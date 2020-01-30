@@ -23,6 +23,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	this.secureMethods=listAppend(this.secureMethods,'importOrders');
 	this.secureMethods=listAppend(this.secureMethods,'upsertOrders');
 	this.secureMethods=listAppend(this.secureMethods,'upsertFlexships');
+	this.secureMethods=listAppend(this.secureMethods,'importFlexships');
 	this.secureMethods=listAppend(this.secureMethods,'upsertOrderItemsPriceAndPromotions');
 	this.secureMethods=listAppend(this.secureMethods,'importVibeAccounts');
 	this.secureMethods=listAppend(this.secureMethods,'importCashReceiptsToOrders');
@@ -72,9 +73,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	 **/
 	private any function getCashReceiptsData(pageNumber,pageSize){ 
 		
-		var uri = "https://api.monatcorp.net:8443/api/Slatwall/queryMCR";
+		var uri = "https://apisandbox.monatcorp.net:8443/api/Slatwall/QueryMCR";
 		var authKeyName = "authkey";
-		var authKey = "978a511c-9f2f-46ba-beaf-39229d37a1a2";//setting(authKeyName);
+		var authKey = setting(authKeyName);
 		
 	    var body = {
 			"Pagination": {
@@ -104,9 +105,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	
 	
 	private any function getDailyAccountUpdatesData(pageNumber,pageSize){
-	    var uri = "https://api.monatcorp.net:8443/api/Slatwall/SwGetUpdatedAccounts";
+	    var uri = "https://apisandbox.monatcorp.net:8443/api/Slatwall/SwGetUpdatedAccounts";
 		var authKeyName = "authkey";
-		var authKey = "978a511c-9f2f-46ba-beaf-39229d37a1a2";//setting(authKeyName);
+		var authKey = setting(authKeyName);
 		
 	    var body = {
 			"Pagination": {
@@ -147,9 +148,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	}
 	
 	private any function getAccountData(pageNumber,pageSize){
-	    var uri = "https://api.monatcorp.net:8443/api/Slatwall/QueryAccounts";
+	    var uri = "https://apisandbox.monatcorp.net:8443/api/Slatwall/QueryAccounts";
 		var authKeyName = "authkey";
-		var authKey = "978a511c-9f2f-46ba-beaf-39229d37a1a2";//setting(authKeyName);
+		var authKey = setting(authKeyName);
 		
 	    var body = {
 			"Pagination": {
@@ -177,9 +178,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	}
 	
 	private any function getOrderData(pageNumber,pageSize){
-	    var uri = "https://api.monatcorp.net:8443/api/Slatwall/QueryOrders";
+	    var uri = "https://apisandbox.monatcorp.net:8443/api/Slatwall/QueryOrders";
 		var authKeyName = "authkey";
-		var authKey = "978a511c-9f2f-46ba-beaf-39229d37a1a2";//setting(authKeyName);
+		var authKey = setting(authKeyName);
 	
 	    var body = {
 			"Pagination": {
@@ -224,9 +225,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	}
 	
 	private any function getFlexshipData(pageNumber,pageSize){
-	    var uri = "https://api.monatcorp.net:8443/api/Slatwall/QueryFlexships";
+	    var uri = "https://apisandbox.monatcorp.net:8443/api/Slatwall/QueryFlexships";
 		var authKeyName = "authkey";
-		var authKey = "978a511c-9f2f-46ba-beaf-39229d37a1a2";//setting(authKeyName);
+		var authKey = setting(authKeyName);
 	
 	    var body = {
 			"Pagination": {
@@ -1064,8 +1065,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 	}
 	
-	//monat:import.importAccounts&pageNumber=38465&pageSize=50&pageMax=41113
-	//monat:import.importAccounts&pageNumber=1&pageSize=100&pageMax=18000 //36240
+	/**
+	 * For detailed information about the import process, please see:
+	 * https://github.com/ten24/Monat/wiki/Data-Migrations-(Import-Information)
+	 **/
 	public void function importAccounts(rc){ 
 		getService("HibachiTagService").cfsetting(requesttimeout="60000");
 		getFW().setView("public:main.blank");
@@ -1141,7 +1144,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
     			for (var account in accounts){
     			    index++;
         		    var newUUID = rereplace(createUUID(), "-", "", "all");
-        			//writeDump(""newUUID);
+        			
         			// newAccount.setTaxExemptFlag(account['exclude1099']?:false);
         			// Create a new account and then use the mapping file to map it.
         			var newAccount = new Slatwall.model.entity.Account();
@@ -1169,7 +1172,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                     newAccount.setGender(account['Gender']?:""); // * attribute with attribute options exist.
                     newAccount.setBusinessAccountFlag(account['BusinessAccount']?:false); //boolean *
                     newAccount.setCompany(account['BusinessName']?:"");//*
-                    newAccount.setActiveFlag( false ); 
+                    
                     
                     if (structKeyExists(account, "TestAccount") && len(account['TestAccount'])){
                     	newAccount.setTestAccountFlag( account['TestAccount']?:false );	
@@ -1198,14 +1201,24 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                     	var newAccountStatusTypeID = getAccountStatusTypeIDFromName(account['AccountStatusName']);
                     	if (!isNull(newAccountStatusTypeID)){
                     		newAccount.setAccountStatus(account['AccountStatusCode']?:""); //*
-                    		
-                    		//set this from th account status code after!
-                    		/*var statusType = getTypeService().getType(getAccountStatusTypeIDFromName(account['AccountStatusName']));
+                    		//populate after with a query
+                    		/*
+                    		var statusType = getTypeService().getType(getAccountStatusTypeIDFromName(account['AccountStatusName']));
                     		if (!isNull(statusType)){
                     			newAccount.setAccountStatusType( statusType );//*
                     		}*/
                     	}
+                    	
+                    	//Set the active flag
+                    	if (account['AccountStatusName'] == "Suspended" || account['AccountStatusName'] == "Terminated"){
+                    	    newAccount.setActiveFlag(false);
+                    	}else{
+                    	    newAccount.setActiveFlag(true);
+                    	}
+                    	
                     }
+                    
+                    
                     
                     //Account Type
                     newAccount.setAccountType(account['AccountTypeName']?:""); //*
@@ -1416,27 +1429,23 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                     
                     // update with all the previous data
                     ormStatelessSession.update("SlatwallAccount", newAccount);
-                    //echo("Update account");
+
     			}
-    			//echo("Commit account");
+    			
     			tx.commit();
     		}catch(e){
-    			/*if (!isNull(tx) && tx.isActive()){
-    			    tx.rollback();
-    			}*/
+    			
     			writeDump("Failed @ Index: #index# PageSize: #pageSize# PageNumber: #pageNumber#");
-    			writeDump(e); // rollback the tx
     			abort;
+    			
     		}
-    		//echo("Clear session");
-    		this.logHibachi('Import (Create) Page #pageNumber# completed ', true);
+    		
     		ormGetSession().clear();//clear every page records...
 		    pageNumber++;
 		}
 		
 		ormStatelessSession.close(); //must close the session regardless of errors.
-		writeDump("End: #pageNumber# - #pageSize# - #index#");
-
+		
 	}
 	
 	//monat:import.upsertAccounts&pageNumber=33857&pageSize=50&pageMax=36240
@@ -1560,6 +1569,13 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                     		if (!isNull(statusType)){
                     			newAccount.setAccountStatusType( statusType );//*
                     		}
+                    	}
+                    	
+                    	//Set the active flag
+                    	if (account['AccountStatusName'] == "Suspended" || account['AccountStatusName'] == "Terminated"){
+                    	    newAccount.setActiveFlag(false);
+                    	}else{
+                    	    newAccount.setActiveFlag(true);
                     	}
                     }
                     
@@ -2820,7 +2836,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
     	}
 		
 		ormStatelessSession.close(); //must close the session regardless of errors.
-		writeDump("End: #pageNumber# - #pageSize# - #index#");
+		
 		
 	}
 	
@@ -2985,14 +3001,26 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 							continue;
 						}
 						
-						//echo("Importing<br>");
-						var orderTemplate = getOrderService().getOrderTemplateByRemoteID(flexship['FlexShipId'], false);
+						// Skip if the account is not imported.
+						var skipAccount = false;
+						try{
+							var customerAccount = getAccountService().getAccountByAccountNumber(flexship['AccountNumber'], false);
+						}catch(accountError){
+							skipAccount = true;
+						}
+						
+						if (skipAccount){
+							index++;
+							continue;
+						}
+						
+						//var orderTemplate = getOrderService().getOrderTemplateByRemoteID(flexship['FlexShipId'], false);
 						var isNewFlexship = false;
 						//writedump(orderTemplate);abort;
 						if (isNull(orderTemplate)){
 							var orderTemplate = new Slatwall.model.entity.OrderTemplate();
-							var newUUID = rereplace(createUUID(), "-", "", "all");
-							orderTemplate.setOrderTemplateID(newUUID);
+							//var newUUID = rereplace(createUUID(), "-", "", "all");
+							//orderTemplate.setOrderTemplateID(newUUID);
 							isNewFlexship = true;
 						}
 						
@@ -3052,20 +3080,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	                    }*/
 	                    
 						// UPDATE THE ACCOUNT
-						var skipAccount = false;
-						try{
-							var customerAccount = getAccountService().getAccountByAccountNumber(flexship['AccountNumber'], false);
-						}catch(accountError){
-							skipAccount = true;
-						}
-						
-						if(isNull(customerAccount) || skipAccount){
-							echo("can't find customer account: #flexship['AccountNumber']# flexship #flexship['FlexShipId']#<br>");
-							//clear orm here.
-							continue;
-						}else{
-							orderTemplate.setAccount(customerAccount);
-						}
+						orderTemplate.setAccount(customerAccount);
 						
 						// UPDATE THE SHIPPING ADDRESS
 						var flexshipShippingAddressRemoteID = 'fss' & flexship['FlexShipId'];
@@ -3300,7 +3315,296 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 					ormStatelessSession.close();
 				}
 			}
-				this.logHibachi('Import (Flexship Upsert) Page #pageNumber# completed ', true);
+				//this.logHibachi('Import (Flexship Upsert) Page #pageNumber# completed ', true);
+		    pageNumber++;
+
+		}//end pageNumber
+    }
+    
+    public void function importFlexships(rc) { 
+    	getService("HibachiTagService").cfsetting(requesttimeout="60000");
+		getFW().setView("public:main.blank");
+		var integration = getService("IntegrationService").getIntegrationByIntegrationPackage("monat");
+		var pageNumber = rc.pageNumber?:1;
+		var pageSize = rc.pageSize?:20;
+		var pageMax = rc.pageMax?:1;
+		var orderTemplateType = getTypeService().getTypeBYSystemCode('ottSchedule');  
+		var orderTemplateStatusType = getTypeService().getTypeBYSystemCode('otstActive'); 
+		var paymentMethod = getPaymentService().getPaymentMethod('444df303dedc6dab69dd7ebcc9b8036a');
+		var termMonthly = getPaymentService().getTermByTermName('Monthly');
+		var termBiMonthly = getPaymentService().getTermByTermName('Bi-Monthly');
+		
+		while (pageNumber < pageMax){
+           
+    		var flexshipResponse = getFlexshipData(pageNumber, pageSize);
+			
+			if (flexshipResponse.hasErrors){
+    		    //goto next page causing this is erroring!
+    		    pageNumber++;
+    		    continue;
+    		}
+
+			var flexships = flexshipResponse.Records;
+			
+			
+    		if (structKeyExists(rc, "viewResponse")){
+    			writeDump( flexships ); abort;
+    		}
+    		
+			//writeDump(flexships);abort;
+    		var startTick = getTickCount();
+    		var transactionClosed = false;
+    		var index = 0;
+			var count = 1;   		
+
+			index=0;
+			
+			
+			//always stateless
+			//stateless
+			var ormStatelessSession = ormGetSessionFactory().openStatelessSession(); 
+			
+			try{
+
+					var tx = ormStatelessSession.beginTransaction();
+
+					for(var flexship in flexships){
+						//Skip the deleted ones.
+						if (structKeyExists(flexship, 'FlexShipStatusName') && flexship['FlexShipStatusName'] == "Deleted"){
+							index++;
+							continue;
+						}
+						
+						// Skip if the account is not imported.
+						var skipAccount = false;
+						try{
+							var customerAccount = getAccountService().getAccountByAccountNumber(flexship['AccountNumber'], false);
+						}catch(accountError){
+							skipAccount = true;
+						}
+						
+						if (isNull(customerAccount) || skipAccount){
+							index++;
+							continue;
+						}
+						
+						
+						
+						var orderTemplate = new Slatwall.model.entity.OrderTemplate();
+						//var newUUID = rereplace(createUUID(), "-", "", "all");
+						//orderTemplate.setOrderTemplateID(newUUID);
+						var isNewFlexship = true;
+						
+						
+						orderTemplate.setRemoteID(flexship['FlexShipId']); 
+						orderTemplate.setOrderTemplateName(flexship['FlexShipNumber']?:"");
+						orderTemplate.setCurrencyCode(flexship['currencyCode']);	
+						orderTemplate.setScheduleOrderNextPlaceDateTime(flexship['NextRunDate']);
+						
+						if (structKeyExists(flexship, 'FlexShipStatusCode')){
+							orderTemplate.setFlexshipStatusCode(flexship['FlexShipStatusCode']);
+						}
+						
+						//lastOrderNumber
+						orderTemplate.setLastOrderNumber(flexship['LastOrderNumber']?:"");
+						
+						//Snapshot the priceLevelCode
+						orderTemplate.setPriceLevelCode(flexship['PriceLevelCode']?:"");
+						
+						//add a date field for this.
+						if (!isNull(flexship['DateLastGenerated']) && len(flexship['DateLastGenerated'])){
+							orderTemplate.setLastGeneratedDateTime( getDateFromString(flexship['DateLastGenerated'] ));
+						}
+						
+						//set created
+						if (!isNull(flexship['EntryDate']) && len(flexship['EntryDate'])){
+							var entryDate = getDateFromString(flexship['EntryDate']);
+	                    	orderTemplate.setCreatedDateTime( entryDate );//*
+	                    	orderTemplate.setModifiedDateTime( entryDate );//*
+	                    }
+	                    
+	                    if (!isNull(flexship['Frequency'])){
+	                    	if (flexship['Frequency'] == 1){
+	                    		orderTemplate.setFrequencyTerm(termMonthly);	
+	                    	}else if(flexship['Frequency'] == 2){
+	                    		orderTemplate.setFrequencyTerm(termBiMonthly);
+	                    	}
+	                    }
+	                    
+	                    //Remove this delete date as we won't update those.
+						//set created and modified date times.
+					
+	                    if (!isNull(flexship['CancelCode']) && len(flexship['CancelCode'])){
+	                    	orderTemplate.setCanceledCode( flexship['CancelCode'] );//*
+	                    }
+	                    
+	                    if (!isNull(flexship['AddressValidationCode']) && len(flexship['AddressValidationCode'])){
+	                    	orderTemplate.setAddressValidationCode( flexship['AddressValidationCode'] );//*
+	                    }
+	                    
+						// UPDATE THE ACCOUNT
+						orderTemplate.setAccount(customerAccount);
+						
+						// UPDATE THE SHIPPING ADDRESS
+						var flexshipShippingAddressRemoteID = 'fss' & flexship['FlexShipId'];
+						//get it by remoteID if it exists.
+						
+						var shippingAccountAddress = new Slatwall.model.entity.AccountAddress();
+						
+						shippingAccountAddress.setRemoteID(flexshipShippingAddressRemoteID);
+						shippingAccountAddress.setAccount(customerAccount);
+						shippingAccountAddress.setAccountAddressName("Shipping");
+						shippingAccountAddress.setCreatedDateTime(getDateFromString(flexship['entryDate']));
+						shippingAccountAddress.setModifiedDateTime(now());
+						
+						
+		                
+		                /**
+		                 * Because we are saving this on the orderTemplate, we may not need to update it on its own,
+		                 * and could cause an ORM error because the batch update ormStatelessSession.update on account address
+		                 * doesn't match whats in the db. In other workds, this line below means you don't need to save it on its own.
+		                 * It will get saved already when the orderTemplate gets saved.
+		                 **/
+		                
+						
+						var shippingAddress = new Slatwall.model.entity.Address();
+						
+						shippingAddress.setRemoteID(flexshipShippingAddressRemoteID);
+						shippingAddress.setStreetAddress(flexship['ShipToAddr1']?:"");   
+						shippingAddress.setStreet2Address(flexship['ShipToAddr2']?:""); 
+						shippingAddress.setStateCode(flexship['ShipToState']?:"");   
+						shippingAddress.setCity(flexship['ShipToCity']?:"");
+						shippingAddress.setPostalCode(flexship['ShipToZip']?:"");
+						shippingAddress.setCountryCode(flexship['ShipToCountry']?:"");
+						shippingAddress.setName(flexship['ShipToName']?:""); 
+						shippingAddress.setPhoneNumber(flexship['ShipToPhone']?:"");
+						
+						ormStatelessSession.insert("SlatwallAddress", shippingAddress);
+						
+						shippingAccountAddress.setAddress(shippingAddress);
+						
+						ormStatelessSession.insert("SlatwallAccountAddress", shippingAccountAddress);
+
+		                orderTemplate.setShippingAccountAddress(shippingAccountAddress); 
+						
+						ormStatelessSession.update("SlatwallAccountAddress", shippingAccountAddress);
+						
+		                //ADD a FLEXSHIP PAYMENT
+						if ( structKeyExists(flexship, "FlexShipPayments") && arrayLen(flexship.FlexShipPayments)){
+							var flexshipPayment = flexship.FlexShipPayments[1];
+				
+							//FIND or CREATE the payment method
+							var accountPaymentMethod = new Slatwall.model.entity.AccountPaymentMethod(); 
+							
+							accountPaymentMethod.setAccount(customerAccount);
+							accountPaymentMethod.setRemoteID(flexshipPayment['FlexShipPaymentId']);
+							accountPaymentMethod.setCurrencyCode(flexship['currencyCode']);
+							accountPaymentMethod.setCreditCardType(flexshipPayment['CcType']?:""); 
+							accountPaymentMethod.setExpirationYear(flexshipPayment['CcExpYy']?:""); 
+							accountPaymentMethod.setExpirationMonth(flexshipPayment['CcExpMm']?:""); 
+							accountPaymentMethod.setProviderToken(flexshipPayment['PaymentToken']?:""); 
+							accountPaymentMethod.setPaymentMethod(paymentMethod);
+							accountPaymentMethod.setCreditCardLastFour( right(flexshipPayment['checkCcAccount'], 4)?:"" );//*
+                            
+                            orderTemplate.setAccountPaymentMethod(accountPaymentMethod);
+                            
+							var flexshipBillingAddressRemoteID = 'fsb' & flexshipPayment['FlexShipPaymentId']; 
+							
+							//FIND or CREATE the billing account address
+							var billingAccountAddress = new Slatwall.model.entity.AccountAddress();
+							 
+				
+							billingAccountAddress.setRemoteID(flexshipbillingAddressRemoteID);
+							billingAccountAddress.setAccount(customerAccount);
+							billingAccountAddress.setAccountAddressName("Billing");
+							billingAccountAddress.setCreatedDateTime(getDateFromString(flexship['entryDate']));
+							billingAccountAddress.setModifiedDateTime(now());
+							
+							//may be same as shipping
+							if(!structKeyExists(flexshipPayment, 'BillCity')){
+								var billingAddress = getAddressService().copyAddress(shippingAddress);
+								billingAddress.setRemoteID(flexshipBillingAddressRemoteID);
+								
+							} else {
+				
+								var billingAddress = new Slatwall.model.entity.Address();
+								billingAddress.setRemoteID(flexshipBillingAddressRemoteID);
+								billingAddress.setName(flexshipPayment['BillOtherName']?:''); 
+								billingAddress.setFirstName(flexshipPayment['BillFirstName']?:''); 
+								billingAddress.setLastName(flexshipPayment['BillLastName']?:''); 
+								billingAddress.setStreetAddress(flexshipPayment['BillAddr1']?:'');   
+								billingAddress.setStreet2Address(flexshipPayment['BillAddr2']?:''); 
+								billingAddress.setLocality(flexshipPayment['BillAddr3']?:''); 
+								billingAddress.setStateCode(flexshipPayment['BillState']?:'');   
+								billingAddress.setCity(flexshipPayment['BillCity']);
+								billingAddress.setPostalCode(flexshipPayment['BillZip']);
+								billingAddress.setCountryCode(flexshipPayment['BillCountryCode']);
+								billingAddress.setPhoneNumber(flexshipPayment['BillPhone']);
+									
+								
+								
+							}
+							
+							// SAVE the address
+							ormStatelessSession.insert("SlatwallAddress", billingAddress);
+							
+							// SAVE the account address
+							billingAccountAddress.setAddress(billingAddress); 
+							ormStatelessSession.insert("SlatwallAccountAddress", billingAccountAddress);
+							
+		                
+							// Save Billing Account Address
+							
+							// Save Account Payment Method
+							accountPaymentMethod.setBillingAddress(billingAddress);
+							accountPaymentMethod.setBillingAccountAddress(billingAccountAddress);
+							ormStatelessSession.insert("SlatwallAccountPaymentMethod", accountPaymentMethod);
+							
+						}
+						
+						if (structKeyExists(flexship, "FlexShipDetails") && arrayLen(flexship.FlexShipDetails)){
+							for (var flexshipItem in flexship.FlexShipDetails){
+								
+								var sku = getSkuService().getSkuBySkuCode(flexshipItem['ItemCode']);
+								
+								if(isNull(sku)){
+									continue; 
+								} 
+								
+								var orderTemplateItem = new Slatwall.model.entity.OrderTemplateItem();
+								
+								orderTemplateItem.setRemoteID(flexshipItem['FlexShipDetailId']);
+								orderTemplateItem.setSku(sku);
+								orderTemplateItem.setQuantity(flexshipItem['quantity']);
+								orderTemplateItem.setCreatedDatetime(now());
+								orderTemplateItem.setModifiedDatetime(now());
+								orderTemplateItem.setKitFlagCode(flexshipItem['KitFlagCode']?:"");
+								
+								ormStatelessSession.insert("SlatwallOrderTemplateItem", orderTemplateItem);
+								
+							}
+						}
+					
+						ormStatelessSession.update("SlatwallOrderTemplate", orderTemplate);
+						this.logHibachi( "upserted orderTemplate #flexship['FlexShipId']# with index #index#", true );
+						index++;
+					} 				
+
+					tx.commit();
+					ormGetSession().clear();//clear every page records...
+			} catch (e){
+				echo("Stateless: Failed @ Index: #index# PageSize: #pageSize# PageNumber: #pageNumber#<br>");
+    			//writeDump(flexship); // rollback the tx
+    			writeDump(e); // rollback the tx
+				abort;
+    		} finally{
+
+			    // close the stateless before opening the statefull again...
+				if (ormStatelessSession.isOpen()){
+					ormStatelessSession.close();
+				}
+			}
+			
 		    pageNumber++;
 
 		}//end pageNumber
