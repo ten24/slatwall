@@ -160,10 +160,10 @@ class SWAddOrderItemsBySkuController{
 	
 		this.observerService.notify("addOrderItemStartLoading", {});
 		
-		if(isNaN(payload.priceByCurrencyCode) || payload.priceByCurrencyCode == 0) {
+		if(isNaN(parseFloat(payload.priceByCurrencyCode))) {
 	       
 	        var alert = this.alertService.newAlert();
-            alert.msg = "This item has no price defined";
+            alert.msg = this.rbkeyService.rbKey("validate.processOrder_addOrderitem.price.notIsDefined");
             alert.type = "error";
             alert.fade = true;
             this.alertService.addAlert(alert);

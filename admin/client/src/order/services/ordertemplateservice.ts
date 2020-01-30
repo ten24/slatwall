@@ -277,10 +277,10 @@ export class OrderTemplateService {
     public addOrderTemplateItem = (state) =>{
         
         		
-		if(isNaN(state.priceByCurrencyCode) || state.priceByCurrencyCode == 0) {
-	       
+	    if(isNaN(parseFloat(state.priceByCurrencyCode))) {
+
 	        var alert = this.alertService.newAlert();
-            alert.msg = "This item has no price defined";
+            alert.msg = this.rbkeyService.rbKey("validate.processOrder_addOrderitem.price.notIsDefined");
             alert.type = "error";
             alert.fade = true;
             this.alertService.addAlert(alert);
