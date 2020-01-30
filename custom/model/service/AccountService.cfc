@@ -120,9 +120,11 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 	
 	//custom validation methods
 	
-	public boolean function restrictRenewalDateToOneYearFromNow( required any renewalDate) {
-		var oneYearFromNow = DateAdd('yyyy', 1, Now());
-		return  DateCompare(oneYearFromNow, ParseDateTime(arguments.renewalDate) ) >= 0; 
+	public boolean function restrictRenewalDateToOneYearOut( required any renewalDate) {
+		var dateLimit = DateAdd('yyyy', 1, Now());
+		//Add buffer time for renewals taking place during the renewal window
+		dateLimit = DateAdd('d', getService('settingService').getSettingValue('integrationmonatOrderMinimumDaysToRenewMP'),dateLimit);
+		return  DateCompare(dateLimit, ParseDateTime(arguments.renewalDate) ) >= 0; 
 	}
 	
 	/**
