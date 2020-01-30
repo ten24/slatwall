@@ -3359,23 +3359,26 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			case 'exactWeeks': //Exact N Week Ago
 				var firstOfCurrentWeek = DateAdd("d",  - (DayOfWeek(Now()) - 1), Now());
 				setStartRange = DateAdd("d",  - arguments.criteria * 7, firstOfCurrentWeek);
-				setEndRange = setStartRange;
+				setEndRange = DateAdd("d",  6, setStartRange);
 			break;
 			case 'exactMonths': //Exact N Month Ago
 				var firstOfCurrentMonth = createDate(year(now()), month(now()), 1);
 				setStartRange = DateAdd("m",  - arguments.criteria, firstOfCurrentMonth);
-				setEndRange = setStartRange;
+				setEndRange = DateAdd("m",  1, setStartRange);
+				setEndRange = DateAdd("d",  -1, setEndRange);
 			break;
 			case 'exactQuaters': //Exact N Quarter Ago
 				var quarter = floor(month(now()) / 3);
 				var firstDayOfCurrentQuarter = CreateDate(year(now()), (quarter)*3 + 1, 1);
 				setStartRange = DateAdd("m",  - arguments.criteria * 3, firstDayOfCurrentQuarter);
-				setEndRange = setStartRange;
+				setEndRange = DateAdd("m",  4, setStartRange); //first of 4th month
+				setEndRange = DateAdd("d",  -1, setEndRange); //last day of quarter
 			break;
 			case 'exactYears': //Exact N Year Ago
 				var firstDayOfCurrentYear = CreateDate(year(now()), 1, 1);
 				setStartRange = DateAdd("yyyy", - arguments.criteria, firstDayOfCurrentYear);
-				setEndRange = setStartRange;
+				setEndRange = DateAdd("yyyy",  1, setStartRange);
+				setEndRange = DateAdd("d",  -1, setEndRange); //last day of year
 			break;
 			case 'exactDayFromNow': //Exact N Day From Now
 				var setStartRange = DateAdd("d",  arguments.criteria, Now());
@@ -3385,20 +3388,18 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		
 		if(setStartRange != "") {
 			if(arguments.measureType== "lastHour") {
-				rangeStruct.rangStartValue = CreateDateTime(year(setStartRange), month(setStartRange), day(setStartRange));
+				rangeStruct.rangStartValue = CreateDateTime(year(setStartRange), month(setStartRange), day(setStartRange), hour(setStartRange), minute(setStartRange), second(setStartRange));
 			} else {
 				rangeStruct.rangStartValue = CreateDateTime(year(setStartRange), month(setStartRange), day(setStartRange), 0, 0, 0);
 			}
-			
 		}
 		
 		if(setEndRange != "") {
 			if(arguments.measureType== "lastHour") {
-				rangeStruct.rangeEndValue = CreateDateTime(year(setEndRange), month(setEndRange), day(setEndRange));
+				rangeStruct.rangeEndValue = CreateDateTime(year(setEndRange), month(setEndRange), day(setEndRange), hour(setEndRange), minute(setEndRange), second(setEndRange));
 			} else {
 				rangeStruct.rangeEndValue = CreateDateTime(year(setEndRange), month(setEndRange), day(setEndRange), 23, 59, 59);
 			}
-			
 		}
 		
 		return rangeStruct;

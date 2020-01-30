@@ -466,23 +466,19 @@ class SWCriteriaDate{
 	  								setStartDate = new Date(year - 1,0,1);
 	  								break;
 	  							case 'exactDays': //Exact N Day Ago
-	  								setStartRange = true;
+	  								setStartRange = false;
 	  								setEndRange = false;
 	  								setNumberOf = true;
-	  								setStartDate = setStartDate.add(-1).days();
 	  								break;
 	  							case 'exactMonths': //Exact N Month Ago
-	  								setStartRange = true;
+	  								setStartRange = false;
 	  								setEndRange = false;
 	  								setNumberOf = true;
-	  								setStartDate = new Date.today().last().month().moveToFirstDayOfMonth();
 	  								break;
 	  							case 'exactYears': //Exact N Year Ago
-	  								setStartRange = true;
+	  								setStartRange = false;
 	  								setEndRange = false;
 	  								setNumberOf = true;
-	  								var year = Date.parse('today').toString('yyyy');
-	  								setStartDate = new Date(year - 1,0,1);
 	  								break;
 	  							case 'exactDayFromNow':
 	  								setStartRange = false;

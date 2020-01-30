@@ -32131,22 +32131,22 @@ var OrderFulfillmentService = /** @class */ (function () {
             switch (action.type) {
                 case actions.TOGGLE_FULFILLMENT_LISTING:
                     _this.state.showFulfillmentListing = !_this.state.showFulfillmentListing;
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.ADD_BATCH:
-                    return __assign({}, state, { action: action });
+                    return __assign(__assign({}, state), { action: action });
                 case actions.SETUP_BATCHDETAIL:
                     //Setup the detail
                     if (action.payload.fulfillmentBatchId != undefined) {
                         _this.state.fulfillmentBatchId = action.payload.fulfillmentBatchId;
                     }
                     _this.setupFulfillmentBatchDetail();
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.UPDATE_BATCHDETAIL:
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.TOGGLE_BATCHLISTING:
                     //Toggle the listing from expanded to half size.
                     _this.state.expandedFulfillmentBatchListing = !_this.state.expandedFulfillmentBatchListing;
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.TOGGLE_EDITCOMMENT:
                     //Update the comment.
                     _this.state.editComment = !_this.state.editComment;
@@ -32156,7 +32156,7 @@ var OrderFulfillmentService = /** @class */ (function () {
                     else {
                         _this.state.commentBeingEdited = undefined;
                     }
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.SAVE_COMMENT_REQUESTED:
                     if (action.payload.comment && action.payload.commentText) {
                         //saving
@@ -32169,49 +32169,49 @@ var OrderFulfillmentService = /** @class */ (function () {
                     //toggle edit mode. so we are no longer editing.
                     _this.state.editComment = false;
                     _this.state.commentBeingEdited = undefined;
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.DELETE_COMMENT_REQUESTED:
                     _this.deleteComment(action.payload.comment);
                     _this.state.editComment = false;
                     _this.state.commentBeingEdited = undefined;
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.CREATE_FULFILLMENT_REQUESTED:
                     //create all the data
                     _this.fulfillItems(action.payload.viewState, false);
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.SETUP_ORDERDELIVERYATTRIBUTES:
                     _this.createOrderDeliveryAttributeCollection();
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.DELETE_FULFILLMENTBATCHITEM_REQUESTED:
                     _this.deleteFulfillmentBatchItem();
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.PRINT_LIST_REQUESTED:
                     _this.getPrintList();
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.EMAIL_LIST_REQUESTED:
                     _this.getEmailList();
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.UPDATE_BOX_DIMENSIONS:
                     _this.updateBoxDimensions(action.payload.box);
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.ADD_BOX:
                     _this.addNewBox();
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.REMOVE_BOX:
                     _this.removeBox(action.payload.index);
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.SET_DELIVERY_QUANTITIES:
                     _this.setDeliveryQuantities();
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.UPDATE_CONTAINER_ITEM_QUANTITY:
                     _this.updateContainerItemQuantity(action.payload.containerItem, action.payload.newValue);
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.SET_UNASSIGNED_ITEM_CONTAINER:
                     _this.setUnassignedItemContainer(action.payload.skuCode, action.payload.container);
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 case actions.TOGGLE_LOADER:
                     _this.state.loading = !_this.state.loading;
-                    return __assign({}, _this.state, { action: action });
+                    return __assign(__assign({}, _this.state), { action: action });
                 default:
                     return _this.state;
             }
@@ -73490,8 +73490,9 @@ var BaseBootStrapper = /** @class */ (function () {
                 });
             })
                 .then(function (appConfig) {
-                if (hibachiConfig.baseURL.length) {
-                    appConfig.baseURL = urlString;
+                // override config
+                for (var config in hibachiConfig) {
+                    appConfig[config] = hibachiConfig[config];
                 }
                 core_module_1.coremodule.constant('appConfig', appConfig);
                 _this.appConfig = appConfig;
@@ -73602,6 +73603,10 @@ var BaseBootStrapper = /** @class */ (function () {
                         .then(function () {
                         if (localStorage.getItem('appConfig') != null) {
                             _this.appConfig = JSON.parse(localStorage.getItem('appConfig'));
+                            // override config
+                            for (var config in hibachiConfig) {
+                                _this.appConfig[config] = hibachiConfig[config];
+                            }
                         }
                         if (hibachiConfig.instantiationKey
                             && _this.appConfig.instantiationKey
@@ -75512,7 +75517,7 @@ var SWCriteriaDate = /** @class */ (function () {
                                 display: "Date",
                                 comparisonOperator: "between",
                                 dateInfo: {
-                                    type: 'exactDate',
+                                    type: 'date',
                                 }
                             },
                             {
@@ -75534,9 +75539,7 @@ var SWCriteriaDate = /** @class */ (function () {
                                 comparisonOperator: "between",
                                 dateInfo: {
                                     type: 'calculation',
-                                    measureType: 'd',
-                                    measureCount: 0,
-                                    behavior: 'toDate'
+                                    measureType: 'today'
                                 }
                             },
                             {
@@ -75544,9 +75547,7 @@ var SWCriteriaDate = /** @class */ (function () {
                                 comparisonOperator: "between",
                                 dateInfo: {
                                     type: 'calculation',
-                                    measureType: 'd',
-                                    measureCount: -1,
-                                    behavior: 'toDate'
+                                    measureType: 'yesterday'
                                 }
                             },
                             {
@@ -75554,8 +75555,7 @@ var SWCriteriaDate = /** @class */ (function () {
                                 comparisonOperator: "between",
                                 dateInfo: {
                                     type: 'calculation',
-                                    measureType: 'w',
-                                    behavior: 'toDate'
+                                    measureType: 'thisWeek'
                                 }
                             },
                             {
@@ -75563,8 +75563,7 @@ var SWCriteriaDate = /** @class */ (function () {
                                 comparisonOperator: "between",
                                 dateInfo: {
                                     type: 'calculation',
-                                    measureType: 'm',
-                                    behavior: 'toDate'
+                                    measureType: 'thisMonth'
                                 }
                             },
                             {
@@ -75572,8 +75571,7 @@ var SWCriteriaDate = /** @class */ (function () {
                                 comparisonOperator: "between",
                                 dateInfo: {
                                     type: 'calculation',
-                                    measureType: 'q',
-                                    behavior: 'toDate'
+                                    measureType: 'thisQuarter'
                                 }
                             },
                             {
@@ -75581,8 +75579,7 @@ var SWCriteriaDate = /** @class */ (function () {
                                 comparisonOperator: "between",
                                 dateInfo: {
                                     type: 'calculation',
-                                    measureType: 'y',
-                                    behavior: 'toDate'
+                                    measureType: 'thisYear'
                                 }
                             },
                             {
@@ -75590,7 +75587,7 @@ var SWCriteriaDate = /** @class */ (function () {
                                 comparisonOperator: "between",
                                 dateInfo: {
                                     type: 'calculation',
-                                    measureType: 'h',
+                                    measureType: 'lastHour',
                                     measureTypeDisplay: 'Hours'
                                 }
                             },
@@ -75599,7 +75596,7 @@ var SWCriteriaDate = /** @class */ (function () {
                                 comparisonOperator: "between",
                                 dateInfo: {
                                     type: 'calculation',
-                                    measureType: 'd',
+                                    measureType: 'lastDay',
                                     measureTypeDisplay: 'Days'
                                 }
                             },
@@ -75608,7 +75605,7 @@ var SWCriteriaDate = /** @class */ (function () {
                                 comparisonOperator: "between",
                                 dateInfo: {
                                     type: 'calculation',
-                                    measureType: 'w',
+                                    measureType: 'lastWeek',
                                     measureTypeDisplay: 'Weeks'
                                 }
                             },
@@ -75617,7 +75614,7 @@ var SWCriteriaDate = /** @class */ (function () {
                                 comparisonOperator: "between",
                                 dateInfo: {
                                     type: 'calculation',
-                                    measureType: 'm',
+                                    measureType: 'lastMonth',
                                     measureTypeDisplay: 'Months'
                                 }
                             },
@@ -75626,7 +75623,7 @@ var SWCriteriaDate = /** @class */ (function () {
                                 comparisonOperator: "between",
                                 dateInfo: {
                                     type: 'calculation',
-                                    measureType: 'q',
+                                    measureType: 'lastQuarter',
                                     measureTypeDisplay: 'Quarters'
                                 }
                             },
@@ -75635,7 +75632,7 @@ var SWCriteriaDate = /** @class */ (function () {
                                 comparisonOperator: "between",
                                 dateInfo: {
                                     type: 'calculation',
-                                    measureType: 'y',
+                                    measureType: 'lastYear',
                                     measureTypeDisplay: 'Years'
                                 }
                             },
@@ -75643,8 +75640,8 @@ var SWCriteriaDate = /** @class */ (function () {
                                 display: "More Than N Day(s) Ago",
                                 comparisonOperator: "<",
                                 dateInfo: {
-                                    type: 'exactDate',
-                                    measureType: 'd',
+                                    type: 'calculation',
+                                    measureType: 'moreDays',
                                     measureTypeDisplay: 'Days'
                                 }
                             },
@@ -75652,8 +75649,8 @@ var SWCriteriaDate = /** @class */ (function () {
                                 display: "More Than N Week(s) Ago",
                                 comparisonOperator: "<",
                                 dateInfo: {
-                                    type: 'exactDate',
-                                    measureType: 'w',
+                                    type: 'calculation',
+                                    measureType: 'moreWeeks',
                                     measureTypeDisplay: 'Weeks'
                                 }
                             },
@@ -75661,8 +75658,8 @@ var SWCriteriaDate = /** @class */ (function () {
                                 display: "More Than N Month(s) Ago",
                                 comparisonOperator: "<",
                                 dateInfo: {
-                                    type: 'exactDate',
-                                    measureType: 'm',
+                                    type: 'calculation',
+                                    measureType: 'moreMonths',
                                     measureTypeDisplay: 'Months'
                                 }
                             },
@@ -75670,8 +75667,8 @@ var SWCriteriaDate = /** @class */ (function () {
                                 display: "More Than N Year(s) Ago",
                                 comparisonOperator: "<",
                                 dateInfo: {
-                                    type: 'exactDate',
-                                    measureType: 'y',
+                                    type: 'calculation',
+                                    measureType: 'moreYears',
                                     measureTypeDisplay: 'Years'
                                 }
                             },
@@ -75679,8 +75676,8 @@ var SWCriteriaDate = /** @class */ (function () {
                                 display: "Exact N Day(s) Ago",
                                 comparisonOperator: "between",
                                 dateInfo: {
-                                    type: 'exactDate',
-                                    measureType: 'd',
+                                    type: 'calculation',
+                                    measureType: 'exactDays',
                                     measureTypeDisplay: 'Days'
                                 }
                             },
@@ -75688,8 +75685,8 @@ var SWCriteriaDate = /** @class */ (function () {
                                 display: "Exact N Month(s) Ago",
                                 comparisonOperator: "between",
                                 dateInfo: {
-                                    type: 'exactDate',
-                                    measureType: 'm',
+                                    type: 'calculation',
+                                    measureType: 'exactMonths',
                                     measureTypeDisplay: 'Months'
                                 }
                             },
@@ -75697,35 +75694,8 @@ var SWCriteriaDate = /** @class */ (function () {
                                 display: "Exact N Year(s) Ago",
                                 comparisonOperator: "between",
                                 dateInfo: {
-                                    type: 'exactDate',
-                                    measureType: 'y',
-                                    measureTypeDisplay: 'Years'
-                                }
-                            },
-                            {
-                                display: "Exact N Day(s) Ago",
-                                comparisonOperator: "between",
-                                dateInfo: {
-                                    type: 'exactDate',
-                                    measureType: 'd',
-                                    measureTypeDisplay: 'Days'
-                                }
-                            },
-                            {
-                                display: "Exact N Month(s) Ago",
-                                comparisonOperator: "between",
-                                dateInfo: {
-                                    type: 'exactDate',
-                                    measureType: 'm',
-                                    measureTypeDisplay: 'Months'
-                                }
-                            },
-                            {
-                                display: "Exact N Year(s) Ago",
-                                comparisonOperator: "between",
-                                dateInfo: {
-                                    type: 'exactDate',
-                                    measureType: 'y',
+                                    type: 'calculation',
+                                    measureType: 'exactYears',
                                     measureTypeDisplay: 'Years'
                                 }
                             },
@@ -75733,8 +75703,8 @@ var SWCriteriaDate = /** @class */ (function () {
                                 display: "Exact N Day(s) From Now",
                                 comparisonOperator: "between",
                                 dateInfo: {
-                                    type: 'exactDateFuture',
-                                    measureType: 'd',
+                                    type: 'calculation',
+                                    measureType: 'exactDayFromNow',
                                     measureTypeDisplay: 'Days'
                                 }
                             },
@@ -75846,95 +75816,201 @@ var SWCriteriaDate = /** @class */ (function () {
                     if (angular.isDefined(selectedCondition.dateInfo)) {
                         //is condition a calculation
                         if (selectedCondition.dateInfo.type === 'calculation') {
-                            selectedCondition.showCriteriaStart = true;
-                            selectedCondition.showCriteriaEnd = true;
-                            selectedCondition.disableCriteriaStart = true;
-                            selectedCondition.disableCriteriaEnd = true;
-                            //if item is a calculation of an N number of measure display the measure and number input
-                            if (angular.isUndefined(selectedCondition.dateInfo.behavior)) {
-                                $log.debug('Not toDate');
-                                selectedCondition.showNumberOf = true;
-                                selectedCondition.conditionDisplay = 'Number of ' + selectedCondition.dateInfo.measureTypeDisplay + ' :';
+                            var setStartRange = false;
+                            var setEndRange = false;
+                            var setNumberOf = false;
+                            var setStartDate = Date.parse('today');
+                            var setEndDate = Date.parse('today');
+                            //get this Measure to date
+                            switch (selectedCondition.dateInfo.measureType) {
+                                case "today":
+                                    setStartRange = true;
+                                    setEndRange = true;
+                                    break;
+                                case "yesterday":
+                                    setStartRange = true;
+                                    setEndRange = true;
+                                    setStartDate = setStartDate.add(-1).days();
+                                    setEndDate = setStartDate;
+                                    break;
+                                case 'thisWeek': //This Week
+                                    setStartRange = true;
+                                    setEndRange = true;
+                                    setStartDate = Date.today().monday().add(-7).days(); //added 7 days because Date.today().monday() is not returning this week's monday
+                                    setEndDate = Date.today().sunday();
+                                    break;
+                                case 'thisMonth': //This Month
+                                    setStartRange = true;
+                                    setEndRange = true;
+                                    setStartDate = new Date.today().moveToFirstDayOfMonth();
+                                    setEndDate = new Date.today().moveToLastDayOfMonth();
+                                    break;
+                                case 'thisQuarter': //This Quarter
+                                    setStartRange = true;
+                                    setEndRange = true;
+                                    var month = Date.parse('today').toString('M');
+                                    var year = Date.parse('today').toString('yyyy');
+                                    var quarterMonth = (Math.floor(month / 3) * 3);
+                                    setStartDate = new Date(year, quarterMonth, 1);
+                                    setEndDate = new Date(year, quarterMonth, 1).addMonths(3).add(-1).days();
+                                    break;
+                                case 'thisYear': //This Year
+                                    setStartRange = true;
+                                    setEndRange = true;
+                                    var year = Date.parse('today').toString('yyyy');
+                                    setStartDate = new Date(year, 0, 1);
+                                    setEndDate = new Date(year, 11, 31);
+                                    break;
+                                case 'lastHour': //Last N Hour
+                                    setStartRange = true;
+                                    setEndRange = true;
+                                    setNumberOf = true;
+                                    break;
+                                case 'lastDay': //Last N Day
+                                    setStartRange = true;
+                                    setEndRange = true;
+                                    setNumberOf = true;
+                                    setStartDate = setStartDate.add(-1).days();
+                                    setEndDate = setStartDate;
+                                    break;
+                                case 'lastWeek': //Last N Week
+                                    setStartRange = true;
+                                    setEndRange = true;
+                                    setNumberOf = true;
+                                    setStartDate = Date.today().monday().add(-2).weeks();
+                                    setEndDate = Date.today().sunday().add(-1).weeks();
+                                    break;
+                                case 'lastMonth': //Last N Month
+                                    setStartRange = true;
+                                    setEndRange = true;
+                                    setNumberOf = true;
+                                    setStartDate = new Date.today().last().month().moveToFirstDayOfMonth();
+                                    setEndDate = new Date.today().last().month().moveToLastDayOfMonth();
+                                    break;
+                                case 'lastQuarter': //Last Quarter
+                                    setStartRange = true;
+                                    setEndRange = true;
+                                    setNumberOf = true;
+                                    var month = Date.parse('today').toString('M');
+                                    var year = Date.parse('today').toString('yyyy');
+                                    var quarterMonth = (Math.floor(month / 3) * 3);
+                                    setStartDate = new Date(year, quarterMonth, 1).addMonths(-3);
+                                    setEndDate = new Date(year, quarterMonth, 1).add(-1).days();
+                                    break;
+                                case 'lastYear': //Last N Year
+                                    setStartRange = true;
+                                    setEndRange = true;
+                                    setNumberOf = true;
+                                    var year = Date.parse('today').toString('yyyy');
+                                    setStartDate = new Date(year - 1, 0, 1);
+                                    setEndDate = new Date(year - 1, 11, 31);
+                                    break;
+                                case 'moreDays': //More than N Day Ago
+                                    setStartRange = true;
+                                    setEndRange = false;
+                                    setNumberOf = true;
+                                    setStartDate = setStartDate.add(-1).days();
+                                    break;
+                                case 'moreWeeks': //More than N Week Ago
+                                    setStartRange = true;
+                                    setEndRange = false;
+                                    setNumberOf = true;
+                                    setStartDate = Date.today().monday().add(-2).weeks();
+                                    break;
+                                case 'moreMonths': //More than N Month Ago
+                                    setStartRange = true;
+                                    setEndRange = false;
+                                    setNumberOf = true;
+                                    setStartDate = new Date.today().last().month().moveToFirstDayOfMonth();
+                                    break;
+                                case 'moreYears': //More than N Year Ago
+                                    setStartRange = true;
+                                    setEndRange = false;
+                                    setNumberOf = true;
+                                    var year = Date.parse('today').toString('yyyy');
+                                    setStartDate = new Date(year - 1, 0, 1);
+                                    break;
+                                case 'exactDays': //Exact N Day Ago
+                                    setStartRange = false;
+                                    setEndRange = false;
+                                    setNumberOf = true;
+                                    break;
+                                case 'exactMonths': //Exact N Month Ago
+                                    setStartRange = false;
+                                    setEndRange = false;
+                                    setNumberOf = true;
+                                    break;
+                                case 'exactYears': //Exact N Year Ago
+                                    setStartRange = false;
+                                    setEndRange = false;
+                                    setNumberOf = true;
+                                    break;
+                                case 'exactDayFromNow':
+                                    setStartRange = false;
+                                    setEndRange = false;
+                                    setNumberOf = true;
+                                    break;
                             }
-                            else {
-                                $log.debug('toDate');
-                                var today = Date.parse('today');
-                                var todayEOD = today.setHours(23, 59, 59, 999);
-                                selectedFilterProperty.criteriaRangeEnd = todayEOD;
-                                //get this Measure to date
-                                switch (selectedCondition.dateInfo.measureType) {
-                                    case 'd':
-                                        var dateBOD = Date.parse('today').add(selectedCondition.dateInfo.measureCount).days();
-                                        dateBOD.setHours(0, 0, 0, 0);
-                                        selectedFilterProperty.criteriaRangeStart = dateBOD.getTime();
-                                        break;
-                                    case 'w':
-                                        var firstDayOfWeek = Date.today().last().monday();
-                                        selectedFilterProperty.criteriaRangeStart = firstDayOfWeek.getTime();
-                                        break;
-                                    case 'm':
-                                        var firstDayOfMonth = Date.today().moveToFirstDayOfMonth();
-                                        selectedFilterProperty.criteriaRangeStart = firstDayOfMonth.getTime();
-                                        break;
-                                    case 'q':
-                                        var month = Date.parse('today').toString('MM');
-                                        var year = Date.parse('today').toString('yyyy');
-                                        var quarterMonth = (Math.floor(month / 3) * 3);
-                                        var firstDayOfQuarter = new Date(year, quarterMonth, 1);
-                                        selectedFilterProperty.criteriaRangeStart = firstDayOfQuarter.getTime();
-                                        break;
-                                    case 'y':
-                                        var year = Date.parse('today').toString('yyyy');
-                                        var firstDayOfYear = new Date(year, 0, 1);
-                                        selectedFilterProperty.criteriaRangeStart = firstDayOfYear.getTime();
-                                        break;
+                            if (setStartRange == true) {
+                                selectedCondition.showCriteriaStart = true;
+                                selectedCondition.disableCriteriaStart = true;
+                                if (selectedCondition.dateInfo.measureType != "lastHour") //set time to current, if filter is for hours
+                                 {
+                                    selectedFilterProperty.criteriaRangeStart = setStartDate.setHours(0, 0, 0, 0);
+                                }
+                                else {
+                                    selectedFilterProperty.criteriaRangeStart = setStartDate.getTime();
                                 }
                             }
+                            else {
+                                selectedCondition.showCriteriaStart = false;
+                                selectedCondition.disableCriteriaStart = false;
+                            }
+                            if (setEndRange == true) {
+                                selectedCondition.showCriteriaEnd = true;
+                                selectedCondition.disableCriteriaEnd = true;
+                                if (selectedCondition.dateInfo.measureType != "lastHour") //set time to current, if filter is for hours
+                                 {
+                                    selectedFilterProperty.criteriaRangeEnd = setEndDate.setHours(23, 59, 59, 999);
+                                }
+                                else {
+                                    selectedFilterProperty.criteriaRangeEnd = setEndDate.getTime();
+                                }
+                            }
+                            else {
+                                selectedCondition.showCriteriaEnd = false;
+                                selectedCondition.disableCriteriaEnd = false;
+                            }
+                            selectedCondition.showNumberOf = setNumberOf;
+                            if (setNumberOf == true) {
+                                if (angular.isDefined(selectedCondition.dateInfo.measureTypeDisplay)) {
+                                    selectedCondition.conditionDisplay = 'Number of ' + selectedCondition.dateInfo.measureTypeDisplay + ' :';
+                                }
+                            }
+                            else {
+                                selectedCondition.conditionDisplay = "";
+                            }
+                            //if item is a calculation of an N number of measure display the measure and number input
+                            // if(angular.isUndefined(selectedCondition.dateInfo.behavior)){
+                            // 	selectedCondition.showNumberOf = true;
+                            // 	selectedCondition.conditionDisplay = 'Number of '+ selectedCondition.dateInfo.measureTypeDisplay + ' :';
+                            // }else{
+                            // }
                         }
-                        if (selectedCondition.dateInfo.type === 'range') {
+                        else if (selectedCondition.dateInfo.type === 'range') {
                             selectedCondition.showCriteriaStart = true;
                             selectedCondition.showCriteriaEnd = true;
                             selectedCondition.disableCriteriaStart = false;
                             selectedCondition.disableCriteriaEnd = false;
                             selectedCondition.showNumberOf = false;
                         }
-                        if (selectedCondition.dateInfo.type === 'exactDate') {
+                        else if (selectedCondition.dateInfo.type === 'date') {
                             selectedCondition.showCriteriaStart = true;
                             selectedCondition.showCriteriaEnd = false;
                             selectedCondition.disableCriteriaStart = false;
-                            selectedCondition.disableCriteriaEnd = true;
-                            if (!selectedCondition.dateInfo.measureType) {
-                                selectedCondition.conditionDisplay = '';
-                                selectedCondition.showCriteriaStart = true;
-                                selectedCondition.showNumberOf = false;
-                                selectedFilterProperty.criteriaRangeStart = new Date(selectedFilterProperty.criteriaRangeStart).setHours(0, 0, 0, 0);
-                                selectedFilterProperty.criteriaRangeEnd = new Date(selectedFilterProperty.criteriaRangeStart).setHours(23, 59, 59, 999);
-                            }
-                            else {
-                                selectedCondition.conditionDisplay = 'How many ' + selectedCondition.dateInfo.measureTypeDisplay + ' ago?';
-                                selectedCondition.showCriteriaStart = false;
-                                selectedCondition.showNumberOf = true;
-                            }
+                            selectedCondition.showNumberOf = false;
                         }
-                        if (selectedCondition.dateInfo.type === 'exactDateFuture') {
-                            selectedCondition.showCriteriaStart = true;
-                            selectedCondition.showCriteriaEnd = false;
-                            selectedCondition.disableCriteriaStart = false;
-                            selectedCondition.disableCriteriaEnd = true;
-                            if (!selectedCondition.dateInfo.measureType) {
-                                selectedCondition.conditionDisplay = '';
-                                selectedCondition.showCriteriaStart = true;
-                                selectedCondition.showNumberOf = false;
-                                selectedFilterProperty.criteriaRangeStart = new Date(selectedFilterProperty.criteriaRangeStart).setHours(0, 0, 0, 0);
-                                selectedFilterProperty.criteriaRangeEnd = new Date(selectedFilterProperty.criteriaRangeStart).setHours(23, 59, 59, 999);
-                            }
-                            else {
-                                selectedCondition.conditionDisplay = 'How many ' + selectedCondition.dateInfo.measureTypeDisplay + ' from now?';
-                                selectedCondition.showCriteriaStart = false;
-                                selectedCondition.showNumberOf = true;
-                            }
-                        }
-                        if (selectedCondition.dateInfo.type === 'matchPart') {
+                        else if (selectedCondition.dateInfo.type === 'matchPart') {
                             selectedCondition.showCriteriaStart = false;
                             selectedCondition.showCriteriaEnd = false;
                             selectedCondition.showNumberOf = true;
@@ -75951,7 +76027,7 @@ var SWCriteriaDate = /** @class */ (function () {
                     $log.debug('selectedConditionChanged Result');
                     $log.debug(selectedCondition);
                     $log.debug(selectedFilterProperty);
-                };
+                }; //End selectedConditionChanged
                 scope.criteriaRangeChanged = function (selectedFilterProperty) {
                     $log.debug('criteriaRangeChanged');
                     $log.debug(selectedFilterProperty);
@@ -75959,71 +76035,60 @@ var SWCriteriaDate = /** @class */ (function () {
                     var measureCount = selectedFilterProperty.criteriaNumberOf;
                     if (selectedCondition.dateInfo.type === 'calculation') {
                         switch (selectedCondition.dateInfo.measureType) {
-                            case 'h':
-                                var today = Date.parse('today');
-                                selectedFilterProperty.criteriaRangeEnd = today.getTime();
+                            case 'lastHour':
                                 var todayXHoursAgo = Date.parse('today').add(-(measureCount)).hours();
                                 selectedFilterProperty.criteriaRangeStart = todayXHoursAgo.getTime();
                                 break;
-                            case 'd':
-                                var lastFullDay = Date.parse('today').add(-1).days();
-                                lastFullDay.setHours(23, 59, 59, 999);
-                                selectedFilterProperty.criteriaRangeEnd = lastFullDay.getTime();
+                            case 'lastDay':
+                            case 'moreDays':
+                                //case 'ed':
                                 var lastXDaysAgo = Date.parse('today').add(-(measureCount)).days();
                                 selectedFilterProperty.criteriaRangeStart = lastXDaysAgo.getTime();
                                 break;
-                            case 'w':
-                                var lastFullWeekEnd = Date.today().last().sunday();
-                                lastFullWeekEnd.setHours(23, 59, 59, 999);
-                                selectedFilterProperty.criteriaRangeEnd = lastFullWeekEnd.getTime();
-                                var lastXWeeksAgo = Date.today().last().sunday().add(-(measureCount)).weeks();
+                            case 'lastWeek':
+                            case 'moreWeeks':
+                                var lastXWeeksAgo = Date.today().last().monday().add(-(measureCount)).weeks();
                                 selectedFilterProperty.criteriaRangeStart = lastXWeeksAgo.getTime();
                                 break;
-                            case 'm':
-                                var lastFullMonthEnd = Date.today().add(-1).months().moveToLastDayOfMonth();
-                                lastFullMonthEnd.setHours(23, 59, 59, 999);
-                                selectedFilterProperty.criteriaRangeEnd = lastFullMonthEnd.getTime();
-                                var lastXMonthsAgo = Date.today().add(-1).months().moveToLastDayOfMonth().add(-(measureCount)).months();
+                            case 'lastMonth':
+                            case 'moreMonths':
+                                //case 'em':
+                                var lastXMonthsAgo = Date.today().months().moveToFirstDayOfMonth().add(-(measureCount)).months();
                                 selectedFilterProperty.criteriaRangeStart = lastXMonthsAgo.getTime();
                                 break;
-                            case 'q':
+                            case 'lastQuarter':
                                 var currentQuarter = Math.floor((Date.parse('today').getMonth() / 3));
-                                var firstDayOfCurrentQuarter = new Date(Date.parse('today').getFullYear(), currentQuarter * 3, 1);
-                                var lastDayOfPreviousQuarter = firstDayOfCurrentQuarter.add(-1).days();
-                                lastDayOfPreviousQuarter.setHours(23, 59, 59, 999);
-                                selectedFilterProperty.criteriaRangeEnd = lastDayOfPreviousQuarter.getTime();
                                 var lastXQuartersAgo = new Date(Date.parse('today').getFullYear(), currentQuarter * 3, 1);
                                 lastXQuartersAgo.add(-(measureCount * 3)).months();
                                 selectedFilterProperty.criteriaRangeStart = lastXQuartersAgo.getTime();
                                 break;
-                            case 'y':
-                                var lastFullYearEnd = new Date(new Date().getFullYear(), 11, 31).add(-1).years();
-                                lastFullYearEnd.setHours(23, 59, 59, 999);
-                                selectedFilterProperty.criteriaRangeEnd = lastFullYearEnd.getTime();
-                                var lastXYearsAgo = new Date(new Date().getFullYear(), 11, 31).add(-(measureCount) - 1).years();
+                            case 'lastYear':
+                            case 'moreYears':
+                                //case 'ey':
+                                var lastXYearsAgo = new Date(new Date().getFullYear(), 0, 1).add(-measureCount).years();
                                 selectedFilterProperty.criteriaRangeStart = lastXYearsAgo.getTime();
                                 break;
-                        }
-                    }
-                    if (selectedCondition.dateInfo.type === 'exactDate' && angular.isDefined(selectedFilterProperty.criteriaRangeStart) && angular.isDefined(selectedFilterProperty.criteriaRangeStart.setHours)) {
-                        selectedFilterProperty.criteriaRangeStart = selectedFilterProperty.criteriaRangeStart.setHours(0, 0, 0, 0);
-                        selectedFilterProperty.criteriaRangeEnd = new Date(selectedFilterProperty.criteriaRangeStart).setHours(23, 59, 59, 999);
-                    }
-                    if (selectedCondition.dateInfo.type === 'exactDateFuture') {
-                        console.log('calculate Condition exactDateFuture', selectedCondition);
-                        switch (selectedCondition.dateInfo.measureType) {
-                            case 'd':
+                            case 'exactDayFromNow':
                                 var xDaysFromNow = new Date(Date.parse('today').getTime() + (measureCount * 24 * 60 * 60 * 1000));
                                 selectedFilterProperty.criteriaRangeStart = xDaysFromNow.setHours(0, 0, 0, 0);
                                 selectedFilterProperty.criteriaRangeEnd = new Date(selectedFilterProperty.criteriaRangeStart).setHours(23, 59, 59, 999);
                                 break;
                         }
+                        // if(selectedCondition.dateInfo.measureType == "em" || selectedCondition.dateInfo.measureType == "ed" || selectedCondition.dateInfo.measureType == "ey") {
+                        // 	selectedFilterProperty.criteriaRangeEnd = selectedFilterProperty.criteriaRangeStart.setHours(23,59,59,999);
+                        // }
+                    }
+                    if (selectedCondition.dateInfo.type === 'date') {
+                        if (angular.isDefined(selectedFilterProperty.criteriaRangeStart)) {
+                            selectedFilterProperty.criteriaRangeStart = new Date(selectedFilterProperty.criteriaRangeStart).setHours(0, 0, 0, 0);
+                            selectedFilterProperty.criteriaRangeEnd = new Date(selectedFilterProperty.criteriaRangeStart).setHours(23, 59, 59, 999);
+                        }
                     }
                     if (selectedCondition.dateInfo.type === 'range') {
-                        if (angular.isDefined(selectedFilterProperty.criteriaRangeStart) && angular.isDefined(selectedFilterProperty.criteriaRangeStart)) {
+                        if (angular.isDefined(selectedFilterProperty.criteriaRangeStart)) {
                             selectedFilterProperty.criteriaRangeStart = new Date(selectedFilterProperty.criteriaRangeStart).setHours(0, 0, 0, 0);
                         }
-                        if (angular.isDefined(selectedFilterProperty.criteriaRangeEnd) && angular.isDefined(selectedFilterProperty.criteriaRangeStart)) {
+                        if (angular.isDefined(selectedFilterProperty.criteriaRangeEnd)) {
                             selectedFilterProperty.criteriaRangeEnd = new Date(selectedFilterProperty.criteriaRangeEnd).setHours(23, 59, 59, 999);
                         }
                     }
@@ -77727,42 +77792,18 @@ var SWEditFilterItem = /** @class */ (function () {
                                 else {
                                     if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.dateInfo.type) && selectedFilterProperty.selectedCriteriaType.dateInfo.type === 'calculation') {
                                         var _daysBetween = daysBetween(new Date(selectedFilterProperty.criteriaRangeStart), new Date(selectedFilterProperty.criteriaRangeEnd));
-                                        filterItem.value = _daysBetween;
                                         filterItem.displayValue = selectedFilterProperty.selectedCriteriaType.display;
+                                        filterItem.measureType = selectedFilterProperty.selectedCriteriaType.dateInfo.measureType;
+                                        filterItem.measureCriteria = selectedFilterProperty.selectedCriteriaType.dateInfo.type;
                                         if (angular.isDefined(selectedFilterProperty.criteriaNumberOf)) {
                                             filterItem.criteriaNumberOf = selectedFilterProperty.criteriaNumberOf;
-                                        }
-                                    }
-                                    else if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.dateInfo.type) && (selectedFilterProperty.selectedCriteriaType.dateInfo.type === 'exactDate' ||
-                                        selectedFilterProperty.selectedCriteriaType.dateInfo.type === 'exactDateFuture')) {
-                                        if (angular.isUndefined(selectedFilterProperty.selectedCriteriaType.dateInfo.measureType)) {
-                                            filterItem.value = selectedFilterProperty.criteriaRangeStart + '-' + selectedFilterProperty.criteriaRangeEnd;
-                                            filterItem.displayValue = $filter('date')(angular.copy(selectedFilterProperty.criteriaRangeStart), 'MM/dd/yyyy @ h:mma') + '-' + $filter('date')(angular.copy(selectedFilterProperty.criteriaRangeEnd), 'MM/dd/yyyy @ h:mma');
+                                            filterItem.value = filterItem.criteriaNumberOf;
+                                            //Update Display Value
+                                            filterItem.displayValue = filterItem.displayValue.replace("N", filterItem.criteriaNumberOf);
                                         }
                                         else {
-                                            filterItem.measureType = selectedFilterProperty.selectedCriteriaType.dateInfo.measureType;
-                                            filterItem.measureCriteria = selectedFilterProperty.selectedCriteriaType.dateInfo.type;
                                             filterItem.criteriaNumberOf = "0";
-                                            if (angular.isDefined(selectedFilterProperty.criteriaNumberOf)) {
-                                                filterItem.criteriaNumberOf = selectedFilterProperty.criteriaNumberOf;
-                                            }
-                                            filterItem.value = filterItem.criteriaNumberOf;
-                                            filterItem.displayValue = filterItem.criteriaNumberOf;
-                                            switch (filterItem.measureType) {
-                                                case 'd':
-                                                    filterItem.displayValue += ' Day';
-                                                    break;
-                                                case 'm':
-                                                    filterItem.displayValue += ' Month';
-                                                    break;
-                                                case 'y':
-                                                    filterItem.displayValue += ' Year';
-                                                    break;
-                                            }
-                                            filterItem.displayValue += ((filterItem.criteriaNumberOf > 1) ? 's' : '');
-                                            (selectedFilterProperty.selectedCriteriaType.dateInfo.type === 'exactDate')
-                                                ? filterItem.displayValue += ' Ago'
-                                                : filterItem.displayValue += ' from Now';
+                                            filterItem.value = _daysBetween;
                                         }
                                     }
                                     else if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.dateInfo.type) && selectedFilterProperty.selectedCriteriaType.dateInfo.type === 'matchPart') {
@@ -82438,7 +82479,7 @@ var SWRbKey = /** @class */ (function () {
                 var rbKeyValue = scope.swRbkey;
                 var bindRBKey = function () {
                     if (angular.isDefined(rbKeyValue) && angular.isString(rbKeyValue)) {
-                        element.text(rbkeyService.getRBKey(rbKeyValue));
+                        element.text(rbkeyService.getRBKey(rbKeyValue, hibachiConfig.rbLocale));
                     }
                 };
                 bindRBKey();
@@ -88095,6 +88136,13 @@ exports.OrderPaymentService = OrderPaymentService;
 
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
+var __spreadArrays = (this && this.__spreadArrays) || function () {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var PublicService = /** @class */ (function () {
     ///index.cfm/api/scope/
@@ -89218,7 +89266,7 @@ var PublicService = /** @class */ (function () {
             for (var _i = 2; _i < arguments.length; _i++) {
                 args[_i - 2] = arguments[_i];
             }
-            return fn.bind.apply(fn, [self].concat(args));
+            return fn.bind.apply(fn, __spreadArrays([self], args));
         };
         /*********************************************************************************/
         /*******************                                    **************************/
@@ -89936,10 +89984,10 @@ var TypeaheadService = /** @class */ (function () {
             switch (action.type) {
                 case 'TYPEAHEAD_QUERY':
                     //modify the state.
-                    return __assign({}, state, { action: action });
+                    return __assign(__assign({}, state), { action: action });
                 case 'TYPEAHEAD_USER_SELECTION':
                     //passthrough - no state change. anyone subscribed can handle this.
-                    return __assign({}, state, { action: action });
+                    return __assign(__assign({}, state), { action: action });
                 default:
                     return state;
             }
@@ -96209,7 +96257,7 @@ var SWListingSearchController = /** @class */ (function () {
         }
     };
     SWListingSearchController.prototype.updateListingSearchConfig = function (config) {
-        var newListingSearchConfig = __assign({}, this.swListingDisplay.collectionConfig.listingSearchConfig, config);
+        var newListingSearchConfig = __assign(__assign({}, this.swListingDisplay.collectionConfig.listingSearchConfig), config);
         this.swListingDisplay.collectionConfig.listingSearchConfig = newListingSearchConfig;
         this.observerService.notifyById('swPaginationAction', this.listingId, { type: 'setCurrentPage', payload: 1 });
     };
@@ -96344,11 +96392,11 @@ var ListingService = /** @class */ (function () {
         this.listingDisplayStateReducer = function (state, action) {
             switch (action.type) {
                 case 'LISTING_PAGE_RECORDS_UPDATE':
-                    return __assign({}, state, { action: action });
+                    return __assign(__assign({}, state), { action: action });
                 case 'CURRENT_PAGE_RECORDS_SELECTED':
-                    return __assign({}, state, { action: action });
+                    return __assign(__assign({}, state), { action: action });
                 case 'ADD_SELECTION':
-                    return __assign({}, state, { action: action });
+                    return __assign(__assign({}, state), { action: action });
                 default:
                     return state;
             }
@@ -99620,6 +99668,7 @@ var SWWorkflowTriggerHistory = /** @class */ (function () {
                 scope.workflowTriggerHistoryCollection.addDisplayProperty("endTime");
                 scope.workflowTriggerHistoryCollection.addDisplayProperty("startTime");
                 scope.workflowTriggerHistoryCollection.addDisplayProperty("successFlag");
+                scope.workflowTriggerHistoryCollection.addDisplayProperty("serverInstanceKey");
             }
         };
     }
