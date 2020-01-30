@@ -94,7 +94,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		for(var i = 1; i <= orderFulfillmentsCount; i++) {
 			if(!arguments.order.getOrderFulfillments()[i].isProcessable( context="placeOrder" )
 				|| arguments.order.getOrderFulfillments()[i].hasErrors()) {
-				writeDump(arguments.order.getOrderFulfillments()[i].getErrors());
 				orderRequirementsList = listAppend(orderRequirementsList, "fulfillment");
 				break;
 			}

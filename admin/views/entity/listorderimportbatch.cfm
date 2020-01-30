@@ -59,7 +59,7 @@ Notes:
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 	<cfset rc.orderImportBatchCollectionList = $.slatwall.getService('OrderImportBatchService').getOrderImportBatchCollectionList() />
-	<cfset displayPropertyList = "itemCount,createdDateTime"/>
+	<cfset displayPropertyList = "itemCount,createdDateTime,orderImportBatchStatusType.typeName"/>
 	<cfset searchFilterPropertyIdentifier="createdDateTime"/>
 	<cfset rc.orderImportBatchCollectionList.setCollectionObjectListingSearchConfig({
 		searchFilterPropertyIdentifier="#searchFilterPropertyIdentifier#"

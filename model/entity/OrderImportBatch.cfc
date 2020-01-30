@@ -34,7 +34,7 @@ component extends="Slatwall.model.entity.HibachiEntity" displayname="OrderImport
 	
 	public any function getShippingMethod(){
 		if(!structKeyExists(variables,'shippingMethod') && arrayLen(getShippingMethodOptions())){
-			variables.shippingMethod = getShippingMethodOptions()[1];
+			variables.shippingMethod = getService('ShippingService').getShippingMethod(getShippingMethodOptions()[1].value);
 		}
 		if(structKeyExists(variables,'shippingMethod')){
 			return variables.shippingMethod;
