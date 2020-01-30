@@ -86,6 +86,7 @@
 		<Record typeID="e96fcde3115111ea9fa612bff9d404c8" typeIDPath="e96fcde3115111ea9fa612bff9d404c8" parentTypeID="NULL" typeName="Order Import Batch Item Status Types" systemCode="orderImportBatchItemStatusType" childRequiresSystemCodeFlag="1" />
 		<Record typeID="03c83b1d115211ea9fa612bff9d404c8" typeIDPath="e96fcde3115111ea9fa612bff9d404c8,03c83b1d115211ea9fa612bff9d404c8" parentTypeID="e96fcde3115111ea9fa612bff9d404c8" typeName="New" systemCode="oibistNew" sortOrder="1" />
 		<Record typeID="1de04d7d115211ea9fa612bff9d404c8" typeIDPath="e96fcde3115111ea9fa612bff9d404c8,1de04d7d115211ea9fa612bff9d404c8" parentTypeID="e96fcde3115111ea9fa612bff9d404c8" typeName="Placed" systemCode="oibstPlaced" sortOrder="2" />
+		<Record typeID="9e86d6dd43a411ea975c0a9c8645709b" typeIDPath="e96fcde3115111ea9fa612bff9d404c8,9e86d6dd43a411ea975c0a9c8645709b" parentTypeID="e96fcde3115111ea9fa612bff9d404c8" typeName="Error" systemCode="oibstError" sortOrder="3" />
 		
 		<Record typeID="2c948084697d51bd01697d5402d40005" typeIDPath="2c948084697d51bd01697d5402d40005" parentTypeID="NULL" typeName="Order Template Types" systemCode="orderTemplateType" childRequiresSystemCodeFlag="1" />
 		<Record typeID="2c948084697d51bd01697d5725650006" typeIDPath="2c948084697d51bd01697d5402d40005,2c948084697d51bd01697d5725650006" parentTypeID="2c948084697d51bd01697d5402d40005" typeName="Schedule Order Template" systemCode="ottSchedule" sortOrder="1"/>
