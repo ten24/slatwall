@@ -185,8 +185,8 @@ class SWListingSearchController {
 
     private updateListingSearchConfig(config?) {
         var newListingSearchConfig = { ...this.swListingDisplay.collectionConfig.listingSearchConfig, ...config };
-        this.swListingDisplay.collectionConfig.listingSearchConfig = newListingSearchConfig;
-        this.observerService.notifyById('swPaginationAction',this.listingId, {type:'setCurrentPage', payload:1});
+        this.swListingDisplay.collectionConfig.listingSearchConfig = newListingSearchConfig;//sets the value on listingsearchconfig
+        this.observerService.notifyById('swPaginationAction',this.listingId, {type:'setCurrentPage', payload:1});//refreshes the listing
     }
 
     public selectSearchColumn = (column?)=>{
@@ -427,5 +427,6 @@ class SWListingSearch  implements ng.IDirective{
 }
 
 export{
-    SWListingSearch
+    SWListingSearch,
+    SWListingSearchController
 }

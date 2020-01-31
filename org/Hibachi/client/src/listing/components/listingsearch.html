@@ -157,15 +157,6 @@
             </button>
         </span>
     </span>
-    <!-- Documentation: Optional toggle flag to fetch all records -->
-    <span class="input-group-btn s-action" ng-show="swListingSearch.swListingControls.showToggleDisplayOptions">
-        <span sw-tooltip class="tool-tip-item" data-text="Toggle Records Count" data-position="bottom">
-            <button class="btn btn-sm btn-default" type="button" data-ng-click="swListingSearch.toggleCountLimit()">
-                <i class="fa fa-list" ng-if="swListingSearch.limitCountTotal > 0"></i>
-                <i class="fa fa-list-alt" ng-if="swListingSearch.limitCountTotal === 0"></i>
-            </button>
-        </span>
-    </span>
     <span class="input-group-btn s-action" ng-show="swListingSearch.swListingControls.showExport">
         <span sw-tooltip class="tool-tip-item" data-text="Export" data-position="bottom">
             <button type="button"

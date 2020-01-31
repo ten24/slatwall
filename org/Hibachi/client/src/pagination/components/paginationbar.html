@@ -36,13 +36,22 @@
 		
 		            <div class="form-group s-page-show">
 		                <label class="control-label col-xs-4">View</label>
-		                <div class="col-xs-8 s-no-padding-right">
+		                <div class="col-xs-5 s-no-padding-right">
 		                    <span class="s-select-wrapper">
 		                        <select size="1" class="form-control input-sm" name="pageShowOptions" aria-controls="" class="form-control" ng-model="swPaginationBar.paginator.selectedPageShowOption" ng-options="pageShowOption as pageShowOption.display for pageShowOption in swPaginationBar.paginator.pageShowOptions"
 		                        ng-change="swPaginationBar.paginator.pageShowOptionChanged(swPaginationBar.paginator.getSelectedPageShowOption())">
 		                        </select>
 		                    </span>
-		                </div>
+						</div>
+		                <div class="col-xs-3 s-no-padding-right">
+							<!-- Documentation: Optional toggle flag to fetch all records  ng-show="swPaginationBar.paginationService.showToggleDisplayOptions" -->
+							<span sw-tooltip class="col-xs-5 tool-tip-item" data-text="Toggle Records Count" data-position="right">
+								<button class="btn btn-sm btn-default" type="button" data-ng-click="swPaginationBar.toggleCountLimit()">
+									<i class="fa fa-list" ng-if="swPaginationBar.limitCountTotal > 0"></i>
+									<i class="fa fa-list-alt" ng-if="swPaginationBar.limitCountTotal === 0"></i>
+								</button>
+							</span>
+						</div>
 		            </div>
 		        </form>
 		    </li>
