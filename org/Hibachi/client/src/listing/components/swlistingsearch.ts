@@ -23,6 +23,7 @@ class SWListingSearchController {
    
     private selectedSearchFilter;
     public selectedWildCardPosition;
+    public limitCountTotal;
     
     public swListingControls:any;
     public hasPersonalCollections:boolean=false;
@@ -97,7 +98,7 @@ class SWListingSearchController {
         if(angular.isDefined(this.swListingDisplay.personalCollectionIdentifier)){
             this.personalCollectionIdentifier = this.swListingDisplay.personalCollectionIdentifier;
         }
-
+        this.limitCountTotal = this.swListingDisplay.collectionConfig.limitCountTotal;//Fetching initial val from config
         //snapshot searchable options in the beginning
         this.searchableOptions = angular.copy(this.collectionConfig.columns);
     
@@ -108,7 +109,7 @@ class SWListingSearchController {
         if(angular.isDefined(this.swListingDisplay.collectionConfig.listingSearchConfig)){
             this.configureListingSearchConfigControls(this.swListingDisplay.collectionConfig.listingSearchConfig);
         }
-        
+
         this.selectedSearchColumn={title:'All'};
         this.configureSearchableColumns(this.selectedSearchColumn);
 
@@ -172,8 +173,8 @@ class SWListingSearchController {
 
     private updateListingSearchConfig(config?) {
         var newListingSearchConfig = { ...this.swListingDisplay.collectionConfig.listingSearchConfig, ...config };
-        this.swListingDisplay.collectionConfig.listingSearchConfig = newListingSearchConfig;
-        this.observerService.notifyById('swPaginationAction',this.listingId, {type:'setCurrentPage', payload:1});
+        this.swListingDisplay.collectionConfig.listingSearchConfig = newListingSearchConfig;//sets the value on listingsearchconfig
+        this.observerService.notifyById('swPaginationAction',this.listingId, {type:'setCurrentPage', payload:1});//refreshes the listing
     }
 
     public selectSearchColumn = (column?)=>{
@@ -414,5 +415,6 @@ class SWListingSearch  implements ng.IDirective{
 }
 
 export{
-    SWListingSearch
+    SWListingSearch,
+    SWListingSearchController
 }
