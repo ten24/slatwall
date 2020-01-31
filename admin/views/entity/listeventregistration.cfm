@@ -53,14 +53,8 @@ Notes:
 
 <cfoutput>
 
-	<!---  We dont need this 
 	<hb:HibachiEntityActionBar type="listing" showCreate="false">
-
-		<hb:HibachiEntityActionBarButtonGroup>
-			<hb:HibachiProcessCaller action="admin:entity.preprocessorder" entity="order" processContext="create" class="btn btn-primary" icon="plus icon-white" modal="true" />
-		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
-	 --->
 
 	<cfset eventRegistrationCollectionList = getHibachiScope().getService('eventRegistrationService').geteventRegistrationCollectionList()>
 	<cfset serchableDisplayProperties = "account.firstName,account.lastName,orderItem.sku.product.productName,orderItem.sku.eventStartDateTime,orderItem.sku.eventEndDateTime,orderItem.sku.calculatedSkuDefinition"/>
