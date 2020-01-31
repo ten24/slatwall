@@ -78,21 +78,18 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiRBService" {
 	
 	public struct function getResourceBundleFromDB(required string locale="en_us"){
 
-        if(FindNoCase("_",arguments.locale)){
-            arguments.locale = "#listFirst(#arguments.locale#,'_')##ucFirst(listLast(arguments.locale,"_"))#";
-        }
 
-	    var formattedLocal = Replace(arguments.locale, "_", "", "ALL");
 	    var rbkeyCollectionList = this.getResourceBundleCollectionList();
-	    rbkeyCollectionList.setDisplayProperties('resourceBundleKey, #formattedLocal#,en');
+	    rbkeyCollectionList.setDisplayProperties('resourceBundleKey, resourcebundleValue');
 	    rbkeyCollectionList.addFilter("activeFlag","true");
-	    rbkeyCollectionList.addFilter(formattedLocal, "NULL", "IS NOT");
+	    rbkeyCollectionList.addFilter("activeFlag","true");
+	    rbkeyCollectionList.addFilter("resourceBundleLocale", arguments.locale, "=");
 
 	    var records = rbkeyCollectionList.getRecords(formatRecords=false);
 
 	    var rbkeysStruct =  StructNew();
 	    for(var i = 1; i<= arrayLen(records); i++){
-            rbkeysStruct[records[i]['resourceBundleKey']] = records[i][formattedLocal];
+            rbkeysStruct["#records[i]['resourceBundleKey']#"] = records[i]['resourcebundleValue'];
 	    }
 
 	    return rbkeysStruct;

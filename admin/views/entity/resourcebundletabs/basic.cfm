@@ -6,18 +6,9 @@
 <cfoutput>
 	<hb:HibachiPropertyRow>
 		<hb:HibachiPropertyList>
-			<hb:HibachiPropertyDisplay object="#rc.resourceBundle#" property="resourceBundleKey" edit="#rc.edit#" requiredFlag="true">
-		
-			<hb:HibachiPropertyDisplay object="#rc.resourceBundle#" property="en" edit="#rc.edit#"> 
-		
-			<hb:HibachiPropertyDisplay object="#rc.resourceBundle#" property="enUs" edit="#rc.edit#">
-			<hb:HibachiPropertyDisplay object="#rc.resourceBundle#" property="enGb" edit="#rc.edit#">	
-			<hb:HibachiPropertyDisplay object="#rc.resourceBundle#" property="es" edit="#rc.edit#">
-			<hb:HibachiPropertyDisplay object="#rc.resourceBundle#" property="fr" edit="#rc.edit#">
-			<hb:HibachiPropertyDisplay object="#rc.resourceBundle#" property="ga" edit="#rc.edit#" >
-			<hb:HibachiPropertyDisplay object="#rc.resourceBundle#" property="pl" edit="#rc.edit#">    
-			<hb:HibachiPropertyDisplay object="#rc.resourceBundle#" property="de" edit="#rc.edit#">   
-		
+			<hb:HibachiPropertyDisplay object="#rc.resourceBundle#" property="resourcebundleKey" edit="#rc.edit#" requiredFlag="true">
+			<hb:HibachiPropertyDisplay object="#rc.resourceBundle#" property="resourceBundleLocale" edit="#rc.edit#"> 
+			<hb:HibachiPropertyDisplay object="#rc.resourceBundle#" property="resourcebundleValue" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.resourceBundle#" property="activeFlag" edit="#rc.edit#">
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>

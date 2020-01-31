@@ -46,16 +46,10 @@ extends="HibachiEntity" hb_serviceName="resourcBundleService" hb_permission="thi
 
 	// Persistent Properties
 	property name="resourceBundleID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="resourceBundleKey" ormtype="string";
-	property name="en"  ormtype="string";
-	property name="enUs"  ormtype="string";
-	property name="enGb" ormtype="string";
-	property name="es" ormtype="string";
-    property name="fr" ormtype="string";
-    property name="ga" ormtype="string";
-    property name="pl" ormtype="string";
-    property name="de" ormtype="string";
-	property name="activeFlag" ormtype="boolean";
+	property name="resourcebundleKey" ormtype="string";
+	property name="resourceBundleLocale"  ormtype="string";
+	property name="resourcebundleValue"  ormtype="string";
+	property name="activeFlag" ormtype="boolean" default=true;
 	
 
 	// Audit Properties
@@ -65,4 +59,11 @@ extends="HibachiEntity" hb_serviceName="resourcBundleService" hb_permission="thi
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
 	// Non-Persistent Properties
+	
+	
+	
+	
+	public string function getSimpleRepresentationPropertyName() {
+		return "resourcebundleKey";
+	}
 }
