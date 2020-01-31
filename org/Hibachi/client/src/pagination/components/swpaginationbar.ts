@@ -35,6 +35,7 @@ class SWPaginationBarController{
             limitCountTotal : this.limitCountTotal   
         });
     }
+    /* updateListingSearchConfig Should not be copied again here and must ideally be reused from sqlistingsearch.ts and extended above */
     public updateListingSearchConfig(config?) {
         var newListingSearchConfig = { ...this.swListingDisplay.collectionConfig.listingSearchConfig, ...config };
         this.swListingDisplay.collectionConfig.listingSearchConfig = newListingSearchConfig;
