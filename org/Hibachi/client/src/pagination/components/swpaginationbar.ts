@@ -4,7 +4,6 @@
 //import pagination = require('../services/paginationservice');
 //var PaginationService = pagination.PaginationService;
 //'use strict';
-git push origin develop-team
 class SWPaginationBarController{
     public limitCountTotal;
     public paginator;
