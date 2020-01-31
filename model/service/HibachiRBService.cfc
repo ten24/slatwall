@@ -82,7 +82,7 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiRBService" {
 	    var rbkeyCollectionList = this.getResourceBundleCollectionList();
 	    rbkeyCollectionList.setDisplayProperties('resourceBundleKey, resourcebundleValue');
 	    rbkeyCollectionList.addFilter("activeFlag","true");
-	    rbkeyCollectionList.addFilter("activeFlag","true");
+	    rbkeyCollectionList.addFilter("resourcebundleValue", "NULL",  "IS NOT");
 	    rbkeyCollectionList.addFilter("resourceBundleLocale", arguments.locale, "=");
 
 	    var records = rbkeyCollectionList.getRecords(formatRecords=false);
