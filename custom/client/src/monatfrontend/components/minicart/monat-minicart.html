@@ -9,7 +9,7 @@
 				<span sw-rbkey="'frontend.miniCart.items'"></span>
 				/
 				<span sw-rbkey="'frontend.miniCart.total'"></span>
-				{{ monatMiniCart.cart.total | currency }} 
+				{{ monatMiniCart.cart.total | swcurrency:monatMiniCart.cart.currencyCode }} 
 			</span>
 		</div>
 		
@@ -34,7 +34,7 @@
 					</button>
 					<div class="img">
 						<a href="#">
-							<img ng-src="{{item.sku.imagePath}}" alt="{{item.sku.skuDefinition}}" />
+							<img image-manager ng-src="{{item.sku.imagePath}}" alt="{{item.sku.skuDefinition}}" />
 						</a>
 					</div>
 					<h6 class="title-sm">
@@ -68,7 +68,7 @@
 							</button>
 						</div>
 						<div class="price-block">
-							<span class="price">{{ item.extendedPriceAfterDiscount | currency }}</span>
+							<span ng-bind-html="item.extendedPriceAfterDiscount | swcurrency:monatMiniCart.cart.currencyCode" class="price"></span>
 						</div>
 					</div>
 				</li>

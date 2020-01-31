@@ -7,8 +7,8 @@
             "key":true
         },
         {
-            "sourcecolumn":"RemoteID",
-            "sourceColumnDataGenerator":"'IMPORT-' + ItemCode + '-' + CountryCode + '-' + PriceLevel",
+            "sourcecolumn":"ImportKey",
+            "sourceColumnDataGenerator":"ItemCode + '-' + CountryCode + '-' + PriceLevel",
             "propertyidentifier":"remoteID",
             "key":true
         },
@@ -54,9 +54,8 @@
             "propertyIdentifier":"activeFlag"
         },
         {
-            "sourceColumn":"PriceGroupRemoteID",
-            "sourceColumnDataGenerator":"'IMPORT-' + PriceLevel",
-            "propertyIdentifier":"priceGroup.remoteID",
+            "sourceColumn":"PriceLevel",
+            "propertyIdentifier":"priceGroup.priceGroupCode",
             "key":true
         }
     ]

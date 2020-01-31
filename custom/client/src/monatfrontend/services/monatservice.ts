@@ -4,18 +4,18 @@ interface IOptions {
 }
 
 declare var angular: any;
+declare var hibachiConfig: any;
 
 export class MonatService {
 	public cart;
 	public lastAddedSkuID: string = '';
 	public previouslySelectedStarterPackBundleSkuID:string;
-
 	public cachedOptions = {
 		frequencyTermOptions: <IOptions[]>null,
 	};
 
 	//@ngInject
-	constructor(public publicService, public $q, public requestService) {}
+	constructor(public publicService, public $q, public $window, public requestService) {}
 
 	public getCart(refresh = false) {
 		var deferred = this.$q.defer();
@@ -177,6 +177,22 @@ export class MonatService {
 			}
 		});
 	}
+
+	public getAccountWishlistItemIDs = () => {
+		var deferred = this.$q.defer();
+		this.publicService.doAction('getWishlistItemsForAccount').then( data => {
+			deferred.resolve( data );
+		});
+		return deferred.promise;
+	}
 	
+	public redirectToProperSite(redirectUrl:string){
+		
+		if(hibachiConfig.cmsSiteID != 'default'){
+			redirectUrl = '/' + hibachiConfig.cmsSiteID + redirectUrl;
+		}
+		
+		this.$window.location.href = redirectUrl;
+	}
 
 }

@@ -98,6 +98,12 @@ component accessors="true" output="false" extends="HibachiService" {
 		return false;
 	}
 	
+	public void function resetPermissionCache() {
+		this.resetCachedKeyByPrefix('getPermissionRecordRestrictions',true);
+		//clears cache keys on the permissiongroup Object
+		this.resetCachedKeyByPrefix('PermissionGroup.');
+	}
+	
 	public void function updateServerInstanceCache(string serverInstanceKey){
 		if(!structKeyExists(arguments, 'serverInstanceKey')){
 			arguments.serverInstanceKey = server[getApplicationValue('applicationKey')].serverInstanceKey;
@@ -107,6 +113,10 @@ component accessors="true" output="false" extends="HibachiService" {
 	}
 	
 	public void function updateServerInstanceSettingsCache(string serverInstanceKey){
+		if(getHibachiScope().getApplicationValue('applicationEnvironment') == 'local'){
+			return;
+		}		
+
 		if(!structKeyExists(arguments, 'serverInstanceKey')){
 			arguments.serverInstanceKey = server[getApplicationValue('applicationKey')].serverInstanceKey;
 		}
@@ -202,6 +212,8 @@ component accessors="true" output="false" extends="HibachiService" {
 		}
 	}
 	
+	
+	
 	public any function resetCachedKeyByPrefix( required string keyPrefix, boolean waitForThreadComplete=false ) {
 		
 		verifyCacheKey(arguments.keyPrefix);
@@ -253,7 +265,7 @@ component accessors="true" output="false" extends="HibachiService" {
 		} else if (!isObject(arguments.fallbackObject)) {
 			arguments.fallbackObject = getBean( arguments.fallbackObject );
 		}
-		
+
 		// If not then execute the function
 		var results = arguments.fallbackObject.invokeMethod(arguments.fallbackFunction, arguments.fallbackArguments);
 		

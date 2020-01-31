@@ -52,20 +52,20 @@ Notes:
 
 <cfparam name="rc.productReview" type="any" />
 <cfparam name="rc.edit" type="boolean" />
-
-<cfif structKeyExists(rc,'productID')>
-	<cfset rc.productReview.setProduct($.slatwall.getService('productService').getProduct(rc.productID)) />	
-</cfif>
 <cfoutput>
 	<hb:HibachiEntityDetailForm object="#rc.productReview#" edit="#rc.edit#">
+		<cfif isNull(rc.productReview.getProduct()) && structKeyExists(rc,'productID')>
+			<input type="hidden" name="product.productID" value="#rc.productID#" />
+		</cfif>
 		<hb:HibachiEntityActionBar type="detail" object="#rc.productReview#" edit="#rc.edit#"></hb:HibachiEntityActionBar>
 
 		<hb:HibachiPropertyRow>
 			<hb:HibachiPropertyList>
-				<hb:HibachiPropertyDisplay object="#rc.productReview#" property="product" 
-					edit="#rc.edit#" productLabelText="#$.slatwall.rbkey('entity.product_plural')#"
-				/>
-					
+				<cfif !structKeyExists(rc,'productID')>
+					<hb:HibachiPropertyDisplay object="#rc.productReview#" property="product" 
+						edit="#rc.edit#" productLabelText="#$.slatwall.rbkey('entity.product_plural')#"
+					/>
+				</cfif>
 				<hb:HibachiPropertyDisplay object="#rc.productReview#" property="activeFlag" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.productReview#" property="reviewTitle" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.productReview#" property="reviewerName" edit="#rc.edit#">

@@ -76,18 +76,18 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 	*/ 
 	public string function appendVibeQueryParamsToURL(required string urlString, required any user ){
 		var accountNumber = arguments.user.getAccountNumber();
-		var authToken = this.setting('authToken');
-		var dateString = DateFormat( DateConvert('local2Utc', now()), "mm/dd/YYYY");
-		
+		var authToken = this.setting('ssoAuthKey');
+
+		var dateString = DateFormat( DateConvert('local2Utc', now()), "m/d/YYYY");
 		var string_to_hash = accountNumber & authToken & dateString;
-		var token = hash(string_to_hash); //default hashing algo is MD5
+		var md5hash = lCase(hash(string_to_hash));
+		var token = ToBase64(md5hash);
 		
 		if( Find("?", arguments.urlString) ) {
 			arguments.urlString &= "&token=#token#&consultant_id=#accountNumber#"
 		} else{
 			arguments.urlString &= "?token=#token#&consultant_id=#accountNumber#"
 		}
-		
 		return arguments.urlString;
 	}
 	
@@ -100,7 +100,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 	*/ 
 	public any function convertSwAccountToVibeAccount(required any account){
 		
-		var accountPropList =  "accountID,firstName,lastName,activeFlag,username,accountNumber,accountType,languagePreference,primaryEmailAddress.emailAddress,primaryPhoneNumber.phoneNumber";
+		var accountPropList =  "accountID,firstName,lastName,activeFlag,username,accountNumber,accountType,company,languagePreference,primaryEmailAddress.emailAddress,primaryPhoneNumber.phoneNumber,ownerAccount.accountNumber";
 		var addressPropList = getService('hibachiUtilityService').prefixListItem("streetAddress,street2Address,city,postalCode,stateCode,countryCode", "primaryAddress.address.");
 
 		accountPropList = accountPropList & ',' & addressPropList;
@@ -127,44 +127,52 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		vibeAccount['lastname'] = swAccountStruct['lastName'];
 		vibeAccount['screenname'] = swAccountStruct['username'];
 		
+		if( StructKeyExists( swAccountStruct, 'company' ) && !IsNull(swAccountStruct['company']) ){
+			vibeAccount['companyname'] = swAccountStruct['company'];
+		}
+		
+		vibeAccount['sponsorid'] = swAccountStruct['ownerAccount_accountNumber'];
+		
 		vibeAccount['email'] = swAccountStruct['primaryEmailAddress_emailAddress'];
 		vibeAccount['homephone'] = swAccountStruct['primaryPhoneNumber_phoneNumber'];
 		
 		vibeAccount['address1'] = swAccountStruct['primaryAddress_address_streetAddress'];
-		vibeAccount['address2'] = swAccountStruct['primaryAddress_address_street2Address'];
+		if(structKeyExists(swAccountStruct, 'primaryAddress_address_street2Address')){
+			vibeAccount['address2'] = swAccountStruct['primaryAddress_address_street2Address'];
+		}
 		vibeAccount['city'] = swAccountStruct['primaryAddress_address_city'];
 		vibeAccount['state'] = swAccountStruct['primaryAddress_address_stateCode'];
 		vibeAccount['zip'] = swAccountStruct['primaryAddress_address_postalCode'];
 		vibeAccount['country'] = swAccountStruct['primaryAddress_address_countryCode'];
 
-		if( StructKeyExists( swAccountStruct, 'languagePreference' ) && !IsNull(swAccountStruct.languagePreference) ){
+		if( StructKeyExists( swAccountStruct, 'languagePreference' ) && !IsNull(swAccountStruct['languagePreference']) ){
 			vibeAccount['preferredlanguage'] = swAccountStruct['languagePreference'];
 		}
 		
-		if( !StructKeyExists( swAccountStruct, 'activeFlag' ) || IsNull(swAccountStruct.activeFlag) ) {
+		if( !StructKeyExists( swAccountStruct, 'activeFlag' ) || IsNull(swAccountStruct['activeFlag']) ) {
 			vibeAccount['statusid'] = 1; // we treat null as active
-		} 
-		else if( IsBoolean(swAccountStruct.activeFlag) ) {
-			vibeAccount['statusid'] = swAccountStruct.activeFlag ? 1 : 0;
+		} else if( IsBoolean(swAccountStruct['activeFlag']) ) {
+			vibeAccount['statusid'] = swAccountStruct['activeFlag'] ? 1 : 0;
 		}
 		
-		vibeAccount['type'] = 1; //default for customer(Retail) type
-		if( StructKeyExists( swAccountStruct, 'accountType' ) && 
-			!IsNull(swAccountStruct.accountType) &&
-			Len( Trim(swAccountStruct.accountType ) )
+		vibeAccount['typeid'] = 1; //default for customer(Retail) type
+	
+		if( StructKeyExists( swAccountStruct, 'accountType' ) &&  !IsNull(swAccountStruct['accountType']) && Len( Trim(swAccountStruct['accountType'] ) )
 		) {
-			
-			swAccountStruct.accountType = Lcase(swAccountStruct.accountType);
-			if( swAccountStruct.accountType == 'vip' ) {
-				vibeAccount['type'] = 2; 
+
+			swAccountStruct['accountType'] = Lcase(swAccountStruct['accountType']);
+			if( swAccountStruct['accountType'] == 'vip' ) {
+				vibeAccount['typeid'] = 2; 
 			} 
-			else if( swAccountStruct.accountType = 'marketpartner' ) {
-				vibeAccount['type'] = 3; 
+			else if( swAccountStruct['accountType'] == 'marketpartner' ) {
+				vibeAccount['typeid'] = 3; 
+				vibeAccount['rankid'] = 1; 
+				vibeAccount['lifetimerankid'] = 1; 
 			}
 		}
-
-		vibeAccount['password'] = setting('defaultUserPassword');
 		
+		vibeAccount['password'] = setting('defaultUserPassword');
+	
 		return vibeAccount;		
 	}
 	

@@ -7,7 +7,7 @@
 					<span class="title-sm" sw-rbkey="'frontend.flexshipDetails.subtotal'"></span>
 				</div>
 				<div class="right">
-					<span class="price">{{monatFlexshipOrderTotalCard.orderTemplate.subtotal | currency}}</span>
+					<span class="price">{{monatFlexshipOrderTotalCard.orderTemplate.calculatedSubTotal | swcurrency:monatFlexshipOrderTotalCard.orderTemplate.currencyCode}}</span>
 				</div>
 			</li>
 			<li>
@@ -15,7 +15,7 @@
 					<span class="title-sm" sw-rbkey="'frontend.flexshipDetails.shipping'"></span>
 				</div>
 				<div class="right">
-					<span class="price">{{monatFlexshipOrderTotalCard.orderTemplate.fulfillmentTotal | currency}}</span>
+					<span class="price">{{monatFlexshipOrderTotalCard.orderTemplate.calculatedFulfillmentTotal | swcurrency:monatFlexshipOrderTotalCard.orderTemplate.currencyCode}}</span>
 				</div>
 			</li>
 			<!--
@@ -41,7 +41,7 @@
 					<h4> <span sw-rbkey="'frontend.flexshipDetails.total'"></span> </h4>
 				</div>
 				<div class="right">
-					<h4>{{monatFlexshipOrderTotalCard.orderTemplate.total | currency}}</h4>
+					<h4>{{monatFlexshipOrderTotalCard.orderTemplate.calculatedTotal | currency}}</h4>
 				</div>
 			</li>
 		</ul>

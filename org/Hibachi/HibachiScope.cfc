@@ -13,7 +13,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	property name="sessionFoundPSIDCookieFlag" type="boolean";
 	property name="sessionFoundExtendedPSIDCookieFlag" type="boolean";
 	property name="ormHasErrors" type="boolean" default="false";
-	property name="rbLocale";
+	property name="rbLocale" type="string";
 	property name="url" type="string";
 	property name="calledActions" type="array";
 	property name="failureActions" type="array";
@@ -492,6 +492,17 @@ component output="false" accessors="true" extends="HibachiTransient" {
 			}
 		}
 		
+	}
+	
+	public string function getServerInstanceKey(){
+		return server[getApplicationKey()].serverInstanceKey;
+	}
+
+	public any function getServerInstance(){
+		if(!structKeyExists(variables, 'serverInstance')){
+			variables.serverInstance = getService('hibachiCacheService').getServerInstanceByServerInstanceKey(getServerInstanceKey());
+		}
+		return variables.serverInstance;
 	}
 	
 	

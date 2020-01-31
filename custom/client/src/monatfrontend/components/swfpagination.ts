@@ -23,9 +23,10 @@ class SWFPaginationController {
         }else {
             this.elipsesNum = 10;
         }
-	};
+	}
 	
 	public init = () => {
+	    this.pageTracker = 1;
         this.totalPages = Math.ceil(this.recordsCount / this.itemsPerPage);
         let holdingArray = [];
         let holdingDisplayPagesArray = [];
@@ -101,6 +102,7 @@ class SWFPaginationController {
             
             this.pageTracker = pageNumber;
             this.publicService.paginationIsLoading = false;
+            this.observerService.notify('paginationEvent');
         });
     }
 

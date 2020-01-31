@@ -183,8 +183,6 @@ property name="personalVolume" ormtype="big_decimal";
 	property name="mainCreditCardExpirationDate" persistent="false";
 	property name="mainPromotionOnOrder" persistent="false";
 
-
-	
     property name="calculatedExtendedPersonalVolume" ormtype="big_decimal" hb_formatType="none";
     property name="calculatedExtendedTaxableAmount" ormtype="big_decimal" hb_formatType="none";
     property name="calculatedExtendedCommissionableVolume" ormtype="big_decimal" hb_formatType="none";
@@ -197,7 +195,9 @@ property name="personalVolume" ormtype="big_decimal";
     property name="calculatedExtendedRetailCommissionAfterDiscount" ormtype="big_decimal" hb_formatType="none";
     property name="calculatedExtendedProductPackVolumeAfterDiscount" ormtype="big_decimal" hb_formatType="none";
     property name="calculatedExtendedRetailValueVolumeAfterDiscount" ormtype="big_decimal" hb_formatType="none";
-    
+    property name="calculatedQuantityDelivered" ormtype="integer";
+    property name="orderItemSkuBundles" singularname="orderItemSkuBundle" fieldType="one-to-many" type="array" fkColumn="orderItemID" cfc="OrderItemSkuBundle" inverse="true" cascade="all-delete-orphan";
+	
    
  property name="lineNumber" ormtype="string";
  property name="orderItemLineNumber" ormtype="string";//CUSTOM PROPERTIES END
@@ -788,16 +788,22 @@ property name="personalVolume" ormtype="big_decimal";
 		
 		var returnOrderItemCollectionList = getService('OrderService').getOrderItemCollectionList();
 		returnOrderItemCollectionList.setDisplayProperties('quantity');
-		returnOrderItemCollectionList.addFilter('orderItemType.systemCode','oitReturn');
-		returnOrderItemCollectionList.addFilter('order.orderType.systemCode','otReturnOrder,otExchangeOrder','IN');
-		returnOrderItemCollectionList.addFilter('order.orderStatusType.systemCode','ostCanceled,ostNotPlaced','NOT IN');
-		returnOrderItemCollectionList.addFilter('referencedOrderItem.orderItemID',getOrderItemID());
+		returnOrderItemCollectionList.addFilter(propertyIdentifier='orderItemType.systemCode',value='oitReturn');
+		returnOrderItemCollectionList.addFilter(propertyIdentifier='order.orderType.systemCode',value='otReturnOrder,otExchangeOrder',comparisonOperator='IN');
+		returnOrderItemCollectionList.addFilter(propertyIdentifier='order.orderStatusType.systemCode',value='ostCanceled,ostNotPlaced',comparisonOperator='NOT IN');
+		returnOrderItemCollectionList.addFilter(propertyIdentifier='referencedOrderItem.orderItemID',value=getOrderItemID());
+		returnOrderItemCollectionList.addFilterGroupWithAlias('replacement','OR');
+		returnOrderItemCollectionList.addFilter(propertyIdentifier='orderItemType.systemCode',value='oitReplacement',filterGroupAlias="replacement");
+		returnOrderItemCollectionList.addFilter(propertyIdentifier='order.orderType.systemCode',value='otReplacementOrder',filterGroupAlias="replacement");
+		returnOrderItemCollectionList.addFilter(propertyIdentifier='order.orderStatusType.systemCode',value='ostCanceled,ostNotPlaced',comparisonOperator='NOT IN',filterGroupAlias="replacement");
+		returnOrderItemCollectionList.addFilter(propertyIdentifier='referencedOrderItem.orderItemID',value=getOrderItemID(),filterGroupAlias="replacement");
 		var result = returnOrderItemCollectionList.getRecords();
 		if(!isNull(result) && arrayLen(result)){
 			for(var item in result){
 				quantity += item['quantity'];
 			}
 		}
+		
 		return quantity;
 	}
 
@@ -840,7 +846,7 @@ property name="personalVolume" ormtype="big_decimal";
 	// ============  END:  Non-Persistent Property Methods =================
 
 	// ============= START: Bidirectional Helper Methods ===================
-
+	
 	// Applied Price Group (many-to-one)
 	public void function setAppliedPriceGroup(required any appliedPriceGroup) {
 		variables.appliedPriceGroup = arguments.appliedPriceGroup;
@@ -848,6 +854,7 @@ property name="personalVolume" ormtype="big_decimal";
 			arrayAppend(arguments.appliedPriceGroup.getAppliedOrderItems(), this);
 		}
 	}
+	
 	public void function removeAppliedPriceGroup(any appliedPriceGroup) {
 		if(!structKeyExists(arguments, "appliedPriceGroup")) {
 			if(!structKeyExists(variables, "appliedPriceGroup")){
@@ -862,7 +869,7 @@ property name="personalVolume" ormtype="big_decimal";
 		}
 		structDelete(variables, "appliedPriceGroup");
 	}
-
+	
 	// Order (many-to-one)
 	public void function setOrder(required any order) {
 		variables.order = arguments.order;
@@ -1229,7 +1236,16 @@ property name="personalVolume" ormtype="big_decimal";
 	// ===================  END:  ORM Event Hooks  =========================	
 		//CUSTOM FUNCTIONS BEGIN
 
-public any function getPersonalVolume(){
+public void function refreshAmounts(){
+        variables.personalVolume = getCustomPriceFieldAmount('personalVolume');
+        variables.taxableAmount = getCustomPriceFieldAmount('taxableAmount');
+        variables.commissionableVolume = getCustomPriceFieldAmount('commissionableVolume');
+        variables.retailCommission = getCustomPriceFieldAmount('retailCommission');
+        variables.productPackVolume = getCustomPriceFieldAmount('productPackVolume');
+        variables.retailValueVolume = getCustomPriceFieldAmount('retailValueVolume');
+    }
+    
+    public any function getPersonalVolume(){
         if(!structKeyExists(variables,'personalVolume')){
             variables.personalVolume = getCustomPriceFieldAmount('personalVolume');
         }
@@ -1373,6 +1389,11 @@ public any function getPersonalVolume(){
 		if(!isNull(this.getOrder().getAccount())){ 
 			arguments.accountID = this.getOrder().getAccount().getAccountID();  
 		}
+		if(!isNull(this.getAppliedPriceGroup())){ 
+			arguments.priceGroups = [];
+			arrayAppend(arguments.priceGroups, this.getAppliedPriceGroup());
+		}
+		
         var amount = getSku().getCustomPriceByCurrencyCode(argumentCollection=arguments);
         if(isNull(amount)){
             amount = 0;

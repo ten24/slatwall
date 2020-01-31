@@ -1,7 +1,9 @@
 declare var $;
+declare var hibachiConfig;
+
 class MonatProductCardController {
 	public product;
-	public type: string = '';
+	public type: string;
 	public loading: boolean;
 	public lastAddedSkuID: string; 
 	public newTemplateID: string;
@@ -13,8 +15,11 @@ class MonatProductCardController {
 	private wishlistTemplateID: string;
 	private wishlistTemplateName: string;
 	public orderTemplate;
-    public urlParams = new URLSearchParams(window.location.search);
-    public showProductLink: boolean = false;
+    public isEnrollment: boolean = false;
+    public accountWishlistItems;
+    public isAccountWishlistItem: boolean = false;
+    public currencyCode:string;
+    public siteCode:string;
 
 	// @ngInject
 	constructor(
@@ -23,26 +28,37 @@ class MonatProductCardController {
 		public monatService,
         public observerService,
         public ModalService,
-        public $scope
+        public $scope,
+        private monatAlertService,
+        public rbkeyService,
+        public $location
 	) { 
         this.observerService.attach(this.closeModals,"createWishlistSuccess"); 
-        this.observerService.attach(this.closeModals,"addItemSuccess"); 
+        this.observerService.attach(this.closeModals,"addOrderTemplateItemSuccess"); 
         this.observerService.attach(this.closeModals,"deleteOrderTemplateItemSuccess"); 
 	}
 	
 	public $onInit = () => {
 		this.$scope.$evalAsync(this.init);
 		
-		this.setShowProductLinkByType();
+		if ( 'undefined' === typeof this.currencyCode ) {
+			this.currencyCode = hibachiConfig.currencyCode
+		}
+		
+		this.setIsEnrollment();
+		
+		// We want to run this on init AND attach to the "accountWishlistItemsSuccess" 
+		// because this directive could load before or after that trigger happens
+		this.setIsAccountWishlistItem();
 	}
 	
 	public init = () => {
-		if(this.urlParams.get('type')){
-			this.type = this.urlParams.get('type');
+		if(this.$location.search().type){
+			this.type = this.$location.search().type;
 		}
 		
-		if(this.urlParams.get('orderTemplateId')){
-			this.orderTemplate = this.urlParams.get('orderTemplateId');
+		if(this.$location.search().orderTemplateId){
+			this.orderTemplate = this.$location.search().orderTemplateId;
 		}
 	}
 	
@@ -61,7 +77,12 @@ class MonatProductCardController {
 				} else if (setNewTemplateID) {
 					this.newTemplateID = result.orderTemplates[0].orderTemplateID;
 				}
-				this.loading = false;
+			})
+			.catch((error)=>{
+			    this.monatAlertService.showErrorsFromResponse(error)
+			})
+			.finally(()=>{
+			    this.loading=false;
 			});
 	};
 
@@ -70,8 +91,13 @@ class MonatProductCardController {
 		const item = this.allProducts[index];
 		this.orderTemplateService.deleteOrderTemplateItem(item.orderItemID).then((result) => {
 			this.allProducts.splice(index, 1);
-			this.loading = false;
 			return result;
+		})
+		.catch((error)=>{
+		    this.monatAlertService.error(this.rbkeyService.rbKey('alert.flexship.addProducterror'));
+		})
+		.finally(()=>{
+		    this.loading =false;
 		});
 	};
 
@@ -80,17 +106,29 @@ class MonatProductCardController {
 		this.orderTemplateService
 			.addOrderTemplateItemAndCreateWishlist(orderTemplateName, skuID, quantity)
 			.then((result) => {
-				this.loading = false;
 				this.getAllWishlists();
+				this.isAccountWishlistItem = true;
 				return result;
+			})
+			.catch((error)=>{
+			 this.monatAlertService.showErrorsFromResponse(error);   
+			})
+			.finally(()=>{
+			  this.loading = false;  
 			});
 	};
 
 	public addWishlistItem = (skuID) => {
 		this.loading = true;
 		this.orderTemplateService.addOrderTemplateItem(skuID, this.wishlistTemplateID).then((result) => {
-			this.loading = false;
+			this.isAccountWishlistItem = true;
 			return result;
+		})
+		.catch((error)=>{
+		    this.monatAlertService.showErrorsFromResponse(error);
+		})
+		.finally(()=>{
+		    this.loading = false;
 		});
 	};
 
@@ -102,14 +140,16 @@ class MonatProductCardController {
 			component: 'monatProductModal',
 			bodyClass: 'angular-modal-service-active',
 			bindings: {
+				siteCode:this.siteCode,
+				currencyCode:this.currencyCode,
 				product: this.product,
 				type: this.type,
+				isEnrollment: this.isEnrollment,
 				orderTemplateID: this.orderTemplate,
 			},
 			preClose: (modal) => {
 				modal.element.modal('hide');
 				this.ModalService.closeModals();
-				// this.changeTypeForDemo(); //TODO remove
 			},
 		}).then((modal) => {
 			modal.element.modal(); //it's a bootstrap element, using '.modal()' to show it
@@ -120,28 +160,43 @@ class MonatProductCardController {
 		});
 	
 	};
-	
-	//TODO remove
-	private changeTypeForDemo = () => {
-		let types = ['','flexship','wishlist','enrollment'];
-		let index = types.indexOf(this.type);
-		index++;
-		this.type = types[index % types.length];
-		
-		console.log('changed type for demo :', this.type);
-	};
 
 	public addToCart = (skuID, skuCode) => {
 		this.loading = true;
 		this.lastAddedSkuID = skuID;
 		let orderTemplateID = this.orderTemplate;
 		if (this.type === 'flexship' || this.type==='VIPenrollment') {
-			this.orderTemplateService.addOrderTemplateItem(skuID, orderTemplateID).then((result) =>{
-				this.loading = false;
+			this.orderTemplateService.addOrderTemplateItem(skuID, orderTemplateID)
+			.then( (result) =>{
+			    if(result.successfulActions &&
+					result.successfulActions.indexOf('public:cart.addOrderItem') > -1) {
+				 this.monatAlertService.success(this.rbkeyService.rbKey('alert.flexship.addProductsucessfull')); 
+					}
+				 else{
+				     throw (result);
+				 }
+			} )
+			.catch((error)=>{
+			  this.monatAlertService.showErrorsFromResponse(error);  
 			})
+			.finally(()=>{
+			     this.loading=false;
+			});
 		} else {
 			this.monatService.addToCart(skuID, 1).then((result) => {
-				this.loading = false;
+			    if(result.successfulActions &&
+					result.successfulActions.indexOf('public:cart.addOrderItem') > -1) {
+				this.monatAlertService.success(this.rbkeyService.rbKey('alert.flexship.addProductsucessfull')); 
+			    }
+				else{
+				    throw(result);
+				}
+			})
+			.catch((error)=>{
+			    this.monatAlertService.showErrorsFromResponse(error);
+			})
+			.finally(()=>{
+			 this.loading=false;
 			});
 		}
 	};
@@ -155,7 +210,7 @@ class MonatProductCardController {
 	};
 	
     public closeModals = () =>{
-        $('.modal').modal('hide')
+        $('.modal').modal('hide');
         $('.modal-backdrop').remove() 
     }
     
@@ -183,12 +238,21 @@ class MonatProductCardController {
 			});
 	};
 	
-	private setShowProductLinkByType = (): void => {
-		this.showProductLink = (
-			this.type !== 'enrollment'
-			&& this.type !== 'VIPenrollmentOrder'
-			&& this.type !== 'VIPenrollment'
+	private setIsEnrollment = (): void => {
+		this.isEnrollment = (
+			this.type === 'enrollment'
+			|| this.type === 'VIPenrollmentOrder'
+			|| this.type === 'VIPenrollment'
 		);
+	}
+	
+	public setIsAccountWishlistItem = () => {
+		if ( 
+			'undefined' !== typeof this.accountWishlistItems 
+			&& this.accountWishlistItems.length
+		) {
+			this.isAccountWishlistItem = this.accountWishlistItems.indexOf(this.product.productID) > -1;
+		}
 	}
 
 }
@@ -202,8 +266,11 @@ class MonatProductCard {
 		product: '=',
 		type: '@',
 		index: '@',
+		accountWishlistItems: '<?',
 		allProducts: '<?',
 		orderTemplate: '<?',
+		currencyCode:'@',
+		siteCode:'@'
 	};
 
 	public controller = MonatProductCardController;

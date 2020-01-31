@@ -1,27 +1,30 @@
 component {
 
 	property name="lastSyncedDateTime" ormtype="timestamp";
-	property name="customerCanCreateFlag" persistent="false";
+	property name="accountIsNotInFlexshipCancellationGracePeriod" persistent="false";
 	property name="commissionableVolumeTotal" persistent="false"; 
 	property name="personalVolumeTotal" persistent="false";
 	property name="flexshipQualifiedOrdersForCalendarYearCount" persistent="false"; 
-	
-	
-	public boolean function getCustomerCanCreateFlag(){
-			
-		if(!structKeyExists(variables, "customerCanCreateFlag")){
-			variables.customerCanCreateFlag = true;
-			if( !isNull(getSite()) && 
-				!isNull(getAccount()) && 
-				!isNull(getAccount().getEnrollmentDate()) && 
-				getAccount().getAccountType() == 'MarketPartner'
-			){
-				var daysAfterMarketPartnerEnrollmentFlexshipCreate = getSite().setting('integrationmonatSiteDaysAfterMarketPartnerEnrollmentFlexshipCreate');
-				variables.customerCanCreateFlag = (daysAfterMarketPartnerEnrollmentFlexshipCreate > 0) ? dateDiff('d',getAccount().getEnrollmentDate(),now()) > daysAfterMarketPartnerEnrollmentFlexshipCreate : true; 
-			} 
+	property name="qualifiesForOFYProducts" persistent="false";
+	property name="cartTotalThresholdForOFYAndFreeShipping" persistent="false";
+
+
+	public boolean function getAccountIsNotInFlexshipCancellationGracePeriod(){
+		if(	getHibachiScope().getAccount().getAdminAccountFlag() ){
+			return true;
 		}
 
-		return variables.customerCanCreateFlag; 
+		if(!structKeyExists(variables, "accountIsNotInFlexshipCancellationGracePeriod")){
+			variables.accountIsNotInFlexshipCancellationGracePeriod = true;
+			
+			if( !IsNull(this.getAccount()) && this.getAccount().getAccountType() == 'MarketPartner' ){
+				
+				variables.accountIsNotInFlexshipCancellationGracePeriod = !getService("OrderService")
+														.getAccountIsInFlexshipCancellationGracePeriod( this );
+			}
+		}
+		
+		return variables.accountIsNotInFlexshipCancellationGracePeriod;
 	}
 
 	public numeric function getPersonalVolumeTotal(){
@@ -59,8 +62,33 @@ component {
 		return variables.flexshipQualifiedOrdersForCalendarYearCount; 
 	}  
 
+	public numeric function getCartTotalThresholdForOFYAndFreeShipping(){
+		if(!structKeyExists(variables, 'cartTotalThresholdForOFYAndFreeShipping')){
+			
+			if(this.getAccount().getAccountType() == 'MarketPartner') {
+				variables.cartTotalThresholdForOFYAndFreeShipping =  this.getSite().setting('integrationmonatSiteMinCartTotalAfterMPUserIsEligibleForOFYAndFreeShipping');
+			} else {
+				variables.cartTotalThresholdForOFYAndFreeShipping =  this.getSite().setting('integrationmonatSiteMinCartTotalAfterVIPUserIsEligibleForOFYAndFreeShipping');
+			}
+		}	
+		return variables.cartTotalThresholdForOFYAndFreeShipping;
+	}
+	
+	public boolean function getQualifiesForOFYProducts(){
+		
+		if(!structKeyExists(variables, 'qualifiesForOFYProducts')) {
+			variables.qualifiesForOFYProducts =  getService('OrderService').orderTemplateQualifiesForOFYProducts(this);
+		}	
+		return variables.qualifiesForOFYProducts;
+	}
+	
 	public struct function getListingSearchConfig() {
 	    param name = "arguments.wildCardPosition" default = "exact";
 	    return super.getListingSearchConfig(argumentCollection = arguments);
 	}
+	
+	public boolean function userCanCancelFlexship(){
+		return getAccount().getAccountType() == 'MarketPartner' || getHibachiScope().getAccount().getAdminAccountFlag();
+	}
+
 }

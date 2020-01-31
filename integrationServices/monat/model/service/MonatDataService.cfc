@@ -1,5 +1,22 @@
-component extends="Slatwall.model.service.HibachiService" {
-    
+component extends="Slatwall.model.service.HibachiService" accessors="true" {
+    property name="productService";
+	property name="settingService";
+	property name="addressService";
+	property name="accountService";
+	property name="typeService";
+	property name="settingService";
+	property name="integrationService";
+	property name="siteService";
+	property name="promotionService";
+	property name="orderService";
+	property name="priceGroupService";
+	property name="commentService";
+	property name="skuService";
+	property name="paymentService";
+	property name="locationService";
+	property name="fulfillmentService";
+	property name="shippingService";
+	
     // @hint helper function to return the integration
     public any function getIntegration(){
         return getService("IntegrationService").getIntegrationByIntegrationPackage("monat");
@@ -63,7 +80,7 @@ component extends="Slatwall.model.service.HibachiService" {
 
         var accountCollection = getService('HibachiService').getAccountCollectionList();
         
-        var searchableDisplayProperties = 'accountNumber,firstName,lastName,username';
+        var searchableDisplayProperties = 'accountNumber,firstName,lastName';
         accountCollection.setDisplayProperties(searchableDisplayProperties, {isSearchable=true, comparisonOperator="exact"});
         accountCollection.addDisplayProperty('accountID','accountID', {isVisible:true, isSearchable:false});
         accountCollection.addDisplayProperty('primaryAddress.address.city','primaryAddress_address_city', {isVisible:true, isSearchable:false});
@@ -135,7 +152,7 @@ component extends="Slatwall.model.service.HibachiService" {
     }
     
     private any function getDailyAccountUpdatesData(pageNumber,pageSize){
-	    var uri = "https://api.monatcorp.net:8443/api/Slatwall/SwGetUpdatedAccounts";
+	    var uri = setting('baseImportURL') & "SwGetUpdatedAccounts";
 		var authKeyName = "authkey";
 		var authKey = setting(authKeyName);
 		
@@ -145,10 +162,11 @@ component extends="Slatwall.model.service.HibachiService" {
 				"PageNumber": "#arguments.pageNumber#"
 			},
 			"Filters": {
-			    "StartDate": "#year(now())#-#month(now())#-#day(now())#T00:00:00.693Z",
+			    "StartDate": "#year(now())#-#month(now())#-#day(now())-1#T00:00:00.693Z",
 			    "EndDate": "#year(now())#-#month(now())#-#day(now())#T23:59:59.693Z"
 			}
 		};
+		
 		
 		/**
 		 * 
@@ -175,6 +193,378 @@ component extends="Slatwall.model.service.HibachiService" {
 		
 		return accountsResponse;
 	}
+	
+	public any function getDateFromString(date) {
+		return	createDate(
+			datePart("yyyy",date), 
+			datePart("m",date),
+			datePart("d",date));
+	}
+	
+	private any function getShipmentData(pageNumber,pageSize,dateFilterStart,dateFilterEnd){
+	    var uri = setting('baseImportURL') & "SWGetShipmentInfo";
+		var authKeyName = "authkey";
+		var authKey = setting(authKeyName);
+	    var = {hasErrors: false};
+	    // Test range
+	    // "StartDate": "2020-11-15T00:16:28.693Z",
+        // "EndDate": "2020-01-17T23:16:28.693Z"
+        
+        // Real Range
+        //"StartDate": arguments.dateFilterStart,
+	    //"EndDate": arguments.dateFilterEnd
+	    var body = {
+			"Pagination": {
+				"PageSize": "#arguments.pageSize#",
+				"PageNumber": "#arguments.pageNumber#"
+			},
+			"Filters": {
+			    "StartDate": arguments.dateFilterStart,
+	            "EndDate": arguments.dateFilterEnd
+			}
+		};
+
+	    httpService = new http(method = "POST", charset = "utf-8", url = uri);
+		httpService.addParam(name = "Authorization", type = "header", value = "#authKey#");
+		httpService.addParam(name = "Content-Type", type = "header", value = "application/json-patch+json");
+		httpService.addParam(name = "Accept", type = "header", value = "text/plain");
+		httpService.addParam(name = "body", type = "body", value = "#serializeJson(body)#");
+
+		var shipmentJson = httpService.send().getPrefix();
+		var apiData = deserializeJson(shipmentJson.fileContent);
+
+		if (structKeyExists(apiData, "Data") && structKeyExists(apiData.Data, "Records")){
+			fsResponse['Records'] = apiData.Data.Records;
+		    return fsResponse;
+		}
+
+		writeDump("Could not import shipment on this page: PS-#arguments.pageSize# PN-#arguments.pageNumber#");
+		fsResponse.hasErrors = true;
+
+
+		return fsResponse;
+	}
+	
+	public void function importOrderShipments(required struct rc){ 
+        logHibachi("Begin importing order deliveries.");
+        /**
+         * Allows the user to override the last n minutes that get checked. 
+         * Defaults to 20 minutes.
+         **/
+        var intervalOverride = rc.intervalOverride ?: 20;
+        
+        /**
+         * CONSTANTS 
+         **/
+        var MERGE_ARRAYS = true;
+        var SHIPPED = "5";
+        var CLOSEDSTATUS = getTypeService().getTypeByTypeCode(SHIPPED);
+        var MINUTES = 'n';
+        
+        /**
+         * The page number to start with 
+         **/
+        var pageNumber = rc.pageNumber?:1;
+        
+        /**
+         * How many records to process per page. 
+         **/
+		var pageSize = rc.pageSize?:500;
+		
+		/**
+		 * the page number to end on (exclusive) 
+		 **/
+		var pageMax = rc.pageMax?:1;
+		
+		/**
+		 * The date and time from 20 minutes ago.
+		 **/
+		var twentyMinutesAgo = DateAdd(MINUTES, -intervalOverride, now());
+		
+		/**
+		 * The string representation for the date twenty minutes ago. 
+		 **/
+		var startDate = "#year(twentyMinutesAgo)#-#month(twentyMinutesAgo)#-#day(twentyMinutesAgo)#T#hour(twentyMinutesAgo)#:#minute(twentyMinutesAgo)#:#second(now())#.693Z";
+		
+		/**
+		 * This should always equal now.
+		 **/
+		var endDate =  "#year(now())#-#month(now())#-#day(now())#T#hour(now())#:#minute(now())#:#second(now())#.693Z";
+		
+		/**
+		 * You can pass in a start date or end date in the rc 
+		 **/
+		var dateFilterStart = rc.dateFilterStart ?: startDate;
+		var dateFilterEnd = rc.dateFilterEnd ?: endDate;
+		
+		/**
+		 * Use a stateless session so we can use objects without memory issues.
+		 * Statelss sessions don't populate any entity related data. Just the
+		 * first level. You can set data on them and save them so good use-case.
+		 **/
+        var ormStatelessSession = ormGetSessionFactory().openStatelessSession();
+        var shippingMethod = getShippingService().getShippingMethodByShippingMethodCode("defaultShippingMethod");
+        
+		logHibachi("Finding deliveries for #startDate# to #endDate#");
+		
+        /**
+         * @param {Struct} hashmap A collection of key value pairs.
+         * @param {List<String>} keys A list of keys that reference values in the map.
+         * @return {Boolean} Returns True if the hashmap contains all the key 
+         * values in the keys list and those values are not null.
+         * False otherwise.
+         */
+        var containsAll = function(hashmap, keys){
+
+            for (var key in listToArray(keys)){
+                if (!structKeyExists(hashmap, key) || isNull(hashmap[key])){
+                    return false;
+                }
+            }
+
+            return true;
+        };
+
+        /**
+         * @param {String} The order number to lookup in Slatwall.
+         * @return {Boolean} Returns True if the order exists. False otherwise.
+         */
+        var orderExists = function(orderNumber) {
+            return !isNull(getOrderService().getOrderByOrderNumber(orderNumber));
+        };
+
+        /**
+         * @param {String} The order number to lookup in Slatwall.
+         * @return {Boolean} Returns True if the order exists. False otherwise.
+         */
+        var order = function(orderNumber) {
+            return getOrderService().getOrderByOrderNumber(orderNumber);
+        };
+
+        /**
+         * @param {Struct} The shipment to use to create the order delivery.
+         * @return {Boolean} Returns True if the tracking, ordernumber and 
+         * order exist. False otherwise.
+         */
+        var dataExistsToCreateDelivery = function(shipment) {
+
+            if (containsAll(shipment, "OrderNumber,Packages") && 
+                orderExists(shipment.OrderNumber)){
+                return true;    
+            }
+
+            return false;
+        };
+
+        /**
+         * @param {String} The name of the fulfillment type to return.
+         * @return {FulfillmentMethod} Returns the fulfillment method by name.
+         */
+        var fulfillmentMethod = function(name) {
+            return getFulfillmentService().getFulfillmentMethodByFulfillmentMethodName(name);
+        };
+
+        /**
+         * @param {String} The name of the fulfillment method type to check.
+         * @return {FulfillmentMethod} Returns the fulfillment method by type name.
+         */
+        var isShippingMethodType = function(orderFulfillment) {
+            return orderFulfillment.getFulfillmentMethodType() == "Shipping";
+        };
+
+        /**
+         * @param {OrderFulfillment} The name of the fulfillment method type to check.
+         * @return {Array} Contains fulfillment items.
+         */
+        var getFulfillmentItems = function(orderFulfillment, orderFulfillmentItems) {
+            if (isShippingMethodType(orderFulfillment)){
+                arrayAppend( orderFulfillmentItems, orderFulfillment.getOrderFulfillmentItems(), MERGE_ARRAYS );
+            }
+            return orderFulfillmentItems;
+        };
+
+        /**
+         * @param {OrderDelivery} Creates and adds all delivery items for the order.
+         * @return {OrderDeliveryItem} Returns the newly created and save item. 
+         */
+        var createDeliveryItem = function( orderDelivery, orderFulfillmentItem ) {
+            var orderDeliveryItem = new Slatwall.model.entity.OrderDeliveryItem();
+            orderDeliveryItem.setQuantity(orderFulfillmentItem.getQuantity());
+            orderDeliveryItem.setOrderItem(orderFulfillmentItem);
+            orderDeliveryItem.setOrderDelivery(orderDelivery);
+			ormStatelessSession.insert("SlatwallOrderDeliveryItem", orderDeliveryItem);
+            return orderDeliveryItem;
+        };
+
+        /**
+         * @param {OrderDelivery} Creates and adds all SHIPPING delivery items for the 
+         * order to a single delivery.
+         * @return {Void} 
+         */
+        var createDeliveryItems = function( orderDelivery ) {
+            var order = orderDelivery.getOrder();
+            var orderFulfillments = order.getOrderFulfillments();
+
+            //gets all the fulfillment items as a single array
+            var orderFulfillmentItems = [];
+
+            // Get all items.
+            for (var orderFulfillment in orderFulfillments){
+                orderFulfillmentItems = getFulfillmentItems( orderFulfillment, 
+                    orderFulfillmentItems );
+            }
+
+            // Create all the delivery items and add them to the delivery.
+            for (var orderFulfillmentItem in orderFulfillmentItems){
+                var orderDeliveryItem = createDeliveryItem( orderDelivery,  
+                    orderFulfillmentItem);
+            }
+        };
+
+        /**
+         * @param {Order} order The order to check 
+         * @return {Boolean} Returns true is the entire order is delivered.
+         * False otherwise.
+         */
+        var orderIsDelivered = function( order ){
+
+            if (order.getQuantityUndelivered() <= 0){
+                return true;
+            }
+
+            return false;
+        };
+
+        /**
+         * @param {Struct} Shipment A shipment (with packages) is used to build a delivery.
+         * @return {Void}
+         */
+        var createDelivery = function(shipment){
+        	logHibachi("createDelivery: #shipment.shipmentNumber#");
+			var order = order(shipment.OrderNumber);
+
+            if (!isNull(order) && dataExistsToCreateDelivery(shipment) && !orderIsdelivered( order )){
+                
+    			var findOrderDeliveryByRemoteID = getOrderService().getOrderDeliveryByRemoteID(shipment.shipmentId, false);
+    			
+    			//Do not create this again if it already exists.
+    			if (!isNull(findOrderDeliveryByRemoteID)){
+    			    logHibachi("Not creating order delivery because it already exists: remoteID: #shipment.shipmentId#");
+    			    return;
+    			}
+    			
+    			// Create the delivery.  
+                var orderDelivery = new Slatwall.model.entity.OrderDelivery();
+    			orderDelivery.setOrder(order);
+    			orderDelivery.setShipmentNumber(shipment.shipmentNumber);//Add this
+    			orderDelivery.setShipmentSequence(shipment.orderShipSequence);// Add this
+    			orderDelivery.setPurchaseOrderNumber(shipment.PONumber);
+    			
+    			
+    			orderDelivery.setRemoteID( shipment.shipmentId );
+
+    		    //get the tracking numbers.
+    		    //get tracking information...
+    		    var concatTrackingNumber = "";
+    		    var concatScanDate = "";
+    		    var packageShipDate = "";
+    		    if (structKeyExists(shipment, "Packages")){
+    		    	 for (var packages in shipment.Packages){
+    		    		concatTrackingNumber = listAppend(concatTrackingNumber, packages.TrackingNumber);
+
+    		    		if (!isNull(packages['ScanDate'])){
+    		    			orderDelivery.setScanDate( getDateFromString(packages['ScanDate']) );//use last scan date
+    		    		}
+
+    		    		if (!isNull(shipment['UndeliveredReasonDescription'])){
+    		    			orderDelivery.setUndeliverableOrderReason(shipment['UndeliveredReasonDescription']);
+    		    		}
+
+    		    		if (!isNull(shipment['PackageShipDate'])){
+    		    			packageShipDate = shipment['PackageShipDate'];
+    		    			orderDelivery.setCreatedDateTime(getDateFromString(packageShipDate) );
+    		    		}
+    		    	 }
+    		    }
+
+    		    // all tracking on one fulfillment.
+    		    orderDelivery.setTrackingNumber(concatTrackingNumber);
+    		    orderDelivery.setModifiedDateTime( now() );
+                orderDelivery.setShippingMethod( shippingMethod );
+                ormStatelessSession.insert("SlatwallOrderDelivery", orderDelivery );
+                
+                createDeliveryItems( orderDelivery );
+                logHibachi("Created a delivery for orderNumber: #shipment['OrderNumber']#");
+                
+                //Close the order if its ready.
+                var orderOnDelivery = orderDelivery.getOrder();
+                var  isOrderPaidFor = orderOnDelivery.isOrderPaidFor();
+    			var isOrderFullyDelivered = orderOnDelivery.isOrderFullyDelivered();
+
+    			if(isOrderPaidFor && isOrderFullyDelivered)	{
+    				orderOnDelivery.setOrderStatusType(CLOSEDSTATUS);
+    				ormStatelessSession.insert("SlatwallOrder", orderOnDelivery );
+                    logHibachi("Closed the order for orderNumber: #shipment['OrderNumber']#");
+    
+                }else{
+                	logHibachi("createDelivery: Can't find enough information for ordernumber: #shipment['OrderNumber']# to create the delivery");
+    			}
+            }
+        };
+
+        // Map all the shipments -> deliveries.
+        // This wraps the map in a new stateless session to keep things fast
+
+        var tx = ormStatelessSession.beginTransaction();
+
+        // Do one page at a time, flushing and clearing as we go.
+        while (pageNumber <= pageMax){
+        	logHibachi("Importing pagenumber: #pageNumber#");
+	        // Call the api and get shipment records for the date defined as the filter.
+	        var response = getShipmentData(pageNumber, pageSize, dateFilterStart, dateFilterEnd);
+	        
+	        if (isNull(response)){
+	        	logHibachi("Unable to get a usable response from Shipments API #now()#");
+	            throw("Unable to get a usable response from Shipments API #now()#");
+	        }
+            
+            if (structKeyExists(rc, "viewResponse")){
+	            writedump(response);abort;    
+	        }
+            
+	        var shipments = response.Records?:"null";
+            
+	        if (shipments.equals("null")){
+	        	logHibachi("Response did not contain shipments.");
+	            throw("Response did not contain shipments data.");
+	        }
+
+			try{
+                /**
+                 * MAPS JSON to Slatwall OrderDeliverys
+                 * {JSON_OBJ} -> SlatwallOrderDelivery
+                 **/
+	    		arrayMap( shipments, createDelivery );
+	    		
+	    		tx.commit();
+	    		ormGetSession().clear();
+			}catch(shipmentError){
+
+				ormGetSession().clear();
+				
+				writedump(shipmentError);
+				logHibachi("Error: importing shipment. ");
+				abort;	
+			}
+			logHibachi("End Importing pagenumber: #pageNumber#");
+			pageNumber++;
+        }
+
+		ormStatelessSession.close();
+		writeDump("End: #pageNumber# - #pageSize#");
+        // Sets the default view 
+
+    }
     
     public any function importDailyAccountUpdates(pageSize, pageNumber, pageMax){
         //get the api key from integration settings.
@@ -189,17 +579,21 @@ component extends="Slatwall.model.service.HibachiService" {
 		*/
 		var index=0;
 		while (arguments.pageNumber < arguments.pageMax){
-			
+			logHibachi("Start Daily Account Updater");
     		var accountsResponse = getDailyAccountUpdatesData(pageNumber, pageSize);
+    		
     		if (accountsResponse.hasErrors){
     		    //goto next page causing this is erroring!
     		    arguments.pageNumber++;
     		    continue;
     		}
     		
+			var goodStanding = getService("TypeService").getTypeByTypeID("2c9180836dacb117016dad11ebf2000e");
+			var terminated = getService("TypeService").getTypeByTypeID("2c9180836dacb117016dad1296c90010");
+			var suspended = getService("TypeService").getTypeByTypeID("2c9180836dacb117016dad1239ac000f");
+			var deleted = getService("TypeService").getTypeByTypeID("2c9180836dacb117016dad12e37c0011");
+			var enrollmentPending = getService("TypeService").getTypeByTypeID("2c9180836dacb117016dad1329790012");
     		var accounts = accountsResponse.Data.Records;
-    		
-    		
     		
     		/**
     		 *  {
@@ -223,7 +617,7 @@ component extends="Slatwall.model.service.HibachiService" {
     			    index++;
         		    
         			// Create a new account and then use the mapping file to map it.
-        			var foundAccount = getAccountService().getAccountByAccountNumber( account['AccountNumber'] );
+        			var foundAccount = getService("AccountService").getAccountByAccountNumber( account['AccountNumber'] );
         			
         			if (isNull(foundAccount)){
         				pageNumber++;
@@ -236,16 +630,34 @@ component extends="Slatwall.model.service.HibachiService" {
                     	foundAccount.setAccountStatus(account['AccountStatusCode']?:"");
                     	
                     	//If the account is suspended, deactivate it.
-                    	if (account['AccountStatusName'] == "Suspended"){
+                    	if (account['AccountStatusName'] == "Suspended" || account['AccountStatusName'] == "Terminated"){
                     	    foundAccount.setActiveFlag(false);
+                    	}else{
+                    	    foundAccount.setActiveFlag(true);
+                    	}
+                    	
+                    	if (!isNull(account['AccountStatusName']) && len(account['AccountStatusName'])){
+                    	        var statusType = goodStanding;
+                    	        if (account['AccountStatusName'] == "Good Standing"){
+                    	            statusType = goodStanding;
+                    	        }
+                    	        if (account['AccountStatusName'] == "Terminated"){
+                    	            statusType = terminated;
+                    	        }
+                    	        if (account['AccountStatusName'] == "Suspended"){
+                    	            statusType = suspended;
+                    	        }
+                    	        if (account['AccountStatusName'] == "Deleted"){
+                    	            statusType = deleted;
+                    	        }
+                    	        if (account['AccountStatusName'] == "Enrollment Pending"){
+                    	            statusType = enrollmentPending;
+                    	        }
+                        		foundAccount.setAccountStatus(account['AccountStatusCode']?:"");
+                        		foundAccount.setAccountStatusType( statusType );
+                        		
                     	}
                     }
-                    
-                    //Entry Date
-                    //This should be POST date
-                    /*if (!isNull(account['EntryDate']) && len(account['EntryDate'])){
-                    	foundAccount.setCreatedDateTime( getDateFromString(account['EntryDate']) ); 
-                    }*/
                     
                     // SponsorNumber
                     
@@ -330,7 +742,6 @@ component extends="Slatwall.model.service.HibachiService" {
                     	}else if(account['AccountTypeCode'] == "E"){
                     		foundAccount.setAccountType( "Employee" );
                     	}
-                    	
                     }
                     
                     //EntryPeriod (What is this mapping to)
@@ -384,7 +795,7 @@ component extends="Slatwall.model.service.HibachiService" {
     		}catch(e){
     			
     			logHibachi("Daily Account Import Failed @ Index: #index# PageSize: #arguments.pageSize# PageNumber: #arguments.pageNumber#");
-    			//writeDump(e); // rollback the tx
+    			logHibachi(serializeJson(e));
     			ormGetSession().clear();
     			ormStatelessSession.close();
     			abort;

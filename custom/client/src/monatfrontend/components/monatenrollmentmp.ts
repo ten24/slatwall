@@ -8,7 +8,7 @@ class EnrollmentMPController {
 	public currentCountryCode: string = '';
 	public loading: boolean = false;
 	public contentId: string;
-	public bundleHasErrors: boolean = false;
+	public bundleErrors: Array<any> = [];
 	public sponsorErrors: any = {};
 	public openedBundle: any;
 	public selectedBundleID: string = '';
@@ -24,7 +24,7 @@ class EnrollmentMPController {
 	public productRecordsCount:any;
 	
 	// @ngInject
-	constructor(public publicService, public observerService, public monatService) {}
+	constructor(public publicService, public observerService, public monatService, private rbkeyService) {}
 	
 	public $onInit = () => {
 		this.getDateOptions();
@@ -93,6 +93,8 @@ class EnrollmentMPController {
 			if ( 'Starter Kit' !== productTypeName && 'Product Pack' !== productTypeName ) {
 				this.lastAddedProductName = orderItem.sku.product.productName;
 				this.addedItemToCart = true;
+			} else{
+			    this.addedItemToCart = false;
 			}
 		})
 	}
@@ -102,18 +104,33 @@ class EnrollmentMPController {
 			.doAction('getStarterPackBundleStruct', { contentID: this.contentId })
 			.then((data) => {
 				this.bundles = data.bundles;
+				//truncating string
+				for(let bundle in this.bundles){
+					let str = this.stripHtml(this.bundles[bundle].description);
+					this.bundles[bundle].description = str.length > 70 ? str.substring(0, str.indexOf(' ', 60)) + '...' : str;
+				}
 			});
 	};
 
 	public submitStarterPack = () => {
+		
+		this.bundleErrors = [];
+		
         if ( this.selectedBundleID.length ) {
 			this.loading = true;
-        	this.monatService.selectStarterPackBundle( this.selectedBundleID ).then(data => {
-        		this.loading = false;
-            	this.observerService.notify('onNext');
-        	})
+			this.monatService.selectStarterPackBundle( this.selectedBundleID ).then(data => {
+				this.loading = false;
+        		
+				if ( data.hasErrors ) {
+					for ( let error in data.errors ) {
+						this.bundleErrors = this.bundleErrors.concat( data.errors[ error ] );
+					}
+				} else {
+					this.observerService.notify('onNext');
+				}
+    		});
         } else {
-            this.bundleHasErrors = true;
+            this.bundleErrors.push( this.rbkeyService.rbKey('frontend.enrollment.selectPack'));
         }
     }
 
@@ -143,7 +160,7 @@ class EnrollmentMPController {
 
 	public selectBundle = (bundleID) => {
 		this.selectedBundleID = bundleID;
-		this.bundleHasErrors = false;
+		this.bundleErrors = [];
 		this.openedBundle = null;
 	};
 
@@ -155,7 +172,7 @@ class EnrollmentMPController {
 
 	public getProductList = (pageNumber = 1, pageRecordsShow = 12 ) => {
 		this.loading = true;
-		this.publicService.doAction('getproducts', { pageRecordsShow: pageRecordsShow, currentPage: pageNumber }).then((result) => {
+		this.publicService.doAction('getproductsByCategoryOrContentID', { pageRecordsShow: pageRecordsShow, currentPage: pageNumber }).then((result) => {
 			this.observerService.notify("PromiseComplete");
 			this.productList = result.productList;
 			this.productRecordsCount = result.recordsCount

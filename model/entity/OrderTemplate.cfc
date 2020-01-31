@@ -63,7 +63,7 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	property name="orderTemplateStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderTemplateStatusTypeID";
 	property name="frequencyTerm" cfc="Term" fieldtype="many-to-one" fkcolumn="frequencyTermID" hb_formFieldType="select";
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
-	property name="accountPaymentMethod" cfc="AccountPaymentMethod" fieldtype="many-to-one" fkcolumn="accountPaymentMethodID"; 
+	property name="accountPaymentMethod"  hb_populateEnabled="public" cfc="AccountPaymentMethod" fieldtype="many-to-one" fkcolumn="accountPaymentMethodID"; 
 	property name="billingAccountAddress" hb_populateEnabled="public" cfc="AccountAddress" fieldtype="many-to-one" fkcolumn="billingAccountAddressID";
 	property name="shippingAccountAddress" hb_populateEnabled="public" cfc="AccountAddress" fieldtype="many-to-one" fkcolumn="shippingAccountAddressID";
 	property name="shippingAddress" cfc="Address" fieldtype="many-to-one" fkcolumn="shippingAddressID";
@@ -87,6 +87,8 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	// Calculated Properties
 	property name="calculatedOrderTemplateItemsCount" ormtype="integer";
 	property name="calculatedTotal" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedSubTotal" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedFulfillmentTotal" ormtype="big_decimal" hb_formatType="currency";
 
 	// Remote properties
 	property name="remoteID" ormtype="string";
@@ -117,12 +119,14 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	
 	//CUSTOM PROPERTIES BEGIN
 property name="lastSyncedDateTime" ormtype="timestamp";
-	property name="customerCanCreateFlag" persistent="false";
+	property name="accountIsNotInFlexshipCancellationGracePeriod" persistent="false";
 	property name="commissionableVolumeTotal" persistent="false"; 
 	property name="personalVolumeTotal" persistent="false";
 	property name="flexshipQualifiedOrdersForCalendarYearCount" persistent="false"; 
-	
-	
+	property name="qualifiesForOFYProducts" persistent="false";
+	property name="cartTotalThresholdForOFYAndFreeShipping" persistent="false";
+
+
 //CUSTOM PROPERTIES END
 	public string function getEncodedJsonRepresentation(string nonPersistentProperties='subtotal,fulfillmentTotal,fulfillmentDiscount,total'){ 
 		return getService('hibachiUtilityService').hibachiHTMLEditFormat(serializeJson(getStructRepresentation(arguments.nonPersistentProperties)));
@@ -393,21 +397,22 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 	
 	//CUSTOM FUNCTIONS BEGIN
 
-public boolean function getCustomerCanCreateFlag(){
-			
-		if(!structKeyExists(variables, "customerCanCreateFlag")){
-			variables.customerCanCreateFlag = true;
-			if( !isNull(getSite()) && 
-				!isNull(getAccount()) && 
-				!isNull(getAccount().getEnrollmentDate()) && 
-				getAccount().getAccountType() == 'MarketPartner'
-			){
-				var daysAfterMarketPartnerEnrollmentFlexshipCreate = getSite().setting('integrationmonatSiteDaysAfterMarketPartnerEnrollmentFlexshipCreate');
-				variables.customerCanCreateFlag = (daysAfterMarketPartnerEnrollmentFlexshipCreate > 0) ? dateDiff('d',getAccount().getEnrollmentDate(),now()) > daysAfterMarketPartnerEnrollmentFlexshipCreate : true; 
-			} 
+public boolean function getAccountIsNotInFlexshipCancellationGracePeriod(){
+		if(	getHibachiScope().getAccount().getAdminAccountFlag() ){
+			return true;
 		}
 
-		return variables.customerCanCreateFlag; 
+		if(!structKeyExists(variables, "accountIsNotInFlexshipCancellationGracePeriod")){
+			variables.accountIsNotInFlexshipCancellationGracePeriod = true;
+			
+			if( !IsNull(this.getAccount()) && this.getAccount().getAccountType() == 'MarketPartner' ){
+				
+				variables.accountIsNotInFlexshipCancellationGracePeriod = !getService("OrderService")
+														.getAccountIsInFlexshipCancellationGracePeriod( this );
+			}
+		}
+		
+		return variables.accountIsNotInFlexshipCancellationGracePeriod;
 	}
 
 	public numeric function getPersonalVolumeTotal(){
@@ -445,8 +450,33 @@ public boolean function getCustomerCanCreateFlag(){
 		return variables.flexshipQualifiedOrdersForCalendarYearCount; 
 	}  
 
+	public numeric function getCartTotalThresholdForOFYAndFreeShipping(){
+		if(!structKeyExists(variables, 'cartTotalThresholdForOFYAndFreeShipping')){
+			
+			if(this.getAccount().getAccountType() == 'MarketPartner') {
+				variables.cartTotalThresholdForOFYAndFreeShipping =  this.getSite().setting('integrationmonatSiteMinCartTotalAfterMPUserIsEligibleForOFYAndFreeShipping');
+			} else {
+				variables.cartTotalThresholdForOFYAndFreeShipping =  this.getSite().setting('integrationmonatSiteMinCartTotalAfterVIPUserIsEligibleForOFYAndFreeShipping');
+			}
+		}	
+		return variables.cartTotalThresholdForOFYAndFreeShipping;
+	}
+	
+	public boolean function getQualifiesForOFYProducts(){
+		
+		if(!structKeyExists(variables, 'qualifiesForOFYProducts')) {
+			variables.qualifiesForOFYProducts =  getService('OrderService').orderTemplateQualifiesForOFYProducts(this);
+		}	
+		return variables.qualifiesForOFYProducts;
+	}
+	
 	public struct function getListingSearchConfig() {
 	    param name = "arguments.wildCardPosition" default = "exact";
 	    return super.getListingSearchConfig(argumentCollection = arguments);
-	}//CUSTOM FUNCTIONS END
+	}
+	
+	public boolean function userCanCancelFlexship(){
+		return getAccount().getAccountType() == 'MarketPartner' || getHibachiScope().getAccount().getAdminAccountFlag();
+	}
+//CUSTOM FUNCTIONS END
 }

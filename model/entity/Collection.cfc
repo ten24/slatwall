@@ -1506,14 +1506,15 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			if(aggregateFunction == 'COUNT'){
 				var isObject = getService('hibachiService').getPropertyIsObjectByEntityNameAndPropertyIdentifier(getCollectionObject(),convertAliasToPropertyIdentifier(arguments.column.propertyIdentifier));
 				//when doing a count on objects it is important to inlcude that it is Distinct
-	//			 however if we are doing a query like
-	//			SELECT firstName,count(firstName) FROM swaccount
-	//			group by firstName
-	//			then distinct doesn't make sense because we want to know how many people of each name by string and not object count
-	//			TODO: to support this level of reporting on the colleciton UI we will need to enable removal of id from collections
-	//			and hide the show/edit button therefore there will be two types of collections report collection and entity collection
+				//			 however if we are doing a query like
+				//			SELECT firstName,count(firstName) FROM swaccount
+				//			group by firstName
+				//			then distinct doesn't make sense because we want to know how many people of each name by string and not object count
+				//			TODO: to support this level of reporting on the colleciton UI we will need to enable removal of id from collections
+				//			and hide the show/edit button therefore there will be two types of collections report collection and entity collection
 
-				var isDistinct = isObject;
+			
+				var isDistinct = isObject && this.getNonPersistentColumn();
 
 				if(structKeyExists(column,'isDistinct')){
 					isDistinct = column.isDistinct;
@@ -1838,24 +1839,30 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 								if(structKeyExists(filter,'propertyIdentifier') && len(filter.propertyIdentifier)){
 									var propertyIdentifier = filter.propertyIdentifier;
 									getPropertyIdentifierAlias(rereplace(listrest(propertyIdentifier,'_'),'_','.','all'),'filter');
-
-									if(ListFind('<>,!=,NOT IN,NOT LIKE',comparisonOperator) > 0){
-										propertyIdentifier = "COALESCE(#propertyIdentifier#,'')";
-									}
-									if(structKeyExists(filter,'measureCriteria') && filter['measureCriteria'] == 'matchPart'){
-										switch(filter.measureType){
-											case 'd':
-												propertyIdentifier = 'day(#propertyIdentifier#)';
-												break;
-											case 'm':
-												propertyIdentifier = 'month(#propertyIdentifier#)';
-												break;
-											case 'y':
-												propertyIdentifier = 'year(#propertyIdentifier#)';
-												break;
+									
+									//Handle Booleans (BIT)
+									if(right(propertyIdentifier, 4) == 'Flag' && ListFind('<>,!=',comparisonOperator) > 0){
+										filterGroupHQL &= " #logicalOperator# (#propertyIdentifier# #comparisonOperator# #predicate# OR #propertyIdentifier# IS NULL) ";
+									}else{
+										if(ListFind('<>,!=,NOT IN,NOT LIKE',comparisonOperator) > 0){
+											propertyIdentifier = "COALESCE(#propertyIdentifier#,'')";
 										}
+										if(structKeyExists(filter,'measureCriteria') && filter['measureCriteria'] == 'matchPart'){
+											switch(filter.measureType){
+												case 'd':
+													propertyIdentifier = 'day(#propertyIdentifier#)';
+													break;
+												case 'm':
+													propertyIdentifier = 'month(#propertyIdentifier#)';
+													break;
+												case 'y':
+													propertyIdentifier = 'year(#propertyIdentifier#)';
+													break;
+											}
+										}
+										filterGroupHQL &= " #logicalOperator# #propertyIdentifier# #comparisonOperator# #predicate# ";
+										
 									}
-									filterGroupHQL &= " #logicalOperator# #propertyIdentifier# #comparisonOperator# #predicate# ";
 								}
 						}else{
 							var attributeHQL = getFilterAttributeHQL(filter);
@@ -3891,7 +3898,20 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 									addTotalSumAggregate(column);
 								}
 
-								columnsHQL &= ' #column.propertyIdentifier# as #columnAlias#';
+								if(arguments.forExport  && structKeyExists(column, 'ormtype') && column.ormtype == 'timestamp'){
+									var dateFormat = '%m/%d/%Y %H:%i:%s';
+									if(structKeyExists(column, 'type')){
+										if(column.type == 'date'){
+											dateFormat = '%m/%d/%Y';
+										}else if(column.type == 'time'){
+											dateFormat = '%H:%i:%s';
+										}
+									}
+									
+									columnsHQL &= " DATE_FORMAT(#column.propertyIdentifier#,'#dateFormat#') as #columnAlias#";
+								}else{
+									columnsHQL &= ' #column.propertyIdentifier# as #columnAlias#';
+								}
 							}
 						}else{
 							continue;
@@ -4085,7 +4105,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				variables.groupBys = arrayToList(groupBys);
 			//standard group by check
 			}else if(
-				!this.getNonPersistentColumn() &&
 				(
 					( 
 					  structKeyExists(variables, "groupByRequired") &&
@@ -4603,7 +4622,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public void function prepareAliasForFilterGroups(required array filterGroup){
 		for(var filter in arguments.filterGroup){
 			if(structKeyExists(filter,'propertyIdentifier')){
-				var propertyIdentifierAlias = getPropertyIdentifierAlias(convertAliasToPropertyIdentifier(filter.propertyIdentifier,'filter'));
+				var propertyIdentifierAlias = getPropertyIdentifierAlias(convertAliasToPropertyIdentifier(filter.propertyIdentifier),'filter');
 			}else if(structKeyExists(filter,'filterGroup')){
 				prepareAliasForFilterGroups(filter.filterGroup);
 			}

@@ -1,24 +1,26 @@
-
 class MonatFlexshipCartContainerController {
     public orderTemplateId: string;
     public orderTemplate:any; // orderTemplateDetails
     public orderTemplateItems: any[];
-    public urlParams = new URLSearchParams(window.location.search);
     public context:string;
-    public canPlaceOrder:boolean;
     public isOpened: boolean = false;
     public orderTemplateItemTotal: number = 0;
+    public showCanPlaceOrderAlert:false;
+    public loading: boolean = false;
     
+    public qualifiesForOFYAndFreeShipping = false;
     //@ngInject
     constructor(
     	public orderTemplateService, 
     	public rbkeyService,
     	public ModalService,
-    	public observerService
+    	public observerService,
+    	private monatAlertService,
+    	public $location
     ) {   
-        this.observerService.attach(this.fetchOrderTemplate,'addItemSuccess');
-        this.observerService.attach(this.fetchOrderTemplate,'removeItemSuccess');
-        this.observerService.attach(this.fetchOrderTemplate,'editItemSuccess');
+        this.observerService.attach(this.fetchOrderTemplate,'addOrderTemplateItemSuccess');
+        this.observerService.attach(this.fetchOrderTemplate,'removeOrderTemplateItemSuccess');
+        this.observerService.attach(this.fetchOrderTemplate,'editOrderTemplateItemSuccess');
     }
     
     public $onInit = () => {
@@ -46,24 +48,17 @@ class MonatFlexshipCartContainerController {
     
     private setOrderTemplate = ( orderTemplate ) => {
         this.orderTemplate = orderTemplate;
-        
-        // Update the order quantity based on data returned. 
-        // If we have order items, we will grab the length, if not, grab the calculated total.
-        this.orderTemplateItemTotal = 0;
-        if ( 'undefined' !== typeof orderTemplate.orderTemplateItems ) {
-            this.orderTemplateItemTotal = orderTemplate.orderTemplateItems.length;
-        } else if ( 'undefined' !== typeof orderTemplate.calculatedOrderTemplateItemsCount ) {
-            this.orderTemplateItemTotal = +orderTemplate.calculatedOrderTemplateItemsCount;
-        }
+        this.qualifiesForOFYAndFreeShipping = this.orderTemplate.cartTotalThresholdForOFYAndFreeShipping <= this.orderTemplate.calculatedSubTotal;
     }
 
     private makeCurrentStepTranslation = ( currentStep:number=1, totalSteps:number=2 ) => {
-    	 //TODO BL?
     	 let stepsPlaceHolderData = {
     	 	'currentStep' : currentStep,
     	 	'totalSteps': totalSteps,
     	 };
     	 this.translations['currentStepOfTtotalSteps'] = this.rbkeyService.rbKey('frontend.flexshipCartContainer.currentStepOfTtotalSteps', stepsPlaceHolderData);
+    	 this.translations['confirmFlexshipRemoveItemDialogTitleText'] = this.rbkeyService.rbKey('alert.frontend.confirmTitleTextDelete');
+    	 this.translations['confirmFlexshipRemoveItemDialogBodyText'] = this.rbkeyService.rbKey('alert.frontend.confirmBodyTextDelete');
     }
     
     public next(){
@@ -71,97 +66,113 @@ class MonatFlexshipCartContainerController {
     }
     
     private fetchOrderTemplate = () => {
-		if(this.urlParams.get('orderTemplateId')){
-			this.orderTemplateId = this.urlParams.get('orderTemplateId');
+        this.loading = true;
+		if(this.$location.search().orderTemplateId){
+			this.orderTemplateId = this.$location.search().orderTemplateId;
 		}else if(localStorage.getItem('flexshipID') && this.context == 'enrollment'){
 		    this.orderTemplateId = localStorage.getItem('flexshipID');
 		}
 		
+		let extraProperties = "cartTotalThresholdForOFYAndFreeShipping";
+		
+		if(this.context == 'enrollment'){
+		    extraProperties += ",canPlaceOrderFlag"; //mind the comma
+		}
+		
         this.orderTemplateService
-        .getOrderTemplateDetails(this.orderTemplateId)
+        .getOrderTemplateDetails(this.orderTemplateId, extraProperties)
         .then(data => {
     		if(data.orderTemplate){
-                this.setOrderTemplate( data.orderTemplate );;
+                this.setOrderTemplate( data.orderTemplate );
                 this.orderTemplateItems = this.orderTemplate.orderTemplateItems;
-                this.canPlaceOrder = this.orderTemplate.canPlaceOrderFlag;
-                //TODO handle errors / success
     		} else {
     			throw(data);
     		}
-        }).catch(error => {
-        	//TODO deal with the error
-        	throw(error); 
+        }).catch((error)=>{
+            this.monatAlertService.showErrorsFromResponse(error);
         }).finally(()=>{
-        //TODO deal with the loader ui
+            this.loading = false;
         });
     }
     
-    private getOrderTemplateItemIndexByID = (orderTemplateItemID:string) => {
-    	return this.orderTemplateItems.findIndex(it => it.orderTemplateItemID === orderTemplateItemID); 
+    public showFlexshipConfirmDeleteItemModal = (item) => {
+		this.ModalService.showModal({
+		      component: 'monatConfirmMessageModel',
+		      bodyClass: 'angular-modal-service-active',
+			  bindings: {
+			    title: this.translations['confirmFlexshipRemoveItemDialogTitleText'],
+			    bodyText: this.translations['confirmFlexshipRemoveItemDialogBodyText']
+			  },
+			  preClose: (modal) => {
+				modal.element.modal('hide');
+			},
+		}).then( (modal) => {
+			modal.element.modal(); //it's a bootstrap element, using '.modal()' to show it
+		    modal.close.then( (confirm) => {
+		        if(confirm){
+		            this.removeOrderTemplateItem(item);
+		        }else{
+		            item.loading=false;
+		        }
+		    });
+		}).catch((error) => {
+			console.error("unable to open showFlexshipConfirmModal :",error);	
+		});
     }
     
     public removeOrderTemplateItem = (item) => {
-    	
-    	this.orderTemplateService.removeOrderTemplateItem(item.orderTemplateItemID).then(
-            (data) => {
-            	if(data.successfulActions && data.successfulActions.indexOf('public:orderTemplate.removeItem') > -1) {
-            		let index = this.getOrderTemplateItemIndexByID(item.orderTemplateItemID); 
-    				this.orderTemplateItems.splice(index, 1);
-    				if(data.orderTemplate){
-    					this.setOrderTemplate( data.orderTemplate );;
-    				}
-        		} else {
-                	console.log('removeOrderTemplateItem res: ', data); 
-            	}
-            	//TODO handle errors / success
-            	
-            }, (reason) => {
-                throw (reason);
+    	this.orderTemplateService
+    	.removeOrderTemplateItem(item.orderTemplateItemID)
+    	.then( (data) => {
+        	if(data.successfulActions && data.successfulActions.indexOf('public:order.removeOrderTemplateItem') > -1) {
+				this.monatAlertService.success(this.rbkeyService.rbKey('alert.flexship.removeItemsucessfull'))
+    		} else {
+    		    throw (data);
             }
-        );
+    	})
+        .catch((error)=>{
+            this.monatAlertService.showErrorsFromResponse(error);
+        })
+        .finally(()=>{
+            this.loading = false;
+        });
     }
     
     public increaseOrderTemplateItemQuantity = (item) => {
-
-    	this.orderTemplateService.editOrderTemplateItem(item.orderTemplateItemID, item.quantity + 1).then(
-            (data) => {
-            	if(data.orderTemplateItem) {
-            		let index = this.getOrderTemplateItemIndexByID(item.orderTemplateItemID); 
-    				this.orderTemplateItems[index] = data.orderTemplateItem;
-    				
-    				if(data.orderTemplate){
-    					this.setOrderTemplate( data.orderTemplate );;
-    				}
-        		} else {
-        			console.error('increaseOrderTemplateItemQuantity res: ', data); 
-            	}
-            	//TODO handle errors / success
-            	
-            }, (reason) => {
-                throw (reason);
+        this.loading = true;
+    	this.orderTemplateService
+    	.editOrderTemplateItem(item.orderTemplateItemID, item.quantity + 1)
+    	.then( (data) => {
+        	if(data.successfulActions && data.successfulActions.indexOf('public:order.editOrderTemplateItem') > -1) {
+				this.monatAlertService.success(this.rbkeyService.rbKey('alert.flexship.editItemsucessfull'))
+    		} else {
+    		    throw (data);
             }
-        );
+        }) 
+        .catch((error)=>{
+            this.monatAlertService.showErrorsFromResponse(error);
+        }).finally(()=>{
+            this.loading = false;
+        });
     }
     
     public decreaseOrderTemplateItemQuantity = (item) => {
-    	this.orderTemplateService.editOrderTemplateItem(item.orderTemplateItemID, item.quantity - 1).then(
-            (data) => {
-            	if(data.orderTemplateItem) {
-            		let index = this.getOrderTemplateItemIndexByID(item.orderTemplateItemID); 
-    				this.orderTemplateItems[index] = data.orderTemplateItem;
-    				
-    				if(data.orderTemplate){
-    					this.setOrderTemplate( data.orderTemplate );;
-    				}
-    				
-        		} else {
-        			console.error('decreaseOrderTemplateItemQuantity res: ', data); 
-            	}
-            	//TODO handle errors / success
-            }, (reason) => {
-                throw (reason);
+        this.loading = true;
+    	this.orderTemplateService
+    	.editOrderTemplateItem(item.orderTemplateItemID, item.quantity - 1)
+    	.then( (data) => {
+        	if(data.successfulActions && data.successfulActions.indexOf('public:order.editOrderTemplateItem') > -1) {
+				this.monatAlertService.success(this.rbkeyService.rbKey('alert.flexship.editItemsucessfull'))
+    		} else {
+    		    throw (data);
             }
-        );
+        }) 
+        .catch((error)=>{
+            this.monatAlertService.showErrorsFromResponse(error);
+        }).finally(()=>{
+            this.loading = false;
+        });
+        
     }
     
     public showFlexshipConfirmModal = () => {
@@ -234,4 +245,3 @@ class MonatFlexshipCartContainer {
 export {
 	MonatFlexshipCartContainer
 };
-

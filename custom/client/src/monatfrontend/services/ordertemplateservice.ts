@@ -102,9 +102,10 @@ export class OrderTemplateService {
        return this.requestService.newPublicRequest('?slatAction=api:public.getordertemplateitems',data).promise;
     }
    
-    public getOrderTemplateDetails = (orderTemplateID:string) => {
+    public getOrderTemplateDetails = (orderTemplateID:string, optionalProperties:string="") => {
        var data = {
-           "orderTemplateID" : orderTemplateID
+           "orderTemplateID" : orderTemplateID,
+           "optionalProperties" : optionalProperties
        }
        return this.requestService
                   .newPublicRequest('?slatAction=api:public.getOrderTemplateDetails', data)
@@ -141,17 +142,16 @@ export class OrderTemplateService {
     
     /**
      * orderTemplateID:string, 
-     * typeID:string,  => OrderTEmplateCancellationReasonTypeID
-     * typeIDOther?:string => other reason text from user
+     * orderTemplateCancellationReasonType:string,  => OrderTEmplateCancellationReason::TypeID
+     * orderTemplateCancellationReasonTypeOther?:string => some explaination from user
      */ 
-    public cancelOrderTemplate = (orderTemplateID:string, typeID:string, typeIDOther:string = "") => {
+    public cancelOrderTemplate = (orderTemplateID:string, orderTemplateCancellationReasonType:string, orderTemplateCancellationReasonTypeOther:string = "") => {
         
         let payload = {};
     	payload['orderTemplateID'] = orderTemplateID;
-    	payload['orderTemplateCancellationReasonType'] = {};
-    	payload['orderTemplateCancellationReasonType']['typeID'] =  typeID;
-    	payload['orderTemplateCancellationReasonType']['typeIDOther'] = typeIDOther;
-    	
+    	payload['orderTemplateCancellationReasonType'] =  orderTemplateCancellationReasonType;
+    	payload['orderTemplateCancellationReasonTypeOther'] = orderTemplateCancellationReasonTypeOther;
+
     	payload = this.getFlattenObject(payload);
     	
         return this.requestService
@@ -218,13 +218,15 @@ export class OrderTemplateService {
        'orderTemplateID',
        'skuID',
        'quantity'
+       temporaryFlag -> For OFY/Promotional item
      * 
     */ 
-    public addOrderTemplateItem = (skuID:string, orderTemplateID:string, quantity:number=1) => {
+    public addOrderTemplateItem = (skuID:string, orderTemplateID:string, quantity:number=1, temporaryFlag: false) => {
         let payload = {
 			'orderTemplateID': orderTemplateID,
 			'skuID': skuID,
-			'quantity': quantity
+			'quantity': quantity,
+			'temporaryFlag': temporaryFlag
 		};
 		
        return this.requestService
@@ -313,9 +315,10 @@ export class OrderTemplateService {
       return objectToReturn;
     }
 
-    public createOrderTemplate = (orderTemplateSystemCode) => {
+    public createOrderTemplate = (orderTemplateSystemCode, context="save") => {
         return this.$rootScope.hibachiScope.doAction("createOrderTemplate",{
             orderTemplateSystemCode: orderTemplateSystemCode,
+            saveContext: context,
             returnJSONObjects:''
         });
     }   

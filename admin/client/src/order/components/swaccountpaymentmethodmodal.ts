@@ -131,7 +131,7 @@ class SWAccountPaymentMethodModalController{
 			entityID: this.baseEntityPrimaryID,
 			entityName: this.baseEntityName,
 			context: this.processContext,
-			propertyIdentifiersList: 'billingAccountAddress,accountPaymentMethod,account.accountAddressOptions,account.accountPaymentMethodOptions'  + this.orderTemplateService.orderTemplatePropertyIdentifierList
+			propertyIdentifiersList: 'billingAccountAddress,accountPaymentMethod,account.accountAddressOptions,account.accountPaymentMethodOptions,'  + this.orderTemplateService.orderTemplatePropertyIdentifierList
 		};
 		
 		if(this.showCreateBillingAddress){

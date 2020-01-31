@@ -32956,6 +32956,7 @@ var SWPricingManagerController = /** @class */ (function () {
         this.skuPriceCollectionConfig.addDisplayProperty("maxQuantity", "", { isEditable: true });
         this.skuPriceCollectionConfig.addDisplayProperty("skuPriceID", "", { isVisible: false, isSearchable: false });
         this.skuPriceCollectionConfig.addDisplayProperty("sku.skuID", "", { isVisible: false, isSearchable: false });
+        this.skuPriceCollectionConfig.addDisplayProperty("sku.imagePath", "", { isVisible: false, isSearchable: false });
         this.skuPriceCollectionConfig.addDisplayProperty("priceGroup.priceGroupID", "", { isVisible: false, isSearchable: false });
         this.skuPriceCollectionConfig.addFilter("sku.product.productID", this.productId, "=", "AND", true);
         this.skuPriceCollectionConfig.setOrderBy('sku.skuCode|ASC,minQuantity|ASC,priceGroup.priceGroupCode|ASC,currencyCode|ASC');
@@ -33202,7 +33203,8 @@ var SWSkuPriceModalController = /** @class */ (function () {
                 skuID: pageRecord["sku_skuID"],
                 skuCode: pageRecord["sku_skuCode"],
                 calculatedSkuDefinition: pageRecord["sku_calculatedSkuDefinition"],
-                skuName: pageRecord["sku_skuName"]
+                skuName: pageRecord["sku_skuName"],
+                imagePath: pageRecord["sku_imagePath"]
             };
             var promotionRewardData = {
                 promotionRewardID: pageRecord['promotionRewardID']
@@ -65653,7 +65655,7 @@ var SWAccountPaymentMethodModalController = /** @class */ (function () {
                 entityID: _this.baseEntityPrimaryID,
                 entityName: _this.baseEntityName,
                 context: _this.processContext,
-                propertyIdentifiersList: 'billingAccountAddress,accountPaymentMethod,account.accountAddressOptions,account.accountPaymentMethodOptions' + _this.orderTemplateService.orderTemplatePropertyIdentifierList
+                propertyIdentifiersList: 'billingAccountAddress,accountPaymentMethod,account.accountAddressOptions,account.accountPaymentMethodOptions,' + _this.orderTemplateService.orderTemplatePropertyIdentifierList
             };
             if (_this.showCreateBillingAddress) {
                 formDataToPost.newAccountAddress = _this.newAccountAddress;
@@ -65946,13 +65948,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 var SWAddOrderItemsBySkuController = /** @class */ (function () {
-    function SWAddOrderItemsBySkuController($hibachi, collectionConfigService, observerService, orderTemplateService, rbkeyService) {
+    function SWAddOrderItemsBySkuController($hibachi, collectionConfigService, observerService, orderTemplateService, rbkeyService, alertService) {
         var _this = this;
         this.$hibachi = $hibachi;
         this.collectionConfigService = collectionConfigService;
         this.observerService = observerService;
         this.orderTemplateService = orderTemplateService;
         this.rbkeyService = rbkeyService;
+        this.alertService = alertService;
         this.$onInit = function () {
             _this.observerService.attach(_this.setEdit, 'swEntityActionBar');
             var skuDisplayProperties = "skuCode,calculatedSkuDefinition,product.productName";
@@ -65982,6 +65985,9 @@ var SWAddOrderItemsBySkuController = /** @class */ (function () {
             _this.addSkuCollection.addFilter('publishedFlag', true, '=', undefined, true);
             _this.addSkuCollection.addFilter('product.activeFlag', true, '=', undefined, true);
             _this.addSkuCollection.addFilter('product.publishedFlag', true, '=', undefined, true);
+            if (angular.isDefined(_this.siteId)) {
+                _this.addSkuCollection.addFilter('product.sites.siteID', _this.siteId, '=', undefined, true);
+            }
             _this.skuColumns = angular.copy(_this.addSkuCollection.getCollectionConfig().columns);
             _this.skuColumns.push({
                 'title': _this.rbkeyService.rbKey('define.quantity'),
@@ -66046,7 +66052,12 @@ var SWAddOrderItemsBySkuController = /** @class */ (function () {
             _this.observerService.notify("addOrderItemStartLoading", {});
             _this.postData(url, data)
                 .then(function (data) {
-                if (data.preProcessView) {
+                //Item can't be purchased
+                if (data.processObjectErrors && data.processObjectErrors.isPurchasableItemFlag) {
+                    _this.observerService.notify("addOrderItemStopLoading", {});
+                    //Display the modal	
+                }
+                else if (data.preProcessView) {
                     //populate a modal with the template data...
                     var parsedHtml = $.parseHTML(data.preProcessView);
                     $('#adminModal').modal();
@@ -66088,17 +66099,19 @@ var SWAddOrderItemsBySkuController = /** @class */ (function () {
     return SWAddOrderItemsBySkuController;
 }());
 var SWAddOrderItemsBySku = /** @class */ (function () {
-    function SWAddOrderItemsBySku(orderPartialsPath, slatwallPathBuilder, $hibachi, rbkeyService) {
+    function SWAddOrderItemsBySku(orderPartialsPath, slatwallPathBuilder, $hibachi, rbkeyService, alertService) {
         this.orderPartialsPath = orderPartialsPath;
         this.slatwallPathBuilder = slatwallPathBuilder;
         this.$hibachi = $hibachi;
         this.rbkeyService = rbkeyService;
+        this.alertService = alertService;
         this.restrict = "EA";
         this.scope = {};
         this.bindToController = {
             order: '<?',
             orderFulfillmentId: '<?',
             accountId: '<?',
+            siteId: '<?',
             currencyCode: '<?',
             simpleRepresentation: '<?',
             returnOrderId: '<?',
@@ -66114,12 +66127,13 @@ var SWAddOrderItemsBySku = /** @class */ (function () {
         this.templateUrl = slatwallPathBuilder.buildPartialsPath(orderPartialsPath) + "/addorderitemsbysku.html";
     }
     SWAddOrderItemsBySku.Factory = function () {
-        var directive = function (orderPartialsPath, slatwallPathBuilder, $hibachi, rbkeyService) { return new SWAddOrderItemsBySku(orderPartialsPath, slatwallPathBuilder, $hibachi, rbkeyService); };
+        var directive = function (orderPartialsPath, slatwallPathBuilder, $hibachi, rbkeyService, alertService) { return new SWAddOrderItemsBySku(orderPartialsPath, slatwallPathBuilder, $hibachi, rbkeyService, alertService); };
         directive.$inject = [
             'orderPartialsPath',
             'slatwallPathBuilder',
             '$hibachi',
-            'rbkeyService'
+            'rbkeyService',
+            'alertService'
         ];
         return directive;
     };
@@ -66846,6 +66860,9 @@ var SWOrderTemplateItemsController = /** @class */ (function () {
             _this.viewOrderTemplateItemsCollection = _this.orderTemplateService.getViewOrderTemplateItemCollection();
             _this.editOrderTemplateItemsCollection = _this.orderTemplateService.getEditOrderTemplateItemCollection();
             _this.addSkuCollection = _this.orderTemplateService.getAddSkuCollection();
+            if (angular.isDefined(_this.siteId)) {
+                _this.addSkuCollection.addFilter('product.sites.siteID', _this.siteId, '=', undefined, true);
+            }
             _this.skuColumns = angular.copy(_this.addSkuCollection.getCollectionConfig().columns);
             _this.editOrderTemplateColumns = angular.copy(_this.viewOrderTemplateItemsCollection.getCollectionConfig().columns);
             _this.viewOrderTemplateColumns = angular.copy(_this.editOrderTemplateItemsCollection.getCollectionConfig().columns);
@@ -66881,6 +66898,7 @@ var SWOrderTemplateItems = /** @class */ (function () {
             currencyCode: '@?',
             edit: "=?",
             orderTemplate: '<?',
+            siteId: '@?',
             skuPropertiesToDisplay: '@?',
             skuPropertyColumnConfigs: '<?' //array of column configs
         };
@@ -72905,7 +72923,7 @@ var SkuPriceService = /** @class */ (function () {
         this.getSkuOptions = function (productID) {
             var skuOptions;
             var skuColectionConfig = _this.collectionConfigService.newCollectionConfig("Sku");
-            skuColectionConfig.setDisplayProperties("skuID,skuName,skuCode");
+            skuColectionConfig.setDisplayProperties("skuID,skuName,skuCode,imagePath");
             skuColectionConfig.addFilter("product.productID", productID, "=");
             skuColectionConfig.setAllRecords(true);
             return skuColectionConfig.getEntity();
@@ -74164,10 +74182,14 @@ var SWReturnOrderItemsController = /** @class */ (function () {
             });
             _this.publicService.modifiedUnitPrices = modifiedUnitPriceFlag;
             _this.allocatedOrderDiscountAmountTotal = allocatedOrderDiscountAmountTotal;
+            if (_this.orderDiscountAmount) {
+                _this.allocatedOrderDiscountAmountTotal = Math.min(_this.orderDiscountAmount, _this.allocatedOrderDiscountAmountTotal);
+            }
             _this.allocatedOrderPVDiscountAmountTotal = allocatedOrderPVDiscountAmountTotal;
             _this.allocatedOrderCVDiscountAmountTotal = allocatedOrderCVDiscountAmountTotal;
             _this.refundSubtotal = refundSubtotal;
-            _this.refundTotal = Number((refundSubtotal + _this.fulfillmentRefundAmount - _this.allocatedOrderDiscountAmountTotal).toFixed(2));
+            _this.fulfillmentRefundTotal = _this.fulfillmentRefundAmount + _this.fulfillmentRefundTaxAmount;
+            _this.refundTotal = Number((refundSubtotal + _this.fulfillmentRefundTotal - _this.allocatedOrderDiscountAmountTotal).toFixed(2));
             _this.refundPVTotal = Number(refundPVTotal.toFixed(2));
             _this.refundCVTotal = Number(refundCVTotal.toFixed(2));
         };
@@ -74180,7 +74202,15 @@ var SWReturnOrderItemsController = /** @class */ (function () {
             if (_this.fulfillmentRefundAmount > _this.maxFulfillmentRefundAmount) {
                 _this.fulfillmentRefundAmount = _this.maxFulfillmentRefundAmount;
             }
-            _this.fulfillmentRefundTaxAmount = _this.fulfillmentTaxAmount / _this.fulfillmentRefundAmount * _this.maxFulfillmentRefundAmount;
+            if (_this.fulfillmentRefundAmount < 0) {
+                _this.fulfillmentRefundAmount = 0;
+            }
+            if (_this.fulfillmentRefundAmount > 0) {
+                _this.fulfillmentRefundTaxAmount = _this.fulfillmentTaxAmount / _this.fulfillmentRefundAmount * _this.maxFulfillmentRefundAmount;
+            }
+            else {
+                _this.fulfillmentRefundTaxAmount = 0;
+            }
             _this.updateRefundTotals();
         };
         this.validateAmount = function (orderPayment) {
@@ -74235,7 +74265,8 @@ var SWReturnOrderItems = /** @class */ (function () {
             refundOrderItems: '<?',
             orderType: '@',
             orderTotal: '<?',
-            fulfillmentTaxAmount: '@'
+            fulfillmentTaxAmount: '@',
+            orderDiscountAmount: '<?'
         };
         this.controller = SWReturnOrderItemsController;
         this.controllerAs = "swReturnOrderItems";
@@ -74735,12 +74766,16 @@ var AlertService = /** @class */ (function () {
             var alerts = [];
             if (messages && messages.length) {
                 for (var message in messages) {
+                    if (messages[message].messageType == "error" && messages[message].message == "Pre Process Displayed Flag must be equal to 1") {
+                        //skip this type of message as its just used to display the modal.
+                        continue;
+                    }
                     var alert = new alert_1.Alert(messages[message].message, messages[message].messageType);
                     alerts.push(alert);
                     if (alert.type === 'success' || alert.type === 'error') {
                         _this.$timeout(function () {
                             alert.fade = true;
-                        }, 3500);
+                        }, 4500);
                         alert.dismissable = false;
                     }
                     else {
@@ -74852,7 +74887,7 @@ var BaseBootStrapper = /** @class */ (function () {
                 return off();
             });
         };
-        this.getInstantiationKey = function (baseURL) {
+        this.getInstantiationKey = function () {
             return _this.$q(function (resolve, reject) {
                 if (_this.instantiationKey) {
                     resolve(_this.instantiationKey);
@@ -74861,7 +74896,7 @@ var BaseBootStrapper = /** @class */ (function () {
                     resolve(hibachiConfig.instantiationKey);
                 }
                 else {
-                    _this.$http.get(baseURL + '?' + hibachiConfig.action + '=api:main.getInstantiationKey')
+                    _this.$http.get(_this.getBaseUrl() + '?' + hibachiConfig.action + '=api:main.getInstantiationKey')
                         .then(function (resp) {
                         _this.instantiationKey = resp.data.data.instantiationKey;
                         resolve(_this.instantiationKey);
@@ -74909,14 +74944,11 @@ var BaseBootStrapper = /** @class */ (function () {
             });
         };
         this.getInstantiationKeyData = function () {
-            if (!_this.instantiationKey) {
-                var d = new Date();
-                var n = d.getTime();
-                _this.instantiationKey = n.toString();
-            }
             var urlString = _this.getBaseUrl();
-            return _this.$http
-                .get(urlString + '/custom/system/config.json?instantiationKey=' + _this.instantiationKey)
+            return _this.getInstantiationKey()
+                .then(function (instantiationKey) {
+                return _this.$http.get(urlString + '/custom/system/config.json?instantiationKey=' + instantiationKey);
+            })
                 .then(function (resp) { return resp.data.data; })
                 .then(function (data) {
                 return _this.$q(function (resolve, reject) {
@@ -74929,8 +74961,9 @@ var BaseBootStrapper = /** @class */ (function () {
                 });
             })
                 .then(function (appConfig) {
-                if (hibachiConfig.baseURL.length) {
-                    appConfig.baseURL = urlString;
+                // override config
+                for (var config in hibachiConfig) {
+                    appConfig[config] = hibachiConfig[config];
                 }
                 core_module_1.coremodule.constant('appConfig', appConfig);
                 _this.appConfig = appConfig;
@@ -75014,8 +75047,7 @@ var BaseBootStrapper = /** @class */ (function () {
             .resolve(['$http', '$q', function ($http, $q) {
                 _this.$http = $http;
                 _this.$q = $q;
-                var baseURL = _this.getBaseUrl();
-                return _this.getInstantiationKey(baseURL)
+                return _this.getInstantiationKey()
                     .then(function (instantiationKey) {
                     var invalidCache = [];
                     // NOTE: Return a promise so bootstrapping process will wait to continue executing until after the last step of loading the resourceBundles
@@ -75042,6 +75074,10 @@ var BaseBootStrapper = /** @class */ (function () {
                         .then(function () {
                         if (localStorage.getItem('appConfig') != null) {
                             _this.appConfig = JSON.parse(localStorage.getItem('appConfig'));
+                            // override config
+                            for (var config in hibachiConfig) {
+                                _this.appConfig[config] = hibachiConfig[config];
+                            }
                         }
                         if (hibachiConfig.instantiationKey
                             && _this.appConfig.instantiationKey
@@ -83889,7 +83925,7 @@ var SWRbKey = /** @class */ (function () {
                 var rbKeyValue = scope.swRbkey;
                 var bindRBKey = function () {
                     if (angular.isDefined(rbKeyValue) && angular.isString(rbKeyValue)) {
-                        element.text(rbkeyService.getRBKey(rbKeyValue));
+                        element.text(rbkeyService.getRBKey(rbKeyValue, hibachiConfig.rbLocale));
                     }
                 };
                 bindRBKey();
@@ -87892,6 +87928,11 @@ var HibachiService = /** @class */ (function () {
             var request = _this.requestService.newAdminRequest(urlString, params);
             return request.promise;
         };
+        this.savePersonalCollection = function (params) {
+            var urlString = _this.getUrlWithActionPrefix() + 'api:main.savePersonalCollection';
+            var request = _this.requestService.newAdminRequest(urlString, params);
+            return request.promise;
+        };
         this.getExistingCollectionsByBaseEntity = function (entityName) {
             var urlString = _this.getUrlWithActionPrefix() + 'api:main.getExistingCollectionsByBaseEntity&entityName=' + entityName;
             var request = _this.requestService.newAdminRequest(urlString);
@@ -91053,7 +91094,7 @@ var RbKeyService = /** @class */ (function () {
                 }
                 if (_this.resourceBundles[locale]) {
                     var bundle = _this.resourceBundles[locale];
-                    if (angular.isDefined(bundle[key])) {
+                    if (angular.isDefined(bundle) && angular.isDefined(bundle[key])) {
                         //$log.debug('rbkeyfound:'+bundle[key]);
                         return bundle[key];
                     }
@@ -91070,7 +91111,7 @@ var RbKeyService = /** @class */ (function () {
                 //$log.debug(localeListArray);
                 if (localeListArray.length === 2) {
                     bundle = _this.resourceBundles[localeListArray[0]];
-                    if (angular.isDefined(bundle[key])) {
+                    if (angular.isDefined(bundle) && angular.isDefined(bundle[key])) {
                         //$log.debug('rbkey found:'+bundle[key]);
                         return bundle[key];
                     }
@@ -96113,13 +96154,14 @@ var SWListingDisplayController = /** @class */ (function () {
             persistedReportsCollectionList.setDisplayProperties('collectionID,collectionName,collectionConfig');
             persistedReportsCollectionList.addFilter('reportFlag', 1);
             persistedReportsCollectionList.addFilter('collectionObject', _this.collectionConfig.baseEntityName);
-            persistedReportsCollectionList.addFilter('accountOwner.accountID', _this.$rootScope.slatwall.account.accountID, '=', 'OR', true, true, false, 'accountOwner');
+            persistedReportsCollectionList.addFilter('accountOwner.accountID', '${account.accountID}', '=', 'OR', true, true, false, 'accountOwner');
             persistedReportsCollectionList.addFilter('accountOwner.accountID', 'NULL', 'IS', 'OR', true, true, false, 'accountOwner');
             persistedReportsCollectionList.setAllRecords(true);
             persistedReportsCollectionList.getEntity().then(function (data) {
                 _this.persistedReportCollections = data.records;
             });
         };
+        //init
         this.initListingDisplay($q, $rootScope, true);
     }
     Object.defineProperty(SWListingDisplayController.prototype, "columns", {
@@ -96842,10 +96884,11 @@ var SWListingReportController = /** @class */ (function () {
                 if (collectionName) {
                     serializedJSONData['collectionName'] = collectionName;
                 }
-                _this.$hibachi.saveEntity('Collection', _this.collectionId || "", {
+                _this.$hibachi.savePersonalCollection({
+                    'entityID': _this.collectionId,
                     'serializedJSONData': angular.toJson(serializedJSONData),
                     'propertyIdentifiersList': 'collectionID,collectionName,collectionObject,collectionConfig'
-                }, 'save').then(function (data) {
+                }).then(function (data) {
                     if (_this.collectionId) {
                         window.location.reload();
                     }
@@ -97462,9 +97505,12 @@ var SWListingSearchController = /** @class */ (function () {
             _this.limitCountTotal = _this.swListingDisplay.collectionConfig.limitCountTotal; //Fetching initial val from config
             //snapshot searchable options in the beginning
             _this.searchableOptions = angular.copy(_this.collectionConfig.columns);
-            // this.$scope.$watch('collectionConfig', function(newValue, oldValue) {
-            //     this.applySearchConfig(this.collectionConfig.listingSearchConfig);
-            // })
+            _this.searchableColumns = [];
+            for (var i = 0; i < _this.searchableOptions.length; i++) {
+                if (_this.searchableOptions[i].isSearchable) {
+                    _this.searchableColumns.push(_this.searchableOptions[i].propertyIdentifier);
+                }
+            }
             if (angular.isDefined(_this.swListingDisplay.collectionConfig.listingSearchConfig)) {
                 _this.configureListingSearchConfigControls(_this.swListingDisplay.collectionConfig.listingSearchConfig);
             }
@@ -97555,10 +97601,10 @@ var SWListingSearchController = /** @class */ (function () {
                         _this.localStorageService.getItem('selectedPersonalCollection')[_this.swListingDisplay.personalCollectionKey]['collectionDescription'] == _this.personalCollectionIdentifier))) {
                 var selectedPersonalCollection = angular.fromJson(_this.localStorageService.getItem('selectedPersonalCollection'));
                 if (selectedPersonalCollection[_this.swListingDisplay.personalCollectionKey]) {
-                    _this.$hibachi.saveEntity('Collection', selectedPersonalCollection[_this.swListingDisplay.personalCollectionKey].collectionID, {
-                        'accountOwner.accountID': _this.$rootScope.slatwall.account.accountID,
+                    _this.$hibachi.savePersonalCollection({
+                        'entityID': selectedPersonalCollection[_this.swListingDisplay.personalCollectionKey].collectionID,
                         'collectionConfig': _this.swListingDisplay.collectionConfig.collectionConfigString
-                    }, 'save').then(function (data) {
+                    }).then(function (data) {
                     });
                     return;
                 }
@@ -97568,15 +97614,12 @@ var SWListingSearchController = /** @class */ (function () {
                     'collectionConfig': _this.swListingDisplay.collectionConfig.collectionConfigString,
                     'collectionName': collectionName,
                     'collectionDescription': _this.personalCollectionIdentifier,
-                    'collectionObject': _this.swListingDisplay.collectionConfig.baseEntityName,
-                    'accountOwner': {
-                        'accountID': _this.$rootScope.slatwall.account.accountID
-                    }
+                    'collectionObject': _this.swListingDisplay.collectionConfig.baseEntityName
                 };
-                _this.$hibachi.saveEntity('Collection', "", {
+                _this.$hibachi.savePersonalCollection({
                     'serializedJSONData': angular.toJson(serializedJSONData),
                     'propertyIdentifiersList': 'collectionID,collectionName,collectionObject,collectionDescription'
-                }, 'save').then(function (data) {
+                }).then(function (data) {
                     if (!_this.localStorageService.hasItem('selectedPersonalCollection')) {
                         _this.localStorageService.setItem('selectedPersonalCollection', '{}');
                     }
@@ -97600,7 +97643,7 @@ var SWListingSearchController = /** @class */ (function () {
             if (!_this.hasPersonalCollections) {
                 var personalCollectionList = _this.collectionConfig.newCollectionConfig('Collection');
                 personalCollectionList.setDisplayProperties('collectionID,collectionName,collectionObject,collectionDescription');
-                personalCollectionList.addFilter('accountOwner.accountID', _this.$rootScope.slatwall.account.accountID);
+                personalCollectionList.addFilter('accountOwner.accountID', '${account.accountID}');
                 personalCollectionList.addFilter('collectionObject', _this.swListingDisplay.baseEntityName);
                 personalCollectionList.addFilter('reportFlag', 0);
                 personalCollectionList.addFilter('softDeleteFlag', true, "!=");
@@ -97625,32 +97668,23 @@ var SWListingSearchController = /** @class */ (function () {
                 _this.listingService.setExpandable(_this.listingId, true);
             }
             _this.collectionConfig.setKeywords(_this.swListingDisplay.searchText);
-            // this.collectionConfig.removeFilterGroupByFilterGroupAlias('searchableFilters');
-            // if(this.selectedSearchFilter.criteria != 'all'){
-            //     if(angular.isDefined(this.searchFilterPropertyIdentifier) && this.searchFilterPropertyIdentifier.length && this.swListingDisplay.searchText.length > 0){
-            //         this.collectionConfig.addFilter(this.searchFilterPropertyIdentifier,this.selectedSearchFilter.value,'>',undefined,undefined,undefined,undefined,'searchableFilters');
-            //     }
-            // }
             _this.swListingDisplay.collectionConfig = _this.collectionConfig;
             _this.observerService.notifyById('swPaginationAction', _this.listingId, { type: 'setCurrentPage', payload: 1 });
         };
         this.configureSearchableColumns = function (column) {
-            var searchableColumn = "";
+            var searchableColumns = [];
             if (column.propertyIdentifier) {
-                searchableColumn = column.propertyIdentifier;
-                //default to All columns
+                searchableColumns.push(column.propertyIdentifier);
+            }
+            else {
+                searchableColumns = _this.searchableColumns;
             }
             for (var i = 0; i < _this.swListingDisplay.collectionConfig.columns.length; i++) {
-                if (searchableColumn.length) {
-                    if (searchableColumn === _this.swListingDisplay.collectionConfig.columns[i].propertyIdentifier) {
-                        _this.swListingDisplay.collectionConfig.columns[i].isSearchable = true;
-                    }
-                    else {
-                        _this.swListingDisplay.collectionConfig.columns[i].isSearchable = false;
-                    }
+                if (searchableColumns.indexOf(_this.swListingDisplay.collectionConfig.columns[i].propertyIdentifier) > -1) {
+                    _this.swListingDisplay.collectionConfig.columns[i].isSearchable = true;
                 }
                 else {
-                    _this.swListingDisplay.collectionConfig.columns[i].isSearchable = true;
+                    _this.swListingDisplay.collectionConfig.columns[i].isSearchable = false;
                 }
             }
         };
@@ -101149,6 +101183,7 @@ var SWWorkflowTriggerHistory = /** @class */ (function () {
                 scope.workflowTriggerHistoryCollection.addDisplayProperty("endTime");
                 scope.workflowTriggerHistoryCollection.addDisplayProperty("startTime");
                 scope.workflowTriggerHistoryCollection.addDisplayProperty("successFlag");
+                scope.workflowTriggerHistoryCollection.addDisplayProperty("serverInstanceKey");
             }
         };
     }

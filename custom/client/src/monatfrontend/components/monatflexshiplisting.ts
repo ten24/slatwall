@@ -12,7 +12,7 @@ class MonatFlexshipListingController{
 	public loading: boolean = false;
 	public daysToEditFlexshipSetting:any;
 	public account:any;
-	
+	public customerCanCreateFlexship:boolean;
 		
 	private orderTemplateTypeID:string = '2c948084697d51bd01697d5725650006'; // order-template-type-flexship 
 	
@@ -23,9 +23,14 @@ class MonatFlexshipListingController{
 		public orderTemplateService, 
 		public $window, 
 		public publicService,
-		public observerService
+		public observerService,
+		public monatAlertService,
+		public rbkeyService,
+		public monatService
 	){
-		this.observerService.attach(this.fetchFlexships,"deleteOrderTemplateSuccess")
+		this.observerService.attach(this.fetchFlexships,"deleteOrderTemplateSuccess");
+		this.observerService.attach(this.fetchFlexships,"updateFrequencySuccess");
+
 	}
 	
 	public $onInit = () => {
@@ -35,6 +40,7 @@ class MonatFlexshipListingController{
 		});
 		
 		this.account = this.publicService.account;
+		this.getCanCreateFlexshipFlag();
 	}
 	
 	private fetchFlexships = () => {
@@ -68,21 +74,32 @@ class MonatFlexshipListingController{
 		
 		this.orderTemplateService.createOrderTemplate('ottSchedule')
 			.then((data) => {
-				if(data.orderTemplate){
-					this.$window.location.href = `/shop/?type=flexship&orderTemplateId=${data.orderTemplate}`; 
+				
+				if (
+					data.successfulActions &&
+					data.successfulActions.indexOf('public:order.create') > -1
+				) {
+				    this.monatAlertService.success(this.rbkeyService.rbKey('frontend.flexshipCreateSucess'))
+				    this.monatService.redirectToProperSite(
+										'/shop/?type=flexship&orderTemplateId=' + data.orderTemplate
+									);
 				} else{
 					throw(data);
 				}
 			})
 			.catch((e) => {
-				console.error(e);
+			    this.monatAlertService.showErrorsFromResponse(e);
 			})
 			.finally( () => {
 				this.loading = false;
 			});
 	}
 	
-
+	/**
+	 * @depricated, not in use any more
+	 * will be remove in later commits 
+	 * 
+	*/ 
 	public setAsCurrentFlexship(orderTemplateID:string) {
 
 		// make api request
@@ -105,6 +122,12 @@ class MonatFlexshipListingController{
 			.finally( () => {
 				//TODO
 			});
+	}
+	
+	public getCanCreateFlexshipFlag = () => {
+	    this.publicService.doAction('getCustomerCanCreateFlexship').then(res=>{
+	       this.customerCanCreateFlexship = res.customerCanCreateFlexship;
+	    });
 	}
 
 }

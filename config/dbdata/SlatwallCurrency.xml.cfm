@@ -12,7 +12,7 @@
 		<column name="currencyISONumber" />
 		<column name="activeFlag" datatype="bit" update="false" />
 		<column name="currencyName" />
-		<column name="currencySymbol" />
+		<column name="currencySymbol" update="false" />
 	</Columns>
 	<Records>
 		<Record currencyCode="AED" currencyISONumber="784" activeFlag="0" currencyName="AED - United Arab Emirates Dirham" currencySymbol="&#164;" />
@@ -58,10 +58,10 @@
 		<Record currencyCode="EGP" currencyISONumber="818" activeFlag="0" currencyName="EGP - Egypt Pound" currencySymbol="&#163;" />
 		<Record currencyCode="ERN" currencyISONumber="232" activeFlag="0" currencyName="ERN - Eritrea Nakfa" currencySymbol="&#164;" />
 		<Record currencyCode="ETB" currencyISONumber="230" activeFlag="0" currencyName="ETB - Ethiopia Birr" currencySymbol="&#164;" />
-		<Record currencyCode="EUR" currencyISONumber="978" activeFlag="0" currencyName="EUR - Euro Member Countries" currencySymbol="&#8364;" />
+		<Record currencyCode="EUR" currencyISONumber="978" activeFlag="0" currencyName="EUR - Euro Member Countries" currencySymbol="€" />
 		<Record currencyCode="FJD" currencyISONumber="242" activeFlag="0" currencyName="FJD - Fiji Dollar" currencySymbol="$" />
 		<Record currencyCode="FKP" currencyISONumber="238" activeFlag="0" currencyName="FKP - Falkland Islands (Malvinas) Pound" currencySymbol="&#163;" />
-		<Record currencyCode="GBP" currencyISONumber="826" activeFlag="0" currencyName="GBP - United Kingdom Pound" currencySymbol="&#163;" />
+		<Record currencyCode="GBP" currencyISONumber="826" activeFlag="0" currencyName="GBP - United Kingdom Pound" currencySymbol="£" />
 		<Record currencyCode="GEL" currencyISONumber="981" activeFlag="0" currencyName="GEL - Georgia Lari" currencySymbol="&#164;" />
 		<Record currencyCode="GGP" currencyISONumber="NULL" activeFlag="0" currencyName="GGP - Guernsey Pound" currencySymbol="&#163;" />
 		<Record currencyCode="GHS" currencyISONumber="936" activeFlag="0" currencyName="GHS - Ghana Cedi" currencySymbol="&#162;" />
@@ -129,7 +129,7 @@
 		<Record currencyCode="PGK" currencyISONumber="598" activeFlag="0" currencyName="PGK - Papua New Guinea Kina" currencySymbol="&#164;" />
 		<Record currencyCode="PHP" currencyISONumber="608" activeFlag="0" currencyName="PHP - Philippines Peso" currencySymbol="&#8369;" />
 		<Record currencyCode="PKR" currencyISONumber="586" activeFlag="0" currencyName="PKR - Pakistan Rupee" currencySymbol="&#8360;" />
-		<Record currencyCode="PLN" currencyISONumber="985" activeFlag="0" currencyName="PLN - Poland Zloty" currencySymbol="z&#322;" />
+		<Record currencyCode="PLN" currencyISONumber="985" activeFlag="0" currencyName="PLN - Poland Zloty" currencySymbol="zł" />
 		<Record currencyCode="PYG" currencyISONumber="600" activeFlag="0" currencyName="PYG - Paraguay Guarani" currencySymbol="Gs" />
 		<Record currencyCode="QAR" currencyISONumber="634" activeFlag="0" currencyName="QAR - Qatar Riyal" currencySymbol="&#65020;" />
 		<Record currencyCode="RON" currencyISONumber="946" activeFlag="0" currencyName="RON - Romania New Leu" currencySymbol="lei" />

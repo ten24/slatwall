@@ -68,8 +68,26 @@ Notes:
 	</cfif>
 	
 	<cfset local.currencyCode = "#rc.order.getCurrencyCode()#">
-	<cfset local.accountID = "#rc.order.getAccount().getAccountID()#">
+	<cfset local.accountID = "">
+	<cfset local.siteID = "">
 	
-	<sw-add-order-items-by-sku data-order="'#rc.order.getOrderId()#'" data-order-fulfillment-id="'#orderFulfillmentID#'" data-simple-representation="'#simpleRepresentation#'" data-exchange-order-flag="#(rc.order.getOrderType().getSystemCode() == 'otExchangeOrder')#" data-account-id="'#accountID#'" data-currency-code="'#currencyCode#'"></sw-add-order-items-by-sku>
+	<cfif NOT IsNull(rc.order.getAccount()) >
+	    <cfset local.accountID = rc.order.getAccount().getAccountID()>
+	 </cfif>
+	 
+    <cfif NOT IsNull(rc.order.getOrderCreatedSite())>
+        <cfset local.siteID = rc.order.getOrderCreatedSite().getSiteID()>
+    </cfif>
+
+	<sw-add-order-items-by-sku 
+    	data-order="'#rc.order.getOrderId()#'" 
+    	data-order-fulfillment-id="'#orderFulfillmentID#'" 
+    	data-simple-representation="'#simpleRepresentation#'" 
+    	data-exchange-order-flag="#(rc.order.getOrderType().getSystemCode() == 'otExchangeOrder')#" 
+    	data-account-id="'#local.accountID#'" 
+    	data-site-id="'#local.siteID#'" 
+    	data-currency-code="'#local.currencyCode#'"
+	>
+	</sw-add-order-items-by-sku>
 	
 </cfoutput>

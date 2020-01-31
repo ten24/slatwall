@@ -1,5 +1,6 @@
 /// <reference path='../../../../../org/Hibachi/client/typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../../../org/Hibachi/client/typings/tsd.d.ts' />
+declare var $;
 
 import {Option} from "../../../../../org/Hibachi/client/src/form/components/swfselect";
 
@@ -38,13 +39,18 @@ class SWFWishlistController {
         
         this.observerService.attach(this.refreshList,"myAccountWishlistSelected");        
         this.observerService.attach(this.successfulAlert,"OrderTemplateAddOrderTemplateItemSuccess");
-        this.observerService.attach(this.closeModal,"createWishlistSuccess"); 
-        this.observerService.attach(this.closeModal,"addItemSuccess"); 
+        this.observerService.attach(this.onAddItemSuccess,"createWishlistSuccess"); 
+        this.observerService.attach(this.onAddItemSuccess,"addItemSuccess"); 
     }
     
     private refreshList = (option:Option)=>{
         this.loading = true;
         this.currentList = option;
+        
+        if(!option){
+           this.loading = false; 
+           return;
+        }
         
         this.orderTemplateService
         .getWishlistItems(option.value,this.pageRecordsShow,this.currentPage,this.wishlistTypeID)
@@ -70,11 +76,10 @@ class SWFWishlistController {
     
     public addWishlistItem =(skuID)=>{ 
         this.loading = true;
-
         this.orderTemplateService.addOrderTemplateItem(this.sku ? this.sku : skuID, this.wishlistTemplateID)
         .then(result=>{
             this.loading = false;
-            return result;
+            this.onAddItemSuccess(this.sku);
         });
     }
 
@@ -102,7 +107,7 @@ class SWFWishlistController {
                 this.newTemplateID = result.orderTemplates[0].orderTemplateID;
             }
         })
-        .cache( (e) => {
+        .catch( (e) => {
             //TODO
             console.error(e);
         })
@@ -139,7 +144,12 @@ class SWFWishlistController {
     }
     
     
-    public closeModal = () => {
+    public onAddItemSuccess = (skuid) => {
+        
+        // Set the heart to be filled on the product details page
+        $('#skuID_' + skuid).removeClass('far').addClass('fas');
+        
+        // Close the modal
         if(!this.close) return;
      	this.close(null); // close, but give 100ms to animate
     };

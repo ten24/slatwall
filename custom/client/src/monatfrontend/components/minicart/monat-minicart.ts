@@ -5,7 +5,8 @@ class MonatMiniCartController {
 	public currentPage:number = 0;
 	public pageSize:number = 6;
 	public recordsStart:number = 0;
-	
+	public loading:boolean = false;
+	public monatEnrollment :any;
 	
 
 	//@ngInject
@@ -63,6 +64,7 @@ class MonatMiniCartController {
 	};
 
 	public removeItem = (item) => {
+	     item.loading=true;
 		this.monatService
 			.removeFromCart(item.orderItemID)
 			.then((data) => {
@@ -73,11 +75,12 @@ class MonatMiniCartController {
 				//TODO handle errors / success
 			})
 			.finally(() => {
-				//TODO hide loader...
+			item.loading=false;
 			});
 	};
 
 	public increaseItemQuantity = (item) => {
+	        item.loading=true;
 		this.monatService
 			.updateCartItemQuantity(item.orderItemID, item.quantity + 1)
 			.then((data) => {
@@ -87,13 +90,13 @@ class MonatMiniCartController {
 				throw reason; //TODO handle errors / success alerts
 			})
 			.finally(() => {
-				//TODO hide loader...
+			item.loading=false;
 			});
 	};
 
 	public decreaseItemQuantity = (item) => {
 		if (item.quantity <= 1) return;
-
+        item.loading=true;
 		this.monatService
 			.updateCartItemQuantity(item.orderItemID, item.quantity - 1)
 			.then((data) => {
@@ -103,9 +106,11 @@ class MonatMiniCartController {
 				throw reason; //TODO handle errors / success
 			})
 			.finally(() => {
-				//TODO hide loader...
+			item.loading=false;
 			});
 	};
+	
+	
 	
 	public changePage = (dir)=>{
 		

@@ -134,7 +134,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" outpu
 		var response = this.sendRequestToMailchimp( 
 			apiPath = apiPath, 
 			method = 'POST', 
-			jsonData = serializeJson( mailchimpData ) 
+			jsonData = serializeJson( mailchimpData )
 		);
 		
 		return response;
@@ -173,6 +173,8 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" outpu
         var httpRequest = new http();
         httpRequest.setMethod( arguments.method );
 		httpRequest.setUrl( arguments.apiPath );
+		httpRequest.setTimeout(1);
+		httpRequest.setThrowonerror(false);
 		httpRequest.addParam( 
 			type = 'header', 
 			name = 'Content-type', 
@@ -189,10 +191,10 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" outpu
 		}
 		
 		var response = httpRequest.send().getPrefix();
-			
-		response = deserializeJson( response.FileContent );
-		
-		return response;
+		if(isJson(response.FileContent)){
+			return deserializeJson( response.FileContent );
+		}
+		return {};
     }
     
 }

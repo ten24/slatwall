@@ -67,6 +67,32 @@ component accessors="true" extends="Slatwall.model.process.Order_AddOrderItem" {
     // =================== END: Lazy Object Helpers ========================
     
     // =============== START: Custom Validation Methods ====================
+    public boolean function orderMinimumDaysToRenewMPFailed(){
+        var renewalFeeSystemCode = 'RenewalFee-MP';
+        // If order already has renewal fee and cannot add another a Market Partner renewal
+        if(this.getOrder().hasMPRenewalFee()){
+            return false;
+        }
+        
+        // If account qualifies for a Market Partner renewal
+        var currentDate = Now();
+        var orderMinimumDaysToRenewMPSetting = getOrder().setting('integrationmonatOrderMinimumDaysToRenewMP');
+        var accountRenewalDate = 0;
+        if(!isNull(getAccount().getRenewalDate())){
+            accountRenewalDate = getAccount().getRenewalDate();
+        }
+        var renewalDateCheck=DateDiff("d", currentDate, accountRenewalDate);
+        
+        if( this.getProduct().getProductType().getSystemCode() == renewalFeeSystemCode){
+            if( this.getAccount().getAccountType() == 'marketPartner' &&
+                renewalDateCheck <= orderMinimumDaysToRenewMPSetting 
+            ){
+                return true;
+            }
+            return false;
+        }
+        return true;
+	}
     
     // ===============  END: Custom Validation Methods =====================
     

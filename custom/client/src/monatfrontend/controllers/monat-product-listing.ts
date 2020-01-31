@@ -9,16 +9,55 @@ class MonatProductListingController {
     public cmsContentFilterFlag:boolean;
     public pageRecordsShow:number = 12;
     public recordsCount:number;
+    public showAddToCardAlert;
+    public callEndpoint = true;
+    public showWishlist:boolean;
+
+    
+    public wishlistItems;
 
 	// @ngInject
 	constructor(
 		public publicService,
 		public observerService,
-		public $rootScope
-	) {}
+        private monatService,
+		public $rootScope,
+		public ModalService
+	) {
+        this.observerService.attach(() => this.showAddToCardAlert = true,"addOrderItemSuccess"); 
+	}
 
+    
+    public $onInit = () => {
+        this.observerService.attach(this.handleAddItem,'addItemSuccess');
+        this.observerService.attach(this.handleAddItem,'createWishlistSuccess');
+        this.observerService.attach(this.handleAddItem,'addOrderTemplateItemSuccess');
+        this.getWishlistItems();
+    }
+    
 	public $postLink = () => {
-	    this.getProducts();
+        if(this.callEndpoint) this.getProducts();
+	}
+	
+	public handleAddItem = () =>{
+	    this.getWishlistItems();
+	    if(!this.callEndpoint) this.showWishlist = true;
+	}
+	
+	public hideAlert = () =>{
+	    this.showAddToCardAlert = false
+	}
+	
+	public getWishlistItems = () => {
+	    this.monatService.getAccountWishlistItemIDs().then( data => {
+            if ( 'undefined' !== typeof data.wishlistItems ) {
+                this.wishlistItems = '';
+                data.wishlistItems.forEach(item=>{
+                    this.wishlistItems += item.productID + ',';
+                });
+                this.observerService.notify('accountWishlistItemsSuccess');
+            }
+        });
 	}
 	
     public getProducts = () => {
@@ -43,7 +82,34 @@ class MonatProductListingController {
             this.loading = false;
         });
     }
+    
+    	public launchWishlistModal = (skuID, productName) => {
+		let newSkuID = skuID
+		this.ModalService.showModal({
+			component: 'swfWishlist',
+			bodyClass: 'angular-modal-service-active',
+			bindings: {
+				sku: newSkuID,
+				productName: productName
+			},
+			preClose: (modal) => {
+				modal.element.modal('hide');
+				this.ModalService.closeModals();
+			},
+		})
+			.then((modal) => {
+				//it's a bootstrap element, use 'modal' to show it
+				modal.element.modal();
+				modal.close.then((result) => {});
+			})
+			.catch((error) => {
+				console.error('unable to open model :', error);
+			});
+	};
+
 }
+
+
 /*********************
     To use: 
     1. Declare as the controller of a wrapper div

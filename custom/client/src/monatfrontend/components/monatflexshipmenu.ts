@@ -35,8 +35,12 @@ class MonatFlexshipMenuController {
 		this.monatFlexshipCard.activateFlexship();
 	}
 
-	public setAsCurrentFlexship() {
-		this.monatFlexshipCard.setAsCurrentFlexship();
+	public goToProductListingPage() {
+		this.monatFlexshipCard.goToProductListingPage();
+	}
+	
+	public goToOFYProductListingPage() {
+		this.monatFlexshipCard.goToOFYProductListingPage();
 	}
 	
 	public showDeleteFlexshipModal = () => {

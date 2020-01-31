@@ -1800,7 +1800,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			}
 		}
 				
-		return super.save(entity=arguments.account,data=arguments.data);
+		return super.save(entity=arguments.account,data=arguments.data,context=arguments.context);
 	}
 	
 	public any function saveAccountEmailAddress(required accountEmailAddress, struct data={}, string context="save"){
@@ -1948,10 +1948,14 @@ component extends="HibachiService" accessors="true" output="false" {
 		// Setup hibernate session correctly if it has errors or not
 		if(!arguments.permissionGroup.hasErrors()) {
 			getAccountDAO().save( arguments.permissionGroup );
-			getService('HibachiCacheService').resetCachedKeyByPrefix('getPermissionRecordRestrictions',true);
+			
 			getService('HibachiCacheService').resetCachedKey(arguments.permissionGroup.getPermissionsByDetailsCacheKey());
-			//clears cache keys on the permissiongroup Object
-			getService('HibachiCacheService').resetCachedKeyByPrefix('PermissionGroup.');
+			
+			//reset permission cache
+			getService('HibachiCacheService').resetPermissionCache();
+			
+			//reset server instance settings cache
+			getService('HibachiCacheService').updateServerInstanceSettingsCache();
 		}
 
 		return arguments.permissionGroup;
@@ -2045,8 +2049,10 @@ component extends="HibachiService" accessors="true" output="false" {
 			arguments.account.setPrimaryPaymentMethod(javaCast("null", ""));
 			
 			getAccountDAO().removeAccountFromAllSessions( arguments.account.getAccountID() );
-			getAccountDAO().removeAccountFromAuditProperties( arguments.account.getAccountID() );
-
+			if(arguments.account.getAdminAccountFlag()){
+				getAccountDAO().removeAccountFromAuditProperties( arguments.account.getAccountID() );
+			}
+			
 		}
 
 		return delete( arguments.account );

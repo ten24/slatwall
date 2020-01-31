@@ -43,6 +43,26 @@ component output="false" accessors="true" extends="Slatwall.model.transient.Hiba
 		}
 	}
 	
+	public any function getSubdomain() {
+		var domain = getCurrentDomain();
+		var regex = '^([^.]+)\.[a-z]+\.(com|local|ten24dev\.com)$';
+		var subdomain = '';
+		/*
+		Matches:
+			username.monat.local
+			username.monatglobal.com
+			username.mymonat.com
+			username.monat.ten24dev.com
+		*/
+		if(reFindNoCase(regex, domain)){
+			var subdomain = reReplaceNoCase(domain, regex, '\1');
+		}
+		
+		return subdomain;
+	}
+	
+	
+	
 	public any function getAvailableAccountPropertyList() {
 		return ReReplace("accountID,firstName,lastName,company,remoteID,primaryPhoneNumber.accountPhoneNumberID,primaryPhoneNumber.phoneNumber,primaryEmailAddress.accountEmailAddressID,primaryEmailAddress.emailAddress,
 			accountEmailAddresses.accountEmailAddressID, accountEmailAddresses.emailAddress,
@@ -58,7 +78,20 @@ component output="false" accessors="true" extends="Slatwall.model.transient.Hiba
 			primaryShippingAddress.address.city,primaryShippingAddress.address.stateCode,primaryShippingAddress.address.postalCode,primaryShippingAddress.address.countrycode,accountPaymentMethods.expirationYear,primaryPaymentMethod.accountPaymentMethodID,
 			accountPaymentMethods.accountPaymentMethodName,primaryShippingAddress.accountAddressID,primaryPaymentMethod.paymentMethodID,accountPaymentMethods.activeFlag,ownerAccount.firstName,primaryAddress.address.streetAddress,primaryAddress.address.street2Address,
 			primaryAddress.address.city,primaryAddress.address.stateCode,primaryAddress.address.postalCode,ownerAccount.lastName,ownerAccount.createdDateTime,ownerAccount.primaryAddress.address.city,ownerAccount.primaryAddress.address.stateCode,ownerAccount.primaryAddress.address.postalCode,
-			ownerAccount.primaryPhoneNumber.phoneNumber,ownerAccount.primaryEmailAddress.emailAddress,userName,languagePreference,primaryAddress.address.countrycode","[[:space:]]","","all");
+			ownerAccount.primaryPhoneNumber.phoneNumber,ownerAccount.primaryEmailAddress.emailAddress,userName,languagePreference,primaryAddress.address.countrycode,ownerAccount.accountNumber","[[:space:]]","","all");
 
+	}
+	
+	
+	public any function getNexioFingerprintUrl() {
+		var paymentIntegration = getService('integrationService').getIntegrationByIntegrationPackage('nexio');
+		var responseData = paymentIntegration.getIntegrationCFC("Payment").getFingerprintToken();
+		
+		if(structKeyExists(responseData, 'token')){
+			setSessionValue('kount-token', responseData['token']);
+			return responseData['fraudUrl'];
+		}
+		
+		return '';
 	}
 }

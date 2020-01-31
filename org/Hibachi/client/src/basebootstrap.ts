@@ -27,8 +27,8 @@ export class BaseBootStrapper{
         .resolve( ['$http','$q', ($http, $q) => {
             this.$http = $http;
             this.$q = $q;
-            var baseURL = this.getBaseUrl();
-            return this.getInstantiationKey(baseURL)
+            
+            return this.getInstantiationKey()
             .then( (instantiationKey: string) => {
                 var invalidCache = [];
                 // NOTE: Return a promise so bootstrapping process will wait to continue executing until after the last step of loading the resourceBundles
@@ -53,6 +53,10 @@ export class BaseBootStrapper{
                 .then( () => {
                     if(localStorage.getItem('appConfig') != null) {
                         this.appConfig = JSON.parse(localStorage.getItem('appConfig'));
+                        // override config
+                        for(var config in hibachiConfig){
+                            this.appConfig[config] = hibachiConfig[config];
+                        }
                     }
                     
                     if( hibachiConfig.instantiationKey
@@ -179,14 +183,14 @@ export class BaseBootStrapper{
       });
     }
 
-    getInstantiationKey = (baseURL:string): ng.IPromise<any> => {
+    getInstantiationKey = (): ng.IPromise<any> => {
         return this.$q( (resolve, reject) => {
             if(this.instantiationKey) {
                 resolve(this.instantiationKey);
             } else if(hibachiConfig.instantiationKey) {
                 resolve(hibachiConfig.instantiationKey);
             } else {
-                this.$http.get(baseURL + '?' + hibachiConfig.action + '=api:main.getInstantiationKey')
+                this.$http.get(this.getBaseUrl() + '?' + hibachiConfig.action + '=api:main.getInstantiationKey')
                 .then( (resp:any) => { 
                     this.instantiationKey = resp.data.data.instantiationKey;
                     resolve(this.instantiationKey); 
@@ -242,15 +246,12 @@ export class BaseBootStrapper{
 
     getInstantiationKeyData = () => {
         
-        if( !this.instantiationKey ){
-            var d = new Date();
-            var n = d.getTime();
-            this.instantiationKey = n.toString();
-        }
-        
         var urlString = this.getBaseUrl();
-        return this.$http
-        .get( urlString + '/custom/system/config.json?instantiationKey=' + this.instantiationKey )
+        
+        return this.getInstantiationKey()
+        .then( (instantiationKey) => {
+            return this.$http.get( urlString + '/custom/system/config.json?instantiationKey=' + instantiationKey ) 
+        })
         .then( (resp: any) => resp.data.data )
         .then( (data) => {
             return this.$q( (resolve, reject) => {
@@ -263,8 +264,9 @@ export class BaseBootStrapper{
             });
         })
         .then( (appConfig: any) => {
-            if(hibachiConfig.baseURL.length) {
-                appConfig.baseURL = urlString;    
+            // override config
+            for(var config in hibachiConfig){
+                appConfig[config] = hibachiConfig[config];
             }
             coremodule.constant('appConfig', appConfig);
             this.appConfig = appConfig;
@@ -304,6 +306,7 @@ export class BaseBootStrapper{
     
     getResourceBundles = () => {
         var rbLocale = this.appConfig.rbLocale;
+        
         if(rbLocale == 'en_us'){
             rbLocale = 'en'
         }

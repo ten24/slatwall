@@ -228,7 +228,7 @@ Notes:
 		return sl.getRecords();
 	}
 
-	public any function generateAndSendFromEntityAndEmailTemplate( required any entity, required any emailTemplate ) {
+	public any function generateAndSendFromEntityAndEmailTemplate( required any entity, required any emailTemplate, string locale) {
 		var email = this.newEmail();
 		arguments[arguments.entity.getClassName()] = arguments.entity;
 		email = this.processEmail(email, arguments, 'createFromTemplate');
@@ -277,6 +277,15 @@ Notes:
 			}
 
 			if(!isNull(templateObject) && isObject(templateObject) && structKeyExists(templateObject, "stringReplace")) {
+				
+				
+				if(structKeyExists(arguments.data,'locale')){
+					local.locale = arguments.data.locale;
+				}else if(!isNull(emailTemplate.setting('emailLocaleString'))){
+					local.locale = lcase(templateObject.stringReplace(emailTemplate.setting('emailLocaleString')));
+				}else{
+					local.locale = 'en_us';
+				}
 
 				// Setup the email values
 				arguments.email.setEmailTo( templateObject.stringReplace( emailTemplate.setting('emailToAddress'), false, true ) );
@@ -285,9 +294,9 @@ Notes:
 				arguments.email.setEmailBCC( templateObject.stringReplace( emailTemplate.setting('emailBCCAddress'), false, true ) );
 				arguments.email.setEmailReplyTo( templateObject.stringReplace( emailTemplate.setting('emailReplyToAddress'), false, true ) );
 				arguments.email.setEmailFailTo( templateObject.stringReplace( emailTemplate.setting('emailFailToAddress'), false, true ) );
-				arguments.email.setEmailSubject( templateObject.stringReplace( emailTemplate.setting('emailSubject'), true, true ) );
-				arguments.email.setEmailBodyHTML( templateObject.stringReplace( emailTemplate.getEmailBodyHTML(),true ) );
-				arguments.email.setEmailBodyText( templateObject.stringReplace( emailTemplate.getEmailBodyText(),true ) );
+				arguments.email.setEmailSubject( templateObject.stringReplace( emailTemplate.setting(settingName='emailSubject',formatValue=true,formatDetails={locale=local.locale}), true, true ) );
+				arguments.email.setEmailBodyHTML( templateObject.stringReplace( emailTemplate.getFormattedValue(propertyName='emailBodyHTML',locale=local.locale),true ) );
+				arguments.email.setEmailBodyText( templateObject.stringReplace( emailTemplate.getFormattedValue(propertyName='emailBodyText',locale=local.locale),true ) );
 
 
 				var templateFileResponse = "";
@@ -297,6 +306,7 @@ Notes:
 				local[ emailTemplate.getEmailTemplateObject() ] = templateObject;
 				local.emailData["relatedObject"] = mid(templateObject.getEntityName(), 9, len(templateObject.getEntityName())-8);
 				local.emailData["relatedObjectID"] = templateObject.getPrimaryIDValue();
+				local["emailTemplate"] = emailTemplate;
 
 				if(len(templatePath)) {
 					savecontent variable="templateFileResponse" {
@@ -325,7 +335,6 @@ Notes:
 			}
 
 		}
-
 		return arguments.email;
 	}
 	

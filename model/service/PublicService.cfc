@@ -467,9 +467,27 @@ component  accessors="true" output="false"
         var accountAddress = getAccountService().getAccountAddress( data.accountAddressID );
         
         if(!isNull(accountAddress) && accountAddress.getAccount().getAccountID() == getHibachiScope().getAccount().getAccountID() ) {
+            
+            getDao('AccountAddressDAO').deleteDependentRelationsByAccountAddressID(data.accountAddressID);
+            
             var deleteOk = getAccountService().deleteAccountAddress( accountAddress );
             getHibachiScope().addActionResult( "public:account.deleteAccountAddress", !deleteOK );
+            
+            if(!deleteOk) {
+                
+                if(accountAddress.hasErrors()){
+                    this.addErrors( arguments.data, accountAddress.getErrors() );
+                } else {
+                    this.addErrors(  arguments.data, [ 
+                        { 'AccountAddress': getHibachiScope().rbKey('validate.define.somethingWentWrong') } 
+                    ]);
+                }
+            }
+            
         } else {
+            this.addErrors(arguments.data, [ 
+                { 'AccountAddress': getHibachiScope().rbKey('validate.delete.AccountAddress.Invalid') }
+            ]);
             getHibachiScope().addActionResult( "public:account.deleteAccountAddress", true );   
         }
     }
@@ -1197,10 +1215,14 @@ component  accessors="true" output="false"
             // Make sure that the session is persisted
             getHibachiSessionService().persistSession();
             
+            //flushing for can place order check
+            getHibachiScope().flushORMSession(); 
+            
         }else{
-            addErrors(data, getHibachiScope().getCart().getProcessObject("addOrderItem").getErrors());
+            addErrors(data, cart.getProcessObject("addOrderItem").getErrors());
+            addErrors(data, cart.getErrors());
         }
-        getHibachiScope().flushORMSession(); //flushing for can place order check
+        
         return cart;
     }
     
@@ -1400,7 +1422,7 @@ component  accessors="true" output="false"
         }
         
         if (len(data.orderID)) {
-            var order = getOrderService().getOrder(orderID);
+            var order = getOrderService().getOrder(data.orderID);
         }
         else {
             var order = getHibachiScope().getCart();
@@ -1433,9 +1455,12 @@ component  accessors="true" output="false"
             }
         }
 
-
+        
         if (data.newOrderPayment.requireBillingAddress || data.newOrderPayment.saveShippingAsBilling) {
-            if (!structKeyExists(data.newOrderPayment, 'billingAddress')) {
+            // Only create a new billing address here if its not being created later using the account payment method.
+            if (!structKeyExists(data.newOrderPayment, 'billingAddress') 
+                && (!structKeyExists(data, "accountPaymentMethodID") 
+                && len(data.accountPaymentMethodID))) {
 
                 var orderPayment = getPaymentService().newOrderPayment();
                 orderPayment.populate(data.newOrderPayment);
@@ -1453,8 +1478,11 @@ component  accessors="true" output="false"
                 getHibachiScope().addActionResult("public:cart.addOrderPayment", true);
                 return;
             }
-            //use this billing information
-            var newBillingAddress = this.addBillingAddress(data.newOrderPayment.billingAddress, "billing");
+            
+            if ((!structKeyExists(data, "accountPaymentMethodID") && len(data.accountPaymentMethodID))){
+                //use this billing information
+                var newBillingAddress = this.addBillingAddress(data.newOrderPayment.billingAddress, "billing");
+            }
         }
 
         if (!isNull(newBillingAddress) && newBillingAddress.hasErrors()) {
@@ -1462,7 +1490,7 @@ component  accessors="true" output="false"
             return;
         }
 
-        
+       
         var addOrderPayment = getService('OrderService').processOrder(order, arguments.data, 'addOrderPayment');
 
         if (!giftCard) {
@@ -1734,6 +1762,7 @@ component  accessors="true" output="false"
         param name="arguments.data.currentPage" default=1;
         param name="arguments.data.orderTemplateID" default="";
 		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; 
+		param name="arguments.data.optionalProperties" default="";
 
 		arguments.data['ajaxResponse']['orderTemplates'] = getOrderService().getOrderTemplatesForAccount(arguments.data); 
 		
@@ -1762,64 +1791,6 @@ component  accessors="true" output="false"
 
 		arguments.data['ajaxResponse']['orderTemplateItems'] = getOrderService().getOrderTemplateItemsForAccount(arguments.data);  
 	} 
-
-	public void function getWishlistItems(required any data){
-        param name="arguments.data.pageRecordsShow" default=5;
-        param name="arguments.data.currentPage" default=1;
-        param name="arguments.data.orderTemplateID" default="";
-		param name="arguments.data.orderTemplateTypeID" default=""; 
-
-		arguments.data['ajaxResponse']['orderTemplateItems'] = [];
-		arguments.data['ajaxResponse']['orderTotal'] = 0;
-		
-		var scrollableSmartList = getOrderService().getOrderTemplateItemSmartList(arguments.data);
-		
-		
-		if (len(arguments.data.orderTemplateID)){
-		    scrollableSmartList.addFilter("orderTemplate.orderTemplateID", "#arguments.data.orderTemplateID#");
-		}
-		
-		var scrollableSession = ormGetSessionFactory().openSession();
-		var wishlistsItems = scrollableSmartList.getScrollableRecords(refresh=true, readOnlyMode=true, ormSession=scrollableSession);
-		
-		//now iterate over all the objects
-		
-		try{
-		    while(wishlistsItems.next()){
-		    
-			    var wishlistItem = wishlistsItems.get(0);
-			    
-			    var wishListItemStruct={
-			      "vipPrice"                    :       wishListItem.getSkuAdjustedPricing().vipPrice?:"",
-			      "marketPartnerPrice"          :       wishListItem.getSkuAdjustedPricing().MPPrice?:"",
-			      "adjustedPriceForAccount"     :       wishListItem.getSkuAdjustedPricing().adjustedPriceForAccount?:"",
-			      "retailPrice"                 :       wishListItem.getSkuAdjustedPricing().retailPrice?:"",
-			      "personalVolume"              :       wishListItem.getSkuAdjustedPricing().personalVolume?:"",
-			      "accountPriceGroup"           :       wishListItem.getSkuAdjustedPricing().accountPriceGroup?:"",
-			      "skuImagePath"                :       wishListItem.getSkuImagePath()?:"",
-			      "skuProductURL"               :       wishListItem.getSkuProductURL()?:"",
-			      "productName"                 :       wishListItem.getSku().getProduct().getProductName()?:"",
-			      "skuID"                       :       wishListItem.getSku().getSkuID()?:"",
-			      "orderItemID"                 :       wishListItem.getOrderTemplateItemID()?:"", 
-  			      "quantity"                    :       wishListItem.getQuantity()?:"", 
-  			      "total"                       :       wishListItem.getTotal()?:""
-
-			    };
-                
-                arrayAppend(arguments.data['ajaxResponse']['orderTemplateItems'], wishListItemStruct);
-
-                if ( arguments.data['ajaxResponse']['orderTotal'] === 0 ) {
-                    arguments.data['ajaxResponse']['orderTotal'] = wishListItem.getOrderTemplate().getTotal();
-                }
-		    }
-		}catch (e){
-            throw(e)
-		}finally{
-			if (scrollableSession.isOpen()){
-				scrollableSession.close();
-			}
-		}
-	} 
 	
 	
 	public void function getOrderTemplateDetails(required any data){
@@ -1827,7 +1798,6 @@ component  accessors="true" output="false"
         param name="arguments.data.currentPage" default=1;
         param name="arguments.data.orderTemplateId" default="";
 		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; 
-
 		arguments.data['ajaxResponse']['orderTemplate'] = getOrderService().getOrderTemplateDetailsForAccount(arguments.data);  
 	}
 	
@@ -1941,7 +1911,7 @@ component  accessors="true" output="false"
 	    
  		orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'cancel'); 
         getHibachiScope().addActionResult( "public:orderTemplate.cancel", orderTemplate.hasErrors() );
-            
+        
         if(!orderTemplate.hasErrors() && !getHibachiScope().getORMHasErrors()) {
             
             orderTemplate.clearProcessObject("cancel");
@@ -1993,24 +1963,7 @@ component  accessors="true" output="false"
             return;
         }
         orderTemplate.clearProcessObject("updateFrequency");
-        
-        //try to activate if we can
-        if( 
-			orderTemplate.getAccount().getAccountStatusType().getSystemCode() == 'astGoodStanding' &&
-            orderTemplate.getOrderTemplateStatusType().getSystemCode() == 'otstDraft' && orderTemplate.getCanPlaceOrderFlag()
-        ) {
-            orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'activate'); 
-            getHibachiScope().addActionResult( "public:orderTemplate.activate", orderTemplate.hasErrors() );
-            
-            if(orderTemplate.hasErrors() && getHibachiScope().getORMHasErrors()) {
-                ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
-                return;
-            }
-            orderTemplate.clearProcessObject("activate");
-            
-            //Clear the currentFlexship from session
-            getHibachiScope().getSession().setCurrentFlexship(JavaCast("null",''));
-        }
+     
 	} 
 	
 	public any function getAccountGiftCards( required struct data) {
@@ -2080,14 +2033,14 @@ component  accessors="true" output="false"
 		}
 		
 		if(!StructKeyExists(arguments.data, 'orderTemplatePromotionSkuCollectionConfig')){
-	        var promotionsCollectionConfig =  orderTemplate.getPromotionalRewardSkuCollectionConfig();
+	        var promotionsCollectionConfig =  orderTemplate.getPromotionalFreeRewardSkuCollectionConfig();
 	        promotionsCollectionConfig['pageRecordsShow'] = arguments.data.pageRecordsShow;
 	        promotionsCollectionConfig['currentPage'] = arguments.data.currentPage;
 	        arguments.data.orderTemplatePromotionSkuCollectionConfig = promotionsCollectionConfig;
 		}
 	    
-	    var promotionsCollectionList = getSkuService().getSkuCollectionList();
-	    promotionsCollectionList.setCollectionConfig(arguments.data.orderTemplatePromotionSkuCollectionConfig);
+	    var promotionsCollectionList = getService("SkuService").getSkuCollectionList();
+	    promotionsCollectionList.setCollectionConfigStruct(arguments.data.orderTemplatePromotionSkuCollectionConfig);
         
         arguments.data['ajaxResponse']['orderTemplatePromotionSkus'] = promotionsCollectionList.getPageRecords(); 
 	}
@@ -2111,18 +2064,10 @@ component  accessors="true" output="false"
 		}
 	    
  		orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'addOrderTemplateItem'); 
-        getHibachiScope().addActionResult( "public:orderTemplate.addItem", orderTemplate.hasErrors() );
+ 		orderTemplate.updateCalculatedProperties();
+        getHibachiScope().addActionResult( "public:order.addOrderTemplateItem", orderTemplate.hasErrors() );
             
-        if(!orderTemplate.hasErrors() && !getHibachiScope().getORMHasErrors()) {
-            
-            orderTemplate.clearProcessObject("addOrderTemplateItem");
-            getHibachiScope().flushORMSession(); //flushing to make new data availble
-            
-            //TODO ???
-            arguments.data['ajaxResponse']['orderTemplateItems'] = getOrderService().getOrderTemplateItemsForAccount(argumentCollection=arguments);
-
-    // 		this.setOrderTemplateItemAjaxResponse(argumentCollection = arguments);
-        } else {
+        if(orderTemplate.hasErrors()) {
             ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
         }
     }
@@ -2139,18 +2084,11 @@ component  accessors="true" output="false"
 		
 		orderTemplateItem.setQuantity(arguments.data.quantity); 
         var orderTemplateItem = getOrderService().saveOrderTemplateItem( orderTemplateItem, arguments.data );
-        
-        getHibachiScope().addActionResult( "public:orderTemplate.editItem", orderTemplateItem.hasErrors() );
+        orderTemplateItem.getOrderTemplate().updateCalculatedProperties();
+
+        getHibachiScope().addActionResult( "public:order.editOrderTemplateItem", orderTemplateItem.hasErrors() );
             
-        if(!orderTemplateItem.hasErrors() && !getHibachiScope().getORMHasErrors()) {
-            getHibachiScope().flushORMSession(); //flushing to make new data availble
-            //return orderTemplate and updated-orderTemplateItem 
-            arguments.data.orderTemplateID = orderTemplateItem.getOrderTemplate().getOrderTemplateID();
-            
-            this.setOrderTemplateAjaxResponse(argumentCollection = arguments);
-    		this.setOrderTemplateItemAjaxResponse(argumentCollection = arguments);
-            
-        } else {
+        if(orderTemplateItem.hasErrors()) {
             ArrayAppend(arguments.data.messages, orderTemplateItem.getErrors(), true);
         }
     }
@@ -2165,17 +2103,10 @@ component  accessors="true" output="false"
 		}
 	    
  		orderTemplate = getOrderService().processOrderTemplate(orderTemplateItem.getOrderTemplate(), arguments.data, 'removeOrderTemplateItem'); 
-        getHibachiScope().addActionResult( "public:orderTemplate.removeItem", orderTemplate.hasErrors() );
+        orderTemplate.updateCalculatedProperties();
+        getHibachiScope().addActionResult( "public:order.removeOrderTemplateItem", orderTemplate.hasErrors() );
             
-        if(!orderTemplate.hasErrors() && !getHibachiScope().getORMHasErrors()) {
-            getHibachiScope().flushORMSession(); //flushing to make new data availble
-            //return updated-orderTemplate 
-            
-            //TODO, figure out a way to get updated calculated prop in ordertemplate
-            arguments.data.orderTemplateID = orderTemplate.getOrderTemplateID();
-            this.setOrderTemplateAjaxResponse(argumentCollection = arguments);
-            
-        } else {
+        if(orderTemplate.hasErrors()) {
             ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
         }
     }
@@ -2222,33 +2153,6 @@ component  accessors="true" output="false"
         }
     }
     
-     public void function editOrderTemplate(required any data){
-        param name="data.orderTemplateID" default="";
-        param name="data.orderTemplateName" default="";
-        
-        var orderTemplate = getOrderService().getOrderTemplateForAccount(argumentCollection = arguments);
-		if( isNull(orderTemplate) ) {
-			return;
-		}
-	    
-	    if(len(arguments.data.orderTemplateName)) {
- 		    orderTemplate.setOrderTemplateName(arguments.data.orderTemplateName);
-	    }
-	    
-	    orderTemplate = getOrderService().saveOrderTemplate(orderTemplate);
-        getHibachiScope().addActionResult( "public:orderTemplate.edit", orderTemplate.hasErrors() );
-
-        if(!orderTemplate.hasErrors() && !getHibachiScope().getORMHasErrors()) {
-            
-            getHibachiScope().flushORMSession(); 
-            //flushing to make new data availble
-    		setOrderTemplateAjaxResponse(argumentCollection = arguments);
-        
-        } else {
-            ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
-        }
-    }
-    
     public void function deleteOrderTemplate(required any data){
         param name="data.orderTemplateItemID" default="";
 
@@ -2261,16 +2165,6 @@ component  accessors="true" output="false"
         
         getHibachiScope().addActionResult( "public:order.deleteOrderTemplate", true );  
         
-    }
-    
-    public void function getAllOrdersOnAccount(required any data){
-        var accountOrders = getAccountService().getAllOrdersOnAccount({accountID: arguments.data.accountID, pageRecordsShow: arguments.data.pageRecordsShow, currentPage: arguments.data.currentPage });
-        arguments.data['ajaxResponse']['ordersOnAccount'] = accountOrders;
-    }
-    
-    public void function getOrderItemsByOrderID(required any data){
-        var OrderItemsByOrderID = getOrderService().getOrderItemsByOrderID({orderID: arguments.data.orderID, currentPage: arguments.data.currentPage, pageRecordsShow: arguments.data.pageRecordsShow });
-        arguments.data['ajaxResponse']['OrderItemsByOrderID'] = OrderItemsByOrderID;
     }
     
     

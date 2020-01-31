@@ -27,6 +27,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	this.secureMethods=listAppend(this.secureMethods,'upsertCashReceiptsToOrders');
 	this.secureMethods=listAppend(this.secureMethods,'importDailyAccountUpdates');
 	this.secureMethods=listAppend(this.secureMethods,'importOrderShipments');
+	this.secureMethods=listAppend(this.secureMethods,'importInventory');
+	this.secureMethods=listAppend(this.secureMethods,'importInventoryUpdates');
 	
 	// @hint helper function to return a Setting
 	public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
@@ -69,7 +71,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	 **/
 	private any function getCashReceiptsData(pageNumber,pageSize){ 
 
-		var uri = "https://api.monatcorp.net:8443/api/Slatwall/queryMCR";
+		var uri = setting('baseImportURL') & "queryMCR";
 		var authKeyName = "authkey";
 		var authKey = setting(authKeyName);
 
@@ -99,45 +101,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 	}
 	
-	private any function getShipmentData(pageNumber,pageSize,dateFilterStart,dateFilterEnd){
-	    var uri = "https://api.monatcorp.net:8443/api/Slatwall/SWGetShipmentInfo";
-		var authKeyName = "authkey";
-		var authKey = setting(authKeyName);
-	    var = {hasErrors: false};
-	    var body = {
-			"Pagination": {
-				"PageSize": "#arguments.pageSize#",
-				"PageNumber": "#arguments.pageNumber#"
-			},
-			"Filters": {
-			    "StartDate": arguments.dateFilterStart,
-			    "EndDate": arguments.dateFilterEnd
-			}
-		};
-
-	    httpService = new http(method = "POST", charset = "utf-8", url = uri);
-		httpService.addParam(name = "Authorization", type = "header", value = "#authKey#");
-		httpService.addParam(name = "Content-Type", type = "header", value = "application/json-patch+json");
-		httpService.addParam(name = "Accept", type = "header", value = "text/plain");
-		httpService.addParam(name = "body", type = "body", value = "#serializeJson(body)#");
-
-		var shipmentJson = httpService.send().getPrefix();
-		var apiData = deserializeJson(shipmentJson.fileContent);
-
-		if (structKeyExists(apiData, "Data") && structKeyExists(apiData.Data, "Records")){
-			fsResponse['Records'] = apiData.Data.Records;
-		    return fsResponse;
-		}
-
-		writeDump("Could not import shipment on this page: PS-#arguments.pageSize# PN-#arguments.pageNumber#");
-		fsResponse.hasErrors = true;
-
-
-		return fsResponse;
-	}
-	
 	private any function getAccountData(pageNumber,pageSize){
-	    var uri = "https://api.monatcorp.net:8443/api/Slatwall/QueryAccounts";
+	    var uri = setting('baseImportURL') & "QueryAccounts";
 		var authKeyName = "authkey";
 		var authKey = setting(authKeyName);
 		
@@ -167,7 +132,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	}
 	
 	private any function getOrderData(pageNumber,pageSize){
-	    var uri = "https://api.monatcorp.net:8443/api/Slatwall/QueryOrders";
+	    var uri = setting('baseImportURL') & "QueryOrders";
 		var authKeyName = "authkey";
 		var authKey = setting(authKeyName);
 	
@@ -211,7 +176,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	}
 	
 	private any function getDailyAccountUpdatesData(pageNumber,pageSize){
-	    var uri = "https://api.monatcorp.net:8443/api/Slatwall/SwGetUpdatedAccounts";
+	    var uri = setting('baseImportURL') & "SwGetUpdatedAccounts";
 		var authKeyName = "authkey";
 		var authKey = setting(authKeyName);
 		
@@ -235,7 +200,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		 * }
 		 *	 
 		 **/
-	   var httpService = new http(method = "POST", charset = "utf-8", url = uri);
+	    var httpService = new http(method = "POST", charset = "utf-8", url = uri);
 		httpService.addParam(name = "Authorization", type = "header", value = "#authKey#");
 		httpService.addParam(name = "Content-Type", type = "header", value = "application/json-patch+json");
 		httpService.addParam(name = "Accept", type = "header", value = "text/plain");
@@ -254,8 +219,44 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	}
 	
 	
+	private any function getInventoryData(pageNumber,pageSize){
+	    var uri = setting('baseImportURL') &  "QueryInventory";
+		var authKeyName = "authkey";
+		var authKey = setting(authKeyName);
+	
+	    var body = {
+			"Pagination": {
+				"PageSize": "#arguments.pageSize#",
+				"PageNumber": "#arguments.pageNumber#"
+			}
+		};
+	    
+	    httpService = new http(method = "POST", charset = "utf-8", url = uri);
+		httpService.addParam(name = "Authorization", type = "header", value = "#authKey#");
+		httpService.addParam(name = "Content-Type", type = "header", value = "application/json-patch+json");
+		httpService.addParam(name = "Accept", type = "header", value = "text/plain");
+		httpService.addParam(name = "body", type = "body", value = "#serializeJson(body)#");
+		
+		var inventoryJson = httpService.send().getPrefix();
+		
+		inventoryResponse = {hasErrors: false};
+		
+		var apiData = deserializeJson(inventoryJson.fileContent);
+	
+		if (structKeyExists(apiData, "Data") && structKeyExists(apiData.Data, "Records")){
+			inventoryResponse['Records'] = apiData.Data.Records;
+		    return inventoryResponse;
+		}
+		
+		writeDump("Could not import inventory on this page: PS-#arguments.pageSize# PN-#arguments.pageNumber#");
+		inventoryResponse.hasErrors = true;
+		
+		
+		return inventoryResponse;
+	}
+	
 	private any function getFlexshipData(pageNumber,pageSize){
-	    var uri = "https://api.monatcorp.net:8443/api/Slatwall/QueryFlexships";
+	    var uri = setting('baseImportURL') &  "QueryFlexships";
 		var authKeyName = "authkey";
 		var authKey = setting(authKeyName);
 	
@@ -290,279 +291,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		return fsResponse;
 	}
 	
-	public void function importOrderShipments(required struct rc){ 
-        getService("HibachiTagService").cfsetting(requesttimeout="60");
-		getFW().setView("public:main.blank");
-
-        var MERGE_ARRAYS = true;
-        var pageNumber = rc.pageNumber?:1;
-		var pageSize = rc.pageSize?:25;
-		var pageMax = rc.pageMax?:1;
-		var dateFilterStart = rc.dateFilterStart?:dateFormat(now(), 'YYYY-mm-dd');
-		var dateFilterEnd = rc.dateFilterEnd?:dateFormat(now(), 'YYYY-mm-dd');
-        var ormStatelessSession = ormGetSessionFactory().openStatelessSession();
-        var shippingMethod = getFulfillmentService().getFulfillmentMethodByFulfillmentMethodName("Shipping");
-
-        // Begin Helper functions
-
-        /**
-         *  @param {Struct} body The request body to be serialized into a API filter.
-         *  @param {String} authKey The value for the Authorization header sent to Boomi.
-         *  @return {Struct | Array} The shipments to create or update in Slatwall.
-         *  @throws Exception when the api can not be accessed.
-         * 
-         *  @example Request Body {
-         *          "ProcessingDate": "2019-01-03"
-         *          }
-         *          
-         * 
-         *  @example Response {
-         *          "Status": "success",
-         *          "Data": {
-         *            "Records": [
-         *              {
-         *                "SalesDocNumber": "7944365",
-         *                "DeliveryDocNumber": "0080552438",
-         *                "DeliveryDate": "2019-01-03",
-         *                "CarrierName": "Ground",
-         *                "TrackingNumber": "472895051621"
-         *              }]
-         *          }
-         * 
-         **/ 
-
-        /**
-         * @param {Struct} hashmap A collection of key value pairs.
-         * @param {List<String>} keys A list of keys that reference values in the map.
-         * @return {Boolean} Returns True if the hashmap contains all the key 
-         * values in the keys list and those values are not null.
-         * False otherwise.
-         */
-        var containsAll = function(hashmap, keys){
-
-            for (var key in listToArray(keys)){
-                if (!structKeyExists(hashmap, key) || isNull(hashmap[key])){
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        /**
-         * @param {String} The order number to lookup in Slatwall.
-         * @return {Boolean} Returns True if the order exists. False otherwise.
-         */
-        var orderExists = function(orderNumber) {
-            return !isNull(getOrderService().getOrderByOrderNumber(orderNumber));
-        }
-
-        /**
-         * @param {String} The order number to lookup in Slatwall.
-         * @return {Boolean} Returns True if the order exists. False otherwise.
-         */
-        var order = function(orderNumber) {
-            return getOrderService().getOrderByOrderNumber(orderNumber);
-        }
-
-        /**
-         * @param {Struct} The shipment to use to create the order delivery.
-         * @return {Boolean} Returns True if the tracking, ordernumber and 
-         * order exist. False otherwise.
-         */
-        var dataExistsToCreateDelivery = function(shipment) {
-
-            if (containsAll(shipment, "OrderNumber,Packages") && 
-                orderExists(shipment.OrderNumber)){
-                return true;    
-            }
-
-            return false;
-        };
-
-        /**
-         * @param {String} The name of the fulfillment type to return.
-         * @return {FulfillmentMethod} Returns the fulfillment method by name.
-         */
-        var fulfillmentMethod = function(name) {
-            return getFulfillmentService().getFulfillmentMethodByFulfillmentMethodName(name);
-        };
-
-        /**
-         * @param {String} The name of the fulfillment method type to check.
-         * @return {FulfillmentMethod} Returns the fulfillment method by type name.
-         */
-        var isShippingMethodType = function(orderFulfillment) {
-            return orderFulfillment.getFulfillmentMethodType() == "Shipping";
-        };
-
-        /**
-         * @param {OrderFulfillment} The name of the fulfillment method type to check.
-         * @return {Array} Contains fulfillment items.
-         */
-        var getFulfillmentItems = function(orderFulfillment, orderFulfillmentItems) {
-            if (isShippingMethodType(orderFulfillment)){
-                arrayAppend( orderFulfillmentItems, orderFulfillment.getOrderFulfillmentItems(), MERGE_ARRAYS );
-            }
-            return orderFulfillmentItems;
-        };
-
-        /**
-         * @param {OrderDelivery} Creates and adds all delivery items for the order.
-         * @return {OrderDeliveryItem} Returns the newly created and save item. 
-         */
-        var createDeliveryItem = function( orderDelivery, orderFulfillmentItem ) {
-            var orderDeliveryItem = Slatwall.model.entity.OrderDeliveryItem();
-            orderDeliveryItem.setQuantity(orderFulfillmentItem.getQuantity());
-            orderDeliveryItem.setOrderItem(orderFulfillmentItem.getOrderItem());
-            orderDeliveryItem.setOrderDelivery(orderDelivery);
-			ormStatelessSession.insert("SlatwallOrderDeliveryItem", orderDeliveryItem);
-            return orderDeliveryItem;
-        }
-
-        /**
-         * @param {OrderDelivery} Creates and adds all SHIPPING delivery items for the 
-         * order to a single delivery.
-         * @return {Void} 
-         */
-        var createDeliveryItems = function( orderDelivery ) {
-            var order = orderDelivery.getOrder();
-            var orderFulfillments = order.getOrderFulfillments();
-
-            //gets all the fulfillment items as a single array
-            var orderFulfillmentItems = [];
-
-            // Get all items.
-            for (var orderFulfillment in orderFulfillments){
-                orderFulfillmentItems = getFulfillmentItems( orderFulfillment, 
-                    orderFulfillmentItems );
-            }
-
-            // Create all the delivery items and add them to the delivery.
-            for (var orderFulfillmentItem in orderFulfillmentItems){
-                var orderDeliveryItem = createDeliveryItem( orderDelivery,  
-                    orderFulfillmentItem);
-            }
-        };
-
-        /**
-         * @param {Order} order The order to check 
-         * @return {Boolean} Returns true is the entire order is delivered.
-         * False otherwise.
-         */
-        var orderIsDelivered = function( order ){
-
-            if (order.getQuantityUndelivered() <= 0){
-                return true;
-            }
-
-            return false;
-        }
-
-        /**
-         * @param {Struct} Shipment A shipment (with packages) is used to build a delivery.
-         * @return {Void}
-         */
-        var createDelivery = function(shipment){
-        	logHibachi("createDelivery: shipment.shipmentNumber");
-			var order = order(shipment.OrderNumber);
-
-            if (!isNull(order) && dataExistsToCreateDelivery(shipment) && !orderIsdelivered( order )){
-                // Create the delivery.  
-                var orderDelivery = new Slatwall.model.entity.OrderDelivery();
-    			orderDelivery.setOrder(order);
-    			orderDelivery.setShipmentNumber(shipment.shipmentNumber);//Add this
-    			orderDelivery.setShipmentSequence(shipment.orderShipSequence);// Add this
-    			orderDelivery.setPurchaseOrderNumber(shipment.PONumber);
-    			orderDelivery.setRemoteID( shipment.shipmentId );
-
-    		    //get the tracking numbers.
-    		    //get tracking information...
-    		    var concatTrackingNumber = "";
-    		    var concatScanDate = "";
-    		    var packageShipDate = "";
-    		    if (structKeyExists(shipment, "Packages")){
-    		    	 for (var packages in shipment.Packages){
-    		    		concatTrackingNumber = listAppend(concatTrackingNumber, packages.TrackingNumber);
-
-    		    		if (!isNull(packages['ScanDate'])){
-    		    			orderDelivery.setScanDate( getDateFromString(packages['ScanDate']) );//use last scan date
-    		    		}
-
-    		    		if (!isNull(shipment['UndeliveredReasonDescription'])){
-    		    			orderDelivery.setUndeliverableOrderReason(shipment['UndeliveredReasonDescription']);
-    		    		}
-
-    		    		if (!isNull(shipment['PackageShipDate'])){
-    		    			packageShipDate = shipment['PackageShipDate'];
-    		    		}
-    		    	 }
-    		    }
-
-    		    // all tracking on one fulfillment.
-    		    orderDelivery.setTrackingNumber(concatTrackingNumber);
-    		    orderDelivery.setCreatedDateTime(getDateFromString(packageShipDate) );
-    		    orderDelivery.setModifiedDateTime( now() );
-                orderDelivery.setShippingMethod( shippingMethod );
-                ormStatelessSession.insert("SlatwallOrderDelivery", orderDelivery );
-                createDeliveryItems( orderDelivery );
-                echo("Created a delivery for orderNumber: #shipment['OrderNumber']# <br>");
-                logHibachi("Created a delivery for orderNumber: #shipment['OrderNumber']#");
-
-            }else{
-            	logHibachi("createDelivery: Can't find enough information for ordernumber: #shipment['OrderNumber']# to create the delivery");
-
-			}
-        };
-
-        // Map all the shipments -> deliveries.
-        // This wraps the map in a new stateless session to keep things fast
-
-        var tx = ormStatelessSession.beginTransaction();
-
-        // Do one page at a time, flushing and clearing as we go.
-        while (pageNumber < pageMax){
-        	logHibachi("Importing pagenumber: #pageNumber#");
-	        // Call the api and get shipment records for the date defined as the filter.
-	        var response = getShipmentData(pageNumber, pageSize, dateFilterStart, dateFilterEnd);
-
-	        if (isNull(response)){
-	        	logHibachi("Unable to get a usable response from Shipments API #now()#");
-	            throw("Unable to get a usable response from Shipments API #now()#");
-	        }
-
-	        var shipments = response.Records?:"null";
-
-	        if (shipments.equals("null")){
-	        	logHibachi("Response did not contain shipments.");
-	            throw("Response did not contain shipments data.");
-	        }
-
-	        if (containsAll(rc, "viewResponse")){
-	            writedump(shipments);abort;
-	        }
-
-			try{
-
-	    		arrayMap( shipments, createDelivery );
-	    		tx.commit();
-	    		ormGetSession().clear();
-			}catch(shipmentError){
-
-				ormGetSession().clear();
-				logHibachi("Error: shipmentError.getMessage()");
-				writedump(shipmentError);
-				abort;	
-			}
-			logHibachi("End Importing pagenumber: #pageNumber#");
-			pageNumber++;
-        }
-
-		ormStatelessSession.close();
-		writeDump("End: #pageNumber# - #pageSize#");
-        // Sets the default view 
-
-    }
     
     /*
 		Receipt Number: 34542. Order Number: 10157652. Entered: 07/15/19. Initials: KYR. Commission Period: 07/2019. MCR Reason: 2-Shipping Refund. Comments: Shipping error refund for order#10157652. Amount: $20.55. Payment Account: 1945. Authorization: SUCCESS. ReferenceNumber: 1524825-4815845636
@@ -702,12 +430,28 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 	}
 	
+	public void function importInventoryUpdates(rc){  
+		getService("HibachiTagService").cfsetting(requesttimeout="60000");
+	
+		//Use a service instead so that it can be run on a workflow.
+		//getService("MonatDataService").importInventoryUpdates(rc.pageSize?:50, rc.pageNumber?:1, rc.pageMax?:2);
+		
+	}
+	
 	public void function importDailyAccountUpdates(rc){  
 		getService("HibachiTagService").cfsetting(requesttimeout="60000");
-		getFW().setView("public:main.blank");
 	
 		//Use a service instead.
 		getService("MonatDataService").importDailyAccountUpdates(rc.pageSize?:50, rc.pageNumber?:1, rc.pageMax?:2);
+		
+	}
+	
+	public void function importOrderShipments(rc){  
+		getService("HibachiTagService").cfsetting(requesttimeout="60000");
+		getFW().setView("public:main.blank");
+		
+		//Use a service instead.
+		getService("MonatDataService").importOrderShipments(rc);
 		
 	}
 	
@@ -716,6 +460,132 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			datePart("yyyy",date), 
 			datePart("m",date),
 			datePart("d",date));
+	}
+
+	
+	
+	/**
+	 * Usage: ?slataction=monat:import.importInventory&pageNumber=1&pageSize=100&pageMax=1001
+	 * Example response
+	 * {
+     *           "ItemCode": "10012000",
+     *           "ItemName": "Travel Size - Renew Shampoo, 2 oz.",
+     *           "SAPItemCode": "6000000111",
+     *           "WarehouseCode": "Main",
+     *           "WarehouseName": "MONAT GLOBAL",
+     *           "CountryCode": "USA",
+     *           "CountryName": "United States",
+     *           "InventoryId": 281,
+     *           "StockAvailable": 37687,
+     *           "LastUpdate": "2019-10-24T14:06:35.787"
+     * } 
+     * 
+     * Warehouses: Main, CAN, UK
+	 * 
+	 **/
+	public void function importInventory(rc){ 
+		getService("HibachiTagService").cfsetting(requesttimeout="60000");
+		getFW().setView("public:main.blank");
+	
+		//get the api key from integration settings.
+		var integration = getService("IntegrationService").getIntegrationByIntegrationPackage("monat");
+		var pageNumber = rc.pageNumber?:1;
+		var pageSize = rc.pageSize?:25;
+		var pageMax = rc.pageMax?:1;
+		var ormStatelessSession = ormGetSessionFactory().openStatelessSession();
+		
+		// Objects we need to set over and over go here...
+		var warehouseMain = getWarehouseService().getWarehouseByName("usWarehouse");
+		var warehouseCAN = getWarehouseService().getWarehouseByName("caWarehouse");
+		var warehouseUK = getWarehouseService().getWarehouseByName("ukWarehouse");
+		var warehouseIRPOL = getWarehouseService().getWarehouseByName("irePolWarehouse");
+		
+		while (pageNumber < pageMax){
+			
+    		var inventoryResponse = getInventoryData(pageNumber, pageSize);
+    		if (inventoryResponse.hasErrors){
+    		    //goto next page causing this is erroring!
+    		    pageNumber++;
+    		    continue;
+    		}
+    		//writedump(accountsResponse);abort;
+    		var inventoryRecords = inventoryResponse.Data.Records;
+    		
+    		var transactionClosed = false;
+    		var index=0;
+    		
+    		try{
+    			
+    			var tx = ormStatelessSession.beginTransaction();
+    			for (var inventory in inventoryRecords){
+    			    index++;
+        		    var sku = getSkuService().getSkuBySkuCode(inventory.itemCode);
+        		    
+        		    if (isNull(sku)){
+        		    	echo("Can't create inventory for a sku that doesn't exist! #inventory.itemCode#");
+        		    	continue;
+        		    }
+        		    
+        		    var location = warehouseMain;
+        		    
+        		    if (inventory['WarehouseName'] == "Main"){
+        		    	location = warehouseMain;	
+        		    }
+        		    
+        		    else if (inventory['WarehouseName'] == "CAN"){
+        		    	location = warehouseCAN;	
+        		    }
+        		    
+        		    else if (inventory['WarehouseName'] == "UK"){
+        		    	
+        		    	location = warehouseUK;	
+        		    
+        		    } else {
+        		    	location = warehouseIRPOL;
+        		    }
+        		    
+        		    
+        		    //Find if we have a stock for this sku and location.
+        		    var stock = getStockService().getStockBySkuIdAndLocationId( sku.getSkuID(), location.getLocationID() );
+        		    
+        		    if (isNull(stock)){
+        		    	// Create the stock
+        		    	var stock = new Slatwall.model.entity.stock();
+        		    	stock.setSku(sku);
+        		    	stock.setLocation(location);
+        		    	stock.setRemoteID(inventory['inventoryID']);
+        		    	ormStatelessSession.insert("SlatwallStock", stock);
+        		    }
+        		    
+        			// Create a new inventory under that stock.
+        			var newInventory = new Slatwall.model.entity.Inventory();
+        			newInventory.setRemoteID(inventory['inventoryID']?:""); //*
+        			newInventory.setStock(stock);
+                	newInventory.setQuantityIn(inventory['StockAvailable']?:0);
+                	newInventory.setCreatedDateTime(getDateFromString(inventory['LastUpdate']));
+                	newInventory.setModifiedDateTime(getDateFromString(inventory['LastUpdate']));
+                	
+                    ormStatelessSession.insert("SlatwallInventory", newInventory);
+
+    			}
+    			
+    			tx.commit();
+    		}catch(e){
+    		
+    			writeDump("Failed @ Index: #index# PageSize: #pageSize# PageNumber: #pageNumber#");
+    			writeDump(e); // rollback the tx
+    			abort;
+    		}
+    		
+    		//echo("Clear session");
+    		this.logHibachi('Import (Create) Page #pageNumber# for inventory completed ', true);
+    		ormGetSession().clear();//clear every page records...
+		    pageNumber++;
+		}
+		
+		ormStatelessSession.close(); //must close the session regardless of errors.
+		writeDump("End: #pageNumber# - #pageSize# - #index#");
+
 	}
 	
 	//monat:import.importAccounts&pageNumber=33857&pageSize=50&pageMax=36240
@@ -3116,7 +2986,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		cftimer(label = "getAPIResponse request length #arguments.endpoint?:''# #arguments.pageNumber?:''# #arguments.pageSize?:''# ", type="outline"){
 			var uri = setting('baseImportURL') & arguments.endPoint;
 			var authKeyName = "authkey";
-			var authKey = setting('authKey');
+			var authKey = "978a511c-9f2f-46ba-beaf-39229d37a1a2";//setting('authKey');
 		
 			var body = {
 				"Pagination": {
@@ -3263,7 +3133,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		var sku = arguments.skuData;
 		var skuPriceData = arguments.skuPriceData;
 
-		if(ArrayLen(sku['KitLines'])){
+		/*if(ArrayLen(sku['KitLines'])){
 			var currentCountryCode = "";
 			var previousCountryCode = "";
 			var index = 0;
@@ -3331,16 +3201,16 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 									}
 									break;
 							}
-						}, true, 10);
+						}, true, 5);
 						
 						ArrayAppend(skuPrices, skuPrice);
-					}, true, 10);
+					}, true, 5);
 				}
 
 				previousCountryCode = currentCountryCode;
 			});
 
-		} else {
+		} else {*/
 			ArrayEach(skuPriceData, function(item){
 				var skuPrice = {};
 				var itemData = arguments.item;
@@ -3387,11 +3257,11 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 							}
 							break;
 					}
-				}, true, 10);
+				}, true, 5);
 				
 				ArrayAppend(skuPrices, skuPrice);
-			}, true, 10);
-		}
+			}, true, 5);
+		// }
 
 
 		
@@ -3403,25 +3273,31 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		var data = {};
 		var query = arguments.skuQuery;
 		var skuPriceData = [];
+		var tempSkuData = arguments.skuData;
 
 		if(structKeyExists(arguments.skuData, "PriceLevels") && ArrayLen(arguments.skuData['PriceLevels'])){
 			skuPriceData = this.getSkuPriceDataFlattened(arguments.skuData['PriceLevels'], arguments.skuData);
 		}
-
+		
 		StructEach(arguments.skuData, function(key, value){
 			var skuField = Trim(arguments.key);
 			var fieldValue = arguments.value;
 			if(isNull(fieldValue)){
 				continue;
 			}
+			
 			switch(skuField){
+				case 'ItemId':
+					data['SKUItemID'] = Trim(fieldValue);
+					break;
 				case 'ItemCode':
 					data['SKUItemCode'] = Trim(fieldValue);
 					data['PRODUCTItemCode'] = Trim(fieldValue);
 					break;
 				case 'ItemName':
 					data['ItemName'] = Trim(fieldValue);
-					data['URLTitle'] = getService('HibachiUtilityService').createUniqueURLTitle(titleString=Trim(fieldValue), tableName="SwProduct");
+					// attempt to set url titles product
+				    //data['URLTitle'] = getService('HibachiUtilityService').createUniqueURLTitle(titleString=Trim(fieldValue), tableName="SwProduct");
 					break;
 				case 'ItemNote':
 					data['ItemNote'] = Trim(fieldValue);
@@ -3450,10 +3326,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 					}
 					break;
 			}
-		}, true, 10);
+		}, true, 5);
 
 		// create skubundle data
-		if(ArrayLen(arguments.skuData['KitLines'])){
+		/*if(ArrayLen(arguments.skuData['KitLines'])){
 			var currentCountryCode = "";
 			var previousCountryCode = "";
 			var index = 0;
@@ -3490,9 +3366,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 					if(index > 0){
 						data['SKUItemCode'] = left(data['SKUItemCode'], len(data['SKUItemCode']) - 3); // removes old country code
 						data['SKUItemCode'] &= currentCountryCode;
-					} else {
+					}  else {
 						data['SKUItemCode'] &= currentCountryCode;
-					}
+					} 
 					
 					QueryAddRow(query, data);
 					index++;
@@ -3501,7 +3377,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				previousCountryCode = currentCountryCode;
 			});
 
-		} else {
+		} else {*/
 
 			if(!arrayIsEmpty(skuPriceData)){
 				var defaultSkuPrice = ArrayFilter(skuPriceData, function(item){
@@ -3518,7 +3394,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			}
 
 			QueryAddRow(query, data);
-		}
+		// }
 
 		return query;
 	}
@@ -3536,7 +3412,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 		ArrayEach(skuPricesFlattened, function(item){
 			QueryAddRow(query, item);
-		}, true, 10);
+		}, true, 5);
 
 		return arguments.skuPriceQuery;
 	}
@@ -3545,9 +3421,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		var query = arguments.skuBundleQuery;
 		var skuData = arguments.skuData;
 		var currentCountryCode = "";
+		
 		ArrayEach(arguments.skuData.KitLines, function(item){
 			var skuBundleData = {};
-			switch (arguments.item['CountryCode']){	
+		/*	switch (arguments.item['CountryCode']){	
 				case 'CAN':
 					currentCountryCode = 'CAD';
 					break;
@@ -3557,9 +3434,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				case 'USA':
 					currentCountryCode = 'USD';
 					break;
-			}
+			}*/
 
-			skuBundleData['SKUItemCode'] = Trim(skuData['ItemCode']) & currentCountryCode;
+			skuBundleData['SKUItemCode'] = Trim(skuData['ItemCode']);
 
 			StructEach(arguments.item, function(key, value){
 				switch (arguments.key){
@@ -3568,23 +3445,51 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 						break;
 					case 'ComponentItemCode':
 						skuBundleData['ComponentItemCode'] = arguments.value;
+						skuBundleData['importKey'] = skuBundleData['SKUItemCode'] & "-" & skuBundleData['ComponentItemCode'];
 						break;
 					case 'ComponentQty':
 						skuBundleData['ComponentQuantity'] = arguments.value;
 						break;
 				}
-			}, true, 10);
+			}, true, 5);
 			if(StructIsEmpty(skuBundleData)){
 				continue;
 			}
 			QueryAddRow(query, skuBundleData);
-		}, true, 10);
+		}, true, 5);
 
 		return query;
 	}
 
+	private any function populateProductSiteQuery(required any productSiteQuery, required struct skuData, required struct sites){
+		var productCode = arguments.skuData['ItemCode'];
+
+		var productIDQuery = QueryExecute(
+			"SELECT productID FROM swproduct WHERE productCode = :productCode 
+			 AND productID NOT IN (SELECT site.productID FROM swproductsite site)",
+			{productCode = productCode}
+		);
+		
+		var productID = productIDQuery["productID"][1];
+		
+		if(!len(productID)){
+			return arguments.productSiteQuery;
+		}
+
+		for(var sapCode in arguments.skuData['SAPItemCodes']){
+			var countryCode = sapCode['CountryCode'];
+
+			if(structKeyExists(arguments.sites, countryCode)){
+				var siteID = arguments.sites[countryCode];
+				QueryAddRow(arguments.productSiteQuery, {productID = productID, siteID = siteID});
+			}
+		}
+
+		return arguments.productSiteQuery;
+	}
+
 	private string function getSkuColumnsList(){
-		return "SKUItemCode,PRODUCTItemCode,ItemName,Amount,SalesCategoryCode,SAPItemCode,ItemNote,DisableOnRegularOrders,DisableOnFlexship,ItemCategoryAccounting,CategoryNameAccounting,EntryDate,URLTitle";
+		return "SKUItemCode,SKUItemID,PRODUCTItemCode,ItemName,Amount,SalesCategoryCode,SAPItemCode,ItemNote,DisableOnRegularOrders,DisableOnFlexship,ItemCategoryAccounting,CategoryNameAccounting,EntryDate,URLTitle";
 	}
 
 	private string function getSkuPriceColumnsList(){
@@ -3592,7 +3497,11 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	}
 	
 	private string function getSkuBundleColumnsList(){
-		return "SKUItemCode,ontheflykit,ComponentItemCode,ComponentQuantity";
+		return "SKUItemCode,KitId,importKey,ontheflykit,ComponentItemCode,ComponentQuantity";
+	}
+	
+	private string function getProductSiteColumnsList(){
+		return "productID,siteID";
 	}
 
 	public void function importMonatProducts(){
@@ -3610,6 +3519,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		var pageMax = rc.pageMax?:totalPages;
 		var updateFlag = rc.updateFlag?:false;
 		var importSkuBundles = rc.importSkuBundles?:false;
+		var importProductSites = rc.importProductSites?:false;
 		var index=0;
 		var skuIndex=0;
 		var skuPriceIndex=0;
@@ -3625,6 +3535,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		var skuBundleColumns = this.getSkuBundleColumnsList();
 		skuBundleColumnTypes = [];
 		ArraySet(skuBundleColumnTypes, 1, ListLen(skuBundleColumns), 'varchar');
+		
+		var productSiteColumns = this.getProductSiteColumnsList();
+		productSiteColumnTypes = [];
+		ArraySet(productSiteColumnTypes, 1, ListLen(productSiteColumns), 'varchar');
 
 		while( pageNumber <= pageMax ){
 			var productResponse = this.getApiResponse( "queryItems", pageNumber, pageSize );
@@ -3636,8 +3550,71 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			}
 			//Set the pagination info.
 			var monatProducts = productResponse.Data.Records?:[];
+			// to dump API data 
+			// writedump(monatProducts);abort;
 
-			if(!importSkuBundles){
+			if(importSkuBundles){
+				try{
+					var skuBundleQuery = QueryNew(skuBundleColumns, skuBundleColumnTypes);
+
+					for (var skuData in monatProducts){
+						
+						if(arrayLen(skuData['KitLines'])){
+							
+							skuBundleQuery = this.populateSkuBundleQuery(skuBundleQuery, skuData);
+							
+							// these line do the actual importing
+
+							var importConfig = FileRead(getDirectoryFromPath(getCurrentTemplatePath()) & '../config/import/bundles.json');
+							getService("HibachiDataService").loadDataFromQuery(skuBundleQuery, importConfig);
+
+							importConfig = FileRead(getDirectoryFromPath(getCurrentTemplatePath()) & '../config/import/bundles2.json');
+							getService("HibachiDataService").loadDataFromQuery(skuBundleQuery, importConfig);
+						}
+					}
+					
+					//writedump(skuBundleQuery);abort;
+				
+				} catch (any e){
+					writeDump(e); // rollback the tx
+				}
+				
+			} else if(importProductSites) {
+				try{
+					var productSiteQuery = QueryNew(productSiteColumns, productSiteColumnTypes);
+					var sites = {
+						CAN = "2c9280846974b77e016974ee40cb0019",
+						GBR = "2c9280846974b77e016974fe89070025",
+						AUD = "2c9280846974b77e016974fe91d5002a",
+						IRL = "2c9280846974b77e016974fe999e002f",
+						POL = "2c9280846974b77e016974fea1e90034",
+						USA = "2c97808468a979b50168a97b20290021"
+					};
+
+					for(var skuData in monatProducts){
+						if(arrayLen(skuData['SAPItemCodes'])){
+							productSiteQuery = this.populateProductSiteQuery(productSiteQuery, skuData, sites);
+						}
+					}
+					
+					//writedump(productSiteQuery);abort;
+
+					insertSQL = "INSERT INTO swproductsite (productID, siteID) VALUES";
+
+					var valueList = "";
+					for(var productSite in productSiteQuery){
+						valueList = listAppend(valueList, "('#productSite.productID#', '#productSite.siteID#')");
+					}
+					insertSQL = insertSQL & valueList;
+
+					if(len(valueList)){
+						QueryExecute(insertSQL);
+					}
+
+				} catch (any e){
+					writeDump(e); // rollback the tx
+				}
+			} else {
 
 				try{
 					
@@ -3652,6 +3629,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 							skuPriceQuery = this.populateSkuPriceQuery( skuPriceQuery, skuData);
 						}
 					}
+					
+					//writedump(skuQuery);abort;
+					//writedump(skuPriceQuery);abort;
 
 					var importConfig = FileRead(getDirectoryFromPath(getCurrentTemplatePath()) & '../config/import/skus.json');
 					getService("HibachiDataService").loadDataFromQuery(skuQuery, importConfig);
@@ -3661,83 +3641,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				} catch (any e){
 					writeDump(e); // rollback the tx
 				}
-			} else {
-
-				try{
-					var skuBundleQuery = QueryNew(skuBundleColumns, skuBundleColumnTypes);
-
-					for (var skuData in monatProducts){
-						if(arrayLen(skuData['KitLines'])){
-							skuBundleQuery = this.populateSkuBundleQuery(skuBundleQuery, skuData);
-
-							var importConfig = FileRead(getDirectoryFromPath(getCurrentTemplatePath()) & '../config/import/bundles.json');
-							getService("HibachiDataService").loadDataFromQuery(skuBundleQuery, importConfig);
-
-							importConfig = FileRead(getDirectoryFromPath(getCurrentTemplatePath()) & '../config/import/bundles2.json');
-							getService("HibachiDataService").loadDataFromQuery(skuBundleQuery, importConfig);
-						}
-					}
-				
-				} catch (any e){
-					writeDump(e); // rollback the tx
-				}
 			}
 			pageNumber++
 		}
 
-		abort;
-	}
-
-	public void function importVibeAccounts(){
-		getService("HibachiTagService").cfsetting(requesttimeout="60000");
-		var importSuccess = true;
-
-		try{
-			var userNameQuery = "UPDATE swaccount a 
-								 INNER JOIN tempauth temp on a.accountNumber = temp.consultant_id
-								 SET a.userName = 
-									CASE 
-										WHEN ( temp.username IS NOT NULL AND LENGTH(temp.username) > 0) 
-										THEN temp.username
-										ELSE temp.consultant_id
-									END
-									a.modifiedDateTime = NOW()";
-			var accountAuthQuery = "INSERT INTO swaccountauthentication (
-										accountAuthenticationID, 
-										password, 
-										activeFlag, 
-										createdDateTime, 
-										accountID, 
-										legacyPassword
-									) 
-									SELECT
-										LOWER(REPLACE(CAST(UUID() as char character set utf8),'-','')) accountAuthenticationID,
-										'LEGACY' password,
-										1 activeFlag,
-										NOW() createdDateTime,
-										a.accountID accountID,
-										temp.encrypted_password legacyPassword
-										FROM swaccount a 
-										INNER JOIN tempauth temp on a.accountNumber = temp.consultant_id
-										LEFT JOIN swaccountauthentication aa ON a.accountID = aa.accountID
-										WHERE aa.accountID IS NULL
-									";
-
-
-			var usernameQuery = QueryExecute(userNameQuery);
-			var accountAuthQuery = QueryExecute(accountAuthQuery);
-
-		} catch(any e){
-			importSuccess = false;
-			writeDump("Something Went Wrong!!!");
-			writeDump(var=e, label="ERROR");
-		}
-
-		if(importSuccess){
-			writeDump("Import Success!!!");
-			writedump(usernameQuery);
-			writedump(accountAuthQuery);
-		}
 		abort;
 	}
     
@@ -3779,7 +3686,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 										THEN temp.username
 										ELSE temp.consultant_id
 									END
-									a.modifiedDateTime = NOW()
+									a.modifiedDateTime = NOW(),
+									a.activeFlag = 1
 									WHERE a.remoteID IS NOT NULL";
 			var accountAuthQuery = "INSERT INTO swaccountauthentication (
 										accountAuthenticationID, 

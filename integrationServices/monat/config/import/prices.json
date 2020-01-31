@@ -2,9 +2,9 @@
     "baseentity":"Sku",
     "mapping":[
         {
-          "sourceColumn":"RemoteID",
+          "sourceColumn":"ImportKey",
           "sourceColumnDataGenerator":"'Import-'+ItemCode",
-          "propertyIdentifier":"remoteID",
+          "propertyIdentifier":"importKey",
           "key":true
         },
         {

@@ -1,0 +1,49 @@
+
+	<!--- Product Review Modal ---> 
+	<div class="modal account-page using-modal-service" id="review-modal" tabindex="-1" role="dialog" aria-labelledby="review-modal" aria-hidden="true">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content p-0">
+				
+				<form 
+					swf-form
+					ng-submit="swfForm.submitForm()" 
+					data-method="addProductReview" 
+					data-after-submit-event-name="addnewProductReview" 
+					data-modal-id="newProductReview"
+					name="productReview"
+					novalidate
+				>
+					<div class="modal-header nameModal title_row">
+						<button type="button" class="close" ng-click="monatProductReview.closeModal()" aria-label="Close">
+							<i class="fas fa-times"></i>
+						</button>
+						<h3 class="mb-0">{{monatProductReview.newProductReview.sku_product_productName}}</h3>
+					</div>
+					<div class="modal-body w-100">
+						<h3 sw-rbkey="'frontend.productReview.leaveReview'"></h3>
+	                    <div class="mx-auto material-field">
+	                    	<!---Overriding material field style for this instance with inline ---> 
+	                    	<label style="position:static" sw-rbkey="'frontend.productReview.yourRating'"></label>
+							<i ng-repeat="star in monatProductReview.stars track by $index" ng-click="monatProductReview.setRating($index + 1)" class="fal fa-star {{star}}"></i>
+							<input type="hidden" required name="newProductReview.rating" ng-model="monatProductReview.newProductReview.rating" />
+                          	<span class="text-danger mt-2 d-block" sw-rbkey="'frontend.global.thisFieldRequired'"></span>
+	                    </div>
+	                    <div class="material-field mx-auto">
+	                        <textarea id="newProductReview" type="text" name="newProductReview.review"  class="d-block form-control success" ng-model="monatProductReview.newProductReview.review" required></textarea>
+                          	<span class="text-danger" sw-rbkey="'frontend.global.thisFieldRequired'"></span>
+	                        <label for="newProductReview.review" sw-rbkey="'frontend.productReview.addComment'"></label>
+							<input type="hidden" name="newProductReview.reviewerName" ng-model="monatProductReview.newProductReview.reviewerName" />
+							<input type="hidden" name="newProductReview.productReviewID" ng-model="monatProductReview.newProductReview.productReviewID" value="" />
+                        	<input id="skuID" type="hidden" name="newProductReview.product.skuID"  class="form-control success" ng-model="monatProductReview.newProductReview.sku_skuID">
+	                        <input id="productID" type="hidden" name="newProductReview.product.productID"  class="form-control success" ng-model="monatProductReview.newProductReview.sku_product_productID">
+                			
+	                    </div>
+					</div>
+					<div class="modal-footer">
+						<button type="submit" sw-rbkey="'frontend.wishlist.send'" ng-class="{loading: swfForm.loading}" class="btn bg-primary save-btn px-5 py-3"></button>
+						<button type="button" class="btn bg-primary py-3" sw-rbkey="'frontend.wishlist.cancel'" ng-click="monatProductReview.closeModal()"></button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>

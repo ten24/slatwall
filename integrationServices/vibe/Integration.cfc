@@ -62,12 +62,13 @@ component accessors='true' output='false' implements='Slatwall.integrationServic
 		
 		var settings = {
 			authToken   			= { fieldType = 'text' },
-			username   		    	= { fieldType = 'text' },
+			ssoAuthKey 				= { fieldType = 'password' },
+			username   				= { fieldType = 'text' },
 			liveModeFlag			= { fieldType = 'yesno', defaultValue = '0' },
 			liveURL     			= { fieldType = 'text' },
 			testURL     			= { fieldType = 'text', defaultValue = 'https://monat-stage3.vibeoffice.com' },
 			defaultRedirectURL		= { fieldType = 'text', defaultValue = 'https://google.com/' },
-			defaultUserPassword	    = { fieldType = 'text', defaultValue = 'Changeme@123' },
+			defaultUserPassword		= { fieldType = 'text', defaultValue = 'Changeme@123' },
 		};
 		
 		return settings;

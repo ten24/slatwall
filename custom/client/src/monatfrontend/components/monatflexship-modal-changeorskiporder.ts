@@ -9,9 +9,10 @@ class MonatFlexshipChangeOrSkipOrderModalController {
 	public endDate;
 	public startDate;
 	public nextPlaceDateTime;
+	public loading : boolean = false;
 
 	public formData = {
-		delayOrSkip : '',
+		delayOrSkip : 'delay',
 		showOtherReasonNotes: false,
 	}; 
 	
@@ -31,7 +32,7 @@ class MonatFlexshipChangeOrSkipOrderModalController {
     	//TODO make translations for success/failure alert messages
     	this.translations['changeOrSkip'] = this.rbkeyService.rbKey('frontend.delayOrSkipOrderModal.changeOrSkip');
         //TODO business-logic
-    	this.translations['delayOrSkipMessage'] = this.rbkeyService.rbKey('frontend.delayOrSkipOrderModal.delayOrSkipMessage', { days : 1234 });
+    	this.translations['delayOrSkipMessage'] = this.rbkeyService.rbKey('frontend.delayOrSkipOrderModal.delayOrSkipMessage', { days : 15 });
     	this.translations['delayThisMonthsOrder'] = this.rbkeyService.rbKey('frontend.delayOrSkipOrderModal.delayThisMonthsOrder');
     	this.translations['skipThisMonthsOrder'] = this.rbkeyService.rbKey('frontend.delayOrSkipOrderModal.skipThisMonthsOrder');
     	this.translations['flexshipCancelReason'] = this.rbkeyService.rbKey('frontend.delayOrSkipOrderModal.flexshipCancelReason');
@@ -46,12 +47,18 @@ class MonatFlexshipChangeOrSkipOrderModalController {
     	var date = new Date(Date.parse(this.orderTemplate.scheduleOrderNextPlaceDateTime));
 	    this.nextPlaceDateTime = `${(date.getMonth() + 1)}/${date.getDate()}/${date.getFullYear()}`;
 	    this.endDayOfTheMonth = 25;
-	    //TODO business-logic
 	    this.endDate = new Date(date.setMonth(date.getMonth()+2));
-	    console.log(this);
     }
     
     public updateDelayOrSkip = (val:string) =>{
+        if(val==='skip'){
+            var date = new Date(Date.parse(this.orderTemplate.scheduleOrderNextPlaceDateTime));
+            this.nextPlaceDateTime = `${(date.getMonth() + 2)}/${date.getDate()}/${date.getFullYear()}`;
+        }
+        else{
+            var date = new Date(Date.parse(this.orderTemplate.scheduleOrderNextPlaceDateTime));
+           this.nextPlaceDateTime = `${(date.getMonth() + 1)}/${date.getDate()}/${date.getFullYear()}`;  
+        }
     	this.formData.delayOrSkip = val;
     }
     
@@ -64,10 +71,10 @@ class MonatFlexshipChangeOrSkipOrderModalController {
     	}
     }
     
+    
+    
     public updateSchedule() {
-
-    	//TODO frontend validation
-    	
+        this.loading = true;
     	let payload = {};
         payload['orderTemplateID'] = this.orderTemplate.orderTemplateID;
     	payload['orderTemplateScheduleDateChangeReasonTypeID'] = this.selectedReason.value;
@@ -80,6 +87,7 @@ class MonatFlexshipChangeOrSkipOrderModalController {
     		payload['scheduleOrderNextPlaceDateTime'] = this.nextPlaceDateTime;
     	} else {
     		payload['skipNextMonthFlag'] = 1;
+    		
     	}
     	
     	payload = this.orderTemplateService.getFlattenObject(payload);
@@ -98,8 +106,9 @@ class MonatFlexshipChangeOrSkipOrderModalController {
             }
         )
         .catch( (error) => {
-        	console.error(error);
         	this.monatAlertService.showErrorsFromResponse(error);
+        }).finally(()=>{
+            this.loading = false;
         });
     }
 
