@@ -135,33 +135,35 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 	 * */
 	public any function processAccountPaymentMethod_cardStatus(required any accountPaymentMethod, required struct data) {
 		
-		var requestBean = getHibachiScope().getTransient('CreditCardTransactionRequestBean');
-	    requestBean.setProviderToken(arguments.accountPaymentMethod.getProviderToken());
-	    
-		var integrationEntity = getService('integrationService').getIntegrationByIntegrationPackage('nexio');
-		var paymentIntegration = getService('integrationService').getPaymentIntegrationCFC(integrationEntity);
+		//Checking if provider token exists and not empty
+		if(!IsNull(arguments.accountPaymentMethod.getProviderToken()) && len( arguments.accountPaymentMethod.getProviderToken() )) {
+			var requestBean = getHibachiScope().getTransient('CreditCardTransactionRequestBean');
+		    requestBean.setProviderToken(arguments.accountPaymentMethod.getProviderToken());
+		    
+			var integrationEntity = getService('integrationService').getIntegrationByIntegrationPackage('nexio');
+			var paymentIntegration = getService('integrationService').getPaymentIntegrationCFC(integrationEntity);
+			
+			var responseData = paymentIntegration.getCardStatus(requestBean);
+			
+	        if( !StructIsEmpty(responseData ) ) {
+	        	if(responseData.card.expirationMonth != arguments.accountPaymentMethod.getExpirationMonth()) {
+	        		arguments.accountPaymentMethod.setExpirationMonth(responseData.card.expirationMonth);
+	        	}
+	        	
+	        	if(responseData.card.expirationYear != arguments.accountPaymentMethod.getExpirationYear()) {
+	        		arguments.accountPaymentMethod.setExpirationYear(responseData.card.expirationYear);
+	        	}
+	        	
+	        	if(responseData.card.cardHolderName != arguments.accountPaymentMethod.getNameOnCreditCard()) {
+	        		arguments.accountPaymentMethod.setExpirationYear(responseData.card.expirationYear);
+	        	}
+	        }
+		}
 		
-		var responseData = paymentIntegration.getCardStatus(requestBean);
-		
-        if( !StructIsEmpty(responseData ) )
-        {
-        	if(responseData.card.expirationMonth != arguments.accountPaymentMethod.getExpirationMonth()) {
-        		arguments.accountPaymentMethod.setExpirationMonth(responseData.card.expirationMonth);
-        	}
-        	
-        	if(responseData.card.expirationYear != arguments.accountPaymentMethod.getExpirationYear()) {
-        		arguments.accountPaymentMethod.setExpirationYear(responseData.card.expirationYear);
-        	}
-        	
-        	if(responseData.card.cardHolderName != arguments.accountPaymentMethod.getNameOnCreditCard()) {
-        		arguments.accountPaymentMethod.setExpirationYear(responseData.card.expirationYear);
-        	}
-        	
-        	//marking the card for the attempt, so that we can prevent the workflow from picking it again, ofcourse for a definate period of time (TODO: this can be a setting as well)
-        	arguments.accountPaymentMethod.setLastExpirationUpdateAttemptDateTime(now());
-        	
-        	arguments.accountPaymentMethod = this.saveAccountPaymentMethod(arguments.accountPaymentMethod);
-        }
+		//marking the card for the attempt, so that we can prevent the workflow from picking it again, ofcourse for a definate period of time (TODO: this can be a setting as well)
+        arguments.accountPaymentMethod.setLastExpirationUpdateAttemptDateTime(now());
+        arguments.accountPaymentMethod = this.saveAccountPaymentMethod(arguments.accountPaymentMethod);
+        
         
         return arguments.accountPaymentMethod;
 	}

@@ -61,6 +61,8 @@ component output="false" accessors="true" extends="Slatwall.model.transient.Hiba
 		return subdomain;
 	}
 	
+	
+	
 	public any function getAvailableAccountPropertyList() {
 		return ReReplace("accountID,firstName,lastName,company,remoteID,primaryPhoneNumber.accountPhoneNumberID,primaryPhoneNumber.phoneNumber,primaryEmailAddress.accountEmailAddressID,primaryEmailAddress.emailAddress,
 			accountEmailAddresses.accountEmailAddressID, accountEmailAddresses.emailAddress,
@@ -78,5 +80,18 @@ component output="false" accessors="true" extends="Slatwall.model.transient.Hiba
 			primaryAddress.address.city,primaryAddress.address.stateCode,primaryAddress.address.postalCode,ownerAccount.lastName,ownerAccount.createdDateTime,ownerAccount.primaryAddress.address.city,ownerAccount.primaryAddress.address.stateCode,ownerAccount.primaryAddress.address.postalCode,
 			ownerAccount.primaryPhoneNumber.phoneNumber,ownerAccount.primaryEmailAddress.emailAddress,userName,languagePreference,primaryAddress.address.countrycode,ownerAccount.accountNumber","[[:space:]]","","all");
 
+	}
+	
+	
+	public any function getNexioFingerprintUrl() {
+		var paymentIntegration = getService('integrationService').getIntegrationByIntegrationPackage('nexio');
+		var responseData = paymentIntegration.getIntegrationCFC("Payment").getFingerprintToken();
+		
+		if(structKeyExists(responseData, 'token')){
+			setSessionValue('kount-token', responseData['token']);
+			return responseData['fraudUrl'];
+		}
+		
+		return '';
 	}
 }
