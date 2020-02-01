@@ -4,11 +4,10 @@ component extends="Slatwall.model.dao.SkuPriceDAO"{
     	required string skuID, 
     	required string currencyCode, 
     	required numeric quantity, 
-    	array priceGroups=getHibachiScope().getAccount().getPriceGroups(), 
+    	array priceGroups=[], 
     	string priceGroupIDList
     ){
-		//Question: we should remove priceGroups default to HibachiScope.account.pricegroups?
-		
+
 		var priceGroupString = "";
 		
 		if(arraylen(arguments.priceGroups) || structKeyExists(arguments,'priceGroupIDs')){
