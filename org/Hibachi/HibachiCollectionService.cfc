@@ -291,7 +291,7 @@ component output="false" accessors="true" extends="HibachiService" {
 				formattedPageRecords[ key ] = recordsCountDataItem;
 			}
 			//return aggregates data
-			
+
 			formattedPageRecords[ "pageRecordsCount" ] = arrayLen(arguments.collectionEntity.getPageRecords(formatRecords=false));
 			formattedPageRecords[ "pageRecordsShow"] = arguments.collectionEntity.getPageRecordsShow();
 			formattedPageRecords[ "pageRecordsStart" ] = arguments.collectionEntity.getPageRecordsStart();
@@ -669,6 +669,11 @@ component output="false" accessors="true" extends="HibachiService" {
 			allRecords = arguments.data['allRecords'];
 		}
 
+		var limitCountTotal = 250;
+		if(structKeyExists(arguments.data,'limitCountTotal')){
+			limitCountTotal = arguments.data['limitCountTotal'];
+		}
+
 		var dirtyRead = false;
 		if(structKeyExists(arguments.data, 'dirtyRead')){
 			dirtyRead = true;
@@ -706,6 +711,7 @@ component output="false" accessors="true" extends="HibachiService" {
 			columnsConfig=columnsConfig,
 			orderByConfig=orderByConfig,
 			allRecords=allRecords,
+			limitCountTotal=limitCountTotal,
 			dirtyRead=dirtyRead,
 			useElasticSearch=useElasticSearch,
 			splitKeywords=splitKeywords,
@@ -881,6 +887,9 @@ component output="false" accessors="true" extends="HibachiService" {
 			if(structKeyExists(collectionOptions,'useElasticSearch')){
 				arguments.collectionEntity.setUseElasticSearch(collectionOptions.useElasticSearch);
 			} 
+			if(structKeyExists(collectionOptions,'limitCountTotal')){
+				arguments.collectionEntity.setLimitCountTotal(collectionOptions.limitCountTotal);
+			}
 			if(structKeyExists(collectionOptions,'splitKeywords')){
 				arguments.collectionEntity.setSplitKeywords(collectionOptions.splitKeywords);
 			}

@@ -280,11 +280,11 @@ Notes:
 				
 				
 				if(structKeyExists(arguments.data,'locale')){
-					var locale = arguments.data.locale;
+					local.locale = arguments.data.locale;
 				}else if(!isNull(emailTemplate.setting('emailLocaleString'))){
-					var locale = lcase(templateObject.stringReplace(emailTemplate.setting('emailLocaleString')));
+					local.locale = lcase(templateObject.stringReplace(emailTemplate.setting('emailLocaleString')));
 				}else{
-					var locale = 'en_us';
+					local.locale = 'en_us';
 				}
 
 				// Setup the email values
@@ -294,9 +294,9 @@ Notes:
 				arguments.email.setEmailBCC( templateObject.stringReplace( emailTemplate.setting('emailBCCAddress'), false, true ) );
 				arguments.email.setEmailReplyTo( templateObject.stringReplace( emailTemplate.setting('emailReplyToAddress'), false, true ) );
 				arguments.email.setEmailFailTo( templateObject.stringReplace( emailTemplate.setting('emailFailToAddress'), false, true ) );
-				arguments.email.setEmailSubject( templateObject.stringReplace( emailTemplate.setting(settingName='emailSubject',formatValue=true,formatDetails={locale=locale}), true, true ) );
-				arguments.email.setEmailBodyHTML( templateObject.stringReplace( emailTemplate.getFormattedValue(propertyName='emailBodyHTML',locale=locale),true ) );
-				arguments.email.setEmailBodyText( templateObject.stringReplace( emailTemplate.getFormattedValue(propertyName='emailBodyText',locale=locale),true ) );
+				arguments.email.setEmailSubject( templateObject.stringReplace( emailTemplate.setting(settingName='emailSubject',formatValue=true,formatDetails={locale=local.locale}), true, true ) );
+				arguments.email.setEmailBodyHTML( templateObject.stringReplace( emailTemplate.getFormattedValue(propertyName='emailBodyHTML',locale=local.locale),true ) );
+				arguments.email.setEmailBodyText( templateObject.stringReplace( emailTemplate.getFormattedValue(propertyName='emailBodyText',locale=local.locale),true ) );
 
 
 				var templateFileResponse = "";
@@ -306,6 +306,7 @@ Notes:
 				local[ emailTemplate.getEmailTemplateObject() ] = templateObject;
 				local.emailData["relatedObject"] = mid(templateObject.getEntityName(), 9, len(templateObject.getEntityName())-8);
 				local.emailData["relatedObjectID"] = templateObject.getPrimaryIDValue();
+				local["emailTemplate"] = emailTemplate;
 
 				if(len(templatePath)) {
 					savecontent variable="templateFileResponse" {
