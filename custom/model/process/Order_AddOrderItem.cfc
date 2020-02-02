@@ -100,12 +100,12 @@ component accessors="true" extends="Slatwall.model.process.Order_AddOrderItem" {
 	 * from ordering the enrollment kit.
 	 * This only work if the max orders validation also works because this only checks the current order
 	 * for total instead of all orders.
-	 * 
 	 **/
+	 
 	 public boolean function marketPartnerValidationMaxOrderAmount(){
 	 	var order = this.getOrder();
 	 	var site = order.getOrderCreatedSite();
-	 	if(isNull(site)) throw('WHY DONT WE HAVE A SITE');
+	 	
 	    var initialEnrollmentPeriodForMarketPartner = site.setting("siteInitialEnrollmentPeriodForMarketPartner");//7
         var maxAmountAllowedToSpendDuringInitialEnrollmentPeriod = site.setting("siteMaxAmountAllowedToSpendInInitialEnrollmentPeriod");//200
         var date = getService('orderService').getMarketPartnerEnrollmentOrderDateTime(order.getAccount());

@@ -16,11 +16,13 @@
 		}
 	},
 	"properties": {
-		"isPurchasableItemFlag" :	[{ "eq": true }],
+		"isPurchasableItemFlag" :	[
+			{ "eq": true },
+			{ "conditions":"isMarketPartnerSalesOrder", "eq": true, "method":"marketPartnerValidationMaxOrderAmount" }
+		],
 		"sku":						[{"method": "orderMinimumDaysToRenewMPFailed"}],
 		"price": [ 
-			{"required": true, "dataType": "numeric" }, 
-			{ "conditions":"isMarketPartnerSalesOrder", "eq": true, "method":"marketPartnerValidationMaxOrderAmount" }
+			{"required": true, "dataType": "numeric" }
 		],
 		"quantity":[
 			{	
