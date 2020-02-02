@@ -200,6 +200,7 @@ property name="currentFlexship" type="any" cfc="OrderTemplate" fieldtype="many-t
 		if(isValid('regex',arguments.rbLocale,'\w{2}(_\w{2})?')){
 			getService("hibachiTagService").cfcookie(name='rbLocale', value=arguments.rbLocale,expires='never');
 			variables.rbLocale = arguments.rbLocale;
+			getHibachiScope().setRbLocale(arguments.rbLocale);
 		}
 	}
 	

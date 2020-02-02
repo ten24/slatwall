@@ -168,7 +168,13 @@ class MonatProductCardController {
 		if (this.type === 'flexship' || this.type==='VIPenrollment') {
 			this.orderTemplateService.addOrderTemplateItem(skuID, orderTemplateID)
 			.then( (result) =>{
-				 this.monatAlertService.success(this.rbkeyService.rbKey('alert.flexship.addProductsucessfull'));
+			    if(result.successfulActions &&
+					result.successfulActions.indexOf('public:cart.addOrderItem') > -1) {
+				 this.monatAlertService.success(this.rbkeyService.rbKey('alert.flexship.addProductsucessfull')); 
+					}
+				 else{
+				     throw (result);
+				 }
 			} )
 			.catch((error)=>{
 			  this.monatAlertService.showErrorsFromResponse(error);  
@@ -178,11 +184,16 @@ class MonatProductCardController {
 			});
 		} else {
 			this.monatService.addToCart(skuID, 1).then((result) => {
-				this.monatAlertService.success(this.rbkeyService.rbKey('alert.flexship.addProductsucessfull'));
-				
+			    if(result.successfulActions &&
+					result.successfulActions.indexOf('public:cart.addOrderItem') > -1) {
+				this.monatAlertService.success(this.rbkeyService.rbKey('alert.flexship.addProductsucessfull')); 
+			    }
+				else{
+				    throw(result);
+				}
 			})
 			.catch((error)=>{
-			    this.monatAlertService.showErrorFromeResponse(error);
+			    this.monatAlertService.showErrorsFromResponse(error);
 			})
 			.finally(()=>{
 			 this.loading=false;

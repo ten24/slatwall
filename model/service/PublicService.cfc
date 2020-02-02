@@ -1219,7 +1219,8 @@ component  accessors="true" output="false"
             getHibachiScope().flushORMSession(); 
             
         }else{
-            addErrors(data, getHibachiScope().getCart().getProcessObject("addOrderItem").getErrors());
+            addErrors(data, cart.getProcessObject("addOrderItem").getErrors());
+            addErrors(data, cart.getErrors());
         }
         
         return cart;

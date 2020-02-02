@@ -78,6 +78,15 @@
 		<Record typeID="444df2b90f62f72711eb5b3c90848e7e" typeIDPath="444df2b3df09f67ddcb27918f02c2d83,444df2b90f62f72711eb5b3c90848e7e" parentTypeID="444df2b3df09f67ddcb27918f02c2d83" typeName="Canceled" systemCode="ostCanceled" sortOrder="6" />
 		<Record typeID="2c9280846bd1f0d8016bd217dc1d002e" typeIDPath="444df2b3df09f67ddcb27918f02c2d83,2c9280846bd1f0d8016bd217dc1d002e" parentTypeID="444df2b3df09f67ddcb27918f02c2d83" typeName="Processing - Payment Declined" systemCode="ostProcessing" sortOrder="7" />
 
+		<Record typeID="443df2c3df09e67dddb27918f02c2d83" typeIDPath="443df2c3df09e67dddb27918f02c2d83" parentTypeID="NULL" typeName="Order Import Batch Status Types" systemCode="orderImportBatchStatusType" childRequiresSystemCodeFlag="1" />
+		<Record typeID="442ef3dbdf29f67fdcb23911f03c1945" typeIDPath="443df2c3df09e67dddb27918f02c2d83,442ef3dbdf29f67fdcb23911f03c1945" parentTypeID="443df2c3df09e67dddb27918f02c2d83" typeName="New" systemCode="oibstNew" sortOrder="1" />
+		<Record typeID="963c1f73115111ea9fa612bff9d404c8" typeIDPath="443df2c3df09e67dddb27918f02c2d83,963c1f73115111ea9fa612bff9d404c8" parentTypeID="443df2c3df09e67dddb27918f02c2d83" typeName="Partially Processed" systemCode="oibstPartial" sortOrder="2" />
+		<Record typeID="b2183cf4115111ea9fa612bff9d404c8" typeIDPath="443df2c3df09e67dddb27918f02c2d83,b2183cf4115111ea9fa612bff9d404c8" parentTypeID="443df2c3df09e67dddb27918f02c2d83" typeName="Processed" systemCode="oibstProcessed" sortOrder="3" />
+		
+		<Record typeID="e96fcde3115111ea9fa612bff9d404c8" typeIDPath="e96fcde3115111ea9fa612bff9d404c8" parentTypeID="NULL" typeName="Order Import Batch Item Status Types" systemCode="orderImportBatchItemStatusType" childRequiresSystemCodeFlag="1" />
+		<Record typeID="03c83b1d115211ea9fa612bff9d404c8" typeIDPath="e96fcde3115111ea9fa612bff9d404c8,03c83b1d115211ea9fa612bff9d404c8" parentTypeID="e96fcde3115111ea9fa612bff9d404c8" typeName="New" systemCode="oibistNew" sortOrder="1" />
+		<Record typeID="1de04d7d115211ea9fa612bff9d404c8" typeIDPath="e96fcde3115111ea9fa612bff9d404c8,1de04d7d115211ea9fa612bff9d404c8" parentTypeID="e96fcde3115111ea9fa612bff9d404c8" typeName="Placed" systemCode="oibstPlaced" sortOrder="2" />
+		<Record typeID="9e86d6dd43a411ea975c0a9c8645709b" typeIDPath="e96fcde3115111ea9fa612bff9d404c8,9e86d6dd43a411ea975c0a9c8645709b" parentTypeID="e96fcde3115111ea9fa612bff9d404c8" typeName="Error" systemCode="oibstError" sortOrder="3" />
 		
 		<Record typeID="2c948084697d51bd01697d5402d40005" typeIDPath="2c948084697d51bd01697d5402d40005" parentTypeID="NULL" typeName="Order Template Types" systemCode="orderTemplateType" childRequiresSystemCodeFlag="1" />
 		<Record typeID="2c948084697d51bd01697d5725650006" typeIDPath="2c948084697d51bd01697d5402d40005,2c948084697d51bd01697d5725650006" parentTypeID="2c948084697d51bd01697d5402d40005" typeName="Schedule Order Template" systemCode="ottSchedule" sortOrder="1"/>

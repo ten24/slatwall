@@ -7,7 +7,7 @@ component accessors="true" output="false" extends="HibachiService" {
 		return getHibachiDAO().isUniqueProperty(argumentcollection=arguments);
 	}
 
-	public any function loadQueryFromCSVFileWithColumnTypeList(required string pathToCSV, required string columnTypeList, boolean useHeaderRow=true, string columnsList){
+	public any function loadQueryFromCSVFileWithColumnTypeList(required string pathToCSV, string columnTypeList='', boolean useHeaderRow=true, string columnsList){
 		var csvFile = FileOpen(pathToCSV);
 		var i = 1;
 		while(!FileisEOF(csvFile)){ 
@@ -21,7 +21,15 @@ component accessors="true" output="false" extends="HibachiService" {
 				this.logHibachi("HibachiDataService loading CSV  with ## of column types: " & listLen(arguments.columnTypeList), true );
 				
 				var csvQuery = QueryNew(arguments.columnsList, arguments.columnTypeList);
-				var numberOfColumns = listlen(line, ',', true); 
+				var numberOfColumns = listlen(line, ',', true);
+				
+				if(!len(arguments.columnTypeList)){
+					
+					var columnTypeArray = ArrayNew(1);
+					ArraySet(columnTypeArray, 1, numberOfColumns, 'varchar');
+					arguments.columnTypeList = ArrayToList(columnTypeArray,',');
+				}
+				
 			} else {
 				var row = [];
 				if(line[1] == '"'){
