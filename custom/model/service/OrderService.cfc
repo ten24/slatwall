@@ -1395,7 +1395,7 @@ component extends="Slatwall.model.service.OrderService" {
 		
 		for(var orderTemplateItem in orderTemplateItems){ 
 
-			if(!isNull(orderTemplateItem.temporaryFlag) && orderTemplateItem.temporaryFlag){
+			if(!isNull(orderTemplateItem.temporaryFlag) && orderTemplateItem.temporaryFlag == true){
 				temporaryItemFound = true;
 			}
 			var args = {
