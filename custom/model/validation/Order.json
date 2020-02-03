@@ -21,7 +21,6 @@
 	},
 	"properties": {
 		"orderCreatedSite": [{"contexts":"save","method":"orderCreatedSiteMatchesAccountCreatedSite"},
-				{ "conditions":"isMarketPartnerSalesOrder","contexts": "save", "method": "MarketPartnerValidationMaxOrderAmount" },
 				{ "conditions":"isMarketPartnerSalesOrder","contexts": "save", "method": "MarketPartnerValidationMaxOrdersPlaced" },
 				{ "conditions":"isMarketPartnerSalesOrder","contexts": "save", "method": "MarketPartnerValidationMaxProductPacksPurchased" }],
 		"orderStatusType": [{ "contexts": "edit", "method": "isNotClosed" }],

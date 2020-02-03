@@ -1460,4 +1460,17 @@ component extends="Slatwall.model.service.OrderService" {
 		return arguments.order;
 	}
 	
+	public any function getMarketPartnerEnrollmentOrderDateTime(required any account){
+		var orderItemCollectionList = this.getOrderItemCollectionList();
+		orderItemCollectionList.addFilter("order.orderStatusType.systemCode", "ostNotPlaced", "!=");
+		orderItemCollectionList.addFilter("order.account.accountID", arguments.account.getAccountID());
+		orderItemCollectionList.addFilter("order.monatOrderType.typeCode","motMPEnrollment");
+		orderItemCollectionList.setDisplayProperties("order.orderOpenDateTime");// Date placed 
+		orderItemCollectionList.setPageRecordsShow(1);
+		var records = orderItemCollectionList.getRecords();
+		
+		if (arrayLen(records)){
+		    return records[1]['order_orderOpenDateTime'];
+		}
+	}
 }
