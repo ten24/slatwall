@@ -1486,6 +1486,19 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		
     }
     
+     public any function removeUpdgradeOnOrder(){
+        var account = getHibachiScope().getAccount();
+        var accountType=account.getAccountType() ?: 'customer';
+        var holdingPriceGroup = account.getPriceGroups();
+        var priceGroup = (!isNull(holdingPriceGroup) && arrayLen(holdingPriceGroup)) ? holdingPriceGroup.getPriceGroupCode() : 2; // set to retail by default
+        var order = getHibachiScope().getCart();
+        order.setUpgradeFlag(false);
+        order.setMonatOrderType('');
+        order.setAccountType(accountType);
+        order.setPriceGroup(priceGroup); 
+        return order;
+     }
+    
     public any function getUpgradedOrderSavingsAmount(cart = getHibachiScope().getCart()){
 		
         var order = arguments.cart;
