@@ -78671,7 +78671,7 @@ var OrderBy = /** @class */ (function () {
 exports.OrderBy = OrderBy;
 var CollectionConfig = /** @class */ (function () {
     // @ngInject
-    function CollectionConfig(rbkeyService, $hibachi, utilityService, observerService, baseEntityName, baseEntityAlias, columns, keywordColumns, useElasticSearch, filterGroups, keywordFilterGroups, joins, orderBy, groupBys, id, currentPage, pageShow, keywords, customEndpoint, allRecords, dirtyRead, isDistinct, enableAveragesAndSums, listingSearchConfig) {
+    function CollectionConfig(rbkeyService, $hibachi, utilityService, observerService, baseEntityName, baseEntityAlias, columns, keywordColumns, useElasticSearch, filterGroups, keywordFilterGroups, joins, orderBy, groupBys, id, currentPage, pageShow, keywords, customEndpoint, allRecords, limitCountTotal, dirtyRead, isDistinct, enableAveragesAndSums, listingSearchConfig) {
         var _this = this;
         if (keywordColumns === void 0) { keywordColumns = []; }
         if (useElasticSearch === void 0) { useElasticSearch = false; }
@@ -78682,6 +78682,7 @@ var CollectionConfig = /** @class */ (function () {
         if (keywords === void 0) { keywords = ''; }
         if (customEndpoint === void 0) { customEndpoint = ''; }
         if (allRecords === void 0) { allRecords = false; }
+        if (limitCountTotal === void 0) { limitCountTotal = 250; }
         if (dirtyRead === void 0) { dirtyRead = false; }
         if (isDistinct === void 0) { isDistinct = false; }
         if (enableAveragesAndSums === void 0) { enableAveragesAndSums = false; }
@@ -78706,6 +78707,7 @@ var CollectionConfig = /** @class */ (function () {
         this.keywords = keywords;
         this.customEndpoint = customEndpoint;
         this.allRecords = allRecords;
+        this.limitCountTotal = limitCountTotal;
         this.dirtyRead = dirtyRead;
         this.isDistinct = isDistinct;
         this.enableAveragesAndSums = enableAveragesAndSums;
@@ -78783,6 +78785,7 @@ var CollectionConfig = /** @class */ (function () {
             _this.groupBys = jsonCollection.groupBys;
             _this.pageShow = jsonCollection.pageShow;
             _this.allRecords = jsonCollection.allRecords;
+            _this.limitCountTotal = jsonCollection.limitCountTotal || 250;
             if (jsonCollection.dirtyRead) {
                 _this.dirtyRead = jsonCollection.dirtyRead;
             }
@@ -78865,6 +78868,7 @@ var CollectionConfig = /** @class */ (function () {
                 defaultColumns: (!_this.columns || !_this.columns.length),
                 useElasticSearch: _this.useElasticSearch,
                 allRecords: _this.allRecords,
+                limitCountTotal: _this.limitCountTotal,
                 dirtyRead: _this.dirtyRead,
                 isDistinct: _this.isDistinct,
                 isReport: _this.isReport(),
@@ -79362,6 +79366,13 @@ var CollectionConfig = /** @class */ (function () {
         };
         this.getCurrentPage = function () {
             return _this.currentPage;
+        };
+        this.setLimitCountTotal = function (newCount) {
+            _this.limitCountTotal = newCount;
+            return _this.limitCountTotal;
+        };
+        this.getLimitCountTotal = function () {
+            return _this.limitCountTotal;
         };
         this.setPageShow = function (NumberOfPages) {
             _this.pageShow = NumberOfPages;
@@ -96056,6 +96067,7 @@ var SWListingSearchController = /** @class */ (function () {
             if (angular.isDefined(_this.swListingDisplay.personalCollectionIdentifier)) {
                 _this.personalCollectionIdentifier = _this.swListingDisplay.personalCollectionIdentifier;
             }
+            _this.limitCountTotal = _this.swListingDisplay.collectionConfig.limitCountTotal; //Fetching initial val from config
             //snapshot searchable options in the beginning
             _this.searchableOptions = angular.copy(_this.collectionConfig.columns);
             _this.searchableColumns = [];
@@ -96258,11 +96270,12 @@ var SWListingSearchController = /** @class */ (function () {
     };
     SWListingSearchController.prototype.updateListingSearchConfig = function (config) {
         var newListingSearchConfig = __assign(__assign({}, this.swListingDisplay.collectionConfig.listingSearchConfig), config);
-        this.swListingDisplay.collectionConfig.listingSearchConfig = newListingSearchConfig;
-        this.observerService.notifyById('swPaginationAction', this.listingId, { type: 'setCurrentPage', payload: 1 });
+        this.swListingDisplay.collectionConfig.listingSearchConfig = newListingSearchConfig; //sets the value on listingsearchconfig
+        this.observerService.notifyById('swPaginationAction', this.listingId, { type: 'setCurrentPage', payload: 1 }); //refreshes the listing
     };
     return SWListingSearchController;
 }());
+exports.SWListingSearchController = SWListingSearchController;
 var SWListingSearch = /** @class */ (function () {
     //@ngInject
     function SWListingSearch(scopeService, collectionPartialsPath, hibachiPathBuilder) {
@@ -97327,18 +97340,53 @@ exports.ListingService = ListingService;
 
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 //import pagination = require('../services/paginationservice');
 //var PaginationService = pagination.PaginationService;
 //'use strict';
 var SWPaginationBarController = /** @class */ (function () {
     //@ngInject
-    function SWPaginationBarController(paginationService) {
+    function SWPaginationBarController(paginationService, observerService) {
+        var _this = this;
         this.paginationService = paginationService;
+        this.observerService = observerService;
+        this.$onInit = function () {
+            _this.limitCountTotal = _this.swListingDisplay.collectionConfig.limitCountTotal; // fetch from config file
+        };
+        //Documentation: Toggle flag function to either show or turn off all records count fetch.
+        this.toggleCountLimit = function (count) {
+            if (_this.limitCountTotal > 0) {
+                _this.limitCountTotal = 0;
+            }
+            else {
+                _this.limitCountTotal = _this.swListingDisplay.collectionConfig.limitCountTotal; // fetch again from config file
+            }
+            _this.updateListingSearchConfig({
+                limitCountTotal: _this.limitCountTotal
+            });
+        };
         if (angular.isUndefined(this.paginator)) {
             this.paginator = paginationService.createPagination();
         }
     }
+    /* updateListingSearchConfig Should not be copied again here and must ideally be reused from sqlistingsearch.ts and extended above */
+    SWPaginationBarController.prototype.updateListingSearchConfig = function (config) {
+        var newListingSearchConfig = __assign(__assign({}, this.swListingDisplay.collectionConfig.listingSearchConfig), config);
+        this.swListingDisplay.collectionConfig.listingSearchConfig = newListingSearchConfig;
+        this.listingId = this.paginator.uuid;
+        this.observerService.notifyById('swPaginationAction', this.listingId, { type: 'setCurrentPage', payload: 1 });
+    };
     return SWPaginationBarController;
 }());
 exports.SWPaginationBarController = SWPaginationBarController;
@@ -97347,8 +97395,12 @@ var SWPaginationBar = /** @class */ (function () {
     function SWPaginationBar(hibachiPathBuilder, partialsPath) {
         this.restrict = 'E';
         this.scope = {};
+        this.require = { swListingDisplay: "?^swListingDisplay", swListingControls: '?^swListingControls' };
         this.bindToController = {
-            paginator: "=?"
+            collectionConfig: "=",
+            paginator: "=?",
+            listingId: "@?",
+            showToggleSearch: "=?",
         };
         this.controller = SWPaginationBarController;
         this.controllerAs = "swPaginationBar";
@@ -97413,6 +97465,7 @@ var Pagination = /** @class */ (function () {
         this.pageStart = 0;
         this.pageEnd = 0;
         this.recordsCount = 0;
+        this.limitCountTotal = 0; //To be used to update the actual fetchcount instead of default 10
         this.totalPages = 0;
         this.pageShowOptions = [
             { display: 10, value: 10 },
@@ -97456,6 +97509,12 @@ var Pagination = /** @class */ (function () {
         this.setRecordsCount = function (recordsCount) {
             _this.recordsCount = recordsCount;
         };
+        this.getLimitCountTotal = function () {
+            return _this.limitCountTotal;
+        };
+        this.setLimitCountTotal = function (limitCountTotal) {
+            _this.limitCountTotal = limitCountTotal;
+        };
         this.getPageShowOptions = function () {
             return _this.pageShowOptions;
         };
@@ -97488,9 +97547,13 @@ var Pagination = /** @class */ (function () {
             }
         };
         this.hasPrevious = function () {
-            return (_this.getPageStart() <= 1);
+            //With no actual recordsCount, need to check if previous page exists even if there's no data on current page. This enables user to go back to previous page if no results exist on current page, unloess its the very first page
+            return (_this.getPageStart() <= 1 && _this.getPageEnd() !== 0);
+            //this.getPageStart() checks if this isnt the first page itself
+            //this.getPageEnd() !== 0 tells us if a previous page exists even if the current page has no records 
         };
         this.hasNext = function () {
+            //Same as above hasPrevious: Need to alter this to fetch anyways and then show appropriate message if no data exists on next fetch
             return (_this.getPageEnd() === _this.getRecordsCount());
         };
         this.showPreviousJump = function () {
@@ -97526,14 +97589,31 @@ var Pagination = /** @class */ (function () {
             return false;
         };
         this.setPageRecordsInfo = function (collection) {
-            _this.setRecordsCount(collection.recordsCount);
+            //Documentation: Partial transfer of pagination control to front-end. Needs to be further rewritten
+            var pageRecordsCount = collection.pageRecordsCount, //actual results obtained - defaults to limit 10 unless otherwise specified by pageRecordsShow
+            pageRecordsShow = collection.pageRecordsShow, recordsCount = collection.recordsCount, //arbitary fetch of recordsCount to get total records in db
+            pageRecordsEnd = collection.pageRecordsEnd, limitCountTotal = collection.limitCountTotal;
+            _this.setLimitCountTotal(limitCountTotal);
+            //Again, using the limitCountTotal to retain old functionality to work as before
+            if (limitCountTotal === 0) {
+                _this.setRecordsCount(recordsCount);
+                _this.setPageEnd(pageRecordsCount);
+            }
+            else {
+                if ((pageRecordsCount < recordsCount) && (pageRecordsCount < pageRecordsShow)) {
+                    _this.setPageEnd(pageRecordsCount);
+                }
+                else {
+                    _this.setPageEnd(pageRecordsEnd);
+                }
+                _this.setRecordsCount((pageRecordsCount < pageRecordsShow) ? pageRecordsCount : recordsCount);
+            }
             if (_this.getRecordsCount() === 0) {
                 _this.setPageStart(0);
             }
             else {
                 _this.setPageStart(collection.pageRecordsStart);
             }
-            _this.setPageEnd(collection.pageRecordsEnd);
             _this.setTotalPages(collection.totalPages);
             _this.currentPage = collection.currentPage;
             _this.totalPagesArray = [];

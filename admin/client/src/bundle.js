@@ -8825,6 +8825,33 @@ exports.isFunction = isFunction;
 
 })();
 
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+/**
+ * An error thrown when an Observable or a sequence was queried but has no
+ * elements.
+ *
+ * @see {@link first}
+ * @see {@link last}
+ * @see {@link single}
+ *
+ * @class EmptyError
+ */
+var EmptyError = (function (_super) {
+    __extends(EmptyError, _super);
+    function EmptyError() {
+        var err = _super.call(this, 'no elements in sequence');
+        this.name = err.name = 'EmptyError';
+        this.stack = err.stack;
+        this.message = err.message;
+    }
+    return EmptyError;
+}(Error));
+exports.EmptyError = EmptyError;
+//# sourceMappingURL=EmptyError.js.map
 
 /***/ }),
 /* 44 */
@@ -9044,6 +9071,42 @@ function audit(durationSelector) {
     return function auditOperatorFunction(source) {
         return source.lift(new AuditOperator(durationSelector));
     };
+    return ScalarObservable;
+}(Observable_1.Observable));
+exports.ScalarObservable = ScalarObservable;
+//# sourceMappingURL=ScalarObservable.js.map
+
+/***/ }),
+/* 45 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var isArray_1 = __webpack_require__(13);
+var ArrayObservable_1 = __webpack_require__(15);
+var OuterSubscriber_1 = __webpack_require__(3);
+var subscribeToResult_1 = __webpack_require__(4);
+function race() {
+    var observables = [];
+    for (var _i = 0; _i < arguments.length; _i++) {
+        observables[_i - 0] = arguments[_i];
+    }
+    // if the only argument is an array, it was most likely called with
+    // `race([obs1, obs2, ...])`
+    if (observables.length === 1) {
+        if (isArray_1.isArray(observables[0])) {
+            observables = observables[0];
+        }
+        else {
+            return observables[0];
+        }
+    }
+    return new ArrayObservable_1.ArrayObservable(observables).lift(new RaceOperator());
 }
 exports.audit = audit;
 var AuditOperator = (function () {
@@ -14888,6 +14951,96 @@ module.exports = charenc;
 
 })));
 
+    var gomLatn = moment.defineLocale('gom-latn', {
+        months : 'Janer_Febrer_Mars_Abril_Mai_Jun_Julai_Agost_Setembr_Otubr_Novembr_Dezembr'.split('_'),
+        monthsShort : 'Jan._Feb._Mars_Abr._Mai_Jun_Jul._Ago._Set._Otu._Nov._Dez.'.split('_'),
+        monthsParseExact : true,
+        weekdays : 'Aitar_Somar_Mongllar_Budvar_Brestar_Sukrar_Son\'var'.split('_'),
+        weekdaysShort : 'Ait._Som._Mon._Bud._Bre._Suk._Son.'.split('_'),
+        weekdaysMin : 'Ai_Sm_Mo_Bu_Br_Su_Sn'.split('_'),
+        weekdaysParseExact : true,
+        longDateFormat : {
+            LT : 'A h:mm [vazta]',
+            LTS : 'A h:mm:ss [vazta]',
+            L : 'DD-MM-YYYY',
+            LL : 'D MMMM YYYY',
+            LLL : 'D MMMM YYYY A h:mm [vazta]',
+            LLLL : 'dddd, MMMM[achea] Do, YYYY, A h:mm [vazta]',
+            llll: 'ddd, D MMM YYYY, A h:mm [vazta]'
+        },
+        calendar : {
+            sameDay: '[Aiz] LT',
+            nextDay: '[Faleam] LT',
+            nextWeek: '[Ieta to] dddd[,] LT',
+            lastDay: '[Kal] LT',
+            lastWeek: '[Fatlo] dddd[,] LT',
+            sameElse: 'L'
+        },
+        relativeTime : {
+            future : '%s',
+            past : '%s adim',
+            s : processRelativeTime,
+            ss : processRelativeTime,
+            m : processRelativeTime,
+            mm : processRelativeTime,
+            h : processRelativeTime,
+            hh : processRelativeTime,
+            d : processRelativeTime,
+            dd : processRelativeTime,
+            M : processRelativeTime,
+            MM : processRelativeTime,
+            y : processRelativeTime,
+            yy : processRelativeTime
+        },
+        dayOfMonthOrdinalParse : /\d{1,2}(er)/,
+        ordinal : function (number, period) {
+            switch (period) {
+                // the ordinal 'er' only applies to day of the month
+                case 'D':
+                    return number + 'er';
+                default:
+                case 'M':
+                case 'Q':
+                case 'DDD':
+                case 'd':
+                case 'w':
+                case 'W':
+                    return number;
+            }
+        },
+        week : {
+            dow : 1, // Monday is the first day of the week.
+            doy : 4  // The week that contains Jan 4th is the first week of the year.
+        },
+        meridiemParse: /rati|sokalli|donparam|sanje/,
+        meridiemHour : function (hour, meridiem) {
+            if (hour === 12) {
+                hour = 0;
+            }
+            if (meridiem === 'rati') {
+                return hour < 4 ? hour : hour + 12;
+            } else if (meridiem === 'sokalli') {
+                return hour;
+            } else if (meridiem === 'donparam') {
+                return hour > 12 ? hour : hour + 12;
+            } else if (meridiem === 'sanje') {
+                return hour + 12;
+            }
+        },
+        meridiem : function (hour, minute, isLower) {
+            if (hour < 4) {
+                return 'rati';
+            } else if (hour < 12) {
+                return 'sokalli';
+            } else if (hour < 16) {
+                return 'donparam';
+            } else if (hour < 20) {
+                return 'sanje';
+            } else {
+                return 'rati';
+            }
+        }
+    });
 
 /***/ }),
 /* 113 */
@@ -17173,7 +17326,7 @@ module.exports = charenc;
         },
         week : {
             dow : 1, // Monday is the first day of the week.
-            doy : 7  // The week that contains Jan 7th is the first week of the year.
+            doy : 4  // The week that contains Jan 4th is the first week of the year.
         }
     });
 
@@ -17606,11 +17759,9 @@ module.exports = charenc;
             y : relativeTimeWithSingular,
             yy : relativeTimeWithPlural
         },
-        dayOfMonthOrdinalParse: /\d{1,2}\./,
-        ordinal : '%d.',
         week : {
             dow : 1, // Monday is the first day of the week.
-            doy : 4  // The week that contains Jan 4th is the first week of the year.
+            doy : 7  // The week that contains Jan 7th is the first week of the year.
         }
     });
 
@@ -18329,6 +18480,8 @@ module.exports = charenc;
             y : 'setahun',
             yy : '%d tahun'
         },
+        dayOfMonthOrdinalParse: /\d{1,2}\./,
+        ordinal : '%d.',
         week : {
             dow : 1, // Monday is the first day of the week.
             doy : 7  // The week that contains Jan 7th is the first week of the year.
@@ -18451,7 +18604,7 @@ module.exports = charenc;
             L : 'DD/MM/YYYY',
             LL : 'D MMMM YYYY',
             LLL : 'D MMMM YYYY HH:mm',
-            LLLL : 'dddd, D MMMM YYYY HH:mm'
+            LLLL : 'dddd D MMMM YYYY HH:mm'
         },
         calendar : {
             sameDay : '[Illum fil-]LT',
@@ -18953,7 +19106,7 @@ module.exports = charenc;
         },
         week : {
             dow : 1, // Monday is the first day of the week.
-            doy : 4  // The week that contains Jan 4th is the first week of the year.
+            doy : 7  // The week that contains Jan 7th is the first week of the year.
         }
     });
 
@@ -19013,8 +19166,6 @@ module.exports = charenc;
             y : 'eit år',
             yy : '%d år'
         },
-        dayOfMonthOrdinalParse: /\d{1,2}\./,
-        ordinal : '%d.',
         week : {
             dow : 1, // Monday is the first day of the week.
             doy : 4  // The week that contains Jan 4th is the first week of the year.
@@ -19486,6 +19637,8 @@ module.exports = charenc;
             y : 'un an',
             yy : relativeTimeWithPlural
         },
+        dayOfMonthOrdinalParse: /\d{1,2}\./,
+        ordinal : '%d.',
         week : {
             dow : 1, // Monday is the first day of the week.
             doy : 7  // The week that contains Jan 7th is the first week of the year.
@@ -19774,9 +19927,11 @@ module.exports = charenc;
         postformat: function (string) {
             return string.replace(/,/g, '،');
         },
+        dayOfMonthOrdinalParse: /\d{1,2}\./,
+        ordinal : '%d.',
         week : {
             dow : 1, // Monday is the first day of the week.
-            doy : 4  // The week that contains Jan 4th is the first week of the year.
+            doy : 7  // The week that contains Jan 7th is the first week of the year.
         }
     });
 
@@ -20188,12 +20343,12 @@ module.exports = charenc;
         weekdaysMin : 'ne_po_to_sr_če_pe_so'.split('_'),
         weekdaysParseExact : true,
         longDateFormat : {
-            LT : 'H:mm',
-            LTS : 'H:mm:ss',
-            L : 'DD.MM.YYYY',
-            LL : 'D. MMMM YYYY',
-            LLL : 'D. MMMM YYYY H:mm',
-            LLLL : 'dddd, D. MMMM YYYY H:mm'
+            LT : 'HH:mm',
+            LTS : 'HH:mm:ss',
+            L : 'DD/MM/YYYY',
+            LL : 'D MMMM YYYY',
+            LLL : 'D MMMM YYYY HH:mm',
+            LLLL : 'dddd, D MMMM YYYY HH:mm'
         },
         calendar : {
             sameDay  : '[danes ob] LT',
@@ -20248,11 +20403,9 @@ module.exports = charenc;
             y      : processRelativeTime,
             yy     : processRelativeTime
         },
-        dayOfMonthOrdinalParse: /\d{1,2}\./,
-        ordinal : '%d.',
         week : {
             dow : 1, // Monday is the first day of the week.
-            doy : 7  // The week that contains Jan 7th is the first week of the year.
+            doy : 4  // The week that contains Jan 4th is the first week of the year.
         }
     });
 
@@ -20320,11 +20473,9 @@ module.exports = charenc;
             y : 'një vit',
             yy : '%d vite'
         },
-        dayOfMonthOrdinalParse: /\d{1,2}\./,
-        ordinal : '%d.',
         week : {
             dow : 1, // Monday is the first day of the week.
-            doy : 4  // The week that contains Jan 4th is the first week of the year.
+            doy : 7  // The week that contains Jan 1th is the first week of the year.
         }
     });
 
@@ -20554,7 +20705,7 @@ module.exports = charenc;
         ordinal : '%d.',
         week : {
             dow : 1, // Monday is the first day of the week.
-            doy : 7  // The week that contains Jan 7th is the first week of the year.
+            doy : 4  // The week that contains Jan 4th is the first week of the year.
         }
     });
 
@@ -20740,6 +20891,26 @@ module.exports = charenc;
    factory(global.moment)
 }(this, (function (moment) { 'use strict';
 
+    var suffixes = {
+        1: '\'inci',
+        5: '\'inci',
+        8: '\'inci',
+        70: '\'inci',
+        80: '\'inci',
+        2: '\'nci',
+        7: '\'nci',
+        20: '\'nci',
+        50: '\'nci',
+        3: '\'üncü',
+        4: '\'üncü',
+        100: '\'üncü',
+        6: '\'ncı',
+        9: '\'uncu',
+        10: '\'uncu',
+        30: '\'uncu',
+        60: '\'ıncı',
+        90: '\'ıncı'
+    };
 
     var sw = moment.defineLocale('sw', {
         months : 'Januari_Februari_Machi_Aprili_Mei_Juni_Julai_Agosti_Septemba_Oktoba_Novemba_Desemba'.split('_'),
@@ -21092,7 +21263,7 @@ module.exports = charenc;
 /* 174 */
 /***/ (function(module, exports, __webpack_require__) {
 
-//! moment.js locale configuration
+//! moment.js language configuration
 
 ;(function (global, factory) {
     true ? factory(__webpack_require__(1)) :
@@ -21432,7 +21603,7 @@ module.exports = charenc;
             L : 'DD.MM.YYYY',
             LL : 'D MMMM YYYY',
             LLL : 'D MMMM YYYY HH:mm',
-            LLLL : 'dddd, D MMMM YYYY HH:mm'
+            LLLL : 'dddd، D MMMM YYYY HH:mm'
         },
         calendar : {
             sameDay: '[DaHjaj] LT',
@@ -21512,10 +21683,10 @@ module.exports = charenc;
         longDateFormat : {
             LT : 'HH:mm',
             LTS : 'HH:mm:ss',
-            L : 'DD.MM.YYYY',
+            L : 'DD/MM/YYYY',
             LL : 'D MMMM YYYY',
             LLL : 'D MMMM YYYY HH:mm',
-            LLLL : 'dddd, D MMMM YYYY HH:mm'
+            LLLL : 'D MMMM YYYY, dddd HH:mm'
         },
         calendar : {
             sameDay : '[bugün saat] LT',
@@ -22138,6 +22309,22 @@ module.exports = charenc;
             lastWeek : '[گذشتہ] dddd [بوقت] LT',
             sameElse : 'L'
         },
+        dayOfMonthOrdinalParse: /\d{1,2}(日|月|周)/,
+        ordinal : function (number, period) {
+            switch (period) {
+                case 'd':
+                case 'D':
+                case 'DDD':
+                    return number + '日';
+                case 'M':
+                    return number + '月';
+                case 'w':
+                case 'W':
+                    return number + '周';
+                default:
+                    return number;
+            }
+        },
         relativeTime : {
             future : '%s بعد',
             past : '%s قبل',
@@ -22161,6 +22348,7 @@ module.exports = charenc;
             return string.replace(/,/g, '،');
         },
         week : {
+            // GB/T 7408-1994《数据元和交换格式·信息交换·日期和时间表示法》与ISO 8601:1988等效
             dow : 1, // Monday is the first day of the week.
             doy : 4  // The week that contains Jan 4th is the first week of the year.
         }
@@ -22454,14 +22642,7 @@ module.exports = charenc;
 /* 189 */
 /***/ (function(module, exports, __webpack_require__) {
 
-//! moment.js locale configuration
-
-;(function (global, factory) {
-    true ? factory(__webpack_require__(1)) :
-   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
-   factory(global.moment)
-}(this, (function (moment) { 'use strict';
-
+"use strict";
 
     var yo = moment.defineLocale('yo', {
         months : 'Sẹ́rẹ́_Èrèlè_Ẹrẹ̀nà_Ìgbé_Èbibi_Òkùdu_Agẹmo_Ògún_Owewe_Ọ̀wàrà_Bélú_Ọ̀pẹ̀̀'.split('_'),
@@ -22507,25 +22688,76 @@ module.exports = charenc;
             dow : 1, // Monday is the first day of the week.
             doy : 4 // The week that contains Jan 4th is the first week of the year.
         }
-    });
+    };
+    BehaviorSubject.prototype.next = function (value) {
+        _super.prototype.next.call(this, this._value = value);
+    };
+    return BehaviorSubject;
+}(Subject_1.Subject));
+exports.BehaviorSubject = BehaviorSubject;
+//# sourceMappingURL=BehaviorSubject.js.map
 
     return yo;
 
-})));
+"use strict";
 
+exports.empty = {
+    closed: true,
+    next: function (value) { },
+    error: function (err) { throw err; },
+    complete: function () { }
+};
+//# sourceMappingURL=Observer.js.map
 
 /***/ }),
 /* 190 */
 /***/ (function(module, exports, __webpack_require__) {
 
-//! moment.js locale configuration
+"use strict";
 
-;(function (global, factory) {
-    true ? factory(__webpack_require__(1)) :
-   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
-   factory(global.moment)
-}(this, (function (moment) { 'use strict';
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var Subscription_1 = __webpack_require__(7);
+/**
+ * We need this JSDoc comment for affecting ESDoc.
+ * @ignore
+ * @extends {Ignored}
+ */
+var SubjectSubscription = (function (_super) {
+    __extends(SubjectSubscription, _super);
+    function SubjectSubscription(subject, subscriber) {
+        _super.call(this);
+        this.subject = subject;
+        this.subscriber = subscriber;
+        this.closed = false;
+    }
+    SubjectSubscription.prototype.unsubscribe = function () {
+        if (this.closed) {
+            return;
+        }
+        this.closed = true;
+        var subject = this.subject;
+        var observers = subject.observers;
+        this.subject = null;
+        if (!observers || observers.length === 0 || subject.isStopped || subject.closed) {
+            return;
+        }
+        var subscriberIndex = observers.indexOf(this.subscriber);
+        if (subscriberIndex !== -1) {
+            observers.splice(subscriberIndex, 1);
+        }
+    };
+    return SubjectSubscription;
+}(Subscription_1.Subscription));
+exports.SubjectSubscription = SubjectSubscription;
+//# sourceMappingURL=SubjectSubscription.js.map
 
+/***/ }),
+/* 196 */
+/***/ (function(module, exports, __webpack_require__) {
 
     var zhCn = moment.defineLocale('zh-cn', {
         months : '一月_二月_三月_四月_五月_六月_七月_八月_九月_十月_十一月_十二月'.split('_'),
@@ -22632,14 +22864,7 @@ module.exports = charenc;
 /* 191 */
 /***/ (function(module, exports, __webpack_require__) {
 
-//! moment.js locale configuration
-
-;(function (global, factory) {
-    true ? factory(__webpack_require__(1)) :
-   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
-   factory(global.moment)
-}(this, (function (moment) { 'use strict';
-
+"use strict";
 
     var zhHk = moment.defineLocale('zh-hk', {
         months : '一月_二月_三月_四月_五月_六月_七月_八月_九月_十月_十一月_十二月'.split('_'),
@@ -22739,14 +22964,7 @@ module.exports = charenc;
 /* 192 */
 /***/ (function(module, exports, __webpack_require__) {
 
-//! moment.js locale configuration
-
-;(function (global, factory) {
-    true ? factory(__webpack_require__(1)) :
-   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
-   factory(global.moment)
-}(this, (function (moment) { 'use strict';
-
+"use strict";
 
     var zhTw = moment.defineLocale('zh-tw', {
         months : '一月_二月_三月_四月_五月_六月_七月_八月_九月_十月_十一月_十二月'.split('_'),
@@ -25029,6 +25247,9 @@ var CountSubscriber = (function (_super) {
         else {
             this.count++;
         }
+    }
+    DistinctSubscriber.prototype.notifyNext = function (outerValue, innerValue, outerIndex, innerIndex, innerSub) {
+        this.values.clear();
     };
     CountSubscriber.prototype._tryPredicate = function (value) {
         var result;
@@ -28678,6 +28899,9 @@ var SampleSubscriber = (function (_super) {
             this.hasValue = false;
             this.destination.next(this.value);
         }
+        catch (err) {
+            this.destination.error(err);
+        }
     };
     return SampleSubscriber;
 }(OuterSubscriber_1.OuterSubscriber));
@@ -29824,7 +30048,11 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var Subscriber_1 = __webpack_require__(2);
+var async_1 = __webpack_require__(5);
+var isDate_1 = __webpack_require__(41);
+var OuterSubscriber_1 = __webpack_require__(3);
+var subscribeToResult_1 = __webpack_require__(4);
+/* tslint:enable:max-line-length */
 /**
  * Emits values emitted by the source Observable so long as each value satisfies
  * the given `predicate`, and then completes as soon as this `predicate` is not
@@ -30025,6 +30253,9 @@ var DoSubscriber = (function (_super) {
         else {
             this.destination.complete();
         }
+        var destination = this.destination;
+        var newWindow = this.window = new Subject_1.Subject();
+        destination.next(newWindow);
     };
     return DoSubscriber;
 }(Subscriber_1.Subscriber));
@@ -30130,6 +30361,7 @@ var ThrottleTimeSubscriber = (function (_super) {
                 this.destination.next(value);
             }
         }
+        this.destination.error(err);
     };
     ThrottleTimeSubscriber.prototype.clearThrottle = function () {
         var throttled = this.throttled;
@@ -30143,6 +30375,7 @@ var ThrottleTimeSubscriber = (function (_super) {
             this.remove(throttled);
             this.throttled = null;
         }
+        this.destination.complete();
     };
     return ThrottleTimeSubscriber;
 }(Subscriber_1.Subscriber));
@@ -30188,6 +30421,25 @@ var TimeIntervalOperator = (function () {
     };
     return TimeIntervalOperator;
 }());
+var CountedSubject = (function (_super) {
+    __extends(CountedSubject, _super);
+    function CountedSubject() {
+        _super.apply(this, arguments);
+        this._numberOfNextedValues = 0;
+    }
+    CountedSubject.prototype.next = function (value) {
+        this._numberOfNextedValues++;
+        _super.prototype.next.call(this, value);
+    };
+    Object.defineProperty(CountedSubject.prototype, "numberOfNextedValues", {
+        get: function () {
+            return this._numberOfNextedValues;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    return CountedSubject;
+}(Subject_1.Subject));
 /**
  * We need this JSDoc comment for affecting ESDoc.
  * @ignore
@@ -30841,9 +31093,65 @@ var CountedSubject = (function (_super) {
     return CountedSubject;
 }(Subject_1.Subject));
 /**
- * We need this JSDoc comment for affecting ESDoc.
- * @ignore
- * @extends {Ignored}
+ *
+ * Queue Scheduler
+ *
+ * <span class="informal">Put every next task on a queue, instead of executing it immediately</span>
+ *
+ * `queue` scheduler, when used with delay, behaves the same as {@link async} scheduler.
+ *
+ * When used without delay, it schedules given task synchronously - executes it right when
+ * it is scheduled. However when called recursively, that is when inside the scheduled task,
+ * another task is scheduled with queue scheduler, instead of executing immediately as well,
+ * that task will be put on a queue and wait for current one to finish.
+ *
+ * This means that when you execute task with `queue` scheduler, you are sure it will end
+ * before any other task scheduled with that scheduler will start.
+ *
+ * @examples <caption>Schedule recursively first, then do something</caption>
+ *
+ * Rx.Scheduler.queue.schedule(() => {
+ *   Rx.Scheduler.queue.schedule(() => console.log('second')); // will not happen now, but will be put on a queue
+ *
+ *   console.log('first');
+ * });
+ *
+ * // Logs:
+ * // "first"
+ * // "second"
+ *
+ *
+ * @example <caption>Reschedule itself recursively</caption>
+ *
+ * Rx.Scheduler.queue.schedule(function(state) {
+ *   if (state !== 0) {
+ *     console.log('before', state);
+ *     this.schedule(state - 1); // `this` references currently executing Action,
+ *                               // which we reschedule with new state
+ *     console.log('after', state);
+ *   }
+ * }, 0, 3);
+ *
+ * // In scheduler that runs recursively, you would expect:
+ * // "before", 3
+ * // "before", 2
+ * // "before", 1
+ * // "after", 1
+ * // "after", 2
+ * // "after", 3
+ *
+ * // But with queue it logs:
+ * // "before", 3
+ * // "after", 3
+ * // "before", 2
+ * // "after", 2
+ * // "before", 1
+ * // "after", 1
+ *
+ *
+ * @static true
+ * @name queue
+ * @owner Scheduler
  */
 var WindowTimeSubscriber = (function (_super) {
     __extends(WindowTimeSubscriber, _super);
@@ -31194,9 +31502,8 @@ var WindowOperator = (function () {
     return WindowOperator;
 }());
 /**
- * We need this JSDoc comment for affecting ESDoc.
- * @ignore
- * @extends {Ignored}
+ * An error thrown when one or more errors have occurred during the
+ * `unsubscribe` of a {@link Subscription}.
  */
 var WindowSubscriber = (function (_super) {
     __extends(WindowSubscriber, _super);
@@ -31692,12 +31999,15 @@ exports.SubscriptionLoggable = SubscriptionLoggable;
 /* 287 */
 /***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
+/* WEBPACK VAR INJECTION */(function(global) {var scope = (typeof global !== "undefined" && global) ||
+            (typeof self !== "undefined" && self) ||
+            window;
+var apply = Function.prototype.apply;
 
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+// DOM APIs, for completeness
+
+exports.setTimeout = function() {
+  return new Timeout(apply.call(setTimeout, scope, arguments), clearTimeout);
 };
 /**
  * An error thrown when duetime elapses.
@@ -34954,6 +35264,9 @@ for (var func in conversions) {
   })(func);
 }
 
+	if (c === 0.0) {
+		return [g * 255, g * 255, g * 255];
+	}
 
 /* Converter does lazy conversion and caching */
 var Converter = function() {
@@ -38076,17 +38389,16 @@ core_defaults._set('bar', {
  * @private
  */
 function computeMinSampleSize(scale, pixels) {
-	var min = scale.isHorizontal() ? scale.width : scale.height;
-	var ticks = scale.getTicks();
+	var min = scale._length;
 	var prev, curr, i, ilen;
 
 	for (i = 1, ilen = pixels.length; i < ilen; ++i) {
 		min = Math.min(min, Math.abs(pixels[i] - pixels[i - 1]));
 	}
 
-	for (i = 0, ilen = ticks.length; i < ilen; ++i) {
+	for (i = 0, ilen = scale.getTicks().length; i < ilen; ++i) {
 		curr = scale.getPixelForTick(i);
-		min = i > 0 ? Math.min(min, curr - prev) : min;
+		min = i > 0 ? Math.min(min, Math.abs(curr - prev)) : min;
 		prev = curr;
 	}
 
@@ -38103,6 +38415,9 @@ function computeFitCategoryTraits(index, ruler, options) {
 	var thickness = options.barThickness;
 	var count = ruler.stackCount;
 	var curr = ruler.pixels[index];
+	var min = helpers$1.isNullOrUndef(thickness)
+		? computeMinSampleSize(ruler.scale, ruler.pixels)
+		: -1;
 	var size, ratio;
 
 	if (helpers$1.isNullOrUndef(thickness)) {
@@ -38641,25 +38956,25 @@ core_defaults._set('doughnut', {
 		mode: 'single'
 	},
 	legendCallback: function(chart) {
-		var text = [];
-		text.push('<ul class="' + chart.id + '-legend">');
-
+		var list = document.createElement('ul');
 		var data = chart.data;
 		var datasets = data.datasets;
 		var labels = data.labels;
+		var i, ilen, listItem, listItemSpan;
 
+		list.setAttribute('class', chart.id + '-legend');
 		if (datasets.length) {
-			for (var i = 0; i < datasets[0].data.length; ++i) {
-				text.push('<li><span style="background-color:' + datasets[0].backgroundColor[i] + '"></span>');
+			for (i = 0, ilen = datasets[0].data.length; i < ilen; ++i) {
+				listItem = list.appendChild(document.createElement('li'));
+				listItemSpan = listItem.appendChild(document.createElement('span'));
+				listItemSpan.style.backgroundColor = datasets[0].backgroundColor[i];
 				if (labels[i]) {
-					text.push(labels[i]);
+					listItem.appendChild(document.createTextNode(labels[i]));
 				}
-				text.push('</li>');
 			}
 		}
 
-		text.push('</ul>');
-		return text.join('');
+		return list.outerHTML;
 	},
 	legend: {
 		labels: {
@@ -38678,10 +38993,10 @@ core_defaults._set('doughnut', {
 
 						return {
 							text: label,
-							fillStyle: fill,
-							strokeStyle: stroke,
-							lineWidth: bw,
-							hidden: isNaN(ds.data[i]) || meta.data[i].hidden,
+							fillStyle: style.backgroundColor,
+							strokeStyle: style.borderColor,
+							lineWidth: style.borderWidth,
+							hidden: isNaN(data.datasets[0].data[i]) || meta.data[i].hidden,
 
 							// Extra data used for toggling the correct item
 							index: i
@@ -38713,10 +39028,10 @@ core_defaults._set('doughnut', {
 	cutoutPercentage: 50,
 
 	// The rotation of the chart, where the first data arc begins.
-	rotation: Math.PI * -0.5,
+	rotation: -HALF_PI$1,
 
 	// The total circumference of the chart.
-	circumference: Math.PI * 2.0,
+	circumference: DOUBLE_PI$1,
 
 	// Need to override these to give a nice default
 	tooltips: {
@@ -39464,25 +39779,25 @@ core_defaults._set('polarArea', {
 
 	startAngle: -0.5 * Math.PI,
 	legendCallback: function(chart) {
-		var text = [];
-		text.push('<ul class="' + chart.id + '-legend">');
-
+		var list = document.createElement('ul');
 		var data = chart.data;
 		var datasets = data.datasets;
 		var labels = data.labels;
+		var i, ilen, listItem, listItemSpan;
 
+		list.setAttribute('class', chart.id + '-legend');
 		if (datasets.length) {
-			for (var i = 0; i < datasets[0].data.length; ++i) {
-				text.push('<li><span style="background-color:' + datasets[0].backgroundColor[i] + '"></span>');
+			for (i = 0, ilen = datasets[0].data.length; i < ilen; ++i) {
+				listItem = list.appendChild(document.createElement('li'));
+				listItemSpan = listItem.appendChild(document.createElement('span'));
+				listItemSpan.style.backgroundColor = datasets[0].backgroundColor[i];
 				if (labels[i]) {
-					text.push(labels[i]);
+					listItem.appendChild(document.createTextNode(labels[i]));
 				}
-				text.push('</li>');
 			}
 		}
 
-		text.push('</ul>');
-		return text.join('');
+		return list.outerHTML;
 	},
 	legend: {
 		labels: {
@@ -39501,10 +39816,10 @@ core_defaults._set('polarArea', {
 
 						return {
 							text: label,
-							fillStyle: fill,
-							strokeStyle: stroke,
-							lineWidth: bw,
-							hidden: isNaN(ds.data[i]) || meta.data[i].hidden,
+							fillStyle: style.backgroundColor,
+							strokeStyle: style.borderColor,
+							lineWidth: style.borderWidth,
+							hidden: isNaN(data.datasets[0].data[i]) || meta.data[i].hidden,
 
 							// Extra data used for toggling the correct item
 							index: i
@@ -39760,6 +40075,7 @@ core_defaults._set('radar', {
 	},
 	elements: {
 		line: {
+			fill: 'start',
 			tension: 0 // no bezier in radar
 		}
 	}
@@ -39997,8 +40313,6 @@ core_defaults._set('scatter', {
 			position: 'left'
 		}]
 	},
-
-	showLines: false,
 
 	tooltips: {
 		callbacks: {
@@ -40576,6 +40890,8 @@ var core_layouts = {
 				minSize = box.update(verticalBoxWidth, maxChartAreaHeight);
 				maxChartAreaWidth -= minSize.width;
 			}
+		}
+	}));
 
 			minBoxSizes.push({
 				horizontal: isHorizontal,
@@ -43170,6 +43486,7 @@ helpers$1.extend(Chart.prototype, /** @lends Chart */ {
 		if (core_plugins.notify(me, 'beforeDatasetDraw', [args]) === false) {
 			return;
 		}
+		var filtered = [];
 
 		meta.controller.draw(easingValue);
 
@@ -43460,6 +43777,14 @@ helpers$1.extend(Chart.prototype, /** @lends Chart */ {
 				// Use e.native here for backwards compatibility
 				options.onClick.call(me, e.native, me.active);
 			}
+		} else if (fraction <= 1.0) {
+			niceFraction = 1;
+		} else if (fraction <= 2) {
+			niceFraction = 2;
+		} else if (fraction <= 5) {
+			niceFraction = 5;
+		} else {
+			niceFraction = 10;
 		}
 
 		// Remove styling for last active (even if it may still be active)
@@ -43941,6 +44266,8 @@ var core_helpers = function() {
 		} else {
 			valueInPixels = styleValue;
 		}
+		return longest;
+	};
 
 		return valueInPixels;
 	}
@@ -44373,7 +44700,9 @@ core_defaults._set('scale', {
 			top: 4,
 			bottom: 4
 		}
-	},
+	}
+	return diff;
+}
 
 	// label settings
 	ticks: {
@@ -44568,11 +44897,51 @@ var core_scale = core_element.extend({
 		me.beforeFit();
 		me.fit();
 		me.afterFit();
-		//
+
+		// Auto-skip
+		me._ticksToDraw = tickOpts.display && (tickOpts.autoSkip || tickOpts.source === 'auto') ? me._autoSkip(ticks) : ticks;
+
+		if (samplingEnabled) {
+			// Generate labels using all non-skipped ticks
+			labels = me._convertTicksToLabels(me._ticksToDraw);
+		}
+
+		me.ticks = labels;   // BACKWARD COMPATIBILITY
+
+		// IMPORTANT: after this point, we consider that `this.ticks` will NEVER change!
+
 		me.afterUpdate();
 
+		// TODO(v3): remove minSize as a public property and return value from all layout boxes. It is unused
+		// make maxWidth and maxHeight private
 		return me.minSize;
+	},
 
+	/**
+	 * @private
+	 */
+	_configure: function() {
+		var me = this;
+		var reversePixels = me.options.ticks.reverse;
+		var startPixel, endPixel;
+
+		if (me.isHorizontal()) {
+			startPixel = me.left;
+			endPixel = me.right;
+		} else {
+			startPixel = me.top;
+			endPixel = me.bottom;
+			// by default vertical scales are from bottom to top, so pixels are reversed
+			reversePixels = !reversePixels;
+		}
+		me._startPixel = startPixel;
+		me._endPixel = endPixel;
+		me._reversePixels = reversePixels;
+		me._length = endPixel - startPixel;
+	},
+
+	afterUpdate: function() {
+		helpers$1.callback(this.options.afterUpdate, [this]);
 	},
 	afterUpdate: function() {
 		helpers$1.callback(this.options.afterUpdate, [this]);
@@ -44995,6 +45364,9 @@ var core_scale = core_element.extend({
 		}
 		return result;
 	},
+	isFullWidth: function() {
+		return this.options.fullWidth;
+	},
 
 	/**
 	 * @private
@@ -45192,6 +45564,50 @@ var core_scale = core_element.extend({
 					labelX = me.left + labelXOffset;
 				}
 			}
+			avgMajorSpacing = numMajorIndices > 1 ? (last - first) / (numMajorIndices - 1) : null;
+			skip(ticks, spacing, helpers$1.isNullOrUndef(avgMajorSpacing) ? 0 : first - avgMajorSpacing, first);
+			skip(ticks, spacing, last, helpers$1.isNullOrUndef(avgMajorSpacing) ? ticks.length : last + avgMajorSpacing);
+			return nonSkipped(ticks);
+		}
+		skip(ticks, spacing);
+		return nonSkipped(ticks);
+	},
+
+	/**
+	 * @private
+	 */
+	_tickSize: function() {
+		var me = this;
+		var optionTicks = me.options.ticks;
+
+		// Calculate space needed by label in axis direction.
+		var rot = helpers$1.toRadians(me.labelRotation);
+		var cos = Math.abs(Math.cos(rot));
+		var sin = Math.abs(Math.sin(rot));
+
+		var labelSizes = me._getLabelSizes();
+		var padding = optionTicks.autoSkipPadding || 0;
+		var w = labelSizes ? labelSizes.widest.width + padding : 0;
+		var h = labelSizes ? labelSizes.highest.height + padding : 0;
+
+		// Calculate space needed for 1 tick in axis direction.
+		return me.isHorizontal()
+			? h * cos > w * sin ? w / cos : h / sin
+			: h * sin < w * cos ? h / cos : w / sin;
+	},
+
+	/**
+	 * @private
+	 */
+	_isVisible: function() {
+		var me = this;
+		var chart = me.chart;
+		var display = me.options.display;
+		var i, ilen, meta;
+
+		if (display !== 'auto') {
+			return !!display;
+		}
 
 			itemsToDraw.push({
 				tx1: tx1,
@@ -45412,6 +45828,7 @@ var scale_category = core_scale.extend({
 			if (offset) {
 				widthOffset += (valueWidth / 2);
 			}
+		}
 
 			return me.left + widthOffset;
 		}
@@ -46472,6 +46889,10 @@ function drawPointLabels(scale) {
 			ctx.lineTo(outerPosition.x, outerPosition.y);
 			ctx.stroke();
 		}
+	} else {
+		ctx.fillText(text, position.x, y);
+	}
+}
 
 		if (pointLabelOpts.display) {
 			// Extra pixels out for some label spacing
@@ -46761,42 +47182,42 @@ var INTERVALS = {
 	millisecond: {
 		common: true,
 		size: 1,
-		steps: [1, 2, 5, 10, 20, 50, 100, 250, 500]
+		steps: 1000
 	},
 	second: {
 		common: true,
 		size: 1000,
-		steps: [1, 2, 5, 10, 15, 30]
+		steps: 60
 	},
 	minute: {
 		common: true,
 		size: 60000,
-		steps: [1, 2, 5, 10, 15, 30]
+		steps: 60
 	},
 	hour: {
 		common: true,
 		size: 3600000,
-		steps: [1, 2, 3, 6, 12]
+		steps: 24
 	},
 	day: {
 		common: true,
 		size: 86400000,
-		steps: [1, 2, 5]
+		steps: 30
 	},
 	week: {
 		common: false,
 		size: 604800000,
-		steps: [1, 2, 3, 4]
+		steps: 4
 	},
 	month: {
 		common: true,
 		size: 2.628e9,
-		steps: [1, 2, 3]
+		steps: 12
 	},
 	quarter: {
 		common: false,
 		size: 7.884e9,
-		steps: [1, 2, 3, 4]
+		steps: 4
 	},
 	year: {
 		common: true,
@@ -46824,6 +47245,14 @@ function arrayUnique(items) {
 	}
 
 	return out;
+}
+
+function getMin(options) {
+	return helpers$1.valueOrDefault(options.time.min, options.ticks.min);
+}
+
+function getMax(options) {
+	return helpers$1.valueOrDefault(options.time.max, options.ticks.max);
 }
 
 /**
@@ -47011,7 +47440,7 @@ function determineUnitForAutoTicks(minUnit, min, max, capacity) {
 
 	for (i = UNITS.indexOf(minUnit); i < ilen - 1; ++i) {
 		interval = INTERVALS[UNITS[i]];
-		factor = interval.steps ? interval.steps[interval.steps.length - 1] : MAX_INTEGER;
+		factor = interval.steps ? interval.steps : MAX_INTEGER;
 
 		if (interval.common && Math.ceil((max - min) / (factor * interval.size)) <= capacity) {
 			return UNITS[i];
@@ -47028,7 +47457,7 @@ function determineUnitForFormatting(scale, ticks, minUnit, min, max) {
 	var ilen = UNITS.length;
 	var i, unit;
 
-	for (i = ilen - 1; i >= UNITS.indexOf(minUnit); i--) {
+	for (i = UNITS.length - 1; i >= UNITS.indexOf(minUnit); i--) {
 		unit = UNITS[i];
 		if (INTERVALS[unit].common && scale._adapter.diff(max, min, unit) >= ticks.length) {
 			return unit;
@@ -47048,7 +47477,7 @@ function determineMajorUnit(unit) {
 
 /**
  * Generates a maximum of `capacity` timestamps between min and max, rounded to the
- * `minor` unit, aligned on the `major` unit and using the given scale time `options`.
+ * `minor` unit using the given scale time `options`.
  * Important: this method can return ticks outside the min and max range, it's the
  * responsibility of the calling code to clamp values if needed.
  */
@@ -47066,10 +47495,6 @@ function generate(scale, min, max, capacity) {
 	var last = max;
 	var ticks = [];
 	var time;
-
-	if (!stepSize) {
-		stepSize = determineStepSize(min, max, minor, capacity);
-	}
 
 	// For 'week' unit, handle the first day of week option
 	if (weekday) {
@@ -47099,8 +47524,6 @@ function generate(scale, min, max, capacity) {
 	for (; time < last; time = +adapter.add(time, stepSize, minor)) {
 		ticks.push(+time);
 	}
-
-	ticks.push(+time);
 
 	return ticks;
 }
@@ -47140,19 +47563,23 @@ function computeOffsets(table, ticks, min, max, options) {
 
 function ticksFromTimestamps(scale, values, majorUnit) {
 	var ticks = [];
-	var i, ilen, value, major;
+	var map = {};
+	var ilen = values.length;
+	var i, value;
 
-	for (i = 0, ilen = values.length; i < ilen; ++i) {
+	for (i = 0; i < ilen; ++i) {
 		value = values[i];
 		major = majorUnit ? value === +scale._adapter.startOf(value, majorUnit) : false;
 
 		ticks.push({
 			value: value,
-			major: major
+			major: false
 		});
 	}
 
-	return ticks;
+	// We set the major ticks separately from the above loop because calling startOf for every tick
+	// is expensive when there is a large number of ticks
+	return (ilen === 0 || !majorUnit) ? ticks : setMajorTicks(scale, ticks, map, majorUnit);
 }
 
 var defaultConfig$4 = {
@@ -78012,6 +78439,7 @@ var CollectionConfig = /** @class */ (function () {
         if (keywords === void 0) { keywords = ''; }
         if (customEndpoint === void 0) { customEndpoint = ''; }
         if (allRecords === void 0) { allRecords = false; }
+        if (limitCountTotal === void 0) { limitCountTotal = 250; }
         if (dirtyRead === void 0) { dirtyRead = false; }
         if (isDistinct === void 0) { isDistinct = false; }
         if (enableAveragesAndSums === void 0) { enableAveragesAndSums = false; }
@@ -78036,6 +78464,7 @@ var CollectionConfig = /** @class */ (function () {
         this.keywords = keywords;
         this.customEndpoint = customEndpoint;
         this.allRecords = allRecords;
+        this.limitCountTotal = limitCountTotal;
         this.dirtyRead = dirtyRead;
         this.isDistinct = isDistinct;
         this.enableAveragesAndSums = enableAveragesAndSums;
@@ -78113,6 +78542,7 @@ var CollectionConfig = /** @class */ (function () {
             _this.groupBys = jsonCollection.groupBys;
             _this.pageShow = jsonCollection.pageShow;
             _this.allRecords = jsonCollection.allRecords;
+            _this.limitCountTotal = jsonCollection.limitCountTotal || 250;
             if (jsonCollection.dirtyRead) {
                 _this.dirtyRead = jsonCollection.dirtyRead;
             }
@@ -78195,6 +78625,7 @@ var CollectionConfig = /** @class */ (function () {
                 defaultColumns: (!_this.columns || !_this.columns.length),
                 useElasticSearch: _this.useElasticSearch,
                 allRecords: _this.allRecords,
+                limitCountTotal: _this.limitCountTotal,
                 dirtyRead: _this.dirtyRead,
                 isDistinct: _this.isDistinct,
                 isReport: _this.isReport(),
@@ -78692,6 +79123,13 @@ var CollectionConfig = /** @class */ (function () {
         };
         this.getCurrentPage = function () {
             return _this.currentPage;
+        };
+        this.setLimitCountTotal = function (newCount) {
+            _this.limitCountTotal = newCount;
+            return _this.limitCountTotal;
+        };
+        this.getLimitCountTotal = function () {
+            return _this.limitCountTotal;
         };
         this.setPageShow = function (NumberOfPages) {
             _this.pageShow = NumberOfPages;
@@ -95427,6 +95865,7 @@ var SWListingSearchController = /** @class */ (function () {
             if (angular.isDefined(_this.swListingDisplay.personalCollectionIdentifier)) {
                 _this.personalCollectionIdentifier = _this.swListingDisplay.personalCollectionIdentifier;
             }
+            _this.limitCountTotal = _this.swListingDisplay.collectionConfig.limitCountTotal; //Fetching initial val from config
             //snapshot searchable options in the beginning
             _this.searchableOptions = angular.copy(_this.collectionConfig.columns);
             _this.searchableColumns = [];
@@ -95472,6 +95911,18 @@ var SWListingSearchController = /** @class */ (function () {
                     wildCardPosition: position.value
                 });
             }
+        };
+        //Documentation: Toggle flag function to either show or turn off all records count fetch.
+        this.toggleCountLimit = function (count) {
+            if (_this.limitCountTotal > 0) {
+                _this.limitCountTotal = 0;
+            }
+            else {
+                _this.limitCountTotal = _this.swListingDisplay.collectionConfig.limitCountTotal; // fetch again from config file
+            }
+            _this.updateListingSearchConfig({
+                limitCountTotal: _this.limitCountTotal
+            });
         };
         this.selectSearchColumn = function (column) {
             _this.selectedSearchColumn = column;
@@ -96784,6 +97235,7 @@ var Pagination = /** @class */ (function () {
         this.pageStart = 0;
         this.pageEnd = 0;
         this.recordsCount = 0;
+        this.limitCountTotal = 0; //To be used to update the actual fetchcount instead of default 10
         this.totalPages = 0;
         this.pageShowOptions = [
             { display: 10, value: 10 },
@@ -96827,6 +97279,12 @@ var Pagination = /** @class */ (function () {
         this.setRecordsCount = function (recordsCount) {
             _this.recordsCount = recordsCount;
         };
+        this.getLimitCountTotal = function () {
+            return _this.limitCountTotal;
+        };
+        this.setLimitCountTotal = function (limitCountTotal) {
+            _this.limitCountTotal = limitCountTotal;
+        };
         this.getPageShowOptions = function () {
             return _this.pageShowOptions;
         };
@@ -96859,9 +97317,13 @@ var Pagination = /** @class */ (function () {
             }
         };
         this.hasPrevious = function () {
-            return (_this.getPageStart() <= 1);
+            //With no actual recordsCount, need to check if previous page exists even if there's no data on current page. This enables user to go back to previous page if no results exist on current page, unloess its the very first page
+            return (_this.getPageStart() <= 1 && _this.getPageEnd() !== 0);
+            //this.getPageStart() checks if this isnt the first page itself
+            //this.getPageEnd() !== 0 tells us if a previous page exists even if the current page has no records 
         };
         this.hasNext = function () {
+            //Same as above hasPrevious: Need to alter this to fetch anyways and then show appropriate message if no data exists on next fetch
             return (_this.getPageEnd() === _this.getRecordsCount());
         };
         this.showPreviousJump = function () {
@@ -96897,14 +97359,31 @@ var Pagination = /** @class */ (function () {
             return false;
         };
         this.setPageRecordsInfo = function (collection) {
-            _this.setRecordsCount(collection.recordsCount);
+            //Documentation: Partial transfer of pagination control to front-end. Needs to be further rewritten
+            var pageRecordsCount = collection.pageRecordsCount, //actual results obtained - defaults to limit 10 unless otherwise specified by pageRecordsShow
+            pageRecordsShow = collection.pageRecordsShow, recordsCount = collection.recordsCount, //arbitary fetch of recordsCount to get total records in db
+            pageRecordsEnd = collection.pageRecordsEnd, limitCountTotal = collection.limitCountTotal;
+            _this.setLimitCountTotal(limitCountTotal);
+            //Again, using the limitCountTotal to retain old functionality to work as before
+            if (limitCountTotal === 0) {
+                _this.setRecordsCount(recordsCount);
+                _this.setPageEnd(pageRecordsCount);
+            }
+            else {
+                if ((pageRecordsCount < recordsCount) && (pageRecordsCount < pageRecordsShow)) {
+                    _this.setPageEnd(pageRecordsCount);
+                }
+                else {
+                    _this.setPageEnd(pageRecordsEnd);
+                }
+                _this.setRecordsCount((pageRecordsCount < pageRecordsShow) ? pageRecordsCount : recordsCount);
+            }
             if (_this.getRecordsCount() === 0) {
                 _this.setPageStart(0);
             }
             else {
                 _this.setPageStart(collection.pageRecordsStart);
             }
-            _this.setPageEnd(collection.pageRecordsEnd);
             _this.setTotalPages(collection.totalPages);
             _this.currentPage = collection.currentPage;
             _this.totalPagesArray = [];
