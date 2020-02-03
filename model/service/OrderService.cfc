@@ -1750,6 +1750,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			if(isNull(orderFulfillment)){
 				var orderFulfillment = arguments.order.getOrderFulfillments()[1];
 				orderFulfillment.setShippingMethod(arguments.orderTemplate.getShippingMethod());
+				orderFulfillment.setFulfillmentMethod(arguments.orderTemplate.getShippingMethod().getFulfillmentMethod());
 			} 
 			if(arguments.order.hasErrors()){
 				this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(arguments.order.getErrors())# when adding order item skuID: #orderTemplateItem['sku_skuID']#', true);
