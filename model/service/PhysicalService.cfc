@@ -155,7 +155,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			
 			// Upload file to temp directory
 			var documentData = fileUpload( tempDir,'countFile','','makeUnique' );
-			
+
 			//check uploaded file if its a valid text file
 			if( documentData.serverFileExt != "txt" && documentData.serverFileExt != "csv"  ){
 				

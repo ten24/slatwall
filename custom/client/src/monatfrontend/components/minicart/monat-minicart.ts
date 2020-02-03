@@ -11,10 +11,13 @@ class MonatMiniCartController {
 
 	//@ngInject
 	constructor(public monatService, public rbkeyService, public ModalService, public observerService) {
-		this.observerService.attach(this.fetchCart, 'addOrderItemSuccess');
+	
 	}
 
 	public $onInit = () => {
+		if(!this.cart){
+			this.observerService.attach(this.fetchCart, 'addOrderItemSuccess');
+		}
 		this.makeTranslations();
 
 		if (this.cart == null) {

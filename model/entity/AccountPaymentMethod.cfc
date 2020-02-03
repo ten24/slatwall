@@ -67,7 +67,7 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 	property name="nameOnCreditCard" hb_populateEnabled="public" ormType="string";
 	property name="providerToken" ormType="string";
 	property name="calculatedExpirationDate" ormType="timestamp";
-
+	
 	property name="lastExpirationUpdateAttemptDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	
 	// Related Object Properties (many-to-one)
