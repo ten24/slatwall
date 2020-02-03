@@ -64,6 +64,128 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	/**
 	* @test
 	* 
+	* Test cases for between date filter
+	*/
+	
+	public void function dateFilter_between(){
+
+		var uniqueNumberForDescription = createUUID();
+		var startDateTime = createDateTime(2018, 8, 3, 0, 0, 0);
+		
+		var productData1 = {
+			productID = '',
+			productName = 'dProduct',
+			purchaseStartDateTime = dateAdd('d', 1, startDateTime),
+			productDescription = uniqueNumberForDescription
+		};
+		createPersistedTestEntity('product', productData1);
+
+		var productData2 = {
+			productID = '',
+			productName = 'cProduct',
+			purchaseStartDateTime = dateAdd('d', 2, startDateTime),
+			productDescription = uniqueNumberForDescription
+		};
+		createPersistedTestEntity('product', productData2);
+
+		var productData3 = {
+			productID = '',
+			productName = 'bProduct',
+			purchaseStartDateTime = dateAdd('d', 3, startDateTime),
+			productDescription = uniqueNumberForDescription
+		};
+		createPersistedTestEntity('product', productData3);
+
+		var productData4 = {
+			productID = '',
+			productName = 'aProduct',
+			purchaseStartDateTime = dateAdd('d', 4, startDateTime),
+			productDescription = uniqueNumberForDescription
+		};
+		createPersistedTestEntity('product', productData4);
+		
+		var productData5 = {
+			productID = '',
+			productName = 'eProduct',
+			purchaseStartDateTime = dateAdd('d', 5, startDateTime),
+			productDescription = uniqueNumberForDescription
+		};
+		createPersistedTestEntity('product', productData5);
+
+		//Today
+		var collectionEntityData = {
+			collectionid = '',
+			collectionCode = 'exactDateProducts'&createUUID(),
+			collectionName = 'exactDateProducts'&createUUID(),
+			collectionObject = "SlatwallProduct",
+			collectionConfig = '
+				{
+				   "baseEntityAlias":"_product",
+				   "baseEntityName":"Product",
+				   "columns":[
+				      {
+				         "isDeletable":false,
+				         "isExportable":true,
+				         "propertyIdentifier":"_product.productID",
+				         "ormtype":"id",
+				         "isVisible":false,
+				         "isSearchable":true,
+				         "title":"Product ID",
+				         "key":"productID",
+				         "sorting":{
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      }
+				   ],
+				   "filterGroups":[
+				      {
+				         "filterGroup":[
+				            {
+				               "displayPropertyIdentifier":"Purchase Start Date Time",
+				               "propertyIdentifier":"_product.purchaseStartDateTime",
+				               "comparisonOperator":"between",
+				               "value":"1533303982000-1533563182000",
+				               "ormtype":"timestamp",
+				               "conditionDisplay":"In Range"
+				               
+				            },
+				            {
+				               "displayPropertyIdentifier":"Product Description",
+				               "propertyIdentifier":"_product.productDescription",
+				               "comparisonOperator":"=",
+				               "logicalOperator":"AND",
+				               "breadCrumbs":[
+				                  {
+				                     "rbKey":"Product",
+				                     "entityAlias":"_product",
+				                     "cfc":"_product",
+				                     "propertyIdentifier":"_product"
+				                  }
+				               ],
+				               "value":"#uniqueNumberForDescription#",
+				               "displayValue":"#uniqueNumberForDescription#",
+				               "ormtype":"string",
+				               "conditionDisplay":"Equals"
+				            }
+				         ]
+				      }
+				   ],
+				   "currentPage":1,
+				   "pageShow":10
+				}
+			'
+		};
+
+		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
+		var pageRecords = collectionEntity.getPageRecords();
+		assertTrue(arraylen(pageRecords) == 3,  "Wrong amount of products returned! Expecting 3 records but returned #arrayLen(pageRecords)#");
+	}
+	
+	/**
+	* @test
+	* 
 	* Test cases for today date filter
 	*/
 	public void function dateFilter_today(){
