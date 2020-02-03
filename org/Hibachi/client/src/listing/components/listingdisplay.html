@@ -367,7 +367,8 @@
                         </tr>
                     </thead>
                     <tbody data-ng-if="((swListingDisplay.collectionData.pageRecords != null && swListingDisplay.collectionData.pageRecords.length > 0) ||
-                                        (swlistingDisplay.collectionData.records != null && swListingDisplay.collectionData.records.length > 0) ) && swListingDisplay.hasNumerical() > 0"
+                                        (swlistingDisplay.collectionData.records != null && swListingDisplay.collectionData.records.length > 0) ) && swListingDisplay.hasNumerical() > 0 
+                                        && swListingDisplay.collectionConfig.enableAveragesAndSums"
                            data-listing-id="{{swListingDisplay.tableID}}"
                            
                            >
