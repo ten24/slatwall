@@ -1075,6 +1075,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var accountType = account.getAccountType();
         var holdingPriceGroups = account.getPriceGroups();
         var priceGroupCode =  (!isNull(arguments.data.priceGroupCode) && len(arguments.data.priceGroupCode)) ? arguments.data.priceGroupCode : (arrayLen(holdingPriceGroups)) ? holdingPriceGroups[1].getPriceGroupCode() : 2;
+        priceGroupCode = getHibachiScope().getCart().getPriceGroup().getPriceGroupCode() ?: priceGroupCode;
         var site = getService('SiteService').getSiteByCmsSiteID(arguments.data.cmsSiteID);
         var currencyCode = site.setting('skuCurrency');
 
