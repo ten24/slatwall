@@ -87,21 +87,6 @@ component  accessors="true" output="false"
 		
 		throw("You have attempted to call the method #arguments.methodName# which does not exist in publicService");
 	}
-	
-	/**
-     * Function to delete Account
-     * This is a test method to be used in jMeter for now,
-     * It is not part of core APIs, should be removed.
-     * @return none
-    */
-    public void function deleteJmeterAccount() {
-        if( getHibachiScope().getLoggedInFlag() ) {
-            var deleteOk = getAccountService().deleteAccount(  getHibachiScope().getAccount() );
-            getHibachiScope().addActionResult( "public:account.deleteAccount", !deleteOK );
-        } else {
-            getHibachiScope().addActionResult( "public:account.deleteAccount", true );   
-        }
-    }
     
     /**
      * Function to get Types by Type Code
@@ -110,7 +95,7 @@ component  accessors="true" output="false"
      * @return none
     */
     public void function getSystemTypesByTypeCode(required struct data){
-        param name="arguments.data.typeCode";
+        param name="arguments.data.typeCode" default="";
         
         var typeList = getService('TypeService').getTypeByTypeCode(arguments.data.typeCode);
         arguments.data.ajaxResponse['typeList'] = typeList;
@@ -124,8 +109,8 @@ component  accessors="true" output="false"
      * @return none
     */
     public void function getSkuStock(required struct data){
-        param name="arguments.data.skuID";
-        param name="arguments.data.locationID";
+        param name="arguments.data.skuID" default="";
+        param name="arguments.data.locationID" default="";
         
         var stock = getService('stockService').getCurrentStockBySkuAndLocation( arguments.data.skuID, arguments.data.locationID );
         arguments.data.ajaxResponse['stock'] = stock;
@@ -138,7 +123,7 @@ component  accessors="true" output="false"
      * @return none
     */
     public void function getProductReviews(required struct data){
-        param name="arguments.data.productID";
+        param name="arguments.data.productID" default="";
         
         var productReviews = getService('productService').getAllProductReviews(productID = arguments.data.productID);
         arguments.data.ajaxResponse['productReviews'] = productReviews;
@@ -151,7 +136,7 @@ component  accessors="true" output="false"
      * @return none
     */
     public void function getRelatedProducts(required struct data){
-        param name="arguments.data.productID";
+        param name="arguments.data.productID" default="";
         var relatedProducts = getService('productService').getAllRelatedProducts(productID = arguments.data.productID);
         arguments.data.ajaxResponse['relatedProducts'] = relatedProducts;
     }
@@ -165,7 +150,7 @@ component  accessors="true" output="false"
      * @return none
     */
     public void function getProductImageGallery(required struct data){
-        param name="arguments.data.productID";
+        param name="arguments.data.productID" default="";
         param name="arguments.data.defaultSkuOnlyFlag" default="false";
         
         var product = getService('productService').getProduct(arguments.data.productID);
@@ -187,13 +172,10 @@ component  accessors="true" output="false"
      * @return none
     */
     public void function getProductOptionsByOptionGroup(required struct data){
-        param name="arguments.data.productID";
-        param name="arguments.data.optionGroupID";
+        param name="arguments.data.productID" default="";
+        param name="arguments.data.optionGroupID" default="";
         
-        var product = getService('productService').getProduct(arguments.data.productID);
-        if(!isNull(product)) {
-            arguments.data.ajaxResponse['productOptions'] = product.getOptionsByOptionGroup(arguments.data.optionGroupID);
-        }
+        arguments.data.ajaxResponse['productOptions'] = getService('optionService').getOptionsByOptionGroup( arguments.data.productID, arguments.data.optionGroupID );
     }
     
     /**
@@ -204,7 +186,7 @@ component  accessors="true" output="false"
      **/
     public void function getAppliedPayments(required any data) {
         if( getHibachiScope().getCart().hasOrderPayment() ) {
-            var appliedPaymentMethods = getOrderService().getAppliedOrderPayments();
+            var appliedPaymentMethods = getOrderService().getAppliedOrderPayments(getHibachiScope().getCart());
             arguments.data['ajaxResponse']['appliedPayments'] = appliedPaymentMethods;
         }
     }
@@ -229,12 +211,11 @@ component  accessors="true" output="false"
      * @return none
      **/
     public void function getAvailablePaymentMethods(required any data) {
-        var paymentMethods = getHibachiScope().getCart().getEligiblePaymentMethodDetails();
-        if(arrayLen(paymentMethods)) {
-            var accountPaymentMethods = [];
-            accountPaymentMethods = getService("accountService").getAvailablePaymentMethods();
-		    arguments.data['ajaxResponse']['availablePaymentMethods'] = accountPaymentMethods;
-        }
+        
+        arguments.account = getHibachiScope().getAccount();
+        
+        var accountPaymentMethods = getService("accountService").getAvailablePaymentMethods( argumentCollection=arguments );
+	    arguments.data['ajaxResponse']['availablePaymentMethods'] = accountPaymentMethods;
     }
     
     /**
@@ -250,28 +231,19 @@ component  accessors="true" output="false"
 		    arguments.data['ajaxResponse']['availableShippingMethods'] = shippingMethods;
         }
     }
-    
-    public void function getShippingMethodOptions(required any data) {
-        var tmpOrderTemplate = getOrderService().newOrderTemplate();
-		arguments.data['ajaxResponse']['shippingMethodOptions'] = tmpOrderTemplate.getShippingMethodOptions();
-    }
 	
 	/**
      * Function to get the parent accounts of user account
      **/
     public void function getParentOnAccount(required any data) {
-        if(getHibachiScope().getAccount().hasChildAccountRelationship()) {
-            arguments.data['ajaxResponse']['parentAccount'] = getAccountService().getAllParentsOnAccount();
-        }
+        arguments.data['ajaxResponse']['parentAccount'] = getAccountService().getAllParentsOnAccount(getHibachiScope().getAccount());
     }
     
     /**
      * Function to get the child accounts of user account
      **/
     public void function getChildOnAccount(required any data) {
-        if(getHibachiScope().getAccount().hasChildAccountRelationship()) {
-            arguments.data['ajaxResponse']['childAccount'] = getAccountService().getAllChildsOnAccount();
-        }
+        arguments.data['ajaxResponse']['childAccount'] = getAccountService().getAllChildsOnAccount(getHibachiScope().getAccount());
     }
 	
 	/**
@@ -282,6 +254,9 @@ component  accessors="true" output="false"
      * @return none
      **/
     public void function getSubscriptionsUsageOnAccount(required any data) {
+        
+        arguments.account = getHibachiScope().getAccount();
+        
         var subscriptionUsage = getSubscriptionService().getSubscriptionsUsageOnAccount( argumentCollection=arguments );
         arguments.data['ajaxResponse']['subscriptionUsageOnAccount'] = subscriptionUsage;
     }
@@ -294,6 +269,7 @@ component  accessors="true" output="false"
      * @return none
      **/
     public void function getAllGiftCardsOnAccount(required any data) {
+        arguments.account = getHibachiScope().getAccount();
         var giftCards = getService('giftCardService').getAllGiftCardsOnAccount( argumentCollection=arguments);
         arguments.data['ajaxResponse']['giftCardsOnAccount'] = giftCards;
     }
@@ -306,6 +282,7 @@ component  accessors="true" output="false"
      * @return none
      **/
     public void function getAllOrderDeliveryOnAccount(required any data) {
+        arguments.account = getHibachiScope().getAccount();
         var accountOrders = getOrderService().getAllOrderDeliveryOnAccount( argumentCollection=arguments );
         arguments.data['ajaxResponse']['orderDeliveryOnAccount'] = accountOrders;
     }
@@ -318,6 +295,9 @@ component  accessors="true" output="false"
      * @return none
      **/
     public void function getAllOrderFulfillmentsOnAccount(required any data) {
+        
+        arguments.account = getHibachiScope().getAccount();
+        
         var accountOrders = getOrderService().getAllOrderFulfillmentsOnAccount( argumentCollection=arguments );
         arguments.data['ajaxResponse']['orderFulFillemntsOnAccount'] = accountOrders;
     }
@@ -330,6 +310,9 @@ component  accessors="true" output="false"
      * @return none
      **/
     public void function getAllCartsAndQuotesOnAccount(required any data) {
+        
+        arguments.account = getHibachiScope().getAccount();
+        
         var accountOrders = getOrderService().getAllCartsAndQuotesOnAccount( argumentCollection=arguments );
         arguments.data['ajaxResponse']['cartsAndQuotesOnAccount'] = accountOrders;
     }
@@ -342,6 +325,9 @@ component  accessors="true" output="false"
      * @return none
      **/ 
     public void function getAllOrdersOnAccount(required any data){
+        
+        arguments.account = getHibachiScope().getAccount();
+        
         var accountOrders = getAccountService().getAllOrdersOnAccount(
             argumentCollection=arguments );
         arguments.data['ajaxResponse']['ordersOnAccount'] = accountOrders;

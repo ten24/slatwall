@@ -192,12 +192,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
      * @param currentPage optional
      * return struct of subscriptionsUsageOnAccount and total count
      **/
-	public any function getSubscriptionsUsageOnAccount(struct data={}) {
+	public any function getSubscriptionsUsageOnAccount(required any account, struct data={}) {
         param name="arguments.data.currentPage" default=1;
         param name="arguments.data.pageRecordsShow" default= getHibachiScope().setting('GLOBALAPIPAGESHOWLIMIT');
         
 		var subscriptionUsageList = this.getSubscriptionUsageBenefitAccountCollectionList();
-		subscriptionList.addFilter( 'account.accountID', getHibachiScope().getAccount().getAccountID() );
+		subscriptionList.addFilter( 'account.accountID', arguments.account.getAccountID() );
 		subscriptionUsageList.setPageRecordsShow(arguments.data.pageRecordsShow);
 		subscriptionUsageList.setCurrentPageDeclaration(arguments.data.currentPage); 
 		
