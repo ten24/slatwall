@@ -2814,6 +2814,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}
 			}
 			catch(any e){
+				
+				if(getApplicationValue('errorDisplayFlag')){
+					rethrow;
+				}
+			
 				if(isNull(HQL)){ 
 					var HQL = '';
 				}
@@ -3008,6 +3013,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}
 			}
 			catch(any e){
+				
+				if(getApplicationValue('errorDisplayFlag')){
+					rethrow;
+				}
 				variables.records = [{'failedCollection'=e.message & ' HQL: ' & HQL}];
 				writelog(file="collection",text="Error:#e.message#");
 				writelog(file="collection",text="HQL:#HQL#");
@@ -3475,6 +3484,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			structKeyExists(arguments.filter, 'measureType')
 		) {
 			range = makeDateRangeFromCriteriaAndMeasureType(arguments.filter.criteriaNumberOf, arguments.filter.measureType, arguments.filter.measureCriteria);
+			if (listFindnocase('>=,>,gt,gte', arguments.filter.comparisonOperator)) {
+				structDelete(range, 'rangeEndValue');
+			}else if (listFindnocase('<=,<,lt,lte', arguments.filter.comparisonOperator)) {
+				structDelete(range, 'rangStartValue');
+			}
 		} else if(listfindnocase("between,not between", arguments.filter.comparisonOperator) && listLen(arguments.filter.value,'-') == 2) {// if its a full range i.e. range1-range2 
 			
 			if(listLen(arguments.filter.value,'/') > 1) { // if it's a date range dd/mm/yyyy-dd/mm/yyyy
@@ -3511,12 +3525,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 
 
-		if( StructKeyExists(range, "rangStartValue") && !isNull(range.rangStartValue) ) {
+		if( StructKeyExists(range, "rangStartValue") && len(range.rangStartValue) ) {
 			var rangeStartParamID = getParamID();
 			addHQLParam(rangeStartParamID, range.rangStartValue, arguments.filter['ormtype']);
 		}
 		
-		if( StructKeyExists(range, "rangeEndValue") && !isNull(range.rangeEndValue) ) {
+		if( StructKeyExists(range, "rangeEndValue") && len(range.rangeEndValue) ) {
 			var rangeEndParamID = getParamID();
 			addHQLParam(rangeEndParamID, range.rangeEndValue, arguments.filter['ormtype']);
 		}
@@ -4834,7 +4848,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		} catch (any e) {
 			
 			if(getApplicationValue('errorDisplayFlag')){
-				writedump(e);throw();
+				rethrow;
 			}
 			var messageDetail = e.message;
 			
