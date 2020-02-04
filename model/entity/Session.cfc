@@ -81,7 +81,8 @@ component displayname="Session" entityname="SlatwallSession" table="SwSession" p
 	 */
 	//CUSTOM PROPERTIES BEGIN
 property name="currentFlexship" type="any" cfc="OrderTemplate" fieldtype="many-to-one" fkcolumn="currentFlexshipID"; 
-//CUSTOM PROPERTIES END
+
+//CUSTOM PROPERTIES END
 	public any function getLoggedInFlag(){
 		//If this is a new session, then the user is not logged in.
 		if (getNewFlag() && !isNull(getSessionCookieExtendedPSID())){
@@ -153,7 +154,6 @@ property name="currentFlexship" type="any" cfc="OrderTemplate" fieldtype="many-t
 				var siteOrderOrigin = getService('HibachiService').getOrderOrigin(site.setting('siteOrderOrigin'));
 				requestOrder.setOrderOrigin(siteOrderOrigin);
 			}
-			
 			//Setup Site Created 
 			if(!isNull(getHibachiScope().getCurrentRequestSite())){
 				variables.requestOrder.setOrderCreatedSite(getHibachiScope().getCurrentRequestSite());
