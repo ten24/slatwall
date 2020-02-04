@@ -259,7 +259,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
         var MERGE_ARRAYS = true;
         var SHIPPED = "5";
         var CLOSEDSTATUS = getTypeService().getTypeByTypeCode(SHIPPED);
-        var MINUTES = 'n';
+        var MINUTES = '45'; //get past 45 minutes.
         
         /**
          * The page number to start with 
@@ -283,14 +283,15 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 		
 		/**
 		 * The string representation for the date twenty minutes ago. 
+		 * Uses number format to make sure each minute, second will use 2 places
 		 **/
-		var startDate = "#year(twentyMinutesAgo)#-#month(twentyMinutesAgo)#-#day(twentyMinutesAgo)#T#hour(twentyMinutesAgo)#:#minute(twentyMinutesAgo)#:#second(now())#.693Z";
-		
+	    startDate = "#year(twentyMinutesAgo)#-#numberFormat(month(twentyMinutesAgo),'00')#-#numberFormat(day(twentyMinutesAgo),'00')#T#numberformat(hour(twentyMinutesAgo),'00')#:#numberformat(minute(twentyMinutesAgo), '00')#:#numberformat(second(twentyMinutesAgo), '00')#.693Z";
+	
 		/**
 		 * This should always equal now.
 		 **/
-		var endDate =  "#year(now())#-#month(now())#-#day(now())#T#hour(now())#:#minute(now())#:#second(now())#.693Z";
-		
+        endDate =  "#year(now())#-#numberFormat(month(now()),'00')#-#numberFormat(day(now()),'00')#T#numberFormat(hour(now()),'00')#:#numberformat(minute(now()), '00')#:#numberformat(second(now()), '00')#.693Z";
+	
 		/**
 		 * You can pass in a start date or end date in the rc 
 		 **/
