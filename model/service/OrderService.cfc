@@ -1785,7 +1785,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			processOrderAddOrderItem.setOrderFulfillmentID(orderFulfillment.getOrderFulfillmentID());
 		} 	
 
-		arguments.order = this.processOrder_addOrderItem(arguments.order, processOrderAddOrderItem);
+		processOrderAddOrderItem.setPreProcessDisplayedFlag(1); //this's a hacky way to pass the the validation;
+		processOrderAddOrderItem.validate( context="addOrderItem");
+		
+		if( processOrderAddOrderItem.hasErrors() ){
+			arguments.order.addErrors(processOrderAddOrderItem.getErrors());
+		} else {
+			arguments.order = this.processOrder_addOrderItem(arguments.order, processOrderAddOrderItem);
+		}
 		return arguments.order;
 	}
 

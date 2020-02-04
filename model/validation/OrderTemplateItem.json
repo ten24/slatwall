@@ -2,6 +2,7 @@
 	"conditions": {},
 	"properties": {
 		"sku": [{ "contexts": "save", "required": true }],
+		"sku.price": [{ "contexts": "addOrderTemplateItem,save", "required": true, "dataType": "numeric", "minValue": 0 }],
 		"quantity": [{ "contexts": "save", "required": true }]
 	}
 }

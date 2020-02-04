@@ -83,7 +83,7 @@ component accessors="true" extends="Slatwall.model.process.Order_AddOrderItem" {
         }
         var renewalDateCheck=DateDiff("d", currentDate, accountRenewalDate);
         
-        if( this.getProduct().getProductType().getSystemCode() == renewalFeeSystemCode){
+        if( !IsNull(this.getProduct()) && this.getProduct().getProductType().getSystemCode() == renewalFeeSystemCode){
             if( this.getAccount().getAccountType() == 'marketPartner' &&
                 renewalDateCheck <= orderMinimumDaysToRenewMPSetting 
             ){
