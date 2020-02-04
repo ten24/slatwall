@@ -183,6 +183,7 @@ property name="personalVolume" ormtype="big_decimal";
 	property name="mainCreditCardExpirationDate" persistent="false";
 	property name="mainPromotionOnOrder" persistent="false";
 
+	
     property name="calculatedExtendedPersonalVolume" ormtype="big_decimal" hb_formatType="none";
     property name="calculatedExtendedTaxableAmount" ormtype="big_decimal" hb_formatType="none";
     property name="calculatedExtendedCommissionableVolume" ormtype="big_decimal" hb_formatType="none";
@@ -1518,5 +1519,6 @@ public void function refreshAmounts(){
         if(structKeyExists(variables,'retailValueVolume')){
             structDelete(variables,'retailValueVolume');
         }
-    }//CUSTOM FUNCTIONS END
+    }
+//CUSTOM FUNCTIONS END
 }

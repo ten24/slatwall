@@ -71,7 +71,8 @@ export class OrderTemplateService {
                 public observerService,
                 public rbkeyService,
                 public requestService,
-                public utilityService
+                public utilityService,
+                public alertService
     ){
         this.observerService.attach(this.addOrderTemplateItem, 'addOrderTemplateItem');
         this.observerService.attach(this.addPromotionalOrderTemplateItem, 'addPromotionalOrderTemplateItem')
@@ -274,6 +275,19 @@ export class OrderTemplateService {
 	}
  
     public addOrderTemplateItem = (state) =>{
+        
+        		
+	    if(isNaN(parseFloat(state.priceByCurrencyCode))) {
+
+	        var alert = this.alertService.newAlert();
+            alert.msg = this.rbkeyService.rbKey("validate.processOrder_addOrderitem.price.notIsDefined");
+            alert.type = "error";
+            alert.fade = true;
+            this.alertService.addAlert(alert);
+	        
+			this.observerService.notify("addOrderItemStopLoading", {});
+			return;
+		} 
         
         var formDataToPost:any = {
 			entityID: this.orderTemplateID,
