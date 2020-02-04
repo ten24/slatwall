@@ -446,6 +446,24 @@ component extends="HibachiService" accessors="true" {
 		}
 		return result;
 	}
+	
+	public any function getAllRelatedProducts(required any productID) {
+		var relatedProducts = this.getProductRelationshipCollectionList();
+		relatedProducts.setDisplayProperties("relatedProduct.productID, relatedProduct.calculatedQATS, relatedProduct.calculatedProductRating, relatedProduct.activeFlag, relatedProduct.urlTitle, relatedProduct.productName");
+		relatedProducts.addFilter("product.productID",arguments.productID);
+		relatedProducts.addFilter("product.activeFlag",1);
+		relatedProducts = relatedProducts.getRecords(formatRecords=false);
+		return relatedProducts;
+	}
+
+	public any function getAllProductReviews(required any productID) {
+		var relatedProducts = this.getProductReviewCollectionList();
+		relatedProducts.setDisplayProperties("reviewerName, review, reviewTitle, rating, activeFlag");
+		relatedProducts.addFilter("product.productID",arguments.productID);
+		relatedProducts.addFilter("product.activeFlag",1);
+		relatedProducts = relatedProducts.getRecords(formatRecords=false);
+		return relatedProducts;
+	}
 
 
 	// =====================  END: Logical Methods ============================

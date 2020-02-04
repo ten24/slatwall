@@ -83,4 +83,10 @@ Notes:
 		<cfreturn options />
 	</cffunction>
 	
+	<cffunction name="getTypeByTypeCode" output="false" access="public">
+		<cfargument name="typeCode" type="string" required="true" >
+
+		<cfreturn ormExecuteQuery("SELECT atype FROM SlatwallType atype WHERE atype.typeCode = ? ORDER BY sortOrder ASC", [arguments.typeCode], true) />
+	</cffunction>
+	
 </cfcomponent>

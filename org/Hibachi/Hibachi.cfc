@@ -1038,9 +1038,8 @@ component extends="framework.one" {
 			getHibachiScope().setPersistSessionFlag(false);
 		}
 		
-		if(!isAPIGetRequest()){
-			endHibachiLifecycle();
-		}
+		endHibachiLifecycle();
+		
 		// Announce the applicationRequestStart event
 		getHibachiScope().getService("hibachiEventService").announceEvent(eventName="onApplicationRequestEnd");
 		
@@ -1049,7 +1048,7 @@ component extends="framework.one" {
 		}
 
 		// Check for an API Response
-		if(isAPIRequest()) {
+		if(arguments.rc.apiRequest) {
 			renderApiResponse();
 		}
 
