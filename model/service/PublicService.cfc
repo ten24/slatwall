@@ -185,10 +185,8 @@ component  accessors="true" output="false"
      * @return none
      **/
     public void function getAppliedPayments(required any data) {
-        if( getHibachiScope().getCart().hasOrderPayment() ) {
-            var appliedPaymentMethods = getOrderService().getAppliedOrderPayments(getHibachiScope().getCart());
-            arguments.data['ajaxResponse']['appliedPayments'] = appliedPaymentMethods;
-        }
+        
+        arguments.data['ajaxResponse']['appliedPayments'] = getOrderService().getAppliedOrderPayments(getHibachiScope().getCart());
     }
     
     /**
@@ -198,10 +196,8 @@ component  accessors="true" output="false"
      * @return none
      **/
     public void function getAppliedPromotionCodes(required any data) {
-        var promotionCodes = getHibachiScope().getCart().getAllAppliedPromotions();
-        if(arrayLen(promotionCodes)) {
-		    arguments.data['ajaxResponse']['appliedPromotionCodes'] = promotionCodes;
-        }
+        
+        arguments.data['ajaxResponse']['appliedPromotionCodes'] = getHibachiScope().getCart().getAllAppliedPromotions();
     }
     
     /**
