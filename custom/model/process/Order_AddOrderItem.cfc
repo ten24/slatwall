@@ -116,8 +116,8 @@ component accessors="true" extends="Slatwall.model.process.Order_AddOrderItem" {
 			&& !isNull(date)
 			&& dateDiff("d", date, now()) <= initialEnrollmentPeriodForMarketPartner){
 			
-			//If this order is more than 200 pounds, fails.  
-			if (order.getTotal() > maxAmountAllowedToSpendDuringInitialEnrollmentPeriod){
+			//If adding the order item will increase the order to over 200 EU return false  
+			if ((order.getTotal() + this.getPrice()) > maxAmountAllowedToSpendDuringInitialEnrollmentPeriod){
 			    return false; // they already have too much.
 			}
 	    }
