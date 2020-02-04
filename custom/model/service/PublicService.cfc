@@ -1088,9 +1088,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         */
         
-        if(!isNull(order.getPriceGroup()) && !isNull(order.getPriceGroup().getPriceGroupCode())){ //order price group
+        if(!isNull(order.getPriceGroup())){ //order price group
             priceGroupCode = order.getPriceGroup().getPriceGroupCode();
-        }else if(!isNull(arguments.data.priceGroupCode) && len(arguments.data.priceGroupCode)){ //argumen price group
+        }else if(!isNull(arguments.data.priceGroupCode) && len(arguments.data.priceGroupCode)){ //argument price group
             priceGroupCode = arguments.data.priceGroupCode;
         }else if(!isNull(holdingPriceGroups) && arrayLen(holdingPriceGroups)){ //account price group
             priceGroupCode = holdingPriceGroups[1].getPriceGroupCode();
@@ -1488,6 +1488,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var priceGroup = (arguments.upgradeType == 'VIP') ? getService('PriceGroupService').getPriceGroupByPriceGroupCode(3) : getService('PriceGroupService').getPriceGroupByPriceGroupCode(1);
         var monatOrderType = (arguments.upgradeType == 'VIP') ? getService('TypeService').getTypeByTypeCode('motVipEnrollment') : getService('TypeService').getTypeByTypeCode('motMpEnrollment');
         var order = getHibachiScope().getCart();
+        
         order.setUpgradeFlag(true);
         order.setMonatOrderType(monatOrderType);
         order.setAccountType(upgradeAccountType);
@@ -1501,14 +1502,19 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		
     }
     
+    //Removes upgraded status from an order
      public any function removeUpdgradeOnOrder(){
         var account = getHibachiScope().getAccount();
         var accountType=account.getAccountType() ?: 'customer';
         var holdingPriceGroup = account.getPriceGroups();
-        var priceGroup = (!isNull(holdingPriceGroup) && arrayLen(holdingPriceGroup)) ? holdingPriceGroup.getPriceGroupCode() : 2; // set to retail by default
         var order = getHibachiScope().getCart();
+        
+        // First check for a price group on the account, then default to retail price group
+        var priceGroup = (!isNull(holdingPriceGroup) && arrayLen(holdingPriceGroup)) ? holdingPriceGroup[1] : getService('priceGroupService').getPriceGroupByPriceGroupCode(2); 
+        
+      
         order.setUpgradeFlag(false);
-        order.setMonatOrderType('');
+        order.setMonatOrderType(javacast("null",""));
         order.setAccountType(accountType);
         order.setPriceGroup(priceGroup); 
         return order;
