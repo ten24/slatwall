@@ -1814,16 +1814,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		orderTemplateItemCollectionList.addFilter('orderTemplate.orderTemplateID', arguments.orderTemplate.getOrderTemplateID()); 
 		orderTemplateItemCollectionList.addFilter('sku.skuID', processObject.getSku().getSkuID());
 
-		if( IsNull(
-				arguments.processObject.getSku().getPriceByCurrencyCode(
-					arguments.orderTemplate.getCurrencyCode(),
-					arguments.processObject.getQuantity(),
-					arguments.orderTemplate.getAccount().getPriceGroups()
-				)
-			)
-		) {
-			arguments.orderTemplate.addError(
-				'priceByCurrencyCode', 
+		var priceByCurrencyCode = arguments.processObject.getSku().getPriceByCurrencyCode(
+							currencyCode = arguments.orderTemplate.getCurrencyCode(),
+							quantity = arguments.processObject.getQuantity(),
+							priceGroups = 	arguments.orderTemplate.getAccount().getPriceGroups()
+						);
+						
+		if( IsNull(priceByCurrencyCode) ) {
+			arguments.orderTemplate.addError('priceByCurrencyCode', 
 				rbKey('validate.processOrderTemplate_addOrderTemplateItem.sku.hasPriceByCurrencyCode')
 			);
 		
