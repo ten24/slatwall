@@ -190,19 +190,36 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		} else {
 			var account = getHibachiScope().getAccount();
 		}
-		
+        
+        /*
+            Price group is prioritized as so: 
+                1.Order price group
+                2.Price group passed in as argument
+                3. Price group on account
+                4. Default to 2
+        
+        */
+        
+        if(!isNull(order.getPriceGroup())){ 
+            var priceGroup = order.getPriceGroup(); //order price group
+        }else if(!isNull(account.getPriceGroups()) && arrayLen(account.getPriceGroups())){ 
+            var priceGroup = account.getPriceGroups()[1]; //account price group
+        }else{
+        	var priceGroup = getService('priceGroupService').getPriceGroupByPriceGroupCode(2) // default to retail
+        }
+        
 		if(
 			!structKeyExists(variables, "price") 
 			|| ( 
 				!isNull(getSku()) && 
 				isNull(getOldQuantity()) && 
-				variables.price == getSku().getPriceByCurrencyCode( currencyCode=getCurrencyCode(), account=account.getAccountID() ) 
+				variables.price == getSku().getPriceByCurrencyCode( currencyCode=getCurrencyCode(), priceGroups=[priceGroup], account=account.getAccountID() ) 
 			)
 			|| ( 
 				!isNull(getSku()) && 
 				!isNull(getOldQuantity()) && 
 				getOldQuantity() != getQuantity() && 
-				variables.price == getSku().getPriceByCurrencyCode(currencyCode=getCurrencyCode(), quantity=getOldQuantity(),accountID=account.getAccountID()) )
+				variables.price == getSku().getPriceByCurrencyCode(currencyCode=getCurrencyCode(), quantity=getOldQuantity(), priceGroups=[priceGroup], accountID=account.getAccountID()) )
 		){
 			variables.price = 0;
 			if(!isNull(getSku())) {
