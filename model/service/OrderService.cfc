@@ -1816,7 +1816,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		if( IsNull(
 				arguments.processObject.getSku().getPriceByCurrencyCode(
-					arguments.orderTemplate.getCurrencyCode() ?: 'USD',
+					arguments.orderTemplate.getCurrencyCode(),
 					arguments.processObject.getQuantity(),
 					arguments.orderTemplate.getAccount().getPriceGroups()
 				)
