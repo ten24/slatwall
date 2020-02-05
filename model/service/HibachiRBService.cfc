@@ -49,6 +49,7 @@ Notes:
 component accessors="true" extends="Slatwall.org.Hibachi.HibachiRBService" {
 
 	property name="integrationService" type="any";
+	property name="hibachiJsonService" type="any";
 
 	// Override the getResourceBundle method so that we can look in other places as well
 	public struct function getResourceBundle(required string locale="en_us") {
@@ -102,7 +103,8 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiRBService" {
 			StructDelete( variables.resourceBundles[ arguments.locale ], arguments.key );
 		}
 		
-		//TODO: recreate the file
+		//TODO: update for across-servers and performance
+		getHibachiJsonService().createRBJson();
 	}
 	
 
