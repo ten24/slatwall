@@ -8,7 +8,7 @@
 		];
 		
 		for ( var attributeCode in attributeCodes ) {
-			queryExecute("UPDATE swattribute SET attributeInputType = 'wysiwyg' WHERE attributeCode = '#attributeCode#' LIMIT 1");
+			queryExecute("UPDATE swattribute SET attributeInputType = 'wysiwyg' WHERE attributeCode = '#attributeCode#'");
 			queryExecute("ALTER TABLE swproduct MODIFY COLUMN #attributeCode# VARCHAR(4000)");
 		}
 	} catch(e) {
