@@ -90,7 +90,7 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiRBService" {
 
 	    var rbkeysStruct =  StructNew();
 	    for(var i = 1; i<= arrayLen(records); i++){
-            rbkeysStruct["#records[i]['resourceBundleKey']#"] = records[i]['resourcebundleValue'];
+            rbkeysStruct[ records[i]['resourceBundleKey'] ] = records[i]['resourcebundleValue'];
 	    }
 
 	    return rbkeysStruct;

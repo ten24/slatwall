@@ -68,6 +68,6 @@ component displayname="ResourceBundle" entityname="SlatwallResourceBundle" table
 	
 	
 	public string function getSimpleRepresentationPropertyName() {
-		return "resourcebundleKey";
+		return "resourceBundleKey";
 	}
 }
