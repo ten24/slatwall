@@ -1526,7 +1526,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     }
     
     //Removes upgraded status from an order
-     public any function removeUpdgradeOnOrder(){
+     public any function removeUpgradeOnOrder(){
         var account = getHibachiScope().getAccount();
         var accountType=account.getAccountType() ?: 'customer';
         var holdingPriceGroup = account.getPriceGroups();
