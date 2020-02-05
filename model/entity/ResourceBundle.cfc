@@ -46,9 +46,9 @@ extends="HibachiEntity" hb_serviceName="resourcBundleService" hb_permission="thi
 
 	// Persistent Properties
 	property name="resourceBundleID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="resourcebundleKey" ormtype="string";
+	property name="resourceBundleKey" ormtype="string";
 	property name="resourceBundleLocale"  ormtype="string";
-	property name="resourcebundleValue"  ormtype="string";
+	property name="resourceBundleValue"  ormtype="string";
 	property name="activeFlag" ormtype="boolean" default=true;
 	
 

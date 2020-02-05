@@ -47,8 +47,8 @@ Notes:
 	<cfset rbKeyCollectionList = getHibachiScope().getService('resourcBundleService').getResourceBundleCollectionList()>
 	<hb:HibachiListingDisplay 
 	    collectionList="#rbKeyCollectionList#"
-		recordEditAction="admin:entity.edit#lcase(rbKeyCollectionList.getCollectionObject())#"
-		recordDetailAction="admin:entity.detail#lcase(rbKeyCollectionList.getCollectionObject())#"
+		recordEditAction="admin:entity.editresourcebundle"
+		recordDetailAction="admin:entity.detailresourcebundle"
 	>
 	</hb:HibachiListingDisplay>
 
