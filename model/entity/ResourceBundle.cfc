@@ -41,13 +41,15 @@
     of the program, but you are not obligated to do so.
 Notes:
 */
-component displayname="ResourceBundle" entityname="SlatwallResourceBundle" table="SwResourceBundle" persistent="true" accessors="true" 
-extends="HibachiEntity" hb_serviceName="resourcBundleService" hb_permission="this" {
+component displayname="ResourceBundle" entityname="SlatwallResourceBundle" table="SwResourceBundle" 
+persistent="true" accessors="true"
+extends="HibachiEntity" hb_serviceName="resourcBundleService" 
+hb_permission="this" {
 
 	// Persistent Properties
 	property name="resourceBundleID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="resourceBundleKey" ormtype="string";
-	property name="resourceBundleLocale"  ormtype="string";
+	property name="resourceBundleLocale"  ormtype="string" hb_formFieldType="select";
 	property name="resourceBundleValue"  ormtype="string";
 	property name="activeFlag" ormtype="boolean" default=true;
 	
@@ -60,7 +62,12 @@ extends="HibachiEntity" hb_serviceName="resourcBundleService" hb_permission="thi
 
 	// Non-Persistent Properties
 	
-	
+	public array function getResourceBundleLocaleOptions(){
+	    if(!StructKeyExists(variables, 'resourceBundleLocaleOptions') ) {
+	        variables.resourceBundleLocaleOptions = getService('hibachiRBService').getAvailableLocaleOptions();
+	    }
+	    return variables.resourceBundleLocaleOptions; 
+	}
 	
 	
 	public string function getSimpleRepresentationPropertyName() {

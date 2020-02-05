@@ -37,6 +37,7 @@ Notes:
 */
 component extends="HibachiService" persistent="false" accessors="true" output="false" {
 
+    property name="hibachiRBService" type="any";
 
 	// ===================== START: Logical Methods ===========================
 
@@ -51,7 +52,21 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// =====================  END: Process Methods ============================
 
 	// ====================== START: Save Overrides ===========================
+	public any function saveResourceBundle(required any resourceBundle, required struct data) {
 
+		arguments.resourceBundle = super.save(arguments.resourceBundle, arguments.data);
+
+		if(!resourceBundle.hasErrors()){
+            //update the cache
+            getHibachiRBService().updateCachedResourceBunbleValueByKeyAndLocale(
+                arguments.resourceBundle.getResourceBundleKey(),
+                arguments.resourceBundle.getResourceBundleLocale(),
+                arguments.resourceBundle.getResourceBundleValue()
+            );
+		}
+
+		return arguments.resourceBundle;
+	}
 	// ======================  END: Save Overrides ============================
 
 	// ==================== START: Smart List Overrides =======================
@@ -64,5 +79,19 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	// ===================== START: Delete Overrides ==========================
 
+	public any function deleteResourceBundle(any resourceBundle) {
+		var deleteOK = super.delete(arguments.resourceBundle);
+		
+		if(deleteOK){
+		    
+		    //update the cache
+		    getHibachiRBService().updateCachedResourceBunbleValueByKeyAndLocale(
+		        arguments.resourceBundle.getResourceBundleKey(),
+		        arguments.resourceBundle.getResourceBundleLocale()
+		    );
+		}
+		return deleteOK;
+	}
+	
 	// =====================  END: Delete Overrides ===========================
 }

@@ -94,4 +94,16 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiRBService" {
 
 	    return rbkeysStruct;
 	}
+	
+	public void function updateCachedResourceBunbleValueByKeyAndLocale(required string key, required string locale, string value=""){
+		if(StructKeyExists(arguments, 'value') && len( trim(arguments.value) ) ){
+			variables.resourceBundles[ arguments.locale ][arguments.key] = arguments.value;
+		} else {
+			StructDelete( variables.resourceBundles[ arguments.locale ], arguments.key );
+		}
+		
+		//TODO: recreate the file
+	}
+	
+
 }

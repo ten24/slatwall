@@ -45,8 +45,24 @@ Notes:
 <hb:HibachiEntityActionBar type="listing" object="#rc.resourceBundleSmartList#" showCreate="true">
 </hb:HibachiEntityActionBar>
 	<cfset rbKeyCollectionList = getHibachiScope().getService('resourcBundleService').getResourceBundleCollectionList()>
+
+	<cfset serchableDisplayProperties = "resourceBundleKey,resourceBundleValue,resourceBundleLocale,activeFlag"/>
+	<cfset rbKeyCollectionList.setDisplayProperties(serchableDisplayProperties, {
+		isVisible=true,
+		isSearchable=true,
+		isDeletable=true
+	})/>
+	
+	<cfset rbKeyCollectionList.addDisplayProperty(displayProperty='resourceBundleID', columnConfig={
+		isVisible=false,
+		isSearchable=false,
+		isDeletable=false
+	})/>
+	
 	<hb:HibachiListingDisplay 
 	    collectionList="#rbKeyCollectionList#"
+		usingPersonalCollection="true"
+		personalCollectionKey='#request.context.entityactiondetails.itemname#'
 		recordEditAction="admin:entity.editresourcebundle"
 		recordDetailAction="admin:entity.detailresourcebundle"
 	>
