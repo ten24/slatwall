@@ -207,7 +207,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
         }else{
         	var priceGroup = getService('priceGroupService').getPriceGroupByPriceGroupCode(2) // default to retail
         }
-        
+
 		if(
 			!structKeyExists(variables, "price") 
 			|| ( 
