@@ -71,6 +71,6 @@ hb_permission="this" {
 	
 	
 	public string function getSimpleRepresentationPropertyName() {
-		return "resourcebundleKey";
+		return "resourceBundleKey";
 	}
 }
