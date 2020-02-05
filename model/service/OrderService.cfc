@@ -1570,11 +1570,22 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		newOrder.setOrderTemplate(arguments.orderTemplate);
 		newOrder.setBillingAccountAddress(arguments.orderTemplate.getBillingAccountAddress()); 
 		newOrder.setShippingAccountAddress(arguments.orderTemplate.getShippingAccountAddress());  
-
 		newOrder = this.saveOrder(order=newOrder, updateOrderAmounts=false, updateOrderAmount=false, updateShippingMethodOptions=false, checkNewAccountAddressSave=false); 
-
 		newOrder = this.createOrderItemsFromOrderTemplateItems(newOrder,arguments.orderTemplate);
-
+		
+		
+		if (arrayLen(newOrder.getOrderFulfillments())){
+			var orderFulfillment = newOrder.getOrderFulfillments()[1];
+			if (!isNull(orderFulfillment)){
+				orderFulfillment.setShippingMethod(arguments.orderTemplate.getShippingMethod());
+				orderFulfillment.setFulfillmentMethod(arguments.orderTemplate.getShippingMethod().getFulfillmentMethod());
+			}
+		}
+		
+		if (!orderFulfillment.hasErrors()){
+			this.saveOrderFulfillment(orderFulfillment);
+		}
+		
 		var promotionCodes = arguments.orderTemplate.getPromotionCodes();
 
 		for(var promotionCode in promotionCodes){
@@ -1746,12 +1757,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 			
 			arguments.order = this.addOrderItemFromTemplateItem(argumentCollection=args);
-			
-			if(isNull(orderFulfillment)){
-				var orderFulfillment = arguments.order.getOrderFulfillments()[1];
-				orderFulfillment.setShippingMethod(arguments.orderTemplate.getShippingMethod());
-				orderFulfillment.setFulfillmentMethod(arguments.orderTemplate.getShippingMethod().getFulfillmentMethod());
-			} 
+		
 			if(arguments.order.hasErrors()){
 				this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(arguments.order.getErrors())# when adding order item skuID: #orderTemplateItem['sku_skuID']#', true);
 				arguments.order.clearHibachiErrors();
@@ -1760,6 +1766,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				continue;
 			}
 		}
+		
 		return arguments.order;
 	}
 	

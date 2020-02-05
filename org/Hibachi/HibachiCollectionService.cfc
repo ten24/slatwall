@@ -908,6 +908,9 @@ component output="false" accessors="true" extends="HibachiService" {
 			
 			if(structKeyExists(collectionOptions,'listingSearchConfig')){
 				arguments.collectionEntity.getCollectionConfigStruct()['listingSearchConfig'] = collectionOptions.listingSearchConfig;
+				if (structKeyExists(collectionOptions.listingSearchConfig,'limitCountTotal')){
+					arguments.collectionEntity.setLimitCountTotal(collectionOptions.listingSearchConfig.limitCountTotal);
+				}
 			}
 
 			var defaultPropertyIdentifiers = getPropertyIdentifierArray('collection');
