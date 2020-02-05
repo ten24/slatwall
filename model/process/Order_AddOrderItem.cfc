@@ -227,6 +227,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 				var priceByCurrencyCode = getSku().getPriceByCurrencyCode( 
 													currencyCode=getCurrencyCode(), 
 													quantity=getQuantity(), 
+													priceGroups=[priceGroup],
 													accountID=account.getAccountID()
 												);
 				
