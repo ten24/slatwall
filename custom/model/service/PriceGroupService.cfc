@@ -16,7 +16,6 @@ component extends="Slatwall.model.service.priceGroupService" accessors="true" {
 
 			arguments.order.setPriceGroupCacheKey(priceGroupCacheKey);
 			var orderItems = arguments.order.getOrderItems(); 
-			var priceGroupService = getService("priceGroupService");
 			for(var orderItem in orderItems){
 				orderItem.setAppliedPriceGroup( priceGroup );
 				orderItem.refreshAmounts();
