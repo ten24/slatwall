@@ -441,7 +441,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			for(var orderItem in orderItems){
 				orderItem.removeAppliedPriceGroup();
 	
-				if(!isNull(arguments.order.getAccount()) && !isNull(orderItem.getOrder().getPriceGroup())){
+				if(!isNull(arguments.order.getAccount()) && isNull(orderItem.getOrder().getPriceGroup())){
 					
 					if(arrayLen(getService("currencyService").getCurrencyOptions()) > 1){
 						var priceGroupDetails = getBestPriceGroupDetailsBasedOnSkuAndAccountAndCurrencyCode(orderItem.getSku(), arguments.order.getAccount(),arguments.order.getCurrencyCode());
