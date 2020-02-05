@@ -466,7 +466,11 @@ component  accessors="true" output="false"
         
         var accountAddress = getAccountService().getAccountAddress( data.accountAddressID );
         
-        if(!isNull(accountAddress) && accountAddress.getAccount().getAccountID() == getHibachiScope().getAccount().getAccountID() ) {
+        if(!isNull(accountAddress) &&
+            !IsNull(accountAddress.getAccount()) &&
+            getHibachiScope().getLoggedInFlag()  &&
+            accountAddress.getAccount().getAccountID() == getHibachiScope().getAccount().getAccountID() 
+        ) {
             
             getDao('AccountAddressDAO').deleteDependentRelationsByAccountAddressID(data.accountAddressID);
             

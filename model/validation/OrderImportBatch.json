@@ -1,0 +1,12 @@
+{   
+    "conditions":{
+        "batchProcessed":{
+            "orderImportBatchStatusType.systemCode":{
+                "neq":"oibstNew"
+            }
+        }
+    },
+    "properties":{
+        "orderImportBatchID": [{ "contexts": "delete,edit", "conditions":"batchProcessed", "maxValue": 0 }]
+    }
+}

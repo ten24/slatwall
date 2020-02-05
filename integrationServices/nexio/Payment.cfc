@@ -721,7 +721,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 		}
 		// Request Data
 		var requestData = {};
-		
+		var responseBean = getTransient('DataResponseBean');
 		var responseData = sendHttpAPIRequest(arguments.requestBean, responseBean, 'cardView', requestData);
 		
 		if( StructKeyExists(responseData,'card') ) { //Success
