@@ -17,5 +17,6 @@
 		<Record updateScriptID="8d4ab5h1db5311ea9fa612bff9d404c8" scriptPath="database/workflowserverlock.cfm" loadOrder="108" maxExecutionCount="1" />
 		<Record updateScriptID="9d4ab5h1dj4311ea9fa612bff9d404c8" scriptPath="database/muracomponenttranslates.cfm" loadOrder="109" maxExecutionCount="1" />
 		<Record updateScriptID="8d4ab5h1db5311ea9fa612bff9d404c9" scriptPath="database/customproperties.cfm" loadOrder="110" maxExecutionCount="1" />
+		<Record updateScriptID="8d4ab5h1db5311ea9fa612bff9d404c2" scriptPath="database/extendeddescriptionattrs.cfm" loadOrder="111" maxExecutionCount="1" />
 	</Records> 
 </Table>
