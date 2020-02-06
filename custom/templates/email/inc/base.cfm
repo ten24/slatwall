@@ -21,7 +21,7 @@
 			</cfcase>
 			<cfdefaultcase>
 				<!-----MARKET PARTER TEMPLATE HERE ----->
-					#templateObject.stringReplace( emailTemplate.getFormattedValue(propertyName='CustomerBody',locale=locale),true )#
+					#templateObject.stringReplace( emailTemplate.getFormattedValue(propertyName='MarketPartner',locale=locale),true )#
 			</cfdefaultcase>
 		</cfswitch>
 	
