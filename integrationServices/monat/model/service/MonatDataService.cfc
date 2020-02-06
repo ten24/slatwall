@@ -249,9 +249,9 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
         logHibachi("Begin importing order deliveries.");
         /**
          * Allows the user to override the last n minutes that get checked. 
-         * Defaults to 20 minutes.
+         * Defaults to 60 minutes.
          **/
-        var intervalOverride = rc.intervalOverride ?: 20;
+        var intervalOverride = rc.intervalOverride ?: 60;
         
         /**
          * CONSTANTS 
@@ -277,20 +277,24 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 		var pageMax = rc.pageMax?:1;
 		
 		/**
-		 * The date and time from 20 minutes ago.
+		 * The date and time from an hour ago.
 		 **/
-		var twentyMinutesAgo = DateAdd(MINUTES, -intervalOverride, now());
+		var sixtyMinutesAgo = DateAdd(MINUTES, -intervalOverride, now());
 		
 		/**
 		 * The string representation for the date twenty minutes ago. 
+		 * Uses number format to make sure each minute, second will use 2 places.
+		 * This checks for the last hour of deliveries every 15 minutes.
+		 * This only adds a delivery IF its not already delivered, so we can do that.
+		 * 
 		 **/
-		var startDate = "#year(twentyMinutesAgo)#-#month(twentyMinutesAgo)#-#day(twentyMinutesAgo)#T#hour(twentyMinutesAgo)#:#minute(twentyMinutesAgo)#:#second(now())#.693Z";
-		
+	    var startDate = "#year(sixtyMinutesAgo)#-#numberFormat(month(sixtyMinutesAgo),'00')#-#numberFormat(day(sixtyMinutesAgo),'00')#T#numberformat(hour(sixtyMinutesAgo),'00')#:#numberformat(minute(sixtyMinutesAgo), '00')#:#numberformat(second(sixtyMinutesAgo), '00')#.693Z";
+	
 		/**
 		 * This should always equal now.
 		 **/
-		var endDate =  "#year(now())#-#month(now())#-#day(now())#T#hour(now())#:#minute(now())#:#second(now())#.693Z";
-		
+        var endDate =  "#year(now())#-#numberFormat(month(now()),'00')#-#numberFormat(day(now()),'00')#T#numberFormat(hour(now()),'00')#:#numberformat(minute(now()), '00')#:#numberformat(second(now()), '00')#.693Z";
+	
 		/**
 		 * You can pass in a start date or end date in the rc 
 		 **/
