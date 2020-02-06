@@ -1,7 +1,7 @@
 <cfparam name="email" type="any" />	
 <cfparam name="emailData" type="struct" default="#structNew()#" />
-<cfparam name="orderTemplate" type="any" />
+<cfparam name="order" type="any" />
 
-<cfset accountType = orderReturn.getAccount().getAccountType() ?: 'customer' />
+<cfset accountType = order.getAccount().getAccountType() ?: 'customer' />
 
 <cfinclude template="../inc/base.cfm" />

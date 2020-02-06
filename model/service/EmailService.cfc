@@ -256,7 +256,6 @@ Notes:
 	<cfscript>
 
 	public any function processEmail_createFromTemplate(required any email, required struct data) {
-
 		if(structKeyExists(arguments.data, "emailTemplate") && isObject(arguments.data.emailTemplate)) {
 			var emailTemplate = arguments.data.emailTemplate;
 		} else if(structKeyExists(arguments.data, "emailTemplateID")) {
@@ -275,7 +274,6 @@ Notes:
 				// Set the template object from the passed ID
 				var templateObject = getServiceByEntityName( emailTemplate.getEmailTemplateObject() ).invokeMethod("get#emailTemplate.getEmailTemplateObject()#", {1=arguments.data[ templateObjectIDProperty ]});
 			}
-
 			if(!isNull(templateObject) && isObject(templateObject) && structKeyExists(templateObject, "stringReplace")) {
 				
 				
@@ -321,7 +319,11 @@ Notes:
 				arguments.email.populate( local.emailData );
 
 				// Do a second string replace for any additional keys added to emailData
-				arguments.email.setEmailTo( getHibachiUtilityService().replaceStringTemplate(template=nullReplace(arguments.email.getEmailTo(), ""), object=emailData) );
+				arguments.email.setEmailTo( 
+				    getHibachiUtilityService().replaceStringTemplate(
+				        template=nullReplace(arguments.email.getEmailTo(), ""),
+				        object=emailData) 
+				    );
 				arguments.email.setEmailFrom( getHibachiUtilityService().replaceStringTemplate(template=nullReplace(arguments.email.getEmailFrom(), ""), object=emailData) );
 				arguments.email.setEmailCC( getHibachiUtilityService().replaceStringTemplate(template=nullReplace(arguments.email.getEmailCC(), ""), object=emailData) );
 				arguments.email.setEmailBCC( getHibachiUtilityService().replaceStringTemplate(template=nullReplace(arguments.email.getEmailBCC(), ""), object=emailData) );
