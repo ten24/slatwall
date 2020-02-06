@@ -1475,11 +1475,11 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         }
         
         //set upgraded info on order
-        return setUpdgradeOnOrder(arguments.data.upgradeType, 1);
+        return setUpgradeOnOrder(arguments.data.upgradeType, 1);
         
     }
     
-    public any function setUpdgradeOnOrder(upgradeType, upgradeFlowFlag = 0){
+    public any function setUpgradeOnOrder(upgradeType, upgradeFlowFlag = 0){
         
         //if we are not in an upgrade flow and the user is logged in, log the user out.
         if(!upgradeFlowFlag && getHibachiScope().getLoggedInFlag()){
