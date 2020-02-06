@@ -446,6 +446,24 @@ component extends="HibachiService" accessors="true" {
 		}
 		return result;
 	}
+	
+	public any function getAllRelatedProducts(required any productID) {
+		var relatedProducts = this.getProductRelationshipCollectionList();
+		relatedProducts.setDisplayProperties("relatedProduct.productID, relatedProduct.calculatedQATS, relatedProduct.calculatedProductRating, relatedProduct.activeFlag, relatedProduct.urlTitle, relatedProduct.productName");
+		relatedProducts.addFilter("product.productID",arguments.productID);
+		relatedProducts.addFilter("product.activeFlag",1);
+		relatedProducts = relatedProducts.getRecords(formatRecords=false);
+		return relatedProducts;
+	}
+
+	public any function getAllProductReviews(required any productID) {
+		var relatedProducts = this.getProductReviewCollectionList();
+		relatedProducts.setDisplayProperties("reviewerName, review, reviewTitle, rating, activeFlag");
+		relatedProducts.addFilter("product.productID",arguments.productID);
+		relatedProducts.addFilter("product.activeFlag",1);
+		relatedProducts = relatedProducts.getRecords(formatRecords=false);
+		return relatedProducts;
+	}
 
 
 	// =====================  END: Logical Methods ============================
@@ -734,7 +752,7 @@ component extends="HibachiService" accessors="true" {
 
 		arguments.product = createSingleSku(arguments.product,arguments.processObject);
 		arguments.product.getDefaultSku().setRedemptionAmountType(arguments.processObject.getRedemptionAmountType());
-		arguments.product.getDefaultSku().setRedemptionAmount(arguments.processObject.getRedemptionAmount());
+		arguments.product.getDefaultSku().setBaseRedemptionAmount(arguments.processObject.getBaseRedemptionAmount());
 		if(!isNull(arguments.processObject.getGiftCardExpirationTermID())){
 			var giftCardExpirationTerm = this.getTerm(arguments.processObject.getGiftCardExpirationTermID());
 			arguments.product.getDefaultSku().setGiftCardExpirationTerm(giftCardExpirationTerm);

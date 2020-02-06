@@ -87,7 +87,9 @@
     						</div>
     					<cfelse>
     					    <cfif $.slatwall.content().getUrlTitle() EQ "order">
-    					        <p>Billing payment not provided</p>
+    					      <cfif not isNull(order.getCalculatedTotal()) >
+    					        <h5>$#order.getCalculatedTotal()#</h5>
+    					        </cfif>
     					    <cfelse>
     					        <p>Not entered.</p>
                             </cfif>

@@ -586,7 +586,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	    string filterGroupAlias="",
  		string filterGroupLogicalOperator="AND",
  		boolean hidden=true,
- 		boolean ignoredWhenSearch=false
+ 		boolean ignoredWhenSearch=false,
+ 		string displayPropertyIdentifier="",
+		string displayValue = "",
 	){
 		
 		var propertyIdentifierAlias = getPropertyIdentifierAlias(arguments.propertyIdentifier,'filter');
@@ -611,7 +613,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			"comparisonOperator" = arguments.comparisonOperator,
 			"value" = arguments.value,
 			"hidden"=arguments.hidden,
-			"ignoredWhenSearch"= arguments.ignoredWhenSearch
+			"ignoredWhenSearch"= arguments.ignoredWhenSearch,
+			"displayPropertyIdentifier" = arguments.displayPropertyIdentifier,
+			"displayValue" = arguments.displayValue
 		};
 		
 		if(len(ormtype)){

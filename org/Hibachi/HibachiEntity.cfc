@@ -81,16 +81,28 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		return getService('HibachiService').getServiceByEntityName( entityName=getClassName() ); 
 	} 
 
-	public struct function getStructRepresentation(){
-		return getEntityService().invokeMethod('get#getClassName()#Struct',{1=this.getPrimaryIDValue()});
+	public struct function getStructRepresentation(string properties){
+		if(structKeyExists(arguments, 'properties')){
+			return getEntityService().invokeMethod('get#getClassName()#Struct',{1=this.getPrimaryIDValue(), 2=arguments.properties});
+		} else {
+			return getEntityService().invokeMethod('get#getClassName()#Struct',{1=this.getPrimaryIDValue()});
+		} 
 	}
 
-	public string function getJsonRepresentation(){
-		return serializeJson(this.getStructRepresentation()); 
+	public string function getJsonRepresentation(string properties){
+		if(structKeyExists(arguments, 'properties')){
+			return serializeJson(this.getStructRepresentation(arguments.properties)); 
+		} else {
+			return serializeJson(this.getStructRepresentation()); 
+		}
 	} 
 
-	public string function getEncodedJsonRepresentation(){ 
-		return encodeForHTML(this.getJsonRepresentation()); 
+	public string function getEncodedJsonRepresentation(string properties){ 
+		if(structKeyExists(arguments, 'properties')){
+			return getService('HibachiUtilityService').hibachiHTMLEditFormat(this.getJsonRepresentation(arguments.properties)); 
+		} else {
+			return getService('HibachiUtilityService').hibachiHTMLEditFormat(this.getJsonRepresentation()); 
+		}
 	} 
 
 	public string function getTableName(){

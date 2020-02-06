@@ -91,7 +91,7 @@ Notes:
 			<hb:HibachiEntityDetailItem property="priceGroups" />
 			<hb:HibachiEntityDetailItem property="orders" count="#rc.ordersPlacedSmartList.getRecordsCount()#" />
 			<hb:HibachiEntityDetailItem view="admin:entity/accounttabs/cartsandquotes" count="#rc.ordersNotPlacedSmartList.getRecordsCount()#" />
-			<hb:HibachiEntityDetailItem property="accountPayments" />
+			<hb:HibachiEntityDetailItem property="accountPayments" count="#rc.account.getAccountPaymentsSmartList().getRecordsCount()#"/>
 			<hb:HibachiEntityDetailItem property="accountLoyalties" count="#rc.account.getAccountLoyaltiesSmartList().getRecordsCount()#" />
 			<hb:HibachiEntityDetailItem property="productReviews" />
 			<hb:HibachiEntityDetailItem view="admin:entity/accounttabs/subscriptionusage" count="#rc.account.getSubscriptionUsagesSmartList().getRecordsCount()#" />

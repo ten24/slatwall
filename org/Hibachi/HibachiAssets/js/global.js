@@ -1879,7 +1879,7 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 		if($('#'+tabID).html().trim().length === 0){
 			//add loading spinner prior to loading
 			$('#'+tabID).html(''+
-				'<i  class="fa fa-refresh fa-spin"></i>'+
+				'<div class="text-center"> <i class="fa fa-spinner fa-spin"></i><div>'+
 			'');
 			$('#'+tabID).load(window.location.href,{viewPath:view.split(/\/(.+)/)[1]},function(htmlToCompile){
 

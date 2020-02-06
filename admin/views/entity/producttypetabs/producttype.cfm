@@ -49,37 +49,35 @@ Notes:
 <cfimport prefix="swa" taglib="../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
-<cfoutput>
-	<swa:SlatwallSettingTable showInheritance="false">
-		<swa:SlatwallSetting settingName="globalAdminDomainNames" />
-		<swa:SlatwallSetting settingName="globalAllowedOutsideRedirectSites" />
-        <swa:SlatwallSetting settingName="globalWhiteListedEmailDomains" />
-        <swa:SlatwallSetting settingName="globalTestingEmailDomain" />
-		<swa:SlatwallSetting settingName="globalAPIDirtyRead" />
-		<swa:SlatwallSetting settingName="globalClientSecret" />
-		<swa:SlatwallSetting settingName="globalDeploySitesAndApplicationsOnUpdate" />
-		<swa:SlatwallSetting settingName="globalEncryptionAlgorithm" />
-		<swa:SlatwallSetting settingName="globalEncryptionEncoding" />
-		<swa:SlatwallSetting settingName="globalEncryptionKeySize" />
-		<swa:SlatwallSetting settingName="globalEncryptionKeyLocation" />
-		<swa:SlatwallSetting settingName="globalEncryptionService" />
-		<swa:SlatwallSetting settingName="globalForceCreditCardOverSSL" />
-		<swa:SlatwallSetting settingName="globalNoSessionIPRegex" />
-		<swa:SlatwallSetting settingName="globalNoSessionPersistDefault" />
-		<swa:SlatwallSetting settingName="globalRemoteIDShowFlag" />
-		<swa:SlatwallSetting settingName="globalRemoteIDEditFlag" />
-		<swa:SlatwallSetting settingName="globalDisplayIntegrationProcessingErrors" />
-		<swa:SlatwallSetting settingName="globalFileTypeWhiteList" />
-		<swa:SlatwallSetting settingName="globalMIMETypeWhiteList" />
-		<swa:SlatwallSetting settingName="globalUseShippingIntegrationForTrackingNumberOption" />
-		<swa:SlatwallSetting settingName="globalShippingIntegrationForAddressVerification" />
-		<swa:SlatwallSetting settingName="globalSmartListGetAllRecordsLimit" />
-		<swa:SlatwallSetting settingName="globalAllowCustomBranchUpdates"/>
-		<swa:SlatwallSetting settingName="globalDisableSearchSettings"/>
-		<swa:SlatwallSetting settingName="globalS3Bucket"/>
-		<swa:SlatwallSetting settingName="globalS3AccessKey"/>
-		<swa:SlatwallSetting settingName="globalS3SecretAccessKey"/>
-		<swa:SlatwallSetting settingName="globalEntityQueueDataProcessCount"/>
-	</swa:SlatwallSettingTable>
-</cfoutput>
 
+<cfoutput>
+    <cfset productTypeCollectionList = getHibachiScope().getService('productService').getProductTypeCollectionList()>
+    <cfset productTypeCollectionList.addFilter('productTypeIDPath',rc.productType.getProductTypeIDPath(),'=')/>
+    <cfset productTypeCollectionList.addFilter(propertyIdentifier='childProductTypes', value='null', comparisonOperator='is not', ignoredWhenSearch="true")/>
+    <cfset productTypeCollectionList.setDisplayProperties(displayPropertiesList='activeFlag',columnConfig={
+		isSearchable=true,
+		isVisible=true,
+		isDeletable=true
+	})/>
+	<cfset productTypeCollectionList.addDisplayProperty(displayProperty='productTypeName',columnConfig={
+		isSearchable=true,
+		isVisible=true,
+		isDeletable=true,
+		tdclass="primary"
+	},prepend=true)/>
+	<cfset productTypeCollectionList.addDisplayProperty(displayProperty='productTypeID',columnConfig={
+		isSearchable=false,
+		isVisible=false,
+		isDeletable=false
+	})/>
+	<cfset productTypeCollectionList.addDisplayAggregate('childProductTypes','COUNT','childProductTypesCount')/>
+	
+	<hb:HibachiListingDisplay
+		collectionList="#productTypeCollectionList#"
+		recordEditAction="admin:entity.edit#lcase(productTypeCollectionList.getCollectionObject())#"
+		recordDetailAction="admin:entity.detail#lcase(productTypeCollectionList.getCollectionObject())#"
+		usingPersonalCollection="true"
+		personalCollectionKey='#request.context.entityactiondetails.itemname#'
+	>
+	</hb:HibachiListingDisplay>
+</cfoutput>

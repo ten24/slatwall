@@ -35,6 +35,7 @@ class SWListingReportController {
     public createdByAccountID:string;
     public swListingDisplay:any;
     public isPublic:boolean;
+    public reportChanged:boolean;
     public accountOwnerID:string;
     public initchartobj:any;
     public comparechartobj: any;
@@ -370,7 +371,7 @@ class SWListingReportController {
         this.reportingData = reportingData;
 		var dates = [];
 		var datasets = [];
-		
+		this.reportChanged=true;
 		
         
 		if(ctx.is($("#myChartCompare"))){

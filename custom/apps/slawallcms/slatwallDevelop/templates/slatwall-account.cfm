@@ -76,7 +76,8 @@
                 </cfif>
                 
                 <!--- Login / Signup --->
-                <div ng-show="!slatwall.loadingThisRequest('getAccount')" ng-cloak class="row">
+             <cfif !$.slatwall.getLoggedInFlag()>   
+             <div ng-show="!slatwall.loadingThisRequest('getAccount')" ng-cloak class="row">
                     <div ng-show="!slatwall.hasAccount()" ng-cloak class="col-md-6 offset-md-3">
                         
                         <div class="text-center my-3">
@@ -113,6 +114,7 @@
                         </div>
                     </div>
                 </div>
+            </cfif>
             </cfif>
         </div>
     <cfinclude template="_slatwall-footer.cfm" />
