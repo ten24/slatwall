@@ -154,8 +154,8 @@ property name="currentFlexship" type="any" cfc="OrderTemplate" fieldtype="many-t
 				var siteOrderOrigin = getService('HibachiService').getOrderOrigin(site.setting('siteOrderOrigin'));
 				requestOrder.setOrderOrigin(siteOrderOrigin);
 			}
-			//Setup Site Created if using slatwall cms
-			if(!isNull(getHibachiScope().getSite()) && getHibachiScope().getSite().isSlatwallCMS() && !isNull(getHibachiScope().getCurrentRequestSite())){
+			//Setup Site Created 
+			if(!isNull(getHibachiScope().getCurrentRequestSite())){
 				variables.requestOrder.setOrderCreatedSite(getHibachiScope().getCurrentRequestSite());
 			}
 			

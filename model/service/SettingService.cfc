@@ -251,6 +251,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalLogApiRequests = {fieldtype="yesno",defaultValue=0},
 			globalLogMessages = {fieldType="select",defaultValue="General"},
 			globalMaximumFulfillmentsPerOrder = {fieldtype="text", defaultValue=1000, validate={dataType="numeric", required=true}},
+			globalMaximumPromotionMessages = {fieldType="text", defaultValue=1, validate={dataType="numeric"}},
 			globalMIMETypeWhiteList = {fieldtype="text", defaultValue="image/jpeg,image/png,image/gif,text/csv,application/pdf,application/rss+xml,application/msword,application/zip,text/plain,application/vnd.ms-excel,"},
 			globalMissingImagePath = {fieldType="text", defaultValue=getURLFromPath(getApplicationValue('applicationRootMappingPath')) & '/custom/assets/images/missingimage.jpg'},
 			globalNoSessionIPRegex = {fieldType="text",defaultValue=""},

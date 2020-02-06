@@ -1570,11 +1570,22 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		newOrder.setOrderTemplate(arguments.orderTemplate);
 		newOrder.setBillingAccountAddress(arguments.orderTemplate.getBillingAccountAddress()); 
 		newOrder.setShippingAccountAddress(arguments.orderTemplate.getShippingAccountAddress());  
-
 		newOrder = this.saveOrder(order=newOrder, updateOrderAmounts=false, updateOrderAmount=false, updateShippingMethodOptions=false, checkNewAccountAddressSave=false); 
-
 		newOrder = this.createOrderItemsFromOrderTemplateItems(newOrder,arguments.orderTemplate);
-
+		
+		
+		if (arrayLen(newOrder.getOrderFulfillments())){
+			var orderFulfillment = newOrder.getOrderFulfillments()[1];
+			if (!isNull(orderFulfillment)){
+				orderFulfillment.setShippingMethod(arguments.orderTemplate.getShippingMethod());
+				orderFulfillment.setFulfillmentMethod(arguments.orderTemplate.getShippingMethod().getFulfillmentMethod());
+			}
+		}
+		
+		if (!orderFulfillment.hasErrors()){
+			this.saveOrderFulfillment(orderFulfillment);
+		}
+		
 		var promotionCodes = arguments.orderTemplate.getPromotionCodes();
 
 		for(var promotionCode in promotionCodes){
@@ -1746,11 +1757,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 			
 			arguments.order = this.addOrderItemFromTemplateItem(argumentCollection=args);
-			
-			if(isNull(orderFulfillment)){
-				var orderFulfillment = arguments.order.getOrderFulfillments()[1];
-				orderFulfillment.setShippingMethod(arguments.orderTemplate.getShippingMethod());
-			} 
+		
 			if(arguments.order.hasErrors()){
 				this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(arguments.order.getErrors())# when adding order item skuID: #orderTemplateItem['sku_skuID']#', true);
 				arguments.order.clearHibachiErrors();
@@ -1759,6 +1766,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				continue;
 			}
 		}
+		
 		return arguments.order;
 	}
 	
@@ -1777,7 +1785,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			processOrderAddOrderItem.setOrderFulfillmentID(orderFulfillment.getOrderFulfillmentID());
 		} 	
 
-		arguments.order = this.processOrder_addOrderItem(arguments.order, processOrderAddOrderItem);
+		processOrderAddOrderItem.setPreProcessDisplayedFlag(1); //this's a hacky way to pass the the validation;
+		processOrderAddOrderItem.validate( context="addOrderItem");
+
+		if( !processOrderAddOrderItem.hasErrors() ){
+			arguments.order = this.processOrder_addOrderItem(arguments.order, processOrderAddOrderItem);
+		}	
 		return arguments.order;
 	}
 
@@ -1800,6 +1813,20 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var orderTemplateItemCollectionList = this.getOrderTemplateItemCollectionList(); 
 		orderTemplateItemCollectionList.addFilter('orderTemplate.orderTemplateID', arguments.orderTemplate.getOrderTemplateID()); 
 		orderTemplateItemCollectionList.addFilter('sku.skuID', processObject.getSku().getSkuID());
+
+		var priceByCurrencyCode = arguments.processObject.getSku().getPriceByCurrencyCode(
+							currencyCode = arguments.orderTemplate.getCurrencyCode(),
+							quantity = arguments.processObject.getQuantity(),
+							priceGroups = 	arguments.orderTemplate.getAccount().getPriceGroups()
+						);
+						
+		if( IsNull(priceByCurrencyCode) ) {
+			arguments.orderTemplate.addError('priceByCurrencyCode', 
+				rbKey('validate.processOrderTemplate_addOrderTemplateItem.sku.hasPriceByCurrencyCode')
+			);
+		
+			return arguments.orderTemplate; 	
+		}
 		
 		if(orderTemplateItemCollectionList.getRecordsCount() == 0){
 			
@@ -1825,7 +1852,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			orderTemplateItem = this.saveOrderTemplateItem(orderTemplateItem);
 		}
 
-
 		return arguments.orderTemplate; 	
 	} 
 
@@ -1833,7 +1859,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		arguments.orderTemplateItem = super.saveOrderTemplateItem(arguments.orderTemplateItem, arguments.data);
 		var orderTemplate = arguments.orderTemplateItem.getOrderTemplate(); 
 		if(!isNull(orderTemplate)){
+			
 			orderTemplate = this.saveOrderTemplate(orderTemplate); 
+			
 			if(orderTemplate.hasErrors()){
 				arguments.orderTemplateItem.addErrors(orderTemplate.getErrors());
 			} 
