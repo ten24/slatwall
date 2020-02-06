@@ -621,13 +621,14 @@ property name="sapItemCode" ormtype="string";
 	public any function getPriceByCurrencyCode( string currencyCode='USD', numeric quantity=1, array priceGroups, string accountID ) {
 		var cacheKey = 'getPriceByCurrencyCode#arguments.currencyCode#';
 
-		if(structKeyExists(arguments, 'accountID') && len(arguments.accountID)){
-			var account = getService('AccountService').getAccount(arguments.accountID);
-		} else {
-			var account = getHibachiScope().getAccount();
-		}
-		
 		if(!structKeyExists(arguments,'priceGroups')){
+			
+			if(structKeyExists(arguments, 'accountID') && len(arguments.accountID)){
+				var account = getService('AccountService').getAccount(arguments.accountID);
+			} else {
+				var account = getHibachiScope().getAccount();
+			}
+			
 			arguments.priceGroups = account.getPriceGroups(); 
 		}
 

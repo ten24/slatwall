@@ -224,6 +224,7 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
  			case 'textArea':
  				ORMType = 'string';
  				hbFormFieldType = 'textarea';
+ 				propertyString &= ' length="4000" ';
  				break;
  			case 'email':
  				ORMType = 'string';

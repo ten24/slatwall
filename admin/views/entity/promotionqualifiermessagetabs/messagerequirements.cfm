@@ -49,18 +49,18 @@ Notes:
 <cfimport prefix="swa" taglib="../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
-<cfparam name="rc.promotionQualifier" type="any">
+<cfparam name="rc.promotionQualifierMessage" type="any">
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-    <hb:HibachiListingDisplay 
-        collectionList="#rc.promotionQualifier.getPromotionQualifierMessagesCollectionList()#" 
-        recordEditAction="admin:entity.editpromotionqualifiermessage"
-        recorddetailaction="admin:entity.detailpromotionqualifiermessage"
-        title="Messages" 
-        edit="false" 
-        displaytype="plainTitle"
-        showSimpleListingControls="true"
-        hideUnfilteredResults="false"/>
-    <hb:HibachiActionCaller action="admin:entity.createPromotionQualifierMessage" querystring="promotionQualifierID=#rc.promotionQualifier.getPromotionQualifierID()#" type="link" class="btn btn-primary" />
+	<div class="col-md-12">
+	    <hb:HibachiListingDisplay 
+	        collectionList="#rc.promotionQualifierMessage.getMessageRequirementsCollection()#" 
+	        title="Message Requirements" 
+	        collectionConfigFieldName="messageRequirementsCollectionConfig" 
+	        edit="#rc.edit#" 
+	        displaytype="plainTitle"
+	        showSimpleListingControls="false"
+	        hideUnfilteredResults="true"/>
+	</div>
 </cfoutput>

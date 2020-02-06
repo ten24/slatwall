@@ -19,7 +19,7 @@ component {
 	
 	public any function getSkuAdjustedPricing(){
 			
-			var priceGroups = getHibachiScope().getAccount().getPriceGroups();
+			var priceGroups = this.getOrderTemplate().getAccount().getPriceGroups();
 			var priceGroupCode = arrayLen(priceGroups) ? priceGroups[1].getPriceGroupCode() : "";
 			var priceGroupService = getHibachiScope().getService('priceGroupService');
 			var hibachiUtilityService = getHibachiScope().getService('hibachiUtilityService');
@@ -76,4 +76,5 @@ component {
 		}
 		return variables.personalVolumeTotal; 	
 	} 
+
 }
