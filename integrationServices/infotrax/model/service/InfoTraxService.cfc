@@ -250,7 +250,6 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 			'address2'    = left(arguments.account.getPrimaryAddress().getAddress().getStreet2Address(), 60),//Suite or Apartment Number
 			'address3'    = getCityStateZipcode(arguments.account.getPrimaryAddress().getAddress()),
 			'city'        = left(arguments.account.getPrimaryAddress().getAddress().getCity(), 25),
-			'state'       = left(arguments.account.getPrimaryAddress().getAddress().getStateCode(), 10),
 			'postalCode'  = left(arguments.account.getPrimaryAddress().getAddress().getPostalCode(), 15),
 			'email'       = left(arguments.account.getEmailAddress(), 60),
 			'referralId' = arguments.account.getOwnerAccount().getAccountNumber()//ID of Member who referred person to the business
@@ -274,6 +273,10 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		
 		if( len(arguments.account.getPhoneNumber()) ){
 			distributorData['homePhone'] = left(formatNumbersOnly(arguments.account.getPhoneNumber()), 20);//Home Phone (NNNNNNNNNN)
+		}
+		
+		if(!isNull(arguments.account.getPrimaryAddress().getAddress().getStateCode()) && len(arguments.account.getPrimaryAddress().getAddress().getStateCode())){
+			distributorData['state'] = left(arguments.account.getPrimaryAddress().getAddress().getStateCode(), 10);
 		}
 		
 		return distributorData;
@@ -303,8 +306,10 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 			'volume8'           = 0,
 			'volume9'           = arguments.order.getFulfillmentChargeTotal(), // Handling Fee
 			'orderType'         = formatOrderType(arguments.order),//Type of order. W for regular order, R for retail, X for exchange, R for replacement, and C for RMA.
-			'periodDate'        = dateFormat(arguments.order.getOrderOpenDateTime(), 'yyyymm')//Volume period date of the order (YYYYMM). This will get assigned to the default volume period if not included
+			'periodDate'        = listLast(arguments.order.getCommissionPeriod(), '/') & listFirst(arguments.order.getCommissionPeriod(), '/')//Volume period date of the order (YYYYMM). This will get assigned to the default volume period if not included
 		};
+		
+		
 		
 		//transactionData['salesPersonId'] = //ID of person who sold order to Customer. This is only used on customer related transactions.Commission check–using ID to represent where volume was attributed at time of order entry.
 		//transactionData['entryInitials'] = //Initials of user entering the transaction
