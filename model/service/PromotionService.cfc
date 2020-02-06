@@ -420,7 +420,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// Sale & Exchange Orders
 			if( listFindNoCase("otSalesOrder,otExchangeOrder", arguments.order.getOrderType().getSystemCode()) ) {
 				clearPreviouslyAppliedPromotions(arguments.order);
-	
+				
 				// This is a structure of promotionPeriods that will get checked and cached as to if we are still within the period use count, and period account use count
 				var promotionPeriodQualifications = {};
 	
@@ -429,6 +429,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 				// This is a structure of orderItems with all of the potential discounts that apply to them
 				var orderItemQualifiedDiscounts = {};
+				
+				// This is an array of qualifier messages for qualifiers not met by the order
+				var orderQualifierMessages = [];
 	
 				setupOrderItemQualifiedDiscounts(arguments.order, orderItemQualifiedDiscounts);
 
@@ -441,7 +444,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					setupPromotionRewardUsageDetails(reward,promotionRewardUsageDetails);
 					// Setup the boolean for if the promotionPeriod is okToApply based on general use count
 					if(!structKeyExists(promotionPeriodQualifications, reward.getPromotionPeriod().getPromotionPeriodID())) {
-						promotionPeriodQualifications[ reward.getPromotionPeriod().getPromotionPeriodID() ] = getPromotionPeriodQualificationDetails(promotionPeriod=reward.getPromotionPeriod(), order=arguments.order);
+						promotionPeriodQualifications[ reward.getPromotionPeriod().getPromotionPeriodID() ] = getPromotionPeriodQualificationDetails(promotionPeriod=reward.getPromotionPeriod(), order=arguments.order, orderQualifierMessages=orderQualifierMessages);
 					}
 					// If this promotion period is ok to apply based on general useCount
 					if(promotionPeriodQualifications[ reward.getPromotionPeriod().getPromotionPeriodID() ].qualificationsMeet) {
@@ -473,7 +476,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					}
 	
 				} // END of PromotionReward Loop
-	
+				
+				if(arrayLen(orderQualifierMessages)){
+					applyPromotionQualifierMessagesToOrder(arguments.order,orderQualifierMessages);
+				}
 	
 			} // END of Sale or Exchange Loop
 	
@@ -498,6 +504,25 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		newAppliedPromotion.setPromotion( arguments.promotion );
 		newAppliedPromotion.setOrder( arguments.order );
 		newAppliedPromotion.setDiscountAmount( arguments.discountAmount );
+	}
+	
+	private void function applyPromotionQualifierMessagesToOrder(required any order, required array orderQualifierMessages){
+		ArraySort(arguments.orderQualifierMessages,function(a,b){
+			if(a.priority <= b.priority){
+				return -1;
+			}else{
+				return 1;
+			}
+		});
+		
+		var maxMessages = getService('SettingService').getSettingValue('globalMaximumPromotionMessages');
+		
+		arguments.orderQualifierMessages = arraySlice(arguments.orderQualifierMessages,1,maxMessages);
+		
+		for(var orderQualifierMessage in arguments.orderQualifierMessages){
+			arguments.order.addMessage(orderQualifierMessage.messageName, orderQualifierMessage.message);
+		}
+
 	}
 
 	private void function removeDiscountsExceedingMaxOrderUseCounts(required any promotionRewardUsageDetails, required any orderItemQualifiedDiscounts){
@@ -578,8 +603,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 	}
 
-	private struct function getPromotionPeriodQualificationDetails(required any promotionPeriod, required any order) {
-
+	private struct function getPromotionPeriodQualificationDetails(required any promotionPeriod, required any order, array orderQualifierMessages) {
+		
+		if(!structKeyExists(arguments,'orderQualifierMessages')){
+			arguments['orderQualifierMessages'] = [];
+		}
 		// Create a return struct
 		var qualificationDetails = {
 			qualificationsMeet = true,
@@ -624,7 +652,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				for(var qualifier in qualifiers) {
 	
 					// Get the details for this qualifier
-					var thisQualifierDetails = getQualifierQualificationDetails(qualifier, arguments.order);
+					var thisQualifierDetails = getQualifierQualificationDetails(qualifier, arguments.order, arguments.orderQualifierMessages);
 	
 					// As long as there is a qualification count that is > 0 we can append the details
 					if(thisQualifierDetails.qualificationCount) {
@@ -666,12 +694,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return qualificationDetails;
 	}
 
-	private void function getQualifierQualificationDetailsForOrder(required any qualifier, required any order, required struct qualifierDetails){
+	private void function getQualifierQualificationDetailsForOrder(required any qualifier, required any order, required struct qualifierDetails, array orderQualifierMessages){
 		// Set the qualification count to 1 because that is the max for an order qualifier
 		arguments.qualifierDetails.qualificationCount = 0;
 
 		if( arguments.qualifier.hasOrderByOrderID( arguments.order.getOrderID() ) ){
 			arguments.qualifierDetails.qualificationCount = 1;
+		}else if(structKeyExists(arguments,'orderQualifierMessages')){
+			for(var promoQualifierMessage in arguments.qualifier.getPromotionQualifierMessages()){
+				if(promoQualifierMessage.hasOrderByOrderID( arguments.order.getOrderID() )){
+					arrayAppend(arguments.orderQualifierMessages, promoQualifierMessage.getMessageStruct());
+				}
+			}
 		}
 	}
 
@@ -732,7 +766,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 	}
 
-	private void function getQualifierQualificationDetailsForOrderItems(required any qualifier, required any order, required struct qualifierDetails){
+	private void function getQualifierQualificationDetailsForOrderItems(required any qualifier, required any order, required struct qualifierDetails, array orderQualifierMessages){
 		// Set the qualification count to the total fulfillments
 		arguments.qualifierDetails.qualificationCount = 0;
 		var qualifiedItemsQuantity = 0;
@@ -764,11 +798,22 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}else if(isNull(arguments.qualifier.getMinimumItemQuantity()) || arguments.qualifier.getMinimumItemQuantity() == 0){
 				arguments.qualifierDetails.qualificationCount++;
 			}
+		}else if(structKeyExists(arguments,'orderQualifierMessages')){
+			for(var promoQualifierMessage in arguments.qualifier.getPromotionQualifierMessages()){
+				if(promoQualifierMessage.hasOrderByOrderID( arguments.order.getOrderID() )){
+					arrayAppend(arguments.orderQualifierMessages, promoQualifierMessage.getMessageStruct());
+				}
+			}
 		}
 
 	}
 
-	private struct function getQualifierQualificationDetails(required any qualifier, required any order) {
+	private struct function getQualifierQualificationDetails(required any qualifier, required any order, array orderQualifierMessages) {
+		
+		if(!structKeyExists(arguments,'orderQualifierMessages')){
+			arguments['orderQualifierMessages'] = [];
+		}
+		
 		var qualifierDetails = {
 			qualifier = arguments.qualifier,
 			qualificationCount = 0,
@@ -779,7 +824,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// ORDER
 		if(arguments.qualifier.getQualifierType() == "order") {
 
-			getQualifierQualificationDetailsForOrder(arguments.qualifier,arguments.order,qualifierDetails);
+			getQualifierQualificationDetailsForOrder(arguments.qualifier, arguments.order, qualifierDetails, orderQualifierMessages);
 
 		// FULFILLMENT
 		} else if (arguments.qualifier.getQualifierType() == "fulfillment") {
@@ -789,7 +834,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// ORDER ITEM
 		} else if (listFindNoCase("contentAccess,merchandise,subscription", arguments.qualifier.getQualifierType())) {
 
-			getQualifierQualificationDetailsForOrderItems(arguments.qualifier,arguments.order,qualifierDetails);
+			getQualifierQualificationDetailsForOrderItems(arguments.qualifier,arguments.order,qualifierDetails, orderQualifierMessages);
 
 		}
 
