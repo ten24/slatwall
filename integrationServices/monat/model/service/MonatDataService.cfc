@@ -160,9 +160,10 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 	}
 	
 	private any function getData(pageNumber,pageSize,dateFilterStart,dateFilterEnd,name){
-	    var uri = "https://apidev.monatcorp.net:8443/api/Slatwall/" & name;
+	    var uri = setting('baseImportURL') & "QueryAccounts";
 		var authKeyName = "authkey";
-		var authKey = "a939f516-7af1-4caa-84c1-642c6966e17e";
+		var authKey = setting(authKeyName);
+		
 	    var = {hasErrors: false};
 	    // Test range
 	    // "StartDate": "2020-11-15T00:16:28.693Z",
@@ -210,7 +211,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
          * Allows the user to override the last n HOURS that get checked. 
          * Defaults to 60 Minutes ago.
          **/
-        var intervalOverride = 11;
+        var intervalOverride = 1;
         
         /**
          * CONSTANTS 
@@ -474,10 +475,10 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
                 
                 //Close the order if its ready.
                 var orderOnDelivery = orderDelivery.getOrder();
-                var  isOrderPaidFor = orderOnDelivery.isOrderPaidFor();
+                var isOrderPaidFor = orderOnDelivery.isOrderPaidFor();
     			var isOrderFullyDelivered = orderOnDelivery.isOrderFullyDelivered();
 
-    			if(isOrderPaidFor && isOrderFullyDelivered)	{
+    			if(isOrderFullyDelivered)	{
     				orderOnDelivery.setOrderStatusType(CLOSEDSTATUS);
     				ormStatelessSession.insert("SlatwallOrder", orderOnDelivery );
                     logHibachi("Closed the order for orderNumber: #shipment['OrderNumber']#",true);
@@ -541,9 +542,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 
 				ormGetSession().clear();
 				
-				writedump(shipmentError);
 				logHibachi("Error: importing shipment. ",true);
-				abort;	
 			}
 			logHibachi("End Importing pagenumber: #pageNumber#",true);
 			pageNumber++;
@@ -858,7 +857,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 		var integration = getService("IntegrationService").getIntegrationByIntegrationPackage("monat");
 		var ormStatelessSession = ormGetSessionFactory().openStatelessSession();
 		var index=0;
-		var HOURS = 'n';
+		var HOURS = 'h';
         
         /**
          * Allows the user to override the last n HOURS that get checked. 
@@ -907,12 +906,12 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
         
         //Exit with no data.
         if (!TotalCount){
-            logHibachi("Start Order Data to import at this time.");
+            logHibachi("Start Order Data to import at this time.", true);
         }
         
         //Iterate the response.
 		while (pageNumber <= TotalPages){
-			logHibachi("Start Order Updater");
+			logHibachi("Start Order Updater", true);
     		var orderResponse = getData(pageNumber, pageSize, dateFilterStart, dateFilterEnd, "SwGetUpdatedOrders");
     	    
     		if (orderResponse.hasErrors){
@@ -949,7 +948,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
     			tx.commit();
     		}catch(e){
     			
-    			logHibachi("Daily Account Import Failed @ Index: #index# PageSize: #pageSize# PageNumber: #pageNumber#");
+    			logHibachi("Daily Account Import Failed @ Index: #index# PageSize: #pageSize# PageNumber: #pageNumber#", true);
     			logHibachi(serializeJson(e));
     			ormGetSession().clear();
     		}
@@ -960,6 +959,6 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 		}
 		
 		ormStatelessSession.close(); //must close the session regardless of errors.
-		logHibachi("End: #pageNumber# - #pageSize# - #index#");
+		logHibachi("End: #pageNumber# - #pageSize# - #index#", true);
     }
 }
