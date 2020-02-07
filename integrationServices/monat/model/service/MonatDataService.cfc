@@ -210,7 +210,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
          * Allows the user to override the last n HOURS that get checked. 
          * Defaults to 60 Minutes ago.
          **/
-        var intervalOverride = 4;
+        var intervalOverride = 11;
         
         /**
          * CONSTANTS 
@@ -419,12 +419,12 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
     			// Create the delivery.  
                 var orderDelivery = new Slatwall.model.entity.OrderDelivery();
     			orderDelivery.setOrder(order);
-    			orderDelivery.setShipmentNumber(shipment.shipmentNumber);//Add this
-    			orderDelivery.setShipmentSequence(shipment.orderShipSequence);// Add this
-    			orderDelivery.setPurchaseOrderNumber(shipment.PONumber);
+    			orderDelivery.setShipmentNumber(shipment.shipmentNumber?:"");//Add this
+    			orderDelivery.setShipmentSequence(shipment.orderShipSequence?:"");// Add this
+    			orderDelivery.setPurchaseOrderNumber(shipment.PONumber?:"");
     			
     			
-    			orderDelivery.setRemoteID( shipment.shipmentId );
+    			orderDelivery.setRemoteID( shipment.shipmentId ?:"");
 
     		    //get the tracking numbers.
     		    //get tracking information...
@@ -440,7 +440,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
     		    		}
 
     		    		if (!isNull(shipment['UndeliveredReasonDescription'])){
-    		    			orderDelivery.setUndeliverableOrderReason(shipment['UndeliveredReasonDescription']);
+    		    			orderDelivery.setUndeliverableOrderReason(shipment['UndeliveredReasonDescription']?:"");
     		    		}
 
     		    		if (!isNull(shipment['PackageShipDate'])){
@@ -454,6 +454,19 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
     		    orderDelivery.setTrackingNumber(concatTrackingNumber);
     		    orderDelivery.setModifiedDateTime( now() );
                 orderDelivery.setShippingMethod( shippingMethod );
+                
+                //Sets the tracking URL
+                if (!isNull(orderDelivery.getTrackingNumber()) && 
+						!isNull(orderDelivery.getShippingMethod())){
+					
+					var trackingUrl = orderDelivery.getShippingMethod().setting("shippingMethodTrackingURL") 
+					if (!isNull(trackingUrl)){
+						trackingUrl = trackingUrl.replace("${trackingNumber}", orderDelivery.getTrackingNumber());
+						orderDelivery.setTrackingURL(trackingUrl);
+					}
+				}
+                
+                
                 ormStatelessSession.insert("SlatwallOrderDelivery", orderDelivery );
                 
                 createDeliveryItems( orderDelivery );
@@ -595,6 +608,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
         "TotalPages": 82721,*/
         
         logHibachi("Start Account Updater");
+        
         //Get the totals on this call.
 		var accountsResponse = getData(pageNumber, pageSize, dateFilterStart, dateFilterEnd, "SwGetUpdatedAccounts");
 		var TotalCount = accountsResponse.Data.totalCount?:0;
@@ -649,7 +663,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
         			
         			if (isNull(foundAccount)){
         				pageNumber++;
-        				logHibachi("Could not find this account to update: Account number #account['AccountNumber']#");
+        				logHibachi("Could not find this account to update: Account number #account['AccountNumber']#", true);
         				continue;
         			}
         			
@@ -822,7 +836,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
     			tx.commit();
     		}catch(e){
     			
-    			logHibachi("Daily Account Import Failed @ Index: #index# PageSize: #arguments.pageSize# PageNumber: #pageNumber#");
+    			logHibachi("Daily Account Import Failed @ Index: #index# PageSize: #pageSize# PageNumber: #pageNumber#", true);
     			logHibachi(serializeJson(e));
     			ormGetSession().clear();
     			ormStatelessSession.close();
@@ -836,7 +850,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 		}
 		
 		ormStatelessSession.close(); //must close the session regardless of errors.
-		logHibachi("End: #pageNumber# - #arguments.pageSize# - #index#");
+		logHibachi("End: #pageNumber# - #pageSize# - #index#", true);
     }
     
     public any function importOrderUpdates(){
