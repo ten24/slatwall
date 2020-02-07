@@ -23,6 +23,7 @@
 			</cfcase>
 			<cfdefaultcase>
 				<!-----MARKET PARTER TEMPLATE HERE ----->
+				#templateObject.stringReplace( emailTemplate.getFormattedValue(propertyName='marketPartnerBody',locale=locale),true )#
 			</cfdefaultcase>
 		</cfswitch>
 	
