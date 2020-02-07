@@ -780,11 +780,6 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
                     	}
                     }
                     
-                    //EntryPeriod (What is this mapping to)
-                    if (!isNull(account['EntryPeriod']) && len(account['EntryPeriod'])){
-                    	foundAccount.setCommissionPeriod( account['EntryPeriod']?:"" );
-                    }
-                    
                     //FlagAccountTypeCode (C,L,M,O,R)
                     if (!isNull(account['FlagAccountTypeCode']) && len(account['FlagAccountTypeCode'])){
                     	//set the accountType from this. Needs to be name or I need to map it.
