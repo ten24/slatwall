@@ -1090,12 +1090,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		if(isNull(originalPrice)){
 			originalPrice = arguments.orderItem.getSku().getPriceByCurrencyCode(currencyCode);
-		} 
-		
-		if(isNull(originalPrice)){
-			dump(var=arguments.orderItem, top=2);
-			dump(var=arguments.orderItem.getSku(),  top=2);
-			abort;
 		}
 
 		var priceDetails = getPriceDetailsForPromoRewards( promoRewards=activePromotionRewardsWithSkuCollection,
