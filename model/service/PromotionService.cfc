@@ -515,9 +515,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 		});
 		
-		var maxMessages = getService('SettingService').getSettingValue('globalMaximumPromotionMessages');
+		var maxPromotionMessagesLength = getService('SettingService').getSettingValue('globalMaximumPromotionMessages');
 		
-		arguments.orderQualifierMessages = arraySlice(arguments.orderQualifierMessages,1,maxMessages);
+		if( ArrayLen(arguments.orderQualifierMessages) > maxPromotionMessagesLength) {
+			arguments.orderQualifierMessages = arraySlice(arguments.orderQualifierMessages, 1, maxPromotionMessagesLength);
+		}
 		
 		for(var orderQualifierMessage in arguments.orderQualifierMessages){
 			arguments.order.addMessage(orderQualifierMessage.messageName, orderQualifierMessage.message);
@@ -1089,6 +1091,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(isNull(originalPrice)){
 			originalPrice = arguments.orderItem.getSku().getPriceByCurrencyCode(currencyCode);
 		} 
+		
+		if(isNull(originalPrice)){
+			dump(var=arguments.orderItem, top=2);
+			dump(var=arguments.orderItem.getSku(),  top=2);
+			abort;
+		}
 
 		var priceDetails = getPriceDetailsForPromoRewards( promoRewards=activePromotionRewardsWithSkuCollection,
 														sku=arguments.orderItem.getSku(),
