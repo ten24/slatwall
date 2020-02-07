@@ -606,7 +606,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
         "PageSize": 25,
         "TotalPages": 82721,*/
         
-        logHibachi("Start Account Updater");
+        logHibachi("Start Account Updater", true);
         
         //Get the totals on this call.
 		var accountsResponse = getData(pageNumber, pageSize, dateFilterStart, dateFilterEnd, "SwGetUpdatedAccounts");
@@ -615,7 +615,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
         
         //Exit if there is no data.
         if (!TotalCount){
-            logHibachi("Start Account Data to import at this time.");
+            logHibachi("Start Account Data to import at this time.", true);
         }
         
         //Iterate all the pages.
@@ -749,11 +749,6 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
                     	}
                     }
                     
-                    // EnrollerNumber (Note: What is this mapping to?) This is the same as sponsor number.
-                    /*if (!isNull(account['EnrollerNumber']) && len(account['EnrollerNumber'])){
-                    	foundAccount.setAccountNumber( account['EnrollerNumber']?:"" );//this shouldn't change if its account number...
-                    }*/
-                    
                     //Account Type
                     if (!isNull(account['AccountTypeCode']) && len(account['AccountTypeCode'])){
                     	//set the accountType from this. Needs to be name or I need to map it.
@@ -795,35 +790,6 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
                     	//set the accountType from this. Needs to be name or I need to map it.
                     	foundAccount.setComplianceStatus( account['FlagAccountTypeCode']?:"" );
                     }
-                    
-                    // GovernmentNumber (We will also need government type code?)
-                    // Will this be plain text? Lookup by the government number.
-                    // We will need the encrypted number sent as well. And, some other information.
-                    // Commenting this out until we have those things.
-                    /*if (!isNull(account['GovernmentNumber']) && len(account['GovernmentNumber'])){
-                    	
-                    	//Find or create a government id and set the number.
-                    	if (structKeyExists(account, "GovernmentNumber") && structKeyExists(account, "GovernmentTypeCode")){
-	                    	// lookup the id
-	                    	var isNewGovernementNumber = false;
-	                    	try{
-	                    		var accountGovernmentID = getAccountService().getAccountGovernmentIdByGovernmentTypeANDgovernmentIdLastFour({1:account['GovernmentTypeCode']?:"",2:account['GovernmentNumber']});
-	                    	} catch(governmentLookupError){
-	                    		isNewGovernmentNumber = true;
-	                    	}
-	                    	
-	                    	//create a new one.
-	                    	if (isNewGovernementNumber){
-	                    		var accountGovernmentID = new Slatwall.model.entity.AccountGovernmentID();
-	                    	}
-		                    accountGovernmentID.setAccount(foundAccount);
-		                    accountGovernmentID.setGovernmentType(account['GovernmentTypeCode']?:"");//*
-		                    accountGovernmentID.setGovernmentIDlastFour(account['GovernmentNumber']);//*
-		                    
-		                    //insert the relationship
-		                    ormStatelessSession.insert("SlatwallAccountGovernmentID", accountGovernmentID);
-                    	}
-                    }*/
                     
                     //CareerTitleCode
                     foundAccount.setCareerTitle( account['CareerTitleCode']?:"" );
