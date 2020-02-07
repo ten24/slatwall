@@ -1774,7 +1774,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var processOrderAddOrderItem = arguments.order.getProcessObject('addOrderItem');
 		var sku = getSkuService().getSku(arguments.orderTemplateItemStruct['sku_skuID']);	
 		processOrderAddOrderItem.setSku(sku);
-		processOrderAddOrderItem.setPrice(sku.getPriceByCurrencyCode(currencyCode=arguments.orderTemplate.getCurrencyCode(), accountID=arguments.orderTemplate.getAccount().getAccountID()));
+		
+		processOrderAddOrderItem.setPrice(
+				sku.getPriceByCurrencyCode(
+					currencyCode=arguments.orderTemplate.getCurrencyCode(), 
+					quantity=arguments.orderTemplateItemStruct['quantity'],
+					accountID=arguments.orderTemplate.getAccount().getAccountID()
+				)
+		);
+		
 		processOrderAddOrderItem.setQuantity(arguments.orderTemplateItemStruct['quantity']);
 		processOrderAddOrderItem.setUpdateOrderAmountFlag(false); 		
 
@@ -5477,7 +5485,20 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		arguments.newOrderItem.setSku( arguments.processObject.getSku() );
 		arguments.newOrderItem.setCurrencyCode( arguments.newOrderItem.getOrder().getCurrencyCode() );
 		arguments.newOrderItem.setQuantity( arguments.processObject.getQuantity() );
-		arguments.newOrderItem.setSkuPrice( arguments.processObject.getSku().getPriceByCurrencyCode( arguments.newOrderItem.getOrder().getCurrencyCode(), arguments.processObject.getQuantity() ) );
+		
+		var skuPrice = arguments.processObject.getSku().getPriceByCurrencyCode( 
+				quantity = arguments.processObject.getQuantity(),
+				currencyCode = arguments.newOrderItem.getOrder().getCurrencyCode(), 
+				priceGroups = arguments.newOrderItem.getOrder().getAccount().getPriceGroups()
+			);
+		
+		if( !IsNull(skuPrice) ){
+			arguments.newOrderItem.setSkuPrice(skuPrice);
+		} else{
+			arguments.newOrderItem.addError('priceByCurrencyCode', 
+				rbKey('validate.processOrderTemplate_addOrderTemplateItem.sku.hasPriceByCurrencyCode')
+			);
+		}
 		
 		return arguments.newOrderItem;
 	}
