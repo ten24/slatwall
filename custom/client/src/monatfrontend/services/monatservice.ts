@@ -4,6 +4,7 @@ interface IOptions {
 }
 
 declare var angular: any;
+declare var hibachiConfig: any;
 
 export class MonatService {
 	public cart;
@@ -15,7 +16,7 @@ export class MonatService {
 	};
 
 	//@ngInject
-	constructor(public publicService, public $q, public requestService) {}
+	constructor(public publicService, public $q, public requestService, public $window,) {}
 
 	public getCart(refresh = false) {
 		var deferred = this.$q.defer();
@@ -184,6 +185,15 @@ export class MonatService {
 			deferred.resolve( data );
 		});
 		return deferred.promise;
+	}
+	
+	public redirectToProperSite(redirectUrl:string){
+		
+		if(hibachiConfig.cmsSiteID != 'default'){
+			redirectUrl = '/' + hibachiConfig.cmsSiteID + redirectUrl;
+		}
+		
+		this.$window.location.href = redirectUrl;
 	}
 	
 
