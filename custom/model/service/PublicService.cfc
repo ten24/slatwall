@@ -1573,13 +1573,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     }
     
     public void function getCustomerCanCreateFlexship(){
-        var site = getService('SiteService').getSiteByCmsSiteID(arguments.data.cmsSiteID);
-        var daysTillCanCreate = site.setting('integrationmonatSiteDaysAfterMarketPartnerEnrollmentFlexshipCreate');
-        var createdDateTime = getHibachiScope().getAccount().getCreatedDateTime();
-        var now = now();
-        var adjustedDate = dateAdd("d",daysTillCanCreate,createdDateTime);
-        var dateCompare = dateCompare(now, adjustedDate);
-        arguments.data['ajaxResponse']['customerCanCreateFlexship'] = (dateCompare > -1) ? true : false;
+        arguments.data['ajaxResponse']['customerCanCreateFlexship'] = getHibachiScope().getAccount().getCanCreateFlexshipFlag();
     }
     
     public void function getOrderTemplates(required any data){ 
