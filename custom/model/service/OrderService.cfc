@@ -142,6 +142,37 @@ component extends="Slatwall.model.service.OrderService" {
 			arguments.data.orderTemplateName = "My Flexship, Created on " & dateFormat(now(), "long");
 		}
 		
+		//grab and set shipping-account-address from account
+		if(account.hasPrimaryShippingAddress()){
+		    arguments.orderTemplate.setShippingAccountAddress(account.getPrimaryShippingAddress());
+		} else if( account.hasPrimaryAddress()){
+		    arguments.orderTemplate.setShippingAccountAddress(account.getPrimaryAddress());
+		}
+
+		//NOTE: there's only one shipping method allowed for flexship
+		var shippingMethod = getService('ShippingService').getShippingMethod( 
+		            ListFirst( arguments.orderTemplate.setting('orderTemplateEligibleShippingMethods') )
+			    );
+		orderTemplate.setShippingMethod(shippingMethod);
+
+		//grab and set account-payment-method from account to ordertemplate
+ 		if(account.hasPrimaryPaymentMethod()){
+		    arguments.orderTemplate.setAccountPaymentMethod(account.getPrimaryPaymentMethod());
+
+		    if( account.getPrimaryPaymentMethod().hasBillingAccountAddress()){
+		        arguments.orderTemplate.setBillingAccountAddress(account.getPrimaryPaymentMethod().getBillingAccountAddress());
+		    }
+		}
+
+		//grab and get billing-account-address from account
+		if(!arguments.orderTemplate.hasBillingAccountAddress() ) {
+		 	if(account.hasPrimaryBillingAddress()) {
+    		    arguments.orderTemplate.setBillingAccountAddress(account.getPrimaryBillingAddress());
+    		} else if( account.hasPrimaryAddress() ) {
+    		    arguments.orderTemplate.setBillingAccountAddress(account.getPrimaryAddress());
+    		}
+		}
+		
 		arguments.orderTemplate.setAccount(account);
 		arguments.orderTemplate.setSite( arguments.processObject.getSite() );
 		arguments.orderTemplate.setCurrencyCode( arguments.processObject.getCurrencyCode() );
