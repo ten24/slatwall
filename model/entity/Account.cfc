@@ -171,7 +171,7 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
  property name="productPackPurchasedFlag" ormtype="boolean" hb_formatType="yesno" default="false";
  property name="allowUplineEmailsFlag" ormtype="boolean";
  property name="memberCode" ormtype="string";
- property name="accountStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="accountStatusTypeID";
+ property name="accountStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="accountStatusTypeID" hb_optionsSmartListData="f:parentType.typeID=2c9180836dacb117016dad1168c2000d";
  property name="subscriptionType" ormtype="string" hb_formFieldType="select";
  property name="renewalDate" ormtype="timestamp" hb_formatType="date";
  property name="spouseName" ormtype="string";
@@ -191,7 +191,6 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
  property name="uplineMarketPartnerNumber" ormtype="string";
  property name="country" cfc="Country" fieldtype="many-to-one" fkcolumn="countryID";
  property name="referType" ormtype="string" hb_formFieldType="select";
- property name="profileImage" hb_fileUpload="true" hb_fileAcceptMIMEType="*/*" ormtype="string" hb_formFieldType="file";
  property name="terminationDate" ormtype="timestamp" hb_formatType="date";
  property name="lastAccountStatusDate" ormtype="timestamp" hb_formatType="date";
  property name="languagePreference" ormtype="string" hb_formFieldType="select";
@@ -1269,12 +1268,14 @@ public numeric function getSuccessfulFlexshipOrdersThisYearCount(){
 	}
 
 	public boolean function getCanCreateFlexshipFlag() {
-	
+		
 		// If the user is not logged in, or retail, return false.
 		var priceGroups = this.getPriceGroups();
 		if ( ! len( priceGroups ) ) {
 			return false;
-		} else if ( priceGroups[1].getPriceGroupCode() == 2 ) {
+			
+		} else if ( priceGroups[1].getPriceGroupCode() == 2 ) { 
+			//Retail price-group
 			return false;
 		}
 		
@@ -1282,18 +1283,23 @@ public numeric function getSuccessfulFlexshipOrdersThisYearCount(){
 			return false;
 		}
 		
-		var daysAfterEnrollment = this.getAccountCreatedSite().setting('integrationmonatSiteDaysAfterMarketPartnerEnrollmentFlexshipCreate');
-		var enrollmentDate = this.getEnrollmentDate();
+		if( this.getAccountType() == 'marketPartner' ){
 		
-		if ( !isNull( enrollmentDate ) ) {
-			// Add the days after enrollment a user can create flexship to the enrollment date.
-			var dateCanCreateFlexship = dateAdd( 'd', daysAfterEnrollment, enrollmentDate );
+			var daysAfterEnrollment = this.getAccountCreatedSite().setting(
+							'integrationmonatSiteDaysAfterMarketPartnerEnrollmentFlexshipCreate'
+						);
+						
+			var enrollmentDate = this.getEnrollmentDate();
 			
-			// If today is a greater date than the date they can create a flexship.
-			return ( dateCompare( dateCanCreateFlexship, now() ) == -1 );
+			if ( !isNull( enrollmentDate ) ) {
+				// Add the days after enrollment a user can create flexship to the enrollment date.
+				var dateAfterCanCreateFlexship = dateAdd( 'd', daysAfterEnrollment, enrollmentDate );
+				
+				// If today is a greater date than the date they can create a flexship.
+				return ( dateCompare( dateAfterCanCreateFlexship, now() ) == -1 ); // -1, if date1 is earlier than date2
+			}	
 		}
 		
-		// If the user doesn't have an enrollment date, return true.
 		return true;
 	}
 
