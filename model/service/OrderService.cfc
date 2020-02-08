@@ -1598,6 +1598,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			if(isNull(orderFulfillment)){
 				var orderFulfillment = newOrder.getOrderFulfillments()[1];
 				orderFulfillment.setShippingMethod(arguments.orderTemplate.getShippingMethod());
+				orderFulfillment.setFulfillmentMethod(arguments.orderTemplate.getShippingMethod().getFulfillmentMethod());
 			} 
 
 			if(newOrder.hasErrors()){
