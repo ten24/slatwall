@@ -42,10 +42,11 @@ class MonatOrderItemsController {
 	public aggregateOrderItems = orderItems => {
 		orderItems.forEach( item => {
 			var productType = item.sku.product.productType.productTypeName;
+			var systemCode = item.sku.product.productType.systemCode;
 			
 			if ( 'Starter Kit' === productType || 'Product Pack' === productType ) {
 				this.starterKits.push( item );
-			} else if('Enrollment Fee - MP' === productType || 'Enrollment Fee - VIP' === productType){
+			} else if('Enrollment Fee - MP' === productType || 'VIPCustomerRegistr' === systemCode){
 				this.orderFees = item.extendedUnitPriceAfterDiscount;
 				this.todaysOrder.push( item );
 			}	else {
