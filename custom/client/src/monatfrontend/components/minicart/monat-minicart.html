@@ -29,7 +29,7 @@
 					ng-class="{loading: item.loading }"
 					ng-repeat="item in monatMiniCart.cart.orderItems | limitTo: monatMiniCart.pageSize : monatMiniCart.recordsStart"
 				>
-					<button ng-if="item.sku.product.productType.productTypeName != 'Enrollment Fee - VIP' && item.sku.product.productType.productTypeName != 'Enrollment Fee - MP'" class="close" type="button" ng-click="$parent.monatMiniCart.removeItem(item); item.loading = true;">
+					<button ng-if="item.sku.product.productType.systemCode != 'VIPCustomerRegistr' && item.sku.product.productType.productTypeName != 'Enrollment Fee - MP'" class="close" type="button" ng-click="$parent.monatMiniCart.removeItem(item); item.loading = true;">
 						<i class="fas fa-times"></i>
 					</button>
 					<div class="img">
@@ -43,7 +43,7 @@
 						</a>
 					</h6>
 					<div class="product-bottom">
-						<div ng-if="item.sku.product.productType.productTypeName != 'Enrollment Fee - VIP' && item.sku.product.productType.productTypeName != 'Enrollment Fee - MP'" class="qty">
+						<div ng-if="item.sku.product.productType.systemCode != 'VIPCustomerRegistr' && item.sku.product.productType.productTypeName != 'Enrollment Fee - MP'" class="qty">
 							<button
 								type="button"
 								class="minus"
