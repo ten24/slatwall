@@ -160,18 +160,10 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 	}
 	
 	private any function getData(pageNumber,pageSize,dateFilterStart,dateFilterEnd,name){
-	    var uri = setting('baseImportURL') & "QueryAccounts";
+	    var uri = setting('baseImportURL') & name;
 		var authKeyName = "authkey";
 		var authKey = setting(authKeyName);
-		
-	    var = {hasErrors: false};
-	    // Test range
-	    // "StartDate": "2020-11-15T00:16:28.693Z",
-        // "EndDate": "2020-01-17T23:16:28.693Z"
-        
-        // Real Range
-        //"StartDate": arguments.dateFilterStart,
-	    //"EndDate": arguments.dateFilterEnd
+	    var fsResponse = {hasErrors: false};
 	    var body = {
 			"Pagination": {
 				"PageSize": "#arguments.pageSize#",
@@ -501,7 +493,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 		
 		var TotalCount = response.totalCount?:0;
 		var TotalPages = response.totalPages?:0;
-        //writedump(response);abort;
+
         
         //Exit if there is no data.
         if (!TotalCount){
@@ -610,12 +602,12 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
         
         //Get the totals on this call.
 		var accountsResponse = getData(pageNumber, pageSize, dateFilterStart, dateFilterEnd, "SwGetUpdatedAccounts");
-		var TotalCount = accountsResponse.Data.totalCount?:0;
-		var TotalPages = accountsResponse.Data.totalPages?:0;
+		var TotalCount = accountsResponse.totalCount?:0;
+		var TotalPages = accountsResponse.totalPages?:0;
         
         //Exit if there is no data.
         if (!TotalCount){
-            logHibachi("Start Account Data to import at this time.", true);
+            logHibachi("No account data to import at this time.", true);
         }
         
         //Iterate all the pages.
@@ -634,7 +626,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 			var suspended = getService("TypeService").getTypeByTypeID("2c9180836dacb117016dad1239ac000f");
 			var deleted = getService("TypeService").getTypeByTypeID("2c9180836dacb117016dad12e37c0011");
 			var enrollmentPending = getService("TypeService").getTypeByTypeID("2c9180836dacb117016dad1329790012");
-    		var accounts = accountsResponse.Data.Records;
+    		var accounts = accountsResponse.Records;
     		
     		/**
     		 *  {
@@ -862,12 +854,12 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 	
 	    //Get the totals
 		var orderResponse = getData(pageNumber, pageSize, dateFilterStart, dateFilterEnd, "SwGetUpdatedOrders");
-		var TotalCount = orderResponse.Data.totalCount;
-		var TotalPages = orderResponse.Data.totalPages;
+		var TotalCount = orderResponse.totalCount;
+		var TotalPages = orderResponse.totalPages;
         
         //Exit with no data.
         if (!TotalCount){
-            logHibachi("Start Order Data to import at this time.", true);
+            logHibachi("No order data to import at this time.", true);
         }
         
         //Iterate the response.
@@ -884,7 +876,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
     		
     		try{
     			var tx = ormStatelessSession.beginTransaction();
-    			var orders = orderResponse.Data.Records;
+    			var orders = orderResponse.Records;
     			
     			for (var order in order){
     			    index++;
