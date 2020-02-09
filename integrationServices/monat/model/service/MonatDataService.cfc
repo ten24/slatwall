@@ -160,7 +160,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 	}
 	
 	private any function getData(pageNumber,pageSize,dateFilterStart,dateFilterEnd,name){
-	    var uri = setting('baseImportURL') & "QueryAccounts";
+	    var uri = setting('baseImportURL') & name;
 		var authKeyName = "authkey";
 		var authKey = setting(authKeyName);
 		
