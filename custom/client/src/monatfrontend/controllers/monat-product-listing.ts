@@ -1,3 +1,5 @@
+declare var $;
+
 class MonatProductListingController {
     public loading:boolean;
     public accountData:any;
@@ -42,6 +44,11 @@ class MonatProductListingController {
 	public handleAddItem = () =>{
 	    this.getWishlistItems();
 	    if(!this.callEndpoint) this.showWishlist = true;
+	    
+	    // On product detail page, fill the heart.
+	    if ( $('.product-img-section .wishlist .far').length ) {
+	        $('.product-img-section .wishlist .far').removeClass('far').addClass('fas no-hover')
+	    }
 	}
 	
 	public hideAlert = () =>{
