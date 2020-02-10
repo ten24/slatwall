@@ -55,7 +55,7 @@ component displayname="Promotion Qualifier Message" entityname="SlatwallPromotio
 	    }
 	}
 	
-	public struct function getMessageStruct(any order){
+	public struct function getMessageStruct(){
 	    if(!isNull(getPromotionQualifier().getPromotionPeriod().getPromotionPeriodName())){
 	        var messageName = getPromotionQualifier().getPromotionPeriod().getPromotionPeriodName();
 	    }else{
@@ -65,7 +65,6 @@ component displayname="Promotion Qualifier Message" entityname="SlatwallPromotio
 	    return {
 	    	'promotionQualifierMessageID':getPromotionQualifierMessageID(),
 	        'messageName':messageName,
-	        'message':getMessage(),
 	        'priority':getPriority()
 	    };
 	}
