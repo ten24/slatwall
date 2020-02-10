@@ -62,15 +62,10 @@ component displayname="Promotion Qualifier Message" entityname="SlatwallPromotio
 	        var messageName = getPromotionQualifier().getPromotionPeriod().getPromotion().getPromotionName();
 	    }
 	    
-	    if(!isNull(arguments.order)){
-	    	var message = arguments.order.stringReplace(getMessage(),false,true);
-	    }else{
-	    	var message = getMessage();
-	    }
-	    message = getService('HibachiUtilityService').replaceFunctionTemplate(message);
 	    return {
+	    	'promotionQualifierMessageID':getPromotionQualifierMessageID(),
 	        'messageName':messageName,
-	        'message':message,
+	        'message':getMessage(),
 	        'priority':getPriority()
 	    };
 	}
@@ -89,6 +84,26 @@ component displayname="Promotion Qualifier Message" entityname="SlatwallPromotio
 
 		var hasOrder = !arrayIsEmpty(orderCollection.getPageRecords(formatRecords=false,refresh=true));
 		return hasOrder;
-
+	}
+	
+	private struct function getOrderDataFromRequirementsCollection(required string orderID){
+		var orderCollection = getTransientMessageRequirementsCollection();
+		if(isNull(orderCollection)){
+			return {};
+		}
+		orderCollection.setPageRecordsShow(1);
+		orderCollection.addFilter(propertyIdentifier='orderID',value=arguments.orderID, filterGroupAlias='orderIDFilter');
+		var orderRecords = orderCollection.getPageRecords();
+		if(arrayLen(orderRecords)){
+			return orderRecords[1];
+		}
+	}
+	
+	public string function getInterpolatedMessage(required any order){
+		var message = arguments.order.stringReplace(getMessage(),false,true);
+		var orderRecord = getOrderDataFromRequirementsCollection(arguments.order.getOrderID());
+		message = getService('HibachiUtilityService').replaceStringTemplateFromStruct(message,orderRecord);
+    	message = getService('HibachiUtilityService').replaceFunctionTemplate(message);
+    	return message;
 	}
 }

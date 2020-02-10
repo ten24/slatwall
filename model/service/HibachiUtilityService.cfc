@@ -631,6 +631,40 @@ Notes:
 		return reMatchNoCase("\!{[^{}]+}",arguments.template);
 	}
 	
+	private array function getStructTemplateKeys(required string template){
+		return reMatchNoCase("\%{[^{(}]+}",arguments.template);
+	}
+	
+	public string function replaceStringTemplateFromStruct(required string template,required struct data){
+		var templateKeys = getStructTemplateKeys(arguments.template);
+		var replacementArray = [];
+		var returnString = arguments.template;
+		
+		for(var i=1; i<=arrayLen(templateKeys); i++) {
+			var replaceDetails = {};
+			replaceDetails.key = templateKeys[i];
+			replaceDetails.value = templateKeys[i];
+
+			var valueKey = replace(replace(templateKeys[i], "%{", ""),"}","");
+			
+			if(structKeyExists(data,valueKey)){
+				replaceDetails.value = data[valueKey];
+				arrayAppend(replacementArray,replaceDetails);
+			}
+			
+		}
+		for(var i=1; i<=arrayLen(replacementArray); i++) {
+			returnString = replace(returnString, replacementArray[i].key, replacementArray[i].value, "all");
+		}
+		if(
+			arguments.template != returnString
+			&& arraylen(getFunctionTemplateKeys(returnString))
+		){
+			returnString = replaceFunctionTemplate(returnString);
+		}
+		return returnString;
+	}
+	
 	public string function replaceFunctionTemplate(required string template){
 		var templateKeys = getFunctionTemplateKeys(arguments.template);
 		var replacementArray = [];
