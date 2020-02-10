@@ -67,6 +67,7 @@ component displayname="Promotion Qualifier Message" entityname="SlatwallPromotio
 	    }else{
 	    	var message = getMessage();
 	    }
+	    message = getService('HibachiUtilityService').replaceFunctionTemplate(message);
 	    return {
 	        'messageName':messageName,
 	        'message':message,

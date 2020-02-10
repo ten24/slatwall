@@ -626,6 +626,90 @@ Notes:
 		}
 		return super.replaceStringTemplate(argumentCollection=arguments);
 	}
+	
+	private array function getFunctionTemplateKeys(required string template){
+		return reMatchNoCase("\!{[^{}]+}",arguments.template);
+	}
+	
+	public string function replaceFunctionTemplate(required string template){
+		var templateKeys = getFunctionTemplateKeys(arguments.template);
+		var replacementArray = [];
+		var returnString = arguments.template;
+		
+		for(var i=1; i<=arrayLen(templateKeys); i++) {
+			var replaceDetails = {};
+			replaceDetails.key = templateKeys[i];
+			replaceDetails.value = templateKeys[i];
+
+			var valueKey = replace(replace(templateKeys[i], "!{", ""),"}","");
+			var method = reMatchNoCase("^[^\(\)]+",valueKey);
+			var methodArgumentsStringArray = reMatchNoCase("\(.+\)",valueKey);
+			
+			if(arrayLen(methodArgumentsStringArray) && arrayLen(method)){
+				method = method[1];
+				var methodArgumentsString = methodArgumentsStringArray[1];
+				methodArgumentsString = replace(replace(methodArgumentsString,"(",""),")","");
+				var methodArguments = listToArray(methodArgumentsString,',');
+				
+				if(arrayLen(methodArguments)){
+					if(method == 'subtract'){
+						replaceDetails.value = this.subtractItems(methodArguments);
+					}else if(method == 'add'){
+						replaceDetails.value = this.addItems(methodArguments);
+					}else if(method == 'multiply'){
+						replaceDetails.value = this.multiplyItems(methodArguments);
+					}else if(method == 'divide'){
+						replaceDetails.value = this.divideItems(methodArguments);
+					}
+				}
+				arrayAppend(replacementArray,replaceDetails);
+			}
+			
+		}
+		for(var i=1; i<=arrayLen(replacementArray); i++) {
+			returnString = replace(returnString, replacementArray[i].key, replacementArray[i].value, "all");
+		}
+		if(
+			arguments.template != returnString
+			&& arraylen(getFunctionTemplateKeys(returnString))
+		){
+			returnString = replaceFunctionTemplate(returnString);
+		}
+		return returnString;
+	}
+	
+	public numeric function addItems(required array items){
+		var total = items[1];
+		for(var i = 2; i <= arrayLen(items); i++){
+			total += items[i];
+		}
+		return total;
+	}
+	
+	public numeric function subtractItems(required array items){
+		var total = items[1];
+		for(var i = 2; i <= arrayLen(items); i++){
+			total -= items[i];
+		}
+		return total;
+	}
+	
+	public numeric function multiplyItems(required array items){
+		var total = items[1];
+		for(var i = 2; i <= arrayLen(items); i++){
+			total *= items[i];
+		}
+		return total;
+	}
+	
+	public numeric function divideItems(required array items){
+		var total = items[1];
+		for(var i = 2; i <= arrayLen(items); i++){
+			total /= items[i];
+		}
+		return total;
+	}
+	
 	</cfscript>
 
 </cfcomponent>
