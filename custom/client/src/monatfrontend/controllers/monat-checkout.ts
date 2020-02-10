@@ -121,6 +121,10 @@ class MonatCheckoutController {
     	});
 	}
 	
+	public handleCheckoutProcess(addressModel:{}, billingModel:{}):void{
+		
+	}
+	
 	public configPayPal( paypalConfig ) {
 		var that = this;
 		var CLIENT_AUTHORIZATION = paypalConfig.clientAuthToken;
