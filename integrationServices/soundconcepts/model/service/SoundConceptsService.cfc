@@ -98,7 +98,10 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 			soundConceptsAccount['address2'] = swAccountStruct['primaryAddress_address_street2Address'];
 		}
 		soundConceptsAccount['city'] = swAccountStruct['primaryAddress_address_city'];
-		soundConceptsAccount['state'] = swAccountStruct['primaryAddress_address_stateCode'];
+		if(structKeyExists(swAccountStruct, 'primaryAddress_address_stateCode') && !isNull(swAccountStruct['primaryAddress_address_stateCode'])){
+			soundConceptsAccount['state'] = swAccountStruct['primaryAddress_address_stateCode'];	
+		}
+		
 		soundConceptsAccount['zip'] = swAccountStruct['primaryAddress_address_postalCode'];
 		soundConceptsAccount['country'] = swAccountStruct['primaryAddress_address_countryCode'];
 		
