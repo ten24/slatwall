@@ -255,11 +255,11 @@ class MonatFlexshipCardController {
 	}
 
 	public goToProductListingPage() {
-		this.$window.location.href = `/shop/?type=flexship&orderTemplateId=${this.orderTemplate.orderTemplateID}`;
+		this.monatService.redirectToProperSite('/shop/?type=flexship&orderTemplateId=' + this.orderTemplate.orderTemplateID);
 	}
 	
 	public goToOFYProductListingPage() {
-		this.$window.location.href = `/shop/only-for-you/?type=flexship&orderTemplateId=${this.orderTemplate.orderTemplateID}`;
+		this.monatService.redirectToProperSite('/shop/only-for-you/?type=flexship&orderTemplateId=' + this.orderTemplate.orderTemplateID);
 	}
 	
 	public showDeleteOrderTemplateModal = () => {
