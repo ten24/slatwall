@@ -1,5 +1,10 @@
 component {
 
+	//calculated properties
+	property name="calculatedCommissionableVolumeTotal" ormtype="integer";
+	property name="calculatedPersonalVolumeTotal" ormtype="integer";
+
+	//non-persistent properties
 	property name="commissionableVolumeTotal" persistent="false"; 
 	property name="personalVolumeTotal" persistent="false"; 
 	property name="skuProductURL" persistent="false";
