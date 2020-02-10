@@ -141,7 +141,11 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 			vibeAccount['address2'] = swAccountStruct['primaryAddress_address_street2Address'];
 		}
 		vibeAccount['city'] = swAccountStruct['primaryAddress_address_city'];
-		vibeAccount['state'] = swAccountStruct['primaryAddress_address_stateCode'];
+		
+		if(structKeyExists(swAccountStruct, 'primaryAddress_address_stateCode') && !isNull(swAccountStruct['primaryAddress_address_stateCode'])){
+			vibeAccount['state'] = swAccountStruct['primaryAddress_address_stateCode'];	
+		}
+		
 		vibeAccount['zip'] = swAccountStruct['primaryAddress_address_postalCode'];
 		vibeAccount['country'] = swAccountStruct['primaryAddress_address_countryCode'];
 
