@@ -25,7 +25,8 @@ class MonatFlexshipCardController {
 		public $window, 
 		public ModalService, 
 		public monatAlertService,
-		public rbkeyService
+		public rbkeyService,
+		public monatService
 	) {}
 
 	public $onInit = () => {
@@ -242,7 +243,7 @@ class MonatFlexshipCardController {
 							this.rbkeyService.rbKey('alert.flexship.activationSuccessfull')
 						);
 						
-					this.$window.location.href = `/flexship-confirmation/?type=flexship&orderTemplateId=${this.orderTemplate.orderTemplateID}`;
+					this.monatService.redirectToProperSite('/flexship-confirmation/?type=flexship&orderTemplateId=' + this.orderTemplate.orderTemplateID);
 				} else {
 					throw(data);
 				}
