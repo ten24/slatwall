@@ -703,7 +703,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}else if(structKeyExists(arguments,'orderQualifierMessages')){
 			for(var promoQualifierMessage in arguments.qualifier.getPromotionQualifierMessages()){
 				if(promoQualifierMessage.hasOrderByOrderID( arguments.order.getOrderID() )){
-					arrayAppend(arguments.orderQualifierMessages, promoQualifierMessage.getMessageStruct());
+					arrayAppend(arguments.orderQualifierMessages, promoQualifierMessage.getMessageStruct(arguments.order));
 				}
 			}
 		}
@@ -801,7 +801,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}else if(structKeyExists(arguments,'orderQualifierMessages')){
 			for(var promoQualifierMessage in arguments.qualifier.getPromotionQualifierMessages()){
 				if(promoQualifierMessage.hasOrderByOrderID( arguments.order.getOrderID() )){
-					arrayAppend(arguments.orderQualifierMessages, promoQualifierMessage.getMessageStruct());
+					arrayAppend(arguments.orderQualifierMessages, promoQualifierMessage.getMessageStruct(arguments.order));
 				}
 			}
 		}

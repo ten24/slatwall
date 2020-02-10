@@ -55,15 +55,21 @@ component displayname="Promotion Qualifier Message" entityname="SlatwallPromotio
 	    }
 	}
 	
-	public struct function getMessageStruct(){
+	public struct function getMessageStruct(any order){
 	    if(!isNull(getPromotionQualifier().getPromotionPeriod().getPromotionPeriodName())){
 	        var messageName = getPromotionQualifier().getPromotionPeriod().getPromotionPeriodName();
 	    }else{
 	        var messageName = getPromotionQualifier().getPromotionPeriod().getPromotion().getPromotionName();
 	    }
+	    
+	    if(!isNull(arguments.order)){
+	    	var message = arguments.order.stringReplace(getMessage(),false,true);
+	    }else{
+	    	var message = getMessage();
+	    }
 	    return {
 	        'messageName':messageName,
-	        'message':getMessage(),
+	        'message':message,
 	        'priority':getPriority()
 	    };
 	}
