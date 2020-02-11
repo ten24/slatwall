@@ -14,6 +14,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 	property name="skuService";
 	property name="paymentService";
 	property name="locationService";
+	property name="stockService";
 	property name="fulfillmentService";
 	property name="shippingService";
 	
@@ -206,12 +207,18 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
         var intervalOverride = 1;
         
         /**
+         * The ids of the orderitems to be added to the entity queue (List)
+         **/
+        var modifiedEntityIds = "";
+        
+        /**
          * CONSTANTS 
          **/
         var MERGE_ARRAYS = true;
         var SHIPPED = "5";
         var CLOSEDSTATUS = getTypeService().getTypeByTypeCode(SHIPPED);
         var HOURS = 'h';
+        var stockLocation = getLocationService().getLocationByLocationID("88e6d435d3ac2e5947c81ab3da60eba2");
         
         /**
          * The page number to start with 
@@ -348,7 +355,20 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
             orderDeliveryItem.setQuantity(orderFulfillmentItem.getQuantity());
             orderDeliveryItem.setOrderItem(orderFulfillmentItem);
             orderDeliveryItem.setOrderDelivery(orderDelivery);
+            
+            //now try to find the stock to attach
+            var sku = orderFulfillmentItem.getSku();
+            
+            if (!isNull(sku)){
+                var stock = getStockService().getStockBySkuAndLocation(sku, stockLocation);
+            }
+            
+            if (!isNull(stock)){
+                orderDeliveryItem.setStock( stock );
+            }
+            
 			ormStatelessSession.insert("SlatwallOrderDeliveryItem", orderDeliveryItem);
+			
             return orderDeliveryItem;
         };
 
@@ -472,7 +492,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 
     			if(isOrderFullyDelivered)	{
     				orderOnDelivery.setOrderStatusType(CLOSEDSTATUS);
-    				ormStatelessSession.insert("SlatwallOrder", orderOnDelivery );
+    				ormStatelessSession.update("SlatwallOrder", orderOnDelivery ); //update because it already exists.
                     logHibachi("Closed the order for orderNumber: #shipment['OrderNumber']#",true);
     
                 }else{
@@ -536,6 +556,19 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 				
 				logHibachi("Error: importing shipment. ",true);
 			}
+			
+			// Now process all the orderItem that need calculated property updates for this page.
+    		try{
+        		if (len(modifiedEntityIds)){
+        		    logHibachi("Adding orderitems to queue.", true);
+        		    var modifiedEntities = queryExecute(
+                      "INSERT into SwEntityQueue (entityQueueID, baseObject, baseID, processMethod, entityQueueData, createdDateTime, tryCount) select orderItemID as entityQueueID, 'OrderItem' as baseObject, orderItemID as baseID, 'processOrderItem_updateCalculatedProperties' as processMethod, '{}', now() as createdDateTime, 0 as tryCount from SwOrderItem where orderItemID in ?", 
+                      [{ value="#modifiedEntityIds#", cfsqltype="cf_sql_varchar", list="true"}]);
+        		}
+    		}catch(any entityQueueError){
+    		    logHibachi("Error while adding orderitems to the queue.[#entityQueueError.message#]", true);
+    		}
+			
 			logHibachi("End Importing pagenumber: #pageNumber#",true);
 			pageNumber++;
         }
