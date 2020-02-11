@@ -395,6 +395,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
                 var orderDeliveryItem = createDeliveryItem( orderDelivery,  
                     orderFulfillmentItem);
             }
+            modifiedEntityIds = listAppend(modifiedEntityIds, order.getOrderID());
         };
 
         /**
