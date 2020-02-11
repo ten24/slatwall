@@ -187,6 +187,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 
 		if (structKeyExists(apiData, "Data") && structKeyExists(apiData.Data, "Records")){
 			fsResponse = apiData.Data;
+			fsResponse.hasErrors = false;
 		    return fsResponse;
 		}
 
@@ -729,6 +730,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
                     	}
                     }
                     
+                    
                     // SponsorNumber
                     
                     if (!isNull(account['AccountNumber']) && 
@@ -740,19 +742,17 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
                     	var notUnique = false;
                     	
                     	try{
-                    		var newSponsorAccount = getService("AccountService")
-                    			.getAccountByAccountNumber(account['SponsorNumber']);
+                    		var newSponsorAccount = getService("AccountService").getAccountByAccountNumber(account['SponsorNumber']);
                     		var childAccount = foundAccount;
-                    		var sponsorAccount =foundAccount.getOwnerAccount();
                     	}catch(nonUniqueResultException){
                     		//not unique
                     		notUnique = true;
                     	}
                     	
-                    	if (!notUnique && !isNull(sponsorAccount) && !isNull(childAccount)){
-                    		var newAccountRelationship = getService("AccountService")
-                    			.getAccountRelationshipByChildAccountANDParentAccount({1:childAccount, 2:sponsorAccount}, false);
-                    		
+     
+                    	if (!notUnique && !isNull(childAccount)){
+                    		var newAccountRelationship = getService("AccountService").getAccountRelationshipByChildAccount(childAccount, false);
+
                     		var isNewAccountRelationship = false;
                     		if (isNull(newAccountRelationship)){
                     			var newAccountRelationship = new Slatwall.model.entity.AccountRelationship();
@@ -774,7 +774,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 	                    		ormStatelessSession.update("SlatwallAccountRelationship", newAccountRelationship);
 	                    	}
 	                    	
-	                    	foundAccount.setOwnerAccount(sponsorAccount);
+	                    	foundAccount.setOwnerAccount(newSponsorAccount);
                     	}
                     }
                     
@@ -848,7 +848,6 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 		var ormStatelessSession = ormGetSessionFactory().openStatelessSession();
 		var index=0;
 		var HOURS = 'h';
-        
         /**
          * Allows the user to override the last n HOURS that get checked. 
          * Defaults to 60 HOURS.
@@ -893,7 +892,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 		var orderResponse = getData(pageNumber, pageSize, dateFilterStart, dateFilterEnd, "SwGetUpdatedOrders");
 		var TotalCount = orderResponse.totalCount;
 		var TotalPages = orderResponse.totalPages;
-        
+         
         //Exit with no data.
         if (!TotalCount){
             logHibachi("No order data to import at this time.", true);
@@ -903,7 +902,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 		while (pageNumber <= TotalPages){
 			logHibachi("Start Order Updater", true);
     		var orderResponse = getData(pageNumber, pageSize, dateFilterStart, dateFilterEnd, "SwGetUpdatedOrders");
-    	    
+    	   
     		if (orderResponse.hasErrors){
     		    //goto next page causing this is erroring!
     		    pageNumber++;
@@ -915,7 +914,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
     			var tx = ormStatelessSession.beginTransaction();
     			var orders = orderResponse.Records;
     			
-    			for (var order in order){
+    			for (var order in orders){
     			    index++;
         		    
         			// Create a new account and then use the mapping file to map it.
@@ -926,18 +925,14 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
         				logHibachi("Could not find this order to update: Order number #order['OrderNumber']#", true);
         				continue;
         			}
-        			
-        			if (!isNull(order) && !isNull(order['CommissionPeriod'])){
-                        foundOrder.setCommissionPeriod( order['CommissionPeriod']?:"" );
+        			if (!isNull(foundOrder) && !isNull(order['Period']) && len(order['Period'])){
+                        foundOrder.setCommissionPeriod(order['Period']);
         			}
-                    
                     ormStatelessSession.update("SlatwallOrder", foundOrder);
-                    
     			}
     			
     			tx.commit();
     		}catch(e){
-    			
     			logHibachi("Daily Account Import Failed @ Index: #index# PageSize: #pageSize# PageNumber: #pageNumber#", true);
     			logHibachi(serializeJson(e));
     			ormGetSession().clear();
