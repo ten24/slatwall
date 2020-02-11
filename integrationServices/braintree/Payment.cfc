@@ -307,8 +307,8 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 		var client_token = arguments.requestBean.getProviderToken();
 
 		//Formatting total to be 2 decimal places
-		total = NumberFormat(total + discount, "0.00");
-		
+		var totalWithDiscount  = NumberFormat(total + discount, "0.00");
+		total = NumberFormat(total, "0.00");
 		
 		//Populate shipping address if orderFulFillment exits
 		var orderFulfillment = arguments.requestBean.getOrder().getOrderFulfillments();
@@ -341,7 +341,7 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 		//request payload
 		var payload = { "query" : "mutation CaptureTransaction($input: ChargePaymentMethodInput!) { chargePaymentMethod(input: $input) { transaction { id status } } }",
 			"variables" : { "input": { "paymentMethodId": "#client_token#", "transaction" : { 
-				"amount" : '#total#',
+				"amount" : '#totalWithDiscount#',
 				"orderId" : "#arguments.requestBean.getOrder().getOrderNumber()#",
 				'discountAmount' : '#discount#',
 				'shipping' : { 
