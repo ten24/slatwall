@@ -121,11 +121,9 @@ class MonatCheckoutController {
     	});
 	}
 	
-	public handleCheckoutProcess(addressModel, billingModel){
-		console.log(addressModel, billingModel);
-		return;
+	public handleCheckoutProcess(addressModel, billingModel):void{
 		
-		for (let key in billingModel) { 
+		for (var key in billingModel) { 
 			addressModel[key] = billingModel[key]; 
 		}
 
