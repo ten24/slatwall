@@ -187,6 +187,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 
 		if (structKeyExists(apiData, "Data") && structKeyExists(apiData.Data, "Records")){
 			fsResponse = apiData.Data;
+			fsResponse.hasErrors = false;
 		    return fsResponse;
 		}
 
