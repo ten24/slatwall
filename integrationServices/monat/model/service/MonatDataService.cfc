@@ -496,7 +496,10 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
     				orderOnDelivery.setOrderStatusType(CLOSEDSTATUS);
     				ormStatelessSession.update("SlatwallOrder", orderOnDelivery ); //update because it already exists.
                     logHibachi("Closed the order for orderNumber: #shipment['OrderNumber']#",true);
-    
+                    
+                    //now fire the event for this delivery.
+                    var eventData = {entity: orderDelivery};
+                    getHibachiScope().getService("hibachiEventService").announceEvent(eventName="afterOrderDeliveryCreateSuccess", eventData=eventData);
                 }else{
                 	logHibachi("createDelivery: Can't find enough information for ordernumber: #shipment['OrderNumber']# to create the delivery",true);
     			}
