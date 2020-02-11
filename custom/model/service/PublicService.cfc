@@ -1645,6 +1645,39 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 				scrollableSession.close();
 			}
 		}
-	} 
+	}
+	
+	public any function addOrderTemplateItem(required any data) {
+        param name="data.orderTemplateID" default="";
+        param name="data.skuID" default="";
+        param name="data.quantity" default=1;
+        
+        var orderTemplate = getOrderService().getOrderTemplateForAccount(argumentCollection = arguments);
+		if( isNull(orderTemplate) ) {
+			return;
+		}
+	    
+ 		orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'addOrderTemplateItem'); 
+ 		orderTemplate.updateCalculatedProperties();
+        getHibachiScope().addActionResult( "public:order.addOrderTemplateItem", orderTemplate.hasErrors() );
+            
+        if(orderTemplate.hasErrors()) {
+            ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
+        }
+        return orderTemplate;
+    }
+    
+    public void function getOrderTemplateDetails(required any data){
+        param name="arguments.data.pageRecordsShow" default=5;
+        param name="arguments.data.currentPage" default=1;
+        param name="arguments.data.orderTemplateId" default="";
+		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; 
+		
+		super.getOrderTemplateDetails(arguments.data);
+		if(structKeyExists(arguments.data.ajaxResponse,'orderTemplate')){
+		    var orderTemplate = getOrderService().getOrderTemplate(arguments.data.orderTemplateID);
+		    arguments.data.ajaxResponse.orderTemplate['canPlaceOrderFlag'] = orderTemplate.getCanPlaceOrderFlag();
+		}
+	}
     
 }
