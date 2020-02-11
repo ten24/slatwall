@@ -2,8 +2,8 @@ import * as Braintree from 'braintree-web';
 declare let paypal: any;
 
 enum Screen {
-	SHIPPING,
-	SPONSOR,
+	SHIPPING, 
+	SPONSOR, 
 	REVIEW,
 	PAYMENT
 }
@@ -17,6 +17,7 @@ class MonatCheckoutController {
 	public screen = Screen.SHIPPING;
 	public SCREEN = Screen; //Allows access to Screen Enum in Partial view
 	public account
+	public hasSponsor = false;
 	
 	// @ngInject
 	constructor(
@@ -62,7 +63,9 @@ class MonatCheckoutController {
 					screen = Screen.PAYMENT;
 				} 
 				
-				if(!this.account?.ownerAccount && this.publicService.hasShippingAddressAndMethod()){
+				//send to sponsor selector if the account has no owner
+				if(!this.account?.ownerAccount && this.publicService.hasShippingAddressAndMethod()){ 
+					this.hasSponsor = false;
 					screen = Screen.SPONSOR;
 				}
 				
@@ -230,6 +233,14 @@ class MonatCheckoutController {
 	
 	public navigate(){
 		this.getCurrentCheckoutScreen();
+	}
+	
+	public back():Screen{
+		console.log('back click');
+		return this.screen = 
+			(this.screen == Screen.REVIEW && !this.hasSponsor) 
+			? this.screen = Screen.SPONSOR	// If they are on review and DONT originally have a sponsor, send back to sponsor selector
+			: this.screen = Screen.SHIPPING	// Else: Send back to shipping/billing			
 	}
 }
 
