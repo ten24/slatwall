@@ -236,11 +236,17 @@ class MonatCheckoutController {
 	}
 	
 	public back():Screen{
-		console.log('back click');
 		return this.screen = 
 			(this.screen == Screen.REVIEW && !this.hasSponsor) 
 			? this.screen = Screen.SPONSOR	// If they are on review and DONT originally have a sponsor, send back to sponsor selector
 			: this.screen = Screen.SHIPPING	// Else: Send back to shipping/billing			
+	}
+	
+	public next():Screen{
+		return this.screen = 
+			((this.screen === Screen.SHIPPING || this.screen === Screen.PAYMENT) && !this.hasSponsor) // if they are reviewing shipping/billing and dont have a sponsor, send to selector
+			? this.screen = Screen.SPONSOR	
+			: this.screen = Screen.REVIEW //else send to review
 	}
 }
 
