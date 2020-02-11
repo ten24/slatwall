@@ -14,6 +14,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 	property name="skuService";
 	property name="paymentService";
 	property name="locationService";
+	property name="stockService";
 	property name="fulfillmentService";
 	property name="shippingService";
 	
@@ -206,12 +207,18 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
         var intervalOverride = 1;
         
         /**
+         * The ids of the orderitems to be added to the entity queue (List)
+         **/
+        var modifiedEntityIDs = "";
+        
+        /**
          * CONSTANTS 
          **/
         var MERGE_ARRAYS = true;
         var SHIPPED = "5";
         var CLOSEDSTATUS = getTypeService().getTypeByTypeCode(SHIPPED);
         var HOURS = 'h';
+        var stockLocation = getLocationService().getLocationByLocationID("88e6d435d3ac2e5947c81ab3da60eba2");
         
         /**
          * The page number to start with 
@@ -348,7 +355,20 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
             orderDeliveryItem.setQuantity(orderFulfillmentItem.getQuantity());
             orderDeliveryItem.setOrderItem(orderFulfillmentItem);
             orderDeliveryItem.setOrderDelivery(orderDelivery);
+            
+            //now try to find the stock to attach
+            var sku = orderFulfillmentItem.getSku();
+            
+            if (!isNull(sku)){
+                var stock = getStockService().getStockBySkuAndLocation(sku, stockLocation);
+            }
+            
+            if (!isNull(stock)){
+                orderDeliveryItem.setStock( stock );
+            }
+            
 			ormStatelessSession.insert("SlatwallOrderDeliveryItem", orderDeliveryItem);
+			
             return orderDeliveryItem;
         };
 
@@ -375,6 +395,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
                 var orderDeliveryItem = createDeliveryItem( orderDelivery,  
                     orderFulfillmentItem);
             }
+            modifiedEntityIDs = listAppend(modifiedEntityIDs, order.getOrderID());
         };
 
         /**
@@ -432,12 +453,12 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
     		    			orderDelivery.setScanDate( getDateFromString(packages['ScanDate']) );//use last scan date
     		    		}
 
-    		    		if (!isNull(shipment['UndeliveredReasonDescription'])){
-    		    			orderDelivery.setUndeliverableOrderReason(shipment['UndeliveredReasonDescription']?:"");
+    		    		if (!isNull(packages['UndeliveredReasonDescription'])){
+    		    			orderDelivery.setUndeliverableOrderReason(packages['UndeliveredReasonDescription']);
     		    		}
-
-    		    		if (!isNull(shipment['PackageShipDate'])){
-    		    			packageShipDate = shipment['PackageShipDate'];
+                        
+    		    		if (!isNull(packages['PackageShipDate'])){
+    		    			packageShipDate = packages['PackageShipDate'];
     		    			orderDelivery.setCreatedDateTime(getDateFromString(packageShipDate) );
     		    		}
     		    	 }
@@ -447,6 +468,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
     		    orderDelivery.setTrackingNumber(concatTrackingNumber);
     		    orderDelivery.setModifiedDateTime( now() );
                 orderDelivery.setShippingMethod( shippingMethod );
+                orderDelivery.setFulfillmentMethod( shippingMethod.getFulfillmentMethod() );
                 
                 //Sets the tracking URL
                 if (!isNull(orderDelivery.getTrackingNumber()) && 
@@ -472,12 +494,14 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 
     			if(isOrderFullyDelivered)	{
     				orderOnDelivery.setOrderStatusType(CLOSEDSTATUS);
-    				ormStatelessSession.insert("SlatwallOrder", orderOnDelivery );
+    				ormStatelessSession.update("SlatwallOrder", orderOnDelivery ); //update because it already exists.
                     logHibachi("Closed the order for orderNumber: #shipment['OrderNumber']#",true);
     
                 }else{
                 	logHibachi("createDelivery: Can't find enough information for ordernumber: #shipment['OrderNumber']# to create the delivery",true);
     			}
+            }else{
+                logHibachi("createDelivery: Can't create the delivery - already exists!", true);
             }
         };
 
@@ -536,6 +560,19 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 				
 				logHibachi("Error: importing shipment. ",true);
 			}
+			
+			// Now process all the orderItem that need calculated property updates for this page.
+    		try{
+        		if (len(modifiedEntityIDs)){
+        		    logHibachi("Adding orderitems to queue.", true);
+        		    var modifiedEntities = queryExecute(
+                      "INSERT into SwEntityQueue (entityQueueID, baseObject, baseID, processMethod, entityQueueData, createdDateTime, tryCount) select orderItemID as entityQueueID, 'OrderItem' as baseObject, orderItemID as baseID, 'processOrderItem_updateCalculatedProperties' as processMethod, '{}', now() as createdDateTime, 0 as tryCount from SwOrderItem where orderID in ?", 
+                      [{ value="#modifiedEntityIDs#", cfsqltype="cf_sql_varchar", list="true"}]);
+        		}
+    		}catch(any entityQueueError){
+    		    logHibachi("Error while adding orderitems to the queue.[#entityQueueError.message#]", true);
+    		}
+			
 			logHibachi("End Importing pagenumber: #pageNumber#",true);
 			pageNumber++;
         }
