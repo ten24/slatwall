@@ -11,23 +11,26 @@
 			<hb:HibachiPropertyDisplay object="#rc.account#" property="lastName" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.account#" property="company" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.account#" property="activeFlag" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.account#" property="birthDate" edit="false">
 			<hb:HibachiPropertyDisplay object="#rc.account#" property="superUserFlag" edit="#rc.edit and $.slatwall.getAccount().getSuperUserFlag()#">
 			<hb:HibachiPropertyDisplay object="#rc.account#" property="taxExemptFlag" edit="#rc.edit#">
-			<hb:HibachiPropertyDisplay object="#rc.account#" property="testAccountFlag" edit="#rc.edit#">
+			<!---hb:HibachiPropertyDisplay object="#rc.account#" property="testAccountFlag" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.account#" property="verifiedAccountFlag" edit="#rc.edit#">
-			<hb:HibachiPropertyDisplay object="#rc.account#" property="organizationFlag" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.account#" property="organizationFlag" edit="#rc.edit#"--->
 			<hb:HibachiPropertyDisplay object="#rc.account#" property="accountCreatedSite" edit="false">
-			<cfif not isNull(rc.account.getOrganizationFlag())  and rc.account.getOrganizationFlag()>
+			<!---cfif not isNull(rc.account.getOrganizationFlag())  and rc.account.getOrganizationFlag()>
 				<hb:HibachiPropertyDisplay object="#rc.account#" property="accountCode" edit="#rc.edit#">
-			</cfif>
+			</cfif--->
 			<hb:HibachiPropertyDisplay object="#rc.account#" property="username" edit="#rc.edit#">
-			<hb:HibachiPropertyDisplay object="#rc.account#" property="accountcode" edit="#rc.edit#">
+			<!---hb:HibachiPropertyDisplay object="#rc.account#" property="accountcode" edit="#rc.edit#"--->
 		</hb:HibachiPropertyList>
 
 		<!--- Overview --->
 		<hb:HibachiPropertyList divclass="col-md-6">
+			<hb:HibachiPropertyDisplay object="#rc.account#" property="accountType" edit="false">
+			<hb:HibachiPropertyDisplay object="#rc.account#" property="renewalDate" edit="false">												
+			<!---Start##
 			<hb:HibachiPropertyTable>
-
 				<!--- Authentication Details --->
 				<hb:HibachiPropertyTableBreak header="#$.slatwall.rbKey('admin.entity.detailaccount.authenticationDetails')#" hint="#$.slatwall.rbKey("admin.entity.detailaccount.authenticationDetails_hint")#" />
 				<hb:HibachiPropertyDisplay object="#rc.account#" property="guestAccountFlag" edit="false" displayType="table">
@@ -51,6 +54,7 @@
 				</cfsavecontent>
 				<hb:HibachiFieldDisplay ignoreHTMLEditFormat="true" title="#$.slatwall.rbKey('admin.entity.accounttabs.twofactorauthentication')#" value="#faValue#" edit="false" displayType="table">
 			</hb:HibachiPropertyTable>
+			End##--->
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 </cfoutput>
