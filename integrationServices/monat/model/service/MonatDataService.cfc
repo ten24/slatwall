@@ -499,6 +499,8 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
                 }else{
                 	logHibachi("createDelivery: Can't find enough information for ordernumber: #shipment['OrderNumber']# to create the delivery",true);
     			}
+            }else{
+                logHibachi("createDelivery: Can't create the delivery - already exists!", true);
             }
         };
 
