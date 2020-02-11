@@ -1,12 +1,22 @@
 import * as Braintree from 'braintree-web';
 declare let paypal: any;
 
+enum Screen {
+	SHIPPING,
+	SPONSOR,
+	REVIEW,
+	PAYMENT
+}
+
+
 class MonatCheckoutController {
 	public 	togglePaymentAction: boolean = false;
 	public loading: any = {
 		selectShippingMethod: false
 	};
-	public screen: string = 'shipping';
+	public screen = Screen.SHIPPING;
+	public SCREEN = Screen; //Allows access to Screen Enum in Partial view
+	public account
 	
 	// @ngInject
 	constructor(
@@ -34,22 +44,30 @@ class MonatCheckoutController {
 		this.observerService.attach( () => window.scrollTo(0, 0), 'createSuccess' ); 
 		this.observerService.attach( () => window.scrollTo(0, 0), 'addShippingAddressSuccess' ); 
 		this.observerService.attach( () => window.scrollTo(0, 0), 'addNewAccountAddressSuccess' );
-
-		this.getCurrentCheckoutScreen();
+		this.publicService.getAccount().then(res=>{
+			this.account = res;
+			this.getCurrentCheckoutScreen();
+		})
+		
 	}
 	
-	private getCurrentCheckoutScreen = () => {
+	private getCurrentCheckoutScreen = ():Screen => {
 		
-		this.publicService.getCart().then(data => {
-			let screen = 'shipping';
+		return this.publicService.getCart().then(data => {
+			
+			let screen = Screen.SHIPPING;
 			
 			if(this.publicService.cart && this.publicService.cart.orderRequirementsList.indexOf('account') == -1){
 				if (this.publicService.hasShippingAddressAndMethod() ) {
-					screen = 'payment'
+					screen = Screen.PAYMENT;
 				} 
 				
+				if(!this.account?.ownerAccount && this.publicService.hasShippingAddressAndMethod()){
+					screen = Screen.SPONSOR;
+				}
+				
 				if ( this.publicService.cart.orderPayments.length && this.publicService.hasShippingAddressAndMethod() ) {
-					screen = 'review';
+					screen = Screen.REVIEW;
 				}
 			}
 			
@@ -58,14 +76,13 @@ class MonatCheckoutController {
 			}
 			
 			this.screen = screen;
-			
 			return screen;
 		});
 		
 	}
 	
 	public closeNewAddressForm = () => {
-		if(this.screen == 'payment') document.getElementById('payment-method-form-anchor').scrollIntoView();
+		if(this.screen == Screen.PAYMENT) document.getElementById('payment-method-form-anchor').scrollIntoView();
 		this.publicService.addBillingAddressOpen = false;
 	}
 	
@@ -209,6 +226,10 @@ class MonatCheckoutController {
 			this.$scope.slatwall.OrderPayment_addOrderPayment.saveFlag = 0;
 			this.$scope.slatwall.OrderPayment_addOrderPayment.primaryFlag = 0;
 		}
+	}
+	
+	public navigate(){
+		this.getCurrentCheckoutScreen();
 	}
 }
 
