@@ -1647,26 +1647,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		}
 	}
 	
-	public any function addOrderTemplateItem(required any data) {
-        param name="data.orderTemplateID" default="";
-        param name="data.skuID" default="";
-        param name="data.quantity" default=1;
-        
-        var orderTemplate = getOrderService().getOrderTemplateForAccount(argumentCollection = arguments);
-		if( isNull(orderTemplate) ) {
-			return;
-		}
-	    
- 		orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'addOrderTemplateItem'); 
- 		orderTemplate.updateCalculatedProperties();
-        getHibachiScope().addActionResult( "public:order.addOrderTemplateItem", orderTemplate.hasErrors() );
-            
-        if(orderTemplate.hasErrors()) {
-            ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
-        }
-        return orderTemplate;
-    }
-    
     public void function getOrderTemplateDetails(required any data){
         param name="arguments.data.pageRecordsShow" default=5;
         param name="arguments.data.currentPage" default=1;
