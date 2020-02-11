@@ -452,12 +452,12 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
     		    			orderDelivery.setScanDate( getDateFromString(packages['ScanDate']) );//use last scan date
     		    		}
 
-    		    		if (!isNull(shipment['UndeliveredReasonDescription'])){
-    		    			orderDelivery.setUndeliverableOrderReason(shipment['UndeliveredReasonDescription']?:"");
+    		    		if (!isNull(packages['UndeliveredReasonDescription'])){
+    		    			orderDelivery.setUndeliverableOrderReason(packages['UndeliveredReasonDescription']);
     		    		}
-
-    		    		if (!isNull(shipment['PackageShipDate'])){
-    		    			packageShipDate = shipment['PackageShipDate'];
+                        
+    		    		if (!isNull(packages['PackageShipDate'])){
+    		    			packageShipDate = packages['PackageShipDate'];
     		    			orderDelivery.setCreatedDateTime(getDateFromString(packageShipDate) );
     		    		}
     		    	 }
@@ -467,6 +467,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
     		    orderDelivery.setTrackingNumber(concatTrackingNumber);
     		    orderDelivery.setModifiedDateTime( now() );
                 orderDelivery.setShippingMethod( shippingMethod );
+                orderDelivery.setFulfillmentMethod( shippingMethod.getFulfillmentMethod() );
                 
                 //Sets the tracking URL
                 if (!isNull(orderDelivery.getTrackingNumber()) && 
