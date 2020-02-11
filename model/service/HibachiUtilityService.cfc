@@ -686,14 +686,19 @@ Notes:
 				var methodArguments = listToArray(methodArgumentsString,',');
 				
 				if(arrayLen(methodArguments)){
-					if(method == 'subtract'){
-						replaceDetails.value = this.subtractItems(methodArguments);
-					}else if(method == 'add'){
-						replaceDetails.value = this.addItems(methodArguments);
-					}else if(method == 'multiply'){
-						replaceDetails.value = this.multiplyItems(methodArguments);
-					}else if(method == 'divide'){
-						replaceDetails.value = this.divideItems(methodArguments);
+					switch(method){
+						case 'subtract':
+							replaceDetails.value = this.subtractItems(methodArguments);
+							break;
+						case 'add':
+							replaceDetails.value = this.addItems(methodArguments);
+							break;
+						case 'multiply':
+							replaceDetails.value = this.multiplyItems(methodArguments);
+							break;
+						case 'divide':
+							replaceDetails.value = this.divideItems(methodArguments);
+							break;
 					}
 				}
 				arrayAppend(replacementArray,replaceDetails);
@@ -736,9 +741,13 @@ Notes:
 		return total;
 	}
 	
-	public numeric function divideItems(required array items){
+	public any function divideItems(required array items){
 		var total = items[1];
 		for(var i = 2; i <= arrayLen(items); i++){
+			if(item == 0){
+				total = 'Infinity';
+				break;
+			}
 			total /= items[i];
 		}
 		return total;
