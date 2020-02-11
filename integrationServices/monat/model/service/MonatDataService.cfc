@@ -209,7 +209,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
         /**
          * The ids of the orderitems to be added to the entity queue (List)
          **/
-        var modifiedEntityIds = "";
+        var modifiedEntityIDs = "";
         
         /**
          * CONSTANTS 
@@ -395,7 +395,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
                 var orderDeliveryItem = createDeliveryItem( orderDelivery,  
                     orderFulfillmentItem);
             }
-            modifiedEntityIds = listAppend(modifiedEntityIds, order.getOrderID());
+            modifiedEntityIDs = listAppend(modifiedEntityIDs, order.getOrderID());
         };
 
         /**
@@ -563,11 +563,11 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 			
 			// Now process all the orderItem that need calculated property updates for this page.
     		try{
-        		if (len(modifiedEntityIds)){
+        		if (len(modifiedEntityIDs)){
         		    logHibachi("Adding orderitems to queue.", true);
         		    var modifiedEntities = queryExecute(
-                      "INSERT into SwEntityQueue (entityQueueID, baseObject, baseID, processMethod, entityQueueData, createdDateTime, tryCount) select orderItemID as entityQueueID, 'OrderItem' as baseObject, orderItemID as baseID, 'processOrderItem_updateCalculatedProperties' as processMethod, '{}', now() as createdDateTime, 0 as tryCount from SwOrderItem where orderItemID in ?", 
-                      [{ value="#modifiedEntityIds#", cfsqltype="cf_sql_varchar", list="true"}]);
+                      "INSERT into SwEntityQueue (entityQueueID, baseObject, baseID, processMethod, entityQueueData, createdDateTime, tryCount) select orderItemID as entityQueueID, 'OrderItem' as baseObject, orderItemID as baseID, 'processOrderItem_updateCalculatedProperties' as processMethod, '{}', now() as createdDateTime, 0 as tryCount from SwOrderItem where orderID in ?", 
+                      [{ value="#modifiedEntityIDs#", cfsqltype="cf_sql_varchar", list="true"}]);
         		}
     		}catch(any entityQueueError){
     		    logHibachi("Error while adding orderitems to the queue.[#entityQueueError.message#]", true);
