@@ -933,7 +933,6 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
     			
     			tx.commit();
     		}catch(e){
-    			rethrow;
     			logHibachi("Daily Account Import Failed @ Index: #index# PageSize: #pageSize# PageNumber: #pageNumber#", true);
     			logHibachi(serializeJson(e));
     			ormGetSession().clear();
