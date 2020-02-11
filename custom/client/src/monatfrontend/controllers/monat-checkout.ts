@@ -121,19 +121,6 @@ class MonatCheckoutController {
     	});
 	}
 	
-	public handleCheckoutProcess(addressModel, billingModel):void{
-		
-		for (var key in billingModel) { 
-			addressModel[key] = billingModel[key]; 
-		}
-
-		this.publicService.doAction('addEditAccountAddress,addBillingAddressUsingAccountAddress,addOrderPayment',addressModel).then(res=>{
-			console.log(res);
-		});
-			
-		
-	}
-	
 	public configPayPal( paypalConfig ) {
 		var that = this;
 		var CLIENT_AUTHORIZATION = paypalConfig.clientAuthToken;
