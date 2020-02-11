@@ -216,13 +216,24 @@ extends = "Slatwall.integrationServices.BaseTax" {
 			 * orderItems. This tells Avatax to distribute the order discount
 			 * to the items automatically.
 			 * 
+			 * For fulfillment, the discount needs to apply to only the shipping
+			 * and handling charge.
+			 * 
 			 **/
 			var orderDiscount = arguments.requestBean.getOrder().getOrderDiscountAmountTotal();
 			var allItemsHaveDiscount = false;
+			
 			if (orderDiscount > 0){
 				//distribute the order discount to all of the orderItems.
 				allItemsHaveDiscount = true;
 				requestDataStruct.Discount = orderDiscount;
+			}
+			
+			var orderFulfillmentDiscount = arguments.requestBean.getOrder().getFulfillmentDiscountAmountTotal();
+			
+			// Adds the fulfillment discount to the orderItems like the order discount
+			if (orderFulfillmentDiscount > 0){
+				requestDataStruct.Discount += orderFulfillmentDiscount;
 			}
 			
 			// Loop over each unique item for this address
@@ -267,6 +278,11 @@ extends = "Slatwall.integrationServices.BaseTax" {
 					itemData.TaxCode = item.getTaxCategoryCode();
 					itemData.Qty = 1;
 					itemData.Amount = amount;
+					
+					if (orderFulfillmentDiscount > 0){
+						itemData.Discounted = true;
+					}
+					
 					arrayAppend(requestDataStruct.Lines, itemData);
 
 				}
