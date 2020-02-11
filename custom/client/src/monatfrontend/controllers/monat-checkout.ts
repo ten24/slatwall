@@ -17,7 +17,8 @@ class MonatCheckoutController {
 	public screen = Screen.SHIPPING;
 	public SCREEN = Screen; //Allows access to Screen Enum in Partial view
 	public account
-	public hasSponsor = false;
+	public hasSponsor = true;
+	public ownerAccountID:string;
 	
 	// @ngInject
 	constructor(
@@ -32,6 +33,8 @@ class MonatCheckoutController {
 		    if (this.$scope.Account_CreateAccount){
 		        this.$scope.Account_CreateAccount.ownerAccount = account.accountID;
 		    };
+	        this.ownerAccountID = account.accountID;
+	        console.log(this.ownerAccountID);
 	        
 		}, 'ownerAccountSelected');	
 		
@@ -231,10 +234,6 @@ class MonatCheckoutController {
 		}
 	}
 	
-	public navigate(){
-		this.getCurrentCheckoutScreen();
-	}
-	
 	public back():Screen{
 		return this.screen = 
 			(this.screen == Screen.REVIEW && !this.hasSponsor) 
@@ -248,6 +247,13 @@ class MonatCheckoutController {
 			? this.screen = Screen.SPONSOR	
 			: this.screen = Screen.REVIEW //else send to review
 	}
+	
+	public submitSponsor(){
+		this.publicService.doAction('submitSponsor', {sponsorID: this.ownerAccountID}).then(res=>{
+			if(res.successfulActions) this.next();
+		});
+	}
+	
 }
 
 export { MonatCheckoutController };
