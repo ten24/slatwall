@@ -245,12 +245,6 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 			'distId'      = arguments.account.getAccountNumber(), //Slatwall will be master
 			'name'        = formatDistibutorName(arguments.account), // Distributor Name (lastname, firstname)
 			'distType'    = formatDistributorType(arguments.account.getAccountType()),//D (MP), P (VIP), C (Customer) 
-			'country'     = arguments.account.getPrimaryAddress().getAddress().getCountry().getCountryCode3Digit(),//Member country(ISO Format) e.g. USA
-			'address1'    = left(arguments.account.getPrimaryAddress().getAddress().getStreetAddress(), 60),//Member Street Address
-			'address2'    = left(arguments.account.getPrimaryAddress().getAddress().getStreet2Address(), 60),//Suite or Apartment Number
-			'address3'    = getCityStateZipcode(arguments.account.getPrimaryAddress().getAddress()),
-			'city'        = left(arguments.account.getPrimaryAddress().getAddress().getCity(), 25),
-			'postalCode'  = left(arguments.account.getPrimaryAddress().getAddress().getPostalCode(), 15),
 			'email'       = left(arguments.account.getEmailAddress(), 60),
 			'referralId' = arguments.account.getOwnerAccount().getAccountNumber()//ID of Member who referred person to the business
 		};
@@ -275,8 +269,18 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 			distributorData['homePhone'] = left(formatNumbersOnly(arguments.account.getPhoneNumber()), 20);//Home Phone (NNNNNNNNNN)
 		}
 		
-		if(!isNull(arguments.account.getPrimaryAddress().getAddress().getStateCode()) && len(arguments.account.getPrimaryAddress().getAddress().getStateCode())){
-			distributorData['state'] = left(arguments.account.getPrimaryAddress().getAddress().getStateCode(), 10);
+		if(!isNull(arguments.account.getPrimaryAddress())){
+			
+			distributorData['country']     = arguments.account.getPrimaryAddress().getAddress().getCountry().getCountryCode3Digit();//Member country(ISO Format) e.g. USA
+			distributorData['address1']    = left(arguments.account.getPrimaryAddress().getAddress().getStreetAddress(), 60);//Member Street Address
+			distributorData['address2']    = left(arguments.account.getPrimaryAddress().getAddress().getStreet2Address(), 60);//Suite or Apartment Number
+			distributorData['address3']    = getCityStateZipcode(arguments.account.getPrimaryAddress().getAddress());
+			distributorData['city']        = left(arguments.account.getPrimaryAddress().getAddress().getCity(), 25);
+			distributorData['postalCode']  = left(arguments.account.getPrimaryAddress().getAddress().getPostalCode(), 15);
+		
+			if(!isNull(arguments.account.getPrimaryAddress().getAddress().getStateCode()) && len(arguments.account.getPrimaryAddress().getAddress().getStateCode())){
+				distributorData['state']   = left(arguments.account.getPrimaryAddress().getAddress().getStateCode(), 10);
+			}
 		}
 		
 		return distributorData;

@@ -85,28 +85,29 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		accountPropList = accountPropList & ',' & addressPropList;
 		var swAccountStruct = arguments.account.getStructRepresentation( accountPropList );
 
+		var mapping = {
+			'accountNumber':'distributor_id',
+			'firstName':'first_name',
+			'lastName':'last_name',
+			'calculatedFullName':'display_name',
+			'username':'username',
+			'primaryEmailAddress_emailAddress':'email',
+			'primaryPhoneNumber_phoneNumber':'phone',
+			'primaryAddress_address_streetAddress':'address1',
+			'primaryAddress_address_street2Address':'address2',
+			'primaryAddress_address_city':'city',
+			'primaryAddress_address_stateCode':'state',
+			'primaryAddress_address_postalCode':'zip',
+			'primaryAddress_address_countryCode':'country',
+			'languagePreference':'default_language'
+		};
+
 		var soundConceptsAccount = {};
-		soundConceptsAccount['distributor_id'] = swAccountStruct['accountNumber'] ;
-		soundConceptsAccount['first_name'] = swAccountStruct['firstName'];
-		soundConceptsAccount['last_name'] = swAccountStruct['lastName'];
-		soundConceptsAccount['display_name'] = swAccountStruct['calculatedFullName'];
-		soundConceptsAccount['username'] = swAccountStruct['username'];
-		soundConceptsAccount['email'] = swAccountStruct['primaryEmailAddress_emailAddress'];
-		soundConceptsAccount['phone'] = swAccountStruct['primaryPhoneNumber_phoneNumber'];
-		soundConceptsAccount['address1'] = swAccountStruct['primaryAddress_address_streetAddress'];
-		if(structKeyExists(swAccountStruct, 'primaryAddress_address_street2Address') && !isNull(swAccountStruct['primaryAddress_address_street2Address'])){
-			soundConceptsAccount['address2'] = swAccountStruct['primaryAddress_address_street2Address'];
-		}
-		soundConceptsAccount['city'] = swAccountStruct['primaryAddress_address_city'];
-		if(structKeyExists(swAccountStruct, 'primaryAddress_address_stateCode') && !isNull(swAccountStruct['primaryAddress_address_stateCode'])){
-			soundConceptsAccount['state'] = swAccountStruct['primaryAddress_address_stateCode'];	
-		}
 		
-		soundConceptsAccount['zip'] = swAccountStruct['primaryAddress_address_postalCode'];
-		soundConceptsAccount['country'] = swAccountStruct['primaryAddress_address_countryCode'];
-		
-		if( StructKeyExists( swAccountStruct, 'languagePreference' ) && !IsNull(swAccountStruct['languagePreference']) ){
-			soundConceptsAccount['default_language'] = swAccountStruct['languagePreference'];
+		for(var fromKey in mapping){
+			if( StructKeyExists( swAccountStruct, fromKey ) && !IsNull(swAccountStruct[fromKey]) ){
+				soundConceptsAccount[mapping[fromKey]] = swAccountStruct[fromKey];
+			}
 		}
 		
 		if( setting('generateRandomPasswordFlag') ) {

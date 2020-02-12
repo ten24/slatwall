@@ -106,51 +106,29 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		accountPropList = accountPropList & ',' & addressPropList;
 		var swAccountStruct = arguments.account.getStructRepresentation( accountPropList );
 
-		/* required fields
-			{	"user" : {
-					"customerid":12345678,
-					"screenname":"nitin.testing12",
-					"firstname": "Nitin",
-					"lastname" : "yadav",
-					"companyname":"ten 24",
-					"email" :"test.test1233@test.com",
-					"typeid" : 1,
-					"statusid" : 1,
-					"password": "Changeme@123"
-				}
-			}
-		*/
+		var mapping = {
+			'accountNumber':'customerid',
+			'firstName':'firstname',
+			'lastName':'lastname',
+			'username':'screenname',
+			'company':'companyname',
+			'ownerAccount_accountNumber':'sponsorid',
+			'primaryEmailAddress_emailAddress':'email',
+			'primaryPhoneNumber_phoneNumber':'homephone',
+			'primaryAddress_address_street2Address':'address1',
+			'primaryAddress_address_city':'city',
+			'primaryAddress_address_stateCode':'state',
+			'primaryAddress_address_postalCode':'zip',
+			'primaryAddress_address_countryCode':'country',
+			'languagePreference':'preferredlanguage'
+		};
 
 		var vibeAccount = {};
-		vibeAccount['customerid'] = swAccountStruct['accountNumber'] ;
-		vibeAccount['firstname'] = swAccountStruct['firstName'];
-		vibeAccount['lastname'] = swAccountStruct['lastName'];
-		vibeAccount['screenname'] = swAccountStruct['username'];
 		
-		if( StructKeyExists( swAccountStruct, 'company' ) && !IsNull(swAccountStruct['company']) ){
-			vibeAccount['companyname'] = swAccountStruct['company'];
-		}
-		
-		vibeAccount['sponsorid'] = swAccountStruct['ownerAccount_accountNumber'];
-		
-		vibeAccount['email'] = swAccountStruct['primaryEmailAddress_emailAddress'];
-		vibeAccount['homephone'] = swAccountStruct['primaryPhoneNumber_phoneNumber'];
-		
-		vibeAccount['address1'] = swAccountStruct['primaryAddress_address_streetAddress'];
-		if(structKeyExists(swAccountStruct, 'primaryAddress_address_street2Address')){
-			vibeAccount['address2'] = swAccountStruct['primaryAddress_address_street2Address'];
-		}
-		vibeAccount['city'] = swAccountStruct['primaryAddress_address_city'];
-		
-		if(structKeyExists(swAccountStruct, 'primaryAddress_address_stateCode') && !isNull(swAccountStruct['primaryAddress_address_stateCode'])){
-			vibeAccount['state'] = swAccountStruct['primaryAddress_address_stateCode'];	
-		}
-		
-		vibeAccount['zip'] = swAccountStruct['primaryAddress_address_postalCode'];
-		vibeAccount['country'] = swAccountStruct['primaryAddress_address_countryCode'];
-
-		if( StructKeyExists( swAccountStruct, 'languagePreference' ) && !IsNull(swAccountStruct['languagePreference']) ){
-			vibeAccount['preferredlanguage'] = swAccountStruct['languagePreference'];
+		for(var fromKey in mapping){
+			if( StructKeyExists( swAccountStruct, fromKey ) && !IsNull(swAccountStruct[fromKey]) ){
+				vibeAccount[mapping[fromKey]] = swAccountStruct[fromKey];
+			}
 		}
 		
 		if( !StructKeyExists( swAccountStruct, 'activeFlag' ) || IsNull(swAccountStruct['activeFlag']) ) {
@@ -161,14 +139,13 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		
 		vibeAccount['typeid'] = 1; //default for customer(Retail) type
 	
-		if( StructKeyExists( swAccountStruct, 'accountType' ) &&  !IsNull(swAccountStruct['accountType']) && Len( Trim(swAccountStruct['accountType'] ) )
-		) {
+		if( StructKeyExists( swAccountStruct, 'accountType' ) &&  !IsNull(swAccountStruct['accountType']) && Len( Trim(swAccountStruct['accountType'] ) )) {
 
 			swAccountStruct['accountType'] = Lcase(swAccountStruct['accountType']);
+			
 			if( swAccountStruct['accountType'] == 'vip' ) {
 				vibeAccount['typeid'] = 2; 
-			} 
-			else if( swAccountStruct['accountType'] == 'marketpartner' ) {
+			}else if( swAccountStruct['accountType'] == 'marketpartner' ) {
 				vibeAccount['typeid'] = 3; 
 				vibeAccount['rankid'] = 1; 
 				vibeAccount['lifetimerankid'] = 1; 
@@ -189,6 +166,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		arguments.data.payload = this.convertSwAccountToVibeAccount(arguments.entity);
 		getDataIntegrationCFC().pushData(argumentCollection=arguments);
 	}
+	
 	
 	
 	// =====================  END: Logical Methods ============================
