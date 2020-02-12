@@ -294,27 +294,21 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 
 		// define discount
 		if(arguments.requestBean.getOrder().getDiscountTotal() > 0) {
-			discount += arguments.requestBean.getOrder().getOrderAndItemDiscountAmountTotal();
-		}
-
-		var itemSubTotal = arguments.requestBean.getOrder().getSubTotalAfterItemDiscounts();
-		if(arguments.requestBean.getOrder().getOrderDiscountAmountTotal() > 0) {
-			itemSubTotal -= arguments.requestBean.getOrder().getOrderDiscountAmountTotal();
+			discount += arguments.requestBean.getOrder().getDiscountTotal();
 		}
 
 		var total = arguments.requestBean.getOrder().getTotal(); 
 
 		if(arguments.requestBean.getOrder().hasGiftCardOrderPaymentAmount()) {
 			discount += arguments.requestBean.getOrder().getGiftCardOrderPaymentAmount();
-			itemSubTotal -= arguments.requestBean.getOrder().getGiftCardOrderPaymentAmount();
 			total -= arguments.requestBean.getOrder().getGiftCardOrderPaymentAmount(); 
 		}	
 
 		var client_token = arguments.requestBean.getProviderToken();
 
 		//Formatting total to be 2 decimal places
+		var totalWithDiscount  = NumberFormat(total + discount, "0.00");
 		total = NumberFormat(total, "0.00");
-		
 		
 		//Populate shipping address if orderFulFillment exits
 		var orderFulfillment = arguments.requestBean.getOrder().getOrderFulfillments();
@@ -347,7 +341,7 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 		//request payload
 		var payload = { "query" : "mutation CaptureTransaction($input: ChargePaymentMethodInput!) { chargePaymentMethod(input: $input) { transaction { id status } } }",
 			"variables" : { "input": { "paymentMethodId": "#client_token#", "transaction" : { 
-				"amount" : '#total#',
+				"amount" : '#totalWithDiscount#',
 				"orderId" : "#arguments.requestBean.getOrder().getOrderNumber()#",
 				'discountAmount' : '#discount#',
 				'shipping' : { 
