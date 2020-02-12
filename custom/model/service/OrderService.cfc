@@ -404,7 +404,7 @@ component extends="Slatwall.model.service.OrderService" {
 
 		return orderTemplateItemCollection;	
 	} 
-	
+
     private void function updateOrderStatusBySystemCode(required any order, required string systemCode) {
         var orderStatusType = "";
         var orderStatusHistory = {};
@@ -424,13 +424,21 @@ component extends="Slatwall.model.service.OrderService" {
         // Sales Orders
         } else if (arguments.order.getOrderType().getSystemCode() == 'otSalesOrder') {
             if (arguments.systemCode == 'ostNew') {
-                
-                //if the order is paid but not shipped, set to Paid status
-                if (arguments.order.getPaymentAmountDue() <= 0 && arguments.order.getQuantityUndelivered() > 0){
+			
+
+				//if the order is paid don't set to new, otherwise set to new (case of flexship)	
+				if ( arguments.order.getPaymentAmountDue() <= 0 && arguments.order.getQuantityUndelivered() > 0 ){
                     //the order is paid but not shipped
-                    arguments.order.setOrderStatusType(getTypeService().getTypeByTypeCode( typeCode="paid"));
-                    orderStatusHistory.setOrderStatusHistoryType(getTypeService().getTypeByTypeCode( typeCode="paid"));
-                }
+                    var type = getTypeService().getTypeByTypeCode( typeCode="paid");
+				} else {
+					//the order is just new
+					var type = getTypeService().getTypeBySystemCode( systemCode=arguments.systemCode );
+				}	
+				
+				arguments.order.setOrderStatusType(type); 
+				orderStatusHistory.setOrderStatusHistoryType(type);
+
+
             }else if (arguments.systemCode == 'ostPaid') {
             	//If its paid and its shipped, set it to shipped.
             	if (arguments.order.getPaymentAmountDue() <= 0 && arguments.order.getQuantityUndelivered() == 0){
@@ -468,7 +476,7 @@ component extends="Slatwall.model.service.OrderService" {
             this.saveOrderStatusHistory(orderStatusHistory);
         }
     }
-	
+
 	//Return data: order fulfillments, order payments, order items, order 
 	public any function getOrderItemsHeavy(struct data={}) {
         param name="arguments.data.orderID" default="";
