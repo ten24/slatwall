@@ -205,7 +205,6 @@ component extends="HibachiService" output="false" accessors="true" {
 			emailSMTPUsername = {fieldType="text"},
 			emailSMTPPassword = {fieldType="password"},
 			emailSubject = {fieldType="text", defaultValue="Notification From Slatwall"},
-			emailAccountTypePropertyIdentifier = {fieldtype="text",defaultValue="customer"},
 
 
 			// Fulfillment Method

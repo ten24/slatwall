@@ -49,25 +49,24 @@ Notes:
 <cfimport prefix="swa" taglib="../../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../../org/Hibachi/HibachiTags" />
 
+
+<cfparam name="rc.emailTemplate" type="any" />
+
 <cfoutput>
-	<swa:SlatwallSettingTable showInheritance="false">
-	    <swa:SlatwallSetting settingName="emailAccountTypePropertyIdentifier" />
-		<swa:SlatwallSetting settingName="emailFromAddress" />
-		<swa:SlatwallSetting settingName="emailToAddress" />
-		<swa:SlatwallSetting settingName="emailCCAddress" />
-		<swa:SlatwallSetting settingName="emailBCCAddress" />
-		<swa:SlatwallSetting settingName="emailFailToAddress" />
-		<swa:SlatwallSetting settingName="emailReplyToAddress" />
-		<swa:SlatwallSetting settingName="emailSubject" />
-		<swa:SlatwallSetting settingName="emailSMTPServer" />
-		<swa:SlatwallSetting settingName="emailSMTPPort" />
-		<swa:SlatwallSetting settingName="emailSMTPUseSSL" />
-		<swa:SlatwallSetting settingName="emailSMTPUseTLS" />
-		<swa:SlatwallSetting settingName="emailSMTPUsername" />
-		<swa:SlatwallSetting settingName="emailSMTPPassword" />
-		<swa:SlatwallSetting settingName="emailIMAPServer" />
-		<swa:SlatwallSetting settingName="emailIMAPServerPort" />
-		<swa:SlatwallSetting settingName="emailIMAPServerUsername" />
-		<swa:SlatwallSetting settingName="emailIMAPServerPassword" />
+	<swa:SlatwallSettingTable>
+	    <swa:SlatwallSetting settingName="emailAccountTypePropertyIdentifier" settingObject="#rc.emailTemplate#"  />
+		<swa:SlatwallSetting settingName="emailFromAddress" settingObject="#rc.emailTemplate#" />
+		<swa:SlatwallSetting settingName="emailToAddress" settingObject="#rc.emailTemplate#" />
+		<swa:SlatwallSetting settingName="emailReplyToAddress" settingObject="#rc.emailTemplate#" />
+		<swa:SlatwallSetting settingName="emailCCAddress" settingObject="#rc.emailTemplate#" />
+		<swa:SlatwallSetting settingName="emailBCCAddress" settingObject="#rc.emailTemplate#" />
+		<swa:SlatwallSetting settingName="emailLocaleString" settingObject="#rc.emailTemplate#" />
+		<swa:SlatwallSetting settingName="emailSubject" settingObject="#rc.emailTemplate#" />
+		<swa:SlatwallSetting settingName="emailSMTPServer" settingObject="#rc.emailTemplate#" />
+		<swa:SlatwallSetting settingName="emailSMTPPort" settingObject="#rc.emailTemplate#" />
+		<swa:SlatwallSetting settingName="emailSMTPUseSSL" settingObject="#rc.emailTemplate#" />
+		<swa:SlatwallSetting settingName="emailSMTPUseTLS" settingObject="#rc.emailTemplate#" />
+		<swa:SlatwallSetting settingName="emailSMTPUsername" settingObject="#rc.emailTemplate#" />
+		<swa:SlatwallSetting settingName="emailSMTPPassword" settingObject="#rc.emailTemplate#" />
 	</swa:SlatwallSettingTable>
 </cfoutput>

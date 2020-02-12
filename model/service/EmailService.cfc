@@ -47,7 +47,6 @@ Notes:
 
 --->
 <cfcomponent extends="HibachiService" persistent="false" accessors="true" output="false">
-
 	<cfproperty name="templateService" />
 	<cfproperty name="hibachiEntityQueueDAO" />
 	<cfproperty name="hibachiUtilityService" />
@@ -192,6 +191,7 @@ Notes:
 	</cffunction>
 
 	<cffunction name="getEmailTemplateFileOptions" output="false" access="public">
+	<cfdump var= "#object#" abort>
 		<cfargument name="object" type="string" required="true" />
 
 		<cfset var dir = "" />
@@ -267,7 +267,6 @@ Notes:
 	<cfscript>
 
 	public any function processEmail_createFromTemplate(required any email, required struct data) {
-
 		if(structKeyExists(arguments.data, "emailTemplate") && isObject(arguments.data.emailTemplate)) {
 			var emailTemplate = arguments.data.emailTemplate;
 		} else if(structKeyExists(arguments.data, "emailTemplateID")) {
@@ -312,13 +311,12 @@ Notes:
 
 				var templateFileResponse = "";
 				var templatePath = getTemplateService().getTemplateFileIncludePath(templateType="email", objectName=emailTemplate.getEmailTemplateObject(), fileName=emailTemplate.getEmailTemplateFile());
-
 				local.email = arguments.email;
 				local[ emailTemplate.getEmailTemplateObject() ] = templateObject;
 				local.emailData["relatedObject"] = mid(templateObject.getEntityName(), 9, len(templateObject.getEntityName())-8);
 				local.emailData["relatedObjectID"] = templateObject.getPrimaryIDValue();
 				local["emailTemplate"] = emailTemplate;
-				local["emailTemplateEntity"] = templateObject;
+				local["emailTemplateObject"] = templateObject;
 
 				if(len(templatePath)) {
 					savecontent variable="templateFileResponse" {
