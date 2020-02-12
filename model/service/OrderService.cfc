@@ -2086,6 +2086,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.orderTemplate; 	
 	}  
 
+	public any function processOrderTemplate_refreshOrderTemplateItemPrices (required any orderTemplate, any processObject, struct data={}){
+
+		arguments.orderTemplate.updateCalculatedProperties(); 
+
+		return arguments.orderTemplate; 	
+
+	}
+
 	//begin order template api functionality
 	public any function getOrderTemplatesCollectionForAccount(required struct data, any account=getHibachiScope().getAccount()){
         param name="arguments.data.pageRecordsShow" default=5;
