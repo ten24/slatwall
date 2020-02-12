@@ -542,20 +542,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			}
 
-			// Setup the Sku / Quantity / Price details
+			// Setup the Sku / Quantity / Price/ SKU-Price details
 			addNewOrderItemSetup(newOrderItem, arguments.processObject);
-
-			// If the sku is allowed to have a user defined price OR the current account has permissions to edit price
-			if(
-				(
-					(!isNull(newOrderItem.getSku().getUserDefinedPriceFlag()) && newOrderItem.getSku().getUserDefinedPriceFlag())
-					  ||
-					(getHibachiScope().getLoggedInAsAdminFlag() && getHibachiAuthenticationService().authenticateEntityPropertyCrudByAccount(crudType='update', entityName='orderItem', propertyName='price', account=getHibachiScope().getAccount()))
-				) && isNumeric(arguments.processObject.getPrice()) ) {
-				newOrderItem.setPrice( arguments.processObject.getPrice() );
-			} else {
-				newOrderItem.setPrice( arguments.processObject.getSku().getPriceByCurrencyCode( arguments.order.getCurrencyCode(), arguments.processObject.getQuantity() ) );
-			}
 
 			// If a stock was passed in assign it to this new item
 			if( !isNull(arguments.processObject.getStock()) ) {
@@ -5486,23 +5474,46 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	private any function addNewOrderItemSetup(required any newOrderItem, required any processObject)
 	{
+		writeLog(file="debug", text="Called addNewOrderItemSetup--core");
 		// Setup the Sku / Quantity / Price details
 		arguments.newOrderItem.setSku( arguments.processObject.getSku() );
 		arguments.newOrderItem.setCurrencyCode( arguments.newOrderItem.getOrder().getCurrencyCode() );
 		arguments.newOrderItem.setQuantity( arguments.processObject.getQuantity() );
 		
-		var skuPrice = arguments.processObject.getSku().getPriceByCurrencyCode( 
-				quantity = arguments.processObject.getQuantity(),
-				currencyCode = arguments.newOrderItem.getOrder().getCurrencyCode(), 
-				priceGroups = arguments.newOrderItem.getOrder().getAccount().getPriceGroups()
-			);
-		
-		if( !IsNull(skuPrice) ){
-			arguments.newOrderItem.setSkuPrice(skuPrice);
-		} else{
-			arguments.newOrderItem.addError('priceByCurrencyCode', 
-				rbKey('validate.processOrderTemplate_addOrderTemplateItem.sku.hasPriceByCurrencyCode')
-			);
+		// If the sku is allowed to have a user defined price OR the current account has permissions to edit price
+		if(
+			( 
+				!isNull(newOrderItem.getSku().getUserDefinedPriceFlag()) && 
+				newOrderItem.getSku().getUserDefinedPriceFlag()
+			)
+			  || //Admin-users can override price from the Slatwall-UI
+			(
+				getHibachiScope().getLoggedInAsAdminFlag() && 
+				getHibachiAuthenticationService().authenticateEntityPropertyCrudByAccount(
+					crudType='update', entityName='orderItem', 
+					propertyName='price', account=getHibachiScope().getAccount()
+				)
+			)
+		) {
+			arguments.newOrderItem.setPrice( arguments.processObject.getPrice() );
+			// Q: should we allow the user defined price as sku-price here? 
+			writeLog(file="debug", text="addNewOrderItemSetup--core: setting overriden price and sku-price #arguments.processObject.getPrice()#");
+			// if the admin overrides the NULL-sku-price 
+			// we need to set the sku-price otherwise the promotion logis throws [null ORIGINALPRICE] exception
+			// as the getPriceByCurrencyCOde will return null
+			arguments.newOrderItem.setSkuPrice( arguments.processObject.getPrice() );
+			
+		} else {
+
+			var skuPrice = arguments.processObject.getSku().getPriceByCurrencyCode( 
+								quantity = arguments.processObject.getQuantity(),
+								currencyCode = arguments.newOrderItem.getOrder().getCurrencyCode(), 
+								priceGroups = arguments.newOrderItem.getOrder().getAccount().getPriceGroups()
+							);
+							
+			writeLog(file="debug", text="addNewOrderItemSetup--core: setting getPriceByCurrencyCode price and sku-price #skuPrice#");
+			newOrderItem.setPrice(skuPrice);
+			newOrderItem.setSkuPrice(skuPrice);
 		}
 		
 		return arguments.newOrderItem;
