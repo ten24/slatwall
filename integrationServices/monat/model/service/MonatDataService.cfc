@@ -819,8 +819,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
                     }
                     
                     //"EntryDate": "2020-01-30T15:00:53",
-                    if (!isNull(account['EntryDate']) && len(account['EntryDate'])){
-                    	//set the accountType from this. Needs to be name or I need to map it.
+                    if (!isNull(account['EntryDate']) && len(account['EntryDate'])){.
                     	foundAccount.setEnrollmentDate( ParseDateTime(account['EntryDate']));
                     }
                     
