@@ -233,7 +233,11 @@ extends = "Slatwall.integrationServices.BaseTax" {
 			
 			// Adds the fulfillment discount to the orderItems like the order discount
 			if (orderFulfillmentDiscount > 0){
-				requestDataStruct.Discount += orderFulfillmentDiscount;
+				if(structKeyExists(requestDataStruct, 'Discount')){
+					requestDataStruct.Discount += orderFulfillmentDiscount;
+				} else { 
+					requestDataStruct.Discount = orderFulfillmentDiscount;
+				}
 			}
 			
 			// Loop over each unique item for this address
