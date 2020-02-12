@@ -3366,6 +3366,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	public any function processOrder_updateOrderAmounts(required any order, struct data) {
+		writeLog(file="debug", text="Called: processOrder_updateOrderAmounts:");
 		this.logHibachi('updating order amounts called', true); 
 		//only allow promos to be applied to orders that have not been closed or canceled
 		if(!listFindNoCase("ostCanceled,ostClosed", arguments.order.getOrderStatusType().getSystemCode())) {
@@ -3381,6 +3382,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
  				){
  					// Loop over the orderItems to see if the skuPrice Changed
 					for(var orderItem in arguments.order.getOrderItems()){
+						writeLog(file="debug", text="processOrder_updateOrderAmounts: Updating Prices for OI: #orderItem.getOrderItemID()#, SkuPrice: #orderItem.getSkuPrice()#, Price: #orderItem.getSkuPrice()#");
+
 						var skuPrice = val(orderItem.getSkuPrice());
 						var SkuPriceByCurrencyCode = val(orderItem.getSku().getPriceByCurrencyCode(orderItem.getCurrencyCode(), orderItem.getQuantity()));
 	 				
@@ -3396,6 +3399,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	 							orderItem.setPrice(SkuPriceByCurrencyCode);
 	 							orderItem.setSkuPrice(SkuPriceByCurrencyCode);
 	 						}
+	 						
+	 						writeLog(file="debug", text="processOrder_updateOrderAmounts: Price for OI: #orderItem.getOrderItemID()#, Updated to , SkuPrice: #orderItem.getSkuPrice()#, Price: #orderItem.getSkuPrice()#");
 						}
 					}
  				}
