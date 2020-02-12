@@ -2086,8 +2086,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.orderTemplate; 	
 	}  
 
-	public any function processOrderTemplate_refreshOrderTemplateItemPrices (required any orderTemplate, any processObject, struct data={}){
+	public any function processOrderTemplate_updateCalculatedProperties (required any orderTemplate, any processObject, struct data={}){
 
+		//calculation cascades to order template items
 		arguments.orderTemplate.updateCalculatedProperties(); 
 
 		return arguments.orderTemplate; 	
