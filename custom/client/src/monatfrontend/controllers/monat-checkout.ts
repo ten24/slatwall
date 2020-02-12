@@ -5,7 +5,8 @@ enum Screen {
 	SHIPPING, 
 	SPONSOR, 
 	REVIEW,
-	PAYMENT
+	PAYMENT,
+	EDIT
 }
 
 
@@ -34,7 +35,6 @@ class MonatCheckoutController {
 		        this.$scope.Account_CreateAccount.ownerAccount = account.accountID;
 		    };
 	        this.ownerAccountID = account.accountID;
-	        console.log(this.ownerAccountID);
 	        
 		}, 'ownerAccountSelected');	
 		
@@ -64,6 +64,7 @@ class MonatCheckoutController {
 			if(this.publicService.cart && this.publicService.cart.orderRequirementsList.indexOf('account') == -1){
 				if (this.publicService.hasShippingAddressAndMethod() ) {
 					screen = Screen.PAYMENT;
+					console.log('has shipping and method!')
 				} 
 				
 				//send to sponsor selector if the account has no owner
@@ -238,7 +239,7 @@ class MonatCheckoutController {
 		return this.screen = 
 			(this.screen == Screen.REVIEW && !this.hasSponsor) 
 			? this.screen = Screen.SPONSOR	// If they are on review and DONT originally have a sponsor, send back to sponsor selector
-			: this.screen = Screen.SHIPPING	// Else: Send back to shipping/billing			
+			: this.screen = Screen.PAYMENT	// Else: Send back to shipping/billing			
 	}
 	
 	public next():Screen{
