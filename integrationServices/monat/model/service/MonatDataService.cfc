@@ -818,6 +818,11 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
                     	foundAccount.setComplianceStatus( account['FlagAccountTypeCode']?:"" );
                     }
                     
+                    //"EntryDate": "2020-01-30T15:00:53",
+                    if (!isNull(account['EntryDate']) && len(account['EntryDate'])){.
+                    	foundAccount.setEnrollmentDate( ParseDateTime(account['EntryDate']));
+                    }
+                    
                     //CareerTitleCode
                     foundAccount.setCareerTitle( account['CareerTitleCode']?:"" );
                     
