@@ -517,7 +517,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		var maxPromotionMessagesLength = getService('SettingService').getSettingValue('globalMaximumPromotionMessages');
 		
-		if( ArrayLen(arguments.orderQualifierMessages) > maxPromotionMessagesLength) {
+		if(maxPromotionMessagesLength < arrayLen(arguments.orderQualifierMessages)){
 			arguments.orderQualifierMessages = arraySlice(arguments.orderQualifierMessages, 1, maxPromotionMessagesLength);
 		}
 		
