@@ -269,7 +269,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 			distributorData['homePhone'] = left(formatNumbersOnly(arguments.account.getPhoneNumber()), 20);//Home Phone (NNNNNNNNNN)
 		}
 		
-		if(!isNull(arguments.account.getPrimaryAddress())){
+		if(!isNull(arguments.account.getPrimaryAddress()) && !isNull(arguments.account.getPrimaryAddress().getAddress()) ){
 			
 			distributorData['country']     = arguments.account.getPrimaryAddress().getAddress().getCountry().getCountryCode3Digit();//Member country(ISO Format) e.g. USA
 			distributorData['address1']    = left(arguments.account.getPrimaryAddress().getAddress().getStreetAddress(), 60);//Member Street Address
