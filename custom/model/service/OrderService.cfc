@@ -438,7 +438,8 @@ component extends="Slatwall.model.service.OrderService" {
 				if(!isNull(type)){	
 					arguments.order.setOrderStatusType(type); 
 					orderStatusHistory.setOrderStatusHistoryType(type);
-				}
+				}	
+
 
             }else if (arguments.systemCode == 'ostPaid') {
             	//If its paid and its shipped, set it to shipped.
@@ -457,7 +458,15 @@ component extends="Slatwall.model.service.OrderService" {
             }
         // Return Orders
         } else if (listFindNoCase('otReturnOrder,otExchangeOrder,otReplacementOrder,otRefundOrder', arguments.order.getTypeCode())) {
-            if (arguments.systemCode == 'ostProcessing') {
+            if (arguments.systemCode == 'ostNew') {
+		
+				var type = getTypeService().getTypeBySystemCode( systemCode=arguments.systemCode, typeCode="1");
+				if(!isNull(type)){	
+					arguments.order.setOrderStatusType(type); 
+					orderStatusHistory.setOrderStatusHistoryType(type);
+				}	
+				
+			} else if (arguments.systemCode == 'ostProcessing') {
                 // Order delivery items have been created but not fulfilled, need to be approved (confirmed) first
                 arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="rmaReceived"));
                 orderStatusHistory.setOrderStatusHistoryType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="rmaReceived"));
