@@ -432,12 +432,13 @@ component extends="Slatwall.model.service.OrderService" {
                     var type = getTypeService().getTypeByTypeCode( typeCode="paid");
 				} else {
 					//the order is just new
-					var type = getTypeService().getTypeBySystemCode( systemCode=arguments.systemCode );
+					var type = getTypeService().getTypeBySystemCode( systemCode=arguments.systemCode, typeCode="1");
 				}	
-				
-				arguments.order.setOrderStatusType(type); 
-				orderStatusHistory.setOrderStatusHistoryType(type);
 
+				if(!isNull(type)){	
+					arguments.order.setOrderStatusType(type); 
+					orderStatusHistory.setOrderStatusHistoryType(type);
+				}
 
             }else if (arguments.systemCode == 'ostPaid') {
             	//If its paid and its shipped, set it to shipped.
