@@ -517,7 +517,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		var maxMessages = getService('SettingService').getSettingValue('globalMaximumPromotionMessages');
 		
-		arguments.orderQualifierMessages = arraySlice(arguments.orderQualifierMessages,1,maxMessages);
+		if(maxMessages < arrayLen(arguments.orderQualifierMessages)){
+			arguments.orderQualifierMessages = arraySlice(arguments.orderQualifierMessages,1,maxMessages);
+		}
 		
 		for(var orderQualifierMessage in arguments.orderQualifierMessages){
 			arguments.order.addMessage(orderQualifierMessage.messageName, orderQualifierMessage.message);

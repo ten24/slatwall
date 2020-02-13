@@ -51,7 +51,6 @@ Notes:
 
 
 <cfparam name="rc.order" type="any" />
-<cfparam name="rc.processObject" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 <cfoutput>
 <hb:HibachiEntityProcessForm entity="#rc.order#" edit="#rc.edit#" sRedirectAction="admin:entity.editorder">
