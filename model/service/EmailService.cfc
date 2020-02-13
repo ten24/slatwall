@@ -191,7 +191,6 @@ Notes:
 	</cffunction>
 
 	<cffunction name="getEmailTemplateFileOptions" output="false" access="public">
-	<cfdump var= "#object#" abort>
 		<cfargument name="object" type="string" required="true" />
 
 		<cfset var dir = "" />
@@ -214,16 +213,6 @@ Notes:
 				</cfif>
 			</cfloop>
 		</cfif>
-		
-		<cfif directoryExists("#getApplicationValue('applicationRootMappingPath')#/custom/templates/email/basetemplate")>
-			<cfdirectory action="list" directory="#getApplicationValue('applicationRootMappingPath')#/custom/templates/email/basetemplate" name="dir" />
-			<cfloop query="dir">
-				<cfif listLast(dir.name, '.') eq 'cfm' and !arrayFind(fileOptions, dir.name)>
-					<cfset arrayAppend(fileOptions, dir.name) />
-				</cfif>
-			</cfloop>
-		</cfif>
-		<cfdump var=" #fileOptions#" ></cfdump> <cfabort>
 		<cfreturn fileOptions />
 	</cffunction>
 
@@ -315,8 +304,8 @@ Notes:
 				local[ emailTemplate.getEmailTemplateObject() ] = templateObject;
 				local.emailData["relatedObject"] = mid(templateObject.getEntityName(), 9, len(templateObject.getEntityName())-8);
 				local.emailData["relatedObjectID"] = templateObject.getPrimaryIDValue();
-				local["emailTemplate"] = emailTemplate;
-				local["emailTemplateObject"] = templateObject;
+				local.emailTemplate = emailTemplate;
+				local.emailTemplateObject = templateObject;
 
 				if(len(templatePath)) {
 					savecontent variable="templateFileResponse" {
