@@ -4669,13 +4669,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var orderPayments = orderPaymentsSmartList.getRecords();
 
 		getOrderDAO().turnOnPaymentProcessingFlag(arguments.order.getOrderID()); 
-		
+		var amountToCredit = -1* order.getPaymentAmountDue();
 		for(var orderPayment in orderPayments) {
 			if(orderPayment.getStatusCode() == 'opstActive') {
-				
+				var paymentAmount = orderPayment.getAmountUncredited();
+				if(paymentAmount > amountToCredit){
+					paymentAmount = amountToCredit;
+				}
 				var processData = {
 					transactionType = 'credit',
-					amount = orderPayment.getAmountUncredited(), 
+					amount = paymentAmount, 
 					setOrderPaymentInvalidOnFailedTransactionFlag = false
 				};
 
@@ -4689,7 +4692,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					var currentTryCount = arguments.order.getPaymentTryCount() + 1;
 					arguments.order.setPaymentTryCount(currentTryCount);
 					arguments.order.setPaymentLastRetryDateTime(now());
-				} 
+				}else{
+					amountToCredit -= paymentAmount;
+				}
 			}
 		}	
 		

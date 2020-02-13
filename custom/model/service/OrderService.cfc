@@ -647,15 +647,17 @@ component extends="Slatwall.model.service.OrderService" {
 	    return order;
 	}
 	
-	public any function processOrder_approveReturn(required any order, any processObject, struct data){
-	    
-	    if(!isNull(arguments.processObject.getOrderItems()) &&arrayLen(arguments.processObject.getOrderItems())){
-	        for(var orderItem in arguments.processObject.getOrderItem()){
-	            orderItem = this.getOrderItem(orderItem.orderItemID);
-	            orderItem.setQuantity(orderItem.quantity);
+	public any function processOrder_approveReturn(required any order, required struct data){
+		
+	    if(!isNull(arguments.data.orderItems) &&arrayLen(arguments.data.orderItems)){
+	        for(var orderItemStruct in arguments.data.orderItems){
+	            var orderItem = this.getOrderItem(orderItemStruct.orderItemID);
+	            orderItem.setQuantity(orderItemStruct.quantity);
 	        }
 	    }
+	    this.processOrder(arguments.order,'updateOrderAmounts');
 	    order.setOrderStatusType(getService('TypeService').getTypeByTypeCode('rmaApproved'));
+
 	    return order;
 	}
 
