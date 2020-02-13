@@ -11,6 +11,9 @@ component {
 	property name="saveablePaymentMethodsCollectionList" persistent="false";
 	property name="canCreateFlexshipFlag" persistent="false";
 	property name="subscribedToMailchimp" persistent="false";
+	property name="genderFullWord" persistent = "false";
+	property name="spouseFirstName" persistent = "false";
+	property name="spouseLastName" persistent = "false";
 	
 	public numeric function getSuccessfulFlexshipOrdersThisYearCount(){
 		if(!structKeyExists(variables, 'successfulFlexshipOrdersThisYearCount')){
@@ -128,5 +131,27 @@ component {
 		return getService('imageService').getResizedImagePath('#getHibachiScope().getBaseImageURL()#/profileImage/#this.getProfileImage()#', arguments.width, arguments.height)
 	}
 	
+	public string function getGenderFullWord(){
+	    var genderFullWord = "";
+	    var local.gender = LCase(this.getGender());
+		switch (local.gender) {
+			case "f": genderFullWord = "Female"; break;
+			case "m": genderFullWord =  "Male"; break;
+			case "p": genderFullWord =  "Male"; break;
+			case "prefernottoSay": genderFullWord =  "Prefer Not To Say"; break;
+		}
+		return genderFullWord;
+	}
 	
+	public string function getSpouseFirstName(){
+	    if(!IsNULL(this.getSpouseName())){
+	       return ListFirst(this.getSpouseName(),", ");
+	    }
+	}
+	
+	public string function getSpouseLastName(){
+	    if(!IsNULL(this.getSpouseName())){
+	       return ListRest(this.getSpouseName(),", ");
+	    }
+	}
 } 
