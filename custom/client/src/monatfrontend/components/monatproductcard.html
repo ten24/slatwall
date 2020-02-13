@@ -49,8 +49,23 @@
             <a 
                 class="d-block" 
                 ng-href="{{ !monatProductCard.isEnrollment ? monatProductCard.product.skuProductURL : undefined }}"
-                ><img ng-src="{{monatProductCard.product.skuImagePath[0]}}" width="240" height="270"></a
             >
+                <!--- Length check on monatProductCard.product.skuImagePath[0] to check if it's a string or an array. --->
+                <img 
+                    ng-if="monatProductCard.product.skuImagePath[0].length > 1"
+                    image-manager
+                    ng-src="{{ monatProductCard.product.skuImagePath[0] }}" 
+                    width="240" 
+                    height="270" 
+                />
+                <img 
+                    ng-if="monatProductCard.product.skuImagePath[0].length === 1"
+                    image-manager
+                    ng-src="{{ monatProductCard.product.skuImagePath }}" 
+                    width="240" 
+                    height="270" 
+                />
+            </a>
            
         </figure>
       
