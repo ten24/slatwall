@@ -26,6 +26,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	this.secureMethods=listAppend(this.secureMethods,'importVibeAccounts');
 	this.secureMethods=listAppend(this.secureMethods,'upsertCashReceiptsToOrders');
 	this.secureMethods=listAppend(this.secureMethods,'importDailyAccountUpdates');
+	this.secureMethods=listAppend(this.secureMethods,'importOrderUpdates');
 	this.secureMethods=listAppend(this.secureMethods,'importOrderShipments');
 	this.secureMethods=listAppend(this.secureMethods,'importInventory');
 	this.secureMethods=listAppend(this.secureMethods,'importInventoryUpdates');
@@ -440,9 +441,18 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	
 	public void function importDailyAccountUpdates(rc){  
 		getService("HibachiTagService").cfsetting(requesttimeout="60000");
-	
+		getFW().setView("public:main.blank");
+		
 		//Use a service instead.
-		getService("MonatDataService").importDailyAccountUpdates(rc.pageSize?:50, rc.pageNumber?:1, rc.pageMax?:2);
+		getService("MonatDataService").importAccountUpdates( );
+		
+	}
+	
+	public void function importOrderUpdates(rc){  
+		getService("HibachiTagService").cfsetting(requesttimeout="60000");
+		getFW().setView("public:main.blank");
+		//Use a service instead.
+		getService("MonatDataService").importOrderUpdates(  );
 		
 	}
 	
@@ -451,7 +461,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		getFW().setView("public:main.blank");
 		
 		//Use a service instead.
-		getService("MonatDataService").importOrderShipments(rc);
+		getService("MonatDataService").importOrderShipments( );
 		
 	}
 	

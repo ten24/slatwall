@@ -1579,6 +1579,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			if (!isNull(orderFulfillment)){
 				orderFulfillment.setShippingMethod(arguments.orderTemplate.getShippingMethod());
 				orderFulfillment.setFulfillmentMethod(arguments.orderTemplate.getShippingMethod().getFulfillmentMethod());
+
 			}
 		}
 		
@@ -1622,8 +1623,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arguments.orderTemplate.setLastOrderPlacedDateTime( now() );
 			arguments.orderTemplate.clearHibachiErrors();
 			return arguments.orderTemplate;
-		}	
+		}
 	
+		var eventData = {entity: newOrder};
+        getHibachiScope().getService("hibachiEventService").announceEvent(eventName="afterOrderPlaceOrderSuccess", eventData=eventData);	
 	
 		var orderTemplateAppliedGiftCards = arguments.orderTemplate.getOrderTemplateAppliedGiftCards(); 
 		for(var orderTemplateAppliedGiftCard in orderTemplateAppliedGiftCards ){ 

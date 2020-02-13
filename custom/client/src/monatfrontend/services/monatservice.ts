@@ -195,4 +195,5 @@ export class MonatService {
 		this.$window.location.href = redirectUrl;
 	}
 
+
 }
