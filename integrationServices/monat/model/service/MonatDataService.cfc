@@ -191,7 +191,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 		    return fsResponse;
 		}
 
-		writeDump("Could not import #name#(s) on this page: PS-#arguments.pageSize# PN-#pageNumber#");
+		logHibachi("Could not import #name#(s) on this page: PS-#arguments.pageSize# PN-#pageNumber#", true);
 		fsResponse.hasErrors = true;
 
 
@@ -216,8 +216,8 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
          * CONSTANTS 
          **/
         var MERGE_ARRAYS = true;
-        var SHIPPED = "5";
-        var CLOSEDSTATUS = getTypeService().getTypeByTypeCode(SHIPPED);
+        var SHIPPED = "Shipped";
+        var CLOSEDSTATUS = getTypeService().getTypeByTypeName(SHIPPED);
         var HOURS = 'h';
         var stockLocation = getLocationService().getLocationByLocationID("88e6d435d3ac2e5947c81ab3da60eba2");
         
@@ -488,22 +488,17 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
                 createDeliveryItems( orderDelivery );
                 logHibachi("Created a delivery for orderNumber: #shipment['OrderNumber']#",true);
                 
-                //Close the order if its ready.
+                // Close the order if its ready.
                 var orderOnDelivery = orderDelivery.getOrder();
-                var isOrderPaidFor = orderOnDelivery.isOrderPaidFor();
-    			var isOrderFullyDelivered = orderOnDelivery.isOrderFullyDelivered();
-
-    			if(isOrderFullyDelivered)	{
-    				orderOnDelivery.setOrderStatusType(CLOSEDSTATUS);
-    				ormStatelessSession.update("SlatwallOrder", orderOnDelivery ); //update because it already exists.
-                    logHibachi("Closed the order for orderNumber: #shipment['OrderNumber']#",true);
-                    
-                    //now fire the event for this delivery.
-                    var eventData = {entity: orderDelivery};
-                    getHibachiScope().getService("hibachiEventService").announceEvent(eventName="afterOrderDeliveryCreateSuccess", eventData=eventData);
-                }else{
-                	logHibachi("createDelivery: Can't find enough information for ordernumber: #shipment['OrderNumber']# to create the delivery",true);
-    			}
+				orderOnDelivery.setOrderStatusType(CLOSEDSTATUS);
+				
+				ormStatelessSession.update("SlatwallOrder", orderOnDelivery ); //update because it already exists.
+                logHibachi("Closed the order for orderNumber: #shipment['OrderNumber']#",true);
+                
+                //now fire the event for this delivery.
+                var eventData = {entity: orderDelivery};
+                getHibachiScope().getService("hibachiEventService").announceEvent(eventName="afterOrderDeliveryCreateSuccess", eventData=eventData);
+                
             }else{
                 logHibachi("createDelivery: Can't create the delivery - already exists!", true);
             }
@@ -569,8 +564,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
     		try{
         		if (len(modifiedEntityIDs)){
         		    logHibachi("Adding orderitems to queue.", true);
-        		    var modifiedEntities = queryExecute(
-                      "INSERT into SwEntityQueue (entityQueueID, baseObject, baseID, processMethod, entityQueueData, createdDateTime, tryCount) select orderItemID as entityQueueID, 'OrderItem' as baseObject, orderItemID as baseID, 'processOrderItem_updateCalculatedProperties' as processMethod, '{}', now() as createdDateTime, 0 as tryCount from SwOrderItem where orderID in ?", 
+        		    queryExecute("INSERT into SwEntityQueue (entityQueueID, baseObject, baseID, processMethod, entityQueueData, createdDateTime, tryCount) select orderItemID as entityQueueID, 'OrderItem' as baseObject, orderItemID as baseID, 'processOrderItem_updateCalculatedProperties' as processMethod, '{}', now() as createdDateTime, 0 as tryCount from SwOrderItem where orderID in ?", 
                       [{ value="#modifiedEntityIDs#", cfsqltype="cf_sql_varchar", list="true"}]);
         		}
     		}catch(any entityQueueError){
