@@ -812,7 +812,14 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     }
         
     public any function selectStarterPackBundle(required struct data){
-        var cart = getHibachiScope().cart();
+        
+         var cart = getHibachiScope().cart();
+         
+        //check to ensure upgrade logic remains on order after first add order item
+        if(arguments.data.upgradeFlowFlag == 1 && isNull(cart.getMonatOrderType())){
+            this.setUpgradeOrderType(cart);
+        }
+       
         var orderService = getService("OrderService");
         var currentOrderItemList = orderService.getOrderItemCollectionList();
         currentOrderItemList.addFilter('order.orderID', cart.getOrderID());
@@ -1443,7 +1450,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         var account = getHibachiScope().getAccount();
         var accountType = account.getAccountType();    
-                //User can not: upgrade while logged out, upgrade to same type, or downgrade from MP to VIP        
+        
+        //User can not: upgrade while logged out, upgrade to same type, or downgrade from MP to VIP        
         if(!getHibachiScope().getLoggedInFlag()){
             arguments.data['ajaxResponse']['upgradeResponseFailure'] = getHibachiScope().rbKey('validate.upgrade.userMustBeLoggedIn'); 
             return;
@@ -1455,24 +1463,52 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             return;         
         }
         
-        var upgradeAccountType = (arguments.data.upgradeType == 'VIP') ? 'VIP' : 'MarketPartner';
-        var priceGroup = (arguments.data.upgradeType == 'VIP') ? getService('PriceGroupService').getPriceGroupByPriceGroupCode(3) : getService('PriceGroupService').getPriceGroupByPriceGroupCode(1);
-        var monatOrderType = (arguments.data.upgradeType == 'VIP') ? getService('TypeService').getTypeByTypeCode('motVipEnrollment') : getService('TypeService').getTypeByTypeCode('motMpEnrollment');
+        //set upgraded info on order
+        return setUpgradeOnOrder(arguments.data.upgradeType, 1);
+        
+    }
+    
+    public any function setUpgradeOnOrder(upgradeType, upgradeFlowFlag = 0){
+        
+        //if we are not in an upgrade flow and the user is logged in, log the user out.
+        if(!upgradeFlowFlag && getHibachiScope().getLoggedInFlag()){
+            super.logout();
+        }
+        
+        //getting the upgraded account type, price group and order type
+        var upgradeAccountType = (arguments.upgradeType == 'VIP') ? 'VIP' : 'marketPartner';
+        var priceGroup = (arguments.upgradeType == 'VIP') ? getService('PriceGroupService').getPriceGroupByPriceGroupCode(3) : getService('PriceGroupService').getPriceGroupByPriceGroupCode(1);
+        var monatOrderType = (arguments.upgradeType == 'VIP') ? getService('TypeService').getTypeByTypeCode('motVipEnrollment') : getService('TypeService').getTypeByTypeCode('motMpEnrollment');
         var order = getHibachiScope().getCart();
         
+        //applying upgrades to order
         order.setUpgradeFlag(true);
         order.setMonatOrderType(monatOrderType);
         order.setAccountType(upgradeAccountType);
-        order.setPriceGroup(priceGroup);       
-        this.addEnrollmentFee(true);
+        order.setPriceGroup(priceGroup); 
+        
+        //Adding enrollment fee for VIP only
+        //TODO: add a check here to avoid duplicate enrollment fee's on an order
+        if(arguments.upgradeType == 'VIP'){
+            return this.addEnrollmentFee(true);
+        }
         
         if(!order.hasErrors()) {
-			// Also make sure that this cart gets set in the session as the order
-			getHibachiScope().getSession().setOrder( order );
-			getHibachiSessionService().persistSession();
-		}else{
-		    this.logHibachi('setUpgradeOrderType: order has errors', true);
-		}
+           
+            //Updating the prices to account for new statuses in case there were prior order items before upgrading
+            order = getOrderService().saveOrder(order);
+            
+            // Set order on session
+            getHibachiScope().getSession().setOrder( order );
+            
+            //Persist Session
+            getHibachiSessionService().persistSession();
+            
+        }else{
+            addErrors(data, order.getProcessObject("addOrderItem").getErrors());
+            addErrors(data, order.getErrors());
+        }
+		
     }
     
     public any function getUpgradedOrderSavingsAmount(cart = getHibachiScope().getCart()){
@@ -1581,5 +1617,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		
 		super.getOrderTemplates(argumentCollection = arguments);
     }
+    
+    
     
 }
