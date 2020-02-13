@@ -816,7 +816,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
          var cart = getHibachiScope().cart();
          
         //check to ensure upgrade logic remains on order after first add order item
-        if(arguments.data.upgradeFlowFlag == 1 && isNull(cart.getMonatOrderType())){
+        if(!isNull(arguments.data.upgradeFlowFlag) && arguments.data.upgradeFlowFlag == 1 && isNull(cart.getMonatOrderType())){
             this.setUpgradeOrderType(cart);
         }
        
