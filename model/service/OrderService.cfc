@@ -1625,8 +1625,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			return arguments.orderTemplate;
 		}
 	
-		var eventData = {entity: newOrder};
-        getHibachiScope().getService("hibachiEventService").announceEvent(eventName="afterOrderPlaceOrderSuccess", eventData=eventData);	
+		var eventData = { entity: newOrder, order: newOrder, data: {} };
+        getHibachiScope().getService("hibachiEventService").announceEvent(eventName="afterOrderProcess_PlaceOrderSuccess", eventData=eventData);	
 	
 		var orderTemplateAppliedGiftCards = arguments.orderTemplate.getOrderTemplateAppliedGiftCards(); 
 		for(var orderTemplateAppliedGiftCard in orderTemplateAppliedGiftCards ){ 

@@ -427,13 +427,12 @@ component extends="Slatwall.model.service.OrderService" {
 			
 
 				//if the order is paid don't set to new, otherwise set to new (case of flexship)	
-				if ( arguments.order.getPaymentAmountDue() <= 0 && arguments.order.getQuantityUndelivered() > 0 ){
+				if ( !isNull(arguments.order.getOrderTemplate()) ||  
+					 ( arguments.order.getPaymentAmountDue() <= 0 && arguments.order.getQuantityUndelivered() > 0 )
+				){
                     //the order is paid but not shipped
                     var type = getTypeService().getTypeByTypeCode( typeCode="paid");
-				} else {
-					//the order is just new
-					var type = getTypeService().getTypeBySystemCode( systemCode=arguments.systemCode, typeCode="1");
-				}	
+				} 	
 
 				if(!isNull(type)){	
 					arguments.order.setOrderStatusType(type); 

@@ -282,7 +282,6 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
  property name="importFlexshipNumber" ormtype="string";
  property name="initialOrderFlag" ormtype="boolean";
  property name="orderSource" ormtype="string" hb_formFieldType="select";
- property name="commissionPeriodCode" ormtype="string" hb_formFieldType="select";
  property name="undeliverableOrderReasons" ormtype="string" hb_formFieldType="select";
  property name="orderAccountNumber" ormtype="string";
  property name="orderCountryCode" ormtype="string";
@@ -801,8 +800,10 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 	public numeric function getFulfillmentRefundPreTaxOnReferencingOrders(){
 		var fulfillmentRefundTotal = 0;
 		for(var referencingOrder in getReferencingOrders()){
-			fulfillmentRefundTotal += referencingOrder.getFulfillmentRefundPreTax();
-			fulfillmentRefundTotal -= referencingOrder.getFulfillmentChargeAfterDiscountPreTaxTotal();
+			if(!listFindNoCase('ostNotPlaced,ostCanceled',referencingOrder.getOrderStatusType().getSystemCode())){
+				fulfillmentRefundTotal += referencingOrder.getFulfillmentRefundPreTax();
+				fulfillmentRefundTotal -= referencingOrder.getFulfillmentChargeAfterDiscountPreTaxTotal();
+			}
 		}
 		return fulfillmentRefundTotal;
 	}
@@ -1118,7 +1119,7 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 		var taxTotalOnReturnOrders = 0;
 		
 		for(var referencingOrder in getReferencingOrders()){
-			if(listFindNoCase('otReturnOrder,otExchangeOrder,otRefundOrder',referencingOrder.getOrderType().getSystemCode())){
+			if(!listFindNoCase('ostNotPlaced,ostCanceled',referencingOrder.getOrderStatusType().getSystemCode()) && listFindNoCase('otReturnOrder,otExchangeOrder,otRefundOrder',referencingOrder.getOrderType().getSystemCode())){
 				taxTotalOnReturnOrders += referencingOrder.getTaxTotal();
 			}
 		}
