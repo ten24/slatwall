@@ -67,7 +67,9 @@ class MonatCheckoutController {
 					console.log('has shipping and method!')
 				} 
 				
+				
 				//send to sponsor selector if the account has no owner
+				// @ts-ignore
 				if(!this.account?.ownerAccount && this.publicService.hasShippingAddressAndMethod()){ 
 					this.hasSponsor = false;
 					screen = Screen.SPONSOR;
