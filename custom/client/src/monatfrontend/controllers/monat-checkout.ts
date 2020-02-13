@@ -20,6 +20,7 @@ class MonatCheckoutController {
 	public account
 	public hasSponsor = true;
 	public ownerAccountID:string;
+	public cart:any; 
 	
 	// @ngInject
 	constructor(
@@ -58,19 +59,18 @@ class MonatCheckoutController {
 	private getCurrentCheckoutScreen = ():Screen => {
 		
 		return this.publicService.getCart().then(data => {
-			
+			this.cart = data;
 			let screen = Screen.SHIPPING;
 			
 			if(this.publicService.cart && this.publicService.cart.orderRequirementsList.indexOf('account') == -1){
 				if (this.publicService.hasShippingAddressAndMethod() ) {
 					screen = Screen.PAYMENT;
-					console.log('has shipping and method!')
 				} 
 				
 				
 				//send to sponsor selector if the account has no owner
 				// @ts-ignore
-				if(!this.account?.ownerAccount && this.publicService.hasShippingAddressAndMethod()){ 
+				if(!this.account?.ownerAccount && this.publicService.cart.orderPayments.length){ 
 					this.hasSponsor = false;
 					screen = Screen.SPONSOR;
 				}
@@ -255,6 +255,19 @@ class MonatCheckoutController {
 		this.publicService.doAction('submitSponsor', {sponsorID: this.ownerAccountID}).then(res=>{
 			if(res.successfulActions) this.next();
 		});
+	}
+	
+	//review potential for race condition here
+	public setInitialShipping():void{
+		console.log('has shipping method', this.publicService.hasShippingAddressAndMethod())
+		var fulfillments:any[] = this.cart.orderFulfillments;
+		
+		//if they do not have a shipping method we add the cheapest shipping method by default
+		if(!this.publicService.hasShippingAddressAndMethod()){
+			console.log(this.cart.orderFulfillments)
+		}
+		fulfillments.filter(el => el.fulfillmentMethod?.fulfillmentMethodType = 'shipping');
+		console.log(fulfillments[0]?.shippingMethodOptions);
 	}
 	
 }
