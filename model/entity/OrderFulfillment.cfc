@@ -165,7 +165,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 
 	public string function getSuggestedShippingAddressName(){
 		if( !isNull(this.getShippingAddress()) ){
-			if(!structKeyExists(variables,'suggestedShippingAddressName'))){
+			if(!structKeyExists(variables,'suggestedShippingAddressName')){
 				var verificationStruct = getService("AddressService").verifyAddressByID(this.getShippingAddress().getAddressID());
 				if(!isNull(verificationStruct) && structKeyExists(verificationStruct,"suggestedAddress")){
 					variables.suggestedShippingAddressName = getService("AddressService").getAddressName(verificationStruct.suggestedAddress);
@@ -179,7 +179,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 
 	public any function getSuggestedShippingAddressStruct(){
 		if( !isNull(this.getShippingAddress()) ){
-			if(!structKeyExists(variables,'suggestedShippingAddressStruct'))){
+			if(!structKeyExists(variables,'suggestedShippingAddressStruct')){
 				var verificationStruct = getService("AddressService").verifyAddressByID(this.getShippingAddress().getAddressID());
 				if(!isNull(verificationStruct) && structKeyExists(verificationStruct,"suggestedAddress")){
 					variables.suggestedShippingAddressStruct = verificationStruct.suggestedAddress;
