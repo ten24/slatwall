@@ -38,9 +38,11 @@ class MonatEnrollmentController {
     	this.observerService.attach(this.handleCreateAccount.bind(this),"createSuccess");
     	this.observerService.attach(this.next.bind(this),"onNext");
     	this.observerService.attach(this.previous.bind(this),"onPrevious");
-    	this.observerService.attach(this.next.bind(this),"updateSuccess");
+    	this.observerService.attach(this.next.bind(this),"addGovernmentIdentificationSuccess");
     	this.observerService.attach(this.getCart.bind(this),"addOrderItemSuccess");
     	this.observerService.attach(this.getCart.bind(this),"removeOrderItemSuccess");
+    	this.observerService.attach(this.getCart.bind(this),"updateOrderItemSuccess");
+    	
     	this.observerService.attach(this.editFlexshipItems.bind(this),"editFlexshipItems");
     	this.observerService.attach(this.editFlexshipDate.bind(this),"editFlexshipDate");
 	}

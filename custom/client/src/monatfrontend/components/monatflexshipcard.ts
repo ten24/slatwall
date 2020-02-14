@@ -243,7 +243,9 @@ class MonatFlexshipCardController {
 							this.rbkeyService.rbKey('alert.flexship.activationSuccessfull')
 						);
 						
-					this.monatService.redirectToProperSite('/flexship-confirmation/?type=flexship&orderTemplateId=' + this.orderTemplate.orderTemplateID);
+						this.monatService.redirectToProperSite(
+							`/flexship-confirmation/?type=flexship&orderTemplateId=${this.orderTemplate.orderTemplateID}`
+							);
 				} else {
 					throw(data);
 				}
@@ -255,11 +257,15 @@ class MonatFlexshipCardController {
 	}
 
 	public goToProductListingPage() {
-		this.monatService.redirectToProperSite('/shop/?type=flexship&orderTemplateId=' + this.orderTemplate.orderTemplateID);
+		this.monatService.redirectToProperSite(
+							`/shop/?type=flexship&orderTemplateId=${this.orderTemplate.orderTemplateID}`
+						);
 	}
 	
 	public goToOFYProductListingPage() {
-		this.monatService.redirectToProperSite('/shop/only-for-you/?type=flexship&orderTemplateId=' + this.orderTemplate.orderTemplateID);
+		this.monatService.redirectToProperSite(
+							`/shop/only-for-you/?type=flexship&orderTemplateId=${this.orderTemplate.orderTemplateID}`
+						);
 	}
 	
 	public showDeleteOrderTemplateModal = () => {

@@ -215,17 +215,20 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	}
 
 	public string function getPreferredLocale(){
-		var localMapping = {
-			'en' : 'en_us',		// English (United States)
-			'gb' : 'gb_en',		// English (United Kingdom)
-			'fr' : 'fr_ca',		// French (Canada)
-			'pl' : 'pl_pl', 	// Polish
-			'ga' : 'ga_ie', 	// Irish (Ireland)
-			'es' : 'es_mx'	 	// Spanish (Mexico)
-		};
+		if(!isNull(getAccountCreatedSite())){
+			var site = getAccountCreatedSite();
+		}else if(!isNull(getHibachiScope().getCurrentRequestSite())){
+			var site = getHibachiScope().getCurrentRequestSite();
+		}
 		
-		if(structKeyExists(variables, 'languagePreference') && structKeyExists(localMapping, variables.languagePreference)){
-			return localMapping[variables.languagePreference];
+		if(!isNull(site)){
+			var siteCode = getService('SiteService').getCountryCodeBySite(site);
+		}else{
+			var siteCode = 'us';
+		}
+		
+		if(structKeyExists(variables, 'languagePreference') && len(siteCode)){
+			return lcase('#variables.languagePreference#_#siteCode#');
 		}else{
 			return '';
 		}
@@ -1198,7 +1201,15 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 		return 'calculatedFullName';
 	}
 	
-	
+	public boolean function isRestrictedKeyword(){
+		if(structKeyExists(variables, 'accountCode')){
+			var retrictedKeywordsCollection = getService('accountService').getReservedKeywordCollectionList();
+			retrictedKeywordsCollection.setDisplayProperties('reservedKeywordID');
+			retrictedKeywordsCollection.addFilter('keyword', variables.accountCode);
+			return retrictedKeywordsCollection.getRecordsCount() == 0;
+		}
+		return true;
+	}
 
 	// ==================  END:  Overridden Methods ========================
 
@@ -1263,8 +1274,9 @@ public numeric function getSuccessfulFlexshipOrdersThisYearCount(){
 				setAccountNumber(insertedID);	
 			}
 		}
-		if(!isNull(variables.accountNumber))
-		return variables.accountNumber;
+		if(!isNull(variables.accountNumber)){
+			return variables.accountNumber;
+		}
 	}
 
 	public boolean function getCanCreateFlexshipFlag() {
@@ -1305,9 +1317,9 @@ public numeric function getSuccessfulFlexshipOrdersThisYearCount(){
 
 	//custom validation methods
 		
-	public boolean function restrictRenewalDateToOneYearFromNow() {
+	public boolean function restrictRenewalDateToOneYearOut() {
 		if(!isNull(this.getRenewalDate()) && len(trim(this.getRenewalDate())) ) {
-			return getService('accountService').restrictRenewalDateToOneYearFromNow(this.getRenewalDate());
+			return getService('accountService').restrictRenewalDateToOneYearOut(this.getRenewalDate());
 		}
 		return true;
 	}
@@ -1336,5 +1348,6 @@ public numeric function getSuccessfulFlexshipOrdersThisYearCount(){
 	public string function getProfileImageFullPath(numeric width = 250, numeric height = 250){
 		return getService('imageService').getResizedImagePath('#getHibachiScope().getBaseImageURL()#/profileImage/#this.getProfileImage()#', arguments.width, arguments.height)
 	}
+	
 	//CUSTOM FUNCTIONS END
 }

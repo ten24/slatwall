@@ -203,6 +203,7 @@ Notes:
 									<hb:HibachiActionCaller action="admin:entity.listvendororder" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listvendororderitem" type="list">
 									<li class="divider"></li>
+									<hb:HibachiActionCaller action="admin:entity.listorderimportbatch" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listeventregistration" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listgiftcard" type="list">
 									<li class="divider"></li>
@@ -280,6 +281,7 @@ Notes:
 									<hb:HibachiActionCaller action="admin:entity.listpaymentterm" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listprinttemplate" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listroundingrule" type="list">
+									<hb:HibachiActionCaller action="admin:entity.listresourcebundle" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listsite" type="list">
 									
 									<hb:HibachiActionCaller action="admin:entity.listtaxcategory" type="list">

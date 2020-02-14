@@ -1,3 +1,5 @@
+declare var $;
+
 class MonatProductListingController {
     public loading:boolean;
     public accountData:any;
@@ -31,7 +33,7 @@ class MonatProductListingController {
     public $onInit = () => {
         this.observerService.attach(this.handleAddItem,'addItemSuccess');
         this.observerService.attach(this.handleAddItem,'createWishlistSuccess');
-        
+        this.observerService.attach(this.handleAddItem,'addOrderTemplateItemSuccess');
         this.getWishlistItems();
     }
     
@@ -42,6 +44,11 @@ class MonatProductListingController {
 	public handleAddItem = () =>{
 	    this.getWishlistItems();
 	    if(!this.callEndpoint) this.showWishlist = true;
+	    
+	    // On product detail page, fill the heart.
+	    if ( $('.product-img-section .wishlist .far').length ) {
+	        $('.product-img-section .wishlist .far').removeClass('far').addClass('fas no-hover')
+	    }
 	}
 	
 	public hideAlert = () =>{
@@ -51,7 +58,10 @@ class MonatProductListingController {
 	public getWishlistItems = () => {
 	    this.monatService.getAccountWishlistItemIDs().then( data => {
             if ( 'undefined' !== typeof data.wishlistItems ) {
-                this.wishlistItems = data.wishlistItems;
+                this.wishlistItems = '';
+                data.wishlistItems.forEach(item=>{
+                    this.wishlistItems += item.productID + ',';
+                });
                 this.observerService.notify('accountWishlistItemsSuccess');
             }
         });

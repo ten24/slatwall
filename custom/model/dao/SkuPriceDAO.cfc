@@ -1,13 +1,19 @@
 component extends="Slatwall.model.dao.SkuPriceDAO"{
     
-    public any function getSkuPricesForSkuCurrencyCodeAndQuantity(required string skuID, required string currencyCode, required numeric quantity, array priceGroups=getHibachiScope().getAccount().getPriceGroups(), string priceGroupIDList){
-		
+    public any function getSkuPricesForSkuCurrencyCodeAndQuantity(
+    	required string skuID, 
+    	required string currencyCode, 
+    	required numeric quantity, 
+    	array priceGroups=[], 
+    	string priceGroupIDList
+    ){
+
 		var priceGroupString = "";
 		
 		if(arraylen(arguments.priceGroups) || structKeyExists(arguments,'priceGroupIDs')){
 			priceGroupString = "OR _priceGroup.priceGroupID IN (:priceGroupIDs)";
 		}else{
-			priceGroupString = "OR _priceGroup.priceGroupCode = 2 ";
+			priceGroupString = "OR _priceGroup.priceGroupCode = 2 "; //PriceGroupCode for RetailCustomer
 		}
 		
 		var hql = "

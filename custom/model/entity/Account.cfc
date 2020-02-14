@@ -53,8 +53,9 @@ component {
 				setAccountNumber(insertedID);	
 			}
 		}
-		if(!isNull(variables.accountNumber))
-		return variables.accountNumber;
+		if(!isNull(variables.accountNumber)){
+			return variables.accountNumber;
+		}
 	}
 
 	public boolean function getCanCreateFlexshipFlag() {
@@ -95,9 +96,9 @@ component {
 
 	//custom validation methods
 		
-	public boolean function restrictRenewalDateToOneYearFromNow() {
+	public boolean function restrictRenewalDateToOneYearOut() {
 		if(!isNull(this.getRenewalDate()) && len(trim(this.getRenewalDate())) ) {
-			return getService('accountService').restrictRenewalDateToOneYearFromNow(this.getRenewalDate());
+			return getService('accountService').restrictRenewalDateToOneYearOut(this.getRenewalDate());
 		}
 		return true;
 	}
@@ -126,5 +127,6 @@ component {
 	public string function getProfileImageFullPath(numeric width = 250, numeric height = 250){
 		return getService('imageService').getResizedImagePath('#getHibachiScope().getBaseImageURL()#/profileImage/#this.getProfileImage()#', arguments.width, arguments.height)
 	}
+	
 	
 } 

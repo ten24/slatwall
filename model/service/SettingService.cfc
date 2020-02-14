@@ -251,6 +251,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalLogApiRequests = {fieldtype="yesno",defaultValue=0},
 			globalLogMessages = {fieldType="select",defaultValue="General"},
 			globalMaximumFulfillmentsPerOrder = {fieldtype="text", defaultValue=1000, validate={dataType="numeric", required=true}},
+			globalMaximumPromotionMessages = {fieldType="text", defaultValue=1, validate={dataType="numeric"}},
 			globalMIMETypeWhiteList = {fieldtype="text", defaultValue="image/jpeg,image/png,image/gif,text/csv,application/pdf,application/rss+xml,application/msword,application/zip,text/plain,application/vnd.ms-excel,"},
 			globalMissingImagePath = {fieldType="text", defaultValue=getURLFromPath(getApplicationValue('applicationRootMappingPath')) & '/custom/assets/images/missingimage.jpg'},
 			globalNoSessionIPRegex = {fieldType="text",defaultValue=""},
@@ -883,7 +884,7 @@ component extends="HibachiService" output="false" accessors="true" {
 		return settingDetails.settingValueFormatted;
 	}
 
-	public string function getSettingCacheKey(required string settingName, any object, array filterEntities=[]){
+	public string function getSettingCacheKey(required string settingName, any object, array filterEntities=[],struct formatDetails={}){
 		// Build out the cached key (handles sites)
 		var cacheKey = "setting_#arguments.settingName#";
 
@@ -899,11 +900,16 @@ component extends="HibachiService" output="false" accessors="true" {
 				cacheKey &= "_#entity.getPrimaryIDValue()#";
 			}
 		}
+		if(structKeyExists(arguments,"formatDetails")){
+			for(var key in arguments.formatDetails) {
+				cacheKey &= "_#key#-#arguments.formatDetails[key]#";
+			}
+		}
 
 		return cacheKey; 
 	} 
 
-	public any function getSettingDetails(required string settingName, any object, array filterEntities=[], boolean disableFormatting=false) {
+	public any function getSettingDetails(required string settingName, any object, array filterEntities=[], boolean disableFormatting=false, struct formatDetails={}) {
 		// Automatically add the site-level context, we may find a setting value within the context of the site handling the request
 		if (!isNull(getHibachiScope().getCurrentRequestSite()) && (isNull(arguments.object) || arguments.object.getClassName() != 'Site')) {
 
@@ -942,7 +948,7 @@ component extends="HibachiService" output="false" accessors="true" {
 		return left(arguments.settingName, 6) == "global";
 	}
 
-	public any function getSettingDetailsFromDatabase(required string settingName, any object, array filterEntities=[], boolean disableFormatting=false) {
+	public any function getSettingDetailsFromDatabase(required string settingName, any object, array filterEntities=[], boolean disableFormatting=false,struct formatDetails={}) {
 		// Create some placeholder Var's
 		var foundValue = false;
 		var settingRecord = "";
@@ -1202,11 +1208,8 @@ component extends="HibachiService" output="false" accessors="true" {
 		}
 
 		if(!arguments.disableFormatting) {
-			// First we look for a formatType in the meta data
-			if( structKeyExists(settingMetaData, "formatType") ) {
-				settingDetails.settingValueFormatted = getHibachiUtilityService().formatValue(settingDetails.settingValue, settingMetaData.formatType);
 			// Now we are looking at different fieldTypes
-			} else if( structKeyExists(settingMetaData, "fieldType") ) {
+			if( structKeyExists(settingMetaData, "fieldType") ) {
 				// Listing Multiselect
 				if(settingMetaData.fieldType == "listingMultiselect") {
 					settingDetails.settingValueFormatted = "";
@@ -1251,14 +1254,30 @@ component extends="HibachiService" output="false" accessors="true" {
 					} else {
 						settingDetails.settingValueFormatted = "";
 					}
-				} else {
-					settingDetails.settingValueFormatted = getHibachiUtilityService().formatValue(settingDetails.settingValue, settingMetaData.fieldType);
+				} else if(structKeyExists(settingDetails,'settingID') && len(settingDetails.settingID)){
+					var settingObject=this.getSetting(settingDetails.settingID);
+					var formatDetails = arguments.formatDetails;
+					formatDetails.propertyName = 'settingValue';
+					formatDetails.object = settingObject;
+
+					settingDetails.settingValueFormatted = getHibachiUtilityService().formatValue(settingDetails.settingValue, '', formatDetails);
 				}
 			// This is the no deffinition case
-			} else {
-				settingDetails.settingValueFormatted = settingDetails.settingValue;
+			} else if(structKeyExists(settingDetails,'settingID') && len(settingDetails.settingID)){
+				var settingObject=this.getSetting(settingDetails.settingID);
+				var formatDetails = arguments.formatDetails;
+				formatDetails.propertyName = 'settingValue';
+				formatDetails.object = settingObject;
+				
+				if( structKeyExists(settingMetaData, "formatType") ) {
+					var formatType = settingMetaData.formatType;
+				}else{
+					var formatType = '';
+				}
+				settingDetails.settingValueFormatted = getHibachiUtilityService().formatValue(settingDetails.settingValue, formatType, formatDetails);
 			}
-		} else {
+		}
+		if(!structKeyExists(settingDetails,'settingValueFormatted')){
 			settingDetails.settingValueFormatted = settingDetails.settingValue;
 		}
 

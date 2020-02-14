@@ -48,7 +48,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="dirtyReadFlag" ormtype="boolean";
 	property name="useElasticSearch" ormtype="boolean" default="0";
 	property name="reportFlag" ormtype="boolean" default="0";
-	property name="disableAveragesAndSumsFlag" ormtype="boolean" default="1";
+	property name="disableAveragesAndSumsFlag" ormtype="boolean" default="1";//disable this by setting to 1 n comment values passed from front-end unless explicitly needed
 	property name="softDeleteFlag" ormtype="boolean" default="0";
 	property name="publicFlag" ormtype="boolean" default="0";
 
@@ -87,6 +87,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	property name="records" type="array" persistent="false";
 	property name="pageRecords" type="array" persistent="false";
+	property name="limitCountTotal" persistent="false" type="numeric" default=250 hint="This sets whether to fetch total count or not. Defaults to 250 for pagination purposes. Fetches 10 records only as per defualt hibernate limit settings";//Need to merge this with hibernate limit parameter
 
 	property name="recordsCountData" persistent="false"; 
 
@@ -167,6 +168,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		variables.currentPageDeclaration = 1;
 		variables.pageRecordsStart = 1;
 		variables.pageRecordsShow = 10;
+		variables.limitCountTotal = 250; //TODO: Fetch from config file
 		variables.keywords = "";
 		variables.keywordArray = [];
 		variables.postFilterGroups = [];
@@ -211,6 +213,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 	}
 	
+	private string function getDatasource(){
+		if(!structKeyExists(variables,'datasource')){
+			variables.datasource =  getApplicationValue("hibachiConfig").readOnlyDataSource;
+		}
+		return variables.datasource;
+	}
 	
 	public void function setInlistDelimiter(delimiter=","){
 		variables.inlistDelimiter = arguments.delimiter;
@@ -505,24 +513,31 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 		if(!searchFilterCondition || listingSearchConfig.ignoreSearchFilters ) {
 			this.removeFilterGroupByFilterGroupAlias('listingSearchFilters');
-			return; //nothing to add
-		} 
-
-		
+			//return; //nothing to add //Can't return here till other conditions are met
+			//Commenting the above line here for Nitin's approval. Delete in future commit.
+		}else{
+			//Adding else condition to close loop on previous if clause
 		//        else add listingSearchFilter      //
-		var selectedFilterIndex = ArrayFind( this.getListingSearchFilterOptions(), function(opt) {
-									return arguments.opt.code == listingSearchConfig.selectedSearchFilterCode;
-								});
+			var selectedFilterIndex = ArrayFind( this.getListingSearchFilterOptions(), function(opt) {
+				return arguments.opt.code == listingSearchConfig.selectedSearchFilterCode;
+			});
 
-		var criterias = ListToArray(this.getListingSearchFilterOptions()[selectedFilterIndex].criteria,':');
-		var filterValue = DateAdd("#criterias[1]#","-#criterias[2]#",now());
+			var criterias = ListToArray(this.getListingSearchFilterOptions()[selectedFilterIndex].criteria,':');
+			var filterValue = DateAdd("#criterias[1]#","-#criterias[2]#",now());
 
-		this.addFilter(
-			propertyIdentifier = listingSearchConfig.searchFilterPropertyIdentifier,
-			value = filterValue,
-			comparisonOperator = ">=",
-		    filterGroupAlias = "listingSearchFilters"
-		);
+			this.addFilter(
+				propertyIdentifier = listingSearchConfig.searchFilterPropertyIdentifier,
+				value = filterValue,
+				comparisonOperator = ">=",
+				filterGroupAlias = "listingSearchFilters"
+			);
+		}
+
+		//Update filter to get entire count from db or only config driven default (250) number.
+		if(structKeyExists(listingSearchConfig, 'limitCountTotal')){
+			variables.limitCountTotal = listingSearchConfig.limitCountTotal;
+			setLimitCountTotal(variables.limitCountTotal);
+		}
 		variables.listingSearchFiltersApplied = true;
 	
 	}
@@ -2164,7 +2179,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 		return updateHQL; 
 	}
-
+	//Documentation: hql building gets triggered here; Possible TODO: pass limit from ui to here and add as a parameter
 	public string function getHQL(boolean excludeSelectAndOrderBy = false, forExport=false, excludeOrderBy = false, excludeGroupBy=false, recordsCountJoins=false){
 		
 		structDelete(variables,'groupBys');
@@ -2174,7 +2189,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		variables.postOrderBys = [];
 
 		var HQL = createHQLFromCollectionObject(this, arguments.excludeSelectAndOrderBy, arguments.forExport, arguments.excludeOrderBy,arguments.excludeGroupBy,arguments.recordsCountJoins);
-
+	//Documentation: Here, var HQL returns the collection - columns list
 		return HQL;
 	}
 
@@ -2787,7 +2802,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 							} else {
 								//Get the pageRecords
-								variables.pageRecords = ormExecuteQuery(HQL, HQLParams, false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#"});
+								variables.pageRecords = ormExecuteQuery(HQL, HQLParams, false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#", datasource=getDatasource()});
 
 								//If this is cacheable but we don't have a cached value yet, then set one.
 								if (getCacheable() && !isNull(getCacheName()) && !getService("hibachiCacheService").hasCachedValue("pageRecords-" & getCacheName())){
@@ -2804,6 +2819,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}
 			}
 			catch(any e){
+				
+				if(getApplicationValue('errorDisplayFlag')){
+					rethrow;
+				}
+			
 				if(isNull(HQL)){ 
 					var HQL = '';
 				}
@@ -2957,7 +2977,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							HQL =  'SELECT DISTINCT(_#lcase(this.getCollectionObject())#) ' &  getHQL(forExport=arguments.forExport);
 							HQLParams = getHQLParams();
 
-							var entities = ormExecuteQuery(HQL,HQLParams, false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#getCacheName()#"});
+							var entities = ormExecuteQuery(HQL,HQLParams, false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#getCacheName()#", datasource=getDatasource()});
 							var columns = getCollectionConfigStruct()["columns"];
 							for(var entity in entities){
 								var record = makeRecordStructFromScorllableORMEntity(entity);
@@ -2979,7 +2999,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 								variables.records =	getService("hibachiCacheService").hasCachedValue("records-"&getCacheName());
 							} else {
 								//Get the Records
-								variables.records = ormExecuteQuery(HQL,HQLParams, false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#getCacheName()#"});
+								variables.records = ormExecuteQuery(HQL,HQLParams, false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#getCacheName()#", datasource=getDatasource()});
 								
 								//If this is cacheable but we don't have a cached value yet, then set one.
 								if (getCacheable() && !isNull(getCacheName()) && !getService("hibachiCacheService").hasCachedValue("records-" & getCacheName())){
@@ -2998,6 +3018,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}
 			}
 			catch(any e){
+				
+				if(getApplicationValue('errorDisplayFlag')){
+					rethrow;
+				}
 				variables.records = [{'failedCollection'=e.message & ' HQL: ' & HQL}];
 				writelog(file="collection",text="Error:#e.message#");
 				writelog(file="collection",text="HQL:#HQL#");
@@ -3081,18 +3105,22 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public void function setRecordsCount(required numeric total){
 		variables.recordsCount = arguments.total;
 	}
-	
-	public any function getRecordsCountData(){
-		if(!structkeyExists(variables,'recordsCountData')){
-			getRecordsCount();
-			if(!structkeyExists(variables,'recordsCountData')){
-				variables.recordsCountData['recordsCount'] = 0;	
-			}
-		}
 
+	public any function getRecordsCountData(){
+		if(variables.limitCountTotal == 0){ //Only fetch all records if limitCountTotal is turned off by setting to zero
+			getRecordsCount();
+			/*Documentation: Question for Miguel/Nitin: This will never occur since getRecords returns this value. Then why is this check here? */
+			if(!structkeyExists(variables,'recordsCountData')){	
+				variables.recordsCountData['recordsCount'] = 0;
+			}
+			variables.recordsCountData['limitCountTotal'] = 0;//Passing flag here for pagination to show total records;Adding here since this is tied to the total recordsCountData set
+		}else{//Return 250/config value by default
+			variables.recordsCountData['recordsCount'] = 250;
+			variables.recordsCountData['limitCountTotal'] = variables.limitCountTotal;//Default value from config
+		}
 		return variables.recordsCountData;
 	}
-
+	//Documentation: This is where count, sum n avg is calculated
 	public any function getRecordsCount(boolean refresh=false) {
 		setRunningGetRecordsCount(true);
 		if(arguments.refresh){
@@ -3123,7 +3151,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							var currentTransactionIsolation = variables.connection.getTransactionIsolation();
 							variables.connection.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
 						}
-						variables.recordsCountData = ormExecuteQuery(HQL, getHQLParams(), true, {ignoreCase="true",maxresults=1});
+
+						variables.recordsCountData = ormExecuteQuery(HQL, getHQLParams(), true, {ignoreCase="true",maxresults=1, datasource=getDatasource()});
 						var recordCount = 0;
 						
 						if(structkeyExists(variables,'recordsCountData') && structkeyExists(variables.recordsCountData,'recordsCount')){
@@ -3230,8 +3259,16 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	public numeric function getPageRecordsEnd() {
 		var pageRecordEnd = getPageRecordsStart() + getPageRecordsShow() - 1;
-		if(pageRecordEnd > getRecordsCount()) {
-			pageRecordEnd = getRecordsCount();
+		//TODO: Entire pagination logic ideally belongs in front end. Possible rewrite needed
+		//Documentation: Only fetch recordsCount if old total records display is needed.
+		if(variables.limitCountTotal == 0){
+ 			if(pageRecordEnd > getRecordsCount()) {
+				pageRecordEnd = getRecordsCount();
+			}
+		}else{
+			if(pageRecordEnd > variables.limitCountTotal){
+				pageRecordEnd = variables.limitCountTotal;
+			}
 		}
 		return pageRecordEnd;
 	}
@@ -3241,7 +3278,16 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 
 	public any function getTotalPages() {
-		return ceiling(getRecordsCount() / getPageRecordsShow());
+		var totalPageCount = 0;
+		//Documentation: Same as getPageRecordsEnd. Only fetch recordsCount if old total records display is needed.
+		//Can remove these checks if we can remove the total records count display logic from collections.
+		if(variables.limitCountTotal == 0){
+			totalPageCount = ceiling(getRecordsCount() / getPageRecordsShow());
+		}
+		else{
+			totalPageCount = ceiling(variables.limitCountTotal / getPageRecordsShow());
+		}
+		return totalPageCount;
 	}
 
 	private string function getParamID(){
@@ -3325,7 +3371,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		) {
 			
 			range = makeDateRangeFromCriteriaAndMeasureType(arguments.filter.criteriaNumberOf, arguments.filter.measureType, arguments.filter.measureCriteria);
-		
+			if (listFindnocase('>=,>,gt,gte', arguments.filter.comparisonOperator)) {
+				structDelete(range, 'rangeEndValue');
+			}else if (listFindnocase('<=,<,lt,lte', arguments.filter.comparisonOperator)) {
+				structDelete(range, 'rangStartValue');
+			}
 		} else if(listfindnocase("between,not between", arguments.filter.comparisonOperator) && listLen(arguments.filter.value,'-') == 2) {// if its a full range i.e. range1-range2 
 			
 			if(listLen(arguments.filter.value,'/') > 1) { // if it's a date range dd/mm/yyyy-dd/mm/yyyy
@@ -3362,12 +3412,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 
 
-		if( StructKeyExists(range, "rangStartValue") && !isNull(range.rangStartValue) ) {
+		if( StructKeyExists(range, "rangStartValue") && len(range.rangStartValue) ) {
 			var rangeStartParamID = getParamID();
 			addHQLParam(rangeStartParamID, range.rangStartValue, arguments.filter['ormtype']);
 		}
 		
-		if( StructKeyExists(range, "rangeEndValue") && !isNull(range.rangeEndValue) ) {
+		if( StructKeyExists(range, "rangeEndValue") && len(range.rangeEndValue) ) {
 			var rangeEndParamID = getParamID();
 			addHQLParam(rangeEndParamID, range.rangeEndValue, arguments.filter['ormtype']);
 		}
@@ -3567,6 +3617,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return count;
 	}
 
+	//Documentation: getSelectionCountHQL gets the count of records, sum n average. 
+	//TODO: Sums and average dont make sense cos of different currency values, etc. as per Sumit. Needs to be removed in a future commit. 
+	//If it needs to be retained, does it really belong here as part of collections or will it be better served to put this in a separate service call?
 	public any function getSelectionCountHQL(){
 
 		var countHQLSelections = "";
@@ -3733,6 +3786,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 	}
 	
+	//Documentation: Builds the selection list - but not the actual query.
 	private any function getSelectionsHQL(required array columns, boolean isDistinct=false, boolean forExport=false){
 
 
@@ -4309,7 +4363,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 			fromHQL &= getFromHQL(collectionConfig.baseEntityName);
 			joinsHQL &= getJoinHQL(arguments.recordsCountJoins);
-			HQL = SelectHQL & FromHQL & joinsHQL & filterHQL  & postFilterHQL & groupByHQL & aggregateFilters & orderByHQL;
+			HQL = SelectHQL & FromHQL & joinsHQL & filterHQL  & postFilterHQL & groupByHQL & aggregateFilters & orderByHQL; 
 		
 
 		}
@@ -4678,7 +4732,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		} catch (any e) {
 			
 			if(getApplicationValue('errorDisplayFlag')){
-				writedump(e);throw();
+				rethrow;
 			}
 			var messageDetail = e.message;
 			

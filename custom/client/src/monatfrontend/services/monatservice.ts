@@ -10,13 +10,12 @@ export class MonatService {
 	public cart;
 	public lastAddedSkuID: string = '';
 	public previouslySelectedStarterPackBundleSkuID:string;
-
 	public cachedOptions = {
 		frequencyTermOptions: <IOptions[]>null,
 	};
 
 	//@ngInject
-	constructor(public publicService, public $q, public requestService, public $window,) {}
+	constructor(public publicService, public $q, public $window, public requestService) {}
 
 	public getCart(refresh = false) {
 		var deferred = this.$q.defer();
@@ -199,6 +198,6 @@ export class MonatService {
 		
 		this.$window.location.href = redirectUrl;
 	}
-	
+
 
 }

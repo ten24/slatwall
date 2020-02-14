@@ -4,4 +4,4 @@
 
 <cfset accountType = account.getAccountType() ?: 'customer' />
 
-<cfinclude template="../inc/base.cfm" /> 
+<cfinclude template="../inc/base.cfm" />

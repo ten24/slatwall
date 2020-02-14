@@ -1,4 +1,6 @@
 declare var $;
+declare var hibachiConfig;
+
 class MonatProductCardController {
 	public product;
 	public type: string;
@@ -34,12 +36,14 @@ class MonatProductCardController {
         this.observerService.attach(this.closeModals,"createWishlistSuccess"); 
         this.observerService.attach(this.closeModals,"addOrderTemplateItemSuccess"); 
         this.observerService.attach(this.closeModals,"deleteOrderTemplateItemSuccess"); 
-        this.observerService.attach(this.setIsAccountWishlistItem,"accountWishlistItemsSuccess");
-        this.observerService.attach(this.setIsAccountWishlistItem,"paginationEvent");
 	}
 	
 	public $onInit = () => {
 		this.$scope.$evalAsync(this.init);
+		
+		if ( 'undefined' === typeof this.currencyCode ) {
+			this.currencyCode = hibachiConfig.currencyCode
+		}
 		
 		this.setIsEnrollment();
 		
@@ -164,7 +168,13 @@ class MonatProductCardController {
 		if (this.type === 'flexship' || this.type==='VIPenrollment') {
 			this.orderTemplateService.addOrderTemplateItem(skuID, orderTemplateID)
 			.then( (result) =>{
-				 this.monatAlertService.success(this.rbkeyService.rbKey('alert.flexship.addProductsucessfull'));
+			    if(result.successfulActions &&
+					result.successfulActions.indexOf('public:cart.addOrderItem') > -1) {
+				 this.monatAlertService.success(this.rbkeyService.rbKey('alert.flexship.addProductsucessfull')); 
+					}
+				 else{
+				     throw (result);
+				 }
 			} )
 			.catch((error)=>{
 			  this.monatAlertService.showErrorsFromResponse(error);  
@@ -174,11 +184,16 @@ class MonatProductCardController {
 			});
 		} else {
 			this.monatService.addToCart(skuID, 1).then((result) => {
-				this.monatAlertService.success(this.rbkeyService.rbKey('alert.flexship.addProductsucessfull'));
-				
+			    if(result.successfulActions &&
+					result.successfulActions.indexOf('public:cart.addOrderItem') > -1) {
+				this.monatAlertService.success(this.rbkeyService.rbKey('alert.flexship.addProductsucessfull')); 
+			    }
+				else{
+				    throw(result);
+				}
 			})
 			.catch((error)=>{
-			    this.monatAlertService.showErrorFromeResponse(error);
+			    this.monatAlertService.showErrorsFromResponse(error);
 			})
 			.finally(()=>{
 			 this.loading=false;
@@ -236,15 +251,7 @@ class MonatProductCardController {
 			'undefined' !== typeof this.accountWishlistItems 
 			&& this.accountWishlistItems.length
 		) {
-			let found = false;
-			this.accountWishlistItems.forEach(item => {
-				console.log(item.productID +' === '+ this.product.productID + '? '+ (item.productID === this.product.productID))
-				if ( item.productID === this.product.productID ) {
-					found = true;
-					return;
-				}
-			});
-			this.isAccountWishlistItem = found;
+			this.isAccountWishlistItem = this.accountWishlistItems.indexOf(this.product.productID) > -1;
 		}
 	}
 

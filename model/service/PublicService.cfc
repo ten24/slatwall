@@ -466,7 +466,11 @@ component  accessors="true" output="false"
         
         var accountAddress = getAccountService().getAccountAddress( data.accountAddressID );
         
-        if(!isNull(accountAddress) && accountAddress.getAccount().getAccountID() == getHibachiScope().getAccount().getAccountID() ) {
+        if(!isNull(accountAddress) &&
+            !IsNull(accountAddress.getAccount()) &&
+            getHibachiScope().getLoggedInFlag()  &&
+            accountAddress.getAccount().getAccountID() == getHibachiScope().getAccount().getAccountID() 
+        ) {
             
             getDao('AccountAddressDAO').deleteDependentRelationsByAccountAddressID(data.accountAddressID);
             
@@ -1219,7 +1223,8 @@ component  accessors="true" output="false"
             getHibachiScope().flushORMSession(); 
             
         }else{
-            addErrors(data, getHibachiScope().getCart().getProcessObject("addOrderItem").getErrors());
+            addErrors(data, cart.getProcessObject("addOrderItem").getErrors());
+            addErrors(data, cart.getErrors());
         }
         
         return cart;
@@ -1790,64 +1795,6 @@ component  accessors="true" output="false"
 
 		arguments.data['ajaxResponse']['orderTemplateItems'] = getOrderService().getOrderTemplateItemsForAccount(arguments.data);  
 	} 
-
-	public void function getWishlistItems(required any data){
-        param name="arguments.data.pageRecordsShow" default=5;
-        param name="arguments.data.currentPage" default=1;
-        param name="arguments.data.orderTemplateID" default="";
-		param name="arguments.data.orderTemplateTypeID" default=""; 
-
-		arguments.data['ajaxResponse']['orderTemplateItems'] = [];
-		arguments.data['ajaxResponse']['orderTotal'] = 0;
-		
-		var scrollableSmartList = getOrderService().getOrderTemplateItemSmartList(arguments.data);
-		
-		
-		if (len(arguments.data.orderTemplateID)){
-		    scrollableSmartList.addFilter("orderTemplate.orderTemplateID", "#arguments.data.orderTemplateID#");
-		}
-		
-		var scrollableSession = ormGetSessionFactory().openSession();
-		var wishlistsItems = scrollableSmartList.getScrollableRecords(refresh=true, readOnlyMode=true, ormSession=scrollableSession);
-		
-		//now iterate over all the objects
-		
-		try{
-		    while(wishlistsItems.next()){
-		    
-			    var wishlistItem = wishlistsItems.get(0);
-			    
-			    var wishListItemStruct={
-			      "vipPrice"                    :       wishListItem.getSkuAdjustedPricing().vipPrice?:"",
-			      "marketPartnerPrice"          :       wishListItem.getSkuAdjustedPricing().MPPrice?:"",
-			      "price"                       :       wishListItem.getSkuAdjustedPricing().adjustedPriceForAccount?:"",
-			      "retailPrice"                 :       wishListItem.getSkuAdjustedPricing().retailPrice?:"",
-			      "personalVolume"              :       wishListItem.getSkuAdjustedPricing().personalVolume?:"",
-			      "accountPriceGroup"           :       wishListItem.getSkuAdjustedPricing().accountPriceGroup?:"",
-			      "skuImagePath"                :       wishListItem.getSkuImagePath()?:"",
-			      "skuProductURL"               :       wishListItem.getSkuProductURL()?:"",
-			      "productName"                 :       wishListItem.getSku().getProduct().getProductName()?:"",
-			      "skuID"                       :       wishListItem.getSku().getSkuID()?:"",
-			      "orderItemID"                 :       wishListItem.getOrderTemplateItemID()?:"", 
-  			      "quantity"                    :       wishListItem.getQuantity()?:"", 
-  			      "total"                       :       wishListItem.getTotal()?:"",
-                  "qats"                        :       wishlistItem.getSku().getCalculatedQATS()
-			    };
-                
-                arrayAppend(arguments.data['ajaxResponse']['orderTemplateItems'], wishListItemStruct);
-
-                if ( arguments.data['ajaxResponse']['orderTotal'] === 0 ) {
-                    arguments.data['ajaxResponse']['orderTotal'] = wishListItem.getOrderTemplate().getTotal();
-                }
-		    }
-		}catch (e){
-            throw(e)
-		}finally{
-			if (scrollableSession.isOpen()){
-				scrollableSession.close();
-			}
-		}
-	} 
 	
 	
 	public void function getOrderTemplateDetails(required any data){
@@ -1855,7 +1802,6 @@ component  accessors="true" output="false"
         param name="arguments.data.currentPage" default=1;
         param name="arguments.data.orderTemplateId" default="";
 		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; 
-
 		arguments.data['ajaxResponse']['orderTemplate'] = getOrderService().getOrderTemplateDetailsForAccount(arguments.data);  
 	}
 	

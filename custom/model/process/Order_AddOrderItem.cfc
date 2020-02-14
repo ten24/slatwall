@@ -68,16 +68,9 @@ component accessors="true" extends="Slatwall.model.process.Order_AddOrderItem" {
     
     // =============== START: Custom Validation Methods ====================
     public boolean function orderMinimumDaysToRenewMPFailed(){
-        var productCodesRenewalMP = getService('SettingService').getSettingValue('integrationmonatGlobalProductCodesRenewMP');
-        
-        // If order already has RENEWALFEE and cannot add another a Market Partner renewal
-        var cartCollectionList = getHibachiScope().getService('orderService').getOrderItemCollectionList();
-        cartCollectionList.setDisplayProperties('order.orderID');
-        cartCollectionList.addFilter('order.orderID', order.getOrderID());
-        cartCollectionList.addFilter('sku.product.productCode', productCodesRenewalMP, 'IN');
-        var cartCollectionCount = cartCollectionList.getRecordsCount();
-        
-        if(cartCollectionCount > 0){
+        var renewalFeeSystemCode = 'RenewalFee-MP';
+        // If order already has renewal fee and cannot add another a Market Partner renewal
+        if(this.getOrder().hasMPRenewalFee()){
             return false;
         }
         
@@ -88,20 +81,48 @@ component accessors="true" extends="Slatwall.model.process.Order_AddOrderItem" {
         if(!isNull(getAccount().getRenewalDate())){
             accountRenewalDate = getAccount().getRenewalDate();
         }
-        var renewalDateCheck=DateDiff("d", accountRenewalDate, currentDate);
+        var renewalDateCheck=DateDiff("d", currentDate, accountRenewalDate);
         
-        if( listFindNoCase(productCodesRenewalMP,this.getProduct().getProductCode())){
+        if( !IsNull(this.getProduct()) && this.getProduct().getProductType().getSystemCode() == renewalFeeSystemCode){
             if( this.getAccount().getAccountType() == 'marketPartner' &&
-                renewalDateCheck >= orderMinimumDaysToRenewMPSetting 
+                renewalDateCheck <= orderMinimumDaysToRenewMPSetting 
             ){
                 return true;
             }
-            
             return false;
         }
-        
         return true;
 	}
+	
+	/**
+	 * 1. If orderCreatedSite.SiteCode is UK and order.accountType is MP 
+	 * max 200 pound TOTAL including VAT and Shipping Feed on days 1-7 
+	 * from ordering the enrollment kit.
+	 * This only work if the max orders validation also works because this only checks the current order
+	 * for total instead of all orders.
+	 **/
+	 
+	 public boolean function marketPartnerValidationMaxOrderAmount(){
+	 	var order = this.getOrder();
+	 	var site = order.getOrderCreatedSite();
+	 	
+	    var initialEnrollmentPeriodForMarketPartner = site.setting("siteInitialEnrollmentPeriodForMarketPartner");//7
+        var maxAmountAllowedToSpendDuringInitialEnrollmentPeriod = site.setting("siteMaxAmountAllowedToSpendInInitialEnrollmentPeriod");//200
+        var date = getService('orderService').getMarketPartnerEnrollmentOrderDateTime(order.getAccount());
+        
+        //If a UK MP is within the first 7 days of enrollment, check that they have not already placed more than 1 order.
+		if (!isNull(order.getAccount()) && order.getAccount().getAccountType() == "marketPartner" 
+			&& site.getSiteCode() == "mura-uk"
+			&& !isNull(date)
+			&& dateDiff("d", date, now()) <= initialEnrollmentPeriodForMarketPartner){
+			
+			//If adding the order item will increase the order to over 200 EU return false  
+			if ((order.getTotal() + this.getPrice()) > maxAmountAllowedToSpendDuringInitialEnrollmentPeriod){
+			    return false; // they already have too much.
+			}
+	    }
+	    return true;
+	 }
     
     // ===============  END: Custom Validation Methods =====================
     

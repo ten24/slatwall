@@ -87,7 +87,9 @@ class MonatFlexshipListingController{
 					data.successfulActions.indexOf('public:order.create') > -1
 				) {
 				    this.monatAlertService.success(this.rbkeyService.rbKey('frontend.flexshipCreateSucess'))
-				    this.monatService.redirectToProperSite('/shop/?type=flexship&orderTemplateId=' + data.orderTemplate);
+				    this.monatService.redirectToProperSite(
+										'/shop/?type=flexship&orderTemplateId=' + data.orderTemplate
+									);
 				} else{
 					throw(data);
 				}
@@ -100,7 +102,11 @@ class MonatFlexshipListingController{
 			});
 	}
 	
-
+	/**
+	 * @depricated, not in use any more
+	 * will be remove in later commits 
+	 * 
+	*/ 
 	public setAsCurrentFlexship(orderTemplateID:string) {
 
 		// make api request

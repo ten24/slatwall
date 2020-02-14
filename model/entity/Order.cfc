@@ -88,6 +88,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="shippingAddress" hb_populateEnabled="public" cfc="Address" fieldtype="many-to-one" fkcolumn="shippingAddressID";
 	property name="orderCreatedSite" hb_populateEnabled="public" cfc="Site" fieldtype="many-to-one" fkcolumn="orderCreatedSiteID";
 	property name="orderPlacedSite" hb_populateEnabled="public" cfc="Site" fieldtype="many-to-one" fkcolumn="orderPlacedSiteID";
+	property name="orderImportBatch" cfc="OrderImportBatch" fieldtype="many-to-one" fkColumn="orderImportBatchID";
 
 	// Related Object Properties (one-To-many)
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="orderID" cascade="all-delete-orphan" inverse="true";
@@ -187,6 +188,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="totalDepositAmount" persistent="false" hb_formatType="currency";
 	property name="refundableAmountMinusRemainingTaxesAndFulfillmentCharge" persistent="false";
 	property name="placeOrderFlag" persistent="false" default="false";
+	property name="refreshCalculateFulfillmentChargeFlag" persistent="false" default="false"; //Flag for Fulfillment Tax Recalculation 
 	
     //======= Mocking Injection for Unit Test ======	
 	property name="orderService" persistent="false" type="any";
@@ -1483,12 +1485,14 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 	}
 	
 	public numeric function getFulfillmentChargeTaxAmount(){
-		if(!structKeyExists(variables,'fulfillmentChargeTaxAmount')){
+		if(!structKeyExists(variables,'fulfillmentChargeTaxAmount') || ( variables.refreshCalculateFulfillmentChargeFlag ) ){
 			var taxTotal = 0;
 			for(var orderFulfillment in this.getOrderFulfillments()) {
 				taxTotal = getService('HibachiUtilityService').precisionCalculate(taxTotal + orderFulfillment.getChargeTaxAmount());
 			}
 			variables.fulfillmentChargeTaxAmount = taxTotal;
+			
+			variables.refreshCalculateFulfillmentChargeFlag = false;
 		}
 		return variables.fulfillmentChargeTaxAmount;
 	}
@@ -2067,15 +2071,10 @@ public numeric function getPersonalVolumeSubtotal(){
 	public any function getMarketPartnerEnrollmentOrderDateTime(){
 	    
 	    if (!structKeyExists(variables, "marketPartnerEnrollmentOrderDateTime")){
-    	    var orderItemCollectionList = getService("OrderService").getOrderItemCollectionList();
-    	    orderItemCollectionList.addFilter("order.orderStatusType.systemCode", "ostNotPlaced", "!=");
-    	    orderItemCollectionList.addFilter("order.account.accountID", "#getAccount().getAccountID()#");
-    	    orderItemCollectionList.addFilter("order.monatOrderType.typeCode","motMPEnrollment");
-    	    orderItemCollectionList.setDisplayProperties("order.orderOpenDateTime");// Date placed 
-    	    var records = orderItemCollectionList.getRecords();
-    	    if (arrayLen(records)){
-    	        variables.marketPartnerEnrollmentOrderDateTime = records[1]['order_orderOpenDateTime'];
-    	        return records[1]['order_orderOpenDateTime'];
+			var value = getService('orderService').getMarketPartnerEnrollmentOrderDateTime(getAccount());
+    	    if (!isNull(value)){
+    	        variables.marketPartnerEnrollmentOrderDateTime = value;
+    	        return value;
     	    }
 	    }
 	    
@@ -2104,10 +2103,11 @@ public numeric function getPersonalVolumeSubtotal(){
 	}
 	
 	public any function getAccountType() {
+	    
 	    if (structKeyExists(variables, "accountType")){
 	        return variables.accountType;
 	    }
-	    
+
 	    if (!isNull(getAccount()) && !isNull(getAccount().getAccountType()) && len(getAccount().getAccountType())){
 	        variables.accountType = getAccount().getAccountType();
 	    }else{
@@ -2206,35 +2206,6 @@ public numeric function getPersonalVolumeSubtotal(){
         }
         return true;
 	}
-	
-	
-	/**
-	 * 1. If orderCreatedSite.SiteCode is UK and order.accountType is MP 
-	 * max 200 pound TOTAL including VAT and Shipping Feed on days 1-7 
-	 * from ordering the enrollment kit.
-	 * This only work if the max orders validation also works because this only checks the current order
-	 * for total instead of all orders.
-	 * 
-	 **/
-	 public boolean function MarketPartnerValidationMaxOrderAmount(){
-	 	
-	 	
-	    var initialEnrollmentPeriodForMarketPartner = this.getOrderCreatedSite().setting("siteInitialEnrollmentPeriodForMarketPartner");//7
-        var maxAmountAllowedToSpendDuringInitialEnrollmentPeriod = this.getOrderCreatedSite().setting("siteMaxAmountAllowedToSpendInInitialEnrollmentPeriod");//200
-        
-        //If a UK MP is within the first 7 days of enrollment, check that they have not already placed more than 1 order.
-		if (!isNull(getAccount()) && getAccount().getAccountType() == "marketPartner" 
-			&& this.getOrderCreatedSite().getSiteCode() == "mura-uk"
-			&& !isNull(getMarketPartnerEnrollmentOrderDateTime())
-			&& dateDiff("d", getMarketPartnerEnrollmentOrderDateTime(), now()) <= initialEnrollmentPeriodForMarketPartner){
-			
-			//If this order is more than 200 pounds, fails.  
-			if (this.getTotal() > maxAmountAllowedToSpendDuringInitialEnrollmentPeriod){
-			    return false; // they already have too much.
-			}
-	    }
-	    return true;
-	 }
 	 
 	 /**
 	  * 2. If Site is UK and account is MP Max Order 1 placed in first 7 days 

@@ -9,7 +9,7 @@
 				<span sw-rbkey="'frontend.miniCart.items'"></span>
 				/
 				<span sw-rbkey="'frontend.miniCart.total'"></span>
-				{{ monatMiniCart.cart.total | swcurrency:slatwall.cart.currencyCode }} 
+				{{ monatMiniCart.cart.total | swcurrency:monatMiniCart.cart.currencyCode }} 
 			</span>
 		</div>
 		
@@ -27,48 +27,50 @@
 			<ul class="item-slider">
 				<li 
 					ng-class="{loading: item.loading }"
-					ng-repeat="item in monatMiniCart.cart.orderItems | limitTo: monatMiniCart.pageSize : monatMiniCart.recordsStart"
+					ng-repeat="item in monatMiniCart.cart.orderItems track by item.sku.skuID| limitTo: monatMiniCart.pageSize : monatMiniCart.recordsStart"
 				>
-					<button ng-if="item.sku.product.productType.systemCode != 'VIPCustomerRegistr' && item.sku.product.productType.productTypeName != 'Enrollment Fee - MP'" class="close" type="button" ng-click="$parent.monatMiniCart.removeItem(item); item.loading = true;">
-						<i class="fas fa-times"></i>
-					</button>
-					<div class="img">
-						<a href="#">
-							<img image-manager ng-src="{{item.sku.imagePath}}" alt="{{item.sku.skuDefinition}}" />
-						</a>
-					</div>
-					<h6 class="title-sm">
-						<a ng-href="{{item.skuProductURL}}">
-							<span class="product-name" ng-bind="item.sku.skuDefinition"></span>
-						</a>
-					</h6>
-					<div class="product-bottom">
-						<div ng-if="item.sku.product.productType.systemCode != 'VIPCustomerRegistr' && item.sku.product.productType.productTypeName != 'Enrollment Fee - MP'" class="qty">
-							<button
-								type="button"
-								class="minus"
-								ng-disabled="item.quantity <= 1"
-								ng-click="$parent.monatMiniCart.decreaseItemQuantity(item)"
-							>
-								- 
-							</button>
-							<input
-								type="text"
-								id="qty"
-								name="quantity"
-								class="form-control"
-								ng-model="item.quantity"
-							/>
-							<button
-								type="button"
-								class="plus"
-								ng-click="$parent.monatMiniCart.increaseItemQuantity(item)"
-							>
-								+
-							</button>
+					<div ng-if="item.sku.product.productType != 'Starter Kit' && item.sku.product.productType != 'Product Pack' ">
+						<button ng-if="item.sku.product.productType.productTypeName != 'Enrollment Fee - VIP' && item.sku.product.productType.productTypeName != 'Enrollment Fee - MP'" class="close" type="button" ng-click="$parent.monatMiniCart.removeItem(item); item.loading = true;">
+							<i class="fas fa-times"></i>
+						</button>
+						<div class="img">
+							<a href="#">
+								<img image-manager ng-src="{{item.sku.imagePath}}" alt="{{item.sku.skuDefinition}}" />
+							</a>
 						</div>
-						<div class="price-block">
-							<span ng-bind-html="item.extendedPriceAfterDiscount | swcurrency: monatMiniCart.cart.currencyCode" class="price"></span>
+						<h6 class="title-sm">
+							<a ng-href="{{item.skuProductURL}}">
+								<span class="product-name" ng-bind="item.sku.skuDefinition"></span>
+							</a>
+						</h6>
+						<div class="product-bottom">
+							<div ng-if="item.sku.product.productType.productTypeName != 'Enrollment Fee - VIP' && item.sku.product.productType.productTypeName != 'Enrollment Fee - MP'" class="qty">
+								<button
+									type="button"
+									class="minus"
+									ng-disabled="item.quantity <= 1"
+									ng-click="$parent.monatMiniCart.decreaseItemQuantity(item)"
+								>
+									- 
+								</button>
+								<input
+									type="text"
+									id="qty"
+									name="quantity"
+									class="form-control"
+									ng-model="item.quantity"
+								/>
+								<button
+									type="button"
+									class="plus"
+									ng-click="$parent.monatMiniCart.increaseItemQuantity(item)"
+								>
+									+
+								</button>
+							</div>
+							<div class="price-block">
+								<span ng-bind-html="item.extendedPriceAfterDiscount | swcurrency:monatMiniCart.cart.currencyCode" class="price"></span>
+							</div>
 						</div>
 					</div>
 				</li>

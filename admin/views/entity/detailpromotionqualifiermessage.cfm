@@ -50,17 +50,31 @@ Notes:
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
 <cfparam name="rc.promotionQualifierMessage" type="any">
-<cfparam name="rc.promotionQualifierID" type="string">
+<cfparam name="rc.promotionQualifier" type="any" default="#rc.promotionQualifierMessage.getPromotionQualifier()#">
+<cfparam name="rc.promotionQualifierID" type="string" default="#rc.promotionQualifierMessage.getPromotionQualifier().getPromotionQualifierID()#">
 <cfparam name="rc.edit" type="boolean">
 
+<cfif rc.promotionQualifierMessage.getNewFlag()>
+	<cfset local.cancelAction="admin:entity.detailpromotionqualifier" />
+	<cfset local.cancelQueryString="promotionQualifierID=#rc.promotionQualifier.getPromotionQualifierID()#" />
+<cfelse>
+	<cfset local.cancelAction="admin:entity.detailpromotionqualifiermessage" />
+	<cfset local.cancelQueryString="promotionQualifierMessageID=#rc.promotionQualifierMessage.getPromotionQualifierMessageID()#" />
+</cfif>
 <cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.promotionQualifierMessage#" edit="#rc.edit#" sRedirectAction="admin:entity.detailPromotionQualifier" sRedirectQS="?promotionQualifierID=#rc.promotionQualifierID#">
-	    <input type="hidden" name="promotionQualifier.promotionQualifierID" value="#rc.promotionQualifierID#" />
-		<hb:HibachiPropertyRow>
-			<hb:HibachiPropertyList>
-				<hb:HibachiPropertyDisplay object="#rc.promotionQualifierMessage#" property="message" edit="#rc.edit#">
-			</hb:HibachiPropertyList>
-		</hb:HibachiPropertyRow>
+	<hb:HibachiEntityDetailForm object="#rc.promotionQualifierMessage#" edit="#rc.edit#" sRedirectAction="admin:entity.detailPromotionQualifierMessage">
+	    <hb:HibachiEntityActionBar type="detail" object="#rc.promotionQualifierMessage#" edit="#rc.edit#" 
+			  cancelAction="#local.cancelAction#"
+			  cancelQueryString="#local.cancelQueryString#" 
+			  backAction="admin:entity.detailpromotionqualifier" 
+			  backQueryString="promotionQualifierID=#rc.promotionQualifier.getPromotionQualifierID()###tabpromotionqualifiermessages" 
+			  deleteQueryString="promotionQualifierMessageID=#rc.promotionQualifierMessage.getPromotionQualifierMessageID()#&redirectAction=admin:entity.detailpromotionqualifier&promotionQualifierID=#rc.promotionQualifier.getPromotionQualifierID()###tabpromotionqualifiermessages" />
+	    
+        <input type="hidden" name="promotionQualifier.promotionQualifierID" value="#rc.promotionQualifierID#" />
+        <hb:HibachiEntityDetailGroup object="#rc.promotionQualifier#">
+			<hb:HibachiEntityDetailItem view="admin:entity/promotionqualifiermessagetabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+			<hb:HibachiEntityDetailItem view="admin:entity/promotionqualifiermessagetabs/messagerequirements" text="#$.slatwall.rbKey('admin.define.messageRequirements')#" showOnCreateFlag=false />
+		</hb:HibachiEntityDetailGroup>
 	</hb:HibachiEntityDetailForm>
 </cfoutput>
 

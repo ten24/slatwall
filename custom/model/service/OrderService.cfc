@@ -140,7 +140,7 @@ component extends="Slatwall.model.service.OrderService" {
 		
         if(isNull(arguments.data.orderTemplateName)  || !len(trim(arguments.data.orderTemplateName)) ) {
 			arguments.data.orderTemplateName = "My Flexship, Created on " & dateFormat(now(), "long");
-		}
+        }
 		
 		//grab and set shipping-account-address from account
 		if(account.hasPrimaryShippingAddress()){
@@ -148,21 +148,22 @@ component extends="Slatwall.model.service.OrderService" {
 		} else if( account.hasPrimaryAddress()){
 		    arguments.orderTemplate.setShippingAccountAddress(account.getPrimaryAddress());
 		}
-
+		
 		//NOTE: there's only one shipping method allowed for flexship
 		var shippingMethod = getService('ShippingService').getShippingMethod( 
 		            ListFirst( arguments.orderTemplate.setting('orderTemplateEligibleShippingMethods') )
 			    );
 		orderTemplate.setShippingMethod(shippingMethod);
-
+		
 		//grab and set account-payment-method from account to ordertemplate
  		if(account.hasPrimaryPaymentMethod()){
 		    arguments.orderTemplate.setAccountPaymentMethod(account.getPrimaryPaymentMethod());
-
+	        
 		    if( account.getPrimaryPaymentMethod().hasBillingAccountAddress()){
 		        arguments.orderTemplate.setBillingAccountAddress(account.getPrimaryPaymentMethod().getBillingAccountAddress());
 		    }
 		}
+		
 
 		//grab and get billing-account-address from account
 		if(!arguments.orderTemplate.hasBillingAccountAddress() ) {
@@ -172,7 +173,7 @@ component extends="Slatwall.model.service.OrderService" {
     		    arguments.orderTemplate.setBillingAccountAddress(account.getPrimaryAddress());
     		}
 		}
-		
+	
 		arguments.orderTemplate.setAccount(account);
 		arguments.orderTemplate.setSite( arguments.processObject.getSite() );
 		arguments.orderTemplate.setCurrencyCode( arguments.processObject.getCurrencyCode() );
@@ -181,7 +182,6 @@ component extends="Slatwall.model.service.OrderService" {
 		arguments.orderTemplate.setScheduleOrderDayOfTheMonth(day(arguments.processObject.getScheduleOrderNextPlaceDateTime()));
 		arguments.orderTemplate.setScheduleOrderNextPlaceDateTime(arguments.processObject.getScheduleOrderNextPlaceDateTime());
 		arguments.orderTemplate.setFrequencyTerm( getSettingService().getTerm(arguments.processObject.getFrequencyTermID()) );
-	
 		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate, arguments.data, arguments.context); 
 		return arguments.orderTemplate;
     }
@@ -665,15 +665,17 @@ component extends="Slatwall.model.service.OrderService" {
 	    return order;
 	}
 	
-	public any function processOrder_approveReturn(required any order, any processObject, struct data){
-	    
-	    if(!isNull(arguments.processObject.getOrderItems()) &&arrayLen(arguments.processObject.getOrderItems())){
-	        for(var orderItem in arguments.processObject.getOrderItem()){
-	            orderItem = this.getOrderItem(orderItem.orderItemID);
-	            orderItem.setQuantity(orderItem.quantity);
+	public any function processOrder_approveReturn(required any order, required struct data){
+		
+	    if(!isNull(arguments.data.orderItems) &&arrayLen(arguments.data.orderItems)){
+	        for(var orderItemStruct in arguments.data.orderItems){
+	            var orderItem = this.getOrderItem(orderItemStruct.orderItemID);
+	            orderItem.setQuantity(orderItemStruct.quantity);
 	        }
 	    }
+	    this.processOrder(arguments.order,'updateOrderAmounts');
 	    order.setOrderStatusType(getService('TypeService').getTypeByTypeCode('rmaApproved'));
+
 	    return order;
 	}
 
@@ -1403,5 +1405,92 @@ component extends="Slatwall.model.service.OrderService" {
 			
 	}
 	
+	public any function createOrderItemsFromOrderTemplateItems(required any order, required any orderTemplate){
+		var orderTemplateItemCollection = this.getOrderTemplateItemCollectionList(); 
+		orderTemplateItemCollection.setDisplayProperties('orderTemplateItemID,sku.skuID,quantity,temporaryFlag'); 
+		orderTemplateItemCollection.addFilter('orderTemplate.orderTemplateID', arguments.orderTemplate.getOrderTemplateID()); 
+
+		var orderTemplateItems = orderTemplateItemCollection.getRecords();
+		var temporaryItemFound = false;
+		
+		for(var orderTemplateItem in orderTemplateItems){ 
+
+			if(!isNull(orderTemplateItem.temporaryFlag) && orderTemplateItem.temporaryFlag == true){
+				temporaryItemFound = true;
+			}
+			var args = {
+				'order'=arguments.order,
+				'orderTemplateItemStruct'=orderTemplateItem,
+				'orderTemplate'=arguments.orderTemplate
+			}
+			
+			if(!isNull(orderFulfillment)){
+				args['orderFulfillment'] = orderFulfillment;
+			}
+			
+			arguments.order = this.addOrderItemFromTemplateItem(argumentCollection=args);
+			
+			if(isNull(orderFulfillment)){
+				var orderFulfillment = arguments.order.getOrderFulfillments()[1];
+				orderFulfillment.setShippingMethod(arguments.orderTemplate.getShippingMethod());
+			} 
+			if(arguments.order.hasErrors()){
+				this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(arguments.order.getErrors())# when adding order item skuID: #orderTemplateItem['sku_skuID']#', true);
+				arguments.order.clearHibachiErrors();
+				arguments.orderTemplate.clearHibachiErrors();
+				//try to place as much of the order as possible should only fail in OFY case
+				continue;
+			}
+		}
+		
+		if(!temporaryItemFound){
+			arguments.order = addDefaultOFYSkuIfEligible(arguments.order,arguments.orderTemplate,orderFulfillment);
+		}
+		
+		return arguments.order;
+	}
 	
+	public any function addDefaultOFYSkuIfEligible(required any order, required any orderTemplate, required any orderFulfillment){
+		var defaultOFYSkuCode = arguments.orderTemplate.getAccount().getAccountCreatedSite().setting('siteDefaultOFYSkuCode');
+		var skuCollection = getService('HibachiCollectionService').getSkuCollectionList();
+		skuCollection.setCollectionConfigStruct(arguments.orderTemplate.getPromotionalFreeRewardSkuCollectionConfig());
+		skuCollection.addFilter('skuCode',defaultOFYSkuCode);
+		skuCollection.setDisplayProperties('skuID,skuCode');
+		var result = skuCollection.getRecords();
+		
+		if(arrayLen(result)){
+			var skuID = result[1].skuID;
+			
+			var orderTemplateItem = this.newOrderTemplateItem();
+			orderTemplateItem.setTemporaryFlag(true);
+			orderTemplateItem.setSku(getSkuService().getSku(skuID));
+			orderTemplateItem.setQuantity(1);
+			orderTemplateItem = this.saveOrderTemplateItem(orderTemplateItem);
+			
+			var orderTemplateItemStruct = {
+				'sku_skuID'=skuID,
+				'quantity'=1,
+				'orderTemplateItemID'=orderTemplateItem.getOrderTemplateItemID()
+			};
+			
+			arguments.order = this.addOrderItemFromTemplateItem(arguments.order, orderTemplateItemStruct, arguments.orderTemplate, arguments.orderFulfillment);
+			arguments.order = this.saveOrder(arguments.order);
+		}
+		
+		return arguments.order;
+	}
+	
+	public any function getMarketPartnerEnrollmentOrderDateTime(required any account){
+		var orderItemCollectionList = this.getOrderItemCollectionList();
+		orderItemCollectionList.addFilter("order.orderStatusType.systemCode", "ostNotPlaced", "!=");
+		orderItemCollectionList.addFilter("order.account.accountID", arguments.account.getAccountID());
+		orderItemCollectionList.addFilter("order.monatOrderType.typeCode","motMPEnrollment");
+		orderItemCollectionList.setDisplayProperties("order.orderOpenDateTime");// Date placed 
+		orderItemCollectionList.setPageRecordsShow(1);
+		var records = orderItemCollectionList.getRecords();
+		
+		if (arrayLen(records)){
+		    return records[1]['order_orderOpenDateTime'];
+		}
+	}
 }

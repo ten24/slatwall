@@ -621,50 +621,37 @@ property name="sapItemCode" ormtype="string";
 	public any function getPriceByCurrencyCode( string currencyCode='USD', numeric quantity=1, array priceGroups, string accountID ) {
 		var cacheKey = 'getPriceByCurrencyCode#arguments.currencyCode#';
 
-		var account = getHibachiScope().getAccount();
-		if(structKeyExists(arguments,'accountID') && len(arguments.accountID)){
-			account = getService('AccountService').getAccount(arguments.accountID);
-		}
 		if(!structKeyExists(arguments,'priceGroups')){
+			
+			if(structKeyExists(arguments, 'accountID') && len(arguments.accountID)){
+				var account = getService('AccountService').getAccount(arguments.accountID);
+			} else {
+				var account = getHibachiScope().getAccount();
+			}
+			
 			arguments.priceGroups = account.getPriceGroups(); 
 		}
 
 		for(var priceGroup in arguments.priceGroups){
-			cacheKey &= '_#priceGroup.getPriceGroupID()#';
+			cacheKey &= '_pg:#priceGroup.getPriceGroupCode()#';
 		}
 
-		arguments.skuID = this.getSkuID(); 
-		if(structKeyExists(arguments, "quantity")){
-			cacheKey &= '#arguments.quantity#';
-			if(!structKeyExists(variables,cacheKey)){
-				var skuPriceResults = getDAO("SkuPriceDAO").getSkuPricesForSkuCurrencyCodeAndQuantity(argumentCollection=arguments);
-				if(!isNull(skuPriceResults) && isArray(skuPriceResults) && arrayLen(skuPriceResults) > 0){
-					var prices = [];
-						for(var i=1; i <= arrayLen(skuPriceResults); i++){
-							if(isNull(skuPriceResults[i]['price'])){
-								skuPriceResults[i]['price'] = 0;
-							}
-							ArrayAppend(prices, skuPriceResults[i]['price']);
-						}
-						ArraySort(prices, "numeric","asc");
-						variables[cacheKey]= prices[1];
-				}
+		if(structKeyExists(arguments, "quantity")) {
+
+			cacheKey &= '_q:#arguments.quantity#';
 				
-				if(structKeyExists(variables,cacheKey)){
-					return variables[cacheKey];
-				}
-				
-				var baseSkuPrice = getDAO("SkuPriceDAO").getBaseSkuPriceForSkuByCurrencyCode(this.getSkuID(), arguments.currencyCode);  
-				if(!isNull(baseSkuPrice)){
-					variables[cacheKey] = baseSkuPrice.getPrice(); 
-				}
-				
+			if(!structKeyExists(variables, cacheKey) ) {
+				arguments.skuID = this.getSkuID(); 
+				variables[cacheKey] = getService('SkuService').getPriceBySkuIDAndCurrencyCodeAndQuantity( argumentCollection=arguments ); 
 			}
 			
-			if(structKeyExists(variables,cacheKey)){
+			if( StructKeyExists(variables, cacheKey) ) {
+				//we return 'null' string from custom service, instead of the NULL val
+				if(variables[cacheKey] == "null") { 
+					return;
+				}
 				return variables[cacheKey];
 			}
-			
 		}
 		
 		

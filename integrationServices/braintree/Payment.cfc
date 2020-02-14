@@ -310,7 +310,6 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 		var totalWithDiscount  = NumberFormat(total + discount, "0.00");
 		total = NumberFormat(total, "0.00");
 		
-		
 		//Populate shipping address if orderFulFillment exits
 		var orderFulfillment = arguments.requestBean.getOrder().getOrderFulfillments();
 		var shippingAddress = {};
