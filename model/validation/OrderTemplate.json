@@ -25,7 +25,7 @@
 		],
 		"billingAccountAddress": [{ "contexts": "activate,createAndPlaceOrder", "required": true }],
 		"canPlaceOrderFlag": [
-			{ "contexts": "save", "conditions": "activeScheduleOrderTemplate", "eq": true }
+			{ "contexts": "save", "conditions": "activeScheduleOrderTemplate,createAndPlaceOrder", "eq": true }
 		],
 		"canPlaceFutureScheduleOrderFlag": [
 			{ "contexts": "createAndPlaceOrder", "conditions": "activeScheduleOrderTemplate", "eq": true }
