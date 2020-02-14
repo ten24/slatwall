@@ -14,6 +14,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 	property name="skuService";
 	property name="paymentService";
 	property name="locationService";
+	property name="stockService";
 	property name="fulfillmentService";
 	property name="shippingService";
 	
@@ -150,50 +151,8 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
         productReviewCollection.addFilter("productReviewStatusType.typeID", "9c60366a4091434582f5085f90d81bad");
         return productReviewCollection;
     }
+    //getOrderUpdatesData
     
-    private any function getDailyAccountUpdatesData(pageNumber,pageSize){
-	    var uri = setting('baseImportURL') & "SwGetUpdatedAccounts";
-		var authKeyName = "authkey";
-		var authKey = setting(authKeyName);
-		
-	    var body = {
-			"Pagination": {
-				"PageSize": "#arguments.pageSize#",
-				"PageNumber": "#arguments.pageNumber#"
-			},
-			"Filters": {
-			    "StartDate": "#year(now())#-#month(now())#-#day(now())-1#T00:00:00.693Z",
-			    "EndDate": "#year(now())#-#month(now())#-#day(now())#T23:59:59.693Z"
-			}
-		};
-		
-		
-		/**
-		 * 
-		 * Filter example
-		 * "Filters": {
-		 *	"StartDate": "2019-11-20T19:16:28.693Z",
-		 *	"EndDate": "2019-11-20T19:16:28.693Z"
-		 * }
-		 *	 
-		 **/
-	   var httpService = new http(method = "POST", charset = "utf-8", url = uri);
-		httpService.addParam(name = "Authorization", type = "header", value = "#authKey#");
-		httpService.addParam(name = "Content-Type", type = "header", value = "application/json-patch+json");
-		httpService.addParam(name = "Accept", type = "header", value = "text/plain");
-		httpService.addParam(name = "body", type = "body", value = "#serializeJson(body)#");
-		
-		var accountJson = httpService.send().getPrefix();
-		var accountsResponse = deserializeJson(accountJson.fileContent);
-        accountsResponse.hasErrors = false;
-		if (isNull(accountsResponse) || accountsResponse.status != "success"){
-			logHibachi("Could not import updated accounts data on this page: PS-#arguments.pageSize# PN-#arguments.pageNumber#");
-		    accountsResponse.hasErrors = true;
-		}
-		
-		return accountsResponse;
-	}
-	
 	public any function getDateFromString(date) {
 		return	createDate(
 			datePart("yyyy",date), 
@@ -201,22 +160,15 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 			datePart("d",date));
 	}
 	
-	private any function getShipmentData(pageNumber,pageSize,dateFilterStart,dateFilterEnd){
-	    var uri = setting('baseImportURL') & "SWGetShipmentInfo";
+	private any function getData(pageNumber,pageSize,dateFilterStart,dateFilterEnd,name){
+	    var uri = setting('baseImportURL') & name;
 		var authKeyName = "authkey";
 		var authKey = setting(authKeyName);
-	    var = {hasErrors: false};
-	    // Test range
-	    // "StartDate": "2020-11-15T00:16:28.693Z",
-        // "EndDate": "2020-01-17T23:16:28.693Z"
-        
-        // Real Range
-        //"StartDate": arguments.dateFilterStart,
-	    //"EndDate": arguments.dateFilterEnd
+	    var fsResponse = {hasErrors: false};
 	    var body = {
 			"Pagination": {
 				"PageSize": "#arguments.pageSize#",
-				"PageNumber": "#arguments.pageNumber#"
+				"PageNumber": "#pageNumber#"
 			},
 			"Filters": {
 			    "StartDate": arguments.dateFilterStart,
@@ -234,24 +186,31 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 		var apiData = deserializeJson(shipmentJson.fileContent);
 
 		if (structKeyExists(apiData, "Data") && structKeyExists(apiData.Data, "Records")){
-			fsResponse['Records'] = apiData.Data.Records;
+			fsResponse = apiData.Data;
+			fsResponse.hasErrors = false;
 		    return fsResponse;
 		}
 
-		writeDump("Could not import shipment on this page: PS-#arguments.pageSize# PN-#arguments.pageNumber#");
+		writeDump("Could not import #name#(s) on this page: PS-#arguments.pageSize# PN-#pageNumber#");
 		fsResponse.hasErrors = true;
 
 
 		return fsResponse;
 	}
 	
-	public void function importOrderShipments(required struct rc){ 
-        logHibachi("Begin importing order deliveries.");
+	public void function importOrderShipments(){ 
+        logHibachi("Begin importing order deliveries.", true);
+        
         /**
-         * Allows the user to override the last n minutes that get checked. 
-         * Defaults to 60 minutes.
+         * Allows the user to override the last n HOURS that get checked. 
+         * Defaults to 60 Minutes ago.
          **/
-        var intervalOverride = rc.intervalOverride ?: 60;
+        var intervalOverride = 1;
+        
+        /**
+         * The ids of the orderitems to be added to the entity queue (List)
+         **/
+        var modifiedEntityIDs = "";
         
         /**
          * CONSTANTS 
@@ -259,32 +218,33 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
         var MERGE_ARRAYS = true;
         var SHIPPED = "5";
         var CLOSEDSTATUS = getTypeService().getTypeByTypeCode(SHIPPED);
-        var MINUTES = 'n';
+        var HOURS = 'h';
+        var stockLocation = getLocationService().getLocationByLocationID("88e6d435d3ac2e5947c81ab3da60eba2");
         
         /**
          * The page number to start with 
          **/
-        var pageNumber = rc.pageNumber?:1;
+        var pageNumber = 1;
         
         /**
          * How many records to process per page. 
          **/
-		var pageSize = rc.pageSize?:500;
+		var pageSize = 50;
 		
 		/**
 		 * the page number to end on (exclusive) 
 		 **/
-		var pageMax = rc.pageMax?:1;
+		var pageMax = 2;
 		
 		/**
 		 * The date and time from an hour ago.
 		 **/
-		var sixtyMinutesAgo = DateAdd(MINUTES, -intervalOverride, now());
+		var sixtyMinutesAgo = DateAdd(HOURS, -intervalOverride, now());
 		
 		/**
-		 * The string representation for the date twenty minutes ago. 
+		 * The string representation for the date sity HOURS ago. 
 		 * Uses number format to make sure each minute, second will use 2 places.
-		 * This checks for the last hour of deliveries every 15 minutes.
+		 * This checks for the last hour of deliveries every 15 HOURS.
 		 * This only adds a delivery IF its not already delivered, so we can do that.
 		 * 
 		 **/
@@ -298,8 +258,8 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 		/**
 		 * You can pass in a start date or end date in the rc 
 		 **/
-		var dateFilterStart = rc.dateFilterStart ?: startDate;
-		var dateFilterEnd = rc.dateFilterEnd ?: endDate;
+		var dateFilterStart = startDate;
+		var dateFilterEnd = endDate;
 		
 		/**
 		 * Use a stateless session so we can use objects without memory issues.
@@ -309,7 +269,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
         var ormStatelessSession = ormGetSessionFactory().openStatelessSession();
         var shippingMethod = getShippingService().getShippingMethodByShippingMethodCode("defaultShippingMethod");
         
-		logHibachi("Finding deliveries for #startDate# to #endDate#");
+		logHibachi("Finding deliveries for #startDate# to #endDate#", true);
 		
         /**
          * @param {Struct} hashmap A collection of key value pairs.
@@ -396,7 +356,20 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
             orderDeliveryItem.setQuantity(orderFulfillmentItem.getQuantity());
             orderDeliveryItem.setOrderItem(orderFulfillmentItem);
             orderDeliveryItem.setOrderDelivery(orderDelivery);
+            
+            //now try to find the stock to attach
+            var sku = orderFulfillmentItem.getSku();
+            
+            if (!isNull(sku)){
+                var stock = getStockService().getStockBySkuAndLocation(sku, stockLocation);
+            }
+            
+            if (!isNull(stock)){
+                orderDeliveryItem.setStock( stock );
+            }
+            
 			ormStatelessSession.insert("SlatwallOrderDeliveryItem", orderDeliveryItem);
+			
             return orderDeliveryItem;
         };
 
@@ -423,6 +396,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
                 var orderDeliveryItem = createDeliveryItem( orderDelivery,  
                     orderFulfillmentItem);
             }
+            modifiedEntityIDs = listAppend(modifiedEntityIDs, order.getOrderID());
         };
 
         /**
@@ -444,7 +418,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
          * @return {Void}
          */
         var createDelivery = function(shipment){
-        	logHibachi("createDelivery: #shipment.shipmentNumber#");
+        	logHibachi("createDelivery: #shipment.shipmentNumber#",true);
 			var order = order(shipment.OrderNumber);
 
             if (!isNull(order) && dataExistsToCreateDelivery(shipment) && !orderIsdelivered( order )){
@@ -453,19 +427,19 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
     			
     			//Do not create this again if it already exists.
     			if (!isNull(findOrderDeliveryByRemoteID)){
-    			    logHibachi("Not creating order delivery because it already exists: remoteID: #shipment.shipmentId#");
+    			    logHibachi("Not creating order delivery because it already exists: remoteID: #shipment.shipmentId#",true);
     			    return;
     			}
     			
     			// Create the delivery.  
                 var orderDelivery = new Slatwall.model.entity.OrderDelivery();
     			orderDelivery.setOrder(order);
-    			orderDelivery.setShipmentNumber(shipment.shipmentNumber);//Add this
-    			orderDelivery.setShipmentSequence(shipment.orderShipSequence);// Add this
-    			orderDelivery.setPurchaseOrderNumber(shipment.PONumber);
+    			orderDelivery.setShipmentNumber(shipment.shipmentNumber?:"");//Add this
+    			orderDelivery.setShipmentSequence(shipment.orderShipSequence?:"");// Add this
+    			orderDelivery.setPurchaseOrderNumber(shipment.PONumber?:"");
     			
     			
-    			orderDelivery.setRemoteID( shipment.shipmentId );
+    			orderDelivery.setRemoteID( shipment.shipmentId ?:"");
 
     		    //get the tracking numbers.
     		    //get tracking information...
@@ -480,12 +454,12 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
     		    			orderDelivery.setScanDate( getDateFromString(packages['ScanDate']) );//use last scan date
     		    		}
 
-    		    		if (!isNull(shipment['UndeliveredReasonDescription'])){
-    		    			orderDelivery.setUndeliverableOrderReason(shipment['UndeliveredReasonDescription']);
+    		    		if (!isNull(packages['UndeliveredReasonDescription'])){
+    		    			orderDelivery.setUndeliverableOrderReason(packages['UndeliveredReasonDescription']);
     		    		}
-
-    		    		if (!isNull(shipment['PackageShipDate'])){
-    		    			packageShipDate = shipment['PackageShipDate'];
+                        
+    		    		if (!isNull(packages['PackageShipDate'])){
+    		    			packageShipDate = packages['PackageShipDate'];
     		    			orderDelivery.setCreatedDateTime(getDateFromString(packageShipDate) );
     		    		}
     		    	 }
@@ -495,24 +469,43 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
     		    orderDelivery.setTrackingNumber(concatTrackingNumber);
     		    orderDelivery.setModifiedDateTime( now() );
                 orderDelivery.setShippingMethod( shippingMethod );
+                orderDelivery.setFulfillmentMethod( shippingMethod.getFulfillmentMethod() );
+                
+                //Sets the tracking URL
+                if (!isNull(orderDelivery.getTrackingNumber()) && 
+						!isNull(orderDelivery.getShippingMethod())){
+					
+					var trackingUrl = orderDelivery.getShippingMethod().setting("shippingMethodTrackingURL") 
+					if (!isNull(trackingUrl)){
+						trackingUrl = trackingUrl.replace("${trackingNumber}", orderDelivery.getTrackingNumber());
+						orderDelivery.setTrackingURL(trackingUrl);
+					}
+				}
+                
+                
                 ormStatelessSession.insert("SlatwallOrderDelivery", orderDelivery );
                 
                 createDeliveryItems( orderDelivery );
-                logHibachi("Created a delivery for orderNumber: #shipment['OrderNumber']#");
+                logHibachi("Created a delivery for orderNumber: #shipment['OrderNumber']#",true);
                 
                 //Close the order if its ready.
                 var orderOnDelivery = orderDelivery.getOrder();
-                var  isOrderPaidFor = orderOnDelivery.isOrderPaidFor();
+                var isOrderPaidFor = orderOnDelivery.isOrderPaidFor();
     			var isOrderFullyDelivered = orderOnDelivery.isOrderFullyDelivered();
 
-    			if(isOrderPaidFor && isOrderFullyDelivered)	{
+    			if(isOrderFullyDelivered)	{
     				orderOnDelivery.setOrderStatusType(CLOSEDSTATUS);
-    				ormStatelessSession.insert("SlatwallOrder", orderOnDelivery );
-                    logHibachi("Closed the order for orderNumber: #shipment['OrderNumber']#");
-    
+    				ormStatelessSession.update("SlatwallOrder", orderOnDelivery ); //update because it already exists.
+                    logHibachi("Closed the order for orderNumber: #shipment['OrderNumber']#",true);
+                    
+                    //now fire the event for this delivery.
+                    var eventData = {entity: orderDelivery};
+                    getHibachiScope().getService("hibachiEventService").announceEvent(eventName="afterOrderDeliveryCreateSuccess", eventData=eventData);
                 }else{
-                	logHibachi("createDelivery: Can't find enough information for ordernumber: #shipment['OrderNumber']# to create the delivery");
+                	logHibachi("createDelivery: Can't find enough information for ordernumber: #shipment['OrderNumber']# to create the delivery",true);
     			}
+            }else{
+                logHibachi("createDelivery: Can't create the delivery - already exists!", true);
             }
         };
 
@@ -520,26 +513,39 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
         // This wraps the map in a new stateless session to keep things fast
 
         var tx = ormStatelessSession.beginTransaction();
+        
+		logHibachi("Start Shipment Importer",true);
+        
+        //Get the totals on this call.
+		var response = getData(pageNumber, pageSize, dateFilterStart, dateFilterEnd, "SWGetShipmentInfo");
+		
+		var TotalCount = response.totalCount?:0;
+		var TotalPages = response.totalPages?:0;
 
+        
+        //Exit if there is no data.
+        if (!TotalCount){
+            logHibachi("No Shipment Data to import at this time.",true);
+        }
+        
+        logHibachi("Shipment TotalPages: #totalPages#",true);
+        
         // Do one page at a time, flushing and clearing as we go.
-        while (pageNumber <= pageMax){
-        	logHibachi("Importing pagenumber: #pageNumber#");
+        while (pageNumber <= TotalPages){
+        	logHibachi("Importing pagenumber: #pageNumber#",true);
 	        // Call the api and get shipment records for the date defined as the filter.
-	        var response = getShipmentData(pageNumber, pageSize, dateFilterStart, dateFilterEnd);
+	        var response = getData(pageNumber, pageSize, dateFilterStart, dateFilterEnd, "SWGetShipmentInfo");
 	        
 	        if (isNull(response)){
-	        	logHibachi("Unable to get a usable response from Shipments API #now()#");
+	        	logHibachi("Unable to get a usable response from Shipments API #now()#",true);
 	            throw("Unable to get a usable response from Shipments API #now()#");
-	        }
-            
-            if (structKeyExists(rc, "viewResponse")){
-	            writedump(response);abort;    
 	        }
             
 	        var shipments = response.Records?:"null";
             
+            
 	        if (shipments.equals("null")){
-	        	logHibachi("Response did not contain shipments.");
+	        	logHibachi("Response did not contain shipments.",true);
 	            throw("Response did not contain shipments data.");
 	        }
 
@@ -556,11 +562,22 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 
 				ormGetSession().clear();
 				
-				writedump(shipmentError);
-				logHibachi("Error: importing shipment. ");
-				abort;	
+				logHibachi("Error: importing shipment. ",true);
 			}
-			logHibachi("End Importing pagenumber: #pageNumber#");
+			
+			// Now process all the orderItem that need calculated property updates for this page.
+    		try{
+        		if (len(modifiedEntityIDs)){
+        		    logHibachi("Adding orderitems to queue.", true);
+        		    var modifiedEntities = queryExecute(
+                      "INSERT into SwEntityQueue (entityQueueID, baseObject, baseID, processMethod, entityQueueData, createdDateTime, tryCount) select orderItemID as entityQueueID, 'OrderItem' as baseObject, orderItemID as baseID, 'processOrderItem_updateCalculatedProperties' as processMethod, '{}', now() as createdDateTime, 0 as tryCount from SwOrderItem where orderID in ?", 
+                      [{ value="#modifiedEntityIDs#", cfsqltype="cf_sql_varchar", list="true"}]);
+        		}
+    		}catch(any entityQueueError){
+    		    logHibachi("Error while adding orderitems to the queue.[#entityQueueError.message#]", true);
+    		}
+			
+			logHibachi("End Importing pagenumber: #pageNumber#",true);
 			pageNumber++;
         }
 
@@ -570,25 +587,78 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 
     }
     
-    public any function importDailyAccountUpdates(pageSize, pageNumber, pageMax){
+    public any function importAccountUpdates(){
         //get the api key from integration settings.
 		var integration = getService("IntegrationService").getIntegrationByIntegrationPackage("monat");
 		var ormStatelessSession = ormGetSessionFactory().openStatelessSession();
-		
-		/*
-		"Filters": {
-		    "StartDate": "2019-10-01T19:16:28.693Z",
-		    "EndDate": "2019-10-20T19:16:28.693Z"
-		  },
-		*/
 		var index=0;
-		while (arguments.pageNumber < arguments.pageMax){
-			logHibachi("Start Daily Account Updater");
-    		var accountsResponse = getDailyAccountUpdatesData(pageNumber, pageSize);
+		var HOURS = 'h';
+        
+        /**
+         * Allows the user to override the last h HOURS that get checked. 
+         * Defaults to 60 Minutes ago.
+         **/
+        var intervalOverride = 1;
+        
+        /**
+         * The page number to start with 
+         **/
+        var pageNumber = 1;
+        
+        /**
+         * How many records to process per page. 
+         **/
+		var pageSize = 50;
+		
+		/**
+		 * the page number to end on (exclusive) 
+		 **/
+		var pageMax = 2;
+		
+		/**
+		 * The date and time from an hour ago.
+		 **/
+		var sixtyMinutesAgo = DateAdd(HOURS, -intervalOverride, now());
+		
+		/**
+		 * The string representation for the date twenty minutes ago. 
+		 * Uses number format to make sure each minute, second will use 2 places.
+		 * This checks for the last hour of deliveries every 15 minutes.
+		 * This only adds a delivery IF its not already delivered, so we can do that.
+		 * 
+		 **/
+	    var dateFilterStart = "#year(sixtyMinutesAgo)#-#numberFormat(month(sixtyMinutesAgo),'00')#-#numberFormat(day(sixtyMinutesAgo),'00')#T#numberformat(hour(sixtyMinutesAgo),'00')#:#numberformat(minute(sixtyMinutesAgo), '00')#:#numberformat(second(sixtyMinutesAgo), '00')#.693Z";
+	
+		/**
+		 * This should always equal now.
+		 **/
+        var dateFilterEnd =  "#year(now())#-#numberFormat(month(now()),'00')#-#numberFormat(day(now()),'00')#T#numberFormat(hour(now()),'00')#:#numberformat(minute(now()), '00')#:#numberformat(second(now()), '00')#.693Z";
+	
+		/*"CurrentPage": 1,
+        "TotalCount": 2068008,
+        "PageSize": 25,
+        "TotalPages": 82721,*/
+        
+        logHibachi("Start Account Updater", true);
+        
+        //Get the totals on this call.
+		var accountsResponse = getData(pageNumber, pageSize, dateFilterStart, dateFilterEnd, "SwGetUpdatedAccounts");
+		var TotalCount = accountsResponse.totalCount?:0;
+		var TotalPages = accountsResponse.totalPages?:0;
+        
+        //Exit if there is no data.
+        if (!TotalCount){
+            logHibachi("No account data to import at this time.", true);
+        }
+        
+        //Iterate all the pages.
+		while (pageNumber <= TotalPages){
+		    
+		    accountsResponse = getData(pageNumber, pageSize, dateFilterStart, dateFilterEnd, "SwGetUpdatedAccounts");
     		
     		if (accountsResponse.hasErrors){
     		    //goto next page causing this is erroring!
-    		    arguments.pageNumber++;
+    		    pageNumber++;
     		    continue;
     		}
     		
@@ -597,7 +667,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 			var suspended = getService("TypeService").getTypeByTypeID("2c9180836dacb117016dad1239ac000f");
 			var deleted = getService("TypeService").getTypeByTypeID("2c9180836dacb117016dad12e37c0011");
 			var enrollmentPending = getService("TypeService").getTypeByTypeID("2c9180836dacb117016dad1329790012");
-    		var accounts = accountsResponse.Data.Records;
+    		var accounts = accountsResponse.Records;
     		
     		/**
     		 *  {
@@ -625,7 +695,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
         			
         			if (isNull(foundAccount)){
         				pageNumber++;
-        				logHibachi("Could not find this account to update: Account number #account['AccountNumber']#");
+        				logHibachi("Could not find this account to update: Account number #account['AccountNumber']#", true);
         				continue;
         			}
         			
@@ -663,6 +733,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
                     	}
                     }
                     
+                    
                     // SponsorNumber
                     
                     if (!isNull(account['AccountNumber']) && 
@@ -674,19 +745,17 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
                     	var notUnique = false;
                     	
                     	try{
-                    		var newSponsorAccount = getService("AccountService")
-                    			.getAccountByAccountNumber(account['SponsorNumber']);
+                    		var newSponsorAccount = getService("AccountService").getAccountByAccountNumber(account['SponsorNumber']);
                     		var childAccount = foundAccount;
-                    		var sponsorAccount =foundAccount.getOwnerAccount();
                     	}catch(nonUniqueResultException){
                     		//not unique
                     		notUnique = true;
                     	}
                     	
-                    	if (!notUnique && !isNull(sponsorAccount) && !isNull(childAccount)){
-                    		var newAccountRelationship = getService("AccountService")
-                    			.getAccountRelationshipByChildAccountANDParentAccount({1:childAccount, 2:sponsorAccount}, false);
-                    		
+     
+                    	if (!notUnique && !isNull(childAccount)){
+                    		var newAccountRelationship = getService("AccountService").getAccountRelationshipByChildAccount(childAccount, false);
+
                     		var isNewAccountRelationship = false;
                     		if (isNull(newAccountRelationship)){
                     			var newAccountRelationship = new Slatwall.model.entity.AccountRelationship();
@@ -708,14 +777,9 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 	                    		ormStatelessSession.update("SlatwallAccountRelationship", newAccountRelationship);
 	                    	}
 	                    	
-	                    	foundAccount.setOwnerAccount(sponsorAccount);
+	                    	foundAccount.setOwnerAccount(newSponsorAccount);
                     	}
                     }
-                    
-                    // EnrollerNumber (Note: What is this mapping to?) This is the same as sponsor number.
-                    /*if (!isNull(account['EnrollerNumber']) && len(account['EnrollerNumber'])){
-                    	foundAccount.setAccountNumber( account['EnrollerNumber']?:"" );//this shouldn't change if its account number...
-                    }*/
                     
                     //Account Type
                     if (!isNull(account['AccountTypeCode']) && len(account['AccountTypeCode'])){
@@ -748,45 +812,16 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
                     	}
                     }
                     
-                    //EntryPeriod (What is this mapping to)
-                    if (!isNull(account['EntryPeriod']) && len(account['EntryPeriod'])){
-                    	//foundAccount.setEntryPeriod( account['EntryPeriod']?:"" );
-                    }
-                    
                     //FlagAccountTypeCode (C,L,M,O,R)
                     if (!isNull(account['FlagAccountTypeCode']) && len(account['FlagAccountTypeCode'])){
                     	//set the accountType from this. Needs to be name or I need to map it.
                     	foundAccount.setComplianceStatus( account['FlagAccountTypeCode']?:"" );
                     }
                     
-                    // GovernmentNumber (We will also need government type code?)
-                    // Will this be plain text? Lookup by the government number.
-                    // We will need the encrypted number sent as well. And, some other information.
-                    // Commenting this out until we have those things.
-                    /*if (!isNull(account['GovernmentNumber']) && len(account['GovernmentNumber'])){
-                    	
-                    	//Find or create a government id and set the number.
-                    	if (structKeyExists(account, "GovernmentNumber") && structKeyExists(account, "GovernmentTypeCode")){
-	                    	// lookup the id
-	                    	var isNewGovernementNumber = false;
-	                    	try{
-	                    		var accountGovernmentID = getAccountService().getAccountGovernmentIdByGovernmentTypeANDgovernmentIdLastFour({1:account['GovernmentTypeCode']?:"",2:account['GovernmentNumber']});
-	                    	} catch(governmentLookupError){
-	                    		isNewGovernmentNumber = true;
-	                    	}
-	                    	
-	                    	//create a new one.
-	                    	if (isNewGovernementNumber){
-	                    		var accountGovernmentID = new Slatwall.model.entity.AccountGovernmentID();
-	                    	}
-		                    accountGovernmentID.setAccount(foundAccount);
-		                    accountGovernmentID.setGovernmentType(account['GovernmentTypeCode']?:"");//*
-		                    accountGovernmentID.setGovernmentIDlastFour(account['GovernmentNumber']);//*
-		                    
-		                    //insert the relationship
-		                    ormStatelessSession.insert("SlatwallAccountGovernmentID", accountGovernmentID);
-                    	}
-                    }*/
+                    //"EntryDate": "2020-01-30T15:00:53",
+                    if (!isNull(account['EntryDate']) && len(account['EntryDate'])){.
+                    	foundAccount.setEnrollmentDate( ParseDateTime(account['EntryDate']));
+                    }
                     
                     //CareerTitleCode
                     foundAccount.setCareerTitle( account['CareerTitleCode']?:"" );
@@ -798,7 +833,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
     			tx.commit();
     		}catch(e){
     			
-    			logHibachi("Daily Account Import Failed @ Index: #index# PageSize: #arguments.pageSize# PageNumber: #arguments.pageNumber#");
+    			logHibachi("Daily Account Import Failed @ Index: #index# PageSize: #pageSize# PageNumber: #pageNumber#", true);
     			logHibachi(serializeJson(e));
     			ormGetSession().clear();
     			ormStatelessSession.close();
@@ -806,13 +841,117 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
     		}
     		
     		//echo("Clear session");
-    		this.logHibachi('Import (Daily Updated Accounts) Page #arguments.pageNumber# completed ', true);
+    		this.logHibachi('Import (Daily Updated Accounts) Page #pageNumber# completed ', true);
     		ormGetSession().clear();//clear every page records...
 		    pageNumber++;
 		}
 		
 		ormStatelessSession.close(); //must close the session regardless of errors.
-		logHibachi("End: #arguments.pageNumber# - #arguments.pageSize# - #index#");
+		logHibachi("End: #pageNumber# - #pageSize# - #index#", true);
     }
     
+    public any function importOrderUpdates(){
+        //get the api key from integration settings.
+		var integration = getService("IntegrationService").getIntegrationByIntegrationPackage("monat");
+		var ormStatelessSession = ormGetSessionFactory().openStatelessSession();
+		var index=0;
+		var HOURS = 'h';
+        /**
+         * Allows the user to override the last n HOURS that get checked. 
+         * Defaults to 60 HOURS.
+         **/
+        var intervalOverride = 1;
+        
+        /**
+         * The page number to start with 
+         **/
+        var pageNumber = 1;
+        
+        /**
+         * How many records to process per page. 
+         **/
+		var pageSize = 50;
+		
+		/**
+		 * the page number to end on (exclusive) 
+		 **/
+		var pageMax = 2;
+		
+		/**
+		 * The date and time from an hour ago.
+		 **/
+		var sixtyMinutesAgo = DateAdd(HOURS, -intervalOverride, now());
+		
+		/**
+		 * The string representation for the date twenty HOURS ago. 
+		 * Uses number format to make sure each minute, second will use 2 places.
+		 * This checks for the last hour of deliveries every 15 HOURS.
+		 * This only adds a delivery IF its not already delivered, so we can do that.
+		 * 
+		 **/
+	    var dateFilterStart = "#year(sixtyMinutesAgo)#-#numberFormat(month(sixtyMinutesAgo),'00')#-#numberFormat(day(sixtyMinutesAgo),'00')#T#numberformat(hour(sixtyMinutesAgo),'00')#:#numberformat(minute(sixtyMinutesAgo), '00')#:#numberformat(second(sixtyMinutesAgo), '00')#.693Z";
+	
+		/**
+		 * This should always equal now.
+		 **/
+        var dateFilterEnd =  "#year(now())#-#numberFormat(month(now()),'00')#-#numberFormat(day(now()),'00')#T#numberFormat(hour(now()),'00')#:#numberformat(minute(now()), '00')#:#numberformat(second(now()), '00')#.693Z";
+	
+	    //Get the totals
+		var orderResponse = getData(pageNumber, pageSize, dateFilterStart, dateFilterEnd, "SwGetUpdatedOrders");
+		var TotalCount = orderResponse.totalCount;
+		var TotalPages = orderResponse.totalPages;
+         
+        //Exit with no data.
+        if (!TotalCount){
+            logHibachi("No order data to import at this time.", true);
+        }
+        
+        //Iterate the response.
+		while (pageNumber <= TotalPages){
+			logHibachi("Start Order Updater", true);
+    		var orderResponse = getData(pageNumber, pageSize, dateFilterStart, dateFilterEnd, "SwGetUpdatedOrders");
+    	   
+    		if (orderResponse.hasErrors){
+    		    //goto next page causing this is erroring!
+    		    pageNumber++;
+    		    continue;
+    		}
+    		
+    		
+    		try{
+    			var tx = ormStatelessSession.beginTransaction();
+    			var orders = orderResponse.Records;
+    			
+    			for (var order in orders){
+    			    index++;
+        		    
+        			// Create a new account and then use the mapping file to map it.
+        			var foundOrder = getOrderService().getOrderByOrderNumber( order['OrderNumber'] );
+        			
+        			if (isNull(foundOrder)){
+        				pageNumber++;
+        				logHibachi("Could not find this order to update: Order number #order['OrderNumber']#", true);
+        				continue;
+        			}
+        			if (!isNull(foundOrder) && !isNull(order['Period']) && len(order['Period'])){
+                        foundOrder.setCommissionPeriod(order['Period']);
+        			}
+                    ormStatelessSession.update("SlatwallOrder", foundOrder);
+    			}
+    			
+    			tx.commit();
+    		}catch(e){
+    			logHibachi("Daily Account Import Failed @ Index: #index# PageSize: #pageSize# PageNumber: #pageNumber#", true);
+    			logHibachi(serializeJson(e));
+    			ormGetSession().clear();
+    		}
+    		
+    		this.logHibachi('Import (Updated Order) Page #pageNumber# completed ', true);
+    		ormGetSession().clear();//clear every page records...
+		    pageNumber++;
+		}
+		
+		ormStatelessSession.close(); //must close the session regardless of errors.
+		logHibachi("End: #pageNumber# - #pageSize# - #index#", true);
+    }
 }

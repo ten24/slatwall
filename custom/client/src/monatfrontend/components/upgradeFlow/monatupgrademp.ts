@@ -103,7 +103,7 @@ class UpgradeMPController {
 	public submitStarterPack = () => {
         if ( this.selectedBundleID.length ) {
 			this.loading = true;
-        	this.monatService.selectStarterPackBundle( this.selectedBundleID ).then(data => {
+        	this.monatService.selectStarterPackBundle( this.selectedBundleID, 1, 1).then(data => {
         		this.loading = false;
             	this.observerService.notify('onNext');
         	})

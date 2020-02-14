@@ -31,6 +31,7 @@ class MonatFlexshipListingController{
 		this.observerService.attach(this.fetchFlexships,"deleteOrderTemplateSuccess");
 		this.observerService.attach(this.fetchFlexships,"updateFrequencySuccess");
 
+
 	}
 	
 	public $onInit = () => {
@@ -71,6 +72,12 @@ class MonatFlexshipListingController{
 	
 	public createNewFlexship = () => {
 		this.loading = true;
+		let siteID = this.publicService.cmsSiteID;
+		let createURL = '/shop/?type=flexship&orderTemplateId=';
+		
+		if(siteID != 'default'){
+			createURL = '/' + siteID + createURL;
+		}
 		
 		this.orderTemplateService.createOrderTemplate('ottSchedule')
 			.then((data) => {

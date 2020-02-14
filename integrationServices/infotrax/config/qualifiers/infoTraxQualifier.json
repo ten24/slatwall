@@ -205,6 +205,9 @@
 	"afterOrderProcess_updateOrderAmountsSuccess" : {
 		"filters" : "validOrder"
 	},
+	"afterOrderProcess_releaseSuccess" : {
+		"filters" : "validOrder"
+	},
 	
 	"afterOrderTemplateProcess_activateSuccess" : {
 		"filters" : [
