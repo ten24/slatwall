@@ -4,7 +4,6 @@ class MonatFlexshipShippingMethodModalController {
 	public accountAddresses;
 	public shippingMethodOptions;
 	public close; // injected from angularModalService
-
 	public existingAccountAddress; 
 	public selectedShippingAddress = { accountAddressID : 'new' }; // this needs to be an object to make radio working in ng-repeat, as that will create a nested scope
 	public existingShippingMethod; 
@@ -12,14 +11,19 @@ class MonatFlexshipShippingMethodModalController {
 	
 	public newAccountAddress = {};
 	public newAddress = {'countryCode':'US'}; //TODO: hard-coded default]
+	public countryCodeOptions = {};
 	
 	public loading: boolean = false;
 
 	//@ngInject
-    constructor(public orderTemplateService, public observerService, public rbkeyService, public monatAlertService) {}
+    constructor(public orderTemplateService, public observerService, public rbkeyService, public monatAlertService,private publicService) {}
     
     public $onInit = () => {
     	this.makeTranslations();
+    		this.publicService.getCountries().then(data => {
+            this.countryCodeOptions = data.countryCodeOptions;
+		    });
+    	
     	this.existingAccountAddress = this.accountAddresses.find( item => {
     		return item.accountAddressID === this.orderTemplate.shippingAccountAddress_accountAddressID;
     	});
