@@ -9,8 +9,10 @@ enum Screen {
 	EDIT
 }
 
+type Fulfillment = { [key: string]: any } | string;
 
 class MonatCheckoutController {
+	public shippingFulfillment: Array<Fulfillment>;
 	public 	togglePaymentAction: boolean = false;
 	public loading: any = {
 		selectShippingMethod: false
@@ -21,6 +23,7 @@ class MonatCheckoutController {
 	public hasSponsor = true;
 	public ownerAccountID:string;
 	public cart:any; 
+	public test = 'test';
 	
 	// @ngInject
 	constructor(
@@ -52,7 +55,7 @@ class MonatCheckoutController {
 		this.publicService.getAccount().then(res=>{
 			this.account = res;
 			this.getCurrentCheckoutScreen();
-		})
+		});
 		
 	}
 	
@@ -61,7 +64,7 @@ class MonatCheckoutController {
 		return this.publicService.getCart().then(data => {
 			this.cart = data;
 			let screen = Screen.SHIPPING;
-			
+			this.shippingFulfillment = this.cart.orderFulfillments.filter(el => el.fulfillmentMethod.fulfillmentMethodType == 'shipping' );;
 			if(this.publicService.cart && this.publicService.cart.orderRequirementsList.indexOf('account') == -1){
 				if (this.publicService.hasShippingAddressAndMethod() ) {
 					screen = Screen.PAYMENT;
@@ -95,21 +98,20 @@ class MonatCheckoutController {
 		this.publicService.addBillingAddressOpen = false;
 	}
 	
-	public selectShippingMethod = ( option, orderFulfillment: any ) => {
+	public selectShippingMethod = ( option:{[key:string]:any}, orderFulfillment: Fulfillment) => {
 		
 		if ( typeof orderFulfillment == 'string' ) {
-			orderFulfillment = this.publicService.cart.orderFulfillments[orderFulfillment];
+			orderFulfillment = <{[key:string]: any}>this.publicService.cart.orderFulfillments[orderFulfillment];
 		}
 		
 		let data = {
 			'shippingMethodID': option.value,
 			'fulfillmentID':orderFulfillment.orderFulfillmentID
-		};
+		}
 		
 		this.loading.selectShippingMethod = true;
 		this.publicService.doAction( 'addShippingMethodUsingShippingMethodID', data ).then( result => {
 			this.loading.selectShippingMethod = false;
-			
 			if ( result.successfulActions.length ) {
 				this.getCurrentCheckoutScreen();
 			}
@@ -258,16 +260,38 @@ class MonatCheckoutController {
 	}
 	
 	//review potential for race condition here
-	public setInitialShipping():void{
-		console.log('has shipping method', this.publicService.hasShippingAddressAndMethod())
-		var fulfillments:any[] = this.cart.orderFulfillments;
+	public setInitialShippingMethod():void{
 		
 		//if they do not have a shipping method we add the cheapest shipping method by default
-		if(!this.publicService.hasShippingAddressAndMethod()){
-			console.log(this.cart.orderFulfillments)
+		if(this.publicService.hasShippingAddressAndMethod()){
+			return;
 		}
-		fulfillments.filter(el => el.fulfillmentMethod?.fulfillmentMethodType = 'shipping');
-		console.log(fulfillments[0]?.shippingMethodOptions);
+		
+		let defaultOption = <{[key:string]: any}>this.shippingFulfillment[0];
+		this.selectShippingMethod(defaultOption.shippingMethodOptions[0], defaultOption);
+	}
+	
+	public setInitialShipping():void{
+		if(this.account.primaryShippingAddress){
+			this.publicService.selectShippingAccountAddress()
+		}
+	}
+	
+	public setBillingSameAsShipping():void{ 
+		if(this.cart.billingAddress || this.cart.billingAccountAddress) return;
+		let addressID = this.cart.orderFulfillments[0]?.accountAddress?.accountAddressID;
+		this.publicService.doAction('addBillingAddressUsingAccountAddress', {accountAddressID: addressID}).then(res=>{
+			return
+		});
+	}
+	
+	public setAccountPrimaryPaymentMethodAsCartPaymentMethod(){
+		let data = {
+			copyFromType: 'accountPaymentMethod',
+			orderID: this.cart.orderID,
+			accountPaymentMethodID: this.account.primaryPaymentMethod.accountPaymentMethodID
+		}
+		this.publicService.doAction('addOrderPayment', data);
 	}
 	
 }
