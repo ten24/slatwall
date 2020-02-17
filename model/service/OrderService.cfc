@@ -1579,6 +1579,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			if (!isNull(orderFulfillment)){
 				orderFulfillment.setShippingMethod(arguments.orderTemplate.getShippingMethod());
 				orderFulfillment.setFulfillmentMethod(arguments.orderTemplate.getShippingMethod().getFulfillmentMethod());
+
 			}
 		}
 		
@@ -1622,8 +1623,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arguments.orderTemplate.setLastOrderPlacedDateTime( now() );
 			arguments.orderTemplate.clearHibachiErrors();
 			return arguments.orderTemplate;
-		}	
+		}
 	
+		var eventData = { entity: newOrder, order: newOrder, data: {} };
+        getHibachiScope().getService("hibachiEventService").announceEvent(eventName="afterOrderProcess_PlaceOrderSuccess", eventData=eventData);	
 	
 		var orderTemplateAppliedGiftCards = arguments.orderTemplate.getOrderTemplateAppliedGiftCards(); 
 		for(var orderTemplateAppliedGiftCard in orderTemplateAppliedGiftCards ){ 
@@ -1785,7 +1788,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			processOrderAddOrderItem.setOrderFulfillmentID(orderFulfillment.getOrderFulfillmentID());
 		} 	
 
-		arguments.order = this.processOrder_addOrderItem(arguments.order, processOrderAddOrderItem);
+		processOrderAddOrderItem.setPreProcessDisplayedFlag(1); //this's a hacky way to pass the the validation;
+		processOrderAddOrderItem.validate( context="addOrderItem");
+
+		if( !processOrderAddOrderItem.hasErrors() ){
+			arguments.order = this.processOrder_addOrderItem(arguments.order, processOrderAddOrderItem);
+		}	
 		return arguments.order;
 	}
 
@@ -1808,6 +1816,20 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var orderTemplateItemCollectionList = this.getOrderTemplateItemCollectionList(); 
 		orderTemplateItemCollectionList.addFilter('orderTemplate.orderTemplateID', arguments.orderTemplate.getOrderTemplateID()); 
 		orderTemplateItemCollectionList.addFilter('sku.skuID', processObject.getSku().getSkuID());
+
+		var priceByCurrencyCode = arguments.processObject.getSku().getPriceByCurrencyCode(
+							currencyCode = arguments.orderTemplate.getCurrencyCode(),
+							quantity = arguments.processObject.getQuantity(),
+							priceGroups = 	arguments.orderTemplate.getAccount().getPriceGroups()
+						);
+						
+		if( IsNull(priceByCurrencyCode) ) {
+			arguments.orderTemplate.addError('priceByCurrencyCode', 
+				rbKey('validate.processOrderTemplate_addOrderTemplateItem.sku.hasPriceByCurrencyCode')
+			);
+		
+			return arguments.orderTemplate; 	
+		}
 		
 		if(orderTemplateItemCollectionList.getRecordsCount() == 0){
 			
@@ -1833,7 +1855,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			orderTemplateItem = this.saveOrderTemplateItem(orderTemplateItem);
 		}
 
-
 		return arguments.orderTemplate; 	
 	} 
 
@@ -1841,7 +1862,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		arguments.orderTemplateItem = super.saveOrderTemplateItem(arguments.orderTemplateItem, arguments.data);
 		var orderTemplate = arguments.orderTemplateItem.getOrderTemplate(); 
 		if(!isNull(orderTemplate)){
+			
 			orderTemplate = this.saveOrderTemplate(orderTemplate); 
+			
 			if(orderTemplate.hasErrors()){
 				arguments.orderTemplateItem.addErrors(orderTemplate.getErrors());
 			} 
@@ -4649,13 +4672,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var orderPayments = orderPaymentsSmartList.getRecords();
 
 		getOrderDAO().turnOnPaymentProcessingFlag(arguments.order.getOrderID()); 
-		
+		var amountToCredit = -1* order.getPaymentAmountDue();
 		for(var orderPayment in orderPayments) {
 			if(orderPayment.getStatusCode() == 'opstActive') {
-				
+				var paymentAmount = orderPayment.getAmountUncredited();
+				if(paymentAmount > amountToCredit){
+					paymentAmount = amountToCredit;
+				}
 				var processData = {
 					transactionType = 'credit',
-					amount = orderPayment.getAmountUncredited(), 
+					amount = paymentAmount, 
 					setOrderPaymentInvalidOnFailedTransactionFlag = false
 				};
 
@@ -4669,7 +4695,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					var currentTryCount = arguments.order.getPaymentTryCount() + 1;
 					arguments.order.setPaymentTryCount(currentTryCount);
 					arguments.order.setPaymentLastRetryDateTime(now());
-				} 
+				}else{
+					amountToCredit -= paymentAmount;
+				}
 			}
 		}	
 		

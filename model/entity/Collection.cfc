@@ -213,6 +213,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 	}
 	
+	private string function getDatasource(){
+		if(!structKeyExists(variables,'datasource')){
+			variables.datasource =  getApplicationValue("hibachiConfig").readOnlyDataSource;
+		}
+		return variables.datasource;
+	}
 	
 	public void function setInlistDelimiter(delimiter=","){
 		variables.inlistDelimiter = arguments.delimiter;
@@ -2796,8 +2802,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 							} else {
 								//Get the pageRecords
-								//Documentation: This should fetch the actual record and any limit/count logic needs to be passed in here. TODO: Remove count logic fromgetRecordsCountData and getRecordsCount
-								variables.pageRecords = ormExecuteQuery(HQL, HQLParams, false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#"});
+								variables.pageRecords = ormExecuteQuery(HQL, HQLParams, false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#", datasource=getDatasource()});
 
 								//If this is cacheable but we don't have a cached value yet, then set one.
 								if (getCacheable() && !isNull(getCacheName()) && !getService("hibachiCacheService").hasCachedValue("pageRecords-" & getCacheName())){
@@ -2972,7 +2977,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							HQL =  'SELECT DISTINCT(_#lcase(this.getCollectionObject())#) ' &  getHQL(forExport=arguments.forExport);
 							HQLParams = getHQLParams();
 
-							var entities = ormExecuteQuery(HQL,HQLParams, false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#getCacheName()#"});
+							var entities = ormExecuteQuery(HQL,HQLParams, false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#getCacheName()#", datasource=getDatasource()});
 							var columns = getCollectionConfigStruct()["columns"];
 							for(var entity in entities){
 								var record = makeRecordStructFromScorllableORMEntity(entity);
@@ -2994,7 +2999,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 								variables.records =	getService("hibachiCacheService").hasCachedValue("records-"&getCacheName());
 							} else {
 								//Get the Records
-								variables.records = ormExecuteQuery(HQL,HQLParams, false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#getCacheName()#"});
+								variables.records = ormExecuteQuery(HQL,HQLParams, false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#getCacheName()#", datasource=getDatasource()});
 								
 								//If this is cacheable but we don't have a cached value yet, then set one.
 								if (getCacheable() && !isNull(getCacheName()) && !getService("hibachiCacheService").hasCachedValue("records-" & getCacheName())){
@@ -3146,8 +3151,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							var currentTransactionIsolation = variables.connection.getTransactionIsolation();
 							variables.connection.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
 						}
-						//Returns java.util.hashmap (object) of string recordsCount and number (492465 for example)
-						variables.recordsCountData = ormExecuteQuery(HQL, getHQLParams(), true, {ignoreCase="true",maxresults=1}); 
+
+						variables.recordsCountData = ormExecuteQuery(HQL, getHQLParams(), true, {ignoreCase="true",maxresults=1, datasource=getDatasource()});
 						var recordCount = 0;
 						
 						if(structkeyExists(variables,'recordsCountData') && structkeyExists(variables.recordsCountData,'recordsCount')){

@@ -46,21 +46,38 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+<cfimport prefix="swa" taglib="../../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../../org/Hibachi/HibachiTags" />
 
-<cfparam name="rc.promotionQualifierMessage" type="any">
-<cfparam name="rc.promotionQualifierID" type="string">
-<cfparam name="rc.edit" type="boolean">
 
-<cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.promotionQualifierMessage#" edit="#rc.edit#" sRedirectAction="admin:entity.detailPromotionQualifier" sRedirectQS="?promotionQualifierID=#rc.promotionQualifierID#">
-	    <input type="hidden" name="promotionQualifier.promotionQualifierID" value="#rc.promotionQualifierID#" />
-		<hb:HibachiPropertyRow>
-			<hb:HibachiPropertyList>
-				<hb:HibachiPropertyDisplay object="#rc.promotionQualifierMessage#" property="message" edit="#rc.edit#">
-			</hb:HibachiPropertyList>
-		</hb:HibachiPropertyRow>
-	</hb:HibachiEntityDetailForm>
-</cfoutput>
+<cfparam name="rc.account" type="any" />
 
+<cfset rc.parentAccountCollection = rc.$.slatwall.getService("AccountService").getCollectionList("AccountRelationship")>
+<cfset rc.parentAccountCollection.addFilter("childAccount.accountID", "#rc.account.getAccountID()#","=")>
+
+<cfset local.displayPropertyList = 'parentAccount.firstName,parentAccount.lastName,parentAccount.accountID,parentAccount.accountCode,parentAccount.company,parentAccount.primaryPhoneNumber.phoneNumber,parentAccount.primaryEmailAddress.emailAddress,parentAccount.accountNumber,parentAccount.organizationFlag'/>
+<cfset rc.parentAccountCollection.setDisplayProperties(displayPropertyList,
+	{
+		isVisible=true,
+		isSearchable=true,
+		isDeletable=true
+	}
+)/>
+<cfset rc.parentAccountCollection.addDisplayProperties("childAccount.accountID",
+	{
+		isVisible=false,
+		isSearchable=false,
+		isDeletable=true
+	}
+)/>
+
+<hb:HibachiListingDisplay
+	  collectionList="#rc.parentAccountCollection#"
+	  recordDetailAction="admin:entity.detailAccount"
+	  recordDetailActionIdProperty="accountID"
+	  recordDetailActionIdKey="parentAccount_accountID"
+	  recordDeleteQueryString="redirectAction=admin:entity.detailaccount&accountID=#rc.account.getAccountID()#"
+	  usingPersonalCollection="false">
+</hb:HibachiListingDisplay>
+
+<hb:HibachiActionCaller action="admin:entity.preprocessaccount" entity="account" class="btn btn-default" icon="plus" querystring="sRedirectAction=admin:entity.detailaccount&childAccountID=#rc.account.getAccountID()#&processcontext=addaccountrelationship" modal=true />

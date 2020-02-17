@@ -41,6 +41,7 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 
 	property name='infoTraxService' type='any' persistent='false';
 	property name='sessionToken' type='string' persistent='false';
+	property name='sessionTokenCreated' type='timestamp' persistent='false' default='#now()#';
 
 	public any function init() {
 		
@@ -106,6 +107,10 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 		}
 		
 		if( structKeyExists(response, 'ERRORCODE') ){
+			// Handle logout
+			if(response['DETAIL'] == 'Not Authorized to run this service'){
+				structDelete(variables, 'sessionToken');
+			}
 			throw(response['MESSAGE'] & ' - ' & response['DETAIL']);
 		}
 		
@@ -113,15 +118,15 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 	}
 	
 	public string function getSessionToken(){
-		
-		if( !structKeyExists(variables, 'sessionToken') ){
-			
+		// Generate token again after 1 hour
+		if( !structKeyExists(variables, 'sessionToken') || DateDiff('h', variables.sessionTokenCreated, now()) >= 1 ){
 			var response = postRequest('Session.login',{
 				'dtsuserid' = setting('username'),
 				'password' = setting('password'),
 			});
 		
 			variables.sessionToken = response['SESSION'];
+			variables.sessionTokenCreated = now();
 		}
 		
 		return variables.sessionToken;

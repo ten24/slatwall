@@ -5,7 +5,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
         variables.service = variables.mockservice.getIntegrationServiceMock();
         variables.accountID = '2c9180846d25c254016d25c3aeb8000d';
-        variables.paymentMethodID = '2c9580846bfaeee2016bfaf16f440006';
+        variables.paymentMethodID = '2c948084703439470170349c5458006a';
+        variables.accountPaymentMethodID = "2c948084703439470170349c5458006a";
+		variables.orderID = "2c91808270310aa3017034d04e8800ab";
 
         variables.paymentNonce = "a10fdd08-c132-08c8-72d7-1956e65cd610"; //One Time Use
         //3eeadf19-43c8-010d-676e-65d664f71072
@@ -130,19 +132,21 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
     }
 
 	 /**
-	 * 
+	 * @test
 	 * Test Create Transaction Method
 	 **/
 	 public void function testCreateTransaction()
 	 {
-	 	var order = request.slatwallScope.getService('OrderService').getOrder(orderID);
-	 	var integrationCFC = request.slatwallScope.getBean("IntegrationService").getIntegrationByIntegrationPackage('braintree');
- 		var paymentIntegrationCFC = createMock(object=request.slatwallScope.getBean("IntegrationService").getPaymentIntegrationCFC(integrationCFC));
-
-        var paymentMethod = request.slatwallScope.getBean("PaymentService").getPaymentMethod(paymentMethodID);
-
-        var response = paymentIntegrationCFC.createTransaction(paymentMethod, order);
-        writeDump(response);
+	 	var order = request.slatwallScope.getService('OrderService').getOrder(variables.orderID);
+	 	var requestBean = request.slatwallScope.getTransient('externalTransactionRequestBean');
+    	var accountPaymentMethod = request.slatwallScope.getBean('paymentService').getAccountPaymentMethod(variables.accountPaymentMethodID);
+    	
+    	requestBean.setProviderToken(accountPaymentMethod.getProviderToken());
+ 		requestBean.setTransactionType(variables.transactionTypes[2]);
+ 		requestBean.setOrder(order);
+ 		
+		var responseBean = variables.paymentIntegrationCFC.processExternal(requestBean);
+		writeDump(responseBean); abort;
 	 }
 
 	 /**

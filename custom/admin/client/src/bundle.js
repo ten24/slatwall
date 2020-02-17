@@ -64570,16 +64570,24 @@ var SWAddOrderItemsBySkuController = /** @class */ (function () {
         };
         this.addOrderItemListener = function (payload) {
             //figure out if we need to show this modal or not.
+            _this.observerService.notify("addOrderItemStartLoading", {});
+            if (isNaN(parseFloat(payload.priceByCurrencyCode))) {
+                var alert = _this.alertService.newAlert();
+                alert.msg = _this.rbkeyService.rbKey("validate.processOrder_addOrderitem.price.notIsDefined");
+                alert.type = "error";
+                alert.fade = true;
+                _this.alertService.addAlert(alert);
+                _this.observerService.notify("addOrderItemStopLoading", {});
+                return;
+            }
             //need to display a modal with the add order item preprocess method.
             var orderItemTypeSystemCode = payload.orderItemTypeSystemCode ? payload.orderItemTypeSystemCode.value : "oitSale";
             var orderFulfilmentID = (payload.orderFulfillmentID && payload.orderFulfillmentID.value) ? payload.orderFulfillmentID.value : (_this.orderFulfillmentId ? _this.orderFulfillmentId : "new");
-            var url = "?slatAction=entity.processOrder&skuID=" + payload.skuID + "&price=" + payload.price + "&quantity=" + payload.quantity + "&orderID=" + _this.order + "&orderItemTypeSystemCode=" + orderItemTypeSystemCode + "&orderFulfillmentID=" + orderFulfilmentID + "&processContext=addorderitem&ajaxRequest=1";
+            var url = "?slatAction=entity.processOrder&skuID=" + payload.skuID + "&price=" + payload.priceByCurrencyCode + "&quantity=" + payload.quantity + "&orderID=" + _this.order + "&orderItemTypeSystemCode=" + orderItemTypeSystemCode + "&orderFulfillmentID=" + orderFulfilmentID + "&processContext=addorderitem&ajaxRequest=1";
             if (orderFulfilmentID && orderFulfilmentID != "new") {
                 url = url + "&preProcessDisplayedFlag=1";
             }
-            var data = { orderFulfillmentID: orderFulfilmentID, quantity: payload.quantity, price: payload.price };
-            _this.observerService.notify("addOrderItemStartLoading", {});
-            _this.postData(url, data)
+            _this.postData(url)
                 .then(function (data) {
                 //Item can't be purchased
                 if (data.processObjectErrors && data.processObjectErrors.isPurchasableItemFlag) {
@@ -65868,7 +65876,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/tsd.d.ts' />
 var OrderTemplateService = /** @class */ (function () {
     //@ngInject
-    function OrderTemplateService($http, $q, $hibachi, entityService, cacheService, collectionConfigService, observerService, rbkeyService, requestService, utilityService) {
+    function OrderTemplateService($http, $q, $hibachi, entityService, cacheService, collectionConfigService, observerService, rbkeyService, requestService, utilityService, alertService) {
         var _this = this;
         this.$http = $http;
         this.$q = $q;
@@ -65880,6 +65888,7 @@ var OrderTemplateService = /** @class */ (function () {
         this.rbkeyService = rbkeyService;
         this.requestService = requestService;
         this.utilityService = utilityService;
+        this.alertService = alertService;
         this.orderTemplatePropertyIdentifierList = 'subtotal,total,fulfillmentTotal,fulfillmentDiscount';
         this.orderTemplateItemPropertyIdentifierList = ''; //this get's programitically set
         this.editablePropertyIdentifierList = '';
@@ -66061,6 +66070,15 @@ var OrderTemplateService = /** @class */ (function () {
             }
         };
         this.addOrderTemplateItem = function (state) {
+            if (isNaN(parseFloat(state.priceByCurrencyCode))) {
+                var alert = _this.alertService.newAlert();
+                alert.msg = _this.rbkeyService.rbKey("validate.processOrder_addOrderitem.price.notIsDefined");
+                alert.type = "error";
+                alert.fade = true;
+                _this.alertService.addAlert(alert);
+                _this.observerService.notify("addOrderItemStopLoading", {});
+                return;
+            }
             var formDataToPost = {
                 entityID: _this.orderTemplateID,
                 entityName: 'OrderTemplate',
@@ -80788,26 +80806,16 @@ var SWCurrencyFormatter = /** @class */ (function () {
         this.link = function ($scope, element, attrs, modelCtrl) {
             modelCtrl.$parsers.push(function (data) {
                 var currencyFilter = _this.$filter('swcurrency');
-                if (isNaN(data)) {
-                    data = 0;
+                if (_this._timeoutPromise) {
+                    _this.$timeout.cancel(_this._timeoutPromise);
+                }
+                _this._timeoutPromise = _this.$timeout(function () {
                     modelCtrl.$setViewValue(currencyFilter(data, $scope.currencyCode, 2, false));
                     modelCtrl.$render();
-                }
-                else {
-                    if (_this._timeoutPromise) {
-                        _this.$timeout.cancel(_this._timeoutPromise);
-                    }
-                    _this._timeoutPromise = _this.$timeout(function () {
-                        modelCtrl.$setViewValue(currencyFilter(data, $scope.currencyCode, 2, false));
-                        modelCtrl.$render();
-                    }, 1500);
-                }
+                }, 1500);
                 return modelCtrl.$viewValue;
             });
             modelCtrl.$formatters.push(function (data) {
-                if (isNaN(data)) {
-                    data = 0;
-                }
                 var currencyFilter = _this.$filter('swcurrency');
                 modelCtrl.$setViewValue(currencyFilter(data, $scope.currencyCode, 2, false));
                 modelCtrl.$render();
@@ -84183,31 +84191,21 @@ var SWCurrency = /** @class */ (function () {
     SWCurrency.Factory = function ($sce, $log, $hibachi, $filter) {
         var data = null, serviceInvoked = false;
         function realFilter(value, currencyCode, decimalPlace, returnStringFlag) {
+            if (decimalPlace === void 0) { decimalPlace = 2; }
             if (returnStringFlag === void 0) { returnStringFlag = true; }
+            if (isNaN(parseFloat(value))) {
+                return returnStringFlag ? "--" : value;
+            }
+            value = $filter('number')(value.toString(), decimalPlace);
             // REAL FILTER LOGIC, DISREGARDING PROMISES
             var currencySymbol = "$";
-            if (data != null &&
-                data[currencyCode] != null) {
+            if (data != null && data[currencyCode] != null) {
                 currencySymbol = data[currencyCode];
             }
             else {
                 $log.debug("Please provide a valid currencyCode, swcurrency defaults to $");
             }
-            if (!value || value.toString().trim() == '') {
-                value = 0;
-            }
-            if (angular.isDefined(value) && angular.isDefined(decimalPlace)) {
-                value = $filter('number')(value.toString(), decimalPlace);
-            }
-            else {
-                value = $filter('number')(value.toString(), 2);
-            }
-            if (returnStringFlag) {
-                return currencySymbol + value;
-            }
-            else {
-                return value;
-            }
+            return returnStringFlag ? currencySymbol + value : value;
         }
         var filterStub;
         filterStub = function (value, currencyCode, decimalPlace, returnStringFlag) {
