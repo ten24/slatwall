@@ -6,7 +6,8 @@ enum Screen {
 	SPONSOR, 
 	REVIEW,
 	PAYMENT,
-	EDIT
+	EDIT,
+	ACCOUNT
 }
 
 type Fulfillment = { [key: string]: any } | string;
@@ -17,7 +18,7 @@ class MonatCheckoutController {
 	public loading: any = {
 		selectShippingMethod: false
 	};
-	public screen = Screen.SHIPPING;
+	public screen = Screen.ACCOUNT;
 	public SCREEN = Screen; //Allows access to Screen Enum in Partial view
 	public account
 	public hasSponsor = true;
@@ -46,7 +47,18 @@ class MonatCheckoutController {
 		    if (this.publicService.toggleForm) this.publicService.toggleForm = false;
 		}, 'shippingAddressSelected');	
 		
-		this.observerService.attach( this.closeNewAddressForm, 'addNewAccountAddressSuccess' );
+		this.observerService.attach( this.closeNewAddressForm, 'addNewAccountAddressSuccess' ); 
+		this.observerService.attach( this.getCurrentCheckoutScreen, 'createAccountSuccess' ); 
+		
+		this.observerService.attach( ()=>{
+			this.getCurrentCheckoutScreen(true);
+		}, 'addShippingAddressUsingAccountAddressSuccess' ); 
+		
+		this.observerService.attach( ()=>{
+			this.getCurrentCheckoutScreen(true);
+		}, 'addShippingMethodUsingShippingMethodIDSuccess' ); 
+		
+
 		this.publicService.getAccount().then(res=>{
 			this.account = res;
 			this.getCurrentCheckoutScreen(true);
@@ -54,9 +66,12 @@ class MonatCheckoutController {
 		
 	}
 	
-	private getCurrentCheckoutScreen = (setDefault = false):Screen => {
+	private getCurrentCheckoutScreen = (setDefault = false):Screen|void => {
 	
 		return this.publicService.getCart().then(data => {
+			if(!this.publicService.hasAccount()){
+				return; 	
+			}
 			this.cart = data;
 			let screen = Screen.SHIPPING;
 			this.shippingFulfillment = this.cart.orderFulfillments.filter(el => el.fulfillmentMethod.fulfillmentMethodType == 'shipping' );
@@ -271,7 +286,6 @@ class MonatCheckoutController {
 	}
 	
 	public setAccountPrimaryPaymentMethodAsCartPaymentMethod():Promise<any>{
-		console.log(this.account.primaryPaymentMethod.accountPaymentMethodID)
 		let data = {
 			copyFromType: 'accountPaymentMethod',
 			orderID: this.cart.orderID,
@@ -285,7 +299,7 @@ class MonatCheckoutController {
 		if(this.cart.orderPayments.length || !this.cart.orderID.length) return;
 		
 		//Set shipping address if it is available and not already set
-		if(this.account.primaryAddress && !this.publicService.hasShippingAddress(0)){
+		if(this.account.primaryAddress.accountAddressID.length && !this.publicService.hasShippingAddress(0)){
 			this.setInitialShippingAddress().then(res=>{
 				this.shippingFulfillment = res.cart.orderFulfillments.filter(el => el.fulfillmentMethod.fulfillmentMethodType == 'shipping' );
 				this.progressDefaults(res, Screen.SHIPPING);
@@ -315,7 +329,7 @@ class MonatCheckoutController {
 		}
 		
 		//set primary payment method
-		else if(this.account.primaryPaymentMethod?.accountPaymentMethodID && this.publicService.getShippingAddress(0).addressID){
+		else if(this.account.primaryPaymentMethod?.accountPaymentMethodID){
 			this.setAccountPrimaryPaymentMethodAsCartPaymentMethod().then(res=>{
 				//if we cant set payment method, set default shipping billing address
 				if(res.failureActions.length && !this.cart.billingAddress.addressID && !this.cart.billingAccountAddress ){
@@ -329,7 +343,7 @@ class MonatCheckoutController {
 	}
 	
 	public progressDefaults(res, screen:Screen){
-		if(!res.failureActions.length){
+		if(res && !res.failureActions.length){
 			this.cart = res.cart;
 			this.setCheckoutDefaults();	
 			this.screen = screen;

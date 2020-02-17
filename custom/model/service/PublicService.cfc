@@ -909,6 +909,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         if(!getHibachiScope().getLoggedInFlag()){
              getHibachiScope().addActionResult('public:account.create',false);
+        }else{
+            getHibachiScope().addActionResult('public:account.createAccount',false);
         }
         
         return account;
@@ -919,21 +921,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     }
     
     public any function createRetailEnrollment(required struct data){
-                
-        if(isNull(arguments.data.sponsorID) || !len(arguments.data.sponsorID)){
-    	    getHibachiScope().addActionResult( "public:account.create", true );
-            addErrors(
-                arguments.data, 
-                { 
-                    'sponsorID': [ 
-                        getHibachiScope().rbKey('frontend.validate.selectSponsor') 
-                    ] 
-                }
-            ); 
-            arguments.data['ajaxResponse']['createAccount'] = getHibachiScope().rbKey('frontend.validate.ownerRequired');
-            return;
-        }
-        
         return enrollUser(arguments.data, 'customer');
     }
     
