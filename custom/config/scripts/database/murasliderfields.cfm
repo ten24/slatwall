@@ -22,12 +22,15 @@
 			sql &= "); ";
 				
 			orderno++;
+			
+			var colorsOptionList = "[mura]m.getOptionListByTypeCode( ''brandColors'', ''Black'' )[/mura]";
+			var colorsOptionLabelList = "[mura]m.getOptionLabelListByTypeCode( ''brandColors'', ''Black'' )[/mura]";
 
 			// Create Text Color Option
 			sql &= 'INSERT INTO tclassextendattributes (';
 			sql &= 'extendSetID, siteID, name, label, type, orderno, isActive, required, adminonly, defaultValue, optionList, optionLabelList';
 			sql &= ') VALUES (';
-			sql &= "'#extendSet.extendSetID#', '#extendSet.siteID#', 'textColor', 'Text Color', 'SelectBox', #orderno#, 1, 'false', 0, 'left', '##fff^##000^##1C1932^##2E2A4A^##ECECEC', 'White^Black^Deep Blue^Blue^Light Grey'";
+			sql &= "'#extendSet.extendSetID#', '#extendSet.siteID#', 'textColor', 'Text Color', 'SelectBox', #orderno#, 1, 'false', 0, '', '#colorsOptionList#', '#colorsOptionLabelList#'";
 			sql &= "); ";
 				
 			orderno++;
