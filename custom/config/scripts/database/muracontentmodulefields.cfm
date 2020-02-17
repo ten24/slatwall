@@ -85,7 +85,6 @@
 			
 			var orderno = 10;
 			
-			// Create Button Text field
 			for ( var code in languageMap ) {
 				var lang = languageMap[ code ];
 				
