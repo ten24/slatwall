@@ -199,5 +199,8 @@ export class MonatService {
 		this.$window.location.href = redirectUrl;
 	}
 
+    public countryCodeOptions = ()=>{
+        return this.countryCodeOptions();
+    }
 
 }

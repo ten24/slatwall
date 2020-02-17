@@ -16,11 +16,11 @@ class MonatFlexshipShippingMethodModalController {
 	public loading: boolean = false;
 
 	//@ngInject
-    constructor(public orderTemplateService, public observerService, public rbkeyService, public monatAlertService,private publicService) {}
+    constructor(public orderTemplateService, public observerService, public rbkeyService, public monatAlertService,private monatService) {}
     
     public $onInit = () => {
     	this.makeTranslations();
-    		this.publicService.getCountries().then(data => {
+    		this.monatService.getCountries().then(data => {
             this.countryCodeOptions = data.countryCodeOptions;
 		    });
     	
@@ -55,6 +55,7 @@ class MonatFlexshipShippingMethodModalController {
     	this.translations['newAddress_selectYourState'] = this.rbkeyService.rbKey('frontend.newAddress.selectYourState');
     	this.translations['newAddress_city'] = this.rbkeyService.rbKey('frontend.newAddress.city');
     	this.translations['newAddress_zipCode'] = this.rbkeyService.rbKey('frontend.newAddress.zipCode');
+    	this.translations['select_country'] = this.rbkeyService.rbKey('frontend.newAddress.selectCountry');
 
     }
     
