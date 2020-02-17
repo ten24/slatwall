@@ -516,13 +516,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		});
 		
 		var maxMessages = getService('SettingService').getSettingValue('globalMaximumPromotionMessages');
-		
+
 		if(maxMessages < arrayLen(arguments.orderQualifierMessages)){
 			arguments.orderQualifierMessages = arraySlice(arguments.orderQualifierMessages,1,maxMessages);
 		}
 		
 		for(var orderQualifierMessage in arguments.orderQualifierMessages){
-			arguments.order.addMessage(orderQualifierMessage.messageName, orderQualifierMessage.message);
+			var promotionQualifierMessage = this.getPromotionQualifierMessage(orderQualifierMessage.promotionQualifierMessageID);
+			var message = promotionQualifierMessage.getInterpolatedMessage(arguments.order);
+			arguments.order.addMessage(orderQualifierMessage.messageName, message);
 		}
 
 	}
