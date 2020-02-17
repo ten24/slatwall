@@ -27,7 +27,8 @@ class SWFWishlistController {
         public $scope,
         public observerService,
         public $timeout,
-        public orderTemplateService
+        public orderTemplateService,
+        public monatService
     ){
         if(!this.pageRecordsShow){
             this.pageRecordsShow = 6;
@@ -153,6 +154,10 @@ class SWFWishlistController {
         if(!this.close) return;
      	this.close(null); // close, but give 100ms to animate
     };
+    
+    public redirectPageToShop(){
+        this.monatService.redirectToProperSite('/shop')
+    }
     
 }
 
