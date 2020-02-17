@@ -65,9 +65,7 @@ class MonatCheckoutController {
 			this.cart = data;
 			let screen = Screen.SHIPPING;
 			this.shippingFulfillment = this.cart.orderFulfillments.filter(el => el.fulfillmentMethod.fulfillmentMethodType == 'shipping' );
-			console.log(this.shippingFulfillment)
 			this.setCheckoutDefaults();
-			
 			
 			if(this.publicService.cart && this.publicService.cart.orderRequirementsList.indexOf('account') == -1){
 				if (this.publicService.hasShippingAddressAndMethod() ) {
@@ -83,10 +81,6 @@ class MonatCheckoutController {
 				if ( this.publicService.cart.orderPayments.length && this.publicService.hasShippingAddressAndMethod() ) {
 					screen = Screen.REVIEW;
 				}
-			}
-			
-			if ( this.screen !== screen ) {
-				window.scrollTo( 0, 0 );
 			}
 			
 			this.screen = screen;
@@ -292,7 +286,7 @@ class MonatCheckoutController {
 				console.log('adding SHIPPING!!!!!!!!!!!!!');
 				this.shippingFulfillment = res.cart.orderFulfillments.filter(el => el.fulfillmentMethod.fulfillmentMethodType == 'shipping' );
 				console.log(this.shippingFulfillment);
-				this.progressDefaults(res);
+				this.progressDefaults(res, Screen.SHIPPING);
 			});
 		}
 		
@@ -301,7 +295,7 @@ class MonatCheckoutController {
 			console.log('adding SHIPPING METHOD!!!!!!!!!!!!!');
 			this.setInitialShippingMethod().then(res=>{
 				this.loading.selectShippingMethod = false;
-				this.progressDefaults(res);
+				this.progressDefaults(res, Screen.PAYMENT);
 			});
 		}
 		
@@ -309,7 +303,7 @@ class MonatCheckoutController {
 		else if(!this.cart.billingAddress && !this.cart.billingAccountAddress && !this.account.primaryPaymentMethod?.accountPaymentMethodID){
 			console.log('adding BILLING ADDRESS!!!!!!!!!!!!!');
 			this.setBillingSameAsShipping().then(res=>{
-				this.progressDefaults(res);
+				this.progressDefaults(res, Screen.PAYMENT);
 			});
 		}
 		
@@ -322,11 +316,11 @@ class MonatCheckoutController {
 		}
 	}
 	
-	public progressDefaults(res){
+	public progressDefaults(res, screen:Screen){
 		if(!res.failureActions.length){
 			this.cart = res.cart;
-			//this.publicService.cart = this.cart;
-			this.setCheckoutDefaults();				
+			this.setCheckoutDefaults();	
+			this.screen = screen;
 		}
 	}
 	
