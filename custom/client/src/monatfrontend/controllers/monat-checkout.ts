@@ -64,16 +64,18 @@ class MonatCheckoutController {
 		return this.publicService.getCart().then(data => {
 			this.cart = data;
 			let screen = Screen.SHIPPING;
-			this.shippingFulfillment = this.cart.orderFulfillments.filter(el => el.fulfillmentMethod.fulfillmentMethodType == 'shipping' );;
+			this.shippingFulfillment = this.cart.orderFulfillments.filter(el => el.fulfillmentMethod.fulfillmentMethodType == 'shipping' );
+			console.log(this.shippingFulfillment)
+			this.setCheckoutDefaults();
+			
+			
 			if(this.publicService.cart && this.publicService.cart.orderRequirementsList.indexOf('account') == -1){
 				if (this.publicService.hasShippingAddressAndMethod() ) {
 					screen = Screen.PAYMENT;
 				} 
 				
-				
 				//send to sponsor selector if the account has no owner
-				// @ts-ignore
-				if(!this.account?.ownerAccount && this.publicService.cart.orderPayments.length){ 
+				if(!this.account?.ownerAccount && this.cart.orderPayments?.length){ 
 					this.hasSponsor = false;
 					screen = Screen.SPONSOR;
 				}
@@ -98,7 +100,7 @@ class MonatCheckoutController {
 		this.publicService.addBillingAddressOpen = false;
 	}
 	
-	public selectShippingMethod = ( option:{[key:string]:any}, orderFulfillment: Fulfillment) => {
+	public selectShippingMethod = ( option:{[key:string]:any}, orderFulfillment: Fulfillment):Promise<any> => {
 		
 		if ( typeof orderFulfillment == 'string' ) {
 			orderFulfillment = <{[key:string]: any}>this.publicService.cart.orderFulfillments[orderFulfillment];
@@ -110,12 +112,7 @@ class MonatCheckoutController {
 		}
 		
 		this.loading.selectShippingMethod = true;
-		this.publicService.doAction( 'addShippingMethodUsingShippingMethodID', data ).then( result => {
-			this.loading.selectShippingMethod = false;
-			if ( result.successfulActions.length ) {
-				this.getCurrentCheckoutScreen();
-			}
-		});
+		return this.publicService.doAction( 'addShippingMethodUsingShippingMethodID', data );
 	}
 	
 	public loadHyperWallet() {
@@ -253,45 +250,84 @@ class MonatCheckoutController {
 			: this.screen = Screen.REVIEW //else send to review
 	}
 	
-	public submitSponsor(){
+	public submitSponsor():Screen | void{
 		this.publicService.doAction('submitSponsor', {sponsorID: this.ownerAccountID}).then(res=>{
 			if(res.successfulActions) this.next();
 		});
 	}
 	
 	//review potential for race condition here
-	public setInitialShippingMethod():void{
-		
-		//if they do not have a shipping method we add the cheapest shipping method by default
-		if(this.publicService.hasShippingAddressAndMethod()){
-			return;
-		}
-		
+	public setInitialShippingMethod():Promise<any>{
 		let defaultOption = <{[key:string]: any}>this.shippingFulfillment[0];
-		this.selectShippingMethod(defaultOption.shippingMethodOptions[0], defaultOption);
+		return this.selectShippingMethod(defaultOption.shippingMethodOptions[0], defaultOption);
 	}
 	
-	public setInitialShipping():void{
-		if(this.account.primaryShippingAddress){
-			this.publicService.selectShippingAccountAddress()
-		}
+	public setInitialShippingAddress():Promise<any> {
+		let accountAddressID = this.account.primaryShippingAddress.accountAddressID;
+		let fulfillmentID = this.shippingFulfillment[0].orderFulfillmentID;
+		return this.publicService.doAction('addShippingAddressUsingAccountAddress', {accountAddressID:accountAddressID,fulfillmentID:fulfillmentID});
+		
 	}
 	
-	public setBillingSameAsShipping():void{ 
-		if(this.cart.billingAddress || this.cart.billingAccountAddress) return;
+	public setBillingSameAsShipping():Promise<any>{ 
 		let addressID = this.cart.orderFulfillments[0]?.accountAddress?.accountAddressID;
-		this.publicService.doAction('addBillingAddressUsingAccountAddress', {accountAddressID: addressID}).then(res=>{
-			return
-		});
+		return this.publicService.doAction('addBillingAddressUsingAccountAddress', {accountAddressID: addressID});
 	}
 	
-	public setAccountPrimaryPaymentMethodAsCartPaymentMethod(){
+	public setAccountPrimaryPaymentMethodAsCartPaymentMethod():Promise<any>{
 		let data = {
 			copyFromType: 'accountPaymentMethod',
 			orderID: this.cart.orderID,
 			accountPaymentMethodID: this.account.primaryPaymentMethod.accountPaymentMethodID
 		}
-		this.publicService.doAction('addOrderPayment', data);
+		return this.publicService.doAction('addOrderPayment', data);
+	}
+	
+	public setCheckoutDefaults(){
+		console.log('function called');
+		
+		//Set shipping address if it is available and not already set
+		if(this.account.primaryShippingAddress && !this.cart.orderFulfillments[0]?.accountAddress?.accountAddressID){
+			this.setInitialShippingAddress().then(res=>{
+				console.log('adding SHIPPING!!!!!!!!!!!!!');
+				this.shippingFulfillment = res.cart.orderFulfillments.filter(el => el.fulfillmentMethod.fulfillmentMethodType == 'shipping' );
+				console.log(this.shippingFulfillment);
+				this.progressDefaults(res);
+			});
+		}
+		
+		//set shipping method
+		else if(!this.publicService.hasShippingAddressAndMethod()){
+			console.log('adding SHIPPING METHOD!!!!!!!!!!!!!');
+			this.setInitialShippingMethod().then(res=>{
+				this.loading.selectShippingMethod = false;
+				this.progressDefaults(res);
+			});
+		}
+		
+		//set billing address if there is none
+		else if(!this.cart.billingAddress && !this.cart.billingAccountAddress && !this.account.primaryPaymentMethod?.accountPaymentMethodID){
+			console.log('adding BILLING ADDRESS!!!!!!!!!!!!!');
+			this.setBillingSameAsShipping().then(res=>{
+				this.progressDefaults(res);
+			});
+		}
+		
+		//set primary payment method
+		else if(!this.cart.orderPayments.length && this.account.primaryPaymentMethod?.accountPaymentMethodID){
+			console.log('adding BILLING METHOD!!!!!!!!!!!!!');
+			this.setAccountPrimaryPaymentMethodAsCartPaymentMethod().then(res=>{
+				this.publicService.removeInvalidOrderPayments(this.cart);
+			});
+		}
+	}
+	
+	public progressDefaults(res){
+		if(!res.failureActions.length){
+			this.cart = res.cart;
+			//this.publicService.cart = this.cart;
+			this.setCheckoutDefaults();				
+		}
 	}
 	
 }
