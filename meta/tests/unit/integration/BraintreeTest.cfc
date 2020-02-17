@@ -8,6 +8,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
         variables.paymentMethodID = '2c948084703439470170349c5458006a';
         variables.accountPaymentMethodID = "2c948084703439470170349c5458006a";
 		variables.orderID = "2c91808270310aa3017034d04e8800ab";
+
         variables.paymentNonce = "a10fdd08-c132-08c8-72d7-1956e65cd610"; //One Time Use
         //3eeadf19-43c8-010d-676e-65d664f71072
         variables.token = "cGF5bWVudG1ldGhvZF9wcF82ZjY3dHY";
