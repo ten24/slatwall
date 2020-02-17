@@ -60,7 +60,7 @@ class MonatCheckoutController {
 	}
 	
 	private getCurrentCheckoutScreen = ():Screen => {
-		
+	
 		return this.publicService.getCart().then(data => {
 			this.cart = data;
 			let screen = Screen.SHIPPING;
@@ -264,8 +264,8 @@ class MonatCheckoutController {
 	}
 	
 	public setBillingSameAsShipping():Promise<any>{ 
-		let addressID = this.cart.orderFulfillments[0]?.accountAddress?.accountAddressID;
-		return this.publicService.doAction('addBillingAddressUsingAccountAddress', {accountAddressID: addressID});
+		let address = this.publicService.getShippingAddress(0);
+		return this.publicService.doAction('addBillingAddress', {addressID: address.addressID});
 	}
 	
 	public setAccountPrimaryPaymentMethodAsCartPaymentMethod():Promise<any>{
@@ -278,40 +278,42 @@ class MonatCheckoutController {
 	}
 	
 	public setCheckoutDefaults(){
-		console.log('function called');
 		
 		//Set shipping address if it is available and not already set
-		if(this.account.primaryShippingAddress && !this.cart.orderFulfillments[0]?.accountAddress?.accountAddressID){
+		if(this.account.primaryShippingAddress && !this.publicService.hasShippingAddress(0)){
 			this.setInitialShippingAddress().then(res=>{
-				console.log('adding SHIPPING!!!!!!!!!!!!!');
 				this.shippingFulfillment = res.cart.orderFulfillments.filter(el => el.fulfillmentMethod.fulfillmentMethodType == 'shipping' );
-				console.log(this.shippingFulfillment);
 				this.progressDefaults(res, Screen.SHIPPING);
 			});
 		}
 		
 		//set shipping method
-		else if(!this.publicService.hasShippingAddressAndMethod()){
-			console.log('adding SHIPPING METHOD!!!!!!!!!!!!!');
+		else if(!this.publicService.hasShippingAddressAndMethod() && this.publicService.hasShippingAddress(0)){
 			this.setInitialShippingMethod().then(res=>{
 				this.loading.selectShippingMethod = false;
 				this.progressDefaults(res, Screen.PAYMENT);
 			});
 		}
-		
-		//set billing address if there is none
-		else if(!this.cart.billingAddress && !this.cart.billingAccountAddress && !this.account.primaryPaymentMethod?.accountPaymentMethodID){
-			console.log('adding BILLING ADDRESS!!!!!!!!!!!!!');
+
+		//set billing address same as shipping, if there is a shipping address and billing address has not been set
+		else if(
+				!this.cart.billingAddress 
+				&& !this.cart.billingAccountAddress 
+				&& !this.account.primaryPaymentMethod?.accountPaymentMethodID 
+				&& this.publicService.getShippingAddress(0).addressID
+			){
 			this.setBillingSameAsShipping().then(res=>{
+				console.log(res.cart)
 				this.progressDefaults(res, Screen.PAYMENT);
 			});
 		}
 		
 		//set primary payment method
 		else if(!this.cart.orderPayments.length && this.account.primaryPaymentMethod?.accountPaymentMethodID){
-			console.log('adding BILLING METHOD!!!!!!!!!!!!!');
 			this.setAccountPrimaryPaymentMethodAsCartPaymentMethod().then(res=>{
-				this.publicService.removeInvalidOrderPayments(this.cart);
+				if(res.failureActions.length){
+					this.setBillingSameAsShipping();
+				}
 			});
 		}
 	}
