@@ -54,18 +54,20 @@ class MonatCheckoutController {
 		this.observerService.attach( () => window.scrollTo(0, 0), 'addNewAccountAddressSuccess' );
 		this.publicService.getAccount().then(res=>{
 			this.account = res;
-			this.getCurrentCheckoutScreen();
+			this.getCurrentCheckoutScreen(true);
 		});
 		
 	}
 	
-	private getCurrentCheckoutScreen = ():Screen => {
+	private getCurrentCheckoutScreen = (setDefault = false):Screen => {
 	
 		return this.publicService.getCart().then(data => {
 			this.cart = data;
 			let screen = Screen.SHIPPING;
 			this.shippingFulfillment = this.cart.orderFulfillments.filter(el => el.fulfillmentMethod.fulfillmentMethodType == 'shipping' );
-			this.setCheckoutDefaults();
+			
+			//sets default order information
+			if(setDefault) this.setCheckoutDefaults();
 			
 			if(this.publicService.cart && this.publicService.cart.orderRequirementsList.indexOf('account') == -1){
 				if (this.publicService.hasShippingAddressAndMethod() ) {
@@ -257,14 +259,19 @@ class MonatCheckoutController {
 	}
 	
 	public setInitialShippingAddress():Promise<any> {
-		let accountAddressID = this.account.primaryShippingAddress.accountAddressID;
+		let accountAddressID = this.account.primaryAddress.accountAddressID;
 		let fulfillmentID = this.shippingFulfillment[0].orderFulfillmentID;
 		return this.publicService.doAction('addShippingAddressUsingAccountAddress', {accountAddressID:accountAddressID,fulfillmentID:fulfillmentID});
 		
 	}
 	
-	public setBillingSameAsShipping():Promise<any>{ 
-		let addressID = this.publicService.getShippingAddress(0).addressID;
+	public setBillingAddress(defaultAddress = true, _addressID=''):Promise<any>{ 
+		let addressID = _addressID;
+		
+		if(defaultAddress){
+			addressID = this.publicService.getShippingAddress(0).addressID;
+		}
+
 		return this.publicService.doAction('addBillingAddress', {addressID: addressID});
 	}
 	
@@ -278,9 +285,12 @@ class MonatCheckoutController {
 	}
 	
 	public setCheckoutDefaults(){
-		console.log(this.publicService.hasShippingAddress(0))
+		console.log(this.cart.orderPayments);
+		//we dont need to do anything is the cart already has an order payment, this also terminates recursion
+		if(this.cart.orderPayments.length || !this.cart.orderID.length) return;
+		
 		//Set shipping address if it is available and not already set
-		if(this.account.primaryShippingAddress && !this.publicService.hasShippingAddress(0)){
+		if(this.account.primaryAddress && !this.publicService.hasShippingAddress(0)){
 			this.setInitialShippingAddress().then(res=>{
 				this.shippingFulfillment = res.cart.orderFulfillments.filter(el => el.fulfillmentMethod.fulfillmentMethodType == 'shipping' );
 				this.progressDefaults(res, Screen.SHIPPING);
@@ -288,31 +298,37 @@ class MonatCheckoutController {
 		}
 		
 		//set shipping method
-		else if(!this.publicService.hasShippingAddressAndMethod() && this.publicService.hasShippingAddress(0)){
+		else if(!this.publicService.hasShippingAddressAndMethod() && this.publicService.hasShippingAddress(0)?.length){
 			this.setInitialShippingMethod().then(res=>{
 				this.loading.selectShippingMethod = false;
 				this.progressDefaults(res, Screen.PAYMENT);
 			});
 		}
 
-		//set billing address same as shipping, if there is a shipping address and billing address has not been set
+		//set billing address same as shipping, if :
+		//											1. there is a shipping address and billing address has not been set
+		//											2. We dont have a primary payment method
 		else if(
 				!this.cart.billingAddress.addressID
 				&& !this.cart.billingAccountAddress 
 				&& !this.account.primaryPaymentMethod?.accountPaymentMethodID 
 				&& this.publicService.getShippingAddress(0).addressID
 			){
-			this.setBillingSameAsShipping().then(res=>{
+			this.setBillingAddress().then(res=>{
 				console.log(res.cart)
 				this.progressDefaults(res, Screen.PAYMENT);
 			});
 		}
 		
 		//set primary payment method
-		else if(!this.cart.orderPayments.length && this.account.primaryPaymentMethod?.accountPaymentMethodID){
+		else if(this.account.primaryPaymentMethod?.accountPaymentMethodID){
 			this.setAccountPrimaryPaymentMethodAsCartPaymentMethod().then(res=>{
 				if(res.failureActions.length){
-					this.setBillingSameAsShipping();
+					this.setBillingAddress();
+				}
+				else{
+					console.log(res)
+					this.progressDefaults(res, Screen.PAYMENT)
 				}
 			});
 		}
