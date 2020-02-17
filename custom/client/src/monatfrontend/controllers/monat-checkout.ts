@@ -264,8 +264,8 @@ class MonatCheckoutController {
 	}
 	
 	public setBillingSameAsShipping():Promise<any>{ 
-		let address = this.publicService.getShippingAddress(0);
-		return this.publicService.doAction('addBillingAddress', {addressID: address.addressID});
+		let addressID = this.publicService.getShippingAddress(0).addressID;
+		return this.publicService.doAction('addBillingAddress', {addressID: addressID});
 	}
 	
 	public setAccountPrimaryPaymentMethodAsCartPaymentMethod():Promise<any>{

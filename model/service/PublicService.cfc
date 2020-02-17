@@ -824,6 +824,7 @@ component  accessors="true" output="false"
     */
     public any function addBillingAddress(required data){
         param name="data.saveAsAccountAddressFlag" default="0"; 
+        
         //if we have that data and don't have any suggestions to make, than try to populate the address
         billingAddress = getService('AddressService').newAddress();    
         
@@ -831,8 +832,11 @@ component  accessors="true" output="false"
         if(structKeyExists(data,'address')){
             var savedAddress = getService('AddressService').copyAddress(data.address);
             savedAddress = getService('AddressService').saveAddress(savedAddress, {}, "full");    
-        //get a new address populated with the data.    
-        }else{
+        
+        }else if(!isNull(data.addressID)){
+            var savedAddress = getService('AddressService').getAddress(data.addressID);
+        }//get a new address populated with the data.    
+        else{
             var savedAddress = getService('AddressService').saveAddress(billingAddress, arguments.data, "full");    
         }
         
@@ -847,10 +851,11 @@ component  accessors="true" output="false"
             }
             
             getService("OrderService").saveOrder(order);
+            getHibachiScope().addActionResult( "public:cart.addBillingAddress", false);
         }
         if(savedAddress.hasErrors()){
-              this.addErrors(arguments.data, savedAddress.getErrors()); //add the basic errors
-        	    getHibachiScope().addActionResult( "public:cart.addBillingAddress", true);
+            this.addErrors(arguments.data, savedAddress.getErrors()); //add the basic errors
+    	    getHibachiScope().addActionResult( "public:cart.addBillingAddress", true);
         }
         return savedAddress;
     }
