@@ -61,6 +61,11 @@ class MonatCheckoutController {
 
 		this.publicService.getAccount().then(res=>{
 			this.account = res;
+			if(!this.account?.ownerAccount || this.account?.ownerAccount?.accountNumber == this.account?.accountNumber){
+				this.hasSponsor = false;
+				console.log(this.account?.ownerAccount?.accountNumber, this.account?.accountNumber);
+			}
+			
 			this.getCurrentCheckoutScreen(true);
 		});
 		
@@ -85,12 +90,13 @@ class MonatCheckoutController {
 				} 
 				
 				//send to sponsor selector if the account has no owner
-				if(!this.account?.ownerAccount && this.cart.orderPayments?.length){ 
-					this.hasSponsor = false;
+				if(!this.hasSponsor && this.cart.orderPayments?.length){ 
+					console.log('sponsor')
 					screen = Screen.SPONSOR;
 				}
 				
-				if ( this.publicService.cart.orderPayments.length && this.publicService.hasShippingAddressAndMethod() ) {
+				//if they have a sponsor, billing, and shipping details, they can go to review
+				if ( this.publicService.cart.orderPayments.length && this.publicService.hasShippingAddressAndMethod() && this.hasSponsor) {
 					screen = Screen.REVIEW;
 				}
 			}
