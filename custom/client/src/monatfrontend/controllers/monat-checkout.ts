@@ -278,7 +278,7 @@ class MonatCheckoutController {
 	}
 	
 	public setCheckoutDefaults(){
-		
+		console.log(this.publicService.hasShippingAddress(0))
 		//Set shipping address if it is available and not already set
 		if(this.account.primaryShippingAddress && !this.publicService.hasShippingAddress(0)){
 			this.setInitialShippingAddress().then(res=>{
@@ -297,7 +297,7 @@ class MonatCheckoutController {
 
 		//set billing address same as shipping, if there is a shipping address and billing address has not been set
 		else if(
-				!this.cart.billingAddress 
+				!this.cart.billingAddress.addressID
 				&& !this.cart.billingAccountAddress 
 				&& !this.account.primaryPaymentMethod?.accountPaymentMethodID 
 				&& this.publicService.getShippingAddress(0).addressID
