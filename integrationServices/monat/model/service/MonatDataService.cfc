@@ -164,7 +164,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 	private any function getData(pageNumber,pageSize,dateFilterStart,dateFilterEnd,name){
 	    var uri = setting('baseImportURL') & name;
 		var authKeyName = "authkey";
-		var authKey = "a939f516-7af1-4caa-84c1-642c6966e17e";//setting(authKeyName);
+		var authKey = setting(authKeyName);
 	    var fsResponse = {hasErrors: false};
 	    var body = {
 			"Pagination": {
