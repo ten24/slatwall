@@ -137,7 +137,7 @@ component {
 		switch (local.gender) {
 			case "f": genderFullWord = "Female"; break;
 			case "m": genderFullWord =  "Male"; break;
-			case "p": genderFullWord =  "Male"; break;
+			case "p":
 			case "prefernottoSay": genderFullWord =  "Prefer Not To Say"; break;
 		}
 		return genderFullWord;
