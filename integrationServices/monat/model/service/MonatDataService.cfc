@@ -998,8 +998,8 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 	
 	    //Get the totals
 		var inventoryResponse = getData(pageNumber, pageSize, dateFilterStart, dateFilterEnd, "SWGetInventoryAdjustments");
-		var TotalCount = inventoryResponse.totalCount;
-		var TotalPages = inventoryResponse.totalPages;
+		var TotalCount = inventoryResponse.totalCount?:0;
+		var TotalPages = inventoryResponse.totalPages?:0;
         
         // Objects we need to set over and over go here...
 		var warehouseMain = getLocationService().getLocationByLocationName("usWarehouse");
@@ -1072,7 +1072,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
         		    //Create the inventory record for this stock
         		    if (!isNull(stock)){
         		        //check if this inventory has already been imported...
-        		        var newInventory = getInventoryService().getInventoryByRemoteId( inventory['InventoryAdjustmentId'] , false);
+        		        var newInventory = getInventoryService().getInventoryByRemoteId( inventory['InventoryAdjustmentId'] );
         		        
         		        //Only create the inventory if it doesn't already exist. Everytime an inventory adjustment is made
         		        //it has a new id, thus a new remoteID.
