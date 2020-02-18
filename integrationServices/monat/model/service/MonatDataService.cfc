@@ -17,8 +17,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 	property name="stockService";
 	property name="fulfillmentService";
 	property name="shippingService";
-	property name="stockService";
-	property name="locationService";
+	property name="inventoryService";
 	
     // @hint helper function to return the integration
     public any function getIntegration(){
@@ -1035,7 +1034,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
         		    var sku = getSkuService().getSkuBySkuCode(inventory.itemCode);
         		    
         		    if (isNull(sku)){
-        		    	echo("Can't create inventory for a sku that doesn't exist! #inventory.itemCode#");
+        		    	logHibachi("Can't create inventory for a sku that doesn't exist! #inventory.itemCode#", true);
         		    	continue;
         		    }
         		    
@@ -1072,15 +1071,22 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
         		    
         		    //Create the inventory record for this stock
         		    if (!isNull(stock)){
-            			// Create a new inventory under that stock.
-            			var newInventory = new Slatwall.model.entity.Inventory();
-            			newInventory.setRemoteID(inventory['InventoryAdjustmentId']?:""); //*
-            			newInventory.setStock(stock);
-                    	newInventory.setQuantityIn(inventory['Quantity']?:0);
-                    	newInventory.setCreatedDateTime(getDateFromString(inventory['CreatedOn']));
-                    	newInventory.setModifiedDateTime(getDateFromString(inventory['ModifiedOn']));
-                    	
-                        ormStatelessSession.insert("SlatwallInventory", newInventory);
+        		        //check if this inventory has already been imported...
+        		        var newInventory = getInventoryService().getInventoryByRemoteId( inventory['InventoryAdjustmentId'] , false);
+        		        
+        		        //Only create the inventory if it doesn't already exist. Everytime an inventory adjustment is made
+        		        //it has a new id, thus a new remoteID.
+        		        if (isNull(newInventory)){
+            			    // Create a new inventory under that stock.
+            			    var newInventory = new Slatwall.model.entity.Inventory();
+            			    newInventory.setRemoteID(inventory['InventoryAdjustmentId']?:""); //*
+                			newInventory.setStock(stock);
+                        	newInventory.setQuantityIn(inventory['Quantity']?:0);
+                        	newInventory.setCreatedDateTime(getDateFromString(inventory['CreatedOn']));
+                        	newInventory.setModifiedDateTime(getDateFromString(inventory['ModifiedOn']));
+                        	
+                            ormStatelessSession.insert("SlatwallInventory", newInventory);
+        		        }
         		    }
     			}
     			
