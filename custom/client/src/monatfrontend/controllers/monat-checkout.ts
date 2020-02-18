@@ -27,6 +27,7 @@ class MonatCheckoutController {
 	public setDefaultShipping = false;
 	public totalSteps:number;
 	public currentStep:number;
+	public enrollmentSteps = 0;
 	
 	// @ngInject
 	constructor(
@@ -62,12 +63,14 @@ class MonatCheckoutController {
 			}
 			
 			// if they have a sponsor, thats an extra step (billing=>sponsor=>review) otherwise its billing=>review
-			this.totalSteps = this.hasSponsor ? 2 : 3; 
 			this.getCurrentCheckoutScreen(true, true);
 		});
-		
 	}
 	
+	public $postLink(){
+		if(this.publicService.enrollmentSteps) this.enrollmentSteps = this.publicService.enrollmentSteps;
+		this.totalSteps = this.hasSponsor ? 2 + this.enrollmentSteps  : 3 + this.enrollmentSteps; 	
+	}
 	private manageEvent(){
 		if(this.loading.selectShippingMethod) {
 			return;
@@ -112,12 +115,12 @@ class MonatCheckoutController {
 	
 	public getCurrentStepNumber():void{
 		this.currentStep = (this.screen == Screen.ACCOUNT || this.screen == Screen.SHIPPING || this.screen == Screen.PAYMENT)  //billing /shipping is step one
-			? 1 
+			? 1 + this.enrollmentSteps
 			: this.screen == Screen.SPONSOR //if they need to select a sponsor, step 2
-			? 2
+			? 2 + this.enrollmentSteps
 			:(this.screen == Screen.REVIEW && !this.hasSponsor) //if they had to go through the sponsor step, and now are on review, there is 3 total steps
-			? 3
-			: 2; //otherwise 2 total steps
+			? 3 + this.enrollmentSteps
+			: 2 + this.enrollmentSteps; //otherwise 2 total steps
 	}
 	
 	public closeNewAddressForm = () => {
