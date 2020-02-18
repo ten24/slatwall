@@ -164,7 +164,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 	private any function getData(pageNumber,pageSize,dateFilterStart,dateFilterEnd,name){
 	    var uri = setting('baseImportURL') & name;
 		var authKeyName = "authkey";
-		var authKey = setting(authKeyName);
+		var authKey = "a939f516-7af1-4caa-84c1-642c6966e17e";//setting(authKeyName);
 	    var fsResponse = {hasErrors: false};
 	    var body = {
 			"Pagination": {
@@ -960,7 +960,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
          * Allows the user to override the last n HOURS that get checked. 
          * Defaults to 1 HOURS.
          **/
-        var intervalOverride = 1;
+        var intervalOverride = 18;
         
         /**
          * The page number to start with 
@@ -1002,10 +1002,10 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 		var TotalPages = inventoryResponse.totalPages?:0;
         
         // Objects we need to set over and over go here...
-		var warehouseMain = getLocationService().getLocationByLocationName("usWarehouse");
-		var warehouseCAN = getLocationService().getLocationByLocationName("caWarehouse");
-		var warehouseUK = getLocationService().getLocationByLocationName("ukWarehouse");
-		var warehouseIRPOL = getLocationService().getLocationByLocationName("irePolWarehouse");
+		var warehouseMain = getLocationService().getLocationByLocationName("US Warehouse");
+		var warehouseCAN = getLocationService().getLocationByLocationName("CA Warehouse");
+		var warehouseUK = getLocationService().getLocationByLocationName("UK Warehouse");
+		var warehouseIRPOL = getLocationService().getLocationByLocationName("Ire/Pol Warehouse");
 		 
         //Exit with no data.
         if (!TotalCount){
