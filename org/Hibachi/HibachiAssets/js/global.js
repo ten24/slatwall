@@ -41,8 +41,85 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 		if(jQuery('.paging-show-toggle').length) {
 			jQuery('.paging-show-toggle').closest('ul').find('.show-option').hide();
 		}
+		
+		//Call on Load
+		loadTabs();
 	
 	});
+	
+	//Helper search function
+	function getKeyByValue(object, value) { 
+        return Object.keys(object).find(key => object[key] === value); 
+    }
+	
+	/**
+     * Function to load from Config JSON and udpate tab positions
+     * */
+    function loadTabs() {
+		var tabsConfigPath = '../../Slatwall/custom/system/config.json';
+		jQuery.getJSON( tabsConfigPath, function(tabsConfig) {
+			if(tabsConfig.hasOwnProperty('data')) {
+				if(tabsConfig.data.hasOwnProperty('entityTabs')) {
+					
+					//Load tabs info from config
+					tabsConfig = tabsConfig.data.entityTabs;
+					
+					var tabsList = [];
+					var entityName = "";
+					if( jQuery('div[id^="tabdetails_"]').length ) { //If detail tab exists
+						jQuery('div[id^="tabdetails_"]').each(function(item, obj){
+							
+							//create IDs array as defined on element
+							var idsArray = jQuery(obj).attr("id").split("_");
+							//1st index will be entity name
+							//2nd index will be name of view
+							if(idsArray.length == 3  && tabsConfig.hasOwnProperty(idsArray[1])) { //Any other tabs like custom, settings, email will have different length
+								
+								//get position of tab
+								entityName = idsArray[1];
+								var position = getKeyByValue( JSON.parse(tabsConfig[entityName]), idsArray[2] );
+								if(position) {
+									tabsList[position] = {
+										"id" : jQuery(obj).attr("id")
+									};
+								}
+							} else if(idsArray.length==2 && tabsConfig.hasOwnProperty(entityName) ) {
+								
+							}
+		
+							return;
+						});
+						
+						//Move HTML
+						for( var i=1; i < tabsList.length; i++ ) {
+							if( tabsList[i] ) {
+								
+								var orgDiv = jQuery('div[id^="tabdetails_"]')[i - 1];
+								var targetDiv = jQuery('div[id="'+tabsList[i].id+'"]');
+								
+								if( orgDiv && targetDiv ) {
+									var clone = $(orgDiv).clone();
+									jQuery(orgDiv).replaceWith( jQuery(targetDiv).clone() );
+									jQuery(targetDiv).replaceWith( clone );
+								}
+							}
+						}
+						
+						
+		
+					}
+				} else {
+					console.log("admin Tabs not found.");
+				}
+				
+			} else {
+				console.log("data not found.");
+			}
+			
+
+		});
+
+	}
 	
 	function initUIElements( scopeSelector ) {
 	

@@ -59,8 +59,42 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(!directoryExists(configDirectoryPath)){
 			directoryCreate(configDirectoryPath);
 		}
+		
+		json = appendTabsJson(json);
+		
 		var filePath = configDirectoryPath & 'config.json';
 		fileWrite(filePath,json,'utf-8');
+    }
+    
+    /**
+     * Function to append tabs JSON file to Config JSON
+     * */
+    public any function appendTabsJson(json) {
+        //Existing Config Json
+        var configJson = DeserializeJSON( arguments.json );
+        
+        var tabsList = {};
+        //Layouts Path
+        var templatePath = expandPath('/#getDAO("hibachiDAO").getApplicationKey()#') & "/custom/config/tabs";
+        
+        if(DirectoryExists(templatePath)) {
+            var directorylisting = directorylist(templatePath,true,"name","*.json");
+            for( entity in directoryListing ) {
+                
+                var entityTabs = FileRead( templatePath & "/#entity#" );
+                entity = ListFirst(entity,"."); //remove extension from file name
+                
+                if( !StructKeyExists(tabsList, entity) ) {
+                    tabsList[entity] = {};
+                }
+                
+                tabsList[entity] = entityTabs;
+            }
+            
+            configJson["data"]["entityTabs"] = tabsList;
+        }
+        
+        return serializeJson( configJson );
     }
 
 	private any function getModel(){
