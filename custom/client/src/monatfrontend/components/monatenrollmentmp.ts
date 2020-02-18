@@ -28,13 +28,14 @@ class EnrollmentMPController {
 	
 	public $onInit = () => {
 		this.getDateOptions();
-		//this.getProductList()
-		
-		this.observerService.attach(this.getStarterPacks, 'createSuccess'); 
 		this.observerService.attach(this.getProductList, 'createSuccess'); 
 		this.observerService.attach(this.showAddToCartMessage, 'addOrderItemSuccess'); 
-		
 		$('.site-tooltip').tooltip();
+		this.publicService.doAction('setUpgradeOnOrder', {upgradeType: 'marketPartner'}).then(res=>{
+			this.getStarterPacks();
+			this.getProductList();	
+		});
+
 	};
 	
 	public adjustInputFocuses = () => {
@@ -170,9 +171,9 @@ class EnrollmentMPController {
 		return tmp.textContent || tmp.innerText || '';
 	};
 
-	public getProductList = (pageNumber = 1, pageRecordsShow = 12 ) => {
+	public getProductList = () => {
 		this.loading = true;
-		this.publicService.doAction('getproductsByCategoryOrContentID', { pageRecordsShow: pageRecordsShow, currentPage: pageNumber }).then((result) => {
+		this.publicService.doAction('getproductsByCategoryOrContentID', {priceGroupCode: 1}).then((result) => {
 			this.observerService.notify("PromiseComplete");
 			this.productList = result.productList;
 			this.productRecordsCount = result.recordsCount

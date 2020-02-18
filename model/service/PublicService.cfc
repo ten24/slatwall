@@ -657,8 +657,11 @@ component  accessors="true" output="false"
                 }
                 
                 getService("OrderService").saveOrder(order);
+                if(structKeyExists(arguments.data,'ajaxResponse')){
+                    var addressVerificationStruct = getService('AddressService').verifyAddressByID(savedAddress.getAddressID());
+                    arguments.data.ajaxResponse['addressVerification'] = addressVerificationStruct;
+                }
                 getHibachiScope().addActionResult( "public:cart.addShippingAddress", order.hasErrors());
-                
             }else{
                     
                     this.addErrors(data, savedAddress.getErrors()); //add the basic errors

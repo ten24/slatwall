@@ -17,6 +17,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 	property name="stockService";
 	property name="fulfillmentService";
 	property name="shippingService";
+	property name="inventoryService";
 	
     // @hint helper function to return the integration
     public any function getIntegration(){
@@ -191,7 +192,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 		    return fsResponse;
 		}
 
-		writeDump("Could not import #name#(s) on this page: PS-#arguments.pageSize# PN-#pageNumber#");
+		logHibachi("Could not import #name#(s) on this page: PS-#arguments.pageSize# PN-#pageNumber#", true);
 		fsResponse.hasErrors = true;
 
 
@@ -216,8 +217,8 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
          * CONSTANTS 
          **/
         var MERGE_ARRAYS = true;
-        var SHIPPED = "5";
-        var CLOSEDSTATUS = getTypeService().getTypeByTypeCode(SHIPPED);
+        var SHIPPED = "Shipped";
+        var CLOSEDSTATUS = getTypeService().getTypeByTypeName(SHIPPED);
         var HOURS = 'h';
         var stockLocation = getLocationService().getLocationByLocationID("88e6d435d3ac2e5947c81ab3da60eba2");
         
@@ -488,22 +489,17 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
                 createDeliveryItems( orderDelivery );
                 logHibachi("Created a delivery for orderNumber: #shipment['OrderNumber']#",true);
                 
-                //Close the order if its ready.
+                // Close the order if its ready.
                 var orderOnDelivery = orderDelivery.getOrder();
-                var isOrderPaidFor = orderOnDelivery.isOrderPaidFor();
-    			var isOrderFullyDelivered = orderOnDelivery.isOrderFullyDelivered();
-
-    			if(isOrderFullyDelivered)	{
-    				orderOnDelivery.setOrderStatusType(CLOSEDSTATUS);
-    				ormStatelessSession.update("SlatwallOrder", orderOnDelivery ); //update because it already exists.
-                    logHibachi("Closed the order for orderNumber: #shipment['OrderNumber']#",true);
-                    
-                    //now fire the event for this delivery.
-                    var eventData = {entity: orderDelivery};
-                    getHibachiScope().getService("hibachiEventService").announceEvent(eventName="afterOrderDeliveryCreateSuccess", eventData=eventData);
-                }else{
-                	logHibachi("createDelivery: Can't find enough information for ordernumber: #shipment['OrderNumber']# to create the delivery",true);
-    			}
+				orderOnDelivery.setOrderStatusType(CLOSEDSTATUS);
+				
+				ormStatelessSession.update("SlatwallOrder", orderOnDelivery ); //update because it already exists.
+                logHibachi("Closed the order for orderNumber: #shipment['OrderNumber']#",true);
+                
+                //now fire the event for this delivery.
+                var eventData = {entity: orderDelivery};
+                getHibachiScope().getService("hibachiEventService").announceEvent(eventName="afterOrderDeliveryCreateSuccess", eventData=eventData);
+                
             }else{
                 logHibachi("createDelivery: Can't create the delivery - already exists!", true);
             }
@@ -569,8 +565,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
     		try{
         		if (len(modifiedEntityIDs)){
         		    logHibachi("Adding orderitems to queue.", true);
-        		    var modifiedEntities = queryExecute(
-                      "INSERT into SwEntityQueue (entityQueueID, baseObject, baseID, processMethod, entityQueueData, createdDateTime, tryCount) select orderItemID as entityQueueID, 'OrderItem' as baseObject, orderItemID as baseID, 'processOrderItem_updateCalculatedProperties' as processMethod, '{}', now() as createdDateTime, 0 as tryCount from SwOrderItem where orderID in ?", 
+        		    queryExecute("INSERT into SwEntityQueue (entityQueueID, baseObject, baseID, processMethod, entityQueueData, createdDateTime, tryCount) select orderItemID as entityQueueID, 'OrderItem' as baseObject, orderItemID as baseID, 'processOrderItem_updateCalculatedProperties' as processMethod, '{}', now() as createdDateTime, 0 as tryCount from SwOrderItem where orderID in ?", 
                       [{ value="#modifiedEntityIDs#", cfsqltype="cf_sql_varchar", list="true"}]);
         		}
     		}catch(any entityQueueError){
@@ -947,6 +942,168 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
     		}
     		
     		this.logHibachi('Import (Updated Order) Page #pageNumber# completed ', true);
+    		ormGetSession().clear();//clear every page records...
+		    pageNumber++;
+		}
+		
+		ormStatelessSession.close(); //must close the session regardless of errors.
+		logHibachi("End: #pageNumber# - #pageSize# - #index#", true);
+    }
+    
+    public any function importInventoryUpdates(){
+        //get the api key from integration settings.
+		var integration = getService("IntegrationService").getIntegrationByIntegrationPackage("monat");
+		var ormStatelessSession = ormGetSessionFactory().openStatelessSession();
+		var index=0;
+		var HOURS = 'h';
+        /**
+         * Allows the user to override the last n HOURS that get checked. 
+         * Defaults to 1 HOURS.
+         **/
+        var intervalOverride = 1;
+        
+        /**
+         * The page number to start with 
+         **/
+        var pageNumber = 1;
+        
+        /**
+         * How many records to process per page. 
+         **/
+		var pageSize = 50;
+		
+		/**
+		 * the page number to end on (exclusive) 
+		 **/
+		var pageMax = 2;
+		
+		/**
+		 * The date and time from an hour ago.
+		 **/
+		var sixtyMinutesAgo = DateAdd(HOURS, -intervalOverride, now());
+		
+		/**
+		 * The string representation for the date twenty HOURS ago. 
+		 * Uses number format to make sure each minute, second will use 2 places.
+		 * This checks for the last hour of deliveries every 15 HOURS.
+		 * This only adds a delivery IF its not already delivered, so we can do that.
+		 * 
+		 **/
+	    var dateFilterStart = "#year(sixtyMinutesAgo)#-#numberFormat(month(sixtyMinutesAgo),'00')#-#numberFormat(day(sixtyMinutesAgo),'00')#T#numberformat(hour(sixtyMinutesAgo),'00')#:#numberformat(minute(sixtyMinutesAgo), '00')#:#numberformat(second(sixtyMinutesAgo), '00')#.693Z";
+	
+		/**
+		 * This should always equal now.
+		 **/
+        var dateFilterEnd =  "#year(now())#-#numberFormat(month(now()),'00')#-#numberFormat(day(now()),'00')#T#numberFormat(hour(now()),'00')#:#numberformat(minute(now()), '00')#:#numberformat(second(now()), '00')#.693Z";
+	
+	    //Get the totals
+		var inventoryResponse = getData(pageNumber, pageSize, dateFilterStart, dateFilterEnd, "SWGetInventoryAdjustments");
+		var TotalCount = inventoryResponse.totalCount?:0;
+		var TotalPages = inventoryResponse.totalPages?:0;
+        
+        // Objects we need to set over and over go here...
+		var warehouseMain = getLocationService().getLocationByLocationName("US Warehouse");
+		var warehouseCAN = getLocationService().getLocationByLocationName("CA Warehouse");
+		var warehouseUK = getLocationService().getLocationByLocationName("UK Warehouse");
+		var warehouseIRPOL = getLocationService().getLocationByLocationName("Ire/Pol Warehouse");
+		 
+        //Exit with no data.
+        if (!TotalCount){
+            logHibachi("No inventory data to import at this time.", true);
+        }
+        
+        //Iterate the response.
+		while (pageNumber <= TotalPages){
+			logHibachi("Start Inventory Updater", true);
+    		var inventoryResponse = getData(pageNumber, pageSize, dateFilterStart, dateFilterEnd, "SWGetInventoryAdjustments");
+    	   
+    		if (inventoryResponse.hasErrors){
+    		    //goto next page causing this is erroring!
+    		    pageNumber++;
+    		    continue;
+    		}
+    		
+    		
+    		try{
+    			var tx = ormStatelessSession.beginTransaction();
+    			
+    			var inventoryRecords = inventoryResponse.Records;
+    			
+    			for (var inventory in inventoryRecords){
+    			    index++;
+        		    var sku = getSkuService().getSkuBySkuCode(inventory.itemCode);
+        		    
+        		    if (isNull(sku)){
+        		    	logHibachi("Can't create inventory for a sku that doesn't exist! #inventory.itemCode#", true);
+        		    	continue;
+        		    }
+        		    
+        		    var location = warehouseMain;
+        		    
+        		    if (inventory['CountryCode'] == "US"){
+        		    	location = warehouseMain;	
+        		    }
+        		    
+        		    else if (inventory['CountryCode'] == "CA"){
+        		    	location = warehouseCAN;	
+        		    }
+        		    
+        		    else if (inventory['CountryCode'] == "UK"){
+        		    	
+        		    	location = warehouseUK;	
+        		    
+        		    } else {
+        		    	location = warehouseIRPOL;
+        		    }
+        		    
+        		    
+        		    //Find if we have a stock for this sku and location.
+        		    var stock = getStockService().getStockBySkuIdAndLocationId( sku.getSkuID(), location.getLocationID() );
+        		    
+        		    if (isNull(stock)){
+        		    	// Create the stock
+        		    	var stock = new Slatwall.model.entity.stock();
+        		    	stock.setSku(sku);
+        		    	stock.setLocation(location);
+        		    	stock.setRemoteID(inventory['InventoryAdjustmentId']);
+        		    	ormStatelessSession.insert("SlatwallStock", stock);
+        		    }
+        		    
+        		    //Create the inventory record for this stock
+        		    if (!isNull(stock)){
+        		        //check if this inventory has already been imported...
+        		        var newInventory = getInventoryService().getInventoryByRemoteId( inventory['InventoryAdjustmentId'] );
+        		        
+        		        //Only create the inventory if it doesn't already exist. Everytime an inventory adjustment is made
+        		        //it has a new id, thus a new remoteID.
+        		        if (isNull(newInventory)){
+            			    // Create a new inventory under that stock.
+            			    var newInventory = new Slatwall.model.entity.Inventory();
+            			    newInventory.setRemoteID(inventory['InventoryAdjustmentId']?:""); //*
+                			newInventory.setStock(stock);
+                			var inventoryQuantity = inventory['Quantity']?:0;
+                			
+                			if (inventoryQuantity > 0){
+                        	    newInventory.setQuantityIn(inventoryQuantity);
+                			}else{
+                			   newInventory.setQuantityOut(inventoryQuantity); 
+                			}
+                			
+                        	newInventory.setCreatedDateTime(getDateFromString(inventory['CreatedOn']));
+                        	
+                            ormStatelessSession.insert("SlatwallInventory", newInventory);
+        		        }
+        		    }
+    			}
+    			
+    			tx.commit();
+    		}catch(e){
+    			logHibachi("Stock Import Failed @ Index: #index# PageSize: #pageSize# PageNumber: #pageNumber#", true);
+    			logHibachi(serializeJson(e));
+    			ormGetSession().clear();
+    		}
+    		
+    		this.logHibachi('Import (Updated Inventory) Page #pageNumber# completed ', true);
     		ormGetSession().clear();//clear every page records...
 		    pageNumber++;
 		}

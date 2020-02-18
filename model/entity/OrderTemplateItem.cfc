@@ -54,7 +54,7 @@ component displayname="OrderTemplateItem" entityname="SlatwallOrderTemplateItem"
 	property name="orderTemplate" hb_populateEnabled="false" cfc="OrderTemplate" fieldtype="many-to-one" fkcolumn="orderTemplateID" hb_cascadeCalculate="true" fetch="join";
 	property name="temporaryFlag" ormtype="boolean" default="false";
 
-	property name="total" persistent="false" hb_formatType="currency"; 
+	property name="calculatedTotal" ormtype="big_decimal" hb_formatType="currency"; 
 
 	// Remote properties
 	property name="remoteID" ormtype="string";
@@ -64,8 +64,16 @@ component displayname="OrderTemplateItem" entityname="SlatwallOrderTemplateItem"
 	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";	
+
+	//non-persistents	
+	property name="total" persistent="false" hb_formatType="currency"; 
+	
 	//CUSTOM PROPERTIES BEGIN
-property name="commissionableVolumeTotal" persistent="false"; 
+property name="calculatedCommissionableVolumeTotal" ormtype="integer";
+	property name="calculatedPersonalVolumeTotal" ormtype="integer";
+
+	//non-persistent properties
+	property name="commissionableVolumeTotal" persistent="false"; 
 	property name="personalVolumeTotal" persistent="false"; 
 	property name="skuProductURL" persistent="false";
 	property name="skuImagePath" persistent="false";

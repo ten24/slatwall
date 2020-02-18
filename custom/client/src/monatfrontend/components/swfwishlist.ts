@@ -90,6 +90,7 @@ class SWFWishlistController {
         return this.orderTemplateService.addOrderTemplateItemAndCreateWishlist(this.wishlistTemplateName, this.sku, quantity).then(result=>{
             this.loading = false;
             this.getAllWishlists();
+            this.onAddItemSuccess(this.sku);
             this.observerService.attach(this.successfulAlert,"createWishlistSuccess");
             return result;
         });
