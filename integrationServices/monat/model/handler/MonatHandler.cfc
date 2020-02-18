@@ -216,7 +216,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 	public any function afterOrderTemplateProcess_createAndPlaceOrderSuccess(required any slatwallScope, required any orderTemplate any data={}){
 
 		getDAO('HibachiEntityQueueDAO').insertEntityQueue(
-				baseID          = arguments.orderTemplate.getOrderTemplate(),
+				baseID          = arguments.orderTemplate,
 				baseObject      = 'OrderTemplate',
 				processMethod   = 'updateCalculatedProperties',
 				entityQueueData = arguments.data
