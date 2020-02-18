@@ -57,7 +57,7 @@ class MonatCheckoutController {
 
 		this.publicService.getAccount().then(res=>{
 			this.account = res;
-			if(!this.account?.ownerAccount || this.account?.ownerAccount?.accountNumber == this.account?.accountNumber){
+			if(!this.account?.ownerAccount?.accountID || this.account?.ownerAccount?.accountNumber == this.account?.accountNumber){
 				this.hasSponsor = false;
 			}
 			
