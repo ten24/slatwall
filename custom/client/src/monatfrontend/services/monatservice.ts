@@ -12,6 +12,7 @@ export class MonatService {
 	public previouslySelectedStarterPackBundleSkuID:string;
 	public cachedOptions = {
 		frequencyTermOptions: <IOptions[]>null,
+		countryCodeOptions: <IOptions[]>null,
 	};
 
 	//@ngInject
@@ -199,8 +200,19 @@ export class MonatService {
 		this.$window.location.href = redirectUrl;
 	}
 
-    public countryCodeOptions = ()=>{
-        return this.countryCodeOptions();
+    public countryCodeOptions = (refresh = false)=>{
+        var deferred = this.$q.defer();
+		if (refresh || !this.cachedOptions.countryCodeOptions) {
+			this.publicService
+				.getCountries()
+				.then((data) => {
+					this.cachedOptions.countryCodeOptions = data.countryCodeOptions;
+					deferred.resolve(this.cachedOptions.countryCodeOptions);
+				});
+		} else {
+			deferred.resolve(this.cachedOptions.countryCodeOptions);
+		}
+		return deferred.promise;
     }
 
 }

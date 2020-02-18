@@ -20,8 +20,8 @@ class MonatFlexshipShippingMethodModalController {
     
     public $onInit = () => {
     	this.makeTranslations();
-    		this.monatService.getCountries().then(data => {
-            this.countryCodeOptions = data.countryCodeOptions;
+    		this.monatService.countryCodeOptions().then(data => {
+            this.countryCodeOptions = data;
 		    });
     	
     	this.existingAccountAddress = this.accountAddresses.find( item => {
