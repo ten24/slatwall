@@ -1081,7 +1081,14 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
             			    var newInventory = new Slatwall.model.entity.Inventory();
             			    newInventory.setRemoteID(inventory['InventoryAdjustmentId']?:""); //*
                 			newInventory.setStock(stock);
-                        	newInventory.setQuantityIn(inventory['Quantity']?:0);
+                			var inventoryQuantity = inventory['Quantity']?:0;
+                			
+                			if (inventoryQuantity > 0){
+                        	    newInventory.setQuantityIn(inventoryQuantity);
+                			}else{
+                			   newInventory.setQuantityOut(inventoryQuantity); 
+                			}
+                			
                         	newInventory.setCreatedDateTime(getDateFromString(inventory['CreatedOn']));
                         	
                             ormStatelessSession.insert("SlatwallInventory", newInventory);
