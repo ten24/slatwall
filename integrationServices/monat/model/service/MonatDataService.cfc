@@ -1083,7 +1083,6 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
                 			newInventory.setStock(stock);
                         	newInventory.setQuantityIn(inventory['Quantity']?:0);
                         	newInventory.setCreatedDateTime(getDateFromString(inventory['CreatedOn']));
-                        	newInventory.setModifiedDateTime(getDateFromString(inventory['ModifiedOn']));
                         	
                             ormStatelessSession.insert("SlatwallInventory", newInventory);
         		        }
