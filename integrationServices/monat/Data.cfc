@@ -100,6 +100,12 @@ component accessors="true" output="false" displayname="Monat" extends="Slatwall.
 		}catch(any shipmentErrors){
 			logHibachi("The shipment update failed with #shipmentErrors.message#");
 		}
+		
+		try{
+			getService("MonatDataService").importInventoryUpdates();
+		}catch(any inventoryErrors){
+			logHibachi("The inventory update failed with #inventoryErrors.message#");
+		}
 	}
 }
 
