@@ -1,5 +1,15 @@
 
-<nav ng-if="paginationController.displayPages.length > 1" class="product-pagination" aria-label="Product Pagination">
+<!--- If display pages is greater than 1 OR if the 1st page isn't 1, show the pagination bar --->
+<nav 
+	ng-if="paginationController.displayPages.length > 1 
+		|| (
+			paginationController.displayPages.length == 1
+			&& paginationController.displayPages[0] != 1
+		)
+	" 
+	class="product-pagination" 
+	aria-label="Product Pagination"
+>
 	<ul class="pagination justify-content-center">
 	    
 		<!-- Back 1 Page --->
