@@ -12,6 +12,7 @@ export class MonatService {
 	public previouslySelectedStarterPackBundleSkuID:string;
 	public cachedOptions = {
 		frequencyTermOptions: <IOptions[]>null,
+		countryCodeOptions: <IOptions[]>null,
 	};
 
 	//@ngInject
@@ -94,11 +95,15 @@ export class MonatService {
 		return this.publicService.doAction('addEnrollmentFee');
 	}
 	
-	public selectStarterPackBundle(skuID: string, quantity: number = 1) {
+	public selectStarterPackBundle(skuID: string, quantity: number = 1, upgradeFlow = 0) {
 		let payload = {
 			skuID: skuID,
 			quantity: quantity,
 		};
+		
+		if(upgradeFlow){
+			payload['upgradeFlowFlag'] = 1;
+		}
 		
 		if(this.previouslySelectedStarterPackBundleSkuID) {
 			payload['previouslySelectedStarterPackBundleSkuID'] = this.previouslySelectedStarterPackBundleSkuID;
@@ -194,5 +199,20 @@ export class MonatService {
 		
 		this.$window.location.href = redirectUrl;
 	}
+
+    public countryCodeOptions = (refresh = false)=>{
+        var deferred = this.$q.defer();
+		if (refresh || !this.cachedOptions.countryCodeOptions) {
+			this.publicService
+				.getCountries()
+				.then((data) => {
+					this.cachedOptions.countryCodeOptions = data.countryCodeOptions;
+					deferred.resolve(this.cachedOptions.countryCodeOptions);
+				});
+		} else {
+			deferred.resolve(this.cachedOptions.countryCodeOptions);
+		}
+		return deferred.promise;
+    }
 
 }

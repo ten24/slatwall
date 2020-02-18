@@ -1579,6 +1579,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			if (!isNull(orderFulfillment)){
 				orderFulfillment.setShippingMethod(arguments.orderTemplate.getShippingMethod());
 				orderFulfillment.setFulfillmentMethod(arguments.orderTemplate.getShippingMethod().getFulfillmentMethod());
+
 			}
 		}
 		
@@ -1622,8 +1623,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arguments.orderTemplate.setLastOrderPlacedDateTime( now() );
 			arguments.orderTemplate.clearHibachiErrors();
 			return arguments.orderTemplate;
-		}	
+		}
 	
+		var eventData = { entity: newOrder, order: newOrder, data: {} };
+        getHibachiScope().getService("hibachiEventService").announceEvent(eventName="afterOrderProcess_PlaceOrderSuccess", eventData=eventData);	
 	
 		var orderTemplateAppliedGiftCards = arguments.orderTemplate.getOrderTemplateAppliedGiftCards(); 
 		for(var orderTemplateAppliedGiftCard in orderTemplateAppliedGiftCards ){ 
@@ -2085,6 +2088,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		return arguments.orderTemplate; 	
 	}  
+
+	public any function processOrderTemplate_updateCalculatedProperties (required any orderTemplate, any processObject, struct data={}){
+
+		//calculation cascades to order template items
+		arguments.orderTemplate.updateCalculatedProperties(); 
+
+		return arguments.orderTemplate; 	
+
+	}
 
 	//begin order template api functionality
 	public any function getOrderTemplatesCollectionForAccount(required struct data, any account=getHibachiScope().getAccount()){

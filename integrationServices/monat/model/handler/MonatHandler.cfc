@@ -209,7 +209,19 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 		}
 		
 	}
-	
+
+	/** Any time we place and order from a flexship we want to recalculate all properties at the flexship level.
+	  *
+      */
+	public any afterOrderTemplateProcess_createAndPlaceOrderSuccess(required any slatwallScope, required any orderTemplate any data={}){
+
+		getDAO('HibachiEntityQueueDAO').insertEntityQueue(
+				baseID          = arguments.orderTemplate.getOrderTemplate(),
+				baseObject      = 'OrderTemplate',
+				processMethod   = 'updateCalculatedProperties',
+				entityQueueData = arguments.data
+		); 	
+	}
 	
 	public any function afterOrderItemCreateSuccess(required any slatwallScope, required any orderItem, required any data){ 
 		// Flush so the item is there when we need it. 

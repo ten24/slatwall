@@ -52,7 +52,7 @@ class MonatFlexshipConfirmController {
     	this.orderTemplateService
     	.updateOrderTemplateFrequency(this.orderTemplate.orderTemplateID, this.selectedFrequencyTermID, this.selectedFrequencyDate)
     	.then( data => { 
-    		
+
     		if(data.successfulActions && data.successfulActions.indexOf('public:orderTemplate.updateFrequency') > -1) {
         		this.monatAlertService.success(this.rbkeyService.rbKey('frontend.flexshipUpdateSucess'));
         		this.monatService.redirectToProperSite(this.redirectUrl);

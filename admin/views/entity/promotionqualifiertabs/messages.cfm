@@ -52,9 +52,13 @@ Notes:
 <cfparam name="rc.promotionQualifier" type="any">
 <cfparam name="rc.edit" type="boolean">
 
+<cfset local.promotionQualifierMessagesCollectionList = rc.promotionQualifier.getPromotionQualifierMessagesCollectionList() />
+<cfset local.promotionQualifierMessagesCollectionList.setDisplayProperties('message',{isVisible=true}) />
+<cfset local.promotionQualifierMessagesCollectionList.addDisplayproperty(displayProperty='promotionQualifierMessageID',columnConfig={isVisible=false}) />
+
 <cfoutput>
     <hb:HibachiListingDisplay 
-        collectionList="#rc.promotionQualifier.getPromotionQualifierMessagesCollectionList()#" 
+        collectionList="#local.promotionQualifierMessagesCollectionList#" 
         recordEditAction="admin:entity.editpromotionqualifiermessage"
         recorddetailaction="admin:entity.detailpromotionqualifiermessage"
         title="Messages" 

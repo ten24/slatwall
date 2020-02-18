@@ -71,7 +71,7 @@ Notes:
 			  deleteQueryString="promotionQualifierMessageID=#rc.promotionQualifierMessage.getPromotionQualifierMessageID()#&redirectAction=admin:entity.detailpromotionqualifier&promotionQualifierID=#rc.promotionQualifier.getPromotionQualifierID()###tabpromotionqualifiermessages" />
 	    
         <input type="hidden" name="promotionQualifier.promotionQualifierID" value="#rc.promotionQualifierID#" />
-        <hb:HibachiEntityDetailGroup object="#rc.promotionQualifier#">
+        <hb:HibachiEntityDetailGroup object="#rc.promotionQualifierMessage#">
 			<hb:HibachiEntityDetailItem view="admin:entity/promotionqualifiermessagetabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
 			<hb:HibachiEntityDetailItem view="admin:entity/promotionqualifiermessagetabs/messagerequirements" text="#$.slatwall.rbKey('admin.define.messageRequirements')#" showOnCreateFlag=false />
 		</hb:HibachiEntityDetailGroup>
