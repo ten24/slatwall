@@ -14,17 +14,20 @@ type Fulfillment = { [key: string]: any } | string;
 
 class MonatCheckoutController {
 	public shippingFulfillment: Array<Fulfillment>;
-	public 	togglePaymentAction: boolean = false;
-	public loading: any = {
+	public 	togglePaymentAction = false;
+	public loading = {
 		selectShippingMethod: false
 	};
 	public screen = Screen.ACCOUNT;
 	public SCREEN = Screen; //Allows access to Screen Enum in Partial view
-	public account
+	public account:any;
 	public hasSponsor = true;
 	public ownerAccountID:string;
 	public cart:any; 
-	public setDefaultShipping:boolean = false;
+	public setDefaultShipping = false;
+	public totalSteps:number;
+	public currentStep:number;
+	
 	// @ngInject
 	constructor(
 		public publicService,
@@ -58,19 +61,18 @@ class MonatCheckoutController {
 				this.hasSponsor = false;
 			}
 			
+			// if they have a sponsor, thats an extra step (billing=>sponsor=>review) otherwise its billing=>review
+			this.totalSteps = this.hasSponsor ? 2 : 3; 
 			this.getCurrentCheckoutScreen(true, true);
 		});
 		
 	}
 	
 	private manageEvent(){
-		console.log('managing event')
 		if(this.loading.selectShippingMethod) {
-			console.log('returning because were still loading');
 			return;
 		}
 		this.getCurrentCheckoutScreen(true);
-	
 	}
 	
 	private getCurrentCheckoutScreen = (setDefault = false, initialCheck = false):Screen|void => {
@@ -101,11 +103,22 @@ class MonatCheckoutController {
 					screen = initialCheck ? Screen.REVIEW : Screen.PAYMENT;
 				}
 			}
-			
 			this.screen = screen;
+			this.getCurrentStepNumber();
 			return screen;
 		});
 		
+	}
+	
+	public getCurrentStepNumber():void{
+		console.log(this.screen);
+		this.currentStep = (this.screen == Screen.ACCOUNT || this.screen == Screen.SHIPPING || this.screen == Screen.PAYMENT)  //billing /shipping is step one
+			? 1 
+			: this.screen == Screen.SPONSOR //if they need to select a sponsor, step 2
+			? 2
+			:(this.screen == Screen.REVIEW && !this.hasSponsor) //if they had to go through the sponsor step, and now are on review, there is 3 total steps
+			? 3
+			: 2; //otherwise 2 total steps
 	}
 	
 	public closeNewAddressForm = () => {
@@ -359,7 +372,7 @@ class MonatCheckoutController {
 
 	}
 	
-	// calls setCheckoutDefaults to creates a recursive loop continually progressing through checkout if possible
+	// calls setCheckoutDefaults to create a recursive loop continually progressing through checkout steps where possible
 	public progressDefaults(res, screen:Screen){
 		if(res && !res.failureActions.length){
 			this.cart = this.publicService.cart;
