@@ -105,9 +105,9 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 
 		var response = this.makeApiRequest('POST /addresses/resolve', this.convertSwAddressToAvalaraAddress(arguments.address) );
 		
-		var formatedResponse = {};
-		formatedResponse['success'] = false;
-		formatedResponse['message'] = '';
+		var formattedResponse = {};
+		formattedResponse['success'] = false;
+		formattedResponse['message'] = '';
 					
 		if( structKeyExists(response, 'validatedAddresses') &&
 			IsArray(response.validatedAddresses) &&
@@ -126,32 +126,32 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 			formattedSuggestion['countryCode'] = suggestion["country"];
 			
 			
-			formatedResponse['success'] =  compreAddressWithSuggestion(arguments.address, formattedSuggestion);
-			formatedResponse['suggestedAddress'] = formattedSuggestion;
+			formattedResponse['success'] =  compareAddressWithSuggestion(arguments.address, formattedSuggestion);
+			formattedResponse['suggestedAddress'] = formattedSuggestion;
 			
 			if(StructKeyExists(response, 'resolutionQuality')) {
-				formatedResponse['message'] = "Resolution quality: #response.resolutionQuality#";
+				formattedResponse['message'] = "Resolution quality: #response.resolutionQuality#";
 			}
 		
 		} 
 		else if( structKeyExists(response, 'error') ) {
-			formatedResponse['message'] = response['error']['code'] &" "& response['error']['message'];
+			formattedResponse['message'] = response['error']['code'] &" "& response['error']['message'];
 		} 
 		else {
-			formatedResponse['message'] = "Something went wrong!!";
+			formattedResponse['message'] = "Something went wrong";
 		}
 		
 		if(setting('debugModeFlag')){
-			debugLog(formatedResponse);
+			debugLog(formattedResponse);
 		}
 		
-		return formatedResponse;
+		return formattedResponse;
 	}
 	
 	/**
 	 * helper function to compare 2 address-structs
 	*/ 
-	public boolean function compreAddressWithSuggestion(required struct address, required struct suggestion){ 
+	public boolean function compareAddressWithSuggestion(required struct address, required struct suggestion){ 
 		// Comparing most relevant points
 		return compareNoCase( arguments.address["streetAddress"], arguments.suggestion["streetAddress"] ) == 0
 			&& compareNoCase( arguments.address["city"], arguments.suggestion["city"] ) == 0
