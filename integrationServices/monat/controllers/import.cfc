@@ -433,9 +433,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	
 	public void function importInventoryUpdates(rc){  
 		getService("HibachiTagService").cfsetting(requesttimeout="60000");
-	
+		//This is just for testing...The workflow uses Data.cfc to call the same.
 		//Use a service instead so that it can be run on a workflow.
-		//getService("MonatDataService").importInventoryUpdates(rc.pageSize?:50, rc.pageNumber?:1, rc.pageMax?:2);
+		getService("MonatDataService").importInventoryUpdates();
 		
 	}
 	
