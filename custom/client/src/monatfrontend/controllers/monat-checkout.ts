@@ -111,7 +111,6 @@ class MonatCheckoutController {
 	}
 	
 	public getCurrentStepNumber():void{
-		console.log(this.screen);
 		this.currentStep = (this.screen == Screen.ACCOUNT || this.screen == Screen.SHIPPING || this.screen == Screen.PAYMENT)  //billing /shipping is step one
 			? 1 
 			: this.screen == Screen.SPONSOR //if they need to select a sponsor, step 2
