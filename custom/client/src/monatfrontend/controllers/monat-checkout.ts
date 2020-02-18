@@ -21,7 +21,7 @@ class MonatCheckoutController {
 	public screen = Screen.ACCOUNT;
 	public SCREEN = Screen; //Allows access to Screen Enum in Partial view
 	public account:any;
-	public hasSponsor = true;
+	public hasSponsor = false;
 	public ownerAccountID:string;
 	public cart:any; 
 	public setDefaultShipping = false;
@@ -57,8 +57,8 @@ class MonatCheckoutController {
 
 		this.publicService.getAccount().then(res=>{
 			this.account = res;
-			if(!this.account?.ownerAccount?.accountID || this.account?.ownerAccount?.accountNumber == this.account?.accountNumber){
-				this.hasSponsor = false;
+			if(this.account?.ownerAccount?.accountNumber?.length && this.account?.ownerAccount?.accountNumber !== this.account?.accountNumber){
+				this.hasSponsor = true;
 			}
 			
 			// if they have a sponsor, thats an extra step (billing=>sponsor=>review) otherwise its billing=>review
@@ -95,7 +95,7 @@ class MonatCheckoutController {
 				
 				//send to sponsor selector if the account has no owner
 				if(!this.hasSponsor && this.cart.orderPayments?.length){ 
-					screen = Screen.SPONSOR;
+					screen = initialCheck ? Screen.SPONSOR : Screen.PAYMENT;
 				}
 				
 				//if they have a sponsor, billing, and shipping details, they can go to review
