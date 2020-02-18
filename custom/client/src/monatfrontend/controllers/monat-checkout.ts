@@ -24,8 +24,7 @@ class MonatCheckoutController {
 	public hasSponsor = true;
 	public ownerAccountID:string;
 	public cart:any; 
-	public test = 'test';
-	
+	public setDefaultShipping:boolean = false;
 	// @ngInject
 	constructor(
 		public publicService,
@@ -49,31 +48,34 @@ class MonatCheckoutController {
 		
 		this.observerService.attach( this.closeNewAddressForm, 'addNewAccountAddressSuccess' ); 
 		this.observerService.attach( this.getCurrentCheckoutScreen, 'createAccountSuccess' ); 
-		
-		this.observerService.attach( ()=>{
-			this.getCurrentCheckoutScreen(true);
-		}, 'addShippingAddressUsingAccountAddressSuccess' ); 
-		
-		this.observerService.attach( ()=>{
-			this.getCurrentCheckoutScreen(true);
-		}, 'addShippingMethodUsingShippingMethodIDSuccess' ); 
-		
+		this.observerService.attach(this.manageEvent.bind(this), 'addShippingAddressUsingAccountAddressSuccess' ); 
+		this.observerService.attach(this.manageEvent.bind(this), 'addShippingAddressSuccess' ); 
+		this.observerService.attach(this.manageEvent.bind(this), 'addShippingMethodUsingShippingMethodIDSuccess' ); 
 
 		this.publicService.getAccount().then(res=>{
 			this.account = res;
 			if(!this.account?.ownerAccount || this.account?.ownerAccount?.accountNumber == this.account?.accountNumber){
 				this.hasSponsor = false;
-				console.log(this.account?.ownerAccount?.accountNumber, this.account?.accountNumber);
 			}
 			
-			this.getCurrentCheckoutScreen(true);
+			this.getCurrentCheckoutScreen(true, true);
 		});
 		
 	}
 	
-	private getCurrentCheckoutScreen = (setDefault = false):Screen|void => {
+	private manageEvent(){
+		console.log('managing event')
+		if(this.loading.selectShippingMethod) {
+			console.log('returning because were still loading');
+			return;
+		}
+		this.getCurrentCheckoutScreen(true);
 	
-		return this.publicService.getCart().then(data => {
+	}
+	
+	private getCurrentCheckoutScreen = (setDefault = false, initialCheck = false):Screen|void => {
+	
+		return this.publicService.getCart(true).then(data => {
 			if(!this.publicService.hasAccount()){
 				return; 	
 			}
@@ -91,13 +93,12 @@ class MonatCheckoutController {
 				
 				//send to sponsor selector if the account has no owner
 				if(!this.hasSponsor && this.cart.orderPayments?.length){ 
-					console.log('sponsor')
 					screen = Screen.SPONSOR;
 				}
 				
 				//if they have a sponsor, billing, and shipping details, they can go to review
 				if ( this.publicService.cart.orderPayments.length && this.publicService.hasShippingAddressAndMethod() && this.hasSponsor) {
-					screen = Screen.REVIEW;
+					screen = initialCheck ? Screen.REVIEW : Screen.PAYMENT;
 				}
 			}
 			
@@ -268,17 +269,22 @@ class MonatCheckoutController {
 		});
 	}
 	
-	//review potential for race condition here
 	public setInitialShippingMethod():Promise<any>{
 		let defaultOption = <{[key:string]: any}>this.shippingFulfillment[0];
-		return this.selectShippingMethod(defaultOption.shippingMethodOptions[0], defaultOption);
+
+		let data = {
+			'shippingMethodID': defaultOption.shippingMethodOptions[0].value,
+			'fulfillmentID':defaultOption.orderFulfillmentID
+		}
+
+		this.loading.selectShippingMethod = true;
+		return this.publicService.doAction( 'addShippingMethodUsingShippingMethodID', data );
 	}
 	
 	public setInitialShippingAddress():Promise<any> {
 		let accountAddressID = this.account.primaryAddress.accountAddressID;
 		let fulfillmentID = this.shippingFulfillment[0].orderFulfillmentID;
 		return this.publicService.doAction('addShippingAddressUsingAccountAddress', {accountAddressID:accountAddressID,fulfillmentID:fulfillmentID});
-		
 	}
 	
 	public setBillingAddress(defaultAddress = true, _addressID=''):Promise<any>{ 
@@ -300,21 +306,24 @@ class MonatCheckoutController {
 		return this.publicService.doAction('addOrderPayment', data);
 	}
 	
+	public hasShippingMethod(){
+		return this.cart.orderFulfillments[0].shippingMethod && this.cart.orderFulfillments[0].shippingMethod.shippingMethodID &&  this.cart.orderFulfillments[0].shippingMethod.shippingMethodID.length > 0;
+	}
+	
 	public setCheckoutDefaults(){
-		//we dont need to do anything is the cart already has an order payment, this also terminates recursion
-		if(this.cart.orderPayments.length || !this.cart.orderID.length) return;
+		if(!this.cart.orderID.length) return;
 		
 		//Set shipping address if it is available and not already set
 		if(this.account.primaryAddress.accountAddressID.length && !this.publicService.hasShippingAddress(0)){
 			this.setInitialShippingAddress().then(res=>{
-				this.shippingFulfillment = res.cart.orderFulfillments.filter(el => el.fulfillmentMethod.fulfillmentMethodType == 'shipping' );
 				this.progressDefaults(res, Screen.SHIPPING);
 			});
 		}
 		
 		//set shipping method
-		else if(!this.publicService.hasShippingAddressAndMethod() && this.publicService.hasShippingAddress(0)?.length){
+		else if(!this.setDefaultShipping  && !this.hasShippingMethod() && this.publicService.hasShippingAddress(0)?.length){
 			this.setInitialShippingMethod().then(res=>{
+				this.setDefaultShipping = true;
 				this.loading.selectShippingMethod = false;
 				this.progressDefaults(res, Screen.PAYMENT);
 			});
@@ -329,28 +338,32 @@ class MonatCheckoutController {
 				&& !this.account.primaryPaymentMethod?.accountPaymentMethodID 
 				&& this.publicService.getShippingAddress(0).addressID
 			){
+	
 			this.setBillingAddress().then(res=>{
 				this.progressDefaults(res, Screen.PAYMENT);
 			});
 		}
 		
 		//set primary payment method
-		else if(this.account.primaryPaymentMethod?.accountPaymentMethodID){
+		else if(!this.cart.orderPayments.length && this.account.primaryPaymentMethod?.accountPaymentMethodID && this.hasShippingMethod()){
 			this.setAccountPrimaryPaymentMethodAsCartPaymentMethod().then(res=>{
 				//if we cant set payment method, set default shipping billing address
 				if(res.failureActions.length && !this.cart.billingAddress.addressID && !this.cart.billingAccountAddress ){
 					this.setBillingAddress();
 				}
 				else{
-					this.progressDefaults(res, Screen.PAYMENT)
+					this.progressDefaults(res, Screen.PAYMENT);
 				}
 			});
 		}
+
 	}
 	
+	// calls setCheckoutDefaults to creates a recursive loop continually progressing through checkout if possible
 	public progressDefaults(res, screen:Screen){
 		if(res && !res.failureActions.length){
-			this.cart = res.cart;
+			this.cart = this.publicService.cart;
+			this.shippingFulfillment = this.cart.orderFulfillments.filter(el => el.fulfillmentMethod.fulfillmentMethodType == 'shipping' );
 			this.setCheckoutDefaults();	
 			this.screen = screen;
 		}
