@@ -953,7 +953,6 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
     public any function importInventoryUpdates(){
         //get the api key from integration settings.
 		var integration = getService("IntegrationService").getIntegrationByIntegrationPackage("monat");
-		var ormStatelessSession = ormGetSessionFactory().openStatelessSession();
 		var index=0;
 		var HOURS = 'h';
         /**
@@ -1025,7 +1024,6 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
     		
     		
     		try{
-    			var tx = ormStatelessSession.beginTransaction();
     			
     			var inventoryRecords = inventoryResponse.Records;
     			
@@ -1042,16 +1040,10 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
         		    
         		    if (inventory['CountryCode'] == "US"){
         		    	location = warehouseMain;	
-        		    }
-        		    
-        		    else if (inventory['CountryCode'] == "CA"){
+        		    }else if (inventory['CountryCode'] == "CA"){
         		    	location = warehouseCAN;	
-        		    }
-        		    
-        		    else if (inventory['CountryCode'] == "UK"){
-        		    	
-        		    	location = warehouseUK;	
-        		    
+        		    }else if (inventory['CountryCode'] == "UK"){
+        		    	location = warehouseUK;
         		    } else {
         		    	location = warehouseIRPOL;
         		    }
@@ -1060,55 +1052,56 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
         		    //Find if we have a stock for this sku and location.
         		    var stock = getStockService().getStockBySkuIdAndLocationId( sku.getSkuID(), location.getLocationID() );
         		    
+        		    
         		    if (isNull(stock)){
         		    	// Create the stock
-        		    	var stock = new Slatwall.model.entity.stock();
+        		    	var stock = getStockService().newStock();
         		    	stock.setSku(sku);
         		    	stock.setLocation(location);
         		    	stock.setRemoteID(inventory['InventoryAdjustmentId']);
-        		    	ormStatelessSession.insert("SlatwallStock", stock);
+        		    	stock = getStockService().saveStock(stock);
         		    }
         		    
         		    //Create the inventory record for this stock
         		    if (!isNull(stock)){
         		        //check if this inventory has already been imported...
-        		        var newInventory = getInventoryService().getInventoryByRemoteId( inventory['InventoryAdjustmentId'] );
+        		        var newInventory = getStockService().getInventoryByRemoteId( inventory['InventoryAdjustmentId'] );
         		        
         		        //Only create the inventory if it doesn't already exist. Everytime an inventory adjustment is made
         		        //it has a new id, thus a new remoteID.
         		        if (isNull(newInventory)){
             			    // Create a new inventory under that stock.
-            			    var newInventory = new Slatwall.model.entity.Inventory();
-            			    newInventory.setRemoteID(inventory['InventoryAdjustmentId']?:""); //*
+            			    var newInventory = getStockService().newInventory();
+            			    newInventory.setRemoteID(inventory['InventoryAdjustmentId'] ?: ""); //*
                 			newInventory.setStock(stock);
-                			var inventoryQuantity = inventory['Quantity']?:0;
+                			
+                			var inventoryQuantity = inventory['Quantity'] ?: 0;
                 			
                 			if (inventoryQuantity > 0){
                         	    newInventory.setQuantityIn(inventoryQuantity);
                 			}else{
-                			   newInventory.setQuantityOut(inventoryQuantity); 
+                			    newInventory.setQuantityOut(inventoryQuantity * -1); 
                 			}
                 			
                         	newInventory.setCreatedDateTime(getDateFromString(inventory['CreatedOn']));
                         	
-                            ormStatelessSession.insert("SlatwallInventory", newInventory);
+                            newInventory = getStockService().saveInventory(newInventory);
+                        	
         		        }
         		    }
+        		    
     			}
     			
-    			tx.commit();
     		}catch(e){
     			logHibachi("Stock Import Failed @ Index: #index# PageSize: #pageSize# PageNumber: #pageNumber#", true);
     			logHibachi(serializeJson(e));
-    			ormGetSession().clear();
+    			
     		}
     		
     		this.logHibachi('Import (Updated Inventory) Page #pageNumber# completed ', true);
-    		ormGetSession().clear();//clear every page records...
 		    pageNumber++;
 		}
 		
-		ormStatelessSession.close(); //must close the session regardless of errors.
 		logHibachi("End: #pageNumber# - #pageSize# - #index#", true);
     }
 }
