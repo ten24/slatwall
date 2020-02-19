@@ -488,7 +488,7 @@ component accessors="true" output="false" extends="HibachiService" {
 		}
 	}
 
-	public void function loadDataFromQuery(required any query, required any configJSON) {
+	public void function loadDataFromQuery(required any query, required any configJSON, dryRun = false) {
 		var qryColumns = getService("HibachiUtilityService").getQueryLabels(arguments.query);
 		var configStruct = parseImportConfig(arguments.configJSON);
 		var tables = configStruct["tables"];
@@ -623,7 +623,16 @@ component accessors="true" output="false" extends="HibachiService" {
 						if(tables[ tableName ][ "tableType" ] == "linktable") {
 							tableData[ tableName ].insertData[ tables[ tableName ][ "primaryKeyColumn" ] ] = {value = thisTableData[ "#tables[ tableName ][ "primaryKeyColumn" ]#_new" ][r], dataType = 'varchar'};
 							tableData[ tableName ].updateData[ tables[ tableName ][ "primaryKeyColumn" ] ] = {value = thisTableData[ "#tables[ tableName ][ "primaryKeyColumn" ]#_new" ][r], dataType = 'varchar'};
-							getHibachiDAO().recordUpdate(tableName, tableData[tableName].idColumns, tableData[tableName].updateData, tableData[tableName].insertData, false);
+							
+							var dataArguments = {
+								'tableName' : tableName,
+								'idColumns' : tableData[tableName].idColumns,
+								'updateData' : tableData[tableName].updateData,
+								'insertData' : tableData[tableName].insertData,
+								'updateOnlyFlag' : false,
+								'dryRun' : arguments.dryRun,
+							};
+							getHibachiDAO().recordUpdate(argumentCollection = dataArguments);
 						} else {
 						    //if compositeKeyOperator == OR check if there is at least one Key with value otherwise all keys need to have value
 							if(structKeyExists(tables[ tableName ],"compositeKeyOperator") && uCase(tables[ tableName ][ "compositeKeyOperator" ]) == 'OR'){
@@ -637,7 +646,7 @@ component accessors="true" output="false" extends="HibachiService" {
 							}else{
 								var okToImport = true;
 								for(var key in listToArray(tableData[tableName].idColumns)) {
-									if(!len(trim(tableData[tableName].updateData[key].value))) {
+									if(!structKeyExists(tableData[tableName].updateData, key) || !len(trim(tableData[tableName].updateData[key].value))) {
 										okToImport = false;
 										break;
 									}
@@ -649,7 +658,18 @@ component accessors="true" output="false" extends="HibachiService" {
 								// set the primary key ID for insert
 								primaryKeyValue = getHibachiScope().createHibachiUUID();
 								tableData[ tableName ].insertData[ tables[ tableName ][ "primaryKeyColumn" ] ] = {value = primaryKeyValue, dataType = 'varchar'};
-								primaryKeyValue = getHibachiDAO().recordUpdate(tableName, tableData[tableName].idColumns, tableData[tableName].updateData, tableData[tableName].insertData, false, true, tables[ tableName ][ "primaryKeyColumn" ],tables[ tableName ][ "compositeKeyOperator" ]);
+								var dataArguments = {
+									'tableName' : tableName,
+									'idColumns' : tableData[tableName].idColumns,
+									'updateData' : tableData[tableName].updateData,
+									'insertData' : tableData[tableName].insertData,
+									'updateOnlyFlag' : false,
+									'returnPrimaryKeyValue' : true,
+									'primaryKeyColumn' : tables[ tableName ][ "primaryKeyColumn" ],
+									'compositeKeyOperator' : tables[ tableName ][ "compositeKeyOperator" ],
+									'dryRun' : arguments.dryRun,
+								}
+								primaryKeyValue = getHibachiDAO().recordUpdate(argumentCollection = dataArguments);
 							}
 						}
 
@@ -666,7 +686,7 @@ component accessors="true" output="false" extends="HibachiService" {
 								}
 							}
 							var idKeyStruct = structGet(getService("HibachiUtilityService").formatStructKeyList("generatedIDStruct.#tableName#.#idKeyList#"));
-						idKeyStruct["value"] = primaryKeyValue == ""?"null":primaryKeyValue;
+							idKeyStruct["value"] = primaryKeyValue == "" ? "null" : primaryKeyValue;
 						} else if(tables[ tableName ][ "tableType" ] != "linktable") {
 							var idKeyStruct = structGet(getService("HibachiUtilityService").formatStructKeyList("generatedIDStruct.#tableName#"));
 							idKeyStruct["value"] = primaryKeyValue;
@@ -711,7 +731,17 @@ component accessors="true" output="false" extends="HibachiService" {
 									tableData[ attributeValueTableName ].insertData[ "attributeValueID" ] = {value = getHibachiScope().createHibachiUUID(), dataType = 'varchar'};
 
 									//writedump(label="#attributeValueTableName#",var="#tableData[attributeValueTableName]#");
-									getHibachiDAO().recordUpdate(attributeValueTableName, tableData[attributeValueTableName].idColumns, tableData[attributeValueTableName].updateData, tableData[attributeValueTableName].insertData, false);
+									
+									var dataArguments = {
+										'tableName' : attributeValueTableName,
+										'idColumns' : tableData[attributeValueTableName].idColumns,
+										'updateData' : tableData[attributeValueTableName].updateData,
+										'insertData' : tableData[attributeValueTableName].insertData,
+										'updateOnlyFlag' : false,
+										'dryRun' : arguments.dryRun
+									};
+								
+									getHibachiDAO().recordUpdate(argumentCollection = dataArguments);
 
 								}
 							}
@@ -765,7 +795,11 @@ component accessors="true" output="false" extends="HibachiService" {
 								WHERE #circularColumn.columnName# IS NULL
 						";
 
-						var qry = new Query().execute( sql = sql );
+						if(!arguments.dryRun){
+							var qry = new Query().execute( sql = sql );
+						}else{
+							writeOutput(sql);
+						}
 					}
 				}
 			}

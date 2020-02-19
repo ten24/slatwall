@@ -199,8 +199,6 @@ property name="personalVolume" ormtype="big_decimal";
     property name="orderItemSkuBundles" singularname="orderItemSkuBundle" fieldType="one-to-many" type="array" fkColumn="orderItemID" cfc="OrderItemSkuBundle" inverse="true" cascade="all-delete-orphan";
 	
    
- property name="kitFlagCode" ormtype="string" hb_formFieldType="select";
- property name="itemCategoryCode" ormtype="string" hb_formFieldType="select";
  property name="lineNumber" ormtype="string";
  property name="orderItemLineNumber" ormtype="string";//CUSTOM PROPERTIES END
 	public boolean function getQuantityHasChanged(){

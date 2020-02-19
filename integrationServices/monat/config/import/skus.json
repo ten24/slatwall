@@ -4,69 +4,85 @@
         {
           "sourceColumn":"SKUItemCode",
           "propertyIdentifier":"skuCode",
-          "key":true
+          "key":true,
+          "compositeKeyOperator":"OR"
         },
         {
-          "sourceColumn":"SAPItemCode",
-          "propertyIdentifier":"remoteID"
+          "sourceColumn":"SKUItemID",
+          "propertyIdentifier":"remoteID",
+          "key":true,
         },
         {
           "sourceColumn":"ItemName",
-          "propertyIdentifier":"skuName"
+          "propertyIdentifier":"skuName",
+          "updateFlag":false
         },
         {
           "sourceColumn":"ItemNote",
-          "propertyIdentifier":"skuDescription"
+          "propertyIdentifier":"skuDescription",
+          "updateFlag":false
         },
         {
           "sourceColumn":"Amount",
-          "propertyIdentifier":"price"
+          "propertyIdentifier":"price",
+          "updateFlag":false
         },
         {
           "sourceColumn":"DisableOnRegularOrders",
-          "propertyIdentifier":"disableOnRegularOrderFlag"
+          "propertyIdentifier":"disableOnRegularOrderFlag",
+          "updateFlag":false
         },
         {
           "sourceColumn":"DisableOnFlexship",
-          "propertyIdentifier":"disableOnFlexshipFlag"
+          "propertyIdentifier":"disableOnFlexshipFlag",
+          "updateFlag":false
         },
         {
           "sourceColumn":"SalesCategoryCode",
-          "propertyIdentifier":"salesCategoryCode"
+          "propertyIdentifier":"salesCategoryCode",
+          "updateFlag":false
         },
         {
           "sourceColumn":"SAPItemCode",
-          "propertyIdentifier":"sapItemCode"
+          "propertyIdentifier":"sapItemCode",
+          "updateFlag":false
         },
         {
           "sourceColumn":"InventoryTrackBy",
           "sourceColumnDataGenerator": "'Quantity'",
-          "propertyIdentifier":"inventoryTrackBy"
+          "propertyIdentifier":"inventoryTrackBy",
+          "updateFlag":false
         },
         {
           "sourceColumn":"EntryDate",
-          "propertyIdentifier":"createdDateTime"
+          "propertyIdentifier":"createdDateTime",
+          "updateFlag":false
         },
         {
           "sourceColumn":"ImageFile",
           "sourceColumnDataGenerator":"lCase(SKUItemCode) + '.jpg'",
-          "propertyIdentifier":"imageFile"
+          "propertyIdentifier":"imageFile",
+          "updateFlag":false
         },
         {
           "sourceColumn":"PRODUCTItemCode",
           "propertyIdentifier":"product.productCode",
+          "updateFlag":false
         },
         {
           "sourceColumn":"SKUItemID",
-          "propertyIdentifier":"product.remoteID"
+          "propertyIdentifier":"product.remoteID",
+          "key":true
         },
         {
           "sourceColumn":"ItemName",
-          "propertyIdentifier":"product.productName"
+          "propertyIdentifier":"product.productName",
+          "updateFlag":false
         },
         {
           "sourceColumn":"EntryDate",
-          "propertyIdentifier":"product.createdDateTime"
+          "propertyIdentifier":"product.createdDateTime",
+          "updateFlag":false
         },
         {
           "sourceColumn":"ItemCategoryAccounting",
@@ -75,42 +91,56 @@
         },
         {
           "sourceColumn":"CategoryNameAccounting",
-          "propertyIdentifier":"product.productType.productTypeName"
+          "propertyIdentifier":"product.productType.productTypeName",
+          "updateFlag":false
+        },
+        {
+          "sourceColumn":"productTypeNamePath",
+          "sourceColumnDataGenerator":"'Merchandise > ' + CategoryNameAccounting",
+          "propertyIdentifier":"product.productType.productTypeNamePath",
+          "updateFlag":false
         },
         {
           "sourceColumn":"productTypeActiveFlag",
           "sourceColumnDataGenerator":"1",
-          "propertyIdentifier":"product.productType.activeFlag"
+          "propertyIdentifier":"product.productType.activeFlag",
+          "updateFlag":false
         },
         {
           "sourceColumn":"productTypePublishedFlag",
           "sourceColumnDataGenerator":"1",
-          "propertyIdentifier":"product.productType.publishedFlag"
+          "propertyIdentifier":"product.productType.publishedFlag",
+          "updateFlag":false
         },
         {
           "sourceColumn":"productActiveFlag",
           "sourceColumnDataGenerator":"1",
-          "propertyIdentifier":"product.activeFlag"
+          "propertyIdentifier":"product.activeFlag",
+          "updateFlag":false
         },
         {
           "sourceColumn":"productPublishedFlag",
           "sourceColumnDataGenerator":"1",
-          "propertyIdentifier":"product.publishedFlag"
+          "propertyIdentifier":"product.publishedFlag",
+          "updateFlag":false
         },
         {
           "sourceColumn":"skuActiveFlag",
           "sourceColumnDataGenerator":"1",
-          "propertyIdentifier":"activeFlag"
+          "propertyIdentifier":"activeFlag",
+          "updateFlag":false
         },
         {
           "sourceColumn":"skuPublishedFlag",
           "sourceColumnDataGenerator":"1",
-          "propertyIdentifier":"publishedFlag"
+          "propertyIdentifier":"publishedFlag",
+          "updateFlag":false
         },
         {
           "sourceColumn":"skuBundleFlag",
           "sourceColumnDataGenerator":"0",
-          "propertyIdentifier":"bundleFlag"
+          "propertyIdentifier":"bundleFlag",
+          "updateFlag":false
         },
         {
           "sourceColumn": "SKUItemCode",
@@ -126,7 +156,8 @@
         },
         {
           "sourceColumn": "URLTitle",
-          "propertyIdentifier": "product.urlTitle"
+          "propertyIdentifier": "product.urlTitle",
+          "updateFlag":false
         }
     ]
 }
