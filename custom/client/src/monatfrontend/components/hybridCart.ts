@@ -17,7 +17,6 @@ class HybridCartController {
 	
 	public toggleCart():void{
 		this.showCart = !this.showCart;
-		console.log(this.showCart);
 		if(this.showCart){
 			this.getCart();
 		}
@@ -30,7 +29,6 @@ class HybridCartController {
 		});
 	}
 	
-	
 	public removeItem = (item) => {
 		this.monatService.removeFromCart(item.orderItemID).then(res => {
 			this.cart = res.cart;
@@ -41,16 +39,14 @@ class HybridCartController {
 		this.monatService.updateCartItemQuantity(item.orderItemID, item.quantity + 1).then(res => {
 			this.cart = res.cart;
 		});
-	};
+	}
 	
 	public decreaseItemQuantity = (item) => {
 		if (item.quantity <= 1) return;
 		this.monatService.updateCartItemQuantity(item.orderItemID, item.quantity - 1).then(res => {
 			this.cart = res.cart;
 		});
-	};
-	
-	
+	}
 	
 }
 
