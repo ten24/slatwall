@@ -81,7 +81,7 @@
 										</a>
 									</div>
 									<div class="col">
-										<a class="w-75 pb-1" ng-href="{{item.skuProductURL}}">
+										<a class="w-100 pb-1 pt-0" ng-href="{{item.skuProductURL}}">
 											<p class="d-inline" ng-bind="item.sku.skuDefinition"></p>
 										</a>
 										<div class="qty">
@@ -113,7 +113,9 @@
 									</div>
 								</div>
 								<span class="badge badge-pill delete">
-									x
+									<a ng-click="hybridCart.removeItem(item)" href="#">
+										x
+									</a>
 								</span>
 							</li>
 						</ul>							
@@ -144,8 +146,8 @@
 							<small>$99.00 </small>
 						</div>
 					</div>
-					<hr>
-					<div class="row justify-content-between px-3">
+					<hr class="my-0">
+					<div class="row justify-content-between px-3 my-1 mb-3">
 						<div>
 							<small> 
 								<b> TODAYS ORDER TOTAL </b>
@@ -156,6 +158,12 @@
 								<b ng-bind-html="hybridCart.cart.total | swcurrency:hybridCart.cart.currencyCode"></b> 
 							</small>
 						</div>
+					</div>
+					<div class="row">
+						<div class="btn-group w-100">
+					  		<button type="button" class="btn btn-secondary">View Cart</button>
+					  		<button type="button" class="btn bg-primary">Checkout</button>
+						</div>						
 					</div>
 				</div>
 			</div>	
