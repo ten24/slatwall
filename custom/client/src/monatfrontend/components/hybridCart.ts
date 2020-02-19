@@ -5,6 +5,7 @@ declare var $: any;
 class HybridCartController {
 	public showCart = false;
 	public cart:any;
+	public isEnrollment:boolean;
 	
 	//@ngInject
 	constructor(public monatService, public observerService, public $rootScope, public publicService) {
@@ -51,13 +52,12 @@ class HybridCartController {
 }
 
 class HybridCart {
-	public restrict: string = 'EA';
+	public restrict: string = 'E';
 	public transclude: boolean = true;
 	public templateUrl: string;
 	public scope = {};
 	public bindToController = {
-		finishText: '@',
-		onFinish: '=?',
+		isEnrollment: '<?',
 	};
 	public controller = HybridCartController;
 	public controllerAs = 'hybridCart';
