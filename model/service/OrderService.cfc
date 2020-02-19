@@ -1608,14 +1608,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		if(newOrder.hasErrors()){
 			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# after adding promotion codes', true);
-			// writeDump(newOrder.getErrors());
-			// for(var key in newOrder.getErrors()){
-			// 	if('processObjects' == key){
-			// 		var processObject = newOrder.getProcessObject(newOrder.getErrors()[key][1]);
-			// 		writeDump(processObject.getErrors());
-			// 	}
-			// }
-			// abort;
 			arguments.orderTemplate.clearHibachiErrors();
 			return arguments.orderTemplate;
 		}
