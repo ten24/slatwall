@@ -64,7 +64,7 @@ Notes:
 
     <cfset accountCollectionList = getHibachiScope().getService('accountService').getAccountCollectionList()>
 
-	<cfset searchableDisplayProperties = "accountNumber,firstName,lastName,username "/>
+	<cfset searchableDisplayProperties = "accountNumber,firstName,lastName,username"/>
 	<cfset accountCollectionList.setDisplayProperties(
 	searchableDisplayProperties,
 	{

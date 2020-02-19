@@ -30,7 +30,7 @@
 			<hb:HibachiPropertyDisplay object="#rc.account#" property="emailAddress" edit="false">
 			<hb:HibachiPropertyDisplay object="#rc.account#" property="accountType" edit="false">
 			<hb:HibachiPropertyDisplay object="#rc.account.getOwnerAccount()#" property="fullName" edit="false" title = "Sponsor Name"> 
-			<cfif NOT IsNULL(rc.account.getenrollmentDate())> 
+			<cfif NOT IsNULL(rc.account.getEnrollmentDate())> 
 			<hb:HibachiPropertyDisplay object="#rc.account#" property="enrollmentDate" edit="false">
 			</cfif>
 			<hb:HibachiPropertyDisplay object="#rc.account#" property="renewalDate" edit="false">

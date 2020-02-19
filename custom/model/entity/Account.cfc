@@ -133,24 +133,24 @@ component {
 	
 	public string function getGenderFullWord(){
 	    var genderFullWord = "";
-	    var local.gender = LCase(this.getGender());
-		switch (local.gender) {
-			case "f": genderFullWord = "Female"; break;
-			case "m": genderFullWord =  "Male"; break;
+	    var gender = LCase(this.getGender());
+		switch (gender) {
+			case "f": genderFullWord = getHibachiScope().getRbKey('define.female'); break;
+			case "m": genderFullWord =  getHibachiScope().getRbKey('define.male'); break;
 			case "p":
-			case "prefernottoSay": genderFullWord =  "Prefer Not To Say"; break;
+			case "prefernottoSay": genderFullWord = getHibachiScope().getRbKey('define.prefernottoSay'); break;
 		}
 		return genderFullWord;
 	}
 	
 	public string function getSpouseFirstName(){
-	    if(!IsNULL(this.getSpouseName())){
+	    if(!IsNull(this.getSpouseName())){
 	       return ListFirst(this.getSpouseName(),", ");
 	    }
 	}
 	
 	public string function getSpouseLastName(){
-	    if(!IsNULL(this.getSpouseName())){
+	    if(!IsNull(this.getSpouseName())){
 	       return ListRest(this.getSpouseName(),", ");
 	    }
 	}
