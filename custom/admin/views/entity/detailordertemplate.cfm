@@ -65,6 +65,10 @@
 		'processContext':'createAndPlaceOrder'
 	},	
 	{
+		'action':'admin:entity.processOrderTemplate',
+		'processContext':'updateCalculatedProperties'
+	},	
+	{
 		'action':'admin:entity.preProcessOrderTemplate',
 		'processContext':'cancel',
 		'modal' : true 

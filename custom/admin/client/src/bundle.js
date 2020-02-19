@@ -65389,7 +65389,9 @@ var SWOrderTemplateItemsController = /** @class */ (function () {
         this.$onInit = function () {
             _this.observerService.attach(_this.setEdit, 'swEntityActionBar');
             _this.orderTemplateService.setOrderTemplate(_this.orderTemplate);
-            _this.orderTemplateService.setAdditionalSkuPropertiesToDisplay(_this.skuPropertiesToDisplay);
+            if (_this.skuPropertiesToDisplay != null) {
+                _this.orderTemplateService.setAdditionalSkuPropertiesToDisplay(_this.skuPropertiesToDisplay);
+            }
             _this.orderTemplateService.setSkuPropertyColumnConfigs(_this.skuPropertyColumnConfigs);
             if (_this.additionalOrderTemplateItemPropertiesToDisplay != null) {
                 _this.orderTemplateService.setAdditionalOrderTemplateItemPropertiesToDisplay(_this.additionalOrderTemplateItemPropertiesToDisplay);
@@ -65984,7 +65986,7 @@ var OrderTemplateService = /** @class */ (function () {
             return addSkuCollection;
         };
         this.setAdditionalOrderTemplateItemPropertiesToDisplay = function (additionalOrderTemplateItemPropertiesToDisplay) {
-            _this.orderTemplateDisplayProperties.concat(additionalOrderTemplateItemPropertiesToDisplay.split(','));
+            _this.orderTemplateItemPropertyIdentifierList.concat(additionalOrderTemplateItemPropertiesToDisplay.split(','));
         };
         this.getViewOrderTemplateItemCollection = function () {
             return _this.initializeViewAndEditOrderTemplateItemsCollection('view');
@@ -66039,7 +66041,9 @@ var OrderTemplateService = /** @class */ (function () {
         };
         this.setOrderTemplateItemPropertyIdentifierList = function (orderTemplatePropertyIdentifierList) {
             var propsToAdd = orderTemplatePropertyIdentifierList.split(',');
-            _this.orderTemplateItemPropertyIdentifierList = '';
+            if (_this.orderTemplateItemPropertyIdentifierList == null) {
+                _this.orderTemplateItemPropertyIdentifierList = '';
+            }
             for (var i = 0; i < propsToAdd.length; i++) {
                 _this.orderTemplateItemPropertyIdentifierList += 'orderTemplate.' + propsToAdd[i];
                 if (i + 1 !== propsToAdd.length)

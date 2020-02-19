@@ -1112,7 +1112,7 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 	}
 	
 	public numeric function getTaxTotalNotRefunded(){
-		return getService('HibachiUtilityService').precisionCalculate(getTaxTotal() - getTaxTotalOnReturnOrders());
+		return getService('HibachiUtilityService').precisionCalculate(getTaxTotal() + getTaxTotalOnReturnOrders());
 	}
 	
 	public numeric function getTaxTotalOnReturnOrders(){
