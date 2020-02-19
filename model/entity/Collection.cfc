@@ -3577,10 +3577,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 		return dateRangePredicate;
 	}
-	
-	public string function getQuery(){
-		return getHQL();
-	}
 
 	private string function getNumericRangePredicate(required any filter){
 		var numericRangePredicate = "";
