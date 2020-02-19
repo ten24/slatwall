@@ -1607,7 +1607,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		
 		if(newOrder.hasErrors()){
-			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# after applying gift cards', true);
+			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# after adding promotion codes', true);
+			// writeDump(newOrder.getErrors());
+			// for(var key in newOrder.getErrors()){
+			// 	if('processObjects' == key){
+			// 		var processObject = newOrder.getProcessObject(newOrder.getErrors()[key][1]);
+			// 		writeDump(processObject.getErrors());
+			// 	}
+			// }
+			// abort;
 			arguments.orderTemplate.clearHibachiErrors();
 			return arguments.orderTemplate;
 		}
@@ -1682,9 +1690,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				}
 			}
 		}
-
 		newOrder = this.process(newOrder, addOrderPaymentProcessData, 'addOrderPayment'); 
-	
 		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate); 	
 		
 		if(newOrder.hasErrors()){
@@ -1775,9 +1781,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	public any function addOrderItemFromTemplateItem(required any order, required struct orderTemplateItemStruct, required any orderTemplate, any orderFulfillment){
 		var processOrderAddOrderItem = arguments.order.getProcessObject('addOrderItem');
-		var sku = getSkuService().getSku(arguments.orderTemplateItemStruct['sku_skuID']);	
+		var sku = getSkuService().getSku(arguments.orderTemplateItemStruct['sku_skuID']);
+
 		processOrderAddOrderItem.setSku(sku);
-		processOrderAddOrderItem.setPrice(sku.getPriceByCurrencyCode(currencyCode=arguments.orderTemplate.getCurrencyCode(), accountID=arguments.orderTemplate.getAccount().getAccountID()));
+		
+		if(structKeyExists(arguments.orderTemplateItemStruct,'price')){
+			var orderTemplateItemPrice = arguments.orderTemplateItemStruct.price;
+		}else{
+			var orderTemplateItemPrice = sku.getPriceByCurrencyCode(currencyCode=arguments.orderTemplate.getCurrencyCode(), accountID=arguments.orderTemplate.getAccount().getAccountID());
+		}
+		
+		processOrderAddOrderItem.setPrice(orderTemplateItemPrice);
+
 		processOrderAddOrderItem.setQuantity(arguments.orderTemplateItemStruct['quantity']);
 		processOrderAddOrderItem.setUpdateOrderAmountFlag(false); 		
 
