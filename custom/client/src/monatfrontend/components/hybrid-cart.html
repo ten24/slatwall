@@ -10,6 +10,11 @@
         	inset 0px -11px 8px -10px #CCC; 
 	}
 	
+	.scroll-body{
+		height: 12em;
+    	overflow: scroll;
+	}
+	
 </style>
 <span ng-click="hybridCart.toggleCart()" class="cart-count">
 	<i class="far fa-shopping-cart"></i>
@@ -34,7 +39,7 @@
 					</div>
 				</div>
 				<div class="card-body p-0 hybrid-cart-body">
-					<div class="p-3">
+					<div class="p-3 scroll-body">
 						<ul class="list-group list-group-flush">
 							<li class="list-group-item d-flex justify-content-between align-items-center p-0">
 								<div>
