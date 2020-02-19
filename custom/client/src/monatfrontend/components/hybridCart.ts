@@ -3,8 +3,8 @@ declare var angular: any;
 declare var $: any;
 
 class HybridCartController {
-	test = 'Hello world';
 	public showCart = false;
+	public cart:any;
 	
 	//@ngInject
 	constructor(public monatService, public observerService, public $rootScope, public publicService) {
@@ -13,12 +13,44 @@ class HybridCartController {
 	}
 
 	public $onInit = () => {
-		
 	}
 	
-	public toggleCart(){
+	public toggleCart():void{
 		this.showCart = !this.showCart;
+		console.log(this.showCart);
+		if(this.showCart){
+			this.getCart();
+		}
 	}
+	
+	private getCart():void{
+		this.monatService.getCart().then(res => {
+			this.cart = res;
+			console.log(res);
+		});
+	}
+	
+	
+	public removeItem = (item) => {
+		this.monatService.removeFromCart(item.orderItemID).then(res => {
+			this.cart = res.cart;
+		});
+	}
+	
+	public increaseItemQuantity = (item) => {
+		this.monatService.updateCartItemQuantity(item.orderItemID, item.quantity + 1).then(res => {
+			this.cart = res.cart;
+		});
+	};
+	
+	public decreaseItemQuantity = (item) => {
+		if (item.quantity <= 1) return;
+		this.monatService.updateCartItemQuantity(item.orderItemID, item.quantity - 1).then(res => {
+			this.cart = res.cart;
+		});
+	};
+	
+	
 	
 }
 

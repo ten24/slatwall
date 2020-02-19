@@ -6,18 +6,45 @@
 	
 	.hybrid-cart-body{
     	box-shadow: 
-        	inset 0px 11px 8px -10px #CCC,
-        	inset 0px -11px 8px -10px #CCC; 
+        	inset 0px 13px 10px -12px #CCC,
+        	inset 0px -13px 10px -12px #CCC; 
 	}
 	
 	.scroll-body{
 		height: 12em;
     	overflow: scroll;
 	}
-	
+    .qty{
+        color: #000;
+        display: -webkit-flex;
+        display: flex;
+        align-items: center;
+    }
+    .qty button{
+        border: 0 none;
+        background-color: transparent;
+        font-size: 20px;
+        position: relative;
+    }
+    
+	.qty input {
+		border: 0 none;
+		padding: 0;
+		text-align: center;
+		width: 30px;
+		background-color: transparent;
+		color: #000;
+		height: 30px;
+	}
+    
+    .delete{
+		font-size: 25px;
+		font-weight: 100;
+    }
+    
 </style>
 <span ng-click="hybridCart.toggleCart()" class="cart-count">
-	<i class="far fa-shopping-cart"></i>
+	<a href="#"><i class="far fa-shopping-cart"></i></a>
 </span>
 <div ng-if="hybridCart.showCart" class="position-absolute hybrid-cart-wrapper">
 	<div class="row">
@@ -41,27 +68,61 @@
 				<div class="card-body p-0 hybrid-cart-body">
 					<div class="p-3 scroll-body">
 						<ul class="list-group list-group-flush">
-							<li class="list-group-item d-flex justify-content-between align-items-center p-0">
-								<div>
-									<img height="75px" src="https://monatteam.ten24dev.com/Slatwall/custom/assets/images/product/default/cache/20096800_300w_300h.jpg">
-									<p class="d-inline"> Monat Shampoo 10oz</p>
+							<li ng-repeat="item in hybridCart.cart.orderItems" class="list-group-item d-flex justify-content-between align-items-center p-0">
+								<div class="row align-items-center">
+									<div class="p-1">
+										<a ng-href="{{item.skuProductURL}}">
+											<img 
+												image-manager 
+												height="75px" 
+												src="https://monatteam.ten24dev.com/Slatwall/custom/assets/images/product/default/cache/20096800_300w_300h.jpg" 
+												alt="{{item.sku.skuDefinition}}"
+											>
+										</a>
+									</div>
+									<div class="col">
+										<a class="w-75 pb-1" ng-href="{{item.skuProductURL}}">
+											<p class="d-inline" ng-bind="item.sku.skuDefinition"></p>
+										</a>
+										<div class="qty">
+											<button
+												type="button"
+												class="minus p-0"
+												ng-disabled="item.quantity <= 1"
+												ng-click="hybridCart.decreaseItemQuantity(item)"
+											>
+												- 
+											</button>
+											<input
+												type="text"
+												id="qty"
+												name="quantity"
+												class="form-control"
+												ng-model="item.quantity"
+											/>
+											<button
+												type="button"
+												class="plus p-0"
+												ng-click="hybridCart.increaseItemQuantity(item)"
+											>
+												+
+											</button>
+											
+											<span class="ml-2" ng-bind-html="item.extendedPriceAfterDiscount | swcurrency:monatMiniCart.cart.currencyCode"></span>
+										</div>
+									</div>
 								</div>
-								
-								<span class="badge badge-pill">
+								<span class="badge badge-pill delete">
 									x
 								</span>
 							</li>
-							<li class="list-group-item">Dapibus ac facilisis in</li>
-							<li class="list-group-item">Morbi leo risus</li>
-							<li class="list-group-item">Porta ac consectetur ac</li>
-							<li class="list-group-item">Vestibulum at eros</li>
 						</ul>							
 					</div>
 				</div>
 				<div class="card-footer">
 					<div class="row justify-content-between px-3">
 						<div>
-							<small> Suggested retail price </small>
+							<small> Suggested Retail Price </small>
 						</div>
 						<div>
 							<small> $99.00 </small>
@@ -69,7 +130,7 @@
 					</div>
 					<div class="row justify-content-between px-3">
 						<div>
-							<small> Purchase Plus Discount </small>
+							<small> Your Price </small>
 						</div>
 						<div>
 							<small> $99.00 </small>
