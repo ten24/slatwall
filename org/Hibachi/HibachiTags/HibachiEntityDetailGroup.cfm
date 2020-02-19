@@ -88,15 +88,15 @@
 					
 					<!--- Creating New ID necause tabid can be template driven --->
 					<cfif CompareNoCase(tab.view, "") NEQ 0 >
-						<cfset newTabID = ListGetAt(tab.view, 2 , '/') & "_" & ListLast(tab.view, '/') >
+						<cfset local.panelID = ListGetAt(tab.view, 2 , '/') & "_" & ListLast(tab.view, '/') >
 					<cfelse> <!--- use tabid if view not available, in case of custom attributes --->
-						<cfset newTabID = tab.tabid />
+						<cfset local.panelID = tab.tabid />
 						<cfif isObject(tab.object) >
-							<cfset newTabID = lcase(tab.object.getClassName()) & "tabs_" & newTabID />
+							<cfset local.panelID = lcase(tab.object.getClassName()) & "tabs_" & local.panelID />
 						</cfif>
 					</cfif>
 					
-					<div class="j-panel panel panel-default" id="tabdetails_#newTabID#" ng-init="#tabScope#.active=#tab.open#" ng-click="#tabScope#.active=true" >
+					<div class="j-panel panel panel-default" id="tabdetails_#local.panelID#" ng-init="#tabScope#.active=#tab.open#" ng-click="#tabScope#.active=true" >
 						<a data-toggle="collapse"  href="##collapse#iteration#" <cfif !tab.open and !tab.open and structKeyExists(tab,'lazyLoad') and tab.lazyLoad and fileExists(expandPath(request.context.fw.parseViewOrLayoutPath(tab.view, 'view')))> onclick='failSafeGetTabHTMLForTabGroup(this,{tabid:"#tab.tabid#",view:"#tab.view#"})'</cfif>>
 							<div class="panel-heading">
 								<h4 class="panel-title">
@@ -132,8 +132,8 @@
 					<cfset emailTemplateCollectionList.addFilter('emailTemplateObject', "#attributes.object.getClassName()#") />
 					<cfif emailTemplateCollectionList.getRecordsCount() gt 0 >
 						<!---emails tab --->
-						<cfset newTabID = "tabdetails_" & lcase(attributes.object.getClassName()) & "tabs_email" />
-						<div class="j-panel panel panel-default" id="#newTabID#">
+						<cfset local.panelID = "tabdetails_" & lcase(attributes.object.getClassName()) & "tabs_email" />
+						<div class="j-panel panel panel-default" id="#local.panelID#">
 							<a data-toggle="collapse" href="##tabEmail">
 								<div class="panel-heading">
 									<h4 class="panel-title">
@@ -174,9 +174,9 @@
 				
 				<cfif isObject(attributes.object)>
 					<!---system tab --->
-					<cfset newTabID = "tabdetails_" & lcase(attributes.object.getClassName()) & "tabs_system" />
+					<cfset local.panelID = "tabdetails_" & lcase(attributes.object.getClassName()) & "tabs_system" />
 					
-					<div class="j-panel panel panel-default" id="#newTabID#">
+					<div class="j-panel panel panel-default" id="#local.panelID#">
 						<a data-toggle="collapse" href="##tabSystem">
 							<div class="panel-heading">
 								<h4 class="panel-title">

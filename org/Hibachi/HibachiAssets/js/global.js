@@ -56,66 +56,69 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
      * Function to load from Config JSON and udpate tab positions
      * */
     function loadTabs() {
+    	//Load Config JSON file
 		var tabsConfigPath = '../../Slatwall/custom/system/config.json';
+		//Ready from JSON File
 		jQuery.getJSON( tabsConfigPath, function(tabsConfig) {
-			if(tabsConfig.hasOwnProperty('data')) {
-				if(tabsConfig.data.hasOwnProperty('entityTabs')) {
-					
-					//Load tabs info from config
-					tabsConfig = tabsConfig.data.entityTabs;
-					
-					var tabsList = [];
-					var entityName = "";
-					if( jQuery('div[id^="tabdetails_"]').length ) { //If detail tab exists
-						jQuery('div[id^="tabdetails_"]').each(function(item, obj){
-							
-							//create IDs array as defined on element
-							var idsArray = jQuery(obj).attr("id").split("_");
-							//1st index will be entity name
-							//2nd index will be name of view
-							if(idsArray.length == 3  && tabsConfig.hasOwnProperty(idsArray[1])) { //Any other tabs like custom, settings, email will have different length
-								
-								//get position of tab
-								entityName = idsArray[1];
-								var position = getKeyByValue( JSON.parse(tabsConfig[entityName]), idsArray[2] );
-								if(position) {
-									tabsList[position] = {
-										"id" : jQuery(obj).attr("id")
-									};
-								}
-							} else if(idsArray.length==2 && tabsConfig.hasOwnProperty(entityName) ) {
-								
-							}
-		
-							return;
-						});
-						
-						//Move HTML
-						for( var i=1; i < tabsList.length; i++ ) {
-							if( tabsList[i] ) {
-								
-								var orgDiv = jQuery('div[id^="tabdetails_"]')[i - 1];
-								var targetDiv = jQuery('div[id="'+tabsList[i].id+'"]');
-								
-								if( orgDiv && targetDiv ) {
-									var clone = $(orgDiv).clone();
-									jQuery(orgDiv).replaceWith( jQuery(targetDiv).clone() );
-									jQuery(targetDiv).replaceWith( clone );
-								}
-							}
-						}
-						
-						
-		
-					}
-				} else {
-					console.log("admin Tabs not found.");
-				}
-				
-			} else {
-				console.log("data not found.");
+			//check if correct json is loaded
+			if( !tabsConfig.hasOwnProperty('data') || !tabsConfig.data.hasOwnProperty('entityTabs') ) {
+				return;	
 			}
 			
+			//If detail tab does not exists
+			if( !jQuery('div[id^="tabdetails_"]').length ) {
+				return;
+			}
+			
+			//Load tabs info from config
+			tabsConfig = tabsConfig.data.entityTabs;
+			
+			var tabsList = [];
+			var entityName = "";
+			
+			//Loop through available detail tabs from HTML DOMs
+			jQuery('div[id^="tabdetails_"]').each(function(item, obj){
+				
+				//create IDs array as defined on element
+				//1st index will be entity name
+				//2nd index will be name of view
+				var idsArray = jQuery(obj).attr("id").split("_");
+				//Skip any element with invalid ID
+				if(idsArray.length != 3  || !tabsConfig.hasOwnProperty(idsArray[1])) {
+					return;
+				}
+					
+				//get position of tab
+				//get post by entity name and view name form JSON
+				var position = getKeyByValue( JSON.parse(tabsConfig[ idsArray[1] ]), idsArray[2] );
+				if( position ) {
+					tabsList[position] = {
+						"id" : jQuery(obj).attr("id")
+					};
+				}
+				return;
+			});
+						
+			//Move HTML
+			for( var i=1; i < tabsList.length; i++ ) {
+				//if invalid tab position
+				//this can happen if we have wrong sequence of postions inside JSON
+				if( !tabsList[i] ) {
+					continue;
+				}
+				
+				var orgDiv = jQuery('div[id^="tabdetails_"]')[i - 1];
+				var targetDiv = jQuery('div[id="'+tabsList[i].id+'"]');
+				//check if both divs exist
+				if( !orgDiv || !targetDiv ) {
+					continue;
+				}
+				
+				//Clone and swap DIVs
+				var clone = $(orgDiv).clone();
+				jQuery(orgDiv).replaceWith( jQuery(targetDiv).clone() );
+				jQuery(targetDiv).replaceWith( clone );
+			}
 
 		});
 

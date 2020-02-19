@@ -69,7 +69,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
     /**
      * Function to append tabs JSON file to Config JSON
      * */
-    public any function appendTabsJson(json) {
+    public any function appendTabsJson(required string json) {
         //Existing Config Json
         var configJson = DeserializeJSON( arguments.json );
         
