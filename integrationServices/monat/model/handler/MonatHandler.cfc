@@ -219,7 +219,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 				baseID          = arguments.orderTemplate.getOrderTemplateID(),
 				baseObject      = 'OrderTemplate',
 				processMethod   = 'updateCalculatedProperties',
-				entityQueueData = arguments.data
+				entityQueueData = {} //no data needed 
 		); 	
 	}
 	
