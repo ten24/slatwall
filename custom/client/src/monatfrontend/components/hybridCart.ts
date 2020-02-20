@@ -6,7 +6,9 @@ class HybridCartController {
 	
 	//@ngInject
 	constructor(public monatService, public observerService, public orderTemplateService, public publicService) {
-
+		this.observerService.attach(this.getCart.bind(this),'updateOrderItemSuccess');
+		this.observerService.attach(this.getCart.bind(this),'removeOrderItemSuccess');
+		this.observerService.attach(this.getCart.bind(this),'addOrderItemSuccess');
 	}
 
 	public $onInit = () => {
