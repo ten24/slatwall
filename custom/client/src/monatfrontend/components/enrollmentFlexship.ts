@@ -1,11 +1,14 @@
-import{ HybridCartController, genericObject, genericTemplate} from './hybridCart';
+import{ HybridCartController, genericObject, GenericTemplate} from './hybridCart';
 
+interface GenericOrderTemplateItem extends genericObject{
+	orderTemplateItem:string;
+}
 
 class EnrollmentFlexshipController {
 	public showCart = false;
 	public cart:any;
 	public isEnrollment:boolean;
-	public orderTemplate:genericTemplate;
+	public orderTemplate:GenericTemplate;
 	public orderTemplateID:string;
 	public hybridCart:HybridCartController;
 	
@@ -28,7 +31,7 @@ class EnrollmentFlexshipController {
 		this.hybridCart.getFlexship(ID)
 	}
 	
-    public removeOrderTemplateItem = (item:genericObject) => {
+    public removeOrderTemplateItem = (item:GenericOrderTemplateItem) => {
     	this.orderTemplateService
     	.removeOrderTemplateItem(item.orderTemplateItemID)
     	.then( (data) => {
@@ -40,7 +43,7 @@ class EnrollmentFlexshipController {
     	});
     }
     
-    public increaseOrderTemplateItemQuantity = (item:genericObject) => {
+    public increaseOrderTemplateItemQuantity = (item:GenericOrderTemplateItem) => {
     	this.orderTemplateService.editOrderTemplateItem(item.orderTemplateItemID, item.quantity + 1).then( (data) => {
         	if(data.successfulActions && data.successfulActions.indexOf('public:order.editOrderTemplateItem') > -1) {
 				console.log('success')
@@ -50,7 +53,7 @@ class EnrollmentFlexshipController {
         });
     }
     
-    public decreaseOrderTemplateItemQuantity = (item:genericObject) => {
+    public decreaseOrderTemplateItemQuantity = (item:GenericOrderTemplateItem) => {
     	this.orderTemplateService.editOrderTemplateItem(item.orderTemplateItemID, item.quantity - 1).then( data => {
         	if(data.successfulActions && data.successfulActions.indexOf('public:order.editOrderTemplateItem') > -1) {
 				console.log('success');
