@@ -6,13 +6,20 @@ class HybridCartController {
 	
 	//@ngInject
 	constructor(public monatService, public observerService, public orderTemplateService, public publicService) {
-		this.observerService.attach(ID => {
-			this.getFlexship(ID)
-		},'flexshipCreated')
 
 	}
 
 	public $onInit = () => {
+		
+		if(this.isEnrollment){
+			this.observerService.attach(ID => {
+				this.getFlexship(ID)
+			},'flexshipCreated');
+			
+			if(localStorage.flexshipID){
+				this.getFlexship(localStorage.flexshipID);
+			}
+		}
 	}
 	
 	public toggleCart():void{
@@ -20,6 +27,11 @@ class HybridCartController {
 		if(this.showCart){
 			this.getCart();
 		}
+	}
+	
+	public redirect(cart = true):void{
+		let href = cart ? '/shopping-cart/' : '/checkout/';
+		this.monatService.redirectToProperSite(href);
 	}
 	
 	private getCart():void{
@@ -82,4 +94,4 @@ class HybridCart {
 	}
 }
 
-export { HybridCart };
+export { HybridCart, HybridCartController };

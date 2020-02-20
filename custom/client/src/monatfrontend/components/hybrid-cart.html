@@ -10,11 +10,15 @@
         inset 0px 11px 8px -10px #CCC,
         inset 0px -11px 8px -10px #CCC; 
 	}
+	
+	.hybrid-cart-body .title{
+		font-size:12px;
+	}
 	.hybrid-cart-body li{
 		overflow-x: hidden;
 	}
 	.scroll-body{
-		height: 12em;
+		max-height: 12em;
     	overflow: scroll;
 	}
 	
@@ -53,19 +57,19 @@
 </span>
 <div ng-if="hybridCart.showCart" class="position-absolute hybrid-cart-wrapper">
 	<div class="row">
-		<div class="col">
+		<div class="col accordion-group">
 			<div id="accordion">
-				<div class="card w-100" data-parent="#accordion">
+				<div class="card w-100">
 					<div class="card-header bg-transparent p-0">
 						<div class="bg-primary">
-							<a class="py-0 text-white" data-toggle="collapse" href="#hybridCartBody">
+							<a class="py-0 text-white" data-toggle="collapse" data-target="#hybridCartBody">
 								<div class="py-3 px-3">
 									Today's Order - <p class="d-inline" ng-bind-html="hybridCart.cart.total | swcurrency:hybridCart.cart.currencyCode"></p>
 								</div>							
 							</a>
 						</div>
 					</div>
-					<div class="collapse show multi-collapse" id="hybridCartBody">
+					<div class="collapse show multi-collapse" id="hybridCartBody" data-parent="#accordion">
 						<div class="cart-progress-bar my-2 py-1 px-3">
 							<div class="mb-2">
 								<progress id="file" value="32" max="100"> 32% </progress>
@@ -91,7 +95,7 @@
 											</div>
 											<div class="col">
 												<a class="w-100 pb-1 pt-0" ng-href="{{item.skuProductURL}}">
-													<p class="d-inline" ng-bind="item.sku.skuDefinition"></p>
+													<p class="d-inline title" ng-bind="item.sku.skuDefinition"></p>
 												</a>
 												<div class="qty">
 													<button
@@ -116,7 +120,7 @@
 														+
 													</button>
 													
-													<span class="ml-2" ng-bind-html="item.extendedPriceAfterDiscount | swcurrency:monatMiniCart.cart.currencyCode"></span>
+													<span class="ml-2" ng-bind-html="item.extendedPriceAfterDiscount | swcurrency:hybridCart.cart.currencyCode"></span>
 												</div>
 											</div>
 										</div>
@@ -169,8 +173,8 @@
 							</div>
 							<div class="row">
 								<div ng-if="hybridCart.isEnrollment != true" class="btn-group w-100">
-							  		<button type="button" class="btn btn-secondary">View Cart</button>
-							  		<button type="button" class="btn bg-primary">Checkout</button>
+							  		<button ng-click="hybridCart.redirect()" type="button" class="btn btn-secondary">View Cart</button>
+							  		<button ng-click="hybridCart.redirect(false)" type="button" class="btn bg-primary">Checkout</button>
 								</div>						
 							</div>
 					</div>
