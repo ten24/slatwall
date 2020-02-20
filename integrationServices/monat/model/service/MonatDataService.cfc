@@ -1435,4 +1435,46 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 		
 		logHibachi("End: #pageNumber# - #pageSize# - #index#", true);
     }
+    
+    
+    public any function fixMonatProductRemoteID(required struct rc){
+		param name="arguments.rc.pageNumber" default="1";
+		param name="arguments.rc.pageSize" default="100";
+		param name="arguments.rc.days" default=0;
+		param name="arguments.rc.dryRun" default="false";
+
+		getService("HibachiTagService").cfsetting(requesttimeout="60000");
+
+		var extraBody = {};
+
+		arguments.rc.pageMax = this.getLastProductPageNumber(arguments.rc.pageSize, extraBody);
+	
+		for(var index = arguments.rc.pageNumber; index <= arguments.rc.pageMax; index++){
+			var productResponse = this.getApiResponse( arguments.rc.days > 0 ? "SWGetNewUpdatedSKU" : "QueryItems", index, arguments.rc.pageSize, extraBody );
+
+			//goto next page causing this is erroring!
+			if ( productResponse.hasErrors ){
+				continue;
+			}
+
+			//Set the pagination info.
+			var monatProducts = productResponse.Data.Records ?: [];
+
+			for (var skuData in monatProducts){
+
+                queryExecute("update swSku set remoteID = :remoteID WHERE skuCode = :skuCode",{
+                    'remoteID' = { value="#trim(skuData['ItemId'])#", cfsqltype="cf_sql_varchar"},
+                    'skuCode' = { value="#trim(skuData['ItemCode'])#", cfsqltype="cf_sql_varchar"}
+                });
+                
+                queryExecute("update swProduct set remoteID = :remoteID WHERE productCode = :productCode",{
+                    'remoteID' = { value="#trim(skuData['ItemId'])#", cfsqltype="cf_sql_varchar"},
+                    'productCode' = { value="#trim(skuData['ItemCode'])#", cfsqltype="cf_sql_varchar"}
+                });
+
+			}
+		}
+
+	
+	}
 }

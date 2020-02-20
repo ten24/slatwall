@@ -3000,6 +3000,14 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		getService("MonatDataService").importMonatProducts(argumentCollection=arguments);
 	}
 	
+	public void function fixMonatProductRemoteID(required struct rc){
+		getService("HibachiTagService").cfsetting(requesttimeout="60000");
+		getFW().setView("public:main.blank");
+		getService("MonatDataService").fixMonatProductRemoteID(argumentCollection=arguments);
+	}
+	
+	
+	
     public void function importVibeAccounts(){
 		getService("HibachiTagService").cfsetting(requesttimeout="60000");
 		var importSuccess = true;
