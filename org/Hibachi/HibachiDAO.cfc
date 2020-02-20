@@ -493,7 +493,7 @@
 			</cfif>
 			
 			<cfif !sqlResult.recordCount>
-				<cfset recordInsert(tableName=arguments.tableName, insertData=arguments.insertData, dryRun) />
+				<cfset recordInsert(tableName=arguments.tableName, insertData=arguments.insertData, dryRun=arguments.dryRun) />
 			</cfif>
 		</cfif>
 	</cffunction>
