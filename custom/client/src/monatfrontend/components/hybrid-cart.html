@@ -65,7 +65,7 @@
 							</a>
 						</div>
 					</div>
-					<div class="collapse multi-collapse" id="hybridCartBody">
+					<div class="collapse show multi-collapse" id="hybridCartBody">
 						<div class="cart-progress-bar my-2 py-1 px-3">
 							<div class="mb-2">
 								<progress id="file" value="32" max="100"> 32% </progress>
@@ -177,7 +177,7 @@
 					</div>
 				</div>	
 				<div ng-if="hybridCart.isEnrollment">
-					<enrollment-flexship></enrollment-flexship>
+					<enrollment-flexship order-template="hybridCart.orderTemplateID"></enrollment-flexship>
 				</div>
 			</div>
 		</div>

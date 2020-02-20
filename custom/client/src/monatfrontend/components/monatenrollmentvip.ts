@@ -178,7 +178,9 @@ class VIPController {
     public createOrderTemplate = (orderTemplateSystemCode:string = 'ottSchedule') => {
         this.loading = true;
         this.orderTemplateService.createOrderTemplate(orderTemplateSystemCode).then(result => {
+        	if(!result.orderTemplate) return;
         	this.flexshipID = result.orderTemplate;
+        	this.observerService.notify('flexshipCreated', this.flexshipID);
         	if(this.isNotSafariPrivate && this.flexshipID){
         		localStorage.setItem('flexshipID', this.flexshipID);
         	}

@@ -6,46 +6,29 @@ class EnrollmentFlexshipController {
 	public showCart = false;
 	public cart:any;
 	public isEnrollment:boolean;
+	public orderTemplate:string;
+	public orderTemplateID:string;
 	
 	//@ngInject
-	constructor(public monatService, public observerService, public $rootScope, public publicService) {
-
+	constructor(public monatService, public observerService, public orderTemplateService, public publicService) {
 
 	}
 
 	public $onInit = () => {
-	}
-	
-	public toggleCart():void{
-		this.showCart = !this.showCart;
-		if(this.showCart){
-			this.getCart();
+		if(this.orderTemplate){
+			this.orderTemplateID = this.orderTemplate;
 		}
+				//this.getFlexship();
 	}
-	
-	private getCart():void{
-		this.monatService.getCart(true).then(res => {
-			this.cart = res;
-			console.log(res);
-		});
-	}
-	
-	public removeItem = (item) => {
-		this.monatService.removeFromCart(item.orderItemID).then(res => {
-			this.cart = res.cart;
-		});
-	}
-	
-	public increaseItemQuantity = (item) => {
-		this.monatService.updateCartItemQuantity(item.orderItemID, item.quantity + 1).then(res => {
-			this.cart = res.cart;
-		});
-	}
-	
-	public decreaseItemQuantity = (item) => {
-		if (item.quantity <= 1) return;
-		this.monatService.updateCartItemQuantity(item.orderItemID, item.quantity - 1).then(res => {
-			this.cart = res.cart;
+
+	public getFlexship() {
+		let extraProperties = "cartTotalThresholdForOFYAndFreeShipping";
+		this.orderTemplateService.getOrderTemplateDetails(this.orderTemplateID, extraProperties).then(data => {
+			if(data.orderTemplate){
+				this.orderTemplate = data.orderTemplate;
+			} else {
+				throw(data);
+			}
 		});
 	}
 	
@@ -53,12 +36,12 @@ class EnrollmentFlexshipController {
 
 class EnrollmentFlexship {
 	public restrict: string = 'E';
-	public transclude: boolean = true;
 	public templateUrl: string;
 	public scope = {};
 	public bindToController = {
 		orderTemplate: '<?',
 	};
+
 	public controller = EnrollmentFlexshipController;
 	public controllerAs = 'enrollmentFlexship';
 

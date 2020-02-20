@@ -14,7 +14,7 @@
 					<progress id="progress" value="32" max="100"> 32% </progress>
 				</div>
 				<div class="alert alert-success mb-0 py-0 rounded-0 text-center">
-					<small>You are $30 away from a 20% discount.</small>
+					<small>You are $30 away from a 20% discount. {{enrollmentFlexship.orderTemplate}}</small>
 				</div>
 			</div>
 			<div class="card-body p-0 hybrid-cart-body">
@@ -110,13 +110,7 @@
 						</small>
 					</div>
 				</div>
-				<div class="row">
-					<div ng-if="enrollmentFlexship.isEnrollment != true" class="btn-group w-100">
-				  		<button type="button" class="btn btn-secondary">View Cart</button>
-				  		<button type="button" class="btn bg-primary">Checkout</button>
-					</div>						
-				</div>
-		</div>
+			</div>
 		</div>
 	</div>	
 

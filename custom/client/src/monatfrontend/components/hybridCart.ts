@@ -6,10 +6,13 @@ class HybridCartController {
 	public showCart = false;
 	public cart:any;
 	public isEnrollment:boolean;
+	public orderTemplateID:string;
 	
 	//@ngInject
 	constructor(public monatService, public observerService, public $rootScope, public publicService) {
-
+		this.observerService.attach(ID => {
+			this.orderTemplateID = ID;
+		},'flexshipCreated')
 
 	}
 
@@ -26,7 +29,6 @@ class HybridCartController {
 	private getCart():void{
 		this.monatService.getCart(true).then(res => {
 			this.cart = res;
-			console.log(res);
 		});
 	}
 	
