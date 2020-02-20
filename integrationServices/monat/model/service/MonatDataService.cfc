@@ -1104,9 +1104,11 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 		param name="arguments.rc.days" default=0;
 		param name="arguments.rc.dryRun" default="false";
 
+
 		getService("HibachiTagService").cfsetting(requesttimeout="60000");
 
 		var extraBody = {};
+		
 
 		if(arguments.rc.days > 0){
 			extraBody = {
@@ -1128,8 +1130,8 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 			'GBR' : 'GBP',
 			'USA' : 'USD',
 			'IRL' : 'EUR',
-			'POL' : 'CAD',
-			'CAN' : 'PLN',
+			'POL' : 'PLN',
+			'CAN' : 'CAD',
 		};
 
 		var siteProductCodes = {
@@ -1252,33 +1254,35 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 
 		if(skuQuery.recordCount){
 			var importSkuConfig = FileRead('#basePath#../../config/import/skus.json');
-			getService("HibachiDataService").loadDataFromQuery(skuQuery, importSkuConfig, arguments.dryRun);
+			getService("HibachiDataService").loadDataFromQuery(skuQuery, importSkuConfig, arguments.rc.dryRun);
 		}
 
 		if(skuPriceQuery.recordCount){
 			var importSkuPriceConfig = FileRead('#basePath#../../config/import/skuprices.json');
-			getService("HibachiDataService").loadDataFromQuery(skuPriceQuery, importSkuPriceConfig, arguments.dryRun);
+			getService("HibachiDataService").loadDataFromQuery(skuPriceQuery, importSkuPriceConfig, arguments.rc.dryRun);
 		}
 
 		if(skuBundleQuery.recordCount){
 			var importSkuBundleConfig = FileRead('#basePath#../../config/import/bundles.json');
-			getService("HibachiDataService").loadDataFromQuery(skuBundleQuery, importSkuBundleConfig, arguments.dryRun);
+			getService("HibachiDataService").loadDataFromQuery(skuBundleQuery, importSkuBundleConfig, arguments.rc.dryRun);
 
 			var importSkuBundle2Config = FileRead('#basePath#../../config/import/bundles2.json');
-			getService("HibachiDataService").loadDataFromQuery(skuBundleQuery, importSkuBundle2Config, arguments.dryRun);
+			getService("HibachiDataService").loadDataFromQuery(skuBundleQuery, importSkuBundle2Config, arguments.rc.dryRun);
 		}
 
 		if(stockQuery.recordCount){
 			var importStockConfig = FileRead('#basePath#../../config/import/stocks.json');
-			getService("HibachiDataService").loadDataFromQuery(stockQuery, importStockConfig, arguments.dryRun);
+			getService("HibachiDataService").loadDataFromQuery(stockQuery, importStockConfig, arguments.rc.dryRun);
 		}
 
-		//this.addUrlTitlesToProducts();
-		if(!arguments.dryRun){
+// 		//this.addUrlTitlesToProducts();
+		if(!arguments.rc.dryRun){
 			this.associateProductWithSite(siteProductCodes);
 		}else{
 			abort;
 		}
+		
+		abort;
 	}
     
     public any function importInventoryUpdates(){
