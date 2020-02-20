@@ -50,7 +50,7 @@ import { ImageManager } from './components/image-manager';
 import { AddressDeleteModal } from './components/address-delete-modal';
 import { MonatConfirmMessageModel } from './components/monat-modal-confirm-message'
 import { HybridCart } from './components/hybridCart'
-
+import { EnrollmentFlexship } from './components/enrollmentFlexship'
 
 // controllers
 import { MonatForgotPasswordController } from './controllers/monat-forgot-password';
@@ -121,6 +121,7 @@ var monatfrontendmodule = angular
 	.directive ('monatConfirmMessageModel',MonatConfirmMessageModel.Factory())
 	.directive('monatDatePicker',MonatDatePicker.Factory())
 	.directive('hybridCart',HybridCart.Factory())
+	.directive('enrollmentFlexship',EnrollmentFlexship.Factory())
 	
 	// Controllers
 	.controller('searchController', MonatSearchController)

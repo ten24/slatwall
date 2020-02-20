@@ -2,7 +2,7 @@
 	.hybrid-cart-wrapper{
 		right: 10%;
 		left:65%;
-		font-size:12.5px;
+		font-size:12px;
 	}
 	
 	.hybrid-cart-body{
@@ -54,123 +54,132 @@
 <div ng-if="hybridCart.showCart" class="position-absolute hybrid-cart-wrapper">
 	<div class="row">
 		<div class="col">
-			<div class="card mb-3 w-100">
-				<div class="card-header bg-transparent p-0">
-					<div class="bg-primary">
-						<div class="py-2 px-3">
-							Today's Order - <span ng-bind-html="hybridCart.cart.total | swcurrency:hybridCart.cart.currencyCode"></span>
+			<div id="accordion">
+				<div class="card w-100" data-parent="#accordion">
+					<div class="card-header bg-transparent p-0">
+						<div class="bg-primary">
+							<a class="py-0 text-white" data-toggle="collapse" href="#hybridCartBody">
+								<div class="py-3 px-3">
+									Today's Order - <span ng-bind-html="hybridCart.cart.total | swcurrency:hybridCart.cart.currencyCode"></span>
+								</div>							
+							</a>
 						</div>
 					</div>
-					<div class="cart-progress-bar my-2 py-1 px-3">
-						<div class="mb-2">
-							<progress id="file" value="32" max="100"> 32% </progress>
+					<div class="collapse multi-collapse" id="hybridCartBody">
+						<div class="cart-progress-bar my-2 py-1 px-3">
+							<div class="mb-2">
+								<progress id="file" value="32" max="100"> 32% </progress>
+							</div>
+							<div class="alert alert-success mb-0 py-0 rounded-0 text-center">
+								<small>You are $30 away from a 20% discount.</small>
+							</div>
 						</div>
-						<div class="alert alert-success mb-0 py-0 rounded-0 text-center">
-							<small>You are $30 away from a 20% discount.</small>
-						</div>
-					</div>
-				</div>
-				<div class="card-body p-0 hybrid-cart-body">
-					<div class="px-3 scroll-body">
-						<ul class="list-group list-group-flush">
-							<li ng-repeat="item in hybridCart.cart.orderItems" class="bg-transparent list-group-item d-flex justify-content-between align-items-center p-0">
-								<div class="row align-items-center">
-									<div class="p-1">
-										<a class="py-0" ng-href="{{item.skuProductURL}}">
-											<img 
-												image-manager 
-												height="75px" 
-												src="https://monatteam.ten24dev.com/Slatwall/custom/assets/images/product/default/cache/20096800_300w_300h.jpg" 
-												alt="{{item.sku.skuDefinition}}"
-											>
-										</a>
-									</div>
-									<div class="col">
-										<a class="w-100 pb-1 pt-0" ng-href="{{item.skuProductURL}}">
-											<p class="d-inline" ng-bind="item.sku.skuDefinition"></p>
-										</a>
-										<div class="qty">
-											<button
-												type="button"
-												class="minus p-0"
-												ng-disabled="item.quantity <= 1"
-												ng-click="hybridCart.decreaseItemQuantity(item)"
-											>
-												- 
-											</button>
-											<input
-												type="text"
-												id="qty"
-												name="quantity"
-												ng-model="item.quantity"
-											/>
-											<button
-												type="button"
-												class="plus p-0"
-												ng-click="hybridCart.increaseItemQuantity(item)"
-											>
-												+
-											</button>
-											
-											<span class="ml-2" ng-bind-html="item.extendedPriceAfterDiscount | swcurrency:monatMiniCart.cart.currencyCode"></span>
+						<div class="card-body p-0 hybrid-cart-body">
+							<div class="px-3 scroll-body">
+								<ul class="list-group list-group-flush">
+									<li ng-repeat="item in hybridCart.cart.orderItems" class="bg-transparent list-group-item d-flex justify-content-between align-items-center p-0">
+										<div class="row align-items-center">
+											<div class="p-1">
+												<a class="py-0" ng-href="{{item.skuProductURL}}">
+													<img 
+														image-manager 
+														height="75px" 
+														src="https://monatteam.ten24dev.com//Slatwall/custom/assets/images/product/default/cache/10392000_300w_300h.jpg" 
+														alt="{{item.sku.skuDefinition}}"
+													>
+												</a>
+											</div>
+											<div class="col">
+												<a class="w-100 pb-1 pt-0" ng-href="{{item.skuProductURL}}">
+													<p class="d-inline" ng-bind="item.sku.skuDefinition"></p>
+												</a>
+												<div class="qty">
+													<button
+														type="button"
+														class="minus p-0"
+														ng-disabled="item.quantity <= 1"
+														ng-click="hybridCart.decreaseItemQuantity(item)"
+													>
+														- 
+													</button>
+													<input
+														type="text"
+														id="qty"
+														name="quantity"
+														ng-model="item.quantity"
+													/>
+													<button
+														type="button"
+														class="plus p-0"
+														ng-click="hybridCart.increaseItemQuantity(item)"
+													>
+														+
+													</button>
+													
+													<span class="ml-2" ng-bind-html="item.extendedPriceAfterDiscount | swcurrency:monatMiniCart.cart.currencyCode"></span>
+												</div>
+											</div>
 										</div>
-									</div>
+										<span class="badge badge-pill delete">
+											<a ng-click="hybridCart.removeItem(item)" href="#">
+												x
+											</a>
+										</span>
+									</li>
+								</ul>							
+							</div>
+						</div>
+						<div class="card-footer">
+							<div class="row justify-content-between px-3">
+								<div>
+									<small> Suggested Retail Price </small>
 								</div>
-								<span class="badge badge-pill delete">
-									<a ng-click="hybridCart.removeItem(item)" href="#">
-										x
-									</a>
-								</span>
-							</li>
-						</ul>							
+								<div>
+									<small> $99.00 </small>
+								</div>
+							</div>
+							<div class="row justify-content-between px-3">
+								<div>
+									<small> Your Price </small>
+								</div>
+								<div>
+									<small> $99.00 </small>
+								</div>
+							</div>
+							<div class="row justify-content-between px-3">
+								<div>
+									<small> Purchase Plus Discount </small>
+								</div>
+								<div>
+									<small>$99.00</small>
+								</div>
+							</div>
+							<hr class="my-0">
+							<div class="row justify-content-between px-3 my-1 mb-3">
+								<div>
+									<small> 
+										<b> TODAYS ORDER TOTAL </b>
+									</small>
+								</div>
+								<div>
+									<small> 
+										<b ng-bind-html="hybridCart.cart.total | swcurrency:hybridCart.cart.currencyCode"></b> 
+									</small>
+								</div>
+							</div>
+							<div class="row">
+								<div ng-if="hybridCart.isEnrollment != true" class="btn-group w-100">
+							  		<button type="button" class="btn btn-secondary">View Cart</button>
+							  		<button type="button" class="btn bg-primary">Checkout</button>
+								</div>						
+							</div>
 					</div>
+					</div>
+				</div>	
+				<div ng-if="hybridCart.isEnrollment">
+					<enrollment-flexship></enrollment-flexship>
 				</div>
-				<div class="card-footer">
-					<div class="row justify-content-between px-3">
-						<div>
-							<small> Suggested Retail Price </small>
-						</div>
-						<div>
-							<small> $99.00 </small>
-						</div>
-					</div>
-					<div class="row justify-content-between px-3">
-						<div>
-							<small> Your Price </small>
-						</div>
-						<div>
-							<small> $99.00 </small>
-						</div>
-					</div>
-					<div class="row justify-content-between px-3">
-						<div>
-							<small> Purchase Plus Discount </small>
-						</div>
-						<div>
-							<small>$99.00</small>
-						</div>
-					</div>
-					<hr class="my-0">
-					<div class="row justify-content-between px-3 my-1 mb-3">
-						<div>
-							<small> 
-								<b> TODAYS ORDER TOTAL </b>
-							</small>
-						</div>
-						<div>
-							<small> 
-								<b ng-bind-html="hybridCart.cart.total | swcurrency:hybridCart.cart.currencyCode"></b> 
-							</small>
-						</div>
-					</div>
-					<div class="row">
-						<div ng-if="hybridCart.isEnrollment != true" class="btn-group w-100">
-					  		<button type="button" class="btn btn-secondary">View Cart</button>
-					  		<button type="button" class="btn bg-primary">Checkout</button>
-						</div>						
-					</div>
-				</div>
-			</div>	
+			</div>
 		</div>
 	</div>	
 </div>
