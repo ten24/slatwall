@@ -422,7 +422,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
         	logHibachi("createDelivery: #shipment.shipmentNumber#",true);
 			var order = order(shipment.OrderNumber);
 
-            if (!isNull(order) && dataExistsToCreateDelivery(shipment) && !orderIsdelivered( order )){
+            if (!isNull(order) && dataExistsToCreateDelivery(shipment)){
                 
     			var findOrderDeliveryByRemoteID = getOrderService().getOrderDeliveryByRemoteID(shipment.shipmentId, false);
     			
@@ -489,19 +489,13 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
                 createDeliveryItems( orderDelivery );
                 logHibachi("Created a delivery for orderNumber: #shipment['OrderNumber']#",true);
                 
-                // Close the order if its ready.
-                var orderOnDelivery = orderDelivery.getOrder();
-				orderOnDelivery.setOrderStatusType(CLOSEDSTATUS);
-				
-				ormStatelessSession.update("SlatwallOrder", orderOnDelivery ); //update because it already exists.
-                logHibachi("Closed the order for orderNumber: #shipment['OrderNumber']#",true);
-                
+                // Close the order.
                 //now fire the event for this delivery.
                 var eventData = {entity: orderDelivery};
                 getHibachiScope().getService("hibachiEventService").announceEvent(eventName="afterOrderDeliveryCreateSuccess", eventData=eventData);
                 
             }else{
-                logHibachi("createDelivery: Can't create the delivery - already exists!", true);
+                logHibachi("createDelivery: Can't create the delivery - already exists or data not present.", true);
             }
         };
 
@@ -554,21 +548,22 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 	    		
 	    		tx.commit();
 	    		ormGetSession().clear();
-			}catch(shipmentError){
+			}catch(any shipmentError){
 
 				ormGetSession().clear();
 				
-				logHibachi("Error: importing shipment. ",true);
+				logHibachi("Errors: importing shipment. #shipmentError.message#",true);
 			}
 			
 			// Now process all the orderItem that need calculated property updates for this page.
     		try{
         		if (len(modifiedEntityIDs)){
         		    logHibachi("Adding orderitems to queue.", true);
-        		    queryExecute("INSERT into SwEntityQueue (entityQueueID, baseObject, baseID, processMethod, entityQueueData, createdDateTime, tryCount) select orderItemID as entityQueueID, 'OrderItem' as baseObject, orderItemID as baseID, 'processOrderItem_updateCalculatedProperties' as processMethod, '{}', now() as createdDateTime, 0 as tryCount from SwOrderItem where orderID in ?", 
+        		    queryExecute("INSERT into SwEntityQueue (entityQueueID, baseObject, baseID, processMethod, entityQueueData, createdDateTime, tryCount) select orderItemID as entityQueueID, 'OrderItem' as baseObject, orderItemID as baseID, 'processOrderItem_updateCalculatedProperties' as processMethod, '{}', now() as createdDateTime, 0 as tryCount from SwOrderItem where orderID in (?)", 
                       [{ value="#modifiedEntityIDs#", cfsqltype="cf_sql_varchar", list="true"}]);
         		}
     		}catch(any entityQueueError){
+    		    
     		    logHibachi("Error while adding orderitems to the queue.[#entityQueueError.message#]", true);
     		}
 			
@@ -577,6 +572,15 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
         }
 
 		ormStatelessSession.close();
+		
+		//now set al the orders to closed.
+		for (var orderID in modifiedEntityIDs){
+		    var order = getService("OrderService").getOrderByOrderID(orderID);
+		    order.setOrderStatusType(CLOSEDSTATUS);
+		    getService("ORderService").saveOrder(order);
+		    ormFlush();
+		}
+		
 		writeDump("End: #pageNumber# - #pageSize#");
         // Sets the default view 
 
