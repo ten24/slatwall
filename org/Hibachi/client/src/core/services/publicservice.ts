@@ -160,7 +160,6 @@ class PublicService {
         let urlBase = this.baseActionPath+'getCart/';
         if(!this.cartDataPromise || refresh){
             this.cartDataPromise = this.getData( urlBase, "cart", param );
-            console.log( this.cartDataPromise );
         }
         
         return this.cartDataPromise;
