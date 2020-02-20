@@ -1,17 +1,21 @@
 type genericObject = { [key:string]: any }
 
 interface GenericCart extends genericObject {
-	orderItems: Array<genericObject>;
+	orderItems: Array<GenericOrderTemplateItem>;
 	orderID: string
 }
 
 interface GenericTemplate extends genericObject {
-	orderTemplateItems: Array<genericObject>;
+	orderTemplateItems: Array<GenericOrderItem>;
 	orderTemplateID: string
 }
 
 interface GenericOrderItem extends genericObject{
 	orderItemID:string;
+}
+
+interface GenericOrderTemplateItem extends genericObject{
+	orderTemplateItem:string;
 }
 
 class HybridCartController {
@@ -111,4 +115,4 @@ class HybridCart {
 	}
 }
 
-export { HybridCart, HybridCartController, genericObject, GenericTemplate};
+export { HybridCart, HybridCartController, genericObject, GenericTemplate, GenericOrderTemplateItem};

@@ -1,8 +1,4 @@
-import{ HybridCartController, genericObject, GenericTemplate} from './hybridCart';
-
-interface GenericOrderTemplateItem extends genericObject{
-	orderTemplateItem:string;
-}
+import{ HybridCartController, genericObject, GenericTemplate, GenericOrderTemplateItem} from './hybridCart';
 
 class EnrollmentFlexshipController {
 	public showCart = false;
