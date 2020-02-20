@@ -11,10 +11,10 @@ class EnrollmentFlexshipController {
 	
 	//@ngInject
 	constructor(public monatService, public observerService, public orderTemplateService, public publicService) {
+		//TODO: review destroying component and releasing event listener when toggeling
 		this.observerService.attach(this.getFlexship.bind(this), 'addOrderTemplateItemSuccess');
 		this.observerService.attach(this.getFlexship.bind(this), 'editOrderTemplateItemSuccess');
 		this.observerService.attach(this.getFlexship.bind(this), 'removeOrderTemplateItemSuccess');
-		
 	}
 
 	public $onInit = () => {
