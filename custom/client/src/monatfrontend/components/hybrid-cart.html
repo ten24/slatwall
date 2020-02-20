@@ -2,28 +2,33 @@
 	.hybrid-cart-wrapper{
 		right: 10%;
 		left:65%;
+		font-size:12.5px;
 	}
 	
 	.hybrid-cart-body{
     	box-shadow: 
-        	inset 0px 13px 10px -12px #CCC,
-        	inset 0px -13px 10px -12px #CCC; 
+        inset 0px 11px 8px -10px #CCC,
+        inset 0px -11px 8px -10px #CCC; 
 	}
-	
+	.hybrid-cart-body li{
+		overflow-x: hidden;
+	}
 	.scroll-body{
 		height: 12em;
     	overflow: scroll;
 	}
+	
     .qty{
         color: #000;
         display: -webkit-flex;
         display: flex;
         align-items: center;
     }
+    
     .qty button{
         border: 0 none;
         background-color: transparent;
-        font-size: 20px;
+        font-size: 16px;
         position: relative;
     }
     
@@ -38,7 +43,7 @@
 	}
     
     .delete{
-		font-size: 25px;
+		font-size: 22px;
 		font-weight: 100;
     }
     
@@ -66,12 +71,12 @@
 					</div>
 				</div>
 				<div class="card-body p-0 hybrid-cart-body">
-					<div class="p-3 scroll-body">
+					<div class="px-3 scroll-body">
 						<ul class="list-group list-group-flush">
-							<li ng-repeat="item in hybridCart.cart.orderItems" class="list-group-item d-flex justify-content-between align-items-center p-0">
+							<li ng-repeat="item in hybridCart.cart.orderItems" class="bg-transparent list-group-item d-flex justify-content-between align-items-center p-0">
 								<div class="row align-items-center">
 									<div class="p-1">
-										<a ng-href="{{item.skuProductURL}}">
+										<a class="py-0" ng-href="{{item.skuProductURL}}">
 											<img 
 												image-manager 
 												height="75px" 
@@ -97,7 +102,6 @@
 												type="text"
 												id="qty"
 												name="quantity"
-												class="form-control"
 												ng-model="item.quantity"
 											/>
 											<button
@@ -143,7 +147,7 @@
 							<small> Purchase Plus Discount </small>
 						</div>
 						<div>
-							<small>$99.00 </small>
+							<small>$99.00</small>
 						</div>
 					</div>
 					<hr class="my-0">
@@ -160,7 +164,7 @@
 						</div>
 					</div>
 					<div class="row">
-						<div ng-if="hybridCart.isEnrollment != false" class="btn-group w-100">
+						<div ng-if="hybridCart.isEnrollment != true" class="btn-group w-100">
 					  		<button type="button" class="btn btn-secondary">View Cart</button>
 					  		<button type="button" class="btn bg-primary">Checkout</button>
 						</div>						

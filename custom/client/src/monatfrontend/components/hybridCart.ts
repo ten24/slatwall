@@ -24,7 +24,7 @@ class HybridCartController {
 	}
 	
 	private getCart():void{
-		this.monatService.getCart().then(res => {
+		this.monatService.getCart(true).then(res => {
 			this.cart = res;
 			console.log(res);
 		});

@@ -75,7 +75,7 @@ class VIPController {
     	this.observerService.attach(this.getProductList,"createSuccess");
 		this.observerService.attach(this.showAddToCartMessage, 'addOrderItemSuccess'); 
 		
-
+		this.getProductList();
 		this.localStorageCheck(); 
 		
 		if(this.isNotSafariPrivate){
