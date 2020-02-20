@@ -950,10 +950,340 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 		logHibachi("End: #pageNumber# - #pageSize# - #index#", true);
     }
     
+    
+    private any function getAPIResponse(string endpoint, numeric pageNumber, numeric pageSize, struct customBody = {}){
+
+		var uri = setting('baseImportURL') & arguments.endPoint;
+		var authKeyName = "authkey";
+		var authKey = setting('authKey');
+
+		var body = {
+			"Pagination": {
+				"PageSize": "#arguments.pageSize#",
+				"PageNumber": "#arguments.pageNumber#"
+			}
+		};
+
+		if(!structIsEmpty(arguments.customBody)){
+			StructAppend(body,customBody,true);
+		}
+		httpService = new http(method = "POST", charset = "utf-8", url = uri);
+		httpService.addParam(name = "Authorization", type = "header", value = "#authKey#");
+		httpService.addParam(name = "Accept", type = "header", value = "text/plain");
+		httpService.addParam(name = "Content-Type", type = "header", value = "application/json-patch+json");
+		httpService.addParam(name = "body", type = "body", value = "#serializeJson(body)#");
+
+		try {
+			httpService.setTimeout(10000)
+			responseJson = httpService.send().getPrefix();
+
+			var response = deserializeJson(responseJson.fileContent);
+
+			if(isArray(response)){
+				response = response[1];
+			} 
+		} catch (any e) {
+			writeDump("Could not read response got #e.message# for page:#arguments.pageNumber#");
+			if(!isNull(responseJson)){
+				writeDump(responseJson);
+			}
+			var response = {}; 
+			response.status = 'error';
+		}
+		response.hasErrors = false;
+		if (isNull(response) || response.status != "success"){
+			writeDump("Could not import from #arguments.endpoint# on this page: PS-#arguments.pageSize# PN-#arguments.pageNumber#");
+			response.hasErrors = true;
+		}
+
+		return response;
+	}
+
+	private string function getSkuColumnsList(){
+		return "SKUItemCode,SKUItemID,PRODUCTItemCode,ItemName,Amount,SalesCategoryCode,SAPItemCode,ItemNote,DisableOnRegularOrders,DisableOnFlexship,ItemCategoryAccounting,CategoryNameAccounting,EntryDate,URLTitle";
+	}
+
+	private string function getSkuPriceColumnsList(){
+		return "ItemCode,SellingPrice,QualifyingPrice,TaxablePrice,Commission,RetailsCommissions,ProductPackBonus,RetailValueVolume,CurrencyCode,PriceLevel";
+	}
+
+	private string function getSkuBundleColumnsList(){
+		return "SKUItemCode,KitId,importKey,ontheflykit,ComponentItemCode,ComponentQuantity";
+	}
+
+	private string function getStockColumnsList(){
+		return "SKUItemID,LocationCode";
+	}
+
+	private any function populateSkuBundleQuery( required any skuBundleQuery, required struct skuData ){
+
+		for(var kit in arguments.skuData.KitLines){
+			var skuBundleData = {
+				'SKUItemCode' : trim(skuData['ItemCode']),
+				'ComponentItemCode' : kit['ComponentItemCode'],
+				'importKey' : trim(skuData['ItemCode']) & "-" & kit['ComponentItemCode'],
+				'ComponentQuantity' : kit['ComponentQty']
+			};
+			if(structKeyExists(kit,'ontheflykit')){
+				skuBundleData['ontheflykit'] = kit['ontheflykit'];
+			}
+			QueryAddRow(arguments.skuBundleQuery, skuBundleData);
+		}
+		return arguments.skuBundleQuery;
+	}
+
+
+	private any function associateProductWithSite(required struct siteProductCodes){
+		var swSites = {
+			'CAN' = '2c9280846974b77e016974ee40cb0019',
+			'GBR' = '2c9280846974b77e016974fe89070025',
+			'AUD' = '2c9280846974b77e016974fe91d5002a',
+			'IRL' = '2c9280846974b77e016974fe999e002f',
+			'POL' = '2c9280846974b77e016974fea1e90034',
+			'USA' = '2c97808468a979b50168a97b20290021'
+		};
+
+		for(var swSite in swSites){
+			if(!arrayLen(arguments.siteProductCodes[swSite])){
+				continue;
+			}
+
+			QueryExecute(
+				"INSERT INTO swproductsite (productID, siteID)
+				SELECT 
+					p.productID as productID,
+					:siteID as siteID
+				FROM swProduct p
+				LEFT JOIN swproductsite ps ON p.productID = ps.productID AND ps.siteID = :siteID
+				WHERE p.productCode IN (:productCodes) AND  ps.productID IS NULL",
+				{ 
+					productCodes ={value = arrayToList(siteProductCodes[swSite]), list=true}, 
+					siteID = swSites[swSite]
+				}
+			);
+		}
+	}
+
+	private any function populateStockQuery(required any stockQuery, required struct skuData){
+
+		var warehouseLookup = {
+			'CAN' : 'caWarehouse',
+			'GBR' : 'ukWarehouse',
+			'USA' : 'usWarehouse',
+			'IRL' : 'irePolWarehouse',
+			'POL' : 'irePolWarehouse'
+		}
+
+		for(var sapItemCode in arguments.skuData['SAPItemCodes']){
+
+			if(!structKeyExists(warehouseLookup, sapItemCode['CountryCode'])){
+				continue;
+			}
+			var queryRow = {
+				'SKUItemID' :  arguments.skuData['ItemId'],
+				'LocationCode' : warehouseLookup[sapItemCode['CountryCode']]
+			};
+			QueryAddRow(arguments.stockQuery, queryRow);
+		}
+
+		return arguments.stockQuery;
+	}
+
+
+	private numeric function getLastProductPageNumber(numeric pageSize = 25, struct extraBody ={}){
+		var initProductData = this.getApiResponse(!structIsEmpty(extraBody) ? "SWGetNewUpdatedSKU" : "QueryItems", 1, arguments.pageSize, arguments.extraBody );
+		if(structKeyExists(initProductData, 'Data') && structKeyExists(initProductData['Data'], 'TotalPages')){
+			return initProductData['Data']['TotalPages'];
+		}
+		return 1;
+	}
+
+	public void function importMonatProducts(required struct rc){
+		param name="arguments.rc.pageNumber" default="1";
+		param name="arguments.rc.pageSize" default="100";
+		param name="arguments.rc.days" default=0;
+		param name="arguments.rc.dryRun" default="false";
+
+		getService("HibachiTagService").cfsetting(requesttimeout="60000");
+
+		var extraBody = {};
+
+		if(arguments.rc.days > 0){
+			extraBody = {
+				"Filters": {
+				    "StartDate": DateTimeFormat( now(), "yyyy-mm-dd'T'00:00:01'.693Z'" ),
+		            "EndDate": DateTimeFormat( now(), "yyyy-mm-dd'T'23:59:59'.693Z'" )
+				}
+			};
+		}
+
+		if(!structKeyExists(arguments.rc, 'pageMax')){
+			arguments.rc.pageMax = this.getLastProductPageNumber(arguments.rc.pageSize, extraBody);
+		}
+
+		var basePath = getDirectoryFromPath(getCurrentTemplatePath());
+
+		var countryToCurrency = {
+			'CAN' : 'CAD',
+			'GBR' : 'GBP',
+			'USA' : 'USD',
+			'IRL' : 'EUR',
+			'POL' : 'CAD',
+			'CAN' : 'PLN',
+		};
+
+		var siteProductCodes = {
+			'CAN' = [],
+			'GBR' = [],
+			'AUD' = [],
+			'IRL' = [],
+			'POL' = [],
+			'USA' = []
+		};
+
+		var skuColumns = this.getSkuColumnsList();
+		var skuColumnTypes = [];
+		ArraySet(skuColumnTypes, 1, ListLen(skuColumns), 'varchar');
+		var skuQuery = QueryNew(skuColumns, skuColumnTypes);
+
+		var skuPriceColumns = this.getSkuPriceColumnsList();
+		var skuPriceColumnTypes = [];
+		ArraySet(skuPriceColumnTypes, 1, ListLen(skuPriceColumns), 'varchar');
+		var skuPriceQuery = QueryNew(skuPriceColumns, skuPriceColumnTypes);
+
+		var skuBundleColumns = this.getSkuBundleColumnsList();
+		var skuBundleColumnTypes = [];
+		ArraySet(skuBundleColumnTypes, 1, ListLen(skuBundleColumns), 'varchar');
+		var skuBundleQuery = QueryNew(skuBundleColumns, skuBundleColumnTypes);
+
+		var stockColumns = this.getStockColumnsList();
+		var stockColumnTypes = [];
+		ArraySet(stockColumnTypes, 1, ListLen(stockColumns), 'varchar');
+		var stockQuery = QueryNew(stockColumns, stockColumnTypes);
+
+
+		for(var index = arguments.rc.pageNumber; index <= arguments.rc.pageMax; index++){
+			var productResponse = this.getApiResponse( arguments.rc.days > 0 ? "SWGetNewUpdatedSKU" : "QueryItems", index, arguments.rc.pageSize, extraBody );
+
+			//goto next page causing this is erroring!
+			if ( productResponse.hasErrors ){
+				continue;
+			}
+
+			//Set the pagination info.
+			var monatProducts = productResponse.Data.Records ?: [];
+
+			for (var skuData in monatProducts){
+
+				// Setup Sku data 
+				var sku = {
+					'SKUItemID' : trim(skuData['ItemId']),
+					'SKUItemCode' : trim(skuData['ItemCode']),
+					'PRODUCTItemCode' : trim(skuData['ItemCode']),
+					'ItemName' : trim(skuData['ItemName']),
+					'ItemNote' : skuData['ItemNote'] ?: '',
+					'SalesCategoryCode' : trim(skuData['SalesCategoryCode']),
+					'DisableOnRegularOrders' : skuData['DisableInDTX'] ?: false,
+					'DisableOnFlexShip' : skuData['DisableInFlexShip'] ?: false,
+					'ItemCategoryAccounting' : trim(skuData['ItemCategoryCode']),
+					'CategoryNameAccounting' : trim(skuData['ItemCategoryName']),
+					'EntryDate' : skuData['EntryDate']
+				};
+
+				if (ArrayLen(skuData['SAPItemCodes'])) {
+					sku['SAPItemCode'] = skuData['SAPItemCodes'][1]['SAPItemCode'];
+
+					// Create Stock Query
+					stockQuery = this.populateStockQuery(stockQuery, skuData);
+
+					for(var sapItem in skuData['SAPItemCodes']){
+						if(!structKeyExists(siteProductCodes, sapItem['countryCode'])){
+							continue;
+						}
+						arrayAppend(siteProductCodes[sapItem['countryCode']], sku['SKUItemCode'])
+					}
+
+
+				}else{
+					sku['SAPItemCode'] = skuData['ItemCode'];
+				}
+
+
+				// Setup SkuPrice data
+				if(structKeyExists(skuData, 'PriceLevels') && ArrayLen(skuData['PriceLevels'])){
+					for(var skuPriceData in skuData.PriceLevels){
+						if( skuPriceData['CountryCode'] == 'UNK'){
+							continue;
+						}
+						var skuPrice = {
+							'ItemCode' : skuData.ItemCode,
+							'Commission' : skuPriceData['CommissionableVolume'] ?: 0,
+							'QualifyingPrice' : skuPriceData['QualifyingVolume'] ?: 0,
+							'RetailsCommissions' : skuPriceData['RetailProfit'] ?: 0,
+							'RetailValueVolume' : skuPriceData['RetailVolume'] ?: 0,
+							'SellingPrice' : skuPriceData['SellingPrice'] ?: 0,
+							'TaxablePrice' : skuPriceData['TaxablePrice'] ?: 0,
+							'ProductPackBonus' : skuPriceData['ProductPackVolume'] ?: 0,
+							'PriceLevel' : skuPriceData['PriceLevelCode'],
+							'CurrencyCode' : countryToCurrency[skuPriceData['CountryCode']]
+						};
+
+						// Check if this is the SKU price
+						if(skuPrice['CurrencyCode'] == 'USD' && skuPrice['PriceLevel'] == '2'){
+							sku['Amount'] = skuPrice['SellingPrice'];
+						}
+						// Add SkuPrice to CF Query
+						QueryAddRow(skuPriceQuery, skuPrice);
+					}
+				}
+				// If Sku Price not found, set it to 0
+				if(!structKeyExists(sku,'Amount')){
+					sku['Amount'] = 0;
+				}
+				// Add Sku to CF Query
+				QueryAddRow(skuQuery, sku);
+
+				// Create SkuBundle Query
+				if(arrayLen(skuData['KitLines'])){
+					skuBundleQuery = this.populateSkuBundleQuery(skuBundleQuery, skuData);
+				}
+			}
+		}
+writedump(skuQuery); abort;
+		if(skuQuery.recordCount){
+			var importSkuConfig = FileRead('#basePath#../../config/import/skus.json');
+			getService("HibachiDataService").loadDataFromQuery(skuQuery, importSkuConfig, arguments.dryRun);
+		}
+
+		if(skuPriceQuery.recordCount){
+			var importSkuPriceConfig = FileRead('#basePath#../../config/import/skuprices.json');
+			getService("HibachiDataService").loadDataFromQuery(skuPriceQuery, importSkuPriceConfig, arguments.dryRun);
+		}
+
+		if(skuBundleQuery.recordCount){
+			var importSkuBundleConfig = FileRead('#basePath#../../config/import/bundles.json');
+			getService("HibachiDataService").loadDataFromQuery(skuBundleQuery, importSkuBundleConfig, arguments.dryRun);
+
+			var importSkuBundle2Config = FileRead('#basePath#../../config/import/bundles2.json');
+			getService("HibachiDataService").loadDataFromQuery(skuBundleQuery, importSkuBundle2Config, arguments.dryRun);
+		}
+
+		if(stockQuery.recordCount){
+			var importStockConfig = FileRead('#basePath#../../config/import/stocks.json');
+			getService("HibachiDataService").loadDataFromQuery(stockQuery, importStockConfig, arguments.dryRun);
+		}
+
+		//this.addUrlTitlesToProducts();
+		if(!arguments.dryRun){
+			this.associateProductWithSite(siteProductCodes);
+		}else{
+			abort;
+		}
+	}
+    
     public any function importInventoryUpdates(){
         //get the api key from integration settings.
 		var integration = getService("IntegrationService").getIntegrationByIntegrationPackage("monat");
-		var ormStatelessSession = ormGetSessionFactory().openStatelessSession();
 		var index=0;
 		var HOURS = 'h';
         /**
@@ -1025,7 +1355,6 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
     		
     		
     		try{
-    			var tx = ormStatelessSession.beginTransaction();
     			
     			var inventoryRecords = inventoryResponse.Records;
     			
@@ -1042,16 +1371,10 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
         		    
         		    if (inventory['CountryCode'] == "US"){
         		    	location = warehouseMain;	
-        		    }
-        		    
-        		    else if (inventory['CountryCode'] == "CA"){
+        		    }else if (inventory['CountryCode'] == "CA"){
         		    	location = warehouseCAN;	
-        		    }
-        		    
-        		    else if (inventory['CountryCode'] == "UK"){
-        		    	
-        		    	location = warehouseUK;	
-        		    
+        		    }else if (inventory['CountryCode'] == "UK"){
+        		    	location = warehouseUK;
         		    } else {
         		    	location = warehouseIRPOL;
         		    }
@@ -1060,55 +1383,56 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
         		    //Find if we have a stock for this sku and location.
         		    var stock = getStockService().getStockBySkuIdAndLocationId( sku.getSkuID(), location.getLocationID() );
         		    
+        		    
         		    if (isNull(stock)){
         		    	// Create the stock
-        		    	var stock = new Slatwall.model.entity.stock();
+        		    	var stock = getStockService().newStock();
         		    	stock.setSku(sku);
         		    	stock.setLocation(location);
         		    	stock.setRemoteID(inventory['InventoryAdjustmentId']);
-        		    	ormStatelessSession.insert("SlatwallStock", stock);
+        		    	stock = getStockService().saveStock(stock);
         		    }
         		    
         		    //Create the inventory record for this stock
         		    if (!isNull(stock)){
         		        //check if this inventory has already been imported...
-        		        var newInventory = getInventoryService().getInventoryByRemoteId( inventory['InventoryAdjustmentId'] );
+        		        var newInventory = getStockService().getInventoryByRemoteId( inventory['InventoryAdjustmentId'] );
         		        
         		        //Only create the inventory if it doesn't already exist. Everytime an inventory adjustment is made
         		        //it has a new id, thus a new remoteID.
         		        if (isNull(newInventory)){
             			    // Create a new inventory under that stock.
-            			    var newInventory = new Slatwall.model.entity.Inventory();
-            			    newInventory.setRemoteID(inventory['InventoryAdjustmentId']?:""); //*
+            			    var newInventory = getStockService().newInventory();
+            			    newInventory.setRemoteID(inventory['InventoryAdjustmentId'] ?: ""); //*
                 			newInventory.setStock(stock);
-                			var inventoryQuantity = inventory['Quantity']?:0;
+                			
+                			var inventoryQuantity = inventory['Quantity'] ?: 0;
                 			
                 			if (inventoryQuantity > 0){
                         	    newInventory.setQuantityIn(inventoryQuantity);
                 			}else{
-                			   newInventory.setQuantityOut(inventoryQuantity); 
+                			    newInventory.setQuantityOut(inventoryQuantity * -1); 
                 			}
                 			
                         	newInventory.setCreatedDateTime(getDateFromString(inventory['CreatedOn']));
                         	
-                            ormStatelessSession.insert("SlatwallInventory", newInventory);
+                            newInventory = getStockService().saveInventory(newInventory);
+                        	
         		        }
         		    }
+        		    
     			}
     			
-    			tx.commit();
     		}catch(e){
     			logHibachi("Stock Import Failed @ Index: #index# PageSize: #pageSize# PageNumber: #pageNumber#", true);
     			logHibachi(serializeJson(e));
-    			ormGetSession().clear();
+    			
     		}
     		
     		this.logHibachi('Import (Updated Inventory) Page #pageNumber# completed ', true);
-    		ormGetSession().clear();//clear every page records...
 		    pageNumber++;
 		}
 		
-		ormStatelessSession.close(); //must close the session regardless of errors.
 		logHibachi("End: #pageNumber# - #pageSize# - #index#", true);
     }
 }

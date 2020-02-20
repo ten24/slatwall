@@ -2,24 +2,20 @@
     "baseentity":"SkuBundle",
     "mapping":[
         {
-          "sourceColumn":"SKUItemCode",
-          "propertyIdentifier":"sku.skuCode",
-          "key":true
-        },
-        {
-          "sourcecolumn":"ComponentItemCode",
-          "propertyidentifier":"remoteCode",
-
-        },
-        {
           "sourcecolumn":"importKey",
           "sourceColumnDataGenerator":"SKUItemCode + '-' + ComponentItemCode",
           "propertyidentifier":"remoteID",
           "key":true
         },
         {
+          "sourceColumn":"SKUItemCode",
+          "propertyIdentifier":"sku.skuCode",
+          "key":true
+        },
+        {
           "sourceColumn":"ontheflykit",
-          "propertyIdentifier":"sku.onTheFlyKitFlag"
+          "propertyIdentifier":"sku.onTheFlyKitFlag",
+          "updateFlag":false
         },
         {
           "sourceColumn":"BundleFlag",
