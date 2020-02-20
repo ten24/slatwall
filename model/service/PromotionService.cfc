@@ -1089,10 +1089,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var activePromotionRewardsWithSkuCollection = getPromotionDAO().getActivePromotionRewards( rewardTypeList="merchandise,subscription,contentAccess", promotionCodeList="", excludeRewardsWithQualifiers=true, site=arguments.orderItem.getOrder().getOrderCreatedSite());
 		var originalPrice = arguments.orderItem.getSkuPrice();
 		var currencyCode = arguments.orderItem.getCurrencyCode();
-
+		if(!isNull(arguments.orderItem.getOrder().getAccount())){
+			var accountID = arguments.orderItem.getOrder().getAccount().getAccountID();
+		}else{
+			var accountID = getHibachiScope().getAccount().getAccountID();	
+		}
 		if(isNull(originalPrice)){
-			originalPrice = arguments.orderItem.getSku().getPriceByCurrencyCode(currencyCode);
-		} 
+			originalPrice = arguments.orderItem.getSku().getPriceByCurrencyCode(currencyCode=currencyCode,accountID=accountID);
+		}
+		if(isNull(originalPrice)){
+			originalPrice = arguments.orderItem.getPrice();
+		}
 
 		var priceDetails = getPriceDetailsForPromoRewards( promoRewards=activePromotionRewardsWithSkuCollection,
 														sku=arguments.orderItem.getSku(),
