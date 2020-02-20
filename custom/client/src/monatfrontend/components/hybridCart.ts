@@ -1,6 +1,18 @@
+type genericObject = { [key:string]: any }
+
+interface genericCart extends genericObject {
+	orderItems: Array<genericObject>;
+	orderID: string
+}
+
+interface genericTemplate extends genericObject {
+	orderTemplateItems: Array<genericObject>;
+	orderTemplateID: string
+}
+
 class HybridCartController {
 	public showCart = false;
-	public cart:any;
+	public cart:genericCart;
 	public isEnrollment:boolean;
 	public orderTemplate = {};
 	
@@ -31,40 +43,39 @@ class HybridCartController {
 		}
 	}
 	
-	public redirect(cart = true):void{
-		let href = cart ? '/shopping-cart/' : '/checkout/';
-		this.monatService.redirectToProperSite(href);
+	public redirect(destination: '/shopping-cart/' | '/checkout/'):void{
+		this.monatService.redirectToProperSite(destination);
 	}
 	
 	private getCart():void{
-		this.monatService.getCart(true).then(res => {
+		this.monatService.getCart(true).then((res:genericCart) => {
 			this.cart = res;
 		});
 	}
 	
-	public removeItem = (item):void => {
+	public removeItem = (item:genericObject):void => {
 		this.monatService.removeFromCart(item.orderItemID).then(res => {
 			this.cart = res.cart;
 		});
 	}
 	
-	public increaseItemQuantity = (item):void => {
+	public increaseItemQuantity = (item:genericObject):void => {
 		this.monatService.updateCartItemQuantity(item.orderItemID, item.quantity + 1).then(res => {
 			this.cart = res.cart;
 		});
 	}
 	
-	public decreaseItemQuantity = (item):void => {
+	public decreaseItemQuantity = (item:genericObject):void => {
 		if (item.quantity <= 1) return;
 		this.monatService.updateCartItemQuantity(item.orderItemID, item.quantity - 1).then(res => {
 			this.cart = res.cart;
 		});
 	}
 	
-	public getFlexship(ID):void {
+	public getFlexship(ID:string):void {
 		let extraProperties = "cartTotalThresholdForOFYAndFreeShipping";
 		this.orderTemplateService.getOrderTemplateDetails(ID, extraProperties).then(data => {
-			if(data.orderTemplate){
+			if((data.orderTemplate as genericTemplate) ){
 				this.orderTemplate = data.orderTemplate;
 			} else {
 				throw(data);
@@ -96,4 +107,4 @@ class HybridCart {
 	}
 }
 
-export { HybridCart, HybridCartController };
+export { HybridCart, HybridCartController, genericObject, genericTemplate};
