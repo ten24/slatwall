@@ -60,7 +60,7 @@
 						<div class="bg-primary">
 							<a class="py-0 text-white" data-toggle="collapse" href="#hybridCartBody">
 								<div class="py-3 px-3">
-									Today's Order - <span ng-bind-html="hybridCart.cart.total | swcurrency:hybridCart.cart.currencyCode"></span>
+									Today's Order - <p class="d-inline" ng-bind-html="hybridCart.cart.total | swcurrency:hybridCart.cart.currencyCode"></p>
 								</div>							
 							</a>
 						</div>
@@ -84,7 +84,7 @@
 													<img 
 														image-manager 
 														height="75px" 
-														src="https://monatteam.ten24dev.com//Slatwall/custom/assets/images/product/default/cache/10392000_300w_300h.jpg" 
+														ng-src="https://monatteam.ten24dev.com/Slatwall/custom/assets/images/product/default/cache/10392000_300w_300h.jpg" 
 														alt="{{item.sku.skuDefinition}}"
 													>
 												</a>
@@ -177,7 +177,7 @@
 					</div>
 				</div>	
 				<div ng-if="hybridCart.isEnrollment">
-					<enrollment-flexship order-template="hybridCart.orderTemplateID"></enrollment-flexship>
+					<enrollment-flexship order-template="hybridCart.orderTemplate"></enrollment-flexship>
 				</div>
 			</div>
 		</div>

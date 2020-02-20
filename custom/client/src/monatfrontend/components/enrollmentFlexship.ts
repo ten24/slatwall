@@ -1,7 +1,3 @@
-declare var hibachiConfig: any;
-declare var angular: any;
-declare var $: any;
-
 class EnrollmentFlexshipController {
 	public showCart = false;
 	public cart:any;
@@ -21,26 +17,15 @@ class EnrollmentFlexshipController {
 				//this.getFlexship();
 	}
 
-	public getFlexship() {
-		let extraProperties = "cartTotalThresholdForOFYAndFreeShipping";
-		this.orderTemplateService.getOrderTemplateDetails(this.orderTemplateID, extraProperties).then(data => {
-			if(data.orderTemplate){
-				this.orderTemplate = data.orderTemplate;
-			} else {
-				throw(data);
-			}
-		});
-	}
-	
 }
 
 class EnrollmentFlexship {
-	public restrict: string = 'E';
+	public restrict = 'E';
 	public templateUrl: string;
 	public scope = {};
 	public bindToController = {
-		orderTemplate: '<?',
-	};
+		orderTemplate: '<?'
+	}
 
 	public controller = EnrollmentFlexshipController;
 	public controllerAs = 'enrollmentFlexship';

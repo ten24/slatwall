@@ -1,17 +1,13 @@
-declare var hibachiConfig: any;
-declare var angular: any;
-declare var $: any;
-
 class HybridCartController {
 	public showCart = false;
 	public cart:any;
 	public isEnrollment:boolean;
-	public orderTemplateID:string;
+	public orderTemplate = {};
 	
 	//@ngInject
-	constructor(public monatService, public observerService, public $rootScope, public publicService) {
+	constructor(public monatService, public observerService, public orderTemplateService, public publicService) {
 		this.observerService.attach(ID => {
-			this.orderTemplateID = ID;
+			this.getFlexship(ID)
 		},'flexshipCreated')
 
 	}
@@ -32,22 +28,33 @@ class HybridCartController {
 		});
 	}
 	
-	public removeItem = (item) => {
+	public removeItem = (item):void => {
 		this.monatService.removeFromCart(item.orderItemID).then(res => {
 			this.cart = res.cart;
 		});
 	}
 	
-	public increaseItemQuantity = (item) => {
+	public increaseItemQuantity = (item):void => {
 		this.monatService.updateCartItemQuantity(item.orderItemID, item.quantity + 1).then(res => {
 			this.cart = res.cart;
 		});
 	}
 	
-	public decreaseItemQuantity = (item) => {
+	public decreaseItemQuantity = (item):void => {
 		if (item.quantity <= 1) return;
 		this.monatService.updateCartItemQuantity(item.orderItemID, item.quantity - 1).then(res => {
 			this.cart = res.cart;
+		});
+	}
+	
+	public getFlexship(ID):void {
+		let extraProperties = "cartTotalThresholdForOFYAndFreeShipping";
+		this.orderTemplateService.getOrderTemplateDetails(ID, extraProperties).then(data => {
+			if(data.orderTemplate){
+				this.orderTemplate = data.orderTemplate;
+			} else {
+				throw(data);
+			}
 		});
 	}
 	
