@@ -422,7 +422,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
         	logHibachi("createDelivery: #shipment.shipmentNumber#",true);
 			var order = order(shipment.OrderNumber);
 
-            if (!isNull(order) && dataExistsToCreateDelivery(shipment)){
+            if (!isNull(order) && dataExistsToCreateDelivery(shipment) && !orderIsdelivered( order )){
                 
     			var findOrderDeliveryByRemoteID = getOrderService().getOrderDeliveryByRemoteID(shipment.shipmentId, false);
     			
