@@ -1091,7 +1091,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 
 
 	private numeric function getLastProductPageNumber(numeric pageSize = 25, struct extraBody ={}){
-		var initProductData = this.getApiResponse( "SWGetNewUpdatedSKU", 1, arguments.pageSize, arguments.extraBody );
+		var initProductData = this.getApiResponse(!structIsEmpty(extraBody) ? "SWGetNewUpdatedSKU" : "QueryItems", 1, arguments.pageSize, arguments.extraBody );
 		if(structKeyExists(initProductData, 'Data') && structKeyExists(initProductData['Data'], 'TotalPages')){
 			return initProductData['Data']['TotalPages'];
 		}
@@ -1163,7 +1163,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 
 
 		for(var index = arguments.rc.pageNumber; index <= arguments.rc.pageMax; index++){
-			var productResponse = this.getApiResponse( "SWGetNewUpdatedSKU", index, arguments.rc.pageSize, extraBody );
+			var productResponse = this.getApiResponse( arguments.rc.days > 0 ? "SWGetNewUpdatedSKU" : "QueryItems", index, arguments.rc.pageSize, extraBody );
 
 			//goto next page causing this is erroring!
 			if ( productResponse.hasErrors ){
@@ -1249,7 +1249,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 				}
 			}
 		}
-
+writedump(skuQuery); abort;
 		if(skuQuery.recordCount){
 			var importSkuConfig = FileRead('#basePath#../../config/import/skus.json');
 			getService("HibachiDataService").loadDataFromQuery(skuQuery, importSkuConfig, arguments.dryRun);

@@ -2993,6 +2993,13 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		writeDump("End: #pageNumber# - #pageSize# - #index# ");
 	}
 	
+	public void function importMonatProducts(required struct rc){
+		getService("HibachiTagService").cfsetting(requesttimeout="60000");
+		getFW().setView("public:main.blank");
+		arguments.dryRun = false;
+		getService("MonatDataService").importMonatProducts(argumentCollection=arguments);
+	}
+	
     public void function importVibeAccounts(){
 		getService("HibachiTagService").cfsetting(requesttimeout="60000");
 		var importSuccess = true;
