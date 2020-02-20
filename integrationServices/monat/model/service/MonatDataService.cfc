@@ -1249,7 +1249,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 				}
 			}
 		}
-writedump(skuQuery); abort;
+
 		if(skuQuery.recordCount){
 			var importSkuConfig = FileRead('#basePath#../../config/import/skus.json');
 			getService("HibachiDataService").loadDataFromQuery(skuQuery, importSkuConfig, arguments.dryRun);
