@@ -252,10 +252,17 @@ extends = "Slatwall.integrationServices.BaseTax" {
 					itemData.TaxCode = item.getTaxCategoryRateCode();
 					itemData.Description = item.getOrderItem().getSku().getProduct().getProductName();
 					itemData.Qty = item.getQuantity();
-					if (item.getOrderItem().getOrderItemType().getSystemCode() == "oitReturn"){
-						itemData.Amount = item.getExtendedPriceAfterDiscount() * -1; 
+					if (item.getOrderItem().getOrderItemType().getSystemCode() == "oitReturn" || item.getOrderItem().getOrderItemType().getSystemCode() == "oitRefund"){
+						itemData.Amount = item.getExtendedPriceAfterDiscount() * -1;
+						itemData.taxOverride = {
+							"type":"TaxAmount",
+							"taxAmount":item.getOrderItem().getTaxAmount()
+						}
 					}else {
 						itemData.Amount = item.getExtendedPriceAfterDiscount();
+					}
+					if(listContains(setting("VATCountries"),addressData.Country)){
+						itemData.taxIncluded = true;
 					}
 					
 					if (allItemsHaveDiscount){
@@ -313,7 +320,7 @@ extends = "Slatwall.integrationServices.BaseTax" {
 		httpRequest.addParam(type="body", value=serializeJSON(requestDataStruct));
 	
 		var responseData = httpRequest.send().getPrefix();
-
+		writeDump(responseData);
 		if (IsJSON(responseData.FileContent)){
 			
 			// a valid response was retrieved
@@ -386,6 +393,7 @@ extends = "Slatwall.integrationServices.BaseTax" {
 			responseBean.setData('An Error occured when attempting to retrieve tax information');
 			logHibachi(serialize(responseBean.getData()));
 		}
+		abort;
 		return responseBean;
 	}
 	

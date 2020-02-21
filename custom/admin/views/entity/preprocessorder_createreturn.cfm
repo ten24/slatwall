@@ -69,8 +69,8 @@ Notes:
 							</a>
 						</div>
 						<div class="btn-group btn-group-sm">
-							<button ng-if="!slatwall.modifiedUnitPrices" type="submit" class="btn btn-primary">Create Return Order</button>
-							<a ng-cloak ng-if="slatwall.modifiedUnitPrices" title="Create Return Order" class="adminentitypreprocessorder btn btn-primary modalload" target="_self" data-toggle="modal" data-target="##warningModal">
+							<button ng-if="!slatwall.modifiedUnitPrices || #rc.order.getOrderType().getSystemCode() == 'otRefundOrder'#" type="submit" class="btn btn-primary">Create Return Order</button>
+							<a ng-cloak ng-if="slatwall.modifiedUnitPrices && #rc.order.getOrderType().getSystemCode() != 'otRefundOrder'#" title="Create Return Order" class="adminentitypreprocessorder btn btn-primary modalload" target="_self" data-toggle="modal" data-target="##warningModal">
 								Create Return Order
 							</a>
 						</div>

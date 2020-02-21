@@ -979,6 +979,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					} else if(!isNull(referencedOrderItem.getOrderFulfillment()) && !getHibachiValidationService().validate(object=referencedOrderItem.getOrderFulfillment().getShippingAddress(), context="full", setErrors=false).hasErrors()) {
 						taxAddresses.taxShippingAddress = referencedOrderItem.getOrderFulfillment().getShippingAddress();
 					}
+				}else if (orderItem.getOrderItemType().getSystemCode() == 'oitRefund'){
+					if(structKeyExists(taxAddresses,'taxBillingAddress')){
+						taxAddresses.taxShippingAddress = taxAddresses['taxBillingAddress'];
+					}else{
+						var referencedOrder = arguments.order.getReferencedOrder();
+						for(var orderFulfillment in arguments.order.getOrderFulfillments()){
+							if(!isNull(orderFulfillment.getShippingAddress())){
+								taxAddresses.taxShippingAddress = orderFulfillment.getShippingAddress();
+								break;
+							}
+						}
+					}
 				}
 				
 				// Loop over the rates of that category, looking for a unique integration
@@ -1026,6 +1038,38 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				} // End TaxCategoryRate Loop
 			}
 		}
+		
+		// for (var orderReturn in arguments.order.getOrderReturns()) {
+		// 	// Setup the orderReturn level taxShippingAddress
+		// 	if(!structKeyExists(taxAddresses,'taxShippingAddress')){
+		// 		if(structKeyExists(taxAddresses,'taxBillingAddress')){
+		// 			taxAddresses.taxShippingAddress = taxAddresses['taxBillingAddress'];
+		// 		}else{
+		// 			var referencedOrder = arguments.order.getReferencedOrder();
+		// 			for(var orderFulfillment in arguments.order.getOrderFulfillments()){
+		// 				if(!isNull(orderFulfillment.getShippingAddress())){
+		// 					taxAddresses.taxShippingAddress = orderFulfillment.getShippingAddress();
+		// 					break;
+		// 				}
+		// 			}
+		// 		}
+		// 	}
+
+		// 	// Loop over the rates of that category, looking for a unique integration
+		// 	for(var taxCategoryRate in taxCategory.getTaxCategoryRates()) {
+		// 		// If a unique integration is found, then we add it to the integrations to call
+		// 		if(!isNull(taxCategoryRate.getTaxIntegration()) && taxCategoryRate.getTaxIntegration().getIntegrationID() == arguments.integration.getIntegrationID()){
+
+		// 			var taxAddress = getTaxAddressByTaxCategoryRate(taxCategoryRate=taxCategoryRate, taxAddresses=taxAddresses);
+
+		// 			if(!isNull(taxAddress) && getTaxCategoryRateIncludesTaxAddress(taxCategoryRate=taxCategoryRate, taxAddress=taxAddress)) {
+		// 				taxRatesRequestBean.addTaxRateItemRequestBean(referenceObject=orderFulfillment, taxCategoryRate=taxCategoryRate, taxAddress=taxAddress);
+		// 			}
+		// 		}
+
+		// 	} // End TaxCategoryRate Loop
+		// 	}
+		// }
 
 		return taxRatesRequestBean;
 
