@@ -3,9 +3,7 @@
     "mapping":[
         {
           "sourceColumn":"SKUItemCode",
-          "propertyIdentifier":"skuCode",
-          "key":true,
-          "compositeKeyOperator":"OR"
+          "propertyIdentifier":"skuCode"
         },
         {
           "sourceColumn":"SKUItemID",
