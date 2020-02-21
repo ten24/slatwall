@@ -255,8 +255,9 @@ extends = "Slatwall.integrationServices.BaseTax" {
 					if (item.getOrderItem().getOrderItemType().getSystemCode() == "oitReturn" || item.getOrderItem().getOrderItemType().getSystemCode() == "oitRefund"){
 						itemData.Amount = item.getExtendedPriceAfterDiscount() * -1;
 						itemData.taxOverride = {
-							"type":"TaxAmount",
-							"taxAmount":item.getOrderItem().getTaxAmount()
+							taxOverrideType:"TaxAmount",
+							taxAmount:item.getOrderItem().getTaxAmount(),
+							reason:"Return"
 						}
 					}else {
 						itemData.Amount = item.getExtendedPriceAfterDiscount();
@@ -320,7 +321,7 @@ extends = "Slatwall.integrationServices.BaseTax" {
 		httpRequest.addParam(type="body", value=serializeJSON(requestDataStruct));
 	
 		var responseData = httpRequest.send().getPrefix();
-		writeDump(responseData);
+
 		if (IsJSON(responseData.FileContent)){
 			
 			// a valid response was retrieved
@@ -393,7 +394,6 @@ extends = "Slatwall.integrationServices.BaseTax" {
 			responseBean.setData('An Error occured when attempting to retrieve tax information');
 			logHibachi(serialize(responseBean.getData()));
 		}
-		abort;
 		return responseBean;
 	}
 	
