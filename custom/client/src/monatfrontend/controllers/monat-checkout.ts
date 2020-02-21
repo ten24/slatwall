@@ -16,7 +16,8 @@ class MonatCheckoutController {
 		public publicService,
 		public observerService,
 		public $rootScope,
-		public $scope
+		public $scope,
+		public ModalService
 	) {}
 
 	public $onInit = () => {
@@ -221,6 +222,29 @@ class MonatCheckoutController {
 			this.$scope.slatwall.OrderPayment_addOrderPayment.saveFlag = 0;
 			this.$scope.slatwall.OrderPayment_addOrderPayment.primaryFlag = 0;
 		}
+	}
+	
+	//default value is only present for testing and it should be deleted
+	public launchAddressModal(address: Array<object> = [{key:'test'}] ):void{
+		this.ModalService.showModal({
+			component: 'addressVerification',
+			bodyClass: 'angular-modal-service-active',
+			bindings: {
+                suggestedAddresses: address //address binding goes here
+			},
+			preClose: (modal) => {
+				modal.element.modal('hide');
+				this.ModalService.closeModals();
+			},
+		})
+		.then((modal) => {
+			//it's a bootstrap element, use 'modal' to show it
+			modal.element.modal();
+			modal.close.then((result) => {});
+		})
+		.catch((error) => {
+			console.error('unable to open model :', error);
+		});
 	}
 }
 
