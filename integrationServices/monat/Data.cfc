@@ -107,5 +107,9 @@ component accessors="true" output="false" displayname="Monat" extends="Slatwall.
 			logHibachi("The inventory update failed with #inventoryErrors.message#");
 		}
 	}
+	
+	public void function importMonatProducts(required struct rc){
+		getService("MonatDataService").importMonatProducts(argumentCollection=arguments);
+	}
 }
 
