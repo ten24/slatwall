@@ -9,7 +9,7 @@ class MonatBirthdayController {
 	public downMonth = this.months[this.months.indexOf(this.month) - 1];
 	
 	//@ngInject
-	constructor(public monatService, public observerService, public $rootScope, public publicService) {}
+	constructor(public monatService, public observerService, public $rootScope, public publicService, public $scope) {}
 
 	public $onInit = () => {
 		
@@ -23,33 +23,38 @@ class MonatBirthdayController {
 		this.month = this.months[this.months.indexOf(this.month) + 1];
 		this.upMonth = this.months[this.months.indexOf(this.month) + 1];
 		this.downMonth = this.months[this.months.indexOf(this.month) - 1];
+		this.resetModel();
 	}
 	
 	public decreaseMonth():void{
 		this.month = this.months[this.months.indexOf(this.month) + 1];
 		this.month = this.months[this.months.indexOf(this.month) - 1];
 		this.downMonth = this.months[this.months.indexOf(this.month) - 1];
+		this.resetModel();
 	}
 	
 	public changeDay(action:'+' | '-'):void{
 		//TODO: logic for available days in a month, disallowing below 1
 		this.day = (action === '+') ? this.day + 1 : this.day - 1;
+		this.resetModel()
 	}
 	
 	public changeYear(action:'+' | '-'):void{
 		//TODO: logic for available days in a month, disallowing below 1
 		this.year = (action === '+') ? this.year + 1 : this.year - 1;
+		this.resetModel()
 	}
 	
 	public resetModel(){
-		this.publicService.
+		this.$scope.swfForm?.form?.month = {$modelValue: this.months.indexOf(this.month)};
+		this.$scope.swfForm?.form?.year = {$modelValue: this.year};
+		this.$scope.swfForm?.form?.day = {$modelValue: this.day};
 	}
 }
 
 class MonatBirthday {
 	public restrict = 'E';
 	public templateUrl: string;
-	public scope = {};
 	public controller = MonatBirthdayController;
 	public controllerAs = 'monatBirthday';
 

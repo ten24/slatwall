@@ -4,8 +4,8 @@
 			id="gender_CreateAccount"
 			name="dob"
 			class="form-control"
-			ng-model="Account_UpdateAccount.dob" 
-			swvalidationrequired="true"
+			ng-model="slatwall.Account_UpdateAccount.dob" 
+
 		>
 		</select>
 		<label for="gender_CreateAccount" sw-rbkey="'frontend.global.yourBirthday'"></label>
@@ -95,7 +95,7 @@
 							>
 						</div>
 						
-						<div>{{ +monatBirthday.year - 1}}</div>
+						<div ng-click="monatBirthday.resetModel()">{{ +monatBirthday.year - 1}}</div>
 						
 						<div>
 							<a ng-click="monatBirthday.changeYear('-')" href="">
@@ -104,7 +104,6 @@
 						</div>
 					</div>
 				</div>
-				
 			</div>
 		</div>
 	</div>
