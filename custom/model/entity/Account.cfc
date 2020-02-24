@@ -135,10 +135,16 @@ component {
 	    var genderFullWord = "";
 	    var gender = LCase(this.getGender());
 		switch (gender) {
-			case "f": genderFullWord = getHibachiScope().getRbKey('define.female'); break;
-			case "m": genderFullWord =  getHibachiScope().getRbKey('define.male'); break;
+			case "f": 
+			         genderFullWord = getHibachiScope().getRbKey('define.female'); 
+			         break;
+			case "m": 
+			         genderFullWord =  getHibachiScope().getRbKey('define.male'); 
+			         break;
 			case "p":
-			case "prefernottoSay": genderFullWord = getHibachiScope().getRbKey('define.prefernottoSay'); break;
+			case "prefernottoSay": 
+			         genderFullWord = getHibachiScope().getRbKey('define.prefernottoSay'); 
+			         break;
 		}
 		return genderFullWord;
 	}
