@@ -55,13 +55,13 @@ Notes:
 <cfparam name="rc.orderTypeCode" type="string" />
 
 <cfif rc.orderTypeCode EQ 'otReturnOrder'>
-	<cfset local.buttonText = 'Create Return Order'>
+	<cfset local.createReturnText = 'Create Return Order'>
 <cfelseif rc.orderTypeCode EQ 'otRefundOrder'>
-	<cfset local.buttonText = 'Create Refund Order'>
+	<cfset local.createReturnText = 'Create Refund Order'>
 <cfelseif rc.orderTypeCode EQ 'otExchangeOrder'>
-	<cfset local.buttonText = 'Create Exchange Order'>
+	<cfset local.createReturnText = 'Create Exchange Order'>
 <cfelseif rc.orderTypeCode EQ 'otReplacementOrder'>
-	<cfset local.buttonText = 'Create Replacement Order'>
+	<cfset local.createReturnText = 'Create Replacement Order'>
 </cfif>
 
 <cfoutput>
@@ -70,7 +70,7 @@ Notes:
 		<div class="row s-body-nav">
 			<nav class="navbar navbar-default" role="navigation">
 				<div class="col-md-6 s-header-info">
-					<h1 class="actionbar-title">#local.buttonText#</h1>
+					<h1 class="actionbar-title">#local.createReturnText#</h1>
 				</div>
 				<div class="col-md-6">
 					<div class="btn-toolbar">
@@ -80,9 +80,9 @@ Notes:
 							</a>
 						</div>
 						<div class="btn-group btn-group-sm">
-							<button ng-if="!slatwall.modifiedUnitPrices" type="submit" class="btn btn-primary">#local.buttonText#</button>
-							<a ng-cloak ng-if="slatwall.modifiedUnitPrices" title="#local.buttonText#" class="adminentitypreprocessorder btn btn-primary modalload" target="_self" data-toggle="modal" data-target="##warningModal">
-								#local.buttonText#
+							<button ng-if="!slatwall.modifiedUnitPrices" type="submit" class="btn btn-primary">#local.createReturnText#</button>
+							<a ng-cloak ng-if="slatwall.modifiedUnitPrices" title="#local.createReturnText#" class="adminentitypreprocessorder btn btn-primary modalload" target="_self" data-toggle="modal" data-target="##warningModal">
+								#local.createReturnText#
 							</a>
 						</div>
 						<div class="modal" id="warningModal" tabindex="-1" role="dialog" aria-hidden="true">
@@ -90,7 +90,7 @@ Notes:
 							   <div class="modal-content">
 							      <div class="modal-header">
 							         <a class="close" data-dismiss="modal">&times;</a>
-							         <h3>#local.buttonText#</h3>
+							         <h3>#local.createReturnText#</h3>
 							      </div>
 							      <div class="modal-body">
 							         <p>The unit prices entered do not match the original order prices; please make sure all prices entered are correct before continuing.
@@ -98,10 +98,10 @@ Notes:
 							      <div class="modal-footer">
 							         <a class="btn btn-default s-remove" data-dismiss="modal"><span class="glyphicon glyphicon-remove icon-white"></span> Cancel</a>
 							         <button class="btn btn-success" 
-							            title="#local.buttonText#"
+							            title="#local.createReturnText#"
 							            type="submit"
 							            >
-							        	<i class="glyphicon glyphicon-ok icon-white"></i> #local.buttonText#
+							        	<i class="glyphicon glyphicon-ok icon-white"></i> #local.createReturnText#
 							         </button>
 							      </div>
 							   </div>
