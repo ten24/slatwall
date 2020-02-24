@@ -56,7 +56,7 @@
 							</a>
 						</div>
 						
-						<div>{{ +monatBirthday.day + 1}}</div>
+						<div>{{ +monatBirthday.upDay }}</div>
 						
 						<div class="my-3">
 							<input
@@ -66,7 +66,7 @@
 							>
 						</div>
 						
-						<div>{{ +monatBirthday.day - 1}}</div>
+						<div>{{ +monatBirthday.downDay }}</div>
 						
 						<div>
 							<a ng-click="monatBirthday.changeDay('-')" href="">

@@ -10,6 +10,8 @@ class MonatBirthdayController {
 	public months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']; // turn into rbKeys
 	public upMonth = this.months[this.months.indexOf(this.month) + 1];
 	public downMonth = this.months[this.months.indexOf(this.month) - 1];
+	public upDay = 2;
+	public downDay = new Date(this.date.getFullYear(), this.months.indexOf(this.month)+1, 0).getDate();
 	
 	//@ngInject
 	constructor(public monatService, public observerService, public $rootScope, public publicService, public $scope) {}
@@ -26,15 +28,14 @@ class MonatBirthdayController {
 		this.month = this.getAdjustedMonth(action); 
 		this.upMonth = this.getAdjustedMonth('+');
 		this.downMonth = this.getAdjustedMonth('-');
-
 		this.resetModel();
 	}
 	
 	public changeDay(action: plusOrMinus):void{
 		//disallow days below 1, and days above the last day in the month
-		let daysInCurrentMonth = new Date(this.date.getFullYear(), this.months.indexOf(this.month)+1, 0).getDate();
-		if((+this.day === 1 && action ==='-') || (+this.day === daysInCurrentMonth && action === '+')) return;
-		this.day = (action === '+') ? this.day + 1 : this.day - 1;
+		this.day = this.getAdjustedDay(action);
+		this.upDay = this.getAdjustedDay('+');
+		this.downDay = this.getAdjustedDay('-');
 		this.resetModel()
 	}
 	
@@ -57,7 +58,6 @@ class MonatBirthdayController {
 	}
 	
 	public getAdjustedMonth(action:plusOrMinus):string{
-		
 		if(this.months.indexOf(this.month) == this.months.length -1 && action === '+'){
 			return this.months[0];
 		}else if(this.months.indexOf(this.month) === 0 && action === '-'){
@@ -66,6 +66,19 @@ class MonatBirthdayController {
 			return (action === '+') ? this.months[this.months.indexOf(this.month) + 1] : this.months[this.months.indexOf(this.month) - 1];
 		}
 	}
+	
+	public getAdjustedDay(action:plusOrMinus):number{
+		let daysInCurrentMonth = new Date(this.date.getFullYear(), this.months.indexOf(this.month)+1, 0).getDate();
+		if(+this.day === 1 && action ==='-'){
+			return daysInCurrentMonth;
+		} else if(+this.day === daysInCurrentMonth && action === '+'){
+			return 1;
+		}
+		
+		return (action === '+') ? this.day + 1 : this.day - 1;
+	}
+	
+	
 }
 
 class MonatBirthday {
