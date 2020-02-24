@@ -52,6 +52,17 @@ Notes:
 
 <cfparam name="rc.order" type="any" />
 <cfparam name="rc.processObject" type="any" />
+<cfparam name="rc.orderTypeCode" type="string" />
+
+<cfif rc.orderTypeCode EQ 'otReturnOrder'>
+	<cfset local.buttonText = 'Create Return Order'>
+<cfelseif rc.orderTypeCode EQ 'otRefundOrder'>
+	<cfset local.buttonText = 'Create Refund Order'>
+<cfelseif rc.orderTypeCode EQ 'otExchangeOrder'>
+	<cfset local.buttonText = 'Create Exchange Order'>
+<cfelseif rc.orderTypeCode EQ 'otReplacementOrder'>
+	<cfset local.buttonText = 'Create Replacement Order'>
+</cfif>
 
 <cfoutput>
 	<hb:HibachiEntityProcessForm entity="#rc.order#" edit="#rc.edit#">
@@ -59,7 +70,7 @@ Notes:
 		<div class="row s-body-nav">
 			<nav class="navbar navbar-default" role="navigation">
 				<div class="col-md-6 s-header-info">
-					<h1 class="actionbar-title">Create Return Order</h1>
+					<h1 class="actionbar-title">#local.buttonText#</h1>
 				</div>
 				<div class="col-md-6">
 					<div class="btn-toolbar">
@@ -69,9 +80,9 @@ Notes:
 							</a>
 						</div>
 						<div class="btn-group btn-group-sm">
-							<button ng-if="!slatwall.modifiedUnitPrices" type="submit" class="btn btn-primary">Create Return Order</button>
-							<a ng-cloak ng-if="slatwall.modifiedUnitPrices" title="Create Return Order" class="adminentitypreprocessorder btn btn-primary modalload" target="_self" data-toggle="modal" data-target="##warningModal">
-								Create Return Order
+							<button ng-if="!slatwall.modifiedUnitPrices" type="submit" class="btn btn-primary">#local.buttonText#</button>
+							<a ng-cloak ng-if="slatwall.modifiedUnitPrices" title="#local.buttonText#" class="adminentitypreprocessorder btn btn-primary modalload" target="_self" data-toggle="modal" data-target="##warningModal">
+								#local.buttonText#
 							</a>
 						</div>
 						<div class="modal" id="warningModal" tabindex="-1" role="dialog" aria-hidden="true">
@@ -79,7 +90,7 @@ Notes:
 							   <div class="modal-content">
 							      <div class="modal-header">
 							         <a class="close" data-dismiss="modal">&times;</a>
-							         <h3>Create Return Order</h3>
+							         <h3>#local.buttonText#</h3>
 							      </div>
 							      <div class="modal-body">
 							         <p>The unit prices entered do not match the original order prices; please make sure all prices entered are correct before continuing.
@@ -87,10 +98,10 @@ Notes:
 							      <div class="modal-footer">
 							         <a class="btn btn-default s-remove" data-dismiss="modal"><span class="glyphicon glyphicon-remove icon-white"></span> Cancel</a>
 							         <button class="btn btn-success" 
-							            title="Create Return Order"
+							            title="#local.buttonText#"
 							            type="submit"
 							            >
-							        	<i class="glyphicon glyphicon-ok icon-white"></i> Create Return Order
+							        	<i class="glyphicon glyphicon-ok icon-white"></i> #local.buttonText#
 							         </button>
 							      </div>
 							   </div>
