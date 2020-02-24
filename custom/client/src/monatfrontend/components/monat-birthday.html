@@ -21,7 +21,7 @@
 				<div class="col-3">
 					<div style="overflow:hidden" class="d-flex flex-column align-items-center">
 						<div>
-							<a ng-click="monatBirthday.changeMonth('+')" href="">
+							<a ng-click="monatBirthday.changeMonth(monatBirthday.Actions.PLUS)" href="">
 								<i class="fa fa-angle-up fa-2x"></i>
 							</a>
 							
@@ -40,7 +40,7 @@
 						<div>{{monatBirthday.downMonth}}</div>
 						
 						<div>
-							<a ng-click="monatBirthday.changeMonth('-')" href="">
+							<a ng-click="monatBirthday.changeMonth(monatBirthday.Actions.MINUS)" href="">
 								<i class="fa fa-angle-down fa-2x"></i>
 							</a>
 							
@@ -51,7 +51,7 @@
 				<div class="col-3">
 					<div style="overflow:hidden" class="d-flex flex-column align-items-center">
 						<div>
-							<a ng-click="monatBirthday.changeDay('+')"  href="">
+							<a ng-click="monatBirthday.changeDay(monatBirthday.Actions.PLUS)"  href="">
 								<i class="fa fa-angle-up fa-2x"></i>
 							</a>
 						</div>
@@ -63,13 +63,16 @@
 								class="border-left-0 border-right-0 border-dark text-center"
 								type="text"
 								ng-model="monatBirthday.day"
+								type="number"
+								ng-change="monatBirthday.changeDay(monatBirthday.Actions.INPUT)"
+								ng-model-options="{ debounce: 500 }"
 							>
 						</div>
 						
 						<div>{{ +monatBirthday.downDay }}</div>
 						
 						<div>
-							<a ng-click="monatBirthday.changeDay('-')" href="">
+							<a ng-click="monatBirthday.changeDay(monatBirthday.Actions.MINUS)" href="">
 								<i class="fa fa-angle-down fa-2x"></i>	
 							</a>
 						</div>
@@ -79,13 +82,13 @@
 				<div class="col-3">
 					<div style="overflow:hidden" class="d-flex flex-column align-items-center">
 						<div>
-							<a ng-click="monatBirthday.changeYear('+')" href="">
+							<a ng-click="monatBirthday.changeYear(monatBirthday.Actions.PLUS)" href="">
 								<i class="fa fa-angle-up fa-2x"></i>
 							</a>
 							
 						</div>
 						
-						<div>{{ +monatBirthday.year + 1}}</div>
+						<div><span ng-if="+monatBirthday.year + 1 < monatBirthday.currentYear">{{ +monatBirthday.year + 1}}</span></div>
 						
 						<div class="my-3">
 							<input
@@ -98,7 +101,7 @@
 						<div ng-click="monatBirthday.resetModel()">{{ +monatBirthday.year - 1}}</div>
 						
 						<div>
-							<a ng-click="monatBirthday.changeYear('-')" href="">
+							<a ng-click="monatBirthday.changeYear(monatBirthday.Actions.MINUS)" href="">
 								<i class="fa fa-angle-down fa-2x"></i>	
 							</a>
 						</div>
