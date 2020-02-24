@@ -22,31 +22,24 @@ class MonatBirthdayController {
 		this.showPicker = !this.showPicker;
 	}
 	
-	public increaseMonth():void{
-		this.month = this.getAdjustedMonth('+'); 
+	public changeMonth(action: plusOrMinus):void{
+		this.month = this.getAdjustedMonth(action); 
 		this.upMonth = this.getAdjustedMonth('+');
-		this.downMonth = this.getAdjustedMonth('-'); 
-		this.resetModel();
-	}
-	
-	public decreaseMonth():void{
-		this.month = this.getAdjustedMonth('-');
-		this.upMonth =this.getAdjustedMonth('+');
 		this.downMonth = this.getAdjustedMonth('-');
+
 		this.resetModel();
 	}
 	
 	public changeDay(action: plusOrMinus):void{
 		//disallow days below 1, and days above the last day in the month
 		let daysInCurrentMonth = new Date(this.date.getFullYear(), this.months.indexOf(this.month)+1, 0).getDate();
-		
 		if((+this.day === 1 && action ==='-') || (+this.day === daysInCurrentMonth && action === '+')) return;
 		this.day = (action === '+') ? this.day + 1 : this.day - 1;
 		this.resetModel()
 	}
 	
 	public changeYear(action: plusOrMinus):void{
-
+		//disallow years above the current year
 		if(action === '+' && this.year < this.currentYear){
 			this.year += 1;
 			this.resetModel();
@@ -58,14 +51,20 @@ class MonatBirthdayController {
 	
 	public resetModel(){
 		if(!this.$scope.swfForm || !this.$scope.swfForm.form) return;
-		
 		this.$scope.swfForm.form.month = {$modelValue: this.months.indexOf(this.month)};
 		this.$scope.swfForm.form.year = {$modelValue: this.year};
 		this.$scope.swfForm.form.day = {$modelValue: this.day};
 	}
 	
 	public getAdjustedMonth(action:plusOrMinus):string{
-		return (action === '+') ? this.months[this.months.indexOf(this.month) + 1] : this.months[this.months.indexOf(this.month) - 1];
+		
+		if(this.months.indexOf(this.month) == this.months.length -1 && action === '+'){
+			return this.months[0];
+		}else if(this.months.indexOf(this.month) === 0 && action === '-'){
+			return this.months[this.months.length -1]
+		}else{
+			return (action === '+') ? this.months[this.months.indexOf(this.month) + 1] : this.months[this.months.indexOf(this.month) - 1];
+		}
 	}
 }
 
