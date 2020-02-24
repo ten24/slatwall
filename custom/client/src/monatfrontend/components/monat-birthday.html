@@ -21,13 +21,13 @@
 				<div class="col-3">
 					<div style="overflow:hidden" class="d-flex flex-column align-items-center">
 						<div>
-							<a ng-click="monatBirthday.increaseMonth()" href="">
+							<a ng-click="monatBirthday.changeMonth('+')" href="">
 								<i class="fa fa-angle-up fa-2x"></i>
 							</a>
 							
 						</div>
 												
-						<div>{{monatBirthday.downMonth}}</div>
+						<div>{{monatBirthday.upMonth}}</div>
 						
 						<div class="my-3">
 							<input
@@ -37,10 +37,10 @@
 							>
 						</div>
 
-						<div>{{monatBirthday.upMonth}}</div>
+						<div>{{monatBirthday.downMonth}}</div>
 						
 						<div>
-							<a ng-click="monatBirthday.decreaseMonth()" href="">
+							<a ng-click="monatBirthday.changeMonth('-')" href="">
 								<i class="fa fa-angle-down fa-2x"></i>
 							</a>
 							
