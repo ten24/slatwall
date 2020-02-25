@@ -438,7 +438,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 			data[ 'processObjects' ][ key ][ 'errors' ] = getAccount().getProcessObjects()[ key ].getErrors();
 		}
 		
-		return data;
+		return {'account':data};
 	}
 
 	public any function getAvailableCartPropertyList(string cartDataOptions="full") {
