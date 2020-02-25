@@ -5,11 +5,10 @@
 			name="dob"
 			class="form-control"
 			ng-model="slatwall.Account_UpdateAccount.dob" 
-
 		>
+			<option ng-selected="!monatBirthday.showPicker && monatBirthday.isSet">{{monatBirthday.day}}/{{monatBirthday.months.indexOf(monatBirthday.month)}}/{{monatBirthday.year}}</option>
 		</select>
 		<label for="gender_CreateAccount" sw-rbkey="'frontend.global.yourBirthday'"></label>
-		<sw:SwfErrorDisplay propertyIdentifier="dob"/>   
 	</div>
 	<div ng-if="monatBirthday.showPicker">
 		<div class="birthday-wrapper shadow border overflow-hidden">
