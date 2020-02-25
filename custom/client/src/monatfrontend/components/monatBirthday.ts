@@ -136,9 +136,6 @@ class MonatBirthdayController {
 		this.$scope.swfForm.form.month = {$modelValue: this.months.indexOf(this.month) + 1};
 		this.$scope.swfForm.form.year = {$modelValue: this.year};
 		this.$scope.swfForm.form.day = {$modelValue: this.day};
-				this.$scope.swfForm.form.dob.$touched = true;
-
-		this.$scope.swfForm.form.dob.$dirty = true;
 		this.isSet = true
 	}
 	
