@@ -37,8 +37,7 @@ class EnrollmentMPController {
 			this.getStarterPacks();
 			this.getProductList();	
 		});
-
-	};
+	}
 	
 	public adjustInputFocuses = () => {
 		this.monatService.adjustInputFocuses();
@@ -63,11 +62,12 @@ class EnrollmentMPController {
 	}
 	
 	public searchByKeyword = (keyword:string) =>{
-		this.publicService.doAction('getProductsByKeyword', {keyword: keyword}).then(res=> {
+		this.publicService.doAction('getProductsByKeyword', {keyword: keyword, priceGroupCode: 1}).then(res=> {
 			this.paginationMethod = 'getProductsByKeyword';
 			this.productRecordsCount = res.recordsCount;
 			this.paginationObject['keyword'] = keyword;
 			this.productList = res.productList;
+			this.observerService.notify("PromiseComplete");
 		});
 	}
 	
