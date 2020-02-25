@@ -438,14 +438,14 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 			data[ 'processObjects' ][ key ][ 'errors' ] = getAccount().getProcessObjects()[ key ].getErrors();
 		}
 		
-		return data;
+		return {'account':data};
 	}
 
 	public any function getAvailableCartPropertyList(string cartDataOptions="full") {
 		var availablePropertyList = "";
 		
 		if(arguments.cartDataOptions=='full' || listFind(arguments.cartDataOptions,'order')){
-			availablePropertyList &="orderID,orderOpenDateTime,calculatedTotal,total,subtotal,taxTotal,VATTotal,fulfillmentTotal,fulfillmentChargeAfterDiscountTotal,promotionCodeList,discountTotal,orderAndItemDiscountAmountTotal, fulfillmentDiscountAmountTotal, orderRequirementsList,orderNotes,totalItemQuantity,";
+			availablePropertyList &="orderID,orderOpenDateTime,calculatedTotal,total,subtotal,taxTotal,VATTotal,fulfillmentTotal,fulfillmentChargeAfterDiscountTotal,promotionCodeList,discountTotal,orderAndItemDiscountAmountTotal, fulfillmentDiscountAmountTotal, orderRequirementsList,orderNotes,totalItemQuantity,messages,";
 		}
 		
 		//orderItemData
@@ -498,7 +498,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 		return availablePropertyList;
 	}
 	
-	public any function getCartData(string propertyList,string cartDataOptions="full") {
+	public any function getCartData(string propertyList,string cartDataOptions="full", boolean updateOrderAmounts) {
 		
 		var availablePropertyList = getAvailableCartPropertyList(arguments.cartDataOptions);
 		availablePropertyList = ReReplace(availablePropertyList,"[[:space:]]","","all");
@@ -511,7 +511,11 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
         if(!structKeyExists(arguments,"propertyList") || trim(arguments.propertyList) == "") {
             arguments.propertyList = availablePropertyList;
         }   
-
+        
+        if ( !isNull( arguments.updateOrderAmounts ) && arguments.updateOrderAmounts ) {
+			getService('OrderService').processOrder( getCart(), {}, 'updateOrderAmounts' );
+        }
+        
         var data = getService('hibachiUtilityService').buildPropertyIdentifierListDataStruct(getCart(), arguments.propertyList, availablePropertyList);
 
         //only need to work if order fulfillment data exists
@@ -546,7 +550,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
             data[ 'processObjects' ][ key ][ 'errors' ] = getCart().getProcessObjects()[ key ].getErrors();
         }
 		
-		return data;
+		return { 'cart': data };
 	}
 
 	public string function getSignedS3URL( required string path, numeric minutesValid = 15) {

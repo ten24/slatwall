@@ -1033,8 +1033,10 @@ component  accessors="true" output="false"
         if(!structKeyExists(arguments.data,'cartDataOptions') || !len(arguments.data['cartDataOptions'])){
             arguments.data['cartDataOptions']='full';
         }
+        
+        var updateOrderAmounts = structKeyExists( arguments.data, 'updateOrderAmounts' ) && arguments.data.updateOrderAmounts;
     
-        arguments.data.ajaxResponse = getHibachiScope().getCartData(cartDataOptions=arguments.data['cartDataOptions']);
+        arguments.data.ajaxResponse = getHibachiScope().getCartData(cartDataOptions=arguments.data['cartDataOptions'], updateOrderAmounts = updateOrderAmounts);
     }
     
     public void function getAccountData(any data) {
@@ -1055,7 +1057,7 @@ component  accessors="true" output="false"
         if(!isNull(order) && order.getAccount().getAccountID() == getHibachiScope().getAccount().getAccountID()) {
             
             var data = {
-                saveNewFlag=true,
+                saveNewFlag=true, 
                 copyPersonalDataFlag=true
             };
             

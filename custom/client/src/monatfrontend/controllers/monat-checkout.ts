@@ -28,6 +28,9 @@ class MonatCheckoutController {
 	public totalSteps:number;
 	public currentStep:number;
 	public enrollmentSteps = 0;
+	public currentYear:number;
+	public monthOptions:Array<number> = [1,2,3,4,5,6,7,8,9,10,11,12];
+	public yearOptions:Array<number> = [];
 	
 	// @ngInject
 	constructor(
@@ -65,6 +68,15 @@ class MonatCheckoutController {
 			// if they have a sponsor, thats an extra step (billing=>sponsor=>review) otherwise its billing=>review
 			this.getCurrentCheckoutScreen(true, true);
 		});
+		
+		const currDate = new Date;
+        this.currentYear = currDate.getFullYear();
+        let manipulateableYear = this.currentYear;
+        
+        do {
+            this.yearOptions.push(manipulateableYear++)
+        }
+        while(this.yearOptions.length <= 9);
 	}
 	
 	public $postLink(){

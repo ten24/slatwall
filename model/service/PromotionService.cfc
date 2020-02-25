@@ -1089,6 +1089,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var activePromotionRewardsWithSkuCollection = getPromotionDAO().getActivePromotionRewards( rewardTypeList="merchandise,subscription,contentAccess", promotionCodeList="", excludeRewardsWithQualifiers=true, site=arguments.orderItem.getOrder().getOrderCreatedSite());
 		var originalPrice = arguments.orderItem.getSkuPrice();
 		var currencyCode = arguments.orderItem.getCurrencyCode();
+
+		var account = arguments.orderItem.getOrder().getAccount();
+
         /*
             Price group is prioritized as so: 
                 1.Order price group
@@ -1100,7 +1103,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
         
         if(!isNull(arguments.orderItem.getOrder().getPriceGroup())){ 
             var priceGroup = arguments.orderItem.getOrder().getPriceGroup(); //order price group
-        }else if(!isNull(account.getPriceGroups()) && arrayLen(account.getPriceGroups())){ 
+        }else if(!isNull(account) && !isNull(account.getPriceGroups()) && arrayLen(account.getPriceGroups())){ 
             var priceGroup = account.getPriceGroups()[1]; //account price group
         }else{
         	var priceGroup = getService('priceGroupService').getPriceGroupByPriceGroupCode(2) // default to retail
@@ -1109,6 +1112,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(isNull(originalPrice)){
 			originalPrice = arguments.orderItem.getSku().getPriceByCurrencyCode(currencyCode= currencyCode, priceGroups=[priceGroup]);
 		} 
+
 
 		var priceDetails = getPriceDetailsForPromoRewards( promoRewards=activePromotionRewardsWithSkuCollection,
 														sku=arguments.orderItem.getSku(),

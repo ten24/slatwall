@@ -1470,7 +1470,8 @@ component extends="Slatwall.model.service.OrderService" {
 			var orderTemplateItemStruct = {
 				'sku_skuID'=skuID,
 				'quantity'=1,
-				'orderTemplateItemID'=orderTemplateItem.getOrderTemplateItemID()
+				'orderTemplateItemID'=orderTemplateItem.getOrderTemplateItemID(),
+				'price'=0
 			};
 			
 			arguments.order = this.addOrderItemFromTemplateItem(arguments.order, orderTemplateItemStruct, arguments.orderTemplate, arguments.orderFulfillment);

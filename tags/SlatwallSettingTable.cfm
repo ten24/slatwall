@@ -142,11 +142,19 @@ Notes:
 
 						<cfset settingFilterEntitiesName = thisSetting.settingFilterEntitiesName />
 						<cfset settingFilterEntitiesURL = thisSetting.settingFilterEntitiesURL />
+						
 						<cfloop array="#thisSetting.settingFilterEntities#" index="fe">
+							<!--- Don't add the same site twice when saving site settings. --->
+							<cfif filterEntitiesSiteCleanupFlag eq true and fe.getSiteName() neq tabData.site.getSiteName()>
+								<cfcontinue>
+							</cfif>
+							
+							<!--- Only add this if site wasn't already added and this isn't siteid--->
 							<cfset settingFilterEntitiesName = listAppend(settingFilterEntitiesName, "#thisSetting.hibachiScope.rbKey('entity.#fe.getClassName()#')#: #fe.getSimpleRepresentation()#") />
 							<cfset settingFilterEntitiesURL = listAppend(settingFilterEntitiesURL, "#fe.getPrimaryIDPropertyName()#=#fe.getPrimaryIDValue()#", "&") />
+								
 						</cfloop>
-
+						
 						<tr>
 							<td class="primary">
 								#thisSetting.settingDisplayName# <cfif len(thisSetting.settingHint)><a href="##" rel="tooltip" class="hint" title="#thisSetting.settingHint#"><i class="fa fa-question-circle"></i></a></cfif>
@@ -188,15 +196,20 @@ Notes:
 							<cfif attributes.showInheritance>
 								<td>
 									<cfif thisSetting.settingDetails.settingInherited>
+										
 										<cfif thisSetting.settingDetails.settingValueResolvedLevel eq "global" or thisSetting.settingDetails.settingValueResolvedLevel eq "global.metadata">
 											<hb:HibachiActionCaller action="admin:entity.settings" text="#request.slatwallScope.rbKey('define.global')#"/>
 										<cfelseif thisSetting.settingDetails.settingValueResolvedLevel eq "site">
-											<hb:HibachiActionCaller action="admin:entity.detailsite" text="#request.slatwallScope.rbKey('entity.site')#" queryString="siteID=#thisSetting.settingDetails.settingRelationships.siteID#">
+											
+											<hb:HibachiActionCaller action="admin:entity.detailsite" text="#request.slatwallScope.rbKey('entity.site')#" queryString="sitesID=#thisSetting.settingDetails.settingRelationships.siteID#">
 										<cfelseif (thisSetting.settingDetails.settingValueResolvedLevel eq "object" and tabData.isGlobalFlag) or thisSetting.settingDetails.settingValueResolvedLevel eq "object.site">
+										
 											#request.slatwallScope.rbKey('define.here')#
 										<cfelseif thisSetting.settingDetails.settingValueResolvedLevel eq "object" and not tabData.isGlobalFlag>
+											
 											#request.slatwallScope.rbKey('define.here')# (#request.slatwallScope.rbKey('define.inherit')# #request.slatwallScope.rbKey('define.primary')#)
 										<cfelseif listFindNoCase("ancestor,ancestor.site",thisSetting.settingDetails.settingValueResolvedLevel)>
+											
 											<cfif structCount(thisSetting.settingDetails.settingRelationships) gt 0 and structCount(thisSetting.settingDetails.settingRelationships) lte 2 and structKeyExists(thisSetting.settingDetails.settingRelationships, "productTypeID")>
 													<cfset local.productType = request.slatwallScope.getService("productService").getProductType(thisSetting.settingDetails.settingRelationships.productTypeID) />
 													<cfset local.linktext = local.productType.getSimpleRepresentation() />
