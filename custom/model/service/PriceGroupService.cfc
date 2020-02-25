@@ -7,23 +7,22 @@ component extends="Slatwall.model.service.priceGroupService" accessors="true" {
 			return super.updateOrderAmountsWithPriceGroups(argumentCollection=arguments);
 		}
 	
-		if(isNull(arguments.order.getAccount())){
-			return;
-		}
-
 		var priceGroup = arguments.order.getPriceGroup();
 
 		var totalQuantity = arguments.order.getTotalItemQuantity();
 		var priceGroupCacheKey = hash(totalQuantity & priceGroup.getPriceGroupID(),'md5');
-		
+
 		if( isNull(arguments.order.getPriceGroupCacheKey()) || arguments.order.getPriceGroupCacheKey() != priceGroupCacheKey ) {
+
 			arguments.order.setPriceGroupCacheKey(priceGroupCacheKey);
 			var orderItems = arguments.order.getOrderItems(); 
 			for(var orderItem in orderItems){
 				orderItem.setAppliedPriceGroup( priceGroup );
 				orderItem.refreshAmounts();
 				orderItem.updateCalculatedProperties();
+				orderItem.setPrice(orderItem.getSku().getPriceByCurrencyCode(currencyCode=arguments.order.getCurrencyCode(), priceGroups=[arguments.order.getPriceGroup()]));
 			}
 		}
 	}
+	
 }

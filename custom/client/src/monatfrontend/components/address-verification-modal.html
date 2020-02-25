@@ -1,0 +1,59 @@
+<div
+	class="modal using-modal-service"
+	role="dialog"
+	id="flexship-modal-payment-method{{ addressVerification.orderTemplate.orderTemplateID }}"
+>
+	<div class="modal-dialog modal-lg">
+        <form name="updateBillingForm" 
+        	ng-submit="updateBillingForm.$valid && addressVerification.updateBilling()"
+         >
+		<div class="modal-content">
+			<!-- Modal Close -->
+			<button
+				type="button"
+				class="close"
+				ng-click="addressVerification.closeModal()"
+				aria-label="Close"
+			>
+				<i class="fas fa-times"></i>
+			</button>
+
+			<div class="payment">
+				<h6 class="title-with-line mb-5">
+					{{ addressVerification.translations.suggestedAddress }}
+				</h6>
+				<div> 
+				<p>{{ addressVerification.translations.addressMessage }}</p>
+					<div
+						class="custom-radio form-group"
+						ng-click="addressVerification.setShippingAddress(address)"
+						ng-repeat="address in addressVerification.suggestedAddresses"
+					>
+						<input
+							type="radio"
+							name="saved_cards"
+							ng-model="address"
+							ng-value="address.addressID"
+							ng-checked=" "
+						/>
+						<label for="new_card">
+							ADDRESS LABEL GOES HERE
+						</label>
+					</div>
+				</div>
+			</div>
+			
+			<div class="footer">
+				<button
+					type="submit"
+					class="btn btn-block bg-primary"
+					ng-class="{ loading: addressVerification.loading }"
+					ng-disabled = "addressVerification.loading"
+					sw-rbkey="'frontend.checkout.okay'"
+				>
+				</button>
+			</div>
+        </div>
+        </form>
+	</div>
+</div>
