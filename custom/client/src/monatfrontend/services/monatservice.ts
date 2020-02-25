@@ -18,11 +18,11 @@ export class MonatService {
 	//@ngInject
 	constructor(public publicService, public $q, public $window, public requestService) {}
 
-	public getCart(refresh = false) {
+	public getCart(refresh = false, param = '') {
 		var deferred = this.$q.defer();
 		if (refresh || angular.isUndefined(this.cart)) {
 			this.publicService
-				.getCart(refresh)
+				.getCart(refresh, param)
 				.then((data) => {
 					this.cart = data;
 					deferred.resolve(this.cart);
