@@ -22,6 +22,8 @@ class EnrollmentMPController {
 	public monthOptions: Array<number|string> = [];
 	public currentDate: any;
 	public productRecordsCount:any;
+	public paginationMethod = 'getStarterPackBundleStruct';
+	public paginationObject = {};
 	
 	// @ngInject
 	constructor(public publicService, public observerService, public monatService, private rbkeyService) {}
@@ -58,6 +60,15 @@ class EnrollmentMPController {
 			}
 			this.dayOptions.push( label );
 		}
+	}
+	
+	public searchByKeyword = (keyword:string) =>{
+		this.publicService.doAction('getProductsByKeyword', {keyword: keyword}).then(res=> {
+			this.paginationMethod = 'getProductsByKeyword';
+			this.productRecordsCount = res.recordsCount;
+			this.paginationObject['keyword'] = keyword;
+			this.productList = res.productList;
+		});
 	}
 	
 	public setDayOptionsByDate = ( year = null, month = null ) => {
