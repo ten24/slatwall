@@ -1801,6 +1801,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             super.addOrderPayment(paymentData);
         }
 	    
+	    arguments.data['ajaxResponse'] = getHibachiScope().getCartData(cartDataOptions='full');
 	}
     
 }

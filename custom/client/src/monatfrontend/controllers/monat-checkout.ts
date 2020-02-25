@@ -91,9 +91,9 @@ class MonatCheckoutController {
 		this.getCurrentCheckoutScreen(true);
 	}
 	
-	private getCurrentCheckoutScreen = (setDefault = false, initialCheck = false):Screen|void => {
+	private getCurrentCheckoutScreen = (setDefault = false, initialCheck = false, hardRefresh = false):Screen|void => {
 	
-		return this.publicService.getCart(true).then(data => {
+		return this.publicService.getCart(hardRefresh).then(data => {
 			if(!this.publicService.hasAccount()){
 				return; 	
 			}
@@ -123,7 +123,6 @@ class MonatCheckoutController {
 			this.getCurrentStepNumber();
 			return screen;
 		});
-		
 	}
 	
 	public getCurrentStepNumber():void{
@@ -298,7 +297,7 @@ class MonatCheckoutController {
 	}
 	
 	public setInitialShippingMethod():Promise<any>{
-		let defaultOption = <{[key:string]: any}>this.shippingFulfillment[0];
+		let defaultOption = <Fulfillment>this.shippingFulfillment[0];
 
 		let data = {
 			'shippingMethodID': defaultOption.shippingMethodOptions[0].value,
@@ -334,75 +333,13 @@ class MonatCheckoutController {
 		return this.publicService.doAction('addOrderPayment', data);
 	}
 	
-	public hasShippingMethod(){
-		return this.cart.orderFulfillments[0].shippingMethod && this.cart.orderFulfillments[0].shippingMethod.shippingMethodID &&  this.cart.orderFulfillments[0].shippingMethod.shippingMethodID.length > 0;
-	}
-	
 	public setCheckoutDefaults(){
 		if(!this.cart.orderID.length) return;
-		
 		this.publicService.doAction('setIntialShippingAndBilling').then(res=>{
-			console.log(res);
-			return;
+			this.cart = res.cart;
+			this.getCurrentCheckoutScreen(false, true, false);
 		});
-		
-		/****
-		//Set shipping address if it is available and not already set
-		if(this.account.primaryAddress.accountAddressID.length && !this.publicService.hasShippingAddress(0)){
-			this.setInitialShippingAddress().then(res=>{
-				this.progressDefaults(res, Screen.SHIPPING);
-			});
-		}
-		
-		//set shipping method
-		else if(!this.setDefaultShipping  && !this.hasShippingMethod() && this.publicService.hasShippingAddress(0)?.length){
-			this.setInitialShippingMethod().then(res=>{
-				this.setDefaultShipping = true;
-				this.loading.selectShippingMethod = false;
-				this.progressDefaults(res, Screen.PAYMENT);
-			});
-		}
-
-		//set billing address same as shipping, if :
-		//											1. there is a shipping address and billing address has not been set
-		//											2. We dont have a primary payment method
-		else if(
-				!this.cart.billingAddress.addressID
-				&& !this.cart.billingAccountAddress 
-				&& !this.account.primaryPaymentMethod?.accountPaymentMethodID 
-				&& this.publicService.getShippingAddress(0).addressID
-			){
-	
-			this.setBillingAddress().then(res=>{
-				this.progressDefaults(res, Screen.PAYMENT);
-			});
-		}
-		
-		//set primary payment method
-		else if(!this.cart.orderPayments.length && this.account.primaryPaymentMethod?.accountPaymentMethodID && this.hasShippingMethod()){
-			this.setAccountPrimaryPaymentMethodAsCartPaymentMethod().then(res=>{
-				//if we cant set payment method, set default shipping billing address
-				if(res.failureActions.length && !this.cart.billingAddress.addressID && !this.cart.billingAccountAddress ){
-					this.setBillingAddress();
-				}
-				else{
-					this.progressDefaults(res, Screen.PAYMENT);
-				}
-			});
-		}
-		***/
 	}
-	
-	// calls setCheckoutDefaults to create a recursive loop continually progressing through checkout steps where possible
-	public progressDefaults(res, screen:Screen){
-		if(res && !res.failureActions.length){
-			this.cart = this.publicService.cart;
-			this.shippingFulfillment = this.cart.orderFulfillments.filter(el => el.fulfillmentMethod.fulfillmentMethodType == 'shipping' );
-			this.setCheckoutDefaults();	
-			this.screen = screen;
-		}
-	}
-	
 }
 
 export { MonatCheckoutController };
