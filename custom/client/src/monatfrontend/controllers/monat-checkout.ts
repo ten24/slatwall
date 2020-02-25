@@ -10,7 +10,7 @@ enum Screen {
 	ACCOUNT
 }
 
-type Fulfillment = { [key: string]: any } | string;
+type Fulfillment = { orderFulfillmentID: string, [key: string]: any };
 
 class MonatCheckoutController {
 	public shippingFulfillment: Array<Fulfillment>;
@@ -55,12 +55,12 @@ class MonatCheckoutController {
 		
 		this.observerService.attach( this.closeNewAddressForm, 'addNewAccountAddressSuccess' ); 
 		this.observerService.attach( this.getCurrentCheckoutScreen, 'createAccountSuccess' ); 
-		this.observerService.attach(this.manageEvent.bind(this), 'addShippingAddressUsingAccountAddressSuccess' ); 
-		this.observerService.attach(this.manageEvent.bind(this), 'addShippingAddressSuccess' ); 
-		this.observerService.attach(this.manageEvent.bind(this), 'addShippingMethodUsingShippingMethodIDSuccess' ); 
+		// this.observerService.attach(this.manageEvent.bind(this), 'addShippingAddressUsingAccountAddressSuccess' ); 
+		// this.observerService.attach(this.manageEvent.bind(this), 'addShippingAddressSuccess' ); 
+		// this.observerService.attach(this.manageEvent.bind(this), 'addShippingMethodUsingShippingMethodIDSuccess' ); 
 
 		this.publicService.getAccount().then(res=>{
-			this.account = res;
+			this.account = res.account;
 			if(this.account?.ownerAccount?.accountNumber?.length && this.account?.ownerAccount?.accountNumber !== this.account?.accountNumber){
 				this.hasSponsor = true;
 			}
@@ -83,6 +83,7 @@ class MonatCheckoutController {
 		if(this.publicService.enrollmentSteps) this.enrollmentSteps = this.publicService.enrollmentSteps;
 		this.totalSteps = this.hasSponsor ? 2 + this.enrollmentSteps  : 3 + this.enrollmentSteps; 	
 	}
+	
 	private manageEvent(){
 		if(this.loading.selectShippingMethod) {
 			return;
@@ -96,7 +97,7 @@ class MonatCheckoutController {
 			if(!this.publicService.hasAccount()){
 				return; 	
 			}
-			this.cart = data;
+			this.cart = data.cart;
 			let screen = Screen.SHIPPING;
 			this.shippingFulfillment = this.cart.orderFulfillments.filter(el => el.fulfillmentMethod.fulfillmentMethodType == 'shipping' );
 			
@@ -140,10 +141,10 @@ class MonatCheckoutController {
 		this.publicService.addBillingAddressOpen = false;
 	}
 	
-	public selectShippingMethod = ( option:{[key:string]:any}, orderFulfillment: Fulfillment):Promise<any> => {
+	public selectShippingMethod = ( option:{[key:string]:any}, orderFulfillment: Fulfillment | string):Promise<any> => {
 		
 		if ( typeof orderFulfillment == 'string' ) {
-			orderFulfillment = <{[key:string]: any}>this.publicService.cart.orderFulfillments[orderFulfillment];
+			orderFulfillment = <Fulfillment>this.publicService.cart.orderFulfillments[orderFulfillment];
 		}
 		
 		let data = {
@@ -340,6 +341,12 @@ class MonatCheckoutController {
 	public setCheckoutDefaults(){
 		if(!this.cart.orderID.length) return;
 		
+		this.publicService.doAction('setIntialShippingAndBilling').then(res=>{
+			console.log(res);
+			return;
+		});
+		
+		/****
 		//Set shipping address if it is available and not already set
 		if(this.account.primaryAddress.accountAddressID.length && !this.publicService.hasShippingAddress(0)){
 			this.setInitialShippingAddress().then(res=>{
@@ -383,7 +390,7 @@ class MonatCheckoutController {
 				}
 			});
 		}
-
+		***/
 	}
 	
 	// calls setCheckoutDefaults to create a recursive loop continually progressing through checkout steps where possible

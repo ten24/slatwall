@@ -1727,12 +1727,14 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 	//override core to also set the cheapest shippinng method as the default
 	public void function addShippingAddressUsingAccountAddress(data){
 	    super.addShippingAddressUsingAccountAddress(arguments.data);
+	    getDAO('HibachiDAO').flushORMSession();
 	    this.setDefaultShippingMethod();
 	}
 	
 	//override core to also set the cheapest shippinng method as the default
 	public void function addOrderShippingAddress(data){
 	    super.addOrderShippingAddress(arguments.data);
+	    getDAO('HibachiDAO').flushORMSession();
 	    this.setDefaultShippingMethod();
 	}
 	
@@ -1748,7 +1750,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             //make sure we have shipping options
             if(!isNull(shippingMethods) && arrayLen(shippingMethods)){
                 //then we set the cheapest shipping fulfillment, which is set as first by sort order
-                var data = {fulfillmentID:shippingFulfillment.getOrderFulfillmentID(), shippingMethodID: shippingMethods[1].getShippingmethodID()};
+                var data = {fulfillmentID:shippingFulfillment.getOrderFulfillmentID(), shippingMethodID: shippingMethods[1].value};
                 super.addShippingMethodUsingShippingMethodID(data);               
             }
         }
@@ -1763,14 +1765,18 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 	
 	public void function setIntialShippingAndBilling(required any data){
         param name="arguments.data.defaultShippingFlag" default=true;
-	     
+        
 	    var cart = getHibachiScope().getCart();
 	    var account = cart.getAccount();
      
 	    //if the default shipping flag is passed in, and the account has a primary shipping address, set shipping address with it
 	    //otherwise use data passed in as arguments
 	    if(arguments.data.defaultShippingFlag && !isNull(account.getPrimaryShippingAddress())){
-	        this.addShippingAddressUsingAccountAddress(arguments.data); 
+	        var orderFulfillments = cart.getOrderFulfillments();
+	        var shippingFulfillmentID = orderFulfillments[1].getOrderFulfillmentID();
+	        var addressID = account.getPrimaryShippingAddress().getAccountAddressID();
+	        var data = {shippingFulfillmentID:shippingFulfillmentID, accountAddressID: addressID};
+	        this.addShippingAddressUsingAccountAddress(data); 
 	    }else{
 	        this.addOrderShippingAddress(arguments.data);
 	    }
