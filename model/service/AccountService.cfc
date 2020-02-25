@@ -106,17 +106,17 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 	
 	
-	public any function getAvailablePaymentMethods() {
-		
+	public any function getAvailablePaymentMethods(required any account, struct data = {}) {
+
 		var accountPaymentMethodList = this.getAccountPaymentMethodCollectionList();
 		accountPaymentMethodList.setDisplayProperties('paymentMethod.paymentMethodType,paymentMethod.paymentMethodName,accountPaymentMethodName,accountPaymentMethodID');
-		accountPaymentMethodList.addFilter("account.accountID",getHibachiScope().getAccount().getAccountID());
+		accountPaymentMethodList.addFilter("account.accountID", arguments.account.getAccountID() );
 		accountPaymentMethodList.addFilter('paymentMethod.paymentMethodType', 'cash,check,creditCard,external,giftCard',"IN");
 		accountPaymentMethodList.addFilter('paymentMethod.paymentMethodID', getHibachiScope().setting('accountEligiblePaymentMethods'),"IN");
 		accountPaymentMethodList.addFilter('paymentMethod.activeFlag', 1);
 		accountPaymentMethodList.addFilter('activeFlag', 1);
 		accountPaymentMethodList = accountPaymentMethodList.getRecords(formatRecords=false);
-		
+
 		return accountPaymentMethodList;
 	}
 	// =====================  END: Logical Methods ============================

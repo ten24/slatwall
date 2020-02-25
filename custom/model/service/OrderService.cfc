@@ -12,11 +12,10 @@ component extends="Slatwall.model.service.OrderService" {
      * @param currentPage optional
      * return struct of orders and total count
      **/
-	public any function getAllCartsAndQuotesOnAccount(struct data={}) {
+	public any function getAllCartsAndQuotesOnAccount(required any account, struct data={}) {
         param name="arguments.data.currentPage" default=1;
-        param name="arguments.data.pageRecordsShow" default=5;
-        param name="arguments.data.accountID" default= getHibachiSCope().getAccount().getAccountID();
-        
+        param name="arguments.data.pageRecordsShow" default= getHibachiScope().setting('GLOBALAPIPAGESHOWLIMIT');
+
 		var ordersList = this.getOrderCollectionList();
 
 		ordersList.addOrderBy('orderOpenDateTime|DESC');
@@ -26,12 +25,12 @@ component extends="Slatwall.model.service.OrderService" {
 			orderNumber,
 			orderStatusType.typeName
 		');
-		
-		ordersList.addFilter( 'account.accountID', arguments.data.accountID, '=');
+
+		ordersList.addFilter( 'account.accountID', arguments.account.getAccountID() );
 		ordersList.addFilter( 'orderStatusType.systemCode', 'ostNotPlaced');
 		ordersList.setPageRecordsShow(arguments.data.pageRecordsShow);
 		ordersList.setCurrentPageDeclaration(arguments.data.currentPage); 
-		
+
 		return { "ordersOnAccount":  ordersList.getPageRecords(formatRecords=false), "recordsCount": ordersList.getRecordsCount()}
 	}
     
@@ -42,18 +41,17 @@ component extends="Slatwall.model.service.OrderService" {
      * @param currentPage optional
      * return struct of orders and total count
      **/
-	public any function getAllOrderFulfillmentsOnAccount(struct data={}) {
+	public any function getAllOrderFulfillmentsOnAccount(required any account, struct data={}) {
         param name="arguments.data.currentPage" default=1;
-        param name="arguments.data.pageRecordsShow" default=5;
-        param name="arguments.data.accountID" default= getHibachiSCope().getAccount().getAccountID();
-        
+        param name="arguments.data.pageRecordsShow" default= getHibachiScope().setting('GLOBALAPIPAGESHOWLIMIT');
+
 		var ordersList = this.getOrderFulfillmentCollectionList();
 		ordersList.setDisplayProperties(' orderFulfillmentID, estimatedShippingDate, pickupDate, order.orderID, order.calculatedTotalItemQuantity, order.orderNumber, orderFulfillmentStatusType.typeName');
-		ordersList.addFilter( 'order.account.accountID', arguments.data.accountID, '=');
+		ordersList.addFilter( 'order.account.accountID', arguments.account.getAccountID() );
 		ordersList.addFilter( 'order.orderStatusType.systemCode', 'ostNotPlaced', '!=');
 		ordersList.setPageRecordsShow(arguments.data.pageRecordsShow);
-		ordersList.setCurrentPageDeclaration(arguments.data.currentPage); 
-		
+		ordersList.setCurrentPageDeclaration(arguments.data.currentPage);
+
 		return { "ordersOnAccount":  ordersList.getPageRecords(formatRecords=false), "recordsCount": ordersList.getRecordsCount()}
 	}
 	
@@ -64,18 +62,17 @@ component extends="Slatwall.model.service.OrderService" {
      * @param currentPage optional
      * return struct of orders and total count
      **/
-	public any function getAllOrderDeliveryOnAccount(struct data={}) {
+	public any function getAllOrderDeliveryOnAccount(required any account, struct data={}) {
         param name="arguments.data.currentPage" default=1;
         param name="arguments.data.pageRecordsShow" default=5;
-        param name="arguments.data.accountID" default= getHibachiSCope().getAccount().getAccountID();
         
 		var ordersList = this.getOrderDeliveryCollectionList();
 		ordersList.setDisplayProperties(' orderDeliveryID, invoiceNumber, trackingNumber, order.orderID, order.calculatedTotalItemQuantity, order.orderNumber, orderDeliveryStatusType.typeName');
-		ordersList.addFilter( 'order.account.accountID', arguments.data.accountID, '=');
+		ordersList.addFilter( 'order.account.accountID', arguments.account.getAccountID() );
 		ordersList.addFilter( 'order.orderStatusType.systemCode', 'ostNotPlaced', '!=');
 		ordersList.setPageRecordsShow(arguments.data.pageRecordsShow);
-		ordersList.setCurrentPageDeclaration(arguments.data.currentPage); 
-		
+		ordersList.setCurrentPageDeclaration(arguments.data.currentPage);
+
 		return { "ordersOnAccount":  ordersList.getPageRecords(formatRecords=false), "recordsCount": ordersList.getRecordsCount()}
 	}
     
