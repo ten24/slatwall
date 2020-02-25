@@ -56,18 +56,25 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
      * Function to load from Config JSON and udpate tab positions
      * */
     function loadTabs() {
+    	
+    	//If detail tab does not exists
+		if( !jQuery('div[id^="tabdetails_"]').length ) {
+			return;
+		}
+		
+    	//get path of global.js
+    	var scripts = document.getElementsByTagName("script");
+    	//derive config json path
+    	var src = scripts[scripts.length-1].src;
+    	var path = (src.substring(0, src.lastIndexOf('/'))).replace("/org/Hibachi/HibachiAssets/js","");
     	//Load Config JSON file
-		var tabsConfigPath = '../../Slatwall/custom/system/config.json';
+		var tabsConfigPath = path+'/custom/system/config.json';
 		//Ready from JSON File
 		jQuery.getJSON( tabsConfigPath, function(tabsConfig) {
+			
 			//check if correct json is loaded
 			if( !tabsConfig.hasOwnProperty('data') || !tabsConfig.data.hasOwnProperty('entityTabs') ) {
 				return;	
-			}
-			
-			//If detail tab does not exists
-			if( !jQuery('div[id^="tabdetails_"]').length ) {
-				return;
 			}
 			
 			//Load tabs info from config
