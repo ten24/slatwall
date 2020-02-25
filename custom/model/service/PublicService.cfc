@@ -1724,25 +1724,33 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		}
 	}
 	
-	//override core to also set the cheapest shippinng method as the default
+    //override core to also set the cheapest shippinng method as the default, and set shipping same as billing
 	public void function addShippingAddressUsingAccountAddress(data){
 	    super.addShippingAddressUsingAccountAddress(arguments.data);
-	    getDAO('HibachiDAO').flushORMSession();
 	    this.setDefaultShippingMethod();
+	    //if the cart does not already have an order payment, set shipping address same as billing
+	    if(!getHibachiScope().getCart().hasOrderPaymentWithSavablePaymentMethod()){
+	        this.setShippingSameAsBilling();
+	    }
 	}
 	
-	//override core to also set the cheapest shippinng method as the default
+	//override core to also set the cheapest shippinng method as the default, and set shipping same as billing
 	public void function addOrderShippingAddress(data){
 	    super.addOrderShippingAddress(arguments.data);
-	    getDAO('HibachiDAO').flushORMSession();
 	    this.setDefaultShippingMethod();
+	    
+	    //if the cart does not already have an order payment, set shipping address same as billing
+	    if(!getHibachiScope().getCart().hasOrderPaymentWithSavablePaymentMethod()){
+	        this.setShippingSameAsBilling();
+	    }
+	    
 	}
 	
 	//this method sets the cheapest shipping method on the order
 	public void function setDefaultShippingMethod(order = getHibachiScope().getCart()){
 
         //Then we get the shipping fulfillment
-        var orderFulfillments = order.getOrderFulfillments();
+        var orderFulfillments = arguments.order.getOrderFulfillments();
         
         if(arrayLen(orderFulfillments)) {
             var shippingFulfillment = orderFulfillments[1];
@@ -1754,6 +1762,12 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                 super.addShippingMethodUsingShippingMethodID(data);               
             }
         }
+	}
+	
+	public void function setShippingSameAsBilling(order = getHibachiScope().getCart()){
+	    if(isNull(arguments.order.getOrderFulfillments()[1]) || isNull(arguments.order.getOrderFulfillments()[1].getShippingAddress())) return;
+        var addressID = arguments.order.getOrderFulfillments()[1].getShippingAddress().getAddressID();
+        super.addBillingAddress({addressID: addressID});
 	}
 	
 	/***
@@ -1781,14 +1795,10 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 	        this.addOrderShippingAddress(arguments.data);
 	    }
 
-        //Set up the billing information, first check to see if there is a primary account payment method
-        // if there is no account payment method, we set the billing address as the same as billing
+        //Set up the billing information, if there is a primary account payment method
         if(!isNull(account.getPrimaryPaymentMethod())){
             var paymentData = { orderID: cart.getOrderID(), copyFromType: 'accountPaymentMethod', accountPaymentMethodID: account.getPrimaryPaymentMethod().getAccountPaymentMethodID() };
             super.addOrderPayment(paymentData);
-        }else if(!isNull(cart.getShippingAddress())){
-            var addressID = cart.getShippingAddress().getShippingAddressID();
-            super.addBillingAddress({addressID: addressID});
         }
 	    
 	}
