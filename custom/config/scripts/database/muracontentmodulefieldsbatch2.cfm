@@ -63,7 +63,6 @@
 		});
 		
 		// Board Member Listing	
-		// delete class extentions first
 		arrayEach( siteArray, function( siteID ) {
 			
 			var subTypeID = createUUID();
@@ -112,7 +111,6 @@
 		});
 		
 		// Folder / module-container-lg-image
-		// delete class extentions first
 		arrayEach( siteArray, function( siteID ) {
 			
 			var subTypeID = createUUID();
@@ -186,7 +184,6 @@
 		});
 		
 		// Folder / module-content-columns
-		// delete us class extention
 		arrayEach( siteArray, function( siteID ) {
 			
 			var subTypeID = createUUID();
