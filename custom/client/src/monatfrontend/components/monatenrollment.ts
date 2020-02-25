@@ -183,11 +183,6 @@ class MonatEnrollmentController {
 		
 		return formattedCart;
 	}
-	
-	public showBirthdayPicker(){
-		alert('test');	
-	}
-	
 }
 
 class MonatEnrollment {
