@@ -524,6 +524,9 @@ component  accessors="true" output="false"
        	     		getDao('hibachiDao').flushOrmSession();
                     data.accountAddressID = savedAccountAddress.getAccountAddressID();
                     arguments.data['ajaxResponse']['newAccountAddressID'] = data.accountAddressID;
+
+                    var addressVerificationStruct = getService('AddressService').verifyAddressByID(savedAccountAddress.getAddress().getAddressID());
+                    arguments.data.ajaxResponse['addressVerification'] = addressVerificationStruct;
        	     	}
           	}else{
               this.addErrors(arguments.data, address.getErrors());
@@ -556,6 +559,9 @@ component  accessors="true" output="false"
    	     		getDao('hibachiDao').flushOrmSession();
                 data.accountAddressID = savedAccountAddress.getAccountAddressID();
                 data['ajaxResponse']['newAccountAddressID'] = data.accountAddressID;
+                
+                var addressVerificationStruct = getService('AddressService').verifyAddressByID(savedAccountAddress.getAddress().getAddressID());
+                arguments.data.ajaxResponse['addressVerification'] = addressVerificationStruct;
    	     	}
       	}else{
           this.addErrors(data, newAddress.getErrors());
@@ -1031,11 +1037,11 @@ component  accessors="true" output="false"
         
         var updateOrderAmounts = structKeyExists( arguments.data, 'updateOrderAmounts' ) && arguments.data.updateOrderAmounts;
     
-        arguments.data.ajaxResponse = getHibachiScope().getCartData(cartDataOptions=arguments.data['cartDataOptions'], updateOrderAmounts = updateOrderAmounts);
+        arguments.data.ajaxResponse = {'cart':getHibachiScope().getCartData(cartDataOptions=arguments.data['cartDataOptions'], updateOrderAmounts = updateOrderAmounts)};
     }
     
     public void function getAccountData(any data) {
-        arguments.data.ajaxResponse = getHibachiScope().getAccountData();
+        arguments.data.ajaxResponse = {'account':getHibachiScope().getAccountData()};
     }
     
     /** 

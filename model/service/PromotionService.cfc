@@ -1089,7 +1089,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var activePromotionRewardsWithSkuCollection = getPromotionDAO().getActivePromotionRewards( rewardTypeList="merchandise,subscription,contentAccess", promotionCodeList="", excludeRewardsWithQualifiers=true, site=arguments.orderItem.getOrder().getOrderCreatedSite());
 		var originalPrice = arguments.orderItem.getSkuPrice();
 		var currencyCode = arguments.orderItem.getCurrencyCode();
-
+		var account = getHibachiScope().getAccount();
         /*
             Price group is prioritized as so: 
                 1.Order price group

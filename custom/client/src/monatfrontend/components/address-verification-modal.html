@@ -22,22 +22,20 @@
 				<h6 class="title-with-line mb-5">
 					{{ addressVerification.translations.suggestedAddress }}
 				</h6>
-				<div> 
-				<p>{{ addressVerification.translations.addressMessage }}</p>
+				<div class="shipping-options"> 
+					<p>{{ addressVerification.translations.addressMessage }}</p>
 					<div
 						class="custom-radio form-group"
-						ng-click="addressVerification.setShippingAddress(address)"
-						ng-repeat="address in addressVerification.suggestedAddresses"
+						ng-repeat="address in addressVerification.suggestedAddresses track by $index"
 					>
+						<!--<h5>{{$index == 1 ? 'Suggested Address' : 'Entered Address'}}</h5>-->
 						<input
 							type="radio"
 							name="saved_cards"
-							ng-model="address"
-							ng-value="address.addressID"
-							ng-checked=" "
+							ng-checked="addressVerification.selectedAddressIndex == $index"
 						/>
-						<label for="new_card">
-							ADDRESS LABEL GOES HERE
+						<label for="new_card" ng-click="addressVerification.selectedAddressIndex = $index">
+							{{address.streetAddress}}, {{address.city}}, {{(address.stateCode || address.locality) ? (address.stateCode || address.locality) + ',' : ''}} {{address.postalCode}}
 						</label>
 					</div>
 				</div>
@@ -45,11 +43,11 @@
 			
 			<div class="footer">
 				<button
-					type="submit"
 					class="btn btn-block bg-primary"
 					ng-class="{ loading: addressVerification.loading }"
-					ng-disabled = "addressVerification.loading"
+					ng-disabled = "addressVerification.loading || addressVerification.selectedAddressIndex == undefined"
 					sw-rbkey="'frontend.checkout.okay'"
+					ng-click="addressVerification.submit()"
 				>
 				</button>
 			</div>

@@ -82,6 +82,12 @@ class MonatCheckoutController {
 		this.publicService.addBillingAddressOpen = false;
 	}
 	
+	public addressVerificationCheck = ({addressVerification})=>{
+		if(addressVerification && addressVerification.hasOwnProperty('success') && !addressVerification.success){
+			this.launchAddressModal([addressVerification.address,addressVerification.suggestedAddress]);
+		}
+	}
+	
 	public selectShippingMethod = ( option, orderFulfillment: any ) => {
 		
 		if ( typeof orderFulfillment == 'string' ) {
@@ -225,7 +231,7 @@ class MonatCheckoutController {
 	}
 	
 	//default value is only present for testing and it should be deleted
-	public launchAddressModal(address: Array<object> = [{key:'test'}] ):void{
+	public launchAddressModal(address: Array<object>):void{
 		this.ModalService.showModal({
 			component: 'addressVerification',
 			bodyClass: 'angular-modal-service-active',

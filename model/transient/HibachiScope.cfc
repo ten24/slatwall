@@ -438,7 +438,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 			data[ 'processObjects' ][ key ][ 'errors' ] = getAccount().getProcessObjects()[ key ].getErrors();
 		}
 		
-		return {'account':data};
+		return data;
 	}
 
 	public any function getAvailableCartPropertyList(string cartDataOptions="full") {
@@ -550,7 +550,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
             data[ 'processObjects' ][ key ][ 'errors' ] = getCart().getProcessObjects()[ key ].getErrors();
         }
 		
-		return { 'cart': data };
+		return data;
 	}
 
 	public string function getSignedS3URL( required string path, numeric minutesValid = 15) {
