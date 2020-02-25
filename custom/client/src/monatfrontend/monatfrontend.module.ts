@@ -49,7 +49,12 @@ import { MonatUpgradeMP } from './components/upgradeFlow/monatupgrademp';
 import { ImageManager } from './components/image-manager';
 import { AddressDeleteModal } from './components/address-delete-modal';
 import { MonatConfirmMessageModel } from './components/monat-modal-confirm-message'
+
 import { MonatBirthday } from './components/monatBirthday'
+
+import { HybridCart } from './components/hybridCart'
+import { EnrollmentFlexship } from './components/enrollmentFlexship'
+
 
 // controllers
 import { MonatForgotPasswordController } from './controllers/monat-forgot-password';
@@ -119,7 +124,13 @@ var monatfrontendmodule = angular
 	.directive('imageManager', ImageManager.Factory())
 	.directive ('monatConfirmMessageModel',MonatConfirmMessageModel.Factory())
 	.directive('monatDatePicker',MonatDatePicker.Factory())
+
 	.directive('monatBirthday',MonatBirthday.Factory())
+
+	.directive('hybridCart',HybridCart.Factory())
+	.directive('enrollmentFlexship',EnrollmentFlexship.Factory())
+	
+
 	// Controllers
 	.controller('searchController', MonatSearchController)
 	.controller('forgotPasswordController', MonatForgotPasswordController)
