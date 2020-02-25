@@ -44,7 +44,7 @@ class MonatBirthdayController {
 	}
 
 	public $onInit = () => {
-		console.log(this.$scope.swfForm.form)
+	
 	}
 	
 	public showBirthdayPicker():void{

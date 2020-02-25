@@ -172,7 +172,7 @@ class MonatCheckoutController {
 			if(response.moMoneyBalance){
 				this.publicService.moMoneyBalance = response.moMoneyBalance;
 			}
-		})
+		});
 	}
 	
 	public configExternalPayPalMethod() {

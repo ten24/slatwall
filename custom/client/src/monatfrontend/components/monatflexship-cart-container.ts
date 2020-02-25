@@ -73,6 +73,8 @@ class MonatFlexshipCartContainerController {
 		    this.orderTemplateId = localStorage.getItem('flexshipID');
 		}
 		
+		if(!this.orderTemplateId) return;
+		
 		let extraProperties = "cartTotalThresholdForOFYAndFreeShipping";
 		
 		if(this.context == 'enrollment'){
