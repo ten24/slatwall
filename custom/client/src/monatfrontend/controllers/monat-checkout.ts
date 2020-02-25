@@ -230,7 +230,6 @@ class MonatCheckoutController {
 		}
 	}
 	
-	//default value is only present for testing and it should be deleted
 	public launchAddressModal(address: Array<object>):void{
 		this.ModalService.showModal({
 			component: 'addressVerification',
