@@ -1723,5 +1723,68 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		    arguments.data.ajaxResponse.orderTemplate['canPlaceOrderFlag'] = orderTemplate.getCanPlaceOrderFlag();
 		}
 	}
+	
+	//override core to also set the cheapest shippinng method as the default
+	public void function addShippingAddressUsingAccountAddress(data){
+	    super.addShippingAddressUsingAccountAddress(arguments.data);
+	    this.setDefaultShippingMethod();
+	}
+	
+	//override core to also set the cheapest shippinng method as the default
+	public void function addOrderShippingAddress(data){
+	    super.addOrderShippingAddress(arguments.data);
+	    this.setDefaultShippingMethod();
+	}
+	
+	//this method sets the cheapest shipping method on the order
+	public void function setDefaultShippingMethod(order = getHibachiScope().getCart()){
+
+        //Then we get the shipping fulfillment
+        var orderFulfillments = order.getOrderFulfillments();
+        
+        if(arrayLen(orderFulfillments)) {
+            var shippingFulfillment = orderFulfillments[1];
+            var shippingMethods = getOrderService().getShippingMethodOptions(shippingFulfillment);
+            //make sure we have shipping options
+            if(!isNull(shippingMethods) && arrayLen(shippingMethods)){
+                //then we set the cheapest shipping fulfillment, which is set as first by sort order
+                var data = {fulfillmentID:shippingFulfillment.getOrderFulfillmentID(), shippingMethodID: shippingMethods[1].getShippingmethodID()};
+                super.addShippingMethodUsingShippingMethodID(data);               
+            }
+        }
+	}
+	
+	/***
+	    This endpoint sets the initial order defaults per Monat's requirenments
+	        1.Billing address is same as shipping
+	        2.Shipping method is the cheapest available
+	        3.If there is a default payment method on the account, it gets set on the order
+	***/
+	
+	public void function setIntialShippingAndBilling(required any data){
+        param name="arguments.data.defaultShippingFlag" default=true;
+	     
+	    var cart = getHibachiScope().getCart();
+	    var account = cart.getAccount();
+     
+	    //if the default shipping flag is passed in, and the account has a primary shipping address, set shipping address with it
+	    //otherwise use data passed in as arguments
+	    if(arguments.data.defaultShippingFlag && !isNull(account.getPrimaryShippingAddress())){
+	        this.addShippingAddressUsingAccountAddress(arguments.data); 
+	    }else{
+	        this.addOrderShippingAddress(arguments.data);
+	    }
+
+        //Set up the billing information, first check to see if there is a primary account payment method
+        // if there is no account payment method, we set the billing address as the same as billing
+        if(!isNull(account.getPrimaryPaymentMethod())){
+            var paymentData = { orderID: cart.getOrderID(), copyFromType: 'accountPaymentMethod', accountPaymentMethodID: account.getPrimaryPaymentMethod().getAccountPaymentMethodID() };
+            super.addOrderPayment(paymentData);
+        }else if(!isNull(cart.getShippingAddress())){
+            var addressID = cart.getShippingAddress().getShippingAddressID();
+            super.addBillingAddress({addressID: addressID});
+        }
+	    
+	}
     
 }
