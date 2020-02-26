@@ -92,7 +92,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// Check each of the orderFulfillments to see if they are ready to process
 		var orderFulfillmentsCount = arrayLen(arguments.order.getOrderFulfillments());
 		for(var i = 1; i <= orderFulfillmentsCount; i++) {
-			if(!arguments.order.getOrderFulfillments()[i].isProcessable( context="placeOrder" ) 
+			if(!arguments.order.getOrderFulfillments()[i].isProcessable( context="placeOrder" )
 				|| arguments.order.getOrderFulfillments()[i].hasErrors()) {
 				orderRequirementsList = listAppend(orderRequirementsList, "fulfillment");
 				break;
@@ -1750,7 +1750,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arguments.order = this.addOrderItemFromTemplateItem(argumentCollection=args);
 	
 			//define order fulfillment for the rest of the loop	
-			if(isNull(orderFulfillment) && !arrayIsEmpty(arguments.order.getOrderItems())){
+			if( isNull(orderFulfillment) && 
+				!arrayIsEmpty(arguments.order.getOrderItems()) && 
+				!isNull(arguments.order.getOrderItems()[1].getOrderFulfillment())
+			){
 
 				var orderFulfillment = arguments.order.getOrderItems()[1].getOrderFulfillment();
 
