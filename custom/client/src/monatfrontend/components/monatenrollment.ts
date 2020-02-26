@@ -35,7 +35,7 @@ class MonatEnrollmentController {
 			this.finishText = 'Finish';
 		}
 		
-    	this.observerService.attach(this.handleCreateAccount.bind(this),"createSuccess");
+    	this.observerService.attach(this.handleCreateAccount.bind(this),"createAccountSuccess");
     	this.observerService.attach(this.next.bind(this),"onNext");
     	this.observerService.attach(this.previous.bind(this),"onPrevious");
     	this.observerService.attach(this.next.bind(this),"addGovernmentIdentificationSuccess");
@@ -63,19 +63,12 @@ class MonatEnrollmentController {
 	}
 
 	public handleCreateAccount = () => {
+		this.next();
+		this.publicService.getAccount().then(res=>{
+			this.currentAccountID = res.account.accountID;
+			localStorage.setItem('accountID', this.currentAccountID); //if in safari private and errors here its okay.
+		});
 		
-		this.currentAccountID = this.$rootScope.slatwall.account.accountID;
-		if (this.currentAccountID.length && (!this.$rootScope.slatwall.errors || !this.$rootScope.slatwall.errors.length)) {
-			if(!this.cart && this.$rootScope.slatwall.account.accountType != "marketPartner") {
-				// Applying fee populates cart, if cart is already populated, do not add another fee
-				this.monatService.addEnrollmentFee().then(()=>{
-					this.next();
-				});
-			}else{
-				this.next();
-			}
-		}
-		localStorage.setItem('accountID', this.currentAccountID); //if in safari private and errors here its okay.
 	}
 	
 	public getCart = () => {
