@@ -1727,23 +1727,28 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     //override core to also set the cheapest shippinng method as the default, and set shipping same as billing
 	public void function addShippingAddressUsingAccountAddress(data){
 	    super.addShippingAddressUsingAccountAddress(arguments.data);
-	    this.setDefaultShippingMethod();
+	    var cart = getHibachiScope().getCart();
 	    //if the cart does not already have an order payment, set shipping address same as billing
-	    if(!getHibachiScope().getCart().hasOrderPaymentWithSavablePaymentMethod()){
-	        this.setShippingSameAsBilling();
+	    if(!isNull(cart.getShippingAddress()) && len(cart.getShippingAddress().getAddressID())){
+           this.setDefaultShippingMethod();
+           if(!isNull(cart.getOrderPayments()) ){
+               this.setShippingSameAsBilling();
+           }
 	    }
 	}
 	
 	//override core to also set the cheapest shippinng method as the default, and set shipping same as billing
 	public void function addOrderShippingAddress(data){
+	    var cart = getHibachiScope().getCart();
 	    super.addOrderShippingAddress(arguments.data);
 	    this.setDefaultShippingMethod();
-	    
 	    //if the cart does not already have an order payment, set shipping address same as billing
-	    if(!getHibachiScope().getCart().hasOrderPaymentWithSavablePaymentMethod()){
-	        this.setShippingSameAsBilling();
+	    if(!isNull(cart.getShippingAddress()) && len(cart.getShippingAddress().getAddressID())){
+           this.setDefaultShippingMethod();
+           if(!isNull(cart.getOrderPayments()) ){
+               this.setShippingSameAsBilling();
+           }
 	    }
-	    
 	}
 	
 	//this method sets the cheapest shipping method on the order
@@ -1756,7 +1761,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             var shippingFulfillment = orderFulfillments[1];
             var shippingMethods = getOrderService().getShippingMethodOptions(shippingFulfillment);
             //make sure we have shipping options
-            if(!isNull(shippingMethods) && arrayLen(shippingMethods)){
+            if(!isNull(shippingMethods) && arrayLen(shippingMethods) && len(shippingMethods[1].value)){
                 //then we set the cheapest shipping fulfillment, which is set as first by sort order
                 var data = {fulfillmentID:shippingFulfillment.getOrderFulfillmentID(), shippingMethodID: shippingMethods[1].value};
                 super.addShippingMethodUsingShippingMethodID(data);               

@@ -60,23 +60,24 @@ class MonatCheckoutController {
 		}, 'shippingAddressSelected');	
 		
 		this.observerService.attach( this.closeNewAddressForm, 'addNewAccountAddressSuccess' ); 
-		this.observerService.attach( this.getCurrentCheckoutScreen, 'createAccountSuccess' ); 
+		this.observerService.attach(this.setCheckoutDefaults.bind(this), 'createAccountSuccess' ); 
+		this.observerService.attach(this.setCheckoutDefaults.bind(this), 'loginSuccess' ); 
+		this.observerService.attach(()=>{
+			console.log('running');
+			this.getCurrentCheckoutScreen(false, true);
+		}, 'addShippingAddressSuccess' ); 
 		
-		this.observerService.attach( () =>{
-			this.getCurrentCheckoutScreen(true,true,true);
-		}, 'loginSuccess' ); 
+		this.observerService.attach(()=>{
+			this.getCurrentCheckoutScreen(false, true);
+		}, 'addOrderPaymentSuccess' ); 
 
-		// this.observerService.attach(this.manageEvent.bind(this), 'addShippingAddressUsingAccountAddressSuccess' ); 
-		// this.observerService.attach(this.manageEvent.bind(this), 'addShippingAddressSuccess' ); 
-		// this.observerService.attach(this.manageEvent.bind(this), 'addShippingMethodUsingShippingMethodIDSuccess' ); 
 
-		this.publicService.getAccount().then(res=>{
+		this.publicService.getAccount(true).then(res=>{
 			this.account = res.account;
 			if(this.account?.ownerAccount?.accountNumber?.length && this.account?.ownerAccount?.accountNumber !== this.account?.accountNumber){
 				this.hasSponsor = true;
 			}
-			
-			// if they have a sponsor, thats an extra step (billing=>sponsor=>review) otherwise its billing=>review
+			if(!this.account.accounID.length) return;
 			this.getCurrentCheckoutScreen(true, true);
 		});
 		
@@ -95,39 +96,35 @@ class MonatCheckoutController {
 		this.totalSteps = this.hasSponsor ? 2 + this.enrollmentSteps  : 3 + this.enrollmentSteps; 	
 	}
 	
-	private manageEvent(){
-		if(this.loading.selectShippingMethod) {
-			return;
-		}
-		this.getCurrentCheckoutScreen(true);
-	}
-	
-	private getCurrentCheckoutScreen = (setDefault = false, initialCheck = false, hardRefresh = false):Screen|void => {
+	private getCurrentCheckoutScreen = (setDefault = false, hardRefresh = false):Screen | void => {
 	
 		return this.publicService.getCart(hardRefresh).then(data => {
-			if(!this.publicService.hasAccount()){
-				return; 	
-			}
-			this.cart = data.cart;
+
+			console.log('<====================================================running====================================================>', setDefault)
+			
+			this.cart = data.cart; 
 			let screen = Screen.SHIPPING;
 			this.shippingFulfillment = this.cart.orderFulfillments.filter(el => el.fulfillmentMethod.fulfillmentMethodType == 'shipping' );
 			
 			//sets default order information
-			if(setDefault) this.setCheckoutDefaults();
+			if(setDefault){
+				this.setCheckoutDefaults();
+				return;
+			} 
 			
-			if(this.publicService.cart && this.publicService.cart.orderRequirementsList.indexOf('account') == -1){
+			if(this.publicService.cart && this.publicService.cart.orderRequirementsList.indexOf('account') === -1){
 				if (this.publicService.hasShippingAddressAndMethod() ) {
 					screen = Screen.PAYMENT;
 				} 
 				
 				//send to sponsor selector if the account has no owner
-				if(!this.hasSponsor && this.cart.orderRequirementsList.indexOf('payment') > -1){ 
-					screen = initialCheck ? Screen.SPONSOR : Screen.PAYMENT;
+				if(!this.hasSponsor && this.cart.orderRequirementsList.indexOf('payment') === -1){ 
+					screen = setDefault ? Screen.SPONSOR : Screen.PAYMENT;
 				}
 				
 				//if they have a sponsor, billing, and shipping details, they can go to review
-				if ( this.cart.orderRequirementsList.indexOf('payment') > -1 && this.publicService.cart.orderRequirementsList.indexOf('fulfillment') > -1 && this.publicService.hasShippingAddressAndMethod() && this.hasSponsor) {
-					screen = initialCheck ? Screen.REVIEW : Screen.PAYMENT;
+				if ( this.cart.orderRequirementsList.indexOf('payment') === -1 && this.publicService.cart.orderRequirementsList.indexOf('fulfillment') === -1 && this.publicService.hasShippingAddressAndMethod() && this.hasSponsor) {
+					screen = setDefault ? Screen.REVIEW : Screen.PAYMENT;
 				}
 			}
 			this.screen = screen;
@@ -345,10 +342,12 @@ class MonatCheckoutController {
 	}
 	
 	public setCheckoutDefaults(){
-		if(!this.cart.orderID.length || this.publicService.cart.orderRequirementsList.indexOf('fulfillment') > -1) return;
+		console.log('<====================================================setCheckoutDefaultsas running====================================================>')
+		console.log(this.publicService.cart)
+		if(!this.publicService.cart.orderID.length || this.publicService.cart.orderRequirementsList.indexOf('fulfillment') === -1) return;
 		this.publicService.doAction('setIntialShippingAndBilling').then(res=>{
-			this.cart = res.cart;
-			this.getCurrentCheckoutScreen(false, true, false);
+			this.cart = res.cart; // do not commit this
+			this.getCurrentCheckoutScreen(false, false);
 		});
 	}
 }

@@ -33,10 +33,10 @@ class EnrollmentMPController {
 		this.observerService.attach(this.getProductList, 'createSuccess'); 
 		this.observerService.attach(this.showAddToCartMessage, 'addOrderItemSuccess'); 
 		$('.site-tooltip').tooltip();
-		//this.publicService.doAction('setUpgradeOnOrder', {upgradeType: 'marketPartner'}).then(res=>{
+		this.publicService.doAction('setUpgradeOnOrder', {upgradeType: 'marketPartner'}).then(res=>{
 			this.getStarterPacks();
 			this.getProductList();	
-	//	});
+		});
 	}
 	
 	public adjustInputFocuses = () => {
