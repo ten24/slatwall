@@ -23,7 +23,7 @@ class MonatCheckoutController {
 	public 	togglePaymentAction = false;
 	public loading = {
 		selectShippingMethod: false
-	};
+	}
 	public screen = Screen.ACCOUNT;
 	public SCREEN = Screen; //Allows access to Screen Enum in Partial view
 	public account:any;
