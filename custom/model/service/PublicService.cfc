@@ -1728,27 +1728,20 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 	public void function addShippingAddressUsingAccountAddress(data){
 	    super.addShippingAddressUsingAccountAddress(arguments.data);
 	    var cart = getHibachiScope().getCart();
-	    //if the cart does not already have an order payment, set shipping address same as billing
-	    if(!isNull(cart.getShippingAddress()) && len(cart.getShippingAddress().getAddressID())){
-           this.setDefaultShippingMethod();
-           if(!isNull(cart.getOrderPayments()) ){
-               this.setShippingSameAsBilling();
-           }
-	    }
+        this.setDefaultShippingMethod();
+        if(isNull(cart.getOrderPayments())) {
+            this.setShippingSameAsBilling();
+        }
 	}
 	
 	//override core to also set the cheapest shippinng method as the default, and set shipping same as billing
 	public void function addOrderShippingAddress(data){
-	    var cart = getHibachiScope().getCart();
+        var cart = getHibachiScope().getCart();
 	    super.addOrderShippingAddress(arguments.data);
 	    this.setDefaultShippingMethod();
-	    //if the cart does not already have an order payment, set shipping address same as billing
-	    if(!isNull(cart.getShippingAddress()) && len(cart.getShippingAddress().getAddressID())){
-           this.setDefaultShippingMethod();
-           if(!isNull(cart.getOrderPayments()) ){
-               this.setShippingSameAsBilling();
-           }
-	    }
+        if(isNull(cart.getOrderPayments() ) ){
+            this.setShippingSameAsBilling();
+        }
 	}
 	
 	//this method sets the cheapest shipping method on the order
@@ -1787,7 +1780,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
 	    var cart = getHibachiScope().getCart();
 	    var account = cart.getAccount();
-     
+    
 	    //if the default shipping flag is passed in, and the account has a primary shipping address, set shipping address with it
 	    //otherwise use data passed in as arguments
 	    if(arguments.data.defaultShippingFlag && !isNull(account.getPrimaryShippingAddress())){

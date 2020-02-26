@@ -77,7 +77,7 @@ class MonatCheckoutController {
 			if(this.account?.ownerAccount?.accountNumber?.length && this.account?.ownerAccount?.accountNumber !== this.account?.accountNumber){
 				this.hasSponsor = true;
 			}
-			if(!this.account.accounID.length) return;
+			if(!this.account.accountID.length) return;
 			this.getCurrentCheckoutScreen(true, true);
 		});
 		
@@ -340,8 +340,7 @@ class MonatCheckoutController {
 	}
 	
 	public setCheckoutDefaults(){
-
-		if(!this.publicService.cart.orderID.length || this.publicService.cart.orderRequirementsList.indexOf('fulfillment') === -1) return;
+		if(!this.publicService.cart.orderID.length || this.publicService.cart.orderRequirementsList.indexOf('fulfillment') === -1) this.getCurrentCheckoutScreen(false, false);
 		this.publicService.doAction('setIntialShippingAndBilling').then(res=>{
 			this.cart = res.cart; // do not commit this
 			this.getCurrentCheckoutScreen(false, false);
