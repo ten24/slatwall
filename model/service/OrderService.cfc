@@ -1574,18 +1574,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		newOrder = this.createOrderItemsFromOrderTemplateItems(newOrder,arguments.orderTemplate);
 		
 		
-		if (arrayLen(newOrder.getOrderFulfillments())){
-			var orderFulfillment = newOrder.getOrderFulfillments()[1];
-			if (!isNull(orderFulfillment)){
-				orderFulfillment.setShippingMethod(arguments.orderTemplate.getShippingMethod());
-				orderFulfillment.setFulfillmentMethod(arguments.orderTemplate.getShippingMethod().getFulfillmentMethod());
 
-			}
-		}
 		
-		if (!orderFulfillment.hasErrors()){
-			this.saveOrderFulfillment(orderFulfillment);
-		}
 		
 		var promotionCodes = arguments.orderTemplate.getPromotionCodes();
 
@@ -1607,7 +1597,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		
 		if(newOrder.hasErrors()){
-			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# after applying gift cards', true);
+			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# after adding promotion codes', true);
 			arguments.orderTemplate.clearHibachiErrors();
 			return arguments.orderTemplate;
 		}
@@ -1682,9 +1672,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				}
 			}
 		}
-
 		newOrder = this.process(newOrder, addOrderPaymentProcessData, 'addOrderPayment'); 
-	
 		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate); 	
 		
 		if(newOrder.hasErrors()){
@@ -1760,7 +1748,27 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 			
 			arguments.order = this.addOrderItemFromTemplateItem(argumentCollection=args);
-		
+	
+			//define order fulfillment for the rest of the loop	
+			if( isNull(orderFulfillment) && 
+				!arrayIsEmpty(arguments.order.getOrderItems()) && 
+				!isNull(arguments.order.getOrderItems()[1].getOrderFulfillment())
+			){
+
+				var orderFulfillment = arguments.order.getOrderItems()[1].getOrderFulfillment();
+
+				orderFulfillment.setShippingMethod(arguments.orderTemplate.getShippingMethod());
+				orderFulfillment.setFulfillmentMethod(arguments.orderTemplate.getShippingMethod().getFulfillmentMethod());
+				
+				orderFulfillment = this.saveOrderFulfillment(orderFulfillment);
+	
+				if (orderFulfillment.hasErrors()){
+					//propegate to parent, because we couldn't create the fulfillment this order is not going to be placed
+					arguments.order.addErrors(orderFulfillment.getErrors());	
+					return arguments.order; 
+				}	
+			} 
+
 			if(arguments.order.hasErrors()){
 				this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(arguments.order.getErrors())# when adding order item skuID: #orderTemplateItem['sku_skuID']#', true);
 				arguments.order.clearHibachiErrors();
@@ -1775,9 +1783,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	public any function addOrderItemFromTemplateItem(required any order, required struct orderTemplateItemStruct, required any orderTemplate, any orderFulfillment){
 		var processOrderAddOrderItem = arguments.order.getProcessObject('addOrderItem');
-		var sku = getSkuService().getSku(arguments.orderTemplateItemStruct['sku_skuID']);	
+		var sku = getSkuService().getSku(arguments.orderTemplateItemStruct['sku_skuID']);
+
 		processOrderAddOrderItem.setSku(sku);
-		processOrderAddOrderItem.setPrice(sku.getPriceByCurrencyCode(currencyCode=arguments.orderTemplate.getCurrencyCode(), accountID=arguments.orderTemplate.getAccount().getAccountID()));
+		
+		if(structKeyExists(arguments.orderTemplateItemStruct,'price')){
+			var orderTemplateItemPrice = arguments.orderTemplateItemStruct.price;
+		}else{
+			var orderTemplateItemPrice = sku.getPriceByCurrencyCode(currencyCode=arguments.orderTemplate.getCurrencyCode(), accountID=arguments.orderTemplate.getAccount().getAccountID());
+		}
+		
+		processOrderAddOrderItem.setPrice(orderTemplateItemPrice);
+
 		processOrderAddOrderItem.setQuantity(arguments.orderTemplateItemStruct['quantity']);
 		processOrderAddOrderItem.setUpdateOrderAmountFlag(false); 		
 
