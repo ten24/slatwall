@@ -2,8 +2,9 @@ import * as Braintree from 'braintree-web';
 declare let paypal: any;
 
 /****
-	bugs to fix: 1. when you add an order paymetn after already having one on the order
-				3. only set initial default information once
+	STILL TO DO:	1. when you add an order paymetn after already having one on the order the screen looks odd
+					2. radio buttons rather than select for payment methods
+					3. show used payment method in account payment methods even if not on account
 ****/
 
 enum Screen {
@@ -63,7 +64,6 @@ class MonatCheckoutController {
 		this.observerService.attach(this.setCheckoutDefaults.bind(this), 'createAccountSuccess' ); 
 		this.observerService.attach(this.setCheckoutDefaults.bind(this), 'loginSuccess' ); 
 		this.observerService.attach(()=>{
-			console.log('running');
 			this.getCurrentCheckoutScreen(false, true);
 		}, 'addShippingAddressSuccess' ); 
 		
@@ -100,8 +100,6 @@ class MonatCheckoutController {
 	
 		return this.publicService.getCart(hardRefresh).then(data => {
 
-			console.log('<====================================================running====================================================>', setDefault)
-			
 			this.cart = data.cart; 
 			let screen = Screen.SHIPPING;
 			this.shippingFulfillment = this.cart.orderFulfillments.filter(el => el.fulfillmentMethod.fulfillmentMethodType == 'shipping' );
@@ -342,8 +340,7 @@ class MonatCheckoutController {
 	}
 	
 	public setCheckoutDefaults(){
-		console.log('<====================================================setCheckoutDefaultsas running====================================================>')
-		console.log(this.publicService.cart)
+
 		if(!this.publicService.cart.orderID.length || this.publicService.cart.orderRequirementsList.indexOf('fulfillment') === -1) return;
 		this.publicService.doAction('setIntialShippingAndBilling').then(res=>{
 			this.cart = res.cart; // do not commit this
