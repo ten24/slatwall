@@ -439,7 +439,12 @@ component extends="Slatwall.model.service.OrderService" {
 					orderStatusHistory.setOrderStatusHistoryType(type);
 				}	
 
-
+            }else if (arguments.systemCode == 'ostProcessing') {
+            	//Set to processing status
+                arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="2"));
+                orderStatusHistory.setOrderStatusHistoryType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="2"));
+            	
+            	
             }else if (arguments.systemCode == 'ostPaid') {
             	//If its paid and its shipped, set it to shipped.
             	if (arguments.order.getPaymentAmountDue() <= 0 && arguments.order.getQuantityUndelivered() == 0){
