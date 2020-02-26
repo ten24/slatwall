@@ -3437,7 +3437,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					
 			// First Re-Calculate the 'amounts' base on price groups
 			getPriceGroupService().updateOrderAmountsWithPriceGroups( arguments.order );
-			arguments.order.updateCalculatedProperties(true);
+
 			// Then Re-Calculate the 'amounts' based on permotions ext.  This is done second so that the order already has priceGroup specific info added
 			getPromotionService().updateOrderAmountsWithPromotions( arguments.order );
 			
