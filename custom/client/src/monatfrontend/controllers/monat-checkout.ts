@@ -1,6 +1,11 @@
 import * as Braintree from 'braintree-web';
 declare let paypal: any;
 
+/****
+	bugs to fix: 1. when you add an order paymetn after already having one on the order
+				3. only set initial default information once
+****/
+
 enum Screen {
 	SHIPPING, 
 	SPONSOR, 
@@ -31,6 +36,7 @@ class MonatCheckoutController {
 	public currentYear:number;
 	public monthOptions:Array<number> = [1,2,3,4,5,6,7,8,9,10,11,12];
 	public yearOptions:Array<number> = [];
+	public tempAccountPaymentMethod:Object;
 	
 	// @ngInject
 	constructor(
@@ -55,6 +61,11 @@ class MonatCheckoutController {
 		
 		this.observerService.attach( this.closeNewAddressForm, 'addNewAccountAddressSuccess' ); 
 		this.observerService.attach( this.getCurrentCheckoutScreen, 'createAccountSuccess' ); 
+		
+		this.observerService.attach( () =>{
+			this.getCurrentCheckoutScreen(true,true,true);
+		}, 'loginSuccess' ); 
+
 		// this.observerService.attach(this.manageEvent.bind(this), 'addShippingAddressUsingAccountAddressSuccess' ); 
 		// this.observerService.attach(this.manageEvent.bind(this), 'addShippingAddressSuccess' ); 
 		// this.observerService.attach(this.manageEvent.bind(this), 'addShippingMethodUsingShippingMethodIDSuccess' ); 
@@ -110,12 +121,12 @@ class MonatCheckoutController {
 				} 
 				
 				//send to sponsor selector if the account has no owner
-				if(!this.hasSponsor && this.cart.orderPayments?.length){ 
+				if(!this.hasSponsor && this.cart.orderRequirementsList.indexOf('payment') > -1){ 
 					screen = initialCheck ? Screen.SPONSOR : Screen.PAYMENT;
 				}
 				
 				//if they have a sponsor, billing, and shipping details, they can go to review
-				if ( this.publicService.cart.orderPayments.length && this.publicService.hasShippingAddressAndMethod() && this.hasSponsor) {
+				if ( this.cart.orderRequirementsList.indexOf('payment') > -1 && this.publicService.cart.orderRequirementsList.indexOf('fulfillment') > -1 && this.publicService.hasShippingAddressAndMethod() && this.hasSponsor) {
 					screen = initialCheck ? Screen.REVIEW : Screen.PAYMENT;
 				}
 			}
@@ -334,7 +345,7 @@ class MonatCheckoutController {
 	}
 	
 	public setCheckoutDefaults(){
-		if(!this.cart.orderID.length) return;
+		if(!this.cart.orderID.length || this.publicService.cart.orderRequirementsList.indexOf('fulfillment') > -1) return;
 		this.publicService.doAction('setIntialShippingAndBilling').then(res=>{
 			this.cart = res.cart;
 			this.getCurrentCheckoutScreen(false, true, false);
