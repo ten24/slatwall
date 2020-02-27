@@ -512,7 +512,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         param name="arguments.data.orderTemplateSystemCode" default="ottSchedule";
         param name="arguments.data.frequencyTermID" default="23c6a8caa4f890196664237003fe5f75";// TermID for monthly
         param name="arguments.data.scheduleOrderNextPlaceDateTime" default= "#dateAdd('m',1,dateFormat(now()))#";
-        param name="arguments.data.siteID" default="#getHibachiScope().getSite().getSiteID()#";
+        param name="arguments.data.siteID" default="";
         param name="arguments.data.saveContext" default="";
         
         if(getHibachiScope().getAccount().isNew() || isNull(arguments.data.orderTemplateSystemCode)){
@@ -522,15 +522,17 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var orderTemplate = getOrderService().newOrderTemplate();
         var processObject = orderTemplate.getProcessObject("create");
         var orderTypeID = getTypeService().getTypeBySystemCode(arguments.data.orderTemplateSystemCode).getTypeID();
-        
-        processObject.setSiteID(arguments.data.siteID);
-        
-        if( StructKeyExists(arguments.data, 'cmsSiteID') ){
-            processObject.setCmsSiteID(arguments.data.cmsSiteID);
+
+        // Set site by siteID or siteCode
+        var siteID = arguments.data.siteID;
+        if ( !len( siteID ) && structKeyExists( arguments.data, 'siteCode' ) ) {
+            var site = getService('SiteService').getSiteBySiteCode( arguments.data.siteCode );
+        } else {
+            var site = getService('SiteService').getSite( siteID );
         }
         
-        if( StructKeyExists(arguments.data, 'siteCode') ){
-            processObject.setSiteCode(arguments.data.siteCode);
+        if ( !isNull( site ) ) {
+            processObject.setSite( site );
         }
         
         processObject.setOrderTemplateTypeID(orderTypeID);
@@ -546,6 +548,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         }else{
             orderTemplate = getOrderService().processOrderTemplate(orderTemplate,processObject,"create");
         }
+        
         getHibachiScope().addActionResult( "public:order.create", orderTemplate.hasErrors() );
         if(orderTemplate.hasErrors()) {
             addErrors(arguments.data, orderTemplate.getErrors());
