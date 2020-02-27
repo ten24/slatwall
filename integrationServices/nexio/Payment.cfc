@@ -181,9 +181,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 	
 	private void function sendRequestToGenerateToken(required any requestBean, required any responseBean) {
 		// We are expecting there is no provider token yet, but if accountPaymentMethod is used & attempt to generate another token prevent & short circuit
-		writeDump('Here the fuck we are, folks!');
 		if (isNull(arguments.requestBean.getProviderToken()) || !len(arguments.requestBean.getProviderToken())) {
-			writeDump('Step one in dis ish');
 			var orderNumber = "";
 			if (!isNull(arguments.requestBean.getOrderID())) {
 				orderNumber = arguments.requestBean.getOrderID();
