@@ -574,7 +574,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 
 			// Save the new order items don't update order amounts we'll do it at the end of this process
-			newOrderItem = this.saveOrderItem( orderItem=newOrderItem, updateOrderAmounts=false );
+			newOrderItem = this.saveOrderItem( orderItem=newOrderItem, updateOrderAmounts=false, updateCalculatedProperties=true);
 
 			if(newOrderItem.hasErrors()) {
 				//String replace the max order qty to give user feedback with the minimum of 0
@@ -1574,18 +1574,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		newOrder = this.createOrderItemsFromOrderTemplateItems(newOrder,arguments.orderTemplate);
 		
 		
-		if (arrayLen(newOrder.getOrderFulfillments())){
-			var orderFulfillment = newOrder.getOrderFulfillments()[1];
-			if (!isNull(orderFulfillment)){
-				orderFulfillment.setShippingMethod(arguments.orderTemplate.getShippingMethod());
-				orderFulfillment.setFulfillmentMethod(arguments.orderTemplate.getShippingMethod().getFulfillmentMethod());
 
-			}
-		}
 		
-		if (!orderFulfillment.hasErrors()){
-			this.saveOrderFulfillment(orderFulfillment);
-		}
 		
 		var promotionCodes = arguments.orderTemplate.getPromotionCodes();
 
@@ -1758,7 +1748,27 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 			
 			arguments.order = this.addOrderItemFromTemplateItem(argumentCollection=args);
-		
+	
+			//define order fulfillment for the rest of the loop	
+			if( isNull(orderFulfillment) && 
+				!arrayIsEmpty(arguments.order.getOrderItems()) && 
+				!isNull(arguments.order.getOrderItems()[1].getOrderFulfillment())
+			){
+
+				var orderFulfillment = arguments.order.getOrderItems()[1].getOrderFulfillment();
+
+				orderFulfillment.setShippingMethod(arguments.orderTemplate.getShippingMethod());
+				orderFulfillment.setFulfillmentMethod(arguments.orderTemplate.getShippingMethod().getFulfillmentMethod());
+				
+				orderFulfillment = this.saveOrderFulfillment(orderFulfillment);
+	
+				if (orderFulfillment.hasErrors()){
+					//propegate to parent, because we couldn't create the fulfillment this order is not going to be placed
+					arguments.order.addErrors(orderFulfillment.getErrors());	
+					return arguments.order; 
+				}	
+			} 
+
 			if(arguments.order.hasErrors()){
 				this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(arguments.order.getErrors())# when adding order item skuID: #orderTemplateItem['sku_skuID']#', true);
 				arguments.order.clearHibachiErrors();
@@ -5063,7 +5073,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.orderFulfillment;
 	}
 
-	public any function saveOrderItem(required any orderItem, struct data={}, string context="save", boolean updateOrderAmounts=true) {
+	public any function saveOrderItem(required any orderItem, struct data={}, string context="save", boolean updateOrderAmounts=true,boolean updateCalculatedProperties=false) {
 
 		// Call the generic save method to populate and validate
 		arguments.orderItem = save(arguments.orderItem, arguments.data, arguments.context);
@@ -5076,7 +5086,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 
 		}
-
+		if(!arguments.orderItem.hasErrors() && arguments.updateCalculatedProperties){
+			arguments.orderItem.updateCalculatedProperties();
+		}
 		// Recalculate the order amounts for tax and promotions
 		if(!arguments.orderItem.hasErrors() && arguments.updateOrderAmounts){
 			this.processOrder( arguments.orderItem.getOrder(), {}, 'updateOrderAmounts' );
