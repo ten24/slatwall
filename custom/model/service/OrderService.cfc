@@ -1,4 +1,3 @@
-
 component extends="Slatwall.model.service.OrderService" {
     variables.customPriceFields = 'personalVolume,taxableAmount,commissionableVolume,retailCommission,productPackVolume,retailValueVolume';
     public string function getCustomAvailableProperties() {
@@ -1438,7 +1437,6 @@ component extends="Slatwall.model.service.OrderService" {
 
 				var orderFulfillment = arguments.order.getOrderItems()[1].getOrderFulfillment();
 
-				this.logHibachi('setting shipping method of order fulfillment: SMID: #arguments.orderTemplate.getShippingMethod().getShippingMethodID()#')
 				orderFulfillment.setShippingMethod(arguments.orderTemplate.getShippingMethod());
 				orderFulfillment.setFulfillmentMethod(arguments.orderTemplate.getShippingMethod().getFulfillmentMethod());
 
