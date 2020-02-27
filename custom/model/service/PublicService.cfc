@@ -1780,11 +1780,14 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
 	    var cart = getHibachiScope().getCart();
 	    var account = cart.getAccount();
-    
-	    //if the default shipping flag is passed in, and the account has a primary shipping address, set shipping address with it
-	    //otherwise use data passed in as arguments
-	    if(arguments.data.defaultShippingFlag && !isNull(account.getPrimaryShippingAddress())){
-	        var orderFulfillments = cart.getOrderFulfillments();
+        var orderFulfillments = cart.getOrderFulfillments();
+        
+        //make sure we have an account and order fulfillments
+        if(isNull(account) || !arrayLen(orderFulfillments)) return;
+        
+	    //if the default shipping flag is passed in, and the account has a primary shipping address, set shipping address with it otherwise use data passed in as arguments
+	    
+	    if(arguments.data.defaultShippingFlag && !isNull(account.getPrimaryShippingAddress())) {
 	        var shippingFulfillmentID = orderFulfillments[1].getOrderFulfillmentID();
 	        var addressID = account.getPrimaryShippingAddress().getAccountAddressID();
 	        var data = {shippingFulfillmentID:shippingFulfillmentID, accountAddressID: addressID};
