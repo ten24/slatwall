@@ -350,7 +350,7 @@ extends = "Slatwall.integrationServices.BaseTax" {
 						// Loop over the details of that taxAmount
 						for(var taxDetail in taxLine.TaxDetails) {
 							// For each detail make sure that it is applied to this item
-							if(taxDetail.Tax > 0 && !listContains(setting("VATCountries"),taxDetail.Country)) {
+							if(taxDetail.Tax > 0 && (!listContains(setting("VATCountries"),taxDetail.Country) || referenceObjectType == 'OrderFulfillment') {
 								var args = {
 									"#primaryIDName#" = taxLine.LineNo,
 									taxAmount = taxDetail.Tax, 
