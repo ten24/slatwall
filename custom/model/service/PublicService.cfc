@@ -1490,7 +1490,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         order.setUpgradeFlag(true);
         order.setMonatOrderType(monatOrderType);
         order.setAccountType(upgradeAccountType);
-        order.setPriceGroup(priceGroup); 
+        order.setPriceGroup(priceGroup);
         
         //Adding enrollment fee for VIP only
         //TODO: add a check here to avoid duplicate enrollment fee's on an order
