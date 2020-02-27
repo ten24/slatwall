@@ -5,6 +5,7 @@ declare let paypal: any;
 	STILL TO DO:	1. when you add an order paymetn after already having one on the order the screen looks odd
 					2. radio buttons rather than select for payment methods
 					3. show used payment method in account payment methods even if not on account
+					4. Sometimes adding an account payment method is adding without a billing address
 ****/
 
 enum Screen {
@@ -340,9 +341,9 @@ class MonatCheckoutController {
 	}
 	
 	public setCheckoutDefaults(){
-		if(!this.publicService.cart.orderID.length || this.publicService.cart.orderRequirementsList.indexOf('fulfillment') === -1) this.getCurrentCheckoutScreen(false, false);
+		if(!this.publicService.cart.orderID.length || this.publicService.cart.orderRequirementsList.indexOf('fulfillment') === -1) return this.getCurrentCheckoutScreen(false, false);
 		this.publicService.doAction('setIntialShippingAndBilling').then(res=>{
-			this.cart = res.cart; // do not commit this
+			this.cart = res.cart; 
 			this.getCurrentCheckoutScreen(false, false);
 		});
 	}
