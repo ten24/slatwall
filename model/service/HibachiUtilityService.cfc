@@ -744,7 +744,7 @@ Notes:
 	public any function divideItems(required array items){
 		var total = items[1];
 		for(var i = 2; i <= arrayLen(items); i++){
-			if(item == 0){
+			if(items[i] == 0){
 				total = 'Infinity';
 				break;
 			}

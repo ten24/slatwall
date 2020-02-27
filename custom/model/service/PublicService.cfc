@@ -909,6 +909,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         if(!getHibachiScope().getLoggedInFlag()){
              getHibachiScope().addActionResult('public:account.create',false);
+        }else{
+            getHibachiScope().addActionResult('public:account.createAccount',false);
         }
         
         return account;
@@ -919,21 +921,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     }
     
     public any function createRetailEnrollment(required struct data){
-                
-        if(isNull(arguments.data.sponsorID) || !len(arguments.data.sponsorID)){
-    	    getHibachiScope().addActionResult( "public:account.create", true );
-            addErrors(
-                arguments.data, 
-                { 
-                    'sponsorID': [ 
-                        getHibachiScope().rbKey('frontend.validate.selectSponsor') 
-                    ] 
-                }
-            ); 
-            arguments.data['ajaxResponse']['createAccount'] = getHibachiScope().rbKey('frontend.validate.ownerRequired');
-            return;
-        }
-        
         return enrollUser(arguments.data, 'customer');
     }
     
@@ -1503,7 +1490,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         order.setUpgradeFlag(true);
         order.setMonatOrderType(monatOrderType);
         order.setAccountType(upgradeAccountType);
-        order.setPriceGroup(priceGroup); 
+        order.setPriceGroup(priceGroup);
         
         //Adding enrollment fee for VIP only
         //TODO: add a check here to avoid duplicate enrollment fee's on an order
@@ -1735,6 +1722,84 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		    var orderTemplate = getOrderService().getOrderTemplate(arguments.data.orderTemplateID);
 		    arguments.data.ajaxResponse.orderTemplate['canPlaceOrderFlag'] = orderTemplate.getCanPlaceOrderFlag();
 		}
+	}
+	
+    //override core to also set the cheapest shippinng method as the default, and set shipping same as billing
+	public void function addShippingAddressUsingAccountAddress(data){
+	    super.addShippingAddressUsingAccountAddress(arguments.data);
+	    var cart = getHibachiScope().getCart();
+        this.setDefaultShippingMethod();
+        if(isNull(cart.getOrderPayments())) {
+            this.setShippingSameAsBilling();
+        }
+	}
+	
+	//override core to also set the cheapest shippinng method as the default, and set shipping same as billing
+	public void function addOrderShippingAddress(data){
+        var cart = getHibachiScope().getCart();
+	    super.addOrderShippingAddress(arguments.data);
+	    this.setDefaultShippingMethod();
+        if(isNull(cart.getOrderPayments() ) ){
+            this.setShippingSameAsBilling();
+        }
+	}
+	
+	//this method sets the cheapest shipping method on the order
+	public void function setDefaultShippingMethod(order = getHibachiScope().getCart()){
+
+        //Then we get the shipping fulfillment
+        var orderFulfillments = arguments.order.getOrderFulfillments();
+        
+        if(arrayLen(orderFulfillments)) {
+            var shippingFulfillment = orderFulfillments[1];
+            var shippingMethods = getOrderService().getShippingMethodOptions(shippingFulfillment);
+            //make sure we have shipping options
+            if(!isNull(shippingMethods) && arrayLen(shippingMethods) && len(shippingMethods[1].value)){
+                //then we set the cheapest shipping fulfillment, which is set as first by sort order
+                var data = {fulfillmentID:shippingFulfillment.getOrderFulfillmentID(), shippingMethodID: shippingMethods[1].value};
+                super.addShippingMethodUsingShippingMethodID(data);               
+            }
+        }
+	}
+	
+	public void function setShippingSameAsBilling(order = getHibachiScope().getCart()){
+	    if(isNull(arguments.order.getOrderFulfillments()[1]) || isNull(arguments.order.getOrderFulfillments()[1].getShippingAddress())) return;
+        var addressID = arguments.order.getOrderFulfillments()[1].getShippingAddress().getAddressID();
+        super.addBillingAddress({addressID: addressID});
+	}
+	
+	/***
+	    This endpoint sets the initial order defaults per Monat's requirenments
+	        1.Billing address is same as shipping
+	        2.Shipping method is the cheapest available
+	        3.If there is a default payment method on the account, it gets set on the order
+	***/
+	
+	public void function setIntialShippingAndBilling(required any data){
+        param name="arguments.data.defaultShippingFlag" default=true;
+        
+	    var cart = getHibachiScope().getCart();
+	    var account = cart.getAccount();
+    
+	    //if the default shipping flag is passed in, and the account has a primary shipping address, set shipping address with it
+	    //otherwise use data passed in as arguments
+	    if(arguments.data.defaultShippingFlag && !isNull(account.getPrimaryShippingAddress())){
+	        var orderFulfillments = cart.getOrderFulfillments();
+	        var shippingFulfillmentID = orderFulfillments[1].getOrderFulfillmentID();
+	        var addressID = account.getPrimaryShippingAddress().getAccountAddressID();
+	        var data = {shippingFulfillmentID:shippingFulfillmentID, accountAddressID: addressID};
+	        this.addShippingAddressUsingAccountAddress(data); 
+	    }else{
+	        this.addOrderShippingAddress(arguments.data);
+	    }
+
+        //Set up the billing information, if there is a primary account payment method
+        if(!isNull(account.getPrimaryPaymentMethod())){
+            var paymentData = { orderID: cart.getOrderID(), copyFromType: 'accountPaymentMethod', accountPaymentMethodID: account.getPrimaryPaymentMethod().getAccountPaymentMethodID() };
+            super.addOrderPayment(paymentData);
+        }
+	    
+	    arguments.data['ajaxResponse'] = getHibachiScope().getCartData(cartDataOptions='full');
 	}
     
 }

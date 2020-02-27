@@ -1,7 +1,7 @@
 type genericObject = { [key:string]: any }
 
 interface GenericCart extends genericObject {
-	orderItems: Array<GenericOrderTemplateItem>;
+	orderItems: Array<GenericOrderItem>;
 	orderID: string
 }
 
@@ -57,7 +57,8 @@ class HybridCartController {
 	
 	private getCart():void{
 		this.monatService.getCart(true).then((res:GenericCart) => {
-			this.cart = res;
+			console.log(res)
+			this.cart = res.cart;
 		});
 	}
 	

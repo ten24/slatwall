@@ -476,11 +476,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					}
 	
 				} // END of PromotionReward Loop
-				
 				if(arrayLen(orderQualifierMessages)){
 					applyPromotionQualifierMessagesToOrder(arguments.order,orderQualifierMessages);
 				}
-	
+
 			} // END of Sale or Exchange Loop
 	
 			// Return & Exchange Orders
@@ -706,6 +705,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arguments.qualifierDetails.qualificationCount = 1;
 		}else if(structKeyExists(arguments,'orderQualifierMessages')){
 			for(var promoQualifierMessage in arguments.qualifier.getPromotionQualifierMessages()){
+
 				if(promoQualifierMessage.hasOrderByOrderID( arguments.order.getOrderID() )){
 					arrayAppend(arguments.orderQualifierMessages, promoQualifierMessage.getMessageStruct());
 				}
