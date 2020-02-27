@@ -1430,10 +1430,27 @@ component extends="Slatwall.model.service.OrderService" {
 			
 			arguments.order = this.addOrderItemFromTemplateItem(argumentCollection=args);
 			
-			if(isNull(orderFulfillment)){
-				var orderFulfillment = arguments.order.getOrderFulfillments()[1];
+			//define order fulfillment for the rest of the loop	
+			if( isNull(orderFulfillment) && 
+				!arrayIsEmpty(arguments.order.getOrderItems()) && 
+				!isNull(arguments.order.getOrderItems()[1].getOrderFulfillment())
+			){
+
+				var orderFulfillment = arguments.order.getOrderItems()[1].getOrderFulfillment();
+
+				this.logHibachi('setting shipping method of order fulfillment: SMID: #arguments.orderTemplate.getShippingMethod().getShippingMethodID()#')
 				orderFulfillment.setShippingMethod(arguments.orderTemplate.getShippingMethod());
-			} 
+				orderFulfillment.setFulfillmentMethod(arguments.orderTemplate.getShippingMethod().getFulfillmentMethod());
+
+				orderFulfillment = this.saveOrderFulfillment(orderFulfillment);
+
+				if (orderFulfillment.hasErrors()){
+					//propegate to parent, because we couldn't create the fulfillment this order is not going to be placed
+					arguments.order.addErrors(orderFulfillment.getErrors());	
+					return arguments.order; 
+				}	
+			}	
+
 			if(arguments.order.hasErrors()){
 				this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(arguments.order.getErrors())# when adding order item skuID: #orderTemplateItem['sku_skuID']#', true);
 				arguments.order.clearHibachiErrors();
