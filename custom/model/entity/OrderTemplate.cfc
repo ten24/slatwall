@@ -101,8 +101,8 @@ component {
 	 **/
 	public boolean function getHasRafGiftCardAppliedToFlexship(){
 		
-		for (var giftCard in variables.orderTemplateAppliedGiftCards){
-			if (giftCard.getSku().getSkuCode() == "raf-gift-card-1"){
+		for (var appliedGiftCard in variables.orderTemplateAppliedGiftCards){
+			if (appliedGiftCard.getGiftCard().getSku().getSkuCode() == "raf-gift-card-1"){
 				return true;
 			}
 		}
