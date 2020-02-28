@@ -1089,7 +1089,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var activePromotionRewardsWithSkuCollection = getPromotionDAO().getActivePromotionRewards( rewardTypeList="merchandise,subscription,contentAccess", promotionCodeList="", excludeRewardsWithQualifiers=true, site=arguments.orderItem.getOrder().getOrderCreatedSite());
 		var originalPrice = arguments.orderItem.getSkuPrice();
 		var currencyCode = arguments.orderItem.getCurrencyCode();
-		//TODO: if orderItem.userDefinedPriceFlag() == true.    return ???
+		//Q: if orderItem.userDefinedPriceFlag() == true.    return ???
 		if(isNull(originalPrice)){
 			var account = arguments.orderItem.getOrder().getAccount() ?: getHibachiScope().getAccount();	
 			originalPrice = arguments.orderItem.getSku().getPriceByCurrencyCode( currencyCode = currencyCode, accountID = account.getAccountID());
