@@ -15,6 +15,21 @@
     </cfcatch>
 </cftry>
 
+<cftry>
+    <cfquery name="local.updateOrderItem">
+        
+        ALTER TABLE SwOrderItem 
+            LOCK=NONE,
+            ALGORITHM=INPLACE,
+            ADD COLUMN userDefinedPriceFlag BIT;
+          
+	</cfquery>
+    <cfcatch >
+        <cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Update Account Payment Method Component (#cfcatch.detail#)">
+    	<cfset local.scriptHasErrors = true />
+    </cfcatch>
+</cftry>
+
 <cfif local.scriptHasErrors>
 	<cflog file="Slatwall" text="General Log - Part of Script Update Account Payment Method had errors when running">
 	<cfthrow detail="Part of Script Update Account Payment Method had errors when running">

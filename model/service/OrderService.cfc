@@ -5508,7 +5508,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	private any function addNewOrderItemSetup(required any newOrderItem, required any processObject)
 	{
-		loggger.m(newOrderItem);
+		logger.m(newOrderItem);
 		
 		// Setup the Sku / Quantity / Price details
 		arguments.newOrderItem.setSku( arguments.processObject.getSku() );
@@ -5517,7 +5517,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		// If the sku is allowed to have a user defined price OR the current account has permissions to edit price
 		if(
-			arguments.newOrderItem.getSku().getUserDefinedPriceFlag()
+			arguments.newOrderItem.getSku().getUserDefinedPriceFlag() ?: false
 			|| //Admin-users can override price from the Slatwall-UI
 			(
 				arguments.processObject.getUserDefinedPriceFlag() 

@@ -618,7 +618,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			return false;
 		}
 
-		if(this.getSku().getUserDefinedPriceFlag()){
+		if(this.getSku().getUserDefinedPriceFlag() ?: false ){
 			return true;
 		}
 		
@@ -632,7 +632,6 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	
 	// funciton to compare two orderItems based on certain properties.
 	public boolean function matchesOrderItem(required any orderItem){
-
 		//check if the sku is a bundle
 		if(!isnull(this.getSku()) && !isnull(this.getSku().getBaseProductType()) && this.getSku().getBaseProductType() == 'productBundle') {
 			return false;
@@ -642,13 +641,13 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		if(arguments.orderItem.getSku().getSkuID() != this.getSku().getSkuID()){
 			return false;
 		}
-		
-		//check if the price is the same if and only if we are using a custom price
-		if( arguments.orderItem.getPrice() != this.getPrice() 
+
+		//check if the price is the same if and only if we are using a custom price (either orderItem or processObject)
+		if( 
+			arguments.orderItem.getPrice() != this.getPrice() 
 			&& 
 			(
-				//if the either prices are user defined
-				this.getUserDefinedPriceFlag() != arguments.orderItem.getUserDefinedPriceFlag()
+				this.getUserDefinedPriceFlag() || arguments.orderItem.getUserDefinedPriceFlag()
 			)
 		){
 			return false;
