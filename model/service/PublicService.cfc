@@ -1786,7 +1786,7 @@ component  accessors="true" output="false"
 		var tmpAccountPaymentMethod = getAccountService().newAccountPaymentMethod();
 		arguments.data['ajaxResponse']['expirationMonthOptions'] = tmpAccountPaymentMethod.getExpirationMonthOptions();
 		arguments.data['ajaxResponse']['expirationYearOptions'] = tmpAccountPaymentMethod.getExpirationYearOptions();
-		
+		arguments.data['ajaxResponse']['countryNameBySite'] = getService('SiteService').getCountryNameByCurrentSite();
 		//this function will set the stateCodeOptions in ajaxResponce
 		getStateCodeOptionsByCountryCode(argumentCollection = arguments); 
 		
