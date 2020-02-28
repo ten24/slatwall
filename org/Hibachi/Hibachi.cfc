@@ -313,6 +313,7 @@ component extends="framework.one" {
 	public void function setupGlobalRequest() {
 
 		var httpRequestData = GetHttpRequestData();
+		
         getHibachiScope().setIsAwsInstance(variables.framework.isAwsInstance);
 		
 		// Verify that the application is setup
@@ -340,6 +341,33 @@ component extends="framework.one" {
 				getBeanFactory().getBean('hibachiCacheService').saveServerInstance(serverInstance);
 			}
 		}
+		
+		//Sets the correct site for api calls.
+		//set custom headers on rc
+        if( StructKeyExists(httpRequestData, "headers") ) {
+            var headers = httpRequestData.headers;
+            
+            for (var key in headers) { 
+                
+                if( left(ucase(key), 4) == 'SWX-' ) {
+                    var headerName = Mid( key, 5, len(key) ); //skip first 4 char --> "SWX-"
+                    
+                    //check to prevent overriding anything on rc, we can't really trust these headers
+                    if(structKeyExists(request,'context') && !StructKeyExists(request.context, headerName)) {
+                        request.context[headerName] = headers[key]; 
+                    }
+                    
+                    if(key == 'SWX-cmsSiteID'){
+			            getHibachiScope().setCurrentRequestSite(getHibachiScope().getService('siteService').getSiteByCMSSiteID(headers[key]));
+			            getHibachiScope().setCurrentRequestSitePathType('cmsSiteID');
+			        }
+			    }
+            }
+        }
+        
+
+		
+		
 		
 		// Verify that the session is setup
 		getHibachiScope().getService("hibachiSessionService").setProperSession();

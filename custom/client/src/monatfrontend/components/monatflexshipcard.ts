@@ -18,6 +18,7 @@ class MonatFlexshipCardController {
 	public expirationYearOptions: any[];
 	public daysToEditFlexship:any;
 	public editFlexshipUntilDate:any;
+	public countryNameBySite:any;
 	//@ngInject
 	constructor(
 		public observerService, 
@@ -31,7 +32,6 @@ class MonatFlexshipCardController {
 
 	public $onInit = () => {
 		this.urlSitePrefix = ( hibachiConfig.cmsSiteID === 'default' ) ? '' : `${hibachiConfig.cmsSiteID}/`;
-		
 		this.observerService.attach(
 			this.updateOrderTemplate,
 			'orderTemplateUpdated' + this.orderTemplate.orderTemplateID,
@@ -187,6 +187,7 @@ class MonatFlexshipCardController {
 				accountAddresses: this.accountAddresses,
 				shippingMethodOptions: this.shippingMethodOptions,
 				stateCodeOptions: this.stateCodeOptions,
+				countryNameBySite:this.countryNameBySite,
 			},
 			preClose: (modal) => {
 				modal.element.modal('hide');
@@ -305,7 +306,8 @@ class MonatFlexshipCard {
 		scheduleDateChangeReasonTypeOptions: '<',
 		expirationMonthOptions: '<',
 		expirationYearOptions: '<',
-		daysToEditFlexship:'@?'
+		daysToEditFlexship:'@?',
+		countryNameBySite:'<'
 	};
 	public controller = MonatFlexshipCardController;
 	public controllerAs = 'monatFlexshipCard';
