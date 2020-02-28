@@ -14,6 +14,7 @@ component extends="Slatwall.model.service.OrderService" {
      **/
 	public any function getAllCartsAndQuotesOnAccount(struct data={}) {
         param name="arguments.data.currentPage" default=1;
+        
         param name="arguments.data.pageRecordsShow" default=5;
         param name="arguments.data.accountID" default= getHibachiSCope().getAccount().getAccountID();
         
@@ -80,7 +81,6 @@ component extends="Slatwall.model.service.OrderService" {
 	}
     
     public any function addNewOrderItemSetup(required any newOrderItem, required any processObject) {
-    	writeLog(file="debug", text="Called addNewOrderItemSetup--custom");
         super.addNewOrderItemSetup(argumentCollection=arguments);
         
         var sku = arguments.newOrderItem.getSku();
@@ -90,7 +90,6 @@ component extends="Slatwall.model.service.OrderService" {
         }
         for(var priceField in variables.customPriceFields){
             if(isNull(arguments.newOrderItem.invokeMethod('get#priceField#'))){
-            	writeLog(file="debug", text="addNewOrderItemSetup--custom: found null for NewOrderItem #priceField#");
             	var customPriceByCurrencyCodeArguments  = {
             		'customPriceField' : priceField, 
             		'currencyCode' : arguments.newOrderItem.getOrder().getCurrencyCode(), 
@@ -104,15 +103,10 @@ component extends="Slatwall.model.service.OrderService" {
 					customPriceByCurrencyCodeArguments['priceGroups'] = [];
 					arrayAppend(customPriceByCurrencyCodeArguments['priceGroups'], arguments.newOrderItem.getAppliedPriceGroup());
 				}
-                writeLog(file="debug", text="addNewOrderItemSetup--custom: detting NewOrderItem #priceField# to #sku.getCustomPriceByCurrencyCode(argumentCollection=customPriceByCurrencyCodeArguments)#");
                 arguments.newOrderItem.invokeMethod('set#priceField#',{1=sku.getCustomPriceByCurrencyCode(argumentCollection=customPriceByCurrencyCodeArguments)});
             } else {
-            	writeLog(file="debug", text="addNewOrderItemSetup--custom: found NewOrderItem- #priceField# == #arguments.newOrderItem.invokeMethod('get#priceField#')#");
             }
         }
-        
-        writeLog(file="debug", text="addNewOrderItemSetup--custom: finallt NewOrderItem- price: #arguments.newOrderItem.getPrice()#, price: #arguments.newOrderItem.getSkuPrice()#");
-
         
         return arguments.newOrderItem;
     }
@@ -1119,8 +1113,6 @@ component extends="Slatwall.model.service.OrderService" {
 				newOrderItem.setPrice( arguments.processObject.getSku().getPriceByCurrencyCode( argumentCollection = priceByCurrencyCodeArgs ) );
 				/******* END CUSTOM CODE FOR MONAT *******/
 			}
-			
-			writeLog(file="debug", text="addNewOrderItemSetup--custom_proc: NewOrderItem's price: #newOrderItem.getPrice()#, price: #newOrderItem.getSkuPrice()#");
 			
 			// If a stock was passed in assign it to this new item
 			if( !isNull(arguments.processObject.getStock()) ) {

@@ -3390,7 +3390,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	public any function processOrder_updateOrderAmounts(required any order, struct data) {
-		writeLog(file="debug", text="Called: processOrder_updateOrderAmounts:");
 		this.logHibachi('updating order amounts called', true); 
 		
 		//only allow promos to be applied to orders that have not been closed or canceled
