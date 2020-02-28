@@ -3416,15 +3416,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	 						listFindNoCase("oitSale,oitDeposit",orderItem.getOrderItemType().getSystemCode()) 
 	 					){
 	 						var skuPrice = val(orderItem.getSkuPrice());
-	 						var SkuPriceByCurrencyCode = val(orderItem.getSku().getPriceByCurrencyCode(orderItem.getCurrencyCode(), orderItem.getQuantity()));
+	 						var skuPriceByCurrencyCode = val(orderItem.getSku().getPriceByCurrencyCode(orderItem.getCurrencyCode(), orderItem.getQuantity()));
 							
-							if(skuPrice != SkuPriceByCurrencyCode) {
-		 						orderItem.setPrice(SkuPriceByCurrencyCode);
-		 						orderItem.setSkuPrice(SkuPriceByCurrencyCode);
+							if(skuPrice != skuPriceByCurrencyCode) {
+		 						orderItem.setPrice(skuPriceByCurrencyCode);
+		 						orderItem.setSkuPrice(skuPriceByCurrencyCode);
 		 						
 		 						logger.d(
 									message = "processOrder_updateOrderAmounts: Updated prices for",
-									orderItem = orderItem, skuPrice = SkuPriceByCurrencyCode, price = SkuPriceByCurrencyCode
+									orderItem = orderItem, skuPrice = skuPriceByCurrencyCode, price = skuPriceByCurrencyCode
 								);
 							}
 						}
