@@ -514,17 +514,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 		});
 		
-<<<<<<< HEAD
-		var maxPromotionMessagesLength = getService('SettingService').getSettingValue('globalMaximumPromotionMessages');
-		
-		if(maxPromotionMessagesLength < arrayLen(arguments.orderQualifierMessages)){
-			arguments.orderQualifierMessages = arraySlice(arguments.orderQualifierMessages, 1, maxPromotionMessagesLength);
-=======
 		var maxMessages = getService('SettingService').getSettingValue('globalMaximumPromotionMessages');
 
 		if(maxMessages < arrayLen(arguments.orderQualifierMessages)){
 			arguments.orderQualifierMessages = arraySlice(arguments.orderQualifierMessages,1,maxMessages);
->>>>>>> origin/develop-team
 		}
 		
 		for(var orderQualifierMessage in arguments.orderQualifierMessages){
@@ -1097,15 +1090,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var originalPrice = arguments.orderItem.getSkuPrice();
 		var currencyCode = arguments.orderItem.getCurrencyCode();
 		
-		if(!isNull(arguments.orderItem.getOrder().getAccount())){
-			var accountID = arguments.orderItem.getOrder().getAccount().getAccountID();
-		}else{
-			var accountID = getHibachiScope().getAccount().getAccountID();	
+		if(isNull(originalPrice)){
+			var account = arguments.orderItem.getOrder().getAccount() ?: getHibachiScope().getAccount();	
+			originalPrice = arguments.orderItem.getSku().getPriceByCurrencyCode( currencyCode = currencyCode, accountID = account.getAccountID());
 		}
 		
-		if(isNull(originalPrice)){
-			originalPrice = arguments.orderItem.getSku().getPriceByCurrencyCode(currencyCode=currencyCode,accountID=accountID);
-		}
 		if(isNull(originalPrice)){
 			originalPrice = arguments.orderItem.getPrice();
 		}
