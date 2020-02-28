@@ -152,9 +152,7 @@ component {
 	
 	public boolean function isVIP(){
 		if (!isNull(this.getAccount()) && !isNull(this.getAccount().getAccountType())){
-			if (this.getAccount().getAccountType() == "VIP"){
-				return true;
-			}
+			return this.getAccount().getAccountType() == "VIP";
 		}
 		return false;
 	}
