@@ -623,7 +623,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		}
 		
 		//check if the price doesn't match with PriceByCurrencyCode
-		if(this.getPrice() != this.getSku().getPriceByCurrencyCode( currencyCode=getCurrencyCode(), quantity=getQuantity(), accountID=this.getAccount().getAccountID()) )){
+		if(this.getPrice() != this.getSku().getPriceByCurrencyCode( currencyCode=getCurrencyCode(), quantity=getQuantity(), accountID=this.getAccount().getAccountID()) ){
 			return true;
 		}
 		

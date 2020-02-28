@@ -3406,7 +3406,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					for(var orderItem in arguments.order.getOrderItems()){
 						
 						logger.d(
-							message = "processOrder_updateOrderAmounts: Updating Prices for" 
+							message = "processOrder_updateOrderAmounts: Updating Prices for", 
 							orderItem = orderItem, skuPrice = orderItem.getSkuPrice(), price = orderItem.getPrice()
 						);
 						
@@ -3423,7 +3423,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		 						orderItem.setSkuPrice(SkuPriceByCurrencyCode);
 		 						
 		 						logger.d(
-									message = "processOrder_updateOrderAmounts: Updated prices for" 
+									message = "processOrder_updateOrderAmounts: Updated prices for",
 									orderItem = orderItem, skuPrice = SkuPriceByCurrencyCode, price = SkuPriceByCurrencyCode
 								);
 							}
