@@ -12,30 +12,32 @@
 </div>
 
 <div ng-if="hybridCart.showCart" class="position-absolute hybrid-cart-wrapper">
-	<div class="cart-container">
-		<div class="accordion-group">
+	<div class="row">
+		<div class="col accordion-group">
 			<div id="accordion">
 				<div class="card w-100">
-					<div class="card-header p-0">
-						<a class="py-0 text-white" data-toggle="collapse" href="#hybridCartBody">
-							<div class="py-3 px-3">
-								<span sw-rbKey="'frontend.cart.todaysOrder'"></span> - <p class="d-inline" ng-bind-html="hybridCart.cart.total | swcurrency:hybridCart.cart.currencyCode"></p>
-							</div>							
-						</a>
+					<div class="card-header bg-transparent p-0">
+						<div class="bg-primary">
+							<a class="py-0 text-white" data-toggle="collapse" href="#hybridCartBody">
+								<div class="py-3 px-3">
+									<span sw-rbKey="'frontend.cart.todaysOrder'"></span> - <p class="d-inline" ng-bind-html="hybridCart.cart.total | swcurrency:hybridCart.cart.currencyCode"></p>
+								</div>							
+							</a>
+						</div>
 					</div>
 					<div class="collapse show multi-collapse" id="hybridCartBody" data-parent="#accordion">
-						<div class="cart-progress-bar">
+						<div class="cart-progress-bar my-2 py-1 px-3">
 							<div class="mb-2">
 								<progress id="file" value="32" max="100"> 32% </progress>
 							</div>
-							<div class="alert alert-success rounded-0 text-center">
-								You are $30 away from a 20% discount.
+							<div class="alert alert-success mb-0 py-0 rounded-0 text-center">
+								<small>You are $30 away from a 20% discount.</small>
 							</div>
 						</div>
 						<div class="card-body p-0 hybrid-cart-body">
 							<div class="px-3 scroll-body">
 								<ul class="list-group list-group-flush">
-									<li ng-repeat="item in hybridCart.cart.orderItems track by item.orderItemID" class="bg-transparent list-group-item d-flex justify-content-between align-items-center">
+									<li ng-repeat="item in hybridCart.cart.orderItems track by item.orderItemID" class="bg-transparent list-group-item d-flex justify-content-between align-items-center p-0">
 										<div class="row align-items-center">
 											<div class="p-1">
 												<a class="py-0" ng-href="{{item.skuProductURL}}">
@@ -80,7 +82,7 @@
 										</div>
 										<span class="badge badge-pill delete">
 											<a ng-click="hybridCart.removeItem(item)" href="#">
-												<i class="fal fa-times"></i>
+												x
 											</a>
 										</span>
 									</li>
@@ -90,35 +92,39 @@
 						<div class="card-footer">
 							<div class="row justify-content-between px-3">
 								<div>
-									<span sw-rbKey="'frontend.hybridCart.suggestedPrice'"></span>
+									<small> <span sw-rbKey="'frontend.hybridCart.suggestedPrice'"></span> </small>
 								</div>
 								<div>
-									$99.00
-								</div>
-							</div>
-							<div class="row justify-content-between px-3">
-								<div>
-									<span sw-rbKey="'frontend.hybridCart.yourPrice'"></span>
-								</div>
-								<div>
-									$99.00
+									<small> $99.00 </small>
 								</div>
 							</div>
 							<div class="row justify-content-between px-3">
 								<div>
-									<span sw-rbKey="'frontend.hybridCart.purchasePlus'"></span>
+									<small> <span sw-rbKey="'frontend.hybridCart.yourPrice'"></span> </small>
 								</div>
 								<div>
-									$99.00
+									<small> $99.00 </small>
+								</div>
+							</div>
+							<div class="row justify-content-between px-3">
+								<div>
+									<small> <span sw-rbKey="'frontend.hybridCart.purchasePlus'"></span> </small>
+								</div>
+								<div>
+									<small>$99.00</small>
 								</div>
 							</div>
 							<hr class="my-0">
 							<div class="row justify-content-between px-3 my-1 mb-3">
 								<div>
-									<b> <span sw-rbKey="'frontend.hybridCart.todaysOrderTotal'"></span> </b>
+									<small> 
+										<b> <span sw-rbKey="'frontend.hybridCart.todaysOrderTotal'"></span> </b>
+									</small>
 								</div>
 								<div>
-									<b ng-bind-html="hybridCart.cart.total | swcurrency:hybridCart.cart.currencyCode"></b> 
+									<small> 
+										<b ng-bind-html="hybridCart.cart.total | swcurrency:hybridCart.cart.currencyCode"></b> 
+									</small>
 								</div>
 							</div>
 							<div class="row">
