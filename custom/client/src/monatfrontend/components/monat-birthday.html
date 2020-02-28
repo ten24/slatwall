@@ -4,10 +4,19 @@
 			id="gender_CreateAccount"
 			name="dob"
 			class="form-control"
+			ng-model="monatBirthday.form.select"
+			swvalidationrequired="true"
 		>
+			<option disabled></option>
 			<option ng-selected="!monatBirthday.showPicker && monatBirthday.isSet">{{monatBirthday.day}}/{{monatBirthday.months.indexOf(monatBirthday.month)}}/{{monatBirthday.year}}</option>
 		</select>
 		<label for="gender_CreateAccount" sw-rbkey="'frontend.global.yourBirthday'"></label>
+		<div class="error-display ng-scope" ng-if="swfForm.form.dob.$error.swvalidationrequired" ng-show="swfForm.form.$submitted">
+			<div 
+				class="text-danger error_text ng-isolate-scope" 
+				sw-rbkey="'validation.define.required'"
+			></div>
+		</div>
 	</div>
 	<div id="birthday-picker" ng-if="monatBirthday.showPicker">
 		<div class="birthday-wrapper shadow border overflow-hidden">
