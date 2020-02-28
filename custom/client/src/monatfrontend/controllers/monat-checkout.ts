@@ -11,6 +11,7 @@ declare let paypal: any;
 					8. On click api calls off slatwall scope so we dont need events or extra get cart calls
 					9. test paypal
 					10. add an automatic smooth scroll from shipping => billing
+					11. on key up serach for MP
 ****/
 
 enum Screen {
@@ -358,8 +359,8 @@ class MonatCheckoutController {
 	}
 	
 	public setCheckoutDefaults(){
-		/************UNCOMMENT BEFORE COMITTING ****************/
-	//	if(!this.publicService.cart.orderID.length || this.publicService.cart.orderRequirementsList.indexOf('fulfillment') === -1) return this.getCurrentCheckoutScreen(false, false);
+	
+		if(!this.publicService.cart.orderID.length || this.publicService.cart.orderRequirementsList.indexOf('fulfillment') === -1) return this.getCurrentCheckoutScreen(false, false);
 		this.publicService.doAction('setIntialShippingAndBilling').then(res=>{
 			this.cart = res.cart; 
 			this.getCurrentCheckoutScreen(false, false);

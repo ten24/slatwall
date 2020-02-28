@@ -1800,7 +1800,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 	        var addressID = account.getPrimaryShippingAddress().getAccountAddressID();
 	        var data = {shippingFulfillmentID:shippingFulfillmentID, accountAddressID: addressID};
 	        this.addShippingAddressUsingAccountAddress(data); 
-	    }else{
+	    }else if(!isNull(arguments.data.streetAddress)){
 	        this.addOrderShippingAddress(arguments.data);
 	    }
         
