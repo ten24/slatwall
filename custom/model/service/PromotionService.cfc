@@ -183,4 +183,29 @@ component extends="Slatwall.model.service.PromotionService" {
     	}
     	return 0;
     }
+    
+    private void function applyPromotionQualifierMessagesToOrder(required any order, required array orderQualifierMessages){
+		ArraySort(arguments.orderQualifierMessages,function(a,b){
+			if(a.priority <= b.priority){
+				return -1;
+			}else{
+				return 1;
+			}
+		});
+		var maxMessages = getService('SettingService').getSettingValue('globalMaximumPromotionMessages');
+
+		if(maxMessages < arrayLen(arguments.orderQualifierMessages)){
+			arguments.orderQualifierMessages = arraySlice(arguments.orderQualifierMessages,1,maxMessages);
+		}
+		
+		for(var orderQualifierMessage in arguments.orderQualifierMessages){
+			var promotionQualifierMessage = this.getPromotionQualifierMessage(orderQualifierMessage.promotionQualifierMessageID);
+			var message = promotionQualifierMessage.getInterpolatedMessage(arguments.order);
+			if(!isNull(promotionQualifierMessage.getQualifierProgress(arguments.order))){
+				message &= ' | #promotionQualifierMessage.getQualifierProgress(arguments.order)#';
+			}
+			arguments.order.addMessage(orderQualifierMessage.messageName, message);
+		}
+
+	}
 }

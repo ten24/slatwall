@@ -476,11 +476,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					}
 	
 				} // END of PromotionReward Loop
-				
 				if(arrayLen(orderQualifierMessages)){
 					applyPromotionQualifierMessagesToOrder(arguments.order,orderQualifierMessages);
 				}
-	
+
 			} // END of Sale or Exchange Loop
 	
 			// Return & Exchange Orders
@@ -515,14 +514,23 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 		});
 		
+<<<<<<< HEAD
 		var maxPromotionMessagesLength = getService('SettingService').getSettingValue('globalMaximumPromotionMessages');
 		
 		if(maxPromotionMessagesLength < arrayLen(arguments.orderQualifierMessages)){
 			arguments.orderQualifierMessages = arraySlice(arguments.orderQualifierMessages, 1, maxPromotionMessagesLength);
+=======
+		var maxMessages = getService('SettingService').getSettingValue('globalMaximumPromotionMessages');
+
+		if(maxMessages < arrayLen(arguments.orderQualifierMessages)){
+			arguments.orderQualifierMessages = arraySlice(arguments.orderQualifierMessages,1,maxMessages);
+>>>>>>> origin/develop-team
 		}
 		
 		for(var orderQualifierMessage in arguments.orderQualifierMessages){
-			arguments.order.addMessage(orderQualifierMessage.messageName, orderQualifierMessage.message);
+			var promotionQualifierMessage = this.getPromotionQualifierMessage(orderQualifierMessage.promotionQualifierMessageID);
+			var message = promotionQualifierMessage.getInterpolatedMessage(arguments.order);
+			arguments.order.addMessage(orderQualifierMessage.messageName, message);
 		}
 
 	}
@@ -704,6 +712,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arguments.qualifierDetails.qualificationCount = 1;
 		}else if(structKeyExists(arguments,'orderQualifierMessages')){
 			for(var promoQualifierMessage in arguments.qualifier.getPromotionQualifierMessages()){
+
 				if(promoQualifierMessage.hasOrderByOrderID( arguments.order.getOrderID() )){
 					arrayAppend(arguments.orderQualifierMessages, promoQualifierMessage.getMessageStruct());
 				}
@@ -1087,9 +1096,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var activePromotionRewardsWithSkuCollection = getPromotionDAO().getActivePromotionRewards( rewardTypeList="merchandise,subscription,contentAccess", promotionCodeList="", excludeRewardsWithQualifiers=true, site=arguments.orderItem.getOrder().getOrderCreatedSite());
 		var originalPrice = arguments.orderItem.getSkuPrice();
 		var currencyCode = arguments.orderItem.getCurrencyCode();
-
+		
+		if(!isNull(arguments.orderItem.getOrder().getAccount())){
+			var accountID = arguments.orderItem.getOrder().getAccount().getAccountID();
+		}else{
+			var accountID = getHibachiScope().getAccount().getAccountID();	
+		}
+		
 		if(isNull(originalPrice)){
-			originalPrice = arguments.orderItem.getSku().getPriceByCurrencyCode(currencyCode);
+			originalPrice = arguments.orderItem.getSku().getPriceByCurrencyCode(currencyCode=currencyCode,accountID=accountID);
+		}
+		if(isNull(originalPrice)){
+			originalPrice = arguments.orderItem.getPrice();
 		}
 
 		var priceDetails = getPriceDetailsForPromoRewards( promoRewards=activePromotionRewardsWithSkuCollection,

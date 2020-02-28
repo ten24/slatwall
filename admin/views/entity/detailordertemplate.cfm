@@ -58,10 +58,14 @@
 	{
 		'action':'admin:entity.processOrderTemplate',
 		'processContext':'activate'
-	},	
+	},
 	{
 		'action':'admin:entity.processOrderTemplate',
 		'processContext':'createAndPlaceOrder'
+	},	
+	{
+		'action':'admin:entity.processOrderTemplate',
+		'processContext':'updateCalculatedProperties'
 	},	
 	{
 		'action':'admin:entity.preProcessOrderTemplate',

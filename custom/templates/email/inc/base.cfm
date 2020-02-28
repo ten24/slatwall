@@ -10,29 +10,20 @@
 </cfscript>
 
 <cfsavecontent variable="emailData.emailBodyHTML">
+	<cfif accountType == 'retail'>
+	    <cfset accountType = "customer">
+	</cfif>
+	
 	<cfoutput>
-	
 		#getEmailContent('#accountType#EmailHeader', emailTemplate)#
-		
-		<cfswitch expression="#accountType#">
-			<cfcase value="retail,customer">
-				#templateObject.stringReplace( emailTemplate.getFormattedValue(propertyName='CustomerBody',locale=locale),true )#
-			</cfcase>
-			<cfcase value="VIP">
-				#templateObject.stringReplace( emailTemplate.getFormattedValue(propertyName='VipBody',locale=locale),true )#
-			</cfcase>
-			<cfdefaultcase>
-				<!-----MARKET PARTER TEMPLATE HERE ----->
-			</cfdefaultcase>
-		</cfswitch>
-	
+		#templateObject.stringReplace( emailTemplate.getFormattedValue(propertyName='#accountType#Body', locale=locale),true )#
 		#getEmailContent('#accountType#EmailFooter', emailTemplate)#
-	
 	</cfoutput>
 </cfsavecontent>
+
 <cfsavecontent variable="emailData.emailBodyText">
 	
-	<!-- PLAIN TEXT VERSION / TODO: Get the right Body text-->
+	<!--- PLAIN TEXT VERSION / TODO: Get the right Body text --->
 	<cfoutput>
 		#email.getEmailBodyText()#
 	</cfoutput>

@@ -562,7 +562,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 
 			// Save the new order items don't update order amounts we'll do it at the end of this process
-			newOrderItem = this.saveOrderItem( orderItem=newOrderItem, updateOrderAmounts=false );
+			newOrderItem = this.saveOrderItem( orderItem=newOrderItem, updateOrderAmounts=false, updateCalculatedProperties=true);
 
 			if(newOrderItem.hasErrors()) {
 				//String replace the max order qty to give user feedback with the minimum of 0
@@ -1562,17 +1562,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		newOrder = this.createOrderItemsFromOrderTemplateItems(newOrder,arguments.orderTemplate);
 		
 		
-		if (arrayLen(newOrder.getOrderFulfillments())){
-			var orderFulfillment = newOrder.getOrderFulfillments()[1];
-			if (!isNull(orderFulfillment)){
-				orderFulfillment.setShippingMethod(arguments.orderTemplate.getShippingMethod());
-				orderFulfillment.setFulfillmentMethod(arguments.orderTemplate.getShippingMethod().getFulfillmentMethod());
-			}
-		}
+
 		
-		if (!orderFulfillment.hasErrors()){
-			this.saveOrderFulfillment(orderFulfillment);
-		}
 		
 		var promotionCodes = arguments.orderTemplate.getPromotionCodes();
 
@@ -1594,7 +1585,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		
 		if(newOrder.hasErrors()){
-			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# after applying gift cards', true);
+			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# after adding promotion codes', true);
 			arguments.orderTemplate.clearHibachiErrors();
 			return arguments.orderTemplate;
 		}
@@ -1610,8 +1601,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arguments.orderTemplate.setLastOrderPlacedDateTime( now() );
 			arguments.orderTemplate.clearHibachiErrors();
 			return arguments.orderTemplate;
-		}	
+		}
 	
+		var eventData = { entity: newOrder, order: newOrder, data: {} };
+        getHibachiScope().getService("hibachiEventService").announceEvent(eventName="afterOrderProcess_PlaceOrderSuccess", eventData=eventData);	
 	
 		var orderTemplateAppliedGiftCards = arguments.orderTemplate.getOrderTemplateAppliedGiftCards(); 
 		for(var orderTemplateAppliedGiftCard in orderTemplateAppliedGiftCards ){ 
@@ -1667,9 +1660,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				}
 			}
 		}
-
 		newOrder = this.process(newOrder, addOrderPaymentProcessData, 'addOrderPayment'); 
-	
 		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate); 	
 		
 		if(newOrder.hasErrors()){
@@ -1745,7 +1736,27 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 			
 			arguments.order = this.addOrderItemFromTemplateItem(argumentCollection=args);
-		
+	
+			//define order fulfillment for the rest of the loop	
+			if( isNull(orderFulfillment) && 
+				!arrayIsEmpty(arguments.order.getOrderItems()) && 
+				!isNull(arguments.order.getOrderItems()[1].getOrderFulfillment())
+			){
+
+				var orderFulfillment = arguments.order.getOrderItems()[1].getOrderFulfillment();
+
+				orderFulfillment.setShippingMethod(arguments.orderTemplate.getShippingMethod());
+				orderFulfillment.setFulfillmentMethod(arguments.orderTemplate.getShippingMethod().getFulfillmentMethod());
+				
+				orderFulfillment = this.saveOrderFulfillment(orderFulfillment);
+	
+				if (orderFulfillment.hasErrors()){
+					//propegate to parent, because we couldn't create the fulfillment this order is not going to be placed
+					arguments.order.addErrors(orderFulfillment.getErrors());	
+					return arguments.order; 
+				}	
+			} 
+
 			if(arguments.order.hasErrors()){
 				this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(arguments.order.getErrors())# when adding order item skuID: #orderTemplateItem['sku_skuID']#', true);
 				arguments.order.clearHibachiErrors();
@@ -1760,17 +1771,21 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	public any function addOrderItemFromTemplateItem(required any order, required struct orderTemplateItemStruct, required any orderTemplate, any orderFulfillment){
 		var processOrderAddOrderItem = arguments.order.getProcessObject('addOrderItem');
-		var sku = getSkuService().getSku(arguments.orderTemplateItemStruct['sku_skuID']);	
+		var sku = getSkuService().getSku(arguments.orderTemplateItemStruct['sku_skuID']);
+
+		
+		if(structKeyExists(arguments.orderTemplateItemStruct,'price')){
+			var orderTemplateItemPrice = arguments.orderTemplateItemStruct.price;
+		}else{
+			var orderTemplateItemPrice = sku.getPriceByCurrencyCode(
+					currencyCode = arguments.orderTemplate.getCurrencyCode(), 
+					quantity = arguments.orderTemplateItemStruct['quantity'],
+					accountID = arguments.orderTemplate.getAccount().getAccountID()
+				);
+		}
+		
 		processOrderAddOrderItem.setSku(sku);
-		
-		processOrderAddOrderItem.setPrice(
-				sku.getPriceByCurrencyCode(
-					currencyCode=arguments.orderTemplate.getCurrencyCode(), 
-					quantity=arguments.orderTemplateItemStruct['quantity'],
-					accountID=arguments.orderTemplate.getAccount().getAccountID()
-				)
-		);
-		
+		processOrderAddOrderItem.setPrice(orderTemplateItemPrice);
 		processOrderAddOrderItem.setQuantity(arguments.orderTemplateItemStruct['quantity']);
 		processOrderAddOrderItem.setUpdateOrderAmountFlag(false); 		
 
@@ -2081,6 +2096,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		return arguments.orderTemplate; 	
 	}  
+
+	public any function processOrderTemplate_updateCalculatedProperties (required any orderTemplate, any processObject, struct data={}){
+
+		//calculation cascades to order template items
+		arguments.orderTemplate.updateCalculatedProperties(); 
+
+		return arguments.orderTemplate; 	
+
+	}
 
 	//begin order template api functionality
 	public any function getOrderTemplatesCollectionForAccount(required struct data, any account=getHibachiScope().getAccount()){
@@ -5045,7 +5069,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.orderFulfillment;
 	}
 
-	public any function saveOrderItem(required any orderItem, struct data={}, string context="save", boolean updateOrderAmounts=true) {
+	public any function saveOrderItem(required any orderItem, struct data={}, string context="save", boolean updateOrderAmounts=true,boolean updateCalculatedProperties=false) {
 
 		// Call the generic save method to populate and validate
 		arguments.orderItem = save(arguments.orderItem, arguments.data, arguments.context);
@@ -5058,7 +5082,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 
 		}
-
+		if(!arguments.orderItem.hasErrors() && arguments.updateCalculatedProperties){
+			arguments.orderItem.updateCalculatedProperties();
+		}
 		// Recalculate the order amounts for tax and promotions
 		if(!arguments.orderItem.hasErrors() && arguments.updateOrderAmounts){
 			this.processOrder( arguments.orderItem.getOrder(), {}, 'updateOrderAmounts' );

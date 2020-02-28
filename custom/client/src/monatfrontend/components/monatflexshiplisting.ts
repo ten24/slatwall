@@ -13,6 +13,7 @@ class MonatFlexshipListingController{
 	public daysToEditFlexshipSetting:any;
 	public account:any;
 	public customerCanCreateFlexship:boolean;
+	public countryNameBySite :any;
 		
 	private orderTemplateTypeID:string = '2c948084697d51bd01697d5725650006'; // order-template-type-flexship 
 	
@@ -30,6 +31,7 @@ class MonatFlexshipListingController{
 	){
 		this.observerService.attach(this.fetchFlexships,"deleteOrderTemplateSuccess");
 		this.observerService.attach(this.fetchFlexships,"updateFrequencySuccess");
+
 
 	}
 	
@@ -57,6 +59,8 @@ class MonatFlexshipListingController{
 				this.scheduleDateChangeReasonTypeOptions = data.scheduleDateChangeReasonTypeOptions;
 				this.expirationMonthOptions = data.expirationMonthOptions;
 				this.expirationYearOptions = data.expirationYearOptions;
+				this.countryNameBySite = data.countryNameBySite;
+				
 				
 				//set this last so that ng repeat inits with all needed data
 				this.orderTemplates = data.orderTemplates; 
@@ -71,6 +75,12 @@ class MonatFlexshipListingController{
 	
 	public createNewFlexship = () => {
 		this.loading = true;
+		let siteID = this.publicService.cmsSiteID;
+		let createURL = '/shop/?type=flexship&orderTemplateId=';
+		
+		if(siteID != 'default'){
+			createURL = '/' + siteID + createURL;
+		}
 		
 		this.orderTemplateService.createOrderTemplate('ottSchedule')
 			.then((data) => {

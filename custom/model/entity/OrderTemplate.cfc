@@ -1,6 +1,12 @@
 component {
 
 	property name="lastSyncedDateTime" ormtype="timestamp";
+	
+	//calculated properties
+	property name="calculatedCommissionableVolumeTotal" ormtype="integer";
+	property name="calculatedPersonalVolumeTotal" ormtype="integer";
+
+	//non-persistents
 	property name="accountIsNotInFlexshipCancellationGracePeriod" persistent="false";
 	property name="commissionableVolumeTotal" persistent="false"; 
 	property name="personalVolumeTotal" persistent="false";

@@ -31,6 +31,6 @@ component accessors="true" output="false" extends="Slatwall.integrationServices.
     }
 
 	public array function getEventHandlers() {
-		return [];
+		return ["Slatwall.integrationServices.monat.model.handler.monatHandler"];
 	}
 }

@@ -4,22 +4,24 @@ class MonatFlexshipShippingMethodModalController {
 	public accountAddresses;
 	public shippingMethodOptions;
 	public close; // injected from angularModalService
-
 	public existingAccountAddress; 
 	public selectedShippingAddress = { accountAddressID : 'new' }; // this needs to be an object to make radio working in ng-repeat, as that will create a nested scope
 	public existingShippingMethod; 
 	public selectedShippingMethod = { shippingMethodID : undefined }; // this needs to be an object to make radio working in ng-repeat, as that will create a nested scope
-	
+	public countryNameBySite:any;
 	public newAccountAddress = {};
 	public newAddress = {'countryCode':'US'}; //TODO: hard-coded default]
+	public countryCodeOptions = {};
 	
 	public loading: boolean = false;
 
 	//@ngInject
-    constructor(public orderTemplateService, public observerService, public rbkeyService, public monatAlertService) {}
+    constructor(public orderTemplateService, public observerService, public rbkeyService, public monatAlertService,private monatService) {}
     
     public $onInit = () => {
     	this.makeTranslations();
+     
+    	this.newAddress['countryCode']=this.countryNameBySite;	
     	this.existingAccountAddress = this.accountAddresses.find( item => {
     		return item.accountAddressID === this.orderTemplate.shippingAccountAddress_accountAddressID;
     	});
@@ -51,6 +53,7 @@ class MonatFlexshipShippingMethodModalController {
     	this.translations['newAddress_selectYourState'] = this.rbkeyService.rbKey('frontend.newAddress.selectYourState');
     	this.translations['newAddress_city'] = this.rbkeyService.rbKey('frontend.newAddress.city');
     	this.translations['newAddress_zipCode'] = this.rbkeyService.rbKey('frontend.newAddress.zipCode');
+    	this.translations['select_country'] = this.rbkeyService.rbKey('frontend.newAddress.selectCountry');
 
     }
     
@@ -123,6 +126,7 @@ class MonatFlexshipShippingMethodModal {
 	    accountAddresses:'<',
 	    shippingMethodOptions:'<',
 	    stateCodeOptions:'<',
+	    countryNameBySite:'<',
 	    close:'=' //injected by angularModalService;
 	};
 	public controller=MonatFlexshipShippingMethodModalController;

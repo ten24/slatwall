@@ -22,9 +22,11 @@
 <cfoutput>
 	<sw-order-template-items data-edit="#rc.edit#"
 							 data-order-template="#rc.orderTemplate.getEncodedJsonRepresentation()#"
-							 data-site-id="#rc.orderTemplate.getSite().getSiteID()#" <!---the ordertemplate should always have a site--->
+							 <!---the ordertemplate should always have a site--->	
+							 data-site-id="#rc.orderTemplate.getSite().getSiteID()#" 
 							 data-currency-code="#rc.orderTemplate.getCurrencyCode()#"
-							 data-sku-properties-to-display="personalVolumeByCurrencyCode"
+							 <!---data-sku-properties-to-display="personalVolumeByCurrencyCode"--->
+							 data-additional-order-template-item-properties-to-display="calculatedPersonalVolumeTotal"
 							 data-sku-property-column-configs="#getHibachiScope().hibachiHtmlEditFormat(serializeJson(rc.skuColumnConfigs))#"
 	></sw-order-template-items>
 </cfoutput>	
