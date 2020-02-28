@@ -89,6 +89,7 @@ component extends="Slatwall.model.service.OrderService" {
             account = getService('AccountService').newAccount();
         }
         for(var priceField in variables.customPriceFields){
+            
             if(isNull(arguments.newOrderItem.invokeMethod('get#priceField#'))){
             	var customPriceByCurrencyCodeArguments  = {
             		'customPriceField' : priceField, 
@@ -104,8 +105,8 @@ component extends="Slatwall.model.service.OrderService" {
 					arrayAppend(customPriceByCurrencyCodeArguments['priceGroups'], arguments.newOrderItem.getAppliedPriceGroup());
 				}
                 arguments.newOrderItem.invokeMethod('set#priceField#',{1=sku.getCustomPriceByCurrencyCode(argumentCollection=customPriceByCurrencyCodeArguments)});
-            } else {
             }
+            
         }
         
         return arguments.newOrderItem;

@@ -613,7 +613,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	
 	public any function getUserDefinedPriceFlag() {
 		
-		//check ithere's no sku we have nothing to check against 
+		//check there's no sku we have nothing to check against 
 		if(IsNull(this.getSku()) ) {
 			return false;
 		}
