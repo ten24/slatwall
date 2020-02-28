@@ -92,6 +92,9 @@ class MonatCheckoutController {
 			}
 			if(!this.account.accountID.length) return;
 			this.getCurrentCheckoutScreen(true, true);
+			if(this.publicService.enrollmentSteps) this.enrollmentSteps = this.publicService.enrollmentSteps;
+			this.totalSteps = this.hasSponsor ? 2 + this.enrollmentSteps  : 3 + this.enrollmentSteps; 
+			
 		});
 		
 		const currDate = new Date;
@@ -102,11 +105,6 @@ class MonatCheckoutController {
             this.yearOptions.push(manipulateableYear++)
         }
         while(this.yearOptions.length <= 9);
-	}
-	
-	public $postLink(){
-		if(this.publicService.enrollmentSteps) this.enrollmentSteps = this.publicService.enrollmentSteps;
-		this.totalSteps = this.hasSponsor ? 2 + this.enrollmentSteps  : 3 + this.enrollmentSteps; 	
 	}
 	
 	private getCurrentCheckoutScreen = (setDefault = false, hardRefresh = false):Screen | void => {
