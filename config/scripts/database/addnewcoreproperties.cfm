@@ -31,8 +31,8 @@
 </cftry>
 
 <cfif local.scriptHasErrors>
-	<cflog file="Slatwall" text="General Log - Part of Script AddNewCorePropertiesm had errors when running">
-	<cfthrow detail="Part of Script AddNewCorePropertiesm had errors when running">
+	<cflog file="Slatwall" text="General Log - Part of Script AddNewCoreProperties had errors when running">
+	<cfthrow detail="Part of Script AddNewCoreProperties had errors when running">
 <cfelse>
-	<cflog file="Slatwall" text="General Log - Script AddNewCorePropertiesm has run with no errors">
+	<cflog file="Slatwall" text="General Log - Script AddNewCoreProperties has run with no errors">
 </cfif>
