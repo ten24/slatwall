@@ -112,7 +112,7 @@ component {
 	
 	public boolean function getHasRafPromoAppliedToFlexship(){
 		for (var promoCode in variables.promotionCodes){
-			if (promoCode.getPromotion().getPromotionName = "Monat - Refer A Friend"){
+			if (promoCode.getPromotion().getPromotionName() == "Monat - Refer A Friend"){
 				return true;
 			}
 		}
