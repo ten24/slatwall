@@ -17,7 +17,8 @@ class MonatOrderItemsController {
 		
 		// cached account
 		this.publicService.getAccount().then(result =>{
-			if(!result.priceGroups.length || result.priceGroups[0].priceGroupCode == 2){
+	
+			if(!result.account.priceGroups.length || result.account.priceGroups[0].priceGroupCode == 2){
 				this.getUpgradedOrderSavings();
 				this.observerService.attach(this.getUpgradedOrderSavings, 'updateOrderItemSuccess'); 
 				this.observerService.attach(this.getUpgradedOrderSavings, 'removeOrderItemSuccess');
@@ -29,9 +30,9 @@ class MonatOrderItemsController {
 
 	private getOrderItems = () => {
 		this.monatService.getCart().then( data => {
-			if ( undefined !== data.orderItems ) {
-				this.orderItems = data.orderItems;
-				this.aggregateOrderItems( data.orderItems );
+			if ( undefined !== data.cart.orderItems ) {
+				this.orderItems = data.cart.orderItems;
+				this.aggregateOrderItems( data.cart.orderItems );
 			}
 		});
 	}
