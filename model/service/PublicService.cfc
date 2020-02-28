@@ -1513,8 +1513,8 @@ component  accessors="true" output="false"
                         var address = paymentMethod.getBillingAccountAddress().getAccountAddressID();
                         var newBillingAddress = this.addBillingAddressUsingAccountAddress({accountAddressID:  paymentMethod.getBillingAccountAddress().getAccountAddressID()});
                     }else if(!isNull(paymentMethod.getBillingAddress())){
-                        var address= paymentMethod.getBillingAddress().getAddressID() //pass the object rather than ID
-                        var newBillingAddress = this.addBillingAddress({addressID:  paymentMethod.getBillingAddress().getAddressID()});
+                        var address= paymentMethod.getBillingAddress() //pass the object rather than ID
+                        var newBillingAddress = this.addBillingAddress({address:  address});
                     }else{
                         getHibachiScope().addActionResult("public:cart.addOrderPayment", true);
                         return;
