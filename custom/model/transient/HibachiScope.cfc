@@ -1,5 +1,7 @@
 component output="false" accessors="true" extends="Slatwall.model.transient.HibachiScope" {
 	
+	property name="currentRequestSiteOwner";
+	
 	public any function getCurrentRequestSite() {
 		
 		if(!structKeyExists(variables,'currentRequestSite')){
@@ -11,7 +13,7 @@ component output="false" accessors="true" extends="Slatwall.model.transient.Hiba
 				var pathInfo = CGI.PATH_INFO;
 			}
 			
-			if ( len( pathInfo ) > len( cgiScriptName ) && left( pathInfo, len( cgiScriptName ) ) == cgiScriptName ) {
+			 if ( len( pathInfo ) > len( cgiScriptName ) && left( pathInfo, len( cgiScriptName ) ) == cgiScriptName ) {
 				// canonicalize for IIS:
 				pathInfo = right( pathInfo, len( pathInfo ) - len( cgiScriptName ) );
 			} else if ( len( pathInfo ) > 0 && pathInfo == left( cgiScriptName, len( pathInfo ) ) ) {
@@ -23,7 +25,7 @@ component output="false" accessors="true" extends="Slatwall.model.transient.Hiba
 			var pathArray = listToArray(pathInfo,'/');
 
 			if(arrayLen(pathArray)){
-				variables.currentRequestSite = getService('siteService').getSiteBySiteCode('mura-'&pathArray[1]);
+				variables.currentRequestSiteOwner = getService('siteService').getSiteBySiteCode(pathArray[1]);
 			}
 				
 

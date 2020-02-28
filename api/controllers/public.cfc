@@ -58,7 +58,26 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
            	structAppend(arguments.rc, arguments.rc.deserializedJSONData);
         }
         
+        //set custom headers on rc
+        if( StructKeyExists(arguments.rc.requestHeaderData, "headers")) {
+            var headers = arguments.rc.requestHeaderData.headers;
+            for (var key in headers) { 
+                
+                if( left(ucase(key), 4) == 'SWX-' ) {
+                    var headerName = Mid( key, 5, len(key) ); //skip first 4 char --> "SWX-"
+                    
+                    //check to prevent overriding anything on rc, we can't really trust these headers
+                    if(!StructKeyExists(arguments.rc, headerName)) {
+                        arguments.rc[headerName] = headers[key]; 
+                    }
+                }
+            }
+        }
         
+        if(structKeyExists(arguments.rc,'cmsSiteID')){
+            getHibachiScope().setCurrentRequestSite(getService('siteService').getSiteByCMSSiteID(arguments.rc.cmsSiteID));
+            getHibachiScope().setCurrentRequestSitePathType('cmsSiteID');
+        }
         //if we have a get request there is nothing to persist because nothing changed
         if(
             structKeyExists(arguments.rc,'context') 
