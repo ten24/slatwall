@@ -1478,6 +1478,11 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     
     public any function setUpgradeOnOrder(upgradeType, upgradeFlowFlag = 0){
         
+        if(!isNull(getHibachiScope().getCart().getMonatOrderType())){
+            arguments.data['ajaxResponse']['upgradeResponseFailure'] = getHibachiScope().rbKey('frontend.validate.upgradeAlreadyExists');
+            return;
+        }
+        
         //if we are not in an upgrade flow and the user is logged in, log the user out.
         if(!upgradeFlowFlag && getHibachiScope().getLoggedInFlag()){
             super.logout();
@@ -1732,7 +1737,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 	    super.addShippingAddressUsingAccountAddress(arguments.data);
 	    var cart = getHibachiScope().getCart();
         this.setDefaultShippingMethod();
-        if(isNull(cart.getOrderPayments())) {
+        if(isNull(cart.getOrderPayments()) || !arrayLen(cart.getOrderPayments())) {
             this.setShippingSameAsBilling();
         }
 	}
@@ -1742,7 +1747,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var cart = getHibachiScope().getCart();
 	    super.addOrderShippingAddress(arguments.data);
 	    this.setDefaultShippingMethod();
-        if(isNull(cart.getOrderPayments() ) ){
+        if(isNull(cart.getOrderPayments()) || !arrayLen(cart.getOrderPayments()) ){
             this.setShippingSameAsBilling();
         }
 	}
@@ -1789,7 +1794,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         if(isNull(account) || !arrayLen(orderFulfillments)) return;
         
 	    //if the default shipping flag is passed in, and the account has a primary shipping address, set shipping address with it otherwise use data passed in as arguments
-	    
+	   
 	    if(arguments.data.defaultShippingFlag && !isNull(account.getPrimaryShippingAddress())) {
 	        var shippingFulfillmentID = orderFulfillments[1].getOrderFulfillmentID();
 	        var addressID = account.getPrimaryShippingAddress().getAccountAddressID();
@@ -1798,10 +1803,11 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 	    }else{
 	        this.addOrderShippingAddress(arguments.data);
 	    }
-
+        
+       
         //Set up the billing information, if there is a primary account payment method
         if(!isNull(account.getPrimaryPaymentMethod())){
-            var paymentData = { orderID: cart.getOrderID(), copyFromType: 'accountPaymentMethod', accountPaymentMethodID: account.getPrimaryPaymentMethod().getAccountPaymentMethodID() };
+            var paymentData = {  requireBillingAddress: 0, copyFromType: 'accountPaymentMethod', accountPaymentMethodID: account.getPrimaryPaymentMethod().getAccountPaymentMethodID() };
             super.addOrderPayment(paymentData);
         }
 	    
