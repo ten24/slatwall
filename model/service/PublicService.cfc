@@ -862,6 +862,12 @@ component  accessors="true" output="false"
             getService("OrderService").saveOrder(order);
             getHibachiScope().addActionResult( "public:cart.addBillingAddress", false);
         }
+        
+        if(isNull(savedAddress)){
+            getHibachiScope().addActionResult( "public:cart.addBillingAddress", true);
+            return;
+        }
+        
         if(savedAddress.hasErrors()){
             this.addErrors(arguments.data, savedAddress.getErrors()); //add the basic errors
     	    getHibachiScope().addActionResult( "public:cart.addBillingAddress", true);
@@ -1499,9 +1505,25 @@ component  accessors="true" output="false"
                 return;
             }
             
-            if ((!structKeyExists(data, "accountPaymentMethodID") && len(data.accountPaymentMethodID))){
+            if (structKeyExists(data, "accountPaymentMethodID") && len(data.accountPaymentMethodID)){
                 //use this billing information
-                var newBillingAddress = this.addBillingAddress(data.newOrderPayment.billingAddress, "billing");
+                var paymentMethod = getService('accountService').getAccountPaymentMethod(data.accountPaymentMethodID);
+                if(!isNull(paymentMethod)){
+                    if(!isNull(paymentMethod.getBillingAccountAddress())){
+                        var address = paymentMethod.getBillingAccountAddress().getAccountAddressID();
+                        var newBillingAddress = this.addBillingAddressUsingAccountAddress({accountAddressID:  paymentMethod.getBillingAccountAddress().getAccountAddressID()});
+                    }else if(!isNull(paymentMethod.getBillingAddress())){
+                        var address= paymentMethod.getBillingAddress() //pass the object rather than ID
+                        var newBillingAddress = this.addBillingAddress({address:  address});
+                    }else{
+                        getHibachiScope().addActionResult("public:cart.addOrderPayment", true);
+                        return;
+                    }
+                  
+                }else{
+                    getHibachiScope().addActionResult("public:cart.addOrderPayment", true);
+                    return;
+                }
             }
         }
 
@@ -1519,6 +1541,7 @@ component  accessors="true" output="false"
             }
             getHibachiScope().addActionResult("public:cart.addOrderPayment", addOrderPayment.hasErrors());
         }
+
         return addOrderPayment;
     }
 

@@ -36,6 +36,9 @@ class EnrollmentMPController {
 		this.publicService.doAction('setUpgradeOnOrder', {upgradeType: 'marketPartner'}).then(res=>{
 			this.getStarterPacks();
 			this.getProductList();	
+			if(res.upgradeResponseFailure?.length){
+				this.observerService.notify('onNext');
+			}
 		});
 	}
 	

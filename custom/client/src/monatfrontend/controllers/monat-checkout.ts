@@ -2,10 +2,16 @@ import * as Braintree from 'braintree-web';
 declare let paypal: any;
 
 /****
-	STILL TO DO:	1. when you add an order paymetn after already having one on the order the screen looks odd
-					2. radio buttons rather than select for payment methods
-					3. show used payment method in account payment methods even if not on account
-					4. Sometimes adding an account payment method is adding without a billing address
+	STILL TO DO:	1. when you add an order payment after already having one on the order the screen looks odd
+					2. Clicking back in checckout if in the conext of enrollment should send back to enrollment
+					3. steps should appear as a continuation of enrollment if in context of enrollment
+					4. amount of steps say three 
+					6. fix radio button styling issues for acc payment method
+					7. add fe text display if user tries to place order without accepting 
+					8. On click api calls off slatwall scope so we dont need events or extra get cart calls
+					9. test paypal
+					10. add an automatic smooth scroll from shipping => billing
+					11. on key up serach for MP
 ****/
 
 enum Screen {
@@ -65,6 +71,7 @@ class MonatCheckoutController {
 		this.observerService.attach( this.closeNewAddressForm, 'addNewAccountAddressSuccess' ); 
 		this.observerService.attach(this.setCheckoutDefaults.bind(this), 'createAccountSuccess' ); 
 		this.observerService.attach(this.setCheckoutDefaults.bind(this), 'loginSuccess' ); 
+		
 		this.observerService.attach(()=>{
 			this.getCurrentCheckoutScreen(false, true);
 		}, 'addShippingAddressSuccess' ); 
@@ -72,6 +79,10 @@ class MonatCheckoutController {
 		this.observerService.attach(()=>{
 			this.getCurrentCheckoutScreen(false, true);
 		}, 'addOrderPaymentSuccess' ); 
+		
+		this.observerService.attach(()=>{
+			this.getCurrentCheckoutScreen(false, true);
+		}, 'addShippingAddressUsingAccountAddressSuccess' ); 
 
 
 		this.publicService.getAccount(true).then(res=>{
@@ -81,6 +92,9 @@ class MonatCheckoutController {
 			}
 			if(!this.account.accountID.length) return;
 			this.getCurrentCheckoutScreen(true, true);
+			if(this.publicService.enrollmentSteps) this.enrollmentSteps = this.publicService.enrollmentSteps;
+			this.totalSteps = this.hasSponsor ? 2 + this.enrollmentSteps  : 3 + this.enrollmentSteps; 
+			
 		});
 		
 		const currDate = new Date;
@@ -91,11 +105,6 @@ class MonatCheckoutController {
             this.yearOptions.push(manipulateableYear++)
         }
         while(this.yearOptions.length <= 9);
-	}
-	
-	public $postLink(){
-		if(this.publicService.enrollmentSteps) this.enrollmentSteps = this.publicService.enrollmentSteps;
-		this.totalSteps = this.hasSponsor ? 2 + this.enrollmentSteps  : 3 + this.enrollmentSteps; 	
 	}
 	
 	private getCurrentCheckoutScreen = (setDefault = false, hardRefresh = false):Screen | void => {
@@ -348,6 +357,7 @@ class MonatCheckoutController {
 	}
 	
 	public setCheckoutDefaults(){
+	
 		if(!this.publicService.cart.orderID.length || this.publicService.cart.orderRequirementsList.indexOf('fulfillment') === -1) return this.getCurrentCheckoutScreen(false, false);
 		this.publicService.doAction('setIntialShippingAndBilling').then(res=>{
 			this.cart = res.cart; 
