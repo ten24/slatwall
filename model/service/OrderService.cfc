@@ -3392,51 +3392,55 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public any function processOrder_updateOrderAmounts(required any order, struct data) {
 		writeLog(file="debug", text="Called: processOrder_updateOrderAmounts:");
 		this.logHibachi('updating order amounts called', true); 
+		
 		//only allow promos to be applied to orders that have not been closed or canceled
 		if(!listFindNoCase("ostCanceled,ostClosed", arguments.order.getOrderStatusType().getSystemCode())) {
 
-			
 			if(arguments.order.getOrderStatusType().getSystemCode() == "ostNotPlaced") {
 				//quote logic should freeze the price based on the expiration therefore short circuiting the logic
 				if(
  					!arguments.order.getQuoteFlag() 
- 					|| (
- 						arguments.order.getQuoteFlag() && arguments.order.isQuotePriceExpired()
- 					)
+ 					|| 
+ 					(arguments.order.getQuoteFlag() && arguments.order.isQuotePriceExpired() )
  				){
  					// Loop over the orderItems to see if the skuPrice Changed
 					for(var orderItem in arguments.order.getOrderItems()){
-						writeLog(file="debug", text="processOrder_updateOrderAmounts: Updating Prices for OI: #orderItem.getOrderItemID()#, SkuPrice: #orderItem.getSkuPrice()#, Price: #orderItem.getSkuPrice()#");
-
-						var skuPrice = val(orderItem.getSkuPrice());
-						var SkuPriceByCurrencyCode = val(orderItem.getSku().getPriceByCurrencyCode(orderItem.getCurrencyCode(), orderItem.getQuantity()));
-	 				
+						
+						logger.d(
+							message = "processOrder_updateOrderAmounts: Updating Prices for" 
+							orderItem = orderItem, skuPrice = orderItem.getSkuPrice(), price = orderItem.getPrice()
+						);
+						
 	 					if(
-	 						listFindNoCase("oitSale,oitDeposit",orderItem.getOrderItemType().getSystemCode()) && skuPrice != SkuPriceByCurrencyCode
+	 						!orderItem.getUserDefinedPriceFlag()
+	 						&&
+	 						listFindNoCase("oitSale,oitDeposit",orderItem.getOrderItemType().getSystemCode()) 
 	 					){
-	 						var userDefinedPrice = false;
-	 						if (!isNull(orderItem.getSku().getUserDefinedPriceFlag())){
-	 							userDefinedPrice = orderItem.getSku().getUserDefinedPriceFlag();
-	 						}
-	 						
-	 						if(!userDefinedPrice) {
-	 							orderItem.setPrice(SkuPriceByCurrencyCode);
-	 							orderItem.setSkuPrice(SkuPriceByCurrencyCode);
-	 						}
-	 						
-	 						writeLog(file="debug", text="processOrder_updateOrderAmounts: Price for OI: #orderItem.getOrderItemID()#, Updated to , SkuPrice: #orderItem.getSkuPrice()#, Price: #orderItem.getSkuPrice()#");
+	 						var skuPrice = val(orderItem.getSkuPrice());
+	 						var SkuPriceByCurrencyCode = val(orderItem.getSku().getPriceByCurrencyCode(orderItem.getCurrencyCode(), orderItem.getQuantity()));
+							
+							if(skuPrice != SkuPriceByCurrencyCode) {
+		 						orderItem.setPrice(SkuPriceByCurrencyCode);
+		 						orderItem.setSkuPrice(SkuPriceByCurrencyCode);
+		 						
+		 						logger.d(
+									message = "processOrder_updateOrderAmounts: Updated prices for" 
+									orderItem = orderItem, skuPrice = SkuPriceByCurrencyCode, price = SkuPriceByCurrencyCode
+								);
+							}
 						}
 					}
  				}
 			}
 			
-					
+// Question: if the price is user defined at the orderItem leved, do we still want to update the order-ammountswith promotion,pricegroup??
+			
 			// First Re-Calculate the 'amounts' base on price groups
 			getPriceGroupService().updateOrderAmountsWithPriceGroups( arguments.order );
 
 			// Then Re-Calculate the 'amounts' based on permotions ext.  This is done second so that the order already has priceGroup specific info added
 			getPromotionService().updateOrderAmountsWithPromotions( arguments.order );
-			
+//			
 			updateOrderItemsWithAllocatedOrderDiscountAmount(arguments.order);
 
 			// Re-Calculate tax now that the new promotions and price groups have been applied
@@ -4135,7 +4139,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				arguments.childOrderItem.getOrderFulfillment().setFulfillmentMethod( listFirst(arguments.childOrderItem.getSku().setting('skuEligibleFulfillmentMethods')) );
 			}
 			arguments.childOrderItem.setCurrencyCode( arguments.order.getCurrencyCode() );
-			if(arguments.childOrderItem.getSku().getUserDefinedPriceFlag() && structKeyExists(arguments.childOrderItemData, 'price') && isNumeric(arguments.childOrderItemData.price)) {
+			if(arguments.childOrderItem.getUserDefinedPriceFlag() && structKeyExists(arguments.childOrderItemData, 'price') && isNumeric(arguments.childOrderItemData.price)) {
 				arguments.childOrderItem.setPrice( arguments.childOrderItemData.price );
 			} else {
 				// TODO: calculate price base on adjustment type rule of bundle group
@@ -5505,7 +5509,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	private any function addNewOrderItemSetup(required any newOrderItem, required any processObject)
 	{
-		writeLog(file="debug", text="Called addNewOrderItemSetup--core");
+		loggger.m(newOrderItem);
+		
 		// Setup the Sku / Quantity / Price details
 		arguments.newOrderItem.setSku( arguments.processObject.getSku() );
 		arguments.newOrderItem.setCurrencyCode( arguments.newOrderItem.getOrder().getCurrencyCode() );
@@ -5513,27 +5518,21 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		// If the sku is allowed to have a user defined price OR the current account has permissions to edit price
 		if(
-			( 
-				!isNull(newOrderItem.getSku().getUserDefinedPriceFlag()) && 
-				newOrderItem.getSku().getUserDefinedPriceFlag()
-			)
-			  || //Admin-users can override price from the Slatwall-UI
+			arguments.newOrderItem.getSku().getUserDefinedPriceFlag()
+			|| //Admin-users can override price from the Slatwall-UI
 			(
-				getHibachiScope().getLoggedInAsAdminFlag() && 
+				arguments.processObject.getUserDefinedPriceFlag() 
+				&& 
 				getHibachiAuthenticationService().authenticateEntityPropertyCrudByAccount(
-					crudType='update', entityName='orderItem', 
+					crudType='update', entityName='OrderItem', 
 					propertyName='price', account=getHibachiScope().getAccount()
 				)
 			)
 		) {
+			logger.d("addNewOrderItemSetup--core: setting overriden price and sku-price #arguments.processObject.getPrice()#");
+			arguments.newOrderItem.setUserDefinedPriceFlag( true );
 			arguments.newOrderItem.setPrice( arguments.processObject.getPrice() );
-			// Q: should we allow the user defined price as sku-price here? 
-			writeLog(file="debug", text="addNewOrderItemSetup--core: setting overriden price and sku-price #arguments.processObject.getPrice()#");
-			// if the admin overrides the NULL-sku-price 
-			// we need to set the sku-price otherwise the promotion logis throws [null ORIGINALPRICE] exception
-			// as the getPriceByCurrencyCOde will return null
 			arguments.newOrderItem.setSkuPrice( arguments.processObject.getPrice() );
-			
 		} else {
 
 			var skuPrice = arguments.processObject.getSku().getPriceByCurrencyCode( 
@@ -5541,10 +5540,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 								currencyCode = arguments.newOrderItem.getOrder().getCurrencyCode(), 
 								priceGroups = arguments.newOrderItem.getOrder().getAccount().getPriceGroups()
 							);
-							
-			writeLog(file="debug", text="addNewOrderItemSetup--core: setting getPriceByCurrencyCode price and sku-price #skuPrice#");
-			newOrderItem.setPrice(skuPrice);
-			newOrderItem.setSkuPrice(skuPrice);
+			logger.d("addNewOrderItemSetup--core: setting getPriceByCurrencyCode price and sku-price #skuPrice#");
+			
+			arguments.newOrderItem.setPrice(skuPrice);
+			arguments.newOrderItem.setSkuPrice(skuPrice);
 		}
 		
 		return arguments.newOrderItem;

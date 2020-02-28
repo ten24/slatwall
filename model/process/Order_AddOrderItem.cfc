@@ -183,41 +183,31 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		
 		return variables.orderItemTypeSystemCode;
 	}
+	
+	public any function getAccount(){
+		return getOrder().getAccount() ?: getHibachiScope().getAccount();
+	}
 
 	public any function getPrice() {
-		if ( !isNull(getOrder().getAccount()) ){
-			var account = getOrder().getAccount();
-		} else {
-			var account = getHibachiScope().getAccount();
-		}
 		
-		if(
+		if( 
 			!structKeyExists(variables, "price") 
-			|| ( 
+			|| 
+			( 
 				!isNull(getSku()) && 
 				isNull(getOldQuantity()) && 
-				variables.price == getSku().getPriceByCurrencyCode( currencyCode=getCurrencyCode(), account=account.getAccountID() ) 
+				variables.price == getSku().getPriceByCurrencyCode( currencyCode=getCurrencyCode(), accountID=this.getAccount().getAccountID() ) 
 			)
-			|| ( 
+			|| 
+			( 
 				!isNull(getSku()) && 
 				!isNull(getOldQuantity()) && 
 				getOldQuantity() != getQuantity() && 
-				variables.price == getSku().getPriceByCurrencyCode(currencyCode=getCurrencyCode(), quantity=getOldQuantity(),accountID=account.getAccountID()) )
-		){
-			variables.price = 0;
+				variables.price == getSku().getPriceByCurrencyCode( currencyCode=getCurrencyCode(), quantity=getOldQuantity(),accountID=this.getAccount().getAccountID()) )
+			)
+		{
 			if(!isNull(getSku())) {
-				
-				var priceByCurrencyCode = getSku().getPriceByCurrencyCode( 
-													currencyCode=getCurrencyCode(), 
-													quantity=getQuantity(), 
-													accountID=account.getAccountID()
-												);
-				
-				if(!isNull(priceByCurrencyCode)) {
-					variables.price = priceByCurrencyCode;
-				} else {
-					variables.price = "N/A";
-				}
+				variables.price = getSku().getPriceByCurrencyCode( currencyCode=getCurrencyCode(), quantity=getQuantity(), accountID=this.getAccount().getAccountID() );
 			}
 		}
 		return variables.price;
@@ -620,7 +610,26 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		}
 		return "";
 	}
+	
+	public any function getUserDefinedPriceFlag() {
+		
+		//check ithere's no sku we have nothing to check against 
+		if(IsNull(this.getSku()) ) {
+			return false;
+		}
 
+		if(this.getSku().getUserDefinedPriceFlag()){
+			return true;
+		}
+		
+		//check if the price doesn't match with PriceByCurrencyCode
+		if(this.getPrice() != this.getSku().getPriceByCurrencyCode( currencyCode=getCurrencyCode(), quantity=getQuantity(), accountID=this.getAccount().getAccountID()) )){
+			return true;
+		}
+		
+		return false;
+	}
+	
 	// funciton to compare two orderItems based on certain properties.
 	public boolean function matchesOrderItem(required any orderItem){
 
@@ -633,8 +642,15 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		if(arguments.orderItem.getSku().getSkuID() != this.getSku().getSkuID()){
 			return false;
 		}
+		
 		//check if the price is the same if and only if we are using a custom price
-		if(arguments.orderItem.getPrice() != this.getPrice() && (!isNull(arguments.orderItem.getSku().getUserDefinedPriceFlag()) && arguments.orderItem.getSku().getUserDefinedPriceFlag())){
+		if( arguments.orderItem.getPrice() != this.getPrice() 
+			&& 
+			(
+				//if the either prices are user defined
+				this.getUserDefinedPriceFlag() != arguments.orderItem.getUserDefinedPriceFlag()
+			)
+		){
 			return false;
 		}
 		
