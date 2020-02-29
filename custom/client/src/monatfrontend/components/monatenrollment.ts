@@ -17,6 +17,7 @@ class MonatEnrollmentController {
 	public showFlexshipCart: boolean = false;
 	public canPlaceCartOrder:boolean = true; //set to true at start so users can progress to today's order page
 	public showCanPlaceOrderAlert:boolean = false;
+	public hasSkippedSteps = false;
 	
 	//@ngInject
 	constructor(public monatService, public observerService, public $rootScope, public publicService) {
@@ -51,6 +52,7 @@ class MonatEnrollmentController {
 			
 			//if account has a flexship send to checkout review
 			this.publicService.getCart().then(res =>{
+				
 				if(localStorage.getItem('flexshipID') && localStorage.getItem('accountID') == result.accountID){ 
 					this.goToLastStep();	
 				}else{
@@ -60,10 +62,17 @@ class MonatEnrollmentController {
 				
 				let cart = res.cart;
 				let account = result.account;
+				let reqList = 'createAccount,updateAccount';
 				
 				//if the user has an upgrade on his order and he leaves/refreshes the page 
-				if(account.accountID.length && cart.monatOrderType?.typeID.length){
+				if(account.accountID.length && cart.monatOrderType?.typeID.length && account.accountCode.length){
+					this.hasSkippedSteps = true;
+					this.steps = this.steps.filter(el => reqList.indexOf(el.stepClass) == -1);
+					this.next();
+				}else if(account.accountID.length && cart.monatOrderType?.typeID.length){
+					this.hasSkippedSteps = true;
 					this.steps = this.steps.filter(el => el.stepClass !== 'createAccount');
+					this.next();
 				}
 			});
 		});
@@ -122,7 +131,7 @@ class MonatEnrollmentController {
 	}
 
 	private navigate(index) {
-		if (index < 1 || index == this.position) {
+		if ((index < 1  && !this.hasSkippedSteps) || index == this.position) {
 			return;
 		}
 		

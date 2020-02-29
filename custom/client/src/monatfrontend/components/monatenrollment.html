@@ -30,8 +30,8 @@
 				data-ng-click="monatEnrollment.previous()" 
 				class="back d-inline-block" 
 				ng-class="{ 
-					invisible: monatEnrollment.position == 0, 
-					disabled: monatEnrollment.position == 1 
+					invisible: (monatEnrollment.position == 0 && !monatEnrollment.hasSkippedSteps), 
+					disabled: (monatEnrollment.position == 1 && !monatEnrollment.hasSkippedSteps)
 				}"
 			>
 				<span class="last" sw-rbkey="'frontend.global.back'"></span>

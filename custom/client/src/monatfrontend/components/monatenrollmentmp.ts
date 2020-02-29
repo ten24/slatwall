@@ -36,10 +36,6 @@ class EnrollmentMPController {
 		this.publicService.doAction('setUpgradeOnOrder', {upgradeType: 'marketPartner'}).then(res=>{
 			this.getStarterPacks();
 			this.getProductList();	
-			if(res.upgradeResponseFailure?.length){
-				//If there is an upgradeResponseFailure it means the cart on session is already an upgrade
-				this.observerService.notify('onNext');
-			}
 		});
 	}
 	
