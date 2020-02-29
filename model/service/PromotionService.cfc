@@ -242,7 +242,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 								} else {
 									// Calculate based on skuPrice because the price on this item is a priceGroup price and we need to adjust the discount by the difference
-									var originalDiscountAmount = getDiscountAmount(arguments.promotionReward, orderItem.getSkuPrice(), discountQuantity, orderItem.getSku(), arguments.order.getAccount());
+									var originalDiscountAmount = getDiscountAmount(arguments.promotionReward, orderItem.getSkuPrice(), discountQuantity, orderItem.getCurrencyCode(), orderItem.getSku(), arguments.order.getAccount());
 	
 									// Take the original discount they were going to get without a priceGroup and subtract the difference of the discount that they are already receiving
 									var discountAmount = val(getService('HibachiUtilityService').precisionCalculate(originalDiscountAmount - (orderItem.getExtendedSkuPrice() - orderItem.getExtendedPrice())));

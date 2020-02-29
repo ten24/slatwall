@@ -38,7 +38,7 @@ class MonatCheckoutController {
 	public ownerAccountID:string;
 	public cart:any; 
 	public setDefaultShipping = false;
-	public totalSteps:number;
+	public totalSteps = 0;
 	public currentStep:number;
 	public enrollmentSteps = 0;
 	public currentYear:number;
@@ -86,15 +86,17 @@ class MonatCheckoutController {
 
 
 		this.publicService.getAccount(true).then(res=>{
+			this.enrollmentSteps = <number>this.publicService.steps ? <number>this.publicService.steps -1 : 0; 
 			this.account = res.account;
 			if(this.account?.ownerAccount?.accountNumber?.length && this.account?.ownerAccount?.accountNumber !== this.account?.accountNumber){
 				this.hasSponsor = true;
+			}else{
+				this.totalSteps = 1;
 			}
+			
+			this.totalSteps = this.hasSponsor ? 2 + this.enrollmentSteps : 3 + this.enrollmentSteps; 
 			if(!this.account.accountID.length) return;
 			this.getCurrentCheckoutScreen(true, true);
-			if(this.publicService.enrollmentSteps) this.enrollmentSteps = this.publicService.enrollmentSteps;
-			this.totalSteps = this.hasSponsor ? 2 + this.enrollmentSteps  : 3 + this.enrollmentSteps; 
-			
 		});
 		
 		const currDate = new Date;
