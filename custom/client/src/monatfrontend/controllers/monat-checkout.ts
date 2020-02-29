@@ -10,7 +10,6 @@ declare let paypal: any;
 					11. on key up serach for MP
 					14. user should not have to create another account if they leave enrollment and come back
 					15. birthday directive should close when you click off of the screen
-					16. shipping address should be shown to user even if not an account address
 					17. billing same as shipping shouldnt be an api call rather a 
 ****/
 
@@ -47,6 +46,7 @@ class MonatCheckoutController {
 	public tempAccountPaymentMethod:Object;
 	public currentPaymentMethodID = '';
 	public activePaymentMethod = 'creditCard'; //refactor to use enum
+	public currentShippingAddress;
 	
 	// @ngInject
 	constructor(
@@ -127,6 +127,11 @@ class MonatCheckoutController {
 			if(this.cart.orderPayments?.length && this.cart.orderPayments[this.cart.orderPayments.length-1].accountPaymentMethod){
 				this.currentPaymentMethodID = this.cart.orderPayments[this.cart.orderPayments.length-1].accountPaymentMethod?.accountPaymentMethodID;
 			}
+			
+			if(this.cart.orderFulfillments?.length && this.cart.orderFulfillments[0].shippingAddress.addressID?.length){
+				this.currentShippingAddress = this.cart.orderFulfillments[0].shippingAddress;
+			}
+			
 			
 			this.publicService.cart.orderPayments[this.publicService.cart.orderPayments.length-1].accountPaymentMethod.accountPaymentMethodID 
 			//sets default order information
