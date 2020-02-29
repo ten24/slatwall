@@ -3,14 +3,13 @@ declare let paypal: any;
 
 /****
 	STILL TO DO:	
-					2. Clicking back in checkout if in the conext of enrollment should send back to enrollment
 					6. fix radio button styling issues for acc payment method
 					8. On click api calls off slatwall scope so we dont need events or extra get cart calls
 					10. add an automatic smooth scroll from shipping => billing
-					11. on key up serach for MP
 					14. user should not have to create another account if they leave enrollment and come back
 					15. birthday directive should close when you click off of the screen
 					17. billing same as shipping shouldnt be an api call rather a 
+					18. make sure paypal payment methods are using inputs
 ****/
 
 enum Screen {
@@ -132,8 +131,6 @@ class MonatCheckoutController {
 				this.currentShippingAddress = this.cart.orderFulfillments[0].shippingAddress;
 			}
 			
-			
-			this.publicService.cart.orderPayments[this.publicService.cart.orderPayments.length-1].accountPaymentMethod.accountPaymentMethodID 
 			//sets default order information
 			if(setDefault){
 				this.setCheckoutDefaults();

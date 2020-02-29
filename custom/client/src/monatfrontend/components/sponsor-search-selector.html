@@ -22,6 +22,7 @@
 				<input 
 					class="form-control slctfrm" 
 					id="market-partner-name-field" 
+					ng-keyup="$event.keyCode == 13 && sponsorSearchSelector.getSearchResults()"
 					type="text" 
 					ng-model="sponsorSearchSelector.form.text"
 				/>
