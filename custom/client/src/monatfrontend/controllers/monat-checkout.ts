@@ -12,7 +12,7 @@ declare let paypal: any;
 					14. user should not have to create another account if they leave enrollment and come back
 					15. birthday directive should close when you click off of the screen
 					16. shipping address should be shown to user even if not an account address
-					17. billing same as shipping shouldnt be an api call
+					17. billing same as shipping shouldnt be an api call rather a 
 ****/
 
 enum Screen {
@@ -47,6 +47,8 @@ class MonatCheckoutController {
 	public yearOptions:Array<number> = [];
 	public tempAccountPaymentMethod:Object;
 	public currentPaymentMethodID = '';
+	public activePaymentMethod = 'creditCard'; //refactor to use enum
+	
 	// @ngInject
 	constructor(
 		public publicService,
@@ -364,7 +366,7 @@ class MonatCheckoutController {
 		if(!addressID.length) return;
 		
 		this.setBillingAddress(false, addressID).then(res=>{
-			this.publicService.cart.orderPayments[this.publicService.cart.orderPayments.length-1].accountPaymentMethod.accountPaymentMethodID = '';
+			this.currentPaymentMethodID = '';
 		});
 	}
 	
