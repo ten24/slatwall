@@ -3,12 +3,9 @@ declare let paypal: any;
 
 /****
 	STILL TO DO:	
-					2. Clicking back in checckout if in the conext of enrollment should send back to enrollment
-					3. steps should appear as a continuation of enrollment if in context of enrollment
-					4. amount of steps say three 
+					2. Clicking back in checkout if in the conext of enrollment should send back to enrollment
 					6. fix radio button styling issues for acc payment method
 					8. On click api calls off slatwall scope so we dont need events or extra get cart calls
-					9. test paypal
 					10. add an automatic smooth scroll from shipping => billing
 					11. on key up serach for MP
 					12, adding payment address causes new payment method to close because it checks account payment id .length, which is returned in full with new cart
@@ -70,7 +67,6 @@ class MonatCheckoutController {
 		}, 'ownerAccountSelected');	
 		
 		this.observerService.attach(()=>{
-			console.log('running')
 			this.publicService.activePaymentMethod = 'creditCard';
 		}, 'addOrderPaymentSuccess');	
 		
@@ -358,6 +354,14 @@ class MonatCheckoutController {
 		}
 
 		return this.publicService.doAction('addBillingAddress', {addressID: addressID});
+	}
+	
+	public handleNewBillingAddress(addressID=''):void{ 
+		if(!addressID.length) return;
+		
+		this.setBillingAddress(false, addressID).then(res=>{
+			this.publicService.cart.orderPayments[this.publicService.cart.orderPayments.length-1].accountPaymentMethod.accountPaymentMethodID = '';
+		});
 	}
 	
 	public setAccountPrimaryPaymentMethodAsCartPaymentMethod():Promise<any>{
