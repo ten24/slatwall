@@ -7,11 +7,11 @@ declare let paypal: any;
 					3. steps should appear as a continuation of enrollment if in context of enrollment
 					4. amount of steps say three 
 					6. fix radio button styling issues for acc payment method
-					7. add fe text display if user tries to place order without accepting 
 					8. On click api calls off slatwall scope so we dont need events or extra get cart calls
 					9. test paypal
 					10. add an automatic smooth scroll from shipping => billing
 					11. on key up serach for MP
+					12, adding payment address causes new payment method to close because it checks account payment id .length, which is returned in full with new cart
 ****/
 
 enum Screen {
