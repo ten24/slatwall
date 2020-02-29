@@ -39,7 +39,6 @@ class MonatEnrollmentController {
     	this.observerService.attach(this.next.bind(this),"onNext");
     	this.observerService.attach(this.previous.bind(this),"onPrevious");
     	this.observerService.attach(this.next.bind(this),"addGovernmentIdentificationSuccess");
-    	this.observerService.attach(this.getCart.bind(this),"addOrderItemSuccess");
     	this.observerService.attach(this.getCart.bind(this),"removeOrderItemSuccess");
     	this.observerService.attach(this.getCart.bind(this),"updateOrderItemSuccess");
     	
@@ -51,15 +50,23 @@ class MonatEnrollmentController {
 		this.publicService.getAccount(true).then(result=>{
 			
 			//if account has a flexship send to checkout review
-			if(localStorage.getItem('flexshipID') && localStorage.getItem('accountID') == result.accountID){ 
-				this.publicService.getCart().then(result=>{
-					this.goToLastStep();
-				})
-			}else{
-				//if its a new account clear data in local storage and ensure they are logged out
-				localStorage.clear()
-			}
-		})
+			this.publicService.getCart().then(res =>{
+				if(localStorage.getItem('flexshipID') && localStorage.getItem('accountID') == result.accountID){ 
+					this.goToLastStep();	
+				}else{
+					//if its a new account clear data in local storage and ensure they are logged out
+					localStorage.clear();
+				}
+				
+				let cart = res.cart;
+				let account = result.account;
+				
+				//if the user has an upgrade on his order and he leaves/refreshes the page 
+				if(account.accountID.length && cart.monatOrderType?.typeID.length){
+					this.steps = this.steps.filter(el => el.stepClass !== 'createAccount');
+				}
+			});
+		});
 		
 	}
 
