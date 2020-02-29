@@ -2,7 +2,7 @@ import * as Braintree from 'braintree-web';
 declare let paypal: any;
 
 /****
-	STILL TO DO:	1. when you add an order payment after already having one on the order the screen looks odd
+	STILL TO DO:	
 					2. Clicking back in checckout if in the conext of enrollment should send back to enrollment
 					3. steps should appear as a continuation of enrollment if in context of enrollment
 					4. amount of steps say three 
@@ -12,6 +12,11 @@ declare let paypal: any;
 					10. add an automatic smooth scroll from shipping => billing
 					11. on key up serach for MP
 					12, adding payment address causes new payment method to close because it checks account payment id .length, which is returned in full with new cart
+					13. disable viewing product packs in minicart
+					14. user should not have to create another account if they leave enrollment and come back
+					15. birthday directive should close when you click off of the screen
+					16. shipping address should be shown to user even if not an account address
+					17. billing same as shipping shouldnt be an api call
 ****/
 
 enum Screen {
@@ -65,6 +70,11 @@ class MonatCheckoutController {
 		}, 'ownerAccountSelected');	
 		
 		this.observerService.attach(()=>{
+			console.log('running')
+			this.publicService.activePaymentMethod = 'creditCard';
+		}, 'addOrderPaymentSuccess');	
+		
+		this.observerService.attach(()=>{
 		    if (this.publicService.toggleForm) this.publicService.toggleForm = false;
 		}, 'shippingAddressSelected');	
 		
@@ -86,6 +96,7 @@ class MonatCheckoutController {
 
 
 		this.publicService.getAccount(true).then(res=>{
+		
 			this.enrollmentSteps = <number>this.publicService.steps ? <number>this.publicService.steps -1 : 0; 
 			this.account = res.account;
 			if(this.account?.ownerAccount?.accountNumber?.length && this.account?.ownerAccount?.accountNumber !== this.account?.accountNumber){
@@ -94,7 +105,7 @@ class MonatCheckoutController {
 				this.totalSteps = 1;
 			}
 			
-			this.totalSteps = this.hasSponsor ? 2 + this.enrollmentSteps : 3 + this.enrollmentSteps; 
+			this.totalSteps += this.hasSponsor ? 2 + this.enrollmentSteps : 3 + this.enrollmentSteps; 
 			if(!this.account.accountID.length) return;
 			this.getCurrentCheckoutScreen(true, true);
 		});
@@ -104,7 +115,7 @@ class MonatCheckoutController {
         let manipulateableYear = this.currentYear;
         
         do {
-            this.yearOptions.push(manipulateableYear++)
+            this.yearOptions.push(manipulateableYear++);
         }
         while(this.yearOptions.length <= 9);
 	}

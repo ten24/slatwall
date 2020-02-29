@@ -51,7 +51,8 @@
 			<span sw-rbkey="'frontend.global.step'"></span> 
 			{{monatEnrollment.position + 1}} 
 			<span sw-rbkey="'frontend.global.of'"></span> 
-			{{monatEnrollment.steps.length}} 
+			<!--- The new checkout is three steps so we add three --->
+			{{monatEnrollment.steps.length  }} 
 		</span>
 		
 		<div ng-if="monatEnrollment.canPlaceCartOrder">
