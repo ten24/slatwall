@@ -8,7 +8,6 @@ declare let paypal: any;
 					8. On click api calls off slatwall scope so we dont need events or extra get cart calls
 					10. add an automatic smooth scroll from shipping => billing
 					11. on key up serach for MP
-					12, adding payment address causes new payment method to close because it checks account payment id .length, which is returned in full with new cart
 					13. disable viewing product packs in minicart
 					14. user should not have to create another account if they leave enrollment and come back
 					15. birthday directive should close when you click off of the screen
@@ -47,7 +46,7 @@ class MonatCheckoutController {
 	public monthOptions:Array<number> = [1,2,3,4,5,6,7,8,9,10,11,12];
 	public yearOptions:Array<number> = [];
 	public tempAccountPaymentMethod:Object;
-	
+	public currentPaymentMethodID = '';
 	// @ngInject
 	constructor(
 		public publicService,
@@ -124,6 +123,11 @@ class MonatCheckoutController {
 			let screen = Screen.SHIPPING;
 			this.shippingFulfillment = this.cart.orderFulfillments.filter(el => el.fulfillmentMethod.fulfillmentMethodType == 'shipping' );
 			
+			if(this.cart.orderPayments?.length && this.cart.orderPayments[this.cart.orderPayments.length-1].accountPaymentMethod){
+				this.currentPaymentMethodID = this.cart.orderPayments[this.cart.orderPayments.length-1].accountPaymentMethod?.accountPaymentMethodID;
+			}
+			
+			this.publicService.cart.orderPayments[this.publicService.cart.orderPayments.length-1].accountPaymentMethod.accountPaymentMethodID 
 			//sets default order information
 			if(setDefault){
 				this.setCheckoutDefaults();
