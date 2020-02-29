@@ -17,6 +17,7 @@ class MonatEnrollmentController {
 	public showFlexshipCart: boolean = false;
 	public canPlaceCartOrder:boolean = true; //set to true at start so users can progress to today's order page
 	public showCanPlaceOrderAlert:boolean = false;
+
 	
 	//@ngInject
 	constructor(public monatService, public observerService, public $rootScope, public publicService) {
@@ -49,6 +50,7 @@ class MonatEnrollmentController {
 
 	public $onInit = () => {
 		this.publicService.getAccount(true).then(result=>{
+			
 			//if account has a flexship send to checkout review
 			if(localStorage.getItem('flexshipID') && localStorage.getItem('accountID') == result.accountID){ 
 				this.publicService.getCart().then(result=>{
@@ -80,6 +82,13 @@ class MonatEnrollmentController {
 	}
 
 	public addStep = (step) => {
+		
+		if(this.publicService.steps){
+			this.publicService.steps++
+		}else{
+			this.publicService.steps = 1;
+		}
+		
 		if (this.steps.length == 0) {
 			step.selected = true;
 		}
@@ -176,6 +185,7 @@ class MonatEnrollmentController {
 		
 		return formattedCart;
 	}
+	
 }
 
 class MonatEnrollment {
@@ -200,5 +210,6 @@ class MonatEnrollment {
 		this.templateUrl = monatFrontendBasePath + '/monatfrontend/components/monatenrollment.html';
 	}
 }
+
 
 export { MonatEnrollment };
