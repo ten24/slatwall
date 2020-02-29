@@ -8,7 +8,6 @@ declare let paypal: any;
 					8. On click api calls off slatwall scope so we dont need events or extra get cart calls
 					10. add an automatic smooth scroll from shipping => billing
 					11. on key up serach for MP
-					13. disable viewing product packs in minicart
 					14. user should not have to create another account if they leave enrollment and come back
 					15. birthday directive should close when you click off of the screen
 					16. shipping address should be shown to user even if not an account address
