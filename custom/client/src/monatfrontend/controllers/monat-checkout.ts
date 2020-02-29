@@ -10,6 +10,8 @@ declare let paypal: any;
 					15. birthday directive should close when you click off of the screen
 					17. billing same as shipping shouldnt be an api call rather a 
 					18. make sure paypal payment methods are using inputs
+					19. clicking on mini cart should launch new mini cart
+					20. filter product pack price from mini cart
 ****/
 
 enum Screen {
@@ -100,7 +102,7 @@ class MonatCheckoutController {
 				this.totalSteps = 1;
 			}
 			
-			this.totalSteps += this.hasSponsor ? 2 + this.enrollmentSteps : 3 + this.enrollmentSteps; 
+			this.totalSteps +=  2 + this.enrollmentSteps; 
 			if(!this.account.accountID.length) return;
 			this.getCurrentCheckoutScreen(true, true);
 		});
