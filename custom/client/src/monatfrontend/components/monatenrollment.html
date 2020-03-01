@@ -90,11 +90,6 @@
 		<span ng-if="monatEnrollment.position + 1 == monatEnrollment.steps.length"></span>
 	</div>
 	
-	<!--- Mini cart ---> 	
-	<div ng-if="monatEnrollment.cart.totalItemQuantity > 0 && monatEnrollment.showMiniCart" class="w-100">
-	    <monat-mini-cart type="enrollment" custom-style="monatEnrollment.style" cart="monatEnrollment.cart"></monat-mini-cart>		
-	</div>
-	
 	<!--- Flexship cart ---> 	
 	<div ng-if="monatEnrollment.showFlexshipCart" class="w-100">
 		<monat-flexship-cart-container context="enrollment"></monat-flexship-cart-container>	
