@@ -10,7 +10,7 @@ declare let paypal: any;
 					17. billing same as shipping shouldnt be an api call rather a 
 					18. make sure paypal payment methods are using inputs
 					20. filter product pack price from mini cart
-					21. user can go back past 0
+					21. mini cart should consider current site
 ****/
 
 enum Screen {
