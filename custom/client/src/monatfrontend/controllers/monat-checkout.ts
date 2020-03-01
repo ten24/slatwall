@@ -6,7 +6,6 @@ declare let paypal: any;
 					6. fix radio button styling issues for acc payment method
 					8. On click api calls off slatwall scope so we dont need events or extra get cart calls
 					10. add an automatic smooth scroll from shipping => billing
-					14. user should not have to create another account if they leave enrollment and come back
 					15. birthday directive should close when you click off of the screen
 					17. billing same as shipping shouldnt be an api call rather a 
 					18. make sure paypal payment methods are using inputs
