@@ -11,6 +11,7 @@ declare let paypal: any;
 					18. make sure paypal payment methods are using inputs
 					19. clicking on mini cart should launch new mini cart
 					20. filter product pack price from mini cart
+					21. user can go back past 0
 ****/
 
 enum Screen {
@@ -160,6 +161,7 @@ class MonatCheckoutController {
 	}
 	
 	public getCurrentStepNumber():void{
+		
 		this.currentStep = (this.screen == Screen.ACCOUNT || this.screen == Screen.SHIPPING || this.screen == Screen.PAYMENT)  //billing /shipping is step one
 			? 1 + this.enrollmentSteps
 			: this.screen == Screen.SPONSOR //if they need to select a sponsor, step 2

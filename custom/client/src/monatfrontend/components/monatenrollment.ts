@@ -54,7 +54,7 @@ class MonatEnrollmentController {
 			this.publicService.getCart().then(res =>{
 				
 				if(localStorage.getItem('flexshipID') && localStorage.getItem('accountID') == result.accountID){ 
-					this.goToLastStep();	
+						
 				}else{
 					//if its a new account clear data in local storage and ensure they are logged out
 					localStorage.clear();
@@ -64,11 +64,19 @@ class MonatEnrollmentController {
 				let account = result.account;
 				let reqList = 'createAccount,updateAccount';
 				
-				//if the user has an upgrade on his order and he leaves/refreshes the page 
-				if(account.accountID.length && cart.monatOrderType?.typeID.length && account.accountCode.length){
+				//logic for if the user has an upgrade on his order and he leaves/refreshes the page 
+				
+				//if they have an upgraded order and order payments, send to checkout remove account steps
+				if(cart.orderPayments.length && cart.monatOrderType?.typeID.length){
+					this.hasSkippedSteps = true;
+					this.steps = this.steps.filter(el => reqList.indexOf(el.stepClass) == -1);
+					this.goToLastStep();
+				//if they have account with a username and upgraded order type, remove account steps and send to shop page
+				}else if(account.accountID.length && cart.monatOrderType?.typeID.length && account.accountCode.length){
 					this.hasSkippedSteps = true;
 					this.steps = this.steps.filter(el => reqList.indexOf(el.stepClass) == -1);
 					this.next();
+				//if they have an account and an upgraded order remove create account
 				}else if(account.accountID.length && cart.monatOrderType?.typeID.length){
 					this.hasSkippedSteps = true;
 					this.steps = this.steps.filter(el => el.stepClass !== 'createAccount');
@@ -131,12 +139,9 @@ class MonatEnrollmentController {
 	}
 
 	private navigate(index) {
-		if ((index < 1  && !this.hasSkippedSteps) || index == this.position) {
-			return;
-		}
-		
+	
 		//If on next returns false, prevent it from navigating
-		if (index > this.position && !this.steps[this.position].onNext()) {
+		if ((index > this.position && !this.steps[this.position].onNext()) || index < 0) {
 			return;
 		}
 		if (index >= this.steps.length) {
