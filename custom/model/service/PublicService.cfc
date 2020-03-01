@@ -1069,7 +1069,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     
     public any function getBaseProductCollectionList(required any data){
         var account = getHibachiScope().getAccount();
-        var accountType = account.getAccountType();
+        var accountType = account.getAccountType()?: 'retail';
         var holdingPriceGroups = account.getPriceGroups();
         var site = getService('SiteService').getSiteByCmsSiteID(arguments.data.cmsSiteID);
         var currencyCode = site.setting('skuCurrency');
@@ -1087,6 +1087,13 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         if(!isNull(order.getPriceGroup())){ //order price group
             priceGroupCode = order.getPriceGroup().getPriceGroupCode();
+            if(priceGroupCode == 1){
+                accountType == 'marketPartner'
+            }else if(priceGroupCode == 3){
+                accountType == 'VIP'
+            }else{
+                accountType == 'retail'
+            }
         }else if(!isNull(arguments.data.priceGroupCode) && len(arguments.data.priceGroupCode)){ //argument price group
             priceGroupCode = arguments.data.priceGroupCode;
         }else if(!isNull(holdingPriceGroups) && arrayLen(holdingPriceGroups)){ //account price group

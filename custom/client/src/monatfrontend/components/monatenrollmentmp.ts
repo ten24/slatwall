@@ -22,7 +22,7 @@ class EnrollmentMPController {
 	public monthOptions: Array<number|string> = [];
 	public currentDate: any;
 	public productRecordsCount:any;
-	public paginationMethod = 'getStarterPackBundleStruct';
+	public paginationMethod = 'getproductsByCategoryOrContentID';
 	public paginationObject = {};
 	
 	// @ngInject
