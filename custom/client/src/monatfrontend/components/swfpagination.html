@@ -25,7 +25,7 @@
 		</li>
 		
         <!--- Ellipsis to get next group of pages if total pages is greater than 10 --->
-        <li ng-show="paginationController.displayPages.length >= paginationController.elipsesNum && paginationController.hasNextPageSet" ng-click="paginationController.getNextPage(1, false, true)" class="page-item">
+        <li ng-show="paginationController.displayPages.length > paginationController.elipsesNum && paginationController.hasNextPageSet" ng-click="paginationController.getNextPage(1, false, true)" class="page-item">
             <a class="page-link" href="##" >...</a>
         </li>
         

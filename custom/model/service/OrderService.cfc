@@ -441,6 +441,7 @@ component extends="Slatwall.model.service.OrderService" {
 					arguments.order.setOrderStatusType(type); 
 					orderStatusHistory.setOrderStatusHistoryType(type);
 				}	
+
 				
 			}else if (arguments.systemCode == 'ostProcessing') {
 			
@@ -449,6 +450,7 @@ component extends="Slatwall.model.service.OrderService" {
                 orderStatusHistory.setOrderStatusHistoryType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="2"));
 					
 			}else if (arguments.systemCode == 'ostPaid') {
+
             	//If its paid and its shipped, set it to shipped.
             	if (arguments.order.getPaymentAmountDue() <= 0 && arguments.order.getQuantityUndelivered() == 0){
                 	arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="5"));
@@ -1134,7 +1136,7 @@ component extends="Slatwall.model.service.OrderService" {
 			}
 
 			// Save the new order items don't update order amounts we'll do it at the end of this process
-			newOrderItem = this.saveOrderItem( orderItem=newOrderItem, updateOrderAmounts=false );
+			newOrderItem = this.saveOrderItem( orderItem=newOrderItem, updateOrderAmounts=false , updateCalculatedProperties=true);
 
 			if(newOrderItem.hasErrors()) {
 				//String replace the max order qty to give user feedback with the minimum of 0
