@@ -48,7 +48,7 @@ class MonatEnrollmentController {
 	}
 
 	public $onInit = () => {
-		this.publicService.getAccount(true).then(result=>{
+		this.publicService.getAccount().then(result=>{
 			
 			//if account has a flexship send to checkout review
 			this.publicService.getCart().then(res =>{

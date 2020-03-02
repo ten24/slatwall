@@ -24,6 +24,8 @@ class EnrollmentMPController {
 	public productRecordsCount:any;
 	public paginationMethod = 'getproductsByCategoryOrContentID';
 	public paginationObject = {};
+	public isInitialized = false;
+	
 	
 	// @ngInject
 	constructor(public publicService, public observerService, public monatService, private rbkeyService) {}
@@ -34,6 +36,7 @@ class EnrollmentMPController {
 		this.observerService.attach(this.showAddToCartMessage, 'addOrderItemSuccess'); 
 		$('.site-tooltip').tooltip();
 		this.publicService.doAction('setUpgradeOnOrder', {upgradeType: 'marketPartner'}).then(res=>{
+			this.isInitialized = true;
 			this.getStarterPacks();
 			this.getProductList();	
 		});
