@@ -81,9 +81,9 @@ component displayname="Session" entityname="SlatwallSession" table="SwSession" p
 	 */
 	//CUSTOM PROPERTIES BEGIN
 property name="currentFlexship" type="any" cfc="OrderTemplate" fieldtype="many-to-one" fkcolumn="currentFlexshipID"; 
-    property name="countryCode" ormtype="string";
-    
-   //CUSTOM PROPERTIES END
+	property name="countryCode" ormtype="string";
+	
+//CUSTOM PROPERTIES END
 	public any function getLoggedInFlag(){
 		//If this is a new session, then the user is not logged in.
 		if (getNewFlag() && !isNull(getSessionCookieExtendedPSID())){
@@ -220,14 +220,14 @@ property name="currentFlexship" type="any" cfc="OrderTemplate" fieldtype="many-t
 	// ===================  END:  ORM Event Hooks  =========================
 	//CUSTOM FUNCTIONS BEGIN
 public any function getCountryCode(){
-        if(structKeyExists(variables, 'countryCode')){
-            return variables.countryCode;
-        }
-        
-        var currentIPAddress = listLast(getRemoteAddress());
-        if(len(currentIPAddress)){
-        	var ips_parts = ListToArray(currentIPAddress, ".");
-			var ipNumber = ( ( 16777216 * ips_parts[1] ) + ( 65536 * ips_parts[2] ) + ( 256 * ips_parts[3] ) + ips_parts[4] );
+		if(structKeyExists(variables, 'countryCode')){
+			return variables.countryCode;
+		}
+		
+		var currentIPAddress = listLast(getRemoteAddress());
+		if(len(currentIPAddress)){
+			var ips_parts = ListToArray(currentIPAddress, ".");
+			var ipNumber =   16777216 * ips_parts[1] + 65536 * ips_parts[2] + 256 * ips_parts[3] + ips_parts[4];
 			
 			var geoIpQuery = new query();
 			geoIpQuery.setSQL('SELECT country_code FROM ip2location  WHERE ip_from <= :ip_number AND ip_to >= :ip_number');
@@ -237,9 +237,8 @@ public any function getCountryCode(){
 				variables.countryCode = queryResult.country_code;
 				return variables.countryCode
 			}
-    	}
-        return 'UNK';
-    }
-
-//CUSTOM FUNCTIONS END
+		}
+		return 'UNK';
+	}
+//CUSTOM FUNCTIONS END
 }
