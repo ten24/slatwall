@@ -133,10 +133,10 @@ public any function getSkuProductURL(){
 			var retailPriceGroup = priceGroupService.getPriceGroupByPriceGroupCode(2);
 			var mpPriceGroup = priceGroupService.getPriceGroupByPriceGroupCode(1);
 			var sku = this.getSku();
-			var adjustedAccountPrice = sku.getPriceByCurrencyCode(currencyCode);
-			var adjustedVipPrice = sku.getPriceByCurrencyCode(currencyCode,1,[vipPriceGroup]);
-			var adjustedRetailPrice = sku.getPriceByCurrencyCode(currencyCode,1,[retailPriceGroup]);
-			var adjustedMPPrice = sku.getPriceByCurrencyCode(currencyCode,1,[MPPriceGroup]);
+			var adjustedAccountPrice = sku.getPriceByCurrencyCode(currencyCode) ?: 0;
+			var adjustedVipPrice = sku.getPriceByCurrencyCode(currencyCode,1,[vipPriceGroup]) ?: 0;
+			var adjustedRetailPrice = sku.getPriceByCurrencyCode(currencyCode,1,[retailPriceGroup]) ?: 0;
+			var adjustedMPPrice = sku.getPriceByCurrencyCode(currencyCode,1,[MPPriceGroup]) ?: 0;
 			var mpPersonalVolume = sku.getPersonalVolumeByCurrencyCode(currencyCode)?:0;
 			
 			// var formattedAccountPricing = hibachiUtilityService.formatValue_currency(adjustedAccountPrice, {currencyCode:currencyCode});

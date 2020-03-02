@@ -489,19 +489,13 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
                 createDeliveryItems( orderDelivery );
                 logHibachi("Created a delivery for orderNumber: #shipment['OrderNumber']#",true);
                 
-                // Close the order if its ready.
-                var orderOnDelivery = orderDelivery.getOrder();
-				orderOnDelivery.setOrderStatusType(CLOSEDSTATUS);
-				
-				ormStatelessSession.update("SlatwallOrder", orderOnDelivery ); //update because it already exists.
-                logHibachi("Closed the order for orderNumber: #shipment['OrderNumber']#",true);
-                
+                // Close the order.
                 //now fire the event for this delivery.
                 var eventData = {entity: orderDelivery};
                 getHibachiScope().getService("hibachiEventService").announceEvent(eventName="afterOrderDeliveryCreateSuccess", eventData=eventData);
                 
             }else{
-                logHibachi("createDelivery: Can't create the delivery - already exists!", true);
+                logHibachi("createDelivery: Can't create the delivery - already exists or data not present.", true);
             }
         };
 
@@ -554,21 +548,22 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 	    		
 	    		tx.commit();
 	    		ormGetSession().clear();
-			}catch(shipmentError){
+			}catch(any shipmentError){
 
 				ormGetSession().clear();
 				
-				logHibachi("Error: importing shipment. ",true);
+				logHibachi("Errors: importing shipment. #shipmentError.message#",true);
 			}
 			
 			// Now process all the orderItem that need calculated property updates for this page.
     		try{
         		if (len(modifiedEntityIDs)){
         		    logHibachi("Adding orderitems to queue.", true);
-        		    queryExecute("INSERT into SwEntityQueue (entityQueueID, baseObject, baseID, processMethod, entityQueueData, createdDateTime, tryCount) select orderItemID as entityQueueID, 'OrderItem' as baseObject, orderItemID as baseID, 'processOrderItem_updateCalculatedProperties' as processMethod, '{}', now() as createdDateTime, 0 as tryCount from SwOrderItem where orderID in ?", 
+        		    queryExecute("INSERT into SwEntityQueue (entityQueueID, baseObject, baseID, processMethod, entityQueueData, createdDateTime, tryCount) select orderItemID as entityQueueID, 'OrderItem' as baseObject, orderItemID as baseID, 'processOrderItem_updateCalculatedProperties' as processMethod, '{}', now() as createdDateTime, 0 as tryCount from SwOrderItem where orderID in (?)", 
                       [{ value="#modifiedEntityIDs#", cfsqltype="cf_sql_varchar", list="true"}]);
         		}
     		}catch(any entityQueueError){
+    		    
     		    logHibachi("Error while adding orderitems to the queue.[#entityQueueError.message#]", true);
     		}
 			
@@ -577,6 +572,15 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
         }
 
 		ormStatelessSession.close();
+		
+		//now set al the orders to closed.
+		for (var orderID in modifiedEntityIDs){
+		    var order = getService("OrderService").getOrderByOrderID(orderID);
+		    order.setOrderStatusType(CLOSEDSTATUS);
+		    getService("ORderService").saveOrder(order);
+		    ormFlush();
+		}
+		
 		writeDump("End: #pageNumber# - #pageSize#");
         // Sets the default view 
 
@@ -1104,9 +1108,11 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 		param name="arguments.rc.days" default=0;
 		param name="arguments.rc.dryRun" default="false";
 
+
 		getService("HibachiTagService").cfsetting(requesttimeout="60000");
 
 		var extraBody = {};
+		
 
 		if(arguments.rc.days > 0){
 			extraBody = {
@@ -1128,8 +1134,8 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 			'GBR' : 'GBP',
 			'USA' : 'USD',
 			'IRL' : 'EUR',
-			'POL' : 'CAD',
-			'CAN' : 'PLN',
+			'POL' : 'PLN',
+			'CAN' : 'CAD',
 		};
 
 		var siteProductCodes = {
@@ -1249,36 +1255,38 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 				}
 			}
 		}
-writedump(skuQuery); abort;
+
 		if(skuQuery.recordCount){
 			var importSkuConfig = FileRead('#basePath#../../config/import/skus.json');
-			getService("HibachiDataService").loadDataFromQuery(skuQuery, importSkuConfig, arguments.dryRun);
+			getService("HibachiDataService").loadDataFromQuery(skuQuery, importSkuConfig, arguments.rc.dryRun);
 		}
 
 		if(skuPriceQuery.recordCount){
 			var importSkuPriceConfig = FileRead('#basePath#../../config/import/skuprices.json');
-			getService("HibachiDataService").loadDataFromQuery(skuPriceQuery, importSkuPriceConfig, arguments.dryRun);
+			getService("HibachiDataService").loadDataFromQuery(skuPriceQuery, importSkuPriceConfig, arguments.rc.dryRun);
 		}
 
 		if(skuBundleQuery.recordCount){
 			var importSkuBundleConfig = FileRead('#basePath#../../config/import/bundles.json');
-			getService("HibachiDataService").loadDataFromQuery(skuBundleQuery, importSkuBundleConfig, arguments.dryRun);
+			getService("HibachiDataService").loadDataFromQuery(skuBundleQuery, importSkuBundleConfig, arguments.rc.dryRun);
 
 			var importSkuBundle2Config = FileRead('#basePath#../../config/import/bundles2.json');
-			getService("HibachiDataService").loadDataFromQuery(skuBundleQuery, importSkuBundle2Config, arguments.dryRun);
+			getService("HibachiDataService").loadDataFromQuery(skuBundleQuery, importSkuBundle2Config, arguments.rc.dryRun);
 		}
 
 		if(stockQuery.recordCount){
 			var importStockConfig = FileRead('#basePath#../../config/import/stocks.json');
-			getService("HibachiDataService").loadDataFromQuery(stockQuery, importStockConfig, arguments.dryRun);
+			getService("HibachiDataService").loadDataFromQuery(stockQuery, importStockConfig, arguments.rc.dryRun);
 		}
 
-		//this.addUrlTitlesToProducts();
-		if(!arguments.dryRun){
+// 		//this.addUrlTitlesToProducts();
+		if(!arguments.rc.dryRun){
 			this.associateProductWithSite(siteProductCodes);
 		}else{
 			abort;
 		}
+		
+		abort;
 	}
     
     public any function importInventoryUpdates(){
@@ -1435,4 +1443,46 @@ writedump(skuQuery); abort;
 		
 		logHibachi("End: #pageNumber# - #pageSize# - #index#", true);
     }
+    
+    
+    public any function fixMonatProductRemoteID(required struct rc){
+		param name="arguments.rc.pageNumber" default="1";
+		param name="arguments.rc.pageSize" default="100";
+		param name="arguments.rc.days" default=0;
+		param name="arguments.rc.dryRun" default="false";
+
+		getService("HibachiTagService").cfsetting(requesttimeout="60000");
+
+		var extraBody = {};
+
+		arguments.rc.pageMax = this.getLastProductPageNumber(arguments.rc.pageSize, extraBody);
+	
+		for(var index = arguments.rc.pageNumber; index <= arguments.rc.pageMax; index++){
+			var productResponse = this.getApiResponse( arguments.rc.days > 0 ? "SWGetNewUpdatedSKU" : "QueryItems", index, arguments.rc.pageSize, extraBody );
+
+			//goto next page causing this is erroring!
+			if ( productResponse.hasErrors ){
+				continue;
+			}
+
+			//Set the pagination info.
+			var monatProducts = productResponse.Data.Records ?: [];
+
+			for (var skuData in monatProducts){
+
+                queryExecute("update swSku set remoteID = :remoteID WHERE skuCode = :skuCode",{
+                    'remoteID' = { value="#trim(skuData['ItemId'])#", cfsqltype="cf_sql_varchar"},
+                    'skuCode' = { value="#trim(skuData['ItemCode'])#", cfsqltype="cf_sql_varchar"}
+                });
+                
+                queryExecute("update swProduct set remoteID = :remoteID WHERE productCode = :productCode",{
+                    'remoteID' = { value="#trim(skuData['ItemId'])#", cfsqltype="cf_sql_varchar"},
+                    'productCode' = { value="#trim(skuData['ItemCode'])#", cfsqltype="cf_sql_varchar"}
+                });
+
+			}
+		}
+
+	
+	}
 }
