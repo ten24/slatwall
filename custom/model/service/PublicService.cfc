@@ -1808,8 +1808,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             var paymentData = {  requireBillingAddress: 0, copyFromType: 'accountPaymentMethod', accountPaymentMethodID: account.getPrimaryPaymentMethod().getAccountPaymentMethodID() };
             super.addOrderPayment(paymentData);
         }
-	    
-	    arguments.data['ajaxResponse'] = getHibachiScope().getCartData(cartDataOptions='full');
+	    arguments.data['ajaxResponse']['cart'] = getHibachiScope().getCartData(cartDataOptions='full');
 	}
     
     public any function removeIneligibleOrderItems(order = getHibachiScope().getCart()){
