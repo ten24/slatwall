@@ -5518,10 +5518,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				)
 			)
 		) {
-			logger.d("addNewOrderItemSetup--core: setting overriden price and sku-price #arguments.processObject.getPrice()#");
+
 			arguments.newOrderItem.setUserDefinedPriceFlag( true );
 			arguments.newOrderItem.setPrice( arguments.processObject.getPrice() );
 			arguments.newOrderItem.setSkuPrice( arguments.processObject.getPrice() );
+			
 		} else {
 
 			var skuPrice = arguments.processObject.getSku().getPriceByCurrencyCode( 
@@ -5529,8 +5530,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 								currencyCode = arguments.newOrderItem.getOrder().getCurrencyCode(), 
 								priceGroups = arguments.newOrderItem.getOrder().getAccount().getPriceGroups()
 							);
-			logger.d("addNewOrderItemSetup--core: setting getPriceByCurrencyCode price and sku-price #skuPrice#");
-			
+
 			arguments.newOrderItem.setPrice(skuPrice);
 			arguments.newOrderItem.setSkuPrice(skuPrice);
 		}
