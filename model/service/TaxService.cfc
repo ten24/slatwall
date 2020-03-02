@@ -958,7 +958,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
 		// Loop over the orderItems, and add a taxRateItemRequestBean to the tax
-		for(var orderItem in arguments.order.getOrderItems()) {
+		var orderItems = arguments.order.getOrderItems();
+		for(var orderItem in orderItems) {
 
 			// Get this sku's taxCategory
 			var taxCategory = this.getTaxCategory(orderItem.getSku().setting('skuTaxCategory'));
@@ -1009,8 +1010,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 
 		}
-
-		for (var orderFulfillment in arguments.order.getOrderFulfillments()) {
+		var orderFulfillments = arguments.order.getOrderFulfillments();
+		for (var orderFulfillment in orderFulfillments) {
 			// Get this sku's taxCategory
 			var taxCategory = this.getTaxCategory(orderFulfillment.getFulfillmentMethod().setting('fulfillmentMethodTaxCategory'));
 			if (!isNull(taxCategory) && taxCategory.getActiveFlag()) {
@@ -1038,38 +1039,39 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				} // End TaxCategoryRate Loop
 			}
 		}
-		
-		// for (var orderReturn in arguments.order.getOrderReturns()) {
-		// 	// Setup the orderReturn level taxShippingAddress
-		// 	if(!structKeyExists(taxAddresses,'taxShippingAddress')){
-		// 		if(structKeyExists(taxAddresses,'taxBillingAddress')){
-		// 			taxAddresses.taxShippingAddress = taxAddresses['taxBillingAddress'];
-		// 		}else{
-		// 			var referencedOrder = arguments.order.getReferencedOrder();
-		// 			for(var orderFulfillment in arguments.order.getOrderFulfillments()){
-		// 				if(!isNull(orderFulfillment.getShippingAddress())){
-		// 					taxAddresses.taxShippingAddress = orderFulfillment.getShippingAddress();
-		// 					break;
-		// 				}
-		// 			}
-		// 		}
-		// 	}
+		var orderReturns = arguments.order.getOrderReturns();
+		for (var orderReturn in orderReturns) {
+			
+			// Setup the orderReturn level taxShippingAddress
+			if(!structKeyExists(taxAddresses,'taxShippingAddress')){
+				var referencedOrder = arguments.order.getReferencedOrder();
+				for(var orderFulfillment in arguments.order.getOrderFulfillments()){
+					var taxCategory = orderFulfillment.getFulfillmentMethod().setting('fulfillmentMethodTaxCategory');
+					if(!isNull(orderFulfillment.getShippingAddress())){
+						taxAddresses.taxShippingAddress = orderFulfillment.getShippingAddress();
+						break;
+					}
+				}
+				if(!structKeyExists(taxAddresses,'taxShippingAddress') && structKeyExists(taxAddresses,'taxBillingAddress')){
+					taxAddresses.taxShippingAddress = taxAddresses['taxBillingAddress'];
+				}
+			}
 
-		// 	// Loop over the rates of that category, looking for a unique integration
-		// 	for(var taxCategoryRate in taxCategory.getTaxCategoryRates()) {
-		// 		// If a unique integration is found, then we add it to the integrations to call
-		// 		if(!isNull(taxCategoryRate.getTaxIntegration()) && taxCategoryRate.getTaxIntegration().getIntegrationID() == arguments.integration.getIntegrationID()){
+			// Loop over the rates of that category, looking for a unique integration
+			var taxCategoryRates = taxCategory.getTaxCategoryRates();
+			for(var taxCategoryRate in taxCategoryRates) {
+				// If a unique integration is found, then we add it to the integrations to call
+				if(!isNull(taxCategoryRate.getTaxIntegration()) && taxCategoryRate.getTaxIntegration().getIntegrationID() == arguments.integration.getIntegrationID()){
 
-		// 			var taxAddress = getTaxAddressByTaxCategoryRate(taxCategoryRate=taxCategoryRate, taxAddresses=taxAddresses);
+					var taxAddress = getTaxAddressByTaxCategoryRate(taxCategoryRate=taxCategoryRate, taxAddresses=taxAddresses);
 
-		// 			if(!isNull(taxAddress) && getTaxCategoryRateIncludesTaxAddress(taxCategoryRate=taxCategoryRate, taxAddress=taxAddress)) {
-		// 				taxRatesRequestBean.addTaxRateItemRequestBean(referenceObject=orderFulfillment, taxCategoryRate=taxCategoryRate, taxAddress=taxAddress);
-		// 			}
-		// 		}
+					if(!isNull(taxAddress) && getTaxCategoryRateIncludesTaxAddress(taxCategoryRate=taxCategoryRate, taxAddress=taxAddress)) {
+						taxRatesRequestBean.addTaxRateItemRequestBean(referenceObject=orderReturn, taxCategoryRate=taxCategoryRate, taxAddress=taxAddress);
+					}
+				}
 
-		// 	} // End TaxCategoryRate Loop
-		// 	}
-		// }
+			} // End TaxCategoryRate Loop
+		}
 
 		return taxRatesRequestBean;
 
@@ -1104,7 +1106,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
 		// Loop over the orderItems, and add a taxRateItemRequestBean to the tax
-		for(var orderDeliveryItem in arguments.orderDelivery.getOrderDeliveryItems()) {
+		var orderDeliveryItems = arguments.orderDelivery.getOrderDeliveryItems()
+		for(var orderDeliveryItem in orderDeliveryItems) {
 
 			var orderItem = orderDeliveryItem.getOrderItem();
 
@@ -1113,7 +1116,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			if(!isNull(taxCategory) && taxCategory.getActiveFlag()) {
 				// Loop over the rates of that category, looking for a unique integration
-				for(var taxCategoryRate in taxCategory.getTaxCategoryRates()) {
+				var taxCategoryRates = taxCategory.getTaxCategoryRates();
+				for(var taxCategoryRate in taxCategoryRates) {
 
 					// If a unique integration is found, then we add it to the integrations to call
 					if(!isNull(taxCategoryRate.getTaxIntegration()) && taxCategoryRate.getTaxIntegration().getIntegrationID() == arguments.integration.getIntegrationID()){
@@ -1133,7 +1137,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		if (!isNull(taxCategory) && taxCategory.getActiveFlag()) {
 			// Loop over the rates of that category, looking for a unique integration
-			for(var taxCategoryRate in taxCategory.getTaxCategoryRates()) {
+			var taxCategoryRates = taxCategory.getTaxCategoryRates();
+			for(var taxCategoryRate in taxCategoryRates) {
 
 				// If a unique integration is found, then we add it to the integrations to call
 				if(!isNull(taxCategoryRate.getTaxIntegration()) && taxCategoryRate.getTaxIntegration().getIntegrationID() == arguments.integration.getIntegrationID()){
@@ -1195,7 +1200,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			if(!isNull(taxCategory) && taxCategory.getActiveFlag()) {
 				// Loop over the rates of that category, looking for a unique integration
-				for(var taxCategoryRate in taxCategory.getTaxCategoryRates()) {
+				var taxCategoryRates = taxCategory.getTaxCategoryRates();
+				for(var taxCategoryRate in taxCategoryRates) {
 
 					// If a unique integration is found, then we add it to the integrations to call
 					if(!isNull(taxCategoryRate.getTaxIntegration()) && taxCategoryRate.getTaxIntegration().getIntegrationID() == arguments.integration.getIntegrationID()){

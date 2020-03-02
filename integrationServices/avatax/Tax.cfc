@@ -165,21 +165,6 @@ extends = "Slatwall.integrationServices.BaseTax" {
 			Lines = []
 		};
 		
-		if (docType =='ReturnInvoice'){
-			
-			if ( !isNull(arguments.requestBean.getOrder().getReferencedOrder()) ){
-				var taxDate = dateFormat(arguments.requestBean.getOrder().getReferencedOrder().getOrderOpenDateTime(), 'yyyy-mm-dd');
-			} else {
-				var taxDate =dateFormat(arguments.requestBean.getOrder().getOrderOpenDateTime(), 'yyyy-mm-dd');
-			}
-			
-			requestDataStruct.TaxOverride = {
-				reason = 'Return',
-				TaxOverrideType = 'TaxDate',
-				TaxDate = taxDate
-			};
-		}
-		
 		if(!isNull(arguments.requestBean.getAccount())) {
 			requestDataStruct.CustomerCode = arguments.requestBean.getAccountShortReferenceID( true );
 		}
@@ -254,10 +239,18 @@ extends = "Slatwall.integrationServices.BaseTax" {
 					itemData.Qty = item.getQuantity();
 					if (item.getOrderItem().getOrderItemType().getSystemCode() == "oitReturn" || item.getOrderItem().getOrderItemType().getSystemCode() == "oitRefund"){
 						itemData.Amount = item.getExtendedPriceAfterDiscount() * -1;
-						itemData.taxOverride = {
-							taxOverrideType:"TaxAmount",
-							taxAmount:item.getOrderItem().getTaxAmount(),
-							reason:"Return"
+						if(listContains(setting("VATCountries"),addressData.Country)){
+							itemData.taxOverride = {
+								taxOverrideType:"TaxAmount",
+								taxAmount:item.getOrderItem().getVATAmount(),
+								reason:"Return"
+							}
+						}else{
+							itemData.taxOverride = {
+								taxOverrideType:"TaxAmount",
+								taxAmount:item.getOrderItem().getTaxAmount(),
+								reason:"Return"
+							}
 						}
 					}else {
 						itemData.Amount = item.getExtendedPriceAfterDiscount();
@@ -287,6 +280,26 @@ extends = "Slatwall.integrationServices.BaseTax" {
 					
 					if (orderFulfillmentDiscount > 0){
 						itemData.Discounted = true;
+					}
+					
+
+				}else if (item.getReferenceObjectType() == 'OrderReturn'){
+					// Setup the itemData
+					
+					var amount = -1*item.getOrderReturn().getFulfillmentRefundPreTax();
+					
+					var itemData = {};
+					itemData.LineNo = item.getOrderReturnID();
+					itemData.DestinationCode = addressIndex;
+					itemData.OriginCode = 1;
+					itemData.ItemCode = 'Shipping Refund';
+					itemData.TaxCode = item.getTaxCategoryCode();
+					itemData.Qty = 1;
+					itemData.Amount = amount;
+					itemData.taxOverride = {
+						taxOverrideType:"TaxAmount",
+						taxAmount:-1*item.getOrderReturn().getFulfillmentTaxRefund(),
+						reason:"Return"
 					}
 					
 
@@ -391,6 +404,7 @@ extends = "Slatwall.integrationServices.BaseTax" {
 			responseBean.setData('An Error occured when attempting to retrieve tax information');
 			logHibachi(serialize(responseBean.getData()));
 		}
+
 		return responseBean;
 	}
 	
