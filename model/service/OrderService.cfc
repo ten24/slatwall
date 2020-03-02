@@ -1237,6 +1237,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var transientOrder = getService('OrderService').newTransientOrderFromOrderTemplate( currentOrderTemplate, false );  
 			//only update amounts if we can
 			transientOrder = this.saveOrder( order=transientOrder, updateOrderAmounts=hasInfoForFulfillment );
+			transientOrderItems = transientOrder.getOrderItems();
+			for(var orderItem in transientOrderItems){
+				orderItem.updateCalculatedProperties(); 
+			}
 			transientOrder.updateCalculatedProperties(); 	
 			getHibachiDAO().flushORMSession();
 		
@@ -1561,10 +1565,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		newOrder = this.saveOrder(order=newOrder, updateOrderAmounts=false, updateOrderAmount=false, updateShippingMethodOptions=false, checkNewAccountAddressSave=false); 
 		newOrder = this.createOrderItemsFromOrderTemplateItems(newOrder,arguments.orderTemplate);
 		
-		
 
-		
-		
 		var promotionCodes = arguments.orderTemplate.getPromotionCodes();
 
 		for(var promotionCode in promotionCodes){
@@ -1747,15 +1748,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 				orderFulfillment.setShippingMethod(arguments.orderTemplate.getShippingMethod());
 				orderFulfillment.setFulfillmentMethod(arguments.orderTemplate.getShippingMethod().getFulfillmentMethod());
-				
+
 				orderFulfillment = this.saveOrderFulfillment(orderFulfillment);
-	
+
 				if (orderFulfillment.hasErrors()){
 					//propegate to parent, because we couldn't create the fulfillment this order is not going to be placed
 					arguments.order.addErrors(orderFulfillment.getErrors());	
 					return arguments.order; 
 				}	
-			} 
+
+			}
+	
 
 			if(arguments.order.hasErrors()){
 				this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(arguments.order.getErrors())# when adding order item skuID: #orderTemplateItem['sku_skuID']#', true);
