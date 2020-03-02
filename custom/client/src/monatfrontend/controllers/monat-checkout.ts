@@ -103,7 +103,7 @@ class MonatCheckoutController {
 			
 			this.totalSteps +=  2 + this.enrollmentSteps; 
 			if(!this.account.accountID.length) return;
-			this.getCurrentCheckoutScreen(true, true);
+			this.getCurrentCheckoutScreen(true, false);
 		});
 		
 		const currDate = new Date;
