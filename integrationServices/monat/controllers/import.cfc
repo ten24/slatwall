@@ -30,6 +30,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	this.secureMethods=listAppend(this.secureMethods,'importOrderShipments');
 	this.secureMethods=listAppend(this.secureMethods,'importInventory');
 	this.secureMethods=listAppend(this.secureMethods,'importInventoryUpdates');
+	this.secureMethods=listAppend(this.secureMethods,'updateGeoIPDatabase');
 	
 	// @hint helper function to return a Setting
 	public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
@@ -3004,6 +3005,12 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		getService("HibachiTagService").cfsetting(requesttimeout="60000");
 		getFW().setView("public:main.blank");
 		getService("MonatDataService").fixMonatProductRemoteID(argumentCollection=arguments);
+	}
+	
+	public void function updateGeoIPDatabase(required struct rc){
+		getService("HibachiTagService").cfsetting(requesttimeout="60000");
+		getFW().setView("public:main.blank");
+		getService("MonatDataService").updateGeoIPDatabase(argumentCollection=arguments);
 	}
 	
 	
