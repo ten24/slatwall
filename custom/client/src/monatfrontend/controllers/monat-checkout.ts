@@ -333,7 +333,10 @@ class MonatCheckoutController {
 	
 	public submitSponsor():Screen | void{
 		this.publicService.doAction('submitSponsor', {sponsorID: this.ownerAccountID}).then(res=>{
-			if(res.successfulActions) this.next();
+			if(res.successfulActions) {
+				this.hasSponsor = true; 
+				this.next();
+			}
 		});
 	}
 	

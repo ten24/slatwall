@@ -67,7 +67,7 @@ class MonatEnrollmentController {
 				//logic for if the user has an upgrade on his order and he leaves/refreshes the page 
 			
 				//if they have an upgraded order and order payments, send to checkout remove account steps
-				if(cart.orderFulfillments && cart.orderFulfillments[0].shippingAddress?.addressID.length && cart.monatOrderType?.typeID.length){
+				if(cart.orderFulfillments && cart.orderFulfillments[0]?.shippingAddress?.addressID.length && cart.monatOrderType?.typeID.length){
 					this.hasSkippedSteps = true;
 					this.steps = this.steps.filter(el => reqList.indexOf(el.stepClass) == -1);
 					this.goToLastStep();

@@ -1540,6 +1540,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var accountType=account.getAccountType() ?: 'customer';
         var holdingPriceGroup = account.getPriceGroups();
         var order = getHibachiScope().getCart();
+        order = this.removeIneligibleOrderItems(order);
+        order = getOrderService().saveOrder(order);
+        getHibachiScope().flushORMSession(); 
         
         // First check for a price group on the account, then default to retail price group
         var priceGroup = (!isNull(holdingPriceGroup) && arrayLen(holdingPriceGroup)) ? holdingPriceGroup[1] : getService('priceGroupService').getPriceGroupByPriceGroupCode(2); 
@@ -1809,4 +1812,24 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 	    arguments.data['ajaxResponse'] = getHibachiScope().getCartData(cartDataOptions='full');
 	}
     
+    public any function removeIneligibleOrderItems(order = getHibachiScope().getCart()){
+        var skuIDs = [];
+        
+        for(var orderItem in arguments.order.getOrderItems()){
+            if(!orderItem.getSku().canBePurchased(getHibachiScope().getAccount())){
+                arrayAppend(skuIDs, orderItem.getSku().getSkuID());
+            }
+        }
+        
+        if(!arrayLen(skuIDs)) return order;
+        
+        var orderData = {
+            orderItemsToRemove: skuIDs,
+            updateOrderAmounts :false
+        }
+        writeDump(orderData)
+        abort;
+        return this.getOrderService().orderService.processOrder( arguments.order, orderData, 'removeOrderItem');
+        
+    }
 }
