@@ -2027,14 +2027,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			//set payment method as credit card
 			accountPaymentMethod.setPaymentMethod(getPaymentService().getPaymentMethod(arguments.orderTemplate.getSite().setting('siteDefaultAccountPaymentMethod'))); 
-
+			
 			accountPaymentMethod = getAccountService().saveAccountPaymentMethod(accountPaymentMethod);
-
+			
+			getHibachiScope().flushORMSession(); 
+			
 			if(accountPaymentMethod.hasErrors()){
 				arguments.orderTemplate.addErrors(accountPaymentMethod.getErrors());
+			} else {
+				arguments.orderTemplate.setAccountPaymentMethod(accountPaymentMethod);
 			}
 
-			arguments.orderTemplate.setAccountPaymentMethod(accountPaymentMethod);
 		} else if (!isNull(processObject.getAccountPaymentMethod())) { 
 			arguments.orderTemplate.setAccountPaymentMethod(getAccountService().getAccountPaymentMethod(processObject.getAccountPaymentMethod().value));	
 		} 
