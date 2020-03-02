@@ -302,7 +302,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		if(!structKeyExists(variables, "shippingAddress")) {
 			variables.shippingAddress = getService("addressService").newAddress();
 		}
-		return variables.shippingAddress;
+		return variables.shippingAddres
 	}
 
 	public any function getSaveShippingAccountAddressFlag() {
@@ -643,8 +643,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		}
 
 		//check if the price is the same if and only if we are using a custom price (either orderItem or processObject)
-		if( 
-			arguments.orderItem.getPrice() != this.getPrice() 
+		if( arguments.orderItem.getPrice() != this.getPrice() 
 			&& 
 			(
 				this.getUserDefinedPriceFlag() || arguments.orderItem.getUserDefinedPriceFlag()

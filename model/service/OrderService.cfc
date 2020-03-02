@@ -3408,11 +3408,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
  					// Loop over the orderItems to see if the skuPrice Changed
 					for(var orderItem in arguments.order.getOrderItems()){
 						
-						logger.d(
-							message = "processOrder_updateOrderAmounts: Updating Prices for", 
-							orderItem = orderItem, skuPrice = orderItem.getSkuPrice(), price = orderItem.getPrice()
-						);
-						
 	 					if(
 	 						!orderItem.getUserDefinedPriceFlag()
 	 						&&
@@ -3424,25 +3419,19 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							if(skuPrice != skuPriceByCurrencyCode) {
 		 						orderItem.setPrice(skuPriceByCurrencyCode);
 		 						orderItem.setSkuPrice(skuPriceByCurrencyCode);
-		 						
-		 						logger.d(
-									message = "processOrder_updateOrderAmounts: Updated prices for",
-									orderItem = orderItem, skuPrice = skuPriceByCurrencyCode, price = skuPriceByCurrencyCode
-								);
 							}
+							
 						}
 					}
  				}
 			}
-			
-// Question: if the price is user defined at the orderItem leved, do we still want to update the order-ammountswith promotion,pricegroup??
 			
 			// First Re-Calculate the 'amounts' base on price groups
 			getPriceGroupService().updateOrderAmountsWithPriceGroups( arguments.order );
 
 			// Then Re-Calculate the 'amounts' based on permotions ext.  This is done second so that the order already has priceGroup specific info added
 			getPromotionService().updateOrderAmountsWithPromotions( arguments.order );
-//			
+			
 			updateOrderItemsWithAllocatedOrderDiscountAmount(arguments.order);
 
 			// Re-Calculate tax now that the new promotions and price groups have been applied
@@ -5509,9 +5498,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode(arguments.systemCode) );
 	}
 	
-	private any function addNewOrderItemSetup(required any newOrderItem, required any processObject)
-	{
-		logger.m(newOrderItem);
+	private any function addNewOrderItemSetup(required any newOrderItem, required any processObject) {
 		
 		// Setup the Sku / Quantity / Price details
 		arguments.newOrderItem.setSku( arguments.processObject.getSku() );

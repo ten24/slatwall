@@ -106,23 +106,28 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// Loop over orderItems and add Sale Prices to the qualified discounts
 
 		for(var orderItem in arguments.order.getOrderItems()) {
-			var salePriceDetails = orderItem.getSalePrice();
-
-			for(var key in salePriceDetails) {
-				if(structKeyExists(salePriceDetails[key], "salePrice") && salePriceDetails[key].salePrice < orderItem.getSkuPrice()) {
-
-					var discountAmount = val(getService('HibachiUtilityService').precisionCalculate((orderItem.getSkuPrice() * orderItem.getQuantity()) - (salePriceDetails[key].salePrice * orderItem.getQuantity())));
-
-					arguments.orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ] = [];
-
-					// Insert this value into the potential discounts array
-					arrayAppend(arguments.orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ], {
-						promotionRewardID = "",
-						promotion = this.getPromotion(salePriceDetails[key].promotionID),
-						discountAmount = discountAmount
-					});
+			
+			//If the price was overriden by the admin, we're skipping that item
+			if( !orderItem.getUserDefinedPriceFlag() ){
+				var salePriceDetails = orderItem.getSalePrice();
+	
+				for(var key in salePriceDetails) {
+					if(structKeyExists(salePriceDetails[key], "salePrice") && salePriceDetails[key].salePrice < orderItem.getSkuPrice()) {
+	
+						var discountAmount = val(getService('HibachiUtilityService').precisionCalculate((orderItem.getSkuPrice() * orderItem.getQuantity()) - (salePriceDetails[key].salePrice * orderItem.getQuantity())));
+	
+						arguments.orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ] = [];
+	
+						// Insert this value into the potential discounts array
+						arrayAppend(arguments.orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ], {
+							promotionRewardID = "",
+							promotion = this.getPromotion(salePriceDetails[key].promotionID),
+							discountAmount = discountAmount
+						});
+					}
 				}
 			}
+			
 		}
 	}
 
@@ -1086,19 +1091,20 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	public struct function getOrderItemSalePricesByPromoRewardSkuCollection(required any orderItem){
+		
 		var activePromotionRewardsWithSkuCollection = getPromotionDAO().getActivePromotionRewards( rewardTypeList="merchandise,subscription,contentAccess", promotionCodeList="", excludeRewardsWithQualifiers=true, site=arguments.orderItem.getOrder().getOrderCreatedSite());
 		var originalPrice = arguments.orderItem.getSkuPrice();
 		var currencyCode = arguments.orderItem.getCurrencyCode();
-		//Q: if orderItem.userDefinedPriceFlag() == true.    return ???
+	
 		if(isNull(originalPrice)){
 			var account = arguments.orderItem.getOrder().getAccount() ?: getHibachiScope().getAccount();	
 			originalPrice = arguments.orderItem.getSku().getPriceByCurrencyCode( currencyCode = currencyCode, accountID = account.getAccountID());
-		}
+		} 
 		
 		if(isNull(originalPrice)){
-			originalPrice = arguments.orderItem.getPrice();
+				originalPrice = arguments.orderItem.getPrice();
 		}
-
+		
 		var priceDetails = getPriceDetailsForPromoRewards( promoRewards=activePromotionRewardsWithSkuCollection,
 														sku=arguments.orderItem.getSku(),
 														originalPrice=originalPrice,

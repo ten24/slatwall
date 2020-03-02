@@ -84,7 +84,7 @@ component extends="Slatwall.model.service.OrderService" {
         
         var sku = arguments.newOrderItem.getSku();
         var account = arguments.newOrderItem.getOrder().getAccount();
-        if(isNull(account)){ //Q: can account be null here? 
+        if(isNull(account)){
             account = getService('AccountService').newAccount();
         }
         for(var priceField in variables.customPriceFields){
