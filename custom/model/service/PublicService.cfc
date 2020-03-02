@@ -1553,6 +1553,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         //Updating the prices to account for new statuses
         order = getOrderService().saveOrder(order);
         getHibachiScope().flushORMSession(); 
+        arguments.data['ajaxResponse']['cart'] = getHibachiScope().getCartData(cartDataOptions='full');
         return order;
      }
     
