@@ -1815,6 +1815,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     public any function removeIneligibleOrderItems(order = getHibachiScope().getCart()){
         var skuIDs = [];
         
+        //add logic to also remove sku's with no price
         for(var orderItem in arguments.order.getOrderItems()){
             if(!orderItem.getSku().canBePurchased(getHibachiScope().getAccount())){
                 arrayAppend(skuIDs, orderItem.getSku().getSkuID());
@@ -1827,8 +1828,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             orderItemsToRemove: skuIDs,
             updateOrderAmounts :false
         }
-        writeDump(orderData)
-        abort;
+
         return this.getOrderService().orderService.processOrder( arguments.order, orderData, 'removeOrderItem');
         
     }
