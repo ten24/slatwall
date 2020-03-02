@@ -262,16 +262,10 @@ extends = "Slatwall.integrationServices.BaseTax" {
 					}else {
 						itemData.Amount = item.getExtendedPriceAfterDiscount();
 					}
-					if(listContains(setting("VATCountries"),addressData.Country)){
-						itemData.taxIncluded = true;
-					}
 					
 					if (allItemsHaveDiscount){
 						itemData.Discounted = true;
 					}
-					
-					arrayAppend(requestDataStruct.Lines, itemData);
-
 					
 				}else if (item.getReferenceObjectType() == 'OrderFulfillment' && item.getOrderFulfillment().hasOrderFulfillmentItem()){
 					// Setup the itemData
@@ -295,9 +289,12 @@ extends = "Slatwall.integrationServices.BaseTax" {
 						itemData.Discounted = true;
 					}
 					
-					arrayAppend(requestDataStruct.Lines, itemData);
 
 				}
+				if(listContains(setting("VATCountries"),addressData.Country)){
+					itemData.taxIncluded = true;
+				}
+				arrayAppend(requestDataStruct.Lines, itemData);
 			}
 		}
 		
@@ -350,7 +347,7 @@ extends = "Slatwall.integrationServices.BaseTax" {
 						// Loop over the details of that taxAmount
 						for(var taxDetail in taxLine.TaxDetails) {
 							// For each detail make sure that it is applied to this item
-							if(taxDetail.Tax > 0 && (!listContains(setting("VATCountries"),taxDetail.Country) || referenceObjectType == 'OrderFulfillment') {
+							if(taxDetail.Tax > 0 && !listContains(setting("VATCountries"),taxDetail.Country)) {
 								var args = {
 									"#primaryIDName#" = taxLine.LineNo,
 									taxAmount = taxDetail.Tax, 
