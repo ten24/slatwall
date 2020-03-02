@@ -55,7 +55,7 @@ Notes:
 <cfparam name="rc.orderTypeCode" type="string" />
 
 <cfif rc.orderTypeCode EQ 'otReturnOrder'>
-	<cfset local.createReturnText = '#local.createReturnText#'>
+	<cfset local.createReturnText = '#Create Return Order#'>
 <cfelseif rc.orderTypeCode EQ 'otRefundOrder'>
 	<cfset local.createReturnText = 'Create Refund Order'>
 <cfelseif rc.orderTypeCode EQ 'otExchangeOrder'>
