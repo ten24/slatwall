@@ -4,14 +4,13 @@
 	<cfquery name="local.ip2location">
 		
 		CREATE TABLE `ip2location`(
-			`ip_from` DECIMAL(39,0) UNSIGNED NULL DEFAULT NULL,
-			`ip_to` DECIMAL(39,0) UNSIGNED NOT NULL,
-			`country_code` CHAR(2),
-			`country_name` VARCHAR(64),
-			INDEX `idx_ip_from` (`ip_from`),
-			INDEX `idx_ip_to` (`ip_to`),
-			INDEX `idx_ip_from_to` (`ip_from`, `ip_to`)
-		);
+        	`ip_from` INT(10) UNSIGNED,
+        	`ip_to` INT(10) UNSIGNED,
+        	`country_code` CHAR(2),
+        	INDEX `idx_ip_from` (`ip_from`),
+        	INDEX `idx_ip_to` (`ip_to`),
+        	INDEX `idx_ip_from_to` (`ip_from`, `ip_to`)
+        )
 		
 		ALTER TABLE swsession
             LOCK=NONE,
