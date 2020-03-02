@@ -207,8 +207,8 @@ extends = "Slatwall.integrationServices.BaseTax" {
 			 **/
 			var orderDiscount = arguments.requestBean.getOrder().getOrderDiscountAmountTotal();
 			var allItemsHaveDiscount = false;
-			
-			if (orderDiscount > 0){
+			writeDump(orderDiscount);
+			if (orderDiscount != 0){
 				//distribute the order discount to all of the orderItems.
 				allItemsHaveDiscount = true;
 				requestDataStruct.Discount = orderDiscount;
@@ -224,7 +224,7 @@ extends = "Slatwall.integrationServices.BaseTax" {
 					requestDataStruct.Discount = orderFulfillmentDiscount;
 				}
 			}
-			
+
 			// Loop over each unique item for this address
 			for(var item in addressTaxRequestItems) {
 				if (item.getReferenceObjectType() == 'OrderItem'){
@@ -242,13 +242,13 @@ extends = "Slatwall.integrationServices.BaseTax" {
 						if(listContains(setting("VATCountries"),addressData.Country)){
 							itemData.taxOverride = {
 								taxOverrideType:"TaxAmount",
-								taxAmount:item.getOrderItem().getVATAmount(),
+								taxAmount:-1 * item.getOrderItem().getVATAmount(),
 								reason:"Return"
 							}
 						}else{
 							itemData.taxOverride = {
 								taxOverrideType:"TaxAmount",
-								taxAmount:item.getOrderItem().getTaxAmount(),
+								taxAmount:-1 * item.getOrderItem().getTaxAmount(),
 								reason:"Return"
 							}
 						}
