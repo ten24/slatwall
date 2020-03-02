@@ -30,6 +30,7 @@
 						$parent.monatFlexshipPaymentMethodModal.setSelectedAccountPaymentMethodID(accountPaymentMethod.accountPaymentMethodID);
 						updateBillingForm.$valid = true;
 					"
+					ng-if="accountPaymentMethod.accountPaymentMethodID && accountPaymentMethod.activeFlag == true"
 				>
 					<input
 						type="radio"
