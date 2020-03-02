@@ -35,9 +35,13 @@ class EnrollmentMPController {
 		this.observerService.attach(this.getProductList, 'createSuccess'); 
 		this.observerService.attach(this.showAddToCartMessage, 'addOrderItemSuccess'); 
 		$('.site-tooltip').tooltip();
-		this.publicService.doAction('setUpgradeOnOrder', {upgradeType: 'marketPartner'}).then(res=>{
+		this.publicService.doAction('setUpgradeOnOrder,getStarterPackBundleStruct', {upgradeType: 'marketPartner'}).then(res=>{
+			this.bundles = res.bundles;
 			this.isInitialized = true;
-			this.getStarterPacks();
+			for(let bundle in this.bundles){
+				let str = this.stripHtml(this.bundles[bundle].description);
+				this.bundles[bundle].description = str.length > 70 ? str.substring(0, str.indexOf(' ', 60)) + '...' : str;
+			}
 			this.getProductList();	
 		});
 	}
