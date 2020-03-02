@@ -1822,7 +1822,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             }
         }
         
-        if(!arrayLen(skuIDs)) return order;
+        if(!arrayLen(skuIDs)) return arguments.order;
         
         var orderData = {
             orderItemsToRemove: skuIDs,
