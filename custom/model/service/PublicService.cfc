@@ -1069,7 +1069,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     
     public any function getBaseProductCollectionList(required any data){
         var account = getHibachiScope().getAccount();
-        var accountType = account.getAccountType();
+        var accountType = account.getAccountType()?: 'retail';
         var holdingPriceGroups = account.getPriceGroups();
         var site = getService('SiteService').getSiteByCmsSiteID(arguments.data.cmsSiteID);
         var currencyCode = site.setting('skuCurrency');
@@ -1087,6 +1087,13 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         if(!isNull(order.getPriceGroup())){ //order price group
             priceGroupCode = order.getPriceGroup().getPriceGroupCode();
+            if(priceGroupCode == 1){
+                accountType == 'marketPartner'
+            }else if(priceGroupCode == 3){
+                accountType == 'VIP'
+            }else{
+                accountType == 'retail'
+            }
         }else if(!isNull(arguments.data.priceGroupCode) && len(arguments.data.priceGroupCode)){ //argument price group
             priceGroupCode = arguments.data.priceGroupCode;
         }else if(!isNull(holdingPriceGroups) && arrayLen(holdingPriceGroups)){ //account price group
@@ -1478,6 +1485,11 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     
     public any function setUpgradeOnOrder(upgradeType, upgradeFlowFlag = 0){
         
+        if(!isNull(getHibachiScope().getCart().getMonatOrderType())){
+            arguments.data['ajaxResponse']['upgradeResponseFailure'] = getHibachiScope().rbKey('frontend.validate.upgradeAlreadyExists');
+            return;
+        }
+        
         //if we are not in an upgrade flow and the user is logged in, log the user out.
         if(!upgradeFlowFlag && getHibachiScope().getLoggedInFlag()){
             super.logout();
@@ -1714,25 +1726,12 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		}
 	}
 	
-    public void function getOrderTemplateDetails(required any data){
-        param name="arguments.data.pageRecordsShow" default=5;
-        param name="arguments.data.currentPage" default=1;
-        param name="arguments.data.orderTemplateId" default="";
-		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; 
-		
-		super.getOrderTemplateDetails(arguments.data);
-		if(structKeyExists(arguments.data.ajaxResponse,'orderTemplate')){
-		    var orderTemplate = getOrderService().getOrderTemplate(arguments.data.orderTemplateID);
-		    arguments.data.ajaxResponse.orderTemplate['canPlaceOrderFlag'] = orderTemplate.getCanPlaceOrderFlag();
-		}
-	}
-	
     //override core to also set the cheapest shippinng method as the default, and set shipping same as billing
 	public void function addShippingAddressUsingAccountAddress(data){
 	    super.addShippingAddressUsingAccountAddress(arguments.data);
 	    var cart = getHibachiScope().getCart();
         this.setDefaultShippingMethod();
-        if(isNull(cart.getOrderPayments())) {
+        if(isNull(cart.getOrderPayments()) || !arrayLen(cart.getOrderPayments())) {
             this.setShippingSameAsBilling();
         }
 	}
@@ -1742,7 +1741,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var cart = getHibachiScope().getCart();
 	    super.addOrderShippingAddress(arguments.data);
 	    this.setDefaultShippingMethod();
-        if(isNull(cart.getOrderPayments() ) ){
+        if(isNull(cart.getOrderPayments()) || !arrayLen(cart.getOrderPayments()) ){
             this.setShippingSameAsBilling();
         }
 	}
@@ -1789,19 +1788,20 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         if(isNull(account) || !arrayLen(orderFulfillments)) return;
         
 	    //if the default shipping flag is passed in, and the account has a primary shipping address, set shipping address with it otherwise use data passed in as arguments
-	    
+	   
 	    if(arguments.data.defaultShippingFlag && !isNull(account.getPrimaryShippingAddress())) {
 	        var shippingFulfillmentID = orderFulfillments[1].getOrderFulfillmentID();
 	        var addressID = account.getPrimaryShippingAddress().getAccountAddressID();
 	        var data = {shippingFulfillmentID:shippingFulfillmentID, accountAddressID: addressID};
 	        this.addShippingAddressUsingAccountAddress(data); 
-	    }else{
+	    }else if(!isNull(arguments.data.streetAddress)){
 	        this.addOrderShippingAddress(arguments.data);
 	    }
-
+        
+       
         //Set up the billing information, if there is a primary account payment method
         if(!isNull(account.getPrimaryPaymentMethod())){
-            var paymentData = { orderID: cart.getOrderID(), copyFromType: 'accountPaymentMethod', accountPaymentMethodID: account.getPrimaryPaymentMethod().getAccountPaymentMethodID() };
+            var paymentData = {  requireBillingAddress: 0, copyFromType: 'accountPaymentMethod', accountPaymentMethodID: account.getPrimaryPaymentMethod().getAccountPaymentMethodID() };
             super.addOrderPayment(paymentData);
         }
 	    

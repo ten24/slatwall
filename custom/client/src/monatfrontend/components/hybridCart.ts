@@ -57,8 +57,8 @@ class HybridCartController {
 	
 	private getCart():void{
 		this.monatService.getCart(true).then((res:GenericCart) => {
-			console.log(res)
 			this.cart = res.cart;
+			this.cart.orderItems = this.cart.orderItems.filter(el => el.sku.product.productType.systemCode !== 'ProductPack');
 		});
 	}
 	

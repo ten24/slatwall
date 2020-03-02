@@ -1,3 +1,4 @@
+declare var angular;
 class MonatFlexshipCartContainerController {
     public orderTemplateId: string;
     public orderTemplate:any; // orderTemplateDetails
@@ -73,7 +74,9 @@ class MonatFlexshipCartContainerController {
 		    this.orderTemplateId = localStorage.getItem('flexshipID');
 		}
 		
-		if(!this.orderTemplateId) return;
+		if(!angular.isDefined(this.orderTemplateId) || this.orderTemplateId.trim().length == 0){
+		    return; // if there's no orderTemplateID, we can't fetch the details
+		}
 		
 		let extraProperties = "cartTotalThresholdForOFYAndFreeShipping";
 		

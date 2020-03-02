@@ -2,10 +2,15 @@ import * as Braintree from 'braintree-web';
 declare let paypal: any;
 
 /****
-	STILL TO DO:	1. when you add an order paymetn after already having one on the order the screen looks odd
-					2. radio buttons rather than select for payment methods
-					3. show used payment method in account payment methods even if not on account
-					4. Sometimes adding an account payment method is adding without a billing address
+	STILL TO DO:	
+					6. fix radio button styling issues for acc payment method
+					8. On click api calls off slatwall scope so we dont need events or extra get cart calls
+					10. add an automatic smooth scroll from shipping => billing
+					15. birthday directive should close when you click off of the screen
+					17. billing same as shipping shouldnt be an api call rather a 
+					18. make sure paypal payment methods are using inputs
+					20. filter product pack price from mini cart
+					21. mini cart should consider current site
 ****/
 
 enum Screen {
@@ -32,13 +37,16 @@ class MonatCheckoutController {
 	public ownerAccountID:string;
 	public cart:any; 
 	public setDefaultShipping = false;
-	public totalSteps:number;
+	public totalSteps = 0;
 	public currentStep:number;
 	public enrollmentSteps = 0;
 	public currentYear:number;
 	public monthOptions:Array<number> = [1,2,3,4,5,6,7,8,9,10,11,12];
 	public yearOptions:Array<number> = [];
 	public tempAccountPaymentMethod:Object;
+	public currentPaymentMethodID = '';
+	public activePaymentMethod = 'creditCard'; //refactor to use enum
+	public currentShippingAddress;
 	
 	// @ngInject
 	constructor(
@@ -59,12 +67,17 @@ class MonatCheckoutController {
 		}, 'ownerAccountSelected');	
 		
 		this.observerService.attach(()=>{
+			this.publicService.activePaymentMethod = 'creditCard';
+		}, 'addOrderPaymentSuccess');	
+		
+		this.observerService.attach(()=>{
 		    if (this.publicService.toggleForm) this.publicService.toggleForm = false;
 		}, 'shippingAddressSelected');	
 		
 		this.observerService.attach( this.closeNewAddressForm, 'addNewAccountAddressSuccess' ); 
 		this.observerService.attach(this.setCheckoutDefaults.bind(this), 'createAccountSuccess' ); 
 		this.observerService.attach(this.setCheckoutDefaults.bind(this), 'loginSuccess' ); 
+		
 		this.observerService.attach(()=>{
 			this.getCurrentCheckoutScreen(false, true);
 		}, 'addShippingAddressSuccess' ); 
@@ -72,13 +85,23 @@ class MonatCheckoutController {
 		this.observerService.attach(()=>{
 			this.getCurrentCheckoutScreen(false, true);
 		}, 'addOrderPaymentSuccess' ); 
+		
+		this.observerService.attach(()=>{
+			this.getCurrentCheckoutScreen(false, true);
+		}, 'addShippingAddressUsingAccountAddressSuccess' ); 
 
 
 		this.publicService.getAccount(true).then(res=>{
+		
+			this.enrollmentSteps = <number>this.publicService.steps ? <number>this.publicService.steps -1 : 0; 
 			this.account = res.account;
 			if(this.account?.ownerAccount?.accountNumber?.length && this.account?.ownerAccount?.accountNumber !== this.account?.accountNumber){
 				this.hasSponsor = true;
+			}else{
+				this.totalSteps = 1;
 			}
+			
+			this.totalSteps +=  2 + this.enrollmentSteps; 
 			if(!this.account.accountID.length) return;
 			this.getCurrentCheckoutScreen(true, true);
 		});
@@ -88,14 +111,9 @@ class MonatCheckoutController {
         let manipulateableYear = this.currentYear;
         
         do {
-            this.yearOptions.push(manipulateableYear++)
+            this.yearOptions.push(manipulateableYear++);
         }
         while(this.yearOptions.length <= 9);
-	}
-	
-	public $postLink(){
-		if(this.publicService.enrollmentSteps) this.enrollmentSteps = this.publicService.enrollmentSteps;
-		this.totalSteps = this.hasSponsor ? 2 + this.enrollmentSteps  : 3 + this.enrollmentSteps; 	
 	}
 	
 	private getCurrentCheckoutScreen = (setDefault = false, hardRefresh = false):Screen | void => {
@@ -105,6 +123,14 @@ class MonatCheckoutController {
 			this.cart = data.cart; 
 			let screen = Screen.SHIPPING;
 			this.shippingFulfillment = this.cart.orderFulfillments.filter(el => el.fulfillmentMethod.fulfillmentMethodType == 'shipping' );
+			
+			if(this.cart.orderPayments?.length && this.cart.orderPayments[this.cart.orderPayments.length-1].accountPaymentMethod){
+				this.currentPaymentMethodID = this.cart.orderPayments[this.cart.orderPayments.length-1].accountPaymentMethod?.accountPaymentMethodID;
+			}
+			
+			if(this.cart.orderFulfillments?.length && this.cart.orderFulfillments[0].shippingAddress.addressID?.length){
+				this.currentShippingAddress = this.cart.orderFulfillments[0].shippingAddress;
+			}
 			
 			//sets default order information
 			if(setDefault){
@@ -134,6 +160,7 @@ class MonatCheckoutController {
 	}
 	
 	public getCurrentStepNumber():void{
+		
 		this.currentStep = (this.screen == Screen.ACCOUNT || this.screen == Screen.SHIPPING || this.screen == Screen.PAYMENT)  //billing /shipping is step one
 			? 1 + this.enrollmentSteps
 			: this.screen == Screen.SPONSOR //if they need to select a sponsor, step 2
@@ -338,6 +365,14 @@ class MonatCheckoutController {
 		return this.publicService.doAction('addBillingAddress', {addressID: addressID});
 	}
 	
+	public handleNewBillingAddress(addressID=''):void{ 
+		if(!addressID.length) return;
+		
+		this.setBillingAddress(false, addressID).then(res=>{
+			this.currentPaymentMethodID = '';
+		});
+	}
+	
 	public setAccountPrimaryPaymentMethodAsCartPaymentMethod():Promise<any>{
 		let data = {
 			copyFromType: 'accountPaymentMethod',
@@ -348,6 +383,7 @@ class MonatCheckoutController {
 	}
 	
 	public setCheckoutDefaults(){
+	
 		if(!this.publicService.cart.orderID.length || this.publicService.cart.orderRequirementsList.indexOf('fulfillment') === -1) return this.getCurrentCheckoutScreen(false, false);
 		this.publicService.doAction('setIntialShippingAndBilling').then(res=>{
 			this.cart = res.cart; 
