@@ -10,7 +10,7 @@
         	INDEX `idx_ip_from` (`ip_from`),
         	INDEX `idx_ip_to` (`ip_to`),
         	INDEX `idx_ip_from_to` (`ip_from`, `ip_to`)
-        )
+        );
 		
 		ALTER TABLE swsession
             LOCK=NONE,
