@@ -103,7 +103,7 @@ class MonatCheckoutController {
 			
 			this.totalSteps +=  2 + this.enrollmentSteps; 
 			if(!this.account.accountID.length) return;
-			this.getCurrentCheckoutScreen(true, true);
+			this.getCurrentCheckoutScreen(true, false);
 		});
 		
 		const currDate = new Date;
@@ -333,7 +333,10 @@ class MonatCheckoutController {
 	
 	public submitSponsor():Screen | void{
 		this.publicService.doAction('submitSponsor', {sponsorID: this.ownerAccountID}).then(res=>{
-			if(res.successfulActions) this.next();
+			if(res.successfulActions) {
+				this.hasSponsor = true; 
+				this.next();
+			}
 		});
 	}
 	

@@ -1540,6 +1540,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var accountType=account.getAccountType() ?: 'customer';
         var holdingPriceGroup = account.getPriceGroups();
         var order = getHibachiScope().getCart();
+        order = this.removeIneligibleOrderItems(order);
+        order = getOrderService().saveOrder(order);
+        getHibachiScope().flushORMSession(); 
         
         // First check for a price group on the account, then default to retail price group
         var priceGroup = (!isNull(holdingPriceGroup) && arrayLen(holdingPriceGroup)) ? holdingPriceGroup[1] : getService('priceGroupService').getPriceGroupByPriceGroupCode(2); 
@@ -1553,6 +1556,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         //Updating the prices to account for new statuses
         order = getOrderService().saveOrder(order);
         getHibachiScope().flushORMSession(); 
+        arguments.data['ajaxResponse']['cart'] = getHibachiScope().getCartData(cartDataOptions='full');
         return order;
      }
     
@@ -1804,8 +1808,27 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             var paymentData = {  requireBillingAddress: 0, copyFromType: 'accountPaymentMethod', accountPaymentMethodID: account.getPrimaryPaymentMethod().getAccountPaymentMethodID() };
             super.addOrderPayment(paymentData);
         }
-	    
-	    arguments.data['ajaxResponse'] = getHibachiScope().getCartData(cartDataOptions='full');
+	    arguments.data['ajaxResponse']['cart'] = getHibachiScope().getCartData(cartDataOptions='full');
 	}
     
+    public any function removeIneligibleOrderItems(order = getHibachiScope().getCart()){
+        var skuIDs = [];
+        
+        //add logic to also remove sku's with no price
+        for(var orderItem in arguments.order.getOrderItems()){
+            if(!orderItem.getSku().canBePurchased(getHibachiScope().getAccount())){
+                arrayAppend(skuIDs, orderItem.getSku().getSkuID());
+            }
+        }
+        
+        if(!arrayLen(skuIDs)) return arguments.order;
+        
+        var orderData = {
+            orderItemsToRemove: skuIDs,
+            updateOrderAmounts :false
+        }
+
+        return this.getOrderService().orderService.processOrder( arguments.order, orderData, 'removeOrderItem');
+        
+    }
 }

@@ -10,6 +10,7 @@ class MonatOrderItemsController {
 	
 	//@ngInject
 	constructor(public monatService, public orderTemplateService, public publicService, public observerService) {
+		this.observerService.attach(this.getOrderItems,'ownerAccountSelected');
 	}
 
 	public $onInit = () => {
@@ -45,11 +46,15 @@ class MonatOrderItemsController {
 	}
 	
 	public aggregateOrderItems = orderItems => {
+		this.todaysOrder = [];
+		this.starterKits = [];
+		this.starterKits = [];
+		
 		orderItems.forEach( item => {
 			var productType = item.sku.product.productType.productTypeName;
 			var systemCode = item.sku.product.productType.systemCode;
 			
-			if ( 'Starter Kit' === productType || 'Product Pack' === productType ) {
+			if ( 'Starter Kit' === productType || 'ProductPack' === systemCode ) {
 				this.starterKits.push( item );
 			} else if('Enrollment Fee - MP' === productType || 'VIPCustomerRegistr' === systemCode){
 				this.orderFees = item.extendedUnitPriceAfterDiscount;

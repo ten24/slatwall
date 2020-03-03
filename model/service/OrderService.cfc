@@ -3220,7 +3220,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 					if(okToRemove) {
 						// Delete this item
-						this.deleteOrderItem( orderItem );
+						var deleteOrderItemArguments = {
+							'orderItem':orderItem,
+							'updateOrderAmounts' : arguments.data.updateOrderAmounts ?: true
+						}
+						this.deleteOrderItem( argumentCollection=deleteOrderItemArguments );
 						orderItemRemoved = true;
 
 					}
@@ -5242,7 +5246,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return delete( arguments.order );
 	}
 
-	public any function deleteOrderItem( required any orderItem ) {
+	public any function deleteOrderItem( required any orderItem, updateOrderAmounts = true ) {
 		getHibachiEventService().announceEvent("beforeOrderItemDelete", arguments);
 
 		// Check delete validation
@@ -5254,8 +5258,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			removeOrderItemAndChildItemRelationshipsAndDelete( arguments.orderItem );
 
 			// Recalculate the order amounts
-			this.processOrder( order, {}, 'updateOrderAmounts' );
-			getHibachiScope().addModifiedEntity(order);
+			if(arguments.updateOrderAmounts){
+				this.processOrder( order, {}, 'updateOrderAmounts' );
+				getHibachiScope().addModifiedEntity(order);
+			}
 
 			getHibachiEventService().announceEvent("afterOrderItemDelete", arguments);
 			getHibachiEventService().announceEvent("afterOrderItemDeleteSuccess", arguments);

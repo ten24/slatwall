@@ -24,6 +24,8 @@ class EnrollmentMPController {
 	public productRecordsCount:any;
 	public paginationMethod = 'getproductsByCategoryOrContentID';
 	public paginationObject = {};
+	public isInitialized = false;
+	
 	
 	// @ngInject
 	constructor(public publicService, public observerService, public monatService, private rbkeyService) {}
@@ -33,8 +35,13 @@ class EnrollmentMPController {
 		this.observerService.attach(this.getProductList, 'createSuccess'); 
 		this.observerService.attach(this.showAddToCartMessage, 'addOrderItemSuccess'); 
 		$('.site-tooltip').tooltip();
-		this.publicService.doAction('setUpgradeOnOrder', {upgradeType: 'marketPartner'}).then(res=>{
-			this.getStarterPacks();
+		this.publicService.doAction('setUpgradeOnOrder,getStarterPackBundleStruct', {upgradeType: 'marketPartner'}).then(res=>{
+			this.bundles = res.bundles;
+			this.isInitialized = true;
+			for(let bundle in this.bundles){
+				let str = this.stripHtml(this.bundles[bundle].description);
+				this.bundles[bundle].description = str.length > 70 ? str.substring(0, str.indexOf(' ', 60)) + '...' : str;
+			}
 			this.getProductList();	
 		});
 	}
