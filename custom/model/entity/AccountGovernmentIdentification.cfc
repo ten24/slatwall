@@ -13,7 +13,7 @@ component {
 		return true;
 	}
 	
-	public boolean function validateGovernmentIdIsUniquePerCuntry() {
+	public boolean function validateGovernmentIdIsUniquePerCountry() {
 		return getDAO("accountDAO").getGovernmentIdNotInUseFlag(
 				this.getGovernmentIdentificationNumberHashed(),
 				this.getAccount().getAccountCreatedSite().getSiteID()

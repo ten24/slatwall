@@ -117,13 +117,26 @@ Notes:
 		<cfreturn true />
 	</cffunction>
 	
-	<cfscript>
-		public boolean function getGovernmentIdNotInUseFlag(required string governmentIdentificationNumberHashed, required string siteID){
-			var hql="Select count(accountGovIdentificationID) FROM SlatwallAccountGovernmentIdentification gid WHERE gid.governmentIdentificationNumberHashed = ? AND gid.account.accountCreatedSite.siteID = ?"; 
-			var params = [arguments.governmentIdentificationNumberHashed, arguments.siteID];
-			return  ormExecuteQuery(hql,params,true, {maxResults=1}) == 0;
-		}
-	</cfscript>
+
+	<cffunction name="getGovernmentIdNotInUseFlag" returntype="boolean" access="public">
+		<cfargument name="governmentIdentificationNumberHashed" required="true" type="string" />
+		<cfargument name="siteID" required="true" type="string" />
+
+		<cfset var params = [arguments.governmentIdentificationNumberHashed, arguments.siteID]/>
+		<cfset var hql ="
+					Select count(accountGovIdentificationID) 
+					FROM SlatwallAccountGovernmentIdentification gid 
+					WHERE gid.governmentIdentificationNumberHashed = ? 
+					AND gid.account.accountCreatedSite.siteID = ?
+		"/>
+		<cfset var count = ormExecuteQuery( hql, params, true, {maxresults=1} )/>
+
+		<cfif count GT 0>
+			<cfreturn false />
+		</cfif>
+		<cfreturn true />
+	</cffunction>
+	
 	
 	<cffunction name="getAccountIDByPrimaryEmailAddress">
 		<cfargument name="emailAddress" required="true" type="string" />

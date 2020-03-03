@@ -2,7 +2,7 @@
 	"properties": {
 		"governmentIdentificationNumber": [
 			{ "contexts": "save", "method": "validateGovernmentIdentificationNumber" },
-			{ "contexts": "save", "method": "validateGovernmentIdIsUniquePerCuntry" }
+			{ "contexts": "save", "method": "validateGovernmentIdIsUniquePerCountry" }
 		]
 	}
 }
