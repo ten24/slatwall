@@ -185,14 +185,14 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	}
 	
 	public any function getAccount(){
-		if ( !StructKeyExists(veriables, 'account') || IsNull(veriables.account) ) {
-			veriables.account = getOrder().getAccount() ?: getHibachiScope().getAccount();
+		if ( !StructKeyExists(variables, 'account') || IsNull(variables.account) ) {
+			variables.account = getOrder().getAccount() ?: getHibachiScope().getAccount();
 		}
-		return veriables.account;
+		return variables.account;
 	}
 	
 	public any function getPriceGroup(){
-		if ( !StructKeyExists(veriables, 'priceGroup') || IsNull(veriables.priceGroup) ) {
+		if ( !StructKeyExists(variables, 'priceGroup') || IsNull(variables.priceGroup) ) {
 			
 			/*
 	            Price group is prioritized as so: 
@@ -203,15 +203,15 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	        */
 	        
 	        if(!IsNull(this.getOrder().getPriceGroup()) ){ 
-	            veriables.priceGroup = this.getOrder().getPriceGroup(); //order price group
+	            variables.priceGroup = this.getOrder().getPriceGroup(); //order price group
 	        } else if(!IsNull(this.getAccount().getPriceGroups()) && ArrayLen(this.getAccount().getPriceGroups()) ){ 
-	            veriables.priceGroup = this.getAccount().getPriceGroups()[1]; //account price group
+	            variables.priceGroup = this.getAccount().getPriceGroups()[1]; //account price group
 	        } else {
-	        	veriables.priceGroup = getService('priceGroupService').getPriceGroupByPriceGroupCode(2) // default to RetailPriceGroup
+	        	variables.priceGroup = getService('priceGroupService').getPriceGroupByPriceGroupCode(2) // default to RetailPriceGroup
 	        }
 	        
 		}
-		return veriables.priceGroup;
+		return variables.priceGroup;
 	}
 
 	public any function getPrice() {
