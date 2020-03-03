@@ -60,6 +60,7 @@ component displayname="EmailTemplate" entityname="SlatwallEmailTemplate" table="
 	// Related Object Properties (many-to-one)
 
 	// Related Object Properties (one-to-many)
+	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" fkcolumn="emailTemplateID" cascade="all" inverse="true" lazy="extra";
 	property name="eventTriggers" singularname="eventTrigger" cfc="EventTrigger" fieldtype="one-to-many" fkcolumn="emailTemplateID" cascade="all" inverse="true" lazy="extra";
 	property name="forms" singularname="form" cfc="Form" fieldtype="one-to-many" fkcolumn="emailTemplateID" cascade="all";
 	// Related Object Properties (many-to-many)
@@ -79,7 +80,11 @@ component displayname="EmailTemplate" entityname="SlatwallEmailTemplate" table="
 
 
 	// ============ START: Non-Persistent Property Methods =================
+	//CUSTOM PROPERTIES BEGIN
 
+ property name="vipBody" length="4000"  ormtype="string" hb_formFieldType="wysiwyg";
+ property name="marketPartnerBody" length="4000"  ormtype="string" hb_formFieldType="wysiwyg";
+ property name="customerBody" length="4000"  ormtype="string" hb_formFieldType="wysiwyg";//CUSTOM PROPERTIES END
 	public array function getEmailTemplateObjectOptions() {
 		if(!structKeyExists(variables, "emailTemplateObjectOptions")) {
 			var emd = getService("hibachiService").getEntitiesMetaData();

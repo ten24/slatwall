@@ -165,18 +165,28 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 
 	public string function getSuggestedShippingAddressName(){
 		if( !isNull(this.getShippingAddress()) ){
-			var verificationStruct = getService("AddressService").verifyAddressWithShippingIntegration(this.getShippingAddress().getAddressID());
-			if(!isNull(verificationStruct) && structKeyExists(verificationStruct,"suggestedAddress")){
-				return getService("AddressService").getAddressName(verificationStruct.suggestedAddress);
+			if(!structKeyExists(variables,'suggestedShippingAddressName')){
+				var verificationStruct = getService("AddressService").verifyAddressByID(this.getShippingAddress().getAddressID());
+				if(!isNull(verificationStruct) && structKeyExists(verificationStruct,"suggestedAddress")){
+					variables.suggestedShippingAddressName = getService("AddressService").getAddressName(verificationStruct.suggestedAddress);
+				}
+			}
+			if(structKeyExists(variables,'suggestedShippingAddressName')){
+				return variables.suggestedShippingAddressName;
 			}
 		}
 	}
 
 	public any function getSuggestedShippingAddressStruct(){
 		if( !isNull(this.getShippingAddress()) ){
-			var verificationStruct = getService("AddressService").verifyAddressWithShippingIntegration(this.getShippingAddress().getAddressID());
-			if(!isNull(verificationStruct) && structKeyExists(verificationStruct,"suggestedAddress")){
-				return verificationStruct.suggestedAddress;
+			if(!structKeyExists(variables,'suggestedShippingAddressStruct')){
+				var verificationStruct = getService("AddressService").verifyAddressByID(this.getShippingAddress().getAddressID());
+				if(!isNull(verificationStruct) && structKeyExists(verificationStruct,"suggestedAddress")){
+					variables.suggestedShippingAddressStruct = verificationStruct.suggestedAddress;
+				}
+			}
+			if(structKeyExists(variables,'suggestedShippingAddressStruct')){
+				return variables.suggestedShippingAddressStruct;
 			}
 		}
 	}

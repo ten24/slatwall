@@ -221,14 +221,19 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	// ==================== START: Logical Methods =========================	
 
 	//CUSTOM PROPERTIES BEGIN
-property name="SAPItemCode" ormtype="string";
+property name="sapItemCode" ormtype="string";
     property name="disableOnFlexshipFlag" ormtype="boolean";
     property name="disableOnRegularOrderFlag" ormtype="boolean";
-    property name="onTheFlyKitFlag" ormtype="boolean";
+	property name="onTheFlyKitFlag" ormtype="boolean";
+	property name="vipFlag" ormtype="boolean" default="1";
+	property name="mpFlag" ormtype="boolean" default="1";
+	property name="retailFlag" ormtype="boolean" default="1";
+	
+	// Non-persistent properties
     property name="personalVolumeByCurrencyCode" persistent="false";
-    property name="comissionablelVolumeByCurrencyCode" persistent="false";
+	property name="comissionablelVolumeByCurrencyCode" persistent="false";
 
-   
+
  property name="salesCategoryCode" ormtype="string" hb_formFieldType="select";
  property name="backorderDate" ormtype="timestamp" hb_formatType="date";//CUSTOM PROPERTIES END
 	public any function getSkuBundleCollectionList(){
@@ -616,50 +621,37 @@ property name="SAPItemCode" ormtype="string";
 	public any function getPriceByCurrencyCode( string currencyCode='USD', numeric quantity=1, array priceGroups, string accountID ) {
 		var cacheKey = 'getPriceByCurrencyCode#arguments.currencyCode#';
 
-		var account = getHibachiScope().getAccount();
-		if(structKeyExists(arguments,'accountID') && len(arguments.accountID)){
-			account = getService('AccountService').getAccount(arguments.accountID);
-		}
 		if(!structKeyExists(arguments,'priceGroups')){
+			
+			if(structKeyExists(arguments, 'accountID') && len(arguments.accountID)){
+				var account = getService('AccountService').getAccount(arguments.accountID);
+			} else {
+				var account = getHibachiScope().getAccount();
+			}
+			
 			arguments.priceGroups = account.getPriceGroups(); 
 		}
 
 		for(var priceGroup in arguments.priceGroups){
-			cacheKey &= '_#priceGroup.getPriceGroupID()#';
+			cacheKey &= '_pg:#priceGroup.getPriceGroupCode()#';
 		}
 
-		arguments.skuID = this.getSkuID(); 
-		if(structKeyExists(arguments, "quantity")){
-			cacheKey &= '#arguments.quantity#';
-			if(!structKeyExists(variables,cacheKey)){
-				var skuPriceResults = getDAO("SkuPriceDAO").getSkuPricesForSkuCurrencyCodeAndQuantity(argumentCollection=arguments);
-				if(!isNull(skuPriceResults) && isArray(skuPriceResults) && arrayLen(skuPriceResults) > 0){
-					var prices = [];
-						for(var i=1; i <= arrayLen(skuPriceResults); i++){
-							if(isNull(skuPriceResults[i]['price'])){
-								skuPriceResults[i]['price'] = 0;
-							}
-							ArrayAppend(prices, skuPriceResults[i]['price']);
-						}
-						ArraySort(prices, "numeric","asc");
-						variables[cacheKey]= prices[1];
-				}
+		if(structKeyExists(arguments, "quantity")) {
+
+			cacheKey &= '_q:#arguments.quantity#';
 				
-				if(structKeyExists(variables,cacheKey)){
-					return variables[cacheKey];
-				}
-				
-				var baseSkuPrice = getDAO("SkuPriceDAO").getBaseSkuPriceForSkuByCurrencyCode(this.getSkuID(), arguments.currencyCode);  
-				if(!isNull(baseSkuPrice)){
-					variables[cacheKey] = baseSkuPrice.getPrice(); 
-				}
-				
+			if(!structKeyExists(variables, cacheKey) ) {
+				arguments.skuID = this.getSkuID(); 
+				variables[cacheKey] = getService('SkuService').getPriceBySkuIDAndCurrencyCodeAndQuantity( argumentCollection=arguments ); 
 			}
 			
-			if(structKeyExists(variables,cacheKey)){
+			if( StructKeyExists(variables, cacheKey) ) {
+				//we return 'null' string from custom service, instead of the NULL val
+				if(variables[cacheKey] == "null") { 
+					return;
+				}
 				return variables[cacheKey];
 			}
-			
 		}
 		
 		
@@ -1480,6 +1472,9 @@ property name="SAPItemCode" ormtype="string";
 	}
 
 	public any function getAverageCost(required string currencyCode, any location){
+		if(this.setting('skuDisableAverageCostCalculation') == true){
+			return 0;
+		}
 		var params.skuID = this.getSkuID();
 		params.currencyCode = arguments.currencyCode;
 		if(!isNull(arguments.location)){
@@ -1490,6 +1485,9 @@ property name="SAPItemCode" ormtype="string";
 	}
 	
 	public any function getAverageLandedCost(required string currencyCode, any location){
+		if(this.setting('skuDisableAverageCostCalculation') == true){
+			return 0;
+		}
 		var params.skuID = this.getSkuID();
 		params.currencyCode = arguments.currencyCode;
 		if(!isNull(arguments.location)){
@@ -1813,6 +1811,16 @@ property name="SAPItemCode" ormtype="string";
 		return true;
 	}
 
+	public boolean function isValidPublishedEndDateTime() {
+		return 	isNull(this.getPublishedStartDateTime()) || 
+				isNull(this.getPublishedEndDateTime()) ||
+				(
+					!isNull(this.getPublishedStartDateTime()) && 
+					!isNull(this.getPublishedEndDateTime()) &&
+					dateDiff("n", this.getPublishedStartDateTime(), this.getPublishedEndDateTime()) >= 0
+				);
+	}
+
 	// ===============  END: Custom Validation Methods =====================
 
 	// =============== START: Custom Formatting Methods ====================
@@ -2023,7 +2031,35 @@ property name="SAPItemCode" ormtype="string";
 
 	// ==================  END:  Deprecated Methods ========================	//CUSTOM FUNCTIONS BEGIN
 
-public any function getPersonalVolumeByCurrencyCode(string currencyCode, string accountID){
+public boolean function canBePurchased(required any account){
+		
+		if ( !isNull( arguments.account.getAccountType() ) ) {
+			
+			var notValidVipItem = arguments.account.getAccountType() == "vip" && this.getVipFlag() != true;
+			if(notValidVipItem){
+				return false;
+			}
+			var notValidMpItem = arguments.account.getAccountType() == "marketPartner" && this.getMpFlag() != true;
+			if(notValidMpItem){
+				return false;
+			}
+			var notValidRetailItem = arguments.account.getAccountType() == "customer" && this.getRetailFlag() != true;
+			if(notValidRetailItem){
+				return false;
+			}
+			
+		} else {
+			
+			// If failed to get account type (not logged in usually), and isn't a retail Sku
+			if ( this.getRetailFlag() != true ) {
+				return false;
+			}
+		}
+		
+        return true; 
+	}
+	
+    public any function getPersonalVolumeByCurrencyCode(string currencyCode, string accountID){
     	if (!structKeyExists(arguments, "currencyCode") || isNull(arguments.currencyCode)){
     		arguments.currencyCode = this.getCurrencyCode();
     	}

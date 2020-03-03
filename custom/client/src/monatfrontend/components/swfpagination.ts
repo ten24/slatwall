@@ -13,6 +13,8 @@ class SWFPaginationController {
     public beginPaginationAt:number;
     public displayPages:any;
     public elipsesNum;
+    public hasNextPageSet:boolean = true;
+    
 	// @ngInject
 	constructor(public observerService, public $scope,public publicService) { 
         this.observerService.attach(this.init,"PromiseComplete"); 
@@ -21,9 +23,10 @@ class SWFPaginationController {
         }else {
             this.elipsesNum = 10;
         }
-	};
+	}
 	
 	public init = () => {
+	    this.pageTracker = 1;
         this.totalPages = Math.ceil(this.recordsCount / this.itemsPerPage);
         let holdingArray = [];
         let holdingDisplayPagesArray = [];
@@ -78,13 +81,28 @@ class SWFPaginationController {
 			}
 		}
         //END: Ellipsis Logic
+        	   
+        if(this.displayPages[this.displayPages.length-1] >= this.totalPageArray[this.totalPageArray.length-1]){
+           this.hasNextPageSet = false;
+        }else{
+           this.hasNextPageSet = true;
+        }
 
         this.argumentsObject['pageRecordsShow'] = this.itemsPerPage;
         this.argumentsObject['currentPage'] = pageNumber;
+        this.publicService.paginationIsLoading = true;
         
         return this.publicService.doAction(this.action, this.argumentsObject).then(result=>{
-            this.recordList = result.productList ? result.productList : result.pageRecords;
+            this.recordList = 
+                (result.productList) 
+                ? result.productList 
+                :(result.pageRecords) 
+                ? result.pageRecords 
+                :result.ordersOnAccount.ordersOnAccount;
+            
             this.pageTracker = pageNumber;
+            this.publicService.paginationIsLoading = false;
+            this.observerService.notify('paginationEvent');
         });
     }
 

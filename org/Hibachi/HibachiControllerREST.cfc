@@ -18,6 +18,7 @@ component output="false" accessors="true" extends="HibachiController" {
     this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getPropertyDisplayOptions');
     this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getValidation');
     this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getEventOptionsByEntityName');
+    this.anyAdminMethods=listAppend(this.anyAdminMethods, 'savePersonalCollection');
     this.anyAdminMethods=listAppend(this.anyAdminMethods, 'put');
     this.anyAdminMethods=listAppend(this.anyAdminMethods, 'delete');
     this.anyAdminMethods=listAppend(this.anyAdminMethods, 'log');
@@ -435,8 +436,15 @@ component output="false" accessors="true" extends="HibachiController" {
             argumentsCollection
         */
         var propertyDisplayOptions = [];
-        var entity = getService('hibachiService').invokeMethod('new#arguments.rc.entityName#');
-        
+
+		if(structKeyExists(arguments.rc, 'entityID') && len(arguments.rc.entityID)){
+			var entity = getService('hibachiService').invokeMethod('get#arguments.rc.entityName#',{1:arguments.rc.entityID});
+		}
+
+		if(isNull(entity)){ 
+			var entity = getService('hibachiService').invokeMethod('new#arguments.rc.entityName#');
+		}        
+
         if(entity.hasAttributeCode(arguments.rc.property)){
         	var attribute = getService('attributeService').getAttributeByAttributeCode(arguments.rc.property);
         	
@@ -752,6 +760,22 @@ component output="false" accessors="true" extends="HibachiController" {
             getService('HibachiUtilityService').logApiRequest(arguments.rc, "get");
         } 
         
+    }
+    
+    public any function savePersonalCollection(required struct rc){
+        
+         if(structKEyExists(arguments.rc, 'serializedJSONData') && isSimpleValue(arguments.rc.serializedJSONData) && isJSON(arguments.rc.serializedJSONData)) {
+            var structuredData = deserializeJSON(arguments.rc.serializedJSONData);
+            if(!structKeyExists(arguments.rc,'publicFlag') || !arguments.rc.publicFlag){
+                structuredData.accountOwner = {
+                    accountID : getHibachiScope().getAccount().getAccountID()
+                };
+            }
+            arguments.rc.serializedJSONData = serializeJson(structuredData);
+         }
+        
+        arguments.rc.entityName = 'Collection';
+        return this.post(argumentCollection=arguments);
     }
 
     public any function post( required struct rc ) {

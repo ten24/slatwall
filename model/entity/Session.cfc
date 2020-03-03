@@ -132,8 +132,10 @@ property name="currentFlexship" type="any" cfc="OrderTemplate" fieldtype="many-t
 	
 	public any function getOrder() {
 		if(structKeyExists(variables, "order")) {
+			this.logHibachi('Session Get Existing Cart - #variables.order.getOrderID()#', true);
 			return variables.order;
 		} else if (!structKeyExists(variables, "requestOrder")) {
+			this.logHibachi('Session Get New Cart', true);
 			variables.requestOrder = getService("orderService").newOrder();
 			
 			// Set default stock location based on current request site, uses first location by default
@@ -151,8 +153,8 @@ property name="currentFlexship" type="any" cfc="OrderTemplate" fieldtype="many-t
 				var siteOrderOrigin = getService('HibachiService').getOrderOrigin(site.setting('siteOrderOrigin'));
 				requestOrder.setOrderOrigin(siteOrderOrigin);
 			}
-			//Setup Site Created if using slatwall cms
-			if(!isNull(getHibachiScope().getSite()) && getHibachiScope().getSite().isSlatwallCMS() && !isNull(getHibachiScope().getCurrentRequestSite())){
+			//Setup Site Created 
+			if(!isNull(getHibachiScope().getCurrentRequestSite())){
 				variables.requestOrder.setOrderCreatedSite(getHibachiScope().getCurrentRequestSite());
 			}
 			
@@ -179,12 +181,12 @@ property name="currentFlexship" type="any" cfc="OrderTemplate" fieldtype="many-t
 	}
 	
 	public string function getRbLocale(){
-		if(structKeyExists(variables, 'rbLocale')){
+		if(structKeyExists(variables, 'rbLocale') && !len(getAccount().getPreferredLocale())){
 			return variables.rbLocale;
 		}
 		
-		if(len(getAccount().getPreferedLocale())){
-			variables.rbLocale = getAccount().getPreferedLocale();
+		if(len(getAccount().getPreferredLocale())){
+			variables.rbLocale = getAccount().getPreferredLocale();
 		}else if(structKeyExists(COOKIE, 'rbLocale')){
 			variables.rbLocale = COOKIE['rbLocale'];
 		}else{
@@ -198,6 +200,7 @@ property name="currentFlexship" type="any" cfc="OrderTemplate" fieldtype="many-t
 		if(isValid('regex',arguments.rbLocale,'\w{2}(_\w{2})?')){
 			getService("hibachiTagService").cfcookie(name='rbLocale', value=arguments.rbLocale,expires='never');
 			variables.rbLocale = arguments.rbLocale;
+			getHibachiScope().setRbLocale(arguments.rbLocale);
 		}
 	}
 	

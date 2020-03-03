@@ -164,8 +164,14 @@ component extends="HibachiService" accessors="true" output="false" {
 		}
 	}
 
+	public void function updateWorkflowTriggerRunning(required any workflowTrigger,required boolean runningFlag){
+		//application based workflows rely on application locking instead of database so keep running flag false
+		if(arguments.workflowTrigger.getLockLevel()=='database' || !arguments.runningFlag){
+			getWorkflowDAO().updateWorkflowTriggerRunning(workflowTriggerID=arguments.workflowTrigger.getWorkflowTriggerID(), runningFlag=arguments.runningFlag);
+		}
+	}
+
 	public any function runWorkflowsByScheduleTrigger(required any workflowTrigger) {
-		
 		var timeout = workflowTrigger.getTimeout();
 		if(!isNull(timeout)){
 			//convert to seconds
@@ -173,11 +179,20 @@ component extends="HibachiService" accessors="true" output="false" {
 			getService('hibachiTagService').cfsetting(requesttimeout=timeout);
 		}
 
-		if(arguments.workflowTrigger.getStartDateTime() > now() || (!isNull(arguments.workflowTrigger.getEndDateTime()) && arguments.workflowTrigger.getEndDateTime() < now())){
+		if(
+			arguments.workflowTrigger.getLockLevel()=='database'
+			&& arguments.workflowTrigger.getStartDateTime() > now() 
+			|| (
+				!isNull(arguments.workflowTrigger.getEndDateTime()) 
+				&& arguments.workflowTrigger.getEndDateTime() < now()
+			)
+		){	
 			return arguments.workflowTrigger;
 		}
+		
+		lock name="runWorkflowsByScheduleTrigger_#getHibachiScope().getServerInstanceKey()#_#arguments.workflowTrigger.getWorkflowTriggerID()#" timeout=timeout{
 			//Change WorkflowTrigger runningFlag to TRUE
-			getWorkflowDAO().updateWorkflowTriggerRunning(workflowTriggerID=arguments.workflowTrigger.getWorkflowTriggerID(), runningFlag=true);
+			updateWorkflowTriggerRunning(workflowTrigger=arguments.workflowTrigger, runningFlag=true);
 	
 			if(workflowTrigger.getSaveTriggerHistoryFlag() == true){
 				// Create a new workflowTriggerHistory to be logged
@@ -185,7 +200,7 @@ component extends="HibachiService" accessors="true" output="false" {
 				//Attach workflowTrigger to workflowTriggerHistory
 				workflowTriggerHistory.setWorkflowTrigger(arguments.workflowTrigger);
 				workflowTriggerHistory.setStartTime(now());
-	
+				workflowTriggerHistory.setServerInstanceKey(getHibachiScope().getServerInstanceKey());
 				// Persist the info to the DB
 				workflowTriggerHistory = this.saveWorkflowTriggerHistory(workflowTriggerHistory);
 				getHibachiDAO().flushORMSession();
@@ -197,31 +212,29 @@ component extends="HibachiService" accessors="true" output="false" {
 				//get workflowTriggers Object
 				//execute Collection and return only the IDs
 
-
-				if(
-					!isNull(arguments.workflowTrigger.getScheduleCollectionConfig()) 
-					|| !isNull(arguments.workflowTrigger.getScheduleCollection())
-				){
-					//transient collection takes precedent
-					if(!isNull(arguments.workflowTrigger.getScheduleCollectionConfig())){
-						var scheduleCollectionConfig = deserializeJSON(arguments.workflowTrigger.getScheduleCollectionConfig());
-						var currentObjectName = scheduleCollectionConfig['baseEntityName'];
-						var scheduleCollection = getService('HibachiCollectionService').invokeMethod('get#currentObjectName#CollectionList');
-						scheduleCollection.setCollectionConfigStruct(scheduleCollectionConfig);
-					}else{
-						var scheduleCollection = arguments.workflow.getScheduleCollection();
-						var currentObjectName = arguments.workflowTrigger.getScheduleCollection().getCollectionObject();
-					}
+				getService('hibachiEventService').announceEvent('beforeWorkflowTriggerPopulate',{workflowTrigger=arguments.workflowTrigger,timeout=timeout});
+				
+				if(	!isNull(arguments.workflowTrigger.getCollection()) ){
+					
+					var scheduleCollection = arguments.workflowTrigger.getCollection();
+					var currentObjectName = arguments.workflowTrigger.getCollection().getCollectionObject();
 				
 					if(arguments.workflowTrigger.getCollectionPassthrough()){
+							
 							//Don't Instantiate every object, just passthroughn the collection records returned
 							scheduleCollection.setPageRecordsShow(arguments.workflowTrigger.getCollectionFetchSize());
-							var triggerCollectionResult = scheduleCollection.getPageRecords();
+							
 							var processData = {
-								entity = this.invokeMethod('new#currentObjectName#'),
-								workflowTrigger = arguments.workflowTrigger,
-								collectionData = { 'collectionData' = triggerCollectionResult}
+								entity : this.invokeMethod('new#currentObjectName#'),
+								workflowTrigger : arguments.workflowTrigger,
+								collectionData : { 'collectionConfig' = scheduleCollection.getCollectionConfigStruct() }
 							};
+
+							if(arguments.workflowTrigger.getCollectionFetchRecordsFlag()){
+								scheduleCollection.setDirtyReadFlag(true);
+								processData.collectionData['collectionData'] = scheduleCollection.getPageRecords();
+							}
+
 							//Call proccess method to execute Tasks
 							this.processWorkflow(workflowTrigger.getWorkflow(), processData, 'execute');
 					} else {
@@ -300,9 +313,10 @@ component extends="HibachiService" accessors="true" output="false" {
 					workflowTrigger.setWorkflowTriggerException(e);
 				}
 			}
-	
-			//Change WorkflowTrigger runningFlag to FALSE
-			getWorkflowDAO().updateWorkflowTriggerRunning(workflowTriggerID=arguments.workflowTrigger.getWorkflowTriggerID(), runningFlag=false);
+		}
+		
+		//Change WorkflowTrigger runningFlag to FALSE
+		updateWorkflowTriggerRunning(workflowTrigger=arguments.workflowTrigger, runningFlag=false);
 	
 
 		if(!isNull(workflowTriggerHistory)) {
@@ -323,7 +337,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		var nextRunDateTime = arguments.workflowTrigger.getSchedule().getNextRunDateTime(argumentCollection=runDateTimeData);
 
 		workflowTrigger.setNextRunDateTime( nextRunDateTime );
-		this.saveWorkflowTrigger(workflowTrigger);
+		this.saveWorkflowTrigger(entity=workflowTrigger, resetCacheFlag=false);
 
 
 		// Flush the DB again to persist all updates
@@ -333,7 +347,7 @@ component extends="HibachiService" accessors="true" output="false" {
 
 	private boolean function executeTaskAction(required any workflowTaskAction, any entity, required string type, struct data = {}){
 		var actionSuccess = false;
-	
+
 		switch (workflowTaskAction.getActionType()) {
 			// EMAIL
 			case 'email' :
@@ -399,14 +413,44 @@ component extends="HibachiService" accessors="true" output="false" {
 				
 				break;
 			case 'processByQueue' :
-				if(structKeyExists(arguments.data, 'collectionData')){
+				//we need some form of collection data for this to work	
+				if(!structKeyExists(arguments.data, 'collectionData') && !structKeyExists(arguments.data, 'collectionConfig')){
+					actionSuccess = false; 
+					break;
+				}
+
+				var processEntityQueueFlagPropertyName = arguments.workflowTaskAction.getProcessEntityQueueFlagPropertyName(); 
+				if(!isNull(processEntityQueueFlagPropertyName)){
+					if(!arguments.entity.hasProperty(processEntityQueueFlagPropertyName)){
+						actionSuccess = false; 
+						break;
+					}	
+
+					var entityCollection = arguments.entity.getEntityCollectionList();
+					entityCollection.setCollectionConfigStruct(arguments.data.collectionConfig); 
+					
+					var updateData = {
+						'#processEntityQueueFlagPropertyName#': true
+					};
+
+					entityCollection.executeUpdate(updateData);		
+
+					//call entity queue dao to insert into with a select
+					getHibachiEntityQueueDAO().bulkInsertEntityQueueByFlagPropertyName(processEntityQueueFlagPropertyName, arguments.entity.getClassName(), arguments.workflowTaskAction.getProcessMethod(), updateData[processEntityQueueFlagPropertyName]);
+					
+					actionSuccess = true; 
+					break; 
+				} 
+				
+				//fallback solution not ideal for large data sets
+				if(structKeyExists(arguments.data, 'collectionData')){ 	
+					
 					var primaryIDName = getHibachiService().getPrimaryIDPropertyNameByEntityName(arguments.entity.getClassName()); 
 					var primaryIDsToQueue = getHibachiUtilityService().arrayOfStructsToList(arguments.data.collectionData, primaryIDName);
-					getHibachiEntityQueueDAO().bulkInsertEntityQueueByPrimaryIDs(primaryIDsToQueue, arguments.entity.getClassName(), workflowTaskAction.getProcessMethod(), workflowTaskAction.getUniqueFlag());
-					actionSucess = true; 
-				} else { 
-					actionSucess = false; 
-				}	
+					getHibachiEntityQueueDAO().bulkInsertEntityQueueByPrimaryIDs(primaryIDsToQueue, arguments.entity.getClassName(), arguments.workflowTaskAction.getProcessMethod(), workflowTaskAction.getUniqueFlag());
+					
+					actionSuccess = true; 
+				}
 				break;
 
 			//IMPORT
@@ -459,8 +503,8 @@ component extends="HibachiService" accessors="true" output="false" {
 			if(
 				workflowTask.getActiveFlag() 
 				&& (
-					!structKeyExists(arguments.data,'entity')
-					|| entityPassesAllWorkflowTaskConditions(arguments.data.entity, workflowTask.getTaskConditionsConfigStruct())
+					structKeyExists(arguments.data,'entity')
+					|| entityPassesAllWorkflowTaskConditions(arguments.data.entity, workflowTask.getTaskConditionsConfigStruct()) 
 				)
 			){
 				// Now loop over all of the actions that can now be run that the workflow task condition has passes
@@ -486,7 +530,7 @@ component extends="HibachiService" accessors="true" output="false" {
 							}
         			}
 				}
-			}
+			} 
 		}
 		if(structKeyExists(arguments.data,'entity')){
 			return arguments.data.entity;
@@ -520,7 +564,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		return arguments.entity;
 	}
 	
-	public any function saveWorkflowTrigger(required any entity, struct data={}) {
+	public any function saveWorkflowTrigger(required any entity, struct data={}, resetCacheFlag=true) {
 
 		// Call the default save logic
 		arguments.entity = super.save(argumentcollection=arguments);
@@ -532,7 +576,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		}
 		
 		// If there aren't any errors then flush, and clear cache
-		if(!getHibachiScope().getORMHasErrors()) {
+		if(!getHibachiScope().getORMHasErrors() && arguments.resetCacheFlag) {
 			
 			getHibachiCacheService().updateServerInstanceSettingsCache();
 			

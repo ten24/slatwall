@@ -19,6 +19,7 @@
 						<hb:HibachiPropertyDisplay object="#local.priceGroup#" property="priceGroupName">
 					</cfloop>
 				</cfif>	
+				
 			<cfelseif !isNull(rc.order.getAccount()) && rc.order.getAccount().getOrganizationFlag()>
  				<hb:HibachiPropertyDisplay object="#rc.order.getAccount()#" property="company">	
 			<cfelseif !isNull(rc.order.getAccount())>
@@ -26,9 +27,16 @@
 				<hb:HibachiPropertyDisplay object="#rc.order.getAccount()#" property="emailAddress" valuelink="mailto:#rc.order.getAccount().getEmailAddress()#">
 				<hb:HibachiPropertyDisplay object="#rc.order.getAccount()#" property="phoneNumber">
 				
-				<cfloop index="local.priceGroup" array="#rc.order.getAccount().getPriceGroups()#">
-					<hb:HibachiPropertyDisplay object="#local.priceGroup#" property="priceGroupName">
-				</cfloop>
+				
+				<!--- The pricegroup of the account when the order was placed --->
+				<cfif !isNull(rc.order.getPriceGroup())>
+					<hb:HibachiPropertyDisplay object="#rc.order.getPriceGroup()#" property="priceGroupName" title="Order Price Group">
+				<cfelse>
+					<!--- The accounts current primary pricegroup --->
+					<cfloop index="local.priceGroup" array="#rc.order.getAccount().getPriceGroups()#">
+						<hb:HibachiPropertyDisplay object="#local.priceGroup#" property="priceGroupName" title="Account Price Group">
+					</cfloop>
+				</cfif>
 				
 			</cfif>
 			
@@ -97,6 +105,9 @@
 				<cfif !isNull(rc.order.getOrderCloseDateTime())>
 					<hb:HibachiPropertyDisplay object="#rc.order#" property="orderCloseDateTime" edit="false" displayType="table">
 				</cfif>
+				<cfif !isNull(rc.order.getCommissionPeriod())>
+					<hb:HibachiPropertyDisplay object="#rc.order#" property="commissionPeriod" edit="false" displayType="table">
+				</cfif>
 				<hb:HibachiPropertyTableBreak header="Totals" />
 			</hb:HibachiPropertyTable>
 		
@@ -107,8 +118,13 @@
 				<sw-simple-property-display object="#OrderJSON#" property="calculatedCommissionableVolumeSubtotal" title="Commissionable Volume Subtotal" edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
 				<sw-simple-property-display object="#OrderJSON#" property="calculatedCommissionableVolumeDiscountTotal" title="Commissionable Volume Discount Total" edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
 				<sw-simple-property-display object="#OrderJSON#" property="calculatedCommissionableVolumeTotal" title="Commissionable Volume Total" edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
+				<cfif rc.order.getVATTotal() GT 0 >
+					<sw-simple-property-display object="#OrderJSON#" property="calculatedVATTotal" title="VAT Total" currency-flag="true"  edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
+				</cfif>
 				<sw-simple-property-display object="#OrderJSON#" property="calculatedSubTotal" title="Subtotal" currency-flag="true" edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
-				<sw-simple-property-display object="#OrderJSON#" property="calculatedTaxTotal" title="Tax Total" currency-flag="true"  edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
+				<cfif rc.order.getVATTotal() EQ 0 >
+					<sw-simple-property-display object="#OrderJSON#" property="calculatedTaxTotal" title="Tax Total" currency-flag="true"  edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
+				</cfif>
 				<sw-simple-property-display object="#OrderJSON#" property="calculatedFulfillmentTotal" currency-flag="true"  title="Fulfillment Total" edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
 				<sw-simple-property-display object="#OrderJSON#" property="calculatedDiscountTotal" currency-flag="true"  title="Discount Total" edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
 				<sw-simple-property-display object="#OrderJSON#" property="calculatedTotal" default="#rc.order.getTotal()#" currency-flag="true" title="Total" edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>

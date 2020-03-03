@@ -37,6 +37,7 @@ component {
 	property name="mainCreditCardOnOrder" persistent="false";
 	property name="mainCreditCardExpirationDate" persistent="false";
 	property name="mainPromotionOnOrder" persistent="false";
+
     property name="calculatedExtendedPersonalVolume" ormtype="big_decimal" hb_formatType="none";
     property name="calculatedExtendedTaxableAmount" ormtype="big_decimal" hb_formatType="none";
     property name="calculatedExtendedCommissionableVolume" ormtype="big_decimal" hb_formatType="none";
@@ -49,6 +50,17 @@ component {
     property name="calculatedExtendedRetailCommissionAfterDiscount" ormtype="big_decimal" hb_formatType="none";
     property name="calculatedExtendedProductPackVolumeAfterDiscount" ormtype="big_decimal" hb_formatType="none";
     property name="calculatedExtendedRetailValueVolumeAfterDiscount" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedQuantityDelivered" ormtype="integer";
+    property name="orderItemSkuBundles" singularname="orderItemSkuBundle" fieldType="one-to-many" type="array" fkColumn="orderItemID" cfc="OrderItemSkuBundle" inverse="true" cascade="all-delete-orphan";
+	
+    public void function refreshAmounts(){
+        variables.personalVolume = getCustomPriceFieldAmount('personalVolume');
+        variables.taxableAmount = getCustomPriceFieldAmount('taxableAmount');
+        variables.commissionableVolume = getCustomPriceFieldAmount('commissionableVolume');
+        variables.retailCommission = getCustomPriceFieldAmount('retailCommission');
+        variables.productPackVolume = getCustomPriceFieldAmount('productPackVolume');
+        variables.retailValueVolume = getCustomPriceFieldAmount('retailValueVolume');
+    }
     property name="returnsReceived" ormtype="string";
     property name="kitFlagCode" ormtype="string";
     property name="itemCategoryCode" ormtype="string";
@@ -197,6 +209,11 @@ component {
 		if(!isNull(this.getOrder().getAccount())){ 
 			arguments.accountID = this.getOrder().getAccount().getAccountID();  
 		}
+		if(!isNull(this.getAppliedPriceGroup())){ 
+			arguments.priceGroups = [];
+			arrayAppend(arguments.priceGroups, this.getAppliedPriceGroup());
+		}
+		
         var amount = getSku().getCustomPriceByCurrencyCode(argumentCollection=arguments);
         if(isNull(amount)){
             amount = 0;
@@ -291,4 +308,36 @@ component {
     	
     	return mainPromotionOnOrder;
 	}
+	
+	public void function removePersonalVolume(){
+	    if(structKeyExists(variables,'personalVolume')){
+	        structDelete(variables,'personalVolume');
+	    }
+	}
+    public void function removeTaxableAmount(){
+        if(structKeyExists(variables,'taxableAmount')){
+            structDelete(variables,'taxableAmount');
+        }
+    }
+    public void function removeCommissionableVolume(){
+        if(structKeyExists(variables,'commissionableVolume')){
+            structDelete(variables,'commissionableVolume');
+        }
+    }
+    public void function removeRetailCommission(){
+        if(structKeyExists(variables,'retailCommission')){
+            structDelete(variables,'retailCommission');
+        }
+    }
+    public void function removeProductPackVolume(){
+        if(structKeyExists(variables,'productPackVolume')){
+            structDelete(variables,'productPackVolume');
+        }
+    }
+    public void function removeRetailValueVolume(){
+        if(structKeyExists(variables,'retailValueVolume')){
+            structDelete(variables,'retailValueVolume');
+        }
+    }
+
 }

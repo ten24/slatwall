@@ -17,9 +17,10 @@ class MonatFlexshipPaymentMethodModalController {
 	public newAddress = {'countryCode':'US'}; // hard-coded default
 
 	public newAccountPaymentMethod = {};
+	public loading : boolean = false;
 
 	//@ngInject
-    constructor(public orderTemplateService, public observerService, public rbkeyService) {
+    constructor(public orderTemplateService, public observerService, public rbkeyService, public monatAlertService) {
     }
     
     public $onInit = () => {
@@ -56,7 +57,6 @@ class MonatFlexshipPaymentMethodModalController {
     	this.translations['newBillingAddress'] = this.rbkeyService.rbKey('frontend.paymentMethodModal.newBillingAddress');
     	this.translations['paymentMethod'] = this.rbkeyService.rbKey('frontend.paymentMethodModal.paymentMethod');
     	this.translations['addNewCreditCard'] = this.rbkeyService.rbKey('frontend.paymentMethodModal.addNewCreditCard');
-
     	this.translations['newCreditCard'] = this.rbkeyService.rbKey('frontend.newCreditCard');
     	this.translations['newCreditCard_nickName'] = this.rbkeyService.rbKey('frontend.newCreditCard.nickName');
     	this.translations['newCreditCard_creditCardNumber'] = this.rbkeyService.rbKey('frontend.newCreditCard.creditCardNumber');
@@ -86,6 +86,7 @@ class MonatFlexshipPaymentMethodModalController {
     }
     
     public updateBilling() {
+        this.loading = true;
     	let payload = {};
     	payload['orderTemplateID'] = this.orderTemplate.orderTemplateID;
 
@@ -106,43 +107,42 @@ class MonatFlexshipPaymentMethodModalController {
     	payload = this.orderTemplateService.getFlattenObject(payload);
 
     	// make api request
-        this.orderTemplateService.updateBilling(payload).then(
-            (response) => {
-               
-               if(response.orderTemplate) {
-	                this.orderTemplate = response.orderTemplate;
-	
-	                if(response.newAccountAddress) {
-	            		this.observerService.notify("newAccountAddressAdded",response.newAccountAddress);
-	            		this.accountAddresses.push(response.newAccountAddress);
-	                }
-	                
-	                if(response.newAccountPaymentMethod) {
-	            		this.observerService.notify("newAccountPaymentMethodAdded",response.newAccountPaymentMethod);
-	            		this.accountPaymentMethods.push(response.newAccountPaymentMethod);
-	                }
-	                
-	                this.setSelectedBillingAccountAddressID(this.orderTemplate.billingAccountAddress_accountAddressID);
-	                this.setSelectedAccountPaymentMethodID(this.orderTemplate.accountPaymentMethod_accountPaymentMethodID);
-	                
-	                this.observerService.notify("orderTemplateUpdated" + response.orderTemplate.orderTemplateID, response.orderTemplate);
-	                this.closeModal();
-               } else {
-               		//TODO handle errors
-	               	console.error(response); 
-               }
-                
-                // TODO: show alerts
-            }, 
-            (reason) => {
-                throw (reason);
-                // TODO: show alert
-            }
-        );
+        this.orderTemplateService.updateBilling(payload)
+        .then( (response) => {
+        	
+			if(response.orderTemplate) {
+			    this.orderTemplate = response.orderTemplate;
+			
+			    if(response.newAccountAddress) {
+					this.observerService.notify("newAccountAddressAdded",response.newAccountAddress);
+					this.accountAddresses.push(response.newAccountAddress);
+			    }
+			    
+			    if(response.newAccountPaymentMethod) {
+					this.observerService.notify("newAccountPaymentMethodAdded",response.newAccountPaymentMethod);
+					this.accountPaymentMethods.push(response.newAccountPaymentMethod);
+			    }
+			    
+			    this.setSelectedBillingAccountAddressID(this.orderTemplate.billingAccountAddress_accountAddressID);
+			    this.setSelectedAccountPaymentMethodID(this.orderTemplate.accountPaymentMethod_accountPaymentMethodID);
+			    
+			    this.monatAlertService.success("Your flexship has been updated successfully");
+			
+			    this.observerService.notify("orderTemplateUpdated" + response.orderTemplate.orderTemplateID, response.orderTemplate);
+			    this.closeModal();
+			} else {
+			   	throw(response); 
+			}
+        })
+        .catch( (error) => {
+	        this.monatAlertService.showErrorsFromResponse(error);
+        }).finally(()=>{
+            this.loading = false;
+        });
     }
     
     public closeModal = () => {
-     	this.close(null); // close, but give 100ms to animate
+     	this.close(null);
     };
 
 }

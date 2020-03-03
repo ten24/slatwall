@@ -119,6 +119,7 @@ class CollectionConfig {
         private keywords:string = '',
         private customEndpoint:string = '',
         private allRecords:boolean = false,
+        private limitCountTotal:number = 250,
         private dirtyRead:boolean = false,
         private isDistinct:boolean = false,
         private enableAveragesAndSums:boolean = false,
@@ -216,6 +217,7 @@ class CollectionConfig {
         this.groupBys = jsonCollection.groupBys;
         this.pageShow = jsonCollection.pageShow;
         this.allRecords = jsonCollection.allRecords;
+        this.limitCountTotal = jsonCollection.limitCountTotal || 250;
         if(jsonCollection.dirtyRead){
             this.dirtyRead = jsonCollection.dirtyRead;
         }
@@ -307,6 +309,7 @@ class CollectionConfig {
             defaultColumns: (!this.columns || !this.columns.length),
             useElasticSearch: this.useElasticSearch,
             allRecords: this.allRecords,
+            limitCountTotal: this.limitCountTotal,
             dirtyRead: this.dirtyRead,
             isDistinct: this.isDistinct,
             isReport: this.isReport(),
@@ -951,6 +954,15 @@ class CollectionConfig {
 
     public getCurrentPage= () =>{
         return this.currentPage;
+    };
+
+    public setLimitCountTotal=(newCount):number=>{
+        this.limitCountTotal = newCount;
+        return this.limitCountTotal;
+    };
+
+    public getLimitCountTotal=():number=>{
+        return this.limitCountTotal;
     };
 
     public setPageShow= (NumberOfPages):CollectionConfig =>{

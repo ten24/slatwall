@@ -164,7 +164,7 @@ class SWListingDisplayController{
         public rbkeyService,
         public localStorageService
     ){
-       
+       //init
        this.initListingDisplay( $q, $rootScope, true );
 
     }
@@ -860,7 +860,7 @@ class SWListingDisplayController{
         persistedReportsCollectionList.setDisplayProperties('collectionID,collectionName,collectionConfig');
         persistedReportsCollectionList.addFilter('reportFlag',1);
         persistedReportsCollectionList.addFilter('collectionObject',this.collectionConfig.baseEntityName);
-        persistedReportsCollectionList.addFilter('accountOwner.accountID',this.$rootScope.slatwall.account.accountID,'=','OR',true,true,false,'accountOwner');
+        persistedReportsCollectionList.addFilter('accountOwner.accountID','${account.accountID}','=','OR',true,true,false,'accountOwner');
         persistedReportsCollectionList.addFilter('accountOwner.accountID','NULL','IS','OR',true,true,false,'accountOwner');
         persistedReportsCollectionList.setAllRecords(true);
         persistedReportsCollectionList.getEntity().then((data)=>{

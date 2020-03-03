@@ -112,6 +112,31 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		return entityCollectionList.getRecordsCount() > 0;
 	}
 	
+	public any function pendingPushOrders(required string accountID){
+		var qualifiers = this.getQualifiers();
+		var filters = qualifiers['filters']['validOrder'];
+
+		var orderCollection = this.getOrderCollectionList();
+		orderCollection.setDisplayProperties('orderID');
+
+		var primaryFilterApplied = false;
+		for(var i = 1; i <= arrayLen(filters); i++){
+			
+			orderCollection.addFilter(
+				propertyIdentifier='account.accountID', 
+				value=arguments.accountID, 
+				filterGroupAlias='FilterGroup#i#',
+				filterGroupLogicalOperator = 'OR'
+			);
+			for(var ii = 1; ii <= arrayLen(filters[i]); ii++){
+				var filterArguments = filters[i][ii];
+				filterArguments['filterGroupAlias'] = 'FilterGroup#i#';
+				orderCollection.addFilter(argumentCollection=filterArguments);
+			}
+		}
+		return orderCollection.getRecords(formatRecords=false);
+	}
+	
 	
 	private string function formatDistibutorName(required any account){
 		var distributorName = '';
@@ -136,7 +161,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 			'Customer'      = 'C'
 		};
 		
-		return structKeyExists(mapping, accountType) ? mapping[accountType] : 'C';
+		return structKeyExists(mapping, arguments.accountType) ? mapping[arguments.accountType] : 'C';
 	}
 	
 	private string function formatOrderType(required any order){
@@ -183,16 +208,11 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 	}
 	
 	public string function getCityStateZipcode(required any address) {
-		var cityStateZipcode = "";
-		cityStateZipcode = listAppend(cityStateZipcode,address.getCity());
-		cityStateZipcode = listAppend(cityStateZipcode,address.getStateCode());
-		cityStateZipcode = listAppend(cityStateZipcode,address.getPostalCode());
-		return cityStateZipcode;
+		return arguments.address.getCity() & ', ' & arguments.address.getStateCode() & ' ' & arguments.address.getPostalCode();
 	}
 	
 	public any function getAmount(required any order, required string fieldName){
 		var amount = order.invokeMethod('get#arguments.fieldName#');
-		
 		
 		if(arguments.order.getOrderType().getSystemCode() == 'otReturnOrder' && amount > 0){
 			amount = amount * -1;
@@ -225,13 +245,6 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 			'distId'      = arguments.account.getAccountNumber(), //Slatwall will be master
 			'name'        = formatDistibutorName(arguments.account), // Distributor Name (lastname, firstname)
 			'distType'    = formatDistributorType(arguments.account.getAccountType()),//D (MP), P (VIP), C (Customer) 
-			'country'     = arguments.account.getPrimaryAddress().getAddress().getCountry().getCountryCode3Digit(),//Member country(ISO Format) e.g. USA
-			'address1'    = left(arguments.account.getPrimaryAddress().getAddress().getStreetAddress(), 60),//Member Street Address
-			'address2'    = left(arguments.account.getPrimaryAddress().getAddress().getStreet2Address(), 60),//Suite or Apartment Number
-			'address3'    = getCityStateZipcode(arguments.account.getPrimaryAddress().getAddress()),
-			'city'        = left(arguments.account.getPrimaryAddress().getAddress().getCity(), 25),
-			'state'       = left(arguments.account.getPrimaryAddress().getAddress().getStateCode(), 10),
-			'postalCode'  = left(arguments.account.getPrimaryAddress().getAddress().getPostalCode(), 15),
 			'email'       = left(arguments.account.getEmailAddress(), 60),
 			'referralId' = arguments.account.getOwnerAccount().getAccountNumber()//ID of Member who referred person to the business
 		};
@@ -254,6 +267,20 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		
 		if( len(arguments.account.getPhoneNumber()) ){
 			distributorData['homePhone'] = left(formatNumbersOnly(arguments.account.getPhoneNumber()), 20);//Home Phone (NNNNNNNNNN)
+		}
+		
+		if(!isNull(arguments.account.getPrimaryAddress()) && !isNull(arguments.account.getPrimaryAddress().getAddress()) ){
+			
+			distributorData['country']     = arguments.account.getPrimaryAddress().getAddress().getCountry().getCountryCode3Digit();//Member country(ISO Format) e.g. USA
+			distributorData['address1']    = left(arguments.account.getPrimaryAddress().getAddress().getStreetAddress(), 60);//Member Street Address
+			distributorData['address2']    = left(arguments.account.getPrimaryAddress().getAddress().getStreet2Address(), 60);//Suite or Apartment Number
+			distributorData['address3']    = getCityStateZipcode(arguments.account.getPrimaryAddress().getAddress());
+			distributorData['city']        = left(arguments.account.getPrimaryAddress().getAddress().getCity(), 25);
+			distributorData['postalCode']  = left(arguments.account.getPrimaryAddress().getAddress().getPostalCode(), 15);
+		
+			if(!isNull(arguments.account.getPrimaryAddress().getAddress().getStateCode()) && len(arguments.account.getPrimaryAddress().getAddress().getStateCode())){
+				distributorData['state']   = left(arguments.account.getPrimaryAddress().getAddress().getStateCode(), 10);
+			}
 		}
 		
 		return distributorData;
@@ -283,8 +310,10 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 			'volume8'           = 0,
 			'volume9'           = arguments.order.getFulfillmentChargeTotal(), // Handling Fee
 			'orderType'         = formatOrderType(arguments.order),//Type of order. W for regular order, R for retail, X for exchange, R for replacement, and C for RMA.
-			'periodDate'        = dateFormat(arguments.order.getOrderOpenDateTime(), 'yyyymm')//Volume period date of the order (YYYYMM). This will get assigned to the default volume period if not included
+			'periodDate'        = listLast(arguments.order.getCommissionPeriod(), '/') & listFirst(arguments.order.getCommissionPeriod(), '/')//Volume period date of the order (YYYYMM). This will get assigned to the default volume period if not included
 		};
+		
+		
 		
 		//transactionData['salesPersonId'] = //ID of person who sold order to Customer. This is only used on customer related transactions.Commission check–using ID to represent where volume was attributed at time of order entry.
 		//transactionData['entryInitials'] = //Initials of user entering the transaction
@@ -336,7 +365,8 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 
 	public void function push(required any entity, any data ={}){
 		
-		if( !structKeyExists(arguments.data, 'event') ){
+		//Check if the object still valid to be pushed
+		if( !structKeyExists(arguments.data, 'event') || !isEntityQualified(arguments.entity.getClassName(), arguments.entity.getPrimaryIDValue(), arguments.data.event)){
 			return;
 		}
 		

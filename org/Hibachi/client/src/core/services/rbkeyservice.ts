@@ -79,10 +79,10 @@ class RbKeyService{
 			}
 			if(this.resourceBundles[locale]){
 			var bundle = this.resourceBundles[locale];
-			if(angular.isDefined(bundle[key])) {
-				//$log.debug('rbkeyfound:'+bundle[key]);
-				return bundle[key];
-			}
+				if(angular.isDefined(bundle) && angular.isDefined(bundle[key])) {
+					//$log.debug('rbkeyfound:'+bundle[key]);
+					return bundle[key];
+				}
 			}
 
 			var checkedKeysListArray = checkedKeys.split(',');
@@ -100,7 +100,7 @@ class RbKeyService{
 			if(localeListArray.length === 2)  {
 				bundle = this.resourceBundles[localeListArray[0]];
 
-				if(angular.isDefined(bundle[key])) {
+				if(angular.isDefined(bundle) && angular.isDefined(bundle[key])) {
 					//$log.debug('rbkey found:'+bundle[key]);
 					return bundle[key];
 				}

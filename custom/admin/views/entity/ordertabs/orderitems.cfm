@@ -56,12 +56,36 @@ Notes:
 	<!--- Order item collection list --->
 	<cfset orderItemCollectionList = getHibachiScope().getService('orderService').getOrderItemCollectionList()>
 	<cfset orderItemCollectionList.addFilter("order.orderID", "#rc.order.getOrderID()#","=")>
-	<cfset serchableDisplayProperties = "sku.product.calculatedTitle,sku.skuCode,orderItemType.typeName, price, quantity, calculatedDiscountAmount,extendedPrice,extendedPersonalVolume,extendedCommissionableVolume,taxAmount,extendedPriceAfterDiscount"/>
-	<cfset orderItemCollectionList.setDisplayProperties(serchableDisplayProperties, {
+	<cfset orderItemCollectionList.setDisplayProperties("sku.product.calculatedTitle,sku.skuCode", {
 		isVisible=true,
 		isSearchable=true,
 		isDeletable=true
 	})/>
+	<cfset orderItemCollectionList.addDisplayProperty('sku.product.productType.productTypeName','Product Type',{'isVisible': true, 'isEditable': false, 'isSearchable': true, 'isExportable': true})>
+	
+	<!--- Adds a type name fields if this is an exchange order --->
+	<cfif !isNull(rc.order.getOrderType()) && (rc.order.getOrderType().getSystemCode() eq "otExchangeOrder" || rc.order.getOrderType().getSystemCode() eq "otReplacementOrder")>
+		<cfset orderItemCollectionList.addDisplayProperty('orderItemType.typeName','Item Type',{'isVisible': true, 'isEditable': false, 'isSearchable': true, 'isExportable': true})>
+	</cfif>
+	
+	<cfset orderItemCollectionList.addDisplayProperty(displayProperty='price',columnConfig={ isVisible :true, isSearchable: true, isDeletable: true}) />
+	<cfset orderItemCollectionList.addDisplayProperty(displayProperty='quantity',columnConfig={ isVisible :true, isSearchable: true, isDeletable: true}) />
+	<cfset orderItemCollectionList.addDisplayProperty(displayProperty='calculatedDiscountAmount',columnConfig={ isVisible :true, isSearchable: true, isDeletable: true}) />
+	<cfset orderItemCollectionList.addDisplayProperty(displayProperty='extendedPrice',columnConfig={ isVisible :true, isSearchable: true, isDeletable: true}) />
+	<cfset orderItemCollectionList.addDisplayProperty(displayProperty='extendedPersonalVolume',columnConfig={ isVisible :true, isSearchable: true, isDeletable: true}) />
+	<cfset orderItemCollectionList.addDisplayProperty(displayProperty='extendedCommissionableVolume',columnConfig={ isVisible :true, isSearchable: true, isDeletable: true}) />
+	<cfif rc.order.getVATTotal() GT 0>
+		<cfset orderItemCollectionList.addDisplayProperty(displayProperty='VATAmount',columnConfig={ isVisible :true, isSearchable: true, isDeletable: true}) />
+	<cfelse>
+		<cfset orderItemCollectionList.addDisplayProperty(displayProperty='taxAmount',columnConfig={ isVisible :true, isSearchable: true, isDeletable: true}) />
+	</cfif>
+	<cfset orderItemCollectionList.addDisplayProperty(displayProperty='extendedPriceAfterDiscount',columnConfig={ isVisible :true, isSearchable: true, isDeletable: true}) />
+	
+	
+	<cfif NOT isNull(rc.order.getOrderType()) && rc.order.getOrderType().getSystemCode() NEQ "otSalesOrder" >
+		<cfset orderItemCollectionList.addDisplayProperty('stockLoss','Stock Loss',{'isVisible':true}) />
+		<cfset orderItemCollectionList.addDisplayProperty('stockLossReason','Stock Loss Reason',{'isVisible':true}) />
+	</cfif>
 	
 	<cfset orderItemCollectionList.addDisplayProperty(displayProperty='orderItemID', columnConfig={
 		isVisible=false,
@@ -91,6 +115,7 @@ Notes:
 		<hb:HibachiTabGroup tabLocation="top" activeTab="#local.activeTab#">
 		    <!--- Tabs for Adding Sale Order Items Sku and Stock --->
     		<hb:HibachiTab tabid="soiaddsku" lazyLoad="true" view="admin:entity/ordertabs/addsku" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.sku')#" />
+    		<hb:HibachiTab tabid="soiaddpromotionsku" lazyLoad="true" view="admin:entity/ordertabs/addpromotionsku" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.promotionsku')#" />
     		<hb:HibachiTab tabid="soiaddstock" lazyLoad="true" view="admin:entity/ordertabs/addstock" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.stock')#" />
     		<!--- Tabs for Adding Return Order Items Sku and Stock --->
     		<!---<hb:HibachiTab tabid="soiaddreturnsku" lazyLoad="true" view="admin:entity/ordertabs/addreturnsku" text="#$.slatwall.rbKey('define.add')# Return #$.slatwall.rbKey('entity.sku')#" />

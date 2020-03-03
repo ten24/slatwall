@@ -1,11 +1,19 @@
 {
-	"conditions": {},
+	"conditions": {
+	},
 	"properties": {
 		"orderTemplateAppliedGiftCards": [
-			{ "contexts": "save", "conditions": "scheduleOrderTemplate", "maxCollection": 1 }
-		],	
-		"customerCanCreateFlag": [
+			{ "contexts": "save", "conditions": "scheduleOrderTemplate", "maxCollection": 1 },
+			{ "contexts": "create,save", "method": "hasRafPromoOrGiftCardButNotBoth"  }
+		],
+		"promotionCodes": [
+			{ "contexts": "create,save", "method": "hasRafPromoOrGiftCardButNotBoth"  }
+		],
+		"accountIsNotInFlexshipCancellationGracePeriod": [
 			{ "contexts": "create,save", "conditions": "scheduleOrderTemplate", "eq": "true" }
+		],
+		"account": [
+			{"contexts": "cancel", "conditions": "activeScheduleOrderTemplate", "method": "userCanCancelFlexship" }
 		]
 	}
 }

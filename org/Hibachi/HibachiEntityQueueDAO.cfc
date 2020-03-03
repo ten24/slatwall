@@ -67,6 +67,44 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 			params
 		);
 	}
+	
+	
+	public void function resetTimedOutEntityQueueItems(required numeric timeout){
+		var queryService = new query();
+		queryService.addParam(name='timeoutDateTime', value='#DateAdd("s",-1*arguments.timeout,now())#', CFSQLTYPE='CF_SQL_TIMESTAMP');
+			
+		var sql =	"UPDATE SwEntityQueue 
+					SET serverInstanceKey=NULL
+					WHERE 
+						serverInstanceKey IS NOT NULL
+						AND modifiedDateTime < :timeoutDateTime
+					";
+						
+		queryService.execute(sql=sql);
+	}
+	
+	public any function claimEntityQueueItemsByServer(required any collection, required numeric fetchSize){
+		
+		var newCollection = arguments.collection.duplicateCollection();
+		newCollection.addFilter('serverInstanceKey', 'NULL', 'IS');
+		var entityQueueIDs = newCollection.getPrimaryIDList(fetchSize * 2);
+		
+		var queryService = new query();
+		queryService.addParam(name='serverInstanceKey', value=getHibachiScope().getServerInstanceKey(), CFSQLTYPE='CF_SQL_STRING');
+		queryService.addParam(name='entityQueueIDs', value=entityQueueIDs, CFSQLTYPE='CF_SQL_STRING', list=true);
+		
+		var sql =	"UPDATE 
+						SwEntityQueue 
+					SET serverInstanceKey=:serverInstanceKey
+					WHERE 
+						entityQueueID IN (:entityQueueIDs)
+					AND
+						serverInstanceKey IS NULL
+					LIMIT
+					#arguments.fetchSize#";
+						
+		return queryService.execute(sql=sql);
+	}
 
 	public void function bulkInsertEntityQueueByPrimaryIDs(required string primaryIDList, required string entityName, required string processMethod, boolean unique=false){
 		var primaryIDPropertyName = getHibachiService().getPrimaryIDPropertyNameByEntityName(arguments.entityName);	
@@ -105,7 +143,38 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 
 		queryService.execute(sql=sql);
 	} 
+
+	public void function bulkInsertEntityQueueByFlagPropertyName(required string flagPropertyName, required string entityName, required string processMethod, boolean flagValue=true){
+		
+		var primaryIDPropertyName = getHibachiService().getPrimaryIDPropertyNameByEntityName(arguments.entityName);	
+		var queryService = new query();
+		
+		var sql = "INSERT INTO SwEntityQueue (entityQueueID, baseObject, baseID, processMethod, createdDateTime, modifiedDateTime, createdByAccountID, modifiedByAccountID, tryCount) ";
+		sql &= "SELECT LOWER(REPLACE(CAST(UUID() as char character set utf8),'-','')) as entityQueueID, "; 
+		sql &= "'#arguments.entityName#' as baseObject, ";  
+		sql &= "#primaryIDPropertyName# as baseID, ";
+		sql &= "'#arguments.processMethod#' as processMethod, ";
+		sql &= "now() as createdDateTime, ";
+		sql &= "now() as modifiedDateTime, ";
+
+		var accountID = 'NULL';
+		if(!isNull(getHibachiScope().getAccount())){
+			accountID = getHibachiScope().getAccount().getAccountID(); 
+		}
+		
+		sql &= "'#accountID#' as createdByAccountID, ";
+		sql &= "'#accountID#' as modifiedByAccountID, ";
+		sql &= "0 as tryCount ";
+		
+		sql &= "FROM #getHibachiService().getTableNameByEntityName(arguments.entityName)# ";
+		sql &= "WHERE #arguments.flagPropertyName# = :flagValue";
 	
+		queryService.addParam(name='flagValue', value=arguments.flagValue, CFSQLTYPE="CF_SQL_BIT");
+		queryService.addParam(name='processMethod', value=arguments.processMethod, CFSQLTYPE="CF_SQL_VARCHAR");
+
+		queryService.execute(sql=sql);
+	}	
+
 	public void function insertEntityQueue(required string baseID, required string baseObject, string processMethod='', string entityQueueID = createHibachiUUID(), struct entityQueueData={}, string integrationID=''){
 		var queryService = new query();
 		queryService.addParam(name='entityQueueID', value='#arguments.entityQueueID#', CFSQLTYPE="CF_SQL_STRING");
@@ -145,9 +214,9 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 	public void function updateModifiedDateTimeAndMostRecentError(required string entityQueueID, required string errorMessage){
 		var queryService = new query();
 		queryService.addParam(name='entityQueueID',value='#arguments.entityQueueID#',CFSQLTYPE="CF_SQL_STRING", list="true");
-		queryService.addParam(name='now',value='#now()#',CFSQLTYPE="CF_SQL_TIMESTAMP", list="true");
+		queryService.addParam(name='now',value='#now()#',CFSQLTYPE="CF_SQL_TIMESTAMP");
 		queryService.addParam(name='errorMessage',value='#errorMessage#',CFSQLTYPE="CF_SQL_STRING");
-		var sql = "UPDATE SwEntityQueue SET modifiedDateTime = :now, tryCount = tryCount + 1, mostRecentError=:errorMessage WHERE entityQueueID = :entityQueueID";
+		var sql = "UPDATE SwEntityQueue SET modifiedDateTime = :now, tryCount = tryCount + 1, mostRecentError=:errorMessage, serverInstanceKey = NULL WHERE entityQueueID = :entityQueueID";
 
 		queryService.execute(sql=sql);
 	}

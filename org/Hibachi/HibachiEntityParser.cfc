@@ -224,6 +224,7 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
  			case 'textArea':
  				ORMType = 'string';
  				hbFormFieldType = 'textarea';
+ 				propertyString &= ' length="4000" ';
  				break;
  			case 'email':
  				ORMType = 'string';
@@ -260,9 +261,11 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
  			case 'multiselect':
  			case 'checkboxGroup':
  			case 'radioGroup':
+ 			case 'readOnly':
  				ORMType = 'string';
  				break;
  			case 'relatedObjectSelect':
+ 			case 'readOnlyRelatedObject':
  				propertyString &= ' cfc="#arguments.attributeData.relatedObject#" fieldtype="many-to-one" fkcolumn="#arguments.attributeData.attributeCode#ID"';
  				break;
  			default:

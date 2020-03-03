@@ -55,6 +55,8 @@ component entityname="SlatwallSite" table="SwSite" persistent="true" accessors="
 	property name="domainNames" ormtype="string";
 	property name="allowAdminAccessFlag" ormtype="boolean";
 	property name="resetSettingCache" ormtype="boolean";
+	property name="currencyCode" ormtype="string";
+	
 	// CMS Properties
 	property name="cmsSiteID" ormtype="string" index="RI_CMSSITEID";
 
@@ -85,6 +87,8 @@ component entityname="SlatwallSite" table="SwSite" persistent="true" accessors="
 	property name="assetsPath" persistent="false";
 	//CUSTOM PROPERTIES BEGIN
 property name="siteAvailableLocales" persistent="false";
+	property name="ownerAccount" persistent="false";
+	
 	
 
  property name="flagImageFilename" ormtype="string";//CUSTOM PROPERTIES END
@@ -221,7 +225,25 @@ property name="siteAvailableLocales" persistent="false";
 
 	// ==================  END:  Deprecated Methods ========================	//CUSTOM FUNCTIONS BEGIN
 
-public string function getSiteAvailableLocales() {
+public any function getOwnerAccount() {
+		if(structKeyExists(variables, 'ownerAccount')) {
+			return variables.ownerAccount;
+		}
+		
+
+		var accountCode = getHibachiScope().getSubdomain();
+		if(len(accountCode)){
+			var account = getService('accountService').getAccountByAccountCode(accountCode);
+			
+			if(!isNull(account)){
+				variables.ownerAccount = account;
+				return variables.ownerAccount;
+			}
+		}
+	
+	}
+	
+	public string function getSiteAvailableLocales() {
 		if ( ! structKeyExists( variables, 'siteAvailableLocales' ) ) {
 			variables.siteAvailableLocales = setting('siteAvailableLocales');
 		}

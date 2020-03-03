@@ -1,6 +1,16 @@
-<div ng-if="monatFlexshipCartContainer.orderTemplate" class="flexship-block">
+
+<div ng-if="monatFlexshipCartContainer.orderTemplateId || monatFlexshipCartContainer.context == 'enrollment' " class="flexship-block">
+	
+	<div ng-show="!monatFlexshipCartContainer.qualifiesForOFYAndFreeShipping && monatFlexshipCartContainer.showCanPlaceOrderAlert" class="alert alert-danger alert-dismissible fade show text-center can-place-order-alert" role="alert">
+		<span sw-rbkey="'frontend.order.canPlaceOrderFailure'"></span>
+		<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+			<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+	
+
 	<div class="flexship-bar">
-		<div class="open-flexship">
+		<div class="open-flexship" ng-if="monatFlexshipCartContainer.context !== 'enrollment'">
 			<a href="#">
 				<i class="fas fa-chevron-up"></i>
 			</a>
@@ -9,9 +19,31 @@
 				<span sw-rbkey="'frontend.flexshipCartContainer.items'"></span>
 				/
 				<span sw-rbkey="'frontend.flexshipCartContainer.total'"></span>
-				{{ monatFlexshipCartContainer.orderTemplate.total | currency }}
+				{{ monatFlexshipCartContainer.orderTemplate.calculatedSubTotal | swcurrency:monatFlexshipCartContainer.orderTemplate.currencyCode }}
 			</span>
 		</div>
+		
+		<div class="steps-footer__nav" ng-if="monatFlexshipCartContainer.context === 'enrollment'">
+			
+			<!--- Navigation back arrow for enrollment --->
+			<a href data-ng-click="monatFlexshipCartContainer.previousEnrollmentStep()" class="back d-inline-block" ng-class="{ 'disabled': monatEnrollment.position == 0 } ">
+				<span class="last" sw-rbkey="'frontend.global.back'"></span>
+				<i class="fas fa-chevron-left"></i> 
+			</a>
+			
+			<span class="steps-footer__nav-summary">
+				<!--- For requests to get the orderTemplate, orderItems is more reliable than the calculated items count --->
+				{{ monatFlexshipCartContainer.orderTemplate.calculatedOrderTemplateItemsCount }}
+				<span sw-rbkey="'frontend.flexshipCartContainer.items'" ng-if="monatFlexshipCartContainer.orderTemplate.calculatedOrderTemplateItemsCount !== 1"></span>
+				<span sw-rbkey="'frontend.flexshipCartContainer.item'" ng-if="monatFlexshipCartContainer.orderTemplate.calculatedOrderTemplateItemsCount === 1"></span>
+				/
+				<span sw-rbkey="'frontend.flexshipCartContainer.total'"></span>
+				{{ monatFlexshipCartContainer.orderTemplate.calculatedSubTotal | swcurrency:monatFlexshipCartContainer.orderTemplate.currencyCode }}
+				<small ng-click="monatFlexshipCartContainer.toggleOpened()" class="border-bottom ml-3" ng-if="!monatFlexshipCartContainer.isOpened" sw-rbkey="'frontend.checkout.showCart'"></small>
+				<small ng-click="monatFlexshipCartContainer.toggleOpened()" class="border-bottom ml-3" ng-if="monatFlexshipCartContainer.isOpened" sw-rbkey="'frontend.checkout.hideCart'"></small>
+			</span>
+		</div>
+		
 		<span
 			ng-if="monatFlexshipCartContainer.context != 'enrollment'"
 			class="steps"
@@ -22,42 +54,59 @@
 			<button
 				ng-if="monatFlexshipCartContainer.context != 'enrollment' "
 				class="btn bg-primary btn-block"
-				ng-disabled="!monatFlexshipCartContainer.orderTemplate.canPlaceOrderFlag"
 				ng-click="monatFlexshipCartContainer.showFlexshipConfirmModal()"
 			>
 				<span sw-rbkey="'frontend.flexshipCartContainer.saveChanges'"></span>
 			</button>
 			
-			<a ng-if="monatFlexshipCartContainer.context == 'enrollment' " href data-ng-click="monatFlexshipCartContainer.next()" class="forward">
-				<span>Next</span>
+			<button ng-if="monatFlexshipCartContainer.context == 'enrollment' && monatFlexshipCartContainer.orderTemplate.canPlaceOrderFlag" data-ng-click="monatFlexshipCartContainer.next(); monatFlexshipCartContainer.showCanPlaceOrderAlert = false" class="btn btn-secondary forward-btn forward">
+				<span sw-rbkey="'frontend.global.next'"></span>
 				<i class="fas fa-chevron-right"></i>
-			</a>
+			</button>
+			<button ng-if="monatFlexshipCartContainer.context == 'enrollment' && !monatFlexshipCartContainer.orderTemplate.canPlaceOrderFlag" data-ng-click="monatFlexshipCartContainer.showCanPlaceOrderAlert = true" class="btn btn-secondary forward-btn forward disabled">
+				<span sw-rbkey="'frontend.global.next'"></span>
+				<i class="fas fa-chevron-right"></i>
+			</button>
+			
 		</div>
 	</div>
 
-	<div class="flexship-container">
-		<p ng-if="!monatFlexshipCartContainer.orderTemplate.canPlaceOrderFlag">
+	<div class="flexship-container" ng-class="{ 'd-block': monatFlexshipCartContainer.isOpened }">
+		
+		<p ng-if="monatFlexshipCartContainer.context != 'enrollment' && !monatFlexshipCartContainer.qualifiesForOFYAndFreeShipping">
 			<i class="fas fa-info-circle"></i>
-			<span sw-rbkey="'frontend.flexshipCartContainer.saveChangeMessage'"></span>
+			<span sw-rbkey="'frontend.flexshipCartContainer.alertOFYAndFreeShippingP1'"></span>
+			{{ monatFlexshipCartContainer.orderTemplate.cartTotalThresholdForOFYAndFreeShipping | swcurrency:monatFlexshipCartContainer.orderTemplate.currencyCode }}
+			<span sw-rbkey="'frontend.flexshipCartContainer.alertOFYAndFreeShippingP2'"></span>
 		</p>
+		
+		<p ng-if="monatFlexshipCartContainer.context == 'enrollment' && ( !monatFlexshipCartContainer.orderTemplate.canPlaceOrderFlag || !monatFlexshipCartContainer.qualifiesForOFYAndFreeShipping )">
+			<i class="fas fa-info-circle"></i>
+			<span sw-rbkey="'frontend.flexshipCartContainer.saveChangeMessageP1'"></span>
+			{{ monatFlexshipCartContainer.orderTemplate.cartTotalThresholdForOFYAndFreeShipping | swcurrency:monatFlexshipCartContainer.orderTemplate.currencyCode }}
+			<span sw-rbkey="'frontend.flexshipCartContainer.saveChangeMessageP2'"></span>
+		</p>
+		
 		<div class="product-container">
 			<ul class="item-slider">
-				<li ng-repeat="item in monatFlexshipCartContainer.orderTemplateItems">
+				<li 
+					ng-repeat="item in monatFlexshipCartContainer.orderTemplateItems"
+					ng-class="{loading: item.loading }"
+				>
 					<button
 						class="close"
 						type="button"
-						ng-click="$parent.monatFlexshipCartContainer.removeOrderTemplateItem(item)"
-					>
-						<i class="fas fa-times"></i>
-					</button>
+						ng-disabled="item.loading"
+						ng-click="$parent.monatFlexshipCartContainer.showFlexshipConfirmDeleteItemModal(item); item.loading = true"
+					><i class="fas fa-times"></i></button>
 					<div class="img">
-						<a href="#">
-							<img ng-src="item.sku_imagePath" alt="" />
+						<a ng-href="{{item.skuProductURL}}">
+							<img ng-src="{{item.sku_imagePath}}" alt="" />
 						</a>
 					</div>
 					<h6 class="title-sm">
-						<a ng-href="item.skuProductURL">
-							<span ng-bind="item.sku_product_productName"></span>
+						<a ng-href="{{item.skuProductURL}}">
+							<span class="text-dark" ng-bind="item.sku_product_productName"></span>
 						</a>
 					</h6>
 					<div class="product-bottom">
@@ -65,11 +114,9 @@
 							<button
 								type="button"
 								class="minus"
-								ng-disabled="item.quantity <= 1"
-								ng-click="$parent.monatFlexshipCartContainer.decreaseOrderTemplateItemQuantity(item)"
-							>
-								-
-							</button>
+								ng-disabled="item.quantity <= 1 || item.loading"
+								ng-click="$parent.monatFlexshipCartContainer.decreaseOrderTemplateItemQuantity(item); item.loading = true"
+							>&minus;</button>
 							<input
 								type="text"
 								id="qty"
@@ -80,24 +127,20 @@
 							<button
 								type="button"
 								class="plus"
-								ng-click="$parent.monatFlexshipCartContainer.increaseOrderTemplateItemQuantity(item)"
-							>
-								+
-							</button>
+								ng-disabled="item.loading"
+								ng-click="$parent.monatFlexshipCartContainer.increaseOrderTemplateItemQuantity(item); item.loading = true"
+							>&plus;</button>
 						</div>
 						<div class="price-block">
-							<!--TODO calc actual price => price*qty -->
-							<span class="price">{{ item.sku_priceByCurrencyCode | currency }}</span>
+							<span class="price">{{ item.total | swcurrency:monatFlexshipCartContainer.orderTemplate.currencyCode }}</span>
 						</div>
 					</div>
 				</li>
 			</ul>
 		</div>
-		<!--TODO logic-->
-		<p class="more"><a href="#">+ 4 More Items ``</a></p>
 		<button
 			class="btn bg-primary btn-block"
-			ng-disabled="!monatFlexshipCartContainer.orderTemplate.canPlaceOrderFlag"
+			ng-disabled="!monatFlexshipCartContainer.qualifiesForOFYAndFreeShipping"
 			ng-click="monatFlexshipCartContainer.showFlexshipConfirmModal()"
 		>
 			<span sw-rbkey="'frontend.flexshipCartContainer.saveChanges'"></span>

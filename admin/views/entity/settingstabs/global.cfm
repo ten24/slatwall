@@ -67,6 +67,7 @@ Notes:
 		<swa:SlatwallSetting settingName="globalAssetsImageBaseURL" />
 		<swa:SlatwallSetting settingName="globalAssetsFileFolderPath" />
 		<swa:SlatwallSetting settingName="globalMissingImagePath" />
+		<swa:SlatwallSetting settingName="globalMaximumPromotionMessages" />
 		<swa:SlatwallSetting settingName="globalOrderNumberGeneration" />
 		<swa:SlatwallSetting settingName="globalURLKeyAttribute" />
 		<swa:SlatwallSetting settingName="globalURLKeyBrand" />
@@ -88,5 +89,6 @@ Notes:
         <swa:SlatwallSetting settingName="globalMaximumFulfillmentsPerOrder" />
         <swa:SlatwallSetting settingName="globalAllowThirdPartyShippingAccount" />
         <swa:SlatwallSetting settingName="globalHibachiCacheName" />
+
 	</swa:SlatwallSettingTable>
 </cfoutput>

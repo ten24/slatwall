@@ -5,9 +5,15 @@ component {
 	property name="lastSyncedDateTime" ormtype="timestamp";
 	property name="calculatedSuccessfulFlexshipOrdersThisYearCount" ormtype="integer";
 	property name="languagePreference" ormtype="string" hb_formFieldType="select";
+	property name="lastActivityDateTime" ormtype="timestamp";
+	
 	property name="successfulFlexshipOrdersThisYearCount" persistent="false"; 
 	property name="saveablePaymentMethodsCollectionList" persistent="false";
-	property name="lastActivityDateTime" ormtype="timestamp";
+	property name="canCreateFlexshipFlag" persistent="false";
+	property name="subscribedToMailchimp" persistent="false";
+	property name="genderFullWord" persistent = "false";
+	property name="spouseFirstName" persistent = "false";
+	property name="spouseLastName" persistent = "false";
 	
 	public numeric function getSuccessfulFlexshipOrdersThisYearCount(){
 		if(!structKeyExists(variables, 'successfulFlexshipOrdersThisYearCount')){
@@ -37,7 +43,7 @@ component {
 	}
 	
 	public any function getAccountNumber(){
-		if(!structKeyExists(variables,'accountNumber') && !isNull(this.getAccountStatusType()) && this.getAccountStatusType().getTypeCode() == 'astGoodStanding'){
+		if(!structKeyExists(variables,'accountNumber') && !isNull(this.getAccountStatusType()) && this.getAccountStatusType().getSystemCode() == 'astGoodStanding'){
 			if(!isNull(this.getAccountID())){
 				var maxAccountNumberQuery = new query();
 				var maxAccountNumberSQL = 'insert into swaccountnumber (accountID,createdDateTime) VALUES (:accountID,:createdDateTime)';
@@ -50,17 +56,20 @@ component {
 				setAccountNumber(insertedID);	
 			}
 		}
-		if(!isNull(variables.accountNumber))
-		return variables.accountNumber;
+		if(!isNull(variables.accountNumber)){
+			return variables.accountNumber;
+		}
 	}
 
-	public boolean function userCanCreateFlexship() {
-	
+	public boolean function getCanCreateFlexshipFlag() {
+		
 		// If the user is not logged in, or retail, return false.
 		var priceGroups = this.getPriceGroups();
 		if ( ! len( priceGroups ) ) {
 			return false;
-		} else if ( priceGroups[1].getPriceGroupCode() == 2 ) {
+			
+		} else if ( priceGroups[1].getPriceGroupCode() == 2 ) { 
+			//Retail price-group
 			return false;
 		}
 		
@@ -68,27 +77,87 @@ component {
 			return false;
 		}
 		
-		var daysAfterEnrollment = this.getAccountCreatedSite().setting('integrationmonatSiteDaysAfterMarketPartnerEnrollmentFlexshipCreate');
-		var enrollmentDate = this.getEnrollmentDate();
+		if( this.getAccountType() == 'marketPartner' ){
 		
-		if ( !isNull( enrollmentDate ) ) {
-			// Add the days after enrollment a user can create flexship to the enrollment date.
-			var dateCanCreateFlexship = dateAdd( 'd', daysAfterEnrollment, enrollmentDate );
+			var daysAfterEnrollment = this.getAccountCreatedSite().setting(
+							'integrationmonatSiteDaysAfterMarketPartnerEnrollmentFlexshipCreate'
+						);
+						
+			var enrollmentDate = this.getEnrollmentDate();
 			
-			// If today is a greater date than the date they can create a flexship.
-			return ( dateCompare( dateCanCreateFlexship, now() ) == -1 );
+			if ( !isNull( enrollmentDate ) ) {
+				// Add the days after enrollment a user can create flexship to the enrollment date.
+				var dateAfterCanCreateFlexship = dateAdd( 'd', daysAfterEnrollment, enrollmentDate );
+				
+				// If today is a greater date than the date they can create a flexship.
+				return ( dateCompare( dateAfterCanCreateFlexship, now() ) == -1 ); // -1, if date1 is earlier than date2
+			}	
 		}
 		
-		// If the user doesn't have an enrollment date, return true.
 		return true;
 	}
 
 	//custom validation methods
 		
-	public boolean function restrictRenewalDateToOneYearFromNow() {
+	public boolean function restrictRenewalDateToOneYearOut() {
 		if(!isNull(this.getRenewalDate()) && len(trim(this.getRenewalDate())) ) {
-			return getService('accountService').restrictRenewalDateToOneYearFromNow(this.getRenewalDate());
+			return getService('accountService').restrictRenewalDateToOneYearOut(this.getRenewalDate());
 		}
 		return true;
+	}
+	
+	public struct function getListingSearchConfig() {
+	    param name = "arguments.wildCardPosition" default = "exact";
+	    return super.getListingSearchConfig(argumentCollection = arguments);
+	}
+	
+	public boolean function onlyOnePriceGroup(){
+		return arrayLen(this.getPriceGroups()) <= 1;
+	}
+	
+	public boolean function getSubscribedToMailchimp(){
+		if(!structKeyExists(variables, 'subscribedToMailchimp')){
+			variables.subscribedToMailchimp = false;
+			
+			if(getHibachiScope().getLoggedInFlag() && getHibachiScope().hasService('MailchimpAPIService')){
+				variables.subscribedToMailchimp = getService('MailchimpAPIService').getSubscribedFlagByEmailAddress( getHibachiScope().account().getPrimaryEmailAddress().getEmailAddress() ); 	
+			}
+		}
+		
+		return variables.subscribedToMailchimp;
+	}
+	
+	public string function getProfileImageFullPath(numeric width = 250, numeric height = 250){
+		return getService('imageService').getResizedImagePath('#getHibachiScope().getBaseImageURL()#/profileImage/#this.getProfileImage()#', arguments.width, arguments.height)
+	}
+	
+	public string function getGenderFullWord(){
+	    var genderFullWord = "";
+	    var gender = LCase(this.getGender());
+		switch (gender) {
+			case "f": 
+			         genderFullWord = getHibachiScope().getRbKey('define.female'); 
+			         break;
+			case "m": 
+			         genderFullWord =  getHibachiScope().getRbKey('define.male'); 
+			         break;
+			case "p":
+			case "prefernottoSay": 
+			         genderFullWord = getHibachiScope().getRbKey('define.prefernottoSay'); 
+			         break;
+		}
+		return genderFullWord;
+	}
+	
+	public string function getSpouseFirstName(){
+	    if(!IsNull(this.getSpouseName())){
+	       return ListFirst(this.getSpouseName(),", ");
+	    }
+	}
+	
+	public string function getSpouseLastName(){
+	    if(!IsNull(this.getSpouseName())){
+	       return ListRest(this.getSpouseName(),", ");
+	    }
 	}
 } 

@@ -76,30 +76,32 @@ component extends="HibachiService" accessors="true" output="false" {
 		if(!isNull(arguments.address.getCountryCode())){
 			cacheKey &= arguments.address.getCountryCode();
 		}
-		if(!getService('HibachiCacheService').hasCachedValue(cacheKey)){
-			var isAddressInZone = ORMExecuteQuery("
-				Select COUNT(azl) FROM SlatwallAddressZone az 
-				LEFT JOIN az.addressZoneLocations azl
-				where az.addressZoneID = :addressZoneID
-				and (azl.postalCode = :postalCode OR azl.postalCode is NULL)
-				and (azl.city = :city OR azl.city is NULL)
-				and (azl.stateCode = :stateCode OR azl.stateCode is NULL)
-				and (azl.countryCode = :countryCode OR azl.countryCode is NULL)
-				",
-				{
-					addressZoneID=arguments.addressZone.getAddressZoneID(),
-					postalCode=arguments.address.getPostalCode(),
-					city=arguments.address.getCity(),
-					stateCode=arguments.address.getStateCode(),
-					countryCode=arguments.address.getCountryCode()
-				},
-				true
-			);
-			//cache Address verification for 5 min
-			getService('HibachiCacheService').setCachedValue(cacheKey,isAddressInZone);
+		if(getService('HibachiCacheService').hasCachedValue(cacheKey)){
+			return getService('HibachiCacheService').getCachedValue(cacheKey);
 		}
 		
-		return getService('HibachiCacheService').getCachedValue(cacheKey);
+		var isAddressInZone = ORMExecuteQuery("
+			Select COUNT(azl) FROM SlatwallAddressZone az 
+			LEFT JOIN az.addressZoneLocations azl
+			where az.addressZoneID = :addressZoneID
+			and (azl.postalCode = :postalCode OR azl.postalCode is NULL)
+			and (azl.city = :city OR azl.city is NULL)
+			and (azl.stateCode = :stateCode OR azl.stateCode is NULL)
+			and (azl.countryCode = :countryCode OR azl.countryCode is NULL)
+			",
+			{
+				addressZoneID=arguments.addressZone.getAddressZoneID(),
+				postalCode=arguments.address.getPostalCode(),
+				city=arguments.address.getCity(),
+				stateCode=arguments.address.getStateCode(),
+				countryCode=arguments.address.getCountryCode()
+			},
+			true
+		);
+			//cache Address verification for 5 min
+		getService('HibachiCacheService').setCachedValue(cacheKey,isAddressInZone);
+	
+		return isAddressInZone;
 	}
 	
 	public any function copyAddress(required any address, saveNewAddress=false) {
@@ -169,66 +171,79 @@ component extends="HibachiService" accessors="true" output="false" {
 		return arguments.country;
 	}
 	
-	public any function verifyAddressStruct(required any addressStruct){
+	public any function verifyAddressStruct(required struct addressStruct){
 		 			
 		var address = this.getAddress(arguments.addressStruct['addressID']);
-		 			
 		var cacheKey = hash(serializeJSON(arguments.addressStruct),'md5');
 		
 		var addressVerificationStruct = {};
 		
-		if( 
-			isNull(address.getVerificationCacheKey()) || 
+		if( isNull(address.getVerificationCacheKey()) || 
 			!len(address.getVerificationCacheKey()) || 
 			compare(address.getVerificationCacheKey(),cacheKey) != 0
-		){
-		
-			var shippingIntegrationID = getHibachiScope().setting('globalShippingIntegrationForAddressVerification');
+		) {
 			
-			if(!isNull(shippingIntegrationID) && len(shippingIntegrationID) && shippingIntegrationID != 'internal' ){
-				
-				var shippingIntegration = getService("IntegrationService").getIntegrationByIntegrationPackage(shippingIntegrationID).getIntegrationCFC("Shipping");
-				
-				addressVerificationStruct = shippingIntegration.verifyAddress(arguments.addressStruct);
+			var integrationID = getHibachiScope().setting('globalIntegrationForAddressVerification');
+			
+			if(!isNull(integrationID) && len(integrationID) && integrationID != 'internal' ){
+	
+				addressVerificationStruct = getService("IntegrationService")
+												.getIntegrationByIntegrationPackage(integrationID)
+													.getIntegrationCFC("Address")
+														.verifyAddress(arguments.addressStruct);
 				
 				address.setVerificationJson(serializeJSON(addressVerificationStruct));
-				
 				address.setVerificationCacheKey(cacheKey);
 			}
 			
-		} else {
+		} 
+		else {
 			
 			addressVerificationStruct = deserializeJson(address.getVerificationJson());
-			
 		}
-		
-		if (structKeyExists(addressVerificationStruct, 'success')){
+
+		if (structKeyExists(addressVerificationStruct, 'success')) {
 			address.setVerifiedByIntegrationFlag(addressVerificationStruct['success']);
 			
 			if(!addressVerificationStruct['success']){
 				address.setIntegrationVerificationErrorMessage(addressVerificationStruct['message']);
 			}
 		}
-		
+		addressVerificationStruct['address'] = arguments.addressStruct;
 		this.saveAddress(address);
 		
+		//TODO: remove
 		logHibachi(serializeJSON(addressVerificationStruct),true);
-
+		
 		return addressVerificationStruct;
 		
 	}
 	
+	/**
+	 * @Depricated this function is depricated in favor of *verifyAccountAddressByID()*.
+	 * left here for compatibility with other projects, should be removed
+	 * 
+	*/ 
 	public any function verifyAccountAddressWithShippingIntegration(required string accountAddressID){
-		
-		
-			var data = getDAO("AddressDAO").getAccountAddressStruct(accountAddressID);
-			
-			if(len(data)){
-				return this.verifyAddressStruct(data[1]);
-			} 
+		return verifyAccountAddressByID(arguments.accountAddressID);
 	}
 	
+	/**
+	 * @Depricated this function is depricated in favor of *verifyAddressByID()*.
+	 * left here for compatibility with other projects, should be removed
+	 * 
+	*/ 
 	public any function verifyAddressWithShippingIntegration(required string addressID){
+		return verifyAddressByID(arguments.addressID);
+	}
+	
+	/**
+	 * Function to verify Address by an addressID using an AddressIntegration 
+	 * Note: the integration is driven by a @setting globalIntegrationForAddressVerification
+	 *  
+	 * @addressID id, of the Address to verify
+	*/ 
+	public any function verifyAddressByID(required string addressID){
 		
 			var data = getDAO("AddressDAO").getAddressStruct(addressID);
 		
@@ -236,6 +251,22 @@ component extends="HibachiService" accessors="true" output="false" {
 				return this.verifyAddressStruct(data[1]);
 			}
 	}
+	
+	/**
+	 * Function to verify AccountAddress by an accountAddressID using an AddressIntegration 
+	 * Note: the integration is driven by a @setting globalIntegrationForAddressVerification
+	 *  
+	 * @accountAddressID id, of the AccountAddress to verify
+	 */ 
+	public any function verifyAccountAddressByID(required string accountAddressID){
+
+			var data = getDAO("AddressDAO").getAccountAddressStruct(accountAddressID);
+			
+			if(len(data)){
+				return this.verifyAddressStruct(data[1]);
+			} 
+	}
+
 	
 	public any function getAddressName(required any addressStruct){
 			var name = "";

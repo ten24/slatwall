@@ -15,6 +15,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	property name="fulfillmentService";
 	property name="paymentService";
 	property name="locationService";
+	property name="fulfillmentService";
 	
 	this.secureMethods="";
 	this.secureMethods=listAppend(this.secureMethods,'importMonatProducts');
@@ -28,11 +29,14 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	this.secureMethods=listAppend(this.secureMethods,'updateFlexshipOrderItems');
 	this.secureMethods=listAppend(this.secureMethods,'upsertOrderItemsPriceAndPromotions');
 	this.secureMethods=listAppend(this.secureMethods,'importVibeAccounts');
-	this.secureMethods=listAppend(this.secureMethods,'importCashReceiptsToOrders');
+	this.secureMethods=listAppend(this.secureMethods,'upsertCashReceiptsToOrders');
 	this.secureMethods=listAppend(this.secureMethods,'importDailyAccountUpdates');
+	this.secureMethods=listAppend(this.secureMethods,'importOrderUpdates');
 	this.secureMethods=listAppend(this.secureMethods,'importOrderShipments');
+	this.secureMethods=listAppend(this.secureMethods,'importInventory');
+	this.secureMethods=listAppend(this.secureMethods,'importInventoryUpdates');
 	this.secureMethods=listAppend(this.secureMethods,'importOrderReasons');
-	
+
 	
 	// @hint helper function to return a Setting
 	public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
@@ -74,7 +78,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
         }
 	 **/
 	private any function getCashReceiptsData(pageNumber,pageSize){ 
-		
+
 		var uri = "https://apisandbox.monatcorp.net:8443/api/Slatwall/QueryMCR";
 		var authKeyName = "authkey";
 		var authKey = "a939f516-7af1-4caa-84c1-642c6966e17e";//setting(authKeyName);
@@ -131,11 +135,13 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		 * }
 		 *	 
 		 **/
+
 	    httpService = new http(method = "POST", charset = "utf-8", url = uri);
 		httpService.addParam(name = "Authorization", type = "header", value = "#authKey#");
 		httpService.addParam(name = "Content-Type", type = "header", value = "application/json-patch+json");
 		httpService.addParam(name = "Accept", type = "header", value = "text/plain");
 		httpService.addParam(name = "body", type = "body", value = "#serializeJson(body)#");
+
 		
 		accountJson = httpService.send().getPrefix();
 		
@@ -151,6 +157,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	
 	private any function getAccountData(pageNumber,pageSize){
 	    var uri = "https://apisandbox.monatcorp.net:8443/api/Slatwall/QueryAccounts";
+
 		var authKeyName = "authkey";
 		var authKey = setting(authKeyName);
 		
@@ -185,7 +192,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	}
 	
 	private any function getOrderData(pageNumber,pageSize){
-	    var uri = "https://apisandbox.monatcorp.net:8443/api/Slatwall/QueryOrders";
+
+	    var uri = setting('baseImportURL') & "QueryOrders";
+
 		var authKeyName = "authkey";
 		var authKey = "a939f516-7af1-4caa-84c1-642c6966e17e";
 	
@@ -231,8 +240,90 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		return ordersResponse;
 	}
 	
+	private any function getDailyAccountUpdatesData(pageNumber,pageSize){
+	    var uri = setting('baseImportURL') & "SwGetUpdatedAccounts";
+		var authKeyName = "authkey";
+		var authKey = setting(authKeyName);
+		
+	    var body = {
+			"Pagination": {
+				"PageSize": "#arguments.pageSize#",
+				"PageNumber": "#arguments.pageNumber#"
+			},
+			"Filters": {
+			    "StartDate": "2019-11-01T19:16:28.693Z",
+			    "EndDate": "2019-11-26T19:16:28.693Z"
+			}
+		};
+		
+		/**
+		 * 
+		 * Filter example
+		 * "Filters": {
+		 *	"StartDate": "2019-11-20T19:16:28.693Z",
+		 *	"EndDate": "2019-11-20T19:16:28.693Z"
+		 * }
+		 *	 
+		 **/
+	    var httpService = new http(method = "POST", charset = "utf-8", url = uri);
+		httpService.addParam(name = "Authorization", type = "header", value = "#authKey#");
+		httpService.addParam(name = "Content-Type", type = "header", value = "application/json-patch+json");
+		httpService.addParam(name = "Accept", type = "header", value = "text/plain");
+		httpService.addParam(name = "body", type = "body", value = "#serializeJson(body)#");
+		
+		var accountJson = httpService.send().getPrefix();
+		
+		var accountsResponse = deserializeJson(accountJson.fileContent);
+        accountsResponse.hasErrors = false;
+		if (isNull(accountsResponse) || accountsResponse.status != "success"){
+			writeDump("Could not import accounts on this page: PS-#arguments.pageSize# PN-#arguments.pageNumber#");
+		    accountsResponse.hasErrors = true;
+		}
+		
+		return accountsResponse;
+	}
+	
+	
+	private any function getInventoryData(pageNumber,pageSize){
+	    var uri = setting('baseImportURL') &  "QueryInventory";
+		var authKeyName = "authkey";
+		var authKey = setting(authKeyName);
+	
+	    var body = {
+			"Pagination": {
+				"PageSize": "#arguments.pageSize#",
+				"PageNumber": "#arguments.pageNumber#"
+			}
+		};
+	    
+	    httpService = new http(method = "POST", charset = "utf-8", url = uri);
+		httpService.addParam(name = "Authorization", type = "header", value = "#authKey#");
+		httpService.addParam(name = "Content-Type", type = "header", value = "application/json-patch+json");
+		httpService.addParam(name = "Accept", type = "header", value = "text/plain");
+		httpService.addParam(name = "body", type = "body", value = "#serializeJson(body)#");
+		
+		var inventoryJson = httpService.send().getPrefix();
+		
+		inventoryResponse = {hasErrors: false};
+		
+		var apiData = deserializeJson(inventoryJson.fileContent);
+	
+		if (structKeyExists(apiData, "Data") && structKeyExists(apiData.Data, "Records")){
+			inventoryResponse['Records'] = apiData.Data.Records;
+		    return inventoryResponse;
+		}
+		
+		writeDump("Could not import inventory on this page: PS-#arguments.pageSize# PN-#arguments.pageNumber#");
+		inventoryResponse.hasErrors = true;
+		
+		
+		return inventoryResponse;
+	}
+	
 	private any function getFlexshipData(pageNumber,pageSize){
-	    var uri = "https://apisandbox.monatcorp.net:8443/api/Slatwall/QueryFlexships";
+
+	    var uri = setting('baseImportURL') &  "QueryFlexships";
+
 		var authKeyName = "authkey";
 		var authKey =  "a939f516-7af1-4caa-84c1-642c6966e17e";//setting(authKeyName);
 	
@@ -267,6 +358,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		return fsResponse;
 	}
 	
+<<<<<<< HEAD
 	private any function getShipmentData(pageNumber,pageSize,dateFilterStart,dateFilterEnd){
 	    var uri = "https://api.monatcorp.net:8443/api/Slatwall/SWGetShipmentInfo";
 		var authKeyName = "authkey";
@@ -577,12 +669,313 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
         // Sets the default view 
         
     }
+
+    
+    /*
+		Receipt Number: 34542. Order Number: 10157652. Entered: 07/15/19. Initials: KYR. Commission Period: 07/2019. MCR Reason: 2-Shipping Refund. Comments: Shipping error refund for order#10157652. Amount: $20.55. Payment Account: 1945. Authorization: SUCCESS. ReferenceNumber: 1524825-4815845636
+	*/
+	public void function upsertCashReceiptsToOrders(rc){
+		getService("HibachiTagService").cfsetting(requesttimeout="60000");
+		getFW().setView("public:main.blank");
+	
+		//get the api key from integration settings.
+		var integration = getService("IntegrationService").getIntegrationByIntegrationPackage("monat");
+		var pageNumber = rc.pageNumber?:1;
+		var pageSize = rc.pageSize?:25;
+		var pageMax = rc.pageMax?:1;
+		var ormStatelessSession = ormGetSessionFactory().openStatelessSession();
+		
+		while (pageNumber < pageMax){
+			
+    		var receiptResponse = getCashReceiptsData(pageNumber, pageSize);
+    		if (receiptResponse.hasErrors){
+    		    //goto next page causing this is erroring!
+    		    pageNumber++;
+    		    continue;
+    		}
+    		
+    		var receipts = receiptResponse.Data.Records;
+    		var index=0;
+    		
+    		try{
+    			var tx = ormStatelessSession.beginTransaction();
+    			
+    			for (var cashReceipt in receipts){
+    			    index++;
+        		    
+        			// Create a new account and then use the mapping file to map it.
+        			if (!isNull(cashReceipt['OrderNumber']) && len(cashReceipt['OrderNumber']) > 1){
+        				var foundOrder = getAccountService().getOrderByOrderNumber( cashReceipt['OrderNumber'], false );
+        			}
+        			
+        			if (isNull(foundOrder)){
+        				pageNumber++;
+        				echo("Could not find this order to update: Order number #cashReceipt['OrderNumber']?:'null'#<br>");
+        				continue;
+        			}
+        			
+        			//Create a comment and add it to the order.
+        			if (!isNull(cashReceipt['Comment']) && !isNull(cashReceipt['OrderNumber']) && len(cashReceipt['OrderNumber']) > 1 ){
+			        	
+			        	try{
+			        		var comment = getCommentService().getCommentByRemoteID(cashReceipt["OrderNumber"]);
+			        	}catch(commentError){
+			        		continue;
+			        	}
+			        	var commentIsNew = false;
+			        	
+			        	if (isNull(comment)){
+			        		commentIsNew = true;
+			        		var comment = new Slatwall.model.entity.Comment();
+			        		var commentRelationship = new Slatwall.model.entity.CommentRelationship();
+			        		comment.setRemoteID(cashReceipt["OrderNumber"]);
+			        	}
+			        	
+			        	//build the comment
+			        	/**
+			        	 * 
+			        	 * Comment Structure Example:  
+			        	 * Receipt Number: 34542. Order Number: 10157652. 
+			        	 * Entered: 07/15/19. 
+			        	 * Initials: KYR. 
+			        	 * Commission Period: 07/2019. 
+			        	 * MCR Reason: 2-Shipping Refund. 
+			        	 * Comments: Shipping error refund for order#10157652. 
+			        	 * Amount: $20.55. 
+			        	 * Payment Account: 1945. 
+			        	 * Authorization: SUCCESS. 
+			        	 * ReferenceNumber: 1524825-4815845636
+			        	 
+			        	   Api results
+			        	   {
+				                "AccountNumber": "1096492",
+				                "UserInitials": "ZAN",
+				                "CommissionPeriod": "201907",
+				                "MCRReason": null,
+				                "ReceiptTypeCode": "2",
+				                "ReceiptTypeName": "Cash",
+				                "MiscCashReceiptId": 1,
+				                "ReceiptNumber": 18549,
+				                "ReceiptDate": "2019-08-03T00:00:00",
+				                "EntryDate": "2018-07-07T00:00:00",
+				                "CcAccountNumber": "",
+				                "PreAuthTransit": "",
+				                "Amount": 20.95,
+				                "AuthorizationDate": null,
+				                "Comment": "Mix & Match Refund Order 5129667",
+				                "ReferenceNumber": "",
+				                "OrderNumber": null
+				            }
+				            
+			        	 Format example: 
+			        	 Receipt Number: 34542. Order Number: 10157652. Entered: 07/15/19. Initials: KYR. Commission Period: 07/2019. MCR Reason: 2-Shipping Refund. Comments: Shipping error refund for order#10157652. Amount: $20.55. Payment Account: 1945. Authorization: SUCCESS. ReferenceNumber: 1524825-4815845636
+			        	 **/
+			        	 
+			        
+			        	var commentText = "";
+			        	commentText = "Receipt Number: #cashReceipt.ReceiptNumber?:''#. Order Number:#cashReceipt.OrderNumber?:''#. Entered: #cashReceipt.EntryDate?:''#. Initials: #cashReceipt.UserInitials?:''#. Commission Period: #cashReceipt.CommissionPeriod?:''#. MCR Reason: #cashReceipt.MCRReason?:''#. Comments: #cashReceipt.Comment?:''#. Amount: #dollarFormat(cashReceipt.Amount?:'0.00')#. Authorization: #cashReceipt.PreAuthTransit?:''#. ReferenceNumber: #cashReceipt.ReferenceNumber?:''#.";
+			        	
+			        	comment.setComment(commentText);
+			        	
+			        	if (commentIsNew){
+			        		ormStatelessSession.insert("SlatwallComment", comment); 
+			        		comment.setPublicFlag(false);
+			        		comment.setCreatedDateTime(now());
+			        		commentRelationship.setOrder( foundOrder );
+			        		commentRelationship.setComment( comment );
+			        		ormStatelessSession.insert("SlatwallCommentRelationship", commentRelationship); 
+			        	}else{
+			        		ormStatelessSession.update("SlatwallComment", comment); 
+			        	}
+        			}
+    			}
+    			
+    			tx.commit();
+    		}catch(e){
+    			
+    			writeDump("Failed @ Index: #index# PageSize: #pageSize# PageNumber: #pageNumber#");
+    			writeDump(e); // rollback the tx
+    			abort;
+    		}
+    		
+    		//echo("Clear session");
+    		this.logHibachi('Import (Daily Receipt Data ) Page #pageNumber# completed ', true);
+    		ormGetSession().clear();//clear every page records...
+		    pageNumber++;
+		}
+		
+		ormStatelessSession.close(); //must close the session regardless of errors.
+		logHibachi("End: #pageNumber# - #pageSize# - #index#");
+
+	}
+	
+	public void function importInventoryUpdates(rc){  
+		getService("HibachiTagService").cfsetting(requesttimeout="60000");
+		getFW().setView("public:main.blank");
+		//This is just for testing...The workflow uses Data.cfc to call the same.
+		//Use a service instead so that it can be run on a workflow.
+		getService("MonatDataService").importInventoryUpdates();
+		
+	}
+	
+	public void function importDailyAccountUpdates(rc){  
+		getService("HibachiTagService").cfsetting(requesttimeout="60000");
+		getFW().setView("public:main.blank");
+		
+		//Use a service instead.
+		getService("MonatDataService").importAccountUpdates( );
+		
+	}
+	
+	public void function importOrderUpdates(rc){  
+		getService("HibachiTagService").cfsetting(requesttimeout="60000");
+		getFW().setView("public:main.blank");
+		//Use a service instead.
+		getService("MonatDataService").importOrderUpdates(  );
+		
+	}
+	
+	public void function importOrderShipments(rc){  
+		getService("HibachiTagService").cfsetting(requesttimeout="60000");
+		getFW().setView("public:main.blank");
+		
+		//Use a service instead.
+		getService("MonatDataService").importOrderShipments( );
+		
+	}
+
 	
 	public any function getDateFromString(date) {
 		return	createDate(
 			datePart("yyyy",date), 
 			datePart("m",date),
 			datePart("d",date));
+	}
+
+	
+	
+	/**
+	 * Usage: ?slataction=monat:import.importInventory&pageNumber=1&pageSize=100&pageMax=1001
+	 * Example response
+	 * {
+     *           "ItemCode": "10012000",
+     *           "ItemName": "Travel Size - Renew Shampoo, 2 oz.",
+     *           "SAPItemCode": "6000000111",
+     *           "WarehouseCode": "Main",
+     *           "WarehouseName": "MONAT GLOBAL",
+     *           "CountryCode": "USA",
+     *           "CountryName": "United States",
+     *           "InventoryId": 281,
+     *           "StockAvailable": 37687,
+     *           "LastUpdate": "2019-10-24T14:06:35.787"
+     * } 
+     * 
+     * Warehouses: Main, CAN, UK
+	 * 
+	 **/
+	public void function importInventory(rc){ 
+		getService("HibachiTagService").cfsetting(requesttimeout="60000");
+		getFW().setView("public:main.blank");
+	
+		//get the api key from integration settings.
+		var integration = getService("IntegrationService").getIntegrationByIntegrationPackage("monat");
+		var pageNumber = rc.pageNumber?:1;
+		var pageSize = rc.pageSize?:25;
+		var pageMax = rc.pageMax?:1;
+		var ormStatelessSession = ormGetSessionFactory().openStatelessSession();
+		
+		// Objects we need to set over and over go here...
+		var warehouseMain = getWarehouseService().getWarehouseByName("usWarehouse");
+		var warehouseCAN = getWarehouseService().getWarehouseByName("caWarehouse");
+		var warehouseUK = getWarehouseService().getWarehouseByName("ukWarehouse");
+		var warehouseIRPOL = getWarehouseService().getWarehouseByName("irePolWarehouse");
+		
+		while (pageNumber < pageMax){
+			
+    		var inventoryResponse = getInventoryData(pageNumber, pageSize);
+    		if (inventoryResponse.hasErrors){
+    		    //goto next page causing this is erroring!
+    		    pageNumber++;
+    		    continue;
+    		}
+    		//writedump(accountsResponse);abort;
+    		var inventoryRecords = inventoryResponse.Data.Records;
+    		
+    		var transactionClosed = false;
+    		var index=0;
+    		
+    		try{
+    			
+    			var tx = ormStatelessSession.beginTransaction();
+    			for (var inventory in inventoryRecords){
+    			    index++;
+        		    var sku = getSkuService().getSkuBySkuCode(inventory.itemCode);
+        		    
+        		    if (isNull(sku)){
+        		    	echo("Can't create inventory for a sku that doesn't exist! #inventory.itemCode#");
+        		    	continue;
+        		    }
+        		    
+        		    var location = warehouseMain;
+        		    
+        		    if (inventory['WarehouseName'] == "Main"){
+        		    	location = warehouseMain;	
+        		    }
+        		    
+        		    else if (inventory['WarehouseName'] == "CAN"){
+        		    	location = warehouseCAN;	
+        		    }
+        		    
+        		    else if (inventory['WarehouseName'] == "UK"){
+        		    	
+        		    	location = warehouseUK;	
+        		    
+        		    } else {
+        		    	location = warehouseIRPOL;
+        		    }
+        		    
+        		    
+        		    //Find if we have a stock for this sku and location.
+        		    var stock = getStockService().getStockBySkuIdAndLocationId( sku.getSkuID(), location.getLocationID() );
+        		    
+        		    if (isNull(stock)){
+        		    	// Create the stock
+        		    	var stock = new Slatwall.model.entity.stock();
+        		    	stock.setSku(sku);
+        		    	stock.setLocation(location);
+        		    	stock.setRemoteID(inventory['inventoryID']);
+        		    	ormStatelessSession.insert("SlatwallStock", stock);
+        		    }
+        		    
+        			// Create a new inventory under that stock.
+        			var newInventory = new Slatwall.model.entity.Inventory();
+        			newInventory.setRemoteID(inventory['inventoryID']?:""); //*
+        			newInventory.setStock(stock);
+                	newInventory.setQuantityIn(inventory['StockAvailable']?:0);
+                	newInventory.setCreatedDateTime(getDateFromString(inventory['LastUpdate']));
+                	newInventory.setModifiedDateTime(getDateFromString(inventory['LastUpdate']));
+                	
+                    ormStatelessSession.insert("SlatwallInventory", newInventory);
+
+    			}
+    			
+    			tx.commit();
+    		}catch(e){
+    		
+    			writeDump("Failed @ Index: #index# PageSize: #pageSize# PageNumber: #pageNumber#");
+    			writeDump(e); // rollback the tx
+    			abort;
+    		}
+    		
+    		//echo("Clear session");
+    		this.logHibachi('Import (Create) Page #pageNumber# for inventory completed ', true);
+    		ormGetSession().clear();//clear every page records...
+		    pageNumber++;
+		}
+		
+		ormStatelessSession.close(); //must close the session regardless of errors.
+		writeDump("End: #pageNumber# - #pageSize# - #index#");
+
 	}
 	
 	
@@ -4744,6 +5137,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		writeDump("End: #pageNumber# - #pageSize# - #index# ");
 	}
 	
+
 	//http://monat/Slatwall/?slatAction=monat:import.upsertOrderItemsPriceAndPromotions&pageNumber=1&pageMax=2&pageSize=50&skipKitsFlag=true
 	public void function upsertOrderItemsPriceAndPromotions(rc) { 
 		getService("HibachiTagService").cfsetting(requesttimeout="60000");
@@ -4987,378 +5381,23 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		writeDump("End: #pageNumber# - #pageSize# - #index# ");
 	}
 	
-	private any function getAPIResponse(string endpoint, numeric pageNumber, numeric pageSize){
-		cftimer(label = "getAPIResponse request length #arguments.endpoint?:''# #arguments.pageNumber?:''# #arguments.pageSize?:''# ", type="outline"){
-			var uri = setting('baseImportURL') & arguments.endPoint;
-			var authKeyName = "authkey";
-			var authKey = setting('authKey');
-		
-			var body = {
-				"Pagination": {
-					"PageSize": "#arguments.pageSize#",
-					"PageNumber": "#arguments.pageNumber#"
-				}
-			};
 
-			httpService = new http(method = "POST", charset = "utf-8", url = uri);
-			httpService.addParam(name = "Authorization", type = "header", value = "#authKey#");
-			httpService.addParam(name = "Accept", type = "header", value = "text/plain");
-			httpService.addParam(name = "Content-Type", type = "header", value = "application/json-patch+json");
-			httpService.addParam(name = "body", type = "body", value = "#serializeJson(body)#");
-			
-			try {
-				httpService.setTimeout(10000)
-				responseJson = httpService.send().getPrefix();
-				
-				var response = deserializeJson(responseJson.fileContent);
-				
-				if(isArray(response)){
-					response = response[1];
-				} 
-			} catch (any e) {
-				writeDump("Could not read response got #e.message# for page:#arguments.pageNumber#");
-				if(!isNull(responseJson)){
-					writeDump(responseJson);
-				}
-				var response = {}; 
-				response.status = 'error';
-			}
-			response.hasErrors = false;
-			if (isNull(response) || response.status != "success"){
-				writeDump("Could not import from #arguments.endpoint# on this page: PS-#arguments.pageSize# PN-#arguments.pageNumber#");
-				response.hasErrors = true;
-			}
-		}
-		return response;
-	}
- 
-    public void function importProducts(){
-        param name="arguments.rc.fileLocation" default="#getDirectoryFromPath(getCurrentTemplatePath())#../assets/";
-		param name="arguments.rc.skuFileName" default="sku-code-data.csv";
-		param name="arguments.rc.priceFileName" default="sku-price-data.csv";
-		param name="arguments.rc.bundleFileName" default="sku-kit-data.csv";
-		param name="arguments.rc.includeSegments" default="sku,bundle,price";
+	public void function importMonatProducts(required struct rc){
 
-		getService("HibachiTagService").cfsetting(requesttimeout="60000");
-		if(listFindNoCase(arguments.rc.includeSegments,'sku')){
-    		var columnTypeList = 'varchar,varchar,varchar,varchar,varchar,varchar,varchar,varchar';
-    		var skuCodeQuery = getService('hibachiDataService').loadQueryFromCSVFileWithColumnTypeList(arguments.rc.fileLocation&arguments.rc.skufileName, columnTypeList);
-            
-            // Sanitize names
-    		for(var i=1; i<=skuCodeQuery.recordCount; i++){
-    			var title = trim(skuCodeQuery['ItemName'][i]);
-    			title = getService('HibachiUtilityService').createUniqueURLTitle(titleString=title, tableName="SwProduct");
-    			skuCodeQuery['ItemName'][i] = reReplace(skuCodeQuery['ItemName'][i],'[^\w\d\s\(\)\+\&\-\.\,]','','all');
-    		};
-            
-            var importConfig = FileRead(getDirectoryFromPath(getCurrentTemplatePath()) & '../config/import/skus.json');
-    		getService("HibachiDataService").loadDataFromQuery(skuCodeQuery,importConfig);
-    		writeDump('imported skus');
-    		
-    		var parentProductTypeSQL = "
-    		                    update swproducttype 
-    		                    set parentProductTypeID = '444df2f7ea9c87e60051f3cd87b435a1',
-    		                        productTypeNamePath=CONCAT('Merchandise > ',productTypeName),
-    		                        productTypeIDPath=CONCAT('444df2f7ea9c87e60051f3cd87b435a1,',productTypeID)
-    		                        where remoteID is not null";
-    		queryExecute(parentProductTypeSQL);
-    		writeDump('updated product types');
-    		
-    		var nullUrlTitleProductCollection = getProductService().getProductCollectionList();
-    		nullUrlTitleProductCollection.setDisplayProperties('productID,productName');
-    		nullUrlTitleProductCollection.addFilter('urlTitle','null','is');
-    		var nullUrlTitleProducts = nullUrlTitleProductCollection.getRecords();
-    		for(var product in nullUrlTitleProducts){
-    		    var urlTitle = getService('HibachiUtilityService').createUniqueURLTitle(titleString=product.productName, tableName="SwProduct");
-    		    var sql = "update swproduct set urlTitle = '#urlTitle#' where productID = '#product.productID#'";
-    		    queryExecute(sql);
-    		}
-    		writeDump('updated product urlTitles');
-    		
-		}
-		
-		/*=========== Sku Bundles ===========*/
-		if(listFindNoCase(arguments.rc.includeSegments,'bundle')){
-    		var defaultLocationSql = "update swlocation set locationCode = '1', locationName = 'MONAT GLOBAL' where locationID = '88e6d435d3ac2e5947c81ab3da60eba2'";
-    		
-    		columnTypeList = 'varchar,varchar,varchar,varchar,varchar,varchar,varchar,varchar,varchar';
-    		var skuBundleQuery = getService('hibachiDataService').loadQueryFromCSVFileWithColumnTypeList(arguments.rc.fileLocation&arguments.rc.bundleFileName, columnTypeList);
-            
-            skuBundleQuery = filterBundleQueryToOneLocationPerBundle( skuBundleQuery );
-            
-    		importConfig = FileRead(getDirectoryFromPath(getCurrentTemplatePath()) & '../config/import/bundles.json');
-    		getService("HibachiDataService").loadDataFromQuery(skuBundleQuery,importConfig);
-    		writeDump('imported bundles');
-    		importConfig = FileRead(getDirectoryFromPath(getCurrentTemplatePath()) & '../config/import/bundles2.json');
-    		getService("HibachiDataService").loadDataFromQuery(skuBundleQuery,importConfig);
-    		writeDump('imported bundles2');
-		}
-		
-		/*=========== Sku Prices ===========*/
-		if(listFindNoCase(arguments.rc.includeSegments,'price')){
-		    columnTypeList = 'varchar,varchar,varchar,varchar,varchar,varchar,varchar,varchar,varchar,varchar,varchar,varchar';
-    		var skuPriceQuery = getService('hibachiDataService').loadQueryFromCSVFileWithColumnTypeList(arguments.rc.fileLocation&arguments.rc.priceFileName, columnTypeList);
-            
-            var numericFields = 'PriceLevel,SellingPrice,QualifyingPrice,TaxablePrice,Commission,RetailsCommissions,ProductPackBonus,ReailValueVolume';
-            for(var i = 1; i <= skuPriceQuery['RecordCount']; i++ ){
-                switch(skuPriceQuery['CountryCode'][i]){
-                    case 'CAN':
-                        skuPriceQuery['CountryCode'][i] = 'CAD';
-                        break;
-                    case 'GBR':
-                        skuPriceQuery['CountryCode'][i] = 'GBP';
-                        break;
-                    case 'USA':
-                        skuPriceQuery['CountryCode'][i] = 'USD';
-                        break;
-                }
-                for(var numericField in numericFields){
-                    skuPriceQuery[numericField][i] = reReplace(skuPriceQuery[numericField][i],'[^\d\.]','','all');
-                }
-            }
-            
-            var usdSkuPriceQuery = new Query();
-    		usdSkuPriceQuery.setDBType('query');
-    		usdSkuPriceQuery.setAttributes(skuPrices=skuPriceQuery);
-    		usdSkuPriceQuery.setSQL("SELECT * FROM skuPrices WHERE PriceLevel = '2' AND CountryCode = 'USD'");
-    		var usdSkuPrices = usdSkuPriceQuery.execute().getResult();
-    		importConfig = FileRead(getDirectoryFromPath(getCurrentTemplatePath()) & '../config/import/prices.json');
-    		getService("HibachiDataService").loadDataFromQuery(usdSkuPrices,importConfig);
-    		writeDump('Price Check on Freedom Shampoo')
-    		
-    		importConfig = FileRead(getDirectoryFromPath(getCurrentTemplatePath()) & '../config/import/skuprices.json');
-    		getService("HibachiDataService").loadDataFromQuery(skuPriceQuery,importConfig);
-    		writeDump('Price Check on Other Shampoo');
-		}
-		abort;
-	}
-
-	private array function getSkuPriceDataFlattened(required any skuPriceData, required struct skuData){ 
-		var skuPrices = [];
-		var sku = arguments.skuData;
-
-		ArrayEach(arguments.skuPriceData, function(item){
-			var skuPrice = {};
-			var itemData = arguments.item;
-			skuPrice["ItemCode"] = sku.ItemCode;
-
-			StructEach(itemData, function(key, value){
-				
-				switch(arguments.key){
-					case 'CommissionableVolume':
-						skuPrice['CommissionableVolume'] = arguments.value;
-						break;
-					case 'QualifyingVolume':
-						skuPrice['QualifyingPrice'] = arguments.value;
-						break;
-					case 'RetailProfit':
-						skuPrice['RetailsCommissions'] = arguments.value;
-						break;
-					case 'RetailVolume':
-						skuPrice['RetailValueVolume'] = arguments.value;
-						break;
-					case 'SellingPrice':
-						skuPrice['SellingPrice'] = arguments.value;
-						break;
-					case 'TaxablePrice':
-						skuPrice['TaxablePrice'] = arguments.value;
-						break;
-					case 'ProductPackVolume':
-						skuPrice['ProductPackBonus'] = arguments.value;
-						break;
-					case 'PriceLevelCode':
-						skuPrice['PriceLevel'] = arguments.value;
-						break;
-					case 'CountryCode':
-						switch (arguments.value){	
-							case 'CAN':
-								skuPrice['CountryCode'] = 'CAD';
-								break;
-							case 'GBR':
-								skuPrice['CountryCode'] = 'GBP';
-								break;
-							case 'USA':
-								skuPrice['CountryCode'] = 'USD';
-								break;
-						}
-						break;
-				}
-			}, true, 10);
-			
-			ArrayAppend(skuPrices, skuPrice);
-		}, true, 10);
-		
-		return skuPrices;
-	}
-
-	private any function populateSkuQuery( required any skuQuery, required struct skuData ){
-		var data = {};
-		var query = arguments.skuQuery;
-		var skuPriceData = [];
-
-		if(structKeyExists(arguments.skuData, "PriceLevels") && ArrayLen(arguments.skuData['PriceLevels'])){
-			skuPriceData = this.getSkuPriceDataFlattened(arguments.skuData['PriceLevels'], arguments.skuData);
-			var defaultSkuPrice = ArrayFilter(skuPriceData, function(item){
-				var hasDefaultSkuPrice = (structKeyExists(arguments.item, 'CountryCode') && arguments.item.CountryCode == 'USD') &&
-										(structKeyExists(arguments.item, 'PriceLevel') && arguments.item.PriceLevel == '2') &&
-										(structKeyExists(arguments.item, 'SellingPrice') && !isNull(arguments.item.SellingPrice));
-										
-				return hasDefaultSkuPrice; 
-			},true, 10);
-
-			if(ArrayLen(defaultSkuPrice)){
-				data['Amount'] = defaultSkuPrice[1]['SellingPrice']; // this is the default sku price
-			}
-		}
-
-		StructEach(arguments.skuData, function(key, value){
-			var skuField = Trim(arguments.key);
-			var fieldValue = arguments.value;
-			if(isNull(fieldValue)){
-				continue;
-			}
-			switch(skuField){
-				case 'ItemCode':
-					data['SKUItemCode'] = Trim(fieldValue);
-					break;
-				case 'ItemName':
-					data['ItemName'] = Trim(fieldValue);
-					break;
-				case 'DisableOnRegularOrders':
-					data['DisableOnRegularOrders'] = fieldValue;
-					break;
-				case 'DisableInFlexShip':
-					data['DisableOnFlexShip'] = fieldValue;
-					break;
-				case 'ItemCategoryCode':
-					data['ItemCategoryAccounting'] = Trim(fieldValue);
-					break;
-				case 'ItemCategoryName':
-					data['CategoryNameAccounting'] = Trim(fieldValue);
-					break;
-			}
-		}, true, 10);
-
-		QueryAddRow(query, data);
-
-		return query;
-	}
-
-	private any function populateSkuPriceQuery( required any skuPriceQuery, required struct skuData ){
-		// var skuPriceData = {};
-		var skuPriceData = [];
-		var query = arguments.skuPriceQuery;
-		if(structKeyExists(arguments.skuData, "PriceLevels") ){
-			var priceLevels = skuData.PriceLevels;
-			skuPriceData = skuData.PriceLevels;
-		}
-
-		var skuPricesFlattened = this.getSkuPriceDataFlattened( skuPriceData, arguments.skuData );
-
-		ArrayEach(skuPricesFlattened, function(item){
-			QueryAddRow(query, item);
-		}, true, 10);
-
-		return arguments.skuPriceQuery;
-	}
-
-	private string function getSkuColumnsList(){
-		return "SKUItemCode,ItemName,Amount,SecondName,DisableOnRegularOrders,DisableOnFlexship,ItemCategoryAccounting,CategoryNameAccounting";
-	}
-
-	private string function getSkuPriceColumnsList(){
-		return "ItemCode,SellingPrice,QualifyingPrice,TaxablePrice,Commission,RetailsCommissions,ProductPackBonus,RetailValueVolume,CountryCode,PriceLevel";
-	}
-
-	public void function importMonatProducts(){
 		getService("HibachiTagService").cfsetting(requesttimeout="60000");
 		getFW().setView("public:main.blank");
-
-		var pageNumber = rc.pageNumber?:1;
-		var pageSize = rc.pageSize?:25;
-		var totalPages = 1;
-		var initProductData = this.getApiResponse( "queryItems", 1, 1 );
-		if(structKeyExists(initProductData, 'Data') && structKeyExists(initProductData['Data'], 'TotalPages')){
-			totalPages = initProductData['Data']['TotalPages'];
-		}
-		var pageMax = rc.pageMax?:totalPages;
-		var updateFlag = rc.updateFlag?:false;
-		var index=0;
-		var skuIndex=0;
-		var skuPriceIndex=0;
-
-		var skuColumns = this.getSkuColumnsList();
-		var skuColumnTypes = [];
-		ArraySet(skuColumnTypes, 1, ListLen(skuColumns), 'varchar');
-
-		var skuPriceColumns = this.getSkuPriceColumnsList();
-		skuPriceColumnTypes = [];
-		ArraySet(skuPriceColumnTypes, 1, ListLen(skuPriceColumns), 'varchar');
-
-
-		while( pageNumber <= pageMax ){
-			var productResponse = this.getApiResponse( "queryItems", pageNumber, pageSize );
-
-			if ( productResponse.hasErrors ){
-				//goto next page causing this is erroring!
-				pageNumber++;
-				continue;
-			}
-			//Set the pagination info.
-			var monatProducts = productResponse.Data.Records?:[];
-
-    		try{
-				
-				var skuQuery = QueryNew(skuColumns, skuColumnTypes);
-				var skuPriceQuery = QueryNew(skuPriceColumns, skuPriceColumnTypes);
-
-				for (var skuData in monatProducts){
-					
-					var skuQuery = this.populateSkuQuery(skuQuery, skuData);
-
-					if(structKeyExists(skuData, 'PriceLevels') && ArrayLen(skuData['PriceLevels'])){
-						skuPriceQuery = this.populateSkuPriceQuery( skuPriceQuery, skuData);
-					}
-				}
-				
-				var importConfig = FileRead(getDirectoryFromPath(getCurrentTemplatePath()) & '../config/import/skus.json');
-				getService("HibachiDataService").loadDataFromQuery(skuQuery, importConfig);
-
-				importConfig = FileRead(getDirectoryFromPath(getCurrentTemplatePath()) & '../config/import/skuprices.json');
-				getService("HibachiDataService").loadDataFromQuery(skuPriceQuery, importConfig);
-			} catch (any e){
-    			writeDump(e); // rollback the tx
-			}
-			pageNumber++
-		}
-		abort;
+		arguments.dryRun = false;
+		getService("MonatDataService").importMonatProducts(argumentCollection=arguments);
 	}
-    
-    private query function filterBundleQueryToOneLocationPerBundle( required query skuBundleQuery ){
-        var columnList = arguments.skuBundleQuery.columnList;
-        var columnTypeList = '';
-        for(var i = 1; i <= listLen(columnList); i++){
-            columnTypeList = listAppend(columnTypeList,'varchar');
-        }
-        var newQuery = queryNew(columnList, columnTypeList);
-        var location = '';
-        var itemCode = '';
-        for( var row in skuBundleQuery){
-            
-            if(len(itemCode) 
-                && itemCode == row['SKUItemCode']
-                && len(location)
-                && location != row['WarehouseNumber']){
-                    continue;
-                }
-            itemCode = row['SKUItemCode'];
-            location = row['WarehouseNumber'];
-            queryAddRow(newQuery,row);
-        }
-
-        return newQuery;
-    }
-    
+	
+	public void function fixMonatProductRemoteID(required struct rc){
+		getService("HibachiTagService").cfsetting(requesttimeout="60000");
+		getFW().setView("public:main.blank");
+		getService("MonatDataService").fixMonatProductRemoteID(argumentCollection=arguments);
+	}
+	
+	
+	
     public void function importVibeAccounts(){
 		getService("HibachiTagService").cfsetting(requesttimeout="60000");
 		var importSuccess = true;
@@ -5366,7 +5405,15 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		try{
 			var userNameQuery = "UPDATE swaccount a 
 								 INNER JOIN tempauth temp on a.accountNumber = temp.consultant_id
-								 SET a.userName = temp.userName";
+								 SET a.userName = 
+									CASE 
+										WHEN ( temp.username IS NOT NULL AND LENGTH(temp.username) > 0) 
+										THEN temp.username
+										ELSE temp.consultant_id
+									END
+									a.modifiedDateTime = NOW(),
+									a.activeFlag = 1
+									WHERE a.remoteID IS NOT NULL";
 			var accountAuthQuery = "INSERT INTO swaccountauthentication (
 										accountAuthenticationID, 
 										password, 

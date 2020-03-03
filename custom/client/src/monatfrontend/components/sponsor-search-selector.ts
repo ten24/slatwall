@@ -1,7 +1,10 @@
+declare var hibachiConfig;
+
 class SponsorSearchSelectorController {
 	private title: string;
 	private siteCountryCode: string;
 	private accountSearchType: string;
+	public selectedSponsor: any = null;
 	public countryCodeOptions: any;
 	public stateCodeOptions: any;
 	public searchResults: any;
@@ -9,7 +12,10 @@ class SponsorSearchSelectorController {
 	public currentPage: number = 1;
 	public argumentsObject:any;
 	public recordsCount:number;
+	public hasBeenSearched:boolean = false;
+	public originalAccountOwner:string;;
 
+	
 	// Form fields for the sponsor search.
 	public form: any = {
 		text: '',
@@ -28,7 +34,14 @@ class SponsorSearchSelectorController {
 		this.form.countryCode = this.siteCountryCode;
 		this.getCountryCodeOptions();
 		this.getStateCodeOptions( this.form.countryCode );
-		this.getSearchResults();
+		if(hibachiConfig.siteOwner.length){
+			this.getSearchResults(true);
+		}
+		
+		this.observerService.attach((account) =>{
+			this.form.text = account;
+			this.getSearchResults(false, true);				
+		}, 'accountRetrieved');
 	}
 	
 	private getCountryCodeOptions = () => {
@@ -53,8 +66,7 @@ class SponsorSearchSelectorController {
 		});
 	}
 	
-	public getSearchResults = () => {
-		
+	public getSearchResults = (useHibachConfig = false, useOriginalAccountOwner = false) => {
 		this.loadingResults = true;
 		
 		let data = {
@@ -73,15 +85,38 @@ class SponsorSearchSelectorController {
 			stateCode:this.form.stateCode,
 			returnJsonObjects:''
 		}
+		
+		if(useHibachConfig && !this.hasBeenSearched){
+			this.argumentsObject['search'] = hibachiConfig.siteOwner
+			data['search'] = hibachiConfig.siteOwner;
+			this.hasBeenSearched = true;
+		}
 
 		this.publicService.marketPartnerResults = this.publicService.doAction(
-			'?slatAction=monat:public.getmarketpartners',data
+			'getmarketpartners',data
 		).then(data => {
 			this.observerService.notify('PromiseComplete');
+			if(useHibachConfig || useOriginalAccountOwner){
+				this.selectedSponsor = data.pageRecords[0];
+				this.notifySelect(this.selectedSponsor);
+			}
 			this.loadingResults = false;
 			this.searchResults = data.pageRecords;
 			this.recordsCount = data.recordsCount;
 		});
+	}
+	
+	public notifySelect = (account) =>{
+		this.observerService.notify('ownerAccountSelected', account)
+	}
+	
+	public setSelectedSponsor = ( sponsor: any, notify: boolean = false ) => {
+		this.selectedSponsor = sponsor;
+		this.publicService.selectedSponsor = sponsor;
+
+		if ( notify ) {
+			this.notifySelect( sponsor );
+		}
 	}
 
 }
@@ -95,6 +130,7 @@ class SponsorSearchSelector {
 		accountSearchType: '@',
 		siteCountryCode: '@',
 		title: '@',
+		originalAccountOwner: '<?'
 	};
 
 	public controller = SponsorSearchSelectorController;

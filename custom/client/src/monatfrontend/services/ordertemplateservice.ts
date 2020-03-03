@@ -2,6 +2,7 @@ export class OrderTemplateService {
    
    private orderTemplateTypeID:string='';
    private cachedGetOrderTemplatesResponse:any;
+   private cachedGetAccountGiftCardsResponse:any;
    
    //@ngInject
    constructor(
@@ -50,7 +51,44 @@ export class OrderTemplateService {
        return deferred.promise;
    }
    
-   public getOrderTemplateItems = (orderTemplateID, pageRecordsShow=100, currentPage=1,orderTemplateTypeID?) =>{
+   
+   public getAccountGiftCards(refresh = false) {
+		var deferred = this.$q.defer();
+		
+		if (refresh || !this.cachedGetAccountGiftCardsResponse) {
+			
+			this.publicService
+				.doAction('?slatAction=api:public.getAccountGiftCards')
+				.then((data) => {
+				    if(data && data.giftCards) {
+    					this.cachedGetAccountGiftCardsResponse = data.giftCards;
+    					deferred.resolve(this.cachedGetAccountGiftCardsResponse);
+				    } else {
+				        throw(data);
+				    }
+				})
+				.catch((e) => {
+					deferred.reject(e);
+				});
+				
+		} else {
+			deferred.resolve(this.cachedGetAccountGiftCardsResponse);
+		}
+		return deferred.promise;
+	}
+	
+	
+	public applyGiftCardToOrderTemplate = (orderTemplateID, giftCardID, amountToApply) => {
+	    var data = {
+            'orderTemplateID' : orderTemplateID,
+            'giftCardID' : giftCardID,
+            'amountToApply' : amountToApply
+       }
+      
+       return this.requestService.newPublicRequest('?slatAction=api:public.applyGiftCardToOrderTemplate',data).promise;
+	}
+   
+    public getOrderTemplateItems = (orderTemplateID, pageRecordsShow=100, currentPage=1,orderTemplateTypeID?) =>{
        var data = {
            'orderTemplateID' : orderTemplateID,
            'currentPage' : currentPage,
@@ -64,9 +102,10 @@ export class OrderTemplateService {
        return this.requestService.newPublicRequest('?slatAction=api:public.getordertemplateitems',data).promise;
     }
    
-    public getOrderTemplateDetails = (orderTemplateID:string) => {
+    public getOrderTemplateDetails = (orderTemplateID:string, optionalProperties:string="") => {
        var data = {
-           "orderTemplateID" : orderTemplateID
+           "orderTemplateID" : orderTemplateID,
+           "optionalProperties" : optionalProperties
        }
        return this.requestService
                   .newPublicRequest('?slatAction=api:public.getOrderTemplateDetails', data)
@@ -103,17 +142,16 @@ export class OrderTemplateService {
     
     /**
      * orderTemplateID:string, 
-     * typeID:string,  => OrderTEmplateCancellationReasonTypeID
-     * typeIDOther?:string => other reason text from user
+     * orderTemplateCancellationReasonType:string,  => OrderTEmplateCancellationReason::TypeID
+     * orderTemplateCancellationReasonTypeOther?:string => some explaination from user
      */ 
-    public cancelOrderTemplate = (orderTemplateID:string, typeID:string, typeIDOther:string = "") => {
+    public cancelOrderTemplate = (orderTemplateID:string, orderTemplateCancellationReasonType:string, orderTemplateCancellationReasonTypeOther:string = "") => {
         
         let payload = {};
     	payload['orderTemplateID'] = orderTemplateID;
-    	payload['orderTemplateCancellationReasonType'] = {};
-    	payload['orderTemplateCancellationReasonType']['typeID'] =  typeID;
-    	payload['orderTemplateCancellationReasonType']['typeIDOther'] = typeIDOther;
-    	
+    	payload['orderTemplateCancellationReasonType'] =  orderTemplateCancellationReasonType;
+    	payload['orderTemplateCancellationReasonTypeOther'] = orderTemplateCancellationReasonTypeOther;
+
     	payload = this.getFlattenObject(payload);
     	
         return this.requestService
@@ -180,13 +218,15 @@ export class OrderTemplateService {
        'orderTemplateID',
        'skuID',
        'quantity'
+       temporaryFlag -> For OFY/Promotional item
      * 
     */ 
-    public addOrderTemplateItem = (skuID:string, orderTemplateID:string, quantity:number=1) => {
+    public addOrderTemplateItem = (skuID:string, orderTemplateID:string, quantity:number=1, temporaryFlag: false) => {
         let payload = {
 			'orderTemplateID': orderTemplateID,
 			'skuID': skuID,
-			'quantity': quantity
+			'quantity': quantity,
+			'temporaryFlag': temporaryFlag
 		};
 		
        return this.requestService
@@ -275,19 +315,24 @@ export class OrderTemplateService {
       return objectToReturn;
     }
 
-    public createOrderTemplate = (orderTemplateSystemCode) => {
+    public createOrderTemplate = (orderTemplateSystemCode, context="save") => {
         return this.$rootScope.hibachiScope.doAction("createOrderTemplate",{
             orderTemplateSystemCode: orderTemplateSystemCode,
+            saveContext: context,
             returnJSONObjects:''
         });
     }   
     
    public getOrderTemplatesLight = (orderTemplateTypeID="2c9280846b712d47016b75464e800014") =>{
-       return this.publicService.doAction('getAccountOrderTemplateNamesAndIDs', {ordertemplateTypeID: orderTemplateTypeID})
+       return this.publicService.doAction('getAccountOrderTemplateNamesAndIDs', {ordertemplateTypeID: orderTemplateTypeID});
    }
    
    	public getOrderTemplateSettings(){
 		return this.publicService.doAction('getDaysToEditOrderTemplateSetting');
+	}
+	
+   	public deleteOrderTemplate(orderTemplateID){
+		return this.publicService.doAction('deleteOrderTemplate', {orderTemplateID: orderTemplateID });
 	}
 
 }

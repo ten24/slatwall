@@ -33,6 +33,7 @@
 		"physicalCounts": [{ "contexts": "delete", "maxCollection": 0 }],
 		"redemptionAmount": [{ "conditions": "isGiftCardSku", "dataType": "numeric", "minValue": 0 }],
 		"eventConflictExistsFlag": [{ "contexts": "save", "conditions": "eventSku", "eq": false }],
-		"measurementUnitID": [{ "contexts": "save", "conditions": "trackedByMeasurement", "required": true }]
+		"measurementUnitID": [{ "contexts": "save", "conditions": "trackedByMeasurement", "required": true }],
+		"publishedEndDateTime": [{ "contexts": "save", "method": "isValidPublishedEndDateTime" }]
 	}
 }

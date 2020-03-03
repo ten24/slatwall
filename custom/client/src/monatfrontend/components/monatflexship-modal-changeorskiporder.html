@@ -1,5 +1,5 @@
 <div
-	class="modal"
+	class="modal using-modal-service"
 	role="dialog"
 	id="flexship-modal-change-or-skip-order{{
 		monatFlexshipChangeOrSkipOrderModal.orderTemplate.orderTemplateID
@@ -8,6 +8,9 @@
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<!-- Modal Close -->
+			<form name = "updateScheduleForm"
+			  ng-submit = "updateScheduleForm.$valid && monatFlexshipChangeOrSkipOrderModal.updateSchedule()"
+			  >
 			<button
 				type="button"
 				class="close"
@@ -47,13 +50,17 @@
 						id="scheduleOrderNextPlaceDateTime"
 						name="scheduleOrderNextPlaceDateTime"
 						placeholder="{{ monatFlexshipChangeOrSkipOrderModal.translations.forHowLong }}"
-						sw-date-picker
+						monat-date-picker
 						data-end-day-of-the-month="monatFlexshipChangeOrSkipOrderModal.endDayOfTheMonth"
-						data-end-date="monatFlexshipChangeOrSkipOrderModal.endDate"
+						data-max-date="monatFlexshipChangeOrSkipOrderModal.nextPlaceDateTime"
 						ng-disabled="monatFlexshipChangeOrSkipOrderModal.formData.delayOrSkip !== 'delay'"
 						ng-model="monatFlexshipChangeOrSkipOrderModal.nextPlaceDateTime"
 						autocomplete="off"
+						readonly 
 					/>
+					 <div class="text-success"  ng-if="monatFlexshipChangeOrSkipOrderModal.formData.delayOrSkip === 'skip'">
+                          <span sw-rbkey ="'alert.flexship.nextDatechange'"></span>  {{monatFlexshipChangeOrSkipOrderModal.nextPlaceDateTime}}
+                        </div>
 				</div>
 
 				<!-- Skip this month's order -->
@@ -69,6 +76,7 @@
 					<label for="change-order2">
 						{{ monatFlexshipChangeOrSkipOrderModal.translations.skipThisMonthsOrder }}
 					</label>
+					   
 				</div>
 
 				<!-- Why are you pushing your flexship? -->
@@ -79,49 +87,58 @@
 						id="change-flexship"
 						ng-model="monatFlexshipChangeOrSkipOrderModal.selectedReason"
 						ng-change="monatFlexshipChangeOrSkipOrderModal.selectedReasonChanged()"
-						ng-options="reason.value as reason.name for reason in monatFlexshipChangeOrSkipOrderModal.scheduleDateChangeReasonTypeOptions"
-						placeholder="{{
-							monatFlexshipChangeOrSkipOrderModal.translations.flexshipCancelReason
-						}}"
+						ng-options="reason as reason.name for reason in monatFlexshipChangeOrSkipOrderModal.scheduleDateChangeReasonTypeOptions"
+						placeholder="{{monatFlexshipChangeOrSkipOrderModal.translations.flexshipCancelReason}}"
+					   	swvalidationrequired = "true"
+					    name="selectedReason"
 					>
 						<option value="">
 							{{ monatFlexshipChangeOrSkipOrderModal.translations.whyAreYouCancellingFlexship }}
 						</option>
 					</select>
+					 <div ng-if="updateScheduleForm.$submitted" ng-messages="updateScheduleForm.selectedReason.$error">
+					 	<div ng-messages-include="monat-form-generic-validation-error-messages"></div>
+					 </div>
 				</div>
 
-				<div
-					class="form-group"
+				<div class="material-field"
 					ng-if="monatFlexshipChangeOrSkipOrderModal.formData.showOtherReasonNotes"
 				>
 					<input
 						type="text"
 						class="form-control"
 						ng-model="monatFlexshipChangeOrSkipOrderModal.formData.otherReasonNotes"
-						placeholder="{{
-							monatFlexshipChangeOrSkipOrderModal.translations.flexshipCancelOtherReason
-						}}"
+						swvalidationrequired = "true"
+						swvalidationmaxlength ="250"
+						name="otherReasonNotes"
 					/>
-					<!--TODO: RB-Keys text has extra chars on it-->
+					<label ng-bind="monatFlexshipChangeOrSkipOrderModal.translations.flexshipCancelOtherReason"></label>
+					<div ng-if="updateScheduleForm.$submitted" ng-messages="updateScheduleForm.otherReasonNotes.$error">
+					    <div ng-messages-include="monat-form-generic-validation-error-messages"></div>
+					</div>
 				</div>
+				
 			</div>
 
 			<div class="footer">
 				<button
-					type="button"
+					type="submit"
 					class="btn btn-block bg-primary"
-					ng-click="monatFlexshipChangeOrSkipOrderModal.updateSchedule()"
+					ng-class="{ loading: monatFlexshipChangeOrSkipOrderModal.loading }"
+					ng-disabled = "monatFlexshipChangeOrSkipOrderModal.loading"
+					sw-rbkey="'frontend.modal.saveChangesButton'"
 				>
-					<span sw-rbkey="'frontend.modal.saveChangesButton'"></span>
 				</button>
+				
 				<button
 					type="button"
 					class="btn btn-cancel cancel-dark"
 					ng-click="monatFlexshipChangeOrSkipOrderModal.closeModal()"
+					sw-rbkey="'frontend.modal.closeButton'"
 				>
-					<span sw-rbkey="'frontend.modal.closeButton'"></span>
 				</button>
 			</div>
+			</form>
 		</div>
 	</div>
 </div>

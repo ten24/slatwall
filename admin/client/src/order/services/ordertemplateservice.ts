@@ -71,7 +71,8 @@ export class OrderTemplateService {
                 public observerService,
                 public rbkeyService,
                 public requestService,
-                public utilityService
+                public utilityService,
+                public alertService
     ){
         this.observerService.attach(this.addOrderTemplateItem, 'addOrderTemplateItem');
         this.observerService.attach(this.addPromotionalOrderTemplateItem, 'addPromotionalOrderTemplateItem')
@@ -113,9 +114,9 @@ export class OrderTemplateService {
     		}
     	}
     	
-    	for(var i=0; i<this.orderTemplateDisplayProperties.length; i++){
+    	for(var i=0; i < this.orderTemplateDisplayProperties.length; i++){
 			
-			var columnConfig = this.getColumnConfigForSkuOrOrderTemplateItemPropertyIdentifier(this.orderTemplateDisplayProperties[i],i,this.originalOrderTemplatePropertyLength);
+			var columnConfig = this.getColumnConfigForSkuOrOrderTemplateItemPropertyIdentifier(this.orderTemplateDisplayProperties[i], i, this.originalOrderTemplatePropertyLength);
 			this.editOrderTemplateItemsCollection.addDisplayProperty(this.orderTemplateDisplayProperties[i],'',columnConfig);
 			
 			columnConfig.isEditable = false;//we never need editable columns in the view config
@@ -179,7 +180,7 @@ export class OrderTemplateService {
     }
     
     public setAdditionalOrderTemplateItemPropertiesToDisplay = (additionalOrderTemplateItemPropertiesToDisplay) =>{
-		this.orderTemplateDisplayProperties.concat(additionalOrderTemplateItemPropertiesToDisplay.split(','));
+		this.orderTemplateItemPropertyIdentifierList.concat(additionalOrderTemplateItemPropertiesToDisplay.split(','));
 	}
 	
 	public getViewOrderTemplateItemCollection = () =>{
@@ -246,11 +247,16 @@ export class OrderTemplateService {
     
     public setOrderTemplateItemPropertyIdentifierList = (orderTemplatePropertyIdentifierList:string) =>{
     	var propsToAdd = orderTemplatePropertyIdentifierList.split(',');
-    	this.orderTemplateItemPropertyIdentifierList = '';
+    	
+    	if(this.orderTemplateItemPropertyIdentifierList == null){
+    		this.orderTemplateItemPropertyIdentifierList = '';
+    	}
+    	
     	for(var i=0; i<propsToAdd.length; i++){
     		this.orderTemplateItemPropertyIdentifierList += 'orderTemplate.' + propsToAdd[i];
     		if(i + 1 !== propsToAdd.length) this.orderTemplateItemPropertyIdentifierList += ',';
     	}
+    	
     	return orderTemplatePropertyIdentifierList; 
     }
     
@@ -274,6 +280,19 @@ export class OrderTemplateService {
 	}
  
     public addOrderTemplateItem = (state) =>{
+        
+        		
+	    if(isNaN(parseFloat(state.priceByCurrencyCode))) {
+
+	        var alert = this.alertService.newAlert();
+            alert.msg = this.rbkeyService.rbKey("validate.processOrder_addOrderitem.price.notIsDefined");
+            alert.type = "error";
+            alert.fade = true;
+            this.alertService.addAlert(alert);
+	        
+			this.observerService.notify("addOrderItemStopLoading", {});
+			return;
+		} 
         
         var formDataToPost:any = {
 			entityID: this.orderTemplateID,

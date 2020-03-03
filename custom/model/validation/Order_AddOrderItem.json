@@ -1,0 +1,33 @@
+{	
+	"conditions": {
+		"renewalFeeFlag": {
+			"sku.product.productType.systemCode": { "eq": "RenewalFee-MP" }
+		},
+		"isMarketPartnerSalesOrder":{
+			"account.accountType":{
+				"eq":"marketPartner"
+			},
+			"account.accountStatusType.systemCode":{
+				"neq":"astEnrollmentPending"
+			},
+			"order.orderType.systemCode":{
+				"eq":"otSalesOrder"
+			}
+		}
+	},
+	"properties": {
+		"isPurchasableItemFlag" :	[
+			{ "eq": true },
+			{ "conditions":"isMarketPartnerSalesOrder", "eq": true, "method":"marketPartnerValidationMaxOrderAmount" }
+		],
+		"sku":						[{"method": "orderMinimumDaysToRenewMPFailed"}],
+		"quantity":[
+			{	
+				"conditions": "renewalFeeFlag",
+				"dataType": "numeric",
+				"minValue": 1,
+				"maxValue": 1
+			}
+		]
+	}
+}

@@ -1,0 +1,39 @@
+	<!---- Edit wishlist name modal --->
+	<div class="modal using-modal-service" id="edit-wishlist" tabindex="-1" role="dialog" aria-labelledby="edit-wishlist" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content p-0">
+				<form 
+					ng-submit="swfForm.submitForm()" 
+					swf-form data-method="editOrderTemplate" 
+					data-after-submit-event-name="myAccountWishlistEdited" 
+					data-modal-id="edit-wishlist"
+					ng-model="wishlistEditModal.wishlist"
+				>
+					<div class="modal-header nameModal pb-3 bg-primary">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<i class="fas text-white fa-times"></i>
+						</button>
+						<p class="text-white h6 mb-0">{{wishlistEditModal.translations.wishlistName}}</p>
+					</div>
+					<div class="modal-body row w-100">
+						<div class="col-2 align-self-center">
+							<span>
+								<i class="fa fa-th-list fa-2x mx-auto"></i>
+							</span>
+						</div>
+	                    <div class="material-field mx-auto col-10">
+	                        <input id="EditorderTemplateName" type="text" name="orderTemplateName"  class="form-control success" ng-model="wishlistEditModal.wishlist.name" swvalidationrequired="true">
+	                        <input id="editOrderTemplateID" type="hidden" name="orderTemplateID"  class="form-control success" ng-model="wishlistEditModal.wishlist.value">
+	                        <label for="wishlistName">{{wishlistEditModal.translations.wishlistName}}</label>
+	                        <sw:SwfErrorDisplay propertyIdentifier="orderTemplateName"/>
+	                    </div>
+					</div>
+					<div class="modal-footer">
+						<button ng-class="{loading: swfForm.loading}" type="submit" value="{{wishlistEditModal.translations.save}}" class="btn bg-primary save-btn px-5 py-3">{{wishlistEditModal.translations.save}}</buton>
+						<button ng-click="wishlistEditModal.close()" type="button" class="btn bg-primary py-3">{{wishlistEditModal.translations.cancel}}</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<!---- END: Edit wishlist name modal --->

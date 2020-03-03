@@ -10,26 +10,30 @@ class MonatFlexshipConfirmController {
     
     public selectedFrequencyTermID;
     public selectedFrequencyDate;
+    public loading :boolean = false;
     //@ngInject
     constructor(
     	public monatService, 
     	public orderTemplateService, 
     	public rbkeyService,
     	public $scope, 
-    	public $window
+    	public $window,
+    	public monatAlertService
     ) { 
         
     }
     
     public $onInit = () => {
+        this.loading= true;
     	this.makeTranslations();
-	
 		this.monatService.getOptions({"frequencyTermOptions":false,"frequencyDateOptions":false})
 		.then(data => {
 			this.frequencyTermOptions = data.frequencyTermOptions;
 			this.frequencyDateOptions = data.frequencyDateOptions;
 			this.selectedFrequencyTermID = this.orderTemplate.frequencyTerm_termID;
 			this.selectedFrequencyDate = this.orderTemplate.scheduleOrderDayOfTheMonth;
+		}).finally(()=>{
+		    this.loading =false;
 		});
 	
     };
@@ -44,22 +48,23 @@ class MonatFlexshipConfirmController {
     }
 
     public confirm = () => {
-    	
-    	//TODO frontend validation, success/failure alert    
+        this.loading =true;
     	this.orderTemplateService
     	.updateOrderTemplateFrequency(this.orderTemplate.orderTemplateID, this.selectedFrequencyTermID, this.selectedFrequencyDate)
     	.then( data => { 
-    		
+
     		if(data.successfulActions && data.successfulActions.indexOf('public:orderTemplate.updateFrequency') > -1) {
-        		this.$window.location.href = this.redirectUrl;
+        		this.monatAlertService.success(this.rbkeyService.rbKey('frontend.flexshipUpdateSucess'));
+        		this.monatService.redirectToProperSite(this.redirectUrl);
         	} else {
 	            throw(data);
         	}
     	}).catch(error => {
-    		console.error("setAsCurrentFlexship :",error);	
-            // TODO: handle errors
-    	}).finally(() => { 
-    	});
+    		this.monatAlertService.showErrorsFromResponse(error);
+    	})
+    	.finally(() => { 
+    	    this.loading =false;
+    	 });
     	
     }
 }

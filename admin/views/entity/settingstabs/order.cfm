@@ -46,6 +46,9 @@
 <cfoutput>
 	<swa:SlatwallSettingTable showInheritance="false">
 		<swa:SlatwallSetting settingName="orderShowUnpublishedSkusFlag" />
+		<swa:SlatwallSetting settingName="orderReturnReasonTypeOptions" />
+		<swa:SlatwallSetting settingName="orderExchangeReasonTypeOptions" />
+		<swa:SlatwallSetting settingName="orderReplacementReasonTypeOptions" />
 	</swa:SlatwallSettingTable>
 	
 </cfoutput>

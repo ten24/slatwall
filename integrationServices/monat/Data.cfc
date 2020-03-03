@@ -80,6 +80,36 @@ component accessors="true" output="false" displayname="Monat" extends="Slatwall.
 	public any function getContentByResponse(required string response){
 		return deserializeJson(arguments.response.fileContent);
 	}
-
+	
+	public any function pullData(){
+		
+		try{
+			getService("MonatDataService").importAccountUpdates();
+		}catch(any accountErrors){
+			logHibachi("The account update failed with #accountErrors.message#");
+		}
+		
+		try{
+			getService("MonatDataService").importOrderUpdates();
+		}catch(any orderErrors){
+			logHibachi("The order update failed with #orderErrors.message#");
+		}
+		
+		try{
+			getService("MonatDataService").importOrderShipments();
+		}catch(any shipmentErrors){
+			logHibachi("The shipment update failed with #shipmentErrors.message#");
+		}
+		
+		try{
+			getService("MonatDataService").importInventoryUpdates();
+		}catch(any inventoryErrors){
+			logHibachi("The inventory update failed with #inventoryErrors.message#");
+		}
+	}
+	
+	public void function importMonatProducts(required struct rc){
+		getService("MonatDataService").importMonatProducts(argumentCollection=arguments);
+	}
 }
 

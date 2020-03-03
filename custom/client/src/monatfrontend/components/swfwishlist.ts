@@ -1,5 +1,6 @@
 /// <reference path='../../../../../org/Hibachi/client/typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../../../org/Hibachi/client/typings/tsd.d.ts' />
+declare var $;
 
 import {Option} from "../../../../../org/Hibachi/client/src/form/components/swfselect";
 
@@ -17,15 +18,17 @@ class SWFWishlistController {
     public sku:string;
     public newTemplateID:string;
     public showTemplateList:boolean = false;
+    public showWishlistModal:boolean;
 	public close; // injected from angularModalService
-
-    
+    public productName;
+    public newWishlist:boolean = false;
     // @ngInject
     constructor(
         public $scope,
         public observerService,
         public $timeout,
-        public orderTemplateService
+        public orderTemplateService,
+        public monatService
     ){
         if(!this.pageRecordsShow){
             this.pageRecordsShow = 6;
@@ -34,24 +37,29 @@ class SWFWishlistController {
         if(!this.currentPage){
             this.currentPage = 1;
         }
-        console.log(this.sku)
         
         this.observerService.attach(this.refreshList,"myAccountWishlistSelected");        
         this.observerService.attach(this.successfulAlert,"OrderTemplateAddOrderTemplateItemSuccess");
-        this.observerService.attach(this.closeModal,"createWishlistSuccess"); 
-        this.observerService.attach(this.closeModal,"addItemSuccess"); 
+        this.observerService.attach(this.onAddItemSuccess,"createWishlistSuccess"); 
+        this.observerService.attach(this.onAddItemSuccess,"addItemSuccess"); 
     }
     
     private refreshList = (option:Option)=>{
         this.loading = true;
         this.currentList = option;
         
+        if(!option){
+           this.loading = false; 
+           return;
+        }
+        
         this.orderTemplateService
         .getWishlistItems(option.value,this.pageRecordsShow,this.currentPage,this.wishlistTypeID)
         .then(result=>{
-            this.orderTemplateItems = result['orderTemplateItems'];
+            this.orderTemplateItems = result.orderTemplateItems;
             this.loading = false;
         });
+        
     }
 
     public deleteItem =(index)=>{
@@ -69,11 +77,10 @@ class SWFWishlistController {
     
     public addWishlistItem =(skuID)=>{ 
         this.loading = true;
-
         this.orderTemplateService.addOrderTemplateItem(this.sku ? this.sku : skuID, this.wishlistTemplateID)
         .then(result=>{
             this.loading = false;
-            return result;
+            this.onAddItemSuccess(this.sku);
         });
     }
 
@@ -83,6 +90,7 @@ class SWFWishlistController {
         return this.orderTemplateService.addOrderTemplateItemAndCreateWishlist(this.wishlistTemplateName, this.sku, quantity).then(result=>{
             this.loading = false;
             this.getAllWishlists();
+            this.onAddItemSuccess(this.sku);
             this.observerService.attach(this.successfulAlert,"createWishlistSuccess");
             return result;
         });
@@ -101,7 +109,7 @@ class SWFWishlistController {
                 this.newTemplateID = result.orderTemplates[0].orderTemplateID;
             }
         })
-        .cache( (e) => {
+        .catch( (e) => {
             //TODO
             console.error(e);
         })
@@ -124,7 +132,6 @@ class SWFWishlistController {
     
     public setWishlistID = (newID) => {
         this.wishlistTemplateID = newID;
-        
     }
     
     public setWishlistName = (newName) => {
@@ -139,9 +146,19 @@ class SWFWishlistController {
     }
     
     
-    public closeModal = () => {
+    public onAddItemSuccess = (skuid) => {
+        
+        // Set the heart to be filled on the product details page
+        $('#skuID_' + skuid).removeClass('far').addClass('fas');
+        
+        // Close the modal
+        if(!this.close) return;
      	this.close(null); // close, but give 100ms to animate
     };
+    
+    public redirectPageToShop(){
+        this.monatService.redirectToProperSite('/shop')
+    }
     
 }
 
@@ -163,6 +180,8 @@ class SWFWishlist  {
         pageRecordsShow:"@?",
         currentPage:"@?",
         sku:"<?",
+        productName:"<?",
+        showWishlistModal:"<?",
         close:'=' //injected by angularModalService;
     };
     public controller       = SWFWishlistController;
@@ -182,7 +201,7 @@ class SWFWishlist  {
     // @ngInject
 	constructor(private monatFrontendBasePath){
 		this.templateUrl = monatFrontendBasePath + '/monatfrontend/components/swfwishlist.html';
-		this.restrict = "E";
+		this.restrict = "AE";
 	}
     /**
         * Sets the context of this form

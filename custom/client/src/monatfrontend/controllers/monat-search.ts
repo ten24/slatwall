@@ -3,10 +3,10 @@ class MonatSearchController {
 	public productList: Array<any> = [];
 	public loading: boolean = false;
 	public keyword: string = '';
-	public recordsCount:any;
+	public recordsCount: any;
 	public priceGroupCode;
-	public argumentsObject:any ;
-
+	public argumentsObject: any;
+	public wishlistItems: Array<any>;
 
 	// @ngInject
 	constructor(
@@ -15,19 +15,20 @@ class MonatSearchController {
 		public $location,
 		public observerService
 	) {
-		this.publicService.getAccount().then(data => {
-			this.priceGroupCode = "2";
-			if ( this.publicService.account.priceGroups.length ) {
-				this.priceGroupCode = this.publicService.account.priceGroups[0].priceGroupCode;
-			}
-			if ( 'undefined' !== typeof this.$location.search().keyword ) {
-				this.getProductsByKeyword( this.$location.search().keyword );
-			}
-		});
+		if ( 'undefined' !== typeof this.$location.search().keyword ) {
+			this.getProductsByKeyword( this.$location.search().keyword );
+		}
+		
+		this.monatService.getAccountWishlistItemIDs().then( data => {
+            if ( 'undefined' !== typeof data.wishlistItems ) {
+                this.wishlistItems = data.wishlistItems;
+                this.observerService.notify('accountWishlistItemsSuccess');
+            }
+        });
 	}
 
 	public getProductsByKeyword = keyword => {
-		this.argumentsObject = {keyword: keyword, priceGroupCode: this.priceGroupCode} // defining the arguments object to be passed into pagination directive
+		this.argumentsObject = {keyword: keyword} // defining the arguments object to be passed into pagination directive
 		this.loading = true;
 		this.keyword = keyword;
 		let priceGroupCode = this.priceGroupCode;

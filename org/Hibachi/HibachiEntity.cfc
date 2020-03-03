@@ -90,7 +90,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	}
 
 	// @hint helper function to return a Setting
-	public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
+	public any function setting(required string settingName, array filterEntities=[], formatValue=false, formatDetails={}) {
 
 		var settingService = getService('settingService'); 
 
@@ -111,14 +111,22 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		var cachedSettingDetails = getService('HibachiCacheService').getOrCacheFunctionValue(argumentCollection=cacheArguments); 
 
 		//we must have this setting value if we don't maybe we should throw an error
-		if(!isNull(cachedSettingDetails) && structKeyExists(cachedSettingDetails, 'settingValue')){
-			return cachedSettingDetails.settingValue;
+		if(!isNull(cachedSettingDetails)){
+			if(arguments.formatValue && structKeyExists(cachedSettingDetails, 'settingValueFormatted')){
+				return cachedSettingDetails.settingValueFormatted;
+			}else if(structKeyExists(cachedSettingDetails, 'settingValue')){
+				return cachedSettingDetails.settingValue;
+			}
 		} 
 	}
 
 	public any function getEntityService(){ 
 		return getService('HibachiService').getServiceByEntityName( entityName=getClassName() ); 
 	} 
+
+	public any function getEntityCollectionList(){
+		return getEntityService().invokeMethod('get#getClassName()#CollectionList'); 
+	}
 
 	public struct function getStructRepresentation(string properties){
 		if(structKeyExists(arguments, 'properties') && len(arguments.properties)){
@@ -1296,7 +1304,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			}else{
 				//Remove all non Persistent, Relational and Excluded columns
 				for(var x = 1; x <= arraylen(properties); x++){
-					if(!ListContains(excludesList, properties[x].name) && !structKeyExists(properties[x],'FKColumn') &&
+					if(!ListContains(arguments.excludesList, properties[x].name) && !structKeyExists(properties[x],'FKColumn') &&
 					(!structKeyExists(properties[x], "persistent") || properties[x].persistent)){
 						arrayAppend(defaultProperties, properties[x]);
 					}

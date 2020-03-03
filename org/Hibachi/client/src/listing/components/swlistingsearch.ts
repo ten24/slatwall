@@ -19,10 +19,12 @@ class SWListingSearchController {
     public swListingDisplay:any;
     
     public searchableOptions;
+    public searchableColumns:any[];
     private selectedSearchColumn;
    
     private selectedSearchFilter;
     public selectedWildCardPosition;
+    public limitCountTotal;
     
     public swListingControls:any;
     public hasPersonalCollections:boolean=false;
@@ -49,6 +51,14 @@ class SWListingSearchController {
     
     public searchableFilterOptions = [
             {
+                title:'Last 1 Month',
+                value:'lastOneMonth',
+            },
+            {
+                title:'Last 2 Months',
+                value:'lastTwoMonths',
+            },
+            {
                 title:'Last 3 Months',
                 value:'lastThreeMonths',
             },
@@ -68,16 +78,20 @@ class SWListingSearchController {
         
     public wildCardPositionOptions = [
         {
-            title:'Match from start',
-            value:'left'
+            title:'Starts with',
+            value:'right'
         },
         {
-            title:'Match from end',
-            value:'right'
+            title:'Ends with',
+            value:'left'
         },
         {
             title:'Match Anywhere',
             value:'both'
+        },
+        {
+            title:'Exact Match',
+            value:'exact'
         }
     ];
 
@@ -85,18 +99,22 @@ class SWListingSearchController {
         if(angular.isDefined(this.swListingDisplay.personalCollectionIdentifier)){
             this.personalCollectionIdentifier = this.swListingDisplay.personalCollectionIdentifier;
         }
-
+        this.limitCountTotal = this.swListingDisplay.collectionConfig.limitCountTotal;//Fetching initial val from config
         //snapshot searchable options in the beginning
         this.searchableOptions = angular.copy(this.collectionConfig.columns);
-    
-        // this.$scope.$watch('collectionConfig', function(newValue, oldValue) {
-        //     this.applySearchConfig(this.collectionConfig.listingSearchConfig);
-        // })
+        
+        this.searchableColumns = [];
+        for(var i = 0; i < this.searchableOptions.length; i++){
+            if(this.searchableOptions[i].isSearchable){
+                this.searchableColumns.push(this.searchableOptions[i].propertyIdentifier);
+            }
+        }
+
         
         if(angular.isDefined(this.swListingDisplay.collectionConfig.listingSearchConfig)){
             this.configureListingSearchConfigControls(this.swListingDisplay.collectionConfig.listingSearchConfig);
         }
-        
+
         this.selectedSearchColumn={title:'All'};
         this.configureSearchableColumns(this.selectedSearchColumn);
 
@@ -124,17 +142,8 @@ class SWListingSearchController {
         }
     }
     
-    public shouldShowSearchFilterDropdown() {
-        console.log("calling shouldShowSearchFilterDropdown");
-
-        //the controls with new config
-        this.configureListingSearchConfigControls(this.swListingDisplay.collectionConfig.listingSearchConfig);
-        
-        return ( this.swListingDisplay.searchText && this.swListingDisplay.searchText.length )
-                || this.swListingDisplay.collectionConfig.listingSearchConfig.selectedSearchFilterCode;
-    }
-    
-    private configureListingSearchConfigControls(searchConfig?) {
+    public configureListingSearchConfigControls(searchConfig?) {
+        if(!searchConfig) searchConfig = this.swListingDisplay.collectionConfig.listingSearchConfig;
         if(!searchConfig) return;
         if(angular.isDefined(searchConfig.selectedSearchFilterCode)){
              this.selectedSearchFilter = this.searchableFilterOptions
@@ -169,8 +178,8 @@ class SWListingSearchController {
 
     private updateListingSearchConfig(config?) {
         var newListingSearchConfig = { ...this.swListingDisplay.collectionConfig.listingSearchConfig, ...config };
-        this.swListingDisplay.collectionConfig.listingSearchConfig = newListingSearchConfig;
-        this.observerService.notifyById('swPaginationAction',this.listingId, {type:'setCurrentPage', payload:1});
+        this.swListingDisplay.collectionConfig.listingSearchConfig = newListingSearchConfig;//sets the value on listingsearchconfig
+        this.observerService.notifyById('swPaginationAction',this.listingId, {type:'setCurrentPage', payload:1});//refreshes the listing
     }
 
     public selectSearchColumn = (column?)=>{
@@ -243,14 +252,11 @@ class SWListingSearchController {
             var selectedPersonalCollection = angular.fromJson(this.localStorageService.getItem('selectedPersonalCollection'));
             if(selectedPersonalCollection[this.swListingDisplay.personalCollectionKey]){
 
-                this.$hibachi.saveEntity(
-                    'Collection',
-                    selectedPersonalCollection[this.swListingDisplay.personalCollectionKey].collectionID,
+                this.$hibachi.savePersonalCollection(
                     {
-                        'accountOwner.accountID':this.$rootScope.slatwall.account.accountID,
+                        'entityID':selectedPersonalCollection[this.swListingDisplay.personalCollectionKey].collectionID,
                         'collectionConfig':this.swListingDisplay.collectionConfig.collectionConfigString
-                    },
-                    'save'
+                    }
                 ).then((data)=>{
 
                 });
@@ -262,20 +268,14 @@ class SWListingSearchController {
                 'collectionConfig':this.swListingDisplay.collectionConfig.collectionConfigString,
                 'collectionName':collectionName,
                 'collectionDescription':this.personalCollectionIdentifier,
-                'collectionObject':this.swListingDisplay.collectionConfig.baseEntityName,
-                'accountOwner':{
-                    'accountID':this.$rootScope.slatwall.account.accountID
-                }
+                'collectionObject':this.swListingDisplay.collectionConfig.baseEntityName
             }
 
-            this.$hibachi.saveEntity(
-                'Collection',
-                "",
+            this.$hibachi.savePersonalCollection(
                 {
                     'serializedJSONData':angular.toJson(serializedJSONData),
                     'propertyIdentifiersList':'collectionID,collectionName,collectionObject,collectionDescription'
-                },
-                'save'
+                }
             ).then((data)=>{
 
                 if(!this.localStorageService.hasItem('selectedPersonalCollection')){
@@ -304,7 +304,7 @@ class SWListingSearchController {
         if(!this.hasPersonalCollections){
             var personalCollectionList = this.collectionConfig.newCollectionConfig('Collection');
             personalCollectionList.setDisplayProperties('collectionID,collectionName,collectionObject,collectionDescription');
-            personalCollectionList.addFilter('accountOwner.accountID',this.$rootScope.slatwall.account.accountID);
+            personalCollectionList.addFilter('accountOwner.accountID','${account.accountID}');
             personalCollectionList.addFilter('collectionObject',this.swListingDisplay.baseEntityName);
             personalCollectionList.addFilter('reportFlag',0);
             personalCollectionList.addFilter('softDeleteFlag',true,"!=");
@@ -334,13 +334,6 @@ class SWListingSearchController {
 
         this.collectionConfig.setKeywords(this.swListingDisplay.searchText);
         
-        // this.collectionConfig.removeFilterGroupByFilterGroupAlias('searchableFilters');
-        // if(this.selectedSearchFilter.criteria != 'all'){
-        //     if(angular.isDefined(this.searchFilterPropertyIdentifier) && this.searchFilterPropertyIdentifier.length && this.swListingDisplay.searchText.length > 0){
-        //         this.collectionConfig.addFilter(this.searchFilterPropertyIdentifier,this.selectedSearchFilter.value,'>',undefined,undefined,undefined,undefined,'searchableFilters');
-        //     }
-        // }
-
         this.swListingDisplay.collectionConfig = this.collectionConfig;
 
         this.observerService.notifyById('swPaginationAction',this.listingId, {type:'setCurrentPage', payload:1});
@@ -348,21 +341,19 @@ class SWListingSearchController {
     };
 
     private configureSearchableColumns=(column)=>{
-        var searchableColumn = "";
+
+        var searchableColumns = [];
         if(column.propertyIdentifier){
-            searchableColumn = column.propertyIdentifier;
-        //default to All columns
+            searchableColumns.push(column.propertyIdentifier);
+        }else{
+            searchableColumns = this.searchableColumns;
         }
 
         for(var i = 0; i < this.swListingDisplay.collectionConfig.columns.length; i++){
-            if(searchableColumn.length){
-                if(searchableColumn === this.swListingDisplay.collectionConfig.columns[i].propertyIdentifier){
-                    this.swListingDisplay.collectionConfig.columns[i].isSearchable = true;
-                }else{
-                    this.swListingDisplay.collectionConfig.columns[i].isSearchable = false;
-                }
-            }else{
+            if(searchableColumns.indexOf(this.swListingDisplay.collectionConfig.columns[i].propertyIdentifier) > -1){
                 this.swListingDisplay.collectionConfig.columns[i].isSearchable = true;
+            }else{
+                this.swListingDisplay.collectionConfig.columns[i].isSearchable = false;
             }
         }
     }
@@ -411,5 +402,6 @@ class SWListingSearch  implements ng.IDirective{
 }
 
 export{
-    SWListingSearch
+    SWListingSearch,
+    SWListingSearchController
 }

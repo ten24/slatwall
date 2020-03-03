@@ -10,7 +10,11 @@ class MonatFlexshipMenuController {
 	public showCancelFlexshipModal = () => {
 		this.monatFlexshipCard.showCancelFlexshipModal();
 	};
-
+	
+	public showAddGiftCardModal = () => {
+		this.monatFlexshipCard.showAddGiftCardModal();
+	};
+	
 	public showDelayOrSkipFlexshipModal = () => {
 		this.monatFlexshipCard.showDelayOrSkipFlexshipModal();
 	};
@@ -31,8 +35,16 @@ class MonatFlexshipMenuController {
 		this.monatFlexshipCard.activateFlexship();
 	}
 
-	public setAsCurrentFlexship() {
-		this.monatFlexshipCard.setAsCurrentFlexship();
+	public goToProductListingPage() {
+		this.monatFlexshipCard.goToProductListingPage();
+	}
+	
+	public goToOFYProductListingPage() {
+		this.monatFlexshipCard.goToOFYProductListingPage();
+	}
+	
+	public showDeleteFlexshipModal = () => {
+		this.monatFlexshipCard.showDeleteOrderTemplateModal();
 	}
 	
 }

@@ -90,7 +90,8 @@ Notes:
 	    </cfif>
 		<hb:HibachiTabGroup tabLocation="top" activeTab="#local.activeTab#">
 		    <!--- Tabs for Adding Sale Order Items Sku and Stock --->
-    		<hb:HibachiTab tabid="soiaddsku" lazyLoad="true" view="admin:entity/ordertabs/addsku" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.sku')#" />
+    		<hb:HibachiTab tabid="soiaddsku" lazyLoad="false" view="admin:entity/ordertabs/addsku" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.sku')#" />
+    		<hb:HibachiTab tabid="soiaddpromotionsku" lazyLoad="true" view="admin:entity/ordertabs/addpromotionsku" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.promotionsku')#" />
     		<hb:HibachiTab tabid="soiaddstock" lazyLoad="true" view="admin:entity/ordertabs/addstock" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.stock')#" />
     		<!--- Tabs for Adding Return Order Items Sku and Stock --->
     		<!---<hb:HibachiTab tabid="soiaddreturnsku" lazyLoad="true" view="admin:entity/ordertabs/addreturnsku" text="#$.slatwall.rbKey('define.add')# Return #$.slatwall.rbKey('entity.sku')#" />

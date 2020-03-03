@@ -1,7 +1,11 @@
+declare var hibachiConfig;
+
 class MonatFlexshipCardController {
 	public dayOfMonthFormatted: string;
 
 	public orderTemplate: any;
+	
+	public urlSitePrefix: string;
 
 	public accountAddresses: any[];
 	public accountPaymentMethods: any[];
@@ -14,10 +18,20 @@ class MonatFlexshipCardController {
 	public expirationYearOptions: any[];
 	public daysToEditFlexship:any;
 	public editFlexshipUntilDate:any;
+	public countryNameBySite:any;
 	//@ngInject
-	constructor(public observerService, public orderTemplateService, public $window, public ModalService) {}
+	constructor(
+		public observerService, 
+		public orderTemplateService, 
+		public $window, 
+		public ModalService, 
+		public monatAlertService,
+		public rbkeyService,
+		public monatService
+	) {}
 
 	public $onInit = () => {
+		this.urlSitePrefix = ( hibachiConfig.cmsSiteID === 'default' ) ? '' : `${hibachiConfig.cmsSiteID}/`;
 		this.observerService.attach(
 			this.updateOrderTemplate,
 			'orderTemplateUpdated' + this.orderTemplate.orderTemplateID,
@@ -53,14 +67,37 @@ class MonatFlexshipCardController {
 				this.ModalService.closeModals();
 			},
 		})
-			.then((modal) => {
-				//it's a bootstrap element, use 'modal' to show it
-				modal.element.modal();
-				modal.close.then((result) => {});
-			})
-			.catch((error) => {
-				console.error('unable to open model :', error);
-			});
+		.then((modal) => {
+			//it's a bootstrap element, use 'modal' to show it
+			modal.element.modal();
+			modal.close.then((result) => {});
+		})
+		.catch((error) => {
+			console.error('unable to open model :', error);
+		});
+	};
+	
+	public showAddGiftCardModal = () => {
+		this.ModalService.closeModals();
+		this.ModalService.showModal({
+			component: 'monatFlexshipAddGiftCardModal',
+			bodyClass: 'angular-modal-service-active',
+			bindings: {
+				orderTemplate: this.orderTemplate,
+			},
+			preClose: (modal) => {
+				modal.element.modal('hide');
+				this.ModalService.closeModals();
+			},
+		})
+		.then((modal) => {
+			//it's a bootstrap element, use 'modal' to show it
+			modal.element.modal();
+			modal.close.then((result) => {});
+		})
+		.catch((error) => {
+			console.error('unable to open model :', error);
+		});
 	};
 	
 	
@@ -78,14 +115,14 @@ class MonatFlexshipCardController {
 				this.ModalService.closeModals();
 			},
 		})
-			.then((modal) => {
-				//it's a bootstrap element, use 'modal' to show it
-				modal.element.modal();
-				modal.close.then((result) => {});
-			})
-			.catch((error) => {
-				console.error('unable to open model :', error);
-			});
+		.then((modal) => {
+			//it's a bootstrap element, use 'modal' to show it
+			modal.element.modal();
+			modal.close.then((result) => {});
+		})
+		.catch((error) => {
+			console.error('unable to open model :', error);
+		});
 	};
 
 	//TODO refactorout to fexship listing, observerservice can be used to do that, or a whole new MonalModalService
@@ -102,14 +139,14 @@ class MonatFlexshipCardController {
 				this.ModalService.closeModals();
 			},
 		})
-			.then((modal) => {
-				//it's a bootstrap element, use 'modal' to show it
-				modal.element.modal();
-				modal.close.then((result) => {});
-			})
-			.catch((error) => {
-				console.error('unable to open model :', error);
-			});
+		.then((modal) => {
+			//it's a bootstrap element, use 'modal' to show it
+			modal.element.modal();
+			modal.close.then((result) => {});
+		})
+		.catch((error) => {
+			console.error('unable to open model :', error);
+		});
 	};
 
 	//TODO refactorout to fexship listing, observerservice can be used to do that, or a whole new MonalModalService
@@ -130,14 +167,14 @@ class MonatFlexshipCardController {
 				this.ModalService.closeModals();
 			},
 		})
-			.then((modal) => {
-				//it's a bootstrap element, use 'modal' to show it
-				modal.element.modal();
-				modal.close.then((result) => {});
-			})
-			.catch((error) => {
-				console.error('unable to open model :', error);
-			});
+		.then((modal) => {
+			//it's a bootstrap element, use 'modal' to show it
+			modal.element.modal();
+			modal.close.then((result) => {});
+		})
+		.catch((error) => {
+			console.error('unable to open model :', error);
+		});
 	};
 
 	//TODO refactorout to fexship listing, observerservice can be used to do that, or a whole new MonalModalService
@@ -150,20 +187,21 @@ class MonatFlexshipCardController {
 				accountAddresses: this.accountAddresses,
 				shippingMethodOptions: this.shippingMethodOptions,
 				stateCodeOptions: this.stateCodeOptions,
+				countryNameBySite:this.countryNameBySite,
 			},
 			preClose: (modal) => {
 				modal.element.modal('hide');
 				this.ModalService.closeModals();
 			},
 		})
-			.then((modal) => {
-				//it's a bootstrap element, use 'modal' to show it
-				modal.element.modal();
-				modal.close.then((result) => {});
-			})
-			.catch((error) => {
-				console.error('unable to open model :', error);
-			});
+		.then((modal) => {
+			//it's a bootstrap element, use 'modal' to show it
+			modal.element.modal();
+			modal.close.then((result) => {});
+		})
+		.catch((error) => {
+			console.error('unable to open model :', error);
+		});
 	};
 
 	public showFlexshipEditFrequencyMethodModal = () => {
@@ -172,21 +210,20 @@ class MonatFlexshipCardController {
 			bodyClass: 'angular-modal-service-active',
 			bindings: {
 				orderTemplate: this.orderTemplate,
-
 			},
 			preClose: (modal) => {
 				modal.element.modal('hide');
 				this.ModalService.closeModals();
 			},
 		})
-			.then((modal) => {
-				//it's a bootstrap element, use 'modal' to show it
-				modal.element.modal();
-				modal.close.then((result) => {});
-			})
-			.catch((error) => {
-				console.error('unable to open model :', error);
-			});
+		.then((modal) => {
+			//it's a bootstrap element, use 'modal' to show it
+			modal.element.modal();
+			modal.close.then((result) => {});
+		})
+		.catch((error) => {
+			console.error('unable to open model :', error);
+		});
 	};
 
 	public activateFlexship() {
@@ -195,43 +232,64 @@ class MonatFlexshipCardController {
 			.activateOrderTemplate({
 				orderTemplateID :	this.orderTemplate.orderTemplateID
 			})
-			.then((data) => {
+			.then( (data) => {
 				if (data.orderTemplate) {
 					this.orderTemplate = data.orderTemplate;
 					this.observerService.notify(
 						'orderTemplateUpdated' + data.orderTemplate.orderTemplateID,
 						data.orderTemplate,
 					);
+					
+					this.monatAlertService.success(
+							this.rbkeyService.rbKey('alert.flexship.activationSuccessfull')
+						);
+						
+						this.monatService.redirectToProperSite(
+							`/flexship-confirmation/?type=flexship&orderTemplateId=${this.orderTemplate.orderTemplateID}`
+							);
 				} else {
-					console.error(data);
+					throw(data);
 				}
-				// TODO: show alert
 			})
-			.catch((reason) => {
-				throw reason;
-				// TODO: show alert
+			.catch( (error) => {
+				console.error(error);
+	            this.monatAlertService.showErrorsFromResponse(error);
 			});
 	}
 
-	public setAsCurrentFlexship() {
-		// make api request
-		this.orderTemplateService
-			.setAsCurrentFlexship(this.orderTemplate.orderTemplateID)
-			.then((data) => {
-				if (
-					data.successfulActions &&
-					data.successfulActions.indexOf('public:setAsCurrentFlexship') > -1
-				) {
-					this.$window.location.href = `/shop/?type=flexship&orderTemplateId=${this.orderTemplate.orderTemplateID}`;
-				} else {
-					throw data;
-				}
-			})
-			.catch((error) => {
-				console.error('setAsCurrentFlexship :', error);
-				// TODO: show alert
-			});
+	public goToProductListingPage() {
+		this.monatService.redirectToProperSite(
+							`/shop/?type=flexship&orderTemplateId=${this.orderTemplate.orderTemplateID}`
+						);
 	}
+	
+	public goToOFYProductListingPage() {
+		this.monatService.redirectToProperSite(
+							`/shop/only-for-you/?type=flexship&orderTemplateId=${this.orderTemplate.orderTemplateID}`
+						);
+	}
+	
+	public showDeleteOrderTemplateModal = () => {
+		this.ModalService.showModal({
+			component: 'MonatFlexshipDeleteModal',
+			bodyClass: 'angular-modal-service-active',
+			bindings: {
+				orderTemplate: this.orderTemplate,
+			},
+			preClose: (modal) => {
+				modal.element.modal('hide');
+				this.ModalService.closeModals();
+			},
+		})
+		.then((modal) => {
+			//it's a bootstrap element, use 'modal' to show it
+			modal.element.modal();
+			modal.close.then((result) => {});
+		})
+		.catch((error) => {
+			console.error('unable to open model :', error);
+		});
+	};
 }
 
 class MonatFlexshipCard {
@@ -248,7 +306,8 @@ class MonatFlexshipCard {
 		scheduleDateChangeReasonTypeOptions: '<',
 		expirationMonthOptions: '<',
 		expirationYearOptions: '<',
-		daysToEditFlexship:'@?'
+		daysToEditFlexship:'@?',
+		countryNameBySite:'<'
 	};
 	public controller = MonatFlexshipCardController;
 	public controllerAs = 'monatFlexshipCard';

@@ -151,6 +151,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="jwtToken" persistent="false";
 	property name="fullNameWithPermissionGroups" persistent="false";
     property name="permissionGroupNameList" persistent="false";
+    property name="preferredLocale" persistent="false";
 	//CUSTOM PROPERTIES BEGIN
 property name="accountType" ormtype="string" hb_formFieldType="select";
 	property name="enrollmentDate" ormtype="timestamp";
@@ -158,8 +159,15 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	property name="lastSyncedDateTime" ormtype="timestamp";
 	property name="calculatedSuccessfulFlexshipOrdersThisYearCount" ormtype="integer";
 	property name="languagePreference" ormtype="string" hb_formFieldType="select";
+	property name="lastActivityDateTime" ormtype="timestamp";
+	
 	property name="successfulFlexshipOrdersThisYearCount" persistent="false"; 
 	property name="saveablePaymentMethodsCollectionList" persistent="false";
+	property name="canCreateFlexshipFlag" persistent="false";
+	property name="subscribedToMailchimp" persistent="false";
+	property name="genderFullWord" persistent = "false";
+	property name="spouseFirstName" persistent = "false";
+	property name="spouseLastName" persistent = "false";
 	property name="lastActivityDateTime" ormtype="timestamp";
 	
 
@@ -171,6 +179,7 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
  property name="renewalDate" ormtype="timestamp" hb_formatType="date";
  property name="spouseName" ormtype="string";
  property name="spouseBirthday" ormtype="timestamp" hb_formatType="date";
+ property name="sponsorIDNumber" ormtype="string";
  property name="birthDate" ormtype="timestamp" hb_formatType="date";
  property name="accountType" ormtype="string" hb_formFieldType="select";
  property name="accountStatus" ormtype="string" hb_formFieldType="select";
@@ -181,6 +190,7 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
  property name="accountNumber" ormtype="string";
  property name="payerName" ormtype="string";
  property name="careerTitle" ormtype="string" hb_formFieldType="select";
+ property name="rank" ormtype="string";
  property name="uplineMarketPartnerNumber" ormtype="string";
  property name="country" cfc="Country" fieldtype="many-to-one" fkcolumn="countryID";
  property name="referType" ormtype="string" hb_formFieldType="select";
@@ -189,6 +199,7 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
  property name="lastAccountStatusDate" ormtype="timestamp" hb_formatType="date";
  property name="languagePreference" ormtype="string" hb_formFieldType="select";
  property name="payerAccountNumber" ormtype="string";//CUSTOM PROPERTIES END
+	 
 	public any function getDefaultCollectionProperties(string includesList = "", string excludesList="modifiedByAccountID,createdByAccountID,modifiedDateTime,createdDateTime,remoteID"){
 			arguments.includesList = 'accountID,calculatedFullName,firstName,lastName,company,organizationFlag,accountCode,urlTitle,primaryEmailAddress.emailAddress,primaryPhoneNumber.phoneNumber';
 			return super.getDefaultCollectionProperties(argumentCollection=arguments);
@@ -207,9 +218,24 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 		}
 	}
 
-	public string function getPreferedLocale(){
-		//TODO: Get qualified locale based on account prefered language
-		return '';
+	public string function getPreferredLocale(){
+		if(!isNull(getAccountCreatedSite())){
+			var site = getAccountCreatedSite();
+		}else if(!isNull(getHibachiScope().getCurrentRequestSite())){
+			var site = getHibachiScope().getCurrentRequestSite();
+		}
+		
+		if(!isNull(site)){
+			var siteCode = getService('SiteService').getCountryCodeBySite(site);
+		}else{
+			var siteCode = 'us';
+		}
+		
+		if(structKeyExists(variables, 'languagePreference') && len(siteCode)){
+			return lcase('#variables.languagePreference#_#siteCode#');
+		}else{
+			return '';
+		}
 	}
 
 	public array function getOrderCurrencies(){
@@ -492,33 +518,29 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	
 	public string function getPermissionGroupNameList() {
 		
-		if(!getNewFlag()){
-			if( !structKeyExists(variables,'permissionGroupNameList') ||
-				(!isNull(variables.permissionGroupNameList) &&
-				!len(trim(variables.permissionGroupNameList))
-				)
-			){
-				var permissionGroupNameList = "";
-				var records = getDao('permissionGroupDao').getPermissionGroupCountByAccountID(getAccountID());
-				
-				if(arraylen(records) && records[1]['permissionGroupsCount']){
-					
-					var permissionGroupCollectionList = this.getPermissionGroupsCollectionList();
-					permissionGroupCollectionList.setEnforceAuthorization(false);
-					permissionGroupCollectionList.setDisplayProperties('permissionGroupName,permissionGroupID' );
-					permissionGroupCollectionList.setPermissionAppliedFlag(true);
-					var permissionGroupRecords = permissionGroupCollectionList.getRecords(formatRecords=false);
-					for(var permissionGroupRecord in permissiongroupRecords){
-						permissionGroupNameList =  listAppend(permissionGroupNameList,'<a href="?slatAction=admin:entity.detailpermissiongroup&permissionGroupID=#permissionGroupRecord["permissionGroupID"]#">#permissionGroupRecord["permissionGroupName"]#</a>');
-					}
-					
-					permissionGroupNameList = '( #permissionGroupNameList# )';
-				}
-				variables.permissionGroupNameList = permissionGroupNameList;
-			}
-		}else{
+		if(getNewFlag()){
 			return "";
 		}
+		if( !structKeyExists(variables,'permissionGroupNameList') ){
+			var permissionGroupNameList = "";
+			
+			var permissionGroupCollectionList = this.getPermissionGroupsCollectionList();
+			permissionGroupCollectionList.setDisplayProperties('permissionGroupName,permissionGroupID' );
+			permissionGroupCollectionList.addFilter('accounts.accountID', variables.accountID);
+			permissionGroupCollectionList.setEnforceAuthorization(false);
+			permissionGroupCollectionList.setPermissionAppliedFlag(true);
+			var permissionGroupRecords = permissionGroupCollectionList.getRecords(formatRecords=false);
+			for(var permissionGroupRecord in permissiongroupRecords){
+				permissionGroupNameList =  listAppend(permissionGroupNameList,'<a href="?slatAction=admin:entity.detailpermissiongroup&permissionGroupID=#permissionGroupRecord["permissionGroupID"]#">#permissionGroupRecord["permissionGroupName"]#</a>');
+			}
+			
+			if(len(permissionGroupNameList)){
+				permissionGroupNameList = '( #permissionGroupNameList# )';
+			}
+
+			variables.permissionGroupNameList = permissionGroupNameList;
+		}
+		
 		return variables.permissionGroupNameList;
 	}
 
@@ -529,27 +551,24 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	}
 	
 	public string function getPermissionGroupCacheKey(){
-		if(!getNewFlag()){
-			if(!structKeyExists(variables,'permissionGroupCacheKey')){
-				var permissionGroupCacheKey = "";
-				var records = getDao('permissionGroupDao').getPermissionGroupCountByAccountID(getAccountID());
-
-				if(arraylen(records) && records[1]['permissionGroupsCount']){
-					var permissionGroupCollectionList = this.getPermissionGroupsCollectionList();
-					permissionGroupCollectionList.setEnforceAuthorization(false);
-					permissionGroupCollectionList.setDisplayProperties('permissionGroupID');
-					permissionGroupCollectionList.setPermissionAppliedFlag(true);
-					var permissionGroupRecords = permissionGroupCollectionList.getRecords(formatRecords=false);
-					for(var permissionGroupRecord in permissiongroupRecords){
-						permissionGroupCacheKey = listAppend(permissionGroupCacheKey,permissionGroupRecord['permissionGroupID'],'_');
-					}
-				}
-				variables.permissionGroupCacheKey = permissionGroupCacheKey;
-
-			}
-			return variables.permissionGroupCacheKey;
+		if(getNewFlag()){
+			return "";
 		}
-		return "";
+		if(!structKeyExists(variables,'permissionGroupCacheKey')){
+			var permissionGroupCacheKey = "";
+			var permissionGroupCollectionList = this.getPermissionGroupsCollectionList();
+			permissionGroupCollectionList.setDisplayProperties('permissionGroupID');
+			permissionGroupCollectionList.addFilter('accounts.accountID', variables.accountID);
+			permissionGroupCollectionList.setEnforceAuthorization(false);
+			permissionGroupCollectionList.setPermissionAppliedFlag(true);
+			var permissionGroupRecords = permissionGroupCollectionList.getRecords(formatRecords=false);
+			for(var permissionGroupRecord in permissiongroupRecords){
+				permissionGroupCacheKey = listAppend(permissionGroupCacheKey,permissionGroupRecord['permissionGroupID'],'_');
+			}
+			
+			variables.permissionGroupCacheKey = permissionGroupCacheKey;
+		}
+		return variables.permissionGroupCacheKey;
 	}
 
 	public string function getPhoneNumber() {
@@ -799,7 +818,10 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 
 		return options;
 	}
-
+	
+	public boolean function isPrimaryMethodExpired(){
+		return variables.primaryPaymentMethod.getCalculatedExpirationDate() >= now();
+	}
 	// ============  END:  Non-Persistent Property Methods =================
 
 	// ============= START: Bidirectional Helper Methods ===================
@@ -1079,7 +1101,25 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	// =============  END: Overridden Smart List Getters ===================
 
 	// ================== START: Overridden Methods ========================
-
+	
+	public numeric function getPermissionGroupsCount(){
+		if(this.getNewFlag()){
+			return 0;
+		}
+		if(!structKeyExists(variables, 'permissionGroupsCount')){
+			var permissionGroupCollection = getService("accountService").getCollectionList('PermissionGroup');
+			permissionGroupCollection.setDisplayProperties('permissionGroupID');
+			permissionGroupCollection.addFilter('accounts.accountID', variables.accountID);
+			
+			//Caution: hacky way to prevent Collection from calling getPermissionGroupsCount();
+			permissionGroupCollection.setPermissionAppliedFlag(true); 
+			
+			variables.permissionGroupsCount = permissionGroupCollection.getRecordsCount();
+		}
+		
+		return variables.permissionGroupsCount;
+	}
+	
 	public any function getPrimaryEmailAddress() {
 		if(!isNull(variables.primaryEmailAddress)) {
 			return variables.primaryEmailAddress;
@@ -1165,7 +1205,15 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 		return 'calculatedFullName';
 	}
 	
-	
+	public boolean function isRestrictedKeyword(){
+		if(structKeyExists(variables, 'accountCode')){
+			var retrictedKeywordsCollection = getService('accountService').getReservedKeywordCollectionList();
+			retrictedKeywordsCollection.setDisplayProperties('reservedKeywordID');
+			retrictedKeywordsCollection.addFilter('keyword', variables.accountCode);
+			return retrictedKeywordsCollection.getRecordsCount() == 0;
+		}
+		return true;
+	}
 
 	// ==================  END:  Overridden Methods ========================
 
@@ -1182,7 +1230,7 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	public boolean function isGuestAccount() {
 		return getGuestAccountFlag();
 	}
-
+	
 	// ==================  END:  Deprecated Methods ========================
 	public string function getAccountURL() {
 		return "/#setting('globalUrlKeyAccount')#/#getUrlTitle()#/";
@@ -1217,7 +1265,7 @@ public numeric function getSuccessfulFlexshipOrdersThisYearCount(){
 	}
 	
 	public any function getAccountNumber(){
-		if(!structKeyExists(variables,'accountNumber') && !isNull(this.getAccountStatusType()) && this.getAccountStatusType().getTypeCode() == 'astGoodStanding'){
+		if(!structKeyExists(variables,'accountNumber') && !isNull(this.getAccountStatusType()) && this.getAccountStatusType().getSystemCode() == 'astGoodStanding'){
 			if(!isNull(this.getAccountID())){
 				var maxAccountNumberQuery = new query();
 				var maxAccountNumberSQL = 'insert into swaccountnumber (accountID,createdDateTime) VALUES (:accountID,:createdDateTime)';
@@ -1230,17 +1278,20 @@ public numeric function getSuccessfulFlexshipOrdersThisYearCount(){
 				setAccountNumber(insertedID);	
 			}
 		}
-		if(!isNull(variables.accountNumber))
-		return variables.accountNumber;
+		if(!isNull(variables.accountNumber)){
+			return variables.accountNumber;
+		}
 	}
 
-	public boolean function userCanCreateFlexship() {
-	
+	public boolean function getCanCreateFlexshipFlag() {
+		
 		// If the user is not logged in, or retail, return false.
 		var priceGroups = this.getPriceGroups();
 		if ( ! len( priceGroups ) ) {
 			return false;
-		} else if ( priceGroups[1].getPriceGroupCode() == 2 ) {
+			
+		} else if ( priceGroups[1].getPriceGroupCode() == 2 ) { 
+			//Retail price-group
 			return false;
 		}
 		
@@ -1248,27 +1299,87 @@ public numeric function getSuccessfulFlexshipOrdersThisYearCount(){
 			return false;
 		}
 		
-		var daysAfterEnrollment = this.getAccountCreatedSite().setting('integrationmonatSiteDaysAfterMarketPartnerEnrollmentFlexshipCreate');
-		var enrollmentDate = this.getEnrollmentDate();
+		if( this.getAccountType() == 'marketPartner' ){
 		
-		if ( !isNull( enrollmentDate ) ) {
-			// Add the days after enrollment a user can create flexship to the enrollment date.
-			var dateCanCreateFlexship = dateAdd( 'd', daysAfterEnrollment, enrollmentDate );
+			var daysAfterEnrollment = this.getAccountCreatedSite().setting(
+							'integrationmonatSiteDaysAfterMarketPartnerEnrollmentFlexshipCreate'
+						);
+						
+			var enrollmentDate = this.getEnrollmentDate();
 			
-			// If today is a greater date than the date they can create a flexship.
-			return ( dateCompare( dateCanCreateFlexship, now() ) == -1 );
+			if ( !isNull( enrollmentDate ) ) {
+				// Add the days after enrollment a user can create flexship to the enrollment date.
+				var dateAfterCanCreateFlexship = dateAdd( 'd', daysAfterEnrollment, enrollmentDate );
+				
+				// If today is a greater date than the date they can create a flexship.
+				return ( dateCompare( dateAfterCanCreateFlexship, now() ) == -1 ); // -1, if date1 is earlier than date2
+			}	
 		}
 		
-		// If the user doesn't have an enrollment date, return true.
 		return true;
 	}
 
 	//custom validation methods
 		
-	public boolean function restrictRenewalDateToOneYearFromNow() {
+	public boolean function restrictRenewalDateToOneYearOut() {
 		if(!isNull(this.getRenewalDate()) && len(trim(this.getRenewalDate())) ) {
-			return getService('accountService').restrictRenewalDateToOneYearFromNow(this.getRenewalDate());
+			return getService('accountService').restrictRenewalDateToOneYearOut(this.getRenewalDate());
 		}
 		return true;
+	}
+	
+	public struct function getListingSearchConfig() {
+	    param name = "arguments.wildCardPosition" default = "exact";
+	    return super.getListingSearchConfig(argumentCollection = arguments);
+	}
+	
+	public boolean function onlyOnePriceGroup(){
+		return arrayLen(this.getPriceGroups()) <= 1;
+	}
+	
+	public boolean function getSubscribedToMailchimp(){
+		if(!structKeyExists(variables, 'subscribedToMailchimp')){
+			variables.subscribedToMailchimp = false;
+			
+			if(getHibachiScope().getLoggedInFlag() && getHibachiScope().hasService('MailchimpAPIService')){
+				variables.subscribedToMailchimp = getService('MailchimpAPIService').getSubscribedFlagByEmailAddress( getHibachiScope().account().getPrimaryEmailAddress().getEmailAddress() ); 	
+			}
+		}
+		
+		return variables.subscribedToMailchimp;
+	}
+	
+	public string function getProfileImageFullPath(numeric width = 250, numeric height = 250){
+		return getService('imageService').getResizedImagePath('#getHibachiScope().getBaseImageURL()#/profileImage/#this.getProfileImage()#', arguments.width, arguments.height)
+	}
+	
+	public string function getGenderFullWord(){
+	    var genderFullWord = "";
+	    var gender = LCase(this.getGender());
+		switch (gender) {
+			case "f": 
+			         genderFullWord = getHibachiScope().getRbKey('define.female'); 
+			         break;
+			case "m": 
+			         genderFullWord =  getHibachiScope().getRbKey('define.male'); 
+			         break;
+			case "p":
+			case "prefernottoSay": 
+			         genderFullWord = getHibachiScope().getRbKey('define.prefernottoSay'); 
+			         break;
+		}
+		return genderFullWord;
+	}
+	
+	public string function getSpouseFirstName(){
+	    if(!IsNull(this.getSpouseName())){
+	       return ListFirst(this.getSpouseName(),", ");
+	    }
+	}
+	
+	public string function getSpouseLastName(){
+	    if(!IsNull(this.getSpouseName())){
+	       return ListRest(this.getSpouseName(),", ");
+	    }
 	}//CUSTOM FUNCTIONS END
 }

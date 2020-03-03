@@ -11,9 +11,9 @@ class MonatFlexshipListingController{
 	public expirationYearOptions: any[];
 	public loading: boolean = false;
 	public daysToEditFlexshipSetting:any;
-	public showCreateButton;
 	public account:any;
-	
+	public customerCanCreateFlexship:boolean;
+	public countryNameBySite :any;
 		
 	private orderTemplateTypeID:string = '2c948084697d51bd01697d5725650006'; // order-template-type-flexship 
 	
@@ -23,8 +23,17 @@ class MonatFlexshipListingController{
 	constructor(
 		public orderTemplateService, 
 		public $window, 
-		public publicService
-	){}
+		public publicService,
+		public observerService,
+		public monatAlertService,
+		public rbkeyService,
+		public monatService
+	){
+		this.observerService.attach(this.fetchFlexships,"deleteOrderTemplateSuccess");
+		this.observerService.attach(this.fetchFlexships,"updateFrequencySuccess");
+
+
+	}
 	
 	public $onInit = () => {
 		this.fetchFlexships();
@@ -33,16 +42,13 @@ class MonatFlexshipListingController{
 		});
 		
 		this.account = this.publicService.account;
-		
-		if ( null === this.showCreateButton ) {
-			this.showCreateButton = true;
-		}
+		this.getCanCreateFlexshipFlag();
 	}
 	
 	private fetchFlexships = () => {
 
 		this.orderTemplateService
-    		.getOrderTemplates(this.orderTemplateTypeID )
+    		.getOrderTemplates(this.orderTemplateTypeID, 100, 1, true )
 			.then( (data) => {
 
 				this.accountAddresses = data.accountAddresses;
@@ -53,6 +59,8 @@ class MonatFlexshipListingController{
 				this.scheduleDateChangeReasonTypeOptions = data.scheduleDateChangeReasonTypeOptions;
 				this.expirationMonthOptions = data.expirationMonthOptions;
 				this.expirationYearOptions = data.expirationYearOptions;
+				this.countryNameBySite = data.countryNameBySite;
+				
 				
 				//set this last so that ng repeat inits with all needed data
 				this.orderTemplates = data.orderTemplates; 
@@ -67,23 +75,41 @@ class MonatFlexshipListingController{
 	
 	public createNewFlexship = () => {
 		this.loading = true;
+		let siteID = this.publicService.cmsSiteID;
+		let createURL = '/shop/?type=flexship&orderTemplateId=';
+		
+		if(siteID != 'default'){
+			createURL = '/' + siteID + createURL;
+		}
 		
 		this.orderTemplateService.createOrderTemplate('ottSchedule')
 			.then((data) => {
-				if(data.orderTemplate){
-					this.setAsCurrentFlexship(data.orderTemplate); //data.orderTemplate is's the Id of newly created flexship
+				
+				if (
+					data.successfulActions &&
+					data.successfulActions.indexOf('public:order.create') > -1
+				) {
+				    this.monatAlertService.success(this.rbkeyService.rbKey('frontend.flexshipCreateSucess'))
+				    this.monatService.redirectToProperSite(
+										'/shop/?type=flexship&orderTemplateId=' + data.orderTemplate
+									);
 				} else{
 					throw(data);
 				}
 			})
 			.catch((e) => {
-				console.error(e);
+			    this.monatAlertService.showErrorsFromResponse(e);
 			})
 			.finally( () => {
 				this.loading = false;
 			});
 	}
 	
+	/**
+	 * @depricated, not in use any more
+	 * will be remove in later commits 
+	 * 
+	*/ 
 	public setAsCurrentFlexship(orderTemplateID:string) {
 
 		// make api request
@@ -107,6 +133,12 @@ class MonatFlexshipListingController{
 				//TODO
 			});
 	}
+	
+	public getCanCreateFlexshipFlag = () => {
+	    this.publicService.doAction('getCustomerCanCreateFlexship').then(res=>{
+	       this.customerCanCreateFlexship = res.customerCanCreateFlexship;
+	    });
+	}
 
 }
 
@@ -115,9 +147,7 @@ class MonatFlexshipListing {
 	public restrict:string;
 	public templateUrl:string;
 	public scope = {};
-	public bindToController = {
-		showCreateButton: '=?'
-	};
+	public bindToController = {};
 	public controller=MonatFlexshipListingController;
 	public controllerAs="monatFlexshipListing";
 

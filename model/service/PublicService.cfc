@@ -63,6 +63,7 @@ component  accessors="true" output="false"
     property name="validationService" type="any";
     property name="hibachiService" type="any";
     property name="typeService" type="any";
+    property name="giftCardService";
 
 
     variables.publicContexts = [];
@@ -196,7 +197,7 @@ component  accessors="true" output="false"
      * @example POST to /api/scope/logout with request_token and deviceID in headers
      * @ProcessMethod Account_Logout
      */
-    public any function logout( required struct data ){ 
+    public any function logout( struct data  = {} ){ 
         
         var account = getService("AccountService").processAccount( getHibachiScope().getAccount(), arguments.data, 'logout' );
         getHibachiScope().addActionResult( "public:account.logout", account.hasErrors() );
@@ -268,7 +269,7 @@ component  accessors="true" output="false"
         
         //If this is a request from the api, setup the response header and populate it with data.
         //any onSuccessCode, any onErrorCode, any genericObject, any responseData, any extraData, required struct data
-        handlePublicAPICall(201, 400, sessionEntity, "Device ID Added", "#arguments.data.deviceID#",  arguments.data);  
+        //handlePublicAPICall(201, 400, sessionEntity, "Device ID Added", "#arguments.data.deviceID#",  arguments.data);  
     }
     
     
@@ -298,7 +299,7 @@ component  accessors="true" output="false"
       * @param emailAddress {string}
       * @ProcessMethod Account_ResetPassword
       **/
-    public void function resetPassword( required struct data ) {
+    public any function resetPassword( required struct data ) {
         param name="data.accountID" default="";
         var account = getAccountService().getAccount( data.accountID );
         if(!isNull(account)) {
@@ -311,9 +312,14 @@ component  accessors="true" output="false"
         } else {
             getHibachiScope().addActionResult( "public:account.resetPassword", true );
         }
+        
+        if ( account.getProcessObject( "resetPassword" ).hasErrors() ) {
+            this.addErrors( data, account.getProcessObject( "resetPassword" ).getErrors() );
+        }
+        
         // Populate the current account with this processObject so that any errors are there.
         getHibachiScope().account().setProcessObject( account.getProcessObject( "resetPassword" ) );
-        return account.getProcessObject( "resetPassword" ) ;
+        return account.getProcessObject( "resetPassword" );
     }
     
     /**
@@ -344,7 +350,6 @@ component  accessors="true" output="false"
       * @ProcessMethod Account_Save
       **/
     public any function updateAccount( required struct data ) {
-        
         var account = getAccountService().saveAccount( getHibachiScope().getAccount(), arguments.data );
         getHibachiScope().addActionResult( "public:account.update", account.hasErrors() );
         if(account.hasErrors()){
@@ -355,7 +360,10 @@ component  accessors="true" output="false"
                     getHibachiScope().showMessage(message,"error");
                 }
             }
+            
+            addErrors(arguments.data, account.getErrors());
         }
+
         return account;
     }
     
@@ -402,7 +410,7 @@ component  accessors="true" output="false"
             getHibachiScope().addActionResult( "public:account.sendAccountEmailAddressVerificationEmail", true );
         }
         
-        return accountEmailAddress;
+        //return accountEmailAddress;
     }
     
     /** 
@@ -424,7 +432,7 @@ component  accessors="true" output="false"
         } else {
             getHibachiScope().addActionResult( "public:account.verifyAccountEmailAddress", true );
         }
-        handlePublicAPICall(200, 400, accountEmailAddress, "Email Address Verified", "",  arguments.data);
+        //handlePublicAPICall(200, 400, accountEmailAddress, "Email Address Verified", "",  arguments.data);
     }
     
     /** 
@@ -458,18 +466,40 @@ component  accessors="true" output="false"
         
         var accountAddress = getAccountService().getAccountAddress( data.accountAddressID );
         
-        if(!isNull(accountAddress) && accountAddress.getAccount().getAccountID() == getHibachiScope().getAccount().getAccountID() ) {
+        if(!isNull(accountAddress) &&
+            !IsNull(accountAddress.getAccount()) &&
+            getHibachiScope().getLoggedInFlag()  &&
+            accountAddress.getAccount().getAccountID() == getHibachiScope().getAccount().getAccountID() 
+        ) {
+            
+            getDao('AccountAddressDAO').deleteDependentRelationsByAccountAddressID(data.accountAddressID);
+            
             var deleteOk = getAccountService().deleteAccountAddress( accountAddress );
             getHibachiScope().addActionResult( "public:account.deleteAccountAddress", !deleteOK );
+            
+            if(!deleteOk) {
+                
+                if(accountAddress.hasErrors()){
+                    this.addErrors( arguments.data, accountAddress.getErrors() );
+                } else {
+                    this.addErrors(  arguments.data, [ 
+                        { 'AccountAddress': getHibachiScope().rbKey('validate.define.somethingWentWrong') } 
+                    ]);
+                }
+            }
+            
         } else {
+            this.addErrors(arguments.data, [ 
+                { 'AccountAddress': getHibachiScope().rbKey('validate.delete.AccountAddress.Invalid') }
+            ]);
             getHibachiScope().addActionResult( "public:account.deleteAccountAddress", true );   
         }
     }
     
-   public void function verifyAddress(required any data){
+   public void function verifyAddress(required struct data){
         param name="data.accountAddressID" default="";
 
-        arguments.data['ajaxResponse']['verifyAddress'] = getService("AddressService").verifyAccountAddressWithShippingIntegration(arguments.data.accountAddressID);
+        arguments.data['ajaxResponse']['verifyAddress'] = getService("AddressService").verifyAccountAddressByID(arguments.data.accountAddressID);
         getHibachiScope().addActionResult("verifyAddress",false);
     }
     
@@ -494,6 +524,9 @@ component  accessors="true" output="false"
        	     		getDao('hibachiDao').flushOrmSession();
                     data.accountAddressID = savedAccountAddress.getAccountAddressID();
                     arguments.data['ajaxResponse']['newAccountAddressID'] = data.accountAddressID;
+
+                    var addressVerificationStruct = getService('AddressService').verifyAddressByID(savedAccountAddress.getAddress().getAddressID());
+                    arguments.data.ajaxResponse['addressVerification'] = addressVerificationStruct;
        	     	}
           	}else{
               this.addErrors(arguments.data, address.getErrors());
@@ -526,6 +559,9 @@ component  accessors="true" output="false"
    	     		getDao('hibachiDao').flushOrmSession();
                 data.accountAddressID = savedAccountAddress.getAccountAddressID();
                 data['ajaxResponse']['newAccountAddressID'] = data.accountAddressID;
+                
+                var addressVerificationStruct = getService('AddressService').verifyAddressByID(savedAccountAddress.getAddress().getAddressID());
+                arguments.data.ajaxResponse['addressVerification'] = addressVerificationStruct;
    	     	}
       	}else{
           this.addErrors(data, newAddress.getErrors());
@@ -627,8 +663,11 @@ component  accessors="true" output="false"
                 }
                 
                 getService("OrderService").saveOrder(order);
+                if(structKeyExists(arguments.data,'ajaxResponse')){
+                    var addressVerificationStruct = getService('AddressService').verifyAddressByID(savedAddress.getAddressID());
+                    arguments.data.ajaxResponse['addressVerification'] = addressVerificationStruct;
+                }
                 getHibachiScope().addActionResult( "public:cart.addShippingAddress", order.hasErrors());
-                
             }else{
                     
                     this.addErrors(data, savedAddress.getErrors()); //add the basic errors
@@ -794,6 +833,7 @@ component  accessors="true" output="false"
     */
     public any function addBillingAddress(required data){
         param name="data.saveAsAccountAddressFlag" default="0"; 
+        
         //if we have that data and don't have any suggestions to make, than try to populate the address
         billingAddress = getService('AddressService').newAddress();    
         
@@ -801,8 +841,11 @@ component  accessors="true" output="false"
         if(structKeyExists(data,'address')){
             var savedAddress = getService('AddressService').copyAddress(data.address);
             savedAddress = getService('AddressService').saveAddress(savedAddress, {}, "full");    
-        //get a new address populated with the data.    
-        }else{
+        
+        }else if(!isNull(data.addressID)){
+            var savedAddress = getService('AddressService').getAddress(data.addressID);
+        }//get a new address populated with the data.    
+        else{
             var savedAddress = getService('AddressService').saveAddress(billingAddress, arguments.data, "full");    
         }
         
@@ -817,10 +860,17 @@ component  accessors="true" output="false"
             }
             
             getService("OrderService").saveOrder(order);
+            getHibachiScope().addActionResult( "public:cart.addBillingAddress", false);
         }
+        
+        if(isNull(savedAddress)){
+            getHibachiScope().addActionResult( "public:cart.addBillingAddress", true);
+            return;
+        }
+        
         if(savedAddress.hasErrors()){
-              this.addErrors(arguments.data, savedAddress.getErrors()); //add the basic errors
-        	    getHibachiScope().addActionResult( "public:cart.addBillingAddress", true);
+            this.addErrors(arguments.data, savedAddress.getErrors()); //add the basic errors
+    	    getHibachiScope().addActionResult( "public:cart.addBillingAddress", true);
         }
         return savedAddress;
     }
@@ -841,20 +891,20 @@ component  accessors="true" output="false"
          	data['paymentMethod'] = {};
          	data['paymentMethod'].paymentMethodID = '444df303dedc6dab69dd7ebcc9b8036a';
         }
-        if (!isNull(data) && !structKeyExists(data, 'billingAddress')){
-         	data['newOrderPayment'] = data;
-         	data['newOrderPayment']['billingAddress'] = data;
-        }	
+        if (!isNull(data) && structKeyExists(data, 'newOrderPayment')){
+         	data['accountPaymentMethod'] = data;
+         	data['accountPaymentMethod']['billingAddress'] = data.newOrderPayment;
+        }
         
         if(getHibachiScope().getLoggedInFlag()) {
             
             // Fodatae the payment method to be added to the current account
            if (structKeyExists(data, "selectedPaymentMethod")){
-             	var accountPaymentMethod = getHibachiScope().getService("AccountService").getAccountPaymentMethod( data.selectedPaymentMethod );
-           }else{
-             	var accountPaymentMethod = getHibachiScope().getService("AccountService").newAccountPaymentMethod(  );	
-            accountPaymentMethod.setAccount( getHibachiScope().getAccount() );
-           }
+                var accountPaymentMethod = getHibachiScope().getService("AccountService").getAccountPaymentMethod( data.selectedPaymentMethod );
+            }else{
+                var accountPaymentMethod = getHibachiScope().getService("AccountService").newAccountPaymentMethod(  );	
+                accountPaymentMethod.setAccount( getHibachiScope().getAccount() );
+            }
             
             accountPaymentMethod = getAccountService().saveAccountPaymentMethod( accountPaymentMethod, arguments.data );
             
@@ -995,12 +1045,14 @@ component  accessors="true" output="false"
         if(!structKeyExists(arguments.data,'cartDataOptions') || !len(arguments.data['cartDataOptions'])){
             arguments.data['cartDataOptions']='full';
         }
+        
+        var updateOrderAmounts = structKeyExists( arguments.data, 'updateOrderAmounts' ) && arguments.data.updateOrderAmounts;
     
-        arguments.data.ajaxResponse = getHibachiScope().getCartData(cartDataOptions=arguments.data['cartDataOptions']);
+        arguments.data.ajaxResponse = {'cart':getHibachiScope().getCartData(cartDataOptions=arguments.data['cartDataOptions'], updateOrderAmounts = updateOrderAmounts)};
     }
     
     public void function getAccountData(any data) {
-        arguments.data.ajaxResponse = getHibachiScope().getAccountData();
+        arguments.data.ajaxResponse = {'account':getHibachiScope().getAccountData()};
     }
     
     /** 
@@ -1017,7 +1069,7 @@ component  accessors="true" output="false"
         if(!isNull(order) && order.getAccount().getAccountID() == getHibachiScope().getAccount().getAccountID()) {
             
             var data = {
-                saveNewFlag=true,
+                saveNewFlag=true, 
                 copyPersonalDataFlag=true
             };
             
@@ -1163,7 +1215,7 @@ component  accessors="true" output="false"
      * @http-return <b>(200)</b> Successfully Updated or <b>(400)</b> Bad or Missing Input Data
      * @ProcessMethod Order_addOrderItem
      */
-    public void function addOrderItem(required any data) {
+    public any function addOrderItem(required any data) {
         // Setup the frontend defaults
         param name="data.preProcessDisplayedFlag" default="true";
         param name="data.saveShippingAccountAddressFlag" default="false";
@@ -1189,9 +1241,15 @@ component  accessors="true" output="false"
             // Make sure that the session is persisted
             getHibachiSessionService().persistSession();
             
+            //flushing for can place order check
+            getHibachiScope().flushORMSession(); 
+            
         }else{
-            addErrors(data, getHibachiScope().getCart().getProcessObject("addOrderItem").getErrors());
+            addErrors(data, cart.getProcessObject("addOrderItem").getErrors());
+            addErrors(data, cart.getErrors());
         }
+        
+        return cart;
     }
     
     /* @http-context updateOrderNotes
@@ -1329,7 +1387,12 @@ component  accessors="true" output="false"
         if(!cart.hasErrors()) {
             cart.clearProcessObject("addPromotionCode");
         }else{
-            addErrors(data, getHibachiScope().getCart().getProcessObject("AddPromotionCode").getErrors());
+            var processObject = cart.getProcessObject("AddPromotionCode");
+            if(processObject.hasErrors()){
+                addErrors(data, cart.getProcessObject("AddPromotionCode").getErrors());
+            }else{
+                addErrors(data,cart.getErrors());
+            }
         }
     }
     
@@ -1385,7 +1448,7 @@ component  accessors="true" output="false"
         }
         
         if (len(data.orderID)) {
-            var order = getOrderService().getOrder(orderID);
+            var order = getOrderService().getOrder(data.orderID);
         }
         else {
             var order = getHibachiScope().getCart();
@@ -1418,9 +1481,12 @@ component  accessors="true" output="false"
             }
         }
 
-
+        
         if (data.newOrderPayment.requireBillingAddress || data.newOrderPayment.saveShippingAsBilling) {
-            if (!structKeyExists(data.newOrderPayment, 'billingAddress')) {
+            // Only create a new billing address here if its not being created later using the account payment method.
+            if (!structKeyExists(data.newOrderPayment, 'billingAddress') 
+                && (!structKeyExists(data, "accountPaymentMethodID") 
+                && len(data.accountPaymentMethodID))) {
 
                 var orderPayment = getPaymentService().newOrderPayment();
                 orderPayment.populate(data.newOrderPayment);
@@ -1438,8 +1504,27 @@ component  accessors="true" output="false"
                 getHibachiScope().addActionResult("public:cart.addOrderPayment", true);
                 return;
             }
-            //use this billing information
-            var newBillingAddress = this.addBillingAddress(data.newOrderPayment.billingAddress, "billing");
+            
+            if (structKeyExists(data, "accountPaymentMethodID") && len(data.accountPaymentMethodID)){
+                //use this billing information
+                var paymentMethod = getService('accountService').getAccountPaymentMethod(data.accountPaymentMethodID);
+                if(!isNull(paymentMethod)){
+                    if(!isNull(paymentMethod.getBillingAccountAddress())){
+                        var address = paymentMethod.getBillingAccountAddress().getAccountAddressID();
+                        var newBillingAddress = this.addBillingAddressUsingAccountAddress({accountAddressID:  paymentMethod.getBillingAccountAddress().getAccountAddressID()});
+                    }else if(!isNull(paymentMethod.getBillingAddress())){
+                        var address= paymentMethod.getBillingAddress() //pass the object rather than ID
+                        var newBillingAddress = this.addBillingAddress({address:  address});
+                    }else{
+                        getHibachiScope().addActionResult("public:cart.addOrderPayment", true);
+                        return;
+                    }
+                  
+                }else{
+                    getHibachiScope().addActionResult("public:cart.addOrderPayment", true);
+                    return;
+                }
+            }
         }
 
         if (!isNull(newBillingAddress) && newBillingAddress.hasErrors()) {
@@ -1447,7 +1532,7 @@ component  accessors="true" output="false"
             return;
         }
 
-        
+       
         var addOrderPayment = getService('OrderService').processOrder(order, arguments.data, 'addOrderPayment');
 
         if (!giftCard) {
@@ -1456,6 +1541,7 @@ component  accessors="true" output="false"
             }
             getHibachiScope().addActionResult("public:cart.addOrderPayment", addOrderPayment.hasErrors());
         }
+
         return addOrderPayment;
     }
 
@@ -1719,6 +1805,7 @@ component  accessors="true" output="false"
         param name="arguments.data.currentPage" default=1;
         param name="arguments.data.orderTemplateID" default="";
 		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; 
+		param name="arguments.data.optionalProperties" default="";
 
 		arguments.data['ajaxResponse']['orderTemplates'] = getOrderService().getOrderTemplatesForAccount(arguments.data); 
 		
@@ -1733,7 +1820,7 @@ component  accessors="true" output="false"
 		var tmpAccountPaymentMethod = getAccountService().newAccountPaymentMethod();
 		arguments.data['ajaxResponse']['expirationMonthOptions'] = tmpAccountPaymentMethod.getExpirationMonthOptions();
 		arguments.data['ajaxResponse']['expirationYearOptions'] = tmpAccountPaymentMethod.getExpirationYearOptions();
-		
+		arguments.data['ajaxResponse']['countryNameBySite'] = getService('SiteService').getCountryNameByCurrentSite();
 		//this function will set the stateCodeOptions in ajaxResponce
 		getStateCodeOptionsByCountryCode(argumentCollection = arguments); 
 		
@@ -1747,59 +1834,6 @@ component  accessors="true" output="false"
 
 		arguments.data['ajaxResponse']['orderTemplateItems'] = getOrderService().getOrderTemplateItemsForAccount(arguments.data);  
 	} 
-
-		public void function getWishlistItems(required any data){
-        param name="arguments.data.pageRecordsShow" default=5;
-        param name="arguments.data.currentPage" default=1;
-        param name="arguments.data.orderTemplateID" default="";
-		param name="arguments.data.orderTemplateTypeID" default=""; 
-
-		arguments.data['ajaxResponse']['orderTemplateItems'] = [];
-		
-		var scrollableSmartList = getOrderService().getOrderTemplateItemSmartList(arguments.data);
-		
-		
-		if (len(arguments.data.orderTemplateID)){
-		    scrollableSmartList.addFilter("orderTemplate.orderTemplateID", "#arguments.data.orderTemplateID#");
-		}
-		
-		var scrollableSession = ormGetSessionFactory().openSession();
-		var wishlistsItems = scrollableSmartList.getScrollableRecords(refresh=true, readOnlyMode=true, ormSession=scrollableSession);
-		
-		//now iterate over all the objects
-		
-		try{
-		    while(wishlistsItems.next()){
-		    
-			    var wishlistItem = wishlistsItems.get(0);
-			    
-			    var wishListItemStruct={
-			      "vipPrice"                    :       wishListItem.getSkuAdjustedPricing().vipPrice?:"",
-			      "marketPartnerPrice"          :       wishListItem.getSkuAdjustedPricing().MPPrice?:"",
-			      "adjustedPriceForAccount"     :       wishListItem.getSkuAdjustedPricing().adjustedPriceForAccount?:"",
-			      "retailPrice"                 :       wishListItem.getSkuAdjustedPricing().retailPrice?:"",
-			      "personalVolume"              :       wishListItem.getSkuAdjustedPricing().personalVolume?:"",
-			      "accountPriceGroup"           :       wishListItem.getSkuAdjustedPricing().accountPriceGroup?:"",
-			      "skuImagePath"                :       wishListItem.getSkuImagePath()?:"",
-			      "skuProductURL"               :       wishListItem.getSkuProductURL()?:"",
-			      "productName"                 :       wishListItem.getSku().getProduct().getProductName()?:"",
-			      "skuID"                       :       wishListItem.getSku().getSkuID()?:"",
-			      "orderItemID"                 :       wishListItem.getOrderTemplateItemID()?:"", 
-  			      "quantity"                    :       wishListItem.getQuantity()?:"", 
-  			      "total"                       :       wishListItem.getTotal()?:""
-
-			    };
-
-			    arrayAppend(arguments.data['ajaxResponse']['orderTemplateItems'], wishListItemStruct);
-		    }
-		}catch (e){
-            throw(e)
-		}finally{
-			if (scrollableSession.isOpen()){
-				scrollableSession.close();
-			}
-		}
-	} 
 	
 	
 	public void function getOrderTemplateDetails(required any data){
@@ -1807,7 +1841,8 @@ component  accessors="true" output="false"
         param name="arguments.data.currentPage" default=1;
         param name="arguments.data.orderTemplateId" default="";
 		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; 
-
+		param name="arguments.data.optionalProperties" type="string" default="";  //putting here for documentation purpous only
+				
 		arguments.data['ajaxResponse']['orderTemplate'] = getOrderService().getOrderTemplateDetailsForAccount(arguments.data);  
 	}
 	
@@ -1815,8 +1850,8 @@ component  accessors="true" output="false"
 	    
 		var orderTemplateCollection = getOrderService().getOrderTemplatesCollectionForAccount(argumentCollection = arguments); 
 	    orderTemplateCollection.addFilter("orderTemplateID", arguments.data.orderTemplateID); // limit to our order-template
-	    
- 		arguments.data['ajaxResponse']['orderTemplate'] = orderTemplateCollection.getPageRecords()[1]; // there should be only one record;  
+	    var orderTemplates = orderTemplateCollection.getPageRecords(); 
+ 		arguments.data['ajaxResponse']['orderTemplate'] = arrayLen(orderTemplates) ? orderTemplates[1] : []; // there should be only one record;  
 	}
 
 
@@ -1844,7 +1879,12 @@ component  accessors="true" output="false"
      		}
      		
         } else {
-            ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
+            var processObject = orderTemplate.getProcessObject('UpdateShipping');
+            if(processObject.hasErrors()){
+                addErrors(arguments.data, processObject.getErrors());
+            }else{
+                addErrors(arguments.data, orderTemplate.getErrors());
+            }
         }
  	}   
  	
@@ -1916,7 +1956,7 @@ component  accessors="true" output="false"
 	    
  		orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'cancel'); 
         getHibachiScope().addActionResult( "public:orderTemplate.cancel", orderTemplate.hasErrors() );
-            
+        
         if(!orderTemplate.hasErrors() && !getHibachiScope().getORMHasErrors()) {
             
             orderTemplate.clearProcessObject("cancel");
@@ -1968,28 +2008,25 @@ component  accessors="true" output="false"
             return;
         }
         orderTemplate.clearProcessObject("updateFrequency");
-        
-        //try to activate if possible
-        if( 
-            orderTemplate.getOrderTemplateStatusType().getSystemCode() == 'otstDraft' 
-            && orderTemplate.getCanPlaceOrderFlag()
-        ) {
-            orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'activate'); 
-            getHibachiScope().addActionResult( "public:orderTemplate.activate", orderTemplate.hasErrors() );
-            
-            if(orderTemplate.hasErrors() && getHibachiScope().getORMHasErrors()) {
-                ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
-                return;
-            }
-            orderTemplate.clearProcessObject("activate");
-            
-            //Clear the currentFlexship from session
-            getHibachiScope().getSession().setCurrentFlexship(JavaCast("null",''));
-        }
+     
 	} 
 	
+	public any function getAccountGiftCards( required struct data) {
+        param name="arguments.data.pageRecordsShow" default=5;
+        param name="arguments.data.currentPage" default=1;
+        
+        var giftCardCollectionList = getGiftCardService().getGiftCardCollectionList();    
+        
+        giftCardCollectionList.setPageRecordsShow(arguments.data.pageRecordsShow);
+		giftCardCollectionList.setCurrentPageDeclaration(arguments.data.currentPage); 
+		giftCardCollectionList.addFilter('ownerAccount.accountID', getHibachiScope().getAccount().getAccountID());
 	
-	public any function applyGiftCardToOrderTemplate( required any data ){
+
+		arguments.data['ajaxResponse']['giftCards'] = giftCardCollectionList.getPageRecords();  
+	
+	}
+	
+	public any function applyGiftCardToOrderTemplate( required struct data ){
         param name="arguments.data.orderTemplateID" default="";
 	
      	var orderTemplate = getOrderService().getOrderTemplateForAccount(argumentCollection = arguments);
@@ -1999,15 +2036,23 @@ component  accessors="true" output="false"
 	    
  		orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'applyGiftCard'); 
         getHibachiScope().addActionResult( "public:orderTemplate.applyGiftCard", orderTemplate.hasErrors() );
+        
+        var processObject = orderTemplate.getProcessObjects()['applyGiftCard'];
+        if( processObject.hasErrors() ){
+            ArrayAppend(arguments.data.messages, processObject.getErrors(), true);
+            return;
+        }
+        
+        if( orderTemplate.hasErrors() ){
+            ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
+            return;
+        }    
             
-        if(!orderTemplate.hasErrors() && !getHibachiScope().getORMHasErrors()) {
+        if( !getHibachiScope().getORMHasErrors()) {
             
             orderTemplate.clearProcessObject("applyGiftCard");
             getHibachiScope().flushORMSession(); //flushing to make new data availble
-    		setOrderTemplateAjaxResponse(argumentCollection = arguments);
-    		
-        } else {
-            ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
+        	setOrderTemplateAjaxResponse(argumentCollection = arguments);
         }
 	}
 	
@@ -2033,14 +2078,14 @@ component  accessors="true" output="false"
 		}
 		
 		if(!StructKeyExists(arguments.data, 'orderTemplatePromotionSkuCollectionConfig')){
-	        var promotionsCollectionConfig =  orderTemplate.getPromotionalRewardSkuCollectionConfig();
+	        var promotionsCollectionConfig =  orderTemplate.getPromotionalFreeRewardSkuCollectionConfig();
 	        promotionsCollectionConfig['pageRecordsShow'] = arguments.data.pageRecordsShow;
 	        promotionsCollectionConfig['currentPage'] = arguments.data.currentPage;
 	        arguments.data.orderTemplatePromotionSkuCollectionConfig = promotionsCollectionConfig;
 		}
 	    
-	    var promotionsCollectionList = getSkuService().getSkuCollectionList();
-	    promotionsCollectionList.setCollectionConfig(arguments.data.orderTemplatePromotionSkuCollectionConfig);
+	    var promotionsCollectionList = getService("SkuService").getSkuCollectionList();
+	    promotionsCollectionList.setCollectionConfigStruct(arguments.data.orderTemplatePromotionSkuCollectionConfig);
         
         arguments.data['ajaxResponse']['orderTemplatePromotionSkus'] = promotionsCollectionList.getPageRecords(); 
 	}
@@ -2064,18 +2109,10 @@ component  accessors="true" output="false"
 		}
 	    
  		orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'addOrderTemplateItem'); 
-        getHibachiScope().addActionResult( "public:orderTemplate.addItem", orderTemplate.hasErrors() );
+ 		orderTemplate.updateCalculatedProperties();
+        getHibachiScope().addActionResult( "public:order.addOrderTemplateItem", orderTemplate.hasErrors() );
             
-        if(!orderTemplate.hasErrors() && !getHibachiScope().getORMHasErrors()) {
-            
-            orderTemplate.clearProcessObject("addOrderTemplateItem");
-            getHibachiScope().flushORMSession(); //flushing to make new data availble
-            
-            //TODO ???
-            arguments.data['ajaxResponse']['orderTemplateItems'] = getOrderService().getOrderTemplateItemsForAccount(argumentCollection=arguments);
-
-    // 		this.setOrderTemplateItemAjaxResponse(argumentCollection = arguments);
-        } else {
+        if(orderTemplate.hasErrors()) {
             ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
         }
     }
@@ -2092,18 +2129,11 @@ component  accessors="true" output="false"
 		
 		orderTemplateItem.setQuantity(arguments.data.quantity); 
         var orderTemplateItem = getOrderService().saveOrderTemplateItem( orderTemplateItem, arguments.data );
-        
-        getHibachiScope().addActionResult( "public:orderTemplate.editItem", orderTemplateItem.hasErrors() );
+        orderTemplateItem.getOrderTemplate().updateCalculatedProperties();
+
+        getHibachiScope().addActionResult( "public:order.editOrderTemplateItem", orderTemplateItem.hasErrors() );
             
-        if(!orderTemplateItem.hasErrors() && !getHibachiScope().getORMHasErrors()) {
-            getHibachiScope().flushORMSession(); //flushing to make new data availble
-            //return orderTemplate and updated-orderTemplateItem 
-            arguments.data.orderTemplateID = orderTemplateItem.getOrderTemplate().getOrderTemplateID();
-            
-            this.setOrderTemplateAjaxResponse(argumentCollection = arguments);
-    		this.setOrderTemplateItemAjaxResponse(argumentCollection = arguments);
-            
-        } else {
+        if(orderTemplateItem.hasErrors()) {
             ArrayAppend(arguments.data.messages, orderTemplateItem.getErrors(), true);
         }
     }
@@ -2118,17 +2148,10 @@ component  accessors="true" output="false"
 		}
 	    
  		orderTemplate = getOrderService().processOrderTemplate(orderTemplateItem.getOrderTemplate(), arguments.data, 'removeOrderTemplateItem'); 
-        getHibachiScope().addActionResult( "public:orderTemplate.removeItem", orderTemplate.hasErrors() );
+        orderTemplate.updateCalculatedProperties();
+        getHibachiScope().addActionResult( "public:order.removeOrderTemplateItem", orderTemplate.hasErrors() );
             
-        if(!orderTemplate.hasErrors() && !getHibachiScope().getORMHasErrors()) {
-            getHibachiScope().flushORMSession(); //flushing to make new data availble
-            //return updated-orderTemplate 
-            
-            //TODO, figure out a way to get updated calculated prop in ordertemplate
-            arguments.data.orderTemplateID = orderTemplate.getOrderTemplateID();
-            this.setOrderTemplateAjaxResponse(argumentCollection = arguments);
-            
-        } else {
+        if(orderTemplate.hasErrors()) {
             ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
         }
     }
@@ -2175,33 +2198,6 @@ component  accessors="true" output="false"
         }
     }
     
-     public void function editOrderTemplate(required any data){
-        param name="data.orderTemplateID" default="";
-        param name="data.orderTemplateName" default="";
-        
-        var orderTemplate = getOrderService().getOrderTemplateForAccount(argumentCollection = arguments);
-		if( isNull(orderTemplate) ) {
-			return;
-		}
-	    
-	    if(len(arguments.data.orderTemplateName)) {
- 		    orderTemplate.setOrderTemplateName(arguments.data.orderTemplateName);
-	    }
-	    
-	    orderTemplate = getOrderService().saveOrderTemplate(orderTemplate);
-        getHibachiScope().addActionResult( "public:orderTemplate.edit", orderTemplate.hasErrors() );
-
-        if(!orderTemplate.hasErrors() && !getHibachiScope().getORMHasErrors()) {
-            
-            getHibachiScope().flushORMSession(); 
-            //flushing to make new data availble
-    		setOrderTemplateAjaxResponse(argumentCollection = arguments);
-        
-        } else {
-            ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
-        }
-    }
-    
     public void function deleteOrderTemplate(required any data){
         param name="data.orderTemplateItemID" default="";
 
@@ -2214,16 +2210,6 @@ component  accessors="true" output="false"
         
         getHibachiScope().addActionResult( "public:order.deleteOrderTemplate", true );  
         
-    }
-    
-    public void function getAllOrdersOnAccount(required any data){
-        var accountOrders = getAccountService().getAllOrdersOnAccount({accountID: arguments.data.accountID, pageRecordsShow: arguments.data.pageRecordsShow, currentPage: arguments.data.currentPage });
-        arguments.data['ajaxResponse']['ordersOnAccount'] = accountOrders;
-    }
-    
-    public void function getOrderItemsByOrderID(required any data){
-        var OrderItemsByOrderID = getOrderService().getOrderItemsByOrderID({orderID: arguments.data.orderID, currentPage: arguments.data.currentPage, pageRecordsShow: arguments.data.pageRecordsShow });
-        arguments.data['ajaxResponse']['OrderItemsByOrderID'] = OrderItemsByOrderID;
     }
     
     
@@ -2275,28 +2261,4 @@ component  accessors="true" output="false"
 		arguments.data['ajaxResponse']['expirationYearOptions'] = tmpAccountPaymentMethod.getExpirationYearOptions();
     }
     
-
-    public any function getBaseProductCollectionList(required any data){
-        param name="arguments.data.currencyCode" default=""; 
-        param name="arguments.data.priceGroupCode" default="";
-        
-        //TODO: Consider starting from skuPrice table for less joins
-        var productCollectionList = getProductService().getProductCollectionList();
-        productCollectionList.addDisplayProperties('productName');
-        productCollectionList.addDisplayProperty('defaultSku.skuID');
-        productCollectionList.addDisplayProperty('defaultSku.skuPrices.personalVolume');
-        productCollectionList.addDisplayProperty('defaultSku.skuPrices.price');
-        productCollectionList.addDisplayProperty('urlTitle');
-        productCollectionList.addDisplayProperty('defaultSku.imageFile');
-
-        productCollectionList.addFilter('activeFlag',1);
-        productCollectionList.addFilter('publishedFlag',1);
-        productCollectionList.addFilter('skus.activeFlag',1);
-        productCollectionList.addFilter('skus.publishedFlag',1);
-        productCollectionList.addFilter('defaultSku.skuPrices.price', 0.00, '!=');
-        productCollectionList.addFilter('defaultSku.skuPrices.currencyCode',arguments.data.currencyCode);
-        productCollectionList.addFilter('defaultSku.skuPrices.priceGroup.priceGroupCode',arguments.data.priceGroupCode);
-
-        return productCollectionList
-    }   
 }

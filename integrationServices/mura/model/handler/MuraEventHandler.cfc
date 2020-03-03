@@ -171,8 +171,30 @@
 					}
 				}
 				
+				
+				if ($.slatwall.setting('globalURLKeyAccount') == 'subdomain') {
+				
+					var accountCode = getHibachiScope().getSubdomain();
+					if(len(accountCode)){
+						
+						var account = $.slatwall.getService('accountService').getAccountByAccountCode(accountCode);
+			
+						if(isNull(account) || isNull(account.getAccountCreatedSite())){
+							$.event('contentBean', $.getBean("content"));
+							$.event().getHandler('standard404').handle($.event());
+							return;
+						}
+						// if(account.getAccountCreatedSite().getCMSSiteID() != $.event('siteID')){
+						// 	$.redirect( $.createHREF(filename=$.getBean("content").getFilename(), siteid=account.getAccountCreatedSite().getCMSSiteID()) );
+						// 	return;
+						// }
+						
+						$.slatwall.setRouteEntity("account", account);
+					}
+				
+				
 				// Look for the Account URL Key
-				if (listFindNoCase($.event('path'), $.slatwall.setting('globalURLKeyAccount'), "/")) {
+				} else if (listFindNoCase($.event('path'), $.slatwall.setting('globalURLKeyAccount'), "/")) {
 					accountKeyLocation = listFindNoCase($.event('path'), $.slatwall.setting('globalURLKeyAccount'), "/");
 					if(accountKeyLocation < listLen($.event('path'),"/")) {
 						$.slatwall.setRouteEntity("account", $.slatwall.getService("addressService").getAccountByURLTitle(listGetAt($.event('path'), accountKeyLocation + 1, "/"), true) );

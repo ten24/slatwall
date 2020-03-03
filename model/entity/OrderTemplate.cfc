@@ -46,48 +46,49 @@
 Notes:
 
 */
-component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="SwOrderTemplate" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="this" hb_processContexts="create,updateBilling,updateShipping,updateSchedule,addOrderTemplateItem,addPromotionCode,removePromotionCode,cancel,batchCancel" {
+component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="SwOrderTemplate" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="this" hb_processContexts="create,updateBilling,updateShipping,updateSchedule,addOrderTemplateItem,addPromotionCode,removePromotionCode,cancel,batchCancel,updateCalculatedProperties" {
 
 	// Persistent Properties
 	property name="orderTemplateID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="orderTemplateName" ormtype="string";
-	
+	property name="orderTemplateName" ormtype="string" hb_populateEnabled="public";
 	property name="scheduleOrderNextPlaceDateTime" ormtype="timestamp";
 	property name="scheduleOrderDayOfTheMonth" ormtype="integer";
-
+	property name="scheduleOrderProcessingFlag" ormtype="boolean" default="false";
 	property name="currencyCode" ormtype="string" length="3";
-
+	property name="canceledDateTime" ormtype="timestamp";
+	property name="lastOrderPlacedDateTime" ormtype="timestamp";
+	
+	// Related Object Properties (many-to-one)
 	property name="orderTemplateType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderTemplateTypeID";
 	property name="orderTemplateStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderTemplateStatusTypeID";
 	property name="frequencyTerm" cfc="Term" fieldtype="many-to-one" fkcolumn="frequencyTermID" hb_formFieldType="select";
-
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
-	property name="accountPaymentMethod" cfc="AccountPaymentMethod" fieldtype="many-to-one" fkcolumn="accountPaymentMethodID"; 
-
+	property name="accountPaymentMethod"  hb_populateEnabled="public" cfc="AccountPaymentMethod" fieldtype="many-to-one" fkcolumn="accountPaymentMethodID"; 
 	property name="billingAccountAddress" hb_populateEnabled="public" cfc="AccountAddress" fieldtype="many-to-one" fkcolumn="billingAccountAddressID";
 	property name="shippingAccountAddress" hb_populateEnabled="public" cfc="AccountAddress" fieldtype="many-to-one" fkcolumn="shippingAccountAddressID";
-
 	property name="shippingAddress" cfc="Address" fieldtype="many-to-one" fkcolumn="shippingAddressID";
 	property name="shippingMethod" cfc="ShippingMethod" fieldtype="many-to-one" fkcolumn="shippingMethodID";
-
 	//order created for applying promos ahead of scheduled order placement
 	property name="temporaryOrder" cfc="Order" fieldtype="many-to-one" fkcolumn="temporaryOrderID";
-	
 	property name="site" cfc="Site" fieldtype="many-to-one" fkcolumn="siteID";
-
-	property name="orderTemplateItems" hb_populateEnabled="public" singularname="orderTemplateItem" cfc="OrderTemplateItem" fieldtype="one-to-many" fkcolumn="orderTemplateID" cascade="all-delete-orphan" inverse="true";
-
+	
+	// Related Object Properties (one-to-many)
+	property name="orderTemplateItems" hb_populateEnabled="public" singularname="orderTemplateItem" cfc="OrderTemplateItem" fieldtype="one-to-many" fkcolumn="orderTemplateID" cascade="all-delete-orphan" inverse="true" hb_cascadeCalculate="true";
 	property name="orders" singularname="order" cfc="Order" fieldtype="one-to-many" fkcolumn="orderTemplateID" inverse="true";
 	property name="orderTemplateScheduleDateChangeReasons" singularname="orderTemplateScheduleDateChangeReason" cfc="OrderTemplateScheduleDateChangeReason" fieldtype="one-to-many" fkcolumn="orderTemplateID" inverse="true";
 	property name="orderTemplateAppliedGiftCards" singularname="orderTemplateAppliedGiftCard" cfc="OrderTemplateAppliedGiftCard" fieldtype="one-to-many" fkcolumn="orderTemplateID";
-
 	property name="orderTemplateCancellationReasonType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderTemplateCancellationReasonTypeID";
 	property name="orderTemplateCancellationReasonTypeOther" ormtype="string";
+	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="orderTemplateID" cascade="all-delete-orphan" inverse="true";
 	
+	// Related Object Properties (many-to-many)
 	property name="promotionCodes" singularname="promotionCode" cfc="PromotionCode" fieldtype="many-to-many" linktable="SwOrderTemplatePromotionCode" fkcolumn="orderTemplateID" inversejoincolumn="promotionCodeID";
-
+	
+	// Calculated Properties
 	property name="calculatedOrderTemplateItemsCount" ormtype="integer";
 	property name="calculatedTotal" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedSubTotal" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedFulfillmentTotal" ormtype="big_decimal" hb_formatType="currency";
 
 	// Remote properties
 	property name="remoteID" ormtype="string";
@@ -102,7 +103,7 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	property name="fulfillmentTotal" persistent="false";
 	property name="canPlaceOrderFlag" persistent="false";
 	property name="canPlaceFutureScheduleOrderFlag" persistent="false";
-	property name="lastOrderPlacedDateTime" persistent="false";
+	property name="orderTemplateItemDetailsHTML" persistent="false";
 	property name="orderTemplateScheduleDateChangeReasonTypeOptions" persistent="false";
 	property name="orderTemplateCancellationReasonTypeOptions" persistent="false";
 	property name="promotionalRewardSkuCollectionConfig" persistent="false"; 
@@ -126,10 +127,20 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 	property name="flexshipStatusCode" ormtype="string";
 	property name="addressValidationCode" ormtype="string";
 	property name="customerCanCreateFlag" persistent="false";
+	
+	//calculated properties
+	property name="calculatedCommissionableVolumeTotal" ormtype="integer";
+	property name="calculatedPersonalVolumeTotal" ormtype="integer";
+
+	//non-persistents
+	property name="accountIsNotInFlexshipCancellationGracePeriod" persistent="false";
 	property name="commissionableVolumeTotal" persistent="false"; 
 	property name="personalVolumeTotal" persistent="false";
 	property name="flexshipQualifiedOrdersForCalendarYearCount" persistent="false"; 
-	
+	property name="qualifiesForOFYProducts" persistent="false";
+	property name="cartTotalThresholdForOFYAndFreeShipping" persistent="false";
+
+
 //CUSTOM PROPERTIES END
 	public string function getEncodedJsonRepresentation(string nonPersistentProperties='subtotal,fulfillmentTotal,fulfillmentDiscount,total'){ 
 		return getService('hibachiUtilityService').hibachiHTMLEditFormat(serializeJson(getStructRepresentation(arguments.nonPersistentProperties)));
@@ -284,23 +295,6 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 		return variables.orderTemplateCancellationReasonTypeOptions;
 	} 
 
-	public string function getLastOrderPlacedDateTime(){
-		if(!structKeyExists(variables, 'lastOrderPlacedDateTime') || !len(variables.lastOrderPlacedDateTime)){
-			var orderCollectionList = getService('OrderService').getOrderCollectionList();
-			orderCollectionList.addDisplayProperty('createdDateTime');  
-			orderCollectionList.addFilter('orderTemplate.orderTemplateID', getOrderTemplateID());
-			orderCollectionList.addOrderBy('createdDateTime|DESC');
-			var records = orderCollectionList.getPageRecords();
-	
-			if(!arrayIsEmpty(records)){
-				variables.lastOrderPlacedDateTime = records[1]['createdDateTime'];
-			} else { 
-				variables.lastOrderPlacedDateTime = '';
-			}
-		} 
-		return variables.lastOrderPlacedDateTime;
-	}
-
 	public string function getScheduledOrderDates(numeric iterations = 5){
 		
 		var scheduledOrderDates = DateFormat(this.getScheduleOrderNextPlaceDateTime(), 'mm/dd/yyyy'); 
@@ -369,6 +363,15 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 	public void function removeOrderItem(required any orderItem) {
 		arguments.orderItem.removeOrder( this );
 	}
+	
+	// AttributeValues (one-to-many)
+	public void function addAttributeValue(required any attributeValue) {
+		arguments.attributeValue.setOrderTemplate( this );
+	}
+	public void function removeAttributeValue(required any attributeValue) {
+		arguments.attributeValue.removeOrderTemplate( this );
+	}
+
 
 	//Email Template Helpers
 	public string function getOrderTemplateItemDetailsHTML(){
@@ -408,21 +411,22 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 	
 	//CUSTOM FUNCTIONS BEGIN
 
-public boolean function getCustomerCanCreateFlag(){
-			
-		if(!structKeyExists(variables, "customerCanCreateFlag")){
-			variables.customerCanCreateFlag = true;
-			if( !isNull(getSite()) && 
-				!isNull(getAccount()) && 
-				!isNull(getAccount().getEnrollmentDate()) && 
-				getAccount().getAccountType() == 'MarketPartner'
-			){
-				var daysAfterMarketPartnerEnrollmentFlexshipCreate = getSite().setting('integrationmonatSiteDaysAfterMarketPartnerEnrollmentFlexshipCreate');  
-				variables.customerCanCreateFlag = dateDiff('d',getAccount().getEnrollmentDate(),now()) > daysAfterMarketPartnerEnrollmentFlexshipCreate; 
-			} 
+public boolean function getAccountIsNotInFlexshipCancellationGracePeriod(){
+		if(	getHibachiScope().getAccount().getAdminAccountFlag() ){
+			return true;
 		}
 
-		return variables.customerCanCreateFlag; 
+		if(!structKeyExists(variables, "accountIsNotInFlexshipCancellationGracePeriod")){
+			variables.accountIsNotInFlexshipCancellationGracePeriod = true;
+			
+			if( !IsNull(this.getAccount()) && this.getAccount().getAccountType() == 'MarketPartner' ){
+				
+				variables.accountIsNotInFlexshipCancellationGracePeriod = !getService("OrderService")
+														.getAccountIsInFlexshipCancellationGracePeriod( this );
+			}
+		}
+		
+		return variables.accountIsNotInFlexshipCancellationGracePeriod;
 	}
 
 	public numeric function getPersonalVolumeTotal(){
@@ -458,5 +462,105 @@ public boolean function getCustomerCanCreateFlag(){
 			variables.flexshipQualifiedOrdersForCalendarYearCount = orderCollection.getRecordsCount(); 	
 		} 
 		return variables.flexshipQualifiedOrdersForCalendarYearCount; 
-	}  //CUSTOM FUNCTIONS END
+	}  
+
+	public numeric function getCartTotalThresholdForOFYAndFreeShipping(){
+		if(!structKeyExists(variables, 'cartTotalThresholdForOFYAndFreeShipping')){
+			
+			if(this.getAccount().getAccountType() == 'MarketPartner') {
+				variables.cartTotalThresholdForOFYAndFreeShipping =  this.getSite().setting('integrationmonatSiteMinCartTotalAfterMPUserIsEligibleForOFYAndFreeShipping');
+			} else {
+				variables.cartTotalThresholdForOFYAndFreeShipping =  this.getSite().setting('integrationmonatSiteMinCartTotalAfterVIPUserIsEligibleForOFYAndFreeShipping');
+			}
+		}	
+		return variables.cartTotalThresholdForOFYAndFreeShipping;
+	}
+	
+	public boolean function getQualifiesForOFYProducts(){
+		
+		if(!structKeyExists(variables, 'qualifiesForOFYProducts')) {
+			variables.qualifiesForOFYProducts =  getService('OrderService').orderTemplateQualifiesForOFYProducts(this);
+		}	
+		return variables.qualifiesForOFYProducts;
+	}
+	
+	/**
+	 * These next two functions deal with this requirement around the Refer a Friend feature.
+	 * As a VIP I may only redeem EITHER an RAF Promo OR RAF Gift Card (limited to the value of one credit, per task:  ) 
+	 * on the same Flexship. I may not redeem both on the same Flexship.
+	 * 
+	 * Context:  This scenario would occur in an edge case where a newly referred VIP has earned their Referee Promo and has 
+	 * also referred new VIP's themselves, BEFORE they have had the opportunity to use their RAF promo on their first Flexship.  
+	 * Thus, resulting in them having both the RAF Promo and balance on their RAF Gift Card.  
+	 * They must use their Promo before redeeming their gift card, as the Promo must be used on their 1st Flexship.  
+	 * 
+	 **/
+	public boolean function getHasRafGiftCardAppliedToFlexship(){
+		
+		for (var appliedGiftCard in variables.orderTemplateAppliedGiftCards){
+			if (appliedGiftCard.getGiftCard().getSku().getSkuCode() == "raf-gift-card-1"){
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	public boolean function getHasRafPromoAppliedToFlexship(){
+		for (var promoCode in variables.promotionCodes){
+			if (promoCode.getPromotion().getPromotionName() == "Monat - Refer A Friend"){
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	public boolean function hasRafPromoOrGiftCardButNotBoth(){ 
+		
+		//This only applied to VIP accounts
+		if (!isVIP()){
+			return true;
+		}
+		
+		var hasGiftCard = getHasRafGiftCardAppliedToFlexship();
+		var hasPromo = getHasRafPromoAppliedToFlexship();
+		
+		//Has either gift card or promo is fine.
+		if (!hasGiftCard && !hasPromo){
+		
+			return true;
+		}
+		
+		//Has a gift card and no promo is fine.
+		if (hasGiftCard && !hasPromo){
+			return true;
+		}
+		
+		//Has a promo and no gift card is also fine.
+		if (hasPromo && !hasGiftCard){
+			return true;
+		}
+		
+		return false;
+		
+	}
+	
+	public boolean function isVIP(){
+		if (!isNull(this.getAccount()) && !isNull(this.getAccount().getAccountType())){
+			return this.getAccount().getAccountType() == "VIP";
+		}
+		return false;
+	}
+	
+	public struct function getListingSearchConfig() {
+	    param name = "arguments.wildCardPosition" default = "exact";
+	    
+	    return super.getListingSearchConfig(argumentCollection = arguments);
+	}
+	
+	public boolean function userCanCancelFlexship(){
+		return getAccount().getAccountType() == 'MarketPartner' || getHibachiScope().getAccount().getAdminAccountFlag();
+	}
+//CUSTOM FUNCTIONS END
 }

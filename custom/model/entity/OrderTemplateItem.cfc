@@ -1,5 +1,10 @@
 component {
 
+	//calculated properties
+	property name="calculatedCommissionableVolumeTotal" ormtype="integer";
+	property name="calculatedPersonalVolumeTotal" ormtype="integer";
+
+	//non-persistent properties
 	property name="commissionableVolumeTotal" persistent="false"; 
 	property name="personalVolumeTotal" persistent="false"; 
 	property name="skuProductURL" persistent="false";
@@ -19,30 +24,32 @@ component {
 	
 	public any function getSkuAdjustedPricing(){
 			
-			var pricegroups = getHibachiScope().getAccount().getPriceGroups();
-			var priceGroupCode = arrayLen(pricegroups) ? pricegroups[1].getPriceGroupCode() : "";
-			var currencyCode = getHibachiScope().getCurrentRequestSite().setting('skuCurrency');
-			var vipPriceGroup = getHibachiScope().getService('PriceGroupService').getPriceGroupByPriceGroupCode(3);
-			var retailPriceGroup = getHibachiScope().getService('PriceGroupService').getPriceGroupByPriceGroupCode(2);
-			var MPPriceGroup = getHibachiScope().getService('PriceGroupService').getPriceGroupByPriceGroupCode(1);
-			var adjustedAccountPrice = this.getSku().getPriceByCurrencyCode(currencyCode);
-			var adjustedVipPrice = this.getSku().getPriceByCurrencyCode(currencyCode,1,[vipPriceGroup]);
-			var adjustedRetailPrice = this.getSku().getPriceByCurrencyCode(currencyCode,1,[retailPriceGroup]);
-			var adjustedMPPrice = this.getSku().getPriceByCurrencyCode(currencyCode,1,[MPPriceGroup]);
-			var mPPersonalVolume = this.getSku().getPersonalVolumeByCurrencyCode()?:0;
+			var priceGroups = this.getOrderTemplate().getAccount().getPriceGroups();
+			var priceGroupCode = arrayLen(priceGroups) ? priceGroups[1].getPriceGroupCode() : "";
+			var priceGroupService = getHibachiScope().getService('priceGroupService');
+			var hibachiUtilityService = getHibachiScope().getService('hibachiUtilityService');
+			var currencyCode = this.getOrderTemplate().getCurrencyCode() ?: 'USD';
+			var vipPriceGroup = priceGroupService.getPriceGroupByPriceGroupCode(3);
+			var retailPriceGroup = priceGroupService.getPriceGroupByPriceGroupCode(2);
+			var mpPriceGroup = priceGroupService.getPriceGroupByPriceGroupCode(1);
+			var sku = this.getSku();
+			var adjustedAccountPrice = sku.getPriceByCurrencyCode(currencyCode) ?: 0;
+			var adjustedVipPrice = sku.getPriceByCurrencyCode(currencyCode,1,[vipPriceGroup]) ?: 0;
+			var adjustedRetailPrice = sku.getPriceByCurrencyCode(currencyCode,1,[retailPriceGroup]) ?: 0;
+			var adjustedMPPrice = sku.getPriceByCurrencyCode(currencyCode,1,[MPPriceGroup]) ?: 0;
+			var mpPersonalVolume = sku.getPersonalVolumeByCurrencyCode(currencyCode)?:0;
 			
-			var formattedAccountPricing = getHibachiScope().getService('hibachiUtilityService').formatValue_currency(adjustedAccountPrice, {currencyCode:currencyCode});
-			var formattedVipPricing = getHibachiScope().getService('hibachiUtilityService').formatValue_currency(adjustedVipPrice, {currencyCode:currencyCode});
-			var formattedRetailPricing = getHibachiScope().getService('hibachiUtilityService').formatValue_currency(adjustedRetailPrice, {currencyCode:currencyCode});
-			var formattedMPPricing = getHibachiScope().getService('hibachiUtilityService').formatValue_currency(adjustedMPPrice, {currencyCode:currencyCode});
-			var formattedPersonalVolume = getHibachiScope().getService('hibachiUtilityService').formatValue_currency(mPPersonalVolume, {currencyCode:currencyCode});
+			// var formattedAccountPricing = hibachiUtilityService.formatValue_currency(adjustedAccountPrice, {currencyCode:currencyCode});
+			// var formattedVipPricing = hibachiUtilityService.formatValue_currency(adjustedVipPrice, {currencyCode:currencyCode});
+			// var formattedRetailPricing = hibachiUtilityService.formatValue_currency(adjustedRetailPrice, {currencyCode:currencyCode});
+			// var formattedMPPricing = hibachiUtilityService.formatValue_currency(adjustedMPPrice, {currencyCode:currencyCode});
 			
 			var skuAdjustedPricing = {
-				adjustedPriceForAccount = formattedAccountPricing,
-				vipPrice = formattedVipPricing,
-				retailPrice = formattedRetailPricing,
-				MPPrice = formattedMPPricing,
-				personalVolume = formattedPersonalVolume,
+				adjustedPriceForAccount = adjustedAccountPrice,
+				vipPrice = adjustedVipPrice,
+				retailPrice = adjustedRetailPrice,
+				MPPrice = adjustedMPPrice,
+				personalVolume = mpPersonalVolume,
 				accountPriceGroup = priceGroupCode
 			};
 	
@@ -74,4 +81,5 @@ component {
 		}
 		return variables.personalVolumeTotal; 	
 	} 
+
 }

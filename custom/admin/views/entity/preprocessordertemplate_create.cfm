@@ -85,6 +85,11 @@ Notes:
 				</hb:HibachiDisplayToggle>
 
 				<hr>
+				
+				<!--- If we already have an account, the process-object will grab these from account itself--->
+				<sw-site-and-currency-select data-site-and-currency-options="#rc.processObject.getEncodedSiteAndCurrencyOptions()#"
+					data-account-typeahead-id='#rc.typeaheadID#'>
+				</sw-site-and-currency-select> 
 			<cfelse> 
 				<input type="hidden" name="accountID" value="#rc.accountID#" />
 			</cfif> 
@@ -92,11 +97,6 @@ Notes:
 			<!--- Always use schedule order template type for flexship ---> 
 			<input type="hidden" name="orderTemplateTypeID" value="2c948084697d51bd01697d5725650006" />	
 			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="orderTemplateTypeID" edit="#rc.edit#" fieldAttributes="disabled='true'">
-
-			<sw-site-and-currency-select data-site-and-currency-options="#rc.processObject.getEncodedSiteAndCurrencyOptions()#"
-										 data-account-typeahead-id='#rc.typeaheadID#'>
-			</sw-site-and-currency-select> 
-
 
 			<hr>
 			
@@ -109,6 +109,7 @@ Notes:
 										edit="#rc.edit#" 
 										fieldType="text" 
 										fieldAttributes="sw-date-picker 
+														required
 														ng-model=""scheduleOrderNextPlaceDateTime""
 														data-end-day-of-the-month=""25""
 														data-end-date=""endDate""

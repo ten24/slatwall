@@ -28,6 +28,8 @@ component {
     property name="productPackVolumeTotal" persistent="false";
     property name="retailValueVolumeTotal" persistent="false";
     property name="vipEnrollmentOrderFlag" persistent="false";
+    property name="marketPartnerEnrollmentOrderDateTime" persistent="false";
+    property name="marketPartnerEnrollmentOrderID" persistent="false";
     
     property name="calculatedVipEnrollmentOrderFlag" ormtype="boolean";
     property name="calculatedPersonalVolumeSubtotal" ormtype="big_decimal" hb_formatType="none";
@@ -56,13 +58,15 @@ component {
     property name="calculatedRetailValueVolumeDiscountTotal" ormtype="big_decimal" hb_formatType="none";
     property name="accountType" ormtype="string";
     property name="accountPriceGroup" ormtype="string";
+
     property name="shipMethodCode" ormtype="string";
     property name="iceRecordNumber" ormtype="string";
     property name="commissionPeriodCode" ormtype="string";
     property name="lastSyncedDateTime" ormtype="timestamp";
     property name="calculatedPaymentAmountDue" ormtype="big_decimal";
-	property name="priceGroup" cfc="PriceGroup" fieldtype="many-to-one" fkcolumn="priceGroupID";
-	
+    property name="priceGroup" cfc="PriceGroup" fieldtype="many-to-one" fkcolumn="priceGroupID";
+    property name="upgradeFlag" ormtype="boolean" default="0";
+
     public numeric function getPersonalVolumeSubtotal(){
         return getCustomPriceFieldSubtotal('personalVolume');
     }
@@ -197,16 +201,51 @@ component {
 	    var orderItemCollectionList = getService("OrderService").getOrderItemCollectionList();
 	    orderItemCollectionList.addFilter("order.orderID",this.getOrderID());
 	    //Product code for the VIP registration fee
-	    orderItemCollectionList.addFilter("sku.product.productCode","10210000");
+	    orderItemCollectionList.addFilter("sku.product.productType.urlTitle","enrollment-fee-vip");
 	    orderItemCollectionList.setDisplayProperties("orderItemID");
 	    return orderItemCollectionList.getRecordsCount() > 0;
 	}
 	
+	public any function getMarketPartnerEnrollmentOrderDateTime(){
+	    
+	    if (!structKeyExists(variables, "marketPartnerEnrollmentOrderDateTime")){
+			var value = getService('orderService').getMarketPartnerEnrollmentOrderDateTime(getAccount());
+    	    if (!isNull(value)){
+    	        variables.marketPartnerEnrollmentOrderDateTime = value;
+    	        return value;
+    	    }
+	    }
+	    
+	    if (!isNull(variables.marketPartnerEnrollmentOrderDateTime)){
+	    	return variables.marketPartnerEnrollmentOrderDateTime;
+	    }
+	}
+	
+	public any function getMarketPartnerEnrollmentOrderID(){
+	    if (!structKeyExists(variables, "marketPartnerEnrollmentOrderID")){
+    	    var orderItemCollectionList = getService("OrderService").getOrderItemCollectionList();
+    	    orderItemCollectionList.addFilter("order.account.accountID", "#getAccount().getAccountID()#");
+    	    orderItemCollectionList.addFilter("order.orderStatusType.systemCode", "ostNotPlaced", "!=");
+    	    orderItemCollectionList.addFilter("order.monatOrderType.typeCode","motMPEnrollment");
+    	    orderItemCollectionList.setDisplayProperties("order.orderID");// Date placed 
+    	    var records = orderItemCollectionList.getRecords();
+    	    if (arrayLen(records)){
+    	        variables.marketPartnerEnrollmentOrderID = records[1]['order_orderID'];
+    	        return records[1]['order_orderID'];
+    	    }
+	    }
+	    
+	    if (!isNull(variables.marketPartnerEnrollmentOrderID)){
+	    	return variables.marketPartnerEnrollmentOrderID;
+	    }
+	}
+	
 	public any function getAccountType() {
+	    
 	    if (structKeyExists(variables, "accountType")){
 	        return variables.accountType;
 	    }
-	    
+
 	    if (!isNull(getAccount()) && !isNull(getAccount().getAccountType()) && len(getAccount().getAccountType())){
 	        variables.accountType = getAccount().getAccountType();
 	    }else{
@@ -232,11 +271,10 @@ component {
 	}
 	
 	public struct function getListingSearchConfig() {
-	   	param name = "arguments.selectedSearchFilterCode" default="lastThreeMonths"; //limiting listingdisplays to shol only last 3 months of record
+	   	param name = "arguments.selectedSearchFilterCode" default="lastTwoMonths"; //limiting listingdisplays to show only last 3 months of record by default
+	    param name = "arguments.wildCardPosition" default = "exact";
 	    return super.getListingSearchConfig(argumentCollection = arguments);
 	}
-	
-	
 	
 	public boolean function hasMPRenewalFee() {
 	    if(!structKeyExists(variables,'orderHasMPRenewalFee')){
@@ -245,13 +283,22 @@ component {
 		return variables.orderHasMPRenewalFee;
 	}
 	
+	public boolean function hasProductPack() {
+	    if(!structKeyExists(variables,'orderHasProductPack')){
+            variables.orderHasProductPack = getService('orderService').orderHasProductPack(this.getOrderID());
+		}
+		return variables.orderHasProductPack;
+	}
+	
 	public boolean function subtotalWithinAllowedPercentage(){
 	    var referencedOrder = this.getReferencedOrder();
 	    if(isNull(referencedOrder)){
 	        return true;
 	    }
-	    
-	    var dateDiff = dateDiff('d',referencedOrder.getOrderCloseDateTime(),now());
+	    var dateDiff = 0;
+	    if(!isNull(referencedOrder.getOrderCloseDateTime())){
+    	         dateDiff = dateDiff('d',referencedOrder.getOrderCloseDateTime(),now());
+	    }
 	    if(dateDiff <= 30){
 	        return true;
 	    }else if(dateDiff > 365){
@@ -275,6 +322,104 @@ component {
 
 	        return abs(originalSubtotal * 0.9) - abs(returnSubtotal) >= abs(getSubTotal());
 	    }
+        return true;
 	}
 	
+	public boolean function hasProductPackOrderItem(){
+        var orderItemCollectionList = getService('orderService').getOrderItemCollectionList();
+        orderItemCollectionList.addFilter('order.orderID',getOrderID());
+        orderItemCollectionList.addFilter('sku.product.productType.urlTitle','productPack,starter-kit','in');
+        return orderItemCollectionList.getRecordsCount() > 0;
+	}
+	
+	/**
+	 * This validates that the orders site matches the accounts created site
+	 * if the order has an account already.
+	 **/
+	public boolean function orderCreatedSiteMatchesAccountCreatedSite(){
+        if (!isNull(this.getAccount()) && !isNull(this.getAccount().getAccountCreatedSite())){
+            if (this.getOrderCreatedSite().getSiteID() != this.getAccount().getAccountCreatedSite().getSiteID()){
+                return false;
+            }
+        }
+        return true;
+	}
+	 
+	 /**
+	  * 2. If Site is UK and account is MP Max Order 1 placed in first 7 days 
+	  * after enrollment order.
+	  **/
+	 public boolean function MarketPartnerValidationMaxOrdersPlaced(){
+	 	
+	    // If they've never enrolled, they can enroll.
+	    if (!isNull(getAccount()) && getAccount().getAccountType() == "marketPartner" 
+			&& this.getOrderCreatedSite().getSiteCode() == "mura-uk"){
+			    var hasEnrollmentOrder = getMarketPartnerEnrollmentOrderID();
+			    if (isNull(hasEnrollmentOrder)){
+			        return true;
+			    }
+		}
+	    
+        var initialEnrollmentPeriodForMarketPartner = this.getOrderCreatedSite().setting("siteInitialEnrollmentPeriodForMarketPartner");
+        
+        //If a UK MP is within the first 7 days of enrollment, check that they have not already placed more than 1 order.
+		if (!isNull(initialEnrollmentPeriodForMarketPartner) && !isNull(getAccount()) && getAccount().getAccountType() == "marketPartner" 
+			&& this.getOrderCreatedSite().getSiteCode() == "mura-uk"
+			&& !isNull(getMarketPartnerEnrollmentOrderDateTime())
+			&& !isNull(getMarketPartnerEnrollmentOrderID())
+			&& dateDiff("d", getMarketPartnerEnrollmentOrderDateTime(), now()) <= initialEnrollmentPeriodForMarketPartner){
+		
+			//This order is 1, so if they have any previous that is not the enrollment order,
+			//they can't place this one.
+			var previouslyOrdered = getService("OrderService").getOrderCollectionList();
+
+			//Find if they have placed more than the initial enrollment order already.
+			previouslyOrdered.addFilter("orderID", getMarketPartnerEnrollmentOrderID(),"!=");
+			previouslyOrdered.addFilter("account.accountID", getAccount().getAccountID());
+			previouslyOrdered.addFilter("orderStatusType.systemCode", "ostNotPlaced", "!=");
+			previouslyOrdered.addFilter("orderType.systemCode", "otSalesOrder");
+			
+			
+			if (previouslyOrdered.getRecordsCount() > 0){
+				return false; //they can not purchase this because they already have purchased it.
+			}
+		} 
+		return true;
+	 }
+	 
+	 /**
+	  * 3. MP (Any site) can't purchase one past 30 days from account creation.
+	  **/
+	 public boolean function MarketPartnerValidationMaxProductPacksPurchased(){
+	    
+	    var maxDaysAfterAccountCreate = this.getOrderCreatedSite().setting("siteMaxDaysAfterAccountCreate");
+	    
+	    //Check if this is MP account AND created MORE THAN 30 days AND is trying to add a product pack.
+		if (!isNull(maxDaysAfterAccountCreate) && !isNull(getAccount()) && getAccount().getAccountType() == "marketPartner" 
+			&& !isNull(getAccount().getCreatedDateTime()) 
+			&& dateDiff("d", getAccount().getCreatedDateTime(), now()) > maxDaysAfterAccountCreate
+			&& this.hasProductPackOrderItem()){
+		
+			return false; //they can not purchase this because they already have purchased it.
+		
+		//Check if they have previously purchased a product pack, then they also can't purchase a new one.
+		} else if (!isNull(maxDaysAfterAccountCreate) && !isNull(getAccount()) && getAccount().getAccountType() == "marketPartner" 
+				&& !isNull(getAccount().getCreatedDateTime()) 
+				&& dateDiff("d", getAccount().getCreatedDateTime(), now()) <= maxDaysAfterAccountCreate
+				&& this.hasProductPackOrderItem()){
+
+			var previouslyPurchasedProductPacks = getService("OrderService").getOrderItemCollectionList();
+
+			//Find all valid previous placed sales orders for this account with a product pack on them.
+			previouslyPurchasedProductPacks.addFilter("order.account.accountID", getAccount().getAccountID());
+			previouslyPurchasedProductPacks.addFilter("order.orderStatusType.systemCode", "ostNotPlaced", "!=");
+			previouslyPurchasedProductPacks.addFilter("order.orderType.systemCode", "otSalesOrder");
+			previouslyPurchasedProductPacks.addFilter("sku.product.productType.productTypeName", "Product Pack");
+
+			if (previouslyPurchasedProductPacks.getRecordsCount() > 0){
+				return false; //they can not purchase this because they already have purchased it.
+			}
+		}
+		return true;
+	 }
 }

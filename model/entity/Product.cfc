@@ -168,6 +168,10 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
  property name="productHowStepDescription5" length="4000"  ormtype="string" hb_formFieldType="wysiwyg";
  property name="productHowStepTitle4" ormtype="string";
  property name="productHowVideoTitle" ormtype="string";
+ property name="extendedDescriptionSubtitle" ormtype="string";
+ property name="extendedDescriptionLeft" length="4000"  ormtype="string" hb_formFieldType="wysiwyg";
+ property name="extendedDescriptionRight" length="4000"  ormtype="string" hb_formFieldType="wysiwyg";
+ property name="extendedDescriptionTitle" length="4000"  ormtype="string" hb_formFieldType="textarea";
  property name="productWhyItWorks" length="4000"  ormtype="string" hb_formFieldType="wysiwyg";
  property name="productIngredient1" cfc="Type" fieldtype="many-to-one" fkcolumn="productIngredient1ID" hb_optionsSmartListData="f:parentType.typeID=2c9180846b8edd11016b8fe51f210032";
  property name="productIngredient2" cfc="Type" fieldtype="many-to-one" fkcolumn="productIngredient2ID" hb_optionsSmartListData="f:parentType.typeID=2c9180846b8edd11016b8fe51f210032";
@@ -880,7 +884,25 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	}
 
 	// ============ START: Non-Persistent Property Methods =================
-
+	
+	public any function getAllRelatedProducts() {
+		var relatedProducts = getService("productService").getProductRelationshipCollectionList();
+		relatedProducts.setDisplayProperties("relatedProduct.productID, relatedProduct.calculatedQATS, relatedProduct.calculatedProductRating, relatedProduct.activeFlag, relatedProduct.urlTitle, relatedProduct.productName");
+		relatedProducts.addFilter("product.productID",getProductID());
+		relatedProducts.addFilter("product.activeFlag",1);
+		relatedProducts = relatedProducts.getRecords(formatRecords=true);
+		return relatedProducts;
+	}
+	
+	public any function getAllProductReviews() {
+		var relatedProducts = getService("productService").getProductReviewCollectionList();
+		relatedProducts.setDisplayProperties("reviewerName, review, reviewTitle, rating, activeFlag");
+		relatedProducts.addFilter("product.productID",getProductID());
+		relatedProducts.addFilter("product.activeFlag",1);
+		relatedProducts = relatedProducts.getRecords(formatRecords=true);
+		return relatedProducts;
+	}
+	
 	public any function getBaseProductType() {
 		if(!isNull(getProductType())){
 			return getProductType().getBaseProductType();
@@ -1261,24 +1283,6 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 	// ============= START: Bidirectional Helper Methods ===================
 
-	// Brand (many-to-one)
-	public void function setBrand(required any brand) {
-		variables.brand = arguments.brand;
-		if(isNew() or !arguments.brand.hasProduct( this )) {
-			arrayAppend(arguments.brand.getProducts(), this);
-		}
-	}
-	public void function removeBrand(any brand) {
-		if(!structKeyExists(arguments, "brand")) {
-			arguments.brand = variables.brand;
-		}
-		var index = arrayFind(arguments.brand.getProducts(), this);
-		if(index > 0) {
-			arrayDeleteAt(arguments.brand.getProducts(), index);
-		}
-		structDelete(variables, "brand");
-	}
-
 	// Attribute Values (one-to-many)
 	public void function addAttributeValue(required any attributeValue) {
 		arguments.attributeValue.setProduct( this );
@@ -1341,26 +1345,6 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	
 	public void function removeDeliveryScheduleDate(required any deliveryScheduleDate){
 		arguments.deliveryScheduleDate.removeProduct(this);
-	}
-
-	//  (many-to-many - owner)
- 	public void function addCategory(required any category) {
- 		if(isNew() or !hasCategory(arguments.category)) {
- 			arrayAppend(variables.categories, arguments.category);
- 		}
- 		if(arguments.category.isNew() or !arguments.category.hasProduct( this )) {
- 			arrayAppend(arguments.category.getProducts(), this);
- 		}
- 	}
- 	public void function removeCategory(required any category) {
- 		var thisIndex = arrayFind(variables.categories, arguments.category);
- 		if(thisIndex > 0) {
- 			arrayDeleteAt(variables.categories, thisIndex);
- 		}
- 		var thatIndex = arrayFind(arguments.category.getProducts(), this);
- 		if(thatIndex > 0) {
- 			arrayDeleteAt(arguments.category.getProducts(), thatIndex);
- 		}
 	}
 
 	// Promotion Rewards (many-to-many - inverse)
@@ -1453,6 +1437,20 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 
 	// =============  END:  Bidirectional Helper Methods ===================
+
+	// =============== START: Custom Validation Methods ====================
+
+	public boolean function isValidPublishedEndDateTime() {
+		return 	isNull(this.getPublishedStartDateTime()) || 
+				isNull(this.getPublishedEndDateTime()) ||
+				(
+					!isNull(this.getPublishedStartDateTime()) && 
+					!isNull(this.getPublishedEndDateTime()) &&
+					dateDiff("n", this.getPublishedStartDateTime(), this.getPublishedEndDateTime()) >= 0
+				);
+	}
+
+	// =============== END: Custom Validation Methods ======================
 
 	// ================== START: Overridden Methods ========================
 

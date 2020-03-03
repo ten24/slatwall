@@ -66,7 +66,10 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 	property name="giftCardNumberEncrypted" ormType="string";
 	property name="nameOnCreditCard" hb_populateEnabled="public" ormType="string";
 	property name="providerToken" ormType="string";
-
+	property name="calculatedExpirationDate" ormType="timestamp";
+	
+	property name="lastExpirationUpdateAttemptDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	
 	// Related Object Properties (many-to-one)
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID" hb_optionsNullRBKey="define.select";
 	property name="billingAccountAddress" hb_populateEnabled="public" cfc="AccountAddress" fieldtype="many-to-one" fkcolumn="billingAccountAddressID" hb_optionsNullRBKey="define.select";
@@ -101,6 +104,7 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 	property name="securityCode" hb_populateEnabled="public" persistent="false";
 	property name="paymentMethodOptions" persistent="false";
 	property name="paymentMethodOptionsSmartList" persistent="false";
+
 	//CUSTOM PROPERTIES BEGIN
 property name="moMoneyBalance" persistent="false";
 	property name="moMoneyWallet" fieldtype="boolean" persistent="false";
@@ -139,6 +143,37 @@ property name="moMoneyBalance" persistent="false";
 		} else {
 			return false;
 		}
+	}
+	
+	public any function hasValidExpirationMonth(){
+		var expirationYear = getExpirationYear();
+		var expirationMonth = getExpirationMonth();
+		
+		//saved as 1,2, or 3 for example 
+		if (len(expirationMonth) == 1){
+		   expirationMonth = val("0#expirationMonth#") 
+		}
+		
+		//saved as 19,20,or 21 for example insteadof 2019,2020
+		if (len("#expirationYear#") == 2){
+			 expirationDate = "20#expirationYear#-#expirationMonth#-01T00:00:00-00:00";	
+		}else{
+			 expirationDate = "#expirationYear#-#expirationMonth#-01T00:00:00-00:00";
+		}
+		
+		var parsedDate = parseDateTime(expirationDate, "yyyy-MM-dd'T'HH:nn:ssX");
+		var failed = false;
+		var passed = true;
+		
+		//make sure the month is not in the past if the year is this year.
+		//date compare will return -1 if the parsedDate is in the past.
+		
+		if (dateCompare(parsedDate, now(), "m") == -1){
+			return failed;
+		}
+		
+		
+		return passed;
 	}
 
 	public void function copyFromOrderPayment(required any orderPayment) {
@@ -476,6 +511,13 @@ property name="moMoneyBalance" persistent="false";
 
 		setupEncryptedProperties();
 	}
+	
+	public any function getExpirationDate(){
+		if(structKeyExists(variables, 'expirationMonth') && structKeyExists(variables, 'expirationYear')){
+			var lastDayOfMonth = daysInMonth(createDate(variables.expirationYear, variables.expirationMonth, '1'));
+			return createDate(variables.expirationYear, variables.expirationMonth, lastDayOfMonth);
+		}
+	}
 
 	// ==================  END:  Overridden Methods ========================
 
@@ -503,7 +545,7 @@ public array function getPaymentMethodOptions() {
 	{
 	    if(!StructKeyExists(variables,"moMoneyWallet"))
 	    {
-	    	
+
 	    	if(!isNull(getPaymentMethod()) && !isNull(getPaymentMethod().getPaymentIntegration()) && getPaymentMethod().getPaymentIntegration().getIntegrationPackage() == 'hyperwallet')
 	        {
 	            variables.moMoneyWallet =  true;
@@ -539,5 +581,5 @@ public array function getPaymentMethodOptions() {
 	    
 	    return variables.moMoneyBalance;
 	}
-//CUSTOM FUNCTIONS END
+	//CUSTOM FUNCTIONS END
 }

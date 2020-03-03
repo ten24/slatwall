@@ -4,24 +4,25 @@ interface IOptions {
 }
 
 declare var angular: any;
+declare var hibachiConfig: any;
 
 export class MonatService {
 	public cart;
 	public lastAddedSkuID: string = '';
 	public previouslySelectedStarterPackBundleSkuID:string;
-
 	public cachedOptions = {
 		frequencyTermOptions: <IOptions[]>null,
+		countryCodeOptions: <IOptions[]>null,
 	};
 
 	//@ngInject
-	constructor(public publicService, public $q, public requestService) {}
+	constructor(public publicService, public $q, public $window, public requestService) {}
 
-	public getCart(refresh = false) {
+	public getCart(refresh = false, param = '') {
 		var deferred = this.$q.defer();
 		if (refresh || angular.isUndefined(this.cart)) {
 			this.publicService
-				.getCart(refresh)
+				.getCart(refresh, param)
 				.then((data) => {
 					this.cart = data;
 					deferred.resolve(this.cart);
@@ -94,11 +95,15 @@ export class MonatService {
 		return this.publicService.doAction('addEnrollmentFee');
 	}
 	
-	public selectStarterPackBundle(skuID: string, quantity: number = 1) {
+	public selectStarterPackBundle(skuID: string, quantity: number = 1, upgradeFlow = 0) {
 		let payload = {
 			skuID: skuID,
 			quantity: quantity,
 		};
+		
+		if(upgradeFlow){
+			payload['upgradeFlowFlag'] = 1;
+		}
 		
 		if(this.previouslySelectedStarterPackBundleSkuID) {
 			payload['previouslySelectedStarterPackBundleSkuID'] = this.previouslySelectedStarterPackBundleSkuID;
@@ -167,5 +172,47 @@ export class MonatService {
 		return deferred.promise;
 	}
 	
+	public adjustInputFocuses = () => {
+		$('input, select').focus(function() {
+			var ele = $(this);
+			if ( !ele.isInEnrollmentViewport() ) {
+				$('html, body').animate({
+					scrollTop: ele.offset().top - 80 
+				}, 800);
+			}
+		});
+	}
+
+	public getAccountWishlistItemIDs = () => {
+		var deferred = this.$q.defer();
+		this.publicService.doAction('getWishlistItemsForAccount').then( data => {
+			deferred.resolve( data );
+		});
+		return deferred.promise;
+	}
+	
+	public redirectToProperSite(redirectUrl:string){
+		
+		if(hibachiConfig.cmsSiteID != 'default'){
+			redirectUrl = '/' + hibachiConfig.cmsSiteID + redirectUrl;
+		}
+		
+		this.$window.location.href = redirectUrl;
+	}
+
+    public countryCodeOptions = (refresh = false)=>{
+        var deferred = this.$q.defer();
+		if (refresh || !this.cachedOptions.countryCodeOptions) {
+			this.publicService
+				.getCountries()
+				.then((data) => {
+					this.cachedOptions.countryCodeOptions = data.countryCodeOptions;
+					deferred.resolve(this.cachedOptions.countryCodeOptions);
+				});
+		} else {
+			deferred.resolve(this.cachedOptions.countryCodeOptions);
+		}
+		return deferred.promise;
+    }
 
 }

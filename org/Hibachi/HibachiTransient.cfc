@@ -636,12 +636,14 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 		}
 	}
 
-	public any function getFormattedValue(required string propertyName, string formatType ) {
+	public any function getFormattedValue(required string propertyName, string formatType, string locale ) {
 		arguments.value = invokeMethod("get#arguments.propertyName#");
-
 		// check if a formatType was passed in, if not then use the getPropertyFormatType() method to figure out what it should be by default
 		if(!structKeyExists(arguments, "formatType")) {
 			arguments.formatType = getPropertyFormatType( arguments.propertyName );
+		}
+		if(!structKeyExists(arguments, 'locale')){
+			arguments.locale = getHibachiScope().getSession().getRbLocale();
 		}
 
 		// If the formatType is custom then deligate back to the property specific getXXXFormatted() method.
@@ -665,7 +667,11 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 			return "";
 		// This is a simple value, so now lets try to actually format the value
 		} else if (isSimpleValue(arguments.value)) {
-			var formatDetails = {};
+			var formatDetails = {
+				locale:arguments.locale,
+				object:this,
+				propertyName:arguments.propertyName
+			};
 			if(this.hasProperty('currencyCode') && !isNull(getCurrencyCode())) {
 				formatDetails.currencyCode = getCurrencyCode();
 			}

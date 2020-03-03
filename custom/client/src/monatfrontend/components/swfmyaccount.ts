@@ -17,8 +17,6 @@ class swfAccountController {
     public userIsLoggedIn:boolean = false;
     public ordersOnAccount;
     public orderItems = [];
-    public orderItemsLength:number;
-    public urlParams = new URLSearchParams(window.location.search);
     public newAccountPaymentMethod
     public cachedCountryCode;
     public accountPaymentMethods;
@@ -26,26 +24,47 @@ class swfAccountController {
     public isNewAddress:boolean;
     public newProductReview:any = {};
     public stars:Array<any> = ['','','','',''];
-
-
+    public moMoneyBalance:number;
     public totalPages:Array<number>;
     public pageTracker:number = 1;
     public mostRecentFlexshipDeliveryDate:any;
     public editFlexshipUntilDate:any;
     public mostRecentFlexship:any;
-
+    public holdingWishlist:any;
+    public totalOrders:any;
+    public ordersArgumentObject = {};
+    public orderPayments:any;
+    public uploadImageError:boolean;
+    public accountProfileImage;
+    public orderDelivery:any;
+    public orderPromotions:any;
+    public orderItemTotal:number = 0;
+    public orderRefundTotal:any;
+    public profileImageLoading:boolean = false;
+    public prouctReviewForm:any;
+    public isDefaultImage:boolean = false;
+    public isNotProfileImagesChoosen:boolean = false;
     
     // @ngInject
     constructor(
         public publicService,
         public $scope,
-        public observerService
+        public observerService,
+        public ModalService, 
+        public rbkeyService,
+        public monatAlertService,
+    	public $location,
     ){
         this.observerService.attach(this.getAccount,"loginSuccess"); 
         this.observerService.attach(this.closeModals,"addNewAccountAddressSuccess"); 
         this.observerService.attach(this.closeModals,"addAccountPaymentMethodSuccess"); 
         this.observerService.attach(this.closeModals,"addProductReviewSuccess"); 
-
+        this.observerService.attach(option => this.holdingWishlist = option,"myAccountWishlistSelected"); 
+        this.observerService.attach(()=>{
+    		this.monatAlertService.error(this.rbkeyService.rbKey('frontend.deleteAccountPaymentMethodFailure'));
+        },"deleteAccountPaymentMethodFailure");
+        
+        
         const currDate = new Date;
         this.currentYear = currDate.getFullYear();
         let manipulateableYear = this.currentYear;
@@ -58,6 +77,38 @@ class swfAccountController {
     
 	public $onInit = () =>{
         this.getAccount();
+        if(this.$location.search().orderid){
+            this.getOrderItemsByOrderID();
+        }
+	}
+	
+	public addressVerificationCheck = ({addressVerification})=>{
+		if(addressVerification && addressVerification.hasOwnProperty('success') && !addressVerification.success){
+			this.launchAddressModal([addressVerification.address,addressVerification.suggestedAddress]);
+		}
+	}
+	
+	
+	public launchAddressModal(address: Array<object>):void{
+		this.ModalService.showModal({
+			component: 'addressVerification',
+			bodyClass: 'angular-modal-service-active',
+			bindings: {
+                suggestedAddresses: address //address binding goes here
+			},
+			preClose: (modal) => {
+				modal.element.modal('hide');
+				this.ModalService.closeModals();
+			},
+		})
+		.then((modal) => {
+			//it's a bootstrap element, use 'modal' to show it
+			modal.element.modal();
+			modal.close.then((result) => {});
+		})
+		.catch((error) => {
+			console.error('unable to open model :', error);
+		});
 	}
 
     public getAccount = () => {
@@ -73,15 +124,23 @@ class swfAccountController {
             this.checkAndApplyAccountAge();
             this.userIsLoggedIn = true;
             this.accountPaymentMethods = this.accountData.accountPaymentMethods;
+            const url = window.location.pathname;
             
-            if(this.urlParams.get('orderid')){
-                this.getOrderItemsByOrderID();
-            }else if(window.location.pathname == '/my-account/' ){
-                this.getOrdersOnAccount(1);
-                this.getMostRecentFlexship();
-            }else if(window.location.pathname == '/my-account/order-history/'){
-                this.getOrdersOnAccount();
-            };
+            switch(true){
+                case (url.indexOf('/my-account/order-history/') > -1):
+                    this.getOrdersOnAccount();
+                    break;
+                case (url.indexOf('/my-account/my-details/profile/') > -1):
+                    this.getUserProfileImage();
+                    break;
+                case (url.indexOf('/my-account/my-details/') > -1):
+                    this.getMoMoneyBalance();
+                    break;
+                case (url.indexOf('/my-account/') > -1):
+                    this.getOrdersOnAccount(1);
+                    this.getMostRecentFlexship(); 
+                    break;
+            }
             
             this.loading = false;
         });
@@ -110,52 +169,43 @@ class swfAccountController {
         });
     }
     
-    public getOrdersOnAccount = ( pageRecordsShow = 5, pageNumber = 1, direction:any = false) => {
-        
+    public getOrdersOnAccount = ( pageRecordsShow = 12, pageNumber = 1, direction:any = false) => {
         this.loading = true;
         const accountID = this.accountData.accountID;
-        if(direction === 'prev'){
-            if(this.pageTracker === 1){
-                return pageNumber;
-            }else{
-                pageNumber = this.pageTracker -1;
-            }
-        }else if(direction === 'next'){
-            if(this.pageTracker >= this.totalPages.length){
-                pageNumber = this.totalPages.length;
-                return pageNumber;
-            }else{
-                pageNumber = this.pageTracker +1;
-            }
-        }
-        
+        this.ordersArgumentObject['accountID'] = accountID;
         return this.publicService.doAction("getAllOrdersOnAccount", {'accountID' : accountID, 'pageRecordsShow': pageRecordsShow, 'currentPage': pageNumber}).then(result=>{
-            
+            this.observerService.notify("PromiseComplete")
             this.ordersOnAccount = result.ordersOnAccount.ordersOnAccount;
-            const holdingArray = [];
-            const pages = Math.ceil(result.ordersOnAccount.records / pageRecordsShow);
- 
-
-            for(var i = 0; i <= pages -1; i++){
-                holdingArray.push(i);
-            }
-            
-            this.totalPages = holdingArray;
-            this.pageTracker = pageNumber;
+            this.totalOrders = result.ordersOnAccount.records;
             this.loading = false;
             this.loadingOrders = false;
         });
     }
     
-    public getOrderItemsByOrderID = (orderID = this.urlParams.get('orderid'), pageRecordsShow = 5, currentPage = 1) => {
+    public getOrderItemsByOrderID = (orderID = this.$location.search().orderid, pageRecordsShow = 5, currentPage = 1) => {
         this.loading = true;
-        
-        const accountID = this.accountData.accountID
-        return this.publicService.doAction("getOrderItemsByOrderID", {orderID,accountID,currentPage,pageRecordsShow,}).then(result=>{
-            result.OrderItemsByOrderID.forEach(orderItem =>{
-                this.orderItems.push(orderItem);
-            });
-            this.orderItemsLength = result.OrderItemsByOrderID.length;
+        return this.publicService.doAction("getOrderItemsByOrderID", {orderID: orderID,currentPage:currentPage,pageRecordsShow: pageRecordsShow}).then(result=>{
+            if(result.OrderItemsByOrderID){
+                this.orderItems = result.OrderItemsByOrderID.orderItems;
+                this.orderPayments = result.OrderItemsByOrderID.orderPayments;
+                this.orderPromotions = result.OrderItemsByOrderID.orderPromtions;
+                this.orderRefundTotal = result.OrderItemsByOrderID.orderRefundTotal >= 0 ? result.OrderItemsByOrderID.orderRefundTotal : false ;
+                this.orderDelivery = result.OrderItemsByOrderID.orderDelivery;
+                
+                if(this.orderPayments.length){
+                    Object.keys(this.orderPayments[0]).forEach(key => {
+                        if(typeof(this.orderPayments[0][key]) == "number") {
+                            this.orderPayments[0][key] = Math.abs(this.orderPayments[0][key]);
+                        }
+                    });
+                }
+                
+                for(let item of this.orderItems as Array<any>){
+                    this.orderItemTotal += item.quantity;
+                }
+            }
+            
+            this.loading = false;
         });
     }
     
@@ -205,12 +255,12 @@ class swfAccountController {
         
         if(list.classList.contains('active')){
             list.classList.remove('active');
-            icon.classList.remove('fa-chevron-down');
-            icon.classList.add('fa-chevron-up');
+            icon.classList.remove('fa-chevron-up');
+            icon.classList.add('fa-chevron-down' );
         } else{
             list.classList.add('active');
-            icon.classList.add('fa-chevron-down');
-            icon.classList.remove('fa-chevron-up');
+            icon.classList.add('fa-chevron-up');
+            icon.classList.remove('fa-chevron-down');
         }
     }
     
@@ -226,12 +276,10 @@ class swfAccountController {
     public setEditAddress = (newAddress = true, address) => {
         this.editAddress = {};
         this.editAddress = address ? address : {};
-        if(!newAddress){
+        if(address.address.countryCode){
             this.getStateCodeOptions(address.address.countryCode)
         }
         this.isNewAddress = newAddress;
-        console.log(this.editAddress);
-
     }
     
     public setPrimaryAddress = (addressID) => {
@@ -241,14 +289,6 @@ class swfAccountController {
         });
     }
     
-    public setRating = (rating) => {
-        this.newProductReview.rating = rating;
-        this.stars = ['','','','',''];
-        for(let i = 0; i <= rating - 1; i++) {
-            this.stars[i] = "color: #d0d00b";
-        };
-    }
-    
     public deleteAccountAddress = (addressID, index) => {
         this.loading = true;
         return this.publicService.doAction("deleteAccountAddress", { 'accountAddressID': addressID }).then(result=>{
@@ -256,10 +296,167 @@ class swfAccountController {
         });
     }
     
+    public setRating = (rating) => {
+        this.newProductReview.rating = rating;
+        this.newProductReview.reviewerName = this.accountData.firstName + " " + this.accountData.lastName;
+        this.stars = ['','','','',''];
+        for(let i = 0; i <= rating - 1; i++) {
+            this.stars[i] = "fas";
+        };
+    }
+    
     public closeModals = () =>{
         $('.modal').modal('hide')
         $('.modal-backdrop').remove() 
     }
+    
+    public getMoMoneyBalance = () => {
+        this.publicService.doAction('getMoMoneyBalance').then(res => {
+            this.moMoneyBalance = res.moMoneyBalance;
+        });
+    }
+
+    public uploadImage = () =>{
+        if(!(<HTMLInputElement>document.getElementById('profileImage')).files[0]) {
+            this.isNotProfileImagesChoosen = true;
+        } else {
+        this.isNotProfileImagesChoosen = false;
+        let tempdata = new FormData();
+        tempdata.append("uploadFile", (<HTMLInputElement>document.getElementById('profileImage')).files[0]);
+        tempdata.append("imageFile", (<HTMLInputElement>document.getElementById('profileImage')).files[0].name);
+		let xhr = new XMLHttpRequest();
+		let url = window.location.href
+		let urlArray = url.split("/");
+		let baseURL = urlArray[0] + "//" + urlArray[2];
+		let that = this; 
+		let form = <any>document.getElementById('imageForm');
+		
+		xhr.open('POST', `${baseURL}/Slatwall/index.cfm/api/scope/uploadProfileImage`, true);
+		xhr.onload = function () {
+			var response = JSON.parse(xhr.response);
+		 	 if (xhr.status === 200 && response.successfulActions && response.successfulActions.length) {
+ 	     	    that.uploadImageError = false;
+		 	 	console.log("File Uploaded");
+		  	 }else{
+    		    that.uploadImageError = true;
+    		    that.$scope.$digest();
+		  	 }
+		  	 
+ 	        form.reset();
+  	 	 	that.getUserProfileImage();
+		};
+        xhr.send(tempdata);
+        } 
+         
+    }     
+    
+    public deleteProfileImage(){
+        this.profileImageLoading = true;
+        this.publicService.doAction('deleteProfileImage').then(result=>{
+            this.profileImageLoading = false;
+            let form = <any>document.getElementById('imageForm');
+            form.reset();
+            this.getUserProfileImage();
+        });
+    }
+    
+    public getUserProfileImage = () =>{
+        this.profileImageLoading = true;
+        this.publicService.doAction('getAccountProfileImage', {height:125, width:175}).then(result=>{
+            this.accountProfileImage = result.accountProfileImage;
+            this.profileImageLoading = false;
+            this.isDefaultImage = this.accountProfileImage.includes('profile_default') ? true : false;
+        });
+    }
+
+	public showDeleteWishlistModal = () => {
+		this.ModalService.showModal({
+			component: 'wishlistDeleteModal',
+			bodyClass: 'angular-modal-service-active',
+			bindings: {
+                wishlist: this.holdingWishlist
+			},
+			preClose: (modal) => {
+				modal.element.modal('hide');
+				this.ModalService.closeModals();
+			},
+		})
+		.then((modal) => {
+			//it's a bootstrap element, use 'modal' to show it
+			modal.element.modal();
+			modal.close.then((result) => {});
+		})
+		.catch((error) => {
+			console.error('unable to open model :', error);
+		});
+	}
+	
+	public showEditWishlistModal = () => {
+		this.ModalService.showModal({
+			component: 'wishlistEditModal',
+			bodyClass: 'angular-modal-service-active',
+			bindings: {
+                wishlist: this.holdingWishlist
+			},
+			preClose: (modal) => {
+				modal.element.modal('hide');
+				this.ModalService.closeModals();
+			},
+		})
+		.then((modal) => {
+			//it's a bootstrap element, use 'modal' to show it
+			modal.element.modal();
+			modal.close.then((result) => {});
+		})
+		.catch((error) => {
+			console.error('unable to open model :', error);
+		});
+	}
+	
+	public showDeleteAccountAddressModal = (address) => {
+		this.ModalService.showModal({
+			component: 'addressDeleteModal',
+			bodyClass: 'angular-modal-service-active',
+			bindings: {
+                address: address
+			},
+			preClose: (modal) => {
+				modal.element.modal('hide');
+				this.ModalService.closeModals();
+			},
+		})
+		.then((modal) => {
+			//it's a bootstrap element, use 'modal' to show it
+			modal.element.modal();
+			modal.close.then((result) => {});
+		})
+		.catch((error) => {
+			console.error('unable to open model :', error);
+		});
+	}
+	
+	public showProductReviewModal = (item) => {
+		this.ModalService.showModal({
+			component: 'monatProductReview',
+			bodyClass: 'angular-modal-service-active',
+			bindings: {
+                productReview: item,
+                reviewerName: this.accountData.firstName + " " + this.accountData.lastName
+			},
+			preClose: (modal) => {
+				modal.element.modal('hide');
+				this.ModalService.closeModals();
+			},
+		})
+		.then((modal) => {
+			//it's a bootstrap element, use 'modal' to show it
+			modal.element.modal();
+			modal.close.then((result) => {});
+		})
+		.catch((error) => {
+			console.error('unable to open model :', error);
+		});
+	}
 }
 
 class SWFAccount  {
