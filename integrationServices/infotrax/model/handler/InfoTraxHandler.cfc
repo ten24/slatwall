@@ -21,6 +21,14 @@ component extends='Slatwall.org.Hibachi.HibachiEventHandler' {
 			
 			// Sync any pending order after account creation
 			if( arguments.eventName == 'afterInfotraxAccountCreateSuccess' ) {
+				
+				//Clear the encrypted govt-id value
+				if( arguments.entity.getAccountGovernmentIdentificationsCount() ){
+					//there can be only one govt-ID, on account at any given time
+					arguments.entity.getAccountGovernmentIdentifications()[1]
+						.setGovernmentIdentificationNumberEncrypted(javaCast("null", ""));
+				}
+				
 				ormFlush();
 				var orders = getService('infoTraxService').pendingPushOrders(arguments.entity.getPrimaryIDValue());
 				for(var order in orders){
