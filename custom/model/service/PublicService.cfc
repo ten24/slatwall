@@ -864,6 +864,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             super.logout();
         }
         
+        
+        arguments.data.accountType = arguments.accountType;
+        
         var account = super.createAccount(arguments.data);
         
         if(account.hasErrors()){
@@ -872,7 +875,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             return account;
         }
         
-        account.setAccountType(arguments.accountType);
         account.setActiveFlag(accountTypeInfo[arguments.accountType].activeFlag);
         
         var priceGroup = getService('PriceGroupService').getPriceGroupByPriceGroupCode(accountTypeInfo[arguments.accountType].priceGroupCode);
