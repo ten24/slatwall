@@ -22,8 +22,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	this.secureMethods=listAppend(this.secureMethods,'upsertAccounts');
 	this.secureMethods=listAppend(this.secureMethods,'importOrders');
 	this.secureMethods=listAppend(this.secureMethods,'upsertOrders');
+	this.secureMethods=listAppend(this.secureMethods,'upsertOrderTaxes');
 	this.secureMethods=listAppend(this.secureMethods,'upsertFlexships');
 	this.secureMethods=listAppend(this.secureMethods,'importFlexships');
+	this.secureMethods=listAppend(this.secureMethods,'updateFlexshipOrderItems');
 	this.secureMethods=listAppend(this.secureMethods,'upsertOrderItemsPriceAndPromotions');
 	this.secureMethods=listAppend(this.secureMethods,'importVibeAccounts');
 	this.secureMethods=listAppend(this.secureMethods,'importCashReceiptsToOrders');
@@ -232,7 +234,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	private any function getFlexshipData(pageNumber,pageSize){
 	    var uri = "https://apisandbox.monatcorp.net:8443/api/Slatwall/QueryFlexships";
 		var authKeyName = "authkey";
-		var authKey = setting(authKeyName);
+		var authKey =  "a939f516-7af1-4caa-84c1-642c6966e17e";//setting(authKeyName);
 	
 	    var body = {
 			"Pagination": {
@@ -3003,13 +3005,13 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 							continue;
 						}
 						
-						//var orderTemplate = getOrderService().getOrderTemplateByRemoteID(flexship['FlexShipId'], false);
+						var orderTemplate = getOrderService().getOrderTemplateByRemoteID(flexship['FlexShipId'], false);
 						var isNewFlexship = false;
 						//writedump(orderTemplate);abort;
 						if (isNull(orderTemplate)){
 							var orderTemplate = new Slatwall.model.entity.OrderTemplate();
-							//var newUUID = rereplace(createUUID(), "-", "", "all");
-							//orderTemplate.setOrderTemplateID(newUUID);
+							var newUUID = rereplace(createUUID(), "-", "", "all");
+							orderTemplate.setOrderTemplateID(newUUID);
 							isNewFlexship = true;
 						}
 						
@@ -3310,6 +3312,114 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		}//end pageNumber
     }
     
+    
+    public void function updateFlexshipOrderItems(rc) { 
+    	getService("HibachiTagService").cfsetting(requesttimeout="60000");
+		getFW().setView("public:main.blank");
+		var integration = getService("IntegrationService").getIntegrationByIntegrationPackage("monat");
+		var pageNumber = rc.pageNumber?:1;
+		var pageSize = rc.pageSize?:20;
+		var pageMax = rc.pageMax?:1;
+		
+		while (pageNumber < pageMax){
+           
+    		var flexshipResponse = getFlexshipData(pageNumber, pageSize);
+			
+			if (flexshipResponse.hasErrors){
+    		    //goto next page - this is erroring!
+    		    pageNumber++;
+    		    continue;
+    		}
+
+			var flexships = flexshipResponse.Records;
+			
+			
+    		if (structKeyExists(rc, "viewResponse")){
+    			writeDump( flexshipResponse ); abort;
+    		}
+    		
+			//writeDump(flexships);abort;
+    		var startTick = getTickCount();
+    		var transactionClosed = false;
+    		var index = 1;
+			var count = 1;   		
+
+			//always stateless
+			//stateless
+			var ormStatelessSession = ormGetSessionFactory().openStatelessSession(); 
+			
+			try{
+
+					var tx = ormStatelessSession.beginTransaction();
+
+					for(var flexship in flexships){
+						//Skip the deleted ones.
+						if (structKeyExists(flexship, 'FlexShipStatusName') && flexship['FlexShipStatusName'] == "Deleted"){
+							
+							index++;
+							continue;
+						}
+						
+						// Skip if the account is not imported.
+						var skipAccount = false;
+						try{
+							var customerAccount = getAccountService().getAccountByAccountNumber(flexship['AccountNumber'], false);
+						}catch(accountError){
+							skipAccount = true;
+						}
+						
+						if (isNull(customerAccount) || skipAccount){
+							index++;
+							continue;
+						}
+						
+						
+						
+						var orderTemplate = getOrderService().getOrderTemplateByRemoteID(flexship['FlexShipId'], false);
+						var isNewFlexship = false;
+						
+						if (isNull(orderTemplate)){
+							index++;
+							continue;
+						}
+						
+						if (structKeyExists(flexship, "FlexShipDetails") && arrayLen(flexship.FlexShipDetails)){
+							for (var flexshipItem in flexship.FlexShipDetails){
+								
+								var orderTemplateItem = getOrderService().getOrderTemplateItemByRemoteID(flexshipItem['FlexShipDetailId'], false);
+								
+								if (!isNull(orderTemplateItem)){
+									orderTemplateItem.setOrderTemplate(orderTemplate);
+									ormStatelessSession.update("SlatwallOrderTemplateItem", orderTemplateItem);
+								}
+							}
+						}
+					
+						ormStatelessSession.update("SlatwallOrderTemplate", orderTemplate);
+						this.logHibachi( "updated orderTemplate page: #pageNumber# with index #index#", true );
+						index++;
+					} 				
+
+					tx.commit();
+					ormGetSession().clear();//clear every page records...
+			} catch (e){
+				echo("Stateless: Failed @ Index: #index# PageSize: #pageSize# PageNumber: #pageNumber#<br>");
+    			//writeDump(flexship); // rollback the tx
+    			writeDump(e); // rollback the tx
+				abort;
+    		} finally{
+
+			    // close the stateless before opening the statefull again...
+				if (ormStatelessSession.isOpen()){
+					ormStatelessSession.close();
+				}
+			}
+			
+		    pageNumber++;
+
+		}//end pageNumber
+    }
+    
     public void function importFlexships(rc) { 
     	getService("HibachiTagService").cfsetting(requesttimeout="60000");
 		getFW().setView("public:main.blank");
@@ -3499,6 +3609,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 							accountPaymentMethod.setProviderToken(flexshipPayment['PaymentToken']?:""); 
 							accountPaymentMethod.setPaymentMethod(paymentMethod);
 							accountPaymentMethod.setCreditCardLastFour( right(flexshipPayment['checkCcAccount'], 4)?:"" );//*
+							accountPaymentMethod.setCreatedDateTime(getDateFromString(flexshipPayment['entryDate']));
 							
                             ormStatelessSession.insert("SlatwallAccountPaymentMethod", accountPaymentMethod);
                             orderTemplate.setAccountPaymentMethod(accountPaymentMethod);
@@ -3571,6 +3682,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 								
 								orderTemplateItem.setRemoteID(flexshipItem['FlexShipDetailId']);
 								orderTemplateItem.setSku(sku);
+								orderTemplateItem.setOrderTemplate(orderTemplate);
 								orderTemplateItem.setQuantity(flexshipItem['quantity']);
 								orderTemplateItem.setCreatedDatetime(now());
 								orderTemplateItem.setModifiedDatetime(now());
@@ -3723,6 +3835,105 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		writeDump("End: #pageNumber# - #pageSize# - #index# ");
 	}
 	
+	public void function upsertOrderTaxes(rc) { 
+		getService("HibachiTagService").cfsetting(requesttimeout="60000");
+		getFW().setView("public:main.blank");
+		
+		var pageNumber = rc.pageNumber?:1;
+		var pageSize = rc.pageSize?:25;
+		var pageMax = rc.pageMax?:1;
+		var updateFlag = rc.updateFlag?:false;
+	    var index=0;
+	       
+		//here
+		var ormStatelessSession = ormGetSessionFactory().openStatelessSession();
+		
+    	while (pageNumber < pageMax){
+    		
+    		var orderResponse = getOrderData(pageNumber, pageSize);
+    		
+    		if (orderResponse.hasErrors == true){
+    			
+    		    //goto next page causing this is erroring!
+    		    logHibachi("Skipping page #pageNumber# because of errors", true);
+    		    pageNumber++;
+    		    continue;
+    		}
+    		
+    		var orders = orderResponse.Records;
+    		var transactionClosed = false;
+    		var index=0;
+    		
+    		try{
+    			var tx = ormStatelessSession.beginTransaction();
+    			
+    			for (var order in orders){
+    			    index++;
+    			    
+			        /**
+			         * Handle discounts on the order. 
+			         **/
+			        
+                    ///->Add order items...
+                    var parentKits = {};
+                    if (!isNull(order['Details'])){
+                    	var detailIndex = 0;
+                    	for (var detail in order['Details']){
+                    		detailIndex++;
+                    	   
+    			            	//if this is a parent sku we add it to the order and to a snapshot on the order.
+    			            	try{
+    			            		var orderItem = getOrderService().getOrderItemByRemoteID(detail['OrderDetailId']);
+    			            	}catch(orderItemError){
+    			            		continue;
+    			            	}
+    			                
+    			                if (isNull(orderItem)){
+    			                	continue; //skip, doesn't exist.
+    			                }
+    			                
+        			            //Taxbase
+        			            
+        			            //adds the tax for the order to the first Line Item
+        			            //Taxbase
+        			            
+        			            // Adds the tax for the order to the first Line Item
+        			            for (var taxRate in detail['TaxRates']){
+	        			            if (structKeyExists(taxRate, "TaxAmount") && taxRate.taxAmount > 0){
+	        			            	var taxApplied = new Slatwall.model.entity.TaxApplied();
+	        			            	taxApplied.setOrderItem(orderItem);//*
+	        			            	taxApplied.setManualTaxAmountFlag(true);//*
+	        			            	taxApplied.setCurrencyCode(order['CurrencyCode']?:'USD');//*
+	        			            	taxApplied.setTaxAmount(taxRate['TaxAmount']);
+	        			            	taxApplied.setTaxLiabilityAmount(taxRate['TaxAmount']);
+	        			            	taxApplied.setTaxRate(taxRate['TaxRate'])
+	        			            	taxApplied.setAppliedType("orderItem");
+	        			            	ormStatelessSession.insert("SlatwallTaxApplied", taxApplied); 
+	        			            }
+        			            }
+        			           
+                    	}//end detail loop
+    			    }
+    			}
+    			
+    			tx.commit();
+    			ormGetSession().clear();//clear every page records...
+    		}catch(e){
+    			if (!isNull(tx) && tx.isActive()){
+    			    tx.rollback();
+    			}
+    			writeDump("Failed @ Index: #index# PageSize: #pageSize# PageNumber: #pageNumber#");
+    			writeDump(e); // rollback the tx
+    			
+    			ormGetSession().clear();
+    			abort;
+    		} 
+		    pageNumber++;
+		    logHibachi("Finished #pageNumber#", true);
+		}
+		
+		ormStatelessSession.close(); //must close the session regardless of errors.
+	}
 	
 	//http://monat/Slatwall/?slatAction=monat:import.upsertOrders&pageNumber=1&pageMax=2&pageSize=25
 	public void function upsertOrders(rc) { 
