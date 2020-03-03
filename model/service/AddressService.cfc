@@ -182,7 +182,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			!len(address.getVerificationCacheKey()) || 
 			compare(address.getVerificationCacheKey(),cacheKey) != 0
 		) {
-		
+			
 			var integrationID = getHibachiScope().setting('globalIntegrationForAddressVerification');
 			
 			if(!isNull(integrationID) && len(integrationID) && integrationID != 'internal' ){
@@ -198,9 +198,10 @@ component extends="HibachiService" accessors="true" output="false" {
 			
 		} 
 		else {
+			
 			addressVerificationStruct = deserializeJson(address.getVerificationJson());
 		}
-		
+
 		if (structKeyExists(addressVerificationStruct, 'success')) {
 			address.setVerifiedByIntegrationFlag(addressVerificationStruct['success']);
 			
@@ -208,12 +209,12 @@ component extends="HibachiService" accessors="true" output="false" {
 				address.setIntegrationVerificationErrorMessage(addressVerificationStruct['message']);
 			}
 		}
-		
+		addressVerificationStruct['address'] = arguments.addressStruct;
 		this.saveAddress(address);
 		
 		//TODO: remove
 		logHibachi(serializeJSON(addressVerificationStruct),true);
-
+		
 		return addressVerificationStruct;
 		
 	}

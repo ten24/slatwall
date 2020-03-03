@@ -2018,14 +2018,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			//set payment method as credit card
 			accountPaymentMethod.setPaymentMethod(getPaymentService().getPaymentMethod(arguments.orderTemplate.getSite().setting('siteDefaultAccountPaymentMethod'))); 
-
+			
 			accountPaymentMethod = getAccountService().saveAccountPaymentMethod(accountPaymentMethod);
-
+			
+			getHibachiScope().flushORMSession(); 
+			
 			if(accountPaymentMethod.hasErrors()){
 				arguments.orderTemplate.addErrors(accountPaymentMethod.getErrors());
+			} else {
+				arguments.orderTemplate.setAccountPaymentMethod(accountPaymentMethod);
 			}
 
-			arguments.orderTemplate.setAccountPaymentMethod(accountPaymentMethod);
 		} else if (!isNull(processObject.getAccountPaymentMethod())) { 
 			arguments.orderTemplate.setAccountPaymentMethod(getAccountService().getAccountPaymentMethod(processObject.getAccountPaymentMethod().value));	
 		} 
@@ -2114,7 +2117,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
         param name="arguments.data.pageRecordsShow" default=5;
         param name="arguments.data.currentPage" default=1;
 		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; 
-		param name="arguments.data.optionalProperties" type="string" default="";
+		param name="arguments.data.optionalProperties" type="string" default=""; //optional properties requested in the api call
 		
 		var orderTemplateCollection = this.getOrderTemplateCollectionList();
 		var displayProperties = 'orderTemplateID,orderTemplateName,scheduleOrderNextPlaceDateTime,calculatedOrderTemplateItemsCount,calculatedTotal,scheduleOrderDayOfTheMonth,statusCode';
@@ -2198,11 +2201,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	} 
 	
 	public any function getOrderTemplateDetailsForAccount(required struct data, any account = getHibachiScope().getAccount()) {
+		param name="arguments.data.optionalProperties" type="string" default="";  //putting here for documentation purpous only
+
+		
 		//Making PropertiesList
-		
-		
 		var orderTemplateCollectionPropList = "calculatedSubTotal,calculatedFulfillmentTotal,shippingMethod.shippingMethodName"; //extra prop we need
-		orderTemplateCollectionPropList = orderTemplateCollectionPropList&","&arguments.data.optionalProperties;
 		
 		var	accountPaymentMethodProps = "creditCardLastFour,expirationMonth,expirationYear";
 		accountPaymentMethodProps =   getService('hibachiUtilityService').prefixListItem(accountPaymentMethodProps, "accountPaymentMethod.");
@@ -3208,7 +3211,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 					if(okToRemove) {
 						// Delete this item
-						this.deleteOrderItem( orderItem );
+						var deleteOrderItemArguments = {
+							'orderItem':orderItem,
+							'updateOrderAmounts' : arguments.data.updateOrderAmounts ?: true
+						}
+						this.deleteOrderItem( argumentCollection=deleteOrderItemArguments );
 						orderItemRemoved = true;
 
 					}
@@ -5227,7 +5234,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return delete( arguments.order );
 	}
 
-	public any function deleteOrderItem( required any orderItem ) {
+	public any function deleteOrderItem( required any orderItem, updateOrderAmounts = true ) {
 		getHibachiEventService().announceEvent("beforeOrderItemDelete", arguments);
 
 		// Check delete validation
@@ -5239,8 +5246,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			removeOrderItemAndChildItemRelationshipsAndDelete( arguments.orderItem );
 
 			// Recalculate the order amounts
-			this.processOrder( order, {}, 'updateOrderAmounts' );
-			getHibachiScope().addModifiedEntity(order);
+			if(arguments.updateOrderAmounts){
+				this.processOrder( order, {}, 'updateOrderAmounts' );
+				getHibachiScope().addModifiedEntity(order);
+			}
 
 			getHibachiEventService().announceEvent("afterOrderItemDelete", arguments);
 			getHibachiEventService().announceEvent("afterOrderItemDeleteSuccess", arguments);

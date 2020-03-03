@@ -185,29 +185,55 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	}
 	
 	public any function getAccount(){
-		return getOrder().getAccount() ?: getHibachiScope().getAccount();
+		if ( !StructKeyExists(veriables, 'account') || IsNull(veriables.account) ) {
+			veriables.account = getOrder().getAccount() ?: getHibachiScope().getAccount();
+		}
+		return veriables.account;
+	}
+	
+	public any function getPriceGroup(){
+		if ( !StructKeyExists(veriables, 'priceGroup') || IsNull(veriables.priceGroup) ) {
+			
+			/*
+	            Price group is prioritized as so: 
+	                1. Order price group
+	                2. Price group passed in as argument ? TODO??
+	                3. Price group on account
+	                4. Default to Retail's pricegroup
+	        */
+	        
+	        if(!IsNull(this.getOrder().getPriceGroup()) ){ 
+	            veriables.priceGroup = this.getOrder().getPriceGroup(); //order price group
+	        } else if(!IsNull(this.getAccount().getPriceGroups()) && ArrayLen(this.getAccount().getPriceGroups()) ){ 
+	            veriables.priceGroup = this.getAccount().getPriceGroups()[1]; //account price group
+	        } else {
+	        	veriables.priceGroup = getService('priceGroupService').getPriceGroupByPriceGroupCode(2) // default to RetailPriceGroup
+	        }
+	        
+		}
+		return veriables.priceGroup;
 	}
 
 	public any function getPrice() {
 		
-		if( 
+		if(
 			!structKeyExists(variables, "price") 
 			|| 
 			( 
-				!isNull(getSku()) && 
+				!isNull(this.getSku()) && 
 				isNull(getOldQuantity()) && 
-				variables.price == getSku().getPriceByCurrencyCode( currencyCode=getCurrencyCode(), accountID=this.getAccount().getAccountID() ) 
+				variables.price == this.getSku().getPriceByCurrencyCode( currencyCode=this.getCurrencyCode(), priceGroups=[this.getPriceGroup()] ) 
 			)
 			|| 
 			( 
 				!isNull(getSku()) && 
 				!isNull(getOldQuantity()) && 
 				getOldQuantity() != getQuantity() && 
-				variables.price == getSku().getPriceByCurrencyCode( currencyCode=getCurrencyCode(), quantity=getOldQuantity(),accountID=this.getAccount().getAccountID()) )
+				variables.price == this.getSku().getPriceByCurrencyCode( currencyCode=this.getCurrencyCode(), quantity=this.getOldQuantity(), priceGroups=[this.getPriceGroup()] ) 
 			)
 		{
 			if(!isNull(getSku())) {
-				variables.price = getSku().getPriceByCurrencyCode( currencyCode=getCurrencyCode(), quantity=getQuantity(), accountID=this.getAccount().getAccountID() );
+				variables.price = this.getSku().getPriceByCurrencyCode( currencyCode=this.getCurrencyCode(), quantity=this.getQuantity(), priceGroups=[this.getPriceGroup()] );
 			}
 		}
 		return variables.price;
@@ -623,7 +649,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		}
 		
 		//check if the price doesn't match with PriceByCurrencyCode
-		if(this.getPrice() != this.getSku().getPriceByCurrencyCode( currencyCode=getCurrencyCode(), quantity=getQuantity(), accountID=this.getAccount().getAccountID()) ){
+		if(this.getPrice() != this.getSku().getPriceByCurrencyCode( currencyCode=getCurrencyCode(), quantity=getQuantity(),  priceGroups=[this.getPriceGroup()] ) ) {
 			return true;
 		}
 		
@@ -642,12 +668,11 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			return false;
 		}
 
-		//check if the price is the same if and only if we are using a custom price (either orderItem or processObject)
-		if( arguments.orderItem.getPrice() != this.getPrice() 
-			&& 
-			(
-				this.getUserDefinedPriceFlag() || arguments.orderItem.getUserDefinedPriceFlag()
-			)
+		//check if the price is the same if and only if we have a custom price (either orderItem or processObject)
+		if( 
+			arguments.orderItem.getPrice() != this.getPrice() 
+			&&  
+			( this.getUserDefinedPriceFlag() || arguments.orderItem.getUserDefinedPriceFlag() )
 		){
 			return false;
 		}
