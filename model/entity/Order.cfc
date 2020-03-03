@@ -1565,7 +1565,7 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 	public any function setAccount(required any account, boolean skipBidirectional=false) {
 		variables.account = arguments.account;
 		if(arguments.skipBidirectional){
-			return arguments.order; 
+			return this;
 		} 
 		arguments.order = this;
 		return getService('AccountService').addOrderToAccount(argumentCollection=arguments);
