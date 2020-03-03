@@ -3315,19 +3315,19 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 			switch (arguments.measureType) {
 				case 'd':
-					var currentdatetime = DateAdd('d', arguments.criteria, now());
-					rangeStruct.rangStartValue = CreateDateTime(year(currentdatetime), month(currentdatetime), day(currentdatetime), 0, 0, 0);
-					rangeStruct.rangeEndValue = CreateDateTime(year(currentdatetime), month(currentdatetime), day(currentdatetime), 23, 59, 59);
+					var currentDateTime = DateAdd('d', arguments.criteria, now());
+					rangeStruct.rangStartValue = CreateDateTime(year(currentDateTime), month(currentDateTime), day(currentDateTime), 0, 0, 0);
+					rangeStruct.rangeEndValue = CreateDateTime(year(currentDateTime), month(currentDateTime), day(currentDateTime), 23, 59, 59);
 					break;
 				case 'm':
-					var currentdatetime = DateAdd('m', arguments.criteria, now());
-					rangeStruct.rangStartValue = CreateDateTime(year(currentdatetime), month(currentdatetime), 1, 0, 0, 0);
-					rangeStruct.rangeEndValue = CreateDateTime(year(currentdatetime), month(currentdatetime), DaysInMonth(currentdatetime), 23, 59, 59);
+					var currentDateTime = DateAdd('m', arguments.criteria, now());
+					rangeStruct.rangStartValue = CreateDateTime(year(currentDateTime), month(currentDateTime), 1, 0, 0, 0);
+					rangeStruct.rangeEndValue = CreateDateTime(year(currentDateTime), month(currentDateTime), DaysInMonth(currentDateTime), 23, 59, 59);
 					break;
 				case 'y':
-					var currentdatetime = DateAdd('yyyy', arguments.criteria, now());
-					rangeStruct.rangStartValue = CreateDateTime(year(currentdatetime), 1, 1, 0, 0, 0);
-					rangeStruct.rangeEndValue = CreateDateTime(year(currentdatetime), 12, 31, 23, 59, 59);
+					var currentDateTime = DateAdd('yyyy', arguments.criteria, now());
+					rangeStruct.rangStartValue = CreateDateTime(year(currentDateTime), 1, 1, 0, 0, 0);
+					rangeStruct.rangeEndValue = CreateDateTime(year(currentDateTime), 12, 31, 23, 59, 59);
 					break;
 			}
 			
