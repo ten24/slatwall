@@ -43,9 +43,26 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 		}
 		
 		//Call on Load
-		loadTabs();
+		//Show Loader
+		setTimeout(()=> {
+			showFullPageLoader();
+			loadTabs();
+		}, 1)
+		
+		
 	
 	});
+	
+	function showFullPageLoader() {
+		jQuery("#accordion").append('<div class="fullpage-loader is-active fullpage-loader-default" data-text="Please wait loading tabs">Loading</div>');
+	}
+	
+	function removeFullPageLoader() {
+		setTimeout(()=>{
+			jQuery(".fullpage-loader").remove();
+		}, 1)
+		
+	}
 	
 	//Helper search function
 	function getKeyByValue(object, value) { 
@@ -59,6 +76,7 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
     	
     	//If detail tab does not exists
 		if( !jQuery('div[id^="tabdetails_"]').length ) {
+			removeFullPageLoader();
 			return;
 		}
 		
@@ -74,6 +92,7 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 			
 			//check if correct json is loaded
 			if( !tabsConfig.hasOwnProperty('data') || !tabsConfig.data.hasOwnProperty('entityTabs') ) {
+				removeFullPageLoader();
 				return;	
 			}
 			
@@ -126,7 +145,10 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 				jQuery(orgDiv).replaceWith( jQuery(targetDiv).clone() );
 				jQuery(targetDiv).replaceWith( clone );
 			}
-
+			
+			removeFullPageLoader();
+			
+			
 		});
 
 	}
