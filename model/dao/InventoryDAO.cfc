@@ -208,30 +208,28 @@ Notes:
 			var skuTotalsHashMap = {};
 			
 			for(var i=1;i <= arrayLen(QDOO);i++){
-				
-				if ( structKeyExists(QDOO[i], 'stockID')){
-					QDOOHashMap["#QDOO[i]['stockID']#"] = QDOO[i]; 
+				if ( structKeyExists(QDOO[i], 'stockID') && len( QDOO[i]['stockID'] )){
+					QDOOHashMap[QDOO[i]['stockID']] = QDOO[i]; 
 				} else {
-					QDOOHashMap["#QDOO[i]['skuID']#"] = QDOO[i]; 
+					QDOOHashMap[QDOO[i]['skuID']] = QDOO[i]; 
 				}
 				
-				if ( !structKeyExists(skuTotalsHashMap, "#QDOO[i]['skuID']#") ){
-					skuTotalsHashMap["#QDOO[i]['skuID']#"]['totalQDOO'] = 0;
-					skuTotalsHashMap["#QDOO[i]['skuID']#"]['totalQOO'] = 0;
+				if ( !structKeyExists(skuTotalsHashMap, QDOO[i]['skuID']) ){
+					skuTotalsHashMap[ QDOO[i]['skuID'] ]['totalQDOO'] = 0;
+					skuTotalsHashMap[ QDOO[i]['skuID'] ]['totalQOO'] = 0;
 				}
 				
-				skuTotalsHashMap["#QDOO[i]['skuID']#"]['totalQDOO'] += QDOO[i]['QDOO'];
+				skuTotalsHashMap[ QDOO[i]['skuID'] ]['totalQDOO'] += QDOO[i]['QDOO'];
 				
 			}
 			
 			var QOO = getQOO(productID=arguments.productID);
-			
 			for(var item in QOO){ 
+				var i = 1;
 				if(structKeyExists(skuTotalsHashMap,item['skuID'])){
 					skuTotalsHashMap[item['skuID']]['totalQOO'] += item['QOO'];
 				}			
 			}
-			
 			for(var QOOData in QOO){
 				var record = {};
 				record['skuID'] = QOOData['skuID'];
@@ -252,13 +250,13 @@ Notes:
 				}
 				var quantityReceived = 0;
 				
-				if( structKeyExists(QOOData, 'stockID' ) && structKeyExists(QDOOHashMap,"#QOOData['stockID']#")){
-					quantityReceived = QDOOHashMap['#QOOData['stockID']#']['QDOO'];
+				if( structKeyExists(QOOData, 'stockID' ) && structKeyExists(QDOOHashMap, QOOData['stockID'] )){
+					quantityReceived = QDOOHashMap[ QOOData['stockID'] ]['QDOO'];
 						
 					record['QNDOO'] = QOOData['QOO'] - quantityReceived;
-				}else if( structKeyExists(skuTotalsHashMap,'#QOOData['skuID']#') ){
+				}else if( structKeyExists(QDOOHashMap, QOOData['skuID'] ) ){
 					
-					record['QNDOO'] = skuTotalsHashMap["#QOOData['skuID']#"]['totalQOO'] - skuTotalsHashMap["#QOOData['skuID']#"]['totalQDOO'];
+					record['QNDOO'] = QOOData['QOO'] - QDOOHashMap[ QOOData['skuID'] ]['QDOO'];
 				}
 				
 				arrayAppend(QNDOO,record);
