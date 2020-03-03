@@ -153,18 +153,13 @@
 					
 					<div class="col-12 col-md-6">
 						<div class="material-field">
-							<select
+                                <input
 								type="text"
 								class="form-control"
 								ng-model="monatFlexshipShippingMethodModal.newAddress.countryCode"
-								swvalidationrequired="true"
-							    name="newAddress_stateCode"
-								ng-options="country.value as country.name for country in monatFlexshipShippingMethodModal.countryCodeOptions"
-								placeholder="{{ monatFlexshipShippingMethodModal.translations.newAddress_country }}"
-							>
-								
-								<option value="" >{{monatFlexshipShippingMethodModal.translations.select_country}}</option>
-							</select>
+								name = "newAddress_country" 
+								readonly
+							/>
 							<label ng-bind="monatFlexshipShippingMethodModal.translations.newAddress_country"></label>
 						</div>
 					</div>

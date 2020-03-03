@@ -435,13 +435,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var priceGroupCacheKey = hash(totalQuantity & priceGroupList,'md5');
 		
 		if( isNull(arguments.order.getPriceGroupCacheKey()) || arguments.order.getPriceGroupCacheKey() != priceGroupCacheKey ) {
-			
+
 			arguments.order.setPriceGroupCacheKey(priceGroupCacheKey);
 			var orderItems = arguments.order.getOrderItems(); 
 			for(var orderItem in orderItems){
 				orderItem.removeAppliedPriceGroup();
-				
-				if(!isNull(arguments.order.getAccount())){
+	
+				if(!isNull(arguments.order.getAccount()) && isNull(orderItem.getOrder().getPriceGroup())){
 					
 					if(arrayLen(getService("currencyService").getCurrencyOptions()) > 1){
 						var priceGroupDetails = getBestPriceGroupDetailsBasedOnSkuAndAccountAndCurrencyCode(orderItem.getSku(), arguments.order.getAccount(),arguments.order.getCurrencyCode());
@@ -458,6 +458,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						orderItem.setAppliedPriceGroup( priceGroupDetails.priceGroup );
 					}
 					
+				}else if(!isNull(orderItem.getOrder().getPriceGroup())){
+					orderItem.setPrice(orderItem.getSku().getPriceByCurrencyCode(currencyCode=arguments.order.getCurrencyCode(), priceGroups=[arguments.order.getPriceGroup()]));
+					orderItem.setAppliedPriceGroup( orderItem.getOrder().getPriceGroup() );
 				}
 			}
 		}

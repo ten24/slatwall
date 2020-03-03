@@ -1,8 +1,7 @@
-
 component extends="Slatwall.model.service.OrderService" {
     variables.customPriceFields = 'personalVolume,taxableAmount,commissionableVolume,retailCommission,productPackVolume,retailValueVolume';
     public string function getCustomAvailableProperties() {
-        return 'orderItems.personalVolume,orderItems.calculatedExtendedPersonalVolume,calculatedPersonalVolumeSubtotal,currencyCode,orderItems.skuProductURL';
+        return 'orderItems.personalVolume,orderItems.calculatedExtendedPersonalVolume,calculatedPersonalVolumeSubtotal,currencyCode,orderItems.skuProductURL,billingAddress';
     }
     
     /**
@@ -330,6 +329,10 @@ component extends="Slatwall.model.service.OrderService" {
 			var transientOrder = getService('OrderService').newTransientOrderFromOrderTemplate( currentOrderTemplate, false );  
 			//only update amounts if we can
 			transientOrder = this.saveOrder( order=transientOrder, updateOrderAmounts=hasInfoForFulfillment );
+			transientOrderItems = transientOrder.getOrderItems();
+			for(var orderItem in transientOrderItems){
+				orderItem.updateCalculatedProperties(); 
+			}
 			transientOrder.updateCalculatedProperties(); 	
 			getHibachiDAO().flushORMSession();
 		
@@ -439,8 +442,15 @@ component extends="Slatwall.model.service.OrderService" {
 					orderStatusHistory.setOrderStatusHistoryType(type);
 				}	
 
+				
+			}else if (arguments.systemCode == 'ostProcessing') {
+			
+				//Set to processing status
+                arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="2"));
+                orderStatusHistory.setOrderStatusHistoryType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="2"));
+					
+			}else if (arguments.systemCode == 'ostPaid') {
 
-            }else if (arguments.systemCode == 'ostPaid') {
             	//If its paid and its shipped, set it to shipped.
             	if (arguments.order.getPaymentAmountDue() <= 0 && arguments.order.getQuantityUndelivered() == 0){
                 	arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="5"));
@@ -1126,7 +1136,7 @@ component extends="Slatwall.model.service.OrderService" {
 			}
 
 			// Save the new order items don't update order amounts we'll do it at the end of this process
-			newOrderItem = this.saveOrderItem( orderItem=newOrderItem, updateOrderAmounts=false );
+			newOrderItem = this.saveOrderItem( orderItem=newOrderItem, updateOrderAmounts=false , updateCalculatedProperties=true);
 
 			if(newOrderItem.hasErrors()) {
 				//String replace the max order qty to give user feedback with the minimum of 0
@@ -1430,10 +1440,26 @@ component extends="Slatwall.model.service.OrderService" {
 			
 			arguments.order = this.addOrderItemFromTemplateItem(argumentCollection=args);
 			
-			if(isNull(orderFulfillment)){
-				var orderFulfillment = arguments.order.getOrderFulfillments()[1];
+			//define order fulfillment for the rest of the loop	
+			if( isNull(orderFulfillment) && 
+				!arrayIsEmpty(arguments.order.getOrderItems()) && 
+				!isNull(arguments.order.getOrderItems()[1].getOrderFulfillment())
+			){
+
+				var orderFulfillment = arguments.order.getOrderItems()[1].getOrderFulfillment();
+
 				orderFulfillment.setShippingMethod(arguments.orderTemplate.getShippingMethod());
-			} 
+				orderFulfillment.setFulfillmentMethod(arguments.orderTemplate.getShippingMethod().getFulfillmentMethod());
+
+				orderFulfillment = this.saveOrderFulfillment(orderFulfillment);
+
+				if (orderFulfillment.hasErrors()){
+					//propegate to parent, because we couldn't create the fulfillment this order is not going to be placed
+					arguments.order.addErrors(orderFulfillment.getErrors());	
+					return arguments.order; 
+				}	
+			}	
+
 			if(arguments.order.hasErrors()){
 				this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(arguments.order.getErrors())# when adding order item skuID: #orderTemplateItem['sku_skuID']#', true);
 				arguments.order.clearHibachiErrors();
