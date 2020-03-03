@@ -328,7 +328,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		if(!structKeyExists(variables, "shippingAddress")) {
 			variables.shippingAddress = getService("addressService").newAddress();
 		}
-		return variables.shippingAddres
+		return variables.shippingAddress;
 	}
 
 	public any function getSaveShippingAccountAddressFlag() {
