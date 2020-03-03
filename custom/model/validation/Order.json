@@ -16,6 +16,9 @@
 			},
 			"orderType.systemCode":{
 				"eq":"otSalesOrder"
+			},
+			"orderStatusType.systemCode":{
+				"neq":"ostNotPlaced"
 			}
 		}
 	},

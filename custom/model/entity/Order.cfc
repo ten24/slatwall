@@ -390,10 +390,6 @@ component {
 	  * 3. MP (Any site) can't purchase one past 30 days from account creation.
 	  **/
 	 public boolean function MarketPartnerValidationMaxProductPacksPurchased(){
-	 	
-	 	if(structKeyExists(variables,'orderNumber') && len(variables.orderNumber)){
-	 		return true;
-	 	}
 	    
 	    var maxDaysAfterAccountCreate = this.getOrderCreatedSite().setting("siteMaxDaysAfterAccountCreate");
 	    
