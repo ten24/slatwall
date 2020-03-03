@@ -182,14 +182,13 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 	private void function sendRequestToGenerateToken(required any requestBean, required any responseBean) {
 		// We are expecting there is no provider token yet, but if accountPaymentMethod is used & attempt to generate another token prevent & short circuit
 		if (isNull(arguments.requestBean.getProviderToken()) || !len(arguments.requestBean.getProviderToken())) {
-			
 			var orderNumber = "";
 			if (!isNull(arguments.requestBean.getOrderID())) {
 				orderNumber = arguments.requestBean.getOrderID();
 			}
 			
 			var publicKey = getPublicKey(arguments.requestBean);
-			var checkFraund = setting(settingName='checkFraud', requestBean=arguments.requestBean) ? true : false;
+			var checkFraud = setting(settingName='checkFraud', requestBean=arguments.requestBean) ? true : false;
 			
 			var publicKey = getPublicKey(arguments.requestBean);
 
@@ -203,7 +202,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 					'securityCode' = arguments.requestBean.getSecurityCode()
 				},
 				'processingOptions' = {
-					'checkFraud' = checkFraund,
+					'checkFraud' = false,
 					'verifyCvc' = setting(settingName='verifyCvcFlag', requestBean=arguments.requestBean) ? true : false,
 					'verifyAvs' = LSParseNumber(setting(settingName='verifyAvsSetting', requestBean=arguments.requestBean))
 				},
@@ -225,14 +224,14 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 					}
 				}
 			};
-			
-			if(checkFraund && getHibachiScope().hasSessionValue('kount-token')){
+			if(checkFraud && getHibachiScope().hasSessionValue('kount-token')){
 				requestData['token'] = getHibachiScope().getSessionValue('kount-token');
+				requestData['processingOptions']['checkFraud']=true;
 			}
 			
 			// Save Card, this is the imortant token we want to persist for Slatwall payment data (https://github.com/nexiopay/payment-service-example-node/blob/master/ClientSideToken.js#L107)
 			var responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'generateToken', requestData);
-			
+
 			// Setting AVS code (https://github.com/ten24/Monat/blob/develop/Slatwall/model/transient/payment/TransactionResponseBean.cfc) off Nexio's response 
 			var responseDataAvsCode = "";
 			

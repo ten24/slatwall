@@ -72658,7 +72658,7 @@ var SWReturnOrderItemsController = /** @class */ (function () {
             var orderMaxRefund;
             orderItem = _this.setValuesWithinConstraints(orderItem);
             orderItem.refundTotal = orderItem.returnQuantity * orderItem.refundUnitPrice;
-            if (orderItem.returnQuantity != 0) {
+            if (orderItem.returnQuantity > 0) {
                 orderItem.refundUnitPV = Math.round(orderItem.refundTotal * orderItem.pvTotal * 100 / (orderItem.total * orderItem.returnQuantity)) / 100;
                 orderItem.refundPVTotal = orderItem.refundUnitPV * orderItem.returnQuantity;
                 orderItem.refundUnitCV = Math.round(orderItem.refundTotal * orderItem.cvTotal * 100 / (orderItem.total * orderItem.returnQuantity)) / 100;
@@ -72689,13 +72689,13 @@ var SWReturnOrderItemsController = /** @class */ (function () {
         };
         this.setValuesWithinConstraints = function (orderItem) {
             var returnQuantityMaximum = orderItem.returnQuantityMaximum;
-            if (orderItem.returnQuantity == null || orderItem.returnQuantity == undefined) {
+            if (orderItem.returnQuantity == null || orderItem.returnQuantity == undefined || orderItem.returnQuantity < 0) {
                 orderItem.returnQuantity = 0;
             }
             if (orderItem.returnQuantity > returnQuantityMaximum) {
                 orderItem.returnQuantity = returnQuantityMaximum;
             }
-            if (orderItem.refundUnitPrice == null || orderItem.refundUnitPrice == undefined) {
+            if (orderItem.refundUnitPrice == null || orderItem.refundUnitPrice == undefined || orderItem.refundUnitPrice < 0) {
                 orderItem.refundUnitPrice = 0;
             }
             if (_this.orderType == 'otRefundOrder') {
@@ -72765,6 +72765,9 @@ var SWReturnOrderItemsController = /** @class */ (function () {
             _this.updateRefundTotals();
         };
         this.validateAmount = function (orderPayment) {
+            if (orderPayment.amount < 0) {
+                orderPayment.amount = 0;
+            }
             var paymentTotal = _this.orderPayments.reduce(function (total, payment) {
                 if (payment != orderPayment) {
                     if (payment.paymentMethodType == 'giftCard') {
@@ -88227,11 +88230,12 @@ var PublicService = /** @class */ (function () {
             return _this.accountDataPromise;
         };
         /** accessors for cart */
-        this.getCart = function (refresh) {
+        this.getCart = function (refresh, param) {
             if (refresh === void 0) { refresh = false; }
+            if (param === void 0) { param = ''; }
             var urlBase = _this.baseActionPath + 'getCart/';
             if (!_this.cartDataPromise || refresh) {
-                _this.cartDataPromise = _this.getData(urlBase, "cart", "");
+                _this.cartDataPromise = _this.getData(urlBase, "cart", param);
             }
             return _this.cartDataPromise;
         };
@@ -88313,17 +88317,19 @@ var PublicService = /** @class */ (function () {
             var request = _this.requestService.newPublicRequest(urlBase);
             request.promise.then(function (result) {
                 //don't need account and cart for anything other than account and cart calls.
-                if (setter.indexOf('account') == -1 || setter.indexOf('cart') == -1) {
+                if (setter.indexOf('account') == -1) {
                     if (result['account']) {
                         delete result['account'];
                     }
+                }
+                if (setter.indexOf('cart') == -1) {
                     if (result['cart']) {
                         delete result['cart'];
                     }
                 }
-                if (setter == 'cart' || setter == 'account' && _this[setter] && _this[setter].populate) {
+                if ((setter == 'cart' || setter == 'account') && _this[setter] && _this[setter].populate) {
                     //cart and account return cart and account info flat
-                    _this[setter].populate(result);
+                    _this[setter].populate(result[setter]);
                 }
                 else {
                     //other functions reutrn cart,account and then data
@@ -88538,7 +88544,9 @@ var PublicService = /** @class */ (function () {
             return _this.hibachiAuthenticationService.authenticateActionByAccount(action, processContext);
         };
         this.removeInvalidOrderPayments = function (cart) {
-            cart.orderPayments = cart.orderPayments.filter(function (payment) { return !payment.hasErrors; });
+            if (angular.isDefined(cart.orderPayments)) {
+                cart.orderPayments = cart.orderPayments.filter(function (payment) { return !payment.hasErrors; });
+            }
         };
         /**
          * Given a payment method name, returns the id.
@@ -91436,7 +91444,7 @@ var SWFFormController = /** @class */ (function () {
                         _this.$rootScope.slatwall.redirectExact(_this.sRedirectUrl);
                     }
                     if (_this.sAction) {
-                        _this.sAction();
+                        _this.sAction(result);
                     }
                     _this.form.$setSubmitted(false);
                     _this.form.$setPristine(true);

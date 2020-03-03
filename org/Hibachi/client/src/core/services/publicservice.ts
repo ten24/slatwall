@@ -155,12 +155,11 @@ class PublicService {
         return this.accountDataPromise;
     }
     /** accessors for cart */
-    public getCart=(refresh=false):any =>  {
+    public getCart=(refresh=false, param = ''):any =>  {
 
         let urlBase = this.baseActionPath+'getCart/';
         if(!this.cartDataPromise || refresh){
-            this.cartDataPromise = this.getData(urlBase, "cart", "");
-           
+            this.cartDataPromise = this.getData( urlBase, "cart", param );
         }
         
         return this.cartDataPromise;
@@ -253,14 +252,16 @@ class PublicService {
 
         request.promise.then((result:any)=>{
             //don't need account and cart for anything other than account and cart calls.
-            if (setter.indexOf('account') == -1 || setter.indexOf('cart') == -1){
+            if ( setter.indexOf('account') == -1) {
                 if (result['account']){delete result['account'];}
+            }
+            if ( setter.indexOf('cart') == -1) {
                 if (result['cart']){delete result['cart'];}
             }
 
-            if(setter == 'cart'||setter=='account' && this[setter] && this[setter].populate){
+            if((setter == 'cart'||setter=='account') && this[setter] && this[setter].populate){
                 //cart and account return cart and account info flat
-                this[setter].populate(result);
+                this[setter].populate(result[setter]);
 
             }else{
                 //other functions reutrn cart,account and then data
@@ -509,7 +510,9 @@ class PublicService {
 	}
 
     public removeInvalidOrderPayments = (cart) =>{
+        if(angular.isDefined(cart.orderPayments)) {
         cart.orderPayments = cart.orderPayments.filter((payment)=>!payment.hasErrors);
+        }
     }
 
     /**

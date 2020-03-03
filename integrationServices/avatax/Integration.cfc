@@ -98,7 +98,7 @@ component accessors="true" output="false" extends="Slatwall.integrationServices.
 	}
 
 	public string function getAllowedSiteSettingNames() {
-		return "companyCode";
+		return "companyCode,sourceStreetAddress,sourceStreetAddress2,sourceCity,sourceRegion,sourceCountry,sourcePostalCode";
 	}
 	
 }

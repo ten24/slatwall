@@ -33,7 +33,7 @@
 		<td ng-if="swReturnOrderItems.orderType != 'otRefundOrder'">{{orderItem.sku_calculatedSkuDefinition}}</td>
 		<td ng-if="swReturnOrderItems.orderType != 'otRefundOrder'">{{orderItem.quantity}}</td>
 		<td ng-if="swReturnOrderItems.orderType != 'otRefundOrder'" class="returnQuantityMaximum">{{orderItem.returnQuantityMaximum}}</td>
-		<td ng-if="swReturnOrderItems.orderType != 'otRefundOrder'"><input type="number" ng-change="swReturnOrderItems.updateOrderItem(orderItem)" ng-model="orderItem.returnQuantity" name="orderItems[{{$index+1}}].quantity" class="span1 number returnQuantity" /></td>
+		<td ng-if="swReturnOrderItems.orderType != 'otRefundOrder'"><input type="number" ng-change="swReturnOrderItems.updateOrderItem(orderItem)" ng-model="orderItem.returnQuantity" name="orderItems[{{$index+1}}].quantity" class="span1 number returnQuantity"/></td>
 		
 		<td ng-if="swReturnOrderItems.orderType == 'otReturnOrder'" ng-bind-html="orderItem.calculatedDiscountAmount.toFixed(2) | swcurrency:swReturnOrderItems.currencyCode"></td>
 		<td ng-if="swReturnOrderItems.orderType == 'otReturnOrder'" ng-bind-html="orderItem.calculatedExtendedPriceAfterDiscount.toFixed(2) | swcurrency:swReturnOrderItems.currencyCode"></td>

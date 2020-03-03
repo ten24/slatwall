@@ -165,6 +165,9 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	property name="saveablePaymentMethodsCollectionList" persistent="false";
 	property name="canCreateFlexshipFlag" persistent="false";
 	property name="subscribedToMailchimp" persistent="false";
+	property name="genderFullWord" persistent = "false";
+	property name="spouseFirstName" persistent = "false";
+	property name="spouseLastName" persistent = "false";
 	
 
  property name="allowCorporateEmailsFlag" ormtype="boolean" hb_formatType="yesno";
@@ -1349,5 +1352,33 @@ public numeric function getSuccessfulFlexshipOrdersThisYearCount(){
 		return getService('imageService').getResizedImagePath('#getHibachiScope().getBaseImageURL()#/profileImage/#this.getProfileImage()#', arguments.width, arguments.height)
 	}
 	
-	//CUSTOM FUNCTIONS END
+	public string function getGenderFullWord(){
+	    var genderFullWord = "";
+	    var gender = LCase(this.getGender());
+		switch (gender) {
+			case "f": 
+			         genderFullWord = getHibachiScope().getRbKey('define.female'); 
+			         break;
+			case "m": 
+			         genderFullWord =  getHibachiScope().getRbKey('define.male'); 
+			         break;
+			case "p":
+			case "prefernottoSay": 
+			         genderFullWord = getHibachiScope().getRbKey('define.prefernottoSay'); 
+			         break;
+		}
+		return genderFullWord;
+	}
+	
+	public string function getSpouseFirstName(){
+	    if(!IsNull(this.getSpouseName())){
+	       return ListFirst(this.getSpouseName(),", ");
+	    }
+	}
+	
+	public string function getSpouseLastName(){
+	    if(!IsNull(this.getSpouseName())){
+	       return ListRest(this.getSpouseName(),", ");
+	    }
+	}//CUSTOM FUNCTIONS END
 }
