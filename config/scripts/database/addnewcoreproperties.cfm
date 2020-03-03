@@ -15,22 +15,6 @@
     </cfcatch>
 </cftry>
 
-
-<cftry>
-    <cfquery name="local.updateAccountGovernmentIdentification">
-        
-        ALTER TABLE SwAccountGovernmentId
-            LOCK=NONE,
-            ALGORITHM=INPLACE,
-            ADD COLUMN governmentIdNumberHashed string;
-          
-	</cfquery>
-    <cfcatch >
-        <cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Update Account-Government-Identification Component (#cfcatch.detail#)">
-    	<cfset local.scriptHasErrors = true />
-    </cfcatch>
-</cftry>
-
 <cfif local.scriptHasErrors>
 	<cflog file="Slatwall" text="General Log - Part of Script Update Account Payment Method had errors when running">
 	<cfthrow detail="Part of Script Update Account Payment Method had errors when running">

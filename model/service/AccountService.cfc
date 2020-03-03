@@ -1961,6 +1961,15 @@ component extends="HibachiService" accessors="true" output="false" {
 		return arguments.permissionGroup;
 	}
 	
+	
+	public void function updateGovernmentIdentificationNumberProperties(required any governmentIdentification, required string governmentIdentificationNumber=""){
+		if(len(arguments.governmentIdentificationNumber)) {
+			arguments.governmentIdentification.setGovernmentIdentificationLastFour( right(arguments.governmentIdentificationNumber, 4) );
+		} else {
+			arguments.governmentIdentification.setGovernmentIdentificationLastFour(javaCast("null", ""));
+			arguments.governmentIdentification.setGovernmentIdentificationNumberEncrypted(javaCast("null", ""));
+		}
+	}
 
 	// ======================  END: Save Overrides ============================
 

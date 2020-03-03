@@ -77,7 +77,10 @@ component displayname="Account Government Identification" entityname="SlatwallAc
 	
 	// ============= START: Bidirectional Helper Methods ===================
 	
-	// Account (many-to-one)    
+	// Account (many-to-one)    	//CUSTOM PROPERTIES BEGIN
+	property name="governmentIdentificationNumberHashed" ormtype="string" hb_auditable="false" column="governmentIdNumberHashed" hint="as the name suggest, needed this for validation";
+
+	//CUSTOM PROPERTIES END
 	public void function setAccount(required any account) {    
 		variables.account = arguments.account;    
 		if(isNew() || !arguments.account.hasAccountGovernmentIdentifications( this )) {    
@@ -116,16 +119,15 @@ component displayname="Account Government Identification" entityname="SlatwallAc
 	}
 	
 	public void function setGovernmentIdentificationNumber(required string governmentIdentificationNumber) {
+
+		this.getService('accountService')
+		.updateGovernmentIdentificationNumberProperties(this, arguments.governmentIdentificationNumber);
+		
 		if(len(arguments.governmentIdentificationNumber)) {
 			variables.governmentIdentificationNumber = arguments.governmentIdentificationNumber;
-			setGovernmentIdentificationLastFour( right(variables.governmentIdentificationNumber, 4) );
-			governmentIdentificationNumberHashed = hash(variables.governmentIdentificationNumber, "SHA-256", "UTF-8");
 			encryptProperty('governmentIdentificationNumber');
 		} else {
 			structDelete(variables, "governmentIdentificationNumber");
-			setGovernmentIdentificationNumberHashed(javaCast("null", ""));
-			setGovernmentIdentificationLastFour(javaCast("null", ""));
-			setGovernmentIdentificationNumberEncrypted(javaCast("null", ""));
 		}
 	}
 	
@@ -151,5 +153,13 @@ public boolean function validateGovernmentIdentificationNumber() {
 		
 		return true;
 	}
+	
+	public boolean function validateGovernmentIdIsUniquePerCountry() {
+		return getDAO("accountDAO").getGovernmentIdNotInUseFlag(
+				this.getGovernmentIdentificationNumberHashed(),
+				this.getAccount().getAccountCreatedSite().getSiteID()
+			);
+	}
+	
 //CUSTOM FUNCTIONS END
 }

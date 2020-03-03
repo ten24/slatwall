@@ -192,4 +192,16 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 
 		return arguments.account; 
 	}
+	
+	
+	public void function updateGovernmentIdentificationNumberProperties(required any governmentIdentification, required string governmentIdentificationNumber=""){
+		
+		if(len(arguments.governmentIdentificationNumber)) {
+			arguments.governmentIdentification.setGovernmentIdentificationNumberHashed ( hash(arguments.governmentIdentificationNumber, "SHA-256", "UTF-8") );
+		} else {
+			arguments.governmentIdentification.setGovernmentIdentificationNumberHashed(javaCast("null", ""));
+		}
+		
+		super.updateGovernmentIdentificationNumberProperties(argumentCollection=arguments);
+	}
 }

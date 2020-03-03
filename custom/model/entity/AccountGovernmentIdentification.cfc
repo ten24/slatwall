@@ -1,5 +1,7 @@
 component {
 	
+	property name="governmentIdentificationNumberHashed" ormtype="string" hb_auditable="false" column="governmentIdNumberHashed" hint="as the name suggest, needed this for validation";
+
 	public boolean function validateGovernmentIdentificationNumber() {
 		var governmentID = this.getGovernmentIdentificationNumber();
 		var siteCreatedCountry = this.getAccount().getAccountCreatedSite().getRemoteID();
