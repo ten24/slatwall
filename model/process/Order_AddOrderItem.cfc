@@ -217,22 +217,19 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	public any function getPrice() {
 		
 		if(
-			!structKeyExists(variables, "price") 
+			!StructKeyExists(variables, "price") 
 			|| 
 			( 
-				!isNull(this.getSku()) && 
-				isNull(getOldQuantity()) && 
+				!IsNull(this.getSku()) && IsNull(getOldQuantity()) && 
 				variables.price == this.getSku().getPriceByCurrencyCode( currencyCode=this.getCurrencyCode(), priceGroups=[this.getPriceGroup()] ) 
 			)
 			|| 
 			( 
-				!isNull(getSku()) && 
-				!isNull(getOldQuantity()) && 
-				getOldQuantity() != getQuantity() && 
+				!IsNull(this.getSku()) &&  !IsNull(this.getOldQuantity()) && this.getOldQuantity() != this.getQuantity() && 
 				variables.price == this.getSku().getPriceByCurrencyCode( currencyCode=this.getCurrencyCode(), quantity=this.getOldQuantity(), priceGroups=[this.getPriceGroup()] ) 
 			)
-		{
-			if(!isNull(getSku())) {
+		){
+			if(!IsNull(this.getSku())) {
 				variables.price = this.getSku().getPriceByCurrencyCode( currencyCode=this.getCurrencyCode(), quantity=this.getQuantity(), priceGroups=[this.getPriceGroup()] );
 			}
 		}

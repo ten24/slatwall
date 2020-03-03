@@ -5537,7 +5537,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var skuPrice = arguments.processObject.getSku().getPriceByCurrencyCode( 
 								quantity = arguments.processObject.getQuantity(),
 								currencyCode = arguments.newOrderItem.getOrder().getCurrencyCode(), 
-								priceGroups = [arguments.processObject.getPriceGroup()],
+								priceGroups = [arguments.processObject.getPriceGroup()]
 							);
 
 			arguments.newOrderItem.setPrice(skuPrice);
