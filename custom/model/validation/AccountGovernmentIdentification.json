@@ -1,5 +1,8 @@
 {
 	"properties": {
-		"governmentIdentificationNumber": [{ "contexts": "save", "method": "validateGovernmentIdentificationNumber" }]
+		"governmentIdentificationNumber": [
+			{ "contexts": "save", "method": "validateGovernmentIdentificationNumber" },
+			{ "contexts": "save", "method": "validateGovernmentIdIsUniquePerCuntry" }
+		]
 	}
 }

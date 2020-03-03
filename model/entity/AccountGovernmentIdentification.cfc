@@ -51,6 +51,7 @@ component displayname="Account Government Identification" entityname="SlatwallAc
 	// Persistent Properties
 	property name="accountGovernmentIdentificationID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="" column="accountGovIdentificationID";
 	property name="governmentIdentificationNumberEncrypted" ormtype="string" hb_auditable="false" column="governmentIdNumberEncrypted";
+	property name="governmentIdentificationNumberHashed" ormtype="string" hb_auditable="false" column="governmentIdNumberHashed" hint="as the name suggest, needed this for validation";
 	property name="governmentIdentificationNumberEncryptedGenerator" ormtype="string" hb_auditable="false" column="governmentIdNumberEncryptedGen";
 	property name="governmentIdentificationNumberEncryptedDateTime" ormtype="timestamp" hb_auditable="false" column="governmentIdNumberEncryptedDT";
 	property name="governmentIdentificationLastFour" ormtype="string" column="governmentIdLastFour";
@@ -118,9 +119,11 @@ component displayname="Account Government Identification" entityname="SlatwallAc
 		if(len(arguments.governmentIdentificationNumber)) {
 			variables.governmentIdentificationNumber = arguments.governmentIdentificationNumber;
 			setGovernmentIdentificationLastFour( right(variables.governmentIdentificationNumber, 4) );
+			governmentIdentificationNumberHashed = hash(variables.governmentIdentificationNumber, "SHA-256", "UTF-8");
 			encryptProperty('governmentIdentificationNumber');
 		} else {
 			structDelete(variables, "governmentIdentificationNumber");
+			setGovernmentIdentificationNumberHashed(javaCast("null", ""));
 			setGovernmentIdentificationLastFour(javaCast("null", ""));
 			setGovernmentIdentificationNumberEncrypted(javaCast("null", ""));
 		}
