@@ -1565,12 +1565,10 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 	public any function setAccount(required any account, boolean skipBidirectional=false) {
 		variables.account = arguments.account;
 		if(arguments.skipBidirectional){
-			return this; 
+			return arguments.order; 
 		} 
-		if(isNew() or !arguments.account.hasOrder( this )) {
-			arrayAppend(arguments.account.getOrders(), this);
-		}
-		return this;
+		arguments.order = this;
+		return getService('AccountService').addOrderToAccount(argumentCollection=arguments);
 	}
 	public void function removeAccount(any account) {
 		if(!structKeyExists(arguments, "account")) {
