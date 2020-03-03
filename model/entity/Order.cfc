@@ -2284,5 +2284,19 @@ public numeric function getPersonalVolumeSubtotal(){
 			}
 		}
 		return true;
+	 }
+	 
+	 public any function getDefaultStockLocation(){
+	 	if(!structKeyExists(variables,'defaultStockLocation')){
+	 		if(!isNull(getOrderCreatedSite())){
+	 			var locations = getOrderCreatedSite().getLocations();
+	 			if(!isNull(locations) && arrayLen(locations)){
+	 				variables.defaultStockLocation = locations[1];
+	 			}
+	 		}
+	 	}
+	 	if(structKeyExists(variables,'defaultStockLocation')){
+	 		return variables.defaultStockLocation;
+	 	}
 	 }//CUSTOM FUNCTIONS END
 }
