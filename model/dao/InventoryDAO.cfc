@@ -204,32 +204,16 @@ Notes:
 			
 			var QDOOHashMap = {};
 			
-			//This variable will store the total QDOO and QOO by skuID
-			var skuTotalsHashMap = {};
-			
 			for(var i=1;i <= arrayLen(QDOO);i++){
 				if ( structKeyExists(QDOO[i], 'stockID') && len( QDOO[i]['stockID'] )){
 					QDOOHashMap[QDOO[i]['stockID']] = QDOO[i]; 
 				} else {
 					QDOOHashMap[QDOO[i]['skuID']] = QDOO[i]; 
 				}
-				
-				if ( !structKeyExists(skuTotalsHashMap, QDOO[i]['skuID']) ){
-					skuTotalsHashMap[ QDOO[i]['skuID'] ]['totalQDOO'] = 0;
-					skuTotalsHashMap[ QDOO[i]['skuID'] ]['totalQOO'] = 0;
-				}
-				
-				skuTotalsHashMap[ QDOO[i]['skuID'] ]['totalQDOO'] += QDOO[i]['QDOO'];
-				
 			}
 			
 			var QOO = getQOO(productID=arguments.productID);
-			for(var item in QOO){ 
-				var i = 1;
-				if(structKeyExists(skuTotalsHashMap,item['skuID'])){
-					skuTotalsHashMap[item['skuID']]['totalQOO'] += item['QOO'];
-				}			
-			}
+			
 			for(var QOOData in QOO){
 				var record = {};
 				record['skuID'] = QOOData['skuID'];
