@@ -25,13 +25,26 @@ class MonatProductModalController {
 		public rbkeyService, 
 		private orderTemplateService, 
 		private monatAlertService,
-		private publicService
+		private publicService,
+		private $http
 	) {}
 
 	public $onInit = () => {
-		this.makeTranslations();
+		let httpOptions = {
+			method: 'GET',
+			url: this.product.skuProductURL
+		}
 		
-		this.getModalInfo();
+		this.$http(httpOptions).then(res => {
+			let content = <HTMLDivElement>document.getElementById('product-modal')!;
+			let parser = new DOMParser();
+			let doc = parser.parseFromString(res.data, "text/html");
+			let footer = <HTMLElement><any>doc.getElementsByTagName('footer');
+			let header = <HTMLElement><any>doc.getElementsByTagName('header');
+			footer[0].parentNode.removeChild(footer[0]);
+			header[0].parentNode.removeChild(header[0]);
+			content.appendChild(doc.getElementById('wrapper'))
+		});
 	};
 	
 	private getModalInfo = () => {
