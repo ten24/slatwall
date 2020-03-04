@@ -104,4 +104,22 @@ property name="qualifierProgress" ormtype="integer";
 	    }
 	    return variables.promotionName;
 	}
+	
+	// Order (many-to-one)
+	public void function setOrder(required any order) {
+		variables.order = arguments.order;
+		if(isNew() or !arguments.order.hasAppliedPromotionMessage( this )) {
+			arrayAppend(arguments.order.getAppliedPromotionMessages(), this);
+		}
+	}
+	public void function removeOrder(any order) {
+		if(!structKeyExists(arguments, "order")) {
+			arguments.order = variables.order;
+		}
+		var index = arrayFind(arguments.order.getAppliedPromotionMessages(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.order.getAppliedPromotionMessages(), index);
+		}
+		structDelete(variables, "order");
+	}
 }
