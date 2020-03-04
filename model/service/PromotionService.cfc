@@ -507,10 +507,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	private void function clearPreviouslyAppliedPromotionMessages(required any order){
 		// Clear all previously applied promotions for order
-		var pa=arrayLen(arguments.order.getAppliedPromotionMessages());
+		var len=arrayLen(arguments.order.getAppliedPromotionMessages());
 		
-		for(pa; pa >= 1; pa--) {
-			arguments.order.getAppliedPromotionMessages()[pa].removeOrder();
+		for(var i = len; i >= 1; i--) {
+			arguments.order.getAppliedPromotionMessages()[i].removeOrder();
 		}
 	}
 	
