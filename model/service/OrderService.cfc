@@ -1836,11 +1836,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var orderTemplateItemCollectionList = this.getOrderTemplateItemCollectionList(); 
 		orderTemplateItemCollectionList.addFilter('orderTemplate.orderTemplateID', arguments.orderTemplate.getOrderTemplateID()); 
 		orderTemplateItemCollectionList.addFilter('sku.skuID', processObject.getSku().getSkuID());
-
+		var priceGroups = !isNull(arguments.orderTemplate.getAccount()) ? arguments.orderTemplate.getAccount().getPriceGroups() : [arguments.orderTemplate.getPriceGroup()];
 		var priceByCurrencyCode = arguments.processObject.getSku().getPriceByCurrencyCode(
 							currencyCode = arguments.orderTemplate.getCurrencyCode(),
 							quantity = arguments.processObject.getQuantity(),
-							priceGroups = 	arguments.orderTemplate.getAccount().getPriceGroups()
+							priceGroups = priceGroups
 						);
 						
 		if( IsNull(priceByCurrencyCode) ) {
@@ -2177,7 +2177,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			return;
 		}  
 		
-		if( arguments.account.getAccountID() != orderTemplate.getAccount().getAccountID() ) {
+		if( !isNull(orderTemplate.getAccount()) && arguments.account.getAccountID() != orderTemplate.getAccount().getAccountID() ) {
 			ArrayAppend(arguments.data.messages, {
 			    'orderTemplate': "OrderTemplate doesn't belong to the User"});
 			return; 

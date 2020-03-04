@@ -515,10 +515,12 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         param name="arguments.data.siteID" default="";
         param name="arguments.data.saveContext" default="";
         
-        if(getHibachiScope().getAccount().isNew() || isNull(arguments.data.orderTemplateSystemCode)){
+        var isUpgradedFlag = arguments.data.saveContext == "upgradeFlow" ? true : false;
+
+        if((getHibachiScope().getAccount().isNew() && !isUpgradedFlag)  || isNull(arguments.data.orderTemplateSystemCode)){
             return;
         }
-        
+
         var orderTemplate = getOrderService().newOrderTemplate();
         var processObject = orderTemplate.getProcessObject("create");
         var orderTypeID = getTypeService().getTypeBySystemCode(arguments.data.orderTemplateSystemCode).getTypeID();
@@ -537,7 +539,13 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         processObject.setOrderTemplateTypeID(orderTypeID);
         processObject.setFrequencyTermID(arguments.data.frequencyTermID);
-        processObject.setAccountID(getHibachiScope().getAccount().getAccountID());
+        
+        if(!isUpgradedFlag){
+            processObject.setAccountID(getHibachiScope().getAccount().getAccountID());
+        }else{
+            //if its a vip upgrade, we assign the VIP price group to the process object
+            processObject.setPriceGroup(getService('PriceGroupService').getPriceGroupByPriceGroupCode(3));
+        }
         
         if(arguments.data.orderTemplateSystemCode == 'ottSchedule'){
             processObject.setScheduleOrderNextPlaceDateTime(arguments.data.scheduleOrderNextPlaceDateTime);  

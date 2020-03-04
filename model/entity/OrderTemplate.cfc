@@ -119,6 +119,7 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	
 	//CUSTOM PROPERTIES BEGIN
 property name="lastSyncedDateTime" ormtype="timestamp";
+	property name="priceGroup" cfc="PriceGroup" fieldtype="many-to-one" fkcolumn="priceGroupID";
 	
 	//calculated properties
 	property name="calculatedCommissionableVolumeTotal" ormtype="integer";
@@ -131,7 +132,7 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 	property name="flexshipQualifiedOrdersForCalendarYearCount" persistent="false"; 
 	property name="qualifiesForOFYProducts" persistent="false";
 	property name="cartTotalThresholdForOFYAndFreeShipping" persistent="false";
-
+	
 
 //CUSTOM PROPERTIES END
 	public string function getEncodedJsonRepresentation(string nonPersistentProperties='subtotal,fulfillmentTotal,fulfillmentDiscount,total'){ 
@@ -244,7 +245,7 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 			var orderTemplateItemRecords = orderTemplateItemCollectionList.getRecords(); 
 
 			variables.subtotal = 0; 
-
+	
 			for(var orderTemplateItem in orderTemplateItemRecords){ 
 				var sku = getService('SkuService').getSku(orderTemplateItem['sku_skuID']);
 				if(isNull(sku)){
@@ -554,5 +555,30 @@ public boolean function getAccountIsNotInFlexshipCancellationGracePeriod(){
 	public boolean function userCanCancelFlexship(){
 		return getAccount().getAccountType() == 'MarketPartner' || getHibachiScope().getAccount().getAdminAccountFlag();
 	}
-//CUSTOM FUNCTIONS END
+	
+	public numeric function getSubtotal(){
+		if(!structKeyExists(variables, 'subtotal')){
+			var orderTemplateItemCollectionList = this.getOrderTemplateItemsCollectionList();
+			orderTemplateItemCollectionList.setDisplayProperties('orderTemplateItemID,quantity,sku.skuID');
+		
+			var orderTemplateItemRecords = orderTemplateItemCollectionList.getRecords(); 
+
+			variables.subtotal = 0; 
+			
+			for(var orderTemplateItem in orderTemplateItemRecords){ 
+				var sku = getService('SkuService').getSku(orderTemplateItem['sku_skuID']);
+				if(isNull(sku)){
+					continue; 
+				} 
+				
+				if(!isNull(this.getAccount())){
+					variables.subtotal += sku.getPriceByCurrencyCode(currencyCode=this.getCurrencyCode(), accountID=this.getAccount().getAccountID())*orderTemplateItem['quantity']; 	
+				}else if(!isNull(this.getPriceGroup())){
+					variables.subtotal += sku.getPriceByCurrencyCode(currencyCode=this.getCurrencyCode(), priceGroups = [this.getPriceGroup()])*orderTemplateItem['quantity']; 	
+				}
+			} 
+		}
+		return variables.subtotal; 
+	}
+	//CUSTOM FUNCTIONS END
 }

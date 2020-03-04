@@ -47,7 +47,8 @@ Notes:
 
 */
 component output="false" accessors="true" extends="Slatwall.model.process.OrderTemplate_Create" {
-
+	property name="priceGroup" cfc="PriceGroup";
+	
 	public any function getAccount() {
 	
 		if( !StructKeyExists(variables, 'account') ) { 

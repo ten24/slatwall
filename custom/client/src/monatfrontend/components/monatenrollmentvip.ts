@@ -143,17 +143,14 @@ class VIPController {
 		});
 	};
 
-    public createOrderTemplate = (orderTemplateSystemCode:string = 'ottSchedule') => {
+    public createOrderTemplate = (orderTemplateSystemCode:string = 'ottSchedule',context="upgradeFlow") => {
         this.loading = true;
-        this.orderTemplateService.createOrderTemplate(orderTemplateSystemCode).then(result => {
-        	if(!result.orderTemplate) return;
+        this.orderTemplateService.createOrderTemplate(orderTemplateSystemCode,context).then(result => {
         	this.flexshipID = result.orderTemplate;
-        	this.observerService.notify('flexshipCreated', this.flexshipID);
-        	if(this.isNotSafariPrivate && this.flexshipID){
-        		localStorage.setItem('flexshipID', this.flexshipID);
-        	}
-        	
             this.loading = false;
+            if(result.orderTemplate?.length){
+    			this.observerService.notify('onNext');
+            }
         });
     }
     

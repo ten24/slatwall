@@ -172,8 +172,13 @@ component extends="Slatwall.model.service.OrderService" {
     		    arguments.orderTemplate.setBillingAccountAddress(account.getPrimaryAddress());
     		}
 		}
+		
+		if( arguments.context != "upgradeFlow"){
+			arguments.orderTemplate.setAccount(account);
+		}else if(!isNull(arguments.processObject.getPriceGroup())){
+			arguments.orderTemplate.setPriceGroup(arguments.processObject.getPriceGroup());
+		}
 	
-		arguments.orderTemplate.setAccount(account);
 		arguments.orderTemplate.setSite( arguments.processObject.getSite() );
 		arguments.orderTemplate.setCurrencyCode( arguments.processObject.getCurrencyCode() );
 		arguments.orderTemplate.setOrderTemplateStatusType(getTypeService().getTypeBySystemCode('otstDraft'));
@@ -1520,4 +1525,72 @@ component extends="Slatwall.model.service.OrderService" {
 		    return records[1]['order_orderOpenDateTime'];
 		}
 	}
+	
+	public any function saveOrderTemplateItem(required any orderTemplateItem, struct data={}){
+		writeDump('I was called too')
+		arguments.orderTemplateItem = super.saveEntity(arguments.orderTemplateItem, arguments.data);
+		var orderTemplate = arguments.orderTemplateItem.getOrderTemplate(); 
+		if(isNull(orderTemplate)) return;
+		
+		if(isNull(orderTemplate.getPriceGroup())){
+			orderTemplate = this.saveOrderTemplate(orderTemplate); 
+		}else{
+			orderTemplate = this.saveOrderTemplate(entity = orderTemplate, context = 'upgradeFlow'); 
+		}
+			
+		if(orderTemplate.hasErrors()){
+			arguments.orderTemplateItem.addErrors(orderTemplate.getErrors());
+		} 
+	
+		return arguments.orderTemplateItem;
+	} 
+	
+	
+	public any function processOrderTemplate_addOrderTemplateItem(required any orderTemplate, required any processObject, required struct data={}){
+
+		var orderTemplateItemCollectionList = this.getOrderTemplateItemCollectionList(); 
+		orderTemplateItemCollectionList.addFilter('orderTemplate.orderTemplateID', arguments.orderTemplate.getOrderTemplateID()); 
+		orderTemplateItemCollectionList.addFilter('sku.skuID', processObject.getSku().getSkuID());
+		var priceGroups = !isNull(arguments.orderTemplate.getAccount()) ? arguments.orderTemplate.getAccount().getPriceGroups() : [arguments.orderTemplate.getPriceGroup()];
+		var priceByCurrencyCode = arguments.processObject.getSku().getPriceByCurrencyCode(
+							currencyCode = arguments.orderTemplate.getCurrencyCode(),
+							quantity = arguments.processObject.getQuantity(),
+							priceGroups = priceGroups
+						);
+						
+		if( IsNull(priceByCurrencyCode) ) {
+			arguments.orderTemplate.addError('priceByCurrencyCode', 
+				rbKey('validate.processOrderTemplate_addOrderTemplateItem.sku.hasPriceByCurrencyCode')
+			);
+		
+			return arguments.orderTemplate; 	
+		}
+		
+		if(orderTemplateItemCollectionList.getRecordsCount() == 0){
+			
+			var newOrderTemplateItem = this.newOrderTemplateItem();
+
+			newOrderTemplateItem.setSku(arguments.processObject.getSku()); 
+			newOrderTemplateItem.setQuantity(arguments.processObject.getQuantity()); 
+			newOrderTemplateItem.setTemporaryFlag(arguments.processObject.getTemporaryFlag()); 
+			newOrderTemplateItem.setOrderTemplate(arguments.orderTemplate);	
+			newOrderTemplateItem = this.saveOrderTemplateItem(newOrderTemplateItem);
+		
+		} else {
+			
+			var orderTemplateItem = this.getOrderTemplateItem(orderTemplateItemCollectionList.getPageRecords()[1]['orderTemplateItemID']);
+			var baseQuantity = orderTemplateItem.getQuantity();
+			
+			orderTemplateItem.setQuantity(arguments.processObject.getQuantity()); 
+			
+			if(!isNull(baseQuantity)){
+				orderTemplateItem.setQuantity(baseQuantity + arguments.processObject.getQuantity()); 
+			}
+		
+			orderTemplateItem = this.saveOrderTemplateItem(orderTemplateItem);
+		}
+
+		return arguments.orderTemplate; 	
+	} 
+
 }
