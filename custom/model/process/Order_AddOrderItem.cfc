@@ -105,6 +105,7 @@ component accessors="true" extends="Slatwall.model.process.Order_AddOrderItem" {
 	 public boolean function marketPartnerValidationMaxOrderAmount(){
 	 	var order = this.getOrder();
 	 	var site = order.getOrderCreatedSite();
+	 	if(isNull(order.getOrderCreatedSite())) return true; 
 	 	
 	    var initialEnrollmentPeriodForMarketPartner = site.setting("siteInitialEnrollmentPeriodForMarketPartner");//7
         var maxAmountAllowedToSpendDuringInitialEnrollmentPeriod = site.setting("siteMaxAmountAllowedToSpendInInitialEnrollmentPeriod");//200
