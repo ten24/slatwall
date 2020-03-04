@@ -408,9 +408,22 @@ component extends="Slatwall.model.service.OrderService" {
 		
 		orderTemplateItemCollection.addFilter('orderTemplate.orderTemplateType.typeID', arguments.data.orderTemplateTypeID);
 		orderTemplateItemCollection.addFilter('orderTemplate.orderTemplateID', arguments.data.orderTemplateID);
-		orderTemplateItemCollection.addFilter('orderTemplate.account.accountID', arguments.account.getAccountID());
+		//orderTemplateItemCollection.addFilter('orderTemplate.account.accountID', arguments.account.getAccountID());
 
 		return orderTemplateItemCollection;	
+	} 
+	
+	public array function getOrderTemplateItemsForAccount(required struct data, any account=getHibachiScope().getAccount()){
+        param name="arguments.data.pageRecordsShow" default=5;
+        param name="arguments.data.currentPage" default=1;
+        param name="arguments.data.orderTemplateID" default="";
+		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; 
+
+		if(!len(arguments.data.orderTemplateID)){
+			return []; 
+		}
+
+		return getOrderTemplateItemCollectionForAccount(argumentCollection=arguments).getPageRecords(); 
 	} 
 
     private void function updateOrderStatusBySystemCode(required any order, required string systemCode) {

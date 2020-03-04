@@ -32,16 +32,6 @@ class HybridCartController {
 	}
 
 	public $onInit = () => {
-		
-		if(this.isEnrollment){
-			this.observerService.attach(ID => {
-				this.getFlexship(ID)
-			},'flexshipCreated');
-			
-			if(localStorage.flexshipID){
-				this.getFlexship(localStorage.flexshipID);
-			}
-		}
 	}
 	
 	public toggleCart():void{
@@ -85,6 +75,7 @@ class HybridCartController {
 		let extraProperties = "cartTotalThresholdForOFYAndFreeShipping";
 		this.orderTemplateService.getOrderTemplateDetails(ID, extraProperties).then(data => {
 			if((data.orderTemplate as GenericTemplate) ){
+				console.log(data.orderTemplate)
 				this.orderTemplate = data.orderTemplate;
 			} else {
 				throw(data);

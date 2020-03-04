@@ -149,6 +149,7 @@ class VIPController {
         	this.flexshipID = result.orderTemplate;
             this.loading = false;
             if(result.orderTemplate?.length){
+            	document.cookie = "flexshipID=" + result.orderTemplate ;
     			this.observerService.notify('onNext');
             }
         });

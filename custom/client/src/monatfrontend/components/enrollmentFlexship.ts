@@ -17,14 +17,19 @@ class EnrollmentFlexshipController {
 	}
 
 	public $onInit = () => {
-		if(this.orderTemplate){
-			this.orderTemplateID = this.orderTemplate.orderTemplateID;
-		}
+		this.getFlexship();
 	}
 	
 	public getFlexship():void {
-		let ID = this.orderTemplateID;
-		this.hybridCart.getFlexship(ID)
+		if(!this.orderTemplateID){
+			let cookieString = document.cookie;
+			let cookieArray = cookieString.split(';')
+			let flexshipIDArray = <Array<string>>cookieArray.filter( el => el.search('flexshipID') > -1 );
+			if(!flexshipIDArray.length) return;
+			this.orderTemplateID = flexshipIDArray[0].substr(flexshipIDArray[0].indexOf('=') + 1);
+		}
+
+		this.hybridCart.getFlexship(this.orderTemplateID);
 	}
 	
     public removeOrderTemplateItem = (item:GenericOrderTemplateItem) => {
