@@ -36,6 +36,12 @@ class MonatProductModalController {
 		}
 		
 		this.$http(httpOptions).then(res => {
+			//error handeling
+			if(res.status !== 200 ){
+				alert('there was an error');
+				return;
+			} 
+			
 			let content = <HTMLDivElement>document.getElementById('product-modal')!;
 			let parser = new DOMParser();
 			let doc = parser.parseFromString(res.data, "text/html");
@@ -43,7 +49,7 @@ class MonatProductModalController {
 			let header = <HTMLElement><any>doc.getElementsByTagName('header');
 			footer[0].parentNode.removeChild(footer[0]);
 			header[0].parentNode.removeChild(header[0]);
-			content.appendChild(doc.getElementById('wrapper'))
+			content.appendChild(doc.getElementById('wrapper'));
 		});
 	};
 	
@@ -137,6 +143,8 @@ class MonatProductModalController {
 	};
 
 	public closeModal = () => {
+		let content = <HTMLDivElement>document.getElementById('product-modal')!;
+		content.innerHTML = '';
 		console.log('closing modal');
 		this.close(null); // close, but give 100ms to animate
 	};
