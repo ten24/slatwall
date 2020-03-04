@@ -1526,26 +1526,6 @@ component extends="Slatwall.model.service.OrderService" {
 		}
 	}
 	
-	public any function saveOrderTemplateItem(required any orderTemplateItem, struct data={}){
-		writeDump('I was called too')
-		arguments.orderTemplateItem = super.saveEntity(arguments.orderTemplateItem, arguments.data);
-		var orderTemplate = arguments.orderTemplateItem.getOrderTemplate(); 
-		if(isNull(orderTemplate)) return;
-		
-		if(isNull(orderTemplate.getPriceGroup())){
-			orderTemplate = this.saveOrderTemplate(orderTemplate); 
-		}else{
-			orderTemplate = this.saveOrderTemplate(entity = orderTemplate, context = 'upgradeFlow'); 
-		}
-			
-		if(orderTemplate.hasErrors()){
-			arguments.orderTemplateItem.addErrors(orderTemplate.getErrors());
-		} 
-	
-		return arguments.orderTemplateItem;
-	} 
-	
-	
 	public any function processOrderTemplate_addOrderTemplateItem(required any orderTemplate, required any processObject, required struct data={}){
 
 		var orderTemplateItemCollectionList = this.getOrderTemplateItemCollectionList(); 
