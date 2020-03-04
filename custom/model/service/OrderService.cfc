@@ -1585,5 +1585,28 @@ component extends="Slatwall.model.service.OrderService" {
 
 		return arguments.orderTemplate; 	
 	} 
-
+	
+	public any function getOrderTemplateItemForAccount(required struct data, any account=getHibachiScope().getAccount()){
+        param name="arguments.data.orderTemplateItemID" default="";
+	
+		if(len(arguments.data.orderTemplateItemID) == 0) {
+			ArrayAppend(arguments.data.messages, 'data.orderTemplateItemID must be set');
+			return;
+		} 
+		
+		var orderTemplateItem = this.getOrderTemplateItem(arguments.data.orderTemplateItemID)
+		
+		if( isNull(orderTemplateItem) ){
+			ArrayAppend(arguments.data.messages, 'no orderTemplateItem found for orderTemplateItemID: #arguments.data.orderTemplateItemID#');
+			return;
+		}  
+		
+		if( isNull(orderTemplateItem.getOrderTemplate().getPriceGroup()) && arguments.account.getAccountID() != orderTemplateItem.getOrderTemplate().getAccount().getAccountID() ) {
+			ArrayAppend(arguments.data.messages, "orderTemplateItem doesn't belong to the User");
+			return; 
+		}
+	
+		return orderTemplateItem; 
+	} 
+	
 }
