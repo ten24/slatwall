@@ -1966,7 +1966,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		if(len(arguments.governmentIdentificationNumber)) {
 			arguments.governmentIdentification.setGovernmentIdentificationLastFour( right(arguments.governmentIdentificationNumber, 4) );
 		} else {
-			arguments.governmentIdentification.setGovernmentIdentificationLastFour(javaCast("null", ""));
+			arguments.governmentIdentification.setGovernmentIdentificationLastFour();
 			arguments.governmentIdentification.setGovernmentIdentificationNumberEncrypted(javaCast("null", ""));
 		}
 	}
