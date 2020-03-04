@@ -69,75 +69,83 @@ Notes:
 
 <cfoutput>
 	<hb:HibachiEntityDetailForm object="#rc.order#" edit="#rc.edit#">
+		
 		<hb:HibachiEntityActionBar type="detail" object="#rc.order#" edit="#rc.edit#" deleteQueryString="#deleteQueryString#">
-
-			<!--- Place Order --->
-			<cfif rc.order.getOrderStatusType().getSystemCode() eq "ostNotPlaced">
-				<cfif len(rc.order.getOrderRequirementsList())>
-					<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="placeOrder" queryString="sRedirectAction=admin:entity.detailorder" type="list" modal="true" hideDisabled="false" />
-				<cfelse>
-					<hb:HibachiProcessCaller action="admin:entity.processOrder" entity="#rc.order#" processContext="placeOrder" type="list" hideDisabled="false" />
+				<!--- Place Order --->
+				<cfif rc.order.getOrderStatusType().getSystemCode() eq "ostNotPlaced">
+					<cfif len(rc.order.getOrderRequirementsList())>
+						<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="placeOrder" queryString="sRedirectAction=admin:entity.detailorder" type="list" modal="true" hideDisabled="false" />
+					<cfelse>
+						<hb:HibachiProcessCaller action="admin:entity.processOrder" entity="#rc.order#" processContext="placeOrder" type="list" hideDisabled="false" />
+					</cfif>
 				</cfif>
-			</cfif>
-
-			<!--- Change Status (onHold, close, cancel, offHold) --->
-			<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="placeOnHold" type="list" modal="true" />
-			<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="takeOffHold" type="list" modal="true" />
-			<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="cancelOrder" type="list" modal="true" />
-			<cfif rc.order.getOrderType().getSystemCode() EQ 'otSalesOrder'>
-				<hb:HibachiProcessCaller action="admin:entity.processOrder" entity="#rc.order#" processContext="retryPayment" type="list" />
-			</cfif>
-			<cfif (rc.order.getOrderType().getSystemCode() eq "otReturnOrder"
-					AND rc.order.getOrderStatusType().getTypeCode() eq 'rmaReceived')
-			>
-				<cfset local.inputNeeded = false />
-				<cfloop array=#rc.order.getOrderItems()# index="orderItem">
-				    <cfif orderItem.getQuantity() NEQ orderItem.getQuantityReceived()>
-				        <cfset local.inputNeeded = true >
-			        </cfif>
-		        </cfloop>
-		        <cfif local.inputNeeded>
-					<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="approveReturn" type="list" modal="true"/>
-				<cfelse>
-					<hb:HibachiProcessCaller action="admin:entity.processOrder" entity="#rc.order#" processContext="approveReturn" type="list"/>
+	
+				<!--- Change Status (onHold, close, cancel, offHold) --->
+				<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="placeOnHold" type="list" modal="true" />
+				<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="takeOffHold" type="list" modal="true" />
+				<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="cancelOrder" type="list" modal="true" />
+				
+				<cfif rc.order.getOrderType().getSystemCode() EQ 'otSalesOrder'>
+					<hb:HibachiProcessCaller action="admin:entity.processOrder" entity="#rc.order#" processContext="retryPayment" type="list" />
 				</cfif>
-			</cfif>
-			<cfif 
-				( rc.order.getOrderType().getSystemCode() eq 'otReturnOrder'
-					AND rc.order.getOrderStatusType().getTypeCode() eq 'rmaApproved'
-				) OR rc.order.getOrderType().getSystemCode() eq 'otRefundOrder'
-			>
-				<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="releaseCredits" type="list" modal="true"/>
-			</cfif>
-			<hb:HibachiProcessCaller action="admin:entity.processOrder" entity="#rc.order#" processContext="updateStatus" type="list" />
-			<hb:HibachiProcessCaller action="admin:entity.processOrder" entity="#rc.order#" processContext="updateOrderAmounts" type="list" />
-			
-			<!--- Reopen a placed order --->
-			<cfif rc.order.getOrderStatusType().getSystemCode() eq "ostClosed">
-				<hb:HibachiProcessCaller action="admin:entity.processOrder" entity="#rc.order#" processContext="reopenOrder" type="list" hideDisabled="false" />
-			</cfif>
-			
-			<li class="divider"></li>
-			
-			<!--- Create Return --->
-			<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="createReturn" queryString="orderTypeCode=otReturnOrder" type="list" text="#getHibachiScope().rbKey('admin.entity.createreturnorder_nav.return')#" />
-			<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="createReturn" queryString="orderTypeCode=otExchangeOrder" type="list" text="#getHibachiScope().rbKey('admin.entity.createreturnorder_nav.exchange')#" />
-			<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="createReturn" queryString="orderTypeCode=otReplacementOrder" type="list" text="#getHibachiScope().rbKey('admin.entity.createreturnorder_nav.replacement')#" />
-			<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="createReturn" queryString="orderTypeCode=otRefundOrder" type="list" text="#getHibachiScope().rbKey('admin.entity.createreturnorder_nav.refund')#" />
-
-			<li class="divider"></li>
-
-			<!--- Add Elements --->
-			<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="addOrderPayment" type="list" modal="true" hideDisabled="false" />
-			<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="addPromotionCode" type="list" modal="true" />
-			<hb:HibachiActionCaller action="admin:entity.createcomment" querystring="orderID=#rc.order.getOrderID()#&redirectAction=#request.context.slatAction#" modal="true" type="list" />
-
-			<li class="divider"></li>
-
-			<!--- Duplicate --->
-			<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="duplicateOrder" type="list" modal="true" />
-		</hb:HibachiEntityActionBar>
-
+				
+				<cfif (rc.order.getOrderType().getSystemCode() eq "otReturnOrder"
+						AND rc.order.getOrderStatusType().getTypeCode() eq 'rmaReceived')
+				>
+					<cfset local.inputNeeded = false />
+					<cfloop array=#rc.order.getOrderItems()# index="orderItem">
+					    <cfif orderItem.getQuantity() NEQ orderItem.getQuantityReceived()>
+					        <cfset local.inputNeeded = true >
+				        </cfif>
+			        </cfloop>
+			        <cfif local.inputNeeded>
+						<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="approveReturn" type="list" modal="true"/>
+					<cfelse>
+						<hb:HibachiProcessCaller action="admin:entity.processOrder" entity="#rc.order#" processContext="approveReturn" type="list"/>
+					</cfif>
+				</cfif>
+				<cfif 
+					( rc.order.getOrderType().getSystemCode() eq 'otReturnOrder'
+						AND rc.order.getOrderStatusType().getTypeCode() eq 'rmaApproved'
+					) OR rc.order.getOrderType().getSystemCode() eq 'otRefundOrder'
+				>
+					<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="releaseCredits" type="list" modal="true"/>
+				</cfif>
+				<hb:HibachiProcessCaller action="admin:entity.processOrder" entity="#rc.order#" processContext="updateStatus" type="list" />
+				<hb:HibachiProcessCaller action="admin:entity.processOrder" entity="#rc.order#" processContext="updateOrderAmounts" type="list" />
+				
+				<!--- Reopen a placed order --->
+				<cfif rc.order.getOrderStatusType().getSystemCode() eq "ostClosed">
+					<hb:HibachiProcessCaller action="admin:entity.processOrder" entity="#rc.order#" processContext="reopenOrder" type="list" hideDisabled="false" />
+				</cfif>
+				
+				<li class="divider"></li>
+				
+				<!--- Create Return --->
+				<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="createReturn" queryString="orderTypeCode=otReturnOrder" type="list" text="#getHibachiScope().rbKey('admin.entity.createreturnorder_nav.return')#" />
+				<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="createReturn" queryString="orderTypeCode=otExchangeOrder" type="list" text="#getHibachiScope().rbKey('admin.entity.createreturnorder_nav.exchange')#" />
+				<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="createReturn" queryString="orderTypeCode=otReplacementOrder" type="list" text="#getHibachiScope().rbKey('admin.entity.createreturnorder_nav.replacement')#" />
+				<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="createReturn" queryString="orderTypeCode=otRefundOrder" type="list" text="#getHibachiScope().rbKey('admin.entity.createreturnorder_nav.refund')#" />
+	
+				<li class="divider"></li>
+	
+				<!--- Add Elements --->
+				<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="addOrderPayment" type="list" modal="true" hideDisabled="false" />
+				<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="addPromotionCode" type="list" modal="true" />
+				<hb:HibachiActionCaller action="admin:entity.createcomment" querystring="orderID=#rc.order.getOrderID()#&redirectAction=#request.context.slatAction#" modal="true" type="list" />
+	
+				<li class="divider"></li>
+	
+				<!--- Duplicate --->
+				<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="duplicateOrder" type="list" modal="true" />
+				
+				<li class="divider"></li>
+		
+				<hb:HibachiProcessCaller action="admin:entity.processOrder" entity="#rc.order#" processContext="placeInProcessingOne" type="list" hideDisabled="true" />
+				<hb:HibachiProcessCaller action="admin:entity.processOrder" entity="#rc.order#" processContext="placeInProcessingTwo" type="list" hideDisabled="true"/>
+			</hb:HibachiEntityActionBar>
+		
+		
 		<!--- Tabs --->
 		<hb:HibachiEntityDetailGroup object="#rc.order#">
 			<hb:HibachiEntityDetailItem view="admin:entity/ordertabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />

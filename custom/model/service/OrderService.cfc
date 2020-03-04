@@ -689,12 +689,12 @@ component extends="Slatwall.model.service.OrderService" {
 	    return order;
 	}
 
-	public any function processOrder_placeInProcessssingOne(required any order, struct data) {
+	public any function processOrder_placeInProcessingOne(required any order, struct data) {
 		this.updateOrderStatusBySystemCode(arguments.order, "ostProcessingOne");
 		return arguments.order;
 	}
 	
-	public any function processOrder_placeInProcessssingTwo(required any order, struct data) {
+	public any function processOrder_placeInProcessingTwo(required any order, struct data) {
 		this.updateOrderStatusBySystemCode(arguments.order, "ostProcessingTwo");
 		return arguments.order;
 	}
