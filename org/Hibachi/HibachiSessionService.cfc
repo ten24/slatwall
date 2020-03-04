@@ -82,7 +82,6 @@ component output="false" accessors="true" extends="HibachiService"  {
 		if (!isNull(currentRequestSite) && len(currentRequestSite.getSiteCode())){
 			cookiePrefix &= "-" & currentRequestSite.getSiteCode();
 		}
-		logHibachi('getCookiePrefix: #cookiePrefix#', true);
 		return cookiePrefix;
 	}
 	
@@ -91,7 +90,8 @@ component output="false" accessors="true" extends="HibachiService"  {
 		
 		var currentRequestSite = getHibachiScope().getCurrentRequestSite();
 		var sessionValue = "sessionID";
-		var cookiePrefix = getCookiePrefix(currentRequestSite);
+		
+		var cookiePrefix = getCookiePrefix(currentRequestSite ?: javaCast("null",""));
 		
 		if (!isNull(currentRequestSite)){
 			sessionValue = sessionvalue & "#currentRequestSite.getSiteCode()#";
@@ -109,7 +109,6 @@ component output="false" accessors="true" extends="HibachiService"  {
 		
 		// Check for non-persistent cookie.
 		if( len(getHibachiScope().getSessionValue(sessionValue)) ) {
-			
 			var sessionEntity = this.getSession( getHibachiScope().getSessionValue(sessionValue), true);
 			
 		} else if( (StructKeyExists(request,'context') && StructKeyExists(request.context, "jsonRequest") && request.context.jsonRequest && StructKeyExists(request.context.deserializedJsonData, "request_token") ) || StructKeyExists(requestHeaders.headers, "request_token") ){
