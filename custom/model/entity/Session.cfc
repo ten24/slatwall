@@ -7,6 +7,12 @@ component{
 		if(structKeyExists(variables, 'countryCode')){
 			return variables.countryCode;
 		}
+		
+		if(getHibachiScope().getApplicationValue('applicationEnvironment') == 'local'){
+		    variables.countryCode = 'US';
+			return variables.countryCode;
+		}
+		
 		if(getHibachiScope().hasSessionValue('requestCountryOrigin')){
 		   variables.countryCode = getHibachiScope().getSessionValue('requestCountryOrigin');
 		   return variables.countryCode;
@@ -14,6 +20,7 @@ component{
 		
 		var currentIPAddress = listLast(getRemoteAddress());
 		if(len(currentIPAddress)){
+		    dd(currentIPAddress);
 			var ips_parts = ListToArray(currentIPAddress, ".");
 			var ipNumber =   16777216 * ips_parts[1] + 65536 * ips_parts[2] + 256 * ips_parts[3] + ips_parts[4];
 			var geoIpQuery = new query();
@@ -23,7 +30,7 @@ component{
 			if(queryResult.recordCount){
 				variables.countryCode = queryResult.country_code;
 				getHibachiScope().setSessionValue('requestCountryOrigin', variables.countryCode);
-				return variables.countryCode
+				return variables.countryCode;
 			}else{
 			    getHibachiScope().setSessionValue('requestCountryOrigin', 'UNK');
 			}
