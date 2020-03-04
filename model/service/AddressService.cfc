@@ -53,6 +53,16 @@ component extends="HibachiService" accessors="true" output="false" {
 	property name="countryCodeOptions" type="array";
 	
 	// ===================== START: Logical Methods ===========================
+	
+	public any function saveAddress(required any address, boolean verifyAddressFlag=false){
+		arguments.address = super.saveAddress(arguments.address);
+		
+		if(!arguments.address.hasErrors() && arguments.verifyAddressFlag){
+			verifyAddressByID(arguments.address);
+		}
+		return arguments.address;
+	}
+	
 	public boolean function isAddressInZoneByZoneID(required any addressZoneID, required any address) {
 		var addressZone = this.getAddressZoneByAddressZoneID(addressZoneID);
 		return this.isAddressInZone(arguments.address, addressZone);
@@ -210,10 +220,6 @@ component extends="HibachiService" accessors="true" output="false" {
 			}
 		}
 		addressVerificationStruct['address'] = arguments.addressStruct;
-		this.saveAddress(address);
-		
-		//TODO: remove
-		logHibachi(serializeJSON(addressVerificationStruct),true);
 		
 		return addressVerificationStruct;
 		
