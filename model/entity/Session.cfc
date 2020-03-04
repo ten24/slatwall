@@ -225,18 +225,18 @@ public any function getCountryCode(){
 		}
 		
 		if(getHibachiScope().getApplicationValue('applicationEnvironment') == 'local'){
-		    variables.countryCode = 'US';
+			variables.countryCode = 'US';
 			return variables.countryCode;
 		}
 		
 		if(getHibachiScope().hasSessionValue('requestCountryOrigin')){
-		   variables.countryCode = getHibachiScope().getSessionValue('requestCountryOrigin');
-		   return variables.countryCode;
+			variables.countryCode = getHibachiScope().getSessionValue('requestCountryOrigin');
+			return variables.countryCode;
 		}
 		
 		var currentIPAddress = listLast(getRemoteAddress());
 		if(len(currentIPAddress)){
-		    dd(currentIPAddress);
+
 			var ips_parts = ListToArray(currentIPAddress, ".");
 			var ipNumber =   16777216 * ips_parts[1] + 65536 * ips_parts[2] + 256 * ips_parts[3] + ips_parts[4];
 			var geoIpQuery = new query();
@@ -248,7 +248,7 @@ public any function getCountryCode(){
 				getHibachiScope().setSessionValue('requestCountryOrigin', variables.countryCode);
 				return variables.countryCode;
 			}else{
-			    getHibachiScope().setSessionValue('requestCountryOrigin', 'UNK');
+				getHibachiScope().setSessionValue('requestCountryOrigin', 'UNK');
 			}
 		}
 		return 'UNK';
