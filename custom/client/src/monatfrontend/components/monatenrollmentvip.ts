@@ -31,13 +31,23 @@ class VIPController {
 	public addedItemToCart;
 	public defaultTerm;
 	public termMap = {};
+	public isInitialized = false;
 	
 	// @ngInject
 	constructor(public publicService, public observerService, public monatService, public orderTemplateService) {
 	}
 
 	public $onInit = () => {
-		this.getCountryCodeOptions();
+		
+		this.publicService.doAction('setUpgradeOnOrder', {upgradeType: 'VIP'}).then(res=>{
+			this.isInitialized = true;
+			this.getProductList();	
+			this.getCountryCodeOptions();
+			this.getFrequencyTermOptions();
+		});
+	}
+	
+	public getFrequencyTermOptions = ():void =>{
 		this.publicService.doAction('getFrequencyTermOptions').then(response => {
 			this.frequencyTerms = response.frequencyTermOptions;
 			this.publicService.model = {};
@@ -47,48 +57,7 @@ class VIPController {
 					this.publicService.model.term = term;
 				}
 			}
-		})
-		
-		//checks to local storage in case user has refreshed
-		if(localStorage.getItem('shippingAddressID')){ 
-			this.holdingShippingAddressID = localStorage.getItem('shippingAddressID');
-		}
-		
-		if(localStorage.getItem('shippingMethodID')){
-			this.holdingShippingMethodID = localStorage.getItem('shippingMethodID');
-		}
-				
-		if(localStorage.getItem('flexshipDayOfMonth')){
-    		this.flexshipDeliveryDate = localStorage.getItem('flexshipDayOfMonth');
-		}
-		
-		if(localStorage.getItem('flexshipFrequency')){
-	    	this.flexshipFrequencyName = localStorage.getItem('flexshipFrequency');
-		}
-		
-		if(localStorage.getItem('flexshipID')){
-	    	this.flexshipID = localStorage.getItem('flexshipID');
-	    	this.getProductList();
-		}
-		
-    	this.observerService.attach(this.getFlexshipDetails,"lastStep"); 
-    	this.observerService.attach(this.getProductList,"createSuccess");
-		this.observerService.attach(this.showAddToCartMessage, 'addOrderItemSuccess'); 
-
-		this.localStorageCheck(); 
-		
-		if(this.isNotSafariPrivate){
-			this.observerService.attach((accountAddress)=>{
-				localStorage.setItem('shippingAddressID',accountAddress.accountAddressID); 
-				this.holdingShippingAddressID = accountAddress.accountAddressID;
-			}, 'shippingAddressSelected');
-			
-			this.observerService.attach((shippingMethod)=>{
-				localStorage.setItem('shippingMethodID',shippingMethod.shippingMethodID);
-				this.holdingShippingMethodID = shippingMethod.shippingMethodID;
-			}, 'shippingMethodSelected');			
-		}
-	
+		});
 	}
 
 	public adjustInputFocuses = () => {
@@ -166,7 +135,7 @@ class VIPController {
 	public getProductList = () => {
 		this.loading = true;
 		
-		this.publicService.doAction('getProductsByCategoryOrContentID').then((result) => {
+		this.publicService.doAction('getproductsByCategoryOrContentID', {priceGroupCode: 3}).then((result) => {
             this.productList = result.productList;
             this.recordsCount = result.recordsCount;
 			this.observerService.notify('PromiseComplete');
