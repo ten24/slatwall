@@ -21,6 +21,8 @@ class UpgradeMPController {
 	public currentDate: any;
 	public productRecordsCount:any;
 	
+	public loadingBundles: boolean = false;
+	
 	// @ngInject
 	constructor(public publicService, public observerService, public monatService) {}
 	
@@ -93,10 +95,13 @@ class UpgradeMPController {
 	}
 
 	public getStarterPacks = () => {
+		this.loadingBundles = false;
+		
 		this.publicService
 			.doAction('getStarterPackBundleStruct', { contentID: this.contentId })
 			.then((data) => {
 				this.bundles = data.bundles;
+				this.loadingBundles = true;
 			});
 	};
 
@@ -136,10 +141,11 @@ class UpgradeMPController {
 		}
 	};
 
-	public selectBundle = (bundleID) => {
+	public selectBundle = ( bundleID, $event ) => {
+		$event.preventDefault();
+		
 		this.selectedBundleID = bundleID;
 		this.bundleHasErrors = false;
-		this.openedBundle = null;
 	};
 
 	private stripHtml = (html) => {

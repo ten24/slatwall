@@ -238,11 +238,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 								// If there is not applied Price Group, or if this reward has the applied pricegroup as an eligible one then use priceExtended... otherwise use skuPriceExtended and then adjust the discount.
 								if( isNull(orderItem.getAppliedPriceGroup()) || arguments.promotionReward.hasEligiblePriceGroup( orderItem.getAppliedPriceGroup() ) ) {
 									// Calculate based on price, which could be a priceGroup price
-									var discountAmount = getDiscountAmount(arguments.promotionReward, orderItem.getPrice(), discountQuantity, orderItem.getCurrencyCode(), orderItem.getSku(), arguments.order.getAccount());
+									var discountAmount = getDiscountAmount(reward=arguments.promotionReward, price=orderItem.getPrice(), quantity=discountQuantity, currencyCode=orderItem.getCurrencyCode(), sku=orderItem.getSku(), account=arguments.order.getAccount());
 	
 								} else {
 									// Calculate based on skuPrice because the price on this item is a priceGroup price and we need to adjust the discount by the difference
-									var originalDiscountAmount = getDiscountAmount(arguments.promotionReward, orderItem.getSkuPrice(), discountQuantity, orderItem.getSku(), arguments.order.getAccount());
+									var originalDiscountAmount = getDiscountAmount(reward=arguments.promotionReward, price=orderItem.getSkuPrice(), quantity=discountQuantity, sku=orderItem.getSku(), account=arguments.order.getAccount());
 	
 									// Take the original discount they were going to get without a priceGroup and subtract the difference of the discount that they are already receiving
 									var discountAmount = val(getService('HibachiUtilityService').precisionCalculate(originalDiscountAmount - (orderItem.getExtendedSkuPrice() - orderItem.getExtendedPrice())));
@@ -1089,17 +1089,30 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var activePromotionRewardsWithSkuCollection = getPromotionDAO().getActivePromotionRewards( rewardTypeList="merchandise,subscription,contentAccess", promotionCodeList="", excludeRewardsWithQualifiers=true, site=arguments.orderItem.getOrder().getOrderCreatedSite());
 		var originalPrice = arguments.orderItem.getSkuPrice();
 		var currencyCode = arguments.orderItem.getCurrencyCode();
-		if(!isNull(arguments.orderItem.getOrder().getAccount())){
-			var accountID = arguments.orderItem.getOrder().getAccount().getAccountID();
-		}else{
-			var accountID = getHibachiScope().getAccount().getAccountID();	
-		}
+
+		var account = arguments.orderItem.getOrder().getAccount();
+
+        /*
+            Price group is prioritized as so: 
+                1.Order price group
+                2.Price group passed in as argument
+                3. Price group on account
+                4. Default to 2
+        
+        */
+        
+        if(!isNull(arguments.orderItem.getOrder().getPriceGroup())){ 
+            var priceGroup = arguments.orderItem.getOrder().getPriceGroup(); //order price group
+        }else if(!isNull(account) && !isNull(account.getPriceGroups()) && arrayLen(account.getPriceGroups())){ 
+            var priceGroup = account.getPriceGroups()[1]; //account price group
+        }else{
+        	var priceGroup = getService('priceGroupService').getPriceGroupByPriceGroupCode(2) // default to retail
+        }
+        
 		if(isNull(originalPrice)){
-			originalPrice = arguments.orderItem.getSku().getPriceByCurrencyCode(currencyCode=currencyCode,accountID=accountID);
-		}
-		if(isNull(originalPrice)){
-			originalPrice = arguments.orderItem.getPrice();
-		}
+			originalPrice = arguments.orderItem.getSku().getPriceByCurrencyCode(currencyCode= currencyCode, priceGroups=[priceGroup]);
+		} 
+
 
 		var priceDetails = getPriceDetailsForPromoRewards( promoRewards=activePromotionRewardsWithSkuCollection,
 														sku=arguments.orderItem.getSku(),
