@@ -56,9 +56,11 @@ component extends="HibachiService" accessors="true" output="false" {
 	
 	public any function saveAddress(required any address, boolean verifyAddressFlag=false){
 		arguments.address = super.saveAddress(arguments.address);
-		
+
 		if(!arguments.address.hasErrors() && arguments.verifyAddressFlag){
-			verifyAddressByID(arguments.address);
+			//Have to flush in order to get address struct
+			getHibachiScope().flushORMSession();
+			verifyAddressByID(arguments.address.getAddressID());
 		}
 		return arguments.address;
 	}
@@ -220,6 +222,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			}
 		}
 		addressVerificationStruct['address'] = arguments.addressStruct;
+		this.saveAddress(address);
 		
 		return addressVerificationStruct;
 		
