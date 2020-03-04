@@ -689,6 +689,16 @@ component extends="Slatwall.model.service.OrderService" {
 	    return order;
 	}
 
+	public any function processOrder_placeInProcessssingOne(required any order, struct data) {
+		this.updateOrderStatusBySystemCode(arguments.order, "ostProcessingOne");
+		return arguments.order;
+	}
+	
+	public any function processOrder_placeInProcessssingTwo(required any order, struct data) {
+		this.updateOrderStatusBySystemCode(arguments.order, "ostProcessingTwo");
+		return arguments.order;
+	}
+
 	public any function processOrderDelivery_markOrderUndeliverable(required any orderDelivery, struct data={}){ 
 		
 		var orderDeliveryStatusType = getService("TypeService").getTypeByTypeCode("odstUndeliverable");
