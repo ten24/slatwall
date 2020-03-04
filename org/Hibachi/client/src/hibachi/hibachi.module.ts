@@ -25,9 +25,11 @@ var hibachimodule = angular.module('hibachi',[
     paginationmodule.name,
     formmodule.name,
     validationmodule.name,
-    workflowmodule.name
-]).config([()=>{
-
+    workflowmodule.name,
+    'angularModalService'
+]).config(['ModalServiceProvider',(ModalServiceProvider)=>{
+    // to set a default close delay on modals
+	ModalServiceProvider.configureOptions({ closeDelay: 0 });
 }])
 .run(['$rootScope','publicService','$hibachi','localStorageService','isAdmin', ($rootScope, publicService, $hibachi, localStorageService, isAdmin)=> {
     $rootScope.hibachiScope = publicService;
