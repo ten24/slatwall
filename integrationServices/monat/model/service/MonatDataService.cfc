@@ -1485,4 +1485,31 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 
 	
 	}
+	
+	public any function updateGeoIPDatabase(required struct rc){
+	    
+	    var fileName = 'IP2LOCATION-LITE-DB1.CSV';
+	    var fullPath = '#getTempDirectory()##fileName#';
+	    var http = new Http(url = 'https://download.ip2location.com/lite/#fileName#.ZIP', method='GET');
+        http.setPath(getTempDirectory());
+        http.setFile(fileName & '.ZIP');
+        result = local.http.send().getPrefix();
+
+        Extract( 'zip', fullPath & '.ZIP', getTempDirectory() );
+	    if(!fileExists(fullPath)){
+	        writeDump('CSV Not Found.');
+	        abort;
+	    }
+	    
+	    var data = getService("HibachiDataService").loadQueryFromCSVFileWithColumnTypeList(
+	        pathToCSV=fullPath, 
+	        columnTypeList='Integer,Integer,VarChar,VarChar',
+	        useHeaderRow=false,  
+	        columnsList = 'ip_from,ip_to,country_code,country_name'
+        );
+        
+        getDAO('MonatDataDAO').updateGeoIPDatabase(data);
+	    
+	    writeDump('GeoIP Database Updated!'); abort;
+	}
 }
