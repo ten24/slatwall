@@ -203,7 +203,7 @@ component extends="HibachiService" accessors="true" output="false" {
 												.getIntegrationByIntegrationPackage(integrationID)
 													.getIntegrationCFC("Address")
 														.verifyAddress(arguments.addressStruct);
-				
+				addressVerificationStruct['address'] = arguments.addressStruct;
 				address.setVerificationJson(serializeJSON(addressVerificationStruct));
 				address.setVerificationCacheKey(cacheKey);
 			}
@@ -221,7 +221,7 @@ component extends="HibachiService" accessors="true" output="false" {
 				address.setIntegrationVerificationErrorMessage(addressVerificationStruct['message']);
 			}
 		}
-		addressVerificationStruct['address'] = arguments.addressStruct;
+
 		this.saveAddress(address);
 		
 		return addressVerificationStruct;

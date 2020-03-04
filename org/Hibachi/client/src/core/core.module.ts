@@ -51,6 +51,7 @@ import {OrdinalFilter} from "./filters/ordinal";
 //directives
 //  components
 import {SWActionCaller} from "./components/swactioncaller";
+import {SWAddressVerification} from "./components/swaddressverification";
 import {SWTypeaheadSearch} from "./components/swtypeaheadsearch";
 import {SWTypeaheadInputField} from "./components/swtypeaheadinputfield";
 import {SWTypeaheadMultiselect} from "./components/swtypeaheadmultiselect";
@@ -256,6 +257,7 @@ var coremodule = angular.module('hibachi.core',[
 .directive('swTypeaheadRemoveSelection', SWTypeaheadRemoveSelection.Factory())
 .directive('swActionCaller',SWActionCaller.Factory())
 .directive('swActionCallerDropdown',SWActionCallerDropdown.Factory())
+.directive('swAddressVerification',SWAddressVerification.Factory())
 .directive('swColumnSorter',SWColumnSorter.Factory())
 .directive('swConfirm',SWConfirm.Factory())
 .directive('swCurrencyFormatter', SWCurrencyFormatter.Factory())
