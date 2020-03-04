@@ -87,9 +87,10 @@ component output="false" accessors="true" extends="HibachiService"  {
 	
 	public void function setProperSession() {
 		var requestHeaders = getHTTPRequestData();
-		
+
 		var currentRequestSite = getHibachiScope().getCurrentRequestSite();
 		var sessionValue = "sessionID";
+
 		
 		var cookiePrefix = getCookiePrefix(currentRequestSite ?: javaCast("null",""));
 		
@@ -108,6 +109,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 		var foundWithExtendedPSID = false;
 		
 		// Check for non-persistent cookie.
+
 		if( len(getHibachiScope().getSessionValue(sessionValue)) ) {
 			var sessionEntity = this.getSession( getHibachiScope().getSessionValue(sessionValue), true);
 			
@@ -123,7 +125,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 				if (StructKeyExists(requestHeaders.headers, "request_token")){
 					rt = requestHeaders.headers["request_token"];
 				}
-			
+
 				//set the session
 				var NPSID = rt;
 				var sessionEntity = this.getSessionBySessionCookieNPSID( NPSID, true );
@@ -151,8 +153,8 @@ component output="false" accessors="true" extends="HibachiService"  {
 		
 		} else if(structKeyExists(cookie, "#cookiePrefix#-ExtendedPSID")) {
 			
-			
 			var sessionEntity = this.getSessionBySessionCookieExtendedPSID( cookie["#cookiePrefix#-ExtendedPSID"], true);
+
 		
 			if(sessionEntity.getNewFlag()) {
 				getHibachiTagService().cfcookie(name="#cookiePrefix#-ExtendedPSID", value='', expires="#getHibachiScope().setting('globalExtendedSessionAutoLogoutInDays')#");
@@ -164,8 +166,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 			}
 			
 		} else if(structKeyExists(cookie, "#cookiePrefix#-NPSID")) {
-			
-			
+
 			var sessionEntity = this.getSessionBySessionCookieNPSID( cookie["#cookiePrefix#-NPSID"], true);
 		
 			if(sessionEntity.getNewFlag()) {
@@ -178,8 +179,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 			}
 		
 		} else if(structKeyExists(cookie, "#cookiePrefix#-PSID")) {
-			
-			
+
 			var sessionEntity = this.getSessionBySessionCookiePSID( cookie["#cookiePrefix#-PSID"], true);
 		
 			if(sessionEntity.getNewFlag()) {
@@ -279,7 +279,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 				logoutAccount(softLogout=false);
 			}
 		}
-		
+
 		// Update the last request datetime, and IP Address now that all other checks have completed.
 		getHibachiScope().getSession().setLastRequestDateTime( now() );
 		getHibachiScope().getSession().setLastRequestIPAddress( getRemoteAddress() );

@@ -60,20 +60,6 @@ property name="qualifierProgressTemplate" ormtype="string";
 	    }
 	}
 	
-	public struct function getMessageStruct(){
-	    if(!isNull(getPromotionQualifier().getPromotionPeriod().getPromotionPeriodName())){
-	        var messageName = getPromotionQualifier().getPromotionPeriod().getPromotionPeriodName();
-	    }else{
-	        var messageName = getPromotionQualifier().getPromotionPeriod().getPromotion().getPromotionName();
-	    }
-	    
-	    return {
-	    	'promotionQualifierMessageID':getPromotionQualifierMessageID(),
-	        'messageName':messageName,
-	        'priority':getPriority()
-	    };
-	}
-	
 	// Collection Orders
 	public boolean function hasOrderByOrderID(required any orderID){
 		var orderCollection = getTransientMessageRequirementsCollection();
