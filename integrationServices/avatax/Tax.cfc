@@ -154,12 +154,12 @@ extends = "Slatwall.integrationServices.BaseTax" {
 			Addresses = [
 				{
 					AddressCode = 1,
-					Line1 = setting('sourceStreetAddress'),
-					Line2 = setting('sourceStreetAddress2'),
-					City = setting('sourceCity'),
-					Region = setting('sourceRegion'),
-					Country = setting('sourceCountry'),
-					PostalCode = setting('sourcePostalCode')
+					Line1 = setting('sourceStreetAddress',arguments.requestBean),
+					Line2 = setting('sourceStreetAddress2',arguments.requestBean),
+					City = setting('sourceCity',arguments.requestBean),
+					Region = setting('sourceRegion',arguments.requestBean),
+					Country = setting('sourceCountry',arguments.requestBean),
+					PostalCode = setting('sourcePostalCode',arguments.requestBean)
 				}
 			],
 			Lines = []
@@ -399,7 +399,7 @@ extends = "Slatwall.integrationServices.BaseTax" {
 		
 		var requestDataStruct = {
 			Client = "a0o33000003xVEI",
-			companyCode = setting('companyCode'),
+			companyCode = setting('companyCode',arguments.requestBean),
 			DocCode = docCode,
 			CancelCode = 'DocDeleted',
 			DocType = 'SalesInvoice'
