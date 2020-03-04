@@ -36,7 +36,7 @@ class MonatProductModalController {
 		}
 		
 		this.$http(httpOptions).then(res => {
-			//error handeling
+			//error handeling to be determined later
 			if(res.status !== 200 ){
 				alert('there was an error');
 				return;
