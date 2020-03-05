@@ -1961,6 +1961,13 @@ component extends="HibachiService" accessors="true" output="false" {
 		return arguments.permissionGroup;
 	}
 	
+	public any function addOrderToAccount(required any account, required any order){
+		if(arguments.order.isNew() or !arguments.account.hasOrder( arguments.order )) {
+			arrayAppend(arguments.account.getOrders(), arguments.order);
+		}
+		return arguments.order;
+	}
+	
 
 	// ======================  END: Save Overrides ============================
 
