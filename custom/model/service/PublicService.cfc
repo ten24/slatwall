@@ -1838,4 +1838,5 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         return this.getOrderService().orderService.processOrder( arguments.order, orderData, 'removeOrderItem');
         
     }
+    
 }

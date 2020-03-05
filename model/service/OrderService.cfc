@@ -2163,6 +2163,30 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		orderTemplateCollection.addOrderBy('modifiedDateTime|DESC');
 		return orderTemplateCollection; 
 	}  
+	
+	public any function getOrderTemplatesCollectionForOrderTemplateWithoutAccount(required struct data){
+        param name="arguments.data.pageRecordsShow" default=5;
+        param name="arguments.data.currentPage" default=1;
+		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; 
+		param name="arguments.data.optionalProperties" type="string" default=""; //optional properties requested in the api call
+		
+		var orderTemplateCollection = this.getOrderTemplateCollectionList();
+		var displayProperties = 'orderTemplateID,orderTemplateName,scheduleOrderNextPlaceDateTime,calculatedOrderTemplateItemsCount,calculatedTotal,scheduleOrderDayOfTheMonth,statusCode';
+		displayProperties &= ",frequencyTerm.termID,frequencyTerm.termName,shippingMethod.shippingMethodID,orderTemplateStatusType.typeName,currencyCode";
+	
+		if(len(arguments.data.optionalProperties)){
+			displayProperties &= ","&arguments.data.optionalProperties;
+		}
+
+		orderTemplateCollection.setDisplayProperties(displayProperties);
+		orderTemplateCollection.setPageRecordsShow(arguments.data.pageRecordsShow);
+		orderTemplateCollection.setCurrentPageDeclaration(arguments.data.currentPage); 
+		orderTemplateCollection.addFilter('orderTemplateType.typeID', arguments.data.orderTemplateTypeID);
+		orderTemplateCollection.addFilter('account', 'NULL', 'IS');  //disallowing anyone from getting an order template with someone's personal data
+		orderTemplateCollection.addFilter('orderTemplateID', arguments.data.orderTemplateID);
+		orderTemplateCollection.addOrderBy('modifiedDateTime|DESC');
+		return orderTemplateCollection; 
+	}  
 
 	public array function getOrderTemplatesForAccount(required struct data, any account=getHibachiScope().getAccount()){
         param name="arguments.data.pageRecordsShow" default=5;
@@ -2224,7 +2248,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	public any function getOrderTemplateDetailsForAccount(required struct data, any account = getHibachiScope().getAccount()) {
 		param name="arguments.data.optionalProperties" type="string" default="";  //putting here for documentation purpous only
-
+		param name="arguments.data.nullAccountFlag" type="boolean" default=false;  
 		
 		//Making PropertiesList
 		var orderTemplateCollectionPropList = "calculatedSubTotal,calculatedFulfillmentTotal,shippingMethod.shippingMethodName"; //extra prop we need
@@ -2234,7 +2258,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		orderTemplateCollectionPropList = ListAppend(orderTemplateCollectionPropList,accountPaymentMethodProps);
 		
-		var orderTemplateCollection = getOrderTemplatesCollectionForAccount(argumentCollection = arguments); 
+		if(arguments.data.nullAccountFlag){
+			var orderTemplateCollection = getOrderTemplatesCollectionForOrderTemplateWithoutAccount(argumentCollection = arguments); 
+		}else{
+			var orderTemplateCollection = getOrderTemplatesCollectionForAccount(argumentCollection = arguments); 
+		}
+		
 		orderTemplateCollection.addDisplayProperties(orderTemplateCollectionPropList);  //add more properties
 		orderTemplateCollection.addFilter("orderTemplateID", arguments.data.orderTemplateID); // limit to our order-template
 		

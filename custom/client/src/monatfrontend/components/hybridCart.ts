@@ -73,7 +73,7 @@ class HybridCartController {
 	
 	public getFlexship(ID:string):void {
 		let extraProperties = "cartTotalThresholdForOFYAndFreeShipping,canPlaceOrderFlag";
-		this.orderTemplateService.getOrderTemplateDetails(ID, extraProperties).then(data => {
+		this.orderTemplateService.getOrderTemplateDetails(ID, extraProperties, true).then(data => {
 			if((data.orderTemplate as GenericTemplate) ){
 				this.orderTemplate = data.orderTemplate;
 			} else {
