@@ -54,7 +54,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	
 	// ===================== START: Logical Methods ===========================
 	
-	public any function saveAddress(required any address, boolean verifyAddressFlag=false){
+	public any function saveAddress(required any address, struct data={}, string context="save", boolean verifyAddressFlag=false){
 		arguments.address = super.saveAddress(arguments.address);
 
 		if(!arguments.address.hasErrors() && arguments.verifyAddressFlag){

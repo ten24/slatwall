@@ -14,6 +14,7 @@ import {workflowmodule} from "../workflow/workflow.module";
 
 //directives
 import {SWSaveAndFinish} from "./components/swsaveandfinish";
+import 'angular-modal-service';
 
 var hibachimodule = angular.module('hibachi',[
     alertmodule.name,

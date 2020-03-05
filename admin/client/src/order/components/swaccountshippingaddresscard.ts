@@ -52,13 +52,13 @@ class SWAccountShippingAddressCardController{
 				this.launchAddressModal([addressVerification.address,addressVerification.suggestedAddress]);
 			}
 		}catch(e){
-			//do nothing
+			console.log(e);
 		}
 	}
 	
 	public launchAddressModal(addresses: Array<object>):void{
 		this.ModalService.showModal({
-			component: 'addressVerification',
+			component: 'swAddressVerification',
 			bodyClass: 'angular-modal-service-active',
 			bindings: {
                 suggestedAddresses: addresses, //address binding goes here
@@ -72,7 +72,7 @@ class SWAccountShippingAddressCardController{
 		.then((modal) => {
 			//it's a bootstrap element, use 'modal' to show it
 			modal.element.modal();
-			modal.close.then((result) => {});
+			// modal.close.then((result) => {});
 		})
 		.catch((error) => {
 			console.error('unable to open model :', error);
