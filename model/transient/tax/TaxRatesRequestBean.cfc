@@ -115,7 +115,7 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 		var taxRateItemRequestBean = getTransient('TaxRateItemRequestBean');
 
 		// Check reference object type. Value should either be 'orderFulfillment' or 'orderItem' or 'OrderDeliveryItem'
-		if (!listFindNoCase('OrderItem,OrderFulfillment,OrderDeliveryItem', arguments.referenceObject.getClassName())) {
+		if (!listFindNoCase('OrderItem,OrderFulfillment,OrderDeliveryItem,OrderReturn', arguments.referenceObject.getClassName())) {
 			throw("#getClassName()# does not support objects of type '#arguments.referenceObject.getClassName()#' as the tax rate item's reference object.");
 		}
 
