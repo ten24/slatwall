@@ -510,7 +510,9 @@ class PublicService {
 	}
 
     public removeInvalidOrderPayments = (cart) =>{
+        if(angular.isDefined(cart.orderPayments)) {
         cart.orderPayments = cart.orderPayments.filter((payment)=>!payment.hasErrors);
+        }
     }
 
     /**

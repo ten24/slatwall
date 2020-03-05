@@ -60,20 +60,6 @@ property name="qualifierProgressTemplate" ormtype="string";
 	    }
 	}
 	
-	public struct function getMessageStruct(){
-	    if(!isNull(getPromotionQualifier().getPromotionPeriod().getPromotionPeriodName())){
-	        var messageName = getPromotionQualifier().getPromotionPeriod().getPromotionPeriodName();
-	    }else{
-	        var messageName = getPromotionQualifier().getPromotionPeriod().getPromotion().getPromotionName();
-	    }
-	    
-	    return {
-	    	'promotionQualifierMessageID':getPromotionQualifierMessageID(),
-	        'messageName':messageName,
-	        'priority':getPriority()
-	    };
-	}
-	
 	// Collection Orders
 	public boolean function hasOrderByOrderID(required any orderID){
 		var orderCollection = getTransientMessageRequirementsCollection();
@@ -104,7 +90,7 @@ property name="qualifierProgressTemplate" ormtype="string";
 	}
 	
 	public string function getInterpolatedMessage(required any order){
-		return getInterpolatedField(arguments.order,getMessage());
+		return this.getInterpolatedField(arguments.order,getMessage());
 	}
 	
 	public string function getInterpolatedField(required any order, required fieldValue){
@@ -113,7 +99,9 @@ property name="qualifierProgressTemplate" ormtype="string";
 		returnValue = getService('HibachiUtilityService').replaceStringTemplateFromStruct(returnValue,orderRecord);
     	returnValue = getService('HibachiUtilityService').replaceFunctionTemplate(returnValue);
     	return returnValue;
-	}	//CUSTOM FUNCTIONS BEGIN
+	}	
+	
+	//CUSTOM FUNCTIONS BEGIN
 
 public any function getQualifierProgress(required any order){
         if(!structKeyExists(variables,'qualifierProgress') && structKeyExists(variables,'qualifierProgressTemplate')){

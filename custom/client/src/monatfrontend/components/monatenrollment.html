@@ -1,8 +1,18 @@
-<header class="step-header">
+<header class="site-header d-flex flex-column">
 	<div class="container">
-		<a href="#" class="logo">
-			<img src="/themes/monat/assets/images/logo.svg"  alt="Monat logo">
-		</a>
+		<div class="header-row">
+			<div class="left-nav">
+				
+			</div>
+			<a href="#" class="logo">
+				<img src="/themes/monat/assets/images/logo.svg"  alt="Monat logo">
+			</a>			
+			<div class="right-nav">
+				<div class="row justify-content-end">
+					<hybrid-cart is-enrollment="true"></hybrid-cart>
+				</div>			
+			</div>			
+		</div>
 	</div>
 </header>
 
@@ -20,8 +30,7 @@
 				data-ng-click="monatEnrollment.previous()" 
 				class="back d-inline-block" 
 				ng-class="{ 
-					invisible: monatEnrollment.position == 0, 
-					disabled: monatEnrollment.position == 1 
+					invisible: (monatEnrollment.position == 0 ), 
 				}"
 			>
 				<span class="last" sw-rbkey="'frontend.global.back'"></span>
@@ -41,7 +50,8 @@
 			<span sw-rbkey="'frontend.global.step'"></span> 
 			{{monatEnrollment.position + 1}} 
 			<span sw-rbkey="'frontend.global.of'"></span> 
-			{{monatEnrollment.steps.length}} 
+			<!--- The new checkout step is three steps in one so we add 2 more --->
+			{{monatEnrollment.steps.length + 2}} 
 		</span>
 		
 		<div ng-if="monatEnrollment.canPlaceCartOrder">
@@ -78,11 +88,6 @@
 		</div>
 
 		<span ng-if="monatEnrollment.position + 1 == monatEnrollment.steps.length"></span>
-	</div>
-	
-	<!--- Mini cart ---> 	
-	<div ng-if="monatEnrollment.cart.totalItemQuantity > 0 && monatEnrollment.showMiniCart" class="w-100">
-	    <monat-mini-cart type="enrollment" custom-style="monatEnrollment.style" cart="monatEnrollment.cart"></monat-mini-cart>		
 	</div>
 	
 	<!--- Flexship cart ---> 	

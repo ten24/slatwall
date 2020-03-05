@@ -238,11 +238,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 								// If there is not applied Price Group, or if this reward has the applied pricegroup as an eligible one then use priceExtended... otherwise use skuPriceExtended and then adjust the discount.
 								if( isNull(orderItem.getAppliedPriceGroup()) || arguments.promotionReward.hasEligiblePriceGroup( orderItem.getAppliedPriceGroup() ) ) {
 									// Calculate based on price, which could be a priceGroup price
-									var discountAmount = getDiscountAmount(arguments.promotionReward, orderItem.getPrice(), discountQuantity, orderItem.getCurrencyCode(), orderItem.getSku(), arguments.order.getAccount());
+									var discountAmount = getDiscountAmount(reward=arguments.promotionReward, price=orderItem.getPrice(), quantity=discountQuantity, currencyCode=orderItem.getCurrencyCode(), sku=orderItem.getSku(), account=arguments.order.getAccount());
 	
 								} else {
 									// Calculate based on skuPrice because the price on this item is a priceGroup price and we need to adjust the discount by the difference
-									var originalDiscountAmount = getDiscountAmount(arguments.promotionReward, orderItem.getSkuPrice(), discountQuantity, orderItem.getSku(), arguments.order.getAccount());
+									var originalDiscountAmount = getDiscountAmount(reward=arguments.promotionReward, price=orderItem.getSkuPrice(), quantity=discountQuantity, sku=orderItem.getSku(), account=arguments.order.getAccount());
 	
 									// Take the original discount they were going to get without a priceGroup and subtract the difference of the discount that they are already receiving
 									var discountAmount = val(getService('HibachiUtilityService').precisionCalculate(originalDiscountAmount - (orderItem.getExtendedSkuPrice() - orderItem.getExtendedPrice())));
@@ -420,7 +420,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// Sale & Exchange Orders
 			if( listFindNoCase("otSalesOrder,otExchangeOrder", arguments.order.getOrderType().getSystemCode()) ) {
 				clearPreviouslyAppliedPromotions(arguments.order);
-				
+				clearPreviouslyAppliedPromotionMessages(arguments.order);
 				// This is a structure of promotionPeriods that will get checked and cached as to if we are still within the period use count, and period account use count
 				var promotionPeriodQualifications = {};
 	
@@ -505,9 +505,19 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		newAppliedPromotion.setDiscountAmount( arguments.discountAmount );
 	}
 	
+	private void function clearPreviouslyAppliedPromotionMessages(required any order){
+		// Clear all previously applied promotions for order
+		var len=arrayLen(arguments.order.getAppliedPromotionMessages());
+		
+		for(var i = len; i >= 1; i--) {
+			arguments.order.getAppliedPromotionMessages()[i].removeOrder();
+		}
+	}
+	
 	private void function applyPromotionQualifierMessagesToOrder(required any order, required array orderQualifierMessages){
+		
 		ArraySort(arguments.orderQualifierMessages,function(a,b){
-			if(a.priority <= b.priority){
+			if(a.getPriority() <= b.getPriority()){
 				return -1;
 			}else{
 				return 1;
@@ -520,10 +530,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arguments.orderQualifierMessages = arraySlice(arguments.orderQualifierMessages,1,maxMessages);
 		}
 		
-		for(var orderQualifierMessage in arguments.orderQualifierMessages){
-			var promotionQualifierMessage = this.getPromotionQualifierMessage(orderQualifierMessage.promotionQualifierMessageID);
-			var message = promotionQualifierMessage.getInterpolatedMessage(arguments.order);
-			arguments.order.addMessage(orderQualifierMessage.messageName, message);
+		for(var promotionQualifierMessage in arguments.orderQualifierMessages){
+			var newAppliedPromotionMessage = this.newPromotionMessageApplied();
+			
+			newAppliedPromotionMessage.setOrder( arguments.order );
+			newAppliedPromotionMessage.setPromotionQualifierMessage( promotionQualifierMessage );
+			
+			newAppliedPromotionMessage.setMessage( promotionQualifierMessage.getInterpolatedMessage( arguments.order ) );
+			
+			this.savePromotionMessageApplied(newAppliedPromotionMessage);
 		}
 
 	}
@@ -707,7 +722,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			for(var promoQualifierMessage in arguments.qualifier.getPromotionQualifierMessages()){
 
 				if(promoQualifierMessage.hasOrderByOrderID( arguments.order.getOrderID() )){
-					arrayAppend(arguments.orderQualifierMessages, promoQualifierMessage.getMessageStruct());
+					arrayAppend(arguments.orderQualifierMessages, promoQualifierMessage);
 				}
 			}
 		}
@@ -805,7 +820,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}else if(structKeyExists(arguments,'orderQualifierMessages')){
 			for(var promoQualifierMessage in arguments.qualifier.getPromotionQualifierMessages()){
 				if(promoQualifierMessage.hasOrderByOrderID( arguments.order.getOrderID() )){
-					arrayAppend(arguments.orderQualifierMessages, promoQualifierMessage.getMessageStruct());
+					arrayAppend(arguments.orderQualifierMessages, promoQualifierMessage);
 				}
 			}
 		}
@@ -1089,17 +1104,30 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var activePromotionRewardsWithSkuCollection = getPromotionDAO().getActivePromotionRewards( rewardTypeList="merchandise,subscription,contentAccess", promotionCodeList="", excludeRewardsWithQualifiers=true, site=arguments.orderItem.getOrder().getOrderCreatedSite());
 		var originalPrice = arguments.orderItem.getSkuPrice();
 		var currencyCode = arguments.orderItem.getCurrencyCode();
-		if(!isNull(arguments.orderItem.getOrder().getAccount())){
-			var accountID = arguments.orderItem.getOrder().getAccount().getAccountID();
-		}else{
-			var accountID = getHibachiScope().getAccount().getAccountID();	
-		}
+
+		var account = arguments.orderItem.getOrder().getAccount();
+
+        /*
+            Price group is prioritized as so: 
+                1.Order price group
+                2.Price group passed in as argument
+                3. Price group on account
+                4. Default to 2
+        
+        */
+        
+        if(!isNull(arguments.orderItem.getOrder().getPriceGroup())){ 
+            var priceGroup = arguments.orderItem.getOrder().getPriceGroup(); //order price group
+        }else if(!isNull(account) && !isNull(account.getPriceGroups()) && arrayLen(account.getPriceGroups())){ 
+            var priceGroup = account.getPriceGroups()[1]; //account price group
+        }else{
+        	var priceGroup = getService('priceGroupService').getPriceGroupByPriceGroupCode(2) // default to retail
+        }
+        
 		if(isNull(originalPrice)){
-			originalPrice = arguments.orderItem.getSku().getPriceByCurrencyCode(currencyCode=currencyCode,accountID=accountID);
-		}
-		if(isNull(originalPrice)){
-			originalPrice = arguments.orderItem.getPrice();
-		}
+			originalPrice = arguments.orderItem.getSku().getPriceByCurrencyCode(currencyCode= currencyCode, priceGroups=[priceGroup]);
+		} 
+
 
 		var priceDetails = getPriceDetailsForPromoRewards( promoRewards=activePromotionRewardsWithSkuCollection,
 														sku=arguments.orderItem.getSku(),
