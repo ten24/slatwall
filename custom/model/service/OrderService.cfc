@@ -230,6 +230,8 @@ component extends="Slatwall.model.service.OrderService" {
 	                returnOrderItem.invokeMethod('set#priceField#',{1=price});
 	            } 
 	        }
+        }else{
+        	returnOrderItem.setTaxableAmount(returnOrderItem.getPrice());
         }
         return returnOrderItem;
     }

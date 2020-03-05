@@ -185,13 +185,15 @@ component extends="Slatwall.model.service.PromotionService" {
     }
     
     private void function applyPromotionQualifierMessagesToOrder(required any order, required array orderQualifierMessages){
+		
 		ArraySort(arguments.orderQualifierMessages,function(a,b){
-			if(a.priority <= b.priority){
+			if(a.getPriority() <= b.getPriority()){
 				return -1;
 			}else{
 				return 1;
 			}
 		});
+		
 		var maxMessages = getService('SettingService').getSettingValue('globalMaximumPromotionMessages');
 
 		if(maxMessages < arrayLen(arguments.orderQualifierMessages)){
