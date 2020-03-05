@@ -697,8 +697,19 @@ component extends="Slatwall.model.service.OrderService" {
 	}
 	
 	public any function processOrder_placeInProcessingTwo(required any order, struct data) {
+		param name="arguments.data.siteID" default = "";
+		// TODO: and Audits
+		// TODO: DAO query
+		// this.getOrderDAO().placeOrdersInProcessingTwo(data = arguments.data);
+
 		this.updateOrderStatusBySystemCode(arguments.order, "ostProcessingTwo");
 		return arguments.order;
+	}
+	
+	public any function processOrder_placeInProcessingTwoUS(required any order, struct data) {
+		param name="arguments.data" default = {};
+		argumetns.data['siteID'] = "usa-site-id"
+		return this.processOrder_placeInProcessingTwo(argumentCollection = arguments);
 	}
 
 	public any function processOrderDelivery_markOrderUndeliverable(required any orderDelivery, struct data={}){ 
