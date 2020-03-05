@@ -329,7 +329,6 @@ Notes:
 				arguments.email.setEmailSubject( getHibachiUtilityService().replaceStringTemplate(template=nullReplace(arguments.email.getEmailSubject(), ""), object=emailData, formatValues=true) );
 				arguments.email.setEmailBodyHTML( getHibachiUtilityService().replaceStringTemplate(template=nullReplace(arguments.email.getEmailBodyHTML(), ""), object=emailData, formatValues=true) );
 				arguments.email.setEmailBodyText( getHibachiUtilityService().replaceStringTemplate(template=nullReplace(arguments.email.getEmailBodyText(), ""), object=emailData, formatValues=true) );
-
 				arguments.email.setLogEmailFlag( emailTemplate.getLogEmailFlag() );
 			}
 

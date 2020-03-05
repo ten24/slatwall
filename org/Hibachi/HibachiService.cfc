@@ -140,7 +140,7 @@
 		
 		// @hint default process method
 		public any function process(required any entity, struct data={}, string processContext=""){
-			
+			logger.m(entity=arguments.entity, processContext=arguments.processContext);
 			// Create the invoke arguments struct
 			var invokeArguments = {};
 			invokeArguments[ "1" ] = arguments.entity;//compatibility with on missing method
@@ -187,6 +187,7 @@
 				getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#Process_#arguments.processContext#Success", invokeArguments);
 			}
 			
+			logger.d("Completed #methodName#");
 			return arguments.entity;
 		}
 		

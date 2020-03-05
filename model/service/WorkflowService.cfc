@@ -58,6 +58,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	
 	public boolean function runWorkflowByEventTrigger(required any workflowTrigger, required any entity){
 		
+	        logger.m(workflowTrigger);
 	
 			//only flush on after
 			if(left(arguments.workflowTrigger.getTriggerEvent(),'5')=='after'){
@@ -133,6 +134,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 		// Make sure that this event has workflows attached before creating a thread
 		if(arrayFindNoCase(allWorkflowTriggerEventsArray, arguments.eventName)) {
+		logger.m(eventName = arguments.eventName, eventData=arguments.eventData);
 			
 			// Run all workflows inside of a thread
 			//thread action="run" name="#createUUID()#" application="#application#" eventName="#arguments.eventName#" entity="#arguments.entity#" {
@@ -497,19 +499,26 @@ component extends="HibachiService" accessors="true" output="false" {
 	// ===================== START: Process Methods ===========================
 	
 	public any function processWorkflow_execute(required any workflow, required struct data) {
+	    logger.m();
+		
 		// Loop over all of the tasks for this workflow
 		for(var workflowTask in arguments.workflow.getWorkflowTasks()) {
+			
 			// Check to see if the task is active and the entity object passes the conditions validation
 			if(
 				workflowTask.getActiveFlag() 
-				&& (
+				&& 
+				(
 					structKeyExists(arguments.data,'entity')
-					|| entityPassesAllWorkflowTaskConditions(arguments.data.entity, workflowTask.getTaskConditionsConfigStruct()) 
+					&& 
+					entityPassesAllWorkflowTaskConditions(arguments.data.entity, workflowTask.getTaskConditionsConfigStruct()) 
 				)
 			){
+				
 				// Now loop over all of the actions that can now be run that the workflow task condition has passes
 				for(var workflowTaskAction in workflowTask.getWorkflowTaskActions()) {
 					if(!isNull(workflowTaskAction.getUpdateData()) && !isNull(workflowTaskAction.getActionType())){
+					        
 							if(data.workflowTrigger.getTriggerType() == 'Event'){
 								arguments.data.entity.setAnnounceEvent(false);
 							}
@@ -532,6 +541,8 @@ component extends="HibachiService" accessors="true" output="false" {
 				}
 			} 
 		}
+		
+		
 		if(structKeyExists(arguments.data,'entity')){
 			return arguments.data.entity;
 		//process methods must return entities
@@ -706,8 +717,8 @@ component extends="HibachiService" accessors="true" output="false" {
 		}
 		return arguments.comparisonOperator;
 	}	
+	
 	private boolean function entityPassesAllWorkflowTaskConditions( required any entity, required any taskConditions ) {
-		
 		getHibachiDAO().flushORMSession();
 		
 		/*
@@ -732,6 +743,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		//if we have a any workflow conditions then evaluate them otherwise evaluate as true
 		
 		if(arguments.entity.getNewFlag()){
+		    logger.d("IN entityPassesAllWorkflowTaskConditions - the Entity is New, something is not right");
 			if(arraylen(arguments.taskConditions.filterGroups)){
 				var booleanExpressionString = getWorkflowConditionGroupsString(arguments.entity,arguments.taskConditions.filterGroups);
 				if(len(booleanExpressionString)){
@@ -743,6 +755,9 @@ component extends="HibachiService" accessors="true" output="false" {
 				return true;
 			}
 		}else{
+		    
+		    logger.d("In entityPassesAllWorkflowTaskConditions - The Entity is-not New, trying to get matching records");
+		    
 			var entityCollectionlist = getCollectionlist(arguments.entity.getClassName());
 			arguments.taskConditions = serializeJson(arguments.taskConditions);
 			arguments.taskConditions = rereplace(arguments.taskConditions,'"eq"','"="','all');
@@ -752,8 +767,12 @@ component extends="HibachiService" accessors="true" output="false" {
 			entityCollectionlist.setCollectionConfigStruct(arguments.taskConditions);
 			entityCollectionlist.addFilter(arguments.entity.getPrimaryIDPropertyName(),arguments.entity.getPrimaryIDValue(),'=','AND',"","isolatedFilter");
 			entityCollectionlist.setDisplayProperties(arguments.entity.getPrimaryIDPropertyName());
+			
+// 			logger.d(message="the final Collection-Config is", collectionConfig=entityCollectionlist.getCollectionConfigStruct() );
+			logger.d("In entityPassesAllWorkflowTaskConditions - The matched-record-count  = #entityCollectionlist.getRecordsCount()#" );
+			
 			//only can return 1 item or no items
-			return arraylen(entityCollectionlist.getRecords());
+			return entityCollectionlist.getRecordsCount();
 		}
 		
 		

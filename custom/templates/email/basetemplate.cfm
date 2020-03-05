@@ -7,7 +7,7 @@
     
     var accountType = emailTemplateObject.getValueByPropertyIdentifier(
             emailTemplate.setting('emailAccountTypePropertyIdentifier')
-        ) ?: 'customer';    
+        ) ?: 'customer'; 
 </cfscript> 
 
 <cfinclude template="./inc/base.cfm" />

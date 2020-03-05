@@ -1,7 +1,7 @@
 <cfscript>
 	function getEmailContent(required string attributeValue, required any emailTemplate){
 		try{
-			var emailContentType = getHibachiScope().getService("typeService").getTypeByTypeID(arguments.emailTemplate.getAttributeValue(arguments.attributeValue));
+			var emailContentType = getHibachiScope().getService("typeService").getTypeByTypeCode(arguments.attributeValue);
 			return getHibachiScope().getService("attributeService").getAttributeValueByType(emailContentType).getAttributeValue();		
 		}catch(e){
 			return '';
@@ -15,8 +15,18 @@
 	</cfif>
 	
 	<cfoutput>
-		#getEmailContent('#accountType#EmailHeader', emailTemplate)#
-		#templateObject.stringReplace( emailTemplate.getFormattedValue(propertyName='#accountType#Body', locale=locale),true )#
+	    <!--- if is headerin setting ---> 
+	    <!--- include #accountType##countryCode#Header --->
+		
+		#getEmailContent('#accountType##countryCode#EmailHeader', emailTemplate)#
+		<cfset emailBody = emailTemplate.getFormattedValue(propertyName='#accountType##CountryCode#Body', locale=locale) />
+		<cfif NOT len(Trim(emailBody)) >
+		    	<cfset emailBody = emailTemplate.getFormattedValue(propertyName='#accountType#Body', locale=locale) />
+
+		 </cfif>
+		#templateObject.stringReplace( emailBody, true )#
+		    <!--accounttype countr-->
+		    <!--- include #accountType##countryCode#Footer --->
 		#getEmailContent('#accountType#EmailFooter', emailTemplate)#
 	</cfoutput>
 </cfsavecontent>
