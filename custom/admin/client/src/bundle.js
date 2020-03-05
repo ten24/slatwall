@@ -64328,8 +64328,10 @@ var SWAccountShippingAddressCardController = /** @class */ (function () {
                 _this.shippingMethod = data.shippingMethod;
                 _this.modalButtonText = _this.rbkeyService.rbKey('define.update') + ' ' + _this.title;
             }
-            if (data.address != null) {
-                _this.shippingAccountAddress.address = data.address;
+            if (data.addressID) {
+                for (var key in data) {
+                    _this.shippingAccountAddress["address_" + key] = data[key];
+                }
             }
         };
         this.observerService.attach(this.updateShippingInfo, 'OrderTemplateUpdateShippingSuccess');
@@ -64352,7 +64354,8 @@ var SWAccountShippingAddressCardController = /** @class */ (function () {
             bodyClass: 'angular-modal-service-active',
             bindings: {
                 suggestedAddresses: addresses,
-                sAction: this.updateShippingInfo
+                sAction: this.updateShippingInfo,
+                propertyIdentifiersList: 'addressID,firstName,lastName,streetAddress,street2Address,city,stateCode,postalCode,countryCode'
             },
             preClose: function (modal) {
                 modal.element.modal('hide');
@@ -64362,7 +64365,7 @@ var SWAccountShippingAddressCardController = /** @class */ (function () {
             .then(function (modal) {
             //it's a bootstrap element, use 'modal' to show it
             modal.element.modal();
-            // modal.close.then((result) => {});
+            modal.close.then(function (result) { });
         })
             .catch(function (error) {
             console.error('unable to open model :', error);
@@ -80218,13 +80221,15 @@ var SWAddressVerificationController = /** @class */ (function () {
             }
             else {
                 _this.loading = true;
-                _this.$hibachi.saveEntity('Address', _this.suggestedAddresses[_this.selectedAddressIndex]['addressID'], _this.suggestedAddresses[_this.selectedAddressIndex])
+                var data = _this.suggestedAddresses[_this.selectedAddressIndex];
+                data.propertyIdentifiersList = _this.propertyIdentifiersList;
+                _this.$hibachi.saveEntity('Address', data['addressID'], data, 'save')
                     .then(function (result) {
                     _this.loading = false;
                     _this.suggestedAddresses[0] = _this.suggestedAddresses[_this.selectedAddressIndex];
                     _this.close(null);
                     if (_this.sAction) {
-                        _this.sAction(result);
+                        _this.sAction(result.data);
                     }
                 });
             }
@@ -80232,6 +80237,7 @@ var SWAddressVerificationController = /** @class */ (function () {
         this.closeModal = function () {
             _this.close(null);
         };
+        this.makeTranslations();
     }
     return SWAddressVerificationController;
 }());
@@ -80242,7 +80248,8 @@ var SWAddressVerification = /** @class */ (function () {
         this.bindToController = {
             suggestedAddresses: '<',
             close: '=',
-            sAction: '=?'
+            sAction: '=?',
+            propertyIdentifiersList: '=?'
         };
         this.controller = SWAddressVerificationController;
         this.controllerAs = "swAddressVerification";

@@ -62,7 +62,8 @@ class SWAccountShippingAddressCardController{
 			bodyClass: 'angular-modal-service-active',
 			bindings: {
                 suggestedAddresses: addresses, //address binding goes here
-                sAction:this.updateShippingInfo
+                sAction:this.updateShippingInfo,
+                propertyIdentifiersList:'addressID,firstName,lastName,streetAddress,street2Address,city,stateCode,postalCode,countryCode'
 			},
 			preClose: (modal) => {
 				modal.element.modal('hide');
@@ -72,7 +73,7 @@ class SWAccountShippingAddressCardController{
 		.then((modal) => {
 			//it's a bootstrap element, use 'modal' to show it
 			modal.element.modal();
-			// modal.close.then((result) => {});
+			modal.close.then((result) => {});
 		})
 		.catch((error) => {
 			console.error('unable to open model :', error);
@@ -90,8 +91,10 @@ class SWAccountShippingAddressCardController{
 			this.modalButtonText = this.rbkeyService.rbKey('define.update')  + ' ' + this.title;
 		}
 		
-		if(data.address != null){
-			this.shippingAccountAddress.address = data.address;
+		if(data.addressID){
+			for(let key in data){
+				this.shippingAccountAddress[`address_${key}`] = data[key];
+			}
 		}
 
 	}

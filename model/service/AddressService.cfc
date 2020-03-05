@@ -55,8 +55,9 @@ component extends="HibachiService" accessors="true" output="false" {
 	// ===================== START: Logical Methods ===========================
 	
 	public any function saveAddress(required any address, struct data={}, string context="save", boolean verifyAddressFlag=false){
-		arguments.address = super.saveAddress(arguments.address);
-
+		
+		arguments.address = super.saveAddress(address,data,context);
+		
 		if(!arguments.address.hasErrors() && arguments.verifyAddressFlag){
 			//Have to flush in order to get address struct
 			getHibachiScope().flushORMSession();
