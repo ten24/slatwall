@@ -68,6 +68,7 @@
                         <div>Preview:</div>
                         <div style="color: #666">
                             {{selectedFilterProperty.displayPropertyIdentifier}} {{selectedFilterProperty.selectedCriteriaType.comparisonOperator}} <strong data-ng-bind="filterItem.value | truncate:25"></strong>
+                            : {{selectedFilterProperty.selectedCriteriaType.dateInfo.measureTypeDisplay}}
                         </div>
                     </div>
                     <button 
