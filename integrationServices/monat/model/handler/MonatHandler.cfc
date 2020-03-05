@@ -185,6 +185,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 				orderTemplate.setBillingAccountAddress(billingAccountAddress);
 				orderTemplate.setOrderTemplateStatusType(orderTemplateStatusType);
 				
+				if(isNull(orderTemplate.getAccount())){
+					orderTemplate.setAccount(account);
+				}
 				orderTemplate = getOrderService().saveOrderTemplate(orderTemplate,{},'upgradeFlow');
 			}
 			

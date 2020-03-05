@@ -10,7 +10,7 @@ class EnrollmentFlexshipController {
 	
 	//@ngInject
 	constructor(public monatService, public observerService, public orderTemplateService, public publicService) {
-		//TODO: review destroying component and releasing event listener when toggeling
+		//TODO: remove event listeners and call get flexship within method
 		this.observerService.attach(this.getFlexship.bind(this), 'addOrderTemplateItemSuccess');
 		this.observerService.attach(this.getFlexship.bind(this), 'editOrderTemplateItemSuccess');
 		this.observerService.attach(this.getFlexship.bind(this), 'removeOrderTemplateItemSuccess');
@@ -22,11 +22,7 @@ class EnrollmentFlexshipController {
 	
 	public getFlexship():void {
 		if(!this.orderTemplateID){
-			let cookieString = document.cookie;
-			let cookieArray = cookieString.split(';')
-			let flexshipIDArray = <Array<string>>cookieArray.filter( el => el.search('flexshipID') > -1 );
-			if(!flexshipIDArray.length) return;
-			this.orderTemplateID = flexshipIDArray[0].substr(flexshipIDArray[0].indexOf('=') + 1);
+			this.orderTemplateID = this.monatService.getCookieValueByCookieName('flexshipID');
 		}
 
 		this.hybridCart.getFlexship(this.orderTemplateID);
