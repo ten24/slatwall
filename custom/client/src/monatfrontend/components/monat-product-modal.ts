@@ -46,27 +46,34 @@ class MonatProductModalController {
 			let parser = new DOMParser();
 			let doc = parser.parseFromString(res.data, "text/html");
 			
-			//Removing the header and fooder
+			//Removing the header, footer and instagram feed
 			let footer = <HTMLElement><any>doc.getElementsByTagName('footer');
-			let header = <HTMLElement><any>doc.getElementsByTagName('header');
+			let header = doc.getElementsByTagName('header');
+			let feed = doc.getElementsByClassName("instagram-feed");
+			let iconRow = doc.getElementsByClassName("iconed-featurs");
+			
+			feed[0].parentNode.removeChild(feed[0]);
 			footer[0].parentNode.removeChild(footer[0]);
 			header[0].parentNode.removeChild(header[0]);
+			iconRow[0].parentNode.removeChild(iconRow[0]);
 			
 			//wrapping the sections in accordion divs
 			let favoriteSection = doc.getElementsByClassName('favorite-section')![0];
-			favoriteSection.setAttribute("id", "favorite-section");
-			favoriteSection.classList.add("collapse");
-			let favoriteSectionParent = favoriteSection.parentElement;
-			let favoriteSectionToggelerTemplate = document.getElementsByTagName("template")[0].content.cloneNode(true);
-			favoriteSectionToggelerTemplate = (<Element>favoriteSectionToggelerTemplate.childNodes[0]).nextElementSibling;
-			(<HTMLDivElement>favoriteSectionToggelerTemplate).setAttribute("data-target", "#favorite-section");
-			(<HTMLDivElement>favoriteSectionToggelerTemplate).setAttribute("data-toggle", "collapse");
-			let favoriteSectionAccordion = doc.createElement('div');
-			favoriteSectionAccordion.appendChild(favoriteSection);
-			favoriteSectionParent.appendChild(favoriteSectionAccordion);
-			favoriteSectionParent.insertBefore(favoriteSectionToggelerTemplate, favoriteSectionAccordion);
-	
-			console.log(favoriteSectionAccordion);		
+			if(favoriteSection){
+				favoriteSection.setAttribute("id", "favorite-section");
+				favoriteSection.classList.add("collapse");
+				let favoriteSectionParent = favoriteSection.parentElement;
+				let favoriteSectionToggelerTemplate = document.getElementsByTagName("template")[0].content.cloneNode(true);
+				favoriteSectionToggelerTemplate = (<HTMLDivElement>favoriteSectionToggelerTemplate.childNodes[0]).nextElementSibling;
+				(<HTMLDivElement>favoriteSectionToggelerTemplate).setAttribute("data-target", "#favorite-section");
+				(<HTMLDivElement>favoriteSectionToggelerTemplate).setAttribute("data-toggle", "collapse");
+				(<HTMLDivElement>favoriteSectionToggelerTemplate).getElementsByClassName('title-paragraph')[0].innerHTML= "Benefits"; //rb key
+				(<HTMLDivElement>favoriteSectionToggelerTemplate).getElementsByClassName('more-paragraph')[0].innerHTML= "View More"; //rb key
+				let favoriteSectionAccordion = doc.createElement('div');
+				favoriteSectionAccordion.appendChild(favoriteSection);
+				favoriteSectionParent.appendChild(favoriteSectionAccordion);
+				favoriteSectionParent.insertBefore(favoriteSectionToggelerTemplate, favoriteSectionAccordion);
+			}
 			content.appendChild(doc.getElementById('wrapper'));
 		});
 	};
