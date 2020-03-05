@@ -234,7 +234,7 @@ public any function getCountryCode(){
 			return variables.countryCode;
 		}
 		
-		var currentIPAddress = listLast(getRemoteAddress());
+		var currentIPAddress = listFirst(getRemoteAddress());
 		if(len(currentIPAddress)){
 
 			var ips_parts = ListToArray(currentIPAddress, ".");
@@ -248,10 +248,10 @@ public any function getCountryCode(){
 				getHibachiScope().setSessionValue('requestCountryOrigin', variables.countryCode);
 				return variables.countryCode;
 			}else{
-				getHibachiScope().setSessionValue('requestCountryOrigin', 'UNK');
+				getHibachiScope().setSessionValue('requestCountryOrigin', 'US');
 			}
 		}
-		return 'UNK';
+		return 'US';
 	}
 	
 	public void function preInsert(){

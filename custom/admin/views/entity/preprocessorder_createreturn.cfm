@@ -80,8 +80,8 @@ Notes:
 							</a>
 						</div>
 						<div class="btn-group btn-group-sm">
-							<button ng-if="!slatwall.modifiedUnitPrices" type="submit" class="btn btn-primary">#local.createReturnText#</button>
-							<a ng-cloak ng-if="slatwall.modifiedUnitPrices" title="#local.createReturnText#" class="adminentitypreprocessorder btn btn-primary modalload" target="_self" data-toggle="modal" data-target="##warningModal">
+							<button ng-if="!slatwall.modifiedUnitPrices || #rc.order.getOrderType().getSystemCode() == 'otRefundOrder'#" type="submit" class="btn btn-primary">#local.createReturnText#</button>
+							<a ng-cloak ng-if="slatwall.modifiedUnitPrices && #rc.order.getOrderType().getSystemCode() != 'otRefundOrder'#" title="#local.createReturnText#" class="adminentitypreprocessorder btn btn-primary modalload" target="_self" data-toggle="modal" data-target="##warningModal">
 								#local.createReturnText#
 							</a>
 						</div>
