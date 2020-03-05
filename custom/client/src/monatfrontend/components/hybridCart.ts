@@ -75,7 +75,6 @@ class HybridCartController {
 		let extraProperties = "cartTotalThresholdForOFYAndFreeShipping";
 		this.orderTemplateService.getOrderTemplateDetails(ID, extraProperties).then(data => {
 			if((data.orderTemplate as GenericTemplate) ){
-				console.log(data.orderTemplate)
 				this.orderTemplate = data.orderTemplate;
 			} else {
 				throw(data);

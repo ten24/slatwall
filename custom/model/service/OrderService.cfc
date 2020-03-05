@@ -408,7 +408,7 @@ component extends="Slatwall.model.service.OrderService" {
 		
 		orderTemplateItemCollection.addFilter('orderTemplate.orderTemplateType.typeID', arguments.data.orderTemplateTypeID);
 		orderTemplateItemCollection.addFilter('orderTemplate.orderTemplateID', arguments.data.orderTemplateID);
-		//orderTemplateItemCollection.addFilter('orderTemplate.account.accountID', arguments.account.getAccountID());
+	
 
 		return orderTemplateItemCollection;	
 	} 
