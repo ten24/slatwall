@@ -29,7 +29,9 @@
 			<hb:HibachiPropertyDisplay object="#rc.account#" property="phoneNumber" edit="false"> 
 			<hb:HibachiPropertyDisplay object="#rc.account#" property="emailAddress" edit="false">
 			<hb:HibachiPropertyDisplay object="#rc.account#" property="accountType" edit="false">
-			<hb:HibachiPropertyDisplay object="#rc.account.getOwnerAccount()#" property="fullName" edit="false" title = "Sponsor Name"> 
+			<cfif !isNull( rc.account.getOwnerAccount() )>
+				<hb:HibachiPropertyDisplay object="#rc.account.getOwnerAccount()#" property="fullName" edit="false" title = "Sponsor Name"> 
+			</cfif>
 			<cfif NOT IsNULL(rc.account.getEnrollmentDate())> 
 			<hb:HibachiPropertyDisplay object="#rc.account#" property="enrollmentDate" edit="false">
 			</cfif>
