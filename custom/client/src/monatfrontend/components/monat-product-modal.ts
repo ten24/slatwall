@@ -45,10 +45,28 @@ class MonatProductModalController {
 			let content = <HTMLDivElement>document.getElementById('product-modal')!;
 			let parser = new DOMParser();
 			let doc = parser.parseFromString(res.data, "text/html");
+			
+			//Removing the header and fooder
 			let footer = <HTMLElement><any>doc.getElementsByTagName('footer');
 			let header = <HTMLElement><any>doc.getElementsByTagName('header');
 			footer[0].parentNode.removeChild(footer[0]);
 			header[0].parentNode.removeChild(header[0]);
+			
+			//wrapping the sections in accordion divs
+			let favoriteSection = doc.getElementsByClassName('favorite-section')![0];
+			favoriteSection.setAttribute("id", "favorite-section");
+			favoriteSection.classList.add("collapse");
+			let favoriteSectionParent = favoriteSection.parentElement;
+			let favoriteSectionToggelerTemplate = document.getElementsByTagName("template")[0].content.cloneNode(true);
+			favoriteSectionToggelerTemplate = (<Element>favoriteSectionToggelerTemplate.childNodes[0]).nextElementSibling;
+			(<HTMLDivElement>favoriteSectionToggelerTemplate).setAttribute("data-target", "#favorite-section");
+			(<HTMLDivElement>favoriteSectionToggelerTemplate).setAttribute("data-toggle", "collapse");
+			let favoriteSectionAccordion = doc.createElement('div');
+			favoriteSectionAccordion.appendChild(favoriteSection);
+			favoriteSectionParent.appendChild(favoriteSectionAccordion);
+			favoriteSectionParent.insertBefore(favoriteSectionToggelerTemplate, favoriteSectionAccordion);
+	
+			console.log(favoriteSectionAccordion);		
 			content.appendChild(doc.getElementById('wrapper'));
 		});
 	};
