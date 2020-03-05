@@ -460,7 +460,7 @@ public boolean function getAccountIsNotInFlexshipCancellationGracePeriod(){
 	public numeric function getCartTotalThresholdForOFYAndFreeShipping(){
 		if(!structKeyExists(variables, 'cartTotalThresholdForOFYAndFreeShipping')){
 			
-			if(this.getAccount().getAccountType() == 'MarketPartner') {
+			if(!isNull(this.getAccount()) && this.getAccount().getAccountType() == 'MarketPartner') {
 				variables.cartTotalThresholdForOFYAndFreeShipping =  this.getSite().setting('integrationmonatSiteMinCartTotalAfterMPUserIsEligibleForOFYAndFreeShipping');
 			} else {
 				variables.cartTotalThresholdForOFYAndFreeShipping =  this.getSite().setting('integrationmonatSiteMinCartTotalAfterVIPUserIsEligibleForOFYAndFreeShipping');
