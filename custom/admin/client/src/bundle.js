@@ -64478,7 +64478,7 @@ var SWAccountShippingMethodModalController = /** @class */ (function () {
                 entityID: _this.baseEntityPrimaryID,
                 entityName: _this.baseEntityName,
                 context: _this.processContext,
-                propertyIdentifiersList: 'shippingAccountAddress,shippingMethod,account.accountAddressOptions' + _this.orderTemplateService.orderTemplatePropertyIdentifierList
+                propertyIdentifiersList: 'shippingAccountAddress,shippingMethod,account.accountAddressOptions,' + _this.orderTemplateService.orderTemplatePropertyIdentifierList
             };
             if (_this.showCreateShippingAddress) {
                 formDataToPost.newAccountAddress = _this.newAccountAddress;

@@ -95,7 +95,7 @@ class SWAccountShippingMethodModalController{
 			entityID: this.baseEntityPrimaryID,
 			entityName: this.baseEntityName,
 			context: this.processContext,
-			propertyIdentifiersList: 'shippingAccountAddress,shippingMethod,account.accountAddressOptions' + this.orderTemplateService.orderTemplatePropertyIdentifierList
+			propertyIdentifiersList: 'shippingAccountAddress,shippingMethod,account.accountAddressOptions,' + this.orderTemplateService.orderTemplatePropertyIdentifierList
 		};
 		
 		if(this.showCreateShippingAddress){
