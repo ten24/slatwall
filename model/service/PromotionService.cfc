@@ -420,7 +420,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// Sale & Exchange Orders
 			if( listFindNoCase("otSalesOrder,otExchangeOrder", arguments.order.getOrderType().getSystemCode()) ) {
 				clearPreviouslyAppliedPromotions(arguments.order);
-				
+				clearPreviouslyAppliedPromotionMessages(arguments.order);
 				// This is a structure of promotionPeriods that will get checked and cached as to if we are still within the period use count, and period account use count
 				var promotionPeriodQualifications = {};
 	
@@ -505,9 +505,19 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		newAppliedPromotion.setDiscountAmount( arguments.discountAmount );
 	}
 	
+	private void function clearPreviouslyAppliedPromotionMessages(required any order){
+		// Clear all previously applied promotions for order
+		var len=arrayLen(arguments.order.getAppliedPromotionMessages());
+		
+		for(var i = len; i >= 1; i--) {
+			arguments.order.getAppliedPromotionMessages()[i].removeOrder();
+		}
+	}
+	
 	private void function applyPromotionQualifierMessagesToOrder(required any order, required array orderQualifierMessages){
+		
 		ArraySort(arguments.orderQualifierMessages,function(a,b){
-			if(a.priority <= b.priority){
+			if(a.getPriority() <= b.getPriority()){
 				return -1;
 			}else{
 				return 1;
@@ -520,10 +530,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arguments.orderQualifierMessages = arraySlice(arguments.orderQualifierMessages,1,maxMessages);
 		}
 		
-		for(var orderQualifierMessage in arguments.orderQualifierMessages){
-			var promotionQualifierMessage = this.getPromotionQualifierMessage(orderQualifierMessage.promotionQualifierMessageID);
-			var message = promotionQualifierMessage.getInterpolatedMessage(arguments.order);
-			arguments.order.addMessage(orderQualifierMessage.messageName, message);
+		for(var promotionQualifierMessage in arguments.orderQualifierMessages){
+			var newAppliedPromotionMessage = this.newPromotionMessageApplied();
+			
+			newAppliedPromotionMessage.setOrder( arguments.order );
+			newAppliedPromotionMessage.setPromotionQualifierMessage( promotionQualifierMessage );
+			
+			newAppliedPromotionMessage.setMessage( promotionQualifierMessage.getInterpolatedMessage( arguments.order ) );
+			
+			this.savePromotionMessageApplied(newAppliedPromotionMessage);
 		}
 
 	}
@@ -707,7 +722,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			for(var promoQualifierMessage in arguments.qualifier.getPromotionQualifierMessages()){
 
 				if(promoQualifierMessage.hasOrderByOrderID( arguments.order.getOrderID() )){
-					arrayAppend(arguments.orderQualifierMessages, promoQualifierMessage.getMessageStruct());
+					arrayAppend(arguments.orderQualifierMessages, promoQualifierMessage);
 				}
 			}
 		}
@@ -805,7 +820,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}else if(structKeyExists(arguments,'orderQualifierMessages')){
 			for(var promoQualifierMessage in arguments.qualifier.getPromotionQualifierMessages()){
 				if(promoQualifierMessage.hasOrderByOrderID( arguments.order.getOrderID() )){
-					arrayAppend(arguments.orderQualifierMessages, promoQualifierMessage.getMessageStruct());
+					arrayAppend(arguments.orderQualifierMessages, promoQualifierMessage);
 				}
 			}
 		}

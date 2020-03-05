@@ -25,13 +25,32 @@ class MonatProductModalController {
 		public rbkeyService, 
 		private orderTemplateService, 
 		private monatAlertService,
-		private publicService
+		private publicService,
+		private $http
 	) {}
 
 	public $onInit = () => {
-		this.makeTranslations();
+		let httpOptions = {
+			method: 'GET',
+			url: this.product.skuProductURL
+		}
 		
-		this.getModalInfo();
+		this.$http(httpOptions).then(res => {
+			//error handeling to be determined later
+			if(res.status !== 200 ){
+				alert('there was an error');
+				return;
+			} 
+			
+			let content = <HTMLDivElement>document.getElementById('product-modal')!;
+			let parser = new DOMParser();
+			let doc = parser.parseFromString(res.data, "text/html");
+			let footer = <HTMLElement><any>doc.getElementsByTagName('footer');
+			let header = <HTMLElement><any>doc.getElementsByTagName('header');
+			footer[0].parentNode.removeChild(footer[0]);
+			header[0].parentNode.removeChild(header[0]);
+			content.appendChild(doc.getElementById('wrapper'));
+		});
 	};
 	
 	private getModalInfo = () => {
@@ -124,6 +143,8 @@ class MonatProductModalController {
 	};
 
 	public closeModal = () => {
+		let content = <HTMLDivElement>document.getElementById('product-modal')!;
+		content.innerHTML = '';
 		console.log('closing modal');
 		this.close(null); // close, but give 100ms to animate
 	};
