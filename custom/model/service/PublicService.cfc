@@ -540,7 +540,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         processObject.setOrderTemplateTypeID(orderTypeID);
         processObject.setFrequencyTermID(arguments.data.frequencyTermID);
         
-        if(!isNull(getHibachiScope().getAccount().getAccountID()) && len(getHibachiScope().getAccount().getAccountID())){
+        if(!isUpgradedFlag){
             processObject.setAccountID(getHibachiScope().getAccount().getAccountID());
         }else{
             //Vip upgrade so we assign the VIP price group to the process object
