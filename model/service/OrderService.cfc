@@ -1227,6 +1227,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		request[orderTemplateOrderDetailsKey] = {}; 
 		request[orderTemplateOrderDetailsKey]['fulfillmentTotal'] = 0;
+		request[orderTemplateOrderDetailsKey]['subtotal'] = 0;
 		request[orderTemplateOrderDetailsKey]['fulfillmentDiscount'] = 0;
 		request[orderTemplateOrderDetailsKey]['canPlaceOrder'] = false;
 		request[orderTemplateOrderDetailsKey]['orderTemplate'] = arguments.orderTemplate; 	
@@ -1260,7 +1261,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				request[orderTemplateOrderDetailsKey]['fulfillmentTotal'] = transientOrder.getFulfillmentTotal(); 
 				request[orderTemplateOrderDetailsKey]['fulfillmentDiscount'] = transientOrder.getFulfillmentDiscountAmountTotal(); 
 			}
-	
+			request[orderTemplateOrderDetailsKey]['subtotal'] = transientOrder.getSubtotal(); 
 			var freeRewardSkuCollection = getSkuService().getSkuCollectionList();
 			var freeRewardSkuIDs = getPromotionService().getQualifiedFreePromotionRewardSkuIDs(transientOrder);
 			freeRewardSkuCollection.addFilter('skuID', freeRewardSkuIDs, 'in');
@@ -1295,6 +1296,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return getOrderTemplateOrderDetails(argumentCollection=arguments)['fulfillmentDiscount'];	
 	}
 	
+	public numeric function getOrderTemplateSubtotal(required any orderTemplate){
+		return getOrderTemplateOrderDetails(argumentCollection=arguments)['subtotal'];	
+	}
 	public numeric function getFulfillmentTotalForOrderTemplate(required any orderTemplate){
 		return getOrderTemplateOrderDetails(argumentCollection=arguments)['fulfillmentTotal'];	
 	}

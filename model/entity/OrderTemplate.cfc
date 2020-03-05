@@ -558,11 +558,7 @@ public boolean function getAccountIsNotInFlexshipCancellationGracePeriod(){
 	
 	public numeric function getSubtotal(){
 		if(!structKeyExists(variables, 'subtotal')){
-			var orderTemplateItemCollectionList = this.getOrderTemplateItemsCollectionList();
-			var skuService = getService('SkuService');
-			var orderService = getService('orderService');
-			var transientOrderTemplate = getService('OrderService').newTransientOrderFromOrderTemplate( this, false );  
-			variables.subtotal = transientOrderTemplate.getSubtotal(); 
+			variables.subtotal = getService('orderService').getOrderTemplateSubtotal(this);
 		}
 		return variables.subtotal; 
 	}
