@@ -1323,9 +1323,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		arguments.transientOrder.setCurrencyCode(arguments.orderTemplate.getCurrencyCode());
 		
-		var account = getAccountService().getAccount(arguments.orderTemplate.getAccount().getAccountID());
-		arguments.transientOrder.setAccount(account); 
-        arguments.transientOrder.setAccountType( arguments.transientOrder.getAccount().getAccountType() );
+		if(!isNull(arguments.orderTemplate.getAccount())){
+			var account = getAccountService().getAccount(arguments.orderTemplate.getAccount().getAccountID());
+			arguments.transientOrder.setAccount(account); 
+    		arguments.transientOrder.setAccountType( arguments.transientOrder.getAccount().getAccountType() );			
+		}else{
+			arguments.transientOrder.setPriceGroup(arguments.orderTemplate.getPriceGroup());
+		}
+
 
 		if(arguments.evictFromSession){	
 			ORMGetSession().evict(arguments.transientOrder.getAccount());
@@ -1406,7 +1411,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			transientOrderItem.setSku(sku);
 			transientOrderItem.setCurrencyCode(arguments.orderTemplate.getCurrencyCode());
-			transientOrderItem.setPrice(sku.getPriceByCurrencyCode(currencyCode=arguments.orderTemplate.getCurrencyCode(),accountID=arguments.orderTemplate.getAccount().getAccountID()));
+			if(!isNull(arguments.orderTemplate.getAccount())){
+				transientOrderItem.setPrice(sku.getPriceByCurrencyCode(currencyCode=arguments.orderTemplate.getCurrencyCode(),accountID=arguments.orderTemplate.getAccount().getAccountID()));
+			}else{
+				transientOrderItem.setPrice(sku.getPriceByCurrencyCode(currencyCode=arguments.orderTemplate.getCurrencyCode(),priceGroups=[arguments.orderTemplate.getPriceGroup()]));
+			}
 			transientOrderItem.setQuantity(orderTemplateItem.getQuantity());
 			
 			if(structKeyExists(arguments, "transientOrderFulfillment")){

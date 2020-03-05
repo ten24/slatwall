@@ -559,24 +559,10 @@ public boolean function getAccountIsNotInFlexshipCancellationGracePeriod(){
 	public numeric function getSubtotal(){
 		if(!structKeyExists(variables, 'subtotal')){
 			var orderTemplateItemCollectionList = this.getOrderTemplateItemsCollectionList();
-			orderTemplateItemCollectionList.setDisplayProperties('orderTemplateItemID,quantity,sku.skuID');
-		
-			var orderTemplateItemRecords = orderTemplateItemCollectionList.getRecords(); 
-
-			variables.subtotal = 0; 
-			
-			for(var orderTemplateItem in orderTemplateItemRecords){ 
-				var sku = getService('SkuService').getSku(orderTemplateItem['sku_skuID']);
-				if(isNull(sku)){
-					continue; 
-				} 
-				
-				if(!isNull(this.getAccount())){
-					variables.subtotal += sku.getPriceByCurrencyCode(currencyCode=this.getCurrencyCode(), accountID=this.getAccount().getAccountID())*orderTemplateItem['quantity']; 	
-				}else if(!isNull(this.getPriceGroup())){
-					variables.subtotal += sku.getPriceByCurrencyCode(currencyCode=this.getCurrencyCode(), priceGroups = [this.getPriceGroup()])*orderTemplateItem['quantity']; 	
-				}
-			} 
+			var skuService = getService('SkuService');
+			var orderService = getService('orderService');
+			var transientOrderTemplate = getService('OrderService').newTransientOrderFromOrderTemplate( this, false );  
+			variables.subtotal = transientOrderTemplate.getSubtotal(); 
 		}
 		return variables.subtotal; 
 	}
