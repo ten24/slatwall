@@ -23,6 +23,7 @@ class HybridCartController {
 	public cart:GenericCart;
 	public isEnrollment:boolean;
 	public orderTemplate = {};
+	public total:number;
 	
 	//@ngInject
 	constructor(public monatService, public observerService, public orderTemplateService, public publicService) {
@@ -58,8 +59,18 @@ class HybridCartController {
 	private getCart():void{
 		this.monatService.getCart(true).then((res:GenericCart) => {
 			this.cart = res.cart;
-			this.cart.orderItems = this.cart.orderItems.filter(el => el.sku.product.productType.systemCode !== 'ProductPack');
+			this.cart.orderItems = this.cart.orderItems.filter(el => el.sku.product.productType.systemCode !== 'ProductPack' && el.sku.product.productType.systemCode !== 'VIPCustomerRegistr');
+			this.recalculatePrices();
 		});
+	}
+	
+	private recalculatePrices():void{
+		let price = 0;
+		for(let item of this.cart.orderItems){
+			price += item.sku.price;
+		}
+		console.log(price)
+		this.total = price;
 	}
 	
 	public removeItem = (item:GenericOrderItem):void => {
