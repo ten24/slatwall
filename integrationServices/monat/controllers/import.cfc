@@ -2073,6 +2073,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 							accountPaymentMethod.setExpirationYear(flexshipPayment['CcExpYy']?:""); 
 							accountPaymentMethod.setExpirationMonth(flexshipPayment['CcExpMm']?:""); 
 							accountPaymentMethod.setProviderToken(flexshipPayment['PaymentToken']?:""); 
+							//DF comment
+							//flexship['entryDate'] is used in 3 places including below: shipping, billing addresses and accountpaymentmethod
+							accountPaymentMethod.setCreatedDateTime(getDateFromString(flexship['entryDate']));
 							accountPaymentMethod.setPaymentMethod(paymentMethod);
 							
 							orderTemplate.setAccountPaymentMethod(accountPaymentMethod);
