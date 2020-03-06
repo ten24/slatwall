@@ -52,14 +52,14 @@ class HybridCartController {
 		}
 	}
 	
-	public redirect(destination: '/shopping-cart/' | '/checkout/'):void{
+	public redirect(destination):void{
 		this.monatService.redirectToProperSite(destination);
 	}
 	
 	private getCart():void{
 		this.monatService.getCart(true).then((res:GenericCart) => {
 			this.cart = res.cart;
-			this.cart.orderItems = this.cart.orderItems.filter(el => el.sku.product.productType.systemCode !== 'ProductPack' && el.sku.product.productType.systemCode !== 'VIPCustomerRegistr');
+			this.cart.orderItems = this.cart.orderItems.filter(el => el.sku.product.productType.systemCode !== 'ProductPack' );
 			this.recalculatePrices();
 		});
 	}
@@ -67,9 +67,10 @@ class HybridCartController {
 	private recalculatePrices():void{
 		let price = 0;
 		for(let item of this.cart.orderItems){
-			price += item.sku.price;
+			if(item.sku.product.productType.systemCode == 'VIPCustomerRegistr' ) continue;
+			price += item.price;
 		}
-		console.log(price)
+
 		this.total = price;
 	}
 	
@@ -102,7 +103,6 @@ class HybridCartController {
 			}
 		});
 	}
-	
 }
 
 class HybridCart {
