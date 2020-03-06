@@ -57,8 +57,6 @@ component extends="HibachiService" accessors="true" output="false" {
 	// ===================== START: Logical Methods ===========================
 	
 	public boolean function runWorkflowByEventTrigger(required any workflowTrigger, required any entity){
-		
-	        logger.m(workflowTrigger);
 	
 			//only flush on after
 			if(left(arguments.workflowTrigger.getTriggerEvent(),'5')=='after'){
@@ -134,7 +132,6 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 		// Make sure that this event has workflows attached before creating a thread
 		if(arrayFindNoCase(allWorkflowTriggerEventsArray, arguments.eventName)) {
-		logger.m(eventName = arguments.eventName, eventData=arguments.eventData);
 			
 			// Run all workflows inside of a thread
 			//thread action="run" name="#createUUID()#" application="#application#" eventName="#arguments.eventName#" entity="#arguments.entity#" {
@@ -499,7 +496,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	// ===================== START: Process Methods ===========================
 	
 	public any function processWorkflow_execute(required any workflow, required struct data) {
-	    logger.m();
+	   
 		
 		// Loop over all of the tasks for this workflow
 		for(var workflowTask in arguments.workflow.getWorkflowTasks()) {
