@@ -22,6 +22,6 @@
 		<Record updateScriptID="8d4ab5h1db5311ea9fa612bff9d404z5" scriptPath="database/muracontentmodulefields.cfm" loadOrder="113" maxExecutionCount="1" />
 		<Record updateScriptID="8d4ab5h1db5311ea9fa612bff9d404x5" scriptPath="database/muracontentmodulefieldsbatch2.cfm" loadOrder="114" maxExecutionCount="1" />
 		<Record updateScriptID="8d4ab5h1db5311ea9fa612bff9d404e5" scriptPath="database/ip2location.cfm" loadOrder="115" maxExecutionCount="1" /> 
-		<Record updateScriptID="8d4ab5h1db5311ea9fa612bff9d404c9" scriptPath="database/custompropertiesAccountGovernmentIdentification.cfm" loadOrder="110" maxExecutionCount="1" />
+		<Record updateScriptID="8d4ab5h1db5311ea9fa612bff9d404c9" scriptPath="database/custompropertiesAccountGovernmentIdentification.cfm" loadOrder="116" maxExecutionCount="1" />
 	</Records> 
 </Table>
