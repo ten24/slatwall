@@ -94,22 +94,17 @@
 							  data-type="detail" 
 							  data-edit="#rc.edit#">
 		</sw-entity-action-bar>
-
-		<div class="panel-group s-pannel-group row">	
-			<div class="col-md-6">
-				<cfif !isNull(rc.orderTemplate.getAccount())>
+		<cfif !isNull(rc.orderTemplate.getAccount())>
+			<div class="panel-group s-pannel-group row">	
+				<div class="col-md-6">
 					<sw-customer-account-card data-title='#getHibachiScope().rbkey('entity.orderTemplate.account')#' 
 										  data-account='#rc.orderTemplate.getAccount().getEncodedJsonRepresentation()#'
 										  data-base-entity-name="OrderTemplate"
 										  data-base-entity="#rc.orderTemplate.getEncodedJsonRepresentation()#"
 										  data-base-entity-properties-to-display-list="site_siteName,currencyCode,account.accountNumber">
 					</sw-customer-account-card> 				
-				</cfif>
-
-			</div>
-
-			<div class="col-md-6">
-				<cfif !isNull(rc.orderTemplate.getAccount())>
+				</div>
+				<div class="col-md-6">
 					<sw-account-shipping-address-card data-title="#getHibachiScope().rbkey('define.shipping')#"
 														<cfif not isNull(rc.orderTemplate.getShippingMethod())>
 															data-shipping-method="#rc.orderTemplate.getShippingMethod().getEncodedJsonRepresentation()#"
@@ -126,10 +121,9 @@
 														data-default-country-code="US"
 														>
 					</sw-account-shipping-address-card>
-				</cfif>
-			</div>		
-		</div>
-
+				</div>	
+			</div>
+		</cfif>
 		<div class="panel-group s-pannel-group row">	
 			<div class="col-md-12">
 				<cfif !isNull(rc.orderTemplate.getAccount())>
