@@ -1,21 +1,3 @@
-interface httpResponse{
-	successfulActions:Array<string>,
-	messages:Array<string>
-	failureActions:Array<string>
-}
-
-interface cartResponse extends httpResponse{
-	orderItems: Array<orderItems>
-}
-
-interface orderItems{
-	sku:object
-}
-
-interface accountResponse extends httpResponse{
-	account:object
-}
-
 class VIPController {
 	public loading:boolean=false;
 	public pageTracker: number;
