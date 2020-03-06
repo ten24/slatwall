@@ -218,4 +218,20 @@ component extends="Slatwall.model.service.PromotionService" {
 		}
 
 	}
+	
+	public void function updateOrderAmountsWithPromotions(required any order){
+		super.updateOrderAmountsWithPromotions(arguments.order);
+		
+		var personalVolumeTotal = arguments.order.getPersonalVolumeTotal();
+		var roundedPersonalVolumeTotal = round(personalVolumeTotal);
+		var difference = personalVolumeTotal - roundedPersonalVolumeTotal;
+		
+		if( difference != 0 ){
+			var newAppliedPromotion = this.newPromotionApplied();
+			newAppliedPromotion.setAppliedType('order');
+			newAppliedPromotion.setOrder( arguments.order );
+			newAppliedPromotion.setPersonalVolumeDiscountAmount( difference );
+			this.savePromotionApplied(newAppliedPromotion);
+		}
+	} 
 }
