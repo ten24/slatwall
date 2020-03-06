@@ -1,7 +1,9 @@
 <cfscript>
 	function getEmailContent(required string attributeValue, required any emailTemplate){
 		try{
-			var emailContentType = getHibachiScope().getService("typeService").getTypeByTypeCode(arguments.attributeValue);
+		    var emailContentType = getHibachiScope().getService("typeService").getTypeByTypeCode(
+		        arguments.attributeValue
+			);
 			return getHibachiScope().getService("attributeService").getAttributeValueByType(emailContentType).getAttributeValue();		
 		}catch(e){
 			return '';
@@ -10,24 +12,23 @@
 </cfscript>
 
 <cfsavecontent variable="emailData.emailBodyHTML">
-	<cfif accountType == 'retail'>
-	    <cfset accountType = "customer">
-	</cfif>
 	
 	<cfoutput>
-	    <!--- if is headerin setting ---> 
-	    <!--- include #accountType##countryCode#Header --->
-		
-		#getEmailContent('#accountType##countryCode#EmailHeader', emailTemplate)#
-		<cfset emailBody = emailTemplate.getFormattedValue(propertyName='#accountType##CountryCode#Body', locale=locale) />
+	    <cfif emailTemplate.getAttributeValue('useGlobalHeaderAndFooterFlag')> 
+    	#getEmailContent('#account.getAccountType()##account.getaccountCreatedSite().getRemoteId()#Header', emailTemplate)#
+		</cfif>
+		<cfset emailBody = emailTemplate.getAttributeValue(attribute='#account.getAccountType()##account.getaccountCreatedSite().getRemoteId()#Body', locale=locale) />
+	
 		<cfif NOT len(Trim(emailBody)) >
-		    	<cfset emailBody = emailTemplate.getFormattedValue(propertyName='#accountType#Body', locale=locale) />
-
+		    	<cfset emailBody = emailTemplate.getFormattedValue(propertyName='#account.getAccountType()#Body', locale=locale) />
 		 </cfif>
-		#templateObject.stringReplace( emailBody, true )#
-		    <!--accounttype countr-->
-		    <!--- include #accountType##countryCode#Footer --->
-		#getEmailContent('#accountType#EmailFooter', emailTemplate)#
+		 
+		 #templateObject.stringReplace( emailBody, true )#
+		
+		<cfif emailTemplate.getAttributeValue('useGlobalHeaderAndFooterFlag') >
+		    #getEmailContent('#account.getAccountType()##account.getaccountCreatedSite().getRemoteId()#Footer', emailTemplate)#
+		</cfif>
+		
 	</cfoutput>
 </cfsavecontent>
 
