@@ -27,6 +27,8 @@ class EnrollmentMPController {
 	public isInitialized = false;
 	
 	
+	public loadingBundles: boolean = false;
+	
 	// @ngInject
 	constructor(public publicService, public observerService, public monatService, private rbkeyService) {}
 	
@@ -119,9 +121,12 @@ class EnrollmentMPController {
 	}
 
 	public getStarterPacks = () => {
+		this.loadingBundles = true;
+		
 		this.publicService
 			.doAction('getStarterPackBundleStruct', { contentID: this.contentId })
 			.then((data) => {
+				this.loadingBundles = false;
 				this.bundles = data.bundles;
 				//truncating string
 				for(let bundle in this.bundles){
@@ -177,10 +182,11 @@ class EnrollmentMPController {
 		}
 	};
 
-	public selectBundle = (bundleID) => {
+	public selectBundle = ( bundleID, $event ) => {
+		$event.preventDefault();
+		
 		this.selectedBundleID = bundleID;
 		this.bundleErrors = [];
-		this.openedBundle = null;
 	};
 
 	private stripHtml = (html) => {

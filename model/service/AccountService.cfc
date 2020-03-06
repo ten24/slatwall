@@ -1961,7 +1961,10 @@ component extends="HibachiService" accessors="true" output="false" {
 		return arguments.permissionGroup;
 	}
 	
-	
+	/**
+	 * helper function to update @entity/AccountGovernmentIdentification's dependent properties
+	 * extracted to make it customizable 
+	*/ 
 	public void function updateGovernmentIdentificationNumberProperties(required any governmentIdentification, required string governmentIdentificationNumber=""){
 		if(len(arguments.governmentIdentificationNumber)) {
 			arguments.governmentIdentification.setGovernmentIdentificationLastFour( right(arguments.governmentIdentificationNumber, 4) );
@@ -1970,6 +1973,14 @@ component extends="HibachiService" accessors="true" output="false" {
 			arguments.governmentIdentification.setGovernmentIdentificationNumberEncrypted(javaCast("null", ""));
 		}
 	}
+	
+	public any function addOrderToAccount(required any account, required any order){
+		if(arguments.order.isNew() or !arguments.account.hasOrder( arguments.order )) {
+			arrayAppend(arguments.account.getOrders(), arguments.order);
+		}
+		return arguments.order;
+	}
+	
 
 	// ======================  END: Save Overrides ============================
 

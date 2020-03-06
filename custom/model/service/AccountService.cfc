@@ -193,6 +193,15 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 		return arguments.account; 
 	}
 	
+	public any function addOrderToAccount(required any account, required any order){
+		if(arguments.order.isNew() or !arguments.account.hasOrder( arguments.order )) {
+			arrayAppend(arguments.account.getOrders(), arguments.order);
+		}
+		if(arguments.account.hasPriceGroup()){
+			arguments.order.setPriceGroup(arguments.account.getPriceGroups()[1]);
+		}
+		return arguments.order;
+	}
 	
 	public void function updateGovernmentIdentificationNumberProperties(required any governmentIdentification, required string governmentIdentificationNumber=""){
 		

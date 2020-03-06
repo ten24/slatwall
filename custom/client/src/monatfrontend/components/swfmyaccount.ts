@@ -120,7 +120,7 @@ class swfAccountController {
         
         this.publicService.getAccount(true).then((response)=>{
             
-            this.accountData = response;
+            this.accountData = response.account;
             this.checkAndApplyAccountAge();
             this.userIsLoggedIn = true;
             this.accountPaymentMethods = this.accountData.accountPaymentMethods;

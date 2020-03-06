@@ -864,6 +864,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             super.logout();
         }
         
+        
+        arguments.data.accountType = arguments.accountType;
+        
         var account = super.createAccount(arguments.data);
         
         if(account.hasErrors()){
@@ -872,7 +875,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             return account;
         }
         
-        account.setAccountType(arguments.accountType);
         account.setActiveFlag(accountTypeInfo[arguments.accountType].activeFlag);
         
         var priceGroup = getService('PriceGroupService').getPriceGroupByPriceGroupCode(accountTypeInfo[arguments.accountType].priceGroupCode);
@@ -1302,15 +1304,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     }
     
     public any function addEnrollmentFee( boolean vipUpgrade = false, boolean mpUpgrade = false){
-        
-        var account = getHibachiScope().getAccount();
-        
-        if(account.getAccountStatusType().getSystemCode() == 'astEnrollmentPending' || arguments.vipUpgrade || arguments.mpUpgrade){
-            if(account.getAccountType() == 'VIP' || arguments.vipUpgrade){
-                var VIPSkuID = getService('SettingService').getSettingValue('integrationmonatGlobalVIPEnrollmentFeeSkuID');
-                return addOrderItem({skuID:VIPSkuID, quantity: 1});
-            }
-            
+        if(arguments.vipUpgrade){
+            var VIPSkuID = getService('SettingService').getSettingValue('integrationmonatGlobalVIPEnrollmentFeeSkuID');
+            return addOrderItem({skuID:VIPSkuID, quantity: 1});
         }
     }
     
@@ -1479,11 +1475,14 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         }
         
         //set upgraded info on order
-        return setUpgradeOnOrder(arguments.data.upgradeType, 1);
+        var data = {upgradeType:arguments.data.upgradeType, upgradeFlowFlag: 1}
+        return setUpgradeOnOrder(data);
         
     }
     
-    public any function setUpgradeOnOrder(upgradeType, upgradeFlowFlag = 0){
+    public any function setUpgradeOnOrder(data){
+        param name="arguments.data.upgradeType" default="marketPartner";
+        param name="arguments.data.upgradeFlowFlag" default=0;
         
         if(!isNull(getHibachiScope().getCart().getMonatOrderType())){
             arguments.data['ajaxResponse']['upgradeResponseFailure'] = getHibachiScope().rbKey('frontend.validate.upgradeAlreadyExists');
@@ -1491,14 +1490,14 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         }
         
         //if we are not in an upgrade flow and the user is logged in, log the user out.
-        if(!upgradeFlowFlag && getHibachiScope().getLoggedInFlag()){
+        if(!arguments.data.upgradeFlowFlag && getHibachiScope().getLoggedInFlag()){
             super.logout();
         }
-        
+  
         //getting the upgraded account type, price group and order type
-        var upgradeAccountType = (arguments.upgradeType == 'VIP') ? 'VIP' : 'marketPartner';
-        var priceGroup = (arguments.upgradeType == 'VIP') ? getService('PriceGroupService').getPriceGroupByPriceGroupCode(3) : getService('PriceGroupService').getPriceGroupByPriceGroupCode(1);
-        var monatOrderType = (arguments.upgradeType == 'VIP') ? getService('TypeService').getTypeByTypeCode('motVipEnrollment') : getService('TypeService').getTypeByTypeCode('motMpEnrollment');
+        var upgradeAccountType = (arguments.data.upgradeType == 'VIP') ? 'VIP' : 'marketPartner';
+        var priceGroup = (arguments.data.upgradeType == 'VIP') ? getService('PriceGroupService').getPriceGroupByPriceGroupCode(3) : getService('PriceGroupService').getPriceGroupByPriceGroupCode(1);
+        var monatOrderType = (arguments.data.upgradeType == 'VIP') ? getService('TypeService').getTypeByTypeCode('motVipEnrollment') : getService('TypeService').getTypeByTypeCode('motMpEnrollment');
         var order = getHibachiScope().getCart();
         
         //applying upgrades to order
@@ -1509,8 +1508,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         //Adding enrollment fee for VIP only
         //TODO: add a check here to avoid duplicate enrollment fee's on an order
-        if(arguments.upgradeType == 'VIP'){
-            return this.addEnrollmentFee(true);
+        if(arguments.data.upgradeType == 'VIP'){
+            return this.addEnrollmentFee(vipUpgrade = true);
         }
         
         if(!order.hasErrors()) {
