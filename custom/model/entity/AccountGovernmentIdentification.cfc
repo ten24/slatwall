@@ -1,6 +1,6 @@
 component {
 	
-	property name="governmentIdentificationNumberHashed" ormtype="string" hb_auditable="false" column="governmentIdNumberHashed" hint="as the name suggest, needed this for validation";
+	property name="governmentIdentificationNumberHashed" ormtype="string" hb_auditable="false" column="governmentIdNumberHashed" hint="Using this for unique gov-ID validation";
 
 	public boolean function validateGovernmentIdentificationNumber() {
 		var governmentID = this.getGovernmentIdentificationNumber();
