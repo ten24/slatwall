@@ -1975,7 +1975,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 	
 	public any function addOrderToAccount(required any account, required any order){
-		if(arguments.order.isNew() or !arguments.account.hasOrder( arguments.order )) {
+		if(arguments.order.isNew() || !arguments.account.hasOrder( arguments.order )) {
 			arrayAppend(arguments.account.getOrders(), arguments.order);
 		}
 		return arguments.order;
