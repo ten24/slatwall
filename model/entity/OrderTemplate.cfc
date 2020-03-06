@@ -239,20 +239,7 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 
 	public numeric function getSubtotal(){
 		if(!structKeyExists(variables, 'subtotal')){
-			var orderTemplateItemCollectionList = this.getOrderTemplateItemsCollectionList();
-			orderTemplateItemCollectionList.setDisplayProperties('orderTemplateItemID,quantity,sku.skuID');
-		
-			var orderTemplateItemRecords = orderTemplateItemCollectionList.getRecords(); 
-
-			variables.subtotal = 0; 
-	
-			for(var orderTemplateItem in orderTemplateItemRecords){ 
-				var sku = getService('SkuService').getSku(orderTemplateItem['sku_skuID']);
-				if(isNull(sku)){
-					continue; 
-				} 
-				variables.subtotal += sku.getPriceByCurrencyCode(currencyCode=this.getCurrencyCode(), accountID=this.getAccount().getAccountID())*orderTemplateItem['quantity']; 	
-			} 
+			variables.subtotal = getService('orderService').getOrderTemplateSubtotal(this);
 		}
 		return variables.subtotal; 
 	}
@@ -554,13 +541,6 @@ public boolean function getAccountIsNotInFlexshipCancellationGracePeriod(){
 	
 	public boolean function userCanCancelFlexship(){
 		return getAccount().getAccountType() == 'MarketPartner' || getHibachiScope().getAccount().getAdminAccountFlag();
-	}
-	
-	public numeric function getSubtotal(){
-		if(!structKeyExists(variables, 'subtotal')){
-			variables.subtotal = getService('orderService').getOrderTemplateSubtotal(this);
-		}
-		return variables.subtotal; 
 	}
 	//CUSTOM FUNCTIONS END
 }

@@ -218,26 +218,4 @@ component extends="Slatwall.model.service.PromotionService" {
 		}
 
 	}
-	
-	public struct function getOrderTemplateItemSalePricesByPromoRewardSkuCollection(required any orderTemplateItem){
-		var orderTemplate = arguments.orderTemplateItem.getOrderTemplate();
-		var activePromotionRewardsWithSkuCollection = getPromotionDAO().getActivePromotionRewards( rewardTypeList="merchandise,subscription,contentAccess", promotionCodeList="", excludeRewardsWithQualifiers=true, site=orderTemplate.getSite());
-		
-		var currencyCode = orderTemplate.getCurrencyCode();
-		
-		if(!isNull(orderTemplate.getAccount())){
-			var originalPrice = arguments.orderTemplateItem.getSku().getPriceByCurrencyCode(currencyCode=currencyCode,accountID=orderTemplate.getAccount().getAccountID());
-			var priceDetails = getPriceDetailsForPromoRewards( promoRewards=activePromotionRewardsWithSkuCollection,
-															sku=arguments.orderTemplateItem.getSku(),
-															originalPrice=originalPrice,
-															currencyCode=currencyCode );
-		}else if(!isNull(orderTemplate.getPriceGroup())){
-			var originalPrice = arguments.orderTemplateItem.getSku().getPriceByCurrencyCode(currencyCode=currencyCode,priceGroups=[orderTemplate.getPriceGroup()] );
-			var priceDetails = getPriceDetailsForPromoRewards( promoRewards=activePromotionRewardsWithSkuCollection,
-															sku=arguments.orderTemplateItem.getSku(),
-															originalPrice=originalPrice,
-															currencyCode=currencyCode );
-		}
-		return {'#arguments.orderTemplateItem.getOrderTemplateItemID()#':priceDetails};
-	}
 }

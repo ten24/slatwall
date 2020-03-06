@@ -1849,11 +1849,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var orderTemplateItemCollectionList = this.getOrderTemplateItemCollectionList(); 
 		orderTemplateItemCollectionList.addFilter('orderTemplate.orderTemplateID', arguments.orderTemplate.getOrderTemplateID()); 
 		orderTemplateItemCollectionList.addFilter('sku.skuID', processObject.getSku().getSkuID());
-
+		var priceGroups = !isNull(arguments.orderTemplate.getAccount()) ? arguments.orderTemplate.getAccount().getPriceGroups() : [arguments.orderTemplate.getPriceGroup()];
 		var priceByCurrencyCode = arguments.processObject.getSku().getPriceByCurrencyCode(
 							currencyCode = arguments.orderTemplate.getCurrencyCode(),
 							quantity = arguments.processObject.getQuantity(),
-							priceGroups = 	arguments.orderTemplate.getAccount().getPriceGroups()
+							priceGroups = priceGroups
 						);
 						
 		if( IsNull(priceByCurrencyCode) ) {
@@ -1884,12 +1884,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			if(!isNull(baseQuantity)){
 				orderTemplateItem.setQuantity(baseQuantity + arguments.processObject.getQuantity()); 
 			}
-			
+		
 			orderTemplateItem = this.saveOrderTemplateItem(orderTemplateItem);
 		}
 
 		return arguments.orderTemplate; 	
-	}
+	} 
 
 	public any function saveOrderTemplateItem(required any orderTemplateItem, struct data={}){
 		arguments.orderTemplateItem = super.saveOrderTemplateItem(arguments.orderTemplateItem, arguments.data);
@@ -2238,7 +2238,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			return;
 		}  
 		
-		if( arguments.account.getAccountID() != orderTemplateItem.getOrderTemplate().getAccount().getAccountID() ) {
+		if( !isNull(orderTemplateItem.getOrderTemplate().getAccount()) && arguments.account.getAccountID() != orderTemplateItem.getOrderTemplate().getAccount().getAccountID() ) {
 			ArrayAppend(arguments.data.messages, "orderTemplateItem doesn't belong to the User");
 			return; 
 		}
@@ -2262,15 +2262,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var orderTemplateCollection = getOrderTemplatesCollectionForOrderTemplateWithoutAccount(argumentCollection = arguments); 
 		}else{
 			var orderTemplateCollection = getOrderTemplatesCollectionForAccount(argumentCollection = arguments); 
+			orderTemplateCollection.addFilter("orderTemplateID", arguments.data.orderTemplateID); // limit to our order-template
 		}
 		
 		orderTemplateCollection.addDisplayProperties(orderTemplateCollectionPropList);  //add more properties
-		orderTemplateCollection.addFilter("orderTemplateID", arguments.data.orderTemplateID); // limit to our order-template
 		
 		var response = {};
 		if (!isNull(orderTemplateCollection.getPageRecords()) && isArray(orderTemplateCollection.getPageRecords()) && arrayLen(orderTemplateCollection.getPageRecords())){
 			response = orderTemplateCollection.getPageRecords()[1]; // there should be only one record
 		}
+	
 		response['orderTemplateItems'] = this.getOrderTemplateItemsForAccount(argumentCollection=arguments);
 		return response;
 	}
@@ -2280,10 +2281,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
         param name="arguments.data.currentPage" default=1;
         param name="arguments.data.orderTemplateID" default="";
 		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; 
-	
+		param name="arguments.data.nullAccountFlag" default=false; 
+
 		var orderTemplateItemCollection = this.getOrderTemplateItemCollectionList();
 
-		var displayProperties = 'orderTemplateItemID,quantity,sku.skuCode,sku.personalVolumeByCurrencyCode,';  
+		var displayProperties = 'orderTemplateItemID,quantity,sku.skuCode,';  
 		displayProperties &= 'sku.priceByCurrencyCode';
 		
 		orderTemplateItemCollection.setDisplayProperties(displayProperties)
@@ -2291,7 +2293,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		orderTemplateItemCollection.setCurrentPageDeclaration(arguments.data.currentPage); 
 		orderTemplateItemCollection.addFilter('orderTemplate.orderTemplateType.typeID', arguments.data.orderTemplateTypeID);
 		orderTemplateItemCollection.addFilter('orderTemplate.orderTemplateID', arguments.data.orderTemplateID);
-		orderTemplateItemCollection.addFilter('orderTemplate.account.accountID', arguments.account.getAccountID());
+		
+		if(arguments.data.nullAccountFlag){
+			orderTemplateItemCollection.addFilter('orderTemplate.account', 'NULL', 'IS');
+		}else{
+			orderTemplateItemCollection.addFilter('orderTemplate.account.accountID', arguments.account.getAccountID());
+		}
+		
 
 		return orderTemplateItemCollection;	
 	} 
@@ -2301,8 +2309,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
         param name="arguments.data.currentPage" default=1;
         param name="arguments.data.orderTemplateID" default="";
 		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; 
-
-		if(!len(arguments.data.orderTemplateID) || isNull(arguments.account)){
+		
+		if(!len(arguments.data.orderTemplateID)){
 			return []; 
 		}
 

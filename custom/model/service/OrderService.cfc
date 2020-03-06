@@ -390,7 +390,7 @@ component extends="Slatwall.model.service.OrderService" {
 	public numeric function getComissionableVolumeTotalForOrderTemplate(required any orderTemplate){
 		return getOrderTemplateOrderDetails(argumentCollection=arguments)['commissionableVolumeTotal'];	
 	}
-    
+	
 	public any function getOrderTemplateItemCollectionForAccount(required struct data, any account=getHibachiScope().getAccount()){
         param name="arguments.data.pageRecordsShow" default=5;
         param name="arguments.data.currentPage" default=1;
@@ -408,24 +408,15 @@ component extends="Slatwall.model.service.OrderService" {
 		
 		orderTemplateItemCollection.addFilter('orderTemplate.orderTemplateType.typeID', arguments.data.orderTemplateTypeID);
 		orderTemplateItemCollection.addFilter('orderTemplate.orderTemplateID', arguments.data.orderTemplateID);
-	
+		if(arguments.data.nullAccountFlag){
+			orderTemplateItemCollection.addFilter('orderTemplate.account', 'NULL', 'IS');
+		}else{
+			orderTemplateItemCollection.addFilter('orderTemplate.account.accountID', arguments.account.getAccountID());
+		}
 
 		return orderTemplateItemCollection;	
 	} 
-	
-	public array function getOrderTemplateItemsForAccount(required struct data, any account=getHibachiScope().getAccount()){
-        param name="arguments.data.pageRecordsShow" default=5;
-        param name="arguments.data.currentPage" default=1;
-        param name="arguments.data.orderTemplateID" default="";
-		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; 
-
-		if(!len(arguments.data.orderTemplateID)){
-			return []; 
-		}
-
-		return getOrderTemplateItemCollectionForAccount(argumentCollection=arguments).getPageRecords(); 
-	} 
-
+    
     private void function updateOrderStatusBySystemCode(required any order, required string systemCode) {
         var orderStatusType = "";
         var orderStatusHistory = {};
@@ -1539,74 +1530,7 @@ component extends="Slatwall.model.service.OrderService" {
 		}
 	}
 	
-	public any function processOrderTemplate_addOrderTemplateItem(required any orderTemplate, required any processObject, required struct data={}){
-
-		var orderTemplateItemCollectionList = this.getOrderTemplateItemCollectionList(); 
-		orderTemplateItemCollectionList.addFilter('orderTemplate.orderTemplateID', arguments.orderTemplate.getOrderTemplateID()); 
-		orderTemplateItemCollectionList.addFilter('sku.skuID', processObject.getSku().getSkuID());
-		var priceGroups = !isNull(arguments.orderTemplate.getAccount()) ? arguments.orderTemplate.getAccount().getPriceGroups() : [arguments.orderTemplate.getPriceGroup()];
-		var priceByCurrencyCode = arguments.processObject.getSku().getPriceByCurrencyCode(
-							currencyCode = arguments.orderTemplate.getCurrencyCode(),
-							quantity = arguments.processObject.getQuantity(),
-							priceGroups = priceGroups
-						);
-						
-		if( IsNull(priceByCurrencyCode) ) {
-			arguments.orderTemplate.addError('priceByCurrencyCode', 
-				rbKey('validate.processOrderTemplate_addOrderTemplateItem.sku.hasPriceByCurrencyCode')
-			);
-		
-			return arguments.orderTemplate; 	
-		}
-		
-		if(orderTemplateItemCollectionList.getRecordsCount() == 0){
-			
-			var newOrderTemplateItem = this.newOrderTemplateItem();
-
-			newOrderTemplateItem.setSku(arguments.processObject.getSku()); 
-			newOrderTemplateItem.setQuantity(arguments.processObject.getQuantity()); 
-			newOrderTemplateItem.setTemporaryFlag(arguments.processObject.getTemporaryFlag()); 
-			newOrderTemplateItem.setOrderTemplate(arguments.orderTemplate);	
-			newOrderTemplateItem = this.saveOrderTemplateItem(newOrderTemplateItem);
-		
-		} else {
-			
-			var orderTemplateItem = this.getOrderTemplateItem(orderTemplateItemCollectionList.getPageRecords()[1]['orderTemplateItemID']);
-			var baseQuantity = orderTemplateItem.getQuantity();
-			
-			orderTemplateItem.setQuantity(arguments.processObject.getQuantity()); 
-			
-			if(!isNull(baseQuantity)){
-				orderTemplateItem.setQuantity(baseQuantity + arguments.processObject.getQuantity()); 
-			}
-		
-			orderTemplateItem = this.saveOrderTemplateItem(orderTemplateItem);
-		}
-
-		return arguments.orderTemplate; 	
-	} 
 	
-	public any function getOrderTemplateItemForAccount(required struct data, any account=getHibachiScope().getAccount()){
-        param name="arguments.data.orderTemplateItemID" default="";
-	
-		if(len(arguments.data.orderTemplateItemID) == 0) {
-			ArrayAppend(arguments.data.messages, 'data.orderTemplateItemID must be set');
-			return;
-		} 
-		
-		var orderTemplateItem = this.getOrderTemplateItem(arguments.data.orderTemplateItemID)
-		
-		if( isNull(orderTemplateItem) ){
-			ArrayAppend(arguments.data.messages, 'no orderTemplateItem found for orderTemplateItemID: #arguments.data.orderTemplateItemID#');
-			return;
-		}  
-		
-		if( isNull(orderTemplateItem.getOrderTemplate().getPriceGroup()) && arguments.account.getAccountID() != orderTemplateItem.getOrderTemplate().getAccount().getAccountID() ) {
-			ArrayAppend(arguments.data.messages, "orderTemplateItem doesn't belong to the User");
-			return; 
-		}
-	
-		return orderTemplateItem; 
-	} 
+
 	
 }

@@ -83,10 +83,12 @@ property name="calculatedCommissionableVolumeTotal" ormtype="integer";
 //CUSTOM PROPERTIES END
 
 	public numeric function getTotal(){
+		
 		if(!structKeyExists(variables, 'total')){
 			variables.total = 0; 
 			
 			if(!isNull(getSku()) && !isNull(getQuantity())){
+				
 				var rewardSkuSalePriceDetails = getService('PromotionService').getOrderTemplateItemSalePricesByPromoRewardSkuCollection(this); 
 				variables.total += rewardSkuSalePriceDetails[this.getOrderTemplateItemID()]['salePrice'] * getQuantity();
 			} 	

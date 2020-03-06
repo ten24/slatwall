@@ -72,7 +72,7 @@ component {
 	public numeric function getCartTotalThresholdForOFYAndFreeShipping(){
 		if(!structKeyExists(variables, 'cartTotalThresholdForOFYAndFreeShipping')){
 			
-			if(this.getAccount().getAccountType() == 'MarketPartner') {
+			if(!isNull(this.getAccount()) && this.getAccount().getAccountType() == 'MarketPartner') {
 				variables.cartTotalThresholdForOFYAndFreeShipping =  this.getSite().setting('integrationmonatSiteMinCartTotalAfterMPUserIsEligibleForOFYAndFreeShipping');
 			} else {
 				variables.cartTotalThresholdForOFYAndFreeShipping =  this.getSite().setting('integrationmonatSiteMinCartTotalAfterVIPUserIsEligibleForOFYAndFreeShipping');
@@ -166,13 +166,6 @@ component {
 	
 	public boolean function userCanCancelFlexship(){
 		return getAccount().getAccountType() == 'MarketPartner' || getHibachiScope().getAccount().getAdminAccountFlag();
-	}
-	
-	public numeric function getSubtotal(){
-		if(!structKeyExists(variables, 'subtotal')){
-			variables.subtotal = getService('orderService').getOrderTemplateSubtotal(this);
-		}
-		return variables.subtotal; 
 	}
 	
 }
