@@ -111,10 +111,8 @@ Notes:
 			,{maxresults=1}
 		)/>
 
-		<cfif usernameNotInUseData GT 0>
-			<cfreturn false />
-		</cfif>
-		<cfreturn true />
+		<cfreturn usernameNotInUseData EQ 0 />
+
 	</cffunction>
 	
 
@@ -131,10 +129,8 @@ Notes:
 		"/>
 		<cfset var count = ormExecuteQuery( hql, params, true, {maxresults=1} )/>
 
-		<cfif count GT 0>
-			<cfreturn false />
-		</cfif>
-		<cfreturn true />
+		<cfreturn count EQ 0 />
+
 	</cffunction>
 	
 	
