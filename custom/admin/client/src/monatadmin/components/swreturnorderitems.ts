@@ -189,8 +189,9 @@ class SWReturnOrderItemsController{
         }
        
        if((orderItem.refundTotal > maxRefund)){
-           orderItem.refundUnitPrice = Math.max(maxRefund,0) / orderItem.returnQuantity;
+           orderItem.refundUnitPrice = (Math.max(maxRefund,0) / orderItem.returnQuantity);
            orderItem.refundTotal = Number((orderItem.refundUnitPrice * orderItem.quantity).toFixed(2));
+           orderItem.refundUnitPrice = Number(orderItem.refundUnitPrice.toFixed(2));
            this.updateOrderItem(orderItem,maxRefund);
        }else{
             this.updateTotals();
