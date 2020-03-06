@@ -1,7 +1,6 @@
 component {
 
 	property name="lastSyncedDateTime" ormtype="timestamp";
-	property name="priceGroup" cfc="PriceGroup" fieldtype="many-to-one" fkcolumn="priceGroupID";
 	
 	//calculated properties
 	property name="calculatedCommissionableVolumeTotal" ormtype="integer";
