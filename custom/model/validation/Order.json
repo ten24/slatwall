@@ -17,14 +17,29 @@
 			"orderType.systemCode":{
 				"eq":"otSalesOrder"
 			}
-		}
+		},
+		"isMarketPartnerSalesOrder":{
+			"account.accountType":{
+				"eq":"marketPartner"
+			},
+			"orderType.systemCode":{
+				"eq":"otSalesOrder"
+			}
+		},
 	},
 	"properties": {
 		"orderCreatedSite": [{"contexts":"save","method":"orderCreatedSiteMatchesAccountCreatedSite"},
 				{ "conditions":"isMarketPartnerSalesOrder","contexts": "save", "method": "MarketPartnerValidationMaxOrdersPlaced" },
 				{ "conditions":"isMarketPartnerSalesOrder","contexts": "save", "method": "MarketPartnerValidationMaxProductPacksPurchased" }],
-		"orderStatusType": [{ "contexts": "edit", "method": "isNotClosed" }],
+		"orderStatusType": [ { "contexts": "edit", "method": "isNotClosed" }],
 		"orderItems":[{"conditions":"mpEnrollmentOrder","contexts":"placeOrder","method":"hasProductPackOrderItem"}],
-		"subTotal": [{"contexts":"placeOrder","conditions":"anyReturnOrder","method":"subtotalWithinAllowedPercentage"}]
+		"subTotal": [{"contexts":"placeOrder","conditions":"anyReturnOrder","method":"subtotalWithinAllowedPercentage"}],
+		
+		"statusCode":  [
+			{ "contexts": "placeInProcessingOne", "inList": "ostNew,ostProcessing,ostProcessingTwo" },
+			{ "contexts": "cancelOrder", "inList": "ostNew,ostProcessing,ostOnHold,ostProcessingOne" },
+		],
+		"isLockedInProcessingOneFlag": [{"contexts": "placeInProcessingTwo", "eq": true }],
+		
 	}
 }

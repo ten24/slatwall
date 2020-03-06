@@ -5515,7 +5515,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	}
 
-	private void function updateOrderStatusBySystemCode(required any order, required string systemCode) {
+	public void function updateOrderStatusBySystemCode(required any order, required string systemCode) {
 		arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode(arguments.systemCode) );
 	}
 	

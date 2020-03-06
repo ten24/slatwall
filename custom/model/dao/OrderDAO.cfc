@@ -1,4 +1,4 @@
-<cfcomponent extends="Slatwall.model.dao.AccountDAO">
+<cfcomponent extends="Slatwall.model.dao.OrderDAO">
 
     <cffunction name="placeOrdersInProcessingTwo" returntype="void" access="public">
         <cfargument name="data" />

@@ -277,13 +277,16 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
     property name="priceGroup" cfc="PriceGroup" fieldtype="many-to-one" fkcolumn="priceGroupID";
     property name="upgradeFlag" ormtype="boolean" default="0";
 
+    property name="isLockedInProcessingFlag" persistent="false";
+    property name="isLockedInProcessingOneFlag" persistent="false";
+    property name="isLockedInProcessingTwoFlag" persistent="false";
+
    
  property name="businessDate" ormtype="string";
  property name="commissionPeriod" ormtype="string";
  property name="importFlexshipNumber" ormtype="string";
  property name="initialOrderFlag" ormtype="boolean";
  property name="orderSource" ormtype="string" hb_formFieldType="select";
- property name="commissionPeriodCode" ormtype="string" hb_formFieldType="select";
  property name="undeliverableOrderReasons" ormtype="string" hb_formFieldType="select";
  property name="orderAccountNumber" ormtype="string";
  property name="orderCountryCode" ormtype="string";
@@ -2283,5 +2286,18 @@ public numeric function getPersonalVolumeSubtotal(){
 			}
 		}
 		return true;
-	 }//CUSTOM FUNCTIONS END
+	 }
+	 
+	public boolean function getIsLockedInProcessingOneFlag(){
+		return getOrderStatusType().getSystemCode() == "ostProcessingOne";
+	}
+	
+	public boolean function getIsLockedInProcessingTwoFlag(){
+		return getOrderStatusType().getSystemCode() == "ostProcessingOne";
+	}
+	
+	public boolean function getIslockedInProcessingFlag(){
+		return ListFindNoCase("ostProcessingOne,ostProcessingTwo", getOrderStatusType().getSystemCode() ) > 0;
+	}
+	//CUSTOM FUNCTIONS END
 }

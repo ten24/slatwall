@@ -66,6 +66,10 @@ component {
     property name="priceGroup" cfc="PriceGroup" fieldtype="many-to-one" fkcolumn="priceGroupID";
     property name="upgradeFlag" ormtype="boolean" default="0";
 
+    property name="isLockedInProcessingFlag" persistent="false";
+    property name="isLockedInProcessingOneFlag" persistent="false";
+    property name="isLockedInProcessingTwoFlag" persistent="false";
+
     public numeric function getPersonalVolumeSubtotal(){
         return getCustomPriceFieldSubtotal('personalVolume');
     }
@@ -421,4 +425,17 @@ component {
 		}
 		return true;
 	 }
+	 
+	public boolean function getIsLockedInProcessingOneFlag(){
+		return getOrderStatusType().getSystemCode() == "ostProcessingOne";
+	}
+	
+	public boolean function getIsLockedInProcessingTwoFlag(){
+		return getOrderStatusType().getSystemCode() == "ostProcessingOne";
+	}
+	
+	public boolean function getIslockedInProcessingFlag(){
+		return ListFindNoCase("ostProcessingOne,ostProcessingTwo", getOrderStatusType().getSystemCode() ) > 0;
+	}
+	
 }

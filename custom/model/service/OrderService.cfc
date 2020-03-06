@@ -410,7 +410,7 @@ component extends="Slatwall.model.service.OrderService" {
 		return orderTemplateItemCollection;	
 	} 
 
-    private void function updateOrderStatusBySystemCode(required any order, required string systemCode) {
+    public void function updateOrderStatusBySystemCode(required any order, required string systemCode) {
         var orderStatusType = "";
         var orderStatusHistory = {};
         
@@ -706,6 +706,8 @@ component extends="Slatwall.model.service.OrderService" {
 		return arguments.order;
 	}
 	
+	//Q: not sure if we should create multiple Processes Functions (one per country), 
+	//   or should create a way to pass data from the workflow-UI ?
 	public any function processOrder_placeInProcessingTwoUS(required any order, struct data) {
 		param name="arguments.data" default = {};
 		argumetns.data['siteID'] = "usa-site-id"
