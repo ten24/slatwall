@@ -740,7 +740,6 @@ component extends="HibachiService" accessors="true" output="false" {
 		//if we have a any workflow conditions then evaluate them otherwise evaluate as true
 		
 		if(arguments.entity.getNewFlag()){
-		    logger.d("IN entityPassesAllWorkflowTaskConditions - the Entity is New, something is not right");
 			if(arraylen(arguments.taskConditions.filterGroups)){
 				var booleanExpressionString = getWorkflowConditionGroupsString(arguments.entity,arguments.taskConditions.filterGroups);
 				if(len(booleanExpressionString)){
@@ -753,7 +752,6 @@ component extends="HibachiService" accessors="true" output="false" {
 			}
 		}else{
 		    
-		    logger.d("In entityPassesAllWorkflowTaskConditions - The Entity is-not New, trying to get matching records");
 		    
 			var entityCollectionlist = getCollectionlist(arguments.entity.getClassName());
 			arguments.taskConditions = serializeJson(arguments.taskConditions);
@@ -764,10 +762,6 @@ component extends="HibachiService" accessors="true" output="false" {
 			entityCollectionlist.setCollectionConfigStruct(arguments.taskConditions);
 			entityCollectionlist.addFilter(arguments.entity.getPrimaryIDPropertyName(),arguments.entity.getPrimaryIDValue(),'=','AND',"","isolatedFilter");
 			entityCollectionlist.setDisplayProperties(arguments.entity.getPrimaryIDPropertyName());
-			
-// 			logger.d(message="the final Collection-Config is", collectionConfig=entityCollectionlist.getCollectionConfigStruct() );
-			logger.d("In entityPassesAllWorkflowTaskConditions - The matched-record-count  = #entityCollectionlist.getRecordsCount()#" );
-			
 			//only can return 1 item or no items
 			return entityCollectionlist.getRecordsCount();
 		}

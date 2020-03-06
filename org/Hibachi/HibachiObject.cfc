@@ -1,12 +1,10 @@
 component accessors="true" output="false" persistent="false" {
 
 	property name="hibachiInstanceApplicationScopeKey" type="string" persistent="false";
-    property name="logger" type="any" persistent="false";
 
 	// Constructor Metod
 	public any function init( ) {
 		getThisMetaData();
-		variables.logger = new HibachiLogger(this.getClassName()); 
 		return this;
 	}
 	
