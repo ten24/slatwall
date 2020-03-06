@@ -247,8 +247,8 @@ component extends="Slatwall.model.service.PromotionService" {
 			
 			// The percentage of overall order discount that needs to be properly allocated to the order item. This is to perform weighted calculations.
 			var currentOrderItemAmountAsPercentage=0;
-			if(!isNull(arguments.order.getSubtotalAfterItemDiscounts()) && arguments.order.getSubtotalAfterItemDiscounts() > 0){
-				currentOrderItemAmountAsPercentage = orderItem.getExtendedPriceAfterDiscount() / arguments.order.getSubtotalAfterItemDiscounts();	
+			if(!isNull(arguments.order.getPersonalVolumeSubtotalAfterItemDiscounts()) && arguments.order.getPersonalVolumeSubtotalAfterItemDiscounts() > 0){
+				currentOrderItemAmountAsPercentage = orderItem.getExtendedPersonalVolumeAfterDiscount() / arguments.order.getPersonalVolumeSubtotalAfterItemDiscounts();	
 			}
 			
 			// Approximate amount to allocate (rounded to nearest penny)
