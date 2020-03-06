@@ -1,16 +1,16 @@
 <cfset local.scriptHasErrors = false />
 
 <cftry>
-    <cfquery name="local.updateCalculatedProperties">
+    <cfquery name="local.updateAccountGovernmentIdentification">
         
-        ALTER TABLE SwOrderItem 
+        ALTER TABLE SwAccountGovernmentId
             LOCK=NONE,
             ALGORITHM=INPLACE,
-            ADD COLUMN calculatedQuantityDelivered int(11);
+            ADD COLUMN governmentIdNumberHashed string;
           
 	</cfquery>
     <cfcatch >
-        <cflog file="Slatwall" text="ERROR UPDATE SCRIPT - SwOrderItem Update Calculated Properties (#cfcatch.detail#)">
+        <cflog file="Slatwall" text="ERROR Update Account-Government-Identification Custom Properties SCRIPT (#cfcatch.detail#)">
     	<cfset local.scriptHasErrors = true />
     </cfcatch>
 </cftry>
