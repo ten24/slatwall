@@ -281,7 +281,7 @@ class SWReturnOrderItemsController{
            this.fulfillmentRefundAmount = 0;
        }
        if(this.fulfillmentRefundAmount > 0){
-            this.fulfillmentRefundTaxAmount = this.fulfillmentTaxAmount / this.fulfillmentRefundAmount * this.maxFulfillmentRefundAmount;
+            this.fulfillmentRefundTaxAmount = this.fulfillmentTaxAmount * this.fulfillmentRefundAmount / this.maxFulfillmentRefundAmount;
        }else{
            this.fulfillmentRefundTaxAmount = 0;
        }
