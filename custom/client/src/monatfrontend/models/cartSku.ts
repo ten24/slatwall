@@ -1,7 +1,7 @@
 import product from './cartProduct'
 
 export default interface sku{
-	errors: object,
+	errors: { [key:string]: any },
 	listPrice: string,
 	imageFile: string,
 	product: product,
