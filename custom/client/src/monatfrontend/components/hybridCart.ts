@@ -1,13 +1,10 @@
-type genericObject = { [key:string]: any }
+import Cart from '../models/cart'
 
-interface GenericCart extends genericObject {
-	orderItems: Array<GenericOrderItem>;
-	orderID: string
-}
+type genericObject = { [key:string]: any }
 
 interface GenericTemplate extends genericObject {
 	orderTemplateItems: Array<GenericOrderItem>;
-	orderTemplateID: string
+	orderTemplateID: string,
 }
 
 interface GenericOrderItem extends genericObject{
@@ -20,7 +17,7 @@ interface GenericOrderTemplateItem extends genericObject{
 
 class HybridCartController {
 	public showCart = false;
-	public cart:GenericCart;
+	public cart:Cart;
 	public isEnrollment:boolean;
 	public orderTemplate = {};
 	
@@ -46,8 +43,9 @@ class HybridCartController {
 	}
 	
 	private getCart():void{
-		this.monatService.getCart(true).then((res:GenericCart) => {
-			this.cart = res.cart;
+		this.monatService.getCart(true).then((res) => {
+			this.cart = <Cart>res.cart;
+			this.cart.orderItems[1].sku.product.productType.systemCode;
 			this.cart.orderItems = this.cart.orderItems.filter(el => el.sku.product.productType.systemCode !== 'ProductPack');
 		});
 	}
