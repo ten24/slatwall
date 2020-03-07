@@ -1533,7 +1533,11 @@ component extends="Slatwall.model.service.OrderService" {
 		}
 	}
 	
-	
-
+	public any function getOFYProductsForOrder(required any order ){
+		var freeRewardSkuCollection = getSkuService().getSkuCollectionList();
+		var freeRewardSkuIDs = getPromotionService().getQualifiedFreePromotionRewardSkuIDs(arguments.order);
+		freeRewardSkuCollection.addFilter('skuID', freeRewardSkuIDs, 'in');
+		return freeRewardSkuCollection.getRecords();
+	}
 	
 }
