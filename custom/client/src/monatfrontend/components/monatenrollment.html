@@ -24,6 +24,7 @@
     
 <footer class="steps-footer d-flex flex-column">
 	<div class="w-100 d-flex justify-content-between align-items-center">
+		<!-- Back button --->
 		<div class="d-flex align-items-center">
 			<a 
 				href 
@@ -46,6 +47,7 @@
 			</span>
 		</div>
 		
+		<!----Step icon indicators --->
 		<div class="step-status row w-50 text-center align-items-end">
 			<div 
 				class="col mt-1"
@@ -76,6 +78,7 @@
 			</div>
 		</div>
 		
+	<!-----NEXT BUTTONS ---->
 		<div ng-if="monatEnrollment.canPlaceCartOrder">
 			<button 
 				style="z-index: 1" 
@@ -110,11 +113,6 @@
 		</div>
 
 		<span ng-if="monatEnrollment.position + 1 == monatEnrollment.steps.length"></span>
-	</div>
-	
-	<!--- Flexship cart ---> 	
-	<div ng-if="monatEnrollment.showFlexshipCart" class="w-100">
-		<monat-flexship-cart-container context="enrollment"></monat-flexship-cart-container>	
 	</div>
 
 </footer>
