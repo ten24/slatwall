@@ -1,6 +1,6 @@
 import productType from './productType'
 
-//filler for objects that have not been defined yet so they do not error in console
+//filler for objects that have not been defined yet so they do not error in compiler
 type genericObject = { [key:string]: any }
 
 export default interface product{

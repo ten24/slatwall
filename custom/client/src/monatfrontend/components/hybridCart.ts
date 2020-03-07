@@ -28,8 +28,7 @@ class HybridCartController {
 		this.observerService.attach(this.getCart.bind(this),'addOrderItemSuccess');
 	}
 
-	public $onInit = () => {
-	}
+	public $onInit = () => { }
 	
 	public toggleCart():void{
 		this.showCart = !this.showCart;
