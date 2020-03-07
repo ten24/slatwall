@@ -47,7 +47,6 @@ class VIPController {
 		});
 
 		this.flexshipID = this.monatService.getCookieValueByCookieName('flexshipID');
-		console.log(this.flexshipID);
 	}
 	
 	public getFrequencyTermOptions = ():void =>{

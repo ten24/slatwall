@@ -399,6 +399,7 @@ component extends="Slatwall.model.service.OrderService" {
         param name="arguments.data.currentPage" default=1;
         param name="arguments.data.orderTemplateID" default="";
 		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; 
+		param name="arguments.data.nullAccountFlag" default=false;
 		
 		var orderTemplateItemCollection = this.getOrderTemplateItemCollectionList();
 		

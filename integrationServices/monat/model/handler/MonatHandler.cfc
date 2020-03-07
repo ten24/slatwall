@@ -173,7 +173,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 				);
 				
 				var accountPaymentMethod = arguments.order.getOrderPayments()[1].getAccountPaymentMethod();
-				var billingAccountAddress = arguments.order.getOrderPayments()[1].getBillingAccountAddress();
 				var orderTemplateStatusType = getService('typeService').getTypeBySystemCode('otstActive');
 				
 				orderTemplate.setShippingMethod(shippingMethod);
@@ -185,18 +184,17 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 					//If the user chose not to save the address, we'll create a new-accountAddress for flexship, as flexship's frontend UI relies on that; User can always change/remove the address at the frontend
 					var newAccountAddress = getAccountService().newAccountAddress();
 					newAccountAddress.setAddress( orderFulFillment.getShippingAddress() );
-					newAccountAddress.setAccount( orderTemplate.getAccount() );
+					newAccountAddress.setAccount( arguments.order.getAccount() );
 					newAccountAddress.setAccountAddressName( orderFulFillment.getShippingAddress().getName());
 					
 					orderTemplate.setShippingAccountAddress(newAccountAddress);
 				}
 				
 				orderTemplate.setAccountPaymentMethod(accountPaymentMethod);
-				orderTemplate.setBillingAccountAddress(billingAccountAddress);
 				orderTemplate.setOrderTemplateStatusType(orderTemplateStatusType);
 				
 				if(isNull(orderTemplate.getAccount())){
-					orderTemplate.setAccount(account);
+					orderTemplate.setAccount(arguments.order.getAccount());
 				}
 				orderTemplate = getOrderService().saveOrderTemplate(orderTemplate,{},'upgradeFlow');
 			}
@@ -218,6 +216,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 				arguments.order.setInitialOrderFlag(true);
 			}
 		}catch(any dateError){
+			writeDump(orderTemplate.getAccount(), 2)
+			writeDump(dateError)
+			abort;
 			logHibachi("afterOrderProcess_placeOrderSuccess failed @ setCommissionPeriod using #commissionDate# OR to set initialOrderFlag");	
 		}
 		
