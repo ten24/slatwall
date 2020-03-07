@@ -23,7 +23,6 @@ class VIPController {
 	public flexshipDeliveryDate;
 	public flexshipFrequencyName;
 	public flexshipFrequencyHasErrors: boolean = false;
-	public isNotSafariPrivate:boolean;
 	public flexshipItemList:any;
 	public recordsCount;
 	public flexshipTotal:number = 0;
@@ -32,6 +31,9 @@ class VIPController {
 	public defaultTerm;
 	public termMap = {};
 	public isInitialized = false;
+	public paginationMethod = 'getproductsByCategoryOrContentID';
+	public productRecordsCount: number;
+	public paginationObject = {};
 	
 	// @ngInject
 	constructor(public publicService, public observerService, public monatService, public orderTemplateService) {
@@ -66,16 +68,6 @@ class VIPController {
 		this.monatService.adjustInputFocuses();
 	}
 	
-	//check to see if we can use local storage
-	public localStorageCheck = () => {
-		try {
-			localStorage.setItem('test', '1');
-			localStorage.removeItem('test');
-			this.isNotSafariPrivate = true;
-		} catch (error) {
-			this.isNotSafariPrivate = false;
-		}
-	}
 
 	public getCountryCodeOptions = () => {
 		if (this.countryCodeOptions.length) {
@@ -134,17 +126,26 @@ class VIPController {
 		}
 	};
 	
+	public searchByKeyword = (keyword:string) =>{
+		this.publicService.doAction('getProductsByKeyword', {keyword: keyword, priceGroupCode: 1}).then(res=> {
+			this.paginationMethod = 'getProductsByKeyword';
+			this.productRecordsCount = res.recordsCount;
+			this.paginationObject['keyword'] = keyword;
+			this.productList = res.productList;
+			this.observerService.notify("PromiseComplete");
+		});
+	}
+
 	public getProductList = () => {
 		this.loading = true;
-		
 		this.publicService.doAction('getproductsByCategoryOrContentID', {priceGroupCode: 3}).then((result) => {
-            this.productList = result.productList;
-            this.recordsCount = result.recordsCount;
-			this.observerService.notify('PromiseComplete');
-            this.loading = false;
+			this.observerService.notify("PromiseComplete");
+			this.productList = result.productList;
+			this.productRecordsCount = result.recordsCount
+			this.loading = false;
 		});
-	};
-
+	}
+	
     public createOrderTemplate = (orderTemplateSystemCode:string = 'ottSchedule',context="upgradeFlow") => {
         this.loading = true;
         this.orderTemplateService.createOrderTemplate(orderTemplateSystemCode,context).then(result => {
@@ -178,12 +179,6 @@ class VIPController {
         this.loading = true;
         this.flexshipDeliveryDate = dayOfMonth;
 		this.flexshipFrequencyName = frequencyTerm.name;
-		
-		if(this.isNotSafariPrivate){
-			localStorage.setItem('flexshipDayOfMonth', dayOfMonth);
-			localStorage.setItem('flexshipFrequency', frequencyTerm.name);	
-		}
-    
         const flexshipID = this.flexshipID;
         this.orderTemplateService.updateOrderTemplateFrequency(flexshipID, frequencyTerm.value, dayOfMonth).then(result => {
             this.getFlexshipDetails();
