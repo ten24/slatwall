@@ -49,6 +49,16 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
         var password = BCrypt.hashpw(arguments.password, arguments.salt);
         return password;
     }
+    
+    public void function afterInfotraxAccountCreateSuccess(any slatwallScope, any entity, any eventData) {
+
+		//Clear the encrypted govt-id-NUMBER 
+		if( arguments.entity.getAccountGovernmentIdentificationsCount() ){
+			//in current specs, there can be only one govt-ID per account
+			arguments.entity.getAccountGovernmentIdentifications()[1]
+				.setGovernmentIdentificationNumberEncrypted(javaCast("null", ""));
+		}
+	}
 
 	public any function afterOrderProcess_placeOrderSuccess(required any slatwallScope, required any order, required any data){
 

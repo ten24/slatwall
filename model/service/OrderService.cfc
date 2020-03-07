@@ -542,20 +542,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			}
 
-			// Setup the Sku / Quantity / Price details
+			// Setup the Sku / Quantity / Price/ SKU-Price details
 			addNewOrderItemSetup(newOrderItem, arguments.processObject);
-
-			// If the sku is allowed to have a user defined price OR the current account has permissions to edit price
-			if(
-				(
-					(!isNull(newOrderItem.getSku().getUserDefinedPriceFlag()) && newOrderItem.getSku().getUserDefinedPriceFlag())
-					  ||
-					(getHibachiScope().getLoggedInAsAdminFlag() && getHibachiAuthenticationService().authenticateEntityPropertyCrudByAccount(crudType='update', entityName='orderItem', propertyName='price', account=getHibachiScope().getAccount()))
-				) && isNumeric(arguments.processObject.getPrice()) ) {
-				newOrderItem.setPrice( arguments.processObject.getPrice() );
-			} else {
-				newOrderItem.setPrice( arguments.processObject.getSku().getPriceByCurrencyCode( arguments.order.getCurrencyCode(), arguments.processObject.getQuantity() ) );
-			}
 
 			// If a stock was passed in assign it to this new item
 			if( !isNull(arguments.processObject.getStock()) ) {
@@ -1801,16 +1789,19 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var processOrderAddOrderItem = arguments.order.getProcessObject('addOrderItem');
 		var sku = getSkuService().getSku(arguments.orderTemplateItemStruct['sku_skuID']);
 
-		processOrderAddOrderItem.setSku(sku);
 		
 		if(structKeyExists(arguments.orderTemplateItemStruct,'price')){
 			var orderTemplateItemPrice = arguments.orderTemplateItemStruct.price;
 		}else{
-			var orderTemplateItemPrice = sku.getPriceByCurrencyCode(currencyCode=arguments.orderTemplate.getCurrencyCode(), accountID=arguments.orderTemplate.getAccount().getAccountID());
+			var orderTemplateItemPrice = sku.getPriceByCurrencyCode(
+					currencyCode = arguments.orderTemplate.getCurrencyCode(), 
+					quantity = arguments.orderTemplateItemStruct['quantity'],
+					accountID = arguments.orderTemplate.getAccount().getAccountID()
+				);
 		}
 		
+		processOrderAddOrderItem.setSku(sku);
 		processOrderAddOrderItem.setPrice(orderTemplateItemPrice);
-
 		processOrderAddOrderItem.setQuantity(arguments.orderTemplateItemStruct['quantity']);
 		processOrderAddOrderItem.setUpdateOrderAmountFlag(false); 		
 
@@ -3460,41 +3451,38 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	public any function processOrder_updateOrderAmounts(required any order, struct data) {
 		this.logHibachi('updating order amounts called', true); 
+		
 		//only allow promos to be applied to orders that have not been closed or canceled
 		if(!listFindNoCase("ostCanceled,ostClosed", arguments.order.getOrderStatusType().getSystemCode())) {
 
-			
 			if(arguments.order.getOrderStatusType().getSystemCode() == "ostNotPlaced") {
 				//quote logic should freeze the price based on the expiration therefore short circuiting the logic
 				if(
  					!arguments.order.getQuoteFlag() 
- 					|| (
- 						arguments.order.getQuoteFlag() && arguments.order.isQuotePriceExpired()
- 					)
+ 					|| 
+ 					(arguments.order.getQuoteFlag() && arguments.order.isQuotePriceExpired() )
  				){
  					// Loop over the orderItems to see if the skuPrice Changed
 					for(var orderItem in arguments.order.getOrderItems()){
-						var skuPrice = val(orderItem.getSkuPrice());
-						var SkuPriceByCurrencyCode = val(orderItem.getSku().getPriceByCurrencyCode(orderItem.getCurrencyCode(), orderItem.getQuantity()));
-	 				
+						
 	 					if(
-	 						listFindNoCase("oitSale,oitDeposit",orderItem.getOrderItemType().getSystemCode()) && skuPrice != SkuPriceByCurrencyCode
+	 						!orderItem.getUserDefinedPriceFlag()
+	 						&&
+	 						listFindNoCase("oitSale,oitDeposit",orderItem.getOrderItemType().getSystemCode()) 
 	 					){
-	 						var userDefinedPrice = false;
-	 						if (!isNull(orderItem.getSku().getUserDefinedPriceFlag())){
-	 							userDefinedPrice = orderItem.getSku().getUserDefinedPriceFlag();
-	 						}
-	 						
-	 						if(!userDefinedPrice) {
-	 							orderItem.setPrice(SkuPriceByCurrencyCode);
-	 							orderItem.setSkuPrice(SkuPriceByCurrencyCode);
-	 						}
+	 						var skuPrice = val(orderItem.getSkuPrice());
+	 						var skuPriceByCurrencyCode = val(orderItem.getSku().getPriceByCurrencyCode(orderItem.getCurrencyCode(), orderItem.getQuantity()));
+							
+							if(skuPrice != skuPriceByCurrencyCode) {
+		 						orderItem.setPrice(skuPriceByCurrencyCode);
+		 						orderItem.setSkuPrice(skuPriceByCurrencyCode);
+							}
+							
 						}
 					}
  				}
 			}
 			
-					
 			// First Re-Calculate the 'amounts' base on price groups
 			getPriceGroupService().updateOrderAmountsWithPriceGroups( arguments.order );
 
@@ -4199,7 +4187,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				arguments.childOrderItem.getOrderFulfillment().setFulfillmentMethod( listFirst(arguments.childOrderItem.getSku().setting('skuEligibleFulfillmentMethods')) );
 			}
 			arguments.childOrderItem.setCurrencyCode( arguments.order.getCurrencyCode() );
-			if(arguments.childOrderItem.getSku().getUserDefinedPriceFlag() && structKeyExists(arguments.childOrderItemData, 'price') && isNumeric(arguments.childOrderItemData.price)) {
+			if(arguments.childOrderItem.getUserDefinedPriceFlag() && structKeyExists(arguments.childOrderItemData, 'price') && isNumeric(arguments.childOrderItemData.price)) {
 				arguments.childOrderItem.setPrice( arguments.childOrderItemData.price );
 			} else {
 				// TODO: calculate price base on adjustment type rule of bundle group
@@ -5569,13 +5557,42 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode(arguments.systemCode) );
 	}
 	
-	private any function addNewOrderItemSetup(required any newOrderItem, required any processObject)
-	{
+	private any function addNewOrderItemSetup(required any newOrderItem, required any processObject) {
+		
 		// Setup the Sku / Quantity / Price details
 		arguments.newOrderItem.setSku( arguments.processObject.getSku() );
 		arguments.newOrderItem.setCurrencyCode( arguments.newOrderItem.getOrder().getCurrencyCode() );
 		arguments.newOrderItem.setQuantity( arguments.processObject.getQuantity() );
-		arguments.newOrderItem.setSkuPrice( arguments.processObject.getSku().getPriceByCurrencyCode( arguments.newOrderItem.getOrder().getCurrencyCode(), arguments.processObject.getQuantity() ) );
+		
+		// If the sku is allowed to have a user defined price OR the current account has permissions to edit price
+		if(
+			arguments.newOrderItem.getSku().getUserDefinedPriceFlag() ?: false
+			|| //Admin-users can override price from the Slatwall-UI
+			(
+				arguments.processObject.getUserDefinedPriceFlag() 
+				&& 
+				getHibachiAuthenticationService().authenticateEntityPropertyCrudByAccount(
+					crudType='update', entityName='OrderItem', 
+					propertyName='price', account=getHibachiScope().getAccount()
+				)
+			)
+		) {
+
+			arguments.newOrderItem.setUserDefinedPriceFlag( true );
+			arguments.newOrderItem.setPrice( arguments.processObject.getPrice() );
+			arguments.newOrderItem.setSkuPrice( arguments.processObject.getPrice() );
+			
+		} else {
+
+			var skuPrice = arguments.processObject.getSku().getPriceByCurrencyCode( 
+								quantity = arguments.processObject.getQuantity(),
+								currencyCode = arguments.newOrderItem.getOrder().getCurrencyCode(), 
+								priceGroups = [arguments.processObject.getPriceGroup()]
+							);
+
+			arguments.newOrderItem.setPrice(skuPrice);
+			arguments.newOrderItem.setSkuPrice(skuPrice);
+		}
 		
 		return arguments.newOrderItem;
 	}

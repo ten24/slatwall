@@ -46,13 +46,35 @@
 			</span>
 		</div>
 		
-		<span class="step-status">
-			<span sw-rbkey="'frontend.global.step'"></span> 
-			{{monatEnrollment.position + 1}} 
-			<span sw-rbkey="'frontend.global.of'"></span> 
-			<!--- The new checkout step is three steps in one so we add 2 more --->
-			{{monatEnrollment.steps.length + 2}} 
-		</span>
+		<div class="step-status row w-50 text-center align-items-end">
+			<div 
+				class="col mt-1"
+				ng-style="{ 'opacity' : (true) ? '100%' : '50%' }"
+			>
+				<i class="fal fa-check fa-2x"></i>	
+				<p class="mb-1" sw-rbkey="'frontend.cart.todaysOrder'"></p>
+			</div>
+			
+			<div class="col">
+				<i class="fas fa-truck fa-2x"></i>	
+				<p class="mb-1" sw-rbkey="'entity.OrderTemplate'"></p>
+			</div>
+			
+			<div class="col">
+				<i class="fas fa-user-plus fa-2x"></i>
+				<p class="mb-1" sw-rbkey="'frontend.createAccount.createAccountBtn'"></p>
+			</div>
+			
+			<div class="col">
+				<i class="fas fa-cash-register fa-2x"></i>
+				<p class="mb-1" sw-rbkey="'frontend.global.checkout'"></p>
+			</div>
+			
+			<div class="col">
+				<i class="fas fa-user-friends fa-2x"></i>
+				<p class="mb-1" sw-rbkey="'frontend.global.sponsor'"></p>
+			</div>
+		</div>
 		
 		<div ng-if="monatEnrollment.canPlaceCartOrder">
 			<button 
