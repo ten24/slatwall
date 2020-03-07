@@ -158,7 +158,6 @@ class MonatEnrollmentController {
 		});
 		this.steps[this.position].selected = true;
 		this.currentStepName = this.steps[this.position].stepClass;
-		console.log(this.currentStepName)
 	}
 	
 	public editFlexshipItems = () => {
