@@ -57,7 +57,6 @@ component extends="HibachiService" accessors="true" output="false" {
 	// ===================== START: Logical Methods ===========================
 	
 	public boolean function runWorkflowByEventTrigger(required any workflowTrigger, required any entity){
-		
 	
 			//only flush on after
 			if(left(arguments.workflowTrigger.getTriggerEvent(),'5')=='after'){
@@ -497,19 +496,26 @@ component extends="HibachiService" accessors="true" output="false" {
 	// ===================== START: Process Methods ===========================
 	
 	public any function processWorkflow_execute(required any workflow, required struct data) {
+	   
+		
 		// Loop over all of the tasks for this workflow
 		for(var workflowTask in arguments.workflow.getWorkflowTasks()) {
+			
 			// Check to see if the task is active and the entity object passes the conditions validation
 			if(
 				workflowTask.getActiveFlag() 
-				&& (
+				&& 
+				(
 					structKeyExists(arguments.data,'entity')
-					|| entityPassesAllWorkflowTaskConditions(arguments.data.entity, workflowTask.getTaskConditionsConfigStruct()) 
+					&& 
+					entityPassesAllWorkflowTaskConditions(arguments.data.entity, workflowTask.getTaskConditionsConfigStruct()) 
 				)
 			){
+				
 				// Now loop over all of the actions that can now be run that the workflow task condition has passes
 				for(var workflowTaskAction in workflowTask.getWorkflowTaskActions()) {
 					if(!isNull(workflowTaskAction.getUpdateData()) && !isNull(workflowTaskAction.getActionType())){
+					        
 							if(data.workflowTrigger.getTriggerType() == 'Event'){
 								arguments.data.entity.setAnnounceEvent(false);
 							}
@@ -532,6 +538,8 @@ component extends="HibachiService" accessors="true" output="false" {
 				}
 			} 
 		}
+		
+		
 		if(structKeyExists(arguments.data,'entity')){
 			return arguments.data.entity;
 		//process methods must return entities
@@ -706,8 +714,8 @@ component extends="HibachiService" accessors="true" output="false" {
 		}
 		return arguments.comparisonOperator;
 	}	
+	
 	private boolean function entityPassesAllWorkflowTaskConditions( required any entity, required any taskConditions ) {
-		
 		getHibachiDAO().flushORMSession();
 		
 		/*
@@ -743,6 +751,8 @@ component extends="HibachiService" accessors="true" output="false" {
 				return true;
 			}
 		}else{
+		    
+		    
 			var entityCollectionlist = getCollectionlist(arguments.entity.getClassName());
 			arguments.taskConditions = serializeJson(arguments.taskConditions);
 			arguments.taskConditions = rereplace(arguments.taskConditions,'"eq"','"="','all');
@@ -753,7 +763,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			entityCollectionlist.addFilter(arguments.entity.getPrimaryIDPropertyName(),arguments.entity.getPrimaryIDValue(),'=','AND',"","isolatedFilter");
 			entityCollectionlist.setDisplayProperties(arguments.entity.getPrimaryIDPropertyName());
 			//only can return 1 item or no items
-			return arraylen(entityCollectionlist.getRecords());
+			return entityCollectionlist.getRecordsCount();
 		}
 		
 		
