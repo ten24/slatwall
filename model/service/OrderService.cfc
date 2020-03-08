@@ -1979,7 +1979,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			accountAddress.setAddress(address); 
 			accountAddress.setAccount(account); 
 
-			accountAddress = getAccountService().saveAccountAddress(accountAddress);
+			accountAddress = getAccountService().saveAccountAddress(accountAddress=accountAddress,verifyAddressFlag=true);
 			
 			// Note: we need to flush here so the new account-address and address has primary-IDs, 
 			// otherwise the **canPlaceOrder** threading logic fails (not able to save a temp-fulfillment due to foreign-key-constraints)

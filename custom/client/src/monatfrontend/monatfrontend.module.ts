@@ -78,7 +78,7 @@ import { MonatDatePicker} from './directives/monatdatepicker';
 declare var $: any;
 
 var monatfrontendmodule = angular
-	.module('monatfrontend', [frontendmodule.name, 'angularModalService','toaster', 'ngMessages'])
+	.module('monatfrontend', [frontendmodule.name,'toaster', 'ngMessages'])
 	//constants
 	.constant('monatFrontendBasePath', '/Slatwall/custom/client/src')
 	//directives
@@ -150,12 +150,9 @@ var monatfrontendmodule = angular
 	.service('monatAlertService', MonatAlertService)
 
 	.config([
-		'ModalServiceProvider',
 		'$locationProvider',
 		'$httpProvider',
-		(ModalServiceProvider, $locationProvider, $httpProvider) => {
-			// to set a default close delay on modals
-			ModalServiceProvider.configureOptions({ closeDelay: 0 });
+		($locationProvider, $httpProvider) => {
 			$locationProvider.html5Mode({ enabled: true, requireBase: false, rewriteLinks: false });
 			
 			//adding monat-http-interceptor

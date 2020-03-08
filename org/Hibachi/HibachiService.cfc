@@ -192,7 +192,7 @@
 		
 		// @hint the default save method will populate, validate, and if not errors delegate to the DAO where entitySave() is called.
 	    public any function save(required any entity, struct data, string context="save") {
-	    	
+
 	    	if(!isObject(arguments.entity) || !arguments.entity.isPersistent()) {
 	    		throw("The entity being passed to this service is not a persistent entity. READ THIS!!!! -> Make sure that you aren't calling the oMM method with named arguments. Also, make sure to check the spelling of your 'fieldname' attributes.");
 	    	}
@@ -205,7 +205,6 @@
 	    	
 			// If data was passed in to this method then populate it with the new data
 	        if(structKeyExists(arguments,"data")){
-	        	
 	        	// Populate this object
 				arguments.entity.populate(argumentCollection=arguments);
 	
@@ -219,7 +218,6 @@
 	        // If the object passed validation then call save in the DAO, otherwise set the errors flag
 	        if(!arguments.entity.hasErrors()) {
 	            arguments.entity = getHibachiDAO().save(target=arguments.entity);
-        
                 // Announce After Events for Success
 				getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#Save", arguments);
 				getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#SaveSuccess", arguments);
@@ -230,7 +228,7 @@
 					getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#CreateSuccess", arguments);
 				}
 		    } else {
-            
+
                 // Announce After Events for Failure
 				getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#Save", arguments);
 				getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#SaveFailure", arguments);
@@ -752,11 +750,15 @@
 	
 	
 		private function onMissingSaveMethod( required string missingMethodName, required struct missingMethodArguments ) {
+
 			if ( structKeyExists(  arguments.missingMethodArguments, '3' ) ) {
+
 				return save( entity = arguments.missingMethodArguments[1], data = arguments.missingMethodArguments[2], context = arguments.missingMethodArguments[3]);
 			} else if ( structKeyExists(  arguments.missingMethodArguments, '2' ) ) {
+
 				return save( entity = arguments.missingMethodArguments[1], data = arguments.missingMethodArguments[2]);
 			} else {
+
 				return save( entity = arguments.missingMethodArguments[1] );
 			}
 		}

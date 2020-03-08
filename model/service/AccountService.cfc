@@ -1824,6 +1824,15 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 	}
 	
+	public any function saveAccountAddress(required any accountAddress, struct data={},string context="save", boolean verifyAddressFlag = false){
+		arguments.accountAddress = super.saveAccountAddress(arguments.accountAddress);
+		
+		if(!arguments.accountAddress.hasErrors()){
+			getAddressService().saveAddress(address=arguments.accountAddress.getAddress(),verifyAddressFlag=arguments.verifyAddressFlag);
+		}
+		return arguments.accountAddress;
+	}
+	
 	public any function savePermissionRecordRestriction(required permissionRecordRestriction, struct data={}, string context="save"){
 		arguments.permissionRecordRestriction =  super.save(entity=arguments.permissionRecordRestriction, data=arguments.data);
 		if(!arguments.permissionRecordRestriction.hasErrors()){

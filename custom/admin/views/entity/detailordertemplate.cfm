@@ -43,6 +43,12 @@
     If you modify this program, you may extend this exception to your version
     of the program, but you are not obligated to do so.
 --->
+<style>
+.angular-modal-service-active .using-modal-service {
+		display: block !important;
+	}
+}
+</style>
 <cfimport prefix="swa" taglib="../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
