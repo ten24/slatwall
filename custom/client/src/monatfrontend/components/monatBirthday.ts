@@ -146,6 +146,14 @@ class MonatBirthdayController {
 		this.isSet = true
 	}
 	
+	public calculateAge(birthDate:string) { 
+		console.log('running')
+		let birthDateObj = <any>Date.parse(birthDate);
+	    let years = Date.now() - birthDateObj.getTime();
+	    let age = new Date(years); // miliseconds from epoch
+	    return Math.abs(age.getUTCFullYear() - 1970);
+	}
+	
 }
 
 class MonatBirthday {
