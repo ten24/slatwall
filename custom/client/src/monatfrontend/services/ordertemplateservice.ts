@@ -102,10 +102,11 @@ export class OrderTemplateService {
        return this.requestService.newPublicRequest('?slatAction=api:public.getordertemplateitems',data).promise;
     }
    
-    public getOrderTemplateDetails = (orderTemplateID:string, optionalProperties:string="") => {
+    public getOrderTemplateDetails = (orderTemplateID:string, optionalProperties:string="", nullAccountFlag = false) => {
        var data = {
            "orderTemplateID" : orderTemplateID,
-           "optionalProperties" : optionalProperties
+           "optionalProperties" : optionalProperties,
+           "nullAccountFlag" :nullAccountFlag
        }
        return this.requestService
                   .newPublicRequest('?slatAction=api:public.getOrderTemplateDetails', data)

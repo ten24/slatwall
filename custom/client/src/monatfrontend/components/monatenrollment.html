@@ -24,6 +24,7 @@
     
 <footer class="steps-footer d-flex flex-column">
 	<div class="w-100 d-flex justify-content-between align-items-center">
+		<!-- Back button --->
 		<div class="d-flex align-items-center">
 			<a 
 				href 
@@ -46,14 +47,46 @@
 			</span>
 		</div>
 		
-		<span class="step-status">
-			<span sw-rbkey="'frontend.global.step'"></span> 
-			{{monatEnrollment.position + 1}} 
-			<span sw-rbkey="'frontend.global.of'"></span> 
-			<!--- The new checkout step is three steps in one so we add 2 more --->
-			{{monatEnrollment.steps.length + 2}} 
-		</span>
+		<!----Step icon indicators --->
+		<div class="step-status row w-50 text-center align-items-end">
+			<div 
+				class="col mt-1"
+				ng-style="{ 'opacity' : (monatEnrollment.currentStepName == 'todaysOrder' || monatEnrollment.currentStepName == undefined ) ? '100%' : '50%' }"
+			>
+				<i class="fal fa-check fa-2x"></i>	
+				<p class="mb-1" sw-rbkey="'frontend.cart.todaysOrder'"></p>
+			</div>
+			
+			<div 
+				class="col"
+				ng-style="{ 
+					'opacity' : (monatEnrollment.currentStepName == 'shopIntro' || monatEnrollment.currentStepName == 'orderListing' ||  monatEnrollment.currentStepName == 'subscription' ) ? '100%' : '50%' 
+				}"
+			>
+				<i class="fas fa-truck fa-2x"></i>	
+				<p class="mb-1" sw-rbkey="'entity.OrderTemplate'"></p>
+			</div>
+			
+			<div 
+				class="col"
+				ng-style="{ 'opacity' : (monatEnrollment.currentStepName == 'createAccount' ) ? '100%' : '50%' }"
+			>
+				<i class="fas fa-user-plus fa-2x"></i>
+				<p class="mb-1" sw-rbkey="'frontend.createAccount.createAccountBtn'"></p>
+			</div>
+			
+			<div class="col">
+				<i class="fas fa-cash-register fa-2x"></i>
+				<p class="mb-1" sw-rbkey="'frontend.global.checkout'"></p>
+			</div>
+			
+			<div class="col">
+				<i class="fas fa-user-friends fa-2x"></i>
+				<p class="mb-1" sw-rbkey="'frontend.global.sponsor'"></p>
+			</div>
+		</div>
 		
+	<!-----NEXT BUTTONS ---->
 		<div ng-if="monatEnrollment.canPlaceCartOrder">
 			<button 
 				style="z-index: 1" 
@@ -88,11 +121,6 @@
 		</div>
 
 		<span ng-if="monatEnrollment.position + 1 == monatEnrollment.steps.length"></span>
-	</div>
-	
-	<!--- Flexship cart ---> 	
-	<div ng-if="monatEnrollment.showFlexshipCart" class="w-100">
-		<monat-flexship-cart-container context="enrollment"></monat-flexship-cart-container>	
 	</div>
 
 </footer>

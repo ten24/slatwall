@@ -1038,6 +1038,9 @@ label {
   margin-top: 8px;
   color: #ccc;
 }
+.angular-modal-service-active .using-modal-service {
+  display: block !important;
+}
 .modal-content .s-content-wrapper {
   margin-top: 5px;
 }
