@@ -820,7 +820,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         if(!isNull(arguments.data.upgradeFlowFlag) && arguments.data.upgradeFlowFlag == 1 && isNull(cart.getMonatOrderType())){
             this.setUpgradeOrderType(cart);
         }
-       
+        
         var orderService = getService("OrderService");
         var currentOrderItemList = orderService.getOrderItemCollectionList();
         currentOrderItemList.addFilter('order.orderID', cart.getOrderID());
@@ -1457,7 +1457,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     
 
     public any function setUpgradeOrderType(required struct data){
-        param name="arguments.data.upgradeType" default="";
+        param name="arguments.data.upgradeType" default="MarketPartner";
         
         var account = getHibachiScope().getAccount();
         var accountType = account.getAccountType();    
@@ -1535,6 +1535,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     
     //Removes upgraded status from an order
      public any function removeUpgradeOnOrder(){
+       
         var account = getHibachiScope().getAccount();
         var accountType=account.getAccountType() ?: 'customer';
         var holdingPriceGroup = account.getPriceGroups();

@@ -25,7 +25,8 @@ class EnrollmentMPController {
 	public paginationMethod = 'getproductsByCategoryOrContentID';
 	public paginationObject = {};
 	public isInitialized = false;
-	
+	public upgradeFlow:boolean;
+	public endpoint: 'setUpgradeOnOrder' | 'setUpgradeOrderType' = 'setUpgradeOnOrder';
 	
 	public loadingBundles: boolean = false;
 	
@@ -37,7 +38,10 @@ class EnrollmentMPController {
 		this.observerService.attach(this.getProductList, 'createSuccess'); 
 		this.observerService.attach(this.showAddToCartMessage, 'addOrderItemSuccess'); 
 		$('.site-tooltip').tooltip();
-		this.publicService.doAction('setUpgradeOnOrder,getStarterPackBundleStruct', {upgradeType: 'marketPartner'}).then(res=>{
+		if(this.upgradeFlow){
+			this.endpoint = 'setUpgradeOrderType';
+		}
+		this.publicService.doAction(this.endpoint + ',getStarterPackBundleStruct', {upgradeType: 'marketPartner'}).then(res=>{
 			this.bundles = res.bundles;
 			this.isInitialized = true;
 			for(let bundle in this.bundles){
@@ -220,6 +224,7 @@ class MonatEnrollmentMP {
 	public bindToController = {
 		step: '@?',
 		contentId: '@',
+		upgradeFlow: '<?'
 	};
 
 	public controller = EnrollmentMPController;
