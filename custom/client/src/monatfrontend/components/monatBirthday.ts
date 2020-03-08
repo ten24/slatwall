@@ -11,7 +11,7 @@ class MonatBirthdayController {
 	public month:string;
 	public day = 1;
 	public year = this.date.getFullYear();
-	public currentYear = this.year; //snapshot the curren year for reference
+	public currentYear = this.year; //snapshot the current year for reference
 	public months:Array<string>;
 	public upMonth:string;
 	public downMonth:string;
@@ -19,6 +19,7 @@ class MonatBirthdayController {
 	public downDay:number;
 	public Actions = ActionType;
 	public isSet = false;
+	public dob:any;
 	
 	//@ngInject
 	constructor(public monatService, public observerService, public $rootScope, public publicService, public $scope, public rbkeyService) {
@@ -56,7 +57,9 @@ class MonatBirthdayController {
 		this.month = this.getAdjustedMonth(action); 
 		this.upMonth = this.getAdjustedMonth(ActionType.PLUS);
 		this.downMonth = this.getAdjustedMonth(ActionType.MINUS);
+		console.log(this.month)
 		this.resetModel();
+		console.log(this.month)
 	}
 	
 	public changeDay(action: ActionType):void{
@@ -136,6 +139,10 @@ class MonatBirthdayController {
 		this.$scope.swfForm.form.month = {$modelValue: this.months.indexOf(this.month) + 1};
 		this.$scope.swfForm.form.year = {$modelValue: this.year};
 		this.$scope.swfForm.form.day = {$modelValue: this.day};
+		this.dob = 
+			this.day < 10 ? ((this.months.indexOf(this.month) + 1)) + ('/0' + this.day) + ('/' + this.year )
+			: ((this.months.indexOf(this.month) + 1) ) + ('/' + this.day ) + ('/' +  this.year);
+			
 		this.isSet = true
 	}
 	

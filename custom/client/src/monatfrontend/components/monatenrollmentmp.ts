@@ -27,7 +27,7 @@ class EnrollmentMPController {
 	public isInitialized = false;
 	public upgradeFlow:boolean;
 	public endpoint: 'setUpgradeOnOrder' | 'setUpgradeOrderType' = 'setUpgradeOnOrder';
-	
+	public showUpgradeErrorMessage = false;
 	public loadingBundles: boolean = false;
 	
 	// @ngInject
@@ -37,13 +37,24 @@ class EnrollmentMPController {
 		this.getDateOptions();
 		this.observerService.attach(this.getProductList, 'createSuccess'); 
 		this.observerService.attach(this.showAddToCartMessage, 'addOrderItemSuccess'); 
+		
 		$('.site-tooltip').tooltip();
+		
 		if(this.upgradeFlow){
 			this.endpoint = 'setUpgradeOrderType';
 		}
+		
 		this.publicService.doAction(this.endpoint + ',getStarterPackBundleStruct', {upgradeType: 'marketPartner'}).then(res=>{
 			this.bundles = res.bundles;
+			
+			if(this.endpoint == 'setUpgradeOrderType' && res.upgradeResponseFailure?.length){
+				this.showUpgradeErrorMessage = true;
+				this.isInitialized = true;
+				return;
+			}
+			
 			this.isInitialized = true;
+			
 			for(let bundle in this.bundles){
 				let str = this.stripHtml(this.bundles[bundle].description);
 				this.bundles[bundle].description = str.length > 70 ? str.substring(0, str.indexOf(' ', 60)) + '...' : str;
