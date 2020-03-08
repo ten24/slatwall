@@ -1875,16 +1875,20 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		
 		//Objects we need to set over and over...
 		var countryUSA =	getAddressService().getCountryByCountryCode3Digit("USA");
-		var aetShipping =	getTypeService().getTypeBySystemCode("aetShipping");
-		var aetBilling =	getTypeService().getTypeBySystemCode("aetBilling");
-		var aatShipping =	getTypeService().getTypeByTypeCode("Ship");
-		var aatBilling =	getTypeService().getTypeByTypeCode("Bill");
-		var aptHome =		getTypeService().getTypeBySystemCode("aptHome");
-		var aptWork =		getTypeService().getTypeBySystemCode("aptWork");
-		var aptMobile = 	getTypeService().getTypeBySystemCode("aptMobile");
-		var aptFax =		getTypeService().getTypeBySystemCode("aptFax");
-		var aptShipTo = 	getTypeService().getTypeBySystemCode("aptShipTo");//needs to be added.
-		
+		var aetShipping =  getTypeService().getTypeByTypeID("2c9180856e182f7b016e1832f78a0009");//aetShipping
+		var aetBilling = getTypeService().getTypeByTypeID("2c9180836e18300f016e18329c5e000b");//aetBilling
+		var aatShipping =  getTypeService().getTypeByTypeID("2c91808b6e965f30016e9de515af01e9");
+		var aatBilling = getTypeService().getTypeByTypeID("2c9180876e99b4d1016e9de4d656006f");
+		var aptHome =  getTypeService().getTypeByTypeID("444df29eaef3cfd1af021d4d31205328");
+		var aptWork = getTypeService().getTypeByTypeID("444df2a1c6cdd58d027199dcbb5b28c9");
+		var aptMobile =  getTypeService().getTypeByTypeID("444df29ff763bac292f9aba2d3debafb");
+		var aptFax = getTypeService().getTypeByTypeID("444df2a0d49e6a3a5951a3cc1c5eefbe");
+		var aptShipTo =  getTypeService().getTypeByTypeID("2c9280846e1dad76016e1de8d2ec0006");
+		var agidSSN =  getTypeService().getTypeByTypeID("443df29eaef3cfd1af021d4d31205328");
+		var agidSIN =  getTypeService().getTypeByTypeID("2c91808a6dbb2a71016dbb361143000d");
+		var agidTIN =  getTypeService().getTypeByTypeID("443df29ff763bac292f9aba2d3debafb");
+		var agidUNK =  getTypeService().getTypeByTypeID("2c9180836dbb2a0a016dbb35124b0010");
+
 		// Call the api and get records from start to end.
 		// import those records using the mapping file.
 		var accountsResponse = getAccountData(pageNumber, pageSize);
@@ -1893,7 +1897,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		
 		while (pageNumber <= pageMax){
 			
-    		var accountsResponse = getAccountData(pageNumber, pageSize);
+	    		var accountsResponse = getAccountData(pageNumber, pageSize);
     		if (accountsResponse.hasErrors){
     		    //goto next page causing this is erroring!
     		    pageNumber++;
@@ -1933,13 +1937,13 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                     
                     
                     // Sets a default if the strings is empty with a space due to web service issue.
-                    if (structKeyExists(account, 'AllowCorporateEmails') && len(account['AllowCorporateEmails']) && (account['AllowCorporateEmails'] == true || account['AllowCorporateEmails'] == " ")){
+                    if (structKeyExists(account, 'AllowCorporateEmails') && len(account['AllowCorporateEmails']) && (account['AllowCorporateEmails'] == true)){
                     	newAccount.setAllowCorporateEmailsFlag(true);//*- changed to Flag
                     }else{
                     	newAccount.setAllowCorporateEmailsFlag(false);
                     }
                     
-                    if (structKeyExists(account, 'AllowUplineEmails') && len(account['AllowUplineEmails']) && (account['AllowUplineEmails'] == true || account['AllowUplineEmails'] == " ")){
+                    if (structKeyExists(account, 'AllowUplineEmails') && len(account['AllowUplineEmails']) && (account['AllowUplineEmails'] == true)){
                     	newAccount.setAllowUplineEmailsFlag(true);//*- changed to Flag
                     }else{
                     	newAccount.setAllowUplineEmailsFlag(false);
@@ -2041,33 +2045,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                     newAccount.setPayerName( account['PayerName'] );//*
                     
                     
-                    //create a new SwAccountGovernementID if needed
-                    if (structKeyExists(account, "GovernmentNumber") && structKeyExists(account, "GovernmentTypeCode") && len(account['GovernmentNumber']) > 2){
-                    	
-                    	var accountGovernmentID = getService("AccountService")
-                    		.getAccountGovernmentIDByAccountID(newAccount.getAccountID());
-                    	
-        				if (isNewAccount || isNull(accountGovernmentID)){
-	                    	var accountGovernmentID = new Slatwall.model.entity.AccountGovernmentID();
-		                    var isNewAccountGovernmentID = true;
-        				}
-        				//governmentIdentificationType
-        				//accountGovernmentID.setGovernmentIdentificationType(account['GovernmentTypeCode']);//*
-        				//This will map to 
-        				//accountGovernmentIdType once we know what the mappings are.
-        				
-		                accountGovernmentID.setGovernmentIDlastFour(account['GovernmentNumber']);//*
-		                accountGovernmentID.setAccount(newAccount);//*
-		                    
-		                //insert the relationship
-		                if (isNewAccountGovernmentID){
-		                	ormStatelessSession.insert("SlatwallAccountGovernmentID", accountGovernmentID);
-		                }else{
-		                	ormStatelessSession.update("SlatwallAccountGovernmentID", accountGovernmentID);
-		                }
-                    }
-                    
-                    // set created account id
+                    // set sponsor ID as temp filed, so we can back fill sponsor once all account is imported
                     newAccount.setSponsorIDNumber( account['SponsorNumber']?:"" );//can't change as Irta is using...
                     
             		
@@ -2204,44 +2182,58 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	                            var accountAddress = new Slatwall.model.entity.AccountAddress();
 	                            accountAddress.setAccount(newAccount);//*
 	        			        accountAddress.setRemoteID( address.addressID );//*
-	        			        accountAddress.setAccountAddressName( address.AddressTypeName?:"");
-	                        	
-	                        	//handle the account email type.
-	                            if (!isNull(address['AddressTypeName']) && structKeyExists(address, 'AddressTypeName')){
-	                            	if (address['AddressTypeName'] == "Billing")  { accountAddress.setAccountAddressType(aatBilling); } //*
-	                            	if (address['AddressTypeName'] == "Shipping") { accountAddress.setAccountAddressType(aatShipping); }//*
-	                            }
-	                        	
-	                            var newAddress = new Slatwall.model.entity.Address();
-	        			        newAddress.setFirstName( account['FirstName']?:"" );//*
-	        			        newAddress.setLastName( account['LastName']?:"" );//*
-	        			        newAddress.setCity( address['City']?:"" );//*
-	        			        newAddress.setStreetAddress( address['Address1']?:"" );//*
-	        			        newAddress.setStreet2Address( address['Address2']?:"" );//*
-	        			        newAddress.setPostalCode(address['postalCode']?:"");//*
-	        			        
-	        			        //handle country
-	        			        //&& address.countryCode contains "USA"
-	        			        if (structKeyExists(address, "CountryCode")){
-	        			            //get the country by three digit
-	        			            var country = getAddressService().getCountryByCountryCode3Digit(trim(address.countryCode));
-	        			            if (!isNull(country)){
-	        			                newAddress.setCountryCode( country.getCountryCode() );  
-	        			                if (country.getStateCodeShowFlag()){
-	        			                    //using state
-	        			                    newAddress.setStateCode( address.stateOrProvince?:"" );//*
-	        			                }else{
-	        			                    //using province
-	        			                    newAddress.setLocality( address.stateOrProvince?:"" );//*
-	        			                }
-	        			            }
-	        			        }
-        			        	accountAddress.setAddress(newAddress);
-        			        	ormStatelessSession.insert("SlatwallAddress", newAddress);
-        			        	ormStatelessSession.insert("SlatwallAccountAddress", accountAddress);
                         	}
+
+        			        accountAddress.setAccountAddressName( address.AddressTypeName?:"");
+                        	
+                        	//handle the account address type.
+                            if (!isNull(address['AddressTypeName']) && structKeyExists(address, 'AddressTypeName')){
+                            	if (address['AddressTypeName'] == "Billing")  { accountAddress.setAccountAddressType(aatBilling); } //*
+                            	if (address['AddressTypeName'] == "Shipping") { accountAddress.setAccountAddressType(aatShipping); }//*
+                            }
+                        	
+                    		var newAddress = getService("AddressService").getAddressByRemoteID(address.addressID, false);
+							
+							if(isNull(newAddress)) {
+	                            var newAddress = new Slatwall.model.entity.Address();
+	                            newAddress.setRemoteID( address.addressID );//*
+							}
+        			        newAddress.setFirstName( account['FirstName']?:"" );//*
+        			        newAddress.setLastName( account['LastName']?:"" );//*
+        			        newAddress.setCity( address['City']?:"" );//*
+        			        newAddress.setStreetAddress( address['Address1']?:"" );//*
+        			        newAddress.setStreet2Address( address['Address2']?:"" );//*
+        			        newAddress.setPostalCode(address['postalCode']?:"");//*
         			        
-        			        newAccount.setPrimaryAddress(accountAddress);
+        			        //handle country
+        			        //&& address.countryCode contains "USA"
+        			        if (structKeyExists(address, "CountryCode")){
+        			            //get the country by three digit
+        			            var country = getAddressService().getCountryByCountryCode3Digit(trim(address.countryCode));
+        			            if (!isNull(country)){
+        			                newAddress.setCountryCode( country.getCountryCode() );  
+        			                if (country.getStateCodeShowFlag()){
+        			                    //using state
+        			                    newAddress.setStateCode( address.stateOrProvince?:"" );//*
+        			                }else{
+        			                    //using province
+        			                    newAddress.setLocality( address.stateOrProvince?:"" );//*
+        			                }
+        			            }
+        			        }
+    			        	accountAddress.setAddress(newAddress);
+    			        	
+    			        	if (newAddress.getNewFlag()){
+        			        	ormStatelessSession.insert("SlatwallAddress", newAddress);
+    			        	} else {
+    			        		ormStatelessSession.update("SlatwallAddress", newAddress);
+    			        	}
+    			        	if(accountAddress.getNewFlag()){
+        			        	ormStatelessSession.insert("SlatwallAccountAddress", accountAddress);
+	        			        newAccount.setPrimaryAddress(accountAddress);
+    			        	} else {
+        			        	ormStatelessSession.update("SlatwallAccountAddress", accountAddress);
+    			        	}
         			        //echo("Inserts address account");
                         } 
         			}
@@ -2288,6 +2280,33 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                 			newAccount.setPrimaryPhoneNumber(accountPhone);
                 			//echo("Inserts phone account");
                         }
+                    }
+                    
+                    //create a new SwAccountGovernementID if needed
+                    if (structKeyExists(account, "GovernmentNumber") && structKeyExists(account, "GovernmentTypeCode") && len(account['GovernmentNumber']) > 2){
+                    	
+                    	var accountGovernmentIdentification = getService("AccountService")
+                    		.getAccountGovernmentIdentificationByGovernmentIdentificationNumberHashed(account['GovernmentNumber']);
+                    	
+        				if (isNull(accountGovernmentIdentification)){
+	                    	var accountGovernmentIdentification = new Slatwall.model.entity.AccountGovernmentIdentification();
+        				}
+        				//governmentIdentificationType
+                    	if (account['GovernmentTypeCode'] == "SSN")  { accountGovernmentIdentification.setGovernmentIdentificationType(agidSSN); }
+                    	if (account['GovernmentTypeCode'] == "SIN") { accountGovernmentIdentification.setGovernmentIdentificationType(agidSIN); }
+                    	if (account['GovernmentTypeCode'] == "TIN") { accountGovernmentIdentification.setGovernmentIdentificationType(agidSIN); }
+                    	if (account['GovernmentTypeCode'] == "UNK") { accountGovernmentIdentification.setGovernmentIdentificationType(agidUNK); }
+
+		                accountGovernmentIdentification.setGovernmentIdentificationLastFour(account['SerialNumber']);//*
+		                accountGovernmentIdentification.setGovernmentIdentificationNumberHashed(account['GovernmentNumber']);//*
+		                accountGovernmentIdentification.setAccount(newAccount);//*
+		                    
+		                //insert the relationship
+		                if (accountGovernmentIdentification.getNewFlag()){
+		                	ormStatelessSession.insert("SlatwallAccountGovernmentIdentification", accountGovernmentIdentification);
+		                }else{
+		                	ormStatelessSession.update("SlatwallAccountGovernmentIdentification", accountGovernmentIdentification);
+		                }
                     }
                     
                     // update with all the previous data
