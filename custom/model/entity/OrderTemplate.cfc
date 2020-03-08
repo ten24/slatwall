@@ -14,7 +14,6 @@ component {
 	property name="priceLevelCode" ormtype="string";
 	property name="flexshipStatusCode" ormtype="string";
 	property name="addressValidationCode" ormtype="string";
-	property name="customerCanCreateFlag" persistent="false";
 	property name="commissionableVolumeTotal" persistent="false"; 
 	property name="personalVolumeTotal" persistent="false";
 	property name="flexshipQualifiedOrdersForCalendarYearCount" persistent="false"; 
