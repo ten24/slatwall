@@ -37,7 +37,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	this.secureMethods=listAppend(this.secureMethods,'importInventoryUpdates');
 	this.secureMethods=listAppend(this.secureMethods,'importOrderReasons');
 
-	
 	// @hint helper function to return a Setting
 	public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
 		if(structKeyExists(getIntegration().getSettings(), arguments.settingName)) {
@@ -79,9 +78,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	 **/
 	private any function getCashReceiptsData(pageNumber,pageSize){ 
 
-		var uri = "https://apisandbox.monatcorp.net:8443/api/Slatwall/QueryMCR";
-		var authKeyName = "authkey";
-		var authKey = "a939f516-7af1-4caa-84c1-642c6966e17e";//setting(authKeyName);
+		var uri = setting("legacyImportAPIDomain") & "/api/Slatwall/QueryMCR";
+		var authKey = setting(legecyImportAPIAuthKey);
 		
 	    var body = {
 			"Pagination": {
@@ -111,9 +109,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	
 	
 	private any function getDailyAccountUpdatesData(pageNumber,pageSize){
-	    var uri = "https://apisandbox.monatcorp.net:8443/api/Slatwall/SwGetUpdatedAccounts";
-		var authKeyName = "authkey";
-		var authKey = setting(authKeyName);
+	    var uri = setting("dailyImportAPIDomain") & "/api/Slatwall/SwGetUpdatedAccounts";
+		var authKey = setting("dailyImportAPIAuthKey");
 		
 	    var body = {
 			"Pagination": {
@@ -156,16 +153,15 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	}
 	
 	private any function getAccountData(pageNumber,pageSize){
-	    var uri = "https://apisandbox.monatcorp.net:8443/api/Slatwall/QueryAccounts";
-
-		var authKeyName = "authkey";
-		var authKey = setting(authKeyName);
+	    var uri = setting("legacyImportAPIDomain") & "/api/Slatwall/QueryAccounts";
+		var authKey = setting("legacyImportAPIAuthKey");
 		
 	    var body = {
 			"Pagination": {
 				"PageSize": "#arguments.pageSize#",
 				"PageNumber": "#arguments.pageNumber#"
-			}
+			},
+			"AccountNumber": "2195472"
 		};
 	    //"AccountNumber": "2195472"
 	    httpService = new http(method = "POST", charset = "utf-8", url = uri);
@@ -193,10 +189,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	
 	private any function getOrderData(pageNumber,pageSize){
 
-	    var uri = setting('baseImportURL') & "QueryOrders";
-
-		var authKeyName = "authkey";
-		var authKey = "a939f516-7af1-4caa-84c1-642c6966e17e";
+	    var uri = setting("legacyImportAPIDomain") & "/api/slatwall/QueryOrders";
+		var authKey = setting("legacyImportAPIAuthKey");
 	
 	    var body = {
 			"Pagination": {
@@ -241,9 +235,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	}
 	
 	private any function getDailyAccountUpdatesData(pageNumber,pageSize){
-	    var uri = setting('baseImportURL') & "SwGetUpdatedAccounts";
-		var authKeyName = "authkey";
-		var authKey = setting(authKeyName);
+	    var uri = setting("dailyImportAPIDomain") & "/api/slatwall/SwGetUpdatedAccounts";
+		var authKey = setting("dailyImportAPIAuthKey");
 		
 	    var body = {
 			"Pagination": {
@@ -285,9 +278,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	
 	
 	private any function getInventoryData(pageNumber,pageSize){
-	    var uri = setting('baseImportURL') &  "QueryInventory";
-		var authKeyName = "authkey";
-		var authKey = setting(authKeyName);
+	    var uri = setting("legacyImportAPIDomain") & "/api/slatwall/QueryInventory";
+		var authKey = setting("legacyImportAPIAuthKey");
 	
 	    var body = {
 			"Pagination": {
@@ -322,10 +314,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	
 	private any function getFlexshipData(pageNumber,pageSize){
 
-	    var uri = setting('baseImportURL') &  "QueryFlexships";
-
-		var authKeyName = "authkey";
-		var authKey =  "a939f516-7af1-4caa-84c1-642c6966e17e";//setting(authKeyName);
+	    var uri = setting("legacyImportAPIDomain") &  "/api/slatwall/QueryFlexships";
+		var authKey =  setting("legacyImportAPIAuthKey");
 	
 	    var body = {
 			"Pagination": {
@@ -358,11 +348,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		return fsResponse;
 	}
 	
-<<<<<<< HEAD
 	private any function getShipmentData(pageNumber,pageSize,dateFilterStart,dateFilterEnd){
-	    var uri = "https://api.monatcorp.net:8443/api/Slatwall/SWGetShipmentInfo";
-		var authKeyName = "authkey";
-		var authKey = "978a511c-9f2f-46ba-beaf-39229d37a1a2";//setting(authKeyName);
+	    var uri = setting("dailyImportAPIDomain") & "/api/Slatwall/SWGetShipmentInfo";
+		var authKey = setting("dailyImportAPIAuthKey");
 	    var = {hasErrors: false};
 	    var body = {
 			"Pagination": {
@@ -1898,8 +1886,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		
 		// Call the api and get records from start to end.
 		// import those records using the mapping file.
-		//var accountsResponse = getAccountData(pageNumber, pageSize);
-		//writedump(accountsResponse);abort;
+		var accountsResponse = getAccountData(pageNumber, pageSize);
+		writedump(accountsResponse);abort;
 		var index=0;
 		
 		while (pageNumber < pageMax){
