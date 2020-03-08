@@ -168,13 +168,13 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	property name="genderFullWord" persistent = "false";
 	property name="spouseFirstName" persistent = "false";
 	property name="spouseLastName" persistent = "false";
-	property name="lastActivityDateTime" ormtype="timestamp";
 	
 
  property name="allowCorporateEmailsFlag" ormtype="boolean" hb_formatType="yesno";
  property name="productPackPurchasedFlag" ormtype="boolean" hb_formatType="yesno" default="false";
  property name="allowUplineEmailsFlag" ormtype="boolean";
  property name="memberCode" ormtype="string";
+ property name="accountStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="accountStatusTypeID";
  property name="subscriptionType" ormtype="string" hb_formFieldType="select";
  property name="renewalDate" ormtype="timestamp" hb_formatType="date";
  property name="spouseName" ormtype="string";

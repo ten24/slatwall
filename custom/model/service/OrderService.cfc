@@ -1,7 +1,7 @@
 component extends="Slatwall.model.service.OrderService" {
     variables.customPriceFields = 'personalVolume,taxableAmount,commissionableVolume,retailCommission,productPackVolume,retailValueVolume';
     public string function getCustomAvailableProperties() {
-        return 'orderItems.personalVolume,orderItems.calculatedExtendedPersonalVolume,calculatedPersonalVolumeSubtotal,currencyCode,orderItems.skuProductURL,billingAddress';
+        return 'orderItems.personalVolume,orderItems.calculatedExtendedPersonalVolume,calculatedPersonalVolumeSubtotal,currencyCode,orderItems.skuProductURL,billingAddress,appliedPromotionMessages.message,appliedPromotionMessages.qualifierProgress,appliedPromotionMessages.promotionName,appliedPromotionMessages.promotionRewards.amount,appliedPromotionMessages.promotionRewards.amountType,appliedPromotionMessages.promotionRewards.rewardType';
     }
     
     /**
@@ -13,6 +13,7 @@ component extends="Slatwall.model.service.OrderService" {
      **/
 	public any function getAllCartsAndQuotesOnAccount(struct data={}) {
         param name="arguments.data.currentPage" default=1;
+        
         param name="arguments.data.pageRecordsShow" default=5;
         param name="arguments.data.accountID" default= getHibachiSCope().getAccount().getAccountID();
         
@@ -87,8 +88,8 @@ component extends="Slatwall.model.service.OrderService" {
             account = getService('AccountService').newAccount();
         }
         for(var priceField in variables.customPriceFields){
+            
             if(isNull(arguments.newOrderItem.invokeMethod('get#priceField#'))){
-            	
             	var customPriceByCurrencyCodeArguments  = {
             		'customPriceField' : priceField, 
             		'currencyCode' : arguments.newOrderItem.getOrder().getCurrencyCode(), 
@@ -102,9 +103,9 @@ component extends="Slatwall.model.service.OrderService" {
 					customPriceByCurrencyCodeArguments['priceGroups'] = [];
 					arrayAppend(customPriceByCurrencyCodeArguments['priceGroups'], arguments.newOrderItem.getAppliedPriceGroup());
 				}
-            
                 arguments.newOrderItem.invokeMethod('set#priceField#',{1=sku.getCustomPriceByCurrencyCode(argumentCollection=customPriceByCurrencyCodeArguments)});
             }
+            
         }
         
         return arguments.newOrderItem;
@@ -230,6 +231,8 @@ component extends="Slatwall.model.service.OrderService" {
 	                returnOrderItem.invokeMethod('set#priceField#',{1=price});
 	            } 
 	        }
+        }else{
+        	returnOrderItem.setTaxableAmount(returnOrderItem.getPrice());
         }
         return returnOrderItem;
     }
@@ -1118,7 +1121,7 @@ component extends="Slatwall.model.service.OrderService" {
 				newOrderItem.setPrice( arguments.processObject.getSku().getPriceByCurrencyCode( argumentCollection = priceByCurrencyCodeArgs ) );
 				/******* END CUSTOM CODE FOR MONAT *******/
 			}
-
+			
 			// If a stock was passed in assign it to this new item
 			if( !isNull(arguments.processObject.getStock()) ) {
 				newOrderItem.setStock( arguments.processObject.getStock() );
