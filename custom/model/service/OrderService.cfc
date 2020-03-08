@@ -173,8 +173,13 @@ component extends="Slatwall.model.service.OrderService" {
     		    arguments.orderTemplate.setBillingAccountAddress(account.getPrimaryAddress());
     		}
 		}
+		
+		if( arguments.context != "upgradeFlow"){
+			arguments.orderTemplate.setAccount(account);
+		}else if(!isNull(arguments.processObject.getPriceGroup())){
+			arguments.orderTemplate.setPriceGroup(arguments.processObject.getPriceGroup());
+		}
 	
-		arguments.orderTemplate.setAccount(account);
 		arguments.orderTemplate.setSite( arguments.processObject.getSite() );
 		arguments.orderTemplate.setCurrencyCode( arguments.processObject.getCurrencyCode() );
 		arguments.orderTemplate.setOrderTemplateStatusType(getTypeService().getTypeBySystemCode('otstDraft'));
@@ -388,12 +393,13 @@ component extends="Slatwall.model.service.OrderService" {
 	public numeric function getComissionableVolumeTotalForOrderTemplate(required any orderTemplate){
 		return getOrderTemplateOrderDetails(argumentCollection=arguments)['commissionableVolumeTotal'];	
 	}
-    
+	
 	public any function getOrderTemplateItemCollectionForAccount(required struct data, any account=getHibachiScope().getAccount()){
         param name="arguments.data.pageRecordsShow" default=5;
         param name="arguments.data.currentPage" default=1;
         param name="arguments.data.orderTemplateID" default="";
 		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; 
+		param name="arguments.data.nullAccountFlag" default=false;
 		
 		var orderTemplateItemCollection = this.getOrderTemplateItemCollectionList();
 		
@@ -406,11 +412,15 @@ component extends="Slatwall.model.service.OrderService" {
 		
 		orderTemplateItemCollection.addFilter('orderTemplate.orderTemplateType.typeID', arguments.data.orderTemplateTypeID);
 		orderTemplateItemCollection.addFilter('orderTemplate.orderTemplateID', arguments.data.orderTemplateID);
-		orderTemplateItemCollection.addFilter('orderTemplate.account.accountID', arguments.account.getAccountID());
+		if(arguments.data.nullAccountFlag){
+			orderTemplateItemCollection.addFilter('orderTemplate.account', 'NULL', 'IS');
+		}else{
+			orderTemplateItemCollection.addFilter('orderTemplate.account.accountID', arguments.account.getAccountID());
+		}
 
 		return orderTemplateItemCollection;	
 	} 
-
+    
     private void function updateOrderStatusBySystemCode(required any order, required string systemCode) {
         var orderStatusType = "";
         var orderStatusHistory = {};
@@ -1523,4 +1533,12 @@ component extends="Slatwall.model.service.OrderService" {
 		    return records[1]['order_orderOpenDateTime'];
 		}
 	}
+	
+	public any function getOFYProductsForOrder(required any order ){
+		var freeRewardSkuCollection = getSkuService().getSkuCollectionList();
+		var freeRewardSkuIDs = getPromotionService().getQualifiedFreePromotionRewardSkuIDs(arguments.order);
+		freeRewardSkuCollection.addFilter('skuID', freeRewardSkuIDs, 'in');
+		return freeRewardSkuCollection.getRecords();
+	}
+	
 }

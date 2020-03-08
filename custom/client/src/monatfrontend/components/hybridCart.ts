@@ -1,13 +1,10 @@
-type genericObject = { [key:string]: any }
+import Cart from '../models/cart'
 
-interface GenericCart extends genericObject {
-	orderItems: Array<GenericOrderItem>;
-	orderID: string
-}
+type genericObject = { [key:string]: any }
 
 interface GenericTemplate extends genericObject {
 	orderTemplateItems: Array<GenericOrderItem>;
-	orderTemplateID: string
+	orderTemplateID: string,
 }
 
 interface GenericOrderItem extends genericObject{
@@ -20,7 +17,7 @@ interface GenericOrderTemplateItem extends genericObject{
 
 class HybridCartController {
 	public showCart = false;
-	public cart:GenericCart;
+	public cart:Cart;
 	public isEnrollment:boolean;
 	public orderTemplate = {};
 	
@@ -31,18 +28,7 @@ class HybridCartController {
 		this.observerService.attach(this.getCart.bind(this),'addOrderItemSuccess');
 	}
 
-	public $onInit = () => {
-		
-		if(this.isEnrollment){
-			this.observerService.attach(ID => {
-				this.getFlexship(ID)
-			},'flexshipCreated');
-			
-			if(localStorage.flexshipID){
-				this.getFlexship(localStorage.flexshipID);
-			}
-		}
-	}
+	public $onInit = () => { }
 	
 	public toggleCart():void{
 		this.showCart = !this.showCart;
@@ -56,8 +42,9 @@ class HybridCartController {
 	}
 	
 	private getCart():void{
-		this.monatService.getCart(true).then((res:GenericCart) => {
-			this.cart = res.cart;
+		this.monatService.getCart(true).then((res) => {
+			this.cart = <Cart>res.cart;
+			this.cart.orderItems[1].sku.product.productType.systemCode;
 			this.cart.orderItems = this.cart.orderItems.filter(el => el.sku.product.productType.systemCode !== 'ProductPack');
 		});
 	}
@@ -82,8 +69,8 @@ class HybridCartController {
 	}
 	
 	public getFlexship(ID:string):void {
-		let extraProperties = "cartTotalThresholdForOFYAndFreeShipping";
-		this.orderTemplateService.getOrderTemplateDetails(ID, extraProperties).then(data => {
+		let extraProperties = "cartTotalThresholdForOFYAndFreeShipping,canPlaceOrderFlag";
+		this.orderTemplateService.getOrderTemplateDetails(ID, extraProperties, true).then(data => {
 			if((data.orderTemplate as GenericTemplate) ){
 				this.orderTemplate = data.orderTemplate;
 			} else {

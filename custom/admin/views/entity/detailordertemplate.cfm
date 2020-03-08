@@ -94,58 +94,59 @@
 							  data-type="detail" 
 							  data-edit="#rc.edit#">
 		</sw-entity-action-bar>
-
-		<div class="panel-group s-pannel-group row">	
-			<div class="col-md-6">
-				<sw-customer-account-card data-title='#getHibachiScope().rbkey('entity.orderTemplate.account')#' 
+		<cfif !isNull(rc.orderTemplate.getAccount())>
+			<div class="panel-group s-pannel-group row">	
+				<div class="col-md-6">
+					<sw-customer-account-card data-title='#getHibachiScope().rbkey('entity.orderTemplate.account')#' 
 										  data-account='#rc.orderTemplate.getAccount().getEncodedJsonRepresentation()#'
 										  data-base-entity-name="OrderTemplate"
 										  data-base-entity="#rc.orderTemplate.getEncodedJsonRepresentation()#"
 										  data-base-entity-properties-to-display-list="site_siteName,currencyCode,account.accountNumber">
-				</sw-customer-account-card> 
+					</sw-customer-account-card> 				
+				</div>
+				<div class="col-md-6">
+					<sw-account-shipping-address-card data-title="#getHibachiScope().rbkey('define.shipping')#"
+														<cfif not isNull(rc.orderTemplate.getShippingMethod())>
+															data-shipping-method="#rc.orderTemplate.getShippingMethod().getEncodedJsonRepresentation()#"
+														</cfif> 
+														<cfif not isNull(rc.orderTemplate.getShippingAccountAddress())>
+															data-shipping-account-address="#rc.orderTemplate.getShippingAccountAddress().getEncodedJsonRepresentation()#"
+														</cfif>
+														data-base-entity-name="OrderTemplate" 
+														data-base-entity="#rc.orderTemplate.getEncodedJsonRepresentation()#"
+														data-account-address-options="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(rc.orderTemplate.getAccount().getAccountAddressOptions()))#"
+														data-shipping-method-options="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(rc.orderTemplate.getShippingMethodOptions()))#" 
+														data-state-code-options="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(stateCollectionList.getRecords()))#"
+														data-country-code-options="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(getHibachiScope().getService('AddressService').getCountryCollectionList().getRecords()))#"	
+														data-default-country-code="US"
+														>
+					</sw-account-shipping-address-card>
+				</div>	
 			</div>
-
-			<div class="col-md-6">
-				<sw-account-shipping-address-card data-title="#getHibachiScope().rbkey('define.shipping')#"
-													<cfif not isNull(rc.orderTemplate.getShippingMethod())>
-														data-shipping-method="#rc.orderTemplate.getShippingMethod().getEncodedJsonRepresentation()#"
-													</cfif> 
-													<cfif not isNull(rc.orderTemplate.getShippingAccountAddress())>
-														data-shipping-account-address="#rc.orderTemplate.getShippingAccountAddress().getEncodedJsonRepresentation()#"
-													</cfif>
-													data-base-entity-name="OrderTemplate" 
-													data-base-entity="#rc.orderTemplate.getEncodedJsonRepresentation()#"
-													data-account-address-options="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(rc.orderTemplate.getAccount().getAccountAddressOptions()))#"
-													data-shipping-method-options="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(rc.orderTemplate.getShippingMethodOptions()))#" 
-													data-state-code-options="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(stateCollectionList.getRecords()))#"
-													data-country-code-options="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(getHibachiScope().getService('AddressService').getCountryCollectionList().getRecords()))#"	
-													data-default-country-code="US"
-													>
-				</sw-account-shipping-address-card>
-			</div>		
-		</div>
-
+		</cfif>
 		<div class="panel-group s-pannel-group row">	
 			<div class="col-md-12">
-				<sw-customer-account-payment-method-card data-title="#getHibachiScope().rbkey('define.billing')#"
-														<cfif not isNull(rc.orderTemplate.getAccountPaymentMethod())>
-															data-account-payment-method="#rc.orderTemplate.getAccountPaymentMethod().getEncodedJsonRepresentation()#"
-														</cfif> 
-														<cfif not isNull(rc.orderTemplate.getBillingAccountAddress())>
-															data-billing-account-address="#rc.orderTemplate.getBillingAccountAddress().getEncodedJsonRepresentation()#"
-														</cfif> 	
-														data-account-address-options="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(rc.orderTemplate.getAccount().getAccountAddressOptions()))#"
-														data-account-payment-method-options="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(rc.orderTemplate.getAccount().getAccountPaymentMethodOptions()))#"
-														data-country-code-options="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(getHibachiScope().getService('AddressService').getCountryCollectionList().getRecords()))#"	
-														data-state-code-options="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(stateCollectionList.getRecords()))#"
-														data-expiration-month-options="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(getHibachiScope().getService('AddressService').newAccountPaymentMethod().getExpirationMonthOptions()))#"
-														data-expiration-year-options="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(getHibachiScope().getService('AddressService').newAccountPaymentMethod().getExpirationYearOptions()))#"
-														data-base-entity-name="OrderTemplate" 
-														data-base-entity="#rc.orderTemplate.getEncodedJsonRepresentation(orderTemplateTotalProperties)#"
-														data-default-country-code="US"
-														data-properties-to-display-list="#orderTemplateTotalProperties#"
-														>
-				</sw-customer-account-payment-method-card>
+				<cfif !isNull(rc.orderTemplate.getAccount())>
+					<sw-customer-account-payment-method-card data-title="#getHibachiScope().rbkey('define.billing')#"
+															<cfif not isNull(rc.orderTemplate.getAccountPaymentMethod())>
+																data-account-payment-method="#rc.orderTemplate.getAccountPaymentMethod().getEncodedJsonRepresentation()#"
+															</cfif> 
+															<cfif not isNull(rc.orderTemplate.getBillingAccountAddress())>
+																data-billing-account-address="#rc.orderTemplate.getBillingAccountAddress().getEncodedJsonRepresentation()#"
+															</cfif> 	
+															data-account-address-options="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(rc.orderTemplate.getAccount().getAccountAddressOptions()))#"
+															data-account-payment-method-options="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(rc.orderTemplate.getAccount().getAccountPaymentMethodOptions()))#"
+															data-country-code-options="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(getHibachiScope().getService('AddressService').getCountryCollectionList().getRecords()))#"	
+															data-state-code-options="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(stateCollectionList.getRecords()))#"
+															data-expiration-month-options="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(getHibachiScope().getService('AddressService').newAccountPaymentMethod().getExpirationMonthOptions()))#"
+															data-expiration-year-options="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(getHibachiScope().getService('AddressService').newAccountPaymentMethod().getExpirationYearOptions()))#"
+															data-base-entity-name="OrderTemplate" 
+															data-base-entity="#rc.orderTemplate.getEncodedJsonRepresentation(orderTemplateTotalProperties)#"
+															data-default-country-code="US"
+															data-properties-to-display-list="#orderTemplateTotalProperties#"
+															>
+					</sw-customer-account-payment-method-card>
+				</cfif>
 			</div>
 		</div>
 

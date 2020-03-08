@@ -515,10 +515,12 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         param name="arguments.data.siteID" default="";
         param name="arguments.data.saveContext" default="";
         
-        if(getHibachiScope().getAccount().isNew() || isNull(arguments.data.orderTemplateSystemCode)){
+        var isUpgradedFlag = arguments.data.saveContext == "upgradeFlow" ? true : false;
+
+        if((getHibachiScope().getAccount().isNew() && !isUpgradedFlag)  || isNull(arguments.data.orderTemplateSystemCode)){
             return;
         }
-        
+
         var orderTemplate = getOrderService().newOrderTemplate();
         var processObject = orderTemplate.getProcessObject("create");
         var orderTypeID = getTypeService().getTypeBySystemCode(arguments.data.orderTemplateSystemCode).getTypeID();
@@ -537,7 +539,13 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         processObject.setOrderTemplateTypeID(orderTypeID);
         processObject.setFrequencyTermID(arguments.data.frequencyTermID);
-        processObject.setAccountID(getHibachiScope().getAccount().getAccountID());
+        
+        if(!isUpgradedFlag){
+            processObject.setAccountID(getHibachiScope().getAccount().getAccountID());
+        }else{
+            //Vip upgrade so we assign the VIP price group to the process object
+            processObject.setPriceGroup(getService('PriceGroupService').getPriceGroupByPriceGroupCode(3));
+        }
         
         if(arguments.data.orderTemplateSystemCode == 'ottSchedule'){
             processObject.setScheduleOrderNextPlaceDateTime(arguments.data.scheduleOrderNextPlaceDateTime);  
@@ -1830,4 +1838,16 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         return this.getOrderService().orderService.processOrder( arguments.order, orderData, 'removeOrderItem');
         
     }
+    
+    public void function getOFYProductsForOrder(order = getHibachiScope().getCart()){
+        var records = getService('orderService').getOFYProductsForOrder(order);
+        var imageService = getService('ImageService');
+        records = arrayMap( records, function( product ) {
+            product.skuImagePath = imageService.getResizedImageByProfileName( product.skuID,'medium' );
+            return product;
+        });
+        
+        arguments.data['ajaxResponse']['ofyProducts'] = records;
+    }
+    
 }

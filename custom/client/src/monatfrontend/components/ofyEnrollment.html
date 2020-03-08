@@ -1,0 +1,38 @@
+<div class="step5_part">
+	<div class="subtext subtext1">      
+		<div class="productbox" ng-class="{ 'has-selected' : ofyEnrollment.selectedProductID.length }">
+			<div class="row no-gutters">
+				<div 
+					class="start col-12 col-sm-12 col-md-4 col-lg-4 col-xl-4" 
+					ng-repeat="item in ofyEnrollment.products"
+					ng-click="ofyEnrollment.stageProduct(item.skuID)"
+					ng-class="{ 'selected': item.skuID == ofyEnrollment.stagedProductID }"
+				>
+					<div class="fitbox">
+						<figure>
+							<img ng-src="{{ item.SKUIMAGEPATH[0] }}" />
+						</figure>
+						
+						<h4 ng-bind="item.skuName"></h4>
+						
+						<p class="price">
+							<span sw-rbKey="'frontend.freeProduct.free'"></span> 
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>	
+</div>
+
+<button 
+	type="submit" 
+	class="btn btn-secondary forward-btn forward" 
+	ng-class="{ 
+		disabled: !ofyEnrollment.stagedProductID.length,
+		loading: ofyEnrollment.loading
+	}"
+	ng-click="ofyEnrollment.addToCart();"
+>	
+	<span sw-rbkey="'frontend.global.next'"></span> <i class="fas fa-chevron-right"></i>
+</button>

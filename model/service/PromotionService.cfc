@@ -1149,14 +1149,20 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var activePromotionRewardsWithSkuCollection = getPromotionDAO().getActivePromotionRewards( rewardTypeList="merchandise,subscription,contentAccess", promotionCodeList="", excludeRewardsWithQualifiers=true, site=orderTemplate.getSite());
 		
 		var currencyCode = orderTemplate.getCurrencyCode();
-		var originalPrice = arguments.orderTemplateItem.getSku().getPriceByCurrencyCode(currencyCode=currencyCode,accountID=orderTemplate.getAccount().getAccountID());
-
-
-		var priceDetails = getPriceDetailsForPromoRewards( promoRewards=activePromotionRewardsWithSkuCollection,
-														sku=arguments.orderTemplateItem.getSku(),
-														originalPrice=originalPrice,
-														currencyCode=currencyCode );
-
+		
+		if(!isNull(orderTemplate.getAccount())){
+			var originalPrice = arguments.orderTemplateItem.getSku().getPriceByCurrencyCode(currencyCode=currencyCode,accountID=orderTemplate.getAccount().getAccountID());
+			var priceDetails = getPriceDetailsForPromoRewards( promoRewards=activePromotionRewardsWithSkuCollection,
+															sku=arguments.orderTemplateItem.getSku(),
+															originalPrice=originalPrice,
+															currencyCode=currencyCode );
+		}else if(!isNull(orderTemplate.getPriceGroup())){
+			var originalPrice = arguments.orderTemplateItem.getSku().getPriceByCurrencyCode(currencyCode=currencyCode,priceGroups=[orderTemplate.getPriceGroup()] );
+			var priceDetails = getPriceDetailsForPromoRewards( promoRewards=activePromotionRewardsWithSkuCollection,
+															sku=arguments.orderTemplateItem.getSku(),
+															originalPrice=originalPrice,
+															currencyCode=currencyCode );
+		}
 		return {'#arguments.orderTemplateItem.getOrderTemplateItemID()#':priceDetails};
 	}
 	
@@ -1198,6 +1204,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				}
 			}
 		}
+
 		return priceDetails;
 	}
 
