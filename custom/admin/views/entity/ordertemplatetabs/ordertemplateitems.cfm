@@ -13,7 +13,7 @@
 			'persistent':false,
 			'arguments': {
 				'currencyCode':rc.orderTemplate.getCurrencyCode(), 
-				'accountID': rc.orderTemplate.getAccount().getAccountID()
+				'accountID': !isNull(rc.orderTemplate.getAccount()) ? rc.orderTemplate.getAccount().getAccountID() : ''
 			}
 		}	
 	]

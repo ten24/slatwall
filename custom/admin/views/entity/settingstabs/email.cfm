@@ -51,7 +51,7 @@ Notes:
 
 <cfoutput>
 	<swa:SlatwallSettingTable showInheritance="false">
-	    <swa:SlatwallSetting settingName="emailAccountTypePropertyIdentifier" />
+	    <swa:SlatwallSetting settingName="emailAccountPropertyIdentifier" />
 		<swa:SlatwallSetting settingName="emailFromAddress" />
 		<swa:SlatwallSetting settingName="emailToAddress" />
 		<swa:SlatwallSetting settingName="emailCCAddress" />

@@ -19,7 +19,7 @@
 					<div class="card-header p-0">
 						<a class="py-0 text-white" data-toggle="collapse" href="#hybridCartBody">
 							<div class="py-3 px-3">
-								<span sw-rbKey="'frontend.cart.todaysOrder'"></span> - <p class="d-inline" ng-bind-html="hybridCart.cart.total | swcurrency:hybridCart.cart.currencyCode"></p>
+								<span sw-rbKey="'frontend.cart.todaysOrder'"></span> - <p class="d-inline" ng-bind-html="hybridCart.total | swcurrency:hybridCart.cart.currencyCode"></p>
 							</div>							
 						</a>
 					</div>
@@ -35,7 +35,7 @@
 									<li ng-repeat="item in hybridCart.cart.orderItems track by item.orderItemID" class="bg-transparent list-group-item d-flex justify-content-between align-items-center">
 										<div class="row align-items-center">
 											<div class="p-1">
-												<a class="py-0" ng-href="{{item.skuProductURL}}">
+												<a class="py-0" ng-click="hybridCart.redirect(item.skuProductURL)" href="#">
 													<img 
 														image-manager 
 														height="75px" 
@@ -45,11 +45,12 @@
 												</a>
 											</div>
 											<div class="col">
-												<a class="w-100 pb-1 pt-0" ng-href="{{item.skuProductURL}}">
+												<a class="w-100 pb-1 pt-0" href="#" ng-click="hybridCart.redirect(item.skuProductURL)">
 													<p class="d-inline title" ng-bind="item.sku.skuDefinition"></p>
 												</a>
 												<div class="qty">
 													<button
+														ng-if="item.sku.product.productType.systemCode !== 'VIPCustomerRegistr'"
 														type="button"
 														class="minus p-0"
 														ng-disabled="item.quantity <= 1"
@@ -62,8 +63,10 @@
 														id="qty"
 														name="quantity"
 														ng-model="item.quantity"
+														ng-disabled="item.sku.product.productType.systemCode === 'VIPCustomerRegistr'"
 													/>
 													<button
+														ng-if="item.sku.product.productType.systemCode !== 'VIPCustomerRegistr'"
 														type="button"
 														class="plus p-0"
 														ng-click="hybridCart.increaseItemQuantity(item)"
@@ -75,7 +78,7 @@
 												</div>
 											</div>
 										</div>
-										<span class="badge badge-pill delete">
+										<span ng-if="item.sku.product.productType.systemCode !== 'VIPCustomerRegistr'" class="badge badge-pill delete">
 											<a ng-click="hybridCart.removeItem(item)" href="#">
 												<i class="fal fa-times"></i>
 											</a>

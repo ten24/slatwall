@@ -15,7 +15,7 @@
 		}
 	},
 	"properties": {
-		"account": [{ "contexts": "save", "required": true }],
+		"account": [{ "contexts": "save", "required": true, conditions: "activeScheduleOrderTemplate" }],
 		"accountPaymentMethod": [
 			{
 				"contexts": "save,createAndPlaceOrder",

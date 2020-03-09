@@ -80,11 +80,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
  		for(var orderItem in arguments.order.getOrderItems()){
  			orderItemIDList = listAppend(orderItemIDList,orderItem.getSku().getSkuID());
  			for(var appliedPromotion in orderItem.getAppliedPromotions()){
- 				orderItemIDList = listAppend(orderItemIDList,appliedPromotion.getPromotion().getPromotionID());
+ 				orderItemIDList = listAppend(orderItemIDList,appliedPromotion.getPromotionAppliedID());
  			}
  		}
  		for(var appliedPromotion in arguments.order.getAppliedPromotions()){
- 			orderItemIDList = listAppend(orderItemIDList,appliedPromotion.getPromotion().getPromotionID());
+ 			orderItemIDList = listAppend(orderItemIDList,appliedPromotion.getPromotionAppliedID());
  		}
  		
  		var orderFulfillmentList ="";
