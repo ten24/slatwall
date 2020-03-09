@@ -135,7 +135,7 @@ class MonatProductCardController {
 
 	
 	public launchQuickShopModal = () => {
-
+	
 		
 		this.ModalService.showModal({
 			component: 'monatProductModal',

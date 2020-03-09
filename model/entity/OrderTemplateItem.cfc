@@ -83,10 +83,12 @@ property name="calculatedCommissionableVolumeTotal" ormtype="integer";
 //CUSTOM PROPERTIES END
 
 	public numeric function getTotal(){
+		
 		if(!structKeyExists(variables, 'total')){
 			variables.total = 0; 
 			
 			if(!isNull(getSku()) && !isNull(getQuantity())){
+				
 				var rewardSkuSalePriceDetails = getService('PromotionService').getOrderTemplateItemSalePricesByPromoRewardSkuCollection(this); 
 				variables.total += rewardSkuSalePriceDetails[this.getOrderTemplateItemID()]['salePrice'] * getQuantity();
 			} 	
@@ -124,7 +126,7 @@ public any function getSkuProductURL(){
 	
 	public any function getSkuAdjustedPricing(){
 			
-			var priceGroups = this.getOrderTemplate().getAccount().getPriceGroups();
+			var priceGroups = !isNull(this.getOrderTemplate().getAccount()) ? this.getOrderTemplate().getAccount().getPriceGroups() : [this.getOrderTemplate().getPriceGroup()];
 			var priceGroupCode = arrayLen(priceGroups) ? priceGroups[1].getPriceGroupCode() : "";
 			var priceGroupService = getHibachiScope().getService('priceGroupService');
 			var hibachiUtilityService = getHibachiScope().getService('hibachiUtilityService');
@@ -133,10 +135,10 @@ public any function getSkuProductURL(){
 			var retailPriceGroup = priceGroupService.getPriceGroupByPriceGroupCode(2);
 			var mpPriceGroup = priceGroupService.getPriceGroupByPriceGroupCode(1);
 			var sku = this.getSku();
-			var adjustedAccountPrice = sku.getPriceByCurrencyCode(currencyCode);
-			var adjustedVipPrice = sku.getPriceByCurrencyCode(currencyCode,1,[vipPriceGroup]);
-			var adjustedRetailPrice = sku.getPriceByCurrencyCode(currencyCode,1,[retailPriceGroup]);
-			var adjustedMPPrice = sku.getPriceByCurrencyCode(currencyCode,1,[MPPriceGroup]);
+			var adjustedAccountPrice = sku.getPriceByCurrencyCode(currencyCode) ?: 0;
+			var adjustedVipPrice = sku.getPriceByCurrencyCode(currencyCode,1,[vipPriceGroup]) ?: 0;
+			var adjustedRetailPrice = sku.getPriceByCurrencyCode(currencyCode,1,[retailPriceGroup]) ?: 0;
+			var adjustedMPPrice = sku.getPriceByCurrencyCode(currencyCode,1,[MPPriceGroup]) ?: 0;
 			var mpPersonalVolume = sku.getPersonalVolumeByCurrencyCode(currencyCode)?:0;
 			
 			// var formattedAccountPricing = hibachiUtilityService.formatValue_currency(adjustedAccountPrice, {currencyCode:currencyCode});

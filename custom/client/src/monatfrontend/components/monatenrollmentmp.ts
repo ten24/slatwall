@@ -22,20 +22,31 @@ class EnrollmentMPController {
 	public monthOptions: Array<number|string> = [];
 	public currentDate: any;
 	public productRecordsCount:any;
+	public paginationMethod = 'getproductsByCategoryOrContentID';
+	public paginationObject = {};
+	public isInitialized = false;
+	
+	
+	public loadingBundles: boolean = false;
 	
 	// @ngInject
 	constructor(public publicService, public observerService, public monatService, private rbkeyService) {}
 	
 	public $onInit = () => {
 		this.getDateOptions();
-		//this.getProductList()
-		
-		this.observerService.attach(this.getStarterPacks, 'createSuccess'); 
 		this.observerService.attach(this.getProductList, 'createSuccess'); 
 		this.observerService.attach(this.showAddToCartMessage, 'addOrderItemSuccess'); 
-		
 		$('.site-tooltip').tooltip();
-	};
+		this.publicService.doAction('setUpgradeOnOrder,getStarterPackBundleStruct', {upgradeType: 'marketPartner'}).then(res=>{
+			this.bundles = res.bundles;
+			this.isInitialized = true;
+			for(let bundle in this.bundles){
+				let str = this.stripHtml(this.bundles[bundle].description);
+				this.bundles[bundle].description = str.length > 70 ? str.substring(0, str.indexOf(' ', 60)) + '...' : str;
+			}
+			this.getProductList();	
+		});
+	}
 	
 	public adjustInputFocuses = () => {
 		this.monatService.adjustInputFocuses();
@@ -57,6 +68,16 @@ class EnrollmentMPController {
 			}
 			this.dayOptions.push( label );
 		}
+	}
+	
+	public searchByKeyword = (keyword:string) =>{
+		this.publicService.doAction('getProductsByKeyword', {keyword: keyword, priceGroupCode: 1}).then(res=> {
+			this.paginationMethod = 'getProductsByKeyword';
+			this.productRecordsCount = res.recordsCount;
+			this.paginationObject['keyword'] = keyword;
+			this.productList = res.productList;
+			this.observerService.notify("PromiseComplete");
+		});
 	}
 	
 	public setDayOptionsByDate = ( year = null, month = null ) => {
@@ -100,9 +121,12 @@ class EnrollmentMPController {
 	}
 
 	public getStarterPacks = () => {
+		this.loadingBundles = true;
+		
 		this.publicService
 			.doAction('getStarterPackBundleStruct', { contentID: this.contentId })
 			.then((data) => {
+				this.loadingBundles = false;
 				this.bundles = data.bundles;
 				//truncating string
 				for(let bundle in this.bundles){
@@ -158,10 +182,11 @@ class EnrollmentMPController {
 		}
 	};
 
-	public selectBundle = (bundleID) => {
+	public selectBundle = ( bundleID, $event ) => {
+		$event.preventDefault();
+		
 		this.selectedBundleID = bundleID;
 		this.bundleErrors = [];
-		this.openedBundle = null;
 	};
 
 	private stripHtml = (html) => {
@@ -170,9 +195,9 @@ class EnrollmentMPController {
 		return tmp.textContent || tmp.innerText || '';
 	};
 
-	public getProductList = (pageNumber = 1, pageRecordsShow = 12 ) => {
+	public getProductList = () => {
 		this.loading = true;
-		this.publicService.doAction('getproductsByCategoryOrContentID', { pageRecordsShow: pageRecordsShow, currentPage: pageNumber }).then((result) => {
+		this.publicService.doAction('getproductsByCategoryOrContentID', {priceGroupCode: 1}).then((result) => {
 			this.observerService.notify("PromiseComplete");
 			this.productList = result.productList;
 			this.productRecordsCount = result.recordsCount

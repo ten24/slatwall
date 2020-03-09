@@ -1824,6 +1824,15 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 	}
 	
+	public any function saveAccountAddress(required any accountAddress, struct data={},string context="save", boolean verifyAddressFlag = false){
+		arguments.accountAddress = super.saveAccountAddress(arguments.accountAddress);
+		
+		if(!arguments.accountAddress.hasErrors()){
+			getAddressService().saveAddress(address=arguments.accountAddress.getAddress(),verifyAddressFlag=arguments.verifyAddressFlag);
+		}
+		return arguments.accountAddress;
+	}
+	
 	public any function savePermissionRecordRestriction(required permissionRecordRestriction, struct data={}, string context="save"){
 		arguments.permissionRecordRestriction =  super.save(entity=arguments.permissionRecordRestriction, data=arguments.data);
 		if(!arguments.permissionRecordRestriction.hasErrors()){
@@ -1959,6 +1968,26 @@ component extends="HibachiService" accessors="true" output="false" {
 		}
 
 		return arguments.permissionGroup;
+	}
+	
+	/**
+	 * helper function to update @entity/AccountGovernmentIdentification's dependent properties
+	 * extracted to make it customizable 
+	*/ 
+	public void function updateGovernmentIdentificationNumberProperties(required any governmentIdentification, required string governmentIdentificationNumber=""){
+		if(len(arguments.governmentIdentificationNumber)) {
+			arguments.governmentIdentification.setGovernmentIdentificationLastFour( right(arguments.governmentIdentificationNumber, 4) );
+		} else {
+			arguments.governmentIdentification.setGovernmentIdentificationLastFour();
+			arguments.governmentIdentification.setGovernmentIdentificationNumberEncrypted(javaCast("null", ""));
+		}
+	}
+	
+	public any function addOrderToAccount(required any account, required any order){
+		if(arguments.order.isNew() || !arguments.account.hasOrder( arguments.order )) {
+			arrayAppend(arguments.account.getOrders(), arguments.order);
+		}
+		return arguments.order;
 	}
 	
 

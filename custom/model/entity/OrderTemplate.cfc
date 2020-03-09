@@ -13,7 +13,7 @@ component {
 	property name="flexshipQualifiedOrdersForCalendarYearCount" persistent="false"; 
 	property name="qualifiesForOFYProducts" persistent="false";
 	property name="cartTotalThresholdForOFYAndFreeShipping" persistent="false";
-
+	
 
 	public boolean function getAccountIsNotInFlexshipCancellationGracePeriod(){
 		if(	getHibachiScope().getAccount().getAdminAccountFlag() ){
@@ -71,7 +71,7 @@ component {
 	public numeric function getCartTotalThresholdForOFYAndFreeShipping(){
 		if(!structKeyExists(variables, 'cartTotalThresholdForOFYAndFreeShipping')){
 			
-			if(this.getAccount().getAccountType() == 'MarketPartner') {
+			if(!isNull(this.getAccount()) && this.getAccount().getAccountType() == 'MarketPartner') {
 				variables.cartTotalThresholdForOFYAndFreeShipping =  this.getSite().setting('integrationmonatSiteMinCartTotalAfterMPUserIsEligibleForOFYAndFreeShipping');
 			} else {
 				variables.cartTotalThresholdForOFYAndFreeShipping =  this.getSite().setting('integrationmonatSiteMinCartTotalAfterVIPUserIsEligibleForOFYAndFreeShipping');
@@ -88,13 +88,83 @@ component {
 		return variables.qualifiesForOFYProducts;
 	}
 	
+	/**
+	 * These next two functions deal with this requirement around the Refer a Friend feature.
+	 * As a VIP I may only redeem EITHER an RAF Promo OR RAF Gift Card (limited to the value of one credit, per task:  ) 
+	 * on the same Flexship. I may not redeem both on the same Flexship.
+	 * 
+	 * Context:  This scenario would occur in an edge case where a newly referred VIP has earned their Referee Promo and has 
+	 * also referred new VIP's themselves, BEFORE they have had the opportunity to use their RAF promo on their first Flexship.  
+	 * Thus, resulting in them having both the RAF Promo and balance on their RAF Gift Card.  
+	 * They must use their Promo before redeeming their gift card, as the Promo must be used on their 1st Flexship.  
+	 * 
+	 **/
+	public boolean function getHasRafGiftCardAppliedToFlexship(){
+		
+		for (var appliedGiftCard in variables.orderTemplateAppliedGiftCards){
+			if (appliedGiftCard.getGiftCard().getSku().getSkuCode() == "raf-gift-card-1"){
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	public boolean function getHasRafPromoAppliedToFlexship(){
+		for (var promoCode in variables.promotionCodes){
+			if (promoCode.getPromotion().getPromotionName() == "Monat - Refer A Friend"){
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	public boolean function hasRafPromoOrGiftCardButNotBoth(){ 
+		
+		//This only applied to VIP accounts
+		if (!isVIP()){
+			return true;
+		}
+		
+		var hasGiftCard = getHasRafGiftCardAppliedToFlexship();
+		var hasPromo = getHasRafPromoAppliedToFlexship();
+		
+		//Has either gift card or promo is fine.
+		if (!hasGiftCard && !hasPromo){
+		
+			return true;
+		}
+		
+		//Has a gift card and no promo is fine.
+		if (hasGiftCard && !hasPromo){
+			return true;
+		}
+		
+		//Has a promo and no gift card is also fine.
+		if (hasPromo && !hasGiftCard){
+			return true;
+		}
+		
+		return false;
+		
+	}
+	
+	public boolean function isVIP(){
+		if (!isNull(this.getAccount()) && !isNull(this.getAccount().getAccountType())){
+			return this.getAccount().getAccountType() == "VIP";
+		}
+		return false;
+	}
+	
 	public struct function getListingSearchConfig() {
 	    param name = "arguments.wildCardPosition" default = "exact";
+	    
 	    return super.getListingSearchConfig(argumentCollection = arguments);
 	}
 	
 	public boolean function userCanCancelFlexship(){
 		return getAccount().getAccountType() == 'MarketPartner' || getHibachiScope().getAccount().getAdminAccountFlag();
 	}
-
+	
 }

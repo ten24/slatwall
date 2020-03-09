@@ -53,6 +53,19 @@ component extends="HibachiService" accessors="true" output="false" {
 	property name="countryCodeOptions" type="array";
 	
 	// ===================== START: Logical Methods ===========================
+	
+	public any function saveAddress(required any address, struct data={}, string context="save", boolean verifyAddressFlag=false){
+		
+		arguments.address = super.saveAddress(address,data,context);
+		
+		if(!arguments.address.hasErrors() && arguments.verifyAddressFlag){
+			//Have to flush in order to get address struct
+			getHibachiScope().flushORMSession();
+			verifyAddressByID(arguments.address.getAddressID());
+		}
+		return arguments.address;
+	}
+	
 	public boolean function isAddressInZoneByZoneID(required any addressZoneID, required any address) {
 		var addressZone = this.getAddressZoneByAddressZoneID(addressZoneID);
 		return this.isAddressInZone(arguments.address, addressZone);
@@ -182,7 +195,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			!len(address.getVerificationCacheKey()) || 
 			compare(address.getVerificationCacheKey(),cacheKey) != 0
 		) {
-		
+			
 			var integrationID = getHibachiScope().setting('globalIntegrationForAddressVerification');
 			
 			if(!isNull(integrationID) && len(integrationID) && integrationID != 'internal' ){
@@ -191,16 +204,17 @@ component extends="HibachiService" accessors="true" output="false" {
 												.getIntegrationByIntegrationPackage(integrationID)
 													.getIntegrationCFC("Address")
 														.verifyAddress(arguments.addressStruct);
-				
+				addressVerificationStruct['address'] = arguments.addressStruct;
 				address.setVerificationJson(serializeJSON(addressVerificationStruct));
 				address.setVerificationCacheKey(cacheKey);
 			}
 			
 		} 
 		else {
+			
 			addressVerificationStruct = deserializeJson(address.getVerificationJson());
 		}
-		
+
 		if (structKeyExists(addressVerificationStruct, 'success')) {
 			address.setVerifiedByIntegrationFlag(addressVerificationStruct['success']);
 			
@@ -208,12 +222,9 @@ component extends="HibachiService" accessors="true" output="false" {
 				address.setIntegrationVerificationErrorMessage(addressVerificationStruct['message']);
 			}
 		}
-		
+
 		this.saveAddress(address);
 		
-		//TODO: remove
-		logHibachi(serializeJSON(addressVerificationStruct),true);
-
 		return addressVerificationStruct;
 		
 	}

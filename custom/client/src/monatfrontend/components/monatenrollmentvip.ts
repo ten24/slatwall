@@ -23,7 +23,6 @@ class VIPController {
 	public flexshipDeliveryDate;
 	public flexshipFrequencyName;
 	public flexshipFrequencyHasErrors: boolean = false;
-	public isNotSafariPrivate:boolean;
 	public flexshipItemList:any;
 	public recordsCount;
 	public flexshipTotal:number = 0;
@@ -31,13 +30,28 @@ class VIPController {
 	public addedItemToCart;
 	public defaultTerm;
 	public termMap = {};
+	public isInitialized = false;
+	public paginationMethod = 'getproductsByCategoryOrContentID';
+	public productRecordsCount: number;
+	public paginationObject = {};
 	
 	// @ngInject
 	constructor(public publicService, public observerService, public monatService, public orderTemplateService) {
 	}
 
 	public $onInit = () => {
-		this.getCountryCodeOptions();
+		
+		this.publicService.doAction('setUpgradeOnOrder', {upgradeType: 'VIP'}).then(res=>{
+			this.isInitialized = true;
+			this.getProductList();	
+			this.getCountryCodeOptions();
+			this.getFrequencyTermOptions();
+		});
+
+		this.flexshipID = this.monatService.getCookieValueByCookieName('flexshipID');
+	}
+	
+	public getFrequencyTermOptions = ():void =>{
 		this.publicService.doAction('getFrequencyTermOptions').then(response => {
 			this.frequencyTerms = response.frequencyTermOptions;
 			this.publicService.model = {};
@@ -47,65 +61,13 @@ class VIPController {
 					this.publicService.model.term = term;
 				}
 			}
-		})
-		
-		//checks to local storage in case user has refreshed
-		if(localStorage.getItem('shippingAddressID')){ 
-			this.holdingShippingAddressID = localStorage.getItem('shippingAddressID');
-		}
-		
-		if(localStorage.getItem('shippingMethodID')){
-			this.holdingShippingMethodID = localStorage.getItem('shippingMethodID');
-		}
-				
-		if(localStorage.getItem('flexshipDayOfMonth')){
-    		this.flexshipDeliveryDate = localStorage.getItem('flexshipDayOfMonth');
-		}
-		
-		if(localStorage.getItem('flexshipFrequency')){
-	    	this.flexshipFrequencyName = localStorage.getItem('flexshipFrequency');
-		}
-		
-		if(localStorage.getItem('flexshipID')){
-	    	this.flexshipID = localStorage.getItem('flexshipID');
-	    	this.getProductList();
-		}
-		
-    	this.observerService.attach(this.getFlexshipDetails,"lastStep"); 
-    	this.observerService.attach(this.getProductList,"createSuccess");
-		this.observerService.attach(this.showAddToCartMessage, 'addOrderItemSuccess'); 
-		
-
-		this.localStorageCheck(); 
-		
-		if(this.isNotSafariPrivate){
-			this.observerService.attach((accountAddress)=>{
-				localStorage.setItem('shippingAddressID',accountAddress.accountAddressID); 
-				this.holdingShippingAddressID = accountAddress.accountAddressID;
-			}, 'shippingAddressSelected');
-			
-			this.observerService.attach((shippingMethod)=>{
-				localStorage.setItem('shippingMethodID',shippingMethod.shippingMethodID);
-				this.holdingShippingMethodID = shippingMethod.shippingMethodID;
-			}, 'shippingMethodSelected');			
-		}
-	
+		});
 	}
 
 	public adjustInputFocuses = () => {
 		this.monatService.adjustInputFocuses();
 	}
 	
-	//check to see if we can use local storage
-	public localStorageCheck = () => {
-		try {
-			localStorage.setItem('test', '1');
-			localStorage.removeItem('test');
-			this.isNotSafariPrivate = true;
-		} catch (error) {
-			this.isNotSafariPrivate = false;
-		}
-	}
 
 	public getCountryCodeOptions = () => {
 		if (this.countryCodeOptions.length) {
@@ -164,26 +126,35 @@ class VIPController {
 		}
 	};
 	
+	public searchByKeyword = (keyword:string) =>{
+		this.publicService.doAction('getProductsByKeyword', {keyword: keyword, priceGroupCode: 1}).then(res=> {
+			this.paginationMethod = 'getProductsByKeyword';
+			this.productRecordsCount = res.recordsCount;
+			this.paginationObject['keyword'] = keyword;
+			this.productList = res.productList;
+			this.observerService.notify("PromiseComplete");
+		});
+	}
+
 	public getProductList = () => {
 		this.loading = true;
-		
-		this.publicService.doAction('getProductsByCategoryOrContentID').then((result) => {
-            this.productList = result.productList;
-            this.recordsCount = result.recordsCount;
-			this.observerService.notify('PromiseComplete');
-            this.loading = false;
+		this.publicService.doAction('getproductsByCategoryOrContentID', {priceGroupCode: 3}).then((result) => {
+			this.observerService.notify("PromiseComplete");
+			this.productList = result.productList;
+			this.productRecordsCount = result.recordsCount
+			this.loading = false;
 		});
-	};
-
-    public createOrderTemplate = (orderTemplateSystemCode:string = 'ottSchedule') => {
+	}
+	
+    public createOrderTemplate = (orderTemplateSystemCode:string = 'ottSchedule',context="upgradeFlow") => {
         this.loading = true;
-        this.orderTemplateService.createOrderTemplate(orderTemplateSystemCode).then(result => {
+        this.orderTemplateService.createOrderTemplate(orderTemplateSystemCode,context).then(result => {
         	this.flexshipID = result.orderTemplate;
-        	if(this.isNotSafariPrivate && this.flexshipID){
-        		localStorage.setItem('flexshipID', this.flexshipID);
-        	}
-        	
             this.loading = false;
+            if(result.orderTemplate?.length){
+            	document.cookie = "flexshipID=" + result.orderTemplate ;
+    			this.observerService.notify('onNext');
+            }
         });
     }
     
@@ -208,12 +179,6 @@ class VIPController {
         this.loading = true;
         this.flexshipDeliveryDate = dayOfMonth;
 		this.flexshipFrequencyName = frequencyTerm.name;
-		
-		if(this.isNotSafariPrivate){
-			localStorage.setItem('flexshipDayOfMonth', dayOfMonth);
-			localStorage.setItem('flexshipFrequency', frequencyTerm.name);	
-		}
-    
         const flexshipID = this.flexshipID;
         this.orderTemplateService.updateOrderTemplateFrequency(flexshipID, frequencyTerm.value, dayOfMonth).then(result => {
             this.getFlexshipDetails();

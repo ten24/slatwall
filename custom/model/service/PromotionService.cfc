@@ -183,4 +183,115 @@ component extends="Slatwall.model.service.PromotionService" {
     	}
     	return 0;
     }
+    
+    private void function applyPromotionQualifierMessagesToOrder(required any order, required array orderQualifierMessages){
+		
+		ArraySort(arguments.orderQualifierMessages,function(a,b){
+			if(a.getPriority() <= b.getPriority()){
+				return -1;
+			}else{
+				return 1;
+			}
+		});
+		
+		var maxMessages = getService('SettingService').getSettingValue('globalMaximumPromotionMessages');
+
+		if(maxMessages < arrayLen(arguments.orderQualifierMessages)){
+			arguments.orderQualifierMessages = arraySlice(arguments.orderQualifierMessages,1,maxMessages);
+		}
+		
+		for(var promotionQualifierMessage in arguments.orderQualifierMessages){
+			var newAppliedPromotionMessage = this.newPromotionMessageApplied();
+			
+			newAppliedPromotionMessage.setOrder( arguments.order );
+			newAppliedPromotionMessage.setPromotionQualifierMessage( promotionQualifierMessage );
+			
+			newAppliedPromotionMessage.setMessage( promotionQualifierMessage.getInterpolatedMessage( arguments.order ) );
+			
+			var qualifierProgress = promotionQualifierMessage.getQualifierProgress( arguments.order );
+			
+			if( !isNull( qualifierProgress ) ){
+				newAppliedPromotionMessage.setQualifierProgress( qualifierProgress );
+			}
+			
+			this.savePromotionMessageApplied(newAppliedPromotionMessage);
+		}
+
+	}
+	
+	public void function updateOrderAmountsWithPromotions(required any order){
+		super.updateOrderAmountsWithPromotions(arguments.order);
+		
+		var personalVolumeTotal = arguments.order.getPersonalVolumeTotal();
+		var roundedPersonalVolumeTotal = round(personalVolumeTotal);
+		var difference = personalVolumeTotal - roundedPersonalVolumeTotal;
+		if(difference != 0){
+			if(arguments.order.hasAppliedPromotion()){
+				var appliedPromotion = arguments.order.getAppliedPromotions()[1];
+				var currentPVDiscountAmount = appliedPromotion.getPersonalVolumeDiscountAmount();
+				appliedPromotion.setPersonalVolumeDiscountAmount(currentPVDiscountAmount + difference);
+			}else{
+				this.allocatePersonalVolumeDiscountToOrderItems(arguments.order, difference);
+			}
+		}
+	}
+	
+	public void function allocatePersonalVolumeDiscountToOrderItems(required any order, required amountToDistribute){
+		// Allocate the order-level discount amount total in appropriate proportions to all order items and if necessary handle any remainder due to uneven division
+		var actualAllocatedAmountTotal = 0;
+		var actualAllocatedAmountAsPercentage = 0;
+		var orderItemCount = 0;
+		var orderItems = arguments.order.getOrderItems()  
+		for (var orderItem in orderItems) {
+			orderItemCount++;
+			
+			// The percentage of overall order discount that needs to be properly allocated to the order item. This is to perform weighted calculations.
+			var currentOrderItemAmountAsPercentage=0;
+			if(!isNull(arguments.order.getPersonalVolumeSubtotalAfterItemDiscounts()) && arguments.order.getPersonalVolumeSubtotalAfterItemDiscounts() > 0){
+				currentOrderItemAmountAsPercentage = orderItem.getExtendedPersonalVolumeAfterDiscount() / arguments.order.getPersonalVolumeSubtotalAfterItemDiscounts();	
+			}
+			
+			// Approximate amount to allocate (rounded to nearest penny)
+		    var currentOrderItemAllocationAmount = round(currentOrderItemAmountAsPercentage * amountToDistribute * 100) / 100;
+		    
+		    var actualAllocatedAmountTotalUnadjusted = actualAllocatedAmountTotal + currentOrderItemAllocationAmount;
+		    
+		    // Recalculated each iteration for maximum precision of how much is expected to have been allocated at current stage in process
+		    var expectedAllocatedAmountTotal = (actualAllocatedAmountAsPercentage + currentOrderItemAmountAsPercentage) * amountToDistribute;
+			
+			// Rather than letting a sum of discrepancies accumulate during each iteration and become a significant adjustment to the final order item, lets handle it immediately and make minor adjustment to order item
+			// This allows the discrepancy of no more than a cent to be accumulated, and appropriately allocated to the current order item when it first appears
+			// NOTE: If instead we deferred handling the discrepancy the likelihood that a noticeable discrepancy will need to be offset on the final order item increases as the number of order items increases on an order.
+		    var currentDiscrepancyAmount =  actualAllocatedAmountTotalUnadjusted - expectedAllocatedAmountTotal;
+		    
+		    // If there is a discrepancy greater than 1/2 cent let's deal with it now, adjust the allocation amount by rounding up or down to nearest cent
+		    if (abs(currentDiscrepancyAmount) >= .005) {
+		    	// Need to decrease the allocation amount by a cent to prevent over allocating
+		        if (currentDiscrepancyAmount > 0) {
+		            currentOrderItemAllocationAmount = (ceiling(currentOrderItemAllocationAmount * 100) - 1) / 100;
+		            
+		        // Need to increase the allocation by a cent to prevent under allocating 
+		        } else if (currentDiscrepancyAmount < 0) {
+		            currentOrderItemAllocationAmount = (floor(currentOrderItemAllocationAmount * 100) + 1) / 100;
+		        }
+		    }
+		    
+		    // Update the actuals to retain maximum precision
+		    actualAllocatedAmountTotal += currentOrderItemAllocationAmount;
+		    actualAllocatedAmountAsPercentage += currentOrderItemAmountAsPercentage;
+		    
+		    // Finally update the order item
+		    if(orderItem.hasAppliedPromotion()){
+		    	var appliedPromotion = orderItem.getAppliedPromotions()[1];
+		    	var currentPVDiscountAmount = appliedPromotion.getPersonalVolumeDiscountAmount();
+				appliedPromotion.setPersonalVolumeDiscountAmount(currentPVDiscountAmount + currentOrderItemAllocationAmount);
+		    }else{
+		    	var newAppliedPromotion = this.newPromotionApplied();
+				newAppliedPromotion.setAppliedType('orderItem');
+				newAppliedPromotion.setOrderItem( orderItem );
+				newAppliedPromotion.setPersonalVolumeDiscountAmount( currentOrderItemAllocationAmount );
+				this.savePromotionApplied(newAppliedPromotion);
+		    }
+		}
+	}
 }
