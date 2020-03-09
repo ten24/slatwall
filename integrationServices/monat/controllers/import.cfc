@@ -717,7 +717,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                     }
                     
                     //newAccount.setCountryCode( account['countryCode']?:"" );
-                    if (structKeyExists(account, 'productPack') && len(account['productPack']) && account['productPack'] == true){
+		    //DF comment: Requirement is to set any value as 1 and empty or not. API does return " " which needs to be set to false. Hence, adding trim
+		    //https://ten24.teamwork.com//#tasks/27841562?c=11975230
+                    if (structKeyExists(account, 'productPack') && len(trim(account['productPack']))){
                     	newAccount.setProductPackPurchasedFlag( true );
                     }else{
                     	newAccount.setProductPackPurchasedFlag( false );
@@ -1059,7 +1061,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
                     }
                     
                     //newAccount.setCountryCode( account['countryCode']?:"" );
-                    if (structKeyExists(account, 'productPack') && len(account['productPack']) && account['productPack'] == true){
+		    //DF comment: Requirement is to set any value as 1 and empty or not. API does return " " which needs to be set to false. Hence, adding trim
+		    //https://ten24.teamwork.com//#tasks/27841562?c=11975230
+                    if (structKeyExists(account, 'productPack') && len(trim(account['productPack']))){
                     	newAccount.setProductPackPurchasedFlag( true );
                     }else{
                     	newAccount.setProductPackPurchasedFlag( false );
@@ -2073,6 +2077,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 							accountPaymentMethod.setExpirationYear(flexshipPayment['CcExpYy']?:""); 
 							accountPaymentMethod.setExpirationMonth(flexshipPayment['CcExpMm']?:""); 
 							accountPaymentMethod.setProviderToken(flexshipPayment['PaymentToken']?:""); 
+							//DF comment
+							//flexship['entryDate'] is used in 3 places including below: shipping, billing addresses and accountpaymentmethod
+							accountPaymentMethod.setCreatedDateTime(getDateFromString(flexship['entryDate']));
 							accountPaymentMethod.setPaymentMethod(paymentMethod);
 							
 							orderTemplate.setAccountPaymentMethod(accountPaymentMethod);

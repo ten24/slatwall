@@ -83,10 +83,12 @@ property name="calculatedCommissionableVolumeTotal" ormtype="integer";
 //CUSTOM PROPERTIES END
 
 	public numeric function getTotal(){
+		
 		if(!structKeyExists(variables, 'total')){
 			variables.total = 0; 
 			
 			if(!isNull(getSku()) && !isNull(getQuantity())){
+				
 				var rewardSkuSalePriceDetails = getService('PromotionService').getOrderTemplateItemSalePricesByPromoRewardSkuCollection(this); 
 				variables.total += rewardSkuSalePriceDetails[this.getOrderTemplateItemID()]['salePrice'] * getQuantity();
 			} 	
@@ -124,7 +126,7 @@ public any function getSkuProductURL(){
 	
 	public any function getSkuAdjustedPricing(){
 			
-			var priceGroups = this.getOrderTemplate().getAccount().getPriceGroups();
+			var priceGroups = !isNull(this.getOrderTemplate().getAccount()) ? this.getOrderTemplate().getAccount().getPriceGroups() : [this.getOrderTemplate().getPriceGroup()];
 			var priceGroupCode = arrayLen(priceGroups) ? priceGroups[1].getPriceGroupCode() : "";
 			var priceGroupService = getHibachiScope().getService('priceGroupService');
 			var hibachiUtilityService = getHibachiScope().getService('hibachiUtilityService');

@@ -47,7 +47,7 @@ Notes:
 
 */
 component output="false" accessors="true" extends="Slatwall.model.process.OrderTemplate_Create" {
-
+	
 	public any function getAccount() {
 	
 		if( !StructKeyExists(variables, 'account') ) { 

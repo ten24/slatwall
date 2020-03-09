@@ -64,7 +64,7 @@ var hibachi =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 933);
+/******/ 	return __webpack_require__(__webpack_require__.s = 936);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -74,7 +74,7 @@ var hibachi =
 "use strict";
 
 var root_1 = __webpack_require__(11);
-var toSubscriber_1 = __webpack_require__(612);
+var toSubscriber_1 = __webpack_require__(614);
 var observable_1 = __webpack_require__(37);
 var pipe_1 = __webpack_require__(60);
 /**
@@ -2234,7 +2234,7 @@ exports.Observable = Observable;
             try {
                 oldLocale = globalLocale._abbr;
                 var aliasedRequire = require;
-                __webpack_require__(316)("./" + name);
+                __webpack_require__(318)("./" + name);
                 getSetGlobalLocale(oldLocale);
             } catch (e) {}
         }
@@ -4985,7 +4985,7 @@ exports.Observable = Observable;
 
 })));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(932)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(935)(module)))
 
 /***/ }),
 /* 2 */
@@ -5000,7 +5000,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var isFunction_1 = __webpack_require__(42);
 var Subscription_1 = __webpack_require__(7);
-var Observer_1 = __webpack_require__(194);
+var Observer_1 = __webpack_require__(195);
 var rxSubscriber_1 = __webpack_require__(38);
 /**
  * Implements the {@link Observer} interface and extends the
@@ -5307,12 +5307,12 @@ exports.OuterSubscriber = OuterSubscriber;
 "use strict";
 
 var root_1 = __webpack_require__(11);
-var isArrayLike_1 = __webpack_require__(291);
-var isPromise_1 = __webpack_require__(293);
-var isObject_1 = __webpack_require__(292);
+var isArrayLike_1 = __webpack_require__(292);
+var isPromise_1 = __webpack_require__(294);
+var isObject_1 = __webpack_require__(293);
 var Observable_1 = __webpack_require__(0);
 var iterator_1 = __webpack_require__(26);
-var InnerSubscriber_1 = __webpack_require__(319);
+var InnerSubscriber_1 = __webpack_require__(321);
 var observable_1 = __webpack_require__(37);
 function subscribeToResult(outerSubscriber, result, outerValue, outerIndex) {
     var destination = new InnerSubscriber_1.InnerSubscriber(outerSubscriber, outerValue, outerIndex);
@@ -5447,94 +5447,96 @@ exports.async = new AsyncScheduler_1.AsyncScheduler(AsyncAction_1.AsyncAction);
 /// <reference path='../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
-var hibachiinterceptor_1 = __webpack_require__(831);
+var hibachiinterceptor_1 = __webpack_require__(834);
 //constant
-var hibachipathbuilder_1 = __webpack_require__(832);
+var hibachipathbuilder_1 = __webpack_require__(835);
+__webpack_require__(65);
 //services
-var cacheservice_1 = __webpack_require__(823);
-var publicservice_1 = __webpack_require__(842);
-var accountservice_1 = __webpack_require__(822);
-var accountaddressservice_1 = __webpack_require__(821);
-var cartservice_1 = __webpack_require__(824);
-var draggableservice_1 = __webpack_require__(825);
-var utilityservice_1 = __webpack_require__(849);
-var selectionservice_1 = __webpack_require__(846);
-var observerservice_1 = __webpack_require__(840);
-var orderservice_1 = __webpack_require__(303);
-var orderpaymentservice_1 = __webpack_require__(841);
-var formservice_1 = __webpack_require__(829);
-var filterservice_1 = __webpack_require__(828);
-var expandableservice_1 = __webpack_require__(827);
-var hibachiauthenticationservice_1 = __webpack_require__(830);
-var metadataservice_1 = __webpack_require__(839);
-var rbkeyservice_1 = __webpack_require__(843);
-var typeaheadservice_1 = __webpack_require__(848);
-var hibachiservice_1 = __webpack_require__(834);
-var historyservice_1 = __webpack_require__(837);
-var localstorageservice_1 = __webpack_require__(838);
-var hibachiservicedecorator_1 = __webpack_require__(835);
-var hibachiscope_1 = __webpack_require__(833);
-var requestservice_1 = __webpack_require__(844);
-var scopeservice_1 = __webpack_require__(845);
-var skuservice_1 = __webpack_require__(847);
-var hibachivalidationservice_1 = __webpack_require__(836);
-var entityservice_1 = __webpack_require__(826);
+var cacheservice_1 = __webpack_require__(826);
+var publicservice_1 = __webpack_require__(845);
+var accountservice_1 = __webpack_require__(825);
+var accountaddressservice_1 = __webpack_require__(824);
+var cartservice_1 = __webpack_require__(827);
+var draggableservice_1 = __webpack_require__(828);
+var utilityservice_1 = __webpack_require__(852);
+var selectionservice_1 = __webpack_require__(849);
+var observerservice_1 = __webpack_require__(843);
+var orderservice_1 = __webpack_require__(304);
+var orderpaymentservice_1 = __webpack_require__(844);
+var formservice_1 = __webpack_require__(832);
+var filterservice_1 = __webpack_require__(831);
+var expandableservice_1 = __webpack_require__(830);
+var hibachiauthenticationservice_1 = __webpack_require__(833);
+var metadataservice_1 = __webpack_require__(842);
+var rbkeyservice_1 = __webpack_require__(846);
+var typeaheadservice_1 = __webpack_require__(851);
+var hibachiservice_1 = __webpack_require__(837);
+var historyservice_1 = __webpack_require__(840);
+var localstorageservice_1 = __webpack_require__(841);
+var hibachiservicedecorator_1 = __webpack_require__(838);
+var hibachiscope_1 = __webpack_require__(836);
+var requestservice_1 = __webpack_require__(847);
+var scopeservice_1 = __webpack_require__(848);
+var skuservice_1 = __webpack_require__(850);
+var hibachivalidationservice_1 = __webpack_require__(839);
+var entityservice_1 = __webpack_require__(829);
 //controllers
-var globalsearch_1 = __webpack_require__(799);
+var globalsearch_1 = __webpack_require__(802);
 //filters
-var percentage_1 = __webpack_require__(804);
-var entityrbkey_1 = __webpack_require__(802);
-var swcurrency_1 = __webpack_require__(805);
-var swtrim_1 = __webpack_require__(806);
-var swunique_1 = __webpack_require__(807);
-var datefilter_1 = __webpack_require__(800);
-var datereporting_1 = __webpack_require__(801);
-var ordinal_1 = __webpack_require__(803);
+var percentage_1 = __webpack_require__(807);
+var entityrbkey_1 = __webpack_require__(805);
+var swcurrency_1 = __webpack_require__(808);
+var swtrim_1 = __webpack_require__(809);
+var swunique_1 = __webpack_require__(810);
+var datefilter_1 = __webpack_require__(803);
+var datereporting_1 = __webpack_require__(804);
+var ordinal_1 = __webpack_require__(806);
 //directives
 //  components
-var swactioncaller_1 = __webpack_require__(758);
-var swtypeaheadsearch_1 = __webpack_require__(797);
-var swtypeaheadinputfield_1 = __webpack_require__(794);
-var swtypeaheadmultiselect_1 = __webpack_require__(795);
-var swtypeaheadsearchlineitem_1 = __webpack_require__(798);
-var swtypeaheadremoveselection_1 = __webpack_require__(796);
-var swcollectionconfig_1 = __webpack_require__(762);
-var swcollectionfilter_1 = __webpack_require__(763);
-var swcollectionorderby_1 = __webpack_require__(764);
-var swcollectioncolumn_1 = __webpack_require__(761);
-var swcurrencyformatter_1 = __webpack_require__(767);
-var swactioncallerdropdown_1 = __webpack_require__(759);
-var swcolumnsorter_1 = __webpack_require__(765);
-var swconfirm_1 = __webpack_require__(766);
-var swdatepicker_1 = __webpack_require__(768);
-var swdraggable_1 = __webpack_require__(770);
-var swdraggablecontainer_1 = __webpack_require__(771);
-var swentityactionbar_1 = __webpack_require__(772);
-var swentityactionbarbuttongroup_1 = __webpack_require__(773);
-var swexpandablerecord_1 = __webpack_require__(774);
-var swexpiringsessionnotifier_1 = __webpack_require__(775);
-var swgravatar_1 = __webpack_require__(777);
-var swlogin_1 = __webpack_require__(780);
-var swmodallauncher_1 = __webpack_require__(781);
-var swmodalwindow_1 = __webpack_require__(782);
-var swnumbersonly_1 = __webpack_require__(783);
-var swloading_1 = __webpack_require__(779);
-var swscrolltrigger_1 = __webpack_require__(788);
-var swtabgroup_1 = __webpack_require__(792);
-var swtabcontent_1 = __webpack_require__(791);
-var swtooltip_1 = __webpack_require__(793);
-var swrbkey_1 = __webpack_require__(787);
-var swoptions_1 = __webpack_require__(784);
-var swselection_1 = __webpack_require__(789);
-var swclickoutside_1 = __webpack_require__(760);
-var swdirective_1 = __webpack_require__(769);
-var swexportaction_1 = __webpack_require__(776);
-var swhref_1 = __webpack_require__(778);
-var swprocesscaller_1 = __webpack_require__(786);
-var swsortable_1 = __webpack_require__(790);
-var sworderbycontrols_1 = __webpack_require__(785);
-var alert_module_1 = __webpack_require__(299);
-var dialog_module_1 = __webpack_require__(304);
+var swactioncaller_1 = __webpack_require__(760);
+var swaddressverification_1 = __webpack_require__(762);
+var swtypeaheadsearch_1 = __webpack_require__(800);
+var swtypeaheadinputfield_1 = __webpack_require__(797);
+var swtypeaheadmultiselect_1 = __webpack_require__(798);
+var swtypeaheadsearchlineitem_1 = __webpack_require__(801);
+var swtypeaheadremoveselection_1 = __webpack_require__(799);
+var swcollectionconfig_1 = __webpack_require__(765);
+var swcollectionfilter_1 = __webpack_require__(766);
+var swcollectionorderby_1 = __webpack_require__(767);
+var swcollectioncolumn_1 = __webpack_require__(764);
+var swcurrencyformatter_1 = __webpack_require__(770);
+var swactioncallerdropdown_1 = __webpack_require__(761);
+var swcolumnsorter_1 = __webpack_require__(768);
+var swconfirm_1 = __webpack_require__(769);
+var swdatepicker_1 = __webpack_require__(771);
+var swdraggable_1 = __webpack_require__(773);
+var swdraggablecontainer_1 = __webpack_require__(774);
+var swentityactionbar_1 = __webpack_require__(775);
+var swentityactionbarbuttongroup_1 = __webpack_require__(776);
+var swexpandablerecord_1 = __webpack_require__(777);
+var swexpiringsessionnotifier_1 = __webpack_require__(778);
+var swgravatar_1 = __webpack_require__(780);
+var swlogin_1 = __webpack_require__(783);
+var swmodallauncher_1 = __webpack_require__(784);
+var swmodalwindow_1 = __webpack_require__(785);
+var swnumbersonly_1 = __webpack_require__(786);
+var swloading_1 = __webpack_require__(782);
+var swscrolltrigger_1 = __webpack_require__(791);
+var swtabgroup_1 = __webpack_require__(795);
+var swtabcontent_1 = __webpack_require__(794);
+var swtooltip_1 = __webpack_require__(796);
+var swrbkey_1 = __webpack_require__(790);
+var swoptions_1 = __webpack_require__(787);
+var swselection_1 = __webpack_require__(792);
+var swclickoutside_1 = __webpack_require__(763);
+var swdirective_1 = __webpack_require__(772);
+var swexportaction_1 = __webpack_require__(779);
+var swhref_1 = __webpack_require__(781);
+var swprocesscaller_1 = __webpack_require__(789);
+var swsortable_1 = __webpack_require__(793);
+var sworderbycontrols_1 = __webpack_require__(788);
+var alert_module_1 = __webpack_require__(300);
+var dialog_module_1 = __webpack_require__(305);
 var coremodule = angular.module('hibachi.core', [
     //Angular Modules
     'ngAnimate',
@@ -5543,9 +5545,10 @@ var coremodule = angular.module('hibachi.core', [
     //3rdParty modules
     'ui.bootstrap',
     alert_module_1.alertmodule.name,
-    dialog_module_1.dialogmodule.name
+    dialog_module_1.dialogmodule.name,
+    'angularModalService'
 ])
-    .config(['$compileProvider', '$httpProvider', '$logProvider', '$filterProvider', '$provide', 'hibachiPathBuilder', 'appConfig', function ($compileProvider, $httpProvider, $logProvider, $filterProvider, $provide, hibachiPathBuilder, appConfig) {
+    .config(['$compileProvider', '$httpProvider', '$logProvider', '$filterProvider', '$provide', 'hibachiPathBuilder', 'appConfig', 'ModalServiceProvider', function ($compileProvider, $httpProvider, $logProvider, $filterProvider, $provide, hibachiPathBuilder, appConfig, ModalServiceProvider) {
         hibachiPathBuilder.setBaseURL(appConfig.baseURL);
         hibachiPathBuilder.setBasePartialsPath('/org/Hibachi/client/src/');
         if (!appConfig.debugFlag) {
@@ -5618,6 +5621,8 @@ var coremodule = angular.module('hibachi.core', [
         $httpProvider.interceptors.push('hibachiInterceptor');
         //Pulls seperate http requests into a single digest cycle.
         $httpProvider.useApplyAsync(true);
+        // to set a default close delay on modals
+        ModalServiceProvider.configureOptions({ closeDelay: 0 });
     }])
     .run(['$rootScope', '$hibachi', '$route', '$location', 'rbkeyService', function ($rootScope, $hibachi, $route, $location, rbkeyService) {
         $rootScope.buildUrl = $hibachi.buildUrl;
@@ -5691,6 +5696,7 @@ var coremodule = angular.module('hibachi.core', [
     .directive('swTypeaheadRemoveSelection', swtypeaheadremoveselection_1.SWTypeaheadRemoveSelection.Factory())
     .directive('swActionCaller', swactioncaller_1.SWActionCaller.Factory())
     .directive('swActionCallerDropdown', swactioncallerdropdown_1.SWActionCallerDropdown.Factory())
+    .directive('swAddressVerification', swaddressverification_1.SWAddressVerification.Factory())
     .directive('swColumnSorter', swcolumnsorter_1.SWColumnSorter.Factory())
     .directive('swConfirm', swconfirm_1.SWConfirm.Factory())
     .directive('swCurrencyFormatter', swcurrencyformatter_1.SWCurrencyFormatter.Factory())
@@ -5731,11 +5737,11 @@ exports.coremodule = coremodule;
 "use strict";
 
 var isArray_1 = __webpack_require__(13);
-var isObject_1 = __webpack_require__(292);
+var isObject_1 = __webpack_require__(293);
 var isFunction_1 = __webpack_require__(42);
 var tryCatch_1 = __webpack_require__(10);
 var errorObject_1 = __webpack_require__(9);
-var UnsubscriptionError_1 = __webpack_require__(288);
+var UnsubscriptionError_1 = __webpack_require__(289);
 /**
  * Represents a disposable resource, such as the execution of an Observable. A
  * Subscription has one important method, `unsubscribe`, that takes no argument
@@ -5938,7 +5944,7 @@ var Observable_1 = __webpack_require__(0);
 var Subscriber_1 = __webpack_require__(2);
 var Subscription_1 = __webpack_require__(7);
 var ObjectUnsubscribedError_1 = __webpack_require__(40);
-var SubjectSubscription_1 = __webpack_require__(195);
+var SubjectSubscription_1 = __webpack_require__(196);
 var rxSubscriber_1 = __webpack_require__(38);
 /**
  * @class SubjectSubscriber<T>
@@ -6201,9 +6207,9 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-var baseobject_1 = __webpack_require__(301);
-var Entities = __webpack_require__(812);
-var Processes = __webpack_require__(818);
+var baseobject_1 = __webpack_require__(302);
+var Entities = __webpack_require__(815);
+var Processes = __webpack_require__(821);
 var BaseEntityService = /** @class */ (function (_super) {
     __extends(BaseEntityService, _super);
     //@ngInject
@@ -6494,7 +6500,7 @@ exports.EmptyObservable = EmptyObservable;
 
 "use strict";
 
-var ConnectableObservable_1 = __webpack_require__(196);
+var ConnectableObservable_1 = __webpack_require__(197);
 /* tslint:enable:max-line-length */
 /**
  * Returns an Observable that emits the results of invoking a specified selector on items
@@ -6726,8 +6732,8 @@ exports.Notification = Notification;
 "use strict";
 
 var isScheduler_1 = __webpack_require__(12);
-var of_1 = __webpack_require__(201);
-var from_1 = __webpack_require__(200);
+var of_1 = __webpack_require__(202);
+var from_1 = __webpack_require__(201);
 var concatAll_1 = __webpack_require__(47);
 /* tslint:enable:max-line-length */
 /**
@@ -7197,7 +7203,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var root_1 = __webpack_require__(11);
-var Action_1 = __webpack_require__(593);
+var Action_1 = __webpack_require__(595);
 /**
  * We need this JSDoc comment for affecting ESDoc.
  * @ignore
@@ -7344,7 +7350,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var Scheduler_1 = __webpack_require__(321);
+var Scheduler_1 = __webpack_require__(323);
 var AsyncScheduler = (function (_super) {
     __extends(AsyncScheduler, _super);
     function AsyncScheduler() {
@@ -7557,11 +7563,11 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var Subject_1 = __webpack_require__(8);
-var queue_1 = __webpack_require__(284);
+var queue_1 = __webpack_require__(285);
 var Subscription_1 = __webpack_require__(7);
 var observeOn_1 = __webpack_require__(34);
 var ObjectUnsubscribedError_1 = __webpack_require__(40);
-var SubjectSubscription_1 = __webpack_require__(195);
+var SubjectSubscription_1 = __webpack_require__(196);
 /**
  * @class ReplaySubject<T>
  */
@@ -7913,7 +7919,7 @@ exports.CombineLatestSubscriber = CombineLatestSubscriber;
 "use strict";
 
 var mergeMap_1 = __webpack_require__(22);
-var identity_1 = __webpack_require__(290);
+var identity_1 = __webpack_require__(291);
 /**
  * Converts a higher-order Observable into a first-order Observable which
  * concurrently delivers all values that are emitted on the inner Observables.
@@ -8665,10 +8671,10 @@ exports.isFunction = isFunction;
 /***/ (function(module, exports, __webpack_require__) {
 
 (function(){
-  var crypt = __webpack_require__(310),
-      utf8 = __webpack_require__(65).utf8,
-      isBuffer = __webpack_require__(315),
-      bin = __webpack_require__(65).bin,
+  var crypt = __webpack_require__(312),
+      utf8 = __webpack_require__(66).utf8,
+      isBuffer = __webpack_require__(317),
+      bin = __webpack_require__(66).bin,
 
   // The core
   md5 = function (message, options) {
@@ -9657,7 +9663,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var FromObservable_1 = __webpack_require__(197);
+var FromObservable_1 = __webpack_require__(198);
 var isArray_1 = __webpack_require__(13);
 var OuterSubscriber_1 = __webpack_require__(3);
 var subscribeToResult_1 = __webpack_require__(4);
@@ -10365,7 +10371,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var baseobject_1 = __webpack_require__(301);
+var baseobject_1 = __webpack_require__(302);
 var BaseTransient = /** @class */ (function (_super) {
     __extends(BaseTransient, _super);
     function BaseTransient($injector) {
@@ -10537,7 +10543,7 @@ exports.BaseTransient = BaseTransient;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var rxjs_1 = __webpack_require__(320);
+var rxjs_1 = __webpack_require__(322);
 var IStore = /** @class */ (function () {
     //@ngInject
     function IStore(initialState, reducer, middleware) {
@@ -10607,6 +10613,13 @@ module.exports = g;
 
 /***/ }),
 /* 65 */
+/***/ (function(module, exports, __webpack_require__) {
+
+__webpack_require__(310);
+module.exports = 'angularModalService';
+
+/***/ }),
+/* 66 */
 /***/ (function(module, exports) {
 
 var charenc = {
@@ -10645,7 +10658,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 66 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -10722,7 +10735,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 67 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -10785,7 +10798,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 68 */
+/* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -10848,7 +10861,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 69 */
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -10974,7 +10987,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 70 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -11037,7 +11050,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 71 */
+/* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -11145,7 +11158,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 72 */
+/* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -11208,7 +11221,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 73 */
+/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -11347,7 +11360,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 74 */
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -11456,7 +11469,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 75 */
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -11592,7 +11605,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 76 */
+/* 77 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -11686,7 +11699,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 77 */
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -11748,7 +11761,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 78 */
+/* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -11871,7 +11884,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 79 */
+/* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -11994,7 +12007,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 80 */
+/* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -12106,7 +12119,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 81 */
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -12261,7 +12274,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 82 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -12353,7 +12366,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 83 */
+/* 84 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -12529,7 +12542,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 84 */
+/* 85 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -12596,7 +12609,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 85 */
+/* 86 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -12680,7 +12693,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 86 */
+/* 87 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -12744,7 +12757,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 87 */
+/* 88 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -12824,7 +12837,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 88 */
+/* 89 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -12904,7 +12917,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 89 */
+/* 90 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -12984,7 +12997,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 90 */
+/* 91 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -13087,7 +13100,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 91 */
+/* 92 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -13191,7 +13204,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 92 */
+/* 93 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -13262,7 +13275,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 93 */
+/* 94 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -13333,7 +13346,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 94 */
+/* 95 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -13400,7 +13413,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 95 */
+/* 96 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -13471,7 +13484,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 96 */
+/* 97 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -13542,7 +13555,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 97 */
+/* 98 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -13608,7 +13621,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 98 */
+/* 99 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -13679,7 +13692,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 99 */
+/* 100 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -13754,7 +13767,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 100 */
+/* 101 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -13850,7 +13863,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 101 */
+/* 102 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -13946,7 +13959,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 102 */
+/* 103 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14042,7 +14055,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 103 */
+/* 104 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14126,7 +14139,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 104 */
+/* 105 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14196,7 +14209,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 105 */
+/* 106 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14306,7 +14319,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 106 */
+/* 107 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14419,7 +14432,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 107 */
+/* 108 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14483,7 +14496,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 108 */
+/* 109 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14561,7 +14574,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 109 */
+/* 110 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14643,7 +14656,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 110 */
+/* 111 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14730,7 +14743,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 111 */
+/* 112 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14809,7 +14822,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 112 */
+/* 113 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14890,7 +14903,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 113 */
+/* 114 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14970,7 +14983,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 114 */
+/* 115 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -15051,7 +15064,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 115 */
+/* 116 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -15178,7 +15191,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 116 */
+/* 117 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -15306,7 +15319,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 117 */
+/* 118 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -15407,7 +15420,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 118 */
+/* 119 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -15535,7 +15548,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 119 */
+/* 120 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -15693,7 +15706,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 120 */
+/* 121 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -15807,7 +15820,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 121 */
+/* 122 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -15906,7 +15919,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 122 */
+/* 123 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -15992,7 +16005,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 123 */
+/* 124 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16128,7 +16141,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 124 */
+/* 125 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16201,7 +16214,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 125 */
+/* 126 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16274,7 +16287,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 126 */
+/* 127 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16370,7 +16383,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 127 */
+/* 128 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16456,7 +16469,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 128 */
+/* 129 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16549,7 +16562,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 129 */
+/* 130 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16640,7 +16653,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 130 */
+/* 131 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16754,7 +16767,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 131 */
+/* 132 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16884,7 +16897,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 132 */
+/* 133 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -16969,7 +16982,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 133 */
+/* 134 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17092,7 +17105,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 134 */
+/* 135 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17183,7 +17196,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 135 */
+/* 136 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17323,7 +17336,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 136 */
+/* 137 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17397,7 +17410,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 137 */
+/* 138 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17519,7 +17532,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 138 */
+/* 139 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17620,7 +17633,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 139 */
+/* 140 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17736,7 +17749,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 140 */
+/* 141 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17804,7 +17817,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 141 */
+/* 142 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17898,7 +17911,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 142 */
+/* 143 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17983,7 +17996,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 143 */
+/* 144 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18091,7 +18104,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 144 */
+/* 145 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18255,7 +18268,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 145 */
+/* 146 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18341,7 +18354,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 146 */
+/* 147 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18427,7 +18440,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 147 */
+/* 148 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18491,7 +18504,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 148 */
+/* 149 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18588,7 +18601,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 149 */
+/* 150 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18654,7 +18667,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 150 */
+/* 151 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18781,7 +18794,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 151 */
+/* 152 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18872,7 +18885,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 152 */
+/* 153 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18963,7 +18976,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 153 */
+/* 154 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19027,7 +19040,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 154 */
+/* 155 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19155,7 +19168,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 155 */
+/* 156 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19285,7 +19298,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 156 */
+/* 157 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19350,7 +19363,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 157 */
+/* 158 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19419,7 +19432,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 158 */
+/* 159 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19498,7 +19511,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 159 */
+/* 160 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19684,7 +19697,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 160 */
+/* 161 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19786,7 +19799,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 161 */
+/* 162 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19850,7 +19863,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 162 */
+/* 163 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19925,7 +19938,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 163 */
+/* 164 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20085,7 +20098,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 164 */
+/* 165 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20262,7 +20275,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 165 */
+/* 166 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20334,7 +20347,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 166 */
+/* 167 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20449,7 +20462,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 167 */
+/* 168 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20564,7 +20577,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 168 */
+/* 169 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20656,7 +20669,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 169 */
+/* 170 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20729,7 +20742,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 170 */
+/* 171 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20792,7 +20805,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 171 */
+/* 172 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20925,7 +20938,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 172 */
+/* 173 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21018,7 +21031,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 173 */
+/* 174 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21089,7 +21102,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 174 */
+/* 175 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21209,7 +21222,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 175 */
+/* 176 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21280,7 +21293,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 176 */
+/* 177 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21346,7 +21359,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 177 */
+/* 178 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21472,7 +21485,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 178 */
+/* 179 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -21570,7 +21583,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 179 */
+/* 180 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21665,7 +21678,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 180 */
+/* 181 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21727,7 +21740,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 181 */
+/* 182 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21789,7 +21802,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 182 */
+/* 183 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js language configuration
@@ -21912,7 +21925,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 183 */
+/* 184 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22070,7 +22083,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 184 */
+/* 185 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22172,7 +22185,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 185 */
+/* 186 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22234,7 +22247,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 186 */
+/* 187 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22296,7 +22309,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 187 */
+/* 188 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22379,7 +22392,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 188 */
+/* 189 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22451,7 +22464,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 189 */
+/* 190 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22515,7 +22528,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 190 */
+/* 191 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22629,7 +22642,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 191 */
+/* 192 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22736,7 +22749,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 192 */
+/* 193 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22843,7 +22856,7 @@ module.exports = charenc;
 
 
 /***/ }),
-/* 193 */
+/* 194 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22898,7 +22911,7 @@ exports.BehaviorSubject = BehaviorSubject;
 //# sourceMappingURL=BehaviorSubject.js.map
 
 /***/ }),
-/* 194 */
+/* 195 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22912,7 +22925,7 @@ exports.empty = {
 //# sourceMappingURL=Observer.js.map
 
 /***/ }),
-/* 195 */
+/* 196 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22958,7 +22971,7 @@ exports.SubjectSubscription = SubjectSubscription;
 //# sourceMappingURL=SubjectSubscription.js.map
 
 /***/ }),
-/* 196 */
+/* 197 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23135,7 +23148,7 @@ var RefCountSubscriber = (function (_super) {
 //# sourceMappingURL=ConnectableObservable.js.map
 
 /***/ }),
-/* 197 */
+/* 198 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23146,12 +23159,12 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var isArray_1 = __webpack_require__(13);
-var isArrayLike_1 = __webpack_require__(291);
-var isPromise_1 = __webpack_require__(293);
-var PromiseObservable_1 = __webpack_require__(198);
-var IteratorObservable_1 = __webpack_require__(462);
+var isArrayLike_1 = __webpack_require__(292);
+var isPromise_1 = __webpack_require__(294);
+var PromiseObservable_1 = __webpack_require__(199);
+var IteratorObservable_1 = __webpack_require__(464);
 var ArrayObservable_1 = __webpack_require__(15);
-var ArrayLikeObservable_1 = __webpack_require__(451);
+var ArrayLikeObservable_1 = __webpack_require__(453);
 var iterator_1 = __webpack_require__(26);
 var Observable_1 = __webpack_require__(0);
 var observeOn_1 = __webpack_require__(34);
@@ -23263,7 +23276,7 @@ exports.FromObservable = FromObservable;
 //# sourceMappingURL=FromObservable.js.map
 
 /***/ }),
-/* 198 */
+/* 199 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23390,7 +23403,7 @@ function dispatchError(arg) {
 //# sourceMappingURL=PromiseObservable.js.map
 
 /***/ }),
-/* 199 */
+/* 200 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23822,17 +23835,17 @@ exports.AjaxTimeoutError = AjaxTimeoutError;
 //# sourceMappingURL=AjaxObservable.js.map
 
 /***/ }),
-/* 200 */
+/* 201 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var FromObservable_1 = __webpack_require__(197);
+var FromObservable_1 = __webpack_require__(198);
 exports.from = FromObservable_1.FromObservable.create;
 //# sourceMappingURL=from.js.map
 
 /***/ }),
-/* 201 */
+/* 202 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23842,23 +23855,23 @@ exports.of = ArrayObservable_1.ArrayObservable.of;
 //# sourceMappingURL=of.js.map
 
 /***/ }),
-/* 202 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var TimerObservable_1 = __webpack_require__(467);
-exports.timer = TimerObservable_1.TimerObservable.create;
-//# sourceMappingURL=timer.js.map
-
-/***/ }),
 /* 203 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+var TimerObservable_1 = __webpack_require__(469);
+exports.timer = TimerObservable_1.TimerObservable.create;
+//# sourceMappingURL=timer.js.map
+
+/***/ }),
+/* 204 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
 var async_1 = __webpack_require__(5);
-var timeInterval_1 = __webpack_require__(271);
+var timeInterval_1 = __webpack_require__(272);
 exports.TimeInterval = timeInterval_1.TimeInterval;
 /**
  * @param scheduler
@@ -23874,14 +23887,14 @@ exports.timeInterval = timeInterval;
 //# sourceMappingURL=timeInterval.js.map
 
 /***/ }),
-/* 204 */
+/* 205 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var async_1 = __webpack_require__(5);
 var audit_1 = __webpack_require__(46);
-var timer_1 = __webpack_require__(202);
+var timer_1 = __webpack_require__(203);
 /**
  * Ignores source values for `duration` milliseconds, then emits the most recent
  * value from the source Observable, then repeats this process.
@@ -23932,7 +23945,7 @@ exports.auditTime = auditTime;
 //# sourceMappingURL=auditTime.js.map
 
 /***/ }),
-/* 205 */
+/* 206 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24016,7 +24029,7 @@ var BufferSubscriber = (function (_super) {
 //# sourceMappingURL=buffer.js.map
 
 /***/ }),
-/* 206 */
+/* 207 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24164,7 +24177,7 @@ var BufferSkipCountSubscriber = (function (_super) {
 //# sourceMappingURL=bufferCount.js.map
 
 /***/ }),
-/* 207 */
+/* 208 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24371,7 +24384,7 @@ function dispatchBufferClose(arg) {
 //# sourceMappingURL=bufferTime.js.map
 
 /***/ }),
-/* 208 */
+/* 209 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24531,7 +24544,7 @@ var BufferToggleSubscriber = (function (_super) {
 //# sourceMappingURL=bufferToggle.js.map
 
 /***/ }),
-/* 209 */
+/* 210 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24661,7 +24674,7 @@ var BufferWhenSubscriber = (function (_super) {
 //# sourceMappingURL=bufferWhen.js.map
 
 /***/ }),
-/* 210 */
+/* 211 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24783,7 +24796,7 @@ var CatchSubscriber = (function (_super) {
 //# sourceMappingURL=catchError.js.map
 
 /***/ }),
-/* 211 */
+/* 212 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24796,7 +24809,7 @@ exports.combineAll = combineAll;
 //# sourceMappingURL=combineAll.js.map
 
 /***/ }),
-/* 212 */
+/* 213 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24865,7 +24878,7 @@ exports.concat = concat;
 //# sourceMappingURL=concat.js.map
 
 /***/ }),
-/* 213 */
+/* 214 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24935,7 +24948,7 @@ exports.concatMapTo = concatMapTo;
 //# sourceMappingURL=concatMapTo.js.map
 
 /***/ }),
-/* 214 */
+/* 215 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25052,7 +25065,7 @@ var CountSubscriber = (function (_super) {
 //# sourceMappingURL=count.js.map
 
 /***/ }),
-/* 215 */
+/* 216 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25185,7 +25198,7 @@ var DebounceSubscriber = (function (_super) {
 //# sourceMappingURL=debounce.js.map
 
 /***/ }),
-/* 216 */
+/* 217 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25307,7 +25320,7 @@ function dispatchNext(subscriber) {
 //# sourceMappingURL=debounceTime.js.map
 
 /***/ }),
-/* 217 */
+/* 218 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25449,7 +25462,7 @@ var DelayMessage = (function () {
 //# sourceMappingURL=delay.js.map
 
 /***/ }),
-/* 218 */
+/* 219 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25649,7 +25662,7 @@ var SubscriptionDelaySubscriber = (function (_super) {
 //# sourceMappingURL=delayWhen.js.map
 
 /***/ }),
-/* 219 */
+/* 220 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25732,7 +25745,7 @@ var DeMaterializeSubscriber = (function (_super) {
 //# sourceMappingURL=dematerialize.js.map
 
 /***/ }),
-/* 220 */
+/* 221 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25744,7 +25757,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var OuterSubscriber_1 = __webpack_require__(3);
 var subscribeToResult_1 = __webpack_require__(4);
-var Set_1 = __webpack_require__(609);
+var Set_1 = __webpack_require__(611);
 /**
  * Returns an Observable that emits all items emitted by the source Observable that are distinct by comparison from previous items.
  *
@@ -25858,7 +25871,7 @@ exports.DistinctSubscriber = DistinctSubscriber;
 //# sourceMappingURL=distinct.js.map
 
 /***/ }),
-/* 221 */
+/* 222 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25929,7 +25942,7 @@ exports.distinctUntilKeyChanged = distinctUntilKeyChanged;
 //# sourceMappingURL=distinctUntilKeyChanged.js.map
 
 /***/ }),
-/* 222 */
+/* 223 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -26035,7 +26048,7 @@ var ElementAtSubscriber = (function (_super) {
 //# sourceMappingURL=elementAt.js.map
 
 /***/ }),
-/* 223 */
+/* 224 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -26115,7 +26128,7 @@ var EverySubscriber = (function (_super) {
 //# sourceMappingURL=every.js.map
 
 /***/ }),
-/* 224 */
+/* 225 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -26210,7 +26223,7 @@ var SwitchFirstSubscriber = (function (_super) {
 //# sourceMappingURL=exhaust.js.map
 
 /***/ }),
-/* 225 */
+/* 226 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -26354,7 +26367,7 @@ var SwitchFirstMapSubscriber = (function (_super) {
 //# sourceMappingURL=exhaustMap.js.map
 
 /***/ }),
-/* 226 */
+/* 227 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -26511,7 +26524,7 @@ exports.ExpandSubscriber = ExpandSubscriber;
 //# sourceMappingURL=expand.js.map
 
 /***/ }),
-/* 227 */
+/* 228 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -26560,7 +26573,7 @@ var FinallySubscriber = (function (_super) {
 //# sourceMappingURL=finalize.js.map
 
 /***/ }),
-/* 228 */
+/* 229 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -26607,7 +26620,7 @@ exports.findIndex = findIndex;
 //# sourceMappingURL=findIndex.js.map
 
 /***/ }),
-/* 229 */
+/* 230 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -26765,7 +26778,7 @@ var FirstSubscriber = (function (_super) {
 //# sourceMappingURL=first.js.map
 
 /***/ }),
-/* 230 */
+/* 231 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -26779,8 +26792,8 @@ var Subscriber_1 = __webpack_require__(2);
 var Subscription_1 = __webpack_require__(7);
 var Observable_1 = __webpack_require__(0);
 var Subject_1 = __webpack_require__(8);
-var Map_1 = __webpack_require__(607);
-var FastMap_1 = __webpack_require__(605);
+var Map_1 = __webpack_require__(609);
+var FastMap_1 = __webpack_require__(607);
 /* tslint:enable:max-line-length */
 /**
  * Groups the items emitted by an Observable according to a specified criterion,
@@ -27047,7 +27060,7 @@ var InnerRefCountSubscription = (function (_super) {
 //# sourceMappingURL=groupBy.js.map
 
 /***/ }),
-/* 231 */
+/* 232 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27101,7 +27114,7 @@ var IgnoreElementsSubscriber = (function (_super) {
 //# sourceMappingURL=ignoreElements.js.map
 
 /***/ }),
-/* 232 */
+/* 233 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27150,7 +27163,7 @@ var IsEmptySubscriber = (function (_super) {
 //# sourceMappingURL=isEmpty.js.map
 
 /***/ }),
-/* 233 */
+/* 234 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27275,7 +27288,7 @@ var LastSubscriber = (function (_super) {
 //# sourceMappingURL=last.js.map
 
 /***/ }),
-/* 234 */
+/* 235 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27344,7 +27357,7 @@ var MapToSubscriber = (function (_super) {
 //# sourceMappingURL=mapTo.js.map
 
 /***/ }),
-/* 235 */
+/* 236 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27442,7 +27455,7 @@ var MaterializeSubscriber = (function (_super) {
 //# sourceMappingURL=materialize.js.map
 
 /***/ }),
-/* 236 */
+/* 237 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27489,7 +27502,7 @@ exports.max = max;
 //# sourceMappingURL=max.js.map
 
 /***/ }),
-/* 237 */
+/* 238 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27555,7 +27568,7 @@ exports.merge = merge;
 //# sourceMappingURL=merge.js.map
 
 /***/ }),
-/* 238 */
+/* 239 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27716,7 +27729,7 @@ exports.MergeMapToSubscriber = MergeMapToSubscriber;
 //# sourceMappingURL=mergeMapTo.js.map
 
 /***/ }),
-/* 239 */
+/* 240 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27851,7 +27864,7 @@ exports.MergeScanSubscriber = MergeScanSubscriber;
 //# sourceMappingURL=mergeScan.js.map
 
 /***/ }),
-/* 240 */
+/* 241 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27898,7 +27911,7 @@ exports.min = min;
 //# sourceMappingURL=min.js.map
 
 /***/ }),
-/* 241 */
+/* 242 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27981,12 +27994,12 @@ var PairwiseSubscriber = (function (_super) {
 //# sourceMappingURL=pairwise.js.map
 
 /***/ }),
-/* 242 */
+/* 243 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var not_1 = __webpack_require__(611);
+var not_1 = __webpack_require__(613);
 var filter_1 = __webpack_require__(51);
 /**
  * Splits the source Observable into two, one with values that satisfy a
@@ -28039,7 +28052,7 @@ exports.partition = partition;
 //# sourceMappingURL=partition.js.map
 
 /***/ }),
-/* 243 */
+/* 244 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28102,7 +28115,7 @@ function plucker(props, length) {
 //# sourceMappingURL=pluck.js.map
 
 /***/ }),
-/* 244 */
+/* 245 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28132,12 +28145,12 @@ exports.publish = publish;
 //# sourceMappingURL=publish.js.map
 
 /***/ }),
-/* 245 */
+/* 246 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var BehaviorSubject_1 = __webpack_require__(193);
+var BehaviorSubject_1 = __webpack_require__(194);
 var multicast_1 = __webpack_require__(17);
 /**
  * @param value
@@ -28152,7 +28165,7 @@ exports.publishBehavior = publishBehavior;
 //# sourceMappingURL=publishBehavior.js.map
 
 /***/ }),
-/* 246 */
+/* 247 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28166,7 +28179,7 @@ exports.publishLast = publishLast;
 //# sourceMappingURL=publishLast.js.map
 
 /***/ }),
-/* 247 */
+/* 248 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28186,7 +28199,7 @@ exports.publishReplay = publishReplay;
 //# sourceMappingURL=publishReplay.js.map
 
 /***/ }),
-/* 248 */
+/* 249 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28220,7 +28233,7 @@ exports.race = race;
 //# sourceMappingURL=race.js.map
 
 /***/ }),
-/* 249 */
+/* 250 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28298,7 +28311,7 @@ var RepeatSubscriber = (function (_super) {
 //# sourceMappingURL=repeat.js.map
 
 /***/ }),
-/* 250 */
+/* 251 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28412,7 +28425,7 @@ var RepeatWhenSubscriber = (function (_super) {
 //# sourceMappingURL=repeatWhen.js.map
 
 /***/ }),
-/* 251 */
+/* 252 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28483,7 +28496,7 @@ var RetrySubscriber = (function (_super) {
 //# sourceMappingURL=retry.js.map
 
 /***/ }),
-/* 252 */
+/* 253 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28590,7 +28603,7 @@ var RetryWhenSubscriber = (function (_super) {
 //# sourceMappingURL=retryWhen.js.map
 
 /***/ }),
-/* 253 */
+/* 254 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28684,7 +28697,7 @@ var SampleSubscriber = (function (_super) {
 //# sourceMappingURL=sample.js.map
 
 /***/ }),
-/* 254 */
+/* 255 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28781,7 +28794,7 @@ function dispatchNotification(state) {
 //# sourceMappingURL=sampleTime.js.map
 
 /***/ }),
-/* 255 */
+/* 256 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28951,7 +28964,7 @@ var SequenceEqualCompareToSubscriber = (function (_super) {
 //# sourceMappingURL=sequenceEqual.js.map
 
 /***/ }),
-/* 256 */
+/* 257 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28982,7 +28995,7 @@ exports.share = share;
 //# sourceMappingURL=share.js.map
 
 /***/ }),
-/* 257 */
+/* 258 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29033,7 +29046,7 @@ function shareReplayOperator(bufferSize, windowTime, scheduler) {
 //# sourceMappingURL=shareReplay.js.map
 
 /***/ }),
-/* 258 */
+/* 259 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29132,7 +29145,7 @@ var SingleSubscriber = (function (_super) {
 //# sourceMappingURL=single.js.map
 
 /***/ }),
-/* 259 */
+/* 260 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29189,7 +29202,7 @@ var SkipSubscriber = (function (_super) {
 //# sourceMappingURL=skip.js.map
 
 /***/ }),
-/* 260 */
+/* 261 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29288,7 +29301,7 @@ var SkipLastSubscriber = (function (_super) {
 //# sourceMappingURL=skipLast.js.map
 
 /***/ }),
-/* 261 */
+/* 262 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29365,7 +29378,7 @@ var SkipUntilSubscriber = (function (_super) {
 //# sourceMappingURL=skipUntil.js.map
 
 /***/ }),
-/* 262 */
+/* 263 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29437,7 +29450,7 @@ var SkipWhileSubscriber = (function (_super) {
 //# sourceMappingURL=skipWhile.js.map
 
 /***/ }),
-/* 263 */
+/* 264 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29491,13 +29504,13 @@ exports.startWith = startWith;
 //# sourceMappingURL=startWith.js.map
 
 /***/ }),
-/* 264 */
+/* 265 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var switchMap_1 = __webpack_require__(56);
-var identity_1 = __webpack_require__(290);
+var identity_1 = __webpack_require__(291);
 function switchAll() {
     return switchMap_1.switchMap(identity_1.identity);
 }
@@ -29505,7 +29518,7 @@ exports.switchAll = switchAll;
 //# sourceMappingURL=switchAll.js.map
 
 /***/ }),
-/* 265 */
+/* 266 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29636,7 +29649,7 @@ var SwitchMapToSubscriber = (function (_super) {
 //# sourceMappingURL=switchMapTo.js.map
 
 /***/ }),
-/* 266 */
+/* 267 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29733,7 +29746,7 @@ var TakeSubscriber = (function (_super) {
 //# sourceMappingURL=take.js.map
 
 /***/ }),
-/* 267 */
+/* 268 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29814,7 +29827,7 @@ var TakeUntilSubscriber = (function (_super) {
 //# sourceMappingURL=takeUntil.js.map
 
 /***/ }),
-/* 268 */
+/* 269 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29912,7 +29925,7 @@ var TakeWhileSubscriber = (function (_super) {
 //# sourceMappingURL=takeWhile.js.map
 
 /***/ }),
-/* 269 */
+/* 270 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30031,7 +30044,7 @@ var DoSubscriber = (function (_super) {
 //# sourceMappingURL=tap.js.map
 
 /***/ }),
-/* 270 */
+/* 271 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30153,7 +30166,7 @@ function dispatchNext(arg) {
 //# sourceMappingURL=throttleTime.js.map
 
 /***/ }),
-/* 271 */
+/* 272 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30212,7 +30225,7 @@ var TimeIntervalSubscriber = (function (_super) {
 //# sourceMappingURL=timeInterval.js.map
 
 /***/ }),
-/* 272 */
+/* 273 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30225,7 +30238,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 var async_1 = __webpack_require__(5);
 var isDate_1 = __webpack_require__(41);
 var Subscriber_1 = __webpack_require__(2);
-var TimeoutError_1 = __webpack_require__(287);
+var TimeoutError_1 = __webpack_require__(288);
 /**
  *
  * Errors if Observable does not emit a value in given time span.
@@ -30359,7 +30372,7 @@ var TimeoutSubscriber = (function (_super) {
 //# sourceMappingURL=timeout.js.map
 
 /***/ }),
-/* 273 */
+/* 274 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30493,7 +30506,7 @@ var TimeoutWithSubscriber = (function (_super) {
 //# sourceMappingURL=timeoutWith.js.map
 
 /***/ }),
-/* 274 */
+/* 275 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30513,7 +30526,7 @@ exports.toArray = toArray;
 //# sourceMappingURL=toArray.js.map
 
 /***/ }),
-/* 275 */
+/* 276 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30631,7 +30644,7 @@ var WindowSubscriber = (function (_super) {
 //# sourceMappingURL=window.js.map
 
 /***/ }),
-/* 276 */
+/* 277 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30770,7 +30783,7 @@ var WindowCountSubscriber = (function (_super) {
 //# sourceMappingURL=windowCount.js.map
 
 /***/ }),
-/* 277 */
+/* 278 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30939,7 +30952,7 @@ function dispatchWindowClose(state) {
 //# sourceMappingURL=windowTime.js.map
 
 /***/ }),
-/* 278 */
+/* 279 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31125,7 +31138,7 @@ var WindowToggleSubscriber = (function (_super) {
 //# sourceMappingURL=windowToggle.js.map
 
 /***/ }),
-/* 279 */
+/* 280 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31260,7 +31273,7 @@ var WindowSubscriber = (function (_super) {
 //# sourceMappingURL=windowWhen.js.map
 
 /***/ }),
-/* 280 */
+/* 281 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31398,7 +31411,7 @@ var WithLatestFromSubscriber = (function (_super) {
 //# sourceMappingURL=withLatestFrom.js.map
 
 /***/ }),
-/* 281 */
+/* 282 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31411,7 +31424,7 @@ exports.zipAll = zipAll;
 //# sourceMappingURL=zipAll.js.map
 
 /***/ }),
-/* 282 */
+/* 283 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31530,13 +31543,13 @@ exports.VirtualAction = VirtualAction;
 //# sourceMappingURL=VirtualTimeScheduler.js.map
 
 /***/ }),
-/* 283 */
+/* 284 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var AsapAction_1 = __webpack_require__(596);
-var AsapScheduler_1 = __webpack_require__(597);
+var AsapAction_1 = __webpack_require__(598);
+var AsapScheduler_1 = __webpack_require__(599);
 /**
  *
  * Asap Scheduler
@@ -31575,13 +31588,13 @@ exports.asap = new AsapScheduler_1.AsapScheduler(AsapAction_1.AsapAction);
 //# sourceMappingURL=asap.js.map
 
 /***/ }),
-/* 284 */
+/* 285 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var QueueAction_1 = __webpack_require__(598);
-var QueueScheduler_1 = __webpack_require__(599);
+var QueueAction_1 = __webpack_require__(600);
+var QueueScheduler_1 = __webpack_require__(601);
 /**
  *
  * Queue Scheduler
@@ -31647,7 +31660,7 @@ exports.queue = new QueueScheduler_1.QueueScheduler(QueueAction_1.QueueAction);
 //# sourceMappingURL=queue.js.map
 
 /***/ }),
-/* 285 */
+/* 286 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31664,12 +31677,12 @@ exports.SubscriptionLog = SubscriptionLog;
 //# sourceMappingURL=SubscriptionLog.js.map
 
 /***/ }),
-/* 286 */
+/* 287 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var SubscriptionLog_1 = __webpack_require__(285);
+var SubscriptionLog_1 = __webpack_require__(286);
 var SubscriptionLoggable = (function () {
     function SubscriptionLoggable() {
         this.subscriptions = [];
@@ -31689,7 +31702,7 @@ exports.SubscriptionLoggable = SubscriptionLoggable;
 //# sourceMappingURL=SubscriptionLoggable.js.map
 
 /***/ }),
-/* 287 */
+/* 288 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31720,7 +31733,7 @@ exports.TimeoutError = TimeoutError;
 //# sourceMappingURL=TimeoutError.js.map
 
 /***/ }),
-/* 288 */
+/* 289 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31751,7 +31764,7 @@ exports.UnsubscriptionError = UnsubscriptionError;
 //# sourceMappingURL=UnsubscriptionError.js.map
 
 /***/ }),
-/* 289 */
+/* 290 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31770,7 +31783,7 @@ exports.applyMixins = applyMixins;
 //# sourceMappingURL=applyMixins.js.map
 
 /***/ }),
-/* 290 */
+/* 291 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31782,7 +31795,7 @@ exports.identity = identity;
 //# sourceMappingURL=identity.js.map
 
 /***/ }),
-/* 291 */
+/* 292 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31791,7 +31804,7 @@ exports.isArrayLike = (function (x) { return x && typeof x.length === 'number'; 
 //# sourceMappingURL=isArrayLike.js.map
 
 /***/ }),
-/* 292 */
+/* 293 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31803,7 +31816,7 @@ exports.isObject = isObject;
 //# sourceMappingURL=isObject.js.map
 
 /***/ }),
-/* 293 */
+/* 294 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31815,7 +31828,7 @@ exports.isPromise = isPromise;
 //# sourceMappingURL=isPromise.js.map
 
 /***/ }),
-/* 294 */
+/* 295 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {var scope = (typeof global !== "undefined" && global) ||
@@ -31871,7 +31884,7 @@ exports._unrefActive = exports.active = function(item) {
 };
 
 // setimmediate attaches itself to the global object
-__webpack_require__(613);
+__webpack_require__(615);
 // On some exotic environments, it's not clear which object `setimmediate` was
 // able to install onto.  Search each possibility in the same order as the
 // `setimmediate` library.
@@ -31885,7 +31898,7 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(64)))
 
 /***/ }),
-/* 295 */
+/* 296 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32044,7 +32057,7 @@ exports.EMAIL_LIST_FAILURE = "EMAIL_LIST_FAILURE";
 
 
 /***/ }),
-/* 296 */
+/* 297 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32065,7 +32078,7 @@ var __assign = (this && this.__assign) || function () {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var FluxStore = __webpack_require__(62);
-var actions = __webpack_require__(295);
+var actions = __webpack_require__(296);
 /**
  * Fulfillment List Controller
  */
@@ -32928,7 +32941,7 @@ exports.OrderFulfillmentService = OrderFulfillmentService;
 
 
 /***/ }),
-/* 297 */
+/* 298 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32936,7 +32949,7 @@ exports.OrderFulfillmentService = OrderFulfillmentService;
 Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-var swPricingManagerHTML = __webpack_require__(313);
+var swPricingManagerHTML = __webpack_require__(315);
 var SWPricingManagerController = /** @class */ (function () {
     //@ngInject
     function SWPricingManagerController(collectionConfigService) {
@@ -33004,7 +33017,7 @@ exports.SWPricingManager = SWPricingManager;
 
 
 /***/ }),
-/* 298 */
+/* 299 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33012,7 +33025,7 @@ exports.SWPricingManager = SWPricingManager;
 Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-var swSkuPriceModalHTML = __webpack_require__(314);
+var swSkuPriceModalHTML = __webpack_require__(316);
 var SWSkuPriceModalController = /** @class */ (function () {
     //@ngInject
     function SWSkuPriceModalController($hibachi, entityService, formService, listingService, observerService, skuPriceService, utilityService, collectionConfigService, scopeService, $scope, $timeout, requestService) {
@@ -33396,7 +33409,7 @@ exports.SWSkuPriceModal = SWSkuPriceModal;
 
 
 /***/ }),
-/* 299 */
+/* 300 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33405,9 +33418,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../typings/tsd.d.ts' />
 //controllers
-var alertcontroller_1 = __webpack_require__(717);
+var alertcontroller_1 = __webpack_require__(719);
 //services
-var alertservice_1 = __webpack_require__(719);
+var alertservice_1 = __webpack_require__(721);
 var alertmodule = angular.module('hibachi.alert', [])
     //controllers
     .controller('alertController', alertcontroller_1.AlertController)
@@ -33417,7 +33430,7 @@ exports.alertmodule = alertmodule;
 
 
 /***/ }),
-/* 300 */
+/* 301 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33428,38 +33441,38 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //modules
 var core_module_1 = __webpack_require__(6);
 //services
-var collectionconfigservice_1 = __webpack_require__(756);
-var collectionservice_1 = __webpack_require__(757);
+var collectionconfigservice_1 = __webpack_require__(758);
+var collectionservice_1 = __webpack_require__(759);
 //controllers
-var collections_1 = __webpack_require__(751);
-var createcollection_1 = __webpack_require__(753);
-var confirmationcontroller_1 = __webpack_require__(752);
-var entity_createcollection_1 = __webpack_require__(754);
+var collections_1 = __webpack_require__(753);
+var createcollection_1 = __webpack_require__(755);
+var confirmationcontroller_1 = __webpack_require__(754);
+var entity_createcollection_1 = __webpack_require__(756);
 //directives
-var swcollection_1 = __webpack_require__(730);
-var swaddfilterbuttons_1 = __webpack_require__(729);
-var swdisplayoptions_1 = __webpack_require__(745);
-var swdisplayitem_1 = __webpack_require__(743);
-var swdisplayitemaggregate_1 = __webpack_require__(744);
-var swcollectiontable_1 = __webpack_require__(731);
-var swcolumnitem_1 = __webpack_require__(732);
-var swconditioncriteria_1 = __webpack_require__(733);
-var swcriteria_1 = __webpack_require__(734);
-var swcriteriaboolean_1 = __webpack_require__(735);
-var swcriteriadate_1 = __webpack_require__(736);
-var swcriteriamanytomany_1 = __webpack_require__(737);
-var swcriteriamanytoone_1 = __webpack_require__(738);
-var swcriterianumber_1 = __webpack_require__(739);
-var swcriteriaonetomany_1 = __webpack_require__(740);
-var swcriteriarelatedobject_1 = __webpack_require__(741);
-var swcriteriastring_1 = __webpack_require__(742);
-var sweditfilteritem_1 = __webpack_require__(746);
-var swfiltergroups_1 = __webpack_require__(748);
-var swfilteritem_1 = __webpack_require__(749);
-var swfiltergroupitem_1 = __webpack_require__(747);
-var swrestrictionconfig_1 = __webpack_require__(750);
+var swcollection_1 = __webpack_require__(732);
+var swaddfilterbuttons_1 = __webpack_require__(731);
+var swdisplayoptions_1 = __webpack_require__(747);
+var swdisplayitem_1 = __webpack_require__(745);
+var swdisplayitemaggregate_1 = __webpack_require__(746);
+var swcollectiontable_1 = __webpack_require__(733);
+var swcolumnitem_1 = __webpack_require__(734);
+var swconditioncriteria_1 = __webpack_require__(735);
+var swcriteria_1 = __webpack_require__(736);
+var swcriteriaboolean_1 = __webpack_require__(737);
+var swcriteriadate_1 = __webpack_require__(738);
+var swcriteriamanytomany_1 = __webpack_require__(739);
+var swcriteriamanytoone_1 = __webpack_require__(740);
+var swcriterianumber_1 = __webpack_require__(741);
+var swcriteriaonetomany_1 = __webpack_require__(742);
+var swcriteriarelatedobject_1 = __webpack_require__(743);
+var swcriteriastring_1 = __webpack_require__(744);
+var sweditfilteritem_1 = __webpack_require__(748);
+var swfiltergroups_1 = __webpack_require__(750);
+var swfilteritem_1 = __webpack_require__(751);
+var swfiltergroupitem_1 = __webpack_require__(749);
+var swrestrictionconfig_1 = __webpack_require__(752);
 //filters
-var aggregatefilter_1 = __webpack_require__(755);
+var aggregatefilter_1 = __webpack_require__(757);
 var collectionmodule = angular.module('hibachi.collection', [core_module_1.coremodule.name])
     .config([function () {
     }]).run([function () {
@@ -33503,7 +33516,7 @@ exports.collectionmodule = collectionmodule;
 
 
 /***/ }),
-/* 301 */
+/* 302 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33538,7 +33551,7 @@ exports.BaseObject = BaseObject;
 
 
 /***/ }),
-/* 302 */
+/* 303 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33685,7 +33698,7 @@ exports.Request = Request;
 
 
 /***/ }),
-/* 303 */
+/* 304 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33726,7 +33739,7 @@ exports.OrderService = OrderService;
 
 
 /***/ }),
-/* 304 */
+/* 305 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33735,9 +33748,9 @@ exports.OrderService = OrderService;
 /// <reference path='../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
 //services
-var dialogservice_1 = __webpack_require__(851);
+var dialogservice_1 = __webpack_require__(854);
 //controllers
-var pagedialog_1 = __webpack_require__(850);
+var pagedialog_1 = __webpack_require__(853);
 var dialogmodule = angular.module('hibachi.dialog', []).config(function () {
 })
     //services
@@ -33751,7 +33764,7 @@ exports.dialogmodule = dialogmodule;
 
 
 /***/ }),
-/* 305 */
+/* 306 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33768,12 +33781,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // import {FormService} from "./services/formservice";
 // import {MetaDataService} from "./services/metadataservice";
 //controllers
-var otherwisecontroller_1 = __webpack_require__(855);
-var routercontroller_1 = __webpack_require__(856);
+var otherwisecontroller_1 = __webpack_require__(858);
+var routercontroller_1 = __webpack_require__(859);
 //directives
-var swdetailtabs_1 = __webpack_require__(853);
-var swdetail_1 = __webpack_require__(852);
-var swlist_1 = __webpack_require__(854);
+var swdetailtabs_1 = __webpack_require__(856);
+var swdetail_1 = __webpack_require__(855);
+var swlist_1 = __webpack_require__(857);
 var core_module_1 = __webpack_require__(6);
 var entitymodule = angular.module('hibachi.entity', ['ngRoute', core_module_1.coremodule.name])
     .config(['$routeProvider', '$injector', '$locationProvider', 'appConfig',
@@ -33831,7 +33844,7 @@ exports.entitymodule = entitymodule;
 
 
 /***/ }),
-/* 306 */
+/* 307 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34154,7 +34167,7 @@ exports.SWPropertyDisplay = SWPropertyDisplay;
 
 
 /***/ }),
-/* 307 */
+/* 308 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34163,21 +34176,21 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../typings/tsd.d.ts' />
 //services
-var workflowconditionservice_1 = __webpack_require__(931);
-var scheduleservice_1 = __webpack_require__(930);
+var workflowconditionservice_1 = __webpack_require__(934);
+var scheduleservice_1 = __webpack_require__(933);
 //directives
-var swadmincreatesuperuser_1 = __webpack_require__(918);
-var swworkflowbasic_1 = __webpack_require__(920);
-var swworkflowcondition_1 = __webpack_require__(921);
-var swworkflowconditiongroupitem_1 = __webpack_require__(922);
-var swworkflowconditiongroups_1 = __webpack_require__(923);
-var swworkflowtask_1 = __webpack_require__(924);
-var swworkflowtaskactions_1 = __webpack_require__(925);
-var swworkflowtasks_1 = __webpack_require__(926);
-var swworkflowtrigger_1 = __webpack_require__(927);
-var swworkflowtriggers_1 = __webpack_require__(929);
-var swworkflowtriggerhistory_1 = __webpack_require__(928);
-var swschedulepreview_1 = __webpack_require__(919);
+var swadmincreatesuperuser_1 = __webpack_require__(921);
+var swworkflowbasic_1 = __webpack_require__(923);
+var swworkflowcondition_1 = __webpack_require__(924);
+var swworkflowconditiongroupitem_1 = __webpack_require__(925);
+var swworkflowconditiongroups_1 = __webpack_require__(926);
+var swworkflowtask_1 = __webpack_require__(927);
+var swworkflowtaskactions_1 = __webpack_require__(928);
+var swworkflowtasks_1 = __webpack_require__(929);
+var swworkflowtrigger_1 = __webpack_require__(930);
+var swworkflowtriggers_1 = __webpack_require__(932);
+var swworkflowtriggerhistory_1 = __webpack_require__(931);
+var swschedulepreview_1 = __webpack_require__(922);
 //filters
 var workflowmodule = angular.module('hibachi.workflow', ['hibachi.collection']).config(function () {
 })
@@ -34203,7 +34216,7 @@ exports.workflowmodule = workflowmodule;
 
 
 /***/ }),
-/* 308 */
+/* 309 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34222,8 +34235,8 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 /*jshint browser:true */
-var basebootstrap_1 = __webpack_require__(720);
-var monatadmin_module_1 = __webpack_require__(712);
+var basebootstrap_1 = __webpack_require__(722);
+var monatadmin_module_1 = __webpack_require__(714);
 //custom bootstrapper
 var bootstrapper = /** @class */ (function (_super) {
     __extends(bootstrapper, _super);
@@ -34239,11 +34252,18 @@ module.exports = new bootstrapper();
 
 
 /***/ }),
-/* 309 */
+/* 310 */
+/***/ (function(module, exports) {
+
+!function(e){var n={};function o(t){if(n[t])return n[t].exports;var l=n[t]={i:t,l:!1,exports:{}};return e[t].call(l.exports,l,l.exports,o),l.l=!0,l.exports}o.m=e,o.c=n,o.d=function(e,n,t){o.o(e,n)||Object.defineProperty(e,n,{enumerable:!0,get:t})},o.r=function(e){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(e,"__esModule",{value:!0})},o.t=function(e,n){if(1&n&&(e=o(e)),8&n)return e;if(4&n&&"object"==typeof e&&e&&e.__esModule)return e;var t=Object.create(null);if(o.r(t),Object.defineProperty(t,"default",{enumerable:!0,value:e}),2&n&&"string"!=typeof e)for(var l in e)o.d(t,l,function(n){return e[n]}.bind(null,l));return t},o.n=function(e){var n=e&&e.__esModule?function(){return e.default}:function(){return e};return o.d(n,"a",n),n},o.o=function(e,n){return Object.prototype.hasOwnProperty.call(e,n)},o.p="",o(o.s=0)}([function(e,n,o){"use strict";angular.module("angularModalService",[]).provider("ModalService",function(){var e={closeDelay:0};this.configureOptions=function(n){angular.extend(e,n)},this.$get=["$animate","$document","$compile","$controller","$http","$rootScope","$q","$templateRequest","$timeout",function(n,o,t,l,r,c,i,s,u){return new function(e){var r=this;r.configOptions=e,r.openModals=[],r.closeModals=function(e,n){for(n=n||r.configOptions.closeDelay;r.openModals.length;)r.openModals[0].close(e,n),r.openModals.splice(0,1)};var a=function(e){e.controller=function(e){return["$scope","close",function(n,o){n.close=o,n.bindings=e.bindings}]}(e),e.template=function(e){var n=function(e){return e.replace(/([a-z0-9])([A-Z])/g,function(e,n,o){return[n,o].join("-").toLowerCase()})},o=n(e.component),t="<"+o+' close="close"',l=Object.keys(e.bindings||{});return l.length>0&&(t+=" "+l.map(function(e){return n(e)+'="bindings.'+e+'"'}).join(" ")),t+="></"+o+">"}(e)};r.showModal=function(e){e.component&&a(e);var p=angular.element(o[0].body),f=i.defer();return e.controller?(function(e,n){var o=i.defer();return e?o.resolve(e):n?s(n,!0).then(function(e){o.resolve(e)},function(e){o.reject(e)}):o.reject("No template or templateUrl has been specified."),o.promise}(e.template,e.templateUrl).then(function(s){var a={},d=(e.scope||c).$new(),m=null,g=e.locationChangeSuccess;!1===g?m=angular.noop:angular.isNumber(g)&&g>=0?u(function(){m=c.$on("$locationChangeSuccess",h.close)},g):u(function(){m=c.$on("$locationChangeSuccess",h.close)},r.configOptions.closeDelay);var v=i.defer(),b=i.defer(),y=!1,h={$scope:d,close:function(o,t){y||(y=!0,t=t||r.configOptions.closeDelay,"function"==typeof e.preClose&&e.preClose(a,o,t),void 0!==t&&null!==t||(t=0),u(function(){!function(o){v.resolve(o),e.bodyClass&&p[0].classList.remove(e.bodyClass),n.leave($).then(function(){if($){b.resolve(o),d.$destroy();for(var e=0;e<r.openModals.length;e++)if(r.openModals[e].modal===a){r.openModals.splice(e,1);break}h.close=null,f=null,v=null,a=null,h=null,$=null,d=null}}),m&&m()}(o)},t))}};e.inputs&&angular.extend(h,e.inputs);var $=t(s)(d);h.$element=$;var M=d[e.controllerAs],j=l(e.controller,h,!1,e.controllerAs);e.controllerAs&&M&&angular.extend(j,M);var O=p;angular.isString(e.appendElement)?O=angular.element(o[0].querySelector(e.appendElement)):e.appendElement&&(O=e.appendElement),function(e,o){var t=e.children();t.length>0?n.enter(o,e,t[t.length-1]):n.enter(o,e)}(O,$),e.bodyClass&&p[0].classList.add(e.bodyClass),a.controller=j,a.scope=d,a.element=$,a.close=v.promise,a.closed=b.promise,angular.isFunction(a.controller.$onInit)&&a.controller.$onInit(),f.resolve(a),document.activeElement.blur(),r.openModals.push({modal:a,close:h.close})}).then(null,function(e){f.reject(e)}),f.promise):(f.reject("No controller has been specified."),f.promise)}}(e)}]})}]);
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIndlYnBhY2s6Ly8vd2VicGFjay9ib290c3RyYXAiLCJ3ZWJwYWNrOi8vLy4vc3JjL2FuZ3VsYXItbW9kYWwtc2VydmljZS5qcyJdLCJuYW1lcyI6WyJpbnN0YWxsZWRNb2R1bGVzIiwiX193ZWJwYWNrX3JlcXVpcmVfXyIsIm1vZHVsZUlkIiwiZXhwb3J0cyIsIm1vZHVsZSIsImkiLCJsIiwibW9kdWxlcyIsImNhbGwiLCJtIiwiYyIsImQiLCJuYW1lIiwiZ2V0dGVyIiwibyIsIk9iamVjdCIsImRlZmluZVByb3BlcnR5IiwiZW51bWVyYWJsZSIsImdldCIsInIiLCJTeW1ib2wiLCJ0b1N0cmluZ1RhZyIsInZhbHVlIiwidCIsIm1vZGUiLCJfX2VzTW9kdWxlIiwibnMiLCJjcmVhdGUiLCJrZXkiLCJiaW5kIiwibiIsIm9iamVjdCIsInByb3BlcnR5IiwicHJvdG90eXBlIiwiaGFzT3duUHJvcGVydHkiLCJwIiwicyIsImFuZ3VsYXIiLCJwcm92aWRlciIsIl9vcHRpb25zIiwiY2xvc2VEZWxheSIsInRoaXMiLCJjb25maWd1cmVPcHRpb25zIiwiY29uZmlnIiwiZXh0ZW5kIiwiJGdldCIsIiRhbmltYXRlIiwiJGRvY3VtZW50IiwiJGNvbXBpbGUiLCIkY29udHJvbGxlciIsIiRodHRwIiwiJHJvb3RTY29wZSIsIiRxIiwiJHRlbXBsYXRlUmVxdWVzdCIsIiR0aW1lb3V0IiwiY29uZmlnT3B0aW9ucyIsInNlbGYiLCJvcGVuTW9kYWxzIiwiY2xvc2VNb2RhbHMiLCJyZXN1bHQiLCJkZWxheSIsImxlbmd0aCIsImNsb3NlIiwic3BsaWNlIiwic2V0dXBDb21wb25lbnRPcHRpb25zIiwib3B0aW9ucyIsImNvbnRyb2xsZXIiLCIkc2NvcGUiLCJiaW5kaW5ncyIsImJ1aWxkQ29tcG9uZW50Q29udHJvbGxlciIsInRlbXBsYXRlIiwia2ViYWJDYXNlIiwiY2FtZWxDYXNlIiwicmVwbGFjZSIsIl9tIiwiYzEiLCJjMiIsImpvaW4iLCJ0b0xvd2VyQ2FzZSIsImNvbXBvbmVudEhhbmRsZSIsImNvbXBvbmVudCIsImlucHV0S2V5cyIsImtleXMiLCJtYXAiLCJpbnB1dEtleSIsImJ1aWxkQ29tcG9uZW50VGVtcGxhdGUiLCJzaG93TW9kYWwiLCJib2R5IiwiZWxlbWVudCIsImRlZmVycmVkIiwiZGVmZXIiLCJ0ZW1wbGF0ZVVybCIsInJlc29sdmUiLCJ0aGVuIiwiZXJyb3IiLCJyZWplY3QiLCJwcm9taXNlIiwiZ2V0VGVtcGxhdGUiLCJtb2RhbCIsIm1vZGFsU2NvcGUiLCJzY29wZSIsIiRuZXciLCJyb290U2NvcGVPbkNsb3NlIiwibG9jYXRpb25DaGFuZ2VTdWNjZXNzIiwibm9vcCIsImlzTnVtYmVyIiwiJG9uIiwiaW5wdXRzIiwiY2xvc2VEZWZlcnJlZCIsImNsb3NlZERlZmVycmVkIiwiaGFzQWxyZWFkeUJlZW5DbG9zZWQiLCJwcmVDbG9zZSIsInVuZGVmaW5lZCIsImJvZHlDbGFzcyIsImNsYXNzTGlzdCIsInJlbW92ZSIsImxlYXZlIiwibW9kYWxFbGVtZW50IiwiJGRlc3Ryb3kiLCJjbGVhblVwQ2xvc2UiLCJsaW5rRm4iLCIkZWxlbWVudCIsImNvbnRyb2xsZXJPYmpCZWZvcmUiLCJjb250cm9sbGVyQXMiLCJtb2RhbENvbnRyb2xsZXIiLCJhcHBlbmRUYXJnZXQiLCJpc1N0cmluZyIsImFwcGVuZEVsZW1lbnQiLCJxdWVyeVNlbGVjdG9yIiwicGFyZW50IiwiY2hpbGQiLCJjaGlsZHJlbiIsImVudGVyIiwiYXBwZW5kQ2hpbGQiLCJhZGQiLCJjbG9zZWQiLCJpc0Z1bmN0aW9uIiwiJG9uSW5pdCIsImRvY3VtZW50IiwiYWN0aXZlRWxlbWVudCIsImJsdXIiLCJwdXNoIl0sIm1hcHBpbmdzIjoiYUFDQSxJQUFBQSxLQUdBLFNBQUFDLEVBQUFDLEdBR0EsR0FBQUYsRUFBQUUsR0FDQSxPQUFBRixFQUFBRSxHQUFBQyxRQUdBLElBQUFDLEVBQUFKLEVBQUFFLElBQ0FHLEVBQUFILEVBQ0FJLEdBQUEsRUFDQUgsWUFVQSxPQU5BSSxFQUFBTCxHQUFBTSxLQUFBSixFQUFBRCxRQUFBQyxJQUFBRCxRQUFBRixHQUdBRyxFQUFBRSxHQUFBLEVBR0FGLEVBQUFELFFBS0FGLEVBQUFRLEVBQUFGLEVBR0FOLEVBQUFTLEVBQUFWLEVBR0FDLEVBQUFVLEVBQUEsU0FBQVIsRUFBQVMsRUFBQUMsR0FDQVosRUFBQWEsRUFBQVgsRUFBQVMsSUFDQUcsT0FBQUMsZUFBQWIsRUFBQVMsR0FBMENLLFlBQUEsRUFBQUMsSUFBQUwsS0FLMUNaLEVBQUFrQixFQUFBLFNBQUFoQixHQUNBLG9CQUFBaUIsZUFBQUMsYUFDQU4sT0FBQUMsZUFBQWIsRUFBQWlCLE9BQUFDLGFBQXdEQyxNQUFBLFdBRXhEUCxPQUFBQyxlQUFBYixFQUFBLGNBQWlEbUIsT0FBQSxLQVFqRHJCLEVBQUFzQixFQUFBLFNBQUFELEVBQUFFLEdBRUEsR0FEQSxFQUFBQSxJQUFBRixFQUFBckIsRUFBQXFCLElBQ0EsRUFBQUUsRUFBQSxPQUFBRixFQUNBLEtBQUFFLEdBQUEsaUJBQUFGLFFBQUFHLFdBQUEsT0FBQUgsRUFDQSxJQUFBSSxFQUFBWCxPQUFBWSxPQUFBLE1BR0EsR0FGQTFCLEVBQUFrQixFQUFBTyxHQUNBWCxPQUFBQyxlQUFBVSxFQUFBLFdBQXlDVCxZQUFBLEVBQUFLLFVBQ3pDLEVBQUFFLEdBQUEsaUJBQUFGLEVBQUEsUUFBQU0sS0FBQU4sRUFBQXJCLEVBQUFVLEVBQUFlLEVBQUFFLEVBQUEsU0FBQUEsR0FBZ0gsT0FBQU4sRUFBQU0sSUFBcUJDLEtBQUEsS0FBQUQsSUFDckksT0FBQUYsR0FJQXpCLEVBQUE2QixFQUFBLFNBQUExQixHQUNBLElBQUFTLEVBQUFULEtBQUFxQixXQUNBLFdBQTJCLE9BQUFyQixFQUFBLFNBQzNCLFdBQWlDLE9BQUFBLEdBRWpDLE9BREFILEVBQUFVLEVBQUFFLEVBQUEsSUFBQUEsR0FDQUEsR0FJQVosRUFBQWEsRUFBQSxTQUFBaUIsRUFBQUMsR0FBc0QsT0FBQWpCLE9BQUFrQixVQUFBQyxlQUFBMUIsS0FBQXVCLEVBQUFDLElBR3REL0IsRUFBQWtDLEVBQUEsR0FJQWxDLElBQUFtQyxFQUFBLGtDQ2hGYUMsUUFBUWpDLE9BQU8sMEJBRXJCa0MsU0FBUyxlQUFnQixXQUM1QixJQUFJQyxHQUNBQyxXQUFZLEdBR2hCQyxLQUFLQyxpQkFBbUIsU0FBVUMsR0FDOUJOLFFBQVFPLE9BQU9MLEVBQVVJLElBRTdCRixLQUFLSSxNQUFRLFdBQVksWUFBYSxXQUFZLGNBQWUsUUFBUyxhQUFjLEtBQU0sbUJBQW9CLFdBQzlHLFNBQVVDLEVBQVVDLEVBQVdDLEVBQVVDLEVBQWFDLEVBQU9DLEVBQVlDLEVBQUlDLEVBQWtCQyxHQStTM0YsT0FBTyxJQTdTUCxTQUFzQkMsR0FFbEIsSUFBSUMsRUFBT2YsS0FHWGUsRUFBS0QsY0FBZ0JBLEVBR3JCQyxFQUFLQyxjQWtDTEQsRUFBS0UsWUFBYyxTQUFVQyxFQUFRQyxHQUVqQyxJQURBQSxFQUFRQSxHQUFTSixFQUFLRCxjQUFjZixXQUM3QmdCLEVBQUtDLFdBQVdJLFFBQ25CTCxFQUFLQyxXQUFXLEdBQUdLLE1BQU1ILEVBQVFDLEdBQ2pDSixFQUFLQyxXQUFXTSxPQUFPLEVBQUcsSUFPbEMsSUE0Q0lDLEVBQXdCLFNBQVNDLEdBQ25DQSxFQUFRQyxXQTdDcUIsU0FBU0QsR0FDdEMsT0FBUSxTQUFVLFFBQVMsU0FBU0UsRUFBUUwsR0FDMUNLLEVBQU9MLE1BQVFBLEVBQ2ZLLEVBQU9DLFNBQVdILEVBQVFHLFdBMENQQyxDQUF5QkosR0FDOUNBLEVBQVFLLFNBdEJtQixTQUFTTCxHQUNwQyxJQUFJTSxFQUFZLFNBQVNDLEdBRXZCLE9BQU9BLEVBQVVDLFFBQVEscUJBRFosU0FBU0MsRUFBSUMsRUFBSUMsR0FBTSxPQUFRRCxFQUFJQyxHQUFJQyxLQUFLLEtBQUtDLGlCQUk1REMsRUFBa0JSLEVBQVVOLEVBQVFlLFdBQ3BDVixFQUFXLElBQU1TLEVBQWtCLGlCQUNuQ0UsRUFBWWxFLE9BQU9tRSxLQUFLakIsRUFBUUcsY0FTcEMsT0FSSWEsRUFBVXBCLE9BQVMsSUFJckJTLEdBQVksSUFIWVcsRUFBVUUsSUFBSSxTQUFTQyxHQUM3QyxPQUFPYixFQUFVYSxHQUFZLGNBQWdCQSxFQUFXLE1BRXRCUCxLQUFLLE1BRTNDUCxHQUFZLE1BQVFTLEVBQWtCLElBT25CTSxDQUF1QnBCLElBRzVDVCxFQUFLOEIsVUFBWSxTQUFVckIsR0FDbkJBLEVBQVFlLFdBQ1ZoQixFQUFzQkMsR0FJeEIsSUFBSXNCLEVBQU9sRCxRQUFRbUQsUUFBUXpDLEVBQVUsR0FBR3dDLE1BR3BDRSxFQUFXckMsRUFBR3NDLFFBSWxCLE9BRHFCekIsRUFBUUMsWUFyR2YsU0FBVUksRUFBVXFCLEdBQ2xDLElBQUlGLEVBQVdyQyxFQUFHc0MsUUFhbEIsT0FaSXBCLEVBQ0FtQixFQUFTRyxRQUFRdEIsR0FDVnFCLEVBQ1B0QyxFQUFpQnNDLEdBQWEsR0FDekJFLEtBQUssU0FBVXZCLEdBQ1ptQixFQUFTRyxRQUFRdEIsSUFDbEIsU0FBVXdCLEdBQ1RMLEVBQVNNLE9BQU9ELEtBR3hCTCxFQUFTTSxPQUFPLGtEQUViTixFQUFTTyxRQThGaEJDLENBQVloQyxFQUFRSyxTQUFVTCxFQUFRMEIsYUFDakNFLEtBQUssU0FBVXZCLEdBR1osSUFBSTRCLEtBR0FDLEdBQWNsQyxFQUFRbUMsT0FBU2pELEdBQVlrRCxPQUMzQ0MsRUFBbUIsS0FDbkJDLEVBQXdCdEMsRUFBUXNDLHVCQU1OLElBQTFCQSxFQUNBRCxFQUFtQmpFLFFBQVFtRSxLQUV0Qm5FLFFBQVFvRSxTQUFTRixJQUEwQkEsR0FBeUIsRUFDekVqRCxFQUFTLFdBQ0xnRCxFQUFtQm5ELEVBQVd1RCxJQUFJLHlCQUEwQkMsRUFBTzdDLFFBQ3BFeUMsR0FHSGpELEVBQVMsV0FDTGdELEVBQW1CbkQsRUFBV3VELElBQUkseUJBQTBCQyxFQUFPN0MsUUFDcEVOLEVBQUtELGNBQWNmLFlBVTFCLElBQUlvRSxFQUFnQnhELEVBQUdzQyxRQUNuQm1CLEVBQWlCekQsRUFBR3NDLFFBQ3BCb0IsR0FBdUIsRUFFdkJILEdBQ0F4QyxPQUFRZ0MsRUFDUnJDLE1BQU8sU0FBVUgsRUFBUUMsR0FDakJrRCxJQUdKQSxHQUF1QixFQUV2QmxELEVBQVFBLEdBQVNKLEVBQUtELGNBQWNmLFdBRUosbUJBQXJCeUIsRUFBUThDLFVBQXlCOUMsRUFBUThDLFNBQVNiLEVBQU92QyxFQUFRQyxRQUU5RG9ELElBQVZwRCxHQUFpQyxPQUFWQSxJQUFnQkEsRUFBUSxHQUVuRE4sRUFBUyxZQW9FakIsU0FBc0JLLEdBR2xCaUQsRUFBY2hCLFFBQVFqQyxHQUdsQk0sRUFBUWdELFdBQ1IxQixFQUFLLEdBQUcyQixVQUFVQyxPQUFPbEQsRUFBUWdELFdBSXJDbkUsRUFBU3NFLE1BQU1DLEdBQ1Z4QixLQUFLLFdBRUYsR0FBS3dCLEVBQUwsQ0FLQVIsRUFBZWpCLFFBQVFqQyxHQUd2QndDLEVBQVdtQixXQUdYLElBQUssSUFBSWpILEVBQUksRUFBR0EsRUFBSW1ELEVBQUtDLFdBQVdJLE9BQVF4RCxJQUN4QyxHQUFJbUQsRUFBS0MsV0FBV3BELEdBQUc2RixRQUFVQSxFQUFPLENBQ3BDMUMsRUFBS0MsV0FBV00sT0FBTzFELEVBQUcsR0FDMUIsTUFPUnNHLEVBQU83QyxNQUFRLEtBQ2YyQixFQUFXLEtBQ1htQixFQUFnQixLQUNoQlYsRUFBUSxLQUNSUyxFQUFTLEtBQ1RVLEVBQWUsS0FDZmxCLEVBQWEsUUFJckJHLEdBQW9CQSxJQS9HWmlCLENBQWE1RCxJQUVkQyxNQUtQSyxFQUFRMEMsUUFBUXRFLFFBQVFPLE9BQU8rRCxFQUFRMUMsRUFBUTBDLFFBSW5ELElBQ0lVLEVBRFNyRSxFQUFTc0IsRUFDSGtELENBQU9yQixHQUMxQlEsRUFBT2MsU0FBV0osRUFHbEIsSUFBSUssRUFBc0J2QixFQUFXbEMsRUFBUTBELGNBQ3pDQyxFQUFrQjNFLEVBQVlnQixFQUFRQyxXQUFZeUMsR0FBUSxFQUFPMUMsRUFBUTBELGNBRXpFMUQsRUFBUTBELGNBQWdCRCxHQUN4QnJGLFFBQVFPLE9BQU9nRixFQUFpQkYsR0FJcEMsSUFBSUcsRUFBZXRDLEVBQ2ZsRCxRQUFReUYsU0FBUzdELEVBQVE4RCxlQUd6QkYsRUFBZXhGLFFBQVFtRCxRQUFRekMsRUFBVSxHQUFHaUYsY0FBYy9ELEVBQVE4RCxnQkFFM0Q5RCxFQUFROEQsZ0JBRWZGLEVBQWU1RCxFQUFROEQsZUFoTHJCLFNBQVVFLEVBQVFDLEdBQ2hDLElBQUlDLEVBQVdGLEVBQU9FLFdBQ2xCQSxFQUFTdEUsT0FBUyxFQUNYZixFQUFTc0YsTUFBTUYsRUFBT0QsRUFBUUUsRUFBU0EsRUFBU3RFLE9BQVMsSUFFN0RmLEVBQVNzRixNQUFNRixFQUFPRCxHQThLckJJLENBQVlSLEVBQWNSLEdBR3RCcEQsRUFBUWdELFdBQ1IxQixFQUFLLEdBQUcyQixVQUFVb0IsSUFBSXJFLEVBQVFnRCxXQUlsQ2YsRUFBTWhDLFdBQWEwRCxFQUNuQjFCLEVBQU1FLE1BQVFELEVBQ2RELEVBQU1WLFFBQVU2QixFQUNoQm5CLEVBQU1wQyxNQUFROEMsRUFBY1osUUFDNUJFLEVBQU1xQyxPQUFTMUIsRUFBZWIsUUFNMUIzRCxRQUFRbUcsV0FBV3RDLEVBQU1oQyxXQUFXdUUsVUFDcEN2QyxFQUFNaEMsV0FBV3VFLFVBSXJCaEQsRUFBU0csUUFBUU0sR0FHakJ3QyxTQUFTQyxjQUFjQyxPQUd2QnBGLEVBQUtDLFdBQVdvRixNQUFNM0MsTUFBT0EsRUFBT3BDLE1BQU82QyxFQUFPN0MsVUFtRHJEK0IsS0FBSyxLQUFNLFNBQVVDLEdBQ2xCTCxFQUFTTSxPQUFPRCxLQUdqQkwsRUFBU08sVUFwTFpQLEVBQVNNLE9BQU8scUNBQ1ROLEVBQVNPLFVBd0xyQixDQUFpQnpEIiwiZmlsZSI6ImFuZ3VsYXItbW9kYWwtc2VydmljZS5qcyIsInNvdXJjZXNDb250ZW50IjpbIiBcdC8vIFRoZSBtb2R1bGUgY2FjaGVcbiBcdHZhciBpbnN0YWxsZWRNb2R1bGVzID0ge307XG5cbiBcdC8vIFRoZSByZXF1aXJlIGZ1bmN0aW9uXG4gXHRmdW5jdGlvbiBfX3dlYnBhY2tfcmVxdWlyZV9fKG1vZHVsZUlkKSB7XG5cbiBcdFx0Ly8gQ2hlY2sgaWYgbW9kdWxlIGlzIGluIGNhY2hlXG4gXHRcdGlmKGluc3RhbGxlZE1vZHVsZXNbbW9kdWxlSWRdKSB7XG4gXHRcdFx0cmV0dXJuIGluc3RhbGxlZE1vZHVsZXNbbW9kdWxlSWRdLmV4cG9ydHM7XG4gXHRcdH1cbiBcdFx0Ly8gQ3JlYXRlIGEgbmV3IG1vZHVsZSAoYW5kIHB1dCBpdCBpbnRvIHRoZSBjYWNoZSlcbiBcdFx0dmFyIG1vZHVsZSA9IGluc3RhbGxlZE1vZHVsZXNbbW9kdWxlSWRdID0ge1xuIFx0XHRcdGk6IG1vZHVsZUlkLFxuIFx0XHRcdGw6IGZhbHNlLFxuIFx0XHRcdGV4cG9ydHM6IHt9XG4gXHRcdH07XG5cbiBcdFx0Ly8gRXhlY3V0ZSB0aGUgbW9kdWxlIGZ1bmN0aW9uXG4gXHRcdG1vZHVsZXNbbW9kdWxlSWRdLmNhbGwobW9kdWxlLmV4cG9ydHMsIG1vZHVsZSwgbW9kdWxlLmV4cG9ydHMsIF9fd2VicGFja19yZXF1aXJlX18pO1xuXG4gXHRcdC8vIEZsYWcgdGhlIG1vZHVsZSBhcyBsb2FkZWRcbiBcdFx0bW9kdWxlLmwgPSB0cnVlO1xuXG4gXHRcdC8vIFJldHVybiB0aGUgZXhwb3J0cyBvZiB0aGUgbW9kdWxlXG4gXHRcdHJldHVybiBtb2R1bGUuZXhwb3J0cztcbiBcdH1cblxuXG4gXHQvLyBleHBvc2UgdGhlIG1vZHVsZXMgb2JqZWN0IChfX3dlYnBhY2tfbW9kdWxlc19fKVxuIFx0X193ZWJwYWNrX3JlcXVpcmVfXy5tID0gbW9kdWxlcztcblxuIFx0Ly8gZXhwb3NlIHRoZSBtb2R1bGUgY2FjaGVcbiBcdF9fd2VicGFja19yZXF1aXJlX18uYyA9IGluc3RhbGxlZE1vZHVsZXM7XG5cbiBcdC8vIGRlZmluZSBnZXR0ZXIgZnVuY3Rpb24gZm9yIGhhcm1vbnkgZXhwb3J0c1xuIFx0X193ZWJwYWNrX3JlcXVpcmVfXy5kID0gZnVuY3Rpb24oZXhwb3J0cywgbmFtZSwgZ2V0dGVyKSB7XG4gXHRcdGlmKCFfX3dlYnBhY2tfcmVxdWlyZV9fLm8oZXhwb3J0cywgbmFtZSkpIHtcbiBcdFx0XHRPYmplY3QuZGVmaW5lUHJvcGVydHkoZXhwb3J0cywgbmFtZSwgeyBlbnVtZXJhYmxlOiB0cnVlLCBnZXQ6IGdldHRlciB9KTtcbiBcdFx0fVxuIFx0fTtcblxuIFx0Ly8gZGVmaW5lIF9fZXNNb2R1bGUgb24gZXhwb3J0c1xuIFx0X193ZWJwYWNrX3JlcXVpcmVfXy5yID0gZnVuY3Rpb24oZXhwb3J0cykge1xuIFx0XHRpZih0eXBlb2YgU3ltYm9sICE9PSAndW5kZWZpbmVkJyAmJiBTeW1ib2wudG9TdHJpbmdUYWcpIHtcbiBcdFx0XHRPYmplY3QuZGVmaW5lUHJvcGVydHkoZXhwb3J0cywgU3ltYm9sLnRvU3RyaW5nVGFnLCB7IHZhbHVlOiAnTW9kdWxlJyB9KTtcbiBcdFx0fVxuIFx0XHRPYmplY3QuZGVmaW5lUHJvcGVydHkoZXhwb3J0cywgJ19fZXNNb2R1bGUnLCB7IHZhbHVlOiB0cnVlIH0pO1xuIFx0fTtcblxuIFx0Ly8gY3JlYXRlIGEgZmFrZSBuYW1lc3BhY2Ugb2JqZWN0XG4gXHQvLyBtb2RlICYgMTogdmFsdWUgaXMgYSBtb2R1bGUgaWQsIHJlcXVpcmUgaXRcbiBcdC8vIG1vZGUgJiAyOiBtZXJnZSBhbGwgcHJvcGVydGllcyBvZiB2YWx1ZSBpbnRvIHRoZSBuc1xuIFx0Ly8gbW9kZSAmIDQ6IHJldHVybiB2YWx1ZSB3aGVuIGFscmVhZHkgbnMgb2JqZWN0XG4gXHQvLyBtb2RlICYgOHwxOiBiZWhhdmUgbGlrZSByZXF1aXJlXG4gXHRfX3dlYnBhY2tfcmVxdWlyZV9fLnQgPSBmdW5jdGlvbih2YWx1ZSwgbW9kZSkge1xuIFx0XHRpZihtb2RlICYgMSkgdmFsdWUgPSBfX3dlYnBhY2tfcmVxdWlyZV9fKHZhbHVlKTtcbiBcdFx0aWYobW9kZSAmIDgpIHJldHVybiB2YWx1ZTtcbiBcdFx0aWYoKG1vZGUgJiA0KSAmJiB0eXBlb2YgdmFsdWUgPT09ICdvYmplY3QnICYmIHZhbHVlICYmIHZhbHVlLl9fZXNNb2R1bGUpIHJldHVybiB2YWx1ZTtcbiBcdFx0dmFyIG5zID0gT2JqZWN0LmNyZWF0ZShudWxsKTtcbiBcdFx0X193ZWJwYWNrX3JlcXVpcmVfXy5yKG5zKTtcbiBcdFx0T2JqZWN0LmRlZmluZVByb3BlcnR5KG5zLCAnZGVmYXVsdCcsIHsgZW51bWVyYWJsZTogdHJ1ZSwgdmFsdWU6IHZhbHVlIH0pO1xuIFx0XHRpZihtb2RlICYgMiAmJiB0eXBlb2YgdmFsdWUgIT0gJ3N0cmluZycpIGZvcih2YXIga2V5IGluIHZhbHVlKSBfX3dlYnBhY2tfcmVxdWlyZV9fLmQobnMsIGtleSwgZnVuY3Rpb24oa2V5KSB7IHJldHVybiB2YWx1ZVtrZXldOyB9LmJpbmQobnVsbCwga2V5KSk7XG4gXHRcdHJldHVybiBucztcbiBcdH07XG5cbiBcdC8vIGdldERlZmF1bHRFeHBvcnQgZnVuY3Rpb24gZm9yIGNvbXBhdGliaWxpdHkgd2l0aCBub24taGFybW9ueSBtb2R1bGVzXG4gXHRfX3dlYnBhY2tfcmVxdWlyZV9fLm4gPSBmdW5jdGlvbihtb2R1bGUpIHtcbiBcdFx0dmFyIGdldHRlciA9IG1vZHVsZSAmJiBtb2R1bGUuX19lc01vZHVsZSA/XG4gXHRcdFx0ZnVuY3Rpb24gZ2V0RGVmYXVsdCgpIHsgcmV0dXJuIG1vZHVsZVsnZGVmYXVsdCddOyB9IDpcbiBcdFx0XHRmdW5jdGlvbiBnZXRNb2R1bGVFeHBvcnRzKCkgeyByZXR1cm4gbW9kdWxlOyB9O1xuIFx0XHRfX3dlYnBhY2tfcmVxdWlyZV9fLmQoZ2V0dGVyLCAnYScsIGdldHRlcik7XG4gXHRcdHJldHVybiBnZXR0ZXI7XG4gXHR9O1xuXG4gXHQvLyBPYmplY3QucHJvdG90eXBlLmhhc093blByb3BlcnR5LmNhbGxcbiBcdF9fd2VicGFja19yZXF1aXJlX18ubyA9IGZ1bmN0aW9uKG9iamVjdCwgcHJvcGVydHkpIHsgcmV0dXJuIE9iamVjdC5wcm90b3R5cGUuaGFzT3duUHJvcGVydHkuY2FsbChvYmplY3QsIHByb3BlcnR5KTsgfTtcblxuIFx0Ly8gX193ZWJwYWNrX3B1YmxpY19wYXRoX19cbiBcdF9fd2VicGFja19yZXF1aXJlX18ucCA9IFwiXCI7XG5cblxuIFx0Ly8gTG9hZCBlbnRyeSBtb2R1bGUgYW5kIHJldHVybiBleHBvcnRzXG4gXHRyZXR1cm4gX193ZWJwYWNrX3JlcXVpcmVfXyhfX3dlYnBhY2tfcmVxdWlyZV9fLnMgPSAwKTtcbiIsIid1c2Ugc3RyaWN0JztcblxudmFyIG1vZHVsZSA9IGFuZ3VsYXIubW9kdWxlKCdhbmd1bGFyTW9kYWxTZXJ2aWNlJywgW10pO1xuXG5tb2R1bGUucHJvdmlkZXIoJ01vZGFsU2VydmljZScsIGZ1bmN0aW9uIE1vZGFsU2VydmljZVByb3ZpZGVyKCkge1xuICAgIHZhciBfb3B0aW9ucyA9IHtcbiAgICAgICAgY2xvc2VEZWxheTogMFxuICAgIH07XG5cbiAgICB0aGlzLmNvbmZpZ3VyZU9wdGlvbnMgPSBmdW5jdGlvbiAoY29uZmlnKSB7XG4gICAgICAgIGFuZ3VsYXIuZXh0ZW5kKF9vcHRpb25zLCBjb25maWcpO1xuICAgIH07XG4gICAgdGhpcy4kZ2V0ID0gWyckYW5pbWF0ZScsICckZG9jdW1lbnQnLCAnJGNvbXBpbGUnLCAnJGNvbnRyb2xsZXInLCAnJGh0dHAnLCAnJHJvb3RTY29wZScsICckcScsICckdGVtcGxhdGVSZXF1ZXN0JywgJyR0aW1lb3V0JyxcbiAgICAgICAgZnVuY3Rpb24gKCRhbmltYXRlLCAkZG9jdW1lbnQsICRjb21waWxlLCAkY29udHJvbGxlciwgJGh0dHAsICRyb290U2NvcGUsICRxLCAkdGVtcGxhdGVSZXF1ZXN0LCAkdGltZW91dCkge1xuXG4gICAgICAgICAgICBmdW5jdGlvbiBNb2RhbFNlcnZpY2UoY29uZmlnT3B0aW9ucykge1xuXG4gICAgICAgICAgICAgICAgdmFyIHNlbGYgPSB0aGlzO1xuXG4gICAgICAgICAgICAgICAgLy9zdGFzaCBjb25maWdPcHRpb25zXG4gICAgICAgICAgICAgICAgc2VsZi5jb25maWdPcHRpb25zID0gY29uZmlnT3B0aW9ucztcblxuICAgICAgICAgICAgICAgIC8vICBUcmFjayBvcGVuIG1vZGFscy5cbiAgICAgICAgICAgICAgICBzZWxmLm9wZW5Nb2RhbHMgPSBbXTtcblxuICAgICAgICAgICAgICAgIC8vICBSZXR1cm5zIGEgcHJvbWlzZSB3aGljaCBnZXRzIHRoZSB0ZW1wbGF0ZSwgZWl0aGVyXG4gICAgICAgICAgICAgICAgLy8gIGZyb20gdGhlIHRlbXBsYXRlIHBhcmFtZXRlciBvciB2aWEgYSByZXF1ZXN0IHRvIHRoZVxuICAgICAgICAgICAgICAgIC8vICB0ZW1wbGF0ZSB1cmwgcGFyYW1ldGVyLlxuICAgICAgICAgICAgICAgIHZhciBnZXRUZW1wbGF0ZSA9IGZ1bmN0aW9uICh0ZW1wbGF0ZSwgdGVtcGxhdGVVcmwpIHtcbiAgICAgICAgICAgICAgICAgICAgdmFyIGRlZmVycmVkID0gJHEuZGVmZXIoKTtcbiAgICAgICAgICAgICAgICAgICAgaWYgKHRlbXBsYXRlKSB7XG4gICAgICAgICAgICAgICAgICAgICAgICBkZWZlcnJlZC5yZXNvbHZlKHRlbXBsYXRlKTtcbiAgICAgICAgICAgICAgICAgICAgfSBlbHNlIGlmICh0ZW1wbGF0ZVVybCkge1xuICAgICAgICAgICAgICAgICAgICAgICAgJHRlbXBsYXRlUmVxdWVzdCh0ZW1wbGF0ZVVybCwgdHJ1ZSlcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAudGhlbihmdW5jdGlvbiAodGVtcGxhdGUpIHtcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZGVmZXJyZWQucmVzb2x2ZSh0ZW1wbGF0ZSk7XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgfSwgZnVuY3Rpb24gKGVycm9yKSB7XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGRlZmVycmVkLnJlamVjdChlcnJvcik7XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgfSk7XG4gICAgICAgICAgICAgICAgICAgIH0gZWxzZSB7XG4gICAgICAgICAgICAgICAgICAgICAgICBkZWZlcnJlZC5yZWplY3QoXCJObyB0ZW1wbGF0ZSBvciB0ZW1wbGF0ZVVybCBoYXMgYmVlbiBzcGVjaWZpZWQuXCIpO1xuICAgICAgICAgICAgICAgICAgICB9XG4gICAgICAgICAgICAgICAgICAgIHJldHVybiBkZWZlcnJlZC5wcm9taXNlO1xuICAgICAgICAgICAgICAgIH07XG5cbiAgICAgICAgICAgICAgICAvLyAgQWRkcyBhbiBlbGVtZW50IHRvIHRoZSBET00gYXMgdGhlIGxhc3QgY2hpbGQgb2YgaXRzIGNvbnRhaW5lclxuICAgICAgICAgICAgICAgIC8vICBsaWtlIGFwcGVuZCwgYnV0IHVzZXMgJGFuaW1hdGUgdG8gaGFuZGxlIGFuaW1hdGlvbnMuIFJldHVybnMgYVxuICAgICAgICAgICAgICAgIC8vICBwcm9taXNlIHRoYXQgaXMgcmVzb2x2ZWQgb25jZSBhbGwgYW5pbWF0aW9uIGlzIGNvbXBsZXRlLlxuICAgICAgICAgICAgICAgIHZhciBhcHBlbmRDaGlsZCA9IGZ1bmN0aW9uIChwYXJlbnQsIGNoaWxkKSB7XG4gICAgICAgICAgICAgICAgICAgIHZhciBjaGlsZHJlbiA9IHBhcmVudC5jaGlsZHJlbigpO1xuICAgICAgICAgICAgICAgICAgICBpZiAoY2hpbGRyZW4ubGVuZ3RoID4gMCkge1xuICAgICAgICAgICAgICAgICAgICAgICAgcmV0dXJuICRhbmltYXRlLmVudGVyKGNoaWxkLCBwYXJlbnQsIGNoaWxkcmVuW2NoaWxkcmVuLmxlbmd0aCAtIDFdKTtcbiAgICAgICAgICAgICAgICAgICAgfVxuICAgICAgICAgICAgICAgICAgICByZXR1cm4gJGFuaW1hdGUuZW50ZXIoY2hpbGQsIHBhcmVudCk7XG4gICAgICAgICAgICAgICAgfTtcblxuICAgICAgICAgICAgICAgIC8vICBDbG9zZSBhbGwgbW9kYWxzLCBwcm92aWRpbmcgdGhlIGdpdmVuIHJlc3VsdCB0byB0aGUgY2xvc2UgcHJvbWlzZS5cbiAgICAgICAgICAgICAgICBzZWxmLmNsb3NlTW9kYWxzID0gZnVuY3Rpb24gKHJlc3VsdCwgZGVsYXkpIHtcbiAgICAgICAgICAgICAgICAgICAgZGVsYXkgPSBkZWxheSB8fCBzZWxmLmNvbmZpZ09wdGlvbnMuY2xvc2VEZWxheTtcbiAgICAgICAgICAgICAgICAgICAgd2hpbGUgKHNlbGYub3Blbk1vZGFscy5sZW5ndGgpIHtcbiAgICAgICAgICAgICAgICAgICAgICAgIHNlbGYub3Blbk1vZGFsc1swXS5jbG9zZShyZXN1bHQsIGRlbGF5KTtcbiAgICAgICAgICAgICAgICAgICAgICAgIHNlbGYub3Blbk1vZGFscy5zcGxpY2UoMCwgMSk7XG4gICAgICAgICAgICAgICAgICAgIH1cbiAgICAgICAgICAgICAgICB9O1xuXG4gICAgICAgICAgICAgICAgLypcbiAgICAgICAgICAgICAgICAgKiAgQ3JlYXRlcyBhIGNvbnRyb2xsZXIgd2l0aCBzY29wZSBiaW5kaW5nc1xuICAgICAgICAgICAgICAgICAqL1xuICAgICAgICAgICAgICAgIHZhciBidWlsZENvbXBvbmVudENvbnRyb2xsZXIgPSBmdW5jdGlvbihvcHRpb25zKSB7XG4gICAgICAgICAgICAgICAgICByZXR1cm4gWyckc2NvcGUnLCAnY2xvc2UnLCBmdW5jdGlvbigkc2NvcGUsIGNsb3NlKSB7XG4gICAgICAgICAgICAgICAgICAgICRzY29wZS5jbG9zZSA9IGNsb3NlO1xuICAgICAgICAgICAgICAgICAgICAkc2NvcGUuYmluZGluZ3MgPSBvcHRpb25zLmJpbmRpbmdzO1xuICAgICAgICAgICAgICAgICAgfV07XG4gICAgICAgICAgICAgICAgfTtcblxuICAgICAgICAgICAgICAgIC8qXG4gICAgICAgICAgICAgICAgICogIENyZWF0ZXMgYSBjb21wb25lbnQgdGVtcGxhdGVcbiAgICAgICAgICAgICAgICAgKlxuICAgICAgICAgICAgICAgICAqICBJbnB1dDpcbiAgICAgICAgICAgICAgICAgKlxuICAgICAgICAgICAgICAgICAqICAgIHtcbiAgICAgICAgICAgICAgICAgKiAgICAgICBjb21wb25lbnQ6ICdteUNvbXBvbmVudCcsXG4gICAgICAgICAgICAgICAgICogICAgICAgYmluZGluZ3M6IHtcbiAgICAgICAgICAgICAgICAgKiAgICAgICAgIG5hbWU6ICdGb28nLFxuICAgICAgICAgICAgICAgICAqICAgICAgICAgcGhvbmVOdW1iZXI6ICcxMjMtNDU2LTc4OTAnXG4gICAgICAgICAgICAgICAgICogICAgICAgfVxuICAgICAgICAgICAgICAgICAqICAgIH1cbiAgICAgICAgICAgICAgICAgKlxuICAgICAgICAgICAgICAgICAqICBPdXRwdXQ6XG4gICAgICAgICAgICAgICAgICpcbiAgICAgICAgICAgICAgICAgKiAgICAnPG15LWNvbXBvbmVudCBjbG9zZT1cImNsb3NlXCIgbmFtZT1cImJpbmRpbmdzLm5hbWVcIiBwaG9uZS1udW1iZXI9XCJiaW5kaW5ncy5waG9uZU51bWJlclwiPjwvbXktY29tcG9uZW50PidcbiAgICAgICAgICAgICAgICAgKi9cbiAgICAgICAgICAgICAgICB2YXIgYnVpbGRDb21wb25lbnRUZW1wbGF0ZSA9IGZ1bmN0aW9uKG9wdGlvbnMpIHtcbiAgICAgICAgICAgICAgICAgIHZhciBrZWJhYkNhc2UgPSBmdW5jdGlvbihjYW1lbENhc2UpIHtcbiAgICAgICAgICAgICAgICAgICAgdmFyIHNrZXdlciA9IGZ1bmN0aW9uKF9tLCBjMSwgYzIpIHsgcmV0dXJuIFtjMSwgYzJdLmpvaW4oJy0nKS50b0xvd2VyQ2FzZSgpOyB9O1xuICAgICAgICAgICAgICAgICAgICByZXR1cm4gY2FtZWxDYXNlLnJlcGxhY2UoLyhbYS16MC05XSkoW0EtWl0pL2csIHNrZXdlcik7XG4gICAgICAgICAgICAgICAgICB9O1xuXG4gICAgICAgICAgICAgICAgICB2YXIgY29tcG9uZW50SGFuZGxlID0ga2ViYWJDYXNlKG9wdGlvbnMuY29tcG9uZW50KTtcbiAgICAgICAgICAgICAgICAgIHZhciB0ZW1wbGF0ZSA9ICc8JyArIGNvbXBvbmVudEhhbmRsZSArICcgY2xvc2U9XCJjbG9zZVwiJztcbiAgICAgICAgICAgICAgICAgIHZhciBpbnB1dEtleXMgPSBPYmplY3Qua2V5cyhvcHRpb25zLmJpbmRpbmdzIHx8IHt9KVxuICAgICAgICAgICAgICAgICAgaWYgKGlucHV0S2V5cy5sZW5ndGggPiAwKSB7XG4gICAgICAgICAgICAgICAgICAgIHZhciBiaW5kaW5nQXR0cmlidXRlcyA9IGlucHV0S2V5cy5tYXAoZnVuY3Rpb24oaW5wdXRLZXkpIHtcbiAgICAgICAgICAgICAgICAgICAgICByZXR1cm4ga2ViYWJDYXNlKGlucHV0S2V5KSArICc9XCJiaW5kaW5ncy4nICsgaW5wdXRLZXkgKyAnXCInO1xuICAgICAgICAgICAgICAgICAgICB9KTtcbiAgICAgICAgICAgICAgICAgICAgdGVtcGxhdGUgKz0gJyAnICsgYmluZGluZ0F0dHJpYnV0ZXMuam9pbignICcpO1xuICAgICAgICAgICAgICAgICAgfVxuICAgICAgICAgICAgICAgICAgdGVtcGxhdGUgKz0gJz48LycgKyBjb21wb25lbnRIYW5kbGUgKyAnPic7XG5cbiAgICAgICAgICAgICAgICAgIHJldHVybiB0ZW1wbGF0ZTtcbiAgICAgICAgICAgICAgICB9O1xuXG4gICAgICAgICAgICAgICAgdmFyIHNldHVwQ29tcG9uZW50T3B0aW9ucyA9IGZ1bmN0aW9uKG9wdGlvbnMpIHtcbiAgICAgICAgICAgICAgICAgIG9wdGlvbnMuY29udHJvbGxlciA9IGJ1aWxkQ29tcG9uZW50Q29udHJvbGxlcihvcHRpb25zKTtcbiAgICAgICAgICAgICAgICAgIG9wdGlvbnMudGVtcGxhdGUgPSBidWlsZENvbXBvbmVudFRlbXBsYXRlKG9wdGlvbnMpO1xuICAgICAgICAgICAgICAgIH07XG5cbiAgICAgICAgICAgICAgICBzZWxmLnNob3dNb2RhbCA9IGZ1bmN0aW9uIChvcHRpb25zKSB7XG4gICAgICAgICAgICAgICAgICAgIGlmIChvcHRpb25zLmNvbXBvbmVudCkge1xuICAgICAgICAgICAgICAgICAgICAgIHNldHVwQ29tcG9uZW50T3B0aW9ucyhvcHRpb25zKTtcbiAgICAgICAgICAgICAgICAgICAgfVxuXG4gICAgICAgICAgICAgICAgICAgIC8vICBHZXQgdGhlIGJvZHkgb2YgdGhlIGRvY3VtZW50LCB3ZSdsbCBhZGQgdGhlIG1vZGFsIHRvIHRoaXMuXG4gICAgICAgICAgICAgICAgICAgIHZhciBib2R5ID0gYW5ndWxhci5lbGVtZW50KCRkb2N1bWVudFswXS5ib2R5KTtcblxuICAgICAgICAgICAgICAgICAgICAvLyAgQ3JlYXRlIGEgZGVmZXJyZWQgd2UnbGwgcmVzb2x2ZSB3aGVuIHRoZSBtb2RhbCBpcyByZWFkeS5cbiAgICAgICAgICAgICAgICAgICAgdmFyIGRlZmVycmVkID0gJHEuZGVmZXIoKTtcblxuICAgICAgICAgICAgICAgICAgICAvLyAgVmFsaWRhdGUgdGhlIGlucHV0IHBhcmFtZXRlcnMuXG4gICAgICAgICAgICAgICAgICAgIHZhciBjb250cm9sbGVyTmFtZSA9IG9wdGlvbnMuY29udHJvbGxlcjtcbiAgICAgICAgICAgICAgICAgICAgaWYgKCFjb250cm9sbGVyTmFtZSkge1xuICAgICAgICAgICAgICAgICAgICAgICAgZGVmZXJyZWQucmVqZWN0KFwiTm8gY29udHJvbGxlciBoYXMgYmVlbiBzcGVjaWZpZWQuXCIpO1xuICAgICAgICAgICAgICAgICAgICAgICAgcmV0dXJuIGRlZmVycmVkLnByb21pc2U7XG4gICAgICAgICAgICAgICAgICAgIH1cblxuICAgICAgICAgICAgICAgICAgICAvLyAgR2V0IHRoZSBhY3R1YWwgaHRtbCBvZiB0aGUgdGVtcGxhdGUuXG4gICAgICAgICAgICAgICAgICAgIGdldFRlbXBsYXRlKG9wdGlvbnMudGVtcGxhdGUsIG9wdGlvbnMudGVtcGxhdGVVcmwpXG4gICAgICAgICAgICAgICAgICAgICAgICAudGhlbihmdW5jdGlvbiAodGVtcGxhdGUpIHtcblxuICAgICAgICAgICAgICAgICAgICAgICAgICAgIC8vICBUaGUgbWFpbiBtb2RhbCBvYmplY3Qgd2Ugd2lsbCBidWlsZC5cbiAgICAgICAgICAgICAgICAgICAgICAgICAgICB2YXIgbW9kYWwgPSB7fTtcblxuICAgICAgICAgICAgICAgICAgICAgICAgICAgIC8vICBDcmVhdGUgYSBuZXcgc2NvcGUgZm9yIHRoZSBtb2RhbC5cbiAgICAgICAgICAgICAgICAgICAgICAgICAgICB2YXIgbW9kYWxTY29wZSA9IChvcHRpb25zLnNjb3BlIHx8ICRyb290U2NvcGUpLiRuZXcoKSxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgcm9vdFNjb3BlT25DbG9zZSA9IG51bGwsXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGxvY2F0aW9uQ2hhbmdlU3VjY2VzcyA9IG9wdGlvbnMubG9jYXRpb25DaGFuZ2VTdWNjZXNzO1xuXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgLy8gIEFsbG93IGxvY2F0aW9uQ2hhbmdlU3VjY2VzcyBldmVudCByZWdpc3RyYXRpb24gdG8gYmUgY29uZmlndXJhYmxlLlxuICAgICAgICAgICAgICAgICAgICAgICAgICAgIC8vICBUcnVlIChkZWZhdWx0KSA9IGV2ZW50IHJlZ2lzdGVyZWQgd2l0aCBkZWZhdWx0Q2xvc2VEZWxheVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgIC8vICAjIChncmVhdGVyIHRoYW4gMCkgPSBldmVudCByZWdpc3RlcmVkIHdpdGggZGVsYXlcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAvLyAgRmFsc2UgPSBkaXNhYmxlZFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgIGlmIChsb2NhdGlvbkNoYW5nZVN1Y2Nlc3MgPT09IGZhbHNlKSB7XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHJvb3RTY29wZU9uQ2xvc2UgPSBhbmd1bGFyLm5vb3A7XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgfVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgIGVsc2UgaWYgKGFuZ3VsYXIuaXNOdW1iZXIobG9jYXRpb25DaGFuZ2VTdWNjZXNzKSAmJiBsb2NhdGlvbkNoYW5nZVN1Y2Nlc3MgPj0gMCkge1xuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAkdGltZW91dChmdW5jdGlvbiAoKSB7XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICByb290U2NvcGVPbkNsb3NlID0gJHJvb3RTY29wZS4kb24oJyRsb2NhdGlvbkNoYW5nZVN1Y2Nlc3MnLCBpbnB1dHMuY2xvc2UpO1xuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB9LCBsb2NhdGlvbkNoYW5nZVN1Y2Nlc3MpO1xuICAgICAgICAgICAgICAgICAgICAgICAgICAgIH1cbiAgICAgICAgICAgICAgICAgICAgICAgICAgICBlbHNlIHtcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgJHRpbWVvdXQoZnVuY3Rpb24gKCkge1xuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgcm9vdFNjb3BlT25DbG9zZSA9ICRyb290U2NvcGUuJG9uKCckbG9jYXRpb25DaGFuZ2VTdWNjZXNzJywgaW5wdXRzLmNsb3NlKTtcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfSwgc2VsZi5jb25maWdPcHRpb25zLmNsb3NlRGVsYXkpO1xuICAgICAgICAgICAgICAgICAgICAgICAgICAgIH1cblxuXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgLy8gIENyZWF0ZSB0aGUgaW5wdXRzIG9iamVjdCB0byB0aGUgY29udHJvbGxlciAtIHRoaXMgd2lsbCBpbmNsdWRlXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgLy8gIHRoZSBzY29wZSwgYXMgd2VsbCBhcyBhbGwgaW5wdXRzIHByb3ZpZGVkLlxuICAgICAgICAgICAgICAgICAgICAgICAgICAgIC8vICBXZSB3aWxsIGFsc28gY3JlYXRlIGEgZGVmZXJyZWQgdGhhdCBpcyByZXNvbHZlZCB3aXRoIGEgcHJvdmlkZWRcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAvLyAgY2xvc2UgZnVuY3Rpb24uIFRoZSBjb250cm9sbGVyIGNhbiB0aGVuIGNhbGwgJ2Nsb3NlKHJlc3VsdCknLlxuICAgICAgICAgICAgICAgICAgICAgICAgICAgIC8vICBUaGUgY29udHJvbGxlciBjYW4gYWxzbyBwcm92aWRlIGEgZGVsYXkgZm9yIGNsb3NpbmcgLSB0aGlzIGlzXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgLy8gIGhlbHBmdWwgaWYgdGhlcmUgYXJlIGNsb3NpbmcgYW5pbWF0aW9ucyB3aGljaCBtdXN0IGZpbmlzaCBmaXJzdC5cbiAgICAgICAgICAgICAgICAgICAgICAgICAgICB2YXIgY2xvc2VEZWZlcnJlZCA9ICRxLmRlZmVyKCk7XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgdmFyIGNsb3NlZERlZmVycmVkID0gJHEuZGVmZXIoKTtcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICB2YXIgaGFzQWxyZWFkeUJlZW5DbG9zZWQgPSBmYWxzZTtcblxuICAgICAgICAgICAgICAgICAgICAgICAgICAgIHZhciBpbnB1dHMgPSB7XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICRzY29wZTogbW9kYWxTY29wZSxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY2xvc2U6IGZ1bmN0aW9uIChyZXN1bHQsIGRlbGF5KSB7XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBpZiAoaGFzQWxyZWFkeUJlZW5DbG9zZWQpIHtcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICByZXR1cm47XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB9XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBoYXNBbHJlYWR5QmVlbkNsb3NlZCA9IHRydWU7XG5cbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGRlbGF5ID0gZGVsYXkgfHwgc2VsZi5jb25maWdPcHRpb25zLmNsb3NlRGVsYXk7XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAvLyAgSWYgd2UgaGF2ZSBhIHByZS1jbG9zZSBmdW5jdGlvbiwgY2FsbCBpdC5cbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGlmICh0eXBlb2Ygb3B0aW9ucy5wcmVDbG9zZSA9PT0gJ2Z1bmN0aW9uJykgb3B0aW9ucy5wcmVDbG9zZShtb2RhbCwgcmVzdWx0LCBkZWxheSk7XG5cbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGlmIChkZWxheSA9PT0gdW5kZWZpbmVkIHx8IGRlbGF5ID09PSBudWxsKSBkZWxheSA9IDA7XG5cbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICR0aW1lb3V0KGZ1bmN0aW9uICgpIHtcblxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNsZWFuVXBDbG9zZShyZXN1bHQpO1xuXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB9LCBkZWxheSk7XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIH1cbiAgICAgICAgICAgICAgICAgICAgICAgICAgICB9O1xuXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgLy8gIElmIHdlIGhhdmUgcHJvdmlkZWQgYW55IGlucHV0cywgcGFzcyB0aGVtIHRvIHRoZSBjb250cm9sbGVyLlxuICAgICAgICAgICAgICAgICAgICAgICAgICAgIGlmIChvcHRpb25zLmlucHV0cykgYW5ndWxhci5leHRlbmQoaW5wdXRzLCBvcHRpb25zLmlucHV0cyk7XG5cbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAvLyAgQ29tcGlsZSB0aGVuIGxpbmsgdGhlIHRlbXBsYXRlIGVsZW1lbnQsIGJ1aWxkaW5nIHRoZSBhY3R1YWwgZWxlbWVudC5cbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAvLyAgU2V0IHRoZSAkZWxlbWVudCBvbiB0aGUgaW5wdXRzIHNvIHRoYXQgaXQgY2FuIGJlIGluamVjdGVkIGlmIHJlcXVpcmVkLlxuICAgICAgICAgICAgICAgICAgICAgICAgICAgIHZhciBsaW5rRm4gPSAkY29tcGlsZSh0ZW1wbGF0ZSk7XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgdmFyIG1vZGFsRWxlbWVudCA9IGxpbmtGbihtb2RhbFNjb3BlKTtcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICBpbnB1dHMuJGVsZW1lbnQgPSBtb2RhbEVsZW1lbnQ7XG5cbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAvLyAgQ3JlYXRlIHRoZSBjb250cm9sbGVyLCBleHBsaWNpdGx5IHNwZWNpZnlpbmcgdGhlIHNjb3BlIHRvIHVzZS5cbiAgICAgICAgICAgICAgICAgICAgICAgICAgICB2YXIgY29udHJvbGxlck9iakJlZm9yZSA9IG1vZGFsU2NvcGVbb3B0aW9ucy5jb250cm9sbGVyQXNdO1xuICAgICAgICAgICAgICAgICAgICAgICAgICAgIHZhciBtb2RhbENvbnRyb2xsZXIgPSAkY29udHJvbGxlcihvcHRpb25zLmNvbnRyb2xsZXIsIGlucHV0cywgZmFsc2UsIG9wdGlvbnMuY29udHJvbGxlckFzKTtcblxuICAgICAgICAgICAgICAgICAgICAgICAgICAgIGlmIChvcHRpb25zLmNvbnRyb2xsZXJBcyAmJiBjb250cm9sbGVyT2JqQmVmb3JlKSB7XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGFuZ3VsYXIuZXh0ZW5kKG1vZGFsQ29udHJvbGxlciwgY29udHJvbGxlck9iakJlZm9yZSk7XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgfVxuXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgLy8gIFRoZW4sIGFwcGVuZCB0aGUgbW9kYWwgdG8gdGhlIGRvbS5cbiAgICAgICAgICAgICAgICAgICAgICAgICAgICB2YXIgYXBwZW5kVGFyZ2V0ID0gYm9keTsgLy8gYXBwZW5kIHRvIGJvZHkgd2hlbiBubyBjdXN0b20gYXBwZW5kIGVsZW1lbnQgaXMgc3BlY2lmaWVkXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgaWYgKGFuZ3VsYXIuaXNTdHJpbmcob3B0aW9ucy5hcHBlbmRFbGVtZW50KSkge1xuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAvLyBxdWVyeSB0aGUgZG9jdW1lbnQgZm9yIHRoZSBmaXJzdCBlbGVtZW50IHRoYXQgbWF0Y2hlcyB0aGUgc2VsZWN0b3JcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAvLyBhbmQgY3JlYXRlIGFuIGFuZ3VsYXIgZWxlbWVudCBvdXQgb2YgaXQuXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGFwcGVuZFRhcmdldCA9IGFuZ3VsYXIuZWxlbWVudCgkZG9jdW1lbnRbMF0ucXVlcnlTZWxlY3RvcihvcHRpb25zLmFwcGVuZEVsZW1lbnQpKTtcblxuICAgICAgICAgICAgICAgICAgICAgICAgICAgIH0gZWxzZSBpZiAob3B0aW9ucy5hcHBlbmRFbGVtZW50KSB7XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC8vIGFwcGVuZCB0byBjdXN0b20gYXBwZW5kIGVsZW1lbnRcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYXBwZW5kVGFyZ2V0ID0gb3B0aW9ucy5hcHBlbmRFbGVtZW50O1xuICAgICAgICAgICAgICAgICAgICAgICAgICAgIH1cblxuICAgICAgICAgICAgICAgICAgICAgICAgICAgIGFwcGVuZENoaWxkKGFwcGVuZFRhcmdldCwgbW9kYWxFbGVtZW50KTtcblxuICAgICAgICAgICAgICAgICAgICAgICAgICAgIC8vIEZpbmFsbHksIGFwcGVuZCBhbnkgY3VzdG9tIGNsYXNzZXMgdG8gdGhlIGJvZHlcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICBpZiAob3B0aW9ucy5ib2R5Q2xhc3MpIHtcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYm9keVswXS5jbGFzc0xpc3QuYWRkKG9wdGlvbnMuYm9keUNsYXNzKTtcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICB9XG5cbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAvLyAgUG9wdWxhdGUgdGhlIG1vZGFsIG9iamVjdC4uLlxuICAgICAgICAgICAgICAgICAgICAgICAgICAgIG1vZGFsLmNvbnRyb2xsZXIgPSBtb2RhbENvbnRyb2xsZXI7XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgbW9kYWwuc2NvcGUgPSBtb2RhbFNjb3BlO1xuICAgICAgICAgICAgICAgICAgICAgICAgICAgIG1vZGFsLmVsZW1lbnQgPSBtb2RhbEVsZW1lbnQ7XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgbW9kYWwuY2xvc2UgPSBjbG9zZURlZmVycmVkLnByb21pc2U7XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgbW9kYWwuY2xvc2VkID0gY2xvc2VkRGVmZXJyZWQucHJvbWlzZTtcblxuICAgICAgICAgICAgICAgICAgICAgICAgICAgIC8vICRvbkluaXQgaXMgcGFydCBvZiB0aGUgY29tcG9uZW50IGxpZmVjeWNsZSBpbnRyb2R1Y2VkIGluIEFuZ3VsYXJKUyAxLjYueFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgIC8vIEJlY2F1c2UgaXQgbWF5IG5vdCBiZSBkZWZpbmVkIG9uIGFsbCBjb250cm9sbGVycyxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAvLyB3ZSBtdXN0IGNoZWNrIGZvciBpdCBiZWZvcmUgYXR0ZW1wdGluZyB0byBpbnZva2UgaXQuXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgLy8gaHR0cHM6Ly9kb2NzLmFuZ3VsYXJqcy5vcmcvZ3VpZGUvY29tcG9uZW50I2NvbXBvbmVudC1iYXNlZC1hcHBsaWNhdGlvbi1hcmNoaXRlY3R1cmVcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICBpZiAoYW5ndWxhci5pc0Z1bmN0aW9uKG1vZGFsLmNvbnRyb2xsZXIuJG9uSW5pdCkpIHtcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgbW9kYWwuY29udHJvbGxlci4kb25Jbml0KCk7XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgfVxuXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgLy8gIC4uLndoaWNoIGlzIHBhc3NlZCB0byB0aGUgY2FsbGVyIHZpYSB0aGUgcHJvbWlzZS5cbiAgICAgICAgICAgICAgICAgICAgICAgICAgICBkZWZlcnJlZC5yZXNvbHZlKG1vZGFsKTtcblxuICAgICAgICAgICAgICAgICAgICAgICAgICAgIC8vIENsZWFyIHByZXZpb3VzIGlucHV0IGZvY3VzIHRvIGF2b2lkIG9wZW4gbXVsdGlwbGUgbW9kYWxzIG9uIGVudGVyXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgZG9jdW1lbnQuYWN0aXZlRWxlbWVudC5ibHVyKCk7XG5cbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAvLyAgV2UgY2FuIHRyYWNrIHRoaXMgbW9kYWwgaW4gb3VyIG9wZW4gbW9kYWxzLlxuICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNlbGYub3Blbk1vZGFscy5wdXNoKHttb2RhbDogbW9kYWwsIGNsb3NlOiBpbnB1dHMuY2xvc2V9KTtcblxuICAgICAgICAgICAgICAgICAgICAgICAgICAgIGZ1bmN0aW9uIGNsZWFuVXBDbG9zZShyZXN1bHQpIHtcblxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAvLyAgUmVzb2x2ZSB0aGUgJ2Nsb3NlJyBwcm9taXNlLlxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjbG9zZURlZmVycmVkLnJlc29sdmUocmVzdWx0KTtcblxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAvLyAgUmVtb3ZlIHRoZSBjdXN0b20gY2xhc3MgZnJvbSB0aGUgYm9keVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBpZiAob3B0aW9ucy5ib2R5Q2xhc3MpIHtcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGJvZHlbMF0uY2xhc3NMaXN0LnJlbW92ZShvcHRpb25zLmJvZHlDbGFzcyk7XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIH1cblxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAvLyAgTGV0IGFuZ3VsYXIgcmVtb3ZlIHRoZSBlbGVtZW50IGFuZCB3YWl0IGZvciBhbmltYXRpb25zIHRvIGZpbmlzaC5cbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgJGFuaW1hdGUubGVhdmUobW9kYWxFbGVtZW50KVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgLnRoZW4oZnVuY3Rpb24gKCkge1xuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC8vIHByZXZlbnQgZXJyb3IgaWYgbW9kYWwgaXMgYWxyZWFkeSBkZXN0cm95ZWRcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBpZiAoIW1vZGFsRWxlbWVudCkge1xuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICByZXR1cm47XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfVxuXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgLy8gIFJlc29sdmUgdGhlICdjbG9zZWQnIHByb21pc2UuXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY2xvc2VkRGVmZXJyZWQucmVzb2x2ZShyZXN1bHQpO1xuXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgLy8gIFdlIGNhbiBub3cgY2xlYW4gdXAgdGhlIHNjb3BlXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgbW9kYWxTY29wZS4kZGVzdHJveSgpO1xuXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgLy8gIFJlbW92ZSB0aGUgbW9kYWwgZnJvbSB0aGUgc2V0IG9mIG9wZW4gbW9kYWxzLlxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGZvciAodmFyIGkgPSAwOyBpIDwgc2VsZi5vcGVuTW9kYWxzLmxlbmd0aDsgaSsrKSB7XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGlmIChzZWxmLm9wZW5Nb2RhbHNbaV0ubW9kYWwgPT09IG1vZGFsKSB7XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzZWxmLm9wZW5Nb2RhbHMuc3BsaWNlKGksIDEpO1xuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYnJlYWs7XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIH1cbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB9XG5cbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAvLyAgVW5sZXNzIHdlIG51bGwgb3V0IGFsbCBvZiB0aGVzZSBvYmplY3RzIHdlIHNlZW0gdG8gc3VmZmVyXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgLy8gIGZyb20gbWVtb3J5IGxlYWtzLCBpZiBhbnlvbmUgY2FuIGV4cGxhaW4gd2h5IHRoZW4gSSdkXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgLy8gIGJlIHZlcnkgaW50ZXJlc3RlZCB0byBrbm93LlxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGlucHV0cy5jbG9zZSA9IG51bGw7XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZGVmZXJyZWQgPSBudWxsO1xuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNsb3NlRGVmZXJyZWQgPSBudWxsO1xuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIG1vZGFsID0gbnVsbDtcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBpbnB1dHMgPSBudWxsO1xuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIG1vZGFsRWxlbWVudCA9IG51bGw7XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgbW9kYWxTY29wZSA9IG51bGw7XG5cbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIH0pO1xuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAvLyByZW1vdmUgZXZlbnQgd2F0Y2hlclxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICByb290U2NvcGVPbkNsb3NlICYmIHJvb3RTY29wZU9uQ2xvc2UoKTtcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICB9XG5cbiAgICAgICAgICAgICAgICAgICAgICAgIH0pXG4gICAgICAgICAgICAgICAgICAgICAgICAudGhlbihudWxsLCBmdW5jdGlvbiAoZXJyb3IpIHsgLy8gJ2NhdGNoJyBkb2Vzbid0IHdvcmsgaW4gSUU4LlxuICAgICAgICAgICAgICAgICAgICAgICAgICAgIGRlZmVycmVkLnJlamVjdChlcnJvcik7XG4gICAgICAgICAgICAgICAgICAgICAgICB9KTtcblxuICAgICAgICAgICAgICAgICAgICByZXR1cm4gZGVmZXJyZWQucHJvbWlzZTtcbiAgICAgICAgICAgICAgICB9O1xuXG4gICAgICAgICAgICB9XG5cbiAgICAgICAgICAgIHJldHVybiBuZXcgTW9kYWxTZXJ2aWNlKF9vcHRpb25zKTtcbiAgICAgICAgfV07XG4gICAgfSk7XG4iXSwic291cmNlUm9vdCI6IiJ9
+
+/***/ }),
+/* 311 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*!
- * Chart.js v2.8.0
+ * Chart.js v2.9.3
  * https://www.chartjs.org
  * (c) 2019 Chart.js Contributors
  * Released under the MIT License
@@ -34251,802 +34271,1228 @@ module.exports = new bootstrapper();
 (function (global, factory) {
  true ? module.exports = factory(function() { try { return __webpack_require__(1); } catch(e) { } }()) :
 typeof define === 'function' && define.amd ? define(['require'], function(require) { return factory(function() { try { return require('moment'); } catch(e) { } }()); }) :
-(global.Chart = factory(global.moment));
+(global = global || self, global.Chart = factory(global.moment));
 }(this, (function (moment) { 'use strict';
 
 moment = moment && moment.hasOwnProperty('default') ? moment['default'] : moment;
 
+function createCommonjsModule(fn, module) {
+	return module = { exports: {} }, fn(module, module.exports), module.exports;
+}
+
+function getCjsExportFromNamespace (n) {
+	return n && n['default'] || n;
+}
+
+var colorName = {
+	"aliceblue": [240, 248, 255],
+	"antiquewhite": [250, 235, 215],
+	"aqua": [0, 255, 255],
+	"aquamarine": [127, 255, 212],
+	"azure": [240, 255, 255],
+	"beige": [245, 245, 220],
+	"bisque": [255, 228, 196],
+	"black": [0, 0, 0],
+	"blanchedalmond": [255, 235, 205],
+	"blue": [0, 0, 255],
+	"blueviolet": [138, 43, 226],
+	"brown": [165, 42, 42],
+	"burlywood": [222, 184, 135],
+	"cadetblue": [95, 158, 160],
+	"chartreuse": [127, 255, 0],
+	"chocolate": [210, 105, 30],
+	"coral": [255, 127, 80],
+	"cornflowerblue": [100, 149, 237],
+	"cornsilk": [255, 248, 220],
+	"crimson": [220, 20, 60],
+	"cyan": [0, 255, 255],
+	"darkblue": [0, 0, 139],
+	"darkcyan": [0, 139, 139],
+	"darkgoldenrod": [184, 134, 11],
+	"darkgray": [169, 169, 169],
+	"darkgreen": [0, 100, 0],
+	"darkgrey": [169, 169, 169],
+	"darkkhaki": [189, 183, 107],
+	"darkmagenta": [139, 0, 139],
+	"darkolivegreen": [85, 107, 47],
+	"darkorange": [255, 140, 0],
+	"darkorchid": [153, 50, 204],
+	"darkred": [139, 0, 0],
+	"darksalmon": [233, 150, 122],
+	"darkseagreen": [143, 188, 143],
+	"darkslateblue": [72, 61, 139],
+	"darkslategray": [47, 79, 79],
+	"darkslategrey": [47, 79, 79],
+	"darkturquoise": [0, 206, 209],
+	"darkviolet": [148, 0, 211],
+	"deeppink": [255, 20, 147],
+	"deepskyblue": [0, 191, 255],
+	"dimgray": [105, 105, 105],
+	"dimgrey": [105, 105, 105],
+	"dodgerblue": [30, 144, 255],
+	"firebrick": [178, 34, 34],
+	"floralwhite": [255, 250, 240],
+	"forestgreen": [34, 139, 34],
+	"fuchsia": [255, 0, 255],
+	"gainsboro": [220, 220, 220],
+	"ghostwhite": [248, 248, 255],
+	"gold": [255, 215, 0],
+	"goldenrod": [218, 165, 32],
+	"gray": [128, 128, 128],
+	"green": [0, 128, 0],
+	"greenyellow": [173, 255, 47],
+	"grey": [128, 128, 128],
+	"honeydew": [240, 255, 240],
+	"hotpink": [255, 105, 180],
+	"indianred": [205, 92, 92],
+	"indigo": [75, 0, 130],
+	"ivory": [255, 255, 240],
+	"khaki": [240, 230, 140],
+	"lavender": [230, 230, 250],
+	"lavenderblush": [255, 240, 245],
+	"lawngreen": [124, 252, 0],
+	"lemonchiffon": [255, 250, 205],
+	"lightblue": [173, 216, 230],
+	"lightcoral": [240, 128, 128],
+	"lightcyan": [224, 255, 255],
+	"lightgoldenrodyellow": [250, 250, 210],
+	"lightgray": [211, 211, 211],
+	"lightgreen": [144, 238, 144],
+	"lightgrey": [211, 211, 211],
+	"lightpink": [255, 182, 193],
+	"lightsalmon": [255, 160, 122],
+	"lightseagreen": [32, 178, 170],
+	"lightskyblue": [135, 206, 250],
+	"lightslategray": [119, 136, 153],
+	"lightslategrey": [119, 136, 153],
+	"lightsteelblue": [176, 196, 222],
+	"lightyellow": [255, 255, 224],
+	"lime": [0, 255, 0],
+	"limegreen": [50, 205, 50],
+	"linen": [250, 240, 230],
+	"magenta": [255, 0, 255],
+	"maroon": [128, 0, 0],
+	"mediumaquamarine": [102, 205, 170],
+	"mediumblue": [0, 0, 205],
+	"mediumorchid": [186, 85, 211],
+	"mediumpurple": [147, 112, 219],
+	"mediumseagreen": [60, 179, 113],
+	"mediumslateblue": [123, 104, 238],
+	"mediumspringgreen": [0, 250, 154],
+	"mediumturquoise": [72, 209, 204],
+	"mediumvioletred": [199, 21, 133],
+	"midnightblue": [25, 25, 112],
+	"mintcream": [245, 255, 250],
+	"mistyrose": [255, 228, 225],
+	"moccasin": [255, 228, 181],
+	"navajowhite": [255, 222, 173],
+	"navy": [0, 0, 128],
+	"oldlace": [253, 245, 230],
+	"olive": [128, 128, 0],
+	"olivedrab": [107, 142, 35],
+	"orange": [255, 165, 0],
+	"orangered": [255, 69, 0],
+	"orchid": [218, 112, 214],
+	"palegoldenrod": [238, 232, 170],
+	"palegreen": [152, 251, 152],
+	"paleturquoise": [175, 238, 238],
+	"palevioletred": [219, 112, 147],
+	"papayawhip": [255, 239, 213],
+	"peachpuff": [255, 218, 185],
+	"peru": [205, 133, 63],
+	"pink": [255, 192, 203],
+	"plum": [221, 160, 221],
+	"powderblue": [176, 224, 230],
+	"purple": [128, 0, 128],
+	"rebeccapurple": [102, 51, 153],
+	"red": [255, 0, 0],
+	"rosybrown": [188, 143, 143],
+	"royalblue": [65, 105, 225],
+	"saddlebrown": [139, 69, 19],
+	"salmon": [250, 128, 114],
+	"sandybrown": [244, 164, 96],
+	"seagreen": [46, 139, 87],
+	"seashell": [255, 245, 238],
+	"sienna": [160, 82, 45],
+	"silver": [192, 192, 192],
+	"skyblue": [135, 206, 235],
+	"slateblue": [106, 90, 205],
+	"slategray": [112, 128, 144],
+	"slategrey": [112, 128, 144],
+	"snow": [255, 250, 250],
+	"springgreen": [0, 255, 127],
+	"steelblue": [70, 130, 180],
+	"tan": [210, 180, 140],
+	"teal": [0, 128, 128],
+	"thistle": [216, 191, 216],
+	"tomato": [255, 99, 71],
+	"turquoise": [64, 224, 208],
+	"violet": [238, 130, 238],
+	"wheat": [245, 222, 179],
+	"white": [255, 255, 255],
+	"whitesmoke": [245, 245, 245],
+	"yellow": [255, 255, 0],
+	"yellowgreen": [154, 205, 50]
+};
+
+var conversions = createCommonjsModule(function (module) {
 /* MIT license */
 
-var conversions = {
-  rgb2hsl: rgb2hsl,
-  rgb2hsv: rgb2hsv,
-  rgb2hwb: rgb2hwb,
-  rgb2cmyk: rgb2cmyk,
-  rgb2keyword: rgb2keyword,
-  rgb2xyz: rgb2xyz,
-  rgb2lab: rgb2lab,
-  rgb2lch: rgb2lch,
 
-  hsl2rgb: hsl2rgb,
-  hsl2hsv: hsl2hsv,
-  hsl2hwb: hsl2hwb,
-  hsl2cmyk: hsl2cmyk,
-  hsl2keyword: hsl2keyword,
-
-  hsv2rgb: hsv2rgb,
-  hsv2hsl: hsv2hsl,
-  hsv2hwb: hsv2hwb,
-  hsv2cmyk: hsv2cmyk,
-  hsv2keyword: hsv2keyword,
-
-  hwb2rgb: hwb2rgb,
-  hwb2hsl: hwb2hsl,
-  hwb2hsv: hwb2hsv,
-  hwb2cmyk: hwb2cmyk,
-  hwb2keyword: hwb2keyword,
-
-  cmyk2rgb: cmyk2rgb,
-  cmyk2hsl: cmyk2hsl,
-  cmyk2hsv: cmyk2hsv,
-  cmyk2hwb: cmyk2hwb,
-  cmyk2keyword: cmyk2keyword,
-
-  keyword2rgb: keyword2rgb,
-  keyword2hsl: keyword2hsl,
-  keyword2hsv: keyword2hsv,
-  keyword2hwb: keyword2hwb,
-  keyword2cmyk: keyword2cmyk,
-  keyword2lab: keyword2lab,
-  keyword2xyz: keyword2xyz,
-
-  xyz2rgb: xyz2rgb,
-  xyz2lab: xyz2lab,
-  xyz2lch: xyz2lch,
-
-  lab2xyz: lab2xyz,
-  lab2rgb: lab2rgb,
-  lab2lch: lab2lch,
-
-  lch2lab: lch2lab,
-  lch2xyz: lch2xyz,
-  lch2rgb: lch2rgb
-};
-
-
-function rgb2hsl(rgb) {
-  var r = rgb[0]/255,
-      g = rgb[1]/255,
-      b = rgb[2]/255,
-      min = Math.min(r, g, b),
-      max = Math.max(r, g, b),
-      delta = max - min,
-      h, s, l;
-
-  if (max == min)
-    h = 0;
-  else if (r == max)
-    h = (g - b) / delta;
-  else if (g == max)
-    h = 2 + (b - r) / delta;
-  else if (b == max)
-    h = 4 + (r - g)/ delta;
-
-  h = Math.min(h * 60, 360);
-
-  if (h < 0)
-    h += 360;
-
-  l = (min + max) / 2;
-
-  if (max == min)
-    s = 0;
-  else if (l <= 0.5)
-    s = delta / (max + min);
-  else
-    s = delta / (2 - max - min);
-
-  return [h, s * 100, l * 100];
-}
-
-function rgb2hsv(rgb) {
-  var r = rgb[0],
-      g = rgb[1],
-      b = rgb[2],
-      min = Math.min(r, g, b),
-      max = Math.max(r, g, b),
-      delta = max - min,
-      h, s, v;
-
-  if (max == 0)
-    s = 0;
-  else
-    s = (delta/max * 1000)/10;
-
-  if (max == min)
-    h = 0;
-  else if (r == max)
-    h = (g - b) / delta;
-  else if (g == max)
-    h = 2 + (b - r) / delta;
-  else if (b == max)
-    h = 4 + (r - g) / delta;
-
-  h = Math.min(h * 60, 360);
-
-  if (h < 0)
-    h += 360;
-
-  v = ((max / 255) * 1000) / 10;
-
-  return [h, s, v];
-}
-
-function rgb2hwb(rgb) {
-  var r = rgb[0],
-      g = rgb[1],
-      b = rgb[2],
-      h = rgb2hsl(rgb)[0],
-      w = 1/255 * Math.min(r, Math.min(g, b)),
-      b = 1 - 1/255 * Math.max(r, Math.max(g, b));
-
-  return [h, w * 100, b * 100];
-}
-
-function rgb2cmyk(rgb) {
-  var r = rgb[0] / 255,
-      g = rgb[1] / 255,
-      b = rgb[2] / 255,
-      c, m, y, k;
-
-  k = Math.min(1 - r, 1 - g, 1 - b);
-  c = (1 - r - k) / (1 - k) || 0;
-  m = (1 - g - k) / (1 - k) || 0;
-  y = (1 - b - k) / (1 - k) || 0;
-  return [c * 100, m * 100, y * 100, k * 100];
-}
-
-function rgb2keyword(rgb) {
-  return reverseKeywords[JSON.stringify(rgb)];
-}
-
-function rgb2xyz(rgb) {
-  var r = rgb[0] / 255,
-      g = rgb[1] / 255,
-      b = rgb[2] / 255;
-
-  // assume sRGB
-  r = r > 0.04045 ? Math.pow(((r + 0.055) / 1.055), 2.4) : (r / 12.92);
-  g = g > 0.04045 ? Math.pow(((g + 0.055) / 1.055), 2.4) : (g / 12.92);
-  b = b > 0.04045 ? Math.pow(((b + 0.055) / 1.055), 2.4) : (b / 12.92);
-
-  var x = (r * 0.4124) + (g * 0.3576) + (b * 0.1805);
-  var y = (r * 0.2126) + (g * 0.7152) + (b * 0.0722);
-  var z = (r * 0.0193) + (g * 0.1192) + (b * 0.9505);
-
-  return [x * 100, y *100, z * 100];
-}
-
-function rgb2lab(rgb) {
-  var xyz = rgb2xyz(rgb),
-        x = xyz[0],
-        y = xyz[1],
-        z = xyz[2],
-        l, a, b;
-
-  x /= 95.047;
-  y /= 100;
-  z /= 108.883;
-
-  x = x > 0.008856 ? Math.pow(x, 1/3) : (7.787 * x) + (16 / 116);
-  y = y > 0.008856 ? Math.pow(y, 1/3) : (7.787 * y) + (16 / 116);
-  z = z > 0.008856 ? Math.pow(z, 1/3) : (7.787 * z) + (16 / 116);
-
-  l = (116 * y) - 16;
-  a = 500 * (x - y);
-  b = 200 * (y - z);
-
-  return [l, a, b];
-}
-
-function rgb2lch(args) {
-  return lab2lch(rgb2lab(args));
-}
-
-function hsl2rgb(hsl) {
-  var h = hsl[0] / 360,
-      s = hsl[1] / 100,
-      l = hsl[2] / 100,
-      t1, t2, t3, rgb, val;
-
-  if (s == 0) {
-    val = l * 255;
-    return [val, val, val];
-  }
-
-  if (l < 0.5)
-    t2 = l * (1 + s);
-  else
-    t2 = l + s - l * s;
-  t1 = 2 * l - t2;
-
-  rgb = [0, 0, 0];
-  for (var i = 0; i < 3; i++) {
-    t3 = h + 1 / 3 * - (i - 1);
-    t3 < 0 && t3++;
-    t3 > 1 && t3--;
-
-    if (6 * t3 < 1)
-      val = t1 + (t2 - t1) * 6 * t3;
-    else if (2 * t3 < 1)
-      val = t2;
-    else if (3 * t3 < 2)
-      val = t1 + (t2 - t1) * (2 / 3 - t3) * 6;
-    else
-      val = t1;
-
-    rgb[i] = val * 255;
-  }
-
-  return rgb;
-}
-
-function hsl2hsv(hsl) {
-  var h = hsl[0],
-      s = hsl[1] / 100,
-      l = hsl[2] / 100,
-      sv, v;
-
-  if(l === 0) {
-      // no need to do calc on black
-      // also avoids divide by 0 error
-      return [0, 0, 0];
-  }
-
-  l *= 2;
-  s *= (l <= 1) ? l : 2 - l;
-  v = (l + s) / 2;
-  sv = (2 * s) / (l + s);
-  return [h, sv * 100, v * 100];
-}
-
-function hsl2hwb(args) {
-  return rgb2hwb(hsl2rgb(args));
-}
-
-function hsl2cmyk(args) {
-  return rgb2cmyk(hsl2rgb(args));
-}
-
-function hsl2keyword(args) {
-  return rgb2keyword(hsl2rgb(args));
-}
-
-
-function hsv2rgb(hsv) {
-  var h = hsv[0] / 60,
-      s = hsv[1] / 100,
-      v = hsv[2] / 100,
-      hi = Math.floor(h) % 6;
-
-  var f = h - Math.floor(h),
-      p = 255 * v * (1 - s),
-      q = 255 * v * (1 - (s * f)),
-      t = 255 * v * (1 - (s * (1 - f))),
-      v = 255 * v;
-
-  switch(hi) {
-    case 0:
-      return [v, t, p];
-    case 1:
-      return [q, v, p];
-    case 2:
-      return [p, v, t];
-    case 3:
-      return [p, q, v];
-    case 4:
-      return [t, p, v];
-    case 5:
-      return [v, p, q];
-  }
-}
-
-function hsv2hsl(hsv) {
-  var h = hsv[0],
-      s = hsv[1] / 100,
-      v = hsv[2] / 100,
-      sl, l;
-
-  l = (2 - s) * v;
-  sl = s * v;
-  sl /= (l <= 1) ? l : 2 - l;
-  sl = sl || 0;
-  l /= 2;
-  return [h, sl * 100, l * 100];
-}
-
-function hsv2hwb(args) {
-  return rgb2hwb(hsv2rgb(args))
-}
-
-function hsv2cmyk(args) {
-  return rgb2cmyk(hsv2rgb(args));
-}
-
-function hsv2keyword(args) {
-  return rgb2keyword(hsv2rgb(args));
-}
-
-// http://dev.w3.org/csswg/css-color/#hwb-to-rgb
-function hwb2rgb(hwb) {
-  var h = hwb[0] / 360,
-      wh = hwb[1] / 100,
-      bl = hwb[2] / 100,
-      ratio = wh + bl,
-      i, v, f, n;
-
-  // wh + bl cant be > 1
-  if (ratio > 1) {
-    wh /= ratio;
-    bl /= ratio;
-  }
-
-  i = Math.floor(6 * h);
-  v = 1 - bl;
-  f = 6 * h - i;
-  if ((i & 0x01) != 0) {
-    f = 1 - f;
-  }
-  n = wh + f * (v - wh);  // linear interpolation
-
-  switch (i) {
-    default:
-    case 6:
-    case 0: r = v; g = n; b = wh; break;
-    case 1: r = n; g = v; b = wh; break;
-    case 2: r = wh; g = v; b = n; break;
-    case 3: r = wh; g = n; b = v; break;
-    case 4: r = n; g = wh; b = v; break;
-    case 5: r = v; g = wh; b = n; break;
-  }
-
-  return [r * 255, g * 255, b * 255];
-}
-
-function hwb2hsl(args) {
-  return rgb2hsl(hwb2rgb(args));
-}
-
-function hwb2hsv(args) {
-  return rgb2hsv(hwb2rgb(args));
-}
-
-function hwb2cmyk(args) {
-  return rgb2cmyk(hwb2rgb(args));
-}
-
-function hwb2keyword(args) {
-  return rgb2keyword(hwb2rgb(args));
-}
-
-function cmyk2rgb(cmyk) {
-  var c = cmyk[0] / 100,
-      m = cmyk[1] / 100,
-      y = cmyk[2] / 100,
-      k = cmyk[3] / 100,
-      r, g, b;
-
-  r = 1 - Math.min(1, c * (1 - k) + k);
-  g = 1 - Math.min(1, m * (1 - k) + k);
-  b = 1 - Math.min(1, y * (1 - k) + k);
-  return [r * 255, g * 255, b * 255];
-}
-
-function cmyk2hsl(args) {
-  return rgb2hsl(cmyk2rgb(args));
-}
-
-function cmyk2hsv(args) {
-  return rgb2hsv(cmyk2rgb(args));
-}
-
-function cmyk2hwb(args) {
-  return rgb2hwb(cmyk2rgb(args));
-}
-
-function cmyk2keyword(args) {
-  return rgb2keyword(cmyk2rgb(args));
-}
-
-
-function xyz2rgb(xyz) {
-  var x = xyz[0] / 100,
-      y = xyz[1] / 100,
-      z = xyz[2] / 100,
-      r, g, b;
-
-  r = (x * 3.2406) + (y * -1.5372) + (z * -0.4986);
-  g = (x * -0.9689) + (y * 1.8758) + (z * 0.0415);
-  b = (x * 0.0557) + (y * -0.2040) + (z * 1.0570);
-
-  // assume sRGB
-  r = r > 0.0031308 ? ((1.055 * Math.pow(r, 1.0 / 2.4)) - 0.055)
-    : r = (r * 12.92);
-
-  g = g > 0.0031308 ? ((1.055 * Math.pow(g, 1.0 / 2.4)) - 0.055)
-    : g = (g * 12.92);
-
-  b = b > 0.0031308 ? ((1.055 * Math.pow(b, 1.0 / 2.4)) - 0.055)
-    : b = (b * 12.92);
-
-  r = Math.min(Math.max(0, r), 1);
-  g = Math.min(Math.max(0, g), 1);
-  b = Math.min(Math.max(0, b), 1);
-
-  return [r * 255, g * 255, b * 255];
-}
-
-function xyz2lab(xyz) {
-  var x = xyz[0],
-      y = xyz[1],
-      z = xyz[2],
-      l, a, b;
-
-  x /= 95.047;
-  y /= 100;
-  z /= 108.883;
-
-  x = x > 0.008856 ? Math.pow(x, 1/3) : (7.787 * x) + (16 / 116);
-  y = y > 0.008856 ? Math.pow(y, 1/3) : (7.787 * y) + (16 / 116);
-  z = z > 0.008856 ? Math.pow(z, 1/3) : (7.787 * z) + (16 / 116);
-
-  l = (116 * y) - 16;
-  a = 500 * (x - y);
-  b = 200 * (y - z);
-
-  return [l, a, b];
-}
-
-function xyz2lch(args) {
-  return lab2lch(xyz2lab(args));
-}
-
-function lab2xyz(lab) {
-  var l = lab[0],
-      a = lab[1],
-      b = lab[2],
-      x, y, z, y2;
-
-  if (l <= 8) {
-    y = (l * 100) / 903.3;
-    y2 = (7.787 * (y / 100)) + (16 / 116);
-  } else {
-    y = 100 * Math.pow((l + 16) / 116, 3);
-    y2 = Math.pow(y / 100, 1/3);
-  }
-
-  x = x / 95.047 <= 0.008856 ? x = (95.047 * ((a / 500) + y2 - (16 / 116))) / 7.787 : 95.047 * Math.pow((a / 500) + y2, 3);
-
-  z = z / 108.883 <= 0.008859 ? z = (108.883 * (y2 - (b / 200) - (16 / 116))) / 7.787 : 108.883 * Math.pow(y2 - (b / 200), 3);
-
-  return [x, y, z];
-}
-
-function lab2lch(lab) {
-  var l = lab[0],
-      a = lab[1],
-      b = lab[2],
-      hr, h, c;
-
-  hr = Math.atan2(b, a);
-  h = hr * 360 / 2 / Math.PI;
-  if (h < 0) {
-    h += 360;
-  }
-  c = Math.sqrt(a * a + b * b);
-  return [l, c, h];
-}
-
-function lab2rgb(args) {
-  return xyz2rgb(lab2xyz(args));
-}
-
-function lch2lab(lch) {
-  var l = lch[0],
-      c = lch[1],
-      h = lch[2],
-      a, b, hr;
-
-  hr = h / 360 * 2 * Math.PI;
-  a = c * Math.cos(hr);
-  b = c * Math.sin(hr);
-  return [l, a, b];
-}
-
-function lch2xyz(args) {
-  return lab2xyz(lch2lab(args));
-}
-
-function lch2rgb(args) {
-  return lab2rgb(lch2lab(args));
-}
-
-function keyword2rgb(keyword) {
-  return cssKeywords[keyword];
-}
-
-function keyword2hsl(args) {
-  return rgb2hsl(keyword2rgb(args));
-}
-
-function keyword2hsv(args) {
-  return rgb2hsv(keyword2rgb(args));
-}
-
-function keyword2hwb(args) {
-  return rgb2hwb(keyword2rgb(args));
-}
-
-function keyword2cmyk(args) {
-  return rgb2cmyk(keyword2rgb(args));
-}
-
-function keyword2lab(args) {
-  return rgb2lab(keyword2rgb(args));
-}
-
-function keyword2xyz(args) {
-  return rgb2xyz(keyword2rgb(args));
-}
-
-var cssKeywords = {
-  aliceblue:  [240,248,255],
-  antiquewhite: [250,235,215],
-  aqua: [0,255,255],
-  aquamarine: [127,255,212],
-  azure:  [240,255,255],
-  beige:  [245,245,220],
-  bisque: [255,228,196],
-  black:  [0,0,0],
-  blanchedalmond: [255,235,205],
-  blue: [0,0,255],
-  blueviolet: [138,43,226],
-  brown:  [165,42,42],
-  burlywood:  [222,184,135],
-  cadetblue:  [95,158,160],
-  chartreuse: [127,255,0],
-  chocolate:  [210,105,30],
-  coral:  [255,127,80],
-  cornflowerblue: [100,149,237],
-  cornsilk: [255,248,220],
-  crimson:  [220,20,60],
-  cyan: [0,255,255],
-  darkblue: [0,0,139],
-  darkcyan: [0,139,139],
-  darkgoldenrod:  [184,134,11],
-  darkgray: [169,169,169],
-  darkgreen:  [0,100,0],
-  darkgrey: [169,169,169],
-  darkkhaki:  [189,183,107],
-  darkmagenta:  [139,0,139],
-  darkolivegreen: [85,107,47],
-  darkorange: [255,140,0],
-  darkorchid: [153,50,204],
-  darkred:  [139,0,0],
-  darksalmon: [233,150,122],
-  darkseagreen: [143,188,143],
-  darkslateblue:  [72,61,139],
-  darkslategray:  [47,79,79],
-  darkslategrey:  [47,79,79],
-  darkturquoise:  [0,206,209],
-  darkviolet: [148,0,211],
-  deeppink: [255,20,147],
-  deepskyblue:  [0,191,255],
-  dimgray:  [105,105,105],
-  dimgrey:  [105,105,105],
-  dodgerblue: [30,144,255],
-  firebrick:  [178,34,34],
-  floralwhite:  [255,250,240],
-  forestgreen:  [34,139,34],
-  fuchsia:  [255,0,255],
-  gainsboro:  [220,220,220],
-  ghostwhite: [248,248,255],
-  gold: [255,215,0],
-  goldenrod:  [218,165,32],
-  gray: [128,128,128],
-  green:  [0,128,0],
-  greenyellow:  [173,255,47],
-  grey: [128,128,128],
-  honeydew: [240,255,240],
-  hotpink:  [255,105,180],
-  indianred:  [205,92,92],
-  indigo: [75,0,130],
-  ivory:  [255,255,240],
-  khaki:  [240,230,140],
-  lavender: [230,230,250],
-  lavenderblush:  [255,240,245],
-  lawngreen:  [124,252,0],
-  lemonchiffon: [255,250,205],
-  lightblue:  [173,216,230],
-  lightcoral: [240,128,128],
-  lightcyan:  [224,255,255],
-  lightgoldenrodyellow: [250,250,210],
-  lightgray:  [211,211,211],
-  lightgreen: [144,238,144],
-  lightgrey:  [211,211,211],
-  lightpink:  [255,182,193],
-  lightsalmon:  [255,160,122],
-  lightseagreen:  [32,178,170],
-  lightskyblue: [135,206,250],
-  lightslategray: [119,136,153],
-  lightslategrey: [119,136,153],
-  lightsteelblue: [176,196,222],
-  lightyellow:  [255,255,224],
-  lime: [0,255,0],
-  limegreen:  [50,205,50],
-  linen:  [250,240,230],
-  magenta:  [255,0,255],
-  maroon: [128,0,0],
-  mediumaquamarine: [102,205,170],
-  mediumblue: [0,0,205],
-  mediumorchid: [186,85,211],
-  mediumpurple: [147,112,219],
-  mediumseagreen: [60,179,113],
-  mediumslateblue:  [123,104,238],
-  mediumspringgreen:  [0,250,154],
-  mediumturquoise:  [72,209,204],
-  mediumvioletred:  [199,21,133],
-  midnightblue: [25,25,112],
-  mintcream:  [245,255,250],
-  mistyrose:  [255,228,225],
-  moccasin: [255,228,181],
-  navajowhite:  [255,222,173],
-  navy: [0,0,128],
-  oldlace:  [253,245,230],
-  olive:  [128,128,0],
-  olivedrab:  [107,142,35],
-  orange: [255,165,0],
-  orangered:  [255,69,0],
-  orchid: [218,112,214],
-  palegoldenrod:  [238,232,170],
-  palegreen:  [152,251,152],
-  paleturquoise:  [175,238,238],
-  palevioletred:  [219,112,147],
-  papayawhip: [255,239,213],
-  peachpuff:  [255,218,185],
-  peru: [205,133,63],
-  pink: [255,192,203],
-  plum: [221,160,221],
-  powderblue: [176,224,230],
-  purple: [128,0,128],
-  rebeccapurple: [102, 51, 153],
-  red:  [255,0,0],
-  rosybrown:  [188,143,143],
-  royalblue:  [65,105,225],
-  saddlebrown:  [139,69,19],
-  salmon: [250,128,114],
-  sandybrown: [244,164,96],
-  seagreen: [46,139,87],
-  seashell: [255,245,238],
-  sienna: [160,82,45],
-  silver: [192,192,192],
-  skyblue:  [135,206,235],
-  slateblue:  [106,90,205],
-  slategray:  [112,128,144],
-  slategrey:  [112,128,144],
-  snow: [255,250,250],
-  springgreen:  [0,255,127],
-  steelblue:  [70,130,180],
-  tan:  [210,180,140],
-  teal: [0,128,128],
-  thistle:  [216,191,216],
-  tomato: [255,99,71],
-  turquoise:  [64,224,208],
-  violet: [238,130,238],
-  wheat:  [245,222,179],
-  white:  [255,255,255],
-  whitesmoke: [245,245,245],
-  yellow: [255,255,0],
-  yellowgreen:  [154,205,50]
-};
+// NOTE: conversions should only return primitive values (i.e. arrays, or
+//       values that give correct `typeof` results).
+//       do not use box values types (i.e. Number(), String(), etc.)
 
 var reverseKeywords = {};
-for (var key in cssKeywords) {
-  reverseKeywords[JSON.stringify(cssKeywords[key])] = key;
+for (var key in colorName) {
+	if (colorName.hasOwnProperty(key)) {
+		reverseKeywords[colorName[key]] = key;
+	}
 }
 
-var convert = function() {
-   return new Converter();
+var convert = module.exports = {
+	rgb: {channels: 3, labels: 'rgb'},
+	hsl: {channels: 3, labels: 'hsl'},
+	hsv: {channels: 3, labels: 'hsv'},
+	hwb: {channels: 3, labels: 'hwb'},
+	cmyk: {channels: 4, labels: 'cmyk'},
+	xyz: {channels: 3, labels: 'xyz'},
+	lab: {channels: 3, labels: 'lab'},
+	lch: {channels: 3, labels: 'lch'},
+	hex: {channels: 1, labels: ['hex']},
+	keyword: {channels: 1, labels: ['keyword']},
+	ansi16: {channels: 1, labels: ['ansi16']},
+	ansi256: {channels: 1, labels: ['ansi256']},
+	hcg: {channels: 3, labels: ['h', 'c', 'g']},
+	apple: {channels: 3, labels: ['r16', 'g16', 'b16']},
+	gray: {channels: 1, labels: ['gray']}
 };
 
-for (var func in conversions) {
-  // export Raw versions
-  convert[func + "Raw"] =  (function(func) {
-    // accept array or plain args
-    return function(arg) {
-      if (typeof arg == "number")
-        arg = Array.prototype.slice.call(arguments);
-      return conversions[func](arg);
-    }
-  })(func);
+// hide .channels and .labels properties
+for (var model in convert) {
+	if (convert.hasOwnProperty(model)) {
+		if (!('channels' in convert[model])) {
+			throw new Error('missing channels property: ' + model);
+		}
 
-  var pair = /(\w+)2(\w+)/.exec(func),
-      from = pair[1],
-      to = pair[2];
+		if (!('labels' in convert[model])) {
+			throw new Error('missing channel labels property: ' + model);
+		}
 
-  // export rgb2hsl and ["rgb"]["hsl"]
-  convert[from] = convert[from] || {};
+		if (convert[model].labels.length !== convert[model].channels) {
+			throw new Error('channel and label counts mismatch: ' + model);
+		}
 
-  convert[from][to] = convert[func] = (function(func) { 
-    return function(arg) {
-      if (typeof arg == "number")
-        arg = Array.prototype.slice.call(arguments);
-      
-      var val = conversions[func](arg);
-      if (typeof val == "string" || val === undefined)
-        return val; // keyword
-
-      for (var i = 0; i < val.length; i++)
-        val[i] = Math.round(val[i]);
-      return val;
-    }
-  })(func);
+		var channels = convert[model].channels;
+		var labels = convert[model].labels;
+		delete convert[model].channels;
+		delete convert[model].labels;
+		Object.defineProperty(convert[model], 'channels', {value: channels});
+		Object.defineProperty(convert[model], 'labels', {value: labels});
+	}
 }
 
+convert.rgb.hsl = function (rgb) {
+	var r = rgb[0] / 255;
+	var g = rgb[1] / 255;
+	var b = rgb[2] / 255;
+	var min = Math.min(r, g, b);
+	var max = Math.max(r, g, b);
+	var delta = max - min;
+	var h;
+	var s;
+	var l;
 
-/* Converter does lazy conversion and caching */
-var Converter = function() {
-   this.convs = {};
+	if (max === min) {
+		h = 0;
+	} else if (r === max) {
+		h = (g - b) / delta;
+	} else if (g === max) {
+		h = 2 + (b - r) / delta;
+	} else if (b === max) {
+		h = 4 + (r - g) / delta;
+	}
+
+	h = Math.min(h * 60, 360);
+
+	if (h < 0) {
+		h += 360;
+	}
+
+	l = (min + max) / 2;
+
+	if (max === min) {
+		s = 0;
+	} else if (l <= 0.5) {
+		s = delta / (max + min);
+	} else {
+		s = delta / (2 - max - min);
+	}
+
+	return [h, s * 100, l * 100];
 };
 
-/* Either get the values for a space or
-  set the values for a space, depending on args */
-Converter.prototype.routeSpace = function(space, args) {
-   var values = args[0];
-   if (values === undefined) {
-      // color.rgb()
-      return this.getValues(space);
-   }
-   // color.rgb(10, 10, 10)
-   if (typeof values == "number") {
-      values = Array.prototype.slice.call(args);        
-   }
+convert.rgb.hsv = function (rgb) {
+	var rdif;
+	var gdif;
+	var bdif;
+	var h;
+	var s;
 
-   return this.setValues(space, values);
+	var r = rgb[0] / 255;
+	var g = rgb[1] / 255;
+	var b = rgb[2] / 255;
+	var v = Math.max(r, g, b);
+	var diff = v - Math.min(r, g, b);
+	var diffc = function (c) {
+		return (v - c) / 6 / diff + 1 / 2;
+	};
+
+	if (diff === 0) {
+		h = s = 0;
+	} else {
+		s = diff / v;
+		rdif = diffc(r);
+		gdif = diffc(g);
+		bdif = diffc(b);
+
+		if (r === v) {
+			h = bdif - gdif;
+		} else if (g === v) {
+			h = (1 / 3) + rdif - bdif;
+		} else if (b === v) {
+			h = (2 / 3) + gdif - rdif;
+		}
+		if (h < 0) {
+			h += 1;
+		} else if (h > 1) {
+			h -= 1;
+		}
+	}
+
+	return [
+		h * 360,
+		s * 100,
+		v * 100
+	];
 };
-  
-/* Set the values for a space, invalidating cache */
-Converter.prototype.setValues = function(space, values) {
-   this.space = space;
-   this.convs = {};
-   this.convs[space] = values;
-   return this;
+
+convert.rgb.hwb = function (rgb) {
+	var r = rgb[0];
+	var g = rgb[1];
+	var b = rgb[2];
+	var h = convert.rgb.hsl(rgb)[0];
+	var w = 1 / 255 * Math.min(r, Math.min(g, b));
+
+	b = 1 - 1 / 255 * Math.max(r, Math.max(g, b));
+
+	return [h, w * 100, b * 100];
 };
 
-/* Get the values for a space. If there's already
-  a conversion for the space, fetch it, otherwise
-  compute it */
-Converter.prototype.getValues = function(space) {
-   var vals = this.convs[space];
-   if (!vals) {
-      var fspace = this.space,
-          from = this.convs[fspace];
-      vals = convert[fspace][space](from);
+convert.rgb.cmyk = function (rgb) {
+	var r = rgb[0] / 255;
+	var g = rgb[1] / 255;
+	var b = rgb[2] / 255;
+	var c;
+	var m;
+	var y;
+	var k;
 
-      this.convs[space] = vals;
-   }
-  return vals;
+	k = Math.min(1 - r, 1 - g, 1 - b);
+	c = (1 - r - k) / (1 - k) || 0;
+	m = (1 - g - k) / (1 - k) || 0;
+	y = (1 - b - k) / (1 - k) || 0;
+
+	return [c * 100, m * 100, y * 100, k * 100];
 };
 
-["rgb", "hsl", "hsv", "cmyk", "keyword"].forEach(function(space) {
-   Converter.prototype[space] = function(vals) {
-      return this.routeSpace(space, arguments);
-   };
+/**
+ * See https://en.m.wikipedia.org/wiki/Euclidean_distance#Squared_Euclidean_distance
+ * */
+function comparativeDistance(x, y) {
+	return (
+		Math.pow(x[0] - y[0], 2) +
+		Math.pow(x[1] - y[1], 2) +
+		Math.pow(x[2] - y[2], 2)
+	);
+}
+
+convert.rgb.keyword = function (rgb) {
+	var reversed = reverseKeywords[rgb];
+	if (reversed) {
+		return reversed;
+	}
+
+	var currentClosestDistance = Infinity;
+	var currentClosestKeyword;
+
+	for (var keyword in colorName) {
+		if (colorName.hasOwnProperty(keyword)) {
+			var value = colorName[keyword];
+
+			// Compute comparative distance
+			var distance = comparativeDistance(rgb, value);
+
+			// Check if its less, if so set as closest
+			if (distance < currentClosestDistance) {
+				currentClosestDistance = distance;
+				currentClosestKeyword = keyword;
+			}
+		}
+	}
+
+	return currentClosestKeyword;
+};
+
+convert.keyword.rgb = function (keyword) {
+	return colorName[keyword];
+};
+
+convert.rgb.xyz = function (rgb) {
+	var r = rgb[0] / 255;
+	var g = rgb[1] / 255;
+	var b = rgb[2] / 255;
+
+	// assume sRGB
+	r = r > 0.04045 ? Math.pow(((r + 0.055) / 1.055), 2.4) : (r / 12.92);
+	g = g > 0.04045 ? Math.pow(((g + 0.055) / 1.055), 2.4) : (g / 12.92);
+	b = b > 0.04045 ? Math.pow(((b + 0.055) / 1.055), 2.4) : (b / 12.92);
+
+	var x = (r * 0.4124) + (g * 0.3576) + (b * 0.1805);
+	var y = (r * 0.2126) + (g * 0.7152) + (b * 0.0722);
+	var z = (r * 0.0193) + (g * 0.1192) + (b * 0.9505);
+
+	return [x * 100, y * 100, z * 100];
+};
+
+convert.rgb.lab = function (rgb) {
+	var xyz = convert.rgb.xyz(rgb);
+	var x = xyz[0];
+	var y = xyz[1];
+	var z = xyz[2];
+	var l;
+	var a;
+	var b;
+
+	x /= 95.047;
+	y /= 100;
+	z /= 108.883;
+
+	x = x > 0.008856 ? Math.pow(x, 1 / 3) : (7.787 * x) + (16 / 116);
+	y = y > 0.008856 ? Math.pow(y, 1 / 3) : (7.787 * y) + (16 / 116);
+	z = z > 0.008856 ? Math.pow(z, 1 / 3) : (7.787 * z) + (16 / 116);
+
+	l = (116 * y) - 16;
+	a = 500 * (x - y);
+	b = 200 * (y - z);
+
+	return [l, a, b];
+};
+
+convert.hsl.rgb = function (hsl) {
+	var h = hsl[0] / 360;
+	var s = hsl[1] / 100;
+	var l = hsl[2] / 100;
+	var t1;
+	var t2;
+	var t3;
+	var rgb;
+	var val;
+
+	if (s === 0) {
+		val = l * 255;
+		return [val, val, val];
+	}
+
+	if (l < 0.5) {
+		t2 = l * (1 + s);
+	} else {
+		t2 = l + s - l * s;
+	}
+
+	t1 = 2 * l - t2;
+
+	rgb = [0, 0, 0];
+	for (var i = 0; i < 3; i++) {
+		t3 = h + 1 / 3 * -(i - 1);
+		if (t3 < 0) {
+			t3++;
+		}
+		if (t3 > 1) {
+			t3--;
+		}
+
+		if (6 * t3 < 1) {
+			val = t1 + (t2 - t1) * 6 * t3;
+		} else if (2 * t3 < 1) {
+			val = t2;
+		} else if (3 * t3 < 2) {
+			val = t1 + (t2 - t1) * (2 / 3 - t3) * 6;
+		} else {
+			val = t1;
+		}
+
+		rgb[i] = val * 255;
+	}
+
+	return rgb;
+};
+
+convert.hsl.hsv = function (hsl) {
+	var h = hsl[0];
+	var s = hsl[1] / 100;
+	var l = hsl[2] / 100;
+	var smin = s;
+	var lmin = Math.max(l, 0.01);
+	var sv;
+	var v;
+
+	l *= 2;
+	s *= (l <= 1) ? l : 2 - l;
+	smin *= lmin <= 1 ? lmin : 2 - lmin;
+	v = (l + s) / 2;
+	sv = l === 0 ? (2 * smin) / (lmin + smin) : (2 * s) / (l + s);
+
+	return [h, sv * 100, v * 100];
+};
+
+convert.hsv.rgb = function (hsv) {
+	var h = hsv[0] / 60;
+	var s = hsv[1] / 100;
+	var v = hsv[2] / 100;
+	var hi = Math.floor(h) % 6;
+
+	var f = h - Math.floor(h);
+	var p = 255 * v * (1 - s);
+	var q = 255 * v * (1 - (s * f));
+	var t = 255 * v * (1 - (s * (1 - f)));
+	v *= 255;
+
+	switch (hi) {
+		case 0:
+			return [v, t, p];
+		case 1:
+			return [q, v, p];
+		case 2:
+			return [p, v, t];
+		case 3:
+			return [p, q, v];
+		case 4:
+			return [t, p, v];
+		case 5:
+			return [v, p, q];
+	}
+};
+
+convert.hsv.hsl = function (hsv) {
+	var h = hsv[0];
+	var s = hsv[1] / 100;
+	var v = hsv[2] / 100;
+	var vmin = Math.max(v, 0.01);
+	var lmin;
+	var sl;
+	var l;
+
+	l = (2 - s) * v;
+	lmin = (2 - s) * vmin;
+	sl = s * vmin;
+	sl /= (lmin <= 1) ? lmin : 2 - lmin;
+	sl = sl || 0;
+	l /= 2;
+
+	return [h, sl * 100, l * 100];
+};
+
+// http://dev.w3.org/csswg/css-color/#hwb-to-rgb
+convert.hwb.rgb = function (hwb) {
+	var h = hwb[0] / 360;
+	var wh = hwb[1] / 100;
+	var bl = hwb[2] / 100;
+	var ratio = wh + bl;
+	var i;
+	var v;
+	var f;
+	var n;
+
+	// wh + bl cant be > 1
+	if (ratio > 1) {
+		wh /= ratio;
+		bl /= ratio;
+	}
+
+	i = Math.floor(6 * h);
+	v = 1 - bl;
+	f = 6 * h - i;
+
+	if ((i & 0x01) !== 0) {
+		f = 1 - f;
+	}
+
+	n = wh + f * (v - wh); // linear interpolation
+
+	var r;
+	var g;
+	var b;
+	switch (i) {
+		default:
+		case 6:
+		case 0: r = v; g = n; b = wh; break;
+		case 1: r = n; g = v; b = wh; break;
+		case 2: r = wh; g = v; b = n; break;
+		case 3: r = wh; g = n; b = v; break;
+		case 4: r = n; g = wh; b = v; break;
+		case 5: r = v; g = wh; b = n; break;
+	}
+
+	return [r * 255, g * 255, b * 255];
+};
+
+convert.cmyk.rgb = function (cmyk) {
+	var c = cmyk[0] / 100;
+	var m = cmyk[1] / 100;
+	var y = cmyk[2] / 100;
+	var k = cmyk[3] / 100;
+	var r;
+	var g;
+	var b;
+
+	r = 1 - Math.min(1, c * (1 - k) + k);
+	g = 1 - Math.min(1, m * (1 - k) + k);
+	b = 1 - Math.min(1, y * (1 - k) + k);
+
+	return [r * 255, g * 255, b * 255];
+};
+
+convert.xyz.rgb = function (xyz) {
+	var x = xyz[0] / 100;
+	var y = xyz[1] / 100;
+	var z = xyz[2] / 100;
+	var r;
+	var g;
+	var b;
+
+	r = (x * 3.2406) + (y * -1.5372) + (z * -0.4986);
+	g = (x * -0.9689) + (y * 1.8758) + (z * 0.0415);
+	b = (x * 0.0557) + (y * -0.2040) + (z * 1.0570);
+
+	// assume sRGB
+	r = r > 0.0031308
+		? ((1.055 * Math.pow(r, 1.0 / 2.4)) - 0.055)
+		: r * 12.92;
+
+	g = g > 0.0031308
+		? ((1.055 * Math.pow(g, 1.0 / 2.4)) - 0.055)
+		: g * 12.92;
+
+	b = b > 0.0031308
+		? ((1.055 * Math.pow(b, 1.0 / 2.4)) - 0.055)
+		: b * 12.92;
+
+	r = Math.min(Math.max(0, r), 1);
+	g = Math.min(Math.max(0, g), 1);
+	b = Math.min(Math.max(0, b), 1);
+
+	return [r * 255, g * 255, b * 255];
+};
+
+convert.xyz.lab = function (xyz) {
+	var x = xyz[0];
+	var y = xyz[1];
+	var z = xyz[2];
+	var l;
+	var a;
+	var b;
+
+	x /= 95.047;
+	y /= 100;
+	z /= 108.883;
+
+	x = x > 0.008856 ? Math.pow(x, 1 / 3) : (7.787 * x) + (16 / 116);
+	y = y > 0.008856 ? Math.pow(y, 1 / 3) : (7.787 * y) + (16 / 116);
+	z = z > 0.008856 ? Math.pow(z, 1 / 3) : (7.787 * z) + (16 / 116);
+
+	l = (116 * y) - 16;
+	a = 500 * (x - y);
+	b = 200 * (y - z);
+
+	return [l, a, b];
+};
+
+convert.lab.xyz = function (lab) {
+	var l = lab[0];
+	var a = lab[1];
+	var b = lab[2];
+	var x;
+	var y;
+	var z;
+
+	y = (l + 16) / 116;
+	x = a / 500 + y;
+	z = y - b / 200;
+
+	var y2 = Math.pow(y, 3);
+	var x2 = Math.pow(x, 3);
+	var z2 = Math.pow(z, 3);
+	y = y2 > 0.008856 ? y2 : (y - 16 / 116) / 7.787;
+	x = x2 > 0.008856 ? x2 : (x - 16 / 116) / 7.787;
+	z = z2 > 0.008856 ? z2 : (z - 16 / 116) / 7.787;
+
+	x *= 95.047;
+	y *= 100;
+	z *= 108.883;
+
+	return [x, y, z];
+};
+
+convert.lab.lch = function (lab) {
+	var l = lab[0];
+	var a = lab[1];
+	var b = lab[2];
+	var hr;
+	var h;
+	var c;
+
+	hr = Math.atan2(b, a);
+	h = hr * 360 / 2 / Math.PI;
+
+	if (h < 0) {
+		h += 360;
+	}
+
+	c = Math.sqrt(a * a + b * b);
+
+	return [l, c, h];
+};
+
+convert.lch.lab = function (lch) {
+	var l = lch[0];
+	var c = lch[1];
+	var h = lch[2];
+	var a;
+	var b;
+	var hr;
+
+	hr = h / 360 * 2 * Math.PI;
+	a = c * Math.cos(hr);
+	b = c * Math.sin(hr);
+
+	return [l, a, b];
+};
+
+convert.rgb.ansi16 = function (args) {
+	var r = args[0];
+	var g = args[1];
+	var b = args[2];
+	var value = 1 in arguments ? arguments[1] : convert.rgb.hsv(args)[2]; // hsv -> ansi16 optimization
+
+	value = Math.round(value / 50);
+
+	if (value === 0) {
+		return 30;
+	}
+
+	var ansi = 30
+		+ ((Math.round(b / 255) << 2)
+		| (Math.round(g / 255) << 1)
+		| Math.round(r / 255));
+
+	if (value === 2) {
+		ansi += 60;
+	}
+
+	return ansi;
+};
+
+convert.hsv.ansi16 = function (args) {
+	// optimization here; we already know the value and don't need to get
+	// it converted for us.
+	return convert.rgb.ansi16(convert.hsv.rgb(args), args[2]);
+};
+
+convert.rgb.ansi256 = function (args) {
+	var r = args[0];
+	var g = args[1];
+	var b = args[2];
+
+	// we use the extended greyscale palette here, with the exception of
+	// black and white. normal palette only has 4 greyscale shades.
+	if (r === g && g === b) {
+		if (r < 8) {
+			return 16;
+		}
+
+		if (r > 248) {
+			return 231;
+		}
+
+		return Math.round(((r - 8) / 247) * 24) + 232;
+	}
+
+	var ansi = 16
+		+ (36 * Math.round(r / 255 * 5))
+		+ (6 * Math.round(g / 255 * 5))
+		+ Math.round(b / 255 * 5);
+
+	return ansi;
+};
+
+convert.ansi16.rgb = function (args) {
+	var color = args % 10;
+
+	// handle greyscale
+	if (color === 0 || color === 7) {
+		if (args > 50) {
+			color += 3.5;
+		}
+
+		color = color / 10.5 * 255;
+
+		return [color, color, color];
+	}
+
+	var mult = (~~(args > 50) + 1) * 0.5;
+	var r = ((color & 1) * mult) * 255;
+	var g = (((color >> 1) & 1) * mult) * 255;
+	var b = (((color >> 2) & 1) * mult) * 255;
+
+	return [r, g, b];
+};
+
+convert.ansi256.rgb = function (args) {
+	// handle greyscale
+	if (args >= 232) {
+		var c = (args - 232) * 10 + 8;
+		return [c, c, c];
+	}
+
+	args -= 16;
+
+	var rem;
+	var r = Math.floor(args / 36) / 5 * 255;
+	var g = Math.floor((rem = args % 36) / 6) / 5 * 255;
+	var b = (rem % 6) / 5 * 255;
+
+	return [r, g, b];
+};
+
+convert.rgb.hex = function (args) {
+	var integer = ((Math.round(args[0]) & 0xFF) << 16)
+		+ ((Math.round(args[1]) & 0xFF) << 8)
+		+ (Math.round(args[2]) & 0xFF);
+
+	var string = integer.toString(16).toUpperCase();
+	return '000000'.substring(string.length) + string;
+};
+
+convert.hex.rgb = function (args) {
+	var match = args.toString(16).match(/[a-f0-9]{6}|[a-f0-9]{3}/i);
+	if (!match) {
+		return [0, 0, 0];
+	}
+
+	var colorString = match[0];
+
+	if (match[0].length === 3) {
+		colorString = colorString.split('').map(function (char) {
+			return char + char;
+		}).join('');
+	}
+
+	var integer = parseInt(colorString, 16);
+	var r = (integer >> 16) & 0xFF;
+	var g = (integer >> 8) & 0xFF;
+	var b = integer & 0xFF;
+
+	return [r, g, b];
+};
+
+convert.rgb.hcg = function (rgb) {
+	var r = rgb[0] / 255;
+	var g = rgb[1] / 255;
+	var b = rgb[2] / 255;
+	var max = Math.max(Math.max(r, g), b);
+	var min = Math.min(Math.min(r, g), b);
+	var chroma = (max - min);
+	var grayscale;
+	var hue;
+
+	if (chroma < 1) {
+		grayscale = min / (1 - chroma);
+	} else {
+		grayscale = 0;
+	}
+
+	if (chroma <= 0) {
+		hue = 0;
+	} else
+	if (max === r) {
+		hue = ((g - b) / chroma) % 6;
+	} else
+	if (max === g) {
+		hue = 2 + (b - r) / chroma;
+	} else {
+		hue = 4 + (r - g) / chroma + 4;
+	}
+
+	hue /= 6;
+	hue %= 1;
+
+	return [hue * 360, chroma * 100, grayscale * 100];
+};
+
+convert.hsl.hcg = function (hsl) {
+	var s = hsl[1] / 100;
+	var l = hsl[2] / 100;
+	var c = 1;
+	var f = 0;
+
+	if (l < 0.5) {
+		c = 2.0 * s * l;
+	} else {
+		c = 2.0 * s * (1.0 - l);
+	}
+
+	if (c < 1.0) {
+		f = (l - 0.5 * c) / (1.0 - c);
+	}
+
+	return [hsl[0], c * 100, f * 100];
+};
+
+convert.hsv.hcg = function (hsv) {
+	var s = hsv[1] / 100;
+	var v = hsv[2] / 100;
+
+	var c = s * v;
+	var f = 0;
+
+	if (c < 1.0) {
+		f = (v - c) / (1 - c);
+	}
+
+	return [hsv[0], c * 100, f * 100];
+};
+
+convert.hcg.rgb = function (hcg) {
+	var h = hcg[0] / 360;
+	var c = hcg[1] / 100;
+	var g = hcg[2] / 100;
+
+	if (c === 0.0) {
+		return [g * 255, g * 255, g * 255];
+	}
+
+	var pure = [0, 0, 0];
+	var hi = (h % 1) * 6;
+	var v = hi % 1;
+	var w = 1 - v;
+	var mg = 0;
+
+	switch (Math.floor(hi)) {
+		case 0:
+			pure[0] = 1; pure[1] = v; pure[2] = 0; break;
+		case 1:
+			pure[0] = w; pure[1] = 1; pure[2] = 0; break;
+		case 2:
+			pure[0] = 0; pure[1] = 1; pure[2] = v; break;
+		case 3:
+			pure[0] = 0; pure[1] = w; pure[2] = 1; break;
+		case 4:
+			pure[0] = v; pure[1] = 0; pure[2] = 1; break;
+		default:
+			pure[0] = 1; pure[1] = 0; pure[2] = w;
+	}
+
+	mg = (1.0 - c) * g;
+
+	return [
+		(c * pure[0] + mg) * 255,
+		(c * pure[1] + mg) * 255,
+		(c * pure[2] + mg) * 255
+	];
+};
+
+convert.hcg.hsv = function (hcg) {
+	var c = hcg[1] / 100;
+	var g = hcg[2] / 100;
+
+	var v = c + g * (1.0 - c);
+	var f = 0;
+
+	if (v > 0.0) {
+		f = c / v;
+	}
+
+	return [hcg[0], f * 100, v * 100];
+};
+
+convert.hcg.hsl = function (hcg) {
+	var c = hcg[1] / 100;
+	var g = hcg[2] / 100;
+
+	var l = g * (1.0 - c) + 0.5 * c;
+	var s = 0;
+
+	if (l > 0.0 && l < 0.5) {
+		s = c / (2 * l);
+	} else
+	if (l >= 0.5 && l < 1.0) {
+		s = c / (2 * (1 - l));
+	}
+
+	return [hcg[0], s * 100, l * 100];
+};
+
+convert.hcg.hwb = function (hcg) {
+	var c = hcg[1] / 100;
+	var g = hcg[2] / 100;
+	var v = c + g * (1.0 - c);
+	return [hcg[0], (v - c) * 100, (1 - v) * 100];
+};
+
+convert.hwb.hcg = function (hwb) {
+	var w = hwb[1] / 100;
+	var b = hwb[2] / 100;
+	var v = 1 - b;
+	var c = v - w;
+	var g = 0;
+
+	if (c < 1) {
+		g = (v - c) / (1 - c);
+	}
+
+	return [hwb[0], c * 100, g * 100];
+};
+
+convert.apple.rgb = function (apple) {
+	return [(apple[0] / 65535) * 255, (apple[1] / 65535) * 255, (apple[2] / 65535) * 255];
+};
+
+convert.rgb.apple = function (rgb) {
+	return [(rgb[0] / 255) * 65535, (rgb[1] / 255) * 65535, (rgb[2] / 255) * 65535];
+};
+
+convert.gray.rgb = function (args) {
+	return [args[0] / 100 * 255, args[0] / 100 * 255, args[0] / 100 * 255];
+};
+
+convert.gray.hsl = convert.gray.hsv = function (args) {
+	return [0, 0, args[0]];
+};
+
+convert.gray.hwb = function (gray) {
+	return [0, 100, gray[0]];
+};
+
+convert.gray.cmyk = function (gray) {
+	return [0, 0, 0, gray[0]];
+};
+
+convert.gray.lab = function (gray) {
+	return [gray[0], 0, 0];
+};
+
+convert.gray.hex = function (gray) {
+	var val = Math.round(gray[0] / 100 * 255) & 0xFF;
+	var integer = (val << 16) + (val << 8) + val;
+
+	var string = integer.toString(16).toUpperCase();
+	return '000000'.substring(string.length) + string;
+};
+
+convert.rgb.gray = function (rgb) {
+	var val = (rgb[0] + rgb[1] + rgb[2]) / 3;
+	return [val / 255 * 100];
+};
+});
+var conversions_1 = conversions.rgb;
+var conversions_2 = conversions.hsl;
+var conversions_3 = conversions.hsv;
+var conversions_4 = conversions.hwb;
+var conversions_5 = conversions.cmyk;
+var conversions_6 = conversions.xyz;
+var conversions_7 = conversions.lab;
+var conversions_8 = conversions.lch;
+var conversions_9 = conversions.hex;
+var conversions_10 = conversions.keyword;
+var conversions_11 = conversions.ansi16;
+var conversions_12 = conversions.ansi256;
+var conversions_13 = conversions.hcg;
+var conversions_14 = conversions.apple;
+var conversions_15 = conversions.gray;
+
+/*
+	this function routes a model to all other models.
+
+	all functions that are routed have a property `.conversion` attached
+	to the returned synthetic function. This property is an array
+	of strings, each with the steps in between the 'from' and 'to'
+	color models (inclusive).
+
+	conversions that are not possible simply are not included.
+*/
+
+function buildGraph() {
+	var graph = {};
+	// https://jsperf.com/object-keys-vs-for-in-with-closure/3
+	var models = Object.keys(conversions);
+
+	for (var len = models.length, i = 0; i < len; i++) {
+		graph[models[i]] = {
+			// http://jsperf.com/1-vs-infinity
+			// micro-opt, but this is simple.
+			distance: -1,
+			parent: null
+		};
+	}
+
+	return graph;
+}
+
+// https://en.wikipedia.org/wiki/Breadth-first_search
+function deriveBFS(fromModel) {
+	var graph = buildGraph();
+	var queue = [fromModel]; // unshift -> queue -> pop
+
+	graph[fromModel].distance = 0;
+
+	while (queue.length) {
+		var current = queue.pop();
+		var adjacents = Object.keys(conversions[current]);
+
+		for (var len = adjacents.length, i = 0; i < len; i++) {
+			var adjacent = adjacents[i];
+			var node = graph[adjacent];
+
+			if (node.distance === -1) {
+				node.distance = graph[current].distance + 1;
+				node.parent = current;
+				queue.unshift(adjacent);
+			}
+		}
+	}
+
+	return graph;
+}
+
+function link(from, to) {
+	return function (args) {
+		return to(from(args));
+	};
+}
+
+function wrapConversion(toModel, graph) {
+	var path = [graph[toModel].parent, toModel];
+	var fn = conversions[graph[toModel].parent][toModel];
+
+	var cur = graph[toModel].parent;
+	while (graph[cur].parent) {
+		path.unshift(graph[cur].parent);
+		fn = link(conversions[graph[cur].parent][cur], fn);
+		cur = graph[cur].parent;
+	}
+
+	fn.conversion = path;
+	return fn;
+}
+
+var route = function (fromModel) {
+	var graph = deriveBFS(fromModel);
+	var conversion = {};
+
+	var models = Object.keys(graph);
+	for (var len = models.length, i = 0; i < len; i++) {
+		var toModel = models[i];
+		var node = graph[toModel];
+
+		if (node.parent === null) {
+			// no possible conversion, or this node is the source model.
+			continue;
+		}
+
+		conversion[toModel] = wrapConversion(toModel, graph);
+	}
+
+	return conversion;
+};
+
+var convert = {};
+
+var models = Object.keys(conversions);
+
+function wrapRaw(fn) {
+	var wrappedFn = function (args) {
+		if (args === undefined || args === null) {
+			return args;
+		}
+
+		if (arguments.length > 1) {
+			args = Array.prototype.slice.call(arguments);
+		}
+
+		return fn(args);
+	};
+
+	// preserve .conversion property if there is one
+	if ('conversion' in fn) {
+		wrappedFn.conversion = fn.conversion;
+	}
+
+	return wrappedFn;
+}
+
+function wrapRounded(fn) {
+	var wrappedFn = function (args) {
+		if (args === undefined || args === null) {
+			return args;
+		}
+
+		if (arguments.length > 1) {
+			args = Array.prototype.slice.call(arguments);
+		}
+
+		var result = fn(args);
+
+		// we're assuming the result is an array here.
+		// see notice in conversions.js; don't use box types
+		// in conversion functions.
+		if (typeof result === 'object') {
+			for (var len = result.length, i = 0; i < len; i++) {
+				result[i] = Math.round(result[i]);
+			}
+		}
+
+		return result;
+	};
+
+	// preserve .conversion property if there is one
+	if ('conversion' in fn) {
+		wrappedFn.conversion = fn.conversion;
+	}
+
+	return wrappedFn;
+}
+
+models.forEach(function (fromModel) {
+	convert[fromModel] = {};
+
+	Object.defineProperty(convert[fromModel], 'channels', {value: conversions[fromModel].channels});
+	Object.defineProperty(convert[fromModel], 'labels', {value: conversions[fromModel].labels});
+
+	var routes = route(fromModel);
+	var routeModels = Object.keys(routes);
+
+	routeModels.forEach(function (toModel) {
+		var fn = routes[toModel];
+
+		convert[fromModel][toModel] = wrapRounded(fn);
+		convert[fromModel][toModel].raw = wrapRaw(fn);
+	});
 });
 
 var colorConvert = convert;
 
-var colorName = {
+var colorName$1 = {
 	"aliceblue": [240, 248, 255],
 	"antiquewhite": [250, 235, 215],
 	"aqua": [0, 255, 255],
@@ -35269,7 +35715,7 @@ function getRgba(string) {
       if (match[1] == "transparent") {
          return [0, 0, 0, 0];
       }
-      rgb = colorName[match[1]];
+      rgb = colorName$1[match[1]];
       if (!rgb) {
          return;
       }
@@ -35431,8 +35877,8 @@ function hexDouble(num) {
 
 //create a list of reverse color names
 var reverseNames = {};
-for (var name in colorName) {
-   reverseNames[colorName[name]] = name;
+for (var name in colorName$1) {
+   reverseNames[colorName$1[name]] = name;
 }
 
 /* MIT license */
@@ -36196,14 +36642,12 @@ var helpers = {
 	 * @param {object} argN - Additional objects containing properties to merge in target.
 	 * @returns {object} The `target` object.
 	 */
-	extend: function(target) {
-		var setFn = function(value, key) {
-			target[key] = value;
-		};
-		for (var i = 1, ilen = arguments.length; i < ilen; ++i) {
-			helpers.each(arguments[i], setFn);
-		}
-		return target;
+	extend: Object.assign || function(target) {
+		return helpers.merge(target, [].slice.call(arguments, 1), {
+			merger: function(key, dst, src) {
+				dst[key] = src[key];
+			}
+		});
 	},
 
 	/**
@@ -36229,6 +36673,13 @@ var helpers = {
 
 		ChartElement.__super__ = me.prototype;
 		return ChartElement;
+	},
+
+	_deprecated: function(scope, value, previous, current) {
+		if (value !== undefined) {
+			console.warn(scope + ': "' + previous +
+				'" is deprecated. Please use "' + current + '" instead');
+		}
 	}
 };
 
@@ -36590,7 +37041,11 @@ var exports$1 = {
 		if (style && typeof style === 'object') {
 			type = style.toString();
 			if (type === '[object HTMLImageElement]' || type === '[object HTMLCanvasElement]') {
-				ctx.drawImage(style, x - style.width / 2, y - style.height / 2, style.width, style.height);
+				ctx.save();
+				ctx.translate(x, y);
+				ctx.rotate(rad);
+				ctx.drawImage(style, -style.width / 2, -style.height / 2, style.width, style.height);
+				ctx.restore();
 				return;
 			}
 		}
@@ -36782,6 +37237,8 @@ var defaults = {
 	}
 };
 
+// TODO(v3): remove 'global' from namespace.  all default are global and
+// there's inconsistency around which options are under 'global'
 defaults._set('global', {
 	defaultColor: 'rgba(0,0,0,0.1)',
 	defaultFontColor: '#666',
@@ -36839,8 +37296,6 @@ var helpers_options = {
 			return value;
 		case '%':
 			value /= 100;
-			break;
-		default:
 			break;
 		}
 
@@ -36906,9 +37361,12 @@ var helpers_options = {
 	 * is called with `context` as first argument and the result becomes the new input.
 	 * @param {number} [index] - If defined and the current value is an array, the value
 	 * at `index` become the new input.
+	 * @param {object} [info] - object to return information about resolution in
+	 * @param {boolean} [info.cacheable] - Will be set to `false` if option is not cacheable.
 	 * @since 2.7.0
 	 */
-	resolve: function(inputs, context, index) {
+	resolve: function(inputs, context, index, info) {
+		var cacheable = true;
 		var i, ilen, value;
 
 		for (i = 0, ilen = inputs.length; i < ilen; ++i) {
@@ -36918,24 +37376,161 @@ var helpers_options = {
 			}
 			if (context !== undefined && typeof value === 'function') {
 				value = value(context);
+				cacheable = false;
 			}
 			if (index !== undefined && helpers_core.isArray(value)) {
 				value = value[index];
+				cacheable = false;
 			}
 			if (value !== undefined) {
+				if (info && !cacheable) {
+					info.cacheable = false;
+				}
 				return value;
 			}
 		}
 	}
 };
 
+/**
+ * @alias Chart.helpers.math
+ * @namespace
+ */
+var exports$2 = {
+	/**
+	 * Returns an array of factors sorted from 1 to sqrt(value)
+	 * @private
+	 */
+	_factorize: function(value) {
+		var result = [];
+		var sqrt = Math.sqrt(value);
+		var i;
+
+		for (i = 1; i < sqrt; i++) {
+			if (value % i === 0) {
+				result.push(i);
+				result.push(value / i);
+			}
+		}
+		if (sqrt === (sqrt | 0)) { // if value is a square number
+			result.push(sqrt);
+		}
+
+		result.sort(function(a, b) {
+			return a - b;
+		}).pop();
+		return result;
+	},
+
+	log10: Math.log10 || function(x) {
+		var exponent = Math.log(x) * Math.LOG10E; // Math.LOG10E = 1 / Math.LN10.
+		// Check for whole powers of 10,
+		// which due to floating point rounding error should be corrected.
+		var powerOf10 = Math.round(exponent);
+		var isPowerOf10 = x === Math.pow(10, powerOf10);
+
+		return isPowerOf10 ? powerOf10 : exponent;
+	}
+};
+
+var helpers_math = exports$2;
+
+// DEPRECATIONS
+
+/**
+ * Provided for backward compatibility, use Chart.helpers.math.log10 instead.
+ * @namespace Chart.helpers.log10
+ * @deprecated since version 2.9.0
+ * @todo remove at version 3
+ * @private
+ */
+helpers_core.log10 = exports$2.log10;
+
+var getRtlAdapter = function(rectX, width) {
+	return {
+		x: function(x) {
+			return rectX + rectX + width - x;
+		},
+		setWidth: function(w) {
+			width = w;
+		},
+		textAlign: function(align) {
+			if (align === 'center') {
+				return align;
+			}
+			return align === 'right' ? 'left' : 'right';
+		},
+		xPlus: function(x, value) {
+			return x - value;
+		},
+		leftForLtr: function(x, itemWidth) {
+			return x - itemWidth;
+		},
+	};
+};
+
+var getLtrAdapter = function() {
+	return {
+		x: function(x) {
+			return x;
+		},
+		setWidth: function(w) { // eslint-disable-line no-unused-vars
+		},
+		textAlign: function(align) {
+			return align;
+		},
+		xPlus: function(x, value) {
+			return x + value;
+		},
+		leftForLtr: function(x, _itemWidth) { // eslint-disable-line no-unused-vars
+			return x;
+		},
+	};
+};
+
+var getAdapter = function(rtl, rectX, width) {
+	return rtl ? getRtlAdapter(rectX, width) : getLtrAdapter();
+};
+
+var overrideTextDirection = function(ctx, direction) {
+	var style, original;
+	if (direction === 'ltr' || direction === 'rtl') {
+		style = ctx.canvas.style;
+		original = [
+			style.getPropertyValue('direction'),
+			style.getPropertyPriority('direction'),
+		];
+
+		style.setProperty('direction', direction, 'important');
+		ctx.prevTextDirection = original;
+	}
+};
+
+var restoreTextDirection = function(ctx) {
+	var original = ctx.prevTextDirection;
+	if (original !== undefined) {
+		delete ctx.prevTextDirection;
+		ctx.canvas.style.setProperty('direction', original[0], original[1]);
+	}
+};
+
+var helpers_rtl = {
+	getRtlAdapter: getAdapter,
+	overrideTextDirection: overrideTextDirection,
+	restoreTextDirection: restoreTextDirection,
+};
+
 var helpers$1 = helpers_core;
 var easing = helpers_easing;
 var canvas = helpers_canvas;
 var options = helpers_options;
+var math = helpers_math;
+var rtl = helpers_rtl;
 helpers$1.easing = easing;
 helpers$1.canvas = canvas;
 helpers$1.options = options;
+helpers$1.math = math;
+helpers$1.rtl = rtl;
 
 function interpolate(start, view, model, ease) {
 	var keys = Object.keys(model);
@@ -36992,6 +37587,7 @@ var Element = function(configuration) {
 };
 
 helpers$1.extend(Element.prototype, {
+	_type: undefined,
 
 	initialize: function() {
 		this.hidden = false;
@@ -37000,7 +37596,7 @@ helpers$1.extend(Element.prototype, {
 	pivot: function() {
 		var me = this;
 		if (!me._view) {
-			me._view = helpers$1.clone(me._model);
+			me._view = helpers$1.extend({}, me._model);
 		}
 		me._start = {};
 		return me;
@@ -37014,7 +37610,7 @@ helpers$1.extend(Element.prototype, {
 
 		// No animation -> No Transition
 		if (!model || ease === 1) {
-			me._view = model;
+			me._view = helpers$1.extend({}, model);
 			me._start = null;
 			return me;
 		}
@@ -37048,7 +37644,7 @@ Element.extend = helpers$1.inherits;
 
 var core_element = Element;
 
-var exports$2 = core_element.extend({
+var exports$3 = core_element.extend({
 	chart: null, // the animation associated chart instance
 	currentStep: 0, // the current animation step
 	numSteps: 60, // default number of steps
@@ -37059,7 +37655,7 @@ var exports$2 = core_element.extend({
 	onAnimationComplete: null, // user specified callback to fire when the animation finishes
 });
 
-var core_animation = exports$2;
+var core_animation = exports$3;
 
 // DEPRECATIONS
 
@@ -37069,7 +37665,7 @@ var core_animation = exports$2;
  * @deprecated since version 2.6.0
  * @todo remove at version 3
  */
-Object.defineProperty(exports$2.prototype, 'animationObject', {
+Object.defineProperty(exports$3.prototype, 'animationObject', {
 	get: function() {
 		return this;
 	}
@@ -37081,7 +37677,7 @@ Object.defineProperty(exports$2.prototype, 'animationObject', {
  * @deprecated since version 2.6.0
  * @todo remove at version 3
  */
-Object.defineProperty(exports$2.prototype, 'chartInstance', {
+Object.defineProperty(exports$3.prototype, 'chartInstance', {
 	get: function() {
 		return this.chart;
 	},
@@ -37299,12 +37895,42 @@ helpers$1.extend(DatasetController.prototype, {
 	 */
 	dataElementType: null,
 
+	/**
+	 * Dataset element option keys to be resolved in _resolveDatasetElementOptions.
+	 * A derived controller may override this to resolve controller-specific options.
+	 * The keys defined here are for backward compatibility for legend styles.
+	 * @private
+	 */
+	_datasetElementOptions: [
+		'backgroundColor',
+		'borderCapStyle',
+		'borderColor',
+		'borderDash',
+		'borderDashOffset',
+		'borderJoinStyle',
+		'borderWidth'
+	],
+
+	/**
+	 * Data element option keys to be resolved in _resolveDataElementOptions.
+	 * A derived controller may override this to resolve controller-specific options.
+	 * The keys defined here are for backward compatibility for legend styles.
+	 * @private
+	 */
+	_dataElementOptions: [
+		'backgroundColor',
+		'borderColor',
+		'borderWidth',
+		'pointStyle'
+	],
+
 	initialize: function(chart, datasetIndex) {
 		var me = this;
 		me.chart = chart;
 		me.index = datasetIndex;
 		me.linkScales();
 		me.addElements();
+		me._type = me.getMeta().type;
 	},
 
 	updateIndex: function(datasetIndex) {
@@ -37314,13 +37940,16 @@ helpers$1.extend(DatasetController.prototype, {
 	linkScales: function() {
 		var me = this;
 		var meta = me.getMeta();
+		var chart = me.chart;
+		var scales = chart.scales;
 		var dataset = me.getDataset();
+		var scalesOpts = chart.options.scales;
 
-		if (meta.xAxisID === null || !(meta.xAxisID in me.chart.scales)) {
-			meta.xAxisID = dataset.xAxisID || me.chart.options.scales.xAxes[0].id;
+		if (meta.xAxisID === null || !(meta.xAxisID in scales) || dataset.xAxisID) {
+			meta.xAxisID = dataset.xAxisID || scalesOpts.xAxes[0].id;
 		}
-		if (meta.yAxisID === null || !(meta.yAxisID in me.chart.scales)) {
-			meta.yAxisID = dataset.yAxisID || me.chart.options.scales.yAxes[0].id;
+		if (meta.yAxisID === null || !(meta.yAxisID in scales) || dataset.yAxisID) {
+			meta.yAxisID = dataset.yAxisID || scalesOpts.yAxes[0].id;
 		}
 	},
 
@@ -37365,7 +37994,7 @@ helpers$1.extend(DatasetController.prototype, {
 	},
 
 	reset: function() {
-		this.update(true);
+		this._update(true);
 	},
 
 	/**
@@ -37441,6 +38070,31 @@ helpers$1.extend(DatasetController.prototype, {
 		me.resyncElements();
 	},
 
+	/**
+	 * Returns the merged user-supplied and default dataset-level options
+	 * @private
+	 */
+	_configure: function() {
+		var me = this;
+		me._config = helpers$1.merge({}, [
+			me.chart.options.datasets[me._type],
+			me.getDataset(),
+		], {
+			merger: function(key, target, source) {
+				if (key !== '_meta' && key !== 'data') {
+					helpers$1._merger(key, target, source);
+				}
+			}
+		});
+	},
+
+	_update: function(reset) {
+		var me = this;
+		me._configure();
+		me._cachedDataOpts = null;
+		me.update(reset);
+	},
+
 	update: helpers$1.noop,
 
 	transition: function(easingValue) {
@@ -37473,6 +38127,127 @@ helpers$1.extend(DatasetController.prototype, {
 		}
 	},
 
+	/**
+	 * Returns a set of predefined style properties that should be used to represent the dataset
+	 * or the data if the index is specified
+	 * @param {number} index - data index
+	 * @return {IStyleInterface} style object
+	 */
+	getStyle: function(index) {
+		var me = this;
+		var meta = me.getMeta();
+		var dataset = meta.dataset;
+		var style;
+
+		me._configure();
+		if (dataset && index === undefined) {
+			style = me._resolveDatasetElementOptions(dataset || {});
+		} else {
+			index = index || 0;
+			style = me._resolveDataElementOptions(meta.data[index] || {}, index);
+		}
+
+		if (style.fill === false || style.fill === null) {
+			style.backgroundColor = style.borderColor;
+		}
+
+		return style;
+	},
+
+	/**
+	 * @private
+	 */
+	_resolveDatasetElementOptions: function(element, hover) {
+		var me = this;
+		var chart = me.chart;
+		var datasetOpts = me._config;
+		var custom = element.custom || {};
+		var options = chart.options.elements[me.datasetElementType.prototype._type] || {};
+		var elementOptions = me._datasetElementOptions;
+		var values = {};
+		var i, ilen, key, readKey;
+
+		// Scriptable options
+		var context = {
+			chart: chart,
+			dataset: me.getDataset(),
+			datasetIndex: me.index,
+			hover: hover
+		};
+
+		for (i = 0, ilen = elementOptions.length; i < ilen; ++i) {
+			key = elementOptions[i];
+			readKey = hover ? 'hover' + key.charAt(0).toUpperCase() + key.slice(1) : key;
+			values[key] = resolve([
+				custom[readKey],
+				datasetOpts[readKey],
+				options[readKey]
+			], context);
+		}
+
+		return values;
+	},
+
+	/**
+	 * @private
+	 */
+	_resolveDataElementOptions: function(element, index) {
+		var me = this;
+		var custom = element && element.custom;
+		var cached = me._cachedDataOpts;
+		if (cached && !custom) {
+			return cached;
+		}
+		var chart = me.chart;
+		var datasetOpts = me._config;
+		var options = chart.options.elements[me.dataElementType.prototype._type] || {};
+		var elementOptions = me._dataElementOptions;
+		var values = {};
+
+		// Scriptable options
+		var context = {
+			chart: chart,
+			dataIndex: index,
+			dataset: me.getDataset(),
+			datasetIndex: me.index
+		};
+
+		// `resolve` sets cacheable to `false` if any option is indexed or scripted
+		var info = {cacheable: !custom};
+
+		var keys, i, ilen, key;
+
+		custom = custom || {};
+
+		if (helpers$1.isArray(elementOptions)) {
+			for (i = 0, ilen = elementOptions.length; i < ilen; ++i) {
+				key = elementOptions[i];
+				values[key] = resolve([
+					custom[key],
+					datasetOpts[key],
+					options[key]
+				], context, index, info);
+			}
+		} else {
+			keys = Object.keys(elementOptions);
+			for (i = 0, ilen = keys.length; i < ilen; ++i) {
+				key = keys[i];
+				values[key] = resolve([
+					custom[key],
+					datasetOpts[elementOptions[key]],
+					datasetOpts[key],
+					options[key]
+				], context, index, info);
+			}
+		}
+
+		if (info.cacheable) {
+			me._cachedDataOpts = Object.freeze(values);
+		}
+
+		return values;
+	},
+
 	removeHoverStyle: function(element) {
 		helpers$1.merge(element._model, element.$previousStyle || {});
 		delete element.$previousStyle;
@@ -37494,6 +38269,42 @@ helpers$1.extend(DatasetController.prototype, {
 		model.backgroundColor = resolve([custom.hoverBackgroundColor, dataset.hoverBackgroundColor, getHoverColor(model.backgroundColor)], undefined, index);
 		model.borderColor = resolve([custom.hoverBorderColor, dataset.hoverBorderColor, getHoverColor(model.borderColor)], undefined, index);
 		model.borderWidth = resolve([custom.hoverBorderWidth, dataset.hoverBorderWidth, model.borderWidth], undefined, index);
+	},
+
+	/**
+	 * @private
+	 */
+	_removeDatasetHoverStyle: function() {
+		var element = this.getMeta().dataset;
+
+		if (element) {
+			this.removeHoverStyle(element);
+		}
+	},
+
+	/**
+	 * @private
+	 */
+	_setDatasetHoverStyle: function() {
+		var element = this.getMeta().dataset;
+		var prev = {};
+		var i, ilen, key, keys, hoverOptions, model;
+
+		if (!element) {
+			return;
+		}
+
+		model = element._model;
+		hoverOptions = this._resolveDatasetElementOptions(element, true);
+
+		keys = Object.keys(hoverOptions);
+		for (i = 0, ilen = keys.length; i < ilen; ++i) {
+			key = keys[i];
+			prev[key] = model[key];
+			model[key] = hoverOptions[key];
+		}
+
+		element.$previousStyle = prev;
 	},
 
 	/**
@@ -37564,6 +38375,8 @@ DatasetController.extend = helpers$1.inherits;
 
 var core_datasetController = DatasetController;
 
+var TAU = Math.PI * 2;
+
 core_defaults._set('global', {
 	elements: {
 		arc: {
@@ -37575,7 +38388,84 @@ core_defaults._set('global', {
 	}
 });
 
+function clipArc(ctx, arc) {
+	var startAngle = arc.startAngle;
+	var endAngle = arc.endAngle;
+	var pixelMargin = arc.pixelMargin;
+	var angleMargin = pixelMargin / arc.outerRadius;
+	var x = arc.x;
+	var y = arc.y;
+
+	// Draw an inner border by cliping the arc and drawing a double-width border
+	// Enlarge the clipping arc by 0.33 pixels to eliminate glitches between borders
+	ctx.beginPath();
+	ctx.arc(x, y, arc.outerRadius, startAngle - angleMargin, endAngle + angleMargin);
+	if (arc.innerRadius > pixelMargin) {
+		angleMargin = pixelMargin / arc.innerRadius;
+		ctx.arc(x, y, arc.innerRadius - pixelMargin, endAngle + angleMargin, startAngle - angleMargin, true);
+	} else {
+		ctx.arc(x, y, pixelMargin, endAngle + Math.PI / 2, startAngle - Math.PI / 2);
+	}
+	ctx.closePath();
+	ctx.clip();
+}
+
+function drawFullCircleBorders(ctx, vm, arc, inner) {
+	var endAngle = arc.endAngle;
+	var i;
+
+	if (inner) {
+		arc.endAngle = arc.startAngle + TAU;
+		clipArc(ctx, arc);
+		arc.endAngle = endAngle;
+		if (arc.endAngle === arc.startAngle && arc.fullCircles) {
+			arc.endAngle += TAU;
+			arc.fullCircles--;
+		}
+	}
+
+	ctx.beginPath();
+	ctx.arc(arc.x, arc.y, arc.innerRadius, arc.startAngle + TAU, arc.startAngle, true);
+	for (i = 0; i < arc.fullCircles; ++i) {
+		ctx.stroke();
+	}
+
+	ctx.beginPath();
+	ctx.arc(arc.x, arc.y, vm.outerRadius, arc.startAngle, arc.startAngle + TAU);
+	for (i = 0; i < arc.fullCircles; ++i) {
+		ctx.stroke();
+	}
+}
+
+function drawBorder(ctx, vm, arc) {
+	var inner = vm.borderAlign === 'inner';
+
+	if (inner) {
+		ctx.lineWidth = vm.borderWidth * 2;
+		ctx.lineJoin = 'round';
+	} else {
+		ctx.lineWidth = vm.borderWidth;
+		ctx.lineJoin = 'bevel';
+	}
+
+	if (arc.fullCircles) {
+		drawFullCircleBorders(ctx, vm, arc, inner);
+	}
+
+	if (inner) {
+		clipArc(ctx, arc);
+	}
+
+	ctx.beginPath();
+	ctx.arc(arc.x, arc.y, vm.outerRadius, arc.startAngle, arc.endAngle);
+	ctx.arc(arc.x, arc.y, arc.innerRadius, arc.endAngle, arc.startAngle, true);
+	ctx.closePath();
+	ctx.stroke();
+}
+
 var element_arc = core_element.extend({
+	_type: 'arc',
+
 	inLabelRange: function(mouseX) {
 		var vm = this._view;
 
@@ -37590,20 +38480,20 @@ var element_arc = core_element.extend({
 
 		if (vm) {
 			var pointRelativePosition = helpers$1.getAngleFromPoint(vm, {x: chartX, y: chartY});
-			var	angle = pointRelativePosition.angle;
+			var angle = pointRelativePosition.angle;
 			var distance = pointRelativePosition.distance;
 
 			// Sanitise angle range
 			var startAngle = vm.startAngle;
 			var endAngle = vm.endAngle;
 			while (endAngle < startAngle) {
-				endAngle += 2.0 * Math.PI;
+				endAngle += TAU;
 			}
 			while (angle > endAngle) {
-				angle -= 2.0 * Math.PI;
+				angle -= TAU;
 			}
 			while (angle < startAngle) {
-				angle += 2.0 * Math.PI;
+				angle += TAU;
 			}
 
 			// Check if within the range of the open/close angle
@@ -37644,51 +38534,44 @@ var element_arc = core_element.extend({
 	draw: function() {
 		var ctx = this._chart.ctx;
 		var vm = this._view;
-		var sA = vm.startAngle;
-		var eA = vm.endAngle;
 		var pixelMargin = (vm.borderAlign === 'inner') ? 0.33 : 0;
-		var angleMargin;
+		var arc = {
+			x: vm.x,
+			y: vm.y,
+			innerRadius: vm.innerRadius,
+			outerRadius: Math.max(vm.outerRadius - pixelMargin, 0),
+			pixelMargin: pixelMargin,
+			startAngle: vm.startAngle,
+			endAngle: vm.endAngle,
+			fullCircles: Math.floor(vm.circumference / TAU)
+		};
+		var i;
 
 		ctx.save();
 
-		ctx.beginPath();
-		ctx.arc(vm.x, vm.y, Math.max(vm.outerRadius - pixelMargin, 0), sA, eA);
-		ctx.arc(vm.x, vm.y, vm.innerRadius, eA, sA, true);
-		ctx.closePath();
-
 		ctx.fillStyle = vm.backgroundColor;
+		ctx.strokeStyle = vm.borderColor;
+
+		if (arc.fullCircles) {
+			arc.endAngle = arc.startAngle + TAU;
+			ctx.beginPath();
+			ctx.arc(arc.x, arc.y, arc.outerRadius, arc.startAngle, arc.endAngle);
+			ctx.arc(arc.x, arc.y, arc.innerRadius, arc.endAngle, arc.startAngle, true);
+			ctx.closePath();
+			for (i = 0; i < arc.fullCircles; ++i) {
+				ctx.fill();
+			}
+			arc.endAngle = arc.startAngle + vm.circumference % TAU;
+		}
+
+		ctx.beginPath();
+		ctx.arc(arc.x, arc.y, arc.outerRadius, arc.startAngle, arc.endAngle);
+		ctx.arc(arc.x, arc.y, arc.innerRadius, arc.endAngle, arc.startAngle, true);
+		ctx.closePath();
 		ctx.fill();
 
 		if (vm.borderWidth) {
-			if (vm.borderAlign === 'inner') {
-				// Draw an inner border by cliping the arc and drawing a double-width border
-				// Enlarge the clipping arc by 0.33 pixels to eliminate glitches between borders
-				ctx.beginPath();
-				angleMargin = pixelMargin / vm.outerRadius;
-				ctx.arc(vm.x, vm.y, vm.outerRadius, sA - angleMargin, eA + angleMargin);
-				if (vm.innerRadius > pixelMargin) {
-					angleMargin = pixelMargin / vm.innerRadius;
-					ctx.arc(vm.x, vm.y, vm.innerRadius - pixelMargin, eA + angleMargin, sA - angleMargin, true);
-				} else {
-					ctx.arc(vm.x, vm.y, pixelMargin, eA + Math.PI / 2, sA - Math.PI / 2);
-				}
-				ctx.closePath();
-				ctx.clip();
-
-				ctx.beginPath();
-				ctx.arc(vm.x, vm.y, vm.outerRadius, sA, eA);
-				ctx.arc(vm.x, vm.y, vm.innerRadius, eA, sA, true);
-				ctx.closePath();
-
-				ctx.lineWidth = vm.borderWidth * 2;
-				ctx.lineJoin = 'round';
-			} else {
-				ctx.lineWidth = vm.borderWidth;
-				ctx.lineJoin = 'bevel';
-			}
-
-			ctx.strokeStyle = vm.borderColor;
-			ctx.stroke();
+			drawBorder(ctx, vm, arc);
 		}
 
 		ctx.restore();
@@ -37717,6 +38600,8 @@ core_defaults._set('global', {
 });
 
 var element_line = core_element.extend({
+	_type: 'line',
+
 	draw: function() {
 		var me = this;
 		var vm = me._view;
@@ -37726,11 +38611,27 @@ var element_line = core_element.extend({
 		var globalDefaults = core_defaults.global;
 		var globalOptionLineElements = globalDefaults.elements.line;
 		var lastDrawnIndex = -1;
-		var index, current, previous, currentVM;
+		var closePath = me._loop;
+		var index, previous, currentVM;
 
-		// If we are looping, adding the first point again
-		if (me._loop && points.length) {
-			points.push(points[0]);
+		if (!points.length) {
+			return;
+		}
+
+		if (me._loop) {
+			for (index = 0; index < points.length; ++index) {
+				previous = helpers$1.previousItem(points, index);
+				// If the line has an open path, shift the point array
+				if (!points[index]._view.skip && previous._view.skip) {
+					points = points.slice(index).concat(points.slice(0, index));
+					closePath = spanGaps;
+					break;
+				}
+			}
+			// If the line has a close path, add the first point again
+			if (closePath) {
+				points.push(points[0]);
+			}
 		}
 
 		ctx.save();
@@ -37750,33 +38651,32 @@ var element_line = core_element.extend({
 
 		// Stroke Line
 		ctx.beginPath();
-		lastDrawnIndex = -1;
 
-		for (index = 0; index < points.length; ++index) {
-			current = points[index];
-			previous = helpers$1.previousItem(points, index);
-			currentVM = current._view;
+		// First point moves to it's starting position no matter what
+		currentVM = points[0]._view;
+		if (!currentVM.skip) {
+			ctx.moveTo(currentVM.x, currentVM.y);
+			lastDrawnIndex = 0;
+		}
 
-			// First point moves to it's starting position no matter what
-			if (index === 0) {
-				if (!currentVM.skip) {
+		for (index = 1; index < points.length; ++index) {
+			currentVM = points[index]._view;
+			previous = lastDrawnIndex === -1 ? helpers$1.previousItem(points, index) : points[lastDrawnIndex];
+
+			if (!currentVM.skip) {
+				if ((lastDrawnIndex !== (index - 1) && !spanGaps) || lastDrawnIndex === -1) {
+					// There was a gap and this is the first point after the gap
 					ctx.moveTo(currentVM.x, currentVM.y);
-					lastDrawnIndex = index;
+				} else {
+					// Line to next point
+					helpers$1.canvas.lineTo(ctx, previous._view, currentVM);
 				}
-			} else {
-				previous = lastDrawnIndex === -1 ? previous : points[lastDrawnIndex];
-
-				if (!currentVM.skip) {
-					if ((lastDrawnIndex !== (index - 1) && !spanGaps) || lastDrawnIndex === -1) {
-						// There was a gap and this is the first point after the gap
-						ctx.moveTo(currentVM.x, currentVM.y);
-					} else {
-						// Line to next point
-						helpers$1.canvas.lineTo(ctx, previous._view, current._view);
-					}
-					lastDrawnIndex = index;
-				}
+				lastDrawnIndex = index;
 			}
+		}
+
+		if (closePath) {
+			ctx.closePath();
 		}
 
 		ctx.stroke();
@@ -37815,6 +38715,8 @@ function yRange(mouseY) {
 }
 
 var element_point = core_element.extend({
+	_type: 'point',
+
 	inRange: function(mouseX, mouseY) {
 		var vm = this._view;
 		return vm ? ((Math.pow(mouseX - vm.x, 2) + Math.pow(mouseY - vm.y, 2)) < Math.pow(vm.hitRadius + vm.radius, 2)) : false;
@@ -37997,6 +38899,8 @@ function inRange(vm, x, y) {
 }
 
 var element_rectangle = core_element.extend({
+	_type: 'rectangle',
+
 	draw: function() {
 		var ctx = this._chart.ctx;
 		var vm = this._view;
@@ -38086,7 +38990,8 @@ elements.Line = Line;
 elements.Point = Point;
 elements.Rectangle = Rectangle;
 
-var resolve$1 = helpers$1.options.resolve;
+var deprecated = helpers$1._deprecated;
+var valueOrDefault$3 = helpers$1.valueOrDefault;
 
 core_defaults._set('bar', {
 	hover: {
@@ -38096,8 +39001,6 @@ core_defaults._set('bar', {
 	scales: {
 		xAxes: [{
 			type: 'category',
-			categoryPercentage: 0.8,
-			barPercentage: 0.9,
 			offset: true,
 			gridLines: {
 				offsetGridLines: true
@@ -38110,22 +39013,30 @@ core_defaults._set('bar', {
 	}
 });
 
+core_defaults._set('global', {
+	datasets: {
+		bar: {
+			categoryPercentage: 0.8,
+			barPercentage: 0.9
+		}
+	}
+});
+
 /**
  * Computes the "optimal" sample size to maintain bars equally sized while preventing overlap.
  * @private
  */
 function computeMinSampleSize(scale, pixels) {
-	var min = scale.isHorizontal() ? scale.width : scale.height;
-	var ticks = scale.getTicks();
+	var min = scale._length;
 	var prev, curr, i, ilen;
 
 	for (i = 1, ilen = pixels.length; i < ilen; ++i) {
 		min = Math.min(min, Math.abs(pixels[i] - pixels[i - 1]));
 	}
 
-	for (i = 0, ilen = ticks.length; i < ilen; ++i) {
+	for (i = 0, ilen = scale.getTicks().length; i < ilen; ++i) {
 		curr = scale.getPixelForTick(i);
-		min = i > 0 ? Math.min(min, curr - prev) : min;
+		min = i > 0 ? Math.min(min, Math.abs(curr - prev)) : min;
 		prev = curr;
 	}
 
@@ -38142,10 +39053,13 @@ function computeFitCategoryTraits(index, ruler, options) {
 	var thickness = options.barThickness;
 	var count = ruler.stackCount;
 	var curr = ruler.pixels[index];
+	var min = helpers$1.isNullOrUndef(thickness)
+		? computeMinSampleSize(ruler.scale, ruler.pixels)
+		: -1;
 	var size, ratio;
 
 	if (helpers$1.isNullOrUndef(thickness)) {
-		size = ruler.min * options.categoryPercentage;
+		size = min * options.categoryPercentage;
 		ratio = options.barPercentage;
 	} else {
 		// When bar thickness is enforced, category and bar percentages are ignored.
@@ -38201,15 +39115,37 @@ var controller_bar = core_datasetController.extend({
 
 	dataElementType: elements.Rectangle,
 
+	/**
+	 * @private
+	 */
+	_dataElementOptions: [
+		'backgroundColor',
+		'borderColor',
+		'borderSkipped',
+		'borderWidth',
+		'barPercentage',
+		'barThickness',
+		'categoryPercentage',
+		'maxBarThickness',
+		'minBarLength'
+	],
+
 	initialize: function() {
 		var me = this;
-		var meta;
+		var meta, scaleOpts;
 
 		core_datasetController.prototype.initialize.apply(me, arguments);
 
 		meta = me.getMeta();
 		meta.stack = me.getDataset().stack;
 		meta.bar = true;
+
+		scaleOpts = me._getIndexScale().options;
+		deprecated('bar chart', scaleOpts.barPercentage, 'scales.[x/y]Axes.barPercentage', 'dataset.barPercentage');
+		deprecated('bar chart', scaleOpts.barThickness, 'scales.[x/y]Axes.barThickness', 'dataset.barThickness');
+		deprecated('bar chart', scaleOpts.categoryPercentage, 'scales.[x/y]Axes.categoryPercentage', 'dataset.categoryPercentage');
+		deprecated('bar chart', me._getValueScale().options.minBarLength, 'scales.[x/y]Axes.minBarLength', 'dataset.minBarLength');
+		deprecated('bar chart', scaleOpts.maxBarThickness, 'scales.[x/y]Axes.maxBarThickness', 'dataset.maxBarThickness');
 	},
 
 	update: function(reset) {
@@ -38228,7 +39164,7 @@ var controller_bar = core_datasetController.extend({
 		var me = this;
 		var meta = me.getMeta();
 		var dataset = me.getDataset();
-		var options = me._resolveElementOptions(rectangle, index);
+		var options = me._resolveDataElementOptions(rectangle, index);
 
 		rectangle._xScale = me.getScaleForId(meta.xAxisID);
 		rectangle._yScale = me.getScaleForId(meta.yAxisID);
@@ -38243,7 +39179,11 @@ var controller_bar = core_datasetController.extend({
 			label: me.chart.data.labels[index]
 		};
 
-		me._updateElementGeometry(rectangle, index, reset);
+		if (helpers$1.isArray(dataset.data[index])) {
+			rectangle._model.borderSkipped = null;
+		}
+
+		me._updateElementGeometry(rectangle, index, reset, options);
 
 		rectangle.pivot();
 	},
@@ -38251,15 +39191,15 @@ var controller_bar = core_datasetController.extend({
 	/**
 	 * @private
 	 */
-	_updateElementGeometry: function(rectangle, index, reset) {
+	_updateElementGeometry: function(rectangle, index, reset, options) {
 		var me = this;
 		var model = rectangle._model;
 		var vscale = me._getValueScale();
 		var base = vscale.getBasePixel();
 		var horizontal = vscale.isHorizontal();
 		var ruler = me._ruler || me.getRuler();
-		var vpixels = me.calculateBarValuePixels(me.index, index);
-		var ipixels = me.calculateBarIndexPixels(me.index, index, ruler);
+		var vpixels = me.calculateBarValuePixels(me.index, index, options);
+		var ipixels = me.calculateBarIndexPixels(me.index, index, ruler, options);
 
 		model.horizontal = horizontal;
 		model.base = reset ? base : vpixels.base;
@@ -38277,20 +39217,26 @@ var controller_bar = core_datasetController.extend({
 	 */
 	_getStacks: function(last) {
 		var me = this;
-		var chart = me.chart;
 		var scale = me._getIndexScale();
+		var metasets = scale._getMatchingVisibleMetas(me._type);
 		var stacked = scale.options.stacked;
-		var ilen = last === undefined ? chart.data.datasets.length : last + 1;
+		var ilen = metasets.length;
 		var stacks = [];
 		var i, meta;
 
 		for (i = 0; i < ilen; ++i) {
-			meta = chart.getDatasetMeta(i);
-			if (meta.bar && chart.isDatasetVisible(i) &&
-				(stacked === false ||
-				(stacked === true && stacks.indexOf(meta.stack) === -1) ||
-				(stacked === undefined && (meta.stack === undefined || stacks.indexOf(meta.stack) === -1)))) {
+			meta = metasets[i];
+			// stacked   | meta.stack
+			//           | found | not found | undefined
+			// false     |   x   |     x     |     x
+			// true      |       |     x     |
+			// undefined |       |     x     |     x
+			if (stacked === false || stacks.indexOf(meta.stack) === -1 ||
+				(stacked === undefined && meta.stack === undefined)) {
 				stacks.push(meta.stack);
+			}
+			if (meta.index === last) {
+				break;
 			}
 		}
 
@@ -38329,28 +39275,18 @@ var controller_bar = core_datasetController.extend({
 	getRuler: function() {
 		var me = this;
 		var scale = me._getIndexScale();
-		var stackCount = me.getStackCount();
-		var datasetIndex = me.index;
-		var isHorizontal = scale.isHorizontal();
-		var start = isHorizontal ? scale.left : scale.top;
-		var end = start + (isHorizontal ? scale.width : scale.height);
 		var pixels = [];
-		var i, ilen, min;
+		var i, ilen;
 
 		for (i = 0, ilen = me.getMeta().data.length; i < ilen; ++i) {
-			pixels.push(scale.getPixelForValue(null, i, datasetIndex));
+			pixels.push(scale.getPixelForValue(null, i, me.index));
 		}
 
-		min = helpers$1.isNullOrUndef(scale.options.barThickness)
-			? computeMinSampleSize(scale, pixels)
-			: -1;
-
 		return {
-			min: min,
 			pixels: pixels,
-			start: start,
-			end: end,
-			stackCount: stackCount,
+			start: scale._startPixel,
+			end: scale._endPixel,
+			stackCount: me.getStackCount(),
 			scale: scale
 		};
 	},
@@ -38359,31 +39295,35 @@ var controller_bar = core_datasetController.extend({
 	 * Note: pixel values are not clamped to the scale area.
 	 * @private
 	 */
-	calculateBarValuePixels: function(datasetIndex, index) {
+	calculateBarValuePixels: function(datasetIndex, index, options) {
 		var me = this;
 		var chart = me.chart;
-		var meta = me.getMeta();
 		var scale = me._getValueScale();
 		var isHorizontal = scale.isHorizontal();
 		var datasets = chart.data.datasets;
-		var value = +scale.getRightValue(datasets[datasetIndex].data[index]);
-		var minBarLength = scale.options.minBarLength;
+		var metasets = scale._getMatchingVisibleMetas(me._type);
+		var value = scale._parseValue(datasets[datasetIndex].data[index]);
+		var minBarLength = options.minBarLength;
 		var stacked = scale.options.stacked;
-		var stack = meta.stack;
-		var start = 0;
-		var i, imeta, ivalue, base, head, size;
+		var stack = me.getMeta().stack;
+		var start = value.start === undefined ? 0 : value.max >= 0 && value.min >= 0 ? value.min : value.max;
+		var length = value.start === undefined ? value.end : value.max >= 0 && value.min >= 0 ? value.max - value.min : value.min - value.max;
+		var ilen = metasets.length;
+		var i, imeta, ivalue, base, head, size, stackLength;
 
 		if (stacked || (stacked === undefined && stack !== undefined)) {
-			for (i = 0; i < datasetIndex; ++i) {
-				imeta = chart.getDatasetMeta(i);
+			for (i = 0; i < ilen; ++i) {
+				imeta = metasets[i];
 
-				if (imeta.bar &&
-					imeta.stack === stack &&
-					imeta.controller._getValueScaleId() === scale.id &&
-					chart.isDatasetVisible(i)) {
+				if (imeta.index === datasetIndex) {
+					break;
+				}
 
-					ivalue = +scale.getRightValue(datasets[i].data[index]);
-					if ((value < 0 && ivalue < 0) || (value >= 0 && ivalue > 0)) {
+				if (imeta.stack === stack) {
+					stackLength = scale._parseValue(datasets[imeta.index].data[index]);
+					ivalue = stackLength.start === undefined ? stackLength.end : stackLength.min >= 0 && stackLength.max >= 0 ? stackLength.max : stackLength.min;
+
+					if ((value.min < 0 && ivalue < 0) || (value.max >= 0 && ivalue > 0)) {
 						start += ivalue;
 					}
 				}
@@ -38391,12 +39331,12 @@ var controller_bar = core_datasetController.extend({
 		}
 
 		base = scale.getPixelForValue(start);
-		head = scale.getPixelForValue(start + value);
+		head = scale.getPixelForValue(start + length);
 		size = head - base;
 
 		if (minBarLength !== undefined && Math.abs(size) < minBarLength) {
 			size = minBarLength;
-			if (value >= 0 && !isHorizontal || value < 0 && isHorizontal) {
+			if (length >= 0 && !isHorizontal || length < 0 && isHorizontal) {
 				head = base - minBarLength;
 			} else {
 				head = base + minBarLength;
@@ -38414,9 +39354,8 @@ var controller_bar = core_datasetController.extend({
 	/**
 	 * @private
 	 */
-	calculateBarIndexPixels: function(datasetIndex, index, ruler) {
+	calculateBarIndexPixels: function(datasetIndex, index, ruler, options) {
 		var me = this;
-		var options = ruler.scale.options;
 		var range = options.barThickness === 'flex'
 			? computeFlexCategoryTraits(index, ruler, options)
 			: computeFitCategoryTraits(index, ruler, options);
@@ -38424,7 +39363,7 @@ var controller_bar = core_datasetController.extend({
 		var stackIndex = me.getStackIndex(datasetIndex, me.getMeta().stack);
 		var center = range.start + (range.chunk * stackIndex) + (range.chunk / 2);
 		var size = Math.min(
-			helpers$1.valueOrDefault(options.maxBarThickness, Infinity),
+			valueOrDefault$3(options.maxBarThickness, Infinity),
 			range.chunk * range.ratio);
 
 		return {
@@ -38447,7 +39386,8 @@ var controller_bar = core_datasetController.extend({
 		helpers$1.canvas.clipArea(chart.ctx, chart.chartArea);
 
 		for (; i < ilen; ++i) {
-			if (!isNaN(scale.getRightValue(dataset.data[i]))) {
+			var val = scale._parseValue(dataset.data[i]);
+			if (!isNaN(val.min) && !isNaN(val.max)) {
 				rects[i].draw();
 			}
 		}
@@ -38458,46 +39398,25 @@ var controller_bar = core_datasetController.extend({
 	/**
 	 * @private
 	 */
-	_resolveElementOptions: function(rectangle, index) {
+	_resolveDataElementOptions: function() {
 		var me = this;
-		var chart = me.chart;
-		var datasets = chart.data.datasets;
-		var dataset = datasets[me.index];
-		var custom = rectangle.custom || {};
-		var options = chart.options.elements.rectangle;
-		var values = {};
-		var i, ilen, key;
+		var values = helpers$1.extend({}, core_datasetController.prototype._resolveDataElementOptions.apply(me, arguments));
+		var indexOpts = me._getIndexScale().options;
+		var valueOpts = me._getValueScale().options;
 
-		// Scriptable options
-		var context = {
-			chart: chart,
-			dataIndex: index,
-			dataset: dataset,
-			datasetIndex: me.index
-		};
-
-		var keys = [
-			'backgroundColor',
-			'borderColor',
-			'borderSkipped',
-			'borderWidth'
-		];
-
-		for (i = 0, ilen = keys.length; i < ilen; ++i) {
-			key = keys[i];
-			values[key] = resolve$1([
-				custom[key],
-				dataset[key],
-				options[key]
-			], context, index);
-		}
+		values.barPercentage = valueOrDefault$3(indexOpts.barPercentage, values.barPercentage);
+		values.barThickness = valueOrDefault$3(indexOpts.barThickness, values.barThickness);
+		values.categoryPercentage = valueOrDefault$3(indexOpts.categoryPercentage, values.categoryPercentage);
+		values.maxBarThickness = valueOrDefault$3(indexOpts.maxBarThickness, values.maxBarThickness);
+		values.minBarLength = valueOrDefault$3(valueOpts.minBarLength, values.minBarLength);
 
 		return values;
 	}
+
 });
 
-var valueOrDefault$3 = helpers$1.valueOrDefault;
-var resolve$2 = helpers$1.options.resolve;
+var valueOrDefault$4 = helpers$1.valueOrDefault;
+var resolve$1 = helpers$1.options.resolve;
 
 core_defaults._set('bubble', {
 	hover: {
@@ -38539,6 +39458,22 @@ var controller_bubble = core_datasetController.extend({
 	dataElementType: elements.Point,
 
 	/**
+	 * @private
+	 */
+	_dataElementOptions: [
+		'backgroundColor',
+		'borderColor',
+		'borderWidth',
+		'hoverBackgroundColor',
+		'hoverBorderColor',
+		'hoverBorderWidth',
+		'hoverRadius',
+		'hitRadius',
+		'pointStyle',
+		'rotation'
+	],
+
+	/**
 	 * @protected
 	 */
 	update: function(reset) {
@@ -38561,7 +39496,7 @@ var controller_bubble = core_datasetController.extend({
 		var custom = point.custom || {};
 		var xScale = me.getScaleForId(meta.xAxisID);
 		var yScale = me.getScaleForId(meta.yAxisID);
-		var options = me._resolveElementOptions(point, index);
+		var options = me._resolveDataElementOptions(point, index);
 		var data = me.getDataset().data[index];
 		var dsIndex = me.index;
 
@@ -38604,25 +39539,22 @@ var controller_bubble = core_datasetController.extend({
 			radius: model.radius
 		};
 
-		model.backgroundColor = valueOrDefault$3(options.hoverBackgroundColor, getHoverColor(options.backgroundColor));
-		model.borderColor = valueOrDefault$3(options.hoverBorderColor, getHoverColor(options.borderColor));
-		model.borderWidth = valueOrDefault$3(options.hoverBorderWidth, options.borderWidth);
+		model.backgroundColor = valueOrDefault$4(options.hoverBackgroundColor, getHoverColor(options.backgroundColor));
+		model.borderColor = valueOrDefault$4(options.hoverBorderColor, getHoverColor(options.borderColor));
+		model.borderWidth = valueOrDefault$4(options.hoverBorderWidth, options.borderWidth);
 		model.radius = options.radius + options.hoverRadius;
 	},
 
 	/**
 	 * @private
 	 */
-	_resolveElementOptions: function(point, index) {
+	_resolveDataElementOptions: function(point, index) {
 		var me = this;
 		var chart = me.chart;
-		var datasets = chart.data.datasets;
-		var dataset = datasets[me.index];
+		var dataset = me.getDataset();
 		var custom = point.custom || {};
-		var options = chart.options.elements.point;
-		var data = dataset.data[index];
-		var values = {};
-		var i, ilen, key;
+		var data = dataset.data[index] || {};
+		var values = core_datasetController.prototype._resolveDataElementOptions.apply(me, arguments);
 
 		// Scriptable options
 		var context = {
@@ -38632,42 +39564,28 @@ var controller_bubble = core_datasetController.extend({
 			datasetIndex: me.index
 		};
 
-		var keys = [
-			'backgroundColor',
-			'borderColor',
-			'borderWidth',
-			'hoverBackgroundColor',
-			'hoverBorderColor',
-			'hoverBorderWidth',
-			'hoverRadius',
-			'hitRadius',
-			'pointStyle',
-			'rotation'
-		];
-
-		for (i = 0, ilen = keys.length; i < ilen; ++i) {
-			key = keys[i];
-			values[key] = resolve$2([
-				custom[key],
-				dataset[key],
-				options[key]
-			], context, index);
+		// In case values were cached (and thus frozen), we need to clone the values
+		if (me._cachedDataOpts === values) {
+			values = helpers$1.extend({}, values);
 		}
 
 		// Custom radius resolution
-		values.radius = resolve$2([
+		values.radius = resolve$1([
 			custom.radius,
-			data ? data.r : undefined,
-			dataset.radius,
-			options.radius
+			data.r,
+			me._config.radius,
+			chart.options.elements.point.radius
 		], context, index);
 
 		return values;
 	}
 });
 
-var resolve$3 = helpers$1.options.resolve;
-var valueOrDefault$4 = helpers$1.valueOrDefault;
+var valueOrDefault$5 = helpers$1.valueOrDefault;
+
+var PI$1 = Math.PI;
+var DOUBLE_PI$1 = PI$1 * 2;
+var HALF_PI$1 = PI$1 / 2;
 
 core_defaults._set('doughnut', {
 	animation: {
@@ -38680,25 +39598,25 @@ core_defaults._set('doughnut', {
 		mode: 'single'
 	},
 	legendCallback: function(chart) {
-		var text = [];
-		text.push('<ul class="' + chart.id + '-legend">');
-
+		var list = document.createElement('ul');
 		var data = chart.data;
 		var datasets = data.datasets;
 		var labels = data.labels;
+		var i, ilen, listItem, listItemSpan;
 
+		list.setAttribute('class', chart.id + '-legend');
 		if (datasets.length) {
-			for (var i = 0; i < datasets[0].data.length; ++i) {
-				text.push('<li><span style="background-color:' + datasets[0].backgroundColor[i] + '"></span>');
+			for (i = 0, ilen = datasets[0].data.length; i < ilen; ++i) {
+				listItem = list.appendChild(document.createElement('li'));
+				listItemSpan = listItem.appendChild(document.createElement('span'));
+				listItemSpan.style.backgroundColor = datasets[0].backgroundColor[i];
 				if (labels[i]) {
-					text.push(labels[i]);
+					listItem.appendChild(document.createTextNode(labels[i]));
 				}
-				text.push('</li>');
 			}
 		}
 
-		text.push('</ul>');
-		return text.join('');
+		return list.outerHTML;
 	},
 	legend: {
 		labels: {
@@ -38707,20 +39625,14 @@ core_defaults._set('doughnut', {
 				if (data.labels.length && data.datasets.length) {
 					return data.labels.map(function(label, i) {
 						var meta = chart.getDatasetMeta(0);
-						var ds = data.datasets[0];
-						var arc = meta.data[i];
-						var custom = arc && arc.custom || {};
-						var arcOpts = chart.options.elements.arc;
-						var fill = resolve$3([custom.backgroundColor, ds.backgroundColor, arcOpts.backgroundColor], undefined, i);
-						var stroke = resolve$3([custom.borderColor, ds.borderColor, arcOpts.borderColor], undefined, i);
-						var bw = resolve$3([custom.borderWidth, ds.borderWidth, arcOpts.borderWidth], undefined, i);
+						var style = meta.controller.getStyle(i);
 
 						return {
 							text: label,
-							fillStyle: fill,
-							strokeStyle: stroke,
-							lineWidth: bw,
-							hidden: isNaN(ds.data[i]) || meta.data[i].hidden,
+							fillStyle: style.backgroundColor,
+							strokeStyle: style.borderColor,
+							lineWidth: style.borderWidth,
+							hidden: isNaN(data.datasets[0].data[i]) || meta.data[i].hidden,
 
 							// Extra data used for toggling the correct item
 							index: i
@@ -38752,10 +39664,10 @@ core_defaults._set('doughnut', {
 	cutoutPercentage: 50,
 
 	// The rotation of the chart, where the first data arc begins.
-	rotation: Math.PI * -0.5,
+	rotation: -HALF_PI$1,
 
 	// The total circumference of the chart.
-	circumference: Math.PI * 2.0,
+	circumference: DOUBLE_PI$1,
 
 	// Need to override these to give a nice default
 	tooltips: {
@@ -38788,6 +39700,19 @@ var controller_doughnut = core_datasetController.extend({
 
 	linkScales: helpers$1.noop,
 
+	/**
+	 * @private
+	 */
+	_dataElementOptions: [
+		'backgroundColor',
+		'borderColor',
+		'borderWidth',
+		'borderAlign',
+		'hoverBackgroundColor',
+		'hoverBorderColor',
+		'hoverBorderWidth',
+	],
+
 	// Get index of the dataset in relation to the visible datasets. This allows determining the inner and outer radius correctly
 	getRingIndex: function(datasetIndex) {
 		var ringIndex = 0;
@@ -38806,46 +39731,52 @@ var controller_doughnut = core_datasetController.extend({
 		var chart = me.chart;
 		var chartArea = chart.chartArea;
 		var opts = chart.options;
-		var availableWidth = chartArea.right - chartArea.left;
-		var availableHeight = chartArea.bottom - chartArea.top;
-		var minSize = Math.min(availableWidth, availableHeight);
-		var offset = {x: 0, y: 0};
+		var ratioX = 1;
+		var ratioY = 1;
+		var offsetX = 0;
+		var offsetY = 0;
 		var meta = me.getMeta();
 		var arcs = meta.data;
-		var cutoutPercentage = opts.cutoutPercentage;
+		var cutout = opts.cutoutPercentage / 100 || 0;
 		var circumference = opts.circumference;
 		var chartWeight = me._getRingWeight(me.index);
-		var i, ilen;
+		var maxWidth, maxHeight, i, ilen;
 
-		// If the chart's circumference isn't a full circle, calculate minSize as a ratio of the width/height of the arc
-		if (circumference < Math.PI * 2.0) {
-			var startAngle = opts.rotation % (Math.PI * 2.0);
-			startAngle += Math.PI * 2.0 * (startAngle >= Math.PI ? -1 : startAngle < -Math.PI ? 1 : 0);
+		// If the chart's circumference isn't a full circle, calculate size as a ratio of the width/height of the arc
+		if (circumference < DOUBLE_PI$1) {
+			var startAngle = opts.rotation % DOUBLE_PI$1;
+			startAngle += startAngle >= PI$1 ? -DOUBLE_PI$1 : startAngle < -PI$1 ? DOUBLE_PI$1 : 0;
 			var endAngle = startAngle + circumference;
-			var start = {x: Math.cos(startAngle), y: Math.sin(startAngle)};
-			var end = {x: Math.cos(endAngle), y: Math.sin(endAngle)};
-			var contains0 = (startAngle <= 0 && endAngle >= 0) || (startAngle <= Math.PI * 2.0 && Math.PI * 2.0 <= endAngle);
-			var contains90 = (startAngle <= Math.PI * 0.5 && Math.PI * 0.5 <= endAngle) || (startAngle <= Math.PI * 2.5 && Math.PI * 2.5 <= endAngle);
-			var contains180 = (startAngle <= -Math.PI && -Math.PI <= endAngle) || (startAngle <= Math.PI && Math.PI <= endAngle);
-			var contains270 = (startAngle <= -Math.PI * 0.5 && -Math.PI * 0.5 <= endAngle) || (startAngle <= Math.PI * 1.5 && Math.PI * 1.5 <= endAngle);
-			var cutout = cutoutPercentage / 100.0;
-			var min = {x: contains180 ? -1 : Math.min(start.x * (start.x < 0 ? 1 : cutout), end.x * (end.x < 0 ? 1 : cutout)), y: contains270 ? -1 : Math.min(start.y * (start.y < 0 ? 1 : cutout), end.y * (end.y < 0 ? 1 : cutout))};
-			var max = {x: contains0 ? 1 : Math.max(start.x * (start.x > 0 ? 1 : cutout), end.x * (end.x > 0 ? 1 : cutout)), y: contains90 ? 1 : Math.max(start.y * (start.y > 0 ? 1 : cutout), end.y * (end.y > 0 ? 1 : cutout))};
-			var size = {width: (max.x - min.x) * 0.5, height: (max.y - min.y) * 0.5};
-			minSize = Math.min(availableWidth / size.width, availableHeight / size.height);
-			offset = {x: (max.x + min.x) * -0.5, y: (max.y + min.y) * -0.5};
+			var startX = Math.cos(startAngle);
+			var startY = Math.sin(startAngle);
+			var endX = Math.cos(endAngle);
+			var endY = Math.sin(endAngle);
+			var contains0 = (startAngle <= 0 && endAngle >= 0) || endAngle >= DOUBLE_PI$1;
+			var contains90 = (startAngle <= HALF_PI$1 && endAngle >= HALF_PI$1) || endAngle >= DOUBLE_PI$1 + HALF_PI$1;
+			var contains180 = startAngle === -PI$1 || endAngle >= PI$1;
+			var contains270 = (startAngle <= -HALF_PI$1 && endAngle >= -HALF_PI$1) || endAngle >= PI$1 + HALF_PI$1;
+			var minX = contains180 ? -1 : Math.min(startX, startX * cutout, endX, endX * cutout);
+			var minY = contains270 ? -1 : Math.min(startY, startY * cutout, endY, endY * cutout);
+			var maxX = contains0 ? 1 : Math.max(startX, startX * cutout, endX, endX * cutout);
+			var maxY = contains90 ? 1 : Math.max(startY, startY * cutout, endY, endY * cutout);
+			ratioX = (maxX - minX) / 2;
+			ratioY = (maxY - minY) / 2;
+			offsetX = -(maxX + minX) / 2;
+			offsetY = -(maxY + minY) / 2;
 		}
 
 		for (i = 0, ilen = arcs.length; i < ilen; ++i) {
-			arcs[i]._options = me._resolveElementOptions(arcs[i], i);
+			arcs[i]._options = me._resolveDataElementOptions(arcs[i], i);
 		}
 
 		chart.borderWidth = me.getMaxBorderWidth();
-		chart.outerRadius = Math.max((minSize - chart.borderWidth) / 2, 0);
-		chart.innerRadius = Math.max(cutoutPercentage ? (chart.outerRadius / 100) * (cutoutPercentage) : 0, 0);
+		maxWidth = (chartArea.right - chartArea.left - chart.borderWidth) / ratioX;
+		maxHeight = (chartArea.bottom - chartArea.top - chart.borderWidth) / ratioY;
+		chart.outerRadius = Math.max(Math.min(maxWidth, maxHeight) / 2, 0);
+		chart.innerRadius = Math.max(chart.outerRadius * cutout, 0);
 		chart.radiusLength = (chart.outerRadius - chart.innerRadius) / (me._getVisibleDatasetWeightTotal() || 1);
-		chart.offsetX = offset.x * chart.outerRadius;
-		chart.offsetY = offset.y * chart.outerRadius;
+		chart.offsetX = offsetX * chart.outerRadius;
+		chart.offsetY = offsetY * chart.outerRadius;
 
 		meta.total = me.calculateTotal();
 
@@ -38868,7 +39799,7 @@ var controller_doughnut = core_datasetController.extend({
 		var startAngle = opts.rotation; // non reset case handled later
 		var endAngle = opts.rotation; // non reset case handled later
 		var dataset = me.getDataset();
-		var circumference = reset && animationOpts.animateRotate ? 0 : arc.hidden ? 0 : me.calculateCircumference(dataset.data[index]) * (opts.circumference / (2.0 * Math.PI));
+		var circumference = reset && animationOpts.animateRotate ? 0 : arc.hidden ? 0 : me.calculateCircumference(dataset.data[index]) * (opts.circumference / DOUBLE_PI$1);
 		var innerRadius = reset && animationOpts.animateScale ? 0 : me.innerRadius;
 		var outerRadius = reset && animationOpts.animateScale ? 0 : me.outerRadius;
 		var options = arc._options || {};
@@ -38934,7 +39865,7 @@ var controller_doughnut = core_datasetController.extend({
 	calculateCircumference: function(value) {
 		var total = this.getMeta().total;
 		if (total > 0 && !isNaN(value)) {
-			return (Math.PI * 2.0) * (Math.abs(value) / total);
+			return DOUBLE_PI$1 * (Math.abs(value) / total);
 		}
 		return 0;
 	},
@@ -38966,7 +39897,12 @@ var controller_doughnut = core_datasetController.extend({
 
 		for (i = 0, ilen = arcs.length; i < ilen; ++i) {
 			arc = arcs[i];
-			options = controller ? controller._resolveElementOptions(arc, i) : arc._options;
+			if (controller) {
+				controller._configure();
+				options = controller._resolveDataElementOptions(arc, i);
+			} else {
+				options = arc._options;
+			}
 			if (options.borderAlign !== 'inner') {
 				borderWidth = options.borderWidth;
 				hoverWidth = options.hoverBorderWidth;
@@ -38992,51 +39928,9 @@ var controller_doughnut = core_datasetController.extend({
 			borderWidth: model.borderWidth,
 		};
 
-		model.backgroundColor = valueOrDefault$4(options.hoverBackgroundColor, getHoverColor(options.backgroundColor));
-		model.borderColor = valueOrDefault$4(options.hoverBorderColor, getHoverColor(options.borderColor));
-		model.borderWidth = valueOrDefault$4(options.hoverBorderWidth, options.borderWidth);
-	},
-
-	/**
-	 * @private
-	 */
-	_resolveElementOptions: function(arc, index) {
-		var me = this;
-		var chart = me.chart;
-		var dataset = me.getDataset();
-		var custom = arc.custom || {};
-		var options = chart.options.elements.arc;
-		var values = {};
-		var i, ilen, key;
-
-		// Scriptable options
-		var context = {
-			chart: chart,
-			dataIndex: index,
-			dataset: dataset,
-			datasetIndex: me.index
-		};
-
-		var keys = [
-			'backgroundColor',
-			'borderColor',
-			'borderWidth',
-			'borderAlign',
-			'hoverBackgroundColor',
-			'hoverBorderColor',
-			'hoverBorderWidth',
-		];
-
-		for (i = 0, ilen = keys.length; i < ilen; ++i) {
-			key = keys[i];
-			values[key] = resolve$3([
-				custom[key],
-				dataset[key],
-				options[key]
-			], context, index);
-		}
-
-		return values;
+		model.backgroundColor = valueOrDefault$5(options.hoverBackgroundColor, getHoverColor(options.backgroundColor));
+		model.borderColor = valueOrDefault$5(options.hoverBorderColor, getHoverColor(options.borderColor));
+		model.borderWidth = valueOrDefault$5(options.hoverBorderWidth, options.borderWidth);
 	},
 
 	/**
@@ -39059,7 +39953,7 @@ var controller_doughnut = core_datasetController.extend({
 	 * @private
 	 */
 	_getRingWeight: function(dataSetIndex) {
-		return Math.max(valueOrDefault$4(this.chart.data.datasets[dataSetIndex].weight, 1), 0);
+		return Math.max(valueOrDefault$5(this.chart.data.datasets[dataSetIndex].weight, 1), 0);
 	},
 
 	/**
@@ -39086,8 +39980,6 @@ core_defaults._set('horizontalBar', {
 		yAxes: [{
 			type: 'category',
 			position: 'left',
-			categoryPercentage: 0.8,
-			barPercentage: 0.9,
 			offset: true,
 			gridLines: {
 				offsetGridLines: true
@@ -39107,6 +39999,15 @@ core_defaults._set('horizontalBar', {
 	}
 });
 
+core_defaults._set('global', {
+	datasets: {
+		horizontalBar: {
+			categoryPercentage: 0.8,
+			barPercentage: 0.9
+		}
+	}
+});
+
 var controller_horizontalBar = controller_bar.extend({
 	/**
 	 * @private
@@ -39123,8 +40024,8 @@ var controller_horizontalBar = controller_bar.extend({
 	}
 });
 
-var valueOrDefault$5 = helpers$1.valueOrDefault;
-var resolve$4 = helpers$1.options.resolve;
+var valueOrDefault$6 = helpers$1.valueOrDefault;
+var resolve$2 = helpers$1.options.resolve;
 var isPointInArea = helpers$1.canvas._isPointInArea;
 
 core_defaults._set('line', {
@@ -39147,9 +40048,50 @@ core_defaults._set('line', {
 	}
 });
 
-function lineEnabled(dataset, options) {
-	return valueOrDefault$5(dataset.showLine, options.showLines);
+function scaleClip(scale, halfBorderWidth) {
+	var tickOpts = scale && scale.options.ticks || {};
+	var reverse = tickOpts.reverse;
+	var min = tickOpts.min === undefined ? halfBorderWidth : 0;
+	var max = tickOpts.max === undefined ? halfBorderWidth : 0;
+	return {
+		start: reverse ? max : min,
+		end: reverse ? min : max
+	};
 }
+
+function defaultClip(xScale, yScale, borderWidth) {
+	var halfBorderWidth = borderWidth / 2;
+	var x = scaleClip(xScale, halfBorderWidth);
+	var y = scaleClip(yScale, halfBorderWidth);
+
+	return {
+		top: y.end,
+		right: x.end,
+		bottom: y.start,
+		left: x.start
+	};
+}
+
+function toClip(value) {
+	var t, r, b, l;
+
+	if (helpers$1.isObject(value)) {
+		t = value.top;
+		r = value.right;
+		b = value.bottom;
+		l = value.left;
+	} else {
+		t = r = b = l = value;
+	}
+
+	return {
+		top: t,
+		right: r,
+		bottom: b,
+		left: l
+	};
+}
+
 
 var controller_line = core_datasetController.extend({
 
@@ -39157,30 +40099,65 @@ var controller_line = core_datasetController.extend({
 
 	dataElementType: elements.Point,
 
+	/**
+	 * @private
+	 */
+	_datasetElementOptions: [
+		'backgroundColor',
+		'borderCapStyle',
+		'borderColor',
+		'borderDash',
+		'borderDashOffset',
+		'borderJoinStyle',
+		'borderWidth',
+		'cubicInterpolationMode',
+		'fill'
+	],
+
+	/**
+	 * @private
+	 */
+	_dataElementOptions: {
+		backgroundColor: 'pointBackgroundColor',
+		borderColor: 'pointBorderColor',
+		borderWidth: 'pointBorderWidth',
+		hitRadius: 'pointHitRadius',
+		hoverBackgroundColor: 'pointHoverBackgroundColor',
+		hoverBorderColor: 'pointHoverBorderColor',
+		hoverBorderWidth: 'pointHoverBorderWidth',
+		hoverRadius: 'pointHoverRadius',
+		pointStyle: 'pointStyle',
+		radius: 'pointRadius',
+		rotation: 'pointRotation'
+	},
+
 	update: function(reset) {
 		var me = this;
 		var meta = me.getMeta();
 		var line = meta.dataset;
 		var points = meta.data || [];
-		var scale = me.getScaleForId(meta.yAxisID);
-		var dataset = me.getDataset();
-		var showLine = lineEnabled(dataset, me.chart.options);
+		var options = me.chart.options;
+		var config = me._config;
+		var showLine = me._showLine = valueOrDefault$6(config.showLine, options.showLines);
 		var i, ilen;
+
+		me._xScale = me.getScaleForId(meta.xAxisID);
+		me._yScale = me.getScaleForId(meta.yAxisID);
 
 		// Update Line
 		if (showLine) {
 			// Compatibility: If the properties are defined with only the old name, use those values
-			if ((dataset.tension !== undefined) && (dataset.lineTension === undefined)) {
-				dataset.lineTension = dataset.tension;
+			if (config.tension !== undefined && config.lineTension === undefined) {
+				config.lineTension = config.tension;
 			}
 
 			// Utility
-			line._scale = scale;
+			line._scale = me._yScale;
 			line._datasetIndex = me.index;
 			// Data
 			line._children = points;
 			// Model
-			line._model = me._resolveLineOptions(line);
+			line._model = me._resolveDatasetElementOptions(line);
 
 			line.pivot();
 		}
@@ -39207,12 +40184,12 @@ var controller_line = core_datasetController.extend({
 		var dataset = me.getDataset();
 		var datasetIndex = me.index;
 		var value = dataset.data[index];
-		var yScale = me.getScaleForId(meta.yAxisID);
-		var xScale = me.getScaleForId(meta.xAxisID);
+		var xScale = me._xScale;
+		var yScale = me._yScale;
 		var lineModel = meta.dataset._model;
 		var x, y;
 
-		var options = me._resolvePointOptions(point, index);
+		var options = me._resolveDataElementOptions(point, index);
 
 		x = xScale.getPixelForValue(typeof value === 'object' ? value : NaN, index, datasetIndex);
 		y = reset ? yScale.getBasePixel() : me.calculatePointY(value, index, datasetIndex);
@@ -39236,7 +40213,7 @@ var controller_line = core_datasetController.extend({
 			backgroundColor: options.backgroundColor,
 			borderColor: options.borderColor,
 			borderWidth: options.borderWidth,
-			tension: valueOrDefault$5(custom.tension, lineModel ? lineModel.tension : 0),
+			tension: valueOrDefault$6(custom.tension, lineModel ? lineModel.tension : 0),
 			steppedLine: lineModel ? lineModel.steppedLine : false,
 			// Tooltip
 			hitRadius: options.hitRadius
@@ -39246,91 +40223,21 @@ var controller_line = core_datasetController.extend({
 	/**
 	 * @private
 	 */
-	_resolvePointOptions: function(element, index) {
+	_resolveDatasetElementOptions: function(element) {
 		var me = this;
-		var chart = me.chart;
-		var dataset = chart.data.datasets[me.index];
+		var config = me._config;
 		var custom = element.custom || {};
-		var options = chart.options.elements.point;
-		var values = {};
-		var i, ilen, key;
-
-		// Scriptable options
-		var context = {
-			chart: chart,
-			dataIndex: index,
-			dataset: dataset,
-			datasetIndex: me.index
-		};
-
-		var ELEMENT_OPTIONS = {
-			backgroundColor: 'pointBackgroundColor',
-			borderColor: 'pointBorderColor',
-			borderWidth: 'pointBorderWidth',
-			hitRadius: 'pointHitRadius',
-			hoverBackgroundColor: 'pointHoverBackgroundColor',
-			hoverBorderColor: 'pointHoverBorderColor',
-			hoverBorderWidth: 'pointHoverBorderWidth',
-			hoverRadius: 'pointHoverRadius',
-			pointStyle: 'pointStyle',
-			radius: 'pointRadius',
-			rotation: 'pointRotation'
-		};
-		var keys = Object.keys(ELEMENT_OPTIONS);
-
-		for (i = 0, ilen = keys.length; i < ilen; ++i) {
-			key = keys[i];
-			values[key] = resolve$4([
-				custom[key],
-				dataset[ELEMENT_OPTIONS[key]],
-				dataset[key],
-				options[key]
-			], context, index);
-		}
-
-		return values;
-	},
-
-	/**
-	 * @private
-	 */
-	_resolveLineOptions: function(element) {
-		var me = this;
-		var chart = me.chart;
-		var dataset = chart.data.datasets[me.index];
-		var custom = element.custom || {};
-		var options = chart.options;
-		var elementOptions = options.elements.line;
-		var values = {};
-		var i, ilen, key;
-
-		var keys = [
-			'backgroundColor',
-			'borderWidth',
-			'borderColor',
-			'borderCapStyle',
-			'borderDash',
-			'borderDashOffset',
-			'borderJoinStyle',
-			'fill',
-			'cubicInterpolationMode'
-		];
-
-		for (i = 0, ilen = keys.length; i < ilen; ++i) {
-			key = keys[i];
-			values[key] = resolve$4([
-				custom[key],
-				dataset[key],
-				elementOptions[key]
-			]);
-		}
+		var options = me.chart.options;
+		var lineOptions = options.elements.line;
+		var values = core_datasetController.prototype._resolveDatasetElementOptions.apply(me, arguments);
 
 		// The default behavior of lines is to break at null values, according
 		// to https://github.com/chartjs/Chart.js/issues/2435#issuecomment-216718158
 		// This option gives lines the ability to span gaps
-		values.spanGaps = valueOrDefault$5(dataset.spanGaps, options.spanGaps);
-		values.tension = valueOrDefault$5(dataset.lineTension, elementOptions.tension);
-		values.steppedLine = resolve$4([custom.steppedLine, dataset.steppedLine, elementOptions.stepped]);
+		values.spanGaps = valueOrDefault$6(config.spanGaps, options.spanGaps);
+		values.tension = valueOrDefault$6(config.lineTension, lineOptions.tension);
+		values.steppedLine = resolve$2([custom.steppedLine, config.steppedLine, lineOptions.stepped]);
+		values.clip = toClip(valueOrDefault$6(config.clip, defaultClip(me._xScale, me._yScale, values.borderWidth)));
 
 		return values;
 	},
@@ -39338,18 +40245,25 @@ var controller_line = core_datasetController.extend({
 	calculatePointY: function(value, index, datasetIndex) {
 		var me = this;
 		var chart = me.chart;
-		var meta = me.getMeta();
-		var yScale = me.getScaleForId(meta.yAxisID);
+		var yScale = me._yScale;
 		var sumPos = 0;
 		var sumNeg = 0;
-		var i, ds, dsMeta;
+		var i, ds, dsMeta, stackedRightValue, rightValue, metasets, ilen;
 
 		if (yScale.options.stacked) {
-			for (i = 0; i < datasetIndex; i++) {
-				ds = chart.data.datasets[i];
-				dsMeta = chart.getDatasetMeta(i);
-				if (dsMeta.type === 'line' && dsMeta.yAxisID === yScale.id && chart.isDatasetVisible(i)) {
-					var stackedRightValue = Number(yScale.getRightValue(ds.data[index]));
+			rightValue = +yScale.getRightValue(value);
+			metasets = chart._getSortedVisibleDatasetMetas();
+			ilen = metasets.length;
+
+			for (i = 0; i < ilen; ++i) {
+				dsMeta = metasets[i];
+				if (dsMeta.index === datasetIndex) {
+					break;
+				}
+
+				ds = chart.data.datasets[dsMeta.index];
+				if (dsMeta.type === 'line' && dsMeta.yAxisID === yScale.id) {
+					stackedRightValue = +yScale.getRightValue(ds.data[index]);
 					if (stackedRightValue < 0) {
 						sumNeg += stackedRightValue || 0;
 					} else {
@@ -39358,13 +40272,11 @@ var controller_line = core_datasetController.extend({
 				}
 			}
 
-			var rightValue = Number(yScale.getRightValue(value));
 			if (rightValue < 0) {
 				return yScale.getPixelForValue(sumNeg + rightValue);
 			}
 			return yScale.getPixelForValue(sumPos + rightValue);
 		}
-
 		return yScale.getPixelForValue(value);
 	},
 
@@ -39429,18 +40341,19 @@ var controller_line = core_datasetController.extend({
 		var meta = me.getMeta();
 		var points = meta.data || [];
 		var area = chart.chartArea;
-		var ilen = points.length;
-		var halfBorderWidth;
+		var canvas = chart.canvas;
 		var i = 0;
+		var ilen = points.length;
+		var clip;
 
-		if (lineEnabled(me.getDataset(), chart.options)) {
-			halfBorderWidth = (meta.dataset._model.borderWidth || 0) / 2;
+		if (me._showLine) {
+			clip = meta.dataset._model.clip;
 
 			helpers$1.canvas.clipArea(chart.ctx, {
-				left: area.left,
-				right: area.right,
-				top: area.top - halfBorderWidth,
-				bottom: area.bottom + halfBorderWidth
+				left: clip.left === false ? 0 : area.left - clip.left,
+				right: clip.right === false ? canvas.width : area.right + clip.right,
+				top: clip.top === false ? 0 : area.top - clip.top,
+				bottom: clip.bottom === false ? canvas.height : area.bottom + clip.bottom
 			});
 
 			meta.dataset.draw();
@@ -39469,14 +40382,14 @@ var controller_line = core_datasetController.extend({
 			radius: model.radius
 		};
 
-		model.backgroundColor = valueOrDefault$5(options.hoverBackgroundColor, getHoverColor(options.backgroundColor));
-		model.borderColor = valueOrDefault$5(options.hoverBorderColor, getHoverColor(options.borderColor));
-		model.borderWidth = valueOrDefault$5(options.hoverBorderWidth, options.borderWidth);
-		model.radius = valueOrDefault$5(options.hoverRadius, options.radius);
+		model.backgroundColor = valueOrDefault$6(options.hoverBackgroundColor, getHoverColor(options.backgroundColor));
+		model.borderColor = valueOrDefault$6(options.hoverBorderColor, getHoverColor(options.borderColor));
+		model.borderWidth = valueOrDefault$6(options.hoverBorderWidth, options.borderWidth);
+		model.radius = valueOrDefault$6(options.hoverRadius, options.radius);
 	},
 });
 
-var resolve$5 = helpers$1.options.resolve;
+var resolve$3 = helpers$1.options.resolve;
 
 core_defaults._set('polarArea', {
 	scale: {
@@ -39503,25 +40416,25 @@ core_defaults._set('polarArea', {
 
 	startAngle: -0.5 * Math.PI,
 	legendCallback: function(chart) {
-		var text = [];
-		text.push('<ul class="' + chart.id + '-legend">');
-
+		var list = document.createElement('ul');
 		var data = chart.data;
 		var datasets = data.datasets;
 		var labels = data.labels;
+		var i, ilen, listItem, listItemSpan;
 
+		list.setAttribute('class', chart.id + '-legend');
 		if (datasets.length) {
-			for (var i = 0; i < datasets[0].data.length; ++i) {
-				text.push('<li><span style="background-color:' + datasets[0].backgroundColor[i] + '"></span>');
+			for (i = 0, ilen = datasets[0].data.length; i < ilen; ++i) {
+				listItem = list.appendChild(document.createElement('li'));
+				listItemSpan = listItem.appendChild(document.createElement('span'));
+				listItemSpan.style.backgroundColor = datasets[0].backgroundColor[i];
 				if (labels[i]) {
-					text.push(labels[i]);
+					listItem.appendChild(document.createTextNode(labels[i]));
 				}
-				text.push('</li>');
 			}
 		}
 
-		text.push('</ul>');
-		return text.join('');
+		return list.outerHTML;
 	},
 	legend: {
 		labels: {
@@ -39530,20 +40443,14 @@ core_defaults._set('polarArea', {
 				if (data.labels.length && data.datasets.length) {
 					return data.labels.map(function(label, i) {
 						var meta = chart.getDatasetMeta(0);
-						var ds = data.datasets[0];
-						var arc = meta.data[i];
-						var custom = arc.custom || {};
-						var arcOpts = chart.options.elements.arc;
-						var fill = resolve$5([custom.backgroundColor, ds.backgroundColor, arcOpts.backgroundColor], undefined, i);
-						var stroke = resolve$5([custom.borderColor, ds.borderColor, arcOpts.borderColor], undefined, i);
-						var bw = resolve$5([custom.borderWidth, ds.borderWidth, arcOpts.borderWidth], undefined, i);
+						var style = meta.controller.getStyle(i);
 
 						return {
 							text: label,
-							fillStyle: fill,
-							strokeStyle: stroke,
-							lineWidth: bw,
-							hidden: isNaN(ds.data[i]) || meta.data[i].hidden,
+							fillStyle: style.backgroundColor,
+							strokeStyle: style.borderColor,
+							lineWidth: style.borderWidth,
+							hidden: isNaN(data.datasets[0].data[i]) || meta.data[i].hidden,
 
 							// Extra data used for toggling the correct item
 							index: i
@@ -39587,6 +40494,33 @@ var controller_polarArea = core_datasetController.extend({
 
 	linkScales: helpers$1.noop,
 
+	/**
+	 * @private
+	 */
+	_dataElementOptions: [
+		'backgroundColor',
+		'borderColor',
+		'borderWidth',
+		'borderAlign',
+		'hoverBackgroundColor',
+		'hoverBorderColor',
+		'hoverBorderWidth',
+	],
+
+	/**
+	 * @private
+	 */
+	_getIndexScaleId: function() {
+		return this.chart.scale.id;
+	},
+
+	/**
+	 * @private
+	 */
+	_getValueScaleId: function() {
+		return this.chart.scale.id;
+	},
+
 	update: function(reset) {
 		var me = this;
 		var dataset = me.getDataset();
@@ -39609,7 +40543,7 @@ var controller_polarArea = core_datasetController.extend({
 		}
 
 		for (i = 0, ilen = arcs.length; i < ilen; ++i) {
-			arcs[i]._options = me._resolveElementOptions(arcs[i], i);
+			arcs[i]._options = me._resolveDataElementOptions(arcs[i], i);
 			me.updateElement(arcs[i], i, reset);
 		}
 	},
@@ -39715,48 +40649,6 @@ var controller_polarArea = core_datasetController.extend({
 	/**
 	 * @private
 	 */
-	_resolveElementOptions: function(arc, index) {
-		var me = this;
-		var chart = me.chart;
-		var dataset = me.getDataset();
-		var custom = arc.custom || {};
-		var options = chart.options.elements.arc;
-		var values = {};
-		var i, ilen, key;
-
-		// Scriptable options
-		var context = {
-			chart: chart,
-			dataIndex: index,
-			dataset: dataset,
-			datasetIndex: me.index
-		};
-
-		var keys = [
-			'backgroundColor',
-			'borderColor',
-			'borderWidth',
-			'borderAlign',
-			'hoverBackgroundColor',
-			'hoverBorderColor',
-			'hoverBorderWidth',
-		];
-
-		for (i = 0, ilen = keys.length; i < ilen; ++i) {
-			key = keys[i];
-			values[key] = resolve$5([
-				custom[key],
-				dataset[key],
-				options[key]
-			], context, index);
-		}
-
-		return values;
-	},
-
-	/**
-	 * @private
-	 */
 	_computeAngle: function(index) {
 		var me = this;
 		var count = this.getMeta().count;
@@ -39775,7 +40667,7 @@ var controller_polarArea = core_datasetController.extend({
 			datasetIndex: me.index
 		};
 
-		return resolve$5([
+		return resolve$3([
 			me.chart.options.elements.arc.angle,
 			(2 * Math.PI) / count
 		], context, index);
@@ -39790,27 +40682,72 @@ core_defaults._set('pie', {
 // Pie charts are Doughnut chart with different defaults
 var controller_pie = controller_doughnut;
 
-var valueOrDefault$6 = helpers$1.valueOrDefault;
-var resolve$6 = helpers$1.options.resolve;
+var valueOrDefault$7 = helpers$1.valueOrDefault;
 
 core_defaults._set('radar', {
+	spanGaps: false,
 	scale: {
 		type: 'radialLinear'
 	},
 	elements: {
 		line: {
+			fill: 'start',
 			tension: 0 // no bezier in radar
 		}
 	}
 });
 
 var controller_radar = core_datasetController.extend({
-
 	datasetElementType: elements.Line,
 
 	dataElementType: elements.Point,
 
 	linkScales: helpers$1.noop,
+
+	/**
+	 * @private
+	 */
+	_datasetElementOptions: [
+		'backgroundColor',
+		'borderWidth',
+		'borderColor',
+		'borderCapStyle',
+		'borderDash',
+		'borderDashOffset',
+		'borderJoinStyle',
+		'fill'
+	],
+
+	/**
+	 * @private
+	 */
+	_dataElementOptions: {
+		backgroundColor: 'pointBackgroundColor',
+		borderColor: 'pointBorderColor',
+		borderWidth: 'pointBorderWidth',
+		hitRadius: 'pointHitRadius',
+		hoverBackgroundColor: 'pointHoverBackgroundColor',
+		hoverBorderColor: 'pointHoverBorderColor',
+		hoverBorderWidth: 'pointHoverBorderWidth',
+		hoverRadius: 'pointHoverRadius',
+		pointStyle: 'pointStyle',
+		radius: 'pointRadius',
+		rotation: 'pointRotation'
+	},
+
+	/**
+	 * @private
+	 */
+	_getIndexScaleId: function() {
+		return this.chart.scale.id;
+	},
+
+	/**
+	 * @private
+	 */
+	_getValueScaleId: function() {
+		return this.chart.scale.id;
+	},
 
 	update: function(reset) {
 		var me = this;
@@ -39818,12 +40755,12 @@ var controller_radar = core_datasetController.extend({
 		var line = meta.dataset;
 		var points = meta.data || [];
 		var scale = me.chart.scale;
-		var dataset = me.getDataset();
+		var config = me._config;
 		var i, ilen;
 
 		// Compatibility: If the properties are defined with only the old name, use those values
-		if ((dataset.tension !== undefined) && (dataset.lineTension === undefined)) {
-			dataset.lineTension = dataset.tension;
+		if (config.tension !== undefined && config.lineTension === undefined) {
+			config.lineTension = config.tension;
 		}
 
 		// Utility
@@ -39833,7 +40770,7 @@ var controller_radar = core_datasetController.extend({
 		line._children = points;
 		line._loop = true;
 		// Model
-		line._model = me._resolveLineOptions(line);
+		line._model = me._resolveDatasetElementOptions(line);
 
 		line.pivot();
 
@@ -39857,7 +40794,7 @@ var controller_radar = core_datasetController.extend({
 		var dataset = me.getDataset();
 		var scale = me.chart.scale;
 		var pointPosition = scale.getPointPositionForValue(index, dataset.data[index]);
-		var options = me._resolvePointOptions(point, index);
+		var options = me._resolveDataElementOptions(point, index);
 		var lineModel = me.getMeta().dataset._model;
 		var x = reset ? scale.xCenter : pointPosition.x;
 		var y = reset ? scale.yCenter : pointPosition.y;
@@ -39880,7 +40817,7 @@ var controller_radar = core_datasetController.extend({
 			backgroundColor: options.backgroundColor,
 			borderColor: options.borderColor,
 			borderWidth: options.borderWidth,
-			tension: valueOrDefault$6(custom.tension, lineModel ? lineModel.tension : 0),
+			tension: valueOrDefault$7(custom.tension, lineModel ? lineModel.tension : 0),
 
 			// Tooltip
 			hitRadius: options.hitRadius
@@ -39890,84 +40827,14 @@ var controller_radar = core_datasetController.extend({
 	/**
 	 * @private
 	 */
-	_resolvePointOptions: function(element, index) {
+	_resolveDatasetElementOptions: function() {
 		var me = this;
-		var chart = me.chart;
-		var dataset = chart.data.datasets[me.index];
-		var custom = element.custom || {};
-		var options = chart.options.elements.point;
-		var values = {};
-		var i, ilen, key;
+		var config = me._config;
+		var options = me.chart.options;
+		var values = core_datasetController.prototype._resolveDatasetElementOptions.apply(me, arguments);
 
-		// Scriptable options
-		var context = {
-			chart: chart,
-			dataIndex: index,
-			dataset: dataset,
-			datasetIndex: me.index
-		};
-
-		var ELEMENT_OPTIONS = {
-			backgroundColor: 'pointBackgroundColor',
-			borderColor: 'pointBorderColor',
-			borderWidth: 'pointBorderWidth',
-			hitRadius: 'pointHitRadius',
-			hoverBackgroundColor: 'pointHoverBackgroundColor',
-			hoverBorderColor: 'pointHoverBorderColor',
-			hoverBorderWidth: 'pointHoverBorderWidth',
-			hoverRadius: 'pointHoverRadius',
-			pointStyle: 'pointStyle',
-			radius: 'pointRadius',
-			rotation: 'pointRotation'
-		};
-		var keys = Object.keys(ELEMENT_OPTIONS);
-
-		for (i = 0, ilen = keys.length; i < ilen; ++i) {
-			key = keys[i];
-			values[key] = resolve$6([
-				custom[key],
-				dataset[ELEMENT_OPTIONS[key]],
-				dataset[key],
-				options[key]
-			], context, index);
-		}
-
-		return values;
-	},
-
-	/**
-	 * @private
-	 */
-	_resolveLineOptions: function(element) {
-		var me = this;
-		var chart = me.chart;
-		var dataset = chart.data.datasets[me.index];
-		var custom = element.custom || {};
-		var options = chart.options.elements.line;
-		var values = {};
-		var i, ilen, key;
-
-		var keys = [
-			'backgroundColor',
-			'borderWidth',
-			'borderColor',
-			'borderCapStyle',
-			'borderDash',
-			'borderDashOffset',
-			'borderJoinStyle',
-			'fill'
-		];
-
-		for (i = 0, ilen = keys.length; i < ilen; ++i) {
-			key = keys[i];
-			values[key] = resolve$6([
-				custom[key],
-				dataset[key],
-				options[key]
-			]);
-		}
-
-		values.tension = valueOrDefault$6(dataset.lineTension, options.tension);
+		values.spanGaps = valueOrDefault$7(config.spanGaps, options.spanGaps);
+		values.tension = valueOrDefault$7(config.lineTension, options.elements.line.tension);
 
 		return values;
 	},
@@ -39978,6 +40845,13 @@ var controller_radar = core_datasetController.extend({
 		var area = me.chart.chartArea;
 		var points = meta.data || [];
 		var i, ilen, model, controlPoints;
+
+		// Only consider points that are drawn in case the spanGaps option is used
+		if (meta.dataset._model.spanGaps) {
+			points = points.filter(function(pt) {
+				return !pt._model.skip;
+			});
+		}
 
 		function capControlPoint(pt, min, max) {
 			return Math.max(Math.min(pt, max), min);
@@ -40012,10 +40886,10 @@ var controller_radar = core_datasetController.extend({
 			radius: model.radius
 		};
 
-		model.backgroundColor = valueOrDefault$6(options.hoverBackgroundColor, getHoverColor(options.backgroundColor));
-		model.borderColor = valueOrDefault$6(options.hoverBorderColor, getHoverColor(options.borderColor));
-		model.borderWidth = valueOrDefault$6(options.hoverBorderWidth, options.borderWidth);
-		model.radius = valueOrDefault$6(options.hoverRadius, options.radius);
+		model.backgroundColor = valueOrDefault$7(options.hoverBackgroundColor, getHoverColor(options.backgroundColor));
+		model.borderColor = valueOrDefault$7(options.hoverBorderColor, getHoverColor(options.borderColor));
+		model.borderWidth = valueOrDefault$7(options.hoverBorderWidth, options.borderWidth);
+		model.radius = valueOrDefault$7(options.hoverRadius, options.radius);
 	}
 });
 
@@ -40037,8 +40911,6 @@ core_defaults._set('scatter', {
 		}]
 	},
 
-	showLines: false,
-
 	tooltips: {
 		callbacks: {
 			title: function() {
@@ -40047,6 +40919,14 @@ core_defaults._set('scatter', {
 			label: function(item) {
 				return '(' + item.xLabel + ', ' + item.yLabel + ')';
 			}
+		}
+	}
+});
+
+core_defaults._set('global', {
+	datasets: {
+		scatter: {
+			showLine: false
 		}
 	}
 });
@@ -40093,17 +40973,13 @@ function getRelativePosition(e, chart) {
  * @param {function} handler - the callback to execute for each visible item
  */
 function parseVisibleItems(chart, handler) {
-	var datasets = chart.data.datasets;
-	var meta, i, j, ilen, jlen;
+	var metasets = chart._getSortedVisibleDatasetMetas();
+	var metadata, i, j, ilen, jlen, element;
 
-	for (i = 0, ilen = datasets.length; i < ilen; ++i) {
-		if (!chart.isDatasetVisible(i)) {
-			continue;
-		}
-
-		meta = chart.getDatasetMeta(i);
-		for (j = 0, jlen = meta.data.length; j < jlen; ++j) {
-			var element = meta.data[j];
+	for (i = 0, ilen = metasets.length; i < ilen; ++i) {
+		metadata = metasets[i].data;
+		for (j = 0, jlen = metadata.length; j < jlen; ++j) {
+			element = metadata[j];
 			if (!element._view.skip) {
 				handler(element);
 			}
@@ -40188,15 +41064,12 @@ function indexMode(chart, e, options) {
 		return [];
 	}
 
-	chart.data.datasets.forEach(function(dataset, datasetIndex) {
-		if (chart.isDatasetVisible(datasetIndex)) {
-			var meta = chart.getDatasetMeta(datasetIndex);
-			var element = meta.data[items[0]._index];
+	chart._getSortedVisibleDatasetMetas().forEach(function(meta) {
+		var element = meta.data[items[0]._index];
 
-			// don't count items that are skipped (null data)
-			if (element && !element._view.skip) {
-				elements.push(element);
-			}
+		// don't count items that are skipped (null data)
+		if (element && !element._view.skip) {
+			elements.push(element);
 		}
 	});
 
@@ -40377,55 +41250,193 @@ var core_interaction = {
 	}
 };
 
+var extend = helpers$1.extend;
+
 function filterByPosition(array, position) {
 	return helpers$1.where(array, function(v) {
-		return v.position === position;
+		return v.pos === position;
 	});
 }
 
 function sortByWeight(array, reverse) {
-	array.forEach(function(v, i) {
-		v._tmpIndex_ = i;
-		return v;
-	});
-	array.sort(function(a, b) {
+	return array.sort(function(a, b) {
 		var v0 = reverse ? b : a;
 		var v1 = reverse ? a : b;
 		return v0.weight === v1.weight ?
-			v0._tmpIndex_ - v1._tmpIndex_ :
+			v0.index - v1.index :
 			v0.weight - v1.weight;
-	});
-	array.forEach(function(v) {
-		delete v._tmpIndex_;
 	});
 }
 
-function findMaxPadding(boxes) {
-	var top = 0;
-	var left = 0;
-	var bottom = 0;
-	var right = 0;
-	helpers$1.each(boxes, function(box) {
-		if (box.getPadding) {
-			var boxPadding = box.getPadding();
-			top = Math.max(top, boxPadding.top);
-			left = Math.max(left, boxPadding.left);
-			bottom = Math.max(bottom, boxPadding.bottom);
-			right = Math.max(right, boxPadding.right);
-		}
-	});
+function wrapBoxes(boxes) {
+	var layoutBoxes = [];
+	var i, ilen, box;
+
+	for (i = 0, ilen = (boxes || []).length; i < ilen; ++i) {
+		box = boxes[i];
+		layoutBoxes.push({
+			index: i,
+			box: box,
+			pos: box.position,
+			horizontal: box.isHorizontal(),
+			weight: box.weight
+		});
+	}
+	return layoutBoxes;
+}
+
+function setLayoutDims(layouts, params) {
+	var i, ilen, layout;
+	for (i = 0, ilen = layouts.length; i < ilen; ++i) {
+		layout = layouts[i];
+		// store width used instead of chartArea.w in fitBoxes
+		layout.width = layout.horizontal
+			? layout.box.fullWidth && params.availableWidth
+			: params.vBoxMaxWidth;
+		// store height used instead of chartArea.h in fitBoxes
+		layout.height = layout.horizontal && params.hBoxMaxHeight;
+	}
+}
+
+function buildLayoutBoxes(boxes) {
+	var layoutBoxes = wrapBoxes(boxes);
+	var left = sortByWeight(filterByPosition(layoutBoxes, 'left'), true);
+	var right = sortByWeight(filterByPosition(layoutBoxes, 'right'));
+	var top = sortByWeight(filterByPosition(layoutBoxes, 'top'), true);
+	var bottom = sortByWeight(filterByPosition(layoutBoxes, 'bottom'));
+
 	return {
-		top: top,
-		left: left,
-		bottom: bottom,
-		right: right
+		leftAndTop: left.concat(top),
+		rightAndBottom: right.concat(bottom),
+		chartArea: filterByPosition(layoutBoxes, 'chartArea'),
+		vertical: left.concat(right),
+		horizontal: top.concat(bottom)
 	};
 }
 
-function addSizeByPosition(boxes, size) {
-	helpers$1.each(boxes, function(box) {
-		size[box.position] += box.isHorizontal() ? box.height : box.width;
-	});
+function getCombinedMax(maxPadding, chartArea, a, b) {
+	return Math.max(maxPadding[a], chartArea[a]) + Math.max(maxPadding[b], chartArea[b]);
+}
+
+function updateDims(chartArea, params, layout) {
+	var box = layout.box;
+	var maxPadding = chartArea.maxPadding;
+	var newWidth, newHeight;
+
+	if (layout.size) {
+		// this layout was already counted for, lets first reduce old size
+		chartArea[layout.pos] -= layout.size;
+	}
+	layout.size = layout.horizontal ? box.height : box.width;
+	chartArea[layout.pos] += layout.size;
+
+	if (box.getPadding) {
+		var boxPadding = box.getPadding();
+		maxPadding.top = Math.max(maxPadding.top, boxPadding.top);
+		maxPadding.left = Math.max(maxPadding.left, boxPadding.left);
+		maxPadding.bottom = Math.max(maxPadding.bottom, boxPadding.bottom);
+		maxPadding.right = Math.max(maxPadding.right, boxPadding.right);
+	}
+
+	newWidth = params.outerWidth - getCombinedMax(maxPadding, chartArea, 'left', 'right');
+	newHeight = params.outerHeight - getCombinedMax(maxPadding, chartArea, 'top', 'bottom');
+
+	if (newWidth !== chartArea.w || newHeight !== chartArea.h) {
+		chartArea.w = newWidth;
+		chartArea.h = newHeight;
+
+		// return true if chart area changed in layout's direction
+		return layout.horizontal ? newWidth !== chartArea.w : newHeight !== chartArea.h;
+	}
+}
+
+function handleMaxPadding(chartArea) {
+	var maxPadding = chartArea.maxPadding;
+
+	function updatePos(pos) {
+		var change = Math.max(maxPadding[pos] - chartArea[pos], 0);
+		chartArea[pos] += change;
+		return change;
+	}
+	chartArea.y += updatePos('top');
+	chartArea.x += updatePos('left');
+	updatePos('right');
+	updatePos('bottom');
+}
+
+function getMargins(horizontal, chartArea) {
+	var maxPadding = chartArea.maxPadding;
+
+	function marginForPositions(positions) {
+		var margin = {left: 0, top: 0, right: 0, bottom: 0};
+		positions.forEach(function(pos) {
+			margin[pos] = Math.max(chartArea[pos], maxPadding[pos]);
+		});
+		return margin;
+	}
+
+	return horizontal
+		? marginForPositions(['left', 'right'])
+		: marginForPositions(['top', 'bottom']);
+}
+
+function fitBoxes(boxes, chartArea, params) {
+	var refitBoxes = [];
+	var i, ilen, layout, box, refit, changed;
+
+	for (i = 0, ilen = boxes.length; i < ilen; ++i) {
+		layout = boxes[i];
+		box = layout.box;
+
+		box.update(
+			layout.width || chartArea.w,
+			layout.height || chartArea.h,
+			getMargins(layout.horizontal, chartArea)
+		);
+		if (updateDims(chartArea, params, layout)) {
+			changed = true;
+			if (refitBoxes.length) {
+				// Dimensions changed and there were non full width boxes before this
+				// -> we have to refit those
+				refit = true;
+			}
+		}
+		if (!box.fullWidth) { // fullWidth boxes don't need to be re-fitted in any case
+			refitBoxes.push(layout);
+		}
+	}
+
+	return refit ? fitBoxes(refitBoxes, chartArea, params) || changed : changed;
+}
+
+function placeBoxes(boxes, chartArea, params) {
+	var userPadding = params.padding;
+	var x = chartArea.x;
+	var y = chartArea.y;
+	var i, ilen, layout, box;
+
+	for (i = 0, ilen = boxes.length; i < ilen; ++i) {
+		layout = boxes[i];
+		box = layout.box;
+		if (layout.horizontal) {
+			box.left = box.fullWidth ? userPadding.left : chartArea.left;
+			box.right = box.fullWidth ? params.outerWidth - userPadding.right : chartArea.left + chartArea.w;
+			box.top = y;
+			box.bottom = y + box.height;
+			box.width = box.right - box.left;
+			y = box.bottom;
+		} else {
+			box.left = x;
+			box.right = x + box.width;
+			box.top = chartArea.top;
+			box.bottom = chartArea.top + chartArea.h;
+			box.height = box.bottom - box.top;
+			x = box.right;
+		}
+	}
+
+	chartArea.x = x;
+	chartArea.y = y;
 }
 
 core_defaults._set('global', {
@@ -40477,6 +41488,14 @@ var core_layouts = {
 		item.fullWidth = item.fullWidth || false;
 		item.position = item.position || 'top';
 		item.weight = item.weight || 0;
+		item._layers = item._layers || function() {
+			return [{
+				z: 0,
+				draw: function() {
+					item.draw.apply(item, arguments);
+				}
+			}];
+		};
 
 		chart.boxes.push(item);
 	},
@@ -40527,26 +41546,12 @@ var core_layouts = {
 
 		var layoutOptions = chart.options.layout || {};
 		var padding = helpers$1.options.toPadding(layoutOptions.padding);
-		var leftPadding = padding.left;
-		var rightPadding = padding.right;
-		var topPadding = padding.top;
-		var bottomPadding = padding.bottom;
 
-		var leftBoxes = filterByPosition(chart.boxes, 'left');
-		var rightBoxes = filterByPosition(chart.boxes, 'right');
-		var topBoxes = filterByPosition(chart.boxes, 'top');
-		var bottomBoxes = filterByPosition(chart.boxes, 'bottom');
-		var chartAreaBoxes = filterByPosition(chart.boxes, 'chartArea');
-
-		// Sort boxes by weight. A higher weight is further away from the chart area
-		sortByWeight(leftBoxes, true);
-		sortByWeight(rightBoxes, false);
-		sortByWeight(topBoxes, true);
-		sortByWeight(bottomBoxes, false);
-
-		var verticalBoxes = leftBoxes.concat(rightBoxes);
-		var horizontalBoxes = topBoxes.concat(bottomBoxes);
-		var outerBoxes = verticalBoxes.concat(horizontalBoxes);
+		var availableWidth = width - padding.width;
+		var availableHeight = height - padding.height;
+		var boxes = buildLayoutBoxes(chart.boxes);
+		var verticalBoxes = boxes.vertical;
+		var horizontalBoxes = boxes.horizontal;
 
 		// Essentially we now have any number of boxes on each of the 4 sides.
 		// Our canvas looks like the following.
@@ -40574,201 +41579,57 @@ var core_layouts = {
 		// |                  B2 (Full Width)                   |
 		// |----------------------------------------------------|
 		//
-		// What we do to find the best sizing, we do the following
-		// 1. Determine the minimum size of the chart area.
-		// 2. Split the remaining width equally between each vertical axis
-		// 3. Split the remaining height equally between each horizontal axis
-		// 4. Give each layout the maximum size it can be. The layout will return it's minimum size
-		// 5. Adjust the sizes of each axis based on it's minimum reported size.
-		// 6. Refit each axis
-		// 7. Position each axis in the final location
-		// 8. Tell the chart the final location of the chart area
-		// 9. Tell any axes that overlay the chart area the positions of the chart area
 
-		// Step 1
-		var chartWidth = width - leftPadding - rightPadding;
-		var chartHeight = height - topPadding - bottomPadding;
-		var chartAreaWidth = chartWidth / 2; // min 50%
+		var params = Object.freeze({
+			outerWidth: width,
+			outerHeight: height,
+			padding: padding,
+			availableWidth: availableWidth,
+			vBoxMaxWidth: availableWidth / 2 / verticalBoxes.length,
+			hBoxMaxHeight: availableHeight / 2
+		});
+		var chartArea = extend({
+			maxPadding: extend({}, padding),
+			w: availableWidth,
+			h: availableHeight,
+			x: padding.left,
+			y: padding.top
+		}, padding);
 
-		// Step 2
-		var verticalBoxWidth = (width - chartAreaWidth) / verticalBoxes.length;
+		setLayoutDims(verticalBoxes.concat(horizontalBoxes), params);
 
-		// Step 3
-		// TODO re-limit horizontal axis height (this limit has affected only padding calculation since PR 1837)
-		// var horizontalBoxHeight = (height - chartAreaHeight) / horizontalBoxes.length;
+		// First fit vertical boxes
+		fitBoxes(verticalBoxes, chartArea, params);
 
-		// Step 4
-		var maxChartAreaWidth = chartWidth;
-		var maxChartAreaHeight = chartHeight;
-		var outerBoxSizes = {top: topPadding, left: leftPadding, bottom: bottomPadding, right: rightPadding};
-		var minBoxSizes = [];
-		var maxPadding;
-
-		function getMinimumBoxSize(box) {
-			var minSize;
-			var isHorizontal = box.isHorizontal();
-
-			if (isHorizontal) {
-				minSize = box.update(box.fullWidth ? chartWidth : maxChartAreaWidth, chartHeight / 2);
-				maxChartAreaHeight -= minSize.height;
-			} else {
-				minSize = box.update(verticalBoxWidth, maxChartAreaHeight);
-				maxChartAreaWidth -= minSize.width;
-			}
-
-			minBoxSizes.push({
-				horizontal: isHorizontal,
-				width: minSize.width,
-				box: box,
-			});
+		// Then fit horizontal boxes
+		if (fitBoxes(horizontalBoxes, chartArea, params)) {
+			// if the area changed, re-fit vertical boxes
+			fitBoxes(verticalBoxes, chartArea, params);
 		}
 
-		helpers$1.each(outerBoxes, getMinimumBoxSize);
+		handleMaxPadding(chartArea);
 
-		// If a horizontal box has padding, we move the left boxes over to avoid ugly charts (see issue #2478)
-		maxPadding = findMaxPadding(outerBoxes);
+		// Finally place the boxes to correct coordinates
+		placeBoxes(boxes.leftAndTop, chartArea, params);
 
-		// At this point, maxChartAreaHeight and maxChartAreaWidth are the size the chart area could
-		// be if the axes are drawn at their minimum sizes.
-		// Steps 5 & 6
+		// Move to opposite side of chart
+		chartArea.x += chartArea.w;
+		chartArea.y += chartArea.h;
 
-		// Function to fit a box
-		function fitBox(box) {
-			var minBoxSize = helpers$1.findNextWhere(minBoxSizes, function(minBox) {
-				return minBox.box === box;
-			});
+		placeBoxes(boxes.rightAndBottom, chartArea, params);
 
-			if (minBoxSize) {
-				if (minBoxSize.horizontal) {
-					var scaleMargin = {
-						left: Math.max(outerBoxSizes.left, maxPadding.left),
-						right: Math.max(outerBoxSizes.right, maxPadding.right),
-						top: 0,
-						bottom: 0
-					};
-
-					// Don't use min size here because of label rotation. When the labels are rotated, their rotation highly depends
-					// on the margin. Sometimes they need to increase in size slightly
-					box.update(box.fullWidth ? chartWidth : maxChartAreaWidth, chartHeight / 2, scaleMargin);
-				} else {
-					box.update(minBoxSize.width, maxChartAreaHeight);
-				}
-			}
-		}
-
-		// Update, and calculate the left and right margins for the horizontal boxes
-		helpers$1.each(verticalBoxes, fitBox);
-		addSizeByPosition(verticalBoxes, outerBoxSizes);
-
-		// Set the Left and Right margins for the horizontal boxes
-		helpers$1.each(horizontalBoxes, fitBox);
-		addSizeByPosition(horizontalBoxes, outerBoxSizes);
-
-		function finalFitVerticalBox(box) {
-			var minBoxSize = helpers$1.findNextWhere(minBoxSizes, function(minSize) {
-				return minSize.box === box;
-			});
-
-			var scaleMargin = {
-				left: 0,
-				right: 0,
-				top: outerBoxSizes.top,
-				bottom: outerBoxSizes.bottom
-			};
-
-			if (minBoxSize) {
-				box.update(minBoxSize.width, maxChartAreaHeight, scaleMargin);
-			}
-		}
-
-		// Let the left layout know the final margin
-		helpers$1.each(verticalBoxes, finalFitVerticalBox);
-
-		// Recalculate because the size of each layout might have changed slightly due to the margins (label rotation for instance)
-		outerBoxSizes = {top: topPadding, left: leftPadding, bottom: bottomPadding, right: rightPadding};
-		addSizeByPosition(outerBoxes, outerBoxSizes);
-
-		// We may be adding some padding to account for rotated x axis labels
-		var leftPaddingAddition = Math.max(maxPadding.left - outerBoxSizes.left, 0);
-		outerBoxSizes.left += leftPaddingAddition;
-		outerBoxSizes.right += Math.max(maxPadding.right - outerBoxSizes.right, 0);
-
-		var topPaddingAddition = Math.max(maxPadding.top - outerBoxSizes.top, 0);
-		outerBoxSizes.top += topPaddingAddition;
-		outerBoxSizes.bottom += Math.max(maxPadding.bottom - outerBoxSizes.bottom, 0);
-
-		// Figure out if our chart area changed. This would occur if the dataset layout label rotation
-		// changed due to the application of the margins in step 6. Since we can only get bigger, this is safe to do
-		// without calling `fit` again
-		var newMaxChartAreaHeight = height - outerBoxSizes.top - outerBoxSizes.bottom;
-		var newMaxChartAreaWidth = width - outerBoxSizes.left - outerBoxSizes.right;
-
-		if (newMaxChartAreaWidth !== maxChartAreaWidth || newMaxChartAreaHeight !== maxChartAreaHeight) {
-			helpers$1.each(verticalBoxes, function(box) {
-				box.height = newMaxChartAreaHeight;
-			});
-
-			helpers$1.each(horizontalBoxes, function(box) {
-				if (!box.fullWidth) {
-					box.width = newMaxChartAreaWidth;
-				}
-			});
-
-			maxChartAreaHeight = newMaxChartAreaHeight;
-			maxChartAreaWidth = newMaxChartAreaWidth;
-		}
-
-		// Step 7 - Position the boxes
-		var left = leftPadding + leftPaddingAddition;
-		var top = topPadding + topPaddingAddition;
-
-		function placeBox(box) {
-			if (box.isHorizontal()) {
-				box.left = box.fullWidth ? leftPadding : outerBoxSizes.left;
-				box.right = box.fullWidth ? width - rightPadding : outerBoxSizes.left + maxChartAreaWidth;
-				box.top = top;
-				box.bottom = top + box.height;
-
-				// Move to next point
-				top = box.bottom;
-
-			} else {
-
-				box.left = left;
-				box.right = left + box.width;
-				box.top = outerBoxSizes.top;
-				box.bottom = outerBoxSizes.top + maxChartAreaHeight;
-
-				// Move to next point
-				left = box.right;
-			}
-		}
-
-		helpers$1.each(leftBoxes.concat(topBoxes), placeBox);
-
-		// Account for chart width and height
-		left += maxChartAreaWidth;
-		top += maxChartAreaHeight;
-
-		helpers$1.each(rightBoxes, placeBox);
-		helpers$1.each(bottomBoxes, placeBox);
-
-		// Step 8
 		chart.chartArea = {
-			left: outerBoxSizes.left,
-			top: outerBoxSizes.top,
-			right: outerBoxSizes.left + maxChartAreaWidth,
-			bottom: outerBoxSizes.top + maxChartAreaHeight
+			left: chartArea.left,
+			top: chartArea.top,
+			right: chartArea.left + chartArea.w,
+			bottom: chartArea.top + chartArea.h
 		};
 
-		// Step 9
-		helpers$1.each(chartAreaBoxes, function(box) {
-			box.left = chart.chartArea.left;
-			box.top = chart.chartArea.top;
-			box.right = chart.chartArea.right;
-			box.bottom = chart.chartArea.bottom;
-
-			box.update(maxChartAreaWidth, maxChartAreaHeight);
+		// Finally update boxes in chartArea (radial scale for example)
+		helpers$1.each(boxes.chartArea, function(layout) {
+			var box = layout.box;
+			extend(box, chart.chartArea);
+			box.update(chartArea.w, chartArea.h);
 		});
 	}
 };
@@ -40792,12 +41653,9 @@ var platform_basic = {
 var platform_dom = "/*\n * DOM element rendering detection\n * https://davidwalsh.name/detect-node-insertion\n */\n@keyframes chartjs-render-animation {\n\tfrom { opacity: 0.99; }\n\tto { opacity: 1; }\n}\n\n.chartjs-render-monitor {\n\tanimation: chartjs-render-animation 0.001s;\n}\n\n/*\n * DOM element resizing detection\n * https://github.com/marcj/css-element-queries\n */\n.chartjs-size-monitor,\n.chartjs-size-monitor-expand,\n.chartjs-size-monitor-shrink {\n\tposition: absolute;\n\tdirection: ltr;\n\tleft: 0;\n\ttop: 0;\n\tright: 0;\n\tbottom: 0;\n\toverflow: hidden;\n\tpointer-events: none;\n\tvisibility: hidden;\n\tz-index: -1;\n}\n\n.chartjs-size-monitor-expand > div {\n\tposition: absolute;\n\twidth: 1000000px;\n\theight: 1000000px;\n\tleft: 0;\n\ttop: 0;\n}\n\n.chartjs-size-monitor-shrink > div {\n\tposition: absolute;\n\twidth: 200%;\n\theight: 200%;\n\tleft: 0;\n\ttop: 0;\n}\n";
 
 var platform_dom$1 = /*#__PURE__*/Object.freeze({
-default: platform_dom
+__proto__: null,
+'default': platform_dom
 });
-
-function getCjsExportFromNamespace (n) {
-	return n && n.default || n;
-}
 
 var stylesheet = getCjsExportFromNamespace(platform_dom$1);
 
@@ -41088,17 +41946,22 @@ function removeResizeListener(node) {
 	}
 }
 
-function injectCSS(platform, css) {
+/**
+ * Injects CSS styles inline if the styles are not already present.
+ * @param {HTMLDocument|ShadowRoot} rootNode - the node to contain the <style>.
+ * @param {string} css - the CSS to be injected.
+ */
+function injectCSS(rootNode, css) {
 	// https://stackoverflow.com/q/3922139
-	var style = platform._style || document.createElement('style');
-	if (!platform._style) {
-		platform._style = style;
+	var expando = rootNode[EXPANDO_KEY] || (rootNode[EXPANDO_KEY] = {});
+	if (!expando.containsStyles) {
+		expando.containsStyles = true;
 		css = '/* Chart.js */\n' + css;
+		var style = document.createElement('style');
 		style.setAttribute('type', 'text/css');
-		document.getElementsByTagName('head')[0].appendChild(style);
+		style.appendChild(document.createTextNode(css));
+		rootNode.appendChild(style);
 	}
-
-	style.appendChild(document.createTextNode(css));
 }
 
 var platform_dom$2 = {
@@ -41119,18 +41982,18 @@ var platform_dom$2 = {
 	_enabled: typeof window !== 'undefined' && typeof document !== 'undefined',
 
 	/**
+	 * Initializes resources that depend on platform options.
+	 * @param {HTMLCanvasElement} canvas - The Canvas element.
 	 * @private
 	 */
-	_ensureLoaded: function() {
-		if (this._loaded) {
-			return;
-		}
-
-		this._loaded = true;
-
-		// https://github.com/chartjs/Chart.js/issues/5208
+	_ensureLoaded: function(canvas) {
 		if (!this.disableCSSInjection) {
-			injectCSS(this, stylesheet);
+			// If the canvas is in a shadow DOM, then the styles must also be inserted
+			// into the same shadow DOM.
+			// https://github.com/chartjs/Chart.js/issues/5763
+			var root = canvas.getRootNode ? canvas.getRootNode() : document;
+			var targetNode = root.host ? root : document.head;
+			injectCSS(targetNode, stylesheet);
 		}
 	},
 
@@ -41152,10 +42015,6 @@ var platform_dom$2 = {
 		// https://github.com/chartjs/Chart.js/issues/2807
 		var context = item && item.getContext && item.getContext('2d');
 
-		// Load platform resources on first chart creation, to make possible to change
-		// platform options after importing the library (e.g. `disableCSSInjection`).
-		this._ensureLoaded();
-
 		// `instanceof HTMLCanvasElement/CanvasRenderingContext2D` fails when the item is
 		// inside an iframe or when running in a protected environment. We could guess the
 		// types from their toString() value but let's keep things flexible and assume it's
@@ -41164,6 +42023,9 @@ var platform_dom$2 = {
 		// https://github.com/chartjs/Chart.js/issues/4102
 		// https://github.com/chartjs/Chart.js/issues/4152
 		if (context && context.canvas === item) {
+			// Load platform resources on first chart creation, to make it possible to
+			// import the library before setting platform options.
+			this._ensureLoaded(item);
 			initCanvas(item, config);
 			return context;
 		}
@@ -41516,7 +42378,8 @@ var core_scaleService = {
 	}
 };
 
-var valueOrDefault$7 = helpers$1.valueOrDefault;
+var valueOrDefault$8 = helpers$1.valueOrDefault;
+var getRtlHelper = helpers$1.rtl.getRtlAdapter;
 
 core_defaults._set('global', {
 	tooltips: {
@@ -41754,28 +42617,32 @@ function getBaseModel(tooltipOpts) {
 		xAlign: tooltipOpts.xAlign,
 		yAlign: tooltipOpts.yAlign,
 
+		// Drawing direction and text direction
+		rtl: tooltipOpts.rtl,
+		textDirection: tooltipOpts.textDirection,
+
 		// Body
 		bodyFontColor: tooltipOpts.bodyFontColor,
-		_bodyFontFamily: valueOrDefault$7(tooltipOpts.bodyFontFamily, globalDefaults.defaultFontFamily),
-		_bodyFontStyle: valueOrDefault$7(tooltipOpts.bodyFontStyle, globalDefaults.defaultFontStyle),
+		_bodyFontFamily: valueOrDefault$8(tooltipOpts.bodyFontFamily, globalDefaults.defaultFontFamily),
+		_bodyFontStyle: valueOrDefault$8(tooltipOpts.bodyFontStyle, globalDefaults.defaultFontStyle),
 		_bodyAlign: tooltipOpts.bodyAlign,
-		bodyFontSize: valueOrDefault$7(tooltipOpts.bodyFontSize, globalDefaults.defaultFontSize),
+		bodyFontSize: valueOrDefault$8(tooltipOpts.bodyFontSize, globalDefaults.defaultFontSize),
 		bodySpacing: tooltipOpts.bodySpacing,
 
 		// Title
 		titleFontColor: tooltipOpts.titleFontColor,
-		_titleFontFamily: valueOrDefault$7(tooltipOpts.titleFontFamily, globalDefaults.defaultFontFamily),
-		_titleFontStyle: valueOrDefault$7(tooltipOpts.titleFontStyle, globalDefaults.defaultFontStyle),
-		titleFontSize: valueOrDefault$7(tooltipOpts.titleFontSize, globalDefaults.defaultFontSize),
+		_titleFontFamily: valueOrDefault$8(tooltipOpts.titleFontFamily, globalDefaults.defaultFontFamily),
+		_titleFontStyle: valueOrDefault$8(tooltipOpts.titleFontStyle, globalDefaults.defaultFontStyle),
+		titleFontSize: valueOrDefault$8(tooltipOpts.titleFontSize, globalDefaults.defaultFontSize),
 		_titleAlign: tooltipOpts.titleAlign,
 		titleSpacing: tooltipOpts.titleSpacing,
 		titleMarginBottom: tooltipOpts.titleMarginBottom,
 
 		// Footer
 		footerFontColor: tooltipOpts.footerFontColor,
-		_footerFontFamily: valueOrDefault$7(tooltipOpts.footerFontFamily, globalDefaults.defaultFontFamily),
-		_footerFontStyle: valueOrDefault$7(tooltipOpts.footerFontStyle, globalDefaults.defaultFontStyle),
-		footerFontSize: valueOrDefault$7(tooltipOpts.footerFontSize, globalDefaults.defaultFontSize),
+		_footerFontFamily: valueOrDefault$8(tooltipOpts.footerFontFamily, globalDefaults.defaultFontFamily),
+		_footerFontStyle: valueOrDefault$8(tooltipOpts.footerFontStyle, globalDefaults.defaultFontStyle),
+		footerFontSize: valueOrDefault$8(tooltipOpts.footerFontSize, globalDefaults.defaultFontSize),
 		_footerAlign: tooltipOpts.footerAlign,
 		footerSpacing: tooltipOpts.footerSpacing,
 		footerMarginTop: tooltipOpts.footerMarginTop,
@@ -42002,7 +42869,7 @@ function getBeforeAfterBodyLines(callback) {
 	return pushOrConcat([], splitNewlines(callback));
 }
 
-var exports$3 = core_element.extend({
+var exports$4 = core_element.extend({
 	initialize: function() {
 		this._model = getBaseModel(this._options);
 		this._lastActive = [];
@@ -42260,25 +43127,28 @@ var exports$3 = core_element.extend({
 
 	drawTitle: function(pt, vm, ctx) {
 		var title = vm.title;
+		var length = title.length;
+		var titleFontSize, titleSpacing, i;
 
-		if (title.length) {
+		if (length) {
+			var rtlHelper = getRtlHelper(vm.rtl, vm.x, vm.width);
+
 			pt.x = getAlignedX(vm, vm._titleAlign);
 
-			ctx.textAlign = vm._titleAlign;
-			ctx.textBaseline = 'top';
+			ctx.textAlign = rtlHelper.textAlign(vm._titleAlign);
+			ctx.textBaseline = 'middle';
 
-			var titleFontSize = vm.titleFontSize;
-			var titleSpacing = vm.titleSpacing;
+			titleFontSize = vm.titleFontSize;
+			titleSpacing = vm.titleSpacing;
 
 			ctx.fillStyle = vm.titleFontColor;
 			ctx.font = helpers$1.fontString(titleFontSize, vm._titleFontStyle, vm._titleFontFamily);
 
-			var i, len;
-			for (i = 0, len = title.length; i < len; ++i) {
-				ctx.fillText(title[i], pt.x, pt.y);
+			for (i = 0; i < length; ++i) {
+				ctx.fillText(title[i], rtlHelper.x(pt.x), pt.y + titleFontSize / 2);
 				pt.y += titleFontSize + titleSpacing; // Line Height and spacing
 
-				if (i + 1 === title.length) {
+				if (i + 1 === length) {
 					pt.y += vm.titleMarginBottom - titleSpacing; // If Last, add margin, remove spacing
 				}
 			}
@@ -42291,60 +43161,68 @@ var exports$3 = core_element.extend({
 		var bodyAlign = vm._bodyAlign;
 		var body = vm.body;
 		var drawColorBoxes = vm.displayColors;
-		var labelColors = vm.labelColors;
 		var xLinePadding = 0;
 		var colorX = drawColorBoxes ? getAlignedX(vm, 'left') : 0;
-		var textColor;
 
-		ctx.textAlign = bodyAlign;
-		ctx.textBaseline = 'top';
-		ctx.font = helpers$1.fontString(bodyFontSize, vm._bodyFontStyle, vm._bodyFontFamily);
+		var rtlHelper = getRtlHelper(vm.rtl, vm.x, vm.width);
 
-		pt.x = getAlignedX(vm, bodyAlign);
-
-		// Before Body
 		var fillLineOfText = function(line) {
-			ctx.fillText(line, pt.x + xLinePadding, pt.y);
+			ctx.fillText(line, rtlHelper.x(pt.x + xLinePadding), pt.y + bodyFontSize / 2);
 			pt.y += bodyFontSize + bodySpacing;
 		};
+
+		var bodyItem, textColor, labelColors, lines, i, j, ilen, jlen;
+		var bodyAlignForCalculation = rtlHelper.textAlign(bodyAlign);
+
+		ctx.textAlign = bodyAlign;
+		ctx.textBaseline = 'middle';
+		ctx.font = helpers$1.fontString(bodyFontSize, vm._bodyFontStyle, vm._bodyFontFamily);
+
+		pt.x = getAlignedX(vm, bodyAlignForCalculation);
 
 		// Before body lines
 		ctx.fillStyle = vm.bodyFontColor;
 		helpers$1.each(vm.beforeBody, fillLineOfText);
 
-		xLinePadding = drawColorBoxes && bodyAlign !== 'right'
+		xLinePadding = drawColorBoxes && bodyAlignForCalculation !== 'right'
 			? bodyAlign === 'center' ? (bodyFontSize / 2 + 1) : (bodyFontSize + 2)
 			: 0;
 
 		// Draw body lines now
-		helpers$1.each(body, function(bodyItem, i) {
+		for (i = 0, ilen = body.length; i < ilen; ++i) {
+			bodyItem = body[i];
 			textColor = vm.labelTextColors[i];
+			labelColors = vm.labelColors[i];
+
 			ctx.fillStyle = textColor;
 			helpers$1.each(bodyItem.before, fillLineOfText);
 
-			helpers$1.each(bodyItem.lines, function(line) {
+			lines = bodyItem.lines;
+			for (j = 0, jlen = lines.length; j < jlen; ++j) {
 				// Draw Legend-like boxes if needed
 				if (drawColorBoxes) {
+					var rtlColorX = rtlHelper.x(colorX);
+
 					// Fill a white rect so that colours merge nicely if the opacity is < 1
 					ctx.fillStyle = vm.legendColorBackground;
-					ctx.fillRect(colorX, pt.y, bodyFontSize, bodyFontSize);
+					ctx.fillRect(rtlHelper.leftForLtr(rtlColorX, bodyFontSize), pt.y, bodyFontSize, bodyFontSize);
 
 					// Border
 					ctx.lineWidth = 1;
-					ctx.strokeStyle = labelColors[i].borderColor;
-					ctx.strokeRect(colorX, pt.y, bodyFontSize, bodyFontSize);
+					ctx.strokeStyle = labelColors.borderColor;
+					ctx.strokeRect(rtlHelper.leftForLtr(rtlColorX, bodyFontSize), pt.y, bodyFontSize, bodyFontSize);
 
 					// Inner square
-					ctx.fillStyle = labelColors[i].backgroundColor;
-					ctx.fillRect(colorX + 1, pt.y + 1, bodyFontSize - 2, bodyFontSize - 2);
+					ctx.fillStyle = labelColors.backgroundColor;
+					ctx.fillRect(rtlHelper.leftForLtr(rtlHelper.xPlus(rtlColorX, 1), bodyFontSize - 2), pt.y + 1, bodyFontSize - 2, bodyFontSize - 2);
 					ctx.fillStyle = textColor;
 				}
 
-				fillLineOfText(line);
-			});
+				fillLineOfText(lines[j]);
+			}
 
 			helpers$1.each(bodyItem.after, fillLineOfText);
-		});
+		}
 
 		// Reset back to 0 for after body
 		xLinePadding = 0;
@@ -42356,21 +43234,27 @@ var exports$3 = core_element.extend({
 
 	drawFooter: function(pt, vm, ctx) {
 		var footer = vm.footer;
+		var length = footer.length;
+		var footerFontSize, i;
 
-		if (footer.length) {
+		if (length) {
+			var rtlHelper = getRtlHelper(vm.rtl, vm.x, vm.width);
+
 			pt.x = getAlignedX(vm, vm._footerAlign);
 			pt.y += vm.footerMarginTop;
 
-			ctx.textAlign = vm._footerAlign;
-			ctx.textBaseline = 'top';
+			ctx.textAlign = rtlHelper.textAlign(vm._footerAlign);
+			ctx.textBaseline = 'middle';
+
+			footerFontSize = vm.footerFontSize;
 
 			ctx.fillStyle = vm.footerFontColor;
-			ctx.font = helpers$1.fontString(vm.footerFontSize, vm._footerFontStyle, vm._footerFontFamily);
+			ctx.font = helpers$1.fontString(footerFontSize, vm._footerFontStyle, vm._footerFontFamily);
 
-			helpers$1.each(footer, function(line) {
-				ctx.fillText(line, pt.x, pt.y);
-				pt.y += vm.footerFontSize + vm.footerSpacing;
-			});
+			for (i = 0; i < length; ++i) {
+				ctx.fillText(footer[i], rtlHelper.x(pt.x), pt.y + footerFontSize / 2);
+				pt.y += footerFontSize + vm.footerSpacing;
+			}
 		}
 	},
 
@@ -42450,6 +43334,8 @@ var exports$3 = core_element.extend({
 			// Draw Title, Body, and Footer
 			pt.y += vm.yPadding;
 
+			helpers$1.rtl.overrideTextDirection(ctx, vm.textDirection);
+
 			// Titles
 			this.drawTitle(pt, vm, ctx);
 
@@ -42458,6 +43344,8 @@ var exports$3 = core_element.extend({
 
 			// Footer
 			this.drawFooter(pt, vm, ctx);
+
+			helpers$1.rtl.restoreTextDirection(ctx, vm.textDirection);
 
 			ctx.restore();
 		}
@@ -42481,6 +43369,9 @@ var exports$3 = core_element.extend({
 			me._active = [];
 		} else {
 			me._active = me._chart.getElementsAtEventForMode(e, options.mode, options);
+			if (options.reverse) {
+				me._active.reverse();
+			}
 		}
 
 		// Remember Last Actives
@@ -42510,10 +43401,10 @@ var exports$3 = core_element.extend({
  */
 var positioners_1 = positioners;
 
-var core_tooltip = exports$3;
+var core_tooltip = exports$4;
 core_tooltip.positioners = positioners_1;
 
-var valueOrDefault$8 = helpers$1.valueOrDefault;
+var valueOrDefault$9 = helpers$1.valueOrDefault;
 
 core_defaults._set('global', {
 	elements: {},
@@ -42554,7 +43445,7 @@ function mergeScaleConfig(/* config objects ... */) {
 
 				for (i = 0; i < slen; ++i) {
 					scale = source[key][i];
-					type = valueOrDefault$8(scale.type, key === 'xAxes' ? 'category' : 'linear');
+					type = valueOrDefault$9(scale.type, key === 'xAxes' ? 'category' : 'linear');
 
 					if (i >= target[key].length) {
 						target[key].push({});
@@ -42638,8 +43529,29 @@ function updateConfig(chart) {
 	chart.tooltip.initialize();
 }
 
+function nextAvailableScaleId(axesOpts, prefix, index) {
+	var id;
+	var hasId = function(obj) {
+		return obj.id === id;
+	};
+
+	do {
+		id = prefix + index++;
+	} while (helpers$1.findIndex(axesOpts, hasId) >= 0);
+
+	return id;
+}
+
 function positionIsHorizontal(position) {
 	return position === 'top' || position === 'bottom';
+}
+
+function compare2Level(l1, l2) {
+	return function(a, b) {
+		return a[l1] === b[l1]
+			? a[l2] - b[l2]
+			: a[l1] - b[l1];
+	};
 }
 
 var Chart = function(item, config) {
@@ -42670,6 +43582,7 @@ helpers$1.extend(Chart.prototype, /** @lends Chart */ {
 		me.aspectRatio = height ? width / height : null;
 		me.options = config.options;
 		me._bufferedRender = false;
+		me._layers = [];
 
 		/**
 		 * Provided for backward compatibility, Chart and Chart.Controller have been merged,
@@ -42726,9 +43639,6 @@ helpers$1.extend(Chart.prototype, /** @lends Chart */ {
 			me.resize(true);
 		}
 
-		// Make sure scales have IDs and are built before we build any controllers.
-		me.ensureScalesHaveIDs();
-		me.buildOrUpdateScales();
 		me.initToolTip();
 
 		// After init plugin notification
@@ -42795,11 +43705,15 @@ helpers$1.extend(Chart.prototype, /** @lends Chart */ {
 		var scaleOptions = options.scale;
 
 		helpers$1.each(scalesOptions.xAxes, function(xAxisOptions, index) {
-			xAxisOptions.id = xAxisOptions.id || ('x-axis-' + index);
+			if (!xAxisOptions.id) {
+				xAxisOptions.id = nextAvailableScaleId(scalesOptions.xAxes, 'x-axis-', index);
+			}
 		});
 
 		helpers$1.each(scalesOptions.yAxes, function(yAxisOptions, index) {
-			yAxisOptions.id = yAxisOptions.id || ('y-axis-' + index);
+			if (!yAxisOptions.id) {
+				yAxisOptions.id = nextAvailableScaleId(scalesOptions.yAxes, 'y-axis-', index);
+			}
 		});
 
 		if (scaleOptions) {
@@ -42843,7 +43757,7 @@ helpers$1.extend(Chart.prototype, /** @lends Chart */ {
 		helpers$1.each(items, function(item) {
 			var scaleOptions = item.options;
 			var id = scaleOptions.id;
-			var scaleType = valueOrDefault$8(scaleOptions.type, item.dtype);
+			var scaleType = valueOrDefault$9(scaleOptions.type, item.dtype);
 
 			if (positionIsHorizontal(scaleOptions.position) !== positionIsHorizontal(item.dposition)) {
 				scaleOptions.position = item.dposition;
@@ -42895,19 +43809,24 @@ helpers$1.extend(Chart.prototype, /** @lends Chart */ {
 	buildOrUpdateControllers: function() {
 		var me = this;
 		var newControllers = [];
+		var datasets = me.data.datasets;
+		var i, ilen;
 
-		helpers$1.each(me.data.datasets, function(dataset, datasetIndex) {
-			var meta = me.getDatasetMeta(datasetIndex);
+		for (i = 0, ilen = datasets.length; i < ilen; i++) {
+			var dataset = datasets[i];
+			var meta = me.getDatasetMeta(i);
 			var type = dataset.type || me.config.type;
 
 			if (meta.type && meta.type !== type) {
-				me.destroyDatasetMeta(datasetIndex);
-				meta = me.getDatasetMeta(datasetIndex);
+				me.destroyDatasetMeta(i);
+				meta = me.getDatasetMeta(i);
 			}
 			meta.type = type;
+			meta.order = dataset.order || 0;
+			meta.index = i;
 
 			if (meta.controller) {
-				meta.controller.updateIndex(datasetIndex);
+				meta.controller.updateIndex(i);
 				meta.controller.linkScales();
 			} else {
 				var ControllerClass = controllers[meta.type];
@@ -42915,10 +43834,10 @@ helpers$1.extend(Chart.prototype, /** @lends Chart */ {
 					throw new Error('"' + meta.type + '" is not a chart type.');
 				}
 
-				meta.controller = new ControllerClass(me, datasetIndex);
+				meta.controller = new ControllerClass(me, i);
 				newControllers.push(meta.controller);
 			}
-		}, me);
+		}
 
 		return newControllers;
 	},
@@ -42944,6 +43863,7 @@ helpers$1.extend(Chart.prototype, /** @lends Chart */ {
 
 	update: function(config) {
 		var me = this;
+		var i, ilen;
 
 		if (!config || typeof config !== 'object') {
 			// backwards compatibility
@@ -42970,9 +43890,9 @@ helpers$1.extend(Chart.prototype, /** @lends Chart */ {
 		var newControllers = me.buildOrUpdateControllers();
 
 		// Make sure all dataset controllers have correct meta data counts
-		helpers$1.each(me.data.datasets, function(dataset, datasetIndex) {
-			me.getDatasetMeta(datasetIndex).controller.buildOrUpdateElements();
-		}, me);
+		for (i = 0, ilen = me.data.datasets.length; i < ilen; i++) {
+			me.getDatasetMeta(i).controller.buildOrUpdateElements();
+		}
 
 		me.updateLayout();
 
@@ -42995,6 +43915,8 @@ helpers$1.extend(Chart.prototype, /** @lends Chart */ {
 
 		// Do this before render so that any plugins that need final scale updates can use it
 		core_plugins.notify(me, 'afterUpdate');
+
+		me._layers.sort(compare2Level('z', '_idx'));
 
 		if (me._bufferedRender) {
 			me._bufferedRequest = {
@@ -43020,6 +43942,20 @@ helpers$1.extend(Chart.prototype, /** @lends Chart */ {
 		}
 
 		core_layouts.update(this, this.width, this.height);
+
+		me._layers = [];
+		helpers$1.each(me.boxes, function(box) {
+			// _configure is called twice, once in core.scale.update and once here.
+			// Here the boxes are fully updated and at their final positions.
+			if (box._configure) {
+				box._configure();
+			}
+			me._layers.push.apply(me._layers, box._layers());
+		}, me);
+
+		me._layers.forEach(function(item, index) {
+			item._idx = index;
+		});
 
 		/**
 		 * Provided for backward compatibility, use `afterLayout` instead.
@@ -43068,7 +44004,7 @@ helpers$1.extend(Chart.prototype, /** @lends Chart */ {
 			return;
 		}
 
-		meta.controller.update();
+		meta.controller._update();
 
 		core_plugins.notify(me, 'afterDatasetUpdate', [args]);
 	},
@@ -43085,7 +44021,7 @@ helpers$1.extend(Chart.prototype, /** @lends Chart */ {
 		}
 
 		var animationOptions = me.options.animation;
-		var duration = valueOrDefault$8(config.duration, animationOptions && animationOptions.duration);
+		var duration = valueOrDefault$9(config.duration, animationOptions && animationOptions.duration);
 		var lazy = config.lazy;
 
 		if (core_plugins.notify(me, 'beforeRender') === false) {
@@ -43127,6 +44063,7 @@ helpers$1.extend(Chart.prototype, /** @lends Chart */ {
 
 	draw: function(easingValue) {
 		var me = this;
+		var i, layers;
 
 		me.clear();
 
@@ -43144,12 +44081,21 @@ helpers$1.extend(Chart.prototype, /** @lends Chart */ {
 			return;
 		}
 
-		// Draw all the scales
-		helpers$1.each(me.boxes, function(box) {
-			box.draw(me.chartArea);
-		}, me);
+		// Because of plugin hooks (before/afterDatasetsDraw), datasets can't
+		// currently be part of layers. Instead, we draw
+		// layers <= 0 before(default, backward compat), and the rest after
+		layers = me._layers;
+		for (i = 0; i < layers.length && layers[i].z <= 0; ++i) {
+			layers[i].draw(me.chartArea);
+		}
 
 		me.drawDatasets(easingValue);
+
+		// Rest of layers
+		for (; i < layers.length; ++i) {
+			layers[i].draw(me.chartArea);
+		}
+
 		me._drawTooltip(easingValue);
 
 		core_plugins.notify(me, 'afterDraw', [easingValue]);
@@ -43171,22 +44117,48 @@ helpers$1.extend(Chart.prototype, /** @lends Chart */ {
 	},
 
 	/**
+	 * @private
+	 */
+	_getSortedDatasetMetas: function(filterVisible) {
+		var me = this;
+		var datasets = me.data.datasets || [];
+		var result = [];
+		var i, ilen;
+
+		for (i = 0, ilen = datasets.length; i < ilen; ++i) {
+			if (!filterVisible || me.isDatasetVisible(i)) {
+				result.push(me.getDatasetMeta(i));
+			}
+		}
+
+		result.sort(compare2Level('order', 'index'));
+
+		return result;
+	},
+
+	/**
+	 * @private
+	 */
+	_getSortedVisibleDatasetMetas: function() {
+		return this._getSortedDatasetMetas(true);
+	},
+
+	/**
 	 * Draws all datasets unless a plugin returns `false` to the `beforeDatasetsDraw`
 	 * hook, in which case, plugins will not be called on `afterDatasetsDraw`.
 	 * @private
 	 */
 	drawDatasets: function(easingValue) {
 		var me = this;
+		var metasets, i;
 
 		if (core_plugins.notify(me, 'beforeDatasetsDraw', [easingValue]) === false) {
 			return;
 		}
 
-		// Draw datasets reversed to support proper line stacking
-		for (var i = (me.data.datasets || []).length - 1; i >= 0; --i) {
-			if (me.isDatasetVisible(i)) {
-				me.drawDataset(i, easingValue);
-			}
+		metasets = me._getSortedVisibleDatasetMetas();
+		for (i = metasets.length - 1; i >= 0; --i) {
+			me.drawDataset(metasets[i], easingValue);
 		}
 
 		core_plugins.notify(me, 'afterDatasetsDraw', [easingValue]);
@@ -43197,12 +44169,11 @@ helpers$1.extend(Chart.prototype, /** @lends Chart */ {
 	 * hook, in which case, plugins will not be called on `afterDatasetDraw`.
 	 * @private
 	 */
-	drawDataset: function(index, easingValue) {
+	drawDataset: function(meta, easingValue) {
 		var me = this;
-		var meta = me.getDatasetMeta(index);
 		var args = {
 			meta: meta,
-			index: index,
+			index: meta.index,
 			easingValue: easingValue
 		};
 
@@ -43282,7 +44253,9 @@ helpers$1.extend(Chart.prototype, /** @lends Chart */ {
 				controller: null,
 				hidden: null,			// See isDatasetVisible() comment
 				xAxisID: null,
-				yAxisID: null
+				yAxisID: null,
+				order: dataset.order || 0,
+				index: datasetIndex
 			};
 		}
 
@@ -43408,14 +44381,18 @@ helpers$1.extend(Chart.prototype, /** @lends Chart */ {
 	},
 
 	updateHoverStyle: function(elements, mode, enabled) {
-		var method = enabled ? 'setHoverStyle' : 'removeHoverStyle';
+		var prefix = enabled ? 'set' : 'remove';
 		var element, i, ilen;
 
 		for (i = 0, ilen = elements.length; i < ilen; ++i) {
 			element = elements[i];
 			if (element) {
-				this.getDatasetMeta(element._datasetIndex).controller[method](element);
+				this.getDatasetMeta(element._datasetIndex).controller[prefix + 'HoverStyle'](element);
 			}
+		}
+
+		if (mode === 'dataset') {
+			this.getDatasetMeta(elements[0]._datasetIndex).controller['_' + prefix + 'DatasetHoverStyle']();
 		}
 	},
 
@@ -43632,7 +44609,7 @@ var core_helpers = function() {
 	};
 	helpers$1.almostWhole = function(x, epsilon) {
 		var rounded = Math.round(x);
-		return (((rounded - epsilon) < x) && ((rounded + epsilon) > x));
+		return ((rounded - epsilon) <= x) && ((rounded + epsilon) >= x);
 	};
 	helpers$1.max = function(array) {
 		return array.reduce(function(max, value) {
@@ -43660,19 +44637,6 @@ var core_helpers = function() {
 				return x;
 			}
 			return x > 0 ? 1 : -1;
-		};
-	helpers$1.log10 = Math.log10 ?
-		function(x) {
-			return Math.log10(x);
-		} :
-		function(x) {
-			var exponent = Math.log(x) * Math.LOG10E; // Math.LOG10E = 1 / Math.LN10.
-			// Check for whole powers of 10,
-			// which due to floating point rounding error should be corrected.
-			var powerOf10 = Math.round(exponent);
-			var isPowerOf10 = x === Math.pow(10, powerOf10);
-
-			return isPowerOf10 ? powerOf10 : exponent;
 		};
 	helpers$1.toRadians = function(degrees) {
 		return degrees * (Math.PI / 180);
@@ -44114,25 +45078,30 @@ var core_helpers = function() {
 
 		ctx.font = font;
 		var longest = 0;
-		helpers$1.each(arrayOfThings, function(thing) {
+		var ilen = arrayOfThings.length;
+		var i, j, jlen, thing, nestedThing;
+		for (i = 0; i < ilen; i++) {
+			thing = arrayOfThings[i];
+
 			// Undefined strings and arrays should not be measured
 			if (thing !== undefined && thing !== null && helpers$1.isArray(thing) !== true) {
 				longest = helpers$1.measureText(ctx, data, gc, longest, thing);
 			} else if (helpers$1.isArray(thing)) {
 				// if it is an array lets measure each element
 				// to do maybe simplify this function a bit so we can do this more recursively?
-				helpers$1.each(thing, function(nestedThing) {
+				for (j = 0, jlen = thing.length; j < jlen; j++) {
+					nestedThing = thing[j];
 					// Undefined strings and arrays should not be measured
 					if (nestedThing !== undefined && nestedThing !== null && !helpers$1.isArray(nestedThing)) {
 						longest = helpers$1.measureText(ctx, data, gc, longest, nestedThing);
 					}
-				});
+				}
 			}
-		});
+		}
 
 		var gcLen = gc.length / 2;
 		if (gcLen > arrayOfThings.length) {
-			for (var i = 0; i < gcLen; i++) {
+			for (i = 0; i < gcLen; i++) {
 				delete data[gc[i]];
 			}
 			gc.splice(0, gcLen);
@@ -44150,6 +45119,10 @@ var core_helpers = function() {
 		}
 		return longest;
 	};
+
+	/**
+	 * @deprecated
+	 */
 	helpers$1.numberOfLabelLines = function(arrayOfThings) {
 		var numberOfLines = 1;
 		helpers$1.each(arrayOfThings, function(thing) {
@@ -44347,7 +45320,9 @@ var core_ticks = {
 				var maxTick = Math.max(Math.abs(ticks[0]), Math.abs(ticks[ticks.length - 1]));
 				if (maxTick < 1e-4) { // all ticks are small numbers; use scientific notation
 					var logTick = helpers$1.log10(Math.abs(tickValue));
-					tickString = tickValue.toExponential(Math.floor(logTick) - Math.floor(logDelta));
+					var numExponential = Math.floor(logTick) - Math.floor(logDelta);
+					numExponential = Math.max(Math.min(numExponential, 20), 0);
+					tickString = tickValue.toExponential(numExponential);
 				} else {
 					var numDecimal = -1 * Math.floor(logDelta);
 					numDecimal = Math.max(Math.min(numDecimal, 20), 0); // toFixed has a max of 20 decimal places
@@ -44373,7 +45348,9 @@ var core_ticks = {
 	}
 };
 
-var valueOrDefault$9 = helpers$1.valueOrDefault;
+var isArray = helpers$1.isArray;
+var isNullOrUndef = helpers$1.isNullOrUndef;
+var valueOrDefault$a = helpers$1.valueOrDefault;
 var valueAtIndexOrDefault = helpers$1.valueAtIndexOrDefault;
 
 core_defaults._set('scale', {
@@ -44384,7 +45361,7 @@ core_defaults._set('scale', {
 	// grid line settings
 	gridLines: {
 		display: true,
-		color: 'rgba(0, 0, 0, 0.1)',
+		color: 'rgba(0,0,0,0.1)',
 		lineWidth: 1,
 		drawBorder: true,
 		drawOnChartArea: true,
@@ -44433,41 +45410,266 @@ core_defaults._set('scale', {
 	}
 });
 
-function labelsFromTicks(ticks) {
-	var labels = [];
-	var i, ilen;
+/** Returns a new array containing numItems from arr */
+function sample(arr, numItems) {
+	var result = [];
+	var increment = arr.length / numItems;
+	var i = 0;
+	var len = arr.length;
 
-	for (i = 0, ilen = ticks.length; i < ilen; ++i) {
-		labels.push(ticks[i].label);
+	for (; i < len; i += increment) {
+		result.push(arr[Math.floor(i)]);
 	}
-
-	return labels;
+	return result;
 }
 
 function getPixelForGridLine(scale, index, offsetGridLines) {
-	var lineValue = scale.getPixelForTick(index);
+	var length = scale.getTicks().length;
+	var validIndex = Math.min(index, length - 1);
+	var lineValue = scale.getPixelForTick(validIndex);
+	var start = scale._startPixel;
+	var end = scale._endPixel;
+	var epsilon = 1e-6; // 1e-6 is margin in pixels for accumulated error.
+	var offset;
 
 	if (offsetGridLines) {
-		if (scale.getTicks().length === 1) {
-			lineValue -= scale.isHorizontal() ?
-				Math.max(lineValue - scale.left, scale.right - lineValue) :
-				Math.max(lineValue - scale.top, scale.bottom - lineValue);
+		if (length === 1) {
+			offset = Math.max(lineValue - start, end - lineValue);
 		} else if (index === 0) {
-			lineValue -= (scale.getPixelForTick(1) - lineValue) / 2;
+			offset = (scale.getPixelForTick(1) - lineValue) / 2;
 		} else {
-			lineValue -= (lineValue - scale.getPixelForTick(index - 1)) / 2;
+			offset = (lineValue - scale.getPixelForTick(validIndex - 1)) / 2;
+		}
+		lineValue += validIndex < index ? offset : -offset;
+
+		// Return undefined if the pixel is out of the range
+		if (lineValue < start - epsilon || lineValue > end + epsilon) {
+			return;
 		}
 	}
 	return lineValue;
 }
 
-function computeTextSize(context, tick, font) {
-	return helpers$1.isArray(tick) ?
-		helpers$1.longestText(context, font, tick) :
-		context.measureText(tick).width;
+function garbageCollect(caches, length) {
+	helpers$1.each(caches, function(cache) {
+		var gc = cache.gc;
+		var gcLen = gc.length / 2;
+		var i;
+		if (gcLen > length) {
+			for (i = 0; i < gcLen; ++i) {
+				delete cache.data[gc[i]];
+			}
+			gc.splice(0, gcLen);
+		}
+	});
 }
 
-var core_scale = core_element.extend({
+/**
+ * Returns {width, height, offset} objects for the first, last, widest, highest tick
+ * labels where offset indicates the anchor point offset from the top in pixels.
+ */
+function computeLabelSizes(ctx, tickFonts, ticks, caches) {
+	var length = ticks.length;
+	var widths = [];
+	var heights = [];
+	var offsets = [];
+	var i, j, jlen, label, tickFont, fontString, cache, lineHeight, width, height, nestedLabel, widest, highest;
+
+	for (i = 0; i < length; ++i) {
+		label = ticks[i].label;
+		tickFont = ticks[i].major ? tickFonts.major : tickFonts.minor;
+		ctx.font = fontString = tickFont.string;
+		cache = caches[fontString] = caches[fontString] || {data: {}, gc: []};
+		lineHeight = tickFont.lineHeight;
+		width = height = 0;
+		// Undefined labels and arrays should not be measured
+		if (!isNullOrUndef(label) && !isArray(label)) {
+			width = helpers$1.measureText(ctx, cache.data, cache.gc, width, label);
+			height = lineHeight;
+		} else if (isArray(label)) {
+			// if it is an array let's measure each element
+			for (j = 0, jlen = label.length; j < jlen; ++j) {
+				nestedLabel = label[j];
+				// Undefined labels and arrays should not be measured
+				if (!isNullOrUndef(nestedLabel) && !isArray(nestedLabel)) {
+					width = helpers$1.measureText(ctx, cache.data, cache.gc, width, nestedLabel);
+					height += lineHeight;
+				}
+			}
+		}
+		widths.push(width);
+		heights.push(height);
+		offsets.push(lineHeight / 2);
+	}
+	garbageCollect(caches, length);
+
+	widest = widths.indexOf(Math.max.apply(null, widths));
+	highest = heights.indexOf(Math.max.apply(null, heights));
+
+	function valueAt(idx) {
+		return {
+			width: widths[idx] || 0,
+			height: heights[idx] || 0,
+			offset: offsets[idx] || 0
+		};
+	}
+
+	return {
+		first: valueAt(0),
+		last: valueAt(length - 1),
+		widest: valueAt(widest),
+		highest: valueAt(highest)
+	};
+}
+
+function getTickMarkLength(options) {
+	return options.drawTicks ? options.tickMarkLength : 0;
+}
+
+function getScaleLabelHeight(options) {
+	var font, padding;
+
+	if (!options.display) {
+		return 0;
+	}
+
+	font = helpers$1.options._parseFont(options);
+	padding = helpers$1.options.toPadding(options.padding);
+
+	return font.lineHeight + padding.height;
+}
+
+function parseFontOptions(options, nestedOpts) {
+	return helpers$1.extend(helpers$1.options._parseFont({
+		fontFamily: valueOrDefault$a(nestedOpts.fontFamily, options.fontFamily),
+		fontSize: valueOrDefault$a(nestedOpts.fontSize, options.fontSize),
+		fontStyle: valueOrDefault$a(nestedOpts.fontStyle, options.fontStyle),
+		lineHeight: valueOrDefault$a(nestedOpts.lineHeight, options.lineHeight)
+	}), {
+		color: helpers$1.options.resolve([nestedOpts.fontColor, options.fontColor, core_defaults.global.defaultFontColor])
+	});
+}
+
+function parseTickFontOptions(options) {
+	var minor = parseFontOptions(options, options.minor);
+	var major = options.major.enabled ? parseFontOptions(options, options.major) : minor;
+
+	return {minor: minor, major: major};
+}
+
+function nonSkipped(ticksToFilter) {
+	var filtered = [];
+	var item, index, len;
+	for (index = 0, len = ticksToFilter.length; index < len; ++index) {
+		item = ticksToFilter[index];
+		if (typeof item._index !== 'undefined') {
+			filtered.push(item);
+		}
+	}
+	return filtered;
+}
+
+function getEvenSpacing(arr) {
+	var len = arr.length;
+	var i, diff;
+
+	if (len < 2) {
+		return false;
+	}
+
+	for (diff = arr[0], i = 1; i < len; ++i) {
+		if (arr[i] - arr[i - 1] !== diff) {
+			return false;
+		}
+	}
+	return diff;
+}
+
+function calculateSpacing(majorIndices, ticks, axisLength, ticksLimit) {
+	var evenMajorSpacing = getEvenSpacing(majorIndices);
+	var spacing = (ticks.length - 1) / ticksLimit;
+	var factors, factor, i, ilen;
+
+	// If the major ticks are evenly spaced apart, place the minor ticks
+	// so that they divide the major ticks into even chunks
+	if (!evenMajorSpacing) {
+		return Math.max(spacing, 1);
+	}
+
+	factors = helpers$1.math._factorize(evenMajorSpacing);
+	for (i = 0, ilen = factors.length - 1; i < ilen; i++) {
+		factor = factors[i];
+		if (factor > spacing) {
+			return factor;
+		}
+	}
+	return Math.max(spacing, 1);
+}
+
+function getMajorIndices(ticks) {
+	var result = [];
+	var i, ilen;
+	for (i = 0, ilen = ticks.length; i < ilen; i++) {
+		if (ticks[i].major) {
+			result.push(i);
+		}
+	}
+	return result;
+}
+
+function skipMajors(ticks, majorIndices, spacing) {
+	var count = 0;
+	var next = majorIndices[0];
+	var i, tick;
+
+	spacing = Math.ceil(spacing);
+	for (i = 0; i < ticks.length; i++) {
+		tick = ticks[i];
+		if (i === next) {
+			tick._index = i;
+			count++;
+			next = majorIndices[count * spacing];
+		} else {
+			delete tick.label;
+		}
+	}
+}
+
+function skip(ticks, spacing, majorStart, majorEnd) {
+	var start = valueOrDefault$a(majorStart, 0);
+	var end = Math.min(valueOrDefault$a(majorEnd, ticks.length), ticks.length);
+	var count = 0;
+	var length, i, tick, next;
+
+	spacing = Math.ceil(spacing);
+	if (majorEnd) {
+		length = majorEnd - majorStart;
+		spacing = length / Math.floor(length / spacing);
+	}
+
+	next = start;
+
+	while (next < 0) {
+		count++;
+		next = Math.round(start + count * spacing);
+	}
+
+	for (i = Math.max(start, 0); i < end; i++) {
+		tick = ticks[i];
+		if (i === next) {
+			tick._index = i;
+			count++;
+			next = Math.round(start + count * spacing);
+		} else {
+			delete tick.label;
+		}
+	}
+}
+
+var Scale = core_element.extend({
+
+	zeroLineIndex: 0,
+
 	/**
 	 * Get the padding needed for the scale
 	 * @method getPadding
@@ -44492,40 +45694,45 @@ var core_scale = core_element.extend({
 		return this._ticks;
 	},
 
+	/**
+	* @private
+	*/
+	_getLabels: function() {
+		var data = this.chart.data;
+		return this.options.labels || (this.isHorizontal() ? data.xLabels : data.yLabels) || data.labels || [];
+	},
+
 	// These methods are ordered by lifecyle. Utilities then follow.
 	// Any function defined here is inherited by all scale types.
 	// Any function can be extended by the scale type
 
+	/**
+	 * Provided for backward compatibility, not available anymore
+	 * @function Chart.Scale.mergeTicksOptions
+	 * @deprecated since version 2.8.0
+	 * @todo remove at version 3
+	 */
 	mergeTicksOptions: function() {
-		var ticks = this.options.ticks;
-		if (ticks.minor === false) {
-			ticks.minor = {
-				display: false
-			};
-		}
-		if (ticks.major === false) {
-			ticks.major = {
-				display: false
-			};
-		}
-		for (var key in ticks) {
-			if (key !== 'major' && key !== 'minor') {
-				if (typeof ticks.minor[key] === 'undefined') {
-					ticks.minor[key] = ticks[key];
-				}
-				if (typeof ticks.major[key] === 'undefined') {
-					ticks.major[key] = ticks[key];
-				}
-			}
-		}
+		// noop
 	},
+
 	beforeUpdate: function() {
 		helpers$1.callback(this.options.beforeUpdate, [this]);
 	},
 
+	/**
+	 * @param {number} maxWidth - the max width in pixels
+	 * @param {number} maxHeight - the max height in pixels
+	 * @param {object} margins - the space between the edge of the other scales and edge of the chart
+	 *   This space comes from two sources:
+	 *     - padding - space that's required to show the labels at the edges of the scale
+	 *     - thickness of scales or legends in another orientation
+	 */
 	update: function(maxWidth, maxHeight, margins) {
 		var me = this;
-		var i, ilen, labels, label, ticks, tick;
+		var tickOpts = me.options.ticks;
+		var sampleSize = tickOpts.sampleSize;
+		var i, ilen, labels, ticks, samplingEnabled;
 
 		// Update Lifecycle - Probably don't want to ever extend or overwrite this function ;)
 		me.beforeUpdate();
@@ -44540,9 +45747,14 @@ var core_scale = core_element.extend({
 			bottom: 0
 		}, margins);
 
+		me._ticks = null;
+		me.ticks = null;
+		me._labelSizes = null;
 		me._maxLabelLines = 0;
 		me.longestLabelWidth = 0;
 		me.longestTextCache = me.longestTextCache || {};
+		me._gridLineItems = null;
+		me._labelItems = null;
 
 		// Dimensions
 		me.beforeSetDimensions();
@@ -44570,49 +45782,81 @@ var core_scale = core_element.extend({
 		// Allow modification of ticks in callback.
 		ticks = me.afterBuildTicks(ticks) || ticks;
 
-		me.beforeTickToLabelConversion();
-
-		// New implementations should return the formatted tick labels but for BACKWARD
-		// COMPAT, we still support no return (`this.ticks` internally changed by calling
-		// this method and supposed to contain only string values).
-		labels = me.convertTicksToLabels(ticks) || me.ticks;
-
-		me.afterTickToLabelConversion();
-
-		me.ticks = labels;   // BACKWARD COMPATIBILITY
-
-		// IMPORTANT: from this point, we consider that `this.ticks` will NEVER change!
-
-		// BACKWARD COMPAT: synchronize `_ticks` with labels (so potentially `this.ticks`)
-		for (i = 0, ilen = labels.length; i < ilen; ++i) {
-			label = labels[i];
-			tick = ticks[i];
-			if (!tick) {
-				ticks.push(tick = {
-					label: label,
+		// Ensure ticks contains ticks in new tick format
+		if ((!ticks || !ticks.length) && me.ticks) {
+			ticks = [];
+			for (i = 0, ilen = me.ticks.length; i < ilen; ++i) {
+				ticks.push({
+					value: me.ticks[i],
 					major: false
 				});
-			} else {
-				tick.label = label;
 			}
 		}
 
 		me._ticks = ticks;
 
+		// Compute tick rotation and fit using a sampled subset of labels
+		// We generally don't need to compute the size of every single label for determining scale size
+		samplingEnabled = sampleSize < ticks.length;
+		labels = me._convertTicksToLabels(samplingEnabled ? sample(ticks, sampleSize) : ticks);
+
+		// _configure is called twice, once here, once from core.controller.updateLayout.
+		// Here we haven't been positioned yet, but dimensions are correct.
+		// Variables set in _configure are needed for calculateTickRotation, and
+		// it's ok that coordinates are not correct there, only dimensions matter.
+		me._configure();
+
 		// Tick Rotation
 		me.beforeCalculateTickRotation();
 		me.calculateTickRotation();
 		me.afterCalculateTickRotation();
-		// Fit
+
 		me.beforeFit();
 		me.fit();
 		me.afterFit();
-		//
+
+		// Auto-skip
+		me._ticksToDraw = tickOpts.display && (tickOpts.autoSkip || tickOpts.source === 'auto') ? me._autoSkip(ticks) : ticks;
+
+		if (samplingEnabled) {
+			// Generate labels using all non-skipped ticks
+			labels = me._convertTicksToLabels(me._ticksToDraw);
+		}
+
+		me.ticks = labels;   // BACKWARD COMPATIBILITY
+
+		// IMPORTANT: after this point, we consider that `this.ticks` will NEVER change!
+
 		me.afterUpdate();
 
+		// TODO(v3): remove minSize as a public property and return value from all layout boxes. It is unused
+		// make maxWidth and maxHeight private
 		return me.minSize;
-
 	},
+
+	/**
+	 * @private
+	 */
+	_configure: function() {
+		var me = this;
+		var reversePixels = me.options.ticks.reverse;
+		var startPixel, endPixel;
+
+		if (me.isHorizontal()) {
+			startPixel = me.left;
+			endPixel = me.right;
+		} else {
+			startPixel = me.top;
+			endPixel = me.bottom;
+			// by default vertical scales are from bottom to top, so pixels are reversed
+			reversePixels = !reversePixels;
+		}
+		me._startPixel = startPixel;
+		me._endPixel = endPixel;
+		me._reversePixels = reversePixels;
+		me._length = endPixel - startPixel;
+	},
+
 	afterUpdate: function() {
 		helpers$1.callback(this.options.afterUpdate, [this]);
 	},
@@ -44665,7 +45909,7 @@ var core_scale = core_element.extend({
 	afterBuildTicks: function(ticks) {
 		var me = this;
 		// ticks is empty for old axis implementations here
-		if (helpers$1.isArray(ticks) && ticks.length) {
+		if (isArray(ticks) && ticks.length) {
 			return helpers$1.callback(me.options.afterBuildTicks, [me, ticks]);
 		}
 		// Support old implementations (that modified `this.ticks` directly in buildTicks)
@@ -44693,40 +45937,39 @@ var core_scale = core_element.extend({
 	},
 	calculateTickRotation: function() {
 		var me = this;
-		var context = me.ctx;
-		var tickOpts = me.options.ticks;
-		var labels = labelsFromTicks(me._ticks);
+		var options = me.options;
+		var tickOpts = options.ticks;
+		var numTicks = me.getTicks().length;
+		var minRotation = tickOpts.minRotation || 0;
+		var maxRotation = tickOpts.maxRotation;
+		var labelRotation = minRotation;
+		var labelSizes, maxLabelWidth, maxLabelHeight, maxWidth, tickWidth, maxHeight, maxLabelDiagonal;
 
-		// Get the width of each grid by calculating the difference
-		// between x offsets between 0 and 1.
-		var tickFont = helpers$1.options._parseFont(tickOpts);
-		context.font = tickFont.string;
+		if (!me._isVisible() || !tickOpts.display || minRotation >= maxRotation || numTicks <= 1 || !me.isHorizontal()) {
+			me.labelRotation = minRotation;
+			return;
+		}
 
-		var labelRotation = tickOpts.minRotation || 0;
+		labelSizes = me._getLabelSizes();
+		maxLabelWidth = labelSizes.widest.width;
+		maxLabelHeight = labelSizes.highest.height - labelSizes.highest.offset;
 
-		if (labels.length && me.options.display && me.isHorizontal()) {
-			var originalLabelWidth = helpers$1.longestText(context, tickFont.string, labels, me.longestTextCache);
-			var labelWidth = originalLabelWidth;
-			var cosRotation, sinRotation;
+		// Estimate the width of each grid based on the canvas width, the maximum
+		// label width and the number of tick intervals
+		maxWidth = Math.min(me.maxWidth, me.chart.width - maxLabelWidth);
+		tickWidth = options.offset ? me.maxWidth / numTicks : maxWidth / (numTicks - 1);
 
-			// Allow 3 pixels x2 padding either side for label readability
-			var tickWidth = me.getPixelForTick(1) - me.getPixelForTick(0) - 6;
-
-			// Max label rotation can be set or default to 90 - also act as a loop counter
-			while (labelWidth > tickWidth && labelRotation < tickOpts.maxRotation) {
-				var angleRadians = helpers$1.toRadians(labelRotation);
-				cosRotation = Math.cos(angleRadians);
-				sinRotation = Math.sin(angleRadians);
-
-				if (sinRotation * originalLabelWidth > me.maxHeight) {
-					// go back one step
-					labelRotation--;
-					break;
-				}
-
-				labelRotation++;
-				labelWidth = cosRotation * originalLabelWidth;
-			}
+		// Allow 3 pixels x2 padding either side for label readability
+		if (maxLabelWidth + 6 > tickWidth) {
+			tickWidth = maxWidth / (numTicks - (options.offset ? 0.5 : 1));
+			maxHeight = me.maxHeight - getTickMarkLength(options.gridLines)
+				- tickOpts.padding - getScaleLabelHeight(options.scaleLabel);
+			maxLabelDiagonal = Math.sqrt(maxLabelWidth * maxLabelWidth + maxLabelHeight * maxLabelHeight);
+			labelRotation = helpers$1.toDegrees(Math.min(
+				Math.asin(Math.min((labelSizes.highest.height + 6) / tickWidth, 1)),
+				Math.asin(Math.min(maxHeight / maxLabelDiagonal, 1)) - Math.asin(maxLabelHeight / maxLabelDiagonal)
+			));
+			labelRotation = Math.max(minRotation, Math.min(maxRotation, labelRotation));
 		}
 
 		me.labelRotation = labelRotation;
@@ -44748,111 +45991,99 @@ var core_scale = core_element.extend({
 			height: 0
 		};
 
-		var labels = labelsFromTicks(me._ticks);
-
+		var chart = me.chart;
 		var opts = me.options;
 		var tickOpts = opts.ticks;
 		var scaleLabelOpts = opts.scaleLabel;
 		var gridLineOpts = opts.gridLines;
 		var display = me._isVisible();
-		var position = opts.position;
+		var isBottom = opts.position === 'bottom';
 		var isHorizontal = me.isHorizontal();
-
-		var parseFont = helpers$1.options._parseFont;
-		var tickFont = parseFont(tickOpts);
-		var tickMarkLength = opts.gridLines.tickMarkLength;
 
 		// Width
 		if (isHorizontal) {
-			// subtract the margins to line up with the chartArea if we are a full width scale
-			minSize.width = me.isFullWidth() ? me.maxWidth - me.margins.left - me.margins.right : me.maxWidth;
-		} else {
-			minSize.width = display && gridLineOpts.drawTicks ? tickMarkLength : 0;
+			minSize.width = me.maxWidth;
+		} else if (display) {
+			minSize.width = getTickMarkLength(gridLineOpts) + getScaleLabelHeight(scaleLabelOpts);
 		}
 
 		// height
-		if (isHorizontal) {
-			minSize.height = display && gridLineOpts.drawTicks ? tickMarkLength : 0;
-		} else {
+		if (!isHorizontal) {
 			minSize.height = me.maxHeight; // fill all the height
-		}
-
-		// Are we showing a title for the scale?
-		if (scaleLabelOpts.display && display) {
-			var scaleLabelFont = parseFont(scaleLabelOpts);
-			var scaleLabelPadding = helpers$1.options.toPadding(scaleLabelOpts.padding);
-			var deltaHeight = scaleLabelFont.lineHeight + scaleLabelPadding.height;
-
-			if (isHorizontal) {
-				minSize.height += deltaHeight;
-			} else {
-				minSize.width += deltaHeight;
-			}
+		} else if (display) {
+			minSize.height = getTickMarkLength(gridLineOpts) + getScaleLabelHeight(scaleLabelOpts);
 		}
 
 		// Don't bother fitting the ticks if we are not showing the labels
 		if (tickOpts.display && display) {
-			var largestTextWidth = helpers$1.longestText(me.ctx, tickFont.string, labels, me.longestTextCache);
-			var tallestLabelHeightInLines = helpers$1.numberOfLabelLines(labels);
-			var lineSpace = tickFont.size * 0.5;
-			var tickPadding = me.options.ticks.padding;
-
-			// Store max number of lines and widest label for _autoSkip
-			me._maxLabelLines = tallestLabelHeightInLines;
-			me.longestLabelWidth = largestTextWidth;
+			var tickFonts = parseTickFontOptions(tickOpts);
+			var labelSizes = me._getLabelSizes();
+			var firstLabelSize = labelSizes.first;
+			var lastLabelSize = labelSizes.last;
+			var widestLabelSize = labelSizes.widest;
+			var highestLabelSize = labelSizes.highest;
+			var lineSpace = tickFonts.minor.lineHeight * 0.4;
+			var tickPadding = tickOpts.padding;
 
 			if (isHorizontal) {
+				// A horizontal axis is more constrained by the height.
+				var isRotated = me.labelRotation !== 0;
 				var angleRadians = helpers$1.toRadians(me.labelRotation);
 				var cosRotation = Math.cos(angleRadians);
 				var sinRotation = Math.sin(angleRadians);
 
-				// TODO - improve this calculation
-				var labelHeight = (sinRotation * largestTextWidth)
-					+ (tickFont.lineHeight * tallestLabelHeightInLines)
-					+ lineSpace; // padding
+				var labelHeight = sinRotation * widestLabelSize.width
+					+ cosRotation * (highestLabelSize.height - (isRotated ? highestLabelSize.offset : 0))
+					+ (isRotated ? 0 : lineSpace); // padding
 
 				minSize.height = Math.min(me.maxHeight, minSize.height + labelHeight + tickPadding);
 
-				me.ctx.font = tickFont.string;
-				var firstLabelWidth = computeTextSize(me.ctx, labels[0], tickFont.string);
-				var lastLabelWidth = computeTextSize(me.ctx, labels[labels.length - 1], tickFont.string);
 				var offsetLeft = me.getPixelForTick(0) - me.left;
-				var offsetRight = me.right - me.getPixelForTick(labels.length - 1);
+				var offsetRight = me.right - me.getPixelForTick(me.getTicks().length - 1);
 				var paddingLeft, paddingRight;
 
 				// Ensure that our ticks are always inside the canvas. When rotated, ticks are right aligned
 				// which means that the right padding is dominated by the font height
-				if (me.labelRotation !== 0) {
-					paddingLeft = position === 'bottom' ? (cosRotation * firstLabelWidth) : (cosRotation * lineSpace);
-					paddingRight = position === 'bottom' ? (cosRotation * lineSpace) : (cosRotation * lastLabelWidth);
+				if (isRotated) {
+					paddingLeft = isBottom ?
+						cosRotation * firstLabelSize.width + sinRotation * firstLabelSize.offset :
+						sinRotation * (firstLabelSize.height - firstLabelSize.offset);
+					paddingRight = isBottom ?
+						sinRotation * (lastLabelSize.height - lastLabelSize.offset) :
+						cosRotation * lastLabelSize.width + sinRotation * lastLabelSize.offset;
 				} else {
-					paddingLeft = firstLabelWidth / 2;
-					paddingRight = lastLabelWidth / 2;
+					paddingLeft = firstLabelSize.width / 2;
+					paddingRight = lastLabelSize.width / 2;
 				}
-				me.paddingLeft = Math.max(paddingLeft - offsetLeft, 0) + 3; // add 3 px to move away from canvas edges
-				me.paddingRight = Math.max(paddingRight - offsetRight, 0) + 3;
+
+				// Adjust padding taking into account changes in offsets
+				// and add 3 px to move away from canvas edges
+				me.paddingLeft = Math.max((paddingLeft - offsetLeft) * me.width / (me.width - offsetLeft), 0) + 3;
+				me.paddingRight = Math.max((paddingRight - offsetRight) * me.width / (me.width - offsetRight), 0) + 3;
 			} else {
 				// A vertical axis is more constrained by the width. Labels are the
 				// dominant factor here, so get that length first and account for padding
-				if (tickOpts.mirror) {
-					largestTextWidth = 0;
-				} else {
+				var labelWidth = tickOpts.mirror ? 0 :
 					// use lineSpace for consistency with horizontal axis
 					// tickPadding is not implemented for horizontal
-					largestTextWidth += tickPadding + lineSpace;
-				}
+					widestLabelSize.width + tickPadding + lineSpace;
 
-				minSize.width = Math.min(me.maxWidth, minSize.width + largestTextWidth);
+				minSize.width = Math.min(me.maxWidth, minSize.width + labelWidth);
 
-				me.paddingTop = tickFont.size / 2;
-				me.paddingBottom = tickFont.size / 2;
+				me.paddingTop = firstLabelSize.height / 2;
+				me.paddingBottom = lastLabelSize.height / 2;
 			}
 		}
 
 		me.handleMargins();
 
-		me.width = minSize.width;
-		me.height = minSize.height;
+		if (isHorizontal) {
+			me.width = me._length = chart.width - me.margins.left - me.margins.right;
+			me.height = minSize.height;
+		} else {
+			me.width = minSize.width;
+			me.height = me._length = chart.height - me.margins.top - me.margins.bottom;
+		}
 	},
 
 	/**
@@ -44862,10 +46093,10 @@ var core_scale = core_element.extend({
 	handleMargins: function() {
 		var me = this;
 		if (me.margins) {
-			me.paddingLeft = Math.max(me.paddingLeft - me.margins.left, 0);
-			me.paddingTop = Math.max(me.paddingTop - me.margins.top, 0);
-			me.paddingRight = Math.max(me.paddingRight - me.margins.right, 0);
-			me.paddingBottom = Math.max(me.paddingBottom - me.margins.bottom, 0);
+			me.margins.left = Math.max(me.paddingLeft, me.margins.left);
+			me.margins.top = Math.max(me.paddingTop, me.margins.top);
+			me.margins.right = Math.max(me.paddingRight, me.margins.right);
+			me.margins.bottom = Math.max(me.paddingBottom, me.margins.bottom);
 		}
 	},
 
@@ -44875,22 +46106,24 @@ var core_scale = core_element.extend({
 
 	// Shared Methods
 	isHorizontal: function() {
-		return this.options.position === 'top' || this.options.position === 'bottom';
+		var pos = this.options.position;
+		return pos === 'top' || pos === 'bottom';
 	},
 	isFullWidth: function() {
-		return (this.options.fullWidth);
+		return this.options.fullWidth;
 	},
 
 	// Get the correct value. NaN bad inputs, If the value type is object get the x or y based on whether we are horizontal or not
 	getRightValue: function(rawValue) {
 		// Null and undefined values first
-		if (helpers$1.isNullOrUndef(rawValue)) {
+		if (isNullOrUndef(rawValue)) {
 			return NaN;
 		}
 		// isNaN(object) returns true, so make sure NaN is checking for a number; Discard Infinite values
 		if ((typeof rawValue === 'number' || rawValue instanceof Number) && !isFinite(rawValue)) {
 			return NaN;
 		}
+
 		// If it is in fact an object, dive in one more level
 		if (rawValue) {
 			if (this.isHorizontal()) {
@@ -44904,6 +46137,85 @@ var core_scale = core_element.extend({
 
 		// Value is good, return it
 		return rawValue;
+	},
+
+	_convertTicksToLabels: function(ticks) {
+		var me = this;
+		var labels, i, ilen;
+
+		me.ticks = ticks.map(function(tick) {
+			return tick.value;
+		});
+
+		me.beforeTickToLabelConversion();
+
+		// New implementations should return the formatted tick labels but for BACKWARD
+		// COMPAT, we still support no return (`this.ticks` internally changed by calling
+		// this method and supposed to contain only string values).
+		labels = me.convertTicksToLabels(ticks) || me.ticks;
+
+		me.afterTickToLabelConversion();
+
+		// BACKWARD COMPAT: synchronize `_ticks` with labels (so potentially `this.ticks`)
+		for (i = 0, ilen = ticks.length; i < ilen; ++i) {
+			ticks[i].label = labels[i];
+		}
+
+		return labels;
+	},
+
+	/**
+	 * @private
+	 */
+	_getLabelSizes: function() {
+		var me = this;
+		var labelSizes = me._labelSizes;
+
+		if (!labelSizes) {
+			me._labelSizes = labelSizes = computeLabelSizes(me.ctx, parseTickFontOptions(me.options.ticks), me.getTicks(), me.longestTextCache);
+			me.longestLabelWidth = labelSizes.widest.width;
+		}
+
+		return labelSizes;
+	},
+
+	/**
+	 * @private
+	 */
+	_parseValue: function(value) {
+		var start, end, min, max;
+
+		if (isArray(value)) {
+			start = +this.getRightValue(value[0]);
+			end = +this.getRightValue(value[1]);
+			min = Math.min(start, end);
+			max = Math.max(start, end);
+		} else {
+			value = +this.getRightValue(value);
+			start = undefined;
+			end = value;
+			min = value;
+			max = value;
+		}
+
+		return {
+			min: min,
+			max: max,
+			start: start,
+			end: end
+		};
+	},
+
+	/**
+	* @private
+	*/
+	_getScaleLabel: function(rawValue) {
+		var v = this._parseValue(rawValue);
+		if (v.start !== undefined) {
+			return '[' + v.start + ', ' + v.end + ']';
+		}
+
+		return +this.getRightValue(rawValue);
 	},
 
 	/**
@@ -44936,21 +46248,12 @@ var core_scale = core_element.extend({
 	getPixelForTick: function(index) {
 		var me = this;
 		var offset = me.options.offset;
-		if (me.isHorizontal()) {
-			var innerWidth = me.width - (me.paddingLeft + me.paddingRight);
-			var tickWidth = innerWidth / Math.max((me._ticks.length - (offset ? 0 : 1)), 1);
-			var pixel = (tickWidth * index) + me.paddingLeft;
+		var numTicks = me._ticks.length;
+		var tickWidth = 1 / Math.max(numTicks - (offset ? 0 : 1), 1);
 
-			if (offset) {
-				pixel += tickWidth / 2;
-			}
-
-			var finalVal = me.left + pixel;
-			finalVal += me.isFullWidth() ? me.margins.left : 0;
-			return finalVal;
-		}
-		var innerHeight = me.height - (me.paddingTop + me.paddingBottom);
-		return me.top + (index * (innerHeight / (me._ticks.length - 1)));
+		return index < 0 || index > numTicks - 1
+			? null
+			: me.getPixelForDecimal(index * tickWidth + (offset ? tickWidth / 2 : 0));
 	},
 
 	/**
@@ -44959,15 +46262,17 @@ var core_scale = core_element.extend({
 	 */
 	getPixelForDecimal: function(decimal) {
 		var me = this;
-		if (me.isHorizontal()) {
-			var innerWidth = me.width - (me.paddingLeft + me.paddingRight);
-			var valueOffset = (innerWidth * decimal) + me.paddingLeft;
 
-			var finalVal = me.left + valueOffset;
-			finalVal += me.isFullWidth() ? me.margins.left : 0;
-			return finalVal;
+		if (me._reversePixels) {
+			decimal = 1 - decimal;
 		}
-		return me.top + (decimal * me.height);
+
+		return me._startPixel + decimal * me._length;
+	},
+
+	getDecimalForPixel: function(pixel) {
+		var decimal = (pixel - this._startPixel) / this._length;
+		return this._reversePixels ? 1 - decimal : decimal;
 	},
 
 	/**
@@ -44995,44 +46300,34 @@ var core_scale = core_element.extend({
 	 */
 	_autoSkip: function(ticks) {
 		var me = this;
-		var isHorizontal = me.isHorizontal();
-		var optionTicks = me.options.ticks.minor;
-		var tickCount = ticks.length;
-		var skipRatio = false;
-		var maxTicks = optionTicks.maxTicksLimit;
+		var tickOpts = me.options.ticks;
+		var axisLength = me._length;
+		var ticksLimit = tickOpts.maxTicksLimit || axisLength / me._tickSize() + 1;
+		var majorIndices = tickOpts.major.enabled ? getMajorIndices(ticks) : [];
+		var numMajorIndices = majorIndices.length;
+		var first = majorIndices[0];
+		var last = majorIndices[numMajorIndices - 1];
+		var i, ilen, spacing, avgMajorSpacing;
 
-		// Total space needed to display all ticks. First and last ticks are
-		// drawn as their center at end of axis, so tickCount-1
-		var ticksLength = me._tickSize() * (tickCount - 1);
-
-		// Axis length
-		var axisLength = isHorizontal
-			? me.width - (me.paddingLeft + me.paddingRight)
-			: me.height - (me.paddingTop + me.PaddingBottom);
-
-		var result = [];
-		var i, tick;
-
-		if (ticksLength > axisLength) {
-			skipRatio = 1 + Math.floor(ticksLength / axisLength);
+		// If there are too many major ticks to display them all
+		if (numMajorIndices > ticksLimit) {
+			skipMajors(ticks, majorIndices, numMajorIndices / ticksLimit);
+			return nonSkipped(ticks);
 		}
 
-		// if they defined a max number of optionTicks,
-		// increase skipRatio until that number is met
-		if (tickCount > maxTicks) {
-			skipRatio = Math.max(skipRatio, 1 + Math.floor(tickCount / maxTicks));
-		}
+		spacing = calculateSpacing(majorIndices, ticks, axisLength, ticksLimit);
 
-		for (i = 0; i < tickCount; i++) {
-			tick = ticks[i];
-
-			if (skipRatio > 1 && i % skipRatio > 0) {
-				// leave tick in place but make sure it's not displayed (#4635)
-				delete tick.label;
+		if (numMajorIndices > 0) {
+			for (i = 0, ilen = numMajorIndices - 1; i < ilen; i++) {
+				skip(ticks, spacing, majorIndices[i], majorIndices[i + 1]);
 			}
-			result.push(tick);
+			avgMajorSpacing = numMajorIndices > 1 ? (last - first) / (numMajorIndices - 1) : null;
+			skip(ticks, spacing, helpers$1.isNullOrUndef(avgMajorSpacing) ? 0 : first - avgMajorSpacing, first);
+			skip(ticks, spacing, last, helpers$1.isNullOrUndef(avgMajorSpacing) ? ticks.length : last + avgMajorSpacing);
+			return nonSkipped(ticks);
 		}
-		return result;
+		skip(ticks, spacing);
+		return nonSkipped(ticks);
 	},
 
 	/**
@@ -45040,22 +46335,20 @@ var core_scale = core_element.extend({
 	 */
 	_tickSize: function() {
 		var me = this;
-		var isHorizontal = me.isHorizontal();
-		var optionTicks = me.options.ticks.minor;
+		var optionTicks = me.options.ticks;
 
 		// Calculate space needed by label in axis direction.
 		var rot = helpers$1.toRadians(me.labelRotation);
 		var cos = Math.abs(Math.cos(rot));
 		var sin = Math.abs(Math.sin(rot));
 
+		var labelSizes = me._getLabelSizes();
 		var padding = optionTicks.autoSkipPadding || 0;
-		var w = (me.longestLabelWidth + padding) || 0;
-
-		var tickFont = helpers$1.options._parseFont(optionTicks);
-		var h = (me._maxLabelLines * tickFont.lineHeight + padding) || 0;
+		var w = labelSizes ? labelSizes.widest.width + padding : 0;
+		var h = labelSizes ? labelSizes.highest.height + padding : 0;
 
 		// Calculate space needed for 1 tick in axis direction.
-		return isHorizontal
+		return me.isHorizontal()
 			? h * cos > w * sin ? w / cos : h / sin
 			: h * sin < w * cos ? h / cos : w / sin;
 	},
@@ -45087,152 +46380,93 @@ var core_scale = core_element.extend({
 	},
 
 	/**
-	 * Actually draw the scale on the canvas
-	 * @param {object} chartArea - the area of the chart to draw full grid lines on
+	 * @private
 	 */
-	draw: function(chartArea) {
+	_computeGridLineItems: function(chartArea) {
 		var me = this;
-		var options = me.options;
-
-		if (!me._isVisible()) {
-			return;
-		}
-
 		var chart = me.chart;
-		var context = me.ctx;
-		var globalDefaults = core_defaults.global;
-		var defaultFontColor = globalDefaults.defaultFontColor;
-		var optionTicks = options.ticks.minor;
-		var optionMajorTicks = options.ticks.major || optionTicks;
+		var options = me.options;
 		var gridLines = options.gridLines;
-		var scaleLabel = options.scaleLabel;
 		var position = options.position;
-
-		var isRotated = me.labelRotation !== 0;
-		var isMirrored = optionTicks.mirror;
+		var offsetGridLines = gridLines.offsetGridLines;
 		var isHorizontal = me.isHorizontal();
+		var ticks = me._ticksToDraw;
+		var ticksLength = ticks.length + (offsetGridLines ? 1 : 0);
 
-		var parseFont = helpers$1.options._parseFont;
-		var ticks = optionTicks.display && optionTicks.autoSkip ? me._autoSkip(me.getTicks()) : me.getTicks();
-		var tickFontColor = valueOrDefault$9(optionTicks.fontColor, defaultFontColor);
-		var tickFont = parseFont(optionTicks);
-		var lineHeight = tickFont.lineHeight;
-		var majorTickFontColor = valueOrDefault$9(optionMajorTicks.fontColor, defaultFontColor);
-		var majorTickFont = parseFont(optionMajorTicks);
-		var tickPadding = optionTicks.padding;
-		var labelOffset = optionTicks.labelOffset;
-
-		var tl = gridLines.drawTicks ? gridLines.tickMarkLength : 0;
-
-		var scaleLabelFontColor = valueOrDefault$9(scaleLabel.fontColor, defaultFontColor);
-		var scaleLabelFont = parseFont(scaleLabel);
-		var scaleLabelPadding = helpers$1.options.toPadding(scaleLabel.padding);
-		var labelRotationRadians = helpers$1.toRadians(me.labelRotation);
-
-		var itemsToDraw = [];
-
+		var tl = getTickMarkLength(gridLines);
+		var items = [];
 		var axisWidth = gridLines.drawBorder ? valueAtIndexOrDefault(gridLines.lineWidth, 0, 0) : 0;
+		var axisHalfWidth = axisWidth / 2;
 		var alignPixel = helpers$1._alignPixel;
-		var borderValue, tickStart, tickEnd;
+		var alignBorderValue = function(pixel) {
+			return alignPixel(chart, pixel, axisWidth);
+		};
+		var borderValue, i, tick, lineValue, alignedLineValue;
+		var tx1, ty1, tx2, ty2, x1, y1, x2, y2, lineWidth, lineColor, borderDash, borderDashOffset;
 
 		if (position === 'top') {
-			borderValue = alignPixel(chart, me.bottom, axisWidth);
-			tickStart = me.bottom - tl;
-			tickEnd = borderValue - axisWidth / 2;
+			borderValue = alignBorderValue(me.bottom);
+			ty1 = me.bottom - tl;
+			ty2 = borderValue - axisHalfWidth;
+			y1 = alignBorderValue(chartArea.top) + axisHalfWidth;
+			y2 = chartArea.bottom;
 		} else if (position === 'bottom') {
-			borderValue = alignPixel(chart, me.top, axisWidth);
-			tickStart = borderValue + axisWidth / 2;
-			tickEnd = me.top + tl;
+			borderValue = alignBorderValue(me.top);
+			y1 = chartArea.top;
+			y2 = alignBorderValue(chartArea.bottom) - axisHalfWidth;
+			ty1 = borderValue + axisHalfWidth;
+			ty2 = me.top + tl;
 		} else if (position === 'left') {
-			borderValue = alignPixel(chart, me.right, axisWidth);
-			tickStart = me.right - tl;
-			tickEnd = borderValue - axisWidth / 2;
+			borderValue = alignBorderValue(me.right);
+			tx1 = me.right - tl;
+			tx2 = borderValue - axisHalfWidth;
+			x1 = alignBorderValue(chartArea.left) + axisHalfWidth;
+			x2 = chartArea.right;
 		} else {
-			borderValue = alignPixel(chart, me.left, axisWidth);
-			tickStart = borderValue + axisWidth / 2;
-			tickEnd = me.left + tl;
+			borderValue = alignBorderValue(me.left);
+			x1 = chartArea.left;
+			x2 = alignBorderValue(chartArea.right) - axisHalfWidth;
+			tx1 = borderValue + axisHalfWidth;
+			tx2 = me.left + tl;
 		}
 
-		var epsilon = 0.0000001; // 0.0000001 is margin in pixels for Accumulated error.
+		for (i = 0; i < ticksLength; ++i) {
+			tick = ticks[i] || {};
 
-		helpers$1.each(ticks, function(tick, index) {
 			// autoskipper skipped this tick (#4635)
-			if (helpers$1.isNullOrUndef(tick.label)) {
-				return;
+			if (isNullOrUndef(tick.label) && i < ticks.length) {
+				continue;
 			}
 
-			var label = tick.label;
-			var lineWidth, lineColor, borderDash, borderDashOffset;
-			if (index === me.zeroLineIndex && options.offset === gridLines.offsetGridLines) {
+			if (i === me.zeroLineIndex && options.offset === offsetGridLines) {
 				// Draw the first index specially
 				lineWidth = gridLines.zeroLineWidth;
 				lineColor = gridLines.zeroLineColor;
 				borderDash = gridLines.zeroLineBorderDash || [];
 				borderDashOffset = gridLines.zeroLineBorderDashOffset || 0.0;
 			} else {
-				lineWidth = valueAtIndexOrDefault(gridLines.lineWidth, index);
-				lineColor = valueAtIndexOrDefault(gridLines.color, index);
+				lineWidth = valueAtIndexOrDefault(gridLines.lineWidth, i, 1);
+				lineColor = valueAtIndexOrDefault(gridLines.color, i, 'rgba(0,0,0,0.1)');
 				borderDash = gridLines.borderDash || [];
 				borderDashOffset = gridLines.borderDashOffset || 0.0;
 			}
 
-			// Common properties
-			var tx1, ty1, tx2, ty2, x1, y1, x2, y2, labelX, labelY, textOffset, textAlign;
-			var labelCount = helpers$1.isArray(label) ? label.length : 1;
-			var lineValue = getPixelForGridLine(me, index, gridLines.offsetGridLines);
+			lineValue = getPixelForGridLine(me, tick._index || i, offsetGridLines);
 
-			if (isHorizontal) {
-				var labelYOffset = tl + tickPadding;
-
-				if (lineValue < me.left - epsilon) {
-					lineColor = 'rgba(0,0,0,0)';
-				}
-
-				tx1 = tx2 = x1 = x2 = alignPixel(chart, lineValue, lineWidth);
-				ty1 = tickStart;
-				ty2 = tickEnd;
-				labelX = me.getPixelForTick(index) + labelOffset; // x values for optionTicks (need to consider offsetLabel option)
-
-				if (position === 'top') {
-					y1 = alignPixel(chart, chartArea.top, axisWidth) + axisWidth / 2;
-					y2 = chartArea.bottom;
-					textOffset = ((!isRotated ? 0.5 : 1) - labelCount) * lineHeight;
-					textAlign = !isRotated ? 'center' : 'left';
-					labelY = me.bottom - labelYOffset;
-				} else {
-					y1 = chartArea.top;
-					y2 = alignPixel(chart, chartArea.bottom, axisWidth) - axisWidth / 2;
-					textOffset = (!isRotated ? 0.5 : 0) * lineHeight;
-					textAlign = !isRotated ? 'center' : 'right';
-					labelY = me.top + labelYOffset;
-				}
-			} else {
-				var labelXOffset = (isMirrored ? 0 : tl) + tickPadding;
-
-				if (lineValue < me.top - epsilon) {
-					lineColor = 'rgba(0,0,0,0)';
-				}
-
-				tx1 = tickStart;
-				tx2 = tickEnd;
-				ty1 = ty2 = y1 = y2 = alignPixel(chart, lineValue, lineWidth);
-				labelY = me.getPixelForTick(index) + labelOffset;
-				textOffset = (1 - labelCount) * lineHeight / 2;
-
-				if (position === 'left') {
-					x1 = alignPixel(chart, chartArea.left, axisWidth) + axisWidth / 2;
-					x2 = chartArea.right;
-					textAlign = isMirrored ? 'left' : 'right';
-					labelX = me.right - labelXOffset;
-				} else {
-					x1 = chartArea.left;
-					x2 = alignPixel(chart, chartArea.right, axisWidth) - axisWidth / 2;
-					textAlign = isMirrored ? 'right' : 'left';
-					labelX = me.left + labelXOffset;
-				}
+			// Skip if the pixel is out of the range
+			if (lineValue === undefined) {
+				continue;
 			}
 
-			itemsToDraw.push({
+			alignedLineValue = alignPixel(chart, lineValue, lineWidth);
+
+			if (isHorizontal) {
+				tx1 = tx2 = x1 = x2 = alignedLineValue;
+			} else {
+				ty1 = ty2 = y1 = y2 = alignedLineValue;
+			}
+
+			items.push({
 				tx1: tx1,
 				ty1: ty1,
 				tx2: tx2,
@@ -45241,114 +46475,146 @@ var core_scale = core_element.extend({
 				y1: y1,
 				x2: x2,
 				y2: y2,
-				labelX: labelX,
-				labelY: labelY,
-				glWidth: lineWidth,
-				glColor: lineColor,
-				glBorderDash: borderDash,
-				glBorderDashOffset: borderDashOffset,
-				rotation: -1 * labelRotationRadians,
+				width: lineWidth,
+				color: lineColor,
+				borderDash: borderDash,
+				borderDashOffset: borderDashOffset,
+			});
+		}
+
+		items.ticksLength = ticksLength;
+		items.borderValue = borderValue;
+
+		return items;
+	},
+
+	/**
+	 * @private
+	 */
+	_computeLabelItems: function() {
+		var me = this;
+		var options = me.options;
+		var optionTicks = options.ticks;
+		var position = options.position;
+		var isMirrored = optionTicks.mirror;
+		var isHorizontal = me.isHorizontal();
+		var ticks = me._ticksToDraw;
+		var fonts = parseTickFontOptions(optionTicks);
+		var tickPadding = optionTicks.padding;
+		var tl = getTickMarkLength(options.gridLines);
+		var rotation = -helpers$1.toRadians(me.labelRotation);
+		var items = [];
+		var i, ilen, tick, label, x, y, textAlign, pixel, font, lineHeight, lineCount, textOffset;
+
+		if (position === 'top') {
+			y = me.bottom - tl - tickPadding;
+			textAlign = !rotation ? 'center' : 'left';
+		} else if (position === 'bottom') {
+			y = me.top + tl + tickPadding;
+			textAlign = !rotation ? 'center' : 'right';
+		} else if (position === 'left') {
+			x = me.right - (isMirrored ? 0 : tl) - tickPadding;
+			textAlign = isMirrored ? 'left' : 'right';
+		} else {
+			x = me.left + (isMirrored ? 0 : tl) + tickPadding;
+			textAlign = isMirrored ? 'right' : 'left';
+		}
+
+		for (i = 0, ilen = ticks.length; i < ilen; ++i) {
+			tick = ticks[i];
+			label = tick.label;
+
+			// autoskipper skipped this tick (#4635)
+			if (isNullOrUndef(label)) {
+				continue;
+			}
+
+			pixel = me.getPixelForTick(tick._index || i) + optionTicks.labelOffset;
+			font = tick.major ? fonts.major : fonts.minor;
+			lineHeight = font.lineHeight;
+			lineCount = isArray(label) ? label.length : 1;
+
+			if (isHorizontal) {
+				x = pixel;
+				textOffset = position === 'top'
+					? ((!rotation ? 0.5 : 1) - lineCount) * lineHeight
+					: (!rotation ? 0.5 : 0) * lineHeight;
+			} else {
+				y = pixel;
+				textOffset = (1 - lineCount) * lineHeight / 2;
+			}
+
+			items.push({
+				x: x,
+				y: y,
+				rotation: rotation,
 				label: label,
-				major: tick.major,
+				font: font,
 				textOffset: textOffset,
 				textAlign: textAlign
 			});
-		});
+		}
 
-		// Draw all of the tick labels, tick marks, and grid lines at the correct places
-		helpers$1.each(itemsToDraw, function(itemToDraw) {
-			var glWidth = itemToDraw.glWidth;
-			var glColor = itemToDraw.glColor;
+		return items;
+	},
 
-			if (gridLines.display && glWidth && glColor) {
-				context.save();
-				context.lineWidth = glWidth;
-				context.strokeStyle = glColor;
-				if (context.setLineDash) {
-					context.setLineDash(itemToDraw.glBorderDash);
-					context.lineDashOffset = itemToDraw.glBorderDashOffset;
+	/**
+	 * @private
+	 */
+	_drawGrid: function(chartArea) {
+		var me = this;
+		var gridLines = me.options.gridLines;
+
+		if (!gridLines.display) {
+			return;
+		}
+
+		var ctx = me.ctx;
+		var chart = me.chart;
+		var alignPixel = helpers$1._alignPixel;
+		var axisWidth = gridLines.drawBorder ? valueAtIndexOrDefault(gridLines.lineWidth, 0, 0) : 0;
+		var items = me._gridLineItems || (me._gridLineItems = me._computeGridLineItems(chartArea));
+		var width, color, i, ilen, item;
+
+		for (i = 0, ilen = items.length; i < ilen; ++i) {
+			item = items[i];
+			width = item.width;
+			color = item.color;
+
+			if (width && color) {
+				ctx.save();
+				ctx.lineWidth = width;
+				ctx.strokeStyle = color;
+				if (ctx.setLineDash) {
+					ctx.setLineDash(item.borderDash);
+					ctx.lineDashOffset = item.borderDashOffset;
 				}
 
-				context.beginPath();
+				ctx.beginPath();
 
 				if (gridLines.drawTicks) {
-					context.moveTo(itemToDraw.tx1, itemToDraw.ty1);
-					context.lineTo(itemToDraw.tx2, itemToDraw.ty2);
+					ctx.moveTo(item.tx1, item.ty1);
+					ctx.lineTo(item.tx2, item.ty2);
 				}
 
 				if (gridLines.drawOnChartArea) {
-					context.moveTo(itemToDraw.x1, itemToDraw.y1);
-					context.lineTo(itemToDraw.x2, itemToDraw.y2);
+					ctx.moveTo(item.x1, item.y1);
+					ctx.lineTo(item.x2, item.y2);
 				}
 
-				context.stroke();
-				context.restore();
+				ctx.stroke();
+				ctx.restore();
 			}
-
-			if (optionTicks.display) {
-				// Make sure we draw text in the correct color and font
-				context.save();
-				context.translate(itemToDraw.labelX, itemToDraw.labelY);
-				context.rotate(itemToDraw.rotation);
-				context.font = itemToDraw.major ? majorTickFont.string : tickFont.string;
-				context.fillStyle = itemToDraw.major ? majorTickFontColor : tickFontColor;
-				context.textBaseline = 'middle';
-				context.textAlign = itemToDraw.textAlign;
-
-				var label = itemToDraw.label;
-				var y = itemToDraw.textOffset;
-				if (helpers$1.isArray(label)) {
-					for (var i = 0; i < label.length; ++i) {
-						// We just make sure the multiline element is a string here..
-						context.fillText('' + label[i], 0, y);
-						y += lineHeight;
-					}
-				} else {
-					context.fillText(label, 0, y);
-				}
-				context.restore();
-			}
-		});
-
-		if (scaleLabel.display) {
-			// Draw the scale label
-			var scaleLabelX;
-			var scaleLabelY;
-			var rotation = 0;
-			var halfLineHeight = scaleLabelFont.lineHeight / 2;
-
-			if (isHorizontal) {
-				scaleLabelX = me.left + ((me.right - me.left) / 2); // midpoint of the width
-				scaleLabelY = position === 'bottom'
-					? me.bottom - halfLineHeight - scaleLabelPadding.bottom
-					: me.top + halfLineHeight + scaleLabelPadding.top;
-			} else {
-				var isLeft = position === 'left';
-				scaleLabelX = isLeft
-					? me.left + halfLineHeight + scaleLabelPadding.top
-					: me.right - halfLineHeight - scaleLabelPadding.top;
-				scaleLabelY = me.top + ((me.bottom - me.top) / 2);
-				rotation = isLeft ? -0.5 * Math.PI : 0.5 * Math.PI;
-			}
-
-			context.save();
-			context.translate(scaleLabelX, scaleLabelY);
-			context.rotate(rotation);
-			context.textAlign = 'center';
-			context.textBaseline = 'middle';
-			context.fillStyle = scaleLabelFontColor; // render in correct colour
-			context.font = scaleLabelFont.string;
-			context.fillText(scaleLabel.labelString, 0, 0);
-			context.restore();
 		}
 
 		if (axisWidth) {
 			// Draw the line at the edge of the axis
 			var firstLineWidth = axisWidth;
-			var lastLineWidth = valueAtIndexOrDefault(gridLines.lineWidth, ticks.length - 1, 0);
+			var lastLineWidth = valueAtIndexOrDefault(gridLines.lineWidth, items.ticksLength - 1, 1);
+			var borderValue = items.borderValue;
 			var x1, x2, y1, y2;
 
-			if (isHorizontal) {
+			if (me.isHorizontal()) {
 				x1 = alignPixel(chart, me.left, firstLineWidth) - firstLineWidth / 2;
 				x2 = alignPixel(chart, me.right, lastLineWidth) + lastLineWidth / 2;
 				y1 = y2 = borderValue;
@@ -45358,59 +46624,214 @@ var core_scale = core_element.extend({
 				x1 = x2 = borderValue;
 			}
 
-			context.lineWidth = axisWidth;
-			context.strokeStyle = valueAtIndexOrDefault(gridLines.color, 0);
-			context.beginPath();
-			context.moveTo(x1, y1);
-			context.lineTo(x2, y2);
-			context.stroke();
+			ctx.lineWidth = axisWidth;
+			ctx.strokeStyle = valueAtIndexOrDefault(gridLines.color, 0);
+			ctx.beginPath();
+			ctx.moveTo(x1, y1);
+			ctx.lineTo(x2, y2);
+			ctx.stroke();
 		}
+	},
+
+	/**
+	 * @private
+	 */
+	_drawLabels: function() {
+		var me = this;
+		var optionTicks = me.options.ticks;
+
+		if (!optionTicks.display) {
+			return;
+		}
+
+		var ctx = me.ctx;
+		var items = me._labelItems || (me._labelItems = me._computeLabelItems());
+		var i, j, ilen, jlen, item, tickFont, label, y;
+
+		for (i = 0, ilen = items.length; i < ilen; ++i) {
+			item = items[i];
+			tickFont = item.font;
+
+			// Make sure we draw text in the correct color and font
+			ctx.save();
+			ctx.translate(item.x, item.y);
+			ctx.rotate(item.rotation);
+			ctx.font = tickFont.string;
+			ctx.fillStyle = tickFont.color;
+			ctx.textBaseline = 'middle';
+			ctx.textAlign = item.textAlign;
+
+			label = item.label;
+			y = item.textOffset;
+			if (isArray(label)) {
+				for (j = 0, jlen = label.length; j < jlen; ++j) {
+					// We just make sure the multiline element is a string here..
+					ctx.fillText('' + label[j], 0, y);
+					y += tickFont.lineHeight;
+				}
+			} else {
+				ctx.fillText(label, 0, y);
+			}
+			ctx.restore();
+		}
+	},
+
+	/**
+	 * @private
+	 */
+	_drawTitle: function() {
+		var me = this;
+		var ctx = me.ctx;
+		var options = me.options;
+		var scaleLabel = options.scaleLabel;
+
+		if (!scaleLabel.display) {
+			return;
+		}
+
+		var scaleLabelFontColor = valueOrDefault$a(scaleLabel.fontColor, core_defaults.global.defaultFontColor);
+		var scaleLabelFont = helpers$1.options._parseFont(scaleLabel);
+		var scaleLabelPadding = helpers$1.options.toPadding(scaleLabel.padding);
+		var halfLineHeight = scaleLabelFont.lineHeight / 2;
+		var position = options.position;
+		var rotation = 0;
+		var scaleLabelX, scaleLabelY;
+
+		if (me.isHorizontal()) {
+			scaleLabelX = me.left + me.width / 2; // midpoint of the width
+			scaleLabelY = position === 'bottom'
+				? me.bottom - halfLineHeight - scaleLabelPadding.bottom
+				: me.top + halfLineHeight + scaleLabelPadding.top;
+		} else {
+			var isLeft = position === 'left';
+			scaleLabelX = isLeft
+				? me.left + halfLineHeight + scaleLabelPadding.top
+				: me.right - halfLineHeight - scaleLabelPadding.top;
+			scaleLabelY = me.top + me.height / 2;
+			rotation = isLeft ? -0.5 * Math.PI : 0.5 * Math.PI;
+		}
+
+		ctx.save();
+		ctx.translate(scaleLabelX, scaleLabelY);
+		ctx.rotate(rotation);
+		ctx.textAlign = 'center';
+		ctx.textBaseline = 'middle';
+		ctx.fillStyle = scaleLabelFontColor; // render in correct colour
+		ctx.font = scaleLabelFont.string;
+		ctx.fillText(scaleLabel.labelString, 0, 0);
+		ctx.restore();
+	},
+
+	draw: function(chartArea) {
+		var me = this;
+
+		if (!me._isVisible()) {
+			return;
+		}
+
+		me._drawGrid(chartArea);
+		me._drawTitle();
+		me._drawLabels();
+	},
+
+	/**
+	 * @private
+	 */
+	_layers: function() {
+		var me = this;
+		var opts = me.options;
+		var tz = opts.ticks && opts.ticks.z || 0;
+		var gz = opts.gridLines && opts.gridLines.z || 0;
+
+		if (!me._isVisible() || tz === gz || me.draw !== me._draw) {
+			// backward compatibility: draw has been overridden by custom scale
+			return [{
+				z: tz,
+				draw: function() {
+					me.draw.apply(me, arguments);
+				}
+			}];
+		}
+
+		return [{
+			z: gz,
+			draw: function() {
+				me._drawGrid.apply(me, arguments);
+				me._drawTitle.apply(me, arguments);
+			}
+		}, {
+			z: tz,
+			draw: function() {
+				me._drawLabels.apply(me, arguments);
+			}
+		}];
+	},
+
+	/**
+	 * @private
+	 */
+	_getMatchingVisibleMetas: function(type) {
+		var me = this;
+		var isHorizontal = me.isHorizontal();
+		return me.chart._getSortedVisibleDatasetMetas()
+			.filter(function(meta) {
+				return (!type || meta.type === type)
+					&& (isHorizontal ? meta.xAxisID === me.id : meta.yAxisID === me.id);
+			});
 	}
 });
+
+Scale.prototype._draw = Scale.prototype.draw;
+
+var core_scale = Scale;
+
+var isNullOrUndef$1 = helpers$1.isNullOrUndef;
 
 var defaultConfig = {
 	position: 'bottom'
 };
 
 var scale_category = core_scale.extend({
-	/**
-	* Internal function to get the correct labels. If data.xLabels or data.yLabels are defined, use those
-	* else fall back to data.labels
-	* @private
-	*/
-	getLabels: function() {
-		var data = this.chart.data;
-		return this.options.labels || (this.isHorizontal() ? data.xLabels : data.yLabels) || data.labels;
-	},
-
 	determineDataLimits: function() {
 		var me = this;
-		var labels = me.getLabels();
-		me.minIndex = 0;
-		me.maxIndex = labels.length - 1;
+		var labels = me._getLabels();
+		var ticksOpts = me.options.ticks;
+		var min = ticksOpts.min;
+		var max = ticksOpts.max;
+		var minIndex = 0;
+		var maxIndex = labels.length - 1;
 		var findIndex;
 
-		if (me.options.ticks.min !== undefined) {
+		if (min !== undefined) {
 			// user specified min value
-			findIndex = labels.indexOf(me.options.ticks.min);
-			me.minIndex = findIndex !== -1 ? findIndex : me.minIndex;
+			findIndex = labels.indexOf(min);
+			if (findIndex >= 0) {
+				minIndex = findIndex;
+			}
 		}
 
-		if (me.options.ticks.max !== undefined) {
+		if (max !== undefined) {
 			// user specified max value
-			findIndex = labels.indexOf(me.options.ticks.max);
-			me.maxIndex = findIndex !== -1 ? findIndex : me.maxIndex;
+			findIndex = labels.indexOf(max);
+			if (findIndex >= 0) {
+				maxIndex = findIndex;
+			}
 		}
 
-		me.min = labels[me.minIndex];
-		me.max = labels[me.maxIndex];
+		me.minIndex = minIndex;
+		me.maxIndex = maxIndex;
+		me.min = labels[minIndex];
+		me.max = labels[maxIndex];
 	},
 
 	buildTicks: function() {
 		var me = this;
-		var labels = me.getLabels();
+		var labels = me._getLabels();
+		var minIndex = me.minIndex;
+		var maxIndex = me.maxIndex;
+
 		// If we are viewing some subset of labels, slice the original array
-		me.ticks = (me.minIndex === 0 && me.maxIndex === labels.length - 1) ? labels : labels.slice(me.minIndex, me.maxIndex + 1);
+		me.ticks = (minIndex === 0 && maxIndex === labels.length - 1) ? labels : labels.slice(minIndex, maxIndex + 1);
 	},
 
 	getLabelForIndex: function(index, datasetIndex) {
@@ -45421,74 +46842,66 @@ var scale_category = core_scale.extend({
 			return me.getRightValue(chart.data.datasets[datasetIndex].data[index]);
 		}
 
-		return me.ticks[index - me.minIndex];
+		return me._getLabels()[index];
+	},
+
+	_configure: function() {
+		var me = this;
+		var offset = me.options.offset;
+		var ticks = me.ticks;
+
+		core_scale.prototype._configure.call(me);
+
+		if (!me.isHorizontal()) {
+			// For backward compatibility, vertical category scale reverse is inverted.
+			me._reversePixels = !me._reversePixels;
+		}
+
+		if (!ticks) {
+			return;
+		}
+
+		me._startValue = me.minIndex - (offset ? 0.5 : 0);
+		me._valueRange = Math.max(ticks.length - (offset ? 0 : 1), 1);
 	},
 
 	// Used to get data value locations.  Value can either be an index or a numerical value
-	getPixelForValue: function(value, index) {
+	getPixelForValue: function(value, index, datasetIndex) {
 		var me = this;
-		var offset = me.options.offset;
-		// 1 is added because we need the length but we have the indexes
-		var offsetAmt = Math.max((me.maxIndex + 1 - me.minIndex - (offset ? 0 : 1)), 1);
+		var valueCategory, labels, idx;
+
+		if (!isNullOrUndef$1(index) && !isNullOrUndef$1(datasetIndex)) {
+			value = me.chart.data.datasets[datasetIndex].data[index];
+		}
 
 		// If value is a data object, then index is the index in the data array,
 		// not the index of the scale. We need to change that.
-		var valueCategory;
-		if (value !== undefined && value !== null) {
+		if (!isNullOrUndef$1(value)) {
 			valueCategory = me.isHorizontal() ? value.x : value.y;
 		}
 		if (valueCategory !== undefined || (value !== undefined && isNaN(index))) {
-			var labels = me.getLabels();
-			value = valueCategory || value;
-			var idx = labels.indexOf(value);
+			labels = me._getLabels();
+			value = helpers$1.valueOrDefault(valueCategory, value);
+			idx = labels.indexOf(value);
 			index = idx !== -1 ? idx : index;
-		}
-
-		if (me.isHorizontal()) {
-			var valueWidth = me.width / offsetAmt;
-			var widthOffset = (valueWidth * (index - me.minIndex));
-
-			if (offset) {
-				widthOffset += (valueWidth / 2);
+			if (isNaN(index)) {
+				index = value;
 			}
-
-			return me.left + widthOffset;
 		}
-		var valueHeight = me.height / offsetAmt;
-		var heightOffset = (valueHeight * (index - me.minIndex));
-
-		if (offset) {
-			heightOffset += (valueHeight / 2);
-		}
-
-		return me.top + heightOffset;
+		return me.getPixelForDecimal((index - me._startValue) / me._valueRange);
 	},
 
 	getPixelForTick: function(index) {
-		return this.getPixelForValue(this.ticks[index], index + this.minIndex, null);
+		var ticks = this.ticks;
+		return index < 0 || index > ticks.length - 1
+			? null
+			: this.getPixelForValue(ticks[index], index + this.minIndex);
 	},
 
 	getValueForPixel: function(pixel) {
 		var me = this;
-		var offset = me.options.offset;
-		var value;
-		var offsetAmt = Math.max((me._ticks.length - (offset ? 0 : 1)), 1);
-		var horz = me.isHorizontal();
-		var valueDimension = (horz ? me.width : me.height) / offsetAmt;
-
-		pixel -= horz ? me.left : me.top;
-
-		if (offset) {
-			pixel -= (valueDimension / 2);
-		}
-
-		if (pixel <= 0) {
-			value = 0;
-		} else {
-			value = Math.round(pixel / valueDimension);
-		}
-
-		return value + me.minIndex;
+		var value = Math.round(me._startValue + me.getDecimalForPixel(pixel) * me._valueRange);
+		return Math.min(Math.max(value, 0), me.ticks.length - 1);
 	},
 
 	getBasePixel: function() {
@@ -45501,7 +46914,7 @@ var _defaults = defaultConfig;
 scale_category._defaults = _defaults;
 
 var noop = helpers$1.noop;
-var isNullOrUndef = helpers$1.isNullOrUndef;
+var isNullOrUndef$2 = helpers$1.isNullOrUndef;
 
 /**
  * Generate a set of linear ticks
@@ -45529,7 +46942,7 @@ function generateTicks(generationOptions, dataRange) {
 
 	// Beyond MIN_SPACING floating point numbers being to lose precision
 	// such that we can't do the math necessary to generate ticks
-	if (spacing < MIN_SPACING && isNullOrUndef(min) && isNullOrUndef(max)) {
+	if (spacing < MIN_SPACING && isNullOrUndef$2(min) && isNullOrUndef$2(max)) {
 		return [rmin, rmax];
 	}
 
@@ -45539,7 +46952,7 @@ function generateTicks(generationOptions, dataRange) {
 		spacing = helpers$1.niceNum(numSpaces * spacing / maxNumSpaces / unit) * unit;
 	}
 
-	if (stepSize || isNullOrUndef(precision)) {
+	if (stepSize || isNullOrUndef$2(precision)) {
 		// If a precision is not specified, calculate factor based on spacing
 		factor = Math.pow(10, helpers$1._decimalPlaces(spacing));
 	} else {
@@ -45554,10 +46967,10 @@ function generateTicks(generationOptions, dataRange) {
 	// If min, max and stepSize is set and they make an evenly spaced scale use it.
 	if (stepSize) {
 		// If very close to our whole number, use it.
-		if (!isNullOrUndef(min) && helpers$1.almostWhole(min / spacing, spacing / 1000)) {
+		if (!isNullOrUndef$2(min) && helpers$1.almostWhole(min / spacing, spacing / 1000)) {
 			niceMin = min;
 		}
-		if (!isNullOrUndef(max) && helpers$1.almostWhole(max / spacing, spacing / 1000)) {
+		if (!isNullOrUndef$2(max) && helpers$1.almostWhole(max / spacing, spacing / 1000)) {
 			niceMax = max;
 		}
 	}
@@ -45572,11 +46985,11 @@ function generateTicks(generationOptions, dataRange) {
 
 	niceMin = Math.round(niceMin * factor) / factor;
 	niceMax = Math.round(niceMax * factor) / factor;
-	ticks.push(isNullOrUndef(min) ? niceMin : min);
+	ticks.push(isNullOrUndef$2(min) ? niceMin : min);
 	for (var j = 1; j < numSpaces; ++j) {
 		ticks.push(Math.round((niceMin + j * spacing) * factor) / factor);
 	}
-	ticks.push(isNullOrUndef(max) ? niceMax : max);
+	ticks.push(isNullOrUndef$2(max) ? niceMax : max);
 
 	return ticks;
 }
@@ -45728,6 +47141,25 @@ var scale_linearbase = core_scale.extend({
 		me.zeroLineIndex = me.ticks.indexOf(0);
 
 		core_scale.prototype.convertTicksToLabels.call(me);
+	},
+
+	_configure: function() {
+		var me = this;
+		var ticks = me.getTicks();
+		var start = me.min;
+		var end = me.max;
+		var offset;
+
+		core_scale.prototype._configure.call(me);
+
+		if (me.options.offset && ticks.length) {
+			offset = (end - start) / Math.max(ticks.length - 1, 1) / 2;
+			start -= offset;
+			end += offset;
+		}
+		me._startValue = start;
+		me._endValue = end;
+		me._valueRange = end - start;
 	}
 });
 
@@ -45738,123 +47170,113 @@ var defaultConfig$1 = {
 	}
 };
 
+var DEFAULT_MIN = 0;
+var DEFAULT_MAX = 1;
+
+function getOrCreateStack(stacks, stacked, meta) {
+	var key = [
+		meta.type,
+		// we have a separate stack for stack=undefined datasets when the opts.stacked is undefined
+		stacked === undefined && meta.stack === undefined ? meta.index : '',
+		meta.stack
+	].join('.');
+
+	if (stacks[key] === undefined) {
+		stacks[key] = {
+			pos: [],
+			neg: []
+		};
+	}
+
+	return stacks[key];
+}
+
+function stackData(scale, stacks, meta, data) {
+	var opts = scale.options;
+	var stacked = opts.stacked;
+	var stack = getOrCreateStack(stacks, stacked, meta);
+	var pos = stack.pos;
+	var neg = stack.neg;
+	var ilen = data.length;
+	var i, value;
+
+	for (i = 0; i < ilen; ++i) {
+		value = scale._parseValue(data[i]);
+		if (isNaN(value.min) || isNaN(value.max) || meta.data[i].hidden) {
+			continue;
+		}
+
+		pos[i] = pos[i] || 0;
+		neg[i] = neg[i] || 0;
+
+		if (opts.relativePoints) {
+			pos[i] = 100;
+		} else if (value.min < 0 || value.max < 0) {
+			neg[i] += value.min;
+		} else {
+			pos[i] += value.max;
+		}
+	}
+}
+
+function updateMinMax(scale, meta, data) {
+	var ilen = data.length;
+	var i, value;
+
+	for (i = 0; i < ilen; ++i) {
+		value = scale._parseValue(data[i]);
+		if (isNaN(value.min) || isNaN(value.max) || meta.data[i].hidden) {
+			continue;
+		}
+
+		scale.min = Math.min(scale.min, value.min);
+		scale.max = Math.max(scale.max, value.max);
+	}
+}
+
 var scale_linear = scale_linearbase.extend({
 	determineDataLimits: function() {
 		var me = this;
 		var opts = me.options;
 		var chart = me.chart;
-		var data = chart.data;
-		var datasets = data.datasets;
-		var isHorizontal = me.isHorizontal();
-		var DEFAULT_MIN = 0;
-		var DEFAULT_MAX = 1;
-
-		function IDMatches(meta) {
-			return isHorizontal ? meta.xAxisID === me.id : meta.yAxisID === me.id;
-		}
-
-		// First Calculate the range
-		me.min = null;
-		me.max = null;
-
+		var datasets = chart.data.datasets;
+		var metasets = me._getMatchingVisibleMetas();
 		var hasStacks = opts.stacked;
+		var stacks = {};
+		var ilen = metasets.length;
+		var i, meta, data, values;
+
+		me.min = Number.POSITIVE_INFINITY;
+		me.max = Number.NEGATIVE_INFINITY;
+
 		if (hasStacks === undefined) {
-			helpers$1.each(datasets, function(dataset, datasetIndex) {
-				if (hasStacks) {
-					return;
-				}
-
-				var meta = chart.getDatasetMeta(datasetIndex);
-				if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta) &&
-					meta.stack !== undefined) {
-					hasStacks = true;
-				}
-			});
+			for (i = 0; !hasStacks && i < ilen; ++i) {
+				meta = metasets[i];
+				hasStacks = meta.stack !== undefined;
+			}
 		}
 
-		if (opts.stacked || hasStacks) {
-			var valuesPerStack = {};
-
-			helpers$1.each(datasets, function(dataset, datasetIndex) {
-				var meta = chart.getDatasetMeta(datasetIndex);
-				var key = [
-					meta.type,
-					// we have a separate stack for stack=undefined datasets when the opts.stacked is undefined
-					((opts.stacked === undefined && meta.stack === undefined) ? datasetIndex : ''),
-					meta.stack
-				].join('.');
-
-				if (valuesPerStack[key] === undefined) {
-					valuesPerStack[key] = {
-						positiveValues: [],
-						negativeValues: []
-					};
-				}
-
-				// Store these per type
-				var positiveValues = valuesPerStack[key].positiveValues;
-				var negativeValues = valuesPerStack[key].negativeValues;
-
-				if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta)) {
-					helpers$1.each(dataset.data, function(rawValue, index) {
-						var value = +me.getRightValue(rawValue);
-						if (isNaN(value) || meta.data[index].hidden) {
-							return;
-						}
-
-						positiveValues[index] = positiveValues[index] || 0;
-						negativeValues[index] = negativeValues[index] || 0;
-
-						if (opts.relativePoints) {
-							positiveValues[index] = 100;
-						} else if (value < 0) {
-							negativeValues[index] += value;
-						} else {
-							positiveValues[index] += value;
-						}
-					});
-				}
-			});
-
-			helpers$1.each(valuesPerStack, function(valuesForType) {
-				var values = valuesForType.positiveValues.concat(valuesForType.negativeValues);
-				var minVal = helpers$1.min(values);
-				var maxVal = helpers$1.max(values);
-				me.min = me.min === null ? minVal : Math.min(me.min, minVal);
-				me.max = me.max === null ? maxVal : Math.max(me.max, maxVal);
-			});
-
-		} else {
-			helpers$1.each(datasets, function(dataset, datasetIndex) {
-				var meta = chart.getDatasetMeta(datasetIndex);
-				if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta)) {
-					helpers$1.each(dataset.data, function(rawValue, index) {
-						var value = +me.getRightValue(rawValue);
-						if (isNaN(value) || meta.data[index].hidden) {
-							return;
-						}
-
-						if (me.min === null) {
-							me.min = value;
-						} else if (value < me.min) {
-							me.min = value;
-						}
-
-						if (me.max === null) {
-							me.max = value;
-						} else if (value > me.max) {
-							me.max = value;
-						}
-					});
-				}
-			});
+		for (i = 0; i < ilen; ++i) {
+			meta = metasets[i];
+			data = datasets[meta.index].data;
+			if (hasStacks) {
+				stackData(me, stacks, meta, data);
+			} else {
+				updateMinMax(me, meta, data);
+			}
 		}
 
-		me.min = isFinite(me.min) && !isNaN(me.min) ? me.min : DEFAULT_MIN;
-		me.max = isFinite(me.max) && !isNaN(me.max) ? me.max : DEFAULT_MAX;
+		helpers$1.each(stacks, function(stackValues) {
+			values = stackValues.pos.concat(stackValues.neg);
+			me.min = Math.min(me.min, helpers$1.min(values));
+			me.max = Math.max(me.max, helpers$1.max(values));
+		});
+
+		me.min = helpers$1.isFinite(me.min) && !isNaN(me.min) ? me.min : DEFAULT_MIN;
+		me.max = helpers$1.isFinite(me.max) && !isNaN(me.max) ? me.max : DEFAULT_MAX;
 
 		// Common base implementation to handle ticks.min, ticks.max, ticks.beginAtZero
-		this.handleTickRangeOptions();
+		me.handleTickRangeOptions();
 	},
 
 	// Returns the maximum number of ticks based on the scale dimension
@@ -45878,38 +47300,25 @@ var scale_linear = scale_linearbase.extend({
 	},
 
 	getLabelForIndex: function(index, datasetIndex) {
-		return +this.getRightValue(this.chart.data.datasets[datasetIndex].data[index]);
+		return this._getScaleLabel(this.chart.data.datasets[datasetIndex].data[index]);
 	},
 
 	// Utils
 	getPixelForValue: function(value) {
-		// This must be called after fit has been run so that
-		// this.left, this.top, this.right, and this.bottom have been defined
 		var me = this;
-		var start = me.start;
-
-		var rightValue = +me.getRightValue(value);
-		var pixel;
-		var range = me.end - start;
-
-		if (me.isHorizontal()) {
-			pixel = me.left + (me.width / range * (rightValue - start));
-		} else {
-			pixel = me.bottom - (me.height / range * (rightValue - start));
-		}
-		return pixel;
+		return me.getPixelForDecimal((+me.getRightValue(value) - me._startValue) / me._valueRange);
 	},
 
 	getValueForPixel: function(pixel) {
-		var me = this;
-		var isHorizontal = me.isHorizontal();
-		var innerDimension = isHorizontal ? me.width : me.height;
-		var offset = (isHorizontal ? pixel - me.left : me.bottom - pixel) / innerDimension;
-		return me.start + ((me.end - me.start) * offset);
+		return this._startValue + this.getDecimalForPixel(pixel) * this._valueRange;
 	},
 
 	getPixelForTick: function(index) {
-		return this.getPixelForValue(this.ticksAsNumbers[index]);
+		var ticks = this.ticksAsNumbers;
+		if (index < 0 || index > ticks.length - 1) {
+			return null;
+		}
+		return this.getPixelForValue(ticks[index]);
 	}
 });
 
@@ -45917,7 +47326,8 @@ var scale_linear = scale_linearbase.extend({
 var _defaults$1 = defaultConfig$1;
 scale_linear._defaults = _defaults$1;
 
-var valueOrDefault$a = helpers$1.valueOrDefault;
+var valueOrDefault$b = helpers$1.valueOrDefault;
+var log10 = helpers$1.math.log10;
 
 /**
  * Generate a set of logarithmic ticks
@@ -45928,20 +47338,20 @@ var valueOrDefault$a = helpers$1.valueOrDefault;
 function generateTicks$1(generationOptions, dataRange) {
 	var ticks = [];
 
-	var tickVal = valueOrDefault$a(generationOptions.min, Math.pow(10, Math.floor(helpers$1.log10(dataRange.min))));
+	var tickVal = valueOrDefault$b(generationOptions.min, Math.pow(10, Math.floor(log10(dataRange.min))));
 
-	var endExp = Math.floor(helpers$1.log10(dataRange.max));
+	var endExp = Math.floor(log10(dataRange.max));
 	var endSignificand = Math.ceil(dataRange.max / Math.pow(10, endExp));
 	var exp, significand;
 
 	if (tickVal === 0) {
-		exp = Math.floor(helpers$1.log10(dataRange.minNotZero));
+		exp = Math.floor(log10(dataRange.minNotZero));
 		significand = Math.floor(dataRange.minNotZero / Math.pow(10, exp));
 
 		ticks.push(tickVal);
 		tickVal = significand * Math.pow(10, exp);
 	} else {
-		exp = Math.floor(helpers$1.log10(tickVal));
+		exp = Math.floor(log10(tickVal));
 		significand = Math.floor(tickVal / Math.pow(10, exp));
 	}
 	var precision = exp < 0 ? Math.pow(10, Math.abs(exp)) : 1;
@@ -45959,7 +47369,7 @@ function generateTicks$1(generationOptions, dataRange) {
 		tickVal = Math.round(significand * Math.pow(10, exp) * precision) / precision;
 	} while (exp < endExp || (exp === endExp && significand < endSignificand));
 
-	var lastTick = valueOrDefault$a(generationOptions.max, tickVal);
+	var lastTick = valueOrDefault$b(generationOptions.max, tickVal);
 	ticks.push(lastTick);
 
 	return ticks;
@@ -45984,38 +47394,35 @@ var scale_logarithmic = core_scale.extend({
 		var me = this;
 		var opts = me.options;
 		var chart = me.chart;
-		var data = chart.data;
-		var datasets = data.datasets;
+		var datasets = chart.data.datasets;
 		var isHorizontal = me.isHorizontal();
 		function IDMatches(meta) {
 			return isHorizontal ? meta.xAxisID === me.id : meta.yAxisID === me.id;
 		}
+		var datasetIndex, meta, value, data, i, ilen;
 
 		// Calculate Range
-		me.min = null;
-		me.max = null;
-		me.minNotZero = null;
+		me.min = Number.POSITIVE_INFINITY;
+		me.max = Number.NEGATIVE_INFINITY;
+		me.minNotZero = Number.POSITIVE_INFINITY;
 
 		var hasStacks = opts.stacked;
 		if (hasStacks === undefined) {
-			helpers$1.each(datasets, function(dataset, datasetIndex) {
-				if (hasStacks) {
-					return;
-				}
-
-				var meta = chart.getDatasetMeta(datasetIndex);
+			for (datasetIndex = 0; datasetIndex < datasets.length; datasetIndex++) {
+				meta = chart.getDatasetMeta(datasetIndex);
 				if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta) &&
 					meta.stack !== undefined) {
 					hasStacks = true;
+					break;
 				}
-			});
+			}
 		}
 
 		if (opts.stacked || hasStacks) {
 			var valuesPerStack = {};
 
-			helpers$1.each(datasets, function(dataset, datasetIndex) {
-				var meta = chart.getDatasetMeta(datasetIndex);
+			for (datasetIndex = 0; datasetIndex < datasets.length; datasetIndex++) {
+				meta = chart.getDatasetMeta(datasetIndex);
 				var key = [
 					meta.type,
 					// we have a separate stack for stack=undefined datasets when the opts.stacked is undefined
@@ -46028,58 +47435,55 @@ var scale_logarithmic = core_scale.extend({
 						valuesPerStack[key] = [];
 					}
 
-					helpers$1.each(dataset.data, function(rawValue, index) {
+					data = datasets[datasetIndex].data;
+					for (i = 0, ilen = data.length; i < ilen; i++) {
 						var values = valuesPerStack[key];
-						var value = +me.getRightValue(rawValue);
+						value = me._parseValue(data[i]);
 						// invalid, hidden and negative values are ignored
-						if (isNaN(value) || meta.data[index].hidden || value < 0) {
-							return;
+						if (isNaN(value.min) || isNaN(value.max) || meta.data[i].hidden || value.min < 0 || value.max < 0) {
+							continue;
 						}
-						values[index] = values[index] || 0;
-						values[index] += value;
-					});
+						values[i] = values[i] || 0;
+						values[i] += value.max;
+					}
 				}
-			});
+			}
 
 			helpers$1.each(valuesPerStack, function(valuesForType) {
 				if (valuesForType.length > 0) {
 					var minVal = helpers$1.min(valuesForType);
 					var maxVal = helpers$1.max(valuesForType);
-					me.min = me.min === null ? minVal : Math.min(me.min, minVal);
-					me.max = me.max === null ? maxVal : Math.max(me.max, maxVal);
+					me.min = Math.min(me.min, minVal);
+					me.max = Math.max(me.max, maxVal);
 				}
 			});
 
 		} else {
-			helpers$1.each(datasets, function(dataset, datasetIndex) {
-				var meta = chart.getDatasetMeta(datasetIndex);
+			for (datasetIndex = 0; datasetIndex < datasets.length; datasetIndex++) {
+				meta = chart.getDatasetMeta(datasetIndex);
 				if (chart.isDatasetVisible(datasetIndex) && IDMatches(meta)) {
-					helpers$1.each(dataset.data, function(rawValue, index) {
-						var value = +me.getRightValue(rawValue);
+					data = datasets[datasetIndex].data;
+					for (i = 0, ilen = data.length; i < ilen; i++) {
+						value = me._parseValue(data[i]);
 						// invalid, hidden and negative values are ignored
-						if (isNaN(value) || meta.data[index].hidden || value < 0) {
-							return;
+						if (isNaN(value.min) || isNaN(value.max) || meta.data[i].hidden || value.min < 0 || value.max < 0) {
+							continue;
 						}
 
-						if (me.min === null) {
-							me.min = value;
-						} else if (value < me.min) {
-							me.min = value;
-						}
+						me.min = Math.min(value.min, me.min);
+						me.max = Math.max(value.max, me.max);
 
-						if (me.max === null) {
-							me.max = value;
-						} else if (value > me.max) {
-							me.max = value;
+						if (value.min !== 0) {
+							me.minNotZero = Math.min(value.min, me.minNotZero);
 						}
-
-						if (value !== 0 && (me.minNotZero === null || value < me.minNotZero)) {
-							me.minNotZero = value;
-						}
-					});
+					}
 				}
-			});
+			}
 		}
+
+		me.min = helpers$1.isFinite(me.min) ? me.min : null;
+		me.max = helpers$1.isFinite(me.max) ? me.max : null;
+		me.minNotZero = helpers$1.isFinite(me.minNotZero) ? me.minNotZero : null;
 
 		// Common base implementation to handle ticks.min, ticks.max
 		this.handleTickRangeOptions();
@@ -46096,26 +47500,26 @@ var scale_logarithmic = core_scale.extend({
 
 		if (me.min === me.max) {
 			if (me.min !== 0 && me.min !== null) {
-				me.min = Math.pow(10, Math.floor(helpers$1.log10(me.min)) - 1);
-				me.max = Math.pow(10, Math.floor(helpers$1.log10(me.max)) + 1);
+				me.min = Math.pow(10, Math.floor(log10(me.min)) - 1);
+				me.max = Math.pow(10, Math.floor(log10(me.max)) + 1);
 			} else {
 				me.min = DEFAULT_MIN;
 				me.max = DEFAULT_MAX;
 			}
 		}
 		if (me.min === null) {
-			me.min = Math.pow(10, Math.floor(helpers$1.log10(me.max)) - 1);
+			me.min = Math.pow(10, Math.floor(log10(me.max)) - 1);
 		}
 		if (me.max === null) {
 			me.max = me.min !== 0
-				? Math.pow(10, Math.floor(helpers$1.log10(me.min)) + 1)
+				? Math.pow(10, Math.floor(log10(me.min)) + 1)
 				: DEFAULT_MAX;
 		}
 		if (me.minNotZero === null) {
 			if (me.min > 0) {
 				me.minNotZero = me.min;
 			} else if (me.max < 1) {
-				me.minNotZero = Math.pow(10, Math.floor(helpers$1.log10(me.max)));
+				me.minNotZero = Math.pow(10, Math.floor(log10(me.max)));
 			} else {
 				me.minNotZero = DEFAULT_MIN;
 			}
@@ -46159,11 +47563,15 @@ var scale_logarithmic = core_scale.extend({
 
 	// Get the correct tooltip label
 	getLabelForIndex: function(index, datasetIndex) {
-		return +this.getRightValue(this.chart.data.datasets[datasetIndex].data[index]);
+		return this._getScaleLabel(this.chart.data.datasets[datasetIndex].data[index]);
 	},
 
 	getPixelForTick: function(index) {
-		return this.getPixelForValue(this.tickValues[index]);
+		var ticks = this.tickValues;
+		if (index < 0 || index > ticks.length - 1) {
+			return null;
+		}
+		return this.getPixelForValue(ticks[index]);
 	},
 
 	/**
@@ -46173,87 +47581,47 @@ var scale_logarithmic = core_scale.extend({
 	 * @private
 	 */
 	_getFirstTickValue: function(value) {
-		var exp = Math.floor(helpers$1.log10(value));
+		var exp = Math.floor(log10(value));
 		var significand = Math.floor(value / Math.pow(10, exp));
 
 		return significand * Math.pow(10, exp);
 	},
 
+	_configure: function() {
+		var me = this;
+		var start = me.min;
+		var offset = 0;
+
+		core_scale.prototype._configure.call(me);
+
+		if (start === 0) {
+			start = me._getFirstTickValue(me.minNotZero);
+			offset = valueOrDefault$b(me.options.ticks.fontSize, core_defaults.global.defaultFontSize) / me._length;
+		}
+
+		me._startValue = log10(start);
+		me._valueOffset = offset;
+		me._valueRange = (log10(me.max) - log10(start)) / (1 - offset);
+	},
+
 	getPixelForValue: function(value) {
 		var me = this;
-		var tickOpts = me.options.ticks;
-		var reverse = tickOpts.reverse;
-		var log10 = helpers$1.log10;
-		var firstTickValue = me._getFirstTickValue(me.minNotZero);
-		var offset = 0;
-		var innerDimension, pixel, start, end, sign;
+		var decimal = 0;
 
 		value = +me.getRightValue(value);
-		if (reverse) {
-			start = me.end;
-			end = me.start;
-			sign = -1;
-		} else {
-			start = me.start;
-			end = me.end;
-			sign = 1;
+
+		if (value > me.min && value > 0) {
+			decimal = (log10(value) - me._startValue) / me._valueRange + me._valueOffset;
 		}
-		if (me.isHorizontal()) {
-			innerDimension = me.width;
-			pixel = reverse ? me.right : me.left;
-		} else {
-			innerDimension = me.height;
-			sign *= -1; // invert, since the upper-left corner of the canvas is at pixel (0, 0)
-			pixel = reverse ? me.top : me.bottom;
-		}
-		if (value !== start) {
-			if (start === 0) { // include zero tick
-				offset = valueOrDefault$a(tickOpts.fontSize, core_defaults.global.defaultFontSize);
-				innerDimension -= offset;
-				start = firstTickValue;
-			}
-			if (value !== 0) {
-				offset += innerDimension / (log10(end) - log10(start)) * (log10(value) - log10(start));
-			}
-			pixel += sign * offset;
-		}
-		return pixel;
+		return me.getPixelForDecimal(decimal);
 	},
 
 	getValueForPixel: function(pixel) {
 		var me = this;
-		var tickOpts = me.options.ticks;
-		var reverse = tickOpts.reverse;
-		var log10 = helpers$1.log10;
-		var firstTickValue = me._getFirstTickValue(me.minNotZero);
-		var innerDimension, start, end, value;
-
-		if (reverse) {
-			start = me.end;
-			end = me.start;
-		} else {
-			start = me.start;
-			end = me.end;
-		}
-		if (me.isHorizontal()) {
-			innerDimension = me.width;
-			value = reverse ? me.right - pixel : pixel - me.left;
-		} else {
-			innerDimension = me.height;
-			value = reverse ? pixel - me.top : me.bottom - pixel;
-		}
-		if (value !== start) {
-			if (start === 0) { // include zero tick
-				var offset = valueOrDefault$a(tickOpts.fontSize, core_defaults.global.defaultFontSize);
-				value -= offset;
-				innerDimension -= offset;
-				start = firstTickValue;
-			}
-			value *= log10(end) - log10(start);
-			value /= innerDimension;
-			value = Math.pow(10, log10(start) + value);
-		}
-		return value;
+		var decimal = me.getDecimalForPixel(pixel);
+		return decimal === 0 && me.min === 0
+			? 0
+			: Math.pow(10, me._startValue + (decimal - me._valueOffset) * me._valueRange);
 	}
 });
 
@@ -46261,9 +47629,9 @@ var scale_logarithmic = core_scale.extend({
 var _defaults$2 = defaultConfig$2;
 scale_logarithmic._defaults = _defaults$2;
 
-var valueOrDefault$b = helpers$1.valueOrDefault;
+var valueOrDefault$c = helpers$1.valueOrDefault;
 var valueAtIndexOrDefault$1 = helpers$1.valueAtIndexOrDefault;
-var resolve$7 = helpers$1.options.resolve;
+var resolve$4 = helpers$1.options.resolve;
 
 var defaultConfig$3 = {
 	display: true,
@@ -46274,7 +47642,7 @@ var defaultConfig$3 = {
 
 	angleLines: {
 		display: true,
-		color: 'rgba(0, 0, 0, 0.1)',
+		color: 'rgba(0,0,0,0.1)',
 		lineWidth: 1,
 		borderDash: [],
 		borderDashOffset: 0.0
@@ -46315,16 +47683,11 @@ var defaultConfig$3 = {
 	}
 };
 
-function getValueCount(scale) {
-	var opts = scale.options;
-	return opts.angleLines.display || opts.pointLabels.display ? scale.chart.data.labels.length : 0;
-}
-
 function getTickBackdropHeight(opts) {
 	var tickOpts = opts.ticks;
 
 	if (tickOpts.display && opts.display) {
-		return valueOrDefault$b(tickOpts.fontSize, core_defaults.global.defaultFontSize) + tickOpts.backdropPaddingY * 2;
+		return valueOrDefault$c(tickOpts.fontSize, core_defaults.global.defaultFontSize) + tickOpts.backdropPaddingY * 2;
 	}
 	return 0;
 }
@@ -46409,10 +47772,10 @@ function fitWithPointLabels(scale) {
 	scale.ctx.font = plFont.string;
 	scale._pointLabelSizes = [];
 
-	var valueCount = getValueCount(scale);
+	var valueCount = scale.chart.data.labels.length;
 	for (i = 0; i < valueCount; i++) {
 		pointPosition = scale.getPointPosition(i, scale.drawingArea + 5);
-		textSize = measureLabelSize(scale.ctx, plFont.lineHeight, scale.pointLabels[i] || '');
+		textSize = measureLabelSize(scale.ctx, plFont.lineHeight, scale.pointLabels[i]);
 		scale._pointLabelSizes[i] = textSize;
 
 		// Add quarter circle to make degree 0 mean top of circle
@@ -46480,53 +47843,30 @@ function adjustPointPositionForLabelHeight(angle, textSize, position) {
 function drawPointLabels(scale) {
 	var ctx = scale.ctx;
 	var opts = scale.options;
-	var angleLineOpts = opts.angleLines;
-	var gridLineOpts = opts.gridLines;
 	var pointLabelOpts = opts.pointLabels;
-	var lineWidth = valueOrDefault$b(angleLineOpts.lineWidth, gridLineOpts.lineWidth);
-	var lineColor = valueOrDefault$b(angleLineOpts.color, gridLineOpts.color);
 	var tickBackdropHeight = getTickBackdropHeight(opts);
+	var outerDistance = scale.getDistanceFromCenterForValue(opts.ticks.reverse ? scale.min : scale.max);
+	var plFont = helpers$1.options._parseFont(pointLabelOpts);
 
 	ctx.save();
-	ctx.lineWidth = lineWidth;
-	ctx.strokeStyle = lineColor;
-	if (ctx.setLineDash) {
-		ctx.setLineDash(resolve$7([angleLineOpts.borderDash, gridLineOpts.borderDash, []]));
-		ctx.lineDashOffset = resolve$7([angleLineOpts.borderDashOffset, gridLineOpts.borderDashOffset, 0.0]);
-	}
-
-	var outerDistance = scale.getDistanceFromCenterForValue(opts.ticks.reverse ? scale.min : scale.max);
-
-	// Point Label Font
-	var plFont = helpers$1.options._parseFont(pointLabelOpts);
 
 	ctx.font = plFont.string;
 	ctx.textBaseline = 'middle';
 
-	for (var i = getValueCount(scale) - 1; i >= 0; i--) {
-		if (angleLineOpts.display && lineWidth && lineColor) {
-			var outerPosition = scale.getPointPosition(i, outerDistance);
-			ctx.beginPath();
-			ctx.moveTo(scale.xCenter, scale.yCenter);
-			ctx.lineTo(outerPosition.x, outerPosition.y);
-			ctx.stroke();
-		}
+	for (var i = scale.chart.data.labels.length - 1; i >= 0; i--) {
+		// Extra pixels out for some label spacing
+		var extra = (i === 0 ? tickBackdropHeight / 2 : 0);
+		var pointLabelPosition = scale.getPointPosition(i, outerDistance + extra + 5);
 
-		if (pointLabelOpts.display) {
-			// Extra pixels out for some label spacing
-			var extra = (i === 0 ? tickBackdropHeight / 2 : 0);
-			var pointLabelPosition = scale.getPointPosition(i, outerDistance + extra + 5);
+		// Keep this in loop since we may support array properties here
+		var pointLabelFontColor = valueAtIndexOrDefault$1(pointLabelOpts.fontColor, i, core_defaults.global.defaultFontColor);
+		ctx.fillStyle = pointLabelFontColor;
 
-			// Keep this in loop since we may support array properties here
-			var pointLabelFontColor = valueAtIndexOrDefault$1(pointLabelOpts.fontColor, i, core_defaults.global.defaultFontColor);
-			ctx.fillStyle = pointLabelFontColor;
-
-			var angleRadians = scale.getIndexAngle(i);
-			var angle = helpers$1.toDegrees(angleRadians);
-			ctx.textAlign = getTextAlignForAngle(angle);
-			adjustPointPositionForLabelHeight(angle, scale._pointLabelSizes[i], pointLabelPosition);
-			fillText(ctx, scale.pointLabels[i] || '', pointLabelPosition, plFont.lineHeight);
-		}
+		var angleRadians = scale.getIndexAngle(i);
+		var angle = helpers$1.toDegrees(angleRadians);
+		ctx.textAlign = getTextAlignForAngle(angle);
+		adjustPointPositionForLabelHeight(angle, scale._pointLabelSizes[i], pointLabelPosition);
+		fillText(ctx, scale.pointLabels[i], pointLabelPosition, plFont.lineHeight);
 	}
 	ctx.restore();
 }
@@ -46534,7 +47874,7 @@ function drawPointLabels(scale) {
 function drawRadiusLine(scale, gridLineOpts, radius, index) {
 	var ctx = scale.ctx;
 	var circular = gridLineOpts.circular;
-	var valueCount = getValueCount(scale);
+	var valueCount = scale.chart.data.labels.length;
 	var lineColor = valueAtIndexOrDefault$1(gridLineOpts.color, index - 1);
 	var lineWidth = valueAtIndexOrDefault$1(gridLineOpts.lineWidth, index - 1);
 	var pointPosition;
@@ -46627,7 +47967,10 @@ var scale_radialLinear = scale_linearbase.extend({
 		scale_linearbase.prototype.convertTicksToLabels.call(me);
 
 		// Point labels
-		me.pointLabels = me.chart.data.labels.map(me.options.pointLabels.callback, me);
+		me.pointLabels = me.chart.data.labels.map(function() {
+			var label = helpers$1.callback(me.options.pointLabels.callback, arguments, me);
+			return label || label === 0 ? label : '';
+		});
 	},
 
 	getLabelForIndex: function(index, datasetIndex) {
@@ -46679,22 +48022,22 @@ var scale_radialLinear = scale_linearbase.extend({
 	},
 
 	getIndexAngle: function(index) {
-		var angleMultiplier = (Math.PI * 2) / getValueCount(this);
-		var startAngle = this.chart.options && this.chart.options.startAngle ?
-			this.chart.options.startAngle :
-			0;
-
-		var startAngleRadians = startAngle * Math.PI * 2 / 360;
+		var chart = this.chart;
+		var angleMultiplier = 360 / chart.data.labels.length;
+		var options = chart.options || {};
+		var startAngle = options.startAngle || 0;
 
 		// Start from the top instead of right, so remove a quarter of the circle
-		return index * angleMultiplier + startAngleRadians;
+		var angle = (index * angleMultiplier + startAngle) % 360;
+
+		return (angle < 0 ? angle + 360 : angle) * Math.PI * 2 / 360;
 	},
 
 	getDistanceFromCenterForValue: function(value) {
 		var me = this;
 
-		if (value === null) {
-			return 0; // null always in center
+		if (helpers$1.isNullOrUndef(value)) {
+			return NaN;
 		}
 
 		// Take into account half font size + the yPadding of the top value
@@ -46718,79 +48061,130 @@ var scale_radialLinear = scale_linearbase.extend({
 		return this.getPointPosition(index, this.getDistanceFromCenterForValue(value));
 	},
 
-	getBasePosition: function() {
+	getBasePosition: function(index) {
 		var me = this;
 		var min = me.min;
 		var max = me.max;
 
-		return me.getPointPositionForValue(0,
+		return me.getPointPositionForValue(index || 0,
 			me.beginAtZero ? 0 :
 			min < 0 && max < 0 ? max :
 			min > 0 && max > 0 ? min :
 			0);
 	},
 
-	draw: function() {
+	/**
+	 * @private
+	 */
+	_drawGrid: function() {
 		var me = this;
+		var ctx = me.ctx;
 		var opts = me.options;
 		var gridLineOpts = opts.gridLines;
-		var tickOpts = opts.ticks;
+		var angleLineOpts = opts.angleLines;
+		var lineWidth = valueOrDefault$c(angleLineOpts.lineWidth, gridLineOpts.lineWidth);
+		var lineColor = valueOrDefault$c(angleLineOpts.color, gridLineOpts.color);
+		var i, offset, position;
 
-		if (opts.display) {
-			var ctx = me.ctx;
-			var startAngle = this.getIndexAngle(0);
-			var tickFont = helpers$1.options._parseFont(tickOpts);
+		if (opts.pointLabels.display) {
+			drawPointLabels(me);
+		}
 
-			if (opts.angleLines.display || opts.pointLabels.display) {
-				drawPointLabels(me);
-			}
-
+		if (gridLineOpts.display) {
 			helpers$1.each(me.ticks, function(label, index) {
-				// Don't draw a centre value (if it is minimum)
-				if (index > 0 || tickOpts.reverse) {
-					var yCenterOffset = me.getDistanceFromCenterForValue(me.ticksAsNumbers[index]);
-
-					// Draw circular lines around the scale
-					if (gridLineOpts.display && index !== 0) {
-						drawRadiusLine(me, gridLineOpts, yCenterOffset, index);
-					}
-
-					if (tickOpts.display) {
-						var tickFontColor = valueOrDefault$b(tickOpts.fontColor, core_defaults.global.defaultFontColor);
-						ctx.font = tickFont.string;
-
-						ctx.save();
-						ctx.translate(me.xCenter, me.yCenter);
-						ctx.rotate(startAngle);
-
-						if (tickOpts.showLabelBackdrop) {
-							var labelWidth = ctx.measureText(label).width;
-							ctx.fillStyle = tickOpts.backdropColor;
-							ctx.fillRect(
-								-labelWidth / 2 - tickOpts.backdropPaddingX,
-								-yCenterOffset - tickFont.size / 2 - tickOpts.backdropPaddingY,
-								labelWidth + tickOpts.backdropPaddingX * 2,
-								tickFont.size + tickOpts.backdropPaddingY * 2
-							);
-						}
-
-						ctx.textAlign = 'center';
-						ctx.textBaseline = 'middle';
-						ctx.fillStyle = tickFontColor;
-						ctx.fillText(label, 0, -yCenterOffset);
-						ctx.restore();
-					}
+				if (index !== 0) {
+					offset = me.getDistanceFromCenterForValue(me.ticksAsNumbers[index]);
+					drawRadiusLine(me, gridLineOpts, offset, index);
 				}
 			});
 		}
-	}
+
+		if (angleLineOpts.display && lineWidth && lineColor) {
+			ctx.save();
+			ctx.lineWidth = lineWidth;
+			ctx.strokeStyle = lineColor;
+			if (ctx.setLineDash) {
+				ctx.setLineDash(resolve$4([angleLineOpts.borderDash, gridLineOpts.borderDash, []]));
+				ctx.lineDashOffset = resolve$4([angleLineOpts.borderDashOffset, gridLineOpts.borderDashOffset, 0.0]);
+			}
+
+			for (i = me.chart.data.labels.length - 1; i >= 0; i--) {
+				offset = me.getDistanceFromCenterForValue(opts.ticks.reverse ? me.min : me.max);
+				position = me.getPointPosition(i, offset);
+				ctx.beginPath();
+				ctx.moveTo(me.xCenter, me.yCenter);
+				ctx.lineTo(position.x, position.y);
+				ctx.stroke();
+			}
+
+			ctx.restore();
+		}
+	},
+
+	/**
+	 * @private
+	 */
+	_drawLabels: function() {
+		var me = this;
+		var ctx = me.ctx;
+		var opts = me.options;
+		var tickOpts = opts.ticks;
+
+		if (!tickOpts.display) {
+			return;
+		}
+
+		var startAngle = me.getIndexAngle(0);
+		var tickFont = helpers$1.options._parseFont(tickOpts);
+		var tickFontColor = valueOrDefault$c(tickOpts.fontColor, core_defaults.global.defaultFontColor);
+		var offset, width;
+
+		ctx.save();
+		ctx.font = tickFont.string;
+		ctx.translate(me.xCenter, me.yCenter);
+		ctx.rotate(startAngle);
+		ctx.textAlign = 'center';
+		ctx.textBaseline = 'middle';
+
+		helpers$1.each(me.ticks, function(label, index) {
+			if (index === 0 && !tickOpts.reverse) {
+				return;
+			}
+
+			offset = me.getDistanceFromCenterForValue(me.ticksAsNumbers[index]);
+
+			if (tickOpts.showLabelBackdrop) {
+				width = ctx.measureText(label).width;
+				ctx.fillStyle = tickOpts.backdropColor;
+
+				ctx.fillRect(
+					-width / 2 - tickOpts.backdropPaddingX,
+					-offset - tickFont.size / 2 - tickOpts.backdropPaddingY,
+					width + tickOpts.backdropPaddingX * 2,
+					tickFont.size + tickOpts.backdropPaddingY * 2
+				);
+			}
+
+			ctx.fillStyle = tickFontColor;
+			ctx.fillText(label, 0, -offset);
+		});
+
+		ctx.restore();
+	},
+
+	/**
+	 * @private
+	 */
+	_drawTitle: helpers$1.noop
 });
 
 // INTERNAL: static default options, registered in src/index.js
 var _defaults$3 = defaultConfig$3;
 scale_radialLinear._defaults = _defaults$3;
 
-var valueOrDefault$c = helpers$1.valueOrDefault;
+var deprecated$1 = helpers$1._deprecated;
+var resolve$5 = helpers$1.options.resolve;
+var valueOrDefault$d = helpers$1.valueOrDefault;
 
 // Integer constants are from the ES6 spec.
 var MIN_INTEGER = Number.MIN_SAFE_INTEGER || -9007199254740991;
@@ -46800,42 +48194,42 @@ var INTERVALS = {
 	millisecond: {
 		common: true,
 		size: 1,
-		steps: [1, 2, 5, 10, 20, 50, 100, 250, 500]
+		steps: 1000
 	},
 	second: {
 		common: true,
 		size: 1000,
-		steps: [1, 2, 5, 10, 15, 30]
+		steps: 60
 	},
 	minute: {
 		common: true,
 		size: 60000,
-		steps: [1, 2, 5, 10, 15, 30]
+		steps: 60
 	},
 	hour: {
 		common: true,
 		size: 3600000,
-		steps: [1, 2, 3, 6, 12]
+		steps: 24
 	},
 	day: {
 		common: true,
 		size: 86400000,
-		steps: [1, 2, 5]
+		steps: 30
 	},
 	week: {
 		common: false,
 		size: 604800000,
-		steps: [1, 2, 3, 4]
+		steps: 4
 	},
 	month: {
 		common: true,
 		size: 2.628e9,
-		steps: [1, 2, 3]
+		steps: 12
 	},
 	quarter: {
 		common: false,
 		size: 7.884e9,
-		steps: [1, 2, 3, 4]
+		steps: 4
 	},
 	year: {
 		common: true,
@@ -46863,6 +48257,14 @@ function arrayUnique(items) {
 	}
 
 	return out;
+}
+
+function getMin(options) {
+	return helpers$1.valueOrDefault(options.time.min, options.ticks.min);
+}
+
+function getMax(options) {
+	return helpers$1.valueOrDefault(options.time.max, options.ticks.max);
 }
 
 /**
@@ -47017,31 +48419,6 @@ function parse(scale, input) {
 }
 
 /**
- * Returns the number of unit to skip to be able to display up to `capacity` number of ticks
- * in `unit` for the given `min` / `max` range and respecting the interval steps constraints.
- */
-function determineStepSize(min, max, unit, capacity) {
-	var range = max - min;
-	var interval = INTERVALS[unit];
-	var milliseconds = interval.size;
-	var steps = interval.steps;
-	var i, ilen, factor;
-
-	if (!steps) {
-		return Math.ceil(range / (capacity * milliseconds));
-	}
-
-	for (i = 0, ilen = steps.length; i < ilen; ++i) {
-		factor = steps[i];
-		if (Math.ceil(range / (milliseconds * factor)) <= capacity) {
-			break;
-		}
-	}
-
-	return factor;
-}
-
-/**
  * Figures out what unit results in an appropriate number of auto-generated ticks
  */
 function determineUnitForAutoTicks(minUnit, min, max, capacity) {
@@ -47050,7 +48427,7 @@ function determineUnitForAutoTicks(minUnit, min, max, capacity) {
 
 	for (i = UNITS.indexOf(minUnit); i < ilen - 1; ++i) {
 		interval = INTERVALS[UNITS[i]];
-		factor = interval.steps ? interval.steps[interval.steps.length - 1] : MAX_INTEGER;
+		factor = interval.steps ? interval.steps : MAX_INTEGER;
 
 		if (interval.common && Math.ceil((max - min) / (factor * interval.size)) <= capacity) {
 			return UNITS[i];
@@ -47063,13 +48440,12 @@ function determineUnitForAutoTicks(minUnit, min, max, capacity) {
 /**
  * Figures out what unit to format a set of ticks with
  */
-function determineUnitForFormatting(scale, ticks, minUnit, min, max) {
-	var ilen = UNITS.length;
+function determineUnitForFormatting(scale, numTicks, minUnit, min, max) {
 	var i, unit;
 
-	for (i = ilen - 1; i >= UNITS.indexOf(minUnit); i--) {
+	for (i = UNITS.length - 1; i >= UNITS.indexOf(minUnit); i--) {
 		unit = UNITS[i];
-		if (INTERVALS[unit].common && scale._adapter.diff(max, min, unit) >= ticks.length) {
+		if (INTERVALS[unit].common && scale._adapter.diff(max, min, unit) >= numTicks - 1) {
 			return unit;
 		}
 	}
@@ -47087,7 +48463,7 @@ function determineMajorUnit(unit) {
 
 /**
  * Generates a maximum of `capacity` timestamps between min and max, rounded to the
- * `minor` unit, aligned on the `major` unit and using the given scale time `options`.
+ * `minor` unit using the given scale time `options`.
  * Important: this method can return ticks outside the min and max range, it's the
  * responsibility of the calling code to clamp values if needed.
  */
@@ -47096,50 +48472,32 @@ function generate(scale, min, max, capacity) {
 	var options = scale.options;
 	var timeOpts = options.time;
 	var minor = timeOpts.unit || determineUnitForAutoTicks(timeOpts.minUnit, min, max, capacity);
-	var major = determineMajorUnit(minor);
-	var stepSize = valueOrDefault$c(timeOpts.stepSize, timeOpts.unitStepSize);
+	var stepSize = resolve$5([timeOpts.stepSize, timeOpts.unitStepSize, 1]);
 	var weekday = minor === 'week' ? timeOpts.isoWeekday : false;
-	var majorTicksEnabled = options.ticks.major.enabled;
-	var interval = INTERVALS[minor];
 	var first = min;
-	var last = max;
 	var ticks = [];
 	var time;
-
-	if (!stepSize) {
-		stepSize = determineStepSize(min, max, minor, capacity);
-	}
 
 	// For 'week' unit, handle the first day of week option
 	if (weekday) {
 		first = +adapter.startOf(first, 'isoWeek', weekday);
-		last = +adapter.startOf(last, 'isoWeek', weekday);
 	}
 
-	// Align first/last ticks on unit
+	// Align first ticks on unit
 	first = +adapter.startOf(first, weekday ? 'day' : minor);
-	last = +adapter.startOf(last, weekday ? 'day' : minor);
 
-	// Make sure that the last tick include max
-	if (last < max) {
-		last = +adapter.add(last, 1, minor);
+	// Prevent browser from freezing in case user options request millions of milliseconds
+	if (adapter.diff(max, min, minor) > 100000 * stepSize) {
+		throw min + ' and ' + max + ' are too far apart with stepSize of ' + stepSize + ' ' + minor;
 	}
 
-	time = first;
-
-	if (majorTicksEnabled && major && !weekday && !timeOpts.round) {
-		// Align the first tick on the previous `minor` unit aligned on the `major` unit:
-		// we first aligned time on the previous `major` unit then add the number of full
-		// stepSize there is between first and the previous major time.
-		time = +adapter.startOf(time, major);
-		time = +adapter.add(time, ~~((first - time) / (interval.size * stepSize)) * stepSize, minor);
+	for (time = first; time < max; time = +adapter.add(time, stepSize, minor)) {
+		ticks.push(time);
 	}
 
-	for (; time < last; time = +adapter.add(time, stepSize, minor)) {
-		ticks.push(+time);
+	if (time === max || options.bounds === 'ticks') {
+		ticks.push(time);
 	}
-
-	ticks.push(+time);
 
 	return ticks;
 }
@@ -47156,42 +48514,57 @@ function computeOffsets(table, ticks, min, max, options) {
 	var first, last;
 
 	if (options.offset && ticks.length) {
-		if (!options.time.min) {
-			first = interpolate$1(table, 'time', ticks[0], 'pos');
-			if (ticks.length === 1) {
-				start = 1 - first;
-			} else {
-				start = (interpolate$1(table, 'time', ticks[1], 'pos') - first) / 2;
-			}
+		first = interpolate$1(table, 'time', ticks[0], 'pos');
+		if (ticks.length === 1) {
+			start = 1 - first;
+		} else {
+			start = (interpolate$1(table, 'time', ticks[1], 'pos') - first) / 2;
 		}
-		if (!options.time.max) {
-			last = interpolate$1(table, 'time', ticks[ticks.length - 1], 'pos');
-			if (ticks.length === 1) {
-				end = last;
-			} else {
-				end = (last - interpolate$1(table, 'time', ticks[ticks.length - 2], 'pos')) / 2;
-			}
+		last = interpolate$1(table, 'time', ticks[ticks.length - 1], 'pos');
+		if (ticks.length === 1) {
+			end = last;
+		} else {
+			end = (last - interpolate$1(table, 'time', ticks[ticks.length - 2], 'pos')) / 2;
 		}
 	}
 
-	return {start: start, end: end};
+	return {start: start, end: end, factor: 1 / (start + 1 + end)};
+}
+
+function setMajorTicks(scale, ticks, map, majorUnit) {
+	var adapter = scale._adapter;
+	var first = +adapter.startOf(ticks[0].value, majorUnit);
+	var last = ticks[ticks.length - 1].value;
+	var major, index;
+
+	for (major = first; major <= last; major = +adapter.add(major, 1, majorUnit)) {
+		index = map[major];
+		if (index >= 0) {
+			ticks[index].major = true;
+		}
+	}
+	return ticks;
 }
 
 function ticksFromTimestamps(scale, values, majorUnit) {
 	var ticks = [];
-	var i, ilen, value, major;
+	var map = {};
+	var ilen = values.length;
+	var i, value;
 
-	for (i = 0, ilen = values.length; i < ilen; ++i) {
+	for (i = 0; i < ilen; ++i) {
 		value = values[i];
-		major = majorUnit ? value === +scale._adapter.startOf(value, majorUnit) : false;
+		map[value] = i;
 
 		ticks.push({
 			value: value,
-			major: major
+			major: false
 		});
 	}
 
-	return ticks;
+	// We set the major ticks separately from the above loop because calling startOf for every tick
+	// is expensive when there is a large number of ticks
+	return (ilen === 0 || !majorUnit) ? ticks : setMajorTicks(scale, ticks, map, majorUnit);
 }
 
 var defaultConfig$4 = {
@@ -47218,7 +48591,6 @@ var defaultConfig$4 = {
 	adapters: {},
 	time: {
 		parser: false, // false == a pattern string from https://momentjs.com/docs/#/parsing/string-format/ or a custom callback that converts its argument to a moment
-		format: false, // DEPRECATED false == date objects, moment object, callback or a pattern string from https://momentjs.com/docs/#/parsing/string-format/
 		unit: false, // false == automatic or override with week, month, year, etc.
 		round: false, // none, or override with week, month, year, etc.
 		displayFormat: false, // DEPRECATED
@@ -47258,9 +48630,9 @@ var scale_time = core_scale.extend({
 		var adapter = me._adapter = new core_adapters._date(options.adapters.date);
 
 		// DEPRECATIONS: output a message only one time per update
-		if (time.format) {
-			console.warn('options.time.format is deprecated and replaced by options.time.parser.');
-		}
+		deprecated$1('time scale', time.format, 'time.format', 'time.parser');
+		deprecated$1('time scale', time.min, 'time.min', 'ticks.min');
+		deprecated$1('time scale', time.max, 'time.max', 'ticks.max');
 
 		// Backward compatibility: before introducing adapter, `displayFormats` was
 		// supposed to contain *all* unit/string pairs but this can't be resolved
@@ -47285,22 +48657,20 @@ var scale_time = core_scale.extend({
 		var me = this;
 		var chart = me.chart;
 		var adapter = me._adapter;
-		var timeOpts = me.options.time;
-		var unit = timeOpts.unit || 'day';
+		var options = me.options;
+		var unit = options.time.unit || 'day';
 		var min = MAX_INTEGER;
 		var max = MIN_INTEGER;
 		var timestamps = [];
 		var datasets = [];
 		var labels = [];
-		var i, j, ilen, jlen, data, timestamp;
-		var dataLabels = chart.data.labels || [];
+		var i, j, ilen, jlen, data, timestamp, labelsAdded;
+		var dataLabels = me._getLabels();
 
-		// Convert labels to timestamps
 		for (i = 0, ilen = dataLabels.length; i < ilen; ++i) {
 			labels.push(parse(me, dataLabels[i]));
 		}
 
-		// Convert data to timestamps
 		for (i = 0, ilen = (chart.data.datasets || []).length; i < ilen; ++i) {
 			if (chart.isDatasetVisible(i)) {
 				data = chart.data.datasets[i].data;
@@ -47315,10 +48685,11 @@ var scale_time = core_scale.extend({
 						datasets[i][j] = timestamp;
 					}
 				} else {
-					for (j = 0, jlen = labels.length; j < jlen; ++j) {
-						timestamps.push(labels[j]);
-					}
 					datasets[i] = labels.slice(0);
+					if (!labelsAdded) {
+						timestamps = timestamps.concat(labels);
+						labelsAdded = true;
+					}
 				}
 			} else {
 				datasets[i] = [];
@@ -47326,20 +48697,18 @@ var scale_time = core_scale.extend({
 		}
 
 		if (labels.length) {
-			// Sort labels **after** data have been converted
-			labels = arrayUnique(labels).sort(sorter);
 			min = Math.min(min, labels[0]);
 			max = Math.max(max, labels[labels.length - 1]);
 		}
 
 		if (timestamps.length) {
-			timestamps = arrayUnique(timestamps).sort(sorter);
+			timestamps = ilen > 1 ? arrayUnique(timestamps).sort(sorter) : timestamps.sort(sorter);
 			min = Math.min(min, timestamps[0]);
 			max = Math.max(max, timestamps[timestamps.length - 1]);
 		}
 
-		min = parse(me, timeOpts.min) || min;
-		max = parse(me, timeOpts.max) || max;
+		min = parse(me, getMin(options)) || min;
+		max = parse(me, getMax(options)) || max;
 
 		// In case there is no valid min/max, set limits based on unit time option
 		min = min === MAX_INTEGER ? +adapter.startOf(Date.now(), unit) : min;
@@ -47350,7 +48719,6 @@ var scale_time = core_scale.extend({
 		me.max = Math.max(min + 1, max);
 
 		// PRIVATE
-		me._horizontal = me.isHorizontal();
 		me._table = [];
 		me._timestamps = {
 			data: timestamps,
@@ -47364,21 +48732,21 @@ var scale_time = core_scale.extend({
 		var min = me.min;
 		var max = me.max;
 		var options = me.options;
+		var tickOpts = options.ticks;
 		var timeOpts = options.time;
-		var timestamps = [];
+		var timestamps = me._timestamps;
 		var ticks = [];
+		var capacity = me.getLabelCapacity(min);
+		var source = tickOpts.source;
+		var distribution = options.distribution;
 		var i, ilen, timestamp;
 
-		switch (options.ticks.source) {
-		case 'data':
-			timestamps = me._timestamps.data;
-			break;
-		case 'labels':
-			timestamps = me._timestamps.labels;
-			break;
-		case 'auto':
-		default:
-			timestamps = generate(me, min, max, me.getLabelCapacity(min), options);
+		if (source === 'data' || (source === 'auto' && distribution === 'series')) {
+			timestamps = timestamps.data;
+		} else if (source === 'labels') {
+			timestamps = timestamps.labels;
+		} else {
+			timestamps = generate(me, min, max, capacity);
 		}
 
 		if (options.bounds === 'ticks' && timestamps.length) {
@@ -47387,8 +48755,8 @@ var scale_time = core_scale.extend({
 		}
 
 		// Enforce limits with user min/max options
-		min = parse(me, timeOpts.min) || min;
-		max = parse(me, timeOpts.max) || max;
+		min = parse(me, getMin(options)) || min;
+		max = parse(me, getMax(options)) || max;
 
 		// Remove ticks outside the min/max range
 		for (i = 0, ilen = timestamps.length; i < ilen; ++i) {
@@ -47402,12 +48770,17 @@ var scale_time = core_scale.extend({
 		me.max = max;
 
 		// PRIVATE
-		me._unit = timeOpts.unit || determineUnitForFormatting(me, ticks, timeOpts.minUnit, me.min, me.max);
-		me._majorUnit = determineMajorUnit(me._unit);
-		me._table = buildLookupTable(me._timestamps.data, min, max, options.distribution);
+		// determineUnitForFormatting relies on the number of ticks so we don't use it when
+		// autoSkip is enabled because we don't yet know what the final number of ticks will be
+		me._unit = timeOpts.unit || (tickOpts.autoSkip
+			? determineUnitForAutoTicks(timeOpts.minUnit, me.min, me.max, capacity)
+			: determineUnitForFormatting(me, ticks.length, timeOpts.minUnit, me.min, me.max));
+		me._majorUnit = !tickOpts.major.enabled || me._unit === 'year' ? undefined
+			: determineMajorUnit(me._unit);
+		me._table = buildLookupTable(me._timestamps.data, min, max, distribution);
 		me._offsets = computeOffsets(me._table, ticks, min, max, options);
 
-		if (options.ticks.reverse) {
+		if (tickOpts.reverse) {
 			ticks.reverse();
 		}
 
@@ -47446,12 +48819,17 @@ var scale_time = core_scale.extend({
 		var minorFormat = formats[me._unit];
 		var majorUnit = me._majorUnit;
 		var majorFormat = formats[majorUnit];
-		var majorTime = +adapter.startOf(time, majorUnit);
-		var majorTickOpts = options.ticks.major;
-		var major = majorTickOpts.enabled && majorUnit && majorFormat && time === majorTime;
+		var tick = ticks[index];
+		var tickOpts = options.ticks;
+		var major = majorUnit && majorFormat && tick && tick.major;
 		var label = adapter.format(time, format ? format : major ? majorFormat : minorFormat);
-		var tickOpts = major ? majorTickOpts : options.ticks.minor;
-		var formatter = valueOrDefault$c(tickOpts.callback, tickOpts.userCallback);
+		var nestedTickOpts = major ? tickOpts.major : tickOpts.minor;
+		var formatter = resolve$5([
+			nestedTickOpts.callback,
+			nestedTickOpts.userCallback,
+			tickOpts.callback,
+			tickOpts.userCallback
+		]);
 
 		return formatter ? formatter(label, index, ticks) : label;
 	},
@@ -47472,13 +48850,9 @@ var scale_time = core_scale.extend({
 	 */
 	getPixelForOffset: function(time) {
 		var me = this;
-		var isReverse = me.options.ticks.reverse;
-		var size = me._horizontal ? me.width : me.height;
-		var start = me._horizontal ? isReverse ? me.right : me.left : isReverse ? me.bottom : me.top;
+		var offsets = me._offsets;
 		var pos = interpolate$1(me._table, 'time', time, 'pos');
-		var offset = size * (me._offsets.start + pos) / (me._offsets.start + 1 + me._offsets.end);
-
-		return isReverse ? start - offset : start + offset;
+		return me.getPixelForDecimal((offsets.start + pos) * offsets.factor);
 	},
 
 	getPixelForValue: function(value, index, datasetIndex) {
@@ -47507,9 +48881,8 @@ var scale_time = core_scale.extend({
 
 	getValueForPixel: function(pixel) {
 		var me = this;
-		var size = me._horizontal ? me.width : me.height;
-		var start = me._horizontal ? me.left : me.top;
-		var pos = (size ? (pixel - start) / size : 0) * (me._offsets.start + 1 + me._offsets.start) - me._offsets.end;
+		var offsets = me._offsets;
+		var pos = me.getDecimalForPixel(pixel) / offsets.factor - offsets.end;
 		var time = interpolate$1(me._table, 'pos', pos, 'time');
 
 		// DEPRECATION, we should return time directly
@@ -47517,19 +48890,29 @@ var scale_time = core_scale.extend({
 	},
 
 	/**
+	 * @private
+	 */
+	_getLabelSize: function(label) {
+		var me = this;
+		var ticksOpts = me.options.ticks;
+		var tickLabelWidth = me.ctx.measureText(label).width;
+		var angle = helpers$1.toRadians(me.isHorizontal() ? ticksOpts.maxRotation : ticksOpts.minRotation);
+		var cosRotation = Math.cos(angle);
+		var sinRotation = Math.sin(angle);
+		var tickFontSize = valueOrDefault$d(ticksOpts.fontSize, core_defaults.global.defaultFontSize);
+
+		return {
+			w: (tickLabelWidth * cosRotation) + (tickFontSize * sinRotation),
+			h: (tickLabelWidth * sinRotation) + (tickFontSize * cosRotation)
+		};
+	},
+
+	/**
 	 * Crude approximation of what the label width might be
 	 * @private
 	 */
 	getLabelWidth: function(label) {
-		var me = this;
-		var ticksOpts = me.options.ticks;
-		var tickLabelWidth = me.ctx.measureText(label).width;
-		var angle = helpers$1.toRadians(ticksOpts.maxRotation);
-		var cosRotation = Math.cos(angle);
-		var sinRotation = Math.sin(angle);
-		var tickFontSize = valueOrDefault$c(ticksOpts.fontSize, core_defaults.global.defaultFontSize);
-
-		return (tickLabelWidth * cosRotation) + (tickFontSize * sinRotation);
+		return this._getLabelSize(label).w;
 	},
 
 	/**
@@ -47537,13 +48920,18 @@ var scale_time = core_scale.extend({
 	 */
 	getLabelCapacity: function(exampleTime) {
 		var me = this;
+		var timeOpts = me.options.time;
+		var displayFormats = timeOpts.displayFormats;
 
 		// pick the longest format (milliseconds) for guestimation
-		var format = me.options.time.displayFormats.millisecond;
-		var exampleLabel = me.tickFormatFunction(exampleTime, 0, [], format);
-		var tickLabelWidth = me.getLabelWidth(exampleLabel);
-		var innerWidth = me.isHorizontal() ? me.width : me.height;
-		var capacity = Math.floor(innerWidth / tickLabelWidth);
+		var format = displayFormats[timeOpts.unit] || displayFormats.millisecond;
+		var exampleLabel = me.tickFormatFunction(exampleTime, 0, ticksFromTimestamps(me, [exampleTime], me._majorUnit), format);
+		var size = me._getLabelSize(exampleLabel);
+		var capacity = Math.floor(me.isHorizontal() ? me.width / size.w : me.height / size.h);
+
+		if (me.options.offset) {
+			capacity--;
+		}
 
 		return capacity > 0 ? capacity : 1;
 	}
@@ -47599,7 +48987,7 @@ core_adapters._date.override(typeof moment === 'function' ? {
 	},
 
 	diff: function(max, min, unit) {
-		return moment.duration(moment(max).diff(moment(min))).as(unit);
+		return moment(max).diff(moment(min), unit);
 	},
 
 	startOf: function(time, unit, weekday) {
@@ -47653,6 +49041,12 @@ var mappers = {
 		var boundary = source.boundary;
 		var x = boundary ? boundary.x : null;
 		var y = boundary ? boundary.y : null;
+
+		if (helpers$1.isArray(boundary)) {
+			return function(point, i) {
+				return boundary[i];
+			};
+		}
 
 		return function(point) {
 			return {
@@ -47713,7 +49107,7 @@ function decodeFill(el, index, count) {
 	}
 }
 
-function computeBoundary(source) {
+function computeLinearBoundary(source) {
 	var model = source.el._model || {};
 	var scale = source.el._scale || {};
 	var fill = source.fill;
@@ -47734,8 +49128,6 @@ function computeBoundary(source) {
 		target = model.scaleTop === undefined ? scale.top : model.scaleTop;
 	} else if (model.scaleZero !== undefined) {
 		target = model.scaleZero;
-	} else if (scale.getBasePosition) {
-		target = scale.getBasePosition();
 	} else if (scale.getBasePixel) {
 		target = scale.getBasePixel();
 	}
@@ -47755,6 +49147,44 @@ function computeBoundary(source) {
 	}
 
 	return null;
+}
+
+function computeCircularBoundary(source) {
+	var scale = source.el._scale;
+	var options = scale.options;
+	var length = scale.chart.data.labels.length;
+	var fill = source.fill;
+	var target = [];
+	var start, end, center, i, point;
+
+	if (!length) {
+		return null;
+	}
+
+	start = options.ticks.reverse ? scale.max : scale.min;
+	end = options.ticks.reverse ? scale.min : scale.max;
+	center = scale.getPointPositionForValue(0, start);
+	for (i = 0; i < length; ++i) {
+		point = fill === 'start' || fill === 'end'
+			? scale.getPointPositionForValue(i, fill === 'start' ? start : end)
+			: scale.getBasePosition(i);
+		if (options.gridLines.circular) {
+			point.cx = center.x;
+			point.cy = center.y;
+			point.angle = scale.getIndexAngle(i) - Math.PI / 2;
+		}
+		target.push(point);
+	}
+	return target;
+}
+
+function computeBoundary(source) {
+	var scale = source.el._scale || {};
+
+	if (scale.getPointPositionForValue) {
+		return computeCircularBoundary(source);
+	}
+	return computeLinearBoundary(source);
 }
 
 function resolveTarget(sources, index, propagate) {
@@ -47808,7 +49238,7 @@ function isDrawable(point) {
 }
 
 function drawArea(ctx, curve0, curve1, len0, len1) {
-	var i;
+	var i, cx, cy, r;
 
 	if (!len0 || !len1) {
 		return;
@@ -47818,6 +49248,16 @@ function drawArea(ctx, curve0, curve1, len0, len1) {
 	ctx.moveTo(curve0[0].x, curve0[0].y);
 	for (i = 1; i < len0; ++i) {
 		helpers$1.canvas.lineTo(ctx, curve0[i - 1], curve0[i]);
+	}
+
+	if (curve1[0].angle !== undefined) {
+		cx = curve1[0].cx;
+		cy = curve1[0].cy;
+		r = Math.sqrt(Math.pow(curve1[0].x - cx, 2) + Math.pow(curve1[0].y - cy, 2));
+		for (i = len1 - 1; i > 0; --i) {
+			ctx.arc(cx, cy, r, curve1[i].angle, curve1[i - 1].angle, true);
+		}
+		return;
 	}
 
 	// joining the two area curves
@@ -47836,16 +49276,21 @@ function doFill(ctx, points, mapper, view, color, loop) {
 	var curve1 = [];
 	var len0 = 0;
 	var len1 = 0;
-	var i, ilen, index, p0, p1, d0, d1;
+	var i, ilen, index, p0, p1, d0, d1, loopOffset;
 
 	ctx.beginPath();
 
-	for (i = 0, ilen = (count + !!loop); i < ilen; ++i) {
+	for (i = 0, ilen = count; i < ilen; ++i) {
 		index = i % count;
 		p0 = points[index]._view;
 		p1 = mapper(p0, index, view);
 		d0 = isDrawable(p0);
 		d1 = isDrawable(p1);
+
+		if (loop && loopOffset === undefined && d0) {
+			loopOffset = i + 1;
+			ilen = count + loopOffset;
+		}
 
 		if (d0 && d1) {
 			len0 = curve0.push(p0);
@@ -47913,34 +49358,42 @@ var plugin_filler = {
 		}
 	},
 
-	beforeDatasetDraw: function(chart, args) {
-		var meta = args.meta.$filler;
-		if (!meta) {
-			return;
-		}
-
+	beforeDatasetsDraw: function(chart) {
+		var metasets = chart._getSortedVisibleDatasetMetas();
 		var ctx = chart.ctx;
-		var el = meta.el;
-		var view = el._view;
-		var points = el._children || [];
-		var mapper = meta.mapper;
-		var color = view.backgroundColor || core_defaults.global.defaultColor;
+		var meta, i, el, view, points, mapper, color;
 
-		if (mapper && color && points.length) {
-			helpers$1.canvas.clipArea(ctx, chart.chartArea);
-			doFill(ctx, points, mapper, view, color, el._loop);
-			helpers$1.canvas.unclipArea(ctx);
+		for (i = metasets.length - 1; i >= 0; --i) {
+			meta = metasets[i].$filler;
+
+			if (!meta || !meta.visible) {
+				continue;
+			}
+
+			el = meta.el;
+			view = el._view;
+			points = el._children || [];
+			mapper = meta.mapper;
+			color = view.backgroundColor || core_defaults.global.defaultColor;
+
+			if (mapper && color && points.length) {
+				helpers$1.canvas.clipArea(ctx, chart.chartArea);
+				doFill(ctx, points, mapper, view, color, el._loop);
+				helpers$1.canvas.unclipArea(ctx);
+			}
 		}
 	}
 };
 
+var getRtlHelper$1 = helpers$1.rtl.getRtlAdapter;
 var noop$1 = helpers$1.noop;
-var valueOrDefault$d = helpers$1.valueOrDefault;
+var valueOrDefault$e = helpers$1.valueOrDefault;
 
 core_defaults._set('global', {
 	legend: {
 		display: true,
 		position: 'top',
+		align: 'center',
 		fullWidth: true,
 		reverse: false,
 		weight: 1000,
@@ -47976,40 +49429,51 @@ core_defaults._set('global', {
 			// lineJoin :
 			// lineWidth :
 			generateLabels: function(chart) {
-				var data = chart.data;
-				return helpers$1.isArray(data.datasets) ? data.datasets.map(function(dataset, i) {
+				var datasets = chart.data.datasets;
+				var options = chart.options.legend || {};
+				var usePointStyle = options.labels && options.labels.usePointStyle;
+
+				return chart._getSortedDatasetMetas().map(function(meta) {
+					var style = meta.controller.getStyle(usePointStyle ? 0 : undefined);
+
 					return {
-						text: dataset.label,
-						fillStyle: (!helpers$1.isArray(dataset.backgroundColor) ? dataset.backgroundColor : dataset.backgroundColor[0]),
-						hidden: !chart.isDatasetVisible(i),
-						lineCap: dataset.borderCapStyle,
-						lineDash: dataset.borderDash,
-						lineDashOffset: dataset.borderDashOffset,
-						lineJoin: dataset.borderJoinStyle,
-						lineWidth: dataset.borderWidth,
-						strokeStyle: dataset.borderColor,
-						pointStyle: dataset.pointStyle,
+						text: datasets[meta.index].label,
+						fillStyle: style.backgroundColor,
+						hidden: !chart.isDatasetVisible(meta.index),
+						lineCap: style.borderCapStyle,
+						lineDash: style.borderDash,
+						lineDashOffset: style.borderDashOffset,
+						lineJoin: style.borderJoinStyle,
+						lineWidth: style.borderWidth,
+						strokeStyle: style.borderColor,
+						pointStyle: style.pointStyle,
+						rotation: style.rotation,
 
 						// Below is extra data used for toggling the datasets
-						datasetIndex: i
+						datasetIndex: meta.index
 					};
-				}, this) : [];
+				}, this);
 			}
 		}
 	},
 
 	legendCallback: function(chart) {
-		var text = [];
-		text.push('<ul class="' + chart.id + '-legend">');
-		for (var i = 0; i < chart.data.datasets.length; i++) {
-			text.push('<li><span style="background-color:' + chart.data.datasets[i].backgroundColor + '"></span>');
-			if (chart.data.datasets[i].label) {
-				text.push(chart.data.datasets[i].label);
+		var list = document.createElement('ul');
+		var datasets = chart.data.datasets;
+		var i, ilen, listItem, listItemSpan;
+
+		list.setAttribute('class', chart.id + '-legend');
+
+		for (i = 0, ilen = datasets.length; i < ilen; i++) {
+			listItem = list.appendChild(document.createElement('li'));
+			listItemSpan = listItem.appendChild(document.createElement('span'));
+			listItemSpan.style.backgroundColor = datasets[i].backgroundColor;
+			if (datasets[i].label) {
+				listItem.appendChild(document.createTextNode(datasets[i].label));
 			}
-			text.push('</li>');
 		}
-		text.push('</ul>');
-		return text.join('');
+
+		return list.outerHTML;
 	}
 });
 
@@ -48031,18 +49495,19 @@ function getBoxWidth(labelOpts, fontSize) {
 var Legend = core_element.extend({
 
 	initialize: function(config) {
-		helpers$1.extend(this, config);
+		var me = this;
+		helpers$1.extend(me, config);
 
 		// Contains hit boxes for each dataset (in dataset order)
-		this.legendHitBoxes = [];
+		me.legendHitBoxes = [];
 
 		/**
  		 * @private
  		 */
-		this._hoveredItem = null;
+		me._hoveredItem = null;
 
 		// Are we in doughnut mode which has a different data type
-		this.doughnutMode = false;
+		me.doughnutMode = false;
 	},
 
 	// These methods are ordered by lifecycle. Utilities then follow.
@@ -48165,79 +49630,82 @@ var Legend = core_element.extend({
 		}
 
 		// Increase sizes here
-		if (display) {
-			ctx.font = labelFont.string;
+		if (!display) {
+			me.width = minSize.width = me.height = minSize.height = 0;
+			return;
+		}
+		ctx.font = labelFont.string;
 
-			if (isHorizontal) {
-				// Labels
+		if (isHorizontal) {
+			// Labels
 
-				// Width of each line of legend boxes. Labels wrap onto multiple lines when there are too many to fit on one
-				var lineWidths = me.lineWidths = [0];
-				var totalHeight = 0;
+			// Width of each line of legend boxes. Labels wrap onto multiple lines when there are too many to fit on one
+			var lineWidths = me.lineWidths = [0];
+			var totalHeight = 0;
 
-				ctx.textAlign = 'left';
-				ctx.textBaseline = 'top';
+			ctx.textAlign = 'left';
+			ctx.textBaseline = 'middle';
 
-				helpers$1.each(me.legendItems, function(legendItem, i) {
-					var boxWidth = getBoxWidth(labelOpts, fontSize);
-					var width = boxWidth + (fontSize / 2) + ctx.measureText(legendItem.text).width;
+			helpers$1.each(me.legendItems, function(legendItem, i) {
+				var boxWidth = getBoxWidth(labelOpts, fontSize);
+				var width = boxWidth + (fontSize / 2) + ctx.measureText(legendItem.text).width;
 
-					if (i === 0 || lineWidths[lineWidths.length - 1] + width + labelOpts.padding > minSize.width) {
-						totalHeight += fontSize + labelOpts.padding;
-						lineWidths[lineWidths.length - (i > 0 ? 0 : 1)] = labelOpts.padding;
-					}
+				if (i === 0 || lineWidths[lineWidths.length - 1] + width + 2 * labelOpts.padding > minSize.width) {
+					totalHeight += fontSize + labelOpts.padding;
+					lineWidths[lineWidths.length - (i > 0 ? 0 : 1)] = 0;
+				}
 
-					// Store the hitbox width and height here. Final position will be updated in `draw`
-					hitboxes[i] = {
-						left: 0,
-						top: 0,
-						width: width,
-						height: fontSize
-					};
+				// Store the hitbox width and height here. Final position will be updated in `draw`
+				hitboxes[i] = {
+					left: 0,
+					top: 0,
+					width: width,
+					height: fontSize
+				};
 
-					lineWidths[lineWidths.length - 1] += width + labelOpts.padding;
-				});
+				lineWidths[lineWidths.length - 1] += width + labelOpts.padding;
+			});
 
-				minSize.height += totalHeight;
+			minSize.height += totalHeight;
 
-			} else {
-				var vPadding = labelOpts.padding;
-				var columnWidths = me.columnWidths = [];
-				var totalWidth = labelOpts.padding;
-				var currentColWidth = 0;
-				var currentColHeight = 0;
-				var itemHeight = fontSize + vPadding;
+		} else {
+			var vPadding = labelOpts.padding;
+			var columnWidths = me.columnWidths = [];
+			var columnHeights = me.columnHeights = [];
+			var totalWidth = labelOpts.padding;
+			var currentColWidth = 0;
+			var currentColHeight = 0;
 
-				helpers$1.each(me.legendItems, function(legendItem, i) {
-					var boxWidth = getBoxWidth(labelOpts, fontSize);
-					var itemWidth = boxWidth + (fontSize / 2) + ctx.measureText(legendItem.text).width;
+			helpers$1.each(me.legendItems, function(legendItem, i) {
+				var boxWidth = getBoxWidth(labelOpts, fontSize);
+				var itemWidth = boxWidth + (fontSize / 2) + ctx.measureText(legendItem.text).width;
 
-					// If too tall, go to new column
-					if (i > 0 && currentColHeight + itemHeight > minSize.height - vPadding) {
-						totalWidth += currentColWidth + labelOpts.padding;
-						columnWidths.push(currentColWidth); // previous column width
+				// If too tall, go to new column
+				if (i > 0 && currentColHeight + fontSize + 2 * vPadding > minSize.height) {
+					totalWidth += currentColWidth + labelOpts.padding;
+					columnWidths.push(currentColWidth); // previous column width
+					columnHeights.push(currentColHeight);
+					currentColWidth = 0;
+					currentColHeight = 0;
+				}
 
-						currentColWidth = 0;
-						currentColHeight = 0;
-					}
+				// Get max width
+				currentColWidth = Math.max(currentColWidth, itemWidth);
+				currentColHeight += fontSize + vPadding;
 
-					// Get max width
-					currentColWidth = Math.max(currentColWidth, itemWidth);
-					currentColHeight += itemHeight;
+				// Store the hitbox width and height here. Final position will be updated in `draw`
+				hitboxes[i] = {
+					left: 0,
+					top: 0,
+					width: itemWidth,
+					height: fontSize
+				};
+			});
 
-					// Store the hitbox width and height here. Final position will be updated in `draw`
-					hitboxes[i] = {
-						left: 0,
-						top: 0,
-						width: itemWidth,
-						height: fontSize
-					};
-				});
-
-				totalWidth += currentColWidth;
-				columnWidths.push(currentColWidth);
-				minSize.width += totalWidth;
-			}
+			totalWidth += currentColWidth;
+			columnWidths.push(currentColWidth);
+			columnHeights.push(currentColHeight);
+			minSize.width += totalWidth;
 		}
 
 		me.width = minSize.width;
@@ -48258,139 +49726,163 @@ var Legend = core_element.extend({
 		var globalDefaults = core_defaults.global;
 		var defaultColor = globalDefaults.defaultColor;
 		var lineDefault = globalDefaults.elements.line;
+		var legendHeight = me.height;
+		var columnHeights = me.columnHeights;
 		var legendWidth = me.width;
 		var lineWidths = me.lineWidths;
 
-		if (opts.display) {
-			var ctx = me.ctx;
-			var fontColor = valueOrDefault$d(labelOpts.fontColor, globalDefaults.defaultFontColor);
-			var labelFont = helpers$1.options._parseFont(labelOpts);
-			var fontSize = labelFont.size;
-			var cursor;
+		if (!opts.display) {
+			return;
+		}
 
-			// Canvas setup
-			ctx.textAlign = 'left';
-			ctx.textBaseline = 'middle';
-			ctx.lineWidth = 0.5;
-			ctx.strokeStyle = fontColor; // for strikethrough effect
-			ctx.fillStyle = fontColor; // render in correct colour
-			ctx.font = labelFont.string;
+		var rtlHelper = getRtlHelper$1(opts.rtl, me.left, me.minSize.width);
+		var ctx = me.ctx;
+		var fontColor = valueOrDefault$e(labelOpts.fontColor, globalDefaults.defaultFontColor);
+		var labelFont = helpers$1.options._parseFont(labelOpts);
+		var fontSize = labelFont.size;
+		var cursor;
 
-			var boxWidth = getBoxWidth(labelOpts, fontSize);
-			var hitboxes = me.legendHitBoxes;
+		// Canvas setup
+		ctx.textAlign = rtlHelper.textAlign('left');
+		ctx.textBaseline = 'middle';
+		ctx.lineWidth = 0.5;
+		ctx.strokeStyle = fontColor; // for strikethrough effect
+		ctx.fillStyle = fontColor; // render in correct colour
+		ctx.font = labelFont.string;
 
-			// current position
-			var drawLegendBox = function(x, y, legendItem) {
-				if (isNaN(boxWidth) || boxWidth <= 0) {
-					return;
-				}
+		var boxWidth = getBoxWidth(labelOpts, fontSize);
+		var hitboxes = me.legendHitBoxes;
 
-				// Set the ctx for the box
-				ctx.save();
-
-				var lineWidth = valueOrDefault$d(legendItem.lineWidth, lineDefault.borderWidth);
-				ctx.fillStyle = valueOrDefault$d(legendItem.fillStyle, defaultColor);
-				ctx.lineCap = valueOrDefault$d(legendItem.lineCap, lineDefault.borderCapStyle);
-				ctx.lineDashOffset = valueOrDefault$d(legendItem.lineDashOffset, lineDefault.borderDashOffset);
-				ctx.lineJoin = valueOrDefault$d(legendItem.lineJoin, lineDefault.borderJoinStyle);
-				ctx.lineWidth = lineWidth;
-				ctx.strokeStyle = valueOrDefault$d(legendItem.strokeStyle, defaultColor);
-
-				if (ctx.setLineDash) {
-					// IE 9 and 10 do not support line dash
-					ctx.setLineDash(valueOrDefault$d(legendItem.lineDash, lineDefault.borderDash));
-				}
-
-				if (opts.labels && opts.labels.usePointStyle) {
-					// Recalculate x and y for drawPoint() because its expecting
-					// x and y to be center of figure (instead of top left)
-					var radius = boxWidth * Math.SQRT2 / 2;
-					var centerX = x + boxWidth / 2;
-					var centerY = y + fontSize / 2;
-
-					// Draw pointStyle as legend symbol
-					helpers$1.canvas.drawPoint(ctx, legendItem.pointStyle, radius, centerX, centerY);
-				} else {
-					// Draw box as legend symbol
-					if (lineWidth !== 0) {
-						ctx.strokeRect(x, y, boxWidth, fontSize);
-					}
-					ctx.fillRect(x, y, boxWidth, fontSize);
-				}
-
-				ctx.restore();
-			};
-			var fillText = function(x, y, legendItem, textWidth) {
-				var halfFontSize = fontSize / 2;
-				var xLeft = boxWidth + halfFontSize + x;
-				var yMiddle = y + halfFontSize;
-
-				ctx.fillText(legendItem.text, xLeft, yMiddle);
-
-				if (legendItem.hidden) {
-					// Strikethrough the text if hidden
-					ctx.beginPath();
-					ctx.lineWidth = 2;
-					ctx.moveTo(xLeft, yMiddle);
-					ctx.lineTo(xLeft + textWidth, yMiddle);
-					ctx.stroke();
-				}
-			};
-
-			// Horizontal
-			var isHorizontal = me.isHorizontal();
-			if (isHorizontal) {
-				cursor = {
-					x: me.left + ((legendWidth - lineWidths[0]) / 2) + labelOpts.padding,
-					y: me.top + labelOpts.padding,
-					line: 0
-				};
-			} else {
-				cursor = {
-					x: me.left + labelOpts.padding,
-					y: me.top + labelOpts.padding,
-					line: 0
-				};
+		// current position
+		var drawLegendBox = function(x, y, legendItem) {
+			if (isNaN(boxWidth) || boxWidth <= 0) {
+				return;
 			}
 
-			var itemHeight = fontSize + labelOpts.padding;
-			helpers$1.each(me.legendItems, function(legendItem, i) {
-				var textWidth = ctx.measureText(legendItem.text).width;
-				var width = boxWidth + (fontSize / 2) + textWidth;
-				var x = cursor.x;
-				var y = cursor.y;
+			// Set the ctx for the box
+			ctx.save();
 
-				// Use (me.left + me.minSize.width) and (me.top + me.minSize.height)
-				// instead of me.right and me.bottom because me.width and me.height
-				// may have been changed since me.minSize was calculated
-				if (isHorizontal) {
-					if (i > 0 && x + width + labelOpts.padding > me.left + me.minSize.width) {
-						y = cursor.y += itemHeight;
-						cursor.line++;
-						x = cursor.x = me.left + ((legendWidth - lineWidths[cursor.line]) / 2) + labelOpts.padding;
-					}
-				} else if (i > 0 && y + itemHeight > me.top + me.minSize.height) {
-					x = cursor.x = x + me.columnWidths[cursor.line] + labelOpts.padding;
-					y = cursor.y = me.top + labelOpts.padding;
-					cursor.line++;
+			var lineWidth = valueOrDefault$e(legendItem.lineWidth, lineDefault.borderWidth);
+			ctx.fillStyle = valueOrDefault$e(legendItem.fillStyle, defaultColor);
+			ctx.lineCap = valueOrDefault$e(legendItem.lineCap, lineDefault.borderCapStyle);
+			ctx.lineDashOffset = valueOrDefault$e(legendItem.lineDashOffset, lineDefault.borderDashOffset);
+			ctx.lineJoin = valueOrDefault$e(legendItem.lineJoin, lineDefault.borderJoinStyle);
+			ctx.lineWidth = lineWidth;
+			ctx.strokeStyle = valueOrDefault$e(legendItem.strokeStyle, defaultColor);
+
+			if (ctx.setLineDash) {
+				// IE 9 and 10 do not support line dash
+				ctx.setLineDash(valueOrDefault$e(legendItem.lineDash, lineDefault.borderDash));
+			}
+
+			if (labelOpts && labelOpts.usePointStyle) {
+				// Recalculate x and y for drawPoint() because its expecting
+				// x and y to be center of figure (instead of top left)
+				var radius = boxWidth * Math.SQRT2 / 2;
+				var centerX = rtlHelper.xPlus(x, boxWidth / 2);
+				var centerY = y + fontSize / 2;
+
+				// Draw pointStyle as legend symbol
+				helpers$1.canvas.drawPoint(ctx, legendItem.pointStyle, radius, centerX, centerY, legendItem.rotation);
+			} else {
+				// Draw box as legend symbol
+				ctx.fillRect(rtlHelper.leftForLtr(x, boxWidth), y, boxWidth, fontSize);
+				if (lineWidth !== 0) {
+					ctx.strokeRect(rtlHelper.leftForLtr(x, boxWidth), y, boxWidth, fontSize);
 				}
+			}
 
-				drawLegendBox(x, y, legendItem);
+			ctx.restore();
+		};
 
-				hitboxes[i].left = x;
-				hitboxes[i].top = y;
+		var fillText = function(x, y, legendItem, textWidth) {
+			var halfFontSize = fontSize / 2;
+			var xLeft = rtlHelper.xPlus(x, boxWidth + halfFontSize);
+			var yMiddle = y + halfFontSize;
 
-				// Fill the actual label
-				fillText(x, y, legendItem, textWidth);
+			ctx.fillText(legendItem.text, xLeft, yMiddle);
 
-				if (isHorizontal) {
-					cursor.x += width + labelOpts.padding;
-				} else {
-					cursor.y += itemHeight;
-				}
+			if (legendItem.hidden) {
+				// Strikethrough the text if hidden
+				ctx.beginPath();
+				ctx.lineWidth = 2;
+				ctx.moveTo(xLeft, yMiddle);
+				ctx.lineTo(rtlHelper.xPlus(xLeft, textWidth), yMiddle);
+				ctx.stroke();
+			}
+		};
 
-			});
+		var alignmentOffset = function(dimension, blockSize) {
+			switch (opts.align) {
+			case 'start':
+				return labelOpts.padding;
+			case 'end':
+				return dimension - blockSize;
+			default: // center
+				return (dimension - blockSize + labelOpts.padding) / 2;
+			}
+		};
+
+		// Horizontal
+		var isHorizontal = me.isHorizontal();
+		if (isHorizontal) {
+			cursor = {
+				x: me.left + alignmentOffset(legendWidth, lineWidths[0]),
+				y: me.top + labelOpts.padding,
+				line: 0
+			};
+		} else {
+			cursor = {
+				x: me.left + labelOpts.padding,
+				y: me.top + alignmentOffset(legendHeight, columnHeights[0]),
+				line: 0
+			};
 		}
+
+		helpers$1.rtl.overrideTextDirection(me.ctx, opts.textDirection);
+
+		var itemHeight = fontSize + labelOpts.padding;
+		helpers$1.each(me.legendItems, function(legendItem, i) {
+			var textWidth = ctx.measureText(legendItem.text).width;
+			var width = boxWidth + (fontSize / 2) + textWidth;
+			var x = cursor.x;
+			var y = cursor.y;
+
+			rtlHelper.setWidth(me.minSize.width);
+
+			// Use (me.left + me.minSize.width) and (me.top + me.minSize.height)
+			// instead of me.right and me.bottom because me.width and me.height
+			// may have been changed since me.minSize was calculated
+			if (isHorizontal) {
+				if (i > 0 && x + width + labelOpts.padding > me.left + me.minSize.width) {
+					y = cursor.y += itemHeight;
+					cursor.line++;
+					x = cursor.x = me.left + alignmentOffset(legendWidth, lineWidths[cursor.line]);
+				}
+			} else if (i > 0 && y + itemHeight > me.top + me.minSize.height) {
+				x = cursor.x = x + me.columnWidths[cursor.line] + labelOpts.padding;
+				cursor.line++;
+				y = cursor.y = me.top + alignmentOffset(legendHeight, columnHeights[cursor.line]);
+			}
+
+			var realX = rtlHelper.x(x);
+
+			drawLegendBox(realX, y, legendItem);
+
+			hitboxes[i].left = rtlHelper.leftForLtr(realX, hitboxes[i].width);
+			hitboxes[i].top = y;
+
+			// Fill the actual label
+			fillText(realX, y, legendItem, textWidth);
+
+			if (isHorizontal) {
+				cursor.x += width + labelOpts.padding;
+			} else {
+				cursor.y += itemHeight;
+			}
+		});
+
+		helpers$1.rtl.restoreTextDirection(me.ctx, opts.textDirection);
 	},
 
 	/**
@@ -48628,23 +50120,20 @@ var Title = core_element.extend({
 	fit: function() {
 		var me = this;
 		var opts = me.options;
-		var display = opts.display;
-		var minSize = me.minSize;
-		var lineCount = helpers$1.isArray(opts.text) ? opts.text.length : 1;
-		var fontOpts = helpers$1.options._parseFont(opts);
-		var textSize = display ? (lineCount * fontOpts.lineHeight) + (opts.padding * 2) : 0;
+		var minSize = me.minSize = {};
+		var isHorizontal = me.isHorizontal();
+		var lineCount, textSize;
 
-		if (me.isHorizontal()) {
-			minSize.width = me.maxWidth; // fill all the width
-			minSize.height = textSize;
-		} else {
-			minSize.width = textSize;
-			minSize.height = me.maxHeight; // fill all the height
+		if (!opts.display) {
+			me.width = minSize.width = me.height = minSize.height = 0;
+			return;
 		}
 
-		me.width = minSize.width;
-		me.height = minSize.height;
+		lineCount = helpers$1.isArray(opts.text) ? opts.text.length : 1;
+		textSize = lineCount * helpers$1.options._parseFont(opts).lineHeight + opts.padding * 2;
 
+		me.width = minSize.width = isHorizontal ? me.maxWidth : textSize;
+		me.height = minSize.height = isHorizontal ? textSize : me.maxHeight;
 	},
 	afterFit: noop$2,
 
@@ -48660,51 +50149,53 @@ var Title = core_element.extend({
 		var ctx = me.ctx;
 		var opts = me.options;
 
-		if (opts.display) {
-			var fontOpts = helpers$1.options._parseFont(opts);
-			var lineHeight = fontOpts.lineHeight;
-			var offset = lineHeight / 2 + opts.padding;
-			var rotation = 0;
-			var top = me.top;
-			var left = me.left;
-			var bottom = me.bottom;
-			var right = me.right;
-			var maxWidth, titleX, titleY;
-
-			ctx.fillStyle = helpers$1.valueOrDefault(opts.fontColor, core_defaults.global.defaultFontColor); // render in correct colour
-			ctx.font = fontOpts.string;
-
-			// Horizontal
-			if (me.isHorizontal()) {
-				titleX = left + ((right - left) / 2); // midpoint of the width
-				titleY = top + offset;
-				maxWidth = right - left;
-			} else {
-				titleX = opts.position === 'left' ? left + offset : right - offset;
-				titleY = top + ((bottom - top) / 2);
-				maxWidth = bottom - top;
-				rotation = Math.PI * (opts.position === 'left' ? -0.5 : 0.5);
-			}
-
-			ctx.save();
-			ctx.translate(titleX, titleY);
-			ctx.rotate(rotation);
-			ctx.textAlign = 'center';
-			ctx.textBaseline = 'middle';
-
-			var text = opts.text;
-			if (helpers$1.isArray(text)) {
-				var y = 0;
-				for (var i = 0; i < text.length; ++i) {
-					ctx.fillText(text[i], 0, y, maxWidth);
-					y += lineHeight;
-				}
-			} else {
-				ctx.fillText(text, 0, 0, maxWidth);
-			}
-
-			ctx.restore();
+		if (!opts.display) {
+			return;
 		}
+
+		var fontOpts = helpers$1.options._parseFont(opts);
+		var lineHeight = fontOpts.lineHeight;
+		var offset = lineHeight / 2 + opts.padding;
+		var rotation = 0;
+		var top = me.top;
+		var left = me.left;
+		var bottom = me.bottom;
+		var right = me.right;
+		var maxWidth, titleX, titleY;
+
+		ctx.fillStyle = helpers$1.valueOrDefault(opts.fontColor, core_defaults.global.defaultFontColor); // render in correct colour
+		ctx.font = fontOpts.string;
+
+		// Horizontal
+		if (me.isHorizontal()) {
+			titleX = left + ((right - left) / 2); // midpoint of the width
+			titleY = top + offset;
+			maxWidth = right - left;
+		} else {
+			titleX = opts.position === 'left' ? left + offset : right - offset;
+			titleY = top + ((bottom - top) / 2);
+			maxWidth = bottom - top;
+			rotation = Math.PI * (opts.position === 'left' ? -0.5 : 0.5);
+		}
+
+		ctx.save();
+		ctx.translate(titleX, titleY);
+		ctx.rotate(rotation);
+		ctx.textAlign = 'center';
+		ctx.textBaseline = 'middle';
+
+		var text = opts.text;
+		if (helpers$1.isArray(text)) {
+			var y = 0;
+			for (var i = 0; i < text.length; ++i) {
+				ctx.fillText(text[i], 0, y, maxWidth);
+				y += lineHeight;
+			}
+		} else {
+			ctx.fillText(text, 0, 0, maxWidth);
+		}
+
+		ctx.restore();
 	}
 });
 
@@ -48776,7 +50267,7 @@ plugins.title = title;
 core_controller.helpers = helpers$1;
 
 // @todo dispatch these helpers into appropriated helpers/helpers.* file and write unit tests!
-core_helpers(core_controller);
+core_helpers();
 
 core_controller._adapters = core_adapters;
 core_controller.Animation = core_animation;
@@ -48925,7 +50416,7 @@ return src;
 
 
 /***/ }),
-/* 310 */
+/* 312 */
 /***/ (function(module, exports) {
 
 (function() {
@@ -49027,31 +50518,31 @@ return src;
 
 
 /***/ }),
-/* 311 */
+/* 313 */
 /***/ (function(module, exports) {
 
 module.exports = "<sw-modal-launcher data-modal-name=\"{{swAddSkuPriceModalLauncher.uniqueName}}\" \n                   data-title=\"Add Sku Price Detail\" \n                   data-save-action=\"swAddSkuPriceModalLauncher.save\">\n    <sw-modal-content> \n        \n        <sw-form ng-if=\"swAddSkuPriceModalLauncher.skuPrice\"\n                 name=\"{{swAddSkuPriceModalLauncher.formName}}\" \n                 data-object=\"swAddSkuPriceModalLauncher.skuPrice\"    \n                 data-context=\"save\"\n                 >\n            <div ng-show=\"!swAddSkuPriceModalLauncher.saveSuccess\" class=\"alert alert-error\" role=\"alert\" sw-rbkey=\"'admin.entity.addskuprice.invalid'\"></div>\n            <div class=\"row\">\n                    <div class=\"col-sm-4\">\n                        <sw-sku-thumbnail ng-if=\"swAddSkuPriceModalLauncher.sku.data\" data-sku-data=\"swAddSkuPriceModalLauncher.sku.data\">\n                        </sw-sku-thumbnail>\n                    </div>\n                    <div class=\"col-sm-8\">\n                        <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.price'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"price\" \n                                        ng-model=\"swAddSkuPriceModalLauncher.skuPrice.price\"\n                                />\n                            </div> \n                            <div class=\"col-sm-6\">\n                                <div class=\"form-group\">\n                                    <label for=\"\" class=\"control-label\">Currency Code</label>\n                                    <select class=\"form-control\" \n                                            name=\"currencyCode\"\n                                            ng-model=\"swAddSkuPriceModalLauncher.selectedCurrencyCode\"\n                                            ng-options=\"item as item for item in swAddSkuPriceModalLauncher.currencyCodeOptions track by item\"\n                                            ng-disabled=\"(swAddSkuPriceModalLauncher.disableAllFieldsButPrice || swAddSkuPriceModalLauncher.defaultCurrencyOnly) && !swAddSkuPriceModalLauncher.currencyCodeEditable\"\n                                            >\n                                    </select>\n                                </div>\n                            </div>\n                        </div>\n                        \n                        <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.minQuantity'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"minQuantity\" \n                                        ng-model=\"swAddSkuPriceModalLauncher.skuPrice.minQuantity\"\n                                />\n                            </div>\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.maxQuantity'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"maxQuantity\" \n                                        ng-model=\"swAddSkuPriceModalLauncher.skuPrice.maxQuantity\"\n                                />\n                            </div>\n                        </div>\n                        <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.Sku'\">\n                                        \n                                </label>\n                                <sw-typeahead-search    data-collection-config=\"swAddSkuPriceModalLauncher.skuCollectionConfig\"\n                                                        data-placeholder-text=\"Select Sku\"\n                                                        data-search-text=\"swAddSkuPriceModalLauncher.selectedSku['skuCode']\"\n                                                        data-add-function=\"swAddSkuPriceModalLauncher.setSelectedSku\"\n                                                        data-property-to-show=\"skuCode\">\n                                    <span sw-typeahead-search-line-item data-property-identifier=\"skuCode\" ng-bind=\"item.skuCode\"></span>\n                                </sw-typeahead-search>\n                                <input type=\"hidden\" readonly style=\"display:none\" name=\"sku\" ng-model=\"swAddSkuPriceModalLauncher.submittedSku\" />\n                            </div>\n                            <div class=\"col-sm-6\">\n                                \n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.PriceGroup'\">\n                                        \n                                </label>\n                                <select class=\"form-control\" \n                                        ng-model=\"swAddSkuPriceModalLauncher.selectedPriceGroup\"\n                                        ng-options=\"item as item.priceGroupName for item in swAddSkuPriceModalLauncher.priceGroupOptions track by item.priceGroupID\"\n                                        ng-change=\"swAddSkuPriceModalLauncher.setSelectedPriceGroup(swAddSkuPriceModalLauncher.selectedPriceGroup)\"\n                                        >\n                                </select>\n                                <input type=\"hidden\" readonly style=\"display:none\" name=\"priceGroup\" ng-model=\"swAddSkuPriceModalLauncher.submittedPriceGroup\" />\n                            </div>\n                        </div>\n                        <!-- BEGIN HIDDEN FIELDS -->\n                        \n                        <!-- END HIDDEN FIELDS -->\n                    </div>\n                </div>\n            </sw-form>\n    </sw-modal-content> \n</sw-modal-launcher>";
 
 /***/ }),
-/* 312 */
+/* 314 */
 /***/ (function(module, exports) {
 
 module.exports = "<sw-modal-launcher data-launch-event-name=\"EDIT_SKUPRICE\"\n                   data-modal-name=\"{{swEditSkuPriceModalLauncher.uniqueName}}\" \n                   data-title=\"Edit Sku Price Detail\" \n                   data-save-action=\"swEditSkuPriceModalLauncher.save\">\n    \n    <sw-modal-content> \n        \n        <sw-form ng-if=\"swEditSkuPriceModalLauncher.skuPrice\"\n                 name=\"{{swEditSkuPriceModalLauncher.formName}}\" \n                 data-object=\"swEditSkuPriceModalLauncher.skuPrice\"    \n                 data-context=\"save\"\n                 \n                 >\n            <div ng-show=\"!swEditSkuPriceModalLauncher.saveSuccess\" class=\"alert alert-error\" role=\"alert\" sw-rbkey=\"'admin.entity.addskuprice.invalid'\"></div>\n            <div class=\"row\">\n                    <div class=\"col-sm-4\">\n                        <sw-sku-thumbnail data-sku-data=\"swEditSkuPriceModalLauncher.sku.data\">\n                        </sw-sku-thumbnail>\n                    </div>\n                    <div class=\"col-sm-8\">\n                        <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.price'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"price\" \n                                        ng-model=\"swEditSkuPriceModalLauncher.skuPrice.price\"\n                                />\n                            </div> \n                            <div class=\"col-sm-6\">\n                                <div class=\"form-group\">\n                                    <label  class=\"control-label\"\n                                            sw-rbKey=\"'entity.SkuPrice.currencyCode'\">\n                                        \n                                    </label>\n                                    <select class=\"form-control\" \n                                            name=\"currencyCode\"\n                                            ng-model=\"swEditSkuPriceModalLauncher.selectedCurrencyCode\"\n                                            ng-options=\"item as item for item in swEditSkuPriceModalLauncher.currencyCodeOptions track by item\"\n                                            ng-disabled=\"(swEditSkuPriceModalLauncher.disableAllFieldsButPrice || swEditSkuPriceModalLauncher.defaultCurrencyOnly) && !swEditSkuPriceModalLauncher.currencyCodeEditable\"\n                                            >\n                                    </select>\n                                </div>\n                            </div>\n                        </div>\n                        \n                        <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.minQuantity'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"minQuantity\" \n                                        ng-model=\"swEditSkuPriceModalLauncher.skuPrice.minQuantity\"\n                                />\n                            </div>\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.maxQuantity'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"maxQuantity\" \n                                        ng-model=\"swEditSkuPriceModalLauncher.skuPrice.maxQuantity\"\n                                />\n                            </div>\n                        </div>\n                        <div class=\"row\">\n                            <div class=\"col-sm-12\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.PriceGroup'\">\n                                        \n                                </label>\n                                <select class=\"form-control\" \n                                        ng-model=\"swEditSkuPriceModalLauncher.selectedPriceGroup\"\n                                        ng-options=\"item as item.priceGroupName for item in swEditSkuPriceModalLauncher.priceGroupOptions track by item.priceGroupID\"\n                                        ng-change=\"swEditSkuPriceModalLauncher.setSelectedPriceGroup(swEditSkuPriceModalLauncher.selectedPriceGroup)\"\n                                        ng-disabled=\"swEditSkuPriceModalLauncher.priceGroupEditable == false\"\n                                        >\n                                </select>\n                                <input type=\"text\" readonly name=\"priceGroup\" ng-if=\"swEditSkuPriceModalLauncher.submittedPriceGroup\" ng-model=\"swEditSkuPriceModalLauncher.submittedPriceGroup\" />\n                            </div>\n                        </div>\n                        <!-- BEGIN HIDDEN FIELDS -->\n                        \n                        <!-- END HIDDEN FIELDS -->\n                    </div>\n                </div>\n            </sw-form>\n    </sw-modal-content> \n</sw-modal-launcher>";
 
 /***/ }),
-/* 313 */
+/* 315 */
 /***/ (function(module, exports) {
 
 module.exports = "<div class=\"s-detail-content-wrapper\">\n    <div id=\"collapse2\" class=\"panel-collapse collapse in\">\n       <sw-tab-group>\n           <!-- RB support here -->\n           <sw-tab-content data-name=\"Basic\">               \n                <!-- Attempting to incorporate needs into existing listing -->\n                <sw-listing-display\n                        data-multi-slot=\"true\"\n                        data-edit=\"true\"\n                        data-has-search=\"true\"\n                        data-is-angular-route=\"false\"\n                        data-angular-links=\"false\"\n                        data-has-action-bar=\"false\"\n                        data-child-property-name=\"bundledSkus\"\n                        data-record-detail-action=\"admin:entity.detailsku\"\n\t\t\t\t\t\tdata-show-print-options=\"true\"\n                        data-base-entity-name=\"Sku\"\n                        data-show-toggle-display-options=\"false\"\n                        data-show-report=\"false\"\n                        >\n\n                        <sw-listing-columns>\n                            <sw-listing-column \n                                data-property-identifier=\"skuCode\" \n                                data-fallback-property-identifiers=\"skuCode,bundledSku_skuCode\" \n                                data-cell-view=\"swSkuCodeEdit\"\n                                tdclass=\"primary\">\n                            </sw-listing-column>\n                            <sw-listing-column \n                                data-property-identifier=\"calculatedSkuDefinition\" \n                                data-fallback-property-identifiers=\"calculatedSkuDefinition,bundledSku_calculatedSkuDefinition\">\n                            </sw-listing-column>\n                            <sw-listing-column \n                                data-property-identifier=\"price\"\n                                data-is-visible=\"true\"\n                                data-cell-view=\"swSkuPriceEdit\">\n                            </sw-listing-column>\n                            <sw-listing-column \n                                data-property-identifier=\"calculatedQATS\">\n                            </sw-listing-column>\n                            <sw-listing-column\n                                data-property-identifier=\"calculatedQOH\"\n                                data-is-visible=\"swPricingManager.trackInventory\"\n                                data-cell-view=\"swSkuStockAdjustmentModalLauncher\">\n                            </sw-listing-column>\n                            <sw-listing-column\n                                data-property-identifier=\"imageFile\"\n                                data-title=\"Image\"\n                                data-cell-view=\"swImageDetailModalLauncher\"\n                                data-tdclass=\"s-image\"\n                                data-is-visible=\"true\">\n                            </sw-listing-column>\n                            <sw-listing-column\n                                data-property-identifier=\"defaultSku\"\n                                data-title=\"Default\"\n                                data-is-visible=\"true\"\n                                data-cell-view=\"swDefaultSkuRadio\"\n                                tdclass=\"s-table-select\"\n                                >\n                            </sw-listing-column>   \n                        </sw-listing-columns>\n                        \n                        <sw-collection-configs>\n                            <sw-collection-config \n                                data-entity-name=\"Sku\"\n                                data-parent-directive-controller-as-name=\"swListingDisplay\"\n                                data-parent-deferred-property=\"singleCollectionDeferred\"\n                                data-collection-config-property=\"collectionConfig\">\n                                <sw-collection-columns>\n                                    <sw-collection-column data-property-identifier=\"skuID\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"bundleFlag\" data-is-searchable=\"true\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"skuCode\" data-is-searchable=\"true\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"calculatedSkuDefinition\" data-is-searchable=\"true\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"calculatedQATS\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"calculatedQOH\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"price\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"product.productID\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"product.defaultSku.skuID\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"imageFileName\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"imageFile\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"imagePath\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"currencyCode\" data-is-searchable=\"false\"></sw-collection-column>\n                                    <sw-collection-column data-property-identifier=\"bundledSkusCount\" data-is-searchable=\"false\"></sw-collection-column>\n                                </sw-collection-columns>\n                                <sw-collection-filters>\n                                    <sw-collection-filter data-property-identifier=\"product.productID\" data-comparison-operator=\"=\" data-comparison-value=\"{{swPricingManager.productId}}\" data-hidden=\"true\"></sw-collection-filter>\n                                </sw-collection-filters>\n                            </sw-collection-config>\n                        </sw-collection-configs>\n                        \n                        <sw-expandable-row-rules>\n                            <sw-listing-expandable-rule data-filter-property-identifier=\"bundleFlag\" \n                                                        data-filter-comparison-operator=\"=\" \n                                                        data-filter-comparison-value=\"Yes\"> \n                                <sw-config>\n                                    <sw-collection-config \n                                        data-entity-name=\"SkuBundle\"\n                                        data-parent-directive-controller-as-name=\"swListingExpandableRule\"\n                                        data-parent-deferred-property=\"hasChildrenCollectionConfigDeferred\"\n                                        data-collection-config-property=\"childrenCollectionConfig\"\n                                        data-all-records=\"true\">\n                                        <sw-collection-columns>\n                                            <sw-collection-column data-property-identifier=\"skuBundleID\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"bundledSku.skuID\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"bundledSku.skuCode\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"bundledSku.calculatedSkuDefinition\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"bundledSku.price\"></sw-collection-column>\n                                            <sw-collection-column data-property-identifier=\"bundledSku.currencyCode\"></sw-collection-column>\n                                        </sw-collection-columns>\n                                        <sw-collection-filters>\n                                            <sw-collection-filter data-property-identifier=\"sku.skuID\" data-comparison-operator=\"=\" data-comparison-value=\"${skuID}\"></sw-collection-filter>\n                                        </sw-collection-filters>\n                                    </sw-collection-config>\n                                </sw-config>\n                            </sw-listing-expandable-rule>\n                        </sw-expandable-row-rules>\n                        <sw-disabled-row-rules>\n                            <sw-listing-disable-rule  data-filter-property-identifier=\"skuBundleID\" \n                                                      data-filter-comparison-operator=\"is not\" \n                                                      data-filter-comparison-value=\"null\">\n                            </sw-listing-disable-rule>\n                        </sw-disabled-row-rules> \n                        <sw-listing-save-action>\n                            <sw-listing-row-save>\n                            </sw-listing-row-save>\n                        </sw-listing-save-action>\n                </sw-listing-display>\n           </sw-tab-content>\n           <sw-tab-content data-name=\"Pricing\">\n                <!--hack forcing listing id to pricing listing-->\n                <div>\n                    <div class=\"pull-right\">\n                        <sw-action-caller\n                                data-event=\"EDIT_SKUPRICE\"\n                                data-payload=\"undefined\"\n                                data-class=\"btn btn-primary btn-md\"\n                                data-icon=\"plus\"\n                                data-text=\"Add Sku Price\"\n                                data-iconOnly=\"false\">\n                            \n                        </sw-action-caller>\n                    </div>\n                    <div>\n                        <sw-listing-display\n                                data-has-search=\"true\"\n                                data-is-angular-route=\"false\"\n                                data-angular-links=\"false\"\n                                data-has-action-bar=\"false\"\n                                data-base-entity-name=\"SkuPrice\"\n                                data-actions=\"[{\n                                    'event' : 'SAVE_SKUPRICE',\n                                    'icon' : 'floppy-disk',\n                                    'iconOnly' : true,\n                                    'display' : false,\n                                    'eventListeners' : {\n                                        'cellModified' : 'setDisplayTrue',\n                                        'rowSaved' : 'setDisplayFalse'\n                                    },\n                                    'useEventListenerId' : true\n                                }]\"\n                                data-record-edit-event=\"EDIT_SKUPRICE\"\n                                data-record-delete-event=\"DELETE_SKUPRICE\"\n                                data-collection-config=\"swPricingManager.skuPriceCollectionConfig\"\n                                data-name=\"pricingListing\"\n                                data-using-personal-collection=\"true\"\n                                data-show-report=\"false\"\n                        >\n                                \n                        </sw-listing-display>\n                    </div>\n                </div>\n                \n                <sw-sku-price-modal data-product-id=\"{{swPricingManager.productId}}\"></sw-sku-price-modal>\n           </sw-tab-content>\n       </sw-tab-group>\n    </div>\n</div>";
 
 /***/ }),
-/* 314 */
+/* 316 */
 /***/ (function(module, exports) {
 
 module.exports = "<sw-modal-launcher data-launch-event-name=\"EDIT_SKUPRICE\"\n                   data-modal-name=\"{{swSkuPriceModal.uniqueName}}\" \n                   data-title=\"Sku Price - Detail\" \n                   data-save-action=\"swSkuPriceModal.save\">\n    \n    <sw-modal-content> \n        \n        <sw-form ng-if=\"swSkuPriceModal.skuPrice\"\n                 name=\"{{swSkuPriceModal.formName}}\" \n                 data-object=\"swSkuPriceModal.skuPrice\"    \n                 data-context=\"save\"\n                 >\n            <div ng-show=\"!swSkuPriceModal.saveSuccess\" class=\"alert alert-error\" role=\"alert\" sw-rbkey=\"'admin.entity.addskuprice.invalid'\"></div>\n            <div class=\"row\">\n                    <div class=\"col-sm-4\">\n                        <sw-sku-thumbnail ng-if=\"swSkuPriceModal.sku.data\" data-sku-data=\"swSkuPriceModal.sku.data\">\n                        </sw-sku-thumbnail>\n                    </div>\n                    <div class=\"col-sm-8\">\n                        <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.price'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"price\" \n                                        ng-model=\"swSkuPriceModal.skuPrice.price\"\n                                />\n                            </div> \n                            <div class=\"col-sm-6\">\n                                <div class=\"form-group\">\n                                    <label for=\"\" class=\"control-label\">Currency Code</label>\n                                    <select class=\"form-control\" \n                                            name=\"currencyCode\"\n                                            ng-model=\"swSkuPriceModal.selectedCurrencyCode\"\n                                            ng-options=\"item as item for item in swSkuPriceModal.currencyCodeOptions track by item\"\n                                            ng-disabled=\"swSkuPriceModal.isDefaultSkuPrice()\"\n                                            >\n                                    </select>\n                                </div>\n                            </div>\n                        </div>\n                        \n                        <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.minQuantity'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"minQuantity\" \n                                        ng-model=\"swSkuPriceModal.skuPrice.minQuantity\"\n                                        ng-disabled=\"swSkuPriceModal.isDefaultSkuPrice()\"\n                                />\n                            </div>\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.maxQuantity'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"maxQuantity\" \n                                        ng-model=\"swSkuPriceModal.skuPrice.maxQuantity\"\n                                        ng-disabled=\"swSkuPriceModal.isDefaultSkuPrice()\"\n                                />\n                            </div>\n                        </div>\n                        <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.Sku'\">\n                                        \n                                </label>\n                                <sw-typeahead-search    data-collection-config=\"swSkuPriceModal.skuCollectionConfig\"\n                                                        data-disabled=\"swSkuPriceModal.isDefaultSkuPrice()\"\n                                                        data-placeholder-text=\"Select Sku\"\n                                                        data-search-text=\"swSkuPriceModal.compoundSkuName\"\n                                                        data-add-function=\"swSkuPriceModal.setSelectedSku\">\n                                    \n                                    <span sw-typeahead-search-line-item data-property-identifier=\"skuName\"></span>\n                                    <span> - </span>\n                                    <span sw-typeahead-search-line-item data-property-identifier=\"skuCode\"></span>\n                                </sw-typeahead-search>\n                                \n                                <input type=\"hidden\" readonly style=\"display:none\" name=\"sku\" ng-model=\"swSkuPriceModal.submittedSku\" />\n                            </div>\n                            <div class=\"col-sm-6\">\n                                \n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.PriceGroup'\">\n                                        \n                                </label>\n                                <select class=\"form-control\" \n                                        ng-model=\"swSkuPriceModal.selectedPriceGroup\"\n                                        ng-options=\"item as item.priceGroupName for item in swSkuPriceModal.priceGroupOptions track by item.priceGroupID\"\n                                        ng-change=\"swSkuPriceModal.setSelectedPriceGroup(swSkuPriceModal.selectedPriceGroup)\"\n                                        ng-disabled=\"swSkuPriceModal.isDefaultSkuPrice() || swSkuPriceModal.priceGroupEditable == false\"\n                                        >\n                                </select>\n                                <input type=\"hidden\" readonly style=\"display:none\" name=\"priceGroup\" ng-model=\"swSkuPriceModal.submittedPriceGroup\" />\n                            </div>\n                        </div>\n                        \n                        <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.personalVolume'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"personalVolume\" \n                                        ng-model=\"swSkuPriceModal.skuPrice.personalVolume\"\n                                />\n                            </div>\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.taxableAmount'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"taxableAmount\" \n                                        ng-model=\"swSkuPriceModal.skuPrice.taxableAmount\"\n                                />\n                            </div>\n                        </div>\n                        \n                        <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.commissionableVolume'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"commissionableVolume\" \n                                        ng-model=\"swSkuPriceModal.skuPrice.commissionableVolume\"\n                                />\n                            </div>\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.retailCommission'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"retailCommission\" \n                                        ng-model=\"swSkuPriceModal.skuPrice.retailCommission\"\n                                />\n                            </div>\n                        </div>\n                        \n                        <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.productPackVolume'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"productPackVolume\" \n                                        ng-model=\"swSkuPriceModal.skuPrice.productPackVolume\"\n                                />\n                            </div>\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.retailValueVolume'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"retailValueVolume\" \n                                        ng-model=\"swSkuPriceModal.skuPrice.retailValueVolume\"\n                                />\n                            </div>\n                        </div>\n                        <div class=\"row\">\n                            \n                            <div class=\"col-xs-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.activeFlag'\">\n                                </label>\n                                <div class=\"s-ladel-options\">\n                                    <div class=\"col-xs-4 radio\">\n                                        <input id=\"active\" type=\"radio\" name=\"activeFlag\" value=\"1\" ng-model=\"swSkuPriceModal.skuPrice.activeFlag\">\n                                        <label for=\"active\">Yes</label>\n                                    </div>\n                                    <div class=\"col-xs-4 radio\">\n                                        <input id=\"inactive\" type=\"radio\" name=\"activeFlag\" value=\"0\" ng-model=\"swSkuPriceModal.skuPrice.activeFlag\">\n                                        <label for=\"inactive\">No</label>\n                                    </div>\n                                </div>\n                            </div>\n                        </div>\n                        <!-- BEGIN HIDDEN FIELDS -->\n                        \n                        <!-- END HIDDEN FIELDS -->\n                    </div>\n                </div>\n            </sw-form>\n    </sw-modal-content> \n</sw-modal-launcher>";
 
 /***/ }),
-/* 315 */
+/* 317 */
 /***/ (function(module, exports) {
 
 /*!
@@ -49078,264 +50569,264 @@ function isSlowBuffer (obj) {
 
 
 /***/ }),
-/* 316 */
+/* 318 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var map = {
-	"./af": 66,
-	"./af.js": 66,
-	"./ar": 73,
-	"./ar-dz": 67,
-	"./ar-dz.js": 67,
-	"./ar-kw": 68,
-	"./ar-kw.js": 68,
-	"./ar-ly": 69,
-	"./ar-ly.js": 69,
-	"./ar-ma": 70,
-	"./ar-ma.js": 70,
-	"./ar-sa": 71,
-	"./ar-sa.js": 71,
-	"./ar-tn": 72,
-	"./ar-tn.js": 72,
-	"./ar.js": 73,
-	"./az": 74,
-	"./az.js": 74,
-	"./be": 75,
-	"./be.js": 75,
-	"./bg": 76,
-	"./bg.js": 76,
-	"./bm": 77,
-	"./bm.js": 77,
-	"./bn": 78,
-	"./bn.js": 78,
-	"./bo": 79,
-	"./bo.js": 79,
-	"./br": 80,
-	"./br.js": 80,
-	"./bs": 81,
-	"./bs.js": 81,
-	"./ca": 82,
-	"./ca.js": 82,
-	"./cs": 83,
-	"./cs.js": 83,
-	"./cv": 84,
-	"./cv.js": 84,
-	"./cy": 85,
-	"./cy.js": 85,
-	"./da": 86,
-	"./da.js": 86,
-	"./de": 89,
-	"./de-at": 87,
-	"./de-at.js": 87,
-	"./de-ch": 88,
-	"./de-ch.js": 88,
-	"./de.js": 89,
-	"./dv": 90,
-	"./dv.js": 90,
-	"./el": 91,
-	"./el.js": 91,
-	"./en-SG": 92,
-	"./en-SG.js": 92,
-	"./en-au": 93,
-	"./en-au.js": 93,
-	"./en-ca": 94,
-	"./en-ca.js": 94,
-	"./en-gb": 95,
-	"./en-gb.js": 95,
-	"./en-ie": 96,
-	"./en-ie.js": 96,
-	"./en-il": 97,
-	"./en-il.js": 97,
-	"./en-nz": 98,
-	"./en-nz.js": 98,
-	"./eo": 99,
-	"./eo.js": 99,
-	"./es": 102,
-	"./es-do": 100,
-	"./es-do.js": 100,
-	"./es-us": 101,
-	"./es-us.js": 101,
-	"./es.js": 102,
-	"./et": 103,
-	"./et.js": 103,
-	"./eu": 104,
-	"./eu.js": 104,
-	"./fa": 105,
-	"./fa.js": 105,
-	"./fi": 106,
-	"./fi.js": 106,
-	"./fo": 107,
-	"./fo.js": 107,
-	"./fr": 110,
-	"./fr-ca": 108,
-	"./fr-ca.js": 108,
-	"./fr-ch": 109,
-	"./fr-ch.js": 109,
-	"./fr.js": 110,
-	"./fy": 111,
-	"./fy.js": 111,
-	"./ga": 112,
-	"./ga.js": 112,
-	"./gd": 113,
-	"./gd.js": 113,
-	"./gl": 114,
-	"./gl.js": 114,
-	"./gom-latn": 115,
-	"./gom-latn.js": 115,
-	"./gu": 116,
-	"./gu.js": 116,
-	"./he": 117,
-	"./he.js": 117,
-	"./hi": 118,
-	"./hi.js": 118,
-	"./hr": 119,
-	"./hr.js": 119,
-	"./hu": 120,
-	"./hu.js": 120,
-	"./hy-am": 121,
-	"./hy-am.js": 121,
-	"./id": 122,
-	"./id.js": 122,
-	"./is": 123,
-	"./is.js": 123,
-	"./it": 125,
-	"./it-ch": 124,
-	"./it-ch.js": 124,
-	"./it.js": 125,
-	"./ja": 126,
-	"./ja.js": 126,
-	"./jv": 127,
-	"./jv.js": 127,
-	"./ka": 128,
-	"./ka.js": 128,
-	"./kk": 129,
-	"./kk.js": 129,
-	"./km": 130,
-	"./km.js": 130,
-	"./kn": 131,
-	"./kn.js": 131,
-	"./ko": 132,
-	"./ko.js": 132,
-	"./ku": 133,
-	"./ku.js": 133,
-	"./ky": 134,
-	"./ky.js": 134,
-	"./lb": 135,
-	"./lb.js": 135,
-	"./lo": 136,
-	"./lo.js": 136,
-	"./lt": 137,
-	"./lt.js": 137,
-	"./lv": 138,
-	"./lv.js": 138,
-	"./me": 139,
-	"./me.js": 139,
-	"./mi": 140,
-	"./mi.js": 140,
-	"./mk": 141,
-	"./mk.js": 141,
-	"./ml": 142,
-	"./ml.js": 142,
-	"./mn": 143,
-	"./mn.js": 143,
-	"./mr": 144,
-	"./mr.js": 144,
-	"./ms": 146,
-	"./ms-my": 145,
-	"./ms-my.js": 145,
-	"./ms.js": 146,
-	"./mt": 147,
-	"./mt.js": 147,
-	"./my": 148,
-	"./my.js": 148,
-	"./nb": 149,
-	"./nb.js": 149,
-	"./ne": 150,
-	"./ne.js": 150,
-	"./nl": 152,
-	"./nl-be": 151,
-	"./nl-be.js": 151,
-	"./nl.js": 152,
-	"./nn": 153,
-	"./nn.js": 153,
-	"./pa-in": 154,
-	"./pa-in.js": 154,
-	"./pl": 155,
-	"./pl.js": 155,
-	"./pt": 157,
-	"./pt-br": 156,
-	"./pt-br.js": 156,
-	"./pt.js": 157,
-	"./ro": 158,
-	"./ro.js": 158,
-	"./ru": 159,
-	"./ru.js": 159,
-	"./sd": 160,
-	"./sd.js": 160,
-	"./se": 161,
-	"./se.js": 161,
-	"./si": 162,
-	"./si.js": 162,
-	"./sk": 163,
-	"./sk.js": 163,
-	"./sl": 164,
-	"./sl.js": 164,
-	"./sq": 165,
-	"./sq.js": 165,
-	"./sr": 167,
-	"./sr-cyrl": 166,
-	"./sr-cyrl.js": 166,
-	"./sr.js": 167,
-	"./ss": 168,
-	"./ss.js": 168,
-	"./sv": 169,
-	"./sv.js": 169,
-	"./sw": 170,
-	"./sw.js": 170,
-	"./ta": 171,
-	"./ta.js": 171,
-	"./te": 172,
-	"./te.js": 172,
-	"./tet": 173,
-	"./tet.js": 173,
-	"./tg": 174,
-	"./tg.js": 174,
-	"./th": 175,
-	"./th.js": 175,
-	"./tl-ph": 176,
-	"./tl-ph.js": 176,
-	"./tlh": 177,
-	"./tlh.js": 177,
-	"./tr": 178,
-	"./tr.js": 178,
-	"./tzl": 179,
-	"./tzl.js": 179,
-	"./tzm": 181,
-	"./tzm-latn": 180,
-	"./tzm-latn.js": 180,
-	"./tzm.js": 181,
-	"./ug-cn": 182,
-	"./ug-cn.js": 182,
-	"./uk": 183,
-	"./uk.js": 183,
-	"./ur": 184,
-	"./ur.js": 184,
-	"./uz": 186,
-	"./uz-latn": 185,
-	"./uz-latn.js": 185,
-	"./uz.js": 186,
-	"./vi": 187,
-	"./vi.js": 187,
-	"./x-pseudo": 188,
-	"./x-pseudo.js": 188,
-	"./yo": 189,
-	"./yo.js": 189,
-	"./zh-cn": 190,
-	"./zh-cn.js": 190,
-	"./zh-hk": 191,
-	"./zh-hk.js": 191,
-	"./zh-tw": 192,
-	"./zh-tw.js": 192
+	"./af": 67,
+	"./af.js": 67,
+	"./ar": 74,
+	"./ar-dz": 68,
+	"./ar-dz.js": 68,
+	"./ar-kw": 69,
+	"./ar-kw.js": 69,
+	"./ar-ly": 70,
+	"./ar-ly.js": 70,
+	"./ar-ma": 71,
+	"./ar-ma.js": 71,
+	"./ar-sa": 72,
+	"./ar-sa.js": 72,
+	"./ar-tn": 73,
+	"./ar-tn.js": 73,
+	"./ar.js": 74,
+	"./az": 75,
+	"./az.js": 75,
+	"./be": 76,
+	"./be.js": 76,
+	"./bg": 77,
+	"./bg.js": 77,
+	"./bm": 78,
+	"./bm.js": 78,
+	"./bn": 79,
+	"./bn.js": 79,
+	"./bo": 80,
+	"./bo.js": 80,
+	"./br": 81,
+	"./br.js": 81,
+	"./bs": 82,
+	"./bs.js": 82,
+	"./ca": 83,
+	"./ca.js": 83,
+	"./cs": 84,
+	"./cs.js": 84,
+	"./cv": 85,
+	"./cv.js": 85,
+	"./cy": 86,
+	"./cy.js": 86,
+	"./da": 87,
+	"./da.js": 87,
+	"./de": 90,
+	"./de-at": 88,
+	"./de-at.js": 88,
+	"./de-ch": 89,
+	"./de-ch.js": 89,
+	"./de.js": 90,
+	"./dv": 91,
+	"./dv.js": 91,
+	"./el": 92,
+	"./el.js": 92,
+	"./en-SG": 93,
+	"./en-SG.js": 93,
+	"./en-au": 94,
+	"./en-au.js": 94,
+	"./en-ca": 95,
+	"./en-ca.js": 95,
+	"./en-gb": 96,
+	"./en-gb.js": 96,
+	"./en-ie": 97,
+	"./en-ie.js": 97,
+	"./en-il": 98,
+	"./en-il.js": 98,
+	"./en-nz": 99,
+	"./en-nz.js": 99,
+	"./eo": 100,
+	"./eo.js": 100,
+	"./es": 103,
+	"./es-do": 101,
+	"./es-do.js": 101,
+	"./es-us": 102,
+	"./es-us.js": 102,
+	"./es.js": 103,
+	"./et": 104,
+	"./et.js": 104,
+	"./eu": 105,
+	"./eu.js": 105,
+	"./fa": 106,
+	"./fa.js": 106,
+	"./fi": 107,
+	"./fi.js": 107,
+	"./fo": 108,
+	"./fo.js": 108,
+	"./fr": 111,
+	"./fr-ca": 109,
+	"./fr-ca.js": 109,
+	"./fr-ch": 110,
+	"./fr-ch.js": 110,
+	"./fr.js": 111,
+	"./fy": 112,
+	"./fy.js": 112,
+	"./ga": 113,
+	"./ga.js": 113,
+	"./gd": 114,
+	"./gd.js": 114,
+	"./gl": 115,
+	"./gl.js": 115,
+	"./gom-latn": 116,
+	"./gom-latn.js": 116,
+	"./gu": 117,
+	"./gu.js": 117,
+	"./he": 118,
+	"./he.js": 118,
+	"./hi": 119,
+	"./hi.js": 119,
+	"./hr": 120,
+	"./hr.js": 120,
+	"./hu": 121,
+	"./hu.js": 121,
+	"./hy-am": 122,
+	"./hy-am.js": 122,
+	"./id": 123,
+	"./id.js": 123,
+	"./is": 124,
+	"./is.js": 124,
+	"./it": 126,
+	"./it-ch": 125,
+	"./it-ch.js": 125,
+	"./it.js": 126,
+	"./ja": 127,
+	"./ja.js": 127,
+	"./jv": 128,
+	"./jv.js": 128,
+	"./ka": 129,
+	"./ka.js": 129,
+	"./kk": 130,
+	"./kk.js": 130,
+	"./km": 131,
+	"./km.js": 131,
+	"./kn": 132,
+	"./kn.js": 132,
+	"./ko": 133,
+	"./ko.js": 133,
+	"./ku": 134,
+	"./ku.js": 134,
+	"./ky": 135,
+	"./ky.js": 135,
+	"./lb": 136,
+	"./lb.js": 136,
+	"./lo": 137,
+	"./lo.js": 137,
+	"./lt": 138,
+	"./lt.js": 138,
+	"./lv": 139,
+	"./lv.js": 139,
+	"./me": 140,
+	"./me.js": 140,
+	"./mi": 141,
+	"./mi.js": 141,
+	"./mk": 142,
+	"./mk.js": 142,
+	"./ml": 143,
+	"./ml.js": 143,
+	"./mn": 144,
+	"./mn.js": 144,
+	"./mr": 145,
+	"./mr.js": 145,
+	"./ms": 147,
+	"./ms-my": 146,
+	"./ms-my.js": 146,
+	"./ms.js": 147,
+	"./mt": 148,
+	"./mt.js": 148,
+	"./my": 149,
+	"./my.js": 149,
+	"./nb": 150,
+	"./nb.js": 150,
+	"./ne": 151,
+	"./ne.js": 151,
+	"./nl": 153,
+	"./nl-be": 152,
+	"./nl-be.js": 152,
+	"./nl.js": 153,
+	"./nn": 154,
+	"./nn.js": 154,
+	"./pa-in": 155,
+	"./pa-in.js": 155,
+	"./pl": 156,
+	"./pl.js": 156,
+	"./pt": 158,
+	"./pt-br": 157,
+	"./pt-br.js": 157,
+	"./pt.js": 158,
+	"./ro": 159,
+	"./ro.js": 159,
+	"./ru": 160,
+	"./ru.js": 160,
+	"./sd": 161,
+	"./sd.js": 161,
+	"./se": 162,
+	"./se.js": 162,
+	"./si": 163,
+	"./si.js": 163,
+	"./sk": 164,
+	"./sk.js": 164,
+	"./sl": 165,
+	"./sl.js": 165,
+	"./sq": 166,
+	"./sq.js": 166,
+	"./sr": 168,
+	"./sr-cyrl": 167,
+	"./sr-cyrl.js": 167,
+	"./sr.js": 168,
+	"./ss": 169,
+	"./ss.js": 169,
+	"./sv": 170,
+	"./sv.js": 170,
+	"./sw": 171,
+	"./sw.js": 171,
+	"./ta": 172,
+	"./ta.js": 172,
+	"./te": 173,
+	"./te.js": 173,
+	"./tet": 174,
+	"./tet.js": 174,
+	"./tg": 175,
+	"./tg.js": 175,
+	"./th": 176,
+	"./th.js": 176,
+	"./tl-ph": 177,
+	"./tl-ph.js": 177,
+	"./tlh": 178,
+	"./tlh.js": 178,
+	"./tr": 179,
+	"./tr.js": 179,
+	"./tzl": 180,
+	"./tzl.js": 180,
+	"./tzm": 182,
+	"./tzm-latn": 181,
+	"./tzm-latn.js": 181,
+	"./tzm.js": 182,
+	"./ug-cn": 183,
+	"./ug-cn.js": 183,
+	"./uk": 184,
+	"./uk.js": 184,
+	"./ur": 185,
+	"./ur.js": 185,
+	"./uz": 187,
+	"./uz-latn": 186,
+	"./uz-latn.js": 186,
+	"./uz.js": 187,
+	"./vi": 188,
+	"./vi.js": 188,
+	"./x-pseudo": 189,
+	"./x-pseudo.js": 189,
+	"./yo": 190,
+	"./yo.js": 190,
+	"./zh-cn": 191,
+	"./zh-cn.js": 191,
+	"./zh-hk": 192,
+	"./zh-hk.js": 192,
+	"./zh-tw": 193,
+	"./zh-tw.js": 193
 };
 function webpackContext(req) {
 	return __webpack_require__(webpackContextResolve(req));
@@ -49351,10 +50842,10 @@ webpackContext.keys = function webpackContextKeys() {
 };
 webpackContext.resolve = webpackContextResolve;
 module.exports = webpackContext;
-webpackContext.id = 316;
+webpackContext.id = 318;
 
 /***/ }),
-/* 317 */
+/* 319 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;(function() {
@@ -50296,7 +51787,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;(function() {
 
 
 /***/ }),
-/* 318 */
+/* 320 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -50486,7 +51977,7 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 319 */
+/* 321 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50528,7 +52019,7 @@ exports.InnerSubscriber = InnerSubscriber;
 //# sourceMappingURL=InnerSubscriber.js.map
 
 /***/ }),
-/* 320 */
+/* 322 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50545,13 +52036,11 @@ var Observable_1 = __webpack_require__(0);
 exports.Observable = Observable_1.Observable;
 // statics
 /* tslint:disable:no-use-before-declare */
-__webpack_require__(322);
-__webpack_require__(323);
 __webpack_require__(324);
 __webpack_require__(325);
 __webpack_require__(326);
-__webpack_require__(329);
-__webpack_require__(330);
+__webpack_require__(327);
+__webpack_require__(328);
 __webpack_require__(331);
 __webpack_require__(332);
 __webpack_require__(333);
@@ -50560,22 +52049,22 @@ __webpack_require__(335);
 __webpack_require__(336);
 __webpack_require__(337);
 __webpack_require__(338);
-__webpack_require__(343);
 __webpack_require__(339);
 __webpack_require__(340);
+__webpack_require__(345);
 __webpack_require__(341);
 __webpack_require__(342);
+__webpack_require__(343);
 __webpack_require__(344);
-__webpack_require__(347);
-__webpack_require__(345);
 __webpack_require__(346);
+__webpack_require__(349);
+__webpack_require__(347);
 __webpack_require__(348);
+__webpack_require__(350);
 //dom
-__webpack_require__(327);
-__webpack_require__(328);
+__webpack_require__(329);
+__webpack_require__(330);
 //operators
-__webpack_require__(351);
-__webpack_require__(352);
 __webpack_require__(353);
 __webpack_require__(354);
 __webpack_require__(355);
@@ -50587,35 +52076,35 @@ __webpack_require__(360);
 __webpack_require__(361);
 __webpack_require__(362);
 __webpack_require__(363);
-__webpack_require__(369);
 __webpack_require__(364);
 __webpack_require__(365);
+__webpack_require__(371);
 __webpack_require__(366);
 __webpack_require__(367);
 __webpack_require__(368);
+__webpack_require__(369);
 __webpack_require__(370);
-__webpack_require__(371);
 __webpack_require__(372);
 __webpack_require__(373);
-__webpack_require__(376);
-__webpack_require__(377);
-__webpack_require__(378);
 __webpack_require__(374);
+__webpack_require__(375);
+__webpack_require__(378);
 __webpack_require__(379);
 __webpack_require__(380);
+__webpack_require__(376);
 __webpack_require__(381);
 __webpack_require__(382);
 __webpack_require__(383);
 __webpack_require__(384);
 __webpack_require__(385);
 __webpack_require__(386);
-__webpack_require__(349);
-__webpack_require__(350);
 __webpack_require__(387);
 __webpack_require__(388);
-__webpack_require__(375);
+__webpack_require__(351);
+__webpack_require__(352);
 __webpack_require__(389);
 __webpack_require__(390);
+__webpack_require__(377);
 __webpack_require__(391);
 __webpack_require__(392);
 __webpack_require__(393);
@@ -50632,10 +52121,10 @@ __webpack_require__(403);
 __webpack_require__(404);
 __webpack_require__(405);
 __webpack_require__(406);
-__webpack_require__(408);
 __webpack_require__(407);
-__webpack_require__(409);
+__webpack_require__(408);
 __webpack_require__(410);
+__webpack_require__(409);
 __webpack_require__(411);
 __webpack_require__(412);
 __webpack_require__(413);
@@ -50676,6 +52165,8 @@ __webpack_require__(447);
 __webpack_require__(448);
 __webpack_require__(449);
 __webpack_require__(450);
+__webpack_require__(451);
+__webpack_require__(452);
 /* tslint:disable:no-unused-variable */
 var Subscription_1 = __webpack_require__(7);
 exports.Subscription = Subscription_1.Subscription;
@@ -50685,9 +52176,9 @@ var AsyncSubject_1 = __webpack_require__(29);
 exports.AsyncSubject = AsyncSubject_1.AsyncSubject;
 var ReplaySubject_1 = __webpack_require__(30);
 exports.ReplaySubject = ReplaySubject_1.ReplaySubject;
-var BehaviorSubject_1 = __webpack_require__(193);
+var BehaviorSubject_1 = __webpack_require__(194);
 exports.BehaviorSubject = BehaviorSubject_1.BehaviorSubject;
-var ConnectableObservable_1 = __webpack_require__(196);
+var ConnectableObservable_1 = __webpack_require__(197);
 exports.ConnectableObservable = ConnectableObservable_1.ConnectableObservable;
 var Notification_1 = __webpack_require__(19);
 exports.Notification = Notification_1.Notification;
@@ -50697,32 +52188,32 @@ var ArgumentOutOfRangeError_1 = __webpack_require__(27);
 exports.ArgumentOutOfRangeError = ArgumentOutOfRangeError_1.ArgumentOutOfRangeError;
 var ObjectUnsubscribedError_1 = __webpack_require__(40);
 exports.ObjectUnsubscribedError = ObjectUnsubscribedError_1.ObjectUnsubscribedError;
-var TimeoutError_1 = __webpack_require__(287);
+var TimeoutError_1 = __webpack_require__(288);
 exports.TimeoutError = TimeoutError_1.TimeoutError;
-var UnsubscriptionError_1 = __webpack_require__(288);
+var UnsubscriptionError_1 = __webpack_require__(289);
 exports.UnsubscriptionError = UnsubscriptionError_1.UnsubscriptionError;
-var timeInterval_1 = __webpack_require__(203);
+var timeInterval_1 = __webpack_require__(204);
 exports.TimeInterval = timeInterval_1.TimeInterval;
 var timestamp_1 = __webpack_require__(58);
 exports.Timestamp = timestamp_1.Timestamp;
-var TestScheduler_1 = __webpack_require__(603);
+var TestScheduler_1 = __webpack_require__(605);
 exports.TestScheduler = TestScheduler_1.TestScheduler;
-var VirtualTimeScheduler_1 = __webpack_require__(282);
+var VirtualTimeScheduler_1 = __webpack_require__(283);
 exports.VirtualTimeScheduler = VirtualTimeScheduler_1.VirtualTimeScheduler;
-var AjaxObservable_1 = __webpack_require__(199);
+var AjaxObservable_1 = __webpack_require__(200);
 exports.AjaxResponse = AjaxObservable_1.AjaxResponse;
 exports.AjaxError = AjaxObservable_1.AjaxError;
 exports.AjaxTimeoutError = AjaxObservable_1.AjaxTimeoutError;
 var pipe_1 = __webpack_require__(60);
 exports.pipe = pipe_1.pipe;
-var asap_1 = __webpack_require__(283);
+var asap_1 = __webpack_require__(284);
 var async_1 = __webpack_require__(5);
-var queue_1 = __webpack_require__(284);
-var animationFrame_1 = __webpack_require__(600);
+var queue_1 = __webpack_require__(285);
+var animationFrame_1 = __webpack_require__(602);
 var rxSubscriber_1 = __webpack_require__(38);
 var iterator_1 = __webpack_require__(26);
 var observable_1 = __webpack_require__(37);
-var _operators = __webpack_require__(591);
+var _operators = __webpack_require__(593);
 exports.operators = _operators;
 /* tslint:enable:no-unused-variable */
 /**
@@ -50767,7 +52258,7 @@ exports.Symbol = Symbol;
 //# sourceMappingURL=Rx.js.map
 
 /***/ }),
-/* 321 */
+/* 323 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50822,40 +52313,40 @@ exports.Scheduler = Scheduler;
 //# sourceMappingURL=Scheduler.js.map
 
 /***/ }),
-/* 322 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var Observable_1 = __webpack_require__(0);
-var bindCallback_1 = __webpack_require__(469);
-Observable_1.Observable.bindCallback = bindCallback_1.bindCallback;
-//# sourceMappingURL=bindCallback.js.map
-
-/***/ }),
-/* 323 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var Observable_1 = __webpack_require__(0);
-var bindNodeCallback_1 = __webpack_require__(470);
-Observable_1.Observable.bindNodeCallback = bindNodeCallback_1.bindNodeCallback;
-//# sourceMappingURL=bindNodeCallback.js.map
-
-/***/ }),
 /* 324 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var combineLatest_1 = __webpack_require__(471);
+var bindCallback_1 = __webpack_require__(471);
+Observable_1.Observable.bindCallback = bindCallback_1.bindCallback;
+//# sourceMappingURL=bindCallback.js.map
+
+/***/ }),
+/* 325 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var Observable_1 = __webpack_require__(0);
+var bindNodeCallback_1 = __webpack_require__(472);
+Observable_1.Observable.bindNodeCallback = bindNodeCallback_1.bindNodeCallback;
+//# sourceMappingURL=bindNodeCallback.js.map
+
+/***/ }),
+/* 326 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var Observable_1 = __webpack_require__(0);
+var combineLatest_1 = __webpack_require__(473);
 Observable_1.Observable.combineLatest = combineLatest_1.combineLatest;
 //# sourceMappingURL=combineLatest.js.map
 
 /***/ }),
-/* 325 */
+/* 327 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50866,37 +52357,15 @@ Observable_1.Observable.concat = concat_1.concat;
 //# sourceMappingURL=concat.js.map
 
 /***/ }),
-/* 326 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var Observable_1 = __webpack_require__(0);
-var defer_1 = __webpack_require__(472);
-Observable_1.Observable.defer = defer_1.defer;
-//# sourceMappingURL=defer.js.map
-
-/***/ }),
-/* 327 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var Observable_1 = __webpack_require__(0);
-var ajax_1 = __webpack_require__(474);
-Observable_1.Observable.ajax = ajax_1.ajax;
-//# sourceMappingURL=ajax.js.map
-
-/***/ }),
 /* 328 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var webSocket_1 = __webpack_require__(475);
-Observable_1.Observable.webSocket = webSocket_1.webSocket;
-//# sourceMappingURL=webSocket.js.map
+var defer_1 = __webpack_require__(474);
+Observable_1.Observable.defer = defer_1.defer;
+//# sourceMappingURL=defer.js.map
 
 /***/ }),
 /* 329 */
@@ -50905,9 +52374,9 @@ Observable_1.Observable.webSocket = webSocket_1.webSocket;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var empty_1 = __webpack_require__(476);
-Observable_1.Observable.empty = empty_1.empty;
-//# sourceMappingURL=empty.js.map
+var ajax_1 = __webpack_require__(476);
+Observable_1.Observable.ajax = ajax_1.ajax;
+//# sourceMappingURL=ajax.js.map
 
 /***/ }),
 /* 330 */
@@ -50916,9 +52385,9 @@ Observable_1.Observable.empty = empty_1.empty;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var forkJoin_1 = __webpack_require__(477);
-Observable_1.Observable.forkJoin = forkJoin_1.forkJoin;
-//# sourceMappingURL=forkJoin.js.map
+var webSocket_1 = __webpack_require__(477);
+Observable_1.Observable.webSocket = webSocket_1.webSocket;
+//# sourceMappingURL=webSocket.js.map
 
 /***/ }),
 /* 331 */
@@ -50927,9 +52396,9 @@ Observable_1.Observable.forkJoin = forkJoin_1.forkJoin;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var from_1 = __webpack_require__(200);
-Observable_1.Observable.from = from_1.from;
-//# sourceMappingURL=from.js.map
+var empty_1 = __webpack_require__(478);
+Observable_1.Observable.empty = empty_1.empty;
+//# sourceMappingURL=empty.js.map
 
 /***/ }),
 /* 332 */
@@ -50938,9 +52407,9 @@ Observable_1.Observable.from = from_1.from;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var fromEvent_1 = __webpack_require__(478);
-Observable_1.Observable.fromEvent = fromEvent_1.fromEvent;
-//# sourceMappingURL=fromEvent.js.map
+var forkJoin_1 = __webpack_require__(479);
+Observable_1.Observable.forkJoin = forkJoin_1.forkJoin;
+//# sourceMappingURL=forkJoin.js.map
 
 /***/ }),
 /* 333 */
@@ -50949,9 +52418,9 @@ Observable_1.Observable.fromEvent = fromEvent_1.fromEvent;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var fromEventPattern_1 = __webpack_require__(479);
-Observable_1.Observable.fromEventPattern = fromEventPattern_1.fromEventPattern;
-//# sourceMappingURL=fromEventPattern.js.map
+var from_1 = __webpack_require__(201);
+Observable_1.Observable.from = from_1.from;
+//# sourceMappingURL=from.js.map
 
 /***/ }),
 /* 334 */
@@ -50960,9 +52429,9 @@ Observable_1.Observable.fromEventPattern = fromEventPattern_1.fromEventPattern;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var fromPromise_1 = __webpack_require__(480);
-Observable_1.Observable.fromPromise = fromPromise_1.fromPromise;
-//# sourceMappingURL=fromPromise.js.map
+var fromEvent_1 = __webpack_require__(480);
+Observable_1.Observable.fromEvent = fromEvent_1.fromEvent;
+//# sourceMappingURL=fromEvent.js.map
 
 /***/ }),
 /* 335 */
@@ -50971,9 +52440,9 @@ Observable_1.Observable.fromPromise = fromPromise_1.fromPromise;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var generate_1 = __webpack_require__(481);
-Observable_1.Observable.generate = generate_1.generate;
-//# sourceMappingURL=generate.js.map
+var fromEventPattern_1 = __webpack_require__(481);
+Observable_1.Observable.fromEventPattern = fromEventPattern_1.fromEventPattern;
+//# sourceMappingURL=fromEventPattern.js.map
 
 /***/ }),
 /* 336 */
@@ -50982,9 +52451,9 @@ Observable_1.Observable.generate = generate_1.generate;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var if_1 = __webpack_require__(482);
-Observable_1.Observable.if = if_1._if;
-//# sourceMappingURL=if.js.map
+var fromPromise_1 = __webpack_require__(482);
+Observable_1.Observable.fromPromise = fromPromise_1.fromPromise;
+//# sourceMappingURL=fromPromise.js.map
 
 /***/ }),
 /* 337 */
@@ -50993,12 +52462,34 @@ Observable_1.Observable.if = if_1._if;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var interval_1 = __webpack_require__(483);
+var generate_1 = __webpack_require__(483);
+Observable_1.Observable.generate = generate_1.generate;
+//# sourceMappingURL=generate.js.map
+
+/***/ }),
+/* 338 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var Observable_1 = __webpack_require__(0);
+var if_1 = __webpack_require__(484);
+Observable_1.Observable.if = if_1._if;
+//# sourceMappingURL=if.js.map
+
+/***/ }),
+/* 339 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var Observable_1 = __webpack_require__(0);
+var interval_1 = __webpack_require__(485);
 Observable_1.Observable.interval = interval_1.interval;
 //# sourceMappingURL=interval.js.map
 
 /***/ }),
-/* 338 */
+/* 340 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51009,37 +52500,15 @@ Observable_1.Observable.merge = merge_1.merge;
 //# sourceMappingURL=merge.js.map
 
 /***/ }),
-/* 339 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var Observable_1 = __webpack_require__(0);
-var never_1 = __webpack_require__(484);
-Observable_1.Observable.never = never_1.never;
-//# sourceMappingURL=never.js.map
-
-/***/ }),
-/* 340 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var Observable_1 = __webpack_require__(0);
-var of_1 = __webpack_require__(201);
-Observable_1.Observable.of = of_1.of;
-//# sourceMappingURL=of.js.map
-
-/***/ }),
 /* 341 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var onErrorResumeNext_1 = __webpack_require__(485);
-Observable_1.Observable.onErrorResumeNext = onErrorResumeNext_1.onErrorResumeNext;
-//# sourceMappingURL=onErrorResumeNext.js.map
+var never_1 = __webpack_require__(486);
+Observable_1.Observable.never = never_1.never;
+//# sourceMappingURL=never.js.map
 
 /***/ }),
 /* 342 */
@@ -51048,12 +52517,34 @@ Observable_1.Observable.onErrorResumeNext = onErrorResumeNext_1.onErrorResumeNex
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var pairs_1 = __webpack_require__(486);
+var of_1 = __webpack_require__(202);
+Observable_1.Observable.of = of_1.of;
+//# sourceMappingURL=of.js.map
+
+/***/ }),
+/* 343 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var Observable_1 = __webpack_require__(0);
+var onErrorResumeNext_1 = __webpack_require__(487);
+Observable_1.Observable.onErrorResumeNext = onErrorResumeNext_1.onErrorResumeNext;
+//# sourceMappingURL=onErrorResumeNext.js.map
+
+/***/ }),
+/* 344 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var Observable_1 = __webpack_require__(0);
+var pairs_1 = __webpack_require__(488);
 Observable_1.Observable.pairs = pairs_1.pairs;
 //# sourceMappingURL=pairs.js.map
 
 /***/ }),
-/* 343 */
+/* 345 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51064,37 +52555,15 @@ Observable_1.Observable.race = race_1.race;
 //# sourceMappingURL=race.js.map
 
 /***/ }),
-/* 344 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var Observable_1 = __webpack_require__(0);
-var range_1 = __webpack_require__(487);
-Observable_1.Observable.range = range_1.range;
-//# sourceMappingURL=range.js.map
-
-/***/ }),
-/* 345 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var Observable_1 = __webpack_require__(0);
-var throw_1 = __webpack_require__(488);
-Observable_1.Observable.throw = throw_1._throw;
-//# sourceMappingURL=throw.js.map
-
-/***/ }),
 /* 346 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var timer_1 = __webpack_require__(202);
-Observable_1.Observable.timer = timer_1.timer;
-//# sourceMappingURL=timer.js.map
+var range_1 = __webpack_require__(489);
+Observable_1.Observable.range = range_1.range;
+//# sourceMappingURL=range.js.map
 
 /***/ }),
 /* 347 */
@@ -51103,9 +52572,9 @@ Observable_1.Observable.timer = timer_1.timer;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var using_1 = __webpack_require__(489);
-Observable_1.Observable.using = using_1.using;
-//# sourceMappingURL=using.js.map
+var throw_1 = __webpack_require__(490);
+Observable_1.Observable.throw = throw_1._throw;
+//# sourceMappingURL=throw.js.map
 
 /***/ }),
 /* 348 */
@@ -51114,9 +52583,9 @@ Observable_1.Observable.using = using_1.using;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var zip_1 = __webpack_require__(490);
-Observable_1.Observable.zip = zip_1.zip;
-//# sourceMappingURL=zip.js.map
+var timer_1 = __webpack_require__(203);
+Observable_1.Observable.timer = timer_1.timer;
+//# sourceMappingURL=timer.js.map
 
 /***/ }),
 /* 349 */
@@ -51125,9 +52594,9 @@ Observable_1.Observable.zip = zip_1.zip;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var audit_1 = __webpack_require__(491);
-Observable_1.Observable.prototype.audit = audit_1.audit;
-//# sourceMappingURL=audit.js.map
+var using_1 = __webpack_require__(491);
+Observable_1.Observable.using = using_1.using;
+//# sourceMappingURL=using.js.map
 
 /***/ }),
 /* 350 */
@@ -51136,9 +52605,9 @@ Observable_1.Observable.prototype.audit = audit_1.audit;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var auditTime_1 = __webpack_require__(492);
-Observable_1.Observable.prototype.auditTime = auditTime_1.auditTime;
-//# sourceMappingURL=auditTime.js.map
+var zip_1 = __webpack_require__(492);
+Observable_1.Observable.zip = zip_1.zip;
+//# sourceMappingURL=zip.js.map
 
 /***/ }),
 /* 351 */
@@ -51147,9 +52616,9 @@ Observable_1.Observable.prototype.auditTime = auditTime_1.auditTime;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var buffer_1 = __webpack_require__(493);
-Observable_1.Observable.prototype.buffer = buffer_1.buffer;
-//# sourceMappingURL=buffer.js.map
+var audit_1 = __webpack_require__(493);
+Observable_1.Observable.prototype.audit = audit_1.audit;
+//# sourceMappingURL=audit.js.map
 
 /***/ }),
 /* 352 */
@@ -51158,9 +52627,9 @@ Observable_1.Observable.prototype.buffer = buffer_1.buffer;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var bufferCount_1 = __webpack_require__(494);
-Observable_1.Observable.prototype.bufferCount = bufferCount_1.bufferCount;
-//# sourceMappingURL=bufferCount.js.map
+var auditTime_1 = __webpack_require__(494);
+Observable_1.Observable.prototype.auditTime = auditTime_1.auditTime;
+//# sourceMappingURL=auditTime.js.map
 
 /***/ }),
 /* 353 */
@@ -51169,9 +52638,9 @@ Observable_1.Observable.prototype.bufferCount = bufferCount_1.bufferCount;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var bufferTime_1 = __webpack_require__(495);
-Observable_1.Observable.prototype.bufferTime = bufferTime_1.bufferTime;
-//# sourceMappingURL=bufferTime.js.map
+var buffer_1 = __webpack_require__(495);
+Observable_1.Observable.prototype.buffer = buffer_1.buffer;
+//# sourceMappingURL=buffer.js.map
 
 /***/ }),
 /* 354 */
@@ -51180,9 +52649,9 @@ Observable_1.Observable.prototype.bufferTime = bufferTime_1.bufferTime;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var bufferToggle_1 = __webpack_require__(496);
-Observable_1.Observable.prototype.bufferToggle = bufferToggle_1.bufferToggle;
-//# sourceMappingURL=bufferToggle.js.map
+var bufferCount_1 = __webpack_require__(496);
+Observable_1.Observable.prototype.bufferCount = bufferCount_1.bufferCount;
+//# sourceMappingURL=bufferCount.js.map
 
 /***/ }),
 /* 355 */
@@ -51191,9 +52660,9 @@ Observable_1.Observable.prototype.bufferToggle = bufferToggle_1.bufferToggle;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var bufferWhen_1 = __webpack_require__(497);
-Observable_1.Observable.prototype.bufferWhen = bufferWhen_1.bufferWhen;
-//# sourceMappingURL=bufferWhen.js.map
+var bufferTime_1 = __webpack_require__(497);
+Observable_1.Observable.prototype.bufferTime = bufferTime_1.bufferTime;
+//# sourceMappingURL=bufferTime.js.map
 
 /***/ }),
 /* 356 */
@@ -51202,10 +52671,9 @@ Observable_1.Observable.prototype.bufferWhen = bufferWhen_1.bufferWhen;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var catch_1 = __webpack_require__(498);
-Observable_1.Observable.prototype.catch = catch_1._catch;
-Observable_1.Observable.prototype._catch = catch_1._catch;
-//# sourceMappingURL=catch.js.map
+var bufferToggle_1 = __webpack_require__(498);
+Observable_1.Observable.prototype.bufferToggle = bufferToggle_1.bufferToggle;
+//# sourceMappingURL=bufferToggle.js.map
 
 /***/ }),
 /* 357 */
@@ -51214,9 +52682,9 @@ Observable_1.Observable.prototype._catch = catch_1._catch;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var combineAll_1 = __webpack_require__(499);
-Observable_1.Observable.prototype.combineAll = combineAll_1.combineAll;
-//# sourceMappingURL=combineAll.js.map
+var bufferWhen_1 = __webpack_require__(499);
+Observable_1.Observable.prototype.bufferWhen = bufferWhen_1.bufferWhen;
+//# sourceMappingURL=bufferWhen.js.map
 
 /***/ }),
 /* 358 */
@@ -51225,9 +52693,10 @@ Observable_1.Observable.prototype.combineAll = combineAll_1.combineAll;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var combineLatest_1 = __webpack_require__(500);
-Observable_1.Observable.prototype.combineLatest = combineLatest_1.combineLatest;
-//# sourceMappingURL=combineLatest.js.map
+var catch_1 = __webpack_require__(500);
+Observable_1.Observable.prototype.catch = catch_1._catch;
+Observable_1.Observable.prototype._catch = catch_1._catch;
+//# sourceMappingURL=catch.js.map
 
 /***/ }),
 /* 359 */
@@ -51236,9 +52705,9 @@ Observable_1.Observable.prototype.combineLatest = combineLatest_1.combineLatest;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var concat_1 = __webpack_require__(501);
-Observable_1.Observable.prototype.concat = concat_1.concat;
-//# sourceMappingURL=concat.js.map
+var combineAll_1 = __webpack_require__(501);
+Observable_1.Observable.prototype.combineAll = combineAll_1.combineAll;
+//# sourceMappingURL=combineAll.js.map
 
 /***/ }),
 /* 360 */
@@ -51247,9 +52716,9 @@ Observable_1.Observable.prototype.concat = concat_1.concat;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var concatAll_1 = __webpack_require__(502);
-Observable_1.Observable.prototype.concatAll = concatAll_1.concatAll;
-//# sourceMappingURL=concatAll.js.map
+var combineLatest_1 = __webpack_require__(502);
+Observable_1.Observable.prototype.combineLatest = combineLatest_1.combineLatest;
+//# sourceMappingURL=combineLatest.js.map
 
 /***/ }),
 /* 361 */
@@ -51258,9 +52727,9 @@ Observable_1.Observable.prototype.concatAll = concatAll_1.concatAll;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var concatMap_1 = __webpack_require__(503);
-Observable_1.Observable.prototype.concatMap = concatMap_1.concatMap;
-//# sourceMappingURL=concatMap.js.map
+var concat_1 = __webpack_require__(503);
+Observable_1.Observable.prototype.concat = concat_1.concat;
+//# sourceMappingURL=concat.js.map
 
 /***/ }),
 /* 362 */
@@ -51269,9 +52738,9 @@ Observable_1.Observable.prototype.concatMap = concatMap_1.concatMap;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var concatMapTo_1 = __webpack_require__(504);
-Observable_1.Observable.prototype.concatMapTo = concatMapTo_1.concatMapTo;
-//# sourceMappingURL=concatMapTo.js.map
+var concatAll_1 = __webpack_require__(504);
+Observable_1.Observable.prototype.concatAll = concatAll_1.concatAll;
+//# sourceMappingURL=concatAll.js.map
 
 /***/ }),
 /* 363 */
@@ -51280,9 +52749,9 @@ Observable_1.Observable.prototype.concatMapTo = concatMapTo_1.concatMapTo;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var count_1 = __webpack_require__(505);
-Observable_1.Observable.prototype.count = count_1.count;
-//# sourceMappingURL=count.js.map
+var concatMap_1 = __webpack_require__(505);
+Observable_1.Observable.prototype.concatMap = concatMap_1.concatMap;
+//# sourceMappingURL=concatMap.js.map
 
 /***/ }),
 /* 364 */
@@ -51291,9 +52760,9 @@ Observable_1.Observable.prototype.count = count_1.count;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var debounce_1 = __webpack_require__(506);
-Observable_1.Observable.prototype.debounce = debounce_1.debounce;
-//# sourceMappingURL=debounce.js.map
+var concatMapTo_1 = __webpack_require__(506);
+Observable_1.Observable.prototype.concatMapTo = concatMapTo_1.concatMapTo;
+//# sourceMappingURL=concatMapTo.js.map
 
 /***/ }),
 /* 365 */
@@ -51302,9 +52771,9 @@ Observable_1.Observable.prototype.debounce = debounce_1.debounce;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var debounceTime_1 = __webpack_require__(507);
-Observable_1.Observable.prototype.debounceTime = debounceTime_1.debounceTime;
-//# sourceMappingURL=debounceTime.js.map
+var count_1 = __webpack_require__(507);
+Observable_1.Observable.prototype.count = count_1.count;
+//# sourceMappingURL=count.js.map
 
 /***/ }),
 /* 366 */
@@ -51313,9 +52782,9 @@ Observable_1.Observable.prototype.debounceTime = debounceTime_1.debounceTime;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var defaultIfEmpty_1 = __webpack_require__(508);
-Observable_1.Observable.prototype.defaultIfEmpty = defaultIfEmpty_1.defaultIfEmpty;
-//# sourceMappingURL=defaultIfEmpty.js.map
+var debounce_1 = __webpack_require__(508);
+Observable_1.Observable.prototype.debounce = debounce_1.debounce;
+//# sourceMappingURL=debounce.js.map
 
 /***/ }),
 /* 367 */
@@ -51324,9 +52793,9 @@ Observable_1.Observable.prototype.defaultIfEmpty = defaultIfEmpty_1.defaultIfEmp
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var delay_1 = __webpack_require__(509);
-Observable_1.Observable.prototype.delay = delay_1.delay;
-//# sourceMappingURL=delay.js.map
+var debounceTime_1 = __webpack_require__(509);
+Observable_1.Observable.prototype.debounceTime = debounceTime_1.debounceTime;
+//# sourceMappingURL=debounceTime.js.map
 
 /***/ }),
 /* 368 */
@@ -51335,9 +52804,9 @@ Observable_1.Observable.prototype.delay = delay_1.delay;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var delayWhen_1 = __webpack_require__(510);
-Observable_1.Observable.prototype.delayWhen = delayWhen_1.delayWhen;
-//# sourceMappingURL=delayWhen.js.map
+var defaultIfEmpty_1 = __webpack_require__(510);
+Observable_1.Observable.prototype.defaultIfEmpty = defaultIfEmpty_1.defaultIfEmpty;
+//# sourceMappingURL=defaultIfEmpty.js.map
 
 /***/ }),
 /* 369 */
@@ -51346,9 +52815,9 @@ Observable_1.Observable.prototype.delayWhen = delayWhen_1.delayWhen;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var dematerialize_1 = __webpack_require__(511);
-Observable_1.Observable.prototype.dematerialize = dematerialize_1.dematerialize;
-//# sourceMappingURL=dematerialize.js.map
+var delay_1 = __webpack_require__(511);
+Observable_1.Observable.prototype.delay = delay_1.delay;
+//# sourceMappingURL=delay.js.map
 
 /***/ }),
 /* 370 */
@@ -51357,9 +52826,9 @@ Observable_1.Observable.prototype.dematerialize = dematerialize_1.dematerialize;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var distinct_1 = __webpack_require__(512);
-Observable_1.Observable.prototype.distinct = distinct_1.distinct;
-//# sourceMappingURL=distinct.js.map
+var delayWhen_1 = __webpack_require__(512);
+Observable_1.Observable.prototype.delayWhen = delayWhen_1.delayWhen;
+//# sourceMappingURL=delayWhen.js.map
 
 /***/ }),
 /* 371 */
@@ -51368,9 +52837,9 @@ Observable_1.Observable.prototype.distinct = distinct_1.distinct;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var distinctUntilChanged_1 = __webpack_require__(513);
-Observable_1.Observable.prototype.distinctUntilChanged = distinctUntilChanged_1.distinctUntilChanged;
-//# sourceMappingURL=distinctUntilChanged.js.map
+var dematerialize_1 = __webpack_require__(513);
+Observable_1.Observable.prototype.dematerialize = dematerialize_1.dematerialize;
+//# sourceMappingURL=dematerialize.js.map
 
 /***/ }),
 /* 372 */
@@ -51379,9 +52848,9 @@ Observable_1.Observable.prototype.distinctUntilChanged = distinctUntilChanged_1.
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var distinctUntilKeyChanged_1 = __webpack_require__(514);
-Observable_1.Observable.prototype.distinctUntilKeyChanged = distinctUntilKeyChanged_1.distinctUntilKeyChanged;
-//# sourceMappingURL=distinctUntilKeyChanged.js.map
+var distinct_1 = __webpack_require__(514);
+Observable_1.Observable.prototype.distinct = distinct_1.distinct;
+//# sourceMappingURL=distinct.js.map
 
 /***/ }),
 /* 373 */
@@ -51390,10 +52859,9 @@ Observable_1.Observable.prototype.distinctUntilKeyChanged = distinctUntilKeyChan
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var do_1 = __webpack_require__(515);
-Observable_1.Observable.prototype.do = do_1._do;
-Observable_1.Observable.prototype._do = do_1._do;
-//# sourceMappingURL=do.js.map
+var distinctUntilChanged_1 = __webpack_require__(515);
+Observable_1.Observable.prototype.distinctUntilChanged = distinctUntilChanged_1.distinctUntilChanged;
+//# sourceMappingURL=distinctUntilChanged.js.map
 
 /***/ }),
 /* 374 */
@@ -51402,9 +52870,9 @@ Observable_1.Observable.prototype._do = do_1._do;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var elementAt_1 = __webpack_require__(516);
-Observable_1.Observable.prototype.elementAt = elementAt_1.elementAt;
-//# sourceMappingURL=elementAt.js.map
+var distinctUntilKeyChanged_1 = __webpack_require__(516);
+Observable_1.Observable.prototype.distinctUntilKeyChanged = distinctUntilKeyChanged_1.distinctUntilKeyChanged;
+//# sourceMappingURL=distinctUntilKeyChanged.js.map
 
 /***/ }),
 /* 375 */
@@ -51413,9 +52881,10 @@ Observable_1.Observable.prototype.elementAt = elementAt_1.elementAt;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var every_1 = __webpack_require__(517);
-Observable_1.Observable.prototype.every = every_1.every;
-//# sourceMappingURL=every.js.map
+var do_1 = __webpack_require__(517);
+Observable_1.Observable.prototype.do = do_1._do;
+Observable_1.Observable.prototype._do = do_1._do;
+//# sourceMappingURL=do.js.map
 
 /***/ }),
 /* 376 */
@@ -51424,9 +52893,9 @@ Observable_1.Observable.prototype.every = every_1.every;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var exhaust_1 = __webpack_require__(518);
-Observable_1.Observable.prototype.exhaust = exhaust_1.exhaust;
-//# sourceMappingURL=exhaust.js.map
+var elementAt_1 = __webpack_require__(518);
+Observable_1.Observable.prototype.elementAt = elementAt_1.elementAt;
+//# sourceMappingURL=elementAt.js.map
 
 /***/ }),
 /* 377 */
@@ -51435,9 +52904,9 @@ Observable_1.Observable.prototype.exhaust = exhaust_1.exhaust;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var exhaustMap_1 = __webpack_require__(519);
-Observable_1.Observable.prototype.exhaustMap = exhaustMap_1.exhaustMap;
-//# sourceMappingURL=exhaustMap.js.map
+var every_1 = __webpack_require__(519);
+Observable_1.Observable.prototype.every = every_1.every;
+//# sourceMappingURL=every.js.map
 
 /***/ }),
 /* 378 */
@@ -51446,9 +52915,9 @@ Observable_1.Observable.prototype.exhaustMap = exhaustMap_1.exhaustMap;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var expand_1 = __webpack_require__(520);
-Observable_1.Observable.prototype.expand = expand_1.expand;
-//# sourceMappingURL=expand.js.map
+var exhaust_1 = __webpack_require__(520);
+Observable_1.Observable.prototype.exhaust = exhaust_1.exhaust;
+//# sourceMappingURL=exhaust.js.map
 
 /***/ }),
 /* 379 */
@@ -51457,9 +52926,9 @@ Observable_1.Observable.prototype.expand = expand_1.expand;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var filter_1 = __webpack_require__(521);
-Observable_1.Observable.prototype.filter = filter_1.filter;
-//# sourceMappingURL=filter.js.map
+var exhaustMap_1 = __webpack_require__(521);
+Observable_1.Observable.prototype.exhaustMap = exhaustMap_1.exhaustMap;
+//# sourceMappingURL=exhaustMap.js.map
 
 /***/ }),
 /* 380 */
@@ -51468,10 +52937,9 @@ Observable_1.Observable.prototype.filter = filter_1.filter;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var finally_1 = __webpack_require__(522);
-Observable_1.Observable.prototype.finally = finally_1._finally;
-Observable_1.Observable.prototype._finally = finally_1._finally;
-//# sourceMappingURL=finally.js.map
+var expand_1 = __webpack_require__(522);
+Observable_1.Observable.prototype.expand = expand_1.expand;
+//# sourceMappingURL=expand.js.map
 
 /***/ }),
 /* 381 */
@@ -51480,9 +52948,9 @@ Observable_1.Observable.prototype._finally = finally_1._finally;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var find_1 = __webpack_require__(523);
-Observable_1.Observable.prototype.find = find_1.find;
-//# sourceMappingURL=find.js.map
+var filter_1 = __webpack_require__(523);
+Observable_1.Observable.prototype.filter = filter_1.filter;
+//# sourceMappingURL=filter.js.map
 
 /***/ }),
 /* 382 */
@@ -51491,9 +52959,10 @@ Observable_1.Observable.prototype.find = find_1.find;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var findIndex_1 = __webpack_require__(524);
-Observable_1.Observable.prototype.findIndex = findIndex_1.findIndex;
-//# sourceMappingURL=findIndex.js.map
+var finally_1 = __webpack_require__(524);
+Observable_1.Observable.prototype.finally = finally_1._finally;
+Observable_1.Observable.prototype._finally = finally_1._finally;
+//# sourceMappingURL=finally.js.map
 
 /***/ }),
 /* 383 */
@@ -51502,9 +52971,9 @@ Observable_1.Observable.prototype.findIndex = findIndex_1.findIndex;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var first_1 = __webpack_require__(525);
-Observable_1.Observable.prototype.first = first_1.first;
-//# sourceMappingURL=first.js.map
+var find_1 = __webpack_require__(525);
+Observable_1.Observable.prototype.find = find_1.find;
+//# sourceMappingURL=find.js.map
 
 /***/ }),
 /* 384 */
@@ -51513,9 +52982,9 @@ Observable_1.Observable.prototype.first = first_1.first;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var groupBy_1 = __webpack_require__(526);
-Observable_1.Observable.prototype.groupBy = groupBy_1.groupBy;
-//# sourceMappingURL=groupBy.js.map
+var findIndex_1 = __webpack_require__(526);
+Observable_1.Observable.prototype.findIndex = findIndex_1.findIndex;
+//# sourceMappingURL=findIndex.js.map
 
 /***/ }),
 /* 385 */
@@ -51524,9 +52993,9 @@ Observable_1.Observable.prototype.groupBy = groupBy_1.groupBy;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var ignoreElements_1 = __webpack_require__(527);
-Observable_1.Observable.prototype.ignoreElements = ignoreElements_1.ignoreElements;
-//# sourceMappingURL=ignoreElements.js.map
+var first_1 = __webpack_require__(527);
+Observable_1.Observable.prototype.first = first_1.first;
+//# sourceMappingURL=first.js.map
 
 /***/ }),
 /* 386 */
@@ -51535,9 +53004,9 @@ Observable_1.Observable.prototype.ignoreElements = ignoreElements_1.ignoreElemen
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var isEmpty_1 = __webpack_require__(528);
-Observable_1.Observable.prototype.isEmpty = isEmpty_1.isEmpty;
-//# sourceMappingURL=isEmpty.js.map
+var groupBy_1 = __webpack_require__(528);
+Observable_1.Observable.prototype.groupBy = groupBy_1.groupBy;
+//# sourceMappingURL=groupBy.js.map
 
 /***/ }),
 /* 387 */
@@ -51546,9 +53015,9 @@ Observable_1.Observable.prototype.isEmpty = isEmpty_1.isEmpty;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var last_1 = __webpack_require__(529);
-Observable_1.Observable.prototype.last = last_1.last;
-//# sourceMappingURL=last.js.map
+var ignoreElements_1 = __webpack_require__(529);
+Observable_1.Observable.prototype.ignoreElements = ignoreElements_1.ignoreElements;
+//# sourceMappingURL=ignoreElements.js.map
 
 /***/ }),
 /* 388 */
@@ -51557,10 +53026,9 @@ Observable_1.Observable.prototype.last = last_1.last;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var let_1 = __webpack_require__(530);
-Observable_1.Observable.prototype.let = let_1.letProto;
-Observable_1.Observable.prototype.letBind = let_1.letProto;
-//# sourceMappingURL=let.js.map
+var isEmpty_1 = __webpack_require__(530);
+Observable_1.Observable.prototype.isEmpty = isEmpty_1.isEmpty;
+//# sourceMappingURL=isEmpty.js.map
 
 /***/ }),
 /* 389 */
@@ -51569,9 +53037,9 @@ Observable_1.Observable.prototype.letBind = let_1.letProto;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var map_1 = __webpack_require__(531);
-Observable_1.Observable.prototype.map = map_1.map;
-//# sourceMappingURL=map.js.map
+var last_1 = __webpack_require__(531);
+Observable_1.Observable.prototype.last = last_1.last;
+//# sourceMappingURL=last.js.map
 
 /***/ }),
 /* 390 */
@@ -51580,9 +53048,10 @@ Observable_1.Observable.prototype.map = map_1.map;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var mapTo_1 = __webpack_require__(532);
-Observable_1.Observable.prototype.mapTo = mapTo_1.mapTo;
-//# sourceMappingURL=mapTo.js.map
+var let_1 = __webpack_require__(532);
+Observable_1.Observable.prototype.let = let_1.letProto;
+Observable_1.Observable.prototype.letBind = let_1.letProto;
+//# sourceMappingURL=let.js.map
 
 /***/ }),
 /* 391 */
@@ -51591,9 +53060,9 @@ Observable_1.Observable.prototype.mapTo = mapTo_1.mapTo;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var materialize_1 = __webpack_require__(533);
-Observable_1.Observable.prototype.materialize = materialize_1.materialize;
-//# sourceMappingURL=materialize.js.map
+var map_1 = __webpack_require__(533);
+Observable_1.Observable.prototype.map = map_1.map;
+//# sourceMappingURL=map.js.map
 
 /***/ }),
 /* 392 */
@@ -51602,9 +53071,9 @@ Observable_1.Observable.prototype.materialize = materialize_1.materialize;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var max_1 = __webpack_require__(534);
-Observable_1.Observable.prototype.max = max_1.max;
-//# sourceMappingURL=max.js.map
+var mapTo_1 = __webpack_require__(534);
+Observable_1.Observable.prototype.mapTo = mapTo_1.mapTo;
+//# sourceMappingURL=mapTo.js.map
 
 /***/ }),
 /* 393 */
@@ -51613,9 +53082,9 @@ Observable_1.Observable.prototype.max = max_1.max;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var merge_1 = __webpack_require__(535);
-Observable_1.Observable.prototype.merge = merge_1.merge;
-//# sourceMappingURL=merge.js.map
+var materialize_1 = __webpack_require__(535);
+Observable_1.Observable.prototype.materialize = materialize_1.materialize;
+//# sourceMappingURL=materialize.js.map
 
 /***/ }),
 /* 394 */
@@ -51624,9 +53093,9 @@ Observable_1.Observable.prototype.merge = merge_1.merge;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var mergeAll_1 = __webpack_require__(536);
-Observable_1.Observable.prototype.mergeAll = mergeAll_1.mergeAll;
-//# sourceMappingURL=mergeAll.js.map
+var max_1 = __webpack_require__(536);
+Observable_1.Observable.prototype.max = max_1.max;
+//# sourceMappingURL=max.js.map
 
 /***/ }),
 /* 395 */
@@ -51635,10 +53104,9 @@ Observable_1.Observable.prototype.mergeAll = mergeAll_1.mergeAll;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var mergeMap_1 = __webpack_require__(537);
-Observable_1.Observable.prototype.mergeMap = mergeMap_1.mergeMap;
-Observable_1.Observable.prototype.flatMap = mergeMap_1.mergeMap;
-//# sourceMappingURL=mergeMap.js.map
+var merge_1 = __webpack_require__(537);
+Observable_1.Observable.prototype.merge = merge_1.merge;
+//# sourceMappingURL=merge.js.map
 
 /***/ }),
 /* 396 */
@@ -51647,10 +53115,9 @@ Observable_1.Observable.prototype.flatMap = mergeMap_1.mergeMap;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var mergeMapTo_1 = __webpack_require__(538);
-Observable_1.Observable.prototype.flatMapTo = mergeMapTo_1.mergeMapTo;
-Observable_1.Observable.prototype.mergeMapTo = mergeMapTo_1.mergeMapTo;
-//# sourceMappingURL=mergeMapTo.js.map
+var mergeAll_1 = __webpack_require__(538);
+Observable_1.Observable.prototype.mergeAll = mergeAll_1.mergeAll;
+//# sourceMappingURL=mergeAll.js.map
 
 /***/ }),
 /* 397 */
@@ -51659,9 +53126,10 @@ Observable_1.Observable.prototype.mergeMapTo = mergeMapTo_1.mergeMapTo;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var mergeScan_1 = __webpack_require__(539);
-Observable_1.Observable.prototype.mergeScan = mergeScan_1.mergeScan;
-//# sourceMappingURL=mergeScan.js.map
+var mergeMap_1 = __webpack_require__(539);
+Observable_1.Observable.prototype.mergeMap = mergeMap_1.mergeMap;
+Observable_1.Observable.prototype.flatMap = mergeMap_1.mergeMap;
+//# sourceMappingURL=mergeMap.js.map
 
 /***/ }),
 /* 398 */
@@ -51670,9 +53138,10 @@ Observable_1.Observable.prototype.mergeScan = mergeScan_1.mergeScan;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var min_1 = __webpack_require__(540);
-Observable_1.Observable.prototype.min = min_1.min;
-//# sourceMappingURL=min.js.map
+var mergeMapTo_1 = __webpack_require__(540);
+Observable_1.Observable.prototype.flatMapTo = mergeMapTo_1.mergeMapTo;
+Observable_1.Observable.prototype.mergeMapTo = mergeMapTo_1.mergeMapTo;
+//# sourceMappingURL=mergeMapTo.js.map
 
 /***/ }),
 /* 399 */
@@ -51681,9 +53150,9 @@ Observable_1.Observable.prototype.min = min_1.min;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var multicast_1 = __webpack_require__(541);
-Observable_1.Observable.prototype.multicast = multicast_1.multicast;
-//# sourceMappingURL=multicast.js.map
+var mergeScan_1 = __webpack_require__(541);
+Observable_1.Observable.prototype.mergeScan = mergeScan_1.mergeScan;
+//# sourceMappingURL=mergeScan.js.map
 
 /***/ }),
 /* 400 */
@@ -51692,9 +53161,9 @@ Observable_1.Observable.prototype.multicast = multicast_1.multicast;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var observeOn_1 = __webpack_require__(542);
-Observable_1.Observable.prototype.observeOn = observeOn_1.observeOn;
-//# sourceMappingURL=observeOn.js.map
+var min_1 = __webpack_require__(542);
+Observable_1.Observable.prototype.min = min_1.min;
+//# sourceMappingURL=min.js.map
 
 /***/ }),
 /* 401 */
@@ -51703,9 +53172,9 @@ Observable_1.Observable.prototype.observeOn = observeOn_1.observeOn;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var onErrorResumeNext_1 = __webpack_require__(543);
-Observable_1.Observable.prototype.onErrorResumeNext = onErrorResumeNext_1.onErrorResumeNext;
-//# sourceMappingURL=onErrorResumeNext.js.map
+var multicast_1 = __webpack_require__(543);
+Observable_1.Observable.prototype.multicast = multicast_1.multicast;
+//# sourceMappingURL=multicast.js.map
 
 /***/ }),
 /* 402 */
@@ -51714,9 +53183,9 @@ Observable_1.Observable.prototype.onErrorResumeNext = onErrorResumeNext_1.onErro
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var pairwise_1 = __webpack_require__(544);
-Observable_1.Observable.prototype.pairwise = pairwise_1.pairwise;
-//# sourceMappingURL=pairwise.js.map
+var observeOn_1 = __webpack_require__(544);
+Observable_1.Observable.prototype.observeOn = observeOn_1.observeOn;
+//# sourceMappingURL=observeOn.js.map
 
 /***/ }),
 /* 403 */
@@ -51725,9 +53194,9 @@ Observable_1.Observable.prototype.pairwise = pairwise_1.pairwise;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var partition_1 = __webpack_require__(545);
-Observable_1.Observable.prototype.partition = partition_1.partition;
-//# sourceMappingURL=partition.js.map
+var onErrorResumeNext_1 = __webpack_require__(545);
+Observable_1.Observable.prototype.onErrorResumeNext = onErrorResumeNext_1.onErrorResumeNext;
+//# sourceMappingURL=onErrorResumeNext.js.map
 
 /***/ }),
 /* 404 */
@@ -51736,9 +53205,9 @@ Observable_1.Observable.prototype.partition = partition_1.partition;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var pluck_1 = __webpack_require__(546);
-Observable_1.Observable.prototype.pluck = pluck_1.pluck;
-//# sourceMappingURL=pluck.js.map
+var pairwise_1 = __webpack_require__(546);
+Observable_1.Observable.prototype.pairwise = pairwise_1.pairwise;
+//# sourceMappingURL=pairwise.js.map
 
 /***/ }),
 /* 405 */
@@ -51747,9 +53216,9 @@ Observable_1.Observable.prototype.pluck = pluck_1.pluck;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var publish_1 = __webpack_require__(547);
-Observable_1.Observable.prototype.publish = publish_1.publish;
-//# sourceMappingURL=publish.js.map
+var partition_1 = __webpack_require__(547);
+Observable_1.Observable.prototype.partition = partition_1.partition;
+//# sourceMappingURL=partition.js.map
 
 /***/ }),
 /* 406 */
@@ -51758,9 +53227,9 @@ Observable_1.Observable.prototype.publish = publish_1.publish;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var publishBehavior_1 = __webpack_require__(548);
-Observable_1.Observable.prototype.publishBehavior = publishBehavior_1.publishBehavior;
-//# sourceMappingURL=publishBehavior.js.map
+var pluck_1 = __webpack_require__(548);
+Observable_1.Observable.prototype.pluck = pluck_1.pluck;
+//# sourceMappingURL=pluck.js.map
 
 /***/ }),
 /* 407 */
@@ -51769,9 +53238,9 @@ Observable_1.Observable.prototype.publishBehavior = publishBehavior_1.publishBeh
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var publishLast_1 = __webpack_require__(549);
-Observable_1.Observable.prototype.publishLast = publishLast_1.publishLast;
-//# sourceMappingURL=publishLast.js.map
+var publish_1 = __webpack_require__(549);
+Observable_1.Observable.prototype.publish = publish_1.publish;
+//# sourceMappingURL=publish.js.map
 
 /***/ }),
 /* 408 */
@@ -51780,9 +53249,9 @@ Observable_1.Observable.prototype.publishLast = publishLast_1.publishLast;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var publishReplay_1 = __webpack_require__(550);
-Observable_1.Observable.prototype.publishReplay = publishReplay_1.publishReplay;
-//# sourceMappingURL=publishReplay.js.map
+var publishBehavior_1 = __webpack_require__(550);
+Observable_1.Observable.prototype.publishBehavior = publishBehavior_1.publishBehavior;
+//# sourceMappingURL=publishBehavior.js.map
 
 /***/ }),
 /* 409 */
@@ -51791,9 +53260,9 @@ Observable_1.Observable.prototype.publishReplay = publishReplay_1.publishReplay;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var race_1 = __webpack_require__(551);
-Observable_1.Observable.prototype.race = race_1.race;
-//# sourceMappingURL=race.js.map
+var publishLast_1 = __webpack_require__(551);
+Observable_1.Observable.prototype.publishLast = publishLast_1.publishLast;
+//# sourceMappingURL=publishLast.js.map
 
 /***/ }),
 /* 410 */
@@ -51802,9 +53271,9 @@ Observable_1.Observable.prototype.race = race_1.race;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var reduce_1 = __webpack_require__(552);
-Observable_1.Observable.prototype.reduce = reduce_1.reduce;
-//# sourceMappingURL=reduce.js.map
+var publishReplay_1 = __webpack_require__(552);
+Observable_1.Observable.prototype.publishReplay = publishReplay_1.publishReplay;
+//# sourceMappingURL=publishReplay.js.map
 
 /***/ }),
 /* 411 */
@@ -51813,9 +53282,9 @@ Observable_1.Observable.prototype.reduce = reduce_1.reduce;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var repeat_1 = __webpack_require__(553);
-Observable_1.Observable.prototype.repeat = repeat_1.repeat;
-//# sourceMappingURL=repeat.js.map
+var race_1 = __webpack_require__(553);
+Observable_1.Observable.prototype.race = race_1.race;
+//# sourceMappingURL=race.js.map
 
 /***/ }),
 /* 412 */
@@ -51824,9 +53293,9 @@ Observable_1.Observable.prototype.repeat = repeat_1.repeat;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var repeatWhen_1 = __webpack_require__(554);
-Observable_1.Observable.prototype.repeatWhen = repeatWhen_1.repeatWhen;
-//# sourceMappingURL=repeatWhen.js.map
+var reduce_1 = __webpack_require__(554);
+Observable_1.Observable.prototype.reduce = reduce_1.reduce;
+//# sourceMappingURL=reduce.js.map
 
 /***/ }),
 /* 413 */
@@ -51835,9 +53304,9 @@ Observable_1.Observable.prototype.repeatWhen = repeatWhen_1.repeatWhen;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var retry_1 = __webpack_require__(555);
-Observable_1.Observable.prototype.retry = retry_1.retry;
-//# sourceMappingURL=retry.js.map
+var repeat_1 = __webpack_require__(555);
+Observable_1.Observable.prototype.repeat = repeat_1.repeat;
+//# sourceMappingURL=repeat.js.map
 
 /***/ }),
 /* 414 */
@@ -51846,9 +53315,9 @@ Observable_1.Observable.prototype.retry = retry_1.retry;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var retryWhen_1 = __webpack_require__(556);
-Observable_1.Observable.prototype.retryWhen = retryWhen_1.retryWhen;
-//# sourceMappingURL=retryWhen.js.map
+var repeatWhen_1 = __webpack_require__(556);
+Observable_1.Observable.prototype.repeatWhen = repeatWhen_1.repeatWhen;
+//# sourceMappingURL=repeatWhen.js.map
 
 /***/ }),
 /* 415 */
@@ -51857,9 +53326,9 @@ Observable_1.Observable.prototype.retryWhen = retryWhen_1.retryWhen;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var sample_1 = __webpack_require__(557);
-Observable_1.Observable.prototype.sample = sample_1.sample;
-//# sourceMappingURL=sample.js.map
+var retry_1 = __webpack_require__(557);
+Observable_1.Observable.prototype.retry = retry_1.retry;
+//# sourceMappingURL=retry.js.map
 
 /***/ }),
 /* 416 */
@@ -51868,9 +53337,9 @@ Observable_1.Observable.prototype.sample = sample_1.sample;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var sampleTime_1 = __webpack_require__(558);
-Observable_1.Observable.prototype.sampleTime = sampleTime_1.sampleTime;
-//# sourceMappingURL=sampleTime.js.map
+var retryWhen_1 = __webpack_require__(558);
+Observable_1.Observable.prototype.retryWhen = retryWhen_1.retryWhen;
+//# sourceMappingURL=retryWhen.js.map
 
 /***/ }),
 /* 417 */
@@ -51879,9 +53348,9 @@ Observable_1.Observable.prototype.sampleTime = sampleTime_1.sampleTime;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var scan_1 = __webpack_require__(559);
-Observable_1.Observable.prototype.scan = scan_1.scan;
-//# sourceMappingURL=scan.js.map
+var sample_1 = __webpack_require__(559);
+Observable_1.Observable.prototype.sample = sample_1.sample;
+//# sourceMappingURL=sample.js.map
 
 /***/ }),
 /* 418 */
@@ -51890,9 +53359,9 @@ Observable_1.Observable.prototype.scan = scan_1.scan;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var sequenceEqual_1 = __webpack_require__(560);
-Observable_1.Observable.prototype.sequenceEqual = sequenceEqual_1.sequenceEqual;
-//# sourceMappingURL=sequenceEqual.js.map
+var sampleTime_1 = __webpack_require__(560);
+Observable_1.Observable.prototype.sampleTime = sampleTime_1.sampleTime;
+//# sourceMappingURL=sampleTime.js.map
 
 /***/ }),
 /* 419 */
@@ -51901,9 +53370,9 @@ Observable_1.Observable.prototype.sequenceEqual = sequenceEqual_1.sequenceEqual;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var share_1 = __webpack_require__(561);
-Observable_1.Observable.prototype.share = share_1.share;
-//# sourceMappingURL=share.js.map
+var scan_1 = __webpack_require__(561);
+Observable_1.Observable.prototype.scan = scan_1.scan;
+//# sourceMappingURL=scan.js.map
 
 /***/ }),
 /* 420 */
@@ -51912,9 +53381,9 @@ Observable_1.Observable.prototype.share = share_1.share;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var shareReplay_1 = __webpack_require__(562);
-Observable_1.Observable.prototype.shareReplay = shareReplay_1.shareReplay;
-//# sourceMappingURL=shareReplay.js.map
+var sequenceEqual_1 = __webpack_require__(562);
+Observable_1.Observable.prototype.sequenceEqual = sequenceEqual_1.sequenceEqual;
+//# sourceMappingURL=sequenceEqual.js.map
 
 /***/ }),
 /* 421 */
@@ -51923,9 +53392,9 @@ Observable_1.Observable.prototype.shareReplay = shareReplay_1.shareReplay;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var single_1 = __webpack_require__(563);
-Observable_1.Observable.prototype.single = single_1.single;
-//# sourceMappingURL=single.js.map
+var share_1 = __webpack_require__(563);
+Observable_1.Observable.prototype.share = share_1.share;
+//# sourceMappingURL=share.js.map
 
 /***/ }),
 /* 422 */
@@ -51934,9 +53403,9 @@ Observable_1.Observable.prototype.single = single_1.single;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var skip_1 = __webpack_require__(564);
-Observable_1.Observable.prototype.skip = skip_1.skip;
-//# sourceMappingURL=skip.js.map
+var shareReplay_1 = __webpack_require__(564);
+Observable_1.Observable.prototype.shareReplay = shareReplay_1.shareReplay;
+//# sourceMappingURL=shareReplay.js.map
 
 /***/ }),
 /* 423 */
@@ -51945,9 +53414,9 @@ Observable_1.Observable.prototype.skip = skip_1.skip;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var skipLast_1 = __webpack_require__(565);
-Observable_1.Observable.prototype.skipLast = skipLast_1.skipLast;
-//# sourceMappingURL=skipLast.js.map
+var single_1 = __webpack_require__(565);
+Observable_1.Observable.prototype.single = single_1.single;
+//# sourceMappingURL=single.js.map
 
 /***/ }),
 /* 424 */
@@ -51956,9 +53425,9 @@ Observable_1.Observable.prototype.skipLast = skipLast_1.skipLast;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var skipUntil_1 = __webpack_require__(566);
-Observable_1.Observable.prototype.skipUntil = skipUntil_1.skipUntil;
-//# sourceMappingURL=skipUntil.js.map
+var skip_1 = __webpack_require__(566);
+Observable_1.Observable.prototype.skip = skip_1.skip;
+//# sourceMappingURL=skip.js.map
 
 /***/ }),
 /* 425 */
@@ -51967,9 +53436,9 @@ Observable_1.Observable.prototype.skipUntil = skipUntil_1.skipUntil;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var skipWhile_1 = __webpack_require__(567);
-Observable_1.Observable.prototype.skipWhile = skipWhile_1.skipWhile;
-//# sourceMappingURL=skipWhile.js.map
+var skipLast_1 = __webpack_require__(567);
+Observable_1.Observable.prototype.skipLast = skipLast_1.skipLast;
+//# sourceMappingURL=skipLast.js.map
 
 /***/ }),
 /* 426 */
@@ -51978,9 +53447,9 @@ Observable_1.Observable.prototype.skipWhile = skipWhile_1.skipWhile;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var startWith_1 = __webpack_require__(568);
-Observable_1.Observable.prototype.startWith = startWith_1.startWith;
-//# sourceMappingURL=startWith.js.map
+var skipUntil_1 = __webpack_require__(568);
+Observable_1.Observable.prototype.skipUntil = skipUntil_1.skipUntil;
+//# sourceMappingURL=skipUntil.js.map
 
 /***/ }),
 /* 427 */
@@ -51989,9 +53458,9 @@ Observable_1.Observable.prototype.startWith = startWith_1.startWith;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var subscribeOn_1 = __webpack_require__(569);
-Observable_1.Observable.prototype.subscribeOn = subscribeOn_1.subscribeOn;
-//# sourceMappingURL=subscribeOn.js.map
+var skipWhile_1 = __webpack_require__(569);
+Observable_1.Observable.prototype.skipWhile = skipWhile_1.skipWhile;
+//# sourceMappingURL=skipWhile.js.map
 
 /***/ }),
 /* 428 */
@@ -52000,10 +53469,9 @@ Observable_1.Observable.prototype.subscribeOn = subscribeOn_1.subscribeOn;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var switch_1 = __webpack_require__(570);
-Observable_1.Observable.prototype.switch = switch_1._switch;
-Observable_1.Observable.prototype._switch = switch_1._switch;
-//# sourceMappingURL=switch.js.map
+var startWith_1 = __webpack_require__(570);
+Observable_1.Observable.prototype.startWith = startWith_1.startWith;
+//# sourceMappingURL=startWith.js.map
 
 /***/ }),
 /* 429 */
@@ -52012,9 +53480,9 @@ Observable_1.Observable.prototype._switch = switch_1._switch;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var switchMap_1 = __webpack_require__(571);
-Observable_1.Observable.prototype.switchMap = switchMap_1.switchMap;
-//# sourceMappingURL=switchMap.js.map
+var subscribeOn_1 = __webpack_require__(571);
+Observable_1.Observable.prototype.subscribeOn = subscribeOn_1.subscribeOn;
+//# sourceMappingURL=subscribeOn.js.map
 
 /***/ }),
 /* 430 */
@@ -52023,9 +53491,10 @@ Observable_1.Observable.prototype.switchMap = switchMap_1.switchMap;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var switchMapTo_1 = __webpack_require__(572);
-Observable_1.Observable.prototype.switchMapTo = switchMapTo_1.switchMapTo;
-//# sourceMappingURL=switchMapTo.js.map
+var switch_1 = __webpack_require__(572);
+Observable_1.Observable.prototype.switch = switch_1._switch;
+Observable_1.Observable.prototype._switch = switch_1._switch;
+//# sourceMappingURL=switch.js.map
 
 /***/ }),
 /* 431 */
@@ -52034,9 +53503,9 @@ Observable_1.Observable.prototype.switchMapTo = switchMapTo_1.switchMapTo;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var take_1 = __webpack_require__(573);
-Observable_1.Observable.prototype.take = take_1.take;
-//# sourceMappingURL=take.js.map
+var switchMap_1 = __webpack_require__(573);
+Observable_1.Observable.prototype.switchMap = switchMap_1.switchMap;
+//# sourceMappingURL=switchMap.js.map
 
 /***/ }),
 /* 432 */
@@ -52045,9 +53514,9 @@ Observable_1.Observable.prototype.take = take_1.take;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var takeLast_1 = __webpack_require__(574);
-Observable_1.Observable.prototype.takeLast = takeLast_1.takeLast;
-//# sourceMappingURL=takeLast.js.map
+var switchMapTo_1 = __webpack_require__(574);
+Observable_1.Observable.prototype.switchMapTo = switchMapTo_1.switchMapTo;
+//# sourceMappingURL=switchMapTo.js.map
 
 /***/ }),
 /* 433 */
@@ -52056,9 +53525,9 @@ Observable_1.Observable.prototype.takeLast = takeLast_1.takeLast;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var takeUntil_1 = __webpack_require__(575);
-Observable_1.Observable.prototype.takeUntil = takeUntil_1.takeUntil;
-//# sourceMappingURL=takeUntil.js.map
+var take_1 = __webpack_require__(575);
+Observable_1.Observable.prototype.take = take_1.take;
+//# sourceMappingURL=take.js.map
 
 /***/ }),
 /* 434 */
@@ -52067,9 +53536,9 @@ Observable_1.Observable.prototype.takeUntil = takeUntil_1.takeUntil;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var takeWhile_1 = __webpack_require__(576);
-Observable_1.Observable.prototype.takeWhile = takeWhile_1.takeWhile;
-//# sourceMappingURL=takeWhile.js.map
+var takeLast_1 = __webpack_require__(576);
+Observable_1.Observable.prototype.takeLast = takeLast_1.takeLast;
+//# sourceMappingURL=takeLast.js.map
 
 /***/ }),
 /* 435 */
@@ -52078,9 +53547,9 @@ Observable_1.Observable.prototype.takeWhile = takeWhile_1.takeWhile;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var throttle_1 = __webpack_require__(577);
-Observable_1.Observable.prototype.throttle = throttle_1.throttle;
-//# sourceMappingURL=throttle.js.map
+var takeUntil_1 = __webpack_require__(577);
+Observable_1.Observable.prototype.takeUntil = takeUntil_1.takeUntil;
+//# sourceMappingURL=takeUntil.js.map
 
 /***/ }),
 /* 436 */
@@ -52089,9 +53558,9 @@ Observable_1.Observable.prototype.throttle = throttle_1.throttle;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var throttleTime_1 = __webpack_require__(578);
-Observable_1.Observable.prototype.throttleTime = throttleTime_1.throttleTime;
-//# sourceMappingURL=throttleTime.js.map
+var takeWhile_1 = __webpack_require__(578);
+Observable_1.Observable.prototype.takeWhile = takeWhile_1.takeWhile;
+//# sourceMappingURL=takeWhile.js.map
 
 /***/ }),
 /* 437 */
@@ -52100,9 +53569,9 @@ Observable_1.Observable.prototype.throttleTime = throttleTime_1.throttleTime;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var timeInterval_1 = __webpack_require__(203);
-Observable_1.Observable.prototype.timeInterval = timeInterval_1.timeInterval;
-//# sourceMappingURL=timeInterval.js.map
+var throttle_1 = __webpack_require__(579);
+Observable_1.Observable.prototype.throttle = throttle_1.throttle;
+//# sourceMappingURL=throttle.js.map
 
 /***/ }),
 /* 438 */
@@ -52111,9 +53580,9 @@ Observable_1.Observable.prototype.timeInterval = timeInterval_1.timeInterval;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var timeout_1 = __webpack_require__(579);
-Observable_1.Observable.prototype.timeout = timeout_1.timeout;
-//# sourceMappingURL=timeout.js.map
+var throttleTime_1 = __webpack_require__(580);
+Observable_1.Observable.prototype.throttleTime = throttleTime_1.throttleTime;
+//# sourceMappingURL=throttleTime.js.map
 
 /***/ }),
 /* 439 */
@@ -52122,9 +53591,9 @@ Observable_1.Observable.prototype.timeout = timeout_1.timeout;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var timeoutWith_1 = __webpack_require__(580);
-Observable_1.Observable.prototype.timeoutWith = timeoutWith_1.timeoutWith;
-//# sourceMappingURL=timeoutWith.js.map
+var timeInterval_1 = __webpack_require__(204);
+Observable_1.Observable.prototype.timeInterval = timeInterval_1.timeInterval;
+//# sourceMappingURL=timeInterval.js.map
 
 /***/ }),
 /* 440 */
@@ -52133,9 +53602,9 @@ Observable_1.Observable.prototype.timeoutWith = timeoutWith_1.timeoutWith;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var timestamp_1 = __webpack_require__(581);
-Observable_1.Observable.prototype.timestamp = timestamp_1.timestamp;
-//# sourceMappingURL=timestamp.js.map
+var timeout_1 = __webpack_require__(581);
+Observable_1.Observable.prototype.timeout = timeout_1.timeout;
+//# sourceMappingURL=timeout.js.map
 
 /***/ }),
 /* 441 */
@@ -52144,17 +53613,20 @@ Observable_1.Observable.prototype.timestamp = timestamp_1.timestamp;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var toArray_1 = __webpack_require__(582);
-Observable_1.Observable.prototype.toArray = toArray_1.toArray;
-//# sourceMappingURL=toArray.js.map
+var timeoutWith_1 = __webpack_require__(582);
+Observable_1.Observable.prototype.timeoutWith = timeoutWith_1.timeoutWith;
+//# sourceMappingURL=timeoutWith.js.map
 
 /***/ }),
 /* 442 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-// HACK: does nothing, because `toPromise` now lives on the `Observable` itself.
-// leaving this module here to prevent breakage.
-//# sourceMappingURL=toPromise.js.map
+"use strict";
+
+var Observable_1 = __webpack_require__(0);
+var timestamp_1 = __webpack_require__(583);
+Observable_1.Observable.prototype.timestamp = timestamp_1.timestamp;
+//# sourceMappingURL=timestamp.js.map
 
 /***/ }),
 /* 443 */
@@ -52163,20 +53635,17 @@ Observable_1.Observable.prototype.toArray = toArray_1.toArray;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var window_1 = __webpack_require__(583);
-Observable_1.Observable.prototype.window = window_1.window;
-//# sourceMappingURL=window.js.map
+var toArray_1 = __webpack_require__(584);
+Observable_1.Observable.prototype.toArray = toArray_1.toArray;
+//# sourceMappingURL=toArray.js.map
 
 /***/ }),
 /* 444 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-"use strict";
-
-var Observable_1 = __webpack_require__(0);
-var windowCount_1 = __webpack_require__(584);
-Observable_1.Observable.prototype.windowCount = windowCount_1.windowCount;
-//# sourceMappingURL=windowCount.js.map
+// HACK: does nothing, because `toPromise` now lives on the `Observable` itself.
+// leaving this module here to prevent breakage.
+//# sourceMappingURL=toPromise.js.map
 
 /***/ }),
 /* 445 */
@@ -52185,9 +53654,9 @@ Observable_1.Observable.prototype.windowCount = windowCount_1.windowCount;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var windowTime_1 = __webpack_require__(585);
-Observable_1.Observable.prototype.windowTime = windowTime_1.windowTime;
-//# sourceMappingURL=windowTime.js.map
+var window_1 = __webpack_require__(585);
+Observable_1.Observable.prototype.window = window_1.window;
+//# sourceMappingURL=window.js.map
 
 /***/ }),
 /* 446 */
@@ -52196,9 +53665,9 @@ Observable_1.Observable.prototype.windowTime = windowTime_1.windowTime;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var windowToggle_1 = __webpack_require__(586);
-Observable_1.Observable.prototype.windowToggle = windowToggle_1.windowToggle;
-//# sourceMappingURL=windowToggle.js.map
+var windowCount_1 = __webpack_require__(586);
+Observable_1.Observable.prototype.windowCount = windowCount_1.windowCount;
+//# sourceMappingURL=windowCount.js.map
 
 /***/ }),
 /* 447 */
@@ -52207,9 +53676,9 @@ Observable_1.Observable.prototype.windowToggle = windowToggle_1.windowToggle;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var windowWhen_1 = __webpack_require__(587);
-Observable_1.Observable.prototype.windowWhen = windowWhen_1.windowWhen;
-//# sourceMappingURL=windowWhen.js.map
+var windowTime_1 = __webpack_require__(587);
+Observable_1.Observable.prototype.windowTime = windowTime_1.windowTime;
+//# sourceMappingURL=windowTime.js.map
 
 /***/ }),
 /* 448 */
@@ -52218,9 +53687,9 @@ Observable_1.Observable.prototype.windowWhen = windowWhen_1.windowWhen;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var withLatestFrom_1 = __webpack_require__(588);
-Observable_1.Observable.prototype.withLatestFrom = withLatestFrom_1.withLatestFrom;
-//# sourceMappingURL=withLatestFrom.js.map
+var windowToggle_1 = __webpack_require__(588);
+Observable_1.Observable.prototype.windowToggle = windowToggle_1.windowToggle;
+//# sourceMappingURL=windowToggle.js.map
 
 /***/ }),
 /* 449 */
@@ -52229,9 +53698,9 @@ Observable_1.Observable.prototype.withLatestFrom = withLatestFrom_1.withLatestFr
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var zip_1 = __webpack_require__(589);
-Observable_1.Observable.prototype.zip = zip_1.zipProto;
-//# sourceMappingURL=zip.js.map
+var windowWhen_1 = __webpack_require__(589);
+Observable_1.Observable.prototype.windowWhen = windowWhen_1.windowWhen;
+//# sourceMappingURL=windowWhen.js.map
 
 /***/ }),
 /* 450 */
@@ -52240,12 +53709,34 @@ Observable_1.Observable.prototype.zip = zip_1.zipProto;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var zipAll_1 = __webpack_require__(590);
+var withLatestFrom_1 = __webpack_require__(590);
+Observable_1.Observable.prototype.withLatestFrom = withLatestFrom_1.withLatestFrom;
+//# sourceMappingURL=withLatestFrom.js.map
+
+/***/ }),
+/* 451 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var Observable_1 = __webpack_require__(0);
+var zip_1 = __webpack_require__(591);
+Observable_1.Observable.prototype.zip = zip_1.zipProto;
+//# sourceMappingURL=zip.js.map
+
+/***/ }),
+/* 452 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var Observable_1 = __webpack_require__(0);
+var zipAll_1 = __webpack_require__(592);
 Observable_1.Observable.prototype.zipAll = zipAll_1.zipAll;
 //# sourceMappingURL=zipAll.js.map
 
 /***/ }),
-/* 451 */
+/* 453 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -52321,7 +53812,7 @@ exports.ArrayLikeObservable = ArrayLikeObservable;
 //# sourceMappingURL=ArrayLikeObservable.js.map
 
 /***/ }),
-/* 452 */
+/* 454 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -52591,7 +54082,7 @@ function dispatchError(arg) {
 //# sourceMappingURL=BoundCallbackObservable.js.map
 
 /***/ }),
-/* 453 */
+/* 455 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -52860,7 +54351,7 @@ function dispatchError(arg) {
 //# sourceMappingURL=BoundNodeCallbackObservable.js.map
 
 /***/ }),
-/* 454 */
+/* 456 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -52965,7 +54456,7 @@ var DeferSubscriber = (function (_super) {
 //# sourceMappingURL=DeferObservable.js.map
 
 /***/ }),
-/* 455 */
+/* 457 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -53054,7 +54545,7 @@ exports.ErrorObservable = ErrorObservable;
 //# sourceMappingURL=ErrorObservable.js.map
 
 /***/ }),
-/* 456 */
+/* 458 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -53262,7 +54753,7 @@ var ForkJoinSubscriber = (function (_super) {
 //# sourceMappingURL=ForkJoinObservable.js.map
 
 /***/ }),
-/* 457 */
+/* 459 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -53484,7 +54975,7 @@ exports.FromEventObservable = FromEventObservable;
 //# sourceMappingURL=FromEventObservable.js.map
 
 /***/ }),
-/* 458 */
+/* 460 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -53603,7 +55094,7 @@ exports.FromEventPatternObservable = FromEventPatternObservable;
 //# sourceMappingURL=FromEventPatternObservable.js.map
 
 /***/ }),
-/* 459 */
+/* 461 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -53744,7 +55235,7 @@ exports.GenerateObservable = GenerateObservable;
 //# sourceMappingURL=GenerateObservable.js.map
 
 /***/ }),
-/* 460 */
+/* 462 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -53811,7 +55302,7 @@ var IfSubscriber = (function (_super) {
 //# sourceMappingURL=IfObservable.js.map
 
 /***/ }),
-/* 461 */
+/* 463 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -53905,7 +55396,7 @@ exports.IntervalObservable = IntervalObservable;
 //# sourceMappingURL=IntervalObservable.js.map
 
 /***/ }),
-/* 462 */
+/* 464 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54074,7 +55565,7 @@ function sign(value) {
 //# sourceMappingURL=IteratorObservable.js.map
 
 /***/ }),
-/* 463 */
+/* 465 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54139,7 +55630,7 @@ exports.NeverObservable = NeverObservable;
 //# sourceMappingURL=NeverObservable.js.map
 
 /***/ }),
-/* 464 */
+/* 466 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54230,7 +55721,7 @@ exports.PairsObservable = PairsObservable;
 //# sourceMappingURL=PairsObservable.js.map
 
 /***/ }),
-/* 465 */
+/* 467 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54332,7 +55823,7 @@ exports.RangeObservable = RangeObservable;
 //# sourceMappingURL=RangeObservable.js.map
 
 /***/ }),
-/* 466 */
+/* 468 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54343,7 +55834,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var Observable_1 = __webpack_require__(0);
-var asap_1 = __webpack_require__(283);
+var asap_1 = __webpack_require__(284);
 var isNumeric_1 = __webpack_require__(28);
 /**
  * We need this JSDoc comment for affecting ESDoc.
@@ -54389,7 +55880,7 @@ exports.SubscribeOnObservable = SubscribeOnObservable;
 //# sourceMappingURL=SubscribeOnObservable.js.map
 
 /***/ }),
-/* 467 */
+/* 469 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54502,7 +55993,7 @@ exports.TimerObservable = TimerObservable;
 //# sourceMappingURL=TimerObservable.js.map
 
 /***/ }),
-/* 468 */
+/* 470 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54569,27 +56060,27 @@ var UsingSubscriber = (function (_super) {
 //# sourceMappingURL=UsingObservable.js.map
 
 /***/ }),
-/* 469 */
+/* 471 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var BoundCallbackObservable_1 = __webpack_require__(452);
+var BoundCallbackObservable_1 = __webpack_require__(454);
 exports.bindCallback = BoundCallbackObservable_1.BoundCallbackObservable.create;
 //# sourceMappingURL=bindCallback.js.map
 
 /***/ }),
-/* 470 */
+/* 472 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var BoundNodeCallbackObservable_1 = __webpack_require__(453);
+var BoundNodeCallbackObservable_1 = __webpack_require__(455);
 exports.bindNodeCallback = BoundNodeCallbackObservable_1.BoundNodeCallbackObservable.create;
 //# sourceMappingURL=bindNodeCallback.js.map
 
 /***/ }),
-/* 471 */
+/* 473 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54731,17 +56222,17 @@ exports.combineLatest = combineLatest;
 //# sourceMappingURL=combineLatest.js.map
 
 /***/ }),
-/* 472 */
+/* 474 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var DeferObservable_1 = __webpack_require__(454);
+var DeferObservable_1 = __webpack_require__(456);
 exports.defer = DeferObservable_1.DeferObservable.create;
 //# sourceMappingURL=defer.js.map
 
 /***/ }),
-/* 473 */
+/* 475 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54759,7 +56250,7 @@ var root_1 = __webpack_require__(11);
 var ReplaySubject_1 = __webpack_require__(30);
 var tryCatch_1 = __webpack_require__(10);
 var errorObject_1 = __webpack_require__(9);
-var assign_1 = __webpack_require__(610);
+var assign_1 = __webpack_require__(612);
 /**
  * We need this JSDoc comment for affecting ESDoc.
  * @extends {Ignored}
@@ -54997,27 +56488,27 @@ exports.WebSocketSubject = WebSocketSubject;
 //# sourceMappingURL=WebSocketSubject.js.map
 
 /***/ }),
-/* 474 */
+/* 476 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var AjaxObservable_1 = __webpack_require__(199);
+var AjaxObservable_1 = __webpack_require__(200);
 exports.ajax = AjaxObservable_1.AjaxObservable.create;
 //# sourceMappingURL=ajax.js.map
 
 /***/ }),
-/* 475 */
+/* 477 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var WebSocketSubject_1 = __webpack_require__(473);
+var WebSocketSubject_1 = __webpack_require__(475);
 exports.webSocket = WebSocketSubject_1.WebSocketSubject.create;
 //# sourceMappingURL=webSocket.js.map
 
 /***/ }),
-/* 476 */
+/* 478 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55027,34 +56518,14 @@ exports.empty = EmptyObservable_1.EmptyObservable.create;
 //# sourceMappingURL=empty.js.map
 
 /***/ }),
-/* 477 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var ForkJoinObservable_1 = __webpack_require__(456);
-exports.forkJoin = ForkJoinObservable_1.ForkJoinObservable.create;
-//# sourceMappingURL=forkJoin.js.map
-
-/***/ }),
-/* 478 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var FromEventObservable_1 = __webpack_require__(457);
-exports.fromEvent = FromEventObservable_1.FromEventObservable.create;
-//# sourceMappingURL=fromEvent.js.map
-
-/***/ }),
 /* 479 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var FromEventPatternObservable_1 = __webpack_require__(458);
-exports.fromEventPattern = FromEventPatternObservable_1.FromEventPatternObservable.create;
-//# sourceMappingURL=fromEventPattern.js.map
+var ForkJoinObservable_1 = __webpack_require__(458);
+exports.forkJoin = ForkJoinObservable_1.ForkJoinObservable.create;
+//# sourceMappingURL=forkJoin.js.map
 
 /***/ }),
 /* 480 */
@@ -55062,9 +56533,9 @@ exports.fromEventPattern = FromEventPatternObservable_1.FromEventPatternObservab
 
 "use strict";
 
-var PromiseObservable_1 = __webpack_require__(198);
-exports.fromPromise = PromiseObservable_1.PromiseObservable.create;
-//# sourceMappingURL=fromPromise.js.map
+var FromEventObservable_1 = __webpack_require__(459);
+exports.fromEvent = FromEventObservable_1.FromEventObservable.create;
+//# sourceMappingURL=fromEvent.js.map
 
 /***/ }),
 /* 481 */
@@ -55072,9 +56543,9 @@ exports.fromPromise = PromiseObservable_1.PromiseObservable.create;
 
 "use strict";
 
-var GenerateObservable_1 = __webpack_require__(459);
-exports.generate = GenerateObservable_1.GenerateObservable.create;
-//# sourceMappingURL=generate.js.map
+var FromEventPatternObservable_1 = __webpack_require__(460);
+exports.fromEventPattern = FromEventPatternObservable_1.FromEventPatternObservable.create;
+//# sourceMappingURL=fromEventPattern.js.map
 
 /***/ }),
 /* 482 */
@@ -55082,9 +56553,9 @@ exports.generate = GenerateObservable_1.GenerateObservable.create;
 
 "use strict";
 
-var IfObservable_1 = __webpack_require__(460);
-exports._if = IfObservable_1.IfObservable.create;
-//# sourceMappingURL=if.js.map
+var PromiseObservable_1 = __webpack_require__(199);
+exports.fromPromise = PromiseObservable_1.PromiseObservable.create;
+//# sourceMappingURL=fromPromise.js.map
 
 /***/ }),
 /* 483 */
@@ -55092,9 +56563,9 @@ exports._if = IfObservable_1.IfObservable.create;
 
 "use strict";
 
-var IntervalObservable_1 = __webpack_require__(461);
-exports.interval = IntervalObservable_1.IntervalObservable.create;
-//# sourceMappingURL=interval.js.map
+var GenerateObservable_1 = __webpack_require__(461);
+exports.generate = GenerateObservable_1.GenerateObservable.create;
+//# sourceMappingURL=generate.js.map
 
 /***/ }),
 /* 484 */
@@ -55102,12 +56573,32 @@ exports.interval = IntervalObservable_1.IntervalObservable.create;
 
 "use strict";
 
-var NeverObservable_1 = __webpack_require__(463);
+var IfObservable_1 = __webpack_require__(462);
+exports._if = IfObservable_1.IfObservable.create;
+//# sourceMappingURL=if.js.map
+
+/***/ }),
+/* 485 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var IntervalObservable_1 = __webpack_require__(463);
+exports.interval = IntervalObservable_1.IntervalObservable.create;
+//# sourceMappingURL=interval.js.map
+
+/***/ }),
+/* 486 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var NeverObservable_1 = __webpack_require__(465);
 exports.never = NeverObservable_1.NeverObservable.create;
 //# sourceMappingURL=never.js.map
 
 /***/ }),
-/* 485 */
+/* 487 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55117,34 +56608,14 @@ exports.onErrorResumeNext = onErrorResumeNext_1.onErrorResumeNextStatic;
 //# sourceMappingURL=onErrorResumeNext.js.map
 
 /***/ }),
-/* 486 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var PairsObservable_1 = __webpack_require__(464);
-exports.pairs = PairsObservable_1.PairsObservable.create;
-//# sourceMappingURL=pairs.js.map
-
-/***/ }),
-/* 487 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var RangeObservable_1 = __webpack_require__(465);
-exports.range = RangeObservable_1.RangeObservable.create;
-//# sourceMappingURL=range.js.map
-
-/***/ }),
 /* 488 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var ErrorObservable_1 = __webpack_require__(455);
-exports._throw = ErrorObservable_1.ErrorObservable.create;
-//# sourceMappingURL=throw.js.map
+var PairsObservable_1 = __webpack_require__(466);
+exports.pairs = PairsObservable_1.PairsObservable.create;
+//# sourceMappingURL=pairs.js.map
 
 /***/ }),
 /* 489 */
@@ -55152,12 +56623,32 @@ exports._throw = ErrorObservable_1.ErrorObservable.create;
 
 "use strict";
 
-var UsingObservable_1 = __webpack_require__(468);
+var RangeObservable_1 = __webpack_require__(467);
+exports.range = RangeObservable_1.RangeObservable.create;
+//# sourceMappingURL=range.js.map
+
+/***/ }),
+/* 490 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var ErrorObservable_1 = __webpack_require__(457);
+exports._throw = ErrorObservable_1.ErrorObservable.create;
+//# sourceMappingURL=throw.js.map
+
+/***/ }),
+/* 491 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var UsingObservable_1 = __webpack_require__(470);
 exports.using = UsingObservable_1.UsingObservable.create;
 //# sourceMappingURL=using.js.map
 
 /***/ }),
-/* 490 */
+/* 492 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55167,7 +56658,7 @@ exports.zip = zip_1.zipStatic;
 //# sourceMappingURL=zip.js.map
 
 /***/ }),
-/* 491 */
+/* 493 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55220,13 +56711,13 @@ exports.audit = audit;
 //# sourceMappingURL=audit.js.map
 
 /***/ }),
-/* 492 */
+/* 494 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var async_1 = __webpack_require__(5);
-var auditTime_1 = __webpack_require__(204);
+var auditTime_1 = __webpack_require__(205);
 /**
  * Ignores source values for `duration` milliseconds, then emits the most recent
  * value from the source Observable, then repeats this process.
@@ -55277,12 +56768,12 @@ exports.auditTime = auditTime;
 //# sourceMappingURL=auditTime.js.map
 
 /***/ }),
-/* 493 */
+/* 495 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var buffer_1 = __webpack_require__(205);
+var buffer_1 = __webpack_require__(206);
 /**
  * Buffers the source Observable values until `closingNotifier` emits.
  *
@@ -55322,12 +56813,12 @@ exports.buffer = buffer;
 //# sourceMappingURL=buffer.js.map
 
 /***/ }),
-/* 494 */
+/* 496 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var bufferCount_1 = __webpack_require__(206);
+var bufferCount_1 = __webpack_require__(207);
 /**
  * Buffers the source Observable values until the size hits the maximum
  * `bufferSize` given.
@@ -55377,14 +56868,14 @@ exports.bufferCount = bufferCount;
 //# sourceMappingURL=bufferCount.js.map
 
 /***/ }),
-/* 495 */
+/* 497 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var async_1 = __webpack_require__(5);
 var isScheduler_1 = __webpack_require__(12);
-var bufferTime_1 = __webpack_require__(207);
+var bufferTime_1 = __webpack_require__(208);
 /* tslint:enable:max-line-length */
 /**
  * Buffers the source Observable values for a specific time period.
@@ -55450,12 +56941,12 @@ exports.bufferTime = bufferTime;
 //# sourceMappingURL=bufferTime.js.map
 
 /***/ }),
-/* 496 */
+/* 498 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var bufferToggle_1 = __webpack_require__(208);
+var bufferToggle_1 = __webpack_require__(209);
 /**
  * Buffers the source Observable values starting from an emission from
  * `openings` and ending when the output of `closingSelector` emits.
@@ -55501,12 +56992,12 @@ exports.bufferToggle = bufferToggle;
 //# sourceMappingURL=bufferToggle.js.map
 
 /***/ }),
-/* 497 */
+/* 499 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var bufferWhen_1 = __webpack_require__(209);
+var bufferWhen_1 = __webpack_require__(210);
 /**
  * Buffers the source Observable values, using a factory function of closing
  * Observables to determine when to close, emit, and reset the buffer.
@@ -55547,12 +57038,12 @@ exports.bufferWhen = bufferWhen;
 //# sourceMappingURL=bufferWhen.js.map
 
 /***/ }),
-/* 498 */
+/* 500 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var catchError_1 = __webpack_require__(210);
+var catchError_1 = __webpack_require__(211);
 /**
  * Catches errors on the observable to be handled by returning a new observable or throwing an error.
  *
@@ -55619,12 +57110,12 @@ exports._catch = _catch;
 //# sourceMappingURL=catch.js.map
 
 /***/ }),
-/* 499 */
+/* 501 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var combineAll_1 = __webpack_require__(211);
+var combineAll_1 = __webpack_require__(212);
 /**
  * Converts a higher-order Observable into a first-order Observable by waiting
  * for the outer Observable to complete, then applying {@link combineLatest}.
@@ -55672,7 +57163,7 @@ exports.combineAll = combineAll;
 //# sourceMappingURL=combineAll.js.map
 
 /***/ }),
-/* 500 */
+/* 502 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55733,12 +57224,12 @@ exports.combineLatest = combineLatest;
 //# sourceMappingURL=combineLatest.js.map
 
 /***/ }),
-/* 501 */
+/* 503 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var concat_1 = __webpack_require__(212);
+var concat_1 = __webpack_require__(213);
 var concat_2 = __webpack_require__(20);
 exports.concatStatic = concat_2.concat;
 /* tslint:enable:max-line-length */
@@ -55802,7 +57293,7 @@ exports.concat = concat;
 //# sourceMappingURL=concat.js.map
 
 /***/ }),
-/* 502 */
+/* 504 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55864,7 +57355,7 @@ exports.concatAll = concatAll;
 //# sourceMappingURL=concatAll.js.map
 
 /***/ }),
-/* 503 */
+/* 505 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55937,12 +57428,12 @@ exports.concatMap = concatMap;
 //# sourceMappingURL=concatMap.js.map
 
 /***/ }),
-/* 504 */
+/* 506 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var concatMapTo_1 = __webpack_require__(213);
+var concatMapTo_1 = __webpack_require__(214);
 /* tslint:enable:max-line-length */
 /**
  * Projects each source value to the same Observable which is merged multiple
@@ -56007,12 +57498,12 @@ exports.concatMapTo = concatMapTo;
 //# sourceMappingURL=concatMapTo.js.map
 
 /***/ }),
-/* 505 */
+/* 507 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var count_1 = __webpack_require__(214);
+var count_1 = __webpack_require__(215);
 /**
  * Counts the number of emissions on the source and emits that number when the
  * source completes.
@@ -56068,12 +57559,12 @@ exports.count = count;
 //# sourceMappingURL=count.js.map
 
 /***/ }),
-/* 506 */
+/* 508 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var debounce_1 = __webpack_require__(215);
+var debounce_1 = __webpack_require__(216);
 /**
  * Emits a value from the source Observable only after a particular time span
  * determined by another Observable has passed without another source emission.
@@ -56123,13 +57614,13 @@ exports.debounce = debounce;
 //# sourceMappingURL=debounce.js.map
 
 /***/ }),
-/* 507 */
+/* 509 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var async_1 = __webpack_require__(5);
-var debounceTime_1 = __webpack_require__(216);
+var debounceTime_1 = __webpack_require__(217);
 /**
  * Emits a value from the source Observable only after a particular time span
  * has passed without another source emission.
@@ -56184,7 +57675,7 @@ exports.debounceTime = debounceTime;
 //# sourceMappingURL=debounceTime.js.map
 
 /***/ }),
-/* 508 */
+/* 510 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -56229,13 +57720,13 @@ exports.defaultIfEmpty = defaultIfEmpty;
 //# sourceMappingURL=defaultIfEmpty.js.map
 
 /***/ }),
-/* 509 */
+/* 511 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var async_1 = __webpack_require__(5);
-var delay_1 = __webpack_require__(217);
+var delay_1 = __webpack_require__(218);
 /**
  * Delays the emission of items from the source Observable by a given timeout or
  * until a given Date.
@@ -56283,12 +57774,12 @@ exports.delay = delay;
 //# sourceMappingURL=delay.js.map
 
 /***/ }),
-/* 510 */
+/* 512 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var delayWhen_1 = __webpack_require__(218);
+var delayWhen_1 = __webpack_require__(219);
 /**
  * Delays the emission of items from the source Observable by a given time span
  * determined by the emissions of another Observable.
@@ -56341,12 +57832,12 @@ exports.delayWhen = delayWhen;
 //# sourceMappingURL=delayWhen.js.map
 
 /***/ }),
-/* 511 */
+/* 513 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var dematerialize_1 = __webpack_require__(219);
+var dematerialize_1 = __webpack_require__(220);
 /**
  * Converts an Observable of {@link Notification} objects into the emissions
  * that they represent.
@@ -56394,12 +57885,12 @@ exports.dematerialize = dematerialize;
 //# sourceMappingURL=dematerialize.js.map
 
 /***/ }),
-/* 512 */
+/* 514 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var distinct_1 = __webpack_require__(220);
+var distinct_1 = __webpack_require__(221);
 /**
  * Returns an Observable that emits all items emitted by the source Observable that are distinct by comparison from previous items.
  *
@@ -56452,7 +57943,7 @@ exports.distinct = distinct;
 //# sourceMappingURL=distinct.js.map
 
 /***/ }),
-/* 513 */
+/* 515 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -56505,12 +57996,12 @@ exports.distinctUntilChanged = distinctUntilChanged;
 //# sourceMappingURL=distinctUntilChanged.js.map
 
 /***/ }),
-/* 514 */
+/* 516 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var distinctUntilKeyChanged_1 = __webpack_require__(221);
+var distinctUntilKeyChanged_1 = __webpack_require__(222);
 /* tslint:enable:max-line-length */
 /**
  * Returns an Observable that emits all items emitted by the source Observable that are distinct by comparison from the previous item,
@@ -56576,12 +58067,12 @@ exports.distinctUntilKeyChanged = distinctUntilKeyChanged;
 //# sourceMappingURL=distinctUntilKeyChanged.js.map
 
 /***/ }),
-/* 515 */
+/* 517 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var tap_1 = __webpack_require__(269);
+var tap_1 = __webpack_require__(270);
 /* tslint:enable:max-line-length */
 /**
  * Perform a side effect for every emission on the source Observable, but return
@@ -56633,12 +58124,12 @@ exports._do = _do;
 //# sourceMappingURL=do.js.map
 
 /***/ }),
-/* 516 */
+/* 518 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var elementAt_1 = __webpack_require__(222);
+var elementAt_1 = __webpack_require__(223);
 /**
  * Emits the single value at the specified `index` in a sequence of emissions
  * from the source Observable.
@@ -56688,12 +58179,12 @@ exports.elementAt = elementAt;
 //# sourceMappingURL=elementAt.js.map
 
 /***/ }),
-/* 517 */
+/* 519 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var every_1 = __webpack_require__(223);
+var every_1 = __webpack_require__(224);
 /**
  * Returns an Observable that emits whether or not every item of the source satisfies the condition specified.
  *
@@ -56715,12 +58206,12 @@ exports.every = every;
 //# sourceMappingURL=every.js.map
 
 /***/ }),
-/* 518 */
+/* 520 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var exhaust_1 = __webpack_require__(224);
+var exhaust_1 = __webpack_require__(225);
 /**
  * Converts a higher-order Observable into a first-order Observable by dropping
  * inner Observables while the previous inner Observable has not yet completed.
@@ -56763,12 +58254,12 @@ exports.exhaust = exhaust;
 //# sourceMappingURL=exhaust.js.map
 
 /***/ }),
-/* 519 */
+/* 521 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var exhaustMap_1 = __webpack_require__(225);
+var exhaustMap_1 = __webpack_require__(226);
 /* tslint:enable:max-line-length */
 /**
  * Projects each source value to an Observable which is merged in the output
@@ -56822,12 +58313,12 @@ exports.exhaustMap = exhaustMap;
 //# sourceMappingURL=exhaustMap.js.map
 
 /***/ }),
-/* 520 */
+/* 522 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var expand_1 = __webpack_require__(226);
+var expand_1 = __webpack_require__(227);
 /* tslint:enable:max-line-length */
 /**
  * Recursively projects each source value to an Observable which is merged in
@@ -56884,7 +58375,7 @@ exports.expand = expand;
 //# sourceMappingURL=expand.js.map
 
 /***/ }),
-/* 521 */
+/* 523 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -56937,12 +58428,12 @@ exports.filter = filter;
 //# sourceMappingURL=filter.js.map
 
 /***/ }),
-/* 522 */
+/* 524 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var finalize_1 = __webpack_require__(227);
+var finalize_1 = __webpack_require__(228);
 /**
  * Returns an Observable that mirrors the source Observable, but will call a specified function when
  * the source terminates on complete or error.
@@ -56958,7 +58449,7 @@ exports._finally = _finally;
 //# sourceMappingURL=finally.js.map
 
 /***/ }),
-/* 523 */
+/* 525 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -57005,12 +58496,12 @@ exports.find = find;
 //# sourceMappingURL=find.js.map
 
 /***/ }),
-/* 524 */
+/* 526 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var findIndex_1 = __webpack_require__(228);
+var findIndex_1 = __webpack_require__(229);
 /**
  * Emits only the index of the first value emitted by the source Observable that
  * meets some condition.
@@ -57052,12 +58543,12 @@ exports.findIndex = findIndex;
 //# sourceMappingURL=findIndex.js.map
 
 /***/ }),
-/* 525 */
+/* 527 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var first_1 = __webpack_require__(229);
+var first_1 = __webpack_require__(230);
 /**
  * Emits only the first value (or the first value that meets some condition)
  * emitted by the source Observable.
@@ -57114,12 +58605,12 @@ exports.first = first;
 //# sourceMappingURL=first.js.map
 
 /***/ }),
-/* 526 */
+/* 528 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var groupBy_1 = __webpack_require__(230);
+var groupBy_1 = __webpack_require__(231);
 exports.GroupedObservable = groupBy_1.GroupedObservable;
 /* tslint:enable:max-line-length */
 /**
@@ -57196,12 +58687,12 @@ exports.groupBy = groupBy;
 //# sourceMappingURL=groupBy.js.map
 
 /***/ }),
-/* 527 */
+/* 529 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var ignoreElements_1 = __webpack_require__(231);
+var ignoreElements_1 = __webpack_require__(232);
 /**
  * Ignores all items emitted by the source Observable and only passes calls of `complete` or `error`.
  *
@@ -57220,12 +58711,12 @@ exports.ignoreElements = ignoreElements;
 //# sourceMappingURL=ignoreElements.js.map
 
 /***/ }),
-/* 528 */
+/* 530 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var isEmpty_1 = __webpack_require__(232);
+var isEmpty_1 = __webpack_require__(233);
 /**
  * If the source Observable is empty it returns an Observable that emits true, otherwise it emits false.
  *
@@ -57242,12 +58733,12 @@ exports.isEmpty = isEmpty;
 //# sourceMappingURL=isEmpty.js.map
 
 /***/ }),
-/* 529 */
+/* 531 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var last_1 = __webpack_require__(233);
+var last_1 = __webpack_require__(234);
 /* tslint:enable:max-line-length */
 /**
  * Returns an Observable that emits only the last item emitted by the source Observable.
@@ -57273,7 +58764,7 @@ exports.last = last;
 //# sourceMappingURL=last.js.map
 
 /***/ }),
-/* 530 */
+/* 532 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -57291,7 +58782,7 @@ exports.letProto = letProto;
 //# sourceMappingURL=let.js.map
 
 /***/ }),
-/* 531 */
+/* 533 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -57337,12 +58828,12 @@ exports.map = map;
 //# sourceMappingURL=map.js.map
 
 /***/ }),
-/* 532 */
+/* 534 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var mapTo_1 = __webpack_require__(234);
+var mapTo_1 = __webpack_require__(235);
 /**
  * Emits the given constant value on the output Observable every time the source
  * Observable emits a value.
@@ -57376,12 +58867,12 @@ exports.mapTo = mapTo;
 //# sourceMappingURL=mapTo.js.map
 
 /***/ }),
-/* 533 */
+/* 535 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var materialize_1 = __webpack_require__(235);
+var materialize_1 = __webpack_require__(236);
 /**
  * Represents all of the notifications from the source Observable as `next`
  * emissions marked with their original types within {@link Notification}
@@ -57433,12 +58924,12 @@ exports.materialize = materialize;
 //# sourceMappingURL=materialize.js.map
 
 /***/ }),
-/* 534 */
+/* 536 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var max_1 = __webpack_require__(236);
+var max_1 = __webpack_require__(237);
 /**
  * The Max operator operates on an Observable that emits numbers (or items that can be compared with a provided function),
  * and when source Observable completes it emits a single item: the item with the largest value.
@@ -57477,12 +58968,12 @@ exports.max = max;
 //# sourceMappingURL=max.js.map
 
 /***/ }),
-/* 535 */
+/* 537 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var merge_1 = __webpack_require__(237);
+var merge_1 = __webpack_require__(238);
 var merge_2 = __webpack_require__(31);
 exports.mergeStatic = merge_2.merge;
 /* tslint:enable:max-line-length */
@@ -57543,7 +59034,7 @@ exports.merge = merge;
 //# sourceMappingURL=merge.js.map
 
 /***/ }),
-/* 536 */
+/* 538 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -57601,7 +59092,7 @@ exports.mergeAll = mergeAll;
 //# sourceMappingURL=mergeAll.js.map
 
 /***/ }),
-/* 537 */
+/* 539 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -57674,12 +59165,12 @@ exports.mergeMap = mergeMap;
 //# sourceMappingURL=mergeMap.js.map
 
 /***/ }),
-/* 538 */
+/* 540 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var mergeMapTo_1 = __webpack_require__(238);
+var mergeMapTo_1 = __webpack_require__(239);
 /* tslint:enable:max-line-length */
 /**
  * Projects each source value to the same Observable which is merged multiple
@@ -57732,12 +59223,12 @@ exports.mergeMapTo = mergeMapTo;
 //# sourceMappingURL=mergeMapTo.js.map
 
 /***/ }),
-/* 539 */
+/* 541 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var mergeScan_1 = __webpack_require__(239);
+var mergeScan_1 = __webpack_require__(240);
 /**
  * Applies an accumulator function over the source Observable where the
  * accumulator function itself returns an Observable, then each intermediate
@@ -57777,12 +59268,12 @@ exports.mergeScan = mergeScan;
 //# sourceMappingURL=mergeScan.js.map
 
 /***/ }),
-/* 540 */
+/* 542 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var min_1 = __webpack_require__(240);
+var min_1 = __webpack_require__(241);
 /**
  * The Min operator operates on an Observable that emits numbers (or items that can be compared with a provided function),
  * and when source Observable completes it emits a single item: the item with the smallest value.
@@ -57821,7 +59312,7 @@ exports.min = min;
 //# sourceMappingURL=min.js.map
 
 /***/ }),
-/* 541 */
+/* 543 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -57929,7 +59420,7 @@ exports.multicast = multicast;
 //# sourceMappingURL=multicast.js.map
 
 /***/ }),
-/* 542 */
+/* 544 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -57989,7 +59480,7 @@ exports.observeOn = observeOn;
 //# sourceMappingURL=observeOn.js.map
 
 /***/ }),
-/* 543 */
+/* 545 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -58068,12 +59559,12 @@ exports.onErrorResumeNext = onErrorResumeNext;
 //# sourceMappingURL=onErrorResumeNext.js.map
 
 /***/ }),
-/* 544 */
+/* 546 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var pairwise_1 = __webpack_require__(241);
+var pairwise_1 = __webpack_require__(242);
 /**
  * Groups pairs of consecutive emissions together and emits them as an array of
  * two values.
@@ -58116,12 +59607,12 @@ exports.pairwise = pairwise;
 //# sourceMappingURL=pairwise.js.map
 
 /***/ }),
-/* 545 */
+/* 547 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var partition_1 = __webpack_require__(242);
+var partition_1 = __webpack_require__(243);
 /**
  * Splits the source Observable into two, one with values that satisfy a
  * predicate, and another with values that don't satisfy the predicate.
@@ -58170,12 +59661,12 @@ exports.partition = partition;
 //# sourceMappingURL=partition.js.map
 
 /***/ }),
-/* 546 */
+/* 548 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var pluck_1 = __webpack_require__(243);
+var pluck_1 = __webpack_require__(244);
 /**
  * Maps each source value (an object) to its specified nested property.
  *
@@ -58213,12 +59704,12 @@ exports.pluck = pluck;
 //# sourceMappingURL=pluck.js.map
 
 /***/ }),
-/* 547 */
+/* 549 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var publish_1 = __webpack_require__(244);
+var publish_1 = __webpack_require__(245);
 /* tslint:enable:max-line-length */
 /**
  * Returns a ConnectableObservable, which is a variety of Observable that waits until its connect method is called
@@ -58240,12 +59731,12 @@ exports.publish = publish;
 //# sourceMappingURL=publish.js.map
 
 /***/ }),
-/* 548 */
+/* 550 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var publishBehavior_1 = __webpack_require__(245);
+var publishBehavior_1 = __webpack_require__(246);
 /**
  * @param value
  * @return {ConnectableObservable<T>}
@@ -58259,12 +59750,12 @@ exports.publishBehavior = publishBehavior;
 //# sourceMappingURL=publishBehavior.js.map
 
 /***/ }),
-/* 549 */
+/* 551 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var publishLast_1 = __webpack_require__(246);
+var publishLast_1 = __webpack_require__(247);
 /**
  * @return {ConnectableObservable<T>}
  * @method publishLast
@@ -58278,12 +59769,12 @@ exports.publishLast = publishLast;
 //# sourceMappingURL=publishLast.js.map
 
 /***/ }),
-/* 550 */
+/* 552 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var publishReplay_1 = __webpack_require__(247);
+var publishReplay_1 = __webpack_require__(248);
 /* tslint:enable:max-line-length */
 /**
  * @param bufferSize
@@ -58301,12 +59792,12 @@ exports.publishReplay = publishReplay;
 //# sourceMappingURL=publishReplay.js.map
 
 /***/ }),
-/* 551 */
+/* 553 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var race_1 = __webpack_require__(248);
+var race_1 = __webpack_require__(249);
 // NOTE: to support backwards compatability with 5.4.* and lower
 var race_2 = __webpack_require__(45);
 exports.raceStatic = race_2.race;
@@ -58330,7 +59821,7 @@ exports.race = race;
 //# sourceMappingURL=race.js.map
 
 /***/ }),
-/* 552 */
+/* 554 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -58396,12 +59887,12 @@ exports.reduce = reduce;
 //# sourceMappingURL=reduce.js.map
 
 /***/ }),
-/* 553 */
+/* 555 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var repeat_1 = __webpack_require__(249);
+var repeat_1 = __webpack_require__(250);
 /**
  * Returns an Observable that repeats the stream of items emitted by the source Observable at most count times.
  *
@@ -58422,12 +59913,12 @@ exports.repeat = repeat;
 //# sourceMappingURL=repeat.js.map
 
 /***/ }),
-/* 554 */
+/* 556 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var repeatWhen_1 = __webpack_require__(250);
+var repeatWhen_1 = __webpack_require__(251);
 /**
  * Returns an Observable that mirrors the source Observable with the exception of a `complete`. If the source
  * Observable calls `complete`, this method will emit to the Observable returned from `notifier`. If that Observable
@@ -58449,12 +59940,12 @@ exports.repeatWhen = repeatWhen;
 //# sourceMappingURL=repeatWhen.js.map
 
 /***/ }),
-/* 555 */
+/* 557 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var retry_1 = __webpack_require__(251);
+var retry_1 = __webpack_require__(252);
 /**
  * Returns an Observable that mirrors the source Observable with the exception of an `error`. If the source Observable
  * calls `error`, this method will resubscribe to the source Observable for a maximum of `count` resubscriptions (given
@@ -58479,12 +59970,12 @@ exports.retry = retry;
 //# sourceMappingURL=retry.js.map
 
 /***/ }),
-/* 556 */
+/* 558 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var retryWhen_1 = __webpack_require__(252);
+var retryWhen_1 = __webpack_require__(253);
 /**
  * Returns an Observable that mirrors the source Observable with the exception of an `error`. If the source Observable
  * calls `error`, this method will emit the Throwable that caused the error to the Observable returned from `notifier`.
@@ -58506,12 +59997,12 @@ exports.retryWhen = retryWhen;
 //# sourceMappingURL=retryWhen.js.map
 
 /***/ }),
-/* 557 */
+/* 559 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var sample_1 = __webpack_require__(253);
+var sample_1 = __webpack_require__(254);
 /**
  * Emits the most recently emitted value from the source Observable whenever
  * another Observable, the `notifier`, emits.
@@ -58553,13 +60044,13 @@ exports.sample = sample;
 //# sourceMappingURL=sample.js.map
 
 /***/ }),
-/* 558 */
+/* 560 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var async_1 = __webpack_require__(5);
-var sampleTime_1 = __webpack_require__(254);
+var sampleTime_1 = __webpack_require__(255);
 /**
  * Emits the most recently emitted value from the source Observable within
  * periodic time intervals.
@@ -58604,7 +60095,7 @@ exports.sampleTime = sampleTime;
 //# sourceMappingURL=sampleTime.js.map
 
 /***/ }),
-/* 559 */
+/* 561 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -58658,12 +60149,12 @@ exports.scan = scan;
 //# sourceMappingURL=scan.js.map
 
 /***/ }),
-/* 560 */
+/* 562 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var sequenceEqual_1 = __webpack_require__(255);
+var sequenceEqual_1 = __webpack_require__(256);
 /**
  * Compares all values of two observables in sequence using an optional comparor function
  * and returns an observable of a single boolean value representing whether or not the two sequences
@@ -58723,12 +60214,12 @@ exports.sequenceEqual = sequenceEqual;
 //# sourceMappingURL=sequenceEqual.js.map
 
 /***/ }),
-/* 561 */
+/* 563 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var share_1 = __webpack_require__(256);
+var share_1 = __webpack_require__(257);
 /**
  * Returns a new Observable that multicasts (shares) the original Observable. As long as there is at least one
  * Subscriber this Observable will be subscribed and emitting data. When all subscribers have unsubscribed it will
@@ -58753,12 +60244,12 @@ exports.share = share;
 //# sourceMappingURL=share.js.map
 
 /***/ }),
-/* 562 */
+/* 564 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var shareReplay_1 = __webpack_require__(257);
+var shareReplay_1 = __webpack_require__(258);
 /**
  * @method shareReplay
  * @owner Observable
@@ -58771,12 +60262,12 @@ exports.shareReplay = shareReplay;
 //# sourceMappingURL=shareReplay.js.map
 
 /***/ }),
-/* 563 */
+/* 565 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var single_1 = __webpack_require__(258);
+var single_1 = __webpack_require__(259);
 /**
  * Returns an Observable that emits the single item emitted by the source Observable that matches a specified
  * predicate, if that Observable emits one such item. If the source Observable emits more than one such item or no
@@ -58800,12 +60291,12 @@ exports.single = single;
 //# sourceMappingURL=single.js.map
 
 /***/ }),
-/* 564 */
+/* 566 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var skip_1 = __webpack_require__(259);
+var skip_1 = __webpack_require__(260);
 /**
  * Returns an Observable that skips the first `count` items emitted by the source Observable.
  *
@@ -58824,12 +60315,12 @@ exports.skip = skip;
 //# sourceMappingURL=skip.js.map
 
 /***/ }),
-/* 565 */
+/* 567 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var skipLast_1 = __webpack_require__(260);
+var skipLast_1 = __webpack_require__(261);
 /**
  * Skip the last `count` values emitted by the source Observable.
  *
@@ -58869,12 +60360,12 @@ exports.skipLast = skipLast;
 //# sourceMappingURL=skipLast.js.map
 
 /***/ }),
-/* 566 */
+/* 568 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var skipUntil_1 = __webpack_require__(261);
+var skipUntil_1 = __webpack_require__(262);
 /**
  * Returns an Observable that skips items emitted by the source Observable until a second Observable emits an item.
  *
@@ -58894,12 +60385,12 @@ exports.skipUntil = skipUntil;
 //# sourceMappingURL=skipUntil.js.map
 
 /***/ }),
-/* 567 */
+/* 569 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var skipWhile_1 = __webpack_require__(262);
+var skipWhile_1 = __webpack_require__(263);
 /**
  * Returns an Observable that skips all items emitted by the source Observable as long as a specified condition holds
  * true, but emits all further source items as soon as the condition becomes false.
@@ -58919,12 +60410,12 @@ exports.skipWhile = skipWhile;
 //# sourceMappingURL=skipWhile.js.map
 
 /***/ }),
-/* 568 */
+/* 570 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var startWith_1 = __webpack_require__(263);
+var startWith_1 = __webpack_require__(264);
 /* tslint:enable:max-line-length */
 /**
  * Returns an Observable that emits the items you specify as arguments before it begins to emit
@@ -58951,12 +60442,12 @@ exports.startWith = startWith;
 //# sourceMappingURL=startWith.js.map
 
 /***/ }),
-/* 569 */
+/* 571 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var subscribeOn_1 = __webpack_require__(592);
+var subscribeOn_1 = __webpack_require__(594);
 /**
  * Asynchronously subscribes Observers to this Observable on the specified IScheduler.
  *
@@ -58976,12 +60467,12 @@ exports.subscribeOn = subscribeOn;
 //# sourceMappingURL=subscribeOn.js.map
 
 /***/ }),
-/* 570 */
+/* 572 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var switchAll_1 = __webpack_require__(264);
+var switchAll_1 = __webpack_require__(265);
 /**
  * Converts a higher-order Observable into a first-order Observable by
  * subscribing to only the most recently emitted of those inner Observables.
@@ -59031,7 +60522,7 @@ exports._switch = _switch;
 //# sourceMappingURL=switch.js.map
 
 /***/ }),
-/* 571 */
+/* 573 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59092,12 +60583,12 @@ exports.switchMap = switchMap;
 //# sourceMappingURL=switchMap.js.map
 
 /***/ }),
-/* 572 */
+/* 574 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var switchMapTo_1 = __webpack_require__(265);
+var switchMapTo_1 = __webpack_require__(266);
 /* tslint:enable:max-line-length */
 /**
  * Projects each source value to the same Observable which is flattened multiple
@@ -59148,12 +60639,12 @@ exports.switchMapTo = switchMapTo;
 //# sourceMappingURL=switchMapTo.js.map
 
 /***/ }),
-/* 573 */
+/* 575 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var take_1 = __webpack_require__(266);
+var take_1 = __webpack_require__(267);
 /**
  * Emits only the first `count` values emitted by the source Observable.
  *
@@ -59194,7 +60685,7 @@ exports.take = take;
 //# sourceMappingURL=take.js.map
 
 /***/ }),
-/* 574 */
+/* 576 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59243,12 +60734,12 @@ exports.takeLast = takeLast;
 //# sourceMappingURL=takeLast.js.map
 
 /***/ }),
-/* 575 */
+/* 577 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var takeUntil_1 = __webpack_require__(267);
+var takeUntil_1 = __webpack_require__(268);
 /**
  * Emits the values emitted by the source Observable until a `notifier`
  * Observable emits a value.
@@ -59289,12 +60780,12 @@ exports.takeUntil = takeUntil;
 //# sourceMappingURL=takeUntil.js.map
 
 /***/ }),
-/* 576 */
+/* 578 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var takeWhile_1 = __webpack_require__(268);
+var takeWhile_1 = __webpack_require__(269);
 /**
  * Emits values emitted by the source Observable so long as each value satisfies
  * the given `predicate`, and then completes as soon as this `predicate` is not
@@ -59338,7 +60829,7 @@ exports.takeWhile = takeWhile;
 //# sourceMappingURL=takeWhile.js.map
 
 /***/ }),
-/* 577 */
+/* 579 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59392,14 +60883,14 @@ exports.throttle = throttle;
 //# sourceMappingURL=throttle.js.map
 
 /***/ }),
-/* 578 */
+/* 580 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var async_1 = __webpack_require__(5);
 var throttle_1 = __webpack_require__(35);
-var throttleTime_1 = __webpack_require__(270);
+var throttleTime_1 = __webpack_require__(271);
 /**
  * Emits a value from the source Observable, then ignores subsequent source
  * values for `duration` milliseconds, then repeats this process.
@@ -59448,13 +60939,13 @@ exports.throttleTime = throttleTime;
 //# sourceMappingURL=throttleTime.js.map
 
 /***/ }),
-/* 579 */
+/* 581 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var async_1 = __webpack_require__(5);
-var timeout_1 = __webpack_require__(272);
+var timeout_1 = __webpack_require__(273);
 /**
  *
  * Errors if Observable does not emit a value in given time span.
@@ -59528,13 +61019,13 @@ exports.timeout = timeout;
 //# sourceMappingURL=timeout.js.map
 
 /***/ }),
-/* 580 */
+/* 582 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var async_1 = __webpack_require__(5);
-var timeoutWith_1 = __webpack_require__(273);
+var timeoutWith_1 = __webpack_require__(274);
 /* tslint:enable:max-line-length */
 /**
  *
@@ -59591,7 +61082,7 @@ exports.timeoutWith = timeoutWith;
 //# sourceMappingURL=timeoutWith.js.map
 
 /***/ }),
-/* 581 */
+/* 583 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59612,12 +61103,12 @@ exports.timestamp = timestamp;
 //# sourceMappingURL=timestamp.js.map
 
 /***/ }),
-/* 582 */
+/* 584 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var toArray_1 = __webpack_require__(274);
+var toArray_1 = __webpack_require__(275);
 /**
  * Collects all source emissions and emits them as an array when the source completes.
  *
@@ -59648,12 +61139,12 @@ exports.toArray = toArray;
 //# sourceMappingURL=toArray.js.map
 
 /***/ }),
-/* 583 */
+/* 585 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var window_1 = __webpack_require__(275);
+var window_1 = __webpack_require__(276);
 /**
  * Branch out the source Observable values as a nested Observable whenever
  * `windowBoundaries` emits.
@@ -59697,12 +61188,12 @@ exports.window = window;
 //# sourceMappingURL=window.js.map
 
 /***/ }),
-/* 584 */
+/* 586 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var windowCount_1 = __webpack_require__(276);
+var windowCount_1 = __webpack_require__(277);
 /**
  * Branch out the source Observable values as a nested Observable with each
  * nested Observable emitting at most `windowSize` values.
@@ -59759,7 +61250,7 @@ exports.windowCount = windowCount;
 //# sourceMappingURL=windowCount.js.map
 
 /***/ }),
-/* 585 */
+/* 587 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59767,7 +61258,7 @@ exports.windowCount = windowCount;
 var async_1 = __webpack_require__(5);
 var isNumeric_1 = __webpack_require__(28);
 var isScheduler_1 = __webpack_require__(12);
-var windowTime_1 = __webpack_require__(277);
+var windowTime_1 = __webpack_require__(278);
 function windowTime(windowTimeSpan) {
     var scheduler = async_1.async;
     var windowCreationInterval = null;
@@ -59793,12 +61284,12 @@ exports.windowTime = windowTime;
 //# sourceMappingURL=windowTime.js.map
 
 /***/ }),
-/* 586 */
+/* 588 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var windowToggle_1 = __webpack_require__(278);
+var windowToggle_1 = __webpack_require__(279);
 /**
  * Branch out the source Observable values as a nested Observable starting from
  * an emission from `openings` and ending when the output of `closingSelector`
@@ -59847,12 +61338,12 @@ exports.windowToggle = windowToggle;
 //# sourceMappingURL=windowToggle.js.map
 
 /***/ }),
-/* 587 */
+/* 589 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var windowWhen_1 = __webpack_require__(279);
+var windowWhen_1 = __webpack_require__(280);
 /**
  * Branch out the source Observable values as a nested Observable using a
  * factory function of closing Observables to determine when to start a new
@@ -59898,12 +61389,12 @@ exports.windowWhen = windowWhen;
 //# sourceMappingURL=windowWhen.js.map
 
 /***/ }),
-/* 588 */
+/* 590 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var withLatestFrom_1 = __webpack_require__(280);
+var withLatestFrom_1 = __webpack_require__(281);
 /* tslint:enable:max-line-length */
 /**
  * Combines the source Observable with other Observables to create an Observable
@@ -59954,7 +61445,7 @@ exports.withLatestFrom = withLatestFrom;
 //# sourceMappingURL=withLatestFrom.js.map
 
 /***/ }),
-/* 589 */
+/* 591 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59978,12 +61469,12 @@ exports.zipProto = zipProto;
 //# sourceMappingURL=zip.js.map
 
 /***/ }),
-/* 590 */
+/* 592 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var zipAll_1 = __webpack_require__(281);
+var zipAll_1 = __webpack_require__(282);
 /**
  * @param project
  * @return {Observable<R>|WebSocketSubject<T>|Observable<T>}
@@ -59997,96 +61488,96 @@ exports.zipAll = zipAll;
 //# sourceMappingURL=zipAll.js.map
 
 /***/ }),
-/* 591 */
+/* 593 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var audit_1 = __webpack_require__(46);
 exports.audit = audit_1.audit;
-var auditTime_1 = __webpack_require__(204);
+var auditTime_1 = __webpack_require__(205);
 exports.auditTime = auditTime_1.auditTime;
-var buffer_1 = __webpack_require__(205);
+var buffer_1 = __webpack_require__(206);
 exports.buffer = buffer_1.buffer;
-var bufferCount_1 = __webpack_require__(206);
+var bufferCount_1 = __webpack_require__(207);
 exports.bufferCount = bufferCount_1.bufferCount;
-var bufferTime_1 = __webpack_require__(207);
+var bufferTime_1 = __webpack_require__(208);
 exports.bufferTime = bufferTime_1.bufferTime;
-var bufferToggle_1 = __webpack_require__(208);
+var bufferToggle_1 = __webpack_require__(209);
 exports.bufferToggle = bufferToggle_1.bufferToggle;
-var bufferWhen_1 = __webpack_require__(209);
+var bufferWhen_1 = __webpack_require__(210);
 exports.bufferWhen = bufferWhen_1.bufferWhen;
-var catchError_1 = __webpack_require__(210);
+var catchError_1 = __webpack_require__(211);
 exports.catchError = catchError_1.catchError;
-var combineAll_1 = __webpack_require__(211);
+var combineAll_1 = __webpack_require__(212);
 exports.combineAll = combineAll_1.combineAll;
 var combineLatest_1 = __webpack_require__(32);
 exports.combineLatest = combineLatest_1.combineLatest;
-var concat_1 = __webpack_require__(212);
+var concat_1 = __webpack_require__(213);
 exports.concat = concat_1.concat;
 var concatAll_1 = __webpack_require__(47);
 exports.concatAll = concatAll_1.concatAll;
 var concatMap_1 = __webpack_require__(48);
 exports.concatMap = concatMap_1.concatMap;
-var concatMapTo_1 = __webpack_require__(213);
+var concatMapTo_1 = __webpack_require__(214);
 exports.concatMapTo = concatMapTo_1.concatMapTo;
-var count_1 = __webpack_require__(214);
+var count_1 = __webpack_require__(215);
 exports.count = count_1.count;
-var debounce_1 = __webpack_require__(215);
+var debounce_1 = __webpack_require__(216);
 exports.debounce = debounce_1.debounce;
-var debounceTime_1 = __webpack_require__(216);
+var debounceTime_1 = __webpack_require__(217);
 exports.debounceTime = debounceTime_1.debounceTime;
 var defaultIfEmpty_1 = __webpack_require__(49);
 exports.defaultIfEmpty = defaultIfEmpty_1.defaultIfEmpty;
-var delay_1 = __webpack_require__(217);
+var delay_1 = __webpack_require__(218);
 exports.delay = delay_1.delay;
-var delayWhen_1 = __webpack_require__(218);
+var delayWhen_1 = __webpack_require__(219);
 exports.delayWhen = delayWhen_1.delayWhen;
-var dematerialize_1 = __webpack_require__(219);
+var dematerialize_1 = __webpack_require__(220);
 exports.dematerialize = dematerialize_1.dematerialize;
-var distinct_1 = __webpack_require__(220);
+var distinct_1 = __webpack_require__(221);
 exports.distinct = distinct_1.distinct;
 var distinctUntilChanged_1 = __webpack_require__(50);
 exports.distinctUntilChanged = distinctUntilChanged_1.distinctUntilChanged;
-var distinctUntilKeyChanged_1 = __webpack_require__(221);
+var distinctUntilKeyChanged_1 = __webpack_require__(222);
 exports.distinctUntilKeyChanged = distinctUntilKeyChanged_1.distinctUntilKeyChanged;
-var elementAt_1 = __webpack_require__(222);
+var elementAt_1 = __webpack_require__(223);
 exports.elementAt = elementAt_1.elementAt;
-var every_1 = __webpack_require__(223);
+var every_1 = __webpack_require__(224);
 exports.every = every_1.every;
-var exhaust_1 = __webpack_require__(224);
+var exhaust_1 = __webpack_require__(225);
 exports.exhaust = exhaust_1.exhaust;
-var exhaustMap_1 = __webpack_require__(225);
+var exhaustMap_1 = __webpack_require__(226);
 exports.exhaustMap = exhaustMap_1.exhaustMap;
-var expand_1 = __webpack_require__(226);
+var expand_1 = __webpack_require__(227);
 exports.expand = expand_1.expand;
 var filter_1 = __webpack_require__(51);
 exports.filter = filter_1.filter;
-var finalize_1 = __webpack_require__(227);
+var finalize_1 = __webpack_require__(228);
 exports.finalize = finalize_1.finalize;
 var find_1 = __webpack_require__(52);
 exports.find = find_1.find;
-var findIndex_1 = __webpack_require__(228);
+var findIndex_1 = __webpack_require__(229);
 exports.findIndex = findIndex_1.findIndex;
-var first_1 = __webpack_require__(229);
+var first_1 = __webpack_require__(230);
 exports.first = first_1.first;
-var groupBy_1 = __webpack_require__(230);
+var groupBy_1 = __webpack_require__(231);
 exports.groupBy = groupBy_1.groupBy;
-var ignoreElements_1 = __webpack_require__(231);
+var ignoreElements_1 = __webpack_require__(232);
 exports.ignoreElements = ignoreElements_1.ignoreElements;
-var isEmpty_1 = __webpack_require__(232);
+var isEmpty_1 = __webpack_require__(233);
 exports.isEmpty = isEmpty_1.isEmpty;
-var last_1 = __webpack_require__(233);
+var last_1 = __webpack_require__(234);
 exports.last = last_1.last;
 var map_1 = __webpack_require__(21);
 exports.map = map_1.map;
-var mapTo_1 = __webpack_require__(234);
+var mapTo_1 = __webpack_require__(235);
 exports.mapTo = mapTo_1.mapTo;
-var materialize_1 = __webpack_require__(235);
+var materialize_1 = __webpack_require__(236);
 exports.materialize = materialize_1.materialize;
-var max_1 = __webpack_require__(236);
+var max_1 = __webpack_require__(237);
 exports.max = max_1.max;
-var merge_1 = __webpack_require__(237);
+var merge_1 = __webpack_require__(238);
 exports.merge = merge_1.merge;
 var mergeAll_1 = __webpack_require__(33);
 exports.mergeAll = mergeAll_1.mergeAll;
@@ -60094,11 +61585,11 @@ var mergeMap_1 = __webpack_require__(22);
 exports.mergeMap = mergeMap_1.mergeMap;
 var mergeMap_2 = __webpack_require__(22);
 exports.flatMap = mergeMap_2.mergeMap;
-var mergeMapTo_1 = __webpack_require__(238);
+var mergeMapTo_1 = __webpack_require__(239);
 exports.mergeMapTo = mergeMapTo_1.mergeMapTo;
-var mergeScan_1 = __webpack_require__(239);
+var mergeScan_1 = __webpack_require__(240);
 exports.mergeScan = mergeScan_1.mergeScan;
-var min_1 = __webpack_require__(240);
+var min_1 = __webpack_require__(241);
 exports.min = min_1.min;
 var multicast_1 = __webpack_require__(17);
 exports.multicast = multicast_1.multicast;
@@ -60106,57 +61597,57 @@ var observeOn_1 = __webpack_require__(34);
 exports.observeOn = observeOn_1.observeOn;
 var onErrorResumeNext_1 = __webpack_require__(53);
 exports.onErrorResumeNext = onErrorResumeNext_1.onErrorResumeNext;
-var pairwise_1 = __webpack_require__(241);
+var pairwise_1 = __webpack_require__(242);
 exports.pairwise = pairwise_1.pairwise;
-var partition_1 = __webpack_require__(242);
+var partition_1 = __webpack_require__(243);
 exports.partition = partition_1.partition;
-var pluck_1 = __webpack_require__(243);
+var pluck_1 = __webpack_require__(244);
 exports.pluck = pluck_1.pluck;
-var publish_1 = __webpack_require__(244);
+var publish_1 = __webpack_require__(245);
 exports.publish = publish_1.publish;
-var publishBehavior_1 = __webpack_require__(245);
+var publishBehavior_1 = __webpack_require__(246);
 exports.publishBehavior = publishBehavior_1.publishBehavior;
-var publishLast_1 = __webpack_require__(246);
+var publishLast_1 = __webpack_require__(247);
 exports.publishLast = publishLast_1.publishLast;
-var publishReplay_1 = __webpack_require__(247);
+var publishReplay_1 = __webpack_require__(248);
 exports.publishReplay = publishReplay_1.publishReplay;
-var race_1 = __webpack_require__(248);
+var race_1 = __webpack_require__(249);
 exports.race = race_1.race;
 var reduce_1 = __webpack_require__(23);
 exports.reduce = reduce_1.reduce;
-var repeat_1 = __webpack_require__(249);
+var repeat_1 = __webpack_require__(250);
 exports.repeat = repeat_1.repeat;
-var repeatWhen_1 = __webpack_require__(250);
+var repeatWhen_1 = __webpack_require__(251);
 exports.repeatWhen = repeatWhen_1.repeatWhen;
-var retry_1 = __webpack_require__(251);
+var retry_1 = __webpack_require__(252);
 exports.retry = retry_1.retry;
-var retryWhen_1 = __webpack_require__(252);
+var retryWhen_1 = __webpack_require__(253);
 exports.retryWhen = retryWhen_1.retryWhen;
 var refCount_1 = __webpack_require__(54);
 exports.refCount = refCount_1.refCount;
-var sample_1 = __webpack_require__(253);
+var sample_1 = __webpack_require__(254);
 exports.sample = sample_1.sample;
-var sampleTime_1 = __webpack_require__(254);
+var sampleTime_1 = __webpack_require__(255);
 exports.sampleTime = sampleTime_1.sampleTime;
 var scan_1 = __webpack_require__(55);
 exports.scan = scan_1.scan;
-var sequenceEqual_1 = __webpack_require__(255);
+var sequenceEqual_1 = __webpack_require__(256);
 exports.sequenceEqual = sequenceEqual_1.sequenceEqual;
-var share_1 = __webpack_require__(256);
+var share_1 = __webpack_require__(257);
 exports.share = share_1.share;
-var shareReplay_1 = __webpack_require__(257);
+var shareReplay_1 = __webpack_require__(258);
 exports.shareReplay = shareReplay_1.shareReplay;
-var single_1 = __webpack_require__(258);
+var single_1 = __webpack_require__(259);
 exports.single = single_1.single;
-var skip_1 = __webpack_require__(259);
+var skip_1 = __webpack_require__(260);
 exports.skip = skip_1.skip;
-var skipLast_1 = __webpack_require__(260);
+var skipLast_1 = __webpack_require__(261);
 exports.skipLast = skipLast_1.skipLast;
-var skipUntil_1 = __webpack_require__(261);
+var skipUntil_1 = __webpack_require__(262);
 exports.skipUntil = skipUntil_1.skipUntil;
-var skipWhile_1 = __webpack_require__(262);
+var skipWhile_1 = __webpack_require__(263);
 exports.skipWhile = skipWhile_1.skipWhile;
-var startWith_1 = __webpack_require__(263);
+var startWith_1 = __webpack_require__(264);
 exports.startWith = startWith_1.startWith;
 /**
  * TODO(https://github.com/ReactiveX/rxjs/issues/2900): Add back subscribeOn once it can be
@@ -60165,61 +61656,61 @@ exports.startWith = startWith_1.startWith;
  * Immediate, root, and other supporting code.
  */
 // export { subscribeOn } from './operators/subscribeOn';
-var switchAll_1 = __webpack_require__(264);
+var switchAll_1 = __webpack_require__(265);
 exports.switchAll = switchAll_1.switchAll;
 var switchMap_1 = __webpack_require__(56);
 exports.switchMap = switchMap_1.switchMap;
-var switchMapTo_1 = __webpack_require__(265);
+var switchMapTo_1 = __webpack_require__(266);
 exports.switchMapTo = switchMapTo_1.switchMapTo;
-var take_1 = __webpack_require__(266);
+var take_1 = __webpack_require__(267);
 exports.take = take_1.take;
 var takeLast_1 = __webpack_require__(57);
 exports.takeLast = takeLast_1.takeLast;
-var takeUntil_1 = __webpack_require__(267);
+var takeUntil_1 = __webpack_require__(268);
 exports.takeUntil = takeUntil_1.takeUntil;
-var takeWhile_1 = __webpack_require__(268);
+var takeWhile_1 = __webpack_require__(269);
 exports.takeWhile = takeWhile_1.takeWhile;
-var tap_1 = __webpack_require__(269);
+var tap_1 = __webpack_require__(270);
 exports.tap = tap_1.tap;
 var throttle_1 = __webpack_require__(35);
 exports.throttle = throttle_1.throttle;
-var throttleTime_1 = __webpack_require__(270);
+var throttleTime_1 = __webpack_require__(271);
 exports.throttleTime = throttleTime_1.throttleTime;
-var timeInterval_1 = __webpack_require__(271);
+var timeInterval_1 = __webpack_require__(272);
 exports.timeInterval = timeInterval_1.timeInterval;
-var timeout_1 = __webpack_require__(272);
+var timeout_1 = __webpack_require__(273);
 exports.timeout = timeout_1.timeout;
-var timeoutWith_1 = __webpack_require__(273);
+var timeoutWith_1 = __webpack_require__(274);
 exports.timeoutWith = timeoutWith_1.timeoutWith;
 var timestamp_1 = __webpack_require__(58);
 exports.timestamp = timestamp_1.timestamp;
-var toArray_1 = __webpack_require__(274);
+var toArray_1 = __webpack_require__(275);
 exports.toArray = toArray_1.toArray;
-var window_1 = __webpack_require__(275);
+var window_1 = __webpack_require__(276);
 exports.window = window_1.window;
-var windowCount_1 = __webpack_require__(276);
+var windowCount_1 = __webpack_require__(277);
 exports.windowCount = windowCount_1.windowCount;
-var windowTime_1 = __webpack_require__(277);
+var windowTime_1 = __webpack_require__(278);
 exports.windowTime = windowTime_1.windowTime;
-var windowToggle_1 = __webpack_require__(278);
+var windowToggle_1 = __webpack_require__(279);
 exports.windowToggle = windowToggle_1.windowToggle;
-var windowWhen_1 = __webpack_require__(279);
+var windowWhen_1 = __webpack_require__(280);
 exports.windowWhen = windowWhen_1.windowWhen;
-var withLatestFrom_1 = __webpack_require__(280);
+var withLatestFrom_1 = __webpack_require__(281);
 exports.withLatestFrom = withLatestFrom_1.withLatestFrom;
 var zip_1 = __webpack_require__(36);
 exports.zip = zip_1.zip;
-var zipAll_1 = __webpack_require__(281);
+var zipAll_1 = __webpack_require__(282);
 exports.zipAll = zipAll_1.zipAll;
 //# sourceMappingURL=operators.js.map
 
 /***/ }),
-/* 592 */
+/* 594 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var SubscribeOnObservable_1 = __webpack_require__(466);
+var SubscribeOnObservable_1 = __webpack_require__(468);
 /**
  * Asynchronously subscribes Observers to this Observable on the specified IScheduler.
  *
@@ -60251,7 +61742,7 @@ var SubscribeOnOperator = (function () {
 //# sourceMappingURL=subscribeOn.js.map
 
 /***/ }),
-/* 593 */
+/* 595 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60301,7 +61792,7 @@ exports.Action = Action;
 //# sourceMappingURL=Action.js.map
 
 /***/ }),
-/* 594 */
+/* 596 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60312,7 +61803,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var AsyncAction_1 = __webpack_require__(24);
-var AnimationFrame_1 = __webpack_require__(604);
+var AnimationFrame_1 = __webpack_require__(606);
 /**
  * We need this JSDoc comment for affecting ESDoc.
  * @ignore
@@ -60362,7 +61853,7 @@ exports.AnimationFrameAction = AnimationFrameAction;
 //# sourceMappingURL=AnimationFrameAction.js.map
 
 /***/ }),
-/* 595 */
+/* 597 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60405,7 +61896,7 @@ exports.AnimationFrameScheduler = AnimationFrameScheduler;
 //# sourceMappingURL=AnimationFrameScheduler.js.map
 
 /***/ }),
-/* 596 */
+/* 598 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60415,7 +61906,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var Immediate_1 = __webpack_require__(606);
+var Immediate_1 = __webpack_require__(608);
 var AsyncAction_1 = __webpack_require__(24);
 /**
  * We need this JSDoc comment for affecting ESDoc.
@@ -60466,7 +61957,7 @@ exports.AsapAction = AsapAction;
 //# sourceMappingURL=AsapAction.js.map
 
 /***/ }),
-/* 597 */
+/* 599 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60509,7 +62000,7 @@ exports.AsapScheduler = AsapScheduler;
 //# sourceMappingURL=AsapScheduler.js.map
 
 /***/ }),
-/* 598 */
+/* 600 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60564,7 +62055,7 @@ exports.QueueAction = QueueAction;
 //# sourceMappingURL=QueueAction.js.map
 
 /***/ }),
-/* 599 */
+/* 601 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60586,13 +62077,13 @@ exports.QueueScheduler = QueueScheduler;
 //# sourceMappingURL=QueueScheduler.js.map
 
 /***/ }),
-/* 600 */
+/* 602 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var AnimationFrameAction_1 = __webpack_require__(594);
-var AnimationFrameScheduler_1 = __webpack_require__(595);
+var AnimationFrameAction_1 = __webpack_require__(596);
+var AnimationFrameScheduler_1 = __webpack_require__(597);
 /**
  *
  * Animation Frame Scheduler
@@ -60627,7 +62118,7 @@ exports.animationFrame = new AnimationFrameScheduler_1.AnimationFrameScheduler(A
 //# sourceMappingURL=animationFrame.js.map
 
 /***/ }),
-/* 601 */
+/* 603 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60639,8 +62130,8 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var Observable_1 = __webpack_require__(0);
 var Subscription_1 = __webpack_require__(7);
-var SubscriptionLoggable_1 = __webpack_require__(286);
-var applyMixins_1 = __webpack_require__(289);
+var SubscriptionLoggable_1 = __webpack_require__(287);
+var applyMixins_1 = __webpack_require__(290);
 /**
  * We need this JSDoc comment for affecting ESDoc.
  * @ignore
@@ -60679,7 +62170,7 @@ applyMixins_1.applyMixins(ColdObservable, [SubscriptionLoggable_1.SubscriptionLo
 //# sourceMappingURL=ColdObservable.js.map
 
 /***/ }),
-/* 602 */
+/* 604 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60691,8 +62182,8 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var Subject_1 = __webpack_require__(8);
 var Subscription_1 = __webpack_require__(7);
-var SubscriptionLoggable_1 = __webpack_require__(286);
-var applyMixins_1 = __webpack_require__(289);
+var SubscriptionLoggable_1 = __webpack_require__(287);
+var applyMixins_1 = __webpack_require__(290);
 /**
  * We need this JSDoc comment for affecting ESDoc.
  * @ignore
@@ -60733,7 +62224,7 @@ applyMixins_1.applyMixins(HotObservable, [SubscriptionLoggable_1.SubscriptionLog
 //# sourceMappingURL=HotObservable.js.map
 
 /***/ }),
-/* 603 */
+/* 605 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60745,10 +62236,10 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var Observable_1 = __webpack_require__(0);
 var Notification_1 = __webpack_require__(19);
-var ColdObservable_1 = __webpack_require__(601);
-var HotObservable_1 = __webpack_require__(602);
-var SubscriptionLog_1 = __webpack_require__(285);
-var VirtualTimeScheduler_1 = __webpack_require__(282);
+var ColdObservable_1 = __webpack_require__(603);
+var HotObservable_1 = __webpack_require__(604);
+var SubscriptionLog_1 = __webpack_require__(286);
+var VirtualTimeScheduler_1 = __webpack_require__(283);
 var defaultMaxFrame = 750;
 var TestScheduler = (function (_super) {
     __extends(TestScheduler, _super);
@@ -60962,7 +62453,7 @@ exports.TestScheduler = TestScheduler;
 //# sourceMappingURL=TestScheduler.js.map
 
 /***/ }),
-/* 604 */
+/* 606 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61002,7 +62493,7 @@ exports.AnimationFrame = new RequestAnimationFrameDefinition(root_1.root);
 //# sourceMappingURL=AnimationFrame.js.map
 
 /***/ }),
-/* 605 */
+/* 607 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61039,7 +62530,7 @@ exports.FastMap = FastMap;
 //# sourceMappingURL=FastMap.js.map
 
 /***/ }),
-/* 606 */
+/* 608 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61252,21 +62743,21 @@ var ImmediateDefinition = (function () {
 exports.ImmediateDefinition = ImmediateDefinition;
 exports.Immediate = new ImmediateDefinition(root_1.root);
 //# sourceMappingURL=Immediate.js.map
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(294).clearImmediate, __webpack_require__(294).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(295).clearImmediate, __webpack_require__(295).setImmediate))
 
 /***/ }),
-/* 607 */
+/* 609 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var root_1 = __webpack_require__(11);
-var MapPolyfill_1 = __webpack_require__(608);
+var MapPolyfill_1 = __webpack_require__(610);
 exports.Map = root_1.root.Map || (function () { return MapPolyfill_1.MapPolyfill; })();
 //# sourceMappingURL=Map.js.map
 
 /***/ }),
-/* 608 */
+/* 610 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61319,7 +62810,7 @@ exports.MapPolyfill = MapPolyfill;
 //# sourceMappingURL=MapPolyfill.js.map
 
 /***/ }),
-/* 609 */
+/* 611 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61358,7 +62849,7 @@ exports.Set = root_1.root.Set || minimalSetImpl();
 //# sourceMappingURL=Set.js.map
 
 /***/ }),
-/* 610 */
+/* 612 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61390,7 +62881,7 @@ exports.assign = getAssign(root_1.root);
 //# sourceMappingURL=assign.js.map
 
 /***/ }),
-/* 611 */
+/* 613 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61407,14 +62898,14 @@ exports.not = not;
 //# sourceMappingURL=not.js.map
 
 /***/ }),
-/* 612 */
+/* 614 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Subscriber_1 = __webpack_require__(2);
 var rxSubscriber_1 = __webpack_require__(38);
-var Observer_1 = __webpack_require__(194);
+var Observer_1 = __webpack_require__(195);
 function toSubscriber(nextOrObserver, error, complete) {
     if (nextOrObserver) {
         if (nextOrObserver instanceof Subscriber_1.Subscriber) {
@@ -61433,7 +62924,7 @@ exports.toSubscriber = toSubscriber;
 //# sourceMappingURL=toSubscriber.js.map
 
 /***/ }),
-/* 613 */
+/* 615 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
@@ -61623,10 +63114,10 @@ exports.toSubscriber = toSubscriber;
     attachTo.clearImmediate = clearImmediate;
 }(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(64), __webpack_require__(318)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(64), __webpack_require__(320)))
 
 /***/ }),
-/* 614 */
+/* 616 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61636,7 +63127,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../typings/tsd.d.ts' />
 //modules
 var core_module_1 = __webpack_require__(6);
-var swcustomeraccountcard_1 = __webpack_require__(615);
+var swcustomeraccountcard_1 = __webpack_require__(617);
 var accountmodule = angular.module('account', [core_module_1.coremodule.name])
     .config([function () {
     }]).run([function () {
@@ -61649,7 +63140,7 @@ exports.accountmodule = accountmodule;
 
 
 /***/ }),
-/* 615 */
+/* 617 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61717,7 +63208,7 @@ exports.SWCustomerAccountCard = SWCustomerAccountCard;
 
 
 /***/ }),
-/* 616 */
+/* 618 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61727,8 +63218,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../typings/tsd.d.ts' />
 //modules
 var core_module_1 = __webpack_require__(6);
-var swaddressformpartial_1 = __webpack_require__(617);
-var addressservice_1 = __webpack_require__(618);
+var swaddressformpartial_1 = __webpack_require__(619);
+var addressservice_1 = __webpack_require__(620);
 var addressmodule = angular.module('address', [core_module_1.coremodule.name])
     .config([function () {
     }]).run([function () {
@@ -61743,7 +63234,7 @@ exports.addressmodule = addressmodule;
 
 
 /***/ }),
-/* 617 */
+/* 619 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61824,7 +63315,7 @@ exports.SWAddressFormPartial = SWAddressFormPartial;
 
 
 /***/ }),
-/* 618 */
+/* 620 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61853,7 +63344,7 @@ exports.AddressService = AddressService;
 
 
 /***/ }),
-/* 619 */
+/* 621 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61915,7 +63406,7 @@ exports.SWAssignedProducts = SWAssignedProducts;
 
 
 /***/ }),
-/* 620 */
+/* 622 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61992,7 +63483,7 @@ exports.SWContentBasic = SWContentBasic;
 
 
 /***/ }),
-/* 621 */
+/* 623 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62053,7 +63544,7 @@ exports.SWContentEditor = SWContentEditor;
 
 
 /***/ }),
-/* 622 */
+/* 624 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62293,7 +63784,7 @@ exports.SWContentList = SWContentList;
 
 
 /***/ }),
-/* 623 */
+/* 625 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62436,7 +63927,7 @@ exports.SWContentNode = SWContentNode;
 
 
 /***/ }),
-/* 624 */
+/* 626 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62578,7 +64069,7 @@ exports.SWSiteSelector = SWSiteSelector;
 
 
 /***/ }),
-/* 625 */
+/* 627 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62591,12 +64082,12 @@ var core_module_1 = __webpack_require__(6);
 //services
 //filters
 //directives
-var swcontentbasic_1 = __webpack_require__(620);
-var swcontenteditor_1 = __webpack_require__(621);
-var swcontentlist_1 = __webpack_require__(622);
-var swcontentnode_1 = __webpack_require__(623);
-var swassignedproducts_1 = __webpack_require__(619);
-var swsiteselector_1 = __webpack_require__(624);
+var swcontentbasic_1 = __webpack_require__(622);
+var swcontenteditor_1 = __webpack_require__(623);
+var swcontentlist_1 = __webpack_require__(624);
+var swcontentnode_1 = __webpack_require__(625);
+var swassignedproducts_1 = __webpack_require__(621);
+var swsiteselector_1 = __webpack_require__(626);
 var contentmodule = angular.module('hibachi.content', [core_module_1.coremodule.name]).config(function () {
 })
     .constant('contentPartialsPath', 'content/components/')
@@ -62613,7 +64104,7 @@ exports.contentmodule = contentmodule;
 
 
 /***/ }),
-/* 626 */
+/* 628 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62717,7 +64208,7 @@ exports.SWFormResponseListing = SWFormResponseListing;
 
 
 /***/ }),
-/* 627 */
+/* 629 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62729,7 +64220,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_module_1 = __webpack_require__(6);
 //controllers
 //directives
-var swformresponselisting_1 = __webpack_require__(626);
+var swformresponselisting_1 = __webpack_require__(628);
 //models
 var formbuildermodule = angular.module('formbuilder', [core_module_1.coremodule.name])
     .config([function () {
@@ -62744,7 +64235,7 @@ exports.formbuildermodule = formbuildermodule;
 
 
 /***/ }),
-/* 628 */
+/* 630 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62752,7 +64243,7 @@ exports.formbuildermodule = formbuildermodule;
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
-var actions = __webpack_require__(295);
+var actions = __webpack_require__(296);
 /**
  * Fulfillment Batch Detail Controller
  */
@@ -62977,7 +64468,7 @@ exports.SWFulfillmentBatchDetail = SWFulfillmentBatchDetail;
 
 
 /***/ }),
-/* 629 */
+/* 631 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62988,10 +64479,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //modules
 var core_module_1 = __webpack_require__(6);
 //services
-var orderfulfillmentservice_1 = __webpack_require__(296);
+var orderfulfillmentservice_1 = __webpack_require__(297);
 //controllers
 //directives
-var swfulfillmentbatchdetail_1 = __webpack_require__(628);
+var swfulfillmentbatchdetail_1 = __webpack_require__(630);
 //models 
 var fulfillmentbatchdetailmodule = angular.module('fulfillmentbatchdetail', [core_module_1.coremodule.name])
     .config([function () {
@@ -63008,7 +64499,7 @@ exports.fulfillmentbatchdetailmodule = fulfillmentbatchdetailmodule;
 
 
 /***/ }),
-/* 630 */
+/* 632 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63016,7 +64507,7 @@ exports.fulfillmentbatchdetailmodule = fulfillmentbatchdetailmodule;
 Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-var giftrecipient_1 = __webpack_require__(640);
+var giftrecipient_1 = __webpack_require__(642);
 var SWAddOrderItemRecipientController = /** @class */ (function () {
     //@ngInject
     function SWAddOrderItemRecipientController($hibachi, collectionConfigService, entityService, observerService) {
@@ -63175,7 +64666,7 @@ exports.SWAddOrderItemGiftRecipient = SWAddOrderItemGiftRecipient;
 
 
 /***/ }),
-/* 631 */
+/* 633 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63254,7 +64745,7 @@ exports.SWGiftCardBalance = SWGiftCardBalance;
 
 
 /***/ }),
-/* 632 */
+/* 634 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63313,7 +64804,7 @@ exports.SWGiftCardDetail = SWGiftCardDetail;
 
 
 /***/ }),
-/* 633 */
+/* 635 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63443,7 +64934,7 @@ exports.SWGiftCardHistory = SWGiftCardHistory;
 
 
 /***/ }),
-/* 634 */
+/* 636 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63503,7 +64994,7 @@ exports.SWGiftCardOrderInfo = SWGiftCardOrderInfo;
 
 
 /***/ }),
-/* 635 */
+/* 637 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63544,7 +65035,7 @@ exports.SWGiftCardOverview = SWGiftCardOverview;
 
 
 /***/ }),
-/* 636 */
+/* 638 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63590,7 +65081,7 @@ exports.SWGiftCardRecipientInfo = SWGiftCardRecipientInfo;
 
 
 /***/ }),
-/* 637 */
+/* 639 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63698,7 +65189,7 @@ exports.SWOrderItemGiftRecipientRow = SWOrderItemGiftRecipientRow;
 
 
 /***/ }),
-/* 638 */
+/* 640 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63744,7 +65235,7 @@ exports.OrderItemGiftRecipientControl = OrderItemGiftRecipientControl;
 
 
 /***/ }),
-/* 639 */
+/* 641 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63755,16 +65246,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //modules
 var core_module_1 = __webpack_require__(6);
 //controllers
-var preprocessorderitem_addorderitemgiftrecipient_1 = __webpack_require__(638);
+var preprocessorderitem_addorderitemgiftrecipient_1 = __webpack_require__(640);
 //directives
-var swaddorderitemgiftrecipient_1 = __webpack_require__(630);
-var swgiftcardbalance_1 = __webpack_require__(631);
-var swgiftcarddetail_1 = __webpack_require__(632);
-var swgiftcardhistory_1 = __webpack_require__(633);
-var swgiftcardoverview_1 = __webpack_require__(635);
-var swgiftcardorderinfo_1 = __webpack_require__(634);
-var swgiftcardrecipientinfo_1 = __webpack_require__(636);
-var sworderitemgiftrecipientrow_1 = __webpack_require__(637);
+var swaddorderitemgiftrecipient_1 = __webpack_require__(632);
+var swgiftcardbalance_1 = __webpack_require__(633);
+var swgiftcarddetail_1 = __webpack_require__(634);
+var swgiftcardhistory_1 = __webpack_require__(635);
+var swgiftcardoverview_1 = __webpack_require__(637);
+var swgiftcardorderinfo_1 = __webpack_require__(636);
+var swgiftcardrecipientinfo_1 = __webpack_require__(638);
+var sworderitemgiftrecipientrow_1 = __webpack_require__(639);
 var giftcardmodule = angular.module('giftcard', [core_module_1.coremodule.name])
     .config([function () {
     }]).run([function () {
@@ -63786,7 +65277,7 @@ exports.giftcardmodule = giftcardmodule;
 
 
 /***/ }),
-/* 640 */
+/* 642 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63815,7 +65306,7 @@ exports.GiftRecipient = GiftRecipient;
 
 
 /***/ }),
-/* 641 */
+/* 643 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63987,7 +65478,7 @@ exports.SWAddOptionGroup = SWAddOptionGroup;
 
 
 /***/ }),
-/* 642 */
+/* 644 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64063,7 +65554,7 @@ exports.SWOptionsForOptionGroup = SWOptionsForOptionGroup;
 
 
 /***/ }),
-/* 643 */
+/* 645 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64075,8 +65566,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_module_1 = __webpack_require__(6);
 //controllers
 //directives
-var swaddoptiongroup_1 = __webpack_require__(641);
-var swoptionsforoptiongroup_1 = __webpack_require__(642);
+var swaddoptiongroup_1 = __webpack_require__(643);
+var swoptionsforoptiongroup_1 = __webpack_require__(644);
 var optiongroupmodule = angular.module('optiongroup', [core_module_1.coremodule.name])
     .config([function () {
     }]).run([function () {
@@ -64091,7 +65582,7 @@ exports.optiongroupmodule = optiongroupmodule;
 
 
 /***/ }),
-/* 644 */
+/* 646 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64265,7 +65756,7 @@ exports.SWAccountPaymentMethodModal = SWAccountPaymentMethodModal;
 
 
 /***/ }),
-/* 645 */
+/* 647 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64274,15 +65765,31 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 var SWAccountShippingAddressCardController = /** @class */ (function () {
-    function SWAccountShippingAddressCardController($hibachi, observerService, rbkeyService) {
+    function SWAccountShippingAddressCardController($hibachi, observerService, rbkeyService, ModalService) {
         var _this = this;
         this.$hibachi = $hibachi;
         this.observerService = observerService;
         this.rbkeyService = rbkeyService;
+        this.ModalService = ModalService;
         this.title = "Shipping";
         this.shippingAddressTitle = 'Shipping Address';
         this.shippingMethodTitle = 'Shipping Method';
         this.includeModal = true;
+        this.addressVerificationCheck = function (_a) {
+            var shippingAccountAddress = _a.shippingAccountAddress;
+            if (!shippingAccountAddress) {
+                return;
+            }
+            try {
+                var addressVerification = JSON.parse(shippingAccountAddress.address_verificationJson);
+                if (addressVerification && addressVerification.hasOwnProperty('success') && !addressVerification.success) {
+                    _this.launchAddressModal([addressVerification.address, addressVerification.suggestedAddress]);
+                }
+            }
+            catch (e) {
+                console.log(e);
+            }
+        };
         this.updateShippingInfo = function (data) {
             if (data['account.accountAddressOptions'] != null) {
                 _this.accountAddressOptions = data['account.accountAddressOptions'];
@@ -64292,8 +65799,14 @@ var SWAccountShippingAddressCardController = /** @class */ (function () {
                 _this.shippingMethod = data.shippingMethod;
                 _this.modalButtonText = _this.rbkeyService.rbKey('define.update') + ' ' + _this.title;
             }
+            if (data.addressID) {
+                for (var key in data) {
+                    _this.shippingAccountAddress["address_" + key] = data[key];
+                }
+            }
         };
         this.observerService.attach(this.updateShippingInfo, 'OrderTemplateUpdateShippingSuccess');
+        this.observerService.attach(this.addressVerificationCheck, 'OrderTemplateUpdateShippingSuccess');
         this.observerService.attach(this.updateShippingInfo, 'OrderTemplateUpdateBillingSuccess');
         if (this.shippingAccountAddress != null && this.shippingMethod != null) {
             this.modalButtonText = this.rbkeyService.rbKey('define.update') + ' ' + this.title;
@@ -64305,6 +65818,30 @@ var SWAccountShippingAddressCardController = /** @class */ (function () {
             this.includeModal = false;
         }
     }
+    SWAccountShippingAddressCardController.prototype.launchAddressModal = function (addresses) {
+        var _this = this;
+        this.ModalService.showModal({
+            component: 'swAddressVerification',
+            bodyClass: 'angular-modal-service-active',
+            bindings: {
+                suggestedAddresses: addresses,
+                sAction: this.updateShippingInfo,
+                propertyIdentifiersList: 'addressID,firstName,lastName,streetAddress,street2Address,city,stateCode,postalCode,countryCode'
+            },
+            preClose: function (modal) {
+                modal.element.modal('hide');
+                _this.ModalService.closeModals();
+            },
+        })
+            .then(function (modal) {
+            //it's a bootstrap element, use 'modal' to show it
+            modal.element.modal();
+            modal.close.then(function (result) { });
+        })
+            .catch(function (error) {
+            console.error('unable to open model :', error);
+        });
+    };
     return SWAccountShippingAddressCardController;
 }());
 var SWAccountShippingAddressCard = /** @class */ (function () {
@@ -64349,7 +65886,7 @@ exports.SWAccountShippingAddressCard = SWAccountShippingAddressCard;
 
 
 /***/ }),
-/* 646 */
+/* 648 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64468,7 +66005,7 @@ exports.SWAccountShippingMethodModal = SWAccountShippingMethodModal;
 
 
 /***/ }),
-/* 647 */
+/* 649 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64680,7 +66217,7 @@ exports.SWAddOrderItemsBySku = SWAddOrderItemsBySku;
 
 
 /***/ }),
-/* 648 */
+/* 650 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64875,7 +66412,7 @@ exports.SWAddPromotionOrderItemsBySku = SWAddPromotionOrderItemsBySku;
 
 
 /***/ }),
-/* 649 */
+/* 651 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64987,7 +66524,7 @@ exports.SWCustomerAccountPaymentMethodCard = SWCustomerAccountPaymentMethodCard;
 
 
 /***/ }),
-/* 650 */
+/* 652 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65084,7 +66621,7 @@ exports.SWOrderTemplateAddGiftCardModal = SWOrderTemplateAddGiftCardModal;
 
 
 /***/ }),
-/* 651 */
+/* 653 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65160,7 +66697,7 @@ exports.SWOrderTemplateAddPromotionModal = SWOrderTemplateAddPromotionModal;
 
 
 /***/ }),
-/* 652 */
+/* 654 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65221,7 +66758,7 @@ exports.SWOrderTemplateFrequencyCard = SWOrderTemplateFrequencyCard;
 
 
 /***/ }),
-/* 653 */
+/* 655 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65310,7 +66847,7 @@ exports.SWOrderTemplateFrequencyModal = SWOrderTemplateFrequencyModal;
 
 
 /***/ }),
-/* 654 */
+/* 656 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65370,7 +66907,7 @@ exports.SWOrderTemplateGiftCards = SWOrderTemplateGiftCards;
 
 
 /***/ }),
-/* 655 */
+/* 657 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65463,7 +67000,7 @@ exports.SWOrderTemplateItems = SWOrderTemplateItems;
 
 
 /***/ }),
-/* 656 */
+/* 658 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65570,7 +67107,7 @@ exports.SWOrderTemplatePromotionItems = SWOrderTemplatePromotionItems;
 
 
 /***/ }),
-/* 657 */
+/* 659 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65627,7 +67164,7 @@ exports.SWOrderTemplatePromotions = SWOrderTemplatePromotions;
 
 
 /***/ }),
-/* 658 */
+/* 660 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65719,7 +67256,7 @@ exports.SWOrderTemplateUpcomingOrdersCard = SWOrderTemplateUpcomingOrdersCard;
 
 
 /***/ }),
-/* 659 */
+/* 661 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65810,7 +67347,7 @@ exports.SWOrderTemplateUpdateScheduleModal = SWOrderTemplateUpdateScheduleModal;
 
 
 /***/ }),
-/* 660 */
+/* 662 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65821,24 +67358,24 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //modules
 var core_module_1 = __webpack_require__(6);
 //services
-var ordertemplateservice_1 = __webpack_require__(661);
+var ordertemplateservice_1 = __webpack_require__(663);
 //components
-var swaccountpaymentmethodmodal_1 = __webpack_require__(644);
-var swaccountshippingaddresscard_1 = __webpack_require__(645);
-var swaccountshippingmethodmodal_1 = __webpack_require__(646);
-var swcustomeraccountpaymentmethodcard_1 = __webpack_require__(649);
-var swordertemplateaddpromotionmodal_1 = __webpack_require__(651);
-var swordertemplateaddgiftcardmodal_1 = __webpack_require__(650);
-var swordertemplatefrequencycard_1 = __webpack_require__(652);
-var swordertemplatefrequencymodal_1 = __webpack_require__(653);
-var swordertemplategiftcards_1 = __webpack_require__(654);
-var swordertemplateitems_1 = __webpack_require__(655);
-var swordertemplatepromotions_1 = __webpack_require__(657);
-var swordertemplatepromotionitems_1 = __webpack_require__(656);
-var swordertemplateupcomingorderscard_1 = __webpack_require__(658);
-var swordertemplateupdateschedulemodal_1 = __webpack_require__(659);
-var swaddorderitemsbysku_1 = __webpack_require__(647);
-var swaddpromotionorderitemsbysku_1 = __webpack_require__(648);
+var swaccountpaymentmethodmodal_1 = __webpack_require__(646);
+var swaccountshippingaddresscard_1 = __webpack_require__(647);
+var swaccountshippingmethodmodal_1 = __webpack_require__(648);
+var swcustomeraccountpaymentmethodcard_1 = __webpack_require__(651);
+var swordertemplateaddpromotionmodal_1 = __webpack_require__(653);
+var swordertemplateaddgiftcardmodal_1 = __webpack_require__(652);
+var swordertemplatefrequencycard_1 = __webpack_require__(654);
+var swordertemplatefrequencymodal_1 = __webpack_require__(655);
+var swordertemplategiftcards_1 = __webpack_require__(656);
+var swordertemplateitems_1 = __webpack_require__(657);
+var swordertemplatepromotions_1 = __webpack_require__(659);
+var swordertemplatepromotionitems_1 = __webpack_require__(658);
+var swordertemplateupcomingorderscard_1 = __webpack_require__(660);
+var swordertemplateupdateschedulemodal_1 = __webpack_require__(661);
+var swaddorderitemsbysku_1 = __webpack_require__(649);
+var swaddpromotionorderitemsbysku_1 = __webpack_require__(650);
 var ordermodule = angular.module('order', [core_module_1.coremodule.name])
     .config([function () {
     }]).run([function () {
@@ -65868,7 +67405,7 @@ exports.ordermodule = ordermodule;
 
 
 /***/ }),
-/* 661 */
+/* 663 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66196,7 +67733,7 @@ exports.OrderTemplateService = OrderTemplateService;
 
 
 /***/ }),
-/* 662 */
+/* 664 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66413,7 +67950,7 @@ exports.SWOrderDeliveryDetail = SWOrderDeliveryDetail;
 
 
 /***/ }),
-/* 663 */
+/* 665 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66427,7 +67964,7 @@ var core_module_1 = __webpack_require__(6);
 //import {OrderFulfillmentService} from "../orderfulfillment/services/orderfulfillmentservice";
 //controllers
 //directives
-var sworderdeliverydetail_1 = __webpack_require__(662);
+var sworderdeliverydetail_1 = __webpack_require__(664);
 var orderdeliverydetailmodule = angular.module('orderdeliverydetail', [core_module_1.coremodule.name])
     .config([function () {
     }]).run([function () {
@@ -66442,7 +67979,7 @@ exports.orderdeliverydetailmodule = orderdeliverydetailmodule;
 
 
 /***/ }),
-/* 664 */
+/* 666 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67103,7 +68640,7 @@ exports.SWOrderFulfillmentList = SWOrderFulfillmentList;
 
 
 /***/ }),
-/* 665 */
+/* 667 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67114,10 +68651,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //modules
 var core_module_1 = __webpack_require__(6);
 //services
-var orderfulfillmentservice_1 = __webpack_require__(296);
+var orderfulfillmentservice_1 = __webpack_require__(297);
 //controllers
 //directives
-var sworderfulfillmentlist_1 = __webpack_require__(664);
+var sworderfulfillmentlist_1 = __webpack_require__(666);
 //models 
 var orderfulfillmentmodule = angular.module('orderFulfillment', [core_module_1.coremodule.name])
     .config([function () {
@@ -67134,7 +68671,7 @@ exports.orderfulfillmentmodule = orderfulfillmentmodule;
 
 
 /***/ }),
-/* 666 */
+/* 668 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67425,7 +68962,7 @@ exports.SWChildOrderItem = SWChildOrderItem;
 
 
 /***/ }),
-/* 667 */
+/* 669 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67469,7 +69006,7 @@ exports.SWOiShippingLabelStamp = SWOiShippingLabelStamp;
 
 
 /***/ }),
-/* 668 */
+/* 670 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67957,7 +69494,7 @@ exports.SWOrderItem = SWOrderItem;
 
 
 /***/ }),
-/* 669 */
+/* 671 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68071,7 +69608,7 @@ exports.SWOrderItemDetailStamp = SWOrderItemDetailStamp;
 
 
 /***/ }),
-/* 670 */
+/* 672 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68114,7 +69651,7 @@ exports.SWResizedImage = SWResizedImage;
 
 
 /***/ }),
-/* 671 */
+/* 673 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68124,12 +69661,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path="../../typings/slatwallTypescript.d.ts" />
 var core_module_1 = __webpack_require__(6);
 //directives
-var swchildorderitem_1 = __webpack_require__(666);
-var sworderitem_1 = __webpack_require__(668);
-var swoishippinglabelstamp_1 = __webpack_require__(667);
-var sworderitemdetailstamp_1 = __webpack_require__(669);
-var sworderitems_1 = __webpack_require__(714);
-var swresizedimage_1 = __webpack_require__(670);
+var swchildorderitem_1 = __webpack_require__(668);
+var sworderitem_1 = __webpack_require__(670);
+var swoishippinglabelstamp_1 = __webpack_require__(669);
+var sworderitemdetailstamp_1 = __webpack_require__(671);
+var sworderitems_1 = __webpack_require__(716);
+var swresizedimage_1 = __webpack_require__(672);
 var orderitemmodule = angular.module('hibachi.orderitem', [core_module_1.coremodule.name])
     // .config(['$provide','baseURL',($provide,baseURL)=>{
     // 	$provide.constant('paginationPartials', baseURL+basePartialsPath+'pagination/components/');
@@ -68149,7 +69686,7 @@ exports.orderitemmodule = orderitemmodule;
 
 
 /***/ }),
-/* 672 */
+/* 674 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68253,7 +69790,7 @@ exports.SWProductDeliveryScheduleDates = SWProductDeliveryScheduleDates;
 
 
 /***/ }),
-/* 673 */
+/* 675 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68315,7 +69852,7 @@ exports.SWProductListingPages = SWProductListingPages;
 
 
 /***/ }),
-/* 674 */
+/* 676 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68378,7 +69915,7 @@ exports.SWRelatedProducts = SWRelatedProducts;
 
 
 /***/ }),
-/* 675 */
+/* 677 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68482,7 +70019,7 @@ exports.ProductCreateController = ProductCreateController;
 
 
 /***/ }),
-/* 676 */
+/* 678 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68494,12 +70031,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_module_1 = __webpack_require__(6);
 //services
 //controllers
-var preprocessproduct_create_1 = __webpack_require__(675);
+var preprocessproduct_create_1 = __webpack_require__(677);
 //filters
 //directives
-var swproductlistingpages_1 = __webpack_require__(673);
-var swrelatedproducts_1 = __webpack_require__(674);
-var swproductdeliveryscheduledates_1 = __webpack_require__(672);
+var swproductlistingpages_1 = __webpack_require__(675);
+var swrelatedproducts_1 = __webpack_require__(676);
+var swproductdeliveryscheduledates_1 = __webpack_require__(674);
 var productmodule = angular.module('hibachi.product', [core_module_1.coremodule.name]).config(function () {
 })
     .constant('productPartialsPath', 'product/components/')
@@ -68515,7 +70052,7 @@ exports.productmodule = productmodule;
 
 
 /***/ }),
-/* 677 */
+/* 679 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68860,7 +70397,7 @@ exports.SWProductBundleCollectionFilterItemTypeahead = SWProductBundleCollection
 
 
 /***/ }),
-/* 678 */
+/* 680 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69046,7 +70583,7 @@ exports.SWProductBundleGroup = SWProductBundleGroup;
 
 
 /***/ }),
-/* 679 */
+/* 681 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69133,7 +70670,7 @@ exports.SWProductBundleGroups = SWProductBundleGroups;
 
 
 /***/ }),
-/* 680 */
+/* 682 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69308,7 +70845,7 @@ exports.SWProductBundleGroupType = SWProductBundleGroupType;
 
 
 /***/ }),
-/* 681 */
+/* 683 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69409,7 +70946,7 @@ exports.CreateBundleController = CreateBundleController;
 
 
 /***/ }),
-/* 682 */
+/* 684 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69420,14 +70957,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //modules
 var core_module_1 = __webpack_require__(6);
 //services
-var productbundleservice_1 = __webpack_require__(683);
+var productbundleservice_1 = __webpack_require__(685);
 //controllers
-var create_bundle_controller_1 = __webpack_require__(681);
+var create_bundle_controller_1 = __webpack_require__(683);
 //directives
-var swproductbundlegrouptype_1 = __webpack_require__(680);
-var swproductbundlegroups_1 = __webpack_require__(679);
-var swproductbundlegroup_1 = __webpack_require__(678);
-var swproductbundlecollectionfilteritemtypeahead_1 = __webpack_require__(677);
+var swproductbundlegrouptype_1 = __webpack_require__(682);
+var swproductbundlegroups_1 = __webpack_require__(681);
+var swproductbundlegroup_1 = __webpack_require__(680);
+var swproductbundlecollectionfilteritemtypeahead_1 = __webpack_require__(679);
 //filters
 var productbundlemodule = angular.module('hibachi.productbundle', [core_module_1.coremodule.name]).config(function () {
 })
@@ -69446,7 +70983,7 @@ exports.productbundlemodule = productbundlemodule;
 
 
 /***/ }),
-/* 683 */
+/* 685 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69532,7 +71069,7 @@ exports.ProductBundleService = ProductBundleService;
 
 
 /***/ }),
-/* 684 */
+/* 686 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69608,7 +71145,7 @@ exports.SWSiteAndCurrencySelect = SWSiteAndCurrencySelect;
 
 
 /***/ }),
-/* 685 */
+/* 687 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69621,7 +71158,7 @@ var core_module_1 = __webpack_require__(6);
 //services
 //controllers
 //directives
-var swsiteandcurrencyselect_1 = __webpack_require__(684);
+var swsiteandcurrencyselect_1 = __webpack_require__(686);
 //filters
 var sitemodule = angular.module('hibachi.site', [core_module_1.coremodule.name]).config(function () {
 })
@@ -69635,7 +71172,7 @@ exports.sitemodule = sitemodule;
 
 
 /***/ }),
-/* 686 */
+/* 688 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69643,7 +71180,7 @@ exports.sitemodule = sitemodule;
 Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-var skuPriceModalLauncherHTML = __webpack_require__(311);
+var skuPriceModalLauncherHTML = __webpack_require__(313);
 var SWAddSkuPriceModalLauncherController = /** @class */ (function () {
     //@ngInject
     function SWAddSkuPriceModalLauncherController($hibachi, entityService, formService, listingService, observerService, skuPriceService, utilityService, $timeout) {
@@ -69806,7 +71343,7 @@ exports.SWAddSkuPriceModalLauncher = SWAddSkuPriceModalLauncher;
 
 
 /***/ }),
-/* 687 */
+/* 689 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69885,7 +71422,7 @@ exports.SWDefaultSkuRadio = SWDefaultSkuRadio;
 
 
 /***/ }),
-/* 688 */
+/* 690 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69972,7 +71509,7 @@ exports.SWDeleteSkuPriceModalLauncher = SWDeleteSkuPriceModalLauncher;
 
 
 /***/ }),
-/* 689 */
+/* 691 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69980,7 +71517,7 @@ exports.SWDeleteSkuPriceModalLauncher = SWDeleteSkuPriceModalLauncher;
 Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-var swEditSkuPriceModalLauncherHTML = __webpack_require__(312);
+var swEditSkuPriceModalLauncherHTML = __webpack_require__(314);
 var SWEditSkuPriceModalLauncherController = /** @class */ (function () {
     //@ngInject
     function SWEditSkuPriceModalLauncherController($hibachi, entityService, formService, listingService, observerService, skuPriceService, utilityService, scopeService, $scope) {
@@ -70195,7 +71732,7 @@ exports.SWEditSkuPriceModalLauncher = SWEditSkuPriceModalLauncher;
 
 
 /***/ }),
-/* 690 */
+/* 692 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70332,7 +71869,7 @@ exports.SWImageDetailModalLauncher = SWImageDetailModalLauncher;
 
 
 /***/ }),
-/* 691 */
+/* 693 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70441,7 +71978,7 @@ exports.SWSkuCodeEdit = SWSkuCodeEdit;
 
 
 /***/ }),
-/* 692 */
+/* 694 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70517,7 +72054,7 @@ exports.SWSkuCurrencySelector = SWSkuCurrencySelector;
 
 
 /***/ }),
-/* 693 */
+/* 695 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70579,7 +72116,7 @@ exports.SWSkuImage = SWSkuImage;
 
 
 /***/ }),
-/* 694 */
+/* 696 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70768,7 +72305,7 @@ exports.SWSkuPriceEdit = SWSkuPriceEdit;
 
 
 /***/ }),
-/* 695 */
+/* 697 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70911,7 +72448,7 @@ exports.SWSkuPriceQuantityEdit = SWSkuPriceQuantityEdit;
 
 
 /***/ }),
-/* 696 */
+/* 698 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71042,7 +72579,7 @@ exports.SWSkuPricesEdit = SWSkuPricesEdit;
 
 
 /***/ }),
-/* 697 */
+/* 699 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71209,7 +72746,7 @@ exports.SWSkuStockAdjustmentModalLauncher = SWSkuStockAdjustmentModalLauncher;
 
 
 /***/ }),
-/* 698 */
+/* 700 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71268,7 +72805,7 @@ exports.SWSkuThumbnail = SWSkuThumbnail;
 
 
 /***/ }),
-/* 699 */
+/* 701 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71319,7 +72856,7 @@ exports.DefaultSkuService = DefaultSkuService;
 
 
 /***/ }),
-/* 700 */
+/* 702 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71691,7 +73228,7 @@ exports.SkuPriceService = SkuPriceService;
 
 
 /***/ }),
-/* 701 */
+/* 703 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71702,25 +73239,25 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //modules
 var core_module_1 = __webpack_require__(6);
 //services
-var defaultskuservice_1 = __webpack_require__(699);
-var skupriceservice_1 = __webpack_require__(700);
+var defaultskuservice_1 = __webpack_require__(701);
+var skupriceservice_1 = __webpack_require__(702);
 //controllers
 //directives
-var swpricingmanager_1 = __webpack_require__(715);
-var swimagedetailmodallauncher_1 = __webpack_require__(690);
-var swaddskupricemodallauncher_1 = __webpack_require__(686);
-var swdeleteskupricemodallauncher_1 = __webpack_require__(688);
-var sweditskupricemodallauncher_1 = __webpack_require__(689);
-var swskupricemodal_1 = __webpack_require__(716);
-var swskustockadjustmentmodallauncher_1 = __webpack_require__(697);
-var swdefaultskuradio_1 = __webpack_require__(687);
-var swskuimage_1 = __webpack_require__(693);
-var swskucurrencyselector_1 = __webpack_require__(692);
-var swskupriceedit_1 = __webpack_require__(694);
-var swskucodeedit_1 = __webpack_require__(691);
-var swskupricesedit_1 = __webpack_require__(696);
-var swskupricequantityedit_1 = __webpack_require__(695);
-var swskuthumbnail_1 = __webpack_require__(698);
+var swpricingmanager_1 = __webpack_require__(717);
+var swimagedetailmodallauncher_1 = __webpack_require__(692);
+var swaddskupricemodallauncher_1 = __webpack_require__(688);
+var swdeleteskupricemodallauncher_1 = __webpack_require__(690);
+var sweditskupricemodallauncher_1 = __webpack_require__(691);
+var swskupricemodal_1 = __webpack_require__(718);
+var swskustockadjustmentmodallauncher_1 = __webpack_require__(699);
+var swdefaultskuradio_1 = __webpack_require__(689);
+var swskuimage_1 = __webpack_require__(695);
+var swskucurrencyselector_1 = __webpack_require__(694);
+var swskupriceedit_1 = __webpack_require__(696);
+var swskucodeedit_1 = __webpack_require__(693);
+var swskupricesedit_1 = __webpack_require__(698);
+var swskupricequantityedit_1 = __webpack_require__(697);
+var swskuthumbnail_1 = __webpack_require__(700);
 //filters
 var skumodule = angular.module('hibachi.sku', [core_module_1.coremodule.name]).config(function () {
 })
@@ -71750,7 +73287,7 @@ exports.skumodule = skumodule;
 
 
 /***/ }),
-/* 702 */
+/* 704 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71784,7 +73321,7 @@ exports.SlatwallPathBuilder = SlatwallPathBuilder;
 
 
 /***/ }),
-/* 703 */
+/* 705 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71792,31 +73329,31 @@ exports.SlatwallPathBuilder = SlatwallPathBuilder;
 Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path="../../typings/tsd.d.ts" />
 /// <reference path="../../typings/slatwallTypescript.d.ts" />
-var hibachi_module_1 = __webpack_require__(879);
-var workflow_module_1 = __webpack_require__(307);
-var entity_module_1 = __webpack_require__(305);
-var account_module_1 = __webpack_require__(614);
-var address_module_1 = __webpack_require__(616);
-var content_module_1 = __webpack_require__(625);
-var formbuilder_module_1 = __webpack_require__(627);
-var giftcard_module_1 = __webpack_require__(639);
-var optiongroup_module_1 = __webpack_require__(643);
-var orderitem_module_1 = __webpack_require__(671);
-var orderfulfillment_module_1 = __webpack_require__(665);
-var fulfillmentbatchdetail_module_1 = __webpack_require__(629);
-var orderdeliverydetail_module_1 = __webpack_require__(663);
-var order_module_1 = __webpack_require__(660);
-var product_module_1 = __webpack_require__(676);
-var productbundle_module_1 = __webpack_require__(682);
-var site_module_1 = __webpack_require__(685);
-var sku_module_1 = __webpack_require__(701);
-var subscriptionusage_module_1 = __webpack_require__(705);
-var term_module_1 = __webpack_require__(708);
+var hibachi_module_1 = __webpack_require__(882);
+var workflow_module_1 = __webpack_require__(308);
+var entity_module_1 = __webpack_require__(306);
+var account_module_1 = __webpack_require__(616);
+var address_module_1 = __webpack_require__(618);
+var content_module_1 = __webpack_require__(627);
+var formbuilder_module_1 = __webpack_require__(629);
+var giftcard_module_1 = __webpack_require__(641);
+var optiongroup_module_1 = __webpack_require__(645);
+var orderitem_module_1 = __webpack_require__(673);
+var orderfulfillment_module_1 = __webpack_require__(667);
+var fulfillmentbatchdetail_module_1 = __webpack_require__(631);
+var orderdeliverydetail_module_1 = __webpack_require__(665);
+var order_module_1 = __webpack_require__(662);
+var product_module_1 = __webpack_require__(678);
+var productbundle_module_1 = __webpack_require__(684);
+var site_module_1 = __webpack_require__(687);
+var sku_module_1 = __webpack_require__(703);
+var subscriptionusage_module_1 = __webpack_require__(707);
+var term_module_1 = __webpack_require__(710);
 //constant
-var slatwallpathbuilder_1 = __webpack_require__(702);
+var slatwallpathbuilder_1 = __webpack_require__(704);
 //filters
 //pace-js
-var pace = __webpack_require__(317);
+var pace = __webpack_require__(319);
 pace.start();
 var slatwalladminmodule = angular.module('slatwalladmin', [
     //custom modules
@@ -72035,7 +73572,7 @@ exports.slatwalladminmodule = slatwalladminmodule;
 
 
 /***/ }),
-/* 704 */
+/* 706 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72128,7 +73665,7 @@ exports.SWScheduledDeliveriesCard = SWScheduledDeliveriesCard;
 
 
 /***/ }),
-/* 705 */
+/* 707 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72142,7 +73679,7 @@ var core_module_1 = __webpack_require__(6);
 //controllers
 //filters
 //directives
-var swscheduleddeliveriescard_1 = __webpack_require__(704);
+var swscheduleddeliveriescard_1 = __webpack_require__(706);
 var subscriptionusagemodule = angular.module('hibachi.subscriptionusage', [core_module_1.coremodule.name]).config(function () {
 })
     .constant('subscriptionUsagePartialsPath', 'subscriptionusage/components/')
@@ -72155,7 +73692,7 @@ exports.subscriptionusagemodule = subscriptionusagemodule;
 
 
 /***/ }),
-/* 706 */
+/* 708 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72206,7 +73743,7 @@ exports.SWTermScheduleTable = SWTermScheduleTable;
 
 
 /***/ }),
-/* 707 */
+/* 709 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72257,7 +73794,7 @@ exports.TermService = TermService;
 
 
 /***/ }),
-/* 708 */
+/* 710 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72267,8 +73804,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../typings/tsd.d.ts' />
 //modules
 var core_module_1 = __webpack_require__(6);
-var swtermscheduletable_1 = __webpack_require__(706);
-var termservice_1 = __webpack_require__(707);
+var swtermscheduletable_1 = __webpack_require__(708);
+var termservice_1 = __webpack_require__(709);
 var termmodule = angular.module('term', [core_module_1.coremodule.name])
     .config([function () {
     }]).run([function () {
@@ -72282,7 +73819,7 @@ exports.termmodule = termmodule;
 
 
 /***/ }),
-/* 709 */
+/* 711 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72351,7 +73888,7 @@ exports.SWFlexshipSurveyModal = SWFlexshipSurveyModal;
 
 
 /***/ }),
-/* 710 */
+/* 712 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72575,7 +74112,7 @@ exports.SWOrderList = SWOrderList;
 
 
 /***/ }),
-/* 711 */
+/* 713 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72844,18 +74381,18 @@ exports.SWReturnOrderItems = SWReturnOrderItems;
 
 
 /***/ }),
-/* 712 */
+/* 714 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var slatwalladmin_module_1 = __webpack_require__(703);
+var slatwalladmin_module_1 = __webpack_require__(705);
 //directives
-var swflexshipsurveymodal_1 = __webpack_require__(709);
-var swreturnorderitems_1 = __webpack_require__(711);
-var sworderlist_1 = __webpack_require__(710);
-var orderservice_1 = __webpack_require__(713);
+var swflexshipsurveymodal_1 = __webpack_require__(711);
+var swreturnorderitems_1 = __webpack_require__(713);
+var sworderlist_1 = __webpack_require__(712);
+var orderservice_1 = __webpack_require__(715);
 var monatadminmodule = angular.module('monatadmin', [
     slatwalladmin_module_1.slatwalladminmodule.name
 ])
@@ -72870,7 +74407,7 @@ exports.monatadminmodule = monatadminmodule;
 
 
 /***/ }),
-/* 713 */
+/* 715 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72889,7 +74426,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var orderservice_1 = __webpack_require__(303);
+var orderservice_1 = __webpack_require__(304);
 var OrderService = /** @class */ (function (_super) {
     __extends(OrderService, _super);
     //@ngInject
@@ -72917,7 +74454,7 @@ exports.OrderService = OrderService;
 
 
 /***/ }),
-/* 714 */
+/* 716 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73069,7 +74606,7 @@ exports.SWOrderItems = SWOrderItems;
 
 
 /***/ }),
-/* 715 */
+/* 717 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73088,8 +74625,8 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var swpricingmanager_1 = __webpack_require__(297);
-var swpricingmanager_2 = __webpack_require__(297);
+var swpricingmanager_1 = __webpack_require__(298);
+var swpricingmanager_2 = __webpack_require__(298);
 var SWPricingManagerController = /** @class */ (function (_super) {
     __extends(SWPricingManagerController, _super);
     function SWPricingManagerController(collectionConfigService) {
@@ -73133,7 +74670,7 @@ exports.SWPricingManager = SWPricingManager;
 
 
 /***/ }),
-/* 716 */
+/* 718 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73153,8 +74690,8 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 // var swEditSkuPriceModalLauncherHTML = require("html-loader!sku/components/editskupricemodallauncher");
-var swskupricemodal_1 = __webpack_require__(298);
-var swskupricemodal_2 = __webpack_require__(298);
+var swskupricemodal_1 = __webpack_require__(299);
+var swskupricemodal_2 = __webpack_require__(299);
 var SWSkuPriceModalController = /** @class */ (function (_super) {
     __extends(SWSkuPriceModalController, _super);
     //@ngInject
@@ -73228,7 +74765,7 @@ exports.SWSkuPriceModal = SWSkuPriceModal;
 
 
 /***/ }),
-/* 717 */
+/* 719 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73248,7 +74785,7 @@ exports.AlertController = AlertController;
 
 
 /***/ }),
-/* 718 */
+/* 720 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73272,7 +74809,7 @@ exports.Alert = Alert;
 
 
 /***/ }),
-/* 719 */
+/* 721 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73281,7 +74818,7 @@ exports.Alert = Alert;
 /// <reference path='../../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
 //import Alert = require('../model/alert');
-var alert_1 = __webpack_require__(718);
+var alert_1 = __webpack_require__(720);
 var AlertService = /** @class */ (function () {
     function AlertService($timeout, alerts) {
         var _this = this;
@@ -73355,7 +74892,7 @@ exports.AlertService = AlertService;
 
 
 /***/ }),
-/* 720 */
+/* 722 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73673,7 +75210,7 @@ exports.BaseBootStrapper = BaseBootStrapper;
 
 
 /***/ }),
-/* 721 */
+/* 723 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73685,13 +75222,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_module_1 = __webpack_require__(6);
 //services
 //components
-var swcardlayout_1 = __webpack_require__(725);
-var swcardview_1 = __webpack_require__(728);
-var swcardheader_1 = __webpack_require__(723);
-var swcardbody_1 = __webpack_require__(722);
-var swcardicon_1 = __webpack_require__(724);
-var swcardprogressbar_1 = __webpack_require__(727);
-var swcardlistitem_1 = __webpack_require__(726);
+var swcardlayout_1 = __webpack_require__(727);
+var swcardview_1 = __webpack_require__(730);
+var swcardheader_1 = __webpack_require__(725);
+var swcardbody_1 = __webpack_require__(724);
+var swcardicon_1 = __webpack_require__(726);
+var swcardprogressbar_1 = __webpack_require__(729);
+var swcardlistitem_1 = __webpack_require__(728);
 var cardmodule = angular.module('hibachi.card', [core_module_1.coremodule.name])
     .config([function () {
     }]).run([function () {
@@ -73710,7 +75247,7 @@ exports.cardmodule = cardmodule;
 
 
 /***/ }),
-/* 722 */
+/* 724 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73757,7 +75294,7 @@ exports.SWCardBody = SWCardBody;
 
 
 /***/ }),
-/* 723 */
+/* 725 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73806,7 +75343,7 @@ exports.SWCardHeader = SWCardHeader;
 
 
 /***/ }),
-/* 724 */
+/* 726 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73857,7 +75394,7 @@ exports.SWCardIcon = SWCardIcon;
 
 
 /***/ }),
-/* 725 */
+/* 727 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73908,7 +75445,7 @@ exports.SWCardLayout = SWCardLayout;
 
 
 /***/ }),
-/* 726 */
+/* 728 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73962,7 +75499,7 @@ exports.SWCardListItem = SWCardListItem;
 
 
 /***/ }),
-/* 727 */
+/* 729 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74015,7 +75552,7 @@ exports.SWCardProgressBar = SWCardProgressBar;
 
 
 /***/ }),
-/* 728 */
+/* 730 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74067,7 +75604,7 @@ exports.SWCardView = SWCardView;
 
 
 /***/ }),
-/* 729 */
+/* 731 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74112,7 +75649,7 @@ exports.SWAddFilterButtons = SWAddFilterButtons;
 
 
 /***/ }),
-/* 730 */
+/* 732 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74155,7 +75692,7 @@ exports.SWCollection = SWCollection;
 
 
 /***/ }),
-/* 731 */
+/* 733 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74249,7 +75786,7 @@ exports.SWCollectionTable = SWCollectionTable;
 
 
 /***/ }),
-/* 732 */
+/* 734 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74485,7 +76022,7 @@ exports.SWColumnItem = SWColumnItem;
 
 
 /***/ }),
-/* 733 */
+/* 735 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75383,7 +76920,7 @@ exports.SWConditionCriteria = SWConditionCriteria;
 
 
 /***/ }),
-/* 734 */
+/* 736 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75422,7 +76959,7 @@ exports.SWCriteria = SWCriteria;
 
 
 /***/ }),
-/* 735 */
+/* 737 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75518,7 +77055,7 @@ exports.SWCriteriaBoolean = SWCriteriaBoolean;
 
 
 /***/ }),
-/* 736 */
+/* 738 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76163,7 +77700,7 @@ exports.SWCriteriaDate = SWCriteriaDate;
 
 
 /***/ }),
-/* 737 */
+/* 739 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76304,7 +77841,7 @@ exports.SWCriteriaManyToMany = SWCriteriaManyToMany;
 
 
 /***/ }),
-/* 738 */
+/* 740 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76466,7 +78003,7 @@ exports.SWCriteriaManyToOne = SWCriteriaManyToOne;
 
 
 /***/ }),
-/* 739 */
+/* 741 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76695,7 +78232,7 @@ exports.SWCriteriaNumber = SWCriteriaNumber;
 
 
 /***/ }),
-/* 740 */
+/* 742 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76843,7 +78380,7 @@ exports.SWCriteriaOneToMany = SWCriteriaOneToMany;
 
 
 /***/ }),
-/* 741 */
+/* 743 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76940,7 +78477,7 @@ exports.SWCriteriaRelatedObject = SWCriteriaRelatedObject;
 
 
 /***/ }),
-/* 742 */
+/* 744 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77118,7 +78655,7 @@ exports.SWCriteriaString = SWCriteriaString;
 
 
 /***/ }),
-/* 743 */
+/* 745 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77182,7 +78719,7 @@ exports.SWDisplayItem = SWDisplayItem;
 
 
 /***/ }),
-/* 744 */
+/* 746 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77268,7 +78805,7 @@ exports.SWDisplayItemAggregate = SWDisplayItemAggregate;
 
 
 /***/ }),
-/* 745 */
+/* 747 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77554,7 +79091,7 @@ exports.SWDisplayOptions = SWDisplayOptions;
 
 
 /***/ }),
-/* 746 */
+/* 748 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77946,7 +79483,7 @@ exports.SWEditFilterItem = SWEditFilterItem;
 
 
 /***/ }),
-/* 747 */
+/* 749 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78019,7 +79556,7 @@ exports.SWFilterGroupItem = SWFilterGroupItem;
 
 
 /***/ }),
-/* 748 */
+/* 750 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78119,7 +79656,7 @@ exports.SWFilterGroups = SWFilterGroups;
 
 
 /***/ }),
-/* 749 */
+/* 751 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78187,7 +79724,7 @@ exports.SWFilterItem = SWFilterItem;
 
 
 /***/ }),
-/* 750 */
+/* 752 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78248,7 +79785,7 @@ exports.SWRestrictionConfig = SWRestrictionConfig;
 
 
 /***/ }),
-/* 751 */
+/* 753 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78304,7 +79841,7 @@ exports.CollectionController = CollectionController;
 
 
 /***/ }),
-/* 752 */
+/* 754 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78343,7 +79880,7 @@ exports.ConfirmationController = ConfirmationController;
 
 
 /***/ }),
-/* 753 */
+/* 755 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78551,7 +80088,7 @@ exports.CreateCollection = CreateCollection;
 
 
 /***/ }),
-/* 754 */
+/* 756 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78590,7 +80127,7 @@ exports.CollectionCreateController = CollectionCreateController;
 
 
 /***/ }),
-/* 755 */
+/* 757 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78621,7 +80158,7 @@ exports.AggregateFilter = AggregateFilter;
 
 
 /***/ }),
-/* 756 */
+/* 758 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79564,7 +81101,7 @@ exports.CollectionConfig = CollectionConfig;
 
 
 /***/ }),
-/* 757 */
+/* 759 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -79786,7 +81323,7 @@ exports.CollectionService = CollectionService;
 
 
 /***/ }),
-/* 758 */
+/* 760 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80115,7 +81652,7 @@ exports.SWActionCaller = SWActionCaller;
 
 
 /***/ }),
-/* 759 */
+/* 761 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80166,7 +81703,80 @@ exports.SWActionCallerDropdown = SWActionCallerDropdown;
 
 
 /***/ }),
-/* 760 */
+/* 762 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var SWAddressVerificationController = /** @class */ (function () {
+    //@ngInject
+    function SWAddressVerificationController(rbkeyService, observerService, $hibachi) {
+        var _this = this;
+        this.rbkeyService = rbkeyService;
+        this.observerService = observerService;
+        this.$hibachi = $hibachi;
+        this.translations = {};
+        this.makeTranslations = function () {
+            _this.translations['suggestedAddress'] = _this.rbkeyService.rbKey('admin.define.suggestedAddress');
+            _this.translations['cancel'] = _this.rbkeyService.rbKey('admin.define.cancel');
+            _this.translations['addressMessage'] = _this.rbkeyService.rbKey('admin.define.addressChangeMessage');
+        };
+        this.submit = function () {
+            if (_this.selectedAddressIndex == 0) {
+                _this.close(null);
+                return;
+            }
+            else {
+                _this.loading = true;
+                var data = _this.suggestedAddresses[_this.selectedAddressIndex];
+                data.propertyIdentifiersList = _this.propertyIdentifiersList;
+                _this.$hibachi.saveEntity('Address', data['addressID'], data, 'save')
+                    .then(function (result) {
+                    _this.loading = false;
+                    _this.suggestedAddresses[0] = _this.suggestedAddresses[_this.selectedAddressIndex];
+                    _this.close(null);
+                    if (_this.sAction) {
+                        _this.sAction(result.data);
+                    }
+                });
+            }
+        };
+        this.closeModal = function () {
+            _this.close(null);
+        };
+        this.makeTranslations();
+    }
+    return SWAddressVerificationController;
+}());
+var SWAddressVerification = /** @class */ (function () {
+    function SWAddressVerification(corePartialsPath, hibachiPathBuilder) {
+        this.corePartialsPath = corePartialsPath;
+        this.scope = {};
+        this.bindToController = {
+            suggestedAddresses: '<',
+            close: '=',
+            sAction: '=?',
+            propertyIdentifiersList: '=?'
+        };
+        this.controller = SWAddressVerificationController;
+        this.controllerAs = "swAddressVerification";
+        this.link = function (scope, element, attrs) {
+        };
+        this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + 'addressverification.html';
+    }
+    SWAddressVerification.Factory = function () {
+        var directive = function (corePartialsPath, hibachiPathBuilder) { return new SWAddressVerification(corePartialsPath, hibachiPathBuilder); };
+        directive.$inject = ['corePartialsPath', 'hibachiPathBuilder'];
+        return directive;
+    };
+    return SWAddressVerification;
+}());
+exports.SWAddressVerification = SWAddressVerification;
+
+
+/***/ }),
+/* 763 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80217,7 +81827,7 @@ exports.SWClickOutside = SWClickOutside;
 
 
 /***/ }),
-/* 761 */
+/* 764 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80309,7 +81919,7 @@ exports.SWCollectionColumn = SWCollectionColumn;
 
 
 /***/ }),
-/* 762 */
+/* 765 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80477,7 +82087,7 @@ exports.SWCollectionConfig = SWCollectionConfig;
 
 
 /***/ }),
-/* 763 */
+/* 766 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80540,7 +82150,7 @@ exports.SWCollectionFilter = SWCollectionFilter;
 
 
 /***/ }),
-/* 764 */
+/* 767 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80591,7 +82201,7 @@ exports.SWCollectionOrderBy = SWCollectionOrderBy;
 
 
 /***/ }),
-/* 765 */
+/* 768 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80638,7 +82248,7 @@ exports.SWColumnSorter = SWColumnSorter;
 
 
 /***/ }),
-/* 766 */
+/* 769 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80792,7 +82402,7 @@ exports.SWConfirm = SWConfirm;
 
 
 /***/ }),
-/* 767 */
+/* 770 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80845,7 +82455,7 @@ exports.SWCurrencyFormatter = SWCurrencyFormatter;
 
 
 /***/ }),
-/* 768 */
+/* 771 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80937,7 +82547,7 @@ exports.SWDatePicker = SWDatePicker;
 
 
 /***/ }),
-/* 769 */
+/* 772 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80996,7 +82606,7 @@ exports.SWDirective = SWDirective;
 
 
 /***/ }),
-/* 770 */
+/* 773 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81079,7 +82689,7 @@ exports.SWDraggable = SWDraggable;
 
 
 /***/ }),
-/* 771 */
+/* 774 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81214,7 +82824,7 @@ exports.SWDraggableContainer = SWDraggableContainer;
 
 
 /***/ }),
-/* 772 */
+/* 775 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81357,7 +82967,7 @@ exports.SWEntityActionBar = SWEntityActionBar;
 
 
 /***/ }),
-/* 773 */
+/* 776 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81396,7 +83006,7 @@ exports.SWEntityActionBarButtonGroup = SWEntityActionBarButtonGroup;
 
 
 /***/ }),
-/* 774 */
+/* 777 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81604,7 +83214,7 @@ exports.SWExpandableRecord = SWExpandableRecord;
 
 
 /***/ }),
-/* 775 */
+/* 778 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81674,7 +83284,7 @@ exports.SWExpiringSessionNotifier = SWExpiringSessionNotifier;
 
 
 /***/ }),
-/* 776 */
+/* 779 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81708,7 +83318,7 @@ exports.SWExportAction = SWExportAction;
 
 
 /***/ }),
-/* 777 */
+/* 780 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81752,7 +83362,7 @@ exports.SWGravatar = SWGravatar;
 
 
 /***/ }),
-/* 778 */
+/* 781 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81786,7 +83396,7 @@ exports.SWHref = SWHref;
 
 
 /***/ }),
-/* 779 */
+/* 782 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81822,7 +83432,7 @@ exports.SWLoading = SWLoading;
 
 
 /***/ }),
-/* 780 */
+/* 783 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81898,7 +83508,7 @@ exports.SWLogin = SWLogin;
 
 
 /***/ }),
-/* 781 */
+/* 784 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82039,7 +83649,7 @@ exports.SWModalLauncher = SWModalLauncher;
 
 
 /***/ }),
-/* 782 */
+/* 785 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82120,7 +83730,7 @@ exports.SWModalWindow = SWModalWindow;
 
 
 /***/ }),
-/* 783 */
+/* 786 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82179,7 +83789,7 @@ exports.SWNumbersOnly = SWNumbersOnly;
 
 
 /***/ }),
-/* 784 */
+/* 787 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82250,7 +83860,7 @@ exports.SWOptions = SWOptions;
 
 
 /***/ }),
-/* 785 */
+/* 788 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82402,7 +84012,7 @@ exports.SWOrderByControls = SWOrderByControls;
 
 
 /***/ }),
-/* 786 */
+/* 789 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82487,7 +84097,7 @@ exports.SWProcessCaller = SWProcessCaller;
 
 
 /***/ }),
-/* 787 */
+/* 790 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82531,7 +84141,7 @@ exports.SWRbKey = SWRbKey;
 
 
 /***/ }),
-/* 788 */
+/* 791 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82623,7 +84233,7 @@ exports.SWScrollTrigger = SWScrollTrigger;
 
 
 /***/ }),
-/* 789 */
+/* 792 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82720,7 +84330,7 @@ exports.SWSelection = SWSelection;
 
 
 /***/ }),
-/* 790 */
+/* 793 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82777,7 +84387,7 @@ exports.SWSortable = SWSortable;
 
 
 /***/ }),
-/* 791 */
+/* 794 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82865,7 +84475,7 @@ exports.SWTabContent = SWTabContent;
 
 
 /***/ }),
-/* 792 */
+/* 795 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -82976,7 +84586,7 @@ exports.SWTabGroup = SWTabGroup;
 
 
 /***/ }),
-/* 793 */
+/* 796 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83059,7 +84669,7 @@ exports.SWTooltip = SWTooltip;
 
 
 /***/ }),
-/* 794 */
+/* 797 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83187,7 +84797,7 @@ exports.SWTypeaheadInputField = SWTypeaheadInputField;
 
 
 /***/ }),
-/* 795 */
+/* 798 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83349,7 +84959,7 @@ exports.SWTypeaheadMultiselect = SWTypeaheadMultiselect;
 
 
 /***/ }),
-/* 796 */
+/* 799 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83425,7 +85035,7 @@ exports.SWTypeaheadRemoveSelection = SWTypeaheadRemoveSelection;
 
 
 /***/ }),
-/* 797 */
+/* 800 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83829,7 +85439,7 @@ exports.SWTypeaheadSearch = SWTypeaheadSearch;
 
 
 /***/ }),
-/* 798 */
+/* 801 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83890,7 +85500,7 @@ exports.SWTypeaheadSearchLineItem = SWTypeaheadSearchLineItem;
 
 
 /***/ }),
-/* 799 */
+/* 802 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84040,7 +85650,7 @@ exports.GlobalSearchController = GlobalSearchController;
 
 
 /***/ }),
-/* 800 */
+/* 803 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84066,7 +85676,7 @@ exports.DateFilter = DateFilter;
 
 
 /***/ }),
-/* 801 */
+/* 804 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84107,7 +85717,7 @@ exports.DateReporting = DateReporting;
 
 
 /***/ }),
-/* 802 */
+/* 805 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84134,7 +85744,7 @@ exports.EntityRBKey = EntityRBKey;
 
 
 /***/ }),
-/* 803 */
+/* 806 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84157,7 +85767,7 @@ exports.OrdinalFilter = OrdinalFilter;
 
 
 /***/ }),
-/* 804 */
+/* 807 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84184,7 +85794,7 @@ exports.PercentageFilter = PercentageFilter;
 
 
 /***/ }),
-/* 805 */
+/* 808 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84239,7 +85849,7 @@ exports.SWCurrency = SWCurrency;
 
 
 /***/ }),
-/* 806 */
+/* 809 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84281,7 +85891,7 @@ exports.SWTrim = SWTrim;
 
 
 /***/ }),
-/* 807 */
+/* 810 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84331,7 +85941,7 @@ exports.SWUnique = SWUnique;
 
 
 /***/ }),
-/* 808 */
+/* 811 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84372,7 +85982,7 @@ exports.Account = Account;
 
 
 /***/ }),
-/* 809 */
+/* 812 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84415,7 +86025,7 @@ exports.AccountAddress = AccountAddress;
 
 
 /***/ }),
-/* 810 */
+/* 813 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84448,7 +86058,7 @@ exports.Address = Address;
 
 
 /***/ }),
-/* 811 */
+/* 814 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84509,7 +86119,7 @@ exports.Cart = Cart;
 
 
 /***/ }),
-/* 812 */
+/* 815 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84517,24 +86127,24 @@ exports.Cart = Cart;
 /// <reference path='../../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
-var account_1 = __webpack_require__(808);
+var account_1 = __webpack_require__(811);
 exports.Account = account_1.Account;
-var address_1 = __webpack_require__(810);
+var address_1 = __webpack_require__(813);
 exports.Address = address_1.Address;
-var cart_1 = __webpack_require__(811);
+var cart_1 = __webpack_require__(814);
 exports.Cart = cart_1.Cart;
-var orderitem_1 = __webpack_require__(813);
+var orderitem_1 = __webpack_require__(816);
 exports.OrderItem = orderitem_1.OrderItem;
-var orderpayment_1 = __webpack_require__(814);
+var orderpayment_1 = __webpack_require__(817);
 exports.OrderPayment = orderpayment_1.OrderPayment;
-var sku_1 = __webpack_require__(815);
+var sku_1 = __webpack_require__(818);
 exports.Sku = sku_1.Sku;
-var accountaddress_1 = __webpack_require__(809);
+var accountaddress_1 = __webpack_require__(812);
 exports.AccountAddress = accountaddress_1.AccountAddress;
 
 
 /***/ }),
-/* 813 */
+/* 816 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84567,7 +86177,7 @@ exports.OrderItem = OrderItem;
 
 
 /***/ }),
-/* 814 */
+/* 817 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84584,7 +86194,7 @@ exports.OrderPayment = OrderPayment;
 
 
 /***/ }),
-/* 815 */
+/* 818 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84624,7 +86234,7 @@ exports.Sku = Sku;
 
 
 /***/ }),
-/* 816 */
+/* 819 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84657,7 +86267,7 @@ exports.BaseProcess = BaseProcess;
 
 
 /***/ }),
-/* 817 */
+/* 820 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84678,7 +86288,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var baseprocess_1 = __webpack_require__(816);
+var baseprocess_1 = __webpack_require__(819);
 var Order_AddOrderPayment = /** @class */ (function (_super) {
     __extends(Order_AddOrderPayment, _super);
     function Order_AddOrderPayment($injector) {
@@ -84692,7 +86302,7 @@ exports.Order_AddOrderPayment = Order_AddOrderPayment;
 
 
 /***/ }),
-/* 818 */
+/* 821 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84700,12 +86310,12 @@ exports.Order_AddOrderPayment = Order_AddOrderPayment;
 /// <reference path='../../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
-var order_addorderpayment_1 = __webpack_require__(817);
+var order_addorderpayment_1 = __webpack_require__(820);
 exports.Order_AddOrderPayment = order_addorderpayment_1.Order_AddOrderPayment;
 
 
 /***/ }),
-/* 819 */
+/* 822 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84726,7 +86336,7 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../../typings/tsd.d.ts' />
-var request_1 = __webpack_require__(302);
+var request_1 = __webpack_require__(303);
 var AdminRequest = /** @class */ (function (_super) {
     __extends(AdminRequest, _super);
     function AdminRequest(url, data, method, headers, $injector, observerService) {
@@ -84757,7 +86367,7 @@ exports.AdminRequest = AdminRequest;
 
 
 /***/ }),
-/* 820 */
+/* 823 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84778,7 +86388,7 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../../typings/tsd.d.ts' />
-var request_1 = __webpack_require__(302);
+var request_1 = __webpack_require__(303);
 var PublicRequest = /** @class */ (function (_super) {
     __extends(PublicRequest, _super);
     function PublicRequest(url, data, method, headers, $injector, observerService) {
@@ -84817,7 +86427,7 @@ exports.PublicRequest = PublicRequest;
 
 
 /***/ }),
-/* 821 */
+/* 824 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84853,7 +86463,7 @@ exports.AccountAddressService = AccountAddressService;
 
 
 /***/ }),
-/* 822 */
+/* 825 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84889,7 +86499,7 @@ exports.AccountService = AccountService;
 
 
 /***/ }),
-/* 823 */
+/* 826 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84975,7 +86585,7 @@ exports.CacheService = CacheService;
 
 
 /***/ }),
-/* 824 */
+/* 827 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -85012,7 +86622,7 @@ exports.CartService = CartService;
 
 
 /***/ }),
-/* 825 */
+/* 828 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -85042,7 +86652,7 @@ exports.DraggableService = DraggableService;
 
 
 /***/ }),
-/* 826 */
+/* 829 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -85080,7 +86690,7 @@ exports.EntityService = EntityService;
 
 
 /***/ }),
-/* 827 */
+/* 830 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -85126,7 +86736,7 @@ exports.ExpandableService = ExpandableService;
 
 
 /***/ }),
-/* 828 */
+/* 831 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -85188,7 +86798,7 @@ exports.FilterService = FilterService;
 
 
 /***/ }),
-/* 829 */
+/* 832 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -85281,7 +86891,7 @@ exports.FormService = FormService;
 
 
 /***/ }),
-/* 830 */
+/* 833 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -85795,7 +87405,7 @@ exports.HibachiAuthenticationService = HibachiAuthenticationService;
 
 
 /***/ }),
-/* 831 */
+/* 834 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -86000,7 +87610,7 @@ exports.HibachiInterceptor = HibachiInterceptor;
 
 
 /***/ }),
-/* 832 */
+/* 835 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -86037,7 +87647,7 @@ exports.HibachiPathBuilder = HibachiPathBuilder;
 
 
 /***/ }),
-/* 833 */
+/* 836 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -86070,7 +87680,7 @@ exports.HibachiScope = HibachiScope;
 
 
 /***/ }),
-/* 834 */
+/* 837 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -86619,7 +88229,7 @@ exports.$Hibachi = $Hibachi;
 
 
 /***/ }),
-/* 835 */
+/* 838 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87404,7 +89014,7 @@ exports.HibachiServiceDecorator = HibachiServiceDecorator;
 
 
 /***/ }),
-/* 836 */
+/* 839 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87693,7 +89303,7 @@ exports.HibachiValidationService = HibachiValidationService;
 
 
 /***/ }),
-/* 837 */
+/* 840 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87729,7 +89339,7 @@ exports.HistoryService = HistoryService;
 
 
 /***/ }),
-/* 838 */
+/* 841 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87787,7 +89397,7 @@ exports.LocalStorageService = LocalStorageService;
 
 
 /***/ }),
-/* 839 */
+/* 842 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87938,7 +89548,7 @@ exports.MetaDataService = MetaDataService;
 
 
 /***/ }),
-/* 840 */
+/* 843 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88108,7 +89718,7 @@ exports.ObserverService = ObserverService;
 
 
 /***/ }),
-/* 841 */
+/* 844 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88146,7 +89756,7 @@ exports.OrderPaymentService = OrderPaymentService;
 
 
 /***/ }),
-/* 842 */
+/* 845 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -89602,7 +91212,7 @@ exports.PublicService = PublicService;
 
 
 /***/ }),
-/* 843 */
+/* 846 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -89725,7 +91335,7 @@ exports.RbKeyService = RbKeyService;
 
 
 /***/ }),
-/* 844 */
+/* 847 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -89733,8 +91343,8 @@ exports.RbKeyService = RbKeyService;
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
-var adminrequest_1 = __webpack_require__(819);
-var publicrequest_1 = __webpack_require__(820);
+var adminrequest_1 = __webpack_require__(822);
+var publicrequest_1 = __webpack_require__(823);
 var RequestService = /** @class */ (function () {
     //@ngInject
     function RequestService($injector, observerService) {
@@ -89764,7 +91374,7 @@ exports.RequestService = RequestService;
 
 
 /***/ }),
-/* 845 */
+/* 848 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -89801,7 +91411,7 @@ exports.ScopeService = ScopeService;
 
 
 /***/ }),
-/* 846 */
+/* 849 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -89927,7 +91537,7 @@ exports.SelectionService = SelectionService;
 
 
 /***/ }),
-/* 847 */
+/* 850 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -89965,7 +91575,7 @@ exports.SkuService = SkuService;
 
 
 /***/ }),
-/* 848 */
+/* 851 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -90211,7 +91821,7 @@ exports.TypeaheadService = TypeaheadService;
 
 
 /***/ }),
-/* 849 */
+/* 852 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -90684,7 +92294,7 @@ exports.UtilityService = UtilityService;
 
 
 /***/ }),
-/* 850 */
+/* 853 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -90710,7 +92320,7 @@ exports.PageDialogController = PageDialogController;
 
 
 /***/ }),
-/* 851 */
+/* 854 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -90754,7 +92364,7 @@ exports.DialogService = DialogService;
 
 
 /***/ }),
-/* 852 */
+/* 855 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -90829,7 +92439,7 @@ exports.SWDetail = SWDetail;
 
 
 /***/ }),
-/* 853 */
+/* 856 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -90860,7 +92470,7 @@ exports.SWDetailTabs = SWDetailTabs;
 
 
 /***/ }),
-/* 854 */
+/* 857 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -90907,7 +92517,7 @@ exports.SWList = SWList;
 
 
 /***/ }),
-/* 855 */
+/* 858 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -90926,7 +92536,7 @@ exports.OtherWiseController = OtherWiseController;
 
 
 /***/ }),
-/* 856 */
+/* 859 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -90958,7 +92568,7 @@ exports.RouterController = RouterController;
 
 
 /***/ }),
-/* 857 */
+/* 860 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -91127,7 +92737,7 @@ exports.SWAddressForm = SWAddressForm;
 
 
 /***/ }),
-/* 858 */
+/* 861 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -91184,7 +92794,7 @@ exports.SWCollectionConfigAsProperty = SWCollectionConfigAsProperty;
 
 
 /***/ }),
-/* 859 */
+/* 862 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -91268,7 +92878,7 @@ exports.SWErrorDisplay = SWErrorDisplay;
 
 
 /***/ }),
-/* 860 */
+/* 863 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -91308,7 +92918,7 @@ exports.SWFFileInput = SWFFileInput;
 
 
 /***/ }),
-/* 861 */
+/* 864 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -91512,7 +93122,7 @@ exports.SWFForm = SWFForm;
 
 
 /***/ }),
-/* 862 */
+/* 865 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -91614,7 +93224,7 @@ exports.SWFFormField = SWFFormField;
 
 
 /***/ }),
-/* 863 */
+/* 866 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -91937,7 +93547,7 @@ exports.SWForm = SWForm;
 
 
 /***/ }),
-/* 864 */
+/* 867 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -92220,7 +93830,7 @@ exports.SWFormField = SWFormField;
 
 
 /***/ }),
-/* 865 */
+/* 868 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -92268,7 +93878,7 @@ exports.SWFormFieldFile = SWFormFieldFile;
 
 
 /***/ }),
-/* 866 */
+/* 869 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -92311,7 +93921,7 @@ exports.SWFormFieldJson = SWFormFieldJson;
 
 
 /***/ }),
-/* 867 */
+/* 870 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -92431,7 +94041,7 @@ exports.SWFormFieldSearchSelect = SWFormFieldSearchSelect;
 
 
 /***/ }),
-/* 868 */
+/* 871 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -92499,7 +94109,7 @@ exports.SWFormRegistrar = SWFormRegistrar;
 
 
 /***/ }),
-/* 869 */
+/* 872 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -92589,7 +94199,7 @@ exports.SWFormSubscriber = SWFormSubscriber;
 
 
 /***/ }),
-/* 870 */
+/* 873 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -92610,7 +94220,7 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-var swpropertydisplay_1 = __webpack_require__(306);
+var swpropertydisplay_1 = __webpack_require__(307);
 var SWFPropertyDisplayController = /** @class */ (function (_super) {
     __extends(SWFPropertyDisplayController, _super);
     //@ngInject
@@ -92651,7 +94261,7 @@ exports.SWFPropertyDisplay = SWFPropertyDisplay;
 
 
 /***/ }),
-/* 871 */
+/* 874 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -92752,7 +94362,7 @@ exports.SWFSelect = SWFSelect;
 
 
 /***/ }),
-/* 872 */
+/* 875 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93117,7 +94727,7 @@ exports.SWInput = SWInput;
 
 
 /***/ }),
-/* 873 */
+/* 876 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93173,7 +94783,7 @@ exports.SWIsolateChildForm = SWIsolateChildForm;
 
 
 /***/ }),
-/* 874 */
+/* 877 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93260,7 +94870,7 @@ exports.SWSimplePropertyDisplay = SWSimplePropertyDisplay;
 
 
 /***/ }),
-/* 875 */
+/* 878 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93355,7 +94965,7 @@ exports.SWVerifyAddressDialog = SWVerifyAddressDialog;
 
 
 /***/ }),
-/* 876 */
+/* 879 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93366,30 +94976,30 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //module
 var core_module_1 = __webpack_require__(6);
 //services
-var fileservice_1 = __webpack_require__(877);
+var fileservice_1 = __webpack_require__(880);
 //directives
 //  components
 //form
-var swinput_1 = __webpack_require__(872);
-var swfformfield_1 = __webpack_require__(862);
-var swform_1 = __webpack_require__(863);
-var swfform_1 = __webpack_require__(861);
-var swfselect_1 = __webpack_require__(871);
-var swffileinput_1 = __webpack_require__(860);
-var swformfield_1 = __webpack_require__(864);
-var swformfieldfile_1 = __webpack_require__(865);
-var swformfieldjson_1 = __webpack_require__(866);
-var swformfieldsearchselect_1 = __webpack_require__(867);
-var swformregistrar_1 = __webpack_require__(868);
-var swerrordisplay_1 = __webpack_require__(859);
-var swaddressform_1 = __webpack_require__(857);
-var swisolatechildform_1 = __webpack_require__(873);
-var swpropertydisplay_1 = __webpack_require__(306);
-var swfpropertydisplay_1 = __webpack_require__(870);
-var swsimplepropertydisplay_1 = __webpack_require__(874);
-var swformsubscriber_1 = __webpack_require__(869);
-var swverifyaddressdialog_1 = __webpack_require__(875);
-var swcollectionconfigasproperty_1 = __webpack_require__(858);
+var swinput_1 = __webpack_require__(875);
+var swfformfield_1 = __webpack_require__(865);
+var swform_1 = __webpack_require__(866);
+var swfform_1 = __webpack_require__(864);
+var swfselect_1 = __webpack_require__(874);
+var swffileinput_1 = __webpack_require__(863);
+var swformfield_1 = __webpack_require__(867);
+var swformfieldfile_1 = __webpack_require__(868);
+var swformfieldjson_1 = __webpack_require__(869);
+var swformfieldsearchselect_1 = __webpack_require__(870);
+var swformregistrar_1 = __webpack_require__(871);
+var swerrordisplay_1 = __webpack_require__(862);
+var swaddressform_1 = __webpack_require__(860);
+var swisolatechildform_1 = __webpack_require__(876);
+var swpropertydisplay_1 = __webpack_require__(307);
+var swfpropertydisplay_1 = __webpack_require__(873);
+var swsimplepropertydisplay_1 = __webpack_require__(877);
+var swformsubscriber_1 = __webpack_require__(872);
+var swverifyaddressdialog_1 = __webpack_require__(878);
+var swcollectionconfigasproperty_1 = __webpack_require__(861);
 var formmodule = angular.module('hibachi.form', ['angularjs-datetime-picker', core_module_1.coremodule.name]).config(function () {
 })
     .constant('coreFormPartialsPath', 'form/components/')
@@ -93419,7 +95029,7 @@ exports.formmodule = formmodule;
 
 
 /***/ }),
-/* 877 */
+/* 880 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93466,7 +95076,7 @@ exports.FileService = FileService;
 
 
 /***/ }),
-/* 878 */
+/* 881 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93576,7 +95186,7 @@ exports.SWSaveAndFinish = SWSaveAndFinish;
 
 
 /***/ }),
-/* 879 */
+/* 882 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93585,18 +95195,19 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../typings/tsd.d.ts' />
 //import alertmodule = require('./alert/alert.module');
-var alert_module_1 = __webpack_require__(299);
-var card_module_1 = __webpack_require__(721);
-var collection_module_1 = __webpack_require__(300);
-var listing_module_1 = __webpack_require__(895);
-var dialog_module_1 = __webpack_require__(304);
-var entity_module_1 = __webpack_require__(305);
-var pagination_module_1 = __webpack_require__(898);
-var form_module_1 = __webpack_require__(876);
-var validation_module_1 = __webpack_require__(917);
-var workflow_module_1 = __webpack_require__(307);
+var alert_module_1 = __webpack_require__(300);
+var card_module_1 = __webpack_require__(723);
+var collection_module_1 = __webpack_require__(301);
+var listing_module_1 = __webpack_require__(898);
+var dialog_module_1 = __webpack_require__(305);
+var entity_module_1 = __webpack_require__(306);
+var pagination_module_1 = __webpack_require__(901);
+var form_module_1 = __webpack_require__(879);
+var validation_module_1 = __webpack_require__(920);
+var workflow_module_1 = __webpack_require__(308);
 //directives
-var swsaveandfinish_1 = __webpack_require__(878);
+var swsaveandfinish_1 = __webpack_require__(881);
+__webpack_require__(65);
 var hibachimodule = angular.module('hibachi', [
     alert_module_1.alertmodule.name,
     card_module_1.cardmodule.name,
@@ -93607,8 +95218,11 @@ var hibachimodule = angular.module('hibachi', [
     pagination_module_1.paginationmodule.name,
     form_module_1.formmodule.name,
     validation_module_1.validationmodule.name,
-    workflow_module_1.workflowmodule.name
-]).config([function () {
+    workflow_module_1.workflowmodule.name,
+    'angularModalService'
+]).config(['ModalServiceProvider', function (ModalServiceProvider) {
+        // to set a default close delay on modals
+        ModalServiceProvider.configureOptions({ closeDelay: 0 });
     }])
     .run(['$rootScope', 'publicService', '$hibachi', 'localStorageService', 'isAdmin', function ($rootScope, publicService, $hibachi, localStorageService, isAdmin) {
         $rootScope.hibachiScope = publicService;
@@ -93623,7 +95237,7 @@ exports.hibachimodule = hibachimodule;
 
 
 /***/ }),
-/* 880 */
+/* 883 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93672,7 +95286,7 @@ exports.SWListingAggregate = SWListingAggregate;
 
 
 /***/ }),
-/* 881 */
+/* 884 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93731,7 +95345,7 @@ exports.SWListingColorFilter = SWListingColorFilter;
 
 
 /***/ }),
-/* 882 */
+/* 885 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93891,7 +95505,7 @@ exports.SWListingColumn = SWListingColumn;
 
 
 /***/ }),
-/* 883 */
+/* 886 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -94073,7 +95687,7 @@ exports.SWListingControls = SWListingControls;
 
 
 /***/ }),
-/* 884 */
+/* 887 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -94136,7 +95750,7 @@ exports.SWListingDisableRule = SWListingDisableRule;
 
 
 /***/ }),
-/* 885 */
+/* 888 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -94953,7 +96567,7 @@ exports.SWListingDisplay = SWListingDisplay;
 
 
 /***/ }),
-/* 886 */
+/* 889 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -95127,7 +96741,7 @@ exports.SWListingDisplayCell = SWListingDisplayCell;
 
 
 /***/ }),
-/* 887 */
+/* 890 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -95204,7 +96818,7 @@ exports.SWListingExpandableRule = SWListingExpandableRule;
 
 
 /***/ }),
-/* 888 */
+/* 891 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -95263,7 +96877,7 @@ exports.SWListingFilter = SWListingFilter;
 
 
 /***/ }),
-/* 889 */
+/* 892 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -95302,7 +96916,7 @@ exports.SWListingFilterGroup = SWListingFilterGroup;
 
 
 /***/ }),
-/* 890 */
+/* 893 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -95359,7 +96973,7 @@ exports.SWListingGlobalSearch = SWListingGlobalSearch;
 
 
 /***/ }),
-/* 891 */
+/* 894 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -95407,7 +97021,7 @@ exports.SWListingOrderBy = SWListingOrderBy;
 
 
 /***/ }),
-/* 892 */
+/* 895 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -95415,7 +97029,7 @@ exports.SWListingOrderBy = SWListingOrderBy;
 Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-var chart_js_1 = __webpack_require__(309);
+var chart_js_1 = __webpack_require__(311);
 var SWListingReportController = /** @class */ (function () {
     //@ngInject
     function SWListingReportController($filter, $scope, $timeout, $rootScope, $hibachi, metadataService, listingService, observerService, collectionConfigService) {
@@ -95930,7 +97544,7 @@ exports.SWListingReport = SWListingReport;
 
 
 /***/ }),
-/* 893 */
+/* 896 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -95994,7 +97608,7 @@ exports.SWListingRowSave = SWListingRowSave;
 
 
 /***/ }),
-/* 894 */
+/* 897 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -96317,7 +97931,7 @@ exports.SWListingSearch = SWListingSearch;
 
 
 /***/ }),
-/* 895 */
+/* 898 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -96326,25 +97940,25 @@ exports.SWListingSearch = SWListingSearch;
 /// <reference path="../../typings/hibachiTypescript.d.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 //modules
-var collection_module_1 = __webpack_require__(300);
+var collection_module_1 = __webpack_require__(301);
 //services
-var listingservice_1 = __webpack_require__(896);
+var listingservice_1 = __webpack_require__(899);
 //directives
-var swlistingdisplay_1 = __webpack_require__(885);
-var swlistingreport_1 = __webpack_require__(892);
-var swlistingdisplaycell_1 = __webpack_require__(886);
-var swlistingcontrols_1 = __webpack_require__(883);
-var swlistingaggregate_1 = __webpack_require__(880);
-var swlistingcolorfilter_1 = __webpack_require__(881);
-var swlistingcolumn_1 = __webpack_require__(882);
-var swlistingdisablerule_1 = __webpack_require__(884);
-var swlistingexpandablerule_1 = __webpack_require__(887);
-var swlistingfilter_1 = __webpack_require__(888);
-var swlistingfiltergroup_1 = __webpack_require__(889);
-var swlistingorderby_1 = __webpack_require__(891);
-var swlistingrowsave_1 = __webpack_require__(893);
-var swlistingsearch_1 = __webpack_require__(894);
-var swlistingglobalsearch_1 = __webpack_require__(890);
+var swlistingdisplay_1 = __webpack_require__(888);
+var swlistingreport_1 = __webpack_require__(895);
+var swlistingdisplaycell_1 = __webpack_require__(889);
+var swlistingcontrols_1 = __webpack_require__(886);
+var swlistingaggregate_1 = __webpack_require__(883);
+var swlistingcolorfilter_1 = __webpack_require__(884);
+var swlistingcolumn_1 = __webpack_require__(885);
+var swlistingdisablerule_1 = __webpack_require__(887);
+var swlistingexpandablerule_1 = __webpack_require__(890);
+var swlistingfilter_1 = __webpack_require__(891);
+var swlistingfiltergroup_1 = __webpack_require__(892);
+var swlistingorderby_1 = __webpack_require__(894);
+var swlistingrowsave_1 = __webpack_require__(896);
+var swlistingsearch_1 = __webpack_require__(897);
+var swlistingglobalsearch_1 = __webpack_require__(893);
 var listingmodule = angular.module('hibachi.listing', [collection_module_1.collectionmodule.name])
     .run([function () {
     }])
@@ -96372,7 +97986,7 @@ exports.listingmodule = listingmodule;
 
 
 /***/ }),
-/* 896 */
+/* 899 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -97344,7 +98958,7 @@ exports.ListingService = ListingService;
 
 
 /***/ }),
-/* 897 */
+/* 900 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -97429,7 +99043,7 @@ exports.SWPaginationBar = SWPaginationBar;
 
 
 /***/ }),
-/* 898 */
+/* 901 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -97438,8 +99052,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path="../../typings/tsd.d.ts" />
 /// <reference path="../../typings/hibachiTypescript.d.ts" />
 //services
-var paginationservice_1 = __webpack_require__(899);
-var swpaginationbar_1 = __webpack_require__(897);
+var paginationservice_1 = __webpack_require__(902);
+var swpaginationbar_1 = __webpack_require__(900);
 var core_module_1 = __webpack_require__(6);
 var paginationmodule = angular.module('hibachi.pagination', [core_module_1.coremodule.name])
     // .config(['$provide','baseURL',($provide,baseURL)=>{
@@ -97456,7 +99070,7 @@ exports.paginationmodule = paginationmodule;
 
 
 /***/ }),
-/* 899 */
+/* 902 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -97682,7 +99296,7 @@ exports.PaginationService = PaginationService;
 
 
 /***/ }),
-/* 900 */
+/* 903 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -98071,7 +99685,7 @@ exports.SWValidate = SWValidate;
 
 
 /***/ }),
-/* 901 */
+/* 904 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -98103,7 +99717,7 @@ exports.SWValidationDataType = SWValidationDataType;
 
 
 /***/ }),
-/* 902 */
+/* 905 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -98136,7 +99750,7 @@ exports.SWValidationEq = SWValidationEq;
 
 
 /***/ }),
-/* 903 */
+/* 906 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -98200,7 +99814,7 @@ exports.SWValidationEqProperty = SWValidationEqProperty;
 
 
 /***/ }),
-/* 904 */
+/* 907 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -98230,7 +99844,7 @@ exports.SWValidationGte = SWValidationGte;
 
 
 /***/ }),
-/* 905 */
+/* 908 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -98260,7 +99874,7 @@ exports.SWValidationLte = SWValidationLte;
 
 
 /***/ }),
-/* 906 */
+/* 909 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -98294,7 +99908,7 @@ exports.SWValidationMaxLength = SWValidationMaxLength;
 
 
 /***/ }),
-/* 907 */
+/* 910 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -98327,7 +99941,7 @@ exports.SWValidationMaxValue = SWValidationMaxValue;
 
 
 /***/ }),
-/* 908 */
+/* 911 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -98361,7 +99975,7 @@ exports.SWValidationMinLength = SWValidationMinLength;
 
 
 /***/ }),
-/* 909 */
+/* 912 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -98394,7 +100008,7 @@ exports.SWValidationMinValue = SWValidationMinValue;
 
 
 /***/ }),
-/* 910 */
+/* 913 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -98424,7 +100038,7 @@ exports.SWValidationNeq = SWValidationNeq;
 
 
 /***/ }),
-/* 911 */
+/* 914 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -98454,7 +100068,7 @@ exports.SWValidationNumeric = SWValidationNumeric;
 
 
 /***/ }),
-/* 912 */
+/* 915 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -98485,7 +100099,7 @@ exports.SWValidationRegex = SWValidationRegex;
 
 
 /***/ }),
-/* 913 */
+/* 916 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -98522,7 +100136,7 @@ exports.SWValidationRequired = SWValidationRequired;
 
 
 /***/ }),
-/* 914 */
+/* 917 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -98555,7 +100169,7 @@ exports.SWValidationUnique = SWValidationUnique;
 
 
 /***/ }),
-/* 915 */
+/* 918 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -98592,7 +100206,7 @@ exports.SWValidationUniqueOrNull = SWValidationUniqueOrNull;
 
 
 /***/ }),
-/* 916 */
+/* 919 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -98749,7 +100363,7 @@ exports.ValidationService = ValidationService;
 
 
 /***/ }),
-/* 917 */
+/* 920 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -98758,24 +100372,24 @@ exports.ValidationService = ValidationService;
 /// <reference path="../../typings/hibachiTypescript.d.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 //components
-var swvalidate_1 = __webpack_require__(900);
-var swvalidationminlength_1 = __webpack_require__(908);
-var swvalidationdatatype_1 = __webpack_require__(901);
-var swvalidationeq_1 = __webpack_require__(902);
-var swvalidationeqproperty_1 = __webpack_require__(903);
-var swvalidationgte_1 = __webpack_require__(904);
-var swvalidationlte_1 = __webpack_require__(905);
-var swvalidationmaxlength_1 = __webpack_require__(906);
-var swvalidationmaxvalue_1 = __webpack_require__(907);
-var swvalidationminvalue_1 = __webpack_require__(909);
-var swvalidationneq_1 = __webpack_require__(910);
-var swvalidationnumeric_1 = __webpack_require__(911);
-var swvalidationregex_1 = __webpack_require__(912);
-var swvalidationrequired_1 = __webpack_require__(913);
-var swvalidationunique_1 = __webpack_require__(914);
-var swvalidationuniqueornull_1 = __webpack_require__(915);
+var swvalidate_1 = __webpack_require__(903);
+var swvalidationminlength_1 = __webpack_require__(911);
+var swvalidationdatatype_1 = __webpack_require__(904);
+var swvalidationeq_1 = __webpack_require__(905);
+var swvalidationeqproperty_1 = __webpack_require__(906);
+var swvalidationgte_1 = __webpack_require__(907);
+var swvalidationlte_1 = __webpack_require__(908);
+var swvalidationmaxlength_1 = __webpack_require__(909);
+var swvalidationmaxvalue_1 = __webpack_require__(910);
+var swvalidationminvalue_1 = __webpack_require__(912);
+var swvalidationneq_1 = __webpack_require__(913);
+var swvalidationnumeric_1 = __webpack_require__(914);
+var swvalidationregex_1 = __webpack_require__(915);
+var swvalidationrequired_1 = __webpack_require__(916);
+var swvalidationunique_1 = __webpack_require__(917);
+var swvalidationuniqueornull_1 = __webpack_require__(918);
 //services
-var validationservice_1 = __webpack_require__(916);
+var validationservice_1 = __webpack_require__(919);
 var core_module_1 = __webpack_require__(6);
 var validationmodule = angular.module('hibachi.validation', [core_module_1.coremodule.name])
     .run([function () {
@@ -98803,7 +100417,7 @@ exports.validationmodule = validationmodule;
 
 
 /***/ }),
-/* 918 */
+/* 921 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -98837,7 +100451,7 @@ exports.SWAdminCreateSuperUser = SWAdminCreateSuperUser;
 
 
 /***/ }),
-/* 919 */
+/* 922 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -98875,7 +100489,7 @@ exports.SWSchedulePreview = SWSchedulePreview;
 
 
 /***/ }),
-/* 920 */
+/* 923 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -98909,7 +100523,7 @@ exports.SWWorkflowBasic = SWWorkflowBasic;
 
 
 /***/ }),
-/* 921 */
+/* 924 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -99030,7 +100644,7 @@ exports.SWWorkflowCondition = SWWorkflowCondition;
 
 
 /***/ }),
-/* 922 */
+/* 925 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -99061,7 +100675,7 @@ exports.SWWorkflowConditionGroupItem = SWWorkflowConditionGroupItem;
 
 
 /***/ }),
-/* 923 */
+/* 926 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -99111,7 +100725,7 @@ exports.SWWorkflowConditionGroups = SWWorkflowConditionGroups;
 
 
 /***/ }),
-/* 924 */
+/* 927 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -99158,7 +100772,7 @@ exports.SWWorkflowTask = SWWorkflowTask;
 
 
 /***/ }),
-/* 925 */
+/* 928 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -99430,7 +101044,7 @@ exports.SWWorkflowTaskActions = SWWorkflowTaskActions;
 
 
 /***/ }),
-/* 926 */
+/* 929 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -99630,7 +101244,7 @@ exports.SWWorkflowTasks = SWWorkflowTasks;
 
 
 /***/ }),
-/* 927 */
+/* 930 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -99732,7 +101346,7 @@ exports.SWWorkflowTrigger = SWWorkflowTrigger;
 
 
 /***/ }),
-/* 928 */
+/* 931 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -99779,7 +101393,7 @@ exports.SWWorkflowTriggerHistory = SWWorkflowTriggerHistory;
 
 
 /***/ }),
-/* 929 */
+/* 932 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -100068,7 +101682,7 @@ exports.SWWorkflowTriggers = SWWorkflowTriggers;
 
 
 /***/ }),
-/* 930 */
+/* 933 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -100182,7 +101796,7 @@ exports.ScheduleService = ScheduleService;
 
 
 /***/ }),
-/* 931 */
+/* 934 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -100240,7 +101854,7 @@ exports.WorkflowConditionService = WorkflowConditionService;
 
 
 /***/ }),
-/* 932 */
+/* 935 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -100268,10 +101882,10 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 933 */
+/* 936 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(308);
+module.exports = __webpack_require__(309);
 
 
 /***/ })
