@@ -188,7 +188,13 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			}
 			
 			var publicKey = getPublicKey(arguments.requestBean);
-			var checkFraud = setting(settingName='checkFraud', requestBean=arguments.requestBean) ? true : false;
+			
+			
+			var checkFraud = false;
+			
+			if(getHibachiScope().hasSessionValue('kount-token')){
+				checkFraud = setting(settingName='checkFraud', requestBean=arguments.requestBean) ? true : false;
+			}
 			
 			var publicKey = getPublicKey(arguments.requestBean);
 
