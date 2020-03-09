@@ -126,7 +126,6 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 	property name="priceLevelCode" ormtype="string";
 	property name="flexshipStatusCode" ormtype="string";
 	property name="addressValidationCode" ormtype="string";
-	property name="customerCanCreateFlag" persistent="false";
 	
 	//calculated properties
 	property name="calculatedCommissionableVolumeTotal" ormtype="integer";
