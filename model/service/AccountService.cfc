@@ -794,8 +794,15 @@ component extends="HibachiService" accessors="true" output="false" {
 				accountAuthentication.getAccount().setFailedLoginAttemptCount(0);
 				accountAuthentication.getAccount().setLoginLockExpiresDateTime(javacast("null",""));
 			} else {
-				arguments.processObject.addError(loginType, rbKey('validate.account.notActive'));
-				arguments.processObject.addError('emailAddressOrUsername', rbKey('validate.account.notActive'));
+				
+				if ( 'astSuspended' == accountAuthentication.getAccount().getAccountStatusType().getSystemCode() ) {
+					arguments.processObject.addError(loginType, rbKey('validate.account.suspended'));
+					arguments.processObject.addError('emailAddressOrUsername', rbKey('validate.account.suspended'));
+				} else {
+					arguments.processObject.addError(loginType, rbKey('validate.account.notActive'));
+					arguments.processObject.addError('emailAddressOrUsername', rbKey('validate.account.notActive'));
+				}
+				
 			}
 		// Login was invalid
 		} else {
