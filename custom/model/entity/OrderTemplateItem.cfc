@@ -10,7 +10,7 @@ component {
 	property name="skuProductURL" persistent="false";
 	property name="skuImagePath" persistent="false";
 	property name="skuAdjustedPricing" persistent="false";
-
+	property name="kitFlagCode" ormtype="string";
 	
 	public any function getSkuProductURL(){
 		var skuProductURL = this.getSku().getProduct().getProductURL();

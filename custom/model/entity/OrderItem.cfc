@@ -38,7 +38,6 @@ component {
 	property name="mainCreditCardExpirationDate" persistent="false";
 	property name="mainPromotionOnOrder" persistent="false";
 
-	
     property name="calculatedExtendedPersonalVolume" ormtype="big_decimal" hb_formatType="none";
     property name="calculatedExtendedTaxableAmount" ormtype="big_decimal" hb_formatType="none";
     property name="calculatedExtendedCommissionableVolume" ormtype="big_decimal" hb_formatType="none";
@@ -62,6 +61,9 @@ component {
         variables.productPackVolume = getCustomPriceFieldAmount('productPackVolume');
         variables.retailValueVolume = getCustomPriceFieldAmount('retailValueVolume');
     }
+    property name="returnsReceived" ormtype="string";
+    property name="kitFlagCode" ormtype="string";
+    property name="itemCategoryCode" ormtype="string";
     
     public any function getPersonalVolume(){
         if(!structKeyExists(variables,'personalVolume')){
