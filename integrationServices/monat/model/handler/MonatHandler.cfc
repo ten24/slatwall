@@ -216,7 +216,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 				arguments.order.setInitialOrderFlag(true);
 			}
 		}catch(any dateError){
-			logHibachi("afterOrderProcess_placeOrderSuccess failed @ setCommissionPeriod using #commissionDate# OR to set initialOrderFlag");	
+			logHibachi("afterOrderProcess_placeOrderSuccess failed @ setCommissionPeriod using #commissionDate# OR to set initialOrderFlag #serializeJson(dateError)#");	
 		}
 		
 	}
