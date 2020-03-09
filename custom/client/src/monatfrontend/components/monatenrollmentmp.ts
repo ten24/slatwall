@@ -1,4 +1,5 @@
 declare var $;
+import Cart from '../models/cart'
 
 class EnrollmentMPController {
 	public Account_CreateAccount;
@@ -50,6 +51,7 @@ class EnrollmentMPController {
 			if(this.endpoint == 'setUpgradeOrderType' && res.upgradeResponseFailure?.length){
 				this.showUpgradeErrorMessage = true;
 				this.isInitialized = true;
+				console.log(this.showUpgradeErrorMessage);
 				return;
 			}
 			
@@ -116,7 +118,7 @@ class EnrollmentMPController {
 	public showAddToCartMessage = () => {
 		var skuID = this.monatService.lastAddedSkuID;
 		
-		this.monatService.getCart().then( data => {
+		this.monatService.getCart().then( (data:Cart) => {
 
 			var orderItem;
 			data.orderItems.forEach( item => {
