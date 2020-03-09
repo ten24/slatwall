@@ -646,7 +646,6 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 		// Comment Out: <---
 		
 		// Make HTTP request to endpoint
-		var response = httpRequest.send();
 		var httpResponse = httpRequest.send().getPrefix();
 
 		if (arguments.transactionName == 'deleteToken') {
