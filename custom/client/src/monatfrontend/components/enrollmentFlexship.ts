@@ -21,11 +21,15 @@ class EnrollmentFlexshipController {
 	}
 	
 	public getFlexship():void {
-		if(!this.orderTemplateID){
-			this.orderTemplateID = this.monatService.getCookieValueByCookieName('flexshipID');
-		}
-
-		this.hybridCart.getFlexship(this.orderTemplateID);
+		let extraProperties = "cartTotalThresholdForOFYAndFreeShipping,canPlaceOrderFlag";
+		this.orderTemplateID = this.monatService.getCookieValueByCookieName('flexshipID');
+		this.orderTemplateService.getOrderTemplateDetails(this.orderTemplateID, extraProperties, true).then(data => {
+			if((data.orderTemplate as GenericTemplate) ){
+				this.orderTemplate = data.orderTemplate;
+			} else {
+				throw(data);
+			}
+		});
 	}
 	
     public removeOrderTemplateItem = (item:GenericOrderTemplateItem) => {

@@ -15,7 +15,7 @@ class MonatEnrollmentController {
 	public reviewContext:boolean = false;
 	public cartText:string = 'Show Cart';
 	public showFlexshipCart: boolean = false;
-	public canPlaceCartOrder:boolean = true; //set to true at start so users can progress to today's order page
+	public canPlaceCartOrder:boolean = false; //set to true at start so users can progress to today's order page
 	public showCanPlaceOrderAlert:boolean = false;
 	public hasSkippedSteps = false;
 	public upgradeFlow:boolean;
@@ -42,27 +42,18 @@ class MonatEnrollmentController {
     	this.observerService.attach(this.next.bind(this),"onNext");
     	this.observerService.attach(this.previous.bind(this),"onPrevious");
     	this.observerService.attach(this.next.bind(this),"addGovernmentIdentificationSuccess");
-    	this.observerService.attach(this.getCart.bind(this),"removeOrderItemSuccess");
-    	this.observerService.attach(this.getCart.bind(this),"updateOrderItemSuccess");
-    	
     	this.observerService.attach(this.editFlexshipItems.bind(this),"editFlexshipItems");
     	this.observerService.attach(this.editFlexshipDate.bind(this),"editFlexshipDate");
+    	this.observerService.attach((res) => this.canPlaceCartOrder = res,"canPlaceOrder");
 	}
 
 	public $onInit = () => {
 		this.publicService.getAccount().then(result=>{
 			
 			//if account has a flexship send to checkout review
-			this.publicService.getCart().then(res =>{
-				
-				if(localStorage.getItem('flexshipID') && localStorage.getItem('accountID') == result.accountID){ 
-						
-				}else{
-					//if its a new account clear data in local storage and ensure they are logged out
-					localStorage.clear();
-				}
-				
+			this.monatService.getCart().then(res =>{
 				let cart = res.cart;
+				this.canPlaceCartOrder = cart.orderRequirementsList.indexOf('canPlaceOrderReward') == -1;
 				let account = result.account;
 				let reqList = 'createAccount,updateAccount';
 				
