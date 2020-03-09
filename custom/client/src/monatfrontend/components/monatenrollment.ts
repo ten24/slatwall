@@ -15,14 +15,16 @@ class MonatEnrollmentController {
 	public reviewContext:boolean = false;
 	public cartText:string = 'Show Cart';
 	public showFlexshipCart: boolean = false;
-	public canPlaceCartOrder:boolean = false; //set to true at start so users can progress to today's order page
+	public canPlaceCartOrder = this.monatService.canPlaceOrder;
 	public showCanPlaceOrderAlert:boolean = false;
 	public hasSkippedSteps = false;
 	public upgradeFlow:boolean;
 	public currentStepName:string;
+	public flexshipShouldBeChecked: boolean;
+	public flexshipCanBePlaced = this.orderTemplateService.canPlaceOrderFlag;
 	
 	//@ngInject
-	constructor(public monatService, public observerService, public $rootScope, public publicService) {
+	constructor(public monatService, public observerService, public $rootScope, public publicService, public orderTemplateService) {
 		if (hibachiConfig.baseSiteURL) {
 			this.backUrl = hibachiConfig.baseSiteURL;
 		}
@@ -44,7 +46,6 @@ class MonatEnrollmentController {
     	this.observerService.attach(this.next.bind(this),"addGovernmentIdentificationSuccess");
     	this.observerService.attach(this.editFlexshipItems.bind(this),"editFlexshipItems");
     	this.observerService.attach(this.editFlexshipDate.bind(this),"editFlexshipDate");
-    	this.observerService.attach((res) => this.canPlaceCartOrder = res,"canPlaceOrder");
 	}
 
 	public $onInit = () => {
@@ -152,6 +153,7 @@ class MonatEnrollmentController {
 		});
 		this.steps[this.position].selected = true;
 		this.currentStepName = this.steps[this.position].stepClass;
+		if(this.currentStepName == 'orderListing') this.flexshipShouldBeChecked = true;
 	}
 	
 	public editFlexshipItems = () => {

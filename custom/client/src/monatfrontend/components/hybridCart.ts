@@ -33,7 +33,7 @@ class HybridCartController {
 	
 	public toggleCart():void{
 		this.showCart = !this.showCart;
-		if(this.showCart){
+		if(this.showCart || this.isEnrollment){
 			this.getCart();
 		}
 	}
@@ -44,16 +44,9 @@ class HybridCartController {
 	
 	private getCart():void{
 		this.monatService.getCart().then((res:Cart | any) => {
-			
 			this.cart = res.cart ? res.cart : res;
-			this.cart.orderItems[1].sku.product.productType.systemCode;
 			this.cart.orderItems = this.cart.orderItems.filter(el => el.sku.product.productType.systemCode !== 'ProductPack');
 			this.recalculatePrices();
-			if(this.cart.orderRequirementsList.indexOf('canPlaceOrderReward') == -1){
-				this.observerService.notify('canPlaceOrder', true);
-			}else{
-				this.observerService.notify('canPlaceOrder', false);
-			}
 		});
 	}
 	

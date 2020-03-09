@@ -3,6 +3,7 @@ export class OrderTemplateService {
    private orderTemplateTypeID:string='';
    private cachedGetOrderTemplatesResponse:any;
    private cachedGetAccountGiftCardsResponse:any;
+   public canPlaceOrderFlag:boolean;
    
    //@ngInject
    constructor(
@@ -103,14 +104,21 @@ export class OrderTemplateService {
     }
    
     public getOrderTemplateDetails = (orderTemplateID:string, optionalProperties:string="", nullAccountFlag = false) => {
-       var data = {
-           "orderTemplateID" : orderTemplateID,
-           "optionalProperties" : optionalProperties,
-           "nullAccountFlag" :nullAccountFlag
-       }
-       return this.requestService
-                  .newPublicRequest('?slatAction=api:public.getOrderTemplateDetails', data)
-                  .promise;
+        var deferred = this.$q.defer();
+        var data = {
+            "orderTemplateID" : orderTemplateID,
+            "optionalProperties" : optionalProperties,
+            "nullAccountFlag" :nullAccountFlag
+        }
+        
+       this.publicService.doAction('getOrderTemplateDetails', data).then(res=>{
+           console.log(res)
+           if(res.orderTemplate && res.orderTemplate.canPlaceOrderFlag) this.canPlaceOrderFlag = res.orderTemplate.canPlaceOrderFlag;
+           deferred.resolve(res);
+        }).catch((e) => {
+			deferred.reject(e);
+		});
+		return deferred.promise;
     }
    
     public updateShipping = (data) => {

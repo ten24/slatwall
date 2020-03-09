@@ -34,14 +34,26 @@ class VIPController {
 	public paginationMethod = 'getproductsByCategoryOrContentID';
 	public productRecordsCount: number;
 	public paginationObject = {};
+	public upgradeFlow:boolean;
+	public endpoint: 'setUpgradeOnOrder' | 'setUpgradeOrderType' = 'setUpgradeOnOrder';
+	public showUpgradeErrorMessage:boolean;
 	
 	// @ngInject
 	constructor(public publicService, public observerService, public monatService, public orderTemplateService) {
 	}
 
 	public $onInit = () => {
+		if(this.upgradeFlow){
+			this.endpoint = 'setUpgradeOrderType';
+		}
 		
-		this.publicService.doAction('setUpgradeOnOrder', {upgradeType: 'VIP'}).then(res=>{
+		this.publicService.doAction(this.endpoint, {upgradeType: 'VIP'}).then(res=>{
+			if(this.endpoint == 'setUpgradeOrderType' && res.upgradeResponseFailure?.length){
+				this.showUpgradeErrorMessage = true;
+				this.isInitialized = true;
+				return;
+			}
+			
 			this.isInitialized = true;
 			this.getProductList();	
 			this.getCountryCodeOptions();
@@ -238,7 +250,9 @@ class MonatEnrollmentVIP {
 	/**
 	 * Binds all of our variables to the controller so we can access using this
 	 */
-	public bindToController = {};
+	public bindToController = {
+		upgradeFlow:'<?'
+	};
 	public controller = VIPController;
 	public controllerAs = 'vipController';
 	// @ngInject

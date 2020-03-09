@@ -18,7 +18,7 @@
 
 <ng-transclude></ng-transclude>
 
-<div ng-show="!monatEnrollment.canPlaceCartOrder && monatEnrollment.showCanPlaceOrderAlert" class="alert alert-danger alert-dismissible fade show text-center can-place-order-alert" role="alert">
+<div ng-cloak ng-show="monatEnrollment.showCanPlaceOrderAlert && !monatEnrollment.monatService.canPlaceOrder" class="alert alert-danger alert-dismissible fade show text-center can-place-order-alert" role="alert">
     <span sw-rbkey="'frontend.order.canPlaceOrderFailure'"></span>
 </div>
     
@@ -51,7 +51,7 @@
 		<div class="step-status row w-50 text-center align-items-end">
 			<div 
 				class="col mt-1"
-				ng-style="{ 'opacity' : (monatEnrollment.currentStepName == 'todaysOrder' || monatEnrollment.currentStepName == undefined ) ? '100%' : '50%' }"
+				ng-style="{ 'opacity' : (monatEnrollment.currentStepName == 'todaysOrder' || monatEnrollment.currentStepName == undefined || monatEnrollment.currentStepName == 'ofy') ? '100%' : '50%' }"
 			>
 				<i class="fal fa-check fa-2x"></i>	
 				<p class="mb-1" sw-rbkey="'frontend.cart.todaysOrder'"></p>
@@ -86,8 +86,11 @@
 			</div>
 		</div>
 		
-	<!-----NEXT BUTTONS ---->
-		<div ng-if="monatEnrollment.canPlaceCartOrder">
+		<!-----NEXT BUTTONS ---->
+		<div ng-if="
+			(monatEnrollment.monatService.canPlaceOrder && !monatEnrollment.flexshipShouldBeChecked) 
+			|| (monatEnrollment.monatService.canPlaceOrder && monatEnrollment.orderTemplateService.canPlaceOrderFlag)
+		">
 			<button 
 				style="z-index: 1" 
 				data-ng-click="monatEnrollment.next(); monatEnrollment.showCanPlaceOrderAlert = false" 
@@ -108,7 +111,10 @@
 			</button>			
 		</div>
 		
-		<div ng-if="!monatEnrollment.canPlaceCartOrder">
+		<div ng-if="
+				(!monatEnrollment.monatService.canPlaceOrder && !monatEnrollment.flexshipShouldBeChecked) 
+			|| (!monatEnrollment.monatService.canPlaceCartOrder && !monatEnrollment.orderTemplateService.canPlaceOrderFlag && monatEnrollment.flexshipShouldBeChecked)
+		">
 			<button 
 				style="z-index: 1" 
 				data-ng-click="monatEnrollment.showCanPlaceOrderAlert = true" 
