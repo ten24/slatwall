@@ -22,6 +22,7 @@ class MonatEnrollmentController {
 	public currentStepName:string;
 	public flexshipShouldBeChecked: boolean;
 	public flexshipCanBePlaced = this.orderTemplateService.canPlaceOrderFlag;
+	public type:string;
 	
 	//@ngInject
 	constructor(public monatService, public observerService, public $rootScope, public publicService, public orderTemplateService) {
@@ -49,6 +50,7 @@ class MonatEnrollmentController {
 	}
 
 	public $onInit = () => {
+	
 		this.publicService.getAccount().then(result=>{
 			
 			//if account has a flexship send to checkout review
@@ -214,7 +216,8 @@ class MonatEnrollment {
 	public bindToController = {
 		finishText: '@',
 		onFinish: '=?',
-		upgradeFlow:'<?'
+		upgradeFlow:'<?',
+		type:'<?'
 	};
 	public controller = MonatEnrollmentController;
 	public controllerAs = 'monatEnrollment';

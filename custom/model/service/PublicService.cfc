@@ -1492,7 +1492,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         param name="arguments.data.upgradeType" default="marketPartner";
         param name="arguments.data.upgradeFlowFlag" default=0;
         
-        if(!isNull(getHibachiScope().getCart().getMonatOrderType())){
+        var typeCode = arguments.data.upgradeType == 'marketPartner' ? 'motMpEnrollment' : 'motVipEnrollment';
+        if(!isNull(getHibachiScope().getCart().getMonatOrderType()) && getHibachiScope().getCart().getMonatOrderType().getTypeCode() == typeCode){
             arguments.data['ajaxResponse']['upgradeResponseFailure'] = getHibachiScope().rbKey('frontend.validate.upgradeAlreadyExists');
             return;
         }
