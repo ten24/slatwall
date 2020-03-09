@@ -232,6 +232,9 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			// Save Card, this is the imortant token we want to persist for Slatwall payment data (https://github.com/nexiopay/payment-service-example-node/blob/master/ClientSideToken.js#L107)
 			var responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'generateToken', requestData);
 
+			if(checkFraud && getHibachiScope().hasSessionValue('kount-token')){
+				getHibachiScope().clearSessionValue('kount-token');
+			}
 			// Setting AVS code (https://github.com/ten24/Monat/blob/develop/Slatwall/model/transient/payment/TransactionResponseBean.cfc) off Nexio's response 
 			var responseDataAvsCode = "";
 			
