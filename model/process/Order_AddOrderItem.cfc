@@ -183,54 +183,59 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		
 		return variables.orderItemTypeSystemCode;
 	}
-	
-	public any function getAccount(){
-		if ( !StructKeyExists(variables, 'account') || IsNull(variables.account) ) {
-			variables.account = getOrder().getAccount() ?: getHibachiScope().getAccount();
-		}
-		return variables.account;
-	}
-	
-	public any function getPriceGroup(){
-		if ( !StructKeyExists(variables, 'priceGroup') || IsNull(variables.priceGroup) ) {
-			
-			/*
-	            Price group is prioritized as so: 
-	                1. Order price group
-	                2. Price group passed in as argument ? TODO??
-	                3. Price group on account
-	                4. Default to Retail's pricegroup
-	        */
-	        
-	        if(!IsNull(this.getOrder().getPriceGroup()) ){ 
-	            variables.priceGroup = this.getOrder().getPriceGroup(); //order price group
-	        } else if(!IsNull(this.getAccount().getPriceGroups()) && ArrayLen(this.getAccount().getPriceGroups()) ){ 
-	            variables.priceGroup = this.getAccount().getPriceGroups()[1]; //account price group
-	        } else {
-	        	variables.priceGroup = getService('priceGroupService').getPriceGroupByPriceGroupCode(2) // default to RetailPriceGroup
-	        }
-	        
-		}
-		return variables.priceGroup;
-	}
 
 	public any function getPrice() {
-		
+		if ( !isNull(getOrder().getAccount()) ){
+			var account = getOrder().getAccount();
+		} else {
+			var account = getHibachiScope().getAccount();
+		}
+        
+        /*
+            Price group is prioritized as so: 
+                1.Order price group
+                2.Price group passed in as argument
+                3. Price group on account
+                4. Default to 2
+        
+        */
+        
+        if(!isNull(order.getPriceGroup())){ 
+            var priceGroup = order.getPriceGroup(); //order price group
+        }else if(!isNull(account.getPriceGroups()) && arrayLen(account.getPriceGroups())){ 
+            var priceGroup = account.getPriceGroups()[1]; //account price group
+        }else{
+        	var priceGroup = getService('priceGroupService').getPriceGroupByPriceGroupCode(2) // default to retail
+        }
+
 		if(
-			!StructKeyExists(variables, "price") 
-			|| 
-			( 
-				!IsNull(this.getSku()) && IsNull(getOldQuantity()) && 
-				variables.price == this.getSku().getPriceByCurrencyCode( currencyCode=this.getCurrencyCode(), priceGroups=[this.getPriceGroup()] ) 
+			!structKeyExists(variables, "price") 
+			|| ( 
+				!isNull(getSku()) && 
+				isNull(getOldQuantity()) && 
+				variables.price == getSku().getPriceByCurrencyCode( currencyCode=getCurrencyCode(), priceGroups=[priceGroup], account=account.getAccountID() ) 
 			)
-			|| 
-			( 
-				!IsNull(this.getSku()) &&  !IsNull(this.getOldQuantity()) && this.getOldQuantity() != this.getQuantity() && 
-				variables.price == this.getSku().getPriceByCurrencyCode( currencyCode=this.getCurrencyCode(), quantity=this.getOldQuantity(), priceGroups=[this.getPriceGroup()] ) 
-			)
+			|| ( 
+				!isNull(getSku()) && 
+				!isNull(getOldQuantity()) && 
+				getOldQuantity() != getQuantity() && 
+				variables.price == getSku().getPriceByCurrencyCode(currencyCode=getCurrencyCode(), quantity=getOldQuantity(), priceGroups=[priceGroup], accountID=account.getAccountID()) )
 		){
-			if(!IsNull(this.getSku())) {
-				variables.price = this.getSku().getPriceByCurrencyCode( currencyCode=this.getCurrencyCode(), quantity=this.getQuantity(), priceGroups=[this.getPriceGroup()] );
+			variables.price = 0;
+			if(!isNull(getSku())) {
+				
+				var priceByCurrencyCode = getSku().getPriceByCurrencyCode( 
+													currencyCode=getCurrencyCode(), 
+													quantity=getQuantity(), 
+													priceGroups=[priceGroup],
+													accountID=account.getAccountID()
+												);
+				
+				if(!isNull(priceByCurrencyCode)) {
+					variables.price = priceByCurrencyCode;
+				} else {
+					variables.price = "N/A";
+				}
 			}
 		}
 		return variables.price;
@@ -633,28 +638,10 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		}
 		return "";
 	}
-	
-	public any function getUserDefinedPriceFlag() {
-		
-		//if there's no sku we have nothing to check against 
-		if(IsNull(this.getSku()) ) {
-			return false;
-		}
 
-		if(this.getSku().getUserDefinedPriceFlag() ?: false ){
-			return true;
-		}
-		
-		//check if the price doesn't match with PriceByCurrencyCode
-		if(this.getPrice() != this.getSku().getPriceByCurrencyCode( currencyCode=getCurrencyCode(), quantity=getQuantity(),  priceGroups=[this.getPriceGroup()] ) ) {
-			return true;
-		}
-		
-		return false;
-	}
-	
 	// funciton to compare two orderItems based on certain properties.
 	public boolean function matchesOrderItem(required any orderItem){
+
 		//check if the sku is a bundle
 		if(!isnull(this.getSku()) && !isnull(this.getSku().getBaseProductType()) && this.getSku().getBaseProductType() == 'productBundle') {
 			return false;
@@ -664,13 +651,8 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		if(arguments.orderItem.getSku().getSkuID() != this.getSku().getSkuID()){
 			return false;
 		}
-
-		//check if the price is the same if and only if we have a custom price (either orderItem or processObject)
-		if( 
-			arguments.orderItem.getPrice() != this.getPrice() 
-			&&  
-			( this.getUserDefinedPriceFlag() || arguments.orderItem.getUserDefinedPriceFlag() )
-		){
+		//check if the price is the same if and only if we are using a custom price
+		if(arguments.orderItem.getPrice() != this.getPrice() && (!isNull(arguments.orderItem.getSku().getUserDefinedPriceFlag()) && arguments.orderItem.getSku().getUserDefinedPriceFlag())){
 			return false;
 		}
 		
