@@ -28,6 +28,7 @@
 <button 
 	type="submit" 
 	class="btn btn-secondary forward-btn forward" 
+	ng-disabled="!ofyEnrollment.stagedProductID.length"
 	ng-class="{ 
 		disabled: !ofyEnrollment.stagedProductID.length,
 		loading: ofyEnrollment.loading

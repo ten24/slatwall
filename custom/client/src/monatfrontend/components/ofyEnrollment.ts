@@ -6,7 +6,7 @@ class OFYEnrollmentController {
 	public loading:boolean;
 	
 	//@ngInject
-	constructor( public observerService, public publicService) {
+	constructor( public observerService, public publicService, public orderTemplateService) {
 	}
 
 	public $onInit = () => {
@@ -28,9 +28,23 @@ class OFYEnrollmentController {
 	
 	public addToCart():void{
 		this.loading = true;
-		this.publicService.doAction('addOrderItem', {skuID: this.stagedProductID} ).then(res=>{
+		
+		let data ={
+			skuID: this.stagedProductID,
+            orderTemplateSystemCode: 'ottSchedule',
+            saveContext: 'upgradeFlow',
+            returnJSONObjects:''
+        }
+        
+		this.publicService.doAction('addOrderItem,createOrderTemplate', data ).then(res=>{
+			
+			if(res.orderTemplate){
+				this.orderTemplateService.canPlaceOrderFlag = false;
+				document.cookie = "flexshipID=" + res.orderTemplate;
+				this.observerService.notify('newOrderTemplate', res.orderTemplate);
+				this.observerService.notify('onNext');	
+			}
 			this.loading = false;
-			this.observerService.notify('onNext');
 		});
 	}
 	

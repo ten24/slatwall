@@ -40,6 +40,7 @@ class VIPController {
 	
 	// @ngInject
 	constructor(public publicService, public observerService, public monatService, public orderTemplateService) {
+		this.observerService.attach((res)=> this.flexshipID = res, 'newOrderTemplate')
 	}
 
 	public $onInit = () => {
@@ -61,6 +62,7 @@ class VIPController {
 		});
 
 		this.flexshipID = this.monatService.getCookieValueByCookieName('flexshipID');
+		
 	}
 	
 	public getFrequencyTermOptions = ():void =>{
@@ -157,18 +159,6 @@ class VIPController {
 			this.loading = false;
 		});
 	}
-	
-    public createOrderTemplate = (orderTemplateSystemCode:string = 'ottSchedule',context="upgradeFlow") => {
-        this.loading = true;
-        this.orderTemplateService.createOrderTemplate(orderTemplateSystemCode,context).then(result => {
-        	this.flexshipID = result.orderTemplate;
-            this.loading = false;
-            if(result.orderTemplate?.length){
-            	document.cookie = "flexshipID=" + result.orderTemplate ;
-    			this.observerService.notify('onNext');
-            }
-        });
-    }
     
     public setOrderTemplateFrequency = (frequencyTerm, dayOfMonth) => {
 		

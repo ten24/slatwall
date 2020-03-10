@@ -1,9 +1,9 @@
-	<div class="card mb-3 w-100">
+	<div ng-cloak class="card mb-3 w-100">
 		<div class="card-header bg-transparent p-0">
 			<div class="bg-primary">
 				<a class="py-0" data-toggle="collapse" href="#flexshipBody">
 					<div class="py-3 px-3 text-white">
-						<span sw-rbKey="'frontend.hybridCart.yourFlexship'"></span> - <span ng-bind-html="enrollmentFlexship.orderTemplate.calculatedSubTotal | swcurrency:enrollmentFlexship.orderTemplate.currencyCode"></span>
+						<span sw-rbKey="'frontend.hybridCart.yourFlexship'"></span> <span ng-if="!enrollmentFlexship.isLoading" ng-bind-html="' - ' + enrollmentFlexship.orderTemplate.calculatedSubTotal | swcurrency:enrollmentFlexship.orderTemplate.currencyCode"></span>
 					</div>					
 				</a>
 			</div>
@@ -73,6 +73,14 @@
 				</div>
 			</div>
 			<div class="card-footer">
+				<div class="px-3">
+					<p>
+						<i class="fal fa-exclamation-circle text-danger"></i> 
+						<span sw-rbkey="'frontend.flexshipCartContainer.alertOFYAndFreeShippingP1'"></span>
+						<span ng-bind-html="enrollmentFlexship.orderTemplate.cartTotalThresholdForOFYAndFreeShipping | swcurrency:enrollmentFlexship.orderTemplate.currencyCode"></span> 
+						<span sw-rbkey="'frontend.enrollmentFlexship.toQualify'"></span>
+					</p>
+				</div>
 				<div class="row justify-content-between px-3">
 					<div>
 						<small> <span sw-rbKey="'frontend.hybridCart.suggestedPrice'"></span> </small>

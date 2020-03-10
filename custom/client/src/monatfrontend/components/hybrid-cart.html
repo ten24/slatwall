@@ -37,9 +37,9 @@
 											<div class="p-1">
 												<a class="py-0" ng-click="hybridCart.redirect(item.skuProductURL)" href="#">
 													<img 
-														image-manager 
+														image-manager
 														height="75px" 
-														ng-src="https://monatteam.ten24dev.com/Slatwall/custom/assets/images/product/default/cache/10392000_300w_300h.jpg" 
+														ng-src="{{item.sku.imagePath}}" 
 														alt="{{item.sku.skuDefinition}}"
 													>
 												</a>
