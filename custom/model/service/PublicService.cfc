@@ -76,25 +76,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             getHibachiScope().addActionResult( "public:cart.updateAddress", true );
         }
      }
-     
-    /**
-     * Function to delete Account
-     * This is a test method to be used in jMeter for now,
-     * It is not part of core APIs, should be removed.
-     * @return none
-    */
-    public void function deleteJmeterAccount() {
-        param name="data.accountID" default="";
-        
-        var account = getAccountService().getAccount( data.accountID );
-        
-        if(!isNull(account) && account.getAccountID() == getHibachiScope().getAccount().getAccountID() ) {
-            var deleteOk = getAccountService().deleteAccount( account );
-            getHibachiScope().addActionResult( "public:account.deleteAccount", !deleteOK );
-        } else {
-            getHibachiScope().addActionResult( "public:account.deleteAccount", true );   
-        }
-    }
     
     /**
      * Function to get Types by Type Code
@@ -103,7 +84,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
      * @return none
     */
     public void function getSystemTypesByTypeCode(required struct data){
-        param name="arguments.data.typeCode";
+        param name="arguments.data.typeCode" default="";
         
         var typeList = getService('TypeService').getTypeByTypeCode(arguments.data.typeCode);
         arguments.data.ajaxResponse['typeList'] = typeList;
@@ -117,15 +98,11 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
      * @return none
     */
     public void function getSkuStock(required struct data){
-        param name="arguments.data.skuID";
-        param name="arguments.data.locationID";
-        
-        var sku = getService('skuService').getSku(arguments.data.skuID);
-        var location = getService('locationService').getLocation(arguments.data.locationID);
-        if(!isNull(sku) && !isNull(location)) {
-            var stock = getService('stockService').getCurrentStockBySkuAndLocation( arguments.data.skuID, arguments.data.locationID );
-            arguments.data.ajaxResponse['stock'] = stock;
-        }
+        param name="arguments.data.skuID" default="";
+        param name="arguments.data.locationID" default="";
+
+        var stock = getService('stockService').getCurrentStockBySkuAndLocation( arguments.data.skuID, arguments.data.locationID );
+        arguments.data.ajaxResponse['stock'] = stock;
     }
     
     /**
@@ -135,13 +112,10 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
      * @return none
     */
     public void function getProductReviews(required struct data){
-        param name="arguments.data.productID";
-        
-        var product = getService('productService').getProduct(arguments.data.productID);
-        if(!isNull(product)) {
-            var productReviews = product.getAllProductReviews();
-            arguments.data.ajaxResponse['productReviews'] = productReviews;
-        }
+        param name="arguments.data.productID" default="";
+
+        var productReviews = getService('productService').getAllProductReviews(productID = arguments.data.productID);
+        arguments.data.ajaxResponse['productReviews'] = productReviews;
     }
     
     /**
@@ -151,13 +125,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
      * @return none
     */
     public void function getRelatedProducts(required struct data){
-        param name="arguments.data.productID";
-        
-        var product = getService('productService').getProduct(arguments.data.productID);
-        if(!isNull(product)) {
-            var relatedProducts = product.getAllRelatedProducts();
-            arguments.data.ajaxResponse['relatedProducts'] = relatedProducts;
-        }
+        param name="arguments.data.productID" default="";
+        var relatedProducts = getService('productService').getAllRelatedProducts(productID = arguments.data.productID);
+        arguments.data.ajaxResponse['relatedProducts'] = relatedProducts;
     }
     
     /**
@@ -169,9 +139,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
      * @return none
     */
     public void function getProductImageGallery(required struct data){
-        param name="arguments.data.productID";
+        param name="arguments.data.productID" default="";
         param name="arguments.data.defaultSkuOnlyFlag" default="false";
-        
+
         var product = getService('productService').getProduct(arguments.data.productID);
         if(structKeyExists(arguments.data,'resizeSizes')){
             var sizeArray = [];
@@ -191,13 +161,10 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
      * @return none
     */
     public void function getProductOptionsByOptionGroup(required struct data){
-        param name="arguments.data.productID";
-        param name="arguments.data.optionGroupID";
-        
-        var product = getService('productService').getProduct(arguments.data.productID);
-        if(!isNull(product)) {
-            arguments.data.ajaxResponse['productOptions'] = product.getOptionsByOptionGroup(arguments.data.optionGroupID);
-        }
+        param name="arguments.data.productID" default="";
+        param name="arguments.data.optionGroupID" default="";
+
+        arguments.data.ajaxResponse['productOptions'] = getService('optionService').getOptionsByOptionGroup( arguments.data.productID, arguments.data.optionGroupID );
     }
     
     /**
@@ -207,10 +174,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
      * @return none
      **/
     public void function getAppliedPayments(required any data) {
-        if( getHibachiScope().getCart().hasOrderPayment() ) {
-            var appliedPaymentMethods = getOrderService().getAppliedOrderPayments();
-            arguments.data['ajaxResponse']['appliedPayments'] = appliedPaymentMethods;
-        }
+        
+        arguments.data['ajaxResponse']['appliedPayments'] = getOrderService().getAppliedOrderPayments(getHibachiScope().getCart());
     }
     
     /**
@@ -220,10 +185,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
      * @return none
      **/
     public void function getAppliedPromotionCodes(required any data) {
-        var promotionCodes = getHibachiScope().getCart().getAllAppliedPromotions();
-        if(arrayLen(promotionCodes)) {
-		    arguments.data['ajaxResponse']['appliedPromotionCodes'] = promotionCodes;
-        }
+        
+        arguments.data['ajaxResponse']['appliedPromotionCodes'] = getHibachiScope().getCart().getAllAppliedPromotions();
     }
     
     /**
@@ -233,12 +196,10 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
      * @return none
      **/
     public void function getAvailablePaymentMethods(required any data) {
-        var paymentMethods = getHibachiScope().getCart().getEligiblePaymentMethodDetails();
-        if(arrayLen(paymentMethods)) {
-            var accountPaymentMethods = [];
-            accountPaymentMethods = getService("accountService").getAvailablePaymentMethods();
-		    arguments.data['ajaxResponse']['availablePaymentMethods'] = accountPaymentMethods;
-        }
+        arguments.account = getHibachiScope().getAccount();
+        
+        var accountPaymentMethods = getService("accountService").getAvailablePaymentMethods( argumentCollection=arguments );
+	    arguments.data['ajaxResponse']['availablePaymentMethods'] = accountPaymentMethods;
     }
     
     /**
@@ -259,24 +220,14 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
      * Function to get the parent accounts of user account
      **/
     public void function getParentOnAccount(required any data) {
-        var account = getHibachiScope().getAccount();
-        if(account.hasChildAccountRelationship()) {
-            var parentAccounts = getAccountService().getAllParentsOnAccount();
-            
-            arguments.data['ajaxResponse']['parentAccount'] = parentAccounts;
-        }
+        arguments.data['ajaxResponse']['parentAccount'] = getAccountService().getAllParentsOnAccount(getHibachiScope().getAccount());
     }
     
     /**
      * Function to get the child accounts of user account
      **/
     public void function getChildOnAccount(required any data) {
-        var account = getHibachiScope().getAccount();
-        if(account.hasChildAccountRelationship()) {
-            var parentAccounts = getAccountService().getAllChildsOnAccount();
-            
-            arguments.data['ajaxResponse']['childAccount'] = parentAccounts;
-        }
+        arguments.data['ajaxResponse']['childAccount'] = getAccountService().getAllChildsOnAccount(getHibachiScope().getAccount());
     }
     
     /**
@@ -287,7 +238,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
      * @return none
      **/
     public void function getSubscriptionsUsageOnAccount(required any data) {
-        var subscriptionUsage = getSubscriptionService().getSubscriptionsUsageOnAccount( {accountID: getHibachiScope().getAccount().getAccountID(), pageRecordsShow: arguments.data.pageRecordsShow, currentPage: arguments.data.currentPage } );
+        arguments.account = getHibachiScope().getAccount();
+        
+        var subscriptionUsage = getSubscriptionService().getSubscriptionsUsageOnAccount( argumentCollection=arguments );
         arguments.data['ajaxResponse']['subscriptionUsageOnAccount'] = subscriptionUsage;
     }
     
@@ -299,7 +252,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
      * @return none
      **/
     public void function getAllGiftCardsOnAccount(required any data) {
-        var giftCards = getGiftCardService().getAllGiftCardsOnAccount({accountID: getHibachiScope().getAccount().getAccountID(), pageRecordsShow: arguments.data.pageRecordsShow, currentPage: arguments.data.currentPage });
+        arguments.account = getHibachiScope().getAccount();
+        
+        var giftCards = getService('giftCardService').getAllGiftCardsOnAccount( argumentCollection=arguments);
         arguments.data['ajaxResponse']['giftCardsOnAccount'] = giftCards;
     }
     
@@ -311,7 +266,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
      * @return none
      **/
     public void function getAllCartsAndQuotesOnAccount(required any data) {
-        var accountOrders = getOrderService().getAllCartsAndQuotesOnAccount({accountID: getHibachiScope().getAccount().getAccountID(), pageRecordsShow: arguments.data.pageRecordsShow, currentPage: arguments.data.currentPage });
+        arguments.account = getHibachiScope().getAccount();
+        
+        var accountOrders = getOrderService().getAllCartsAndQuotesOnAccount( argumentCollection=arguments );
         arguments.data['ajaxResponse']['cartsAndQuotesOnAccount'] = accountOrders;
     }
      
@@ -323,7 +280,10 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
      * @return none
      **/ 
     public void function getAllOrdersOnAccount(required any data){
-        var accountOrders = getAccountService().getAllOrdersOnAccount({accountID: getHibachiScope().getAccount().getAccountID(), pageRecordsShow: arguments.data.pageRecordsShow, currentPage: arguments.data.currentPage });
+        
+        arguments.account = getHibachiScope().getAccount();
+        
+        var accountOrders = getAccountService().getAllOrdersOnAccount( argumentCollection=arguments );
         arguments.data['ajaxResponse']['ordersOnAccount'] = accountOrders;
     }
      
@@ -336,7 +296,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
      * @return none
      **/
     public void function getAllOrderFulfillmentsOnAccount(required any data) {
-        var accountOrders = getOrderService().getAllOrderFulfillmentsOnAccount({accountID: getHibachiScope().getAccount().getAccountID(), pageRecordsShow: arguments.data.pageRecordsShow, currentPage: arguments.data.currentPage });
+        arguments.account = getHibachiScope().getAccount();
+        
+        var accountOrders = getOrderService().getAllOrderFulfillmentsOnAccount( argumentCollection=arguments );
         arguments.data['ajaxResponse']['orderFulFillemntsOnAccount'] = accountOrders;
     }
     
@@ -348,7 +310,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
      * @return none
      **/
     public void function getAllOrderDeliveryOnAccount(required any data) {
-        var accountOrders = getOrderService().getAllOrderDeliveryOnAccount({accountID: getHibachiScope().getAccount().getAccountID(), pageRecordsShow: arguments.data.pageRecordsShow, currentPage: arguments.data.currentPage });
+        arguments.account = getHibachiScope().getAccount();
+        
+        var accountOrders = getOrderService().getAllOrderDeliveryOnAccount( argumentCollection=arguments );
         arguments.data['ajaxResponse']['orderDeliveryOnAccount'] = accountOrders;
     }
     
@@ -1611,11 +1575,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		}
 
 		arguments.data['ajaxResponse']['upgradedSavings'] = precisionEvaluate(currentPrice - upgradedPrice);
-    }
-    
-    public void function getAllOrdersOnAccount(required any data){
-        var accountOrders = getAccountService().getAllOrdersOnAccount({accountID: arguments.data.accountID, pageRecordsShow: arguments.data.pageRecordsShow, currentPage: arguments.data.currentPage });
-        arguments.data['ajaxResponse']['ordersOnAccount'] = accountOrders;
     }
     
     public void function getOrderItemsByOrderID(required any data){

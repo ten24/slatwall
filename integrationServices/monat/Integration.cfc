@@ -22,7 +22,11 @@ component accessors="true" output="false" extends="Slatwall.integrationServices.
             baseImportURL = {fieldType="text", defaultValue=""},
 			authKey = {fieldType="password", encryptValue=true},
 		    globalVIPEnrollmentFeeSkuID = {fieldtype="text", defaultValue="", validate={required=true}},
-		    orderMinimumDaysToRenewMP = {fieldType="text", defaultValue=0, validate={dataType="numeric"}}
+		    orderMinimumDaysToRenewMP = {fieldType="text", defaultValue=0, validate={dataType="numeric"}},
+		    legacyImportAPIDomain = {fieldType="text", defaultValue="https://api.monatcorp.net:8443"},
+			legacyImportAPIAuthKey = {fieldType="password", defaultValue=""},
+		    dailyImportAPIDomain = {fieldType="text", defaultValue="https://apisandbox.monatcorp.net:8443"},
+			dailyImportAPIAuthKey = {fieldType="password", defaultValue=""},
 		};
     }
     

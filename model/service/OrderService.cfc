@@ -5487,28 +5487,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	//Function get all available order paymentss
-	public any function getAppliedOrderPayments() {
-		var appliedPaymentMethods = [];
-	    for(orderPayment in getHibachiScope().getCart().getOrderPayments()) {
-	        
-	        if(orderPayment.getOrderPaymentStatusType().getSystemCode() != "opstActive") {
-	            continue;
-	        }
-	        
-	        var orderPayments = {};
-	        orderPayments['expirationYear'] = orderPayment.getExpirationYear();
-	        orderPayments['purchaseOrderNumber'] = orderPayment.getPurchaseOrderNumber();
-	        orderPayments['nameOnCreditCard'] = orderPayment.getNameOnCreditCard();
-	        orderPayments['expirationMonth'] = orderPayment.getExpirationMonth();
-	        orderPayments['creditCardLastFour'] = orderPayment.getCreditCardLastFour();
-	        orderPayments['currencyCode'] = orderPayment.getCurrencyCode();
-	        orderPayments['orderPaymentID'] = orderPayment.getOrderPaymentID();
-	        orderPayments['amount'] = orderPayment.getAmount();
-	        orderPayments['creditCardType'] = orderPayment.getCreditCardType();
-	        
-	        arrayAppend(appliedPaymentMethods, orderPayments);
-	    }
-	    return appliedPaymentMethods;
+	public any function getAppliedOrderPayments(required any order) {
+		var appliedPaymentMethods = this.getOrderPaymentCollectionList();
+		appliedPaymentMethods.setDisplayProperties('expirationYear, purchaseOrderNumber, nameOnCreditCard, expirationMonth, creditCardLastFour, currencyCode, orderPaymentID, amount, creditCardType');
+	    appliedPaymentMethods.addFilter("order.orderID",arguments.order.getOrderID());
+	    appliedPaymentMethods.addFilter("orderPaymentStatusType.systemCode","opstActive");
+	    return appliedPaymentMethods.getRecords(formatRecords = false);
 	}
 	
 	// Process: Order Payment

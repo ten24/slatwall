@@ -78,7 +78,7 @@ property name="calculatedCommissionableVolumeTotal" ormtype="integer";
 	property name="skuProductURL" persistent="false";
 	property name="skuImagePath" persistent="false";
 	property name="skuAdjustedPricing" persistent="false";
-
+	property name="kitFlagCode" ormtype="string";
 	
 //CUSTOM PROPERTIES END
 
