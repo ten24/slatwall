@@ -183,7 +183,6 @@ property name="personalVolume" ormtype="big_decimal";
 	property name="mainCreditCardExpirationDate" persistent="false";
 	property name="mainPromotionOnOrder" persistent="false";
 
-	
     property name="calculatedExtendedPersonalVolume" ormtype="big_decimal" hb_formatType="none";
     property name="calculatedExtendedTaxableAmount" ormtype="big_decimal" hb_formatType="none";
     property name="calculatedExtendedCommissionableVolume" ormtype="big_decimal" hb_formatType="none";
@@ -196,10 +195,6 @@ property name="personalVolume" ormtype="big_decimal";
     property name="calculatedExtendedRetailCommissionAfterDiscount" ormtype="big_decimal" hb_formatType="none";
     property name="calculatedExtendedProductPackVolumeAfterDiscount" ormtype="big_decimal" hb_formatType="none";
     property name="calculatedExtendedRetailValueVolumeAfterDiscount" ormtype="big_decimal" hb_formatType="none";
-    property name="returnsReceived" ormtype="string";
-    property name="kitFlagCode" ormtype="string";
-    property name="itemCategoryCode" ormtype="string";
-    
     property name="calculatedQuantityDelivered" ormtype="integer";
     property name="orderItemSkuBundles" singularname="orderItemSkuBundle" fieldType="one-to-many" type="array" fkColumn="orderItemID" cfc="OrderItemSkuBundle" inverse="true" cascade="all-delete-orphan";
 	
@@ -854,14 +849,6 @@ property name="personalVolume" ormtype="big_decimal";
 
 	// ============= START: Bidirectional Helper Methods ===================
 	
-	// Applied Price Group (many-to-one)
-	public void function setAppliedPriceGroup(required any appliedPriceGroup) {
-		variables.appliedPriceGroup = arguments.appliedPriceGroup;
-		if(isNew() or !arguments.appliedPriceGroup.hasAppliedOrderItem( this )) {
-			arrayAppend(arguments.appliedPriceGroup.getAppliedOrderItems(), this);
-		}
-	}
-	
 	public void function removeAppliedPriceGroup(any appliedPriceGroup) {
 		if(!structKeyExists(arguments, "appliedPriceGroup")) {
 			if(!structKeyExists(variables, "appliedPriceGroup")){
@@ -1251,6 +1238,9 @@ public void function refreshAmounts(){
         variables.productPackVolume = getCustomPriceFieldAmount('productPackVolume');
         variables.retailValueVolume = getCustomPriceFieldAmount('retailValueVolume');
     }
+    property name="returnsReceived" ormtype="string";
+    property name="kitFlagCode" ormtype="string";
+    property name="itemCategoryCode" ormtype="string";
     
     public any function getPersonalVolume(){
         if(!structKeyExists(variables,'personalVolume')){
