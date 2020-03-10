@@ -4,6 +4,7 @@ export class OrderTemplateService {
    private cachedGetOrderTemplatesResponse:any;
    private cachedGetAccountGiftCardsResponse:any;
    public canPlaceOrderFlag:boolean;
+   public mostRecentOrderTemplate:any;
    
    //@ngInject
    constructor(
@@ -112,8 +113,12 @@ export class OrderTemplateService {
         }
         
        this.publicService.doAction('getOrderTemplateDetails', data).then(res=>{
-           console.log(res)
-           if(res.orderTemplate && res.orderTemplate.canPlaceOrderFlag) this.canPlaceOrderFlag = res.orderTemplate.canPlaceOrderFlag;
+       
+           if(res.orderTemplate && res.orderTemplate.canPlaceOrderFlag){
+               this.canPlaceOrderFlag = res.orderTemplate.canPlaceOrderFlag;
+               this.mostRecentOrderTemplate = res.orderTemplate;
+           } 
+           
            deferred.resolve(res);
         }).catch((e) => {
 			deferred.reject(e);
