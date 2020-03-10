@@ -478,6 +478,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         param name="arguments.data.scheduleOrderNextPlaceDateTime" default= "#dateAdd('m',1,dateFormat(now()))#";
         param name="arguments.data.siteID" default="";
         param name="arguments.data.saveContext" default="";
+        param name="arguments.data.setOnSessionFlag" default=false;
         
         var isUpgradedFlag = arguments.data.saveContext == "upgradeFlow" ? true : false;
 
@@ -522,10 +523,14 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         }
         
         getHibachiScope().addActionResult( "public:order.create", orderTemplate.hasErrors() );
+        
         if(orderTemplate.hasErrors()) {
             addErrors(arguments.data, orderTemplate.getErrors());
         }
-
+        
+        if(arguments.data.setOnSessionFlag){
+            
+        }
         arguments.data['ajaxResponse']['orderTemplate'] = orderTemplate.getOrderTemplateID();
     }
     
