@@ -91,6 +91,7 @@ class MonatProductCardController {
 		const item = this.allProducts[index];
 		this.orderTemplateService.deleteOrderTemplateItem(item.orderItemID).then((result) => {
 			this.allProducts.splice(index, 1);
+			document.body.classList.remove('modal-open'); // If it's the last item, the modal will be deleted and not properly closed.
 			return result;
 		})
 		.catch((error)=>{
@@ -134,7 +135,7 @@ class MonatProductCardController {
 
 	
 	public launchQuickShopModal = () => {
-
+	
 		
 		this.ModalService.showModal({
 			component: 'monatProductModal',

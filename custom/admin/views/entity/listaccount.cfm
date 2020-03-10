@@ -80,6 +80,14 @@ Notes:
 		isSearchable=false,
 		isDeletable=true
 	})/>
+	
+	<cfset accountCollectionList.addDisplayProperty(
+	displayProperty='ownerAccount.firstName',
+	columnConfig={
+		isVisible=true,
+		isSearchable=false,
+		isDeletable=true
+	})/>
 
 	<cfset accountCollectionList.addDisplayProperty(
 	displayProperty='accountID',

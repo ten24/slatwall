@@ -54,7 +54,7 @@ component displayname="OrderTemplateItem" entityname="SlatwallOrderTemplateItem"
 	property name="orderTemplate" hb_populateEnabled="false" cfc="OrderTemplate" fieldtype="many-to-one" fkcolumn="orderTemplateID" hb_cascadeCalculate="true" fetch="join";
 	property name="temporaryFlag" ormtype="boolean" default="false";
 
-	property name="total" persistent="false" hb_formatType="currency"; 
+	property name="calculatedTotal" ormtype="big_decimal" hb_formatType="currency"; 
 
 	// Remote properties
 	property name="remoteID" ormtype="string";
@@ -64,21 +64,31 @@ component displayname="OrderTemplateItem" entityname="SlatwallOrderTemplateItem"
 	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";	
+
+	//non-persistents	
+	property name="total" persistent="false" hb_formatType="currency"; 
+	
 	//CUSTOM PROPERTIES BEGIN
-property name="commissionableVolumeTotal" persistent="false"; 
+property name="calculatedCommissionableVolumeTotal" ormtype="integer";
+	property name="calculatedPersonalVolumeTotal" ormtype="integer";
+
+	//non-persistent properties
+	property name="commissionableVolumeTotal" persistent="false"; 
 	property name="personalVolumeTotal" persistent="false"; 
 	property name="skuProductURL" persistent="false";
 	property name="skuImagePath" persistent="false";
 	property name="skuAdjustedPricing" persistent="false";
-
+	property name="kitFlagCode" ormtype="string";
 	
 //CUSTOM PROPERTIES END
 
 	public numeric function getTotal(){
+		
 		if(!structKeyExists(variables, 'total')){
 			variables.total = 0; 
 			
 			if(!isNull(getSku()) && !isNull(getQuantity())){
+				
 				var rewardSkuSalePriceDetails = getService('PromotionService').getOrderTemplateItemSalePricesByPromoRewardSkuCollection(this); 
 				variables.total += rewardSkuSalePriceDetails[this.getOrderTemplateItemID()]['salePrice'] * getQuantity();
 			} 	
@@ -116,7 +126,7 @@ public any function getSkuProductURL(){
 	
 	public any function getSkuAdjustedPricing(){
 			
-			var priceGroups = this.getOrderTemplate().getAccount().getPriceGroups();
+			var priceGroups = !isNull(this.getOrderTemplate().getAccount()) ? this.getOrderTemplate().getAccount().getPriceGroups() : [this.getOrderTemplate().getPriceGroup()];
 			var priceGroupCode = arrayLen(priceGroups) ? priceGroups[1].getPriceGroupCode() : "";
 			var priceGroupService = getHibachiScope().getService('priceGroupService');
 			var hibachiUtilityService = getHibachiScope().getService('hibachiUtilityService');
@@ -125,10 +135,10 @@ public any function getSkuProductURL(){
 			var retailPriceGroup = priceGroupService.getPriceGroupByPriceGroupCode(2);
 			var mpPriceGroup = priceGroupService.getPriceGroupByPriceGroupCode(1);
 			var sku = this.getSku();
-			var adjustedAccountPrice = sku.getPriceByCurrencyCode(currencyCode);
-			var adjustedVipPrice = sku.getPriceByCurrencyCode(currencyCode,1,[vipPriceGroup]);
-			var adjustedRetailPrice = sku.getPriceByCurrencyCode(currencyCode,1,[retailPriceGroup]);
-			var adjustedMPPrice = sku.getPriceByCurrencyCode(currencyCode,1,[MPPriceGroup]);
+			var adjustedAccountPrice = sku.getPriceByCurrencyCode(currencyCode) ?: 0;
+			var adjustedVipPrice = sku.getPriceByCurrencyCode(currencyCode,1,[vipPriceGroup]) ?: 0;
+			var adjustedRetailPrice = sku.getPriceByCurrencyCode(currencyCode,1,[retailPriceGroup]) ?: 0;
+			var adjustedMPPrice = sku.getPriceByCurrencyCode(currencyCode,1,[MPPriceGroup]) ?: 0;
 			var mpPersonalVolume = sku.getPersonalVolumeByCurrencyCode(currencyCode)?:0;
 			
 			// var formattedAccountPricing = hibachiUtilityService.formatValue_currency(adjustedAccountPrice, {currencyCode:currencyCode});

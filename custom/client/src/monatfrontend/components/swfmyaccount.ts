@@ -81,6 +81,35 @@ class swfAccountController {
             this.getOrderItemsByOrderID();
         }
 	}
+	
+	public addressVerificationCheck = ({addressVerification})=>{
+		if(addressVerification && addressVerification.hasOwnProperty('success') && !addressVerification.success){
+			this.launchAddressModal([addressVerification.address,addressVerification.suggestedAddress]);
+		}
+	}
+	
+	
+	public launchAddressModal(address: Array<object>):void{
+		this.ModalService.showModal({
+			component: 'addressVerification',
+			bodyClass: 'angular-modal-service-active',
+			bindings: {
+                suggestedAddresses: address //address binding goes here
+			},
+			preClose: (modal) => {
+				modal.element.modal('hide');
+				this.ModalService.closeModals();
+			},
+		})
+		.then((modal) => {
+			//it's a bootstrap element, use 'modal' to show it
+			modal.element.modal();
+			modal.close.then((result) => {});
+		})
+		.catch((error) => {
+			console.error('unable to open model :', error);
+		});
+	}
 
     public getAccount = () => {
         this.loading = true;
@@ -91,7 +120,7 @@ class swfAccountController {
         
         this.publicService.getAccount(true).then((response)=>{
             
-            this.accountData = response;
+            this.accountData = response.account;
             this.checkAndApplyAccountAge();
             this.userIsLoggedIn = true;
             this.accountPaymentMethods = this.accountData.accountPaymentMethods;

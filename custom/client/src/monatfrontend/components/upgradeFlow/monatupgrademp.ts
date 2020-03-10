@@ -21,6 +21,8 @@ class UpgradeMPController {
 	public currentDate: any;
 	public productRecordsCount:any;
 	
+	public loadingBundles: boolean = false;
+	
 	// @ngInject
 	constructor(public publicService, public observerService, public monatService) {}
 	
@@ -93,17 +95,20 @@ class UpgradeMPController {
 	}
 
 	public getStarterPacks = () => {
+		this.loadingBundles = false;
+		
 		this.publicService
 			.doAction('getStarterPackBundleStruct', { contentID: this.contentId })
 			.then((data) => {
 				this.bundles = data.bundles;
+				this.loadingBundles = true;
 			});
 	};
 
 	public submitStarterPack = () => {
         if ( this.selectedBundleID.length ) {
 			this.loading = true;
-        	this.monatService.selectStarterPackBundle( this.selectedBundleID ).then(data => {
+        	this.monatService.selectStarterPackBundle( this.selectedBundleID, 1, 1).then(data => {
         		this.loading = false;
             	this.observerService.notify('onNext');
         	})
@@ -136,10 +141,11 @@ class UpgradeMPController {
 		}
 	};
 
-	public selectBundle = (bundleID) => {
+	public selectBundle = ( bundleID, $event ) => {
+		$event.preventDefault();
+		
 		this.selectedBundleID = bundleID;
 		this.bundleHasErrors = false;
-		this.openedBundle = null;
 	};
 
 	private stripHtml = (html) => {

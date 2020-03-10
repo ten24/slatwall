@@ -94,6 +94,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="orderID" cascade="all-delete-orphan" inverse="true";
 	property name="orderItems" hb_populateEnabled="public" singularname="orderItem" cfc="OrderItem" fieldtype="one-to-many" fkcolumn="orderID" cascade="all-delete-orphan" inverse="true";
 	property name="appliedPromotions" singularname="appliedPromotion" cfc="PromotionApplied" fieldtype="one-to-many" fkcolumn="orderID" cascade="all-delete-orphan" inverse="true";
+	property name="appliedPromotionMessages" singularname="appliedPromotionMessage" cfc="PromotionMessageApplied" fieldtype="one-to-many" fkcolumn="orderID" cascade="all-delete-orphan" inverse="true";
 	property name="orderDeliveries" singularname="orderDelivery" cfc="OrderDelivery" fieldtype="one-to-many" fkcolumn="orderID" cascade="delete-orphan" inverse="true";
 	property name="orderFulfillments" hb_populateEnabled="public" singularname="orderFulfillment" cfc="OrderFulfillment" fieldtype="one-to-many" fkcolumn="orderID" cascade="all-delete-orphan" inverse="true";
 	property name="orderPayments" hb_populateEnabled="public" singularname="orderPayment" cfc="OrderPayment" fieldtype="one-to-many" fkcolumn="orderID" cascade="all-delete-orphan" inverse="true";
@@ -271,6 +272,7 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 
     property name="shipMethodCode" ormtype="string";
     property name="iceRecordNumber" ormtype="string";
+    property name="commissionPeriodCode" ormtype="string";
     property name="lastSyncedDateTime" ormtype="timestamp";
     property name="calculatedPaymentAmountDue" ormtype="big_decimal";
     property name="priceGroup" cfc="PriceGroup" fieldtype="many-to-one" fkcolumn="priceGroupID";
@@ -800,8 +802,10 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 	public numeric function getFulfillmentRefundPreTaxOnReferencingOrders(){
 		var fulfillmentRefundTotal = 0;
 		for(var referencingOrder in getReferencingOrders()){
-			fulfillmentRefundTotal += referencingOrder.getFulfillmentRefundPreTax();
-			fulfillmentRefundTotal -= referencingOrder.getFulfillmentChargeAfterDiscountPreTaxTotal();
+			if(!listFindNoCase('ostNotPlaced,ostCanceled',referencingOrder.getOrderStatusType().getSystemCode())){
+				fulfillmentRefundTotal += referencingOrder.getFulfillmentRefundPreTax();
+				fulfillmentRefundTotal -= referencingOrder.getFulfillmentChargeAfterDiscountPreTaxTotal();
+			}
 		}
 		return fulfillmentRefundTotal;
 	}
@@ -1110,14 +1114,14 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 	}
 	
 	public numeric function getTaxTotalNotRefunded(){
-		return getService('HibachiUtilityService').precisionCalculate(getTaxTotal() - getTaxTotalOnReturnOrders());
+		return getService('HibachiUtilityService').precisionCalculate(getTaxTotal() + getTaxTotalOnReturnOrders());
 	}
 	
 	public numeric function getTaxTotalOnReturnOrders(){
 		var taxTotalOnReturnOrders = 0;
 		
 		for(var referencingOrder in getReferencingOrders()){
-			if(listFindNoCase('otReturnOrder,otExchangeOrder,otRefundOrder',referencingOrder.getOrderType().getSystemCode())){
+			if(!listFindNoCase('ostNotPlaced,ostCanceled',referencingOrder.getOrderStatusType().getSystemCode()) && listFindNoCase('otReturnOrder,otExchangeOrder,otRefundOrder',referencingOrder.getOrderType().getSystemCode())){
 				taxTotalOnReturnOrders += referencingOrder.getTaxTotal();
 			}
 		}
@@ -1562,12 +1566,10 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 	public any function setAccount(required any account, boolean skipBidirectional=false) {
 		variables.account = arguments.account;
 		if(arguments.skipBidirectional){
-			return this; 
+			return this;
 		} 
-		if(isNew() or !arguments.account.hasOrder( this )) {
-			arrayAppend(arguments.account.getOrders(), this);
-		}
-		return this;
+		arguments.order = this;
+		return getService('AccountService').addOrderToAccount(argumentCollection=arguments);
 	}
 	public void function removeAccount(any account) {
 		if(!structKeyExists(arguments, "account")) {

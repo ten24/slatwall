@@ -12,16 +12,17 @@ export class MonatService {
 	public previouslySelectedStarterPackBundleSkuID:string;
 	public cachedOptions = {
 		frequencyTermOptions: <IOptions[]>null,
+		countryCodeOptions: <IOptions[]>null,
 	};
 
 	//@ngInject
 	constructor(public publicService, public $q, public $window, public requestService) {}
 
-	public getCart(refresh = false) {
+	public getCart(refresh = false, param = '') {
 		var deferred = this.$q.defer();
 		if (refresh || angular.isUndefined(this.cart)) {
 			this.publicService
-				.getCart(refresh)
+				.getCart(refresh, param)
 				.then((data) => {
 					this.cart = data;
 					deferred.resolve(this.cart);
@@ -94,11 +95,15 @@ export class MonatService {
 		return this.publicService.doAction('addEnrollmentFee');
 	}
 	
-	public selectStarterPackBundle(skuID: string, quantity: number = 1) {
+	public selectStarterPackBundle(skuID: string, quantity: number = 1, upgradeFlow = 0) {
 		let payload = {
 			skuID: skuID,
 			quantity: quantity,
 		};
+		
+		if(upgradeFlow){
+			payload['upgradeFlowFlag'] = 1;
+		}
 		
 		if(this.previouslySelectedStarterPackBundleSkuID) {
 			payload['previouslySelectedStarterPackBundleSkuID'] = this.previouslySelectedStarterPackBundleSkuID;
@@ -194,5 +199,33 @@ export class MonatService {
 		
 		this.$window.location.href = redirectUrl;
 	}
+
+    public countryCodeOptions = (refresh = false)=>{
+        var deferred = this.$q.defer();
+		if (refresh || !this.cachedOptions.countryCodeOptions) {
+			this.publicService
+				.getCountries()
+				.then((data) => {
+					this.cachedOptions.countryCodeOptions = data.countryCodeOptions;
+					deferred.resolve(this.cachedOptions.countryCodeOptions);
+				});
+		} else {
+			deferred.resolve(this.cachedOptions.countryCodeOptions);
+		}
+		return deferred.promise;
+    }
+    
+    /**
+    	This method gets the value of a cookie by its name
+    	Example cookie: "flexshipID=01234567" => "01234567"
+    **/
+    
+    public getCookieValueByCookieName(name:string):string{
+		let cookieString = document.cookie;
+		let cookieArray = cookieString.split(';')
+		let cookieValueArray = <Array<string>>cookieArray.filter( el => el.search(name) > -1 );
+		if(!cookieValueArray.length) return '';
+    	return  cookieValueArray[0].substr(cookieValueArray[0].indexOf('=') + 1);
+    }
 
 }

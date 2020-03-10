@@ -27,7 +27,8 @@ class SWFWishlistController {
         public $scope,
         public observerService,
         public $timeout,
-        public orderTemplateService
+        public orderTemplateService,
+        public monatService
     ){
         if(!this.pageRecordsShow){
             this.pageRecordsShow = 6;
@@ -89,6 +90,7 @@ class SWFWishlistController {
         return this.orderTemplateService.addOrderTemplateItemAndCreateWishlist(this.wishlistTemplateName, this.sku, quantity).then(result=>{
             this.loading = false;
             this.getAllWishlists();
+            this.onAddItemSuccess(this.sku);
             this.observerService.attach(this.successfulAlert,"createWishlistSuccess");
             return result;
         });
@@ -153,6 +155,10 @@ class SWFWishlistController {
         if(!this.close) return;
      	this.close(null); // close, but give 100ms to animate
     };
+    
+    public redirectPageToShop(){
+        this.monatService.redirectToProperSite('/shop')
+    }
     
 }
 

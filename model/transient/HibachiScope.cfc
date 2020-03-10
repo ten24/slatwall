@@ -445,7 +445,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 		var availablePropertyList = "";
 		
 		if(arguments.cartDataOptions=='full' || listFind(arguments.cartDataOptions,'order')){
-			availablePropertyList &="orderID,orderOpenDateTime,calculatedTotal,total,subtotal,taxTotal,VATTotal,fulfillmentTotal,fulfillmentChargeAfterDiscountTotal,promotionCodeList,discountTotal,orderAndItemDiscountAmountTotal, fulfillmentDiscountAmountTotal, orderRequirementsList,orderNotes,totalItemQuantity,";
+			availablePropertyList &="orderID,orderOpenDateTime,calculatedTotal,total,subtotal,taxTotal,VATTotal,fulfillmentTotal,fulfillmentChargeAfterDiscountTotal,promotionCodeList,discountTotal,orderAndItemDiscountAmountTotal, fulfillmentDiscountAmountTotal, orderRequirementsList,orderNotes,totalItemQuantity,messages,";
 		}
 		
 		//orderItemData
@@ -480,7 +480,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 				orderPayments.orderPaymentID,orderPayments.amount,orderPayments.currencyCode,orderPayments.creditCardType,orderPayments.expirationMonth,orderPayments.expirationYear,orderPayments.nameOnCreditCard, orderPayments.creditCardLastFour,orderPayments.purchaseOrderNumber,
 				orderPayments.billingAccountAddress.accountAddressID,orderPayments.billingAddress.addressID,orderPayments.billingAddress.name,orderPayments.billingAddress.streetAddress,orderPayments.billingAddress.street2Address,orderPayments.billingAddress.city,orderPayments.billingAddress.stateCode,orderPayments.billingAddress.postalCode,orderPayments.billingAddress.countrycode,
 				orderPayments.paymentMethod.paymentMethodID,orderPayments.paymentMethod.paymentMethodName, orderPayments.giftCard.balanceAmount, orderPayments.giftCard.giftCardCode, promotionCodes.promotionCode,promotionCodes.promotion.promotionName,eligiblePaymentMethodDetails.paymentMethod.paymentMethodName,eligiblePaymentMethodDetails.paymentMethod.paymentMethodType,eligiblePaymentMethodDetails.paymentMethod.paymentMethodID,eligiblePaymentMethodDetails.maximumAmount,
-				orderNotes
+				orderNotes,orderPayments.accountPaymentMethod.accountPaymentMethodID
 			";
 		}
 		
@@ -498,7 +498,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 		return availablePropertyList;
 	}
 	
-	public any function getCartData(string propertyList,string cartDataOptions="full") {
+	public any function getCartData(string propertyList,string cartDataOptions="full", boolean updateOrderAmounts) {
 		
 		var availablePropertyList = getAvailableCartPropertyList(arguments.cartDataOptions);
 		availablePropertyList = ReReplace(availablePropertyList,"[[:space:]]","","all");
@@ -511,7 +511,11 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
         if(!structKeyExists(arguments,"propertyList") || trim(arguments.propertyList) == "") {
             arguments.propertyList = availablePropertyList;
         }   
-
+        
+        if ( !isNull( arguments.updateOrderAmounts ) && arguments.updateOrderAmounts ) {
+			getService('OrderService').processOrder( getCart(), {}, 'updateOrderAmounts' );
+        }
+        
         var data = getService('hibachiUtilityService').buildPropertyIdentifierListDataStruct(getCart(), arguments.propertyList, availablePropertyList);
 
         //only need to work if order fulfillment data exists

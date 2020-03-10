@@ -47,7 +47,6 @@ Notes:
 
 --->
 <cfcomponent extends="HibachiService" persistent="false" accessors="true" output="false">
-
 	<cfproperty name="templateService" />
 	<cfproperty name="hibachiEntityQueueDAO" />
 	<cfproperty name="hibachiUtilityService" />
@@ -205,6 +204,7 @@ Notes:
 				</cfif>
 			</cfloop>
 		</cfif>
+		
 		<cfif directoryExists("#getApplicationValue('applicationRootMappingPath')#/custom/templates/email/#arguments.object#")>
 			<cfdirectory action="list" directory="#getApplicationValue('applicationRootMappingPath')#/custom/templates/email/#arguments.object#" name="dir" />
 			<cfloop query="dir">
@@ -299,12 +299,12 @@ Notes:
 
 				var templateFileResponse = "";
 				var templatePath = getTemplateService().getTemplateFileIncludePath(templateType="email", objectName=emailTemplate.getEmailTemplateObject(), fileName=emailTemplate.getEmailTemplateFile());
-
 				local.email = arguments.email;
 				local[ emailTemplate.getEmailTemplateObject() ] = templateObject;
 				local.emailData["relatedObject"] = mid(templateObject.getEntityName(), 9, len(templateObject.getEntityName())-8);
 				local.emailData["relatedObjectID"] = templateObject.getPrimaryIDValue();
-				local["emailTemplate"] = emailTemplate;
+				local.emailTemplate = emailTemplate;
+				local.emailTemplateObject = templateObject;
 
 				if(len(templatePath)) {
 					savecontent variable="templateFileResponse" {
@@ -332,7 +332,6 @@ Notes:
 				arguments.email.setEmailSubject( getHibachiUtilityService().replaceStringTemplate(template=nullReplace(arguments.email.getEmailSubject(), ""), object=emailData, formatValues=true) );
 				arguments.email.setEmailBodyHTML( getHibachiUtilityService().replaceStringTemplate(template=nullReplace(arguments.email.getEmailBodyHTML(), ""), object=emailData, formatValues=true) );
 				arguments.email.setEmailBodyText( getHibachiUtilityService().replaceStringTemplate(template=nullReplace(arguments.email.getEmailBodyText(), ""), object=emailData, formatValues=true) );
-
 				arguments.email.setLogEmailFlag( emailTemplate.getLogEmailFlag() );
 			}
 

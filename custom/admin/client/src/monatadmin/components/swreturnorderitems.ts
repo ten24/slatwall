@@ -165,7 +165,7 @@ class SWReturnOrderItemsController{
        orderItem = this.setValuesWithinConstraints(orderItem);
 
        orderItem.refundTotal = orderItem.returnQuantity * orderItem.refundUnitPrice;
-       if(orderItem.returnQuantity != 0){
+       if(orderItem.returnQuantity > 0){
            orderItem.refundUnitPV = Math.round(orderItem.refundTotal * orderItem.pvTotal * 100 / (orderItem.total * orderItem.returnQuantity)) / 100;
            orderItem.refundPVTotal = orderItem.refundUnitPV * orderItem.returnQuantity;
            orderItem.refundUnitCV = Math.round(orderItem.refundTotal * orderItem.cvTotal * 100 / (orderItem.total * orderItem.returnQuantity)) / 100;
@@ -189,8 +189,9 @@ class SWReturnOrderItemsController{
         }
        
        if((orderItem.refundTotal > maxRefund)){
-           orderItem.refundUnitPrice = Math.max(maxRefund,0) / orderItem.returnQuantity;
+           orderItem.refundUnitPrice = (Math.max(maxRefund,0) / orderItem.returnQuantity);
            orderItem.refundTotal = Number((orderItem.refundUnitPrice * orderItem.quantity).toFixed(2));
+           orderItem.refundUnitPrice = Number(orderItem.refundUnitPrice.toFixed(2));
            this.updateOrderItem(orderItem,maxRefund);
        }else{
             this.updateTotals();
@@ -200,7 +201,7 @@ class SWReturnOrderItemsController{
     private setValuesWithinConstraints = (orderItem)=>{
         var returnQuantityMaximum = orderItem.returnQuantityMaximum;
         
-        if (orderItem.returnQuantity == null || orderItem.returnQuantity == undefined) {
+        if (orderItem.returnQuantity == null || orderItem.returnQuantity == undefined || orderItem.returnQuantity < 0) {
             orderItem.returnQuantity = 0;
         }
         
@@ -209,7 +210,7 @@ class SWReturnOrderItemsController{
             orderItem.returnQuantity = returnQuantityMaximum;
         }
         
-        if (orderItem.refundUnitPrice == null || orderItem.refundUnitPrice == undefined) {
+        if (orderItem.refundUnitPrice == null || orderItem.refundUnitPrice == undefined || orderItem.refundUnitPrice < 0) {
             orderItem.refundUnitPrice = 0;
         }
         if(this.orderType == 'otRefundOrder'){
@@ -280,7 +281,7 @@ class SWReturnOrderItemsController{
            this.fulfillmentRefundAmount = 0;
        }
        if(this.fulfillmentRefundAmount > 0){
-            this.fulfillmentRefundTaxAmount = this.fulfillmentTaxAmount / this.fulfillmentRefundAmount * this.maxFulfillmentRefundAmount;
+            this.fulfillmentRefundTaxAmount = this.fulfillmentTaxAmount * this.fulfillmentRefundAmount / this.maxFulfillmentRefundAmount;
        }else{
            this.fulfillmentRefundTaxAmount = 0;
        }
@@ -288,7 +289,9 @@ class SWReturnOrderItemsController{
    }
    
    public validateAmount = (orderPayment)=>{
-
+        if(orderPayment.amount < 0){
+            orderPayment.amount = 0;
+        }
        const paymentTotal = this.orderPayments.reduce((total:number,payment:any)=>{
            if(payment != orderPayment){
                if(payment.paymentMethodType == 'giftCard'){

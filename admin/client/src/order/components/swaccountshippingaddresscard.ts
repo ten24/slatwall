@@ -24,9 +24,11 @@ class SWAccountShippingAddressCardController{
 
 	constructor(public $hibachi,
 				public observerService,
-				public rbkeyService
+				public rbkeyService,
+				public ModalService
 	){
 		this.observerService.attach(this.updateShippingInfo, 'OrderTemplateUpdateShippingSuccess');
+		this.observerService.attach(this.addressVerificationCheck, 'OrderTemplateUpdateShippingSuccess');
 		this.observerService.attach(this.updateShippingInfo, 'OrderTemplateUpdateBillingSuccess');
 		
 		if(this.shippingAccountAddress != null && this.shippingMethod != null){
@@ -40,6 +42,44 @@ class SWAccountShippingAddressCardController{
 		}
 	}
 	
+	public addressVerificationCheck = ({shippingAccountAddress})=>{
+		if(!shippingAccountAddress){
+			return;
+		}
+		try{
+			let addressVerification = JSON.parse(shippingAccountAddress.address_verificationJson);
+			if(addressVerification && addressVerification.hasOwnProperty('success') && !addressVerification.success){
+				this.launchAddressModal([addressVerification.address,addressVerification.suggestedAddress]);
+			}
+		}catch(e){
+			console.log(e);
+		}
+	}
+	
+	public launchAddressModal(addresses: Array<object>):void{
+		this.ModalService.showModal({
+			component: 'swAddressVerification',
+			bodyClass: 'angular-modal-service-active',
+			bindings: {
+                suggestedAddresses: addresses, //address binding goes here
+                sAction:this.updateShippingInfo,
+                propertyIdentifiersList:'addressID,firstName,lastName,streetAddress,street2Address,city,stateCode,postalCode,countryCode'
+			},
+			preClose: (modal) => {
+				modal.element.modal('hide');
+				this.ModalService.closeModals();
+			},
+		})
+		.then((modal) => {
+			//it's a bootstrap element, use 'modal' to show it
+			modal.element.modal();
+			modal.close.then((result) => {});
+		})
+		.catch((error) => {
+			console.error('unable to open model :', error);
+		});
+	}
+	
 	public updateShippingInfo = (data) =>{
 		if( data['account.accountAddressOptions'] != null){
 			this.accountAddressOptions = data['account.accountAddressOptions'];
@@ -49,6 +89,12 @@ class SWAccountShippingAddressCardController{
 			this.shippingAccountAddress = data.shippingAccountAddress;
 			this.shippingMethod = data.shippingMethod; 
 			this.modalButtonText = this.rbkeyService.rbKey('define.update')  + ' ' + this.title;
+		}
+		
+		if(data.addressID){
+			for(let key in data){
+				this.shippingAccountAddress[`address_${key}`] = data[key];
+			}
 		}
 
 	}

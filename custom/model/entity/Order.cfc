@@ -61,6 +61,7 @@ component {
 
     property name="shipMethodCode" ormtype="string";
     property name="iceRecordNumber" ormtype="string";
+    property name="commissionPeriodCode" ormtype="string";
     property name="lastSyncedDateTime" ormtype="timestamp";
     property name="calculatedPaymentAmountDue" ormtype="big_decimal";
     property name="priceGroup" cfc="PriceGroup" fieldtype="many-to-one" fkcolumn="priceGroupID";

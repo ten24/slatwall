@@ -10,6 +10,7 @@ class MonatOrderItemsController {
 	
 	//@ngInject
 	constructor(public monatService, public orderTemplateService, public publicService, public observerService) {
+		this.observerService.attach(this.getOrderItems,'ownerAccountSelected');
 	}
 
 	public $onInit = () => {
@@ -17,7 +18,8 @@ class MonatOrderItemsController {
 		
 		// cached account
 		this.publicService.getAccount().then(result =>{
-			if(!result.priceGroups.length || result.priceGroups[0].priceGroupCode == 2){
+	
+			if(!result.account.priceGroups.length || result.account.priceGroups[0].priceGroupCode == 2){
 				this.getUpgradedOrderSavings();
 				this.observerService.attach(this.getUpgradedOrderSavings, 'updateOrderItemSuccess'); 
 				this.observerService.attach(this.getUpgradedOrderSavings, 'removeOrderItemSuccess');
@@ -29,9 +31,9 @@ class MonatOrderItemsController {
 
 	private getOrderItems = () => {
 		this.monatService.getCart().then( data => {
-			if ( undefined !== data.orderItems ) {
-				this.orderItems = data.orderItems;
-				this.aggregateOrderItems( data.orderItems );
+			if ( undefined !== data.cart.orderItems ) {
+				this.orderItems = data.cart.orderItems;
+				this.aggregateOrderItems( data.cart.orderItems );
 			}
 		});
 	}
@@ -44,11 +46,17 @@ class MonatOrderItemsController {
 	}
 	
 	public aggregateOrderItems = orderItems => {
+		this.todaysOrder = [];
+		this.starterKits = [];
+		this.starterKits = [];
+		
 		orderItems.forEach( item => {
 			var productType = item.sku.product.productType.productTypeName;
-			if ( 'Starter Kit' === productType || 'Product Pack' === productType ) {
+			var systemCode = item.sku.product.productType.systemCode;
+			
+			if ( 'Starter Kit' === productType || 'ProductPack' === systemCode ) {
 				this.starterKits.push( item );
-			} else if('Enrollment Fee - MP' === productType || 'Enrollment Fee - VIP' === productType){
+			} else if('Enrollment Fee - MP' === productType || 'VIPCustomerRegistr' === systemCode){
 				this.orderFees = item.extendedUnitPriceAfterDiscount;
 				this.todaysOrder.push( item );
 			}	else {

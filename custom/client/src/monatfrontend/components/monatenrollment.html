@@ -1,8 +1,18 @@
-<header class="step-header">
+<header class="site-header d-flex flex-column">
 	<div class="container">
-		<a href="#" class="logo">
-			<img src="/themes/monat/assets/images/logo.svg"  alt="Monat logo">
-		</a>
+		<div class="header-row">
+			<div class="left-nav">
+				
+			</div>
+			<a href="#" class="logo">
+				<img src="/themes/monat/assets/images/logo.svg"  alt="Monat logo">
+			</a>			
+			<div class="right-nav">
+				<div class="row justify-content-end">
+					<hybrid-cart is-enrollment="true"></hybrid-cart>
+				</div>			
+			</div>			
+		</div>
 	</div>
 </header>
 
@@ -14,14 +24,14 @@
     
 <footer class="steps-footer d-flex flex-column">
 	<div class="w-100 d-flex justify-content-between align-items-center">
+		<!-- Back button --->
 		<div class="d-flex align-items-center">
 			<a 
 				href 
 				data-ng-click="monatEnrollment.previous()" 
 				class="back d-inline-block" 
 				ng-class="{ 
-					invisible: monatEnrollment.position == 0, 
-					disabled: monatEnrollment.position == 1 
+					invisible: (monatEnrollment.position == 0 ), 
 				}"
 			>
 				<span class="last" sw-rbkey="'frontend.global.back'"></span>
@@ -37,13 +47,46 @@
 			</span>
 		</div>
 		
-		<span class="step-status">
-			<span sw-rbkey="'frontend.global.step'"></span> 
-			{{monatEnrollment.position + 1}} 
-			<span sw-rbkey="'frontend.global.of'"></span> 
-			{{monatEnrollment.steps.length}} 
-		</span>
+		<!----Step icon indicators --->
+		<div class="step-status row w-50 text-center align-items-end">
+			<div 
+				class="col mt-1"
+				ng-style="{ 'opacity' : (monatEnrollment.currentStepName == 'todaysOrder' || monatEnrollment.currentStepName == undefined ) ? '100%' : '50%' }"
+			>
+				<i class="fal fa-check fa-2x"></i>	
+				<p class="mb-1" sw-rbkey="'frontend.cart.todaysOrder'"></p>
+			</div>
+			
+			<div 
+				class="col"
+				ng-style="{ 
+					'opacity' : (monatEnrollment.currentStepName == 'shopIntro' || monatEnrollment.currentStepName == 'orderListing' ||  monatEnrollment.currentStepName == 'subscription' ) ? '100%' : '50%' 
+				}"
+			>
+				<i class="fas fa-truck fa-2x"></i>	
+				<p class="mb-1" sw-rbkey="'entity.OrderTemplate'"></p>
+			</div>
+			
+			<div 
+				class="col"
+				ng-style="{ 'opacity' : (monatEnrollment.currentStepName == 'createAccount' ) ? '100%' : '50%' }"
+			>
+				<i class="fas fa-user-plus fa-2x"></i>
+				<p class="mb-1" sw-rbkey="'frontend.createAccount.createAccountBtn'"></p>
+			</div>
+			
+			<div class="col">
+				<i class="fas fa-cash-register fa-2x"></i>
+				<p class="mb-1" sw-rbkey="'frontend.global.checkout'"></p>
+			</div>
+			
+			<div class="col">
+				<i class="fas fa-user-friends fa-2x"></i>
+				<p class="mb-1" sw-rbkey="'frontend.global.sponsor'"></p>
+			</div>
+		</div>
 		
+	<!-----NEXT BUTTONS ---->
 		<div ng-if="monatEnrollment.canPlaceCartOrder">
 			<button 
 				style="z-index: 1" 
@@ -78,16 +121,6 @@
 		</div>
 
 		<span ng-if="monatEnrollment.position + 1 == monatEnrollment.steps.length"></span>
-	</div>
-	
-	<!--- Mini cart ---> 	
-	<div ng-if="monatEnrollment.cart.totalItemQuantity > 0 && monatEnrollment.showMiniCart" class="w-100">
-	    <monat-mini-cart type="enrollment" custom-style="monatEnrollment.style" cart="monatEnrollment.cart"></monat-mini-cart>		
-	</div>
-	
-	<!--- Flexship cart ---> 	
-	<div ng-if="monatEnrollment.showFlexshipCart" class="w-100">
-		<monat-flexship-cart-container context="enrollment"></monat-flexship-cart-container>	
 	</div>
 
 </footer>

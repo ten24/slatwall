@@ -1,8 +1,7 @@
-
 component extends="Slatwall.model.service.OrderService" {
     variables.customPriceFields = 'personalVolume,taxableAmount,commissionableVolume,retailCommission,productPackVolume,retailValueVolume';
     public string function getCustomAvailableProperties() {
-        return 'orderItems.personalVolume,orderItems.calculatedExtendedPersonalVolume,calculatedPersonalVolumeSubtotal,currencyCode,orderItems.skuProductURL';
+        return 'orderItems.personalVolume,orderItems.calculatedExtendedPersonalVolume,calculatedPersonalVolumeSubtotal,currencyCode,orderItems.skuProductURL,billingAddress,appliedPromotionMessages.message,appliedPromotionMessages.qualifierProgress,appliedPromotionMessages.promotionName,appliedPromotionMessages.promotionRewards.amount,appliedPromotionMessages.promotionRewards.amountType,appliedPromotionMessages.promotionRewards.rewardType';
     }
     
     /**
@@ -12,11 +11,12 @@ component extends="Slatwall.model.service.OrderService" {
      * @param currentPage optional
      * return struct of orders and total count
      **/
-	public any function getAllCartsAndQuotesOnAccount(struct data={}) {
+	public any function getAllCartsAndQuotesOnAccount(required any account, struct data={}) {
         param name="arguments.data.currentPage" default=1;
-        param name="arguments.data.pageRecordsShow" default=5;
+
+        param name="arguments.data.pageRecordsShow" default= getHibachiScope().setting('GLOBALAPIPAGESHOWLIMIT');
         param name="arguments.data.accountID" default= getHibachiSCope().getAccount().getAccountID();
-        
+
 		var ordersList = this.getOrderCollectionList();
 
 		ordersList.addOrderBy('orderOpenDateTime|DESC');
@@ -26,12 +26,12 @@ component extends="Slatwall.model.service.OrderService" {
 			orderNumber,
 			orderStatusType.typeName
 		');
-		
-		ordersList.addFilter( 'account.accountID', arguments.data.accountID, '=');
+
+		ordersList.addFilter( 'account.accountID', arguments.account.getAccountID() );
 		ordersList.addFilter( 'orderStatusType.systemCode', 'ostNotPlaced');
 		ordersList.setPageRecordsShow(arguments.data.pageRecordsShow);
 		ordersList.setCurrentPageDeclaration(arguments.data.currentPage); 
-		
+
 		return { "ordersOnAccount":  ordersList.getPageRecords(formatRecords=false), "recordsCount": ordersList.getRecordsCount()}
 	}
     
@@ -42,18 +42,17 @@ component extends="Slatwall.model.service.OrderService" {
      * @param currentPage optional
      * return struct of orders and total count
      **/
-	public any function getAllOrderFulfillmentsOnAccount(struct data={}) {
+	public any function getAllOrderFulfillmentsOnAccount(required any account, struct data={}) {
         param name="arguments.data.currentPage" default=1;
-        param name="arguments.data.pageRecordsShow" default=5;
-        param name="arguments.data.accountID" default= getHibachiSCope().getAccount().getAccountID();
-        
+        param name="arguments.data.pageRecordsShow" default= getHibachiScope().setting('GLOBALAPIPAGESHOWLIMIT');
+
 		var ordersList = this.getOrderFulfillmentCollectionList();
 		ordersList.setDisplayProperties(' orderFulfillmentID, estimatedShippingDate, pickupDate, order.orderID, order.calculatedTotalItemQuantity, order.orderNumber, orderFulfillmentStatusType.typeName');
-		ordersList.addFilter( 'order.account.accountID', arguments.data.accountID, '=');
+		ordersList.addFilter( 'order.account.accountID', arguments.account.getAccountID() );
 		ordersList.addFilter( 'order.orderStatusType.systemCode', 'ostNotPlaced', '!=');
 		ordersList.setPageRecordsShow(arguments.data.pageRecordsShow);
-		ordersList.setCurrentPageDeclaration(arguments.data.currentPage); 
-		
+		ordersList.setCurrentPageDeclaration(arguments.data.currentPage);
+
 		return { "ordersOnAccount":  ordersList.getPageRecords(formatRecords=false), "recordsCount": ordersList.getRecordsCount()}
 	}
 	
@@ -64,18 +63,17 @@ component extends="Slatwall.model.service.OrderService" {
      * @param currentPage optional
      * return struct of orders and total count
      **/
-	public any function getAllOrderDeliveryOnAccount(struct data={}) {
+	public any function getAllOrderDeliveryOnAccount(required any account, struct data={}) {
         param name="arguments.data.currentPage" default=1;
         param name="arguments.data.pageRecordsShow" default=5;
-        param name="arguments.data.accountID" default= getHibachiSCope().getAccount().getAccountID();
         
 		var ordersList = this.getOrderDeliveryCollectionList();
 		ordersList.setDisplayProperties(' orderDeliveryID, invoiceNumber, trackingNumber, order.orderID, order.calculatedTotalItemQuantity, order.orderNumber, orderDeliveryStatusType.typeName');
-		ordersList.addFilter( 'order.account.accountID', arguments.data.accountID, '=');
+		ordersList.addFilter( 'order.account.accountID', arguments.account.getAccountID() );
 		ordersList.addFilter( 'order.orderStatusType.systemCode', 'ostNotPlaced', '!=');
 		ordersList.setPageRecordsShow(arguments.data.pageRecordsShow);
-		ordersList.setCurrentPageDeclaration(arguments.data.currentPage); 
-		
+		ordersList.setCurrentPageDeclaration(arguments.data.currentPage);
+
 		return { "ordersOnAccount":  ordersList.getPageRecords(formatRecords=false), "recordsCount": ordersList.getRecordsCount()}
 	}
     
@@ -88,8 +86,8 @@ component extends="Slatwall.model.service.OrderService" {
             account = getService('AccountService').newAccount();
         }
         for(var priceField in variables.customPriceFields){
+            
             if(isNull(arguments.newOrderItem.invokeMethod('get#priceField#'))){
-            	
             	var customPriceByCurrencyCodeArguments  = {
             		'customPriceField' : priceField, 
             		'currencyCode' : arguments.newOrderItem.getOrder().getCurrencyCode(), 
@@ -103,9 +101,9 @@ component extends="Slatwall.model.service.OrderService" {
 					customPriceByCurrencyCodeArguments['priceGroups'] = [];
 					arrayAppend(customPriceByCurrencyCodeArguments['priceGroups'], arguments.newOrderItem.getAppliedPriceGroup());
 				}
-            
                 arguments.newOrderItem.invokeMethod('set#priceField#',{1=sku.getCustomPriceByCurrencyCode(argumentCollection=customPriceByCurrencyCodeArguments)});
             }
+            
         }
         
         return arguments.newOrderItem;
@@ -164,6 +162,7 @@ component extends="Slatwall.model.service.OrderService" {
 		    }
 		}
 		
+
 		//grab and get billing-account-address from account
 		if(!arguments.orderTemplate.hasBillingAccountAddress() ) {
 		 	if(account.hasPrimaryBillingAddress()) {
@@ -172,8 +171,13 @@ component extends="Slatwall.model.service.OrderService" {
     		    arguments.orderTemplate.setBillingAccountAddress(account.getPrimaryAddress());
     		}
 		}
+		
+		if( arguments.context != "upgradeFlow"){
+			arguments.orderTemplate.setAccount(account);
+		}else if(!isNull(arguments.processObject.getPriceGroup())){
+			arguments.orderTemplate.setPriceGroup(arguments.processObject.getPriceGroup());
+		}
 	
-		arguments.orderTemplate.setAccount(account);
 		arguments.orderTemplate.setSite( arguments.processObject.getSite() );
 		arguments.orderTemplate.setCurrencyCode( arguments.processObject.getCurrencyCode() );
 		arguments.orderTemplate.setOrderTemplateStatusType(getTypeService().getTypeBySystemCode('otstDraft'));
@@ -230,6 +234,8 @@ component extends="Slatwall.model.service.OrderService" {
 	                returnOrderItem.invokeMethod('set#priceField#',{1=price});
 	            } 
 	        }
+        }else{
+        	returnOrderItem.setTaxableAmount(returnOrderItem.getPrice());
         }
         return returnOrderItem;
     }
@@ -329,6 +335,10 @@ component extends="Slatwall.model.service.OrderService" {
 			var transientOrder = getService('OrderService').newTransientOrderFromOrderTemplate( currentOrderTemplate, false );  
 			//only update amounts if we can
 			transientOrder = this.saveOrder( order=transientOrder, updateOrderAmounts=hasInfoForFulfillment );
+			transientOrderItems = transientOrder.getOrderItems();
+			for(var orderItem in transientOrderItems){
+				orderItem.updateCalculatedProperties(); 
+			}
 			transientOrder.updateCalculatedProperties(); 	
 			getHibachiDAO().flushORMSession();
 		
@@ -381,12 +391,13 @@ component extends="Slatwall.model.service.OrderService" {
 	public numeric function getComissionableVolumeTotalForOrderTemplate(required any orderTemplate){
 		return getOrderTemplateOrderDetails(argumentCollection=arguments)['commissionableVolumeTotal'];	
 	}
-    
+	
 	public any function getOrderTemplateItemCollectionForAccount(required struct data, any account=getHibachiScope().getAccount()){
         param name="arguments.data.pageRecordsShow" default=5;
         param name="arguments.data.currentPage" default=1;
         param name="arguments.data.orderTemplateID" default="";
 		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; 
+		param name="arguments.data.nullAccountFlag" default=false;
 		
 		var orderTemplateItemCollection = this.getOrderTemplateItemCollectionList();
 		
@@ -399,11 +410,15 @@ component extends="Slatwall.model.service.OrderService" {
 		
 		orderTemplateItemCollection.addFilter('orderTemplate.orderTemplateType.typeID', arguments.data.orderTemplateTypeID);
 		orderTemplateItemCollection.addFilter('orderTemplate.orderTemplateID', arguments.data.orderTemplateID);
-		orderTemplateItemCollection.addFilter('orderTemplate.account.accountID', arguments.account.getAccountID());
+		if(arguments.data.nullAccountFlag){
+			orderTemplateItemCollection.addFilter('orderTemplate.account', 'NULL', 'IS');
+		}else{
+			orderTemplateItemCollection.addFilter('orderTemplate.account.accountID', arguments.account.getAccountID());
+		}
 
 		return orderTemplateItemCollection;	
 	} 
-	
+    
     private void function updateOrderStatusBySystemCode(required any order, required string systemCode) {
         var orderStatusType = "";
         var orderStatusHistory = {};
@@ -416,30 +431,46 @@ component extends="Slatwall.model.service.OrderService" {
         }
         
         // All new sales and return orders will appear as "Entered"
-        if (arguments.systemCode == 'ostNew') {
-            arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="1")); // "Entered"
-            orderStatusHistory.setOrderStatusHistoryType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="1"));
-            
-        } else if (arguments.systemCode == 'ostCanceled') {
+        if (arguments.systemCode == 'ostCanceled') {
             arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="9")); // "Deleted"
             orderStatusHistory.setOrderStatusHistoryType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="9"));
        
         // Sales Orders
         } else if (arguments.order.getOrderType().getSystemCode() == 'otSalesOrder') {
-            if (arguments.systemCode == 'ostProcessing') {
-                
-                //if the order is paid but not shipped, set to Paid status
-                if (arguments.order.getPaymentAmountDue() <= 0 && arguments.order.getQuantityUndelivered() > 0){
+            if (arguments.systemCode == 'ostNew') {
+			
+
+				//if the order is paid don't set to new, otherwise set to new (case of flexship)	
+				if ( !isNull(arguments.order.getOrderTemplate()) ||  
+					 ( arguments.order.getPaymentAmountDue() <= 0 && arguments.order.getQuantityUndelivered() > 0 )
+				){
                     //the order is paid but not shipped
-                    arguments.order.setOrderStatusType(getTypeService().getTypeByTypeCode( typeCode="paid"));
-                    orderStatusHistory.setOrderStatusHistoryType(getTypeService().getTypeByTypeCode( typeCode="paid"));
-                }else{
-                    // set to processing
-                    arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="2"));
-                    orderStatusHistory.setOrderStatusHistoryType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="2"));
-                }
-                
-            } else if (arguments.systemCode == 'ostClosed') {
+                    var type = getTypeService().getTypeByTypeCode( typeCode="paid");
+				} 	
+
+				if(!isNull(type)){	
+					arguments.order.setOrderStatusType(type); 
+					orderStatusHistory.setOrderStatusHistoryType(type);
+				}	
+
+				
+			}else if (arguments.systemCode == 'ostProcessing') {
+			
+				//Set to processing status
+                arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="2"));
+                orderStatusHistory.setOrderStatusHistoryType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="2"));
+					
+			}else if (arguments.systemCode == 'ostPaid') {
+
+            	//If its paid and its shipped, set it to shipped.
+            	if (arguments.order.getPaymentAmountDue() <= 0 && arguments.order.getQuantityUndelivered() == 0){
+                	arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="5"));
+                	orderStatusHistory.setOrderStatusHistoryType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="5"));
+            	}
+            
+            	
+            }else if (arguments.systemCode == 'ostClosed') {
+            	//If its paid and its shipped, make sure its shipped.
                 arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="5"));
                 orderStatusHistory.setOrderStatusHistoryType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="5"));
             } else {
@@ -447,7 +478,15 @@ component extends="Slatwall.model.service.OrderService" {
             }
         // Return Orders
         } else if (listFindNoCase('otReturnOrder,otExchangeOrder,otReplacementOrder,otRefundOrder', arguments.order.getTypeCode())) {
-            if (arguments.systemCode == 'ostProcessing') {
+            if (arguments.systemCode == 'ostNew') {
+		
+				var type = getTypeService().getTypeBySystemCode( systemCode=arguments.systemCode, typeCode="1");
+				if(!isNull(type)){	
+					arguments.order.setOrderStatusType(type); 
+					orderStatusHistory.setOrderStatusHistoryType(type);
+				}	
+				
+			} else if (arguments.systemCode == 'ostProcessing') {
                 // Order delivery items have been created but not fulfilled, need to be approved (confirmed) first
                 arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="rmaReceived"));
                 orderStatusHistory.setOrderStatusHistoryType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="rmaReceived"));
@@ -467,7 +506,7 @@ component extends="Slatwall.model.service.OrderService" {
             this.saveOrderStatusHistory(orderStatusHistory);
         }
     }
-	
+
 	//Return data: order fulfillments, order payments, order items, order 
 	public any function getOrderItemsHeavy(struct data={}) {
         param name="arguments.data.orderID" default="";
@@ -647,15 +686,17 @@ component extends="Slatwall.model.service.OrderService" {
 	    return order;
 	}
 	
-	public any function processOrder_approveReturn(required any order, any processObject, struct data){
-	    
-	    if(!isNull(arguments.processObject.getOrderItems()) &&arrayLen(arguments.processObject.getOrderItems())){
-	        for(var orderItem in arguments.processObject.getOrderItem()){
-	            orderItem = this.getOrderItem(orderItem.orderItemID);
-	            orderItem.setQuantity(orderItem.quantity);
+	public any function processOrder_approveReturn(required any order, required struct data){
+		
+	    if(!isNull(arguments.data.orderItems) &&arrayLen(arguments.data.orderItems)){
+	        for(var orderItemStruct in arguments.data.orderItems){
+	            var orderItem = this.getOrderItem(orderItemStruct.orderItemID);
+	            orderItem.setQuantity(orderItemStruct.quantity);
 	        }
 	    }
+	    this.processOrder(arguments.order,'updateOrderAmounts');
 	    order.setOrderStatusType(getService('TypeService').getTypeByTypeCode('rmaApproved'));
+
 	    return order;
 	}
 
@@ -1088,7 +1129,7 @@ component extends="Slatwall.model.service.OrderService" {
 				newOrderItem.setPrice( arguments.processObject.getSku().getPriceByCurrencyCode( argumentCollection = priceByCurrencyCodeArgs ) );
 				/******* END CUSTOM CODE FOR MONAT *******/
 			}
-
+			
 			// If a stock was passed in assign it to this new item
 			if( !isNull(arguments.processObject.getStock()) ) {
 				newOrderItem.setStock( arguments.processObject.getStock() );
@@ -1106,7 +1147,7 @@ component extends="Slatwall.model.service.OrderService" {
 			}
 
 			// Save the new order items don't update order amounts we'll do it at the end of this process
-			newOrderItem = this.saveOrderItem( orderItem=newOrderItem, updateOrderAmounts=false );
+			newOrderItem = this.saveOrderItem( orderItem=newOrderItem, updateOrderAmounts=false , updateCalculatedProperties=true);
 
 			if(newOrderItem.hasErrors()) {
 				//String replace the max order qty to give user feedback with the minimum of 0
@@ -1410,10 +1451,26 @@ component extends="Slatwall.model.service.OrderService" {
 			
 			arguments.order = this.addOrderItemFromTemplateItem(argumentCollection=args);
 			
-			if(isNull(orderFulfillment)){
-				var orderFulfillment = arguments.order.getOrderFulfillments()[1];
+			//define order fulfillment for the rest of the loop	
+			if( isNull(orderFulfillment) && 
+				!arrayIsEmpty(arguments.order.getOrderItems()) && 
+				!isNull(arguments.order.getOrderItems()[1].getOrderFulfillment())
+			){
+
+				var orderFulfillment = arguments.order.getOrderItems()[1].getOrderFulfillment();
+
 				orderFulfillment.setShippingMethod(arguments.orderTemplate.getShippingMethod());
-			} 
+				orderFulfillment.setFulfillmentMethod(arguments.orderTemplate.getShippingMethod().getFulfillmentMethod());
+
+				orderFulfillment = this.saveOrderFulfillment(orderFulfillment);
+
+				if (orderFulfillment.hasErrors()){
+					//propegate to parent, because we couldn't create the fulfillment this order is not going to be placed
+					arguments.order.addErrors(orderFulfillment.getErrors());	
+					return arguments.order; 
+				}	
+			}	
+
 			if(arguments.order.hasErrors()){
 				this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(arguments.order.getErrors())# when adding order item skuID: #orderTemplateItem['sku_skuID']#', true);
 				arguments.order.clearHibachiErrors();
@@ -1450,7 +1507,8 @@ component extends="Slatwall.model.service.OrderService" {
 			var orderTemplateItemStruct = {
 				'sku_skuID'=skuID,
 				'quantity'=1,
-				'orderTemplateItemID'=orderTemplateItem.getOrderTemplateItemID()
+				'orderTemplateItemID'=orderTemplateItem.getOrderTemplateItemID(),
+				'price'=0
 			};
 			
 			arguments.order = this.addOrderItemFromTemplateItem(arguments.order, orderTemplateItemStruct, arguments.orderTemplate, arguments.orderFulfillment);
@@ -1473,4 +1531,12 @@ component extends="Slatwall.model.service.OrderService" {
 		    return records[1]['order_orderOpenDateTime'];
 		}
 	}
+	
+	public any function getOFYProductsForOrder(required any order ){
+		var freeRewardSkuCollection = getSkuService().getSkuCollectionList();
+		var freeRewardSkuIDs = getPromotionService().getQualifiedFreePromotionRewardSkuIDs(arguments.order);
+		freeRewardSkuCollection.addFilter('skuID', freeRewardSkuIDs, 'in');
+		return freeRewardSkuCollection.getRecords();
+	}
+	
 }

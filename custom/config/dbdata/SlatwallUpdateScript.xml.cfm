@@ -18,5 +18,10 @@
 		<Record updateScriptID="9d4ab5h1dj4311ea9fa612bff9d404c8" scriptPath="database/muracomponenttranslates.cfm" loadOrder="109" maxExecutionCount="1" />
 		<Record updateScriptID="8d4ab5h1db5311ea9fa612bff9d404c9" scriptPath="database/customproperties.cfm" loadOrder="110" maxExecutionCount="1" />
 		<Record updateScriptID="8d4ab5h1db5311ea9fa612bff9d404c2" scriptPath="database/extendeddescriptionattrs.cfm" loadOrder="111" maxExecutionCount="1" />
+		<Record updateScriptID="8d4ab5h1db5311ea9fa612bff9d404b4" scriptPath="database/murasliderfields.cfm" loadOrder="112" maxExecutionCount="1" />
+		<Record updateScriptID="8d4ab5h1db5311ea9fa612bff9d404z5" scriptPath="database/muracontentmodulefields.cfm" loadOrder="113" maxExecutionCount="1" />
+		<Record updateScriptID="8d4ab5h1db5311ea9fa612bff9d404x5" scriptPath="database/muracontentmodulefieldsbatch2.cfm" loadOrder="114" maxExecutionCount="1" />
+		<Record updateScriptID="8d4ab5h1db5311ea9fa612bff9d404e5" scriptPath="database/ip2location.cfm" loadOrder="115" maxExecutionCount="1" /> 
+		<Record updateScriptID="8d4ab5h1db5311ea9fa612bff9d404c9" scriptPath="database/custompropertiesAccountGovernmentIdentification.cfm" loadOrder="116" maxExecutionCount="1" />
 	</Records> 
 </Table>

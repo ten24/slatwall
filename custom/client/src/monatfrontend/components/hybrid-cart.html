@@ -1,0 +1,139 @@
+
+<div class="header-cart" ng-click="hybridCart.toggleCart()">
+	<a href="#">
+		<p class="d-inline" sw-rbKey="'frontend.global.cart'"></p>
+		<span ng-if="!hybridCart.cart.totalItemQuantity" class="cart-count">
+			<i class="far fa-shopping-cart"></i>
+		</span>
+		<span ng-if="hybridCart.cart.totalItemQuantity > 0" class="cart-count">
+			{{hybridCart.cart.totalItemQuantity}}
+		</span>	
+	</a> 
+</div>
+
+<div ng-if="hybridCart.showCart" class="position-absolute hybrid-cart-wrapper">
+	<div class="cart-container">
+		<div class="accordion-group">
+			<div id="accordion">
+				<div class="card w-100">
+					<div class="card-header p-0">
+						<a class="py-0 text-white" data-toggle="collapse" href="#hybridCartBody">
+							<div class="py-3 px-3">
+								<span sw-rbKey="'frontend.cart.todaysOrder'"></span> - <p class="d-inline" ng-bind-html="hybridCart.total | swcurrency:hybridCart.cart.currencyCode"></p>
+							</div>							
+						</a>
+					</div>
+					<div class="collapse show multi-collapse" id="hybridCartBody" data-parent="#accordion">
+						
+						<div class="cart-progress-bar">
+							<purchase-plus-bar show-messages="true" extra-class="purchase-plus-bar--dark"></purchase-plus-bar>
+						</div>
+						
+						<div class="card-body p-0 hybrid-cart-body">
+							<div class="px-3 scroll-body">
+								<ul class="list-group list-group-flush">
+									<li ng-repeat="item in hybridCart.cart.orderItems track by item.orderItemID" class="bg-transparent list-group-item d-flex justify-content-between align-items-center">
+										<div class="row align-items-center">
+											<div class="p-1">
+												<a class="py-0" ng-click="hybridCart.redirect(item.skuProductURL)" href="#">
+													<img 
+														image-manager 
+														height="75px" 
+														ng-src="https://monatteam.ten24dev.com/Slatwall/custom/assets/images/product/default/cache/10392000_300w_300h.jpg" 
+														alt="{{item.sku.skuDefinition}}"
+													>
+												</a>
+											</div>
+											<div class="col">
+												<a class="w-100 pb-1 pt-0" href="#" ng-click="hybridCart.redirect(item.skuProductURL)">
+													<p class="d-inline title" ng-bind="item.sku.skuDefinition"></p>
+												</a>
+												<div class="qty">
+													<button
+														ng-if="item.sku.product.productType.systemCode !== 'VIPCustomerRegistr'"
+														type="button"
+														class="minus p-0"
+														ng-disabled="item.quantity <= 1"
+														ng-click="hybridCart.decreaseItemQuantity(item)"
+													>
+														- 
+													</button>
+													<input
+														type="text"
+														id="qty"
+														name="quantity"
+														ng-model="item.quantity"
+														ng-disabled="item.sku.product.productType.systemCode === 'VIPCustomerRegistr'"
+													/>
+													<button
+														ng-if="item.sku.product.productType.systemCode !== 'VIPCustomerRegistr'"
+														type="button"
+														class="plus p-0"
+														ng-click="hybridCart.increaseItemQuantity(item)"
+													>
+														+
+													</button>
+													
+													<span class="ml-2" ng-bind-html="item.extendedPriceAfterDiscount | swcurrency:hybridCart.cart.currencyCode"></span>
+												</div>
+											</div>
+										</div>
+										<span ng-if="item.sku.product.productType.systemCode !== 'VIPCustomerRegistr'" class="badge badge-pill delete">
+											<a ng-click="hybridCart.removeItem(item)" href="#">
+												<i class="fal fa-times"></i>
+											</a>
+										</span>
+									</li>
+								</ul>							
+							</div>
+						</div>
+						<div class="card-footer">
+							<div class="row justify-content-between px-3">
+								<div>
+									<span sw-rbKey="'frontend.hybridCart.suggestedPrice'"></span>
+								</div>
+								<div>
+									$99.00
+								</div>
+							</div>
+							<div class="row justify-content-between px-3">
+								<div>
+									<span sw-rbKey="'frontend.hybridCart.yourPrice'"></span>
+								</div>
+								<div>
+									$99.00
+								</div>
+							</div>
+							<div class="row justify-content-between px-3">
+								<div>
+									<span sw-rbKey="'frontend.hybridCart.purchasePlus'"></span>
+								</div>
+								<div>
+									$99.00
+								</div>
+							</div>
+							<hr class="my-0">
+							<div class="row justify-content-between px-3 my-1 mb-3">
+								<div>
+									<b> <span sw-rbKey="'frontend.hybridCart.todaysOrderTotal'"></span> </b>
+								</div>
+								<div>
+									<b ng-bind-html="hybridCart.cart.total | swcurrency:hybridCart.cart.currencyCode"></b> 
+								</div>
+							</div>
+							<div class="row">
+								<div ng-if="hybridCart.isEnrollment != true" class="btn-group w-100">
+							  		<button ng-click="hybridCart.redirect('/shopping-cart/')" type="button" class="btn btn-secondary">View Cart</button>
+							  		<button ng-click="hybridCart.redirect('/checkout/')" type="button" class="btn bg-primary">Checkout</button>
+								</div>						
+							</div>
+						</div>
+					</div>
+				</div>	
+				<div ng-if="hybridCart.isEnrollment">
+					<enrollment-flexship order-template="hybridCart.orderTemplate"></enrollment-flexship>
+				</div>
+			</div>
+		</div>
+	</div>	
+</div>

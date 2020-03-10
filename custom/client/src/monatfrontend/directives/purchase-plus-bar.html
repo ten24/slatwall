@@ -1,0 +1,46 @@
+<div class="purchase-plus-bar" ng-class="purchasePlusBar.extraClass">
+	
+	<div class="purchase-plus-bar__container">
+		
+		<div 
+			class="purchase-plus-bar__breakpoint" 
+			ng-class="{ 'active': purchasePlusBar.lastActiveBreakpoint >= 15 }"
+		>
+			<div class="purchase-plus-bar__percentage">15%</div>
+		</div>
+		<div class="purchase-plus-bar__progress-bar">
+			<div 
+				class="purchase-plus-bar__progress-bar-fill" 
+				ng-style="{
+					width: ( purchasePlusBar.lastActiveBreakpoint > 15 ) ? '102%' : purchasePlusBar.percentage + '%'
+				}"
+			></div>
+		</div>
+		
+		<div 
+			class="purchase-plus-bar__breakpoint" 
+			ng-class="{ 'active': purchasePlusBar.lastActiveBreakpoint >= 20 }"
+		>
+			<div class="purchase-plus-bar__percentage">20%</div>
+		</div>
+		<div class="purchase-plus-bar__progress-bar">
+			<div 
+				class="purchase-plus-bar__progress-bar-fill"
+				ng-style="{
+					width: ( purchasePlusBar.lastActiveBreakpoint > 20 ) ? '102%' : purchasePlusBar.percentage + '%'
+				}"
+			></div>
+		</div>
+		
+		<div 
+			class="purchase-plus-bar__breakpoint" 
+			ng-class="{ 'active': purchasePlusBar.lastActiveBreakpoint >= 25 }"
+		>
+			<div class="purchase-plus-bar__percentage">25%</div>
+		</div>
+		
+	</div>
+	
+</div>
+
+<div class="purchase-plus-message alert alert-success rounded-0" ng-if="purchasePlusBar.showMessages === true" ng-bind="purchasePlusBar.message"></div>

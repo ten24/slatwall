@@ -15,7 +15,7 @@
 		}
 	},
 	"properties": {
-		"account": [{ "contexts": "save", "required": true }],
+		"account": [{ "contexts": "save", "required": true, conditions: "activeScheduleOrderTemplate" }],
 		"accountPaymentMethod": [
 			{
 				"contexts": "save,createAndPlaceOrder",
@@ -25,7 +25,7 @@
 		],
 		"billingAccountAddress": [{ "contexts": "activate,createAndPlaceOrder", "required": true }],
 		"canPlaceOrderFlag": [
-			{ "contexts": "save", "conditions": "activeScheduleOrderTemplate", "eq": true }
+			{ "contexts": "save", "conditions": "activeScheduleOrderTemplate,createAndPlaceOrder", "eq": true }
 		],
 		"canPlaceFutureScheduleOrderFlag": [
 			{ "contexts": "createAndPlaceOrder", "conditions": "activeScheduleOrderTemplate", "eq": true }
