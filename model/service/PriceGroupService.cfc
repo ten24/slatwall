@@ -439,11 +439,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arguments.order.setPriceGroupCacheKey(priceGroupCacheKey);
 			var orderItems = arguments.order.getOrderItems(); 
 			for(var orderItem in orderItems){
-				
-				if(orderItem.getUserDefinedPriceFlag()){
-					continue;
-				}
-				
 				orderItem.removeAppliedPriceGroup();
 	
 				if(!isNull(arguments.order.getAccount()) && isNull(orderItem.getOrder().getPriceGroup())){

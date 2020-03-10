@@ -18,8 +18,6 @@
 			{ "contexts": "edit,delete", "inList": "ostNotPlaced,ostNew,ostProcessing,ostOnHold" }
 		],
 		"sku": [{ "contexts": "save", "required": true }],
-		"price": [{ "contexts": "save", "required": true, "dataType": "numeric", "minValue": 0 }],
-		"skuPrice": [{ "contexts": "save", "required": true, "dataType": "numeric", "minValue": 0 }],
 		"quantity": [
 			{
 				"conditions": "shouldValidateQuantity",
