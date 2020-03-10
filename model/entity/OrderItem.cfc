@@ -55,7 +55,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="estimatedFulfillmentDateTime" ormtype="timestamp";
 	property name="stockLoss" ormtype="boolean"; //Stock Loss flag for order return items;
 	property name="stockLossReason" ormtype="string"; //Stock Loss reason for Order Return Items;
-
+	property name="userDefinedPriceFlag" ormtype="boolean" default="0" hint="To flag if the price can be set by user/admin, in that case the price won't get updated to the best available price";
 	
 	// Calculated Properties
 	property name="calculatedExtendedPrice" ormtype="big_decimal" hb_formatType="currency";
@@ -202,8 +202,6 @@ property name="personalVolume" ormtype="big_decimal";
     property name="itemCategoryCode" ormtype="string";
     
    
- property name="kitFlagCode" ormtype="string" hb_formFieldType="select";
- property name="itemCategoryCode" ormtype="string" hb_formFieldType="select";
  property name="lineNumber" ormtype="string";
  property name="orderItemLineNumber" ormtype="string";//CUSTOM PROPERTIES END
 	public boolean function getQuantityHasChanged(){

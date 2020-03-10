@@ -106,23 +106,28 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// Loop over orderItems and add Sale Prices to the qualified discounts
 
 		for(var orderItem in arguments.order.getOrderItems()) {
-			var salePriceDetails = orderItem.getSalePrice();
-
-			for(var key in salePriceDetails) {
-				if(structKeyExists(salePriceDetails[key], "salePrice") && salePriceDetails[key].salePrice < orderItem.getSkuPrice()) {
-
-					var discountAmount = val(getService('HibachiUtilityService').precisionCalculate((orderItem.getSkuPrice() * orderItem.getQuantity()) - (salePriceDetails[key].salePrice * orderItem.getQuantity())));
-
-					arguments.orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ] = [];
-
-					// Insert this value into the potential discounts array
-					arrayAppend(arguments.orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ], {
-						promotionRewardID = "",
-						promotion = this.getPromotion(salePriceDetails[key].promotionID),
-						discountAmount = discountAmount
-					});
+			
+			//If the price was overriden by the admin, we're skipping that item
+			if( !orderItem.getUserDefinedPriceFlag() ){
+				var salePriceDetails = orderItem.getSalePrice();
+	
+				for(var key in salePriceDetails) {
+					if(structKeyExists(salePriceDetails[key], "salePrice") && salePriceDetails[key].salePrice < orderItem.getSkuPrice()) {
+	
+						var discountAmount = val(getService('HibachiUtilityService').precisionCalculate((orderItem.getSkuPrice() * orderItem.getQuantity()) - (salePriceDetails[key].salePrice * orderItem.getQuantity())));
+	
+						arguments.orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ] = [];
+	
+						// Insert this value into the potential discounts array
+						arrayAppend(arguments.orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ], {
+							promotionRewardID = "",
+							promotion = this.getPromotion(salePriceDetails[key].promotionID),
+							discountAmount = discountAmount
+						});
+					}
 				}
 			}
+			
 		}
 	}
 
@@ -1101,30 +1106,32 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	public struct function getOrderItemSalePricesByPromoRewardSkuCollection(required any orderItem){
+		
 		var activePromotionRewardsWithSkuCollection = getPromotionDAO().getActivePromotionRewards( rewardTypeList="merchandise,subscription,contentAccess", promotionCodeList="", excludeRewardsWithQualifiers=true, site=arguments.orderItem.getOrder().getOrderCreatedSite());
 		var originalPrice = arguments.orderItem.getSkuPrice();
 		var currencyCode = arguments.orderItem.getCurrencyCode();
-
-		var account = arguments.orderItem.getOrder().getAccount();
-
-        /*
-            Price group is prioritized as so: 
-                1.Order price group
-                2.Price group passed in as argument
-                3. Price group on account
-                4. Default to 2
-        
-        */
-        
-        if(!isNull(arguments.orderItem.getOrder().getPriceGroup())){ 
-            var priceGroup = arguments.orderItem.getOrder().getPriceGroup(); //order price group
-        }else if(!isNull(account) && !isNull(account.getPriceGroups()) && arrayLen(account.getPriceGroups())){ 
-            var priceGroup = account.getPriceGroups()[1]; //account price group
-        }else{
-        	var priceGroup = getService('priceGroupService').getPriceGroupByPriceGroupCode(2) // default to retail
-        }
         
 		if(isNull(originalPrice)){
+			
+			var account = var account = arguments.orderItem.getOrder().getAccount();	
+	        
+	        /*
+	            Price group is prioritized as so: 
+	                1. Order price group
+	                2. Price group passed in as argument, TODO ??
+	                3. Price group on account
+	                4. Default to 2
+	        
+	        */
+	        
+	        if(!isNull(arguments.orderItem.getOrder().getPriceGroup())){ 
+	            var priceGroup = arguments.orderItem.getOrder().getPriceGroup(); //order price group
+	        }else if(!isNull(account) && !isNull(account.getPriceGroups()) && arrayLen(account.getPriceGroups())){ 
+	            var priceGroup = account.getPriceGroups()[1]; //account price group
+	        }else{
+	        	var priceGroup = getService('priceGroupService').getPriceGroupByPriceGroupCode(2) // default to retail
+	        }
+        
 			originalPrice = arguments.orderItem.getSku().getPriceByCurrencyCode(currencyCode= currencyCode, priceGroups=[priceGroup]);
 		} 
 
