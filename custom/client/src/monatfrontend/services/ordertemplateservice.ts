@@ -5,6 +5,7 @@ export class OrderTemplateService {
    private cachedGetAccountGiftCardsResponse:any;
    public canPlaceOrderFlag:boolean;
    public mostRecentOrderTemplate:any;
+   public currentOrderTemplateID:string;
    
    //@ngInject
    constructor(
@@ -347,6 +348,32 @@ export class OrderTemplateService {
 	
    	public deleteOrderTemplate(orderTemplateID){
 		return this.publicService.doAction('deleteOrderTemplate', {orderTemplateID: orderTemplateID });
+	}
+	
+	public getSetOrderTemplateOnSession(orderTemplateSystemCode = 'ottSchedule', saveContext = 'upgradeFlow', createOrderTemplateAndSetOnSession = true){
+        let deferred = this.$q.defer();
+        
+		let data ={
+            orderTemplateSystemCode: orderTemplateSystemCode,
+            saveContext: saveContext,
+            createOrderTemplateAndSetOnSession: createOrderTemplateAndSetOnSession,
+            returnJSONObjects:''
+        }
+        
+        this.publicService.doAction('getOrderTemplateOnSession', data).then(res=>{
+            if(res.orderTemplate && typeof res.orderTemplate == 'string'){
+                this.currentOrderTemplateID = res.orderTemplate;
+            }else if(res.orderTemplateDetails){
+                this.currentOrderTemplateID = res.orderTemplateDetails.orderTemplateID
+                this.mostRecentOrderTemplate = res.orderTemplateDetails;
+                this.canPlaceOrderFlag = res.orderTemplateDetails.canPlaceOrderFlag;
+            }
+            deferred.resolve(res);
+	    }).catch( (e) => {
+           deferred.reject(e);
+       });
+       
+       return deferred.promise;
 	}
 
 }

@@ -529,8 +529,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         }
         
         if(arguments.data.setOnSessionFlag){
-            
+            getHibachiScope().getSession().setCurrentFlexship(orderTemplate);
         }
+
         arguments.data['ajaxResponse']['orderTemplate'] = orderTemplate.getOrderTemplateID();
     }
     
@@ -1814,6 +1815,32 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         });
         
         arguments.data['ajaxResponse']['ofyProducts'] = records;
+    }
+    
+    public void function getOrderTemplateOnSession(){
+        param name="arguments.data.createOrderTemplateAndSetOnSession" default=false; //if this param is true, and there is no order template on session, it will create one and set it.
+        param name="arguments.data.saveContext" default="upgradeFlow";
+        
+        var reqSession = getHibachiScope().getSession();
+        
+        if(isNull(reqSession.getCurrentFlexship()) && !arguments.data.createOrderTemplateAndSetOnSession){
+            arguments.data['ajaxResponse']['orderTemplate'] = {};
+            return;
+        }else if( !isNull(reqSession.getCurrentFlexship()) ){
+            var orderTemplateOnSession = reqSession.getCurrentFlexship();
+            orderTemplateDetails['orderTemplateID'] = orderTemplateOnSession.getOrderTemplateID();
+            orderTemplateDetails['orderTemplateSubtotal'] = orderTemplateOnSession.getSubtotal();
+            orderTemplateDetails['canPlaceOrderFlag'] = orderTemplateOnSession.getCanPlaceOrderFlag();
+            orderTemplateDetails['frequencyTerm'] = orderTemplateOnSession.getFrequencyTerm();
+            orderTemplateDetails['scheduleOrderDayOfTheMonth'] = orderTemplateOnSession.getScheduleOrderDayOfTheMonth();
+            arguments.data['ajaxResponse']['orderTemplateDetails'] = orderTemplateDetails;
+            return;
+        }
+        
+        if(arguments.data.createOrderTemplateAndSetOnSession){
+            arguments.data['setOnSessionFlag'] = true;
+            return this.createOrderTemplate(arguments.data);
+        }
     }
     
 }

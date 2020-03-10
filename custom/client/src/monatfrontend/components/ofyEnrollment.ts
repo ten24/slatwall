@@ -31,19 +31,10 @@ class OFYEnrollmentController {
 		
 		let data ={
 			skuID: this.stagedProductID,
-            orderTemplateSystemCode: 'ottSchedule',
-            saveContext: 'upgradeFlow',
-            returnJSONObjects:''
         }
         
-		this.publicService.doAction('addOrderItem,createOrderTemplate', data ).then(res=>{
-			
-			if(res.orderTemplate){
-				this.orderTemplateService.canPlaceOrderFlag = false;
-				document.cookie = "flexshipID=" + res.orderTemplate;
-				this.observerService.notify('newOrderTemplate', res.orderTemplate);
-				this.observerService.notify('onNext');	
-			}
+		this.publicService.doAction('addOrderItem', data ).then(res=>{
+			this.observerService.notify('onNext');	
 			this.loading = false;
 		});
 	}

@@ -12,7 +12,6 @@ class VIPController {
 	public isVIPEnrollment: boolean = false;
 	public productList;
 	public sponsorErrors: any = {};
-	public flexshipID:any;
 	public frequencyTerms:any;
 	public flexshipDaysOfMonth:Array<number> = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26]; 
 	public accountPriceGroupCode:number = 3; //Hardcoded pricegroup as we always want to serve VIP pricing
@@ -40,7 +39,6 @@ class VIPController {
 	
 	// @ngInject
 	constructor(public publicService, public observerService, public monatService, public orderTemplateService) {
-		this.observerService.attach((res)=> this.flexshipID = res, 'newOrderTemplate')
 	}
 
 	public $onInit = () => {
@@ -59,9 +57,10 @@ class VIPController {
 			this.getProductList();	
 			this.getCountryCodeOptions();
 			this.getFrequencyTermOptions();
+			this.orderTemplateService.getSetOrderTemplateOnSession().then(res=>{
+				//error handeling here
+			});
 		});
-
-		this.flexshipID = this.monatService.getCookieValueByCookieName('flexshipID');
 		
 	}
 	
@@ -181,7 +180,7 @@ class VIPController {
         this.loading = true;
         this.flexshipDeliveryDate = dayOfMonth;
 		this.flexshipFrequencyName = frequencyTerm.name;
-        const flexshipID = this.flexshipID;
+        const flexshipID = this.orderTemplateService.currentOrderTemplateID;
         this.orderTemplateService.updateOrderTemplateFrequency(flexshipID, frequencyTerm.value, dayOfMonth).then(result => {
             this.getFlexshipDetails();
         });
@@ -189,8 +188,8 @@ class VIPController {
     
     public getFlexshipDetails = () => {
     	this.loading = true;
-    
-        this.orderTemplateService.getWishlistItems(this.flexshipID).then(result => {
+    	const flexshipID = this.orderTemplateService.currentOrderTemplateID;
+        this.orderTemplateService.getWishlistItems(flexshipID).then(result => {
         	this.flexshipItemList = result.orderTemplateItems;
 			this.flexshipTotal = result.orderTotal;
 			this.observerService.notify('onNext');
