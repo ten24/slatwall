@@ -52,7 +52,10 @@ component {
     property name="calculatedExtendedRetailValueVolumeAfterDiscount" ormtype="big_decimal" hb_formatType="none";
     property name="calculatedQuantityDelivered" ormtype="integer";
     property name="orderItemSkuBundles" singularname="orderItemSkuBundle" fieldType="one-to-many" type="array" fkColumn="orderItemID" cfc="OrderItemSkuBundle" inverse="true" cascade="all-delete-orphan";
-	
+	property name="returnsReceived" ormtype="string";
+    property name="kitFlagCode" ormtype="string";
+    property name="itemCategoryCode" ormtype="string";
+    
     public void function refreshAmounts(){
         variables.personalVolume = getCustomPriceFieldAmount('personalVolume');
         variables.taxableAmount = getCustomPriceFieldAmount('taxableAmount');
@@ -61,9 +64,6 @@ component {
         variables.productPackVolume = getCustomPriceFieldAmount('productPackVolume');
         variables.retailValueVolume = getCustomPriceFieldAmount('retailValueVolume');
     }
-    property name="returnsReceived" ormtype="string";
-    property name="kitFlagCode" ormtype="string";
-    property name="itemCategoryCode" ormtype="string";
     
     public any function getPersonalVolume(){
         if(!structKeyExists(variables,'personalVolume')){
