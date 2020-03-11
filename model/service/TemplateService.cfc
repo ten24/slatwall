@@ -94,10 +94,18 @@ Notes:
 	<cffunction name="getTemplateContextPathList">
 		<cfargument name="templateType" type="string" required="true" />
 		<cfargument name="objectName" type="string" required="true" />
+		<cfargument name="includesFlag" type="string" default="false" />
 		<!--- Custom Path --->
 		<cfset templateContextPathList = "#getApplicationValue('applicationRootMappingPath')#/custom/templates/#lcase(arguments.templateType)#/#lcase(arguments.objectName)#/" />
 		<!--- Core Path --->
 		<cfset templateContextPathList = listAppend(templateContextPathList, "#getApplicationValue('applicationRootMappingPath')#/templates/#lcase(arguments.templateType)#/#lcase(arguments.objectName)#/") />	
+
+		<cfif arguments.includesFlag > 
+			
+			<cfset templateContextPathList = "#getApplicationValue('applicationRootMappingPath')#/custom/templates/#lcase(arguments.templateType)#/#lcase(arguments.objectName)#/inc/" />
+			<cfset templateContextPathList = listAppend(templateContextPathList, "#getApplicationValue('applicationRootMappingPath')#/templates/#lcase(arguments.templateType)#/#lcase(arguments.objectName)#/inc/") />	
+			
+		</cfif> 
 
 		<cfreturn templateContextPathList /> 
 	</cffunction> 
