@@ -30,9 +30,10 @@ class MonatProductModalController {
 	) {}
 
 	public $onInit = () => {
+		let date = Date.now();
 		let httpOptions = {
 			method: 'GET',
-			url: this.product.skuProductURL
+			url: this.product.skuProductURL + '?context=modal&date=' + date
 		}
 		
 		this.$http(httpOptions).then(res => {
