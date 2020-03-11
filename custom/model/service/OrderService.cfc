@@ -966,7 +966,7 @@ component extends="Slatwall.model.service.OrderService" {
 			}
 			
 			// Set Stock reference, check the fullfillment for a pickup location
-			if (!isNull(orderFulfillment.getPickupLocation())){
+			if (!isNull(orderFulfillment) && !isNull(orderFulfillment.getPickupLocation())){
 				// The item being added to the cart should have its stockID added based on that location
 				var location = orderFulfillment.getPickupLocation();
 				var stock = getService("StockService").getStockBySkuAndLocation(sku=arguments.processObject.getSku(), location=location);
