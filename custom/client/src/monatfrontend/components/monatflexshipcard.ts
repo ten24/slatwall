@@ -18,7 +18,7 @@ class MonatFlexshipCardController {
 	public expirationYearOptions: any[];
 	public daysToEditFlexship:any;
 	public editFlexshipUntilDate:any;
-	public countryNameBySite:any;
+	public countryCodeBySite:any;
 	//@ngInject
 	constructor(
 		public observerService, 
@@ -161,7 +161,7 @@ class MonatFlexshipCardController {
 				stateCodeOptions: this.stateCodeOptions,
 				expirationMonthOptions: this.expirationMonthOptions,
 				expirationYearOptions: this.expirationYearOptions,
-				countryNameBySite:this.countryNameBySite,
+				countryCodeBySite:this.countryCodeBySite,
 			},
 			preClose: (modal) => {
 				modal.element.modal('hide');
@@ -188,7 +188,7 @@ class MonatFlexshipCardController {
 				accountAddresses: this.accountAddresses,
 				shippingMethodOptions: this.shippingMethodOptions,
 				stateCodeOptions: this.stateCodeOptions,
-				countryNameBySite:this.countryNameBySite,
+				countryCodeBySite:this.countryCodeBySite,
 			},
 			preClose: (modal) => {
 				modal.element.modal('hide');
@@ -308,7 +308,7 @@ class MonatFlexshipCard {
 		expirationMonthOptions: '<',
 		expirationYearOptions: '<',
 		daysToEditFlexship:'@?',
-		countryNameBySite:'<'
+		countryCodeBySite:'<'
 	};
 	public controller = MonatFlexshipCardController;
 	public controllerAs = 'monatFlexshipCard';
