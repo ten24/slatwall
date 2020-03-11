@@ -417,7 +417,9 @@
 				} else if(right(lCaseMissingMethodName, 6) == "struct"){
 					return onMissingGetEntityStructMethod( arguments.missingMethodName, arguments.missingMethodArguments );
 				} else if(right(lCaseMissingMethodName, 15) == "processcontexts"){ 
-					return onMissingGetEntityProcessContexts( arguments.missingMethodName, arguments.missingMethodArguments ); 
+					return onMissingGetEntityProcessContexts( arguments.missingMethodName, arguments.missingMethodArguments );
+				} else if(right(lCaseMissingMethodName, 6) == "eventoptions"){
+					return onMissingGetEntityEventOptions( arguments.missingMethodName, arguments.missingMethodArguments );	
 				} else {
 					return onMissingGetMethod( arguments.missingMethodName, arguments.missingMethodArguments );
 				}
@@ -559,6 +561,83 @@
 			var metaData = getEntityMetaData(entityName);
 			
 			return metaData.hb_processContexts; 	
+		}
+
+		//this is defined on hibachi service rather than hibachi event service so it can be overriden at the entity service level to allow for defining custom events to be used with workflow
+		private function onMissingGetEntityEventOptions( required string missingMethodName, required struct missingMethodArguments ){
+			var entityNameLength = len(arguments.missingMethodName) - 15;
+			var entityName = arguments.missingMethodName.substring( 3, entityNameLength + 3 );
+			var entityService = getServiceByEntityName(entityName); 
+
+			var doOneToManyOptions = true; 
+			
+			if( structCount(arguments.missingMethodArguments) && 
+				structKeyExists(arguments.missingMethodArguments, "1") &&
+				isBoolean(arguments.missingMethodArguments["1"])
+			){
+				doOneToManyOptions = arguments.missingMethodArguments["1"];  
+			} 	
+
+			var positions = ['before','after'];
+			var processes = ['Save','Delete','Create'];
+			var statuses = ['','Success','Failure'];
+
+			var processContextList = entityService.invokeMethod('get#entityName#ProcessContexts'); 	
+	
+			arrayAppend(array=processes, value=listToArray(processContextList), merge=true); 
+
+			var eventOptions = []; 
+
+			for(var process in processes){
+				for(var position in positions){
+					for(var status in statuses){
+						arrayAppend(eventOptions, getEventNameOptionsStruct(entityName, position, process, status));
+					}
+				}
+			}
+
+			if(doOneToManyOptions){
+				for(var property in entityMetaData.properties){
+					if( structKeyExists(property,'fieldType') && 
+						property.fieldType == 'one-to-many' && 
+						property.cfc != arguments.objectName
+					){
+						var relatedEntityService = getServiceByEntityName(property.CFC);
+						var relatedEntityOptions = relatedEntityService.invokeMethod('get#property.cfc#EventOptions', {"1":false})
+						arrayAppend(array=eventOptions, value=, merge=true); 
+						opArr = getService('hibachiUtilityService').arrayConcat(opArr,relationshipOptions);
+					}
+				}
+			}
+		} 	
+
+		
+		private struct function getEventNameOptionsStruct(required string entityName, string position="before", string process="save", string status=""){
+		
+			var optionStruct = {};
+			
+			optionStruct['name'] = "#getHibachiScope().rbKey('entity.#arguments.entityName#')# - ";
+			
+			var processPrefix = "";
+			
+			if(lcase(arguments.process) != 'save' && lcase(arguments.process) != 'delete' && lcase(arguments.process) != 'create'){
+				processPrefix = "Process_";
+				optionStruct['name'] &= "#getHibachiScope().rbKey('define.#arguments.position#')# #getHibachiScope().rbKey('entity.#arguments.entityName#.process.#arguments.process#')#";
+			}else{
+				optionStruct['name'] &= "#getHibachiScope().rbKey('define.#arguments.position#')# #getHibachiScope().rbKey('define.#arguments.process#')#"; 
+			}
+			
+			if(len(arguments.status)){
+				optionStruct['name'] &= " #getHibachiScope().rbKey('define.#arguments.status#')# | #arguments.position##entityName##processPrefix##arguments.process##arguments.status#";
+			}else{
+				optionStruct['name'] &= " | #arguments.position##arguments.entityName##processPrefix##arguments.process#";	
+			}
+			
+			optionStruct['value'] = arguments.position & entityName & processPrefix & arguments.process & arguments.status;
+
+			optionStruct['entityName'] = arguments.entityName;
+			
+			return optionStruct;
 		}
 
 		/**
