@@ -128,6 +128,11 @@ component displayname="Price Group" entityname="SlatwallPriceGroup" table="SwPri
 		}
 		structDelete(variables, "parentPriceGroup");
 	}
+
+	// Applied Order Items (one-to-many)    
+	public void function addAppliedOrderItem(required any appliedOrderItem) {    
+		arguments.appliedOrderItem.setAppliedPriceGroup( this );    
+	}
 	
 	// Child Price Groups (one-to-many)    
 	public void function addChildPriceGroup(required any childPriceGroup) {    
