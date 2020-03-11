@@ -350,23 +350,24 @@ export class OrderTemplateService {
 		return this.publicService.doAction('deleteOrderTemplate', {orderTemplateID: orderTemplateID });
 	}
 	
-	public getSetOrderTemplateOnSession(orderTemplateSystemCode = 'ottSchedule', saveContext = 'upgradeFlow', createOrderTemplateAndSetOnSession = true){
+	public getSetOrderTemplateOnSession(optionalProperties = '', saveContext = 'upgradeFlow', setIfNullFlag = true, nullAccountFlag = true){
         let deferred = this.$q.defer();
-        
+    
 		let data ={
-            orderTemplateSystemCode: orderTemplateSystemCode,
             saveContext: saveContext,
-            createOrderTemplateAndSetOnSession: createOrderTemplateAndSetOnSession,
+            setIfNullFlag: setIfNullFlag,
+            optionalProperties: optionalProperties,
+            nullAccountFlag:nullAccountFlag,
             returnJSONObjects:''
         }
         
-        this.publicService.doAction('getOrderTemplateOnSession', data).then(res=>{
+        this.publicService.doAction('getSetFlexshipOnSession', data).then(res=>{
             if(res.orderTemplate && typeof res.orderTemplate == 'string'){
                 this.currentOrderTemplateID = res.orderTemplate;
-            }else if(res.orderTemplateDetails){
-                this.currentOrderTemplateID = res.orderTemplateDetails.orderTemplateID
-                this.mostRecentOrderTemplate = res.orderTemplateDetails;
-                this.canPlaceOrderFlag = res.orderTemplateDetails.canPlaceOrderFlag;
+            }else if(res.orderTemplate){
+                this.currentOrderTemplateID = res.orderTemplate.orderTemplateID
+                this.mostRecentOrderTemplate = res.orderTemplate;
+                this.canPlaceOrderFlag = res.orderTemplate.canPlaceOrderFlag;
             }
             deferred.resolve(res);
 	    }).catch( (e) => {

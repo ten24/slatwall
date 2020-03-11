@@ -57,9 +57,6 @@ class VIPController {
 			this.getProductList();	
 			this.getCountryCodeOptions();
 			this.getFrequencyTermOptions();
-			this.orderTemplateService.getSetOrderTemplateOnSession().then(res=>{
-				//error handeling here
-			});
 		});
 		
 	}

@@ -8,6 +8,7 @@ class EnrollmentFlexshipController {
 	public orderTemplateID:string;
 	public hybridCart:HybridCartController;
 	public isLoading:boolean;
+	public cartThreshold:number;
 	
 	//@ngInject
 	constructor(public monatService, public observerService, public orderTemplateService, public publicService) {
@@ -20,12 +21,14 @@ class EnrollmentFlexshipController {
 	
 	public getFlexship():void {
 		this.isLoading = true;
-		let extraProperties = "cartTotalThresholdForOFYAndFreeShipping,canPlaceOrderFlag";
-		this.orderTemplateID = this.monatService.getCookieValueByCookieName('flexshipID');
-		if(!this.orderTemplateID) return;
-		this.orderTemplateService.getOrderTemplateDetails(this.orderTemplateID, extraProperties, true).then(data => {
+		let extraProperties = "canPlaceOrderFlag,appliedPromotionMessages";
+		if(!this.cartThreshold){
+			extraProperties += ',cartTotalThresholdForOFYAndFreeShipping'
+		}
+		this.orderTemplateService.getSetOrderTemplateOnSession(extraProperties).then(data => {
 			if((data.orderTemplate as GenericTemplate) ){
 				this.orderTemplate = data.orderTemplate;
+				this.cartThreshold = +this.orderTemplate.cartTotalThresholdForOFYAndFreeShipping;
 				this.isLoading = false;
 			} else {
 				throw(data);

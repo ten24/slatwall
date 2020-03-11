@@ -1817,29 +1817,45 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         arguments.data['ajaxResponse']['ofyProducts'] = records;
     }
     
-    public void function getOrderTemplateOnSession(){
-        param name="arguments.data.createOrderTemplateAndSetOnSession" default=false; //if this param is true, and there is no order template on session, it will create one and set it.
+    /**
+    * Function to get the current flexship on session with option to create and set if null
+    * @param setIfNullFlag declares whether we should create and set flexship if there isn't one on session
+    * @param saveContext is optional and defines the validation context
+    * @param nullAccountFlag is optional and defines if the flexship has not account, this is for getting flexship details
+    * @param optionalProperties is optional and declares extra properties for order template details
+    * @return Either order template details or the newly created order template ID 
+    **/
+    
+    public any function getSetFlexshipOnSession(){
+        param name="arguments.data.setIfNullFlag" default="false"; 
         param name="arguments.data.saveContext" default="upgradeFlow";
+        param name="arguments.data.nullAccountFlag" default="false";
+        param name="arguments.data.optionalProperties" default="";
         
         var reqSession = getHibachiScope().getSession();
         
-        if(isNull(reqSession.getCurrentFlexship()) && !arguments.data.createOrderTemplateAndSetOnSession){
+        //if the request does not pass setIfNullFlag as true, and there is no order template on session, return an empty object
+        if(isNull(reqSession.getCurrentFlexship()) && !arguments.data.setIfNullFlag){
+            
             arguments.data['ajaxResponse']['orderTemplate'] = {};
-            return;
+            
+        //If there is an order template on the session return the order template details
         }else if( !isNull(reqSession.getCurrentFlexship()) ){
-            var orderTemplateOnSession = reqSession.getCurrentFlexship();
-            orderTemplateDetails['orderTemplateID'] = orderTemplateOnSession.getOrderTemplateID();
-            orderTemplateDetails['orderTemplateSubtotal'] = orderTemplateOnSession.getSubtotal();
-            orderTemplateDetails['canPlaceOrderFlag'] = orderTemplateOnSession.getCanPlaceOrderFlag();
-            orderTemplateDetails['frequencyTerm'] = orderTemplateOnSession.getFrequencyTerm();
-            orderTemplateDetails['scheduleOrderDayOfTheMonth'] = orderTemplateOnSession.getScheduleOrderDayOfTheMonth();
-            arguments.data['ajaxResponse']['orderTemplateDetails'] = orderTemplateDetails;
-            return;
-        }
-        
-        if(arguments.data.createOrderTemplateAndSetOnSession){
+            
+            var data = {
+                "orderTemplateID" : reqSession.getCurrentFlexship().getOrderTemplateID(),
+                "optionalProperties" : arguments.data.optionalProperties,
+                "nullAccountFlag" :arguments.data.nullAccountFlag
+            }
+            arguments.data['ajaxResponse']['orderTemplate'] = getOrderService().getOrderTemplateDetailsForAccount(data);
+            
+        //if there is no order template on session and request passes setIfNullFlag then we create an order template and set on session
+        }else if(arguments.data.setIfNullFlag){
+            
             arguments.data['setOnSessionFlag'] = true;
+            arguments.data['orderTemplateSystemCode'] = 'ottSchedule'; //currently session only accepts flexships
             return this.createOrderTemplate(arguments.data);
+            
         }
     }
     
