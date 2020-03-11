@@ -89,7 +89,19 @@ Notes:
 		
 		<cfreturn "" />
 	</cffunction>
-	
+
+	<!--- Convenience method for getting template directories for core and custom --->
+	<cffunction name="getTemplateContextPathList">
+		<cfargument name="templateType" type="string" required="true" />
+		<cfargument name="objectName" type="string" required="true" />
+		<!--- Custom Path --->
+		<cfset templateContextPathList = "#getApplicationValue('applicationRootMappingPath')#/custom/templates/#lcase(arguments.templateType)#/#lcase(arguments.objectName)#/" />
+		<!--- Core Path --->
+		<cfset templateContextPathList = listAppend(templateContextPathList, "#getApplicationValue('applicationRootMappingPath')#/templates/#lcase(arguments.templateType)#/#lcase(arguments.objectName)#/") />	
+
+		<cfreturn templateContextPathList /> 
+	</cffunction> 
+
 	<!--- =====================  END: Logical Methods ============================ --->
 	
 	<!--- ===================== START: DAO Passthrough =========================== --->
