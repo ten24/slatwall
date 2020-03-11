@@ -61,6 +61,7 @@ component {
 
     property name="shipMethodCode" ormtype="string";
     property name="iceRecordNumber" ormtype="string";
+    property name="commissionPeriodCode" ormtype="string";
     property name="lastSyncedDateTime" ormtype="timestamp";
     property name="calculatedPaymentAmountDue" ormtype="big_decimal";
     property name="priceGroup" cfc="PriceGroup" fieldtype="many-to-one" fkcolumn="priceGroupID";
@@ -420,5 +421,19 @@ component {
 			}
 		}
 		return true;
+	 }
+	 
+	 public any function getDefaultStockLocation(){
+	 	if(!structKeyExists(variables,'defaultStockLocation')){
+	 		if(!isNull(getOrderCreatedSite())){
+	 			var locations = getOrderCreatedSite().getLocations();
+	 			if(!isNull(locations) && arrayLen(locations)){
+	 				variables.defaultStockLocation = locations[1];
+	 			}
+	 		}
+	 	}
+	 	if(structKeyExists(variables,'defaultStockLocation')){
+	 		return variables.defaultStockLocation;
+	 	}
 	 }
 }

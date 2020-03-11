@@ -10,7 +10,7 @@ component {
 	property name="skuProductURL" persistent="false";
 	property name="skuImagePath" persistent="false";
 	property name="skuAdjustedPricing" persistent="false";
-
+	property name="kitFlagCode" ormtype="string";
 	
 	public any function getSkuProductURL(){
 		var skuProductURL = this.getSku().getProduct().getProductURL();
@@ -24,7 +24,7 @@ component {
 	
 	public any function getSkuAdjustedPricing(){
 			
-			var priceGroups = this.getOrderTemplate().getAccount().getPriceGroups();
+			var priceGroups = !isNull(this.getOrderTemplate().getAccount()) ? this.getOrderTemplate().getAccount().getPriceGroups() : [this.getOrderTemplate().getPriceGroup()];
 			var priceGroupCode = arrayLen(priceGroups) ? priceGroups[1].getPriceGroupCode() : "";
 			var priceGroupService = getHibachiScope().getService('priceGroupService');
 			var hibachiUtilityService = getHibachiScope().getService('hibachiUtilityService');
@@ -33,10 +33,10 @@ component {
 			var retailPriceGroup = priceGroupService.getPriceGroupByPriceGroupCode(2);
 			var mpPriceGroup = priceGroupService.getPriceGroupByPriceGroupCode(1);
 			var sku = this.getSku();
-			var adjustedAccountPrice = sku.getPriceByCurrencyCode(currencyCode);
-			var adjustedVipPrice = sku.getPriceByCurrencyCode(currencyCode,1,[vipPriceGroup]);
-			var adjustedRetailPrice = sku.getPriceByCurrencyCode(currencyCode,1,[retailPriceGroup]);
-			var adjustedMPPrice = sku.getPriceByCurrencyCode(currencyCode,1,[MPPriceGroup]);
+			var adjustedAccountPrice = sku.getPriceByCurrencyCode(currencyCode) ?: 0;
+			var adjustedVipPrice = sku.getPriceByCurrencyCode(currencyCode,1,[vipPriceGroup]) ?: 0;
+			var adjustedRetailPrice = sku.getPriceByCurrencyCode(currencyCode,1,[retailPriceGroup]) ?: 0;
+			var adjustedMPPrice = sku.getPriceByCurrencyCode(currencyCode,1,[MPPriceGroup]) ?: 0;
 			var mpPersonalVolume = sku.getPersonalVolumeByCurrencyCode(currencyCode)?:0;
 			
 			// var formattedAccountPricing = hibachiUtilityService.formatValue_currency(adjustedAccountPrice, {currencyCode:currencyCode});

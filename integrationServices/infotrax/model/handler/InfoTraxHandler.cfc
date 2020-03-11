@@ -18,7 +18,6 @@ component extends='Slatwall.org.Hibachi.HibachiEventHandler' {
 				return;
 			}
 			
-			
 			// Sync any pending order after account creation
 			if( arguments.eventName == 'afterInfotraxAccountCreateSuccess' ) {
 				ormFlush();

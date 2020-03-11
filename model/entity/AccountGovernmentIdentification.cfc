@@ -76,7 +76,10 @@ component displayname="Account Government Identification" entityname="SlatwallAc
 	
 	// ============= START: Bidirectional Helper Methods ===================
 	
-	// Account (many-to-one)    
+	// Account (many-to-one)    	//CUSTOM PROPERTIES BEGIN
+property name="governmentIdentificationNumberHashed" ormtype="string" hb_auditable="false" column="governmentIdNumberHashed" hint="as the name suggest, needed this for validation";
+
+//CUSTOM PROPERTIES END
 	public void function setAccount(required any account) {    
 		variables.account = arguments.account;    
 		if(isNew() || !arguments.account.hasAccountGovernmentIdentifications( this )) {    
@@ -115,14 +118,15 @@ component displayname="Account Government Identification" entityname="SlatwallAc
 	}
 	
 	public void function setGovernmentIdentificationNumber(required string governmentIdentificationNumber) {
+
+		this.getService('accountService')
+		.updateGovernmentIdentificationNumberProperties(this, arguments.governmentIdentificationNumber);
+		
 		if(len(arguments.governmentIdentificationNumber)) {
 			variables.governmentIdentificationNumber = arguments.governmentIdentificationNumber;
-			setGovernmentIdentificationLastFour( right(variables.governmentIdentificationNumber, 4) );
 			encryptProperty('governmentIdentificationNumber');
 		} else {
 			structDelete(variables, "governmentIdentificationNumber");
-			setGovernmentIdentificationLastFour(javaCast("null", ""));
-			setGovernmentIdentificationNumberEncrypted(javaCast("null", ""));
 		}
 	}
 	
@@ -134,6 +138,27 @@ component displayname="Account Government Identification" entityname="SlatwallAc
 	
 	// =================== START: ORM Event Hooks  =========================
 	
-	// ===================  END:  ORM Event Hooks  =========================
-}
+	// ===================  END:  ORM Event Hooks  =========================	//CUSTOM FUNCTIONS BEGIN
 
+public boolean function validateGovernmentIdentificationNumber() {
+		var governmentID = this.getGovernmentIdentificationNumber();
+		var siteCreatedCountry = this.getAccount().getAccountCreatedSite().getRemoteID();
+		
+		if ( 'USA' == siteCreatedCountry ) {
+			return ( 9 == len( governmentID ) );
+		} else if ( 'CAN' == siteCreatedCountry ) {
+			return ( 10 == len( governmentID ) );
+		}
+		
+		return true;
+	}
+	
+	public boolean function validateGovernmentIdIsUniquePerCountry() {
+		return getDAO("accountDAO").getGovernmentIdNotInUseFlag(
+				this.getGovernmentIdentificationNumberHashed(),
+				this.getAccount().getAccountCreatedSite().getSiteID()
+			);
+	}
+	
+//CUSTOM FUNCTIONS END
+}

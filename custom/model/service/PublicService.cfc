@@ -76,25 +76,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             getHibachiScope().addActionResult( "public:cart.updateAddress", true );
         }
      }
-     
-    /**
-     * Function to delete Account
-     * This is a test method to be used in jMeter for now,
-     * It is not part of core APIs, should be removed.
-     * @return none
-    */
-    public void function deleteJmeterAccount() {
-        param name="data.accountID" default="";
-        
-        var account = getAccountService().getAccount( data.accountID );
-        
-        if(!isNull(account) && account.getAccountID() == getHibachiScope().getAccount().getAccountID() ) {
-            var deleteOk = getAccountService().deleteAccount( account );
-            getHibachiScope().addActionResult( "public:account.deleteAccount", !deleteOK );
-        } else {
-            getHibachiScope().addActionResult( "public:account.deleteAccount", true );   
-        }
-    }
     
     /**
      * Function to get Types by Type Code
@@ -103,7 +84,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
      * @return none
     */
     public void function getSystemTypesByTypeCode(required struct data){
-        param name="arguments.data.typeCode";
+        param name="arguments.data.typeCode" default="";
         
         var typeList = getService('TypeService').getTypeByTypeCode(arguments.data.typeCode);
         arguments.data.ajaxResponse['typeList'] = typeList;
@@ -117,15 +98,11 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
      * @return none
     */
     public void function getSkuStock(required struct data){
-        param name="arguments.data.skuID";
-        param name="arguments.data.locationID";
-        
-        var sku = getService('skuService').getSku(arguments.data.skuID);
-        var location = getService('locationService').getLocation(arguments.data.locationID);
-        if(!isNull(sku) && !isNull(location)) {
-            var stock = getService('stockService').getCurrentStockBySkuAndLocation( arguments.data.skuID, arguments.data.locationID );
-            arguments.data.ajaxResponse['stock'] = stock;
-        }
+        param name="arguments.data.skuID" default="";
+        param name="arguments.data.locationID" default="";
+
+        var stock = getService('stockService').getCurrentStockBySkuAndLocation( arguments.data.skuID, arguments.data.locationID );
+        arguments.data.ajaxResponse['stock'] = stock;
     }
     
     /**
@@ -135,13 +112,10 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
      * @return none
     */
     public void function getProductReviews(required struct data){
-        param name="arguments.data.productID";
-        
-        var product = getService('productService').getProduct(arguments.data.productID);
-        if(!isNull(product)) {
-            var productReviews = product.getAllProductReviews();
-            arguments.data.ajaxResponse['productReviews'] = productReviews;
-        }
+        param name="arguments.data.productID" default="";
+
+        var productReviews = getService('productService').getAllProductReviews(productID = arguments.data.productID);
+        arguments.data.ajaxResponse['productReviews'] = productReviews;
     }
     
     /**
@@ -151,13 +125,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
      * @return none
     */
     public void function getRelatedProducts(required struct data){
-        param name="arguments.data.productID";
-        
-        var product = getService('productService').getProduct(arguments.data.productID);
-        if(!isNull(product)) {
-            var relatedProducts = product.getAllRelatedProducts();
-            arguments.data.ajaxResponse['relatedProducts'] = relatedProducts;
-        }
+        param name="arguments.data.productID" default="";
+        var relatedProducts = getService('productService').getAllRelatedProducts(productID = arguments.data.productID);
+        arguments.data.ajaxResponse['relatedProducts'] = relatedProducts;
     }
     
     /**
@@ -169,9 +139,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
      * @return none
     */
     public void function getProductImageGallery(required struct data){
-        param name="arguments.data.productID";
+        param name="arguments.data.productID" default="";
         param name="arguments.data.defaultSkuOnlyFlag" default="false";
-        
+
         var product = getService('productService').getProduct(arguments.data.productID);
         if(structKeyExists(arguments.data,'resizeSizes')){
             var sizeArray = [];
@@ -191,13 +161,10 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
      * @return none
     */
     public void function getProductOptionsByOptionGroup(required struct data){
-        param name="arguments.data.productID";
-        param name="arguments.data.optionGroupID";
-        
-        var product = getService('productService').getProduct(arguments.data.productID);
-        if(!isNull(product)) {
-            arguments.data.ajaxResponse['productOptions'] = product.getOptionsByOptionGroup(arguments.data.optionGroupID);
-        }
+        param name="arguments.data.productID" default="";
+        param name="arguments.data.optionGroupID" default="";
+
+        arguments.data.ajaxResponse['productOptions'] = getService('optionService').getOptionsByOptionGroup( arguments.data.productID, arguments.data.optionGroupID );
     }
     
     /**
@@ -207,10 +174,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
      * @return none
      **/
     public void function getAppliedPayments(required any data) {
-        if( getHibachiScope().getCart().hasOrderPayment() ) {
-            var appliedPaymentMethods = getOrderService().getAppliedOrderPayments();
-            arguments.data['ajaxResponse']['appliedPayments'] = appliedPaymentMethods;
-        }
+        
+        arguments.data['ajaxResponse']['appliedPayments'] = getOrderService().getAppliedOrderPayments(getHibachiScope().getCart());
     }
     
     /**
@@ -220,10 +185,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
      * @return none
      **/
     public void function getAppliedPromotionCodes(required any data) {
-        var promotionCodes = getHibachiScope().getCart().getAllAppliedPromotions();
-        if(arrayLen(promotionCodes)) {
-		    arguments.data['ajaxResponse']['appliedPromotionCodes'] = promotionCodes;
-        }
+        
+        arguments.data['ajaxResponse']['appliedPromotionCodes'] = getHibachiScope().getCart().getAllAppliedPromotions();
     }
     
     /**
@@ -233,12 +196,10 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
      * @return none
      **/
     public void function getAvailablePaymentMethods(required any data) {
-        var paymentMethods = getHibachiScope().getCart().getEligiblePaymentMethodDetails();
-        if(arrayLen(paymentMethods)) {
-            var accountPaymentMethods = [];
-            accountPaymentMethods = getService("accountService").getAvailablePaymentMethods();
-		    arguments.data['ajaxResponse']['availablePaymentMethods'] = accountPaymentMethods;
-        }
+        arguments.account = getHibachiScope().getAccount();
+        
+        var accountPaymentMethods = getService("accountService").getAvailablePaymentMethods( argumentCollection=arguments );
+	    arguments.data['ajaxResponse']['availablePaymentMethods'] = accountPaymentMethods;
     }
     
     /**
@@ -259,24 +220,14 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
      * Function to get the parent accounts of user account
      **/
     public void function getParentOnAccount(required any data) {
-        var account = getHibachiScope().getAccount();
-        if(account.hasChildAccountRelationship()) {
-            var parentAccounts = getAccountService().getAllParentsOnAccount();
-            
-            arguments.data['ajaxResponse']['parentAccount'] = parentAccounts;
-        }
+        arguments.data['ajaxResponse']['parentAccount'] = getAccountService().getAllParentsOnAccount(getHibachiScope().getAccount());
     }
     
     /**
      * Function to get the child accounts of user account
      **/
     public void function getChildOnAccount(required any data) {
-        var account = getHibachiScope().getAccount();
-        if(account.hasChildAccountRelationship()) {
-            var parentAccounts = getAccountService().getAllChildsOnAccount();
-            
-            arguments.data['ajaxResponse']['childAccount'] = parentAccounts;
-        }
+        arguments.data['ajaxResponse']['childAccount'] = getAccountService().getAllChildsOnAccount(getHibachiScope().getAccount());
     }
     
     /**
@@ -287,7 +238,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
      * @return none
      **/
     public void function getSubscriptionsUsageOnAccount(required any data) {
-        var subscriptionUsage = getSubscriptionService().getSubscriptionsUsageOnAccount( {accountID: getHibachiScope().getAccount().getAccountID(), pageRecordsShow: arguments.data.pageRecordsShow, currentPage: arguments.data.currentPage } );
+        arguments.account = getHibachiScope().getAccount();
+        
+        var subscriptionUsage = getSubscriptionService().getSubscriptionsUsageOnAccount( argumentCollection=arguments );
         arguments.data['ajaxResponse']['subscriptionUsageOnAccount'] = subscriptionUsage;
     }
     
@@ -299,7 +252,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
      * @return none
      **/
     public void function getAllGiftCardsOnAccount(required any data) {
-        var giftCards = getGiftCardService().getAllGiftCardsOnAccount({accountID: getHibachiScope().getAccount().getAccountID(), pageRecordsShow: arguments.data.pageRecordsShow, currentPage: arguments.data.currentPage });
+        arguments.account = getHibachiScope().getAccount();
+        
+        var giftCards = getService('giftCardService').getAllGiftCardsOnAccount( argumentCollection=arguments);
         arguments.data['ajaxResponse']['giftCardsOnAccount'] = giftCards;
     }
     
@@ -311,7 +266,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
      * @return none
      **/
     public void function getAllCartsAndQuotesOnAccount(required any data) {
-        var accountOrders = getOrderService().getAllCartsAndQuotesOnAccount({accountID: getHibachiScope().getAccount().getAccountID(), pageRecordsShow: arguments.data.pageRecordsShow, currentPage: arguments.data.currentPage });
+        arguments.account = getHibachiScope().getAccount();
+        
+        var accountOrders = getOrderService().getAllCartsAndQuotesOnAccount( argumentCollection=arguments );
         arguments.data['ajaxResponse']['cartsAndQuotesOnAccount'] = accountOrders;
     }
      
@@ -323,7 +280,10 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
      * @return none
      **/ 
     public void function getAllOrdersOnAccount(required any data){
-        var accountOrders = getAccountService().getAllOrdersOnAccount({accountID: getHibachiScope().getAccount().getAccountID(), pageRecordsShow: arguments.data.pageRecordsShow, currentPage: arguments.data.currentPage });
+        
+        arguments.account = getHibachiScope().getAccount();
+        
+        var accountOrders = getAccountService().getAllOrdersOnAccount( argumentCollection=arguments );
         arguments.data['ajaxResponse']['ordersOnAccount'] = accountOrders;
     }
      
@@ -336,7 +296,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
      * @return none
      **/
     public void function getAllOrderFulfillmentsOnAccount(required any data) {
-        var accountOrders = getOrderService().getAllOrderFulfillmentsOnAccount({accountID: getHibachiScope().getAccount().getAccountID(), pageRecordsShow: arguments.data.pageRecordsShow, currentPage: arguments.data.currentPage });
+        arguments.account = getHibachiScope().getAccount();
+        
+        var accountOrders = getOrderService().getAllOrderFulfillmentsOnAccount( argumentCollection=arguments );
         arguments.data['ajaxResponse']['orderFulFillemntsOnAccount'] = accountOrders;
     }
     
@@ -348,7 +310,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
      * @return none
      **/
     public void function getAllOrderDeliveryOnAccount(required any data) {
-        var accountOrders = getOrderService().getAllOrderDeliveryOnAccount({accountID: getHibachiScope().getAccount().getAccountID(), pageRecordsShow: arguments.data.pageRecordsShow, currentPage: arguments.data.currentPage });
+        arguments.account = getHibachiScope().getAccount();
+        
+        var accountOrders = getOrderService().getAllOrderDeliveryOnAccount( argumentCollection=arguments );
         arguments.data['ajaxResponse']['orderDeliveryOnAccount'] = accountOrders;
     }
     
@@ -512,30 +476,40 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         param name="arguments.data.orderTemplateSystemCode" default="ottSchedule";
         param name="arguments.data.frequencyTermID" default="23c6a8caa4f890196664237003fe5f75";// TermID for monthly
         param name="arguments.data.scheduleOrderNextPlaceDateTime" default= "#dateAdd('m',1,dateFormat(now()))#";
-        param name="arguments.data.siteID" default="#getHibachiScope().getSite().getSiteID()#";
+        param name="arguments.data.siteID" default="";
         param name="arguments.data.saveContext" default="";
         
-        if(getHibachiScope().getAccount().isNew() || isNull(arguments.data.orderTemplateSystemCode)){
+        var isUpgradedFlag = arguments.data.saveContext == "upgradeFlow" ? true : false;
+
+        if((getHibachiScope().getAccount().isNew() && !isUpgradedFlag)  || isNull(arguments.data.orderTemplateSystemCode)){
             return;
         }
-        
+
         var orderTemplate = getOrderService().newOrderTemplate();
         var processObject = orderTemplate.getProcessObject("create");
         var orderTypeID = getTypeService().getTypeBySystemCode(arguments.data.orderTemplateSystemCode).getTypeID();
-        
-        processObject.setSiteID(arguments.data.siteID);
-        
-        if( StructKeyExists(arguments.data, 'cmsSiteID') ){
-            processObject.setCmsSiteID(arguments.data.cmsSiteID);
+
+        // Set site by siteID or siteCode
+        var siteID = arguments.data.siteID;
+        if ( !len( siteID ) && structKeyExists( arguments.data, 'siteCode' ) ) {
+            var site = getService('SiteService').getSiteBySiteCode( arguments.data.siteCode );
+        } else {
+            var site = getService('SiteService').getSite( siteID );
         }
         
-        if( StructKeyExists(arguments.data, 'siteCode') ){
-            processObject.setSiteCode(arguments.data.siteCode);
+        if ( !isNull( site ) ) {
+            processObject.setSite( site );
         }
         
         processObject.setOrderTemplateTypeID(orderTypeID);
         processObject.setFrequencyTermID(arguments.data.frequencyTermID);
-        processObject.setAccountID(getHibachiScope().getAccount().getAccountID());
+        
+        if(!isUpgradedFlag){
+            processObject.setAccountID(getHibachiScope().getAccount().getAccountID());
+        }else{
+            //Vip upgrade so we assign the VIP price group to the process object
+            processObject.setPriceGroup(getService('PriceGroupService').getPriceGroupByPriceGroupCode(3));
+        }
         
         if(arguments.data.orderTemplateSystemCode == 'ottSchedule'){
             processObject.setScheduleOrderNextPlaceDateTime(arguments.data.scheduleOrderNextPlaceDateTime);  
@@ -546,6 +520,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         }else{
             orderTemplate = getOrderService().processOrderTemplate(orderTemplate,processObject,"create");
         }
+        
         getHibachiScope().addActionResult( "public:order.create", orderTemplate.hasErrors() );
         if(orderTemplate.hasErrors()) {
             addErrors(arguments.data, orderTemplate.getErrors());
@@ -861,6 +836,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             super.logout();
         }
         
+        
+        arguments.data.accountType = arguments.accountType;
+        
         var account = super.createAccount(arguments.data);
         
         if(account.hasErrors()){
@@ -869,7 +847,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             return account;
         }
         
-        account.setAccountType(arguments.accountType);
         account.setActiveFlag(accountTypeInfo[arguments.accountType].activeFlag);
         
         var priceGroup = getService('PriceGroupService').getPriceGroupByPriceGroupCode(accountTypeInfo[arguments.accountType].priceGroupCode);
@@ -909,6 +886,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         if(!getHibachiScope().getLoggedInFlag()){
              getHibachiScope().addActionResult('public:account.create',false);
+        }else{
+            getHibachiScope().addActionResult('public:account.createAccount',false);
         }
         
         return account;
@@ -919,21 +898,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     }
     
     public any function createRetailEnrollment(required struct data){
-                
-        if(isNull(arguments.data.sponsorID) || !len(arguments.data.sponsorID)){
-    	    getHibachiScope().addActionResult( "public:account.create", true );
-            addErrors(
-                arguments.data, 
-                { 
-                    'sponsorID': [ 
-                        getHibachiScope().rbKey('frontend.validate.selectSponsor') 
-                    ] 
-                }
-            ); 
-            arguments.data['ajaxResponse']['createAccount'] = getHibachiScope().rbKey('frontend.validate.ownerRequired');
-            return;
-        }
-        
         return enrollUser(arguments.data, 'customer');
     }
     
@@ -1079,14 +1043,37 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     
     public any function getBaseProductCollectionList(required any data){
         var account = getHibachiScope().getAccount();
-        var accountType = account.getAccountType();
+        var accountType = account.getAccountType()?: 'retail';
         var holdingPriceGroups = account.getPriceGroups();
-        var priceGroupCode =  (!isNull(arguments.data.priceGroupCode) && len(arguments.data.priceGroupCode)) ? arguments.data.priceGroupCode : (arrayLen(holdingPriceGroups)) ? holdingPriceGroups[1].getPriceGroupCode() : 2;
         var site = getService('SiteService').getSiteByCmsSiteID(arguments.data.cmsSiteID);
         var currencyCode = site.setting('skuCurrency');
+        var order = getHibachiScope().getCart();
+        var priceGroupCode =  2;
+        
+        /*
+            Price group is prioritized as so: 
+                1.Order price group
+                2.Price group passed in as argument
+                3. Price group on account
+                4. Default to 2
+        
+        */
+        
+        if(!isNull(order.getPriceGroup())){ //order price group
+            priceGroupCode = order.getPriceGroup().getPriceGroupCode();
+            if(priceGroupCode == 1){
+                accountType == 'marketPartner'
+            }else if(priceGroupCode == 3){
+                accountType == 'VIP'
+            }else{
+                accountType == 'retail'
+            }
+        }else if(!isNull(arguments.data.priceGroupCode) && len(arguments.data.priceGroupCode)){ //argument price group
+            priceGroupCode = arguments.data.priceGroupCode;
+        }else if(!isNull(holdingPriceGroups) && arrayLen(holdingPriceGroups)){ //account price group
+            priceGroupCode = holdingPriceGroups[1].getPriceGroupCode();
+        }
 
-
-        //TODO: Consider starting from skuPrice table for less joins
         var productCollectionList = getProductService().getProductCollectionList();
         productCollectionList.addDisplayProperties('productID');
         productCollectionList.addDisplayProperties('productName');
@@ -1289,15 +1276,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     }
     
     public any function addEnrollmentFee( boolean vipUpgrade = false, boolean mpUpgrade = false){
-        
-        var account = getHibachiScope().getAccount();
-        
-        if(account.getAccountStatusType().getSystemCode() == 'astEnrollmentPending' || arguments.vipUpgrade || arguments.mpUpgrade){
-            if(account.getAccountType() == 'VIP' || arguments.vipUpgrade){
-                var VIPSkuID = getService('SettingService').getSettingValue('integrationmonatGlobalVIPEnrollmentFeeSkuID');
-                return addOrderItem({skuID:VIPSkuID, quantity: 1});
-            }
-            
+        if(arguments.vipUpgrade){
+            var VIPSkuID = getService('SettingService').getSettingValue('integrationmonatGlobalVIPEnrollmentFeeSkuID');
+            return addOrderItem({skuID:VIPSkuID, quantity: 1});
         }
     }
     
@@ -1466,33 +1447,41 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         }
         
         //set upgraded info on order
-        return setUpgradeOnOrder(arguments.data.upgradeType, 1);
+        var data = {upgradeType:arguments.data.upgradeType, upgradeFlowFlag: 1}
+        return setUpgradeOnOrder(data);
         
     }
     
-    public any function setUpgradeOnOrder(upgradeType, upgradeFlowFlag = 0){
+    public any function setUpgradeOnOrder(data){
+        param name="arguments.data.upgradeType" default="marketPartner";
+        param name="arguments.data.upgradeFlowFlag" default=0;
         
-        //if we are not in an upgrade flow and the user is logged in, log the user out.
-        if(!upgradeFlowFlag && getHibachiScope().getLoggedInFlag()){
-            super.logout();
+        if(!isNull(getHibachiScope().getCart().getMonatOrderType())){
+            arguments.data['ajaxResponse']['upgradeResponseFailure'] = getHibachiScope().rbKey('frontend.validate.upgradeAlreadyExists');
+            return;
         }
         
+        //if we are not in an upgrade flow and the user is logged in, log the user out.
+        if(!arguments.data.upgradeFlowFlag && getHibachiScope().getLoggedInFlag()){
+            super.logout();
+        }
+  
         //getting the upgraded account type, price group and order type
-        var upgradeAccountType = (arguments.upgradeType == 'VIP') ? 'VIP' : 'marketPartner';
-        var priceGroup = (arguments.upgradeType == 'VIP') ? getService('PriceGroupService').getPriceGroupByPriceGroupCode(3) : getService('PriceGroupService').getPriceGroupByPriceGroupCode(1);
-        var monatOrderType = (arguments.upgradeType == 'VIP') ? getService('TypeService').getTypeByTypeCode('motVipEnrollment') : getService('TypeService').getTypeByTypeCode('motMpEnrollment');
+        var upgradeAccountType = (arguments.data.upgradeType == 'VIP') ? 'VIP' : 'marketPartner';
+        var priceGroup = (arguments.data.upgradeType == 'VIP') ? getService('PriceGroupService').getPriceGroupByPriceGroupCode(3) : getService('PriceGroupService').getPriceGroupByPriceGroupCode(1);
+        var monatOrderType = (arguments.data.upgradeType == 'VIP') ? getService('TypeService').getTypeByTypeCode('motVipEnrollment') : getService('TypeService').getTypeByTypeCode('motMpEnrollment');
         var order = getHibachiScope().getCart();
         
         //applying upgrades to order
         order.setUpgradeFlag(true);
         order.setMonatOrderType(monatOrderType);
         order.setAccountType(upgradeAccountType);
-        order.setPriceGroup(priceGroup); 
+        order.setPriceGroup(priceGroup);
         
         //Adding enrollment fee for VIP only
         //TODO: add a check here to avoid duplicate enrollment fee's on an order
-        if(arguments.upgradeType == 'VIP'){
-            return this.addEnrollmentFee(true);
+        if(arguments.data.upgradeType == 'VIP'){
+            return this.addEnrollmentFee(vipUpgrade = true);
         }
         
         if(!order.hasErrors()) {
@@ -1506,12 +1495,41 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             //Persist Session
             getHibachiSessionService().persistSession();
             
+            //flushing
+            getHibachiScope().flushORMSession(); 
+            
         }else{
             addErrors(data, order.getProcessObject("addOrderItem").getErrors());
             addErrors(data, order.getErrors());
         }
 		
     }
+    
+    //Removes upgraded status from an order
+     public any function removeUpgradeOnOrder(){
+        var account = getHibachiScope().getAccount();
+        var accountType=account.getAccountType() ?: 'customer';
+        var holdingPriceGroup = account.getPriceGroups();
+        var order = getHibachiScope().getCart();
+        order = this.removeIneligibleOrderItems(order);
+        order = getOrderService().saveOrder(order);
+        getHibachiScope().flushORMSession(); 
+        
+        // First check for a price group on the account, then default to retail price group
+        var priceGroup = (!isNull(holdingPriceGroup) && arrayLen(holdingPriceGroup)) ? holdingPriceGroup[1] : getService('priceGroupService').getPriceGroupByPriceGroupCode(2); 
+        
+        //Setting downgraded status on orders 
+        order.setUpgradeFlag(false);
+        order.setMonatOrderType(javacast("null",""));
+        order.setAccountType(accountType);
+        order.setPriceGroup(priceGroup); 
+        
+        //Updating the prices to account for new statuses
+        order = getOrderService().saveOrder(order);
+        getHibachiScope().flushORMSession(); 
+        arguments.data['ajaxResponse']['cart'] = getHibachiScope().getCartData(cartDataOptions='full');
+        return order;
+     }
     
     public any function getUpgradedOrderSavingsAmount(cart = getHibachiScope().getCart()){
 		
@@ -1555,11 +1573,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		}
 
 		arguments.data['ajaxResponse']['upgradedSavings'] = precisionEvaluate(currentPrice - upgradedPrice);
-    }
-    
-    public void function getAllOrdersOnAccount(required any data){
-        var accountOrders = getAccountService().getAllOrdersOnAccount({accountID: arguments.data.accountID, pageRecordsShow: arguments.data.pageRecordsShow, currentPage: arguments.data.currentPage });
-        arguments.data['ajaxResponse']['ordersOnAccount'] = accountOrders;
     }
     
     public void function getOrderItemsByOrderID(required any data){
@@ -1683,17 +1696,117 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		}
 	}
 	
-    public void function getOrderTemplateDetails(required any data){
-        param name="arguments.data.pageRecordsShow" default=5;
-        param name="arguments.data.currentPage" default=1;
-        param name="arguments.data.orderTemplateId" default="";
-		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; 
-		
-		super.getOrderTemplateDetails(arguments.data);
-		if(structKeyExists(arguments.data.ajaxResponse,'orderTemplate')){
-		    var orderTemplate = getOrderService().getOrderTemplate(arguments.data.orderTemplateID);
-		    arguments.data.ajaxResponse.orderTemplate['canPlaceOrderFlag'] = orderTemplate.getCanPlaceOrderFlag();
-		}
+    //override core to also set the cheapest shippinng method as the default, and set shipping same as billing
+	public void function addShippingAddressUsingAccountAddress(data){
+	    super.addShippingAddressUsingAccountAddress(arguments.data);
+	    var cart = getHibachiScope().getCart();
+        this.setDefaultShippingMethod();
+        if(isNull(cart.getOrderPayments()) || !arrayLen(cart.getOrderPayments())) {
+            this.setShippingSameAsBilling();
+        }
 	}
+	
+	//override core to also set the cheapest shippinng method as the default, and set shipping same as billing
+	public void function addOrderShippingAddress(data){
+        var cart = getHibachiScope().getCart();
+	    super.addOrderShippingAddress(arguments.data);
+	    this.setDefaultShippingMethod();
+        if(isNull(cart.getOrderPayments()) || !arrayLen(cart.getOrderPayments()) ){
+            this.setShippingSameAsBilling();
+        }
+	}
+	
+	//this method sets the cheapest shipping method on the order
+	public void function setDefaultShippingMethod(order = getHibachiScope().getCart()){
+
+        //Then we get the shipping fulfillment
+        var orderFulfillments = arguments.order.getOrderFulfillments();
+        
+        if(arrayLen(orderFulfillments)) {
+            var shippingFulfillment = orderFulfillments[1];
+            var shippingMethods = getOrderService().getShippingMethodOptions(shippingFulfillment);
+            //make sure we have shipping options
+            if(!isNull(shippingMethods) && arrayLen(shippingMethods) && len(shippingMethods[1].value)){
+                //then we set the cheapest shipping fulfillment, which is set as first by sort order
+                var data = {fulfillmentID:shippingFulfillment.getOrderFulfillmentID(), shippingMethodID: shippingMethods[1].value};
+                super.addShippingMethodUsingShippingMethodID(data);               
+            }
+        }
+	}
+	
+	public void function setShippingSameAsBilling(order = getHibachiScope().getCart()){
+	    if(isNull(arguments.order.getOrderFulfillments()[1]) || isNull(arguments.order.getOrderFulfillments()[1].getShippingAddress())) return;
+        var addressID = arguments.order.getOrderFulfillments()[1].getShippingAddress().getAddressID();
+        super.addBillingAddress({addressID: addressID});
+	}
+	
+	/***
+	    This endpoint sets the initial order defaults per Monat's requirenments
+	        1.Billing address is same as shipping
+	        2.Shipping method is the cheapest available
+	        3.If there is a default payment method on the account, it gets set on the order
+	***/
+	
+	public void function setIntialShippingAndBilling(required any data){
+        param name="arguments.data.defaultShippingFlag" default=true;
+        
+	    var cart = getHibachiScope().getCart();
+	    var account = cart.getAccount();
+        var orderFulfillments = cart.getOrderFulfillments();
+        
+        //make sure we have an account and order fulfillments
+        if(isNull(account) || !arrayLen(orderFulfillments)) return;
+        
+	    //if the default shipping flag is passed in, and the account has a primary shipping address, set shipping address with it otherwise use data passed in as arguments
+	   
+	    if(arguments.data.defaultShippingFlag && !isNull(account.getPrimaryShippingAddress())) {
+	        var shippingFulfillmentID = orderFulfillments[1].getOrderFulfillmentID();
+	        var addressID = account.getPrimaryShippingAddress().getAccountAddressID();
+	        var data = {shippingFulfillmentID:shippingFulfillmentID, accountAddressID: addressID};
+	        this.addShippingAddressUsingAccountAddress(data); 
+	    }else if(!isNull(arguments.data.streetAddress)){
+	        this.addOrderShippingAddress(arguments.data);
+	    }
+        
+       
+        //Set up the billing information, if there is a primary account payment method
+        if(!isNull(account.getPrimaryPaymentMethod())){
+            var paymentData = {  requireBillingAddress: 0, copyFromType: 'accountPaymentMethod', accountPaymentMethodID: account.getPrimaryPaymentMethod().getAccountPaymentMethodID() };
+            super.addOrderPayment(paymentData);
+        }
+	    arguments.data['ajaxResponse']['cart'] = getHibachiScope().getCartData(cartDataOptions='full');
+	}
+    
+    public any function removeIneligibleOrderItems(order = getHibachiScope().getCart()){
+        var skuIDs = [];
+        
+        //add logic to also remove sku's with no price
+        for(var orderItem in arguments.order.getOrderItems()){
+            if(!orderItem.getSku().canBePurchased(getHibachiScope().getAccount())){
+                arrayAppend(skuIDs, orderItem.getSku().getSkuID());
+            }
+        }
+        
+        if(!arrayLen(skuIDs)) return arguments.order;
+        
+        var orderData = {
+            orderItemsToRemove: skuIDs,
+            updateOrderAmounts :false
+        }
+
+        return this.getOrderService().orderService.processOrder( arguments.order, orderData, 'removeOrderItem');
+        
+    }
+    
+    public void function getOFYProductsForOrder(order = getHibachiScope().getCart()){
+        var records = getService('orderService').getOFYProductsForOrder(order);
+        var imageService = getService('ImageService');
+        records = arrayMap( records, function( product ) {
+            product.skuImagePath = imageService.getResizedImageByProfileName( product.skuID,'medium' );
+            return product;
+        });
+        
+        arguments.data['ajaxResponse']['ofyProducts'] = records;
+    }
     
 }
