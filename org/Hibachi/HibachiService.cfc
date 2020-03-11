@@ -410,12 +410,14 @@
 			var lCaseMissingMethodName = lCase( arguments.missingMethodName );
 	
 			if ( lCaseMissingMethodName.startsWith( 'get' ) ) {
-				if(right(lCaseMissingMethodName,9) == "smartlist") {
+				if(right(lCaseMissingMethodName, 9) == "smartlist") {
 					return onMissingGetSmartListMethod( arguments.missingMethodName, arguments.missingMethodArguments );
-				} else if(right(lCaseMissingMethodName,14) == "collectionlist"){
+				} else if(right(lCaseMissingMethodName, 14) == "collectionlist"){
 					return onMissingGetCollectionListMethod( arguments.missingMethodName, arguments.missingMethodArguments );
-				} else if(right(lCaseMissingMethodName,6) == "struct"){
+				} else if(right(lCaseMissingMethodName, 6) == "struct"){
 					return onMissingGetEntityStructMethod( arguments.missingMethodName, arguments.missingMethodArguments );
+				} else if(right(lCaseMissingMethodName, 15) == "processcontexts"){ 
+					return onMissingGetEntityProcessContexts( arguments.missingMethodName, arguments.missingMethodArguments ); 
 				} else {
 					return onMissingGetMethod( arguments.missingMethodName, arguments.missingMethodArguments );
 				}
@@ -549,7 +551,16 @@
 			collection.setPageRecordsShow(1);
 			return collection.getPageRecords(formatRecords=false)[1];
 		}
-	
+
+		private function onMissingGetEntityProcessContexts( required string missingMethodName, required struct missingMethodArguments ) {
+			var entityNameLength = len(arguments.missingMethodName) - 18;
+			var entityName = arguments.missingMethodName.substring( 3, entityNameLength + 3 );
+
+			var metaData = getEntityMetaData(entityName);
+			
+			return metaData.hb_processContexts; 	
+		}
+
 		/**
 		 * Provides dynamic list methods, by convention, on missing method:
 		 *
