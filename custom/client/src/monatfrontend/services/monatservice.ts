@@ -214,5 +214,18 @@ export class MonatService {
 		}
 		return deferred.promise;
     }
+    
+    /**
+    	This method gets the value of a cookie by its name
+    	Example cookie: "flexshipID=01234567" => "01234567"
+    **/
+    
+    public getCookieValueByCookieName(name:string):string{
+		let cookieString = document.cookie;
+		let cookieArray = cookieString.split(';')
+		let cookieValueArray = <Array<string>>cookieArray.filter( el => el.search(name) > -1 );
+		if(!cookieValueArray.length) return '';
+    	return  cookieValueArray[0].substr(cookieValueArray[0].indexOf('=') + 1);
+    }
 
 }

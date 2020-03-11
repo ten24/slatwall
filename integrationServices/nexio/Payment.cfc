@@ -188,7 +188,13 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			}
 			
 			var publicKey = getPublicKey(arguments.requestBean);
-			var checkFraud = setting(settingName='checkFraud', requestBean=arguments.requestBean) ? true : false;
+			
+			
+			var checkFraud = false;
+			
+			if(getHibachiScope().hasSessionValue('kount-token')){
+				checkFraud = setting(settingName='checkFraud', requestBean=arguments.requestBean) ? true : false;
+			}
 			
 			var publicKey = getPublicKey(arguments.requestBean);
 
@@ -232,6 +238,9 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			// Save Card, this is the imortant token we want to persist for Slatwall payment data (https://github.com/nexiopay/payment-service-example-node/blob/master/ClientSideToken.js#L107)
 			var responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'generateToken', requestData);
 
+			if(checkFraud && getHibachiScope().hasSessionValue('kount-token')){
+				getHibachiScope().clearSessionValue('kount-token');
+			}
 			// Setting AVS code (https://github.com/ten24/Monat/blob/develop/Slatwall/model/transient/payment/TransactionResponseBean.cfc) off Nexio's response 
 			var responseDataAvsCode = "";
 			
@@ -660,10 +669,15 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			// Server error handling - Unavailable or Communication Problem
 			if (httpResponse.status_code == 0 || left(httpResponse.status_code, 1) == 5 || left(httpResponse.status_code, 1) == 4) {
 				arguments.responseBean.setStatusCode("ERROR");
-	
+				
 				// Public error message
-				arguments.responseBean.addError('serverCommunicationFault', "#rbKey('nexio.error.serverCommunication_public')# #httpResponse.statusCode#");
-	
+				var responseContent = deserializeJSON( httpResponse.filecontent );
+				if ( isStruct( responseContent ) && structKeyExists( responseContent, 'message' ) ) {
+					arguments.responseBean.addError( 'serverCommunicationFault', responseContent.message );
+				} else {
+					arguments.responseBean.addError( 'serverCommunicationFault', "#rbKey('nexio.error.serverCommunication_public')# #httpResponse.statusCode#" );
+				}
+				
 				// Only for admin purposes
 				arguments.responseBean.addMessage('serverCommunicationFault', "#rbKey('nexio.error.serverCommunication_admin')# - #httpResponse.statusCode#. Check the payment transaction for more details.");
 				

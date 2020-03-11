@@ -18,6 +18,7 @@ class MonatEnrollmentController {
 	public canPlaceCartOrder:boolean = true; //set to true at start so users can progress to today's order page
 	public showCanPlaceOrderAlert:boolean = false;
 	public hasSkippedSteps = false;
+	public currentStepName:string;
 	
 	//@ngInject
 	constructor(public monatService, public observerService, public $rootScope, public publicService) {
@@ -156,6 +157,7 @@ class MonatEnrollmentController {
 			step.selected = false;
 		});
 		this.steps[this.position].selected = true;
+		this.currentStepName = this.steps[this.position].stepClass;
 	}
 	
 	public editFlexshipItems = () => {

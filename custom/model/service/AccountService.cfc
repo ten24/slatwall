@@ -47,11 +47,10 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 		return arguments.account.getFullName() & ' ( ' & arguments.account.getAccountNumber() & ' - ' & accountType & ' )';
 	}
 	
-	public any function getAllOrdersOnAccount(struct data={}) {
+	public any function getAllOrdersOnAccount(required any account, struct data={}) {
         param name="arguments.data.currentPage" default=1;
-        param name="arguments.data.pageRecordsShow" default=5;
-        param name="arguments.data.accountID" default= getHibachiSCope().getAccount().getAccountID();
-        param name="arguments.data.orderID" default= false;
+        param name="arguments.data.pageRecordsShow" default=getHibachiScope().setting('GLOBALAPIPAGESHOWLIMIT');;
+        param name="arguments.data.orderID" default="";
         
 		var ordersList = getHibachiSCope().getAccount().getOrdersCollectionList();
 
@@ -69,13 +68,13 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 			orderDeliveries.trackingUrl
 		');
 		
-		ordersList.addFilter( 'account.accountID', arguments.data.accountID, '=');
+		ordersList.addFilter( 'account.accountID', arguments.account.getAccountID());
 		ordersList.addFilter( 'orderStatusType.systemCode', 'ostNotPlaced', '!=');
 		
-		if(arguments.data.orderID != false){
-		    ordersList.addFilter( 'orderID', arguments.data.orderID, '=' );
+		if( len(arguments.data.orderID) ){
+		    ordersList.addFilter( 'orderID', arguments.data.orderID );
 		}
-		
+		ordersList.addGroupBy('orderID');
 		ordersList.setPageRecordsShow(arguments.data.pageRecordsShow);
 		ordersList.setCurrentPageDeclaration(arguments.data.currentPage); 
 		
@@ -85,9 +84,7 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 	/**
 	 * Function to get All Parents on Account
 	 * */
-	public any function getAllParentsOnAccount(struct data={}) {
-		param name="arguments.data.accountID" default= getHibachiSCope().getAccount().getAccountID();
-		
+	public any function getAllParentsOnAccount(required any account) {
 		var parentAccountCollectionList = this.getAccountRelationshipCollectionList();
 		parentAccountCollectionList.setDisplayProperties('accountRelationshipID, 
 												parentAccount.emailAddress, 
@@ -95,17 +92,16 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 												parentAccount.lastName, 
 												parentAccount.username, 
 												parentAccount.accountID');
-		parentAccountCollectionList.addFilter( 'childAccount.accountID', arguments.data.accountID, '=');
-		parentAccountCollectionList.addFilter( 'activeFlag', 1, '=');
+		parentAccountCollectionList.addFilter( 'childAccount.accountID', arguments.account.getAccountID() );
+		parentAccountCollectionList.addFilter( 'activeFlag', 1);
 		return parentAccountCollectionList.getRecords(formatRecord = false);
 	}
 	
 	/**
 	 * Function to get All Childs on Account
 	 * */
-	public any function getAllChildsOnAccount(struct data={}) {
-		param name="arguments.data.accountID" default= getHibachiSCope().getAccount().getAccountID();
-		
+	public any function getAllChildsOnAccount(required any account) {
+
 		var childAccountCollectionList = this.getAccountRelationshipCollectionList();
 		childAccountCollectionList.setDisplayProperties('accountRelationshipID, 
 												childAccount.emailAddress, 
@@ -113,8 +109,8 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 												childAccount.lastName, 
 												childAccount.username, 
 												childAccount.accountID');
-		childAccountCollectionList.addFilter( 'parentAccount.accountID', arguments.data.accountID, '=');
-		childAccountCollectionList.addFilter( 'activeFlag', 1, '=');
+		childAccountCollectionList.addFilter( 'parentAccount.accountID', arguments.account.getAccountID() );
+		childAccountCollectionList.addFilter( 'activeFlag', 1 );
 		return childAccountCollectionList.getRecords(formatRecord = false);
 	}
 	

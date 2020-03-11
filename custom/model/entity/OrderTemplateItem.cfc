@@ -10,7 +10,7 @@ component {
 	property name="skuProductURL" persistent="false";
 	property name="skuImagePath" persistent="false";
 	property name="skuAdjustedPricing" persistent="false";
-
+	property name="kitFlagCode" ormtype="string";
 	
 	public any function getSkuProductURL(){
 		var skuProductURL = this.getSku().getProduct().getProductURL();
@@ -24,7 +24,7 @@ component {
 	
 	public any function getSkuAdjustedPricing(){
 			
-			var priceGroups = this.getOrderTemplate().getAccount().getPriceGroups();
+			var priceGroups = !isNull(this.getOrderTemplate().getAccount()) ? this.getOrderTemplate().getAccount().getPriceGroups() : [this.getOrderTemplate().getPriceGroup()];
 			var priceGroupCode = arrayLen(priceGroups) ? priceGroups[1].getPriceGroupCode() : "";
 			var priceGroupService = getHibachiScope().getService('priceGroupService');
 			var hibachiUtilityService = getHibachiScope().getService('hibachiUtilityService');

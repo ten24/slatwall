@@ -106,17 +106,17 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 	
 	
-	public any function getAvailablePaymentMethods() {
-		
+	public any function getAvailablePaymentMethods(required any account, struct data = {}) {
+
 		var accountPaymentMethodList = this.getAccountPaymentMethodCollectionList();
 		accountPaymentMethodList.setDisplayProperties('paymentMethod.paymentMethodType,paymentMethod.paymentMethodName,accountPaymentMethodName,accountPaymentMethodID');
-		accountPaymentMethodList.addFilter("account.accountID",getHibachiScope().getAccount().getAccountID());
+		accountPaymentMethodList.addFilter("account.accountID", arguments.account.getAccountID() );
 		accountPaymentMethodList.addFilter('paymentMethod.paymentMethodType', 'cash,check,creditCard,external,giftCard',"IN");
 		accountPaymentMethodList.addFilter('paymentMethod.paymentMethodID', getHibachiScope().setting('accountEligiblePaymentMethods'),"IN");
 		accountPaymentMethodList.addFilter('paymentMethod.activeFlag', 1);
 		accountPaymentMethodList.addFilter('activeFlag', 1);
 		accountPaymentMethodList = accountPaymentMethodList.getRecords(formatRecords=false);
-		
+
 		return accountPaymentMethodList;
 	}
 	// =====================  END: Logical Methods ============================
@@ -794,8 +794,15 @@ component extends="HibachiService" accessors="true" output="false" {
 				accountAuthentication.getAccount().setFailedLoginAttemptCount(0);
 				accountAuthentication.getAccount().setLoginLockExpiresDateTime(javacast("null",""));
 			} else {
-				arguments.processObject.addError(loginType, rbKey('validate.account.notActive'));
-				arguments.processObject.addError('emailAddressOrUsername', rbKey('validate.account.notActive'));
+				
+				if ( 'astSuspended' == accountAuthentication.getAccount().getAccountStatusType().getSystemCode() ) {
+					arguments.processObject.addError(loginType, rbKey('validate.account.suspended'));
+					arguments.processObject.addError('emailAddressOrUsername', rbKey('validate.account.suspended'));
+				} else {
+					arguments.processObject.addError(loginType, rbKey('validate.account.notActive'));
+					arguments.processObject.addError('emailAddressOrUsername', rbKey('validate.account.notActive'));
+				}
+				
 			}
 		// Login was invalid
 		} else {
@@ -1822,6 +1829,15 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 		return arguments.accountEmailAddress;
 		
+	}
+	
+	public any function saveAccountAddress(required any accountAddress, struct data={},string context="save", boolean verifyAddressFlag = false){
+		arguments.accountAddress = super.saveAccountAddress(arguments.accountAddress);
+		
+		if(!arguments.accountAddress.hasErrors()){
+			getAddressService().saveAddress(address=arguments.accountAddress.getAddress(),verifyAddressFlag=arguments.verifyAddressFlag);
+		}
+		return arguments.accountAddress;
 	}
 	
 	public any function savePermissionRecordRestriction(required permissionRecordRestriction, struct data={}, string context="save"){

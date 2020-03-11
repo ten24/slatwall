@@ -183,7 +183,6 @@ property name="personalVolume" ormtype="big_decimal";
 	property name="mainCreditCardExpirationDate" persistent="false";
 	property name="mainPromotionOnOrder" persistent="false";
 
-	
     property name="calculatedExtendedPersonalVolume" ormtype="big_decimal" hb_formatType="none";
     property name="calculatedExtendedTaxableAmount" ormtype="big_decimal" hb_formatType="none";
     property name="calculatedExtendedCommissionableVolume" ormtype="big_decimal" hb_formatType="none";
@@ -198,7 +197,10 @@ property name="personalVolume" ormtype="big_decimal";
     property name="calculatedExtendedRetailValueVolumeAfterDiscount" ormtype="big_decimal" hb_formatType="none";
     property name="calculatedQuantityDelivered" ormtype="integer";
     property name="orderItemSkuBundles" singularname="orderItemSkuBundle" fieldType="one-to-many" type="array" fkColumn="orderItemID" cfc="OrderItemSkuBundle" inverse="true" cascade="all-delete-orphan";
-	
+	property name="returnsReceived" ormtype="string";
+    property name="kitFlagCode" ormtype="string";
+    property name="itemCategoryCode" ormtype="string";
+    
    
  property name="lineNumber" ormtype="string";
  property name="orderItemLineNumber" ormtype="string";//CUSTOM PROPERTIES END
@@ -847,14 +849,6 @@ property name="personalVolume" ormtype="big_decimal";
 	// ============  END:  Non-Persistent Property Methods =================
 
 	// ============= START: Bidirectional Helper Methods ===================
-	
-	// Applied Price Group (many-to-one)
-	public void function setAppliedPriceGroup(required any appliedPriceGroup) {
-		variables.appliedPriceGroup = arguments.appliedPriceGroup;
-		if(isNew() or !arguments.appliedPriceGroup.hasAppliedOrderItem( this )) {
-			arrayAppend(arguments.appliedPriceGroup.getAppliedOrderItems(), this);
-		}
-	}
 	
 	public void function removeAppliedPriceGroup(any appliedPriceGroup) {
 		if(!structKeyExists(arguments, "appliedPriceGroup")) {

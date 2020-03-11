@@ -7,8 +7,7 @@ component extends="Slatwall.model.service.SettingService" {
 			listingMultiselectEntityName="Type"
 		}
 		
-		settingMetaData['emailAccountTypePropertyIdentifier'] = {fieldtype="text",defaultValue="Please-Override-AccountType-PropertyIdentifier-in-EmailTemplate-Settings"};
-
+		settingMetaData['emailAccountPropertyIdentifier'] = {fieldtype="text",defaultValue="Please-Override-Account-PropertyIdentifier-in-EmailTemplate-Settings"};
 		settingMetaData["siteInitialEnrollmentPeriodForMarketPartner"] = {fieldtype="text", defaultValue="7"};
 		settingMetaData["siteMaxAmountAllowedToSpendInInitialEnrollmentPeriod"] = {fieldtype="text", defaultValue="200"};
 		settingMetaData["siteMaxDaysAfterAccountCreate"] = {fieldtype="text", defaultValue="30"};
