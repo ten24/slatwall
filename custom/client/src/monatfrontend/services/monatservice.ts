@@ -27,7 +27,6 @@ export class MonatService {
 				.then((data) => {
 					this.cart = data;
 					this.canPlaceOrder = this.cart.cart.orderRequirementsList.indexOf('canPlaceOrderReward') == -1;
-					console.log(this.canPlaceOrder)
 					deferred.resolve(this.cart);
 				})
 				.catch((e) => {

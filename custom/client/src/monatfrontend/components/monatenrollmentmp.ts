@@ -51,7 +51,6 @@ class EnrollmentMPController {
 			if(this.endpoint == 'setUpgradeOrderType' && res.upgradeResponseFailure?.length){
 				this.showUpgradeErrorMessage = true;
 				this.isInitialized = true;
-				console.log(this.showUpgradeErrorMessage);
 				return;
 			}
 			
