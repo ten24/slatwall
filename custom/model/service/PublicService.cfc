@@ -529,7 +529,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         }
         
         if(arguments.data.setOnSessionFlag){
-            getHibachiScope().getSession().setCurrentFlexship(orderTemplate);
+            getHibachiScope().getSession().setSessionValue('currentFlexshipID', orderTemplate.getOrderTemplateID());
         }
 
         arguments.data['ajaxResponse']['orderTemplate'] = orderTemplate.getOrderTemplateID();
@@ -1890,18 +1890,17 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         param name="arguments.data.nullAccountFlag" default="false";
         param name="arguments.data.optionalProperties" default="";
         
-        var reqSession = getHibachiScope().getSession();
-        
+           
         //if the request does not pass setIfNullFlag as true, and there is no order template on session, return an empty object
-        if(isNull(reqSession.getCurrentFlexship()) && !arguments.data.setIfNullFlag){
+        if( (!getHibachiScope().hasSessionValue('currentFlexshipID') || !len( getHibachiScope().hasSessionValue('currentFlexshipID'))) && !arguments.data.setIfNullFlag){
             
             arguments.data['ajaxResponse']['orderTemplate'] = {};
             
         //If there is an order template on the session return the order template details
-        }else if( !isNull(reqSession.getCurrentFlexship()) ){
+        }else if( getHibachiScope().hasSessionValue('currentFlexshipID') && len( getHibachiScope().hasSessionValue('currentFlexshipID')) ){
             
             var data = {
-                "orderTemplateID" : reqSession.getCurrentFlexship().getOrderTemplateID(),
+                "orderTemplateID" : getHibachiScope().getSessionValue('currentFlexshipID'),
                 "optionalProperties" : arguments.data.optionalProperties,
                 "nullAccountFlag" :arguments.data.nullAccountFlag
             }
