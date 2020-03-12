@@ -163,8 +163,9 @@ component {
 	    }
 	}
 	public string function getGovernmentIdentificationLastFour(){
-	    if(!IsNull(this.getAccountGovernmentIdentifications())){
-	       return this.getAccountGovernmentIdentifications().getGovernmentIdentificationLastFour();
+	    if(!IsNull(this.getAccountGovernmentIdentifications()) && ArrayLen(this.getAccountGovernmentIdentifications()) >0){
+	        
+	       return this.getAccountGovernmentIdentifications()[1].getGovernmentIdentificationLastFour();
 	    }
 	}
 } 
