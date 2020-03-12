@@ -120,13 +120,6 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	
 	//CUSTOM PROPERTIES BEGIN
 property name="lastSyncedDateTime" ormtype="timestamp";
-	property name="lastGeneratedDateTime" ormtype="timestamp";
-	property name="deletedDateTime" ormtype="timestamp";
-	property name="canceledCode" ormtype="string";
-	property name="lastOrderNumber" ormtype="string";
-	property name="priceLevelCode" ormtype="string";
-	property name="flexshipStatusCode" ormtype="string";
-	property name="addressValidationCode" ormtype="string";
 	
 	//calculated properties
 	property name="calculatedCommissionableVolumeTotal" ormtype="integer";
@@ -134,6 +127,13 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 
 	//non-persistents
 	property name="accountIsNotInFlexshipCancellationGracePeriod" persistent="false";
+	property name="lastGeneratedDateTime" ormtype="timestamp";
+	property name="deletedDateTime" ormtype="timestamp";
+	property name="canceledCode" ormtype="string";
+	property name="lastOrderNumber" ormtype="string";
+	property name="priceLevelCode" ormtype="string";
+	property name="flexshipStatusCode" ormtype="string";
+	property name="addressValidationCode" ormtype="string";
 	property name="commissionableVolumeTotal" persistent="false"; 
 	property name="personalVolumeTotal" persistent="false";
 	property name="flexshipQualifiedOrdersForCalendarYearCount" persistent="false"; 
