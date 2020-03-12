@@ -12,7 +12,6 @@ class VIPController {
 	public isVIPEnrollment: boolean = false;
 	public productList;
 	public sponsorErrors: any = {};
-	public flexshipID:any;
 	public frequencyTerms:any;
 	public flexshipDaysOfMonth:Array<number> = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26]; 
 	public accountPriceGroupCode:number = 3; //Hardcoded pricegroup as we always want to serve VIP pricing
@@ -34,21 +33,32 @@ class VIPController {
 	public paginationMethod = 'getproductsByCategoryOrContentID';
 	public productRecordsCount: number;
 	public paginationObject = {};
+	public upgradeFlow:boolean;
+	public endpoint: 'setUpgradeOnOrder' | 'setUpgradeOrderType' = 'setUpgradeOnOrder';
+	public showUpgradeErrorMessage:boolean;
 	
 	// @ngInject
 	constructor(public publicService, public observerService, public monatService, public orderTemplateService) {
 	}
 
 	public $onInit = () => {
+		if(this.upgradeFlow){
+			this.endpoint = 'setUpgradeOrderType';
+		}
 		
-		this.publicService.doAction('setUpgradeOnOrder', {upgradeType: 'VIP'}).then(res=>{
+		this.publicService.doAction(this.endpoint, {upgradeType: 'VIP'}).then(res=>{
+			if(this.endpoint == 'setUpgradeOrderType' && res.upgradeResponseFailure?.length){
+				this.showUpgradeErrorMessage = true;
+				this.isInitialized = true;
+				return;
+			}
+			
 			this.isInitialized = true;
 			this.getProductList();	
 			this.getCountryCodeOptions();
 			this.getFrequencyTermOptions();
 		});
-
-		this.flexshipID = this.monatService.getCookieValueByCookieName('flexshipID');
+		
 	}
 	
 	public getFrequencyTermOptions = ():void =>{
@@ -145,18 +155,6 @@ class VIPController {
 			this.loading = false;
 		});
 	}
-	
-    public createOrderTemplate = (orderTemplateSystemCode:string = 'ottSchedule',context="upgradeFlow") => {
-        this.loading = true;
-        this.orderTemplateService.createOrderTemplate(orderTemplateSystemCode,context).then(result => {
-        	this.flexshipID = result.orderTemplate;
-            this.loading = false;
-            if(result.orderTemplate?.length){
-            	document.cookie = "flexshipID=" + result.orderTemplate ;
-    			this.observerService.notify('onNext');
-            }
-        });
-    }
     
     public setOrderTemplateFrequency = (frequencyTerm, dayOfMonth) => {
 		
@@ -179,7 +177,7 @@ class VIPController {
         this.loading = true;
         this.flexshipDeliveryDate = dayOfMonth;
 		this.flexshipFrequencyName = frequencyTerm.name;
-        const flexshipID = this.flexshipID;
+        const flexshipID = this.orderTemplateService.currentOrderTemplateID;
         this.orderTemplateService.updateOrderTemplateFrequency(flexshipID, frequencyTerm.value, dayOfMonth).then(result => {
             this.getFlexshipDetails();
         });
@@ -187,8 +185,8 @@ class VIPController {
     
     public getFlexshipDetails = () => {
     	this.loading = true;
-    
-        this.orderTemplateService.getWishlistItems(this.flexshipID).then(result => {
+    	const flexshipID = this.orderTemplateService.currentOrderTemplateID;
+        this.orderTemplateService.getWishlistItems(flexshipID).then(result => {
         	this.flexshipItemList = result.orderTemplateItems;
 			this.flexshipTotal = result.orderTotal;
 			this.observerService.notify('onNext');
@@ -238,7 +236,9 @@ class MonatEnrollmentVIP {
 	/**
 	 * Binds all of our variables to the controller so we can access using this
 	 */
-	public bindToController = {};
+	public bindToController = {
+		upgradeFlow:'<?'
+	};
 	public controller = VIPController;
 	public controllerAs = 'vipController';
 	// @ngInject

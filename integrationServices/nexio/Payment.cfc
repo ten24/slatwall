@@ -669,10 +669,15 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			// Server error handling - Unavailable or Communication Problem
 			if (httpResponse.status_code == 0 || left(httpResponse.status_code, 1) == 5 || left(httpResponse.status_code, 1) == 4) {
 				arguments.responseBean.setStatusCode("ERROR");
-	
+				
 				// Public error message
-				arguments.responseBean.addError('serverCommunicationFault', "#rbKey('nexio.error.serverCommunication_public')# #httpResponse.statusCode#");
-	
+				var responseContent = deserializeJSON( httpResponse.filecontent );
+				if ( isStruct( responseContent ) && structKeyExists( responseContent, 'message' ) ) {
+					arguments.responseBean.addError( 'serverCommunicationFault', responseContent.message );
+				} else {
+					arguments.responseBean.addError( 'serverCommunicationFault', "#rbKey('nexio.error.serverCommunication_public')# #httpResponse.statusCode#" );
+				}
+				
 				// Only for admin purposes
 				arguments.responseBean.addMessage('serverCommunicationFault', "#rbKey('nexio.error.serverCommunication_admin')# - #httpResponse.statusCode#. Check the payment transaction for more details.");
 				
