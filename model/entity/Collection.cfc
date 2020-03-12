@@ -1189,7 +1189,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 
 	public boolean function getPropertyIdentifierIsPersistent(required string propertyIdentifier){
-		return getService('HibachiService').getPropertyIsPersistentByEntityNameAndPropertyIdentifier(getCollectionObject(),arguments.propertyIdentifier);
+		var formattedPropertyIdentifier = convertAliasToPropertyIdentifier(arguments.propertyIdentifier);
+		return getService('HibachiService').getPropertyIsPersistentByEntityNameAndPropertyIdentifier(getCollectionObject(), formattedPropertyIdentifier);
 	}
 
 	public string function getOrmTypeByPropertyIdentifier(required string propertyIdentifier){
