@@ -5,9 +5,9 @@ class MonatProductModalController {
 	public currencyCode:string;
 	public siteCode:string;
 	public close; // injected from angularModalService
-
+	public productDetails:any;
 	public quantityToAdd: number = 1;
-	
+	public showFullIngredients = false;
 	public loading=false;
 	public skuBundles: Array<any> = [];
 	public productRating: Number;
@@ -40,6 +40,7 @@ class MonatProductModalController {
 			this.productRating = data.productRating.product_calculatedProductRating;
 			this.reviewsCount = data.reviewsCount;
 			this.getReviewStars( this.productRating );
+			this.productDetails = data.productData;
 		});
 	}
 	

@@ -1215,7 +1215,65 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             }
 
             arguments.data['ajaxResponse']['skuBundles'] = records;
+            
+            var product = getService('skuService').getSku(arguments.data.skuID).getProduct();
+            var productData = {}
+            productData['videoUrl'] = len(product.getProductVideoVimeoURL()) ? product.getProductVideoVimeoURL() : product.getProductVideoYoutubeURL();
+            productData['videoTitle'] = product.getProductVideoTitle();
+            productData['videoLength'] = product.getProductVideoLength();
+            productData['videoWidth'] = product.getProductVideoWidth();
+            productData['videoHeight'] = product.getProductVideoHeight();
+            productData['subtitle'] = product.getFormattedValue('extendedDescriptionSubtitle');
+            productData['title'] = product.getFormattedValue('extendedDescriptionTitle');
+            productData['left'] = product.getFormattedValue('extendedDescriptionLeft');
+            productData['right'] = product.getFormattedValue('extendedDescriptionRight');
+            productData['productFullIngredients'] = product.getAttributeValue('productFullIngredients');
+            productData['ingredients'] = [];
+            
+            if(!isNull(product.getProductIngredient1())){
+                var productIngredient1 = {};
+                productIngredient1['typeDescription'] = product.getProductIngredient1().getTypeDescription();
+                productIngredient1['typeName'] = product.getProductIngredient1().getTypeName();
+                productIngredient1['typeSummary'] = product.getProductIngredient1().getTypeSummary(); 
+                arrayAppend(productData['ingredients'], productIngredient1);
+            }
+            
+            if(!isNull(product.getProductIngredient2())){
+                var productIngredient2 = {};
+                productIngredient2['typeDescription'] = product.getProductIngredient2().getTypeDescription();
+                productIngredient2['typeName'] = product.getProductIngredient2().getTypeName();
+                productIngredient2['typeSummary'] = product.getProductIngredient2().getTypeSummary();     
+                arrayAppend(productData['ingredients'], productIngredient2);
+            }
+            
+            if(!isNull(product.getProductIngredient3())){
+                var productIngredient3 = {};
+                productIngredient3['typeDescription'] = product.getProductIngredient3().getTypeDescription();
+                productIngredient3['typeName'] = product.getProductIngredient3().getTypeName();
+                productIngredient3['typeSummary'] = product.getProductIngredient3().getTypeSummary();  
+                arrayAppend(productData['ingredients'], productIngredient3);
+            }
+            
+            if(!isNull(product.getProductIngredient4())){
+                var productIngredient4 = {};
+                productIngredient4['typeDescription'] = product.getProductIngredient4().getTypeDescription();
+                productIngredient4['typeName'] = product.getProductIngredient4().getTypeName();
+                productIngredient4['typeSummary'] = product.getProductIngredient4().getTypeSummary();
+                arrayAppend(productData['ingredients'], productIngredient4);
+            }
+            
+            if(!isNull(product.getProductIngredient5())){
+                var productIngredient5 = {};
+                productIngredient5['typeDescription'] = product.getProductIngredient5().getTypeDescription();
+                productIngredient5['typeName'] = product.getProductIngredient5().getTypeName();
+                productIngredient5['typeSummary'] = product.getProductIngredient5().getTypeSummary(); 
+                arrayAppend(productData['ingredients'], productIngredient5);
+            }
+            
+            arguments.data['ajaxResponse']['productData'] = productData;
+            
         }
+    
     }
     
     public any function getCommonNonPersistentProductProperties(required array records, required string priceGroupCode, required string currencyCode, required string siteID = 'default'){
