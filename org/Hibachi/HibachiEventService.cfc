@@ -257,11 +257,8 @@ component output="false" update="true" extends="HibachiService" {
 	
 	public any function getEventNameOptionsForObject(required string objectName, boolean doOneToManyOptions = true) {
 		if(!structKeyExists(variables.EventNameOptions,arguments.objectName)){
-			var opArr = [];
 			
-			var entityName = ;
 			var entityService = getServiceByEntityName(arguments.objectName); 	
-				
 			
 			variables.EventNameOptions[arguments.objectName] = entityService.invokeMethod('get#arguments.objectName#EventOptions', {"1":arguments.doOneToManyOptions});
 			

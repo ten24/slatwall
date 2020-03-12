@@ -418,7 +418,7 @@
 					return onMissingGetEntityStructMethod( arguments.missingMethodName, arguments.missingMethodArguments );
 				} else if(right(lCaseMissingMethodName, 15) == "processcontexts"){ 
 					return onMissingGetEntityProcessContexts( arguments.missingMethodName, arguments.missingMethodArguments );
-				} else if(right(lCaseMissingMethodName, 6) == "eventoptions"){
+				} else if(right(lCaseMissingMethodName, 12) == "eventoptions"){
 					return onMissingGetEntityEventOptions( arguments.missingMethodName, arguments.missingMethodArguments );	
 				} else {
 					return onMissingGetMethod( arguments.missingMethodName, arguments.missingMethodArguments );
@@ -559,8 +559,13 @@
 			var entityName = arguments.missingMethodName.substring( 3, entityNameLength + 3 );
 
 			var metaData = getEntityMetaData(entityName);
+
+			var processContexts = ''; 
+			if(structKeyExists(metaData, 'hb_processContexts')){
+				processContexts = metaData.hb_processContexts;
+			}
 			
-			return metaData.hb_processContexts; 	
+			return processContexts;	
 		}
 
 		//this is defined on hibachi service rather than hibachi event service so it can be overriden at the entity service level to allow for defining custom events to be used with workflow
@@ -568,6 +573,7 @@
 			var entityNameLength = len(arguments.missingMethodName) - 15;
 			var entityName = arguments.missingMethodName.substring( 3, entityNameLength + 3 );
 			var entityService = getServiceByEntityName(entityName); 
+			var entityMetaData = getEntityMetaData(entityName); 
 
 			var doOneToManyOptions = true; 
 			
@@ -600,15 +606,16 @@
 				for(var property in entityMetaData.properties){
 					if( structKeyExists(property,'fieldType') && 
 						property.fieldType == 'one-to-many' && 
-						property.cfc != arguments.objectName
+						property.cfc != entityName
 					){
 						var relatedEntityService = getServiceByEntityName(property.CFC);
-						var relatedEntityOptions = relatedEntityService.invokeMethod('get#property.cfc#EventOptions', {"1":false})
-						arrayAppend(array=eventOptions, value=, merge=true); 
-						opArr = getService('hibachiUtilityService').arrayConcat(opArr,relationshipOptions);
+						var relatedEntityOptions = relatedEntityService.invokeMethod('get#property.cfc#EventOptions', {"1":false});
+						arrayAppend(array=eventOptions, value=relatedEntityOptions, merge=true); 
 					}
 				}
 			}
+
+			return eventOptions;
 		} 	
 
 		
