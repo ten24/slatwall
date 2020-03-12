@@ -444,8 +444,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					continue;
 				}
 				
-				orderItem.removeAppliedPriceGroup();
-	
+				orderItem.setAppliedPriceGroup(javaCast("null",""))
+			
 				if(!isNull(arguments.order.getAccount()) && isNull(orderItem.getOrder().getPriceGroup())){
 					
 					if(arrayLen(getService("currencyService").getCurrencyOptions()) > 1){
