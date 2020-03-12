@@ -1536,6 +1536,7 @@ component extends="Slatwall.model.service.OrderService" {
 		var freeRewardSkuCollection = getSkuService().getSkuCollectionList();
 		var freeRewardSkuIDs = getPromotionService().getQualifiedFreePromotionRewardSkuIDs(arguments.order);
 		freeRewardSkuCollection.addFilter('skuID', freeRewardSkuIDs, 'in');
+		freeRewardSkuCollection.addDisplayProperty('product.productDescription');
 		return freeRewardSkuCollection.getRecords();
 	}
 	

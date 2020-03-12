@@ -95,7 +95,8 @@ class MonatCheckoutController {
 		
 			this.enrollmentSteps = <number>this.publicService.steps ? <number>this.publicService.steps -1 : 0; 
 			this.account = res.account;
-			if(this.account?.ownerAccount?.accountNumber?.length && this.account?.ownerAccount?.accountNumber !== this.account?.accountNumber){
+	
+			if( (this.account && this.account.ownerAccount && this.account.ownerAccount.accountNumber.length) && (this.account.ownerAccount.accountNumber !== this.account?.accountNumber) ) {
 				this.hasSponsor = true;
 			}else{
 				this.totalSteps = 1;

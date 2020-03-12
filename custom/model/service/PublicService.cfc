@@ -478,6 +478,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         param name="arguments.data.scheduleOrderNextPlaceDateTime" default= "#dateAdd('m',1,dateFormat(now()))#";
         param name="arguments.data.siteID" default="";
         param name="arguments.data.saveContext" default="";
+        param name="arguments.data.setOnSessionFlag" default=false;
         
         var isUpgradedFlag = arguments.data.saveContext == "upgradeFlow" ? true : false;
 
@@ -522,8 +523,13 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         }
         
         getHibachiScope().addActionResult( "public:order.create", orderTemplate.hasErrors() );
+        
         if(orderTemplate.hasErrors()) {
             addErrors(arguments.data, orderTemplate.getErrors());
+        }
+        
+        if(arguments.data.setOnSessionFlag){
+            getHibachiScope().getSession().setCurrentFlexship(orderTemplate);
         }
 
         arguments.data['ajaxResponse']['orderTemplate'] = orderTemplate.getOrderTemplateID();
@@ -792,7 +798,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         if(!isNull(arguments.data.upgradeFlowFlag) && arguments.data.upgradeFlowFlag == 1 && isNull(cart.getMonatOrderType())){
             this.setUpgradeOrderType(cart);
         }
-       
+        
         var orderService = getService("OrderService");
         var currentOrderItemList = orderService.getOrderItemCollectionList();
         currentOrderItemList.addFilter('order.orderID', cart.getOrderID());
@@ -1209,7 +1215,65 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             }
 
             arguments.data['ajaxResponse']['skuBundles'] = records;
+            
+            var product = getService('skuService').getSku(arguments.data.skuID).getProduct();
+            var productData = {}
+            productData['videoUrl'] = len(product.getProductVideoVimeoURL()) ? product.getProductVideoVimeoURL() : product.getProductVideoYoutubeURL();
+            productData['videoTitle'] = product.getProductVideoTitle();
+            productData['videoLength'] = product.getProductVideoLength();
+            productData['videoWidth'] = product.getProductVideoWidth();
+            productData['videoHeight'] = product.getProductVideoHeight();
+            productData['subtitle'] = product.getFormattedValue('extendedDescriptionSubtitle');
+            productData['title'] = product.getFormattedValue('extendedDescriptionTitle');
+            productData['left'] = product.getFormattedValue('extendedDescriptionLeft');
+            productData['right'] = product.getFormattedValue('extendedDescriptionRight');
+            productData['productFullIngredients'] = product.getAttributeValue('productFullIngredients');
+            productData['ingredients'] = [];
+            
+            if(!isNull(product.getProductIngredient1())){
+                var productIngredient1 = {};
+                productIngredient1['typeDescription'] = product.getProductIngredient1().getTypeDescription();
+                productIngredient1['typeName'] = product.getProductIngredient1().getTypeName();
+                productIngredient1['typeSummary'] = product.getProductIngredient1().getTypeSummary(); 
+                arrayAppend(productData['ingredients'], productIngredient1);
+            }
+            
+            if(!isNull(product.getProductIngredient2())){
+                var productIngredient2 = {};
+                productIngredient2['typeDescription'] = product.getProductIngredient2().getTypeDescription();
+                productIngredient2['typeName'] = product.getProductIngredient2().getTypeName();
+                productIngredient2['typeSummary'] = product.getProductIngredient2().getTypeSummary();     
+                arrayAppend(productData['ingredients'], productIngredient2);
+            }
+            
+            if(!isNull(product.getProductIngredient3())){
+                var productIngredient3 = {};
+                productIngredient3['typeDescription'] = product.getProductIngredient3().getTypeDescription();
+                productIngredient3['typeName'] = product.getProductIngredient3().getTypeName();
+                productIngredient3['typeSummary'] = product.getProductIngredient3().getTypeSummary();  
+                arrayAppend(productData['ingredients'], productIngredient3);
+            }
+            
+            if(!isNull(product.getProductIngredient4())){
+                var productIngredient4 = {};
+                productIngredient4['typeDescription'] = product.getProductIngredient4().getTypeDescription();
+                productIngredient4['typeName'] = product.getProductIngredient4().getTypeName();
+                productIngredient4['typeSummary'] = product.getProductIngredient4().getTypeSummary();
+                arrayAppend(productData['ingredients'], productIngredient4);
+            }
+            
+            if(!isNull(product.getProductIngredient5())){
+                var productIngredient5 = {};
+                productIngredient5['typeDescription'] = product.getProductIngredient5().getTypeDescription();
+                productIngredient5['typeName'] = product.getProductIngredient5().getTypeName();
+                productIngredient5['typeSummary'] = product.getProductIngredient5().getTypeSummary(); 
+                arrayAppend(productData['ingredients'], productIngredient5);
+            }
+            
+            arguments.data['ajaxResponse']['productData'] = productData;
+            
         }
+    
     }
     
     public any function getCommonNonPersistentProductProperties(required array records, required string priceGroupCode, required string currencyCode, required string siteID = 'default'){
@@ -1429,7 +1493,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     
 
     public any function setUpgradeOrderType(required struct data){
-        param name="arguments.data.upgradeType" default="";
+        param name="arguments.data.upgradeType" default="MarketPartner";
         
         var account = getHibachiScope().getAccount();
         var accountType = account.getAccountType();    
@@ -1456,7 +1520,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         param name="arguments.data.upgradeType" default="marketPartner";
         param name="arguments.data.upgradeFlowFlag" default=0;
         
-        if(!isNull(getHibachiScope().getCart().getMonatOrderType())){
+        var typeCode = arguments.data.upgradeType == 'marketPartner' ? 'motMpEnrollment' : 'motVipEnrollment';
+        if(!isNull(getHibachiScope().getCart().getMonatOrderType()) && getHibachiScope().getCart().getMonatOrderType().getTypeCode() == typeCode){
             arguments.data['ajaxResponse']['upgradeResponseFailure'] = getHibachiScope().rbKey('frontend.validate.upgradeAlreadyExists');
             return;
         }
@@ -1507,6 +1572,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     
     //Removes upgraded status from an order
      public any function removeUpgradeOnOrder(){
+       
         var account = getHibachiScope().getAccount();
         var accountType=account.getAccountType() ?: 'customer';
         var holdingPriceGroup = account.getPriceGroups();
@@ -1802,11 +1868,53 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var records = getService('orderService').getOFYProductsForOrder(order);
         var imageService = getService('ImageService');
         records = arrayMap( records, function( product ) {
-            product.skuImagePath = imageService.getResizedImageByProfileName( product.skuID,'medium' );
+            product['skuImagePath'] = imageService.getResizedImageByProfileName( product.skuID,'medium' );
             return product;
         });
         
         arguments.data['ajaxResponse']['ofyProducts'] = records;
+    }
+    
+    /**
+    * Function to get the current flexship on session with option to create and set if null
+    * @param setIfNullFlag declares whether we should create and set flexship if there isn't one on session
+    * @param saveContext is optional and defines the validation context
+    * @param nullAccountFlag is optional and defines if the flexship has not account, this is for getting flexship details
+    * @param optionalProperties is optional and declares extra properties for order template details
+    * @return Either order template details or the newly created order template ID 
+    **/
+    
+    public any function getSetFlexshipOnSession(){
+        param name="arguments.data.setIfNullFlag" default="false"; 
+        param name="arguments.data.saveContext" default="upgradeFlow";
+        param name="arguments.data.nullAccountFlag" default="false";
+        param name="arguments.data.optionalProperties" default="";
+        
+        var reqSession = getHibachiScope().getSession();
+        
+        //if the request does not pass setIfNullFlag as true, and there is no order template on session, return an empty object
+        if(isNull(reqSession.getCurrentFlexship()) && !arguments.data.setIfNullFlag){
+            
+            arguments.data['ajaxResponse']['orderTemplate'] = {};
+            
+        //If there is an order template on the session return the order template details
+        }else if( !isNull(reqSession.getCurrentFlexship()) ){
+            
+            var data = {
+                "orderTemplateID" : reqSession.getCurrentFlexship().getOrderTemplateID(),
+                "optionalProperties" : arguments.data.optionalProperties,
+                "nullAccountFlag" :arguments.data.nullAccountFlag
+            }
+            arguments.data['ajaxResponse']['orderTemplate'] = getOrderService().getOrderTemplateDetailsForAccount(data);
+            
+        //if there is no order template on session and request passes setIfNullFlag then we create an order template and set on session
+        }else if(arguments.data.setIfNullFlag){
+            
+            arguments.data['setOnSessionFlag'] = true;
+            arguments.data['orderTemplateSystemCode'] = 'ottSchedule'; //currently session only accepts flexships
+            return this.createOrderTemplate(arguments.data);
+            
+        }
     }
     
 }
