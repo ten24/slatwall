@@ -17,15 +17,7 @@
 			"orderType.systemCode":{
 				"eq":"otSalesOrder"
 			}
-		},
-		"isMarketPartnerSalesOrder":{
-			"account.accountType":{
-				"eq":"marketPartner"
-			},
-			"orderType.systemCode":{
-				"eq":"otSalesOrder"
-			}
-		},
+		}
 	},
 	"properties": {
 		"orderCreatedSite": [{"contexts":"save","method":"orderCreatedSiteMatchesAccountCreatedSite"},
@@ -35,11 +27,18 @@
 		"orderItems":[{"conditions":"mpEnrollmentOrder","contexts":"placeOrder","method":"hasProductPackOrderItem"}],
 		"subTotal": [{"contexts":"placeOrder","conditions":"anyReturnOrder","method":"subtotalWithinAllowedPercentage"}],
 		
+		"isLockedInProcessingFlag": [{ "contexts": "edit", "eq": false }],
 		"statusCode":  [
-			{ "contexts": "placeInProcessingOne", "inList": "ostNew,ostProcessing,ostProcessingTwo" },
-			{ "contexts": "cancelOrder", "inList": "ostNew,ostProcessing,ostOnHold,ostProcessingOne" },
+			{ "contexts": "placeInProcessingOne", "inList": "ostNew,ostProcessing" },
 		],
-		"isLockedInProcessingOneFlag": [{"contexts": "placeInProcessingTwo", "eq": true }],
 		
+		"isLockedInProcessingOneFlag": [
+			{ "contexts": "placeInProcessingOne", "eq": false },
+			{ "contexts": "placeInProcessingTwo", "eq": true }
+		],
+		
+		"isLockedInProcessingTwoFlag": [
+			{ "contexts": "cancelOrder", "eq": false },
+		]
 	}
 }

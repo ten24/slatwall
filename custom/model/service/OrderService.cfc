@@ -419,7 +419,7 @@ component extends="Slatwall.model.service.OrderService" {
 		return orderTemplateItemCollection;	
 	} 
 
-    public void function updateOrderStatusBySystemCode(required any order, required string systemCode) {
+    public void function updateOrderStatusBySystemCode(required any order, required string systemCode, string typeCode) {
         var orderStatusType = "";
         var orderStatusHistory = {};
         
@@ -455,10 +455,14 @@ component extends="Slatwall.model.service.OrderService" {
 
 				
 			}else if (arguments.systemCode == 'ostProcessing') {
-			
+				
+				if(!StructKeyExists(arguments, "typeCode") || !Len( Trim(arguments.typeCode) ) ){
+					arguments.typeCode = "2"
+				}
+				
 				//Set to processing status
-                arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="2"));
-                orderStatusHistory.setOrderStatusHistoryType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="2"));
+                arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode=arguments.typeCode));
+                orderStatusHistory.setOrderStatusHistoryType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode=arguments.typeCode));
 					
 			}else if (arguments.systemCode == 'ostPaid') {
 
@@ -701,7 +705,7 @@ component extends="Slatwall.model.service.OrderService" {
 	}
 
 	public any function processOrder_placeInProcessingOne(required any order, struct data) {
-		this.updateOrderStatusBySystemCode(arguments.order, "ostProcessingOne");
+		this.updateOrderStatusBySystemCode(arguments.order, "ostProcessing", "ostProcessing1");
 		return arguments.order;
 	}
 	
@@ -711,7 +715,7 @@ component extends="Slatwall.model.service.OrderService" {
 		// TODO: DAO query
 		// this.getOrderDAO().placeOrdersInProcessingTwo(data = arguments.data);
 
-		this.updateOrderStatusBySystemCode(arguments.order, "ostProcessingTwo");
+		this.updateOrderStatusBySystemCode(arguments.order, "ostProcessing", "ostProcessing2");
 		return arguments.order;
 	}
 	

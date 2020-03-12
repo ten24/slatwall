@@ -428,15 +428,24 @@ component {
 	 }
 	 
 	public boolean function getIsLockedInProcessingOneFlag(){
-		return getOrderStatusType().getSystemCode() == "ostProcessingOne";
+		return getOrderStatusType().getSystemCode() == "ostProcessing" && getOrderStatusType().getTypeCode() == "ostProcessing1";
 	}
 	
 	public boolean function getIsLockedInProcessingTwoFlag(){
-		return getOrderStatusType().getSystemCode() == "ostProcessingOne";
+		return getOrderStatusType().getSystemCode() == "ostProcessing" && getOrderStatusType().getTypeCode() == "ostProcessing2";
 	}
 	
 	public boolean function getIslockedInProcessingFlag(){
-		return ListFindNoCase("ostProcessingOne,ostProcessingTwo", getOrderStatusType().getSystemCode() ) > 0;
+	
+		return  (
+					getOrderStatusType().getSystemCode() == "ostProcessing" 
+					&& 
+					(
+						getOrderStatusType().getTypeCode() == "ostProcessing1"
+						||
+						getOrderStatusType().getTypeCode() == "ostProcessing2"
+					)
+				);
 	}
 	
 }
