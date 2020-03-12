@@ -1973,12 +1973,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 		if(!isNull(processObject.getNewAccountAddress())){
 			
-			//Country Check - make sure the orderTemplate site country and Address country are same
-			if( processObject.getNewAccountAddress().address.countryCode != siteCountryCode ) {
-				arguments.orderTemplate.addError('updateShipping', "Cannot create flexship for selected country.", true);
-				return arguments.orderTemplate;
-			}
-			
 			var accountAddress = getAccountService().newAccountAddress();
 			accountAddress.populate(processObject.getNewAccountAddress());
 			
@@ -1986,7 +1980,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			address.populate(processObject.getNewAccountAddress().address);
 		
 			accountAddress.setAddress(address); 
-			accountAddress.setAccount(account); 
+			accountAddress.setAccount(account);
 
 			accountAddress = getAccountService().saveAccountAddress(accountAddress=accountAddress,verifyAddressFlag=true);
 			
@@ -1995,15 +1989,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			getHibachiScope().flushORMSession(); 
 
 			orderTemplate.setShippingAccountAddress(accountAddress);
-		} else if (!isNull(processObject.getShippingAccountAddress())) { 
+		} else if (!isNull(processObject.getShippingAccountAddress())) {
 			
 			var accountAddress = getAccountService().getAccountAddress(processObject.getShippingAccountAddress().value);
-			
-			//Country Check - make sure the orderTemplate site country and Address country are same
-			if( accountAddress.getAddress().getCountryCode() != siteCountryCode ) {
-				arguments.orderTemplate.addError('updateShipping', "Cannot create flexship for selected country.", true);
-				return arguments.orderTemplate;
-			}
 			
 			orderTemplate.setShippingAccountAddress(accountAddress);	
 		}

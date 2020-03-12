@@ -144,9 +144,9 @@ component extends="Slatwall.model.service.OrderService" {
 		
 		//grab and set shipping-account-address from account
 		//Add Address only when it belongs to same country as site
-		if(account.hasPrimaryShippingAddress() && account.getPrimaryShippingAddress().getAddress().getCountryCode() === siteCountryCode ) {
+		if(account.hasPrimaryShippingAddress() && account.getPrimaryShippingAddress().getAddress().getCountryCode() == siteCountryCode ) {
 		    arguments.orderTemplate.setShippingAccountAddress(account.getPrimaryShippingAddress());
-		} else if( account.hasPrimaryAddress() && account.getPrimaryAddress().getAddress().getCountryCode() === siteCountryCode){
+		} else if( account.hasPrimaryAddress() && account.getPrimaryAddress().getAddress().getCountryCode() == siteCountryCode){
 		    arguments.orderTemplate.setShippingAccountAddress(account.getPrimaryAddress());
 		}
 		
