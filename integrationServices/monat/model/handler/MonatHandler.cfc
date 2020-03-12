@@ -131,7 +131,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 				// 	}
 				// }
 			
-				getHibachiEventService().announceEvent('afterAccountEnrollmentSuccess', {'accountID':account.getAccountID()}); 
+				getHibachiEventService().announceEvent('afterAccountEnrollmentSuccess', {'account':account, 'entity':account}); 
 	
 			} else if ( 
 				account.getAccountStatusType().getSystemCode() == 'astGoodStanding' 
