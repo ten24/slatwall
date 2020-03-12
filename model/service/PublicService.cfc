@@ -1663,7 +1663,6 @@ component  accessors="true" output="false"
         	stateCodeOptions = country.getStateCodeOptions();
         	getHibachiCacheService().setCachedValue(cacheKey,stateCodeOptions);
         }
-        
          arguments.data.ajaxResponse["stateCodeOptions"] = stateCodeOptions;
         //get the address options.
         if (!isNull(arguments.data.countryCode)){
@@ -1820,9 +1819,11 @@ component  accessors="true" output="false"
 		var tmpAccountPaymentMethod = getAccountService().newAccountPaymentMethod();
 		arguments.data['ajaxResponse']['expirationMonthOptions'] = tmpAccountPaymentMethod.getExpirationMonthOptions();
 		arguments.data['ajaxResponse']['expirationYearOptions'] = tmpAccountPaymentMethod.getExpirationYearOptions();
-		arguments.data['ajaxResponse']['countryNameBySite'] = getService('SiteService').getCountryNameByCurrentSite();
+		arguments.data['ajaxResponse']['countryCodeBySite'] = getService('SiteService').getCountryCodeByCurrentSite();
 		//this function will set the stateCodeOptions in ajaxResponce
-		getStateCodeOptionsByCountryCode(argumentCollection = arguments); 
+		
+		arguments.data['countryCode'] = getService('SiteService').getCountryCodeByCurrentSite();
+		getStateCodeOptionsByCountryCode(arguments.data);
 		
 	}
 	

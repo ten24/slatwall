@@ -13,7 +13,7 @@ class MonatFlexshipListingController{
 	public daysToEditFlexshipSetting:any;
 	public account:any;
 	public customerCanCreateFlexship:boolean;
-	public countryNameBySite :any;
+	public countryCodeBySite :any;
 		
 	private orderTemplateTypeID:string = '2c948084697d51bd01697d5725650006'; // order-template-type-flexship 
 	
@@ -59,7 +59,7 @@ class MonatFlexshipListingController{
 				this.scheduleDateChangeReasonTypeOptions = data.scheduleDateChangeReasonTypeOptions;
 				this.expirationMonthOptions = data.expirationMonthOptions;
 				this.expirationYearOptions = data.expirationYearOptions;
-				this.countryNameBySite = data.countryNameBySite;
+				this.countryCodeBySite = data.countryCodeBySite;
 				
 				
 				//set this last so that ng repeat inits with all needed data

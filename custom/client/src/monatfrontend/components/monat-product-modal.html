@@ -1,30 +1,251 @@
-<style>
-	.product-details-modal .modal-dialog .modal-content .product-details{
-		width:auto;
-		padding:0;
-	}
-</style>
-<div monat-product-modal class="modal product-details-modal using-modal-service" tabindex="-1" role="dialog"  aria-hidden="true">
-	<div class="modal-dialog modal-lg">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" ng-click="monatProductModal.closeModal()">
-					<span aria-hidden="true">&times;</span>
-				</button>
-			</div>
-			<div id="product-modal" class="modal-body">
-			<!--- Javascript inserted html goes here --->
-			
-				<template>
-					<div id="template" class="row px-5 my-2">
-						<div class="col">
-							<p class="title-paragraph">  </p>
+<div class="modal product-details-modal using-modal-service">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content d-flex flex-column">
+			<!-- Modal Close -->
+			<button type="button" class="close" ng-click="monatProductModal.closeModal()" aria-label="Close">
+				<i class="fas fa-times"></i>
+			</button>
+			<div class="row">
+				<!--product image-->
+				<div class="product-img">
+					<img image-manager ng-src="{{monatProductModal.product.skuImagePath[0]}}" ng-attr-alt="{{monatProductModal.product.productName}}" />
+				</div>
+				<!-- end product image-->
+	
+				<!--product details-->
+				<div class="product-details">
+					<h2 class="modal-title">
+						<a ng-href="{{monatProductModal.product.skuProductURL}}">
+							{{monatProductModal.product.productName ? monatProductModal.product.productName : monatProductModal.product.skuName }}
+						</a>
+					</h2>
+	
+					<!--- Star rating --->
+					<div class="rating" ng-if="monatProductModal.reviewsCount > 0">
+						
+						<div class="rating-stars">
+							<i class="fas fa-star" ng-repeat="i in monatProductModal.reviewStars.full track by $index"></i>
+							<i class="fas fa-star-half-alt" ng-if="monatProductModal.reviewStars.half"></i>
+							<i class="far fa-star" ng-repeat="i in monatProductModal.reviewStars.empty track by $index"></i>
 						</div>
-						<div class="col text-right toggleCol">
-							<p class="more-paragraph"></p>
+						
+						<div class="rating-count">
+							{{ monatProductModal.productRating }} /
+							{{ monatProductModal.reviewsCount }} <span sw-rbkey="'frontend.product.reviews'"></span>
+						</div>
+						
+					</div>
+		  			
+					<!--- In this system --->
+					<div class="in-this-system" ng-if="monatProductModal.skuBundles.length">
+						<p class="system" sw-rbkey="'frontend.product.includedInThisSystem'"></p>
+						<p class="features">
+							<span class="feature" ng-repeat="bundle in monatProductModal.skuBundles">
+								<a 
+									ng-href="{{ monatProductModal.isEnrollment ? undefined : bundle.productUrl"
+									ng-bind="bundle.bundledSku_product_productName"
+									></a
+								>
+							</span>
+						</p>
+					</div>
+					
+					<!--- In this system --->
+					<div class="in-this-system" ng-if="monatProductModal.type == 'ofy' ">
+						<p class="features">
+							{{monatProductModal.product.product_productDescription}}
+						</p>
+					</div>
+	
+					<!--price group block-->
+	  				<div class="price-block">
+	  					<div ng-if="monatProductModal.type ==='ofy' || monatProductModal.type ==='productListing' || monatProductModal.type ==='VIPenrollment' || monatProductModal.type ==='VIPenrollmentOrder' || monatProductModal.type === 'flexship'" class="price">
+				            <strong ng-if="monatProductModal.type !='ofy'" ng-bind-html="monatProductModal.product.price | swcurrency:monatProductModal.currencyCode"><span ng-if="monatProductModal.product.upgradedPricing.price != null ">/</span></strong> 
+				           	<span ng-if="monatProductModal.type ==='ofy'" sw-rbKey="'frontend.freeProduct.free'"></span>
+				            <span class="vip-price">
+				                <span ng-if="monatProductModal.product.upgradedPricing.price != null && monatProductModal.product.upgradedPriceGroupCode == 3">
+				                    <span sw-rbKey="'frontend.global.vip'"></span> <span ng-bind-html="monatProductModal.product.upgradedPricing.price | swcurrency:monatProductModal.currencyCode"></span>
+				                </span> 
+				                <span ng-if="monatProductModal.product.upgradedPricing.price != null && monatProductModal.product.upgradedPriceGroupCode == 2">
+				                    <span sw-rbKey="'frontend.global.retail'"></span> <span ng-bind-html="monatProductModal.product.upgradedPricing.price | swcurrency:monatProductModal.currencyCode"></span>
+				                </span> 
+				            </span>
+				            <span ng-if="monatProductModal.product.priceGroupCode == 1"> <br> <strong> <span sw-rbKey="'frontend.cart.pv'"></span> {{monatProductModal.product.personalVolume}} </strong></span>
+				        </div>
+				        
+				        <!-- Market Partner Pricing -->
+				        <div ng-if="monatProductModal.product.accountPriceGroup == 1 && monatProductModal.type !='enrollment' && monatProductModal.type !='productListing'" class="price">
+				            <strong ng-bind-html="monatProductModal.product.marketPartnerPrice">/</strong> <span class="vip-price"><span sw-rbKey="'frontend.global.retail'"></span> {{monatProductModal.product.retailPrice}}
+				            <br><strong><span sw-rbKey="'frontend.cart.pv'"></span> {{monatProductModal.product.personalVolume}}</strong> 
+				        </div>
+	  					
+		  			</div> 
+		  			<!--- end price group block-->
+	
+					<div class="qty-block">
+						<label sw-rbkey="'frontend.global.quantity'"></label>
+						<div class="qty">
+							<button type="button" 
+								ng-if="monatProductModal.type != 'ofy' "
+								ng-disabled="monatProductModal.quantityToAdd <= 1"
+								ng-click="monatProductModal.quantityToAdd = monatProductModal.quantityToAdd -1" 
+								class="minus">
+								-
+							</button>
+							<input 
+								ng-disabled="monatProductModal.type == 'ofy'"
+								class="form-control qty-input" 
+								type="number" 
+								name="quantity"
+								ng-model="monatProductModal.quantityToAdd" />
+							<button 
+								ng-if="monatProductModal.type != 'ofy' "
+								type="button" 
+								ng-click="monatProductModal.quantityToAdd = monatProductModal.quantityToAdd + 1 " 
+								class="plus">
+								+
+							</button>
 						</div>
 					</div>
-				</template>
+	
+					<button 
+						class="btn bg-primary"
+						ng-click="monatProductModal.onAddButtonClick()" 
+						ng-class="{ loading: monatProductModal.loading }"
+						ng-disabled="monatProductModal.loading"
+						ng-if="monatProductModal.product.qats > 1 || monatProductModal.type =='ofy'"
+					>
+						{{ monatProductModal.translations.addButtonText }}
+					</button>
+					<button 
+						class="btn bg-primary disabled"
+						ng-if="monatProductModal.product.qats <= 0"
+					>
+						<span sw-rbKey="'frontend.cart.soldOut'"></span>
+					</button>
+				</div>
+				<!--end product details -->
+			</div>
+			<div ng-if="monatProductModal.type != 'ofy' " class="accordion" id="productAccordion">
+				<div class="card" ng-if="monatProductModal.productDetails.subtitle.length">
+					<div class="card-header" id="headingTwo">
+						<h2 class="mb-0">
+							<button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+								Benefits
+							</button>
+						</h2>
+					</div>
+					<div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#productAccordion">
+						<section class="description-extended">
+							<div class="container container-sm">
+								<h6 class="title-with-line">{{monatProductModal.productDetails.subtitle}}</h6>
+								<h2 class="description-extended__title">{{monatProductModal.productDetails.title}}</h2>
+								<div class="row">
+									<div class="col-md-6">
+										<p class="description-extended__content" ng-bind-html="monatProductModal.productDetails.left"></p>
+									</div>
+									<div class="col-md-6">
+										<p class="description-extended__content" ng-bind-html="monatProductModal.productDetails.right"></p>
+									</div>
+								</div>
+							</div>
+						</section>
+					</div>
+				</div>
+				<div ng-if="monatProductModal.productDetails.ingredients.length" class="card">
+					<div class="card-header" id="headingOne">
+						<h2 class="mb-0">
+							<button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+								Featured Ingredients
+							</button>
+						</h2>
+					</div>
+					
+					<div id="collapseOne" class="collapse ingredients-section" aria-labelledby="headingOne" data-parent="#productAccordion">
+						<div class="card-body row">
+							<div class="col-12 col-md-6 content-box">
+								<div class="content">
+									<ul>
+										<li ng-repeat="ingredient in monatProductModal.productDetails.ingredients">
+											<div class="left">
+												<span>{{ingredient.typeDescription}}</span>
+												<h5>{{ingredient.typeName}}</h5>
+											</div>
+											<div class="right">
+												<p>{{ingredient.typeSummary}}</p>
+											</div>
+										</li>
+									</ul>
+									<a 
+										ng-if="monatProductModal.productDetails.productFullIngredients" 
+										sw-rbKey="'frontend.product.seeFullIngredients'" 
+										class="btn bg-primary btn-ing"
+										ng-click="monatProductModal.showFullIngredients = !monatProductModal.showFullIngredients"
+									></a>
+								</div>
+							</div>
+							<div class="col-12 col-md-6 content-box" style="background-image: url(/themes/monat/assets/images/section-bg.jpg);">
+							<div class="colored-box">
+								<h6 sw-rbKey="'frontend.product.noNasties'"></h6>
+								
+								<div class="ingredients">
+									#m.dspObject( 'component', 'No Toxic Ingredients' )#
+								</div>
+								
+								<div class="iconed-featurs iconed-featurs--white">
+									#m.dspObject( 'component', 'Product Details: Values Bar' )#
+								</div>
+							</div>
+							<div id="ingredient-block" class="ingredient-block" ng-class="{'active': monatProductModal.showFullIngredients}">
+								<button type="button" class="close">
+									<i class="fas fa-times"></i>
+								</button>
+								<div ng-if="monatProductModal.showFullIngredients" class="list-box">
+									<h6 class="title-with-line" sw-rbKey="'frontend.product.fullIngredients'"></h6>
+									<div class="ingredients-block-popup">
+										<div ng-bind-html="monatProductModal.productDetails.productFullIngredients"></div>
+									</div>
+								</div>
+							</div>
+						</div>
+						</div>
+					</div>
+				</div>
+				<div ng-if="monatProductModal.productDetails.videoUrl.length" class="card">
+					<div class="card-header" id="headingTwo">
+						<h2 class="mb-0">
+							<button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseTwo">
+								Collapsible Group Item #2
+							</button>
+						</h2>
+					</div>
+					<section id="collapseThree" class="product-video collapse" data-parent="#productAccordion">
+						<div class="video-section">
+							<span class="play-video" data-featherlight="#product-video-lightbox">
+								<i class="fas fa-play"></i>
+							</span>
+							<div class="img-box">
+								
+							<!-----	TODO: <img src="#m.getAttributeFilePath( $.slatwall.product(), 'productVideoBackgroundImage' )#" alt="">----->
+							</div>
+							<div class="video-box">
+							</div>
+							<div class="video-lightbox" id="product-video-lightbox" style="padding-top: #videoRatio#%; width: #videoWidth#px">
+							<iframe
+								frameborder="0" 
+								allowfullscreen
+								src="{{monatProductModal.productDetails.videoUrl}}"
+								width="{{monatProductModal.productDetails.videoWidth}}"
+								height="{{monatProductModal.productDetails.videoHeight}}"
+								></iframe>
+							</div>
+						</div>
+						<div class="container">
+							<h6>{{monatProductModal.productDetails.videoTitle}} </h6>
+							<span id="duration" class="time">{{monatProductModal.productDetails.videoLength}}</span>
+						</div>
+					</section>
+				</div>
 			</div>
 		</div>
 	</div>

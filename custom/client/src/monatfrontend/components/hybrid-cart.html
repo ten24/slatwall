@@ -11,7 +11,7 @@
 	</a> 
 </div>
 
-<div ng-if="hybridCart.showCart" class="position-absolute hybrid-cart-wrapper">
+<div ng-show="hybridCart.showCart" class="position-absolute hybrid-cart-wrapper">
 	<div class="cart-container">
 		<div class="accordion-group">
 			<div id="accordion">
@@ -37,9 +37,9 @@
 											<div class="p-1">
 												<a class="py-0" ng-click="hybridCart.redirect(item.skuProductURL)" href="#">
 													<img 
-														image-manager 
+														image-manager
 														height="75px" 
-														ng-src="https://monatteam.ten24dev.com/Slatwall/custom/assets/images/product/default/cache/10392000_300w_300h.jpg" 
+														ng-src="{{item.sku.imagePath}}" 
 														alt="{{item.sku.skuDefinition}}"
 													>
 												</a>
@@ -118,7 +118,7 @@
 									<b> <span sw-rbKey="'frontend.hybridCart.todaysOrderTotal'"></span> </b>
 								</div>
 								<div>
-									<b ng-bind-html="hybridCart.cart.total | swcurrency:hybridCart.cart.currencyCode"></b> 
+									<b ng-bind-html="hybridCart.total | swcurrency:hybridCart.cart.currencyCode"></b> 
 								</div>
 							</div>
 							<div class="row">

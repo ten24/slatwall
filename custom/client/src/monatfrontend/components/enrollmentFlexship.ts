@@ -7,13 +7,12 @@ class EnrollmentFlexshipController {
 	public orderTemplate:GenericTemplate;
 	public orderTemplateID:string;
 	public hybridCart:HybridCartController;
+	public isLoading:boolean;
+	public cartThreshold:number;
 	
 	//@ngInject
 	constructor(public monatService, public observerService, public orderTemplateService, public publicService) {
-		//TODO: remove event listeners and call get flexship within method
-		this.observerService.attach(this.getFlexship.bind(this), 'addOrderTemplateItemSuccess');
-		this.observerService.attach(this.getFlexship.bind(this), 'editOrderTemplateItemSuccess');
-		this.observerService.attach(this.getFlexship.bind(this), 'removeOrderTemplateItemSuccess');
+		this.observerService.attach(this.getFlexship.bind(this), 'addOrderTemplateItemSuccess')
 	}
 
 	public $onInit = () => {
@@ -21,42 +20,39 @@ class EnrollmentFlexshipController {
 	}
 	
 	public getFlexship():void {
-		if(!this.orderTemplateID){
-			this.orderTemplateID = this.monatService.getCookieValueByCookieName('flexshipID');
+		this.isLoading = true;
+		let extraProperties = "canPlaceOrderFlag";
+		if(!this.cartThreshold){
+			extraProperties += ',cartTotalThresholdForOFYAndFreeShipping'
 		}
-
-		this.hybridCart.getFlexship(this.orderTemplateID);
+		this.orderTemplateService.getSetOrderTemplateOnSession(extraProperties).then(data => {
+			if((data.orderTemplate as GenericTemplate) ){
+				this.orderTemplate = data.orderTemplate;
+				this.cartThreshold = +this.orderTemplate.cartTotalThresholdForOFYAndFreeShipping;
+				this.isLoading = false;
+			} else {
+				throw(data);
+			}
+		});
 	}
 	
     public removeOrderTemplateItem = (item:GenericOrderTemplateItem) => {
     	this.orderTemplateService
     	.removeOrderTemplateItem(item.orderTemplateItemID)
     	.then( (data) => {
-        	if(data.successfulActions && data.successfulActions.indexOf('public:order.removeOrderTemplateItem') > -1) {
-				console.log('success');
-    		} else {
-    		    console.log(data);
-            }
+        	this.getFlexship();
     	});
     }
     
     public increaseOrderTemplateItemQuantity = (item:GenericOrderTemplateItem) => {
     	this.orderTemplateService.editOrderTemplateItem(item.orderTemplateItemID, item.quantity + 1).then( (data) => {
-        	if(data.successfulActions && data.successfulActions.indexOf('public:order.editOrderTemplateItem') > -1) {
-				console.log('success')
-    		} else {
-    		    console.log(data);
-            }
+        	this.getFlexship();
         });
     }
     
     public decreaseOrderTemplateItemQuantity = (item:GenericOrderTemplateItem) => {
     	this.orderTemplateService.editOrderTemplateItem(item.orderTemplateItemID, item.quantity - 1).then( data => {
-        	if(data.successfulActions && data.successfulActions.indexOf('public:order.editOrderTemplateItem') > -1) {
-				console.log('success');
-    		} else {
-    		    console.log(data);
-            }
+        	this.getFlexship();
         });
     }
 

@@ -10,6 +10,7 @@ export class MonatService {
 	public cart;
 	public lastAddedSkuID: string = '';
 	public previouslySelectedStarterPackBundleSkuID:string;
+	public canPlaceOrder:boolean;
 	public cachedOptions = {
 		frequencyTermOptions: <IOptions[]>null,
 		countryCodeOptions: <IOptions[]>null,
@@ -25,6 +26,7 @@ export class MonatService {
 				.getCart(refresh, param)
 				.then((data) => {
 					this.cart = data;
+					this.canPlaceOrder = this.cart.cart.orderRequirementsList.indexOf('canPlaceOrderReward') == -1;
 					deferred.resolve(this.cart);
 				})
 				.catch((e) => {
@@ -49,6 +51,7 @@ export class MonatService {
 			.then((data) => {
 				if (data.cart) {
 					this.cart = data.cart;
+					this.canPlaceOrder = this.cart.orderRequirementsList.indexOf('canPlaceOrderReward') == -1;
 					deferred.resolve(data.cart);
 				} else {
 					throw data;

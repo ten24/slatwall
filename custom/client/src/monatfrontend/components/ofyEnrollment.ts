@@ -6,7 +6,7 @@ class OFYEnrollmentController {
 	public loading:boolean;
 	
 	//@ngInject
-	constructor( public observerService, public publicService) {
+	constructor( public observerService, public publicService, public orderTemplateService, public ModalService) {
 	}
 
 	public $onInit = () => {
@@ -28,15 +28,44 @@ class OFYEnrollmentController {
 	
 	public addToCart():void{
 		this.loading = true;
-		this.publicService.doAction('addOrderItem', {skuID: this.stagedProductID} ).then(res=>{
+		
+		let data ={
+			skuID: this.stagedProductID,
+        }
+        
+		this.publicService.doAction('addOrderItem', data ).then(res=>{
+			this.observerService.notify('onNext');	
 			this.loading = false;
-			this.observerService.notify('onNext');
 		});
 	}
 	
 	public stageProduct(skuID:string):void{
 		this.stagedProductID = skuID;
 	}
+	
+	public launchQuickShopModal = (product) => {
+		this.ModalService.showModal({
+			component: 'monatProductModal',
+			bodyClass: 'angular-modal-service-active',
+			bindings: {
+				currencyCode:this.products[0].currencyCode,
+				product: product,
+				isEnrollment: true,
+				type:'ofy'
+			},
+			preClose: (modal) => {
+				modal.element.modal('hide');
+				this.ModalService.closeModals();
+			},
+		}).then((modal) => {
+			modal.element.modal(); //it's a bootstrap element, using '.modal()' to show it
+			modal.close.then((result) => {});
+		})
+		.catch((error) => {
+			console.error('unable to open model :', error);
+		});
+	
+	};
 	
 }
 

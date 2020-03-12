@@ -852,21 +852,6 @@ property name="personalVolume" ormtype="big_decimal";
 
 	// ============= START: Bidirectional Helper Methods ===================
 	
-	public void function removeAppliedPriceGroup(any appliedPriceGroup) {
-		if(!structKeyExists(arguments, "appliedPriceGroup")) {
-			if(!structKeyExists(variables, "appliedPriceGroup")){
-				return;
-			}
-			arguments.appliedPriceGroup = variables.appliedPriceGroup;
-		}
-		var index = arrayFind(arguments.appliedPriceGroup.getAppliedOrderItems(), this);
-		if(index > 0) {
-			arrayDeleteAt(arguments.appliedPriceGroup.getAppliedOrderItems(), index);
-			this.setPrice(this.getSkuPrice());
-		}
-		structDelete(variables, "appliedPriceGroup");
-	}
-	
 	// Order (many-to-one)
 	public void function setOrder(required any order) {
 		variables.order = arguments.order;
