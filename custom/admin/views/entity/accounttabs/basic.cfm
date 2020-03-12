@@ -29,16 +29,18 @@
 			<hb:HibachiPropertyDisplay object="#rc.account#" property="phoneNumber" edit="false"> 
 			<hb:HibachiPropertyDisplay object="#rc.account#" property="emailAddress" edit="false">
 			<hb:HibachiPropertyDisplay object="#rc.account#" property="accountType" edit="false">
-			<cfif not isNull( rc.account.getOwnerAccount() )>
+			<cfif NOT IsNULL( rc.account.getOwnerAccount() )>
 				<hb:HibachiPropertyDisplay object="#rc.account.getOwnerAccount()#" property="fullName" edit="false" title = "Sponsor Name"> 
 			</cfif>
 			<cfif NOT IsNULL(rc.account.getEnrollmentDate())> 
 			<hb:HibachiPropertyDisplay object="#rc.account#" property="enrollmentDate" edit="false">
 			</cfif>
-			<hb:HibachiPropertyDisplay object="#rc.account#" property="renewalDate" edit="false">
-			<hb:HibachiPropertyDisplay object="#rc.account.getAccountCreatedSite()#" property="siteName" edit="false">
-			    
-			
+			<cfif NOT IsNULL(rc.account.getAddress())> 
+			<hb:HibachiPropertyDisplay object="#rc.account#" property="address" edit="false">
+			</cfif>
+			<cfif NOT IsNULL(rc.account.getGovernmentIdentificationLastFour())> 
+			<hb:HibachiPropertyDisplay object="#rc.account#" property="GovernmentIdentificationLastFour" edit="false">
+			</cfif>
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 </cfoutput>
