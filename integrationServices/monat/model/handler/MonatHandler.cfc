@@ -120,6 +120,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 					var renewalDate = DateAdd('yyyy', 1, account.getEnrollmentDate());
 					account.setRenewalDate(DateAdd('yyyy', 1, account.getEnrollmentDate()));
 				}
+				
 				//TODO: Move this logic to account save
 				// // Email opt-in when finishing enrollment
 				// if ( !isNull(account.getAllowCorporateEmailsFlag()) && account.getAllowCorporateEmailsFlag() ) {
@@ -129,7 +130,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 				// 		logHibachi("afterOrderProcess_placeOrderSuccess failed @ addMemberToListByAccount for #account.getAccountID()#");
 				// 	}
 				// }
-				
+			
+				getHibachiEventService().announceEvent('afterAccountEnrollmentSuccess', {'accountID':account.getAccountID()}); 
+	
 			} else if ( 
 				account.getAccountStatusType().getSystemCode() == 'astGoodStanding' 
 				&& CompareNoCase(account.getAccountType(), 'marketPartner')  == 0 
