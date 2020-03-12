@@ -14,6 +14,8 @@ component {
 	property name="genderFullWord" persistent = "false";
 	property name="spouseFirstName" persistent = "false";
 	property name="spouseLastName" persistent = "false";
+	property name="governmentIdentificationLastFour" persistent = "false";
+	
 	
 	public numeric function getSuccessfulFlexshipOrdersThisYearCount(){
 		if(!structKeyExists(variables, 'successfulFlexshipOrdersThisYearCount')){
@@ -158,6 +160,11 @@ component {
 	public string function getSpouseLastName(){
 	    if(!IsNull(this.getSpouseName())){
 	       return ListRest(this.getSpouseName(),", ");
+	    }
+	}
+	public string function getGovernmentIdentificationLastFour(){
+	    if(!IsNull(this.getAccountGovernmentIdentifications())){
+	       return this.getAccountGovernmentIdentifications().getGovernmentIdentificationLastFour();
 	    }
 	}
 } 
