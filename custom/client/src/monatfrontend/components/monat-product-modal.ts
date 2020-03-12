@@ -136,11 +136,11 @@ class MonatProductModal {
 
 	public scope = {};
 	public bindToController = {
-		siteCode:'<',
+		siteCode:'<?',
 		currencyCode:'<',
 		product: '<',
 		type: '<',
-		orderTemplateID: '<',
+		orderTemplateID: '<?',
 		close: '=', //injected by angularModalService
 	};
 	public controller = MonatProductModalController;

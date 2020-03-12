@@ -8,7 +8,7 @@
 			<div class="row">
 				<!--product image-->
 				<div class="product-img">
-					<img ng-src="{{monatProductModal.product.skuImagePath[0]}}" ng-attr-alt="{{monatProductModal.product.productName}}" />
+					<img image-manager ng-src="{{monatProductModal.product.skuImagePath[0]}}" ng-attr-alt="{{monatProductModal.product.productName}}" />
 				</div>
 				<!-- end product image-->
 	
@@ -16,7 +16,7 @@
 				<div class="product-details">
 					<h2 class="modal-title">
 						<a ng-href="{{monatProductModal.product.skuProductURL}}">
-							{{monatProductModal.product.productName}}
+							{{monatProductModal.product.productName ? monatProductModal.product.productName : monatProductModal.product.skuName }}
 						</a>
 					</h2>
 	
@@ -49,12 +49,20 @@
 							</span>
 						</p>
 					</div>
+					
+					<!--- In this system --->
+					<div class="in-this-system" ng-if="monatProductModal.type == 'ofy' ">
+						<p class="features">
+							{{monatProductModal.product.product_productDescription}}
+						</p>
+					</div>
 	
 					<!--price group block-->
 	  				<div class="price-block">
 	  					
-	  					<div ng-if="monatProductModal.type ==='productListing' || monatProductModal.type ==='VIPenrollment' || monatProductModal.type ==='VIPenrollmentOrder' || monatProductModal.type === 'flexship'" class="price">
-				            <strong ng-bind-html="monatProductModal.product.price | swcurrency:monatProductModal.currencyCode"><span ng-if="monatProductModal.product.upgradedPricing.price != null ">/</span></strong> 
+	  					<div ng-if="monatProductModal.type ==='ofy' || monatProductModal.type ==='productListing' || monatProductModal.type ==='VIPenrollment' || monatProductModal.type ==='VIPenrollmentOrder' || monatProductModal.type === 'flexship'" class="price">
+				            <strong ng-if="monatProductModal.type !='ofy'" ng-bind-html="monatProductModal.product.price | swcurrency:monatProductModal.currencyCode"><span ng-if="monatProductModal.product.upgradedPricing.price != null ">/</span></strong> 
+				           	<span ng-if="monatProductModal.type ==='ofy'" sw-rbKey="'frontend.freeProduct.free'"></span>
 				            <span class="vip-price">
 				                <span ng-if="monatProductModal.product.upgradedPricing.price != null && monatProductModal.product.upgradedPriceGroupCode == 3">
 				                    <span sw-rbKey="'frontend.global.vip'"></span> <span ng-bind-html="monatProductModal.product.upgradedPricing.price | swcurrency:monatProductModal.currencyCode"></span>
@@ -79,14 +87,21 @@
 						<label sw-rbkey="'frontend.global.quantity'"></label>
 						<div class="qty">
 							<button type="button" 
+								ng-if="monatProductModal.type != 'ofy' "
 								ng-disabled="monatProductModal.quantityToAdd <= 1"
 								ng-click="monatProductModal.quantityToAdd = monatProductModal.quantityToAdd -1" 
 								class="minus">
 								-
 							</button>
-							<input class="form-control qty-input" type="number" name="quantity"
+							<input 
+								ng-disabled="monatProductModal.type == 'ofy'"
+								class="form-control qty-input" 
+								type="number" 
+								name="quantity"
 								ng-model="monatProductModal.quantityToAdd" />
-							<button type="button" 
+							<button 
+								ng-if="monatProductModal.type != 'ofy' "
+								type="button" 
 								ng-click="monatProductModal.quantityToAdd = monatProductModal.quantityToAdd + 1 " 
 								class="plus">
 								+
@@ -99,7 +114,7 @@
 						ng-click="monatProductModal.onAddButtonClick()" 
 						ng-class="{ loading: monatProductModal.loading }"
 						ng-disabled="monatProductModal.loading"
-						ng-if="monatProductModal.product.qats > 1"
+						ng-if="monatProductModal.product.qats > 1 || monatProductModal.type =='ofy'"
 					>
 						{{ monatProductModal.translations.addButtonText }}
 					</button>
@@ -112,7 +127,7 @@
 				</div>
 				<!--end product details -->
 			</div>
-			<div class="accordion" id="accordionExample">
+			<div ng-if="monatProductModal.type != 'ofy' " class="accordion" id="productAccordion">
 				<div class="card" ng-if="monatProductModal.productDetails.subtitle.length">
 					<div class="card-header" id="headingTwo">
 						<h2 class="mb-0">
@@ -121,7 +136,7 @@
 							</button>
 						</h2>
 					</div>
-					<div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+					<div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#productAccordion">
 						<section class="description-extended">
 							<div class="container container-sm">
 								<h6 class="title-with-line">{{monatProductModal.productDetails.subtitle}}</h6>
@@ -147,7 +162,7 @@
 						</h2>
 					</div>
 					
-					<div id="collapseOne" class="collapse ingredients-section" aria-labelledby="headingOne" data-parent="#accordionExample">
+					<div id="collapseOne" class="collapse ingredients-section" aria-labelledby="headingOne" data-parent="#productAccordion">
 						<div class="card-body row">
 							<div class="col-12 col-md-6 content-box">
 								<div class="content">
@@ -205,7 +220,7 @@
 							</button>
 						</h2>
 					</div>
-					<section id="collapseThree" class="product-video collapse" data-parent="#accordionExample">
+					<section id="collapseThree" class="product-video collapse" data-parent="#productAccordion">
 						<div class="video-section">
 							<span class="play-video" data-featherlight="#product-video-lightbox">
 								<i class="fas fa-play"></i>
