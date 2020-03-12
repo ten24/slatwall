@@ -156,6 +156,95 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 		}
 		return 50;
 	}
+	
+
+	
+	private any function getExtraData(required any requestBean){
+		
+		var data = {
+			'paymentMethod' = 'creditCard',
+			'amount' = LSParseNumber(arguments.requestBean.getTransactionAmount()),
+			'currency' = arguments.requestBean.getTransactionCurrencyCode(),
+			'customer' = {
+				'firstName' = arguments.requestBean.getAccountFirstName(),
+				'lastName' = arguments.requestBean.getAccountLastName(),
+				'orderNumber' = '',
+				'customerRef' = '',
+				'createdAtDate' = '',
+				'email' = '',
+				'phone' = '',
+				'billToAddressOne' = arguments.requestBean.getBillingStreetAddress(),
+				'billToAddressTwo' = arguments.requestBean.getBillingStreet2Address(),
+				'billToCity' = arguments.requestBean.getBillingCity(),
+				'billToState' = arguments.requestBean.getBillingStateCode(),
+				'billToPostal' = arguments.requestBean.getBillingPostalCode(),
+				'billToCountry' = arguments.requestBean.getBillingCountryCode()
+			},
+			'customFields' = {
+				'CURRENTRANK' = '' ,
+				'SPONSORID' = '',
+				'TRANSACTIONDATE' = now(),
+				'CARDHOLDER_NAME' = arguments.requestBean.getBillingName(),
+			},
+			'cart' = {
+				'items' = []
+			}
+		};
+		
+		if(!isNull(arguments.requestBean.getAccount())){
+			var account = arguments.requestBean.getAccount();
+			
+			requestData['data']['customer']['customerRef'] = account.getAccountNumber();
+			requestData['data']['customer']['createdAtDate'] = account.getCreatedDateTime();
+			requestData['data']['customer']['email'] = account.getEmailAddress();
+			requestData['data']['customer']['phone'] = account.getPhoneNumber();
+			if(!isNull(account.getOwnerAccount())){
+				requestData['data']['customFields']['SPONSORID'] = account.getOwnerAccount().getAccountNumber();
+			}
+		}
+		
+		
+		if (!isNull(arguments.requestBean.getOrder())) {
+			
+			requestData['data']['customer']['orderNumber'] = arguments.requestBean.getOrder().getOrderNumber();
+			
+			if(!isNull(arguments.requestBean.getOrder().getShippingAddress())){
+				var shippingAddress = arguments.requestBean.getOrder().getShippingAddress();
+				requestData['data']['customer']['shipToAddressOne'] = shippingAddress.getStreetAddress();
+				requestData['data']['customer']['shipToAddressTwo'] = shippingAddress.getStreet2Address();
+				requestData['data']['customer']['shipToCity'] = shippingAddress.getCity();
+				requestData['data']['customer']['shipToState'] = shippingAddress.getStateCode();
+				requestData['data']['customer']['shipToPostal'] = shippingAddress.getPostalCode();
+				requestData['data']['customer']['shipToCountry'] = shippingAddress.getCountryCode();
+			}
+			
+			
+			var orderItems = arguments.requestBean.getOrder().getOrderItems();
+			
+			for(var orderItem in orderItems){
+				
+				//don't run this logic for child order items.
+				if (isNull(orderItem.getParentOrderItem())) {
+					//if this is a product bundle orderitem, send the product bundle price
+					if(!isNull(orderItem.getChildOrderItems()) && arrayLen(orderItem.getChildOrderItems())) {
+						var unitAmount = orderItem.getProductBundlePrice();
+					//send the regular orderitem price.
+					} else {
+						var unitAmount = orderItem.getPrice();
+					}
+					 data.cart.items.append({
+						'item' : '#orderItem.getSku().getSkuCode()#',
+						'description' : '#orderItem.getSku().getSkuName()#',
+						'quantity' : '#orderItem.getQuantity()#',
+						'type' : 'sale',
+						"price" : "#(orderItem.getQuantity() * unitAmount)#"
+					});
+				}
+			}
+		}
+		
+		return data;
+	}
 
 	// Nexio relies on 3rd party TokenEx for tokenization. It uses PKCS #1 v1.5 as cipher algorithm for RSA encryption
 	private any function encryptCardNumber(required string cardNumber, required string publicKey) {
@@ -182,13 +271,8 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 	private void function sendRequestToGenerateToken(required any requestBean, required any responseBean) {
 		// We are expecting there is no provider token yet, but if accountPaymentMethod is used & attempt to generate another token prevent & short circuit
 		if (isNull(arguments.requestBean.getProviderToken()) || !len(arguments.requestBean.getProviderToken())) {
-			var orderNumber = "";
-			if (!isNull(arguments.requestBean.getOrderID())) {
-				orderNumber = arguments.requestBean.getOrderID();
-			}
 			
 			var publicKey = getPublicKey(arguments.requestBean);
-			
 			
 			var checkFraud = false;
 			
@@ -208,31 +292,24 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 					'securityCode' = arguments.requestBean.getSecurityCode()
 				},
 				'processingOptions' = {
-					'checkFraud' = false,
+					'checkFraud' = checkFraud,
 					'verifyCvc' = setting(settingName='verifyCvcFlag', requestBean=arguments.requestBean) ? true : false,
 					'verifyAvs' = LSParseNumber(setting(settingName='verifyAvsSetting', requestBean=arguments.requestBean))
 				},
-				'data' = {
-					'paymentMethod' = 'creditCard',
-					'amount' = LSParseNumber(arguments.requestBean.getTransactionAmount()),
-					'currency' = arguments.requestBean.getTransactionCurrencyCode(),
-					'customer'= {
-						'orderNumber' = orderNumber,
-						'customerRef' = arguments.requestBean.getAccountID(),
-						'firstName' = arguments.requestBean.getAccountFirstName(),
-						'lastName' = arguments.requestBean.getAccountLastName(),
-						'billToAddressOne' = arguments.requestBean.getBillingStreetAddress(),
-						'billToAddressTwo' = arguments.requestBean.getBillingStreet2Address(),
-						'billToCity' = arguments.requestBean.getBillingCity(),
-						'billToState' = arguments.requestBean.getBillingStateCode(),
-						'billToPostal' = arguments.requestBean.getBillingPostalCode(),
-						'billToCountry' = arguments.requestBean.getBillingCountryCode()
-					}
-				}
+				'data' = this.getExtraData(arguments.requestBean)
 			};
-			if(checkFraud && getHibachiScope().hasSessionValue('kount-token')){
+			
+			if(getHibachiScope().hasSessionValue('kount-token')){
 				requestData['token'] = getHibachiScope().getSessionValue('kount-token');
-				requestData['processingOptions']['checkFraud']=true;
+			}else{
+				// One Time Use Token (https://github.com/nexiopay/payment-service-example-node/blob/master/ClientSideToken.js#L23)
+				var responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'generateOneTimeUseToken', requestData);
+				if(responseBean.hasErrors()){
+					return responseBean;
+				}
+				if(!isNull(responseData.token)){
+					requestData['token'] = responseData.token;
+				}
 			}
 			
 			// Save Card, this is the imortant token we want to persist for Slatwall payment data (https://github.com/nexiopay/payment-service-example-node/blob/master/ClientSideToken.js#L107)
@@ -344,18 +421,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			    	"lastFour" = arguments.requestBean.getCreditCardLastFour(),
 			    	"cardType" = arguments.requestBean.getCreditCardType()
 			    },
-			    "data" = {
-			      "currency" = arguments.requestBean.getTransactionCurrencyCode(),
-			      "amount" = LSParseNumber(arguments.requestBean.getTransactionAmount())
-			    },
-			    "customer"= {
-					'billToAddressOne' = arguments.requestBean.getBillingStreetAddress(),
-					'billToAddressTwo' = arguments.requestBean.getBillingStreet2Address(),
-					'billToCity' = arguments.requestBean.getBillingCity(),
-					'billToState' = arguments.requestBean.getBillingStateCode(),
-					'billToPostal' = arguments.requestBean.getBillingPostalCode(),
-					'billToCountry' = arguments.requestBean.getBillingCountryCode()
-				},
+			    'data' = this.getExtraData(arguments.requestBean),
 			    "processingOptions" = {
 				    "checkFraud" = (setting(settingName='checkFraud', requestBean=arguments.requestBean)? true : false),
 				    "verifyAvs" = LSParseNumber(setting(settingName='verifyAvsSetting', requestBean=arguments.requestBean)),
@@ -406,18 +472,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			    	"lastFour" = arguments.requestBean.getCreditCardLastFour(),
 			    	"cardType" = arguments.requestBean.getCreditCardType()
 			    },
-			    "data" = {
-			    	"currency" = arguments.requestBean.getTransactionCurrencyCode(),
-			    	"amount" = LSParseNumber(arguments.requestBean.getTransactionAmount()),
-					"customer"= {
-						'billToAddressOne' = arguments.requestBean.getBillingStreetAddress(),
-						'billToAddressTwo' = arguments.requestBean.getBillingStreet2Address(),
-						'billToCity' = arguments.requestBean.getBillingCity(),
-						'billToState' = arguments.requestBean.getBillingStateCode(),
-						'billToPostal' = arguments.requestBean.getBillingPostalCode(),
-						'billToCountry' = arguments.requestBean.getBillingCountryCode()
-					}
-			    },
+			    'data' = this.getExtraData(arguments.requestBean),
 			    "processingOptions" = {
 				    "checkFraud" = (setting(settingName='checkFraud', requestBean=arguments.requestBean)? true : false),
 				    "verifyAvs" = LSParseNumber(setting(settingName='verifyAvsSetting', requestBean=arguments.requestBean)),
@@ -665,7 +720,6 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			return responseData;
 		} else {
 			var responseData = {};
-			
 			// Server error handling - Unavailable or Communication Problem
 			if (httpResponse.status_code == 0 || left(httpResponse.status_code, 1) == 5 || left(httpResponse.status_code, 1) == 4) {
 				arguments.responseBean.setStatusCode("ERROR");
