@@ -444,7 +444,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					continue;
 				}
 				
-				orderItem.setAppliedPriceGroup(javaCast("null",""))
+				orderItem.setAppliedPriceGroup(javaCast("null",""));
 			
 				if(!isNull(arguments.order.getAccount()) && isNull(orderItem.getOrder().getPriceGroup())){
 					
