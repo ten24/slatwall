@@ -45,16 +45,15 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 		//Call on Load
 		//Show Loader
 		setTimeout(()=> {
-			showFullPageLoader();
 			loadTabs();
-		}, 1)
+		}, 0);
 		
 		
 	
 	});
 	
 	function showFullPageLoader() {
-		jQuery("#accordion").append('<div class="fullpage-loader is-active fullpage-loader-default" data-text="Please wait loading tabs">Loading</div>');
+		jQuery("#accordion").append('<div class="fullpage-loader is-active fullpage-loader-default" data-text="Please wait loading tabs"></div>');
 	}
 	
 	function removeFullPageLoader() {
@@ -76,7 +75,6 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
     	
     	//If detail tab does not exists
 		if( !jQuery('div[id^="tabdetails_"]').length ) {
-			removeFullPageLoader();
 			return;
 		}
 		
@@ -92,15 +90,23 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 			
 			//check if correct json is loaded
 			if( !tabsConfig.hasOwnProperty('data') || !tabsConfig.data.hasOwnProperty('entityTabs') ) {
-				removeFullPageLoader();
 				return;	
 			}
 			
 			//Load tabs info from config
 			tabsConfig = tabsConfig.data.entityTabs;
 			
+			var idsArray = jQuery('div[id^="tabdetails_"]').first().attr("id").split("_");
+			if(idsArray.length != 3  || !tabsConfig.hasOwnProperty(idsArray[1])) {
+				return;
+			}
+			showFullPageLoader();
+			
+			
 			var tabsList = [];
 			var entityName = "";
+			
+			document.getElementById('accordion').style.cssText = "display: flex; flex-flow: column;";
 			
 			//Loop through available detail tabs from HTML DOMs
 			jQuery('div[id^="tabdetails_"]').each(function(item, obj){
@@ -118,36 +124,12 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 				//get post by entity name and view name form JSON
 				var position = getKeyByValue( JSON.parse(tabsConfig[ idsArray[1] ]), idsArray[2] );
 				if( position ) {
-					tabsList[position] = {
-						"id" : jQuery(obj).attr("id")
-					};
+					document.getElementById( jQuery(obj).attr("id") ).style.order = position;
 				}
 				return;
 			});
-						
-			//Move HTML
-			for( var i=1; i < tabsList.length; i++ ) {
-				//if invalid tab position
-				//this can happen if we have wrong sequence of postions inside JSON
-				if( !tabsList[i] ) {
-					continue;
-				}
-				
-				var orgDiv = jQuery('div[id^="tabdetails_"]')[i - 1];
-				var targetDiv = jQuery('div[id="'+tabsList[i].id+'"]');
-				//check if both divs exist
-				if( !orgDiv || !targetDiv ) {
-					continue;
-				}
-				
-				//Clone and swap DIVs
-				var clone = $(orgDiv).clone();
-				jQuery(orgDiv).replaceWith( jQuery(targetDiv).clone() );
-				jQuery(targetDiv).replaceWith( clone );
-			}
 			
 			removeFullPageLoader();
-			
 			
 		});
 
