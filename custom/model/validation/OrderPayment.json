@@ -1,5 +1,5 @@
 {
 	"properties": {
-		"order.isLockedInProcessingFlag": [{ "contexts": "save", "eq": false }]
+		"order.isLockedInProcessingFlag": [{ "eq": false }]
 	}
 }
