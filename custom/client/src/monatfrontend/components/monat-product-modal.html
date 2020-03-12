@@ -59,7 +59,6 @@
 	
 					<!--price group block-->
 	  				<div class="price-block">
-	  					
 	  					<div ng-if="monatProductModal.type ==='ofy' || monatProductModal.type ==='productListing' || monatProductModal.type ==='VIPenrollment' || monatProductModal.type ==='VIPenrollmentOrder' || monatProductModal.type === 'flexship'" class="price">
 				            <strong ng-if="monatProductModal.type !='ofy'" ng-bind-html="monatProductModal.product.price | swcurrency:monatProductModal.currencyCode"><span ng-if="monatProductModal.product.upgradedPricing.price != null ">/</span></strong> 
 				           	<span ng-if="monatProductModal.type ==='ofy'" sw-rbKey="'frontend.freeProduct.free'"></span>
