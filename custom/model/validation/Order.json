@@ -27,7 +27,7 @@
 		"orderItems":[{"conditions":"mpEnrollmentOrder","contexts":"placeOrder","method":"hasProductPackOrderItem"}],
 		"subTotal": [{"contexts":"placeOrder","conditions":"anyReturnOrder","method":"subtotalWithinAllowedPercentage"}],
 		
-		"isLockedInProcessingFlag": [{ "contexts": "edit,delete,addOrderPayment,placeOrder,retryPayment,addSaleOrderItem,addPromotionCode,updateOrderAmounts,updateStatus,closeOrder,createReturn,takeOffHold,placeOnHold,auditRollback", "eq": false }],
+		"isLockedInProcessingFlag": [{ "contexts": "edit,clear,delete,addOrderPayment,removeOrderPayment,retryPayment,placeOrder,addOrderItem,removeOrderItem,addOrderItemGiftRecipient,addSaleOrderItem,addPromotionCode,removePromotionCode,changeCurrencyCode,updateOrderAmounts,forceItemQuantityUpdate,updateStatus,updateOrderFulfillment,removePersonalInfo,closeOrder,createReturn,takeOffHold,placeOnHold,auditRollback,releaseCredits,reopenOrder", "eq": false }],
 		"statusCode":  [
 			{ "contexts": "placeInProcessingOne", "inList": "ostNew,ostProcessing" },
 		],
