@@ -106,7 +106,7 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 			var tabsList = [];
 			var entityName = "";
 			
-			document.getElementById('accordion').style.cssText = "display: flex; flex-flow: column;";
+			jQuery('#accordion').css({ "display": "flex", "flex-flow": "column"});
 			
 			//Loop through available detail tabs from HTML DOMs
 			jQuery('div[id^="tabdetails_"]').each(function(item, obj){
@@ -124,7 +124,7 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 				//get post by entity name and view name form JSON
 				var position = getKeyByValue( JSON.parse(tabsConfig[ idsArray[1] ]), idsArray[2] );
 				if( position ) {
-					document.getElementById( jQuery(obj).attr("id") ).style.order = position;
+					jQuery(obj).css({ "order" : position });
 				}
 				return;
 			});
