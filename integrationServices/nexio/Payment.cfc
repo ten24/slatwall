@@ -174,7 +174,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				'email' = '',
 				'phone' = '',
 				'billToAddressOne' = arguments.requestBean.getBillingStreetAddress(),
-				'billToAddressTwo' = arguments.requestBean.getBillingStreet2Address(),
+				'billToAddressTwo' = arguments.requestBean.getBillingStreet2Address() ?: '',
 				'billToCity' = arguments.requestBean.getBillingCity(),
 				'billToState' = arguments.requestBean.getBillingStateCode(),
 				'billToPostal' = arguments.requestBean.getBillingPostalCode(),
@@ -183,8 +183,10 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			'customFields' = {
 				'CURRENTRANK' = '' ,
 				'SPONSORID' = '',
-				'TRANSACTIONDATE' = now(),
+				'TRANSACTIONDATE' = arguments.requestBean.getOrderPayment().getCreatedDateTime(),
 				'CARDHOLDER_NAME' = arguments.requestBean.getBillingName(),
+				'ACCOUNT_REF' = '',
+				'ORDER_REF' = ''
 			},
 			'cart' = {
 				'items' = []
@@ -193,29 +195,42 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 		
 		if(!isNull(arguments.requestBean.getAccount())){
 			var account = arguments.requestBean.getAccount();
+			data['customer']['customerRef'] = account.getAccountNumber();
+			data['customer']['createdAtDate'] = account.getCreatedDateTime();
+			data['customer']['email'] = account.getEmailAddress();
+			data['customer']['phone'] = account.getPhoneNumber();
 			
-			requestData['data']['customer']['customerRef'] = account.getAccountNumber();
-			requestData['data']['customer']['createdAtDate'] = account.getCreatedDateTime();
-			requestData['data']['customer']['email'] = account.getEmailAddress();
-			requestData['data']['customer']['phone'] = account.getPhoneNumber();
-			if(!isNull(account.getOwnerAccount())){
-				requestData['data']['customFields']['SPONSORID'] = account.getOwnerAccount().getAccountNumber();
+			data['customFields']['ACCOUNT_REF'] = account.getShortReferenceID(true);
+			
+			if(len(account.getRank())){
+				var rankOption = arguments.requestBean.getService('attributeService').getAttributeOptionByAttributeOptionValue(account.getRank());
+				if(!isNull(rankOption)){
+					data['customFields']['CURRENTRANK'] = rankOption.getAttributeOptionLabel();
+				}
 			}
+			
+			if(!isNull(account.getOwnerAccount())){
+				data['customFields']['SPONSORID'] = account.getOwnerAccount().getAccountNumber();
+			}
+			
 		}
 		
 		
 		if (!isNull(arguments.requestBean.getOrder())) {
 			
-			requestData['data']['customer']['orderNumber'] = arguments.requestBean.getOrder().getOrderNumber();
+			data['customer']['orderNumber'] = arguments.requestBean.getOrder().getOrderNumber();
+			data['customFields']['ORDER_REF'] = arguments.requestBean.getOrder().getShortReferenceID(true);
 			
-			if(!isNull(arguments.requestBean.getOrder().getShippingAddress())){
+			
+			
+			if(!isNull(arguments.requestBean.getOrder().getShippingAddress()) && len(arguments.requestBean.getOrder().getShippingAddress().getStreetAddress())){
 				var shippingAddress = arguments.requestBean.getOrder().getShippingAddress();
-				requestData['data']['customer']['shipToAddressOne'] = shippingAddress.getStreetAddress();
-				requestData['data']['customer']['shipToAddressTwo'] = shippingAddress.getStreet2Address();
-				requestData['data']['customer']['shipToCity'] = shippingAddress.getCity();
-				requestData['data']['customer']['shipToState'] = shippingAddress.getStateCode();
-				requestData['data']['customer']['shipToPostal'] = shippingAddress.getPostalCode();
-				requestData['data']['customer']['shipToCountry'] = shippingAddress.getCountryCode();
+				data['customer']['shipToAddressOne'] = shippingAddress.getStreetAddress();
+				data['customer']['shipToAddressTwo'] = shippingAddress.getStreet2Address() ?: '';
+				data['customer']['shipToCity'] = shippingAddress.getCity();
+				data['customer']['shipToState'] = shippingAddress.getStateCode();
+				data['customer']['shipToPostal'] = shippingAddress.getPostalCode();
+				data['customer']['shipToCountry'] = shippingAddress.getCountryCode();
 			}
 			
 			
@@ -225,19 +240,12 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				
 				//don't run this logic for child order items.
 				if (isNull(orderItem.getParentOrderItem())) {
-					//if this is a product bundle orderitem, send the product bundle price
-					if(!isNull(orderItem.getChildOrderItems()) && arrayLen(orderItem.getChildOrderItems())) {
-						var unitAmount = orderItem.getProductBundlePrice();
-					//send the regular orderitem price.
-					} else {
-						var unitAmount = orderItem.getPrice();
-					}
 					 data.cart.items.append({
 						'item' : '#orderItem.getSku().getSkuCode()#',
 						'description' : '#orderItem.getSku().getSkuName()#',
 						'quantity' : '#orderItem.getQuantity()#',
 						'type' : 'sale',
-						"price" : "#(orderItem.getQuantity() * unitAmount)#"
+						"price" : "#orderItem.getItemTotal()#"
 					});
 				}
 			}
