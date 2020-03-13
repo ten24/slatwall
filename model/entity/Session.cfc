@@ -83,7 +83,7 @@ component displayname="Session" entityname="SlatwallSession" table="SwSession" p
 	//CUSTOM PROPERTIES BEGIN
 property name="currentFlexship" type="any" cfc="OrderTemplate" fieldtype="many-to-one" fkcolumn="currentFlexshipID"; 
 	property name="countryCode" ormtype="string";
-
+	
 //CUSTOM PROPERTIES END
 	public any function getLoggedInFlag(){
 		//If this is a new session, then the user is not logged in.
@@ -152,7 +152,7 @@ property name="currentFlexship" type="any" cfc="OrderTemplate" fieldtype="many-t
 	
 	
 	public any function getOrder() {
-		if(structKeyExists(variables, "order")) {
+		if(structKeyExists(variables, "order") && variables.order.getOrderCreatedSite().getSiteID() == getHibachiScope().getCurrentRequestSite().getSiteID()) {
 			
 			return variables.order;
 		} else if (!structKeyExists(variables, "requestOrder")) {

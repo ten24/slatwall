@@ -3471,7 +3471,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					for(var orderItem in arguments.order.getOrderItems()){
 						
 	 					if(
-	 						!orderItem.getUserDefinedPriceFlag()
+	 						(isNull(orderItem.getUserDefinedPriceFlag()) || !orderItem.getUserDefinedPriceFlag())
 	 						&&
 	 						listFindNoCase("oitSale,oitDeposit",orderItem.getOrderItemType().getSystemCode()) 
 	 					){

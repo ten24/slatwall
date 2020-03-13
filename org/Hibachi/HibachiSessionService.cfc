@@ -87,22 +87,33 @@ component output="false" accessors="true" extends="HibachiService"  {
 	
 	public void function setProperSession() {
 		var requestHeaders = getHTTPRequestData();
+		
 
-		var currentRequestSite = getHibachiScope().getCurrentRequestSite();
 		var sessionValue = "sessionID";
+		var cookiePrefix = getApplicationValue('applicationKey');
+		
+		if(!getHibachiScope().hasSessionValue(sessionValue) || !len(getHibachiScope().getSessionValue(sessionValue))) {
 
-		
-		var cookiePrefix = getCookiePrefix(currentRequestSite ?: javaCast("null",""));
-		
-		if (!isNull(currentRequestSite)){
-			sessionValue = sessionvalue & "#currentRequestSite.getSiteCode()#";
+			var currentRequestSite = getHibachiScope().getCurrentRequestSite();
+			
+			var cookiePrefixArgs = {};
+			
+			if (!isNull(currentRequestSite)){
+				sessionValue = sessionvalue & "#currentRequestSite.getSiteCode()#";
+				cookiePrefixArgs['currentRequestSite'] = currentRequestSite;
+			}
+			
+			cookiePrefix = getCookiePrefix(argumentCollection=cookiePrefixArgs);
+			
+			// Check to see if a session value doesn't exist, then we can check for a cookie... or just set it to blank
+			if(!getHibachiScope().hasSessionValue(sessionValue)) {
+				getHibachiScope().setSessionValue(sessionValue, '');
+			} 
+			
 		}
 		
-		// Check to see if a session value doesn't exist, then we can check for a cookie... or just set it to blank
-		if(!getHibachiScope().hasSessionValue(sessionValue)) {
-			getHibachiScope().setSessionValue(sessionValue, '');
-		} 
-		
+		getHibachiScope().logHibachi('setProperSession - sessionValue: #sessionValue#',true);
+		getHibachiScope().logHibachi('setProperSession - cookiePrefix: #cookiePrefix#',true);
 		
 		var foundWithNPSID = false;
 		var foundWithPSID = false;
@@ -296,19 +307,31 @@ component output="false" accessors="true" extends="HibachiService"  {
 	
 	public void function persistSession(boolean updateLoginCookies=false) {
 		
-		var currentRequestSite = getHibachiScope().getCurrentRequestSite();
+		getHibachiScope().logHibachi('persistSession',true);
 		var sessionValue = "sessionID";
-		var cookiePrefix = getCookiePrefix(currentRequestSite);
+		var cookiePrefix = getApplicationValue('applicationKey');
 		
-		if (!isNull(currentRequestSite)){
-			sessionValue = sessionvalue & "#currentRequestSite.getSiteCode()#";
+		if(!getHibachiScope().getLoggedInFlag()) {
+			
+			if(getHibachiScope().hasSessionValue(sessionValue)) {
+				getHibachiScope().setSessionValue(sessionValue, '');
+			} 
+
+			var currentRequestSite = getHibachiScope().getCurrentRequestSite();
+			
+			var cookiePrefixArgs = {};
+			
+			if (!isNull(currentRequestSite)){
+				sessionValue = sessionvalue & "#currentRequestSite.getSiteCode()#";
+				cookiePrefixArgs['currentRequestSite'] = currentRequestSite;
+			}
+			
+			cookiePrefix = getCookiePrefix(argumentCollection=cookiePrefixArgs);
+			
 		}
 		
-		// Check to see if a session value doesn't exist, then we can check for a cookie... or just set it to blank
-		if(!getHibachiScope().hasSessionValue(sessionValue)) {
-			getHibachiScope().setSessionValue(sessionValue, '');
-		} 
-		
+		getHibachiScope().logHibachi('persistSession - sessionValue: #sessionValue#',true);
+		getHibachiScope().logHibachi('persistSession - cookiePrefix: #cookiePrefix#',true);
 		// Save the session
 		getHibachiDAO().save( getHibachiScope().getSession() );
 		getHibachiDAO().flushORMSession();
@@ -374,6 +397,8 @@ component output="false" accessors="true" extends="HibachiService"  {
 	
 	/** Logs out the user completely. */
 	public void function logoutAccount(boolean softLogout=false) {
+		getHibachiScope().logHibachi('logoutAccount',true);
+
 		var currentSession = getHibachiScope().getSession();
 		var auditLogData = {};
 	
@@ -387,7 +412,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 		// Update the last request datetime, and IP Address now that all other checks have completed.
 		currentSession.setLastRequestDateTime( now() );
 		currentSession.setLastRequestIPAddress( getRemoteAddress() );
-		
+		getHibachiScope().logHibachi('logoutAccount - softLogout: #arguments.softLogout#',true);
 		if (arguments.softLogout == false){
 			
 			var oldSession = currentSession;
@@ -408,14 +433,22 @@ component output="false" accessors="true" extends="HibachiService"  {
 		}
 		var isAdminSoftLogout = arguments.softLogout == false || currentSession.getAccount().getAdminAccountFlag();
 		
-		// Delete all site cookies
-		for(var currentCookie in cookie) {
-			if (listLast(currentCookie, "-") == "NPSID" || listLast(currentCookie, "-") == "PSID"
-			|| (listLast(currentCookie, "-") == "ExtendedPSID" && isAdminSoftLogout)){
-				
-				getHibachiTagService().cfcookie(name=currentCookie, value='', expires="#now()#");
-				structDelete(cookie, currentCookie, true);
-			}
+		var applicationKey = getApplicationValue('applicationKey');
+		//Remove the cookies. Forgets the user if they intentionally click logout (on public computer for example)
+		if(structKeyExists(cookie, "#applicationKey#-NPSID")){
+			getHibachiTagService().cfcookie(name="#applicationKey#-NPSID", value='', expires="#now()#");
+			structDelete(cookie,"#applicationKey#-NPSID", true);
+		}
+		
+		if(structKeyExists(cookie, "#applicationKey#-PSID")){
+			getHibachiTagService().cfcookie(name="#applicationKey#-PSID", value='', expires="#now()#");
+			structDelete(cookie,"#applicationKey#-PSID", true);
+		}
+		
+		//only delete this extended session cookie if this is a hard logout instead of soft.
+		if((structKeyExists(cookie, "#applicationKey#-ExtendedPSID") && arguments.softLogout == false) || (structKeyExists(cookie, "#applicationKey#-ExtendedPSID") && currentSession.getAccount().getAdminAccountFlag())){
+			getHibachiTagService().cfcookie(name="#applicationKey#-ExtendedPSID", value='', expires="#now()#");
+			structDelete(cookie,"#applicationKey#-ExtendedPSID", true);
 		}
 		
 		// Make sure that we persist the session
