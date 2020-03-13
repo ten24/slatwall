@@ -237,6 +237,7 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
     }
     
     public void function getShippingMethodOptions(required any rc) {
+        arguments.rc.account = getHibachiScope().getAccount();
         getPublicService().getShippingMethodOptions(arguments.rc);
 	}
     

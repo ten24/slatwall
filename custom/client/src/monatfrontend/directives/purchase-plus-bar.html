@@ -1,0 +1,58 @@
+<div class="purchase-plus-bar" ng-class="purchasePlusBar.extraClass" ng-if="purchasePlusBar.hasPurchasePlusMessage">
+	
+	<div class="purchase-plus-bar__container">
+		
+		<div 
+			class="purchase-plus-bar__breakpoint" 
+			ng-class="{ 'active': purchasePlusBar.nextBreakpoint > 15 }"
+		>
+			<div class="purchase-plus-bar__percentage">15%</div>
+		</div>
+		<div class="purchase-plus-bar__progress-bar">
+			<div 
+				class="purchase-plus-bar__progress-bar-fill" 
+				ng-style="{
+					width: ( purchasePlusBar.nextBreakpoint > 20 ) 
+						? '102%' 
+						: ( purchasePlusBar.nextBreakpoint > 15 ) 
+							? purchasePlusBar.percentage + '%' 
+							: '0%'
+				}"
+			></div>
+		</div>
+		
+		<div 
+			class="purchase-plus-bar__breakpoint" 
+			ng-class="{ 'active': purchasePlusBar.nextBreakpoint > 20 }"
+		>
+			<div class="purchase-plus-bar__percentage">20%</div>
+		</div>
+		<div class="purchase-plus-bar__progress-bar">
+			<div 
+				class="purchase-plus-bar__progress-bar-fill"
+				ng-style="{
+					width: ( purchasePlusBar.nextBreakpoint > 25 ) 
+						? '102%' 
+						: ( purchasePlusBar.nextBreakpoint > 20 ) 
+							? purchasePlusBar.percentage + '%' 
+							: '0%'
+				}"
+			></div>
+		</div>
+		
+		<div 
+			class="purchase-plus-bar__breakpoint" 
+			ng-class="{ 'active': purchasePlusBar.nextBreakpoint > 25 }"
+		>
+			<div class="purchase-plus-bar__percentage">25%</div>
+		</div>
+		
+	</div>
+	
+</div>
+
+<div 
+	class="purchase-plus-message alert alert-success rounded-0" 
+	ng-if="purchasePlusBar.showMessages === true && purchasePlusBar.hasPurchasePlusMessage" 
+	ng-bind="purchasePlusBar.message"
+></div>

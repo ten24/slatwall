@@ -618,7 +618,7 @@ Notes:
        }
     }
 
-    public string function replaceStringTemplate(required string template, required any object, boolean formatValues=false, boolean removeMissingKeys=false) {
+	public string function replaceStringTemplate(required string template, required any object, boolean formatValues=false, boolean removeMissingKeys=false, string templateContextPathList) {
 		if(
 			getHibachiScope().onSlatwallCMS()
 		){

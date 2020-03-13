@@ -156,6 +156,103 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 		}
 		return 50;
 	}
+	
+
+	
+	private any function getExtraData(required any requestBean){
+		
+		var data = {
+			'paymentMethod' = 'creditCard',
+			'amount' = LSParseNumber(arguments.requestBean.getTransactionAmount()),
+			'currency' = arguments.requestBean.getTransactionCurrencyCode(),
+			'customer' = {
+				'firstName' = arguments.requestBean.getAccountFirstName(),
+				'lastName' = arguments.requestBean.getAccountLastName(),
+				'orderNumber' = '',
+				'customerRef' = '',
+				'createdAtDate' = '',
+				'email' = '',
+				'phone' = '',
+				'billToAddressOne' = arguments.requestBean.getBillingStreetAddress(),
+				'billToAddressTwo' = arguments.requestBean.getBillingStreet2Address() ?: '',
+				'billToCity' = arguments.requestBean.getBillingCity(),
+				'billToState' = arguments.requestBean.getBillingStateCode(),
+				'billToPostal' = arguments.requestBean.getBillingPostalCode(),
+				'billToCountry' = arguments.requestBean.getBillingCountryCode()
+			},
+			'customFields' = {
+				'CURRENTRANK' = '' ,
+				'SPONSORID' = '',
+				'TRANSACTIONDATE' = arguments.requestBean.getOrderPayment().getCreatedDateTime(),
+				'CARDHOLDER_NAME' = arguments.requestBean.getBillingName(),
+				'ACCOUNT_REF' = '',
+				'ORDER_REF' = ''
+			},
+			'cart' = {
+				'items' = []
+			}
+		};
+		
+		if(!isNull(arguments.requestBean.getAccount())){
+			var account = arguments.requestBean.getAccount();
+			data['customer']['customerRef'] = account.getAccountNumber();
+			data['customer']['createdAtDate'] = account.getCreatedDateTime();
+			data['customer']['email'] = account.getEmailAddress();
+			data['customer']['phone'] = account.getPhoneNumber();
+			
+			data['customFields']['ACCOUNT_REF'] = account.getShortReferenceID(true);
+			
+			if(len(account.getRank())){
+				var rankOption = arguments.requestBean.getService('attributeService').getAttributeOptionByAttributeOptionValue(account.getRank());
+				if(!isNull(rankOption)){
+					data['customFields']['CURRENTRANK'] = rankOption.getAttributeOptionLabel();
+				}
+			}
+			
+			if(!isNull(account.getOwnerAccount())){
+				data['customFields']['SPONSORID'] = account.getOwnerAccount().getAccountNumber();
+			}
+			
+		}
+		
+		
+		if (!isNull(arguments.requestBean.getOrder())) {
+			
+			data['customer']['orderNumber'] = arguments.requestBean.getOrder().getOrderNumber();
+			data['customFields']['ORDER_REF'] = arguments.requestBean.getOrder().getShortReferenceID(true);
+			
+			
+			
+			if(!isNull(arguments.requestBean.getOrder().getShippingAddress()) && len(arguments.requestBean.getOrder().getShippingAddress().getStreetAddress())){
+				var shippingAddress = arguments.requestBean.getOrder().getShippingAddress();
+				data['customer']['shipToAddressOne'] = shippingAddress.getStreetAddress();
+				data['customer']['shipToAddressTwo'] = shippingAddress.getStreet2Address() ?: '';
+				data['customer']['shipToCity'] = shippingAddress.getCity();
+				data['customer']['shipToState'] = shippingAddress.getStateCode();
+				data['customer']['shipToPostal'] = shippingAddress.getPostalCode();
+				data['customer']['shipToCountry'] = shippingAddress.getCountryCode();
+			}
+			
+			
+			var orderItems = arguments.requestBean.getOrder().getOrderItems();
+			
+			for(var orderItem in orderItems){
+				
+				//don't run this logic for child order items.
+				if (isNull(orderItem.getParentOrderItem())) {
+					 data.cart.items.append({
+						'item' : '#orderItem.getSku().getSkuCode()#',
+						'description' : '#orderItem.getSku().getSkuName()#',
+						'quantity' : '#orderItem.getQuantity()#',
+						'type' : 'sale',
+						"price" : "#orderItem.getItemTotal()#"
+					});
+				}
+			}
+		}
+		
+		return data;
+	}
 
 	// Nexio relies on 3rd party TokenEx for tokenization. It uses PKCS #1 v1.5 as cipher algorithm for RSA encryption
 	private any function encryptCardNumber(required string cardNumber, required string publicKey) {
@@ -182,13 +279,14 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 	private void function sendRequestToGenerateToken(required any requestBean, required any responseBean) {
 		// We are expecting there is no provider token yet, but if accountPaymentMethod is used & attempt to generate another token prevent & short circuit
 		if (isNull(arguments.requestBean.getProviderToken()) || !len(arguments.requestBean.getProviderToken())) {
-			var orderNumber = "";
-			if (!isNull(arguments.requestBean.getOrderID())) {
-				orderNumber = arguments.requestBean.getOrderID();
-			}
 			
 			var publicKey = getPublicKey(arguments.requestBean);
-			var checkFraud = setting(settingName='checkFraud', requestBean=arguments.requestBean) ? true : false;
+			
+			var checkFraud = false;
+			
+			if(getHibachiScope().hasSessionValue('kount-token')){
+				checkFraud = setting(settingName='checkFraud', requestBean=arguments.requestBean) ? true : false;
+			}
 			
 			var publicKey = getPublicKey(arguments.requestBean);
 
@@ -202,36 +300,32 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 					'securityCode' = arguments.requestBean.getSecurityCode()
 				},
 				'processingOptions' = {
-					'checkFraud' = false,
+					'checkFraud' = checkFraud,
 					'verifyCvc' = setting(settingName='verifyCvcFlag', requestBean=arguments.requestBean) ? true : false,
 					'verifyAvs' = LSParseNumber(setting(settingName='verifyAvsSetting', requestBean=arguments.requestBean))
 				},
-				'data' = {
-					'paymentMethod' = 'creditCard',
-					'amount' = LSParseNumber(arguments.requestBean.getTransactionAmount()),
-					'currency' = arguments.requestBean.getTransactionCurrencyCode(),
-					'customer'= {
-						'orderNumber' = orderNumber,
-						'customerRef' = arguments.requestBean.getAccountID(),
-						'firstName' = arguments.requestBean.getAccountFirstName(),
-						'lastName' = arguments.requestBean.getAccountLastName(),
-						'billToAddressOne' = arguments.requestBean.getBillingStreetAddress(),
-						'billToAddressTwo' = arguments.requestBean.getBillingStreet2Address(),
-						'billToCity' = arguments.requestBean.getBillingCity(),
-						'billToState' = arguments.requestBean.getBillingStateCode(),
-						'billToPostal' = arguments.requestBean.getBillingPostalCode(),
-						'billToCountry' = arguments.requestBean.getBillingCountryCode()
-					}
-				}
+				'data' = this.getExtraData(arguments.requestBean)
 			};
-			if(checkFraud && getHibachiScope().hasSessionValue('kount-token')){
+			
+			if(getHibachiScope().hasSessionValue('kount-token')){
 				requestData['token'] = getHibachiScope().getSessionValue('kount-token');
-				requestData['processingOptions']['checkFraud']=true;
+			}else{
+				// One Time Use Token (https://github.com/nexiopay/payment-service-example-node/blob/master/ClientSideToken.js#L23)
+				var responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'generateOneTimeUseToken', requestData);
+				if(responseBean.hasErrors()){
+					return responseBean;
+				}
+				if(!isNull(responseData.token)){
+					requestData['token'] = responseData.token;
+				}
 			}
 			
 			// Save Card, this is the imortant token we want to persist for Slatwall payment data (https://github.com/nexiopay/payment-service-example-node/blob/master/ClientSideToken.js#L107)
 			var responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'generateToken', requestData);
 
+			if(checkFraud && getHibachiScope().hasSessionValue('kount-token')){
+				getHibachiScope().clearSessionValue('kount-token');
+			}
 			// Setting AVS code (https://github.com/ten24/Monat/blob/develop/Slatwall/model/transient/payment/TransactionResponseBean.cfc) off Nexio's response 
 			var responseDataAvsCode = "";
 			
@@ -323,6 +417,13 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 	private void function sendRequestToAuthorize(required any requestBean, required any responseBean) {
 		// Request Data
 		if (!arguments.requestBean.hasErrors() && !isNull(arguments.requestBean.getProviderToken()) && len(arguments.requestBean.getProviderToken())) {
+			
+			var checkFraud = false;
+			
+			if(getHibachiScope().hasSessionValue('kount-token')){
+				checkFraud = setting(settingName='checkFraud', requestBean=arguments.requestBean) ? true : false;
+			}
+			
 			var requestData = {
 				"isAuthOnly" = true,
 				"tokenex" = {
@@ -335,26 +436,19 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			    	"lastFour" = arguments.requestBean.getCreditCardLastFour(),
 			    	"cardType" = arguments.requestBean.getCreditCardType()
 			    },
-			    "data" = {
-			      "currency" = arguments.requestBean.getTransactionCurrencyCode(),
-			      "amount" = LSParseNumber(arguments.requestBean.getTransactionAmount())
-			    },
-			    "customer"= {
-					'billToAddressOne' = arguments.requestBean.getBillingStreetAddress(),
-					'billToAddressTwo' = arguments.requestBean.getBillingStreet2Address(),
-					'billToCity' = arguments.requestBean.getBillingCity(),
-					'billToState' = arguments.requestBean.getBillingStateCode(),
-					'billToPostal' = arguments.requestBean.getBillingPostalCode(),
-					'billToCountry' = arguments.requestBean.getBillingCountryCode()
-				},
+			    'data' = this.getExtraData(arguments.requestBean),
 			    "processingOptions" = {
-				    "checkFraud" = (setting(settingName='checkFraud', requestBean=arguments.requestBean)? true : false),
+				    "checkFraud" = checkFraud,
 				    "verifyAvs" = LSParseNumber(setting(settingName='verifyAvsSetting', requestBean=arguments.requestBean)),
 				    "verifyCvc" = (setting(settingName='verifyCvcFlag', requestBean=arguments.requestBean)? true : false),
 				    'merchantID' = setting(settingName='merchantIDTest', requestBean=arguments.requestBean)
 			    }
 			};	
 			responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'authorize', requestData);
+			
+			if(checkFraud && getHibachiScope().hasSessionValue('kount-token')){
+				getHibachiScope().clearSessionValue('kount-token');
+			}
 			
 			// Response Data
 			if (!responseBean.hasErrors()) {
@@ -385,6 +479,12 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 	private void function sendRequestToAuthorizeAndCharge(required any requestBean, required any responseBean) {
 		// Request Data
 		if (!arguments.requestBean.hasErrors() && !isNull(arguments.requestBean.getProviderToken()) && len(arguments.requestBean.getProviderToken())) {
+			var checkFraud = false;
+			
+			if(getHibachiScope().hasSessionValue('kount-token')){
+				checkFraud = setting(settingName='checkFraud', requestBean=arguments.requestBean) ? true : false;
+			}
+			
 			var requestData = {
 				"isAuthOnly" = false,
 				"tokenex" = {
@@ -397,20 +497,9 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			    	"lastFour" = arguments.requestBean.getCreditCardLastFour(),
 			    	"cardType" = arguments.requestBean.getCreditCardType()
 			    },
-			    "data" = {
-			    	"currency" = arguments.requestBean.getTransactionCurrencyCode(),
-			    	"amount" = LSParseNumber(arguments.requestBean.getTransactionAmount()),
-					"customer"= {
-						'billToAddressOne' = arguments.requestBean.getBillingStreetAddress(),
-						'billToAddressTwo' = arguments.requestBean.getBillingStreet2Address(),
-						'billToCity' = arguments.requestBean.getBillingCity(),
-						'billToState' = arguments.requestBean.getBillingStateCode(),
-						'billToPostal' = arguments.requestBean.getBillingPostalCode(),
-						'billToCountry' = arguments.requestBean.getBillingCountryCode()
-					}
-			    },
+			    'data' = this.getExtraData(arguments.requestBean),
 			    "processingOptions" = {
-				    "checkFraud" = (setting(settingName='checkFraud', requestBean=arguments.requestBean)? true : false),
+				    "checkFraud" = checkFraud,
 				    "verifyAvs" = LSParseNumber(setting(settingName='verifyAvsSetting', requestBean=arguments.requestBean)),
 				    "verifyCvc" = (setting(settingName='verifyCvcFlag', requestBean=arguments.requestBean)? true : false),
 				    'merchantID' = setting(settingName='merchantIDTest', requestBean=arguments.requestBean)
@@ -418,7 +507,10 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			};	
 
 			responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'authorizeAndCharge', requestData);
-		
+			
+			if(checkFraud && getHibachiScope().hasSessionValue('kount-token')){
+				getHibachiScope().clearSessionValue('kount-token');
+			}
 	
 			// Response Data
 			if (!responseBean.hasErrors()) {
@@ -656,14 +748,18 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			return responseData;
 		} else {
 			var responseData = {};
-			
 			// Server error handling - Unavailable or Communication Problem
 			if (httpResponse.status_code == 0 || left(httpResponse.status_code, 1) == 5 || left(httpResponse.status_code, 1) == 4) {
 				arguments.responseBean.setStatusCode("ERROR");
-	
+				
 				// Public error message
-				arguments.responseBean.addError('serverCommunicationFault', "#rbKey('nexio.error.serverCommunication_public')# #httpResponse.statusCode#");
-	
+				var responseContent = deserializeJSON( httpResponse.filecontent );
+				if ( isStruct( responseContent ) && structKeyExists( responseContent, 'message' ) ) {
+					arguments.responseBean.addError( 'serverCommunicationFault', responseContent.message );
+				} else {
+					arguments.responseBean.addError( 'serverCommunicationFault', "#rbKey('nexio.error.serverCommunication_public')# #httpResponse.statusCode#" );
+				}
+				
 				// Only for admin purposes
 				arguments.responseBean.addMessage('serverCommunicationFault', "#rbKey('nexio.error.serverCommunication_admin')# - #httpResponse.statusCode#. Check the payment transaction for more details.");
 				

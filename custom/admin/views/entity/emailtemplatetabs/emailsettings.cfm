@@ -54,7 +54,7 @@ Notes:
 
 <cfoutput>
 	<swa:SlatwallSettingTable>
-	    <swa:SlatwallSetting settingName="emailAccountTypePropertyIdentifier" settingObject="#rc.emailTemplate#"  />
+	    <swa:SlatwallSetting settingName="emailAccountPropertyIdentifier" settingObject="#rc.emailTemplate#"  />
 		<swa:SlatwallSetting settingName="emailFromAddress" settingObject="#rc.emailTemplate#" />
 		<swa:SlatwallSetting settingName="emailToAddress" settingObject="#rc.emailTemplate#" />
 		<swa:SlatwallSetting settingName="emailReplyToAddress" settingObject="#rc.emailTemplate#" />

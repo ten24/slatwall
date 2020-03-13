@@ -1,14 +1,14 @@
-<div>
+<div ng-cloak ng-if="monatBirthday.show">
 	<div ng-click="monatBirthday.showBirthdayPicker()" class="material-field">
 		<select 
-			id="gender_CreateAccount"
-			name="dob"
+			id="dob"
+			name="birthDate"
 			class="form-control"
-			ng-model="monatBirthday.form.select"
+			ng-model="monatBirthday.dob"
 			swvalidationrequired="true"
 		>
 			<option disabled></option>
-			<option ng-selected="!monatBirthday.showPicker && monatBirthday.isSet">{{monatBirthday.day}}/{{monatBirthday.months.indexOf(monatBirthday.month)}}/{{monatBirthday.year}}</option>
+			<option ng-selected="!monatBirthday.showPicker && monatBirthday.isSet">{{monatBirthday.dob}}</option>
 		</select>
 		<label for="gender_CreateAccount" sw-rbkey="'frontend.global.yourBirthday'"></label>
 		<div class="error-display ng-scope" ng-if="swfForm.form.dob.$error.swvalidationrequired" ng-show="swfForm.form.$submitted">
@@ -20,23 +20,23 @@
 	</div>
 	<div id="birthday-picker" ng-if="monatBirthday.showPicker">
 		<div class="birthday-wrapper shadow border overflow-hidden">
-			<div class="header bg-primary text-center">
-				<p class="text-white py-2">Select Date</p>	
+			<div class="header text-center">
+				<p class="text-white py-3">Select Date</p>	
 			</div>
-			<div class="row justify-content-between px-5 bg-white">
+			<div class="row justify-content-between px-5 py-2 bg-white">
 				
 				<div class="col-4">
-					<div style="overflow:hidden" class="d-flex flex-column align-items-center">
+					<div style="overflow:hidden" class="d-flex flex-column align-items-center birthday-col">
 						<div>
 							<a ng-click="monatBirthday.changeMonth(monatBirthday.Actions.PLUS)" href="">
-								<i class="fa fa-angle-up fa-2x"></i>
+								<i class="far fa-chevron-up"></i>
 							</a>
 							
 						</div>
 												
 						<div>{{monatBirthday.upMonth}}</div>
 						
-						<div class="my-3">
+						<div>
 							<input
 								class="border-left-0 border-right-0 border-dark text-center"
 								type="text"
@@ -50,7 +50,7 @@
 						
 						<div>
 							<a ng-click="monatBirthday.changeMonth(monatBirthday.Actions.MINUS)" href="">
-								<i class="fa fa-angle-down fa-2x"></i>
+								<i class="far fa-chevron-down"></i>
 							</a>
 							
 						</div>
@@ -58,16 +58,16 @@
 				</div>
 				
 				<div class="col-4">
-					<div style="overflow:hidden" class="d-flex flex-column align-items-center">
+					<div style="overflow:hidden" class="d-flex flex-column align-items-center birthday-col">
 						<div>
 							<a ng-click="monatBirthday.changeDay(monatBirthday.Actions.PLUS)"  href="">
-								<i class="fa fa-angle-up fa-2x"></i>
+								<i class="far fa-chevron-up"></i>
 							</a>
 						</div>
 						
 						<div>{{ +monatBirthday.upDay }}</div>
 						
-						<div class="my-3">
+						<div>
 							<input
 								class="border-left-0 border-right-0 border-dark text-center"
 								type="text"
@@ -82,24 +82,24 @@
 						
 						<div>
 							<a ng-click="monatBirthday.changeDay(monatBirthday.Actions.MINUS)" href="">
-								<i class="fa fa-angle-down fa-2x"></i>	
+								<i class="far fa-chevron-down"></i>	
 							</a>
 						</div>
 					</div>
 				</div>
 			
 				<div class="col-4">
-					<div style="overflow:hidden" class="d-flex flex-column align-items-center">
+					<div style="overflow:hidden" class="d-flex flex-column align-items-center birthday-col">
 						<div>
 							<a ng-click="monatBirthday.changeYear(monatBirthday.Actions.PLUS)" href="">
-								<i class="fa fa-angle-up fa-2x"></i>
+								<i class="far fa-chevron-up"></i>
 							</a>
 							
 						</div>
 						
 						<div><span ng-show="+monatBirthday.year + 1 < monatBirthday.currentYear">{{ +monatBirthday.year + 1}}</span></div>
 						
-						<div class="my-3">
+						<div>
 							<input
 								class="border-left-0 border-right-0 border-dark text-center"
 								type="text"
@@ -113,7 +113,7 @@
 						
 						<div>
 							<a ng-click="monatBirthday.changeYear(monatBirthday.Actions.MINUS)" href="">
-								<i class="fa fa-angle-down fa-2x"></i>	
+								<i class="far fa-chevron-down"></i>	
 							</a>
 						</div>
 					</div>

@@ -272,6 +272,7 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 
     property name="shipMethodCode" ormtype="string";
     property name="iceRecordNumber" ormtype="string";
+    property name="commissionPeriodCode" ormtype="string";
     property name="lastSyncedDateTime" ormtype="timestamp";
     property name="calculatedPaymentAmountDue" ormtype="big_decimal";
     property name="priceGroup" cfc="PriceGroup" fieldtype="many-to-one" fkcolumn="priceGroupID";
@@ -1566,12 +1567,10 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 	public any function setAccount(required any account, boolean skipBidirectional=false) {
 		variables.account = arguments.account;
 		if(arguments.skipBidirectional){
-			return this; 
+			return this;
 		} 
-		if(isNew() or !arguments.account.hasOrder( this )) {
-			arrayAppend(arguments.account.getOrders(), this);
-		}
-		return this;
+		arguments.order = this;
+		return getService('AccountService').addOrderToAccount(argumentCollection=arguments);
 	}
 	public void function removeAccount(any account) {
 		if(!structKeyExists(arguments, "account")) {
@@ -2285,5 +2284,19 @@ public numeric function getPersonalVolumeSubtotal(){
 			}
 		}
 		return true;
+	 }
+	 
+	 public any function getDefaultStockLocation(){
+	 	if(!structKeyExists(variables,'defaultStockLocation')){
+	 		if(!isNull(getOrderCreatedSite())){
+	 			var locations = getOrderCreatedSite().getLocations();
+	 			if(!isNull(locations) && arrayLen(locations)){
+	 				variables.defaultStockLocation = locations[1];
+	 			}
+	 		}
+	 	}
+	 	if(structKeyExists(variables,'defaultStockLocation')){
+	 		return variables.defaultStockLocation;
+	 	}
 	 }//CUSTOM FUNCTIONS END
 }

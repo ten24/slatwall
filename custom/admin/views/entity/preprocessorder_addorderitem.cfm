@@ -97,7 +97,7 @@ Notes:
 								<hb:HibachiPropertyDisplay object="#rc.processObject#" property="quantity" edit="#rc.edit#">
 							</cfif>
 							<input type="hidden" name="oldQuantity" value="#rc.processObject.getQuantity()#">
-							<hb:HibachiPropertyDisplay object="#rc.processObject#" property="price" value="#rc.processObject.getSku().getPriceByCurrencyCode(currencyCode=rc.processObject.getCurrencyCode(),accountID=rc.order.getAccount().getAccountID())#" edit="#rc.edit#" fieldAttributes="sw-currency-formatter ng-model='priceByCurrencyCode'">
+							<hb:HibachiPropertyDisplay object="#rc.processObject#" property="price" edit="#rc.edit#" fieldAttributes="sw-currency-formatter ng-model='priceByCurrencyCode'">
 
 							<!--- Manual Gift Card Code Entry --->
 							<cfif rc.processObject.getSku().isGiftCardSku() && !rc.processObject.getSku().getGiftCardRecipientRequiredFlag() && !rc.processObject.getSku().getGiftCardAutoGenerateCodeFlag()>

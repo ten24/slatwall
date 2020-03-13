@@ -1313,7 +1313,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var collectionConfigStruct = myCollection.getCollectionConfigStruct();
 
 		var pageRecords = myCollection.getPrimaryIDs(2);
-
 		if(arraylen(pageRecords)){
 			assert(!structKeyExists(pageRecords[1],'failedCollection'));
 		}
@@ -5581,43 +5580,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var pageRecords = myCollection.getRecords();
 		assertTrue(arraylen(pageRecords) == 1,  "Wrong amount of products returned! Expecting 1 records but returned #arrayLen(pageRecords)#");
 
-	}
-	
-		/**
-	* @test
-	*/
-	public void function ListingSearchConfigTest(){
-		var myCollection = variables.entityService.getProductCollectionList();
-		myCollection.setDisplayProperties('productID,productName,productDescription',{isSearchable:true});
-		writeDump('simple collection :');
-		writeDump(myCollection.getHQL());
-		writeDump(myCollection.getCollectionConfigStruct());
-		
-		myCollection.addFilter('productDescription',"abc");
-		writeDump('Added filter : ');
-		writeDump(myCollection.getHQL());
-		writeDump(myCollection.getCollectionConfigStruct());
-		
-		myCollection.setKeywords('ProductABC');
-		writeDump('added keywords : ');
-		writeDump(myCollection.getHQL());
-		writeDump(myCollection.getCollectionConfigStruct());
-		
-		myCollection.setCollectionObjectListingSearchConfig({
-			'selectedSearchFilterCode' = 'lastOneYear'
-		});
-		writeDump('added selectedSearchFilterCode lastOneYear: ');
-		writeDump(myCollection.getHQL());
-		writeDump(myCollection.getCollectionConfigStruct());
-
-		myCollection.setCollectionObjectListingSearchConfig({
-			'ignoreSearchFilters' = true
-		});
-		writeDump('added ignoreSearchFilters : ');
-		writeDump(myCollection.getHQL());
-		writeDump(myCollection.getCollectionConfigStruct());
-		
-		abort;
 	}
 
 

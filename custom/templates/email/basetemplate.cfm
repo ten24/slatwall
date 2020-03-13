@@ -5,9 +5,16 @@
 
 <cfscript>
     
-    var accountType = emailTemplateObject.getValueByPropertyIdentifier(
-            emailTemplate.setting('emailAccountTypePropertyIdentifier')
-        ) ?: 'customer';    
+    var accountPropertyIdentifier = emailTemplate.setting('emailAccountPropertyIdentifier')
+    if( Len(Trim(accountPropertyIdentifier)) ){
+        var account =  emailTemplateObject.getValueByPropertyIdentifier(accountPropertyIdentifier); 
+    } else if(emailTemplateObject.getClassName() == "Account" ) {
+        var account = emailTemplateObject;
+    } 
+    if(isNull(account)){
+        throw("you need to set proper value in EmailTemplateSettings for *accountPropertyIdentifier*");
+    }
+    
 </cfscript> 
 
 <cfinclude template="./inc/base.cfm" />

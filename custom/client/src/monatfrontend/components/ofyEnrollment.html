@@ -1,0 +1,44 @@
+<div class="step5_part">
+	<div class="subtext subtext1">      
+		<div class="productbox" ng-class="{ 'has-selected' : ofyEnrollment.selectedProductID.length }">
+			<div class="row no-gutters product_list">
+				<div 
+					class="start col-12 col-sm-12 col-md-4 col-lg-4 col-xl-4 product-box" 
+					ng-repeat="item in ofyEnrollment.products"
+					ng-click="ofyEnrollment.stageProduct(item.skuID)"
+					ng-class="{ 'selected': item.skuID == ofyEnrollment.stagedProductID }"
+				>
+					<div class="fitbox">
+						<figure>
+							<div class="overlay">
+								<div class="overlay-inner">
+									<span><a ng-click="ofyEnrollment.launchQuickShopModal(item)" class="btn prod-btn" sw-rbkey="'frontend.global.quickShop'"></a></span>
+								</div>
+							</div>
+							<img image-manager ng-src="{{ item.skuImagePath[0] }}" />
+						</figure>
+						
+						<h4 ng-bind="item.skuName"></h4>
+						
+						<p class="price">
+							<span sw-rbKey="'frontend.freeProduct.free'"></span> 
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>	
+</div>
+
+<button 
+	type="submit" 
+	class="btn btn-secondary forward-btn forward" 
+	ng-disabled="!ofyEnrollment.stagedProductID.length"
+	ng-class="{ 
+		disabled: !ofyEnrollment.stagedProductID.length,
+		loading: ofyEnrollment.loading
+	}"
+	ng-click="ofyEnrollment.addToCart();"
+>	
+	<span sw-rbkey="'frontend.global.next'"></span> <i class="fas fa-chevron-right"></i>
+</button>

@@ -77,6 +77,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 	property name="scheduleOrderDayOfTheMonth";
 	property name="scheduleOrderNextPlaceDateTime" hb_rbKey="entity.orderTemplate.scheduleOrderNextPlaceDateTime" hb_formFieldType="datetime"; 
+	property name="priceGroup" cfc="PriceGroup";
 	
 	public array function getCurrencyCodeOptions() {
 		var currencyCodeOptions = getService("currencyService").getCurrencyOptions();

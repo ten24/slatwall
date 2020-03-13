@@ -12,7 +12,6 @@ class VIPController {
 	public isVIPEnrollment: boolean = false;
 	public productList;
 	public sponsorErrors: any = {};
-	public flexshipID:any;
 	public frequencyTerms:any;
 	public flexshipDaysOfMonth:Array<number> = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26]; 
 	public accountPriceGroupCode:number = 3; //Hardcoded pricegroup as we always want to serve VIP pricing
@@ -23,7 +22,6 @@ class VIPController {
 	public flexshipDeliveryDate;
 	public flexshipFrequencyName;
 	public flexshipFrequencyHasErrors: boolean = false;
-	public isNotSafariPrivate:boolean;
 	public flexshipItemList:any;
 	public recordsCount;
 	public flexshipTotal:number = 0;
@@ -32,19 +30,34 @@ class VIPController {
 	public defaultTerm;
 	public termMap = {};
 	public isInitialized = false;
+	public paginationMethod = 'getproductsByCategoryOrContentID';
+	public productRecordsCount: number;
+	public paginationObject = {};
+	public upgradeFlow:boolean;
+	public endpoint: 'setUpgradeOnOrder' | 'setUpgradeOrderType' = 'setUpgradeOnOrder';
+	public showUpgradeErrorMessage:boolean;
 	
 	// @ngInject
 	constructor(public publicService, public observerService, public monatService, public orderTemplateService) {
 	}
 
 	public $onInit = () => {
+		if(this.upgradeFlow){
+			this.endpoint = 'setUpgradeOrderType';
+		}
 		
-		this.publicService.doAction('setUpgradeOnOrder', {upgradeType: 'VIP'}).then(res=>{
+		this.publicService.doAction(this.endpoint, {upgradeType: 'VIP'}).then(res=>{
+			if(this.endpoint == 'setUpgradeOrderType' && res.upgradeResponseFailure?.length){
+				this.showUpgradeErrorMessage = true;
+				this.isInitialized = true;
+				return;
+			}
+			
 			this.isInitialized = true;
-			this.getProductList();	
 			this.getCountryCodeOptions();
 			this.getFrequencyTermOptions();
 		});
+		
 	}
 	
 	public getFrequencyTermOptions = ():void =>{
@@ -64,16 +77,6 @@ class VIPController {
 		this.monatService.adjustInputFocuses();
 	}
 	
-	//check to see if we can use local storage
-	public localStorageCheck = () => {
-		try {
-			localStorage.setItem('test', '1');
-			localStorage.removeItem('test');
-			this.isNotSafariPrivate = true;
-		} catch (error) {
-			this.isNotSafariPrivate = false;
-		}
-	}
 
 	public getCountryCodeOptions = () => {
 		if (this.countryCodeOptions.length) {
@@ -132,30 +135,25 @@ class VIPController {
 		}
 	};
 	
+	public searchByKeyword = (keyword:string) =>{
+		this.publicService.doAction('getProductsByKeyword', {keyword: keyword, priceGroupCode: 1}).then(res=> {
+			this.paginationMethod = 'getProductsByKeyword';
+			this.productRecordsCount = res.recordsCount;
+			this.paginationObject['keyword'] = keyword;
+			this.productList = res.productList;
+			this.observerService.notify("PromiseComplete");
+		});
+	}
+
 	public getProductList = () => {
 		this.loading = true;
-		
 		this.publicService.doAction('getproductsByCategoryOrContentID', {priceGroupCode: 3}).then((result) => {
-            this.productList = result.productList;
-            this.recordsCount = result.recordsCount;
-			this.observerService.notify('PromiseComplete');
-            this.loading = false;
+			this.observerService.notify("PromiseComplete");
+			this.productList = result.productList;
+			this.productRecordsCount = result.recordsCount
+			this.loading = false;
 		});
-	};
-
-    public createOrderTemplate = (orderTemplateSystemCode:string = 'ottSchedule') => {
-        this.loading = true;
-        this.orderTemplateService.createOrderTemplate(orderTemplateSystemCode).then(result => {
-        	if(!result.orderTemplate) return;
-        	this.flexshipID = result.orderTemplate;
-        	this.observerService.notify('flexshipCreated', this.flexshipID);
-        	if(this.isNotSafariPrivate && this.flexshipID){
-        		localStorage.setItem('flexshipID', this.flexshipID);
-        	}
-        	
-            this.loading = false;
-        });
-    }
+	}
     
     public setOrderTemplateFrequency = (frequencyTerm, dayOfMonth) => {
 		
@@ -178,13 +176,7 @@ class VIPController {
         this.loading = true;
         this.flexshipDeliveryDate = dayOfMonth;
 		this.flexshipFrequencyName = frequencyTerm.name;
-		
-		if(this.isNotSafariPrivate){
-			localStorage.setItem('flexshipDayOfMonth', dayOfMonth);
-			localStorage.setItem('flexshipFrequency', frequencyTerm.name);	
-		}
-    
-        const flexshipID = this.flexshipID;
+        const flexshipID = this.orderTemplateService.currentOrderTemplateID;
         this.orderTemplateService.updateOrderTemplateFrequency(flexshipID, frequencyTerm.value, dayOfMonth).then(result => {
             this.getFlexshipDetails();
         });
@@ -192,8 +184,8 @@ class VIPController {
     
     public getFlexshipDetails = () => {
     	this.loading = true;
-    
-        this.orderTemplateService.getWishlistItems(this.flexshipID).then(result => {
+    	const flexshipID = this.orderTemplateService.currentOrderTemplateID;
+        this.orderTemplateService.getWishlistItems(flexshipID).then(result => {
         	this.flexshipItemList = result.orderTemplateItems;
 			this.flexshipTotal = result.orderTotal;
 			this.observerService.notify('onNext');
@@ -243,7 +235,9 @@ class MonatEnrollmentVIP {
 	/**
 	 * Binds all of our variables to the controller so we can access using this
 	 */
-	public bindToController = {};
+	public bindToController = {
+		upgradeFlow:'<?'
+	};
 	public controller = VIPController;
 	public controllerAs = 'vipController';
 	// @ngInject

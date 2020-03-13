@@ -71,6 +71,7 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	//order created for applying promos ahead of scheduled order placement
 	property name="temporaryOrder" cfc="Order" fieldtype="many-to-one" fkcolumn="temporaryOrderID";
 	property name="site" cfc="Site" fieldtype="many-to-one" fkcolumn="siteID";
+	property name="priceGroup" cfc="PriceGroup" fieldtype="many-to-one" fkcolumn="priceGroupID";
 	
 	// Related Object Properties (one-to-many)
 	property name="orderTemplateItems" hb_populateEnabled="public" singularname="orderTemplateItem" cfc="OrderTemplateItem" fieldtype="one-to-many" fkcolumn="orderTemplateID" cascade="all-delete-orphan" inverse="true" hb_cascadeCalculate="true";
@@ -126,12 +127,19 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 
 	//non-persistents
 	property name="accountIsNotInFlexshipCancellationGracePeriod" persistent="false";
+	property name="lastGeneratedDateTime" ormtype="timestamp";
+	property name="deletedDateTime" ormtype="timestamp";
+	property name="canceledCode" ormtype="string";
+	property name="lastOrderNumber" ormtype="string";
+	property name="priceLevelCode" ormtype="string";
+	property name="flexshipStatusCode" ormtype="string";
+	property name="addressValidationCode" ormtype="string";
 	property name="commissionableVolumeTotal" persistent="false"; 
 	property name="personalVolumeTotal" persistent="false";
 	property name="flexshipQualifiedOrdersForCalendarYearCount" persistent="false"; 
 	property name="qualifiesForOFYProducts" persistent="false";
 	property name="cartTotalThresholdForOFYAndFreeShipping" persistent="false";
-
+	
 
 //CUSTOM PROPERTIES END
 	public string function getEncodedJsonRepresentation(string nonPersistentProperties='subtotal,fulfillmentTotal,fulfillmentDiscount,total'){ 
@@ -238,20 +246,7 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 
 	public numeric function getSubtotal(){
 		if(!structKeyExists(variables, 'subtotal')){
-			var orderTemplateItemCollectionList = this.getOrderTemplateItemsCollectionList();
-			orderTemplateItemCollectionList.setDisplayProperties('orderTemplateItemID,quantity,sku.skuID');
-		
-			var orderTemplateItemRecords = orderTemplateItemCollectionList.getRecords(); 
-
-			variables.subtotal = 0; 
-
-			for(var orderTemplateItem in orderTemplateItemRecords){ 
-				var sku = getService('SkuService').getSku(orderTemplateItem['sku_skuID']);
-				if(isNull(sku)){
-					continue; 
-				} 
-				variables.subtotal += sku.getPriceByCurrencyCode(currencyCode=this.getCurrencyCode(), accountID=this.getAccount().getAccountID())*orderTemplateItem['quantity']; 	
-			} 
+			variables.subtotal = getService('orderService').getOrderTemplateSubtotal(this);
 		}
 		return variables.subtotal; 
 	}
@@ -459,7 +454,7 @@ public boolean function getAccountIsNotInFlexshipCancellationGracePeriod(){
 	public numeric function getCartTotalThresholdForOFYAndFreeShipping(){
 		if(!structKeyExists(variables, 'cartTotalThresholdForOFYAndFreeShipping')){
 			
-			if(this.getAccount().getAccountType() == 'MarketPartner') {
+			if(!isNull(this.getAccount()) && this.getAccount().getAccountType() == 'MarketPartner') {
 				variables.cartTotalThresholdForOFYAndFreeShipping =  this.getSite().setting('integrationmonatSiteMinCartTotalAfterMPUserIsEligibleForOFYAndFreeShipping');
 			} else {
 				variables.cartTotalThresholdForOFYAndFreeShipping =  this.getSite().setting('integrationmonatSiteMinCartTotalAfterVIPUserIsEligibleForOFYAndFreeShipping');
@@ -554,5 +549,5 @@ public boolean function getAccountIsNotInFlexshipCancellationGracePeriod(){
 	public boolean function userCanCancelFlexship(){
 		return getAccount().getAccountType() == 'MarketPartner' || getHibachiScope().getAccount().getAdminAccountFlag();
 	}
-//CUSTOM FUNCTIONS END
+	//CUSTOM FUNCTIONS END
 }

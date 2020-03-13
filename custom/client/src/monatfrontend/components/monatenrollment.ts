@@ -15,12 +15,17 @@ class MonatEnrollmentController {
 	public reviewContext:boolean = false;
 	public cartText:string = 'Show Cart';
 	public showFlexshipCart: boolean = false;
-	public canPlaceCartOrder:boolean = true; //set to true at start so users can progress to today's order page
+	public canPlaceCartOrder = this.monatService.canPlaceOrder;
 	public showCanPlaceOrderAlert:boolean = false;
 	public hasSkippedSteps = false;
+	public upgradeFlow:boolean;
+	public currentStepName:string;
+	public flexshipShouldBeChecked: boolean;
+	public flexshipCanBePlaced = this.orderTemplateService.canPlaceOrderFlag;
+	public type:string;
 	
 	//@ngInject
-	constructor(public monatService, public observerService, public $rootScope, public publicService) {
+	constructor(public monatService, public observerService, public $rootScope, public publicService, public orderTemplateService) {
 		if (hibachiConfig.baseSiteURL) {
 			this.backUrl = hibachiConfig.baseSiteURL;
 		}
@@ -40,47 +45,40 @@ class MonatEnrollmentController {
     	this.observerService.attach(this.next.bind(this),"onNext");
     	this.observerService.attach(this.previous.bind(this),"onPrevious");
     	this.observerService.attach(this.next.bind(this),"addGovernmentIdentificationSuccess");
-    	this.observerService.attach(this.getCart.bind(this),"removeOrderItemSuccess");
-    	this.observerService.attach(this.getCart.bind(this),"updateOrderItemSuccess");
-    	
     	this.observerService.attach(this.editFlexshipItems.bind(this),"editFlexshipItems");
     	this.observerService.attach(this.editFlexshipDate.bind(this),"editFlexshipDate");
 	}
 
 	public $onInit = () => {
+	
 		this.publicService.getAccount().then(result=>{
 			
 			//if account has a flexship send to checkout review
-			this.publicService.getCart().then(res =>{
-				
-				if(localStorage.getItem('flexshipID') && localStorage.getItem('accountID') == result.accountID){ 
-						
-				}else{
-					//if its a new account clear data in local storage and ensure they are logged out
-					localStorage.clear();
-				}
-				
+			this.monatService.getCart().then(res =>{
 				let cart = res.cart;
+				this.canPlaceCartOrder = cart.orderRequirementsList.indexOf('canPlaceOrderReward') == -1;
 				let account = result.account;
 				let reqList = 'createAccount,updateAccount';
 				
-				//logic for if the user has an upgrade on his order and he leaves/refreshes the page 
-			
-				//if they have an upgraded order and order payments, send to checkout remove account steps
-				if(cart.orderFulfillments && cart.orderFulfillments[0]?.shippingAddress?.addressID.length && cart.monatOrderType?.typeID.length){
-					this.hasSkippedSteps = true;
-					this.steps = this.steps.filter(el => reqList.indexOf(el.stepClass) == -1);
-					this.goToLastStep();
-				//if they have account with a username and upgraded order type, remove account steps and send to shop page
-				}else if(account.accountID.length && cart.monatOrderType?.typeID.length && account.accountCode.length){
-					this.hasSkippedSteps = true;
-					this.steps = this.steps.filter(el => reqList.indexOf(el.stepClass) == -1);
-					this.next();
-				//if they have an account and an upgraded order remove create account
-				}else if(account.accountID.length && cart.monatOrderType?.typeID.length){
-					this.hasSkippedSteps = true;
-					this.steps = this.steps.filter(el => el.stepClass !== 'createAccount');
-					this.next();
+				if(!this.upgradeFlow){
+					//logic for if the user has an upgrade on his order and he leaves/refreshes the page 
+				
+					//if they have an upgraded order and order payments, send to checkout remove account steps
+					if(cart.orderFulfillments && cart.orderFulfillments[0]?.shippingAddress?.addressID.length && cart.monatOrderType?.typeID.length){
+						this.hasSkippedSteps = true;
+						this.steps = this.steps.filter(el => reqList.indexOf(el.stepClass) == -1);
+						this.goToLastStep();
+					//if they have account with a username and upgraded order type, remove account steps and send to shop page
+					}else if(account.accountID.length && cart.monatOrderType?.typeID.length && account.accountCode.length){
+						this.hasSkippedSteps = true;
+						this.steps = this.steps.filter(el => reqList.indexOf(el.stepClass) == -1);
+						this.next();
+					//if they have an account and an upgraded order remove create account
+					}else if(account.accountID.length && cart.monatOrderType?.typeID.length){
+						this.hasSkippedSteps = true;
+						this.steps = this.steps.filter(el => el.stepClass !== 'createAccount');
+						this.next();
+					}
 				}
 			});
 		});
@@ -156,6 +154,8 @@ class MonatEnrollmentController {
 			step.selected = false;
 		});
 		this.steps[this.position].selected = true;
+		this.currentStepName = this.steps[this.position].stepClass;
+		if(this.currentStepName == 'orderListing') this.flexshipShouldBeChecked = true;
 	}
 	
 	public editFlexshipItems = () => {
@@ -216,6 +216,8 @@ class MonatEnrollment {
 	public bindToController = {
 		finishText: '@',
 		onFinish: '=?',
+		upgradeFlow:'<?',
+		type:'<?'
 	};
 	public controller = MonatEnrollmentController;
 	public controllerAs = 'monatEnrollment';
