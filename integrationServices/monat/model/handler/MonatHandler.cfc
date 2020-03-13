@@ -92,11 +92,21 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
     		if(arguments.order.getMonatOrderType().getTypeCode() == 'motVipEnrollment'){
     			account.setAccountType('VIP');
     			account.setPriceGroups([getService('PriceGroupService').getPriceGroupByPriceGroupCode(3)]);
-    		}else if(arguments.order.getMonatOrderType().getTypeCode() == 'motMpEnrollment'){
+				
+				getHibachiEventService().announceEvent('afterVIPUpgradeSuccess', {'order':arguments.order, 'entity':arguments.order}); 
+    		
+			}else if(arguments.order.getMonatOrderType().getTypeCode() == 'motMpEnrollment'){
     			account.setAccountType('marketPartner');	
     			account.setPriceGroups([getService('PriceGroupService').getPriceGroupByPriceGroupCode(1)]);
+				
 				getHibachiEventService().announceEvent('afterMarketPartnerUpgradeSuccess', {'order':arguments.order, 'entity':arguments.order}); 
     		}
+			
+			getHibachiEventService().announceEvent('afterAccountUpgradeSuccess', {'order':arguments.order, 'entity':arguments.order}); 
+			
+			if(!isNull(account.getOwnerAccount())){
+				getHibachiEventService().announceEvent('afterAccountSponsorUpgradeSuccess', {'account':account.getOwnerAccount(), 'entity':account.getOwnerAccount()}); 
+			} 
     	}
     	
     	

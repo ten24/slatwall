@@ -40,10 +40,20 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 				'entityName': 'Account' 
 			},
 			{
-				'name': 'Account - Affter Account Sponsor Account Enrollment Success | afterAccountSponsorEnrollmentSuccess',
+				'name': 'Account - After Account Sponsor Account Enrollment Success | afterAccountSponsorEnrollmentSuccess',
 				'value': 'afterAccountSponsorEnrollmentSuccess',
 				'entityName': 'Account'
-			}
+			},
+			{
+				'name': 'Account - After Account Upgrade Success | afterAccountUpgradeSuccess',
+				'value': 'afterAccountUpgradeSuccess',
+				'entityName': 'Account'
+			}, 
+			{
+				'name': 'Account - After Account Sponsor Account Upgrade Success | afterAccountSponsorUpgradeSuccess',
+				'value': 'afterAccountSponsorUpgradeSuccess',
+				'entityName': 'Account'
+			} 
 		]
 
 		arrayAppend(eventOptions, customEvents, true); 
