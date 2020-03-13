@@ -161,6 +161,8 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 	
 	private any function getExtraData(required any requestBean){
 		
+		var transactionDate = !isNull( arguments.requestBean.getOrderPayment() ) ? arguments.requestBean.getOrderPayment().getCreatedDateTime() : '';
+
 		var data = {
 			'paymentMethod' = 'creditCard',
 			'amount' = LSParseNumber(arguments.requestBean.getTransactionAmount()),
@@ -183,7 +185,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			'customFields' = {
 				'CURRENTRANK' = '' ,
 				'SPONSORID' = '',
-				'TRANSACTIONDATE' = arguments.requestBean.getOrderPayment().getCreatedDateTime(),
+				'TRANSACTIONDATE' = transactionDate,
 				'CARDHOLDER_NAME' = arguments.requestBean.getBillingName(),
 				'ACCOUNT_REF' = '',
 				'ORDER_REF' = ''

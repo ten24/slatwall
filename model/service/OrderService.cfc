@@ -12,7 +12,7 @@
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
-
+_
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -1967,9 +1967,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	public any function processOrderTemplate_updateShipping(required any orderTemplate, required any processObject, required struct data={}){
 		
-		var account = arguments.orderTemplate.getAccount(); 
+		var account = arguments.orderTemplate.getAccount();
+		
+		var siteCountryCode = getSiteService().getCountryCodeBySite(arguments.orderTemplate.getSite());
 			
 		if(!isNull(processObject.getNewAccountAddress())){
+			
 			var accountAddress = getAccountService().newAccountAddress();
 			accountAddress.populate(processObject.getNewAccountAddress());
 			
@@ -1977,7 +1980,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			address.populate(processObject.getNewAccountAddress().address);
 		
 			accountAddress.setAddress(address); 
-			accountAddress.setAccount(account); 
+			accountAddress.setAccount(account);
 
 			accountAddress = getAccountService().saveAccountAddress(accountAddress=accountAddress,verifyAddressFlag=true);
 			
@@ -1986,9 +1989,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			getHibachiScope().flushORMSession(); 
 
 			orderTemplate.setShippingAccountAddress(accountAddress);
-		} else if (!isNull(processObject.getShippingAccountAddress())) { 
-
-			orderTemplate.setShippingAccountAddress(getAccountService().getAccountAddress(processObject.getShippingAccountAddress().value));	
+		} else if (!isNull(processObject.getShippingAccountAddress())) {
+			
+			var accountAddress = getAccountService().getAccountAddress(processObject.getShippingAccountAddress().value);
+			
+			orderTemplate.setShippingAccountAddress(accountAddress);	
 		}
 		
 		var shippingMethod = processObject.getShippingMethod();
@@ -2614,11 +2619,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	public any function addReturnOrderItemSetup(required any returnOrder, required any originalOrderItem, required any processObject, required struct orderItemStruct){
 		var originalOrderItemExists = !(isStruct(arguments.originalOrderItem) && structIsEmpty(arguments.originalOrderItem));
-
+		
 		// Create OrderReturn entity (to save the fulfillment amount)
 		if(returnOrder.hasOrderReturn()){
 			var orderReturn = returnOrder.getOrderReturns()[1];
 		}else{
+			
 			var orderReturn = this.newOrderReturn();
 			orderReturn.setOrder( arguments.returnOrder );
 			if(!isNull(arguments.processObject.getFulfillmentRefundAmount())){
@@ -2636,25 +2642,28 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		// Create a new order item
 		var returnOrderItem = this.newOrderItem();
-
 		// Setup the details
 		returnOrderItem.setOrderItemType( getTypeService().getTypeBySystemCode('oitReturn') );
 		returnOrderItem.setOrderItemStatusType( getTypeService().getTypeBySystemCode('oistNew') );
-		
-
+	
 		// Add needed references
 		returnOrderItem.setOrderReturn( orderReturn );
 		returnOrderItem.setOrder( returnOrder );
 		if(originalOrderItemExists){
+			
 			returnOrderItem.setReferencedOrderItem( originalOrderItem );
 			returnOrderItem.setSkuPrice( originalOrderItem.getSkuPrice() );
 			returnOrderItem.setCurrencyCode( originalOrderItem.getSku().getCurrencyCode() );
 			returnOrderItem.setSku( originalOrderItem.getSku() );
 		}else{
+			
 			returnOrderItem.setSku(getService('skuService').getSku(arguments.orderItemStruct.sku.skuID));
 			returnOrderItem.setCurrencyCode( arguments.returnOrder.getCurrencyCode() );
 		}
+		
 		returnOrderItem.setPrice( arguments.orderItemStruct.price );
+		returnOrderItem.setSkuPrice( arguments.orderItemStruct.price );
+		returnOrderItem.setUserDefinedPriceFlag(true);
 		returnOrderItem.setQuantity( arguments.orderItemStruct.quantity );
 		
 		getHibachiDAO().save( returnOrderItem );
