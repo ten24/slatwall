@@ -202,6 +202,8 @@ property name="personalVolume" ormtype="big_decimal";
     property name="itemCategoryCode" ormtype="string";
     
    
+ property name="kitFlagCode" ormtype="string" hb_formFieldType="select";
+ property name="itemCategoryCode" ormtype="string" hb_formFieldType="select";
  property name="lineNumber" ormtype="string";
  property name="orderItemLineNumber" ormtype="string";//CUSTOM PROPERTIES END
 	public boolean function getQuantityHasChanged(){
@@ -849,21 +851,6 @@ property name="personalVolume" ormtype="big_decimal";
 	// ============  END:  Non-Persistent Property Methods =================
 
 	// ============= START: Bidirectional Helper Methods ===================
-	
-	public void function removeAppliedPriceGroup(any appliedPriceGroup) {
-		if(!structKeyExists(arguments, "appliedPriceGroup")) {
-			if(!structKeyExists(variables, "appliedPriceGroup")){
-				return;
-			}
-			arguments.appliedPriceGroup = variables.appliedPriceGroup;
-		}
-		var index = arrayFind(arguments.appliedPriceGroup.getAppliedOrderItems(), this);
-		if(index > 0) {
-			arrayDeleteAt(arguments.appliedPriceGroup.getAppliedOrderItems(), index);
-			this.setPrice(this.getSkuPrice());
-		}
-		structDelete(variables, "appliedPriceGroup");
-	}
 	
 	// Order (many-to-one)
 	public void function setOrder(required any order) {

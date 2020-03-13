@@ -73,7 +73,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="cmsSiteID" hb_rbKey="entity.orderTemplate.site";  
 	property name="siteCode" hb_rbKey="entity.orderTemplate.site";  
 	property name="site" hb_rbKey="entity.orderTemplate.site";  
-	
+
 
 	property name="scheduleOrderDayOfTheMonth";
 	property name="scheduleOrderNextPlaceDateTime" hb_rbKey="entity.orderTemplate.scheduleOrderNextPlaceDateTime" hb_formFieldType="datetime"; 

@@ -11,7 +11,7 @@ class MonatBirthdayController {
 	public month:string;
 	public day = 1;
 	public year = this.date.getFullYear();
-	public currentYear = this.year; //snapshot the curren year for reference
+	public currentYear = this.year; //snapshot the current year for reference
 	public months:Array<string>;
 	public upMonth:string;
 	public downMonth:string;
@@ -19,9 +19,11 @@ class MonatBirthdayController {
 	public downDay:number;
 	public Actions = ActionType;
 	public isSet = false;
+	public dob:any;
+	public show:boolean;
 	
 	//@ngInject
-	constructor(public monatService, public observerService, public $rootScope, public publicService, public $scope, public rbkeyService) {
+	constructor(public observerService, public $rootScope, public publicService, public $scope, public rbkeyService) {
 		this.months = [
 			this.rbkeyService.rbKey('frontend.global.january'),
 			this.rbkeyService.rbKey('frontend.global.february'),
@@ -44,7 +46,11 @@ class MonatBirthdayController {
 	}
 
 	public $onInit = () => {
-	
+		this.publicService.getAccount().then(res=>{
+			if(!res.birthDate || this.calculateAge(res.birthDate) < 18){
+				this.show = true;
+			}
+		});
 	}
 	
 	public showBirthdayPicker():void{
@@ -52,7 +58,6 @@ class MonatBirthdayController {
 	}
 	
 	public changeMonth(action: ActionType):void{
-	
 		this.month = this.getAdjustedMonth(action); 
 		this.upMonth = this.getAdjustedMonth(ActionType.PLUS);
 		this.downMonth = this.getAdjustedMonth(ActionType.MINUS);
@@ -60,8 +65,6 @@ class MonatBirthdayController {
 	}
 	
 	public changeDay(action: ActionType):void{
-
-		//disallow days below 1, and days above the last day in the month
 		this.day = this.getAdjustedDay(action);
 		this.upDay = this.getAdjustedDay(ActionType.PLUS);
 		this.downDay = this.getAdjustedDay(ActionType.MINUS);
@@ -133,10 +136,18 @@ class MonatBirthdayController {
 	//updates form values
 	public resetModel(){
 		if(!this.$scope.swfForm || !this.$scope.swfForm.form) return;
-		this.$scope.swfForm.form.month = {$modelValue: this.months.indexOf(this.month) + 1};
-		this.$scope.swfForm.form.year = {$modelValue: this.year};
-		this.$scope.swfForm.form.day = {$modelValue: this.day};
+		this.dob = 
+			this.day < 10 ? ((this.months.indexOf(this.month) + 1)) + ('/0' + this.day) + ('/' + this.year )
+			: ((this.months.indexOf(this.month) + 1) ) + ('/' + this.day ) + ('/' +  this.year);
+			
 		this.isSet = true
+	}
+	
+	public calculateAge(birthDate:string):number { 
+		let birthDateObj = <any>Date.parse(birthDate);
+	    let years = Date.now() - birthDateObj.getTime();
+	    let age = new Date(years); // miliseconds from epoch
+	    return Math.abs(age.getUTCFullYear() - 1970);
 	}
 	
 }

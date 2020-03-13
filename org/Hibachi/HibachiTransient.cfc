@@ -1021,7 +1021,10 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 	}
 
 	// @hint helper function to pass this entity along with a template to the string replace function
-	public string function stringReplace( required string templateString, boolean formatValues=false, boolean removeMissingKeys=false ) {
-		return getService("hibachiUtilityService").replaceStringTemplate(arguments.templateString, this, arguments.formatValues, arguments.removeMissingKeys);
+	public string function stringReplace( required string template, boolean formatValues=false, boolean removeMissingKeys=false, string templateContextPathList ) {
+		
+		arguments['object'] = this; 
+		
+		return getService("hibachiUtilityService").replaceStringTemplate(argumentCollection=arguments);
 	}
 }
