@@ -135,7 +135,7 @@
 										<!------- ORDER ITEM LOOP ------->
 										<cfloop array="#order.getOrderItems()#" index="local.orderItem">
 											<!-- col-6 -->
-											<div class="email_row" style="box-sizing: border-box;font-size: 0;display: block;width: 100%;vertical-align: top;margin: 0 auto;text-align: center;clear: both;line-height: inherit;min-width: 0 !important;max-width: 600px !important; border-top: 1px solid #colorRule#; padding:16px 0;">
+											<div class="email_row" style="box-sizing: border-box;font-size: 0;display: block;width: 100%;vertical-align: top;margin: 0 auto;text-align: center;clear: both;line-height: inherit;min-width: 0 !important;max-width: 600px !important; padding:16px 0;">
 											<!--[if (mso)|(IE)]><table width="600" border="0" cellspacing="0" cellpadding="0" align="center" style="vertical-align:top;width:600px;Margin:0 auto;"><tbody><tr><td width="100" style="width:100px;line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
 												
 												<!--[if (mso)|(IE)]></td><td width="300" style="width:300px;line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
@@ -146,7 +146,7 @@
 																<td class="column_cell px pt_0 pb_0 tl" style="box-sizing: border-box;vertical-align: top;width: 100%;min-width: 100%;padding-top: 0;padding-bottom: 0;font-family: Helvetica, Arial, sans-serif;font-size: 16px;line-height: 23px;mso-line-height-rule: exactly;text-align: left;padding-left: 16px;padding-right: 16px;">
 																	
 																	<!------- PRODUCT TITLE AND QUANTITY ------->
-																	<h5 class="mt_xs mb_xxs" style="margin-left: 0;margin-right: 0;margin-top: 8px;margin-bottom: 4px;padding: 0;font-weight: bold;font-size: 16px;line-height: 21px;">#local.orderItem.getSku().getProduct().getTitle()# <span class="tm" style="color: #colorLighterText#;line-height: inherit;">x #NumberFormat(local.orderItem.getQuantity())# </span></h5>
+																	<h5 class="mt_xs mb_xxs" style="margin-left: 0;margin-right: 0;margin-top: 8px;margin-bottom: 4px;padding: 0;font-weight: bold;font-size: 16px;line-height: 21px;">#local.orderItem.getSku().getProduct().getTitle()# <span class="tm" style="line-height: inherit;">x #NumberFormat(local.orderItem.getQuantity())# </span></h5>
 																	
 																	<!------- PRODUTC SKU ------->
 																	<p class="small tm mb_0" style="font-family: Helvetica, Arial, sans-serif;font-size: 14px;line-height: 20px;mso-line-height-rule: exactly;display: block;margin-top: 0;margin-bottom: 0;">SKU: #local.orderItem.getSku().getSkuCode()#</p>
@@ -264,7 +264,7 @@
 																					</cfif>
 																					<cfif not isNull(local.orderFulfillment.getShippingMethod())>
 																						<h6 style="margin-left: 0;margin-right: 0;margin-top: 20px;margin-bottom: 5px;padding: 0;font-weight: bold;font-size: 13px;line-height: 20px;">Shipping Method</h6>
-																						<p class="small" style="font-family: Helvetica, Arial, sans-serif;font-size: 14px;line-height: 20px;color: #colorLighterText#;mso-line-height-rule: exactly;display: block;margin-top: 0;margin-bottom: 16px;">#local.orderFulfillment.getShippingMethod().getShippingMethodName()#</p>
+																						<p class="small" style="font-family: Helvetica, Arial, sans-serif;font-size: 14px;line-height: 20px;mso-line-height-rule: exactly;display: block;margin-top: 0;margin-bottom: 16px;">#local.orderFulfillment.getShippingMethod().getShippingMethodName()#</p>
 																					</cfif>
 																				</td>
 																			</tr>
@@ -315,21 +315,21 @@
 																			<td class="ncard_c px pt light_b" style="box-sizing: border-box;vertical-align: top;overflow: hidden;border-radius: 4px;padding-left: 16px;padding-right: 16px;padding-top: 16px;line-height: inherit;font-family: Helvetica, Arial, sans-serif;">
 																				
 																				<!------- SUBTOTAL ------->
-																				<p class="mb_xxs small" style="font-family: Helvetica, Arial, sans-serif;font-size: 14px;line-height: 20px;mso-line-height-rule: exactly;display: block;margin-top: 0;margin-bottom: 4px;"><span class="tm" style="color: #colorLighterText#;line-height: inherit;">Subtotal</span> <span style="float: right; text-align: right;">#order.getFormattedValue('subtotal', 'currency')#</span></p>
+																				<p class="mb_xxs small" style="font-family: Helvetica, Arial, sans-serif;font-size: 14px;line-height: 20px;mso-line-height-rule: exactly;display: block;margin-top: 0;margin-bottom: 4px;"><span class="tm" style="line-height: inherit;">Subtotal</span> <span style="float: right; text-align: right;">#order.getFormattedValue('subtotal', 'currency')#</span></p>
 																				
 																				<!------- DELIVERY CHARGES ------->
-																				<p class="mb_xxs small" style="font-family: Helvetica, Arial, sans-serif;font-size: 14px;line-height: 20px;mso-line-height-rule: exactly;display: block;margin-top: 0;margin-bottom: 4px;"><span class="tm" style="color: #colorLighterText#;line-height: inherit;">Delivery Charges</span> <span style="float: right; text-align: right;">#order.getFormattedValue('fulfillmentTotal', 'currency')#</span></p>
+																				<p class="mb_xxs small" style="font-family: Helvetica, Arial, sans-serif;font-size: 14px;line-height: 20px;mso-line-height-rule: exactly;display: block;margin-top: 0;margin-bottom: 4px;"><span class="tm" style="line-height: inherit;">Delivery Charges</span> <span style="float: right; text-align: right;">#order.getFormattedValue('fulfillmentTotal', 'currency')#</span></p>
 																				
 																				<!------- TAX ------->
-																				<p class="mb_xxs small" style="font-family: Helvetica, Arial, sans-serif;font-size: 14px;line-height: 20px;mso-line-height-rule: exactly;display: block;margin-top: 0;margin-bottom: 4px;"><span class="tm" style="color: #colorLighterText#;line-height: inherit;">Tax</span> <span style="float: right; text-align: right;">#order.getFormattedValue('taxTotal', 'currency')#</span></p>
+																				<p class="mb_xxs small" style="font-family: Helvetica, Arial, sans-serif;font-size: 14px;line-height: 20px;mso-line-height-rule: exactly;display: block;margin-top: 0;margin-bottom: 4px;"><span class="tm" style="line-height: inherit;">Tax</span> <span style="float: right; text-align: right;">#order.getFormattedValue('taxTotal', 'currency')#</span></p>
 																				
 																				<!------- DISCOUNTS ------->
 																				<cfif order.getDiscountTotal()>
-																					<p class="mb_xxs small" style="font-family: Helvetica, Arial, sans-serif;font-size: 14px;line-height: 20px;mso-line-height-rule: exactly;display: block;margin-top: 0;margin-bottom: 4px;"><span class="tm" style="color: #colorLighterText#;line-height: inherit;">Discounts</span> <span style="float: right; text-align: right;">-#order.getFormattedValue('discountTotal', 'currency')#</span></p>
+																					<p class="mb_xxs small" style="font-family: Helvetica, Arial, sans-serif;font-size: 14px;line-height: 20px;mso-line-height-rule: exactly;display: block;margin-top: 0;margin-bottom: 4px;"><span class="tm" style="line-height: inherit;">Discounts</span> <span style="float: right; text-align: right;">-#order.getFormattedValue('discountTotal', 'currency')#</span></p>
 																				</cfif>
 																				
 																				<!------- TOTAL ------->
-																				<p class="mt_0 mb" style="font-family: Helvetica, Arial, sans-serif;font-size: 16px;line-height: 23px;mso-line-height-rule: exactly;display: block;margin-top: 16px;margin-bottom: 16px;border-top: 1px solid #colorRule#;padding-top:16px;"><strong>Total</strong> <span class="tp" style="color: #colorAccent#;line-height: inherit; float:right; text-align: right;">#order.getFormattedValue('total', 'currency')#</span></p>
+																				<p class="mt_0 mb" style="font-family: Helvetica, Arial, sans-serif;font-size: 16px;line-height: 23px;mso-line-height-rule: exactly;display: block;margin-top: 16px;margin-bottom: 16px;padding-top:16px;"><strong>Total</strong> <span class="tp" style="line-height: inherit; float:right; text-align: right;">#order.getFormattedValue('total', 'currency')#</span></p>
 																			</td>
 																		</tr>
 																	</tbody>
@@ -345,7 +345,7 @@
 																		<tbody>
 																			<tr>
 																				<td class="ncard_c px pt" style="box-sizing: border-box;vertical-align: top;overflow: hidden;border-radius: 4px;padding:0 16px;line-height: inherit;font-family: Helvetica, Arial, sans-serif;">
-																					<p class="mb_xxs small" style="font-family: Helvetica, Arial, sans-serif;font-size: 14px;line-height: 20px;mso-line-height-rule: exactly;display: block;margin-top: 0;border-bottom: 1px solid #colorRule#; padding-bottom: 5px; margin-bottom: 10px;"><span class="tm" style="color: #colorLighterText#;line-height: inherit;">Payment Method</span> <span class="tm" style="float: right; text-align: right;">Amount</span></p>
+																					<p class="mb_xxs small" style="font-family: Helvetica, Arial, sans-serif;font-size: 14px;line-height: 20px;mso-line-height-rule: exactly;display: block;margin-top: 0; padding-bottom: 5px; margin-bottom: 10px;"><span class="tm" style="line-height: inherit;">Payment Method</span> <span class="tm" style="float: right; text-align: right;">Amount</span></p>
 																					
 																					<!------- PAYMENT METHOD LOOP ------->
 																					<cfloop array="#order.getOrderPayments()#" index="orderPayment">
