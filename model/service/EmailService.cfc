@@ -317,9 +317,10 @@ Notes:
 			if(structKeyExists(templateObject, 'hasAccount') && templateObject.hasAccount()){
 				local.account = templateObject.getAccount(); 
 			}
+
 			if(structKeyExists(templateObject, 'hasOrder') && templateObject.hasOrder()){
 				local.order = templateObject.getOrder(); 
-				local.account = local.order.getOrder(); 
+				local.account = local.order.getAccount(); 
 			}
 
 			if(len(templatePath)) {
