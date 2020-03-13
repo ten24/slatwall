@@ -555,8 +555,6 @@
 						} 
 					} 
 
-					this.logHibachi('template Context Path #templateContextPath#', true);
-
 					if(len(templateContextPath)){ 
 
 						//TODO: remove Slatwall reference from hibachi
