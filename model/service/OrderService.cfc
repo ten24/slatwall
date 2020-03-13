@@ -1967,9 +1967,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	public any function processOrderTemplate_updateShipping(required any orderTemplate, required any processObject, required struct data={}){
 		
-		var account = arguments.orderTemplate.getAccount(); 
+		var account = arguments.orderTemplate.getAccount();
+		
+		var siteCountryCode = getSiteService().getCountryCodeBySite(arguments.orderTemplate.getSite());
 			
 		if(!isNull(processObject.getNewAccountAddress())){
+			
 			var accountAddress = getAccountService().newAccountAddress();
 			accountAddress.populate(processObject.getNewAccountAddress());
 			
@@ -1977,7 +1980,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			address.populate(processObject.getNewAccountAddress().address);
 		
 			accountAddress.setAddress(address); 
-			accountAddress.setAccount(account); 
+			accountAddress.setAccount(account);
 
 			accountAddress = getAccountService().saveAccountAddress(accountAddress=accountAddress,verifyAddressFlag=true);
 			
@@ -1986,9 +1989,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			getHibachiScope().flushORMSession(); 
 
 			orderTemplate.setShippingAccountAddress(accountAddress);
-		} else if (!isNull(processObject.getShippingAccountAddress())) { 
-
-			orderTemplate.setShippingAccountAddress(getAccountService().getAccountAddress(processObject.getShippingAccountAddress().value));	
+		} else if (!isNull(processObject.getShippingAccountAddress())) {
+			
+			var accountAddress = getAccountService().getAccountAddress(processObject.getShippingAccountAddress().value);
+			
+			orderTemplate.setShippingAccountAddress(accountAddress);	
 		}
 		
 		var shippingMethod = processObject.getShippingMethod();
