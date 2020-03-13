@@ -400,7 +400,7 @@ component extends="framework.one" {
 							getHibachiScope().getSession().setAccountAuthentication( accountAuthentication );
 						}
 						getHibachiScope().getService("hibachiSessionService").persistSession(true);
-			            location(replace(REReplaceNoCase(CGI['request_url'], '&?token=[^&]+', ''), '/index.cfm', ''), false, 301);
+			      location(replace(REReplaceNoCase(CGI['request_url'], '&?token=[^&]+', ''), '/index.cfm', ''), false, 301);
 					}
 				}
 			}
