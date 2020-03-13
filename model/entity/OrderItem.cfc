@@ -150,7 +150,8 @@ property name="personalVolume" ormtype="big_decimal";
     property name="retailCommission" ormtype="big_decimal";
     property name="productPackVolume" ormtype="big_decimal";
     property name="retailValueVolume" ormtype="big_decimal";
-    
+    property name="listPrice" ormtype="big_decimal";
+        
     property name="manualPersonalVolume" ormtype="big_decimal";
     property name="manualTaxableAmount" ormtype="big_decimal";
     property name="manualCommissionableVolume" ormtype="big_decimal";
@@ -196,6 +197,7 @@ property name="personalVolume" ormtype="big_decimal";
     property name="calculatedExtendedProductPackVolumeAfterDiscount" ormtype="big_decimal" hb_formatType="none";
     property name="calculatedExtendedRetailValueVolumeAfterDiscount" ormtype="big_decimal" hb_formatType="none";
     property name="calculatedQuantityDelivered" ormtype="integer";
+    property name="calculatedListPrice" ormtype="integer";
     property name="orderItemSkuBundles" singularname="orderItemSkuBundle" fieldType="one-to-many" type="array" fkColumn="orderItemID" cfc="OrderItemSkuBundle" inverse="true" cascade="all-delete-orphan";
 	property name="returnsReceived" ormtype="string";
     property name="kitFlagCode" ormtype="string";
@@ -1234,6 +1236,15 @@ public void function refreshAmounts(){
         return variables.personalVolume;
     }
     
+    public any function getListPrice(){
+        
+        if(!structKeyExists(variables,'listPrice')){
+            variables.listPrice = getCustomPriceFieldAmount('listPrice');
+        }
+        
+        return variables.listPrice;
+    }
+    
     public any function getTaxableAmount(){
        if(!structKeyExists(variables,'taxableAmount')){
             variables.taxableAmount = getCustomPriceFieldAmount('taxableAmount');
@@ -1368,10 +1379,12 @@ public void function refreshAmounts(){
 	private numeric function getCustomPriceFieldAmount(required string customPriceField){
         arguments.currencyCode = this.getCurrencyCode();
 		arguments.quantity = this.getQuantity();
-		if(!isNull(this.getOrder().getAccount())){ 
+		
+		if(!isNull(this.getOrder().getPriceGroup())){
+		    arguments.priceGroups = [this.getOrder().getPriceGroup()];
+		}else if(!isNull(this.getOrder().getAccount())){ 
 			arguments.accountID = this.getOrder().getAccount().getAccountID();  
-		}
-		if(!isNull(this.getAppliedPriceGroup())){ 
+		}else if(!isNull(this.getAppliedPriceGroup())){ 
 			arguments.priceGroups = [];
 			arrayAppend(arguments.priceGroups, this.getAppliedPriceGroup());
 		}
