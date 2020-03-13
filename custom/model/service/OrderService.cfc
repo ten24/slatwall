@@ -3,7 +3,22 @@ component extends="Slatwall.model.service.OrderService" {
     public string function getCustomAvailableProperties() {
         return 'orderItems.personalVolume,orderItems.calculatedExtendedPersonalVolume,calculatedPersonalVolumeSubtotal,currencyCode,orderItems.skuProductURL,billingAddress,appliedPromotionMessages.message,appliedPromotionMessages.qualifierProgress,appliedPromotionMessages.promotionName,appliedPromotionMessages.promotionRewards.amount,appliedPromotionMessages.promotionRewards.amountType,appliedPromotionMessages.promotionRewards.rewardType';
     }
-    
+   
+	public array function getOrderEventOptions(){
+		var eventOptions = super.getOrderEventOptions(); 
+
+		var customEvents = [
+			{
+				'name': 'Order - After Market Partner Upgrade Success | afterMarketPartnerUpgradeSuccess',
+				'value': 'afterMarketPartnerUpgradeSuccess',
+				'entityName': 'Account' 
+			}
+		]
+
+		arrayAppend(eventOptions, customEvents, true); 
+
+		return eventOptions;  
+	} 
     /**
      * Function to get all carts and quotes for user
      * @param accountID required
