@@ -141,8 +141,6 @@
 		// @hint default process method
 		public any function process(required any entity, struct data={}, string processContext=""){
 		
-			logger.m(entity = entity.getClassName(), processContext=processContext);
-			
 			// Create the invoke arguments struct
 			var invokeArguments = {};
 			invokeArguments[ "1" ] = arguments.entity;//compatibility with on missing method
