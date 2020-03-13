@@ -445,7 +445,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 		var availablePropertyList = "";
 		
 		if(arguments.cartDataOptions=='full' || listFind(arguments.cartDataOptions,'order')){
-			availablePropertyList &="orderID,orderOpenDateTime,calculatedTotal,total,subtotal,taxTotal,VATTotal,fulfillmentTotal,fulfillmentChargeAfterDiscountTotal,promotionCodeList,discountTotal,orderAndItemDiscountAmountTotal, fulfillmentDiscountAmountTotal, orderRequirementsList,orderNotes,totalItemQuantity,messages,";
+			availablePropertyList &="orderID,orderOpenDateTime,calculatedTotal,total,subtotal,taxTotal,VATTotal,fulfillmentTotal,fulfillmentChargeAfterDiscountTotal,fulfillmentHandlingFeeTotal,promotionCodeList,discountTotal,orderAndItemDiscountAmountTotal, fulfillmentDiscountAmountTotal, orderRequirementsList,orderNotes,totalItemQuantity,messages,";
 		}
 		
 		//orderItemData
@@ -469,7 +469,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 				orderFulfillments.fulfillmentMethod.fulfillmentMethodID,orderFulfillments.fulfillmentMethod.fulfillmentMethodName,orderFulfillments.fulfillmentMethod.fulfillmentMethodType,orderFulfillments.orderFulfillmentItems.sku.skuName,orderFulfillments.orderFulfillmentItems.sku.product.productName,
 				orderFulfillments.shippingMethod.shippingMethodID,orderFulfillments.shippingMethod.shippingMethodName,
 				orderFulfillments.shippingAddress.addressID,orderFulfillments.shippingAddress.name,orderFulfillments.shippingAddress.streetAddress,orderFulfillments.shippingAddress.street2Address,orderFulfillments.shippingAddress.city,orderFulfillments.shippingAddress.stateCode,orderFulfillments.shippingAddress.postalCode,orderFulfillments.shippingAddress.countrycode,
-				orderFulfillments.shippingMethodOptions,orderFulfillments.shippingMethodRate.shippingMethodRateID,
+				orderFulfillments.shippingMethodOptions,orderFulfillments.shippingMethodRate.shippingMethodRateID,orderFulfillments.handlingFee,
 				orderFulfillments.totalShippingWeight,orderFulfillments.taxAmount, orderFulfillments.emailAddress,orderFulfillments.pickupLocation.locationID, orderFulfillments.pickupLocation.locationName, orderFulfillments.pickupLocation.primaryShippingAddress.address.streetAddress, orderFulfillments.pickupLocation.primaryShippingAddress.address.street2Address,
 				orderFulfillments.pickupLocation.primaryShippingAddress.address.city, orderFulfillments.pickupLocation.primaryShippingAddress.address.stateCode, orderFulfillments.pickupLocation.primaryShippingAddress.address.postalCode,
 			";	
