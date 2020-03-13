@@ -60,7 +60,7 @@ class EnrollmentMPController {
 				let str = this.stripHtml(this.bundles[bundle].description);
 				this.bundles[bundle].description = str.length > 70 ? str.substring(0, str.indexOf(' ', 60)) + '...' : str;
 			}
-			this.getProductList();	
+			
 		});
 	}
 	

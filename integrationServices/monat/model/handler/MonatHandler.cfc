@@ -1,6 +1,7 @@
 component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiEventHandler" {
     property name="OrderService";
     property name="AccountService";
+    property name="HibachiEventService";
 
     public any function afterAccountProcess_loginFailure(required any slatwallScope, required any account ,required struct data){
         param name="arguments.data.emailAddressOrUsername" default="";

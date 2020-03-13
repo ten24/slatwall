@@ -107,7 +107,7 @@ component displayname="EmailTemplate" entityname="SlatwallEmailTemplate" table="
 		return variables.emailTemplateFileOptions;
 	}
 
-	public string function getEmailTemplateContextPathList() { 
+	public string function getTemplateContextPathList() { 
 		return getService("templateService").getTemplateContextPathList( templateType="email", objectName=getEmailTemplateObject(), includesFlag=true );  	
 	}  
 

@@ -95,15 +95,17 @@ Notes:
 		<cfargument name="templateType" type="string" required="true" />
 		<cfargument name="objectName" type="string" required="true" />
 		<cfargument name="includesFlag" type="string" default="false" />
+
+		<cfset local.rootPath = expandPath('/Slatwall') /> 
 		<!--- Custom Path --->
-		<cfset templateContextPathList = "#getApplicationValue('applicationRootMappingPath')#/custom/templates/#lcase(arguments.templateType)#/#lcase(arguments.objectName)#/" />
+		<cfset local.templateContextPathList = rootPath & "/custom/templates/#lcase(arguments.templateType)#/#lcase(arguments.objectName)#/" />
 		<!--- Core Path --->
-		<cfset templateContextPathList = listAppend(templateContextPathList, "#getApplicationValue('applicationRootMappingPath')#/templates/#lcase(arguments.templateType)#/#lcase(arguments.objectName)#/") />	
+		<cfset templateContextPathList = listAppend(templateContextPathList, rootPath & "/templates/#lcase(arguments.templateType)#/#lcase(arguments.objectName)#/") />	
 
 		<cfif arguments.includesFlag > 
 			
-			<cfset templateContextPathList = "#getApplicationValue('applicationRootMappingPath')#/custom/templates/#lcase(arguments.templateType)#/#lcase(arguments.objectName)#/inc/" />
-			<cfset templateContextPathList = listAppend(templateContextPathList, "#getApplicationValue('applicationRootMappingPath')#/templates/#lcase(arguments.templateType)#/#lcase(arguments.objectName)#/inc/") />	
+			<cfset templateContextPathList = listAppend(templateContextPathlist, rootPath & "/custom/templates/#lcase(arguments.templateType)#/#lcase(arguments.objectName)#/inc/") />
+			<cfset templateContextPathList = listAppend(templateContextPathList, rootPath & "/templates/#lcase(arguments.templateType)#/#lcase(arguments.objectName)#/inc/") />	
 			
 		</cfif> 
 
