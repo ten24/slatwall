@@ -1,14 +1,14 @@
-<div>
+<div ng-cloak ng-if="monatBirthday.show">
 	<div ng-click="monatBirthday.showBirthdayPicker()" class="material-field">
 		<select 
-			id="gender_CreateAccount"
-			name="dob"
+			id="dob"
+			name="birthDate"
 			class="form-control"
-			ng-model="monatBirthday.form.select"
+			ng-model="monatBirthday.dob"
 			swvalidationrequired="true"
 		>
 			<option disabled></option>
-			<option ng-selected="!monatBirthday.showPicker && monatBirthday.isSet">{{monatBirthday.day}}/{{monatBirthday.months.indexOf(monatBirthday.month)}}/{{monatBirthday.year}}</option>
+			<option ng-selected="!monatBirthday.showPicker && monatBirthday.isSet">{{monatBirthday.dob}}</option>
 		</select>
 		<label for="gender_CreateAccount" sw-rbkey="'frontend.global.yourBirthday'"></label>
 		<div class="error-display ng-scope" ng-if="swfForm.form.dob.$error.swvalidationrequired" ng-show="swfForm.form.$submitted">

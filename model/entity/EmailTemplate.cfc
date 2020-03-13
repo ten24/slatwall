@@ -77,6 +77,7 @@ component displayname="EmailTemplate" entityname="SlatwallEmailTemplate" table="
 	// Non-Persistent Properties
 	property name="emailTemplateObjectOptions" persistent="false";
 	property name="emailTemplateFileOptions" persistent="false";
+	property name="emailTemplateContextPathList" persistent="false"; 
 
 
 	// ============ START: Non-Persistent Property Methods =================
@@ -105,6 +106,10 @@ component displayname="EmailTemplate" entityname="SlatwallEmailTemplate" table="
 		}
 		return variables.emailTemplateFileOptions;
 	}
+
+	public string function getTemplateContextPathList() { 
+		return getService("templateService").getTemplateContextPathList( templateType="email", objectName=getEmailTemplateObject(), includesFlag=true );  	
+	}  
 
 	// ============  END:  Non-Persistent Property Methods =================
 

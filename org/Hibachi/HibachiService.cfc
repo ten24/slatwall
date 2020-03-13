@@ -140,9 +140,9 @@
 		
 		// @hint default process method
 		public any function process(required any entity, struct data={}, string processContext=""){
-			
+		
 			logger.m(entity = entity.getClassName(), processContext=processContext);
-
+			
 			// Create the invoke arguments struct
 			var invokeArguments = {};
 			invokeArguments[ "1" ] = arguments.entity;//compatibility with on missing method
@@ -194,7 +194,7 @@
 		
 		// @hint the default save method will populate, validate, and if not errors delegate to the DAO where entitySave() is called.
 	    public any function save(required any entity, struct data, string context="save") {
-	    	
+
 	    	if(!isObject(arguments.entity) || !arguments.entity.isPersistent()) {
 	    		throw("The entity being passed to this service is not a persistent entity. READ THIS!!!! -> Make sure that you aren't calling the oMM method with named arguments. Also, make sure to check the spelling of your 'fieldname' attributes.");
 	    	}
@@ -207,7 +207,6 @@
 	    	
 			// If data was passed in to this method then populate it with the new data
 	        if(structKeyExists(arguments,"data")){
-	        	
 	        	// Populate this object
 				arguments.entity.populate(argumentCollection=arguments);
 	
@@ -221,7 +220,6 @@
 	        // If the object passed validation then call save in the DAO, otherwise set the errors flag
 	        if(!arguments.entity.hasErrors()) {
 	            arguments.entity = getHibachiDAO().save(target=arguments.entity);
-        
                 // Announce After Events for Success
 				getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#Save", arguments);
 				getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#SaveSuccess", arguments);
@@ -232,7 +230,7 @@
 					getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#CreateSuccess", arguments);
 				}
 		    } else {
-            
+
                 // Announce After Events for Failure
 				getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#Save", arguments);
 				getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#SaveFailure", arguments);
@@ -415,12 +413,16 @@
 			var lCaseMissingMethodName = lCase( arguments.missingMethodName );
 	
 			if ( lCaseMissingMethodName.startsWith( 'get' ) ) {
-				if(right(lCaseMissingMethodName,9) == "smartlist") {
+				if(right(lCaseMissingMethodName, 9) == "smartlist") {
 					return onMissingGetSmartListMethod( arguments.missingMethodName, arguments.missingMethodArguments );
-				} else if(right(lCaseMissingMethodName,14) == "collectionlist"){
+				} else if(right(lCaseMissingMethodName, 14) == "collectionlist"){
 					return onMissingGetCollectionListMethod( arguments.missingMethodName, arguments.missingMethodArguments );
-				} else if(right(lCaseMissingMethodName,6) == "struct"){
+				} else if(right(lCaseMissingMethodName, 6) == "struct"){
 					return onMissingGetEntityStructMethod( arguments.missingMethodName, arguments.missingMethodArguments );
+				} else if(right(lCaseMissingMethodName, 15) == "processcontexts"){ 
+					return onMissingGetEntityProcessContexts( arguments.missingMethodName, arguments.missingMethodArguments );
+				} else if(right(lCaseMissingMethodName, 12) == "eventoptions"){
+					return onMissingGetEntityEventOptions( arguments.missingMethodName, arguments.missingMethodArguments );	
 				} else {
 					return onMissingGetMethod( arguments.missingMethodName, arguments.missingMethodArguments );
 				}
@@ -554,7 +556,100 @@
 			collection.setPageRecordsShow(1);
 			return collection.getPageRecords(formatRecords=false)[1];
 		}
+
+		private function onMissingGetEntityProcessContexts( required string missingMethodName, required struct missingMethodArguments ) {
+			var entityNameLength = len(arguments.missingMethodName) - 18;
+			var entityName = arguments.missingMethodName.substring( 3, entityNameLength + 3 );
+
+			var metaData = getEntityMetaData(entityName);
+
+			var processContexts = ''; 
+			if(structKeyExists(metaData, 'hb_processContexts')){
+				processContexts = metaData.hb_processContexts;
+			}
+			
+			return processContexts;	
+		}
+
+		//this is defined on hibachi service rather than hibachi event service so it can be overriden at the entity service level to allow for defining custom events to be used with workflow
+		private function onMissingGetEntityEventOptions( required string missingMethodName, required struct missingMethodArguments ){
+			var entityNameLength = len(arguments.missingMethodName) - 15;
+			var entityName = arguments.missingMethodName.substring( 3, entityNameLength + 3 );
+			var entityService = getServiceByEntityName(entityName); 
+			var entityMetaData = getEntityMetaData(entityName); 
+
+			var doOneToManyOptions = true; 
+			
+			if( structCount(arguments.missingMethodArguments) && 
+				structKeyExists(arguments.missingMethodArguments, "1") &&
+				isBoolean(arguments.missingMethodArguments["1"])
+			){
+				doOneToManyOptions = arguments.missingMethodArguments["1"];  
+			} 	
+
+			var positions = ['before','after'];
+			var processes = ['Save','Delete','Create'];
+			var statuses = ['','Success','Failure'];
+
+			var processContextList = entityService.invokeMethod('get#entityName#ProcessContexts'); 	
 	
+			arrayAppend(array=processes, value=listToArray(processContextList), merge=true); 
+
+			var eventOptions = []; 
+
+			for(var process in processes){
+				for(var position in positions){
+					for(var status in statuses){
+						arrayAppend(eventOptions, getEventNameOptionsStruct(entityName, position, process, status));
+					}
+				}
+			}
+
+			if(doOneToManyOptions){
+				for(var property in entityMetaData.properties){
+					if( structKeyExists(property,'fieldType') && 
+						property.fieldType == 'one-to-many' && 
+						property.cfc != entityName
+					){
+						var relatedEntityService = getServiceByEntityName(property.CFC);
+						var relatedEntityOptions = relatedEntityService.invokeMethod('get#property.cfc#EventOptions', {"1":false});
+						arrayAppend(array=eventOptions, value=relatedEntityOptions, merge=true); 
+					}
+				}
+			}
+
+			return eventOptions;
+		} 	
+
+		
+		private struct function getEventNameOptionsStruct(required string entityName, string position="before", string process="save", string status=""){
+		
+			var optionStruct = {};
+			
+			optionStruct['name'] = "#getHibachiScope().rbKey('entity.#arguments.entityName#')# - ";
+			
+			var processPrefix = "";
+			
+			if(lcase(arguments.process) != 'save' && lcase(arguments.process) != 'delete' && lcase(arguments.process) != 'create'){
+				processPrefix = "Process_";
+				optionStruct['name'] &= "#getHibachiScope().rbKey('define.#arguments.position#')# #getHibachiScope().rbKey('entity.#arguments.entityName#.process.#arguments.process#')#";
+			}else{
+				optionStruct['name'] &= "#getHibachiScope().rbKey('define.#arguments.position#')# #getHibachiScope().rbKey('define.#arguments.process#')#"; 
+			}
+			
+			if(len(arguments.status)){
+				optionStruct['name'] &= " #getHibachiScope().rbKey('define.#arguments.status#')# | #arguments.position##entityName##processPrefix##arguments.process##arguments.status#";
+			}else{
+				optionStruct['name'] &= " | #arguments.position##arguments.entityName##processPrefix##arguments.process#";	
+			}
+			
+			optionStruct['value'] = arguments.position & entityName & processPrefix & arguments.process & arguments.status;
+
+			optionStruct['entityName'] = arguments.entityName;
+			
+			return optionStruct;
+		}
+
 		/**
 		 * Provides dynamic list methods, by convention, on missing method:
 		 *
@@ -754,11 +849,15 @@
 	
 	
 		private function onMissingSaveMethod( required string missingMethodName, required struct missingMethodArguments ) {
+
 			if ( structKeyExists(  arguments.missingMethodArguments, '3' ) ) {
+
 				return save( entity = arguments.missingMethodArguments[1], data = arguments.missingMethodArguments[2], context = arguments.missingMethodArguments[3]);
 			} else if ( structKeyExists(  arguments.missingMethodArguments, '2' ) ) {
+
 				return save( entity = arguments.missingMethodArguments[1], data = arguments.missingMethodArguments[2]);
 			} else {
+
 				return save( entity = arguments.missingMethodArguments[1] );
 			}
 		}

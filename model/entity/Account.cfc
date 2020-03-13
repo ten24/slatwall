@@ -168,6 +168,8 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	property name="genderFullWord" persistent = "false";
 	property name="spouseFirstName" persistent = "false";
 	property name="spouseLastName" persistent = "false";
+	property name="governmentIdentificationLastFour" persistent = "false";
+	
 	
 
  property name="allowCorporateEmailsFlag" ormtype="boolean" hb_formatType="yesno";
@@ -1379,6 +1381,12 @@ public numeric function getSuccessfulFlexshipOrdersThisYearCount(){
 	public string function getSpouseLastName(){
 	    if(!IsNull(this.getSpouseName())){
 	       return ListRest(this.getSpouseName(),", ");
+	    }
+	}
+	public string function getGovernmentIdentificationLastFour(){
+	    if(!IsNull(this.getAccountGovernmentIdentifications()) && ArrayLen(this.getAccountGovernmentIdentifications()) >0){
+	        
+	       return this.getAccountGovernmentIdentifications()[1].getGovernmentIdentificationLastFour();
 	    }
 	}//CUSTOM FUNCTIONS END
 }

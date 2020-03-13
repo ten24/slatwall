@@ -3,6 +3,9 @@ export class OrderTemplateService {
    private orderTemplateTypeID:string='';
    private cachedGetOrderTemplatesResponse:any;
    private cachedGetAccountGiftCardsResponse:any;
+   public canPlaceOrderFlag:boolean;
+   public mostRecentOrderTemplate:any;
+   public currentOrderTemplateID:string;
    
    //@ngInject
    constructor(
@@ -102,14 +105,26 @@ export class OrderTemplateService {
        return this.requestService.newPublicRequest('?slatAction=api:public.getordertemplateitems',data).promise;
     }
    
-    public getOrderTemplateDetails = (orderTemplateID:string, optionalProperties:string="") => {
-       var data = {
-           "orderTemplateID" : orderTemplateID,
-           "optionalProperties" : optionalProperties
-       }
-       return this.requestService
-                  .newPublicRequest('?slatAction=api:public.getOrderTemplateDetails', data)
-                  .promise;
+    public getOrderTemplateDetails = (orderTemplateID:string, optionalProperties:string="", nullAccountFlag = false) => {
+        var deferred = this.$q.defer();
+        var data = {
+            "orderTemplateID" : orderTemplateID,
+            "optionalProperties" : optionalProperties,
+            "nullAccountFlag" :nullAccountFlag
+        }
+        
+       this.publicService.doAction('getOrderTemplateDetails', data).then(res=>{
+       
+           if(res.orderTemplate && res.orderTemplate.canPlaceOrderFlag){
+               this.canPlaceOrderFlag = res.orderTemplate.canPlaceOrderFlag;
+               this.mostRecentOrderTemplate = res.orderTemplate;
+           } 
+           
+           deferred.resolve(res);
+        }).catch((e) => {
+			deferred.reject(e);
+		});
+		return deferred.promise;
     }
    
     public updateShipping = (data) => {
@@ -333,6 +348,33 @@ export class OrderTemplateService {
 	
    	public deleteOrderTemplate(orderTemplateID){
 		return this.publicService.doAction('deleteOrderTemplate', {orderTemplateID: orderTemplateID });
+	}
+	
+	public getSetOrderTemplateOnSession(optionalProperties = '', saveContext = 'upgradeFlow', setIfNullFlag = true, nullAccountFlag = true){
+        let deferred = this.$q.defer();
+    
+		let data ={
+            saveContext: saveContext,
+            setIfNullFlag: setIfNullFlag,
+            optionalProperties: optionalProperties,
+            nullAccountFlag:nullAccountFlag,
+            returnJSONObjects:''
+        }
+        
+        this.publicService.doAction('getSetFlexshipOnSession', data).then(res=>{
+            if(res.orderTemplate && typeof res.orderTemplate == 'string'){
+                this.currentOrderTemplateID = res.orderTemplate;
+            }else if(res.orderTemplate){
+                this.currentOrderTemplateID = res.orderTemplate.orderTemplateID
+                this.mostRecentOrderTemplate = res.orderTemplate;
+                this.canPlaceOrderFlag = res.orderTemplate.canPlaceOrderFlag;
+            }
+            deferred.resolve(res);
+	    }).catch( (e) => {
+           deferred.reject(e);
+       });
+       
+       return deferred.promise;
 	}
 
 }

@@ -4,7 +4,7 @@
 import {HibachiInterceptor,IHibachi,IHibachiConfig,HibachiJQueryStatic} from "./services/hibachiinterceptor";
 //constant
 import {HibachiPathBuilder} from "./services/hibachipathbuilder";
-
+import 'angular-modal-service';
 //services
 import {CacheService} from "./services/cacheservice";
 import {PublicService} from "./services/publicservice";
@@ -51,6 +51,7 @@ import {OrdinalFilter} from "./filters/ordinal";
 //directives
 //  components
 import {SWActionCaller} from "./components/swactioncaller";
+import {SWAddressVerification} from "./components/swaddressverification";
 import {SWTypeaheadSearch} from "./components/swtypeaheadsearch";
 import {SWTypeaheadInputField} from "./components/swtypeaheadinputfield";
 import {SWTypeaheadMultiselect} from "./components/swtypeaheadmultiselect";
@@ -107,9 +108,10 @@ var coremodule = angular.module('hibachi.core',[
   //3rdParty modules
   'ui.bootstrap',
   alertmodule.name,
-  dialogmodule.name
+  dialogmodule.name,
+  'angularModalService'
 ])
-.config(['$compileProvider','$httpProvider','$logProvider','$filterProvider','$provide','hibachiPathBuilder','appConfig',($compileProvider,$httpProvider,$logProvider,$filterProvider,$provide,hibachiPathBuilder,appConfig)=>{
+.config(['$compileProvider','$httpProvider','$logProvider','$filterProvider','$provide','hibachiPathBuilder','appConfig','ModalServiceProvider',($compileProvider,$httpProvider,$logProvider,$filterProvider,$provide,hibachiPathBuilder,appConfig,ModalServiceProvider)=>{
     hibachiPathBuilder.setBaseURL(appConfig.baseURL);
     hibachiPathBuilder.setBasePartialsPath('/org/Hibachi/client/src/');
 
@@ -182,7 +184,9 @@ var coremodule = angular.module('hibachi.core',[
    
    //Pulls seperate http requests into a single digest cycle.
    $httpProvider.useApplyAsync(true);
-
+    
+    // to set a default close delay on modals
+	ModalServiceProvider.configureOptions({ closeDelay: 0 });
 }])
 .run(['$rootScope','$hibachi', '$route', '$location','rbkeyService',($rootScope,$hibachi, $route, $location,rbkeyService)=>{
     $rootScope.buildUrl = $hibachi.buildUrl;
@@ -256,6 +260,7 @@ var coremodule = angular.module('hibachi.core',[
 .directive('swTypeaheadRemoveSelection', SWTypeaheadRemoveSelection.Factory())
 .directive('swActionCaller',SWActionCaller.Factory())
 .directive('swActionCallerDropdown',SWActionCallerDropdown.Factory())
+.directive('swAddressVerification',SWAddressVerification.Factory())
 .directive('swColumnSorter',SWColumnSorter.Factory())
 .directive('swConfirm',SWConfirm.Factory())
 .directive('swCurrencyFormatter', SWCurrencyFormatter.Factory())

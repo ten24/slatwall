@@ -3,7 +3,22 @@ component extends="Slatwall.model.service.OrderService" {
     public string function getCustomAvailableProperties() {
         return 'orderItems.personalVolume,orderItems.calculatedExtendedPersonalVolume,calculatedPersonalVolumeSubtotal,currencyCode,orderItems.skuProductURL,billingAddress,appliedPromotionMessages.message,appliedPromotionMessages.qualifierProgress,appliedPromotionMessages.promotionName,appliedPromotionMessages.promotionRewards.amount,appliedPromotionMessages.promotionRewards.amountType,appliedPromotionMessages.promotionRewards.rewardType';
     }
-    
+   
+	public array function getOrderEventOptions(){
+		var eventOptions = super.getOrderEventOptions(); 
+
+		var customEvents = [
+			{
+				'name': 'Order - After Market Partner Upgrade Success | afterMarketPartnerUpgradeSuccess',
+				'value': 'afterMarketPartnerUpgradeSuccess',
+				'entityName': 'Account' 
+			}
+		]
+
+		arrayAppend(eventOptions, customEvents, true); 
+
+		return eventOptions;  
+	} 
     /**
      * Function to get all carts and quotes for user
      * @param accountID required
@@ -11,11 +26,12 @@ component extends="Slatwall.model.service.OrderService" {
      * @param currentPage optional
      * return struct of orders and total count
      **/
-	public any function getAllCartsAndQuotesOnAccount(struct data={}) {
+	public any function getAllCartsAndQuotesOnAccount(required any account, struct data={}) {
         param name="arguments.data.currentPage" default=1;
-        param name="arguments.data.pageRecordsShow" default=5;
+
+        param name="arguments.data.pageRecordsShow" default= getHibachiScope().setting('GLOBALAPIPAGESHOWLIMIT');
         param name="arguments.data.accountID" default= getHibachiSCope().getAccount().getAccountID();
-        
+
 		var ordersList = this.getOrderCollectionList();
 
 		ordersList.addOrderBy('orderOpenDateTime|DESC');
@@ -25,12 +41,12 @@ component extends="Slatwall.model.service.OrderService" {
 			orderNumber,
 			orderStatusType.typeName
 		');
-		
-		ordersList.addFilter( 'account.accountID', arguments.data.accountID, '=');
+
+		ordersList.addFilter( 'account.accountID', arguments.account.getAccountID() );
 		ordersList.addFilter( 'orderStatusType.systemCode', 'ostNotPlaced');
 		ordersList.setPageRecordsShow(arguments.data.pageRecordsShow);
 		ordersList.setCurrentPageDeclaration(arguments.data.currentPage); 
-		
+
 		return { "ordersOnAccount":  ordersList.getPageRecords(formatRecords=false), "recordsCount": ordersList.getRecordsCount()}
 	}
     
@@ -41,18 +57,17 @@ component extends="Slatwall.model.service.OrderService" {
      * @param currentPage optional
      * return struct of orders and total count
      **/
-	public any function getAllOrderFulfillmentsOnAccount(struct data={}) {
+	public any function getAllOrderFulfillmentsOnAccount(required any account, struct data={}) {
         param name="arguments.data.currentPage" default=1;
-        param name="arguments.data.pageRecordsShow" default=5;
-        param name="arguments.data.accountID" default= getHibachiSCope().getAccount().getAccountID();
-        
+        param name="arguments.data.pageRecordsShow" default= getHibachiScope().setting('GLOBALAPIPAGESHOWLIMIT');
+
 		var ordersList = this.getOrderFulfillmentCollectionList();
 		ordersList.setDisplayProperties(' orderFulfillmentID, estimatedShippingDate, pickupDate, order.orderID, order.calculatedTotalItemQuantity, order.orderNumber, orderFulfillmentStatusType.typeName');
-		ordersList.addFilter( 'order.account.accountID', arguments.data.accountID, '=');
+		ordersList.addFilter( 'order.account.accountID', arguments.account.getAccountID() );
 		ordersList.addFilter( 'order.orderStatusType.systemCode', 'ostNotPlaced', '!=');
 		ordersList.setPageRecordsShow(arguments.data.pageRecordsShow);
-		ordersList.setCurrentPageDeclaration(arguments.data.currentPage); 
-		
+		ordersList.setCurrentPageDeclaration(arguments.data.currentPage);
+
 		return { "ordersOnAccount":  ordersList.getPageRecords(formatRecords=false), "recordsCount": ordersList.getRecordsCount()}
 	}
 	
@@ -63,18 +78,17 @@ component extends="Slatwall.model.service.OrderService" {
      * @param currentPage optional
      * return struct of orders and total count
      **/
-	public any function getAllOrderDeliveryOnAccount(struct data={}) {
+	public any function getAllOrderDeliveryOnAccount(required any account, struct data={}) {
         param name="arguments.data.currentPage" default=1;
         param name="arguments.data.pageRecordsShow" default=5;
-        param name="arguments.data.accountID" default= getHibachiSCope().getAccount().getAccountID();
         
 		var ordersList = this.getOrderDeliveryCollectionList();
 		ordersList.setDisplayProperties(' orderDeliveryID, invoiceNumber, trackingNumber, order.orderID, order.calculatedTotalItemQuantity, order.orderNumber, orderDeliveryStatusType.typeName');
-		ordersList.addFilter( 'order.account.accountID', arguments.data.accountID, '=');
+		ordersList.addFilter( 'order.account.accountID', arguments.account.getAccountID() );
 		ordersList.addFilter( 'order.orderStatusType.systemCode', 'ostNotPlaced', '!=');
 		ordersList.setPageRecordsShow(arguments.data.pageRecordsShow);
-		ordersList.setCurrentPageDeclaration(arguments.data.currentPage); 
-		
+		ordersList.setCurrentPageDeclaration(arguments.data.currentPage);
+
 		return { "ordersOnAccount":  ordersList.getPageRecords(formatRecords=false), "recordsCount": ordersList.getRecordsCount()}
 	}
     
@@ -87,8 +101,8 @@ component extends="Slatwall.model.service.OrderService" {
             account = getService('AccountService').newAccount();
         }
         for(var priceField in variables.customPriceFields){
+            
             if(isNull(arguments.newOrderItem.invokeMethod('get#priceField#'))){
-            	
             	var customPriceByCurrencyCodeArguments  = {
             		'customPriceField' : priceField, 
             		'currencyCode' : arguments.newOrderItem.getOrder().getCurrencyCode(), 
@@ -102,9 +116,9 @@ component extends="Slatwall.model.service.OrderService" {
 					customPriceByCurrencyCodeArguments['priceGroups'] = [];
 					arrayAppend(customPriceByCurrencyCodeArguments['priceGroups'], arguments.newOrderItem.getAppliedPriceGroup());
 				}
-            
                 arguments.newOrderItem.invokeMethod('set#priceField#',{1=sku.getCustomPriceByCurrencyCode(argumentCollection=customPriceByCurrencyCodeArguments)});
             }
+            
         }
         
         return arguments.newOrderItem;
@@ -172,8 +186,13 @@ component extends="Slatwall.model.service.OrderService" {
     		    arguments.orderTemplate.setBillingAccountAddress(account.getPrimaryAddress());
     		}
 		}
+		
+		if( arguments.context != "upgradeFlow"){
+			arguments.orderTemplate.setAccount(account);
+		}else if(!isNull(arguments.processObject.getPriceGroup())){
+			arguments.orderTemplate.setPriceGroup(arguments.processObject.getPriceGroup());
+		}
 	
-		arguments.orderTemplate.setAccount(account);
 		arguments.orderTemplate.setSite( arguments.processObject.getSite() );
 		arguments.orderTemplate.setCurrencyCode( arguments.processObject.getCurrencyCode() );
 		arguments.orderTemplate.setOrderTemplateStatusType(getTypeService().getTypeBySystemCode('otstDraft'));
@@ -387,12 +406,13 @@ component extends="Slatwall.model.service.OrderService" {
 	public numeric function getComissionableVolumeTotalForOrderTemplate(required any orderTemplate){
 		return getOrderTemplateOrderDetails(argumentCollection=arguments)['commissionableVolumeTotal'];	
 	}
-    
+	
 	public any function getOrderTemplateItemCollectionForAccount(required struct data, any account=getHibachiScope().getAccount()){
         param name="arguments.data.pageRecordsShow" default=5;
         param name="arguments.data.currentPage" default=1;
         param name="arguments.data.orderTemplateID" default="";
 		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; 
+		param name="arguments.data.nullAccountFlag" default=false;
 		
 		var orderTemplateItemCollection = this.getOrderTemplateItemCollectionList();
 		
@@ -405,11 +425,15 @@ component extends="Slatwall.model.service.OrderService" {
 		
 		orderTemplateItemCollection.addFilter('orderTemplate.orderTemplateType.typeID', arguments.data.orderTemplateTypeID);
 		orderTemplateItemCollection.addFilter('orderTemplate.orderTemplateID', arguments.data.orderTemplateID);
-		orderTemplateItemCollection.addFilter('orderTemplate.account.accountID', arguments.account.getAccountID());
+		if(arguments.data.nullAccountFlag){
+			orderTemplateItemCollection.addFilter('orderTemplate.account', 'NULL', 'IS');
+		}else{
+			orderTemplateItemCollection.addFilter('orderTemplate.account.accountID', arguments.account.getAccountID());
+		}
 
 		return orderTemplateItemCollection;	
 	} 
-
+    
     private void function updateOrderStatusBySystemCode(required any order, required string systemCode) {
         var orderStatusType = "";
         var orderStatusHistory = {};
@@ -957,7 +981,7 @@ component extends="Slatwall.model.service.OrderService" {
 			}
 			
 			// Set Stock reference, check the fullfillment for a pickup location
-			if (!isNull(orderFulfillment.getPickupLocation())){
+			if (!isNull(orderFulfillment) && !isNull(orderFulfillment.getPickupLocation())){
 				// The item being added to the cart should have its stockID added based on that location
 				var location = orderFulfillment.getPickupLocation();
 				var stock = getService("StockService").getStockBySkuAndLocation(sku=arguments.processObject.getSku(), location=location);
@@ -1120,7 +1144,7 @@ component extends="Slatwall.model.service.OrderService" {
 				newOrderItem.setPrice( arguments.processObject.getSku().getPriceByCurrencyCode( argumentCollection = priceByCurrencyCodeArgs ) );
 				/******* END CUSTOM CODE FOR MONAT *******/
 			}
-
+			
 			// If a stock was passed in assign it to this new item
 			if( !isNull(arguments.processObject.getStock()) ) {
 				newOrderItem.setStock( arguments.processObject.getStock() );
@@ -1522,4 +1546,13 @@ component extends="Slatwall.model.service.OrderService" {
 		    return records[1]['order_orderOpenDateTime'];
 		}
 	}
+	
+	public any function getOFYProductsForOrder(required any order ){
+		var freeRewardSkuCollection = getSkuService().getSkuCollectionList();
+		var freeRewardSkuIDs = getPromotionService().getQualifiedFreePromotionRewardSkuIDs(arguments.order);
+		freeRewardSkuCollection.addFilter('skuID', freeRewardSkuIDs, 'in');
+		freeRewardSkuCollection.addDisplayProperty('product.productDescription');
+		return freeRewardSkuCollection.getRecords();
+	}
+	
 }

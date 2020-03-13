@@ -58,7 +58,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	// Inject DAO's
 	property name="stockDAO" type="any";
 	
-	public any function getCurrentStockBySkuAndLocation(skuID, locationID) {
+	public any function getCurrentStockBySkuAndLocation(required any skuID, required any locationID) {
 		var relatedProducts = this.getStockCollectionList();
 		relatedProducts.setDisplayProperties("stockID, minQuantity, maxQuantity, averageCost, averageLandedCost, calculatedQATS, calculatedQOH, calculatedQNC, calculatedQOQ");
 		relatedProducts.addFilter("sku.skuID",arguments.skuID);

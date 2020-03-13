@@ -55,7 +55,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="estimatedFulfillmentDateTime" ormtype="timestamp";
 	property name="stockLoss" ormtype="boolean"; //Stock Loss flag for order return items;
 	property name="stockLossReason" ormtype="string"; //Stock Loss reason for Order Return Items;
-
+	property name="userDefinedPriceFlag" ormtype="boolean" default="0" hint="To flag if the price can be set by user/admin, in that case the price won't get updated to the best available price";
 	
 	// Calculated Properties
 	property name="calculatedExtendedPrice" ormtype="big_decimal" hb_formatType="currency";
@@ -183,7 +183,6 @@ property name="personalVolume" ormtype="big_decimal";
 	property name="mainCreditCardExpirationDate" persistent="false";
 	property name="mainPromotionOnOrder" persistent="false";
 
-	
     property name="calculatedExtendedPersonalVolume" ormtype="big_decimal" hb_formatType="none";
     property name="calculatedExtendedTaxableAmount" ormtype="big_decimal" hb_formatType="none";
     property name="calculatedExtendedCommissionableVolume" ormtype="big_decimal" hb_formatType="none";
@@ -198,7 +197,10 @@ property name="personalVolume" ormtype="big_decimal";
     property name="calculatedExtendedRetailValueVolumeAfterDiscount" ormtype="big_decimal" hb_formatType="none";
     property name="calculatedQuantityDelivered" ormtype="integer";
     property name="orderItemSkuBundles" singularname="orderItemSkuBundle" fieldType="one-to-many" type="array" fkColumn="orderItemID" cfc="OrderItemSkuBundle" inverse="true" cascade="all-delete-orphan";
-	
+	property name="returnsReceived" ormtype="string";
+    property name="kitFlagCode" ormtype="string";
+    property name="itemCategoryCode" ormtype="string";
+    
    
  property name="kitFlagCode" ormtype="string" hb_formFieldType="select";
  property name="itemCategoryCode" ormtype="string" hb_formFieldType="select";
@@ -849,29 +851,6 @@ property name="personalVolume" ormtype="big_decimal";
 	// ============  END:  Non-Persistent Property Methods =================
 
 	// ============= START: Bidirectional Helper Methods ===================
-	
-	// Applied Price Group (many-to-one)
-	public void function setAppliedPriceGroup(required any appliedPriceGroup) {
-		variables.appliedPriceGroup = arguments.appliedPriceGroup;
-		if(isNew() or !arguments.appliedPriceGroup.hasAppliedOrderItem( this )) {
-			arrayAppend(arguments.appliedPriceGroup.getAppliedOrderItems(), this);
-		}
-	}
-	
-	public void function removeAppliedPriceGroup(any appliedPriceGroup) {
-		if(!structKeyExists(arguments, "appliedPriceGroup")) {
-			if(!structKeyExists(variables, "appliedPriceGroup")){
-				return;
-			}
-			arguments.appliedPriceGroup = variables.appliedPriceGroup;
-		}
-		var index = arrayFind(arguments.appliedPriceGroup.getAppliedOrderItems(), this);
-		if(index > 0) {
-			arrayDeleteAt(arguments.appliedPriceGroup.getAppliedOrderItems(), index);
-			this.setPrice(this.getSkuPrice());
-		}
-		structDelete(variables, "appliedPriceGroup");
-	}
 	
 	// Order (many-to-one)
 	public void function setOrder(required any order) {

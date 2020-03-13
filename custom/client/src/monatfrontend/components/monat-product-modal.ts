@@ -5,9 +5,9 @@ class MonatProductModalController {
 	public currencyCode:string;
 	public siteCode:string;
 	public close; // injected from angularModalService
-
+	public productDetails:any;
 	public quantityToAdd: number = 1;
-	
+	public showFullIngredients = false;
 	public loading=false;
 	public skuBundles: Array<any> = [];
 	public productRating: Number;
@@ -25,32 +25,13 @@ class MonatProductModalController {
 		public rbkeyService, 
 		private orderTemplateService, 
 		private monatAlertService,
-		private publicService,
-		private $http
+		private publicService
 	) {}
 
 	public $onInit = () => {
-		let httpOptions = {
-			method: 'GET',
-			url: this.product.skuProductURL
-		}
+		this.makeTranslations();
 		
-		this.$http(httpOptions).then(res => {
-			//error handeling to be determined later
-			if(res.status !== 200 ){
-				alert('there was an error');
-				return;
-			} 
-			
-			let content = <HTMLDivElement>document.getElementById('product-modal')!;
-			let parser = new DOMParser();
-			let doc = parser.parseFromString(res.data, "text/html");
-			let footer = <HTMLElement><any>doc.getElementsByTagName('footer');
-			let header = <HTMLElement><any>doc.getElementsByTagName('header');
-			footer[0].parentNode.removeChild(footer[0]);
-			header[0].parentNode.removeChild(header[0]);
-			content.appendChild(doc.getElementById('wrapper'));
-		});
+		this.getModalInfo();
 	};
 	
 	private getModalInfo = () => {
@@ -59,6 +40,7 @@ class MonatProductModalController {
 			this.productRating = data.productRating.product_calculatedProductRating;
 			this.reviewsCount = data.reviewsCount;
 			this.getReviewStars( this.productRating );
+			this.productDetails = data.productData;
 		});
 	}
 	
@@ -143,8 +125,6 @@ class MonatProductModalController {
 	};
 
 	public closeModal = () => {
-		let content = <HTMLDivElement>document.getElementById('product-modal')!;
-		content.innerHTML = '';
 		console.log('closing modal');
 		this.close(null); // close, but give 100ms to animate
 	};
@@ -156,11 +136,11 @@ class MonatProductModal {
 
 	public scope = {};
 	public bindToController = {
-		siteCode:'<',
+		siteCode:'<?',
 		currencyCode:'<',
 		product: '<',
 		type: '<',
-		orderTemplateID: '<',
+		orderTemplateID: '<?',
 		close: '=', //injected by angularModalService
 	};
 	public controller = MonatProductModalController;
