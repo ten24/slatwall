@@ -563,7 +563,10 @@
 						//make object available in scope with its given name
 						if(structKeyExists(arguments.object, 'getClassName')){
 							local[arguments.object.getClassName()] = arguments.object;
+						} else if(isStruct(arguments.object)) {
+							structAppend(local, arguments.object); 
 						}
+
 						savecontent variable="templateBody" {
 							include '#templateContextPath#';
 						} 
