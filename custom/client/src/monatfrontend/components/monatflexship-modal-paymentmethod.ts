@@ -15,7 +15,7 @@ class MonatFlexshipPaymentMethodModalController {
 	
 	public newAccountAddress = {};
 	public newAddress = {'countryCode':'US'}; // hard-coded default
-    public countryNameBySite:any;
+    public countryCodeBySite:any;
 	public newAccountPaymentMethod = {};
 	public loading : boolean = false;
 
@@ -28,7 +28,7 @@ class MonatFlexshipPaymentMethodModalController {
     	/**
     	 * Find and set old billing-address if any
     	*/ 
-    	this.newAddress['countryCode']=this.countryNameBySite;
+    	this.newAddress['countryCode']=this.countryCodeBySite;
     	this.existingBillingAccountAddress = this.accountAddresses.find( item => {
     		return item.accountAddressID === this.orderTemplate.billingAccountAddress_accountAddressID;
     	});
@@ -161,7 +161,7 @@ class MonatFlexshipPaymentMethodModal {
 	    orderTemplate:'<',
 	    expirationMonthOptions: '<',
 		expirationYearOptions: '<',
-		countryNameBySite:'<',
+		countryCodeBySite:'<',
 		close:'=' //injected by angularModalService
 	};
 	public controller=MonatFlexshipPaymentMethodModalController;

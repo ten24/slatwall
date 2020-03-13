@@ -168,13 +168,15 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	property name="genderFullWord" persistent = "false";
 	property name="spouseFirstName" persistent = "false";
 	property name="spouseLastName" persistent = "false";
+	property name="governmentIdentificationLastFour" persistent = "false";
+	
 	
 
  property name="allowCorporateEmailsFlag" ormtype="boolean" hb_formatType="yesno";
  property name="productPackPurchasedFlag" ormtype="boolean" hb_formatType="yesno" default="false";
  property name="allowUplineEmailsFlag" ormtype="boolean";
  property name="memberCode" ormtype="string";
- property name="accountStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="accountStatusTypeID";
+ property name="accountStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="accountStatusTypeID" hb_optionsSmartListData="f:parentType.typeID=2c9180836dacb117016dad1168c2000d";
  property name="subscriptionType" ormtype="string" hb_formFieldType="select";
  property name="renewalDate" ormtype="timestamp" hb_formatType="date";
  property name="spouseName" ormtype="string";
@@ -194,7 +196,6 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
  property name="uplineMarketPartnerNumber" ormtype="string";
  property name="country" cfc="Country" fieldtype="many-to-one" fkcolumn="countryID";
  property name="referType" ormtype="string" hb_formFieldType="select";
- property name="profileImage" hb_fileUpload="true" hb_fileAcceptMIMEType="*/*" ormtype="string" hb_formFieldType="file";
  property name="terminationDate" ormtype="timestamp" hb_formatType="date";
  property name="lastAccountStatusDate" ormtype="timestamp" hb_formatType="date";
  property name="languagePreference" ormtype="string" hb_formFieldType="select";
@@ -1380,6 +1381,12 @@ public numeric function getSuccessfulFlexshipOrdersThisYearCount(){
 	public string function getSpouseLastName(){
 	    if(!IsNull(this.getSpouseName())){
 	       return ListRest(this.getSpouseName(),", ");
+	    }
+	}
+	public string function getGovernmentIdentificationLastFour(){
+	    if(!IsNull(this.getAccountGovernmentIdentifications()) && ArrayLen(this.getAccountGovernmentIdentifications()) >0){
+	        
+	       return this.getAccountGovernmentIdentifications()[1].getGovernmentIdentificationLastFour();
 	    }
 	}//CUSTOM FUNCTIONS END
 }

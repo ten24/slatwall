@@ -29,7 +29,22 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 		}
 		return arguments.accountLoyalty;
 	} 
-	
+
+	public array function getAccountEventOptions(){
+		var eventOptions = super.getAccountEventOptions(); 
+
+		var customEvents = [
+			{
+				'name': 'Account - After Account Enrollment Success | afterAccountEnrollmentSuccess',
+				'value': 'afterAccountEnrollmentSuccess',
+				'entityName': 'Account' 
+			}
+		]
+
+		arrayAppend(eventOptions, customEvents, true); 
+
+		return eventOptions;  
+	} 	
 	
 	public string function getSimpleRepresentation(required any account){
 		var accountType = arguments.account.getAccountType();
@@ -192,8 +207,8 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 	public any function addOrderToAccount(required any account, required any order){
 		
 		arguments.order = super.addOrderToAccount(argumentCollection = arguments);
-		
-		if(arguments.account.hasPriceGroup()){
+
+		if(arguments.account.hasPriceGroup() && isNull(arguments.order.getPriceGroup())){
 			arguments.order.setPriceGroup(arguments.account.getPriceGroups()[1]);
 		}
 		

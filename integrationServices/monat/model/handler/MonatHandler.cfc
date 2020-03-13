@@ -1,6 +1,7 @@
 component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiEventHandler" {
     property name="OrderService";
     property name="AccountService";
+    property name="HibachiEventService";
 
     public any function afterAccountProcess_loginFailure(required any slatwallScope, required any account ,required struct data){
         param name="arguments.data.emailAddressOrUsername" default="";
@@ -94,6 +95,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
     		}else if(arguments.order.getMonatOrderType().getTypeCode() == 'motMpEnrollment'){
     			account.setAccountType('marketPartner');	
     			account.setPriceGroups([getService('PriceGroupService').getPriceGroupByPriceGroupCode(1)]);
+				getHibachiEventService().announceEvent('afterMarketPartnerUpgradeSuccess', {'order':arguments.order, 'entity':arguments.order}); 
     		}
     	}
     	
@@ -120,6 +122,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 					var renewalDate = DateAdd('yyyy', 1, account.getEnrollmentDate());
 					account.setRenewalDate(DateAdd('yyyy', 1, account.getEnrollmentDate()));
 				}
+				
 				//TODO: Move this logic to account save
 				// // Email opt-in when finishing enrollment
 				// if ( !isNull(account.getAllowCorporateEmailsFlag()) && account.getAllowCorporateEmailsFlag() ) {
@@ -129,7 +132,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 				// 		logHibachi("afterOrderProcess_placeOrderSuccess failed @ addMemberToListByAccount for #account.getAccountID()#");
 				// 	}
 				// }
-				
+			
+				getHibachiEventService().announceEvent('afterAccountEnrollmentSuccess', {'account':account, 'entity':account}); 
+	
 			} else if ( 
 				account.getAccountStatusType().getSystemCode() == 'astGoodStanding' 
 				&& CompareNoCase(account.getAccountType(), 'marketPartner')  == 0 
@@ -145,6 +150,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 			}
 			getAccountService().saveAccount(account);
 			
+			getDAO('HibachiDAO').flushORMSession();
+
 			getDAO('HibachiEntityQueueDAO').insertEntityQueue(
 				baseID          = account.getAccountID(),
 				baseObject      = 'Account',
@@ -154,7 +161,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 			);
 		}
 		
-
+		
 		//Set the commissionPeriod - this is wrapped in a try catch so nothing causes a place order to fail.
 		//Set the initial order flag if needed.
 		try{
@@ -216,7 +223,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 				arguments.order.setInitialOrderFlag(true);
 			}
 		}catch(any dateError){
-			logHibachi("afterOrderProcess_placeOrderSuccess failed @ setCommissionPeriod using #commissionDate# OR to set initialOrderFlag");	
+			logHibachi("afterOrderProcess_placeOrderSuccess failed @ setCommissionPeriod using #commissionDate# OR to set initialOrderFlag #serializeJson(dateError)#");	
 		}
 		
 	}

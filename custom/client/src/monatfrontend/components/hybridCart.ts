@@ -33,7 +33,7 @@ class HybridCartController {
 	
 	public toggleCart():void{
 		this.showCart = !this.showCart;
-		if(this.showCart){
+		if(this.showCart || this.isEnrollment){
 			this.getCart();
 		}
 	}
@@ -43,9 +43,8 @@ class HybridCartController {
 	}
 	
 	private getCart():void{
-		this.monatService.getCart(true).then((res) => {
-			this.cart = <Cart>res.cart;
-			this.cart.orderItems[1].sku.product.productType.systemCode;
+		this.monatService.getCart().then((res:Cart | any) => {
+			this.cart = res.cart ? res.cart : res;
 			this.cart.orderItems = this.cart.orderItems.filter(el => el.sku.product.productType.systemCode !== 'ProductPack');
 			this.recalculatePrices();
 		});
@@ -55,7 +54,7 @@ class HybridCartController {
 		let price = 0;
 		for(let item of this.cart.orderItems){
 			if(item.sku.product.productType.systemCode == 'VIPCustomerRegistr' ) continue;
-			price += item.price;
+			price += item.extendedPriceAfterDiscount;
 		}
 
 		this.total = price;
@@ -77,17 +76,6 @@ class HybridCartController {
 		if (item.quantity <= 1) return;
 		this.monatService.updateCartItemQuantity(item.orderItemID, item.quantity - 1).then(res => {
 			this.cart = res.cart;
-		});
-	}
-	
-	public getFlexship(ID:string):void {
-		let extraProperties = "cartTotalThresholdForOFYAndFreeShipping,canPlaceOrderFlag";
-		this.orderTemplateService.getOrderTemplateDetails(ID, extraProperties, true).then(data => {
-			if((data.orderTemplate as GenericTemplate) ){
-				this.orderTemplate = data.orderTemplate;
-			} else {
-				throw(data);
-			}
 		});
 	}
 }
