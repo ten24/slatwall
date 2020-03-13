@@ -67,9 +67,12 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 		return config; 
 	}
 	
+	public string function hibachiLoginAccount(required any account, required any accountAuthentication){
+		super.loginAccount(argumentCollection=arguments);
+	}
+	
 	public string function loginAccount(required any account, required any accountAuthentication) {
 		super.loginAccount(argumentCollection=arguments);
-		
 		if(
 			(
 				structKeyExists(request,'context') 

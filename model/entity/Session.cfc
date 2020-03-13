@@ -139,7 +139,7 @@ property name="currentFlexship" type="any" cfc="OrderTemplate" fieldtype="many-t
 		var requestSite = getHibachiScope().getCurrentRequestSite();
 		if (!isNull(requestSite)){
 			//If no site is set on this site and one exists, use that one.
-			this.setSite( site );
+			this.setSite( requestSite );
 			return variables.site;
 		}
 	
@@ -277,6 +277,5 @@ public any function getCountryCode(){
 		super.preInsert();
 		getCountryCode();
 	}
-
-//CUSTOM FUNCTIONS END
+//CUSTOM FUNCTIONS END
 }
