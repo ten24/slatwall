@@ -134,6 +134,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 				// }
 			
 				getHibachiEventService().announceEvent('afterAccountEnrollmentSuccess', {'account':account, 'entity':account}); 
+
+				if(!isNull(account.getOwnerAccount())){
+					getHibachiEventService().announceEvent('afterAccountSponsorEnrollmentSuccess', {'account':account.getOwnerAccount(), 'entity':account.getOwnerAccount()}); 
+				} 
 	
 			} else if ( 
 				account.getAccountStatusType().getSystemCode() == 'astGoodStanding' 

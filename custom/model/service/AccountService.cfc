@@ -38,6 +38,11 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 				'name': 'Account - After Account Enrollment Success | afterAccountEnrollmentSuccess',
 				'value': 'afterAccountEnrollmentSuccess',
 				'entityName': 'Account' 
+			},
+			{
+				'name': 'Account - Affter Account Sponsor Account Enrollment Success | afterAccountSponsorEnrollmentSuccess',
+				'value': 'afterAccountSponsorEnrollmentSuccess',
+				'entityName': 'Account'
 			}
 		]
 
