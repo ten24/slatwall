@@ -154,13 +154,17 @@ component extends="Slatwall.model.service.OrderService" {
         if(isNull(arguments.data.orderTemplateName)  || !len(trim(arguments.data.orderTemplateName)) ) {
 			arguments.data.orderTemplateName = "My Flexship, Created on " & dateFormat(now(), "long");
         }
+        
+        var siteCountryCode = getSiteService().getCountryCodeBySite(arguments.processObject.getSite());
 		
 		//grab and set shipping-account-address from account
-		if(account.hasPrimaryShippingAddress()){
+		//Add Address only when it belongs to same country as site
+		if(account.hasPrimaryShippingAddress() && account.getPrimaryShippingAddress().getAddress().getCountryCode() == siteCountryCode ) {
 		    arguments.orderTemplate.setShippingAccountAddress(account.getPrimaryShippingAddress());
-		} else if( account.hasPrimaryAddress()){
+		} else if( account.hasPrimaryAddress() && account.getPrimaryAddress().getAddress().getCountryCode() == siteCountryCode){
 		    arguments.orderTemplate.setShippingAccountAddress(account.getPrimaryAddress());
 		}
+		
 		
 		//NOTE: there's only one shipping method allowed for flexship
 		var shippingMethod = getService('ShippingService').getShippingMethod( 
@@ -1551,6 +1555,7 @@ component extends="Slatwall.model.service.OrderService" {
 		var freeRewardSkuCollection = getSkuService().getSkuCollectionList();
 		var freeRewardSkuIDs = getPromotionService().getQualifiedFreePromotionRewardSkuIDs(arguments.order);
 		freeRewardSkuCollection.addFilter('skuID', freeRewardSkuIDs, 'in');
+		freeRewardSkuCollection.addDisplayProperty('product.productDescription');
 		return freeRewardSkuCollection.getRecords();
 	}
 	

@@ -150,6 +150,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 			}
 			getAccountService().saveAccount(account);
 			
+			getDAO('HibachiDAO').flushORMSession();
+
 			getDAO('HibachiEntityQueueDAO').insertEntityQueue(
 				baseID          = account.getAccountID(),
 				baseObject      = 'Account',
@@ -159,7 +161,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 			);
 		}
 		
-
+		
 		//Set the commissionPeriod - this is wrapped in a try catch so nothing causes a place order to fail.
 		//Set the initial order flag if needed.
 		try{
@@ -221,7 +223,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 				arguments.order.setInitialOrderFlag(true);
 			}
 		}catch(any dateError){
-			logHibachi("afterOrderProcess_placeOrderSuccess failed @ setCommissionPeriod using #commissionDate# OR to set initialOrderFlag");	
+			logHibachi("afterOrderProcess_placeOrderSuccess failed @ setCommissionPeriod using #commissionDate# OR to set initialOrderFlag #serializeJson(dateError)#");	
 		}
 		
 	}

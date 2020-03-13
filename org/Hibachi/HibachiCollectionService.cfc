@@ -869,8 +869,24 @@ component output="false" accessors="true" extends="HibachiService" {
 			}
 
 			if(structKeyExists(collectionOptions,'orderByConfig') && len(collectionOptions.orderByConfig)){
-				arguments.collectionEntity.getCollectionConfigStruct()['orderBy'] = deserializeJson(collectionOptions.orderByConfig);
+				
+				var originalOrderBys = DeserializeJson(collectionOptions.orderByConfig);
+				var collectionEntityRef = arguments.collectionEntity;
+				
+				//Remove all invalid and non-persistent orderBYs
+				var filteredOrderBys = ArrayFilter( originalOrderBys, function(item) {
+					return (	
+						StructKeyExists(arguments.item, "propertyIdentifier") 
+						&& 
+						collectionEntityRef.hasPropertyByPropertyIdentifier(arguments.item.propertyIdentifier)
+						&&
+						collectionEntityRef.getPropertyIdentifierIsPersistent(arguments.item.propertyIdentifier)
+					);
+				});
+				
+				arguments.collectionEntity.getCollectionConfigStruct()['orderBy'] = filteredOrderBys;			
 			}
+
 			if(structKeyExists(collectionOptions,'groupBysConfig') && len(collectionOptions.groupBysConfig)){
 				arguments.collectionEntity.getCollectionConfigStruct().groupBys = deserializeJson(collectionOptions.groupBysConfig);
 			}

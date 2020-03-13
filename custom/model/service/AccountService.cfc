@@ -207,8 +207,8 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 	public any function addOrderToAccount(required any account, required any order){
 		
 		arguments.order = super.addOrderToAccount(argumentCollection = arguments);
-		
-		if(arguments.account.hasPriceGroup()){
+
+		if(arguments.account.hasPriceGroup() && isNull(arguments.order.getPriceGroup())){
 			arguments.order.setPriceGroup(arguments.account.getPriceGroups()[1]);
 		}
 		

@@ -3,7 +3,7 @@ class PurchasePlusBarController {
 	public hasPurchasePlusMessage: boolean = false;
 	public message: string = '';
 	public percentage: number = 0;
-	public lastActiveBreakpoint: number = 0;
+	public nextBreakpoint: number = 0;
 	public showMessages: boolean = false;
 	public extraClass: string;
     
@@ -41,7 +41,7 @@ class PurchasePlusBarController {
 			
 			let promotionReward = appliedMessage.promotionRewards[0];
 			
-			this.lastActiveBreakpoint = promotionReward.amount;
+			this.nextBreakpoint = promotionReward.amount;
 			this.message = appliedMessage.message;
 			this.percentage = +appliedMessage.qualifierProgress + 1; // Add 1 for UI reasons.
 		}

@@ -77,7 +77,7 @@ component displayname="Account Government Identification" entityname="SlatwallAc
 	// ============= START: Bidirectional Helper Methods ===================
 	
 	// Account (many-to-one)    	//CUSTOM PROPERTIES BEGIN
-property name="governmentIdentificationNumberHashed" ormtype="string" hb_auditable="false" column="governmentIdNumberHashed" hint="as the name suggest, needed this for validation";
+property name="governmentIdentificationNumberHashed" ormtype="string" hb_auditable="false" column="governmentIdNumberHashed" hint="Using this for unique gov-ID validation";
 
 //CUSTOM PROPERTIES END
 	public void function setAccount(required any account) {    
