@@ -300,8 +300,8 @@ Notes:
 			arguments.email.setEmailReplyTo( templateObject.stringReplace( emailTemplate.setting('emailReplyToAddress'), false, true ) );
 			arguments.email.setEmailFailTo( templateObject.stringReplace( emailTemplate.setting('emailFailToAddress'), false, true ) );
 			arguments.email.setEmailSubject( templateObject.stringReplace( emailTemplate.setting(settingName='emailSubject',formatValue=true,formatDetails={locale=local.locale}), true, true ) );
-			arguments.email.setEmailBodyHTML( templateObject.stringReplace( template = emailTemplate.getFormattedValue(propertyName='emailBodyHTML',locale=local.locale), formatValues = true, templateContextPath = templateContextPathList) );
-			arguments.email.setEmailBodyText( templateObject.stringReplace( template = emailTemplate.getFormattedValue(propertyName='emailBodyText',locale=local.locale), formatValues = true, templateContextPath = templateContextPathList) );
+			arguments.email.setEmailBodyHTML( templateObject.stringReplace( template = emailTemplate.getFormattedValue(propertyName='emailBodyHTML',locale=local.locale), formatValues = true, templateContextPathList = templateContextPathList) );
+			arguments.email.setEmailBodyText( templateObject.stringReplace( template = emailTemplate.getFormattedValue(propertyName='emailBodyText',locale=local.locale), formatValues = true, templateContextPathList = templateContextPathList) );
 
 
 			var templateFileResponse = "";
@@ -347,8 +347,8 @@ Notes:
 			arguments.email.setEmailReplyTo( getHibachiUtilityService().replaceStringTemplate(template=nullReplace(arguments.email.getEmailReplyTo(), ""), object=emailData) );
 			arguments.email.setEmailFailTo( getHibachiUtilityService().replaceStringTemplate(template=nullReplace(arguments.email.getEmailFailTo(), ""), object=emailData) );
 			arguments.email.setEmailSubject( getHibachiUtilityService().replaceStringTemplate(template=nullReplace(arguments.email.getEmailSubject(), ""), object=emailData, formatValues=true) );
-			arguments.email.setEmailBodyHTML( getHibachiUtilityService().replaceStringTemplate(template=nullReplace(arguments.email.getEmailBodyHTML(), ""), object=emailData, formatValues=true, templateContextPath = templateContextPathList));
-			arguments.email.setEmailBodyText( getHibachiUtilityService().replaceStringTemplate(template=nullReplace(arguments.email.getEmailBodyText(), ""), object=emailData, formatValues=true, templateContextPath = templateContextPathList) );
+			arguments.email.setEmailBodyHTML( getHibachiUtilityService().replaceStringTemplate(template=nullReplace(arguments.email.getEmailBodyHTML(), ""), object=emailData, formatValues=true, templateContextPathList = templateContextPathList));
+			arguments.email.setEmailBodyText( getHibachiUtilityService().replaceStringTemplate(template=nullReplace(arguments.email.getEmailBodyText(), ""), object=emailData, formatValues=true, templateContextPathList = templateContextPathList) );
 			arguments.email.setLogEmailFlag( emailTemplate.getLogEmailFlag() );
 		}
 

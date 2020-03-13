@@ -536,7 +536,7 @@
 
 				if( listLen(valueKey,':') == 2 && 
 					listFirst(valueKey,':') == 'template' &&
-					structKeyExists(arguments, 'templateContextPathList')
+					structKeyExists(arguments, 'templateContextPathList')	
 				){
 				
 					//${template:order-details} load order-details.cfm  
@@ -548,19 +548,26 @@
 
 					var templateContextPath = ''; 	
 					for(var contextPath in contextPaths){
+						
 						if(fileExists(contextPath & templateFileName)){
 						    templateContextPath = contextPath & templateFileName; 
 							break;	
 						} 
 					} 
 
+					this.logHibachi('template Context Path #templateContextPath#', true);
+
 					if(len(templateContextPath)){ 
-					
+
+						//TODO: remove Slatwall reference from hibachi
+						templateContextPath = replaceNoCase(templateContextPath, getApplicationValue('applicationRootMappingPath'), getApplicationValue('slatwallRootURL'));
+
 						//make object available in scope with its given name
-						local[arguments.object.getClassName()] = arguments.object;
-						
+						if(structKeyExists(arguments.object, 'getClassName')){
+							local[arguments.object.getClassName()] = arguments.object;
+						}
 						savecontent variable="templateBody" {
-							include '#arguments.templateContextPath#';
+							include '#templateContextPath#';
 						} 
 
 						replaceDetails.value = templateBody; 
