@@ -47,6 +47,7 @@ class MonatCheckoutController {
 	public currentPaymentMethodID = '';
 	public activePaymentMethod = 'creditCard'; //refactor to use enum
 	public currentShippingAddress;
+	public listPrice = 0;
 	
 	// @ngInject
 	constructor(
@@ -124,6 +125,7 @@ class MonatCheckoutController {
 			this.cart = data.cart; 
 			let screen = Screen.SHIPPING;
 			this.shippingFulfillment = this.cart.orderFulfillments.filter(el => el.fulfillmentMethod.fulfillmentMethodType == 'shipping' );
+			this.calculateListPrice();
 			
 			if(this.cart.orderPayments?.length && this.cart.orderPayments[this.cart.orderPayments.length-1].accountPaymentMethod){
 				this.currentPaymentMethodID = this.cart.orderPayments[this.cart.orderPayments.length-1].accountPaymentMethod?.accountPaymentMethodID;
@@ -393,6 +395,12 @@ class MonatCheckoutController {
 			this.cart = res.cart; 
 			this.getCurrentCheckoutScreen(false, false);
 		});
+	}
+	
+	public calculateListPrice(){
+		for(let item of this.cart.orderItems){
+			this.listPrice += item.listPrice;
+		}
 	}
 	
 	public launchAddressModal(address: Array<object>):void{
