@@ -2573,20 +2573,25 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	public any function addReturnOrderItemSetup(required any returnOrder, required any originalOrderItem, required any processObject, required struct orderItemStruct){
 		var originalOrderItemExists = !(isStruct(arguments.originalOrderItem) && structIsEmpty(arguments.originalOrderItem));
-
+		logger.m(originalOrderItemExists = originalOrderItemExists, orderItemStruct = arguments.orderItemStruct);
+		
 		// Create OrderReturn entity (to save the fulfillment amount)
 		if(returnOrder.hasOrderReturn()){
 			var orderReturn = returnOrder.getOrderReturns()[1];
 		}else{
+			logger.d("creating new orderReturn");
 			var orderReturn = this.newOrderReturn();
 			orderReturn.setOrder( arguments.returnOrder );
 			if(!isNull(arguments.processObject.getFulfillmentRefundAmount())){
+				logger.d("seting FulfillmentRefundAmount orderReturn = #arguments.processObject.getFulfillmentRefundAmount()#");
 				orderReturn.setFulfillmentRefundAmount( arguments.processObject.getFulfillmentRefundAmount() );
 			}
 			if(!isNull(arguments.processObject.getFulfillmentRefundPreTax())){
+				logger.d("seting FulfillmentRefundPreTax orderReturn = #arguments.processObject.getFulfillmentRefundPreTax()#");
 				orderReturn.setFulfillmentRefundPreTax( arguments.processObject.getFulfillmentRefundPreTax() );
 			}
 			if(!isNull(arguments.processObject.getFulfillmentTaxRefund())){
+				logger.d("seting FulfillmentTaxRefund orderReturn = #arguments.processObject.getFulfillmentTaxRefund()#");
 				orderReturn.setFulfillmentTaxRefund( arguments.processObject.getFulfillmentTaxRefund() );
 			}
 			orderReturn.setReturnLocation( arguments.processObject.getLocation() );
@@ -2615,7 +2620,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		returnOrderItem.setPrice( arguments.orderItemStruct.price );
 		returnOrderItem.setQuantity( arguments.orderItemStruct.quantity );
-		
+		logger.o(returnOrderItem, "", true);
 		getHibachiDAO().save( returnOrderItem );
 		return returnOrderItem;
 	}
