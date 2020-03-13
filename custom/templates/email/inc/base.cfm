@@ -16,7 +16,7 @@
 	<cfoutput>
 
 	    <cfif emailTemplate.getAttributeValue('useGlobalHeaderAndFooterFlag')> 
-			#getEmailContent('#account.getAccountType()##account.getaccountCreatedSite().getRemoteId()#Header', emailTemplate)#
+			#getEmailContent('#account.getAccountType()##account.getaccountCreatedSite().getRemoteID()#Header', emailTemplate)#
 		</cfif>
 		
 		<cfset emailBody = emailTemplate.getAttributeValue(attribute='#account.getAccountType()##account.getaccountCreatedSite().getRemoteId()#Body', locale=locale) />
@@ -42,4 +42,3 @@
 	</cfoutput>
 	
 </cfsavecontent>
-
