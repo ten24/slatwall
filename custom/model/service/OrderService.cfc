@@ -729,22 +729,39 @@ component extends="Slatwall.model.service.OrderService" {
 	}
 	
 	public any function processOrder_placeInProcessingTwo(required any order, struct data) {
-		param name="arguments.data.siteID" default = "";
-		// TODO: and Audits
-		// TODO: DAO query
-		// this.getOrderDAO().placeOrdersInProcessingTwo(data = arguments.data);
-
 		this.updateOrderStatusBySystemCode(arguments.order, "ostProcessing", "ostProcessing2");
 		return arguments.order;
 	}
 	
-	//Q: not sure if we should create multiple Processes Functions (one per country), 
-	//   or should create a way to pass data from the workflow-UI ?
+	
+	/**
+	 * ***************.BEGIN. Custom Process Methods for Workflows *****************
+	*/ 
+	public any function processOrder_placeInProcessingTwoAll(required any order, struct data) {
+		param name="arguments.data.siteID" default = "";
+		logHibachi("CALLED processOrder_placeInProcessingTwoAll");
+		this.getOrderDAO().placeOrdersInProcessingTwo(data = arguments.data);
+		logHibachi("COmpleted processOrder_placeInProcessingTwoAll");
+
+		return arguments.order;
+	}
+	
 	public any function processOrder_placeInProcessingTwoUS(required any order, struct data) {
 		param name="arguments.data" default = {};
 		argumetns.data['siteID'] = "usa-site-id"
-		return this.processOrder_placeInProcessingTwo(argumentCollection = arguments);
+		return this.processOrder_placeInProcessingTwoAll(argumentCollection = arguments);
 	}
+	
+	public any function processOrder_placeInProcessingTwoCAN(required any order, struct data) {
+		param name="arguments.data" default = {};
+		argumetns.data['siteID'] = "can-site-id"
+		return this.processOrder_placeInProcessingTwoAll(argumentCollection = arguments);
+	}
+	
+	/**
+	 * ***************.END. Custom Process Methods for Workflows *****************
+	*/ 
+	
 
 	public any function processOrderDelivery_markOrderUndeliverable(required any orderDelivery, struct data={}){ 
 		
