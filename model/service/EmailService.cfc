@@ -290,7 +290,7 @@ Notes:
 				local.locale = 'en_us';
 			}
 
-			var templateContextPathList = templateObject.getTemplateContextPathList(); 
+			var templateContextPathList = emailTemplate.getTemplateContextPathList(); 
 
 			// Setup the email values
 			arguments.email.setEmailTo( templateObject.stringReplace( emailTemplate.setting('emailToAddress'), false, true ) );
@@ -313,6 +313,14 @@ Notes:
 			local.emailData["relatedObjectID"] = templateObject.getPrimaryIDValue();
 			local.emailTemplate = emailTemplate;
 			local.emailTemplateObject = templateObject;
+
+			if(structKeyExists(templateObject, 'hasAccount') && templateObject.hasAccount()){
+				local.account = templateObject.getAccount(); 
+			}
+			if(structKeyExists(templateObject, 'hasOrder') && templateObject.hasOrder()){
+				local.order = templateObject.getOrder(); 
+				local.account = local.order.getOrder(); 
+			}
 
 			if(len(templatePath)) {
 				savecontent variable="templateFileResponse" {
