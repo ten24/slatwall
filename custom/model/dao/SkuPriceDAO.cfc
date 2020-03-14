@@ -25,6 +25,7 @@ component extends="Slatwall.model.dao.SkuPriceDAO"{
 			    _skuPrice.retailCommission as retailCommission,
 			    _skuPrice.productPackVolume as productPackVolume,
 			    _skuPrice.retailValueVolume as retailValueVolume,
+			    _skuPrice.listPrice as listPrice,
 			    _skuPrice.skuPriceID as skuPriceID
 		    )
 			FROM SlatwallSkuPrice _skuPrice 

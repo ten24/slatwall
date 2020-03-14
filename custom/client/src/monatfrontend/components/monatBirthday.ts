@@ -21,6 +21,7 @@ class MonatBirthdayController {
 	public isSet = false;
 	public dob:any;
 	public show:boolean;
+	public required:boolean;
 	
 	//@ngInject
 	constructor(public observerService, public $rootScope, public publicService, public $scope, public rbkeyService) {
@@ -157,7 +158,9 @@ class MonatBirthday {
 	public templateUrl: string;
 	public controller = MonatBirthdayController;
 	public controllerAs = 'monatBirthday';
-
+	public bindToController = {
+		required: '<?'
+	}
 	public static Factory() {
 		var directive: any = (monatFrontendBasePath) => new this(monatFrontendBasePath);
 		directive.$inject = ['monatFrontendBasePath'];

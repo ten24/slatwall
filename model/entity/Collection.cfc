@@ -3405,6 +3405,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					setStartRange = DateAdd("yyyy", - arguments.criteria, firstDayOfCurrentYear);
 					setEndRange = DateAdd("d", -1, firstDayOfCurrentYear);
 				break;
+				case 'moreMinutes': //More than N Minutes Ago
+					setStartRange = DateAdd("n",  - arguments.criteria, Now());
+				break;
+				case 'moreHours': //More than N Hours Ago
+					setStartRange = DateAdd("h",  - arguments.criteria, Now());
+				break;
 				case 'moreDays': //More than N Day Ago
 					setStartRange = DateAdd("d",  - arguments.criteria, Now());
 				break;
@@ -3516,6 +3522,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		if( structKeyExists(arguments.filter, 'measureCriteria') && 
 			structKeyExists(arguments.filter, 'measureType')
 		) {
+	
 			range = makeDateRangeFromCriteriaAndMeasureType(arguments.filter.criteriaNumberOf, arguments.filter.measureType, arguments.filter.measureCriteria);
 			
 		} else if(listfindnocase("between,not between", arguments.filter.comparisonOperator) && listLen(arguments.filter.value,'-') == 2) {// if its a full range i.e. range1-range2 
@@ -3525,7 +3532,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			} else { // otherwise it should be an epoch range
 				range = makeLocalDateRangeFromEpochRange(arguments.filter.value);
 			}
+			
 		} else if(listFindnocase('>=,>,gt,gte', arguments.filter.comparisonOperator)) {
+		
 			//convert unix timestamp
 			if(isNumeric(arguments.filter.value)){
 				range.rangStartValue = getService('HibachiUtilityService').getLocalServerDateTimeByUtcEpoch( round(arguments.filter.value/1000) );
