@@ -10,12 +10,6 @@ component accessors="true" output="false" extends="Slatwall.model.service.Hibach
 		
 		var sessionOrder = getHibachiScope().getSession().getOrder();
 		
-		if(sessionOrder.getOrderCreatedSite().getSiteID() != getHibachiScope().getAccount().getAccountCreatedSite().getSiteID()){
-			getHibachiScope().getSession().setOrder(JavaCast("null",""));
-			getHibachiDAO().save( getHibachiScope().getSession() );
-			getHibachiDAO().flushORMSession();
-		}
-		
 		if( 
 			(
 				(
