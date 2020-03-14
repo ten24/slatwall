@@ -318,7 +318,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 			var cookiePrefixArgs = {};
 			
 			if (!isNull(currentRequestSite)){
-				sessionValue = sessionvalue & "#currentRequestSite.getSiteCode()#";
+				sessionValue &= currentRequestSite.getSiteCode();
 				cookiePrefixArgs['currentRequestSite'] = currentRequestSite;
 			}
 			
