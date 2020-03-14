@@ -521,18 +521,60 @@
 		}
 
 		//replace single brackets ${}
-		public string function replaceStringTemplate(required string template, required any object, boolean formatValues=false, boolean removeMissingKeys=false) {
+		public string function replaceStringTemplate(required string template, required any object, boolean formatValues=false, boolean removeMissingKeys=false, string templateContextPathList) {
 
 			var templateKeys = getTemplateKeys(arguments.template);
 			var replacementArray = [];
 			var returnString = arguments.template;
+			
 			for(var i=1; i<=arrayLen(templateKeys); i++) {
 				var replaceDetails = {};
 				replaceDetails.key = templateKeys[i];
 				replaceDetails.value = templateKeys[i];
 
 				var valueKey = replace(replace(templateKeys[i], "${", ""),"}","");
-				if( isStruct(arguments.object) && structKeyExists(arguments.object, valueKey) ) {
+
+				if( listLen(valueKey,':') == 2 && 
+					listFirst(valueKey,':') == 'template' &&
+					structKeyExists(arguments, 'templateContextPathList')	
+				){
+				
+					//${template:order-details} load order-details.cfm  
+					var templateBody = '';
+					var templateFileName = listRest(valueKey, ':') & '.cfm';
+
+
+					var contextPaths = listToArray(arguments.templateContextPathList); 
+
+					var templateContextPath = ''; 	
+					for(var contextPath in contextPaths){
+						
+						if(fileExists(contextPath & templateFileName)){
+						    templateContextPath = contextPath & templateFileName; 
+							break;	
+						} 
+					} 
+
+					if(len(templateContextPath)){ 
+
+						//TODO: remove Slatwall reference from hibachi
+						templateContextPath = replaceNoCase(templateContextPath, getApplicationValue('applicationRootMappingPath'), getApplicationValue('slatwallRootURL'));
+
+						//make object available in scope with its given name
+						if(structKeyExists(arguments.object, 'getClassName')){
+							local[arguments.object.getClassName()] = arguments.object;
+						} else if(isStruct(arguments.object)) {
+							structAppend(local, arguments.object); 
+						}
+
+						savecontent variable="templateBody" {
+							include '#templateContextPath#';
+						} 
+
+						replaceDetails.value = templateBody; 
+					}
+
+				} else if( isStruct(arguments.object) && structKeyExists(arguments.object, valueKey) ) {
 					replaceDetails.value = arguments.object[ valueKey ];
 				} else if (isObject(arguments.object) &&
 					(
@@ -556,20 +598,27 @@
 					)
 				) {
 					replaceDetails.value = arguments.object.getValueByPropertyIdentifier(valueKey, arguments.formatValues);
-				} else if (arguments.removeMissingKeys) {
+				}
+					
+				if ( arguments.removeMissingKeys && replaceDetails.key == replaceDetails.value) {
 					replaceDetails.value = '';
 				}
 
 				arrayAppend(replacementArray, replaceDetails);
 			}
+
 			for(var i=1; i<=arrayLen(replacementArray); i++) {
 				returnString = replace(returnString, replacementArray[i].key, replacementArray[i].value, "all");
 			}
+
 			if(
 				arguments.template != returnString
 				&& arraylen(getTemplateKeys(returnString))
 			){
-				returnString = replaceStringTemplate(returnString, arguments.object, arguments.formatValues,arguments.removeMissingKeys);
+				var args = arguments; 
+				args['template'] = returnString; 
+
+				returnString = replaceStringTemplate(argumentCollection=args);
 			}
 
 			return returnString;

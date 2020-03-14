@@ -1,7 +1,7 @@
 
 class OFYEnrollmentController {
 	public flexship:string;
-	public products:Array<object>;
+	public products:Array<{[key:string]:any}>;
 	public stagedProductID:string;
 	public loading:boolean;
 	
@@ -48,7 +48,7 @@ class OFYEnrollmentController {
 			component: 'monatProductModal',
 			bodyClass: 'angular-modal-service-active',
 			bindings: {
-				currencyCode:this.products[0].currencyCode,
+				currencyCode:(this.products as any)[0].currencyCode,
 				product: product,
 				isEnrollment: true,
 				type:'ofy'

@@ -3,7 +3,22 @@ component extends="Slatwall.model.service.OrderService" {
     public string function getCustomAvailableProperties() {
         return 'orderItems.personalVolume,orderItems.calculatedExtendedPersonalVolume,calculatedPersonalVolumeSubtotal,currencyCode,orderItems.skuProductURL,billingAddress,appliedPromotionMessages.message,appliedPromotionMessages.qualifierProgress,appliedPromotionMessages.promotionName,appliedPromotionMessages.promotionRewards.amount,appliedPromotionMessages.promotionRewards.amountType,appliedPromotionMessages.promotionRewards.rewardType';
     }
-    
+   
+	public array function getOrderEventOptions(){
+		var eventOptions = super.getOrderEventOptions(); 
+
+		var customEvents = [
+			{
+				'name': 'Order - After Market Partner Upgrade Success | afterMarketPartnerUpgradeSuccess',
+				'value': 'afterMarketPartnerUpgradeSuccess',
+				'entityName': 'Account' 
+			}
+		]
+
+		arrayAppend(eventOptions, customEvents, true); 
+
+		return eventOptions;  
+	} 
     /**
      * Function to get all carts and quotes for user
      * @param accountID required
@@ -139,13 +154,17 @@ component extends="Slatwall.model.service.OrderService" {
         if(isNull(arguments.data.orderTemplateName)  || !len(trim(arguments.data.orderTemplateName)) ) {
 			arguments.data.orderTemplateName = "My Flexship, Created on " & dateFormat(now(), "long");
         }
+        
+        var siteCountryCode = getSiteService().getCountryCodeBySite(arguments.processObject.getSite());
 		
 		//grab and set shipping-account-address from account
-		if(account.hasPrimaryShippingAddress()){
+		//Add Address only when it belongs to same country as site
+		if(account.hasPrimaryShippingAddress() && account.getPrimaryShippingAddress().getAddress().getCountryCode() == siteCountryCode ) {
 		    arguments.orderTemplate.setShippingAccountAddress(account.getPrimaryShippingAddress());
-		} else if( account.hasPrimaryAddress()){
+		} else if( account.hasPrimaryAddress() && account.getPrimaryAddress().getAddress().getCountryCode() == siteCountryCode){
 		    arguments.orderTemplate.setShippingAccountAddress(account.getPrimaryAddress());
 		}
+		
 		
 		//NOTE: there's only one shipping method allowed for flexship
 		var shippingMethod = getService('ShippingService').getShippingMethod( 
@@ -966,7 +985,7 @@ component extends="Slatwall.model.service.OrderService" {
 			}
 			
 			// Set Stock reference, check the fullfillment for a pickup location
-			if (!isNull(orderFulfillment.getPickupLocation())){
+			if (!isNull(orderFulfillment) && !isNull(orderFulfillment.getPickupLocation())){
 				// The item being added to the cart should have its stockID added based on that location
 				var location = orderFulfillment.getPickupLocation();
 				var stock = getService("StockService").getStockBySkuAndLocation(sku=arguments.processObject.getSku(), location=location);

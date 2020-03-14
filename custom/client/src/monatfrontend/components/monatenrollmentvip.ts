@@ -54,7 +54,6 @@ class VIPController {
 			}
 			
 			this.isInitialized = true;
-			this.getProductList();	
 			this.getCountryCodeOptions();
 			this.getFrequencyTermOptions();
 		});

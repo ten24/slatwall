@@ -1,0 +1,6 @@
+{
+	"properties": {
+		"shippingMethod": [{ "required": true }],
+		"shippingAccountAddress": [{ "method": "hasSameCountryAsSite" }]
+	}
+}

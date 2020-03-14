@@ -29,7 +29,37 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 		}
 		return arguments.accountLoyalty;
 	} 
-	
+
+	public array function getAccountEventOptions(){
+		var eventOptions = super.getAccountEventOptions(); 
+
+		var customEvents = [
+			{
+				'name': 'Account - After Account Enrollment Success | afterAccountEnrollmentSuccess',
+				'value': 'afterAccountEnrollmentSuccess',
+				'entityName': 'Account' 
+			},
+			{
+				'name': 'Account - After Account Sponsor Account Enrollment Success | afterAccountSponsorEnrollmentSuccess',
+				'value': 'afterAccountSponsorEnrollmentSuccess',
+				'entityName': 'Account'
+			},
+			{
+				'name': 'Account - After Account Upgrade Success | afterAccountUpgradeSuccess',
+				'value': 'afterAccountUpgradeSuccess',
+				'entityName': 'Account'
+			}, 
+			{
+				'name': 'Account - After Account Sponsor Account Upgrade Success | afterAccountSponsorUpgradeSuccess',
+				'value': 'afterAccountSponsorUpgradeSuccess',
+				'entityName': 'Account'
+			} 
+		]
+
+		arrayAppend(eventOptions, customEvents, true); 
+
+		return eventOptions;  
+	} 	
 	
 	public string function getSimpleRepresentation(required any account){
 		var accountType = arguments.account.getAccountType();

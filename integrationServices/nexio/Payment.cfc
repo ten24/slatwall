@@ -161,6 +161,8 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 	
 	private any function getExtraData(required any requestBean){
 		
+		var transactionDate = !isNull( arguments.requestBean.getOrderPayment() ) ? arguments.requestBean.getOrderPayment().getCreatedDateTime() : '';
+
 		var data = {
 			'paymentMethod' = 'creditCard',
 			'amount' = LSParseNumber(arguments.requestBean.getTransactionAmount()),
@@ -183,7 +185,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			'customFields' = {
 				'CURRENTRANK' = '' ,
 				'SPONSORID' = '',
-				'TRANSACTIONDATE' = arguments.requestBean.getOrderPayment().getCreatedDateTime(),
+				'TRANSACTIONDATE' = transactionDate,
 				'CARDHOLDER_NAME' = arguments.requestBean.getBillingName(),
 				'ACCOUNT_REF' = '',
 				'ORDER_REF' = ''
@@ -417,6 +419,13 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 	private void function sendRequestToAuthorize(required any requestBean, required any responseBean) {
 		// Request Data
 		if (!arguments.requestBean.hasErrors() && !isNull(arguments.requestBean.getProviderToken()) && len(arguments.requestBean.getProviderToken())) {
+			
+			var checkFraud = false;
+			
+			if(getHibachiScope().hasSessionValue('kount-token')){
+				checkFraud = setting(settingName='checkFraud', requestBean=arguments.requestBean) ? true : false;
+			}
+			
 			var requestData = {
 				"isAuthOnly" = true,
 				"tokenex" = {
@@ -431,13 +440,17 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			    },
 			    'data' = this.getExtraData(arguments.requestBean),
 			    "processingOptions" = {
-				    "checkFraud" = (setting(settingName='checkFraud', requestBean=arguments.requestBean)? true : false),
+				    "checkFraud" = checkFraud,
 				    "verifyAvs" = LSParseNumber(setting(settingName='verifyAvsSetting', requestBean=arguments.requestBean)),
 				    "verifyCvc" = (setting(settingName='verifyCvcFlag', requestBean=arguments.requestBean)? true : false),
 				    'merchantID' = setting(settingName='merchantIDTest', requestBean=arguments.requestBean)
 			    }
 			};	
 			responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'authorize', requestData);
+			
+			if(checkFraud && getHibachiScope().hasSessionValue('kount-token')){
+				getHibachiScope().clearSessionValue('kount-token');
+			}
 			
 			// Response Data
 			if (!responseBean.hasErrors()) {
@@ -468,6 +481,12 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 	private void function sendRequestToAuthorizeAndCharge(required any requestBean, required any responseBean) {
 		// Request Data
 		if (!arguments.requestBean.hasErrors() && !isNull(arguments.requestBean.getProviderToken()) && len(arguments.requestBean.getProviderToken())) {
+			var checkFraud = false;
+			
+			if(getHibachiScope().hasSessionValue('kount-token')){
+				checkFraud = setting(settingName='checkFraud', requestBean=arguments.requestBean) ? true : false;
+			}
+			
 			var requestData = {
 				"isAuthOnly" = false,
 				"tokenex" = {
@@ -482,7 +501,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			    },
 			    'data' = this.getExtraData(arguments.requestBean),
 			    "processingOptions" = {
-				    "checkFraud" = (setting(settingName='checkFraud', requestBean=arguments.requestBean)? true : false),
+				    "checkFraud" = checkFraud,
 				    "verifyAvs" = LSParseNumber(setting(settingName='verifyAvsSetting', requestBean=arguments.requestBean)),
 				    "verifyCvc" = (setting(settingName='verifyCvcFlag', requestBean=arguments.requestBean)? true : false),
 				    'merchantID' = setting(settingName='merchantIDTest', requestBean=arguments.requestBean)
@@ -490,7 +509,10 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			};	
 
 			responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'authorizeAndCharge', requestData);
-		
+			
+			if(checkFraud && getHibachiScope().hasSessionValue('kount-token')){
+				getHibachiScope().clearSessionValue('kount-token');
+			}
 	
 			// Response Data
 			if (!responseBean.hasErrors()) {
