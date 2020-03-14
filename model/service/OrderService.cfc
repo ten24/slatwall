@@ -2262,7 +2262,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var orderTemplateCollection = getOrderTemplatesCollectionForAccount(argumentCollection = arguments); 
 			orderTemplateCollection.addFilter("orderTemplateID", arguments.data.orderTemplateID); // limit to our order-template
 		}
-		writeDump(orderTemplateCollection.getRecords(),1)
+
 		orderTemplateCollection.addDisplayProperties(orderTemplateCollectionPropList);  //add more properties
 		var response = {};
 		if (!isNull(orderTemplateCollection.getPageRecords()) && isArray(orderTemplateCollection.getPageRecords()) && arrayLen(orderTemplateCollection.getPageRecords())){
