@@ -5,7 +5,7 @@ component {
     property name="retailCommission" ormtype="big_decimal";
     property name="productPackVolume" ormtype="big_decimal";
     property name="retailValueVolume" ormtype="big_decimal";
-    property name="listPrice" ormtype="big_decimal";
+    property name="listPrice" ormtype="big_decimal" hb_formatType="currency";
         
     property name="manualPersonalVolume" ormtype="big_decimal";
     property name="manualTaxableAmount" ormtype="big_decimal";
@@ -51,7 +51,7 @@ component {
     property name="calculatedExtendedRetailCommissionAfterDiscount" ormtype="big_decimal" hb_formatType="none";
     property name="calculatedExtendedProductPackVolumeAfterDiscount" ormtype="big_decimal" hb_formatType="none";
     property name="calculatedExtendedRetailValueVolumeAfterDiscount" ormtype="big_decimal" hb_formatType="none";
-    property name="calculatedListPrice" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedListPrice" ormtype="big_decimal" hb_formatType="currency";
     property name="calculatedQuantityDelivered" ormtype="integer";
     property name="orderItemSkuBundles" singularname="orderItemSkuBundle" fieldType="one-to-many" type="array" fkColumn="orderItemID" cfc="OrderItemSkuBundle" inverse="true" cascade="all-delete-orphan";
 	property name="returnsReceived" ormtype="string";
