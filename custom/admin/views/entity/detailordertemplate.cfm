@@ -81,6 +81,16 @@
 	} 
 ] />
 
+<cfset rc.printProcessCallers = [] />
+<cfloop array="#rc.orderTemplate.getEmailTemplates()#" index="local.template">
+	<cfset arrayAppend(rc.printProcessCallers, {
+		'action':'admin:entity.preprocessemail', 
+		'processContext':'addToQueue',
+		'queryString':'emailTemplateID=#template.getEmailTemplateID()#',
+		'text':'#template.getEmailTemplateName()#',
+		'modal':true
+		}) />
+</cfloop>
 
 <cfoutput>
 	<hb:HibachiEntityDetailForm object="#rc.orderTemplate#" edit="#rc.edit#">
@@ -97,6 +107,7 @@
 							  data-edit-event="editOrderTemplate"
 							  data-show-delete="#!getHibachiScope().validate(rc.orderTemplate,'delete', false).hasErrors()#"
 							  data-process-callers="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(rc.processCallers))#"
+							  data-print-process-callers="#getHibachiScope().hibachiHTMLEditFormat(serializeJson(rc.printProcessCallers))#"
 							  data-type="detail" 
 							  data-edit="#rc.edit#">
 		</sw-entity-action-bar>

@@ -30,7 +30,9 @@ class SWEntityActionBarController{
     public payload;
     
     public processCallers;
+    public printProcessCallers;
     public swProcessCallers;
+    public swPrintProcessCallers;
     
     public saveEvent:string;
     public saveAction:string;
@@ -81,16 +83,19 @@ class SWEntityActionBarController{
 
             if(this.processCallers != null){
                 for(var i=0; i<this.processCallers.length; i++){
-                    if(this.processCallers[i].queryString != null){
-                        this.processCallers[i].queryString = this.baseQueryString + this.processCallers[i].queryString;
-                    } else {
-                        this.processCallers[i].queryString = this.baseQueryString;
-                    }
+                    this.processCallers[i].queryString = this.getQueryStringForProcessCaller(this.processCallers[i]);
+                }
+            }
+            
+            if(this.printProcessCallers){
+                for(var i=0; i<this.printProcessCallers.length; i++){
+                    this.printProcessCallers[i].queryString = this.getQueryStringForProcessCaller(this.printProcessCallers[i]);
                 }
             }
         }
 
         this.swProcessCallers = this.processCallers;
+        this.swPrintProcessCallers = this.printProcessCallers;
         
         if(this.editEvent != null){
             this.observerService.attach(this.toggleEditMode, this.editEvent);
@@ -110,6 +115,13 @@ class SWEntityActionBarController{
         
         //there should only be one action bar on a page so no id
         this.observerService.notify('swEntityActionBar', this.payload)
+    }
+    
+    public getQueryStringForProcessCaller = (processCaller)=>{
+        if(processCaller.queryString != null){
+            return this.baseQueryString + '&' + processCaller.queryString;
+        } 
+        return this.baseQueryString;
     }
     
     public toggleEditMode = () =>{
@@ -177,7 +189,8 @@ class SWEntityActionBar implements ng.IDirective{
         processAction:"@?",
         processContext:"@?",
         
-        processCallers:"<?"
+        processCallers:"<?",
+        printProcessCallers:"<?"
 
     };
     public controller=SWEntityActionBarController

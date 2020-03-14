@@ -12,6 +12,7 @@ component {
 	property name="skuImagePath" persistent="false";
 	property name="skuAdjustedPricing" persistent="false";
 	property name="kitFlagCode" ormtype="string";
+	property name="skuPriceByCurrencyCode" persistent="false" hb_formatType="currency";
 	property name="listPrice" persistent="false";
 	
 	public any function getSkuProductURL(){
@@ -23,6 +24,11 @@ component {
 		var skuImagePath = this.getSku().getImagePath();
 		return skuImagePath;
 	}
+
+	public numeric function getSkuPriceByCurrencyCode(){
+		var priceGroups = !isNull(this.getOrderTemplate().getAccount()) ? this.getOrderTemplate().getAccount().getPriceGroups() : [this.getOrderTemplate().getPriceGroup()];
+		return sku.getPriceByCurrencyCode(currencyCode=this.getOrderTemplate().getCurrencyCode(), priceGroups=priceGroups);   
+	} 
 	
 	public any function getSkuAdjustedPricing(){
 			
