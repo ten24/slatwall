@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="this" hb_processContexts="addOrderItem,addOrderPayment,addPromotionCode,cancelOrder,changeCurrencyCode,clear,create,createReturn,duplicateOrder,placeOrder,placeOnHold,removeOrderItem,removeOrderPayment,removePersonalInfo,removePromotionCode,takeOffHold,updateStatus,updateOrderAmounts,updateOrderFulfillment,retryPayment" {
+component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="this" hb_processContexts="addOrderItem,addOrderPayment,addPromotionCode,cancelOrder,changeCurrencyCode,clear,create,createReturn,duplicateOrder,placeOrder,placeOnHold,removeOrderItem,removeOrderPayment,removePersonalInfo,removePromotionCode,takeOffHold,updateStatus,updateOrderAmounts,updateOrderFulfillment,retryPayment,releaseCredits" {
 
 	// Persistent Properties
 	property name="orderID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -284,7 +284,6 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
  property name="importFlexshipNumber" ormtype="string";
  property name="initialOrderFlag" ormtype="boolean";
  property name="orderSource" ormtype="string" hb_formFieldType="select";
- property name="commissionPeriodCode" ormtype="string" hb_formFieldType="select";
  property name="undeliverableOrderReasons" ormtype="string" hb_formFieldType="select";
  property name="orderAccountNumber" ormtype="string";
  property name="orderCountryCode" ormtype="string";
