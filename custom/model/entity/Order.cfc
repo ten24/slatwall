@@ -449,7 +449,7 @@ component {
 		return getOrderStatusType().getSystemCode() == "ostProcessing" && getOrderStatusType().getTypeCode() == "ostProcessing2";
 	}
 	
-	public boolean function getIslockedInProcessingFlag(){
+	public boolean function getIsLockedInProcessingFlag(){
 	
 		return  (
 					getOrderStatusType().getSystemCode() == "ostProcessing" 
