@@ -9,6 +9,7 @@ class EnrollmentFlexshipController {
 	public hybridCart:HybridCartController;
 	public isLoading:boolean;
 	public cartThreshold:number;
+	public suggestedRetailPrice: 0; 
 	
 	//@ngInject
 	constructor(public monatService, public observerService, public orderTemplateService, public publicService) {
@@ -29,6 +30,7 @@ class EnrollmentFlexshipController {
 			if((data.orderTemplate as GenericTemplate) ){
 				this.orderTemplate = data.orderTemplate;
 				this.cartThreshold = +this.orderTemplate.cartTotalThresholdForOFYAndFreeShipping;
+				this.calculateSRPOnOrder();
 				this.isLoading = false;
 			} else {
 				throw(data);
@@ -36,7 +38,7 @@ class EnrollmentFlexshipController {
 		});
 	}
 	
-    public removeOrderTemplateItem = (item:GenericOrderTemplateItem) => {
+    public removeOrderTemplateItem = (item:GenericOrderTemplateItem):void => {
     	this.orderTemplateService
     	.removeOrderTemplateItem(item.orderTemplateItemID)
     	.then( (data) => {
@@ -44,16 +46,24 @@ class EnrollmentFlexshipController {
     	});
     }
     
-    public increaseOrderTemplateItemQuantity = (item:GenericOrderTemplateItem) => {
+    public increaseOrderTemplateItemQuantity = (item:GenericOrderTemplateItem):void => {
     	this.orderTemplateService.editOrderTemplateItem(item.orderTemplateItemID, item.quantity + 1).then( (data) => {
         	this.getFlexship();
         });
     }
     
-    public decreaseOrderTemplateItemQuantity = (item:GenericOrderTemplateItem) => {
+    public decreaseOrderTemplateItemQuantity = (item:GenericOrderTemplateItem):void => {
     	this.orderTemplateService.editOrderTemplateItem(item.orderTemplateItemID, item.quantity - 1).then( data => {
         	this.getFlexship();
         });
+    }
+    
+    public calculateSRPOnOrder= ():void =>{
+    	if(!this.orderTemplate.orderTemplateItems) return;
+    	this.suggestedRetailPrice = 0;
+    	for(let item of this.orderTemplate.orderTemplateItems){
+    		this.suggestedRetailPrice += item.calculatedListPrice;
+    	}
     }
 
 }
