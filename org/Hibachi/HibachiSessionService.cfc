@@ -112,9 +112,6 @@ component output="false" accessors="true" extends="HibachiService"  {
 			
 		}
 		
-		getHibachiScope().logHibachi('setProperSession - sessionValue: #sessionValue#',true);
-		getHibachiScope().logHibachi('setProperSession - cookiePrefix: #cookiePrefix#',true);
-		
 		var foundWithNPSID = false;
 		var foundWithPSID = false;
 		var foundWithExtendedPSID = false;
@@ -307,7 +304,6 @@ component output="false" accessors="true" extends="HibachiService"  {
 	
 	public void function persistSession(boolean updateLoginCookies=false) {
 		
-		getHibachiScope().logHibachi('persistSession',true);
 		var sessionValue = "sessionID";
 		var cookiePrefix = getApplicationValue('applicationKey');
 		
@@ -330,8 +326,6 @@ component output="false" accessors="true" extends="HibachiService"  {
 			
 		}
 		
-		getHibachiScope().logHibachi('persistSession - sessionValue: #sessionValue#',true);
-		getHibachiScope().logHibachi('persistSession - cookiePrefix: #cookiePrefix#',true);
 		// Save the session
 		getHibachiDAO().save( getHibachiScope().getSession() );
 		getHibachiDAO().flushORMSession();
@@ -397,7 +391,6 @@ component output="false" accessors="true" extends="HibachiService"  {
 	
 	/** Logs out the user completely. */
 	public void function logoutAccount(boolean softLogout=false) {
-		getHibachiScope().logHibachi('logoutAccount',true);
 
 		var currentSession = getHibachiScope().getSession();
 		var auditLogData = {};
@@ -412,7 +405,6 @@ component output="false" accessors="true" extends="HibachiService"  {
 		// Update the last request datetime, and IP Address now that all other checks have completed.
 		currentSession.setLastRequestDateTime( now() );
 		currentSession.setLastRequestIPAddress( getRemoteAddress() );
-		getHibachiScope().logHibachi('logoutAccount - softLogout: #arguments.softLogout#',true);
 		if (arguments.softLogout == false){
 			
 			var oldSession = currentSession;
