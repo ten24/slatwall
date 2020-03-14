@@ -26,6 +26,7 @@ class SWWorkflowTaskActionsController {
     private selectPrintTemplate;
     private emailTemplateCollectionConfig;
     private printTemplateCollectionConfig;
+    private emailTemplateLinks={};
     //@ngInject
     constructor(
         public $log,
@@ -34,7 +35,8 @@ class SWWorkflowTaskActionsController {
         public workflowPartialsPath,
         public hibachiPathBuilder,
         public collectionConfigService,
-        public observerService
+        public observerService,
+        public appConfig
     ){
 
         this.$log.debug('Workflow Task Actions Init');
@@ -58,12 +60,33 @@ class SWWorkflowTaskActionsController {
          */
         var getObjectByActionType = (workflowTaskAction) =>{
             if (workflowTaskAction.data.actionType === 'email') {
-                workflowTaskAction.$$getEmailTemplate();
+                    
+                    workflowTaskAction.$$getEmailTemplate().finally(()=>{
+                        getEmailTemplateLinkByAction(workflowTaskAction);
+                    });
 
             } else if (workflowTaskAction.data.actionType === 'print') {
                 workflowTaskAction.$$getPrintTemplate();
             }
         };
+        
+        var getEmailTemplateLinkByAction = (workflowTaskAction) =>{
+            
+            if(workflowTaskAction == null ||
+                workflowTaskAction.data == null ||
+                workflowTaskAction.data.actionType != 'email' ||
+                workflowTaskAction.data.emailTemplate == null ||
+                workflowTaskAction.data.emailTemplate.data == null ||
+                workflowTaskAction.data.emailTemplate.data.emailTemplateID == null
+            ){
+                return;
+            }
+            
+            var emailTemplateID = workflowTaskAction.data.emailTemplate.data.emailTemplateID;
+            this.emailTemplateLinks[emailTemplateID] = this.appConfig.baseURL + '?slatAction=admin:entity.detailemailtemplate&emailTemplateID=' + emailTemplateID;
+            
+        }
+        
         /**
          * --------------------------------------------------------------------------------------------------------
          * Returns workflow task action, and saves them to the scope variable workflowtaskactions
