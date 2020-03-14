@@ -746,37 +746,37 @@ component extends="Slatwall.model.service.OrderService" {
 	
 	public any function processOrder_placeInProcessingTwoUS(required any order, struct data) {
 		param name="arguments.data" default = {};
-		argumetns.data['siteID'] = getSiteService().getSiteBySiteCode('mura-default').getSiteID();
+		arguments.data['siteID'] = getSiteService().getSiteBySiteCode('mura-default').getSiteID();
 		return this.processOrder_placeInProcessingTwoAll(argumentCollection = arguments);
 	}
 	
 	public any function processOrder_placeInProcessingTwoUK(required any order, struct data) {
 		param name="arguments.data" default = {};
-		argumetns.data['siteID'] = getSiteService().getSiteBySiteCode('mura-uk').getSiteID();
+		arguments.data['siteID'] = getSiteService().getSiteBySiteCode('mura-uk').getSiteID();
 		return this.processOrder_placeInProcessingTwoAll(argumentCollection = arguments);
 	}
 	
 	public any function processOrder_placeInProcessingTwoAU(required any order, struct data) {
 		param name="arguments.data" default = {};
-		argumetns.data['siteID'] = getSiteService().getSiteBySiteCode('mura-au').getSiteID();
+		arguments.data['siteID'] = getSiteService().getSiteBySiteCode('mura-au').getSiteID();
 		return this.processOrder_placeInProcessingTwoAll(argumentCollection = arguments);
 	}
 	
 	public any function processOrder_placeInProcessingTwoIRE(required any order, struct data) {
 		param name="arguments.data" default = {};
-		argumetns.data['siteID'] = getSiteService().getSiteBySiteCode('mura-ie').getSiteID();
+		arguments.data['siteID'] = getSiteService().getSiteBySiteCode('mura-ie').getSiteID();
 		return this.processOrder_placeInProcessingTwoAll(argumentCollection = arguments);
 	}
 	
 	public any function processOrder_placeInProcessingTwoPOL(required any order, struct data) {
 		param name="arguments.data" default = {};
-		argumetns.data['siteID'] = getSiteService().getSiteBySiteCode('mura-pl').getSiteID();
+		arguments.data['siteID'] = getSiteService().getSiteBySiteCode('mura-pl').getSiteID();
 		return this.processOrder_placeInProcessingTwoAll(argumentCollection = arguments);
 	}
 	
 	public any function processOrder_placeInProcessingTwoCAN(required any order, struct data) {
 		param name="arguments.data" default = {};
-		argumetns.data['siteID'] = getSiteService().getSiteBySiteCode('mura-ca').getSiteID();
+		arguments.data['siteID'] = getSiteService().getSiteBySiteCode('mura-ca').getSiteID();
 		return this.processOrder_placeInProcessingTwoAll(argumentCollection = arguments);
 	}
 	
