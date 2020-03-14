@@ -22,7 +22,6 @@ enum Screen {
 	ACCOUNT
 }
 
-
 type Fulfillment = { orderFulfillmentID: string, [key: string]: any };
 
 class MonatCheckoutController {
