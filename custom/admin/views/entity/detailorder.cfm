@@ -140,12 +140,10 @@ Notes:
 				<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="duplicateOrder" type="list" modal="true" />
 				
 				<li class="divider"></li>
-				
-		<!--- commenting-out until these are required
+				<!--- Monat's custom Order-Statuses --->
+				<hb:HibachiProcessCaller action="monat:entity.processOrder" entity="#rc.order#" processContext="placeInProcessingOne" queryString="redirectAction=admin:entity.detailorder" type="list" hideDisabled="true" />
+				<hb:HibachiProcessCaller action="monat:entity.processOrder" entity="#rc.order#" processContext="placeInProcessingTwo" queryString="redirectAction=admin:entity.detailorder" type="list" hideDisabled="true"/>
 		
-				<hb:HibachiProcessCaller action="admin:entity.processOrder" entity="#rc.order#" processContext="placeInProcessingOne" type="list" hideDisabled="true" />
-				<hb:HibachiProcessCaller action="admin:entity.processOrder" entity="#rc.order#" processContext="placeInProcessingTwo" type="list" hideDisabled="true"/>
-		--->
 			</hb:HibachiEntityActionBar>
 		
 		
