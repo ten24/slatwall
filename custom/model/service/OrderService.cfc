@@ -382,8 +382,7 @@ component extends="Slatwall.model.service.OrderService" {
 			
 			request[orderTemplateOrderDetailsKey]['canPlaceOrderDetails'] = getPromotionService().getOrderQualifierDetailsForCanPlaceOrderReward(transientOrder); 
 			request[orderTemplateOrderDetailsKey]['canPlaceOrder'] = request[orderTemplateOrderDetailsKey]['canPlaceOrderDetails']['canPlaceOrder']; 
-			// writeDump(transientOrder.getAppliedPromotion)
-			// var deleteOk = this.deleteOrder(transientOrder); 
+
 			this.logHibachi('transient order deleted #deleteOk# hasErrors #transientOrder.hasErrors()#',true);
 
 			ormFlush();	
