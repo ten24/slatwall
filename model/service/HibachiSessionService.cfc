@@ -67,9 +67,13 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 		return config; 
 	}
 	
+	public string function hibachiLoginAccount(required any account, required any accountAuthentication){
+		super.loginAccount(argumentCollection=arguments);
+	}
+	
 	public string function loginAccount(required any account, required any accountAuthentication) {
 		super.loginAccount(argumentCollection=arguments);
-		
+
 		if(
 			(
 				structKeyExists(request,'context') 
@@ -82,6 +86,7 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 			)
 		){
 		
+			
 			// If the current order has an account, and it is different from the one being logged in... then create a copy of the order without any personal information
 			if( !isNull(getHibachiScope().getSession().getOrder().getAccount()) && getHibachiScope().getSession().getOrder().getAccount().getAccountID() != arguments.account.getAccountID()) {
 				

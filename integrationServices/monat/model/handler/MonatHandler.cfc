@@ -1,6 +1,7 @@
 component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiEventHandler" {
     property name="OrderService";
     property name="AccountService";
+    property name="HibachiEventService";
 
     public any function afterAccountProcess_loginFailure(required any slatwallScope, required any account ,required struct data){
         param name="arguments.data.emailAddressOrUsername" default="";
@@ -91,10 +92,21 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
     		if(arguments.order.getMonatOrderType().getTypeCode() == 'motVipEnrollment'){
     			account.setAccountType('VIP');
     			account.setPriceGroups([getService('PriceGroupService').getPriceGroupByPriceGroupCode(3)]);
-    		}else if(arguments.order.getMonatOrderType().getTypeCode() == 'motMpEnrollment'){
+				
+				getHibachiEventService().announceEvent('afterVIPUpgradeSuccess', {'order':arguments.order, 'entity':arguments.order}); 
+    		
+			}else if(arguments.order.getMonatOrderType().getTypeCode() == 'motMpEnrollment'){
     			account.setAccountType('marketPartner');	
     			account.setPriceGroups([getService('PriceGroupService').getPriceGroupByPriceGroupCode(1)]);
+				
+				getHibachiEventService().announceEvent('afterMarketPartnerUpgradeSuccess', {'order':arguments.order, 'entity':arguments.order}); 
     		}
+			
+			getHibachiEventService().announceEvent('afterAccountUpgradeSuccess', {'order':arguments.order, 'entity':arguments.order}); 
+			
+			if(!isNull(account.getOwnerAccount())){
+				getHibachiEventService().announceEvent('afterAccountSponsorUpgradeSuccess', {'account':account.getOwnerAccount(), 'entity':account.getOwnerAccount()}); 
+			} 
     	}
     	
     	
@@ -120,6 +132,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 					var renewalDate = DateAdd('yyyy', 1, account.getEnrollmentDate());
 					account.setRenewalDate(DateAdd('yyyy', 1, account.getEnrollmentDate()));
 				}
+				
 				//TODO: Move this logic to account save
 				// // Email opt-in when finishing enrollment
 				// if ( !isNull(account.getAllowCorporateEmailsFlag()) && account.getAllowCorporateEmailsFlag() ) {
@@ -129,7 +142,13 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 				// 		logHibachi("afterOrderProcess_placeOrderSuccess failed @ addMemberToListByAccount for #account.getAccountID()#");
 				// 	}
 				// }
-				
+			
+				getHibachiEventService().announceEvent('afterAccountEnrollmentSuccess', {'account':account, 'entity':account}); 
+
+				if(!isNull(account.getOwnerAccount())){
+					getHibachiEventService().announceEvent('afterAccountSponsorEnrollmentSuccess', {'account':account.getOwnerAccount(), 'entity':account.getOwnerAccount()}); 
+				} 
+	
 			} else if ( 
 				account.getAccountStatusType().getSystemCode() == 'astGoodStanding' 
 				&& CompareNoCase(account.getAccountType(), 'marketPartner')  == 0 

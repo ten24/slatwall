@@ -529,7 +529,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         }
         
         if(arguments.data.setOnSessionFlag){
-            getHibachiScope().getSession().setSessionValue('currentFlexshipID', orderTemplate.getOrderTemplateID());
+            getHibachiScope().logHibachi('========================SETTING NEW ORDER TEMPLATE ON SESSIONID: #getHibachiScope().getSession().getSessionID()#========================',true);
+            getHibachiScope().logHibachi('========================SETTING NEW ORDER TEMPLATE ON flexshipID: #orderTemplate.getOrderTemplateID()#========================',true);
+            getHibachiScope().setSessionValue('currentFlexshipID', orderTemplate.getOrderTemplateID());
         }
 
         arguments.data['ajaxResponse']['orderTemplate'] = orderTemplate.getOrderTemplateID();
@@ -1013,6 +1015,21 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             }
             
         }
+        
+        // Add process Object errors messages to the response properly 
+        // (Prevents the vague error message: addOrderItem)
+        if(cart.hasErrors()){
+            var cartErrors = cart.getErrors();
+            cart.clearHibachiErrors();
+            if(structKeyExists(cartErrors, 'processObjects') && arrayLen(cartErrors.processObjects)){
+                for(var processObjectName in cartErrors.processObjects){
+                    cart.addErrors(cart.getProcessObject(processObjectName).getErrors());
+                    cart.getProcessObject(processObjectName).clearHibachiErrors();
+                }
+            }
+        }
+        
+        
         return cart;
     }
 
@@ -1890,14 +1907,15 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         param name="arguments.data.nullAccountFlag" default="false";
         param name="arguments.data.optionalProperties" default="";
         
-           
+       getHibachiScope().logHibachi('========================GET SET FLEXSHIP CALLED, currentFlexshipID session value: #getHibachiScope().hasSessionValue("currentFlexshipID")#========================',true);
+
         //if the request does not pass setIfNullFlag as true, and there is no order template on session, return an empty object
-        if( (!getHibachiScope().hasSessionValue('currentFlexshipID') || !len( getHibachiScope().hasSessionValue('currentFlexshipID'))) && !arguments.data.setIfNullFlag){
+        if( (!getHibachiScope().hasSessionValue('currentFlexshipID') || !len( getHibachiScope().getSessionValue('currentFlexshipID'))) && !arguments.data.setIfNullFlag){
             
             arguments.data['ajaxResponse']['orderTemplate'] = {};
             
         //If there is an order template on the session return the order template details
-        }else if( getHibachiScope().hasSessionValue('currentFlexshipID') && len( getHibachiScope().hasSessionValue('currentFlexshipID')) ){
+        }else if( getHibachiScope().hasSessionValue('currentFlexshipID') && len( getHibachiScope().getSessionValue('currentFlexshipID')) ){
             
             var data = {
                 "orderTemplateID" : getHibachiScope().getSessionValue('currentFlexshipID'),
