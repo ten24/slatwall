@@ -288,7 +288,6 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
  property name="importFlexshipNumber" ormtype="string";
  property name="initialOrderFlag" ormtype="boolean";
  property name="orderSource" ormtype="string" hb_formFieldType="select";
- property name="commissionPeriodCode" ormtype="string" hb_formFieldType="select";
  property name="undeliverableOrderReasons" ormtype="string" hb_formFieldType="select";
  property name="orderAccountNumber" ormtype="string";
  property name="orderCountryCode" ormtype="string";
@@ -501,7 +500,7 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 
     //alias method for validation
     public boolean function canCancel(){
-          return !hasGiftCardOrderItems();
+        return getOrderService().orderCanBeCanceled(this);
     }
 
 	public boolean function hasGiftCardOrderItems(orderItemID=""){
@@ -2290,6 +2289,20 @@ public numeric function getPersonalVolumeSubtotal(){
 		return true;
 	 }
 	 
+	public any function getDefaultStockLocation(){
+	 	if(!structKeyExists(variables,'defaultStockLocation')){
+	 		if(!isNull(getOrderCreatedSite())){
+	 			var locations = getOrderCreatedSite().getLocations();
+	 			if(!isNull(locations) && arrayLen(locations)){
+	 				variables.defaultStockLocation = locations[1];
+	 			}
+	 		}
+	 	}
+	 	if(structKeyExists(variables,'defaultStockLocation')){
+	 		return variables.defaultStockLocation;
+	 	}
+	}
+	 
 	public boolean function getIsLockedInProcessingOneFlag(){
 		return getOrderStatusType().getSystemCode() == "ostProcessing" && getOrderStatusType().getTypeCode() == "ostProcessing1";
 	}
@@ -2310,18 +2323,5 @@ public numeric function getPersonalVolumeSubtotal(){
 					)
 				);
 	}
-	
-	public any function getDefaultStockLocation(){
-	 	if(!structKeyExists(variables,'defaultStockLocation')){
-	 		if(!isNull(getOrderCreatedSite())){
-	 			var locations = getOrderCreatedSite().getLocations();
-	 			if(!isNull(locations) && arrayLen(locations)){
-	 				variables.defaultStockLocation = locations[1];
-	 			}
-	 		}
-	 	}
-	 	if(structKeyExists(variables,'defaultStockLocation')){
-	 		return variables.defaultStockLocation;
-	 	}
-	 }//CUSTOM FUNCTIONS END
+	//CUSTOM FUNCTIONS END
 }

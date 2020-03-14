@@ -739,28 +739,66 @@ component extends="Slatwall.model.service.OrderService" {
 	*/ 
 	public any function processOrder_placeInProcessingTwoAll(required any order, struct data) {
 		param name="arguments.data.siteID" default = "";
-		logHibachi("CALLED processOrder_placeInProcessingTwoAll");
+		
 		this.getOrderDAO().placeOrdersInProcessingTwo(data = arguments.data);
-		logHibachi("COmpleted processOrder_placeInProcessingTwoAll");
-
 		return arguments.order;
 	}
 	
 	public any function processOrder_placeInProcessingTwoUS(required any order, struct data) {
 		param name="arguments.data" default = {};
-		argumetns.data['siteID'] = "usa-site-id"
+		argumetns.data['siteID'] = getSiteService().getSiteBySiteCode('mura-default').getSiteID();
+		return this.processOrder_placeInProcessingTwoAll(argumentCollection = arguments);
+	}
+	
+	public any function processOrder_placeInProcessingTwoUK(required any order, struct data) {
+		param name="arguments.data" default = {};
+		argumetns.data['siteID'] = getSiteService().getSiteBySiteCode('mura-uk').getSiteID();
+		return this.processOrder_placeInProcessingTwoAll(argumentCollection = arguments);
+	}
+	
+	public any function processOrder_placeInProcessingTwoAU(required any order, struct data) {
+		param name="arguments.data" default = {};
+		argumetns.data['siteID'] = getSiteService().getSiteBySiteCode('mura-au').getSiteID();
+		return this.processOrder_placeInProcessingTwoAll(argumentCollection = arguments);
+	}
+	
+	public any function processOrder_placeInProcessingTwoIRE(required any order, struct data) {
+		param name="arguments.data" default = {};
+		argumetns.data['siteID'] = getSiteService().getSiteBySiteCode('mura-ie').getSiteID();
+		return this.processOrder_placeInProcessingTwoAll(argumentCollection = arguments);
+	}
+	
+	public any function processOrder_placeInProcessingTwoPOL(required any order, struct data) {
+		param name="arguments.data" default = {};
+		argumetns.data['siteID'] = getSiteService().getSiteBySiteCode('mura-pl').getSiteID();
 		return this.processOrder_placeInProcessingTwoAll(argumentCollection = arguments);
 	}
 	
 	public any function processOrder_placeInProcessingTwoCAN(required any order, struct data) {
 		param name="arguments.data" default = {};
-		argumetns.data['siteID'] = "can-site-id"
+		argumetns.data['siteID'] = getSiteService().getSiteBySiteCode('mura-ca').getSiteID();
 		return this.processOrder_placeInProcessingTwoAll(argumentCollection = arguments);
 	}
 	
 	/**
 	 * ***************.END. Custom Process Methods for Workflows *****************
 	*/ 
+	
+	// =================== START: Validation Helpers Functions ========================
+		
+	public boolean function orderCanBeCanceled(required any order){
+		
+		if(!super.orderCanBeCanceled(arguments.order)) {
+			return false;
+		}
+		
+		//order can be canceled in processing-1, but not in processing-2
+		return  !arguments.order.getIsLockedInProcessingFlag() || arguments.order.getIsLockedInProcessingOneFlag();
+		
+	}
+		
+	// =================== END: Validation Helpers Functions ========================
+
 	
 
 	public any function processOrderDelivery_markOrderUndeliverable(required any orderDelivery, struct data={}){ 

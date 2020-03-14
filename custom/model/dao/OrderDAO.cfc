@@ -4,85 +4,81 @@
     <cffunction name="placeOrdersInProcessingTwo" returntype="void" access="public">
         <cfargument name="data" />
         
+        <cfset local.loggedinAccount = getHibachiScope().getAccount() />
+        <cfset local.loggedinAccountID = len(local.loggedinAccount.getAccountID()) ? local.loggedinAccount.getAccountID() : 'NULL'  />
+        <cfset local.loggedinAccountEmailAddress = len(local.loggedinAccount.getEmailAddress()) ? local.loggedinAccount.getEmailAddress() : 'NULL'  />
+        <cfset local.loggedinAccountFullName = len(local.loggedinAccount.getFullName()) ? local.loggedinAccount.getFullName() : 'NULL'  />
+        
         <cfset local.processing1Type = getHibachiScope().getService('typeService').getTypeByTypeCode('ostProcessing1') />
         <cfset local.processing2Type = getHibachiScope().getService('typeService').getTypeByTypeCode('ostProcessing2') />
+        <cfset local.siteID = arguments.data.siteID ?: '' />
 	    
-	    <cftransaction action="begin" />
+	    <cftransaction>
 
-            <cfif getHibachiScope().getLoggedInFlag()>
-                <cftry>
-             		<cfquery name="local.createAudits">
-             		    INSERT INTO swaudit 
-                            ( 
-                                auditID, auditType, auditDateTime, baseObject, baseID, data, title, 
-                                sessionIPAddress, sessionAccountID, sessionAccountEmailAddress, sessionAccountFullName
-                            )
-                        SELECT 
-                            LOWER(
-                                REPLACE(CAST(UUID() as char character set utf8), '-', '')
-                            ) auditID,
-                            'update' auditType,
-                             NOW() auditDateTime,
-                            'Order' baseObject,
-                             o.orderID baseID,
-                            CONCAT('{"newPropertyData":{"orderStatusType":{"typeID":"#local.processing2Type.getTypeID()#", "title":"#local.processing2Type.getTypename()#"}}, "oldPropertyData":{"orderStatusType": {"typeID": "',o.orderStatusTypeID,'","title": "',t.typeName,'"}}}') data,
-                            'Order' title,
-                            '#getHibachiScope().getIPAddress()#' sessionIPAddress,
-                            '#getHibachiScope().getAccount().getAccountID()#' sessionAccountID,
-                            '#getHibachiScope().getAccount().getEmailAddress()#' sessionAccountEmailAddress,
-                            '#getHibachiScope().getAccount().getFullName()#' sessionAccountFullName
-                        FROM swOrder o
-                        INNER JOIN swType t ON t.typeID = o.orderStatusTypeID AND t.typeCode = 'ostprocessing1';
-                    </cfquery>
-                    
-                    <cfcatch >
-                        <cftransaction action="rollback" />
-                        <cflog file="Slatwall" text="ERROR IN QUERY - placeOrdersInProcessingTwo.createAudits  (#cfcatch.detail#)">
-                    	<cfrethrow>
-                    </cfcatch>
-                </cftry>
-            </cfif>
-            
-            <cftry>
-         		<cfquery name="local.createOrderStatusHistories">
-         		    INSERT INTO sworderstatushistory 
-                    (
-                    	orderStatusHistoryID, changeDateTime, effectiveDateTime, createdDateTime, modifiedDateTime, orderID, orderStatusHistoryTypeID
+     		<cfquery name="local.createAudits">
+     		    INSERT INTO swaudit 
+                    ( 
+                        auditID, auditType, auditDateTime, baseObject, baseID, data, title, 
+                        sessionIPAddress, sessionAccountID, sessionAccountEmailAddress, sessionAccountFullName
                     )
-                    SELECT 
+                SELECT 
+                    LOWER(REPLACE(CAST(UUID() as char character set utf8), '-', '')) auditID,
+                    'update' auditType,
+                     NOW() auditDateTime,
+                    'Order' baseObject,
+                     o.orderID baseID,
+                    CONCAT('{"newPropertyData":{"orderStatusType":{"typeID":"#local.processing2Type.getTypeID()#", "title":"#local.processing2Type.getTypename()#"}}, "oldPropertyData":{"orderStatusType": {"typeID": "',o.orderStatusTypeID,'","title": "',t.typeName,'"}}}') data,
+                    'Order' title,
+                    '#getHibachiScope().getIPAddress()#' sessionIPAddress,
+                    '#local.loggedinAccountID#' sessionAccountID,
+                    '#local.loggedinAccountEmailAddress#' sessionAccountEmailAddress,
+                    '#local.loggedinAccountFullName#' sessionAccountFullName
+                FROM swOrder o
+                <cfif Len(local.siteID)>
+                    WHERE o.orderCreatedSite.siteID = '#local.siteID#'
+                </cfif>
+                INNER JOIN swType t ON t.typeID = o.orderStatusTypeID AND t.typeCode = 'ostprocessing1'
+            </cfquery>
+                
+                
+     		<cfquery name="local.createOrderStatusHistories">
+     		    INSERT INTO sworderstatushistory 
+                    (
+                    	orderStatusHistoryID, changeDateTime, effectiveDateTime, createdDateTime, 
+                    	createdByAccountID, modifiedDateTime, modifiedByAccountID, orderID, orderStatusHistoryTypeID
+                    )
+                SELECT 
                     LOWER(REPLACE(CAST(UUID() as char character set utf8), '-', '')) orderStatusHistoryID,
                     NOW() changeDateTime,
                     NOW() effectiveDateTime,
                     NOW() createdDateTime,
+                    '#local.loggedinAccountID#' createdByAccountID,
                     NOW() modifiedDateTime,
+                    '#local.loggedinAccountID#' modifiedByAccountID,
                     o.orderID orderID,
                     '#local.processing2Type.getTypeID()#' orderStatusHistoryTypeID
-                    from swOrder o
-                    INNER JOIN swType t ON t.typeID = o.orderStatusTypeID AND t.typeCode = 'ostprocessing1'
-    	        </cfquery>
-                
-                <cfcatch >
-                    <cftransaction action="rollback" />
-                    <cflog file="Slatwall" text="ERROR IN QUERY - placeOrdersInProcessingTwo.createOrderStatusHistories  (#cfcatch.detail#)">
-                	<cfrethrow>
-                </cfcatch>
-            </cftry>
-            
-            <cftry>
-         		<cfquery name="local.updateOrdersStatus">
-                    Update swOrder 
-                        Set orderStatusTypeID = '#local.processing2Type.getTypeID()#'
-                        Where orderStatusTypeID = '#local.processing1Type.getTypeID()#'
-                </cfquery>
-                <cfcatch >
-                    <cftransaction action="rollback" />
-                    <cflog file="Slatwall" text="ERROR IN QUERY - placeOrdersInProcessingTwo.updateOrdersStatus  (#cfcatch.detail#)">
-                	<cfrethrow>
-                </cfcatch>
-            </cftry>
+                FROM swOrder o
+                <cfif Len(local.siteID)>
+                    WHERE o.orderCreatedSite.siteID = '#local.siteID#'
+                </cfif>
+                INNER JOIN swType t ON t.typeID = o.orderStatusTypeID AND t.typeCode = 'ostprocessing1'
+	        </cfquery>
             
             
-            <cftransaction action="commit" />
+     		<cfquery name="local.updateOrdersStatus">
+                Update swOrder 
+                Set 
+                    orderStatusTypeID = '#local.processing2Type.getTypeID()#',
+                    modifiedDateTime = NOW(),
+                    modifiedByAccountID = '#local.loggedinAccountID#'
+                WHERE 
+                    orderStatusTypeID = '#local.processing1Type.getTypeID()#'
+                <cfif Len(local.siteID)>
+                    AND o.orderCreatedSite.siteID = '#local.siteID#'
+                </cfif>
+            </cfquery>
+        
+        </cftransaction>
 
 	</cffunction>
 	

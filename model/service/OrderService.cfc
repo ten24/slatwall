@@ -5592,6 +5592,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	// ==================  END:  Private Helper Functions =====================
 
+	// =================== START: Validation Helpers Functions ========================
+		
+	public boolean function orderCanBeCanceled(required any order){
+		return !arguments.order.hasGiftCardOrderItems();
+	}
+		
+	// =================== END: Validation Helpers Functions ========================
+
+
 	// =================== START: Deprecated Functions ========================
 
 	public any function forceItemQuantityUpdate(required any order, required any messageBean) {
