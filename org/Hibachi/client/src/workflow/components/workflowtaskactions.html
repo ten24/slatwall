@@ -15,7 +15,9 @@
                     Detail: 
                     <ng-switch on="workflowTaskAction.data.actionType" ng-if="workflowTaskAction.data.actionType">
                         <span data-ng-switch-when="print" data-ng-bind="workflowTaskAction.data.printTemplate.data.printTemplateName"></span>
-                        <span data-ng-switch-when="email" data-ng-bind="workflowTaskAction.data.emailTemplate.data.emailTemplateName"></span>
+                        <a data-ng-switch-when="email" ng-if="swWorkflowTaskActions.emailTemplateLinks[workflowTaskAction.data.emailTemplate.data.emailTemplateID] != null" ng-href="{{swWorkflowTaskActions.emailTemplateLinks[workflowTaskAction.data.emailTemplate.data.emailTemplateID]}}" target="_blank">
+                            <span data-ng-bind="workflowTaskAction.data.emailTemplate.data.emailTemplateName"></span>
+                        </a> 
                         <span data-ng-switch-when="process" data-ng-bind="workflowTaskAction.data.processMethod"></span>
                         <span data-ng-switch-when="processByQueue" data-ng-bind="workflowTaskAction.data.processMethod"></span>
                     </ng-switch>

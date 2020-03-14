@@ -4,7 +4,7 @@
 				<a class="py-0" data-toggle="collapse" href="#flexshipBody">
 					<div class="py-3 px-3 text-white">
 						<span sw-rbKey="'frontend.hybridCart.yourFlexship'"></span> 
-						<span ng-if="!enrollmentFlexship.isLoading" ng-bind-html="' - ' + enrollmentFlexship.cartThreshold | swcurrency:enrollmentFlexship.orderTemplate.currencyCode"></span>
+						<span ng-if="!enrollmentFlexship.isLoading" ng-bind-html=" ' - ' + (enrollmentFlexship.orderTemplate.calculatedSubTotal | swcurrency:enrollmentFlexship.orderTemplate.currencyCode)"></span>
 					</div>					
 				</a>
 			</div>
@@ -87,7 +87,7 @@
 						<small> <span sw-rbKey="'frontend.hybridCart.suggestedPrice'"></span> </small>
 					</div>
 					<div>
-						<small> $99.00 </small>
+						<small ng-bind-html="enrollmentFlexship.suggestedRetailPrice | swcurrency:enrollmentFlexship.orderTemplate.currencyCode"> </small>
 					</div>
 				</div>
 				<div class="row justify-content-between px-3">
@@ -95,7 +95,7 @@
 						<small> <span sw-rbKey="'frontend.hybridCart.yourPrice'"></span> </small>
 					</div>
 					<div>
-						<small> $99.00 </small>
+						<small ng-bind-html="enrollmentFlexship.orderTemplate.calculatedSubTotal | swcurrency:enrollmentFlexship.orderTemplate.currencyCode"></small>
 					</div>
 				</div>
 				<div class="row justify-content-between px-3">

@@ -1,11 +1,12 @@
 <div ng-cloak ng-if="monatBirthday.show">
+
 	<div ng-click="monatBirthday.showBirthdayPicker()" class="material-field">
 		<select 
 			id="dob"
 			name="birthDate"
 			class="form-control"
 			ng-model="monatBirthday.dob"
-			swvalidationrequired="true"
+			swvalidationrequired="{{monatBirthday.required}}"
 		>
 			<option disabled></option>
 			<option ng-selected="!monatBirthday.showPicker && monatBirthday.isSet">{{monatBirthday.dob}}</option>

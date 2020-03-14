@@ -67,6 +67,10 @@ component {
     property name="priceGroup" cfc="PriceGroup" fieldtype="many-to-one" fkcolumn="priceGroupID";
     property name="upgradeFlag" ormtype="boolean" default="0";
 
+    property name="isLockedInProcessingFlag" persistent="false";
+    property name="isLockedInProcessingOneFlag" persistent="false";
+    property name="isLockedInProcessingTwoFlag" persistent="false";
+
     public numeric function getPersonalVolumeSubtotal(){
         return getCustomPriceFieldSubtotal('personalVolume');
     }
@@ -423,7 +427,7 @@ component {
 		return true;
 	 }
 	 
-	 public any function getDefaultStockLocation(){
+	public any function getDefaultStockLocation(){
 	 	if(!structKeyExists(variables,'defaultStockLocation')){
 	 		if(!isNull(getOrderCreatedSite())){
 	 			var locations = getOrderCreatedSite().getLocations();
@@ -435,5 +439,27 @@ component {
 	 	if(structKeyExists(variables,'defaultStockLocation')){
 	 		return variables.defaultStockLocation;
 	 	}
-	 }
+	}
+	 
+	public boolean function getIsLockedInProcessingOneFlag(){
+		return getOrderStatusType().getSystemCode() == "ostProcessing" && getOrderStatusType().getTypeCode() == "ostProcessing1";
+	}
+	
+	public boolean function getIsLockedInProcessingTwoFlag(){
+		return getOrderStatusType().getSystemCode() == "ostProcessing" && getOrderStatusType().getTypeCode() == "ostProcessing2";
+	}
+	
+	public boolean function getIsLockedInProcessingFlag(){
+	
+		return  (
+					getOrderStatusType().getSystemCode() == "ostProcessing" 
+					&& 
+					(
+						getOrderStatusType().getTypeCode() == "ostProcessing1"
+						||
+						getOrderStatusType().getTypeCode() == "ostProcessing2"
+					)
+				);
+	}
+	
 }

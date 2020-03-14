@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="this" hb_processContexts="addOrderItem,addOrderPayment,addPromotionCode,cancelOrder,changeCurrencyCode,clear,create,createReturn,duplicateOrder,placeOrder,placeOnHold,removeOrderItem,removeOrderPayment,removePersonalInfo,removePromotionCode,takeOffHold,updateStatus,updateOrderAmounts,updateOrderFulfillment,retryPayment" {
+component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="this" hb_processContexts="addOrderItem,addOrderPayment,addPromotionCode,cancelOrder,changeCurrencyCode,clear,create,createReturn,duplicateOrder,placeOrder,placeOnHold,removeOrderItem,removeOrderPayment,removePersonalInfo,removePromotionCode,takeOffHold,updateStatus,updateOrderAmounts,updateOrderFulfillment,retryPayment,releaseCredits" {
 
 	// Persistent Properties
 	property name="orderID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -278,6 +278,10 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
     property name="priceGroup" cfc="PriceGroup" fieldtype="many-to-one" fkcolumn="priceGroupID";
     property name="upgradeFlag" ormtype="boolean" default="0";
 
+    property name="isLockedInProcessingFlag" persistent="false";
+    property name="isLockedInProcessingOneFlag" persistent="false";
+    property name="isLockedInProcessingTwoFlag" persistent="false";
+
    
  property name="businessDate" ormtype="string";
  property name="commissionPeriod" ormtype="string";
@@ -497,7 +501,7 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 
     //alias method for validation
     public boolean function canCancel(){
-          return !hasGiftCardOrderItems();
+        return getOrderService().orderCanBeCanceled(this);
     }
 
 	public boolean function hasGiftCardOrderItems(orderItemID=""){
@@ -2286,7 +2290,7 @@ public numeric function getPersonalVolumeSubtotal(){
 		return true;
 	 }
 	 
-	 public any function getDefaultStockLocation(){
+	public any function getDefaultStockLocation(){
 	 	if(!structKeyExists(variables,'defaultStockLocation')){
 	 		if(!isNull(getOrderCreatedSite())){
 	 			var locations = getOrderCreatedSite().getLocations();
@@ -2298,5 +2302,27 @@ public numeric function getPersonalVolumeSubtotal(){
 	 	if(structKeyExists(variables,'defaultStockLocation')){
 	 		return variables.defaultStockLocation;
 	 	}
-	 }//CUSTOM FUNCTIONS END
+	}
+	 
+	public boolean function getIsLockedInProcessingOneFlag(){
+		return getOrderStatusType().getSystemCode() == "ostProcessing" && getOrderStatusType().getTypeCode() == "ostProcessing1";
+	}
+	
+	public boolean function getIsLockedInProcessingTwoFlag(){
+		return getOrderStatusType().getSystemCode() == "ostProcessing" && getOrderStatusType().getTypeCode() == "ostProcessing2";
+	}
+	
+	public boolean function getIsLockedInProcessingFlag(){
+	
+		return  (
+					getOrderStatusType().getSystemCode() == "ostProcessing" 
+					&& 
+					(
+						getOrderStatusType().getTypeCode() == "ostProcessing1"
+						||
+						getOrderStatusType().getTypeCode() == "ostProcessing2"
+					)
+				);
+	}
+	//CUSTOM FUNCTIONS END
 }

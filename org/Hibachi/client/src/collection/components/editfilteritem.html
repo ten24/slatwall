@@ -67,7 +67,7 @@
                     <div class="well well-sm">
                         <div>Preview:</div>
                         <div style="color: #666">
-                            {{selectedFilterProperty.displayPropertyIdentifier}} {{selectedFilterProperty.selectedCriteriaType.comparisonOperator}} <strong data-ng-bind="filterItem.value | truncate:25"></strong>
+                            {{selectedFilterProperty.displayPropertyIdentifier}} {{selectedFilterProperty.selectedCriteriaType.comparisonOperator}} <strong> <span data-ng-bind="filterItem.value | truncate:25"></span> {{selectedFilterProperty.selectedCriteriaType.dateInfo.measureTypeDisplay}}</strong>
                         </div>
                     </div>
                     <button 
