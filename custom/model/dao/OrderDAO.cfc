@@ -30,7 +30,7 @@
                     CONCAT('{"newPropertyData":{"orderStatusType":{"typeID":"#local.processing2Type.getTypeID()#", "title":"#local.processing2Type.getTypename()#"}}, "oldPropertyData":{"orderStatusType": {"typeID": "',o.orderStatusTypeID,'","title": "',t.typeName,'"}}}') data,
                     'Order' title,
                     <cfqueryparam cfsqltype="cf_sql_varchar" value="#getHibachiScope().getIPAddress()#" /> sessionIPAddress,
-                    <cfqueryparam cfsqltype="cf_sql_varchar" value="#ocal.loggedinAccountID#" /> sessionAccountID,
+                    <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.loggedinAccountID#" /> sessionAccountID,
                     <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.loggedinAccountEmailAddress#" /> sessionAccountEmailAddress,
                     <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.loggedinAccountFullName#" />  sessionAccountFullName
                 FROM swOrder o
