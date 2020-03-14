@@ -95,7 +95,7 @@
 						<small> <span sw-rbKey="'frontend.hybridCart.yourPrice'"></span> </small>
 					</div>
 					<div>
-						<small> $99.00 </small>
+						<small ng-bind-html="enrollmentFlexship.orderTemplate.calculatedSubTotal | swcurrency:enrollmentFlexship.orderTemplate.currencyCode"></small>
 					</div>
 				</div>
 				<div class="row justify-content-between px-3">
