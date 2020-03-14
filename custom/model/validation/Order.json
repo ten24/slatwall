@@ -32,7 +32,7 @@
 		
 		"isLockedInProcessingFlag": [{ "contexts": "edit,clear,delete,addOrderPayment,removeOrderPayment,retryPayment,placeOrder,addOrderItem,removeOrderItem,addOrderItemGiftRecipient,addSaleOrderItem,addPromotionCode,removePromotionCode,changeCurrencyCode,updateOrderAmounts,forceItemQuantityUpdate,updateStatus,updateOrderFulfillment,removePersonalInfo,closeOrder,createReturn,takeOffHold,placeOnHold,auditRollback,releaseCredits,reopenOrder", "eq": false }],
 		"statusCode":  [
-			{ "contexts": "placeInProcessingOne", "inList": "ostNew,ostProcessing" },
+			{ "contexts": "placeInProcessingOne", "inList": "ostNew,ostPaid" },
 		],
 		
 		"isLockedInProcessingOneFlag": [
