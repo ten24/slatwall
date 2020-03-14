@@ -31,9 +31,10 @@ class MonatOrderItemsController {
 
 	private getOrderItems = () => {
 		this.monatService.getCart().then( data => {
-			if ( undefined !== data.cart.orderItems ) {
-				this.orderItems = data.cart.orderItems;
-				this.aggregateOrderItems( data.cart.orderItems );
+			let cart = data.cart ? data.cart : data;
+			if ( undefined !== cart.orderItems ) {
+				this.orderItems = cart.orderItems;
+				this.aggregateOrderItems( cart.orderItems );
 			}
 		});
 	}
