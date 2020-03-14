@@ -125,16 +125,16 @@ component {
 
 			if(!isNull(skuPriceResults) && isArray(skuPriceResults) && arrayLen(skuPriceResults) > 0){
 				var sortFunction = function(a,b){
-				   	if(isNull(a['price'])){
-						a['price'] = 0;
+				   	if(isNull(a[customPriceField])){
+						a[customPriceField] = 0;
 					}
 					
-					if(isNull(b['price'])){
-						b['price'] = 0;
+					if(isNull(b[customPriceField])){
+						b[customPriceField] = 0;
 					}
 				   
-				    if(a['price'] < b['price']){ return -1;}
-				    else if (a['price'] > b['price']){ return 1; }
+				    if(a[customPriceField] < b[customPriceField]){ return -1;}
+				    else if (a[customPriceField] > b[customPriceField]){ return 1; }
 				    else{ return 0; }
 					
 				};
