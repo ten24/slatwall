@@ -73,6 +73,7 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 	
 	public string function loginAccount(required any account, required any accountAuthentication) {
 		super.loginAccount(argumentCollection=arguments);
+
 		if(
 			(
 				structKeyExists(request,'context') 

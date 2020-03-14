@@ -55,7 +55,7 @@ class swfAccountController {
         public monatAlertService,
     	public $location,
     ){
-        this.observerService.attach(this.getAccount,"loginSuccess"); 
+        this.observerService.attach(this.loginSuccess,"loginSuccess"); 
         this.observerService.attach(this.closeModals,"addNewAccountAddressSuccess"); 
         this.observerService.attach(this.closeModals,"addAccountPaymentMethodSuccess"); 
         this.observerService.attach(this.closeModals,"addProductReviewSuccess"); 
@@ -88,6 +88,10 @@ class swfAccountController {
 		}
 	}
 	
+	public loginSuccess = () =>{
+	    this.getAccount();
+	    this.publicService.getCart(true);
+	}
 	
 	public launchAddressModal(address: Array<object>):void{
 		this.ModalService.showModal({

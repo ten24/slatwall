@@ -346,7 +346,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 				isBoolean(getContent().getProductListingPageFlag()) 
 				&& getContent().getProductListingPageFlag() 
 				&& isBoolean(getContent().setting('contentIncludeChildContentProductsFlag')) 
-				&& getContent().setting('contentIncludeChildContentProductsFlag')
 			){
 				productCollectionList.addFilter('listingPages.content.contentIDPath',getContent().getContentIDPath()&"%",'like');
 			}else if(isBoolean(getContent().getProductListingPageFlag()) && getContent().getProductListingPageFlag()){
