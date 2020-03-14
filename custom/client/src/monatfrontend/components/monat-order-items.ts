@@ -5,11 +5,11 @@ class MonatOrderItemsController {
 	public starterKits: any = []; // orderTemplateDetails
 	public todaysOrder: any = []; // orderTemplateDetails
 	public orderFees; 
-	public orderSavings:number;
+	public orderSavings:number = 0;
 	public siteCode:string = hibachiConfig.cmsSiteID == 'default' ? '' : hibachiConfig.cmsSiteID;
 	
 	//@ngInject
-	constructor(public monatService, public orderTemplateService, public publicService, public observerService) {
+	constructor(public monatService, public orderTemplateService, public publicService, public observerService, private $scope, private $timeout) {
 		this.observerService.attach(this.getOrderItems,'ownerAccountSelected');
 	}
 
@@ -41,7 +41,10 @@ class MonatOrderItemsController {
 		
 	public getUpgradedOrderSavings = () => {
 		this.publicService.doAction('getUpgradedOrderSavingsAmount').then(result =>{
-			this.orderSavings = result.upgradedSavings;
+			if ( 'undefined' !== typeof result ) {
+				this.orderSavings = result.upgradedSavings;
+				this.$timeout( () => this.$scope.$apply() );
+			}
 		});
 	}
 	
@@ -72,7 +75,7 @@ class MonatOrderItemsController {
 
 class MonatOrderItems {
 	public restrict: string = 'A';
-	public scope = true;
+	public scope: any;
 
 	public bindToController = {
 	}

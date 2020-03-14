@@ -16,6 +16,7 @@
 		}
 	},
 	"properties": {
+		"order" : [{"method": "orderCreatedSiteMatchesAccountCreatedSite"}],
 		"isPurchasableItemFlag" :	[
 			{ "eq": true },
 			{ "conditions":"isMarketPartnerSalesOrder", "eq": true, "method":"marketPartnerValidationMaxOrderAmount" }

@@ -26,7 +26,8 @@ class SponsorSearchSelectorController {
 	// @ngInject
 	constructor(
 		private publicService,
-		public observerService
+		public observerService,
+		public $location
 	) {}
 	
 	public $onInit = () => {
@@ -42,6 +43,11 @@ class SponsorSearchSelectorController {
 			this.form.text = account;
 			this.getSearchResults(false, true);				
 		}, 'accountRetrieved');
+		
+		if ( 'undefined' !== this.$location.search().accountNumber ) {
+			this.form.text = this.$location.search().accountNumber;
+			this.getSearchResults(false, false, true);
+		}
 	}
 	
 	private getCountryCodeOptions = () => {
@@ -66,7 +72,7 @@ class SponsorSearchSelectorController {
 		});
 	}
 	
-	public getSearchResults = (useHibachConfig = false, useOriginalAccountOwner = false) => {
+	public getSearchResults = (useHibachConfig = false, useOriginalAccountOwner = false, selectFirstSponsor = false) => {
 		this.loadingResults = true;
 		
 		let data = {
@@ -103,6 +109,10 @@ class SponsorSearchSelectorController {
 			this.loadingResults = false;
 			this.searchResults = data.pageRecords;
 			this.recordsCount = data.recordsCount;
+			
+			if ( this.searchResults.length && selectFirstSponsor ) {
+				this.setSelectedSponsor( this.searchResults[0] );
+			}
 		});
 	}
 	

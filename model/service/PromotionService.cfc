@@ -108,7 +108,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		for(var orderItem in arguments.order.getOrderItems()) {
 			
 			//If the price was overriden by the admin, we're skipping that item
-			if( !orderItem.getUserDefinedPriceFlag() ){
+			if( isNull(orderItem.getUserDefinedPriceFlag()) || !orderItem.getUserDefinedPriceFlag() ){
 				var salePriceDetails = orderItem.getSalePrice();
 	
 				for(var key in salePriceDetails) {

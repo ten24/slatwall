@@ -1015,6 +1015,21 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             }
             
         }
+        
+        // Add process Object errors messages to the response properly 
+        // (Prevents the vague error message: addOrderItem)
+        if(cart.hasErrors()){
+            var cartErrors = cart.getErrors();
+            cart.clearHibachiErrors();
+            if(structKeyExists(cartErrors, 'processObjects') && arrayLen(cartErrors.processObjects)){
+                for(var processObjectName in cartErrors.processObjects){
+                    cart.addErrors(cart.getProcessObject(processObjectName).getErrors());
+                    cart.getProcessObject(processObjectName).clearHibachiErrors();
+                }
+            }
+        }
+        
+        
         return cart;
     }
 

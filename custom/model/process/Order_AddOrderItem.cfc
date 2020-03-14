@@ -105,7 +105,7 @@ component accessors="true" extends="Slatwall.model.process.Order_AddOrderItem" {
 	 public boolean function marketPartnerValidationMaxOrderAmount(){
 	 	var order = this.getOrder();
 	 	
-	 	if(isNull(order.getOrderCreatedSite())){
+	 	if(isNull(order.getAccount())  || isNull(order.getOrderCreatedSite())){
 	 	    return true; 
 	 	} 
 	 	
@@ -128,6 +128,19 @@ component accessors="true" extends="Slatwall.model.process.Order_AddOrderItem" {
 	    }
 	    return true;
 	 }
+	 
+	 /**
+	 * This validates that the orders site matches the accounts created site
+	 * if the order has an account already.
+	 **/
+	public boolean function orderCreatedSiteMatchesAccountCreatedSite(){
+        if (!isNull(this.getAccount()) && !isNull(this.getAccount().getAccountCreatedSite())){
+            if (this.getOrder().getOrderCreatedSite().getSiteID() != this.getAccount().getAccountCreatedSite().getSiteID()){
+                return false;
+            }
+        }
+        return true;
+	}
     
     // ===============  END: Custom Validation Methods =====================
     
