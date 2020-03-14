@@ -371,7 +371,7 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 			}
 		}
 
-		var orderTemplateItemCollection = this.getOrderTemplateItemCollectionList();
+		var orderTemplateItemCollection = this.getOrderTemplateItemsCollectionList();
 		orderTemplateItemCollection.setDisplayProperties('sku.skuCode, sku.skuDefinition, sku.priceByCurrencyCode, quantity', columnConfig);
 		var orderTemplateItems = orderTemplateItemCollection.getRecords(formatRecords=false);
 

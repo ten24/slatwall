@@ -81395,16 +81395,17 @@ var SWEntityActionBarController = /** @class */ (function () {
                 _this.saveQueryString = _this.baseQueryString + _this.saveQueryString;
                 if (_this.processCallers != null) {
                     for (var i = 0; i < _this.processCallers.length; i++) {
-                        if (_this.processCallers[i].queryString != null) {
-                            _this.processCallers[i].queryString = _this.baseQueryString + _this.processCallers[i].queryString;
-                        }
-                        else {
-                            _this.processCallers[i].queryString = _this.baseQueryString;
-                        }
+                        _this.processCallers[i].queryString = _this.getQueryStringForProcessCaller(_this.processCallers[i]);
+                    }
+                }
+                if (_this.printProcessCallers) {
+                    for (var i = 0; i < _this.printProcessCallers.length; i++) {
+                        _this.printProcessCallers[i].queryString = _this.getQueryStringForProcessCaller(_this.printProcessCallers[i]);
                     }
                 }
             }
             _this.swProcessCallers = _this.processCallers;
+            _this.swPrintProcessCallers = _this.printProcessCallers;
             if (_this.editEvent != null) {
                 _this.observerService.attach(_this.toggleEditMode, _this.editEvent);
             }
@@ -81419,6 +81420,12 @@ var SWEntityActionBarController = /** @class */ (function () {
             };
             //there should only be one action bar on a page so no id
             _this.observerService.notify('swEntityActionBar', _this.payload);
+        };
+        this.getQueryStringForProcessCaller = function (processCaller) {
+            if (processCaller.queryString != null) {
+                return _this.baseQueryString + '&' + processCaller.queryString;
+            }
+            return _this.baseQueryString;
         };
         this.toggleEditMode = function () {
             _this.edit = !_this.edit;
@@ -81476,7 +81483,8 @@ var SWEntityActionBar = /** @class */ (function () {
             processEvent: "@?",
             processAction: "@?",
             processContext: "@?",
-            processCallers: "<?"
+            processCallers: "<?",
+            printProcessCallers: "<?"
         };
         this.controller = SWEntityActionBarController;
         this.controllerAs = "swEntityActionBar";

@@ -79,8 +79,10 @@ property name="calculatedCommissionableVolumeTotal" ormtype="integer";
 	property name="skuImagePath" persistent="false";
 	property name="skuAdjustedPricing" persistent="false";
 	property name="kitFlagCode" ormtype="string";
+	property name="skuPriceByCurrencyCode" persistent="false" hb_formatType="currency";
 	
 //CUSTOM PROPERTIES END
+	
 
 	public numeric function getTotal(){
 		
@@ -112,7 +114,8 @@ property name="calculatedCommissionableVolumeTotal" ormtype="integer";
 			arrayDeleteAt(arguments.orderTemplate.getOrderTemplateItems(), index);
 		}
 		structDelete(variables, "orderTemplate");
-	}		//CUSTOM FUNCTIONS BEGIN
+	}		
+	//CUSTOM FUNCTIONS BEGIN
 
 public any function getSkuProductURL(){
 		var skuProductURL = this.getSku().getProduct().getProductURL();
@@ -123,6 +126,11 @@ public any function getSkuProductURL(){
 		var skuImagePath = this.getSku().getImagePath();
 		return skuImagePath;
 	}
+
+	public numeric function getSkuPriceByCurrencyCode(){
+		var priceGroups = !isNull(this.getOrderTemplate().getAccount()) ? this.getOrderTemplate().getAccount().getPriceGroups() : [this.getOrderTemplate().getPriceGroup()];
+		return sku.getPriceByCurrencyCode(currencyCode=this.getOrderTemplate().getCurrencyCode(), priceGroups=priceGroups);   
+	} 
 	
 	public any function getSkuAdjustedPricing(){
 			
