@@ -99,7 +99,7 @@
 			<div 
 				class="col"
 				ng-style="{ 
-					'opacity' : (monatEnrollment.currentStepName == 'todaysOrder') ? '100%' : '50%' 
+					'opacity' : (monatEnrollment.currentStepName == 'todaysOrder' ) ? '100%' : '50%' 
 				}"
 			>
 				<i class="fal fa-shopping-basket"></i>	
@@ -108,7 +108,7 @@
 			
 			<div 
 				class="col"
-				ng-style="{ 'opacity' : (monatEnrollment.currentStepName == 'createAccount' ) ? '100%' : '50%' }"
+				ng-style="{ 'opacity' : (monatEnrollment.currentStepName == 'createAccount' || monatEnrollment.currentStepName=='updateAccount') ? '100%' : '50%' }"
 			>
 				<i class="fal fa-user-plus"></i>
 				<p class="mb-1" sw-rbkey="'frontend.createAccount.createAccountBtn'"></p>

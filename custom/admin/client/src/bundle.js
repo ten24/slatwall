@@ -75729,6 +75729,24 @@ var SWCriteriaDate = /** @class */ (function () {
                                 }
                             },
                             {
+                                display: "More Than N Minute(s) Ago",
+                                comparisonOperator: "<",
+                                dateInfo: {
+                                    type: 'calculation',
+                                    measureType: 'moreMinutes',
+                                    measureTypeDisplay: 'Minute(s)'
+                                }
+                            },
+                            {
+                                display: "More Than N Hours(s) Ago",
+                                comparisonOperator: "<",
+                                dateInfo: {
+                                    type: 'calculation',
+                                    measureType: 'moreHours',
+                                    measureTypeDisplay: 'Hour(s)'
+                                }
+                            },
+                            {
                                 display: "More Than N Day(s) Ago",
                                 comparisonOperator: "<",
                                 dateInfo: {
@@ -75996,6 +76014,12 @@ var SWCriteriaDate = /** @class */ (function () {
                                     var year = Date.parse('today').toString('yyyy');
                                     setStartDate = new Date(year - 1, 0, 1);
                                     setEndDate = new Date(year - 1, 11, 31);
+                                    break;
+                                case 'moreMinutes': //More than N Minutes Ago
+                                    setNumberOf = true;
+                                    break;
+                                case 'moreHours': //More than N Hours Ago
+                                    setNumberOf = true;
                                     break;
                                 case 'moreDays': //More than N Day Ago
                                     setStartRange = true;

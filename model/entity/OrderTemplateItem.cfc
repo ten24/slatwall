@@ -71,7 +71,8 @@ component displayname="OrderTemplateItem" entityname="SlatwallOrderTemplateItem"
 	//CUSTOM PROPERTIES BEGIN
 property name="calculatedCommissionableVolumeTotal" ormtype="integer";
 	property name="calculatedPersonalVolumeTotal" ormtype="integer";
-
+	property name="calculatedListPrice" ormtype="big_decimal" hb_formatType="currency";
+	
 	//non-persistent properties
 	property name="commissionableVolumeTotal" persistent="false"; 
 	property name="personalVolumeTotal" persistent="false"; 
@@ -80,6 +81,7 @@ property name="calculatedCommissionableVolumeTotal" ormtype="integer";
 	property name="skuAdjustedPricing" persistent="false";
 	property name="kitFlagCode" ormtype="string";
 	property name="skuPriceByCurrencyCode" persistent="false" hb_formatType="currency";
+	property name="listPrice" persistent="false";
 	
 //CUSTOM PROPERTIES END
 	
@@ -191,5 +193,19 @@ public any function getSkuProductURL(){
 		}
 		return variables.personalVolumeTotal; 	
 	} 
+	
+	public numeric function getListPrice(){
+		if(!structKeyExists(variables, 'listPrice')){
+			if(!isNull(this.getOrderTemplate().getPriceGroup() )){
+				var priceGroup = [this.getOrderTemplate().getPriceGroup()];
+			}else if( !isNull(this.getOrderTemplate().getAccount()) && !isNull(this.getOrderTemplate().getAccount()) && arrayLen(this.getOrderTemplate().getAccount().getPriceGroups()) ){
+				var priceGroup = this.getOrderTemplate().getAccount().getPriceGroups()[1];
+			}else{
+				var priceGroup = getService('priceGroupService').getPriceGroupByPriceGroupCode(2) // default to retail
+			}
+			variables.listPrice = this.getSku().getCustomPriceByCurrencyCode(customPriceField='listPrice', currencyCode=this.getOrderTemplate().getCurrencyCode(), quantity=this.getQuantity(), priceGroups=priceGroup);
+		}
+		return variables.listPrice
+	}
 //CUSTOM FUNCTIONS END
 }

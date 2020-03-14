@@ -10,8 +10,8 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
         
         // If the account does not have a created site (which it will), set a default.
         // Otherwise, set the site on the order.
-        if ( isNull(accountCreatedSite)){
-            order.setOrderCreatedSite(slatwallScope.getService("OrderService").getSiteBySiteCode("mura-default"));
+        if ( isNull(accountCreatedSite) ){
+            order.setOrderCreatedSite(getHibachiScope().getCurrentRequestSite());
         } else {
             
             // Set the order created site to account created site.

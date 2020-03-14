@@ -2138,7 +2138,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		param name="arguments.data.optionalProperties" type="string" default=""; //optional properties requested in the api call
 		
 		var orderTemplateCollection = this.getOrderTemplateCollectionList();
-		var displayProperties = 'orderTemplateID,orderTemplateName,scheduleOrderNextPlaceDateTime,calculatedOrderTemplateItemsCount,calculatedTotal,scheduleOrderDayOfTheMonth,statusCode';
+		var displayProperties = 'calculatedSubTotal,orderTemplateID,orderTemplateName,scheduleOrderNextPlaceDateTime,calculatedOrderTemplateItemsCount,calculatedTotal,scheduleOrderDayOfTheMonth,statusCode';
 		displayProperties &= ",frequencyTerm.termID,frequencyTerm.termName,shippingMethod.shippingMethodID,accountPaymentMethod.accountPaymentMethodID,orderTemplateStatusType.typeName,currencyCode";
 		
 		var addressCollectionProps = getService('hibachiService').getDefaultPropertyIdentifiersListByEntityName("AccountAddress");
@@ -2167,7 +2167,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		param name="arguments.data.optionalProperties" type="string" default=""; //optional properties requested in the api call
 		
 		var orderTemplateCollection = this.getOrderTemplateCollectionList();
-		var displayProperties = 'orderTemplateID,orderTemplateName,scheduleOrderNextPlaceDateTime,calculatedOrderTemplateItemsCount,calculatedTotal,scheduleOrderDayOfTheMonth,statusCode';
+		var displayProperties = 'calculatedSubTotal,orderTemplateID,orderTemplateName,scheduleOrderNextPlaceDateTime,calculatedOrderTemplateItemsCount,calculatedTotal,scheduleOrderDayOfTheMonth,statusCode';
 		displayProperties &= ",frequencyTerm.termID,frequencyTerm.termName,shippingMethod.shippingMethodID,orderTemplateStatusType.typeName,currencyCode";
 	
 		if(len(arguments.data.optionalProperties)){
@@ -2247,7 +2247,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		param name="arguments.data.nullAccountFlag" type="boolean" default=false;  
 		
 		//Making PropertiesList
-		var orderTemplateCollectionPropList = "calculatedSubTotal,calculatedFulfillmentTotal,shippingMethod.shippingMethodName"; //extra prop we need
+		var orderTemplateCollectionPropList = "calculatedFulfillmentTotal,shippingMethod.shippingMethodName"; //extra prop we need
 		
 		var	accountPaymentMethodProps = "creditCardLastFour,expirationMonth,expirationYear";
 		accountPaymentMethodProps =   getService('hibachiUtilityService').prefixListItem(accountPaymentMethodProps, "accountPaymentMethod.");
@@ -3475,7 +3475,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					for(var orderItem in arguments.order.getOrderItems()){
 						
 	 					if(
-	 						!orderItem.getUserDefinedPriceFlag()
+	 						(isNull(orderItem.getUserDefinedPriceFlag()) || !orderItem.getUserDefinedPriceFlag())
 	 						&&
 	 						listFindNoCase("oitSale,oitDeposit",orderItem.getOrderItemType().getSystemCode()) 
 	 					){
@@ -5546,7 +5546,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	}
 
-	private void function updateOrderStatusBySystemCode(required any order, required string systemCode) {
+	public void function updateOrderStatusBySystemCode(required any order, required string systemCode) {
 		arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode(arguments.systemCode) );
 	}
 	
@@ -5591,6 +5591,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	// ==================  END:  Private Helper Functions =====================
+
+	// =================== START: Validation Helpers Functions ========================
+		
+	public boolean function orderCanBeCanceled(required any order){
+		return !arguments.order.hasGiftCardOrderItems();
+	}
+		
+	// =================== END: Validation Helpers Functions ========================
+
 
 	// =================== START: Deprecated Functions ========================
 
