@@ -3405,7 +3405,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					setStartRange = DateAdd("yyyy", - arguments.criteria, firstDayOfCurrentYear);
 					setEndRange = DateAdd("d", -1, firstDayOfCurrentYear);
 				break;
-				case 'moreMinutes': //More than N Hours Ago
+				case 'moreMinutes': //More than N Minutes Ago
 					setStartRange = DateAdd("n",  - arguments.criteria, Now());
 				break;
 				case 'moreHours': //More than N Hours Ago

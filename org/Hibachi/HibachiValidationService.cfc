@@ -269,9 +269,6 @@ component output="false" accessors="true" extends="HibachiService" {
 
 		var isValid = invokeMethod("validate_#arguments.constraintDetails.constraintType#", {object=arguments.object, propertyIdentifier=arguments.propertyIdentifier, constraintValue=arguments.constraintDetails.constraintValue});
 		
-		//TODO: remove, left here for debugging
-		logHibachi("ValidateConstraint with: object = #arguments.object.getClassName()#, propertyIdentifier = #arguments.propertyIdentifier#, constraintValue = #arguments.constraintDetails.constraintValue#, context = #arguments.context#; returned isValid = #isValid# ");
-
 		if(!isValid) {
 			var thisPropertyName = listLast(arguments.propertyIdentifier, '.');
 
