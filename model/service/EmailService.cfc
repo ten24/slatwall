@@ -308,19 +308,23 @@ Notes:
 			var templatePath = getTemplateService().getTemplateFileIncludePath(templateType="email", objectName=emailTemplate.getEmailTemplateObject(), fileName=emailTemplate.getEmailTemplateFile());
 			
 			local.email = arguments.email;
-			local[ emailTemplate.getEmailTemplateObject() ] = templateObject;
+			local[ emailTemplate.getEmailTemplateObject() ] = templateObject; 
+			local.emailData[ emailTemplate.getEmailTemplateObject() ] = templateObject;	
 			local.emailData["relatedObject"] = mid(templateObject.getEntityName(), 9, len(templateObject.getEntityName())-8);
 			local.emailData["relatedObjectID"] = templateObject.getPrimaryIDValue();
 			local.emailTemplate = emailTemplate;
 			local.emailTemplateObject = templateObject;
 
-			if(structKeyExists(templateObject, 'hasAccount') && templateObject.hasAccount()){
+			if(structKeyExists(templateObject, 'hasAccount') && structKeyExists(templateObject, 'getAccount') && templateObject.hasAccount()){
 				local.account = templateObject.getAccount(); 
+				local.emailData['account'] = templateObject.getAccount(); 
 			}
 
-			if(structKeyExists(templateObject, 'hasOrder') && templateObject.hasOrder()){
+			if(structKeyExists(templateObject, 'hasOrder') && structKeyExists(templateObject, 'getOrder') && templateObject.hasOrder()){
 				local.order = templateObject.getOrder(); 
+				local.emailData['order'] = templateObject.getOrder(); 
 				local.account = local.order.getAccount(); 
+				local.emailData['account'] = local.order.getAccount(); 
 			}
 
 			if(len(templatePath)) {
