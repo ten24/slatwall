@@ -3,8 +3,8 @@
     <cffunction name="placeOrdersInProcessingTwo" returntype="void" access="public">
         <cfargument name="data" />
         
-        <cfset local.processing1Type = getHibachiScope().getService('typeService').getTypeBySystemCodeAndTypeCode('ostProcessing', 'ostProcessing1') />
-        <cfset local.processing2Type = getHibachiScope().getService('typeService').getTypeBySystemCodeAndTypeCode('ostProcessing', 'ostProcessing2') />
+        <cfset local.processing1Type = getHibachiScope().getService('typeService').getTypeByTypeCode('ostProcessing1') />
+        <cfset local.processing2Type = getHibachiScope().getService('typeService').getTypeByTypeCode('ostProcessing2') />
 	    
 	    <cftransaction action="begin" />
 
@@ -17,11 +17,13 @@
                                 sessionIPAddress, sessionAccountID, sessionAccountEmailAddress, sessionAccountFullName
                             )
                         SELECT 
-                            LOWER(REPLACE(CAST(UUID() as char character set utf8), '-', '')) auditID,
+                            LOWER(
+                                REPLACE(CAST(UUID() as char character set utf8), '-', '')
+                            ) auditID,
                             'update' auditType,
-                            NOW() auditDateTime,
+                             NOW() auditDateTime,
                             'Order' baseObject,
-                            o.orderID baseID,
+                             o.orderID baseID,
                             CONCAT('{"newPropertyData":{"orderStatusType":{"typeID":"#local.processing2Type.getTypeID()#", "title":"#local.processing2Type.getTypename()#"}}, "oldPropertyData":{"orderStatusType": {"typeID": "',o.orderStatusTypeID,'","title": "',t.typeName,'"}}}') data,
                             'Order' title,
                             '#getHibachiScope().getIPAddress()#' sessionIPAddress,
@@ -29,7 +31,7 @@
                             '#getHibachiScope().getAccount().getEmailAddress()#' sessionAccountEmailAddress,
                             '#getHibachiScope().getAccount().getFullName()#' sessionAccountFullName
                         FROM swOrder o
-                        INNER JOIN swType t ON t.typeID = o.orderStatusTypeID AND t.typeCode = 'ostprocessing1;
+                        INNER JOIN swType t ON t.typeID = o.orderStatusTypeID AND t.typeCode = 'ostprocessing1';
                     </cfquery>
                     
                     <cfcatch >
@@ -53,7 +55,7 @@
                     NOW() createdDateTime,
                     NOW() modifiedDateTime,
                     o.orderID orderID,
-                    #local.processing2Type.getTypeID()# orderStatusHistoryTypeID
+                    '#local.processing2Type.getTypeID()#' orderStatusHistoryTypeID
                     from swOrder o
                     INNER JOIN swType t ON t.typeID = o.orderStatusTypeID AND t.typeCode = 'ostprocessing1'
     	        </cfquery>
@@ -68,8 +70,8 @@
             <cftry>
          		<cfquery name="local.updateOrdersStatus">
                     Update swOrder 
-                        Set orderStatusTypeID = #local.processing2Type.getTypeID()#
-                        Where orderStatusTypeID = #local.processing1Type.getTypeID()#
+                        Set orderStatusTypeID = '#local.processing2Type.getTypeID()#'
+                        Where orderStatusTypeID = '#local.processing1Type.getTypeID()#'
                 </cfquery>
                 <cfcatch >
                     <cftransaction action="rollback" />
