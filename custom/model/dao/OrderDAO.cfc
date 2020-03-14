@@ -29,13 +29,13 @@
                      o.orderID baseID,
                     CONCAT('{"newPropertyData":{"orderStatusType":{"typeID":"#local.processing2Type.getTypeID()#", "title":"#local.processing2Type.getTypename()#"}}, "oldPropertyData":{"orderStatusType": {"typeID": "',o.orderStatusTypeID,'","title": "',t.typeName,'"}}}') data,
                     'Order' title,
-                    '#getHibachiScope().getIPAddress()#' sessionIPAddress,
-                    '#local.loggedinAccountID#' sessionAccountID,
-                    '#local.loggedinAccountEmailAddress#' sessionAccountEmailAddress,
-                    '#local.loggedinAccountFullName#' sessionAccountFullName
+                    <cfqueryparam cfsqltype="cf_sql_varchar" value="#getHibachiScope().getIPAddress()#" /> sessionIPAddress,
+                    <cfqueryparam cfsqltype="cf_sql_varchar" value="#ocal.loggedinAccountID#" /> sessionAccountID,
+                    <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.loggedinAccountEmailAddress#" /> sessionAccountEmailAddress,
+                    <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.loggedinAccountFullName#" />  sessionAccountFullName
                 FROM swOrder o
                 <cfif Len(local.siteID)>
-                    WHERE o.orderCreatedSite.siteID = '#local.siteID#'
+                    WHERE o.orderCreatedSite.siteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.siteID#" />
                 </cfif>
                 INNER JOIN swType t ON t.typeID = o.orderStatusTypeID AND t.typeCode = 'ostprocessing1'
             </cfquery>
@@ -52,14 +52,14 @@
                     NOW() changeDateTime,
                     NOW() effectiveDateTime,
                     NOW() createdDateTime,
-                    '#local.loggedinAccountID#' createdByAccountID,
+                    <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.loggedinAccountID#" /> createdByAccountID,
                     NOW() modifiedDateTime,
-                    '#local.loggedinAccountID#' modifiedByAccountID,
+                    <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.loggedinAccountID#" /> modifiedByAccountID,
                     o.orderID orderID,
-                    '#local.processing2Type.getTypeID()#' orderStatusHistoryTypeID
+                    <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.processing2Type.getTypeID()#" /> orderStatusHistoryTypeID
                 FROM swOrder o
                 <cfif Len(local.siteID)>
-                    WHERE o.orderCreatedSite.siteID = '#local.siteID#'
+                    WHERE o.orderCreatedSite.siteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.siteID#" />
                 </cfif>
                 INNER JOIN swType t ON t.typeID = o.orderStatusTypeID AND t.typeCode = 'ostprocessing1'
 	        </cfquery>
@@ -68,13 +68,13 @@
      		<cfquery name="local.updateOrdersStatus">
                 Update swOrder 
                 Set 
-                    orderStatusTypeID = '#local.processing2Type.getTypeID()#',
+                    orderStatusTypeID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.processing2Type.getTypeID()#" />,
                     modifiedDateTime = NOW(),
-                    modifiedByAccountID = '#local.loggedinAccountID#'
+                    modifiedByAccountID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.loggedinAccountID#" />
                 WHERE 
-                    orderStatusTypeID = '#local.processing1Type.getTypeID()#'
+                    orderStatusTypeID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.processing1Type.getTypeID()#" />
                 <cfif Len(local.siteID)>
-                    AND o.orderCreatedSite.siteID = '#local.siteID#'
+                    AND o.orderCreatedSite.siteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.siteID#" />
                 </cfif>
             </cfquery>
         
