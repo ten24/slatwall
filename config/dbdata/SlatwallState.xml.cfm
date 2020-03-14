@@ -7,7 +7,7 @@
 	</Columns>
 	<Records>
 
-		<!--- Canada --->
+		<!-- Canada -->
 		<Record stateCode="AB" countryCode="CA" stateName="Alberta" />
 		<Record stateCode="BC" countryCode="CA" stateName="British Columbia" />
 		<Record stateCode="MB" countryCode="CA" stateName="Manitoba" />
@@ -22,7 +22,7 @@
 		<Record stateCode="SK" countryCode="CA" stateName="Saskatchewan" />
 		<Record stateCode="YT" countryCode="CA" stateName="Yukon" />
 
-		<!--- Germany --->
+		<!-- Germany -->
 		<Record stateCode="BW" countryCode="DE" stateName="Baden-W&uuml;rttemberg" />
 		<Record stateCode="BY" countryCode="DE" stateName="Bayern" />
 		<Record stateCode="BE" countryCode="DE" stateName="Berlin" />
@@ -40,7 +40,7 @@
 		<Record stateCode="SH" countryCode="DE" stateName="Schleswig-Holstein" />
 		<Record stateCode="TH" countryCode="DE" stateName="Th&uuml;ringen" />
 
-		<!--- Sweden --->
+		<!-- Sweden -->
 		<Record stateCode="K" countryCode="SE" stateName="Blekinge l&auml;n" />
 		<Record stateCode="W" countryCode="SE" stateName="Dalarnas l&auml;n" />
 		<Record stateCode="I" countryCode="SE" stateName="Gotlands l&auml;n" />
@@ -63,7 +63,7 @@
 		<Record stateCode="T" countryCode="SE" stateName="&Ouml;rebro l&auml;n" />
 		<Record stateCode="E" countryCode="SE" stateName="&Ouml;sterg&ouml;tlands l&auml;n" />
 
-		<!--- United States --->
+		<!-- United States -->
 		<Record stateCode="AK" countryCode="US" stateName="Alaska" />
 		<Record stateCode="AL" countryCode="US" stateName="Alabama" />
 		<Record stateCode="AR" countryCode="US" stateName="Arkansas" />
