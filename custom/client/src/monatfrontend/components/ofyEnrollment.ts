@@ -1,7 +1,7 @@
 
 class OFYEnrollmentController {
 	public flexship:string;
-	public products:Array<object>;
+	public products:Array<{[key:string]:any}>;
 	public stagedProductID:string;
 	public loading:boolean;
 	
