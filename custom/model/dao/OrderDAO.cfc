@@ -34,10 +34,10 @@
                     <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.loggedinAccountEmailAddress#" /> sessionAccountEmailAddress,
                     <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.loggedinAccountFullName#" />  sessionAccountFullName
                 FROM swOrder o
-                <cfif Len(local.siteID)>
-                    WHERE o.orderCreatedSite.siteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.siteID#" />
-                </cfif>
                 INNER JOIN swType t ON t.typeID = o.orderStatusTypeID AND t.typeCode = 'ostprocessing1'
+                <cfif Len(local.siteID)>
+                    INNER JOIN swSite s ON s.siteID = o.orderCreatedSiteID AND s.siteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.siteID#" />
+                </cfif>
             </cfquery>
                 
                 
@@ -58,10 +58,10 @@
                     o.orderID orderID,
                     <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.processing2Type.getTypeID()#" /> orderStatusHistoryTypeID
                 FROM swOrder o
-                <cfif Len(local.siteID)>
-                    WHERE o.orderCreatedSite.siteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.siteID#" />
-                </cfif>
                 INNER JOIN swType t ON t.typeID = o.orderStatusTypeID AND t.typeCode = 'ostprocessing1'
+                <cfif Len(local.siteID)>
+                    INNER JOIN swSite s ON s.siteID = o.orderCreatedSiteID AND s.siteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.siteID#" />
+                </cfif>
 	        </cfquery>
             
             
@@ -74,7 +74,7 @@
                 WHERE 
                     orderStatusTypeID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.processing1Type.getTypeID()#" />
                 <cfif Len(local.siteID)>
-                    AND o.orderCreatedSite.siteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.siteID#" />
+                    AND orderCreatedSiteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.siteID#" />
                 </cfif>
             </cfquery>
         
