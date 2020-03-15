@@ -90,6 +90,7 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	property name="calculatedTotal" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedSubTotal" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedFulfillmentTotal" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedTaxableAmountTotal" ormtype="big_decimal" hb_formatType="currency";
 
 	// Remote properties
 	property name="remoteID" ormtype="string";
@@ -102,6 +103,7 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 
 	property name="fulfillmentDiscount" persistent="false";
 	property name="fulfillmentTotal" persistent="false";
+	property name="taxableTotal" persistent="false";
 	property name="canPlaceOrderFlag" persistent="false";
 	property name="canPlaceFutureScheduleOrderFlag" persistent="false";
 	property name="orderTemplateItemDetailsHTML" persistent="false";
@@ -124,6 +126,8 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 	//calculated properties
 	property name="calculatedCommissionableVolumeTotal" ormtype="integer";
 	property name="calculatedPersonalVolumeTotal" ormtype="integer";
+	property name="calculatedProductPackVolumeTotal" ormtype="integer";
+	property name="calculatedRetailComissionTotal" ormtype="integer"; 
 
 	//non-persistents
 	property name="accountIsNotInFlexshipCancellationGracePeriod" persistent="false";
@@ -136,6 +140,9 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 	property name="addressValidationCode" ormtype="string";
 	property name="commissionableVolumeTotal" persistent="false"; 
 	property name="personalVolumeTotal" persistent="false";
+	property name="productPackVolumeTotal" persistent="false"; 
+	property name="retailCommissionTotal" persistent="false";
+	property name="flexshipQualifiedOrdersForCalendarYearCount" persistent="false"; 
 	property name="flexshipQualifiedOrdersForCalendarYearCount" persistent="false"; 
 	property name="qualifiesForOFYProducts" persistent="false";
 	property name="cartTotalThresholdForOFYAndFreeShipping" persistent="false";
@@ -426,10 +433,19 @@ public boolean function getAccountIsNotInFlexshipCancellationGracePeriod(){
 	}
 
 	public numeric function getCommissionableVolumeTotal(){
+		
 		if(!structKeyExists(variables, 'commissionableVolumeTotal')){
-			variables.commissionableVolumeTotal = getService('OrderService').getComissionableVolumeTotalForOrderTemplate(this);	
+			variables.commissionableVolumeTotal = getService('OrderService').getCommissionableVolumeTotalForOrderTemplate(this);	
 		}	
 		return variables.commissionableVolumeTotal;
+	} 
+
+	public numeric function getProductPackVolumeTotal(){
+		
+		if(!structKeyExists(variables, 'productPackVolumeTotal')){
+			variables.productPackVolumeTotal = getService('OrderService').getProductPackVolumeTotalForOrderTemplate(this);	
+		}	
+		return variables.productPackVolumeTotal;
 	} 
 
 	public numeric function getFlexshipQualifiedOrdersForCalendarYearCount(){

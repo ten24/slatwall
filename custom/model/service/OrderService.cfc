@@ -329,8 +329,11 @@ component extends="Slatwall.model.service.OrderService" {
 		request[orderTemplateOrderDetailsKey]['fulfillmentDiscount'] = 0;
 		request[orderTemplateOrderDetailsKey]['total'] = 0;
 		request[orderTemplateOrderDetailsKey]['subtotal'] = 0;
+		request[orderTemplateOrderDetailsKey]['taxableAmountTotal'] = 0;
 		request[orderTemplateOrderDetailsKey]['personalVolumeTotal'] = 0;
 		request[orderTemplateOrderDetailsKey]['commissionableVolumeTotal'] = 0;
+		request[orderTemplateOrderDetailsKey]['productPackVolumeTotal'] = 0;
+		request[orderTemplateOrderDetailsKey]['retailComissionTotal'] = 0;
 		request[orderTemplateOrderDetailsKey]['canPlaceOrder'] = false;
 		
 		request[orderTemplateOrderDetailsKey]['orderTemplate'] = arguments.orderTemplate;
@@ -368,8 +371,11 @@ component extends="Slatwall.model.service.OrderService" {
 	
 			request[orderTemplateOrderDetailsKey]['subtotal'] = transientOrder.getCalculatedSubtotal();
 			request[orderTemplateOrderDetailsKey]['total'] = transientOrder.getCalculatedTotal();
+			request[orderTemplateOrderDetailsKey]['taxableAmountTotal'] = transientOrder.getTaxableAmountTotal();
 			request[orderTemplateOrderDetailsKey]['personalVolumeTotal'] = transientOrder.getPersonalVolumeSubtotal();
 			request[orderTemplateOrderDetailsKey]['commissionableVolumeTotal'] = transientOrder.getCommissionableVolumeSubtotal(); 
+			request[orderTemplateOrderDetailsKey]['productPackVolumeTotal'] = transientOrder.getProductPackVolumeSubtotal();
+			request[orderTemplateOrderDetailsKey]['retailComissionTotal'] = transientOrder.getRetailComissionSubtotal();
 
 			var freeRewardSkuCollection = getSkuService().getSkuCollectionList();
 			var freeRewardSkuIDs = getPromotionService().getQualifiedFreePromotionRewardSkuIDs(transientOrder);
@@ -406,8 +412,16 @@ component extends="Slatwall.model.service.OrderService" {
 		return getOrderTemplateOrderDetails(argumentCollection=arguments)['personalVolumeTotal'];	
 	}
 	
-	public numeric function getComissionableVolumeTotalForOrderTemplate(required any orderTemplate){
+	public numeric function getCommissionableVolumeTotalForOrderTemplate(required any orderTemplate){
 		return getOrderTemplateOrderDetails(argumentCollection=arguments)['commissionableVolumeTotal'];	
+	}
+	
+	public numeric function getProductPackVolumeTotalForOrderTemplate(required any orderTemplate){
+		return getOrderTemplateOrderDetails(argumentCollection=arguments)['productPackVolumeTotal'];	
+	}
+	
+	public numeric function getRetailComissionTotalForOrderTemplate(required any orderTemplate){
+		return getOrderTemplateOrderDetails(argumentCollection=arguments)['retailComissionTotal'];	
 	}
 	
 	public any function getOrderTemplateItemCollectionForAccount(required struct data, any account=getHibachiScope().getAccount()){
