@@ -2,6 +2,10 @@
 <cfparam name="emailData" type="struct" default="#structNew()#" />
 <cfparam name="orderTemplate" type="any" />
 
-<cfset accountType = orderTemplate.getAccount().getAccountType() ?: 'customer' />
+<cfif not isNull(orderTemplate.getAccount()) >	
 
-<cfinclude template="../inc/base.cfm" />
+	<cfset accountType = orderTemplate.getAccount().getAccountType() ?: 'customer' />
+
+	<cfinclude template="../inc/base.cfm" />
+
+</cfif> 
