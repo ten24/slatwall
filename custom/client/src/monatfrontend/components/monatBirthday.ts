@@ -22,9 +22,10 @@ class MonatBirthdayController {
 	public dob:any;
 	public show:boolean;
 	public required:boolean;
+	public isValid:boolean;
 	
 	//@ngInject
-	constructor(public observerService, public $rootScope, public publicService, public $scope, public rbkeyService) {
+	constructor(public observerService, public $rootScope, public monatService, public $scope, public rbkeyService) {
 		this.months = [
 			this.rbkeyService.rbKey('frontend.global.january'),
 			this.rbkeyService.rbKey('frontend.global.february'),
@@ -47,11 +48,13 @@ class MonatBirthdayController {
 	}
 
 	public $onInit = () => {
-		this.publicService.getAccount().then(res=>{
-			if(!res.birthDate || this.calculateAge(res.birthDate) < 18){
-				this.show = true;
-			}
-		});
+		this.observerService.attach(this.validateAge.bind(this),'updateFailure');
+		this.observerService.attach(this.validateAge.bind(this),'createFailure');
+	}
+	
+	public validateAge(){
+		if (!this.required) return this.isValid = true;
+		this.isValid = this.monatService.calculateAge(this.dob) > 18;
 	}
 	
 	public showBirthdayPicker():void{
@@ -142,13 +145,6 @@ class MonatBirthdayController {
 			: ((this.months.indexOf(this.month) + 1) ) + ('/' + this.day ) + ('/' +  this.year);
 			
 		this.isSet = true
-	}
-	
-	public calculateAge(birthDate:string):number { 
-		let birthDateObj = <any>Date.parse(birthDate);
-	    let years = Date.now() - birthDateObj.getTime();
-	    let age = new Date(years); // miliseconds from epoch
-	    return Math.abs(age.getUTCFullYear() - 1970);
 	}
 	
 }
