@@ -258,6 +258,13 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 		return variables.subtotal; 
 	}
 
+	public numeric function getTaxableAmountTotal() {
+		if(!structKeyExists(variables, 'taxableAmountTotal')){
+			variables.taxableAmountTotal = getService('OrderService').getTaxableAmountTotalForOrderTemplate(this); 
+		}
+		return variables.taxableAmountTotal;
+	}
+
 	public numeric function getTotal(){ 
 		return this.getSubtotal() + this.getFulfillmentTotal(); 
 	} 
