@@ -233,7 +233,9 @@ component output="false" accessors="true" extends="HibachiProcess" {
 				variables.price = this.getSku().getPriceByCurrencyCode( currencyCode=this.getCurrencyCode(), quantity=this.getQuantity(), priceGroups=[this.getPriceGroup()] );
 			}
 		}
-		return variables.price;
+		if(structKeyExists(variables, 'price')){
+			return variables.price;
+		}
 	}
 	/*
 
