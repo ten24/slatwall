@@ -74,11 +74,11 @@
 				</div>
 			</div>
 			<div class="card-footer">
-				<div class="px-3">
+				<div ng-if="enrollmentFlexship.cartThreshold && enrollmentFlexship.orderTemplate.calculatedSubTotal < enrollmentFlexship.cartThreshold" class="px-3">
 					<p>
 						<i class="fal fa-exclamation-circle text-danger"></i> 
 						<span sw-rbkey="'frontend.flexshipCartContainer.alertOFYAndFreeShippingP1'"></span>
-						<span ng-bind-html="enrollmentFlexship.orderTemplate.cartTotalThresholdForOFYAndFreeShipping | swcurrency:enrollmentFlexship.orderTemplate.currencyCode"></span> 
+						<span ng-bind-html="enrollmentFlexship.cartThreshold | swcurrency:enrollmentFlexship.orderTemplate.currencyCode"></span> 
 						<span sw-rbkey="'frontend.enrollmentFlexship.toQualify'"></span>
 					</p>
 				</div>
@@ -110,7 +110,7 @@
 				<div class="row justify-content-between px-3 my-1 mb-3">
 					<div>
 						<small> 
-							<b><span sw-rbKey="'frontend.hybridCart.purchasePlus'"></span></b> 
+							<b><span sw-rbKey="'frontend.hybridCart.yourFlexship'"></span></b> 
 						</small>
 					</div>
 					<div>

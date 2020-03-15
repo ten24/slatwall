@@ -93,7 +93,7 @@
 									<span sw-rbKey="'frontend.hybridCart.suggestedPrice'"></span>
 								</div>
 								<div>
-									$99.00
+									<span class="ml-2" ng-bind-html="hybridCart.listPrice | swcurrency:hybridCart.cart.currencyCode"></span>
 								</div>
 							</div>
 							<div class="row justify-content-between px-3">
@@ -101,7 +101,7 @@
 									<span sw-rbKey="'frontend.hybridCart.yourPrice'"></span>
 								</div>
 								<div>
-									$99.00
+									<span ng-bind-html="hybridCart.total | swcurrency:hybridCart.cart.currencyCode"></span> 
 								</div>
 							</div>
 							<div class="row justify-content-between px-3">
