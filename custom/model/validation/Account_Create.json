@@ -1,0 +1,5 @@
+{
+	"properties": {
+		"birthDate": [{ "contexts": "eighteenPlus", "required": true, "method": "eighteenPlus" }]
+	}
+}
