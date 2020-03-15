@@ -1933,5 +1933,12 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             
         }
     }
+    /**
+        * Function to update account with validation ensuring age is >= 18
+    **/
+    public any function updateEighteenPlusUser(required any data){
+        arguments.data['context'] = 'eighteenPlus';
+        super.updateAccount(arguments.data);
+    }
     
 }
