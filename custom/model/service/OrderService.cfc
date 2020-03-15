@@ -333,7 +333,7 @@ component extends="Slatwall.model.service.OrderService" {
 		request[orderTemplateOrderDetailsKey]['personalVolumeTotal'] = 0;
 		request[orderTemplateOrderDetailsKey]['commissionableVolumeTotal'] = 0;
 		request[orderTemplateOrderDetailsKey]['productPackVolumeTotal'] = 0;
-		request[orderTemplateOrderDetailsKey]['retailComissionTotal'] = 0;
+		request[orderTemplateOrderDetailsKey]['retailCommissionTotal'] = 0;
 		request[orderTemplateOrderDetailsKey]['canPlaceOrder'] = false;
 		
 		request[orderTemplateOrderDetailsKey]['orderTemplate'] = arguments.orderTemplate;
@@ -375,7 +375,7 @@ component extends="Slatwall.model.service.OrderService" {
 			request[orderTemplateOrderDetailsKey]['personalVolumeTotal'] = transientOrder.getPersonalVolumeSubtotal();
 			request[orderTemplateOrderDetailsKey]['commissionableVolumeTotal'] = transientOrder.getCommissionableVolumeSubtotal(); 
 			request[orderTemplateOrderDetailsKey]['productPackVolumeTotal'] = transientOrder.getProductPackVolumeSubtotal();
-			request[orderTemplateOrderDetailsKey]['retailComissionTotal'] = transientOrder.getRetailComissionSubtotal();
+			request[orderTemplateOrderDetailsKey]['retailCommissionTotal'] = transientOrder.getRetailCommissionSubtotal();
 
 			var freeRewardSkuCollection = getSkuService().getSkuCollectionList();
 			var freeRewardSkuIDs = getPromotionService().getQualifiedFreePromotionRewardSkuIDs(transientOrder);
@@ -420,8 +420,8 @@ component extends="Slatwall.model.service.OrderService" {
 		return getOrderTemplateOrderDetails(argumentCollection=arguments)['productPackVolumeTotal'];	
 	}
 	
-	public numeric function getRetailComissionTotalForOrderTemplate(required any orderTemplate){
-		return getOrderTemplateOrderDetails(argumentCollection=arguments)['retailComissionTotal'];	
+	public numeric function getRetailCommissionTotalForOrderTemplate(required any orderTemplate){
+		return getOrderTemplateOrderDetails(argumentCollection=arguments)['retailCommissionTotal'];	
 	}
 	
 	public any function getOrderTemplateItemCollectionForAccount(required struct data, any account=getHibachiScope().getAccount()){

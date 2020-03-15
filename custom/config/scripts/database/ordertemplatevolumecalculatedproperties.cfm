@@ -6,7 +6,7 @@
 		LOCK = NONE,
         ALGORITHM = INPLACE,
 		ADD COLUMN calculatedProductPackVolumeTotal INTEGER,
-		ADD COLUMN calculatedRetailComissionTotal INTEGER;
+		ADD COLUMN calculatedRetailCommissionTotal INTEGER;
 		ADD COLUMN calculatedTaxableAmountTotal decimal(19, 2),
 	</cfquery>
 
@@ -15,7 +15,7 @@
 		LOCK = NONE,
         ALGORITHM = INPLACE,
 		ADD COLUMN calculatedProductPackVolumeTotal INTEGER,
-		ADD COLUMN calculatedRetailComissionTotal INTEGER,
+		ADD COLUMN calculatedRetailCommissionTotal INTEGER,
 		ADD COLUMN calculatedTaxableAmountTotal decimal(19,2),
 	</cfquery>	
 

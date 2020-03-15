@@ -127,7 +127,7 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 	property name="calculatedCommissionableVolumeTotal" ormtype="integer";
 	property name="calculatedPersonalVolumeTotal" ormtype="integer";
 	property name="calculatedProductPackVolumeTotal" ormtype="integer";
-	property name="calculatedRetailComissionTotal" ormtype="integer"; 
+	property name="calculatedRetailCommissionTotal" ormtype="integer"; 
 
 	//non-persistents
 	property name="accountIsNotInFlexshipCancellationGracePeriod" persistent="false";
