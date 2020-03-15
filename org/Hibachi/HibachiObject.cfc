@@ -1,6 +1,9 @@
 component accessors="true" output="false" persistent="false" {
 
 	property name="hibachiInstanceApplicationScopeKey" type="string" persistent="false";
+	property name="currentMonth" persistent="false";
+	property name="currentYear" persistent="false";
+	property name="currentYearAbreviated" persistent="false";
 
 	// Constructor Metod
 	public any function init( ) {
@@ -29,6 +32,20 @@ component accessors="true" output="false" persistent="false" {
 		}
 		return clientIP;
 	}
+
+	//convenience date functions for collections filters
+	public numeric function getCurrentMonth(){
+		return month(now());
+	} 
+
+	public numeric function getCurrentYear(){
+		return year(now());
+	} 
+
+	public numeric function getCurrentYearAbreviated(){
+		return right(getCurrentYear(), 2); 
+	}  	
+	//end convenience date functions for collections filters
 	
 	// @help Public method to determine if this is a processObject.  This is overridden in the HibachiProcess.cfc
 	public any function isProcessObject() {
