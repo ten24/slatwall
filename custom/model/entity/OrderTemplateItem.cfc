@@ -4,7 +4,7 @@ component {
 	property name="calculatedCommissionableVolumeTotal" ormtype="integer";
 	property name="calculatedPersonalVolumeTotal" ormtype="integer";
 	property name="calculatedProductPackVolumeTotal" ormtype="integer"; 
-	property name="calculatedRetailComissionTotal" ormtype="integer"; 
+	property name="calculatedRetailCommissionTotal" ormtype="integer"; 
 	property name="calculatedListPrice" ormtype="big_decimal" hb_formatType="currency";
 	
 	//non-persistent properties
