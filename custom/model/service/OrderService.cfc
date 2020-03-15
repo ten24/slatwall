@@ -707,12 +707,12 @@ component extends="Slatwall.model.service.OrderService" {
 	}
 
 	public any function processOrder_placeInProcessingOne(required any order, struct data) {
-		this.updateOrderStatusBySystemCode(arguments.order, "ostProcessing", "ostProcessing1");
+		this.updateOrderStatusBySystemCode(arguments.order, "ostProcessing", "processing1");
 		return arguments.order;
 	}
 	
 	public any function processOrder_placeInProcessingTwo(required any order, struct data) {
-		this.updateOrderStatusBySystemCode(arguments.order, "ostProcessing", "ostProcessing2");
+		this.updateOrderStatusBySystemCode(arguments.order, "ostProcessing", "processing2");
 		return arguments.order;
 	}
 	
