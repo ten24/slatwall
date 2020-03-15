@@ -823,6 +823,14 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	public boolean function isPrimaryMethodExpired(){
 		return variables.primaryPaymentMethod.getCalculatedExpirationDate() >= now();
 	}
+	
+	public boolean function eighteenPlus(){
+		if(isNull(this.getBirthDate())) return false;
+    	var globalEighteenYearsAgo = DateConvert('local2Utc', DateAdd('yyyy', -18, now()));
+    	var globalDOB = DateConvert('local2Utc', this.getBirthDate());
+		return DateCompare(globalEighteenYearsAgo, globalDOB) > -1;
+	}
+	
 	// ============  END:  Non-Persistent Property Methods =================
 
 	// ============= START: Bidirectional Helper Methods ===================

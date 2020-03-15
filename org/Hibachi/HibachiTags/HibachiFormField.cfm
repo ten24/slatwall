@@ -388,15 +388,17 @@
 		</cfcase>
 		<cfcase value="yesno">
 			<cfoutput>
+				<!--- Generate unique ID so it doesn't overlap --->
+				<cfset local.radioGroupID = "#CreateUUID()#_" />
 				<div class="radio">
-					<input type="radio" name="#attributes.fieldName#" id="#attributes.fieldName#Yes" class="#attributes.fieldClass# yes" value="1" <cfif isBoolean(attributes.value) && attributes.value>checked="checked"</cfif> #attributes.fieldAttributes# />
-					<label for="#attributes.fieldName#Yes">
+					<input type="radio" name="#attributes.fieldName#" id="#local.radioGroupID##attributes.fieldName#Yes" class="#attributes.fieldClass# yes" value="1" <cfif isBoolean(attributes.value) && attributes.value>checked="checked"</cfif> #attributes.fieldAttributes# />
+					<label for="#local.radioGroupID##attributes.fieldName#Yes">
 						#yesNoFormat(1)#
 					</label>
 				</div>
 				<div class="radio">
-					<input type="radio" name="#attributes.fieldName#" id="#attributes.fieldName#No" class="#attributes.fieldClass# yes" value="0" <cfif (isboolean(attributes.value) && not attributes.value) || not isBoolean(attributes.value)>checked="checked"</cfif> #attributes.fieldAttributes# />
-					<label for="#attributes.fieldName#No">
+					<input type="radio" name="#attributes.fieldName#" id="#local.radioGroupID##attributes.fieldName#No" class="#attributes.fieldClass# yes" value="0" <cfif (isboolean(attributes.value) && not attributes.value) || not isBoolean(attributes.value)>checked="checked"</cfif> #attributes.fieldAttributes# />
+					<label for="#local.radioGroupID##attributes.fieldName#No">
 						#yesNoFormat(0)#
 					</label>
 				</div>

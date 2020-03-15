@@ -23,6 +23,7 @@ class MonatEnrollmentController {
 	public flexshipShouldBeChecked: boolean;
 	public flexshipCanBePlaced = this.orderTemplateService.canPlaceOrderFlag;
 	public type:string;
+	public showBirthday:boolean;
 	
 	//@ngInject
 	constructor(public monatService, public observerService, public $rootScope, public publicService, public orderTemplateService) {
@@ -43,6 +44,7 @@ class MonatEnrollmentController {
 		
     	this.observerService.attach(this.handleCreateAccount.bind(this),"createAccountSuccess");
     	this.observerService.attach(this.next.bind(this),"onNext");
+    	this.observerService.attach(this.next.bind(this),"updateSuccess");
     	this.observerService.attach(this.previous.bind(this),"onPrevious");
     	this.observerService.attach(this.next.bind(this),"addGovernmentIdentificationSuccess");
     	this.observerService.attach(this.editFlexshipItems.bind(this),"editFlexshipItems");
@@ -53,6 +55,14 @@ class MonatEnrollmentController {
 	
 		this.publicService.getAccount().then(result=>{
 			
+			if( (this.type =='vipUpgrade' || this.type =='mpUpgrade') && result.account.birthDate && this.monatService.calculateAge(result.account.birthDate) > 18 ){
+				this.showBirthday = true;
+				//Per design: Update account step should only contain birthday picker for VIP, the step should only exist if user is < 18
+				if(this.type =='vipUpgrade') this.steps = this.steps.filter(el => el.stepClass !== 'updateAccount');
+			}
+			
+			
+		
 			//if account has a flexship send to checkout review
 			this.monatService.getCart().then(res =>{
 				let cart = res.cart;

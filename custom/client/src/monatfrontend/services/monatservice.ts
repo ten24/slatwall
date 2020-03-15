@@ -15,6 +15,7 @@ export class MonatService {
 		frequencyTermOptions: <IOptions[]>null,
 		countryCodeOptions: <IOptions[]>null,
 	};
+	public userIsEighteen:boolean;
 
 	//@ngInject
 	constructor(public publicService, public $q, public $window, public requestService) {}
@@ -230,5 +231,17 @@ export class MonatService {
 		if(!cookieValueArray.length) return '';
     	return  cookieValueArray[0].substr(cookieValueArray[0].indexOf('=') + 1);
     }
+    
+    /**
+    	This method takes a date string and returns age in years
+    **/
+	public calculateAge(birthDate:string):number { 
+		let birthDateObj = <any>Date.parse(birthDate);
+	    let years = Date.now() - birthDateObj.getTime();
+	    let age = new Date(years); 
+	    let yearsOld = Math.abs(age.getUTCFullYear() - 1970);
+	    this.userIsEighteen = yearsOld >= 18;
+	    return yearsOld;
+	}
 
 }
