@@ -452,93 +452,77 @@ component extends="Slatwall.model.service.OrderService" {
 	} 
 
     public void function updateOrderStatusBySystemCode(required any order, required string systemCode, string typeCode) {
-        var orderStatusType = "";
-        var orderStatusHistory = {};
+
+        var currentOrderStatusType = arguments.order.getOrderStatusType();
         
-        if (arguments.systemCode != "ostNotPlaced"){
+        // All new sales and return orders will appear as "Entered"
+        
+        if (arguments.systemCode == 'ostNotPlaced' && isNull(currentOrderStatusType)) {
+        	
+            arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode));
+        	
+        } else if (arguments.systemCode == 'ostOnHold') {
+
+            arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode));
+
+        } else if (arguments.systemCode == 'ostCanceled') {
+
+            arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="9"));
+
+        } else if (arguments.systemCode == 'ostClosed') {
+			
+			if(arguments.order.getOrderType().getSystemCode() == 'otSalesOrder') {
+	            arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="5"));
+			} else {
+				// RMA closed orders
+	            arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="rmaReleased"));
+			}
+
+        } else if (arguments.systemCode == 'ostNew') {
+
+			//if the order is paid don't set to new, otherwise set to new
+			if (  arguments.order.getPaymentAmountDue() <= 0 ){
+				arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode( systemCode=arguments.systemCode, typeCode="2")); 
+			} else {
+				arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode( systemCode=arguments.systemCode, typeCode="1")); 
+			}
+				
+        } else if (arguments.systemCode == 'ostProcessing') {
+			
+			if (arguments.order.getOrderType().getSystemCode() == 'otSalesOrder'){
+				
+				if(currentOrderStatusType.getSystemCode() == 'ostNew' && arguments.order.getPaymentAmountDue() <= 0) {
+
+					arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode( systemCode=arguments.systemCode, typeCode="2")); 
+
+				// all processing status allowed when called with a specific typecode
+				// we should narrow down the flow of status here
+				} else if (!isNull(arguments.typeCode)) {
+
+					var newType = getTypeService().getTypeBySystemCode( systemCode=arguments.systemCode, typeCode="#argument.typeCode#");
+					arguments.order.setOrderStatusType( newType );
+	            }
+			        // Return Orders
+	        } else if (listFindNoCase('otReturnOrder,otExchangeOrder,otReplacementOrder,otRefundOrder', arguments.order.getTypeCode())) {
+	            if (argument.typeCode == 'rmaApproved') {
+	
+	                arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode(systemCode='ostProcessing', typeCode="rmaApproved"));
+	                
+				} else {
+	
+	                arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="rmaReceived"));
+	
+	            }
+	        }
+
+        }
+        
+        if (arguments.systemCode != "ostNotPlaced" && !isNull(currentOrderStatusType) && currentOrderStatusType.getTypeID() != arguments.order.getOrderStatusType().getTypeID()){
             // create status change history.
             orderStatusHistory = this.newOrderStatusHistory();
             orderStatusHistory.setOrder(arguments.order);
             orderStatusHistory.setChangeDateTime(now());
-        }
-        
-        // All new sales and return orders will appear as "Entered"
-        if (arguments.systemCode == 'ostCanceled') {
-            arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="9")); // "Deleted"
-            orderStatusHistory.setOrderStatusHistoryType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="9"));
-       
-        // Sales Orders
-        } else if (arguments.order.getOrderType().getSystemCode() == 'otSalesOrder') {
-            if (arguments.systemCode == 'ostNew') {
-			
-
-				//if the order is paid don't set to new, otherwise set to new (case of flexship)	
-				if ( !isNull(arguments.order.getOrderTemplate()) ||  
-					 ( arguments.order.getPaymentAmountDue() <= 0 && arguments.order.getQuantityUndelivered() > 0 )
-				){
-                    //the order is paid but not shipped
-                    var type = getTypeService().getTypeByTypeCode( typeCode="paid");
-				} 	
-
-				if(!isNull(type)){	
-					arguments.order.setOrderStatusType(type); 
-					orderStatusHistory.setOrderStatusHistoryType(type);
-				}	
-
-				
-			}else if (arguments.systemCode == 'ostProcessing') {
-				
-				if(!StructKeyExists(arguments, "typeCode") || !Len( Trim(arguments.typeCode) ) ){
-					arguments.typeCode = "2"
-				}
-				
-				//Set to processing status
-                arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode=arguments.typeCode));
-                orderStatusHistory.setOrderStatusHistoryType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode=arguments.typeCode));
-					
-			}else if (arguments.systemCode == 'ostPaid') {
-
-            	//If its paid and its shipped, set it to shipped.
-            	if (arguments.order.getPaymentAmountDue() <= 0 && arguments.order.getQuantityUndelivered() == 0){
-                	arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="5"));
-                	orderStatusHistory.setOrderStatusHistoryType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="5"));
-            	}
-            
-            	
-            }else if (arguments.systemCode == 'ostClosed') {
-            	//If its paid and its shipped, make sure its shipped.
-                arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="5"));
-                orderStatusHistory.setOrderStatusHistoryType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="5"));
-            } else {
-                super.updateOrderStatusBySystemCode(argumentCollection=arguments);
-            }
-        // Return Orders
-        } else if (listFindNoCase('otReturnOrder,otExchangeOrder,otReplacementOrder,otRefundOrder', arguments.order.getTypeCode())) {
-            if (arguments.systemCode == 'ostNew') {
-		
-				var type = getTypeService().getTypeBySystemCode( systemCode=arguments.systemCode, typeCode="1");
-				if(!isNull(type)){	
-					arguments.order.setOrderStatusType(type); 
-					orderStatusHistory.setOrderStatusHistoryType(type);
-				}	
-				
-			} else if (arguments.systemCode == 'ostProcessing') {
-                // Order delivery items have been created but not fulfilled, need to be approved (confirmed) first
-                arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="rmaReceived"));
-                orderStatusHistory.setOrderStatusHistoryType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="rmaReceived"));
-
-                // If order delivery items have been fulfilled, it was approved
-                //arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="rmaApproved"));
-            } else if (arguments.systemCode == 'ostClosed') {
-
-                // If order balance amount has all been refunded, it was released
-                arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="rmaReleased"));
-                orderStatusHistory.setOrderStatusHistoryType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="rmaReleased"));
-            }
-        }
-        
-        //now save the order status history changes.
-        if (!isStruct(orderStatusHistory) && !orderStatusHistory.hasErrors()){
+			orderStatusHistory.setOrderStatusHistoryType(arguments.order.getOrderStatusType());
             this.saveOrderStatusHistory(orderStatusHistory);
         }
     }
@@ -731,18 +715,18 @@ component extends="Slatwall.model.service.OrderService" {
 	        }
 	    }
 	    this.processOrder(arguments.order,'updateOrderAmounts');
-	    order.setOrderStatusType(getService('TypeService').getTypeByTypeCode('rmaApproved'));
+	    this.updateOrderStatusBySystemCode(arguments.order, "ostProcessing", "rmaApproved");
 
 	    return order;
 	}
 
 	public any function processOrder_placeInProcessingOne(required any order, struct data) {
-		this.updateOrderStatusBySystemCode(arguments.order, "ostProcessing", "ostProcessing1");
+		this.updateOrderStatusBySystemCode(arguments.order, "ostProcessing", "processing1");
 		return arguments.order;
 	}
 	
 	public any function processOrder_placeInProcessingTwo(required any order, struct data) {
-		this.updateOrderStatusBySystemCode(arguments.order, "ostProcessing", "ostProcessing2");
+		this.updateOrderStatusBySystemCode(arguments.order, "ostProcessing", "processing2");
 		return arguments.order;
 	}
 	
