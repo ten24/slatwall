@@ -1,0 +1,13 @@
+{
+	"conditions": {
+		"isVIP": {
+			"accountType": { "eq": "VIP" }
+		},
+		"isMP": {
+			"accountType": { "eq": "marketPartner" }
+		}
+	},
+	"properties": {
+		"birthDate": [{ "required": true, "method": "eighteenPlus", "conditions": "isVIP,isMP"}]
+	}
+}
