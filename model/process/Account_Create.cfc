@@ -67,7 +67,8 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="accountID" hb_formFieldType="textautocomplete" cfc="Account";
 	property name="parentAccountID";
 	property name="childAccountID";
-	
+	property name="birthDate";
+	property name="accounttype";
 	property name="parentAccount" cfc="Account" fieldtype="many-to-one";
 	property name="childAccount" cfc="Account" fieldtype="many-to-one";
 	property name="accountCreatedSite" cfc="Site" fieldtype="many-to-one";
@@ -137,6 +138,12 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		arrayAppend(options, collectionList.getRecords(), true );
 		
 		return options;
+	}
+	
+	public boolean function eighteenPlus(){
+    	globalEighteenYearsAgo = DateConvert('local2Utc', DateAdd('yyyy', -18, now()));
+    	globalDOB = DateConvert('local2Utc', this.getBirthDate());
+		return DateCompare(globalEighteenYearsAgo, globalDOB) > -1;
 	}
 	
 }
