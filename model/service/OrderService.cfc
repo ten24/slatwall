@@ -1716,7 +1716,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		newOrder = this.saveOrder(order=newOrder, updateOrderAmount=false, updateShippingMethodOptions=false, checkNewAccountAddressSave=false); 
 
 		if(newOrder.hasErrors() || newOrder.getPaymentAmountDue() > 0){
-			newOrder.setOrderStatusType(getTypeService().getType('2c9280846bd1f0d8016bd217dc1d002e'));
+			updateOrderStatusBySystemCode(newOrder, 'ostProcessing', 'paymentDeclined');
 			newOrder.setPaymentTryCount(1);
 			newOrder.setPaymentLastRetryDateTime(now());
 			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has declined payment');
