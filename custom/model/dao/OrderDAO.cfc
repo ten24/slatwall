@@ -9,8 +9,8 @@
         <cfset local.loggedinAccountEmailAddress = len(local.loggedinAccount.getEmailAddress()) ? local.loggedinAccount.getEmailAddress() : 'NULL'  />
         <cfset local.loggedinAccountFullName = len(local.loggedinAccount.getFullName()) ? local.loggedinAccount.getFullName() : 'NULL'  />
         
-        <cfset local.processing1Type = getHibachiScope().getService('typeService').getTypeByTypeCode('ostProcessing1') />
-        <cfset local.processing2Type = getHibachiScope().getService('typeService').getTypeByTypeCode('ostProcessing2') />
+        <cfset local.processing1Type = getHibachiScope().getService('typeService').getTypeByTypeCode('processing1') />
+        <cfset local.processing2Type = getHibachiScope().getService('typeService').getTypeByTypeCode('processing2') />
         <cfset local.siteID = arguments.data.siteID ?: '' />
 	    
 	    <cftransaction>
@@ -34,7 +34,7 @@
                     <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.loggedinAccountEmailAddress#" /> sessionAccountEmailAddress,
                     <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.loggedinAccountFullName#" />  sessionAccountFullName
                 FROM swOrder o
-                INNER JOIN swType t ON t.typeID = o.orderStatusTypeID AND t.typeCode = 'ostprocessing1'
+                INNER JOIN swType t ON t.typeID = o.orderStatusTypeID AND t.typeCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.processing1Type.getTypeCode()#" />
                 <cfif Len(local.siteID)>
                     INNER JOIN swSite s ON s.siteID = o.orderCreatedSiteID AND s.siteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.siteID#" />
                 </cfif>
@@ -58,7 +58,7 @@
                     o.orderID orderID,
                     <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.processing2Type.getTypeID()#" /> orderStatusHistoryTypeID
                 FROM swOrder o
-                INNER JOIN swType t ON t.typeID = o.orderStatusTypeID AND t.typeCode = 'ostprocessing1'
+                INNER JOIN swType t ON t.typeID = o.orderStatusTypeID AND t.typeCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.processing1Type.getTypeCode()#" />
                 <cfif Len(local.siteID)>
                     INNER JOIN swSite s ON s.siteID = o.orderCreatedSiteID AND s.siteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.siteID#" />
                 </cfif>

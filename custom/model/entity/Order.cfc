@@ -205,7 +205,7 @@ component {
 	    var orderItemCollectionList = getService("OrderService").getOrderItemCollectionList();
 	    orderItemCollectionList.addFilter("order.orderID",this.getOrderID());
 	    //Product code for the VIP registration fee
-	    orderItemCollectionList.addFilter("sku.product.productType.urlTitle","enrollment-fee-vip");
+	    orderItemCollectionList.addFilter("sku.product.productType.urlTitle","vpn-customer-registr");
 	    orderItemCollectionList.setDisplayProperties("orderItemID");
 	    return orderItemCollectionList.getRecordsCount() > 0;
 	}
@@ -442,11 +442,11 @@ component {
 	}
 	 
 	public boolean function getIsLockedInProcessingOneFlag(){
-		return getOrderStatusType().getSystemCode() == "ostProcessing" && getOrderStatusType().getTypeCode() == "ostProcessing1";
+		return getOrderStatusType().getSystemCode() == "ostProcessing" && getOrderStatusType().getTypeCode() == "processing1";
 	}
 	
 	public boolean function getIsLockedInProcessingTwoFlag(){
-		return getOrderStatusType().getSystemCode() == "ostProcessing" && getOrderStatusType().getTypeCode() == "ostProcessing2";
+		return getOrderStatusType().getSystemCode() == "ostProcessing" && getOrderStatusType().getTypeCode() == "processing2";
 	}
 	
 	public boolean function getIsLockedInProcessingFlag(){
@@ -455,9 +455,9 @@ component {
 					getOrderStatusType().getSystemCode() == "ostProcessing" 
 					&& 
 					(
-						getOrderStatusType().getTypeCode() == "ostProcessing1"
+						getOrderStatusType().getTypeCode() == "processing1"
 						||
-						getOrderStatusType().getTypeCode() == "ostProcessing2"
+						getOrderStatusType().getTypeCode() == "processing2"
 					)
 				);
 	}
