@@ -169,7 +169,9 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	property name="spouseFirstName" persistent = "false";
 	property name="spouseLastName" persistent = "false";
 	property name="governmentIdentificationLastFour" persistent = "false";
-	
+
+	property name="languagePreferenceFull" persistent = "false" ;
+
 	
 
  property name="allowCorporateEmailsFlag" ormtype="boolean" hb_formatType="yesno";
@@ -220,23 +222,28 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	}
 
 	public string function getPreferredLocale(){
-		if(!isNull(getAccountCreatedSite())){
-			var site = getAccountCreatedSite();
-		}else if(!isNull(getHibachiScope().getCurrentRequestSite())){
-			var site = getHibachiScope().getCurrentRequestSite();
-		}
 		
-		if(!isNull(site)){
-			var siteCode = getService('SiteService').getCountryCodeBySite(site);
-		}else{
-			var siteCode = 'us';
-		}
-		
-		if(structKeyExists(variables, 'languagePreference') && len(siteCode)){
-			return lcase('#variables.languagePreference#_#siteCode#');
+		if(structKeyExists(variables, 'languagePreference') && len(this.getCountryCode())){
+			return lcase('#variables.languagePreference#_#this.getCountryCode()#');
 		}else{
 			return '';
 		}
+	}
+	
+	public string function getCountryCode() {
+		
+		if(!StructKeyExists(variables, "countryCode")) {
+			
+			var site = getAccountCreatedSite() ?: getHibachiScope().getCurrentRequestSite();
+		
+			if(!isNull(site)){
+				variables.countryCode = getService('SiteService').getCountryCodeBySite(site);
+			} else {
+				variables.countryCode = 'us';
+			}
+		}
+		
+		return variables.countryCode;
 	}
 
 	public array function getOrderCurrencies(){
@@ -1290,6 +1297,17 @@ public numeric function getSuccessfulFlexshipOrdersThisYearCount(){
 		if(!isNull(variables.accountNumber)){
 			return variables.accountNumber;
 		}
+	}
+	
+	public string function getLanguagePreferenceFull(){
+		if(!StructKeyExists(variables, "languagePreferenceFull")) {
+			
+			var javaLocale = createObject('java', 'java.util.Locale');
+			
+			 variables.languagePreferenceFull = javaLocale.init( this.getLanguagePreference() ?: "en" ,  this.getCountryCode() ?: "Us").getDisplayName();
+		}
+		
+		return variables.languagePreferenceFull;
 	}
 
 	public boolean function getCanCreateFlexshipFlag() {

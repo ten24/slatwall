@@ -15,7 +15,9 @@ component {
 	property name="spouseFirstName" persistent = "false";
 	property name="spouseLastName" persistent = "false";
 	property name="governmentIdentificationLastFour" persistent = "false";
-	
+
+	property name="languagePreferenceFull" persistent = "false" ;
+
 	
 	public numeric function getSuccessfulFlexshipOrdersThisYearCount(){
 		if(!structKeyExists(variables, 'successfulFlexshipOrdersThisYearCount')){
@@ -61,6 +63,17 @@ component {
 		if(!isNull(variables.accountNumber)){
 			return variables.accountNumber;
 		}
+	}
+	
+	public string function getLanguagePreferenceFull(){
+		if(!StructKeyExists(variables, "languagePreferenceFull")) {
+			
+			var javaLocale = createObject('java', 'java.util.Locale');
+			
+			 variables.languagePreferenceFull = javaLocale.init( this.getLanguagePreference() ?: "en" ,  this.getCountryCode() ?: "Us").getDisplayName();
+		}
+		
+		return variables.languagePreferenceFull;
 	}
 
 	public boolean function getCanCreateFlexshipFlag() {
