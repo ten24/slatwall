@@ -102,11 +102,14 @@ class SponsorSearchSelectorController {
 			'getmarketpartners',data
 		).then(data => {
 			this.observerService.notify('PromiseComplete');
-			
+			if(useHibachConfig || useOriginalAccountOwner){
+				this.selectedSponsor = data.pageRecords[0];
+				this.notifySelect(this.selectedSponsor);
+			}
 			this.loadingResults = false;
 			this.searchResults = data.pageRecords;
 			this.recordsCount = data.recordsCount;
-		
+			
 		});
 	}
 	
