@@ -442,7 +442,7 @@ component extends="Slatwall.model.service.OrderService" {
 		
         var currentOrderStatusType = arguments.order.getOrderStatusType();
         
-        logHibachi("Called updateOrderStatusBySystemCode, with currentOrderStatusType = #currentOrderStatusType.getSystemCode()#, new systemCode = #arguments.systemCode ?: ''#, typeCode = #arguments.typeCode ?: '' #  ");
+ 
         
         if( //if order is either in processing1 or 2 
         	currentOrderStatusType.getSystemCode() == 'ostProcessing' && 
@@ -475,7 +475,6 @@ component extends="Slatwall.model.service.OrderService" {
         if (arguments.systemCode == 'ostNotPlaced' && isNull(currentOrderStatusType)) {
 
             arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode));
-        	logHibachi("IN updateOrderStatusBySystemCode, setting OrderStatus to  arguments.systemCode= #arguments.systemCode#, new systemCode = #arguments.order.getOrderStatusType().getSystemCode() ?: ''# ");
         	
         } else if (arguments.systemCode == 'ostOnHold') {
 
@@ -500,10 +499,8 @@ component extends="Slatwall.model.service.OrderService" {
 			if (  arguments.order.getPaymentAmountDue() <= 0 ){
 				//type for PaidOrder  systemCode=ostProcessing, typeCode=2
 				arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode( systemCode='ostProcessing', typeCode="2")); 
-	        	logHibachi("IN updateOrderStatusBySystemCode, [paidOrder] setting OrderStatus to  systemCode= ostProcessing, new systemCode = #arguments.order.getOrderStatusType().getSystemCode() ?: ''# ");
 			} else {
 				arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode( systemCode=arguments.systemCode, typeCode="1")); 
-	        	logHibachi("IN updateOrderStatusBySystemCode, [not paidOrder] setting OrderStatus to  arguments.systemCode= #arguments.systemCode#, new systemCode = #arguments.order.getOrderStatusType().getSystemCode() ?: ''# ");
 			}
 				
         } else if (arguments.systemCode == 'ostProcessing') {
