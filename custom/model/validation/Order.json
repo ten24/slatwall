@@ -25,6 +25,11 @@
 			"isLockedInProcessingFlag":{
 				"eq":false
 			}
+		},
+		"orderIsInProcessing":{
+			"statusCode":{
+				"eq":"ostProcessing"
+			}
 		}
 	},
 	"properties": {
@@ -39,7 +44,10 @@
 		"isLockedInProcessingFlag": [{ "contexts": "edit,clear,delete,addOrderPayment,removeOrderPayment,retryPayment,placeOrder,addOrderItem,removeOrderItem,addOrderItemGiftRecipient,addSaleOrderItem,addPromotionCode,removePromotionCode,changeCurrencyCode,updateOrderAmounts,forceItemQuantityUpdate,updateStatus,updateOrderFulfillment,removePersonalInfo,closeOrder,createReturn,takeOffHold,placeOnHold,auditRollback,releaseCredits,reopenOrder", "eq": false }],
 		
 		"statusCode":  [
-			{ "contexts": "placeInProcessingOne", "conditions": "orderIsNotLockedInProcessing", "inList": "ostNew,ostPaid" },
+			{ "contexts": "placeInProcessingOne", "conditions": "orderIsNotLockedInProcessing", "eq": "ostNew" }
+		],
+		"orderStatusType.typeCode":  [
+			{ "contexts": "placeInProcessingOne", "conditions": "orderIsInProcessing", "eq": "2" }
 		],
 		
 		"isLockedInProcessingOneFlag": [

@@ -441,6 +441,32 @@ component extends="Slatwall.model.service.OrderService" {
 
         var currentOrderStatusType = arguments.order.getOrderStatusType();
         
+        if( //if order is either in processing1 or 2 
+        	currentOrderStatusType.getSystemCode() == 'ostProcessing' && 
+        	ListFindNoCase( 'processing1,processing2', currentOrderStatusType.getTypeCode() ) 
+        ) {
+        	
+	        /** 
+	         *  there're validations in place, but added these extra checks, 
+	         *  to prevent accidental order-status updates, as this's not a process/method
+	         *  
+	        */
+	        
+        	// order can only be canceled in processing1 status
+        	if(arguments.systemCode == 'ostCanceled') {
+	        	 if(currentOrderStatusType.getTypeCode() != 'processing1'){
+					return;
+	        	} 
+        	} else if( 
+        		// order  can only go  back and forth b/w processing1 and processing2
+        		arguments.systemCode != 'ostProcessing' || isNull(arguments.typeCode) || 
+        		!ListFindNoCase('processing1,processing2', arguments.typeCode) 
+        	){
+				return;
+        	}
+        	
+		}
+        
         // All new sales and return orders will appear as "Entered"
         
         if (arguments.systemCode == 'ostNotPlaced' && isNull(currentOrderStatusType)) {
@@ -480,7 +506,7 @@ component extends="Slatwall.model.service.OrderService" {
 				if(currentOrderStatusType.getSystemCode() == 'ostNew' && arguments.order.getPaymentAmountDue() <= 0) {
 
 					arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode( systemCode=arguments.systemCode, typeCode="2")); 
-
+	
 				// all processing status allowed when called with a specific typecode
 				// we should narrow down the flow of status here
 				} else if (!isNull(arguments.typeCode)) {
