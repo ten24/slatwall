@@ -3466,7 +3466,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			}
 			
 			if(setStartRange != "") {
-				if(arguments.measureType== "lastHour") {
+				if( ListFindNoCase("moreHours,moreMinutes,lastHour", arguments.measureType) ) {
 					rangeStruct.rangStartValue = CreateDateTime(year(setStartRange), month(setStartRange), day(setStartRange), hour(setStartRange), minute(setStartRange), second(setStartRange));
 				} else {
 					rangeStruct.rangStartValue = CreateDateTime(year(setStartRange), month(setStartRange), day(setStartRange), 0, 0, 0);
@@ -3474,7 +3474,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			}
 			
 			if(setEndRange != "") {
-				if(arguments.measureType== "lastHour") {
+				if( ListFindNoCase("moreHours,moreMinutes,lastHour", arguments.measureType) ) {
 					rangeStruct.rangeEndValue = CreateDateTime(year(setEndRange), month(setEndRange), day(setEndRange), hour(setEndRange), minute(setEndRange), second(setEndRange));
 				} else {
 					rangeStruct.rangeEndValue = CreateDateTime(year(setEndRange), month(setEndRange), day(setEndRange), 23, 59, 59);

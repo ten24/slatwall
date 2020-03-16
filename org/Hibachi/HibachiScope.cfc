@@ -273,8 +273,15 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	public boolean function hasFailureAction( required string action ) {
 		return arrayFindNoCase(getFailureActions(), arguments.action) > 0;
 	}
+	
+	public void function clearActionResult( required string action ) {
+		 arrayDeleteNoCase(getFailureActions(), arguments.action);
+		 arrayDeleteNoCase(getSuccessfulActions(), arguments.action);
+	}
 
 	public void function addActionResult( required string action, required failure=false ) {
+		clearActionResult(arguments.action);
+		
 		if(arguments.failure) {
 			arrayAppend(getFailureActions(), arguments.action);
 		} else {

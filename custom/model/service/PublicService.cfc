@@ -914,23 +914,36 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     }
     
     public any function updateAccount(required struct data){
+        param name="arguments.data.context" default="save";
+
         var account = super.updateAccount(arguments.data);
-        if(!account.hasErrors()){
-            if(!isNull(arguments.data['governmentIDNumber'])){
-                var accountGovernmentIdentification = getService('AccountService').newAccountGovernmentIdentification();
-                accountGovernmentIdentification.setGovernmentIdentificationNumber(arguments.data['governmentIDNumber']);
-                accountGovernmentIdentification.setAccount(account);
-                accountGovernmentIdentification = getService('AccountService').saveAccountGovernmentIdentification(accountGovernmentIdentification);
-                if(accountGovernmentIdentification.hasErrors()){
-                    addErrors(arguments.data,accountGovernmentIdentification.getErrors());
-                }
-                getHibachiScope().addActionResult('public:account.addGovernmentIdentification',accountGovernmentIdentification.hasErrors());
+        
+        if(!account.hasErrors() && !isNull(arguments.data['governmentIDNumber'])){
+            
+            var accountGovernmentIdentification = getService('AccountService').newAccountGovernmentIdentification();
+            accountGovernmentIdentification.setGovernmentIdentificationNumber(arguments.data['governmentIDNumber']);
+            accountGovernmentIdentification.setAccount(account);
+            
+            accountGovernmentIdentification = getService('AccountService')
+                .saveAccountGovernmentIdentification(accountGovernmentIdentification);
+            
+            getHibachiScope().addActionResult('public:account.addGovernmentIdentification', accountGovernmentIdentification.hasErrors());
+            
+            if(accountGovernmentIdentification.hasErrors()){
+                account.addErrors(accountGovernmentIdentification.getErrors());
+                addErrors(arguments.data,accountGovernmentIdentification.getErrors());
             }
-            if ( 
+            
+        }
+        
+         if(!account.hasErrors()){
+             
+            if( 
                 !isNull( arguments.data['month'] )
                 && !isNull( arguments.data['year'] )
                 && !isNull( arguments.data['day'] )
             ) {
+                
                 account.setBirthDate( arguments.data.month & '/' & arguments.data.day & '/' & arguments.data.year );
                 getAccountService().saveAccount( account );
             }
@@ -940,6 +953,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                 getService('MailchimpAPIService').updateSubscriptionByAccount( account, arguments.data.subscribedToMailchimp );
             }
         }
+        
+        getHibachiScope().addActionResult( "public:account.update", account.hasErrors() );
+
         return account;
     }
     
@@ -1938,7 +1954,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     **/
     public any function updateEighteenPlusUser(required any data){
         arguments.data['context'] = 'eighteenPlus';
-        super.updateAccount(arguments.data);
+        this.updateAccount(arguments.data);
     }
     
 }
