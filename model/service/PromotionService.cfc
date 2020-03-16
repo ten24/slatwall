@@ -375,13 +375,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	public void function updateOrderAmountsWithPromotions(required any order) {
-		arguments.order.updateCalculatedProperties(true);
+		for(var orderItem in arguments.order.getOrderItems()){
+			orderItem.updateCalculatedProperties(true);
+		}
 		//Save before flushing 
 		if(arguments.order.getNewFlag()){
 			getService('hibachiService').saveOrder(arguments.order);
 		}
-
-		getHibachiScope().flushOrmSession();
 
 		if(arguments.order.isOrderPaidFor()){
 			return;
@@ -395,7 +395,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		var orderItemIDList="";
  		for(var orderItem in arguments.order.getOrderItems()){
- 			orderItemIDList = listAppend(orderItemIDList,orderItem.getSku().getSkuID());
+ 			orderItemIDList = listAppend(orderItemIDList,orderItem.getSku().getSkuID()&orderItem.getQuantity());
  		}
  		for(var promotionCode in arguments.order.getPromotionCodes()){
  			orderItemIDList = listAppend(orderItemIDList,promotionCode.getPromotionCodeID());
@@ -424,8 +424,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arguments.order.setPromotionCacheKey(promotionCacheKey);
 			// Sale & Exchange Orders
 			if( listFindNoCase("otSalesOrder,otExchangeOrder", arguments.order.getOrderType().getSystemCode()) ) {
+				
 				clearPreviouslyAppliedPromotions(arguments.order);
 				clearPreviouslyAppliedPromotionMessages(arguments.order);
+				getHibachiScope().flushOrmSession();
+				
 				// This is a structure of promotionPeriods that will get checked and cached as to if we are still within the period use count, and period account use count
 				var promotionPeriodQualifications = {};
 	
@@ -484,7 +487,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				if(arrayLen(orderQualifierMessages)){
 					applyPromotionQualifierMessagesToOrder(arguments.order,orderQualifierMessages);
 				}
-
 			} // END of Sale or Exchange Loop
 	
 			// Return & Exchange Orders
@@ -517,6 +519,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		for(var i = len; i >= 1; i--) {
 			arguments.order.getAppliedPromotionMessages()[i].removeOrder();
 		}
+
 	}
 	
 	private void function applyPromotionQualifierMessagesToOrder(required any order, required array orderQualifierMessages){

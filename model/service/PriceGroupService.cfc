@@ -440,7 +440,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var orderItems = arguments.order.getOrderItems(); 
 			for(var orderItem in orderItems){
 				
-				if(orderItem.getUserDefinedPriceFlag()){
+				if(!isNull(orderItem.getUserDefinedPriceFlag()) && orderItem.getUserDefinedPriceFlag()){
 					continue;
 				}
 				
