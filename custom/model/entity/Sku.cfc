@@ -9,7 +9,7 @@ component {
 	
 	// Non-persistent properties
     property name="personalVolumeByCurrencyCode" persistent="false";
-	property name="comissionablelVolumeByCurrencyCode" persistent="false";
+	property name="commissionableVolumeByCurrencyCode" persistent="false";
 
 	public boolean function canBePurchased(required any account){
 		

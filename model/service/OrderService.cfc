@@ -1711,12 +1711,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 				if(orderPayment.hasErrors()){
 					orderPayment.clearHibachiErrors(); 
-					newOrder.setOrderStatusType(getTypeService().getType('2c9280846bd1f0d8016bd217dc1d002e'));
-					newOrder.setPaymentTryCount(1);
-					newOrder.setPaymentLastRetryDateTime(now());
-
-					//fire retry payment failure event so it can be utilized in workflows
-					getHibachiEventService().announceEvent("afterOrderProcess_RetryPaymentFailure");
 				} 
 			}
 		}
@@ -1725,15 +1719,19 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		newOrder = this.saveOrder(order=newOrder, updateOrderAmount=false, updateShippingMethodOptions=false, checkNewAccountAddressSave=false); 
 
 		if(newOrder.hasErrors() || newOrder.getPaymentAmountDue() > 0){
-			updateOrderStatusBySystemCode(newOrder, 'ostProcessing', 'paymentDeclined');
+			this.updateOrderStatusBySystemCode(newOrder, 'ostProcessing', 'paymentDeclined');
 			newOrder.setPaymentTryCount(1);
 			newOrder.setPaymentLastRetryDateTime(now());
 			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has declined payment');
 			newOrder.clearHibachiErrors();
-			this.processOrder( newOrder, {}, 'updateOrderAmounts' );
+			newOrder = this.processOrder( newOrder, {}, 'updateOrderAmounts' );
+			newOrder = this.saveOrder(newOrder);
+			ormFlush(); 
+			//fire retry payment failure event so it can be utilized in workflows
+			getHibachiEventService().announceEvent("afterOrderProcess_retryPaymentFailure", {"entity":newOrder, "order":newOrder});
 		}
 			
-		this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# completing place order');
+		this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# completing place order and has status: #newOrder.getOrderStatusType().getTypeName()#');
 		getHibachiEntityQueueService().insertEntityQueueItem(arguments.orderTemplate.getOrderTemplateID(), 'OrderTemplate', 'processOrderTemplate_removeTemporaryItems');	
 
 		return arguments.orderTemplate; 
@@ -5017,7 +5015,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			this.logHibachi('saveOrder updateOrderAmounts');
 			arguments.order = this.processOrder( order, {}, 'updateOrderAmounts');
 		}
-
 		// Check for updateEventRegistrationQuantity Needs
 		if(!arguments.order.hasErrors() && !listFindNoCase("ostClosed,ostCanceled", arguments.order.getStatusCode())) {
 
