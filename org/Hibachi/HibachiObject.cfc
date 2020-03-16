@@ -3,7 +3,7 @@ component accessors="true" output="false" persistent="false" {
 	property name="hibachiInstanceApplicationScopeKey" type="string" persistent="false";
 	property name="currentMonth" persistent="false";
 	property name="currentYear" persistent="false";
-	property name="currentYearAbreviated" persistent="false";
+	property name="currentYearAbbreviated" persistent="false";
 
 	// Constructor Metod
 	public any function init( ) {
