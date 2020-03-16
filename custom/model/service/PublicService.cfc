@@ -1938,7 +1938,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     **/
     public any function updateEighteenPlusUser(required any data){
         arguments.data['context'] = 'eighteenPlus';
-        super.updateAccount(arguments.data);
+        this.updateAccount(arguments.data);
     }
     
 }
