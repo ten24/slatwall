@@ -15,15 +15,21 @@
 		}
 	},
 	"properties": {
-		"account": [{ "contexts": "save", "required": true, conditions: "activeScheduleOrderTemplate" }],
+		"account": [{ "contexts": "save", "required": true, "conditions": "activeScheduleOrderTemplate" }],
 		"accountPaymentMethod": [
 			{
 				"contexts": "save,createAndPlaceOrder",
-				"conditions": "activeScheduleOrderTemplate",
+				"conditions": "activeScheduleOrderTemplate",	
 				"required": true
 			}
 		],
-		"billingAccountAddress": [{ "contexts": "activate,createAndPlaceOrder", "required": true }],
+		"billingAccountAddress": [
+			{ 
+				"contexts": "save,createAndPlaceOrder", 
+				"conditions": "activeScheduleOrderTemplate",	
+				"required": true 
+			}
+		],
 		"canPlaceOrderFlag": [
 			{ "contexts": "save", "conditions": "activeScheduleOrderTemplate,createAndPlaceOrder", "eq": true }
 		],
