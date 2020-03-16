@@ -388,6 +388,7 @@ component extends="Slatwall.model.service.OrderService" {
 			
 			request[orderTemplateOrderDetailsKey]['canPlaceOrderDetails'] = getPromotionService().getOrderQualifierDetailsForCanPlaceOrderReward(transientOrder); 
 			request[orderTemplateOrderDetailsKey]['canPlaceOrder'] = request[orderTemplateOrderDetailsKey]['canPlaceOrderDetails']['canPlaceOrder']; 
+			ormFlush();
 			request[orderTemplateOrderDetailsKey]['purchasePlusTotal'] = transientOrder.getPurchasePlusTotal();
 			var deleteOk = this.deleteOrder(transientOrder); 
 			this.logHibachi('transient order deleted #deleteOk# hasErrors #transientOrder.hasErrors()#',true);
@@ -1672,7 +1673,7 @@ component extends="Slatwall.model.service.OrderService" {
 	}
 	
 	public any function getPurchasePlusInformationForOrderItems(required string orderID=''){
-		if(!len(arguments.orderID)) return;
+		if(!len(arguments.orderID)) return [];
 		var orderItemCL = this.getOrderItemCollectionList();
 		orderItemCL.addFilter('order.orderID', arguments.orderID)
 		orderItemCL.addDisplayProperty('orderItemID');
