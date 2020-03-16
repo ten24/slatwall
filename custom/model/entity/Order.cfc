@@ -468,6 +468,7 @@ component {
 		 if (!structKeyExists(variables, "purchasePlusTotal")){
 			var purchasePlusRecords = getService('orderService').getPurchasePlusInformationForOrderItems(this.getOrderID());
 			var total = 0;
+	
 			if(!isArray(purchasePlusRecords)){
 				purchasePlusRecords = purchasePlusRecords.getRecords();
 				for (var item in purchasePlusRecords){
