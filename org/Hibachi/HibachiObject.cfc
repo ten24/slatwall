@@ -42,7 +42,7 @@ component accessors="true" output="false" persistent="false" {
 		return year(now());
 	} 
 
-	public numeric function getCurrentYearAbreviated(){
+	public numeric function getCurrentYearAbbreviated(){
 		return right(getCurrentYear(), 2); 
 	}  	
 	//end convenience date functions for collections filters
