@@ -387,8 +387,7 @@ component extends="Slatwall.model.service.OrderService" {
 			for (var item in records){
 				request[orderTemplateOrderDetailsKey]['purchasePlusTotal'] +=  item.discountAmount;
 			};
-			writeDump(request[orderTemplateOrderDetailsKey]['purchasePlusTotal']);
-			abort;
+		
 			var deleteOk = this.deleteOrder(transientOrder); 
 			this.logHibachi('transient order deleted #deleteOk# hasErrors #transientOrder.hasErrors()#',true);
 			StructDelete(request[orderTemplateOrderDetailsKey], 'orderTemplate'); //we don't need it anymore

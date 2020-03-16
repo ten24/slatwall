@@ -82,7 +82,7 @@
 						<span sw-rbkey="'frontend.enrollmentFlexship.toQualify'"></span>
 					</p>
 				</div>
-				<div class="row justify-content-between px-3">
+				<div ng-if="enrollmentFlexship.suggestedRetailPrice" class="row justify-content-between px-3">
 					<div>
 						<small> <span sw-rbKey="'frontend.hybridCart.suggestedPrice'"></span> </small>
 					</div>
@@ -95,7 +95,7 @@
 						<small> <span sw-rbKey="'frontend.hybridCart.yourPrice'"></span> </small>
 					</div>
 					<div>
-						<small ng-bind-html="enrollmentFlexship.orderTemplate.calculatedSubTotal | swcurrency:enrollmentFlexship.orderTemplate.currencyCode"></small>
+						<small ng-bind-html="(enrollmentFlexship.orderTemplate.calculatedSubTotal ? enrollmentFlexship.orderTemplate.calculatedSubTotal : 0 )| swcurrency:enrollmentFlexship.orderTemplate.currencyCode"></small>
 					</div>
 				</div>
 				<div class="row justify-content-between px-3">
@@ -103,7 +103,7 @@
 						<small> <span sw-rbKey="'frontend.hybridCart.purchasePlus'"></span> </small>
 					</div>
 					<div>
-						<small>$99.00</small>
+						<small ng-bind-html="(enrollmentFlexship.orderTemplate.purchasePlusTotal ? enrollmentFlexship.orderTemplate.purchasePlusTotal : 0) | swcurrency:enrollmentFlexship.orderTemplate.currencyCode"></small>
 					</div>
 				</div>
 				<hr class="my-0">
@@ -115,7 +115,7 @@
 					</div>
 					<div>
 						<small> 
-							<b ng-bind-html="enrollmentFlexship.orderTemplate.calculatedSubTotal | swcurrency:enrollmentFlexship.orderTemplate.currencyCode"></b>
+							<b ng-bind-html="(enrollmentFlexship.orderTemplate.calculatedSubTotal ? enrollmentFlexship.orderTemplate.calculatedSubTotal : 0) | swcurrency:enrollmentFlexship.orderTemplate.currencyCode"></b>
 						</small>
 					</div>
 				</div>
