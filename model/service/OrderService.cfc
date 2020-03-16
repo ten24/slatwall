@@ -1215,7 +1215,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		request[orderTemplateOrderDetailsKey] = {}; 
 		request[orderTemplateOrderDetailsKey]['fulfillmentTotal'] = 0;
+		request[orderTemplateOrderDetailsKey]['total'] = 0;
 		request[orderTemplateOrderDetailsKey]['subtotal'] = 0;
+		request[orderTemplateOrderDetailsKey]['taxableAmountTotal'] = 0;
 		request[orderTemplateOrderDetailsKey]['fulfillmentDiscount'] = 0;
 		request[orderTemplateOrderDetailsKey]['canPlaceOrder'] = false;
 		request[orderTemplateOrderDetailsKey]['orderTemplate'] = arguments.orderTemplate; 	
@@ -1249,7 +1251,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				request[orderTemplateOrderDetailsKey]['fulfillmentTotal'] = transientOrder.getFulfillmentTotal(); 
 				request[orderTemplateOrderDetailsKey]['fulfillmentDiscount'] = transientOrder.getFulfillmentDiscountAmountTotal(); 
 			}
-			request[orderTemplateOrderDetailsKey]['subtotal'] = transientOrder.getSubtotal(); 
+			request[orderTemplateOrderDetailsKey]['subtotal'] = transientOrder.getCalculatedSubtotal(); 
+			request[orderTemplateOrderDetailsKey]['total'] = transientOrder.getCalculatedTotal();
+			request[orderTemplateOrderDetailsKey]['taxableAmountTotal'] = transientOrder.getTaxableAmountTotal();
 			var freeRewardSkuCollection = getSkuService().getSkuCollectionList();
 			var freeRewardSkuIDs = getPromotionService().getQualifiedFreePromotionRewardSkuIDs(transientOrder);
 			freeRewardSkuCollection.addFilter('skuID', freeRewardSkuIDs, 'in');
@@ -1287,8 +1291,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public numeric function getOrderTemplateSubtotal(required any orderTemplate){
 		return getOrderTemplateOrderDetails(argumentCollection=arguments)['subtotal'];	
 	}
+	
 	public numeric function getFulfillmentTotalForOrderTemplate(required any orderTemplate){
 		return getOrderTemplateOrderDetails(argumentCollection=arguments)['fulfillmentTotal'];	
+	}
+	
+	public numeric function getTaxableAmountTotalForOrderTemplate(required any orderTemplate){
+		return getOrderTemplateOrderDetails(argumentCollection=arguments)['taxableAmountTotal'];	
 	}
 	
 	public struct function getPromotionalFreeRewardSkuCollectionConfigForOrderTemplate(required any orderTemplate){ 
@@ -1716,7 +1725,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		newOrder = this.saveOrder(order=newOrder, updateOrderAmount=false, updateShippingMethodOptions=false, checkNewAccountAddressSave=false); 
 
 		if(newOrder.hasErrors() || newOrder.getPaymentAmountDue() > 0){
-			newOrder.setOrderStatusType(getTypeService().getType('2c9280846bd1f0d8016bd217dc1d002e'));
+			updateOrderStatusBySystemCode(newOrder, 'ostProcessing', 'paymentDeclined');
 			newOrder.setPaymentTryCount(1);
 			newOrder.setPaymentLastRetryDateTime(now());
 			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has declined payment');

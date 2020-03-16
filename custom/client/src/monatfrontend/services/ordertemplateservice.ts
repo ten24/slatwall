@@ -362,6 +362,7 @@ export class OrderTemplateService {
         }
         
         this.publicService.doAction('getSetFlexshipOnSession', data).then(res=>{
+            console.log(res)
             if(res.orderTemplate && typeof res.orderTemplate == 'string'){
                 this.currentOrderTemplateID = res.orderTemplate;
             }else if(res.orderTemplate){

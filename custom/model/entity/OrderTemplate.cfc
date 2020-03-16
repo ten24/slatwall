@@ -4,6 +4,8 @@ component {
 	//calculated properties
 	property name="calculatedCommissionableVolumeTotal" ormtype="integer";
 	property name="calculatedPersonalVolumeTotal" ormtype="integer";
+	property name="calculatedProductPackVolumeTotal" ormtype="integer";
+	property name="calculatedRetailCommissionTotal" ormtype="integer"; 
 
 	//non-persistents
 	property name="accountIsNotInFlexshipCancellationGracePeriod" persistent="false";
@@ -17,6 +19,9 @@ component {
 	property name="commissionableVolumeTotal" persistent="false"; 
 	property name="purchasePlusTotal" persistent="false"; 
 	property name="personalVolumeTotal" persistent="false";
+	property name="productPackVolumeTotal" persistent="false"; 
+	property name="retailCommissionTotal" persistent="false";
+	property name="flexshipQualifiedOrdersForCalendarYearCount" persistent="false"; 
 	property name="flexshipQualifiedOrdersForCalendarYearCount" persistent="false"; 
 	property name="qualifiesForOFYProducts" persistent="false";
 	property name="cartTotalThresholdForOFYAndFreeShipping" persistent="false";
@@ -50,8 +55,9 @@ component {
 	}
 
 	public numeric function getCommissionableVolumeTotal(){
+		
 		if(!structKeyExists(variables, 'commissionableVolumeTotal')){
-			variables.commissionableVolumeTotal = getService('OrderService').getComissionableVolumeTotalForOrderTemplate(this);	
+			variables.commissionableVolumeTotal = getService('OrderService').getCommissionableVolumeTotalForOrderTemplate(this);	
 		}	
 		return variables.commissionableVolumeTotal;
 	} 
@@ -61,6 +67,14 @@ component {
 			variables.purchasePlusTotal = getService('OrderService').getPurchasePlusTotalForOrderTemplate(this);	
 		}	
 		return variables.purchasePlusTotal;
+	} 
+
+	public numeric function getProductPackVolumeTotal(){
+		
+		if(!structKeyExists(variables, 'productPackVolumeTotal')){
+			variables.productPackVolumeTotal = getService('OrderService').getProductPackVolumeTotalForOrderTemplate(this);	
+		}	
+		return variables.productPackVolumeTotal;
 	} 
 
 	public numeric function getFlexshipQualifiedOrdersForCalendarYearCount(){
