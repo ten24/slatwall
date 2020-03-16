@@ -269,7 +269,7 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
     property name="calculatedRetailValueVolumeDiscountTotal" ormtype="big_decimal" hb_formatType="none";
     property name="accountType" ormtype="string";
     property name="accountPriceGroup" ormtype="string";
-
+	
     property name="shipMethodCode" ormtype="string";
     property name="iceRecordNumber" ormtype="string";
     property name="commissionPeriodCode" ormtype="string";
@@ -281,13 +281,15 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
     property name="isLockedInProcessingFlag" persistent="false";
     property name="isLockedInProcessingOneFlag" persistent="false";
     property name="isLockedInProcessingTwoFlag" persistent="false";
-
+	property name="purchasePlusTotal" persistent="false";
+	
    
  property name="businessDate" ormtype="string";
  property name="commissionPeriod" ormtype="string";
  property name="importFlexshipNumber" ormtype="string";
  property name="initialOrderFlag" ormtype="boolean";
  property name="orderSource" ormtype="string" hb_formFieldType="select";
+ property name="commissionPeriodCode" ormtype="string" hb_formFieldType="select";
  property name="undeliverableOrderReasons" ormtype="string" hb_formFieldType="select";
  property name="orderAccountNumber" ormtype="string";
  property name="orderCountryCode" ormtype="string";
@@ -2322,6 +2324,23 @@ public numeric function getPersonalVolumeSubtotal(){
 						getOrderStatusType().getTypeCode() == "processing2"
 					)
 				);
+	}
+	
+	public boolean function getPurchasePlusTotal(){
+		
+		 if (!structKeyExists(variables, "purchasePlusTotal")){
+			var purchasePlusRecords = getService('orderService').getPurchasePlusInformationForOrderItems(this.getOrderID());
+			var total = 0;
+	
+			if(!isArray(purchasePlusRecords)){
+				purchasePlusRecords = purchasePlusRecords.getRecords();
+				for (var item in purchasePlusRecords){
+					total +=  item.discountAmount;
+				}
+			}
+			variables.purchasePlusTotal = total;
+		}
+		return variables.purchasePlusTotal;
 	}
 	//CUSTOM FUNCTIONS END
 }

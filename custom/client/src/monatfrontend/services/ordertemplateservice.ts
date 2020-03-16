@@ -362,12 +362,14 @@ export class OrderTemplateService {
         }
         
         this.publicService.doAction('getSetFlexshipOnSession', data).then(res=>{
+            console.log(res)
             if(res.orderTemplate && typeof res.orderTemplate == 'string'){
                 this.currentOrderTemplateID = res.orderTemplate;
             }else if(res.orderTemplate){
                 this.currentOrderTemplateID = res.orderTemplate.orderTemplateID
                 this.mostRecentOrderTemplate = res.orderTemplate;
                 this.canPlaceOrderFlag = res.orderTemplate.canPlaceOrderFlag;
+                this.mostRecentOrderTemplate['suggestedPrice'] = this.calculateSRPOnOrder(this.mostRecentOrderTemplate);
             }
             deferred.resolve(res);
 	    }).catch( (e) => {
@@ -376,5 +378,15 @@ export class OrderTemplateService {
        
        return deferred.promise;
 	}
+	
+    public calculateSRPOnOrder= (orderTemplate):number =>{
+    	if(!orderTemplate.orderTemplateItems) return;
+    	let suggestedRetailPrice = 0;
+    	for(let item of orderTemplate.orderTemplateItems){
+    		suggestedRetailPrice += item.calculatedListPrice;
+    	}
+    	
+    	return suggestedRetailPrice;
+    }
 
 }

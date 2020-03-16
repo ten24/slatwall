@@ -139,6 +139,7 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 	property name="flexshipStatusCode" ormtype="string";
 	property name="addressValidationCode" ormtype="string";
 	property name="commissionableVolumeTotal" persistent="false"; 
+	property name="purchasePlusTotal" persistent="false"; 
 	property name="personalVolumeTotal" persistent="false";
 	property name="productPackVolumeTotal" persistent="false"; 
 	property name="retailCommissionTotal" persistent="false";
@@ -445,6 +446,13 @@ public boolean function getAccountIsNotInFlexshipCancellationGracePeriod(){
 			variables.commissionableVolumeTotal = getService('OrderService').getCommissionableVolumeTotalForOrderTemplate(this);	
 		}	
 		return variables.commissionableVolumeTotal;
+	} 
+	
+	public numeric function getPurchasePlusTotal(){
+		if(!structKeyExists(variables, 'purchasePlusTotal')){
+			variables.purchasePlusTotal = getService('OrderService').getPurchasePlusTotalForOrderTemplate(this);	
+		}	
+		return variables.purchasePlusTotal;
 	} 
 
 	public numeric function getProductPackVolumeTotal(){

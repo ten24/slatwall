@@ -22,7 +22,8 @@ export default interface cartOrderItem {
 	childOrderItems: Array<genericObject>,
 	taxAmount: number,
 	quantity: number,
-	currencyCode: string
+	currencyCode: string,
+	calculatedListPrice:number
 }
 
  
