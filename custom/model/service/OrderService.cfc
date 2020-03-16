@@ -438,8 +438,11 @@ component extends="Slatwall.model.service.OrderService" {
 	} 
 
     public void function updateOrderStatusBySystemCode(required any order, required string systemCode, string typeCode) {
-
+		
+		
         var currentOrderStatusType = arguments.order.getOrderStatusType();
+        
+        logHibachi("Called updateOrderStatusBySystemCode, with currentOrderStatusType = #currentOrderStatusType.getSystemCode()#, new systemCode = #arguments.systemCode ?: ''#, typeCode = #arguments.typeCode ?: '' #  ");
         
         if( //if order is either in processing1 or 2 
         	currentOrderStatusType.getSystemCode() == 'ostProcessing' && 
@@ -470,8 +473,9 @@ component extends="Slatwall.model.service.OrderService" {
         // All new sales and return orders will appear as "Entered"
         
         if (arguments.systemCode == 'ostNotPlaced' && isNull(currentOrderStatusType)) {
-        	
+
             arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode));
+        	logHibachi("IN updateOrderStatusBySystemCode, setting OrderStatus to  arguments.systemCode= #arguments.systemCode#, new systemCode = #arguments.order.getOrderStatusType().getSystemCode() ?: ''# ");
         	
         } else if (arguments.systemCode == 'ostOnHold') {
 
@@ -494,9 +498,12 @@ component extends="Slatwall.model.service.OrderService" {
 
 			//if the order is paid don't set to new, otherwise set to new
 			if (  arguments.order.getPaymentAmountDue() <= 0 ){
-				arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode( systemCode=arguments.systemCode, typeCode="2")); 
+				//type for PaidOrder  systemCode=ostProcessing, typeCode=2
+				arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode( systemCode='ostProcessing', typeCode="2")); 
+	        	logHibachi("IN updateOrderStatusBySystemCode, [paidOrder] setting OrderStatus to  systemCode= ostProcessing, new systemCode = #arguments.order.getOrderStatusType().getSystemCode() ?: ''# ");
 			} else {
 				arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode( systemCode=arguments.systemCode, typeCode="1")); 
+	        	logHibachi("IN updateOrderStatusBySystemCode, [not paidOrder] setting OrderStatus to  arguments.systemCode= #arguments.systemCode#, new systemCode = #arguments.order.getOrderStatusType().getSystemCode() ?: ''# ");
 			}
 				
         } else if (arguments.systemCode == 'ostProcessing') {
@@ -511,7 +518,7 @@ component extends="Slatwall.model.service.OrderService" {
 				// we should narrow down the flow of status here
 				} else if (!isNull(arguments.typeCode)) {
 
-					var newType = getTypeService().getTypeBySystemCode( systemCode=arguments.systemCode, typeCode="#argument.typeCode#");
+					var newType = getTypeService().getTypeBySystemCode( systemCode=arguments.systemCode, typeCode=arguments.typeCode);
 					arguments.order.setOrderStatusType( newType );
 	            }
 			        // Return Orders
@@ -797,13 +804,12 @@ component extends="Slatwall.model.service.OrderService" {
 		
 	public boolean function orderCanBeCanceled(required any order){
 		
-		if(!super.orderCanBeCanceled(arguments.order)) {
+		if(!super.orderCanBeCanceled(arguments.order) || arguments.order.getIsLockedInProcessingTwoFlag()) {
 			return false;
 		}
-		
 		//order can be canceled in processing-1, but not in processing-2
-		return  !arguments.order.getIsLockedInProcessingFlag() || arguments.order.getIsLockedInProcessingOneFlag();
 		
+		return true;
 	}
 		
 	// =================== END: Validation Helpers Functions ========================
