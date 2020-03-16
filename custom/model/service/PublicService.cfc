@@ -914,6 +914,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     }
     
     public any function updateAccount(required struct data){
+        param name="arguments.data.context" default="save";
+
         var account = super.updateAccount(arguments.data);
         if(!account.hasErrors()){
             if(!isNull(arguments.data['governmentIDNumber'])){
