@@ -288,7 +288,6 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
  property name="importFlexshipNumber" ormtype="string";
  property name="initialOrderFlag" ormtype="boolean";
  property name="orderSource" ormtype="string" hb_formFieldType="select";
- property name="commissionPeriodCode" ormtype="string" hb_formFieldType="select";
  property name="undeliverableOrderReasons" ormtype="string" hb_formFieldType="select";
  property name="orderAccountNumber" ormtype="string";
  property name="orderCountryCode" ormtype="string";
@@ -2305,11 +2304,11 @@ public numeric function getPersonalVolumeSubtotal(){
 	}
 	 
 	public boolean function getIsLockedInProcessingOneFlag(){
-		return getOrderStatusType().getSystemCode() == "ostProcessing" && getOrderStatusType().getTypeCode() == "ostProcessing1";
+		return getOrderStatusType().getSystemCode() == "ostProcessing" && getOrderStatusType().getTypeCode() == "processing1";
 	}
 	
 	public boolean function getIsLockedInProcessingTwoFlag(){
-		return getOrderStatusType().getSystemCode() == "ostProcessing" && getOrderStatusType().getTypeCode() == "ostProcessing2";
+		return getOrderStatusType().getSystemCode() == "ostProcessing" && getOrderStatusType().getTypeCode() == "processing2";
 	}
 	
 	public boolean function getIsLockedInProcessingFlag(){
@@ -2318,9 +2317,9 @@ public numeric function getPersonalVolumeSubtotal(){
 					getOrderStatusType().getSystemCode() == "ostProcessing" 
 					&& 
 					(
-						getOrderStatusType().getTypeCode() == "ostProcessing1"
+						getOrderStatusType().getTypeCode() == "processing1"
 						||
-						getOrderStatusType().getTypeCode() == "ostProcessing2"
+						getOrderStatusType().getTypeCode() == "processing2"
 					)
 				);
 	}
