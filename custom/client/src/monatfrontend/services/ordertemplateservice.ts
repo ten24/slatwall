@@ -369,7 +369,7 @@ export class OrderTemplateService {
                 this.currentOrderTemplateID = res.orderTemplate.orderTemplateID
                 this.mostRecentOrderTemplate = res.orderTemplate;
                 this.canPlaceOrderFlag = res.orderTemplate.canPlaceOrderFlag;
-                res.orderTemplate['suggestedPrice'] = this.calculateSRPOnOrder(this.mostRecentOrderTemplate);
+                this.mostRecentOrderTemplate['suggestedPrice'] = this.calculateSRPOnOrder(this.mostRecentOrderTemplate);
             }
             deferred.resolve(res);
 	    }).catch( (e) => {
