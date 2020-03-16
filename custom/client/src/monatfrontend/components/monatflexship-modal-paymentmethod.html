@@ -24,7 +24,7 @@
 				</h6>
 
 				<div
-					class="custom-radio form-group"
+					class="custom-radio form-group py-2"
 					ng-repeat="accountPaymentMethod in monatFlexshipPaymentMethodModal.accountPaymentMethods"
 					ng-click="
 						$parent.monatFlexshipPaymentMethodModal.setSelectedAccountPaymentMethodID(accountPaymentMethod.accountPaymentMethodID);
@@ -46,7 +46,7 @@
 				</div>
 
 				<div
-					class="custom-radio form-group"
+					class="custom-radio form-group py-2"
 					ng-click="monatFlexshipPaymentMethodModal.setSelectedAccountPaymentMethodID()"
 				>
 					<input
@@ -60,13 +60,13 @@
 				</div>
 				
 				<!-- new billing -->
-				<div ng-if="'new' === monatFlexshipPaymentMethodModal.selectedAccountPaymentMethod.accountPaymentMethodID">
+				<div class="my-3" ng-if="'new' === monatFlexshipPaymentMethodModal.selectedAccountPaymentMethod.accountPaymentMethodID">
 					<h6 class="title-with-line mb-5">
 						{{ monatFlexshipPaymentMethodModal.translations.billingAddress }}
 					</h6>
 	
 					<div
-						class="custom-radio form-group"
+						class="custom-radio form-group py-2"
 						ng-repeat="accountAddress in monatFlexshipPaymentMethodModal.accountAddresses"
 						ng-click="$parent.monatFlexshipPaymentMethodModal.setSelectedBillingAccountAddressID(accountAddress.accountAddressID)"
 					>
@@ -82,7 +82,7 @@
 					</div>
 	
 					<div
-						class="custom-radio form-group"
+						class="custom-radio form-group py-2"
 						ng-click="monatFlexshipPaymentMethodModal.setSelectedBillingAccountAddressID()"
 					>
 						<input
