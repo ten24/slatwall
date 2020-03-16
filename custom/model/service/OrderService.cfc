@@ -388,11 +388,10 @@ component extends="Slatwall.model.service.OrderService" {
 			
 			request[orderTemplateOrderDetailsKey]['canPlaceOrderDetails'] = getPromotionService().getOrderQualifierDetailsForCanPlaceOrderReward(transientOrder); 
 			request[orderTemplateOrderDetailsKey]['canPlaceOrder'] = request[orderTemplateOrderDetailsKey]['canPlaceOrderDetails']['canPlaceOrder']; 
+			request[orderTemplateOrderDetailsKey]['purchasePlusTotal'] = transientOrder.getPurchasePlusTotal();
 			var deleteOk = this.deleteOrder(transientOrder); 
 			this.logHibachi('transient order deleted #deleteOk# hasErrors #transientOrder.hasErrors()#',true);
-
-			ormFlush();	
-			
+			ormFlush();
 			StructDelete(request[orderTemplateOrderDetailsKey], 'orderTemplate'); //we don't need it anymore
 			
 		}
@@ -416,6 +415,11 @@ component extends="Slatwall.model.service.OrderService" {
 		return getOrderTemplateOrderDetails(argumentCollection=arguments)['commissionableVolumeTotal'];	
 	}
 	
+
+	public numeric function getPurchasePlusTotalForOrderTemplate(required any orderTemplate){
+		return getOrderTemplateOrderDetails(argumentCollection=arguments)['purchasePlusTotal'];	
+	}
+	
 	public numeric function getProductPackVolumeTotalForOrderTemplate(required any orderTemplate){
 		return getOrderTemplateOrderDetails(argumentCollection=arguments)['productPackVolumeTotal'];	
 	}
@@ -433,7 +437,7 @@ component extends="Slatwall.model.service.OrderService" {
 		
 		var orderTemplateItemCollection = this.getOrderTemplateItemCollectionList();
 		
-		var displayProperties = 'calculatedListPrice,total,orderTemplateItemID,skuProductURL,quantity,sku.skuCode,sku.imagePath,sku.product.productName,sku.skuDefinition,orderTemplate.currencyCode';  
+		var displayProperties = 'calculatedListPrice,total,orderTemplateItemID,skuProductURL,quantity,sku.skuCode,sku.imagePath,sku.product.productName,sku.skuDefinition,orderTemplate.currencyCode,';  
 		//TODO: These are throwing exception ,skuAdjustedPricing.adjustedPriceForAccount,skuAdjustedPricing.vipPrice
 
 		orderTemplateItemCollection.setDisplayProperties(displayProperties);
@@ -1665,6 +1669,27 @@ component extends="Slatwall.model.service.OrderService" {
 		freeRewardSkuCollection.addFilter('skuID', freeRewardSkuIDs, 'in');
 		freeRewardSkuCollection.addDisplayProperty('product.productDescription');
 		return freeRewardSkuCollection.getRecords();
+	}
+	
+	public any function getPurchasePlusInformationForOrderItems(required string orderID=''){
+		if(!len(arguments.orderID)) return [];
+		var orderItemCL = this.getOrderItemCollectionList();
+		orderItemCL.addFilter('order.orderID', arguments.orderID)
+		orderItemCL.addDisplayProperty('orderItemID');
+		orderItemCL = orderItemCL.getRecords();
+		var orderItemIDs = ''
+		
+		if(isNull(orderItemCL) || !arrayLen(orderItemCL)) return [];
+		for(var item in orderItemCL){
+			orderItemIDs &= '#item.orderItemID#,';
+		}
+	
+		var ofyPromoCL = getService('promotionService').getPromotionAppliedCollectionList();
+		ofyPromoCL.addFilter('orderItem.orderItemID', orderItemIDs, 'IN');
+		ofyPromoCL.addFilter('promotion.promotionName', 'Purchase Plus%', 'like');
+		ofyPromoCL.addDisplayProperty('discountAmount');
+		ofyPromoCL.addDisplayProperty('promotion.promotionName');
+		return ofyPromoCL
 	}
 	
 }

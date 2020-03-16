@@ -21,6 +21,7 @@ class HybridCartController {
 	public isEnrollment:boolean;
 	public orderTemplate = {};
 	public total:number;
+	public listPrice:number;
 	
 	//@ngInject
 	constructor(public monatService, public observerService, public orderTemplateService, public publicService) {
@@ -52,12 +53,15 @@ class HybridCartController {
 	
 	private recalculatePrices():void{
 		let price = 0;
+		let listPrice = 0;
 		for(let item of this.cart.orderItems){
 			if(item.sku.product.productType.systemCode == 'VIPCustomerRegistr' ) continue;
 			price += item.extendedPriceAfterDiscount;
+			listPrice+= item.calculatedListPrice;
 		}
 
 		this.total = price;
+		this.listPrice = listPrice;
 	}
 	
 	public removeItem = (item:GenericOrderItem):void => {

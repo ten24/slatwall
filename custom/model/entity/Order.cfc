@@ -58,7 +58,7 @@ component {
     property name="calculatedRetailValueVolumeDiscountTotal" ormtype="big_decimal" hb_formatType="none";
     property name="accountType" ormtype="string";
     property name="accountPriceGroup" ormtype="string";
-
+	
     property name="shipMethodCode" ormtype="string";
     property name="iceRecordNumber" ormtype="string";
     property name="commissionPeriodCode" ormtype="string";
@@ -70,7 +70,8 @@ component {
     property name="isLockedInProcessingFlag" persistent="false";
     property name="isLockedInProcessingOneFlag" persistent="false";
     property name="isLockedInProcessingTwoFlag" persistent="false";
-
+	property name="purchasePlusTotal" persistent="false";
+	
     public numeric function getPersonalVolumeSubtotal(){
         return getCustomPriceFieldSubtotal('personalVolume');
     }
@@ -460,6 +461,23 @@ component {
 						getOrderStatusType().getTypeCode() == "processing2"
 					)
 				);
+	}
+	
+	public boolean function getPurchasePlusTotal(){
+		
+		 if (!structKeyExists(variables, "purchasePlusTotal")){
+			var purchasePlusRecords = getService('orderService').getPurchasePlusInformationForOrderItems(this.getOrderID());
+			var total = 0;
+	
+			if(!isArray(purchasePlusRecords)){
+				purchasePlusRecords = purchasePlusRecords.getRecords();
+				for (var item in purchasePlusRecords){
+					total +=  item.discountAmount;
+				}
+			}
+			variables.purchasePlusTotal = total;
+		}
+		return variables.purchasePlusTotal;
 	}
 	
 }
