@@ -251,7 +251,7 @@ public any function getSkuProductURL(){
 			}else{
 				var priceGroup = getService('priceGroupService').getPriceGroupByPriceGroupCode(2) // default to retail
 			}
-			variables.listPrice = writeDump(this.getSku().getCustomPriceByCurrencyCode(customPriceField='listPrice', currencyCode=this.getOrderTemplate().getCurrencyCode(), quantity=this.getQuantity(), priceGroups=priceGroup));
+			variables.listPrice = this.getSku().getCustomPriceByCurrencyCode(customPriceField='listPrice', currencyCode=this.getOrderTemplate().getCurrencyCode(), quantity=this.getQuantity(), priceGroups=priceGroup);
 		}
 		return variables.listPrice
 	}
