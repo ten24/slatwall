@@ -77,7 +77,14 @@ component output="false" accessors="true" extends="Slatwall.model.transient.Hiba
 			accountPaymentMethods.accountPaymentMethodName,primaryShippingAddress.accountAddressID,primaryPaymentMethod.paymentMethodID,accountPaymentMethods.activeFlag,ownerAccount.firstName,primaryAddress.address.streetAddress,primaryAddress.address.street2Address,
 			primaryAddress.address.city,primaryAddress.address.stateCode,primaryAddress.address.postalCode,ownerAccount.lastName,ownerAccount.createdDateTime,ownerAccount.primaryAddress.address.city,ownerAccount.primaryAddress.address.stateCode,ownerAccount.primaryAddress.address.postalCode,
 			ownerAccount.primaryPhoneNumber.phoneNumber,ownerAccount.primaryEmailAddress.emailAddress,userName,languagePreference,primaryAddress.address.countrycode,ownerAccount.accountNumber","[[:space:]]","","all");
-
+	}
+	
+	public any function getAvailableCartPropertyList(string cartDataOptions="full") {
+		var values = super.getAvailableCartPropertyList(arguments.cartDataOptions);
+		if(arguments.cartDataOptions == 'full'){
+			values &=",purchasePlusTotal"
+		}
+		return values;
 	}
 	
 	

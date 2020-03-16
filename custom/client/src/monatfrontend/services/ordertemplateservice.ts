@@ -369,6 +369,7 @@ export class OrderTemplateService {
                 this.currentOrderTemplateID = res.orderTemplate.orderTemplateID
                 this.mostRecentOrderTemplate = res.orderTemplate;
                 this.canPlaceOrderFlag = res.orderTemplate.canPlaceOrderFlag;
+                res.orderTemplate['suggestedPrice'] = this.calculateSRPOnOrder(this.mostRecentOrderTemplate);
             }
             deferred.resolve(res);
 	    }).catch( (e) => {
@@ -377,5 +378,15 @@ export class OrderTemplateService {
        
        return deferred.promise;
 	}
+	
+    public calculateSRPOnOrder= (orderTemplate):number =>{
+    	if(!orderTemplate.orderTemplateItems) return;
+    	let suggestedRetailPrice = 0;
+    	for(let item of orderTemplate.orderTemplateItems){
+    		suggestedRetailPrice += item.calculatedListPrice;
+    	}
+    	
+    	return suggestedRetailPrice;
+    }
 
 }

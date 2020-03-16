@@ -1684,9 +1684,10 @@ component extends="Slatwall.model.service.OrderService" {
 		orderItemCL.addDisplayProperty('orderItemID');
 		orderItemCL = orderItemCL.getRecords();
 		var orderItemIDs = ''
-		if(isNull(orderItemCL) || !arrayLen(orderItemCL)) return;
+		
+		if(isNull(orderItemCL) || !arrayLen(orderItemCL)) return [];
 		for(var item in orderItemCL){
-			orderItemIDs &= item.orderItemID;
+			orderItemIDs &= '#item.orderItemID#,';
 		}
 	
 		var ofyPromoCL = getService('promotionService').getPromotionAppliedCollectionList();
