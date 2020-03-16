@@ -19,7 +19,7 @@
 	</cfquery>	
 
 	<cfcatch>
-		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Add Order Template calculated properties">
+		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Add Order Template calculated properties #serializeJson(cfcatch.detail)#">
     	<cfset local.scriptHasErrors = true />
 	</cfcatch>
 </cftry>

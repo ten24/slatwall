@@ -55,6 +55,7 @@ component displayname="OrderTemplateItem" entityname="SlatwallOrderTemplateItem"
 	property name="temporaryFlag" ormtype="boolean" default="false";
 
 	property name="calculatedTotal" ormtype="big_decimal" hb_formatType="currency"; 
+	property name="calculatedTaxableAmountTotal" ormtype="big_decimal" hb_formatType="currency";  
 
 	// Remote properties
 	property name="remoteID" ormtype="string";
@@ -67,15 +68,20 @@ component displayname="OrderTemplateItem" entityname="SlatwallOrderTemplateItem"
 
 	//non-persistents	
 	property name="total" persistent="false" hb_formatType="currency"; 
+	property name="taxableAmountTotal" persistent="false";  
 	
 	//CUSTOM PROPERTIES BEGIN
 property name="calculatedCommissionableVolumeTotal" ormtype="integer";
 	property name="calculatedPersonalVolumeTotal" ormtype="integer";
+	property name="calculatedProductPackVolumeTotal" ormtype="integer"; 
+	property name="calculatedRetailCommissionTotal" ormtype="integer"; 
 	property name="calculatedListPrice" ormtype="big_decimal" hb_formatType="currency";
 	
 	//non-persistent properties
 	property name="commissionableVolumeTotal" persistent="false"; 
-	property name="personalVolumeTotal" persistent="false"; 
+	property name="personalVolumeTotal" persistent="false";
+	property name="productPackVolumeTotal" persistent="false"; 
+	property name="retailComissionTotal" persistent="false"; 
 	property name="skuProductURL" persistent="false";
 	property name="skuImagePath" persistent="false";
 	property name="skuAdjustedPricing" persistent="false";
@@ -99,6 +105,20 @@ property name="calculatedCommissionableVolumeTotal" ormtype="integer";
 		}
 		
 		return variables.total;
+	} 
+	
+	public numeric function getTaxableAmountTotal(string currencyCode, string accountID){
+		if(!structKeyExists(variables, 'taxableAmountTotal')){
+			variables.taxableAmountTotal = 0; 	
+			
+			if( !isNull(this.getSku()) && 
+				!isNull(this.getQuantity())
+			){
+				variables.taxableAmountTotal += (this.getSku().getTaxableAmountByCurrencyCode(argumentCollection=arguments) * this.getQuantity()); 
+			}
+		}
+		return variables.taxableAmountTotal; 	
+
 	} 
 
 	public void function setOrderTemplate(required any orderTemplate) {
@@ -167,6 +187,34 @@ public any function getSkuProductURL(){
 	
 			return skuAdjustedPricing;
 	}
+
+	public numeric function getProductPackVolumeTotal(string currencyCode, string accountID){
+		if(!structKeyExists(variables, 'productPackVolumeTotal')){
+			variables.productPackVolumeTotal = 0;
+				
+			if( !isNull(this.getSku()) && 
+				!isNull(this.getQuantity())
+			){
+				variables.productPackVolumeTotal += (this.getSku().getProductPackVolumeTotalByCurrencyCode(argumentCollection=arguments) * this.getQuantity()); 
+			}
+		}
+		return variables.productPackVolumeTotal; 	
+	}	
+
+	public numeric function getRetailCommissionTotal(string currencyCode, string accountID){
+		if(!structKeyExists(variables, 'retailComissionTotal')){
+			variables.retailComissionTotal = 0; 
+			
+			if( !isNull(this.getSku()) && 
+				!isNull(this.getQuantity())
+			){
+				variables.retailComissionTotal += (this.getSku().getRetailComissionByCurrencyCode(argumentCollection=arguments) * this.getQuantity()); 
+			}
+		}
+		return variables.retailComissionTotal; 	
+
+	} 
+
 	
 	public numeric function getCommissionVolumeTotal(string currencyCode, string accountID){
 		if(!structKeyExists(variables, 'commissionVolumeTotal')){
