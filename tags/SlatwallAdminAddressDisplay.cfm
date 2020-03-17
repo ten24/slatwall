@@ -112,17 +112,18 @@ Notes:
 				<hb:HibachiPropertyDisplay object="#attributes.address#" fieldName="#attributes.fieldNamePrefix#postalCode" property="postalCode" edit="#attributes.edit#" fieldClass="slatwall-address-postalCode" />	
 			</cfif>
 			
-			<div class="#local.suggestionID#-block well well-lg" style="display:none">
-				<h4>Suggested Address:</h4>
-				
-				<input type="hidden" name="#attributes.fieldNamePrefix#verifyAddress" value="true">
-				<span class="#local.suggestionID#-address-new"></span><br>
-				<span class="#local.suggestionID#-address-new-2"></span><br>
-				<span class="#local.suggestionID#-address-new-3"></span><br>
-				<!--<input name="verifyAddress" >-->
-				<a class="btn btn-success" id="#local.suggestionID#">Use Suggested Address</a>
-				<a class="btn btn-default pull-right" id="#local.suggestionID#-continue">Continue with the address provided</a>
-			</div>
+			<cfif len(trim(attributes.address.getAddressID())) EQ 0>
+				<div class="#local.suggestionID#-block well well-lg" style="display:none">
+					<h4>#attributes.hibachiScope.rbKey("entity.address.suggestedAddress")#:</h4>
+					
+					<input type="hidden" name="#attributes.fieldNamePrefix#verifyAddress" value="true">
+					<span class="#local.suggestionID#-address-new"></span><br>
+					<span class="#local.suggestionID#-address-new-2"></span><br>
+					<span class="#local.suggestionID#-address-new-3"></span><br>
+					<a class="btn btn-success" id="#local.suggestionID#">#attributes.hibachiScope.rbKey("entity.address.useSuggestedAddress")#</a>
+					<a class="btn btn-default pull-right" id="#local.suggestionID#-continue">#attributes.hibachiScope.rbKey("entity.address.continueSuggestedAddress")#</a>
+				</div>
+			</cfif>
 		</div>
 
 		<cfif len(trim(attributes.address.getAddressID())) EQ 0>
