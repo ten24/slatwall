@@ -25,7 +25,7 @@ component {
 	property name="flexshipQualifiedOrdersForCalendarYearCount" persistent="false"; 
 	property name="qualifiesForOFYProducts" persistent="false";
 	property name="cartTotalThresholdForOFYAndFreeShipping" persistent="false";
-	
+	property name="appliedPromotionMessages" persistent="false"; 
 
 	public boolean function getAccountIsNotInFlexshipCancellationGracePeriod(){
 		if(	getHibachiScope().getAccount().getAdminAccountFlag() ){
@@ -193,6 +193,15 @@ component {
 	
 	public boolean function userCanCancelFlexship(){
 		return getAccount().getAccountType() == 'MarketPartner' || getHibachiScope().getAccount().getAdminAccountFlag();
+	}
+	
+	public any function getAppliedPromotionMessages(){
+	
+		if(!structKeyExists(variables, 'appliedPromotionMessages')){
+			variables.appliedPromotionMessages = getService('OrderService').getAppliedPromotionMessagesForOrderTemplate(this);
+
+		}	
+		return variables.appliedPromotionMessages; 	
 	}
 	
 }

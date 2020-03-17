@@ -393,6 +393,13 @@ component extends="Slatwall.model.service.OrderService" {
 			request[orderTemplateOrderDetailsKey]['canPlaceOrderDetails'] = getPromotionService().getOrderQualifierDetailsForCanPlaceOrderReward(transientOrder); 
 			request[orderTemplateOrderDetailsKey]['canPlaceOrder'] = request[orderTemplateOrderDetailsKey]['canPlaceOrderDetails']['canPlaceOrder']; 
 			request[orderTemplateOrderDetailsKey]['purchasePlusTotal'] = transientOrder.getPurchasePlusTotal();
+			var messages = transientOrder.getAppliedPromotionMessages();
+			var messageArray = '';
+			for(var message in messages){
+				messageArray = listAppend(messageArray,message.getMessage());
+			}
+		
+			request[orderTemplateOrderDetailsKey]['appliedpromotionMessages'] = messageArray;
 			var deleteOk = this.deleteOrder(transientOrder); 
 			this.logHibachi('transient order deleted #deleteOk# hasErrors #transientOrder.hasErrors()#',true);
 			ormFlush();
@@ -430,6 +437,10 @@ component extends="Slatwall.model.service.OrderService" {
 	
 	public numeric function getRetailCommissionTotalForOrderTemplate(required any orderTemplate){
 		return getOrderTemplateOrderDetails(argumentCollection=arguments)['retailCommissionTotal'];	
+	}
+	
+	public any function getAppliedPromotionMessagesForOrderTemplate(required any orderTemplate){
+		return getOrderTemplateOrderDetails(argumentCollection=arguments)['appliedpromotionMessages'];	
 	}
 	
 	public any function getOrderTemplateItemCollectionForAccount(required struct data, any account=getHibachiScope().getAccount()){
