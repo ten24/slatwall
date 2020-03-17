@@ -141,13 +141,9 @@ Notes:
 					var postalCode      = $("input[name='#attributes.fieldNamePrefix#postalCode']");
 					var verify          = $("input[name='#attributes.fieldNamePrefix#verifyAddress");
 					var suggestion      = {};
-					
-					var currentForm = streetAddress.closest("form");
-					
-					var submitForm = false;
+					var currentForm     = streetAddress.closest("form");
+					var submitForm      = false;
 
-					// $(".#local.suggestionID#-block").remove();
-					// $(currentForm).append($(".#local.suggestionID#-block"));
 					currentForm.submit(function(event) {
 						if(!submitForm){
 							event.preventDefault();
@@ -172,6 +168,16 @@ Notes:
 									context: document.body,
 									success: function(r) {
 										suggestion = r.suggestedAddress;
+										
+										if(!r.success &&
+											suggestion.streetAddress.toLowerCase() == requestData['address.streetAddress'] &&
+											suggestion.city.toLowerCase() == requestData['address.city'] &&
+											suggestion.stateCode.toLowerCase() == requestData['address.stateCode'] &&
+											suggestion.postalCode.substring(0, 5) == requestData['address.postalCode'].substring(0, 5)
+										){
+											r.success = true;
+										}
+										
 										if(!r.success){
 											$('.'+prefix+'-address-new').text(suggestion.streetAddress);
 											$('.'+prefix+'-address-new-2').text(suggestion.city+' - '+ suggestion.stateCode + ', ' +suggestion.countryCode);
