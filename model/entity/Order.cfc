@@ -2337,7 +2337,7 @@ public numeric function getPersonalVolumeSubtotal(){
 				);
 	}
 	
-	public boolean function getPurchasePlusTotal(){
+	public any function getPurchasePlusTotal(){
 		
 		 if (!structKeyExists(variables, "purchasePlusTotal")){
 			var purchasePlusRecords = getService('orderService').getPurchasePlusInformationForOrderItems(this.getOrderID());
@@ -2352,6 +2352,11 @@ public numeric function getPersonalVolumeSubtotal(){
 			variables.purchasePlusTotal = total;
 		}
 		return variables.purchasePlusTotal;
+	}
+	
+	public boolean function orderPriceGroupMatchesAccount(){
+		return (isNull(this.getAccount().getPriceGroups()) || !arrayLen(this.getAccount().getPriceGroups()) 
+				|| (!isNull(this.getPriceGroup().getPriceGroupCode()) && this.getPriceGroup().getPriceGroupCode() != this.getAccount().getPriceGroups()[1].getPriceGroupCode()) ) ? false : true;
 	}
 	//CUSTOM FUNCTIONS END
 }
