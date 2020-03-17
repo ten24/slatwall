@@ -9,7 +9,7 @@ class PurchasePlusBarController {
     
 	// @ngInject
 	constructor(
-		private publicService,
+		private monatService,
 		private observerService
 	) { }
 	
@@ -17,10 +17,11 @@ class PurchasePlusBarController {
 		this.getPurchasePlusMessages();
 		
 		this.observerService.attach( this.getPurchasePlusMessages, 'updateOrderItemSuccess' );
+		this.observerService.attach( this.getPurchasePlusMessages, 'removeOrderItemSuccess' );
 	}
 	
 	private getPurchasePlusMessages = () => {
-		this.publicService.getCart().then( data => {
+		this.monatService.getCart().then( data => {
 			if ( 'undefined' !== typeof data.cart && 'undefined' !== typeof data.cart.appliedPromotionMessages ) {
 				let appliedPromotionMessages = data.cart.appliedPromotionMessages;
 				if ( appliedPromotionMessages.length ) {
