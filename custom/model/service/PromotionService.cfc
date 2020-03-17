@@ -225,15 +225,19 @@ component extends="Slatwall.model.service.PromotionService" {
 		var personalVolumeTotal = arguments.order.getPersonalVolumeTotal();
 		var roundedPersonalVolumeTotal = round(personalVolumeTotal);
 		var difference = personalVolumeTotal - roundedPersonalVolumeTotal;
+		
 		if(difference != 0){
 			if(arguments.order.hasAppliedPromotion()){
+				
 				var appliedPromotion = arguments.order.getAppliedPromotions()[1];
 				var currentPVDiscountAmount = appliedPromotion.getPersonalVolumeDiscountAmount();
 				appliedPromotion.setPersonalVolumeDiscountAmount(currentPVDiscountAmount + difference);
 			}else{
+				
 				this.allocatePersonalVolumeDiscountToOrderItems(arguments.order, difference);
 			}
 		}
+
 	}
 	
 	public void function allocatePersonalVolumeDiscountToOrderItems(required any order, required amountToDistribute){
@@ -247,7 +251,8 @@ component extends="Slatwall.model.service.PromotionService" {
 			
 			// The percentage of overall order discount that needs to be properly allocated to the order item. This is to perform weighted calculations.
 			var currentOrderItemAmountAsPercentage=0;
-			if(!isNull(arguments.order.getPersonalVolumeSubtotalAfterItemDiscounts()) && arguments.order.getPersonalVolumeSubtotalAfterItemDiscounts() > 0){
+			
+			if(!isNull(arguments.order.getPersonalVolumeSubtotalAfterItemDiscounts()) && arguments.order.getPersonalVolumeSubtotalAfterItemDiscounts() != 0){
 				currentOrderItemAmountAsPercentage = orderItem.getExtendedPersonalVolumeAfterDiscount() / arguments.order.getPersonalVolumeSubtotalAfterItemDiscounts();	
 			}
 			
@@ -258,7 +263,7 @@ component extends="Slatwall.model.service.PromotionService" {
 		    
 		    // Recalculated each iteration for maximum precision of how much is expected to have been allocated at current stage in process
 		    var expectedAllocatedAmountTotal = (actualAllocatedAmountAsPercentage + currentOrderItemAmountAsPercentage) * amountToDistribute;
-			
+		    
 			// Rather than letting a sum of discrepancies accumulate during each iteration and become a significant adjustment to the final order item, lets handle it immediately and make minor adjustment to order item
 			// This allows the discrepancy of no more than a cent to be accumulated, and appropriately allocated to the current order item when it first appears
 			// NOTE: If instead we deferred handling the discrepancy the likelihood that a noticeable discrepancy will need to be offset on the final order item increases as the number of order items increases on an order.
@@ -284,12 +289,14 @@ component extends="Slatwall.model.service.PromotionService" {
 		    if(orderItem.hasAppliedPromotion()){
 		    	var appliedPromotion = orderItem.getAppliedPromotions()[1];
 		    	var currentPVDiscountAmount = appliedPromotion.getPersonalVolumeDiscountAmount();
+		    	
 				appliedPromotion.setPersonalVolumeDiscountAmount(currentPVDiscountAmount + currentOrderItemAllocationAmount);
 		    }else{
 		    	var newAppliedPromotion = this.newPromotionApplied();
 				newAppliedPromotion.setAppliedType('orderItem');
 				newAppliedPromotion.setOrderItem( orderItem );
 				newAppliedPromotion.setPersonalVolumeDiscountAmount( currentOrderItemAllocationAmount );
+				
 				this.savePromotionApplied(newAppliedPromotion);
 		    }
 		}

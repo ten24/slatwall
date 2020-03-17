@@ -3,7 +3,6 @@
 
 <cfparam name="rc.account" type="any" />
 <cfparam name="rc.edit" type="boolean" />
-
 <cfoutput>
 	<hb:HibachiPropertyRow>
 		<hb:HibachiPropertyList divclass="col-md-6">
@@ -25,7 +24,7 @@
 		<!--- Overview --->
 		<hb:HibachiPropertyList divclass="col-md-6">
 			<hb:HibachiPropertyDisplay object="#rc.account#" property="renewalDate" edit="false">	
-			<hb:HibachiPropertyDisplay object="#rc.account#" property="languagePreference" edit="false">
+			<hb:HibachiPropertyDisplay object="#rc.account#" property="languagePreference" value="#rc.account.getLanguagePreferenceLabel()#" edit="false">
 			<hb:HibachiPropertyDisplay object="#rc.account#" property="phoneNumber" edit="false"> 
 			<hb:HibachiPropertyDisplay object="#rc.account#" property="emailAddress" edit="false">
 			<hb:HibachiPropertyDisplay object="#rc.account#" property="accountType" edit="false">
