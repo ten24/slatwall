@@ -25,7 +25,7 @@
 			{ "conditions": "giftCardPayment,redeemGiftCardToAccount", "method": "canPurchaseWithGiftCard" },
 			{ "conditions": "giftCardPayment", "method": "giftCardNotAlreadyApplied" }
 		],
-		"newOrderPayment.dynamicAmountFlag": [{ "conditions": "noPaymentAmountNeeded", "eq": false }],
+		"newOrderPayment.orderHasAnotherDynamicOrderPaymentFlag": [{ "eq":"false"}],
 		"newOrderPayment.paymentMethod.paymentMethodID": [
 			{ "conditions": "giftCardOrderTypeReturn", "eq": "50d8cd61009931554764385482347f3a" }
 		],
