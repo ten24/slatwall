@@ -47,6 +47,20 @@ Notes:
 */
 component extends="Slatwall.model.service.PublicService" accessors="true" output="false" {
     
+    
+    
+     public any function login( required struct data ){
+         super.login(argumentCollection = arguments);
+         
+        if (getHibachiScope().getLoggedInFlag() &&
+            !isNull(getHibachiScope().getAccount().getAccountCreatedSite()) &&
+            !isNull(getHibachiScope().getCurrentRequestSite()) &&
+            getHibachiScope().getAccount().getAccountCreatedSite().getSiteID() != getHibachiScope().getCurrentRequestSite().getSiteID()
+        ){
+            arguments.data.ajaxResponse['data'] =  { 'redirect': getHibachiScope().getAccount().getAccountCreatedSite().getCmsSiteID() };
+        }
+    }
+    
     /**
       * Updates an Account address.
       */
