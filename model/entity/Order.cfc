@@ -893,10 +893,10 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 	}
 
 	public numeric function getOrderPaymentAmountNeeded() {
-
+		
 		var nonNullPayments = getOrderService().getOrderPaymentNonNullAmountTotal(orderID=getOrderID());
 		var orderPaymentAmountNeeded = getService('HibachiUtilityService').precisionCalculate(getTotal() - nonNullPayments);
-	
+			
 		if(orderPaymentAmountNeeded gt 0 && isNull(getDynamicChargeOrderPayment())) {
 			return orderPaymentAmountNeeded;
 		} else if (orderPaymentAmountNeeded lt 0 && isNull(getDynamicCreditOrderPayment())) {
@@ -923,11 +923,22 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 		return orderPaymentAmountNeeded * -1;
 	}
 
-	public any function getDynamicChargeOrderPayment() {
-		for(var orderPayment in getOrderPayments()) {
-			if(orderPayment.getDynamicAmountFlag()
-			   && orderPayment.getStatusCode() == 'opstActive'
-			   && orderPayment.getOrderPaymentType().getSystemCode() eq 'optCharge') {
+	public any function getDynamicChargeOrderPayment(any orderPayment) {
+			
+		var orderPayments = getOrderPayments();  
+		for(var orderPayment in orderPayments) {
+			
+			//don't consider a passed orderPayment as the dynamic 
+			if( structKeyExists(arguments, 'orderPayment') &&
+				arguments.orderPayment.getOrderPaymentID() == orderPayment.getOrderPaymentID() 
+			){
+				continue; 	
+			} 
+			
+			if(orderPayment.getDynamicAmountFlag() &&
+			   orderPayment.getStatusCode() == 'opstActive' &&
+			   orderPayment.getOrderPaymentType().getSystemCode() == 'optCharge'
+			){
 				return orderPayment;
 			} 
 		}
