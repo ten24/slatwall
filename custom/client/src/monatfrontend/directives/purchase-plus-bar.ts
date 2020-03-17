@@ -53,8 +53,6 @@ class PurchasePlusBarController {
 	}
 	
 	private setMessageValues = ( appliedMessage ) => {
-		
-		console.log( appliedMessage );
 						
 		this.hasPurchasePlusMessage = !!appliedMessage.promotionRewards.length;
 		if ( this.hasPurchasePlusMessage ) {
