@@ -2032,7 +2032,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			accountAddress.setAddress(address); 
 			accountAddress.setAccount(account); 
 
-			accountAddress = getAccountService().saveAccountAddress(accountAddress);
+			accountAddress = getAccountService().saveAccountAddress(accountAddress=accountAddress,verifyAddressFlag=true);
 
 
 			arguments.orderTemplate.setBillingAccountAddress(accountAddress);
