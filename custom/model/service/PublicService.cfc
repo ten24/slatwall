@@ -1949,7 +1949,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         giftCardList.setPageRecordsShow(1);
         
         var records = giftCardList.getPageRecords();
-        if ( !len( records ) ) {
+        if ( !arrayLen( records ) ) {
             return false;
         }
         
