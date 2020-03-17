@@ -132,12 +132,12 @@ Notes:
 					
 					var prefix          = '#local.suggestionID#';
 					var preventDupsHash = '';
-					var countryCode     = $("select[name='#attributes.fieldNamePrefix#countryCode'] option:selected");
+					var countryCode     = $("select[name='#attributes.fieldNamePrefix#countryCode']");
 					var streetAddress   = $("input[name='#attributes.fieldNamePrefix#streetAddress']");
 					var street2Address  = $("input[name='#attributes.fieldNamePrefix#street2Address']");
 					var locality        = $("input[name='#attributes.fieldNamePrefix#locality']");
 					var city            = $("input[name='#attributes.fieldNamePrefix#city']");
-					var stateCode       = $("select[name='#attributes.fieldNamePrefix#stateCode'] option:selected");
+					var stateCode       = $("select[name='#attributes.fieldNamePrefix#stateCode']");
 					var postalCode      = $("input[name='#attributes.fieldNamePrefix#postalCode']");
 					var verify          = $("input[name='#attributes.fieldNamePrefix#verifyAddress");
 					var suggestion      = {};
@@ -152,13 +152,15 @@ Notes:
 						if(!submitForm){
 							event.preventDefault();
 							var requestData = {
-								'address.countryCode' : countryCode.val(),
+								'address.countryCode' : countryCode.children("option:selected").val(),
 								'address.streetAddress' : streetAddress.val(),
 								'address.street2Address' : street2Address.val(),
 								'address.city' : city.val(),
-								'address.stateCode' : stateCode.val().length ? stateCode.val() : locality.val(),
+								'address.stateCode' : locality.val() ? locality.val() : stateCode.children("option:selected").val(),
 								'address.postalCode' : postalCode.val()
 							};
+							console.log(stateCode.val());
+							console.log(requestData);
 							
 							if(JSON.stringify(requestData) != preventDupsHash){
 								preventDupsHash = JSON.stringify(requestData);
@@ -169,12 +171,10 @@ Notes:
 									dataType: "json",
 									context: document.body,
 									success: function(r) {
-										
-										console.log(r);
 										suggestion = r.suggestedAddress;
-										if(!r.suggestedAddress.success){
+										if(!r.success){
 											$('.'+prefix+'-address-new').text(suggestion.streetAddress);
-											$('.'+prefix+'-address-new-2').text(suggestion.city+' - '+ suggestion.stateCode + ', ' +suggestion.countryCode + ' '+  suggestion.postalCode);
+											$('.'+prefix+'-address-new-2').text(suggestion.city+' - '+ suggestion.stateCode + ', ' +suggestion.countryCode);
 											$('.'+prefix+'-address-new-3').text(suggestion.postalCode);
 											$('.#local.suggestionID#-block').show();
 										}else{
