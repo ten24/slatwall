@@ -16,9 +16,6 @@ component {
 	property name="spouseLastName" persistent = "false";
 	property name="governmentIdentificationLastFour" persistent = "false";
 
-	property name="languagePreferenceFull" persistent = "false" ;
-
-	
 	public numeric function getSuccessfulFlexshipOrdersThisYearCount(){
 		if(!structKeyExists(variables, 'successfulFlexshipOrdersThisYearCount')){
 			var orderCollection = getService('OrderService').getOrderCollectionList(); 
@@ -65,17 +62,20 @@ component {
 		}
 	}
 	
-	public string function getLanguagePreferenceFull(){
-		if(!StructKeyExists(variables, "languagePreferenceFull")) {
+	public string function getLanguagePreferenceLabel(){
+		if(!StructKeyExists(variables, "languagePreferenceLabel")) {
 			
-			var javaLocale = createObject('java', 'java.util.Locale');
-			
-			 variables.languagePreferenceFull = javaLocale.init( this.getLanguagePreference() ?: "en" ,  this.getCountryCode() ?: "Us").getDisplayName();
+			var attributeOption = this.getDAO('AttributeDAO').getAttributeOptionByAttributeOptionValueAndAttributeID(
+								    attributeOptionValue = this.getLanguagePreference() ?: 'en', 
+								    attributeID = this.getService('AttributeService').getAttributeByAttributeCode('languagePreference').getAttributeID()
+								);
+								
+			variables.languagePreferenceLabel = attributeOption.getAttributeOptionLabel();
 		}
 		
-		return variables.languagePreferenceFull;
+		return variables.languagePreferenceLabel;
 	}
-
+	
 	public boolean function getCanCreateFlexshipFlag() {
 		
 		// If the user is not logged in, or retail, return false.

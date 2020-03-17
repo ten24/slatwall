@@ -170,9 +170,6 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	property name="spouseLastName" persistent = "false";
 	property name="governmentIdentificationLastFour" persistent = "false";
 
-	property name="languagePreferenceFull" persistent = "false" ;
-
-	
 
  property name="allowCorporateEmailsFlag" ormtype="boolean" hb_formatType="yesno";
  property name="productPackPurchasedFlag" ormtype="boolean" hb_formatType="yesno" default="false";
@@ -198,6 +195,7 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
  property name="uplineMarketPartnerNumber" ormtype="string";
  property name="country" cfc="Country" fieldtype="many-to-one" fkcolumn="countryID";
  property name="referType" ormtype="string" hb_formFieldType="select";
+ property name="profileImage" hb_fileUpload="true" hb_fileAcceptMIMEType="*/*" ormtype="string" hb_formFieldType="file";
  property name="terminationDate" ormtype="timestamp" hb_formatType="date";
  property name="lastAccountStatusDate" ormtype="timestamp" hb_formatType="date";
  property name="languagePreference" ormtype="string" hb_formFieldType="select";
@@ -1299,17 +1297,20 @@ public numeric function getSuccessfulFlexshipOrdersThisYearCount(){
 		}
 	}
 	
-	public string function getLanguagePreferenceFull(){
-		if(!StructKeyExists(variables, "languagePreferenceFull")) {
+	public string function getLanguagePreferenceLabel(){
+		if(!StructKeyExists(variables, "languagePreferenceLabel")) {
 			
-			var javaLocale = createObject('java', 'java.util.Locale');
-			
-			 variables.languagePreferenceFull = javaLocale.init( this.getLanguagePreference() ?: "en" ,  this.getCountryCode() ?: "Us").getDisplayName();
+			var attributeOption = this.getDAO('AttributeDAO').getAttributeOptionByAttributeOptionValueAndAttributeID(
+								    attributeOptionValue = this.getLanguagePreference() ?: 'en', 
+								    attributeID = this.getService('AttributeService').getAttributeByAttributeCode('languagePreference').getAttributeID()
+								);
+								
+			variables.languagePreferenceLabel = attributeOption.getAttributeOptionLabel();
 		}
 		
-		return variables.languagePreferenceFull;
+		return variables.languagePreferenceLabel;
 	}
-
+	
 	public boolean function getCanCreateFlexshipFlag() {
 		
 		// If the user is not logged in, or retail, return false.
