@@ -18,7 +18,7 @@ class PurchasePlusBarController {
 	public $onInit = () => {
 		this.getPurchasePlusMessages();
 		
-		this.observerService.attach( this.getPurchasePlusMessages, 'updatedCart' );
+		this.observerService.attach( this.getMessagesFromCart, 'updatedCart' );
 	}
 	
 	private resetProps = () => {
