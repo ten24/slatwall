@@ -22,8 +22,9 @@ component accessors="true" output="false" extends="Slatwall.model.service.Hibach
 					&& !structKeyExists(request.context,'fw')
 				)
 			)
-			&& 
-			sessionOrder.getOrderCreatedSite().getSiteID() == getHibachiScope().getAccount().getAccountCreatedSite().getSiteID()
+			&& !isNull(sessionOrder.getOrderCreatedSite())
+			&& !isNull(getHibachiScope().getAccount().getAccountCreatedSite())
+			&& sessionOrder.getOrderCreatedSite().getSiteID() == getHibachiScope().getAccount().getAccountCreatedSite().getSiteID()
 		){
 		
 			// If the current order has an account, and it is different from the one being logged in... then create a copy of the order without any personal information

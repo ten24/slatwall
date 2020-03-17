@@ -231,7 +231,7 @@ property name="sapItemCode" ormtype="string";
 	
 	// Non-persistent properties
     property name="personalVolumeByCurrencyCode" persistent="false";
-	property name="comissionablelVolumeByCurrencyCode" persistent="false";
+	property name="commissionableVolumeByCurrencyCode" persistent="false";
 
 
  property name="salesCategoryCode" ormtype="string" hb_formFieldType="select";
