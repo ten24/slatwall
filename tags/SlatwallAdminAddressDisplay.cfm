@@ -48,6 +48,7 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../tags" />
 <cfimport prefix="hb" taglib="../org/Hibachi/HibachiTags" />
+<cfparam name="attributes.hibachiScope" type="any" default="#request.context.fw.getHibachiScope()#" />
 <cfparam name="attributes.address" type="any" />
 <cfparam name="attributes.edit" type="boolean" default="true" />
 <cfparam name="attributes.fieldNamePrefix" type="string" default="" />
