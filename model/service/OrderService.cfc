@@ -1729,7 +1729,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			ormFlush(); 
 			//fire retry payment failure event so it can be utilized in workflows
 			getHibachiEventService().announceEvent("afterOrderProcess_retryPaymentFailure", {"entity":newOrder, "order":newOrder});
+		} else {
+
+			//attempt to set paid	
+			this.updateOrderStatusBySystemCode(newOrder, 'ostProcessing');
 		}
+		
+
 			
 		this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# completing place order and has status: #newOrder.getOrderStatusType().getTypeName()#');
 		getHibachiEntityQueueService().insertEntityQueueItem(arguments.orderTemplate.getOrderTemplateID(), 'OrderTemplate', 'processOrderTemplate_removeTemporaryItems');	
@@ -5588,6 +5594,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 								currencyCode = arguments.newOrderItem.getOrder().getCurrencyCode(), 
 								priceGroups = [arguments.processObject.getPriceGroup()]
 							);
+
+			if(isNull(skuPrice)){
+				return;
+			}
 
 			arguments.newOrderItem.setPrice(skuPrice);
 			arguments.newOrderItem.setSkuPrice(skuPrice);

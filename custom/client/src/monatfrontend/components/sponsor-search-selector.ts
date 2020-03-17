@@ -110,9 +110,6 @@ class SponsorSearchSelectorController {
 			this.searchResults = data.pageRecords;
 			this.recordsCount = data.recordsCount;
 			
-			if ( this.searchResults.length && selectFirstSponsor ) {
-				this.setSelectedSponsor( this.searchResults[0] );
-			}
 		});
 	}
 	

@@ -141,7 +141,8 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	property name="creditCardOrProviderTokenExistsFlag" persistent="false";
 	property name="dynamicAmountFlag" persistent="false" hb_formatType="yesno";
 	property name="maximumPaymentMethodPaymentAmount" persistent="false";
-
+	property name="orderHasAnotherDynamicOrderPaymentFlag" persistent="false";
+ 
 		//CUSTOM PROPERTIES BEGIN
 
  property name="paymentNumber" ormtype="string";//CUSTOM PROPERTIES END
@@ -611,6 +612,10 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 			}
 		}
 	}
+
+	public boolean function getOrderHasAnotherDynamicOrderPaymentFlag(){
+		return !isNull(getOrder()) && !isNull(getOrder().getDynamicChargeOrderPayment(this)); 
+	} 
 
 	// ============  END:  Non-Persistent Property Methods =================
 

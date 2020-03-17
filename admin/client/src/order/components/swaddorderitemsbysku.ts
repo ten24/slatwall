@@ -191,7 +191,7 @@ class SWAddOrderItemsBySkuController{
 			//Display the modal	
 			}else if (data.preProcessView){
 				//populate a modal with the template data...
-	        	var parsedHtml:any = $.parseHTML( data.preProcessView );
+	        	var parsedHtml:any = data.preProcessView;
 				$('#adminModal').modal();
 				// show modal
 				(window as any).renderModal(parsedHtml);
