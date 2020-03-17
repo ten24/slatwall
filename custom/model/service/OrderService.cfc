@@ -1701,12 +1701,4 @@ component extends="Slatwall.model.service.OrderService" {
 		return ofyPromoCL
 	}
 	
-	public any function getAppliedPromotionMessageData(required string orderID=''){
-		var messageCL = getService('promotionService').getPromotionMessageAppliedCollectionList();
-		messageCL.addFilter('order.orderID', arguments.orderID);
-		var displayProperties = 'message,qualifierProgress,promotionQualifierMessage.promotionQualifier.promotionPeriod.promotion.promotionName,promotionQualifierMessage.promotionQualifier.promotionPeriod.promotionRewards.amount';
-		messageCL.setDisplayProperties(displayProperties);
-		return messageCL;
-	}
-	
 }
