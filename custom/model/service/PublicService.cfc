@@ -732,11 +732,16 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 			"isDeletable":false,
 			"isSearchable":false,
 			"arguments":{
+			    'currencyCode': 'USD'
 			}
 		};
 		
+		var site = getService('SiteService').getSiteBySiteCode( arguments.data.siteCode );
+        if ( !isNull( site ) ) {
+            visibleColumnConfigWithArguments['arguments']['currencyCode'] = site.getCurrencyCode();
+        }
+        
 		if(!isNull(getHibachiScope().getAccount())){
-			visibleColumnConfigWithArguments["arguments"]["currencyCode"] = getHibachiScope().getAccount().getSiteCurrencyCode();
 			visibleColumnConfigWithArguments["arguments"]["accountID"] = getHibachiScope().getAccount().getAccountID();
 		}
 
@@ -769,7 +774,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 					'image': baseImageUrl & skuBundle.sku_product_defaultSku_imageFile,
 					'personalVolume': skuBundle.sku_personalVolumeByCurrencyCode,
 					'productTypes': {},
-					'currencyCode':getHibachiScope().getAccount().getSiteCurrencyCode()
+					'currencyCode': visibleColumnConfigWithArguments['arguments']['currencyCode']
 				};
 			}
 			
