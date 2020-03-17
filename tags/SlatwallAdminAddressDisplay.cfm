@@ -67,8 +67,11 @@ Notes:
 	<cfset attributes.address.setCountryCode('US') />
 </cfif>
 
+<cfset local.suggestionID = 'suggestion-'&createUUID() />
+
 <cfif thisTag.executionMode is "start">
 	<cfoutput>
+
 		<div class="slatwall-address-container form-horizontal">
 			<input type="hidden" name="#attributes.fieldNamePrefix#addressID" value="#attributes.address.getAddressID()#" />
 			<cfif attributes.showCountry>
@@ -108,6 +111,106 @@ Notes:
 			<cfif attributes.showPostalCode AND (isNull(attributes.address.getCountry()) OR  ( NOT isNull(attributes.address.getCountry().getPostalCodeShowFlag()) AND attributes.address.getCountry().getPostalCodeShowFlag() )) >
 				<hb:HibachiPropertyDisplay object="#attributes.address#" fieldName="#attributes.fieldNamePrefix#postalCode" property="postalCode" edit="#attributes.edit#" fieldClass="slatwall-address-postalCode" />	
 			</cfif>
+			
+			<div class="#local.suggestionID#-block well well-lg" style="display:none">
+				<h4>Suggested Address:</h4>
+				
+				<input type="hidden" name="#attributes.fieldNamePrefix#verifyAddress" value="true">
+				<span class="#local.suggestionID#-address-new"></span><br>
+				<span class="#local.suggestionID#-address-new-2"></span><br>
+				<span class="#local.suggestionID#-address-new-3"></span><br>
+				<!--<input name="verifyAddress" >-->
+				<a class="btn btn-success" id="#local.suggestionID#">Use Suggested Address</a>
+				<a class="btn btn-default pull-right" id="#local.suggestionID#-continue">Continue with the address provided</a>
+			</div>
 		</div>
+
+		<cfif len(trim(attributes.address.getAddressID())) EQ 0>
+			<script type="text/javascript">
+				$(document).ready(function(){
+					
+					
+					var prefix          = '#local.suggestionID#';
+					var preventDupsHash = '';
+					var countryCode     = $("select[name='#attributes.fieldNamePrefix#countryCode'] option:selected");
+					var streetAddress   = $("input[name='#attributes.fieldNamePrefix#streetAddress']");
+					var street2Address  = $("input[name='#attributes.fieldNamePrefix#street2Address']");
+					var locality        = $("input[name='#attributes.fieldNamePrefix#locality']");
+					var city            = $("input[name='#attributes.fieldNamePrefix#city']");
+					var stateCode       = $("select[name='#attributes.fieldNamePrefix#stateCode'] option:selected");
+					var postalCode      = $("input[name='#attributes.fieldNamePrefix#postalCode']");
+					var verify          = $("input[name='#attributes.fieldNamePrefix#verifyAddress");
+					var suggestion      = {};
+					
+					var currentForm = streetAddress.closest("form");
+					
+					var submitForm = false;
+
+					// $(".#local.suggestionID#-block").remove();
+					// $(currentForm).append($(".#local.suggestionID#-block"));
+					currentForm.submit(function(event) {
+						if(!submitForm){
+							event.preventDefault();
+							var requestData = {
+								'address.countryCode' : countryCode.val(),
+								'address.streetAddress' : streetAddress.val(),
+								'address.street2Address' : street2Address.val(),
+								'address.city' : city.val(),
+								'address.stateCode' : stateCode.val().length ? stateCode.val() : locality.val(),
+								'address.postalCode' : postalCode.val()
+							};
+							
+							if(JSON.stringify(requestData) != preventDupsHash){
+								preventDupsHash = JSON.stringify(requestData);
+								$.ajax({
+									type: 'POST',
+									url: '?slatAction=api:main.verifyAddress',
+									data: requestData,
+									dataType: "json",
+									context: document.body,
+									success: function(r) {
+										
+										console.log(r);
+										suggestion = r.suggestedAddress;
+										if(!r.suggestedAddress.success){
+											$('.'+prefix+'-address-new').text(suggestion.streetAddress);
+											$('.'+prefix+'-address-new-2').text(suggestion.city+' - '+ suggestion.stateCode + ', ' +suggestion.countryCode + ' '+  suggestion.postalCode);
+											$('.'+prefix+'-address-new-3').text(suggestion.postalCode);
+											$('.#local.suggestionID#-block').show();
+										}else{
+											submitForm = true;
+											verify.val('true');
+											currentForm.submit();
+										}
+									}
+								});
+							}
+						}
+					});
+					
+					$('###local.suggestionID#').on('click', function() {
+					  if(suggestion.streetAddress.toLowerCase() != streetAddress.val().toLowerCase()){
+					  	streetAddress.val(suggestion.streetAddress)
+					  }
+					  if(suggestion.city.toLowerCase() != city.val().toLowerCase()){
+					  	city.val(suggestion.city)
+					  }
+					  if(suggestion.postalCode.toLowerCase() != postalCode.val().toLowerCase()){
+					  	postalCode.val(suggestion.postalCode)
+					  }
+					  submitForm = true;
+					  verify.val('true');
+					  currentForm.submit();
+					});
+					
+					$('###local.suggestionID#-continue').on('click', function() {
+					  submitForm = true;
+					  verify.val('false');
+					  currentForm.submit();
+					});
+					
+				});
+			</script>
+		</cfif>
 	</cfoutput>
 </cfif>
