@@ -24,10 +24,9 @@ class EnrollmentFlexshipController {
 	
 		this.isLoading = true;
 		let extraProperties = "canPlaceOrderFlag,purchasePlusTotal,appliedPromotionMessages";
-		console.log(this.cartThreshold)
-		// if(!this.cartThreshold){
-		// 	extraProperties += ',cartTotalThresholdForOFYAndFreeShipping'
-		// }
+		if(!this.cartThreshold){
+			extraProperties += ',cartTotalThresholdForOFYAndFreeShipping'
+		}
 		this.orderTemplateService.getSetOrderTemplateOnSession(extraProperties).then(data => {
 			if((data.orderTemplate as GenericTemplate) ){
 				this.orderTemplate = data.orderTemplate;
