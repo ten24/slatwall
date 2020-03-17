@@ -618,11 +618,11 @@ property name="sapItemCode" ormtype="string";
 		return getService("priceGroupService").getRateForSkuBasedOnPriceGroup(sku=this, priceGroup=arguments.priceGroup);
 	}
 	
-	public any function getPriceByCurrencyCode( string currencyCode='USD', numeric quantity=1, array priceGroups, string accountID, string priceGroupCode = "" ) {
+	public any function getPriceByCurrencyCode( string currencyCode='USD', numeric quantity=1, array priceGroups, string accountID, string priceGroupCode) {
 		var cacheKey = 'getPriceByCurrencyCode#arguments.currencyCode#';
 		
-		if( arguments.priceGroupCode != "" ) {
-			arguments.priceGroups = getService('priceGroupService').getPriceGroupByPriceGroupCode(arguments.priceGroupCode);
+		if( ! IsNull(arguments.priceGroupCode) ) {
+			arguments.priceGroups = [ getService('priceGroupService').getPriceGroupByPriceGroupCode(arguments.priceGroupCode) ];
 		}
 		
 		if( !structKeyExists(arguments,'priceGroups') ) {
