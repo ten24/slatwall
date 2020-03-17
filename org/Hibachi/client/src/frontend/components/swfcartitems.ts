@@ -8,7 +8,7 @@ class SWFCartItemsController{
     public orderItem:any;
     public loadingImages:any;
     
-    constructor(private $rootScope, private observerService){
+    constructor(private $rootScope, private observerService, private publicService){
         this.loadingImages = true;
         this.$rootScope = $rootScope;
         this.$rootScope.slatwall.doAction('getResizedImageByProfileName',{profileName:'small',skuIds:this.orderItem.sku.skuID})
@@ -38,6 +38,9 @@ class SWFCartItemsController{
                 'orderItem.quantity':newQuantity
         };
         this.$rootScope.slatwall.doAction('updateOrderItemQuantity',data).then(result=>{
+            if ( result.successfulActions.length ) {
+                this.observerService.notify('updatedCart', result.cart);
+            }
             this.updateOrderItemQuantityIsLoading = false;
         });
     }
@@ -48,6 +51,9 @@ class SWFCartItemsController{
             'orderItemID':this.orderItem.orderItemID
         };
         this.$rootScope.slatwall.doAction('removeOrderItem',data).then(result=>{
+            if ( result.successfulActions.length ) {
+                this.observerService.notify('updatedCart', result.cart);
+            }
             this.removeOrderItemIsLoading = false;
         });
     }
