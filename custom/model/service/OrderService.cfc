@@ -93,8 +93,12 @@ component extends="Slatwall.model.service.OrderService" {
 	}
     
     public any function addNewOrderItemSetup(required any newOrderItem, required any processObject) {
-        super.addNewOrderItemSetup(argumentCollection=arguments);
+        arguments.newOrderItem = super.addNewOrderItemSetup(argumentCollection=arguments);
         
+		if(isNull(arguments.newOrderItem)){
+			return; 
+		}
+
         var sku = arguments.newOrderItem.getSku();
         var account = arguments.newOrderItem.getOrder().getAccount();
         if(isNull(account)){

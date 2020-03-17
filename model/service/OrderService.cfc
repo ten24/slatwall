@@ -5595,6 +5595,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 								priceGroups = [arguments.processObject.getPriceGroup()]
 							);
 
+			if(isNull(skuPrice)){
+				return;
+			}
+
 			arguments.newOrderItem.setPrice(skuPrice);
 			arguments.newOrderItem.setSkuPrice(skuPrice);
 		}
