@@ -2355,6 +2355,8 @@ public numeric function getPersonalVolumeSubtotal(){
 	}
 	
 	public boolean function orderPriceGroupMatchesAccount(){
+		//first check account, account price groups should both not be null and have a length  
+		//then we check if the order has a price group, if it does it should match the price group on the account - inverses are checked as to avoid nested logic
 		return (isNull(this.getAccount().getPriceGroups()) || !arrayLen(this.getAccount().getPriceGroups()) 
 				|| (!isNull(this.getPriceGroup().getPriceGroupCode()) && this.getPriceGroup().getPriceGroupCode() != this.getAccount().getPriceGroups()[1].getPriceGroupCode()) ) ? false : true;
 	}
