@@ -393,13 +393,7 @@ component extends="Slatwall.model.service.OrderService" {
 			request[orderTemplateOrderDetailsKey]['canPlaceOrderDetails'] = getPromotionService().getOrderQualifierDetailsForCanPlaceOrderReward(transientOrder); 
 			request[orderTemplateOrderDetailsKey]['canPlaceOrder'] = request[orderTemplateOrderDetailsKey]['canPlaceOrderDetails']['canPlaceOrder']; 
 			request[orderTemplateOrderDetailsKey]['purchasePlusTotal'] = transientOrder.getPurchasePlusTotal();
-			var messages = transientOrder.getAppliedPromotionMessages();
-			var messageArray = '';
-			for(var message in messages){
-				messageArray = listAppend(messageArray,message.getMessage());
-			}
-		
-			request[orderTemplateOrderDetailsKey]['appliedpromotionMessages'] = messageArray;
+			request[orderTemplateOrderDetailsKey]['appliedpromotionMessages'] = serializeJson(this.getAppliedPromotionMessageData(transientOrder.getOrderID()).getRecords());
 			var deleteOk = this.deleteOrder(transientOrder); 
 			this.logHibachi('transient order deleted #deleteOk# hasErrors #transientOrder.hasErrors()#',true);
 			ormFlush();
@@ -1705,6 +1699,14 @@ component extends="Slatwall.model.service.OrderService" {
 		ofyPromoCL.addDisplayProperty('discountAmount');
 		ofyPromoCL.addDisplayProperty('promotion.promotionName');
 		return ofyPromoCL
+	}
+	
+	public any function getAppliedPromotionMessageData(required string orderID=''){
+		var messageCL = getService('promotionService').getPromotionMessageAppliedCollectionList();
+		messageCL.addFilter('order.orderID', arguments.orderID);
+		var displayProperties = 'message,qualifierProgress,promotionQualifierMessage.promotionQualifier.promotionPeriod.promotion.promotionName,promotionQualifierMessage.promotionQualifier.promotionPeriod.promotionRewards.amount';
+		messageCL.setDisplayProperties(displayProperties);
+		return messageCL;
 	}
 	
 }
