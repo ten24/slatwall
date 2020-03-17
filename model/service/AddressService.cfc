@@ -57,6 +57,9 @@ component extends="HibachiService" accessors="true" output="false" {
 	public any function saveAddress(required any address, struct data={}, string context="save", boolean verifyAddressFlag=false){
 		
 		arguments.address = super.saveAddress(address,data,context);
+		if(structKeyExists(arguments.data, 'verifyAddressFlag') && arguments.data.verifyAddressFlag == true){
+			arguments.verifyAddressFlag = true;
+		}
 		
 		if(!arguments.address.hasErrors() && arguments.verifyAddressFlag){
 			//Have to flush in order to get address struct
@@ -185,45 +188,51 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 	
 	public any function verifyAddressStruct(required struct addressStruct){
-		 			
-		var address = this.getAddress(arguments.addressStruct['addressID']);
+		
+		var integrationID = getHibachiScope().setting('globalIntegrationForAddressVerification');
+		
 		var cacheKey = hash(serializeJSON(arguments.addressStruct),'md5');
 		
 		var addressVerificationStruct = {};
 		
-		if( isNull(address.getVerificationCacheKey()) || 
-			!len(address.getVerificationCacheKey()) || 
-			compare(address.getVerificationCacheKey(),cacheKey) != 0
-		) {
+		if(structKeyExists(arguments.addressStruct,'addressID')){
+			var address = this.getAddress(arguments.addressStruct['addressID']);
 			
-			var integrationID = getHibachiScope().setting('globalIntegrationForAddressVerification');
-			
-			if(!isNull(integrationID) && len(integrationID) && integrationID != 'internal' ){
-	
-				addressVerificationStruct = getService("IntegrationService")
-												.getIntegrationByIntegrationPackage(integrationID)
-													.getIntegrationCFC("Address")
-														.verifyAddress(arguments.addressStruct);
-				addressVerificationStruct['address'] = arguments.addressStruct;
-				address.setVerificationJson(serializeJSON(addressVerificationStruct));
-				address.setVerificationCacheKey(cacheKey);
-			}
-			
-		} 
-		else {
-			
-			addressVerificationStruct = deserializeJson(address.getVerificationJson());
+			if( !isNull(address) && 
+				!isNull(address.getVerificationCacheKey()) &&
+				len(address.getVerificationCacheKey()) && 
+				compare(address.getVerificationCacheKey(),cacheKey) == 0
+			) {
+				addressVerificationStruct = deserializeJson(address.getVerificationJson());
+			} 
 		}
-
-		if (structKeyExists(addressVerificationStruct, 'success')) {
-			address.setVerifiedByIntegrationFlag(addressVerificationStruct['success']);
-			
-			if(!addressVerificationStruct['success']){
-				address.setIntegrationVerificationErrorMessage(addressVerificationStruct['message']);
-			}
+		 			
+		if( StructIsEmpty(addressVerificationStruct) &&
+			!isNull(integrationID) && 
+			len(integrationID) && 
+			integrationID != 'internal' 
+		){
+			addressVerificationStruct = getService("IntegrationService")
+											.getIntegrationByIntegrationPackage(integrationID)
+												.getIntegrationCFC("Address")
+													.verifyAddress(arguments.addressStruct);
+			addressVerificationStruct['address'] = arguments.addressStruct;
 		}
-
-		this.saveAddress(address);
+		
+		if(!isNull(address)){
+			
+			address.setVerificationJson(serializeJSON(addressVerificationStruct));
+			address.setVerificationCacheKey(cacheKey);
+			
+			if (structKeyExists(addressVerificationStruct, 'success')) {
+				address.setVerifiedByIntegrationFlag(addressVerificationStruct['success']);
+			
+				if(!addressVerificationStruct['success']){
+					address.setIntegrationVerificationErrorMessage(addressVerificationStruct['message']);
+				}
+			}
+			this.saveAddress(address);
+		}
 		
 		return addressVerificationStruct;
 		

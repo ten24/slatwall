@@ -19,6 +19,7 @@ component output="false" accessors="true" extends="HibachiController" {
     this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getValidation');
     this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getEventOptionsByEntityName');
     this.anyAdminMethods=listAppend(this.anyAdminMethods, 'savePersonalCollection');
+    this.anyAdminMethods=listAppend(this.anyAdminMethods, 'verifyAddress');
     this.anyAdminMethods=listAppend(this.anyAdminMethods, 'put');
     this.anyAdminMethods=listAppend(this.anyAdminMethods, 'delete');
     this.anyAdminMethods=listAppend(this.anyAdminMethods, 'log');
@@ -228,31 +229,37 @@ component output="false" accessors="true" extends="HibachiController" {
      * ...should return three paths.
      */
     public any function getResizedImageByProfileName(required struct rc){
-            var imageHeight = 60;
-            var imageWidth  = 60;
+        var imageHeight = 60;
+        var imageWidth  = 60;
 
-            if(arguments.rc.profileName == "orderItem"){
-                imageHeight = 90;
-                imageWidth  = 90;
-            }else if (arguments.rc.profileName == "skuDetail"){
-                    imageHeight = 150;
-                    imageWidth  = 150;
+        if(arguments.rc.profileName == "orderItem"){
+            imageHeight = 90;
+            imageWidth  = 90;
+        }else if (arguments.rc.profileName == "skuDetail"){
+                imageHeight = 150;
+                imageWidth  = 150;
+        }
+        arguments.rc.apiResponse.content = {};
+        arguments.rc.apiResponse.content['resizedImagePaths'] = [];
+        var skus = [];
+
+        //smart list to load up sku array
+        var skuSmartList = getHibachiScope().getService('skuService').getSkuSmartList();
+        skuSmartList.addInFilter('skuID',rc.skuIDs);
+
+        if( skuSmartList.getRecordsCount() > 0){
+            var skus = skuSmartList.getRecords();
+
+            for  (var sku in skus){
+                ArrayAppend(arguments.rc.apiResponse.content['resizedImagePaths'], sku.getResizedImagePath(width=imageWidth, height=imageHeight));
             }
-            arguments.rc.apiResponse.content = {};
-            arguments.rc.apiResponse.content['resizedImagePaths'] = [];
-            var skus = [];
-
-            //smart list to load up sku array
-            var skuSmartList = getHibachiScope().getService('skuService').getSkuSmartList();
-            skuSmartList.addInFilter('skuID',rc.skuIDs);
-
-            if( skuSmartList.getRecordsCount() > 0){
-                var skus = skuSmartList.getRecords();
-
-                for  (var sku in skus){
-                    ArrayAppend(arguments.rc.apiResponse.content['resizedImagePaths'], sku.getResizedImagePath(width=imageWidth, height=imageHeight));
-                }
-            }
+        }
+    }
+    
+    public any function verifyAddress(required struct rc){
+        if(structKeyExists(arguments.rc,'address')){
+            arguments.rc.apiResponse.content = getHibachiScope().getService('addressService').verifyAddressStruct(arguments.rc.address);
+        }
     }
 
 
