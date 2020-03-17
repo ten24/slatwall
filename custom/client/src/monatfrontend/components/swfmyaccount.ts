@@ -1,6 +1,7 @@
 /// <reference path='../../../../../org/Hibachi/client/typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../../../org/Hibachi/client/typings/tsd.d.ts' />
 
+declare var $;
 
 class swfAccountController {
     public account;
@@ -38,6 +39,7 @@ class swfAccountController {
     public accountProfileImage;
     public orderDelivery:any;
     public orderPromotions:any;
+    public RAFGiftCard:any;
     public orderItemTotal:number = 0;
     public orderRefundTotal:any;
     public profileImageLoading:boolean = false;
@@ -93,6 +95,34 @@ class swfAccountController {
 	    this.publicService.getCart(true);
 	}
 	
+	private getRAFGiftCard = () => {
+	    this.loading = true;
+        this.publicService.doAction( 
+            'getRAFGiftCard', 
+            { accountID : this.accountData.accountID } 
+        ).then(result=>{
+            if ( 'undefined' !== typeof result.giftCard ) {
+                for ( let i = 0; i < result.giftCard.transactions.length; i++ ) {
+                    let transaction = result.giftCard.transactions[ i ];
+                    
+                    // Match everything up until 4 digit year.
+                    let dateMatch = result.giftCard.transactions[ i ].createdDateTime.match(/.+?[0-9]{4}/g);
+                    if ( dateMatch.length ) {
+                        result.giftCard.transactions[ i ].createdDateTime = dateMatch[0];
+                    }
+                    
+                    // Convert to string so we can use trim    
+                    result.giftCard.transactions[ i ].debitAmount = ( '' + transaction.debitAmount ).trim();
+                    result.giftCard.transactions[ i ].creditAmount = ( '' + transaction.creditAmount ).trim();
+                }
+                
+                this.RAFGiftCard = result.giftCard;
+            }
+            
+            this.loading = false;
+        });
+	}
+	
 	public launchAddressModal(address: Array<object>):void{
 		this.ModalService.showModal({
 			component: 'addressVerification',
@@ -139,6 +169,9 @@ class swfAccountController {
                     break;
                 case (url.indexOf('/my-account/my-details/') > -1):
                     this.getMoMoneyBalance();
+                    break;
+                case (url.indexOf('/my-account/rewards/') > -1):
+                    this.getRAFGiftCard();
                     break;
                 case (url.indexOf('/my-account/') > -1):
                     this.getOrdersOnAccount(1);
