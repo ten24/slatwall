@@ -88,7 +88,17 @@ class swfAccountController {
 		}
 	}
 	
-	public loginSuccess = () =>{
+	public loginSuccess = (data) =>{
+	    
+	    if(data.redirect){
+	        if(data.redirect == 'default'){
+	            data.redirect = '';
+	        }else{
+	            data.redirect = '/'+data.redirect;
+	        }
+	        window.location.href = data.redirect + '/my-account/';
+	        return;
+	    }
 	    this.getAccount();
 	    this.publicService.getCart(true);
 	}
