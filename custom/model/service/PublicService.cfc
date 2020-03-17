@@ -1944,7 +1944,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     public any function getRAFGiftCard(requred any data) {
         var giftCardList = getService('GiftCardService').getGiftCardCollectionList();
         giftCardList.addFilter( 'ownerAccount.accountID', arguments.data.accountID );
-        giftCardList.addFilter( 'Sku.skuCode', 'raf-gift-card-1' );
+        giftCardList.addFilter( 'sku.skuCode', 'raf-gift-card-1' );
         giftCardList.setDisplayProperties('calculatedBalanceAmount,giftCardCode,currencyCode,giftCardID,activeFlag');
         giftCardList.setPageRecordsShow(1);
         
