@@ -758,9 +758,12 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		if(!isNull(getHibachiScope().getAccount())){
 			visibleColumnConfigWithArguments["arguments"]["accountID"] = getHibachiScope().getAccount().getAccountID();
 		}
+		
+		//Price Group For Market Partner
+		visibleColumnConfigWithArguments["arguments"]["priceGroupCode"] = 1;
 
 		//todo handle case where user is not logged in 
-	
+	    
 		bundleNonPersistentCollectionList.addDisplayProperty('bundledSku.priceByCurrencyCode', '', visibleColumnConfigWithArguments);
 		bundleNonPersistentCollectionList.addDisplayProperty('sku.priceByCurrencyCode', '', visibleColumnConfigWithArguments);
 		bundleNonPersistentCollectionList.addDisplayProperty('sku.personalVolumeByCurrencyCode', '', visibleColumnConfigWithArguments);

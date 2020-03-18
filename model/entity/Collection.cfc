@@ -970,6 +970,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		if(structKeyExists(arguments.columnConfig,'isDistinct')){
 			arguments.column['isDistinct']=arguments.columnConfig['isDistinct'];
 		}
+		
+		if(structKeyExists(arguments.columnConfig,'arguments')){
+			arguments.column['arguments']=arguments.columnConfig['arguments'];
+		}
 
 		if(arguments.prepend){
 			arrayPrepend(collectionConfig.columns,arguments.column);
