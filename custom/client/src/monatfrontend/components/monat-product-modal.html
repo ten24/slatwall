@@ -187,14 +187,8 @@
 							<div class="col-12 col-md-6 content-box" style="background-image: url(/themes/monat/assets/images/section-bg.jpg);">
 							<div class="colored-box">
 								<h6 sw-rbKey="'frontend.product.noNasties'"></h6>
-								
-								<div class="ingredients">
-									#m.dspObject( 'component', 'No Toxic Ingredients' )#
-								</div>
-								
-								<div class="iconed-featurs iconed-featurs--white">
-									#m.dspObject( 'component', 'Product Details: Values Bar' )#
-								</div>
+								<div ng-bind-html="monatProductModal.muraContentIngredients" class="ingredients"></div>
+								<div ng-bind-html="monatProductModal.muraValues" class="iconed-featurs iconed-featurs--white"></div>
 							</div>
 							<div id="ingredient-block" class="ingredient-block" ng-class="{'active': monatProductModal.showFullIngredients}">
 								<button type="button" class="close">
@@ -225,16 +219,15 @@
 								<i class="fas fa-play"></i>
 							</span>
 							<div class="img-box">
-								
-							<!-----	TODO: <img src="#m.getAttributeFilePath( $.slatwall.product(), 'productVideoBackgroundImage' )#" alt="">----->
+							<!-----	TODO: <img src="#m.getAttributeFilePath( $.slatwall.product(), 'productVideoBackgroundImage' )#" alt=""> ----->
 							</div>
 							<div class="video-box">
 							</div>
-							<div class="video-lightbox" id="product-video-lightbox" style="padding-top: #videoRatio#%; width: #videoWidth#px">
+							<div class="video-lightbox" id="product-video-lightbox" ng-style="{'padding-top': monatProductModal.productDetails.videoWidth / monatProductModal.productDetails.videoHeight + '%', 'width': monatProductModal.productDetails.videoWidth + 'px'}">
 							<iframe
 								frameborder="0" 
 								allowfullscreen
-								src="{{monatProductModal.productDetails.videoUrl}}"
+								ng-src="{{monatProductModal.trustedVideoURL}}"
 								width="{{monatProductModal.productDetails.videoWidth}}"
 								height="{{monatProductModal.productDetails.videoHeight}}"
 								></iframe>
