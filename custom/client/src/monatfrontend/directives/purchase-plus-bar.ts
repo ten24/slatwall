@@ -18,6 +18,8 @@ class PurchasePlusBarController {
 	public $onInit = () => {
 		this.getPurchasePlusMessages();
 		
+		this.observerService.attach( this.getMessagesFromCart, 'updateOrderItemSuccess');
+		this.observerService.attach( this.getMessagesFromCart, 'addOrderItemSuccess');
 		this.observerService.attach( this.getMessagesFromCart, 'updatedCart' );
 	}
 	

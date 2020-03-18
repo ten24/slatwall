@@ -147,7 +147,7 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 	property name="flexshipQualifiedOrdersForCalendarYearCount" persistent="false"; 
 	property name="qualifiesForOFYProducts" persistent="false";
 	property name="cartTotalThresholdForOFYAndFreeShipping" persistent="false";
-	
+	property name="appliedPromotionMessagesJson" persistent="false"; 
 
 //CUSTOM PROPERTIES END
 	public string function getEncodedJsonRepresentation(string nonPersistentProperties='subtotal,fulfillmentTotal,fulfillmentDiscount,total'){ 
@@ -579,6 +579,15 @@ public boolean function getAccountIsNotInFlexshipCancellationGracePeriod(){
 	
 	public boolean function userCanCancelFlexship(){
 		return getAccount().getAccountType() == 'MarketPartner' || getHibachiScope().getAccount().getAdminAccountFlag();
+	}
+	
+	public any function getappliedPromotionMessagesJson(){
+	
+		if(!structKeyExists(variables, 'appliedPromotionMessagesJson')){
+			variables.appliedPromotionMessagesJson = getService('OrderService').getappliedPromotionMessagesJsonForOrderTemplate(this);
+
+		}	
+		return variables.appliedPromotionMessagesJson; 	
 	}
 	//CUSTOM FUNCTIONS END
 }

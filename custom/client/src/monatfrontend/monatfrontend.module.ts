@@ -49,17 +49,14 @@ import { MonatUpgradeMP } from './components/upgradeFlow/monatupgrademp';
 import { ImageManager } from './components/image-manager';
 import { AddressDeleteModal } from './components/address-delete-modal';
 import { MonatConfirmMessageModel } from './components/monat-modal-confirm-message'
-
 import { MonatBirthday } from './components/monatBirthday'
-
 import { HybridCart } from './components/hybridCart'
 import { EnrollmentFlexship } from './components/enrollmentFlexship'
-
 import { AddressVerification } from './components/addressVerificationModal'
-
 import { OFYEnrollment } from './components/ofyEnrollment'
 import { PurchasePlusBar } from './directives/purchase-plus-bar';
-
+import { FlexshipPurchasePlus } from './components/flexshipPurchasePlus';
+ 
 // controllers
 import { MonatForgotPasswordController } from './controllers/monat-forgot-password';
 import { MonatSearchController } from './controllers/monat-search';
@@ -137,6 +134,7 @@ var monatfrontendmodule = angular
 	.directive('hybridCart',HybridCart.Factory())
 	.directive('enrollmentFlexship',EnrollmentFlexship.Factory())
 	.directive('ofyEnrollment',OFYEnrollment.Factory())	
+	.directive('flexshipPurchasePlus',FlexshipPurchasePlus.Factory())	
 
 	// Controllers
 	.controller('searchController', MonatSearchController)
