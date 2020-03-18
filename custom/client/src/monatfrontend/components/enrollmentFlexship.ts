@@ -33,7 +33,7 @@ class EnrollmentFlexshipController {
 				this.orderTemplate = data.orderTemplate;
 				if(this.orderTemplate.cartTotalThresholdForOFYAndFreeShipping) this.cartThreshold = +this.orderTemplate.cartTotalThresholdForOFYAndFreeShipping;
 				this.calculateSRPOnOrder();
-				let messages = JSON.parse(this.orderTemplate.appliedPromotionMessages);
+				let messages = this.orderTemplate.appliedPromotionMessages ? JSON.parse(this.orderTemplate.appliedPromotionMessages) : [];
 				messages = messages.filter(el => el.promotionQualifierMessage_promotionQualifier_promotionPeriod_promotion_promotionName?.indexOf('Purchase Plus') > -1);
 				if(!messages || !messages.length){
 					this.messages = null;
@@ -44,8 +44,6 @@ class EnrollmentFlexshipController {
 						qualifierProgress: messages[0].qualifierProgress,
 					}	
 				}
-			
-			
 				this.isLoading = false;
 			} else {
 				throw(data);
