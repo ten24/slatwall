@@ -1917,10 +1917,11 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     
     public any function removeIneligibleOrderItems(order = getHibachiScope().getCart()){
         var skuIDs = [];
-        
+        var currencyCode = arguments.order.getCurrencyCode();
+        var priceGroup = !isNull(arguments.order.getAccount()) && arguments.order.getAccount().hasPriceGroup() ? arguments.order.getAccount().getPriceGroups()[1] : getService('priceGroupService').getPriceGroupByPriceGroupCode(2);
         //add logic to also remove sku's with no price
         for(var orderItem in arguments.order.getOrderItems()){
-            if(!orderItem.getSku().canBePurchased(getHibachiScope().getAccount())){
+            if(!orderItem.getSku().canBePurchased(getHibachiScope().getAccount()) || isNull(orderItem.getSku().getPriceByCurrencyCode(currencyCode,orderItem.getQuantity(),[priceGroup]))  || orderItem.getSku().getPriceByCurrencyCode(currencyCode,orderItem.getQuantity(),[priceGroup]) < 1 ){
                 arrayAppend(skuIDs, orderItem.getSku().getSkuID());
             }
         }
@@ -1932,7 +1933,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             updateOrderAmounts :false
         }
 
-        return this.getOrderService().orderService.processOrder( arguments.order, orderData, 'removeOrderItem');
+        return this.getOrderService().processOrder( arguments.order, orderData, 'removeOrderItem');
         
     }
     
