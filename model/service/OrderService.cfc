@@ -241,6 +241,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		return newOrder;
 	}
+	
+	public any function getAppliedPromotionMessageData(required string orderID=''){
+		var messageCL = getService('promotionService').getPromotionMessageAppliedCollectionList();
+		messageCL.addFilter('order.orderID', arguments.orderID);
+		var displayProperties = 'promotionMessageAppliedID,message,qualifierProgress,promotionQualifierMessage.promotionQualifier.promotionPeriod.promotion.promotionName,promotionQualifierMessage.promotionQualifier.promotionPeriod.promotionRewards.amount';
+		messageCL.setDisplayProperties(displayProperties);
+		return messageCL;
+	}
 
 	// =====================  END: Logical Methods ============================
 
@@ -2032,7 +2040,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			accountAddress.setAddress(address); 
 			accountAddress.setAccount(account); 
 
-			accountAddress = getAccountService().saveAccountAddress(accountAddress);
+			accountAddress = getAccountService().saveAccountAddress(accountAddress=accountAddress,verifyAddressFlag=true);
 
 
 			arguments.orderTemplate.setBillingAccountAddress(accountAddress);

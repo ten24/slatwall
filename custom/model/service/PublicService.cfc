@@ -47,6 +47,20 @@ Notes:
 */
 component extends="Slatwall.model.service.PublicService" accessors="true" output="false" {
     
+    
+    
+     public any function login( required struct data ){
+         super.login(argumentCollection = arguments);
+         
+        if (getHibachiScope().getLoggedInFlag() &&
+            !isNull(getHibachiScope().getAccount().getAccountCreatedSite()) &&
+            !isNull(getHibachiScope().getCurrentRequestSite()) &&
+            getHibachiScope().getAccount().getAccountCreatedSite().getSiteID() != getHibachiScope().getCurrentRequestSite().getSiteID()
+        ){
+            arguments.data.ajaxResponse['data'] =  { 'redirect': getHibachiScope().getAccount().getAccountCreatedSite().getCmsSiteID() };
+        }
+    }
+    
     /**
       * Updates an Account address.
       */
@@ -732,16 +746,24 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 			"isDeletable":false,
 			"isSearchable":false,
 			"arguments":{
+			    'currencyCode': 'USD'
 			}
 		};
 		
+		var site = getHibachiScope().getCurrentRequestSite();
+        if ( !isNull( site ) ) {
+            visibleColumnConfigWithArguments['arguments']['currencyCode'] = site.getCurrencyCode();
+        }
+        
 		if(!isNull(getHibachiScope().getAccount())){
-			visibleColumnConfigWithArguments["arguments"]["currencyCode"] = getHibachiScope().getAccount().getSiteCurrencyCode();
 			visibleColumnConfigWithArguments["arguments"]["accountID"] = getHibachiScope().getAccount().getAccountID();
 		}
+		
+		//Price Group For Market Partner
+		visibleColumnConfigWithArguments["arguments"]["priceGroupCode"] = 1;
 
 		//todo handle case where user is not logged in 
-	
+	    
 		bundleNonPersistentCollectionList.addDisplayProperty('bundledSku.priceByCurrencyCode', '', visibleColumnConfigWithArguments);
 		bundleNonPersistentCollectionList.addDisplayProperty('sku.priceByCurrencyCode', '', visibleColumnConfigWithArguments);
 		bundleNonPersistentCollectionList.addDisplayProperty('sku.personalVolumeByCurrencyCode', '', visibleColumnConfigWithArguments);
@@ -769,7 +791,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 					'image': baseImageUrl & skuBundle.sku_product_defaultSku_imageFile,
 					'personalVolume': skuBundle.sku_personalVolumeByCurrencyCode,
 					'productTypes': {},
-					'currencyCode':getHibachiScope().getAccount().getSiteCurrencyCode()
+					'currencyCode': visibleColumnConfigWithArguments['arguments']['currencyCode']
 				};
 			}
 			
@@ -1955,6 +1977,31 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     public any function updateEighteenPlusUser(required any data){
         arguments.data['context'] = 'eighteenPlus';
         this.updateAccount(arguments.data);
+    }
+    
+    public any function getRAFGiftCard(requred any data) {
+        var giftCardList = getService('GiftCardService').getGiftCardCollectionList();
+        giftCardList.addFilter( 'ownerAccount.accountID', arguments.data.accountID );
+        giftCardList.addFilter( 'sku.skuCode', 'raf-gift-card-1' );
+        giftCardList.setDisplayProperties('calculatedBalanceAmount,giftCardCode,currencyCode,giftCardID,activeFlag');
+        giftCardList.setPageRecordsShow(1);
+        
+        var records = giftCardList.getPageRecords();
+        if ( !arrayLen( records ) ) {
+            return false;
+        }
+        
+        var giftCard = records[1];
+        giftCard['status'] = giftCard.activeFlag ? getHibachiScope().rbKey('frontend.global.active') : getHibachiScope().rbKey('frontend.global.inactive');
+        
+        var giftCardTransactionsList = getService('GiftCardService').getGiftCardTransactionCollectionList();
+        giftCardTransactionsList.addFilter( 'giftCard.giftCardID', giftCard.giftCardID );
+        giftCardTransactionsList.setDisplayProperties('createdDateTime,debitAmount,creditAmount,reasonForAdjustment,balanceAmount');
+        giftCardTransactionsList.setOrderBy('createdDateTime|DESC');
+        
+        giftCard['transactions'] = giftCardTransactionsList.getRecords();
+        
+        arguments.data['ajaxResponse']['giftCard'] = giftCard;
     }
     
 }
