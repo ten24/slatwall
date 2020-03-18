@@ -1971,4 +1971,29 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         this.updateAccount(arguments.data);
     }
     
+    public any function getRAFGiftCard(requred any data) {
+        var giftCardList = getService('GiftCardService').getGiftCardCollectionList();
+        giftCardList.addFilter( 'ownerAccount.accountID', arguments.data.accountID );
+        giftCardList.addFilter( 'sku.skuCode', 'raf-gift-card-1' );
+        giftCardList.setDisplayProperties('calculatedBalanceAmount,giftCardCode,currencyCode,giftCardID,activeFlag');
+        giftCardList.setPageRecordsShow(1);
+        
+        var records = giftCardList.getPageRecords();
+        if ( !arrayLen( records ) ) {
+            return false;
+        }
+        
+        var giftCard = records[1];
+        giftCard['status'] = giftCard.activeFlag ? getHibachiScope().rbKey('frontend.global.active') : getHibachiScope().rbKey('frontend.global.inactive');
+        
+        var giftCardTransactionsList = getService('GiftCardService').getGiftCardTransactionCollectionList();
+        giftCardTransactionsList.addFilter( 'giftCard.giftCardID', giftCard.giftCardID );
+        giftCardTransactionsList.setDisplayProperties('createdDateTime,debitAmount,creditAmount,reasonForAdjustment,balanceAmount');
+        giftCardTransactionsList.setOrderBy('createdDateTime|DESC');
+        
+        giftCard['transactions'] = giftCardTransactionsList.getRecords();
+        
+        arguments.data['ajaxResponse']['giftCard'] = giftCard;
+    }
+    
 }
