@@ -463,7 +463,7 @@ component {
 				);
 	}
 	
-	public any function getPurchasePlusTotal(){
+	public numeric function getPurchasePlusTotal(){
 		
 		 if (!structKeyExists(variables, "purchasePlusTotal")){
 			var purchasePlusRecords = getService('orderService').getPurchasePlusInformationForOrderItems(this.getOrderID());
