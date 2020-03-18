@@ -852,7 +852,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             },
             'customer':{
                 'priceGroupCode':'2',
-                'statusSystemCode':'astGoodStanding',
+                'statusSystemCode':'astEnrollmentPending',
                 'activeFlag':true
             },
             'marketPartner':{
