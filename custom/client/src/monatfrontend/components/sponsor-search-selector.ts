@@ -14,7 +14,7 @@ class SponsorSearchSelectorController {
 	public recordsCount:number;
 	public hasBeenSearched:boolean = false;
 	public originalAccountOwner:string;;
-
+	public subDomain:string;
 	
 	// Form fields for the sponsor search.
 	public form: any = {
@@ -28,14 +28,20 @@ class SponsorSearchSelectorController {
 		private publicService,
 		public observerService,
 		public $location
-	) {}
+	) {
+
+	}
 	
 	public $onInit = () => {
 		// Set the default country code based on the current site.
 		this.form.countryCode = this.siteCountryCode;
 		this.getCountryCodeOptions();
 		this.getStateCodeOptions( this.form.countryCode );
-		if(hibachiConfig.siteOwner.length){
+		let URL = window.location.host
+		let parts = URL.split('.');
+		this.subDomain = parts[0].indexOf('monat') > -1 ? '' : parts[0];
+
+		if(this.subDomain.length){
 			this.getSearchResults(true);
 		}
 		
@@ -44,7 +50,7 @@ class SponsorSearchSelectorController {
 			this.getSearchResults(false, true);				
 		}, 'accountRetrieved');
 		
-		if ( 'undefined' !== this.$location.search().accountNumber ) {
+		if ( 'undefined' !== this.$location.search().accountNumber && !this.subDomain.length) {
 			this.form.text = this.$location.search().accountNumber;
 			this.getSearchResults(false, false, true);
 		}
@@ -72,9 +78,9 @@ class SponsorSearchSelectorController {
 		});
 	}
 	
-	public getSearchResults = (useHibachConfig = false, useOriginalAccountOwner = false, selectFirstSponsor = false) => {
+	public getSearchResults = (useSubdomain = false, useOriginalAccountOwner = false, selectFirstSponsor = false) => {
 		this.loadingResults = true;
-		
+
 		let data = {
 			search:this.form.text,
 			currentPage:this.currentPage,
@@ -92,9 +98,9 @@ class SponsorSearchSelectorController {
 			returnJsonObjects:''
 		}
 		
-		if(useHibachConfig && !this.hasBeenSearched){
-			this.argumentsObject['search'] = hibachiConfig.siteOwner
-			data['search'] = hibachiConfig.siteOwner;
+		if(useSubdomain && !this.hasBeenSearched){
+			this.argumentsObject['search'] = this.subDomain;
+			data['search'] = this.subDomain;
 			this.hasBeenSearched = true;
 		}
 
@@ -102,7 +108,7 @@ class SponsorSearchSelectorController {
 			'getmarketpartners',data
 		).then(data => {
 			this.observerService.notify('PromiseComplete');
-			if(useHibachConfig || useOriginalAccountOwner){
+			if(useSubdomain || useOriginalAccountOwner){
 				this.selectedSponsor = data.pageRecords[0];
 				this.notifySelect(this.selectedSponsor);
 			}
