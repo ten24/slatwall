@@ -1325,13 +1325,21 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		arguments.transientOrder.setCurrencyCode(arguments.orderTemplate.getCurrencyCode());
 		
 		if(!isNull(arguments.orderTemplate.getAccount())){
-			var account = getAccountService().getAccount(arguments.orderTemplate.getAccount().getAccountID());
+			var account = arguments.orderTemplate.getAccount();
 			arguments.transientOrder.setAccount(account); 
-    		arguments.transientOrder.setAccountType( arguments.transientOrder.getAccount().getAccountType() );			
-		}else{
-			arguments.transientOrder.setPriceGroup(arguments.orderTemplate.getPriceGroup());
+    		arguments.transientOrder.setAccountType( arguments.transientOrder.getAccount().getAccountType());	
 		}
-
+		
+		var priceGroup =
+			( !isNull(arguments.orderTemplate.getAccount()) && !isNull(arguments.orderTemplate.getAccount().getPriceGroups() ) && arrayLen(arguments.orderTemplate.getAccount().getPriceGroups()) )
+				? arguments.orderTemplate.getAccount().getPriceGroups()[1] 
+				: !isNull(arguments.orderTemplate.getPriceGroup()) 
+				? arguments.orderTemplate.getPriceGroup()
+				: getService('priceGroupService').getPriceGroupByPriceGroupCode(2);
+			
+		arguments.transientOrder.setPriceGroup(priceGroup);
+			
+			
 
 		if(arguments.evictFromSession){	
 			ORMGetSession().evict(arguments.transientOrder.getAccount());
