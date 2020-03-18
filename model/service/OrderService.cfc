@@ -1330,15 +1330,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
     		arguments.transientOrder.setAccountType( arguments.transientOrder.getAccount().getAccountType());	
 		}
 		
-		var priceGroup =
-			( !isNull(arguments.orderTemplate.getAccount()) && !isNull(arguments.orderTemplate.getAccount().getPriceGroups() ) && arrayLen(arguments.orderTemplate.getAccount().getPriceGroups()) )
-				? arguments.orderTemplate.getAccount().getPriceGroups()[1] 
-				: !isNull(arguments.orderTemplate.getPriceGroup()) 
-				? arguments.orderTemplate.getPriceGroup()
-				: getService('priceGroupService').getPriceGroupByPriceGroupCode(2);
-			
-		arguments.transientOrder.setPriceGroup(priceGroup);
-			
+		if(
+			!isNull(arguments.orderTemplate.getAccount()) 
+			&& arguments.orderTemplate.getAccount().hasPriceGroup()
+		){
+			var priceGroup = arguments.orderTemplate.getAccount().getPriceGroups()[1];
+			arguments.transientOrder.setPriceGroup(priceGroup);
+		}else if(!isNull(arguments.orderTemplate.getPriceGroup())){
+			var priceGroup = arguments.orderTemplate.getPriceGroup();
+			arguments.transientOrder.setPriceGroup(priceGroup);
+		}
 			
 
 		if(arguments.evictFromSession){	
