@@ -542,7 +542,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var newAppliedPromotionMessage = this.newPromotionMessageApplied();
 			newAppliedPromotionMessage.setOrder( arguments.order );
 			/*******
-				To be done in sprint 3.5 https://ten24.teamwork.com/index.cfm#/tasks/28248194
+				TODO: in sprint 3.5 https://ten24.teamwork.com/index.cfm#/tasks/28248194
 		
 				newAppliedPromotionMessage.setPromotionQualifierMessage( promotionQualifierMessage );
 				newAppliedPromotionMessage.setPromotion(promotionQualifierMessage.getPromotionQualifier().getPromotionPeriod().getPromotion());
