@@ -29,11 +29,12 @@ class EnrollmentFlexshipController {
 			extraProperties += ',cartTotalThresholdForOFYAndFreeShipping'
 		}
 		this.orderTemplateService.getSetOrderTemplateOnSession(extraProperties).then(data => {
+
 			if((data.orderTemplate as GenericTemplate) ){
 				this.orderTemplate = data.orderTemplate;
 				if(this.orderTemplate.cartTotalThresholdForOFYAndFreeShipping) this.cartThreshold = +this.orderTemplate.cartTotalThresholdForOFYAndFreeShipping;
 				this.calculateSRPOnOrder();
-				let messages = this.orderTemplate.appliedPromotionMessages ? JSON.parse(this.orderTemplate.appliedPromotionMessages) : [];
+				let messages = this.orderTemplate.appliedPromotionMessagesJson ? JSON.parse(this.orderTemplate.appliedPromotionMessagesJson) : [];
 				messages = messages.filter(el => el.promotionQualifierMessage_promotionQualifier_promotionPeriod_promotion_promotionName?.indexOf('Purchase Plus') > -1);
 				if(!messages || !messages.length){
 					this.messages = null;
