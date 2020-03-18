@@ -77741,6 +77741,9 @@ var SWCriteriaDate = /** @class */ (function () {
                                 scope.selectedFilterProperty.criteriaRangeStart = parseInt(dateRangeArray[0]);
                                 scope.selectedFilterProperty.criteriaRangeEnd = parseInt(dateRangeArray[1]);
                             }
+                            if (angular.isDefined(scope.filterItem.criteriaNumberOf)) {
+                                scope.selectedFilterProperty.criteriaNumberOf = scope.filterItem.criteriaNumberOf;
+                            }
                             if (angular.isDefined(scope.selectedConditionChanged)) {
                                 scope.selectedConditionChanged(scope.selectedFilterProperty);
                             }
