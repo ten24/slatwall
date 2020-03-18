@@ -736,7 +736,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 			}
 		};
 		
-		var site = getService('SiteService').getSiteBySiteCode( arguments.data.siteCode );
+		var site = getHibachiScope().getCurrentRequestSite();
         if ( !isNull( site ) ) {
             visibleColumnConfigWithArguments['arguments']['currencyCode'] = site.getCurrencyCode();
         }
