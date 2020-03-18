@@ -1327,6 +1327,23 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             
             arguments.data['ajaxResponse']['productData'] = productData;
             
+            var muraIngredients = QueryExecute("SELECT body FROM tContent WHERE htmlTitle='No Toxic Ingredients' AND active=1 AND siteID=:siteID", {siteID: arguments.data.cmsSiteID});
+            var queryProductValues = [];
+            
+            for(var record in muraIngredients){
+                arrayAppend(queryProductValues,record.body);
+            }
+            
+            
+            var muraValues = QueryExecute("SELECT body FROM tContent WHERE htmlTitle='Product Details: Values Bar' AND active=1 AND siteID=:siteID", {siteID: arguments.data.cmsSiteID});
+            var queryCompanyValues = [];
+            for(var record in muraValues){
+                arrayAppend(queryCompanyValues,record.body);
+            }
+            
+            arguments.data['ajaxResponse']['muraIngredients'] = queryProductValues;
+            arguments.data['ajaxResponse']['muraValues'] = queryCompanyValues;
+            
         }
     
     }
