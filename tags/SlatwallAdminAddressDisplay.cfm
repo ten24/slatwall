@@ -157,8 +157,12 @@ Notes:
 								'address.stateCode' : locality.val() ? locality.val() : stateCode.children("option:selected").val(),
 								'address.postalCode' : postalCode.val()
 							};
-							console.log(stateCode.val());
-							console.log(requestData);
+							if(!requestData['address.streetAddress']){
+								submitForm = true;
+								verify.val('false');
+								currentForm.submit();
+								return;
+							}
 							
 							if(JSON.stringify(requestData) != preventDupsHash){
 								preventDupsHash = JSON.stringify(requestData);
@@ -171,11 +175,11 @@ Notes:
 									success: function(r) {
 										suggestion = r.suggestedAddress;
 										
-										if(!r.success &&
+										if(suggestion === 'undefined' || (!r.success &&
 											suggestion.streetAddress.toLowerCase() == requestData['address.streetAddress'] &&
 											suggestion.city.toLowerCase() == requestData['address.city'] &&
 											suggestion.stateCode.toLowerCase() == requestData['address.stateCode'] &&
-											suggestion.postalCode.substring(0, 5) == requestData['address.postalCode'].substring(0, 5)
+											suggestion.postalCode.substring(0, 5) == requestData['address.postalCode'].substring(0, 5))
 										){
 											r.success = true;
 										}
