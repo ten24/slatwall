@@ -1916,23 +1916,32 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 	}
     
     public any function removeIneligibleOrderItems(order = getHibachiScope().getCart()){
-        var skuIDs = [];
+        var orderItemIDs = '';
+        var ineligibleProductTypes = 'VIPCustomerRegistr,PromotionalItems,ProductPack';
+        var account = getHibachiScope().getAccount();
+        var currencyCode = order.getCurrencyCode();
+        var priceGroup = account.hasPriceGroup() ?[account.getPriceGroups[1]] : [getService('priceGroupService').getPriceGroupByPriceGroupCode(2)];
         
         //add logic to also remove sku's with no price
-        for(var orderItem in arguments.order.getOrderItems()){
-            if(!orderItem.getSku().canBePurchased(getHibachiScope().getAccount())){
-                arrayAppend(skuIDs, orderItem.getSku().getSkuID());
+        for(var oi in arguments.order.getOrderItems()){
+            var sku = oi.getSku();
+            var productType = sku.getProduct().getProductType().getSystemCode();
+            var price = sku.getPriceByCurrencyCode(currencyCode, oi.getQuantity(), priceGroup)
+            if(!sku.canBePurchased(account) || listFindNoCase(ineligibleProductTypes, productType) || price < 1){
+                orderItemIDs = listAppend(orderItemIDs, oi.getOrderItemID());
             }
         }
         
-        if(!arrayLen(skuIDs)) return arguments.order;
+        if(!len(orderItemIDs)) return arguments.order;
         
         var orderData = {
-            orderItemsToRemove: skuIDs,
+            orderItemIDList: orderItemIDs,
             updateOrderAmounts :false
         }
-
-        return this.getOrderService().orderService.processOrder( arguments.order, orderData, 'removeOrderItem');
+      
+        var order = this.getOrderService().processOrder( arguments.order, orderData, 'removeOrderItem');
+        order = getService("OrderService").saveOrder(order);
+        return order;
         
     }
     
