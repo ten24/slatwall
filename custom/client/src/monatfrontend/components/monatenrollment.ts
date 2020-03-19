@@ -24,6 +24,7 @@ class MonatEnrollmentController {
 	public flexshipCanBePlaced = this.orderTemplateService.canPlaceOrderFlag;
 	public type:string;
 	public showBirthday:boolean;
+	public account;
 	
 	//@ngInject
 	constructor(public monatService, public observerService, public $rootScope, public publicService, public orderTemplateService) {
@@ -54,6 +55,8 @@ class MonatEnrollmentController {
 	public $onInit = () => {
 	
 		this.publicService.getAccount().then(result=>{
+			
+			this.account = result.account ? result.account : result;
 			
 			if( (this.type =='vipUpgrade' || this.type =='mpUpgrade') && result.account.birthDate && this.monatService.calculateAge(result.account.birthDate) > 18 ){
 				this.showBirthday = true;
