@@ -8,7 +8,7 @@ class SWFCartItemsController{
     public orderItem:any;
     public loadingImages:any;
     
-    constructor(private $rootScope, private observerService, private publicService){
+    constructor(private $rootScope, private observerService){
         this.loadingImages = true;
         this.$rootScope = $rootScope;
         this.$rootScope.slatwall.doAction('getResizedImageByProfileName',{profileName:'small',skuIds:this.orderItem.sku.skuID})
