@@ -1920,14 +1920,14 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var ineligibleProductTypes = 'VIPCustomerRegistr,PromotionalItems,ProductPack';
         var account = getHibachiScope().getAccount();
         var currencyCode = order.getCurrencyCode();
-        var priceGroup = account.hasPriceGroup() ?[account.getPriceGroups[1]] : [getService('priceGroupService').getPriceGroupByPriceGroupCode(2)];
+        var priceGroup = account.hasPriceGroup() ?[account.getPriceGroups()[1]] : [getService('priceGroupService').getPriceGroupByPriceGroupCode(2)];
         
         //add logic to also remove sku's with no price
         for(var oi in arguments.order.getOrderItems()){
             var sku = oi.getSku();
             var productType = sku.getProduct().getProductType().getSystemCode();
             var price = sku.getPriceByCurrencyCode(currencyCode, oi.getQuantity(), priceGroup)
-            if(!sku.canBePurchased(account) || listFindNoCase(ineligibleProductTypes, productType) || price < 1){
+            if(!sku.canBePurchased(account) || listFindNoCase(ineligibleProductTypes, productType) || isNull(price) || price == 0){
                 orderItemIDs = listAppend(orderItemIDs, oi.getOrderItemID());
             }
         }
@@ -2028,6 +2028,31 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         giftCard['transactions'] = giftCardTransactionsList.getRecords();
         
         arguments.data['ajaxResponse']['giftCard'] = giftCard;
+    }
+    
+    public void function placeOrder(required struct data){
+        var cart = getHibachiScope().getCart();
+        var cartPriceGroup = cart.getPriceGroup();
+        if(
+            (!structKeyExists(arguments.data,'upgradeFlag') || !arguments.data.upgradeFlag)
+            && cart.getUpgradeFlag()
+            && !isNull(cartPriceGroup) 
+            && cart.hasAccount() 
+            && cart.getAccount().hasPriceGroup()
+            && cart.getAccount().getPriceGroups()[1].getPriceGroupID() != cartPriceGroup.getPriceGroupID()
+        ){
+            this.removeUpgradeOnOrder();
+            cart.addError('runPlaceOrderTransaction',getHibachiScope().rbKey('validate.order.upgradeFlagMismatch'),true);
+            if(!structKeyExists(arguments.data,'returnJsonObjects')){
+                arguments.data.returnJsonObjects = 'cart';
+            }else if(!listContains(arguments.data.returnJsonObjects,'cart')){
+                arguments.data.returnJsonObjects = listAppend(arguments.data.returnJsonObjects,'cart');
+            }
+            addErrors(arguments.data,cart.getErrors());
+            getHibachiScope().addActionResult('public:cart.placeOrder',true);
+            return;
+        }
+        super.placeOrder(arguments.data);
     }
     
 }
