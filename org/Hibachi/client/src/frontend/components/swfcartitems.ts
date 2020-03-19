@@ -52,7 +52,7 @@ class SWFCartItemsController{
         };
         this.$rootScope.slatwall.doAction('removeOrderItem',data).then(result=>{
             if ( result.successfulActions.length ) {
-                console.log( result.cart.appliedPromotionMessages );
+                this.observerService.notify('updatedCart', result.cart);
             }
             this.removeOrderItemIsLoading = false;
         });
