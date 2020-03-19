@@ -1602,12 +1602,17 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         if(!arguments.data.upgradeFlowFlag && getHibachiScope().getLoggedInFlag()){
             super.logout();
         }
-  
+       
+        getService('orderService').processOrder(getHibachiScope().getCart(),'clear');
+        getHibachiScope().flushORMSession(); 
+        var order = getHibachiScope().getCart();
+        getHibachiScope().setSessionValue('currentFlexshipID', '');
+        
         //getting the upgraded account type, price group and order type
         var upgradeAccountType = (arguments.data.upgradeType == 'VIP') ? 'VIP' : 'marketPartner';
         var priceGroup = (arguments.data.upgradeType == 'VIP') ? getService('PriceGroupService').getPriceGroupByPriceGroupCode(3) : getService('PriceGroupService').getPriceGroupByPriceGroupCode(1);
         var monatOrderType = (arguments.data.upgradeType == 'VIP') ? getService('TypeService').getTypeByTypeCode('motVipEnrollment') : getService('TypeService').getTypeByTypeCode('motMpEnrollment');
-        var order = getHibachiScope().getCart();
+        
         
         //applying upgrades to order
         order.setUpgradeFlag(true);
