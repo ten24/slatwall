@@ -175,7 +175,7 @@ Notes:
 									success: function(r) {
 										suggestion = r.suggestedAddress;
 										
-										if(suggestion == undefined || (!r.success &&
+										if(suggestion === 'undefined' || (!r.success &&
 											suggestion.streetAddress.toLowerCase() == requestData['address.streetAddress'] &&
 											suggestion.city.toLowerCase() == requestData['address.city'] &&
 											suggestion.stateCode.toLowerCase() == requestData['address.stateCode'] &&
