@@ -1113,6 +1113,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var activePromotionRewardsWithSkuCollection = getPromotionDAO().getActivePromotionRewards( rewardTypeList="merchandise,subscription,contentAccess", promotionCodeList="", excludeRewardsWithQualifiers=true, site=arguments.orderItem.getOrder().getOrderCreatedSite());
 		var originalPrice = arguments.orderItem.getSkuPrice();
 		var currencyCode = arguments.orderItem.getCurrencyCode();
+		if(isNull(currencyCode)){
+			currencyCode = arguments.orderItem.getOrder().getCurrencyCode();
+		}
         
 		if(isNull(originalPrice)){
 			

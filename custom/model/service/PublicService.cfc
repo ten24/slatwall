@@ -1379,6 +1379,35 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         }
     }
     
+    public any function addRefundEnrollmentFee(required any order){
+        var VIPSkuID = getService('SettingService').getSettingValue('integrationmonatGlobalVIPEnrollmentFeeSkuID');
+        var VIPSku = getService('skuService').getSku(VIPSkuID);
+        var orderReturn = getService('OrderService').newOrderReturn();
+		orderReturn.setOrder( arguments.order );
+		orderReturn.setReturnLocation( arguments.order.getDefaultStockLocation() );
+		getService('OrderService').saveOrderReturn(orderReturn);
+		
+		// Create a new order item
+		var orderItem = getService('OrderService').newOrderItem();
+		// Setup the details
+		orderItem.setOrderItemType( getTypeService().getTypeBySystemCode('oitReturn') );
+		orderItem.setOrderItemStatusType( getTypeService().getTypeBySystemCode('oistNew') );
+	
+		// Add needed references
+		orderItem.setOrderReturn( orderReturn );
+		orderItem.setOrder( arguments.order );
+		orderItem.setSku(VIPSku);
+		var price = VIPSku.getPriceByCurrencyCode(currencyCode="USD",priceGroup=getService('priceGroupService').getPriceGroupByPriceGroupCode(3));
+		orderItem.setPrice(price);
+		orderItem.setSkuPrice(price);
+		orderItem.setQuantity(1);
+		orderItem.setCurrencyCode(arguments.order.getCurrencyCode());
+		getService('OrderService').saveOrderItem(orderItem);
+		if(orderItem.hasErrors()){
+		    writeDump(var=orderItem.getErrors(),label="orderItem'");abort;
+		}
+		return arguments.order;
+    }
     public any function getMoMoneyBalance(){
         var account = getHibachiScope().getAccount();
         var paymentMethods = account.getAccountPaymentMethods();
@@ -1575,11 +1604,19 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         order.setMonatOrderType(monatOrderType);
         order.setAccountType(upgradeAccountType);
         order.setPriceGroup(priceGroup);
+        order.setCurrencyCode(order.getOrderCreatedSite().getCurrencyCode());
         
         //Adding enrollment fee for VIP only
         //TODO: add a check here to avoid duplicate enrollment fee's on an order
         if(arguments.data.upgradeType == 'VIP'){
             return this.addEnrollmentFee(vipUpgrade = true);
+        }else if(arguments.data.upgradeType == 'marketPartner' && getHibachiScope().getAccount().getAccountType() == 'VIP'){
+            
+            order = getOrderService().saveOrder(order);
+            
+            if(!order.hasErrors()){
+                order = this.addRefundEnrollmentFee(order);
+            }
         }
         
         if(!order.hasErrors()) {
@@ -1599,6 +1636,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         }else{
             addErrors(data, order.getProcessObject("addOrderItem").getErrors());
             addErrors(data, order.getErrors());
+            writeDump(order.getErrors());abort;
         }
 		
     }
