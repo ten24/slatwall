@@ -1637,11 +1637,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arguments.orderTemplate.clearHibachiErrors();
 			return arguments.orderTemplate;
 		}
-		
+	
 		this.processOrder( newOrder, {}, 'updateOrderAmounts' );
+
+		newOrder.updateCalculatedProperties(runAgain=true); 
 		ormFlush();//flush so that the order exists
 
-		//this will only succeed if skuMinimumPercentageAmountRecievedRequiredToPlaceOrder is 0 is this the right approach? 
 		newOrder = this.processOrder_placeOrder(newOrder);
 
 		if(newOrder.hasErrors()){
