@@ -319,14 +319,13 @@
                                                            <div style="font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 12px; line-height: 1.5; color: #696969; mso-line-height-alt: 18px;">
                                                               <p style="font-size: 12px; line-height: 1.5; text-align: right; mso-line-height-alt: 18px; margin: 0;"><span style="color: #2f294b; font-size: 12px;"><strong><span style="font-size: 16px;">Sub Total: #order.getFormattedValue('subtotal', 'currency')#</span></strong></span></p>
                                                               <p style="font-size: 14px; line-height: 1.5; text-align: right; mso-line-height-alt: 21px; margin: 0;"><span style="font-size: 14px;">Tax: #order.getFormattedValue('taxTotal', 'currency')#</span></p>
-                                                              <p style="font-size: 14px; line-height: 1.5; text-align: right; mso-line-height-alt: 21px; margin: 0;"><span style="font-size: 14px;">VAT Total: (VATTotal)</span></p>
                                                               <p style="font-size: 14px; line-height: 1.5; text-align: right; mso-line-height-alt: 21px; margin: 0;"><span style="font-size: 14px;">Shipping: #order.getFormattedValue('fulfillmentTotal', 'currency')#</span></p>
                                                               <p style="font-size: 14px; line-height: 1.5; text-align: right; mso-line-height-alt: 21px; margin: 0;"><span style="font-size: 14px;">Handling: (HANDLING COST)</span></p>
-                                                              <p style="font-size: 14px; line-height: 1.5; text-align: right; mso-line-height-alt: 21px; margin: 0;"><span style="font-size: 14px;">Misc: (MISC COST)</span></p>
                                                               <cfif order.getDiscountTotal()>
 																	<p style="font-size: 14px; line-height: 1.5; text-align: right; mso-line-height-alt: 21px; margin: 0;"><span style="font-size: 14px;">Discount: -#order.getFormattedValue('discountTotal', 'currency')#</span></p>
                                                               </cfif>
                                                               <p style="font-size: 14px; line-height: 1.5; text-align: right; mso-line-height-alt: 21px; margin: 0;"><span style="font-size: 14px;">Total Amount: #order.getFormattedValue('total', 'currency')#</span></p>
+                                                              <p style="font-size: 14px; line-height: 1.5; text-align: right; mso-line-height-alt: 21px; margin: 0;"><span style="font-size: 14px;">VATTotal: (VATTotal)</span></p>
                                                               <p style="font-size: 14px; line-height: 1.5; text-align: right; mso-line-height-alt: 21px; margin: 0;"><span style="font-size: 14px;">Paid Amount: (PAID AMOUNT)</span></p>
                                                            </div>
                                                         </div>
