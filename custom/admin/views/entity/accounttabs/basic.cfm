@@ -13,8 +13,8 @@
 			<hb:HibachiPropertyDisplay object="#rc.account#" property="activeFlag" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.account#" property="birthDate" edit="false">
 			<hb:HibachiPropertyDisplay object="#rc.account#" property="genderFullWord" edit="false">   
-			<hb:HibachiPropertyDisplay object="#rc.account#" property="complianceStatus" edit="#rc.edit#">
-			<hb:HibachiPropertyDisplay object="#rc.account#" property="username" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.account#" property="complianceStatus" edit="false">
+			<hb:HibachiPropertyDisplay object="#rc.account#" property="username" edit="false">
 			     
 			
 			
