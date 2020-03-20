@@ -375,9 +375,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	public void function updateOrderAmountsWithPromotions(required any order) {
-		for(var orderItem in arguments.order.getOrderItems()){
-			orderItem.updateCalculatedProperties(true);
-		}
+
 		//Save before flushing 
 		if(arguments.order.getNewFlag()){
 			getService('hibachiService').saveOrder(arguments.order);
@@ -427,6 +425,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				
 				clearPreviouslyAppliedPromotions(arguments.order);
 				clearPreviouslyAppliedPromotionMessages(arguments.order);
+				
+				for(var orderItem in arguments.order.getOrderItems()){
+					orderItem.updateCalculatedProperties(true);
+				}
+				
 				getHibachiScope().flushOrmSession();
 				
 				// This is a structure of promotionPeriods that will get checked and cached as to if we are still within the period use count, and period account use count
@@ -485,6 +488,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 				} // END of PromotionReward Loop
 				if(arrayLen(orderQualifierMessages)){
+					getHibachiScope().flushOrmSession();
 					applyPromotionQualifierMessagesToOrder(arguments.order,orderQualifierMessages);
 				}
 			} // END of Sale or Exchange Loop
@@ -540,10 +544,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		for(var promotionQualifierMessage in arguments.orderQualifierMessages){
 			var newAppliedPromotionMessage = this.newPromotionMessageApplied();
-			
 			newAppliedPromotionMessage.setOrder( arguments.order );
-			newAppliedPromotionMessage.setPromotionQualifierMessage( promotionQualifierMessage );
-			
+			/*******
+				TODO: in sprint 3.5 https://ten24.teamwork.com/index.cfm#/tasks/28248194
+		
+				newAppliedPromotionMessage.setPromotionQualifierMessage( promotionQualifierMessage );
+				newAppliedPromotionMessage.setPromotion(promotionQualifierMessage.getPromotionQualifier().getPromotionPeriod().getPromotion());
+			*****/
+			newAppliedPromotionMessage.setPromotionPeriod(promotionQualifierMessage.getPromotionQualifier().getPromotionPeriod());
 			newAppliedPromotionMessage.setMessage( promotionQualifierMessage.getInterpolatedMessage( arguments.order ) );
 			
 			this.savePromotionMessageApplied(newAppliedPromotionMessage);

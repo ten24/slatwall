@@ -3,6 +3,7 @@ component output="false" accessors="true" extends="Slatwall.model.transient.Hiba
 	public any function getCurrentRequestSite() {
 		
 		if(!structKeyExists(variables,'currentRequestSite')){
+			
 			if ( len( getContextRoot() ) ) {
 				var cgiScriptName = replace( CGI.SCRIPT_NAME, getContextRoot(), '' );
 				var pathInfo = replace( CGI.PATH_INFO, getContextRoot(), '' );
@@ -24,9 +25,10 @@ component output="false" accessors="true" extends="Slatwall.model.transient.Hiba
 
 			if(arrayLen(pathArray)){
 				variables.currentRequestSite = getService('siteService').getSiteBySiteCode('mura-'&pathArray[1]);
+			}else if( !structKeyExists(request, 'cfcbase') || request.cfcbase != 'Slatwall'){
+				variables.currentRequestSite = getService('siteService').getSiteBySiteCode('mura-default');
 			}
 				
-
 			if(isNull(variables.currentRequestSite)){
 				var domain = getCurrentDomain();
 				variables.currentRequestSite = getService('siteService').getSiteByDomainName(domain);

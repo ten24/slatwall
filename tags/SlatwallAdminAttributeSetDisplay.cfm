@@ -140,6 +140,16 @@ Notes:
 				
 			</cfif>
 		</cfif>
+		
+		<cfif not attributes.edit and attribute.getAttributeInputType() eq 'select' and len(fdAttributes.value)>
+			<cfset attributeOptionObject="#attributes.hibachiScope.getDAO('AttributeDAO')
+													.getAttributeOptionByAttributeOptionValueAndAttributeID(
+													    attributeOptionValue= fdAttributes.value, attributeID= attribute.getAttributeID()
+													)#" />
+			<cfif !isNull(attributeOptionObject)>
+				<cfset fdAttributes.value= attributeOptionObject.getAttributeOptionLabel() />
+			</cfif>
+		</cfif>
 
 		<!--- Setup file link --->
 		<cfif not attributes.edit and attribute.getAttributeInputType() eq 'file' and len(fdAttributes.value)>

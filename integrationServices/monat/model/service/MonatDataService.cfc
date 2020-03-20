@@ -82,7 +82,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 
         var accountCollection = getService('HibachiService').getAccountCollectionList();
         
-        var searchableDisplayProperties = 'accountNumber,firstName,lastName';
+        var searchableDisplayProperties = 'accountNumber,firstName,lastName,userName';
         accountCollection.setDisplayProperties(searchableDisplayProperties, {isSearchable=true, comparisonOperator="exact"});
         accountCollection.addDisplayProperty('accountID','accountID', {isVisible:true, isSearchable:false});
         accountCollection.addDisplayProperty('primaryAddress.address.city','primaryAddress_address_city', {isVisible:true, isSearchable:false});

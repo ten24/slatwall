@@ -9,29 +9,49 @@ class PurchasePlusBarController {
     
 	// @ngInject
 	constructor(
-		private publicService,
-		private observerService
+		private monatService,
+		private observerService,
+		private $timeout,
+		private $scope
 	) { }
 	
 	public $onInit = () => {
 		this.getPurchasePlusMessages();
 		
-		this.observerService.attach( this.getPurchasePlusMessages, 'updateOrderItemSuccess' );
+		this.observerService.attach( this.getMessagesFromCart, 'updateOrderItemSuccess');
+		this.observerService.attach( this.getMessagesFromCart, 'addOrderItemSuccess');
+		this.observerService.attach( this.getMessagesFromCart, 'updatedCart' );
+	}
+	
+	private resetProps = () => {
+		this.hasPurchasePlusMessage = false;
+		this.message = '';
+		this.percentage = 0;
+		this.nextBreakpoint = 0;
 	}
 	
 	private getPurchasePlusMessages = () => {
-		this.publicService.getCart().then( data => {
-			if ( 'undefined' !== typeof data.cart && 'undefined' !== typeof data.cart.appliedPromotionMessages ) {
-				let appliedPromotionMessages = data.cart.appliedPromotionMessages;
-				if ( appliedPromotionMessages.length ) {
-					let purchasePlusArray = appliedPromotionMessages.filter( message => message.promotionName.indexOf('Purchase Plus') > -1 );
-
-					if ( purchasePlusArray.length ) {
-						this.setMessageValues( purchasePlusArray[0] );
-					}
-				}
-			}
+		
+		this.monatService.getCart().then( data => {
+			this.getMessagesFromCart( data.cart );
 		});
+	}
+	
+	public getMessagesFromCart = ( cart ) => {
+		if ( 'undefined' !== typeof cart && 'undefined' !== typeof cart.appliedPromotionMessages ) {
+			let appliedPromotionMessages = cart.appliedPromotionMessages;
+			if ( appliedPromotionMessages.length ) {
+				let purchasePlusArray = appliedPromotionMessages.filter( message => message.promotionName.indexOf('Purchase Plus') > -1 );
+
+				if ( purchasePlusArray.length ) {
+					this.setMessageValues( purchasePlusArray[0] );
+				}
+			} else {
+				this.resetProps();
+			}
+			
+			this.$timeout( () => this.$scope.$apply() );
+		}
 	}
 	
 	private setMessageValues = ( appliedMessage ) => {

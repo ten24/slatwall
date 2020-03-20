@@ -48,6 +48,7 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../tags" />
 <cfimport prefix="hb" taglib="../org/Hibachi/HibachiTags" />
+<cfparam name="attributes.hibachiScope" type="any" default="#request.context.fw.getHibachiScope()#" />
 <cfparam name="attributes.address" type="any" />
 <cfparam name="attributes.edit" type="boolean" default="true" />
 <cfparam name="attributes.fieldNamePrefix" type="string" default="" />
@@ -67,8 +68,11 @@ Notes:
 	<cfset attributes.address.setCountryCode('US') />
 </cfif>
 
+<cfset local.suggestionID = 'suggestion-'&createUUID() />
+
 <cfif thisTag.executionMode is "start">
 	<cfoutput>
+
 		<div class="slatwall-address-container form-horizontal">
 			<input type="hidden" name="#attributes.fieldNamePrefix#addressID" value="#attributes.address.getAddressID()#" />
 			<cfif attributes.showCountry>
@@ -108,6 +112,117 @@ Notes:
 			<cfif attributes.showPostalCode AND (isNull(attributes.address.getCountry()) OR  ( NOT isNull(attributes.address.getCountry().getPostalCodeShowFlag()) AND attributes.address.getCountry().getPostalCodeShowFlag() )) >
 				<hb:HibachiPropertyDisplay object="#attributes.address#" fieldName="#attributes.fieldNamePrefix#postalCode" property="postalCode" edit="#attributes.edit#" fieldClass="slatwall-address-postalCode" />	
 			</cfif>
+			
+			<cfif len(trim(attributes.address.getAddressID())) EQ 0>
+				<div class="#local.suggestionID#-block well well-lg" style="display:none">
+					<h4>#attributes.hibachiScope.rbKey("entity.address.suggestedAddress")#:</h4>
+					
+					<input type="hidden" name="#attributes.fieldNamePrefix#verifyAddress" value="true">
+					<span class="#local.suggestionID#-address-new"></span><br>
+					<span class="#local.suggestionID#-address-new-2"></span><br>
+					<span class="#local.suggestionID#-address-new-3"></span><br>
+					<a class="btn btn-success" id="#local.suggestionID#">#attributes.hibachiScope.rbKey("entity.address.useSuggestedAddress")#</a>
+					<a class="btn btn-default pull-right" id="#local.suggestionID#-continue">#attributes.hibachiScope.rbKey("entity.address.continueSuggestedAddress")#</a>
+				</div>
+			</cfif>
 		</div>
+
+		<cfif len(trim(attributes.address.getAddressID())) EQ 0>
+			<script type="text/javascript">
+				$(document).ready(function(){
+					
+					
+					var prefix          = '#local.suggestionID#';
+					var preventDupsHash = '';
+					var countryCode     = $("select[name='#attributes.fieldNamePrefix#countryCode']");
+					var streetAddress   = $("input[name='#attributes.fieldNamePrefix#streetAddress']");
+					var street2Address  = $("input[name='#attributes.fieldNamePrefix#street2Address']");
+					var locality        = $("input[name='#attributes.fieldNamePrefix#locality']");
+					var city            = $("input[name='#attributes.fieldNamePrefix#city']");
+					var stateCode       = $("select[name='#attributes.fieldNamePrefix#stateCode']");
+					var postalCode      = $("input[name='#attributes.fieldNamePrefix#postalCode']");
+					var verify          = $("input[name='#attributes.fieldNamePrefix#verifyAddress");
+					var suggestion      = {};
+					var currentForm     = streetAddress.closest("form");
+					var submitForm      = false;
+
+					currentForm.submit(function(event) {
+						if(!submitForm){
+							event.preventDefault();
+							var requestData = {
+								'address.countryCode' : countryCode.children("option:selected").val(),
+								'address.streetAddress' : streetAddress.val(),
+								'address.street2Address' : street2Address.val(),
+								'address.city' : city.val(),
+								'address.stateCode' : locality.val() ? locality.val() : stateCode.children("option:selected").val(),
+								'address.postalCode' : postalCode.val()
+							};
+							if(!requestData['address.streetAddress']){
+								submitForm = true;
+								verify.val('false');
+								currentForm.submit();
+								return;
+							}
+							
+							if(JSON.stringify(requestData) != preventDupsHash){
+								preventDupsHash = JSON.stringify(requestData);
+								$.ajax({
+									type: 'POST',
+									url: '?slatAction=api:main.verifyAddress',
+									data: requestData,
+									dataType: "json",
+									context: document.body,
+									success: function(r) {
+										suggestion = r.suggestedAddress;
+										
+										if(suggestion === 'undefined' || (!r.success &&
+											suggestion.streetAddress.toLowerCase() == requestData['address.streetAddress'] &&
+											suggestion.city.toLowerCase() == requestData['address.city'] &&
+											suggestion.stateCode.toLowerCase() == requestData['address.stateCode'] &&
+											suggestion.postalCode.substring(0, 5) == requestData['address.postalCode'].substring(0, 5))
+										){
+											r.success = true;
+										}
+										
+										if(!r.success){
+											$('.'+prefix+'-address-new').text(suggestion.streetAddress);
+											$('.'+prefix+'-address-new-2').text(suggestion.city+' - '+ suggestion.stateCode + ', ' +suggestion.countryCode);
+											$('.'+prefix+'-address-new-3').text(suggestion.postalCode);
+											$('.#local.suggestionID#-block').show();
+										}else{
+											submitForm = true;
+											verify.val('true');
+											currentForm.submit();
+										}
+									}
+								});
+							}
+						}
+					});
+					
+					$('###local.suggestionID#').on('click', function() {
+					  if(suggestion.streetAddress.toLowerCase() != streetAddress.val().toLowerCase()){
+					  	streetAddress.val(suggestion.streetAddress)
+					  }
+					  if(suggestion.city.toLowerCase() != city.val().toLowerCase()){
+					  	city.val(suggestion.city)
+					  }
+					  if(suggestion.postalCode.toLowerCase() != postalCode.val().toLowerCase()){
+					  	postalCode.val(suggestion.postalCode)
+					  }
+					  submitForm = true;
+					  verify.val('true');
+					  currentForm.submit();
+					});
+					
+					$('###local.suggestionID#-continue').on('click', function() {
+					  submitForm = true;
+					  verify.val('false');
+					  currentForm.submit();
+					});
+					
+				});
+			</script>
+		</cfif>
 	</cfoutput>
 </cfif>

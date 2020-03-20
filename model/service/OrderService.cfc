@@ -241,6 +241,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		return newOrder;
 	}
+	
+	public any function getAppliedPromotionMessageData(required string orderID=''){
+		var messageCL = getService('promotionService').getPromotionMessageAppliedCollectionList();
+		messageCL.addFilter('order.orderID', arguments.orderID);
+		var displayProperties = 'promotionMessageAppliedID,message,qualifierProgress,promotionQualifierMessage.promotionQualifier.promotionPeriod.promotion.promotionName,promotionQualifierMessage.promotionQualifier.promotionPeriod.promotionRewards.amount';
+		messageCL.setDisplayProperties(displayProperties);
+		return messageCL;
+	}
 
 	// =====================  END: Logical Methods ============================
 
@@ -1325,13 +1333,22 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		arguments.transientOrder.setCurrencyCode(arguments.orderTemplate.getCurrencyCode());
 		
 		if(!isNull(arguments.orderTemplate.getAccount())){
-			var account = getAccountService().getAccount(arguments.orderTemplate.getAccount().getAccountID());
+			var account = arguments.orderTemplate.getAccount();
 			arguments.transientOrder.setAccount(account); 
-    		arguments.transientOrder.setAccountType( arguments.transientOrder.getAccount().getAccountType() );			
-		}else{
-			arguments.transientOrder.setPriceGroup(arguments.orderTemplate.getPriceGroup());
+    		arguments.transientOrder.setAccountType( arguments.transientOrder.getAccount().getAccountType());	
 		}
-
+		
+		if(
+			!isNull(arguments.orderTemplate.getAccount()) 
+			&& arguments.orderTemplate.getAccount().hasPriceGroup()
+		){
+			var priceGroup = arguments.orderTemplate.getAccount().getPriceGroups()[1];
+			arguments.transientOrder.setPriceGroup(priceGroup);
+		}else if(!isNull(arguments.orderTemplate.getPriceGroup())){
+			var priceGroup = arguments.orderTemplate.getPriceGroup();
+			arguments.transientOrder.setPriceGroup(priceGroup);
+		}
+			
 
 		if(arguments.evictFromSession){	
 			ORMGetSession().evict(arguments.transientOrder.getAccount());
@@ -2047,7 +2064,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			accountAddress.setAddress(address); 
 			accountAddress.setAccount(account); 
 
-			accountAddress = getAccountService().saveAccountAddress(accountAddress);
+			accountAddress = getAccountService().saveAccountAddress(accountAddress=accountAddress,verifyAddressFlag=true);
 
 
 			arguments.orderTemplate.setBillingAccountAddress(accountAddress);

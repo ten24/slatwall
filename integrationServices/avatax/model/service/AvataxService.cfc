@@ -182,7 +182,6 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		avalaraAddress['region'] = arguments.address['stateCode'];
 		avalaraAddress['postalCode'] = arguments.address['postalCode'];
 		avalaraAddress['country'] = arguments.address['countryCode'];
-
 		return avalaraAddress;		
 	}
 

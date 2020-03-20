@@ -231,7 +231,7 @@ property name="sapItemCode" ormtype="string";
 	
 	// Non-persistent properties
     property name="personalVolumeByCurrencyCode" persistent="false";
-	property name="comissionablelVolumeByCurrencyCode" persistent="false";
+	property name="commissionableVolumeByCurrencyCode" persistent="false";
 
 
  property name="salesCategoryCode" ormtype="string" hb_formFieldType="select";
@@ -618,10 +618,14 @@ property name="sapItemCode" ormtype="string";
 		return getService("priceGroupService").getRateForSkuBasedOnPriceGroup(sku=this, priceGroup=arguments.priceGroup);
 	}
 	
-	public any function getPriceByCurrencyCode( string currencyCode='USD', numeric quantity=1, array priceGroups, string accountID ) {
+	public any function getPriceByCurrencyCode( string currencyCode='USD', numeric quantity=1, array priceGroups, string accountID, string priceGroupCode) {
 		var cacheKey = 'getPriceByCurrencyCode#arguments.currencyCode#';
-
-		if(!structKeyExists(arguments,'priceGroups')){
+		
+		if( ! IsNull(arguments.priceGroupCode) ) {
+			arguments.priceGroups = [ getService('priceGroupService').getPriceGroupByPriceGroupCode(arguments.priceGroupCode) ];
+		}
+		
+		if( !structKeyExists(arguments,'priceGroups') ) {
 			
 			if(structKeyExists(arguments, 'accountID') && len(arguments.accountID)){
 				var account = getService('AccountService').getAccount(arguments.accountID);
@@ -631,10 +635,11 @@ property name="sapItemCode" ormtype="string";
 			
 			arguments.priceGroups = account.getPriceGroups(); 
 		}
-
+		
 		for(var priceGroup in arguments.priceGroups){
 			cacheKey &= '_pg:#priceGroup.getPriceGroupCode()#';
 		}
+		
 
 		if(structKeyExists(arguments, "quantity")) {
 
