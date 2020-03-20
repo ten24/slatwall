@@ -1,16 +1,16 @@
 <cfoutput>
 <div style="background-color:transparent;">
-    <div class="block-grid two-up" style="Margin: 0 auto; min-width: 320px; max-width: 600px; overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; background-color: #FFFFFF;">
-        <div style="border-collapse: collapse;display: table;width: 100%;background-color:#FFFFFF;">
+    <div class="block-grid two-up" style="Margin: 0 auto; min-width: 320px; max-width: 600px; overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; background-color: ##FFFFFF;">
+        <div style="border-collapse: collapse;display: table;width: 100%;background-color:##FFFFFF;">
            <!--[if (mso)|(IE)]>
            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:transparent;">
               <tr>
                  <td align="center">
                     <table cellpadding="0" cellspacing="0" border="0" style="width:600px">
-                       <tr class="layout-full-width" style="background-color:#FFFFFF">
+                       <tr class="layout-full-width" style="background-color:##FFFFFF">
                           <![endif]-->
                           <!--[if (mso)|(IE)]>
-                          <td align="center" width="300" style="background-color:#FFFFFF;width:300px; border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent;" valign="top">
+                          <td align="center" width="300" style="background-color:##FFFFFF;width:300px; border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent;" valign="top">
                              <table width="100%" cellpadding="0" cellspacing="0" border="0">
                                 <tr>
                                    <td style="padding-right: 0px; padding-left: 0px; padding-top:5px; padding-bottom:5px;">
@@ -25,12 +25,12 @@
                                                   <tr>
                                                      <td style="padding-right: 30px; padding-left: 30px; padding-top: 50px; padding-bottom: 50px; font-family: Arial, sans-serif">
                                                         <![endif]-->
-                                                        <div style="color:#696969;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;line-height:1.5;padding-top:50px;padding-right:30px;padding-bottom:50px;padding-left:30px;">
-                                                           <div style="font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 12px; line-height: 1.5; color: #696969; mso-line-height-alt: 18px;">
-                                                              <p style="font-size: 16px; line-height: 1.5; text-align: left; mso-line-height-alt: 24px; margin: 0;"><strong style="font-size: 16px; background-color: transparent;"><span style="color: #2f294b; font-size: 16px;">Billing Address</span></strong></p>
-                                                              <p style="font-size: 16px; line-height: 1.5; text-align: left; mso-line-height-alt: 24px; margin: 0;"><span style="font-size: 16px;"> </span></p>
-                                                              <p style="font-size: 14px; line-height: 1.5; mso-line-height-alt: 21px; margin: 0;"><span style="font-size: 14px;">#order.getAccount().getFirstName()# #order.getAccount().getLastName()#<br/>(MPs BILLING ADDRESS)<br/>(MPs CITY, STATE, ZIPCODE, COUNTRY)</span></p>
-                                                              <p style="font-size: 12px; line-height: 1.5; mso-line-height-alt: 18px; margin: 0;"> </p>
+                                                        <div style="color:##696969;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;line-height:1.5;padding-top:50px;padding-right:30px;padding-bottom:50px;padding-left:30px;">
+                                                           <div style="font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 12px; line-height: 1.5; color: ##696969; mso-line-height-alt: 18px;">
+                                                              <p style="font-size: 16px; line-height: 1.5; text-align: left; mso-line-height-alt: 24px; margin: 0; color: ##2f294b;"><strong>Billing Address</strong></p>
+                                                              <p style="font-size: 14px; line-height: 1.5; text-align: left; mso-line-height-alt: 24px; margin: 0;">
+                                                                  #order.getAccount().getFirstName()# #order.getAccount().getLastName()#<br/>(MPs BILLING ADDRESS)<br/>(MPs CITY, STATE, ZIPCODE, COUNTRY)
+                                                              </p>
                                                            </div>
                                                         </div>
                                                         <!--[if mso]>
@@ -51,7 +51,7 @@
                              <!--[if (mso)|(IE)]>
                           </td>
                           
-                          <td align="center" width="300" style="background-color:#FFFFFF;width:300px; border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent;" valign="top">
+                          <td align="center" width="300" style="background-color:##FFFFFF;width:300px; border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent;" valign="top">
                              <table width="100%" cellpadding="0" cellspacing="0" border="0">
                                 <tr>
                                    <td style="padding-right: 0px; padding-left: 0px; padding-top:5px; padding-bottom:5px;">
@@ -67,13 +67,13 @@
 	                                                  <tr>
 	                                                     <td style="padding-right: 30px; padding-left: 30px; padding-top: 50px; padding-bottom: 50px; font-family: Arial, sans-serif">
 	                                                        <![endif]-->
-	                                                        <div style="color:#696969;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;line-height:1.5;padding-top:50px;padding-right:30px;padding-bottom:50px;padding-left:30px;">
-	                                                           <div style="font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 12px; line-height: 1.5; color: #696969; mso-line-height-alt: 18px;">
+	                                                        <div style="color:##696969;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;line-height:1.5;padding-top:50px;padding-right:30px;padding-bottom:50px;padding-left:30px;">
+	                                                           <div style="font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 12px; line-height: 1.5; color: ##696969; mso-line-height-alt: 18px;">
 	                                                           	<!------- ORDER FULFILLMENT = SHIPPING ------->
 																<cfif local.orderFulfillment.getFulfillmentMethodType() EQ "shipping">
 																
 																	<cfif not local.orderFulfillment.getAddress().getNewFlag()>
-																		<p style="font-size: 16px; line-height: 1.5; text-align: left; mso-line-height-alt: 24px; margin: 0; color: #2f294b;"><strong>Shipping Address</strong></p>
+																		<p style="font-size: 16px; line-height: 1.5; text-align: left; mso-line-height-alt: 24px; margin: 0; color: ##2f294b;"><strong>Shipping Address</strong></p>
 																		<p style="font-size: 14px; line-height: 1.5; text-align: left; mso-line-height-alt: 24px; margin: 0;">
 																			<cfif len(local.orderFulfillment.getAddress().getName())>#local.orderFulfillment.getAddress().getName()#<br /></cfif>
 																			<cfif len(local.orderFulfillment.getAddress().getStreetAddress())>#local.orderFulfillment.getAddress().getStreetAddress()#<br /></cfif>
@@ -123,17 +123,17 @@
      </div>
   </div>
   <div style="background-color:transparent;">
-     <div class="block-grid" style="Margin: 0 auto; min-width: 320px; max-width: 600px; overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; background-color: #FFFFFF;">
-        <div style="border-collapse: collapse;display: table;width: 100%;background-color:#FFFFFF;">
+     <div class="block-grid" style="Margin: 0 auto; min-width: 320px; max-width: 600px; overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; background-color: ##FFFFFF;">
+        <div style="border-collapse: collapse;display: table;width: 100%;background-color:##FFFFFF;">
            <!--[if (mso)|(IE)]>
            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:transparent;">
               <tr>
                  <td align="center">
                     <table cellpadding="0" cellspacing="0" border="0" style="width:600px">
-                       <tr class="layout-full-width" style="background-color:#FFFFFF">
+                       <tr class="layout-full-width" style="background-color:##FFFFFF">
                           <![endif]-->
                           <!--[if (mso)|(IE)]>
-                          <td align="center" width="600" style="background-color:#FFFFFF;width:600px; border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent;" valign="top">
+                          <td align="center" width="600" style="background-color:##FFFFFF;width:600px; border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent;" valign="top">
                              <table width="100%" cellpadding="0" cellspacing="0" border="0">
                                 <tr>
                                    <td style="padding-right: 0px; padding-left: 0px; padding-top:5px; padding-bottom:5px;">
@@ -147,7 +147,7 @@
                                                   <tbody>
                                                      <tr style="vertical-align: top;" valign="top">
                                                         <td class="divider_inner" style="word-break: break-word; vertical-align: top; min-width: 100%; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 10px;" valign="top">
-                                                           <table align="center" border="0" cellpadding="0" cellspacing="0" class="divider_content" height="0" role="presentation" style="table-layout: fixed; vertical-align: top; border-spacing: 0; border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; border-top: 3px solid #BBBBBB; height: 0px; width: 100%;" valign="top" width="100%">
+                                                           <table align="center" border="0" cellpadding="0" cellspacing="0" class="divider_content" height="0" role="presentation" style="table-layout: fixed; vertical-align: top; border-spacing: 0; border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; border-top: 3px solid ##BBBBBB; height: 0px; width: 100%;" valign="top" width="100%">
                                                               <tbody>
                                                                  <tr style="vertical-align: top;" valign="top">
                                                                     <td height="0" style="word-break: break-word; vertical-align: top; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%;" valign="top"><span></span></td>
@@ -159,7 +159,7 @@
                                                   </tbody>
                                                </table>
                                                <div style="font-size:16px;text-align:center;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif">
-                                                  <table style="font-family: helvetica, sans-serif; font-size: 12px; color:#696969; border-collapse: collapse; width: 93%; margin: 0 auto;">
+                                                  <table style="font-family: helvetica, sans-serif; font-size: 12px; color:##696969; border-collapse: collapse; width: 93%; margin: 0 auto;">
                                                      <tr>
                                                         <th style="text-align: left; padding: 8px;">Order Number</th>
                                                         <th style="text-align: center; padding: 8px;">Distributor ID</th>
@@ -184,7 +184,7 @@
                                                   <tbody>
                                                      <tr style="vertical-align: top;" valign="top">
                                                         <td class="divider_inner" style="word-break: break-word; vertical-align: top; min-width: 100%; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 10px;" valign="top">
-                                                           <table align="center" border="0" cellpadding="0" cellspacing="0" class="divider_content" height="0" role="presentation" style="table-layout: fixed; vertical-align: top; border-spacing: 0; border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; border-top: 3px solid #BBBBBB; height: 0px; width: 100%;" valign="top" width="100%">
+                                                           <table align="center" border="0" cellpadding="0" cellspacing="0" class="divider_content" height="0" role="presentation" style="table-layout: fixed; vertical-align: top; border-spacing: 0; border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; border-top: 3px solid ##BBBBBB; height: 0px; width: 100%;" valign="top" width="100%">
                                                               <tbody>
                                                                  <tr style="vertical-align: top;" valign="top">
                                                                     <td height="0" style="word-break: break-word; vertical-align: top; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%;" valign="top"><span></span></td>
@@ -217,17 +217,17 @@
      </div>
   </div>
   <div style="background-color:transparent;">
-     <div class="block-grid" style="Margin: 0 auto; min-width: 320px; max-width: 600px; overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; background-color: #FFFFFF;">
-        <div style="border-collapse: collapse;display: table;width: 100%;background-color:#FFFFFF;">
+     <div class="block-grid" style="Margin: 0 auto; min-width: 320px; max-width: 600px; overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; background-color: ##FFFFFF;">
+        <div style="border-collapse: collapse;display: table;width: 100%;background-color:##FFFFFF;">
            <!--[if (mso)|(IE)]>
            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:transparent;">
               <tr>
                  <td align="center">
                     <table cellpadding="0" cellspacing="0" border="0" style="width:600px">
-                       <tr class="layout-full-width" style="background-color:#FFFFFF">
+                       <tr class="layout-full-width" style="background-color:##FFFFFF">
                           <![endif]-->
                           <!--[if (mso)|(IE)]>
-                          <td align="center" width="600" style="background-color:#FFFFFF;width:600px; border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent;" valign="top">
+                          <td align="center" width="600" style="background-color:##FFFFFF;width:600px; border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent;" valign="top">
                              <table width="100%" cellpadding="0" cellspacing="0" border="0">
                                 <tr>
                                    <td style="padding-right: 0px; padding-left: 0px; padding-top:15px; padding-bottom:20px;">
@@ -238,12 +238,12 @@
                                             <div style="border-top:0px solid transparent; border-left:0px solid transparent; border-bottom:0px solid transparent; border-right:0px solid transparent; padding-top:15px; padding-bottom:20px; padding-right: 0px; padding-left: 0px;">
                                                <!--<![endif]-->
                                                <div style="font-size:16px;text-align:center;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif">
-                                                  <table style="font-family: helvetica, sans-serif; font-size: 12px; color:#696969; border-collapse: collapse; width: 97%; margin: 0 auto;">
+                                                  <table style="font-family: helvetica, sans-serif; font-size: 12px; color:##696969; border-collapse: collapse; width: 97%; margin: 0 auto;">
                                                      <tr>
-                                                        <th style="text-align: left; padding: 15px 10px; background-color: #2F294B; color:#fff; width: 20%">Item Code</th>
-                                                        <th style="text-align: left; padding: 15px 5px; background-color: #2F294B; color:#fff; width: 40%">Item Description</th>
-                                                        <th style="text-align: center; padding: 15px 5px; background-color: #2F294B; color:#fff; width: 20%">Quantity Ordered</th>
-                                                        <th style="text-align: right; padding: 15px 10px; background-color: #2F294B; color:#fff; width: 20%">Item Price</th>
+                                                        <th style="text-align: left; padding: 15px 10px; background-color: ##2F294B; color:##fff; width: 20%">Item Code</th>
+                                                        <th style="text-align: left; padding: 15px 5px; background-color: ##2F294B; color:##fff; width: 40%">Item Description</th>
+                                                        <th style="text-align: center; padding: 15px 5px; background-color: ##2F294B; color:##fff; width: 20%">Quantity Ordered</th>
+                                                        <th style="text-align: right; padding: 15px 10px; background-color: ##2F294B; color:##fff; width: 20%">Item Price</th>
                                                      </tr>
                                                      <!------- ORDER ITEM LOOP ------->
 													<cfloop array="#order.getOrderItems()#" index="local.orderItem">
@@ -290,17 +290,17 @@
      </div>
   </div>
   <div style="background-color:transparent;">
-     <div class="block-grid" style="Margin: 0 auto; min-width: 320px; max-width: 600px; overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; background-color: #FFFFFF;">
-        <div style="border-collapse: collapse;display: table;width: 100%;background-color:#FFFFFF;">
+     <div class="block-grid" style="Margin: 0 auto; min-width: 320px; max-width: 600px; overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; background-color: ##FFFFFF;">
+        <div style="border-collapse: collapse;display: table;width: 100%;background-color:##FFFFFF;">
            <!--[if (mso)|(IE)]>
            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:transparent;">
               <tr>
                  <td align="center">
                     <table cellpadding="0" cellspacing="0" border="0" style="width:600px">
-                       <tr class="layout-full-width" style="background-color:#FFFFFF">
+                       <tr class="layout-full-width" style="background-color:##FFFFFF">
                           <![endif]-->
                           <!--[if (mso)|(IE)]>
-                          <td align="center" width="600" style="background-color:#FFFFFF;width:600px; border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent;" valign="top">
+                          <td align="center" width="600" style="background-color:##FFFFFF;width:600px; border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent;" valign="top">
                              <table width="100%" cellpadding="0" cellspacing="0" border="0">
                                 <tr>
                                    <td style="padding-right: 0px; padding-left: 0px; padding-top:5px; padding-bottom:5px;">
@@ -315,9 +315,9 @@
                                                   <tr>
                                                      <td style="padding-right: 30px; padding-left: 30px; padding-top: 10px; padding-bottom: 20px; font-family: Arial, sans-serif">
                                                         <![endif]-->
-                                                        <div style="color:#696969;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;line-height:1.5;padding-top:10px;padding-right:30px;padding-bottom:20px;padding-left:30px;">
-                                                           <div style="font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 12px; line-height: 1.5; color: #696969; mso-line-height-alt: 18px;">
-                                                              <p style="font-size: 12px; line-height: 1.5; text-align: right; mso-line-height-alt: 18px; margin: 0;"><span style="color: #2f294b; font-size: 12px;"><strong><span style="font-size: 16px;">Sub Total: #order.getFormattedValue('subtotal', 'currency')#</span></strong></span></p>
+                                                        <div style="color:##696969;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;line-height:1.5;padding-top:10px;padding-right:30px;padding-bottom:20px;padding-left:30px;">
+                                                           <div style="font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 12px; line-height: 1.5; color: ##696969; mso-line-height-alt: 18px;">
+                                                              <p style="font-size: 12px; line-height: 1.5; text-align: right; mso-line-height-alt: 18px; margin: 0;"><span style="color: ##2f294b; font-size: 12px;"><strong><span style="font-size: 16px;">Sub Total: #order.getFormattedValue('subtotal', 'currency')#</span></strong></span></p>
                                                               <p style="font-size: 14px; line-height: 1.5; text-align: right; mso-line-height-alt: 21px; margin: 0;"><span style="font-size: 14px;">Tax: #order.getFormattedValue('taxTotal', 'currency')#</span></p>
                                                               <p style="font-size: 14px; line-height: 1.5; text-align: right; mso-line-height-alt: 21px; margin: 0;"><span style="font-size: 14px;">Shipping: #order.getFormattedValue('fulfillmentTotal', 'currency')#</span></p>
                                                               <p style="font-size: 14px; line-height: 1.5; text-align: right; mso-line-height-alt: 21px; margin: 0;"><span style="font-size: 14px;">Handling: (HANDLING COST)</span></p>
@@ -339,9 +339,9 @@
                                                   <tr>
                                                      <td style="padding-right: 10px; padding-left: 10px; padding-top: 20px; padding-bottom: 20px; font-family: Arial, sans-serif">
                                                         <![endif]-->
-                                                        <div style="color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;line-height:1.2;padding-top:20px;padding-right:10px;padding-bottom:20px;padding-left:10px;">
-                                                           <div style="font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 12px; line-height: 1.2; color: #555555; mso-line-height-alt: 14px;">
-                                                              <p style="font-size: 14px; line-height: 1.2; text-align: center; mso-line-height-alt: 17px; margin: 0;"><strong><span style="font-size: 16px; color: #2f294b;"><span style="font-size: 16px;">Thank you for being a</span> <span style="font-size: 16px;">part</span> of MONAT! </span></strong></p>
+                                                        <div style="color:##555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;line-height:1.2;padding-top:20px;padding-right:10px;padding-bottom:20px;padding-left:10px;">
+                                                           <div style="font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 12px; line-height: 1.2; color: ##555555; mso-line-height-alt: 14px;">
+                                                              <p style="font-size: 14px; line-height: 1.2; text-align: center; mso-line-height-alt: 17px; margin: 0;"><strong><span style="font-size: 16px; color: ##2f294b;"><span style="font-size: 16px;">Thank you for being a</span> <span style="font-size: 16px;">part</span> of MONAT! </span></strong></p>
                                                            </div>
                                                         </div>
                                                         <!--[if mso]>
@@ -350,9 +350,9 @@
                                                </table>
                                                <![endif]-->
                                                <div style="font-size:16px;text-align:center;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif">
-                                                  <div style=" color:#555555; font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;line-height:120%;padding-top:20px;padding-right:20px;padding-bottom:20px;padding-left:20px;">
-                                                     <div style="background-color:#E5E5E5; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 12px; line-height: 14px; color: #555555; text-align:center; padding-top:30px; padding-right:20px; padding-bottom:30px;padding-left:20px;">
-                                                        <p style="font-size: 16px; line-height: 15px; margin: 0;"><span style="font-size: 16px; mso-ansi-font-size: 14px;"><strong>Shipping #(AUTOSHIPNUMBER) **Internet Order</strong></span></p>
+                                                  <div style=" color: ##555555; font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;line-height:120%;padding-top:20px;padding-right:20px;padding-bottom:20px;padding-left:20px;">
+                                                     <div style="background-color: ##E5E5E5; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 12px; line-height: 14px; color: ##555555; text-align:center; padding-top:30px; padding-right:20px; padding-bottom:30px;padding-left:20px;">
+                                                        <p style="font-size: 16px; line-height: 15px; margin: 0;"><span style="font-size: 16px; mso-ansi-font-size: 14px;"><strong>Shipping ##(AUTOSHIPNUMBER) **Internet Order</strong></span></p>
                                                      </div>
                                                   </div>
                                                </div>
