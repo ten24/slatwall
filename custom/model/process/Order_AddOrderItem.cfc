@@ -100,7 +100,6 @@ component accessors="true" extends="Slatwall.model.process.Order_AddOrderItem" {
 		    priceGroups= [ this.getPriceGroup() ] 
 		);
 		
-		return super.getCurrentSkuPriceForQuantityAndCurrency( argumentCollection= arguments );
 	}
     // =================== END: Lazy Object Helpers ========================
     
