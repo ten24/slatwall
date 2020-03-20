@@ -47,7 +47,7 @@
 			{ "contexts": "placeInProcessingOne", "conditions": "orderIsNotInProcessing", "eq": "ostNew" }
 		],
 		"orderStatusType.typeCode":  [
-			{ "contexts": "placeInProcessingOne", "conditions": "orderIsInProcessing", "eq": "2" }
+			{ "contexts": "placeInProcessingOne", "conditions": "orderIsInProcessing", "inList": "2,processing2" }
 		],
 		
 		"isLockedInProcessingOneFlag": [
