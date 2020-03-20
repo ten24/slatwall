@@ -1603,7 +1603,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		newOrder.setShippingAccountAddress(arguments.orderTemplate.getShippingAccountAddress());  
 		newOrder = this.saveOrder(order=newOrder, updateOrderAmounts=false, updateOrderAmount=false, updateShippingMethodOptions=false, checkNewAccountAddressSave=false); 
 		newOrder = this.createOrderItemsFromOrderTemplateItems(newOrder,arguments.orderTemplate);
-		
+	
+		if(newOrder.hasErrors()){
+			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# after adding order items', true);
+			newOrder.clearHibachiErrors();
+
+			if(arrayIsEmpty(newOrder.getOrderItems())){
+				return arguments.orderTemplate;
+			}
+		}	
 
 		var promotionCodes = arguments.orderTemplate.getPromotionCodes();
 
@@ -1629,19 +1637,21 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arguments.orderTemplate.clearHibachiErrors();
 			return arguments.orderTemplate;
 		}
-		
+	
 		this.processOrder( newOrder, {}, 'updateOrderAmounts' );
+
+		newOrder.updateCalculatedProperties(runAgain=true); 
 		ormFlush();//flush so that the order exists
 
-		//this will only succeed if skuMinimumPercentageAmountRecievedRequiredToPlaceOrder is 0 is this the right approach? 
 		newOrder = this.processOrder_placeOrder(newOrder);
 
 		if(newOrder.hasErrors()){
 			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors on place order #serializeJson(newOrder.getErrors())# when placing order', true);
-			arguments.orderTemplate.setLastOrderPlacedDateTime( now() );
 			arguments.orderTemplate.clearHibachiErrors();
 			return arguments.orderTemplate;
 		}
+			
+		arguments.orderTemplate.setLastOrderPlacedDateTime( now() );
 	
 		var eventData = { entity: newOrder, order: newOrder, data: {} };
         getHibachiScope().getService("hibachiEventService").announceEvent(eventName="afterOrderProcess_PlaceOrderSuccess", eventData=eventData);	
@@ -1834,6 +1844,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		processOrderAddOrderItem.setPrice(orderTemplateItemPrice);
 		processOrderAddOrderItem.setQuantity(arguments.orderTemplateItemStruct['quantity']);
 		processOrderAddOrderItem.setUpdateOrderAmountFlag(false); 		
+
+		if(!isNull(arguments.orderTemplate.getPriceGroup())){
+			processOrderAddOrderItem.setPriceGroup(arguments.orderTemplate.getPriceGroup());
+		} else if(!isNull(arguments.orderTemplate.getAccount()) && arguments.orderTemplate.getAccount().hasPriceGroup()){
+			processOrderAddOrderItem.setPriceGroup(arguments.orderTemplate.getAccount().getPriceGroups()[1]);
+		}
 
 		if(isNull(arguments.orderFulfillment)){
 			processOrderAddOrderItem.setShippingAccountAddressID(arguments.orderTemplate.getShippingAccountAddress().getAccountAddressID());
