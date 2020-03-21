@@ -179,7 +179,7 @@ class MonatCheckoutController {
 	}
 	
 	public addressVerificationCheck = ({addressVerification})=>{
-		if(addressVerification && addressVerification.hasOwnProperty('success') && !addressVerification.success){
+		if(addressVerification && addressVerification.hasOwnProperty('success') && !addressVerification.success && addressVerification.hasOwnProperty('addressVerification')){
 			this.launchAddressModal([addressVerification.address,addressVerification.suggestedAddress]);
 		}
 	}

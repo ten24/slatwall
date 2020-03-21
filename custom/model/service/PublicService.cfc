@@ -987,7 +987,19 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     
     public void function submitSponsor(required struct data){
         param name="arguments.data.sponsorID" default="";
-
+        
+        var account = getHibachiScope().getAccount();
+        if(account.getNewFlag()){
+            getHibachiScope().addActionResult('public:account.submitSponsor',true);
+            return;
+        }
+        
+        var autoAssignment = false;
+        
+        if(!len(arguments.data.sponsorID)){
+            arguments.data.sponsorID = getDAO('accountDAO').getEligibleMarketPartner('01453');
+            autoAssignment = true;
+        }
 
         var sponsorAccount = getService('accountService').getAccount(arguments.data.sponsorID);
         
@@ -996,11 +1008,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             return;
         }
         
-        var account = getHibachiScope().getAccount();
-        if(account.getNewFlag()){
-            getHibachiScope().addActionResult('public:account.submitSponsor',true);
-            return;
-        }
         if(account.hasParentAccountRelationship()){
             for(var accountRelationship in account.getParentAccountRelationships()){
                 if(accountRelationship.getParentAccountID() != arguments.data.sponsorID){
@@ -1012,17 +1019,29 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         if(!account.hasParentAccountRelationship()){
             var accountRelationship = getService('accountService').newAccountRelationship();
             accountRelationship.setParentAccount(sponsorAccount);
-            accountRelationship.setChildAccount(getHibachiScope().getAccount());
+            accountRelationship.setChildAccount(account);
             accountRelationship = getService('accountService').saveAccountRelationship(accountRelationship);
         }
         
         getHibachiScope().getAccount().setOwnerAccount(sponsorAccount);
         
-        if(accountRelationship.hasErrors()){
-            addErrors(arguments.data,accountRelationship.getErrors());
-        }
         getHibachiScope().addActionResult('public:account.submitSponsor',accountRelationship.hasErrors());
         
+        if(accountRelationship.hasErrors()){
+            addErrors(arguments.data,accountRelationship.getErrors());
+            return;
+        }
+        
+        var accountLead = getService('accountService').getAccountLeadByLeadAccount(account, autoAssignment);
+        
+        if(autoAssignment){
+            var accountLead = getService('accountService').getAccountLeadByLeadAccount(account, true);
+            accountLead.setAccount(sponsorAccount);
+            accountLead.setLeadAccount(account);
+            accountLead = getService('accountService').saveAccountLead(accountLead);
+        }else if(!isNull(accountLead)){
+            getService('accountService').deleteAccountLead(accountLead);
+        }
     }
 
     public any function getAccountOrderTemplateNamesAndIDs(required struct data){
@@ -1723,6 +1742,23 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         arguments.data.ajaxResponse['pageRecords'] = marketPartners.accountCollection;
         arguments.data.ajaxResponse['recordsCount'] = marketPartners.recordsCount;
     }
+    
+    // public void function getSuggestedMarketPartner(required struct data){
+    //     arguments.data.ajaxResponse['pageRecords'] = [];
+    //     arguments.data.ajaxResponse['recordsCount'] = 0;
+        
+    //     var marketPartner = getDAO('accountDAO').getEligibleMarketPartner('01453');
+    //     if(!isNull(marketPartner)){
+    //         arrayAppend(arguments.data.ajaxResponse['pageRecords'], {
+    //             'accountID': marketPartner.accountID,
+    //             'accountNumber': marketPartner.accountNumber,
+    //             'firstName': marketPartner.firstName,
+    //             'lastName': marketPartner.lastName,
+    //             'username': marketPartner.username
+    //         })
+    //         arguments.data.ajaxResponse['recordsCount'] = 1;
+    //     }
+    // }
 	
     public any function getOrderTemplatePromotionProducts( required any data ) {
         param name="arguments.data.orderTemplateID" default="";
