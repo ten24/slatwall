@@ -997,7 +997,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var autoAssignment = false;
         
         if(!len(arguments.data.sponsorID)){
-            arguments.data.sponsorID = getDAO('accountDAO').getEligibleMarketPartner('01453');
+            arguments.data.sponsorID = getDAO('accountDAO').getEligibleMarketPartner(account.getPrimaryAddress().getAddress().getPostalCode());
             autoAssignment = true;
         }
 

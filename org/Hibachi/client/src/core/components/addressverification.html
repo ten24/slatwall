@@ -32,9 +32,12 @@
 								<input
 									type="radio"
 									name="saved_cards"
+									id="address{{$index}}"
+									value="{{$index}}"
+									ng-model="swAddressVerification.selectedAddressIndex"
 									ng-checked="swAddressVerification.selectedAddressIndex == $index"
 								/>
-								<label for="new_card" ng-click="swAddressVerification.selectedAddressIndex = $index">
+								<label for="address{{$index}}" ng-click="swAddressVerification.selectedAddressIndex = $index">
 									{{address.streetAddress}}, {{address.city}}, {{(address.stateCode || address.locality) ? (address.stateCode || address.locality) + ',' : ''}} {{address.postalCode}}
 								</label>
 							</div>
