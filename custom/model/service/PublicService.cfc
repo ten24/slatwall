@@ -1742,23 +1742,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         arguments.data.ajaxResponse['pageRecords'] = marketPartners.accountCollection;
         arguments.data.ajaxResponse['recordsCount'] = marketPartners.recordsCount;
     }
-    
-    // public void function getSuggestedMarketPartner(required struct data){
-    //     arguments.data.ajaxResponse['pageRecords'] = [];
-    //     arguments.data.ajaxResponse['recordsCount'] = 0;
-        
-    //     var marketPartner = getDAO('accountDAO').getEligibleMarketPartner('01453');
-    //     if(!isNull(marketPartner)){
-    //         arrayAppend(arguments.data.ajaxResponse['pageRecords'], {
-    //             'accountID': marketPartner.accountID,
-    //             'accountNumber': marketPartner.accountNumber,
-    //             'firstName': marketPartner.firstName,
-    //             'lastName': marketPartner.lastName,
-    //             'username': marketPartner.username
-    //         })
-    //         arguments.data.ajaxResponse['recordsCount'] = 1;
-    //     }
-    // }
 	
     public any function getOrderTemplatePromotionProducts( required any data ) {
         param name="arguments.data.orderTemplateID" default="";
