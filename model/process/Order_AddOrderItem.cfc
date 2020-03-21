@@ -198,7 +198,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			IsNull(variables.price)  
 			||
 			(   // 1 is the fallback QTY, so the price will be same for QTY == 1 or null
-				this.getQuantity() != ( this.getOldQuantity() ?: 1) // I know!
+				this.getQuantity() != this.getOldQuantity()
 				&& 
 				variables.price == this.getCurrentSkuPriceForQuantityAndCurrency( this.getOldQuantity()  ) 
 			)
@@ -237,6 +237,15 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			
 		}
 		
+	}
+	
+	public numeric function getOldQuantity(){
+		
+		if(!StructKeyExists(variables, "oldQuantity")){
+			variables.oldQuantity = 1;
+		}
+		
+		return variables.oldQuantity;
 	}
 	
 	/*
