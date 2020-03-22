@@ -1,8 +1,21 @@
 <cfparam name="orderTemplate" />
-<cfoutput>		
-	<ul>
-		<cfloop array="#orderTemplate.getOrderTemplateItems()#" index="local.orderTemplateItem">
-			<li>#orderTemplateItem.getSku().getSkuCode()# - #orderTemplateItem.getSku().getSkuDefinition()# Price: #getService('HibachiUtilityService').formatValue_currency(orderTemplateItem.getSkuPriceByCurrencyCode(), {currencyCode:orderTemplate.getCurrencyCode()})#  Quantity: #orderTemplateItem.getQuantity()#</li>
-		</cfloop> 
-	</ul>
+<cfoutput>
+	<table style="margin: 0 auto; font-family: arial, sans-serif; border-collapse: collapse;width: 100%; font-size:13px; width:80%;">
+		<tbody>
+		   <tr>
+		      <th style="background-color: ##2F294B; color:##fff; border-bottom: 1px solid ##dddddd; text-align: left; padding: 10px;">ITEM CODE</th>
+		      <th style="background-color: ##2F294B; color:##fff; border-bottom: 1px solid ##dddddd; text-align: left; padding: 10px;">DESCRIPTION</th>
+		      <th style="background-color: ##2F294B; color:##fff; border-bottom: 1px solid ##dddddd; text-align: left; padding: 10px;">PRICE</th>
+		      <th style="background-color: ##2F294B; color:##fff; border-bottom: 1px solid ##dddddd; text-align: left; padding: 10px;">QUANTITY</th>
+		   </tr>
+		   <cfloop array="#orderTemplate.getOrderTemplateItems()#" index="local.orderTemplateItem">
+			   <tr>
+			      <td style="border-bottom: 1px solid ##dddddd; text-align: left; padding: 10px;">#orderTemplateItem.getSku().getSkuCode()#</td>
+			      <td style="border-bottom: 1px solid ##dddddd; text-align: left; padding: 10px;">#orderTemplateItem.getSku().getSkuDefinition()#</td>
+			      <td style="border-bottom: 1px solid ##dddddd; text-align: left; padding: 10px;">#getService('HibachiUtilityService').formatValue_currency(orderTemplateItem.getSkuPriceByCurrencyCode(), {currencyCode:orderTemplate.getCurrencyCode()})#</td>
+			      <td style="border-bottom: 1px solid ##dddddd; text-align: left; padding: 10px;">#orderTemplateItem.getQuantity()#</td>
+			   </tr>
+		   </cfloop>
+		</tbody>
+	</table>
 </cfoutput>	
