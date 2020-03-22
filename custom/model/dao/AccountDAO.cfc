@@ -31,11 +31,11 @@
 		<cfargument name="maxRadius" default = "500" /> 
 		<cfargument name="step" default = "50" /> 
 		
-		<cfquery name="local.coordenatesByZipcode" maxrows="1">
+		<cfquery name="local.coordinatesByZipcode" maxrows="1">
 			SELECT LAT, LNG FROM zipusa WHERE ZIP_CODE = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Left(arguments.zipcode,5)#" />
 		</cfquery>
 
-		<cfif local.coordenatesByZipcode.recordCount EQ 0>
+		<cfif local.coordinatesByZipcode.recordCount EQ 0>
 			<cfreturn '' />
 		</cfif>
 		
@@ -45,11 +45,11 @@
 					SELECT 
 						ZIP_CODE, ( 
 							3959 * 
-							acos( cos( radians(<cfqueryparam cfsqltype="cf_sql_varchar" value="#local.coordenatesByZipcode.LAT#" />) ) * 
+							acos( cos( radians(<cfqueryparam cfsqltype="cf_sql_varchar" value="#local.coordinatesByZipcode.LAT#" />) ) * 
 							cos( radians( LAT ) ) * 
 							cos( radians( LNG ) - 
-							radians(<cfqueryparam cfsqltype="cf_sql_varchar" value="#local.coordenatesByZipcode.LNG#" />) ) + 
-							sin( radians(<cfqueryparam cfsqltype="cf_sql_varchar" value="#local.coordenatesByZipcode.LAT#" />) ) * 
+							radians(<cfqueryparam cfsqltype="cf_sql_varchar" value="#local.coordinatesByZipcode.LNG#" />) ) + 
+							sin( radians(<cfqueryparam cfsqltype="cf_sql_varchar" value="#local.coordinatesByZipcode.LAT#" />) ) * 
 							sin( radians( LAT ) ) ) 
 						) distance
 					FROM zipusa
