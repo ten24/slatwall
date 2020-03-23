@@ -1302,6 +1302,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             productData['right'] = product.getFormattedValue('extendedDescriptionRight');
             productData['productFullIngredients'] = product.getAttributeValue('productFullIngredients');
             productData['ingredients'] = [];
+            var fileName = product.getAttributeValue( 'productVideoBackgroundImage' );
+            var videoBackgroundImage = getService('imageService').getResizedImagePath(imagePath = "#getHibachiScope().getBaseImageURL()#'/'#fileName#",width = 300, height =300);
+            productData['videoBackgroundImage'] = videoBackgroundImage;
             
             if(!isNull(product.getProductIngredient1())){
                 var productIngredient1 = {};
@@ -1358,7 +1361,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             for(var record in muraValues){
                 arrayAppend(queryCompanyValues,record.body);
             }
-            
+
             arguments.data['ajaxResponse']['muraIngredients'] = queryProductValues;
             arguments.data['ajaxResponse']['muraValues'] = queryCompanyValues;
             
