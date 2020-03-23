@@ -1583,7 +1583,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         }
         
         //set upgraded info on order
-        var data = {upgradeType:arguments.data.upgradeType, upgradeFlowFlag: 1}
+        var data = {upgradeType:arguments.data.upgradeType, upgradeFlowFlag: 1, cmsSiteID: arguments.data.cmsSiteID}
         return setUpgradeOnOrder(data);
         
     }
@@ -1591,21 +1591,27 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     public any function setUpgradeOnOrder(data){
         param name="arguments.data.upgradeType" default="marketPartner";
         param name="arguments.data.upgradeFlowFlag" default=0;
+        param name="arguments.data.cmsSiteID" default="default";
         
         var typeCode = arguments.data.upgradeType == 'marketPartner' ? 'motMpEnrollment' : 'motVipEnrollment';
-        if(!isNull(getHibachiScope().getCart().getMonatOrderType()) && getHibachiScope().getCart().getMonatOrderType().getTypeCode() == typeCode){
+        var site = getService('siteService').getSiteByCmsSiteID(arguments.data.cmsSiteID);
+        var siteCurrencyCode = site.getCurrencyCode();
+
+        if(
+            !isNull(getHibachiScope().getCart().getMonatOrderType()) 
+            && getHibachiScope().getCart().getMonatOrderType().getTypeCode() == typeCode
+            && getHibachiScope().getCart().getCurrencyCode() == siteCurrencyCode
+        ){
             arguments.data['ajaxResponse']['upgradeResponseFailure'] = getHibachiScope().rbKey('frontend.validate.upgradeAlreadyExists');
             return;
         }
-        
+     
         //if we are not in an upgrade flow and the user is logged in, log the user out.
         if(!arguments.data.upgradeFlowFlag && getHibachiScope().getLoggedInFlag()){
             super.logout();
         }
        
-        getService('orderService').processOrder(getHibachiScope().getCart(),'clear');
-        getHibachiScope().flushORMSession(); 
-        var order = getHibachiScope().getCart();
+        var order = getService('orderService').processOrder(getHibachiScope().getCart(),'clear');
         getHibachiScope().setSessionValue('currentFlexshipID', '');
         
         //getting the upgraded account type, price group and order type
@@ -1619,12 +1625,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         order.setMonatOrderType(monatOrderType);
         order.setAccountType(upgradeAccountType);
         order.setPriceGroup(priceGroup);
-        
-        //Adding enrollment fee for VIP only
-        //TODO: add a check here to avoid duplicate enrollment fee's on an order
-        if(arguments.data.upgradeType == 'VIP'){
-            return this.addEnrollmentFee(vipUpgrade = true);
-        }
         
         if(!order.hasErrors()) {
            
@@ -1641,8 +1641,12 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             getHibachiScope().flushORMSession(); 
             
         }else{
-            addErrors(data, order.getProcessObject("addOrderItem").getErrors());
             addErrors(data, order.getErrors());
+        }
+        
+        //Adding enrollment fee for VIP only
+        if(arguments.data.upgradeType == 'VIP'){
+           return this.addEnrollmentFee(true);
         }
 		
     }
