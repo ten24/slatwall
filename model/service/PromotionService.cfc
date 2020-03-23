@@ -241,7 +241,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							}
 							if(discountQuantity != 0){
 								// If there is not applied Price Group, or if this reward has the applied pricegroup as an eligible one then use priceExtended... otherwise use skuPriceExtended and then adjust the discount.
-								if( isNull(orderItem.getAppliedPriceGroup()) || arguments.promotionReward.hasEligiblePriceGroup( orderItem.getAppliedPriceGroup() ) ) {
+								if( isNull(orderItem.getAppliedPriceGroup()) || arguments.promotionReward.hasEligiblePriceGroup( orderItem.getAppliedPriceGroup() ) || getService('SettingService').getSettingValue('globalPromotionIgnorePriceGroupEligibility') ) {
 									// Calculate based on price, which could be a priceGroup price
 									var discountAmount = getDiscountAmount(reward=arguments.promotionReward, price=orderItem.getPrice(), quantity=discountQuantity, currencyCode=orderItem.getCurrencyCode(), sku=orderItem.getSku(), account=arguments.order.getAccount());
 	
