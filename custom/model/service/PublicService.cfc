@@ -987,20 +987,26 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     
     public void function submitSponsor(required struct data){
         param name="arguments.data.sponsorID" default="";
-
-
-        var sponsorAccount = getService('accountService').getAccount(arguments.data.sponsorID);
-        
-        if(isNull(sponsorAccount)){
-            getHibachiScope().addActionResult('public:account.submitSponsor',true);
-            return;
-        }
         
         var account = getHibachiScope().getAccount();
         if(account.getNewFlag()){
             getHibachiScope().addActionResult('public:account.submitSponsor',true);
             return;
         }
+        
+        var autoAssignment = false;
+        
+        if(!len(arguments.data.sponsorID)){
+            arguments.data.sponsorID = getDAO('accountDAO').getEligibleMarketPartner(account.getPrimaryAddress().getAddress().getPostalCode());
+            autoAssignment = true;
+        }
+
+        var sponsorAccount = getService('accountService').getAccount(arguments.data.sponsorID);
+        if(isNull(sponsorAccount)){
+            getHibachiScope().addActionResult('public:account.submitSponsor',true);
+            return;
+        }
+        
         if(account.hasParentAccountRelationship()){
             for(var accountRelationship in account.getParentAccountRelationships()){
                 if(accountRelationship.getParentAccountID() != arguments.data.sponsorID){
@@ -1012,17 +1018,29 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         if(!account.hasParentAccountRelationship()){
             var accountRelationship = getService('accountService').newAccountRelationship();
             accountRelationship.setParentAccount(sponsorAccount);
-            accountRelationship.setChildAccount(getHibachiScope().getAccount());
+            accountRelationship.setChildAccount(account);
             accountRelationship = getService('accountService').saveAccountRelationship(accountRelationship);
         }
         
-        getHibachiScope().getAccount().setOwnerAccount(sponsorAccount);
+        account.setOwnerAccount(sponsorAccount);
+        
+        getHibachiScope().addActionResult('public:account.submitSponsor',accountRelationship.hasErrors());
         
         if(accountRelationship.hasErrors()){
             addErrors(arguments.data,accountRelationship.getErrors());
+            return;
         }
-        getHibachiScope().addActionResult('public:account.submitSponsor',accountRelationship.hasErrors());
         
+        var accountLead = getService('accountService').getAccountLeadByLeadAccount(account, autoAssignment);
+        
+        if(autoAssignment){
+            var accountLead = getService('accountService').getAccountLeadByLeadAccount(account, true);
+            accountLead.setAccount(sponsorAccount);
+            accountLead.setLeadAccount(account);
+            accountLead = getService('accountService').saveAccountLead(accountLead);
+        }else if(!isNull(accountLead)){
+            getService('accountService').deleteAccountLead(accountLead);
+        }
     }
 
     public any function getAccountOrderTemplateNamesAndIDs(required struct data){

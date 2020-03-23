@@ -85,7 +85,7 @@ class swfAccountController {
 	}
 	
 	public addressVerificationCheck = ({addressVerification})=>{
-		if(addressVerification && addressVerification.hasOwnProperty('success') && !addressVerification.success){
+		if(addressVerification && addressVerification.hasOwnProperty('success') && !addressVerification.success && addressVerification.hasOwnProperty('suggestedAddress')){
 			this.launchAddressModal([addressVerification.address,addressVerification.suggestedAddress]);
 		}
 	}
