@@ -12,10 +12,10 @@
     			#NumberFormat(local.orderItem.getQuantityReceived())#
     		</td>
     		<td style="width: 15%; text-align: center;">
-    		    #local.orderItem.getReferencedOrderItem().getCalculatedExtendedPriceAfterDiscount()#
+    		    #DollarFormat(local.orderItem.getReferencedOrderItem().getCalculatedExtendedPriceAfterDiscount())#
     		</td>
     		<td style="width: 15%; text-align: center;">
-    		    #local.orderItem.getCalculatedExtendedPriceAfterDiscount()#
+    		    #DollarFormat(local.orderItem.getCalculatedExtendedPriceAfterDiscount())#
     		</td>
     	</tr>
     </cfloop>
