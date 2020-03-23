@@ -1,7 +1,5 @@
 {
 	"properties": {
-		"order.isLockedInProcessingFlag": [
-			{ "eq": false }
-		]
+	    "order.isLockedInProcessingOneFlag": [{ "eq": false }]
 	}
 }
