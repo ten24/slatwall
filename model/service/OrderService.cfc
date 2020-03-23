@@ -5595,6 +5595,21 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode(arguments.systemCode) );
 	}
 	
+	private any function addNewOrderItemSetupGetSkuPrice(required any newOrderItem, required any processObject) {
+	
+		var priceByCurrencyCodeArgs = {
+			'currencyCode' : arguments.order.getCurrencyCode(),
+			'quantity' : arguments.processObject.getQuantity()
+		};
+		
+		if(!isNull(	newOrderItem.getOrder().getAccount() ) && !newOrderItem.getOrder().getAccount().getNewFlag()){
+			priceByCurrencyCodeArgs['accountID'] = newOrderItem.getOrder().getAccount().getAccountID();
+		}
+		
+		return arguments.processObject.getSku()
+		.getPriceByCurrencyCode( argumentCollection = priceByCurrencyCodeArgs ) 
+	}
+	
 	private any function addNewOrderItemSetup(required any newOrderItem, required any processObject) {
 		
 		// Setup the Sku / Quantity / Price details
@@ -5621,17 +5636,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arguments.newOrderItem.setSkuPrice( arguments.processObject.getPrice() );
 			
 		} else {
-
-			var skuPrice = arguments.processObject.getSku().getPriceByCurrencyCode( 
-								quantity = arguments.processObject.getQuantity(),
-								currencyCode = arguments.newOrderItem.getOrder().getCurrencyCode(), 
-								priceGroups = [arguments.processObject.getPriceGroup()]
-							);
-
+			
+			var skuPrice = addNewOrderItemSetupGetSkuPrice(argumentCollection=arguments);
+			
 			if(isNull(skuPrice)){
 				return;
 			}
-
+	
 			arguments.newOrderItem.setPrice(skuPrice);
 			arguments.newOrderItem.setSkuPrice(skuPrice);
 		}

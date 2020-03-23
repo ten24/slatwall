@@ -64,6 +64,43 @@ component accessors="true" extends="Slatwall.model.process.Order_AddOrderItem" {
         }
     }
     
+    public any function getPriceGroup(){
+		if ( !StructKeyExists(variables, 'priceGroup') || IsNull(variables.priceGroup) ) {
+			
+			/*
+	            Price group is prioritized as so: 
+	                1. Order price group
+	                2. Price group passed in as argument ? TODO??
+	                3. Price group on account
+	                4. Default to Retail's pricegroup
+	        */
+	        
+	        if(!IsNull(this.getOrder().getPriceGroup()) ){ 
+	            variables.priceGroup = this.getOrder().getPriceGroup(); //order price group
+	        } else if( !IsNull(this.getAccount()) && this.getAccount().hasPriceGroup() ){ 
+	            variables.priceGroup = this.getAccount().getPriceGroups()[1]; //account price group
+	        } else {
+	        	variables.priceGroup = getService('priceGroupService').getPriceGroupByPriceGroupCode(2) // default to RetailPriceGroup
+	        }
+	        
+		}
+		return variables.priceGroup;
+	}
+	
+    //helper function to reduce duplicate-code
+	public any function getCurrentSkuPriceForQuantityAndCurrency(numeric quantity= 1, string currencyCode= this.getCurrencyCode()){
+		
+		if( IsNull(this.getSku()) ) {
+			return;
+		}
+		
+		return this.getSku().getPriceByCurrencyCode( 
+			currencyCode= arguments.currencyCode, 
+		    quantity= arguments.quantity, 
+		    priceGroups= [ this.getPriceGroup() ] 
+		);
+		
+	}
     // =================== END: Lazy Object Helpers ========================
     
     // =============== START: Custom Validation Methods ====================
