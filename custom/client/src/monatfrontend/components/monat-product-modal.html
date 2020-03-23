@@ -191,7 +191,7 @@
 								<div ng-bind-html="monatProductModal.muraValues" class="iconed-featurs iconed-featurs--white"></div>
 							</div>
 							<div id="ingredient-block" class="ingredient-block" ng-class="{'active': monatProductModal.showFullIngredients}">
-								<button type="button" class="close">
+								<button ng-click="monatProductModal.showFullIngredients = !monatProductModal.showFullIngredients" type="button" class="close">
 									<i class="fas fa-times"></i>
 								</button>
 								<div ng-if="monatProductModal.showFullIngredients" class="list-box">
