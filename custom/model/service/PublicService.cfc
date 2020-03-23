@@ -1000,7 +1000,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             arguments.data.sponsorID = getDAO('accountDAO').getEligibleMarketPartner(account.getPrimaryAddress().getAddress().getPostalCode());
             
             if(!len(arguments.data.sponsorID)){
-                this.addErrors(arguments.data, "No Sponsor found in your area");
+                this.addErrors(arguments.data, getHibachiScope().rbKey('validate.submitSponsor.notfound'));
                 getHibachiScope().addActionResult('public:account.submitSponsor',true);
                 return;
             }
