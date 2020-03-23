@@ -1436,6 +1436,18 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         }
     }
     
+    public any function addEnrollmentFeeRefund(required any order, required refundAmount){
+        var newAppliedPromotion = getService('PromotionService').newPromotionApplied();
+        newAppliedPromotion.setAppliedType('order');
+        newAppliedPromotion.setDiscountAmount(arguments.refundAmount);
+        newAppliedPromotion.setTaxableAmountDiscountAmount(arguments.refundAmount);
+        newAppliedPromotion.setEnrollmentFeeRefundFlag(true);
+        newAppliedPromotion.setManualDiscountAmountFlag(true);
+        newAppliedPromotion = getService('PromotionService').savePromotionApplied(newAppliedPromotion);
+        newAppliedPromotion.setOrder(arguments.order);
+
+		return arguments.order;
+    }
     public any function getMoMoneyBalance(){
         var account = getHibachiScope().getAccount();
         var paymentMethods = account.getAccountPaymentMethods();
@@ -1587,7 +1599,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         var account = getHibachiScope().getAccount();
         var accountType = account.getAccountType();    
-        
+
         //User can not: upgrade while logged out, upgrade to same type, or downgrade from MP to VIP        
         if(!getHibachiScope().getLoggedInFlag()){
             arguments.data['ajaxResponse']['upgradeResponseFailure'] = getHibachiScope().rbKey('validate.upgrade.userMustBeLoggedIn'); 
@@ -1599,7 +1611,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             arguments.data['ajaxResponse']['upgradeResponseFailure'] = getHibachiScope().rbKey('validate.upgrade.canNotDowngrade'); 
             return;         
         }
-        
+
         //set upgraded info on order
         var data = {upgradeType:arguments.data.upgradeType, upgradeFlowFlag: 1, cmsSiteID: arguments.data.cmsSiteID}
         return setUpgradeOnOrder(data);
@@ -1646,12 +1658,30 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         order.setMonatOrderType(monatOrderType);
         order.setAccountType(upgradeAccountType);
         order.setPriceGroup(priceGroup);
+        order.setCurrencyCode(order.getOrderCreatedSite().getCurrencyCode());
+
+        //Adding enrollment fee for VIP only
+        //TODO: add a check here to avoid duplicate enrollment fee's on an order
+        if(arguments.data.upgradeType == 'VIP'){
+            return this.addEnrollmentFee(vipUpgrade = true);
+        }else if(
+            arguments.data.upgradeType == 'marketPartner' 
+            && getHibachiScope().getAccount().getAccountType() == 'VIP'
+            && getHibachiScope().getAccount().getVIPEnrollmentAmountPaid() > 0){
+            
+            order = getOrderService().saveOrder(order);
+            
+            if(!order.hasErrors()){
+                
+                order = this.addEnrollmentFeeRefund(order,getHibachiScope().getAccount().getVIPEnrollmentAmountPaid());
+            }
+        }
         
         if(!order.hasErrors()) {
            
             //Updating the prices to account for new statuses in case there were prior order items before upgrading
             order = getOrderService().saveOrder(order);
-            
+
             // Set order on session
             getHibachiScope().getSession().setOrder( order );
             
@@ -1691,6 +1721,14 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         order.setMonatOrderType(javacast("null",""));
         order.setAccountType(accountType);
         order.setPriceGroup(priceGroup); 
+        
+        var promotionCount = arrayLen(order.getAppliedPromotions());
+        for(var i = promotionCount; i > 0; i--){
+            var promotionApplied = order.getAppliedPromotions[i];
+            if(promotionApplied.getEnrollmentFeeRefundFlag()){
+                promotionApplied.removeOrder();
+            }
+        }
         
         //Updating the prices to account for new statuses
         order = getOrderService().saveOrder(order);

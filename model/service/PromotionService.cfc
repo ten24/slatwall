@@ -51,7 +51,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// Clear all previously applied promotions for order items
 		for(var oi=1; oi<=arrayLen(arguments.orderItems); oi++) {
 			for(var pa=arrayLen(arguments.orderItems[oi].getAppliedPromotions()); pa >= 1; pa--) {
-				arguments.orderItems[oi].getAppliedPromotions()[pa].removeOrderItem();
+				if(!arguments.orderItems[oi].getAppliedPromotions()[pa].getManualDiscountAmountFlag()){
+					arguments.orderItems[oi].getAppliedPromotions()[pa].removeOrderItem();
+				}
 			}
 		}
 	}
@@ -60,7 +62,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// Clear all previously applied promotions for fulfillment
 		for(var of=1; of<=arrayLen(arguments.orderFulfillments); of++) {
 			for(var pa=arrayLen(arguments.orderFulfillments[of].getAppliedPromotions()); pa >= 1; pa--) {
-				arguments.orderFulfillments[of].getAppliedPromotions()[pa].removeOrderFulfillment();
+				if(!arguments.orderFulfillments[of].getAppliedPromotions()[pa].getManualDiscountAmountFlag()){
+					arguments.orderFulfillments[of].getAppliedPromotions()[pa].removeOrderFulfillment();
+				}
 			}
 		}
 	}
@@ -68,7 +72,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	private void function clearPreviouslyAppliedPromotionsForOrder(required any order){
 		// Clear all previously applied promotions for order
 		for(var pa=arrayLen(arguments.order.getAppliedPromotions()); pa >= 1; pa--) {
-			arguments.order.getAppliedPromotions()[pa].removeOrder();
+			if(!arguments.order.getAppliedPromotions()[pa].getManualDiscountAmountFlag()){
+				arguments.order.getAppliedPromotions()[pa].removeOrder();
+			}
 		}
 	}
 
@@ -1118,6 +1124,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var activePromotionRewardsWithSkuCollection = getPromotionDAO().getActivePromotionRewards( rewardTypeList="merchandise,subscription,contentAccess", promotionCodeList="", excludeRewardsWithQualifiers=true, site=arguments.orderItem.getOrder().getOrderCreatedSite());
 		var originalPrice = arguments.orderItem.getSkuPrice();
 		var currencyCode = arguments.orderItem.getCurrencyCode();
+		if(isNull(currencyCode)){
+			currencyCode = arguments.orderItem.getOrder().getCurrencyCode();
+		}
         
 		if(isNull(originalPrice)){
 			
