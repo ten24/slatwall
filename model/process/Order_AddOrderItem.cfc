@@ -192,52 +192,63 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		return variables.account;
 	}
 	
-	public any function getPriceGroup(){
-		if ( !StructKeyExists(variables, 'priceGroup') || IsNull(variables.priceGroup) ) {
-			
-			/*
-	            Price group is prioritized as so: 
-	                1. Order price group
-	                2. Price group passed in as argument ? TODO??
-	                3. Price group on account
-	                4. Default to Retail's pricegroup
-	        */
-	        
-	        if(!IsNull(this.getOrder().getPriceGroup()) ){ 
-	            variables.priceGroup = this.getOrder().getPriceGroup(); //order price group
-	        } else if(!IsNull(this.getAccount().getPriceGroups()) && ArrayLen(this.getAccount().getPriceGroups()) ){ 
-	            variables.priceGroup = this.getAccount().getPriceGroups()[1]; //account price group
-	        } else {
-	        	variables.priceGroup = getService('priceGroupService').getPriceGroupByPriceGroupCode(2) // default to RetailPriceGroup
-	        }
-	        
-		}
-		return variables.priceGroup;
-	}
 
 	public any function getPrice() {
 		
 		if(
-			!StructKeyExists(variables, "price") 
-			|| 
-			( 
-				!IsNull(this.getSku()) && IsNull(getOldQuantity()) && 
-				variables.price == this.getSku().getPriceByCurrencyCode( currencyCode=this.getCurrencyCode(), priceGroups=[this.getPriceGroup()] ) 
+			IsNull(variables.price)  
+			||
+			(   // 1 is the fallback QTY, so the price will be same for QTY == 1 or null
+				this.getQuantity() != this.getOldQuantity()
+				&& 
+				variables.price == this.getCurrentSkuPriceForQuantityAndCurrency( this.getOldQuantity()  ) 
 			)
-			|| 
-			( 
-				!IsNull(this.getSku()) &&  !IsNull(this.getOldQuantity()) && this.getOldQuantity() != this.getQuantity() && 
-				variables.price == this.getSku().getPriceByCurrencyCode( currencyCode=this.getCurrencyCode(), quantity=this.getOldQuantity(), priceGroups=[this.getPriceGroup()] ) 
-			)
-		){
-			if(!IsNull(this.getSku())) {
-				variables.price = this.getSku().getPriceByCurrencyCode( currencyCode=this.getCurrencyCode(), quantity=this.getQuantity(), priceGroups=[this.getPriceGroup()] );
-			}
+		) {
+			
+			variables.price = this.getCurrentSkuPriceForQuantityAndCurrency( this.getQuantity() );
 		}
-		if(structKeyExists(variables, 'price')){
+		
+		if(!IsNull(variables.price) ){
 			return variables.price;
 		}
 	}
+	
+	
+	//helper function to reduce duplicate-code
+	public any function getCurrentSkuPriceForQuantityAndCurrency(numeric quantity= 1, string currencyCode = this.getCurrencyCode()){
+		
+		if( IsNull(this.getSku()) ) {
+			return;
+		}
+		
+		if(!IsNull(this.getAccount()) && !getAccount().getNewFlag()){
+			
+			return this.getSku().getPriceByCurrencyCode( 
+				currencyCode= arguments.currencyCode, 
+				quantity= arguments.quantity, 
+				accountID= this.getAccount().getAccountID() 
+			);
+			
+		} else {
+			
+			return this.getSku().getPriceByCurrencyCode( 
+				currencyCode= this.getCurrencyCode(), 
+				quantity= arguments.quantity 
+			);
+			
+		}
+		
+	}
+	
+	public numeric function getOldQuantity(){
+		
+		if(!StructKeyExists(variables, "oldQuantity")){
+			variables.oldQuantity = 1;
+		}
+		
+		return variables.oldQuantity;
+	}
+	
 	/*
 
 	//Need to also check child order items for child order items.
@@ -648,8 +659,8 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			return true;
 		}
 		
-		//check if the price doesn't match with PriceByCurrencyCode
-		if(this.getPrice() != this.getSku().getPriceByCurrencyCode( currencyCode=getCurrencyCode(), quantity=getQuantity(),  priceGroups=[this.getPriceGroup()] ) ) {
+		//check if the price doesn't match with SKU's price-ByCurrencyCode
+		if( this.getPrice() != this.getCurrentSkuPriceForQuantityAndCurrency( this.getQuantity() ) ) {
 			return true;
 		}
 		

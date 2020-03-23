@@ -92,6 +92,19 @@ component extends="Slatwall.model.service.OrderService" {
 		return { "ordersOnAccount":  ordersList.getPageRecords(formatRecords=false), "recordsCount": ordersList.getRecordsCount()}
 	}
     
+    
+    private numeric function addNewOrderItemSetupGetSkuPrice(required any newOrderItem, required any processObject) {
+	
+		var priceByCurrencyCodeArgs = {
+			'currencyCode' : arguments.newOrderItem.getCurrencyCode(),
+			'quantity' : arguments.newOrderItem.getQuantity(),
+			'priceGroups': [ arguments.newOrderItem.getAppliedPriceGroup() ?: arguments.processObject.getPriceGroup() ]
+		}
+		
+		return arguments.processObject.getSku()
+				.getPriceByCurrencyCode( argumentCollection = priceByCurrencyCodeArgs ) 
+	}
+    
     public any function addNewOrderItemSetup(required any newOrderItem, required any processObject) {
         arguments.newOrderItem = super.addNewOrderItemSetup(argumentCollection=arguments);
         
@@ -1245,36 +1258,10 @@ component extends="Slatwall.model.service.OrderService" {
 				}
 
 			}
-			// Setup the Sku / Quantity / Price details
+			
+			// Setup the Sku / Quantity / Price/ SKU-Price details
 			addNewOrderItemSetup(newOrderItem, arguments.processObject);
 
-			// If the sku is allowed to have a user defined price OR the current account has permissions to edit price
-			if(
-				(
-					(!isNull(newOrderItem.getSku().getUserDefinedPriceFlag()) && newOrderItem.getSku().getUserDefinedPriceFlag())
-					  ||
-					(getHibachiScope().getLoggedInAsAdminFlag() && getHibachiAuthenticationService().authenticateEntityPropertyCrudByAccount(crudType='update', entityName='orderItem', propertyName='price', account=getHibachiScope().getAccount()))
-				) && isNumeric(arguments.processObject.getPrice()) ) {
-				newOrderItem.setPrice( arguments.processObject.getPrice() );
-			} else {
-				
-				/******* CUSTOM CODE FOR MONAT *******/
-				var priceByCurrencyCodeArgs = {
-					'currencyCode' : arguments.order.getCurrencyCode(),
-					'quantity' : arguments.processObject.getQuantity()
-				};
-				if(!isNull(	newOrderItem.getAppliedPriceGroup()) ){
-					priceByCurrencyCodeArgs['priceGroups'] = [];
-					arrayAppend(priceByCurrencyCodeArgs['priceGroups'], newOrderItem.getAppliedPriceGroup());
-				}
-				
-				if(!isNull(	newOrderItem.getOrder().getAccount() ) && !newOrderItem.getOrder().getAccount().getNewFlag()){
-					priceByCurrencyCodeArgs['accountID'] = newOrderItem.getOrder().getAccount().getAccountID();
-				}
-				newOrderItem.setPrice( arguments.processObject.getSku().getPriceByCurrencyCode( argumentCollection = priceByCurrencyCodeArgs ) );
-				/******* END CUSTOM CODE FOR MONAT *******/
-			}
-			
 			// If a stock was passed in assign it to this new item
 			if( !isNull(arguments.processObject.getStock()) ) {
 				newOrderItem.setStock( arguments.processObject.getStock() );

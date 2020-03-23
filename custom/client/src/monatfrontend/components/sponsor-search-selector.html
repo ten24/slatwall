@@ -76,13 +76,19 @@
 	</div>
 	
 	<div class="signup-mp__search-button" ng-show="sponsorSearchSelector.selectedSponsor === null">
-		<button 
-			type="button"
-			class="bg-primary btn" 
-			ng-click="sponsorSearchSelector.getSearchResults()"
-			ng-class="{ loading: sponsorSearchSelector.loadingResults || sponsorSearchSelector.publicService.paginationIsLoading }"
-			sw-rbkey="'frontend.global.search'"
-		></button>
+		<div class="p-2">
+			<button 
+				type="button"
+				class="bg-primary btn" 
+				ng-click="sponsorSearchSelector.getSearchResults()"
+				ng-class="{ loading: sponsorSearchSelector.loadingResults || sponsorSearchSelector.publicService.paginationIsLoading }"
+				sw-rbkey="'frontend.global.search'"
+			></button>
+		</div> 
+		<div class="p-2">
+			<p>Don't have a Market Partner?</p>
+			<a href ng-click="sponsorSearchSelector.autoAssignSponsor()">Let us assign one to you.</a>
+		</div>
 	</div>
 	
 	<!--- Results --->
