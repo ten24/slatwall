@@ -219,11 +219,12 @@
 								<i class="fas fa-play"></i>
 							</span>
 							<div class="img-box">
-							<!-----	TODO: <img src="#m.getAttributeFilePath( $.slatwall.product(), 'productVideoBackgroundImage' )#" alt=""> ----->
+								<img ng-src="{{monatProductModal.productDetails.videoBackgroundImage}}" alt=""> 
 							</div>
 							<div class="video-box">
 							</div>
-							<div class="video-lightbox" id="product-video-lightbox" ng-style="{'padding-top': monatProductModal.productDetails.videoWidth / monatProductModal.productDetails.videoHeight + '%', 'width': monatProductModal.productDetails.videoWidth + 'px'}">
+							<div class="video-lightbox" id="product-video-lightbox" 
+							ng-style="{'padding-top': monatProductModal.videoRatio + '%', 'width': monatProductModal.productDetails.videoWidth + 'px'}">
 							<iframe
 								frameborder="0" 
 								allowfullscreen
