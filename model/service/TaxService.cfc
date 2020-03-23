@@ -152,12 +152,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						var integrationTaxAPI = integration.getIntegrationCFC("tax");
 
 						// Call the API and store the responseBean by integrationID
-						try{
-							ratesResponseBeans[ integration.getIntegrationID() ] = integrationTaxAPI.getTaxRates( taxRatesRequestBean );
-						}catch(any e){
-							writeDump(var=taxRatesRequestBean,top=4,label="WHAT THE FUCK IS GOING ON HERE");
-							writeDump(e);abort;
-						}
+						ratesResponseBeans[ integration.getIntegrationID() ] = integrationTaxAPI.getTaxRates( taxRatesRequestBean );
 
 					} catch(any e) {
 
@@ -1051,7 +1046,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			if(!structKeyExists(taxAddresses,'taxShippingAddress')){
 				var referencedOrder = arguments.order.getReferencedOrder();
 				for(var orderFulfillment in arguments.order.getOrderFulfillments()){
-					var taxCategory = this.getTaxCategory(orderFulfillment.getFulfillmentMethod().setting('fulfillmentMethodTaxCategory'));
+					var taxCategory = orderFulfillment.getFulfillmentMethod().setting('fulfillmentMethodTaxCategory');
 					if(!isNull(orderFulfillment.getShippingAddress())){
 						taxAddresses.taxShippingAddress = orderFulfillment.getShippingAddress();
 						break;
@@ -1061,23 +1056,21 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					taxAddresses.taxShippingAddress = taxAddresses['taxBillingAddress'];
 				}
 			}
-			if(!isNull(taxCategory)){
-				// Loop over the rates of that category, looking for a unique integration
-				var taxCategoryRates = taxCategory.getTaxCategoryRates();
-				
-				for(var taxCategoryRate in taxCategoryRates) {
-					// If a unique integration is found, then we add it to the integrations to call
-					if(!isNull(taxCategoryRate.getTaxIntegration()) && taxCategoryRate.getTaxIntegration().getIntegrationID() == arguments.integration.getIntegrationID()){
-	
-						var taxAddress = getTaxAddressByTaxCategoryRate(taxCategoryRate=taxCategoryRate, taxAddresses=taxAddresses);
-	
-						if(!isNull(taxAddress) && getTaxCategoryRateIncludesTaxAddress(taxCategoryRate=taxCategoryRate, taxAddress=taxAddress)) {
-							taxRatesRequestBean.addTaxRateItemRequestBean(referenceObject=orderReturn, taxCategoryRate=taxCategoryRate, taxAddress=taxAddress);
-						}
+
+			// Loop over the rates of that category, looking for a unique integration
+			var taxCategoryRates = taxCategory.getTaxCategoryRates();
+			for(var taxCategoryRate in taxCategoryRates) {
+				// If a unique integration is found, then we add it to the integrations to call
+				if(!isNull(taxCategoryRate.getTaxIntegration()) && taxCategoryRate.getTaxIntegration().getIntegrationID() == arguments.integration.getIntegrationID()){
+
+					var taxAddress = getTaxAddressByTaxCategoryRate(taxCategoryRate=taxCategoryRate, taxAddresses=taxAddresses);
+
+					if(!isNull(taxAddress) && getTaxCategoryRateIncludesTaxAddress(taxCategoryRate=taxCategoryRate, taxAddress=taxAddress)) {
+						taxRatesRequestBean.addTaxRateItemRequestBean(referenceObject=orderReturn, taxCategoryRate=taxCategoryRate, taxAddress=taxAddress);
 					}
-	
-				} // End TaxCategoryRate Loop
-			}
+				}
+
+			} // End TaxCategoryRate Loop
 		}
 
 		return taxRatesRequestBean;

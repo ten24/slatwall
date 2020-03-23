@@ -1680,7 +1680,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
            
             //Updating the prices to account for new statuses in case there were prior order items before upgrading
             order = getOrderService().saveOrder(order);
-            ormFlush();
+
             // Set order on session
             getHibachiScope().getSession().setOrder( order );
             
@@ -1689,7 +1689,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             
             //flushing
             getHibachiScope().flushORMSession(); 
-            abort;
             
         }else{
             addErrors(data, order.getErrors());
