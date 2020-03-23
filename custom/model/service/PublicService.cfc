@@ -1440,6 +1440,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var newAppliedPromotion = getService('PromotionService').newPromotionApplied();
         newAppliedPromotion.setAppliedType('order');
         newAppliedPromotion.setDiscountAmount(arguments.refundAmount);
+        newAppliedPromotion.setTaxableAmountDiscountAmount(arguments.refundAmount);
         newAppliedPromotion.setEnrollmentFeeRefundFlag(true);
         newAppliedPromotion.setManualDiscountAmountFlag(true);
         newAppliedPromotion = getService('PromotionService').savePromotionApplied(newAppliedPromotion);
