@@ -29,7 +29,7 @@
                                                            <div style="font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 12px; line-height: 1.5; color: ##696969; mso-line-height-alt: 18px;">
                                                               <p style="font-size: 16px; line-height: 1.5; text-align: left; mso-line-height-alt: 24px; margin: 0; color: ##2f294b;"><strong>Billing Address</strong></p>
                                                               <p style="font-size: 14px; line-height: 1.5; text-align: left; mso-line-height-alt: 24px; margin: 0;">
-                                                                  #order.getAccount().getFirstName()# #order.getAccount().getLastName()#<br/>(MPs BILLING ADDRESS)<br/>(MPs CITY, STATE, ZIPCODE, COUNTRY)
+															  #order.getAccount().getFirstName()# #order.getAccount().getLastName()#<br/>#order.getBillingAddress().getStreetAddress()# #order.getBillingAddress().getStreet2Address()#<br/> #order.getBillingAddress().getCity()#, #order.getBillingAddress().getStateCode()# #order.getBillingAddress().getPostalCode()# </br> #order.getBillingAddress().getCountryCode()#
                                                               </p>
                                                            </div>
                                                         </div>
@@ -171,11 +171,11 @@
                                                      </tr>
                                                      <tr>
                                                         <td style="text-align: left; padding: 5px;">#order.getOrderNumber()#</td>
-                                                        <td style="text-align: center; padding: 5px;">(DISTRIBUTOR ID)</td>
+                                                        <td style="text-align: center; padding: 5px;">#order.getAccount().getAccountNumber()#</td>
                                                         <cfif not isNull(local.orderFulfillment.getShippingMethod())>
                                                     		<td style="text-align: center; padding: 5px;">#local.orderFulfillment.getShippingMethod().getShippingMethodName()#</td>
                                                         </cfif>
-                                                        <td style="text-align: center; padding: 5px;">(PERIOD)</td>
+                                                        <td style="text-align: center; padding: 5px;">#order.getCommissionPeriod()#</td>
                                                         <td style="text-align: right; padding: 5px;">#DateFormat(order.getOrderOpenDateTime(), "m/d/yyyy")# - #TimeFormat(order.getOrderOpenDateTime(), "short")#</td>
                                                      </tr>
                                                   </table>
@@ -320,13 +320,13 @@
                                                               <p style="font-size: 12px; line-height: 1.5; text-align: right; mso-line-height-alt: 18px; margin: 0;"><span style="color: ##2f294b; font-size: 12px;"><strong><span style="font-size: 16px;">Sub Total: #order.getFormattedValue('subtotal', 'currency')#</span></strong></span></p>
                                                               <p style="font-size: 14px; line-height: 1.5; text-align: right; mso-line-height-alt: 21px; margin: 0;"><span style="font-size: 14px;">Tax: #order.getFormattedValue('taxTotal', 'currency')#</span></p>
                                                               <p style="font-size: 14px; line-height: 1.5; text-align: right; mso-line-height-alt: 21px; margin: 0;"><span style="font-size: 14px;">Shipping: #order.getFormattedValue('fulfillmentTotal', 'currency')#</span></p>
-                                                              <p style="font-size: 14px; line-height: 1.5; text-align: right; mso-line-height-alt: 21px; margin: 0;"><span style="font-size: 14px;">Handling: (HANDLING COST)</span></p>
+                                                              <p style="font-size: 14px; line-height: 1.5; text-align: right; mso-line-height-alt: 21px; margin: 0;"><span style="font-size: 14px;">Handling: #order.getFormattedValue('fulfillmentHandlingFeeTotal', 'currency')#</span></p>
                                                               <cfif order.getDiscountTotal()>
 																	<p style="font-size: 14px; line-height: 1.5; text-align: right; mso-line-height-alt: 21px; margin: 0;"><span style="font-size: 14px;">Discount: -#order.getFormattedValue('discountTotal', 'currency')#</span></p>
                                                               </cfif>
                                                               <p style="font-size: 14px; line-height: 1.5; text-align: right; mso-line-height-alt: 21px; margin: 0;"><span style="font-size: 14px;">Total Amount: #order.getFormattedValue('total', 'currency')#</span></p>
-                                                              <p style="font-size: 14px; line-height: 1.5; text-align: right; mso-line-height-alt: 21px; margin: 0;"><span style="font-size: 14px;">VATTotal: (VATTotal)</span></p>
-                                                              <p style="font-size: 14px; line-height: 1.5; text-align: right; mso-line-height-alt: 21px; margin: 0;"><span style="font-size: 14px;">Paid Amount: (PAID AMOUNT)</span></p>
+                                                              <p style="font-size: 14px; line-height: 1.5; text-align: right; mso-line-height-alt: 21px; margin: 0;"><span style="font-size: 14px;">VATTotal: #order.getVATTotal()#</span></p>
+                                                              <p style="font-size: 14px; line-height: 1.5; text-align: right; mso-line-height-alt: 21px; margin: 0;"><span style="font-size: 14px;">Paid Amount: #order.getFormattedValue('paymentAmountTotal','currency')#</span></p>
                                                            </div>
                                                         </div>
                                                         <!--[if mso]>
