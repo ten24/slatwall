@@ -81,7 +81,7 @@ class SWFFormController {
     }
     
     public submitForm = ()=>{
-        console.log(this.method)
+
         let method = this.newMethod ? this.newMethod : this.method;
         if(this.form.$valid){
             this.loading = true;
