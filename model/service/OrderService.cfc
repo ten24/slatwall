@@ -245,7 +245,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public any function getAppliedPromotionMessageData(required string orderID=''){
 		var messageCL = getService('promotionService').getPromotionMessageAppliedCollectionList();
 		messageCL.addFilter('order.orderID', arguments.orderID);
-		var displayProperties = 'promotionMessageAppliedID,message,qualifierProgress,promotionQualifierMessage.promotionQualifier.promotionPeriod.promotion.promotionName,promotionQualifierMessage.promotionQualifier.promotionPeriod.promotionRewards.amount';
+		var displayProperties = 'promotionMessageAppliedID,message,qualifierProgress,promotion.promotionName,promotionPeriod.promotionRewards.amount';
 		messageCL.setDisplayProperties(displayProperties);
 		return messageCL;
 	}
