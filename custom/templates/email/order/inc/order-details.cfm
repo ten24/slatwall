@@ -349,14 +349,21 @@
                                                   </tr>
                                                </table>
                                                <![endif]-->
-                                               <div style="font-size:16px;text-align:center;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif">
-                                                  <div style=" color: ##555555; font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;line-height:120%;padding-top:20px;padding-right:20px;padding-bottom:20px;padding-left:20px;">
-                                                     <div style="background-color: ##E5E5E5; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 12px; line-height: 14px; color: ##555555; text-align:center; padding-top:30px; padding-right:20px; padding-bottom:30px;padding-left:20px;">
-                                                        <p style="font-size: 16px; line-height: 15px; margin: 0;"><span style="font-size: 16px; mso-ansi-font-size: 14px;"><strong>Shipping ##(AUTOSHIPNUMBER) **Internet Order</strong></span></p>
-                                                     </div>
-                                                  </div>
-                                               </div>
-                                               <!--[if (!mso)&(!IE)]><!-->
+											
+												<!--- 
+												
+												Commenting out autoshipping number block we do not currently have a flexship number for this field. 
+
+													<div style="font-size:16px;text-align:center;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif">
+														<div style=" color: ##555555; font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;line-height:120%;padding-top:20px;padding-right:20px;padding-bottom:20px;padding-left:20px;">
+															<div style="background-color: ##E5E5E5; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 12px; line-height: 14px; color: ##555555; text-align:center; padding-top:30px; padding-right:20px; padding-bottom:30px;padding-left:20px;">
+																<p style="font-size: 16px; line-height: 15px; margin: 0;"><span style="font-size: 16px; mso-ansi-font-size: 14px;"><strong>Shipping ##(AUTOSHIPNUMBER) **Internet Order</strong></span></p>
+															</div>
+														</div>
+													</div>
+												--->
+												
+												<!--[if (!mso)&(!IE)]><!-->
                                             </div>
                                             <!--<![endif]-->
                                          </div>
