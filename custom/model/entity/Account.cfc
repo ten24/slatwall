@@ -168,4 +168,25 @@ component {
 	       return this.getAccountGovernmentIdentifications()[1].getGovernmentIdentificationLastFour();
 	    }
 	}
+	
+	public numeric function getVIPEnrollmentAmountPaid(){
+		if(!structKeyExists(variables,'vipEnrollmentAmountPaid')){
+			var enrollmentAmountPaid = 0;
+			var vipSkuID = getService('SettingService').getSettingValue('integrationmonatGlobalVIPEnrollmentFeeSkuID');
+			
+			var enrollmentOrderItemCollection = getService('OrderService').getOrderItemCollectionList();
+			enrollmentOrderItemCollection.setDisplayProperties('calculatedExtendedPriceAfterDiscount');
+			enrollmentOrderItemCollection.addFilter('order.account.accountID',getAccountID());
+			enrollmentOrderItemCollection.addFilter('sku.skuID',vipSkuID);
+			enrollmentOrderItemCollection.addFilter('order.orderStatusType.systemCode','ostProcessing,ostClosed','IN');
+			
+			var enrollmentOrderItems = enrollmentOrderItemCollection.getRecords();
+			if(arrayLen(enrollmentOrderItems)){
+				var enrollmentOrderItem = enrollmentOrderItems[1];
+				enrollmentAmountPaid += enrollmentOrderItem.calculatedExtendedPriceAfterDiscount;
+			}
+			variables.vipEnrollmentAmountPaid = enrollmentAmountPaid;
+		}
+		return variables.vipEnrollmentAmountPaid;
+	}
 } 
