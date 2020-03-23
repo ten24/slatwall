@@ -552,7 +552,7 @@ component extends="Slatwall.model.service.OrderService" {
 	            }
 			        // Return Orders
 	        } else if (listFindNoCase('otReturnOrder,otExchangeOrder,otReplacementOrder,otRefundOrder', arguments.order.getTypeCode())) {
-	            if (argument.typeCode == 'rmaApproved') {
+	            if (arguments.typeCode == 'rmaApproved') {
 	
 	                arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode(systemCode='ostProcessing', typeCode="rmaApproved"));
 	                

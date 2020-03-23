@@ -1,378 +1,381 @@
 <cfoutput>
-	<table class="email_table" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
-		<tbody>
-			<tr>
-				<td class="email_body tc" style="box-sizing: border-box;vertical-align: top;line-height: 100%;text-align: center;padding-left: 16px;padding-right: 16px;font-size: 0 !important;">
-					<!--[if (mso)|(IE)]><table width="632" border="0" cellspacing="0" cellpadding="0" align="center" style="vertical-align:top;width:632px;Margin:0 auto;"><tbody><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
-					<div class="email_container" style="box-sizing: border-box;font-size: 0;display: inline-block;width: 100%;vertical-align: top;max-width: 632px;margin: 0 auto;text-align: center;line-height: inherit;min-width: 0 !important;">
-						<table class="content_section" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
-							<tbody>
-								<tr>
-									<td class="content_cell" style="box-sizing: border-box;vertical-align: top;width: 100%;;font-size: 0;text-align: center;padding-left: 16px;padding-right: 16px;line-height: inherit;min-width: 0 !important;">
-										<!-- col-6 -->
-										<div class="email_row" style="box-sizing: border-box;font-size: 0;display: block;width: 100%;vertical-align: top;margin: 0 auto;text-align: center;clear: both;line-height: inherit;min-width: 0 !important;max-width: 600px !important;">
-										<!--[if (mso)|(IE)]><table width="600" border="0" cellspacing="0" cellpadding="0" align="center" style="vertical-align:top;width:600px;Margin:0 auto 0 0;"><tbody><tr><td width="600" style="width:600px;line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
-											<div class="col_6" style="box-sizing: border-box;font-size: 0;display: inline-block;width: 100%;vertical-align: top;max-width: 600px;line-height: inherit;min-width: 0 !important;">
-												<table class="column" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
-													<tbody>
-														<tr>
-															<td class="column_cell px tc" style="box-sizing: border-box;vertical-align: top;width: 100%;min-width: 100%;padding-top: 0;padding-bottom: 16px;font-family: Helvetica, Arial, sans-serif;font-size: 16px;line-height: 23px;mso-line-height-rule: exactly;text-align: center;padding-left: 16px;padding-right: 16px;">
-																
-																<!------- MAIN HEADER ------->
-																<h1 class="mb_xxs" style="margin-left: 0;margin-right: 0;margin-top: 25px;margin-bottom: 4px;padding: 0;font-weight: bold;font-size: 32px;line-height: 42px;">Order Confirmation</h1>
-																
-																<!------- SUB-HEADER ------->
-																<p class="mbe" style="font-family: Helvetica, Arial, sans-serif;font-size: 16px;line-height: 23px;mso-line-height-rule: exactly;display: block;margin-top: 0;margin-bottom: 20px;">Thank you for your order, #order.getAccount().getFirstName()# #order.getAccount().getLastName()#! </p>
-																
-																<!------- ORDER NUMBER ------->
-																<h4 class="mb_xxs mte" style="margin-left: 0;margin-right: 0;margin-top: 0;margin-bottom: 4px;padding: 0;font-weight: bold;font-size: 19px;line-height: 25px;">Order &##35;#order.getOrderNumber()#</h4>
-																
-																<!------- ORDER PLACED DATE ------->
-																<p class="small tm" style="font-family: Helvetica, Arial, sans-serif;font-size: 14px;line-height: 20px;mso-line-height-rule: exactly;display: block;margin-top: 0;margin-bottom: 16px;">Placed on #DateFormat(order.getOrderOpenDateTime(), "m/d/yyyy")# - #TimeFormat(order.getOrderOpenDateTime(), "short")#</p>
-															</td>
-														</tr>
-													</tbody>
-												</table>
-											</div>
-										<!--[if (mso)|(IE)]></td></tr></tbody></table><![endif]-->
-										</div>
-									</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-					<!--[if (mso)|(IE)]></td></tr></tbody></table><![endif]-->
-				</td>
-			</tr>
-		</tbody>
-	</table>
-
-	<!------- TABLE HEADER ------->
-	<table class="email_table" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
-		<tbody>
-			<tr>
-				<td class="email_body tc" style="box-sizing: border-box;vertical-align: top;line-height: 100%;text-align: center;padding-left: 16px;padding-right: 16px;font-size: 0 !important;">
-					<!--[if (mso)|(IE)]><table width="632" border="0" cellspacing="0" cellpadding="0" align="center" style="vertical-align:top;width:632px;Margin:0 auto;"><tbody><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
-					<div class="email_container" style="box-sizing: border-box;font-size: 0;display: inline-block;width: 100%;vertical-align: top;max-width: 632px;margin: 0 auto;text-align: center;line-height: inherit;min-width: 0 !important;">
-						<table class="content_section" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
-							<tbody>
-								<tr>
-									<td class="content_cell pb" style="box-sizing: border-box;vertical-align: top;width: 100%;font-size: 0;text-align: center;line-height: inherit;min-width: 0 !important; padding: 25px 16px 0;">
-										<!-- col-6 -->
-										<div class="email_row" style="box-sizing: border-box;font-size: 0;display: block;width: 100%;vertical-align: top;margin: 0 auto;text-align: center;clear: both;line-height: inherit;min-width: 0 !important;max-width: 600px !important;">
-										<!--[if (mso)|(IE)]><table width="600" border="0" cellspacing="0" cellpadding="0" align="center" style="vertical-align:top;width:600px;Margin:0 auto;"><tbody><tr><td width="400" style="width:300px;line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
-											<div class="col_3" style="box-sizing: border-box;font-size: 0;display: inline-block;width: 100%;vertical-align: top;max-width: 300px;line-height: inherit;min-width: 0 !important;">
-												<table class="column" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
-													<tbody>
-														<tr>
-															<td class="column_cell px pt_0 pb_0 tl" style="box-sizing: border-box;vertical-align: top;width: 100%;min-width: 100%;padding-top: 0;padding-bottom: 5px;font-family: Helvetica, Arial, sans-serif;font-size: 16px;line-height: 23px;mso-line-height-rule: exactly;text-align: left;padding-left: 16px;padding-right: 16px;">
-																<p class="mb_0 mt_xs" style="font-family: Helvetica, Arial, sans-serif;font-size: 14px;line-height: 23px;mso-line-height-rule: exactly;display: block;margin-top: 8px;margin-bottom: 0;">Order Summary</p>
-															</td>
-														</tr>
-													</tbody>
-												</table>
-											</div>
-											<!--[if (mso)|(IE)]></td><td width="100" style="width:100px;line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
-											<div class="col_1 hide" style="box-sizing: border-box;font-size: 0;display: inline-block;width: 100%;vertical-align: top;max-width: 100px;line-height: inherit;min-width: 0 !important;">
-												<table class="column" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
-													<tbody>
-														<tr>
-															<td class="column_cell px pt_0 tr ord_cell" style="box-sizing: border-box;vertical-align: top;width: 100%;min-width: 100%;padding-top: 0;padding-bottom: 5px;font-family: Helvetica, Arial, sans-serif;font-size: 16px;line-height: 23px;mso-line-height-rule: exactly;text-align: right;padding-left: 16px;padding-right: 16px;">
-																<p class="mb_0 mt_xs" style="font-family: Helvetica, Arial, sans-serif;font-size: 14px;line-height: 23px;mso-line-height-rule: exactly;display: block;margin-top: 8px;margin-bottom: 0;">Options</p>
-															</td>
-														</tr>
-													</tbody>
-												</table>
-											</div>
-											<!--[if (mso)|(IE)]></td><td width="100" style="width:100px;line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
-											<div class="col_1 hide" style="box-sizing: border-box;font-size: 0;display: inline-block;width: 100%;vertical-align: top;max-width: 100px;line-height: inherit;min-width: 0 !important;">
-												<table class="column" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
-													<tbody>
-														<tr>
-															<td class="column_cell px pt_0 tr ord_cell" style="box-sizing: border-box;vertical-align: top;width: 100%;min-width: 100%;padding-top: 0;padding-bottom: 5px;font-family: Helvetica, Arial, sans-serif;font-size: 16px;line-height: 23px;mso-line-height-rule: exactly;text-align: right;padding-left: 16px;padding-right: 16px;">
-																<p class="mb_0 mt_xs" style="font-family: Helvetica, Arial, sans-serif;font-size: 14px;line-height: 23px;mso-line-height-rule: exactly;display: block;margin-top: 8px;margin-bottom: 0;">Price</p>
-															</td>
-														</tr>
-													</tbody>
-												</table>
-											</div>
-										<!--[if (mso)|(IE)]></td><td width="100" style="width:100px;line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
-											<div class="col_1 hide" style="box-sizing: border-box;font-size: 0;display: inline-block;width: 100%;vertical-align: top;max-width: 100px;line-height: inherit;min-width: 0 !important;">
-												<table class="column" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
-													<tbody>
-														<tr>
-															<td class="column_cell px pt_0 tr ord_cell" style="box-sizing: border-box;vertical-align: top;width: 100%;min-width: 100%;padding-top: 0;padding-bottom: 5px;font-family: Helvetica, Arial, sans-serif;font-size: 16px;line-height: 23px;mso-line-height-rule: exactly;text-align: right;padding-left: 16px;padding-right: 16px;">
-																<p class="mb_0 mt_xs" style="font-family: Helvetica, Arial, sans-serif;font-size: 14px;line-height: 23px;mso-line-height-rule: exactly;display: block;margin-top: 8px;margin-bottom: 0;">Total</p>
-															</td>
-														</tr>
-													</tbody>
-												</table>
-											</div>
-										<!--[if (mso)|(IE)]></td></tr></tbody></table><![endif]-->
-										</div>
-									</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-					<!--[if (mso)|(IE)]></td></tr></tbody></table><![endif]-->
-				</td>
-			</tr>
-		</tbody>
-	</table>
-	<!-- order_product_small -->
-	<table class="email_table" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
-		<tbody>
-			<tr>
-				<td class="email_body tc" style="box-sizing: border-box;vertical-align: top;line-height: 100%;text-align: center;padding-left: 16px;padding-right: 16px;font-size: 0 !important;">
-					<!--[if (mso)|(IE)]><table width="632" border="0" cellspacing="0" cellpadding="0" align="center" style="vertical-align:top;width:632px;Margin:0 auto;"><tbody><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
-					<div class="email_container" style="box-sizing: border-box;font-size: 0;display: inline-block;width: 100%;vertical-align: top;max-width: 632px;margin: 0 auto;text-align: center;line-height: inherit;min-width: 0 !important;">
-						<table class="content_section" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
-							<tbody>
-								<tr>
-									<td class="content_cell pb" style="box-sizing: border-box;vertical-align: top;width: 100%;font-size: 0;text-align: center;padding-left: 16px;padding-right: 16px;padding-bottom: 16px;line-height: inherit;min-width: 0 !important;">
-										
-										<!------- ORDER ITEM LOOP ------->
-										<cfloop array="#order.getOrderItems()#" index="local.orderItem">
-											<!-- col-6 -->
-											<div class="email_row" style="box-sizing: border-box;font-size: 0;display: block;width: 100%;vertical-align: top;margin: 0 auto;text-align: center;clear: both;line-height: inherit;min-width: 0 !important;max-width: 600px !important; padding:16px 0;">
-											<!--[if (mso)|(IE)]><table width="600" border="0" cellspacing="0" cellpadding="0" align="center" style="vertical-align:top;width:600px;Margin:0 auto;"><tbody><tr><td width="100" style="width:100px;line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
-												
-												<!--[if (mso)|(IE)]></td><td width="300" style="width:300px;line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
-												<div class="col_3" style="box-sizing: border-box;font-size: 0;display: inline-block;width: 100%;vertical-align: top;max-width: 300px;line-height: inherit;min-width: 0 !important;">
-													<table class="column" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
-														<tbody>
-															<tr>
-																<td class="column_cell px pt_0 pb_0 tl" style="box-sizing: border-box;vertical-align: top;width: 100%;min-width: 100%;padding-top: 0;padding-bottom: 0;font-family: Helvetica, Arial, sans-serif;font-size: 16px;line-height: 23px;mso-line-height-rule: exactly;text-align: left;padding-left: 16px;padding-right: 16px;">
-																	
-																	<!------- PRODUCT TITLE AND QUANTITY ------->
-																	<h5 class="mt_xs mb_xxs" style="margin-left: 0;margin-right: 0;margin-top: 8px;margin-bottom: 4px;padding: 0;font-weight: bold;font-size: 16px;line-height: 21px;">#local.orderItem.getSku().getProduct().getTitle()# <span class="tm" style="line-height: inherit;">x #NumberFormat(local.orderItem.getQuantity())# </span></h5>
-																	
-																	<!------- PRODUTC SKU ------->
-																	<p class="small tm mb_0" style="font-family: Helvetica, Arial, sans-serif;font-size: 14px;line-height: 20px;mso-line-height-rule: exactly;display: block;margin-top: 0;margin-bottom: 0;">SKU: #local.orderItem.getSku().getSkuCode()#</p>
-																</td>
-															</tr>
-														</tbody>
-													</table>
-												</div>
-												<!--[if (mso)|(IE)]></td><td width="100" style="width:100px;line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
-												<div class="col_1" style="box-sizing: border-box;font-size: 0;display: inline-block;width: 100%;vertical-align: top;max-width: 100px;line-height: inherit;min-width: 0 !important;">
-													<table class="column" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
-														<tbody>
-															<tr>
-																<td class="column_cell px pt_0 tr ord_cell" style="box-sizing: border-box;vertical-align: top;width: 100%;min-width: 100%;padding-top: 0;padding-bottom: 0;font-family: Helvetica, Arial, sans-serif;font-size: 16px;line-height: 23px;mso-line-height-rule: exactly;text-align: right;padding-left: 0;">
-																	
-																	<!------- ITEM OPTIONS ------->
-																	<cfif len(local.orderItem.getSku().displayOptions())>
-																		<p class="mb_0 mt_xs" style="font-family: Helvetica, Arial, sans-serif;font-size: 15px;line-height: 22px;mso-line-height-rule: exactly;display: block;margin-top: 8px;margin-bottom: 0;">#local.orderItem.getSku().displayOptions()#</p>
-																	</cfif>
-																</td>
-															</tr>
-														</tbody>
-													</table>
-												</div>
-												<!--[if (mso)|(IE)]></td><td width="100" style="width:100px;line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
-												<div class="col_1 hide" style="box-sizing: border-box;font-size: 0;display: inline-block;width: 100%;vertical-align: top;max-width: 100px;line-height: inherit;min-width: 0 !important;">
-													<table class="column" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
-														<tbody>
-															<tr>
-																<td class="column_cell px pt_0 tr ord_cell" style="box-sizing: border-box;vertical-align: top;width: 100%;min-width: 100%;font-family: Helvetica, Arial, sans-serif;font-size: 16px;line-height: 23px;mso-line-height-rule: exactly;text-align: right;padding: 0 16px;">
-																	
-																	<!------- ITEM PRICE ------->
-																	<p class="mb_0 mt_xs" style="font-family: Helvetica, Arial, sans-serif;font-size: 16px;line-height: 23px;mso-line-height-rule: exactly;display: block;margin-top: 8px;margin-bottom: 0;">#local.orderItem.getFormattedValue('price', 'currency')#</p>
-																</td>
-															</tr>
-														</tbody>
-													</table>
-												</div>
-											<!--[if (mso)|(IE)]></td><td width="100" style="width:100px;line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
-												<div class="col_1" style="box-sizing: border-box;font-size: 0;display: inline-block;width: 100%;vertical-align: top;max-width: 100px;line-height: inherit;min-width: 0 !important;">
-													<table class="column" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
-														<tbody>
-															<tr>
-																<td class="column_cell px pt_0 tr ord_cell" style="box-sizing: border-box;vertical-align: top;width: 100%;min-width: 100%;padding-top: 0;padding-bottom: 16px;font-family: Helvetica, Arial, sans-serif;font-size: 16px;line-height: 23px;mso-line-height-rule: exactly;text-align: right;padding-left: 16px;">
-																	
-																	<!------- ITEM TOTAL ------->
-																	<p class="mb_0 mt_xs" style="font-family: Helvetica, Arial, sans-serif;font-size: 16px;line-height: 23px;mso-line-height-rule: exactly;display: block;margin-top: 8px;margin-bottom: 0;">
-																		<cfif orderItem.getDiscountAmount() GT 0>
-																			<span style="text-decoration:line-through; color:##cc0000;">#orderItem.getFormattedValue('extendedPrice', 'currency')#</span><br />
-																			#local.orderItem.getFormattedValue('extendedPriceAfterDiscount', 'currency')#
-																		<cfelse>
-																			#local.orderItem.getFormattedValue('extendedPrice', 'currency')#
-																		</cfif>
-																	</p>
-																</td>
-															</tr>
-														</tbody>
-													</table>
-												</div>
-											<!--[if (mso)|(IE)]></td></tr></tbody></table><![endif]-->
-											</div>
-										</cfloop>
-									</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-					<!--[if (mso)|(IE)]></td></tr></tbody></table><![endif]-->
-				</td>
-			</tr>
-		</tbody>
-	</table>
-
-
-	<!-- order_total_alt -->
-	<table class="email_table" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
-		<tbody>
-			<tr>
-				<td class="email_body tc" style="box-sizing: border-box;vertical-align: top;line-height: 100%;text-align: center;padding-left: 16px;padding-right: 16px;font-size: 0 !important;">
-					<!--[if (mso)|(IE)]><table width="632" border="0" cellspacing="0" cellpadding="0" align="center" style="vertical-align:top;width:632px;Margin:0 auto;"><tbody><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
-					<div class="email_container" style="box-sizing: border-box;font-size: 0;display: inline-block;width: 100%;vertical-align: top;max-width: 632px;margin: 0 auto;text-align: center;line-height: inherit;min-width: 0 !important;">
-						<table class="content_section" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
-							<tbody>
-								<tr>
-									<td class="content_cell pb" style="box-sizing: border-box;vertical-align: top;width: 100%;font-size: 0;text-align: center;padding-left: 16px;padding-right: 16px;padding-bottom: 16px;line-height: inherit;min-width: 0 !important;">
-										<!-- col-6 -->
-										<div class="email_row tr" style="box-sizing: border-box;font-size: 0;display: block;width: 100%;vertical-align: top;margin: 0 auto;text-align: right;clear: both;line-height: inherit;min-width: 0 !important;max-width: 600px !important;">
-										<!--[if (mso)|(IE)]><table width="600" border="0" cellspacing="0" cellpadding="0" align="center" style="vertical-align:top;width:600px;Margin:0 auto;"><tbody><tr><td width="100" style="width:100px;line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
-											
-						
-											
-											<!--[if (mso)|(IE)]></td><td width="300" style="width:300px;line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
-											<div class="col_3" style="box-sizing: border-box;font-size: 0;display: inline-block;width: 100%;vertical-align: top;max-width: 300px;line-height: inherit;min-width: 0 !important;">
-												<table class="column" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
-													<tbody>
-														<tr>
-															<td class="column_cell px tl" style="box-sizing: border-box;vertical-align: top;width: 100%;min-width: 100%;padding-top: 16px;padding-bottom: 16px;font-family: Helvetica, Arial, sans-serif;font-size: 16px;line-height: 23px;mso-line-height-rule: exactly;text-align: left;padding-left: 16px;padding-right: 16px;">
-																<cfloop array="#order.getOrderFulfillments()#" index="local.orderFulfillment">
-																	
-																<!------- ORDER FULFILLMENT = SHIPPING ------->
+<div style="background-color:transparent;">
+    <div class="block-grid two-up" style="Margin: 0 auto; min-width: 320px; max-width: 600px; overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; background-color: ##FFFFFF;">
+        <div style="border-collapse: collapse;display: table;width: 100%;background-color:##FFFFFF;">
+           <!--[if (mso)|(IE)]>
+           <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:transparent;">
+              <tr>
+                 <td align="center">
+                    <table cellpadding="0" cellspacing="0" border="0" style="width:600px">
+                       <tr class="layout-full-width" style="background-color:##FFFFFF">
+                          <![endif]-->
+                          <!--[if (mso)|(IE)]>
+                          <td align="center" width="300" style="background-color:##FFFFFF;width:300px; border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent;" valign="top">
+                             <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                                <tr>
+                                   <td style="padding-right: 0px; padding-left: 0px; padding-top:5px; padding-bottom:5px;">
+                                      <![endif]-->
+                                      <div class="col num6" style="max-width: 320px; min-width: 300px; display: table-cell; vertical-align: top; width: 300px;">
+                                         <div style="width:100% !important;">
+                                            <!--[if (!mso)&(!IE)]><!-->
+                                            <div style="border-top:0px solid transparent; border-left:0px solid transparent; border-bottom:0px solid transparent; border-right:0px solid transparent; padding-top:5px; padding-bottom:5px; padding-right: 0px; padding-left: 0px;">
+                                               <!--<![endif]-->
+                                               <!--[if mso]>
+                                               <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                                                  <tr>
+                                                     <td style="padding-right: 30px; padding-left: 30px; padding-top: 50px; padding-bottom: 50px; font-family: Arial, sans-serif">
+                                                        <![endif]-->
+                                                        <div style="color:##696969;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;line-height:1.5;padding-top:50px;padding-right:30px;padding-bottom:50px;padding-left:30px;">
+                                                           <div style="font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 12px; line-height: 1.5; color: ##696969; mso-line-height-alt: 18px;">
+                                                              <p style="font-size: 16px; line-height: 1.5; text-align: left; mso-line-height-alt: 24px; margin: 0; color: ##2f294b;"><strong>Billing Address</strong></p>
+                                                              <p style="font-size: 14px; line-height: 1.5; text-align: left; mso-line-height-alt: 24px; margin: 0;">
+                                                                  #order.getAccount().getFirstName()# #order.getAccount().getLastName()#<br/>(MPs BILLING ADDRESS)<br/>(MPs CITY, STATE, ZIPCODE, COUNTRY)
+                                                              </p>
+                                                           </div>
+                                                        </div>
+                                                        <!--[if mso]>
+                                                     </td>
+                                                  </tr>
+                                               </table>
+                                               <![endif]-->
+                                               <!--[if (!mso)&(!IE)]><!-->
+                                            </div>
+                                            <!--<![endif]-->
+                                         </div>
+                                      </div>
+                                      <!--[if (mso)|(IE)]>
+                                   </td>
+                                </tr>
+                             </table>
+                             <![endif]-->
+                             <!--[if (mso)|(IE)]>
+                          </td>
+                          
+                          <td align="center" width="300" style="background-color:##FFFFFF;width:300px; border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent;" valign="top">
+                             <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                                <tr>
+                                   <td style="padding-right: 0px; padding-left: 0px; padding-top:5px; padding-bottom:5px;">
+                                      <![endif]-->
+                                      <cfloop array="#order.getOrderFulfillments()#" index="local.orderFulfillment">
+	                                      <div class="col num6" style="max-width: 320px; min-width: 300px; display: table-cell; vertical-align: top; width: 300px;">
+	                                         <div style="width:100% !important;">
+	                                            <!--[if (!mso)&(!IE)]><!-->
+	                                            <div style="border-top:0px solid transparent; border-left:0px solid transparent; border-bottom:0px solid transparent; border-right:0px solid transparent; padding-top:5px; padding-bottom:5px; padding-right: 0px; padding-left: 0px;">
+	                                               <!--<![endif]-->
+	                                               <!--[if mso]>
+	                                               <table width="100%" cellpadding="0" cellspacing="0" border="0">
+	                                                  <tr>
+	                                                     <td style="padding-right: 30px; padding-left: 30px; padding-top: 50px; padding-bottom: 50px; font-family: Arial, sans-serif">
+	                                                        <![endif]-->
+	                                                        <div style="color:##696969;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;line-height:1.5;padding-top:50px;padding-right:30px;padding-bottom:50px;padding-left:30px;">
+	                                                           <div style="font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 12px; line-height: 1.5; color: ##696969; mso-line-height-alt: 18px;">
+	                                                           	<!------- ORDER FULFILLMENT = SHIPPING ------->
 																<cfif local.orderFulfillment.getFulfillmentMethodType() EQ "shipping">
-																	<table class="ncard" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt; margin-bottom: 16px;">
-																		<tbody>
-																			<tr>
-																				<td class="ncard_c px pt light_b" style="box-sizing: border-box;vertical-align: top;overflow: hidden;border-radius: 4px;padding-left: 16px;padding-right: 16px;padding-top: 16px;line-height: inherit;font-family: Helvetica, Arial, sans-serif;">
-																					<cfif not local.orderFulfillment.getAddress().getNewFlag()>
-																						<h6 style="margin-left: 0;margin-right: 0;margin-top: 0;margin-bottom: 5px;padding: 0;font-weight: bold;font-size: 13px;line-height: 20px;">Shipping Address</h6>
-																						<p class="small" style="font-family: Helvetica, Arial, sans-serif;font-size: 14px;line-height: 20px;mso-line-height-rule: exactly;display: block;margin-top: 0;margin-bottom: 16px;">
-																							<cfif len(local.orderFulfillment.getAddress().getName())>#local.orderFulfillment.getAddress().getName()#<br /></cfif>
-																							<cfif len(local.orderFulfillment.getAddress().getStreetAddress())>#local.orderFulfillment.getAddress().getStreetAddress()#<br /></cfif>
-																							<cfif len(local.orderFulfillment.getAddress().getStreet2Address())>#local.orderFulfillment.getAddress().getStreet2Address()#<br /></cfif>
-																							#local.orderFulfillment.getAddress().getCity()#, #local.orderFulfillment.getAddress().getStateCode()# #local.orderFulfillment.getAddress().getPostalCode()#<br />
-																							#local.orderFulfillment.getAddress().getCountryCode()#
-																						</p>
-																					</cfif>
-																					<cfif not isNull(local.orderFulfillment.getShippingMethod())>
-																						<h6 style="margin-left: 0;margin-right: 0;margin-top: 20px;margin-bottom: 5px;padding: 0;font-weight: bold;font-size: 13px;line-height: 20px;">Shipping Method</h6>
-																						<p class="small" style="font-family: Helvetica, Arial, sans-serif;font-size: 14px;line-height: 20px;mso-line-height-rule: exactly;display: block;margin-top: 0;margin-bottom: 16px;">#local.orderFulfillment.getShippingMethod().getShippingMethodName()#</p>
-																					</cfif>
-																				</td>
-																			</tr>
-																		</tbody>
-																	</table>
-																	
+																
+																	<cfif not local.orderFulfillment.getAddress().getNewFlag()>
+																		<p style="font-size: 16px; line-height: 1.5; text-align: left; mso-line-height-alt: 24px; margin: 0; color: ##2f294b;"><strong>Shipping Address</strong></p>
+																		<p style="font-size: 14px; line-height: 1.5; text-align: left; mso-line-height-alt: 24px; margin: 0;">
+																			<cfif len(local.orderFulfillment.getAddress().getName())>#local.orderFulfillment.getAddress().getName()#<br /></cfif>
+																			<cfif len(local.orderFulfillment.getAddress().getStreetAddress())>#local.orderFulfillment.getAddress().getStreetAddress()#<br /></cfif>
+																			<cfif len(local.orderFulfillment.getAddress().getStreet2Address())>#local.orderFulfillment.getAddress().getStreet2Address()#<br /></cfif>
+																			#local.orderFulfillment.getAddress().getCity()#, #local.orderFulfillment.getAddress().getStateCode()# #local.orderFulfillment.getAddress().getPostalCode()#<br />
+																			#local.orderFulfillment.getAddress().getCountryCode()#
+																		</p>
+																	</cfif>
+																
 																<!------- ORDER FULFILLMENT = EMAIL ------->
 																<cfelseif orderFulfillment.getFulfillmentMethodType() EQ "email">
-																	<table class="ncard" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt; margin-bottom: 16px;">
-																		<tbody>
-																			<tr>
-																				<td class="ncard_c px pt light_b" style="box-sizing: border-box;vertical-align: top;overflow: hidden;border-radius: 4px;padding-left: 16px;padding-right: 16px;padding-top: 16px;line-height: inherit;font-family: Helvetica, Arial, sans-serif;">
-																					<h6 style="margin-left: 0;margin-right: 0;margin-top: 0;margin-bottom: 5px;padding: 0;font-weight: bold;font-size: 13px;line-height: 20px;">Delivery Email</h6>
-																					<p class="small" style="font-family: Helvetica, Arial, sans-serif;font-size: 14px;line-height: 20px;mso-line-height-rule: exactly;display: block;margin-top: 0;margin-bottom: 16px;">#orderFulfillment.getEmailAddress()#</p>
-																				</td>
-																			</tr>
-																		</tbody>
-																	</table>
-																	
+																	<p style="font-size: 14px; line-height: 1.5; text-align: left; mso-line-height-alt: 24px; margin: 0;">Delivery Email</p>
+																	<p style="font-size: 14px; line-height: 1.5; text-align: left; mso-line-height-alt: 24px; margin: 0;">#orderFulfillment.getEmailAddress()#</p>
+																
 																<!------- ORDER FULFILLMENT = AUTO ------->
 																<cfelseif orderFulfillment.getFulfillmentMethodType() EQ "auto">
-																	<table class="ncard" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt; margin-bottom: 16px;">
-																		<tbody>
-																			<tr>
-																				<td class="ncard_c px pt light_b" style="box-sizing: border-box;vertical-align: top;overflow: hidden;border-radius: 4px;padding-left: 16px;padding-right: 16px;padding-top: 16px;line-height: inherit;font-family: Helvetica, Arial, sans-serif;">
-																					<h6 style="margin-left: 0;margin-right: 0;margin-top: 0;margin-bottom: 5px;padding: 0;font-weight: bold;font-size: 13px;line-height: 20px;">Auto Fulfilled</h6>
-																				</td>
-																			</tr>
-																		</tbody>
-																	</table>
+																	<p style="font-size: 14px; line-height: 1.5; text-align: left; mso-line-height-alt: 24px; margin: 0;">Auto Fulfilled</p>
 																</cfif>
-																</cfloop>
-															</td>
-														</tr>
-													</tbody>
-												</table>
-											</div>
-											
-											<!--[if (mso)|(IE)]></td><td width="300" style="width:300px;line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
-											<div class="col_3" style="box-sizing: border-box;font-size: 0;display: inline-block;width: 100%;vertical-align: top;max-width: 300px;line-height: inherit;min-width: 0 !important;">
-												<table class="column" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
-													<tbody>
+	                                                              
+	                                                           </div>
+	                                                        </div>
+	                                                        <!--[if mso]>
+	                                                     </td>
+	                                                  </tr>
+	                                               </table>
+	                                               <![endif]-->
+	                                               <!--[if (!mso)&(!IE)]><!-->
+	                                            </div>
+	                                            <!--<![endif]-->
+	                                         </div>
+	                                      </div>
+	                                  </cfloop>
+                                      <!--[if (mso)|(IE)]>
+                                   </td>
+                                </tr>
+                             </table>
+                             <![endif]-->
+                             <!--[if (mso)|(IE)]>
+                          </td>
+                       </tr>
+                    </table>
+                 </td>
+              </tr>
+           </table>
+           <![endif]-->
+        </div>
+     </div>
+  </div>
+  <div style="background-color:transparent;">
+     <div class="block-grid" style="Margin: 0 auto; min-width: 320px; max-width: 600px; overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; background-color: ##FFFFFF;">
+        <div style="border-collapse: collapse;display: table;width: 100%;background-color:##FFFFFF;">
+           <!--[if (mso)|(IE)]>
+           <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:transparent;">
+              <tr>
+                 <td align="center">
+                    <table cellpadding="0" cellspacing="0" border="0" style="width:600px">
+                       <tr class="layout-full-width" style="background-color:##FFFFFF">
+                          <![endif]-->
+                          <!--[if (mso)|(IE)]>
+                          <td align="center" width="600" style="background-color:##FFFFFF;width:600px; border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent;" valign="top">
+                             <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                                <tr>
+                                   <td style="padding-right: 0px; padding-left: 0px; padding-top:5px; padding-bottom:5px;">
+                                      <![endif]-->
+                                      <div class="col num12" style="min-width: 320px; max-width: 600px; display: table-cell; vertical-align: top; width: 600px;">
+                                         <div style="width:100% !important;">
+                                            <!--[if (!mso)&(!IE)]><!-->
+                                            <div style="border-top:0px solid transparent; border-left:0px solid transparent; border-bottom:0px solid transparent; border-right:0px solid transparent; padding-top:5px; padding-bottom:5px; padding-right: 0px; padding-left: 0px;">
+                                               <!--<![endif]-->
+                                               <table border="0" cellpadding="0" cellspacing="0" class="divider" role="presentation" style="table-layout: fixed; vertical-align: top; border-spacing: 0; border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; min-width: 100%; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%;" valign="top" width="100%">
+                                                  <tbody>
+                                                     <tr style="vertical-align: top;" valign="top">
+                                                        <td class="divider_inner" style="word-break: break-word; vertical-align: top; min-width: 100%; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 10px;" valign="top">
+                                                           <table align="center" border="0" cellpadding="0" cellspacing="0" class="divider_content" height="0" role="presentation" style="table-layout: fixed; vertical-align: top; border-spacing: 0; border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; border-top: 3px solid ##BBBBBB; height: 0px; width: 100%;" valign="top" width="100%">
+                                                              <tbody>
+                                                                 <tr style="vertical-align: top;" valign="top">
+                                                                    <td height="0" style="word-break: break-word; vertical-align: top; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%;" valign="top"><span></span></td>
+                                                                 </tr>
+                                                              </tbody>
+                                                           </table>
+                                                        </td>
+                                                     </tr>
+                                                  </tbody>
+                                               </table>
+                                               <div style="font-size:16px;text-align:center;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif">
+                                                  <table style="font-family: helvetica, sans-serif; font-size: 12px; color:##696969; border-collapse: collapse; width: 93%; margin: 0 auto;">
+                                                     <tr>
+                                                        <th style="text-align: left; padding: 8px;">Order Number</th>
+                                                        <th style="text-align: center; padding: 8px;">Distributor ID</th>
+                                                        <cfif not isNull(local.orderFulfillment.getShippingMethod())>
+                                                        	<th style="text-align: center; padding: 8px;">Ship Via</th>
+                                                        </cfif>
+                                                        <th style="text-align: center; padding: 8px;">Period</th>
+                                                        <th style="text-align: right; padding: 8px;">Entry Date</th>
+                                                     </tr>
+                                                     <tr>
+                                                        <td style="text-align: left; padding: 5px;">#order.getOrderNumber()#</td>
+                                                        <td style="text-align: center; padding: 5px;">(DISTRIBUTOR ID)</td>
+                                                        <cfif not isNull(local.orderFulfillment.getShippingMethod())>
+                                                    		<td style="text-align: center; padding: 5px;">#local.orderFulfillment.getShippingMethod().getShippingMethodName()#</td>
+                                                        </cfif>
+                                                        <td style="text-align: center; padding: 5px;">(PERIOD)</td>
+                                                        <td style="text-align: right; padding: 5px;">#DateFormat(order.getOrderOpenDateTime(), "m/d/yyyy")# - #TimeFormat(order.getOrderOpenDateTime(), "short")#</td>
+                                                     </tr>
+                                                  </table>
+                                               </div>
+                                               <table border="0" cellpadding="0" cellspacing="0" class="divider" role="presentation" style="table-layout: fixed; vertical-align: top; border-spacing: 0; border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; min-width: 100%; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%;" valign="top" width="100%">
+                                                  <tbody>
+                                                     <tr style="vertical-align: top;" valign="top">
+                                                        <td class="divider_inner" style="word-break: break-word; vertical-align: top; min-width: 100%; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 10px;" valign="top">
+                                                           <table align="center" border="0" cellpadding="0" cellspacing="0" class="divider_content" height="0" role="presentation" style="table-layout: fixed; vertical-align: top; border-spacing: 0; border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; border-top: 3px solid ##BBBBBB; height: 0px; width: 100%;" valign="top" width="100%">
+                                                              <tbody>
+                                                                 <tr style="vertical-align: top;" valign="top">
+                                                                    <td height="0" style="word-break: break-word; vertical-align: top; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%;" valign="top"><span></span></td>
+                                                                 </tr>
+                                                              </tbody>
+                                                           </table>
+                                                        </td>
+                                                     </tr>
+                                                  </tbody>
+                                               </table>
+                                               <!--[if (!mso)&(!IE)]><!-->
+                                            </div>
+                                            <!--<![endif]-->
+                                         </div>
+                                      </div>
+                                      <!--[if (mso)|(IE)]>
+                                   </td>
+                                </tr>
+                             </table>
+                             <![endif]-->
+                             <!--[if (mso)|(IE)]>
+                          </td>
+                       </tr>
+                    </table>
+                 </td>
+              </tr>
+           </table>
+           <![endif]-->
+        </div>
+     </div>
+  </div>
+  <div style="background-color:transparent;">
+     <div class="block-grid" style="Margin: 0 auto; min-width: 320px; max-width: 600px; overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; background-color: ##FFFFFF;">
+        <div style="border-collapse: collapse;display: table;width: 100%;background-color:##FFFFFF;">
+           <!--[if (mso)|(IE)]>
+           <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:transparent;">
+              <tr>
+                 <td align="center">
+                    <table cellpadding="0" cellspacing="0" border="0" style="width:600px">
+                       <tr class="layout-full-width" style="background-color:##FFFFFF">
+                          <![endif]-->
+                          <!--[if (mso)|(IE)]>
+                          <td align="center" width="600" style="background-color:##FFFFFF;width:600px; border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent;" valign="top">
+                             <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                                <tr>
+                                   <td style="padding-right: 0px; padding-left: 0px; padding-top:15px; padding-bottom:20px;">
+                                      <![endif]-->
+                                      <div class="col num12" style="min-width: 320px; max-width: 600px; display: table-cell; vertical-align: top; width: 600px;">
+                                         <div style="width:100% !important;">
+                                            <!--[if (!mso)&(!IE)]><!-->
+                                            <div style="border-top:0px solid transparent; border-left:0px solid transparent; border-bottom:0px solid transparent; border-right:0px solid transparent; padding-top:15px; padding-bottom:20px; padding-right: 0px; padding-left: 0px;">
+                                               <!--<![endif]-->
+                                               <div style="font-size:16px;text-align:center;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif">
+                                                  <table style="font-family: helvetica, sans-serif; font-size: 12px; color:##696969; border-collapse: collapse; width: 97%; margin: 0 auto;">
+                                                     <tr>
+                                                        <th style="text-align: left; padding: 15px 10px; background-color: ##2F294B; color:##fff; width: 20%">Item Code</th>
+                                                        <th style="text-align: left; padding: 15px 5px; background-color: ##2F294B; color:##fff; width: 40%">Item Description</th>
+                                                        <th style="text-align: center; padding: 15px 5px; background-color: ##2F294B; color:##fff; width: 20%">Quantity Ordered</th>
+                                                        <th style="text-align: right; padding: 15px 10px; background-color: ##2F294B; color:##fff; width: 20%">Item Price</th>
+                                                     </tr>
+                                                     <!------- ORDER ITEM LOOP ------->
+													<cfloop array="#order.getOrderItems()#" index="local.orderItem">
 														<tr>
-															<td class="column_cell px tl" style="box-sizing: border-box;vertical-align: top;width: 100%;min-width: 100%;padding-top: 16px;padding-bottom: 16px;font-family: Helvetica, Arial, sans-serif;font-size: 16px;line-height: 23px;mso-line-height-rule: exactly;text-align: left;padding-left: 16px;padding-right: 16px;">
-																<table class="ncard" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;">
-																	<tbody>
-																		<tr>
-																			<td class="ncard_c px pt light_b" style="box-sizing: border-box;vertical-align: top;overflow: hidden;border-radius: 4px;padding-left: 16px;padding-right: 16px;padding-top: 16px;line-height: inherit;font-family: Helvetica, Arial, sans-serif;">
-																				
-																				<!------- SUBTOTAL ------->
-																				<p class="mb_xxs small" style="font-family: Helvetica, Arial, sans-serif;font-size: 14px;line-height: 20px;mso-line-height-rule: exactly;display: block;margin-top: 0;margin-bottom: 4px;"><span class="tm" style="line-height: inherit;">Subtotal</span> <span style="float: right; text-align: right;">#order.getFormattedValue('subtotal', 'currency')#</span></p>
-																				
-																				<!------- DELIVERY CHARGES ------->
-																				<p class="mb_xxs small" style="font-family: Helvetica, Arial, sans-serif;font-size: 14px;line-height: 20px;mso-line-height-rule: exactly;display: block;margin-top: 0;margin-bottom: 4px;"><span class="tm" style="line-height: inherit;">Delivery Charges</span> <span style="float: right; text-align: right;">#order.getFormattedValue('fulfillmentTotal', 'currency')#</span></p>
-																				
-																				<!------- TAX ------->
-																				<p class="mb_xxs small" style="font-family: Helvetica, Arial, sans-serif;font-size: 14px;line-height: 20px;mso-line-height-rule: exactly;display: block;margin-top: 0;margin-bottom: 4px;"><span class="tm" style="line-height: inherit;">Tax</span> <span style="float: right; text-align: right;">#order.getFormattedValue('taxTotal', 'currency')#</span></p>
-																				
-																				<!------- DISCOUNTS ------->
-																				<cfif order.getDiscountTotal()>
-																					<p class="mb_xxs small" style="font-family: Helvetica, Arial, sans-serif;font-size: 14px;line-height: 20px;mso-line-height-rule: exactly;display: block;margin-top: 0;margin-bottom: 4px;"><span class="tm" style="line-height: inherit;">Discounts</span> <span style="float: right; text-align: right;">-#order.getFormattedValue('discountTotal', 'currency')#</span></p>
-																				</cfif>
-																				
-																				<!------- TOTAL ------->
-																				<p class="mt_0 mb" style="font-family: Helvetica, Arial, sans-serif;font-size: 16px;line-height: 23px;mso-line-height-rule: exactly;display: block;margin-top: 16px;margin-bottom: 16px;padding-top:16px;"><strong>Total</strong> <span class="tp" style="line-height: inherit; float:right; text-align: right;">#order.getFormattedValue('total', 'currency')#</span></p>
-																			</td>
-																		</tr>
-																	</tbody>
-																</table>
+															<td style="text-align: left; padding: 10px 10px;">
+																#local.orderItem.getSku().getSkuCode()#
+															</td>
+															<td style="text-align: left; padding: 10px 10px;">
+																#local.orderItem.getSku().getProduct().getTitle()#<br />
+																<!------- ITEM OPTIONS ------->
+																<cfif len(local.orderItem.getSku().displayOptions())>
+																	#local.orderItem.getSku().displayOptions()#
+																</cfif>
+															</td>
+															<td style="text-align: center; padding: 10px 10px;">
+																#NumberFormat(local.orderItem.getQuantity())#
+															</td>
+															<td style="text-align: right; padding: 10px 10px;">
+																#local.orderItem.getFormattedValue('price', 'currency')#
 															</td>
 														</tr>
-														
-														<!------- PAYMENTS METHODS ------->
-														<cfif arrayLen(order.getOrderPayments())>
-															<tr>
-																<td class="column_cell px tl" style="box-sizing: border-box;vertical-align: top;width: 100%;min-width: 100%;padding-top: 16px;padding-bottom: 16px;font-family: Helvetica, Arial, sans-serif;font-size: 16px;line-height: 23px;mso-line-height-rule: exactly;text-align: left;padding-left: 16px;padding-right: 16px;">
-																	<table class="ncard" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;">
-																		<tbody>
-																			<tr>
-																				<td class="ncard_c px pt" style="box-sizing: border-box;vertical-align: top;overflow: hidden;border-radius: 4px;padding:0 16px;line-height: inherit;font-family: Helvetica, Arial, sans-serif;">
-																					<p class="mb_xxs small" style="font-family: Helvetica, Arial, sans-serif;font-size: 14px;line-height: 20px;mso-line-height-rule: exactly;display: block;margin-top: 0; padding-bottom: 5px; margin-bottom: 10px;"><span class="tm" style="line-height: inherit;">Payment Method</span> <span class="tm" style="float: right; text-align: right;">Amount</span></p>
-																					
-																					<!------- PAYMENT METHOD LOOP ------->
-																					<cfloop array="#order.getOrderPayments()#" index="orderPayment">
-																					<cfif orderPayment.getOrderPaymentStatusType().getSystemCode() EQ "opstActive">
-																						<p class="mb_xxs small" style="font-family: Helvetica, Arial, sans-serif;font-size: 14px;line-height: 20px;mso-line-height-rule: exactly;display: block;margin-top: 0;margin-bottom: 4px;"><span  style="line-height: inherit;">#orderPayment.getPaymentMethod().getPaymentMethodName()#</span> <span style="float: right; text-align: right;">#orderPayment.getFormattedValue('amount', 'currency')#</span></p>
-																					</cfif>
-																					</cfloop>
-																				</td>
-																			</tr>
-																		</tbody>
-																	</table>
-																</td>
-															</tr>
-														</cfif>
-													</tbody>
-												</table>
-											</div>
-										<!--[if (mso)|(IE)]></td></tr></tbody></table><![endif]-->
-										</div>
-									</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-					<!--[if (mso)|(IE)]></td></tr></tbody></table><![endif]-->
-				</td>
-			</tr>
-		</tbody>
-	</table>
+													</cfloop>
+                                                  </table>
+                                               </div>
+                                               <!--[if (!mso)&(!IE)]><!-->
+                                            </div>
+                                            <!--<![endif]-->
+                                         </div>
+                                      </div>
+                                      <!--[if (mso)|(IE)]>
+                                   </td>
+                                </tr>
+                             </table>
+                             <![endif]-->
+                             <!--[if (mso)|(IE)]>
+                          </td>
+                       </tr>
+                    </table>
+                 </td>
+              </tr>
+           </table>
+           <![endif]-->
+        </div>
+     </div>
+  </div>
+  <div style="background-color:transparent;">
+     <div class="block-grid" style="Margin: 0 auto; min-width: 320px; max-width: 600px; overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; background-color: ##FFFFFF;">
+        <div style="border-collapse: collapse;display: table;width: 100%;background-color:##FFFFFF;">
+           <!--[if (mso)|(IE)]>
+           <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:transparent;">
+              <tr>
+                 <td align="center">
+                    <table cellpadding="0" cellspacing="0" border="0" style="width:600px">
+                       <tr class="layout-full-width" style="background-color:##FFFFFF">
+                          <![endif]-->
+                          <!--[if (mso)|(IE)]>
+                          <td align="center" width="600" style="background-color:##FFFFFF;width:600px; border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent;" valign="top">
+                             <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                                <tr>
+                                   <td style="padding-right: 0px; padding-left: 0px; padding-top:5px; padding-bottom:5px;">
+                                      <![endif]-->
+                                      <div class="col num12" style="min-width: 320px; max-width: 600px; display: table-cell; vertical-align: top; width: 600px;">
+                                         <div style="width:100% !important;">
+                                            <!--[if (!mso)&(!IE)]><!-->
+                                            <div style="border-top:0px solid transparent; border-left:0px solid transparent; border-bottom:0px solid transparent; border-right:0px solid transparent; padding-top:5px; padding-bottom:5px; padding-right: 0px; padding-left: 0px;">
+                                               <!--<![endif]-->
+                                               <!--[if mso]>
+                                               <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                                                  <tr>
+                                                     <td style="padding-right: 30px; padding-left: 30px; padding-top: 10px; padding-bottom: 20px; font-family: Arial, sans-serif">
+                                                        <![endif]-->
+                                                        <div style="color:##696969;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;line-height:1.5;padding-top:10px;padding-right:30px;padding-bottom:20px;padding-left:30px;">
+                                                           <div style="font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 12px; line-height: 1.5; color: ##696969; mso-line-height-alt: 18px;">
+                                                              <p style="font-size: 12px; line-height: 1.5; text-align: right; mso-line-height-alt: 18px; margin: 0;"><span style="color: ##2f294b; font-size: 12px;"><strong><span style="font-size: 16px;">Sub Total: #order.getFormattedValue('subtotal', 'currency')#</span></strong></span></p>
+                                                              <p style="font-size: 14px; line-height: 1.5; text-align: right; mso-line-height-alt: 21px; margin: 0;"><span style="font-size: 14px;">Tax: #order.getFormattedValue('taxTotal', 'currency')#</span></p>
+                                                              <p style="font-size: 14px; line-height: 1.5; text-align: right; mso-line-height-alt: 21px; margin: 0;"><span style="font-size: 14px;">Shipping: #order.getFormattedValue('fulfillmentTotal', 'currency')#</span></p>
+                                                              <p style="font-size: 14px; line-height: 1.5; text-align: right; mso-line-height-alt: 21px; margin: 0;"><span style="font-size: 14px;">Handling: (HANDLING COST)</span></p>
+                                                              <cfif order.getDiscountTotal()>
+																	<p style="font-size: 14px; line-height: 1.5; text-align: right; mso-line-height-alt: 21px; margin: 0;"><span style="font-size: 14px;">Discount: -#order.getFormattedValue('discountTotal', 'currency')#</span></p>
+                                                              </cfif>
+                                                              <p style="font-size: 14px; line-height: 1.5; text-align: right; mso-line-height-alt: 21px; margin: 0;"><span style="font-size: 14px;">Total Amount: #order.getFormattedValue('total', 'currency')#</span></p>
+                                                              <p style="font-size: 14px; line-height: 1.5; text-align: right; mso-line-height-alt: 21px; margin: 0;"><span style="font-size: 14px;">VATTotal: (VATTotal)</span></p>
+                                                              <p style="font-size: 14px; line-height: 1.5; text-align: right; mso-line-height-alt: 21px; margin: 0;"><span style="font-size: 14px;">Paid Amount: (PAID AMOUNT)</span></p>
+                                                           </div>
+                                                        </div>
+                                                        <!--[if mso]>
+                                                     </td>
+                                                  </tr>
+                                               </table>
+                                               <![endif]-->
+                                               <!--[if mso]>
+                                               <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                                                  <tr>
+                                                     <td style="padding-right: 10px; padding-left: 10px; padding-top: 20px; padding-bottom: 20px; font-family: Arial, sans-serif">
+                                                        <![endif]-->
+                                                        <div style="color:##555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;line-height:1.2;padding-top:20px;padding-right:10px;padding-bottom:20px;padding-left:10px;">
+                                                           <div style="font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 12px; line-height: 1.2; color: ##555555; mso-line-height-alt: 14px;">
+                                                              <p style="font-size: 14px; line-height: 1.2; text-align: center; mso-line-height-alt: 17px; margin: 0;"><strong><span style="font-size: 16px; color: ##2f294b;"><span style="font-size: 16px;">Thank you for being a</span> <span style="font-size: 16px;">part</span> of MONAT! </span></strong></p>
+                                                           </div>
+                                                        </div>
+                                                        <!--[if mso]>
+                                                     </td>
+                                                  </tr>
+                                               </table>
+                                               <![endif]-->
+                                               <div style="font-size:16px;text-align:center;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif">
+                                                  <div style=" color: ##555555; font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;line-height:120%;padding-top:20px;padding-right:20px;padding-bottom:20px;padding-left:20px;">
+                                                     <div style="background-color: ##E5E5E5; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 12px; line-height: 14px; color: ##555555; text-align:center; padding-top:30px; padding-right:20px; padding-bottom:30px;padding-left:20px;">
+                                                        <p style="font-size: 16px; line-height: 15px; margin: 0;"><span style="font-size: 16px; mso-ansi-font-size: 14px;"><strong>Shipping ##(AUTOSHIPNUMBER) **Internet Order</strong></span></p>
+                                                     </div>
+                                                  </div>
+                                               </div>
+                                               <!--[if (!mso)&(!IE)]><!-->
+                                            </div>
+                                            <!--<![endif]-->
+                                         </div>
+                                      </div>
+                                      <!--[if (mso)|(IE)]>
+                                   </td>
+                                </tr>
+                             </table>
+                             <![endif]-->
+                             <!--[if (mso)|(IE)]>
+                          </td>
+                       </tr>
+                    </table>
+                 </td>
+              </tr>
+           </table>
+           <![endif]-->
+        </div>
+    </div>
+</div>
+
 </cfoutput>

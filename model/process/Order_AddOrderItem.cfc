@@ -97,6 +97,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="thirdPartyShippingAccountIdentifier";
 
 	// Data Properties (Related Entity Populate)
+	property name="priceGroup" cfc="PriceGroup" fieldType="many-to-one" persistent="false" fkcolumn="priceGroupID";
 	property name="shippingAddress" cfc="Address" fieldType="many-to-one" persistent="false" fkcolumn="addressID";
 	// Data Properties (Object / Array Populate)
 	property name="attributeValuesByCodeStruct";
