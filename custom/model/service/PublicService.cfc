@@ -998,6 +998,13 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         if(!len(arguments.data.sponsorID)){
             arguments.data.sponsorID = getDAO('accountDAO').getEligibleMarketPartner(account.getPrimaryAddress().getAddress().getPostalCode());
+            
+            if(!len(arguments.data.sponsorID)){
+                this.addErrors(arguments.data, "No Sponsor found in your area");
+                getHibachiScope().addActionResult('public:account.submitSponsor',true);
+                return;
+            }
+            
             autoAssignment = true;
         }
 

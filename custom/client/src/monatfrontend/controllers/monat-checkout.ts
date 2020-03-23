@@ -55,7 +55,8 @@ class MonatCheckoutController {
 		public observerService,
 		public $rootScope,
 		public $scope,
-		public ModalService
+		public ModalService,
+		public monatAlertService
 	) {}
 
 	public $onInit = () => {
@@ -337,9 +338,11 @@ class MonatCheckoutController {
 	
 	public submitSponsor():Screen | void{
 		this.publicService.doAction('submitSponsor', {sponsorID: this.ownerAccountID}).then(res=>{
-			if(res.successfulActions) {
+			if(res.successfulActions.length) {
 				this.hasSponsor = true; 
 				this.next();
+			}else if(res.errors){
+				this.monatAlertService.error(res.errors);
 			}
 		});
 	}
