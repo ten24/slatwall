@@ -76,16 +76,19 @@
 	</div>
 	
 	<div class="signup-mp__search-button" ng-show="sponsorSearchSelector.selectedSponsor === null">
-		<button 
-			type="button"
-			class="bg-primary btn" 
-			ng-click="sponsorSearchSelector.getSearchResults()"
-			ng-class="{ loading: sponsorSearchSelector.loadingResults || sponsorSearchSelector.publicService.paginationIsLoading }"
-			sw-rbkey="'frontend.global.search'"
-		></button>
-		<!-- TODO: Replace this place holder with the real design -->
-		<span>Don't have a Market Partner</span>
-		<a href ng-click="">Let us assign one to you.</a>
+		<div class="p-2">
+			<button 
+				type="button"
+				class="bg-primary btn" 
+				ng-click="sponsorSearchSelector.getSearchResults()"
+				ng-class="{ loading: sponsorSearchSelector.loadingResults || sponsorSearchSelector.publicService.paginationIsLoading }"
+				sw-rbkey="'frontend.global.search'"
+			></button>
+		</div> 
+		<div class="p-2">
+			<p>Don't have a Market Partner?</p>
+			<a href ng-click="sponsorSearchSelector.autoAssignSponsor()">Let us assign one to you.</a>
+		</div>
 	</div>
 	
 	<!--- Results --->

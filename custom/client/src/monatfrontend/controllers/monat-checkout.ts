@@ -91,6 +91,7 @@ class MonatCheckoutController {
 			this.getCurrentCheckoutScreen(false, true);
 		}, 'addShippingAddressUsingAccountAddressSuccess' ); 
 
+		this.observerService.attach(this.submitSponsor.bind(this), 'autoAssignSponsor' ); 
 
 		this.publicService.getAccount(true).then(res=>{
 		

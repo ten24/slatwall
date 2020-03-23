@@ -1002,7 +1002,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         }
 
         var sponsorAccount = getService('accountService').getAccount(arguments.data.sponsorID);
-        
         if(isNull(sponsorAccount)){
             getHibachiScope().addActionResult('public:account.submitSponsor',true);
             return;
@@ -1023,7 +1022,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             accountRelationship = getService('accountService').saveAccountRelationship(accountRelationship);
         }
         
-        getHibachiScope().getAccount().setOwnerAccount(sponsorAccount);
+        account.setOwnerAccount(sponsorAccount);
         
         getHibachiScope().addActionResult('public:account.submitSponsor',accountRelationship.hasErrors());
         

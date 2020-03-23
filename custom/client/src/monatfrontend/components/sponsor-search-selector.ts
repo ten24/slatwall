@@ -125,6 +125,12 @@ class SponsorSearchSelectorController {
 			this.notifySelect( sponsor );
 		}
 	}
+	
+	public autoAssignSponsor = () => {
+		this.observerService.notify('autoAssignSponsor');
+	}
+	
+	
 
 }
 
