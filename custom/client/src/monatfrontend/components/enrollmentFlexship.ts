@@ -10,6 +10,7 @@ class EnrollmentFlexshipController {
 	public isLoading:boolean;
 	public cartThreshold:number;
 	public suggestedRetailPrice: 0; 
+	public messages:any;
 	
 	//@ngInject
 	constructor(public monatService, public observerService, public orderTemplateService, public publicService) {
@@ -23,16 +24,27 @@ class EnrollmentFlexshipController {
 	public getFlexship():void {
 	
 		this.isLoading = true;
-		let extraProperties = "canPlaceOrderFlag,purchasePlusTotal";
-		console.log(this.cartThreshold)
+		let extraProperties = "canPlaceOrderFlag,purchasePlusTotal,appliedPromotionMessagesJson";
 		if(!this.cartThreshold){
 			extraProperties += ',cartTotalThresholdForOFYAndFreeShipping'
 		}
 		this.orderTemplateService.getSetOrderTemplateOnSession(extraProperties).then(data => {
+
 			if((data.orderTemplate as GenericTemplate) ){
 				this.orderTemplate = data.orderTemplate;
 				if(this.orderTemplate.cartTotalThresholdForOFYAndFreeShipping) this.cartThreshold = +this.orderTemplate.cartTotalThresholdForOFYAndFreeShipping;
 				this.calculateSRPOnOrder();
+				let messages = this.orderTemplate.appliedPromotionMessagesJson ? JSON.parse(this.orderTemplate.appliedPromotionMessagesJson) : [];
+				messages = messages.filter(el => el.promotionQualifierMessage_promotionQualifier_promotionPeriod_promotion_promotionName?.indexOf('Purchase Plus') > -1);
+				if(!messages || !messages.length){
+					this.messages = null;
+				}else{
+					this.messages = {
+						message: messages[0].message,
+						amount: messages[0].promotionQualifierMessage_promotionQualifier_promotionPeriod_promotionRewards_amount,
+						qualifierProgress: messages[0].qualifierProgress,
+					}	
+				}
 				this.isLoading = false;
 			} else {
 				throw(data);

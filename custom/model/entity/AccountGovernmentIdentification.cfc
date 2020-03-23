@@ -16,10 +16,13 @@ component {
 	}
 	
 	public boolean function validateGovernmentIdIsUniquePerCountry() {
-		return getDAO("accountDAO").getGovernmentIdNotInUseFlag(
-				this.getGovernmentIdentificationNumberHashed(),
-				this.getAccount().getAccountCreatedSite().getSiteID()
+		if(!isNull(getGovernmentIdentificationNumberHashed())){
+			return getDAO("accountDAO").getGovernmentIdNotInUseFlag(
+					this.getGovernmentIdentificationNumberHashed(),
+					this.getAccount().getAccountCreatedSite().getSiteID()
 			);
+		}
+		return true;
 	}
 	
 

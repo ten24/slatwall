@@ -18,7 +18,7 @@ export class MonatService {
 	public userIsEighteen:boolean;
 
 	//@ngInject
-	constructor(public publicService, public $q, public $window, public requestService) {}
+	constructor(public publicService, public $q, public $window, public requestService, private observerService) {}
 
 	public getCart(refresh = false, param = '') {
 		var deferred = this.$q.defer();
@@ -54,6 +54,7 @@ export class MonatService {
 					this.cart = data.cart;
 					this.canPlaceOrder = this.cart.orderRequirementsList.indexOf('canPlaceOrderReward') == -1;
 					deferred.resolve(data.cart);
+					this.observerService.notify( 'updatedCart', data.cart ); 
 				} else {
 					throw data;
 				}

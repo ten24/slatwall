@@ -51,9 +51,12 @@ component displayname="Promotion Message Applied" entityname="SlatwallPromotionM
     property name="promotionMessageAppliedID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
     property name="message" ormtype="string";
     
+    
     // Related Entities (many-to-one)
     property name="order" cfc="Order" fieldtype="many-to-one" fkcolumn="orderID";
     property name="promotionQualifierMessage" cfc="PromotionQualifierMessage" fieldtype="many-to-one" fkcolumn="promotionQualifierMessageID";
+    property name="promotion" cfc="Promotion" fieldtype="many-to-one" fkcolumn="promotionID";
+    property name="promotionPeriod" cfc="PromotionPeriod" fieldtype="many-to-one" fkcolumn="promotionPeriodID";
     
     // Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
@@ -62,8 +65,6 @@ component displayname="Promotion Message Applied" entityname="SlatwallPromotionM
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non-Persistent Properties
-	property name="promotion" persistent="false";
-	property name="promotionPeriod" persistent="false";
 	property name="promotionQualifier" persistent="false";
 	property name="promotionRewards" persistent="false";
 	property name="promotionName" persistent="false";

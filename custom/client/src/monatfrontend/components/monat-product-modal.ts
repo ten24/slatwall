@@ -17,7 +17,10 @@ class MonatProductModalController {
 		half: false,
 		empty: 0
 	};
-
+	public muraContentIngredients:string;
+	public muraValues:string;
+	public trustedVideoURL:string;
+	
 	//@ngInject
 	constructor(
 		public monatService, 
@@ -25,12 +28,12 @@ class MonatProductModalController {
 		public rbkeyService, 
 		private orderTemplateService, 
 		private monatAlertService,
-		private publicService
+		private publicService,
+		private $sce
 	) {}
 
 	public $onInit = () => {
 		this.makeTranslations();
-		
 		this.getModalInfo();
 	};
 	
@@ -41,6 +44,9 @@ class MonatProductModalController {
 			this.reviewsCount = data.reviewsCount;
 			this.getReviewStars( this.productRating );
 			this.productDetails = data.productData;
+			this.trustedVideoURL = this.$sce.trustAsResourceUrl(data.productData.videoUrl);
+			this.muraContentIngredients = data.muraIngredients.length ? data.muraIngredients[0] : '';
+			this.muraValues = data.muraValues.length ? data.muraValues[0] : '';
 		});
 	}
 	

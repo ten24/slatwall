@@ -169,8 +169,7 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	property name="spouseFirstName" persistent = "false";
 	property name="spouseLastName" persistent = "false";
 	property name="governmentIdentificationLastFour" persistent = "false";
-	
-	
+
 
  property name="allowCorporateEmailsFlag" ormtype="boolean" hb_formatType="yesno";
  property name="productPackPurchasedFlag" ormtype="boolean" hb_formatType="yesno" default="false";
@@ -221,23 +220,28 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	}
 
 	public string function getPreferredLocale(){
-		if(!isNull(getAccountCreatedSite())){
-			var site = getAccountCreatedSite();
-		}else if(!isNull(getHibachiScope().getCurrentRequestSite())){
-			var site = getHibachiScope().getCurrentRequestSite();
-		}
 		
-		if(!isNull(site)){
-			var siteCode = getService('SiteService').getCountryCodeBySite(site);
-		}else{
-			var siteCode = 'us';
-		}
-		
-		if(structKeyExists(variables, 'languagePreference') && len(siteCode)){
-			return lcase('#variables.languagePreference#_#siteCode#');
+		if(structKeyExists(variables, 'languagePreference') && len(this.getCountryCode())){
+			return lcase('#variables.languagePreference#_#this.getCountryCode()#');
 		}else{
 			return '';
 		}
+	}
+	
+	public string function getCountryCode() {
+		
+		if(!StructKeyExists(variables, "countryCode")) {
+			
+			var site = getAccountCreatedSite() ?: getHibachiScope().getCurrentRequestSite();
+		
+			if(!isNull(site)){
+				variables.countryCode = getService('SiteService').getCountryCodeBySite(site);
+			} else {
+				variables.countryCode = 'us';
+			}
+		}
+		
+		return variables.countryCode;
 	}
 
 	public array function getOrderCurrencies(){
@@ -1292,7 +1296,21 @@ public numeric function getSuccessfulFlexshipOrdersThisYearCount(){
 			return variables.accountNumber;
 		}
 	}
-
+	
+	public string function getLanguagePreferenceLabel(){
+		if(!StructKeyExists(variables, "languagePreferenceLabel")) {
+			
+			var attributeOption = this.getDAO('AttributeDAO').getAttributeOptionByAttributeOptionValueAndAttributeID(
+								    attributeOptionValue = this.getLanguagePreference() ?: 'en', 
+								    attributeID = this.getService('AttributeService').getAttributeByAttributeCode('languagePreference').getAttributeID()
+								);
+								
+			variables.languagePreferenceLabel = attributeOption.getAttributeOptionLabel();
+		}
+		
+		return variables.languagePreferenceLabel;
+	}
+	
 	public boolean function getCanCreateFlexshipFlag() {
 		
 		// If the user is not logged in, or retail, return false.

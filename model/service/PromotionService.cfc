@@ -247,7 +247,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							}
 							if(discountQuantity != 0){
 								// If there is not applied Price Group, or if this reward has the applied pricegroup as an eligible one then use priceExtended... otherwise use skuPriceExtended and then adjust the discount.
-								if( isNull(orderItem.getAppliedPriceGroup()) || arguments.promotionReward.hasEligiblePriceGroup( orderItem.getAppliedPriceGroup() ) ) {
+								if( isNull(orderItem.getAppliedPriceGroup()) || arguments.promotionReward.hasEligiblePriceGroup( orderItem.getAppliedPriceGroup() ) || getService('SettingService').getSettingValue('globalPromotionIgnorePriceGroupEligibility') ) {
 									// Calculate based on price, which could be a priceGroup price
 									var discountAmount = getDiscountAmount(reward=arguments.promotionReward, price=orderItem.getPrice(), quantity=discountQuantity, currencyCode=orderItem.getCurrencyCode(), sku=orderItem.getSku(), account=arguments.order.getAccount());
 	
@@ -381,9 +381,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	public void function updateOrderAmountsWithPromotions(required any order) {
-		for(var orderItem in arguments.order.getOrderItems()){
-			orderItem.updateCalculatedProperties(true);
-		}
+
 		//Save before flushing 
 		if(arguments.order.getNewFlag()){
 			getService('hibachiService').saveOrder(arguments.order);
@@ -433,6 +431,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				
 				clearPreviouslyAppliedPromotions(arguments.order);
 				clearPreviouslyAppliedPromotionMessages(arguments.order);
+				
+				for(var orderItem in arguments.order.getOrderItems()){
+					orderItem.updateCalculatedProperties(true);
+				}
+				
 				getHibachiScope().flushOrmSession();
 				
 				// This is a structure of promotionPeriods that will get checked and cached as to if we are still within the period use count, and period account use count
@@ -491,6 +494,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 				} // END of PromotionReward Loop
 				if(arrayLen(orderQualifierMessages)){
+					getHibachiScope().flushOrmSession();
 					applyPromotionQualifierMessagesToOrder(arguments.order,orderQualifierMessages);
 				}
 			} // END of Sale or Exchange Loop
@@ -546,10 +550,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		for(var promotionQualifierMessage in arguments.orderQualifierMessages){
 			var newAppliedPromotionMessage = this.newPromotionMessageApplied();
-			
 			newAppliedPromotionMessage.setOrder( arguments.order );
+		
 			newAppliedPromotionMessage.setPromotionQualifierMessage( promotionQualifierMessage );
-			
+			newAppliedPromotionMessage.setPromotionPeriod(promotionQualifierMessage.getPromotionQualifier().getPromotionPeriod());
+			newAppliedPromotionMessage.setPromotion(newAppliedPromotionMessage.getPromotionPeriod().getPromotion());
 			newAppliedPromotionMessage.setMessage( promotionQualifierMessage.getInterpolatedMessage( arguments.order ) );
 			
 			this.savePromotionMessageApplied(newAppliedPromotionMessage);

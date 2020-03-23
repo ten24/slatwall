@@ -68,6 +68,7 @@
 			</div>
 			
 			<div 
+				ng-if="!monatEnrollment.upgradeFlow"
 				class="col"
 				ng-style="{ 'opacity' : (monatEnrollment.currentStepName == 'createAccount' ) ? '100%' : '50%' }"
 			>
@@ -80,7 +81,7 @@
 				<p class="mb-1" sw-rbkey="'frontend.global.checkout'"></p>
 			</div>
 			
-			<div class="col">
+			<div ng-if="!monatEnrollment.account.ownerAccount.accountNumber.length" class="col">
 				<i class="fal fa-user-friends"></i>
 				<p class="mb-1" sw-rbkey="'frontend.global.sponsor'"></p>
 			</div>
@@ -107,11 +108,20 @@
 			</div>
 			
 			<div 
+				ng-if="!monatEnrollment.upgradeFlow"
 				class="col"
 				ng-style="{ 'opacity' : (monatEnrollment.currentStepName == 'createAccount' || monatEnrollment.currentStepName=='updateAccount') ? '100%' : '50%' }"
 			>
 				<i class="fal fa-user-plus"></i>
 				<p class="mb-1" sw-rbkey="'frontend.createAccount.createAccountBtn'"></p>
+			</div>
+			<div 
+				ng-if="monatEnrollment.upgradeFlow"
+				class="col"
+				ng-style="{ 'opacity' : (monatEnrollment.currentStepName == 'createAccount' || monatEnrollment.currentStepName=='updateAccount') ? '100%' : '50%' }"
+			>
+				<i class="fal fa-briefcase"></i>
+				<p class="mb-1" sw-rbkey="'frontend.enrollment.businessDetails'"></p>
 			</div>
 			
 			<div class="col">
@@ -119,8 +129,8 @@
 				<p class="mb-1" sw-rbkey="'frontend.global.checkout'"></p>
 			</div>
 			
-			<div class="col">
-				<i class="fal fa-user-friends"></i>
+			<div ng-if="!monatEnrollment.account.ownerAccount.accountNumber.length" class="col">
+				<i class="fal fa-user-friends"></i> 
 				<p class="mb-1" sw-rbkey="'frontend.global.sponsor'"></p>
 			</div>
 		</div>

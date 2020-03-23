@@ -47,6 +47,20 @@ Notes:
 */
 component extends="Slatwall.model.service.PublicService" accessors="true" output="false" {
     
+    
+    
+     public any function login( required struct data ){
+         super.login(argumentCollection = arguments);
+         
+        if (getHibachiScope().getLoggedInFlag() &&
+            !isNull(getHibachiScope().getAccount().getAccountCreatedSite()) &&
+            !isNull(getHibachiScope().getCurrentRequestSite()) &&
+            getHibachiScope().getAccount().getAccountCreatedSite().getSiteID() != getHibachiScope().getCurrentRequestSite().getSiteID()
+        ){
+            arguments.data.ajaxResponse['data'] =  { 'redirect': getHibachiScope().getAccount().getAccountCreatedSite().getCmsSiteID() };
+        }
+    }
+    
     /**
       * Updates an Account address.
       */
@@ -732,16 +746,24 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 			"isDeletable":false,
 			"isSearchable":false,
 			"arguments":{
+			    'currencyCode': 'USD'
 			}
 		};
 		
+		var site = getHibachiScope().getCurrentRequestSite();
+        if ( !isNull( site ) ) {
+            visibleColumnConfigWithArguments['arguments']['currencyCode'] = site.getCurrencyCode();
+        }
+        
 		if(!isNull(getHibachiScope().getAccount())){
-			visibleColumnConfigWithArguments["arguments"]["currencyCode"] = getHibachiScope().getAccount().getSiteCurrencyCode();
 			visibleColumnConfigWithArguments["arguments"]["accountID"] = getHibachiScope().getAccount().getAccountID();
 		}
+		
+		//Price Group For Market Partner
+		visibleColumnConfigWithArguments["arguments"]["priceGroupCode"] = 1;
 
 		//todo handle case where user is not logged in 
-	
+	    
 		bundleNonPersistentCollectionList.addDisplayProperty('bundledSku.priceByCurrencyCode', '', visibleColumnConfigWithArguments);
 		bundleNonPersistentCollectionList.addDisplayProperty('sku.priceByCurrencyCode', '', visibleColumnConfigWithArguments);
 		bundleNonPersistentCollectionList.addDisplayProperty('sku.personalVolumeByCurrencyCode', '', visibleColumnConfigWithArguments);
@@ -769,7 +791,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 					'image': baseImageUrl & skuBundle.sku_product_defaultSku_imageFile,
 					'personalVolume': skuBundle.sku_personalVolumeByCurrencyCode,
 					'productTypes': {},
-					'currencyCode':getHibachiScope().getAccount().getSiteCurrencyCode()
+					'currencyCode': visibleColumnConfigWithArguments['arguments']['currencyCode']
 				};
 			}
 			
@@ -830,7 +852,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             },
             'customer':{
                 'priceGroupCode':'2',
-                'statusSystemCode':'astGoodStanding',
+                'statusSystemCode':'astEnrollmentPending',
                 'activeFlag':true
             },
             'marketPartner':{
@@ -965,20 +987,26 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     
     public void function submitSponsor(required struct data){
         param name="arguments.data.sponsorID" default="";
-
-
-        var sponsorAccount = getService('accountService').getAccount(arguments.data.sponsorID);
-        
-        if(isNull(sponsorAccount)){
-            getHibachiScope().addActionResult('public:account.submitSponsor',true);
-            return;
-        }
         
         var account = getHibachiScope().getAccount();
         if(account.getNewFlag()){
             getHibachiScope().addActionResult('public:account.submitSponsor',true);
             return;
         }
+        
+        var autoAssignment = false;
+        
+        if(!len(arguments.data.sponsorID)){
+            arguments.data.sponsorID = getDAO('accountDAO').getEligibleMarketPartner(account.getPrimaryAddress().getAddress().getPostalCode());
+            autoAssignment = true;
+        }
+
+        var sponsorAccount = getService('accountService').getAccount(arguments.data.sponsorID);
+        if(isNull(sponsorAccount)){
+            getHibachiScope().addActionResult('public:account.submitSponsor',true);
+            return;
+        }
+        
         if(account.hasParentAccountRelationship()){
             for(var accountRelationship in account.getParentAccountRelationships()){
                 if(accountRelationship.getParentAccountID() != arguments.data.sponsorID){
@@ -990,17 +1018,29 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         if(!account.hasParentAccountRelationship()){
             var accountRelationship = getService('accountService').newAccountRelationship();
             accountRelationship.setParentAccount(sponsorAccount);
-            accountRelationship.setChildAccount(getHibachiScope().getAccount());
+            accountRelationship.setChildAccount(account);
             accountRelationship = getService('accountService').saveAccountRelationship(accountRelationship);
         }
         
-        getHibachiScope().getAccount().setOwnerAccount(sponsorAccount);
+        account.setOwnerAccount(sponsorAccount);
+        
+        getHibachiScope().addActionResult('public:account.submitSponsor',accountRelationship.hasErrors());
         
         if(accountRelationship.hasErrors()){
             addErrors(arguments.data,accountRelationship.getErrors());
+            return;
         }
-        getHibachiScope().addActionResult('public:account.submitSponsor',accountRelationship.hasErrors());
         
+        var accountLead = getService('accountService').getAccountLeadByLeadAccount(account, autoAssignment);
+        
+        if(autoAssignment){
+            var accountLead = getService('accountService').getAccountLeadByLeadAccount(account, true);
+            accountLead.setAccount(sponsorAccount);
+            accountLead.setLeadAccount(account);
+            accountLead = getService('accountService').saveAccountLead(accountLead);
+        }else if(!isNull(accountLead)){
+            getService('accountService').deleteAccountLead(accountLead);
+        }
     }
 
     public any function getAccountOrderTemplateNamesAndIDs(required struct data){
@@ -1305,6 +1345,23 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             
             arguments.data['ajaxResponse']['productData'] = productData;
             
+            var muraIngredients = QueryExecute("SELECT body FROM tContent WHERE htmlTitle='No Toxic Ingredients' AND active=1 AND siteID=:siteID", {siteID: arguments.data.cmsSiteID});
+            var queryProductValues = [];
+            
+            for(var record in muraIngredients){
+                arrayAppend(queryProductValues,record.body);
+            }
+            
+            
+            var muraValues = QueryExecute("SELECT body FROM tContent WHERE htmlTitle='Product Details: Values Bar' AND active=1 AND siteID=:siteID", {siteID: arguments.data.cmsSiteID});
+            var queryCompanyValues = [];
+            for(var record in muraValues){
+                arrayAppend(queryCompanyValues,record.body);
+            }
+            
+            arguments.data['ajaxResponse']['muraIngredients'] = queryProductValues;
+            arguments.data['ajaxResponse']['muraValues'] = queryCompanyValues;
+            
         }
     
     }
@@ -1555,7 +1612,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         }
 
         //set upgraded info on order
-        var data = {upgradeType:arguments.data.upgradeType, upgradeFlowFlag: 1}
+        var data = {upgradeType:arguments.data.upgradeType, upgradeFlowFlag: 1, cmsSiteID: arguments.data.cmsSiteID}
         return setUpgradeOnOrder(data);
         
     }
@@ -1563,23 +1620,37 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     public any function setUpgradeOnOrder(data){
         param name="arguments.data.upgradeType" default="marketPartner";
         param name="arguments.data.upgradeFlowFlag" default=0;
-
+        param name="arguments.data.cmsSiteID" default="default";
+        
         var typeCode = arguments.data.upgradeType == 'marketPartner' ? 'motMpEnrollment' : 'motVipEnrollment';
-        if(!isNull(getHibachiScope().getCart().getMonatOrderType()) && getHibachiScope().getCart().getMonatOrderType().getTypeCode() == typeCode){
+        var site = getService('siteService').getSiteByCmsSiteID(arguments.data.cmsSiteID);
+        var siteCurrencyCode = site.getCurrencyCode();
+
+        if(
+            !isNull(getHibachiScope().getCart().getMonatOrderType()) 
+            && getHibachiScope().getCart().getMonatOrderType().getTypeCode() == typeCode
+            && getHibachiScope().getCart().getCurrencyCode() == siteCurrencyCode
+        ){
             arguments.data['ajaxResponse']['upgradeResponseFailure'] = getHibachiScope().rbKey('frontend.validate.upgradeAlreadyExists');
             return;
         }
-
+        
+        getHibachiScope().setSessionValue('ownerAccountNumber', '');
+        
         //if we are not in an upgrade flow and the user is logged in, log the user out.
         if(!arguments.data.upgradeFlowFlag && getHibachiScope().getLoggedInFlag()){
+           if(getHibachiScope().getAccount().getAccountType() == 'marketPartner') getHibachiScope().setSessionValue('ownerAccountNumber', '#getHibachiScope().getAccount().getAccountNumber()#');
             super.logout();
         }
-  
+       
+        var order = getService('orderService').processOrder(getHibachiScope().getCart(),'clear');
+        getHibachiScope().setSessionValue('currentFlexshipID', '');
+        
         //getting the upgraded account type, price group and order type
         var upgradeAccountType = (arguments.data.upgradeType == 'VIP') ? 'VIP' : 'marketPartner';
         var priceGroup = (arguments.data.upgradeType == 'VIP') ? getService('PriceGroupService').getPriceGroupByPriceGroupCode(3) : getService('PriceGroupService').getPriceGroupByPriceGroupCode(1);
         var monatOrderType = (arguments.data.upgradeType == 'VIP') ? getService('TypeService').getTypeByTypeCode('motVipEnrollment') : getService('TypeService').getTypeByTypeCode('motMpEnrollment');
-        var order = getHibachiScope().getCart();
+        
         
         //applying upgrades to order
         order.setUpgradeFlag(true);
@@ -1621,8 +1692,12 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             abort;
             
         }else{
-            addErrors(data, order.getProcessObject("addOrderItem").getErrors());
             addErrors(data, order.getErrors());
+        }
+        
+        //Adding enrollment fee for VIP only
+        if(arguments.data.upgradeType == 'VIP'){
+           return this.addEnrollmentFee(true);
         }
 		
     }
@@ -1712,6 +1787,12 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     }
     
     public void function getMarketPartners(required struct data){
+        param name="arguments.data.search" default='';
+        
+        if(!len(data.search) && getHibachiScope().hasSessionValue('ownerAccountNumber') && len( getHibachiScope().getSessionValue('ownerAccountNumber'))){
+            data['search'] = getHibachiScope().getSessionValue('ownerAccountNumber');
+        }
+        
         var marketPartners = getService('MonatDataService').getMarketPartners(data);
         arguments.data.ajaxResponse['pageRecords'] = marketPartners.accountCollection;
         arguments.data.ajaxResponse['recordsCount'] = marketPartners.recordsCount;
@@ -1909,23 +1990,32 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 	}
     
     public any function removeIneligibleOrderItems(order = getHibachiScope().getCart()){
-        var skuIDs = [];
+        var orderItemIDs = '';
+        var ineligibleProductTypes = 'VIPCustomerRegistr,PromotionalItems,ProductPack';
+        var account = getHibachiScope().getAccount();
+        var currencyCode = order.getCurrencyCode();
+        var priceGroup = account.hasPriceGroup() ?[account.getPriceGroups()[1]] : [getService('priceGroupService').getPriceGroupByPriceGroupCode(2)];
         
         //add logic to also remove sku's with no price
-        for(var orderItem in arguments.order.getOrderItems()){
-            if(!orderItem.getSku().canBePurchased(getHibachiScope().getAccount())){
-                arrayAppend(skuIDs, orderItem.getSku().getSkuID());
+        for(var oi in arguments.order.getOrderItems()){
+            var sku = oi.getSku();
+            var productType = sku.getProduct().getProductType().getSystemCode();
+            var price = sku.getPriceByCurrencyCode(currencyCode, oi.getQuantity(), priceGroup)
+            if(!sku.canBePurchased(account) || listFindNoCase(ineligibleProductTypes, productType) || isNull(price) || price == 0){
+                orderItemIDs = listAppend(orderItemIDs, oi.getOrderItemID());
             }
         }
         
-        if(!arrayLen(skuIDs)) return arguments.order;
+        if(!len(orderItemIDs)) return arguments.order;
         
         var orderData = {
-            orderItemsToRemove: skuIDs,
+            orderItemIDList: orderItemIDs,
             updateOrderAmounts :false
         }
-
-        return this.getOrderService().orderService.processOrder( arguments.order, orderData, 'removeOrderItem');
+      
+        var order = this.getOrderService().processOrder( arguments.order, orderData, 'removeOrderItem');
+        order = getService("OrderService").saveOrder(order);
+        return order;
         
     }
     
@@ -1987,6 +2077,56 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     public any function updateEighteenPlusUser(required any data){
         arguments.data['context'] = 'eighteenPlus';
         this.updateAccount(arguments.data);
+    }
+    
+    public any function getRAFGiftCard(requred any data) {
+        var giftCardList = getService('GiftCardService').getGiftCardCollectionList();
+        giftCardList.addFilter( 'ownerAccount.accountID', arguments.data.accountID );
+        giftCardList.addFilter( 'sku.skuCode', 'raf-gift-card-1' );
+        giftCardList.setDisplayProperties('calculatedBalanceAmount,giftCardCode,currencyCode,giftCardID,activeFlag');
+        giftCardList.setPageRecordsShow(1);
+        
+        var records = giftCardList.getPageRecords();
+        if ( !arrayLen( records ) ) {
+            return false;
+        }
+        
+        var giftCard = records[1];
+        giftCard['status'] = giftCard.activeFlag ? getHibachiScope().rbKey('frontend.global.active') : getHibachiScope().rbKey('frontend.global.inactive');
+        
+        var giftCardTransactionsList = getService('GiftCardService').getGiftCardTransactionCollectionList();
+        giftCardTransactionsList.addFilter( 'giftCard.giftCardID', giftCard.giftCardID );
+        giftCardTransactionsList.setDisplayProperties('createdDateTime,debitAmount,creditAmount,reasonForAdjustment,balanceAmount');
+        giftCardTransactionsList.setOrderBy('createdDateTime|DESC');
+        
+        giftCard['transactions'] = giftCardTransactionsList.getRecords();
+        
+        arguments.data['ajaxResponse']['giftCard'] = giftCard;
+    }
+    
+    public void function placeOrder(required struct data){
+        var cart = getHibachiScope().getCart();
+        var cartPriceGroup = cart.getPriceGroup();
+        if(
+            (!structKeyExists(arguments.data,'upgradeFlag') || !arguments.data.upgradeFlag)
+            && cart.getUpgradeFlag()
+            && !isNull(cartPriceGroup) 
+            && cart.hasAccount() 
+            && cart.getAccount().hasPriceGroup()
+            && cart.getAccount().getPriceGroups()[1].getPriceGroupID() != cartPriceGroup.getPriceGroupID()
+        ){
+            this.removeUpgradeOnOrder();
+            cart.addError('runPlaceOrderTransaction',getHibachiScope().rbKey('validate.order.upgradeFlagMismatch'),true);
+            if(!structKeyExists(arguments.data,'returnJsonObjects')){
+                arguments.data.returnJsonObjects = 'cart';
+            }else if(!listContains(arguments.data.returnJsonObjects,'cart')){
+                arguments.data.returnJsonObjects = listAppend(arguments.data.returnJsonObjects,'cart');
+            }
+            addErrors(arguments.data,cart.getErrors());
+            getHibachiScope().addActionResult('public:cart.placeOrder',true);
+            return;
+        }
+        super.placeOrder(arguments.data);
     }
     
 }

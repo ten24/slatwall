@@ -65782,7 +65782,7 @@ var SWAccountShippingAddressCardController = /** @class */ (function () {
             }
             try {
                 var addressVerification = JSON.parse(shippingAccountAddress.address_verificationJson);
-                if (addressVerification && addressVerification.hasOwnProperty('success') && !addressVerification.success) {
+                if (addressVerification && addressVerification.hasOwnProperty('success') && !addressVerification.success && addressVerification.hasOwnProperty('suggestedAddress')) {
                     _this.launchAddressModal([addressVerification.address, addressVerification.suggestedAddress]);
                 }
             }
@@ -66421,12 +66421,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 var SWCustomerAccountPaymentMethodCardController = /** @class */ (function () {
-    function SWCustomerAccountPaymentMethodCardController($hibachi, observerService, orderTemplateService, rbkeyService) {
+    function SWCustomerAccountPaymentMethodCardController($hibachi, observerService, orderTemplateService, rbkeyService, ModalService) {
         var _this = this;
         this.$hibachi = $hibachi;
         this.observerService = observerService;
         this.orderTemplateService = orderTemplateService;
         this.rbkeyService = rbkeyService;
+        this.ModalService = ModalService;
         this.billingAddressTitle = "Billing Address";
         this.paymentTitle = "Payment";
         this.includeModal = true;
@@ -66453,12 +66454,33 @@ var SWCustomerAccountPaymentMethodCardController = /** @class */ (function () {
                     _this.baseEntity[propertyIdentifier] = data['orderTemplate.' + propertyIdentifier];
                 }
             }
+            if (data.addressID) {
+                for (var key in data) {
+                    _this.billingAccountAddress["address_" + key] = data[key];
+                }
+            }
+        };
+        this.addressVerificationCheck = function (_a) {
+            var billingAccountAddress = _a.billingAccountAddress;
+            if (!billingAccountAddress) {
+                return;
+            }
+            try {
+                var addressVerification = JSON.parse(billingAccountAddress.address_verificationJson);
+                if (addressVerification && addressVerification.hasOwnProperty('success') && !addressVerification.success && addressVerification.hasOwnProperty('suggestedAddress')) {
+                    _this.launchAddressModal([addressVerification.address, addressVerification.suggestedAddress]);
+                }
+            }
+            catch (e) {
+                console.log(e);
+            }
         };
         this.observerService.attach(this.updateBillingInfo, 'OrderTemplateUpdateShippingSuccess');
         this.observerService.attach(this.updateBillingInfo, 'OrderTemplateUpdateBillingSuccess');
         this.observerService.attach(this.updateBillingInfo, 'OrderTemplateAddOrderTemplateItemSuccess');
         this.observerService.attach(this.updateBillingInfo, 'OrderTemplateRemoveOrderTemplateItemSuccess');
         this.observerService.attach(this.updateBillingInfo, 'OrderTemplateItemSaveSuccess');
+        this.observerService.attach(this.addressVerificationCheck, 'OrderTemplateUpdateBillingSuccess');
         this.title = this.rbkeyService.rbKey('define.billing');
         if (this.propertiesToDisplayList == null) {
             this.propertiesToDisplayList = 'fulfillmentTotal,fulfillmentDiscount,subTotal,total';
@@ -66477,6 +66499,30 @@ var SWCustomerAccountPaymentMethodCardController = /** @class */ (function () {
             this.includeModal = false;
         }
     }
+    SWCustomerAccountPaymentMethodCardController.prototype.launchAddressModal = function (addresses) {
+        var _this = this;
+        this.ModalService.showModal({
+            component: 'swAddressVerification',
+            bodyClass: 'angular-modal-service-active',
+            bindings: {
+                suggestedAddresses: addresses,
+                sAction: this.updateBillingInfo,
+                propertyIdentifiersList: 'addressID,firstName,lastName,streetAddress,street2Address,city,stateCode,postalCode,countryCode'
+            },
+            preClose: function (modal) {
+                modal.element.modal('hide');
+                _this.ModalService.closeModals();
+            },
+        })
+            .then(function (modal) {
+            //it's a bootstrap element, use 'modal' to show it
+            modal.element.modal();
+            modal.close.then(function (result) { });
+        })
+            .catch(function (error) {
+            console.error('unable to open model :', error);
+        });
+    };
     return SWCustomerAccountPaymentMethodCardController;
 }());
 var SWCustomerAccountPaymentMethodCard = /** @class */ (function () {
@@ -77694,6 +77740,9 @@ var SWCriteriaDate = /** @class */ (function () {
                                 var dateRangeArray = scope.filterItem.value.split("-");
                                 scope.selectedFilterProperty.criteriaRangeStart = parseInt(dateRangeArray[0]);
                                 scope.selectedFilterProperty.criteriaRangeEnd = parseInt(dateRangeArray[1]);
+                            }
+                            if (angular.isDefined(scope.filterItem.criteriaNumberOf)) {
+                                scope.selectedFilterProperty.criteriaNumberOf = scope.filterItem.criteriaNumberOf;
                             }
                             if (angular.isDefined(scope.selectedConditionChanged)) {
                                 scope.selectedConditionChanged(scope.selectedFilterProperty);

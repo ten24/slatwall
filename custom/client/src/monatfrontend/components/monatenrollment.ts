@@ -24,6 +24,7 @@ class MonatEnrollmentController {
 	public flexshipCanBePlaced = this.orderTemplateService.canPlaceOrderFlag;
 	public type:string;
 	public showBirthday:boolean;
+	public account;
 	
 	//@ngInject
 	constructor(public monatService, public observerService, public $rootScope, public publicService, public orderTemplateService) {
@@ -55,13 +56,7 @@ class MonatEnrollmentController {
 	
 		this.publicService.getAccount().then(result=>{
 			
-			if( (this.type =='vipUpgrade' || this.type =='mpUpgrade') && result.account.birthDate && this.monatService.calculateAge(result.account.birthDate) > 18 ){
-				this.showBirthday = true;
-				//Per design: Update account step should only contain birthday picker for VIP, the step should only exist if user is < 18
-				if(this.type =='vipUpgrade') this.steps = this.steps.filter(el => el.stepClass !== 'updateAccount');
-			}
-			
-			
+			this.account = result.account ? result.account : result;
 		
 			//if account has a flexship send to checkout review
 			this.monatService.getCart().then(res =>{
@@ -84,12 +79,14 @@ class MonatEnrollmentController {
 						this.steps = this.steps.filter(el => reqList.indexOf(el.stepClass) == -1);
 						this.next();
 					//if they have an account and an upgraded order remove create account
-					}else if(account.accountID.length && cart.monatOrderType?.typeID.length){
+					}else if(account.accountID.length && cart.monatOrderType?.typeID.length && !this.upgradeFlow){
 						this.hasSkippedSteps = true;
 						this.steps = this.steps.filter(el => el.stepClass !== 'createAccount');
 						this.next();
 					}
-				}
+				 }else if(cart.monatOrderType?.typeID.length){
+				 	this.handleUpgradeSteps(cart);
+				 }
 			});
 		});
 		
@@ -216,6 +213,25 @@ class MonatEnrollmentController {
 		return formattedCart;
 	}
 	
+	public handleUpgradeSteps = cart => {
+		let reqList = 'updateAccount';
+					
+		if( this.account.birthDate && this.monatService.calculateAge(this.account.birthDate) > 18 ){
+			this.showBirthday = false;
+			//Per design: Update account step should only contain birthday picker for VIP, the step should only exist if user is < 18
+			if(this.type =='vipUpgrade') this.steps = this.steps.filter(el => el.stepClass !== 'updateAccount');
+		}else{
+			this.showBirthday = true;
+		}
+		
+		if(cart.orderFulfillments && cart.orderFulfillments[0]?.shippingAddress?.addressID.length && cart.monatOrderType?.typeID.length){
+			this.hasSkippedSteps = true;
+			this.steps = this.steps.filter(el => reqList.indexOf(el.stepClass) == -1);
+			this.goToLastStep();
+		}else if(!this.showBirthday && this.type =='mpUpgrade' && this.account?.accountCode.length){
+			this.steps = this.steps.filter(el => el.stepClass !== 'updateAccount');
+		}
+	}
 }
 
 class MonatEnrollment {

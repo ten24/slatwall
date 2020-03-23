@@ -91,6 +91,7 @@ class MonatCheckoutController {
 			this.getCurrentCheckoutScreen(false, true);
 		}, 'addShippingAddressUsingAccountAddressSuccess' ); 
 
+		this.observerService.attach(this.submitSponsor.bind(this), 'autoAssignSponsor' ); 
 
 		this.publicService.getAccount(true).then(res=>{
 		
@@ -179,7 +180,7 @@ class MonatCheckoutController {
 	}
 	
 	public addressVerificationCheck = ({addressVerification})=>{
-		if(addressVerification && addressVerification.hasOwnProperty('success') && !addressVerification.success){
+		if(addressVerification && addressVerification.hasOwnProperty('success') && !addressVerification.success && addressVerification.hasOwnProperty('suggestedAddress')){
 			this.launchAddressModal([addressVerification.address,addressVerification.suggestedAddress]);
 		}
 	}
@@ -400,7 +401,6 @@ class MonatCheckoutController {
 	public calculateListPrice(){
 		this.listPrice = 0;
 		for(let item of this.cart.orderItems){
-			console.log(item.calculatedListPrice)
 			this.listPrice += item.calculatedListPrice;
 		}
 	}

@@ -35,13 +35,15 @@ class SWCustomerAccountPaymentMethodCardController{
 	constructor(public $hibachi,
 				public observerService,
 				public orderTemplateService, 
-				public rbkeyService
+				public rbkeyService,
+				public ModalService
 	){
 		this.observerService.attach(this.updateBillingInfo, 'OrderTemplateUpdateShippingSuccess');
 		this.observerService.attach(this.updateBillingInfo, 'OrderTemplateUpdateBillingSuccess');
 		this.observerService.attach(this.updateBillingInfo, 'OrderTemplateAddOrderTemplateItemSuccess');
 		this.observerService.attach(this.updateBillingInfo, 'OrderTemplateRemoveOrderTemplateItemSuccess');
 		this.observerService.attach(this.updateBillingInfo, 'OrderTemplateItemSaveSuccess');
+		this.observerService.attach(this.addressVerificationCheck, 'OrderTemplateUpdateBillingSuccess');
 		
 		this.title = this.rbkeyService.rbKey('define.billing');
 		
@@ -92,7 +94,52 @@ class SWCustomerAccountPaymentMethodCardController{
 				this.baseEntity[propertyIdentifier] = data['orderTemplate.' + propertyIdentifier];
 			}
 		}
+		
+		if(data.addressID){
+			for(let key in data){
+				this.billingAccountAddress[`address_${key}`] = data[key];
+			}
+		}
 	}
+	
+	public addressVerificationCheck = ({billingAccountAddress})=>{
+		if(!billingAccountAddress){
+			return;
+		}
+		try{
+			let addressVerification = JSON.parse(billingAccountAddress.address_verificationJson);
+			if(addressVerification && addressVerification.hasOwnProperty('success') && !addressVerification.success && addressVerification.hasOwnProperty('suggestedAddress')){
+				this.launchAddressModal([addressVerification.address,addressVerification.suggestedAddress]);
+			}
+		}catch(e){
+			console.log(e);
+		}
+	}
+	
+	public launchAddressModal(addresses: Array<object>):void{
+		this.ModalService.showModal({
+			component: 'swAddressVerification',
+			bodyClass: 'angular-modal-service-active',
+			bindings: {
+                suggestedAddresses: addresses, //address binding goes here
+                sAction:this.updateBillingInfo,
+                propertyIdentifiersList:'addressID,firstName,lastName,streetAddress,street2Address,city,stateCode,postalCode,countryCode'
+			},
+			preClose: (modal) => {
+				modal.element.modal('hide');
+				this.ModalService.closeModals();
+			},
+		})
+		.then((modal) => {
+			//it's a bootstrap element, use 'modal' to show it
+			modal.element.modal();
+			modal.close.then((result) => {});
+		})
+		.catch((error) => {
+			console.error('unable to open model :', error);
+		});
+	}
+	
 }
 
 class SWCustomerAccountPaymentMethodCard implements ng.IDirective {

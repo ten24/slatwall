@@ -28,17 +28,27 @@ class MonatOrderItemsController {
 		
 	}
 	
+	public placeOrder = (data) =>{
+		this.publicService.doAction('placeOrder',data).then(result=>{
+			if(result.failureActions.length){
+				this.updateOrderItems(result);
+			}
+		})
+	}
 
 	private getOrderItems = () => {
 		this.monatService.getCart().then( data => {
-			let cart = data.cart ? data.cart : data;
-			if ( undefined !== cart.orderItems ) {
-				this.orderItems = cart.orderItems;
-				this.aggregateOrderItems( cart.orderItems );
-			}
+			this.updateOrderItems(data);
 		});
 	}
 	
+	private updateOrderItems = (data) =>{
+		let cart = data.cart ? data.cart : data;
+		if ( undefined !== cart.orderItems ) {
+			this.orderItems = cart.orderItems;
+			this.aggregateOrderItems( cart.orderItems );
+		}
+	}
 		
 	public getUpgradedOrderSavings = () => {
 		this.publicService.doAction('getUpgradedOrderSavingsAmount').then(result =>{
@@ -53,7 +63,7 @@ class MonatOrderItemsController {
 		this.todaysOrder = [];
 		this.starterKits = [];
 		this.starterKits = [];
-		
+		this.orderFees = 0;
 		orderItems.forEach( item => {
 			var productType = item.sku.product.productType.productTypeName;
 			var systemCode = item.sku.product.productType.systemCode;

@@ -241,6 +241,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		return newOrder;
 	}
+	
+	public any function getAppliedPromotionMessageData(required string orderID=''){
+		var messageCL = getService('promotionService').getPromotionMessageAppliedCollectionList();
+		messageCL.addFilter('order.orderID', arguments.orderID);
+		var displayProperties = 'promotionMessageAppliedID,message,qualifierProgress,promotion.promotionName,promotionPeriod.promotionRewards.amount';
+		messageCL.setDisplayProperties(displayProperties);
+		return messageCL;
+	}
 
 	// =====================  END: Logical Methods ============================
 
@@ -1325,13 +1333,22 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		arguments.transientOrder.setCurrencyCode(arguments.orderTemplate.getCurrencyCode());
 		
 		if(!isNull(arguments.orderTemplate.getAccount())){
-			var account = getAccountService().getAccount(arguments.orderTemplate.getAccount().getAccountID());
+			var account = arguments.orderTemplate.getAccount();
 			arguments.transientOrder.setAccount(account); 
-    		arguments.transientOrder.setAccountType( arguments.transientOrder.getAccount().getAccountType() );			
-		}else{
-			arguments.transientOrder.setPriceGroup(arguments.orderTemplate.getPriceGroup());
+    		arguments.transientOrder.setAccountType( arguments.transientOrder.getAccount().getAccountType());	
 		}
-
+		
+		if(
+			!isNull(arguments.orderTemplate.getAccount()) 
+			&& arguments.orderTemplate.getAccount().hasPriceGroup()
+		){
+			var priceGroup = arguments.orderTemplate.getAccount().getPriceGroups()[1];
+			arguments.transientOrder.setPriceGroup(priceGroup);
+		}else if(!isNull(arguments.orderTemplate.getPriceGroup())){
+			var priceGroup = arguments.orderTemplate.getPriceGroup();
+			arguments.transientOrder.setPriceGroup(priceGroup);
+		}
+			
 
 		if(arguments.evictFromSession){	
 			ORMGetSession().evict(arguments.transientOrder.getAccount());
@@ -1586,7 +1603,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		newOrder.setShippingAccountAddress(arguments.orderTemplate.getShippingAccountAddress());  
 		newOrder = this.saveOrder(order=newOrder, updateOrderAmounts=false, updateOrderAmount=false, updateShippingMethodOptions=false, checkNewAccountAddressSave=false); 
 		newOrder = this.createOrderItemsFromOrderTemplateItems(newOrder,arguments.orderTemplate);
-		
+	
+		if(newOrder.hasErrors()){
+			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# after adding order items', true);
+			newOrder.clearHibachiErrors();
+
+			if(arrayIsEmpty(newOrder.getOrderItems())){
+				return arguments.orderTemplate;
+			}
+		}	
 
 		var promotionCodes = arguments.orderTemplate.getPromotionCodes();
 
@@ -1612,19 +1637,21 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arguments.orderTemplate.clearHibachiErrors();
 			return arguments.orderTemplate;
 		}
-		
+	
 		this.processOrder( newOrder, {}, 'updateOrderAmounts' );
+
+		newOrder.updateCalculatedProperties(runAgain=true); 
 		ormFlush();//flush so that the order exists
 
-		//this will only succeed if skuMinimumPercentageAmountRecievedRequiredToPlaceOrder is 0 is this the right approach? 
 		newOrder = this.processOrder_placeOrder(newOrder);
 
 		if(newOrder.hasErrors()){
 			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors on place order #serializeJson(newOrder.getErrors())# when placing order', true);
-			arguments.orderTemplate.setLastOrderPlacedDateTime( now() );
 			arguments.orderTemplate.clearHibachiErrors();
 			return arguments.orderTemplate;
 		}
+			
+		arguments.orderTemplate.setLastOrderPlacedDateTime( now() );
 	
 		var eventData = { entity: newOrder, order: newOrder, data: {} };
         getHibachiScope().getService("hibachiEventService").announceEvent(eventName="afterOrderProcess_PlaceOrderSuccess", eventData=eventData);	
@@ -1817,6 +1844,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		processOrderAddOrderItem.setPrice(orderTemplateItemPrice);
 		processOrderAddOrderItem.setQuantity(arguments.orderTemplateItemStruct['quantity']);
 		processOrderAddOrderItem.setUpdateOrderAmountFlag(false); 		
+
+		if(!isNull(arguments.orderTemplate.getPriceGroup())){
+			processOrderAddOrderItem.setPriceGroup(arguments.orderTemplate.getPriceGroup());
+		} else if(!isNull(arguments.orderTemplate.getAccount()) && arguments.orderTemplate.getAccount().hasPriceGroup()){
+			processOrderAddOrderItem.setPriceGroup(arguments.orderTemplate.getAccount().getPriceGroups()[1]);
+		}
 
 		if(isNull(arguments.orderFulfillment)){
 			processOrderAddOrderItem.setShippingAccountAddressID(arguments.orderTemplate.getShippingAccountAddress().getAccountAddressID());
@@ -2032,7 +2065,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			accountAddress.setAddress(address); 
 			accountAddress.setAccount(account); 
 
-			accountAddress = getAccountService().saveAccountAddress(accountAddress);
+			accountAddress = getAccountService().saveAccountAddress(accountAddress=accountAddress,verifyAddressFlag=true);
 
 
 			arguments.orderTemplate.setBillingAccountAddress(accountAddress);
@@ -5562,6 +5595,21 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode(arguments.systemCode) );
 	}
 	
+	private any function addNewOrderItemSetupGetSkuPrice(required any newOrderItem, required any processObject) {
+	
+		var priceByCurrencyCodeArgs = {
+			'currencyCode' : arguments.order.getCurrencyCode(),
+			'quantity' : arguments.processObject.getQuantity()
+		};
+		
+		if(!isNull(	newOrderItem.getOrder().getAccount() ) && !newOrderItem.getOrder().getAccount().getNewFlag()){
+			priceByCurrencyCodeArgs['accountID'] = newOrderItem.getOrder().getAccount().getAccountID();
+		}
+		
+		return arguments.processObject.getSku()
+		.getPriceByCurrencyCode( argumentCollection = priceByCurrencyCodeArgs ) 
+	}
+	
 	private any function addNewOrderItemSetup(required any newOrderItem, required any processObject) {
 		
 		// Setup the Sku / Quantity / Price details
@@ -5588,17 +5636,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arguments.newOrderItem.setSkuPrice( arguments.processObject.getPrice() );
 			
 		} else {
-
-			var skuPrice = arguments.processObject.getSku().getPriceByCurrencyCode( 
-								quantity = arguments.processObject.getQuantity(),
-								currencyCode = arguments.newOrderItem.getOrder().getCurrencyCode(), 
-								priceGroups = [arguments.processObject.getPriceGroup()]
-							);
-
+			
+			var skuPrice = addNewOrderItemSetupGetSkuPrice(argumentCollection=arguments);
+			
 			if(isNull(skuPrice)){
 				return;
 			}
-
+	
 			arguments.newOrderItem.setPrice(skuPrice);
 			arguments.newOrderItem.setSkuPrice(skuPrice);
 		}
