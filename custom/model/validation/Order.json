@@ -53,7 +53,6 @@
 		"isLockedInProcessingOneFlag": [
 			{ "contexts": "placeInProcessingOne", "eq": false },
 			{ "contexts": "placeInProcessingTwo", "eq": true }
-		],
-		"priceGroup": [{"contexts":"placeOrder","method":"orderPriceGroupMatchesAccount"}]
+		]
 	}
 }
