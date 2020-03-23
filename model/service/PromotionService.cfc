@@ -545,13 +545,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		for(var promotionQualifierMessage in arguments.orderQualifierMessages){
 			var newAppliedPromotionMessage = this.newPromotionMessageApplied();
 			newAppliedPromotionMessage.setOrder( arguments.order );
-			/*******
-				TODO: in sprint 3.5 https://ten24.teamwork.com/index.cfm#/tasks/28248194
 		
-				newAppliedPromotionMessage.setPromotionQualifierMessage( promotionQualifierMessage );
-				newAppliedPromotionMessage.setPromotion(promotionQualifierMessage.getPromotionQualifier().getPromotionPeriod().getPromotion());
-			*****/
+			newAppliedPromotionMessage.setPromotionQualifierMessage( promotionQualifierMessage );
 			newAppliedPromotionMessage.setPromotionPeriod(promotionQualifierMessage.getPromotionQualifier().getPromotionPeriod());
+			newAppliedPromotionMessage.setPromotion(newAppliedPromotionMessage.getPromotionPeriod().getPromotion());
 			newAppliedPromotionMessage.setMessage( promotionQualifierMessage.getInterpolatedMessage( arguments.order ) );
 			
 			this.savePromotionMessageApplied(newAppliedPromotionMessage);
