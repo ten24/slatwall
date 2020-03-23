@@ -115,7 +115,8 @@ Notes:
 					<hb:HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/shippingAddressZones" />
 				</cfif>
 				<!--- Do not show eligible price group tabs for sku-based rewards when using fixed pricing --->
-				<cfif !$.slatwall.getService('SettingService').getSettingValue('globalPromotionIgnorePriceGroupEligibility') AND !( listFindNoCase("merchandise,subscription,contentaccess",rc.rewardType) AND rc.amountType == 'amount') >
+				<cfif 
+NOT $.slatwall.getService('SettingService').getSettingValue('globalPromotionIgnorePriceGroupEligibility') AND NOT ( listFindNoCase("merchandise,subscription,contentaccess",rc.rewardType) AND rc.amountType == 'amount') >
 					<hb:HibachiEntityDetailItem property="eligiblePriceGroups" />
 				</cfif>
 			</cfif>
