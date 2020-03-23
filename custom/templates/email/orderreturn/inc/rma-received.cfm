@@ -1,6 +1,6 @@
 <cfoutput>
 <table style="font-family:arial,sans-serif; font-size:13px; margin:0 auto; width:98%; table-layout: fixed; border-spacing: 5px;">
-    <cfloop array="#order.getOrderReturns()[1].getOrderReturnItems()#" index="local.orderItem">
+    <cfloop array="#orderReturn.getOrderReturnItems()#" index="local.orderItem">
         <tr>
     		<td style="width: 25%; text-align: left;">
     			#local.orderItem.getSku().getSkuCode()#
