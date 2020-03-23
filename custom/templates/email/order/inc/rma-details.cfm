@@ -6,7 +6,7 @@
     			#local.orderItem.getSku().getSkuCode()#
     		</td>
     		<td style="width: 35%; text-align: center;">
-    			#local.orderItem.getSku().getProduct().getTitle()#<br />
+    			#local.orderItem.getSku().getProduct().getTitle()#
     		</td>
     		<td style="width: 20%; text-align: center;">
     			#NumberFormat(local.orderItem.getQuantity())#
