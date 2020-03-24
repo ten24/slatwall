@@ -1059,6 +1059,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     public any function addOrderItem(required struct data){
         var cart = super.addOrderItem(arguments.data);
         var account = cart.getAccount();
+ 
         if(!cart.hasErrors() 
         && !isNull(account) 
         && !isNull(account.getAccountStatusType()) 
@@ -1076,8 +1077,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         // (Prevents the vague error message: addOrderItem)
         if(cart.hasErrors()){
             var cartErrors = cart.getErrors();
-            cart.clearHibachiErrors();
+          
             if(structKeyExists(cartErrors, 'processObjects') && arrayLen(cartErrors.processObjects)){
+                cart.clearHibachiErrors();
                 for(var processObjectName in cartErrors.processObjects){
                     cart.addErrors(cart.getProcessObject(processObjectName).getErrors());
                     cart.getProcessObject(processObjectName).clearHibachiErrors();
