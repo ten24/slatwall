@@ -20,6 +20,7 @@ class MonatProductModalController {
 	public muraContentIngredients:string;
 	public muraValues:string;
 	public trustedVideoURL:string;
+	public videoRatio;
 	
 	//@ngInject
 	constructor(
@@ -47,6 +48,10 @@ class MonatProductModalController {
 			this.trustedVideoURL = this.$sce.trustAsResourceUrl(data.productData.videoUrl);
 			this.muraContentIngredients = data.muraIngredients.length ? data.muraIngredients[0] : '';
 			this.muraValues = data.muraValues.length ? data.muraValues[0] : '';
+			
+			if(this.productDetails.videoHeight){
+				this.setVideoRatio();
+			}
 		});
 	}
 	
@@ -134,6 +139,12 @@ class MonatProductModalController {
 		console.log('closing modal');
 		this.close(null); // close, but give 100ms to animate
 	};
+	
+	public setVideoRatio = ()=>{
+    	let ratio = 16 / 9;
+        ratio = Math.round( this.productDetails.videoHeight / this.productDetails.videoWidth * 100 * 10000 ) / 10000;
+        this.videoRatio = ratio;
+	}
 }
 
 class MonatProductModal {

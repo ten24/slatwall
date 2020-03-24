@@ -65782,7 +65782,7 @@ var SWAccountShippingAddressCardController = /** @class */ (function () {
             }
             try {
                 var addressVerification = JSON.parse(shippingAccountAddress.address_verificationJson);
-                if (addressVerification && addressVerification.hasOwnProperty('success') && !addressVerification.success) {
+                if (addressVerification && addressVerification.hasOwnProperty('success') && !addressVerification.success && addressVerification.hasOwnProperty('suggestedAddress')) {
                     _this.launchAddressModal([addressVerification.address, addressVerification.suggestedAddress]);
                 }
             }
@@ -66467,7 +66467,7 @@ var SWCustomerAccountPaymentMethodCardController = /** @class */ (function () {
             }
             try {
                 var addressVerification = JSON.parse(billingAccountAddress.address_verificationJson);
-                if (addressVerification && addressVerification.hasOwnProperty('success') && !addressVerification.success) {
+                if (addressVerification && addressVerification.hasOwnProperty('success') && !addressVerification.success && addressVerification.hasOwnProperty('suggestedAddress')) {
                     _this.launchAddressModal([addressVerification.address, addressVerification.suggestedAddress]);
                 }
             }

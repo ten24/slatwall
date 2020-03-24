@@ -130,6 +130,14 @@ property name="governmentIdentificationNumberHashed" ormtype="string" hb_auditab
 		}
 	}
 	
+	public void function setGovernmentIdentificationLastFour(string lastFour){
+		if(!structKeyExists(arguments,'lastFour')){
+			structDelete(variables,'governmentIdentificationLastFour');
+		}else{
+			variables.governmentIdentificationLastFour = arguments.lastFour;
+		}
+	}
+	
 	// ==================  END:  Overridden Methods ========================
 
 	// ================== START: Overridden Methods ========================
@@ -154,10 +162,13 @@ public boolean function validateGovernmentIdentificationNumber() {
 	}
 	
 	public boolean function validateGovernmentIdIsUniquePerCountry() {
-		return getDAO("accountDAO").getGovernmentIdNotInUseFlag(
-				this.getGovernmentIdentificationNumberHashed(),
-				this.getAccount().getAccountCreatedSite().getSiteID()
+		if(!isNull(getGovernmentIdentificationNumberHashed())){
+			return getDAO("accountDAO").getGovernmentIdNotInUseFlag(
+					this.getGovernmentIdentificationNumberHashed(),
+					this.getAccount().getAccountCreatedSite().getSiteID()
 			);
+		}
+		return true;
 	}
 	
 //CUSTOM FUNCTIONS END

@@ -987,20 +987,26 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     
     public void function submitSponsor(required struct data){
         param name="arguments.data.sponsorID" default="";
-
-
-        var sponsorAccount = getService('accountService').getAccount(arguments.data.sponsorID);
-        
-        if(isNull(sponsorAccount)){
-            getHibachiScope().addActionResult('public:account.submitSponsor',true);
-            return;
-        }
         
         var account = getHibachiScope().getAccount();
         if(account.getNewFlag()){
             getHibachiScope().addActionResult('public:account.submitSponsor',true);
             return;
         }
+        
+        var autoAssignment = false;
+        
+        if(!len(arguments.data.sponsorID)){
+            arguments.data.sponsorID = getDAO('accountDAO').getEligibleMarketPartner(account.getPrimaryAddress().getAddress().getPostalCode());
+            autoAssignment = true;
+        }
+
+        var sponsorAccount = getService('accountService').getAccount(arguments.data.sponsorID);
+        if(isNull(sponsorAccount)){
+            getHibachiScope().addActionResult('public:account.submitSponsor',true);
+            return;
+        }
+        
         if(account.hasParentAccountRelationship()){
             for(var accountRelationship in account.getParentAccountRelationships()){
                 if(accountRelationship.getParentAccountID() != arguments.data.sponsorID){
@@ -1012,17 +1018,29 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         if(!account.hasParentAccountRelationship()){
             var accountRelationship = getService('accountService').newAccountRelationship();
             accountRelationship.setParentAccount(sponsorAccount);
-            accountRelationship.setChildAccount(getHibachiScope().getAccount());
+            accountRelationship.setChildAccount(account);
             accountRelationship = getService('accountService').saveAccountRelationship(accountRelationship);
         }
         
-        getHibachiScope().getAccount().setOwnerAccount(sponsorAccount);
+        account.setOwnerAccount(sponsorAccount);
+        
+        getHibachiScope().addActionResult('public:account.submitSponsor',accountRelationship.hasErrors());
         
         if(accountRelationship.hasErrors()){
             addErrors(arguments.data,accountRelationship.getErrors());
+            return;
         }
-        getHibachiScope().addActionResult('public:account.submitSponsor',accountRelationship.hasErrors());
         
+        var accountLead = getService('accountService').getAccountLeadByLeadAccount(account, autoAssignment);
+        
+        if(autoAssignment){
+            var accountLead = getService('accountService').getAccountLeadByLeadAccount(account, true);
+            accountLead.setAccount(sponsorAccount);
+            accountLead.setLeadAccount(account);
+            accountLead = getService('accountService').saveAccountLead(accountLead);
+        }else if(!isNull(accountLead)){
+            getService('accountService').deleteAccountLead(accountLead);
+        }
     }
 
     public any function getAccountOrderTemplateNamesAndIDs(required struct data){
@@ -1284,6 +1302,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             productData['right'] = product.getFormattedValue('extendedDescriptionRight');
             productData['productFullIngredients'] = product.getAttributeValue('productFullIngredients');
             productData['ingredients'] = [];
+            var fileName = product.getAttributeValue( 'productVideoBackgroundImage' );
+            var videoBackgroundImage = getService('imageService').getResizedImagePath(imagePath = "#getHibachiScope().getBaseImageURL()#'/'#fileName#",width = 300, height =300);
+            productData['videoBackgroundImage'] = videoBackgroundImage;
             
             if(!isNull(product.getProductIngredient1())){
                 var productIngredient1 = {};
@@ -1340,7 +1361,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             for(var record in muraValues){
                 arrayAppend(queryCompanyValues,record.body);
             }
-            
+
             arguments.data['ajaxResponse']['muraIngredients'] = queryProductValues;
             arguments.data['ajaxResponse']['muraValues'] = queryCompanyValues;
             
@@ -1418,6 +1439,18 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         }
     }
     
+    public any function addEnrollmentFeeRefund(required any order, required refundAmount){
+        var newAppliedPromotion = getService('PromotionService').newPromotionApplied();
+        newAppliedPromotion.setAppliedType('order');
+        newAppliedPromotion.setDiscountAmount(arguments.refundAmount);
+        newAppliedPromotion.setTaxableAmountDiscountAmount(arguments.refundAmount);
+        newAppliedPromotion.setEnrollmentFeeRefundFlag(true);
+        newAppliedPromotion.setManualDiscountAmountFlag(true);
+        newAppliedPromotion = getService('PromotionService').savePromotionApplied(newAppliedPromotion);
+        newAppliedPromotion.setOrder(arguments.order);
+
+		return arguments.order;
+    }
     public any function getMoMoneyBalance(){
         var account = getHibachiScope().getAccount();
         var paymentMethods = account.getAccountPaymentMethods();
@@ -1569,7 +1602,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         var account = getHibachiScope().getAccount();
         var accountType = account.getAccountType();    
-        
+
         //User can not: upgrade while logged out, upgrade to same type, or downgrade from MP to VIP        
         if(!getHibachiScope().getLoggedInFlag()){
             arguments.data['ajaxResponse']['upgradeResponseFailure'] = getHibachiScope().rbKey('validate.upgrade.userMustBeLoggedIn'); 
@@ -1581,9 +1614,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             arguments.data['ajaxResponse']['upgradeResponseFailure'] = getHibachiScope().rbKey('validate.upgrade.canNotDowngrade'); 
             return;         
         }
-        
+
         //set upgraded info on order
-        var data = {upgradeType:arguments.data.upgradeType, upgradeFlowFlag: 1}
+        var data = {upgradeType:arguments.data.upgradeType, upgradeFlowFlag: 1, cmsSiteID: arguments.data.cmsSiteID}
         return setUpgradeOnOrder(data);
         
     }
@@ -1591,41 +1624,64 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     public any function setUpgradeOnOrder(data){
         param name="arguments.data.upgradeType" default="marketPartner";
         param name="arguments.data.upgradeFlowFlag" default=0;
+        param name="arguments.data.cmsSiteID" default="default";
         
         var typeCode = arguments.data.upgradeType == 'marketPartner' ? 'motMpEnrollment' : 'motVipEnrollment';
-        if(!isNull(getHibachiScope().getCart().getMonatOrderType()) && getHibachiScope().getCart().getMonatOrderType().getTypeCode() == typeCode){
+        var site = getService('siteService').getSiteByCmsSiteID(arguments.data.cmsSiteID);
+        var siteCurrencyCode = site.getCurrencyCode();
+
+        if(
+            !isNull(getHibachiScope().getCart().getMonatOrderType()) 
+            && getHibachiScope().getCart().getMonatOrderType().getTypeCode() == typeCode
+            && getHibachiScope().getCart().getCurrencyCode() == siteCurrencyCode
+        ){
             arguments.data['ajaxResponse']['upgradeResponseFailure'] = getHibachiScope().rbKey('frontend.validate.upgradeAlreadyExists');
             return;
         }
         
+        getHibachiScope().setSessionValue('ownerAccountNumber', '');
+        
         //if we are not in an upgrade flow and the user is logged in, log the user out.
         if(!arguments.data.upgradeFlowFlag && getHibachiScope().getLoggedInFlag()){
+           if(getHibachiScope().getAccount().getAccountType() == 'marketPartner') getHibachiScope().setSessionValue('ownerAccountNumber', '#getHibachiScope().getAccount().getAccountNumber()#');
             super.logout();
         }
-  
+       
+        var order = getService('orderService').processOrder(getHibachiScope().getCart(),'clear');
+        getHibachiScope().setSessionValue('currentFlexshipID', '');
+        order.setOrderCreatedSite(site);
+        
         //getting the upgraded account type, price group and order type
         var upgradeAccountType = (arguments.data.upgradeType == 'VIP') ? 'VIP' : 'marketPartner';
         var priceGroup = (arguments.data.upgradeType == 'VIP') ? getService('PriceGroupService').getPriceGroupByPriceGroupCode(3) : getService('PriceGroupService').getPriceGroupByPriceGroupCode(1);
         var monatOrderType = (arguments.data.upgradeType == 'VIP') ? getService('TypeService').getTypeByTypeCode('motVipEnrollment') : getService('TypeService').getTypeByTypeCode('motMpEnrollment');
-        var order = getHibachiScope().getCart();
+        
         
         //applying upgrades to order
         order.setUpgradeFlag(true);
         order.setMonatOrderType(monatOrderType);
         order.setAccountType(upgradeAccountType);
         order.setPriceGroup(priceGroup);
-        
-        //Adding enrollment fee for VIP only
-        //TODO: add a check here to avoid duplicate enrollment fee's on an order
-        if(arguments.data.upgradeType == 'VIP'){
-            return this.addEnrollmentFee(vipUpgrade = true);
+        order.setCurrencyCode(order.getOrderCreatedSite().getCurrencyCode());
+
+        if(
+            arguments.data.upgradeType == 'marketPartner' 
+            && getHibachiScope().getAccount().getAccountType() == 'VIP'
+            && getHibachiScope().getAccount().getVIPEnrollmentAmountPaid() > 0){
+            
+            order = getOrderService().saveOrder(order);
+            
+            if(!order.hasErrors()){
+                
+                order = this.addEnrollmentFeeRefund(order,getHibachiScope().getAccount().getVIPEnrollmentAmountPaid());
+            }
         }
         
         if(!order.hasErrors()) {
            
             //Updating the prices to account for new statuses in case there were prior order items before upgrading
             order = getOrderService().saveOrder(order);
-            
+
             // Set order on session
             getHibachiScope().getSession().setOrder( order );
             
@@ -1636,8 +1692,12 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             getHibachiScope().flushORMSession(); 
             
         }else{
-            addErrors(data, order.getProcessObject("addOrderItem").getErrors());
             addErrors(data, order.getErrors());
+        }
+        
+        //Adding enrollment fee for VIP only
+        if(arguments.data.upgradeType == 'VIP'){
+           return this.addEnrollmentFee(true);
         }
 		
     }
@@ -1661,6 +1721,14 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         order.setMonatOrderType(javacast("null",""));
         order.setAccountType(accountType);
         order.setPriceGroup(priceGroup); 
+        
+        var promotionCount = arrayLen(order.getAppliedPromotions());
+        for(var i = promotionCount; i > 0; i--){
+            var promotionApplied = order.getAppliedPromotions[i];
+            if(promotionApplied.getEnrollmentFeeRefundFlag()){
+                promotionApplied.removeOrder();
+            }
+        }
         
         //Updating the prices to account for new statuses
         order = getOrderService().saveOrder(order);
@@ -1719,6 +1787,12 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     }
     
     public void function getMarketPartners(required struct data){
+        param name="arguments.data.search" default='';
+        
+        if(!len(data.search) && getHibachiScope().hasSessionValue('ownerAccountNumber') && len( getHibachiScope().getSessionValue('ownerAccountNumber'))){
+            data['search'] = getHibachiScope().getSessionValue('ownerAccountNumber');
+        }
+        
         var marketPartners = getService('MonatDataService').getMarketPartners(data);
         arguments.data.ajaxResponse['pageRecords'] = marketPartners.accountCollection;
         arguments.data.ajaxResponse['recordsCount'] = marketPartners.recordsCount;
