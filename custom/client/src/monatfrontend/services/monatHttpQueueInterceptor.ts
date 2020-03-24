@@ -26,7 +26,7 @@ class MonatHttpQueueInterceptor {
 	 *
 	 */
 	private dequeue(config) {
-		if (!this.quableReuest(config)) {
+		if (!this.queueableRequest(config)) {
 			return;
 		}
 
@@ -54,7 +54,7 @@ class MonatHttpQueueInterceptor {
 	 * or there can be an extra config on the request like --> $http.get(url, { processInQueue: true})
 	 */
 
-	public quableReuest(config): boolean {
+	public queueableRequest(config): boolean {
 		return this.config.methods.indexOf(config.method) !== -1 || config.processInQueue;
 	}
 
@@ -62,7 +62,7 @@ class MonatHttpQueueInterceptor {
 	 * Blocks quable request on thir specific-queue. If the first request, processes immediately.
 	 */
 	public request = (config) => {
-		if (this.quableReuest(config)) {
+		if (this.queueableRequest(config)) {
 			let deferred = this.$q.defer();
 			let queue = this.getRequestQueue(config);
 
