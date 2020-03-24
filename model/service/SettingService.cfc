@@ -291,7 +291,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalQuotePriceFreezeExpiration = {fieldtype="text", defaultValue="90", validate={dataType="numeric", required=true}},
 			globalEntityQueueDataProcessCount = {fieldType="text", defaultValue=0, validate={dataType="numeric", required=true}},
 			globalDisableUninstalledIntegration = {fieldType="yesno",defaultValue=1},
-
+			globalPromotionIgnorePriceGroupEligibility = {fieldType="yesno",defaultValue=0},
 
 			// Image
 			imageAltString = {fieldType="text",defaultValue=""},

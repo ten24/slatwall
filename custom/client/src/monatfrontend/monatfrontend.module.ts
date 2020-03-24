@@ -69,6 +69,7 @@ import { OnlyForYouController } from './controllers/monat-onlyforyou';
 import { MonatService } from './services/monatservice';
 import { OrderTemplateService } from './services/ordertemplateservice';
 import { MonatHttpInterceptor } from './services/monatHttpInterceptor';
+import { MonatHttpQueueInterceptor } from './services/monatHttpQueueInterceptor'
 import { MonatAlertService } from './services/monatAlertService';
 import { MonatDatePicker} from './directives/monatdatepicker';
 
@@ -148,6 +149,7 @@ var monatfrontendmodule = angular
 	.service('monatService', MonatService)
 	.service('orderTemplateService', OrderTemplateService)
 	.service('monatHttpInterceptor', MonatHttpInterceptor)
+	.service("monatHttpQueueInterceptor", MonatHttpQueueInterceptor)
 	.service('monatAlertService', MonatAlertService)
 
 	.config([
@@ -158,6 +160,7 @@ var monatfrontendmodule = angular
 			
 			//adding monat-http-interceptor
 			$httpProvider.interceptors.push('monatHttpInterceptor');
+			$httpProvider.interceptors.push('monatHttpQueueInterceptor');
 		},
 	]);
 

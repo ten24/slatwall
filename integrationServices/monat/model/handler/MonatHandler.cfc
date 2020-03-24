@@ -64,7 +64,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 	public any function afterOrderProcess_placeOrderSuccess(required any slatwallScope, required any order, required any data){
 
 		var account = arguments.order.getAccount();
-		
+		arguments.slatwallScope.setSessionValue('currentFlexshipID', '');
+	
 		// Snapshot the pricegroups on the order.
 		if ( !isNull(account) && arrayLen(account.getPriceGroups()) ) {
             arguments.order.setPriceGroup(account.getPriceGroups()[1]);

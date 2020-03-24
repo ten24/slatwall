@@ -22,7 +22,7 @@ class SWFFormController {
     public afterSubmitEventName:string;
     public closeModal:boolean;
     public modalId:string;
-    
+    public newMethod:string;
     // @ngInject
     constructor(
         public $rootScope,
@@ -41,7 +41,7 @@ class SWFFormController {
     }
     
     public resetMethod=(newMethod)=>{
-        this.method = newMethod;
+        this.newMethod = newMethod;
     }
     
     public getFormData = ()=>{
@@ -81,6 +81,8 @@ class SWFFormController {
     }
     
     public submitForm = ()=>{
+
+        let method = this.newMethod ? this.newMethod : this.method;
         if(this.form.$valid){
             this.loading = true;
             let formData = this.getFormData();
@@ -94,7 +96,7 @@ class SWFFormController {
                 });
             }
             
-            return this.$rootScope.slatwall.doAction(this.method,formData).then( (result) =>{
+            return this.$rootScope.slatwall.doAction(method,formData).then( (result) =>{
                 return this.processResult(result);
             });
    

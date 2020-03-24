@@ -1,5 +1,6 @@
 {
 	"properties": {
-		"order.isLockedInProcessingFlag": [{"eq": false }]
+		"order.isLockedInProcessingOneFlag": [{ "eq": false }],
+		"order.isLockedInProcessingTwoFlag": [{ "contexts": "updateEventRegistrationQuantity,AddRecipientsToOrderItem,edit,delete", "eq": false }]
 	}
 }
