@@ -50,7 +50,7 @@ export class MonatService {
 
 		this.publicService.doAction(action, payload)
 			.then((data) => {
-				if (data.cart) {
+				if (data.cart && !data.failureActions.length) {
 					this.cart = data.cart;
 					this.canPlaceOrder = this.cart.orderRequirementsList.indexOf('canPlaceOrderReward') == -1;
 					deferred.resolve(data.cart);
