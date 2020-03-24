@@ -545,6 +545,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         if(arguments.data.setOnSessionFlag){
             getHibachiScope().logHibachi('========================SETTING NEW ORDER TEMPLATE ON SESSIONID: #getHibachiScope().getSession().getSessionID()#========================',true);
             getHibachiScope().logHibachi('========================SETTING NEW ORDER TEMPLATE ON flexshipID: #orderTemplate.getOrderTemplateID()#========================',true);
+            
+            COOKIE['currentFlexshipID'] = orderTemplate.getOrderTemplateID();
             getHibachiScope().setSessionValue('currentFlexshipID', orderTemplate.getOrderTemplateID());
         }
 
@@ -2050,10 +2052,14 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         getHibachiScope().logHibachi('========================GET SET FLEXSHIP CALLED, currentFlexshipID hasSessionValue: #getHibachiScope().hasSessionValue("currentFlexshipID")#========================',true);
         
-        getHibachiScope().logHibachi(" Current Slatwall-SessionID #getHibachiScope().getSession().getSessionID()# ", true);
-        getHibachiScope().logHibachi(" COOKIE.JSESSIONID = #COOKIE.JSESSIONID# ", true);
-		getHibachiScope().logHibachi(" COOKIE.CFTOKEN = #COOKIE.CFTOKEN# ", true);
-		getHibachiScope().logHibachi(" COOKIE.CFID = #COOKIE.CFID# ", true);
+        if( !getHibachiScope().hasSessionValue('currentFlexshipID') || !StructKeyExists(COOKIE, 'currentFlexshipID'){
+            
+            getHibachiScope().logHibachi(" Current Slatwall-SessionID #getHibachiScope().getSession().getSessionID()# ", true);
+            getHibachiScope().logHibachi(" COOKIE.JSESSIONID = #COOKIE.JSESSIONID# ", true);
+    		getHibachiScope().logHibachi(" COOKIE.CFTOKEN = #COOKIE.CFTOKEN# ", true);
+    		getHibachiScope().logHibachi(" COOKIE.CFID = #COOKIE.CFID# ", true);
+        }
+        
 
         //if the request does not pass setIfNullFlag as true, and there is no order template on session, return an empty object
         if( (!getHibachiScope().hasSessionValue('currentFlexshipID') || !len( getHibachiScope().getSessionValue('currentFlexshipID'))) && !arguments.data.setIfNullFlag){
@@ -2075,8 +2081,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             arguments.data['setOnSessionFlag'] = true;
             arguments.data['orderTemplateSystemCode'] = 'ottSchedule'; //currently session only accepts flexships
             this.createOrderTemplate(arguments.data);
-            
+
             getHibachiScope().logHibachi(" REPEAT AfterCreating New Flexship  COOKIE.JSESSIONID = #COOKIE.JSESSIONID# ", true);
+    		getHibachiScope().logHibachi(" REPEAT COOKIE.currentFlexshipID = #COOKIE.currentFlexshipID# ", true);
     		getHibachiScope().logHibachi(" REPEAT COOKIE.CFTOKEN = #COOKIE.CFTOKEN# ", true);
     		getHibachiScope().logHibachi(" REPEAT COOKIE.CFID = #COOKIE.CFID# ", true);
         }
