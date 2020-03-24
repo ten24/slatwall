@@ -42,7 +42,6 @@
 		"subTotal": [{"contexts":"placeOrder","conditions":"anyReturnOrder","method":"subtotalWithinAllowedPercentage"}],
 		
 		"isLockedInProcessingFlag": [{ "contexts": "edit,clear,delete,addOrderPayment,removeOrderPayment,retryPayment,placeOrder,addOrderItem,removeOrderItem,addOrderItemGiftRecipient,addSaleOrderItem,addPromotionCode,removePromotionCode,changeCurrencyCode,forceItemQuantityUpdate,removePersonalInfo,closeOrder,createReturn,takeOffHold,placeOnHold,auditRollback,releaseCredits,reopenOrder", "eq": false }],
-		
 		"statusCode":  [
 			{ "contexts": "placeInProcessingOne", "conditions": "orderIsNotInProcessing", "eq": "ostNew" }
 		],
@@ -52,7 +51,8 @@
 		
 		"isLockedInProcessingOneFlag": [
 			{ "contexts": "placeInProcessingOne", "eq": false },
-			{ "contexts": "placeInProcessingTwo", "eq": true }
+			{ "contexts": "placeInProcessingTwo", "eq": true },
+			{ "contexts": "updateOrderAmounts,updateStatus", "eq": false}
 		]
 	}
 }
