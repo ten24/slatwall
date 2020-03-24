@@ -1649,6 +1649,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
        
         var order = getService('orderService').processOrder(getHibachiScope().getCart(),'clear');
         getHibachiScope().setSessionValue('currentFlexshipID', '');
+        order.setOrderCreatedSite(site);
         
         //getting the upgraded account type, price group and order type
         var upgradeAccountType = (arguments.data.upgradeType == 'VIP') ? 'VIP' : 'marketPartner';
@@ -1663,11 +1664,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         order.setPriceGroup(priceGroup);
         order.setCurrencyCode(order.getOrderCreatedSite().getCurrencyCode());
 
-        //Adding enrollment fee for VIP only
-        //TODO: add a check here to avoid duplicate enrollment fee's on an order
-        if(arguments.data.upgradeType == 'VIP'){
-            return this.addEnrollmentFee(vipUpgrade = true);
-        }else if(
+        if(
             arguments.data.upgradeType == 'marketPartner' 
             && getHibachiScope().getAccount().getAccountType() == 'VIP'
             && getHibachiScope().getAccount().getVIPEnrollmentAmountPaid() > 0){
