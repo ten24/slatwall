@@ -338,14 +338,13 @@ class PublicService {
         if(data){
             method = "post";
             if(data.returnJsonObjects == undefined){
-                data.returnJsonObjects = "cart,account";
+                data.returnJsonObjects = "";
             }
             if(this.cmsSiteID){
                 data.cmsSiteID = this.cmsSiteID;
             }
         }else{
             urlBase += (urlBase.indexOf('?') == -1) ? '?' : '&';
-            urlBase += "returnJsonObject=cart,account";
             if(this.cmsSiteID){
                 urlBase += "&cmsSiteID=" + this.cmsSiteID;
             }

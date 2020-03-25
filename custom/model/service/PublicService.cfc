@@ -723,6 +723,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 			bundledSku.product.defaultSku.imageFile,
 			bundledSku.product.productType.productTypeID,
 			bundledSku.product.productType.productTypeName,
+			bundledSku.product.productID,
 			sku.product.defaultSku.skuID,
 			sku.product.productName,
 			sku.product.productDescription,
@@ -774,6 +775,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		// Build out bundles struct
 		var bundles = {};
 		var skuBundleCount = arrayLen(skuBundles);
+		var products = {};
 		for ( var i=1; i<=skuBundleCount; i++ ){
 			var skuBundle = skuBundles[i]; 
 			structAppend(skuBundle, skuBundlesNonPersistentRecords[i]);
@@ -804,14 +806,18 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 			}
 		
 			// Add sub product to the struct.
-			arrayAppend( bundles[ skuID ].productTypes[ subProductTypeID ].products, {
+			if(!structKeyExists(products,skuBundle.bundledSku_product_productID)){
+			    products[skuBundle.bundledSku_product_productID] = {
 				'name': skuBundle.bundledSku_product_productName,
 				'price': skuBundle.bundledSku_priceByCurrencyCode,
 				'image': baseImageUrl & skuBundle.bundledSku_product_defaultSku_imageFile
-			});
+			    };
+			}
+			arrayAppend( bundles[ skuID ].productTypes[ subProductTypeID ].products, skuBundle.bundledSku_product_productID);
 		}
 
 		arguments.data['ajaxResponse']['bundles'] = bundles;
+		arguments.data['ajaxResponse']['products'] = products;
     }
         
     public any function selectStarterPackBundle(required struct data){
