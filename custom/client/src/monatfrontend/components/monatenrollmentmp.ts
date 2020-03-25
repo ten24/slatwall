@@ -47,7 +47,7 @@ class EnrollmentMPController {
 		}
 		
 		this.publicService.doAction(this.endpoint + ',getStarterPackBundleStruct', {upgradeType: 'marketPartner',returnJsonObjects:''}).then(res=>{
-			console.log(res);
+
 			this.bundles = res.bundles;
 			this.bundledProducts = res.products;
 
