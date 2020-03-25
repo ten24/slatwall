@@ -998,6 +998,13 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         if(!len(arguments.data.sponsorID)){
             arguments.data.sponsorID = getDAO('accountDAO').getEligibleMarketPartner(account.getPrimaryAddress().getAddress().getPostalCode());
+            
+            if(!len(arguments.data.sponsorID)){
+                this.addErrors(arguments.data, getHibachiScope().rbKey('validate.submitSponsor.notfound'));
+                getHibachiScope().addActionResult('public:account.submitSponsor',true);
+                return;
+            }
+            
             autoAssignment = true;
         }
 
@@ -1059,6 +1066,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     public any function addOrderItem(required struct data){
         var cart = super.addOrderItem(arguments.data);
         var account = cart.getAccount();
+ 
         if(!cart.hasErrors() 
         && !isNull(account) 
         && !isNull(account.getAccountStatusType()) 
@@ -1076,8 +1084,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         // (Prevents the vague error message: addOrderItem)
         if(cart.hasErrors()){
             var cartErrors = cart.getErrors();
-            cart.clearHibachiErrors();
+          
             if(structKeyExists(cartErrors, 'processObjects') && arrayLen(cartErrors.processObjects)){
+                cart.clearHibachiErrors();
                 for(var processObjectName in cartErrors.processObjects){
                     cart.addErrors(cart.getProcessObject(processObjectName).getErrors());
                     cart.getProcessObject(processObjectName).clearHibachiErrors();
@@ -1643,7 +1652,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         //if we are not in an upgrade flow and the user is logged in, log the user out.
         if(!arguments.data.upgradeFlowFlag && getHibachiScope().getLoggedInFlag()){
-           if(getHibachiScope().getAccount().getAccountType() == 'marketPartner') getHibachiScope().setSessionValue('ownerAccountNumber', '#getHibachiScope().getAccount().getAccountNumber()#');
+           if(getHibachiScope().getAccount().getAccountType() == 'marketPartner' && !isNull(getHibachiScope().getAccount().getAccountNumber())) getHibachiScope().setSessionValue('ownerAccountNumber', '#getHibachiScope().getAccount().getAccountNumber()#');
             super.logout();
         }
        

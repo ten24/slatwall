@@ -614,7 +614,7 @@ component extends="Slatwall.model.service.OrderService" {
 		
 		//Order payment data
 		var orderPaymentList = this.getOrderPaymentCollectionList();
-		orderPaymentList.setDisplayProperties('billingAddress.streetAddress,billingAddress.street2Address,billingAddress.city,billingAddress.stateCode,billingAddress.postalCode,billingAddress.name,billingAddress.countryCode,expirationMonth,expirationYear,order.calculatedFulfillmentTotal,order.calculatedSubTotal,order.calculatedTaxTotal,order.calculatedDiscountTotal,order.calculatedTotal,order.orderCountryCode,order.orderNumber,order.orderStatusType.typeName,order.calculatedPersonalVolumeTotal,creditCardLastFour,order.orderType.typeName');
+		orderPaymentList.setDisplayProperties('billingAddress.streetAddress,billingAddress.street2Address,billingAddress.city,billingAddress.stateCode,billingAddress.postalCode,billingAddress.name,billingAddress.countryCode,expirationMonth,expirationYear,order.calculatedFulfillmentTotal,order.calculatedSubTotal,order.calculatedVATTotal,order.calculatedDiscountTotal,order.calculatedTotal,order.orderCountryCode,order.orderNumber,order.orderStatusType.typeName,order.calculatedPersonalVolumeTotal,creditCardLastFour,order.orderType.typeName');
 		orderPaymentList.addFilter( 'order.orderID', arguments.data.orderID, '=');
 		orderPaymentList.addFilter( 'order.account.accountID', arguments.data.accountID, '=');
 		orderPaymentList.setPageRecordsShow(arguments.data.pageRecordsShow);
