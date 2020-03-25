@@ -545,6 +545,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         if(arguments.data.setOnSessionFlag){
             getHibachiScope().logHibachi('========================SETTING NEW ORDER TEMPLATE ON SESSIONID: #getHibachiScope().getSession().getSessionID()#========================',true);
             getHibachiScope().logHibachi('========================SETTING NEW ORDER TEMPLATE ON flexshipID: #orderTemplate.getOrderTemplateID()#========================',true);
+            
+            COOKIE['currentFlexshipID'] = orderTemplate.getOrderTemplateID();
             getHibachiScope().setSessionValue('currentFlexshipID', orderTemplate.getOrderTemplateID());
         }
 
@@ -2054,11 +2056,20 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         param name="arguments.data.nullAccountFlag" default="false";
         param name="arguments.data.optionalProperties" default="";
         
-       getHibachiScope().logHibachi('========================GET SET FLEXSHIP CALLED, currentFlexshipID session value: #getHibachiScope().hasSessionValue("currentFlexshipID")#========================',true);
+        getHibachiScope().logHibachi('========================GET SET FLEXSHIP CALLED, currentFlexshipID hasSessionValue: #getHibachiScope().hasSessionValue("currentFlexshipID")#========================',true);
+        
+        if( ( !getHibachiScope().hasSessionValue('currentFlexshipID') || !len(getHibachiScope().getSessionValue('currentFlexshipID')) ) && StructKeyExists(COOKIE, 'currentFlexshipID') ) {
+            
+            getHibachiScope().logHibachi(" Current Slatwall-SessionID #getHibachiScope().getSession().getSessionID()# ", true);
+            getHibachiScope().logHibachi(" COOKIE.JSESSIONID = #COOKIE.JSESSIONID# ", true);
+    		getHibachiScope().logHibachi(" COOKIE.CFTOKEN = #COOKIE.CFTOKEN# ", true);
+    		getHibachiScope().logHibachi(" COOKIE.CFID = #COOKIE.CFID# ", true);
+        }
+        
 
         //if the request does not pass setIfNullFlag as true, and there is no order template on session, return an empty object
         if( (!getHibachiScope().hasSessionValue('currentFlexshipID') || !len( getHibachiScope().getSessionValue('currentFlexshipID'))) && !arguments.data.setIfNullFlag){
-            
+
             arguments.data['ajaxResponse']['orderTemplate'] = {};
             
         //If there is an order template on the session return the order template details
@@ -2073,12 +2084,14 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             
         //if there is no order template on session and request passes setIfNullFlag then we create an order template and set on session
         }else if(arguments.data.setIfNullFlag){
-            
             arguments.data['setOnSessionFlag'] = true;
             arguments.data['orderTemplateSystemCode'] = 'ottSchedule'; //currently session only accepts flexships
-            return this.createOrderTemplate(arguments.data);
-            
+            this.createOrderTemplate(arguments.data);
+
+       
         }
+        
+
     }
     /**
         * Function to update account with validation ensuring age is >= 18
