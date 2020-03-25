@@ -2052,7 +2052,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         getHibachiScope().logHibachi('========================GET SET FLEXSHIP CALLED, currentFlexshipID hasSessionValue: #getHibachiScope().hasSessionValue("currentFlexshipID")#========================',true);
         
-        if( !getHibachiScope().hasSessionValue('currentFlexshipID') || !StructKeyExists(COOKIE, 'currentFlexshipID') ) {
+        if( ( !getHibachiScope().hasSessionValue('currentFlexshipID') || !len(getHibachiScope().getSessionValue('currentFlexshipID')) ) && StructKeyExists(COOKIE, 'currentFlexshipID') ) {
             
             getHibachiScope().logHibachi(" Current Slatwall-SessionID #getHibachiScope().getSession().getSessionID()# ", true);
             getHibachiScope().logHibachi(" COOKIE.JSESSIONID = #COOKIE.JSESSIONID# ", true);
@@ -2082,13 +2082,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             arguments.data['orderTemplateSystemCode'] = 'ottSchedule'; //currently session only accepts flexships
             this.createOrderTemplate(arguments.data);
 
-            getHibachiScope().logHibachi(" REPEAT AfterCreating New Flexship  COOKIE.JSESSIONID = #COOKIE.JSESSIONID# ", true);
-    		getHibachiScope().logHibachi(" REPEAT COOKIE.currentFlexshipID = #COOKIE.currentFlexshipID# ", true);
-    		getHibachiScope().logHibachi(" REPEAT COOKIE.CFTOKEN = #COOKIE.CFTOKEN# ", true);
-    		getHibachiScope().logHibachi(" REPEAT COOKIE.CFID = #COOKIE.CFID# ", true);
+       
         }
         
-        getHibachiScope().logHibachi('========================GET SET FLEXSHIP COMPLETED: SessionID #getHibachiScope().getSession().getSessionID()#========================',true);
 
     }
     /**
