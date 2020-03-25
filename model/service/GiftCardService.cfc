@@ -299,7 +299,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
         if(arguments.amountToDebit > arguments.giftCard.getBalanceAmount() && !arguments.allowNegativeBalanceFlag){
             arguments.amountToDebit = arguments.giftcard.getBalanceAmount(); 
         }
-
+		
+		debitGiftTransaction.setBalanceAmount(arguments.giftCard.getBalanceAmount());
 		debitGiftTransaction.setDebitAmount(arguments.amountToDebit);
 		debitGiftTransaction.setGiftCard(arguments.giftCard);
 		debitGiftTransaction.setCurrencyCode(arguments.giftCard.getCurrencyCode());
@@ -321,6 +322,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var creditGiftTransaction = this.newGiftCardTransaction();
 
 		creditGiftTransaction.setCreditAmount(arguments.amountToCredit);
+		creditGiftTransaction.setBalanceAmount(arguments.giftCard.getBalanceAmount());
 		creditGiftTransaction.setGiftCard(arguments.giftCard);
 		creditGiftTransaction.setCurrencyCode(arguments.giftCard.getCurrencyCode());
 
