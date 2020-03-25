@@ -1066,6 +1066,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     public any function addOrderItem(required struct data){
         var cart = super.addOrderItem(arguments.data);
         var account = cart.getAccount();
+ 
         if(!cart.hasErrors() 
         && !isNull(account) 
         && !isNull(account.getAccountStatusType()) 
@@ -1083,8 +1084,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         // (Prevents the vague error message: addOrderItem)
         if(cart.hasErrors()){
             var cartErrors = cart.getErrors();
-            cart.clearHibachiErrors();
+          
             if(structKeyExists(cartErrors, 'processObjects') && arrayLen(cartErrors.processObjects)){
+                cart.clearHibachiErrors();
                 for(var processObjectName in cartErrors.processObjects){
                     cart.addErrors(cart.getProcessObject(processObjectName).getErrors());
                     cart.getProcessObject(processObjectName).clearHibachiErrors();
@@ -1309,6 +1311,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             productData['right'] = product.getFormattedValue('extendedDescriptionRight');
             productData['productFullIngredients'] = product.getAttributeValue('productFullIngredients');
             productData['ingredients'] = [];
+            var fileName = product.getAttributeValue( 'productVideoBackgroundImage' );
+            var videoBackgroundImage = getService('imageService').getResizedImagePath(imagePath = "#getHibachiScope().getBaseImageURL()#'/'#fileName#",width = 300, height =300);
+            productData['videoBackgroundImage'] = videoBackgroundImage;
             
             if(!isNull(product.getProductIngredient1())){
                 var productIngredient1 = {};
@@ -1365,7 +1370,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             for(var record in muraValues){
                 arrayAppend(queryCompanyValues,record.body);
             }
-            
+
             arguments.data['ajaxResponse']['muraIngredients'] = queryProductValues;
             arguments.data['ajaxResponse']['muraValues'] = queryCompanyValues;
             
@@ -1443,6 +1448,18 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         }
     }
     
+    public any function addEnrollmentFeeRefund(required any order, required refundAmount){
+        var newAppliedPromotion = getService('PromotionService').newPromotionApplied();
+        newAppliedPromotion.setAppliedType('order');
+        newAppliedPromotion.setDiscountAmount(arguments.refundAmount);
+        newAppliedPromotion.setTaxableAmountDiscountAmount(arguments.refundAmount);
+        newAppliedPromotion.setEnrollmentFeeRefundFlag(true);
+        newAppliedPromotion.setManualDiscountAmountFlag(true);
+        newAppliedPromotion = getService('PromotionService').savePromotionApplied(newAppliedPromotion);
+        newAppliedPromotion.setOrder(arguments.order);
+
+		return arguments.order;
+    }
     public any function getMoMoneyBalance(){
         var account = getHibachiScope().getAccount();
         var paymentMethods = account.getAccountPaymentMethods();
@@ -1594,7 +1611,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         var account = getHibachiScope().getAccount();
         var accountType = account.getAccountType();    
-        
+
         //User can not: upgrade while logged out, upgrade to same type, or downgrade from MP to VIP        
         if(!getHibachiScope().getLoggedInFlag()){
             arguments.data['ajaxResponse']['upgradeResponseFailure'] = getHibachiScope().rbKey('validate.upgrade.userMustBeLoggedIn'); 
@@ -1606,7 +1623,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             arguments.data['ajaxResponse']['upgradeResponseFailure'] = getHibachiScope().rbKey('validate.upgrade.canNotDowngrade'); 
             return;         
         }
-        
+
         //set upgraded info on order
         var data = {upgradeType:arguments.data.upgradeType, upgradeFlowFlag: 1, cmsSiteID: arguments.data.cmsSiteID}
         return setUpgradeOnOrder(data);
@@ -1635,12 +1652,13 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         //if we are not in an upgrade flow and the user is logged in, log the user out.
         if(!arguments.data.upgradeFlowFlag && getHibachiScope().getLoggedInFlag()){
-           if(getHibachiScope().getAccount().getAccountType() == 'marketPartner') getHibachiScope().setSessionValue('ownerAccountNumber', '#getHibachiScope().getAccount().getAccountNumber()#');
+           if(getHibachiScope().getAccount().getAccountType() == 'marketPartner' && !isNull(getHibachiScope().getAccount().getAccountNumber())) getHibachiScope().setSessionValue('ownerAccountNumber', '#getHibachiScope().getAccount().getAccountNumber()#');
             super.logout();
         }
        
         var order = getService('orderService').processOrder(getHibachiScope().getCart(),'clear');
         getHibachiScope().setSessionValue('currentFlexshipID', '');
+        order.setOrderCreatedSite(site);
         
         //getting the upgraded account type, price group and order type
         var upgradeAccountType = (arguments.data.upgradeType == 'VIP') ? 'VIP' : 'marketPartner';
@@ -1653,12 +1671,26 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         order.setMonatOrderType(monatOrderType);
         order.setAccountType(upgradeAccountType);
         order.setPriceGroup(priceGroup);
+        order.setCurrencyCode(order.getOrderCreatedSite().getCurrencyCode());
+
+        if(
+            arguments.data.upgradeType == 'marketPartner' 
+            && getHibachiScope().getAccount().getAccountType() == 'VIP'
+            && getHibachiScope().getAccount().getVIPEnrollmentAmountPaid() > 0){
+            
+            order = getOrderService().saveOrder(order);
+            
+            if(!order.hasErrors()){
+                
+                order = this.addEnrollmentFeeRefund(order,getHibachiScope().getAccount().getVIPEnrollmentAmountPaid());
+            }
+        }
         
         if(!order.hasErrors()) {
            
             //Updating the prices to account for new statuses in case there were prior order items before upgrading
             order = getOrderService().saveOrder(order);
-            
+
             // Set order on session
             getHibachiScope().getSession().setOrder( order );
             
@@ -1698,6 +1730,14 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         order.setMonatOrderType(javacast("null",""));
         order.setAccountType(accountType);
         order.setPriceGroup(priceGroup); 
+        
+        var promotionCount = arrayLen(order.getAppliedPromotions());
+        for(var i = promotionCount; i > 0; i--){
+            var promotionApplied = order.getAppliedPromotions[i];
+            if(promotionApplied.getEnrollmentFeeRefundFlag()){
+                promotionApplied.removeOrder();
+            }
+        }
         
         //Updating the prices to account for new statuses
         order = getOrderService().saveOrder(order);
