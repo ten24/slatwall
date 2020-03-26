@@ -13,7 +13,8 @@ class EnrollmentMPController {
 	public sponsorErrors: any = {};
 	public openedBundle: any;
 	public selectedBundleID: string = '';
-	public bundles: any = [];
+	public bundles: Array<any> = [];
+	public bundledProducts:any = {};
 	public step: any;
 	public productList;
 	public addedItemToCart: boolean = false;
@@ -45,8 +46,11 @@ class EnrollmentMPController {
 			this.endpoint = 'setUpgradeOrderType';
 		}
 		
-		this.publicService.doAction(this.endpoint + ',getStarterPackBundleStruct', {upgradeType: 'marketPartner'}).then(res=>{
+		this.publicService.doAction(this.endpoint + ',getStarterPackBundleStruct', {upgradeType: 'marketPartner',returnJsonObjects:''}).then(res=>{
+
 			this.bundles = res.bundles;
+			this.bundledProducts = res.products;
+
 			
 			if(this.endpoint == 'setUpgradeOrderType' && res.upgradeResponseFailure?.length){
 				this.showUpgradeErrorMessage = true;

@@ -131,7 +131,7 @@
 			getHibachiScope().clearModifiedEntities();
 			// Loop over the modifiedEntities to add updateCalculatedProperties to entity queue
 	    	for(var entity in modifiedEntities){
-	    		if(getService('HibachiService').getEntityHasCalculatedPropertiesByEntityName(entity.getClassName())){
+	    		if(getService('HibachiService').getEntityHasCalculatedPropertiesByEntityName(entity.getClassName()) && !entity.getCalculatedUpdateRunFlag()){
 	    			getHibachiScope().addEntityQueueData(entity.getPrimaryIDValue(), entity.getClassName(), 'process#entity.getClassName()#_updateCalculatedProperties');
 	    		}
 	    	}

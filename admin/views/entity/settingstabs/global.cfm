@@ -90,5 +90,6 @@ Notes:
         <swa:SlatwallSetting settingName="globalAllowThirdPartyShippingAccount" />
         <swa:SlatwallSetting settingName="globalHibachiCacheName" />
 		<swa:SlatwallSetting settingName="globalPromotionIgnorePriceGroupEligibility" />
+		<swa:SlatwallSetting settingName="globalCartResponseIncludeAttributeValues" />
 	</swa:SlatwallSettingTable>
 </cfoutput>

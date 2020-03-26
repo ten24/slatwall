@@ -4299,5 +4299,112 @@ table.s-detail-content-table tbody tr.s-done {
 	}
 
 	.form-control-feedback {
-      pointer-events: all;
+	  pointer-events: all;
 	}	
+	
+	
+
+/** Full page loader **/
+
+
+.fullpage-loader {
+    color: #fff;
+    position: fixed;
+    box-sizing: border-box;
+    left: -9999px;
+    top: -9999px;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+    z-index: 999999
+}
+
+.fullpage-loader:after,
+.fullpage-loader:before {
+    box-sizing: border-box;
+    display: none
+}
+
+.fullpage-loader.is-active {
+    background-color: rgba(0, 0, 0, .85);
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0
+}
+
+.fullpage-loader.is-active:after,
+.fullpage-loader.is-active:before {
+    display: block
+}
+
+@keyframes rotation {
+    0% {
+        transform: rotate(0)
+    }
+    to {
+        transform: rotate(359deg)
+    }
+}
+
+@keyframes blink {
+    0% {
+        opacity: .5
+    }
+    to {
+        opacity: 1
+    }
+}
+
+.fullpage-loader[data-text]:before {
+    position: fixed;
+    left: 0;
+    top: 50%;
+    color: currentColor;
+    font-family: Helvetica, Arial, sans-serif;
+    text-align: center;
+    width: 100%;
+    font-size: 14px
+}
+
+.fullpage-loader[data-text=""]:before {
+    content: "Loading"
+}
+
+.fullpage-loader[data-text]:not([data-text=""]):before {
+    content: attr(data-text)
+}
+
+.fullpage-loader[data-text][data-blink]:before {
+    animation: blink 1s linear infinite alternate
+}
+
+.fullpage-loader-default[data-text]:before {
+    top: calc(50% - 63px)
+}
+
+.fullpage-loader-default:after {
+    content: "";
+    position: fixed;
+    width: 48px;
+    height: 48px;
+    border: 8px solid #fff;
+    border-left-color: transparent;
+    border-radius: 50%;
+    top: calc(50% - 24px);
+    left: calc(50% - 24px);
+    animation: rotation 1s linear infinite
+}
+
+.fullpage-loader-default[data-half]:after {
+    border-right-color: transparent
+}
+
+.fullpage-loader-default[data-inverse]:after {
+    animation-direction: reverse
+}
+	
+	
+#adminModal .modal-body {
+  min-height: 50vh;
+}

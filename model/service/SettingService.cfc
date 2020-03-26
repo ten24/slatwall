@@ -232,6 +232,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalAuditAutoArchiveVersionLimit = {fieldType="text", defaultValue=10, validate={dataType="numeric", minValue=0}},
 			globalAuditCommitMode = {fieldType="select", defaultValue="thread", valueOptions=[{name="separate thread",value="thread"}, {name="same request",value="sameRequest"}]},
 			globalCopyCartToNewSessionOnLogout = {fieldtype="yesno", defaultValue=0},
+			globalCartResponseIncludeAttributeValues = {fieldtype="yesno",defaultValue=1},
 			globalClientSecret = {fieldtype="text",defaultValue="#createUUID()#"},
 			globalCurrencyLocale = {fieldType="select",defaultValue="English (US)"},
 			globalCurrencyType = {fieldType="select",defaultValue="Local"},
