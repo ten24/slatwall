@@ -106,7 +106,7 @@
    <div ng-if="monatProductCard.product.qats > 0" class="product-actions">
          <button 
             ng-click="monatProductCard.addToCart(monatProductCard.product.skuID, monatProductCard.product.skuCode)" 
-            class="btn btn-border-primary add-to-cart" 
+            class="btn bg-primary add-to-cart" 
             ng-class="{
                 'bg-primary': monatProductCard.type == 'enrollment',
                 loading: monatProductCard.loading && monatProductCard.lastAddedSkuID == monatProductCard.product.skuID
@@ -119,7 +119,7 @@
    
     <div ng-if="monatProductCard.product.qats <= 0" class="product-actions">
         <button 
-            class="btn btn-border-primary add-to-cart" 
+            class="btn bg-primary add-to-cart" 
             ng-class="{
                 'bg-primary': monatProductCard.type == 'enrollment',
             }"
