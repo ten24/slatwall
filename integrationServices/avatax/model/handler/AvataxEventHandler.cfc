@@ -1,13 +1,17 @@
 component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 	
+	public void function afterOrderProcess_placeInProcessingOneSuccess(required any slatwallScope,required any order){
+		return this.afterOrderProcess_updateStatusSuccess(argumentCollection=arguments);
+	}
 	public void function afterOrderProcess_updateStatusSuccess(required any slatwallScope, required any order){
 		
 		//Only commit the tax document after the order has been closed
-		if (arguments.order.getOrderStatusType().getSystemCode() == 'ostClosed'){
+		var orderStatusType = arguments.order.getOrderStatusType();
+		if (orderStatusType.getTypeCode() == 'rmaReleased' || orderStatusType.getTypeCode() == 'processing1'){
 			//First get integration and make sure the commit tax document flag is set
 			var integration = arguments.slatwallScope.getService('IntegrationService').getIntegrationByIntegrationPackage('avatax');
 					
-			if (integration.setting('commitTaxDocumentFlag') && integration.setting('taxDocumentCommitType') == 'commitOnClose' ){
+			if (integration.setting('commitTaxDocumentFlag')){
 				//Create the request scope for the account
 				var taxRatesRequestBean = arguments.slatwallScope.getService('TaxService').generateTaxRatesRequestBeanForIntegration(arguments.order, integration);
 				taxRatesRequestBean.setCommitTaxDocFlag(true);
@@ -25,28 +29,28 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 		}
 	} 
 	
-	public void function afterOrderDeliveryProcess_createSuccess(required any slatwallScope, required any orderDelivery){
-		//First get integration and make sure the commit tax document flag is set
-		var integration = arguments.slatwallScope.getService('IntegrationService').getIntegrationByIntegrationPackage('avatax');
+	// public void function afterOrderDeliveryProcess_createSuccess(required any slatwallScope, required any orderDelivery){
+	// 	//First get integration and make sure the commit tax document flag is set
+	// 	var integration = arguments.slatwallScope.getService('IntegrationService').getIntegrationByIntegrationPackage('avatax');
 	
-		if (integration.setting('commitTaxDocumentFlag') && integration.setting('taxDocumentCommitType') == 'commitOnDelivery' ){
-			//Create the request scope for the account
+	// 	if (integration.setting('commitTaxDocumentFlag') && integration.setting('taxDocumentCommitType') == 'commitOnDelivery' ){
+	// 		//Create the request scope for the account
 			
-			var taxRatesRequestBean = arguments.slatwallScope.getService('TaxService').generateTaxRatesRequestBeanForIntegration(arguments.orderDelivery, integration);
-			taxRatesRequestBean.setCommitTaxDocFlag(true);
+	// 		var taxRatesRequestBean = arguments.slatwallScope.getService('TaxService').generateTaxRatesRequestBeanForIntegration(arguments.orderDelivery, integration);
+	// 		taxRatesRequestBean.setCommitTaxDocFlag(true);
 			
-			var integrationTaxAPI = integration.getIntegrationCFC("tax");
+	// 		var integrationTaxAPI = integration.getIntegrationCFC("tax");
 			
-			// Call the API and store the responseBean by integrationID
-			try{
-				integrationTaxAPI.getTaxRates( requestBean=taxRatesRequestBean );
-			}catch (any e){
-				logHibachi('An error occured with the Avatax integration when trying to call commitTaxDocument()', true);
-				logHibachiException(e);
-			}
-	 	}
+	// 		// Call the API and store the responseBean by integrationID
+	// 		try{
+	// 			integrationTaxAPI.getTaxRates( requestBean=taxRatesRequestBean );
+	// 		}catch (any e){
+	// 			logHibachi('An error occured with the Avatax integration when trying to call commitTaxDocument()', true);
+	// 			logHibachiException(e);
+	// 		}
+	//  	}
 		
-	}
+	// }
 	
 	public void function afterOrderProcess_placeOrderSuccess(required any slatwallScope, required any order){
 		

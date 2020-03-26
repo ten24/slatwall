@@ -2360,5 +2360,14 @@ public numeric function getPersonalVolumeSubtotal(){
 		return (isNull(this.getAccount().getPriceGroups()) || !arrayLen(this.getAccount().getPriceGroups()) 
 				|| (!isNull(this.getPriceGroup().getPriceGroupCode()) && this.getPriceGroup().getPriceGroupCode() != this.getAccount().getPriceGroups()[1].getPriceGroupCode()) ) ? false : true;
 	}
+	
+	public any function getCurrencyCode(){
+		if(!isNull(getOrderCreatedSite()) 
+		&& !isNull(getOrderCreatedSite().getCurrencyCode())
+		&& getOrderCreatedSite().getCurrencyCode() != variables.currencyCode){
+			variables.currencyCode = getOrderCreatedSite().getCurrencyCode()
+		}
+		return variables.currencyCode;
+	}
 	//CUSTOM FUNCTIONS END
 }
