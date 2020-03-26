@@ -3197,9 +3197,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 	
 
-	public string function getPrimaryIDList(){
+	public string function getPrimaryIDList(numeric recordCount){
 		var primaryIDList = "";
-		var primaryIDRecords = getPrimaryIDs();
+		var primaryIDRecords = getPrimaryIDs(argumentCollection=arguments);
 		var primaryIDName = getService('hibachiService').getPrimaryIDPropertyNameByEntityName( getCollectionObject() );
 		for(var primaryIDRecord in primaryIDRecords){
 			primaryIDList = listAppend(primaryIDList,primaryIDRecord[primaryIDName]);
