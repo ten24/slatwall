@@ -502,7 +502,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 		
 		var availablePropertyList = getAvailableCartPropertyList(arguments.cartDataOptions);
 		availablePropertyList = ReReplace(availablePropertyList,"[[:space:]]","","all");
-		availablePropertyList = ListAppend(availablePropertyList, getService('OrderService').getOrderAttributePropertyList());
+		
+		if(getService('SettingService').getSettingValue('globalCartResponseIncludeAttributeValues')){
+			availablePropertyList = ListAppend(availablePropertyList, getService('OrderService').getOrderAttributePropertyList());
+		}
 		
 		if(structKeyExists(getService('OrderService'), "getCustomAvailableProperties")){
 			availablePropertyList = listAppend(availablePropertyList, getService('OrderService').getCustomAvailableProperties());

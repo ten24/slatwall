@@ -54,7 +54,7 @@
 			        data-show-add-button="true"
 			        data-show-view-button="true"
 			        data-placeholder-rb-key="#attributes.rbKey#"
-			        data-placeholder-text="Search #attributes.placeholder#"
+			        data-placeholder-text="#attributes.placeholder#"
 			        data-multiselect-mode="false"
 			        data-filter-flag="true"
 			        data-selected-format-string="#attributes.selectedFormatString#"
