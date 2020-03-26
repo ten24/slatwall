@@ -301,6 +301,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
         }
 		
 		debitGiftTransaction.setBalanceAmount(arguments.giftCard.getBalanceAmount());
+		logHibachi("GIFT CARD BALANCE ++++++++++++ #arguments.giftCard.getBalanceAmount()#", true);
 		debitGiftTransaction.setDebitAmount(arguments.amountToDebit);
 		debitGiftTransaction.setGiftCard(arguments.giftCard);
 		debitGiftTransaction.setCurrencyCode(arguments.giftCard.getCurrencyCode());
@@ -325,6 +326,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		creditGiftTransaction.setBalanceAmount(arguments.giftCard.getBalanceAmount());
 		creditGiftTransaction.setGiftCard(arguments.giftCard);
 		creditGiftTransaction.setCurrencyCode(arguments.giftCard.getCurrencyCode());
+		logHibachi("GIFT CARD BALANCE ++++++++++++ #creditGiftTransaction.getBalanceAmount()#", true);
 
 		if(structKeyExists(arguments, "orderPayment") && !isNull(arguments.orderPayment)){
             creditGiftTransaction.setOrderPayment(arguments.orderPayment);
