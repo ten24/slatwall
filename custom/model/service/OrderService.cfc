@@ -487,31 +487,40 @@ component extends="Slatwall.model.service.OrderService" {
 		
         var currentOrderStatusType = arguments.order.getOrderStatusType();
         
- 
         
-        if( //if order is either in processing1 or 2 
-        	currentOrderStatusType.getSystemCode() == 'ostProcessing' && 
-        	ListFindNoCase( 'processing1,processing2', currentOrderStatusType.getTypeCode() ) 
+        /** 
+         * if order is locked it can go back and forth b/w processsing1 and processing2 status 
+         * but if that's not the case, we're checking further
+        */ 
+        if( 
+        	arguments.order.getIsLockedInProcessingFlag() && 
+        	( !ListFindNoCase( 'processing1,processing2', arguments.typeCode ?: '')  || arguments.systemCode != 'ostProcessing') 
         ) {
-        	
 	        /** 
-	         *  there're validations in place, but added these extra checks, 
-	         *  to prevent accidental order-status updates, as this's not a process/method
-	         *  
+	         * Note:
+	         * there're validations in place, but added these extra checks, 
+	         * to prevent accidental order-status updates, as this's not a process/method
 	        */
 	        
-        	// order can only be canceled in processing1 status
-        	if(arguments.systemCode == 'ostCanceled') {
-	        	 if(currentOrderStatusType.getTypeCode() != 'processing1'){
-					return;
-	        	} 
-        	} else if( 
-        		// order  can only go  back and forth b/w processing1 and processing2
-        		arguments.systemCode != 'ostProcessing' || isNull(arguments.typeCode) || 
-        		!ListFindNoCase('processing1,processing2', arguments.typeCode) 
-        	){
-				return;
-        	}
+        	if( arguments.order.getIsLockedInProcessingOneFlag() && arguments.systemCode != 'ostCanceled') {
+	        	
+	        	 logHibachi("Attempted to update an order's status to #arguments.systemCode# and #arguments.typeCode ?: '.'#, while order is locked in processing-1 ");
+	        	 return; // any-order can go to cancel status
+	        	 
+        	} else if( arguments.order.getIsLockedInProcessingTwoFlag()) {
+        		
+        		if( arguments.systemCode == 'ostProcessing' && ListFindNoCase('rmaApproved,rmaReceived', arguments.typeCode ?: '') ){
+        			
+        			logHibachi("Attempted to update an order's status to pstProcessing and #arguments.typeCode ?: '.'#, while order is locked in processing-2 ");
+        			return; // rma can be got to approved/received status
+        		
+        		} else if(arguments.systemCode != 'ostClosed') {
+        			
+        			logHibachi("Attempted to update an order's status to #arguments.systemCode# and #arguments.typeCode ?: '.'#, while order is locked in processing-2 ");
+        			return; // or sales-order/rma can only go to close status 
+     
+        		}
+        	} 
         	
 		}
         
@@ -554,13 +563,21 @@ component extends="Slatwall.model.service.OrderService" {
 				
 				if(currentOrderStatusType.getSystemCode() == 'ostNew' && arguments.order.getPaymentAmountDue() <= 0) {
 
-					arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode( systemCode=arguments.systemCode, typeCode="2")); 
-	
-				// all processing status allowed when called with a specific typecode
+					arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode( systemCode=arguments.systemCode, typeCode="2"));
+				} 
 				// we should narrow down the flow of status here
-				} else if (!isNull(arguments.typeCode)) {
-
-					var newType = getTypeService().getTypeBySystemCode( systemCode=arguments.systemCode, typeCode=arguments.typeCode);
+				else {
+					
+					if (!isNull(arguments.typeCode) ) {
+						
+						// all processing status allowed when called with a specific typecode
+						var newType = getTypeService().getTypeBySystemCode( systemCode=arguments.systemCode, typeCode=arguments.typeCode);
+					} else {
+		
+						//reopening closed-order, which is ostProcessing
+						var newType = getTypeService().getTypeBySystemCode( systemCode=arguments.systemCode);
+					}
+					
 					arguments.order.setOrderStatusType( newType );
 	            }
 			        // Return Orders

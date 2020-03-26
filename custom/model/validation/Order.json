@@ -52,7 +52,6 @@
 		"isLockedInProcessingOneFlag": [
 			{ "contexts": "placeInProcessingOne", "eq": false },
 			{ "contexts": "placeInProcessingTwo", "eq": true },
-			{ "contexts": "updateOrderAmounts,updateStatus", "eq": false}
 		]
 	}
 }
