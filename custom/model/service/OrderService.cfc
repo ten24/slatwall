@@ -564,10 +564,10 @@ component extends="Slatwall.model.service.OrderService" {
 				if(currentOrderStatusType.getSystemCode() == 'ostNew' && arguments.order.getPaymentAmountDue() <= 0) {
 
 					arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode( systemCode=arguments.systemCode, typeCode="2"));
-				} 
-				// we should narrow down the flow of status here
-				else {
+				
+				} else {
 					
+					// we should narrow down the flow of status here
 					if (!isNull(arguments.typeCode) ) {
 						
 						// all processing status allowed when called with a specific typecode
