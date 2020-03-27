@@ -174,7 +174,6 @@ class MonatEnrollmentController {
 	}
 	
 	public goToStep = (stepName:string):void =>{
-		console.log(stepName)
 		this.reviewContext = true;
 		let position = this.stepMap[stepName] -1;
 		if(typeof position === 'undefined') return;
