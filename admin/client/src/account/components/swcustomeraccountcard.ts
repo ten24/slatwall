@@ -29,7 +29,7 @@ class SWCustomerAccountCardController{
 		
 	
 		if(this.baseEntityPropertiesToDisplayList != null){
-			this.baseEntityPropertiesToDisplay = this.baseEntityPropertiesToDisplayList.split(',');
+			this.baseEntityPropertiesToDisplay = this.baseEntityPropertiesToDisplayList.replace('.','_').split(',');
 			
 			for(var i=0; i<this.baseEntityPropertiesToDisplay.length; i++){
 				this.baseEntityRbKeys[this.baseEntityPropertiesToDisplay[i]] = this.$hibachi.getRBKeyFromPropertyIdentifier(this.baseEntityName, this.baseEntityPropertiesToDisplay[i]);
