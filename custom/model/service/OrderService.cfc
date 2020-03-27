@@ -483,8 +483,7 @@ component extends="Slatwall.model.service.OrderService" {
 	} 
 
     public void function updateOrderStatusBySystemCode(required any order, required string systemCode, string typeCode='') {
-		logHibachi("Called updateOrderStatusBySystemCode with systemCode= #systemCode#, typeCode= #typeCode# ", true);
-		
+
         var currentOrderStatusType = arguments.order.getOrderStatusType();
         
         
