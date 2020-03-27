@@ -545,6 +545,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         if(arguments.data.setOnSessionFlag){
             getHibachiScope().logHibachi('========================SETTING NEW ORDER TEMPLATE ON SESSIONID: #getHibachiScope().getSession().getSessionID()#========================',true);
             getHibachiScope().logHibachi('========================SETTING NEW ORDER TEMPLATE ON flexshipID: #orderTemplate.getOrderTemplateID()#========================',true);
+            
+            COOKIE['currentFlexshipID'] = orderTemplate.getOrderTemplateID();
             getHibachiScope().setSessionValue('currentFlexshipID', orderTemplate.getOrderTemplateID());
         }
 
@@ -723,23 +725,15 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 			bundledSku.product.defaultSku.imageFile,
 			bundledSku.product.productType.productTypeID,
 			bundledSku.product.productType.productTypeName,
+			bundledSku.product.productID,
+			bundledSku.skuPrices.price,
 			sku.product.defaultSku.skuID,
 			sku.product.productName,
 			sku.product.productDescription,
-			sku.product.defaultSku.imageFile
+			sku.product.defaultSku.imageFile,
+			sku.skuPrices.price,
+			sku.skuPrices.personalVolume
 		');
-
-		
-		var bundleNonPersistentCollectionList = getService('HibachiService').getSkuBundleCollectionList();
-		bundleNonPersistentCollectionList.setDisplayProperties('skuBundleID'); 	
-		bundleNonPersistentCollectionList.addFilter( 'sku.product.activeFlag', true );
-		bundleNonPersistentCollectionList.addFilter( 'sku.product.publishedFlag', true );
-		bundleNonPersistentCollectionList.addFilter( 'sku.product.productType.urlTitle', 'starter-kit,productPack','in' );
-		if(!isNull(getHibachiScope().getCurrentRequestSite())){
-		    bundleNonPersistentCollectionList.addFilter('sku.product.sites.siteID',getHibachiScope().getCurrentRequestSite().getSiteID());
-		}
-		
-		bundleNonPersistentCollectionList.addOrderBy( 'createdDateTime|DESC');
 
 		var visibleColumnConfigWithArguments = {
 			"isVisible":true,
@@ -749,34 +743,26 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 			    'currencyCode': 'USD'
 			}
 		};
-		
+
 		var site = getHibachiScope().getCurrentRequestSite();
         if ( !isNull( site ) ) {
-            visibleColumnConfigWithArguments['arguments']['currencyCode'] = site.getCurrencyCode();
+            var currencyCode = site.getCurrencyCode();
+        }else{
+            var currencyCode = 'USD';
         }
+        bundlePersistentCollectionList.addFilter('sku.skuPrices.currencyCode',currencyCode);
+        bundlePersistentCollectionList.addFilter('sku.skuPrices.priceGroup.priceGroupCode',1);
+	    bundlePersistentCollectionList.addFilter('bundledSku.skuPrices.currencyCode',currencyCode);
+        bundlePersistentCollectionList.addFilter('bundledSku.skuPrices.priceGroup.priceGroupCode',1);
         
-		if(!isNull(getHibachiScope().getAccount())){
-			visibleColumnConfigWithArguments["arguments"]["accountID"] = getHibachiScope().getAccount().getAccountID();
-		}
-		
-		//Price Group For Market Partner
-		visibleColumnConfigWithArguments["arguments"]["priceGroupCode"] = 1;
-
-		//todo handle case where user is not logged in 
-	    
-		bundleNonPersistentCollectionList.addDisplayProperty('bundledSku.priceByCurrencyCode', '', visibleColumnConfigWithArguments);
-		bundleNonPersistentCollectionList.addDisplayProperty('sku.priceByCurrencyCode', '', visibleColumnConfigWithArguments);
-		bundleNonPersistentCollectionList.addDisplayProperty('sku.personalVolumeByCurrencyCode', '', visibleColumnConfigWithArguments);
-	
 		var skuBundles = bundlePersistentCollectionList.getRecords();
-		var skuBundlesNonPersistentRecords = bundleNonPersistentCollectionList.getRecords();  
 	
 		// Build out bundles struct
 		var bundles = {};
 		var skuBundleCount = arrayLen(skuBundles);
+		var products = {};
 		for ( var i=1; i<=skuBundleCount; i++ ){
 			var skuBundle = skuBundles[i]; 
-			structAppend(skuBundle, skuBundlesNonPersistentRecords[i]);
 		
 			var skuID = skuBundle.sku_product_defaultSku_skuID;
 			var subProductTypeID = skuBundle.bundledSku_product_productType_productTypeID;
@@ -786,10 +772,10 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 				bundles[ skuID ] = {
 					'ID': skuID,
 					'name': skuBundle.sku_product_productName,
-					'price': skuBundle.sku_priceByCurrencyCode,
+					'price': skuBundle.sku_skuPrices_price,
 					'description': skuBundle.sku_product_productDescription,
 					'image': baseImageUrl & skuBundle.sku_product_defaultSku_imageFile,
-					'personalVolume': skuBundle.sku_personalVolumeByCurrencyCode,
+					'personalVolume': skuBundle.sku_skuPrices_personalVolume,
 					'productTypes': {},
 					'currencyCode': visibleColumnConfigWithArguments['arguments']['currencyCode']
 				};
@@ -804,14 +790,18 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 			}
 		
 			// Add sub product to the struct.
-			arrayAppend( bundles[ skuID ].productTypes[ subProductTypeID ].products, {
+			if(!structKeyExists(products,skuBundle.bundledSku_product_productID)){
+			    products[skuBundle.bundledSku_product_productID] = {
 				'name': skuBundle.bundledSku_product_productName,
-				'price': skuBundle.bundledSku_priceByCurrencyCode,
+				'price': skuBundle.bundledSku_skuPrices_price,
 				'image': baseImageUrl & skuBundle.bundledSku_product_defaultSku_imageFile
-			});
+			    };
+			}
+			arrayAppend( bundles[ skuID ].productTypes[ subProductTypeID ].products, skuBundle.bundledSku_product_productID);
 		}
 
 		arguments.data['ajaxResponse']['bundles'] = bundles;
+		arguments.data['ajaxResponse']['products'] = products;
     }
         
     public any function selectStarterPackBundle(required struct data){
@@ -998,6 +988,13 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         if(!len(arguments.data.sponsorID)){
             arguments.data.sponsorID = getDAO('accountDAO').getEligibleMarketPartner(account.getPrimaryAddress().getAddress().getPostalCode());
+            
+            if(!len(arguments.data.sponsorID)){
+                this.addErrors(arguments.data, getHibachiScope().rbKey('validate.submitSponsor.notfound'));
+                getHibachiScope().addActionResult('public:account.submitSponsor',true);
+                return;
+            }
+            
             autoAssignment = true;
         }
 
@@ -1059,6 +1056,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     public any function addOrderItem(required struct data){
         var cart = super.addOrderItem(arguments.data);
         var account = cart.getAccount();
+ 
         if(!cart.hasErrors() 
         && !isNull(account) 
         && !isNull(account.getAccountStatusType()) 
@@ -1076,8 +1074,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         // (Prevents the vague error message: addOrderItem)
         if(cart.hasErrors()){
             var cartErrors = cart.getErrors();
-            cart.clearHibachiErrors();
+          
             if(structKeyExists(cartErrors, 'processObjects') && arrayLen(cartErrors.processObjects)){
+                cart.clearHibachiErrors();
                 for(var processObjectName in cartErrors.processObjects){
                     cart.addErrors(cart.getProcessObject(processObjectName).getErrors());
                     cart.getProcessObject(processObjectName).clearHibachiErrors();
@@ -1643,7 +1642,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         //if we are not in an upgrade flow and the user is logged in, log the user out.
         if(!arguments.data.upgradeFlowFlag && getHibachiScope().getLoggedInFlag()){
-           if(getHibachiScope().getAccount().getAccountType() == 'marketPartner') getHibachiScope().setSessionValue('ownerAccountNumber', '#getHibachiScope().getAccount().getAccountNumber()#');
+           if(getHibachiScope().getAccount().getAccountType() == 'marketPartner' && !isNull(getHibachiScope().getAccount().getAccountNumber())) getHibachiScope().setSessionValue('ownerAccountNumber', '#getHibachiScope().getAccount().getAccountNumber()#');
             super.logout();
         }
        
@@ -1731,8 +1730,12 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         }
         
         //Updating the prices to account for new statuses
-        order = getOrderService().saveOrder(order);
-        getHibachiScope().flushORMSession(); 
+        if(!order.hasErrors()){
+            order = getOrderService().saveOrder(order);
+            getHibachiScope().flushORMSession();             
+        }
+        
+        getHibachiScope().addActionResult('public:cart.downGradeOrder',order.hasErrors());
         arguments.data['ajaxResponse']['cart'] = getHibachiScope().getCartData(cartDataOptions='full');
         return order;
      }
@@ -1994,18 +1997,19 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var ineligibleProductTypes = 'VIPCustomerRegistr,PromotionalItems,ProductPack';
         var account = getHibachiScope().getAccount();
         var currencyCode = order.getCurrencyCode();
-        var priceGroup = account.hasPriceGroup() ?[account.getPriceGroups()[1]] : [getService('priceGroupService').getPriceGroupByPriceGroupCode(2)];
+        var priceGroup = account.hasPriceGroup() ? [account.getPriceGroups()[1]] : [getService('priceGroupService').getPriceGroupByPriceGroupCode(2)];
         
         //add logic to also remove sku's with no price
         for(var oi in arguments.order.getOrderItems()){
             var sku = oi.getSku();
             var productType = sku.getProduct().getProductType().getSystemCode();
             var price = sku.getPriceByCurrencyCode(currencyCode, oi.getQuantity(), priceGroup)
-            if(!sku.canBePurchased(account) || listFindNoCase(ineligibleProductTypes, productType) || isNull(price) || price == 0){
+     
+            if(!sku.canBePurchased(account) || listFindNoCase(ineligibleProductTypes, productType) || isNull(sku.getPriceByCurrencyCode(currencyCode, oi.getQuantity(), priceGroup)) || price == 0){
                 orderItemIDs = listAppend(orderItemIDs, oi.getOrderItemID());
             }
         }
-        
+
         if(!len(orderItemIDs)) return arguments.order;
         
         var orderData = {
@@ -2045,11 +2049,20 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         param name="arguments.data.nullAccountFlag" default="false";
         param name="arguments.data.optionalProperties" default="";
         
-       getHibachiScope().logHibachi('========================GET SET FLEXSHIP CALLED, currentFlexshipID session value: #getHibachiScope().hasSessionValue("currentFlexshipID")#========================',true);
+        getHibachiScope().logHibachi('========================GET SET FLEXSHIP CALLED, currentFlexshipID hasSessionValue: #getHibachiScope().hasSessionValue("currentFlexshipID")#========================',true);
+        
+        if( ( !getHibachiScope().hasSessionValue('currentFlexshipID') || !len(getHibachiScope().getSessionValue('currentFlexshipID')) ) && StructKeyExists(COOKIE, 'currentFlexshipID') ) {
+            
+            getHibachiScope().logHibachi(" Current Slatwall-SessionID #getHibachiScope().getSession().getSessionID()# ", true);
+            getHibachiScope().logHibachi(" COOKIE.JSESSIONID = #COOKIE.JSESSIONID# ", true);
+    		getHibachiScope().logHibachi(" COOKIE.CFTOKEN = #COOKIE.CFTOKEN# ", true);
+    		getHibachiScope().logHibachi(" COOKIE.CFID = #COOKIE.CFID# ", true);
+        }
+        
 
         //if the request does not pass setIfNullFlag as true, and there is no order template on session, return an empty object
         if( (!getHibachiScope().hasSessionValue('currentFlexshipID') || !len( getHibachiScope().getSessionValue('currentFlexshipID'))) && !arguments.data.setIfNullFlag){
-            
+
             arguments.data['ajaxResponse']['orderTemplate'] = {};
             
         //If there is an order template on the session return the order template details
@@ -2064,12 +2077,14 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             
         //if there is no order template on session and request passes setIfNullFlag then we create an order template and set on session
         }else if(arguments.data.setIfNullFlag){
-            
             arguments.data['setOnSessionFlag'] = true;
             arguments.data['orderTemplateSystemCode'] = 'ottSchedule'; //currently session only accepts flexships
-            return this.createOrderTemplate(arguments.data);
-            
+            this.createOrderTemplate(arguments.data);
+
+       
         }
+        
+
     }
     /**
         * Function to update account with validation ensuring age is >= 18

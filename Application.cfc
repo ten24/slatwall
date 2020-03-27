@@ -103,7 +103,7 @@ component extends="org.Hibachi.Hibachi" output="false" {
 				break;
 			} catch (any e) {
 				writeLog(file="Slatwall", text="General Log - Integrations setup try count: #tryCount#");
-				sleep(1);
+				sleep(1000);
 			}
 		}
 	}

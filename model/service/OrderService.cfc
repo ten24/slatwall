@@ -405,7 +405,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					//Sets the status type
 					orderFulfillment.setOrderFulfillmentInvStatType(orderFulfillment.getOrderFulfillmentInvStatType());
 					//we will update order amounts at the end of the process
-					orderFulfillment = this.saveOrderFulfillment( orderFulfillment=orderFulfillment, updateOrderAmount=false );
+					orderFulfillment = this.saveOrderFulfillment( orderFulfillment=orderFulfillment, updateOrderAmounts=false );
                     //check the fulfillment and display errors if needed.
                     if (orderFulfillment.hasErrors()){
                         arguments.order.addError('addOrderItem', orderFulfillment.getErrors());
@@ -566,7 +566,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 
 			if(arguments.order.isNew()){
-				this.saveOrder(order=arguments.order, updateOrderAmount=arguments.processObject.getUpdateOrderAmountFlag());
+				this.saveOrder(order=arguments.order, updateOrderAmounts=arguments.processObject.getUpdateOrderAmountFlag());
 			}
 
 			// Save the new order items don't update order amounts we'll do it at the end of this process
@@ -807,7 +807,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
 		// Call save order to place in the hibernate session and re-calculate all of the totals
-		arguments.order = this.saveOrder( order=arguments.order, updateOrderAmount=arguments.processObject.getUpdateOrderAmountFlag() );
+		arguments.order = this.saveOrder( order=arguments.order, updateOrderAmounts=arguments.processObject.getUpdateOrderAmountFlag() );
 
 		return arguments.order;
 	}
@@ -1601,7 +1601,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		newOrder.setOrderTemplate(arguments.orderTemplate);
 		newOrder.setBillingAccountAddress(arguments.orderTemplate.getBillingAccountAddress()); 
 		newOrder.setShippingAccountAddress(arguments.orderTemplate.getShippingAccountAddress());  
-		newOrder = this.saveOrder(order=newOrder, updateOrderAmounts=false, updateOrderAmount=false, updateShippingMethodOptions=false, checkNewAccountAddressSave=false); 
+		newOrder = this.saveOrder(order=newOrder, updateOrderAmounts=false, updateOrderAmounts=false, updateShippingMethodOptions=false, checkNewAccountAddressSave=false); 
 		newOrder = this.createOrderItemsFromOrderTemplateItems(newOrder,arguments.orderTemplate);
 	
 		if(newOrder.hasErrors()){
@@ -1695,6 +1695,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors on gift card payment #serializeJson(newOrder.getErrors())# when placing order', true);
 				arguments.orderTemplate.clearHibachiErrors();
 				newOrder.clearHibachiErrors(); 	
+				
 				//keep going potentially the gift card is already applied to another order 
 				continue;
 			} else {
@@ -1732,26 +1733,28 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arguments.orderTemplate.clearHibachiErrors();
 			return arguments.orderTemplate;
 		}
-
+		
 		getOrderDAO().turnOnPaymentProcessingFlag(newOrder.getOrderID()); 
 		
 		var orderPayments = newOrder.getOrderPayments(); 
 	
 		for(var orderPayment in orderPayments) {
+	
 			if(orderPayment.getStatusCode() == 'opstActive') {
-			
+
 				var transactionType = 'charge'; 
 				if(len(orderPayment.getPaymentMethod().getPlaceOrderChargeTransactionType())){
 					transactionType = orderPayment.getPaymentMethod().getPlaceOrderChargeTransactionType(); 
 				}
-	
+				
 				var processData = {
 					transactionType = transactionType,
 					amount = orderPayment.getAmount(),
 					setOrderPaymentInvalidOnFailedTransactionFlag = false
 				};	
-
+				
 				orderPayment = this.createTransactionAndCheckErrors(orderPayment, processData);
+
 
 				if(orderPayment.hasErrors()){
 					orderPayment.clearHibachiErrors(); 
@@ -1760,7 +1763,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		newOrder.setPaymentProcessingInProgressFlag(false); 
-		newOrder = this.saveOrder(order=newOrder, updateOrderAmount=false, updateShippingMethodOptions=false, checkNewAccountAddressSave=false); 
+		newOrder = this.saveOrder(order=newOrder, updateOrderAmounts=false, updateShippingMethodOptions=false, checkNewAccountAddressSave=false); 
 
 		if(newOrder.hasErrors() || newOrder.getPaymentAmountDue() > 0){
 			this.updateOrderStatusBySystemCode(newOrder, 'ostProcessing', 'paymentDeclined');
@@ -5098,7 +5101,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.order;
 	}
 
-	public any function saveOrderFulfillment(required any orderFulfillment, struct data={}, string context="save", boolean updateOrderAmount=true) {
+	public any function saveOrderFulfillment(required any orderFulfillment, struct data={}, string context="save", boolean updateOrderAmounts=true) {
 		//if we have a new account address then override shippingaddress data. This must happen before populate
 		if(
 			(
@@ -5138,7 +5141,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
  						if (!isNull(stock)){
  							orderItem.setStock(stock);
- 							getService("OrderService").saveOrderItem(orderItem=orderItem,updateOrderAmount=arguments.updateOrderAmount);
+ 							getService("OrderService").saveOrderItem(orderItem=orderItem,updateOrderAmounts=arguments.updateOrderAmount);
  						}
  					}
  				}
@@ -5163,7 +5166,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
 		// Recalculate the order amounts for tax and promotions
-		if(!arguments.orderFulfillment.hasErrors() && arguments.updateOrderAmount) {
+		if(!arguments.orderFulfillment.hasErrors() && arguments.updateOrderAmounts) {
 			this.logHibachi('saveOrderFulfillment updateOrderAmounts');
 			this.processOrder( arguments.orderFulfillment.getOrder(), {}, 'updateOrderAmounts' );
 		}

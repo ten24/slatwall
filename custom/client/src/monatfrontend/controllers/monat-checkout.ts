@@ -3,14 +3,9 @@ declare let paypal: any;
 
 /****
 	STILL TO DO:	
-					6. fix radio button styling issues for acc payment method
 					8. On click api calls off slatwall scope so we dont need events or extra get cart calls
 					10. add an automatic smooth scroll from shipping => billing
-					15. birthday directive should close when you click off of the screen
-					17. billing same as shipping shouldnt be an api call rather a 
-					18. make sure paypal payment methods are using inputs
-					20. filter product pack price from mini cart
-					21. mini cart should consider current site
+					17. billing same as shipping shouldnt be an api call rather an input
 ****/
 
 enum Screen {
@@ -48,6 +43,7 @@ class MonatCheckoutController {
 	public activePaymentMethod = 'creditCard'; //refactor to use enum
 	public currentShippingAddress;
 	public listPrice = 0;
+	public toggleBillingAddressForm:boolean;
 	
 	// @ngInject
 	constructor(
@@ -55,7 +51,8 @@ class MonatCheckoutController {
 		public observerService,
 		public $rootScope,
 		public $scope,
-		public ModalService
+		public ModalService,
+		public monatAlertService
 	) {}
 
 	public $onInit = () => {
@@ -75,10 +72,17 @@ class MonatCheckoutController {
 		    if (this.publicService.toggleForm) this.publicService.toggleForm = false;
 		}, 'shippingAddressSelected');	
 		
+		this.observerService.attach(()=>{
+			this.toggleBillingAddressForm = false;
+			this.currentPaymentMethodID = '';
+		}, 'addBillingAddressSuccess');
+		
 		this.observerService.attach( this.closeNewAddressForm, 'addNewAccountAddressSuccess' ); 
+	
 		this.observerService.attach(this.setCheckoutDefaults.bind(this), 'createAccountSuccess' ); 
 		this.observerService.attach(this.setCheckoutDefaults.bind(this), 'loginSuccess' ); 
 		
+		//TODO: delete these event listeners and call within function
 		this.observerService.attach(()=>{
 			this.getCurrentCheckoutScreen(false, true);
 		}, 'addShippingAddressSuccess' ); 
@@ -337,9 +341,11 @@ class MonatCheckoutController {
 	
 	public submitSponsor():Screen | void{
 		this.publicService.doAction('submitSponsor', {sponsorID: this.ownerAccountID}).then(res=>{
-			if(res.successfulActions) {
+			if(res.successfulActions.length) {
 				this.hasSponsor = true; 
 				this.next();
+			}else if(res.errors){
+				this.monatAlertService.error(res.errors);
 			}
 		});
 	}
