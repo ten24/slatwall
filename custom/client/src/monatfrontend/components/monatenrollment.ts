@@ -49,9 +49,7 @@ class MonatEnrollmentController {
     	this.observerService.attach(this.next.bind(this),"updateSuccess");
     	this.observerService.attach(this.previous.bind(this),"onPrevious");
     	this.observerService.attach(this.next.bind(this),"addGovernmentIdentificationSuccess");
-    	this.observerService.attach(()=> this.goToStep('orderListing'),"editFlexshipItems");
-    	this.observerService.attach(()=> this.goToStep('todaysOrder'),"editOrderItems");
-    	this.observerService.attach(this.editFlexshipDate.bind(this),"editFlexshipDate");
+    	this.observerService.attach((stepClass)=> this.goToStep(stepClass),"goToStep");
 	}
 
 	public $onInit = () => {
@@ -181,11 +179,6 @@ class MonatEnrollmentController {
 		let position = this.stepMap[stepName] -1;
 		if(typeof position === 'undefined') return;
 		this.navigate(position);
-	}
-	
-	public editFlexshipDate = () => {
-		this.reviewContext = true;
-		this.previous();
 	}
 	
 	public goToLastStep = () => {

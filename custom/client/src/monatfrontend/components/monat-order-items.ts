@@ -84,7 +84,7 @@ class MonatOrderItemsController {
 	}
 	
 	public editItems = () => {
-		this.observerService.notify('editOrderItems')
+		this.observerService.notify('goToStep', 'todaysOrder')
 	}
 }
 
