@@ -202,7 +202,7 @@ property name="currentFlexship" type="any" cfc="OrderTemplate" fieldtype="many-t
 	}
 	
 	public string function getRbLocale(){
-		if(structKeyExists(variables, 'rbLocale') && !len(getAccount().getPreferredLocale())){
+		if(structKeyExists(variables, 'rbLocale')){
 			return variables.rbLocale;
 		}
 		
