@@ -25,6 +25,7 @@ class MonatEnrollmentController {
 	public type:string;
 	public showBirthday:boolean;
 	public account;
+	public stepMap = {};
 	
 	//@ngInject
 	constructor(public monatService, public observerService, public $rootScope, public publicService, public orderTemplateService) {
@@ -48,7 +49,8 @@ class MonatEnrollmentController {
     	this.observerService.attach(this.next.bind(this),"updateSuccess");
     	this.observerService.attach(this.previous.bind(this),"onPrevious");
     	this.observerService.attach(this.next.bind(this),"addGovernmentIdentificationSuccess");
-    	this.observerService.attach(this.editFlexshipItems.bind(this),"editFlexshipItems");
+    	this.observerService.attach(()=> this.goToStep('orderListing'),"editFlexshipItems");
+    	this.observerService.attach(()=> this.goToStep('todaysOrder'),"editOrderItems");
     	this.observerService.attach(this.editFlexshipDate.bind(this),"editFlexshipDate");
 	}
 
@@ -64,7 +66,7 @@ class MonatEnrollmentController {
 				this.canPlaceCartOrder = cart.orderRequirementsList.indexOf('canPlaceOrderReward') == -1;
 				let account = result.account;
 				let reqList = 'createAccount,updateAccount';
-				
+	
 				if(!this.upgradeFlow){
 					//logic for if the user has an upgrade on his order and he leaves/refreshes the page 
 				
@@ -120,6 +122,7 @@ class MonatEnrollmentController {
 		if (this.steps.length == 0) {
 			step.selected = true;
 		}
+		this.stepMap[step.stepClass] = Object.keys(this.stepMap).length +1;
 		this.steps.push(step);
 	};
 
@@ -167,7 +170,17 @@ class MonatEnrollmentController {
 	
 	public editFlexshipItems = () => {
 		this.reviewContext = true;
+		let position = this.stepMap['orderListing'] -1;
+		if(!position) return;
 		this.navigate(this.position - 2);
+	}
+	
+	public goToStep = (stepName:string):void =>{
+		console.log(stepName)
+		this.reviewContext = true;
+		let position = this.stepMap[stepName] -1;
+		if(typeof position === 'undefined') return;
+		this.navigate(position);
 	}
 	
 	public editFlexshipDate = () => {
@@ -176,7 +189,7 @@ class MonatEnrollmentController {
 	}
 	
 	public goToLastStep = () => {
-		this.observerService.notify('lastStep')
+		this.observerService.notify('lastStep');
 		this.navigate(this.steps.length -1);
 		this.reviewContext = false;
 	}
