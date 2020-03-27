@@ -2363,9 +2363,14 @@ public numeric function getPersonalVolumeSubtotal(){
 	}
 	
 	public any function getCurrencyCode(){
-		if(!isNull(getOrderCreatedSite()) 
-		&& !isNull(getOrderCreatedSite().getCurrencyCode())
-		&& getOrderCreatedSite().getCurrencyCode() != variables.currencyCode){
+		if(
+			isNull(variables.currencyCode) 
+			|| (
+				!isNull(getOrderCreatedSite()) 
+				&& !isNull(getOrderCreatedSite().getCurrencyCode())
+				&& getOrderCreatedSite().getCurrencyCode() != variables.currencyCode
+			)
+		){
 			variables.currencyCode = getOrderCreatedSite().getCurrencyCode()
 		}
 		return variables.currencyCode;

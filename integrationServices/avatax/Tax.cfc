@@ -107,10 +107,10 @@ extends = "Slatwall.integrationServices.BaseTax" {
 				exemptionNo = arguments.requestBean.getAccount().getValueByPropertyIdentifier( setting('taxExemptNumberPropertyIdentifier') );
 			}
 		}
-		
+		var order = arguments.requestBean.getOrder();
 		//When this flag is turned on, set the exemption no and usage type to an empty string to prevent tax exemption
 		if(setting('taxExemptRequiresCompanyPaymentMethodFlag')) {
-			var opSmartList = arguments.requestBean.getOrder().getOrderPaymentsSmartList();
+			var opSmartList = order.getOrderPaymentsSmartList();
 			opSmartList.addFilter('orderPaymentStatusType.systemCode', 'opstActive');
 			
 			if(arrayLen(opSmartList.getRecords(refresh=true))) {
@@ -124,21 +124,22 @@ extends = "Slatwall.integrationServices.BaseTax" {
 			}
 		}
 		
-		if ( arguments.requestBean.getOrder().getOrderType().getSystemCode() == 'otReturnOrder'  && setting('taxDocumentCommitType') == 'commitOnClose' ){
-			docType = 'ReturnInvoice';
-		} else if ( setting('taxDocumentCommitType') == 'commitOnClose' && !isNull(arguments.requestBean.getOrder().getOrderNumber()) && len(arguments.requestBean.getOrder().getOrderNumber()) ){
-			docType = 'SalesInvoice';
+		if(!isNull( order.getOrderNumber() )){
+			var docCode = order.getOrderNumber();
+		}else{
+			var docCode = order.getShortReferenceID( true );
 		}
 		
+		var docDate = dateFormat(now(),'yyyy-mm-dd');
 		
-		if ( !isNull(arguments.requestBean.getOrderDelivery()) ){
-			var docCode = arguments.requestBean.getOrderDelivery().getShortReferenceID( true )
-			docType = 'SalesInvoice';
-		} else if ( !isNull(arguments.requestBean.getOrderReturn()) && setting('taxDocumentCommitType') == 'commitOnDelivery' ){
-			var docCode = arguments.requestBean.getOrderReturn().getShortReferenceID( true )
-			docType = 'ReturnInvoice';
-		} else{
-			var docCode = arguments.requestBean.getOrder().getShortReferenceID( true )
+		if( arguments.requestBean.getCommitTaxDocFlag() ){
+			var orderType = order.getOrderType().getSystemCode();
+			if (  orderType == 'otSalesOrder' ){
+				docType = 'SalesInvoice';
+				docDate = dateFormat(order.getOrderOpenDateTime(),'yyyy-mm-dd');
+			} else {
+				docType = 'ReturnInvoice';
+			}
 		}
 		
 		// Setup the request data structure
@@ -146,7 +147,7 @@ extends = "Slatwall.integrationServices.BaseTax" {
 			Client = "a0o33000003xVEI",
 			companyCode = setting('companyCode',arguments.requestBean),
 			DocCode = docCode,
-			DocDate = dateFormat(now(),'yyyy-mm-dd'),
+			DocDate = docDate,
 			DocType = docType,
 			CustomerUsageType= usageType,
 			ExemptionNo= exemptionNo,
@@ -409,11 +410,20 @@ extends = "Slatwall.integrationServices.BaseTax" {
 	}
 	
 	public any function voidTaxDocument(required any requestBean){
+		var order = arguments.requestBean.getOrder();
 		
-		if ( !isNull(arguments.requestBean.getOrderDelivery()) ){
-			var docCode = arguments.requestBean.getOrderDelivery().getShortReferenceID( true )
+		if ( !isNull(order.getOrderNumber()) ){
+			var docCode = order.getOrderNumber();
 		} else{
-			var docCode = arguments.requestBean.getOrder().getShortReferenceID( true )
+			var docCode = order.getShortReferenceID( true )
+		}
+		
+		var orderType = order.getOrderType().getSystemCode();
+		
+		if (  orderType == 'otSalesOrder' ){
+			docType = 'SalesInvoice';
+		} else {
+			docType = 'ReturnInvoice';
 		}
 		
 		var requestDataStruct = {
