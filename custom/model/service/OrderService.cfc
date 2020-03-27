@@ -482,8 +482,8 @@ component extends="Slatwall.model.service.OrderService" {
 		return orderTemplateItemCollection;	
 	} 
 
-    public void function updateOrderStatusBySystemCode(required any order, required string systemCode, string typeCode) {
-		
+    public void function updateOrderStatusBySystemCode(required any order, required string systemCode, string typeCode='') {
+		logHibachi("Called updateOrderStatusBySystemCode with systemCode= #systemCode#, typeCode= #typeCode# ", true);
 		
         var currentOrderStatusType = arguments.order.getOrderStatusType();
         
@@ -494,8 +494,9 @@ component extends="Slatwall.model.service.OrderService" {
         */ 
         if( 
         	arguments.order.getIsLockedInProcessingFlag() && 
-        	( !ListFindNoCase( 'processing1,processing2', arguments.typeCode ?: '')  || arguments.systemCode != 'ostProcessing') 
+        	( !ListFindNoCase( 'processing1,processing2', arguments.typeCode)  || arguments.systemCode != 'ostProcessing') 
         ) {
+
 	        /** 
 	         * Note:
 	         * there're validations in place, but added these extra checks, 
@@ -504,20 +505,20 @@ component extends="Slatwall.model.service.OrderService" {
 	        
         	if( arguments.order.getIsLockedInProcessingOneFlag() && arguments.systemCode != 'ostCanceled') {
 	        	
-	        	 logHibachi("Attempted to update an order's status to #arguments.systemCode# and #arguments.typeCode ?: '.'#, while order is locked in processing-1 ");
-	        	 return; // any-order can go to cancel status
+	        	 logHibachi("Attempted to update an order's status to #arguments.systemCode# and #arguments.typeCode#, while order is locked in processing-1 ");
+	        	 return; // any-order can only go to cancel status, after fulfilling these conditions
 	        	 
         	} else if( arguments.order.getIsLockedInProcessingTwoFlag()) {
         		
-        		if( arguments.systemCode == 'ostProcessing' && ListFindNoCase('rmaApproved,rmaReceived', arguments.typeCode ?: '') ){
+        		if( arguments.systemCode == 'ostProcessing' && ListFindNoCase('rmaApproved,rmaReceived', arguments.typeCode ) ){
         			
-        			logHibachi("Attempted to update an order's status to pstProcessing and #arguments.typeCode ?: '.'#, while order is locked in processing-2 ");
-        			return; // rma can be got to approved/received status
+        			logHibachi("Attempted to update an order's status to pstProcessing and #arguments.typeCode#, while order is locked in processing-2 ");
+        			return; // rma can only got to approved/received status, after fulfilling these conditions
         		
         		} else if(arguments.systemCode != 'ostClosed') {
         			
-        			logHibachi("Attempted to update an order's status to #arguments.systemCode# and #arguments.typeCode ?: '.'#, while order is locked in processing-2 ");
-        			return; // or sales-order/rma can only go to close status 
+        			logHibachi("Attempted to update an order's status to #arguments.systemCode# and #arguments.typeCode#, while order is locked in processing-2 ");
+        			return; // or sales-order/rma can only go to close status, after fulfilling these conditions 
      
         		}
         	} 
@@ -525,26 +526,27 @@ component extends="Slatwall.model.service.OrderService" {
 		}
         
         // All new sales and return orders will appear as "Entered"
-        
+       
         if (arguments.systemCode == 'ostNotPlaced' && isNull(currentOrderStatusType)) {
 
-            arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode));
+            arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode));
         	
         } else if (arguments.systemCode == 'ostOnHold') {
 
-            arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode));
+            arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode));
 
         } else if (arguments.systemCode == 'ostCanceled') {
 
-            arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="9"));
+            arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="9"));
 
         } else if (arguments.systemCode == 'ostClosed') {
 			
 			if(arguments.order.getOrderType().getSystemCode() == 'otSalesOrder') {
-	            arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="5"));
+				// closed(shipped) orders
+	            arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="5"));
 			} else {
 				// RMA closed orders
-	            arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="rmaReleased"));
+	            arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="rmaReleased"));
 			}
 
         } else if (arguments.systemCode == 'ostNew') {
@@ -552,9 +554,10 @@ component extends="Slatwall.model.service.OrderService" {
 			//if the order is paid don't set to new, otherwise set to new
 			if (  arguments.order.getPaymentAmountDue() <= 0 ){
 				//type for PaidOrder  systemCode=ostProcessing, typeCode=2
-				arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode( systemCode='ostProcessing', typeCode="2")); 
+				arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode( systemCode='ostProcessing', typeCode="2")); 
 			} else {
-				arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode( systemCode=arguments.systemCode, typeCode="1")); 
+				// type for newOrder systemCode=ostProcessing, typeCode=1
+				arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode( systemCode=arguments.systemCode, typeCode="1")); 
 			}
 				
         } else if (arguments.systemCode == 'ostProcessing') {
@@ -563,22 +566,22 @@ component extends="Slatwall.model.service.OrderService" {
 				
 				if(currentOrderStatusType.getSystemCode() == 'ostNew' && arguments.order.getPaymentAmountDue() <= 0) {
 
-					arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode( systemCode=arguments.systemCode, typeCode="2"));
+					arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode( systemCode=arguments.systemCode, typeCode="2"));
 				
 				} else {
 					
 					// we should narrow down the flow of status here
-					if (!isNull(arguments.typeCode) ) {
+					if (Len(arguments.typeCode) ) {
 						
 						// all processing status allowed when called with a specific typecode
-						var newType = getTypeService().getTypeBySystemCode( systemCode=arguments.systemCode, typeCode=arguments.typeCode);
-					} else {
-		
+						arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode( systemCode=arguments.systemCode, typeCode=arguments.typeCode) );
+						
+					} else if( currentOrderStatusType.getSystemCode() == 'ostClosed') {
+						
 						//reopening closed-order, which is ostProcessing
-						var newType = getTypeService().getTypeBySystemCode( systemCode=arguments.systemCode);
+	                	arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode(systemCode='ostProcessing'));
 					}
 					
-					arguments.order.setOrderStatusType( newType );
 	            }
 			        // Return Orders
 	        } else if (listFindNoCase('otReturnOrder,otExchangeOrder,otReplacementOrder,otRefundOrder', arguments.order.getTypeCode())) {
