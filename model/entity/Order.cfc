@@ -213,7 +213,8 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType="dateTime" hb_nullRBKey="define.forever";
     property name="commissionPeriodEndDateTime" ormtype="timestamp" hb_formatType="dateTime" hb_nullRBKey="define.forever";
     property name="secondaryReturnReasonType" cfc="Type" fieldtype="many-to-one" fkcolumn="secondaryReturnReasonTypeID"; // Intended to be used by Ops accounts
-    
+     property name="monatOrderType" cfc="Type" fieldtype="many-to-one" fkcolumn="monatOrderTypeID" hb_optionsSmartListData="f:parentType.typeID=2c9280846deeca0b016deef94a090038";
+
     property name="personalVolumeSubtotal" persistent="false";
     property name="taxableAmountSubtotal" persistent="false";
     property name="commissionableVolumeSubtotal" persistent="false";
@@ -2362,9 +2363,14 @@ public numeric function getPersonalVolumeSubtotal(){
 	}
 	
 	public any function getCurrencyCode(){
-		if(!isNull(getOrderCreatedSite()) 
-		&& !isNull(getOrderCreatedSite().getCurrencyCode())
-		&& getOrderCreatedSite().getCurrencyCode() != variables.currencyCode){
+		if(
+			isNull(variables.currencyCode) 
+			|| (
+				!isNull(getOrderCreatedSite()) 
+				&& !isNull(getOrderCreatedSite().getCurrencyCode())
+				&& getOrderCreatedSite().getCurrencyCode() != variables.currencyCode
+			)
+		){
 			variables.currencyCode = getOrderCreatedSite().getCurrencyCode()
 		}
 		return variables.currencyCode;

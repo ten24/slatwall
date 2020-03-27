@@ -1730,8 +1730,12 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         }
         
         //Updating the prices to account for new statuses
-        order = getOrderService().saveOrder(order);
-        getHibachiScope().flushORMSession(); 
+        if(!order.hasErrors()){
+            order = getOrderService().saveOrder(order);
+            getHibachiScope().flushORMSession();             
+        }
+        
+        getHibachiScope().addActionResult('public:cart.downGradeOrder',order.hasErrors());
         arguments.data['ajaxResponse']['cart'] = getHibachiScope().getCartData(cartDataOptions='full');
         return order;
      }
