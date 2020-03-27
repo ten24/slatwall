@@ -725,23 +725,15 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 			bundledSku.product.defaultSku.imageFile,
 			bundledSku.product.productType.productTypeID,
 			bundledSku.product.productType.productTypeName,
+			bundledSku.product.productID,
+			bundledSku.skuPrices.price,
 			sku.product.defaultSku.skuID,
 			sku.product.productName,
 			sku.product.productDescription,
-			sku.product.defaultSku.imageFile
+			sku.product.defaultSku.imageFile,
+			sku.skuPrices.price,
+			sku.skuPrices.personalVolume
 		');
-
-		
-		var bundleNonPersistentCollectionList = getService('HibachiService').getSkuBundleCollectionList();
-		bundleNonPersistentCollectionList.setDisplayProperties('skuBundleID'); 	
-		bundleNonPersistentCollectionList.addFilter( 'sku.product.activeFlag', true );
-		bundleNonPersistentCollectionList.addFilter( 'sku.product.publishedFlag', true );
-		bundleNonPersistentCollectionList.addFilter( 'sku.product.productType.urlTitle', 'starter-kit,productPack','in' );
-		if(!isNull(getHibachiScope().getCurrentRequestSite())){
-		    bundleNonPersistentCollectionList.addFilter('sku.product.sites.siteID',getHibachiScope().getCurrentRequestSite().getSiteID());
-		}
-		
-		bundleNonPersistentCollectionList.addOrderBy( 'createdDateTime|DESC');
 
 		var visibleColumnConfigWithArguments = {
 			"isVisible":true,
@@ -751,34 +743,26 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 			    'currencyCode': 'USD'
 			}
 		};
-		
+
 		var site = getHibachiScope().getCurrentRequestSite();
         if ( !isNull( site ) ) {
-            visibleColumnConfigWithArguments['arguments']['currencyCode'] = site.getCurrencyCode();
+            var currencyCode = site.getCurrencyCode();
+        }else{
+            var currencyCode = 'USD';
         }
+        bundlePersistentCollectionList.addFilter('sku.skuPrices.currencyCode',currencyCode);
+        bundlePersistentCollectionList.addFilter('sku.skuPrices.priceGroup.priceGroupCode',1);
+	    bundlePersistentCollectionList.addFilter('bundledSku.skuPrices.currencyCode',currencyCode);
+        bundlePersistentCollectionList.addFilter('bundledSku.skuPrices.priceGroup.priceGroupCode',1);
         
-		if(!isNull(getHibachiScope().getAccount())){
-			visibleColumnConfigWithArguments["arguments"]["accountID"] = getHibachiScope().getAccount().getAccountID();
-		}
-		
-		//Price Group For Market Partner
-		visibleColumnConfigWithArguments["arguments"]["priceGroupCode"] = 1;
-
-		//todo handle case where user is not logged in 
-	    
-		bundleNonPersistentCollectionList.addDisplayProperty('bundledSku.priceByCurrencyCode', '', visibleColumnConfigWithArguments);
-		bundleNonPersistentCollectionList.addDisplayProperty('sku.priceByCurrencyCode', '', visibleColumnConfigWithArguments);
-		bundleNonPersistentCollectionList.addDisplayProperty('sku.personalVolumeByCurrencyCode', '', visibleColumnConfigWithArguments);
-	
 		var skuBundles = bundlePersistentCollectionList.getRecords();
-		var skuBundlesNonPersistentRecords = bundleNonPersistentCollectionList.getRecords();  
 	
 		// Build out bundles struct
 		var bundles = {};
 		var skuBundleCount = arrayLen(skuBundles);
+		var products = {};
 		for ( var i=1; i<=skuBundleCount; i++ ){
 			var skuBundle = skuBundles[i]; 
-			structAppend(skuBundle, skuBundlesNonPersistentRecords[i]);
 		
 			var skuID = skuBundle.sku_product_defaultSku_skuID;
 			var subProductTypeID = skuBundle.bundledSku_product_productType_productTypeID;
@@ -788,10 +772,10 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 				bundles[ skuID ] = {
 					'ID': skuID,
 					'name': skuBundle.sku_product_productName,
-					'price': skuBundle.sku_priceByCurrencyCode,
+					'price': skuBundle.sku_skuPrices_price,
 					'description': skuBundle.sku_product_productDescription,
 					'image': baseImageUrl & skuBundle.sku_product_defaultSku_imageFile,
-					'personalVolume': skuBundle.sku_personalVolumeByCurrencyCode,
+					'personalVolume': skuBundle.sku_skuPrices_personalVolume,
 					'productTypes': {},
 					'currencyCode': visibleColumnConfigWithArguments['arguments']['currencyCode']
 				};
@@ -806,14 +790,18 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 			}
 		
 			// Add sub product to the struct.
-			arrayAppend( bundles[ skuID ].productTypes[ subProductTypeID ].products, {
+			if(!structKeyExists(products,skuBundle.bundledSku_product_productID)){
+			    products[skuBundle.bundledSku_product_productID] = {
 				'name': skuBundle.bundledSku_product_productName,
-				'price': skuBundle.bundledSku_priceByCurrencyCode,
+				'price': skuBundle.bundledSku_skuPrices_price,
 				'image': baseImageUrl & skuBundle.bundledSku_product_defaultSku_imageFile
-			});
+			    };
+			}
+			arrayAppend( bundles[ skuID ].productTypes[ subProductTypeID ].products, skuBundle.bundledSku_product_productID);
 		}
 
 		arguments.data['ajaxResponse']['bundles'] = bundles;
+		arguments.data['ajaxResponse']['products'] = products;
     }
         
     public any function selectStarterPackBundle(required struct data){
@@ -2005,18 +1993,19 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var ineligibleProductTypes = 'VIPCustomerRegistr,PromotionalItems,ProductPack';
         var account = getHibachiScope().getAccount();
         var currencyCode = order.getCurrencyCode();
-        var priceGroup = account.hasPriceGroup() ?[account.getPriceGroups()[1]] : [getService('priceGroupService').getPriceGroupByPriceGroupCode(2)];
+        var priceGroup = account.hasPriceGroup() ? [account.getPriceGroups()[1]] : [getService('priceGroupService').getPriceGroupByPriceGroupCode(2)];
         
         //add logic to also remove sku's with no price
         for(var oi in arguments.order.getOrderItems()){
             var sku = oi.getSku();
             var productType = sku.getProduct().getProductType().getSystemCode();
             var price = sku.getPriceByCurrencyCode(currencyCode, oi.getQuantity(), priceGroup)
-            if(!sku.canBePurchased(account) || listFindNoCase(ineligibleProductTypes, productType) || isNull(price) || price == 0){
+     
+            if(!sku.canBePurchased(account) || listFindNoCase(ineligibleProductTypes, productType) || isNull(sku.getPriceByCurrencyCode(currencyCode, oi.getQuantity(), priceGroup)) || price == 0){
                 orderItemIDs = listAppend(orderItemIDs, oi.getOrderItemID());
             }
         }
-        
+
         if(!len(orderItemIDs)) return arguments.order;
         
         var orderData = {
