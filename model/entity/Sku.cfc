@@ -249,18 +249,30 @@ property name="sapItemCode" ormtype="string";
 	}
 
 	public numeric function getAveragePriceSold(required string currencyCode="USD"){
+		if(setting('skuDisableAverageCostCalculation') == true){
+			return 0;
+		}
 		return getDao('skuDao').getAveragePriceSold(skuID=this.getSkuID(),currencyCode=arguments.currencyCode);
 	}
 	
 	public numeric function getAveragePriceSoldAfterDiscount(required string currencyCode="USD"){
+		if(setting('skuDisableAverageCostCalculation') == true){
+			return 0;
+		}
 		return getDao('skuDao').getAveragePriceSoldAfterDiscount(skuID=this.getSkuID(),currencyCode=arguments.currencyCode);
 	}
 	
 	public numeric function getAverageDiscountAmount(required string currencyCode="USD"){
+		if(setting('skuDisableAverageCostCalculation') == true){
+			return 0;
+		}
 		return getDao('skuDao').getAverageDiscountAmount(skuID=this.getSkuID(),currencyCode=arguments.currencyCode);
 	}
 
 	public numeric function getCurrentAssetValue(required string currencyCode="USD"){
+		if(setting('skuDisableAverageCostCalculation') == true){
+			return 0;
+		}
 		return getQOH(currencyCode=arguments.currencyCode) * getAverageCost(arguments.currencyCode);
 	}
 	
@@ -270,30 +282,51 @@ property name="sapItemCode" ormtype="string";
 //	}
 	
 	public numeric function getCurrentMargin(required string currencyCode="USD"){
+		if(setting('skuDisableAverageCostCalculation') == true){
+			return 0;
+		}
 		return getDao('skuDao').getCurrentMargin(this.getSkuID(),arguments.currencyCode);
 	}
 	
 	public numeric function getCurrentMarginBeforeDiscount(required string currencyCode="USD"){
+		if(setting('skuDisableAverageCostCalculation') == true){
+			return 0;
+		}
 		return getDao('skuDao').getCurrentMarginBeforeDiscount(this.getSkuID(),arguments.currencyCode);
 	}
 	
 	public numeric function getCurrentLandedMargin(required string currencyCode="USD"){
+		if(setting('skuDisableAverageCostCalculation') == true){
+			return 0;
+		}
 		return getDao('skuDao').getCurrentLandedMargin(this.getSkuID(),arguments.currencyCode);
 	}
 
 	public numeric function getAverageProfit(required string currencyCode="USD"){
+		if(setting('skuDisableAverageCostCalculation') == true){
+			return 0;
+		}
 		return getDao('skuDao').getAverageProfit(this.getSkuID(),arguments.currencyCode);
 	}
 	
 	public numeric function getAverageLandedProfit(required string currencyCode="USD"){
+		if(setting('skuDisableAverageCostCalculation') == true){
+			return 0;
+		}
 		return getDao('skuDao').getAverageLandedProfit(this.getSkuID(),arguments.currencyCode);
 	}
 	
 	public numeric function getAverageMarkup(required string currencyCode="USD"){
+		if(setting('skuDisableAverageCostCalculation') == true){
+			return 0;
+		}
 		return getDao('skuDao').getAverageMarkup(this.getSkuID(),arguments.currencyCode);
 	}
 	
 	public numeric function getAverageLandedMarkup(required string currencyCode="USD"){
+		if(setting('skuDisableAverageCostCalculation') == true){
+			return 0;
+		}
 		return getDao('skuDao').getAverageLandedMarkup(this.getSkuID(),arguments.currencyCode);
 	}
 
@@ -1336,6 +1369,11 @@ property name="sapItemCode" ormtype="string";
 	}
 	
 	public any function getQOQ(string locationID) {
+		
+		if(setting('skuDisableQoQCalculation') == true){
+			return 0;
+		}
+		
 		if ( structKeyExists(arguments, 'locationID') ){
 			return getQuantity(quantityType="QOQ", locationID=arguments.locationID );
 		}	
