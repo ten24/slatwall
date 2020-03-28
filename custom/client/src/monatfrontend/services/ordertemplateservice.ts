@@ -145,16 +145,7 @@ export class OrderTemplateService {
                   .promise;
     }
     
-    public setAsCurrentFlexship = (orderTemplateID:string) => {
-        let payload = {
-            'orderTemplateID' : orderTemplateID
-        };
-        
-       return this.requestService
-                  .newPublicRequest('?slatAction=monat:public.setAsCurrentFlexship', payload)
-                  .promise;
-    }
-    
+  
     /**
      * orderTemplateID:string, 
      * orderTemplateCancellationReasonType:string,  => OrderTEmplateCancellationReason::TypeID

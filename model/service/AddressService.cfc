@@ -239,7 +239,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 	
 	/**
-	 * @Depricated this function is depricated in favor of *verifyAccountAddressByID()*.
+	 * @Deprecated this function is deprecated in favor of *verifyAccountAddressByID()*.
 	 * left here for compatibility with other projects, should be removed
 	 * 
 	*/ 
@@ -248,7 +248,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 	
 	/**
-	 * @Depricated this function is depricated in favor of *verifyAddressByID()*.
+	 * @Deprecated this function is deprecated in favor of *verifyAddressByID()*.
 	 * left here for compatibility with other projects, should be removed
 	 * 
 	*/ 

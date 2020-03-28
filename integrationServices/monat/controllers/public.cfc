@@ -5,7 +5,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
     this.publicMethods = '';
     this.publicMethods=ListAppend(this.publicMethods, 'getProductReviews');
     this.publicMethods=ListAppend(this.publicMethods, 'getMarketPartners');
-    this.publicMethods=ListAppend(this.publicMethods, 'setAsCurrentFlexship');
 
 
     public any function before(required struct rc){
@@ -32,12 +31,5 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
     }
     
-    	
-	/**
-	 * Custom api-end-points
-	*/ 
-	public any function setAsCurrentFlexship(required struct rc) {
-	    getPublicService().setAsCurrentFlexship(arguments.rc); 
-	}
     
 }

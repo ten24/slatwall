@@ -152,10 +152,9 @@ component extends="Slatwall.model.service.OrderService" {
 				arguments.orderTemplate.addError('create', account.getErrors());
 				return arguments.orderTemplate;
 			} 
-		} else if(!isNull(processObject.getAccount())){
-			var account = processObject.getAccount();
+			
 		} else {
-			var account = getHibachiScope().getAccount();
+			var account = processObject.getAccount() ?: getHibachiScope().getAccount();
 		}
 		
 		if( !account.getCanCreateFlexshipFlag() && arguments.context != "upgradeFlow") {
@@ -186,7 +185,7 @@ component extends="Slatwall.model.service.OrderService" {
 		//NOTE: there's only one shipping method allowed for flexship
 		var shippingMethod = getService('ShippingService').getShippingMethod( 
 		            ListFirst( arguments.orderTemplate.setting('orderTemplateEligibleShippingMethods') )
-			    );
+			   );
 		orderTemplate.setShippingMethod(shippingMethod);
 		
 		//grab and set account-payment-method from account to ordertemplate
@@ -199,7 +198,7 @@ component extends="Slatwall.model.service.OrderService" {
 		}
 		
 
-		//grab and get billing-account-address from account
+		//grab and set billing-account-address from account
 		if(!arguments.orderTemplate.hasBillingAccountAddress() ) {
 		 	if(account.hasPrimaryBillingAddress()) {
     		    arguments.orderTemplate.setBillingAccountAddress(account.getPrimaryBillingAddress());
@@ -221,7 +220,9 @@ component extends="Slatwall.model.service.OrderService" {
 		arguments.orderTemplate.setScheduleOrderDayOfTheMonth(day(arguments.processObject.getScheduleOrderNextPlaceDateTime()));
 		arguments.orderTemplate.setScheduleOrderNextPlaceDateTime(arguments.processObject.getScheduleOrderNextPlaceDateTime());
 		arguments.orderTemplate.setFrequencyTerm( getSettingService().getTerm(arguments.processObject.getFrequencyTermID()) );
+		
 		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate, arguments.data, arguments.context); 
+		
 		return arguments.orderTemplate;
     }
 
@@ -482,60 +483,70 @@ component extends="Slatwall.model.service.OrderService" {
 		return orderTemplateItemCollection;	
 	} 
 
-    public void function updateOrderStatusBySystemCode(required any order, required string systemCode, string typeCode) {
-		
-		
+    public void function updateOrderStatusBySystemCode(required any order, required string systemCode, string typeCode='') {
+
         var currentOrderStatusType = arguments.order.getOrderStatusType();
         
- 
         
-        if( //if order is either in processing1 or 2 
-        	currentOrderStatusType.getSystemCode() == 'ostProcessing' && 
-        	ListFindNoCase( 'processing1,processing2', currentOrderStatusType.getTypeCode() ) 
+        /** 
+         * if order is locked it can go back and forth b/w processsing1 and processing2 status 
+         * but if that's not the case, we're checking further
+        */ 
+        if( 
+        	arguments.order.getIsLockedInProcessingFlag() && 
+        	( !ListFindNoCase( 'processing1,processing2', arguments.typeCode)  || arguments.systemCode != 'ostProcessing') 
         ) {
-        	
+
 	        /** 
-	         *  there're validations in place, but added these extra checks, 
-	         *  to prevent accidental order-status updates, as this's not a process/method
-	         *  
+	         * Note:
+	         * there're validations in place, but added these extra checks, 
+	         * to prevent accidental order-status updates, as this's not a process/method
 	        */
 	        
-        	// order can only be canceled in processing1 status
-        	if(arguments.systemCode == 'ostCanceled') {
-	        	 if(currentOrderStatusType.getTypeCode() != 'processing1'){
-					return;
-	        	} 
-        	} else if( 
-        		// order  can only go  back and forth b/w processing1 and processing2
-        		arguments.systemCode != 'ostProcessing' || isNull(arguments.typeCode) || 
-        		!ListFindNoCase('processing1,processing2', arguments.typeCode) 
-        	){
-				return;
-        	}
+        	if( arguments.order.getIsLockedInProcessingOneFlag() && arguments.systemCode != 'ostCanceled') {
+	        	
+	        	 logHibachi("Attempted to update an order's status to #arguments.systemCode# and #arguments.typeCode#, while order is locked in processing-1 ");
+	        	 return; // any-order can only go to cancel status, after fulfilling these conditions
+	        	 
+        	} else if( arguments.order.getIsLockedInProcessingTwoFlag()) {
+        		
+        		if( arguments.systemCode == 'ostProcessing' && ListFindNoCase('rmaApproved,rmaReceived', arguments.typeCode ) ){
+        			
+        			logHibachi("Attempted to update an order's status to pstProcessing and #arguments.typeCode#, while order is locked in processing-2 ");
+        			return; // rma can only got to approved/received status, after fulfilling these conditions
+        		
+        		} else if(arguments.systemCode != 'ostClosed') {
+        			
+        			logHibachi("Attempted to update an order's status to #arguments.systemCode# and #arguments.typeCode#, while order is locked in processing-2 ");
+        			return; // or sales-order/rma can only go to close status, after fulfilling these conditions 
+     
+        		}
+        	} 
         	
 		}
         
         // All new sales and return orders will appear as "Entered"
-        
+       
         if (arguments.systemCode == 'ostNotPlaced' && isNull(currentOrderStatusType)) {
 
-            arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode));
+            arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode));
         	
         } else if (arguments.systemCode == 'ostOnHold') {
 
-            arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode));
+            arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode));
 
         } else if (arguments.systemCode == 'ostCanceled') {
 
-            arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="9"));
+            arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="9"));
 
         } else if (arguments.systemCode == 'ostClosed') {
 			
 			if(arguments.order.getOrderType().getSystemCode() == 'otSalesOrder') {
-	            arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="5"));
+				// closed(shipped) orders
+	            arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="5"));
 			} else {
 				// RMA closed orders
-	            arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="rmaReleased"));
+	            arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="rmaReleased"));
 			}
 
         } else if (arguments.systemCode == 'ostNew') {
@@ -543,9 +554,10 @@ component extends="Slatwall.model.service.OrderService" {
 			//if the order is paid don't set to new, otherwise set to new
 			if (  arguments.order.getPaymentAmountDue() <= 0 ){
 				//type for PaidOrder  systemCode=ostProcessing, typeCode=2
-				arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode( systemCode='ostProcessing', typeCode="2")); 
+				arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode( systemCode='ostProcessing', typeCode="2")); 
 			} else {
-				arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode( systemCode=arguments.systemCode, typeCode="1")); 
+				// type for newOrder systemCode=ostProcessing, typeCode=1
+				arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode( systemCode=arguments.systemCode, typeCode="1")); 
 			}
 				
         } else if (arguments.systemCode == 'ostProcessing') {
@@ -554,14 +566,22 @@ component extends="Slatwall.model.service.OrderService" {
 				
 				if(currentOrderStatusType.getSystemCode() == 'ostNew' && arguments.order.getPaymentAmountDue() <= 0) {
 
-					arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode( systemCode=arguments.systemCode, typeCode="2")); 
-	
-				// all processing status allowed when called with a specific typecode
-				// we should narrow down the flow of status here
-				} else if (!isNull(arguments.typeCode)) {
-
-					var newType = getTypeService().getTypeBySystemCode( systemCode=arguments.systemCode, typeCode=arguments.typeCode);
-					arguments.order.setOrderStatusType( newType );
+					arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode( systemCode=arguments.systemCode, typeCode="2"));
+				
+				} else {
+					
+					// we should narrow down the flow of status here
+					if (Len(arguments.typeCode) ) {
+						
+						// all processing status allowed when called with a specific typecode
+						arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode( systemCode=arguments.systemCode, typeCode=arguments.typeCode) );
+						
+					} else if( currentOrderStatusType.getSystemCode() == 'ostClosed') {
+						
+						//reopening closed-order, which is ostProcessing
+	                	arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode(systemCode='ostProcessing'));
+					}
+					
 	            }
 			        // Return Orders
 	        } else if (listFindNoCase('otReturnOrder,otExchangeOrder,otReplacementOrder,otRefundOrder', arguments.order.getTypeCode())) {
@@ -935,13 +955,10 @@ component extends="Slatwall.model.service.OrderService" {
 	
 	
 	public any function deleteOrderTemplate( required any orderTemplate ) {
-		var flexshipTypeID = getService('TypeService').getTypeBySystemCode('ottSchedule').getTypeID();
 		
-		if(arguments.orderTemplate.getOrderTemplateType().getTypeID() == flexshipTypeID){
-			getHibachiScope().getSession().setCurrentFlexship( javaCast("null", "") );
-			ORMExecuteQuery("UPDATE SlatwallSession s SET s.currentFlexship = NULL WHERE s.currentFlexship.orderTemplateID =:orderTemplateID", {orderTemplateID = arguments.orderTemplate.getOrderTemplateID()});
+		if( getHibachiSCope().getCurrentFlexshipID() == arguments.orderTemplate.getOrderTemplateID() ){
+			getHibachiScope().clearCurrentFlexship();
 		}
-		
 		return super.delete( arguments.orderTemplate );
 	}
 

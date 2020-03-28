@@ -885,12 +885,19 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				newOrderPayment.addError('orderPaymentID', "An issue occured while adding your Order Payment.");
 			}
 
-		}else if(!isNull(arguments.processObject.getAccountAddressID()) && len(arguments.processObject.getAccountAddressID())) {
+		} else if( len(arguments.processObject.getAccountAddressID()) ) {
+			
 			var accountAddress = getAccountService().getAccountAddress( arguments.processObject.getAccountAddressID() );
-
 			if(!isNull(accountAddress)) {
 				newOrderPayment.setBillingAccountAddress(accountAddress);
 				newOrderPayment.setBillingAddress( accountAddress.getAddress().copyAddress( true ) );
+			}
+			
+		} else if( len(arguments.processObject.getAddressID()) ) {
+			
+			var address = getAccountService().getAddress( arguments.processObject.getAddressID() );
+			if(!isNull(address)) {
+				newOrderPayment.setBillingAddress( address.copyAddress( true ) );
 			}
 		}
 
@@ -1703,6 +1710,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 		}  
 
+
 		getHibachiEntityQueueService().insertEntityQueueItem(arguments.orderTemplate.getOrderTemplateID(), 'OrderTemplate', 'processOrderTemplate_removeAppliedGiftCards');		
 
 		var addOrderPaymentProcessData = {	
@@ -1740,13 +1748,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 		for(var orderPayment in orderPayments) {
 	
-			if(orderPayment.getStatusCode() == 'opstActive') {
-
+			if(orderPayment.getStatusCode() == 'opstActive') { 
+      
 				var transactionType = 'charge'; 
 				if(len(orderPayment.getPaymentMethod().getPlaceOrderChargeTransactionType())){
 					transactionType = orderPayment.getPaymentMethod().getPlaceOrderChargeTransactionType(); 
 				}
-				
+
 				var processData = {
 					transactionType = transactionType,
 					amount = orderPayment.getAmount(),
@@ -5696,6 +5704,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public any function processOrder_reopenOrder(required any order, struct data={}) {
 		this.updateOrderStatusBySystemCode(arguments.order, "ostProcessing");
 		return arguments.order;
+    
 	}
 	
 

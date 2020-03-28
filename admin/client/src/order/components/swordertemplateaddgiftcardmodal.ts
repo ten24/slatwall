@@ -45,12 +45,14 @@ class SWOrderTemplateAddGiftCardModalController{
 	}
 	
 	public prefillGiftCardAmount = () =>{
-		if(this.orderTemplate.calculatedTotal < this.giftCard.calculatedBalanceAmount){
-			this.amountToApply = this.orderTemplate.calculatedTotal; 	
+		if(this.orderTemplate.total < this.giftCard.calculatedBalanceAmount){
+			this.amountToApply = this.orderTemplate.total; 	
 		} else { 
 			this.amountToApply = this.giftCard.calculatedBalanceAmount;
 		}
+		
 		this.maxAmount = Number(this.amountToApply);
+		
 		this.amountToApply = Number(this.amountToApply);
 	}
 	
