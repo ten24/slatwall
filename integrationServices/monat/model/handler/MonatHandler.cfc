@@ -64,8 +64,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 	public any function afterOrderProcess_placeOrderSuccess(required any slatwallScope, required any order, required any data){
 
 		var account = arguments.order.getAccount();
-		arguments.slatwallScope.setSessionValue('currentFlexshipID', '');
-	
+		arguments.slatwallScope.clearCurrentFlexship(); //if there was any
+		
 		// Snapshot the pricegroups on the order.
 		if ( !isNull(account) && arrayLen(account.getPriceGroups()) ) {
             arguments.order.setPriceGroup(account.getPriceGroups()[1]);
@@ -199,17 +199,26 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 				
 				orderTemplate.setShippingMethod(shippingMethod);
 				
-				if( !IsNull(orderFulFillment.getAccountAddress() ) ){
-					orderTemplate.setShippingAccountAddress(orderFulFillment.getAccountAddress() );
-				} else {
-					
-					//If the user chose not to save the address, we'll create a new-accountAddress for flexship, as flexship's frontend UI relies on that; User can always change/remove the address at the frontend
-					var newAccountAddress = getAccountService().newAccountAddress();
-					newAccountAddress.setAddress( orderFulFillment.getShippingAddress() );
-					newAccountAddress.setAccount( arguments.order.getAccount() );
-					newAccountAddress.setAccountAddressName( orderFulFillment.getShippingAddress().getName());
-					
-					orderTemplate.setShippingAccountAddress(newAccountAddress);
+				//try to copy shipping-account-address from last used assresses if required
+				if(!orderTemplate.hasShippingAccountAddress()) {
+					var shippingAccountAddress = orderFulFillment.getAccountAddress() ?: arguments.order.getShippingAccountAddress();
+					if( !isNull(shippingAccountAddress) ) {
+						orderTemplate.setShippingAccountAddress( shippingAccountAddress );
+						orderTemplate.setShippingAddress( shippingAccountAddress.getAddress().copyAddress() );
+					} 
+				}
+				
+				//try to copy shipping-address from last used assresses if required
+				if( !orderTemplate.hasShippingAddress() ) {
+					var shippingAddress = orderFulFillment.getShippingAddress() ?: arguments.order.getShippingAddress();
+					if( !isNull(shippingAddress) ) {
+						orderTemplate.setShippingAddress( shippingAddress.copyAddress() );
+					} 
+				}
+				
+				//try to copy billing-account-address from last used assresses if required
+				if( !orderTemplate.hasBillingAccountAddress() && arguments.order.hasBillingAccountAddress()) {
+					orderTemplate.setBillingAccountAddress(arguments.order.getBillingAccountAddress());
 				}
 				
 				orderTemplate.setAccountPaymentMethod(accountPaymentMethod);
@@ -218,6 +227,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 				if(isNull(orderTemplate.getAccount())){
 					orderTemplate.setAccount(arguments.order.getAccount());
 				}
+				
 				orderTemplate = getOrderService().saveOrderTemplate(orderTemplate,{},'upgradeFlow');
 			}
 			

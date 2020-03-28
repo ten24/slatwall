@@ -189,6 +189,29 @@ component output="false" accessors="true" extends="HibachiTransient" {
 			session[ getHibachiInstanceApplicationScopeKey() ][ arguments.key ] = arguments.value;
 		}
 	}
+	
+	
+	public boolean function hasCookieValue(required string key) {
+		return StructKeyExists(COOKIE, arguments.key) && Len( Trim(COOKIE[arguments.key]) );
+	}
+	
+	public string function getCookieValue(required string key) {
+		if( this.hasCookieValue(arguments.key) ) { return COOKIE[arguments.key]; }
+	}
+	
+	public void function setCookieValue(required string key, string value) {
+		
+		if(!IsNull(arguments.value) && Len(Trim(arguments.value))){
+			COOKIE[arguments.key] = arguments.value;
+		} else {
+			this.clearCookieValue(arguments.key);
+		}
+	}
+	
+	public void function clearCookieValue(required string key) {
+		 StructDelete(COOKIE, arguments.key);
+	}
+
 
 	public string function renderJSObject() {
 		var config = getService('HibachiSessionService').getConfig();

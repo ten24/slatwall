@@ -71,18 +71,29 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
 
     public any function get( required struct rc ) {
         var publicService = getService('PublicService');
-        if ( structKeyExists(arguments.rc, "context") && arguments.rc.context == "getCart"){
-            publicService.invokeMethod("getCartData", {data=arguments.rc});
-        }else if ( structKeyExists(arguments.rc, "context") && arguments.rc.context == "getAccount"){
-            publicService.invokeMethod("getAccountData", {data=arguments.rc});
-        }else if ( StructKeyExists(arguments.rc, "context") && rc.context != "get"){
-            publicService.invokeMethod("#arguments.rc.context#", {data=arguments.rc});
+        var hibachiEventService = getService('HibachiEventService');
+        
+        if ( structKeyExists(arguments.rc, "context") ) {
+            
+            hibachiEventService.announceEvent("beforePublicAPI::GET_#arguments.rc.context#", arguments.rc);
+            
+            if ( arguments.rc.context == "getCart"){
+                publicService.invokeMethod("getCartData", {data=arguments.rc});
+            }else if ( arguments.rc.context == "getAccount"){
+                publicService.invokeMethod("getAccountData", {data=arguments.rc});
+            }else if (  rc.context != "get"){
+                publicService.invokeMethod("#arguments.rc.context#", {data=arguments.rc});
+            }
+            
+            hibachiEventService.announceEvent("afterPublicAPI::GET_#arguments.rc.context#", arguments.rc);
         }
+        
     }
 
     public any function post( required struct rc ) {
         param name="arguments.rc.context" default="save";
         var publicService = getService('PublicService');
+        var hibachiEventService = getService('HibachiEventService');
 
         if (arguments.rc.context != "get" && arguments.rc.context == "process"){
             publicService.doProcess(rc);
@@ -99,18 +110,31 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
                 actions = listToArray(arguments.rc.context);
             }
             if (!arrayLen(actions)){
+                
+                hibachiEventService.announceEvent("beforePublicAPI::POST_#arguments.rc.context#", arguments.rc);
+
                 publicService.invokeMethod(
                     "#arguments.rc.context#", 
                     {data=arguments.rc}
                 );
+                
+                hibachiEventService.announceEvent("afterPublicAPI::POST_#arguments.rc.context#", arguments.rc);
+
             }else{
                 //iterate through all the actions calling the method.
                 for (var eachAction in actions){
+
                     //Make sure there are no errors if we have multiple.
                     if (!arguments.rc.$["#getDao('hibachiDao').getApplicationValue('applicationKey')#"].cart().hasErrors() && !arguments.rc.$["#getDao('hibachiDao').getApplicationValue('applicationKey')#"].account().hasErrors()){
-                          getHibachiScope().flushORMSession();
-                          publicService.invokeMethod("#eachAction#", {data=arguments['rc']});
-                    }else{
+                        
+                        hibachiEventService.announceEvent("beforePublicAPI::POST_#eachAction#", arguments.rc);
+                        
+                        getHibachiScope().flushORMSession();
+                        publicService.invokeMethod("#eachAction#", {data=arguments['rc']});
+                        
+                        hibachiEventService.announceEvent("afterPublicAPI::POST_#eachAction#", arguments.rc);
+
+                    } else {
                         return; //return here to push errors to the form that errored.
                     }
                 }

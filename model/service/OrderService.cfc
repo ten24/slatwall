@@ -885,12 +885,19 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				newOrderPayment.addError('orderPaymentID', "An issue occured while adding your Order Payment.");
 			}
 
-		}else if(!isNull(arguments.processObject.getAccountAddressID()) && len(arguments.processObject.getAccountAddressID())) {
+		} else if( len(arguments.processObject.getAccountAddressID()) ) {
+			
 			var accountAddress = getAccountService().getAccountAddress( arguments.processObject.getAccountAddressID() );
-
 			if(!isNull(accountAddress)) {
 				newOrderPayment.setBillingAccountAddress(accountAddress);
 				newOrderPayment.setBillingAddress( accountAddress.getAddress().copyAddress( true ) );
+			}
+			
+		} else if( len(arguments.processObject.getAddressID()) ) {
+			
+			var address = getAccountService().getAddress( arguments.processObject.getAddressID() );
+			if(!isNull(address)) {
+				newOrderPayment.setBillingAddress( address.copyAddress( true ) );
 			}
 		}
 
