@@ -495,7 +495,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         var isUpgradedFlag = arguments.data.saveContext == "upgradeFlow" ? true : false;
 
-        if((getHibachiScope().getAccount().isNew() && !isUpgradedFlag ) ){
+        if((getHibachiScope().getAccount().isNew() && !isUpgradedFlag)  || isNull(arguments.data.orderTemplateSystemCode)){
             return;
         }
 
