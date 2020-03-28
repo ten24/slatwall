@@ -71,6 +71,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
             arguments.order.setPriceGroup(account.getPriceGroups()[1]);
         }
         
+        //Commission Date
+        arguments.order.setCommissionPeriod(dateFormat( now(), "mm/yyyy" ));
+        
         // Set the Product Pack Purchased Flag
         if( account.getAccountType() == 'marketPartner' && arguments.order.hasProductPack() ) {
 			account.setProductPackPurchasedFlag(true);
@@ -181,8 +184,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 		//Set the initial order flag if needed.
 		try{
 			
-			//Commission Date
-			var commissionDate = dateFormat( now(), "mm/yyyy" );
+			
 			//adding shipping and billing to flexship and activating
 			if(!isNull(arguments.data.orderTemplateID)){
 
@@ -235,7 +237,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 				orderTemplate = getOrderService().saveOrderTemplate(orderTemplate,{},'upgradeFlow');//upgradeFlow???
 			}
 			
-			arguments.order.setCommissionPeriod(commissionDate);
+			
 			
 			//Initial Order Flag
 			//Set the Initial Order Flag as needed
@@ -252,7 +254,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 				arguments.order.setInitialOrderFlag(true);
 			}
 		}catch(any dateError){
-			logHibachi("afterOrderProcess_placeOrderSuccess failed @ setCommissionPeriod using #commissionDate# OR to set initialOrderFlag #serializeJson(dateError)#");	
+			logHibachi("afterOrderProcess_placeOrderSuccess failed @ set initialOrderFlag #serializeJson(dateError)#");	
 		}
 		
 	}
