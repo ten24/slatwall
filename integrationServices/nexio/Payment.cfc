@@ -52,8 +52,19 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 		return "creditCard";
 	}
 
+	public boolean function isAdminRequest() {
+		return structKeyExists(request,'context') 
+			&& structKeyExists(request.context,'fw')
+			&& request.context.fw.getSubsystem(request.context[request.context.fw.getAction()]) == 'admin';
+	}
+
 	// Override allow site settings
 	public any function setting(required any requestBean) {
+		
+		if(structKeyExists(arguments, 'settingName') && arguments.settingName == 'checkFraud' && isAdminRequest()){
+			return false;
+		}
+		
 		// Allows settings to be requested in the context of the site where the order was created
 		if (!isNull(arguments.requestBean.getOrder()) && !isNull(arguments.requestBean.getOrder().getOrderCreatedSite()) && !arguments.requestBean.getOrder().getOrderCreatedSite().getNewFlag()) {
 			arguments.filterEntities = [arguments.requestBean.getOrder().getOrderCreatedSite()];
@@ -420,11 +431,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 		// Request Data
 		if (!arguments.requestBean.hasErrors() && !isNull(arguments.requestBean.getProviderToken()) && len(arguments.requestBean.getProviderToken())) {
 			
-			var checkFraud = false;
-			
-			if(getHibachiScope().hasSessionValue('kount-token')){
-				checkFraud = setting(settingName='checkFraud', requestBean=arguments.requestBean) ? true : false;
-			}
+			var checkFraud = setting(settingName='checkFraud', requestBean=arguments.requestBean);
 			
 			var requestData = {
 				"isAuthOnly" = true,
@@ -447,10 +454,6 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			    }
 			};	
 			responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'authorize', requestData);
-			
-			if(checkFraud && getHibachiScope().hasSessionValue('kount-token')){
-				getHibachiScope().clearSessionValue('kount-token');
-			}
 			
 			// Response Data
 			if (!responseBean.hasErrors()) {
@@ -481,11 +484,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 	private void function sendRequestToAuthorizeAndCharge(required any requestBean, required any responseBean) {
 		// Request Data
 		if (!arguments.requestBean.hasErrors() && !isNull(arguments.requestBean.getProviderToken()) && len(arguments.requestBean.getProviderToken())) {
-			var checkFraud = false;
-			
-			if(getHibachiScope().hasSessionValue('kount-token')){
-				checkFraud = setting(settingName='checkFraud', requestBean=arguments.requestBean) ? true : false;
-			}
+			var checkFraud = setting(settingName='checkFraud', requestBean=arguments.requestBean);
 			
 			var requestData = {
 				"isAuthOnly" = false,
@@ -509,10 +508,6 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			};	
 
 			responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'authorizeAndCharge', requestData);
-			
-			if(checkFraud && getHibachiScope().hasSessionValue('kount-token')){
-				getHibachiScope().clearSessionValue('kount-token');
-			}
 	
 			// Response Data
 			if (!responseBean.hasErrors()) {
