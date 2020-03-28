@@ -185,7 +185,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 			var commissionDate = dateFormat( now(), "mm/yyyy" );
 			//adding shipping and billing to flexship and activating
 			if(!isNull(arguments.data.orderTemplateID)){
-				
+
 				var orderTemplate = getOrderService().getOrderTemplate(arguments.data.orderTemplateID);
 				var orderFulFillment = arguments.order.getOrderFulfillments()[1];
 				
@@ -202,7 +202,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 				//try to copy shipping-account-address from last used assresses if required
 				if(!orderTemplate.hasShippingAccountAddress()) {
 					var shippingAccountAddress = orderFulFillment.getAccountAddress() ?: arguments.order.getShippingAccountAddress();
-					if( !isNull(shippingAccountAddress) ) {
+					if( !IsNull(shippingAccountAddress) ) {
 						orderTemplate.setShippingAccountAddress( shippingAccountAddress );
 						orderTemplate.setShippingAddress( shippingAccountAddress.getAddress().copyAddress() );
 					} 
@@ -211,14 +211,18 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 				//try to copy shipping-address from last used assresses if required
 				if( !orderTemplate.hasShippingAddress() ) {
 					var shippingAddress = orderFulFillment.getShippingAddress() ?: arguments.order.getShippingAddress();
-					if( !isNull(shippingAddress) ) {
+					if( !IsNull(shippingAddress) ) {
 						orderTemplate.setShippingAddress( shippingAddress.copyAddress() );
 					} 
 				}
 				
 				//try to copy billing-account-address from last used assresses if required
-				if( !orderTemplate.hasBillingAccountAddress() && arguments.order.hasBillingAccountAddress()) {
-					orderTemplate.setBillingAccountAddress(arguments.order.getBillingAccountAddress());
+				if( !orderTemplate.hasBillingAccountAddress()) {
+					//if there's no billing-account-address falling-back to the shipping-account-address
+					var billingAccountAddress = arguments.order.getBillingAccountAddress() ?: orderTemplate.getShippingAccountAddress();
+					if(!IsNull(billingAccountAddress)){
+						orderTemplate.setBillingAccountAddress(billingAccountAddress);
+					}
 				}
 				
 				orderTemplate.setAccountPaymentMethod(accountPaymentMethod);
@@ -228,7 +232,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 					orderTemplate.setAccount(arguments.order.getAccount());
 				}
 				
-				orderTemplate = getOrderService().saveOrderTemplate(orderTemplate,{},'upgradeFlow');
+				orderTemplate = getOrderService().saveOrderTemplate(orderTemplate,{},'upgradeFlow');//upgradeFlow???
 			}
 			
 			arguments.order.setCommissionPeriod(commissionDate);
