@@ -337,12 +337,10 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 		        };	
 	        }
 	    }
-	    
-	    var merchantAccountId = setting(settingName='braintreeAccountMerchantID', requestBean=arguments.requestBean);
 
 		//request payload
 		var payload = { "query" : "mutation CaptureTransaction($input: ChargePaymentMethodInput!) { chargePaymentMethod(input: $input) { transaction { id status } } }",
-			"variables" : { "input": { "paymentMethodId": "#client_token#", "merchantAccountId": "#merchantAccountId#", "transaction" : { 
+			"variables" : { "input": { "paymentMethodId": "#client_token#", "transaction" : { 
 				"amount" : '#totalWithDiscount#',
 				"orderId" : "#arguments.requestBean.getOrder().getOrderNumber()#",
 				'discountAmount' : '#discount#',
