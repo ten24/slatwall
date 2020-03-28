@@ -72,7 +72,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 				}	
 		}
 		
-		//only force a new token if one was passed in
+		//only force a new token if one not was passed in
 		if( !requestHasCSRF ){
 			arguments.rc.csrf = this.generateCSRFToken(requestHasCSRF);
 		}
