@@ -13,7 +13,7 @@
 			<cfset local.i = 1 /> 
 			<cfset local.insertList = '' /> 
 			<cfloop query="arguments.geoIPDatabase">
-				<cfif listFind('US,GB,PL,IE,AU', country_code)>
+				<cfif listFind('US,GB,PL,IE,AU,CA', country_code)>
 					<cfset local.i++ />
 					<cfset local.insertList = listAppend(local.insertList, '(#ip_from#, #ip_to#, "#country_code#")')  /> 
 				</cfif>

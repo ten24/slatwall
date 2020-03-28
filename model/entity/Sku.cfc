@@ -1369,6 +1369,11 @@ property name="sapItemCode" ormtype="string";
 	}
 	
 	public any function getQOQ(string locationID) {
+		
+		if(setting('skuDisableQoQCalculation') == true){
+			return 0;
+		}
+		
 		if ( structKeyExists(arguments, 'locationID') ){
 			return getQuantity(quantityType="QOQ", locationID=arguments.locationID );
 		}	
