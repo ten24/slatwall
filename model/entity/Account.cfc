@@ -320,7 +320,7 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 			variables.usernameNotInUseFlag = true;
 			if(!isNull(getUserName()) && len(getUserName()) && getNewFlag()) {
 				variables.usernameNotInUseFlag = getService("accountService").getUsernameNotInUseFlag( username=getUsername() );
-			} else {
+			} else if(!isNull(getUserName()) && len(getUserName()) ) {
 				variables.usernameNotInUseFlag = getService("accountService").getUsernameNotInUseFlag( username=getUsername(), accountID=getAccountID() );
 			}
 		}
