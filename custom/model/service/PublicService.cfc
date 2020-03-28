@@ -1942,7 +1942,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             var shippingMethods = getOrderService().getShippingMethodOptions(shippingFulfillment) ?: [];
             
             for(var method in shippingMethods){
-                 if(len(method.value) && method.getPublishedFlag()){
+                 if(len(method.value) && method.publishedFlag){
                     //then we set the cheapest shipping fulfillment, which is set as first by sort order
                     var data = {fulfillmentID:shippingFulfillment.getOrderFulfillmentID(), shippingMethodID: method.value};
                     super.addShippingMethodUsingShippingMethodID(data);       
