@@ -1685,7 +1685,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					},
 					'orderPaymentID' : '',
 					'orderPaymentType' : {
-						'typeID' : '444df2f0fed139ff94191de8fcd1f61b'//new payment
+						'typeID' : '444df2f0fed139ff94191de8fcd1f61b'//new payment type
 					},
 					'paymentMethod' : {
 						'paymentMethodID' : '50d8cd61009931554764385482347f3a'//giftcard payment method
@@ -1696,7 +1696,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 
 			newOrder = this.process(newOrder, processData, 'addOrderPayment'); 
-			newOrder.clearProcessObject('addOrderPayment');
+			newOrder.clearProcessObject('addOrderPayment');	
 
 			if(newOrder.hasErrors()){
 				this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors on gift card payment #serializeJson(newOrder.getErrors())# when placing order', true);
@@ -1705,10 +1705,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				
 				//keep going potentially the gift card is already applied to another order 
 				continue;
-			} else { 
+			} else {
 				ormFlush(); 
-			} 
-		}	
+			}
+		}  
+
 
 		getHibachiEntityQueueService().insertEntityQueueItem(arguments.orderTemplate.getOrderTemplateID(), 'OrderTemplate', 'processOrderTemplate_removeAppliedGiftCards');		
 
@@ -1747,9 +1748,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 		for(var orderPayment in orderPayments) {
 	
-			if(orderPayment.getStatusCode() == 'opstActive') {
-		
-
+			if(orderPayment.getStatusCode() == 'opstActive') { 
+      
 				var transactionType = 'charge'; 
 				if(len(orderPayment.getPaymentMethod().getPlaceOrderChargeTransactionType())){
 					transactionType = orderPayment.getPaymentMethod().getPlaceOrderChargeTransactionType(); 
@@ -5704,6 +5704,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public any function processOrder_reopenOrder(required any order, struct data={}) {
 		this.updateOrderStatusBySystemCode(arguments.order, "ostProcessing");
 		return arguments.order;
+    
 	}
 	
 

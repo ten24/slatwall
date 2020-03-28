@@ -1,5 +1,7 @@
 {
+	
 	"properties": {
-		"order.isLockedInProcessingFlag": [{ "eq": false }]
+		"order.isLockedInProcessingFlag": [{ "contexts": "processTransaction,updateAmount", "eq": false }],
+		"order.isLockedInProcessingTwoFlag": [{ "contexts": "createTransaction", "eq": false }]
 	}
 }

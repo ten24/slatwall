@@ -65,11 +65,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
         
         var marketPartnerCollection = this.getAccountCollection(arguments.data);
         
-        var marketPartnerObject = {
-            accountCollection: marketPartnerCollection.accountCollection.getPageRecords(formatRecords=false),
-            recordsCount: marketPartnerCollection.recordsCount
-        }
-        return marketPartnerObject;
+        return this.getAccountCollection(arguments.data);
     }
     
     private any function getAccountCollection(required struct data){
@@ -89,7 +85,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
         accountCollection.addDisplayProperty('primaryAddress.address.countryCode','primaryAddress_address_countryCode', {isVisible:true, isSearchable:false});
         accountCollection.addDisplayProperty('primaryAddress.address.stateCode','primaryAddress_address_stateCode', {isVisible:true, isSearchable:false});
         accountCollection.addFilter( 'accountNumber', 'NULL', 'IS NOT');
-        accountCollection.addFilter( 'accountStatusType.systemCode', 'astGoodStanding');
+        accountCollection.addFilter( 'accountStatusType.typeID', '2c9180836dacb117016dad11ebf2000e'); //'astGoodStanding'
         
         if(arguments.data.accountSearchType == 'VIP'){
             accountCollection.addFilter(
@@ -121,13 +117,22 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
             accountCollection.setKeywords(arguments.data.search);
         }
         
-        var recordsCount = accountCollection.getRecordsCount();
         
         accountCollection.setPageRecordsShow(arguments.data.pageRecordsShow);
         accountCollection.setCurrentPageDeclaration(arguments.data.currentPage);
         
+        //Just to remove Order By CreatedDateTime
+        accountCollection.addOrderBy('accountType|ASC');
+        
+        var pageRecords = accountCollection.getPageRecords(formatRecords=false);
+        var recordsCount = arrayLen(pageRecords);
+        
+        if(recordsCount == arguments.data.pageRecordsShow){
+            recordsCount = accountCollection.getRecordsCount();
+        }
+        
         var returnObject = {
-            accountCollection: accountCollection,
+            accountCollection: pageRecords,
             recordsCount: recordsCount
         }
         return returnObject; 
