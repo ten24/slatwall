@@ -66604,8 +66604,8 @@ var SWOrderTemplateAddGiftCardModalController = /** @class */ (function () {
             }
         };
         this.prefillGiftCardAmount = function () {
-            if (_this.orderTemplate.calculatedTotal < _this.giftCard.calculatedBalanceAmount) {
-                _this.amountToApply = _this.orderTemplate.calculatedTotal;
+            if (_this.orderTemplate.total < _this.giftCard.calculatedBalanceAmount) {
+                _this.amountToApply = _this.orderTemplate.total;
             }
             else {
                 _this.amountToApply = _this.giftCard.calculatedBalanceAmount;
