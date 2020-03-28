@@ -1832,7 +1832,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 	
 	public any function saveAccountAddress(required any accountAddress, struct data={},string context="save", boolean verifyAddressFlag = false){
-		arguments.accountAddress = super.saveAccountAddress(arguments.accountAddress);
+		arguments.accountAddress = super.saveAccountAddress(arguments.accountAddress, arguments.data);
 		
 		if(!arguments.accountAddress.hasErrors()){
 			getAddressService().saveAddress(address=arguments.accountAddress.getAddress(),verifyAddressFlag=arguments.verifyAddressFlag);
