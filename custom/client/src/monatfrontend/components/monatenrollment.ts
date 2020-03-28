@@ -25,6 +25,7 @@ class MonatEnrollmentController {
 	public type:string;
 	public showBirthday:boolean;
 	public account;
+
 	
 	//@ngInject
 	constructor(public monatService, public observerService, public $rootScope, public publicService, public orderTemplateService) {
@@ -67,19 +68,19 @@ class MonatEnrollmentController {
 				
 				if(!this.upgradeFlow){
 					//logic for if the user has an upgrade on his order and he leaves/refreshes the page 
-				
+					
 					//if they have an upgraded order and order payments, send to checkout remove account steps
-					if(cart.orderFulfillments && cart.orderFulfillments[0]?.shippingAddress?.addressID.length && cart.monatOrderType?.typeID.length){
+					if(cart.orderFulfillments && cart.orderFulfillments[0]?.shippingAddress?.addressID.length && cart.monatOrderType?.typeCode.length){
 						this.hasSkippedSteps = true;
 						this.steps = this.steps.filter(el => reqList.indexOf(el.stepClass) == -1);
 						this.goToLastStep();
 					//if they have account with a username and upgraded order type, remove account steps and send to shop page
-					}else if(account.accountID.length && cart.monatOrderType?.typeID.length && account.accountCode.length){
+					}else if(account.accountID.length && cart.monatOrderType?.typeCode.length && account.accountCode.length){
 						this.hasSkippedSteps = true;
 						this.steps = this.steps.filter(el => reqList.indexOf(el.stepClass) == -1);
 						this.next();
 					//if they have an account and an upgraded order remove create account
-					}else if(account.accountID.length && cart.monatOrderType?.typeID.length && !this.upgradeFlow){
+					}else if(account.accountID.length && cart.monatOrderType?.typeCode.length && !this.upgradeFlow){
 						this.hasSkippedSteps = true;
 						this.steps = this.steps.filter(el => el.stepClass !== 'createAccount');
 						this.next();
@@ -120,6 +121,7 @@ class MonatEnrollmentController {
 		if (this.steps.length == 0) {
 			step.selected = true;
 		}
+
 		this.steps.push(step);
 	};
 
