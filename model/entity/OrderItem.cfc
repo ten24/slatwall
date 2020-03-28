@@ -203,11 +203,7 @@ property name="personalVolume" ormtype="big_decimal";
     property name="kitFlagCode" ormtype="string";
     property name="itemCategoryCode" ormtype="string";
     
-   
- property name="kitFlagCode" ormtype="string" hb_formFieldType="select";
- property name="itemCategoryCode" ormtype="string" hb_formFieldType="select";
- property name="lineNumber" ormtype="string";
- property name="orderItemLineNumber" ormtype="string";//CUSTOM PROPERTIES END
+   //CUSTOM PROPERTIES END
 	public boolean function getQuantityHasChanged(){
 		return variables.quantityHasChanged;
 	}

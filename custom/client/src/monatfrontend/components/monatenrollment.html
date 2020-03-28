@@ -22,7 +22,7 @@
     <span sw-rbkey="'frontend.order.canPlaceOrderFailure'"></span>
 </div>
     
-<footer class="steps-footer d-flex flex-column">
+<footer ng-if="monatEnrollment.currentStepName !== 'checkout'" class="steps-footer d-flex flex-column">
 	<div class="w-100 d-flex justify-content-between align-items-center">
 		<!-- Back button --->
 		<div class="d-flex align-items-center">
@@ -48,7 +48,7 @@
 		</div>
 		
 		<!----VIP step icon indicators --->
-		<div ng-if="monatEnrollment.type=='vip' || monatEnrollment.type=='vipUpgrade'" class="step-status row w-50 text-center align-items-end">
+		<div ng-if=" monatEnrollment.type=='vip' || monatEnrollment.type=='vipUpgrade'" class="step-status row w-50 text-center align-items-end">
 			<div 
 				class="col mt-1"
 				ng-style="{ 'opacity' : (monatEnrollment.currentStepName == 'todaysOrder' || monatEnrollment.currentStepName == undefined || monatEnrollment.currentStepName == 'ofy') ? '100%' : '50%' }"

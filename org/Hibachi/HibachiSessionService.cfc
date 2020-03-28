@@ -46,8 +46,10 @@ component output="false" accessors="true" extends="HibachiService"  {
 	} 
 
 	public any function verifyCSRF(required any rc, required any framework){
+		var requestHasCSRF = structKeyExists(arguments.rc, "csrf"); 
+
 		// Right now this logic only runs if CSRF token is present, not as secure as it could be. 
-		if(structKeyExists(arguments.rc, "csrf") && !this.verifyCSRFToken(arguments.rc.csrf)){
+		if(requestHasCSRF && !this.verifyCSRFToken(arguments.rc.csrf)){
 				
 				getHibachiScope().showMessage(getHibachiScope().rbKey("admin.define.csrfinvalid"),"success");
 	
@@ -71,8 +73,9 @@ component output="false" accessors="true" extends="HibachiService"  {
 		}
 		
 		//only force a new token if one was passed in
-		arguments.rc.csrf = this.generateCSRFToken(structKeyExists(arguments.rc, "csrf")); 
-		
+		if(requestHasCSRF){
+			arguments.rc.csrf = this.generateCSRFToken(requestHasCSRF); 
+		}
  		return arguments.rc;	
 	}
 	
