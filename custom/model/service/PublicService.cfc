@@ -1926,16 +1926,22 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 	public void function setDefaultShippingMethod(order = getHibachiScope().getCart()){
 
         //Then we get the shipping fulfillment
-        var orderFulfillments = arguments.order.getOrderFulfillments();
+        var orderFulfillments = arguments.order.getOrderFulfillments() ?: [];
         
         if(arrayLen(orderFulfillments)) {
             var shippingFulfillment = orderFulfillments[1];
-            var shippingMethods = getOrderService().getShippingMethodOptions(shippingFulfillment);
-            //make sure we have shipping options
-            if(!isNull(shippingMethods) && arrayLen(shippingMethods) && len(shippingMethods[1].value)){
-                //then we set the cheapest shipping fulfillment, which is set as first by sort order
-                var data = {fulfillmentID:shippingFulfillment.getOrderFulfillmentID(), shippingMethodID: shippingMethods[1].value};
-                super.addShippingMethodUsingShippingMethodID(data);               
+            var shippingMethods = getOrderService().getShippingMethodOptions(shippingFulfillment) ?: [];
+            
+            for(var method in shippingMethods){
+                 if(len(method.value) && method.publishedFlag){
+                    //then we set the cheapest shipping fulfillment, which is set as first by sort order
+                    var data = {
+                        'fulfillmentID':shippingFulfillment.getOrderFulfillmentID(),
+                        'shippingMethodID': method.value
+                    };
+                    super.addShippingMethodUsingShippingMethodID(data);       
+                    break;
+                }               
             }
         }
 	}
@@ -1977,6 +1983,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
        
         //Set up the billing information, if there is a primary account payment method
         if(!isNull(account.getPrimaryPaymentMethod())){
+              
             var paymentData = {  requireBillingAddress: 0, copyFromType: 'accountPaymentMethod', accountPaymentMethodID: account.getPrimaryPaymentMethod().getAccountPaymentMethodID() };
             super.addOrderPayment(paymentData);
         }
