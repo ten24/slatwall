@@ -199,10 +199,21 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		if( this.hasCookieValue(arguments.key) ) { return COOKIE[arguments.key]; }
 	}
 	
-	public void function setCookieValue(required string key, string value) {
+	public void function setCookieValue(required string key, string value, any expires) {
 		
 		if(!IsNull(arguments.value) && Len(Trim(arguments.value))){
-			COOKIE[arguments.key] = arguments.value;
+			
+			var args = {
+				name= arguments.key,  
+				value= arguments.value
+			};
+			if(!IsNull(arguments.expires)){
+				args.expires = arguments.expires;
+			}
+			
+			//the Hibachi service will takecare of [sessionCookieSecure and sessionCookieDomain] based on the application settings
+			this.getService('hibachiServiece').cfcookie(args);
+		
 		} else {
 			this.clearCookieValue(arguments.key);
 		}
