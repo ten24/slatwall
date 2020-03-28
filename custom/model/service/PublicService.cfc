@@ -1804,10 +1804,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     public void function getMarketPartners(required struct data){
         param name="arguments.data.search" default='';
         
-        if( !len(data.search) && getHibachiScope().hasSessionValue('ownerAccountNumber') && 
-            len( getHibachiScope().getSessionValue('ownerAccountNumber'))
-        ){
-            data['search'] = getHibachiScope().getSessionValue('ownerAccountNumber');
+        if( !len(data.search) && getHibachiScope().hasCurrentOwnerAccountNumber()){
+            data['search'] = getHibachiScope().getCurrentOwnerAccountNumber();
         }
         
         var marketPartners = getService('MonatDataService').getMarketPartners(data);
