@@ -44,6 +44,7 @@ class MonatCheckoutController {
 	public currentShippingAddress;
 	public listPrice = 0;
 	public toggleBillingAddressForm:boolean;
+	public sponsorLoading:boolean;
 	
 	// @ngInject
 	constructor(
@@ -340,6 +341,7 @@ class MonatCheckoutController {
 	}
 	
 	public submitSponsor():Screen | void{
+		this.sponsorLoading = true;
 		this.publicService.doAction('submitSponsor', {sponsorID: this.ownerAccountID}).then(res=>{
 			if(res.successfulActions.length) {
 				this.hasSponsor = true; 
@@ -347,6 +349,7 @@ class MonatCheckoutController {
 			}else if(res.errors){
 				this.monatAlertService.error(res.errors);
 			}
+			this.sponsorLoading = false;
 		});
 	}
 	
