@@ -48,7 +48,6 @@ Notes:
 component extends="Slatwall.model.service.PublicService" accessors="true" output="false" {
     
     
-    
      public any function login( required struct data ){
          super.login(argumentCollection = arguments);
          
@@ -492,7 +491,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         param name="arguments.data.scheduleOrderNextPlaceDateTime" default= "#dateAdd('m',1,dateFormat(now()))#";
         param name="arguments.data.siteID" default="";
         param name="arguments.data.saveContext" default="";
-        param name="arguments.data.setOnSessionFlag" default=false;
+        param name="arguments.data.setOnHibachiScopeFlag" default=false;
         
         var isUpgradedFlag = arguments.data.saveContext == "upgradeFlow" ? true : false;
 
@@ -521,7 +520,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         if(!isUpgradedFlag){
             processObject.setAccountID(getHibachiScope().getAccount().getAccountID());
-        }else{
+        } else {
             //Vip upgrade so we assign the VIP price group to the process object
             processObject.setPriceGroup(getService('PriceGroupService').getPriceGroupByPriceGroupCode(3));
         }
@@ -530,27 +529,24 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             processObject.setScheduleOrderNextPlaceDateTime(arguments.data.scheduleOrderNextPlaceDateTime);  
         }
         
-        if(len(arguments.data.saveContext)){
-            orderTemplate = getOrderService().processOrderTemplate_create(orderTemplate,processObject,{},arguments.data.saveContext);
-        }else{
-            orderTemplate = getOrderService().processOrderTemplate(orderTemplate,processObject,"create");
+        if( len(arguments.data.saveContext)) {
+            orderTemplate = getOrderService().processOrderTemplate_create(orderTemplate, processObject, {}, arguments.data.saveContext);
+        } else {
+            orderTemplate = getOrderService().processOrderTemplate(orderTemplate, processObject, "create");
         }
         
+        //TODO: change these to consistant-names, need to review dependant frontend code 
         getHibachiScope().addActionResult( "public:order.create", orderTemplate.hasErrors() );
-        
-        if(orderTemplate.hasErrors()) {
-            addErrors(arguments.data, orderTemplate.getErrors());
-        }
-        
-        if(arguments.data.setOnSessionFlag){
-            getHibachiScope().logHibachi('========================SETTING NEW ORDER TEMPLATE ON SESSIONID: #getHibachiScope().getSession().getSessionID()#========================',true);
-            getHibachiScope().logHibachi('========================SETTING NEW ORDER TEMPLATE ON flexshipID: #orderTemplate.getOrderTemplateID()#========================',true);
+        if(!orderTemplate.hasErrors()) {
             
-            COOKIE['currentFlexshipID'] = orderTemplate.getOrderTemplateID();
-            getHibachiScope().setSessionValue('currentFlexshipID', orderTemplate.getOrderTemplateID());
+            arguments.data['ajaxResponse']['orderTemplate'] = orderTemplate.getOrderTemplateID();
+            if(arguments.data.setOnHibachiScopeFlag) {
+                getHibachiScope().setCurrentFlexship(orderTemplate);
+            }
+            
+        } else {
+            this.addErrors(arguments.data, orderTemplate.getErrors());
         }
-
-        arguments.data['ajaxResponse']['orderTemplate'] = orderTemplate.getOrderTemplateID();
     }
     
     public any function addItemAndCreateWishlist( required struct data ) {
@@ -563,20 +559,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         //add item to template
         
     }
-    
-    public any function setAsCurrentFlexship(required any data) {
-        param name="data.orderTemplateID" default="";
-        
-        var orderTemplate = getOrderService().getOrderTemplateForAccount(argumentCollection = arguments);
-		if( isNull(orderTemplate) ) {
-			return;
-		}
-		
-	    getHibachiScope().getSession().setCurrentFlexship(orderTemplate);
-	    var failure = isNull(getHibachiScope().getSession().getCurrentFlexship());
-	    getHibachiScope().addActionResult( "public:setAsCurrentFlexship", failure );
-
-	}
 
     public void function updatePrimaryPaymentMethod(required any data){
         param name="data.paymentMethodID" default="";
@@ -980,15 +962,17 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         var account = getHibachiScope().getAccount();
         if(account.getNewFlag()){
-            getHibachiScope().addActionResult('public:account.submitSponsor',true);
+            getHibachiScope().addActionResult('public:account.submitSponsor', true);
             return;
         }
         
         var autoAssignment = false;
-        
-        if(!len(arguments.data.sponsorID)){
-            arguments.data.sponsorID = getDAO('accountDAO').getEligibleMarketPartner(account.getPrimaryAddress().getAddress().getPostalCode());
+        if( !len(arguments.data.sponsorID) ){
             
+            arguments.data.sponsorID = getDAO('accountDAO').getEligibleMarketPartner(
+                    account.getPrimaryAddress().getAddress().getPostalCode()
+                );
+                
             if(!len(arguments.data.sponsorID)){
                 this.addErrors(arguments.data, getHibachiScope().rbKey('validate.submitSponsor.notfound'));
                 getHibachiScope().addActionResult('public:account.submitSponsor',true);
@@ -1021,10 +1005,10 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         account.setOwnerAccount(sponsorAccount);
         
-        getHibachiScope().addActionResult('public:account.submitSponsor',accountRelationship.hasErrors());
+        getHibachiScope().addActionResult('public:account.submitSponsor', accountRelationship.hasErrors());
         
         if(accountRelationship.hasErrors()){
-            addErrors(arguments.data,accountRelationship.getErrors());
+            addErrors(arguments.data, accountRelationship.getErrors());
             return;
         }
         
@@ -1057,11 +1041,13 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var cart = super.addOrderItem(arguments.data);
         var account = cart.getAccount();
  
-        if(!cart.hasErrors() 
-        && !isNull(account) 
-        && !isNull(account.getAccountStatusType()) 
-        && account.getAccountStatusType().getSystemCode() == 'astEnrollmentPending'
-        && isNull(cart.getMonatOrderType())){
+        if(
+            !cart.hasErrors() 
+            && !isNull(account) 
+            && !isNull(account.getAccountStatusType()) 
+            && account.getAccountStatusType().getSystemCode() == 'astEnrollmentPending'
+            && isNull(cart.getMonatOrderType())
+        ){
             if(account.getAccountType() == 'marketPartner' ){
                 cart.setMonatOrderType(getService('TypeService').getTypeByTypeCode('motMpEnrollment'));
             }else if(account.getAccountType() == 'vip'){
@@ -1638,16 +1624,21 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             return;
         }
         
-        getHibachiScope().setSessionValue('ownerAccountNumber', '');
+        getHibachiScope().clearCurrentOwnerAccountNumber();
         
         //if we are not in an upgrade flow and the user is logged in, log the user out.
         if(!arguments.data.upgradeFlowFlag && getHibachiScope().getLoggedInFlag()){
-           if(getHibachiScope().getAccount().getAccountType() == 'marketPartner' && !isNull(getHibachiScope().getAccount().getAccountNumber())) getHibachiScope().setSessionValue('ownerAccountNumber', '#getHibachiScope().getAccount().getAccountNumber()#');
+            if( 
+                getHibachiScope().getAccount().getAccountType() == 'marketPartner' && 
+                !isNull(getHibachiScope().getAccount().getAccountNumber())
+            ) {
+                getHibachiScope().setCurrentOwnerAccountNumber( getHibachiScope().getAccount().getAccountNumber() );
+           } 
             super.logout();
         }
        
         var order = getService('orderService').processOrder(getHibachiScope().getCart(),'clear');
-        getHibachiScope().setSessionValue('currentFlexshipID', '');
+        getHibachiScope().clearCurrentFlexship();
         order.setOrderCreatedSite(site);
         
         //getting the upgraded account type, price group and order type
@@ -1792,8 +1783,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     public void function getMarketPartners(required struct data){
         param name="arguments.data.search" default='';
         
-        if(!len(data.search) && getHibachiScope().hasSessionValue('ownerAccountNumber') && len( getHibachiScope().getSessionValue('ownerAccountNumber'))){
-            data['search'] = getHibachiScope().getSessionValue('ownerAccountNumber');
+        if( !len(data.search) && getHibachiScope().hasCurrentOwnerAccountNumber()){
+            data['search'] = getHibachiScope().getCurrentOwnerAccountNumber();
         }
         
         var marketPartners = getService('MonatDataService').getMarketPartners(data);
@@ -2049,43 +2040,45 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         param name="arguments.data.nullAccountFlag" default="false";
         param name="arguments.data.optionalProperties" default="";
         
-        getHibachiScope().logHibachi('========================GET SET FLEXSHIP CALLED, currentFlexshipID hasSessionValue: #getHibachiScope().hasSessionValue("currentFlexshipID")#========================',true);
-        
-        if( ( !getHibachiScope().hasSessionValue('currentFlexshipID') || !len(getHibachiScope().getSessionValue('currentFlexshipID')) ) && StructKeyExists(COOKIE, 'currentFlexshipID') ) {
+        //Try to grab the currentFlexshipID from Cookie/session/whatever
+        if( !getHibachiScope().hasCurrentFlexship() ) {
             
-            getHibachiScope().logHibachi(" Current Slatwall-SessionID #getHibachiScope().getSession().getSessionID()# ", true);
+            getHibachiScope().logHibachi(" No current-flexship found", true);
             getHibachiScope().logHibachi(" COOKIE.JSESSIONID = #COOKIE.JSESSIONID# ", true);
     		getHibachiScope().logHibachi(" COOKIE.CFTOKEN = #COOKIE.CFTOKEN# ", true);
     		getHibachiScope().logHibachi(" COOKIE.CFID = #COOKIE.CFID# ", true);
+            
+        } else {
+            
+            getHibachiScope().logHibachi("Current-flexship found on hibachi-scope = #getHibachiScope().getCurrentFlexshipID()# ", true);
         }
         
-
-        //if the request does not pass setIfNullFlag as true, and there is no order template on session, return an empty object
-        if( (!getHibachiScope().hasSessionValue('currentFlexshipID') || !len( getHibachiScope().getSessionValue('currentFlexshipID'))) && !arguments.data.setIfNullFlag){
-
-            arguments.data['ajaxResponse']['orderTemplate'] = {};
-            
-        //If there is an order template on the session return the order template details
-        }else if( getHibachiScope().hasSessionValue('currentFlexshipID') && len( getHibachiScope().getSessionValue('currentFlexshipID')) ){
-            
+        
+        if( getHibachiScope().hasCurrentFlexship() ) {
+            //If there is an order template on the session return the order template details
             var data = {
-                "orderTemplateID" : getHibachiScope().getSessionValue('currentFlexshipID'),
-                "optionalProperties" : arguments.data.optionalProperties,
-                "nullAccountFlag" :arguments.data.nullAccountFlag
+                "orderTemplateID": getHibachiScope().getCurrentFlexshipID(),
+                "optionalProperties": arguments.data.optionalProperties,
+                "nullAccountFlag": arguments.data.nullAccountFlag
             }
             arguments.data['ajaxResponse']['orderTemplate'] = getOrderService().getOrderTemplateDetailsForAccount(data);
             
-        //if there is no order template on session and request passes setIfNullFlag then we create an order template and set on session
-        }else if(arguments.data.setIfNullFlag){
-            arguments.data['setOnSessionFlag'] = true;
+        } else if(arguments.data.setIfNullFlag) {
+            
+            // if there is no order template on session and request passes setIfNullFlag, 
+            // then we create an order template and set on session
+            arguments.data['setOnHibachiScopeFlag'] = true;
             arguments.data['orderTemplateSystemCode'] = 'ottSchedule'; //currently session only accepts flexships
             this.createOrderTemplate(arguments.data);
-
-       
+            
+        } else {
+            // if the request does not pass setIfNullFlag as true, 
+            // and there is no order template on session, return an empty object
+            arguments.data['ajaxResponse']['orderTemplate'] = {};
         }
-        
-
     }
+    
+    
     /**
         * Function to update account with validation ensuring age is >= 18
     **/

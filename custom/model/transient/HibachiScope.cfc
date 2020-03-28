@@ -101,4 +101,66 @@ component output="false" accessors="true" extends="Slatwall.model.transient.Hiba
 		
 		return '';
 	}
+	
+	
+	/**
+	 * Helper functions to handle the current-flexship, currentOwner/Account..., 
+	 * to keep logic abstracted from Session/Cookie
+	*/ 
+	public any function getCurrentFlexship(){
+		if(this.hasCookieValue('currentFlexshipID')){
+			return this.getService('orderService')
+						.getOrderTemplate( this.getCookieValue('currentFlexshipID') );
+		}
+	}
+	
+	public any function hasCurrentFlexship(){
+		return this.hasCookieValue('currentFlexshipID');
+	}
+	
+	public any function getCurrentFlexshipID(){
+		return this.getCookieValue('currentFlexshipID');
+	}
+	
+	public any function setCurrentFlexship(any orderTemplate){
+		
+		if(!IsNull(arguments.orderTemplate)){
+			this.logHibachi("SETTING CurrentFlexship on HibachiScope FlexshipID: #arguments.orderTemplate.getOrderTemplateID()#", true);
+			this.setCookieValue('currentFlexshipID', arguments.orderTemplate.getOrderTemplateID());
+		} else {
+			this.removeCurrentFlexship();
+		}
+	}
+	
+	public any function clearCurrentFlexship(){
+		this.logHibachi("RMOVING CurrentFlexship from HibachiScope, FlexshipID: #this.getCurrentFlexshipID()#", true);
+		this.clearCookieValue('currentFlexshipID');
+	}
+	
+	
+	
+	
+	public any function hasCurrentOwnerAccountNumber(){
+		return this.hasCookieValue('ownerAccountNumber');
+	}
+	
+	public any function getCurrentOwnerAccountNumber(){
+		return this.getCookieValue('ownerAccountNumber');
+	}
+	
+	public any function setCurrentOwnerAccountNumber(string ownerAccountNumber){
+		
+		if( !IsNull(arguments.orderTemplate) && Len(Trim(arguments.ownerAccountNumber)) ){
+			this.logHibachi("SETTING Current-OwnerAccountNumber on HibachiScope ownerAccountNumber: #arguments.ownerAccountNumber#", true);
+			this.setCookieValue('ownerAccountNumber', arguments.ownerAccountNumber);
+		} else {
+			this.clearCurrentOwnerAccountNumber();
+		}
+	}
+	
+	public any function clearCurrentOwnerAccountNumber(){
+		this.logHibachi("RMOVING Current-OwnerAccountNumber from HibachiScope, ownerAccountNumber: #this.getOwnerAccountNumber()#", true);
+		this.clearCookieValue('ownerAccountNumber');
+	}
+	
 }

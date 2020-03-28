@@ -152,10 +152,9 @@ component extends="Slatwall.model.service.OrderService" {
 				arguments.orderTemplate.addError('create', account.getErrors());
 				return arguments.orderTemplate;
 			} 
-		} else if(!isNull(processObject.getAccount())){
-			var account = processObject.getAccount();
+			
 		} else {
-			var account = getHibachiScope().getAccount();
+			var account = processObject.getAccount() ?: getHibachiScope().getAccount();
 		}
 		
 		if( !account.getCanCreateFlexshipFlag() && arguments.context != "upgradeFlow") {
@@ -186,7 +185,7 @@ component extends="Slatwall.model.service.OrderService" {
 		//NOTE: there's only one shipping method allowed for flexship
 		var shippingMethod = getService('ShippingService').getShippingMethod( 
 		            ListFirst( arguments.orderTemplate.setting('orderTemplateEligibleShippingMethods') )
-			    );
+			   );
 		orderTemplate.setShippingMethod(shippingMethod);
 		
 		//grab and set account-payment-method from account to ordertemplate
@@ -199,7 +198,7 @@ component extends="Slatwall.model.service.OrderService" {
 		}
 		
 
-		//grab and get billing-account-address from account
+		//grab and set billing-account-address from account
 		if(!arguments.orderTemplate.hasBillingAccountAddress() ) {
 		 	if(account.hasPrimaryBillingAddress()) {
     		    arguments.orderTemplate.setBillingAccountAddress(account.getPrimaryBillingAddress());
@@ -221,7 +220,9 @@ component extends="Slatwall.model.service.OrderService" {
 		arguments.orderTemplate.setScheduleOrderDayOfTheMonth(day(arguments.processObject.getScheduleOrderNextPlaceDateTime()));
 		arguments.orderTemplate.setScheduleOrderNextPlaceDateTime(arguments.processObject.getScheduleOrderNextPlaceDateTime());
 		arguments.orderTemplate.setFrequencyTerm( getSettingService().getTerm(arguments.processObject.getFrequencyTermID()) );
+		
 		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate, arguments.data, arguments.context); 
+		
 		return arguments.orderTemplate;
     }
 
@@ -954,13 +955,10 @@ component extends="Slatwall.model.service.OrderService" {
 	
 	
 	public any function deleteOrderTemplate( required any orderTemplate ) {
-		var flexshipTypeID = getService('TypeService').getTypeBySystemCode('ottSchedule').getTypeID();
 		
-		if(arguments.orderTemplate.getOrderTemplateType().getTypeID() == flexshipTypeID){
-			getHibachiScope().getSession().setCurrentFlexship( javaCast("null", "") );
-			ORMExecuteQuery("UPDATE SlatwallSession s SET s.currentFlexship = NULL WHERE s.currentFlexship.orderTemplateID =:orderTemplateID", {orderTemplateID = arguments.orderTemplate.getOrderTemplateID()});
+		if( getHibachiSCope().getCurrentFlexshipID() == arguments.orderTemplate.getOrderTemplateID() ){
+			getHibachiScope().clearCurrentFlexship();
 		}
-		
 		return super.delete( arguments.orderTemplate );
 	}
 
