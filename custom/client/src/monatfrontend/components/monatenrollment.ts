@@ -25,6 +25,7 @@ class MonatEnrollmentController {
 	public type:string;
 	public showBirthday:boolean;
 	public account;
+	public stepMap = {};
 
 	
 	//@ngInject
@@ -49,8 +50,7 @@ class MonatEnrollmentController {
     	this.observerService.attach(this.next.bind(this),"updateSuccess");
     	this.observerService.attach(this.previous.bind(this),"onPrevious");
     	this.observerService.attach(this.next.bind(this),"addGovernmentIdentificationSuccess");
-    	this.observerService.attach(this.editFlexshipItems.bind(this),"editFlexshipItems");
-    	this.observerService.attach(this.editFlexshipDate.bind(this),"editFlexshipDate");
+    	this.observerService.attach((stepClass)=> this.goToStep(stepClass),"goToStep");
 	}
 
 	public $onInit = () => {
@@ -65,7 +65,7 @@ class MonatEnrollmentController {
 				this.canPlaceCartOrder = cart.orderRequirementsList.indexOf('canPlaceOrderReward') == -1;
 				let account = result.account;
 				let reqList = 'createAccount,updateAccount';
-				
+	
 				if(!this.upgradeFlow){
 					//logic for if the user has an upgrade on his order and he leaves/refreshes the page 
 					
@@ -121,7 +121,7 @@ class MonatEnrollmentController {
 		if (this.steps.length == 0) {
 			step.selected = true;
 		}
-
+		this.stepMap[step.stepClass] = Object.keys(this.stepMap).length +1;
 		this.steps.push(step);
 	};
 
@@ -169,16 +169,20 @@ class MonatEnrollmentController {
 	
 	public editFlexshipItems = () => {
 		this.reviewContext = true;
+		let position = this.stepMap['orderListing'] -1;
+		if(!position) return;
 		this.navigate(this.position - 2);
 	}
 	
-	public editFlexshipDate = () => {
+	public goToStep = (stepName:string):void =>{
 		this.reviewContext = true;
-		this.previous();
+		let position = this.stepMap[stepName] -1;
+		if(typeof position === 'undefined') return;
+		this.navigate(position);
 	}
 	
 	public goToLastStep = () => {
-		this.observerService.notify('lastStep')
+		this.observerService.notify('lastStep');
 		this.navigate(this.steps.length -1);
 		this.reviewContext = false;
 	}
