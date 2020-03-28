@@ -105,36 +105,6 @@ class MonatFlexshipListingController{
 			});
 	}
 	
-	/**
-	 * TODO: remove
-	 * @deprecated, not in use any more
-	 * will be remove in later commits 
-	 * 
-	*/ 
-	public setAsCurrentFlexship(orderTemplateID:string) {
-
-		// make api request
-		this.orderTemplateService
-			.setAsCurrentFlexship(orderTemplateID)
-			.then((data) => {
-				if (
-					data.successfulActions &&
-					data.successfulActions.indexOf('public:setAsCurrentFlexship') > -1
-				) {
-					this.$window.location.href = '/shop';
-				} else {
-					throw data;
-				}
-			})
-			.catch( (error) => {
-				console.error('setAsCurrentFlexship :', error);
-				// TODO: show alert
-			})
-			.finally( () => {
-				//TODO
-			});
-	}
-	
 	public getCanCreateFlexshipFlag = () => {
 	    this.publicService.doAction('getCustomerCanCreateFlexship').then(res=>{
 	       this.customerCanCreateFlexship = res.customerCanCreateFlexship;

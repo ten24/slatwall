@@ -530,11 +530,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         }
         
         if( len(arguments.data.saveContext)) {
-            // Q: skiping validation here, is that on purpose?
-            // what if there was any validation error in processOrderTemplate_create :: saveOrderTemplate() ?
             orderTemplate = getOrderService().processOrderTemplate_create(orderTemplate, processObject, {}, arguments.data.saveContext);
-        }else{
-            
+        } else {
             orderTemplate = getOrderService().processOrderTemplate(orderTemplate, processObject, "create");
         }
         
@@ -562,24 +559,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         //add item to template
         
     }
-    
-    /**
-     * TODO: remove 
-     * @deprecated, not in use any more
-    */
-    public any function setAsCurrentFlexship(required any data) {
-        param name="data.orderTemplateID" default="";
-        
-        var orderTemplate = getOrderService().getOrderTemplateForAccount(argumentCollection = arguments);
-		if( isNull(orderTemplate) ) {
-			return;
-		}
-		
-	    getHibachiScope().getSession().setCurrentFlexship(orderTemplate);
-	    var failure = isNull(getHibachiScope().getSession().getCurrentFlexship());
-	    getHibachiScope().addActionResult( "public:setAsCurrentFlexship", failure );
-
-	}
 
     public void function updatePrimaryPaymentMethod(required any data){
         param name="data.paymentMethodID" default="";

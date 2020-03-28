@@ -199,7 +199,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 				
 				orderTemplate.setShippingMethod(shippingMethod);
 				
-				//try to copy shipping-account-address from last used assresses if required
+				//try to copy shipping-account-address from last used addresses if required
 				if(!orderTemplate.hasShippingAccountAddress()) {
 					var shippingAccountAddress = orderFulFillment.getAccountAddress() ?: arguments.order.getShippingAccountAddress();
 					if( !IsNull(shippingAccountAddress) ) {
@@ -208,7 +208,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 					} 
 				}
 				
-				//try to copy shipping-address from last used assresses if required
+				//try to copy shipping-address from last used addresses if required
 				if( !orderTemplate.hasShippingAddress() ) {
 					var shippingAddress = orderFulFillment.getShippingAddress() ?: arguments.order.getShippingAddress();
 					if( !IsNull(shippingAddress) ) {
@@ -216,7 +216,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 					} 
 				}
 				
-				//try to copy billing-account-address from last used assresses if required
+				//try to copy billing-account-address from last used addresses if required
 				if( !orderTemplate.hasBillingAccountAddress()) {
 					//if there's no billing-account-address falling-back to the shipping-account-address
 					var billingAccountAddress = arguments.order.getBillingAccountAddress() ?: orderTemplate.getShippingAccountAddress();

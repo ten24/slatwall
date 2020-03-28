@@ -955,18 +955,10 @@ component extends="Slatwall.model.service.OrderService" {
 	
 	
 	public any function deleteOrderTemplate( required any orderTemplate ) {
-		var flexshipTypeID = getService('TypeService').getTypeBySystemCode('ottSchedule').getTypeID();
 		
-		if(arguments.orderTemplate.getOrderTemplateType().getTypeID() == flexshipTypeID){
-			getHibachiScope().getSession().setCurrentFlexship( javaCast("null", "") );
-			/**
-			 * TODO: remove, this's not required anymore 
-			 * as the logic that used to associate flexships with session is deprecated 
-			 * The whole function can be removed
-			*/ 
-			ORMExecuteQuery("UPDATE SlatwallSession s SET s.currentFlexship = NULL WHERE s.currentFlexship.orderTemplateID =:orderTemplateID", {orderTemplateID = arguments.orderTemplate.getOrderTemplateID()});
+		if( getHibachiSCope().getCurrentFlexshipID() == arguments.orderTemplate.getOrderTemplateID() ){
+			getHibachiScope().clearCurrentFlexship();
 		}
-		
 		return super.delete( arguments.orderTemplate );
 	}
 
