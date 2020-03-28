@@ -107,7 +107,7 @@ class MonatFlexshipListingController{
 	
 	/**
 	 * TODO: remove
-	 * @depricated, not in use any more
+	 * @deprecated, not in use any more
 	 * will be remove in later commits 
 	 * 
 	*/ 

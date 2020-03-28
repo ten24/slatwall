@@ -565,7 +565,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     
     /**
      * TODO: remove 
-     * @depricated, not in use any more
+     * @deprecated, not in use any more
     */
     public any function setAsCurrentFlexship(required any data) {
         param name="data.orderTemplateID" default="";
