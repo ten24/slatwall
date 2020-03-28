@@ -73,7 +73,7 @@
 														+
 													</button>
 													
-													<span class="ml-2" ng-bind-html="item.extendedPriceAfterDiscount | swcurrency:hybridCart.cart.currencyCode"></span>
+													<span class="ml-2" ng-bind-html="item.extendedPrice | swcurrency:hybridCart.cart.currencyCode"></span>
 												</div>
 											</div>
 										</div>
@@ -100,7 +100,7 @@
 									<span sw-rbKey="'frontend.hybridCart.yourPrice'"></span>
 								</div>
 								<div>
-									<span ng-bind-html="hybridCart.total | swcurrency:hybridCart.cart.currencyCode"></span> 
+									<span ng-bind-html="hybridCart.subtotal | swcurrency:hybridCart.cart.currencyCode"></span> 
 								</div>
 							</div>
 							<div class="row justify-content-between px-3">
@@ -109,6 +109,14 @@
 								</div>
 								<div>
 									<span ng-bind-html="hybridCart.cart.purchasePlusTotal | swcurrency:hybridCart.cart.currencyCode"></span> 
+								</div>
+							</div>
+							<div class="row justify-content-between px-3">
+								<div>
+									<span sw-rbKey="'frontend.hybridCart.otherDiscounts'"></span>
+								</div>
+								<div>
+									<span ng-bind-html="(hybridCart.otherDiscounts ? hybridCart.otherDiscounts : 0) | swcurrency:hybridCart.cart.currencyCode"></span> 
 								</div>
 							</div>
 							<hr class="my-0">
