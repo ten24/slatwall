@@ -30,6 +30,7 @@ class HybridCartController {
 		this.observerService.attach(this.getCart.bind(this),'updateOrderItemSuccess');
 		this.observerService.attach(this.getCart.bind(this),'removeOrderItemSuccess');
 		this.observerService.attach(this.getCart.bind(this),'addOrderItemSuccess');
+		this.observerService.attach(()=> this.getCart(true),'downGradeOrderSuccess');
 	}
 
 	public $onInit = () => { }
@@ -45,8 +46,8 @@ class HybridCartController {
 		this.monatService.redirectToProperSite(destination);
 	}
 	
-	private getCart():void{
-		this.monatService.getCart().then((res:Cart | any) => {
+	private getCart(refresh = false):void{
+		this.monatService.getCart(refresh).then((res:Cart | any) => {
 			this.cart = res.cart ? res.cart : res;
 			this.cart.orderItems = this.cart.orderItems.filter(el => el.sku.product.productType.systemCode !== 'ProductPack');
 			this.recalculatePrices();

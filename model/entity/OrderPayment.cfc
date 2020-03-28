@@ -46,7 +46,8 @@
 Notes:
 
 */
-component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="true" output="false" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="order.orderPayments" hb_processContexts="processTransaction,createTransaction,runPlaceOrderTransaction" {
+// Q: couldn't find any use for **processTransaction**
+component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="true" output="false" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="order.orderPayments" hb_processContexts="processTransaction,createTransaction,updateAmount,runPlaceOrderTransaction" {
 
 	// Persistent Properties
 	property name="orderPaymentID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";

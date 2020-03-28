@@ -63163,7 +63163,7 @@ var SWCustomerAccountCardController = /** @class */ (function () {
         this.phoneTitle = rbkeyService.rbKey('entity.AccountPhoneNumber.phoneNumber');
         this.detailAccountLink = $hibachi.buildUrl('admin:entity.detailaccount', 'accountID=' + this.account.accountID);
         if (this.baseEntityPropertiesToDisplayList != null) {
-            this.baseEntityPropertiesToDisplay = this.baseEntityPropertiesToDisplayList.split(',');
+            this.baseEntityPropertiesToDisplay = this.baseEntityPropertiesToDisplayList.replace('.', '_').split(',');
             for (var i = 0; i < this.baseEntityPropertiesToDisplay.length; i++) {
                 this.baseEntityRbKeys[this.baseEntityPropertiesToDisplay[i]] = this.$hibachi.getRBKeyFromPropertyIdentifier(this.baseEntityName, this.baseEntityPropertiesToDisplay[i]);
             }
@@ -93027,7 +93027,7 @@ var SWFFormController = /** @class */ (function () {
         this.$onInit = function () {
         };
         this.resetMethod = function (newMethod) {
-            _this.method = newMethod;
+            _this.newMethod = newMethod;
         };
         this.getFormData = function () {
             var formData = {};
@@ -93065,6 +93065,7 @@ var SWFFormController = /** @class */ (function () {
             return file;
         };
         this.submitForm = function () {
+            var method = _this.newMethod ? _this.newMethod : _this.method;
             if (_this.form.$valid) {
                 _this.loading = true;
                 var formData = _this.getFormData();
@@ -93077,7 +93078,7 @@ var SWFFormController = /** @class */ (function () {
                         return _this.processResult(result);
                     });
                 }
-                return _this.$rootScope.slatwall.doAction(_this.method, formData).then(function (result) {
+                return _this.$rootScope.slatwall.doAction(method, formData).then(function (result) {
                     return _this.processResult(result);
                 });
             }

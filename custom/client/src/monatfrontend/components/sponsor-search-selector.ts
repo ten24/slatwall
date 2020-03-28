@@ -44,10 +44,6 @@ class SponsorSearchSelectorController {
 			this.getSearchResults(false, true);				
 		}, 'accountRetrieved');
 		
-		if ( 'undefined' !== this.$location.search().accountNumber ) {
-			this.form.text = this.$location.search().accountNumber;
-			this.getSearchResults(false, false, true);
-		}
 	}
 	
 	private getCountryCodeOptions = () => {

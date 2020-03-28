@@ -82,6 +82,10 @@ class MonatOrderItemsController {
 			}
 		});
 	}
+	
+	public editItems = () => {
+		this.observerService.notify('goToStep', 'todaysOrder')
+	}
 }
 
 class MonatOrderItems {

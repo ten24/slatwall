@@ -22,7 +22,7 @@
     <span sw-rbkey="'frontend.order.canPlaceOrderFailure'"></span>
 </div>
     
-<footer class="steps-footer d-flex flex-column">
+<footer ng-if="monatEnrollment.currentStepName !== 'checkout'" class="steps-footer d-flex flex-column">
 	<div class="w-100 d-flex justify-content-between align-items-center">
 		<!-- Back button --->
 		<div class="d-flex align-items-center">
@@ -48,12 +48,12 @@
 		</div>
 		
 		<!----VIP step icon indicators --->
-		<div ng-if="monatEnrollment.type=='vip' || monatEnrollment.type=='vipUpgrade'" class="step-status row w-50 text-center align-items-end">
+		<div ng-if=" monatEnrollment.type=='vip' || monatEnrollment.type=='vipUpgrade'" class="step-status row w-50 text-center align-items-end">
 			<div 
 				class="col mt-1"
 				ng-style="{ 'opacity' : (monatEnrollment.currentStepName == 'todaysOrder' || monatEnrollment.currentStepName == undefined || monatEnrollment.currentStepName == 'ofy') ? '100%' : '50%' }"
 			>
-				<i class="fal fa-check fa-2x"></i>	
+				<i class="far fa-shopping-basket"></i>	
 				<p class="mb-1" sw-rbkey="'frontend.cart.todaysOrder'"></p>
 			</div>
 			
@@ -63,7 +63,7 @@
 					'opacity' : (monatEnrollment.currentStepName == 'shopIntro' || monatEnrollment.currentStepName == 'orderListing' ||  monatEnrollment.currentStepName == 'subscription' ) ? '100%' : '50%' 
 				}"
 			>
-				<i class="fas fa-truck fa-2x"></i>	
+				<i class="far fa-shipping-timed"></i>
 				<p class="mb-1" sw-rbkey="'entity.OrderTemplate'"></p>
 			</div>
 			
@@ -72,17 +72,17 @@
 				class="col"
 				ng-style="{ 'opacity' : (monatEnrollment.currentStepName == 'createAccount' ) ? '100%' : '50%' }"
 			>
-				<i class="fal fa-user-plus"></i>
+				<i class="far fa-user-plus"></i>
 				<p class="mb-1" sw-rbkey="'frontend.createAccount.createAccountBtn'"></p>
 			</div>
 			
 			<div class="col">
-				<i class="fal fa-credit-card"></i>
+				<i class="far fa-credit-card"></i>
 				<p class="mb-1" sw-rbkey="'frontend.global.checkout'"></p>
 			</div>
 			
 			<div ng-if="!monatEnrollment.account.ownerAccount.accountNumber.length" class="col">
-				<i class="fal fa-user-friends"></i>
+				<i class="far fa-user-friends"></i>
 				<p class="mb-1" sw-rbkey="'frontend.global.sponsor'"></p>
 			</div>
 		</div>
@@ -93,7 +93,7 @@
 				class="col mt-1"
 				ng-style="{ 'opacity' : (monatEnrollment.currentStepName == 'starterPack' || monatEnrollment.currentStepName == undefined ) ? '100%' : '50%' }"
 			>
-				<i class="fal fa-wine-bottle"></i>	
+				<i class="far fa-wine-bottle"></i>	
 				<p class="mb-1" sw-rbkey="'frontend.global.productPack'"></p>
 			</div>
 			
@@ -103,7 +103,7 @@
 					'opacity' : (monatEnrollment.currentStepName == 'todaysOrder' ) ? '100%' : '50%' 
 				}"
 			>
-				<i class="fal fa-shopping-basket"></i>	
+				<i class="far fa-shopping-basket"></i>
 				<p class="mb-1" sw-rbkey="'frontend.cart.todaysOrder'"></p>
 			</div>
 			
@@ -112,7 +112,7 @@
 				class="col"
 				ng-style="{ 'opacity' : (monatEnrollment.currentStepName == 'createAccount' || monatEnrollment.currentStepName=='updateAccount') ? '100%' : '50%' }"
 			>
-				<i class="fal fa-user-plus"></i>
+				<i class="far fa-user-plus"></i>
 				<p class="mb-1" sw-rbkey="'frontend.createAccount.createAccountBtn'"></p>
 			</div>
 			<div 
@@ -120,17 +120,17 @@
 				class="col"
 				ng-style="{ 'opacity' : (monatEnrollment.currentStepName == 'createAccount' || monatEnrollment.currentStepName=='updateAccount') ? '100%' : '50%' }"
 			>
-				<i class="fal fa-briefcase"></i>
+				<i class="far fa-briefcase"></i>
 				<p class="mb-1" sw-rbkey="'frontend.enrollment.businessDetails'"></p>
 			</div>
 			
 			<div class="col">
-				<i class="fal fa-credit-card"></i>
+				<i class="far fa-credit-card"></i>
 				<p class="mb-1" sw-rbkey="'frontend.global.checkout'"></p>
 			</div>
 			
 			<div ng-if="!monatEnrollment.account.ownerAccount.accountNumber.length" class="col">
-				<i class="fal fa-user-friends"></i> 
+				<i class="far fa-user-friends"></i> 
 				<p class="mb-1" sw-rbkey="'frontend.global.sponsor'"></p>
 			</div>
 		</div>

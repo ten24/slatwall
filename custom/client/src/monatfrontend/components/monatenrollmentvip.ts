@@ -192,14 +192,6 @@ class VIPController {
         	this.loading = false;
         });
     }
-    
-	public editFlexshipItems = () => {
-		this.observerService.notify('editFlexshipItems');
-	}
-	
-	public editFlexshipDate = () => {
-		this.observerService.notify('editFlexshipDate');
-	}
 	
 	public showAddToCartMessage = () => {
 		var skuID = this.monatService.lastAddedSkuID;
