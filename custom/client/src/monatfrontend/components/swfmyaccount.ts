@@ -46,6 +46,7 @@ class swfAccountController {
     public prouctReviewForm:any;
     public isDefaultImage:boolean = false;
     public isNotProfileImagesChoosen:boolean = false;
+    public purchasePlusTotal:number;
     
     // @ngInject
     constructor(
@@ -233,11 +234,13 @@ class swfAccountController {
         this.loading = true;
         return this.publicService.doAction("getOrderItemsByOrderID", {orderID: orderID,currentPage:currentPage,pageRecordsShow: pageRecordsShow}).then(result=>{
             if(result.OrderItemsByOrderID){
+
                 this.orderItems = result.OrderItemsByOrderID.orderItems;
                 this.orderPayments = result.OrderItemsByOrderID.orderPayments;
                 this.orderPromotions = result.OrderItemsByOrderID.orderPromtions;
                 this.orderRefundTotal = result.OrderItemsByOrderID.orderRefundTotal >= 0 ? result.OrderItemsByOrderID.orderRefundTotal : false ;
                 this.orderDelivery = result.OrderItemsByOrderID.orderDelivery;
+                this.purchasePlusTotal = result.OrderItemsByOrderID.purchasePlusTotal;
                 
                 if(this.orderPayments.length){
                     Object.keys(this.orderPayments[0]).forEach(key => {
