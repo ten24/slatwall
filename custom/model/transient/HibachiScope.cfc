@@ -150,7 +150,7 @@ component output="false" accessors="true" extends="Slatwall.model.transient.Hiba
 	
 	public any function setCurrentOwnerAccountNumber(string ownerAccountNumber){
 		
-		if( !IsNull(arguments.orderTemplate) && Len(Trim(arguments.ownerAccountNumber)) ){
+		if( !IsNull(arguments.ownerAccountNumber) && Len(Trim(arguments.ownerAccountNumber)) ){
 			this.logHibachi("SETTING Current-OwnerAccountNumber on HibachiScope ownerAccountNumber: #arguments.ownerAccountNumber#", true);
 			this.setCookieValue('ownerAccountNumber', arguments.ownerAccountNumber);
 		} else {
