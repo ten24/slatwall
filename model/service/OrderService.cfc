@@ -1650,7 +1650,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		newOrder.updateCalculatedProperties(runAgain=true); 
 		ormFlush();//flush so that the order exists
 
-		newOrder = this.processOrder_placeOrder(newOrder);
+		newOrder = this.processOrder_placeOrder(newOrder,{ignoreCanPlaceOrderFlag:true});
 
 		if(newOrder.hasErrors()){
 			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors on place order #serializeJson(newOrder.getErrors())# when placing order', true);
@@ -3069,7 +3069,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							if(listFindNoCase(orderRequirementsList, "payment")) {
 								arguments.order.addError('payment',rbKey('entity.order.process.placeOrder.paymentRequirementError'));
 							}
-							if(listFindNoCase(orderRequirementsList, "canPlaceOrderReward")){
+							if(listFindNoCase(orderRequirementsList, "canPlaceOrderReward") && (!structKeyExists(arguments.data,'ignoreCanPlaceOrderFlag') || !arguments.data.ignoreCanPlaceOrderFlag) ){
 								arguments.order.addError('canPlaceOrderReward',rbKey('entity.order.process.placeOrder.canPlaceOrderRewardRequirementError'));
 							}
 						} else {
