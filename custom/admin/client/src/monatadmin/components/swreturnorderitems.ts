@@ -162,13 +162,8 @@ class SWReturnOrderItemsController{
         })
     }
 
-    public updateOrderItem = (orderItem,maxRefund,attemptNum) => {
+    public updateOrderItem = (orderItem,maxRefund) => {
        let orderMaxRefund:number;
-       
-       if(!attemptNum){
-           attemptNum = 0;
-       }
-       attemptNum++;
        
        orderItem = this.setValuesWithinConstraints(orderItem);
 
@@ -202,11 +197,8 @@ class SWReturnOrderItemsController{
        if((orderItem.refundTotal > maxRefund)){
            orderItem.refundUnitPrice = (Math.max(maxRefund,0) / orderItem.returnQuantity);
            orderItem.refundTotal = Number((orderItem.refundUnitPrice * orderItem.quantity).toFixed(2));
-           if(attemptNum > 2){
-               orderItem.refundTotal -= 0.01;
-           }
            orderItem.refundUnitPrice = Number(orderItem.refundUnitPrice.toFixed(2));
-           this.updateOrderItem(orderItem,maxRefund,attemptNum);
+           this.updateOrderItem(orderItem,maxRefund);
        }else{
             this.updateTotals();
        }

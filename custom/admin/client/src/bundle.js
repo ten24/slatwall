@@ -72769,12 +72769,8 @@ var SWReturnOrderItemsController = /** @class */ (function () {
         this.getDisplayPropertiesList = function () {
             return "orderItemID,\n                quantity,\n                sku.calculatedSkuDefinition,\n                calculatedDiscountAmount,\n                calculatedExtendedPriceAfterDiscount,\n                calculatedExtendedUnitPriceAfterDiscount,\n                calculatedTaxAmount,\n                allocatedOrderDiscountAmount,\n                allocatedOrderPersonalVolumeDiscountAmount,\n                allocatedOrderCommissionableVolumeDiscountAmount,\n                sku.skuCode,\n                sku.product.calculatedTitle,\n                calculatedQuantityDeliveredMinusReturns,\n                calculatedExtendedPersonalVolumeAfterDiscount,\n                calculatedExtendedCommissionableVolumeAfterDiscount".replace(/\s+/gi, '');
         };
-        this.updateOrderItem = function (orderItem, maxRefund, attemptNum) {
+        this.updateOrderItem = function (orderItem, maxRefund) {
             var orderMaxRefund;
-            if (!attemptNum) {
-                attemptNum = 0;
-            }
-            attemptNum++;
             orderItem = _this.setValuesWithinConstraints(orderItem);
             orderItem.refundTotal = orderItem.returnQuantity * orderItem.refundUnitPrice;
             if (orderItem.returnQuantity > 0) {
@@ -72803,11 +72799,8 @@ var SWReturnOrderItemsController = /** @class */ (function () {
             if ((orderItem.refundTotal > maxRefund)) {
                 orderItem.refundUnitPrice = (Math.max(maxRefund, 0) / orderItem.returnQuantity);
                 orderItem.refundTotal = Number((orderItem.refundUnitPrice * orderItem.quantity).toFixed(2));
-                if (attemptNum > 2) {
-                    orderItem.refundTotal -= 0.01;
-                }
                 orderItem.refundUnitPrice = Number(orderItem.refundUnitPrice.toFixed(2));
-                _this.updateOrderItem(orderItem, maxRefund, attemptNum);
+                _this.updateOrderItem(orderItem, maxRefund);
             }
             else {
                 _this.updateTotals();
