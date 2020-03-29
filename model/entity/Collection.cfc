@@ -4572,7 +4572,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				if(
 					( !defaultColumns && !this.getPropertyIdentifierIsPersistent(column.propertyIdentifier) ) 
 					|| 
-					(  defaultColumns &&  structKeyExists(column, 'fkcolumn')  )
+					(  defaultColumns &&  structKeyExists(column, 'fkcolumn')  ) //default prop's are already filtered for persistent
 				){
 					continue;
 				}
