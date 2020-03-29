@@ -24,6 +24,7 @@ class HybridCartController {
 	public subtotal:number;
 	public listPrice:number;
 	public otherDiscounts:number;
+	public type:string;
 	
 	//@ngInject
 	constructor(public monatService, public observerService, public orderTemplateService, public publicService) {
@@ -97,6 +98,7 @@ class HybridCart {
 	public scope = {};
 	public bindToController = {
 		isEnrollment: '<?',
+		type: '<?',
 	};
 	public controller = HybridCartController;
 	public controllerAs = 'hybridCart';

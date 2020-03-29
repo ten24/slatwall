@@ -137,7 +137,7 @@
 						</div>
 					</div>
 				</div>	
-				<div ng-if="hybridCart.isEnrollment">
+				<div ng-if="hybridCart.type.indexOf('vip') > -1">
 					<enrollment-flexship order-template="hybridCart.orderTemplate"></enrollment-flexship>
 				</div>
 			</div>
