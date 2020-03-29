@@ -8,7 +8,7 @@ class ReturnOrderItem{
     public calculatedExtendedCommissionableVolumeAfterDiscount:number;
     public calculatedExtendedUnitPriceAfterDiscount:number;
     public calculatedTaxAmount:number;
-    public allocatedOrderDiscountAmount:number;
+    public allocatedOrderDiscountAmount;
     public allocatedOrderPersonalVolumeDiscountAmount:number;
     public allocatedOrderCommissionableVolumeDiscountAmount:number;
     public sku_skuCode:string;
@@ -37,6 +37,9 @@ class ReturnOrderItem{
         this.refundUnitPrice = this.calculatedExtendedUnitPriceAfterDiscount;
         this.taxTotal = this.calculatedTaxAmount;
         this.taxRefundAmount = 0;
+        if(this.allocatedOrderDiscountAmount === " "){
+            this.allocatedOrderDiscountAmount = null;
+        }
         if(this.refundUnitPrice){
             this.maxRefund = this.refundUnitPrice * this.returnQuantityMaximum;
         }else{
@@ -159,8 +162,13 @@ class SWReturnOrderItemsController{
         })
     }
 
-    public updateOrderItem = (orderItem,maxRefund) => {
+    public updateOrderItem = (orderItem,maxRefund,attemptNum) => {
        let orderMaxRefund:number;
+       
+       if(!attemptNum){
+           attemptNum = 0;
+       }
+       attemptNum++;
        
        orderItem = this.setValuesWithinConstraints(orderItem);
 
@@ -185,14 +193,20 @@ class SWReturnOrderItemsController{
            },0);
            
            orderMaxRefund = this.orderTotal - refundTotal;
-           maxRefund = Math.min(orderMaxRefund,orderItem.maxRefund);
+           if(this.orderDiscountAmount && !orderItem.allocatedOrderDiscountAmount && orderItem.allocatedOrderDiscountAmount !== 0){
+                orderMaxRefund += this.orderDiscountAmount;
+           }
+            maxRefund = Math.min(orderMaxRefund,orderItem.maxRefund);
         }
        
        if((orderItem.refundTotal > maxRefund)){
            orderItem.refundUnitPrice = (Math.max(maxRefund,0) / orderItem.returnQuantity);
            orderItem.refundTotal = Number((orderItem.refundUnitPrice * orderItem.quantity).toFixed(2));
+           if(attemptNum > 2){
+               orderItem.refundTotal -= 0.01;
+           }
            orderItem.refundUnitPrice = Number(orderItem.refundUnitPrice.toFixed(2));
-           this.updateOrderItem(orderItem,maxRefund);
+           this.updateOrderItem(orderItem,maxRefund,attemptNum);
        }else{
             this.updateTotals();
        }
@@ -254,6 +268,9 @@ class SWReturnOrderItemsController{
         
         this.allocatedOrderDiscountAmountTotal = allocatedOrderDiscountAmountTotal;
         if(this.orderDiscountAmount){
+            if(this.allocatedOrderDiscountAmountTotal == 0 && refundSubtotal != 0){
+                this.allocatedOrderDiscountAmountTotal = this.orderDiscountAmount * (refundSubtotal / this.orderTotal);
+            }
             this.allocatedOrderDiscountAmountTotal = Math.min(this.orderDiscountAmount,this.allocatedOrderDiscountAmountTotal);
         }
         this.allocatedOrderPVDiscountAmountTotal = allocatedOrderPVDiscountAmountTotal;
