@@ -10,7 +10,7 @@
 	</a> 
 </div>
 
-<div ng-show="hybridCart.showCart" class="position-absolute hybrid-cart-wrapper">
+<div sw-click-outside="hybridCart.showCart = false" ng-show="hybridCart.showCart" class="position-absolute hybrid-cart-wrapper">
 	<div class="cart-container">
 		<div class="accordion-group">
 			<div id="accordion">

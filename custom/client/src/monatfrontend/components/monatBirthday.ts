@@ -147,6 +147,10 @@ class MonatBirthdayController {
 		this.isSet = true
 	}
 	
+	public closeThis(){
+		this.showPicker = false;
+	}
+	
 }
 
 class MonatBirthday {

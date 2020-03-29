@@ -55,6 +55,7 @@ export default interface cart {
     eligiblePaymentMethodDetails: Array<genericObject>,
     calculatedTotal: number,
     initialOrderFlag: string,
-    orderOpenDateTime: string
+    orderOpenDateTime: string,
+    purchasePlusTotal:number
 }
 
