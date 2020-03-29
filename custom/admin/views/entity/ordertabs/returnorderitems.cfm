@@ -18,6 +18,7 @@
 				<cfelse>
 					order-total="#rc.order.getRefundableAmountMinusRemainingTaxesAndFulfillmentCharge()#"
 				</cfif>
+				original-order-subtotal="#rc.order.getSubTotal()#"
 				order-discount-amount="#rc.order.getOrderDiscountAmountTotal()#"
 			></sw-return-order-items>
 			
