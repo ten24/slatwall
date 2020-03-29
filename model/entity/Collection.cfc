@@ -147,9 +147,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="primaryIDFound" type="boolean" persistent="false" default="false";
 	property name="listingSearchFiltersApplied" type="boolean" persistent="false" default="false";
 	
-
-	
-
 	// ============ START: Non-Persistent Property Methods =================
 
 	public any function init(){
@@ -157,7 +154,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 		param name="session.entityCollection" type="struct" default="#structNew()#";
 		param name="session.entityCollection.savedStates" type="array" default="#arrayNew(1)#";
-
+		
 		variables.inlistDelimiter = ",";
 		variables.totalAvgAggregates = [];
 		variables.totalSumAggregates = [];
@@ -1193,6 +1190,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 
 	public boolean function getPropertyIdentifierIsPersistent(required string propertyIdentifier){
+		arguments.propertyIdentifier = ListFirst(arguments.propertyIdentifier, '|');// to handel orderBys strings like ** xxyyzz|ASC **
 		var formattedPropertyIdentifier = convertAliasToPropertyIdentifier(arguments.propertyIdentifier);
 		return getService('HibachiService').getPropertyIsPersistentByEntityNameAndPropertyIdentifier(getCollectionObject(), formattedPropertyIdentifier);
 	}
@@ -2758,7 +2756,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 							//begin transaction on the scrollable session to avoid empty result when records exist lucee4
 							var tx = scrollableSession.beginTransaction();
-
+							
 	    					var query = scrollableSession.createQuery(HQL)
 								.setCacheMode(cacheMode.IGNORE)
 								.setFirstResult(getPageRecordsStart()-1)
@@ -4571,16 +4569,16 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						break;
 				}
 				
-				if ((
-					!defaultColumns && ( !structKeyExists(column, 'isSearchable') || !column.isSearchable)
-					) || (
-					defaultColumns && (
-						structKeyExists(column, 'fkcolumn')
-					|| (structKeyExists(column, 'persistent') && column.persistent == false)
-					|| !structKeyExists(column, 'ormtype')
-					))
-				) continue;
-				//if ormtype is not set, find it
+				if(
+					( !defaultColumns && !this.getPropertyIdentifierIsPersistent(column.propertyIdentifier) ) 
+					|| 
+					(  defaultColumns &&  structKeyExists(column, 'fkcolumn')  )
+				){
+					continue;
+				}
+				
+				// TODO: process this in HibachiCollectionService
+				// if ormtype is not set, find it
 				if(!structKeyExists(column, 'ormtype')){
 					var allColumns = getService('HibachiService').getPropertiesWithAttributesByEntityName(arguments.collectionConfig.baseEntityName);
 					for(var col in allColumns){

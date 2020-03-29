@@ -166,6 +166,7 @@ export class SkuPriceService {
         let skuOptions;
         let skuColectionConfig = this.collectionConfigService.newCollectionConfig("Sku");
         skuColectionConfig.setDisplayProperties("skuID,skuName,skuCode,imagePath");
+        
         skuColectionConfig.addFilter("product.productID", productID, "=");
         skuColectionConfig.setAllRecords(true);
         
@@ -184,7 +185,8 @@ export class SkuPriceService {
     
     public getSkuCollectionConfig = (productID) =>{
         let config = this.collectionConfigService.newCollectionConfig("Sku");
-        config.setDisplayProperties("skuID,skuName,skuCode,imagePath");
+        config.setDisplayProperties("skuID,skuName,skuCode");
+        config.addDisplayProperty("imagePath", "" , {'isSearchable': false});
         config.addFilter("product.productID", productID, "=");
 
         return config;
