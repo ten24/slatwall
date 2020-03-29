@@ -62,7 +62,6 @@ import { MonatForgotPasswordController } from './controllers/monat-forgot-passwo
 import { MonatSearchController } from './controllers/monat-search';
 import { MonatCheckoutController } from './controllers/monat-checkout';
 import { MonatProductListingController } from './controllers/monat-product-listing';
-import { MonatSiteOwnerController } from './controllers/site-owner-controller';
 import { OnlyForYouController } from './controllers/monat-onlyforyou';
 
 //services
@@ -142,7 +141,6 @@ var monatfrontendmodule = angular
 	.controller('forgotPasswordController', MonatForgotPasswordController)
 	.controller('checkoutController', MonatCheckoutController)
 	.controller('productListingController', MonatProductListingController)
-	.controller('siteOwnerController', MonatSiteOwnerController)
 	.controller('onlyForYouController', OnlyForYouController)
 
 	// Services

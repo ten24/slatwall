@@ -125,7 +125,6 @@ component output="false" accessors="true" extends="Slatwall.model.transient.Hiba
 	public any function setCurrentFlexship(any orderTemplate){
 		
 		if(!IsNull(arguments.orderTemplate)){
-			this.logHibachi("SETTING CurrentFlexship on HibachiScope FlexshipID: #arguments.orderTemplate.getOrderTemplateID()#", true);
 			this.setCookieValue('currentFlexshipID', arguments.orderTemplate.getOrderTemplateID());
 		} else {
 			this.removeCurrentFlexship();
@@ -133,34 +132,8 @@ component output="false" accessors="true" extends="Slatwall.model.transient.Hiba
 	}
 	
 	public any function clearCurrentFlexship(){
-		this.logHibachi("RMOVING CurrentFlexship from HibachiScope, FlexshipID: #this.getCurrentFlexshipID()#", true);
 		this.clearCookieValue('currentFlexshipID');
 	}
 	
-	
-	
-	
-	public any function hasCurrentOwnerAccountNumber(){
-		return this.hasCookieValue('ownerAccountNumber');
-	}
-	
-	public any function getCurrentOwnerAccountNumber(){
-		return this.getCookieValue('ownerAccountNumber');
-	}
-	
-	public any function setCurrentOwnerAccountNumber(string ownerAccountNumber){
-		
-		if( !IsNull(arguments.ownerAccountNumber) && Len(Trim(arguments.ownerAccountNumber)) ){
-			this.logHibachi("SETTING Current-OwnerAccountNumber on HibachiScope ownerAccountNumber: #arguments.ownerAccountNumber#", true);
-			this.setCookieValue('ownerAccountNumber', arguments.ownerAccountNumber);
-		} else {
-			this.clearCurrentOwnerAccountNumber();
-		}
-	}
-	
-	public any function clearCurrentOwnerAccountNumber(){
-		this.logHibachi("RMOVING Current-OwnerAccountNumber from HibachiScope, ownerAccountNumber: #this.getOwnerAccountNumber()#", true);
-		this.clearCookieValue('ownerAccountNumber');
-	}
 	
 }

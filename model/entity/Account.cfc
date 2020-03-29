@@ -1430,5 +1430,30 @@ public numeric function getSuccessfulFlexshipOrdersThisYearCount(){
 			variables.vipEnrollmentAmountPaid = enrollmentAmountPaid;
 		}
 		return variables.vipEnrollmentAmountPaid;
+	}
+	
+	public boolean function canSponsor(){
+
+		if(structKeyExists(variables, 'canSponsorFlag')){
+			return variables.canSponsorFlag;
+		}
+		if(
+			(getAccountType() == 'marketPartner' || getAccountType() == 'VIP')
+			&&
+			structKeyExists(variables,'accountNumber') 
+			&&
+			len(variables.accountNumber)
+			&& 
+			!isNull(this.getAccountStatusType()) 
+			&& 
+			this.getAccountStatusType().getSystemCode() == 'astGoodStanding'
+		){
+			variables.canSponsorFlag = true;
+			return true;
+		}
+		
+		
+		return false;
+	
 	}//CUSTOM FUNCTIONS END
 }

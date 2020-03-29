@@ -1624,8 +1624,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             return;
         }
         
-        getHibachiScope().clearCurrentOwnerAccountNumber();
-        
         //if we are not in an upgrade flow and the user is logged in, log the user out.
         if(!arguments.data.upgradeFlowFlag && getHibachiScope().getLoggedInFlag()){
             if( 
@@ -1782,10 +1780,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     
     public void function getMarketPartners(required struct data){
         param name="arguments.data.search" default='';
-        
-        if( !len(data.search) && getHibachiScope().hasCurrentOwnerAccountNumber()){
-            data['search'] = getHibachiScope().getCurrentOwnerAccountNumber();
-        }
         
         var marketPartners = getService('MonatDataService').getMarketPartners(data);
         arguments.data.ajaxResponse['pageRecords'] = marketPartners.accountCollection;
