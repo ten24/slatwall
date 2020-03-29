@@ -179,7 +179,7 @@ class SWReturnOrderItemsController{
        orderItem = this.setValuesWithinConstraints(orderItem);
 
        orderItem.refundTotal = orderItem.returnQuantity * orderItem.refundUnitPrice;
-       if(orderItem.returnQuantity > 0){
+       if(orderItem.returnQuantity > 0 && orderItem.total > 0){
            orderItem.refundUnitPV = Math.round(orderItem.refundTotal * orderItem.pvTotal * 100 / (orderItem.total * orderItem.returnQuantity)) / 100;
            orderItem.refundPVTotal = orderItem.refundUnitPV * orderItem.returnQuantity;
            orderItem.refundUnitCV = Math.round(orderItem.refundTotal * orderItem.cvTotal * 100 / (orderItem.total * orderItem.returnQuantity)) / 100;
