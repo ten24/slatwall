@@ -4573,8 +4573,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					( 
 						!defaultColumns && 
 						( 
-							!structKeyExists(column, 'isSearchable') 
-							|| !column.isSearchable 
+							!structKeyExists(column, 'isSearchable') || !column.isSearchable 
 							|| !this.getPropertyIdentifierIsPersistent(column.propertyIdentifier) 
 						)
 					) 
