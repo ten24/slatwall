@@ -212,7 +212,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 			}
 			
 			//the Hibachi service will takecare of [sessionCookieSecure and sessionCookieDomain] based on the application settings
-			this.getService('hibachiTagService').cfcookie(args);
+			this.getService('hibachiTagService').cfcookie(argumentCollection= args);
 		
 		} else {
 			this.clearCookieValue(arguments.key);
