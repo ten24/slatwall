@@ -267,7 +267,11 @@ component extends="Slatwall.model.service.OrderService" {
 	        for(var priceField in variables.customPriceFields){
 	            var price = arguments.originalOrderItem.invokeMethod('getCustomExtendedPriceAfterDiscount',{1=priceField});
 	            if(!isNull(price)){
-	                price = price * returnOrderItem.getPrice() / arguments.originalOrderItem.getExtendedPriceAfterDiscount();
+	            	if(arguments.originalOrderItem.getExtendedPriceAfterDiscount() != 0){
+	                	price = price * returnOrderItem.getPrice() / arguments.originalOrderItem.getExtendedPriceAfterDiscount();
+	            	}else{
+	            		price = 0;
+	            	}
 	                returnOrderItem.invokeMethod('set#priceField#',{1=price});
 	            } 
 	        }
