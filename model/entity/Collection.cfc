@@ -1190,7 +1190,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 
 	public boolean function getPropertyIdentifierIsPersistent(required string propertyIdentifier){
-		arguments.propertyIdentifier = ListFirst(arguments.propertyIdentifier, '|');// to handel orderBys strings like ** xxyyzz|ASC **
+		arguments.propertyIdentifier = ListFirst(arguments.propertyIdentifier);
 		var formattedPropertyIdentifier = convertAliasToPropertyIdentifier(arguments.propertyIdentifier);
 		return getService('HibachiService').getPropertyIsPersistentByEntityNameAndPropertyIdentifier(getCollectionObject(), formattedPropertyIdentifier);
 	}

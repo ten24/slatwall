@@ -878,9 +878,9 @@ component output="false" accessors="true" extends="HibachiService" {
 					return (	
 						StructKeyExists(arguments.item, "propertyIdentifier") 
 						&& 
-						collectionEntityRef.hasPropertyByPropertyIdentifier(arguments.item.propertyIdentifier)
+						collectionEntityRef.hasPropertyByPropertyIdentifier( ListFirst(arguments.item.propertyIdentifier, '|') )
 						&&
-						collectionEntityRef.getPropertyIdentifierIsPersistent(arguments.item.propertyIdentifier)
+						collectionEntityRef.getPropertyIdentifierIsPersistent( ListFirst(arguments.item.propertyIdentifier, '|') )
 					);
 				});
 				
