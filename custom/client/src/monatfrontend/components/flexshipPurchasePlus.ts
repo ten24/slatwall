@@ -10,9 +10,7 @@ class FlexshipPurchasePlusController {
 	//@ngInject
 	constructor() {}
 
-	public $onInit = () => {
-		console.log(this.messages)
-	}
+	public $onInit = () => {}
 	
 	
 	
