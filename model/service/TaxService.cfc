@@ -338,11 +338,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						newAppliedTax.setTaxStateCode( originalAppliedTax.getTaxStateCode() );
 						newAppliedTax.setTaxPostalCode( originalAppliedTax.getTaxPostalCode() );
 						newAppliedTax.setTaxCountryCode( originalAppliedTax.getTaxCountryCode() );
-						if(originalAppliedTax.getTaxCategoryRate().getTaxLiabilityAppliedToItemFlag() == true){
-							newAppliedTax.setTaxAmount( newAppliedTax.getTaxLiabilityAmount() );
-						} else {
-							newAppliedTax.setTaxAmount( 0 );
-						}
+						
+						newAppliedTax.setTaxAmount( newAppliedTax.getTaxLiabilityAmount() );
 					}
 				//Then calculate the tax if there is no referenced item.
 				} else {
