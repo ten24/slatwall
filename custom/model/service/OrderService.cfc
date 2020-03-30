@@ -559,7 +559,7 @@ component extends="Slatwall.model.service.OrderService" {
         } else if (arguments.systemCode == 'ostNew') {
 
 			//if the order is paid don't set to new, otherwise set to new
-			if (  arguments.order.getPaymentAmountDue() <= 0 ){
+			if (  arguments.order.getPaymentAmountDue() <= 0  && arguments.order.getOrderType().getSystemCode() == 'otSalesOrder' ){
 				//type for PaidOrder  systemCode=ostProcessing, typeCode=2
 				arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode( systemCode='ostProcessing', typeCode="2")); 
 			} else {
