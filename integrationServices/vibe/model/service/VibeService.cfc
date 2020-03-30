@@ -100,7 +100,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 	*/ 
 	public any function convertSwAccountToVibeAccount(required any account){
 		
-		var accountPropList =  "accountID,firstName,lastName,activeFlag,username,accountNumber,accountType,company,languagePreference,primaryEmailAddress.emailAddress,primaryPhoneNumber.phoneNumber,ownerAccount.accountNumber";
+		var accountPropList =  "accountID,firstName,lastName,activeFlag,username,accountNumber,accountType,company,languagePreference,enrollmentDate,primaryEmailAddress.emailAddress,primaryPhoneNumber.phoneNumber,ownerAccount.accountNumber";
 		var addressPropList = getService('hibachiUtilityService').prefixListItem("streetAddress,street2Address,city,postalCode,stateCode,countryCode", "primaryAddress.address.");
 
 		accountPropList = accountPropList & ',' & addressPropList;
@@ -150,6 +150,11 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 				vibeAccount['rankid'] = 1; 
 				vibeAccount['lifetimerankid'] = 1; 
 			}
+		}
+		
+		if( StructKeyExists( swAccountStruct, 'enrollmentDate' ) &&  !IsNull( swAccountStruct['enrollmentDate']) ){
+			//2019-08-25T15:23:42.7198285+05:30
+			vibeAccount['signupdate'] = DateTimeFormat( swAccountStruct['enrollmentDate'], "yyyy-mm-dd'T'hh:nn:ss" );
 		}
 		
 		vibeAccount['password'] = setting('defaultUserPassword');
