@@ -75,7 +75,7 @@
 		
 	</div>
 	
-	<div class="signup-mp__search-button" ng-show="sponsorSearchSelector.selectedSponsor === null">
+	<div class="signup-mp__search-button d-flex align-items-center" ng-show="sponsorSearchSelector.selectedSponsor === null">
 		<div class="p-2">
 			<button 
 				type="button"
@@ -85,9 +85,14 @@
 				sw-rbkey="'frontend.global.search'"
 			></button>
 		</div> 
-		<div class="p-2">
-			<p>Don't have a Market Partner?</p>
-			<a href ng-click="sponsorSearchSelector.autoAssignSponsor()">Let us assign one to you.</a>
+		<div class="p-2 text-left">
+			<h6 sw-rbkey="'frontend.enrollment.noMarketPartner'"></h6>
+			<a href
+				class="text-link"
+				ng-click="sponsorSearchSelector.autoAssignSponsor()"
+				ng-class="{ loading: checkout.sponsorLoading }"
+				sw-rbkey="'frontend.enrollment.sponsorAssignment'"
+			></a>
 		</div>
 	</div>
 	
