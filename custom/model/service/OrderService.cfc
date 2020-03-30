@@ -308,7 +308,7 @@ component extends="Slatwall.model.service.OrderService" {
 			var promotionApplied = getService('PromotionService').newPromotionApplied();
 			promotionApplied.setOrder(returnOrder);
 			if( arguments.order.hasAppliedPromotion() ){
-				var originalPromo = arguments.order.getAppliedPromotions[1].getPromotion();
+				var originalPromo = arguments.order.getAppliedPromotions()[1].getPromotion();
 				if( !isNull(originalPromo) ){
 					promotionApplied.setPromotion( originalPromo );
 				}
