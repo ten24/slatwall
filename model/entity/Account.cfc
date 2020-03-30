@@ -1433,10 +1433,10 @@ public numeric function getSuccessfulFlexshipOrdersThisYearCount(){
 	}
 	
 	public boolean function canSponsor(){
-
 		if(structKeyExists(variables, 'canSponsorFlag')){
 			return variables.canSponsorFlag;
 		}
+		
 		if(
 			(getAccountType() == 'marketPartner' || getAccountType() == 'VIP')
 			&&
