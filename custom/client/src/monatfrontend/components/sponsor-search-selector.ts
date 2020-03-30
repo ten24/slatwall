@@ -98,7 +98,7 @@ class SponsorSearchSelectorController {
 			'getmarketpartners',data
 		).then(data => {
 			this.observerService.notify('PromiseComplete');
-			if(useHibachConfig || useOriginalAccountOwner || data.recordsCount == 1){
+			if( data.recordsCount == 1 || (useHibachConfig || useOriginalAccountOwner && data.recordsCount == 1)){
 				this.selectedSponsor = data.pageRecords[0];
 				this.notifySelect(this.selectedSponsor);
 			}

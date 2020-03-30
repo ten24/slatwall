@@ -1,4 +1,4 @@
-import{ HybridCartController, genericObject, GenericTemplate, GenericOrderTemplateItem} from './hybridCart';
+ import{ HybridCartController, genericObject, GenericTemplate, GenericOrderTemplateItem} from './hybridCart';
 
 class EnrollmentFlexshipController {
 	public showCart = false;
@@ -31,17 +31,19 @@ class EnrollmentFlexshipController {
 		this.orderTemplateService.getSetOrderTemplateOnSession(extraProperties).then(data => {
 
 			if((data.orderTemplate as GenericTemplate) ){
+		
 				this.orderTemplate = data.orderTemplate;
 				if(this.orderTemplate.cartTotalThresholdForOFYAndFreeShipping) this.cartThreshold = +this.orderTemplate.cartTotalThresholdForOFYAndFreeShipping;
 				this.calculateSRPOnOrder();
 				let messages = this.orderTemplate.appliedPromotionMessagesJson ? JSON.parse(this.orderTemplate.appliedPromotionMessagesJson) : [];
-				messages = messages.filter(el => el.promotionQualifierMessage_promotionQualifier_promotionPeriod_promotion_promotionName?.indexOf('Purchase Plus') > -1);
+				messages = messages.filter(el => el.promotion_promotionName?.indexOf('Purchase Plus') > -1);
+				
 				if(!messages || !messages.length){
 					this.messages = null;
 				}else{
 					this.messages = {
 						message: messages[0].message,
-						amount: messages[0].promotionQualifierMessage_promotionQualifier_promotionPeriod_promotionRewards_amount,
+						amount: messages[0].promotionPeriod_promotionRewards_amount,
 						qualifierProgress: messages[0].qualifierProgress,
 					}	
 				}

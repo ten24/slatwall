@@ -205,9 +205,10 @@ component extends="Slatwall.model.service.PromotionService" {
 			
 			newAppliedPromotionMessage.setOrder( arguments.order );
 			newAppliedPromotionMessage.setPromotionQualifierMessage( promotionQualifierMessage );
-			
 			newAppliedPromotionMessage.setMessage( promotionQualifierMessage.getInterpolatedMessage( arguments.order ) );
-			
+			newAppliedPromotionMessage.setPromotionPeriod(promotionQualifierMessage.getPromotionQualifier().getPromotionPeriod());
+			newAppliedPromotionMessage.setPromotion(newAppliedPromotionMessage.getPromotionPeriod().getPromotion());
+
 			var qualifierProgress = promotionQualifierMessage.getQualifierProgress( arguments.order );
 			
 			if( !isNull( qualifierProgress ) ){

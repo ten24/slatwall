@@ -10,8 +10,7 @@ class FlexshipPurchasePlusController {
 	//@ngInject
 	constructor() {}
 
-	public $onInit = () => {
-	}
+	public $onInit = () => {}
 	
 	
 	
