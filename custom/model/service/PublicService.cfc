@@ -59,13 +59,14 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         ){
             arguments.data.ajaxResponse['data'] =  { 'redirect': getHibachiScope().getAccount().getAccountCreatedSite().getCmsSiteID() };
         }
-        
-
+    
         if(
             getHibachiScope().getCart().getUpgradeFlag()
+            && !isNull(getHibachiScope().getAccount().getAccountStatusType())
             && getHibachiScope().getAccount().getAccountStatusType().getSystemCode() == 'astGoodStanding'
         ){
-            this.removeUpgradeOnOrder();
+            getService('orderService').processOrder(getHibachiScope().getCart(), arguments.data, 'clear');
+            getHibachiScope().flushORMSession();             
         }
     }
     
