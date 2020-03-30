@@ -88,7 +88,7 @@ class EnrollmentFlexship {
 	public scope = {};
 	
 	public bindToController = {
-		orderTemplate: '<?'
+		orderTemplate: '=?'
 	}
 	
 	public require={
