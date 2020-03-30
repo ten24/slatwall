@@ -173,17 +173,20 @@ class SWReturnOrderItemsController{
         })
     }
 
-    public updateOrderItem = (orderItem,maxRefund) => {
+    public updateOrderItem = (orderItem,maxRefund,attemptNum) => {
        let orderMaxRefund:number;
-       
+       if(!attemptNum){
+           attemptNum = 0;
+       }
+       attemptNum++;
        orderItem = this.setValuesWithinConstraints(orderItem);
 
        orderItem.refundTotal = orderItem.returnQuantity * orderItem.refundUnitPrice;
        if(orderItem.returnQuantity > 0 && orderItem.total > 0){
            orderItem.refundUnitPV = Math.round(orderItem.refundTotal * orderItem.pvTotal * 100 / (orderItem.total * orderItem.returnQuantity)) / 100;
-           orderItem.refundPVTotal = orderItem.refundUnitPV * orderItem.returnQuantity;
+           orderItem.refundPVTotal = Number((orderItem.refundUnitPV * orderItem.returnQuantity).toFixed(2));
            orderItem.refundUnitCV = Math.round(orderItem.refundTotal * orderItem.cvTotal * 100 / (orderItem.total * orderItem.returnQuantity)) / 100;
-           orderItem.refundCVTotal = orderItem.refundUnitCV * orderItem.returnQuantity;
+           orderItem.refundCVTotal = Number((orderItem.refundUnitCV * orderItem.returnQuantity).toFixed(2));
        }else{
            orderItem.refundUnitPV = 0;
            orderItem.refundPVTotal = 0;
@@ -206,7 +209,10 @@ class SWReturnOrderItemsController{
            orderItem.refundUnitPrice = (Math.max(maxRefund,0) / orderItem.returnQuantity);
            orderItem.refundTotal = Number((orderItem.refundUnitPrice * orderItem.quantity).toFixed(2));
            orderItem.refundUnitPrice = Number(orderItem.refundUnitPrice.toFixed(2));
-           this.updateOrderItem(orderItem,maxRefund);
+           if(attemptNum > 2){
+               maxRefund += 0.01;
+           }
+           this.updateOrderItem(orderItem,maxRefund,attemptNum);
        }else{
             this.updateTotals();
        }
