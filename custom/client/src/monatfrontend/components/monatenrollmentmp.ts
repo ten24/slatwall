@@ -51,7 +51,6 @@ class EnrollmentMPController {
 			this.bundles = res.bundles;
 			this.bundledProducts = res.products;
 
-			
 			if(this.endpoint == 'setUpgradeOrderType' && res.upgradeResponseFailure?.length){
 				this.showUpgradeErrorMessage = true;
 				this.isInitialized = true;
