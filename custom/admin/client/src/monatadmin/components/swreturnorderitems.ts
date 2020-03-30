@@ -8,7 +8,7 @@ class ReturnOrderItem{
     public calculatedExtendedCommissionableVolumeAfterDiscount:number;
     public calculatedExtendedUnitPriceAfterDiscount:number;
     public calculatedTaxAmount:number;
-    public allocatedOrderDiscountAmount:number;
+    public allocatedOrderDiscountAmount;
     public allocatedOrderPersonalVolumeDiscountAmount:number;
     public allocatedOrderCommissionableVolumeDiscountAmount:number;
     public sku_skuCode:string;
@@ -27,7 +27,7 @@ class ReturnOrderItem{
     public returnQuantity=0;
     public maxRefund:number;
     
-    constructor(obj){
+    constructor(obj,orderDiscountRatio){
         obj && Object.assign(this,obj);
         this.refundTotal=0;
         this.returnQuantityMaximum = this.calculatedQuantityDeliveredMinusReturns;
@@ -37,6 +37,15 @@ class ReturnOrderItem{
         this.refundUnitPrice = this.calculatedExtendedUnitPriceAfterDiscount;
         this.taxTotal = this.calculatedTaxAmount;
         this.taxRefundAmount = 0;
+        
+        if(this.allocatedOrderDiscountAmount === " "){
+            this.allocatedOrderDiscountAmount = null;
+        }
+        
+        if(!this.allocatedOrderDiscountAmount && this.allocatedOrderDiscountAmount !== 0){
+            this.allocatedOrderDiscountAmount = this.calculatedExtendedPriceAfterDiscount * orderDiscountRatio;
+        }
+        
         if(this.refundUnitPrice){
             this.maxRefund = this.refundUnitPrice * this.returnQuantityMaximum;
         }else{
@@ -75,7 +84,7 @@ class SWReturnOrderItemsController{
     private displayPropertiesList:string;
     private currencyCode:string;
     private orderTotal:number;
-    
+    private originalOrderSubtotal:number;
     public orderType:string;
     public orderItemCollectionList;
     private refundOrderItems;
@@ -97,7 +106,7 @@ class SWReturnOrderItemsController{
     public fulfillmentRefundTotal:number;
     public orderDiscountAmount:number;
     
-    public setupOrderItemCollectionList = () =>{
+    public setupOrderItemCollectionList = ( orderDiscountRatio ) =>{
         this.orderItemCollectionList = this.collectionConfigService.newCollectionConfig("OrderItem");
         for(let displayProperty of this.displayPropertiesList.split(',')){
             this.orderItemCollectionList.addDisplayProperty(displayProperty);
@@ -106,7 +115,7 @@ class SWReturnOrderItemsController{
         this.orderItemCollectionList.setAllRecords(true);
         this.orderItemCollectionList.getEntity().then(result=>{
             for(let i = 0; i < result.records.length; i++){
-                result.records[i] = new ReturnOrderItem(result.records[i]);
+                result.records[i] = new ReturnOrderItem( result.records[i], orderDiscountRatio );
                 this.orderTotal += result.records[i].allocatedOrderDiscountAmount;
             }
             this.orderItems = result.records;
@@ -144,13 +153,18 @@ class SWReturnOrderItemsController{
         if(this.fulfillmentTaxAmount == undefined){
             this.fulfillmentTaxAmount = 0;
         }
+        let orderDiscountRatio;
+        if(this.originalOrderSubtotal){
+            orderDiscountRatio = this.orderDiscountAmount / this.originalOrderSubtotal;
+        }
+        
         if(this.refundOrderItems == undefined){
             this.displayPropertiesList = this.getDisplayPropertiesList();
-            this.setupOrderItemCollectionList();
+            this.setupOrderItemCollectionList(orderDiscountRatio);
         }else{
             this.orderItems = this.refundOrderItems.map(item=>{
                 item.calculatedExtendedPriceAfterDiscount = this.orderTotal;
-                return new ReturnOrderItem(item)
+                return new ReturnOrderItem( item, orderDiscountRatio )
             });
         }
         
@@ -165,7 +179,7 @@ class SWReturnOrderItemsController{
        orderItem = this.setValuesWithinConstraints(orderItem);
 
        orderItem.refundTotal = orderItem.returnQuantity * orderItem.refundUnitPrice;
-       if(orderItem.returnQuantity > 0){
+       if(orderItem.returnQuantity > 0 && orderItem.total > 0){
            orderItem.refundUnitPV = Math.round(orderItem.refundTotal * orderItem.pvTotal * 100 / (orderItem.total * orderItem.returnQuantity)) / 100;
            orderItem.refundPVTotal = orderItem.refundUnitPV * orderItem.returnQuantity;
            orderItem.refundUnitCV = Math.round(orderItem.refundTotal * orderItem.cvTotal * 100 / (orderItem.total * orderItem.returnQuantity)) / 100;
@@ -184,8 +198,8 @@ class SWReturnOrderItemsController{
                return (item == orderItem) ?  total : total += item.refundTotal;
            },0);
            
-           orderMaxRefund = this.orderTotal - refundTotal;
-           maxRefund = Math.min(orderMaxRefund,orderItem.maxRefund);
+            orderMaxRefund = this.orderTotal - refundTotal;
+            maxRefund = Math.min(orderMaxRefund,orderItem.maxRefund);
         }
        
        if((orderItem.refundTotal > maxRefund)){
@@ -328,7 +342,8 @@ class SWReturnOrderItems {
 	    orderType:'@',
 	    orderTotal:'<?',
 	    fulfillmentTaxAmount:'@',
-	    orderDiscountAmount:'<?'
+	    orderDiscountAmount:'<?',
+	    originalOrderSubtotal:'<?'
 	};
 	public controller=SWReturnOrderItemsController;
 	public controllerAs="swReturnOrderItems";

@@ -101,4 +101,39 @@ component output="false" accessors="true" extends="Slatwall.model.transient.Hiba
 		
 		return '';
 	}
+	
+	
+	/**
+	 * Helper functions to handle the current-flexship, currentOwner/Account..., 
+	 * to keep logic abstracted from Session/Cookie
+	*/ 
+	public any function getCurrentFlexship(){
+		if(this.hasCookieValue('currentFlexshipID')){
+			return this.getService('orderService')
+						.getOrderTemplate( this.getCookieValue('currentFlexshipID') );
+		}
+	}
+	
+	public any function hasCurrentFlexship(){
+		return this.hasCookieValue('currentFlexshipID');
+	}
+	
+	public any function getCurrentFlexshipID(){
+		return this.getCookieValue('currentFlexshipID');
+	}
+	
+	public any function setCurrentFlexship(any orderTemplate){
+		
+		if(!IsNull(arguments.orderTemplate)){
+			this.setCookieValue('currentFlexshipID', arguments.orderTemplate.getOrderTemplateID());
+		} else {
+			this.removeCurrentFlexship();
+		}
+	}
+	
+	public any function clearCurrentFlexship(){
+		this.clearCookieValue('currentFlexshipID');
+	}
+	
+	
 }

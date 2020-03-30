@@ -150,7 +150,7 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 			"variables" : { "clientToken": { "merchantAccountId": "#merchantAccountId#", "customerId": "#arguments.requestBean.getAccount().getAccountID()#" } }
 		};
 		httpRequest.addParam(type="body",value=SerializeJson(payload));
-
+		
 		var response = httpRequest.send().getPrefix();
 
 		if (!IsJSON(response.FileContent)) {

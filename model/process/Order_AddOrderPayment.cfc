@@ -65,6 +65,8 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="previousOrderPaymentID" hb_rbKey="entity.previousOrderPayment" hb_formFieldType="select";
 	property name="amount" hb_populateEnabled="public" hb_formatType="currency";
 
+	property name="addressID" hb_rbKey="entity.address";
+
 	// Data Properties (Inputs)
 	property name="saveAccountPaymentMethodFlag" hb_formFieldType="yesno" hb_populateEnabled="public";
 	property name="saveAccountPaymentMethodName" hb_rbKey="entity.accountPaymentMethod.accountPaymentMethodName" hb_populateEnabled="public";
@@ -150,6 +152,14 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		}
 		return variables.accountAddressID;
 	}
+
+	public string function getAccountAddressID() {
+		if(!structKeyExists(variables, "addressID")) {
+			variables.addressID = "";
+		}
+		return variables.addressID;
+	}
+
 
 	public string function getOrderTypeCode(){
 		if(!structKeyExists(variables,"orderTypeCode")){

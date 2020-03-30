@@ -1,4 +1,4 @@
-<div ng-cloak>
+<div sw-click-outside="monatBirthday.closeThis()" ng-cloak>
 
 	<div ng-if="!monatBirthday.monatService.userIsEighteen" ng-click="monatBirthday.showBirthdayPicker()" class="material-field">
 		<select 
@@ -13,7 +13,7 @@
 		</select>
 		<label for="gender_CreateAccount" sw-rbkey="'frontend.global.yourBirthday'"></label>
 	</div>
-	<div id="birthday-picker" ng-if="monatBirthday.showPicker">
+	<div  id="birthday-picker" ng-if="monatBirthday.showPicker">
 		<div class="birthday-wrapper shadow border overflow-hidden">
 			<div class="header text-center">
 				<p class="text-white py-3">Select Date</p>	

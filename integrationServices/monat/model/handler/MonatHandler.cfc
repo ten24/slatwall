@@ -64,12 +64,15 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 	public any function afterOrderProcess_placeOrderSuccess(required any slatwallScope, required any order, required any data){
 
 		var account = arguments.order.getAccount();
-		arguments.slatwallScope.setSessionValue('currentFlexshipID', '');
-	
+		arguments.slatwallScope.clearCurrentFlexship(); //if there was any
+		
 		// Snapshot the pricegroups on the order.
 		if ( !isNull(account) && arrayLen(account.getPriceGroups()) ) {
             arguments.order.setPriceGroup(account.getPriceGroups()[1]);
         }
+        
+        //Commission Date
+        arguments.order.setCommissionPeriod(dateFormat( now(), "mm/yyyy" ));
         
         // Set the Product Pack Purchased Flag
         if( account.getAccountType() == 'marketPartner' && arguments.order.hasProductPack() ) {
@@ -181,11 +184,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 		//Set the initial order flag if needed.
 		try{
 			
-			//Commission Date
-			var commissionDate = dateFormat( now(), "mm/yyyy" );
+			
 			//adding shipping and billing to flexship and activating
 			if(!isNull(arguments.data.orderTemplateID)){
-				
+
 				var orderTemplate = getOrderService().getOrderTemplate(arguments.data.orderTemplateID);
 				var orderFulFillment = arguments.order.getOrderFulfillments()[1];
 				
@@ -199,17 +201,30 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 				
 				orderTemplate.setShippingMethod(shippingMethod);
 				
-				if( !IsNull(orderFulFillment.getAccountAddress() ) ){
-					orderTemplate.setShippingAccountAddress(orderFulFillment.getAccountAddress() );
-				} else {
-					
-					//If the user chose not to save the address, we'll create a new-accountAddress for flexship, as flexship's frontend UI relies on that; User can always change/remove the address at the frontend
-					var newAccountAddress = getAccountService().newAccountAddress();
-					newAccountAddress.setAddress( orderFulFillment.getShippingAddress() );
-					newAccountAddress.setAccount( arguments.order.getAccount() );
-					newAccountAddress.setAccountAddressName( orderFulFillment.getShippingAddress().getName());
-					
-					orderTemplate.setShippingAccountAddress(newAccountAddress);
+				//try to copy shipping-account-address from last used addresses if required
+				if(!orderTemplate.hasShippingAccountAddress()) {
+					var shippingAccountAddress = orderFulFillment.getAccountAddress() ?: arguments.order.getShippingAccountAddress();
+					if( !IsNull(shippingAccountAddress) ) {
+						orderTemplate.setShippingAccountAddress( shippingAccountAddress );
+						orderTemplate.setShippingAddress( shippingAccountAddress.getAddress().copyAddress() );
+					} 
+				}
+				
+				//try to copy shipping-address from last used addresses if required
+				if( !orderTemplate.hasShippingAddress() ) {
+					var shippingAddress = orderFulFillment.getShippingAddress() ?: arguments.order.getShippingAddress();
+					if( !IsNull(shippingAddress) ) {
+						orderTemplate.setShippingAddress( shippingAddress.copyAddress() );
+					} 
+				}
+				
+				//try to copy billing-account-address from last used addresses if required
+				if( !orderTemplate.hasBillingAccountAddress()) {
+					//if there's no billing-account-address falling-back to the shipping-account-address
+					var billingAccountAddress = arguments.order.getBillingAccountAddress() ?: orderTemplate.getShippingAccountAddress();
+					if(!IsNull(billingAccountAddress)){
+						orderTemplate.setBillingAccountAddress(billingAccountAddress);
+					}
 				}
 				
 				orderTemplate.setAccountPaymentMethod(accountPaymentMethod);
@@ -218,10 +233,11 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 				if(isNull(orderTemplate.getAccount())){
 					orderTemplate.setAccount(arguments.order.getAccount());
 				}
-				orderTemplate = getOrderService().saveOrderTemplate(orderTemplate,{},'upgradeFlow');
+				
+				orderTemplate = getOrderService().saveOrderTemplate(orderTemplate,{},'upgradeFlow');//upgradeFlow???
 			}
 			
-			arguments.order.setCommissionPeriod(commissionDate);
+			
 			
 			//Initial Order Flag
 			//Set the Initial Order Flag as needed
@@ -238,7 +254,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 				arguments.order.setInitialOrderFlag(true);
 			}
 		}catch(any dateError){
-			logHibachi("afterOrderProcess_placeOrderSuccess failed @ setCommissionPeriod using #commissionDate# OR to set initialOrderFlag #serializeJson(dateError)#");	
+			logHibachi("afterOrderProcess_placeOrderSuccess failed @ set initialOrderFlag #serializeJson(dateError)#");	
 		}
 		
 	}

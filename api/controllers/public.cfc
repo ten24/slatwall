@@ -71,13 +71,19 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
 
     public any function get( required struct rc ) {
         var publicService = getService('PublicService');
-        if ( structKeyExists(arguments.rc, "context") && arguments.rc.context == "getCart"){
-            publicService.invokeMethod("getCartData", {data=arguments.rc});
-        }else if ( structKeyExists(arguments.rc, "context") && arguments.rc.context == "getAccount"){
-            publicService.invokeMethod("getAccountData", {data=arguments.rc});
-        }else if ( StructKeyExists(arguments.rc, "context") && rc.context != "get"){
-            publicService.invokeMethod("#arguments.rc.context#", {data=arguments.rc});
+
+        if ( structKeyExists(arguments.rc, "context") ) {
+            
+            if ( arguments.rc.context == "getCart"){
+                publicService.invokeMethod("getCartData", {data=arguments.rc});
+            }else if ( arguments.rc.context == "getAccount"){
+                publicService.invokeMethod("getAccountData", {data=arguments.rc});
+            }else if (  rc.context != "get"){
+                publicService.invokeMethod("#arguments.rc.context#", {data=arguments.rc});
+            }
+            
         }
+        
     }
 
     public any function post( required struct rc ) {
@@ -98,19 +104,21 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
             if (arguments.rc.context contains ","){
                 actions = listToArray(arguments.rc.context);
             }
+            
             if (!arrayLen(actions)){
-                publicService.invokeMethod(
-                    "#arguments.rc.context#", 
-                    {data=arguments.rc}
-                );
-            }else{
+                publicService.invokeMethod( "#arguments.rc.context#", {data=arguments.rc} );
+            } else {
+                
                 //iterate through all the actions calling the method.
                 for (var eachAction in actions){
                     //Make sure there are no errors if we have multiple.
-                    if (!arguments.rc.$["#getDao('hibachiDao').getApplicationValue('applicationKey')#"].cart().hasErrors() && !arguments.rc.$["#getDao('hibachiDao').getApplicationValue('applicationKey')#"].account().hasErrors()){
-                          getHibachiScope().flushORMSession();
-                          publicService.invokeMethod("#eachAction#", {data=arguments['rc']});
-                    }else{
+                    if ( 
+                        !arguments.rc.$["#getDao('hibachiDao').getApplicationValue('applicationKey')#"].cart().hasErrors() && 
+                        !arguments.rc.$["#getDao('hibachiDao').getApplicationValue('applicationKey')#"].account().hasErrors()
+                    ){
+                        getHibachiScope().flushORMSession();
+                        publicService.invokeMethod("#eachAction#", {data=arguments['rc']});
+                    } else {
                         return; //return here to push errors to the form that errored.
                     }
                 }

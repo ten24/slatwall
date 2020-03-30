@@ -885,12 +885,19 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				newOrderPayment.addError('orderPaymentID', "An issue occured while adding your Order Payment.");
 			}
 
-		}else if(!isNull(arguments.processObject.getAccountAddressID()) && len(arguments.processObject.getAccountAddressID())) {
+		} else if( len(arguments.processObject.getAccountAddressID()) ) {
+			
 			var accountAddress = getAccountService().getAccountAddress( arguments.processObject.getAccountAddressID() );
-
 			if(!isNull(accountAddress)) {
 				newOrderPayment.setBillingAccountAddress(accountAddress);
 				newOrderPayment.setBillingAddress( accountAddress.getAddress().copyAddress( true ) );
+			}
+			
+		} else if( len(arguments.processObject.getAddressID()) ) {
+			
+			var address = getAccountService().getAddress( arguments.processObject.getAddressID() );
+			if(!isNull(address)) {
+				newOrderPayment.setBillingAddress( address.copyAddress( true ) );
 			}
 		}
 
@@ -1643,7 +1650,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		newOrder.updateCalculatedProperties(runAgain=true); 
 		ormFlush();//flush so that the order exists
 
-		newOrder = this.processOrder_placeOrder(newOrder);
+		newOrder = this.processOrder_placeOrder(newOrder,{ignoreCanPlaceOrderFlag:true});
 
 		if(newOrder.hasErrors()){
 			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors on place order #serializeJson(newOrder.getErrors())# when placing order', true);
@@ -2555,6 +2562,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		// If the order doesn't have any errors, then we can flush the ormSession
 		if(!returnOrder.hasErrors()) {
+			// Recalculate the order amounts
+			this.processOrder( returnOrder, {}, 'updateOrderAmounts' );
 			getHibachiDAO().flushORMSession();
 			if(listFindNoCase('otReturnOrder,otExchangeOrder,otReplacementOrder,otRefundOrder',arguments.processObject.getOrderTypeCode()) && orderItemFoundFlag) {
 				// 'placeOrder' process will handle logic for the order payment
@@ -3062,7 +3071,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							if(listFindNoCase(orderRequirementsList, "payment")) {
 								arguments.order.addError('payment',rbKey('entity.order.process.placeOrder.paymentRequirementError'));
 							}
-							if(listFindNoCase(orderRequirementsList, "canPlaceOrderReward")){
+							if(listFindNoCase(orderRequirementsList, "canPlaceOrderReward") && (!structKeyExists(arguments.data,'ignoreCanPlaceOrderFlag') || !arguments.data.ignoreCanPlaceOrderFlag) ){
 								arguments.order.addError('canPlaceOrderReward',rbKey('entity.order.process.placeOrder.canPlaceOrderRewardRequirementError'));
 							}
 						} else {

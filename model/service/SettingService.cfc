@@ -446,6 +446,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			skuTrackInventoryFlag = {fieldType="yesno", defaultValue=0},
 			skuShippingCostExempt = {fieldType="yesno", defaultValue=0},
 			skuDisableAverageCostCalculation = {fieldType="yesno", defaultValue=0},
+			skuDisableQoQCalculation = {fieldType="yesno", defaultValue=0},
 			
 			skuRevenueLedgerAccount = {fieldType="select", defaultValue="54cf9c67d219bd4eddc6aa7dfe32aa02"},
 			skuCogsLedgerAccount = {fieldType="select", defaultValue="54cd90d6dd39c2e90c99cdb675371a05"},

@@ -321,7 +321,7 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 			variables.usernameNotInUseFlag = true;
 			if(!isNull(getUserName()) && len(getUserName()) && getNewFlag()) {
 				variables.usernameNotInUseFlag = getService("accountService").getUsernameNotInUseFlag( username=getUsername() );
-			} else {
+			} else if(!isNull(getUserName()) && len(getUserName()) ) {
 				variables.usernameNotInUseFlag = getService("accountService").getUsernameNotInUseFlag( username=getUsername(), accountID=getAccountID() );
 			}
 		}
@@ -1431,5 +1431,30 @@ public numeric function getSuccessfulFlexshipOrdersThisYearCount(){
 			variables.vipEnrollmentAmountPaid = enrollmentAmountPaid;
 		}
 		return variables.vipEnrollmentAmountPaid;
+	}
+	
+	public boolean function canSponsor(){
+
+		if(structKeyExists(variables, 'canSponsorFlag')){
+			return variables.canSponsorFlag;
+		}
+		if(
+			(getAccountType() == 'marketPartner' || getAccountType() == 'VIP')
+			&&
+			structKeyExists(variables,'accountNumber') 
+			&&
+			len(variables.accountNumber)
+			&& 
+			!isNull(this.getAccountStatusType()) 
+			&& 
+			this.getAccountStatusType().getSystemCode() == 'astGoodStanding'
+		){
+			variables.canSponsorFlag = true;
+			return true;
+		}
+		
+		
+		return false;
+	
 	}//CUSTOM FUNCTIONS END
 }

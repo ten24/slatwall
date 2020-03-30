@@ -269,6 +269,9 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	}
 	
 	public any function getQOQ() {
+		if(getSku().setting('skuDisableQoQCalculation') == true){
+			return 0;
+		}
 		return getQuantity("QOQ");
 	}
 

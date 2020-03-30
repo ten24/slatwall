@@ -44,6 +44,7 @@ class MonatCheckoutController {
 	public currentShippingAddress;
 	public listPrice = 0;
 	public toggleBillingAddressForm:boolean;
+	public sponsorLoading:boolean;
 	
 	// @ngInject
 	constructor(
@@ -266,13 +267,13 @@ class MonatCheckoutController {
                             enableShippingAddress: true,
                             shippingAddressEditable: false,
                             shippingAddressOverride: {
-                            	line1: paypalConfig.line1,
-                            	line2: paypalConfig.line2,
-                            	city: paypalConfig.city,
-                            	state: paypalConfig.state,
-                            	postalCode: paypalConfig.postalCode,
-                            	countryCode: paypalConfig.countryCode,
-                            	recipientName: paypalConfig.name,
+                            	line1: paypalConfig.shippingAddress.line1,
+                            	line2: paypalConfig.shippingAddress.line2,
+                            	city: paypalConfig.shippingAddress.city,
+                            	state: paypalConfig.shippingAddress.state,
+                            	postalCode: paypalConfig.shippingAddress.postalCode,
+                            	countryCode: paypalConfig.shippingAddress.countryCode,
+                            	recipientName: paypalConfig.shippingAddress.recipientName,
                             },
                             amount: paypalConfig.amount, // Required
                             currency: paypalConfig.currencyCode, // Required
@@ -340,6 +341,7 @@ class MonatCheckoutController {
 	}
 	
 	public submitSponsor():Screen | void{
+		this.sponsorLoading = true;
 		this.publicService.doAction('submitSponsor', {sponsorID: this.ownerAccountID}).then(res=>{
 			if(res.successfulActions.length) {
 				this.hasSponsor = true; 
@@ -347,6 +349,7 @@ class MonatCheckoutController {
 			}else if(res.errors){
 				this.monatAlertService.error(res.errors);
 			}
+			this.sponsorLoading = false;
 		});
 	}
 	

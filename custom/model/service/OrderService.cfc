@@ -152,10 +152,9 @@ component extends="Slatwall.model.service.OrderService" {
 				arguments.orderTemplate.addError('create', account.getErrors());
 				return arguments.orderTemplate;
 			} 
-		} else if(!isNull(processObject.getAccount())){
-			var account = processObject.getAccount();
+			
 		} else {
-			var account = getHibachiScope().getAccount();
+			var account = processObject.getAccount() ?: getHibachiScope().getAccount();
 		}
 		
 		if( !account.getCanCreateFlexshipFlag() && arguments.context != "upgradeFlow") {
@@ -186,7 +185,7 @@ component extends="Slatwall.model.service.OrderService" {
 		//NOTE: there's only one shipping method allowed for flexship
 		var shippingMethod = getService('ShippingService').getShippingMethod( 
 		            ListFirst( arguments.orderTemplate.setting('orderTemplateEligibleShippingMethods') )
-			    );
+			   );
 		orderTemplate.setShippingMethod(shippingMethod);
 		
 		//grab and set account-payment-method from account to ordertemplate
@@ -199,7 +198,7 @@ component extends="Slatwall.model.service.OrderService" {
 		}
 		
 
-		//grab and get billing-account-address from account
+		//grab and set billing-account-address from account
 		if(!arguments.orderTemplate.hasBillingAccountAddress() ) {
 		 	if(account.hasPrimaryBillingAddress()) {
     		    arguments.orderTemplate.setBillingAccountAddress(account.getPrimaryBillingAddress());
@@ -221,7 +220,9 @@ component extends="Slatwall.model.service.OrderService" {
 		arguments.orderTemplate.setScheduleOrderDayOfTheMonth(day(arguments.processObject.getScheduleOrderNextPlaceDateTime()));
 		arguments.orderTemplate.setScheduleOrderNextPlaceDateTime(arguments.processObject.getScheduleOrderNextPlaceDateTime());
 		arguments.orderTemplate.setFrequencyTerm( getSettingService().getTerm(arguments.processObject.getFrequencyTermID()) );
+		
 		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate, arguments.data, arguments.context); 
+		
 		return arguments.orderTemplate;
     }
 
@@ -266,7 +267,11 @@ component extends="Slatwall.model.service.OrderService" {
 	        for(var priceField in variables.customPriceFields){
 	            var price = arguments.originalOrderItem.invokeMethod('getCustomExtendedPriceAfterDiscount',{1=priceField});
 	            if(!isNull(price)){
-	                price = price * returnOrderItem.getPrice() / arguments.originalOrderItem.getExtendedPriceAfterDiscount();
+	            	if(arguments.originalOrderItem.getExtendedPriceAfterDiscount() != 0){
+	                	price = price * returnOrderItem.getPrice() / arguments.originalOrderItem.getExtendedPriceAfterDiscount();
+	            	}else{
+	            		price = 0;
+	            	}
 	                returnOrderItem.invokeMethod('set#priceField#',{1=price});
 	            } 
 	        }
@@ -302,8 +307,11 @@ component extends="Slatwall.model.service.OrderService" {
 		if(!isNull(allocatedOrderDiscountAmount) && allocatedOrderDiscountAmount > 0){
 			var promotionApplied = getService('PromotionService').newPromotionApplied();
 			promotionApplied.setOrder(returnOrder);
-			if(arguments.order.hasAppliedPromotion()){
-				promotionApplied.setPromotion(arguments.order.getAppliedPromotions()[1].getPromotion());
+			if( arguments.order.hasAppliedPromotion() ){
+				var originalPromo = arguments.order.getAppliedPromotions()[1].getPromotion();
+				if( !isNull(originalPromo) ){
+					promotionApplied.setPromotion( originalPromo );
+				}
 			}
 			promotionApplied.setDiscountAmount(allocatedOrderDiscountAmount * -1);
 			promotionApplied.setPersonalVolumeDiscountAmount(allocatedOrderPVDiscountAmount * -1);
@@ -633,7 +641,7 @@ component extends="Slatwall.model.service.OrderService" {
 		
 		//Order payment data
 		var orderPaymentList = this.getOrderPaymentCollectionList();
-		orderPaymentList.setDisplayProperties('billingAddress.streetAddress,billingAddress.street2Address,billingAddress.city,billingAddress.stateCode,billingAddress.postalCode,billingAddress.name,billingAddress.countryCode,expirationMonth,expirationYear,order.calculatedFulfillmentTotal,order.calculatedSubTotal,order.calculatedVATTotal,order.calculatedDiscountTotal,order.calculatedTotal,order.orderCountryCode,order.orderNumber,order.orderStatusType.typeName,order.calculatedPersonalVolumeTotal,creditCardLastFour,order.orderType.typeName');
+		orderPaymentList.setDisplayProperties('currencyCode,billingAddress.streetAddress,billingAddress.street2Address,billingAddress.city,billingAddress.stateCode,billingAddress.postalCode,billingAddress.name,billingAddress.countryCode,expirationMonth,expirationYear,order.calculatedFulfillmentTotal,order.calculatedSubTotal,order.calculatedVATTotal,order.calculatedTaxTotal,order.calculatedDiscountTotal,order.calculatedTotal,order.orderCountryCode,order.orderNumber,order.orderStatusType.typeName,order.calculatedPersonalVolumeSubtotal,creditCardLastFour,order.orderType.typeName');
 		orderPaymentList.addFilter( 'order.orderID', arguments.data.orderID, '=');
 		orderPaymentList.addFilter( 'order.account.accountID', arguments.data.accountID, '=');
 		orderPaymentList.setPageRecordsShow(arguments.data.pageRecordsShow);
@@ -651,14 +659,16 @@ component extends="Slatwall.model.service.OrderService" {
 		
 		var orderPayments = orderPaymentList.getPageRecords();
 		var orderItems = ordersItemsList.getPageRecords();
-		var orderPromtions = orderPromotionList.getPageRecords();
+		var orderPromotions = orderPromotionList.getPageRecords();
 		var orderDeliveries = orderDeliveriesList.getPageRecords();
 		var orderItemData = {};
 		
 		orderItemData['orderPayments'] = orderPayments;
 		orderItemData['orderItems'] = orderItems;
-		orderItemData['orderPromtions'] = orderPromtions;
+		orderItemData['orderPromotions'] = orderPromotions;
 		orderItemData['orderRefundTotal'] = orderRefundTotal;
+		orderItemData['purchasePlusTotal'] = order.getPurchasePlusTotal();
+		
 		if ( len( orderDeliveries ) ) {
 			orderItemData['orderDelivery'] = orderDeliveries[1];
 		}
@@ -954,13 +964,10 @@ component extends="Slatwall.model.service.OrderService" {
 	
 	
 	public any function deleteOrderTemplate( required any orderTemplate ) {
-		var flexshipTypeID = getService('TypeService').getTypeBySystemCode('ottSchedule').getTypeID();
 		
-		if(arguments.orderTemplate.getOrderTemplateType().getTypeID() == flexshipTypeID){
-			getHibachiScope().getSession().setCurrentFlexship( javaCast("null", "") );
-			ORMExecuteQuery("UPDATE SlatwallSession s SET s.currentFlexship = NULL WHERE s.currentFlexship.orderTemplateID =:orderTemplateID", {orderTemplateID = arguments.orderTemplate.getOrderTemplateID()});
+		if( getHibachiSCope().getCurrentFlexshipID() == arguments.orderTemplate.getOrderTemplateID() ){
+			getHibachiScope().clearCurrentFlexship();
 		}
-		
 		return super.delete( arguments.orderTemplate );
 	}
 

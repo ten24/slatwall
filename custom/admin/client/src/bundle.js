@@ -66604,8 +66604,8 @@ var SWOrderTemplateAddGiftCardModalController = /** @class */ (function () {
             }
         };
         this.prefillGiftCardAmount = function () {
-            if (_this.orderTemplate.calculatedTotal < _this.giftCard.calculatedBalanceAmount) {
-                _this.amountToApply = _this.orderTemplate.calculatedTotal;
+            if (_this.orderTemplate.total < _this.giftCard.calculatedBalanceAmount) {
+                _this.amountToApply = _this.orderTemplate.total;
             }
             else {
                 _this.amountToApply = _this.giftCard.calculatedBalanceAmount;
@@ -73072,7 +73072,8 @@ var SkuPriceService = /** @class */ (function () {
         };
         this.getSkuCollectionConfig = function (productID) {
             var config = _this.collectionConfigService.newCollectionConfig("Sku");
-            config.setDisplayProperties("skuID,skuName,skuCode,imagePath");
+            config.setDisplayProperties("skuID,skuName,skuCode");
+            config.addDisplayProperty("imagePath", "", { 'isSearchable': false });
             config.addFilter("product.productID", productID, "=");
             return config;
         };
@@ -74165,7 +74166,7 @@ exports.SWOrderList = SWOrderList;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var ReturnOrderItem = /** @class */ (function () {
-    function ReturnOrderItem(obj) {
+    function ReturnOrderItem(obj, orderDiscountRatio) {
         var _this = this;
         this.returnQuantity = 0;
         //  Following equations have a (this.maxRefund / this.total) term included in order to get the remaining values
@@ -74196,6 +74197,12 @@ var ReturnOrderItem = /** @class */ (function () {
         this.refundUnitPrice = this.calculatedExtendedUnitPriceAfterDiscount;
         this.taxTotal = this.calculatedTaxAmount;
         this.taxRefundAmount = 0;
+        if (this.allocatedOrderDiscountAmount === " ") {
+            this.allocatedOrderDiscountAmount = null;
+        }
+        if (!this.allocatedOrderDiscountAmount && this.allocatedOrderDiscountAmount !== 0) {
+            this.allocatedOrderDiscountAmount = this.calculatedExtendedPriceAfterDiscount * orderDiscountRatio;
+        }
         if (this.refundUnitPrice) {
             this.maxRefund = this.refundUnitPrice * this.returnQuantityMaximum;
         }
@@ -74218,7 +74225,7 @@ var SWReturnOrderItemsController = /** @class */ (function () {
         this.refundPVTotal = 0;
         this.refundCVTotal = 0;
         this.fulfillmentRefundTaxAmount = 0;
-        this.setupOrderItemCollectionList = function () {
+        this.setupOrderItemCollectionList = function (orderDiscountRatio) {
             _this.orderItemCollectionList = _this.collectionConfigService.newCollectionConfig("OrderItem");
             for (var _i = 0, _a = _this.displayPropertiesList.split(','); _i < _a.length; _i++) {
                 var displayProperty = _a[_i];
@@ -74228,7 +74235,7 @@ var SWReturnOrderItemsController = /** @class */ (function () {
             _this.orderItemCollectionList.setAllRecords(true);
             _this.orderItemCollectionList.getEntity().then(function (result) {
                 for (var i = 0; i < result.records.length; i++) {
-                    result.records[i] = new ReturnOrderItem(result.records[i]);
+                    result.records[i] = new ReturnOrderItem(result.records[i], orderDiscountRatio);
                     _this.orderTotal += result.records[i].allocatedOrderDiscountAmount;
                 }
                 _this.orderItems = result.records;
@@ -74241,7 +74248,7 @@ var SWReturnOrderItemsController = /** @class */ (function () {
             var orderMaxRefund;
             orderItem = _this.setValuesWithinConstraints(orderItem);
             orderItem.refundTotal = orderItem.returnQuantity * orderItem.refundUnitPrice;
-            if (orderItem.returnQuantity > 0) {
+            if (orderItem.returnQuantity > 0 && orderItem.total > 0) {
                 orderItem.refundUnitPV = Math.round(orderItem.refundTotal * orderItem.pvTotal * 100 / (orderItem.total * orderItem.returnQuantity)) / 100;
                 orderItem.refundPVTotal = orderItem.refundUnitPV * orderItem.returnQuantity;
                 orderItem.refundUnitCV = Math.round(orderItem.refundTotal * orderItem.cvTotal * 100 / (orderItem.total * orderItem.returnQuantity)) / 100;
@@ -74374,14 +74381,18 @@ var SWReturnOrderItemsController = /** @class */ (function () {
         if (this.fulfillmentTaxAmount == undefined) {
             this.fulfillmentTaxAmount = 0;
         }
+        var orderDiscountRatio;
+        if (this.originalOrderSubtotal) {
+            orderDiscountRatio = this.orderDiscountAmount / this.originalOrderSubtotal;
+        }
         if (this.refundOrderItems == undefined) {
             this.displayPropertiesList = this.getDisplayPropertiesList();
-            this.setupOrderItemCollectionList();
+            this.setupOrderItemCollectionList(orderDiscountRatio);
         }
         else {
             this.orderItems = this.refundOrderItems.map(function (item) {
                 item.calculatedExtendedPriceAfterDiscount = _this.orderTotal;
-                return new ReturnOrderItem(item);
+                return new ReturnOrderItem(item, orderDiscountRatio);
             });
         }
         $hibachi.getCurrencies().then(function (result) {
@@ -74404,7 +74415,8 @@ var SWReturnOrderItems = /** @class */ (function () {
             orderType: '@',
             orderTotal: '<?',
             fulfillmentTaxAmount: '@',
-            orderDiscountAmount: '<?'
+            orderDiscountAmount: '<?',
+            originalOrderSubtotal: '<?'
         };
         this.controller = SWReturnOrderItemsController;
         this.controllerAs = "swReturnOrderItems";
