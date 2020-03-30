@@ -11,6 +11,7 @@ class FlexshipPurchasePlusController {
 	constructor() {}
 
 	public $onInit = () => {
+		console.log(this.messages)
 	}
 	
 	
