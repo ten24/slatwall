@@ -151,23 +151,22 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 	}
 	
 	public any function populateFromAddressValueCopy(required any sourceAddress) {
-
-		setName( arguments.sourceAddress.getName() );
-		setCompany( arguments.sourceAddress.getCompany() );
-		setStreetAddress( arguments.sourceAddress.getStreetAddress() );
-		setStreet2Address( arguments.sourceAddress.getStreet2Address() );
-		setLocality( arguments.sourceAddress.getLocality() );
-		setCity( arguments.sourceAddress.getCity() );
-		setStateCode( arguments.sourceAddress.getStateCode() );
-		setPostalCode( arguments.sourceAddress.getPostalCode() );
-		setCountryCode( arguments.sourceAddress.getCountryCode() );
-		setSalutation( arguments.sourceAddress.getSalutation() );
-		setFirstName( arguments.sourceAddress.getFirstName() );
-		setLastName( arguments.sourceAddress.getLastName() );
-		setMiddleName( arguments.sourceAddress.getMiddleName() );
-		setMiddleInitial( arguments.sourceAddress.getMiddleInitial() );
-		setPhoneNumber( arguments.sourceAddress.getPhoneNumber() );
-		setEmailAddress( arguments.sourceAddress.getEmailAddress() );
+		this.setName( arguments.sourceAddress.getName() );
+		this.setCompany( arguments.sourceAddress.getCompany() );
+		this.setStreetAddress( arguments.sourceAddress.getStreetAddress() );
+		this.setStreet2Address( arguments.sourceAddress.getStreet2Address() );
+		this.setLocality( arguments.sourceAddress.getLocality() );
+		this.setCity( arguments.sourceAddress.getCity() );
+		this.setStateCode( arguments.sourceAddress.getStateCode() );
+		this.setPostalCode( arguments.sourceAddress.getPostalCode() );
+		this.setCountryCode( arguments.sourceAddress.getCountryCode() );
+		this.setSalutation( arguments.sourceAddress.getSalutation() );
+		this.setFirstName( arguments.sourceAddress.getFirstName() );
+		this.setLastName( arguments.sourceAddress.getLastName() );
+		this.setMiddleName( arguments.sourceAddress.getMiddleName() );
+		this.setMiddleInitial( arguments.sourceAddress.getMiddleInitial() );
+		this.setPhoneNumber( arguments.sourceAddress.getPhoneNumber() );
+		this.setEmailAddress( arguments.sourceAddress.getEmailAddress() );
 	}
 	
 	// ====================  END: Logical Methods ==========================
