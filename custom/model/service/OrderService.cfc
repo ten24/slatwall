@@ -307,8 +307,11 @@ component extends="Slatwall.model.service.OrderService" {
 		if(!isNull(allocatedOrderDiscountAmount) && allocatedOrderDiscountAmount > 0){
 			var promotionApplied = getService('PromotionService').newPromotionApplied();
 			promotionApplied.setOrder(returnOrder);
-			if(arguments.order.hasAppliedPromotion()){
-				promotionApplied.setPromotion(arguments.order.getAppliedPromotions()[1].getPromotion());
+			if( arguments.order.hasAppliedPromotion() ){
+				var originalPromo = arguments.order.getAppliedPromotions[1].getPromotion();
+				if( !isNull(originalPromo) ){
+					promotionApplied.setPromotion( originalPromo );
+				}
 			}
 			promotionApplied.setDiscountAmount(allocatedOrderDiscountAmount * -1);
 			promotionApplied.setPersonalVolumeDiscountAmount(allocatedOrderPVDiscountAmount * -1);
