@@ -131,6 +131,7 @@ component entityname="SlatwallTaxApplied" table="SwTaxApplied" persistent="true"
 		variables.orderItem = arguments.orderItem;
 		if(isNew() or !arguments.orderItem.hasAppliedTax( this )) {
 			arrayAppend(arguments.orderItem.getAppliedTaxes(), this);
+			arguments.orderItem.clearVariablesKey('taxAmount');
 		}
 	}
 	public void function removeOrderItem(any orderItem) {
