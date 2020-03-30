@@ -1632,14 +1632,13 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             return;
         }
         
+        getHibachiScope().setSessionValue('ownerAccountNumber', '');
+        
         //if we are not in an upgrade flow and the user is logged in, log the user out.
         if(!arguments.data.upgradeFlowFlag && getHibachiScope().getLoggedInFlag()){
-            if( 
-                getHibachiScope().getAccount().getAccountType() == 'marketPartner' && 
-                !isNull(getHibachiScope().getAccount().getAccountNumber())
-            ) {
-                getHibachiScope().setCurrentOwnerAccountNumber( getHibachiScope().getAccount().getAccountNumber() );
-           } 
+            if(getHibachiScope().getAccount().canSponsor()){
+                getHibachiScope().setSessionValue('ownerAccountNumber', '#getHibachiScope().getAccount().getAccountNumber()#');
+            }
             super.logout();
         }
        
@@ -1788,6 +1787,10 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     
     public void function getMarketPartners(required struct data){
         param name="arguments.data.search" default='';
+        
+        if(!len(data.search) && getHibachiScope().hasSessionValue('ownerAccountNumber') && len( getHibachiScope().getSessionValue('ownerAccountNumber'))){
+            data['search'] = getHibachiScope().getSessionValue('ownerAccountNumber');
+        }
         
         var marketPartners = getService('MonatDataService').getMarketPartners(data);
         arguments.data.ajaxResponse['pageRecords'] = marketPartners.accountCollection;

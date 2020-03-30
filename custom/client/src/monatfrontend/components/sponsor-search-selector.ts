@@ -35,14 +35,8 @@ class SponsorSearchSelectorController {
 		this.form.countryCode = this.siteCountryCode;
 		this.getCountryCodeOptions();
 		this.getStateCodeOptions( this.form.countryCode );
-		if(hibachiConfig.siteOwner.length){
-			this.getSearchResults(true);
-		}
 		
-		this.observerService.attach((account) =>{
-			this.form.text = account;
-			this.getSearchResults(false, true);				
-		}, 'accountRetrieved');
+		this.getSearchResults(true);
 		
 	}
 	
@@ -68,7 +62,7 @@ class SponsorSearchSelectorController {
 		});
 	}
 	
-	public getSearchResults = (useHibachConfig = false, useOriginalAccountOwner = false, selectFirstSponsor = false) => {
+	public getSearchResults = (selectFirstSponsor = false) => {
 		this.loadingResults = true;
 		
 		let data = {
@@ -87,19 +81,13 @@ class SponsorSearchSelectorController {
 			stateCode:this.form.stateCode,
 			returnJsonObjects:''
 		}
-		
-		if(useHibachConfig && !this.hasBeenSearched){
-			this.argumentsObject['search'] = hibachiConfig.siteOwner
-			data['search'] = hibachiConfig.siteOwner;
-			this.hasBeenSearched = true;
-		}
 
 		this.publicService.marketPartnerResults = this.publicService.doAction(
 			'getmarketpartners',data
 		).then(data => {
 			this.observerService.notify('PromiseComplete');
 	
-			if( data.recordsCount == 1 || (useHibachConfig || useOriginalAccountOwner && data.recordsCount == 1)){
+			if( data.recordsCount == 1 ){
 				this.selectedSponsor = data.pageRecords[0];
 				this.notifySelect(this.selectedSponsor);
 			}
