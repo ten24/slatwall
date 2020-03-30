@@ -49,7 +49,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     
     
      public any function login( required struct data ){
-         super.login(argumentCollection = arguments);
+         
+        super.login(argumentCollection = arguments);
          
         if (getHibachiScope().getLoggedInFlag() &&
             !isNull(getHibachiScope().getAccount().getAccountCreatedSite()) &&
@@ -57,6 +58,14 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             getHibachiScope().getAccount().getAccountCreatedSite().getSiteID() != getHibachiScope().getCurrentRequestSite().getSiteID()
         ){
             arguments.data.ajaxResponse['data'] =  { 'redirect': getHibachiScope().getAccount().getAccountCreatedSite().getCmsSiteID() };
+        }
+
+        if(
+            getHibachiScope().getCart().getUpgradeFlag()
+            && getHibachiScope().getAccount().getAccountStatusType().getTypeCode() == 'astGoodStanding'
+        ){
+            throw('yoyo')
+            this.removeUpgradeOnOrder();
         }
     }
     
@@ -700,6 +709,10 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		if(!isNull(getHibachiScope().getCurrentRequestSite())){
 		    bundlePersistentCollectionList.addFilter('sku.product.sites.siteID',getHibachiScope().getCurrentRequestSite().getSiteID());
 		}
+		var currencyCode = 
+		    !isNull(getService('siteService').getSiteByCMSSiteID(arguments.data.cmsSiteID)) 
+		    ? getService('siteService').getSiteByCMSSiteID(arguments.data.cmsSiteID).getCurrencyCode() 
+		    : 'USD';
 		
 		bundlePersistentCollectionList.setDisplayProperties('
 			skuBundleID,
@@ -722,16 +735,10 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 			"isDeletable":false,
 			"isSearchable":false,
 			"arguments":{
-			    'currencyCode': 'USD'
+			    'currencyCode': currencyCode
 			}
 		};
 
-		var site = getHibachiScope().getCurrentRequestSite();
-        if ( !isNull( site ) ) {
-            var currencyCode = site.getCurrencyCode();
-        }else{
-            var currencyCode = 'USD';
-        }
         bundlePersistentCollectionList.addFilter('sku.skuPrices.currencyCode',currencyCode);
         bundlePersistentCollectionList.addFilter('sku.skuPrices.priceGroup.priceGroupCode',1);
 	    bundlePersistentCollectionList.addFilter('bundledSku.skuPrices.currencyCode',currencyCode);
