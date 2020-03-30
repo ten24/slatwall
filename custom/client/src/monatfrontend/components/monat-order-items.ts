@@ -37,13 +37,14 @@ class MonatOrderItemsController {
 	}
 
 	private getOrderItems = () => {
-		this.monatService.getCart().then( data => {
+		this.monatService.getCart(true).then( data => {
 			this.updateOrderItems(data);
 		});
 	}
 	
 	private updateOrderItems = (data) =>{
 		let cart = data.cart ? data.cart : data;
+
 		if ( undefined !== cart.orderItems ) {
 			this.orderItems = cart.orderItems;
 			this.aggregateOrderItems( cart.orderItems );
@@ -60,6 +61,7 @@ class MonatOrderItemsController {
 	}
 	
 	public aggregateOrderItems = orderItems => {
+	
 		this.todaysOrder = [];
 		this.starterKits = [];
 		this.starterKits = [];
