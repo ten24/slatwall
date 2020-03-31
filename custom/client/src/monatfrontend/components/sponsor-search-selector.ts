@@ -31,12 +31,20 @@ class SponsorSearchSelectorController {
 	) {}
 	
 	public $onInit = () => {
+		console.log(hibachiConfig);
 		// Set the default country code based on the current site.
 		this.form.countryCode = this.siteCountryCode;
 		this.getCountryCodeOptions();
 		this.getStateCodeOptions( this.form.countryCode );
 		
-		this.getSearchResults(true);
+		//replicated site
+		if(hibachiConfig.siteOwner.length){
+			this.getSearchResults(true);
+			//session general search 
+		}else{
+			this.getSearchResults(false);
+		}
+		
 		
 	}
 	
@@ -62,7 +70,7 @@ class SponsorSearchSelectorController {
 		});
 	}
 	
-	public getSearchResults = (selectFirstSponsor = false) => {
+	public getSearchResults = (useHibachiConfig = false) => {
 		this.loadingResults = true;
 		
 		let data = {
@@ -80,6 +88,12 @@ class SponsorSearchSelectorController {
 			countryCode:this.form.countryCode,
 			stateCode:this.form.stateCode,
 			returnJsonObjects:''
+		}
+		
+		if(useHibachiConfig && !this.hasBeenSearched){
+			this.argumentsObject['search'] = hibachiConfig.siteOwner
+			data['search'] = hibachiConfig.siteOwner;
+			this.hasBeenSearched = true;
 		}
 
 		this.publicService.marketPartnerResults = this.publicService.doAction(

@@ -106,7 +106,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
           accountCollection.addFilter('accountType', 'marketPartner', '=');  
         }
         
-        if ( len( arguments.data.countryCode ) &&  !getHibachiScope().hasSessionValue('ownerAccountNumber') && !len( getHibachiScope().getSessionValue('ownerAccountNumber'))) {
+        if ( len( arguments.data.countryCode ) &&  !getHibachiScope().hasSessionValue('ownerAccountNumber') || !len( getHibachiScope().getSessionValue('ownerAccountNumber'))) {
             accountCollection.addFilter( 'primaryAddress.address.countryCode', arguments.data.countryCode );
         }
         
