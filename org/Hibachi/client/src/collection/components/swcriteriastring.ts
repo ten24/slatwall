@@ -39,36 +39,36 @@ class SWCriteriaString{
 								display:"Doesn't Equal",
 								comparisonOperator:"<>"
 							},
-							{
-								display:"Contains",
-								comparisonOperator:"like",
-								pattern:"%w%"
-							},
-							{
-								display:"Doesn't Contain",
-								comparisonOperator:"not like",
-								pattern:"%w%"
-							},
-							{
-								display:"Starts With",
-								comparisonOperator:"like",
-								pattern:"w%"
-							},
-							{
-								display:"Doesn't Start With",
-								comparisonOperator:"not like",
-								pattern:"w%"
-							},
-							{
-								display:"Ends With",
-								comparisonOperator:"like",
-								pattern:"%w"
-							},
-							{
-								display:"Doesn't End With",
-								comparisonOperator:"not like",
-								pattern:"%w"
-							},
+							// {
+							// 	display:"Contains",
+							// 	comparisonOperator:"like",
+							// 	pattern:"%w%"
+							// },
+							// {
+							// 	display:"Doesn't Contain",
+							// 	comparisonOperator:"not like",
+							// 	pattern:"%w%"
+							// },
+							// {
+							// 	display:"Starts With",
+							// 	comparisonOperator:"like",
+							// 	pattern:"w%"
+							// },
+							// {
+							// 	display:"Doesn't Start With",
+							// 	comparisonOperator:"not like",
+							// 	pattern:"w%"
+							// },
+							// {
+							// 	display:"Ends With",
+							// 	comparisonOperator:"like",
+							// 	pattern:"%w"
+							// },
+							// {
+							// 	display:"Doesn't End With",
+							// 	comparisonOperator:"not like",
+							// 	pattern:"%w"
+							// },
 							{
 								display:"In List",
 								comparisonOperator:"in"
