@@ -455,7 +455,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
      * and make orderPayment billingAddress optional
      * */
     public any function addOrderPayment(required any data, boolean giftCard = false) {
-
+        param name = "data.orderID" default = "";
+        
         if(StructKeyExists(arguments.data,'accountPaymentMethodID')) {
             var accountPaymentMethodCollectionList = getAccountService().getAccountPaymentMethodCollectionList();
             accountPaymentMethodCollectionList.setDisplayProperties('paymentMethod.paymentMethodID');
@@ -467,6 +468,21 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                arguments.data.newOrderPayment.paymentMethod.paymentMethodID = accountPaymentMethodCollectionList[1].paymentMethod_paymentMethodID;
                 arguments.data.newOrderPayment.requireBillingAddress = 0;
             }
+            
+            if (len(data.orderID)) {
+                var order = getOrderService().getOrder(data.orderID);
+            }
+            else {
+                var order = getHibachiScope().getCart();
+            }
+            
+            //Remove any existing order payments
+            //It's to remove default payment from order when adding any new method
+            for( orderPayment in order.getOrderPayments() ) {
+                if(orderPayment.isDeletable()) {
+    				getService("OrderService").deleteOrderPayment(orderPayment);
+    			}
+    		}
         }
         
         super.addOrderPayment(argumentCollection = arguments);
