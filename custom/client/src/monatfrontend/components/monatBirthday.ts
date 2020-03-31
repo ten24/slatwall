@@ -82,14 +82,13 @@ class MonatBirthdayController {
 		//disallow years above the current year
 		if(action === ActionType.PLUS && this.year < this.currentYear){
 			this.year += 1;
-			this.resetModel();
 		}else if(action === ActionType.MINUS){
 			this.year -= 1;
-			this.resetModel();
-		}else if(this.year > this.currentYear){
+		}else if(this.year > this.currentYear || this.year < 1900){
 			this.year = this.currentYear;
+			return;
 		}
-		
+		this.resetModel();
 	}
 	
 	public getAdjustedMonth(action:ActionType):string{
