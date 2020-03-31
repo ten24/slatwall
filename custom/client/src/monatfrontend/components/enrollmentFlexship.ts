@@ -11,6 +11,7 @@ class EnrollmentFlexshipController {
 	public cartThreshold:number;
 	public suggestedRetailPrice: 0; 
 	public messages:any;
+
 	
 	//@ngInject
 	constructor(public monatService, public observerService, public orderTemplateService, public publicService) {

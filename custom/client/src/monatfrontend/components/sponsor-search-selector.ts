@@ -38,7 +38,10 @@ class SponsorSearchSelectorController {
 		this.getStateCodeOptions( this.form.countryCode );
 		
 		//replicated site
-		if(hibachiConfig.siteOwner.length){
+		if ( 'undefined' !== this.$location.search().accountNumber ) {
+			this.form.text = this.$location.search().accountNumber;
+			this.getSearchResults();
+		}else if(hibachiConfig.siteOwner.length){
 			this.getSearchResults(true);
 			//session general search 
 		}else{
