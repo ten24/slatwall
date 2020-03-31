@@ -1274,7 +1274,7 @@ component  accessors="true" output="false"
     public void function updateOrderItemQuantity(required any data) {
         
         var cart = getHibachiScope().cart();
-        
+
         // Check to see if we can attach the current account to this order, required to apply price group details
         if( isNull(cart.getAccount()) && getHibachiScope().getLoggedInFlag() ) {
             cart.setAccount( getHibachiScope().getAccount() );
@@ -1283,39 +1283,49 @@ component  accessors="true" output="false"
         if (structKeyExists(data, "orderItem") && structKeyExists(data.orderItem, "orderItemID") && structKeyExists(data.orderItem, "quantity")){
             for (var orderItem in cart.getOrderItems()){
                 if (orderItem.getOrderItemID() == data.orderItem.orderItemID){
+                    var oldQuantity = orderItem.getQuantity();
                     orderItem.setQuantity(data.orderItem.quantity);
+                    getService("HibachiValidationService").validate(cart,'save');
+                    if(cart.hasErrors()){
+                        orderItem.setQuantity(oldQuantity);
+                        orderItem.clearVariablesKey('extendedPrice');
+                    }
                 }
             }
 		}else if (structKeyExists(data, "orderItem") && structKeyExists(data.orderItem, "sku") && structKeyExists(data.orderItem.sku, "skuID") && structKeyExists(data.orderItem, "qty") ){
             for (var orderItem in cart.getOrderItems()){
                 if (orderItem.getSku().getSkuID() == data.orderItem.sku.skuID){
+                    var oldQuantity = orderItem.getQuantity();
                     orderItem.setQuantity(data.orderItem.qty);
+                    
+                    getService("HibachiValidationService").validate(cart,'save');
+                    if(cart.hasErrors()){
+                        orderItem.setQuantity(oldQuantity);
+                        orderItem.clearVariablesKey('extendedPrice');
+                    }
                 }
             }
         }
         
+        
         if(!cart.hasErrors()) {
-            //Persist the quantity change
             getService("OrderService").saveOrder(cart);
-            
             // Insure that all items in the cart are within their max constraint
      	    	if(!cart.hasItemsQuantityWithinMaxOrderQuantity()) {
     	 	        cart = getService("OrderService").processOrder(cart, 'forceItemQuantityUpdate');
+    	 	        if(!cart.hasErrors()) {
+                      getService("OrderService").saveOrder(cart);
+                    }
     	 	    } 
     	 	    
-    	 	    if(!cart.hasErrors()) {
-              getService("OrderService").saveOrder(cart);
-            }
             // Also make sure that this cart gets set in the session as the order
             getHibachiScope().getSession().setOrder( cart );
             
             // Make sure that the session is persisted
             getHibachiSessionService().persistSession();
-            
-        }else{
-            addErrors(data, getHibachiScope().getCart().getErrors());
         }
-		  getHibachiScope().addActionResult( "public:cart.updateOrderItem", cart.hasErrors() );
+        
+        getHibachiScope().addActionResult( "public:cart.updateOrderItem", cart.hasErrors() );
     }
     /** 
      * @http-context removeOrderItem
