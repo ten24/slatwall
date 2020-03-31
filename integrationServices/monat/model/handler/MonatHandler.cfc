@@ -117,7 +117,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 				getHibachiEventService().announceEvent('afterAccountUpgradeSuccess', {'order':arguments.order, 'entity':arguments.order}); 
 			}
 			
-			//only emit on enrollment order
 			if(!isNull(account.getOwnerAccount())){
 				getHibachiEventService().announceEvent('afterAccountSponsorUpgradeSuccess', {'account':account.getOwnerAccount(), 'entity':account.getOwnerAccount()}); 
 			} 
