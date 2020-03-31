@@ -31,7 +31,7 @@ class SponsorSearchSelectorController {
 	) {}
 	
 	public $onInit = () => {
-		console.log(hibachiConfig);
+
 		// Set the default country code based on the current site.
 		this.form.countryCode = this.siteCountryCode;
 		this.getCountryCodeOptions();
