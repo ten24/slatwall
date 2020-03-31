@@ -1650,7 +1650,7 @@ component extends="Slatwall.model.service.OrderService" {
 		var defaultOFYSkuCode = arguments.orderTemplate.getAccount().getAccountCreatedSite().setting('siteDefaultOFYSkuCode');
 		
 		var freeRewardSkuCollection = getSkuService().getSkuCollectionList();
-		var freeRewardSkuIDs = getPromotionService().getQualifiedFreePromotionRewardSkuIDs(order);
+		var freeRewardSkuIDs = getPromotionService().getQualifiedFreePromotionRewardSkuIDs(arguments.order);
 		freeRewardSkuCollection.addFilter('skuID', freeRewardSkuIDs, 'in');
 		freeRewardSkuCollection.addFilter('skuCode',defaultOFYSkuCode);
 		freeRewardSkuCollection.setDisplayProperties('skuID,skuCode');
