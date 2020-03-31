@@ -49,6 +49,7 @@ class VIPController {
 		this.publicService.doAction(this.endpoint, {upgradeType: 'VIP'}).then(res=>{
 			if(this.endpoint == 'setUpgradeOrderType' && res.upgradeResponseFailure?.length){
 				this.showUpgradeErrorMessage = true;
+				this.monatService.hasOwnerAccountOnSession = res.hasOwnerAccountOnSession;
 				this.isInitialized = true;
 				return;
 			}

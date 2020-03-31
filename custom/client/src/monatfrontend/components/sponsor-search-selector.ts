@@ -27,7 +27,8 @@ class SponsorSearchSelectorController {
 	constructor(
 		private publicService,
 		public observerService,
-		public $location
+		public $location,
+		private monatService
 	) {}
 	
 	public $onInit = () => {
@@ -36,15 +37,16 @@ class SponsorSearchSelectorController {
 		this.form.countryCode = this.siteCountryCode;
 		this.getCountryCodeOptions();
 		this.getStateCodeOptions( this.form.countryCode );
-		
-		//replicated site
-		if ( 'undefined' !== this.$location.search().accountNumber ) {
+
+		//raf search
+		if (this.$location.search().accountNumber ) {
 			this.form.text = this.$location.search().accountNumber;
 			this.getSearchResults();
+		//replicated site search
 		}else if(hibachiConfig.siteOwner.length){
 			this.getSearchResults(true);
-			//session general search 
-		}else{
+		//session search 
+		}else if(this.monatService.hasOwnerAccountOnSession){
 			this.getSearchResults(false);
 		}
 		
@@ -92,7 +94,9 @@ class SponsorSearchSelectorController {
 			stateCode:this.form.stateCode,
 			returnJsonObjects:''
 		}
-		
+		if (this.$location.search().accountNumber ) {
+			data.countryCode = null;
+		}
 		if(useHibachiConfig && !this.hasBeenSearched){
 			this.argumentsObject['search'] = hibachiConfig.siteOwner
 			data['search'] = hibachiConfig.siteOwner;

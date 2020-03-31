@@ -16,7 +16,8 @@ export class MonatService {
 		countryCodeOptions: <IOptions[]>null,
 	};
 	public userIsEighteen:boolean;
-
+	public hasOwnerAccountOnSession:boolean;
+	
 	//@ngInject
 	constructor(public publicService, public $q, public $window, public requestService, private observerService) {}
 

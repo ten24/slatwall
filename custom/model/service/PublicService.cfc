@@ -1629,6 +1629,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             && getHibachiScope().getCart().getCurrencyCode() == siteCurrencyCode
         ){
             arguments.data['ajaxResponse']['upgradeResponseFailure'] = getHibachiScope().rbKey('frontend.validate.upgradeAlreadyExists');
+            arguments.data['ajaxResponse']['hasOwnerAccountOnSession'] = getHibachiScope().hasSessionValue('ownerAccountNumber') && len(getHibachiScope().getSessionValue('ownerAccountNumber'));
             return;
         }
         
@@ -1641,7 +1642,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             }
             super.logout();
         }
-       
+        
+        arguments.data['ajaxResponse']['hasOwnerAccountOnSession'] = getHibachiScope().hasSessionValue('ownerAccountNumber') && len(getHibachiScope().getSessionValue('ownerAccountNumber'));
+
         var order = getService('orderService').processOrder(getHibachiScope().getCart(),'clear');
         getHibachiScope().clearCurrentFlexship();
         order.setOrderCreatedSite(site);
