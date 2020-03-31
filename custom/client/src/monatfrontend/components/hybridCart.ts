@@ -52,9 +52,6 @@ class HybridCartController {
 			this.cart = res.cart ? res.cart : res;
 			this.cart.orderItems = this.cart.orderItems.filter(el => el.sku.product.productType.systemCode !== 'ProductPack');
 			this.recalculatePrices();
-			if(this.orderTemplate && this.orderTemplate.currencyCode != this.cart.currencyCode){
-				this.orderTemplate.currencyCode = this.cart.currencyCode;
-			}
 		});
 	}
 	
