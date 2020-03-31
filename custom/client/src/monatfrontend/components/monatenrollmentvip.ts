@@ -54,6 +54,7 @@ class VIPController {
 				return;
 			}
 			
+			this.monatService.hasOwnerAccountOnSession = res.hasOwnerAccountOnSession;
 			this.isInitialized = true;
 			this.getCountryCodeOptions();
 			this.getFrequencyTermOptions();
