@@ -343,6 +343,7 @@ component extends="Slatwall.model.service.OrderService" {
 	 * 
 	 */ 
 	private struct function getOrderTemplateOrderDetails(required any orderTemplate){	
+		
 		var orderTemplateOrderDetailsKey = "orderTemplateOrderDetails#arguments.orderTemplate.getOrderTemplateID()#"
 
 		if(structKeyExists(request, orderTemplateOrderDetailsKey)){
@@ -1647,11 +1648,13 @@ component extends="Slatwall.model.service.OrderService" {
 	
 	public any function addDefaultOFYSkuIfEligible(required any order, required any orderTemplate, required any orderFulfillment){
 		var defaultOFYSkuCode = arguments.orderTemplate.getAccount().getAccountCreatedSite().setting('siteDefaultOFYSkuCode');
-		var skuCollection = getService('HibachiCollectionService').getSkuCollectionList();
-		skuCollection.setCollectionConfigStruct(arguments.orderTemplate.getPromotionalFreeRewardSkuCollectionConfig());
-		skuCollection.addFilter('skuCode',defaultOFYSkuCode);
-		skuCollection.setDisplayProperties('skuID,skuCode');
-		var result = skuCollection.getRecords();
+		
+		var freeRewardSkuCollection = getSkuService().getSkuCollectionList();
+		var freeRewardSkuIDs = getPromotionService().getQualifiedFreePromotionRewardSkuIDs(arguments.order);
+		freeRewardSkuCollection.addFilter('skuID', freeRewardSkuIDs, 'in');
+		freeRewardSkuCollection.addFilter('skuCode',defaultOFYSkuCode);
+		freeRewardSkuCollection.setDisplayProperties('skuID,skuCode');
+		var result = freeRewardSkuCollection.getRecords();
 		
 		if(arrayLen(result)){
 			var skuID = result[1].skuID;

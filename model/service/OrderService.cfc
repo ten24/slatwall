@@ -1304,7 +1304,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public numeric function getOrderTemplateSubtotal(required any orderTemplate){
-		return getOrderTemplateOrderDetails(argumentCollection=arguments)['subtotal'];	
+		return getOrderTemplateOrderDetails(argumentCollection=arguments)['subtotal'];
 	}
 	
 	public numeric function getFulfillmentTotalForOrderTemplate(required any orderTemplate){
@@ -1733,7 +1733,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		} 
 
 		newOrder = this.process(newOrder, addOrderPaymentProcessData, 'addOrderPayment'); 
-		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate); 	
+		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate, {}, 'placeOrder'); 	
 		
 		if(newOrder.hasErrors()){
 			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors on add order payment #serializeJson(newOrder.getErrors())# when adding a payment', true);
@@ -3221,7 +3221,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var orderTemplate = arguments.order.getOrderTemplate(); 
 			orderTemplate.setLastOrderPlacedDateTime( now() );
 
-			orderTemplate = this.saveOrderTemplate(orderTemplate);
+			orderTemplate = this.saveOrderTemplate(orderTemplate, {} , 'placeOrder');
 		}
 
 		return arguments.order;
