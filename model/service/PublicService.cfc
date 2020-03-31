@@ -138,6 +138,20 @@ component  accessors="true" output="false"
     public void function getRelatedProducts(required struct data){
         param name="arguments.data.productID" default="";
         var relatedProducts = getService('productService').getAllRelatedProducts(productID = arguments.data.productID);
+        
+        //add images
+        if(arrayLen(relatedProducts)) {
+            for(product in relatedProducts) {
+                var imageFile = product.relatedProduct_defaultSku_imageFile;
+                
+                var resizeImageData = { 
+                    size='l', //Large Image
+                    imagePath = getService('imageService').getProductImagePathByImageFile(imageFile),
+                    missingImagePath = getService('SettingService').getSettingValue('imageMissingImagePath')
+                };
+                product.images = getService('imageService').getResizedImagePath(argumentCollection=resizeImageData);
+            }
+        }
         arguments.data.ajaxResponse['relatedProducts'] = relatedProducts;
     }
     
@@ -328,6 +342,7 @@ component  accessors="true" output="false"
             argumentCollection=arguments );
         arguments.data['ajaxResponse']['ordersOnAccount'] = accountOrders;
     }
+	
 	
 	/**
       * Updates an Account address.
