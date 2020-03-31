@@ -220,9 +220,7 @@ component extends="HibachiService" accessors="true" output="false" {
 				
 					if(arguments.workflowTrigger.getCollectionPassthrough()){
 							
-							//Don't Instantiate every object, just passthroughn the collection records returned
-							scheduleCollection.setPageRecordsShow(arguments.workflowTrigger.getCollectionFetchSize());
-							
+							//Don't Instantiate every object, just passthrough the collection records returned
 							var processData = {
 								entity : this.invokeMethod('new#currentObjectName#'),
 								workflowTrigger : arguments.workflowTrigger,
@@ -231,7 +229,14 @@ component extends="HibachiService" accessors="true" output="false" {
 
 							if(arguments.workflowTrigger.getCollectionFetchRecordsFlag()){
 								scheduleCollection.setDirtyReadFlag(true);
-								processData.collectionData['collectionData'] = scheduleCollection.getPageRecords();
+								
+								if(isNumeric(arguments.workflowTrigger.getCollectionFetchSize()) && arguments.workflowTrigger.getCollectionFetchSize() > 0){
+									scheduleCollection.setPageRecordsShow(arguments.workflowTrigger.getCollectionFetchSize());
+									processData.collectionData['collectionData'] = scheduleCollection.getPageRecords();
+								}else{
+									processData.collectionData['collectionData'] = scheduleCollection.getRecords();
+								}
+								
 							}
 
 							//Call proccess method to execute Tasks
