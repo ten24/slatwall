@@ -220,7 +220,7 @@ component extends="HibachiService" accessors="true" output="false" {
 				
 					if(arguments.workflowTrigger.getCollectionPassthrough()){
 							
-							//Don't Instantiate every object, just passthroughn the collection records returned
+							//Don't Instantiate every object, just passthrough the collection records returned
 							var processData = {
 								entity : this.invokeMethod('new#currentObjectName#'),
 								workflowTrigger : arguments.workflowTrigger,
