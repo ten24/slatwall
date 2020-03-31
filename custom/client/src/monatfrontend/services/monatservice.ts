@@ -238,6 +238,7 @@ export class MonatService {
     	This method takes a date string and returns age in years
     **/
 	public calculateAge(birthDate:string):number { 
+		if(!birthDate) return;
 		let birthDateObj = <any>Date.parse(birthDate);
 	    let years = Date.now() - birthDateObj.getTime();
 	    let age = new Date(years); 

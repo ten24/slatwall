@@ -92,22 +92,32 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 	
     	// Set the AccountType and PriceGroup IF this is an upgrade flow.
     	if(arguments.order.getUpgradeFlag() == true){
+    		
+    		//If the order isFirstOrder it is enrollment, if its not its an account type upgrade
+    		var isFirstOrder = !isNull(arguments.order.getAccount().getAccountStatusType()) && arguments.order.getAccount().getAccountStatusType().getSystemCode() == 'astEnrollmentPending' ? true : false;
+    		
     		arguments.order.setOrderOrigin(getService('orderService').getOrderOriginByOrderOriginName('Web Upgrades'));
     		if(arguments.order.getMonatOrderType().getTypeCode() == 'motVipEnrollment'){
     			account.setAccountType('VIP');
     			account.setPriceGroups([getService('PriceGroupService').getPriceGroupByPriceGroupCode(3)]);
-				
-				getHibachiEventService().announceEvent('afterVIPUpgradeSuccess', {'order':arguments.order, 'entity':arguments.order}); 
+		
+				if(!isFirstOrder){
+					getHibachiEventService().announceEvent('afterVIPUpgradeSuccess', {'order':arguments.order, 'entity':arguments.order}); 	
+				}
     		
 			}else if(arguments.order.getMonatOrderType().getTypeCode() == 'motMpEnrollment'){
     			account.setAccountType('marketPartner');	
     			account.setPriceGroups([getService('PriceGroupService').getPriceGroupByPriceGroupCode(1)]);
-				
-				getHibachiEventService().announceEvent('afterMarketPartnerUpgradeSuccess', {'order':arguments.order, 'entity':arguments.order}); 
+				if(!isFirstOrder){
+					getHibachiEventService().announceEvent('afterMarketPartnerUpgradeSuccess', {'order':arguments.order, 'entity':arguments.order}); 	
+				}
     		}
 			
-			getHibachiEventService().announceEvent('afterAccountUpgradeSuccess', {'order':arguments.order, 'entity':arguments.order}); 
+			if(!isFirstOrder){
+				getHibachiEventService().announceEvent('afterAccountUpgradeSuccess', {'order':arguments.order, 'entity':arguments.order}); 
+			}
 			
+			//only emit on enrollment order
 			if(!isNull(account.getOwnerAccount())){
 				getHibachiEventService().announceEvent('afterAccountSponsorUpgradeSuccess', {'account':account.getOwnerAccount(), 'entity':account.getOwnerAccount()}); 
 			} 
