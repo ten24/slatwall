@@ -2375,5 +2375,31 @@ public numeric function getPersonalVolumeSubtotal(){
 		}
 		return variables.currencyCode;
 	}
+	
+	public boolean function marketPartnerValidationMaxOrderAmount(){
+	 	
+	 	if(isNull(this.getAccount())  || isNull(this.getOrderCreatedSite())){
+	 	    return true; 
+	 	} 
+	 	
+	 	var site = this.getOrderCreatedSite();
+	 	
+	    var initialEnrollmentPeriodForMarketPartner = site.setting("siteInitialEnrollmentPeriodForMarketPartner");//7
+        var maxAmountAllowedToSpendDuringInitialEnrollmentPeriod = site.setting("siteMaxAmountAllowedToSpendInInitialEnrollmentPeriod");//200
+        var date = getService('orderService').getMarketPartnerEnrollmentOrderDateTime(this.getAccount());
+        
+        //If a UK MP is within the first 7 days of enrollment, check that they have not already placed more than 1 order.
+		if (!isNull(this.getAccount()) && this.getAccount().getAccountType() == "marketPartner" 
+			&& site.getSiteCode() == "mura-uk"
+			&& !isNull(date)
+			&& dateDiff("d", date, now()) <= initialEnrollmentPeriodForMarketPartner){
+			
+			//If adding the order item will increase the order to over 200 EU return false  
+			if (this.getTotal() > maxAmountAllowedToSpendDuringInitialEnrollmentPeriod){
+			    return false; // they already have too much.
+			}
+	    }
+	    return true;
+	 }
 	//CUSTOM FUNCTIONS END
 }

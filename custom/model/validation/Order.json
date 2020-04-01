@@ -30,6 +30,17 @@
 			"orderStatusType.systemCode":{
 				"eq":"ostProcessing"
 			}
+		},
+		"isMarketPartnerSalesOrder":{
+			"account.accountType":{
+				"eq":"marketPartner"
+			},
+			"account.accountStatusType.systemCode":{
+				"neq":"astEnrollmentPending"
+			},
+			"orderType.systemCode":{
+				"eq":"otSalesOrder"
+			}
 		}
 	},
 	"properties": {
@@ -48,7 +59,9 @@
 		"orderStatusType.typeCode":  [
 			{ "contexts": "placeInProcessingOne", "conditions": "orderIsInProcessing", "inList": "2,processing2" }
 		],
-		
+		"total":[
+			{"contexts":"save","conditions":"isMarketPartnerSalesOrder", "method":"marketPartnerValidationMaxOrderAmount"}
+		],
 		"isLockedInProcessingOneFlag": [
 			{ "contexts": "placeInProcessingOne", "eq": false },
 			{ "contexts": "placeInProcessingTwo", "eq": true },
