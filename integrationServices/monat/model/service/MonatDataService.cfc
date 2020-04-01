@@ -106,7 +106,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
           accountCollection.addFilter('accountType', 'marketPartner', '=');  
         }
         
-        if ( len( arguments.data.countryCode ) &&  !getHibachiScope().hasSessionValue('ownerAccountNumber') || !len( getHibachiScope().getSessionValue('ownerAccountNumber'))) {
+        if ( len( arguments.data.countryCode ) &&  (!getHibachiScope().hasSessionValue('ownerAccountNumber') || !len( getHibachiScope().getSessionValue('ownerAccountNumber')))) {
             accountCollection.addFilter( 'primaryAddress.address.countryCode', arguments.data.countryCode );
         }
         
@@ -114,6 +114,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
             accountCollection.addFilter( 'primaryAddress.address.stateCode', arguments.data.stateCode );
         }
         if(!isNull(arguments.data.search) && len(arguments.data.search)){
+         
             accountCollection.setKeywords(arguments.data.search);
         }
         

@@ -16,7 +16,8 @@ export class MonatService {
 		countryCodeOptions: <IOptions[]>null,
 	};
 	public userIsEighteen:boolean;
-
+	public hasOwnerAccountOnSession:boolean;
+	
 	//@ngInject
 	constructor(public publicService, public $q, public $window, public requestService, private observerService) {}
 
@@ -237,6 +238,7 @@ export class MonatService {
     	This method takes a date string and returns age in years
     **/
 	public calculateAge(birthDate:string):number { 
+		if(!birthDate) return;
 		let birthDateObj = <any>Date.parse(birthDate);
 	    let years = Date.now() - birthDateObj.getTime();
 	    let age = new Date(years); 

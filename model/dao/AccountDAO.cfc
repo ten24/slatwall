@@ -373,10 +373,16 @@ Notes:
 		
 		<cfset var comparisonValue =""/>
 		
+		<cfif getApplicationValue("databaseType") eq "Oracle10g">
+			<cfset comparisonValue = "lower(a.username)"/>
+		<cfelse>
+			<cfset comparisonValue = "a.username"/>
+		</cfif>
+		
 		<cfset var hql = "SELECT aa FROM #getApplicationKey()#AccountAuthentication aa 
 			INNER JOIN FETCH aa.account a 
 			WHERE aa.password is not null 
-			AND lower(a.username)=:username "
+			AND #comparisonValue# = :username "
 		/>
 		
 		<cfif getService('HibachiService').getHasPropertyByEntityNameAndPropertyIdentifier('AccountAuthentication','integration.integrationID')>
@@ -416,8 +422,14 @@ Notes:
 
 	<cffunction name="getAccountWithAuthenticationByEmailAddress" returntype="any" access="public">
 		<cfargument name="emailAddress" required="true" type="string" />
+		
+		<cfif getApplicationValue("databaseType") eq "Oracle10g">
+			<cfset comparisonValue = "lower(pea.emailAddress)"/>
+		<cfelse>
+			<cfset comparisonValue = "pea.emailAddress"/>
+		</cfif>
 
-		<cfset var accounts = ormExecuteQuery("SELECT a FROM #getApplicationKey()#Account a INNER JOIN a.primaryEmailAddress pea WHERE lower(pea.emailAddress) = :emailAddress AND EXISTS(SELECT aa.accountAuthenticationID FROM #getApplicationKey()#AccountAuthentication aa WHERE aa.account.accountID = a.accountID)", {emailAddress=lcase(arguments.emailAddress)}) />
+		<cfset var accounts = ormExecuteQuery("SELECT a FROM #getApplicationKey()#Account a INNER JOIN a.primaryEmailAddress pea WHERE #comparisonValue# = :emailAddress AND EXISTS(SELECT aa.accountAuthenticationID FROM #getApplicationKey()#AccountAuthentication aa WHERE aa.account.accountID = a.accountID)", {emailAddress=lcase(arguments.emailAddress)}) />
 		<cfif arrayLen(accounts)>
 			<cfreturn accounts[1] />
 		</cfif>

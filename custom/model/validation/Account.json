@@ -2,6 +2,29 @@
 	"properties": {
 		"renewalDate": [{ "contexts": "update,save", "method": "restrictRenewalDateToOneYearOut", "dataType": "date" }],
 		"priceGroups": [{ "contexts": "save", "method": "onlyOnePriceGroup" }],
-		"birthDate": [{ "contexts": "eighteenPlus", "required": true, "method": "eighteenPlus" }]
+		"birthDate": [{ "contexts": "eighteenPlus", "required": true, "method": "eighteenPlus" }],
+		"accountCode": [
+			{
+				"conditions": "isOrganizationAccount",
+				"contexts": "save,eighteenPlus",
+				"unique": true,
+				"required": true
+			},
+			{
+				"conditions": "isNotOrganizationAccount",
+				"contexts": "save,eighteenPlus",
+				"uniqueOrNull": true
+			},
+			{
+				"contexts": "save,eighteenPlus",
+				"regex": "^[a-zA-Z0-9_-]+$",
+				"maxLength": 35,
+				"minLength": 3
+			},
+			{
+				"contexts": "save,eighteenPlus",
+				"method": "isRestrictedKeyword"
+			}
+		]
 	}
 }

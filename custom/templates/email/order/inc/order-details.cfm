@@ -324,7 +324,13 @@
 																	<p style="font-size: 14px; line-height: 1.5; text-align: right; mso-line-height-alt: 21px; margin: 0;"><span style="font-size: 14px;">Discount: -#order.getFormattedValue('discountTotal', 'currency')#</span></p>
                                                               </cfif>
                                                               <p style="font-size: 14px; line-height: 1.5; text-align: right; mso-line-height-alt: 21px; margin: 0;"><span style="font-size: 14px;">Total Amount: #order.getFormattedValue('total', 'currency')#</span></p>
-                                                              <p style="font-size: 14px; line-height: 1.5; text-align: right; mso-line-height-alt: 21px; margin: 0;"><span style="font-size: 14px;">VATTotal: #order.getVATTotal()#</span></p>
+                                                                <p style="font-size: 14px; line-height: 1.5; text-align: right; mso-line-height-alt: 21px; margin: 0;">
+                                                                    <cfif order.getVATTotal()>
+                                                                        <span style="font-size: 14px;">VAT Total: #order.getVATTotal()#</span>
+                                                                    <cfelse>
+                                                                        <span style="font-size: 14px;">Tax Total: #order.getTaxTotal()#</span>
+                                                                    </cfif>
+                                                                </p>
                                                               <p style="font-size: 14px; line-height: 1.5; text-align: right; mso-line-height-alt: 21px; margin: 0;"><span style="font-size: 14px;">Paid Amount: #order.getFormattedValue('paymentAmountTotal','currency')#</span></p>
                                                            </div>
                                                         </div>

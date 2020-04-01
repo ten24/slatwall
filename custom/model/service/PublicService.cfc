@@ -455,7 +455,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
      * and make orderPayment billingAddress optional
      * */
     public any function addOrderPayment(required any data, boolean giftCard = false) {
-
+        param name = "data.orderID" default = "";
+        
         if(StructKeyExists(arguments.data,'accountPaymentMethodID')) {
             var accountPaymentMethodCollectionList = getAccountService().getAccountPaymentMethodCollectionList();
             accountPaymentMethodCollectionList.setDisplayProperties('paymentMethod.paymentMethodID');
@@ -467,6 +468,26 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                arguments.data.newOrderPayment.paymentMethod.paymentMethodID = accountPaymentMethodCollectionList[1].paymentMethod_paymentMethodID;
                 arguments.data.newOrderPayment.requireBillingAddress = 0;
             }
+            
+            if (len(data.orderID)) {
+                var order = getOrderService().getOrder(data.orderID);
+            }
+            else {
+                var order = getHibachiScope().getCart();
+            }
+            
+            var account = getHibachiScope().getAccount();
+            
+            //Remove any existing order payments
+            //It's to remove default payment from order when adding any new method
+            if(!isNull(order) && !isNull(account) && order.getAccount().getAccountID() == account.getAccountID()) {
+                for( orderPayment in order.getOrderPayments() ) {
+                    if(orderPayment.isDeletable()) {
+        				getService("OrderService").deleteOrderPayment(orderPayment);
+        			}
+        		}
+            }
+            
         }
         
         super.addOrderPayment(argumentCollection = arguments);
@@ -1629,6 +1650,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             && getHibachiScope().getCart().getCurrencyCode() == siteCurrencyCode
         ){
             arguments.data['ajaxResponse']['upgradeResponseFailure'] = getHibachiScope().rbKey('frontend.validate.upgradeAlreadyExists');
+            arguments.data['ajaxResponse']['hasOwnerAccountOnSession'] = getHibachiScope().hasSessionValue('ownerAccountNumber') && len(getHibachiScope().getSessionValue('ownerAccountNumber'));
             return;
         }
         
@@ -1641,7 +1663,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             }
             super.logout();
         }
-       
+        
+        arguments.data['ajaxResponse']['hasOwnerAccountOnSession'] = getHibachiScope().hasSessionValue('ownerAccountNumber') && len(getHibachiScope().getSessionValue('ownerAccountNumber'));
+
         var order = getService('orderService').processOrder(getHibachiScope().getCart(),'clear');
         getHibachiScope().clearCurrentFlexship();
         order.setOrderCreatedSite(site);
