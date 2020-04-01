@@ -138,7 +138,6 @@ component  accessors="true" output="false"
     public void function getRelatedProducts(required struct data){
         param name="arguments.data.productID" default="";
         var relatedProducts = getService('productService').getAllRelatedProducts(productID = arguments.data.productID);
-        
         //add images
         if(arrayLen(relatedProducts)) {
             for(product in relatedProducts) {
@@ -149,7 +148,7 @@ component  accessors="true" output="false"
                     imagePath = getService('imageService').getProductImagePathByImageFile(imageFile),
                     missingImagePath = getService('SettingService').getSettingValue('imageMissingImagePath')
                 };
-                product.images = getService('imageService').getResizedImagePath(argumentCollection=resizeImageData);
+                product['images'] = getService('imageService').getResizedImagePath(argumentCollection=resizeImageData);
             }
         }
         arguments.data.ajaxResponse['relatedProducts'] = relatedProducts;
