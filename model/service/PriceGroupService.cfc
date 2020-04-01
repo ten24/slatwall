@@ -440,7 +440,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var orderItems = arguments.order.getOrderItems(); 
 			for(var orderItem in orderItems){
 				
-				if(!isNull(orderItem.getUserDefinedPriceFlag()) && orderItem.getUserDefinedPriceFlag()){
+				if(
+					(
+						!isNull(orderItem.getUserDefinedPriceFlag()) && orderItem.getUserDefinedPriceFlag()
+					)
+					|| orderItem.getOrderItemType().getSystemCode() == 'oitReplacement')
+				{
 					continue;
 				}
 				

@@ -2460,6 +2460,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			if(!structKeyExists(orderItemStruct,'price')){
 				orderItemStruct.price = 0;
 			}
+
 			// Verify that there was a quantity
 			if(isNumeric(orderItemStruct.quantity) && orderItemStruct.quantity gt 0) {
 
@@ -2503,10 +2504,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(orderTypeCode == 'otReturnOrder'){
 			this.updateReturnOrderWithAllocatedDiscounts(arguments.order, returnOrder, arguments.processObject);
 		}
-		
+
 		// Recalculate the order amounts for tax and promotions
 		this.processOrder( returnOrder, {}, 'updateOrderAmounts' );
-		
 
 		// Check to see if we are attaching an referenced orderPayment
 		var originalOrderPayment = "";
@@ -2659,13 +2659,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			if(originalFulfillment.hasShippingAddress()){
 				orderFulfillment.setShippingAddress( originalFulfillment.getShippingAddress() );
 			}
-			if(!isNull(originalFulfillment.getShippingMethod())){
-				orderFulfillment.setShippingMethod(originalFulfillment.getShippingMethod());
-			}
+
 			if(originalFulfillment.hasPickupLocation()){
 				orderFulfillment.setPickupLocation(originalFulfillment.getPickupLocation());
 			}
+			
 			this.saveOrderFulfillment(orderFulfillment);
+			if(!isNull(originalFulfillment.getShippingMethod())){
+				orderFulfillment.setShippingMethod(originalFulfillment.getShippingMethod());
+			}
 		}
 		
 		// Create a new order item
@@ -2685,9 +2687,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		replacementOrderItem.setCurrencyCode( originalOrderItem.getSku().getCurrencyCode() );
 		replacementOrderItem.setSku( originalOrderItem.getSku() );
 		replacementOrderItem.setPrice( arguments.orderItemStruct.price );
+		replacementOrderItem.setSkuPrice( arguments.orderItemStruct.price );
 		replacementOrderItem.setQuantity( arguments.orderItemStruct.quantity );
 		
 		getHibachiDAO().save( replacementOrderItem );
+
 		return replacementOrderItem;
 	}
 	
@@ -3567,6 +3571,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 			
 			// First Re-Calculate the 'amounts' base on price groups
+
 			getPriceGroupService().updateOrderAmountsWithPriceGroups( arguments.order );
 
 			// Then Re-Calculate the 'amounts' based on permotions ext.  This is done second so that the order already has priceGroup specific info added
