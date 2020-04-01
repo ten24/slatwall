@@ -476,13 +476,18 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                 var order = getHibachiScope().getCart();
             }
             
+            var account = getHibachiScope().getAccount();
+            
             //Remove any existing order payments
             //It's to remove default payment from order when adding any new method
-            for( orderPayment in order.getOrderPayments() ) {
-                if(orderPayment.isDeletable()) {
-    				getService("OrderService").deleteOrderPayment(orderPayment);
-    			}
-    		}
+            if(!isNull(order) && !isNull(account) && order.getAccount().getAccountID() == account.getAccountID()) {
+                for( orderPayment in order.getOrderPayments() ) {
+                    if(orderPayment.isDeletable()) {
+        				getService("OrderService").deleteOrderPayment(orderPayment);
+        			}
+        		}
+            }
+            
         }
         
         super.addOrderPayment(argumentCollection = arguments);
