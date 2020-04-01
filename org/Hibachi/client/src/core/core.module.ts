@@ -95,7 +95,7 @@ import {SWOrderByControls} from "./components/sworderbycontrols";
 
 import {alertmodule} from "../alert/alert.module";
 import {dialogmodule} from "../dialog/dialog.module";
-
+import {cacheModule} from "../cache/cache.module";
 
 import {BaseObject} from "./model/baseobject";
 declare var $:any;
@@ -105,13 +105,24 @@ var coremodule = angular.module('hibachi.core',[
   'ngAnimate',
   'ngRoute',
   'ngSanitize',
-  //3rdParty modules
-  'ui.bootstrap',
   alertmodule.name,
   dialogmodule.name,
+  cacheModule.name,
+  //3rdParty modules
+  'ui.bootstrap',
   'angularModalService'
 ])
-.config(['$compileProvider','$httpProvider','$logProvider','$filterProvider','$provide','hibachiPathBuilder','appConfig','ModalServiceProvider',($compileProvider,$httpProvider,$logProvider,$filterProvider,$provide,hibachiPathBuilder,appConfig,ModalServiceProvider)=>{
+.config(
+    [ '$compileProvider','$httpProvider','$logProvider',
+      '$filterProvider','$provide','hibachiPathBuilder',
+      'appConfig','ModalServiceProvider',
+    ( 
+      $compileProvider,$httpProvider,$logProvider,
+      $filterProvider,$provide,hibachiPathBuilder,
+      appConfig,ModalServiceProvider
+    ) => {
+        
+     
     hibachiPathBuilder.setBaseURL(appConfig.baseURL);
     hibachiPathBuilder.setBasePartialsPath('/org/Hibachi/client/src/');
 
@@ -120,7 +131,7 @@ var coremodule = angular.module('hibachi.core',[
     }
     $logProvider.debugEnabled( appConfig.debugFlag );
     
-     $filterProvider.register('likeFilter',function(){
+    $filterProvider.register('likeFilter',function(){
          return function(text){
              if(angular.isDefined(text) && angular.isString(text)){
                  return text.replace(new RegExp('%', 'g'), '');
@@ -128,8 +139,8 @@ var coremodule = angular.module('hibachi.core',[
              }
          };
      });
-     //This filter is used to shorten a string by removing the charecter count that is passed to it and ending it with "..."
-     $filterProvider.register('truncate',function(){
+    //This filter is used to shorten a string by removing the charecter count that is passed to it and ending it with "..."
+    $filterProvider.register('truncate',function(){
          return function (input, chars, breakOnWord) {
              if (isNaN(chars)) return input;
              if (chars <= 0) return '';
@@ -151,8 +162,8 @@ var coremodule = angular.module('hibachi.core',[
              return input;
          };
      });
-     //This filter is used to shorten long string but unlike "truncate", it removes from the start of the string and prepends "..."
-     $filterProvider.register('pretruncate',function(){
+    //This filter is used to shorten long string but unlike "truncate", it removes from the start of the string and prepends "..."
+    $filterProvider.register('pretruncate',function(){
          return function (input, chars, breakOnWord) {
              if (isNaN(chars)) return input;
              if (chars <= 0) return '';
@@ -176,14 +187,13 @@ var coremodule = angular.module('hibachi.core',[
          };
      });
 
-
     hibachiPathBuilder.setBaseURL(appConfig.baseURL);
     hibachiPathBuilder.setBasePartialsPath('/org/Hibachi/client/src/');
-   // $provide.decorator('$hibachi',
-   $httpProvider.interceptors.push('hibachiInterceptor');
+    // $provide.decorator('$hibachi',
+    $httpProvider.interceptors.push('hibachiInterceptor');
    
-   //Pulls seperate http requests into a single digest cycle.
-   $httpProvider.useApplyAsync(true);
+    //Pulls seperate http requests into a single digest cycle.
+    $httpProvider.useApplyAsync(true);
     
     // to set a default close delay on modals
 	ModalServiceProvider.configureOptions({ closeDelay: 0 });
