@@ -1591,16 +1591,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public any function processOrderTemplate_createAndPlaceOrder(required any orderTemplate, any processObject, required struct data={}){
 		
 		// if next process date is in future and not a logged in user skip
-		if( dateCompare( arguments.orderTemplate.getScheduleOrderNextPlaceDateTime(), now() ) == 1 && !getHibachiScope().getLoggedInFlag() ) {
+		if( (!isNull(arguments.getScheduleOrderProcessingFlag()) && arguments.getScheduleOrderProcessingFlag()) || (dateCompare( arguments.orderTemplate.getScheduleOrderNextPlaceDateTime(), now() ) == 1 && !getHibachiScope().getLoggedInFlag()) ) {
 			return arguments.orderTemplate;
 		}
+
+		//we set this first and persist so that even if there's a problem with the order a workflow won't attempt retry	
+		arguments.orderTemplate.setScheduleOrderProcessingFlag(true);
+		ormFlush();
 		
-		var nextPlaceDate = arguments.orderTemplate.getFrequencyTerm().getEndDate(arguments.orderTemplate.getScheduleOrderNextPlaceDateTime());  	
-
-		//we set this first so that even if there's a problem with the order a workflow won't attempt retry	
-		arguments.orderTemplate.setScheduleOrderNextPlaceDateTime(nextPlaceDate);
-		arguments.orderTemplate.setScheduleOrderProcessingFlag(false);
-
 		var newOrder = this.newOrder(); 
 		newOrder = this.processOrder_Create(newOrder, getOrderCreateProcessObjectForOrderTemplate(arguments.orderTemplate, newOrder)); 	
 		
@@ -1615,7 +1613,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		newOrder.setShippingAccountAddress(arguments.orderTemplate.getShippingAccountAddress());  
 		newOrder = this.saveOrder(order=newOrder, updateOrderAmounts=false, updateOrderAmounts=false, updateShippingMethodOptions=false, checkNewAccountAddressSave=false); 
 		newOrder = this.createOrderItemsFromOrderTemplateItems(newOrder,arguments.orderTemplate);
-	
+
+		var nextPlaceDate = arguments.orderTemplate.getFrequencyTerm().getEndDate(arguments.orderTemplate.getScheduleOrderNextPlaceDateTime());  	
+		arguments.orderTemplate.setScheduleOrderNextPlaceDateTime(nextPlaceDate);
+		arguments.orderTemplate.setScheduleOrderProcessingFlag(false);
+
 		if(newOrder.hasErrors()){
 			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# after adding order items', true);
 			newOrder.clearHibachiErrors();
