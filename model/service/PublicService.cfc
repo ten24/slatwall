@@ -141,7 +141,6 @@ component  accessors="true" output="false"
         //add images
         if(arrayLen(relatedProducts)) {
             for(product in relatedProducts) {
-            dump(product);
                 var imageFile = product.relatedProduct_defaultSku_imageFile ?: '';
                 
                 var resizeImageData = { 
@@ -149,7 +148,7 @@ component  accessors="true" output="false"
                     imagePath = getService('imageService').getProductImagePathByImageFile(imageFile),
                     missingImagePath = getService('SettingService').getSettingValue('imageMissingImagePath')
                 };
-                product.images = getService('imageService').getResizedImagePath(argumentCollection=resizeImageData);
+                product['images'] = getService('imageService').getResizedImagePath(argumentCollection=resizeImageData);
             }
         }
         arguments.data.ajaxResponse['relatedProducts'] = relatedProducts;
