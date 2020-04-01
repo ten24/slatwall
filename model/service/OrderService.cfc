@@ -1591,7 +1591,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public any function processOrderTemplate_createAndPlaceOrder(required any orderTemplate, any processObject, required struct data={}){
 		
 		// if next process date is in future and not a logged in user skip
-		if( (!isNull(arguments.getScheduleOrderProcessingFlag()) && arguments.getScheduleOrderProcessingFlag()) || (dateCompare( arguments.orderTemplate.getScheduleOrderNextPlaceDateTime(), now() ) == 1 && !getHibachiScope().getLoggedInFlag()) ) {
+		if( (!isNull(arguments.orderTemplate.getScheduleOrderProcessingFlag()) && arguments.orderTemplate.getScheduleOrderProcessingFlag()) || (dateCompare( arguments.orderTemplate.getScheduleOrderNextPlaceDateTime(), now() ) == 1 && !getHibachiScope().getLoggedInFlag()) ) {
 			return arguments.orderTemplate;
 		}
 
