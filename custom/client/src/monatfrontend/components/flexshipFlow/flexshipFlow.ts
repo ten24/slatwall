@@ -9,10 +9,11 @@ enum FlexshipSteps{
 class FlexshipFlowController {
 	public FlexshipSteps = FlexshipSteps; 
 	public currentStep = FlexshipSteps.SHOP;
+	public farthestStepReached = FlexshipSteps.SHOP;
 	
     //@ngInject
-    constructor(public observerService, public publicService) {
-    
+    constructor(public publicService) {
+
     }
     
     public $onInit = () => { }
@@ -20,16 +21,16 @@ class FlexshipFlowController {
 	public back = ():FlexshipSteps => {
 		switch(this.currentStep){
 			case FlexshipSteps.FREQUENCY:
-				return this.currentStep = FlexshipSteps.SHOP;
+				return this.setStepAndUpdateProgress(FlexshipSteps.SHOP);
 				break;
 			case FlexshipSteps.OFY:
-				return this.currentStep = FlexshipSteps.FREQUENCY;
+				return this.setStepAndUpdateProgress(FlexshipSteps.FREQUENCY);
 				break;
 			case FlexshipSteps.CHECKOUT:
-				return this.currentStep = FlexshipSteps.OFY;
+				return this.setStepAndUpdateProgress(FlexshipSteps.OFY);
 				break;
 			default:
-				return this.currentStep = FlexshipSteps.SHOP;
+				return this.setStepAndUpdateProgress(FlexshipSteps.SHOP);
 		}
 		
 	}
@@ -37,25 +38,34 @@ class FlexshipFlowController {
 	public next = ():FlexshipSteps => {
 		switch(this.currentStep){
 			case FlexshipSteps.SHOP:
-				return this.currentStep = FlexshipSteps.FREQUENCY;
+				return this.setStepAndUpdateProgress(FlexshipSteps.FREQUENCY)
 				break;
 			case FlexshipSteps.FREQUENCY:
-				return this.currentStep = FlexshipSteps.OFY;
+				return this.setStepAndUpdateProgress(FlexshipSteps.OFY);
 				break;
 			case FlexshipSteps.OFY:
-				return this.currentStep = FlexshipSteps.CHECKOUT;
+				return this.setStepAndUpdateProgress(FlexshipSteps.CHECKOUT);
 				break;
 			default:
-				return this.currentStep = FlexshipSteps.CHECKOUT;
+				return this.setStepAndUpdateProgress(FlexshipSteps.CHECKOUT);
 		}
 		
 	}
 	
-	public goToStep = (step):FlexshipSteps =>{
-		return this.currentStep = step;
+	public goToStep = (step:FlexshipSteps):FlexshipSteps =>{
+		return this.currentStep = this.currentStep > step ? step : this.currentStep;
 	}
 	
-    
+	public updateProgress(step:FlexshipSteps):void{
+		if(step > this.farthestStepReached){
+			this.farthestStepReached = step;
+		}
+	}
+	
+    private setStepAndUpdateProgress(step:FlexshipSteps):FlexshipSteps{
+    	this.updateProgress(step);
+    	return this.currentStep = step;
+    }
 }
 
 class FlexshipFlow {
