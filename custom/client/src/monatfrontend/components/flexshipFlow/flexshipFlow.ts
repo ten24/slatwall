@@ -53,7 +53,7 @@ class FlexshipFlowController {
 	}
 	
 	public goToStep = (step:FlexshipSteps):FlexshipSteps =>{
-		return this.currentStep = this.currentStep > step ? step : this.currentStep;
+		return this.currentStep = this.farthestStepReached >= step ? step : this.currentStep;
 	}
 	
 	public updateProgress(step:FlexshipSteps):void{
