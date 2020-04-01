@@ -140,6 +140,11 @@ component displayname="Gift Card Transaction" entityname="SlatwallGiftCardTransa
 
 	// =================== START: ORM Event Hooks  =========================
 
+	public void function preInsert(){
+		this.setBalanceAmount(this.getGiftCard().getBalanceAmount());
+		super.preInsert();
+	}
+
 	// ===================  END:  ORM Event Hooks  =========================
 
 	// ================== START: Deprecated Methods ========================

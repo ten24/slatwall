@@ -343,7 +343,6 @@ component extends="Slatwall.model.service.OrderService" {
 	 * 
 	 */ 
 	private struct function getOrderTemplateOrderDetails(required any orderTemplate){	
-		
 		var orderTemplateOrderDetailsKey = "orderTemplateOrderDetails#arguments.orderTemplate.getOrderTemplateID()#"
 
 		if(structKeyExists(request, orderTemplateOrderDetailsKey)){
@@ -560,7 +559,7 @@ component extends="Slatwall.model.service.OrderService" {
         } else if (arguments.systemCode == 'ostNew') {
 
 			//if the order is paid don't set to new, otherwise set to new
-			if (  arguments.order.getPaymentAmountDue() <= 0  && arguments.order.getOrderType().getSystemCode() == 'otSalesOrder' ){
+			if (  arguments.order.getPaymentAmountDue() <= 0 ){
 				//type for PaidOrder  systemCode=ostProcessing, typeCode=2
 				arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode( systemCode='ostProcessing', typeCode="2")); 
 			} else {
@@ -642,7 +641,7 @@ component extends="Slatwall.model.service.OrderService" {
 		
 		//Order payment data
 		var orderPaymentList = this.getOrderPaymentCollectionList();
-		orderPaymentList.setDisplayProperties('paymentMethod.paymentMethodType,paymentMethod.paymentMethodName,currencyCode,billingAddress.streetAddress,billingAddress.street2Address,billingAddress.city,billingAddress.stateCode,billingAddress.postalCode,billingAddress.name,billingAddress.countryCode,expirationMonth,expirationYear,order.calculatedFulfillmentTotal,order.calculatedSubTotal,order.calculatedVATTotal,order.calculatedTaxTotal,order.calculatedDiscountTotal,order.calculatedTotal,order.orderCountryCode,order.orderNumber,order.orderStatusType.typeName,order.calculatedPersonalVolumeSubtotal,creditCardLastFour,order.orderType.typeName');
+		orderPaymentList.setDisplayProperties('currencyCode,billingAddress.streetAddress,billingAddress.street2Address,billingAddress.city,billingAddress.stateCode,billingAddress.postalCode,billingAddress.name,billingAddress.countryCode,expirationMonth,expirationYear,order.calculatedFulfillmentTotal,order.calculatedSubTotal,order.calculatedVATTotal,order.calculatedTaxTotal,order.calculatedDiscountTotal,order.calculatedTotal,order.orderCountryCode,order.orderNumber,order.orderStatusType.typeName,order.calculatedPersonalVolumeSubtotal,creditCardLastFour,order.orderType.typeName');
 		orderPaymentList.addFilter( 'order.orderID', arguments.data.orderID, '=');
 		orderPaymentList.addFilter( 'order.account.accountID', arguments.data.accountID, '=');
 		orderPaymentList.setPageRecordsShow(arguments.data.pageRecordsShow);
@@ -1648,13 +1647,11 @@ component extends="Slatwall.model.service.OrderService" {
 	
 	public any function addDefaultOFYSkuIfEligible(required any order, required any orderTemplate, required any orderFulfillment){
 		var defaultOFYSkuCode = arguments.orderTemplate.getAccount().getAccountCreatedSite().setting('siteDefaultOFYSkuCode');
-		
-		var freeRewardSkuCollection = getSkuService().getSkuCollectionList();
-		var freeRewardSkuIDs = getPromotionService().getQualifiedFreePromotionRewardSkuIDs(arguments.order);
-		freeRewardSkuCollection.addFilter('skuID', freeRewardSkuIDs, 'in');
-		freeRewardSkuCollection.addFilter('skuCode',defaultOFYSkuCode);
-		freeRewardSkuCollection.setDisplayProperties('skuID,skuCode');
-		var result = freeRewardSkuCollection.getRecords();
+		var skuCollection = getService('HibachiCollectionService').getSkuCollectionList();
+		skuCollection.setCollectionConfigStruct(arguments.orderTemplate.getPromotionalFreeRewardSkuCollectionConfig());
+		skuCollection.addFilter('skuCode',defaultOFYSkuCode);
+		skuCollection.setDisplayProperties('skuID,skuCode');
+		var result = skuCollection.getRecords();
 		
 		if(arrayLen(result)){
 			var skuID = result[1].skuID;
