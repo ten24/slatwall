@@ -1589,7 +1589,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	} 
 
 	public any function processOrderTemplate_createAndPlaceOrder(required any orderTemplate, any processObject, required struct data={}){
-
+		
+		// if next process date is in future and not a logged in user skip
+		if( dateCompare( arguments.orderTemplate.getScheduleOrderNextPlaceDateTime(), now() ) == 1 && !getHibachiScope().getLoggedInFlag() ) {
+			return arguments.orderTemplate;
+		}
+		
 		var nextPlaceDate = arguments.orderTemplate.getFrequencyTerm().getEndDate(arguments.orderTemplate.getScheduleOrderNextPlaceDateTime());  	
 
 		//we set this first so that even if there's a problem with the order a workflow won't attempt retry	
