@@ -142,7 +142,7 @@ component  accessors="true" output="false"
         //add images
         if(arrayLen(relatedProducts)) {
             for(product in relatedProducts) {
-                var imageFile = product['relatedProduct_defaultSku_imageFile'];
+                var imageFile = product['relatedProduct_defaultSku_imageFile'] ? : '';
                 
                 var resizeImageData = { 
                     size='l', //Large Image
