@@ -452,7 +452,7 @@ component extends="HibachiService" accessors="true" {
 		relatedProducts.setDisplayProperties("relatedProduct.productID, relatedProduct.calculatedQATS, relatedProduct.calculatedProductRating, relatedProduct.activeFlag, relatedProduct.urlTitle, relatedProduct.productName, relatedProduct.defaultSku.imageFile");
 		relatedProducts.addFilter("product.productID",arguments.productID);
 		relatedProducts.addFilter("product.activeFlag",1);
-		relatedProducts = relatedProducts.getRecords(formatRecords=true);
+		relatedProducts = relatedProducts.getRecords(formatRecords=false);
 		return relatedProducts;
 	}
 
