@@ -172,8 +172,6 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 		queryService.addParam(name='flagValue', value=arguments.flagValue, CFSQLTYPE="CF_SQL_BIT");
 		queryService.addParam(name='processMethod', value=arguments.processMethod, CFSQLTYPE="CF_SQL_VARCHAR");
 
-		this.logHibachi('bulk insert by flag entity queue #sql#');
-
 		queryService.execute(sql=sql);
 	}	
 

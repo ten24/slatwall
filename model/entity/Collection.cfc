@@ -2144,9 +2144,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
     }
 
 	public void function executeUpdate(required struct updateSetStruct){
-		var updateHQL = getUpdateHQL( argumentCollection = arguments );  
-		this.logHibachi('Collection running updateHQL #updateHQL# #serializeJson(getHQLParams())#');
-		ormExecuteQuery( updateHQL, getHQLParams() );
+		ormExecuteQuery(getUpdateHQL(argumentCollection=arguments), getHQLParams());
 	}
 
 	public string function getUpdateHQL(required struct updateSetStruct){
