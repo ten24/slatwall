@@ -91,9 +91,7 @@ class FlexshipFlow {
         );
         directive.$inject = [
 			'monatFrontendBasePath',
-			'$hibachi',
 			'rbkeyService',
-			'requestService'
         ];
         return directive;
     }

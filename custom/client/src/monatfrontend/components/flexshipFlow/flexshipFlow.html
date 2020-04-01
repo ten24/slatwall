@@ -59,7 +59,7 @@
 				<i class="far"
 					ng-class="{
 						'fa-shopping-bag': (flexshipFlow.farthestStepReached <= flexshipFlow.FlexshipSteps.SHOP) || (flexshipFlow.currentStep == flexshipFlow.FlexshipSteps.SHOP),
-						'fa-check': (flexshipFlow.farthestStepReached > flexshipFlow.FlexshipSteps.SHOP) && (flexshipFlow.currentStep != flexshipFlow.FlexshipSteps.SHOP)
+						'fa-check': (flexshipFlow.farthestStepReached > flexshipFlow.FlexshipSteps.SHOP) && flexshipFlow.currentStep != flexshipFlow.FlexshipSteps.SHOP
 					}"
 				></i>	
 	
