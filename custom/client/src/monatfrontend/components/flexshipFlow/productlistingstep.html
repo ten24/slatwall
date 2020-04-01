@@ -1,0 +1,34 @@
+<section ng-controller="productListingController as productController"  class="container products-listing-section">  
+		<div class="product_list mb-0 wishlist-products row no-gutters">
+			<div 
+				class="col-12 col-sm-6 col-md-4 col-lg-3 product-box" 
+				ng-repeat="item in productController.productList track by item.productID"
+				ng-cloak
+			>
+				<monat-product-card 
+					site-code="#local.siteCode#" 
+					currency-code="slatwall.cart.currencyCode" 
+					all-products="productController.productList" 
+					type="productListing" 
+					product="item" 
+					index="{{$index}}"
+				></monat-product-card>
+			</div> 
+		</div>
+		<h2 
+			class="search-page__no-results" 
+			ng-if="productController.recordsCount == 0" 
+			sw-rbkey="'frontend.product.noneFound'"
+			ng-cloak
+		></h2>
+		        
+		<pagination-controller 
+			record-list="productController.productList" 
+			items-per-page="12" 
+			records-count="productController.recordsCount" 
+			action="getProductsByCategoryOrContentID"
+			arguments-object="productController.argumentsObject" 
+		></pagination-controller>
+				
+		<sw:LoaderFullWidth ng-if="productController.loading" />
+</section>

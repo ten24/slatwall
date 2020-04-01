@@ -16,7 +16,8 @@
 <!--remove utility classes just so you can see steps without content for now--->
 <div class="wrapper my-5 py-5">
 		<!--Shop step -->
-		<div ng-if="flexshipFlow.currentStep == flexshipFlow.FlexshipSteps.SHOP" > SHOP STEP </div>
+		<div ng-if="flexshipFlow.currentStep == flexshipFlow.FlexshipSteps.SHOP" > 
+			<product-listing-step></product-listing-step>
 		<!--frequency step -->
 		<div ng-if="flexshipFlow.currentStep == flexshipFlow.FlexshipSteps.FREQUENCY"> FREQUENCY STEP </div>
 		<!--ofy step -->
