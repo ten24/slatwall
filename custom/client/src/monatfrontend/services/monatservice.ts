@@ -22,13 +22,16 @@ export class MonatService {
 	constructor(public publicService, public $q, public $window, public requestService, private observerService) {}
 
 	public getCart(refresh = false, param = '') {
+
 		var deferred = this.$q.defer();
 		if (refresh || angular.isUndefined(this.cart)) {
 			this.publicService
 				.getCart(refresh, param)
 				.then((data) => {
 					this.cart = data;
-					this.canPlaceOrder = this.cart.cart.orderRequirementsList.indexOf('canPlaceOrderReward') == -1;
+					let cart = data.cart ? data.cart : data;
+					this.canPlaceOrder = cart.orderRequirementsList.indexOf('canPlaceOrderReward') == -1;
+					this.cart['purchasePlusMessage'] = cart.appliedPromotionMessages ? cart.appliedPromotionMessages.filter( message => message.promotionName.indexOf('Purchase Plus') > -1 )[0] : '';
 					deferred.resolve(this.cart);
 				})
 				.catch((e) => {
@@ -54,6 +57,7 @@ export class MonatService {
 				if (data.cart) {
 					this.cart = data.cart;
 					this.canPlaceOrder = this.cart.orderRequirementsList.indexOf('canPlaceOrderReward') == -1;
+					this.cart['purchasePlusMessage'] = this.cart.appliedPromotionMessages ? this.cart.appliedPromotionMessages.filter( message => message.promotionName.indexOf('Purchase Plus') > -1 ) : '';
 					deferred.resolve(data.cart);
 					this.observerService.notify( 'updatedCart', data.cart ); 
 				} else {
