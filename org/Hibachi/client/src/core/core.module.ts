@@ -105,9 +105,9 @@ var coremodule = angular.module('hibachi.core',[
   'ngAnimate',
   'ngRoute',
   'ngSanitize',
+  cacheModule.name,
   alertmodule.name,
   dialogmodule.name,
-  cacheModule.name,
   //3rdParty modules
   'ui.bootstrap',
   'angularModalService'
@@ -121,8 +121,7 @@ var coremodule = angular.module('hibachi.core',[
       $filterProvider,$provide,hibachiPathBuilder,
       appConfig,ModalServiceProvider
     ) => {
-        
-     
+		
     hibachiPathBuilder.setBaseURL(appConfig.baseURL);
     hibachiPathBuilder.setBasePartialsPath('/org/Hibachi/client/src/');
 
@@ -198,9 +197,10 @@ var coremodule = angular.module('hibachi.core',[
     // to set a default close delay on modals
 	ModalServiceProvider.configureOptions({ closeDelay: 0 });
 }])
-.run(['$rootScope','$hibachi', '$route', '$location','rbkeyService',($rootScope,$hibachi, $route, $location,rbkeyService)=>{
+.run(['$rootScope','$hibachi', '$route', '$location','rbkeyService', ($rootScope,$hibachi, $route, $location,rbkeyService)=>{
     $rootScope.buildUrl = $hibachi.buildUrl;
     $rootScope.rbKey = rbkeyService.rbKey;
+    
     var original = $location.path;
     $location.path = function (path, reload) {
         if (reload === false) {

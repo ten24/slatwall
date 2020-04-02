@@ -149,17 +149,50 @@ var monatfrontendmodule = angular
 	.service('monatHttpInterceptor', MonatHttpInterceptor)
 	.service("monatHttpQueueInterceptor", MonatHttpQueueInterceptor)
 	.service('monatAlertService', MonatAlertService)
-
-	.config([
-		'$locationProvider',
-		'$httpProvider',
-		($locationProvider, $httpProvider) => {
+	.config(['$locationProvider', '$httpProvider','appConfig','localStorageCacheProvider', 'sessionStorageCacheProvider',
+	($locationProvider, $httpProvider, appConfig, localStorageCacheProvider, sessionStorageCacheProvider) => {
+			
 			$locationProvider.html5Mode({ enabled: true, requireBase: false, rewriteLinks: false });
 			
 			//adding monat-http-interceptor
 			$httpProvider.interceptors.push('monatHttpInterceptor');
 			$httpProvider.interceptors.push('monatHttpQueueInterceptor');
+			
+			/**
+	         * localStorageCache will be availabe to inject anywhere,
+	         * this cache is shared b/w browser-tabs and windows
+	         * this cache has no max-age
+	         * this cache will be uniqueue per site
+	         * 
+	        */
+			localStorageCacheProvider.override({
+				'name': `ls.${appConfig.cmsSiteID || 'default'}`
+			});
+			
+			/**
+			 * sessionStorageCache will be availabe to inject anywhere,
+			 * this cache is unique for every browser-window, and is sahred b/w tabs
+			 * this cache will be uniqueue per site
+			*/
+			sessionStorageCacheProvider.override({
+				'name': `ss.${appConfig.cmsSiteID || 'default'}`
+			});
 		},
-	]);
+	])
+	.run(['appConfig','localStorageCache','sessionStorageCache', 
+	(appConfig,localStorageCache,sessionStorageCache) =>{
+		
+		console.log("monat-module-run start");
+		if(localStorageCache.get('instantiationKey') !== appConfig.instantiationKey){
+			console.log("app-instantiation-key changed, resetting caches");
+        	//if the app-instantiation-key is changed, clearign the caches
+        	localStorageCache.removeAll(); 
+        	sessionStorageCache.removeAll();
+        	localStorageCache.put('instantiationKey', appConfig.instantiationKey);
+        }
+        console.log("app-key", localStorageCache.get('instantiationKey'));
+        console.log("monat-module-run stop");
+
+	}]);
 
 export { monatfrontendmodule };

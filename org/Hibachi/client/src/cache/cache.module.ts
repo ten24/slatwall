@@ -1,4 +1,5 @@
 declare var angular: any;
+declare var ng: any;
 
 import { CacheFactory, BinaryHeap, utils, defaults  } from 'cachefactory';
 // relies on http://www.pseudobry.com/CacheFactory/latest/tutorial-basics.html
@@ -8,98 +9,169 @@ utils.equals = angular.equals;
 utils.isObject = angular.isObject;
 utils.fromJson = angular.fromJson;
 
-let cacheModule = angular.module('hibachi.cache',[])
-  .provider('BinaryHeap', () => {
-      this.$get = () =>  BinaryHeap;
-  })
-  .provider('CacheFactory', () => {
-        //override default-configs
-        let newDefaults = angular.extend({}, defaults, {
-            'storagePrefix': 'hb.caches.',
-            'capacity': Number.MAX_VALUE, // how many items per cache
-            'storageMode': 'localStorage', // available options "memory"(default), "localStorage", "sessionStorage"
-            
-            'recycleFreq': 60*1000, // all caceh will be scaned every 1 minute for expired items
-            'maxAge': Number.MAX_VALUE, // number of milies after which the cache will be expired 
-            'deleteOnExpire': 'aggressive', // available options "none", "passive", "aggressive"
-            'onExpire': (key, value) => {
-                console.log(`Cache Expired for Key: ${key}, Value: ${value}`);
-            }
-        });
+class BinaryHeapProvider implements ng.IServiceProvider {
         
-        this.$get = ['$q', ($q) => {
+        constructor() {}
+        
+        public $get() {
+                return BinaryHeap;
+        };
+}
+
+class CacheFactoryProvider implements ng.IServiceProvider {
+    
+    private config:any={};
+    
+    constructor() {
+
+        this.config = defaults;
+
+        this.config.storagePrefix = 'hb.caches.';
+        this.config.capacity = Number.MAX_VALUE; // how many items per cache
+        this.config.storageMode = 'localStorage'; // available options "memory"(default); "localStorage"; "sessionStorage"
+        
+        // making-default to never, we can override as needed
+        // this.config.recycleFreq = 15*60*1000; // all caceh will be scaned every 1 minute for expired items
+        
+        this.config.maxAge = Number.MAX_VALUE; // number of milies after which the cache will be expired 
+        this.config.deleteOnExpire = 'aggressive'; // available options "none", "passive", "aggressive"
+        
+	    this.$get.$inject = [ '$q'];
+    }
+    
+    public override(overrides) {
+         this.config =  {...this.config, ...overrides}; //merge with overriding 
+    }
+
+    public $get($q) {
             
-            //set the PromiseConstructor to angular's $q
-            utils.Promise = $q; 
+            utils.Promise = $q;
             
             let cacheFactory = new CacheFactory();
             Object.defineProperty(cacheFactory, 'defaults', {
-                'value': newDefaults,
-                'writable': true,
-            });
+              value: this.config
+            })
+            
             return cacheFactory;
-        }];
-        
-  })
-  .provider('localStorageCache', () => {
-      
-        /**
-         * localStorageCache will be availabe to inject anywhere,
-         * this cache is shared b/w browser-tabs and windows
-         * this cache has no max-age
-         * 
-        */
-        this.$get = ['cacheFactory', (cacheFactory) => {
-            let cache;
-            if(!this.cacheFactory.get('localStoragecache')) {
-                // this will create a localStorege based cache, which will be availabe to inject anywhere
-                cache = this.cacheFactory('localStoragecache', {
-                    
-                });
-            }
-            return cache;
-        }];
-  })
-  .provider('sessionStorageCache', () => {
-      
-      /**
-       * sessionStorageCache will be availabe to inject anywhere,
-       * this cache is unique for every browser-window, and is sahred b/w tabs
-       * 
-      */
-        this.$get = ['cacheFactory', (cacheFactory) => {
-            let cache;
-            if(!this.cacheFactory.get('sessionStoragecache')) {
-                // this will create a sessionStorege based cache
-                cache = this.cacheFactory('sessionStoragecache', {
-                    'storageMode': 'sessionStorage',
-                    'recycleFreq': 5*1000, // will scane the cache every 5 sec for expired items
-                    'maxAge': 15*60*1000, // anything will expire after 15 minutes
-                    'onExpire': (key, value) => {
-                        console.log(`Session Cache Expired for Key: ${key}, Value: ${value}`);
-                    }
-                });
-            }
-            return cache;
-        }];
-  })
-  .provider('memoryCache', () => {
-        this.$get = ['cacheFactory', (cacheFactory) => {
-            let cache;
-            if(!this.cacheFactory.get('memoryStoragecache')) {
-                // this will create a memory-based cache, which will be availabe to inject anywhere
-                cache = this.cacheFactory('memoryStoragecache', {
-                    'storageMode': 'memory',
-                    'recycleFreq': 2*1000, // will scane the cache every 2 sec for expired items
-                    'maxAge': 5*60*1000, // anything will expire after 5 minutes
-                    'onExpire': (key, value) => {
-                        console.log(`Memory Cache Expired for Key: ${key}, Value: ${value}`);
-                    }
-                });
-            }
-            return cache;
-        }];
-  });
+    };
+}
+
+class LocalStorageCacheProvider implements ng.IServiceProvider {
+    
+    private config:any={
+        'name': 'ls.default'
+    };
+    
+    constructor() {
+        this.config.onExpire = (key, value) => {
+            console.log(`LocalStorage-cache ${this.config.name}, has expired for Key: ${key}, Value: ${value}`);
+        }
+	    this.$get.$inject = [ 'CacheFactory'];
+    }
+    
+    public override(overrides) {
+         this.config =  {...this.config, ...overrides}; //merge with overriding 
+    }
+
+    public $get(CacheFactory) {
+        let cache;
+        //check if cache-object is already created
+    	if(CacheFactory.exists(this.config.name)){
+    		cache = CacheFactory.get(this.config.name);
+    	} else {
+            // this will retain data if any from LocalStorege, and will create a cacheObject, 
+            // this which will be availabe to inject into any service/controller/component
+        	cache = CacheFactory.createCache(this.config.name);
+		}
+        return cache;
+    };
+}
+
+class SessionStorageCacheProvider implements ng.IServiceProvider {
+    
+    private config:any={
+        'name': 'ss.default',
+        'storageMode': 'sessionStorage',
+        'recycleFreq': 5*1000, // will scan the cache every 5 sec for expired items
+        'maxAge': 15*60*1000, // anything will expire after 15 minutes
+    };
+    
+    constructor() {
+        this.config.onExpire = (key, value) => {
+            console.log(`SessionStorage-cache ${this.config.name}, has expired for Key: ${key}, Value: ${value}`);
+        }
+	    this.$get.$inject = [ 'CacheFactory'];
+    }
+    
+    public override(overrides) {
+         this.config =  {...this.config, ...overrides}; //merge with overriding 
+    }
+
+    public $get(CacheFactory) {
+        let cache;
+        //check if cache-object is already created
+    	if(CacheFactory.exists(this.config.name)){
+    		cache = CacheFactory.get(this.config.name);
+    	} else {
+            // this will retain data if any from Session-Storege, and will create a cacheObject, 
+            // this which will be availabe to inject into any service/controller/component
+        	cache = CacheFactory.createCache(this.config.name);
+		}
+        return cache;
+    };
+}
+
+
+class MemoryCacheProvider implements ng.IServiceProvider {
+    
+    private config:any = {
+        'name': 'ss.default',
+        'storageMode': 'memory',
+        'recycleFreq': 2*1000, // will scan the cache every 2 sec for expired items
+        'maxAge': 5*60*1000, // anything will expire after 5 minutes
+    };
+    
+    constructor() {
+        this.config.onExpire = (key, value) => {
+            console.log(`Memory-cache ${this.config.name}, has expired for Key: ${key}, Value: ${value}`);
+        }
+	    this.$get.$inject = [ 'CacheFactory'];
+    }
+    
+    public override(overrides) {
+         this.config =  {...this.config, ...overrides}; //merge with overriding 
+    }
+
+    public $get(CacheFactory) {
+        let cache;
+        //check if cache-object is already created
+    	if(CacheFactory.exists(this.config.name)){
+    		cache = CacheFactory.get(this.config.name);
+    	} else {
+            // this will create a In-Memory caceh-Object, 
+            // this which will be availabe to inject into any service/controller/component
+        	cache = CacheFactory.createCache(this.config.name);
+		}
+        return cache;
+    };
+}
+
+
+/**
+ * For uses/api-ref, see 
+ * http://www.pseudobry.com/CacheFactory/latest/Cache.html 
+ * http://www.pseudobry.com/CacheFactory/latest/CacheFactory.html
+ *
+*/ 
+
+
+let cacheModule = angular.module('hibachi.cache',[])
+  .provider("BinaryHeap",  BinaryHeapProvider)
+  .provider("CacheFactory", CacheFactoryProvider)
+  .provider('localStorageCache', LocalStorageCacheProvider)
+  .provider('sessionStorageCache', SessionStorageCacheProvider)
+  .provider('inMemoryCache', MemoryCacheProvider) //can use a better name, like currentPageCache
+;
 
 export {
     cacheModule
