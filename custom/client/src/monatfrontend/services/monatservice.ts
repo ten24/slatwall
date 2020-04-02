@@ -31,7 +31,7 @@ export class MonatService {
 					this.cart = data;
 					let cart = data.cart ? data.cart : data;
 					this.canPlaceOrder = cart.orderRequirementsList.indexOf('canPlaceOrderReward') == -1;
-					this.cart['purchasePlusMessage'] = cart.appliedPromotionMessages ? cart.appliedPromotionMessages.filter( message => message.promotionName.indexOf('Purchase Plus') > -1 )[0] : '';
+					this.cart['purchasePlusMessage'] = cart.appliedPromotionMessages ? cart.appliedPromotionMessages.filter( message => message.promotionName.indexOf('Purchase Plus') > -1 )[0] : {};
 					deferred.resolve(this.cart);
 				})
 				.catch((e) => {
