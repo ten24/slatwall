@@ -48,6 +48,7 @@ Notes:
 */
 component extends="HibachiService" persistent="false" accessors="true" output="false" {
 	property name="settingService" type="any";
+	property name="GiftCardDAO";
 	// ===================== START: Logical Methods ===========================
 	
 	/**
@@ -181,6 +182,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 			
 		if(!giftCardDebitTransaction.hasErrors()){
+			writeDump('Fuck yeah, bud!');
+			writeDump(getHibachiScope().getOrmHasErrors());
 			if(arguments.giftCard.getBalanceAmount() == 0){
 				arguments.giftCard.setActiveFlag(false);//this will trigger updateCalculateProperties to run when gift card is saved
 			} else {
@@ -188,6 +191,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 			arguments.giftCard = this.saveGiftCard(arguments.giftCard);
 		} else {
+			writeDump(giftCardDebitTransaction.getErrors());
 			arguments.giftCard.addErrors(giftCardDebitTransaction.getErrors());
 		}
 
@@ -339,6 +343,21 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		return this.saveGiftCardTransaction(creditGiftTransaction);
 	}
+	
+	public void function processGiftCard_debitExpiredGiftCardCredits(){
+		var expiredCreditsList = getGiftCardDAO().getExpiredCreditsList();
+		var emptyArray = [];
+		
+		for(var item in expiredCreditsList){
+			var giftCard = this.getGiftCard(item.giftCardID);
+			var processObject = giftCard.getProcessObject('addDebit');
+			processObject.setGiftCard(giftCard);
+			processObject.setDebitAmount(item.netExpiredCredit);
+			processObject.setReasonForAdjustment('Expired Credit');
+			giftCard = this.processGiftCard(giftCard,processObject,'addDebit');
+		}
+	}
+	
 	// =====================  END: Process Methods ============================
 
 	// ====================== START: Save Overrides ===========================
