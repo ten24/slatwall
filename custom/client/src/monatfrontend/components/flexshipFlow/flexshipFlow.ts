@@ -13,7 +13,7 @@ class FlexshipFlowController {
 	
     //@ngInject
     constructor(public publicService) {
-
+		
     }
     
     public $onInit = () => { }
@@ -62,10 +62,14 @@ class FlexshipFlowController {
 		}
 	}
 	
-    private setStepAndUpdateProgress(step:FlexshipSteps):FlexshipSteps{
-    	this.updateProgress(step);
-    	return this.currentStep = step;
+	public 
+	
+	private setStepAndUpdateProgress(step:FlexshipSteps):FlexshipSteps{
+		this.updateProgress(step);
+		return this.currentStep = step;
     }
+    
+    
 }
 
 class FlexshipFlow {
