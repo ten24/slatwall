@@ -327,7 +327,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(structKeyExists(arguments, "orderPayment") && !isNull(arguments.orderPayment)){
             creditGiftTransaction.setOrderPayment(arguments.orderPayment);
         }
-
+		
 		return this.saveGiftCardTransaction(creditGiftTransaction);
 	}
 	// =====================  END: Process Methods ============================

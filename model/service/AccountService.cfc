@@ -1498,6 +1498,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			if(isNull(accruementCurrency)){
 				return arguments.accountLoyaltyTransaction;
 			}
+			creditGiftCardProcessObject.setReasonForAdjustment(arguments.accountLoyaltyTransaction.getAccruementEvent());
 	
 			creditGiftCardProcessObject.setCreditAmount(accruementCurrency.getGiftCardValue());
 	
