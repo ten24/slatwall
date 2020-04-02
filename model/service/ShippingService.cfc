@@ -164,9 +164,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					} 
 				}		
 			}
+
+			logHibachi('#arguments.integrations[i].getIntegrationName()# Shipping Integration Rates Request - Started',true);
 			
 			try {
 				if(splitShipmentFlag){
+					
+					logHibachi('#arguments.integrations[i].getIntegrationName()# Shipping Integration Rates Request - Splitting Shipment');
 					
 					var rateResponseBeans = []; 
 					var shippingMethodOptionSplitShipments = []; 
@@ -194,12 +198,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				responseBeans[ arguments.integrations[i].getIntegrationID() ] = rateResponseBean; 
 			
 			} catch(any e) {
+				logHibachi('An error occured with the #arguments.integrations[i].getIntegrationName()# integration when trying to call getRates()', true);
 				logHibachiException(e);
 
 				if(getSettingService().getSettingValue("globalDisplayIntegrationProcessingErrors")){
 					rethrow;
 				}
 			}
+			logHibachi('#arguments.integrations[i].getIntegrationName()# Shipping Integration Rates Request - Finished');
 		}
 		return responseBeans;
 	}
