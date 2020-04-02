@@ -11,7 +11,6 @@ import { MonatFlexshipShippingAndBillingCard } from './components/monatflexship-
 import { MonatFlexshipOrderTotalCard } from './components/monatflexship-ordertotalcard';
 import { MonatFlexshipPaymentMethodModal } from './components/monatflexship-modal-paymentmethod';
 import { MonatFlexshipShippingMethodModal } from './components/monatflexship-modal-shippingmethod';
-import { MonatFlexshipChangeOrSkipOrderModal } from './components/monatflexship-modal-changeorskiporder';
 import { MonatFlexshipCancelModal } from './components/monatflexship-modal-cancel';
 import { MonatFlexshipNameModal } from './components/monatflexship-modal-name';
 import { MonatFlexshipAddGiftCardModal } from './components/monatflexship-modal-add-giftcard';
@@ -25,6 +24,10 @@ import { MonatEnrollmentStep } from './components/monatenrollmentstep';
 import { MonatOrderItems } from './components/monat-order-items';
 import { MaterialTextarea } from './components/material-textarea';
 import { ObserveEvent } from './components/observe-event';
+
+import { MonatFlexshipScheduleModal } from './components/flexship/modal-schedule';
+
+import { MonatFlexshipChangeOrSkipOrderModal } from './components/monatflexship-modal-changeorskiporder';
 import { MonatFlexshipFrequencyModal } from './components/monatflexship-modal-deliveryfrequency';
 import { MonatFlexshipDeleteModal } from './components/monatflexship-modal-delete';
 import { WishlistDeleteModal } from './components/wishlist-delete-modal';
@@ -88,7 +91,11 @@ var monatfrontendmodule = angular
 	.directive('monatFlexshipOrderTotalCard', MonatFlexshipOrderTotalCard.Factory())
 	.directive('monatFlexshipPaymentMethodModal', MonatFlexshipPaymentMethodModal.Factory())
 	.directive('monatFlexshipShippingMethodModal', MonatFlexshipShippingMethodModal.Factory())
-	.directive('monatFlexshipChangeOrSkipOrderModal', MonatFlexshipChangeOrSkipOrderModal.Factory())
+	
+	.directive('monatFlexshipChangeOrSkipOrderModal', MonatFlexshipChangeOrSkipOrderModal.Factory()) //TODO: remove
+	.directive('monatFlexshipFrequencyModal', MonatFlexshipFrequencyModal.Factory()) //TODO: remove
+	.directive('monatFlexshipScheduleModal', MonatFlexshipScheduleModal.Factory())
+	
 	.directive('monatFlexshipCancelModal', MonatFlexshipCancelModal.Factory())
 	.directive('monatFlexshipNameModal', MonatFlexshipNameModal.Factory())
 	.directive('monatFlexshipAddGiftCardModal', MonatFlexshipAddGiftCardModal.Factory())
@@ -103,7 +110,6 @@ var monatfrontendmodule = angular
 	.directive('materialTextarea', MaterialTextarea.Factory())
 	.directive('observeEvent', ObserveEvent.Factory())
 	.directive('sponsorSearchSelector', SponsorSearchSelector.Factory())
-	.directive('monatFlexshipFrequencyModal', MonatFlexshipFrequencyModal.Factory())
 	.directive('paginationController', SWFPagination.Factory())
 	.directive('monatFlexshipDeleteModal', MonatFlexshipDeleteModal.Factory())
 	.directive('wishlistDeleteModal', WishlistDeleteModal.Factory())

@@ -177,13 +177,12 @@ export class MonatService {
 				.promise
 				.then((data) => {
 					var { messages, failureActions, successfulActions, ...realOptions } = data; //destructuring we dont want unwanted data in cached options
-					realOptions.map( (k,v)=> this.localStorageCache.put(k,v));
-					// this.cachedOptions = { ...this.cachedOptions, ...realOptions }; // override and merge with old options
-					this.sendOptionsBack(options, deferred);
+					Object.keys(realOptions).forEach( (key) => this.localStorageCache.put(key, realOptions[key] ) );
+					this.returnOptions(options, deferred);
 					//TODO handle errors
 				});
 		} else {
-			this.sendOptionsBack(options, deferred);
+			this.returnOptions(options, deferred);
 		}
 		return deferred.promise;
 	}
@@ -191,12 +190,10 @@ export class MonatService {
 	private makeListOfOptionsToFetch(options: {}, refresh: boolean = false) {
 		return Object.keys(options)
 			.filter((key) => refresh || !!options[key] || !this.localStorageCache.get(key))
-			.reduce((list, current) => {
-				return this.utilityService.listAppend(list,current);
-			});
+			.reduce((list, current) =>  this.utilityService.listAppend(list,current), '');
 	}
 
-	private sendOptionsBack(options: {}, deferred) {
+	private returnOptions(options: {}, deferred) {
 		let res = Object.keys(options)
 			.reduce( (obj, key) => {
 				return (<any>Object).assign(obj, { [key]: this.localStorageCache.get(key) })
