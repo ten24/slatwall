@@ -57,7 +57,7 @@ export class MonatService {
 				if (data.cart) {
 					this.cart = data.cart;
 					this.canPlaceOrder = this.cart.orderRequirementsList.indexOf('canPlaceOrderReward') == -1;
-					this.cart['purchasePlusMessage'] = this.cart.appliedPromotionMessages ? this.cart.appliedPromotionMessages.filter( message => message.promotionName.indexOf('Purchase Plus') > -1 )[0] : '';
+					this.cart['purchasePlusMessage'] = this.cart.appliedPromotionMessages ? this.cart.appliedPromotionMessages.filter( message => message.promotionName.indexOf('Purchase Plus') > -1 )[0] : {};
 					deferred.resolve(data.cart);
 					this.observerService.notify( 'updatedCart', data.cart ); 
 				} else {

@@ -359,6 +359,9 @@ export class OrderTemplateService {
                 this.currentOrderTemplateID = res.orderTemplate.orderTemplateID
                 this.mostRecentOrderTemplate = res.orderTemplate;
                 this.canPlaceOrderFlag = res.orderTemplate.canPlaceOrderFlag;
+                debugger;
+                let promoArray = this.mostRecentOrderTemplate.appliedPromotionMessagesJson?.length ? JSON.parse(this.mostRecentOrderTemplate.appliedPromotionMessagesJson) : [];
+                this.mostRecentOrderTemplate['purchasePlusMessage'] = promoArray.length ? promoArray.filter( message => message.promotion_promotionName.indexOf('Purchase Plus') > -1 )[0] : {};
                 this.mostRecentOrderTemplate['suggestedPrice'] = this.calculateSRPOnOrder(this.mostRecentOrderTemplate);
             }
             deferred.resolve(res);
