@@ -15,7 +15,7 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 
 				// Setup the transaction data
 				var transactionData = {
-					accruementEvent = "orderClosed",
+					accruementEvent = "Refer a Friend",
 					accountLoyalty = arguments.accountLoyalty,
 					loyaltyAccruement = arguments.data.loyaltyAccruement,
 					order = arguments.data.order,
