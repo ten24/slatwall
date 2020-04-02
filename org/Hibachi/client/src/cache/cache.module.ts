@@ -81,7 +81,7 @@ class LocalStorageCacheProvider implements ng.IServiceProvider {
     	} else {
             // this will retain data if any from LocalStorege, and will create a cacheObject, 
             // this which will be availabe to inject into any service/controller/component
-        	cache = CacheFactory.createCache(this.config.name);
+        	cache = CacheFactory.createCache(this.config.name, this.config);
 		}
         return cache;
     };
@@ -104,7 +104,7 @@ class SessionStorageCacheProvider implements ng.IServiceProvider {
     }
     
     public override(overrides) {
-         this.config =  {...this.config, ...overrides}; //merge with overriding 
+        this.config =  {...this.config, ...overrides}; //merge with overriding 
     }
 
     public $get(CacheFactory) {
@@ -115,7 +115,7 @@ class SessionStorageCacheProvider implements ng.IServiceProvider {
     	} else {
             // this will retain data if any from Session-Storege, and will create a cacheObject, 
             // this which will be availabe to inject into any service/controller/component
-        	cache = CacheFactory.createCache(this.config.name);
+        	cache = CacheFactory.createCache(this.config.name, this.config);
 		}
         return cache;
     };
@@ -125,7 +125,7 @@ class SessionStorageCacheProvider implements ng.IServiceProvider {
 class MemoryCacheProvider implements ng.IServiceProvider {
     
     private config:any = {
-        'name': 'ss.default',
+        'name': 'mem.default',
         'storageMode': 'memory',
         'recycleFreq': 2*1000, // will scan the cache every 2 sec for expired items
         'maxAge': 5*60*1000, // anything will expire after 5 minutes
@@ -150,7 +150,7 @@ class MemoryCacheProvider implements ng.IServiceProvider {
     	} else {
             // this will create a In-Memory caceh-Object, 
             // this which will be availabe to inject into any service/controller/component
-        	cache = CacheFactory.createCache(this.config.name);
+        	cache = CacheFactory.createCache(this.config.name, this.config);
 		}
         return cache;
     };
