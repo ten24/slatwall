@@ -182,8 +182,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 			
 		if(!giftCardDebitTransaction.hasErrors()){
-			writeDump('Fuck yeah, bud!');
-			writeDump(getHibachiScope().getOrmHasErrors());
+			
 			if(arguments.giftCard.getBalanceAmount() == 0){
 				arguments.giftCard.setActiveFlag(false);//this will trigger updateCalculateProperties to run when gift card is saved
 			} else {
@@ -191,7 +190,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 			arguments.giftCard = this.saveGiftCard(arguments.giftCard);
 		} else {
-			writeDump(giftCardDebitTransaction.getErrors());
+			
 			arguments.giftCard.addErrors(giftCardDebitTransaction.getErrors());
 		}
 
