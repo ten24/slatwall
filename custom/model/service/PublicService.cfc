@@ -1316,7 +1316,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             productData['right'] = product.getFormattedValue('extendedDescriptionRight');
             productData['productFullIngredients'] = product.getAttributeValue('productFullIngredients');
             productData['ingredients'] = [];
-            productData['productDescription'] = product.getProductDescription();
+            productData['productDescription'] = product.getFormattedValue('productDescription');
             
             var fileName = product.getAttributeValue( 'productVideoBackgroundImage' );
             var videoBackgroundImage = getService('imageService').getResizedImagePath(imagePath = "#getHibachiScope().getBaseImageURL()#'/'#fileName#",width = 300, height =300);
