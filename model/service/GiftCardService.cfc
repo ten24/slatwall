@@ -91,6 +91,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
                 arguments.giftCard.setExpirationDate(arguments.processObject.getExpirationDate());
             }
 		}
+		
+		if(!isNull(arguments.processObject.getCreditExpirationTerm())){
+			arguments.giftCard.setCreditExpirationTerm(arguments.processObject.getCreditExpirationTerm());
+		}
 
 		if(!isNull(arguments.processObject.getOriginalOrderItem())){
 			arguments.giftCard.setOriginalOrderItem(arguments.processObject.getOriginalOrderItem());
@@ -326,6 +330,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		if(structKeyExists(arguments, "orderPayment") && !isNull(arguments.orderPayment)){
             creditGiftTransaction.setOrderPayment(arguments.orderPayment);
+        }
+        
+        if(arguments.giftCard.hasCreditExpirationTerm()){
+        	var endDate = arguments.giftCard.getCreditExpirationTerm().getEndDate();
+        	creditGiftTransaction.setExpirationDate(endDate);
         }
 
 		return this.saveGiftCardTransaction(creditGiftTransaction);

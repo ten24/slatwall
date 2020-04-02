@@ -27,8 +27,15 @@ component accessors="true" output="false" extends="Slatwall.integrationServices.
 			legacyImportAPIAuthKey = {fieldType="password", defaultValue=""},
 		    dailyImportAPIDomain = {fieldType="text", defaultValue="https://apisandbox.monatcorp.net:8443"},
 			dailyImportAPIAuthKey = {fieldType="password", defaultValue=""},
-			rafGiftCardExpirationMonths = {fieldType="text", defaultValue=6, validate={dataType="numeric"}}
+			rafCreditExpirationTerm = {fieldType="select"}
 		};
+    }
+    
+    public array function getSettingOptions(required string settingName){
+        if(settingName == 'integrationMonatRAFCreditExpirationTerm'){
+            var termCollection = getService('SettingService').getTermCollectionList();
+            return termCollection.getRecordOptions();
+        }
     }
     
     public array function getMenuItems(){

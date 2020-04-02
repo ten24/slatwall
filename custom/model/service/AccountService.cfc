@@ -21,6 +21,11 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 					order = arguments.data.order,
 					pointAdjustmentType = "pointsIn"
 				};
+				var integration = getService("IntegrationService").getIntegrationByIntegrationPackage('monat').getIntegrationCFC();
+				var creditExpirationTerm = integration.setting("RafCreditExpirationTerm");
+				if(!isNull(creditExpirationTerm)){
+					transactionData.creditExpirationTerm = getService('SettingService').getTerm(creditExpirationTerm);
+				}
 
 				// Process the transaction
 				accountLoyaltyTransaction = this.processAccountLoyaltyTransaction(accountLoyaltyTransaction, transactionData,'create');
