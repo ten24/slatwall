@@ -59,7 +59,8 @@ export class MonatService {
 			
 			this.publicService.getCart(refresh, param)
 				.then((data) => { 
-					if(data &&  data.failureActions.lenght == 0){
+					if(data &&  data.failureActions.length == 0){
+						console.log("get-cart, puting it in session-cache")
 						this.sessionStorageCache.put('cachedCart',data.cart);
 						this.canPlaceOrder = data.cart.orderRequirementsList.indexOf('canPlaceOrderReward') == -1;
 						deferred.resolve(data.cart);
@@ -68,6 +69,7 @@ export class MonatService {
 					}
 				})
 				.catch((e) => {
+					console.log("get-cart, exception, removing it from session-cache", e);
 					this.sessionStorageCache.remove('cachedCart');
 					deferred.reject(e);
 				});
@@ -88,9 +90,10 @@ export class MonatService {
 
 		this.publicService.doAction(action, payload)
 			.then((data) => {
-				if (data.cart) {
+				if (data.cart && data.failureActions.length == 0) {
+					console.log("update-cart, puting it in session-cache")
 					this.sessionStorageCache.put('cachedCart', data.cart);
-					this.canPlaceOrder = data.orderRequirementsList.indexOf('canPlaceOrderReward') == -1;
+					this.canPlaceOrder = data.cart.orderRequirementsList.indexOf('canPlaceOrderReward') == -1;
 					deferred.resolve(data.cart);
 					this.observerService.notify( 'updatedCart', data.cart ); 
 				} else {
@@ -98,6 +101,7 @@ export class MonatService {
 				}
 			})
 			.catch((e) => {
+				console.log("update-cart, exception, removing it from session-cache", e);
 				this.sessionStorageCache.remove('cachedCart');
 				deferred.reject(e);
 			});
