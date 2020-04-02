@@ -1,6 +1,6 @@
 {
 	"properties": {
-		"renewalDate": [{ "contexts": "update,save", "method": "restrictRenewalDateToOneYearOut", "dataType": "date" }],
+		"renewalDate": [{ "contexts": "update,save", "dataType": "date" }],
 		"priceGroups": [{ "contexts": "save", "method": "onlyOnePriceGroup" }],
 		"birthDate": [{ "contexts": "eighteenPlus", "required": true, "method": "eighteenPlus" }],
 		"accountCode": [
