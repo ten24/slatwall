@@ -288,9 +288,10 @@ component extends="HibachiService" accessors="true" output="false" {
 					var processData = {
 						workflowTrigger = arguments.workflowTrigger
 					};
-	
+
 					//Call proccess method to execute Tasks
 					this.processWorkflow(workflowTrigger.getWorkflow(), processData, 'execute');
+
 					if(structKeyExists(processData,'entity') && processData.entity.hasErrors()) {
 						throw("error");
 						//application[getDao('hibachiDao').gethibachiInstanceApplicationScopeKey()].application.endHibachiLifecycle();
@@ -502,18 +503,22 @@ component extends="HibachiService" accessors="true" output="false" {
 	
 	public any function processWorkflow_execute(required any workflow, required struct data) {
 	   
-		
+
 		// Loop over all of the tasks for this workflow
 		for(var workflowTask in arguments.workflow.getWorkflowTasks()) {
-			
+
 			// Check to see if the task is active and the entity object passes the conditions validation
 			if(
 				workflowTask.getActiveFlag() 
 				&& 
 				(
-					structKeyExists(arguments.data,'entity')
+					!structKeyExists(arguments.data,'entity')
+					||
+					(
+						structKeyExists(arguments.data,'entity')
 					&& 
-					entityPassesAllWorkflowTaskConditions(arguments.data.entity, workflowTask.getTaskConditionsConfigStruct()) 
+						entityPassesAllWorkflowTaskConditions(arguments.data.entity, workflowTask.getTaskConditionsConfigStruct()) 
+					)
 				)
 			){
 				
