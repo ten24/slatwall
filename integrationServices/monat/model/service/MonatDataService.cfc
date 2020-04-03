@@ -1287,8 +1287,8 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 		
 		
 		//Fix ProductTypes:
-		QueryExecute("UPDATE swProductType SET parentProductTypeID = '444df2f7ea9c87e60051f3cd87b435a1' WHERE parentProductTypeID IS NULL AND productTypeNamePath LIKE 'Merchandise > %';");
-		QueryExecute("UPDATE swProductType SET productTypeIDPath = CONCAT('444df2f7ea9c87e60051f3cd87b435a1,',productTypeIDPath) WHERE parentProductTypeID = '444df2f7ea9c87e60051f3cd87b435a1' AND productTypeIDPath NOT LIKE '444df2f7ea9c87e60051f3cd87b435a1,%';");
+		QueryExecute("UPDATE swProductType SET parentProductTypeID = '444df2f7ea9c87e60051f3cd87b435a1' WHERE parentProductTypeID IS NULL AND productTypeNamePath LIKE 'Merchandise > %'");
+		QueryExecute("UPDATE swProductType SET productTypeIDPath = CONCAT('444df2f7ea9c87e60051f3cd87b435a1,',productTypeIDPath) WHERE parentProductTypeID = '444df2f7ea9c87e60051f3cd87b435a1' AND productTypeIDPath NOT LIKE '444df2f7ea9c87e60051f3cd87b435a1,%'");
 
 // 		//this.addUrlTitlesToProducts();
 		if(!arguments.rc.dryRun){
