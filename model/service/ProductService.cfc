@@ -464,6 +464,28 @@ component extends="HibachiService" accessors="true" {
 		relatedProducts = relatedProducts.getRecords(formatRecords=false);
 		return relatedProducts;
 	}
+	
+	/** Function append Images to existing product List
+	 * @param - array of products
+	 * @param - image property name
+	 * @return - updated array of products
+	 **/
+	public array function appendImagesToProduct(required array products, required string propertyName="defaultSku_imageFile") {
+		if(arrayLen(arguments.products)) {
+			var missingImageSetting = getService('SettingService').getSettingValue('imageMissingImagePath');
+			for(product in arguments.products) {
+	            var imageFile = product['#arguments.propertyName#'] ? : '';
+	            
+	            var resizeImageData = { 
+	                size='l', //Large Image
+	                imagePath = getService('imageService').getProductImagePathByImageFile(imageFile),
+	                missingImagePath = missingImageSetting
+	            };
+	            product['images'] = getService('imageService').getResizedImagePath(argumentCollection=resizeImageData);
+	        }
+		}
+		return arguments.products;
+	}
 
 
 	// =====================  END: Logical Methods ============================
