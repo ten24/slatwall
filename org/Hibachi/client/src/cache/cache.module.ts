@@ -9,14 +9,6 @@ utils.equals = angular.equals;
 utils.isObject = angular.isObject;
 utils.fromJson = angular.fromJson;
 
-class BinaryHeapProvider implements ng.IServiceProvider {
-        
-        constructor() {}
-        
-        public $get() {
-                return BinaryHeap;
-        };
-}
 
 class CacheFactoryProvider implements ng.IServiceProvider {
     
@@ -166,7 +158,6 @@ class MemoryCacheProvider implements ng.IServiceProvider {
 
 
 let cacheModule = angular.module('hibachi.cache',[])
-  .provider("BinaryHeap",  BinaryHeapProvider)
   .provider("CacheFactory", CacheFactoryProvider)
   .provider('localStorageCache', LocalStorageCacheProvider)
   .provider('sessionStorageCache', SessionStorageCacheProvider)

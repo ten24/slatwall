@@ -63,7 +63,6 @@ class monatFlexshipScheduleModalController {
     
     private makeTranslations = () => {
     	
-    	//TODO make translations for success/failure alert messages
     	this.translations['delayOrSkip'] = this.rbkeyService.rbKey('frontend.flexshipScheduleModal.delayOrSkip');
         //TODO business-logic
     	this.translations['delayOrSkipMessage'] = this.rbkeyService.rbKey('frontend.flexshipScheduleModal.delayOrSkipMessage', { days : 15 });
@@ -181,10 +180,6 @@ class MonatFlexshipScheduleModal {
 	){
 		this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/flexship/modal-schedule.html";
 		this.restrict = "E";
-	}
-
-	public link = (scope, element, attrs) =>{
-
 	}
 
 }
