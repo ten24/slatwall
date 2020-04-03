@@ -15,101 +15,100 @@
 			</button>
 
 				<!-- delay or skip -->
-				<div class="change-order row">
+				<div class="change-order">
 					<h6 class="title-with-line mb-3">
-						{{ monatFlexshipScheduleModal.translations.changeOrSkip }}
+						<span ng-bind="monatFlexshipScheduleModal.translations.delayOrSkip"></span>
 					</h6>
+					<p>
+						<span ng-bind="monatFlexshipScheduleModal.translations.delayOrSkipMessage"> </span>
+					</p>
 	
-					<p>{{ monatFlexshipScheduleModal.translations.delayOrSkipMessage }}</p>
-	
-					<div class="col-12 col-md-5">
-						<div
-							class="custom-radio material-field "
-							ng-click="monatFlexshipScheduleModal.updateDelayOrSkip('delay')"
-						>
-							<input
-								type="radio"
-								name="change-order"
-								ng-checked="monatFlexshipScheduleModal.formData.delayOrSkip === 'delay'"
-							/>
-							<label for="change-order">
-								{{ monatFlexshipScheduleModal.translations.delayThisMonthsOrder }}
-							</label>
-						</div>
-						<!-- Delay/Change Order Datepicker -->
-						<div class="material-field">
-							<input
-								type="text"
-								id="scheduleOrderNextPlaceDateTime"
-								name="scheduleOrderNextPlaceDateTime"
-								placeholder="{{ monatFlexshipScheduleModal.translations.forHowLong }}"
-								monat-date-picker
-								data-end-day-of-the-month="monatFlexshipScheduleModal.endDayOfTheMonth"
-								data-max-date="monatFlexshipScheduleModal.nextPlaceDateTime"
-								ng-disabled="monatFlexshipScheduleModal.formData.delayOrSkip !== 'delay'"
-								ng-model="monatFlexshipScheduleModal.nextPlaceDateTime"
-								autocomplete="off"
-								readonly 
-							/>
-							 <div class="text-success"  ng-if="monatFlexshipScheduleModal.formData.delayOrSkip === 'skip'">
-		                          <span sw-rbkey ="'alert.flexship.nextDatechange'"></span>  {{monatFlexshipScheduleModal.nextPlaceDateTime}}
-		                     </div>
-						</div>
-					</div>
-	
-					<div class="col-12 col-md-7">
-						<!-- Skip this month's order -->
-						<div 
-							class="custom-radio material-field"
-							ng-click="monatFlexshipScheduleModal.updateDelayOrSkip('skip')"
-						>
-							<input
-								type="radio"
-								name="change-order"
-								ng-checked="monatFlexshipScheduleModal.formData.delayOrSkip === 'skip'"
-							/>
-							<label for="change-order2">
-								{{ monatFlexshipScheduleModal.translations.skipThisMonthsOrder }}
-							</label>
-							   
-						</div>
-		
-						<!-- Why are you pushing your flexship? -->
-						<div class="material-field">
-							<select
-								type="text"
-								class="form-control"
-								id="change-flexship"
-								ng-model="monatFlexshipScheduleModal.selectedReason"
-								ng-change="monatFlexshipScheduleModal.selectedReasonChanged()"
-								ng-options="reason as reason.name for reason in monatFlexshipScheduleModal.scheduleDateChangeReasonTypeOptions"
-								placeholder="{{monatFlexshipScheduleModal.translations.flexshipCancelReason}}"
-							   	swvalidationrequired = "true"
-							    name="selectedReason"
+					<div class="row">
+						<div class="col-12 col-md-5">
+							
+							<!-- Delay-radio -->
+							<div
+								class="custom-radio material-field "
+								ng-click="monatFlexshipScheduleModal.updateDelayOrSkip('delay')"
 							>
-								<option value="">
-									{{ monatFlexshipScheduleModal.translations.whyAreYouCancellingFlexship }}
-								</option>
-							</select>
-							 <div ng-if="updateScheduleForm.$submitted" ng-messages="updateScheduleForm.selectedReason.$error">
-							 	<div ng-messages-include="monat-form-generic-validation-error-messages"></div>
-							 </div>
+								<input
+									type="radio"
+									name="change-order"
+									ng-checked="monatFlexshipScheduleModal.formData.delayOrSkip === 'delay'"
+								/>
+								<label for="change-order" ng-bind="monatFlexshipScheduleModal.translations.delayThisMonthsOrder"></label>
+							</div>
+							
+							<!-- Delay/Change Order Datepicker -->
+							<div class="material-field">
+								<input
+									type="text"
+									id="scheduleOrderNextPlaceDateTime"
+									name="scheduleOrderNextPlaceDateTime"
+									placeholder="{{ monatFlexshipScheduleModal.translations.forHowLong }}"
+									monat-date-picker
+									data-end-day-of-the-month="monatFlexshipScheduleModal.endDayOfTheMonth"
+									data-max-date="monatFlexshipScheduleModal.nextPlaceDateTime"
+									ng-disabled="monatFlexshipScheduleModal.formData.delayOrSkip !== 'delay'"
+									ng-model="monatFlexshipScheduleModal.nextPlaceDateTime"
+									autocomplete="off"
+									readonly 
+								/>
+								 <div class="text-success"  ng-if="monatFlexshipScheduleModal.formData.delayOrSkip === 'skip'">
+			                          <span ng-bind="monatFlexshipScheduleModal.translations.nextSkipOrderNextDeliveryDateMessage"></span>  {{monatFlexshipScheduleModal.nextPlaceDateTime}}
+			                     </div>
+							</div>
 						</div>
 		
-						<div class="material-field"
-							ng-if="monatFlexshipScheduleModal.formData.showOtherReasonNotes"
-						>
-							<input
-								type="text"
-								class="form-control"
-								ng-model="monatFlexshipScheduleModal.formData.otherReasonNotes"
-								swvalidationrequired = "true"
-								swvalidationmaxlength ="250"
-								name="otherReasonNotes"
-							/>
-							<label ng-bind="monatFlexshipScheduleModal.translations.flexshipCancelOtherReason"></label>
-							<div ng-if="updateScheduleForm.$submitted" ng-messages="updateScheduleForm.otherReasonNotes.$error">
-							    <div ng-messages-include="monat-form-generic-validation-error-messages"></div>
+						<div class="col-12 col-md-7">
+							
+							<!-- Skip-radio -->
+							<div 
+								class="custom-radio material-field"
+								ng-click="monatFlexshipScheduleModal.updateDelayOrSkip('skip')"
+							>
+								<input
+									type="radio"
+									name="change-order"
+									ng-checked="monatFlexshipScheduleModal.formData.delayOrSkip === 'skip'"
+								/>
+								<label for="change-order2" ng-bind="monatFlexshipScheduleModal.translations.skipThisMonthsOrder"> </label>
+								   
+							</div>
+			
+							<!-- Why are you pushing your flexship? -->
+							<div class="material-field">
+								<select
+									class="form-control"
+									id="change-flexship"
+								    name="selectedReason"
+								   	swvalidationrequired="true"
+									ng-model="monatFlexshipScheduleModal.formData.selectedReason"
+									ng-options="reason as reason.name for reason in monatFlexshipScheduleModal.scheduleDateChangeReasonTypeOptions"
+								>
+									<option value=""> {{ monatFlexshipScheduleModal.translations.whyAreYouSkippingFlexship }} </option>
+								</select>
+								
+								 <div ng-if="setOrderScheduleForm.$submitted" ng-messages="setOrderScheduleForm.selectedReason.$error">
+								 	<div ng-messages-include="monat-form-generic-validation-error-messages"></div>
+								 </div>
+							</div>
+			
+							<div class="material-field"
+								ng-if="monatFlexshipScheduleModal.formData.selectedReason.systemCode === 'otsdcrtOther'"
+							>
+								<input
+									type="text"
+									class="form-control"
+									ng-model="monatFlexshipScheduleModal.formData.otherReasonNotes"
+									swvalidationrequired="true"
+									swvalidationmaxlength="250"
+									name="otherReasonNotes"
+								/>
+								<label ng-bind="monatFlexshipScheduleModal.translations.flexshipSkipOtherReason"></label>
+								<div ng-if="setOrderScheduleForm.$submitted" ng-messages="setOrderScheduleForm.otherReasonNotes.$error">
+								    <div ng-messages-include="monat-form-generic-validation-error-messages"></div>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -118,20 +117,27 @@
 				<!-- Frequency -->
 				<div class="rename-flexship">
 					<h6 class="title-with-line mt-5 mb-3">
-						<span sw-rbkey="'frontend.flexship.menu.editFrequency'"></span>
+						<span ng-bind="monatFlexshipScheduleModal.translations.orderFrequency"></span>
 					</h6>
 					
-					<p>{{ monatFlexshipScheduleModal.translations.delayOrSkipMessage }}</p>
+					<p>
+						<span ng-bind="monatFlexshipScheduleModal.translations.flexshipFrequencyMessage"> </span>
+					</p>
 					
 					<div class="material-field col-md-5 mt-3">
+						<label ng-bind="monatFlexshipPaymentMethodModal.translations.flexshipFrequency"></label>
 	              		<select 
-		              		swvalidationrequired = "true"
-		              		ng-model="monatFlexshipScheduleModal.selectedFrequencyTermID" 
-		              		class="form-control" 
+		              		class="form-control"
+		              		name="frequencyTerm"
+		              		swvalidationrequired="true"
+		              		ng-model="monatFlexshipScheduleModal.formData.selectedFrequencyTermID" 
 		              		ng-options="frequency.value as frequency.name for frequency in monatFlexshipScheduleModal.frequencyTermOptions"
 	              		>
 	              			<option value="">{{monatFlexshipScheduleModal.translations.flexshipFrequency}}</option>
 						</select>
+						<div ng-if="setOrderScheduleForm.$submitted" ng-messages="setOrderScheduleForm.frequencyTerm.$error">
+						 	<div ng-messages-include="monat-form-generic-validation-error-messages"></div>
+						</div>
 					</div>
 				</div>
 			

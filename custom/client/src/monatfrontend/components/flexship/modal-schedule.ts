@@ -6,13 +6,10 @@ class monatFlexshipScheduleModalController {
 	
 	//local-states
 	public loading: boolean = false;
-	
+	public translations = {};
+
     public frequencyTermOptions: IOption[];
     public scheduleDateChangeReasonTypeOptions: IOption[];
-
-    public selectedFrequencyTermID:string;
-    public selectedReason;
-
     
     public endDayOfTheMonth = 25;
 	public endDateString;
@@ -20,14 +17,25 @@ class monatFlexshipScheduleModalController {
 	public startDate;
 	public nextPlaceDateTime;
 
+	
 	public formData = {
 		delayOrSkip : 'delay',
-		showOtherReasonNotes: false,
+		otherReasonNotes: undefined,
+		selectedFrequencyTermID: undefined,
+        selectedReason: undefined,
 	}; 
+	
     
 
     //@ngInject
-	constructor(public orderTemplateService, public observerService, public rbkeyService, public monatService, public monatAlertService) {
+	constructor(
+		public orderTemplateService, 
+		public observerService, 
+		public rbkeyService, 
+		public monatService, 
+		public monatAlertService
+	) {
+		
     }
     
     public $onInit = () => {
@@ -42,89 +50,69 @@ class monatFlexshipScheduleModalController {
 			this.scheduleDateChangeReasonTypeOptions = options.scheduleDateChangeReasonTypeOptions;
 			
 			if(this.orderTemplate.frequencyTerm_termID) {
-				this.selectedFrequencyTermID = this.orderTemplate.frequencyTerm_termID;
+				this.formData.selectedFrequencyTermID = this.orderTemplate.frequencyTerm_termID;
 			}
-			
 		})
 		.catch( (error) => {
 		    console.error(error);
 		})
 		.finally(()=>{
-		 this.loading = false;   
+			this.loading = false;   
 		})
     };
     
-    public translations = {};
     private makeTranslations = () => {
     	
     	//TODO make translations for success/failure alert messages
-    	this.translations['flexshiFrequency'] = this.rbkeyService.rbKey('frontend.flexshipEdit.flexshipFrequency');
-    	
-    	this.translations['changeOrSkip'] = this.rbkeyService.rbKey('frontend.delayOrSkipOrderModal.changeOrSkip');
+    	this.translations['delayOrSkip'] = this.rbkeyService.rbKey('frontend.flexshipScheduleModal.delayOrSkip');
         //TODO business-logic
-    	this.translations['delayOrSkipMessage'] = this.rbkeyService.rbKey('frontend.delayOrSkipOrderModal.delayOrSkipMessage', { days : 15 });
-    	this.translations['delayThisMonthsOrder'] = this.rbkeyService.rbKey('frontend.delayOrSkipOrderModal.delayThisMonthsOrder');
-    	this.translations['skipThisMonthsOrder'] = this.rbkeyService.rbKey('frontend.delayOrSkipOrderModal.skipThisMonthsOrder');
-    	this.translations['flexshipCancelReason'] = this.rbkeyService.rbKey('frontend.delayOrSkipOrderModal.flexshipCancelReason');
-    	this.translations['whyAreYouCancellingFlexship'] = this.rbkeyService.rbKey('frontend.delayOrSkipOrderModal.whyAreYouCancellingFlexship');
-    	this.translations['flexshipCancelOtherReason'] = this.rbkeyService.rbKey('frontend.delayOrSkipOrderModal.flexshipCancelOtherReason');
-
-    }
-    
-    public setOrderTemplateFrequency() {
-		this.loading = true;
-        this.orderTemplateService.updateOrderTemplateFrequency(
-            this.orderTemplate.orderTemplateID, 
-            this.selectedFrequencyTermID, 
-            this.orderTemplate.scheduleOrderDayOfTheMonth
-        )
-        .then( (data) => {
-        	if(data.successfulActions.length && (data.successfulActions[0] == 'public:orderTemplate.updateFrequency' || data.successfulActions[1] == 'public:orderTemplate.updateFrequency') ) {
-                this.observerService.notify("orderTemplateUpdated" + " " + this.orderTemplate.orderTemplateID);
-            	this.monatAlertService.success("Your flexship has been updated successfully");
-                this.closeModal();
-        	} else {
-        		throw(data);
-        	}
-        }).catch( (error) => {
-	        this.monatAlertService.showErrorsFromResponse(error);
-        }).finally(() => {
-        	this.loading = false;
-        });
+    	this.translations['delayOrSkipMessage'] = this.rbkeyService.rbKey('frontend.flexshipScheduleModal.delayOrSkipMessage', { days : 15 });
+    	this.translations['delayThisMonthsOrder'] = this.rbkeyService.rbKey('frontend.flexshipScheduleModal.delayThisMonthsOrder');
+    	this.translations['skipThisMonthsOrder'] = this.rbkeyService.rbKey('frontend.flexshipScheduleModal.skipThisMonthsOrder');
+		
+    	this.translations['whyAreYouSkippingFlexship'] = this.rbkeyService.rbKey('frontend.flexshipScheduleModal.whyAreYouSkippingFlexship');
+    	this.translations['flexshipSkipOtherReason'] = this.rbkeyService.rbKey('frontend.flexshipScheduleModal.flexshipSkipOtherReason');
+    	this.translations['nextSkipOrderNextDeliveryDateMessage'] = this.rbkeyService.rbKey('frontend.flexshipScheduleModal.nextSkipOrderNextDeliveryDateMessage');
+						    
+    	this.translations['orderFrequency'] = this.rbkeyService.rbKey('frontend.flexshipScheduleModal.orderFrequency');
+    	this.translations['flexshipFrequencyMessage'] = this.rbkeyService.rbKey('frontend.flexshipScheduleModal.flexshipFrequencyMessage');
+    	
     }
     
     public updateSchedule() {
         this.loading = true;
+    	
     	let payload = {};
         payload['orderTemplateID'] = this.orderTemplate.orderTemplateID;
-    	payload['orderTemplateScheduleDateChangeReasonTypeID'] = this.selectedReason.value;
-    	
-    	if(this.formData.showOtherReasonNotes) {
-		   	payload['otherScheduleDateChangeReasonNotes'] = this.formData['otherReasonNotes'];
-    	}
     	
     	if(this.formData.delayOrSkip === 'delay') {
     		payload['scheduleOrderNextPlaceDateTime'] = this.nextPlaceDateTime;
     	} else {
     		payload['skipNextMonthFlag'] = 1;
-    		
     	}
     	
-    	payload = this.orderTemplateService.getFlattenObject(payload);
-
-    	// make api request
-        this.orderTemplateService.updateOrderTemplateSchedule(payload)
-        .then( (data) => {
-            	if(data.orderTemplate) {
-	                this.orderTemplate = data.orderTemplate;
-	                this.observerService.notify("orderTemplateUpdated" + data.orderTemplate.orderTemplateID, data.orderTemplate);
-	                this.monatAlertService.success("Your flexship has been updated successfully");
-	                this.closeModal();
-            	} else {
-            		throw(data);
-            	} 
-            }
+    	payload['orderTemplateScheduleDateChangeReasonTypeID'] = this.formData.selectedReason.value;
+    	if(this.formData.otherReasonNotes) {
+		   	payload['otherScheduleDateChangeReasonNotes'] = this.formData['otherReasonNotes'];
+    	}
+    
+    	payload['frequencyTermID'] = this.formData.selectedFrequencyTermID;
+    	
+    	
+        this.orderTemplateService
+        .updateOrderTemplateSchedule(
+        	this.orderTemplateService.getFlattenObject(payload)
         )
+        .then( (data) => {
+        	if(data.orderTemplate) {
+                this.orderTemplate = data.orderTemplate;
+            	this.monatAlertService.success(this.rbkeyService.rbKey('alert.flexship.updateSucceccfull'));
+                this.observerService.notify("orderTemplateUpdated" + data.orderTemplate.orderTemplateID, data.orderTemplate);
+                this.closeModal();
+        	} else {
+        		throw(data);
+        	} 
+        })
         .catch( (error) => {
         	this.monatAlertService.showErrorsFromResponse(error);
         }).finally(()=>{
@@ -132,34 +120,18 @@ class monatFlexshipScheduleModalController {
         });
     }
 
-    
     private calculateNextPlacedDateTime = () => {
-    	//format mm/dd/yyyy
     	var date = new Date(Date.parse(this.orderTemplate.scheduleOrderNextPlaceDateTime));
+    	//format mm/dd/yyyy
 	    this.nextPlaceDateTime = `${(date.getMonth() + 1)}/${date.getDate()}/${date.getFullYear()}`;
-	    this.endDayOfTheMonth = 25;
-	    this.endDate = new Date(date.setMonth(date.getMonth()+2));
+	    this.endDate = new Date(date.setMonth(date.getMonth()+2)); //next one month
     }
     
-    public updateDelayOrSkip = (val:string) =>{
-        if(val==='skip'){
-            var date = new Date(Date.parse(this.orderTemplate.scheduleOrderNextPlaceDateTime));
-            this.nextPlaceDateTime = `${(date.getMonth() + 2)}/${date.getDate()}/${date.getFullYear()}`;
-        }
-        else{
-            var date = new Date(Date.parse(this.orderTemplate.scheduleOrderNextPlaceDateTime));
-           this.nextPlaceDateTime = `${(date.getMonth() + 1)}/${date.getDate()}/${date.getFullYear()}`;  
-        }
-    	this.formData.delayOrSkip = val;
-    }
-    
-    public selectedReasonChanged = () => {
-    	if(!!this.selectedReason && !!this.selectedReason.value) {
-    		this.formData.showOtherReasonNotes = this.selectedReason.systemCode === 'otsdcrtOther';
-    	} else {
-	    	this.formData.showOtherReasonNotes = false;
-    		//TODO disable the form
-    	}
+    public updateDelayOrSkip = (delayOrSkip:string) =>{
+    	this.formData.delayOrSkip = delayOrSkip;
+        var date = new Date(Date.parse(this.orderTemplate.scheduleOrderNextPlaceDateTime));
+        var monthsToAdd = delayOrSkip === 'skip' ? 2 : 1;
+        this.nextPlaceDateTime = `${(date.getMonth() + monthsToAdd)}/${date.getDate()}/${date.getFullYear()}`;  
     }
     
     public closeModal = () => {
