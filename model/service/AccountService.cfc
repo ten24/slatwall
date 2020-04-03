@@ -1487,6 +1487,10 @@ component extends="HibachiService" accessors="true" output="false" {
 					createGiftCardProcessObject.setOrder(arguments.data.order);
 				}
 				
+				if(structKeyExists(arguments.data,'creditExpirationTerm')){
+					createGiftCardProcessObject.setCreditExpirationTerm(arguments.data.creditExpirationTerm);
+				}
+				
 				giftCard = getService("GiftCardService").processGiftCard_Create(giftCard,createGiftCardProcessObject);  
 				
 			}
@@ -1498,6 +1502,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			if(isNull(accruementCurrency)){
 				return arguments.accountLoyaltyTransaction;
 			}
+			creditGiftCardProcessObject.setReasonForAdjustment(arguments.accountLoyaltyTransaction.getAccruementEvent());
 	
 			creditGiftCardProcessObject.setCreditAmount(accruementCurrency.getGiftCardValue());
 	
@@ -1548,8 +1553,9 @@ component extends="HibachiService" accessors="true" output="false" {
 		}
 
 		// Set up loyalty program expiration date / time based upon the expiration term
-		if( !isNull(arguments.data.loyaltyAccruement.getExpirationTerm()) ){
-		    arguments.accountLoyaltyTransaction.setExpirationDateTime( arguments.data.loyaltyAccruement.getExpirationTerm().getEndDate() );
+		var expirationTerm = arguments.data.loyaltyAccruement.getExpirationTerm();
+		if( !isNull(expirationTerm) ){
+		    arguments.accountLoyaltyTransaction.setExpirationDateTime( expirationTerm.getEndDate() );
 		}
 		
 		this.RedeemLoyaltyRedemptions(arguments.data.accountLoyalty);
