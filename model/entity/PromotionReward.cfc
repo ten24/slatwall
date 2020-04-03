@@ -83,6 +83,8 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 	property name="fulfillmentMethods" singularname="fulfillmentMethod" cfc="FulfillmentMethod" fieldtype="many-to-many" linktable="SwPromoRewardFulfillmentMethod" fkcolumn="promotionRewardID" inversejoincolumn="fulfillmentMethodID";
 	property name="shippingAddressZones" singularname="shippingAddressZone" cfc="AddressZone" fieldtype="many-to-many" linktable="SwPromoRewardShipAddressZone" fkcolumn="promotionRewardID" inversejoincolumn="addressZoneID";
 	property name="shippingMethods" singularname="shippingMethod" cfc="ShippingMethod" fieldtype="many-to-many" linktable="SwPromoRewardShippingMethod" fkcolumn="promotionRewardID" inversejoincolumn="shippingMethodID";
+	property name="includedStackableRewards" singularname="includedStackableReward" cfc="PromotionReward" fieldtype="many-to-many" linktable="SwPromoRewardStackIncl" fkcolumn="promotionRewardID" inversejoincolumn="linkedPromotionRewardID";
+	property name="excludedStackableRewards" singularname="excludedStackableReward" cfc="PromotionReward" fieldtype="many-to-many" linktable="SwPromoRewardStackExcl" fkcolumn="promotionRewardID" inversejoincolumn="linkedPromotionRewardID";
 	
 	// Deprecated Properties
 	property name="brands" singularname="brand" cfc="Brand" fieldtype="many-to-many" linktable="SwPromoRewardBrand" fkcolumn="promotionRewardID" inversejoincolumn="brandID";
