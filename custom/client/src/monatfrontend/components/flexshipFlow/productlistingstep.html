@@ -5,6 +5,7 @@
 	
 	<div class="mx-5 my-3 ">
 	    <div>
+	    	<!---TODO: call for component ---->
 			<h1>Today's Order</h1>
 	        <div class="text-grey">HELLO WORLD</div>
 	    </div>
@@ -60,7 +61,7 @@
 					currency-code="slatwall.cart.currencyCode" 
 					all-products="productController.productList" 
 					type="flexship"
-					order-template=""
+					order-template="productListingStep.orderTemplateService.mostRecentOrderTemplate.orderTemplateID"
 					product="item" 
 					index="{{$index}}"
 				></monat-product-card>

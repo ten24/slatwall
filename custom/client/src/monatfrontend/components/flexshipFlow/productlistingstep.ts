@@ -1,12 +1,14 @@
 class ProductListingStepController {
 	public FlexshipSteps;
+	public orderTemplate;
 	
     //@ngInject
-    constructor(public publicService) {
+    constructor(public orderTemplateService) {
 
     }
     
-    public $onInit = () => { }
+    public $onInit = () => { 
+    }
 	
 }
 
@@ -14,8 +16,6 @@ class ProductListingStep {
 
 	public restrict:string;
 	public templateUrl:string;
-	
-	public scope = {};
 	public bindToController = {
 	
 	};

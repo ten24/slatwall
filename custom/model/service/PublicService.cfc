@@ -2175,13 +2175,13 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         super.placeOrder(arguments.data);
     }
     
-    public void function setCurrentFlexshipOnHibachiScope(required string orderTemplateID){
-        var orderTemplate = getService('orderService').getOrderTemplate(orderTemplateID);
+    public void function setCurrentFlexshipOnHibachiScope(required any data){
+        var orderTemplate = getService('orderService').getOrderTemplate(arguments.data.orderTemplateID);
         var account = getHibachiScope().getAccount();
         
         //ensure the order template is a flexship and either does not have an account, or matches the current account on session
         if(
-            orderTemplate.getOrderTemplateSystemCode() == 'ottSchedule'
+            orderTemplate.getTypeCode() == 'ottSchedule'
             && (isNull(orderTemplate.getAccount()) || account.getAccountID() == orderTemplate.getAccount().getAccountID())
         ){
             getHibachiScope().setCurrentFlexship(orderTemplate);
