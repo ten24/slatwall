@@ -1621,7 +1621,7 @@ component extends="Slatwall.model.service.OrderService" {
 				orderFulfillment.setShippingMethod(arguments.orderTemplate.getShippingMethod());
 				orderFulfillment.setFulfillmentMethod(arguments.orderTemplate.getShippingMethod().getFulfillmentMethod());
 
-				orderFulfillment = this.saveOrderFulfillment(orderFulfillment);
+				orderFulfillment = this.saveOrderFulfillment( orderFulfillment=orderFulfillment, updateOrderAmounts=false );
 
 				if (orderFulfillment.hasErrors()){
 					//propegate to parent, because we couldn't create the fulfillment this order is not going to be placed
