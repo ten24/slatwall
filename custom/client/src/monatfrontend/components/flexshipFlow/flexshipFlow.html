@@ -1,0 +1,143 @@
+<header class="site-header d-flex flex-column">
+	<div class="container">
+		<div class="header-row">
+			<div class="left-nav"></div>
+			<a href="#" class="logo">
+				<img src="/themes/monat/assets/images/logo.svg"  alt="Monat logo">
+			</a>			
+			<div class="right-nav">
+				<div class="row justify-content-end">
+					<hybrid-cart type="flexshipFlow.type" is-enrollment="true"></hybrid-cart>
+				</div>			
+			</div>			
+		</div>
+	</div>
+</header>
+<!--remove utility classes just so you can see steps without content for now--->
+<div class="wrapper my-5 py-5">
+		<!--Shop step -->
+		<div ng-if="flexshipFlow.currentStep == flexshipFlow.FlexshipSteps.SHOP" > SHOP STEP </div>
+		<!--frequency step -->
+		<div ng-if="flexshipFlow.currentStep == flexshipFlow.FlexshipSteps.FREQUENCY"> FREQUENCY STEP </div>
+		<!--ofy step -->
+		<div ng-if="flexshipFlow.currentStep  == flexshipFlow.FlexshipSteps.OFY"> OFY STEP </div>
+		<!--Checkout step -->
+		<div ng-if="flexshipFlow.currentStep  == flexshipFlow.FlexshipSteps.CHECKOUT"> CHECKOUT STEP </div>
+</div>
+
+<div ng-cloak ng-show="flexshipFlow.showCanPlaceOrderAlert && !flexshipFlow.monatService.canPlaceOrder" class="alert alert-danger alert-dismissible fade show text-center can-place-order-alert" role="alert">
+    <span sw-rbkey="'frontend.order.canPlaceOrderFailure'"></span>
+</div>
+    
+<footer class="steps-footer d-flex flex-column">
+	<div class="w-100 d-flex justify-content-between align-items-center">
+		
+		<!-- Back button --->
+		<div class="d-flex align-items-center">
+			<a 
+				href 
+				data-ng-click="flexshipFlow.back()" 
+				class="back d-inline-block" 
+				ng-class="{ 
+					disabled: flexshipFlow.currentStep == flexshipFlow.FlexshipSteps.SHOP, 
+				}"
+				ng-disabled="flexshipFlow.currentStep == flexshipFlow.FlexshipSteps.SHOP"
+			>
+				<span class="last" sw-rbkey="'frontend.global.back'"></span>
+				<i class="fas fa-chevron-left"></i> 
+			</a>
+		</div>
+		
+		<div class="step-status row w-50 text-center align-items-end">
+			<!---TODO: add styling to icons so they appear clickable --->
+			<!--Shop Icon -->
+			<div 
+				class="col mt-1"
+				ng-click="flexshipFlow.goToStep(flexshipFlow.FlexshipSteps.SHOP)"
+				ng-style="{ 'opacity' : (flexshipFlow.currentStep == flexshipFlow.FlexshipSteps.SHOP) ? '100%' : '50%' }"
+			>
+				<i class="far"
+					ng-class="{
+						'fa-shopping-bag': (flexshipFlow.farthestStepReached <= flexshipFlow.FlexshipSteps.SHOP) || (flexshipFlow.currentStep == flexshipFlow.FlexshipSteps.SHOP),
+						'fa-check': (flexshipFlow.farthestStepReached > flexshipFlow.FlexshipSteps.SHOP) && (flexshipFlow.currentStep != flexshipFlow.FlexshipSteps.SHOP)
+					}"
+				></i>	
+	
+				<p class="mb-1" sw-rbkey="'frontend.cart.todaysOrder'"></p>
+			</div>
+			
+			<!--Frequency Icon -->
+			<div 
+				class="col"
+				ng-click="flexshipFlow.goToStep(flexshipFlow.FlexshipSteps.FREQUENCY)"
+				ng-style="{ 
+					'opacity' : (flexshipFlow.currentStep == flexshipFlow.FlexshipSteps.FREQUENCY ) ? '100%' : '50%' 
+				}"
+			>
+				<i 
+					class="far"
+					ng-class="{
+						'fa-shipping-timed':(flexshipFlow.farthestStepReached <= flexshipFlow.FlexshipSteps.FREQUENCY) || (flexshipFlow.currentStep == flexshipFlow.FlexshipSteps.FREQUENCY),
+						'fa-check': (flexshipFlow.farthestStepReached > flexshipFlow.FlexshipSteps.FREQUENCY) && (flexshipFlow.currentStep != flexshipFlow.FlexshipSteps.FREQUENCY)
+					}"
+				></i>
+				<p class="mb-1" sw-rbkey="'frontend.flexship.frequency'"></p>
+			</div>
+			
+			<!--OFY Icon -->
+			<div 
+				class="col"
+				ng-click="flexshipFlow.goToStep(flexshipFlow.FlexshipSteps.OFY)"
+				ng-style="{ 
+					'opacity' : (flexshipFlow.currentStep == flexshipFlow.FlexshipSteps.OFY ) ? '100%' : '50%' 
+				}"
+			>
+				<i 
+					class="fas"
+					ng-class="{
+						'fa-gift':(flexshipFlow.farthestStepReached <= flexshipFlow.FlexshipSteps.OFY) || (flexshipFlow.currentStep == flexshipFlow.FlexshipSteps.OFY),
+						'fa-check': (flexshipFlow.farthestStepReached > flexshipFlow.FlexshipSteps.OFY) && (flexshipFlow.currentStep != flexshipFlow.FlexshipSteps.OFY)
+					}"
+				></i>
+				<p class="mb-1" sw-rbkey="'frontend.flexship.frequency'"></p>
+			</div>
+			
+			<!--Checkout Icon -->
+			<div 
+				class="col"
+				ng-click="flexshipFlow.goToStep(flexshipFlow.FlexshipSteps.CHECKOUT)"
+				ng-style="{ 
+					'opacity' : (flexshipFlow.currentStep == flexshipFlow.FlexshipSteps.CHECKOUT ) ? '100%' : '50%' 
+				}"
+			>
+				<i 
+					class="fas"
+					ng-class="{
+						'fa-cash-register': flexshipFlow.farthestStepReached <= flexshipFlow.FlexshipSteps.CHECKOUT,
+						'fa-check': flexshipFlow.farthestStepReached > flexshipFlow.FlexshipSteps.CHECKOUT
+					}"
+				></i>
+				<p class="mb-1" sw-rbkey="'frontend.global.checkout'"></p>
+			</div>
+	
+		</div>
+		
+		<!-----NEXT BUTTONS ---->
+		<div>
+			<button 
+				style="z-index: 1" 
+				data-ng-click="flexshipFlow.next();"
+				class="btn btn-secondary forward-btn forward" 
+				ng-class="{ 
+					disabled: flexshipFlow.currentStep == flexshipFlow.FlexshipSteps.CHECKOUT, 
+				}"
+				ng-disabled="flexshipFlow.currentStep == flexshipFlow.FlexshipSteps.CHECKOUT"
+			>
+				<span sw-rbkey="'frontend.global.next'"></span>
+				<i class="fas fa-chevron-right"></i>
+			</button>			
+		</div>
+
+	</div>
+
+</footer>
