@@ -210,9 +210,15 @@ class MonatCheckoutController {
     		if(!response.hyperWalletPaymentMethod) {
 			    console.log("Error in configuring Hyperwallet.");
 			    return;
+			} else {
+				this.publicService.doAction('addOrderPayment', {accountPaymentMethodID: response.hyperWalletAccountPaymentMethod,
+					"copyFromType":"accountPaymentMethod",
+					"paymentMethodType":"hyperwallet",
+					"newOrderPayment.paymentMethod.paymentMethodID": response.hyperWalletPaymentMethod,
+				});
 			}
 			
-			this.publicService.useSavedPaymentMethod.accountPaymentMethodID = response.hyperWalletPaymentMethod;
+			this.publicService.useSavedPaymentMethod.accountPaymentMethodID = response.hyperWalletAccountPaymentMethod;
     	});
 	}
 	
@@ -295,6 +301,7 @@ class MonatCheckoutController {
 								
 								that.publicService.doAction('addOrderPayment', {accountPaymentMethodID: response.newPayPalPaymentMethod,
 									"copyFromType":"accountPaymentMethod",
+									"paymentMethodType":"braintree",
 									"newOrderPayment.paymentMethod.paymentMethodID": response.paymentMethodID,
 								});
 							});

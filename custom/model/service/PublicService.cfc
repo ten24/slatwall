@@ -351,7 +351,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         for(var paymentMethod in accountPaymentMethods) {
             if(paymentMethod.getMoMoneyWallet() === true) {
                 if(getHibachiScope().cart().getCalculatedPaymentAmountDue() <= paymentMethod.getMoMoneyBalance()) { //Sufficient Balance
-                    arguments.data['ajaxResponse']['hyperWalletPaymentMethod']= paymentMethod.getAccountPaymentMethodID();
+                    arguments.data['ajaxResponse']['hyperWalletPaymentMethod'] = paymentMethod.getPaymentMethodID();
+                    arguments.data['ajaxResponse']['hyperWalletAccountPaymentMethod'] = paymentMethod.getAccountPaymentMethodID();
                 }
                 else{
                     this.addErrors(arguments.data, "Insufficient Balance");
@@ -456,11 +457,12 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
      * */
     public any function addOrderPayment(required any data, boolean giftCard = false) {
         param name = "data.orderID" default = "";
+        param name = "data.paymentMethodType" default="";
         
-        if(StructKeyExists(arguments.data,'accountPaymentMethodID')) {
+        if(StructKeyExists(arguments.data,'accountPaymentMethodID') && StructKeyExists(arguments.data, "paymentMethodType") && !isEmpty(arguments.data.paymentMethodType) ) {
             var accountPaymentMethodCollectionList = getAccountService().getAccountPaymentMethodCollectionList();
             accountPaymentMethodCollectionList.setDisplayProperties('paymentMethod.paymentMethodID');
-            accountPaymentMethodCollectionList.addFilter("paymentMethod.paymentIntegration.integrationPackage", "braintree");
+            accountPaymentMethodCollectionList.addFilter("paymentMethod.paymentIntegration.integrationPackage", "#arguments.data.paymentMethodType#");
             accountPaymentMethodCollectionList.addFilter("accountPaymentMethodID", arguments.data.accountPaymentMethodID);
             accountPaymentMethodCollectionList = accountPaymentMethodCollectionList.getRecords(formatRecords=true);
             
@@ -468,26 +470,25 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                arguments.data.newOrderPayment.paymentMethod.paymentMethodID = accountPaymentMethodCollectionList[1].paymentMethod_paymentMethodID;
                 arguments.data.newOrderPayment.requireBillingAddress = 0;
             }
-            
-            if (len(data.orderID)) {
-                var order = getOrderService().getOrder(data.orderID);
-            }
-            else {
-                var order = getHibachiScope().getCart();
-            }
-            
-            var account = getHibachiScope().getAccount();
-            
-            //Remove any existing order payments
-            //It's to remove default payment from order when adding any new method
-            if(!isNull(order) && !isNull(account) && order.getAccount().getAccountID() == account.getAccountID()) {
-                for( orderPayment in order.getOrderPayments() ) {
-                    if(orderPayment.isDeletable()) {
-        				getService("OrderService").deleteOrderPayment(orderPayment);
-        			}
-        		}
-            }
-            
+        }
+        
+        if (len(data.orderID)) {
+            var order = getOrderService().getOrder(data.orderID);
+        }
+        else {
+            var order = getHibachiScope().getCart();
+        }
+        
+        var account = getHibachiScope().getAccount();
+        
+        //Remove any existing order payments
+        //It's to remove default payment from order when adding any new method
+        if(!isNull(order) && !isNull(account) && order.getAccount().getAccountID() == account.getAccountID()) {
+            for( orderPayment in order.getOrderPayments() ) {
+                if(orderPayment.isDeletable()) {
+    				getService("OrderService").deleteOrderPayment(orderPayment);
+    			}
+    		}
         }
         
         super.addOrderPayment(argumentCollection = arguments);
