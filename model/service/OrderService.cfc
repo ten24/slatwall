@@ -1645,7 +1645,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			return arguments.orderTemplate;
 		}
 	
-		//this.processOrder( newOrder, {}, 'updateOrderAmounts' );
+		this.processOrder( newOrder, {}, 'updateOrderAmounts' );
 
 		newOrder.updateCalculatedProperties(runAgain=true); 
 		ormFlush();//flush so that the order exists
