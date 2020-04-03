@@ -262,7 +262,7 @@ class MonatFlexshipCardController {
 	public goToProductListingPage() {
 
 		this.publicService.doAction('setCurrentFlexshipOnHibachiScope', {orderTemplateID: this.orderTemplate.orderTemplateID}).then(res=>{
-		//	this.monatService.redirectToProperSite(	'/flexship-flow');
+			this.monatService.redirectToProperSite(	'/flexship-flow');
 		});
 	}
 	
