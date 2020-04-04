@@ -54,7 +54,7 @@ Notes:
 <!--- Sorting not implemeted in collection list, so leaving it commented --->
 <!--- 
 <cfset rc.shippingMethodCollectionList = rc.fulfillmentMethod.getShippingMethodsCollectionList() />
-<cfset rc.shippingMethodCollectionList.setDisplayProperties('shippingMethodName,shippingMethodCode,activeFlag',{isVisible=true,isSearchable=true,isDeletable=false}) />
+<cfset rc.shippingMethodCollectionList.setDisplayProperties('shippingMethodName,shippingMethodCode,activeFlag,publishedFlag',{isVisible=true,isSearchable=true,isDeletable=false}) />
 <cfset rc.shippingMethodCollectionList.addDisplayProperty(displayProperty="sortOrder",columnConfig={isVisible=false,isSearchable=false,isDeletable=false} ) />
 <cfset rc.shippingMethodCollectionList.addDisplayProperty(displayProperty="shippingMethodID",title="#getHibachiScope().rbkey('entity.shippingMethod.shippingMethodID')#",columnConfig={isVisible=false,isSearchable=false,isDeletable=false} ) />
 <cfset rc.shippingMethodCollectionList.setOrderBy('sortOrder|asc')/>
@@ -90,6 +90,7 @@ Notes:
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="shippingMethodName" />
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="shippingMethodCode" />
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="activeFlag" />
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="publishedFlag" />
 		
 	</hb:HibachiListingDisplay>
 	
