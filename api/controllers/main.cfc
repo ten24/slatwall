@@ -10,7 +10,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	        StructKeyExists(arguments.rc.apiResponse.content, "collectionObject") &&
 	        arguments.rc.apiResponse.content.collectionObject== "Product"
 	    ) {
-	        arguments.rc.apiresponse.content.pageRecords = getService("productService").appendImagesToProduct(arguments.rc.apiresponse.content.pageRecords);
+	        arguments.rc.apiResponse.content.pageRecords = getService("productService").appendImagesToProduct(arguments.rc.apiResponse.content.pageRecords);
 	    }
 	}
 }

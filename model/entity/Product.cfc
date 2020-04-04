@@ -1470,7 +1470,6 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	public any function getDefaultCollectionProperties(string includesList = "", string excludesList=""){
 		
 		arguments.includesList = "calculatedQATS, calculatedProductRating, calculatedTitle, productDescription, calculatedSalePrice, productID, productCode, activeFlag, urlTitle, purchaseStartDateTime, publishedFlag, productName, defaultSku.skuID, productType.productTypeName, defaultSku.imageFile";
-		arguments.excludesList = "";
 		return super.getDefaultCollectionProperties(argumentCollection=arguments);
 	}
 

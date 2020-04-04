@@ -473,7 +473,7 @@ component extends="HibachiService" accessors="true" {
 	public array function appendImagesToProduct(required array products, required string propertyName="defaultSku_imageFile") {
 		if(arrayLen(arguments.products)) {
 			var missingImageSetting = getService('SettingService').getSettingValue('imageMissingImagePath');
-			for(product in arguments.products) {
+			for(var product in arguments.products) {
 	            var imageFile = product['#arguments.propertyName#'] ? : '';
 	            
 	            var resizeImageData = { 
