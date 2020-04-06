@@ -81,7 +81,7 @@
 				<p class="mb-1" sw-rbkey="'frontend.global.checkout'"></p>
 			</div>
 			
-			<div ng-if="!monatEnrollment.account.ownerAccount.accountNumber.length" class="col">
+			<div ng-if="slatwall.account.accountStatusType.systemCode != 'astGoodStanding'" class="col">
 				<i class="far fa-user-friends"></i>
 				<p class="mb-1" sw-rbkey="'frontend.global.sponsor'"></p>
 			</div>
@@ -129,7 +129,7 @@
 				<p class="mb-1" sw-rbkey="'frontend.global.checkout'"></p>
 			</div>
 			
-			<div ng-if="!monatEnrollment.account.ownerAccount.accountNumber.length" class="col">
+			<div ng-if="slatwall.account.accountStatusType.systemCode != 'astGoodStanding'" class="col">
 				<i class="far fa-user-friends"></i> 
 				<p class="mb-1" sw-rbkey="'frontend.global.sponsor'"></p>
 			</div>
