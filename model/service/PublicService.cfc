@@ -1825,9 +1825,7 @@ component  accessors="true" output="false"
 		
 		var tmpOrderTemplate = getOrderService().newOrderTemplate();
 		arguments.data['ajaxResponse']['shippingMethodOptions'] = tmpOrderTemplate.getShippingMethodOptions();
-		arguments.data['ajaxResponse']['cancellationReasonTypeOptions'] = tmpOrderTemplate.getOrderTemplateCancellationReasonTypeOptions();
-		arguments.data['ajaxResponse']['scheduleDateChangeReasonTypeOptions'] = tmpOrderTemplate.getOrderTemplateScheduleDateChangeReasonTypeOptions();
-		
+
 		var tmpAccountPaymentMethod = getAccountService().newAccountPaymentMethod();
 		arguments.data['ajaxResponse']['expirationMonthOptions'] = tmpAccountPaymentMethod.getExpirationMonthOptions();
 		arguments.data['ajaxResponse']['expirationYearOptions'] = tmpAccountPaymentMethod.getExpirationYearOptions();
@@ -1843,7 +1841,7 @@ component  accessors="true" output="false"
         param name="arguments.data.pageRecordsShow" default=5;
         param name="arguments.data.currentPage" default=1;
         param name="arguments.data.orderTemplateID" default="";
-		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; 
+		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; // defaults to - "ottSchedule", we should use system-code
 
 		arguments.data['ajaxResponse']['orderTemplateItems'] = getOrderService().getOrderTemplateItemsForAccount(arguments.data);  
 	} 
