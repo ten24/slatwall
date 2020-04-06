@@ -21,7 +21,9 @@
 			<product-listing-step></product-listing-step>
 		</div>
 		<!--frequency step -->
-		<div ng-if="flexshipFlow.currentStep == flexshipFlow.FlexshipSteps.FREQUENCY"> FREQUENCY STEP </div>
+		<div ng-if="flexshipFlow.currentStep == flexshipFlow.FlexshipSteps.FREQUENCY"> 
+			<frequency-step></frequency-step>
+		</div>
 		<!--ofy step -->
 		<div ng-if="flexshipFlow.currentStep  == flexshipFlow.FlexshipSteps.OFY"> OFY STEP </div>
 		<!--Checkout step -->
