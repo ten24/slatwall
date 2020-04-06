@@ -2229,7 +2229,7 @@ component  accessors="true" output="false"
     ///    ############### .  getXXXOptions();  .  ###############   
     
     /**
-     *  data.optionsList = "frequencyTermOPtions,shippingMethodOptions,cancellationReasonTypeOptions....."; 
+     *  data.optionsList = "frequencyTermOptions,shippingMethodOptions,cancellationReasonTypeOptions....."; 
     */ 
     public void function getOptions(required any data){
         param name="data.optionsList" default="" pattern="^[\w,]+$"; //option-name-list
