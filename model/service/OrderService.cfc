@@ -1650,7 +1650,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		newOrder.updateCalculatedProperties(runAgain=true); 
 		ormFlush();//flush so that the order exists
 
-		newOrder = this.processOrder_placeOrder(newOrder,{ignoreCanPlaceOrderFlag:true});
+		newOrder = this.processOrder_placeOrder(newOrder,{ignoreCanPlaceOrderFlag:true, updateOrderAmounts:false});
 
 		if(newOrder.hasErrors()){
 			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors on place order #serializeJson(newOrder.getErrors())# when placing order', true);
@@ -1710,8 +1710,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 		}  
 
-
-		getHibachiEntityQueueService().insertEntityQueueItem(arguments.orderTemplate.getOrderTemplateID(), 'OrderTemplate', 'processOrderTemplate_removeAppliedGiftCards');		
+		getOrderDAO().removeAppliedOrderTemplateGiftCards(arguments.orderTemplate.getOrderTemplateID());
 
 		var addOrderPaymentProcessData = {	
 			'accountPaymentMethodID': arguments.orderTemplate.getAccountPaymentMethod().getAccountPaymentMethodID(),
@@ -1787,10 +1786,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		} else {
 
 			//attempt to set paid	
-			this.updateOrderStatusBySystemCode(newOrder, 'ostProcessing');
+			this.updateOrderStatusBySystemCode(newOrder, 'ostNew');
 		}
 		
-
 			
 		this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# completing place order and has status: #newOrder.getOrderStatusType().getTypeName()#');
 		getHibachiEntityQueueService().insertEntityQueueItem(arguments.orderTemplate.getOrderTemplateID(), 'OrderTemplate', 'processOrderTemplate_removeTemporaryItems');	
@@ -1830,11 +1828,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				orderFulfillment.setShippingMethod(arguments.orderTemplate.getShippingMethod());
 				orderFulfillment.setFulfillmentMethod(arguments.orderTemplate.getShippingMethod().getFulfillmentMethod());
 
-				orderFulfillment = this.saveOrderFulfillment(orderFulfillment);
+				orderFulfillment = this.saveOrderFulfillment(orderFulfillment=orderFulfillment, updateOrderAmounts=false);
 
 				if (orderFulfillment.hasErrors()){
 					//propegate to parent, because we couldn't create the fulfillment this order is not going to be placed
-					arguments.order.addErrors(orderFulfillment.getErrors());	
+					arguments.order.addErrors(orderFulfillment.getErrors());
 					return arguments.order; 
 				}	
 
@@ -4998,6 +4996,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// Call the generic save method to populate and validate
 		arguments.order = save(entity=arguments.order, data=arguments.data, context=arguments.context);
 		
+		if(structKeyExists(arguments.data, 'updateOrderAmounts')){
+			arguments.updateOrderAmounts = arguments.data.updateOrderAmounts
+		}
+		
 		// If the order has no errors & it has not been placed yet, then we can make necessary implicit updates
 		if(!arguments.order.hasErrors() && arguments.order.getStatusCode() == "ostNotPlaced") {
 
@@ -5154,7 +5156,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
  						if (!isNull(stock)){
  							orderItem.setStock(stock);
- 							getService("OrderService").saveOrderItem(orderItem=orderItem,updateOrderAmounts=arguments.updateOrderAmount);
+ 							getService("OrderService").saveOrderItem(orderItem=orderItem,updateOrderAmounts=arguments.updateOrderAmounts);
  						}
  					}
  				}

@@ -336,6 +336,15 @@ Notes:
 
 		<cfreturn 0 />
 	</cffunction>
+	
+	<cffunction name="removeAppliedOrderTemplateGiftCards" returntype="void" access="public">
+		<cfargument name="orderTemplateID" type="string" required="true" />
+		
+		<cfquery name="rs">
+			DELETE FROM swOrderTemplateAppliedGiftcard where orderTemplateID =  <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderTemplateID#" />
+		</cfquery>
+	</cffunction>
+
 	<cfscript>
 		public numeric function getOrderItemCountOnOrder(required any orderItem){
 			var orderItemCount = 0;
