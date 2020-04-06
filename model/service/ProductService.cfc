@@ -449,7 +449,7 @@ component extends="HibachiService" accessors="true" {
 	
 	public any function getAllRelatedProducts(required any productID) {
 		var relatedProducts = this.getProductRelationshipCollectionList();
-		relatedProducts.setDisplayProperties("relatedProduct.productID, relatedProduct.calculatedQATS, relatedProduct.calculatedProductRating, relatedProduct.activeFlag, relatedProduct.urlTitle, relatedProduct.productName");
+		relatedProducts.setDisplayProperties("relatedProduct.productID, relatedProduct.calculatedQATS, relatedProduct.calculatedProductRating, relatedProduct.activeFlag, relatedProduct.urlTitle, relatedProduct.productName, relatedProduct.defaultSku.imageFile");
 		relatedProducts.addFilter("product.productID",arguments.productID);
 		relatedProducts.addFilter("product.activeFlag",1);
 		relatedProducts = relatedProducts.getRecords(formatRecords=false);
@@ -458,11 +458,33 @@ component extends="HibachiService" accessors="true" {
 
 	public any function getAllProductReviews(required any productID) {
 		var relatedProducts = this.getProductReviewCollectionList();
-		relatedProducts.setDisplayProperties("reviewerName, review, reviewTitle, rating, activeFlag");
+		relatedProducts.setDisplayProperties("reviewerName, createdDateTime, review, reviewTitle, rating, activeFlag");
 		relatedProducts.addFilter("product.productID",arguments.productID);
 		relatedProducts.addFilter("product.activeFlag",1);
 		relatedProducts = relatedProducts.getRecords(formatRecords=false);
 		return relatedProducts;
+	}
+	
+	/** Function append Images to existing product List
+	 * @param - array of products
+	 * @param - image property name
+	 * @return - updated array of products
+	 **/
+	public array function appendImagesToProduct(required array products, required string propertyName="defaultSku_imageFile") {
+		if(arrayLen(arguments.products)) {
+			var missingImageSetting = getService('SettingService').getSettingValue('imageMissingImagePath');
+			for(var product in arguments.products) {
+	            var imageFile = product[arguments.propertyName] ? : '';
+	            
+	            var resizeImageData = { 
+	                size='l', //Large Image
+	                imagePath = getService('imageService').getProductImagePathByImageFile(imageFile),
+	                missingImagePath = missingImageSetting
+	            };
+	            product['images'] = getService('imageService').getResizedImagePath(argumentCollection=resizeImageData);
+	        }
+		}
+		return arguments.products;
 	}
 
 
