@@ -457,12 +457,12 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
      * */
     public any function addOrderPayment(required any data, boolean giftCard = false) {
         param name = "data.orderID" default = "";
-        param name = "data.paymentMethodType" default="";
+        param name = "data.paymentIntegrationType" default="";
         
         if(StructKeyExists(arguments.data,'accountPaymentMethodID') && StructKeyExists(arguments.data, "paymentMethodType") && !isEmpty(arguments.data.paymentMethodType) ) {
             var accountPaymentMethodCollectionList = getAccountService().getAccountPaymentMethodCollectionList();
             accountPaymentMethodCollectionList.setDisplayProperties('paymentMethod.paymentMethodID');
-            accountPaymentMethodCollectionList.addFilter("paymentMethod.paymentIntegration.integrationPackage", "#arguments.data.paymentMethodType#");
+            accountPaymentMethodCollectionList.addFilter("paymentMethod.paymentIntegration.integrationPackage", arguments.data.paymentIntegrationType);
             accountPaymentMethodCollectionList.addFilter("accountPaymentMethodID", arguments.data.accountPaymentMethodID);
             accountPaymentMethodCollectionList = accountPaymentMethodCollectionList.getRecords(formatRecords=true);
             
@@ -474,8 +474,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         if (len(data.orderID)) {
             var order = getOrderService().getOrder(data.orderID);
-        }
-        else {
+        } else {
             var order = getHibachiScope().getCart();
         }
         

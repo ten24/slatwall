@@ -213,7 +213,7 @@ class MonatCheckoutController {
 			} else {
 				this.publicService.doAction('addOrderPayment', {accountPaymentMethodID: response.hyperWalletAccountPaymentMethod,
 					"copyFromType":"accountPaymentMethod",
-					"paymentMethodType":"hyperwallet",
+					"paymentIntegrationType":"hyperwallet",
 					"newOrderPayment.paymentMethod.paymentMethodID": response.hyperWalletPaymentMethod,
 				});
 			}
@@ -301,7 +301,7 @@ class MonatCheckoutController {
 								
 								that.publicService.doAction('addOrderPayment', {accountPaymentMethodID: response.newPayPalPaymentMethod,
 									"copyFromType":"accountPaymentMethod",
-									"paymentMethodType":"braintree",
+									"paymentIntegrationType":"braintree",
 									"newOrderPayment.paymentMethod.paymentMethodID": response.paymentMethodID,
 								});
 							});
