@@ -5,7 +5,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	    
 	    //Append Images for Products
 	    if(
-	        StructKeyExists(arguments.rc, "apiresponse") &&
+	        StructKeyExists(arguments.rc, "apiResponse") &&
 	        StructKeyExists(arguments.rc.apiResponse, "content") &&
 	        StructKeyExists(arguments.rc.apiResponse.content, "collectionObject") &&
 	        arguments.rc.apiResponse.content.collectionObject== "Product"

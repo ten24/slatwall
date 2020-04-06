@@ -474,7 +474,7 @@ component extends="HibachiService" accessors="true" {
 		if(arrayLen(arguments.products)) {
 			var missingImageSetting = getService('SettingService').getSettingValue('imageMissingImagePath');
 			for(var product in arguments.products) {
-	            var imageFile = product['#arguments.propertyName#'] ? : '';
+	            var imageFile = product[arguments.propertyName] ? : '';
 	            
 	            var resizeImageData = { 
 	                size='l', //Large Image
