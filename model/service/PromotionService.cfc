@@ -399,7 +399,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		var orderItemIDList="";
  		for(var orderItem in arguments.order.getOrderItems()){
- 			orderItemIDList = listAppend(orderItemIDList,orderItem.getSku().getSkuID()&orderItem.getQuantity());
+ 			orderItemIDList = listAppend(orderItemIDList,orderItem.getSku().getSkuID()&orderItem.getQuantity()&orderItem.getPrice());
  		}
  		for(var promotionCode in arguments.order.getPromotionCodes()){
  			orderItemIDList = listAppend(orderItemIDList,promotionCode.getPromotionCodeID());
@@ -422,8 +422,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
  			accountID = arguments.order.getAccount().getAccountID();
  		}
  		
- 		// var promotionCacheKey = hash(orderItemIDList&orderFulfillmentList&arguments.order.getTotalItemQuantity()&accountID,'md5');
- 		var promotionCacheKey = createUUID();
+ 		var promotionCacheKey = hash(orderItemIDList&orderFulfillmentList&arguments.order.getTotalItemQuantity()&accountID,'md5');
+
 		if(isNull(arguments.order.getPromotionCacheKey()) || arguments.order.getPromotionCacheKey() != promotionCacheKey){
 			arguments.order.setPromotionCacheKey(promotionCacheKey);
 			// Sale & Exchange Orders
