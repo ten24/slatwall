@@ -58,7 +58,7 @@ class monatFlexshipScheduleModalController {
 		})
 		.finally(()=>{
 			this.loading = false;   
-		})
+		});
     };
     
     private makeTranslations = () => {

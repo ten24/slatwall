@@ -492,12 +492,13 @@ component extends="Slatwall.model.service.OrderService" {
 	} 
 	
 	public struct function getAssociatedOFYProductForFlexship(required string orderTemplateID){
-		var orderTemplateItemCollectionList = this.getOrderTemplateCollectionForAccount(
-												data= { 'orderTemplateTypeID'= arguments.orderTemplateID}
+		var orderTemplateItemCollectionList = this.getOrderTemplateItemCollectionForAccount(
+												data= { 'orderTemplateID'= arguments.orderTemplateID}
 											);
-		orderTemplateItemCollectionList.addFilter('temporaryFlag',true);
+		orderTemplateItemCollectionList.addFilter('temporaryFlag', true);
+		
 		var records = orderTemplateItemCollectionList.getRecords();
-		if( ArrayLen(records) ){ return records[1]; } //there should be only one record at max; }
+		if( ArrayLen(records) ) {  return records[1]; } //there should be only one record at max;  
 		return {};
 	}
 

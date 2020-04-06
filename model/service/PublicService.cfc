@@ -1824,11 +1824,8 @@ component  accessors="true" output="false"
 		arguments.data['ajaxResponse']['accountPaymentMethods'] = getHibachiScope().getAccount().getAccountPaymentMethodsCollectionList().getRecords();  
 		
 		var tmpOrderTemplate = getOrderService().newOrderTemplate();
-		arguments.data['ajaxResponse']['shippingMethodOptions'] = tmpOrderTemplate.getShippingMethodOptions();
 
 		var tmpAccountPaymentMethod = getAccountService().newAccountPaymentMethod();
-		arguments.data['ajaxResponse']['expirationMonthOptions'] = tmpAccountPaymentMethod.getExpirationMonthOptions();
-		arguments.data['ajaxResponse']['expirationYearOptions'] = tmpAccountPaymentMethod.getExpirationYearOptions();
 		arguments.data['ajaxResponse']['countryCodeBySite'] = getService('SiteService').getCountryCodeByCurrentSite();
 		//this function will set the stateCodeOptions in ajaxResponce
 		
@@ -2227,7 +2224,7 @@ component  accessors="true" output="false"
     ///    ############### .  getXXXOptions();  .  ###############   
     
     /**
-     *  data.optionsList = "frequencyTermOptions,shippingMethodOptions,cancellationReasonTypeOptions....."; 
+     *  data.optionsList = "frequencyTermOptions,orderTemplateShippingMethodOptions,cancellationReasonTypeOptions....."; 
     */ 
     public void function getOptions(required any data){
         param name="data.optionsList" default="" pattern="^[\w,]+$"; //option-name-list
@@ -2247,9 +2244,9 @@ component  accessors="true" output="false"
 		arguments.data['ajaxResponse']['frequencyDateOptions'] = getOrderService().getOrderTemplateFrequencyDateOptions();
     }
     
-    public void function getShippingMethodOptions(required any data) {
+    public void function getOrderTemplateShippingMethodOptions(required any data) {
         var tmpOrderTemplate = getOrderService().newOrderTemplate();
-		arguments.data['ajaxResponse']['shippingMethodOptions'] = tmpOrderTemplate.getShippingMethodOptions();
+		arguments.data['ajaxResponse']['orderTemplateShippingMethodOptions'] = tmpOrderTemplate.getShippingMethodOptions();
     }
     
     public void function getCancellationReasonTypeOptions(required any data) {

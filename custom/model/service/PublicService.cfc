@@ -1871,9 +1871,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		
 		//loop over the flexships and include the associated OFY product
 		for(var ot in arguments.data['ajaxResponse']['orderTemplates'] ){
-		    
-		    //this is some add-on optimization, as if flexship qualifies, it definately can't have an OFY on it
-		    if(!ot.qualifiesForOFYProducts){ 
+		  
+		    //this is some add-on optimization, as if flexship qualifies, or is-canceled, it definately can't have an OFY on it
+		    if(!ot.qualifiesForOFYProducts && ot.statusCode != "otstCanceled"){ 
 		        ot['associatedOFYProduct'] = this.getService('orderService').getAssociatedOFYProductForFlexship(ot.orderTemplateID);
 		    }
 		}
