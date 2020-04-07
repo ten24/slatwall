@@ -35,6 +35,14 @@
 		    <a href="##" ng-click="monatFlexshipMenu.showFlexshipScheduleModal()"><span sw-rbkey="'frontend.flexshipCard.menu.editSchedule'"></span></a>
 		</li>
 
+		<!--TODO: remove-->
+		<li>
+		    <a href="##" ng-click="monatFlexshipMenu.showFlexshipEditFrequencyMethodModal()"><span sw-rbkey="'frontend.flexshipCard.menu.editFrequency'"></span></a>
+		</li>
+		<!--TODO: remove-->
+		<li ng-if="monatFlexshipMenu.orderTemplate.statusCode === 'otstActive'" >
+		    <a href="##" ng-click="monatFlexshipMenu.showDelayOrSkipFlexshipModal()"><span sw-rbkey="'frontend.flexshipCard.menu.delayOrSkipOrder'"></span></a>
+		</li>
 		
 		<li ng-if="monatFlexshipMenu.orderTemplate.statusCode === 'otstActive'">
 		    <a href="##" ng-click="monatFlexshipMenu.showCancelFlexshipModal()"><span sw-rbkey="'frontend.flexshipCard.menu.cancelFlexship'"></span></a>
