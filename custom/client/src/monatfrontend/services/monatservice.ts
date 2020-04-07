@@ -14,6 +14,21 @@ export class MonatService {
 	public lastAddedSkuID: string = '';
 	public previouslySelectedStarterPackBundleSkuID:string;
 	public canPlaceOrder:boolean;
+
+	public cachedOptions = {
+		
+		//flexship related options
+		frequencyTermOptions: <IOption[]>null,
+		frequencyDateOptions: <IOption[]>null,
+		cancellationReasonTypeOptions: <IOption[]>null,
+		scheduleDateChangeReasonTypeOptions: <IOption[]>null,
+		expirationMonthOptions: <IOption[]>null,
+		expirationYearOptions: <IOption[]>null,
+		
+		//other generic options
+		countryCodeOptions: <IOption[]>null,
+	};
+	
 	public userIsEighteen:boolean;
 	public hasOwnerAccountOnSession:boolean;
 	
@@ -185,18 +200,9 @@ export class MonatService {
 			}, {});
 		deferred.resolve(res);
 	}
-	
-
-	public getOrderTemplateShippingMethodOptions(refresh = false) {
-		return this.getOptions( {'orderTemplateShippingMethodOptions': refresh} );
-	}
 
 	public getFrequencyTermOptions(refresh = false) {
 		return this.getOptions( {'frequencyTermOptions': refresh} );
-	}
-	
-	public getFrequencyDateOptions(refresh = false) {
-		return this.getOptions( {'frequencydateOptions': refresh} );
 	}
 	
 	public getCancellationReasonTypeOptions(refresh = false) {
@@ -215,6 +221,11 @@ export class MonatService {
 		return this.getOptions( {'expirationYearOptions': refresh} );
 	}
 	
+
+    public countryCodeOptions = (refresh = false)=>{
+    	return this.getOptions( {'countryCodeOptions': refresh} );
+    }
+    
     /**
      * TODO: move to the UtilityService
      * 
