@@ -63,9 +63,9 @@ component extends="HibachiDAO" {
 		return queryExecute(
 			sql = 'SELECT DISTINCT basePropertyName FROM swtranslation WHERE baseObject = :entityName',
 			params = {
-				entityName:{
-					type:'string',
-					value:arguments.entityName
+				'entityName':{
+					'type':'string',
+					'value':arguments.entityName
 				}
 			}
 		);
@@ -73,6 +73,5 @@ component extends="HibachiDAO" {
 	}
 	
 }
-
 
 
