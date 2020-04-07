@@ -19,6 +19,11 @@
 		</div>
 	</div>
 	
+	<div class="alert alert-success text-center" ng-if="monatFlexshipCard.orderTemplate.isNew">
+		<i class="fa fa-check" aria-hidden="true"></i>
+		<span sw-rbkey="'frontend.flexshipCreateSucess'"></span>
+	</div>
+	
 	<div class="alert alert-success" ng-if="
 				monatFlexshipCard.orderTemplate.billingAccountAddress_accountAddressID.trim().length 
 	            && monatFlexshipCard.orderTemplate.shippingAccountAddress_accountAddressID.trim().length
@@ -127,7 +132,7 @@
 				</a>
 			</div>
 			
-			<div ng-if="monatFlexshipCard.orderTemplate.qualifiesForOFYProducts && monatFlexshipCard.userCanAddOFYProductFlag" 
+			<div ng-if="monatFlexshipCard.orderTemplate.qualifiesForOFYProducts && monatFlexshipCard.showAddOFYProductCallout" 
 				class="bg-primary  p-2">
 				<span sw-rbkey="'alert.frontend.youQualifiesForOFY'"></span>
 				<a href="#" class="text-white" ng-click="monatFlexshipCard.goToOFYProductListingPage()">
