@@ -246,7 +246,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 		/**
 		 * The date and time from an hour ago.
 		 **/
-		var sixtyMinutesAgo = DateAdd('ww', -intervalOverride, now());
+		var sixtyMinutesAgo = DateAdd(HOURS, -intervalOverride, now());
 		
 		/**
 		 * The string representation for the date sity HOURS ago. 
