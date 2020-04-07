@@ -323,9 +323,7 @@ component output="false" accessors="true" extends="HibachiController" {
 
 	// SAVE
 	public void function genericSaveMethod(required string entityName, required struct rc) {
-		if(entityName=="Product"){
-			getHibachiService().logHibachi('NEW PRODUCT CONCERNS BEING SAVED ++++++++++++++++++++++ #rc.hairConcernType# +++++++++++++++++++++++++++',true);
-		}
+
 		// Find the correct service and this object PrimaryID
 		var entityService = getHibachiService().getServiceByEntityName( entityName=arguments.entityName );
 		var entityPrimaryID = getHibachiService().getPrimaryIDPropertyNameByEntityName( entityName=arguments.entityName );
