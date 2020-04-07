@@ -113,7 +113,7 @@ class MonatFlexshipCancelModal {
 				private $hibachi,
 				private rbkeyService
 	){
-		this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/monatflexship-modal-cancel.html";
+		this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/flexship/modals/cancel.html";
 		this.restrict = "E";
 	}
 

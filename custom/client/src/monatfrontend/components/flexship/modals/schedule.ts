@@ -1,4 +1,4 @@
-import {MonatService,IOption} from '../../services/monatservice';
+import {MonatService,IOption} from '../../../services/monatservice';
 
 class monatFlexshipScheduleModalController {
 	public orderTemplate;  //injected
@@ -178,7 +178,7 @@ class MonatFlexshipScheduleModal {
 				private $hibachi,
 				private rbkeyService
 	){
-		this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/flexship/modal-schedule.html";
+		this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/flexship/modals/schedule.html";
 		this.restrict = "E";
 	}
 

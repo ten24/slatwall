@@ -9,11 +9,15 @@ import { MonatFlexshipDetail } from './components/monatflexshipdetail';
 import { MonatFlexshipOrderItem } from './components/monatflexship-orderitem';
 import { MonatFlexshipShippingAndBillingCard } from './components/monatflexship-shippingandbillingcard';
 import { MonatFlexshipOrderTotalCard } from './components/monatflexship-ordertotalcard';
-import { MonatFlexshipPaymentMethodModal } from './components/monatflexship-modal-paymentmethod';
-import { MonatFlexshipShippingMethodModal } from './components/monatflexship-modal-shippingmethod';
-import { MonatFlexshipCancelModal } from './components/monatflexship-modal-cancel';
-import { MonatFlexshipNameModal } from './components/monatflexship-modal-name';
-import { MonatFlexshipAddGiftCardModal } from './components/monatflexship-modal-add-giftcard';
+
+import { MonatFlexshipAddGiftCardModal } from './components/flexship/modals/add-giftcard';
+import { MonatFlexshipCancelModal } from './components/flexship/modals/cancel';
+import { MonatFlexshipDeleteModal } from './components/flexship/modals/delete';
+import { MonatFlexshipNameModal } from './components/flexship/modals/name';
+import { MonatFlexshipPaymentMethodModal } from './components/flexship/modals/paymentmethod';
+import { MonatFlexshipScheduleModal } from './components/flexship/modals/schedule';
+import { MonatFlexshipShippingMethodModal } from './components/flexship/modals/shippingmethod';
+
 import { MonatFlexshipCartContainer } from './components/monatflexship-cart-container';
 import { MonatFlexshipConfirm } from './components/monatflexship-confirm';
 import { MonatFlexshipListing } from './components/monatflexshiplisting';
@@ -25,9 +29,7 @@ import { MonatOrderItems } from './components/monat-order-items';
 import { MaterialTextarea } from './components/material-textarea';
 import { ObserveEvent } from './components/observe-event';
 
-import { MonatFlexshipScheduleModal } from './components/flexship/modal-schedule';
 
-import { MonatFlexshipDeleteModal } from './components/monatflexship-modal-delete';
 import { WishlistDeleteModal } from './components/wishlist-delete-modal';
 import { WishlistEditModal } from './components/wishlist-edit-modal';
 

@@ -180,7 +180,7 @@ class MonatFlexshipShippingMethodModal {
 				private $hibachi,
 				private rbkeyService
 	){
-		this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/monatflexship-modal-shippingmethod.html";
+		this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/flexship/modals/shippingmethod.html";
 		this.restrict = "E";
 	}
 

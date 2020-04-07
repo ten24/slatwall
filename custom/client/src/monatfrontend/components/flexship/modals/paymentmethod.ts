@@ -206,7 +206,7 @@ class MonatFlexshipPaymentMethodModal {
 				private $hibachi,
 				private rbkeyService
 	){
-		this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/monatflexship-modal-paymentmethod.html";
+		this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/flexship/modals/paymentmethod.html";
 		this.restrict = "E";
 	}
 

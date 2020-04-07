@@ -111,7 +111,7 @@ class MonatFlexshipAddGiftCardModal {
 				private $hibachi,
 				private rbkeyService
 	){
-		this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/monatflexship-modal-add-giftcard.html";
+		this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/flexship/modals/add-giftcard.html";
 		this.restrict = "E";
 	}
 
