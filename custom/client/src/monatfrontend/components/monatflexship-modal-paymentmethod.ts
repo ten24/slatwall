@@ -20,19 +20,27 @@ class MonatFlexshipPaymentMethodModalController {
 	public loading : boolean = false;
 
 	//@ngInject
-    constructor(public orderTemplateService, public observerService, public rbkeyService, public monatAlertService) {
+    constructor(
+    	public orderTemplateService, 
+    	public observerService, 
+    	public rbkeyService, 
+    	public monatAlertService,
+    	private monatService
+    ) {
     }
     
     public $onInit = () => {
+    	this.loading = true;
+    	
     	this.makeTranslations();
+    	this.newAddress['countryCode']=this.countryCodeBySite;
+    	
     	/**
     	 * Find and set old billing-address if any
     	*/ 
-    	this.newAddress['countryCode']=this.countryCodeBySite;
     	this.existingBillingAccountAddress = this.accountAddresses.find( item => {
     		return item.accountAddressID === this.orderTemplate.billingAccountAddress_accountAddressID;
     	});
-    	
     	if(!!this.existingBillingAccountAddress && !!this.existingBillingAccountAddress.accountAddressID){
 	    	this.setSelectedBillingAccountAddressID(this.existingBillingAccountAddress.accountAddressID);
     	}
@@ -43,10 +51,17 @@ class MonatFlexshipPaymentMethodModalController {
     	this.existingAccountPaymentMethod = this.accountPaymentMethods.find( item => {
     		return item.accountPaymentMethodID === this.orderTemplate.accountPaymentMethod_accountPaymentMethodID; 
     	});
-    	
     	if(!!this.existingAccountPaymentMethod && !!this.existingAccountPaymentMethod.accountPaymentMethodID){
 	    	this.setSelectedAccountPaymentMethodID(this.existingAccountPaymentMethod.accountPaymentMethodID);
     	}
+    	
+    	this.monatService.getOptions({'expirationMonthOptions':false, 'expirationYearOptions': false})
+    	.then( (options) => {
+    		this.expirationMonthOptions = options.expirationMonthOptions;
+    		this.expirationYearOptions = options.expirationYearOptions;
+    	})
+    	.catch( (e) => console.log(e) )
+    	.finally( () => this.loading=false);
     	
     }
     
@@ -159,8 +174,6 @@ class MonatFlexshipPaymentMethodModal {
  	    stateCodeOptions:'<',
 	    accountAddresses:'<',
 	    orderTemplate:'<',
-	    expirationMonthOptions: '<',
-		expirationYearOptions: '<',
 		countryCodeBySite:'<',
 		close:'=' //injected by angularModalService
 	};
