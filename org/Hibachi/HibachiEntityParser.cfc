@@ -214,6 +214,10 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
  				ORMType = 'boolean';
  				hbFormatType = 'yesno';
  				break;
+ 			case 'multiselect':
+ 				ORMType = 'string';
+ 				hbFormatType = 'multiselect';
+ 				propertyString &= ' hb_attributeID="#arguments.attributeData.attributeID#"';
  			case 'select':
  				ORMType = 'string';
  				hbFormFieldType = 'select';
@@ -258,7 +262,6 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
  				}
  				break;
  			case 'text':
- 			case 'multiselect':
  			case 'checkboxGroup':
  			case 'radioGroup':
  			case 'readOnly':

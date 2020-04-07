@@ -661,6 +661,26 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 				object:this,
 				propertyName:arguments.propertyName
 			};
+			
+			
+			// handle Attribute Options Translation
+			if (len(arguments.value) && arguments.formatType == 'multiselect' && structKeyExists(variables, "getAttributeValue") && hasProperty("attributeValues") && hasAttributeCode(arguments.propertyName) ) {
+
+				var propertyMeta = getPropertyMetaData( arguments.propertyName );
+				
+				if(structKeyExists(propertyMeta, "hb_attributeID")) {
+					var attributeOption = getDAO('AttributeDAO').getAttributeOptionByAttributeOptionValueAndAttributeID(
+						attributeOptionValue = arguments.value, 
+						attributeID = propertyMeta.hb_attributeID
+					);
+					
+					if(!isNull(attributeOption)){
+						formatDetails['object'] = attributeOption;
+						formatDetails['propertyName'] = 'attributeOptionLabel';
+					}
+				}
+			}
+			
 			if(this.hasProperty('currencyCode') && !isNull(getCurrencyCode())) {
 				formatDetails.currencyCode = getCurrencyCode();
 			}

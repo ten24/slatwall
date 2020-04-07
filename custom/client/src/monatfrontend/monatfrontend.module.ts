@@ -27,6 +27,8 @@ import { ObserveEvent } from './components/observe-event';
 
 import { MonatFlexshipScheduleModal } from './components/flexship/modal-schedule';
 
+import { MonatFlexshipChangeOrSkipOrderModal } from './components/monatflexship-modal-changeorskiporder';
+import { MonatFlexshipFrequencyModal } from './components/monatflexship-modal-deliveryfrequency';
 import { MonatFlexshipDeleteModal } from './components/monatflexship-modal-delete';
 import { WishlistDeleteModal } from './components/wishlist-delete-modal';
 import { WishlistEditModal } from './components/wishlist-edit-modal';
@@ -91,6 +93,8 @@ var monatfrontendmodule = angular
 	.directive('monatFlexshipPaymentMethodModal', MonatFlexshipPaymentMethodModal.Factory())
 	.directive('monatFlexshipShippingMethodModal', MonatFlexshipShippingMethodModal.Factory())
 	
+	.directive('monatFlexshipChangeOrSkipOrderModal', MonatFlexshipChangeOrSkipOrderModal.Factory()) //TODO: remove
+	.directive('monatFlexshipFrequencyModal', MonatFlexshipFrequencyModal.Factory()) //TODO: remove
 	.directive('monatFlexshipScheduleModal', MonatFlexshipScheduleModal.Factory())
 	
 	.directive('monatFlexshipCancelModal', MonatFlexshipCancelModal.Factory())
