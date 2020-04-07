@@ -4,6 +4,8 @@ class MonatFlexshipCardController {
 	public dayOfMonthFormatted: string;
 
 	public orderTemplate: any;
+	public userCanEditOFYProductFlag = false;
+	public userCanAddOFYProductFlag = false;
 	
 	public urlSitePrefix: string;
 
@@ -35,7 +37,16 @@ class MonatFlexshipCardController {
 		if(this.orderTemplate.scheduleOrderNextPlaceDateTime){
 			let mostRecentFlexshipDeliveryDate = Date.parse(this.orderTemplate.scheduleOrderNextPlaceDateTime);
 			this.editFlexshipUntilDate = new Date(mostRecentFlexshipDeliveryDate);
-			this.editFlexshipUntilDate.setDate(this.editFlexshipUntilDate.getDate() - this.daysToEditFlexship);          
+			this.editFlexshipUntilDate.setDate(this.editFlexshipUntilDate.getDate() - this.daysToEditFlexship);  
+			
+			
+			//user can add OFY, if next-scheduled-order-date is within current-month
+			this.userCanAddOFYProductFlag = ( new Date().getMonth() == new Date(mostRecentFlexshipDeliveryDate).getMonth() );
+			
+			//user can edit OFY, until one 1-day before next-scheduled-order-date;
+			var editOFYUntilDate = new Date(mostRecentFlexshipDeliveryDate);
+			editOFYUntilDate.setDate(editOFYUntilDate.getDate() - 1);
+			this.userCanEditOFYProductFlag = ( new Date() <= editOFYUntilDate );
 		}
 
 	};

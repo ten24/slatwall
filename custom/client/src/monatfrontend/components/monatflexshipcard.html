@@ -119,15 +119,15 @@
 		</div>
 				
 		<div class="col-md-8 p-0 m-0">
-			
 			<div ng-if="monatFlexshipCard.orderTemplate.associatedOFYProduct.sku_product_productName" class="p-2">
 				<span sw-rbkey="'alert.frontend.yourNextOrderOFYProduct'"></span> {{monatFlexshipCard.orderTemplate.associatedOFYProduct.sku_product_productName}}
-				<a href="#" ng-click="monatFlexshipCard.goToOFYProductListingPage()">
+				
+				<a ng-if="monatFlexshipCard.userCanEditOFYProductFlag" href="#" ng-click="monatFlexshipCard.goToOFYProductListingPage()">
 					<strong> &nbsp;-&nbsp; <u sw-rbkey="'define.edit'"></u> </strong>
 				</a>
 			</div>
 			
-			<div ng-if="monatFlexshipCard.orderTemplate.qualifiesForOFYProducts" 
+			<div ng-if="monatFlexshipCard.orderTemplate.qualifiesForOFYProducts && monatFlexshipCard.userCanAddOFYProductFlag" 
 				class="bg-primary  p-2">
 				<span sw-rbkey="'alert.frontend.youQualifiesForOFY'"></span>
 				<a href="#" class="text-white" ng-click="monatFlexshipCard.goToOFYProductListingPage()">
