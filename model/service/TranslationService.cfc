@@ -39,7 +39,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			variables.translatableProperties = {};
 		}
 		
-		 if(!structKeyExists(variables.translatableProperties, 'entityName')){
+		 if(!structKeyExists(variables.translatableProperties, entityName)){
 			variables.translatableProperties[arguments.entityName] = [];
 			var properties = getTranslationDAO().getTranslatablePropertyNamesByEntityName(argumentCollection=arguments);
 			for(var property in properties){
@@ -143,6 +143,13 @@ component extends="HibachiService" accessors="true" output="false" {
 	
 	public any function processTranslation_updateProperty(required any entity, required struct data, required any processObject) {
 		var objectTranslationData = arguments.processObject.getTranslationData();
+		
+		//Clear Cache
+		if(structKeyExists(variables, 'translatableProperties')){
+			structDelete(variables.translatableProperties, arguments.processObject.getBaseObject());
+		}
+		
+		
 		if (isArray(objectTranslationData)) {
 			
 			for (var translationData in objectTranslationData) {
