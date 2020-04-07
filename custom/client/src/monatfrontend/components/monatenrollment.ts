@@ -231,7 +231,7 @@ class MonatEnrollmentController {
 			this.showBirthday = true;
 		}
 		
-		if(cart.orderFulfillments && cart.orderFulfillments[0]?.shippingAddress?.addressID.length && cart.monatOrderType?.typeID.length){
+		if(cart.orderFulfillments && cart.orderFulfillments[0]?.shippingAddress?.addressID.length && cart.monatOrderType?.typeCode.length){
 			this.hasSkippedSteps = true;
 			this.steps = this.steps.filter(el => reqList.indexOf(el.stepClass) == -1);
 			this.goToLastStep();

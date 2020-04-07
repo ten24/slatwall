@@ -8,11 +8,28 @@ class MonatFlexshipCancelModalController {
 	
 	public loading = false;
     //@ngInject
-	constructor(public orderTemplateService, public observerService, public rbkeyService, public monatAlertService) {
+	constructor(
+		public orderTemplateService, 
+		public observerService, 
+		public rbkeyService, 
+		public monatAlertService,
+		private monatService,
+	) {
     }
     
     public $onInit = () => {
+    	this.loading=true;
     	this.makeTranslations();
+    	this.monatService.getOptions({ 'cancellationReasonTypeOptions':false})
+		.then( (options) => {
+			this.cancellationReasonTypeOptions = options.cancellationReasonTypeOptions;
+		})
+		.catch( (error) => {
+		    console.error(error);
+		})
+		.finally(()=>{
+			this.loading = false;   
+		});
     };
     
     public translations = {};
@@ -64,7 +81,6 @@ class MonatFlexshipCancelModal {
 	public scope = {};
 	public bindToController = {
 	    orderTemplate:'<',
-	    cancellationReasonTypeOptions:'<',
 	    close:'=' //injected by angularModalService
 	};
 	public controller=MonatFlexshipCancelModalController;
