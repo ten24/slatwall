@@ -246,7 +246,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 		/**
 		 * The date and time from an hour ago.
 		 **/
-		var sixtyMinutesAgo = DateAdd(HOURS, -intervalOverride, now());
+		var sixtyMinutesAgo = DateAdd('ww', -intervalOverride, now());
 		
 		/**
 		 * The string representation for the date sity HOURS ago. 
@@ -509,7 +509,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
         // This wraps the map in a new stateless session to keep things fast
 
         var tx = ormStatelessSession.beginTransaction();
-        
+
 		logHibachi("Start Shipment Importer",true);
         
         //Get the totals on this call.
@@ -552,10 +552,12 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
                  **/
 	    		arrayMap( shipments, createDelivery );
 	    		
-	    		tx.commit();
+	    		if(!tx.wasCommitted()){
+	    		    tx.commit();
+	    		}
 	    		ormGetSession().clear();
 			}catch(any shipmentError){
-
+                writeDump(shipmentError);abort;
 				ormGetSession().clear();
 				
 				logHibachi("Errors: importing shipment. #shipmentError.message#",true);
@@ -583,7 +585,12 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 		for (var orderID in modifiedEntityIDs){
 		    var order = getService("OrderService").getOrderByOrderID(orderID);
 		    order.setOrderStatusType(CLOSEDSTATUS);
-		    getService("ORderService").saveOrder(order);
+		    var orderItems = order.getOrderItems();
+		    for(var orderItem in orderItems){
+		        orderItem.updateCalculatedProperties(true);
+		    }
+		    getService("OrderService").saveOrder(order);
+		    
 		    ormFlush();
 		}
 		
