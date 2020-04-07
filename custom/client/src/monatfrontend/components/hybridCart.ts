@@ -50,7 +50,6 @@ class HybridCartController {
 	private getCart(refresh = false):void{
 		this.monatService.getCart(refresh).then((res:Cart | any) => {
 			this.cart = res.cart ? res.cart : res;
-			this.cart.orderItems = this.cart.orderItems.filter(el => el.sku.product.productType.systemCode !== 'ProductPack');
 			this.recalculatePrices();
 		});
 	}
@@ -60,7 +59,6 @@ class HybridCartController {
 		let subtotal = 0;
 		let listPrice = 0;
 		for(let item of this.cart.orderItems){
-			if(item.sku.product.productType.systemCode == 'VIPCustomerRegistr' ) continue;
 			price += item.extendedPriceAfterDiscount;
 			subtotal += item.extendedPrice;
 			listPrice+= item.calculatedListPrice;

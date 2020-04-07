@@ -105,8 +105,7 @@ class MonatEnrollmentController {
 	
 	public getCart = () => {
 		this.monatService.getCart().then(data =>{
-			let cartData = this.removeStarterKitsFromCart( data );
-			this.cart = cartData;
+			this.cart = data;
 			this.canPlaceCartOrder = this.cart.orderRequirementsList.indexOf('canPlaceOrderReward') == -1;
 		});
 	}
