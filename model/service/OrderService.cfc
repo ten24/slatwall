@@ -1994,10 +1994,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		orderTemplateScheduleDateChangeReason = this.saveOrderTemplateScheduleDateChangeReason(orderTemplateScheduleDateChangeReason);
 		
-		if(!isNull(arguments.processObject.getOrderTemplateFrequencyTerm())){
-			arguments.orderTemplate.setFrequencyTerm(arguments.processObject.getOrderTemplateFrequencyTerm()); 
-		}
-		
 		arguments.orderTemplate.setScheduleOrderNextPlaceDateTime(arguments.processObject.getScheduleOrderNextPlaceDateTime());
 
 		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate); 
