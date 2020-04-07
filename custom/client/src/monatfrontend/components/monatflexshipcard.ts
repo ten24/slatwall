@@ -4,18 +4,21 @@ class MonatFlexshipCardController {
 	public dayOfMonthFormatted: string;
 
 	public orderTemplate: any;
-	public userCanEditOFYProductFlag = false;
-	public showAddOFYProductCallout = false;
 	
 	public urlSitePrefix: string;
 
 	public accountAddresses: any[];
 	public accountPaymentMethods: any[];
+	public shippingMethodOptions: any[];
 	public stateCodeOptions: any[];
+	public cancellationReasonTypeOptions: any[];
+	public scheduleDateChangeReasonTypeOptions: any[];
+
+	public expirationMonthOptions: any[];
+	public expirationYearOptions: any[];
 	public daysToEditFlexship:any;
 	public editFlexshipUntilDate:any;
 	public countryCodeBySite:any;
-	
 	//@ngInject
 	constructor(
 		public observerService, 
@@ -24,7 +27,8 @@ class MonatFlexshipCardController {
 		public ModalService, 
 		public monatAlertService,
 		public rbkeyService,
-		public monatService
+		public monatService,
+		public publicService
 	) {}
 
 	public $onInit = () => {
@@ -35,22 +39,9 @@ class MonatFlexshipCardController {
 		);
 		
 		if(this.orderTemplate.scheduleOrderNextPlaceDateTime){
-			
-			let nextScheduledOrderDate = new Date(Date.parse(this.orderTemplate.scheduleOrderNextPlaceDateTime));
-			
-			this.editFlexshipUntilDate = new Date(nextScheduledOrderDate.getTime());
-			this.editFlexshipUntilDate.setDate(nextScheduledOrderDate.getDate() - this.daysToEditFlexship);  
-			
-			//user can add/edit OFY, until one 1-day before next-scheduled-order-date;
-			let addEditOFYUntilDate = new Date(nextScheduledOrderDate.getTime());
-			let today = new Date();
-			
-			addEditOFYUntilDate.setDate(addEditOFYUntilDate.getDate() - 1);
-			this.userCanEditOFYProductFlag = ( today <= addEditOFYUntilDate );
-
-			//we'll show add OFY callout, if next-scheduled-order-date is within current-month
-			this.showAddOFYProductCallout = ( today <= addEditOFYUntilDate && today.getMonth() == nextScheduledOrderDate.getMonth() );
-			
+			let mostRecentFlexshipDeliveryDate = Date.parse(this.orderTemplate.scheduleOrderNextPlaceDateTime);
+			this.editFlexshipUntilDate = new Date(mostRecentFlexshipDeliveryDate);
+			this.editFlexshipUntilDate.setDate(this.editFlexshipUntilDate.getDate() - this.daysToEditFlexship);          
 		}
 
 	};
@@ -118,6 +109,7 @@ class MonatFlexshipCardController {
 			bodyClass: 'angular-modal-service-active',
 			bindings: {
 				orderTemplate: this.orderTemplate,
+				cancellationReasonTypeOptions: this.cancellationReasonTypeOptions,
 			},
 			preClose: (modal) => {
 				modal.element.modal('hide');
@@ -134,12 +126,14 @@ class MonatFlexshipCardController {
 		});
 	};
 
-	public showFlexshipScheduleModal = () => {
+	//TODO refactorout to fexship listing, observerservice can be used to do that, or a whole new MonalModalService
+	public showDelayOrSkipFlexshipModal = () => {
 		this.ModalService.showModal({
-			component: 'monatFlexshipScheduleModal',
+			component: 'monatFlexshipChangeOrSkipOrderModal',
 			bodyClass: 'angular-modal-service-active',
 			bindings: {
 				orderTemplate: this.orderTemplate,
+				scheduleDateChangeReasonTypeOptions: this.scheduleDateChangeReasonTypeOptions,
 			},
 			preClose: (modal) => {
 				modal.element.modal('hide');
@@ -152,7 +146,7 @@ class MonatFlexshipCardController {
 			modal.close.then((result) => {});
 		})
 		.catch((error) => {
-			console.error('unable to open model: monatFlexshipScheduleModal', error);
+			console.error('unable to open model :', error);
 		});
 	};
 
@@ -166,6 +160,8 @@ class MonatFlexshipCardController {
 				accountAddresses: this.accountAddresses,
 				accountPaymentMethods: this.accountPaymentMethods,
 				stateCodeOptions: this.stateCodeOptions,
+				expirationMonthOptions: this.expirationMonthOptions,
+				expirationYearOptions: this.expirationYearOptions,
 				countryCodeBySite:this.countryCodeBySite,
 			},
 			preClose: (modal) => {
@@ -191,6 +187,7 @@ class MonatFlexshipCardController {
 			bindings: {
 				orderTemplate: this.orderTemplate,
 				accountAddresses: this.accountAddresses,
+				shippingMethodOptions: this.shippingMethodOptions,
 				stateCodeOptions: this.stateCodeOptions,
 				countryCodeBySite:this.countryCodeBySite,
 			},
@@ -209,6 +206,27 @@ class MonatFlexshipCardController {
 		});
 	};
 
+	public showFlexshipEditFrequencyMethodModal = () => {
+		this.ModalService.showModal({
+			component: 'monatFlexshipFrequencyModal',
+			bodyClass: 'angular-modal-service-active',
+			bindings: {
+				orderTemplate: this.orderTemplate,
+			},
+			preClose: (modal) => {
+				modal.element.modal('hide');
+				this.ModalService.closeModals();
+			},
+		})
+		.then((modal) => {
+			//it's a bootstrap element, use 'modal' to show it
+			modal.element.modal();
+			modal.close.then((result) => {});
+		})
+		.catch((error) => {
+			console.error('unable to open model :', error);
+		});
+	};
 
 	public activateFlexship() {
 		// make api request
@@ -242,9 +260,10 @@ class MonatFlexshipCardController {
 	}
 
 	public goToProductListingPage() {
-		this.monatService.redirectToProperSite(
-							`/shop/?type=flexship&orderTemplateId=${this.orderTemplate.orderTemplateID}`
-						);
+
+		this.publicService.doAction('setCurrentFlexshipOnHibachiScope', {orderTemplateID: this.orderTemplate.orderTemplateID}).then(res=>{
+			this.monatService.redirectToProperSite(	'/flexship-flow');
+		});
 	}
 	
 	public goToOFYProductListingPage() {
@@ -284,7 +303,12 @@ class MonatFlexshipCard {
 		orderTemplate: '<',
 		accountAddresses: '<',
 		accountPaymentMethods: '<',
+		shippingMethodOptions: '<',
 		stateCodeOptions: '<',
+		cancellationReasonTypeOptions: '<',
+		scheduleDateChangeReasonTypeOptions: '<',
+		expirationMonthOptions: '<',
+		expirationYearOptions: '<',
 		daysToEditFlexship:'@?',
 		countryCodeBySite:'<'
 	};

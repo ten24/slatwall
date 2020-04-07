@@ -2272,7 +2272,7 @@ public numeric function getPersonalVolumeSubtotal(){
 	  **/
 	 public boolean function MarketPartnerValidationMaxProductPacksPurchased(){
 	 	
-	 	if(order.getOrderStatus().getSystemCode() != 'ostNotPlaced'){
+	 	if(this.getOrderStatusType().getSystemCode() != 'ostNotPlaced'){
 	 		return true;
 	 	}
 	    

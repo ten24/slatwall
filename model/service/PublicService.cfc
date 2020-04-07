@@ -1824,8 +1824,13 @@ component  accessors="true" output="false"
 		arguments.data['ajaxResponse']['accountPaymentMethods'] = getHibachiScope().getAccount().getAccountPaymentMethodsCollectionList().getRecords();  
 		
 		var tmpOrderTemplate = getOrderService().newOrderTemplate();
-
+		arguments.data['ajaxResponse']['shippingMethodOptions'] = tmpOrderTemplate.getShippingMethodOptions();
+		arguments.data['ajaxResponse']['cancellationReasonTypeOptions'] = tmpOrderTemplate.getOrderTemplateCancellationReasonTypeOptions();
+		arguments.data['ajaxResponse']['scheduleDateChangeReasonTypeOptions'] = tmpOrderTemplate.getOrderTemplateScheduleDateChangeReasonTypeOptions();
+		
 		var tmpAccountPaymentMethod = getAccountService().newAccountPaymentMethod();
+		arguments.data['ajaxResponse']['expirationMonthOptions'] = tmpAccountPaymentMethod.getExpirationMonthOptions();
+		arguments.data['ajaxResponse']['expirationYearOptions'] = tmpAccountPaymentMethod.getExpirationYearOptions();
 		arguments.data['ajaxResponse']['countryCodeBySite'] = getService('SiteService').getCountryCodeByCurrentSite();
 		//this function will set the stateCodeOptions in ajaxResponce
 		
@@ -1838,7 +1843,7 @@ component  accessors="true" output="false"
         param name="arguments.data.pageRecordsShow" default=5;
         param name="arguments.data.currentPage" default=1;
         param name="arguments.data.orderTemplateID" default="";
-		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; // defaults to - "ottSchedule", we should use system-code
+		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; 
 
 		arguments.data['ajaxResponse']['orderTemplateItems'] = getOrderService().getOrderTemplateItemsForAccount(arguments.data);  
 	} 
@@ -2224,7 +2229,7 @@ component  accessors="true" output="false"
     ///    ############### .  getXXXOptions();  .  ###############   
     
     /**
-     *  data.optionsList = "frequencyTermOptions,orderTemplateShippingMethodOptions,cancellationReasonTypeOptions....."; 
+     *  data.optionsList = "frequencyTermOPtions,shippingMethodOptions,cancellationReasonTypeOptions....."; 
     */ 
     public void function getOptions(required any data){
         param name="data.optionsList" default="" pattern="^[\w,]+$"; //option-name-list
@@ -2244,9 +2249,9 @@ component  accessors="true" output="false"
 		arguments.data['ajaxResponse']['frequencyDateOptions'] = getOrderService().getOrderTemplateFrequencyDateOptions();
     }
     
-    public void function getOrderTemplateShippingMethodOptions(required any data) {
+    public void function getShippingMethodOptions(required any data) {
         var tmpOrderTemplate = getOrderService().newOrderTemplate();
-		arguments.data['ajaxResponse']['orderTemplateShippingMethodOptions'] = tmpOrderTemplate.getShippingMethodOptions();
+		arguments.data['ajaxResponse']['shippingMethodOptions'] = tmpOrderTemplate.getShippingMethodOptions();
     }
     
     public void function getCancellationReasonTypeOptions(required any data) {

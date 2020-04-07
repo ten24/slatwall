@@ -14,7 +14,7 @@ export class OrderTemplateService {
         public $rootScope,
         public publicService,
         public $q
-    ){
+       ){
 
    } 
    
@@ -182,23 +182,6 @@ export class OrderTemplateService {
                   .promise;
     }
     
-    /**
-     * 
-     * {
-     * 
-        'orderTemplateID': this.orderTemplate.orderTemplateID,
-    	'orderTemplateScheduleDateChangeReasonTypeID': this.formData.selectedReason.value,
-    	'frequencyTerm.value': this.formData.selectedFrequencyTermID,
-        
-        //optional
-		'otherScheduleDateChangeReasonNotes': this.formData['otherReasonNotes'],
-        'scheduleOrderNextPlaceDateTime': this.nextPlaceDateTime,
-    	'skipNextMonthFlag  = 1,
-     * }
-     * 
-     * 
-     * 
-    */ 
     public updateOrderTemplateSchedule = (data) => {
        return this.requestService
                   .newPublicRequest('?slatAction=api:public.updateOrderTemplateSchedule', data)

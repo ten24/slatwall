@@ -4,12 +4,17 @@ class MonatFlexshipListingController{
 	public accountAddresses: any[];
 	public accountPaymentMethods: any[];
 	public stateCodeOptions: any[];
+	public shippingMethodOptions: any[];
+	public cancellationReasonTypeOptions: any[];
+	public scheduleDateChangeReasonTypeOptions: any[];
+	public expirationMonthOptions: any[];
+	public expirationYearOptions: any[];
+	public loading: boolean = false;
 	public daysToEditFlexshipSetting:any;
 	public account:any;
 	public customerCanCreateFlexship:boolean;
 	public countryCodeBySite :any;
 		
-	public loading: boolean = false;
 	private orderTemplateTypeID:string = '2c948084697d51bd01697d5725650006'; // order-template-type-flexship 
 	
 	public initialized = false; 
@@ -22,10 +27,12 @@ class MonatFlexshipListingController{
 		public observerService,
 		public monatAlertService,
 		public rbkeyService,
-		public monatService,
+		public monatService
 	){
 		this.observerService.attach(this.fetchFlexships,"deleteOrderTemplateSuccess");
 		this.observerService.attach(this.fetchFlexships,"updateFrequencySuccess");
+
+
 	}
 	
 	public $onInit = () => {
@@ -46,19 +53,17 @@ class MonatFlexshipListingController{
 
 				this.accountAddresses = data.accountAddresses;
 				this.accountPaymentMethods = data.accountPaymentMethods;
+				this.shippingMethodOptions = data.shippingMethodOptions;
 				this.stateCodeOptions = data.stateCodeOptions;
+				this.cancellationReasonTypeOptions = data.cancellationReasonTypeOptions;
+				this.scheduleDateChangeReasonTypeOptions = data.scheduleDateChangeReasonTypeOptions;
+				this.expirationMonthOptions = data.expirationMonthOptions;
+				this.expirationYearOptions = data.expirationYearOptions;
 				this.countryCodeBySite = data.countryCodeBySite;
+				
 				
 				//set this last so that ng repeat inits with all needed data
 				this.orderTemplates = data.orderTemplates; 
-				let newFlexshipID = this.monatService.getNewlyCreatedFlexship();
-				if(newFlexshipID) {
-					var newOrderTemplate = this.orderTemplates.find( ot => ot.orderTemplateID === newFlexshipID );
-					if(newOrderTemplate){
-						newOrderTemplate['isNew'] = true;
-					}
-					this.monatService.setNewlyCreatedFlexship(''); //unset
-				}
 			})
 			.catch( (e) => {
 				console.error(e);
@@ -84,13 +89,10 @@ class MonatFlexshipListingController{
 					data.successfulActions &&
 					data.successfulActions.indexOf('public:order.create') > -1
 				) {
-					
-				    this.monatAlertService.success(this.rbkeyService.rbKey('frontend.flexshipCreateSucess'));
-				    this.monatService.setNewlyCreatedFlexship(data.orderTemplate); 
+				    this.monatAlertService.success(this.rbkeyService.rbKey('frontend.flexshipCreateSucess'))
 				    this.monatService.redirectToProperSite(
 										'/shop/?type=flexship&orderTemplateId=' + data.orderTemplate
 									);
-									
 				} else{
 					throw(data);
 				}

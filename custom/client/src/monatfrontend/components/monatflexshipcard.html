@@ -1,40 +1,30 @@
 <div class="orderbox flexship-card">
 	
-	<div ng-if="monatFlexshipCard.orderTemplate.statusCode !== 'otstCancelled'">
-		
-		<div ng-if="!monatFlexshipCard.orderTemplate.shippingAccountAddress_accountAddressID.trim().length" class="alert alert-danger">
-			<i class="fa fa-info-circle" aria-hidden="true"></i>
-			<span sw-rbkey="'frontend.flexship.actionRequired'"></span> &nbsp;-&nbsp; <span sw-rbkey="'frontend.flexship.noDeliveryAddress'"></span>
-			<a href="#" ng-click="monatFlexshipCard.showFlexshipEditShippingMethodModal()">
-				<strong> &nbsp;-&nbsp; <u sw-rbkey="'frontend.flexshipCard.menu.editDeliveryAddress'"></u> </strong>
-			</a>
-		</div>
-		
-		<div ng-if="!monatFlexshipCard.orderTemplate.accountPaymentMethod_accountPaymentMethodID.trim().length" class="alert alert-danger">
-			<i class="fa fa-info-circle" aria-hidden="true"></i>
-			<span sw-rbkey="'frontend.flexship.actionRequired'"></span> &nbsp;-&nbsp; <span sw-rbkey="'frontend.flexship.noPaymentMethod'"></span>
-			<a href="#" ng-click="monatFlexshipCard.showFlexshipEditPaymentMethodModal()">
-				<strong> &nbsp;-&nbsp; <u sw-rbkey="'frontend.flexshipCard.menu.editPaymentMethod'"></u> </strong>
-			</a>
-		</div>
+	
+	<div ng-if="!monatFlexshipCard.orderTemplate.shippingAccountAddress_accountAddressID.trim().length" class="alert alert-warning alert-dismissible">
+		<span sw-rbkey="'frontend.flexship.noDeliveryAddress'"></span>
+		<a href="#" ng-click="monatFlexshipCard.showFlexshipEditShippingMethodModal()"><span sw-rbkey="'frontend.flexshipCard.menu.editDeliveryAddress'"></span></a>
+		<a href="#" class="close" data-dismiss="alert" aria-label="close" title="close"><i class="fas fa-times"></i></a>
 	</div>
 	
-	<div class="alert alert-success text-center" ng-if="monatFlexshipCard.orderTemplate.isNew">
-		<i class="fa fa-check" aria-hidden="true"></i>
-		<span sw-rbkey="'frontend.flexshipCreateSucess'"></span>
+	<div ng-if="!monatFlexshipCard.orderTemplate.billingAccountAddress_accountAddressID.trim().length" 
+	class="alert alert-warning alert-dismissible">
+		<span sw-rbkey="'frontend.flexship.noBilling'"></span>
+		<a href="#" ng-click="monatFlexshipCard.showFlexshipEditPaymentMethodModal()"><span sw-rbkey="'frontend.flexshipCard.menu.editPaymentMethod'"></span></a>
+		<a href="#" class="close" data-dismiss="alert" aria-label="close" title="close"><i class="fas fa-times"></i></a>
 	</div>
 	
-	<div class="alert alert-success" ng-if="
-				monatFlexshipCard.orderTemplate.billingAccountAddress_accountAddressID.trim().length 
+	
+	<div ng-if="monatFlexshipCard.orderTemplate.billingAccountAddress_accountAddressID.trim().length 
 	            && monatFlexshipCard.orderTemplate.shippingAccountAddress_accountAddressID.trim().length
 	            && monatFlexshipCard.orderTemplate.statusCode === 'otstDraft'
-	 ">
-		<i class="fa fa-check" aria-hidden="true"></i>
-		<span sw-rbkey="'frontend.flexship.actionRequired'"></span> &nbsp;-&nbsp; <span sw-rbkey="'frontend.flexship.flexshipReadyActive'"></span>
-		<a href="#" ng-click="monatFlexshipCard.activateFlexship()">
-			<strong> &nbsp;-&nbsp; <u sw-rbkey="'frontend.flexshipCard.menu.activateFlexship'"></u> </strong>
-		</a>
+	            " 
+	class="alert alert-success alert-dismissible">
+		<span sw-rbkey="'frontend.flexship.flexshipReadyActive'"></span>
+		<a href="#" ng-click="monatFlexshipCard.activateFlexship()"><span sw-rbkey="'frontend.flexshipCard.menu.activateFlexship'"></span></a>
+		<a href="#" class="close" data-dismiss="alert" aria-label="close" title="close"><i class="fas fa-times"></i></a>
 	</div>
+	
 	
 	
 	<div class="subtext">
@@ -82,7 +72,8 @@
 						</span>
 						<span ng-bind="monatFlexshipCard.orderTemplate.shippingAccountAddress_address_city"></span>, <span ng-bind="monatFlexshipCard.orderTemplate.shippingAccountAddress_address_stateCode"></span> <span ng-bind="monatFlexshipCard.orderTemplate.shippingAccountAddress_address_postalCode"></span>
 					</p>
-					<p  class="broad" 
+					<p 
+						class="broad" 
 						ng-if="
 							!monatFlexshipCard.orderTemplate.shippingAccountAddress_accountAddressID.trim().length
 							|| !monatFlexshipCard.orderTemplate.shippingAccountAddress_address_streetAddress.length
@@ -95,8 +86,7 @@
 				<!--- Status --->
 				<div class="col-md-6 col-lg-2">
 					<div class="small-caps-title" sw-rbkey="'define.status'"></div>
-					<p class="broad" ng-class="monatFlexshipCard.orderTemplate.statusCode === 'otstActive' ? 'text-primary' : 'text-danger' ">
-						<i ng-class="monatFlexshipCard.orderTemplate.statusCode === 'otstActive' ? 'fa-check' : 'fa-info-circle' "  class="fa" aria-hidden="true"></i>
+					<p class="broad">
 						<span ng-bind="monatFlexshipCard.orderTemplate.orderTemplateStatusType_typeName">
 					</p>
 				</div>
@@ -107,7 +97,12 @@
 						data-order-template="monatFlexshipCard.orderTemplate"
 						data-account-addresses="monatFlexshipCard.accountAddresses"
 						data-account-payment-methods="monatFlexshipCard.accountPaymentMethods"
+						data-expiration-month-options="monatFlexshipCard.expirationMonthOptions"
+						data-expiration-year-options="monatFlexshipCard.expirationYearOptions"
+						data-shipping-method-options="monatFlexshipCard.shippingMethodOptions"
 						data-state-code-options="monatFlexshipCard.stateCodeOptions"
+						data-cancellation-reason-type-options="monatFlexshipCard.cancellationReasonTypeOptions"
+						data-schedule-date-change-reason-type-options="monatFlexshipCard.scheduleDateChangeReasonTypeOptions"
 					></monat-flexship-menu>
 				</div>
 				
@@ -115,33 +110,10 @@
 
 		</div>
 	</div>
-
-	<!--card footer-->
-	<div class="items row m-0 p-0">
-		<div class="col-md-4 p-2">
-			<a href="/{{monatFlexshipCard.urlSitePrefix}}my-account/flexship-details/?orderTemplateID={{monatFlexshipCard.orderTemplate.orderTemplateID}}" class="plus p-1">
-				<span ng-bind="monatFlexshipCard.orderTemplate.calculatedOrderTemplateItemsCount ? monatFlexshipCard.orderTemplate.calculatedOrderTemplateItemsCount : 0"></span> 
-				<span sw-rbkey="'define.items'"></span> <i class="fa fa-plus"></i>
-			</a>
-		</div>
-				
-		<div class="col-md-8 p-0 m-0">
-			<div ng-if="monatFlexshipCard.orderTemplate.associatedOFYProduct.sku_product_productName" class="p-2">
-				<span sw-rbkey="'alert.frontend.yourNextOrderOFYProduct'"></span> {{monatFlexshipCard.orderTemplate.associatedOFYProduct.sku_product_productName}}
-				
-				<a ng-if="monatFlexshipCard.userCanEditOFYProductFlag" href="#" ng-click="monatFlexshipCard.goToOFYProductListingPage()">
-					<strong> &nbsp;-&nbsp; <u sw-rbkey="'define.edit'"></u> </strong>
-				</a>
-			</div>
-			
-			<div ng-if="monatFlexshipCard.orderTemplate.qualifiesForOFYProducts && monatFlexshipCard.showAddOFYProductCallout" 
-				class="bg-primary  p-2">
-				<span sw-rbkey="'alert.frontend.youQualifiesForOFY'"></span>
-				<a href="#" class="text-white" ng-click="monatFlexshipCard.goToOFYProductListingPage()">
-					<strong> &nbsp;-&nbsp; <u sw-rbkey="'frontend.flexshipCard.menu.selectYourFreeProducts'"></u> </strong>
-				</a>
-			</div>
-		</div>
+	<div class="items">
+		<a href="/{{monatFlexshipCard.urlSitePrefix}}my-account/flexship-details/?orderTemplateID={{monatFlexshipCard.orderTemplate.orderTemplateID}}" class="plus">
+			<span ng-bind="monatFlexshipCard.orderTemplate.calculatedOrderTemplateItemsCount ? monatFlexshipCard.orderTemplate.calculatedOrderTemplateItemsCount : 0"></span> 
+			<span sw-rbkey="'define.items'"></span> <i class="fa fa-plus"></i>
+		</a>
 	</div>
-	
 </div>

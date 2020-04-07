@@ -1,0 +1,51 @@
+<div class="modal using-modal-service" id="flexship-modal-name{{ monatFlexshipFrequencyModal.orderTemplate.orderTemplateID }}">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<!-- Modal Close -->
+			<form name ="setOrderTemplateFrequencyForm" 
+			 ng-submit= "setOrderTemplateFrequencyForm.$valid && monatFlexshipFrequencyModal.setOrderTemplateFrequency()" >
+			<button
+				type="button"
+				class="close"
+				ng-click="monatFlexshipFrequencyModal.closeModal()"
+				aria-label="Close"
+			>
+				<i class="fas fa-times"></i>
+			</button>
+
+			<div class="rename-flexship">
+				<h6 class="title-with-line mb-5">
+					<span sw-rbkey="'frontend.flexship.menu.editFrequency'"></span>
+				</h6>
+
+				<div class="material-field">
+              		<select 
+              		swvalidationrequired = "true"
+              		ng-model="monatFlexshipFrequencyModal.selectedFrequencyTermID" 
+              		class="form-control" 
+              		ng-options="frequency.value as frequency.name for frequency in monatFlexshipFrequencyModal.frequencyTermOptions"
+              		>
+              		<option value="">{{monatFlexshipFrequencyModal.translations.flexshipFrequency}}</option>
+					</select>
+					
+				</div>
+			</div>
+			<div class="footer">
+				<button
+					type="submit"
+					class="btn btn-block bg-primary"
+					ng-class="{ loading: monatFlexshipFrequencyModal.loading }"
+					sw-rbkey="'frontend.modal.saveChangesButton'"
+					ng-disabled = "monatFlexshipFrequencyModal.loading"
+				></button>
+				<button
+					type="button"
+					class="btn btn-cancel cancel-dark"
+					ng-click="monatFlexshipFrequencyModal.closeModal()"
+					sw-rbkey="'frontend.modal.closeButton'"
+				></button>
+			</div>
+			</form>
+		</div>
+	</div>
+</div>
