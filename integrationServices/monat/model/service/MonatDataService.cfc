@@ -246,7 +246,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 		/**
 		 * The date and time from an hour ago.
 		 **/
-		var sixtyMinutesAgo = DateAdd(HOURS, -intervalOverride, now());
+		var sixtyMinutesAgo = DateAdd('ww', -intervalOverride, now());
 		
 		/**
 		 * The string representation for the date sity HOURS ago. 
@@ -524,9 +524,9 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
         logHibachi("Shipment TotalPages: #totalPages#",true);
         
         // Do one page at a time, flushing and clearing as we go.
+        // This wraps the map in a new stateless session to keep things fast
+        var tx = ormStatelessSession.beginTransaction();
         while (pageNumber <= TotalPages){
-            // This wraps the map in a new stateless session to keep things fast
-            var tx = ormStatelessSession.beginTransaction();
             
         	logHibachi("Importing pagenumber: #pageNumber#",true);
 	        // Call the api and get shipment records for the date defined as the filter.
