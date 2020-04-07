@@ -1,7 +1,12 @@
 <div class="manage">
 	<a href="##" class="flexs"><span sw-rbkey="'frontend.flexshipCard.menu.manageMyFlexship'"></span> <i class="fas fa-chevron-down"></i></a>
 	<ul>
-		<li ng-if=" monatFlexshipMenu.orderTemplate.statusCode === 'otstDraft'">
+		<li ng-if="
+				monatFlexshipMenu.orderTemplate.billingAccountAddress_accountAddressID.trim().length 
+	            && monatFlexshipMenu.orderTemplate.shippingAccountAddress_accountAddressID.trim().length
+	            && monatFlexshipMenu.orderTemplate.statusCode === 'otstDraft'
+	       " 
+	    >
 		    <a href="##"  ng-click="monatFlexshipMenu.activateFlexship()"><span sw-rbkey="'frontend.flexshipCard.menu.activateFlexship'"></span></a>
 		</li>
 		
@@ -25,11 +30,16 @@
 		<li>
 		    <a href="##" ng-click="monatFlexshipMenu.showFlexshipEditPaymentMethodModal()"><span sw-rbkey="'frontend.flexshipCard.menu.editPaymentMethod'"></span></a>
 		</li>
-		
-		<li>
-		    <a href="##" ng-click="monatFlexshipMenu.showFlexshipEditFrequencyMethodModal()"><span sw-rbkey="'frontend.flexship.menu.editFrequency'"></span></a>
+
+		<li ng-if="monatFlexshipMenu.orderTemplate.statusCode === 'otstActive'" >
+		    <a href="##" ng-click="monatFlexshipMenu.showFlexshipScheduleModal()"><span sw-rbkey="'frontend.flexshipCard.menu.editSchedule'"></span></a>
 		</li>
-		
+
+		<!--TODO: remove-->
+		<li>
+		    <a href="##" ng-click="monatFlexshipMenu.showFlexshipEditFrequencyMethodModal()"><span sw-rbkey="'frontend.flexshipCard.menu.editFrequency'"></span></a>
+		</li>
+		<!--TODO: remove-->
 		<li ng-if="monatFlexshipMenu.orderTemplate.statusCode === 'otstActive'" >
 		    <a href="##" ng-click="monatFlexshipMenu.showDelayOrSkipFlexshipModal()"><span sw-rbkey="'frontend.flexshipCard.menu.delayOrSkipOrder'"></span></a>
 		</li>

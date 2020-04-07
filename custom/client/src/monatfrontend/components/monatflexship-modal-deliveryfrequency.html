@@ -21,13 +21,16 @@
 				<div class="material-field">
               		<select 
               		swvalidationrequired = "true"
+              		name="frequencyTerm"
               		ng-model="monatFlexshipFrequencyModal.selectedFrequencyTermID" 
               		class="form-control" 
               		ng-options="frequency.value as frequency.name for frequency in monatFlexshipFrequencyModal.frequencyTermOptions"
               		>
-              		<option value="">{{monatFlexshipFrequencyModal.translations.flexshipFrequency}}</option>
+              			<option value="">{{monatFlexshipFrequencyModal.translations.flexshipFrequency}}</option>
 					</select>
-					
+					<div ng-if="setOrderTemplateFrequencyForm.$submitted" ng-messages="setOrderTemplateFrequencyForm.frequencyTerm.$error">
+						 <div ng-messages-include="monat-form-generic-validation-error-messages"></div>
+					</div>
 				</div>
 			</div>
 			<div class="footer">
