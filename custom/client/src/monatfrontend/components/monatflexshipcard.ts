@@ -11,16 +11,11 @@ class MonatFlexshipCardController {
 
 	public accountAddresses: any[];
 	public accountPaymentMethods: any[];
-	public shippingMethodOptions: any[];
 	public stateCodeOptions: any[];
-	public cancellationReasonTypeOptions: any[];
-	public scheduleDateChangeReasonTypeOptions: any[];
-
-	public expirationMonthOptions: any[];
-	public expirationYearOptions: any[];
 	public daysToEditFlexship:any;
 	public editFlexshipUntilDate:any;
 	public countryCodeBySite:any;
+	
 	//@ngInject
 	constructor(
 		public observerService, 
@@ -123,53 +118,6 @@ class MonatFlexshipCardController {
 			bodyClass: 'angular-modal-service-active',
 			bindings: {
 				orderTemplate: this.orderTemplate,
-				cancellationReasonTypeOptions: this.cancellationReasonTypeOptions,
-			},
-			preClose: (modal) => {
-				modal.element.modal('hide');
-				this.ModalService.closeModals();
-			},
-		})
-		.then((modal) => {
-			//it's a bootstrap element, use 'modal' to show it
-			modal.element.modal();
-			modal.close.then((result) => {});
-		})
-		.catch((error) => {
-			console.error('unable to open model :', error);
-		});
-	};
-
-	//TODO remove 
-	public showDelayOrSkipFlexshipModal = () => {
-		this.ModalService.showModal({
-			component: 'monatFlexshipChangeOrSkipOrderModal',
-			bodyClass: 'angular-modal-service-active',
-			bindings: {
-				orderTemplate: this.orderTemplate,
-				scheduleDateChangeReasonTypeOptions: this.scheduleDateChangeReasonTypeOptions,
-			},
-			preClose: (modal) => {
-				modal.element.modal('hide');
-				this.ModalService.closeModals();
-			},
-		})
-		.then((modal) => {
-			//it's a bootstrap element, use 'modal' to show it
-			modal.element.modal();
-			modal.close.then((result) => {});
-		})
-		.catch((error) => {
-			console.error('unable to open model :', error);
-		});
-	};
-	//TODO: remove
-	public showFlexshipEditFrequencyMethodModal = () => {
-		this.ModalService.showModal({
-			component: 'monatFlexshipFrequencyModal',
-			bodyClass: 'angular-modal-service-active',
-			bindings: {
-				orderTemplate: this.orderTemplate,
 			},
 			preClose: (modal) => {
 				modal.element.modal('hide');
@@ -218,8 +166,6 @@ class MonatFlexshipCardController {
 				accountAddresses: this.accountAddresses,
 				accountPaymentMethods: this.accountPaymentMethods,
 				stateCodeOptions: this.stateCodeOptions,
-				expirationMonthOptions: this.expirationMonthOptions,
-				expirationYearOptions: this.expirationYearOptions,
 				countryCodeBySite:this.countryCodeBySite,
 			},
 			preClose: (modal) => {
@@ -245,7 +191,6 @@ class MonatFlexshipCardController {
 			bindings: {
 				orderTemplate: this.orderTemplate,
 				accountAddresses: this.accountAddresses,
-				shippingMethodOptions: this.shippingMethodOptions,
 				stateCodeOptions: this.stateCodeOptions,
 				countryCodeBySite:this.countryCodeBySite,
 			},
@@ -339,12 +284,7 @@ class MonatFlexshipCard {
 		orderTemplate: '<',
 		accountAddresses: '<',
 		accountPaymentMethods: '<',
-		shippingMethodOptions: '<',
 		stateCodeOptions: '<',
-		cancellationReasonTypeOptions: '<',
-		scheduleDateChangeReasonTypeOptions: '<',
-		expirationMonthOptions: '<',
-		expirationYearOptions: '<',
 		daysToEditFlexship:'@?',
 		countryCodeBySite:'<'
 	};

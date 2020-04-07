@@ -82,8 +82,7 @@
 						</span>
 						<span ng-bind="monatFlexshipCard.orderTemplate.shippingAccountAddress_address_city"></span>, <span ng-bind="monatFlexshipCard.orderTemplate.shippingAccountAddress_address_stateCode"></span> <span ng-bind="monatFlexshipCard.orderTemplate.shippingAccountAddress_address_postalCode"></span>
 					</p>
-					<p 
-						class="broad" 
+					<p  class="broad" 
 						ng-if="
 							!monatFlexshipCard.orderTemplate.shippingAccountAddress_accountAddressID.trim().length
 							|| !monatFlexshipCard.orderTemplate.shippingAccountAddress_address_streetAddress.length
@@ -96,7 +95,8 @@
 				<!--- Status --->
 				<div class="col-md-6 col-lg-2">
 					<div class="small-caps-title" sw-rbkey="'define.status'"></div>
-					<p class="broad">
+					<p class="broad" ng-class="monatFlexshipCard.orderTemplate.statusCode === 'otstActive' ? 'text-primary' : 'text-danger' ">
+						<i ng-class="monatFlexshipCard.orderTemplate.statusCode === 'otstActive' ? 'fa-check' : 'fa-info-circle' "  class="fa" aria-hidden="true"></i>
 						<span ng-bind="monatFlexshipCard.orderTemplate.orderTemplateStatusType_typeName">
 					</p>
 				</div>
@@ -107,12 +107,7 @@
 						data-order-template="monatFlexshipCard.orderTemplate"
 						data-account-addresses="monatFlexshipCard.accountAddresses"
 						data-account-payment-methods="monatFlexshipCard.accountPaymentMethods"
-						data-expiration-month-options="monatFlexshipCard.expirationMonthOptions"
-						data-expiration-year-options="monatFlexshipCard.expirationYearOptions"
-						data-shipping-method-options="monatFlexshipCard.shippingMethodOptions"
 						data-state-code-options="monatFlexshipCard.stateCodeOptions"
-						data-cancellation-reason-type-options="monatFlexshipCard.cancellationReasonTypeOptions"
-						data-schedule-date-change-reason-type-options="monatFlexshipCard.scheduleDateChangeReasonTypeOptions"
 					></monat-flexship-menu>
 				</div>
 				
