@@ -22,10 +22,12 @@ class MonatFlexshipListingController{
 		public observerService,
 		public monatAlertService,
 		public rbkeyService,
-		public monatService,
+		public monatService
 	){
 		this.observerService.attach(this.fetchFlexships,"deleteOrderTemplateSuccess");
 		this.observerService.attach(this.fetchFlexships,"updateFrequencySuccess");
+
+
 	}
 	
 	public $onInit = () => {
@@ -51,14 +53,6 @@ class MonatFlexshipListingController{
 				
 				//set this last so that ng repeat inits with all needed data
 				this.orderTemplates = data.orderTemplates; 
-				let newFlexshipID = this.monatService.getNewlyCreatedFlexship();
-				if(newFlexshipID) {
-					var newOrderTemplate = this.orderTemplates.find( ot => ot.orderTemplateID === newFlexshipID );
-					if(newOrderTemplate){
-						newOrderTemplate['isNew'] = true;
-					}
-					this.monatService.setNewlyCreatedFlexship(''); //unset
-				}
 			})
 			.catch( (e) => {
 				console.error(e);
@@ -84,13 +78,10 @@ class MonatFlexshipListingController{
 					data.successfulActions &&
 					data.successfulActions.indexOf('public:order.create') > -1
 				) {
-					
-				    this.monatAlertService.success(this.rbkeyService.rbKey('frontend.flexshipCreateSucess'));
-				    this.monatService.setNewlyCreatedFlexship(data.orderTemplate); 
+				    this.monatAlertService.success(this.rbkeyService.rbKey('frontend.flexshipCreateSucess'))
 				    this.monatService.redirectToProperSite(
 										'/shop/?type=flexship&orderTemplateId=' + data.orderTemplate
 									);
-									
 				} else{
 					throw(data);
 				}

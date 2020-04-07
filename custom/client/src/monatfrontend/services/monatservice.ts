@@ -270,32 +270,5 @@ export class MonatService {
 		
 		this.$window.location.href = redirectUrl;
 	}
-	
-	public setNewlyCreatedFlexship(flexshipID: string){
-		if(flexshipID && flexshipID.trim() !== '' ){
-			this.sessionStorageCache.put('newlyCreatedFlexship', flexshipID);
-		} else {
-			this.sessionStorageCache.remove('newlyCreatedFlexship');
-		}
-	}
-	
-	public getNewlyCreatedFlexship(): string {
-		return this.sessionStorageCache.get('newlyCreatedFlexship');
-	}
-	
-	
-	public setCurrentFlexship(flexshipID: string){
-		if(flexshipID && flexshipID.trim() !== '' ){
-			this.sessionStorageCache.put('currentFlexship', flexshipID);
-		} else {
-			this.sessionStorageCache.remove('currentFlexship');
-		}
-	}
-	
-	public getCurrentFlexship(): string {
-		return this.sessionStorageCache.get('currentFlexship');
-	}
-	
-	
 
 }
