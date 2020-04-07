@@ -93,7 +93,11 @@ component extends="HibachiService" accessors="true" output="false" {
 		return getTranslation(cacheKey);
 	}
 	
-	public array function getTranslatedCollectionRecords(required string baseObject, required array collectionRecords, string locale='en_us'){
+	public array function getTranslatedCollectionRecords(required string baseObject, required array collectionRecords, string locale){
+		
+		if(!structKeyExists(arguments, 'locale')){
+			arguments.locale = getHibachiScope().getSession().getRbLocale();
+		}
 		
 		if( !listFindNoCase(getHibachiScope().setting('globalTranslateEntities'), arguments.baseObject) ){
 			return arguments.collectionRecords;
