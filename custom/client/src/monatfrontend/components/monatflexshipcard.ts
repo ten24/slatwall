@@ -126,7 +126,7 @@ class MonatFlexshipCardController {
 		});
 	};
 
-	//TODO remove 
+	//TODO refactorout to fexship listing, observerservice can be used to do that, or a whole new MonalModalService
 	public showDelayOrSkipFlexshipModal = () => {
 		this.ModalService.showModal({
 			component: 'monatFlexshipChangeOrSkipOrderModal',
@@ -147,50 +147,6 @@ class MonatFlexshipCardController {
 		})
 		.catch((error) => {
 			console.error('unable to open model :', error);
-		});
-	};
-	//TODO: remove
-	public showFlexshipEditFrequencyMethodModal = () => {
-		this.ModalService.showModal({
-			component: 'monatFlexshipFrequencyModal',
-			bodyClass: 'angular-modal-service-active',
-			bindings: {
-				orderTemplate: this.orderTemplate,
-			},
-			preClose: (modal) => {
-				modal.element.modal('hide');
-				this.ModalService.closeModals();
-			},
-		})
-		.then((modal) => {
-			//it's a bootstrap element, use 'modal' to show it
-			modal.element.modal();
-			modal.close.then((result) => {});
-		})
-		.catch((error) => {
-			console.error('unable to open model :', error);
-		});
-	};
-
-	public showFlexshipScheduleModal = () => {
-		this.ModalService.showModal({
-			component: 'monatFlexshipScheduleModal',
-			bodyClass: 'angular-modal-service-active',
-			bindings: {
-				orderTemplate: this.orderTemplate,
-			},
-			preClose: (modal) => {
-				modal.element.modal('hide');
-				this.ModalService.closeModals();
-			},
-		})
-		.then((modal) => {
-			//it's a bootstrap element, use 'modal' to show it
-			modal.element.modal();
-			modal.close.then((result) => {});
-		})
-		.catch((error) => {
-			console.error('unable to open model: monatFlexshipScheduleModal', error);
 		});
 	};
 
@@ -250,6 +206,27 @@ class MonatFlexshipCardController {
 		});
 	};
 
+	public showFlexshipEditFrequencyMethodModal = () => {
+		this.ModalService.showModal({
+			component: 'monatFlexshipFrequencyModal',
+			bodyClass: 'angular-modal-service-active',
+			bindings: {
+				orderTemplate: this.orderTemplate,
+			},
+			preClose: (modal) => {
+				modal.element.modal('hide');
+				this.ModalService.closeModals();
+			},
+		})
+		.then((modal) => {
+			//it's a bootstrap element, use 'modal' to show it
+			modal.element.modal();
+			modal.close.then((result) => {});
+		})
+		.catch((error) => {
+			console.error('unable to open model :', error);
+		});
+	};
 
 	public activateFlexship() {
 		// make api request
