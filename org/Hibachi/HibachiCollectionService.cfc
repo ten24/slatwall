@@ -243,6 +243,8 @@ component output="false" accessors="true" extends="HibachiService" {
 
 	public array function getFormattedObjectRecords(required array objectRecords, required array propertyIdentifiers, any collectionEntity){
 		//validate columns against entities default property identifiers
+		
+		arguments.objectRecords = getService('translationService').getTranslatedCollectionRecords(arguments.collectionEntity.getCollectionObject(), arguments.objectRecords);
 		var formattedObjectRecords = [];
 		for(var i=1; i<=arrayLen(arguments.objectRecords); i++) {
 			var thisRecord = {};
