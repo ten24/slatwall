@@ -473,7 +473,7 @@ component extends="Slatwall.model.service.OrderService" {
 		
 		var orderTemplateItemCollection = this.getOrderTemplateItemCollectionList();
 		
-		var displayProperties = 'calculatedListPrice,total,orderTemplateItemID,skuProductURL,quantity,sku.skuCode,sku.imagePath,sku.product.productName,sku.skuDefinition,orderTemplate.currencyCode,temporaryFlag';  
+		var displayProperties = 'calculatedListPrice,total,orderTemplateItemID,skuProductURL,quantity,sku.skuCode,sku.imagePath,sku.product.productName,sku.skuDefinition,orderTemplate.currencyCode,';  
 		//TODO: These are throwing exception ,skuAdjustedPricing.adjustedPriceForAccount,skuAdjustedPricing.vipPrice
 
 		orderTemplateItemCollection.setDisplayProperties(displayProperties);
@@ -490,17 +490,6 @@ component extends="Slatwall.model.service.OrderService" {
 
 		return orderTemplateItemCollection;	
 	} 
-	
-	public struct function getAssociatedOFYProductForFlexship(required string orderTemplateID){
-		var orderTemplateItemCollectionList = this.getOrderTemplateItemCollectionForAccount(
-												data= { 'orderTemplateID'= arguments.orderTemplateID}
-											);
-		orderTemplateItemCollectionList.addFilter('temporaryFlag', true);
-		
-		var records = orderTemplateItemCollectionList.getRecords();
-		if( ArrayLen(records) ) {  return records[1]; } //there should be only one record at max;  
-		return {};
-	}
 
     public void function updateOrderStatusBySystemCode(required any order, required string systemCode, string typeCode='') {
 

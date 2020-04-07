@@ -60,6 +60,7 @@ class MonatDatePicker {
 		}
 
 		$(element).datepicker($scope.options);
+		console.log($scope);
 	};
 
 	public static Factory() {

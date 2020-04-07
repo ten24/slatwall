@@ -1868,15 +1868,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		param name="arguments.data.optionalProperties" default="qualifiesForOFYProducts"; 
 		
 		super.getOrderTemplates(argumentCollection = arguments);
-		
-		//loop over the flexships and include the associated OFY product
-		for(var ot in arguments.data['ajaxResponse']['orderTemplates'] ){
-		  
-		    //this is some add-on optimization, as if flexship qualifies, or is-canceled, it definately can't have an OFY on it
-		    if(!ot.qualifiesForOFYProducts && ot.statusCode != "otstCanceled"){ 
-		        ot['associatedOFYProduct'] = this.getService('orderService').getAssociatedOFYProductForFlexship(ot.orderTemplateID);
-		    }
-		}
     }
     
 	public void function getWishlistItems(required any data){
@@ -2087,6 +2078,20 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         param name="arguments.data.nullAccountFlag" default="false";
         param name="arguments.data.optionalProperties" default="";
         
+        //Try to grab the currentFlexshipID from Cookie/session/whatever
+        if( !getHibachiScope().hasCurrentFlexship() ) {
+            
+            getHibachiScope().logHibachi(" No current-flexship found", true);
+            getHibachiScope().logHibachi(" COOKIE.JSESSIONID = #COOKIE.JSESSIONID# ", true);
+    		getHibachiScope().logHibachi(" COOKIE.CFTOKEN = #COOKIE.CFTOKEN# ", true);
+    		getHibachiScope().logHibachi(" COOKIE.CFID = #COOKIE.CFID# ", true);
+            
+        } else {
+            
+            getHibachiScope().logHibachi("Current-flexship found on hibachi-scope = #getHibachiScope().getCurrentFlexshipID()# ", true);
+        }
+        
+        
         if( getHibachiScope().hasCurrentFlexship() ) {
             //If there is an order template on the session return the order template details
             var data = {
@@ -2113,31 +2118,11 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     
     
     /**
-     * Function to update account with validation ensuring age is >= 18
-    */
+        * Function to update account with validation ensuring age is >= 18
+    **/
     public any function updateEighteenPlusUser(required any data){
         arguments.data['context'] = 'eighteenPlus';
         this.updateAccount(arguments.data);
-    }
-    
-    
-    /**
-     * API, to return associated OFY product on any flexship, if it has one
-     * 
-    */ 
-    public void function getAssociatedOFYProductForFlexship(requred struct data){
-        param name="arguments.data.orderTemplateID" default=""; //default to flexship
-
-        var orderTemplate = getOrderService().getOrderTemplateForAccount(argumentCollection = arguments);
-		if( isNull(orderTemplate) ) {
-			return;
-		}
-
-        arguments.data['ajaxResponse']['associatedOFYProduct'] = this.getService('orderService')
-                                                                    .getAssociatedOFYProductForFlexship(
-                                                                        arguments.data.orderTemplateID    
-                                                                    );
-    
     }
     
     public any function getRAFGiftCard(requred any data) {
