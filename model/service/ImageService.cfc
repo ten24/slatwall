@@ -105,11 +105,7 @@ component persistent="false" extends="HibachiService" output="false" accessors="
         //var skus = [];
         
         var skuRecords = getService('skuDAO').getImageFileDataBySkuIDList(arguments.skuIDList);
-        
         for(var skuRecord in skuRecords){
-        	if(!structKeyExists(skuRecord,'imageFile') || isNull(skuRecord['imageFile'])){
-        		continue;
-        	}
         	ArrayAppend(
         		resizedImagePaths, 
         		getService('imageService').getResizedImagePath(
