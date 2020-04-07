@@ -120,7 +120,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		for( var record in arguments.collectionRecords){
 			var primaryID = record[primaryIDPropertyName];
 			
-			for(var translatableProperty in translatableProperties){
+			for(var translatableProperty in collectionRecordProperties){
 				var translatedValue = getTranslationValue(arguments.baseObject, primaryID, translatableProperty, arguments.locale);
 				if(isNull(translatedValue)){
 					continue;
