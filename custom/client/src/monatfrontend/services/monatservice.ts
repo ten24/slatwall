@@ -5,9 +5,6 @@ export interface IOption {
 	value: any;
 }
 
-declare var $: any;
-declare var angular: any;
-declare var hibachiConfig: any;
 
 export class MonatService {
 	public cart;

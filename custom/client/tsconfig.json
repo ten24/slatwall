@@ -2,9 +2,19 @@
   "compilerOptions": {
     "target":"es5",
     "module": "commonjs",
-    "sourceMap": true
+    "sourceMap": true,
+    
+    "baseUrl": "src",
+    "paths": {
+      "@Monat/*": ["monatfrontend/*"]
+    }
   },
+  "include": [
+        "./src/**/*"
+  ],
+
   "files": [
+    "typings.d.ts",
     "../../org/Hibachi/client/typings/hibachiTypescript.d.ts",
     "../../org/Hibachi/client/typings/tsd.d.ts",
     "../../org/Hibachi/client/typings/requirejs/require.d.ts",
