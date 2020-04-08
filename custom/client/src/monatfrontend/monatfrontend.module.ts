@@ -56,8 +56,7 @@ import { AddressVerification } from './components/addressVerificationModal'
 import { OFYEnrollment } from './components/ofyEnrollment'
 import { PurchasePlusBar } from './directives/purchase-plus-bar';
 import { FlexshipPurchasePlus } from './components/flexshipPurchasePlus';
-import { FlexshipFlow } from './components/flexshipFlow/flexshipFlow';
-
+ 
 // controllers
 import { MonatForgotPasswordController } from './controllers/monat-forgot-password';
 import { MonatSearchController } from './controllers/monat-search';
@@ -135,8 +134,7 @@ var monatfrontendmodule = angular
 	.directive('hybridCart',HybridCart.Factory())
 	.directive('enrollmentFlexship',EnrollmentFlexship.Factory())
 	.directive('ofyEnrollment',OFYEnrollment.Factory())	
-	.directive('flexshipPurchasePlus',FlexshipPurchasePlus.Factory())
-	.directive('flexshipFlow',FlexshipFlow.Factory())
+	.directive('flexshipPurchasePlus',FlexshipPurchasePlus.Factory())	
 
 	// Controllers
 	.controller('searchController', MonatSearchController)
