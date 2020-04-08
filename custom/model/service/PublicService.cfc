@@ -472,8 +472,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             }
         }
         
-        if (len(data.orderID)) {
-            var order = getOrderService().getOrder(data.orderID);
+        if (len(arguments.data.orderID)) {
+            var order = getOrderService().getOrder(arguments.data.orderID);
         } else {
             var order = getHibachiScope().getCart();
         }
@@ -483,7 +483,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         //Remove any existing order payments
         //It's to remove default payment from order when adding any new method
         if(!isNull(order) && !isNull(account) && order.getAccount().getAccountID() == account.getAccountID()) {
-            for( orderPayment in order.getOrderPayments() ) {
+            for( var orderPayment in order.getOrderPayments() ) {
                 if(orderPayment.isDeletable()) {
     				getService("OrderService").deleteOrderPayment(orderPayment);
     			}
