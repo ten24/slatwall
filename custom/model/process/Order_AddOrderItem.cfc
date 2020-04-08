@@ -38,10 +38,11 @@ component accessors="true" extends="Slatwall.model.process.Order_AddOrderItem" {
 
     public boolean function getIsPurchasableItemFlag(){
         var account = this.getAccount();
+        var order = this.getOrder();
         var sku = this.getSku();
 
         if(!isNull(account) && !isNull(sku)){
-            return sku.canBePurchased(account);
+            return sku.canBePurchased(account,order);
         }
 
         return true;
