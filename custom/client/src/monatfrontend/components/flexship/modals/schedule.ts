@@ -1,4 +1,4 @@
-import {MonatService,IOption} from '../../../services/monatservice';
+import {MonatService,IOption} from '@Monat/services/monatservice';
 
 class monatFlexshipScheduleModalController {
 	public orderTemplate;  //injected
