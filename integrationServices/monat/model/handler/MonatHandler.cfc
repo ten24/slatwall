@@ -237,13 +237,12 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 				}
 				
 				orderTemplate.setAccountPaymentMethod(accountPaymentMethod);
-				orderTemplate.setOrderTemplateStatusType(orderTemplateStatusType);
 				
 				if(isNull(orderTemplate.getAccount())){
 					orderTemplate.setAccount(arguments.order.getAccount());
 				}
-				
-				orderTemplate = getOrderService().saveOrderTemplate(orderTemplate,{},'upgradeFlow');//upgradeFlow???
+				orderTemplate = getOrderService().processOrderTemplate_activate(orderTemplate, {}, {'context': 'upgradeFlow'});
+		
 			}
 			
 			
@@ -263,6 +262,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 				arguments.order.setInitialOrderFlag(true);
 			}
 		}catch(any dateError){
+			writeDump(dateError,1); abort;
 			logHibachi("afterOrderProcess_placeOrderSuccess failed @ set initialOrderFlag #serializeJson(dateError)#");	
 		}
 		
