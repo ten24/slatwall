@@ -58,8 +58,6 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	
 	property name="skipNextMonthFlag" ormtype="boolean" default=false;
 
-	property name="frequencyTermID"; 
-
 
 	property name="scheduleOrderNextPlaceDateTime" hb_rbKey="entity.orderTemplate.scheduleOrderNextPlaceDateTime" hb_formFieldType="datetime"; 
 	
@@ -79,10 +77,4 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			return getService('TypeService').getType(getOrderTemplateScheduleDateChangeReasonTypeID());
 		}
 	}  
-	
-	public any function getOrderTemplateFrequencyTerm(){
-		if(!isNull(getFrequencyTermID())){
-			return getService('settingService').getTerm(getFrequencyTermID());
-		}
-	}
 }

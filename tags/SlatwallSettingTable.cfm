@@ -165,7 +165,7 @@ Notes:
 							<td>
 								#left(thisSetting.settingDetails.settingValueFormatted, 100)##len(thisSetting.settingDetails.settingValueFormatted) GT 100 ? "..." : ""#
 							
-								<cfset local.isTranslatable = listFindNoCase('text,email,wysiwyg',thisSetting.settingDetails.fieldType)>
+								<cfset local.isTranslatable = listFindNoCase('text,email,textarea,wysiwyg',thisSetting.settingDetails.fieldType)>
 								<cfif local.isTranslatable>
 									<cfset local.hasSettingID = NOT isNull(thisSetting.settingDetails.settingID) AND len(thisSetting.settingDetails.settingID)>
 									<cfif local.hasSettingID>

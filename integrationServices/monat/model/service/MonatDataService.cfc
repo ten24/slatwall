@@ -506,10 +506,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
         };
 
         // Map all the shipments -> deliveries.
-        // This wraps the map in a new stateless session to keep things fast
 
-        var tx = ormStatelessSession.beginTransaction();
-        
 		logHibachi("Start Shipment Importer",true);
         
         //Get the totals on this call.
@@ -527,7 +524,10 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
         logHibachi("Shipment TotalPages: #totalPages#",true);
         
         // Do one page at a time, flushing and clearing as we go.
+        // This wraps the map in a new stateless session to keep things fast
+        var tx = ormStatelessSession.beginTransaction();
         while (pageNumber <= TotalPages){
+            
         	logHibachi("Importing pagenumber: #pageNumber#",true);
 	        // Call the api and get shipment records for the date defined as the filter.
 	        var response = getData(pageNumber, pageSize, dateFilterStart, dateFilterEnd, "SWGetShipmentInfo");
@@ -552,38 +552,26 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
                  **/
 	    		arrayMap( shipments, createDelivery );
 	    		
-	    		tx.commit();
-	    		ormGetSession().clear();
 			}catch(any shipmentError){
-
-				ormGetSession().clear();
-				
 				logHibachi("Errors: importing shipment. #shipmentError.message#",true);
 			}
-			
-			// Now process all the orderItem that need calculated property updates for this page.
-    		try{
-        		if (len(modifiedEntityIDs)){
-        		    logHibachi("Adding orderitems to queue.", true);
-        		    queryExecute("INSERT into SwEntityQueue (entityQueueID, baseObject, baseID, processMethod, entityQueueData, createdDateTime, tryCount) select orderItemID as entityQueueID, 'OrderItem' as baseObject, orderItemID as baseID, 'processOrderItem_updateCalculatedProperties' as processMethod, '{}', now() as createdDateTime, 0 as tryCount from SwOrderItem where orderID in (?)", 
-                      [{ value="#modifiedEntityIDs#", cfsqltype="cf_sql_varchar", list="true"}]);
-        		}
-    		}catch(any entityQueueError){
-    		    
-    		    logHibachi("Error while adding orderitems to the queue.[#entityQueueError.message#]", true);
-    		}
 			
 			logHibachi("End Importing pagenumber: #pageNumber#",true);
 			pageNumber++;
         }
-
+        tx.commit();
 		ormStatelessSession.close();
 		
 		//now set al the orders to closed.
 		for (var orderID in modifiedEntityIDs){
 		    var order = getService("OrderService").getOrderByOrderID(orderID);
 		    order.setOrderStatusType(CLOSEDSTATUS);
-		    getService("ORderService").saveOrder(order);
+		    var orderItems = order.getOrderItems();
+		    for(var orderItem in orderItems){
+		        orderItem.updateCalculatedProperties(true);
+		    }
+		    getService("OrderService").saveOrder(order);
+		    
 		    ormFlush();
 		}
 		

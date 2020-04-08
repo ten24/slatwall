@@ -1168,8 +1168,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         }
 
         var productCollectionList = getProductService().getProductCollectionList();
-        productCollectionList.addDisplayProperties('productID');
-        productCollectionList.addDisplayProperties('productName');
+        productCollectionList.setDisplayProperties('productID');
+        productCollectionList.addDisplayProperty('productName');
         productCollectionList.addDisplayProperty('defaultSku.skuID');
         productCollectionList.addDisplayProperty('defaultSku.skuPrices.personalVolume');
         productCollectionList.addDisplayProperty('defaultSku.skuPrices.price');
