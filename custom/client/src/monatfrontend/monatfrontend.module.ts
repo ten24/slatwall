@@ -59,8 +59,10 @@ import { AddressVerification } from './components/addressVerificationModal'
 import { OFYEnrollment } from './components/ofyEnrollment'
 import { PurchasePlusBar } from './directives/purchase-plus-bar';
 import { FlexshipPurchasePlus } from './components/flexshipPurchasePlus';
+
 import { FlexshipFlow } from './components/flexshipFlow/flexshipFlow';
-import {ProductListingStep} from './components/flexshipFlow/productlistingstep';
+import { ProductListingStep } from './components/flexshipFlow/productlistingstep';
+import { FlexshipCheckoutStep} from './components/flexshipFlow/checkout-step'; 
 
 // controllers
 import { MonatForgotPasswordController } from './controllers/monat-forgot-password';
@@ -143,6 +145,7 @@ var monatfrontendmodule = angular
 	.directive('flexshipPurchasePlus',FlexshipPurchasePlus.Factory())
 	.directive('flexshipFlow',FlexshipFlow.Factory())
 	.directive('productListingStep',ProductListingStep.Factory())
+	.directive('flexshipCheckoutStep', FlexshipCheckoutStep.Factory())
 	
 	// Controllers
 	.controller('searchController', MonatSearchController)

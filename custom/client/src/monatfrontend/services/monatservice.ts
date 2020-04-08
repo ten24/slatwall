@@ -281,15 +281,15 @@ export class MonatService {
 	}
 	
 	
-	public setCurrentFlexship(flexshipID: string){
-		if(flexshipID && flexshipID.trim() !== '' ){
-			this.sessionStorageCache.put('currentFlexship', flexshipID);
+	public setCurrentFlexship(flexship: {[key:string]:any}){
+		if(flexship && flexship.hasOwnProperty('orderTemplateID')  ){
+			this.sessionStorageCache.put('currentFlexship', flexship);
 		} else {
 			this.sessionStorageCache.remove('currentFlexship');
 		}
 	}
 	
-	public getCurrentFlexship(): string {
+	public getCurrentFlexship(): {[key:string]:any} {
 		return this.sessionStorageCache.get('currentFlexship');
 	}
 	

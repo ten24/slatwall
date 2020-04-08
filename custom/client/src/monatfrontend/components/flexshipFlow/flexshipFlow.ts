@@ -1,6 +1,6 @@
 import { MonatService, IOption } from '@Monat/services/monatservice';
 
-enum FlexshipSteps{
+export enum FlexshipSteps{
 	SHOP,
 	FREQUENCY,	
 	OFY,
@@ -13,10 +13,6 @@ class FlexshipFlowController {
 	public farthestStepReached = FlexshipSteps.SHOP;
 	public orderTemplate:{[key:string]:any};
 	
-
-	
-	public currentOrderTemplateID:string;
-
     //@ngInject
     constructor(
     	public publicService,
@@ -29,9 +25,12 @@ class FlexshipFlowController {
     
     public $onInit = () => {
     	
-    	this.currentOrderTemplateID = this.monatService.getCurrentFlexship();
+    	this.orderTemplate = this.monatService.getCurrentFlexship();
     	
-
+		if(!this.orderTemplate){
+			//redirect to listing
+			// this.monatService.redirectToProperSite("/my-account/flexships");
+		}
     }
 	
 	public back = ():FlexshipSteps => {
