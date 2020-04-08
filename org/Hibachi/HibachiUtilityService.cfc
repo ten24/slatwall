@@ -178,7 +178,7 @@
 				&& structKeyExists(arguments.formatDetails,'object')
 				&& structKeyExists(arguments.formatDetails.object, 'getPrimaryIDValue')
 			){
-				var translation = getService('TranslationService').getTranslationByBaseObjectANDBaseIDANDBasePropertyNameANDLocale(
+				var translation = getService('TranslationService').getTranslationValue(
 					baseObject=arguments.formatDetails.object.getClassName(),
 					baseID = arguments.formatDetails.object.getPrimaryIDValue(),
 					basePropertyName=arguments.formatDetails.propertyName,
@@ -186,7 +186,7 @@
 				);
 
 				if(!isNull(translation)){
-					return translation.getValue();
+					return translation;
 				}
 			}
 			return arguments.value;

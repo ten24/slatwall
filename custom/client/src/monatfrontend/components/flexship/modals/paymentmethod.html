@@ -1,0 +1,382 @@
+<div
+	class="modal using-modal-service"
+	role="dialog"
+	id="flexship-modal-payment-method{{ monatFlexshipPaymentMethodModal.orderTemplate.orderTemplateID }}"
+>
+	<div class="modal-dialog modal-lg">
+        <form name="updateBillingForm" 
+        	ng-submit="updateBillingForm.$valid && monatFlexshipPaymentMethodModal.updateBilling()"
+         >
+		<div class="modal-content">
+			<!-- Modal Close -->
+			<button
+				type="button"
+				class="close"
+				ng-click="monatFlexshipPaymentMethodModal.closeModal()"
+				aria-label="Close"
+			>
+				<i class="fas fa-times"></i>
+			</button>
+
+			<div class="payment">
+				<h6 class="title-with-line mb-5">
+					{{ monatFlexshipPaymentMethodModal.translations.paymentMethod }}
+				</h6>
+
+				<div
+					class="custom-radio form-group py-2"
+					ng-repeat="accountPaymentMethod in monatFlexshipPaymentMethodModal.accountPaymentMethods"
+					ng-click="
+						$parent.monatFlexshipPaymentMethodModal.setSelectedAccountPaymentMethodID(accountPaymentMethod.accountPaymentMethodID);
+						updateBillingForm.$valid = true;
+					"
+					ng-if="accountPaymentMethod.accountPaymentMethodID && accountPaymentMethod.activeFlag == true"
+				>
+					<input
+						type="radio"
+						name="saved_cards"
+						ng-checked="accountPaymentMethod.accountPaymentMethodID === monatFlexshipPaymentMethodModal.selectedAccountPaymentMethod.accountPaymentMethodID"
+					/>
+					<label
+						for="saved_cards"
+						ng-bind="accountPaymentMethod.accountPaymentMethodName.trim().length ? accountPaymentMethod.accountPaymentMethodName : accountPaymentMethod.creditCardType + ' ' + accountPaymentMethod.creditCardLastFour"
+					>
+						<i class="fab fa-cc-visa"></i>
+					</label>
+				</div>
+
+				<div
+					class="custom-radio form-group py-2"
+					ng-click="monatFlexshipPaymentMethodModal.setSelectedAccountPaymentMethodID()"
+				>
+					<input
+						type="radio"
+						name="saved_cards"
+						ng-checked="'new' === monatFlexshipPaymentMethodModal.selectedAccountPaymentMethod.accountPaymentMethodID"
+					/>
+					<label for="new_card">
+						{{ monatFlexshipPaymentMethodModal.translations.addNewCreditCard }}
+					</label>
+				</div>
+				
+				<!-- new billing -->
+				<div class="my-3" ng-if="'new' === monatFlexshipPaymentMethodModal.selectedAccountPaymentMethod.accountPaymentMethodID">
+					<h6 class="title-with-line mb-5">
+						{{ monatFlexshipPaymentMethodModal.translations.billingAddress }}
+					</h6>
+	
+					<div
+						class="custom-radio form-group py-2"
+						ng-repeat="accountAddress in monatFlexshipPaymentMethodModal.accountAddresses"
+						ng-click="$parent.monatFlexshipPaymentMethodModal.setSelectedBillingAccountAddressID(accountAddress.accountAddressID)"
+					>
+						<input
+							type="radio"
+							name="accountAddressID"
+							ng-checked="accountAddress.accountAddressID === monatFlexshipPaymentMethodModal.selectedBillingAccountAddress.accountAddressID"
+						/>
+						<label
+							for="accountAddressID"
+							ng-bind="accountAddress.accountAddressName.trim().length ? accountAddress.accountAddressName : accountAddress.address_streetAddress + ', ' + accountAddress.address_city + ', ' + accountAddress.address_stateCode + ' ' + accountAddress.address_postalCode"
+						></label>
+					</div>
+	
+					<div
+						class="custom-radio form-group py-2"
+						ng-click="monatFlexshipPaymentMethodModal.setSelectedBillingAccountAddressID()"
+					>
+						<input
+							type="radio"
+							name="accountAddressID"
+							ng-checked="'new' === monatFlexshipPaymentMethodModal.selectedBillingAccountAddress.accountAddressID"
+						/>
+						<label for="accountAddressID">
+							{{ monatFlexshipPaymentMethodModal.translations.addNewBillingAddress }}
+						</label>
+					</div>
+					
+					
+					<!--- Conditional: Add New Shipping Address form --->
+					<div
+						ng-if="'new' === monatFlexshipPaymentMethodModal.selectedBillingAccountAddress.accountAddressID"
+						class="row"
+					>
+						<div class="label col-12" ng-bind="monatFlexshipPaymentMethodModal.translations.addNewBillingAddress"></div>
+						
+						<div class="col-12 col-md-6">
+							<div class="material-field">
+								<input
+								   swvalidationrequired= "true"
+									type="text"
+									class="form-control"
+									name="accountAddressName"
+									ng-model="monatFlexshipPaymentMethodModal.newAccountAddress.accountAddressName"
+								/>
+								<label ng-bind="monatFlexshipPaymentMethodModal.translations.newAddress_nickName"></label>
+								<div ng-if="updateBillingForm.$submitted" ng-messages="updateBillingForm.accountAddressName.$error">
+	    						    <div ng-messages-include="monat-form-generic-validation-error-messages"></div>
+	    						</div>
+							</div>
+						</div>
+						
+						<div class="col-12 col-md-6">
+							<div class="material-field">
+								<input
+								    name="newAddress_name"
+								    swvalidationrequired="true"
+	    						    type="text"
+									class="form-control"
+									ng-model="monatFlexshipPaymentMethodModal.newAddress.name"
+								/>
+								<label ng-bind="monatFlexshipPaymentMethodModal.translations.newAddress_name"></label>
+								<div ng-if="updateBillingForm.$submitted" ng-messages="updateBillingForm.newAddress_name.$error">
+	    						    <div ng-messages-include="monat-form-generic-validation-error-messages"></div>
+	    						</div>
+							</div>
+						</div>
+						
+						<div class="col-12 col-md-6">
+							<div class="material-field">
+								<input
+								    name="newAddress_address"
+								    swvalidationrequired = "true"
+									type="text"
+									class="form-control"
+									ng-model="monatFlexshipPaymentMethodModal.newAddress.streetAddress"
+								/>
+								<label ng-bind="monatFlexshipPaymentMethodModal.translations.newAddress_address"></label>
+								<div ng-if="updateBillingForm.$submitted" ng-messages="updateBillingForm.newAddress_address.$error">
+	    						    <div ng-messages-include="monat-form-generic-validation-error-messages"></div>
+	    						</div>
+							</div>
+						</div>
+						
+						<div class="col-12 col-md-6">
+							<div class="material-field">
+								<input
+									type="text"
+									class="form-control"
+									ng-model="monatFlexshipPaymentMethodModal.newAddress.street2Address"
+								/>
+								<label ng-bind="monatFlexshipPaymentMethodModal.translations.newAddress_address2"></label>
+							</div>
+						</div>
+	
+						
+						<div class="col-12 col-md-6">
+							<div class="material-field">
+								<input
+									type="text"
+									class="form-control"
+									name="newAddress_country"
+									swvalidationrequired = "true"
+									ng-model="monatFlexshipPaymentMethodModal.newAddress.countryCode"
+									readonly
+								/>
+								<label ng-bind="monatFlexshipPaymentMethodModal.translations.newAddress_country"></label>
+								<div ng-if="updateBillingForm.$submitted" ng-messages="updateBillingForm.newAddress_country.$error">
+	    						    <div ng-messages-include="monat-form-generic-validation-error-messages"></div>
+	    						</div>
+							</div>
+						</div>
+						
+						<div class="col-12 col-md-6">
+							<div class="material-field">
+								<select
+									type="text"
+								    swvalidationrequired = "true"
+									class="form-control"
+									ng-model="monatFlexshipPaymentMethodModal.newAddress.stateCode"
+									ng-options="state.value as state.name for state in monatFlexshipPaymentMethodModal.stateCodeOptions"
+									name="newAddress_state"
+								>
+									<option disabled></option>
+								</select>
+								<label ng-bind="monatFlexshipPaymentMethodModal.translations.newAddress_state"></label>
+								<div ng-if="updateBillingForm.$submitted" ng-messages="updateBillingForm.newAddress_state.$error">
+	    						    <div ng-messages-include="monat-form-generic-validation-error-messages"></div>
+	    						</div>
+							</div>
+						</div>
+	
+						
+						<div class="col-12 col-md-6">
+							<div class="material-field">
+								<input
+								  swvalidationrequired="true"
+									type="text"
+									class="form-control"
+									ng-model="monatFlexshipPaymentMethodModal.newAddress.city"
+									name="newAddress_city"
+								/>
+								<label ng-bind="monatFlexshipPaymentMethodModal.translations.newAddress_city"></label>
+								<div ng-if="updateBillingForm.$submitted" ng-messages="updateBillingForm.newAddress_city.$error">
+	    						    <div ng-messages-include="monat-form-generic-validation-error-messages"></div>
+	    						</div>
+							</div>
+						</div>
+						
+						<div class="col-12 col-md-6">
+							<div class="material-field">
+								<input
+									type="text"
+									class="form-control"
+									ng-model="monatFlexshipPaymentMethodModal.newAddress.postalCode"
+									swvalidationrequired="true"
+									name="newAddress_postalCode"
+								/>
+								<label ng-bind="monatFlexshipPaymentMethodModal.translations.newAddress_zipCode"></label>
+								<div ng-if="updateBillingForm.$submitted" ng-messages="updateBillingForm.newAddress_postalCode.$error">
+	    						    <div ng-messages-include="monat-form-generic-validation-error-messages"></div>
+	    						</div>
+							</div>
+						</div>
+					</div>
+					<!-- end add new account address-->
+					<!-- end select billing address-->
+	
+					<!-- Conditional: Add New Payment method form -->
+					<div
+						ng-if="'new' === monatFlexshipPaymentMethodModal.selectedAccountPaymentMethod.accountPaymentMethodID"
+						class="row"
+					>
+						<div class="label col-12" ng-bind="monatFlexshipPaymentMethodModal.translations.newCreditCard"></div>
+	
+						<div class="col-12 col-md-6">
+							<div class="material-field">
+								<input
+									type="text"
+									class="form-control"
+									ng-model="monatFlexshipPaymentMethodModal.newAccountPaymentMethod.accountPaymentMethodName"
+									name="newCreditCard_nickName"
+									swvalidationrequired="true"
+								/>
+								<label ng-bind="monatFlexshipPaymentMethodModal.translations.newCreditCard_nickName"></label>
+								<div ng-if="updateBillingForm.$submitted" 
+								ng-messages="updateBillingfOrm.newCreditCard_nickName.$error">
+	    						    <div ng-messages-include="monat-form-generic-validation-error-messages"></div>
+	    						</div>
+							</div>
+						</div>
+	
+						<div class="col-12 col-md-6">
+							<div class="material-field">
+								<input
+									type="text"
+									class="form-control"
+									ng-model="monatFlexshipPaymentMethodModal.newAccountPaymentMethod.creditCardNumber"
+									swvalidationrequired = "true"
+									swvalidationnumeric="true"
+									name = "newAccountPaymentMethod_creditCardNumber"
+								/>
+								<label ng-bind="monatFlexshipPaymentMethodModal.translations.newCreditCard_creditCardNumber"></label>
+								<div ng-if="updateBillingForm.$submitted" 
+								ng-messages="updateBillingForm.newAccountPaymentMethod_creditCardNumber.$error">
+	    						    <div ng-messages-include="monat-form-generic-validation-error-messages"></div>
+	    						</div>
+							</div>
+						</div>
+	
+						<div class="col-12 col-md-6">
+							<div class="material-field">
+								<input
+									type="text"
+									class="form-control"
+									ng-model="monatFlexshipPaymentMethodModal.newAccountPaymentMethod.nameOnCreditCard"
+									swvalidationrequired = "true"
+									name = "newCreditCard_nameOnCard"
+								/>
+								<label ng-bind="monatFlexshipPaymentMethodModal.translations.newCreditCard_nameOnCard"></label>
+									<div ng-if="updateBillingForm.$submitted" 
+								         ng-messages="updateBillingForm.newCreditCard_nameOnCard.$error">
+	    						    <div ng-messages-include="monat-form-generic-validation-error-messages"></div>
+	    						</div>
+							</div>
+						</div>
+	
+						<div class="col-12 col-md-6">
+							<div class="material-field">
+								<select
+									type="text"
+									class="form-control"
+									ng-model="monatFlexshipPaymentMethodModal.newAccountPaymentMethod.expirationMonth"
+									ng-options="month for month in monatFlexshipPaymentMethodModal.expirationMonthOptions"
+									swvalidationrequired = "true"
+									name = "newCreditCard_expirationMonth"
+								>
+									<option disabled></option>
+								</select>
+								<label ng-bind="monatFlexshipPaymentMethodModal.translations.newCreditCard_expirationMonth"></label>
+								<div ng-if="updateBillingForm.$submitted" 
+								         ng-messages="updateBillingForm.newCreditCard_expirationMonth.$error">
+	    						    <div ng-messages-include="monat-form-generic-validation-error-messages"></div>
+	    						</div>
+							</div>
+						</div>
+	
+						<div class="col-12 col-md-6">
+							<div class="material-field">
+								<select
+									type="text"
+									class="form-control"
+									ng-model="monatFlexshipPaymentMethodModal.newAccountPaymentMethod.expirationYear"
+									ng-options="year.VALUE as year.NAME for year in monatFlexshipPaymentMethodModal.expirationYearOptions"
+									name = "newCreditCard_expirationYear"
+									swvalidationrequired = "true"
+								>
+									<option disabled></option>
+								</select>
+								<label ng-bind="monatFlexshipPaymentMethodModal.translations.newCreditCard_expirationYear"></label>
+								<div ng-if="updateBillingForm.$submitted" 
+								     ng-messages="updateBillingForm.newCreditCard_expirationYear.$error">
+	    						    <div ng-messages-include="monat-form-generic-validation-error-messages"></div>
+	    						</div>
+							</div>
+						</div>
+	
+						<div class="col-12 col-md-6">
+							<div class="material-field">
+								<input
+									type="text"
+									class="form-control"
+									ng-model="monatFlexshipPaymentMethodModal.newAccountPaymentMethod.securityCode"
+									swvalidationrequired = "true"
+									swvalidationnumeric="true"
+									swvalidationmaxlength = "4"
+									swvalidationminlength = "3"
+									name = "newCreditCard_securityCode"
+								/>
+								<label ng-bind="monatFlexshipPaymentMethodModal.translations.newCreditCard_securityCode"></label>
+									<div ng-if="updateBillingForm.$submitted" 
+								     ng-messages="updateBillingForm.newCreditCard_securityCode.$error">
+									 <div ng-message="swvalidationmaxlength" sw-Rbkey="'validation.define.maxlength4'" class="text-danger error_text"></div>
+									 <div ng-message="swvalidationminlength" sw-Rbkey="'validation.define.minlength3'" class="text-danger error_text"></div>
+	    						    <div ng-messages-include="monat-form-generic-validation-error-messages"></div>
+	    						</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="footer">
+				<button
+					type="submit"
+					class="btn btn-block bg-primary"
+					ng-class="{ loading: monatFlexshipPaymentMethodModal.loading }"
+					ng-disabled = "monatFlexshipPaymentMethodModal.loading"
+					sw-rbkey="'frontend.modal.saveChangesButton'"
+				>
+				</button>
+				<button
+					type="button"
+					class="btn btn-cancel cancel-dark"
+					ng-click="monatFlexshipPaymentMethodModal.closeModal()"
+					sw-rbkey="'frontend.modal.closeButton'"
+				>
+				</button>
+			</div>
+        </div>
+        </form>
+	</div>
+</div>

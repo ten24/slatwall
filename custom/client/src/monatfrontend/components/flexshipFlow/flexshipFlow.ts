@@ -1,3 +1,4 @@
+import { MonatService, IOption } from '@Monat/services/monatservice';
 
 enum FlexshipSteps{
 	SHOP,
@@ -12,15 +13,25 @@ class FlexshipFlowController {
 	public farthestStepReached = FlexshipSteps.SHOP;
 	public orderTemplate:{[key:string]:any};
 	
+
+	
+	public currentOrderTemplateID:string;
+
     //@ngInject
-    constructor(public publicService, public orderTemplateService) {
-		
+    constructor(
+    	public publicService,
+    	public orderTemplateService,
+    	private monatService: MonatService
+    ) {
+    
+    	
     }
     
     public $onInit = () => {
-		this.orderTemplateService.getSetOrderTemplateOnSession('', 'save', false, false).then(res=>{
-			this.orderTemplate = res.orderTemplate;
-		});
+    	
+    	this.currentOrderTemplateID = this.monatService.getCurrentFlexship();
+    	
+
     }
 	
 	public back = ():FlexshipSteps => {
@@ -66,10 +77,11 @@ class FlexshipFlowController {
 			this.farthestStepReached = step;
 		}
 	}
-	
+
 	private setStepAndUpdateProgress(step:FlexshipSteps):FlexshipSteps{
 		this.updateProgress(step);
 		return this.currentStep = step;
+
     }
     
     

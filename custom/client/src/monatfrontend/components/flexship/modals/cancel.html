@@ -1,0 +1,77 @@
+<div class="modal using-modal-service" id="flexship-modal-cancel{{ monatFlexshipCancelModal.orderTemplate.orderTemplateID }}">
+	<div class="modal-dialog">
+		<form name="flexshipCancelForm" 
+	         ng-submit=" flexshipCancelForm.$valid && monatFlexshipCancelModal.cancelFlexship()"
+	    >
+			<div class="modal-content">
+				
+				<!-- Modal Close -->
+				<button type="button"
+					class="close"
+					ng-click="monatFlexshipCancelModal.closeModal()"
+					aria-label="Close"
+				>
+					<i class="fas fa-times"></i>
+				</button>
+			
+
+				<div class="cancel-flexship">
+					<h6 class="title-with-line mb-5">
+						<span sw-rbkey="'frontend.cancelFlexshipModal.cancel'"></span>
+					</h6>
+	
+					<select class="form-control" 
+						name="flexshipCancelReasonType"
+						swvalidationrequired="true"
+						ng-model="monatFlexshipCancelModal.formData.orderTemplateCancellationReasonType"
+						ng-options="reason as reason.name for reason in monatFlexshipCancelModal.cancellationReasonTypeOptions"
+						placeholder="{{ monatFlexshipCancelModal.translations.flexshipCancelReason }}"
+						
+					>
+						<option value="">{{ monatFlexshipCancelModal.translations.whyAreYouCancelling }}</option>
+					</select>
+					
+					<div ng-if="flexshipCancelForm.$submitted" 
+						ng-messages="flexshipCancelForm.flexshipCancelReasonType.$error">
+						<div ng-messages-include="monat-form-generic-validation-error-messages"></div>
+					</div>
+					
+					<div class="material-field" 
+					ng-if="monatFlexshipCancelModal.formData.orderTemplateCancellationReasonType.systemCode === 'otcrtOther'">
+						<input type="text"
+							class="form-control"
+							name="flexshipCancelOtherReasonNotes"
+							swvalidationmaxlength ="250"
+							swvalidationrequired = "true"
+							ng-model="monatFlexshipCancelModal.formData.orderTemplateCancellationReasonTypeOther"
+						/>
+						
+						<label ng-bind="monatFlexshipCancelModal.translations.flexshipCancelOtherReasonNotes"></label>
+						
+						<div ng-if="flexshipCancelForm.$submitted" 
+							ng-messages="flexshipCancelForm.flexshipCancelOtherReasonNotes.$error">
+						    <div ng-messages-include="monat-form-generic-validation-error-messages"></div>
+						</div>
+					</div>
+				</div>
+	
+				<div class="footer">
+					
+					<button type="submit"
+						class="btn btn-block bg-primary"
+						ng-class="{loading: monatFlexshipCancelModal.loading }"
+						ng-disabled="monatFlexshipCancelModal.loading"
+						sw-rbkey="'frontend.modal.saveChangesButton'"
+					> </button>
+
+					<button type="button"
+						class="btn btn-cancel cancel-dark"
+						ng-click="monatFlexshipCancelModal.closeModal()"
+						sw-rbkey="'frontend.modal.closeButton'"
+					> </button>
+					
+				</div> <!-- end modal-footer -->
+			</div> <!-- end modal-content -->
+		</form> <!-- end flexshipCancelForm -->
+	</div> <!-- end modal-dialog -->
+</div>

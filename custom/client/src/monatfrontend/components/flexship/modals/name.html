@@ -1,0 +1,46 @@
+<div class="modal using-modal-service" id="flexship-modal-name{{ monatFlexshipNameModal.orderTemplate.orderTemplateID }}">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<!-- Modal Close -->
+			<button
+				type="button"
+				class="close"
+				ng-click="monatFlexshipNameModal.closeModal()"
+				aria-label="Close"
+			>
+				<i class="fas fa-times"></i>
+			</button>
+
+			<div class="rename-flexship">
+				<h6 class="title-with-line mb-5">
+					<span sw-rbkey="'define.edit'"></span>
+				</h6>
+
+				<div class="material-field">
+					<input
+						type="text"
+						class="form-control"
+						ng-model="monatFlexshipNameModal.orderTemplateName"
+					/>
+					<label ng-bind="monatFlexshipNameModal.translations.flexshipName"></label>
+				</div>
+			</div>
+
+			<div class="footer">
+				<button
+					type="button"
+					class="btn btn-block bg-primary"
+					ng-click="monatFlexshipNameModal.saveFlexshipName()"
+					ng-class="{ loading: monatFlexshipNameModal.loading }"
+					sw-rbkey="'frontend.modal.saveChangesButton'"
+				></button>
+				<button
+					type="button"
+					class="btn btn-cancel cancel-dark"
+					ng-click="monatFlexshipNameModal.closeModal()"
+					sw-rbkey="'frontend.modal.closeButton'"
+				></button>
+			</div>
+		</div>
+	</div>
+</div>
