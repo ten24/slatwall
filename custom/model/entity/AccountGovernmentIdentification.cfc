@@ -9,7 +9,7 @@ component {
 		if ( 'USA' == siteCreatedCountry ) {
 			return ( 9 == len( governmentID ) );
 		} else if ( 'CAN' == siteCreatedCountry ) {
-			return ( 10 == len( governmentID ) );
+			return ( 9 == len( governmentID ) || 10 == len( governmentID ) );
 		}
 		
 		return true;
