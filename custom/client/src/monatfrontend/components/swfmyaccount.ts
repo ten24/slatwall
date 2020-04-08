@@ -47,6 +47,7 @@ class swfAccountController {
     public isDefaultImage:boolean = false;
     public isNotProfileImagesChoosen:boolean = false;
     public purchasePlusTotal:number;
+    public listPrice:number;
     
     // @ngInject
     constructor(
@@ -249,9 +250,10 @@ class swfAccountController {
                         }
                     });
                 }
-                
+                this.listPrice = 0;
                 for(let item of this.orderItems as Array<any>){
                     this.orderItemTotal += item.quantity;
+                    this.listPrice += item.calculatedListPrice;
                 }
             }
             
