@@ -13,13 +13,10 @@
 		</div>
 	</div>
 </header>
-
-<!--FLEXSHIP FLOW STEPS--->
-<div class="wrapper">
+<!--remove utility classes just so you can see steps without content for now--->
+<div class="wrapper my-5 py-5">
 		<!--Shop step -->
-		<div ng-if="flexshipFlow.currentStep == flexshipFlow.FlexshipSteps.SHOP" > 
-			<product-listing-step></product-listing-step>
-		</div>
+		<div ng-if="flexshipFlow.currentStep == flexshipFlow.FlexshipSteps.SHOP" > SHOP STEP </div>
 		<!--frequency step -->
 		<div ng-if="flexshipFlow.currentStep == flexshipFlow.FlexshipSteps.FREQUENCY"> FREQUENCY STEP </div>
 		<!--ofy step -->
@@ -31,9 +28,7 @@
 <div ng-cloak ng-show="flexshipFlow.showCanPlaceOrderAlert && !flexshipFlow.monatService.canPlaceOrder" class="alert alert-danger alert-dismissible fade show text-center can-place-order-alert" role="alert">
     <span sw-rbkey="'frontend.order.canPlaceOrderFailure'"></span>
 </div>
-
-
- <!----FLEXSHIP FLOW FOOTER-------->
+    
 <footer class="steps-footer d-flex flex-column">
 	<div class="w-100 d-flex justify-content-between align-items-center">
 		
@@ -64,7 +59,7 @@
 				<i class="far"
 					ng-class="{
 						'fa-shopping-bag': (flexshipFlow.farthestStepReached <= flexshipFlow.FlexshipSteps.SHOP) || (flexshipFlow.currentStep == flexshipFlow.FlexshipSteps.SHOP),
-						'fa-check': (flexshipFlow.farthestStepReached > flexshipFlow.FlexshipSteps.SHOP) && flexshipFlow.currentStep != flexshipFlow.FlexshipSteps.SHOP
+						'fa-check': (flexshipFlow.farthestStepReached > flexshipFlow.FlexshipSteps.SHOP) && (flexshipFlow.currentStep != flexshipFlow.FlexshipSteps.SHOP)
 					}"
 				></i>	
 	
