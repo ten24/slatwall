@@ -1656,8 +1656,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             return;
         }
         
-        getHibachiScope().setSessionValue('ownerAccountNumber', '');
-        
         //if we are not in an upgrade flow and the user is logged in, log the user out.
         if(!arguments.data.upgradeFlowFlag && getHibachiScope().getLoggedInFlag()){
             if(getHibachiScope().getAccount().canSponsor()){

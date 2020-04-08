@@ -37,7 +37,7 @@ class SponsorSearchSelectorController {
 		this.form.countryCode = this.siteCountryCode;
 		this.getCountryCodeOptions();
 		this.getStateCodeOptions( this.form.countryCode );
-
+	
 		//raf search
 		if (this.$location.search().accountNumber ) {
 			this.form.text = this.$location.search().accountNumber;
@@ -94,12 +94,16 @@ class SponsorSearchSelectorController {
 			stateCode:this.form.stateCode,
 			returnJsonObjects:''
 		}
-		if (this.$location.search().accountNumber ) {
+		if (this.$location.search().accountNumber && !this.hasBeenSearched) {
 			data.countryCode = null;
 		}
 		if(useHibachiConfig && !this.hasBeenSearched){
 			this.argumentsObject['search'] = hibachiConfig.siteOwner
 			data['search'] = hibachiConfig.siteOwner;
+			this.argumentsObject['countryCode'] = null;
+			this.argumentsObject['stateCode'] = null;
+			data['countryCode'] = null;
+			data['stateCode'] = null;
 			this.hasBeenSearched = true;
 		}
 
