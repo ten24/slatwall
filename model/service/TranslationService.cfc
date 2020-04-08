@@ -51,7 +51,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 	}
 	
-	public string function setTranslation(required string translationKey, string translationValue){
+	public string function setCachedTranslationValue(required string translationKey, string translationValue){
 		if( !structKeyExists(variables,  'translations') ){
 			variables.translations = {};
 		}
@@ -62,11 +62,11 @@ component extends="HibachiService" accessors="true" output="false" {
 		}
 	}
 	
-	public boolean function hasTranslation(required string translationKey){
+	public boolean function hasCachedTranslationValue(required string translationKey){
 		return structKeyExists(variables,  'translations') && structKeyExists(variables.translations, arguments.translationKey);
 	}
 	
-	public string function getTranslation(required string translationKey){
+	public string function getCachedTranslationValue(required string translationKey){
 		if( !structKeyExists(variables,  'translations') ){
 			variables.translations = {};
 		}
@@ -80,17 +80,17 @@ component extends="HibachiService" accessors="true" output="false" {
 		}
 		var cacheKey = 'translate_#arguments.baseObject#_#arguments.baseID#_#arguments.basePropertyName#_#arguments.locale#';
 		
-		if( !hasTranslation(cacheKey) ){
+		if( !hasCachedTranslationValue(cacheKey) ){
 			var translation = getTranslationByBaseObjectANDBaseIDANDBasePropertyNameANDLocale(argumentCollection=arguments);
 			
 			if( !isNull(translation) && len(translation) ){
-				setTranslation(cacheKey, translation.getValue());
+				setCachedTranslationValue(cacheKey, translation.getValue());
 			}else{
 				return;
 			}
 		}
 		
-		return getTranslation(cacheKey);
+		return getCachedTranslationValue(cacheKey);
 	}
 	
 	public array function getTranslatedCollectionRecords(required string baseObject, required array collectionRecords, string locale){
@@ -186,11 +186,11 @@ component extends="HibachiService" accessors="true" output="false" {
 				// Delete existing translation that are set to an empty value
 				if (!translation.getNewFlag() && !len(translationData.value)) {
 					this.deleteTranslation(translation);
-					setTranslation(cacheKey)
+					setCachedTranslationValue(cacheKey)
 				} else if (len(translationData.value)) {
 					translation.setValue(translationData.value);
 					this.saveTranslation(translation);
-					setTranslation(cacheKey, translationData.value);
+					setCachedTranslationValue(cacheKey, translationData.value);
 				}
 			}
 		}

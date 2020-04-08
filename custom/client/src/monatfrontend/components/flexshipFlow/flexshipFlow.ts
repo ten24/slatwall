@@ -11,7 +11,9 @@ class FlexshipFlowController {
 	public FlexshipSteps = FlexshipSteps; 
 	public currentStep = FlexshipSteps.SHOP;
 	public farthestStepReached = FlexshipSteps.SHOP;
+	public orderTemplate:{[key:string]:any};
 	
+
 	
 	public currentOrderTemplateID:string;
 
@@ -29,6 +31,7 @@ class FlexshipFlowController {
     	
     	this.currentOrderTemplateID = this.monatService.getCurrentFlexship();
     	
+
     }
 	
 	public back = ():FlexshipSteps => {
@@ -75,10 +78,14 @@ class FlexshipFlowController {
 		}
 	}
 	
-    private setStepAndUpdateProgress(step:FlexshipSteps) {
-    	this.updateProgress(step);
-    	return this.currentStep = step;
+	
+	private setStepAndUpdateProgress(step:FlexshipSteps):FlexshipSteps{
+		this.updateProgress(step);
+		return this.currentStep = step;
+
     }
+    
+    
 }
 
 class FlexshipFlow {
@@ -104,9 +111,7 @@ class FlexshipFlow {
         );
         directive.$inject = [
 			'monatFrontendBasePath',
-			'$hibachi',
 			'rbkeyService',
-			'requestService'
         ];
         return directive;
     }
