@@ -67,8 +67,6 @@ class FlexshipFlowController {
 		}
 	}
 	
-	public 
-	
 	private setStepAndUpdateProgress(step:FlexshipSteps):FlexshipSteps{
 		this.updateProgress(step);
 		return this.currentStep = step;
