@@ -381,6 +381,20 @@ property name="personalVolumeAmount" ormtype="big_decimal" hb_formatType="custom
 		return this.hasSkuBySkuID(arguments.orderItem.getSku().getSkuID());
 	}
 	
+	public string function getIncludedStackableRewardsIDList(){
+		if(!structKeyExists(variables,'includedStackableRewardsIDList')){
+			variables.includedStackableRewardsIDList = ArrayToList(getDAO('PromotionDAO').getIncludedStackableRewardsIDListForPromotionReward(this));
+		}
+		return variables.includedStackableRewardsIDList;
+	}
+	
+	public string function getExcludedStackableRewardsIDList(){
+		if(!structKeyExists(variables,'excludedStackableRewardsIDList')){
+			variables.excludedStackableRewardsIDList = ArrayToList(getDAO('PromotionDAO').getExcludedStackableRewardsIDListForPromotionReward(this));
+		}
+		return variables.excludedStackableRewardsIDList;
+	}
+	
 	// =============  END:  Bidirectional Helper Methods ===================
 	
 	// =============== START: Custom Formatting Methods ====================

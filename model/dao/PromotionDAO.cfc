@@ -338,4 +338,23 @@ Notes:
 			where o.orderID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderID#" />
 		</cfquery> 
 	</cffunction> 
+	
+	<cffunction name="getIncludedStackableRewardsIDListForPromotionReward" returntype="array" access="public">
+		<cfargument name="promotionReward" required="true" type="any" />
+		<cfquery name="local.rewards">
+			SELECT linkedPromotionRewardID from swpromorewardstackincl where promotionRewardID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.promotionReward.getPromotionRewardID()#" />
+		</cfquery>
+		<cfset rewardsArray = ValueArray(local.rewards,'linkedPromotionRewardID') />
+		<cfreturn rewardsArray />
+	</cffunction>
+	
+	<cffunction name="getExcludedStackableRewardsIDListForPromotionReward" returntype="array" access="public">
+		<cfargument name="promotionReward" required="true" type="any" />
+		<cfquery name="local.rewards">
+			SELECT linkedPromotionRewardID from swpromorewardstackexcl where promotionRewardID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.promotionReward.getPromotionRewardID()#" />
+		</cfquery>
+		<cfset rewardsArray = ValueArray(local.rewards,'linkedPromotionRewardID') />
+		<cfreturn rewardsArray />
+	</cffunction>
+	
 </cfcomponent>

@@ -190,7 +190,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					var addNew = shouldAddNewPromotion(discountAmount,orderFulfillment,arguments.promotionReward);
 					// Add the new appliedPromotion
 					if(addNew) {
-						applyPromotionToOrderFulfillment(orderFulfillment,arguments.promotionReward.getPromotionPeriod().getPromotion(),discountAmount);
+						applyPromotionToOrderFulfillment(orderFulfillment,arguments.promotionReward,discountAmount);
 					}
 
 				} // END: Address In Zone
@@ -198,6 +198,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			} // END: Method Match
 
 		} // Loop
+	}
+	
+	private boolean function rewardSortFunction( required struct a, required struct b ){
+		if(a.priority < b.priority){
+			return -1;
+		}else if( a.priority > b.priority ){
+			return 1;
+		}else{
+			return a.discountAmount < b.discountAmount ? 1 : -1;
+		}
 	}
 
 	private void function processOrderItemRewards(required any order, required any promotionPeriodQualifications, required any promotionRewardUsageDetails, required any orderItemQualifiedDiscounts, required any promotionReward){
@@ -270,32 +280,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 									// Set it as a blank array
 									orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ] = [];
 								}
-
-								// If there are already values in the array then figure out where to insert
-								var discountAdded = false;
-								// loop over any discounts that might be already in assigned and pick an index where the discount amount is best
-								for(var d=1; d<=arrayLen(orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ]) ; d++) {
-									if(orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ][d].discountAmount < discountAmount) {
-										// Insert this value into the potential discounts array
-										arrayInsertAt(orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ], d, {
-											promotionRewardID = arguments.promotionReward.getPromotionRewardID(),
-											promotion = arguments.promotionReward.getPromotionPeriod().getPromotion(),
-											discountAmount = discountAmount
-										});
-										discountAdded = true;
-										break;
-									}
+								var promotion = arguments.promotionReward.getPromotionPeriod().getPromotion();
+								
+								var rewardStruct = {
+									promotionReward = arguments.promotionReward,
+									promotion = promotion,
+									discountAmount = discountAmount,
+									priority=promotion.getPriority()
 								}
+								
+								// Insert this value into the potential discounts array
+								arrayAppend(orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ], rewardStruct);
 
-								if(!discountAdded) {
-									// Insert this value into the potential discounts array
-									arrayAppend(orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ], {
-										promotionRewardID = arguments.promotionReward.getPromotionRewardID(),
-										promotion = arguments.promotionReward.getPromotionPeriod().getPromotion(),
-										discountAmount = discountAmount
-									});
-
-								}
 
 								// Increment the number of times this promotion reward has been used
 
@@ -336,9 +332,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					} // End orderItem qualification count > 0
 
 				} // End orderItem fulfillment in qualifiedFulfillment list
-
+				
 			} // END Sale Item If
-											
+			
+			//Sort the rewards for this item by priority and discountAmount
+			if( structKeyExists( orderItemQualifiedDiscounts, orderItem.getOrderItemID() ) ){
+				ArraySort(orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ], rewardSortFunction);
+			}
+			
 			//Now add the order item to the modified entities to recalculate.
 			getHibachiScope().addModifiedEntity(orderItem);
 		} // End Order Item For Loop
@@ -354,30 +355,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// First we make sure that the discountAmount is > 0 before we check if we should add more discount
 		if(discountAmount > 0) {
 
-			// If there aren't any promotions applied to this order fulfillment yet, then we can add this one
-			if(!arrayLen(arguments.order.getAppliedPromotions())) {
-				addNew = true;
-
-			// If one has already been set then we just need to check if this new discount amount is greater
-			} else if ( arguments.order.getAppliedPromotions()[1].getDiscountAmount() < discountAmount ) {
-
-				// If the promotion is the same, then we just update the amount
-				if(arguments.order.getAppliedPromotions()[1].getPromotion().getPromotionID() == arguments.promotionReward.getPromotionPeriod().getPromotion().getPromotionID()) {
-					arguments.order.getAppliedPromotions()[1].setDiscountAmount(discountAmount);
-
-				// If the promotion is a different then remove the original and set addNew to true
-				} else {
-					arguments.order.getAppliedPromotions()[1].removeOrder();
-					addNew = true;
-				}
+			var promotion = arguments.promotionReward.getPromotionPeriod().getPromotion();
+								
+			var rewardStruct = {
+				promotionReward = arguments.promotionReward,
+				promotion = promotion,
+				discountAmount = discountAmount,
+				priority=promotion.getPriority()
 			}
+			
+			// Insert this value into the potential discounts array
+			arrayAppend(orderQualifiedDiscounts, rewardStruct);
 		}
-
-		// Add the new appliedPromotion
-		if(addNew) {
-			applyPromotionToOrder(arguments.order,arguments.promotionReward.getPromotionPeriod().getPromotion(),discountAmount);
-		}
-
 	}
 
 	public void function updateOrderAmountsWithPromotions(required any order) {
@@ -447,6 +436,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				// This is a structure of orderItems with all of the potential discounts that apply to them
 				var orderItemQualifiedDiscounts = {};
 				
+				// This is an array of qualified order rewards
+				var orderQualifiedDiscounts = [];
+				
 				// This is an array of qualifier messages for qualifiers not met by the order
 				var orderQualifierMessages = [];
 	
@@ -475,7 +467,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							processOrderFulfillmentRewards(arguments.order, promotionPeriodQualifications, Reward);
 						// ================== Order Reward =========================
 						} else if (orderRewards and reward.getRewardType() eq "order" ) {
-							processOrderRewards(arguments.order, reward);
+							processOrderRewards(arguments.order, orderQualifiedDiscounts, reward);
 						} // ============= END ALL REWARD TYPES
 	
 					} // END Promotion Period OK IF
@@ -486,13 +478,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						// Now that we has setup all the potential discounts for orderItems sorted by best price, we want to strip out any of the discounts that would exceed the maximum order use counts.
 						removeDiscountsExceedingMaxOrderUseCounts(promotionRewardUsageDetails,orderItemQualifiedDiscounts);
 		
-						// Loop over the orderItems one last time, and look for the top 1 discounts that can be applied
-						applyTop1Discounts(arguments.order,orderItemQualifiedDiscounts);
+						// Loop over the orderItems one last time, and look for the discounts that can be applied
+						applyOrderItemDiscounts(arguments.order,orderItemQualifiedDiscounts);
 						pr = 0;
 						orderRewards = true;
 					}
 	
 				} // END of PromotionReward Loop
+				
+				applyOrderDiscounts(arguments.order, orderQualifiedDiscounts);
+				
 				if(arrayLen(orderQualifierMessages)){
 					getHibachiScope().flushOrmSession();
 					applyPromotionQualifierMessagesToOrder(arguments.order,orderQualifierMessages);
@@ -506,20 +501,31 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 	}
 
-	private void function applyPromotionToOrderFulfillment(required any orderFulfillment, required any promotion, required numeric discountAmount){
+	private void function applyPromotionToOrderFulfillment(required any orderFulfillment, required any promotionReward, required numeric discountAmount){
 		var newAppliedPromotion = this.newPromotionApplied();
 		newAppliedPromotion.setAppliedType('orderFulfillment');
-		newAppliedPromotion.setPromotion( arguments.promotion );
+		newAppliedPromotion.setPromotion( arguments.promotionReward.getPromotionPeriod().getPromotion() );
+		newAppliedPromotion.setPromotionReward( arguments.promotionReward );
 		newAppliedPromotion.setOrderFulfillment( arguments.orderFulfillment );
 		newAppliedPromotion.setDiscountAmount( arguments.discountAmount );
 	}
 
-	private void function applyPromotionToOrder(required any order,required any promotion, required numeric discountAmount){
+	private void function applyPromotionToOrder(required any order,required any rewardStruct){
 		var newAppliedPromotion = this.newPromotionApplied();
 		newAppliedPromotion.setAppliedType('order');
-		newAppliedPromotion.setPromotion( arguments.promotion );
+		newAppliedPromotion.setPromotion( rewardStruct.promotion );
+		newAppliedPromotion.setPromotionReward( rewardStruct.promotionReward );
 		newAppliedPromotion.setOrder( arguments.order );
-		newAppliedPromotion.setDiscountAmount( arguments.discountAmount );
+		newAppliedPromotion.setDiscountAmount( rewardStruct.discountAmount );
+	}
+	
+	private void function applyPromotionToOrderItem( required any orderItem, required struct rewardStruct ){
+		var newAppliedPromotion = this.newPromotionApplied();
+		newAppliedPromotion.setAppliedType('orderItem');
+		newAppliedPromotion.setPromotion( arguments.rewardStruct.promotion );
+		newAppliedPromotion.setPromotionReward( arguments.rewardStruct.promotionReward );
+		newAppliedPromotion.setOrderItem( orderItem );
+		newAppliedPromotion.setDiscountAmount( arguments.rewardStruct.discountAmount );
 	}
 	
 	private void function clearPreviouslyAppliedPromotionMessages(required any order){
@@ -619,25 +625,71 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		} // End Promotion Reward loop for removing anything that was overused
 
 	}
+	
+	private void function applyOrderDiscounts(required any order, required array orderQualifiedDiscounts){
+		
+		var appliedPromotions = arguments.order.getAppliedPromotions();
 
-	private void function applyTop1Discounts(required any order, required any orderItemQualifiedDiscounts){
-		// Loop over the orderItems one last time, and look for the top 1 discounts that can be applied
-		for(var i=1; i<=arrayLen(arguments.order.getOrderItems()); i++) {
-
-			var orderItem = arguments.order.getOrderItems()[i];
-			// If the orderItemID exists in the qualifiedDiscounts, and the discounts have at least 1 value we can apply that top 1 discount
-			if(structKeyExists(arguments.orderItemQualifiedDiscounts, orderItem.getOrderItemID()) && arrayLen(arguments.orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ]) ) {
-				var newAppliedPromotion = this.newPromotionApplied();
-				newAppliedPromotion.setAppliedType('orderItem');
-				newAppliedPromotion.setPromotion( arguments.orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ][1].promotion );
-				newAppliedPromotion.setOrderItem( orderItem );
-				newAppliedPromotion.setDiscountAmount( arguments.orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ][1].discountAmount );
+		for(var rewardStruct in arguments.orderQualifiedDiscounts ){
 			
+			if( rewardCanStack( appliedPromotions, rewardStruct.promotionReward )){
+				applyPromotionToOrder( arguments.order, rewardStruct );
+			}
+			
+		}
+		//making sure calculated props run
+		getHibachiScope().addModifiedEntity(order);
+		
+	}
+
+	private void function applyOrderItemDiscounts(required any order, required any orderItemQualifiedDiscounts){
+		var orderItems = arguments.order.getOrderItems();
+		
+		for(var orderItem in orderItems) {
+			var appliedPromotions = orderItem.getAppliedPromotions();
+			// If the orderItemID exists in the qualifiedDiscounts and there's at least 1 discount available, apply discounts
+			if(structKeyExists(arguments.orderItemQualifiedDiscounts, orderItem.getOrderItemID()) && arrayLen(arguments.orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ]) ) {
+				for(var rewardStruct in arguments.orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ]){
+					
+					if( !len(appliedPromotions) || rewardCanStack( appliedPromotions, rewardStruct.promotionReward )){
+						applyPromotionToOrderItem( orderItem, rewardStruct );
+					}
+					
+				}
 				//making sure calculated props run
 				getHibachiScope().addModifiedEntity(orderItem);
 			}
 
 		}
+	}
+	
+	private boolean function rewardCanStack( required array appliedPromotions, required any promotionReward ){
+		
+		if( !ArrayLen(appliedPromotions) ){
+			return true;
+		}
+		
+		var rewardType = arguments.promotionReward.getRewardType();
+
+		var rewardCanStack = true;
+		
+		for( var appliedPromotion in appliedPromotions ){
+			var appliedRewardID = appliedPromotion.getPromotionRewardID();
+			var appliedRewardType = appliedPromotion.getPromotionReward().getRewardType();
+			
+			if( appliedRewardType == rewardType ){
+				if( !listContains(arguments.promotionReward.getIncludedStackableRewardsIDList(),appliedRewardID) ){
+					rewardCanStack = false;
+					break;
+				}
+			}else{
+				if( listContains(arguments.promotionReward.getExcludedStackableRewardsIDList(),appliedRewardID) ){
+					rewardCanStack = false;
+					break;
+				}
+			}
+		}
+		return rewardCanStack;
 	}
 
 	private struct function getPromotionPeriodQualificationDetails(required any promotionPeriod, required any order, array orderQualifierMessages) {
