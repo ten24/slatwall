@@ -10,13 +10,18 @@ class FlexshipFlowController {
 	public FlexshipSteps = FlexshipSteps; 
 	public currentStep = FlexshipSteps.SHOP;
 	public farthestStepReached = FlexshipSteps.SHOP;
+	public orderTemplate:{[key:string]:any};
 	
     //@ngInject
-    constructor(public publicService) {
-
+    constructor(public publicService, public orderTemplateService) {
+		
     }
     
-    public $onInit = () => { }
+    public $onInit = () => {
+		this.orderTemplateService.getSetOrderTemplateOnSession('', 'save', false, false).then(res=>{
+			this.orderTemplate = res.orderTemplate;
+		});
+    }
 	
 	public back = ():FlexshipSteps => {
 		switch(this.currentStep){
@@ -62,10 +67,14 @@ class FlexshipFlowController {
 		}
 	}
 	
-    private setStepAndUpdateProgress(step:FlexshipSteps):FlexshipSteps{
-    	this.updateProgress(step);
-    	return this.currentStep = step;
+	public 
+	
+	private setStepAndUpdateProgress(step:FlexshipSteps):FlexshipSteps{
+		this.updateProgress(step);
+		return this.currentStep = step;
     }
+    
+    
 }
 
 class FlexshipFlow {
@@ -91,9 +100,7 @@ class FlexshipFlow {
         );
         directive.$inject = [
 			'monatFrontendBasePath',
-			'$hibachi',
 			'rbkeyService',
-			'requestService'
         ];
         return directive;
     }
