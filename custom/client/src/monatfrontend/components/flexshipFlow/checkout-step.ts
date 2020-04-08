@@ -1,6 +1,9 @@
 import { FlexshipSteps } from '@Monat/components/flexshipFlow/flexshipFlow';
 
 class FlexshipCheckoutStepController {
+	
+	//states
+	public activePaymentMethod: string = 'creditCard';
 
 	public orderTemplate;
 
@@ -20,7 +23,7 @@ export class FlexshipCheckoutStep {
 	public templateUrl:string;
 	
 	public controller = FlexshipCheckoutStepController;
-	public controllerAs = "flexshipCheckoutStep";
+	public controllerAs = "flexshipCheckout";
 	public bindToController = {};
 	
 
