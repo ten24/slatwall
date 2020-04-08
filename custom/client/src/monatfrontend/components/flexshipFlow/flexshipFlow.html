@@ -22,7 +22,9 @@
 		<!--ofy step -->
 		<div ng-if="flexshipFlow.currentStep  == flexshipFlow.FlexshipSteps.OFY"> OFY STEP </div>
 		<!--Checkout step -->
-		<div ng-if="flexshipFlow.currentStep  == flexshipFlow.FlexshipSteps.CHECKOUT"> CHECKOUT STEP </div>
+		<div ng-if="flexshipFlow.currentStep  == flexshipFlow.FlexshipSteps.CHECKOUT"> 			
+			<flexship-checkout-step></flexship-checkout-step>
+		</div>
 </div>
 
 <div ng-cloak ng-show="flexshipFlow.showCanPlaceOrderAlert && !flexshipFlow.monatService.canPlaceOrder" class="alert alert-danger alert-dismissible fade show text-center can-place-order-alert" role="alert">
