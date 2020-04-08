@@ -264,11 +264,9 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
  			case 'text':
  			case 'checkboxGroup':
  			case 'radioGroup':
- 			case 'readOnly':
  				ORMType = 'string';
  				break;
  			case 'relatedObjectSelect':
- 			case 'readOnlyRelatedObject':
  				propertyString &= ' cfc="#arguments.attributeData.relatedObject#" fieldtype="many-to-one" fkcolumn="#arguments.attributeData.attributeCode#ID"';
  				break;
  			default:
