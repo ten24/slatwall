@@ -27,7 +27,8 @@ class MonatFlexshipCardController {
 		public ModalService, 
 		public monatAlertService,
 		public rbkeyService,
-		public monatService
+		public monatService,
+		public publicService
 	) {}
 
 	public $onInit = () => {
@@ -259,9 +260,10 @@ class MonatFlexshipCardController {
 	}
 
 	public goToProductListingPage() {
-		this.monatService.redirectToProperSite(
-							`/shop/?type=flexship&orderTemplateId=${this.orderTemplate.orderTemplateID}`
-						);
+
+		this.publicService.doAction('setCurrentFlexshipOnHibachiScope', {orderTemplateID: this.orderTemplate.orderTemplateID}).then(res=>{
+			this.monatService.redirectToProperSite(	'/flexship-flow');
+		});
 	}
 	
 	public goToOFYProductListingPage() {
