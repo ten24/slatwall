@@ -17,15 +17,15 @@
 <!--FLEXSHIP FLOW STEPS--->
 <div class="wrapper">
 		<!--Shop step -->
-		<div ng-if="flexshipFlow.currentStep == flexshipFlow.FlexshipSteps.SHOP" > 
+		<div ng-if="flexshipFlow.currentStep === flexshipFlow.FlexshipSteps.SHOP" > 
 			<product-listing-step></product-listing-step>
 		</div>
 		<!--frequency step -->
-		<div ng-if="flexshipFlow.currentStep == flexshipFlow.FlexshipSteps.FREQUENCY"> FREQUENCY STEP </div>
+		<div ng-if="flexshipFlow.currentStep === flexshipFlow.FlexshipSteps.FREQUENCY"> FREQUENCY STEP </div>
 		<!--ofy step -->
-		<div ng-if="flexshipFlow.currentStep  == flexshipFlow.FlexshipSteps.OFY"> OFY STEP </div>
+		<div ng-if="flexshipFlow.currentStep  === flexshipFlow.FlexshipSteps.OFY"> OFY STEP </div>
 		<!--Checkout step -->
-		<div ng-if="flexshipFlow.currentStep  == flexshipFlow.FlexshipSteps.CHECKOUT"> 			
+		<div ng-if="flexshipFlow.currentStep  === flexshipFlow.FlexshipSteps.CHECKOUT"> 			
 			<flexship-checkout-step></flexship-checkout-step>
 		</div>
 </div>
