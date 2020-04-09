@@ -62,7 +62,7 @@ class MonatEnrollmentController {
 			
 			//if account has a flexship send to checkout review
 			this.monatService.getCart().then(res =>{
-				let cart = res.cart;
+				let cart = res.cart ? res.cart : res;
 				this.canPlaceCartOrder = cart.orderRequirementsList.indexOf('canPlaceOrderReward') == -1;
 				let account = result.account;
 				let reqList = 'createAccount,updateAccount';
