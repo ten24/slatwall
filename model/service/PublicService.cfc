@@ -616,7 +616,22 @@ component  accessors="true" output="false"
       **/
     public any function updateAccount( required struct data ) {
         
-        var account = getAccountService().saveAccount( getHibachiScope().getAccount(), arguments.data );
+        //
+        var account = getHibachiScope().getAccount();
+        if(StructKeyExists("primaryEmailAddressID", arguments.data) && !isNull(arguments.data.primaryEmailAddressID)) {
+            account.setPrimaryEmailAddress();
+        }
+        
+        if(StructKeyExists("primaryPhoneNumberID", arguments.data) && !isNull(arguments.data.primaryPhoneNumberID)) {
+            account.setPrimaryPhoneNumber();
+        }
+        
+        if(StructKeyExists("primaryAccountAddressID", arguments.data) && !isNull(arguments.data.primaryAccountAddressID)) {
+            account.setPrimaryAddress();
+        }
+        
+        
+        account = getAccountService().saveAccount( account, arguments.data );
         getHibachiScope().addActionResult( "public:account.update", account.hasErrors() );
         if(account.hasErrors()){
             var errorStruct = account.getErrors();
@@ -936,6 +951,7 @@ component  accessors="true" output="false"
             if(!isNull(orderFulfillment) && !orderFulfillment.hasErrors()){
               orderFulfillment.setShippingAddress(accountAddress.getAddress());
               orderFulfillment.setAccountAddress(accountAddress);
+              getService("OrderService").saveOrderFulfillment(orderFulfillment);
             }
             getService("OrderService").saveOrder(order);
             getHibachiScope().addActionResult( "public:cart.addShippingAddressUsingAccountAddress", order.hasErrors());

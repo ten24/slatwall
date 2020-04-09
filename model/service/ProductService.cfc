@@ -449,7 +449,7 @@ component extends="HibachiService" accessors="true" {
 	
 	public any function getAllRelatedProducts(required any productID) {
 		var relatedProducts = this.getProductRelationshipCollectionList();
-		relatedProducts.setDisplayProperties("relatedProduct.productID, relatedProduct.calculatedQATS, relatedProduct.calculatedProductRating, relatedProduct.activeFlag, relatedProduct.urlTitle, relatedProduct.productName, relatedProduct.defaultSku.imageFile");
+		relatedProducts.setDisplayProperties("relatedProduct.productID, relatedProduct.calculatedQATS, relatedProduct.calculatedProductRating, relatedProduct.activeFlag, relatedProduct.urlTitle, relatedProduct.productName, relatedProduct.defaultSku.imageFile, relatedProduct.calculatedSalePrice, relatedProduct.defaultSku.price, relatedProduct.defaultSku.listPrice, relatedProduct.productType.productTypeName, relatedProduct.defaultSku.skuID");
 		relatedProducts.addFilter("product.productID",arguments.productID);
 		relatedProducts.addFilter("product.activeFlag",1);
 		relatedProducts = relatedProducts.getRecords(formatRecords=false);
@@ -473,15 +473,20 @@ component extends="HibachiService" accessors="true" {
 	public array function appendImagesToProduct(required array products, required string propertyName="defaultSku_imageFile") {
 		if(arrayLen(arguments.products)) {
 			var missingImageSetting = getService('SettingService').getSettingValue('imageMissingImagePath');
+			var resizeSizes=['s','m','l']; //add all sized images
 			for(var product in arguments.products) {
 	            var imageFile = product[arguments.propertyName] ? : '';
+	            var imageArray = [];
+	            for( var size in resizeSizes) {
+	            	var resizeImageData = { 
+		                size=size, //Large Image
+		                imagePath = getService('imageService').getProductImagePathByImageFile(imageFile),
+		                missingImagePath = missingImageSetting
+		            };
+		            arrayAppend(imageArray, getService('imageService').getResizedImagePath(argumentCollection=resizeImageData) );
+	            }
 	            
-	            var resizeImageData = { 
-	                size='l', //Large Image
-	                imagePath = getService('imageService').getProductImagePathByImageFile(imageFile),
-	                missingImagePath = missingImageSetting
-	            };
-	            product['images'] = getService('imageService').getResizedImagePath(argumentCollection=resizeImageData);
+	            product['images'] = imageArray;
 	        }
 		}
 		return arguments.products;
