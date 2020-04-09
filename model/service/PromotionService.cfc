@@ -287,7 +287,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 									promotionReward = arguments.promotionReward,
 									promotion = promotion,
 									discountAmount = discountAmount,
-									priority=promotion.getPriority()
+									priority=promotion.getPriority(),
+									discountQuantity=discountQuantity
 								}
 								
 								// Insert this value into the potential discounts array
@@ -652,7 +653,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			if(structKeyExists(arguments.orderItemQualifiedDiscounts, orderItem.getOrderItemID()) && arrayLen(arguments.orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ]) ) {
 				for(var rewardStruct in arguments.orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ]){
 					
-					if( !len(appliedPromotions) || rewardCanStack( appliedPromotions, rewardStruct.promotionReward )){
+					if( rewardCanStack( appliedPromotions, rewardStruct.promotionReward )){
+						// writeDump('let''s do this!');
+						// writeDump(rewardStruct.promotionReward.getRewardType());
+						if(len(appliedPromotions) && rewardStruct.promotionReward.getRewardType() == 'percentageOff'){
+							// writeDump('woo!');
+							// writeDump(rewardStruct.discountAmount);
+							// //Recalculate discount amount based on new price
+							// // rewardStruct.discountAmount = getDiscountAmount(reward=rewardStruct.promotionReward, price=orderItem.getExtendedUnitPriceAfterDiscount(), quantity=rewardStruct.discountQuantity, currencyCode=orderItem.getCurrencyCode(), sku=orderItem.getSku(), account=arguments.order.getAccount());
+							// writeDump(rewardStruct.discountAmount);
+							// abort;
+							
+						}
 						applyPromotionToOrderItem( orderItem, rewardStruct );
 					}
 					
