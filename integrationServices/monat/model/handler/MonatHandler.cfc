@@ -262,7 +262,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 				arguments.order.setInitialOrderFlag(true);
 			}
 		}catch(any dateError){
-			writeDump(dateError,1); abort;
 			logHibachi("afterOrderProcess_placeOrderSuccess failed @ set initialOrderFlag #serializeJson(dateError)#");	
 		}
 		
