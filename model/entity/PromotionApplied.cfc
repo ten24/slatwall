@@ -116,9 +116,12 @@ property name="personalVolumeDiscountAmount" ormtype="big_decimal";
 			arguments.orderItem = variables.orderItem;
 		}
 		var index = arrayFind(arguments.orderItem.getAppliedPromotions(), this);
+		writeDump(var=index,label="index");
 		if(index > 0) {
+			writeDump('ayyy');
 			arrayDeleteAt(arguments.orderItem.getAppliedPromotions(), index);
 		}
+		writeDump(var=arrayLen(orderItem.getAppliedPromotions()),label="arrayLen");
 		structDelete(variables, "orderItem");
 	}
 	
@@ -152,6 +155,7 @@ property name="personalVolumeDiscountAmount" ormtype="big_decimal";
 			arguments.order = variables.order;
 		}
 		var index = arrayFind(arguments.order.getAppliedPromotions(), this);
+		
 		if(index > 0) {
 			arrayDeleteAt(arguments.order.getAppliedPromotions(), index);
 		}

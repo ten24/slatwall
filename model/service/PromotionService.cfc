@@ -51,6 +51,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// Clear all previously applied promotions for order items
 		for(var oi=1; oi<=arrayLen(arguments.orderItems); oi++) {
 			for(var pa=arrayLen(arguments.orderItems[oi].getAppliedPromotions()); pa >= 1; pa--) {
+				writeDump(var=pa,label="pa");
 				if(!arguments.orderItems[oi].getAppliedPromotions()[pa].getManualDiscountAmountFlag()){
 					arguments.orderItems[oi].getAppliedPromotions()[pa].removeOrderItem();
 				}
