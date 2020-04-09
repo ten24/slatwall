@@ -2082,9 +2082,7 @@ public boolean function canBePurchased(required any account, any order){
 		}
 		
 		if( isNull(accountType) ){
-			if ( this.getRetailFlag() != true ) {
-				return false;
-			}
+			return this.getRetailFlag() == true;
 		}else{
 		
 			var notValidVipItem = ( accountType == "vip" && this.getVipFlag() != true );
