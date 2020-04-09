@@ -936,6 +936,7 @@ component  accessors="true" output="false"
             if(!isNull(orderFulfillment) && !orderFulfillment.hasErrors()){
               orderFulfillment.setShippingAddress(accountAddress.getAddress());
               orderFulfillment.setAccountAddress(accountAddress);
+              getService("OrderService").saveOrderFulfillment(orderFulfillment);
             }
             getService("OrderService").saveOrder(order);
             getHibachiScope().addActionResult( "public:cart.addShippingAddressUsingAccountAddress", order.hasErrors());
