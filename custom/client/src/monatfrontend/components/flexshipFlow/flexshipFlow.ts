@@ -9,8 +9,9 @@ export enum FlexshipSteps{
 
 class FlexshipFlowController {
 	public FlexshipSteps = FlexshipSteps; 
-	public currentStep = FlexshipSteps.SHOP;
+	public currentStep = FlexshipSteps.CHECKOUT;
 	public farthestStepReached = FlexshipSteps.CHECKOUT;
+	
 	public orderTemplate:{[key:string]:any};
 	
     //@ngInject

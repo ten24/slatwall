@@ -259,6 +259,60 @@ export class MonatService {
 		return deferred.promise;
 	}
 	
+	public getAccountAddresses(){
+		let deferred = this.$q.defer();
+		this.publicService.doAction('getAccountAddresses')
+		.then( (data) => {
+			if(data?.accountAddresses)  deferred.resolve( data.accountAddresses );
+			else  throw(data);
+		})
+		.catch( (e) => {
+			deferred.reject(e);
+		});
+		return deferred.promise;
+	}
+	
+	public getAccountPaymentMethods(){
+		let deferred = this.$q.defer();
+		this.publicService.doAction('getAccountPaymentMethods')
+		.then( (data) => {
+			if(data?.accountPaymentMethods)  deferred.resolve( data.accountPaymentMethods ); 
+			else  throw(data);
+		})
+		.catch( (e) => {
+			deferred.reject(e);
+		});
+		return deferred.promise;
+	}
+	
+	public getStateCodeOptionsByCountryCode(countryCode:string = hibachiConfig.countryCode, refresh=false) {
+		
+		let cacheKey = `stateCodeOptions_${countryCode}`;
+		let deferred = this.$q.defer();
+		
+		if(refresh || !this.localStorageCache.get(cacheKey) ){
+			this.requestService
+			.newPublicRequest('?slatAction=api:public.getStateCodeOptionsByCountryCode', { 'countryCode': countryCode })
+			.promise
+			.then( (data) => {
+				if(data?.stateCodeOptions){
+					this.localStorageCache.put(cacheKey, data.stateCodeOptions);
+					deferred.resolve( data.stateCodeOptions );
+				} else {
+					throw(data);
+				}
+			})
+			.catch( (e) => {
+				deferred.reject(e);
+			});	
+		} else {
+			deferred.resolve( this.localStorageCache.get(cacheKey) );
+		}
+		
+		return deferred.promise;
+	}
+	
+	
 	public redirectToProperSite(redirectUrl:string){
 		
 		if(hibachiConfig.cmsSiteID != 'default'){

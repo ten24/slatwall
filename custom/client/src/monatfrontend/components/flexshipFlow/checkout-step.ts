@@ -1,18 +1,27 @@
 import { FlexshipSteps } from '@Monat/components/flexshipFlow/flexshipFlow';
+import { MonatService } from '@Monat/services/monatservice';
 
 class FlexshipCheckoutStepController {
 	
 	//states
 	public activePaymentMethod: string = 'creditCard';
-
+	
+	
+	public accountPaymentMethods = [];
 	public orderTemplate;
 
     //@ngInject
-    constructor(public orderTemplateService) {
-
+    constructor(
+    	public orderTemplateService, 
+    	private monatService: MonatService
+    ) {
     }
 
     public $onInit = () => { 
+		this.monatService.getAccountPaymentMethods()
+		.then( (accountPaymentMethods) => {
+			this.accountPaymentMethods = accountPaymentMethods;
+		})
     }
 
 }

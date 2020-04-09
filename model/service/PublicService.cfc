@@ -1810,6 +1810,14 @@ component  accessors="true" output="false"
         var sku = getSkuService().getSku(arguments.data.skuID);
         arguments.data['ajaxResponse']['price'] = sku.getPriceByCurrencyCode(arguments.data.currencyCode, arguments.data.quantity);
     }
+    
+    public void function getAccountAddresses(required struct data){
+        arguments.data['ajaxResponse']['accountAddresses'] = getHibachiScope().getAccount().getAccountAddressesCollectionList().getRecords();  
+    }
+    
+    public void function getAccountPaymentMethods(required struct data){
+		arguments.data['ajaxResponse']['accountPaymentMethods'] = getHibachiScope().getAccount().getAccountPaymentMethodsCollectionList().getRecords();  
+    }
    
 	public void function getOrderTemplates(required any data){ 
         param name="arguments.data.pageRecordsShow" default=5;
@@ -1819,19 +1827,6 @@ component  accessors="true" output="false"
 		param name="arguments.data.optionalProperties" default="";
 
 		arguments.data['ajaxResponse']['orderTemplates'] = getOrderService().getOrderTemplatesForAccount(arguments.data); 
-		
-		arguments.data['ajaxResponse']['accountAddresses'] = getHibachiScope().getAccount().getAccountAddressesCollectionList().getRecords();  
-		arguments.data['ajaxResponse']['accountPaymentMethods'] = getHibachiScope().getAccount().getAccountPaymentMethodsCollectionList().getRecords();  
-		
-		var tmpOrderTemplate = getOrderService().newOrderTemplate();
-
-		var tmpAccountPaymentMethod = getAccountService().newAccountPaymentMethod();
-		arguments.data['ajaxResponse']['countryCodeBySite'] = getService('SiteService').getCountryCodeByCurrentSite();
-		//this function will set the stateCodeOptions in ajaxResponce
-		
-		arguments.data['countryCode'] = getService('SiteService').getCountryCodeByCurrentSite();
-		getStateCodeOptionsByCountryCode(arguments.data);
-		
 	}
 	
 	public void function getOrderTemplateItems(required any data){

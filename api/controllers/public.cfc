@@ -127,6 +127,18 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
             this.get(rc);
         }
     }
+    
+    public any function getStateCodeOptionsByCountryCode( required struct rc ){
+		getPublicService().getStateCodeOptionsByCountryCode(arguments.rc); 
+	} 
+	
+	public any function getAccountAddresses( required struct rc ){
+		getPublicService().getAccountAddresses(arguments.rc); 
+	} 
+	
+	public any function getAccountPaymentMethods( required struct rc ){
+		getPublicService().getAccountPaymentMethods(arguments.rc); 
+	} 
 
 	public any function getOrderTemplates( required struct rc ){
 		getPublicService().getOrderTemplates(arguments.rc); 
@@ -244,9 +256,8 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
 		getPublicService().getFrequencyDateOptions(arguments.rc);
     }
     
-    public void function getShippingMethodOptions(required any rc) {
-        arguments.rc.account = getHibachiScope().getAccount();
-        getPublicService().getShippingMethodOptions(arguments.rc);
+    public void function orderTemplateShippingMethodOptions(required any rc) {
+        getPublicService().orderTemplateShippingMethodOptions(arguments.rc);
 	}
     
     public void function getCancellationReasonTypeOptions(required any rc) {

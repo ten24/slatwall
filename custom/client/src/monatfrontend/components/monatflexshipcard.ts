@@ -9,13 +9,9 @@ class MonatFlexshipCardController {
 	
 	public urlSitePrefix: string;
 
-	public accountAddresses: any[];
-	public accountPaymentMethods: any[];
-	public stateCodeOptions: any[];
 	public daysToEditFlexship:any;
 	public editFlexshipUntilDate:any;
-	public countryCodeBySite:any;
-	
+
 	//@ngInject
 	constructor(
 		public observerService, 
@@ -163,11 +159,7 @@ class MonatFlexshipCardController {
 			component: 'monatFlexshipPaymentMethodModal',
 			bodyClass: 'angular-modal-service-active',
 			bindings: {
-				orderTemplate: this.orderTemplate,
-				accountAddresses: this.accountAddresses,
-				accountPaymentMethods: this.accountPaymentMethods,
-				stateCodeOptions: this.stateCodeOptions,
-				countryCodeBySite:this.countryCodeBySite,
+				orderTemplate: this.orderTemplate
 			},
 			preClose: (modal) => {
 				modal.element.modal('hide');
@@ -190,10 +182,7 @@ class MonatFlexshipCardController {
 			component: 'monatFlexshipShippingMethodModal',
 			bodyClass: 'angular-modal-service-active',
 			bindings: {
-				orderTemplate: this.orderTemplate,
-				accountAddresses: this.accountAddresses,
-				stateCodeOptions: this.stateCodeOptions,
-				countryCodeBySite:this.countryCodeBySite,
+				orderTemplate: this.orderTemplate
 			},
 			preClose: (modal) => {
 				modal.element.modal('hide');
@@ -284,11 +273,7 @@ class MonatFlexshipCard {
 	public scope = {};
 	public bindToController = {
 		orderTemplate: '<',
-		accountAddresses: '<',
-		accountPaymentMethods: '<',
-		stateCodeOptions: '<',
 		daysToEditFlexship:'@?',
-		countryCodeBySite:'<'
 	};
 	public controller = MonatFlexshipCardController;
 	public controllerAs = 'monatFlexshipCard';
