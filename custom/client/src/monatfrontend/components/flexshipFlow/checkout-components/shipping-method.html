@@ -1,0 +1,30 @@
+<div class="new_address">
+    <section class="shipping-page">
+    	<div class="container">
+           	<div class="shipping_sec mb-5">
+        		
+        		<h2 class="checkout-heading">When do you want your items shiped?</h2>
+        		
+				<div class="shipping-options">
+					<ul>
+						<li ng-repeat="shippingMethod in flexshipCheckoutShippingMethod.shippingMethodOptions">
+							<div
+								class="custom-radio form-group"
+								ng-click="$parent.flexshipCheckoutShippingMethod.setSelectedShippingMethodID(shippingMethod.value)"
+							>
+								<input
+									type="radio"
+									name="shippingMethodID"
+									id="accountAddress-{{shippingMethod.shippingMethodID}}" 
+									ng-checked="shippingMethod.value === flexshipCheckoutShippingMethod.selectedShippingMethod.shippingMethodID"
+								/>
+								<label for="shippingMethodID" ng-bind="shippingMethod.name"></label>
+							</div>
+						</li>
+					</ul>
+				</div>
+				
+			</div>
+		</div>
+    </section>
+</div>

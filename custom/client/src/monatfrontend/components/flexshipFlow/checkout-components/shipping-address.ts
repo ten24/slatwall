@@ -2,7 +2,7 @@ import { MonatService } from '@Monat/services/monatservice';
 import { MonatAlertService } from '@Monat/services/monatAlertService';
 import { OrderTemplateService } from '@Monat/services/ordertemplateservice';
 
-class FlexshipCheckoutShippingController {
+class FlexshipCheckoutShippingAddressController {
 	public orderTemplate; 
 
 	public accountAddresses:Array<any>;
@@ -29,7 +29,7 @@ class FlexshipCheckoutShippingController {
     		this.accountAddresses = data.accountAddresses;
 	    	
 	    	let oldShippingAddressID = this.orderTemplate?.shippingAccountAddress_accountAddressID?.trim();
-	    	if(oldShippingAddressID !== '') oldShippingAddressID = undefined;
+	    	if(oldShippingAddressID === '') oldShippingAddressID = undefined;
 	    	
 	    	//select either one of previously-selected shipping-address, or-primary-sgipping or primary-account-address or first of items
 		    this.setSelectedAccountAddressID(
@@ -39,13 +39,8 @@ class FlexshipCheckoutShippingController {
 		    	|| this.accountAddresses?.find(e => true)?.accountAddressID //first of the array
 		    );
     	})
-    	.catch( (error) => {
-		    console.error(error);
-		})
-		.finally(()=>{
-			this.loading = false;   
-		});
-    	
+    	.catch( e =>  console.error(e) )
+		.finally( () => this.loading = false );
     };
     
     
@@ -141,7 +136,7 @@ class FlexshipCheckoutShippingController {
 
 }
 
-class FlexshipCheckoutShipping {
+class FlexshipCheckoutShippingAddress {
 
 	public restrict:"E";
 	public scope = {};
@@ -149,23 +144,23 @@ class FlexshipCheckoutShipping {
 	public bindToController = {
 	    orderTemplate:'<',
 	};
-	public controller=FlexshipCheckoutShippingController;
-	public controllerAs="flexshipCheckoutShipping";
+	public controller=FlexshipCheckoutShippingAddressController;
+	public controllerAs="flexshipCheckoutShippingAddress";
 
 	public static Factory(){
         //@ngInject
         return ( monatFrontendBasePath ) => {
-            return new FlexshipCheckoutShipping( monatFrontendBasePath);
+            return new FlexshipCheckoutShippingAddress( monatFrontendBasePath);
         }; 
     }
 
 	constructor(private monatFrontendBasePath){
-		this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/flexshipFlow/checkout-components/shipping.html";
+		this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/flexshipFlow/checkout-components/shipping-address.html";
 	}
 
 }
 
 export {
-	FlexshipCheckoutShipping
+	FlexshipCheckoutShippingAddress
 };
 
