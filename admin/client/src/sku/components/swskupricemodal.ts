@@ -131,7 +131,8 @@ class SWSkuPriceModalController{
                 minQuantity : pageRecord.minQuantity,
                 maxQuantity : pageRecord.maxQuantity,
                 currencyCode : pageRecord.currencyCode, 
-                price : pageRecord.price
+                price : pageRecord.price,
+                listPrice : pageRecord.listPrice
             } 
             
             let skuData = {

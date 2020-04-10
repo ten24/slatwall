@@ -1,13 +1,15 @@
 
 class MonatFlexshipShippingMethodModalController {
 	public orderTemplate; 
-	public accountAddresses;
-	public shippingMethodOptions;
+	public accountAddresses:Array<any>;
+	public shippingMethodOptions:Array<any>;
 	public close; // injected from angularModalService
+
 	public existingAccountAddress; 
 	public selectedShippingAddress = { accountAddressID : 'new' }; // this needs to be an object to make radio working in ng-repeat, as that will create a nested scope
 	public existingShippingMethod; 
 	public selectedShippingMethod = { shippingMethodID : undefined }; // this needs to be an object to make radio working in ng-repeat, as that will create a nested scope
+	
 	public countryCodeBySite:any;
 	public newAccountAddress = {};
 	public newAddress = {'countryCode':'US'}; //TODO: hard-coded default]
@@ -16,9 +18,17 @@ class MonatFlexshipShippingMethodModalController {
 	public loading: boolean = false;
 
 	//@ngInject
-    constructor(public orderTemplateService, public observerService, public rbkeyService, public monatAlertService,private monatService) {}
+    constructor(
+    	public orderTemplateService, 
+    	public observerService, 
+    	public rbkeyService, 
+    	public monatAlertService,
+    	private monatService
+    ) {}
     
     public $onInit = () => {
+    	this.loading=true;
+    	
     	this.makeTranslations();
      
     	this.newAddress['countryCode']=this.countryCodeBySite;	
@@ -29,12 +39,25 @@ class MonatFlexshipShippingMethodModalController {
 	    	this.setSelectedAccountAddressID(this.existingAccountAddress.accountAddressID);
     	}
     	
-    	this.existingShippingMethod = this.shippingMethodOptions.find( item => {
-    		return item.value === this.orderTemplate.shippingMethod_shippingMethodID; //shipping methods are {"name" : shippingMethodName, "value":"shippingMethodID" }
-    	});
-    	if(!!this.existingShippingMethod && !!this.existingShippingMethod.value){
-	    	this.setSelectedShippingMethodID(this.existingShippingMethod.value);
-    	}
+    	this.monatService.getOptions({'orderTemplateShippingMethodOptions':false})
+    	.then( (options) => {
+    		this.shippingMethodOptions = options.orderTemplateShippingMethodOptions;
+   
+	    	this.existingShippingMethod = this.shippingMethodOptions.find( item => {
+	    		return item.value === this.orderTemplate.shippingMethod_shippingMethodID; //shipping methods are {"name" : shippingMethodName, "value":"shippingMethodID" }
+	    	});
+	    	
+	    	if(!!this.existingShippingMethod && !!this.existingShippingMethod.value){
+		    	this.setSelectedShippingMethodID(this.existingShippingMethod.value);
+	    	}
+    	})
+    	.catch( (error) => {
+		    console.error(error);
+		})
+		.finally(()=>{
+			this.loading = false;   
+		});
+    	
     };
     
     public translations = {};
@@ -124,7 +147,6 @@ class MonatFlexshipShippingMethodModal {
 	public bindToController = {
 	    orderTemplate:'<',
 	    accountAddresses:'<',
-	    shippingMethodOptions:'<',
 	    stateCodeOptions:'<',
 	    countryCodeBySite:'<',
 	    close:'=' //injected by angularModalService;
@@ -158,7 +180,7 @@ class MonatFlexshipShippingMethodModal {
 				private $hibachi,
 				private rbkeyService
 	){
-		this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/monatflexship-modal-shippingmethod.html";
+		this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/flexship/modals/shippingmethod.html";
 		this.restrict = "E";
 	}
 

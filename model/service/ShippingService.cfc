@@ -271,15 +271,20 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}	
 	
 	public array function getIntegrationsByOrderFulfillmentAndShippingMethods(required any orderFulfillment, required array shippingMethods){
+		
 		var integrations = [];
 		// Loop over all of the shipping methods & their rates for
 		var shippingMethodsCount = arrayLen(arguments.shippingMethods);
 		for(var m=1; m<=shippingMethodsCount; m++) {
+			
 			var shippingMethod = arguments.shippingMethods[m];
 			var shippingMethodRates = getShippingMethodRatesByOrderFulfillmentAndShippingMethod(arguments.orderFulfillment,shippingMethod); 
 			var shippingMethodRatesCount = arrayLen(shippingMethodRates);
 			
+			
+			
 			for(var r=1; r<=shippingMethodRatesCount; r++) {
+				
 				var shippingMethodRate = shippingMethodRates[r];
 				// check to make sure that this rate applies to the current orderFulfillment
 				if(!isNull(shippingMethodRate.getShippingIntegration()) && shippingMethodRate.getShippingIntegration().getActiveFlag()){
@@ -472,7 +477,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	public void function updateOrderFulfillmentShippingMethodOptions( required any orderFulfillment, boolean persistShippingMethodOption=true ) {
-	
 		//only run if the method is shipping
 		if(arguments.orderfulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq 'shipping'){
 			// Container to hold all shipping integrations that are in all the usable rates
@@ -485,9 +489,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			smsl.addFilter('activeFlag', '1');
 			smsl.addOrder("sortOrder|ASC");
 			var shippingMethods = smsl.getRecords();
+			
 	
 			var integrations = getIntegrationsByOrderFulfillmentAndShippingMethods(arguments.orderFulfillment, shippingMethods);
-			
+
 			var orderfulfillmentaddress = "";
 			if(!isNull(arguments.orderFulfillment.getShippingAddress())){
 				orderfulfillmentaddress &= arguments.orderFulfillment.getShippingAddress().getFullAddress();
@@ -500,7 +505,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			if(!isnull(arguments.orderFulfillment.getAddressZone())){
 				orderfulfillmentaddress &= arguments.orderFulfillment.getAddressZone().getAddressZoneCode();
 			}
-			
 			// Loop over all of the shipping integrations and add thier rates response to the 'responseBeans' struct that is key'd by integrationID
 			var shippingMethodRatesRequestBeans = getShippingMethodRatesRequestBeansByIntegrationsAndOrderFulfillment(integrations,arguments.orderFulfillment);
 			
@@ -508,8 +512,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			for(var shippingMethodRatesRequestBean in shippingMethodRatesRequestBeans){
 				arrayAppend(fulfillmentMethodOptionsCacheKeyArray,shippingMethodRatesRequestBean.getJSON());
 			}
-			for(var shippingMethod in shippingMethods){
-				arrayAppend(fulfillmentMethodOptionsCacheKeyArray, shippingMethod.getModifiedDateTime());
+			
+			//cache key for manual shipping method rates
+			var shippingMethodIDList = "";
+			var shippingMethodsCount = arrayLen(shippingMethods);
+			
+			for(var i = 1; i <= shippingMethodsCount; i++) {
+				arrayAppend(fulfillmentMethodOptionsCacheKeyArray, shippingMethods[i].getModifiedDateTime());
+				
+				shippingMethodIDList = listAppend(shippingMethodIDList,shippingMethods[i].getShippingMethodID());
 			}
 			
 			arrayAppend(fulfillmentMethodOptionsCacheKeyArray,orderfulfillmentaddress);
@@ -517,14 +528,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arrayAppend(fulfillmentMethodOptionsCacheKeyArray,arguments.orderFulfillment.getTotalShippingQuantity());
 			arrayAppend(fulfillmentMethodOptionsCacheKeyArray,arguments.orderFulfillment.getSubtotalAfterDiscounts());
 			
-			//cache key for manual shipping method rates
-			var shippingMethodIDList = "";
-			
-			for(var shippingMethod in shippingMethods){
-				shippingMethodIDList = listAppend(shippingMethodIDList,shippingMethod.getShippingMethodID());
-			}
-			
 			var shippingMethodRatesCollectionList = getService('shippingService').getShippingMethodRateCollectionList();
+			shippingMethodRatesCollectionList.setDisplayProperties('shippingMethodRateID|id');
 			shippingMethodRatesCollectionList.addFilter('shippingIntegration','NULL','IS');
 			shippingMethodRatesCollectionList.addFilter('shippingMethod.shippingMethodID',shippingMethodIDList,'IN');
 			
@@ -533,21 +538,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 			var fulfillmentMethodOptionsCacheKey = hash(ArrayToList(fulfillmentMethodOptionsCacheKeyArray,''),'md5');
 			
-			
 			if(isNull(arguments.orderFulfillment.getFulfillmentMethodOptionsCacheKey()) || arguments.orderFulfillment.getFulfillmentMethodOptionsCacheKey() != fulfillmentMethodOptionsCacheKey){
-				
 				
 				var shippingMethodRateResponseBeans = getShippingMethodRatesResponseBeansByIntegrationsAndOrderFulfillment(integrations,arguments.orderFulfillment,shippingMethodRatesRequestBeans);
 				
-				var shippingMethodsCount = arrayLen(shippingMethods);
+				
 				// Loop over the shippingMethods again, and loop over each of the rates to find the quote in the response bean.
-				for(var m=1; m<=shippingMethodsCount; m++) {
+				for(var m = 1; m <= shippingMethodsCount; m++) {
+					
 					var shippingMethod = shippingMethods[m];
 					var shippingMethodRates = getShippingMethodRatesByOrderFulfillmentAndShippingMethod(arguments.orderFulfillment,shippingMethod); 
-					var shippingMethodRatesCount = arrayLen(shippingMethodRates);
-					
-					var qualifiedRateOptions = [];
-					
 					
 					var qualifiedRateOptions = getQualifiedRateOptionsByOrderFulfillmentAndShippingMethodRatesAndShippingMethodRatesResponseBeans(
 						arguments.orderFulfillment,
@@ -559,28 +559,28 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					var rateToUse = {};
 		
 					// If the qualified rate options were returned and then the first one is the rateToUse for right now
-					if(arrayLen(qualifiedRateOptions) gt 0) {
+					if(arrayLen(qualifiedRateOptions) > 0) {
 		
-						var rateToUse = qualifiedRateOptions[1];
+						rateToUse = qualifiedRateOptions[1];
 					}
 		
 					// If the qualified rate options are greater than 1, then we need too loop over them and replace rateToUse with whichever one is best
-					if (arrayLen(qualifiedRateOptions) gt 1) {
+					if (arrayLen(qualifiedRateOptions) > 1) {
 						var qualifiedRateOptionsCount = arrayLen(qualifiedRateOptions);
-						for(var qr=2; qr<=qualifiedRateOptionsCount; qr++) {
+						for(var qr = 2; qr <= qualifiedRateOptionsCount; qr++) {
+							
+							var shippingMethodQualifiedRateSelection = shippingMethods[m].setting('shippingMethodQualifiedRateSelection');
 		
-							if( (shippingMethods[m].setting('shippingMethodQualifiedRateSelection') eq 'sortOrder' && qualifiedRateOptions[ qr ].shippingMethodRate.getSortOrder() < rateToUse.shippingMethodRate.getSortOrder()) ||
-								(shippingMethods[m].setting('shippingMethodQualifiedRateSelection') eq 'lowest' && qualifiedRateOptions[ qr ].totalCharge < rateToUse.totalCharge) ||
-								(shippingMethods[m].setting('shippingMethodQualifiedRateSelection') eq 'highest' && qualifiedRateOptions[ qr ].totalCharge > rateToUse.totalCharge)	) {
+							if( (shippingMethodQualifiedRateSelection == 'sortOrder' && qualifiedRateOptions[ qr ].shippingMethodRate.getSortOrder() < rateToUse.shippingMethodRate.getSortOrder()) ||
+								(shippingMethodQualifiedRateSelection == 'lowest' && qualifiedRateOptions[ qr ].totalCharge < rateToUse.totalCharge) ||
+								(shippingMethodQualifiedRateSelection == 'highest' && qualifiedRateOptions[ qr ].totalCharge > rateToUse.totalCharge)	) {
 		
 									rateToUse = qualifiedRateOptions[ qr ];
 							}
 						}
 					}
-		
 					// If there actually is a rateToUse, then we create a shippingMethodOption
 					if(structCount(rateToUse)) {
-		
 						// Add the shippingMethodID to the list of new options
 						shippingMethodIDOptionsList = listAppend(shippingMethodIDOptionsList, rateToUse.shippingMethodRate.getShippingMethod().getShippingMethodID());
 		
@@ -611,7 +611,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 						// If we didn't update an existing option then we need to create a new one.
 						if(!optionUpdated) {
-		
 							var newOption = this.newShippingMethodOption();
 		
 							newOption.setTotalCharge( rateToUse.totalCharge );
@@ -637,7 +636,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 					}
 				}
-		
 				// If the previously selected shipping method does not exist in the options now, then we just remove it.
 				if( !isNull(arguments.orderFulfillment.getShippingMethod()) && !listFindNoCase(shippingMethodIDOptionsList, arguments.orderFulfillment.getShippingMethod().getShippingMethodID())) {
 					arguments.orderFulfillment.setFulfillmentCharge(0);
@@ -662,10 +660,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						arguments.orderFulfillment.setFulfillmentCharge( arguments.orderFulfillment.getFulfillmentShippingMethodOptions()[c].getTotalCharge() );
 					}
 				}
-		
 				// Now if there is no method yet selected, and one shippingMethod exists as an option, we can automatically just select it.
 				if(isNull(arguments.orderFulfillment.getShippingMethod()) && arrayLen(arguments.orderFulfillment.getFulfillmentShippingMethodOptions()) == 1) {
-		
 					// Set the method
 					arguments.orderFulfillment.setShippingMethod( arguments.orderFulfillment.getFulfillmentShippingMethodOptions()[1].getShippingMethodRate().getShippingMethod() );
 		
@@ -677,7 +673,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				arguments.orderFulfillment.setfulfillmentMethodOptionsCacheKey(fulfillmentMethodOptionsCacheKey);
 			}
 		}
-		
 	}
 	
 	public any function associateManualRateAndIntegrations(required any shippingMethodRateID,required any manualRateIntegrationIDs,required any shippingIntegrationMethods){

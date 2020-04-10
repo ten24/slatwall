@@ -1,41 +1,63 @@
-interface IOptions {
+import { Cache } from 'cachefactory';
+
+export interface IOption {
 	name: string;
 	value: any;
 }
 
-declare var angular: any;
-declare var hibachiConfig: any;
 
 export class MonatService {
 	public cart;
 	public lastAddedSkuID: string = '';
 	public previouslySelectedStarterPackBundleSkuID:string;
 	public canPlaceOrder:boolean;
-	public cachedOptions = {
-		frequencyTermOptions: <IOptions[]>null,
-		countryCodeOptions: <IOptions[]>null,
-	};
 	public userIsEighteen:boolean;
 	public hasOwnerAccountOnSession:boolean;
 	
 	//@ngInject
-	constructor(public publicService, public $q, public $window, public requestService, private observerService) {}
+	constructor(
+		private $q, 
+		private $window, 
+		private publicService, 
+		private requestService, 
+		private observerService,
+		private utilityService,
+		
+		private localStorageCache: Cache,
+		private sessionStorageCache: Cache,
+		private inMemoryCache: Cache
+	) {
+		
+		console.log("localCache keys: "+this.localStorageCache.keys());
+		console.log("sessionCache keys: "+this.sessionStorageCache.keys());
+		console.log("memoryCache keys: "+this.inMemoryCache.keys());
+	}
 
 	public getCart(refresh = false, param = '') {
 		var deferred = this.$q.defer();
-		if (refresh || angular.isUndefined(this.cart)) {
-			this.publicService
-				.getCart(refresh, param)
-				.then((data) => {
-					this.cart = data;
-					this.canPlaceOrder = this.cart.cart.orderRequirementsList.indexOf('canPlaceOrderReward') == -1;
-					deferred.resolve(this.cart);
+		let cachedCart = this.sessionStorageCache.get('cachedCart');
+		
+		if (refresh || angular.isUndefined(cachedCart) ){
+			
+			this.publicService.getCart(refresh, param)
+				.then((data) => { 
+					if(data &&  data.failureActions.length == 0){
+						console.log("get-cart, puting it in session-cache")
+						this.sessionStorageCache.put('cachedCart',data.cart);
+						this.canPlaceOrder = data.cart.orderRequirementsList.indexOf('canPlaceOrderReward') == -1;
+						deferred.resolve(data.cart);
+					} else {
+						throw data;
+					}
 				})
 				.catch((e) => {
+					console.log("get-cart, exception, removing it from session-cache", e);
+					this.sessionStorageCache.remove('cachedCart');
 					deferred.reject(e);
 				});
+				
 		} else {
-			deferred.resolve(this.cart);
+			deferred.resolve(cachedCart);
 		}
 		return deferred.promise;
 	}
@@ -43,17 +65,17 @@ export class MonatService {
 	/**
 	 * actions => addOrderItem, removeOrderItem, updateOrderItemQuantity, ....
 	 *
-	 */
-
+	*/
 	private updateCart = (action: string, payload): Promise<any> => {
 		let deferred = this.$q.defer();
 		payload['returnJSONObjects'] = 'cart';
 
 		this.publicService.doAction(action, payload)
 			.then((data) => {
-				if (data.cart) {
-					this.cart = data.cart;
-					this.canPlaceOrder = this.cart.orderRequirementsList.indexOf('canPlaceOrderReward') == -1;
+				if (data.cart && data.failureActions.length == 0) {
+					console.log("update-cart, puting it in session-cache")
+					this.sessionStorageCache.put('cachedCart', data.cart);
+					this.canPlaceOrder = data.cart.orderRequirementsList.indexOf('canPlaceOrderReward') == -1;
 					deferred.resolve(data.cart);
 					this.observerService.notify( 'updatedCart', data.cart ); 
 				} else {
@@ -61,6 +83,8 @@ export class MonatService {
 				}
 			})
 			.catch((e) => {
+				console.log("update-cart, exception, removing it from session-cache", e);
+				this.sessionStorageCache.remove('cachedCart');
 				deferred.reject(e);
 			});
 
@@ -124,7 +148,7 @@ export class MonatService {
 
 	/**
 	 * options = {optionName:refresh, ---> option2:true, o3:false}
-	 */
+	*/
 	public getOptions(options: {}, refresh = false) {
 		var deferred = this.$q.defer();
 		var optionsToFetch = this.makeListOfOptionsToFetch(options, refresh);
@@ -132,52 +156,90 @@ export class MonatService {
 		if (refresh || (optionsToFetch && optionsToFetch.length)) {
 			this.requestService
 				.newPublicRequest('?slatAction=api:public.getOptions', { optionsList: optionsToFetch })
-				.promise.then((data) => {
+				.promise
+				.then((data) => {
 					var { messages, failureActions, successfulActions, ...realOptions } = data; //destructuring we dont want unwanted data in cached options
-					this.cachedOptions = { ...this.cachedOptions, ...realOptions }; // override and merge with old options
-					this.sendOptionsBack(options, deferred);
+					Object.keys(realOptions).forEach( (key) => this.localStorageCache.put(key, realOptions[key] ) );
+					this.returnOptions(options, deferred);
 					//TODO handle errors
 				});
 		} else {
-			this.sendOptionsBack(options, deferred);
+			this.returnOptions(options, deferred);
 		}
 		return deferred.promise;
 	}
 
 	private makeListOfOptionsToFetch(options: {}, refresh: boolean = false) {
 		return Object.keys(options)
-			.filter((key) => refresh || !!options[key] || !this.cachedOptions[key])
-			.reduce((previous, current) => {
-				if (current) {
-					previous = previous.length ? previous + ',' + current : current;
-				}
-				return previous;
-			}, '');
+			.filter((key) => refresh || !!options[key] || !this.localStorageCache.get(key))
+			.reduce((list, current) =>  this.utilityService.listAppend(list,current), '');
 	}
 
-	private sendOptionsBack(options: {}, deferred) {
-		let res = Object.keys(options).reduce(
-			(result, key) => (<any>Object).assign(result, { [key]: this.cachedOptions[key] }),
-			{},
-		);
+	private returnOptions(options: {}, deferred) {
+		let res = Object.keys(options)
+			.reduce( (obj, key) => {
+				return (<any>Object).assign(obj, { [key]: this.localStorageCache.get(key) })
+			}, {});
 		deferred.resolve(res);
+	}
+	
+
+	public getOrderTemplateShippingMethodOptions(refresh = false) {
+		return this.getOptions( {'orderTemplateShippingMethodOptions': refresh} );
 	}
 
 	public getFrequencyTermOptions(refresh = false) {
-		var deferred = this.$q.defer();
-		if (refresh || !this.cachedOptions.frequencyTermOptions) {
-			this.requestService
-				.newPublicRequest('?slatAction=api:public.getFrequencyTermOptions')
-				.promise.then((data) => {
-					this.cachedOptions.frequencyTermOptions = data.frequencyTermOptions;
-					deferred.resolve(this.cachedOptions.frequencyTermOptions);
-				});
-		} else {
-			deferred.resolve(this.cachedOptions.frequencyTermOptions);
-		}
-		return deferred.promise;
+		return this.getOptions( {'frequencyTermOptions': refresh} );
 	}
 	
+	public getFrequencyDateOptions(refresh = false) {
+		return this.getOptions( {'frequencydateOptions': refresh} );
+	}
+	
+	public getCancellationReasonTypeOptions(refresh = false) {
+		return this.getOptions( {'cancellationReasonTypeOptions': refresh} );
+	}
+	
+	public getScheduleDateChangeReasonTypeOptions(refresh = false) {
+		return this.getOptions( {'scheduleDateChangeReasonTypeOptions': refresh} );
+	}
+	
+	public getExpirationMonthOptions(refresh = false) {
+		return this.getOptions( {'expirationMonthOptions': refresh} );
+	}
+	
+	public getExpirationYearOptions(refresh = false) {
+		return this.getOptions( {'expirationYearOptions': refresh} );
+	}
+	
+    /**
+     * TODO: move to the UtilityService
+     * 
+     * This method gets the value of a cookie by its name
+     * Example cookie: "flexshipID=01234567" => "01234567"
+    **/
+    public getCookieValueByCookieName(name:string):string{
+		let cookieString = document.cookie;
+		let cookieArray = cookieString.split(';')
+		let cookieValueArray = <Array<string>>cookieArray.filter( el => el.search(name) > -1 );
+		if(!cookieValueArray.length) return '';
+    	return  cookieValueArray[0].substr(cookieValueArray[0].indexOf('=') + 1);
+    }
+    
+    /**
+    	This method takes a date string and returns age in years
+    **/
+	public calculateAge(birthDate:string):number { 
+		if(!birthDate) return;
+		let birthDateObj = <any>Date.parse(birthDate);
+	    let years = Date.now() - birthDateObj.getTime();
+	    let age = new Date(years); 
+	    let yearsOld = Math.abs(age.getUTCFullYear() - 1970);
+	    this.userIsEighteen = yearsOld >= 18;
+	    return yearsOld;
+	}
+	
+		
 	public adjustInputFocuses = () => {
 		$('input, select').focus(function() {
 			var ele = $(this);
@@ -205,46 +267,32 @@ export class MonatService {
 		
 		this.$window.location.href = redirectUrl;
 	}
-
-    public countryCodeOptions = (refresh = false)=>{
-        var deferred = this.$q.defer();
-		if (refresh || !this.cachedOptions.countryCodeOptions) {
-			this.publicService
-				.getCountries()
-				.then((data) => {
-					this.cachedOptions.countryCodeOptions = data.countryCodeOptions;
-					deferred.resolve(this.cachedOptions.countryCodeOptions);
-				});
+	
+	public setNewlyCreatedFlexship(flexshipID: string){
+		if(flexshipID && flexshipID.trim() !== '' ){
+			this.sessionStorageCache.put('newlyCreatedFlexship', flexshipID);
 		} else {
-			deferred.resolve(this.cachedOptions.countryCodeOptions);
+			this.sessionStorageCache.remove('newlyCreatedFlexship');
 		}
-		return deferred.promise;
-    }
-    
-    /**
-    	This method gets the value of a cookie by its name
-    	Example cookie: "flexshipID=01234567" => "01234567"
-    **/
-    
-    public getCookieValueByCookieName(name:string):string{
-		let cookieString = document.cookie;
-		let cookieArray = cookieString.split(';')
-		let cookieValueArray = <Array<string>>cookieArray.filter( el => el.search(name) > -1 );
-		if(!cookieValueArray.length) return '';
-    	return  cookieValueArray[0].substr(cookieValueArray[0].indexOf('=') + 1);
-    }
-    
-    /**
-    	This method takes a date string and returns age in years
-    **/
-	public calculateAge(birthDate:string):number { 
-		if(!birthDate) return;
-		let birthDateObj = <any>Date.parse(birthDate);
-	    let years = Date.now() - birthDateObj.getTime();
-	    let age = new Date(years); 
-	    let yearsOld = Math.abs(age.getUTCFullYear() - 1970);
-	    this.userIsEighteen = yearsOld >= 18;
-	    return yearsOld;
 	}
+	
+	public getNewlyCreatedFlexship(): string {
+		return this.sessionStorageCache.get('newlyCreatedFlexship');
+	}
+	
+	
+	public setCurrentFlexship(flexshipID: string){
+		if(flexshipID && flexshipID.trim() !== '' ){
+			this.sessionStorageCache.put('currentFlexship', flexshipID);
+		} else {
+			this.sessionStorageCache.remove('currentFlexship');
+		}
+	}
+	
+	public getCurrentFlexship(): string {
+		return this.sessionStorageCache.get('currentFlexship');
+	}
+	
+	
 
 }

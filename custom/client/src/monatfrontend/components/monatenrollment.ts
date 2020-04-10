@@ -62,7 +62,7 @@ class MonatEnrollmentController {
 			
 			//if account has a flexship send to checkout review
 			this.monatService.getCart().then(res =>{
-				let cart = res.cart;
+				let cart = res.cart ? res.cart : res;
 				this.canPlaceCartOrder = cart.orderRequirementsList.indexOf('canPlaceOrderReward') == -1;
 				let account = result.account;
 				let reqList = 'createAccount,updateAccount';
@@ -105,8 +105,7 @@ class MonatEnrollmentController {
 	
 	public getCart = () => {
 		this.monatService.getCart().then(data =>{
-			let cartData = this.removeStarterKitsFromCart( data );
-			this.cart = cartData;
+			this.cart = data;
 			this.canPlaceCartOrder = this.cart.orderRequirementsList.indexOf('canPlaceOrderReward') == -1;
 		});
 	}
@@ -231,7 +230,7 @@ class MonatEnrollmentController {
 			this.showBirthday = true;
 		}
 		
-		if(cart.orderFulfillments && cart.orderFulfillments[0]?.shippingAddress?.addressID.length && cart.monatOrderType?.typeID.length){
+		if(cart.orderFulfillments && cart.orderFulfillments[0]?.shippingAddress?.addressID.length && cart.monatOrderType?.typeCode.length){
 			this.hasSkippedSteps = true;
 			this.steps = this.steps.filter(el => reqList.indexOf(el.stepClass) == -1);
 			this.goToLastStep();

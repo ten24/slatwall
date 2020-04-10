@@ -1,5 +1,10 @@
 {
+	"conditions": {
+		"isNotEnrollment": {
+			"childAccount.accountStatusType.systemCode": { "neq": "astEnrollmentPending" }
+		},
+	},
 	"properties": {
-		"childAccount": [{ "contexts": "delete", "method": "childAccountHasMultipleParents" }]
+		"childAccount": [{ "contexts": "delete", "method": "childAccountHasMultipleParents", "conditions": "isNotEnrollment"}]
 	}
 }

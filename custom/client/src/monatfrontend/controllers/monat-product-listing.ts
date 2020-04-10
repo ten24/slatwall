@@ -14,8 +14,8 @@ class MonatProductListingController {
     public showAddToCardAlert;
     public callEndpoint = true;
     public showWishlist:boolean;
-
-    
+    public paginationMethod = 'getProductsByCategoryOrContentID';
+    public searchTerm:string;
     public wishlistItems;
 
 	// @ngInject
@@ -90,7 +90,7 @@ class MonatProductListingController {
         });
     }
     
-    	public launchWishlistModal = (skuID, productName) => {
+	public launchWishlistModal = (skuID, productName) => {
 		let newSkuID = skuID
 		this.ModalService.showModal({
 			component: 'swfWishlist',
@@ -112,7 +112,20 @@ class MonatProductListingController {
 			.catch((error) => {
 				console.error('unable to open model :', error);
 			});
-	};
+	}
+	
+	public searchByKeyword = ():void =>{
+	    this.loading = true;
+        this.argumentsObject['pageRecordsShow'] = this.pageRecordsShow;
+		this.publicService.doAction('getProductsByKeyword', {keyword: this.searchTerm }).then(res=> {
+			this.paginationMethod = 'getProductsByKeyword';
+			this.recordsCount = res.recordsCount;
+			this.argumentsObject['keyword'] = this.searchTerm;
+			this.productList = res.productList;
+			this.observerService.notify("PromiseComplete");
+			this.loading = false;
+		});
+	}
 
 }
 

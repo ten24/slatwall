@@ -48,6 +48,7 @@ Notes:
 */
 component extends="HibachiService" persistent="false" accessors="true" output="false" {
 	property name="settingService" type="any";
+	property name="GiftCardDAO";
 	// ===================== START: Logical Methods ===========================
 	
 	/**
@@ -90,6 +91,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
             if(getService("SettingService").getSettingValue("skuGiftCardEnforceExpirationTerm")){
                 arguments.giftCard.setExpirationDate(arguments.processObject.getExpirationDate());
             }
+		}
+		
+		if(!isNull(arguments.processObject.getCreditExpirationTerm())){
+			arguments.giftCard.setCreditExpirationTerm(arguments.processObject.getCreditExpirationTerm());
 		}
 
 		if(!isNull(arguments.processObject.getOriginalOrderItem())){
@@ -177,6 +182,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 			
 		if(!giftCardDebitTransaction.hasErrors()){
+			
 			if(arguments.giftCard.getBalanceAmount() == 0){
 				arguments.giftCard.setActiveFlag(false);//this will trigger updateCalculateProperties to run when gift card is saved
 			} else {
@@ -184,6 +190,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 			arguments.giftCard = this.saveGiftCard(arguments.giftCard);
 		} else {
+			
 			arguments.giftCard.addErrors(giftCardDebitTransaction.getErrors());
 		}
 
@@ -327,9 +334,29 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(structKeyExists(arguments, "orderPayment") && !isNull(arguments.orderPayment)){
             creditGiftTransaction.setOrderPayment(arguments.orderPayment);
         }
+        
+        if(arguments.giftCard.hasCreditExpirationTerm()){
+        	var endDate = arguments.giftCard.getCreditExpirationTerm().getEndDate();
+        	creditGiftTransaction.setExpirationDate(endDate);
+        }
 
 		return this.saveGiftCardTransaction(creditGiftTransaction);
 	}
+	
+	public void function processGiftCard_debitExpiredGiftCardCredits(){
+		var expiredCreditsList = getGiftCardDAO().getExpiredCreditsList();
+		var emptyArray = [];
+		
+		for(var item in expiredCreditsList){
+			var giftCard = this.getGiftCard(item.giftCardID);
+			var processObject = giftCard.getProcessObject('addDebit');
+			processObject.setGiftCard(giftCard);
+			processObject.setDebitAmount(item.netExpiredCredit);
+			processObject.setReasonForAdjustment('Expired Credit');
+			giftCard = this.processGiftCard(giftCard,processObject,'addDebit');
+		}
+	}
+	
 	// =====================  END: Process Methods ============================
 
 	// ====================== START: Save Overrides ===========================

@@ -351,7 +351,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         for(var paymentMethod in accountPaymentMethods) {
             if(paymentMethod.getMoMoneyWallet() === true) {
                 if(getHibachiScope().cart().getCalculatedPaymentAmountDue() <= paymentMethod.getMoMoneyBalance()) { //Sufficient Balance
-                    arguments.data['ajaxResponse']['hyperWalletPaymentMethod']= paymentMethod.getAccountPaymentMethodID();
+                    arguments.data['ajaxResponse']['hyperWalletPaymentMethod'] = paymentMethod.getPaymentMethodID();
+                    arguments.data['ajaxResponse']['hyperWalletAccountPaymentMethod'] = paymentMethod.getAccountPaymentMethodID();
                 }
                 else{
                     this.addErrors(arguments.data, "Insufficient Balance");
@@ -456,11 +457,12 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
      * */
     public any function addOrderPayment(required any data, boolean giftCard = false) {
         param name = "data.orderID" default = "";
+        param name = "data.paymentIntegrationType" default="";
         
-        if(StructKeyExists(arguments.data,'accountPaymentMethodID')) {
+        if(StructKeyExists(arguments.data,'accountPaymentMethodID') && StructKeyExists(arguments.data, "paymentIntegrationType") && !isEmpty(arguments.data.paymentIntegrationType) ) {
             var accountPaymentMethodCollectionList = getAccountService().getAccountPaymentMethodCollectionList();
             accountPaymentMethodCollectionList.setDisplayProperties('paymentMethod.paymentMethodID');
-            accountPaymentMethodCollectionList.addFilter("paymentMethod.paymentIntegration.integrationPackage", "braintree");
+            accountPaymentMethodCollectionList.addFilter("paymentMethod.paymentIntegration.integrationPackage", arguments.data.paymentIntegrationType);
             accountPaymentMethodCollectionList.addFilter("accountPaymentMethodID", arguments.data.accountPaymentMethodID);
             accountPaymentMethodCollectionList = accountPaymentMethodCollectionList.getRecords(formatRecords=true);
             
@@ -468,26 +470,24 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                arguments.data.newOrderPayment.paymentMethod.paymentMethodID = accountPaymentMethodCollectionList[1].paymentMethod_paymentMethodID;
                 arguments.data.newOrderPayment.requireBillingAddress = 0;
             }
-            
-            if (len(data.orderID)) {
-                var order = getOrderService().getOrder(data.orderID);
-            }
-            else {
-                var order = getHibachiScope().getCart();
-            }
-            
-            var account = getHibachiScope().getAccount();
-            
-            //Remove any existing order payments
-            //It's to remove default payment from order when adding any new method
-            if(!isNull(order) && !isNull(account) && order.getAccount().getAccountID() == account.getAccountID()) {
-                for( orderPayment in order.getOrderPayments() ) {
-                    if(orderPayment.isDeletable()) {
-        				getService("OrderService").deleteOrderPayment(orderPayment);
-        			}
-        		}
-            }
-            
+        }
+        
+        if (len(arguments.data.orderID)) {
+            var order = getOrderService().getOrder(arguments.data.orderID);
+        } else {
+            var order = getHibachiScope().getCart();
+        }
+        
+        var account = getHibachiScope().getAccount();
+        
+        //Remove any existing order payments
+        //It's to remove default payment from order when adding any new method
+        if(!isNull(order) && !isNull(account) && order.getAccount().getAccountID() == account.getAccountID()) {
+            for( var orderPayment in order.getOrderPayments() ) {
+                if(orderPayment.isDeletable()) {
+    				getService("OrderService").deleteOrderPayment(orderPayment);
+    			}
+    		}
         }
         
         super.addOrderPayment(argumentCollection = arguments);
@@ -519,7 +519,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 
         param name="arguments.data.orderTemplateSystemCode" default="ottSchedule";
         param name="arguments.data.frequencyTermID" default="23c6a8caa4f890196664237003fe5f75";// TermID for monthly
-        param name="arguments.data.scheduleOrderNextPlaceDateTime" default= "#dateAdd('m',1,dateFormat(now()))#";
         param name="arguments.data.siteID" default="";
         param name="arguments.data.saveContext" default="";
         param name="arguments.data.setOnHibachiScopeFlag" default=false;
@@ -554,10 +553,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         } else {
             //Vip upgrade so we assign the VIP price group to the process object
             processObject.setPriceGroup(getService('PriceGroupService').getPriceGroupByPriceGroupCode(3));
-        }
-        
-        if(arguments.data.orderTemplateSystemCode == 'ottSchedule'){
-            processObject.setScheduleOrderNextPlaceDateTime(arguments.data.scheduleOrderNextPlaceDateTime);  
         }
         
         if( len(arguments.data.saveContext)) {
@@ -1168,8 +1163,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         }
 
         var productCollectionList = getProductService().getProductCollectionList();
-        productCollectionList.addDisplayProperties('productID');
-        productCollectionList.addDisplayProperties('productName');
+        productCollectionList.setDisplayProperties('productID');
+        productCollectionList.addDisplayProperty('productName');
         productCollectionList.addDisplayProperty('defaultSku.skuID');
         productCollectionList.addDisplayProperty('defaultSku.skuPrices.personalVolume');
         productCollectionList.addDisplayProperty('defaultSku.skuPrices.price');
@@ -1316,6 +1311,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             productData['right'] = product.getFormattedValue('extendedDescriptionRight');
             productData['productFullIngredients'] = product.getAttributeValue('productFullIngredients');
             productData['ingredients'] = [];
+            productData['productDescription'] = product.getFormattedValue('productDescription');
+            
             var fileName = product.getAttributeValue( 'productVideoBackgroundImage' );
             var videoBackgroundImage = getService('imageService').getResizedImagePath(imagePath = "#getHibachiScope().getBaseImageURL()#'/'#fileName#",width = 300, height =300);
             productData['videoBackgroundImage'] = videoBackgroundImage;
@@ -1654,8 +1651,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             return;
         }
         
-        getHibachiScope().setSessionValue('ownerAccountNumber', '');
-        
         //if we are not in an upgrade flow and the user is logged in, log the user out.
         if(!arguments.data.upgradeFlowFlag && getHibachiScope().getLoggedInFlag()){
             if(getHibachiScope().getAccount().canSponsor()){
@@ -1866,6 +1861,15 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		param name="arguments.data.optionalProperties" default="qualifiesForOFYProducts"; 
 		
 		super.getOrderTemplates(argumentCollection = arguments);
+		
+		//loop over the flexships and include the associated OFY product
+		for(var ot in arguments.data['ajaxResponse']['orderTemplates'] ){
+		  
+		    //this is some add-on optimization, as if flexship qualifies, or is-canceled, it definately can't have an OFY on it
+		    if(!ot.qualifiesForOFYProducts && ot.statusCode != "otstCanceled"){ 
+		        ot['associatedOFYProduct'] = this.getService('orderService').getAssociatedOFYProductForFlexship(ot.orderTemplateID);
+		    }
+		}
     }
     
 	public void function getWishlistItems(required any data){
@@ -2076,20 +2080,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         param name="arguments.data.nullAccountFlag" default="false";
         param name="arguments.data.optionalProperties" default="";
         
-        //Try to grab the currentFlexshipID from Cookie/session/whatever
-        if( !getHibachiScope().hasCurrentFlexship() ) {
-            
-            getHibachiScope().logHibachi(" No current-flexship found", true);
-            getHibachiScope().logHibachi(" COOKIE.JSESSIONID = #COOKIE.JSESSIONID# ", true);
-    		getHibachiScope().logHibachi(" COOKIE.CFTOKEN = #COOKIE.CFTOKEN# ", true);
-    		getHibachiScope().logHibachi(" COOKIE.CFID = #COOKIE.CFID# ", true);
-            
-        } else {
-            
-            getHibachiScope().logHibachi("Current-flexship found on hibachi-scope = #getHibachiScope().getCurrentFlexshipID()# ", true);
-        }
-        
-        
         if( getHibachiScope().hasCurrentFlexship() ) {
             //If there is an order template on the session return the order template details
             var data = {
@@ -2116,11 +2106,31 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     
     
     /**
-        * Function to update account with validation ensuring age is >= 18
-    **/
+     * Function to update account with validation ensuring age is >= 18
+    */
     public any function updateEighteenPlusUser(required any data){
         arguments.data['context'] = 'eighteenPlus';
         this.updateAccount(arguments.data);
+    }
+    
+    
+    /**
+     * API, to return associated OFY product on any flexship, if it has one
+     * 
+    */ 
+    public void function getAssociatedOFYProductForFlexship(requred struct data){
+        param name="arguments.data.orderTemplateID" default=""; //default to flexship
+
+        var orderTemplate = getOrderService().getOrderTemplateForAccount(argumentCollection = arguments);
+		if( isNull(orderTemplate) ) {
+			return;
+		}
+
+        arguments.data['ajaxResponse']['associatedOFYProduct'] = this.getService('orderService')
+                                                                    .getAssociatedOFYProductForFlexship(
+                                                                        arguments.data.orderTemplateID    
+                                                                    );
+    
     }
     
     public any function getRAFGiftCard(requred any data) {
@@ -2173,4 +2183,16 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         super.placeOrder(arguments.data);
     }
     
+    public void function setCurrentFlexshipOnHibachiScope(required any data){
+        var orderTemplate = getService('orderService').getOrderTemplate(arguments.data.orderTemplateID);
+        var account = getHibachiScope().getAccount();
+        
+        //ensure the order template is a flexship and either does not have an account, or matches the current account on session
+        if(
+            orderTemplate.getTypeCode() == 'ottSchedule'
+            && (isNull(orderTemplate.getAccount()) || account.getAccountID() == orderTemplate.getAccount().getAccountID())
+        ){
+            getHibachiScope().setCurrentFlexship(orderTemplate);
+        }
+    }
 }
