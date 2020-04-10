@@ -459,7 +459,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         param name = "data.orderID" default = "";
         param name = "data.paymentIntegrationType" default="";
         
-        if(StructKeyExists(arguments.data,'accountPaymentMethodID') && StructKeyExists(arguments.data, "paymentMethodType") && !isEmpty(arguments.data.paymentMethodType) ) {
+        if(StructKeyExists(arguments.data,'accountPaymentMethodID') && StructKeyExists(arguments.data, "paymentIntegrationType") && !isEmpty(arguments.data.paymentIntegrationType) ) {
             var accountPaymentMethodCollectionList = getAccountService().getAccountPaymentMethodCollectionList();
             accountPaymentMethodCollectionList.setDisplayProperties('paymentMethod.paymentMethodID');
             accountPaymentMethodCollectionList.addFilter("paymentMethod.paymentIntegration.integrationPackage", arguments.data.paymentIntegrationType);
@@ -519,7 +519,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 
         param name="arguments.data.orderTemplateSystemCode" default="ottSchedule";
         param name="arguments.data.frequencyTermID" default="23c6a8caa4f890196664237003fe5f75";// TermID for monthly
-        param name="arguments.data.scheduleOrderNextPlaceDateTime" default= "#dateAdd('m',1,dateFormat(now()))#";
         param name="arguments.data.siteID" default="";
         param name="arguments.data.saveContext" default="";
         param name="arguments.data.setOnHibachiScopeFlag" default=false;
@@ -554,10 +553,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         } else {
             //Vip upgrade so we assign the VIP price group to the process object
             processObject.setPriceGroup(getService('PriceGroupService').getPriceGroupByPriceGroupCode(3));
-        }
-        
-        if(arguments.data.orderTemplateSystemCode == 'ottSchedule'){
-            processObject.setScheduleOrderNextPlaceDateTime(arguments.data.scheduleOrderNextPlaceDateTime);  
         }
         
         if( len(arguments.data.saveContext)) {

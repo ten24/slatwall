@@ -237,13 +237,12 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 				}
 				
 				orderTemplate.setAccountPaymentMethod(accountPaymentMethod);
-				orderTemplate.setOrderTemplateStatusType(orderTemplateStatusType);
 				
 				if(isNull(orderTemplate.getAccount())){
 					orderTemplate.setAccount(arguments.order.getAccount());
 				}
-				
-				orderTemplate = getOrderService().saveOrderTemplate(orderTemplate,{},'upgradeFlow');//upgradeFlow???
+				orderTemplate = getOrderService().processOrderTemplate_activate(orderTemplate, {}, {'context': 'upgradeFlow'});
+		
 			}
 			
 			

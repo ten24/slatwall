@@ -190,17 +190,12 @@ var monatfrontendmodule = angular
 	.run(['appConfig','localStorageCache','sessionStorageCache', 
 	(appConfig,localStorageCache,sessionStorageCache) =>{
 		
-		console.log("monat-module-run start");
 		if(localStorageCache.get('instantiationKey') !== appConfig.instantiationKey){
-			console.log("app-instantiation-key changed, resetting caches");
-        	//if the app-instantiation-key is changed, clearign the caches
+			console.log("app-instantiation-key changed, resetting local-storage caches");
         	localStorageCache.removeAll(); 
-        	sessionStorageCache.removeAll();
         	localStorageCache.put('instantiationKey', appConfig.instantiationKey);
         }
-        console.log("app-key", localStorageCache.get('instantiationKey'));
-        console.log("monat-module-run stop");
-
+        console.log("app-instantiationKey-key", localStorageCache.get('instantiationKey'));
 	}]);
 
 export { monatfrontendmodule };
