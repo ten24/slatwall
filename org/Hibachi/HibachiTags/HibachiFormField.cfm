@@ -184,7 +184,7 @@
 						</cfif>
 						<cfset thisOptionValue = isSimpleValue(option) ? option : structKeyExists(option, 'value') ? structFind(option, 'value') : '' />
 						<cfset thisOptionName = isSimpleValue(option) ? option : structFind(option, 'name') />
-						<option value="#thisOptionValue#" <cfif listFindNoCase(attributes.value, thisOptionValue)> selected="selected"</cfif>>#thisOptionName#</option>
+						<option value="#thisOptionValue#" <cfif listFindNoCase(decodeForHTML(attributes.value), thisOptionValue)> selected="selected"</cfif>>#thisOptionName#</option>
 					</cfloop>
 				</select>
 			</cfoutput>
@@ -231,11 +231,6 @@
 			</cfoutput>
 		</cfcase>
 		<cfcase value="readOnly">
-			<cfoutput>
-				<p class="form-control read-only <cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>">#attributes.value#</p>
-			</cfoutput>
-		</cfcase>
-		<cfcase value="readOnlyRelatedObject">
 			<cfoutput>
 				<p class="form-control read-only <cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>">#attributes.value#</p>
 			</cfoutput>

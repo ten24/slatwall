@@ -33,6 +33,7 @@ class SWPricingManagerController{
         this.skuPriceCollectionConfig = this.collectionConfigService.newCollectionConfig("SkuPrice");
         this.skuPriceCollectionConfig.setDisplayProperties("sku.skuName,sku.skuCode,sku.calculatedSkuDefinition,activeFlag,priceGroup.priceGroupName,currencyCode");
         this.skuPriceCollectionConfig.addDisplayProperty("price", "" ,{isEditable:true});
+        this.skuPriceCollectionConfig.addDisplayProperty("listPrice", "" ,{isEditable:true});
         this.skuPriceCollectionConfig.addDisplayProperty("minQuantity", "" ,{isEditable:true});
         this.skuPriceCollectionConfig.addDisplayProperty("maxQuantity", "" ,{isEditable:true});
         this.skuPriceCollectionConfig.addDisplayProperty("skuPriceID", "", {isVisible:false,isSearchable:false});

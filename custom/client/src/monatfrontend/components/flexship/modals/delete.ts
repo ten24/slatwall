@@ -64,7 +64,7 @@ class MonatFlexshipDeleteModal {
 				private $hibachi,
 				private rbkeyService
 	){
-		this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/monatflexship-modal-delete.html";
+		this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/flexship/modals/delete.html";
 		this.restrict = "E";
 	}
 

@@ -2074,32 +2074,27 @@ property name="sapItemCode" ormtype="string";
 
 	// ==================  END:  Deprecated Methods ========================	//CUSTOM FUNCTIONS BEGIN
 
-public boolean function canBePurchased(required any account){
+public boolean function canBePurchased(required any account, any order){
+		if( !isNull(arguments.order) && !isNull(arguments.order.getAccountType()) ){
+			var accountType = arguments.order.getAccountType();
+		} else if ( !isNull(arguments.account.getAccountType()) ) {
+			var accountType = arguments.account.getAccountType();
+		}
 		
-		if ( !isNull( arguments.account.getAccountType() ) ) {
+		if( isNull(accountType) ){
+			return this.getRetailFlag() == true;
+		}else{
+		
+			var notValidVipItem = ( accountType == "vip" && this.getVipFlag() != true );
+			var notValidMpItem = ( accountType == "marketPartner" && this.getMpFlag() != true );
+			var notValidRetailItem = ( accountType == "customer" && this.getRetailFlag() != true );
 			
-			var notValidVipItem = arguments.account.getAccountType() == "vip" && this.getVipFlag() != true;
-			if(notValidVipItem){
-				return false;
-			}
-			var notValidMpItem = arguments.account.getAccountType() == "marketPartner" && this.getMpFlag() != true;
-			if(notValidMpItem){
-				return false;
-			}
-			var notValidRetailItem = arguments.account.getAccountType() == "customer" && this.getRetailFlag() != true;
-			if(notValidRetailItem){
-				return false;
-			}
-			
-		} else {
-			
-			// If failed to get account type (not logged in usually), and isn't a retail Sku
-			if ( this.getRetailFlag() != true ) {
+			if( notValidRetailItem || notValidVipItem || notValidMpItem ){
 				return false;
 			}
 		}
 		
-        return true; 
+		return true;
 	}
 	
     public any function getPersonalVolumeByCurrencyCode(string currencyCode, string accountID){

@@ -94,7 +94,7 @@ class MonatFlexshipNameModal {
 				private $hibachi,
 				private rbkeyService
 	){
-		this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/monatflexship-modal-name.html";
+		this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/flexship/modals/name.html";
 		this.restrict = "E";
 	}
 

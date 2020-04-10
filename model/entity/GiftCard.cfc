@@ -59,6 +59,7 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
     property name="activeFlag" ormtype="boolean";
     property name="issuedDate" ormtype="timestamp";
     property name="currencyCode" ormtype="string" length="3";
+
     //Calculated Properties
     property name="calculatedBalanceAmount" ormtype="big_decimal" hb_formatType="currency";
 
@@ -69,6 +70,7 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
 	property name="originalOrderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="originalOrderItemID" cascade="all";
 	property name="Sku" cfc="Sku" fieldtype="many-to-one" fkcolumn="SkuID" cascade="all";
 	property name="giftCardExpirationTerm" cfc="Term" fieldtype="many-to-one" fkcolumn="giftCardExpirationTermID" cascade="all";
+	property name="creditExpirationTerm" cfc="Term" fieldtype="many-to-one" fkcolumn="creditExpirationTermID" cascade="all";
 	property name="order" cfc="Order" fieldtype="many-to-one" fkcolumn="OrderID";
 	property name="ownerAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="ownerAccountID";
     property name="orderItemGiftRecipient" cfc="OrderItemGiftRecipient" fieldtype="many-to-one" fkcolumn="orderItemGiftRecipientID" inverse="true" cascade="all";

@@ -103,7 +103,7 @@ class MonatCheckoutController {
 			this.enrollmentSteps = <number>this.publicService.steps ? <number>this.publicService.steps -1 : 0; 
 			this.account = res.account;
 	
-			if( (this.account && this.account.ownerAccount && this.account.ownerAccount.accountNumber.length) && (this.account.ownerAccount.accountNumber !== this.account?.accountNumber) ) {
+			if( this.account.accountStatusType.systemCode != 'astEnrollmentPending' ) {
 				this.hasSponsor = true;
 			}else{
 				this.totalSteps = 1;
@@ -210,9 +210,15 @@ class MonatCheckoutController {
     		if(!response.hyperWalletPaymentMethod) {
 			    console.log("Error in configuring Hyperwallet.");
 			    return;
+			} else {
+				this.publicService.doAction('addOrderPayment', {accountPaymentMethodID: response.hyperWalletAccountPaymentMethod,
+					"copyFromType":"accountPaymentMethod",
+					"paymentIntegrationType":"hyperwallet",
+					"newOrderPayment.paymentMethod.paymentMethodID": response.hyperWalletPaymentMethod,
+				});
 			}
 			
-			this.publicService.useSavedPaymentMethod.accountPaymentMethodID = response.hyperWalletPaymentMethod;
+			this.publicService.useSavedPaymentMethod.accountPaymentMethodID = response.hyperWalletAccountPaymentMethod;
     	});
 	}
 	
@@ -295,6 +301,7 @@ class MonatCheckoutController {
 								
 								that.publicService.doAction('addOrderPayment', {accountPaymentMethodID: response.newPayPalPaymentMethod,
 									"copyFromType":"accountPaymentMethod",
+									"paymentIntegrationType":"braintree",
 									"newOrderPayment.paymentMethod.paymentMethodID": response.paymentMethodID,
 								});
 							});
@@ -344,7 +351,6 @@ class MonatCheckoutController {
 		this.sponsorLoading = true;
 		this.publicService.doAction('submitSponsor', {sponsorID: this.ownerAccountID}).then(res=>{
 			if(res.successfulActions.length) {
-				this.hasSponsor = true; 
 				this.next();
 			}else if(res.errors){
 				this.monatAlertService.error(res.errors);
