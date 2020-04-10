@@ -187,8 +187,8 @@ var monatfrontendmodule = angular
 			});
 		},
 	])
-	.run(['appConfig','localStorageCache','sessionStorageCache', 
-	(appConfig,localStorageCache,sessionStorageCache) =>{
+	.run(['appConfig','localStorageCache','sessionStorageCache','observerService', 
+	(appConfig,localStorageCache,sessionStorageCache,observerService) =>{
 		
 		if(localStorageCache.get('instantiationKey') !== appConfig.instantiationKey){
 			console.log("app-instantiation-key changed, resetting local-storage caches");
@@ -196,6 +196,17 @@ var monatfrontendmodule = angular
         	localStorageCache.put('instantiationKey', appConfig.instantiationKey);
         }
         console.log("app-instantiationKey-key", localStorageCache.get('instantiationKey'));
+        
+        let clearSessionCartCallback = () =>{
+        	console.log("Called clearSessionCartCallback, clearing cached-cart");
+        	sessionStorageCache.remove('cachedCart');
+        };
+        
+        observerService.attach( clearSessionCartCallback, 'loginFailure' ); 
+        observerService.attach( clearSessionCartCallback, 'loginSuccess' ); 
+        observerService.attach( clearSessionCartCallback, 'logoutSuccess' ); 
+        observerService.attach( clearSessionCartCallback, 'logoutFailure' ); 
+
 	}]);
 
 export { monatfrontendmodule };
