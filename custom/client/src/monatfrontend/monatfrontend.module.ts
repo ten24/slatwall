@@ -63,6 +63,9 @@ import { FlexshipPurchasePlus } from './components/flexshipPurchasePlus';
 import { FlexshipFlow } from './components/flexshipFlow/flexshipFlow';
 import { ProductListingStep } from './components/flexshipFlow/productlistingstep';
 import { FlexshipCheckoutStep} from './components/flexshipFlow/checkout-step'; 
+import { FlexshipCheckoutShipping } from './components/flexshipFlow/checkout-components/shipping';
+
+import { AccountAddressForm } from './components/account-address-form';
 
 // controllers
 import { MonatForgotPasswordController } from './controllers/monat-forgot-password';
@@ -93,17 +96,18 @@ var monatfrontendmodule = angular
 	.directive('monatFlexshipOrderItem', MonatFlexshipOrderItem.Factory())
 	.directive('monatFlexshipShippingAndBillingCard', MonatFlexshipShippingAndBillingCard.Factory())
 	.directive('monatFlexshipOrderTotalCard', MonatFlexshipOrderTotalCard.Factory())
+
 	.directive('monatFlexshipPaymentMethodModal', MonatFlexshipPaymentMethodModal.Factory())
 	.directive('monatFlexshipShippingMethodModal', MonatFlexshipShippingMethodModal.Factory())
-	
 	.directive('monatFlexshipScheduleModal', MonatFlexshipScheduleModal.Factory())
-	
 	.directive('monatFlexshipCancelModal', MonatFlexshipCancelModal.Factory())
 	.directive('monatFlexshipNameModal', MonatFlexshipNameModal.Factory())
 	.directive('monatFlexshipAddGiftCardModal', MonatFlexshipAddGiftCardModal.Factory())
+	
 	.directive('monatFlexshipCartContainer', MonatFlexshipCartContainer.Factory())
 	.directive('monatFlexshipConfirm', MonatFlexshipConfirm.Factory())
 	.directive('monatFlexshipMenu', MonatFlexshipMenu.Factory())
+	
 	.directive('monatEnrollment', MonatEnrollment.Factory())
 	.directive('enrollmentMp', MonatEnrollmentMP.Factory())
 	.directive('monatEnrollmentStep', MonatEnrollmentStep.Factory())
@@ -131,7 +135,7 @@ var monatfrontendmodule = angular
 	.directive('vipUpgradeController', MonatUpgradeVIP.Factory())
 	.directive('monatUpgradeStep', MonatUpgradeStep.Factory())
 	.directive('imageManager', ImageManager.Factory())
-	.directive ('monatConfirmMessageModel',MonatConfirmMessageModel.Factory())
+	.directive('monatConfirmMessageModel',MonatConfirmMessageModel.Factory())
 	.directive('monatDatePicker',MonatDatePicker.Factory())
 	.directive('addressVerification',AddressVerification.Factory())
 
@@ -146,6 +150,8 @@ var monatfrontendmodule = angular
 	.directive('flexshipFlow',FlexshipFlow.Factory())
 	.directive('productListingStep',ProductListingStep.Factory())
 	.directive('flexshipCheckoutStep', FlexshipCheckoutStep.Factory())
+	.directive('flexshipCheckoutShipping', FlexshipCheckoutShipping.Factory())
+	.directive('accountAddressForm', AccountAddressForm.Factory())
 	
 	// Controllers
 	.controller('searchController', MonatSearchController)

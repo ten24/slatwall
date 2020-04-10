@@ -226,6 +226,24 @@ export class MonatService {
     	return  cookieValueArray[0].substr(cookieValueArray[0].indexOf('=') + 1);
     }
     
+    public getFlattenObject = (inObject:Object, delimiter:string='.') : Object => {
+        var objectToReturn = {};
+        for (var key in inObject) {
+            if (!inObject.hasOwnProperty(key)) continue;
+    
+            if ((typeof inObject[key]) == 'object' && inObject[key] !== null) {
+                var flatObject = this.getFlattenObject(inObject[key]);
+                for (var x in flatObject) {
+                    if (!flatObject.hasOwnProperty(x)) continue;
+                    objectToReturn[key + delimiter + x] = flatObject[x];
+                }
+            } else {
+                objectToReturn[key] = inObject[key];
+            }
+        }
+        return objectToReturn;
+    }
+    
     /**
     	This method takes a date string and returns age in years
     **/
@@ -257,6 +275,10 @@ export class MonatService {
 			deferred.resolve( data );
 		});
 		return deferred.promise;
+	}
+	
+	public addEditAccountAddress( payload ) {
+		return this.publicService.doAction('addEditAccountAddress', payload);
 	}
 	
 	public getAccountAddresses(){

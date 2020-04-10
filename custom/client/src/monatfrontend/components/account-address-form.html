@@ -1,0 +1,159 @@
+<!--  new Address form -->
+<form name="accountAddressForm" 
+	ng-submit="accountAddressForm.$valid && accountAddAddressCtrl.onFormSubmit()"
+>
+	<div class="shipping">
+		<!--- Conditional: Add New Shipping Address form --->
+		<div class="row">
+			<div class="label col-12">
+				{{ accountAddAddressCtrl.translations.address }}
+			</div>
+			
+			<div class="col-12 col-md-6">
+				<div class="material-field">
+					<input
+					    swvalidationrequired="true"
+					    type="text"
+						class="form-control"
+						name="accountAddressName"
+						ng-model="accountAddAddressCtrl.accountAddress.accountAddressName"
+					/>
+					<label ng-bind="accountAddAddressCtrl.translations.address_nickName"></label>
+					<div ng-if="accountAddressForm.$submitted" ng-messages="accountAddressForm.accountAddressName.$error">
+					    <div ng-messages-include="monat-form-generic-validation-error-messages"></div>
+					</div>
+					
+				</div>
+			</div>
+			
+			<div class="col-12 col-md-6">
+				<div class="material-field">
+					<input 
+					    swvalidationrequired="true"
+						type="text"
+						class="form-control"
+						name="address_name"
+						ng-model="accountAddAddressCtrl.accountAddress.name"
+					/>
+					
+					<label ng-bind="accountAddAddressCtrl.translations.address_name"></label>
+					<div ng-if="accountAddressForm.$submitted" ng-messages="accountAddressForm.address_name.$error">
+					    <div ng-messages-include="monat-form-generic-validation-error-messages"></div>
+					</div>
+	
+				</div>
+			</div>
+			
+			<div class="col-12 col-md-6">
+				<div class="material-field">
+					<input
+					    swvalidationrequired="true"
+					    name = "address_streetAddress"
+						type="text"
+						class="form-control"
+						ng-model="accountAddAddressCtrl.accountAddress.streetAddress"
+					/>
+					<label ng-bind="accountAddAddressCtrl.translations.address_address"></label>
+					<div ng-if="accountAddressForm.$submitted" ng-messages="accountAddressForm.address_streetAddress.$error">
+					    <div ng-messages-include="monat-form-generic-validation-error-messages"></div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="col-12 col-md-6">
+				<div class="material-field">
+					<input
+						type="text"
+						class="form-control"
+						ng-model="accountAddAddressCtrl.accountAddress.street2Address"
+					/>
+					<label ng-bind="accountAddAddressCtrl.translations.address_address2"></label>
+				</div>
+			</div>
+			
+			<div class="col-12 col-md-6">
+				<div class="material-field">
+	                    <input
+						type="text"
+						class="form-control"
+						ng-model="accountAddAddressCtrl.accountAddress.countryCode"
+						name = "address_country" 
+						ng-readonly=true
+					/>
+					<label ng-bind="accountAddAddressCtrl.translations.address_country"></label>
+				</div>
+			</div>
+			
+			<div class="col-12 col-md-6">
+				<div class="material-field">
+					<select
+						type="text"
+						class="form-control"
+						ng-model="accountAddAddressCtrl.accountAddress.stateCode"
+						swvalidationrequired="true"
+					    name="address_stateCode"
+						ng-options="state.value as state.name for state in accountAddAddressCtrl.stateCodeOptions"
+						placeholder="{{ accountAddAddressCtrl.translations.address_state }}"
+					>
+						<option disabled></option>
+					</select>
+					<label ng-bind="accountAddAddressCtrl.translations.address_selectYourState"></label>
+					<div ng-if="accountAddressForm.$submitted" ng-messages="accountAddressForm.address_stateCode.$error">
+					    <div ng-messages-include="monat-form-generic-validation-error-messages"></div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="col-12 col-md-6">
+				<div class="material-field">
+					<input
+					  swvalidationrequired = "true"
+					  type="text"
+					  class="form-control"
+					  ng-model="accountAddAddressCtrl.accountAddress.city"
+					  name="address_city"
+					/>
+					<label ng-bind="accountAddAddressCtrl.translations.address_city"></label>
+					<div ng-if="accountAddressForm.$submitted" ng-messages="accountAddressForm.address_city.$error">
+					    <div ng-messages-include="monat-form-generic-validation-error-messages"></div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="col-12 col-md-6">
+				<div class="material-field">
+					<input
+					 	swvalidationrequired="true"
+						type="text"
+						class="form-control"
+						ng-model="accountAddAddressCtrl.accountAddress.postalCode"
+						name="address_zipCode"
+					/>
+					<label ng-bind="accountAddAddressCtrl.translations.address_zipCode"></label>
+					<div ng-if="accountAddressForm.$submitted" ng-messages="accountAddressForm.address_zipCode.$error">
+					    <div ng-messages-include="monat-form-generic-validation-error-messages"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	
+	<div class="form-group">
+		<button
+			type="submit"
+			class="btn btn-block bg-primary  col-md-3"
+			ng-class="{ 'loading, disabled': accountAddAddressCtrl.loading}"
+			ng-disabled = "accountAddAddressCtrl.loading"
+		>
+			<span sw-rbkey="'frontend.modal.saveChanges'" ng-hide="accountAddAddressCtrl.loading"></span>
+		</button>
+		<button
+			type="button"
+			class="btn btn-block btn-cancel cancel-dark col-md-2"
+			ng-click="accountAddAddressCtrl.remove()"
+			sw-rbkey="'frontend.modal.closeButton'"
+		></button>
+	</div>
+	
+</form>

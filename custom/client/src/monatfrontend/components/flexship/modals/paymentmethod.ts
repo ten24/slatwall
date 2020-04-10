@@ -170,51 +170,27 @@ class MonatFlexshipPaymentMethodModalController {
 
 class MonatFlexshipPaymentMethodModal {
 
-	public restrict:string;
+	public restrict = 'E';
 	public templateUrl:string;
 	
-	public scope = {};
 	public bindToController = {
 	    orderTemplate:'<',
 		close:'=' //injected by angularModalService
 	};
+
 	public controller=MonatFlexshipPaymentMethodModalController;
 	public controllerAs="monatFlexshipPaymentMethodModal";
 
-	public static Factory(){
-        var directive:any = (
-		    monatFrontendBasePath,
-			$hibachi,
-			rbkeyService,
-			requestService
-        ) => new MonatFlexshipPaymentMethodModal(
-			monatFrontendBasePath,
-			$hibachi,
-			rbkeyService,
-			requestService
-        );
-        directive.$inject = [
-			'monatFrontendBasePath',
-			'$hibachi',
-			'rbkeyService',
-			'requestService'
-        ];
-        return directive;
+    public static Factory(){
+		//@ngInject
+        return ( monatFrontendBasePath ) => {
+        	return new MonatFlexshipPaymentMethodModal(monatFrontendBasePath);
+        };
     }
 
-	constructor(private monatFrontendBasePath, 
-				private slatwallPathBuilder, 
-				private $hibachi,
-				private rbkeyService
-	){
+	constructor(private monatFrontendBasePath){
 		this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/flexship/modals/paymentmethod.html";
-		this.restrict = "E";
 	}
-
-	public link = (scope, element, attrs) =>{
-
-	}
-
 }
 
 export {
