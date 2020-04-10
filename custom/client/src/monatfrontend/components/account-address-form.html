@@ -1,12 +1,12 @@
 <!--  new Address form -->
 <form name="accountAddressForm" 
-	ng-submit="accountAddressForm.$valid && accountAddAddressCtrl.onFormSubmit()"
+	ng-submit="accountAddressForm.$valid && accountAddressCtrl.onFormSubmit()"
 >
 	<div class="shipping">
 		<!--- Conditional: Add New Shipping Address form --->
 		<div class="row">
 			<div class="label col-12">
-				{{ accountAddAddressCtrl.translations.address }}
+				{{ accountAddressCtrl.translations.address }}
 			</div>
 			
 			<div class="col-12 col-md-6">
@@ -16,9 +16,9 @@
 					    type="text"
 						class="form-control"
 						name="accountAddressName"
-						ng-model="accountAddAddressCtrl.accountAddress.accountAddressName"
+						ng-model="accountAddressCtrl.accountAddress.accountAddressName"
 					/>
-					<label ng-bind="accountAddAddressCtrl.translations.address_nickName"></label>
+					<label ng-bind="accountAddressCtrl.translations.address_nickName"></label>
 					<div ng-if="accountAddressForm.$submitted" ng-messages="accountAddressForm.accountAddressName.$error">
 					    <div ng-messages-include="monat-form-generic-validation-error-messages"></div>
 					</div>
@@ -33,10 +33,10 @@
 						type="text"
 						class="form-control"
 						name="address_name"
-						ng-model="accountAddAddressCtrl.accountAddress.name"
+						ng-model="accountAddressCtrl.accountAddress.name"
 					/>
 					
-					<label ng-bind="accountAddAddressCtrl.translations.address_name"></label>
+					<label ng-bind="accountAddressCtrl.translations.address_name"></label>
 					<div ng-if="accountAddressForm.$submitted" ng-messages="accountAddressForm.address_name.$error">
 					    <div ng-messages-include="monat-form-generic-validation-error-messages"></div>
 					</div>
@@ -51,9 +51,9 @@
 					    name = "address_streetAddress"
 						type="text"
 						class="form-control"
-						ng-model="accountAddAddressCtrl.accountAddress.streetAddress"
+						ng-model="accountAddressCtrl.accountAddress.streetAddress"
 					/>
-					<label ng-bind="accountAddAddressCtrl.translations.address_address"></label>
+					<label ng-bind="accountAddressCtrl.translations.address_address"></label>
 					<div ng-if="accountAddressForm.$submitted" ng-messages="accountAddressForm.address_streetAddress.$error">
 					    <div ng-messages-include="monat-form-generic-validation-error-messages"></div>
 					</div>
@@ -65,9 +65,9 @@
 					<input
 						type="text"
 						class="form-control"
-						ng-model="accountAddAddressCtrl.accountAddress.street2Address"
+						ng-model="accountAddressCtrl.accountAddress.street2Address"
 					/>
-					<label ng-bind="accountAddAddressCtrl.translations.address_address2"></label>
+					<label ng-bind="accountAddressCtrl.translations.address_address2"></label>
 				</div>
 			</div>
 			
@@ -76,11 +76,11 @@
 	                    <input
 						type="text"
 						class="form-control"
-						ng-model="accountAddAddressCtrl.accountAddress.countryCode"
+						ng-model="accountAddressCtrl.accountAddress.countryCode"
 						name = "address_country" 
 						ng-readonly=true
 					/>
-					<label ng-bind="accountAddAddressCtrl.translations.address_country"></label>
+					<label ng-bind="accountAddressCtrl.translations.address_country"></label>
 				</div>
 			</div>
 			
@@ -89,15 +89,15 @@
 					<select
 						type="text"
 						class="form-control"
-						ng-model="accountAddAddressCtrl.accountAddress.stateCode"
+						ng-model="accountAddressCtrl.accountAddress.stateCode"
 						swvalidationrequired="true"
 					    name="address_stateCode"
-						ng-options="state.value as state.name for state in accountAddAddressCtrl.stateCodeOptions"
-						placeholder="{{ accountAddAddressCtrl.translations.address_state }}"
+						ng-options="state.value as state.name for state in accountAddressCtrl.stateCodeOptions"
+						placeholder="{{ accountAddressCtrl.translations.address_state }}"
 					>
 						<option disabled></option>
 					</select>
-					<label ng-bind="accountAddAddressCtrl.translations.address_selectYourState"></label>
+					<label ng-bind="accountAddressCtrl.translations.address_selectYourState"></label>
 					<div ng-if="accountAddressForm.$submitted" ng-messages="accountAddressForm.address_stateCode.$error">
 					    <div ng-messages-include="monat-form-generic-validation-error-messages"></div>
 					</div>
@@ -110,10 +110,10 @@
 					  swvalidationrequired = "true"
 					  type="text"
 					  class="form-control"
-					  ng-model="accountAddAddressCtrl.accountAddress.city"
+					  ng-model="accountAddressCtrl.accountAddress.city"
 					  name="address_city"
 					/>
-					<label ng-bind="accountAddAddressCtrl.translations.address_city"></label>
+					<label ng-bind="accountAddressCtrl.translations.address_city"></label>
 					<div ng-if="accountAddressForm.$submitted" ng-messages="accountAddressForm.address_city.$error">
 					    <div ng-messages-include="monat-form-generic-validation-error-messages"></div>
 					</div>
@@ -126,10 +126,10 @@
 					 	swvalidationrequired="true"
 						type="text"
 						class="form-control"
-						ng-model="accountAddAddressCtrl.accountAddress.postalCode"
+						ng-model="accountAddressCtrl.accountAddress.postalCode"
 						name="address_zipCode"
 					/>
-					<label ng-bind="accountAddAddressCtrl.translations.address_zipCode"></label>
+					<label ng-bind="accountAddressCtrl.translations.address_zipCode"></label>
 					<div ng-if="accountAddressForm.$submitted" ng-messages="accountAddressForm.address_zipCode.$error">
 					    <div ng-messages-include="monat-form-generic-validation-error-messages"></div>
 					</div>
@@ -143,10 +143,10 @@
 		<button
 			type="submit"
 			class="btn btn-block bg-primary  col-md-3"
-			ng-class="{ 'loading, disabled': accountAddAddressCtrl.loading}"
-			ng-disabled = "accountAddAddressCtrl.loading"
+			ng-class="{ 'loading, disabled': accountAddressCtrl.loading}"
+			ng-disabled = "accountAddressCtrl.loading"
 		>
-			<span sw-rbkey="'frontend.modal.saveChanges'" ng-hide="accountAddAddressCtrl.loading"></span>
+			<span sw-rbkey="'frontend.modal.saveChanges'" ng-hide="accountAddressCtrl.loading"></span>
 		</button>
 		<button
 			type="button"

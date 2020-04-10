@@ -110,7 +110,7 @@ class AccountAddressForm {
 	    onFailureCallback:'=?'
 	};
 	public controller=AccountAddressFormController;
-	public controllerAs="accountAddAddressCtrl";
+	public controllerAs="accountAddressCtrl";
 
 	public static Factory(){
         //@ngInject
