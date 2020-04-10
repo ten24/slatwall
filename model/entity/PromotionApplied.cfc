@@ -112,6 +112,13 @@ property name="personalVolumeDiscountAmount" ormtype="big_decimal";
 		}
 	}
 	public void function removeOrderItem(any orderItem) {
+		if(!structKeyExists(arguments, "orderItem")) {
+			arguments.orderItem = variables.orderItem;
+		}
+		var index = arrayFind(arguments.orderItem.getAppliedPromotions(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.orderItem.getAppliedPromotions(), index);
+		}
 		structDelete(variables, "orderItem");
 	}
 	

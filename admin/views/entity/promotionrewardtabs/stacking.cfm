@@ -85,17 +85,9 @@ Notes:
     <cfset local.excludeRewardCollection.addFilter(propertyIdentifier='promotionPeriod.promotion.site.siteID',value="null",logicalOperator="OR",filterGroupAlias="site") />
 </cfif>
 
-<cfset local.includedRewards = rc.promotionReward.getIncludedStackableRewards() />
-<cfset local.includedRewardIDs = "" />
-<cfloop array="#local.includedRewards#" index="local.includedReward">
-    <cfset local.includedRewardIDs = listAppend(local.includedRewardIDs, local.includedReward.getPrimaryIDValue()) />
-</cfloop>
+<cfset local.includedRewardIDs = rc.promotionReward.getIncludedStackableRewardsIDList() />
+<cfset local.excludedRewardIDs = rc.promotionReward.getExcludedStackableRewardsIDList() />
 
-<cfset local.excludedRewards = rc.promotionReward.getExcludedStackableRewards() />
-<cfset local.excludedRewardIDs = "" />
-<cfloop array="#local.excludedRewards#" index="local.excludedReward">
-    <cfset local.excludedRewardIDs = listAppend(local.excludedRewardIDs, local.excludedReward.getPrimaryIDValue()) />
-</cfloop>
 
 
 <cfoutput>

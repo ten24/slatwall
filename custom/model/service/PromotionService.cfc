@@ -14,7 +14,6 @@ component extends="Slatwall.model.service.PromotionService" {
 			if(structKeyExists(arguments.orderItemQualifiedDiscounts, orderItem.getOrderItemID()) && arrayLen(arguments.orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ]) ) {
 				for(var rewardStruct in arguments.orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ]){
 					if( rewardCanStack( appliedPromotions, rewardStruct.promotionReward )){
-						// orderItem.clearVariablesKey('extendedPrice');
 						
 						var extendedUnitPriceAfterDiscount = orderItem.getExtendedUnitPriceAfterDiscount();
 						

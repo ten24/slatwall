@@ -483,6 +483,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				} // END of PromotionReward Loop
 				getHibachiScope().flushORMSession();
 				
+				ArraySort(orderQualifiedDiscounts, rewardSortFunction);
 				applyOrderDiscounts(arguments.order, orderQualifiedDiscounts);
 				
 				if(arrayLen(orderQualifierMessages)){
@@ -653,7 +654,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					var appliedPromotions = orderItem.getAppliedPromotions();
 					if( rewardCanStack( appliedPromotions, rewardStruct.promotionReward )){
 						if(len(appliedPromotions) && rewardStruct.promotionReward.getAmountType() == 'percentageOff'){
-							orderItem.clearVariablesKey('extendedPrice');
 							//Recalculate discount amount based on new price
 							rewardStruct.discountAmount = getDiscountAmount(reward=rewardStruct.promotionReward, price=orderItem.getExtendedUnitPriceAfterDiscount(), quantity=rewardStruct.discountQuantity, currencyCode=orderItem.getCurrencyCode(), sku=orderItem.getSku(), account=arguments.order.getAccount());
 						}
