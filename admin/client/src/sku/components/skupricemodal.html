@@ -22,7 +22,7 @@
                     </div>
                     <div class="col-sm-8">
                         <div class="row">
-                            <div class="col-sm-6">
+                            <div class="col-sm-4">
                                 <label  class="control-label"
                                         sw-rbKey="'entity.SkuPrice.price'">
                                 </label>
@@ -32,7 +32,17 @@
                                         ng-model="swSkuPriceModal.skuPrice.price"
                                 />
                             </div> 
-                            <div class="col-sm-6">
+                            <div class="col-sm-4">
+                                <label  class="control-label"
+                                        sw-rbKey="'entity.SkuPrice.listPrice'">
+                                </label>
+                                <input  class="form-control" 
+                                        type="text" 
+                                        name="listPrice" 
+                                        ng-model="swSkuPriceModal.skuPrice.listPrice"
+                                />
+                            </div> 
+                            <div class="col-sm-4">
                                 <div class="form-group">
                                     <label for="" class="control-label">Currency Code</label>
                                     <select class="form-control" 

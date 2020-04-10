@@ -1462,9 +1462,31 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arguments.orderTemplate.addError('orderTemplateStatusType', 'Order Template can only be activated if it''s a draft');
 			return arguments.orderTemplate;
 		} 
-
+		
+		if(isNull(arguments.orderTemplate.getScheduleOrderDayOfTheMonth()) || isNull(arguments.orderTemplate.getFrequencyTerm())){
+			arguments.orderTemplate.addError('scheduleOrderNextPlaceDateTime', 'Order Template must have scheduleOrderDayOfTheMonth and frequencyTerm to determine scheduleOrderNextPlaceDateTime');
+			return arguments.orderTemplate;	
+		}
+		
+		var now = now();
+		var year = year(now);
+		var day = arguments.orderTemplate.getScheduleOrderDayOfTheMonth();
+		
+		//if the ScheduleOrderDayOfTheMonth has already passed this month, set it to next month
+		if(arguments.orderTemplate.getScheduleOrderDayOfTheMonth() <= day(now())){
+		    var month = month(now) + 1;
+		}else{
+			var month = month(now);
+		}
+		
+	    var scheduleOrderNextPlaceDateTime = createDate(year, month, day);
+		arguments.orderTemplate.setScheduleOrderNextPlaceDateTime(scheduleOrderNextPlaceDateTime);
 		arguments.orderTemplate.setOrderTemplateStatusType ( getTypeService().getTypeBySystemCode('otstActive'));
-		return this.saveOrderTemplate(arguments.orderTemplate); 
+		if( isNull(arguments.data.context)){
+			arguments.data.context = "save";
+		}
+
+		return this.saveOrderTemplate(arguments.orderTemplate, {}, arguments.data.context); 
 	} 
     
    	public any function processOrderTemplate_batchCancel(required any orderTemplate, any processObject, required struct data={}) { 

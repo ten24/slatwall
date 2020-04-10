@@ -351,7 +351,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         for(var paymentMethod in accountPaymentMethods) {
             if(paymentMethod.getMoMoneyWallet() === true) {
                 if(getHibachiScope().cart().getCalculatedPaymentAmountDue() <= paymentMethod.getMoMoneyBalance()) { //Sufficient Balance
-                    arguments.data['ajaxResponse']['hyperWalletPaymentMethod']= paymentMethod.getAccountPaymentMethodID();
+                    arguments.data['ajaxResponse']['hyperWalletPaymentMethod'] = paymentMethod.getPaymentMethodID();
+                    arguments.data['ajaxResponse']['hyperWalletAccountPaymentMethod'] = paymentMethod.getAccountPaymentMethodID();
                 }
                 else{
                     this.addErrors(arguments.data, "Insufficient Balance");
@@ -456,11 +457,12 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
      * */
     public any function addOrderPayment(required any data, boolean giftCard = false) {
         param name = "data.orderID" default = "";
+        param name = "data.paymentIntegrationType" default="";
         
-        if(StructKeyExists(arguments.data,'accountPaymentMethodID')) {
+        if(StructKeyExists(arguments.data,'accountPaymentMethodID') && StructKeyExists(arguments.data, "paymentIntegrationType") && !isEmpty(arguments.data.paymentIntegrationType) ) {
             var accountPaymentMethodCollectionList = getAccountService().getAccountPaymentMethodCollectionList();
             accountPaymentMethodCollectionList.setDisplayProperties('paymentMethod.paymentMethodID');
-            accountPaymentMethodCollectionList.addFilter("paymentMethod.paymentIntegration.integrationPackage", "braintree");
+            accountPaymentMethodCollectionList.addFilter("paymentMethod.paymentIntegration.integrationPackage", arguments.data.paymentIntegrationType);
             accountPaymentMethodCollectionList.addFilter("accountPaymentMethodID", arguments.data.accountPaymentMethodID);
             accountPaymentMethodCollectionList = accountPaymentMethodCollectionList.getRecords(formatRecords=true);
             
@@ -468,26 +470,24 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                arguments.data.newOrderPayment.paymentMethod.paymentMethodID = accountPaymentMethodCollectionList[1].paymentMethod_paymentMethodID;
                 arguments.data.newOrderPayment.requireBillingAddress = 0;
             }
-            
-            if (len(data.orderID)) {
-                var order = getOrderService().getOrder(data.orderID);
-            }
-            else {
-                var order = getHibachiScope().getCart();
-            }
-            
-            var account = getHibachiScope().getAccount();
-            
-            //Remove any existing order payments
-            //It's to remove default payment from order when adding any new method
-            if(!isNull(order) && !isNull(account) && order.getAccount().getAccountID() == account.getAccountID()) {
-                for( orderPayment in order.getOrderPayments() ) {
-                    if(orderPayment.isDeletable()) {
-        				getService("OrderService").deleteOrderPayment(orderPayment);
-        			}
-        		}
-            }
-            
+        }
+        
+        if (len(arguments.data.orderID)) {
+            var order = getOrderService().getOrder(arguments.data.orderID);
+        } else {
+            var order = getHibachiScope().getCart();
+        }
+        
+        var account = getHibachiScope().getAccount();
+        
+        //Remove any existing order payments
+        //It's to remove default payment from order when adding any new method
+        if(!isNull(order) && !isNull(account) && order.getAccount().getAccountID() == account.getAccountID()) {
+            for( var orderPayment in order.getOrderPayments() ) {
+                if(orderPayment.isDeletable()) {
+    				getService("OrderService").deleteOrderPayment(orderPayment);
+    			}
+    		}
         }
         
         super.addOrderPayment(argumentCollection = arguments);
@@ -519,7 +519,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 
         param name="arguments.data.orderTemplateSystemCode" default="ottSchedule";
         param name="arguments.data.frequencyTermID" default="23c6a8caa4f890196664237003fe5f75";// TermID for monthly
-        param name="arguments.data.scheduleOrderNextPlaceDateTime" default= "#dateAdd('m',1,dateFormat(now()))#";
         param name="arguments.data.siteID" default="";
         param name="arguments.data.saveContext" default="";
         param name="arguments.data.setOnHibachiScopeFlag" default=false;
@@ -554,10 +553,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         } else {
             //Vip upgrade so we assign the VIP price group to the process object
             processObject.setPriceGroup(getService('PriceGroupService').getPriceGroupByPriceGroupCode(3));
-        }
-        
-        if(arguments.data.orderTemplateSystemCode == 'ottSchedule'){
-            processObject.setScheduleOrderNextPlaceDateTime(arguments.data.scheduleOrderNextPlaceDateTime);  
         }
         
         if( len(arguments.data.saveContext)) {
@@ -1655,8 +1650,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             arguments.data['ajaxResponse']['hasOwnerAccountOnSession'] = getHibachiScope().hasSessionValue('ownerAccountNumber') && len(getHibachiScope().getSessionValue('ownerAccountNumber'));
             return;
         }
-        
-        getHibachiScope().setSessionValue('ownerAccountNumber', '');
         
         //if we are not in an upgrade flow and the user is logged in, log the user out.
         if(!arguments.data.upgradeFlowFlag && getHibachiScope().getLoggedInFlag()){

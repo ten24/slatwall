@@ -162,11 +162,6 @@ component extends="Slatwall.model.service.OrderService" {
 			return arguments.orderTemplate;
 		}
 		
-		if(isNull(arguments.processObject.getScheduleOrderNextPlaceDateTime())){
-			arguments.orderTemplate.addError('scheduleOrderNextPlaceDateTime', 'Order Next Place Date Time is required');
-			return arguments.orderTemplate; 
-		}
-		
         if(isNull(arguments.data.orderTemplateName)  || !len(trim(arguments.data.orderTemplateName)) ) {
 			arguments.data.orderTemplateName = "My Flexship, Created on " & dateFormat(now(), "long");
         }
@@ -217,7 +212,6 @@ component extends="Slatwall.model.service.OrderService" {
 		arguments.orderTemplate.setCurrencyCode( arguments.processObject.getCurrencyCode() );
 		arguments.orderTemplate.setOrderTemplateStatusType(getTypeService().getTypeBySystemCode('otstDraft'));
 		arguments.orderTemplate.setOrderTemplateType(getTypeService().getType(arguments.processObject.getOrderTemplateTypeID()));
-		arguments.orderTemplate.setScheduleOrderDayOfTheMonth(day(arguments.processObject.getScheduleOrderNextPlaceDateTime()));
 		arguments.orderTemplate.setScheduleOrderNextPlaceDateTime(arguments.processObject.getScheduleOrderNextPlaceDateTime());
 		arguments.orderTemplate.setFrequencyTerm( getSettingService().getTerm(arguments.processObject.getFrequencyTermID()) );
 		
