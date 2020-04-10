@@ -76,9 +76,7 @@ export class MonatService {
 				if (data.cart && data.failureActions.length == 0) {
 					console.log("update-cart, puting it in session-cache")
 					this.sessionStorageCache.put('cachedCart', data.cart);
-					this.cart = data.cart;
-					this.cart['purchasePlusMessage'] = data.cart.appliedPromotionMessages ? data.cart.appliedPromotionMessages.filter( message => message.promotionName.indexOf('Purchase Plus') > -1 )[0] : {};
-					this.canPlaceOrder = data.cart.orderRequirementsList.indexOf('canPlaceOrderReward') == -1;
+					this.updateCartPropertiesOnService(data);
 					deferred.resolve(data.cart);
 					this.observerService.notify( 'updatedCart', data.cart ); 
 				} else {

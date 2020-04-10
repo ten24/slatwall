@@ -75,7 +75,7 @@ component {
 			if( !isNull(this.getSku()) && 
 				!isNull(this.getQuantity())
 			){
-				variables.productPackVolumeTotal += (this.getSku().getProductPackVolumeTotalByCurrencyCode(argumentCollection=arguments) * this.getQuantity()); 
+				variables.productPackVolumeTotal += (this.getSku().getProductPackVolumeByCurrencyCode(argumentCollection=arguments) * this.getQuantity()); 
 			}
 		}
 		return variables.productPackVolumeTotal; 	
@@ -88,7 +88,7 @@ component {
 			if( !isNull(this.getSku()) && 
 				!isNull(this.getQuantity())
 			){
-				variables.retailComissionTotal += (this.getSku().getRetailComissionByCurrencyCode(argumentCollection=arguments) * this.getQuantity()); 
+				variables.retailComissionTotal += (this.getSku().getRetailCommissionByCurrencyCode(argumentCollection=arguments) * this.getQuantity()); 
 			}
 		}
 		return variables.retailComissionTotal; 	
@@ -103,7 +103,7 @@ component {
 			if( !isNull(this.getSku()) && 
 				!isNull(this.getQuantity())
 			){
-				variables.commissionVolumeTotal += (this.getSku().getCommissionVolumeByCurrencyCode(argumentCollection=arguments) * this.getQuantity()); 
+				variables.commissionVolumeTotal += (this.getSku().getCommissionableVolumeByCurrencyCode(argumentCollection=arguments) * this.getQuantity()); 
 			}	
 		}
 		return variables.commissionVolumeTotal; 	
@@ -123,15 +123,16 @@ component {
 	} 
 	
 	public numeric function getListPrice(){
+
 		if(!structKeyExists(variables, 'listPrice')){
 			if(!isNull(this.getOrderTemplate().getPriceGroup() )){
 				var priceGroup = [this.getOrderTemplate().getPriceGroup()];
 			}else if( !isNull(this.getOrderTemplate().getAccount()) && !isNull(this.getOrderTemplate().getAccount()) && arrayLen(this.getOrderTemplate().getAccount().getPriceGroups()) ){
-				var priceGroup = this.getOrderTemplate().getAccount().getPriceGroups()[1];
+				var priceGroup = [this.getOrderTemplate().getAccount().getPriceGroups()[1]];
 			}else{
-				var priceGroup = getService('priceGroupService').getPriceGroupByPriceGroupCode(2) // default to retail
+				var priceGroup = [getService('priceGroupService').getPriceGroupByPriceGroupCode(2)] // default to retail
 			}
-			variables.listPrice = this.getSku().getCustomPriceByCurrencyCode(customPriceField='listPrice', currencyCode=this.getOrderTemplate().getCurrencyCode(), quantity=this.getQuantity(), priceGroups=priceGroup);
+			variables.listPrice = this.getSku().getCustomPriceByCurrencyCode(customPriceField='listPrice', currencyCode=this.getOrderTemplate().getCurrencyCode(), quantity=this.getQuantity(), priceGroups=priceGroup) ?: 0;
 		}
 		return variables.listPrice
 	}
