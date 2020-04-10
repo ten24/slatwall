@@ -662,6 +662,10 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 				propertyName:arguments.propertyName
 			};
 			
+			if(this.hasProperty('currencyCode') && !isNull(getCurrencyCode())) {
+				formatDetails.currencyCode = getCurrencyCode();
+			}
+			
 			
 			// handle Attribute Options Translation
 			if (len(arguments.value) && arguments.formatType == 'multiselect' && structKeyExists(variables, "getAttributeValue") && hasProperty("attributeValues") && hasAttributeCode(arguments.propertyName) ) {
@@ -669,21 +673,32 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 				var propertyMeta = getPropertyMetaData( arguments.propertyName );
 				
 				if(structKeyExists(propertyMeta, "hb_attributeID")) {
-					var attributeOption = getDAO('AttributeDAO').getAttributeOptionByAttributeOptionValueAndAttributeID(
-						attributeOptionValue = arguments.value, 
-						attributeID = propertyMeta.hb_attributeID
-					);
 					
-					if(!isNull(attributeOption)){
-						formatDetails['object'] = attributeOption;
-						formatDetails['propertyName'] = 'attributeOptionLabel';
+					var attributeOptionValues = listToArray(arguments.value);
+					var formatedValues = '';
+					for(var attributeOptionValue in attributeOptionValues){
+						
+						var attributeOption = getDAO('AttributeDAO').getAttributeOptionByAttributeOptionValueAndAttributeID(
+							attributeOptionValue = attributeOptionValue, 
+							attributeID = propertyMeta.hb_attributeID
+						);
+						
+						if(!isNull(attributeOption)){
+							formatDetails['object'] = attributeOption;
+							formatDetails['propertyName'] = 'attributeOptionLabel';
+						}else{
+							formatDetails['object'] = this;
+							formatDetails['propertyName'] = arguments.propertyName;
+						}
+						formatedValues = listAppend(formatedValues, getService("hibachiUtilityService").formatValue(value=attributeOptionValue, formatType=arguments.formatType, formatDetails=formatDetails));
+						
 					}
+					return formatedValues;
 				}
+				
 			}
 			
-			if(this.hasProperty('currencyCode') && !isNull(getCurrencyCode())) {
-				formatDetails.currencyCode = getCurrencyCode();
-			}
+			
 			return getService("hibachiUtilityService").formatValue(value=arguments.value, formatType=arguments.formatType, formatDetails=formatDetails);
 		}
 
