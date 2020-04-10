@@ -44,9 +44,7 @@ export class MonatService {
 				.then((data) => { 
 					if(data &&  data.failureActions.length == 0){
 						console.log("get-cart, puting it in session-cache")
-						this.sessionStorageCache.put('cachedCart',data.cart);
-						this.cart['purchasePlusMessage'] = data.cart.appliedPromotionMessages ? data.cart.appliedPromotionMessages.filter( message => message.promotionName.indexOf('Purchase Plus') > -1 )[0] : {};
-						this.canPlaceOrder = data.cart.orderRequirementsList.indexOf('canPlaceOrderReward') == -1;
+						this.updateCartPropertiesOnService(data);
 						deferred.resolve(data.cart);
 					} else {
 						throw data;
@@ -59,6 +57,7 @@ export class MonatService {
 				});
 				
 		} else {
+			this.updateCartPropertiesOnService({cart:cachedCart});
 			deferred.resolve(cachedCart);
 		}
 		return deferred.promise;
@@ -77,6 +76,7 @@ export class MonatService {
 				if (data.cart && data.failureActions.length == 0) {
 					console.log("update-cart, puting it in session-cache")
 					this.sessionStorageCache.put('cachedCart', data.cart);
+					this.cart = data.cart;
 					this.cart['purchasePlusMessage'] = data.cart.appliedPromotionMessages ? data.cart.appliedPromotionMessages.filter( message => message.promotionName.indexOf('Purchase Plus') > -1 )[0] : {};
 					this.canPlaceOrder = data.cart.orderRequirementsList.indexOf('canPlaceOrderReward') == -1;
 					deferred.resolve(data.cart);
@@ -296,6 +296,11 @@ export class MonatService {
 		return this.sessionStorageCache.get('currentFlexship');
 	}
 	
+	public updateCartPropertiesOnService(data:{['cart']:any, [key:string]:any}){
+		this.cart = data.cart;
+		this.cart['purchasePlusMessage'] = data.cart.appliedPromotionMessages ? data.cart.appliedPromotionMessages.filter( message => message.promotionName.indexOf('Purchase Plus') > -1 )[0] : {};
+		this.canPlaceOrder = data.cart.orderRequirementsList.indexOf('canPlaceOrderReward') == -1;
+	}
 	
 
 }
