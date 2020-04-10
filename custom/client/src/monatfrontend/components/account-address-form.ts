@@ -1,6 +1,5 @@
-import { MonatService } from '@Monat/services/monatservice';
+import { MonatService, IAddressFormOptions, IOption } from '@Monat/services/monatservice';
 import { MonatAlertService } from '@Monat/services/monatAlertService';
-
 
 class AccountAddressFormController {
 	public close;
@@ -10,9 +9,9 @@ class AccountAddressFormController {
 	public onSuccessCallback;
 	public onFailureCallback;
 	
-	public accountAddress= {'countryCode': hibachiConfig.countryCode }; 
-	public stateCodeOptions: Array<any>;
-	
+	public stateCodeOptions: Array<IOption>;
+	public addressFormOptions: IAddressFormOptions;
+	public accountAddress= { 'countryCode': hibachiConfig.countryCode }; 
 	public loading: boolean = false;
 
 	//@ngInject
@@ -25,35 +24,24 @@ class AccountAddressFormController {
     
     public $onInit = () => {
     	this.loading=true;
-    	this.makeTranslations();
- 
     	this.monatService.getStateCodeOptionsByCountryCode()
-    	.then( (options) => this.stateCodeOptions = options )
-    	//TODO: address-form-field-options, Q: are we using these (conditional form fields for address)?
-    	.catch( (error) => {
-		    console.error(error);
-		})
-		.finally(()=>{
-			this.loading = false;   
-		});
-    	
+    	.then( (options) => { 
+    		this.stateCodeOptions = options.stateCodeOptions ;
+    		this.addressFormOptions = options.addressOptions;
+    	})
+    	.catch( (error) => console.error(error))
+		.finally( ()=> this.loading = false );
+		
+    	this.makeTranslations();
     };
     
     public translations = {};
     private makeTranslations = () => {
-    	//TODO make translations for success/failure alert messages
-    	this.translations['addNewAddress'] = this.rbkeyService.rbKey('frontend.newAddress.addNewAddress');
-    	this.translations['address_nickName'] = this.rbkeyService.rbKey('frontend.newAddress.nickName');
     	this.translations['address_name'] = this.rbkeyService.rbKey('frontend.newAddress.name');
-    	this.translations['address_address'] = this.rbkeyService.rbKey('frontend.newAddress.address');
-    	this.translations['address_address2'] = this.rbkeyService.rbKey('frontend.newAddress.address2');
+    	this.translations['address_nickName'] = this.rbkeyService.rbKey('frontend.newAddress.nickName');
     	this.translations['address_country'] = this.rbkeyService.rbKey('frontend.newAddress.country');
-    	this.translations['address_state'] = this.rbkeyService.rbKey('frontend.newAddress.state');
-    	this.translations['address_selectYourState'] = this.rbkeyService.rbKey('frontend.newAddress.selectYourState');
-    	this.translations['address_city'] = this.rbkeyService.rbKey('frontend.newAddress.city');
-    	this.translations['address_zipCode'] = this.rbkeyService.rbKey('frontend.newAddress.zipCode');
-    	this.translations['select_country'] = this.rbkeyService.rbKey('frontend.newAddress.selectCountry');
-
+    	this.translations['address_emailAddress'] = this.rbkeyService.rbKey('frontend.newAddress.emailAddress');
+    	this.translations['address_phoneNumber'] = this.rbkeyService.rbKey('frontend.newAddress.phoneNumber');
     }
     
     public onFormSubmit() {
@@ -97,6 +85,7 @@ class AccountAddressForm {
 
 	public restrict:"E";
 	public templateUrl:string;
+	public scope = {};
 	
 	public bindToController = {
 		close: "=", //injected via modal-service

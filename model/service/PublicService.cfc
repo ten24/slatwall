@@ -610,7 +610,6 @@ component  accessors="true" output="false"
         if(!isNull(accountPaymentMethod) && accountPaymentMethod.getAccount().getAccountID() == getHibachiScope().getAccount().getAccountID() ) {
             var deleteOk = getAccountService().deleteAccountPaymentMethod( accountPaymentMethod );
             getHibachiScope().addActionResult( "public:account.deleteAccountPaymentMethod", !deleteOK );
-            
             if(!deleteOk) {
                 ArrayAppend(arguments.data.messages, accountPaymentMethod.getErrors(), true);
             }
@@ -1814,11 +1813,33 @@ component  accessors="true" output="false"
     }
     
     public void function getAccountAddresses(required struct data){
-        arguments.data['ajaxResponse']['accountAddresses'] = getHibachiScope().getAccount().getAccountAddressesCollectionList().getRecords();  
+        
+        var account = getHibachiScope().getAccount();
+        
+        arguments.data['ajaxResponse']['accountAddresses'] = account.getAccountAddressesCollectionList().getRecords(); 
+        
+        if(account.hasPrimaryAddress()) {
+            arguments.data['ajaxResponse']['primaryAccountAddressID'] = account.getPrimaryAddress().getAccountAddressID(); 
+        }
+        
+        if(account.hasPrimaryBillingAddress()) {
+            arguments.data['ajaxResponse']['primaryBillingAddressID'] = account.getPrimaryBillingAddress().getAccountAddressID(); 
+        }
+        
+        if(account.hasPrimaryShippingAddress()) {
+            arguments.data['ajaxResponse']['primaryShippingAddressID'] = account.getPrimaryShippingAddress().getAccountAddressID(); 
+        }
     }
     
     public void function getAccountPaymentMethods(required struct data){
-		arguments.data['ajaxResponse']['accountPaymentMethods'] = getHibachiScope().getAccount().getAccountPaymentMethodsCollectionList().getRecords();  
+	
+		var account = getHibachiScope().getAccount();
+	
+		arguments.data['ajaxResponse']['accountPaymentMethods'] = account.getAccountPaymentMethodsCollectionList().getRecords();  
+		
+		if(account.hasPrimaryPaymentMethod()){
+            arguments.data['ajaxResponse']['primaryPaymentMethodID'] = account.getPrimaryPaymentMethod().getAccountPaymentMethodID(); 
+        }
     }
    
 	public void function getOrderTemplates(required any data){ 
@@ -2211,6 +2232,10 @@ component  accessors="true" output="false"
         if(!isNull(orderTemplate) && orderTemplate.getAccount().getAccountID() == getHibachiScope().getAccount().getAccountID() ) {
             var deleteOK = getOrderService().deleteOrderTemplate(orderTemplate);
             getHibachiScope().addActionResult( "public:order.deleteOrderTemplate", !deleteOK);
+            if(!deleteOK){
+                ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
+            }
+            return;
         }
         
         getHibachiScope().addActionResult( "public:order.deleteOrderTemplate", true );  

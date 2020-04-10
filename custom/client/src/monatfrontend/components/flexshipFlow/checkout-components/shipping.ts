@@ -6,7 +6,6 @@ class FlexshipCheckoutShippingController {
 	public orderTemplate; 
 
 	public accountAddresses:Array<any>;
-	public existingAccountAddress; 
 	public selectedShippingAddress = { accountAddressID : undefined }; // this needs to be an object to make radio working in ng-repeat, as that will create a nested scope
 	
 	private newAddressFormRef;
@@ -26,12 +25,19 @@ class FlexshipCheckoutShippingController {
     	this.loading=true;
 	
         this.accountAddresses || this.monatService.getAccountAddresses() 
-    	.then( (accountAddresses) => {
-    		this.accountAddresses = accountAddresses;
-	    	this.existingAccountAddress = this.accountAddresses.find( item => {
-	    		return item.accountAddressID === this.orderTemplate?.shippingAccountAddress_accountAddressID;
-	    	});
-		    this.setSelectedAccountAddressID(this.existingAccountAddress?.accountAddressID);
+    	.then( (data) => {
+    		this.accountAddresses = data.accountAddresses;
+	    	
+	    	let oldShippingAddressID = this.orderTemplate?.shippingAccountAddress_accountAddressID?.trim();
+	    	if(oldShippingAddressID !== '') oldShippingAddressID = undefined;
+	    	
+	    	//select either one of previously-selected shipping-address, or-primary-sgipping or primary-account-address or first of items
+		    this.setSelectedAccountAddressID(
+		    	oldShippingAddressID 
+		    	|| data.primaryShippingAddressID 
+		    	|| data.primaryAccountAddressID 
+		    	|| this.accountAddresses?.find(e => true)?.accountAddressID //first of the array
+		    );
     	})
     	.catch( (error) => {
 		    console.error(error);
@@ -138,8 +144,8 @@ class FlexshipCheckoutShippingController {
 class FlexshipCheckoutShipping {
 
 	public restrict:"E";
+	public scope = {};
 	public templateUrl:string;
-	
 	public bindToController = {
 	    orderTemplate:'<',
 	};

@@ -5,6 +5,35 @@ export interface IOption {
 	value: any;
 }
 
+export interface IAddressFormOptions{
+	
+	streetAddressLabel:string;
+	streetAddressShowFlag:boolean;
+	streetAddressRequiredFlag:boolean;
+	
+	street2AddressLabel:string;
+	street2AddressShowFlag:boolean;
+	street2AddressRequiredFlag:boolean;
+	
+	cityLabel:string;
+	cityShowFlag:boolean;
+	cityRequiredFlag:boolean;
+	
+    postalCodeLabel:string;
+	postalCodeShowFlag:boolean;
+	postalCodeRequiredFlag:boolean;
+       
+    stateCodeLabel:string;
+	stateCodeShowFlag:boolean;
+	stateCodeRequiredFlag:boolean;
+    
+	localityLabel:string;
+	localityShowFlag:boolean;
+	localityRequiredFlag:boolean;
+}
+
+
+
 
 export class MonatService {
 	public cart;
@@ -285,7 +314,7 @@ export class MonatService {
 		let deferred = this.$q.defer();
 		this.publicService.doAction('getAccountAddresses')
 		.then( (data) => {
-			if(data?.accountAddresses)  deferred.resolve( data.accountAddresses );
+			if(data?.accountAddresses)  deferred.resolve( data );
 			else  throw(data);
 		})
 		.catch( (e) => {
@@ -318,8 +347,11 @@ export class MonatService {
 			.promise
 			.then( (data) => {
 				if(data?.stateCodeOptions){
-					this.localStorageCache.put(cacheKey, data.stateCodeOptions);
-					deferred.resolve( data.stateCodeOptions );
+					this.localStorageCache.put( cacheKey, { 
+						'stateCodeOptions': data.stateCodeOptions, 
+						'addressOptions': data.addressOptions
+					});
+					deferred.resolve( data );
 				} else {
 					throw(data);
 				}

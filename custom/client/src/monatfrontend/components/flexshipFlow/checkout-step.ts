@@ -29,8 +29,8 @@ class FlexshipCheckoutStepController {
 export class FlexshipCheckoutStep {
 
 	public restrict = 'E';
+	public scope = {};
 	public templateUrl:string;
-	
 	public controller = FlexshipCheckoutStepController;
 	public controllerAs = "flexshipCheckout";
 	public bindToController = {};
