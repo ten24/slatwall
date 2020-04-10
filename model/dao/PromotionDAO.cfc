@@ -357,4 +357,13 @@ Notes:
 		<cfreturn rewardsArray />
 	</cffunction>
 	
+	<cffunction name="deleteOrphanedAppliedPromotions" returntype="void" access="public">
+		<cfquery name="local.deleteQuery">
+			DELETE FROM swpromotionapplied 
+			WHERE orderItemID IS NULL 
+			AND orderID IS NULL
+			AND orderFulfillmentID IS NULL
+		</cfquery>
+	</cffunction>
+	
 </cfcomponent>

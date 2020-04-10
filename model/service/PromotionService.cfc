@@ -50,12 +50,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	private void function clearPreviouslyAppliedPromotionsForOrderItems(required array orderItems){
 		// Clear all previously applied promotions for order items
 		for(var oi=1; oi<=arrayLen(arguments.orderItems); oi++) {
-			for(var pa=arrayLen(arguments.orderItems[oi].getAppliedPromotions()); pa >= 1; pa--) {
-				writeDump(var=pa,label="pa");
-				if(!arguments.orderItems[oi].getAppliedPromotions()[pa].getManualDiscountAmountFlag()){
-					arguments.orderItems[oi].getAppliedPromotions()[pa].removeOrderItem();
-				}
-			}
+			ArrayClear(arguments.orderItems[oi].getAppliedPromotions());
 		}
 	}
 
@@ -83,6 +78,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		clearPreviouslyAppliedPromotionsForOrderItems(arguments.order.getOrderItems());
 		clearPreviouslyAppliedPromotionsForOrderFulfillments(arguments.order.getOrderFulfillments());
 		clearPreviouslyAppliedPromotionsForOrder(arguments.order);
+		getPromotionDAO().deleteOrphanedAppliedPromotions();
 	}
 
 	private void function setupPromotionRewardUsageDetails(required any promotionReward, required any promotionRewardUsageDetails){
@@ -422,7 +418,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				
 				clearPreviouslyAppliedPromotions(arguments.order);
 				clearPreviouslyAppliedPromotionMessages(arguments.order);
-				
+				getHibachiScope().flushOrmSession();
 				for(var orderItem in arguments.order.getOrderItems()){
 					orderItem.updateCalculatedProperties(true);
 				}
@@ -654,16 +650,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				for(var rewardStruct in arguments.orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ]){
 					
 					if( rewardCanStack( appliedPromotions, rewardStruct.promotionReward )){
-						// writeDump('let''s do this!');
-						// writeDump(rewardStruct.promotionReward.getRewardType());
 						if(len(appliedPromotions) && rewardStruct.promotionReward.getRewardType() == 'percentageOff'){
-							// writeDump('woo!');
-							// writeDump(rewardStruct.discountAmount);
-							// //Recalculate discount amount based on new price
-							// // rewardStruct.discountAmount = getDiscountAmount(reward=rewardStruct.promotionReward, price=orderItem.getExtendedUnitPriceAfterDiscount(), quantity=rewardStruct.discountQuantity, currencyCode=orderItem.getCurrencyCode(), sku=orderItem.getSku(), account=arguments.order.getAccount());
-							// writeDump(rewardStruct.discountAmount);
-							// abort;
-							
+							//Recalculate discount amount based on new price
+							rewardStruct.discountAmount = getDiscountAmount(reward=rewardStruct.promotionReward, price=orderItem.getExtendedUnitPriceAfterDiscount(), quantity=rewardStruct.discountQuantity, currencyCode=orderItem.getCurrencyCode(), sku=orderItem.getSku(), account=arguments.order.getAccount());
 						}
 						applyPromotionToOrderItem( orderItem, rewardStruct );
 					}
