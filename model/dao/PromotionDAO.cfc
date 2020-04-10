@@ -341,8 +341,22 @@ Notes:
 	
 	<cffunction name="getIncludedStackableRewardsIDListForPromotionReward" returntype="array" access="public">
 		<cfargument name="promotionReward" required="true" type="any" />
+		<cfargument name="includeReciprocalRecords" type="string" default="false" />
 		<cfquery name="local.rewards">
-			SELECT linkedPromotionRewardID from swpromorewardstackincl where promotionRewardID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.promotionReward.getPromotionRewardID()#" />
+			SELECT 
+				linkedPromotionRewardID 
+			FROM swpromorewardstackincl 
+			WHERE 
+				promotionRewardID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.promotionReward.getPromotionRewardID()#" />
+			<cfif arguments.includeReciprocalRecords EQ true >
+				UNION
+				SELECT 
+					promotionRewardID 
+				FROM swpromorewardstackincl 
+				WHERE 
+					linkedPromotionRewardID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.promotionReward.getPromotionRewardID()#" />
+			</cfif>
+					
 		</cfquery>
 		<cfset rewardsArray = ValueArray(local.rewards,'linkedPromotionRewardID') />
 		<cfreturn rewardsArray />
@@ -350,11 +364,41 @@ Notes:
 	
 	<cffunction name="getExcludedStackableRewardsIDListForPromotionReward" returntype="array" access="public">
 		<cfargument name="promotionReward" required="true" type="any" />
+		<cfargument name="includeReciprocalRecords" type="string" default="false" />
 		<cfquery name="local.rewards">
-			SELECT linkedPromotionRewardID from swpromorewardstackexcl where promotionRewardID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.promotionReward.getPromotionRewardID()#" />
+			SELECT 
+				linkedPromotionRewardID 
+			FROM swpromorewardstackexcl 
+			WHERE 
+				promotionRewardID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.promotionReward.getPromotionRewardID()#" />
+			<cfif arguments.includeReciprocalRecords EQ true >
+				UNION
+				SELECT 
+					promotionRewardID 
+				FROM swpromorewardstackexcl 
+				WHERE linkedPromotionRewardID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.promotionReward.getPromotionRewardID()#" />
+			</cfif>
 		</cfquery>
 		<cfset rewardsArray = ValueArray(local.rewards,'linkedPromotionRewardID') />
 		<cfreturn rewardsArray />
+	</cffunction>
+	
+	<cffunction name="getAppliedPromotionsForOrderItemsByOrder" returntype="array" access="public">
+		<cfargument name="order" required="true" type="any" />
+		
+		<cfquery name="local.orderItemIDs">
+			SELECT orderItemID FROM sworderitem WHERE orderID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.order.getOrderID()#" />
+		</cfquery>
+		<cfset local.orderItemIDList = ValueList(local.orderItemIDs.orderItemID) />
+
+		<cfquery name="local.appliedPromotions" dbtype="hql">
+			SELECT 
+				pa 
+			FROM SlatwallPromotionApplied pa
+			WHERE pa.orderItem.orderItemID IN (<cfqueryparam cfsqltype="cf_sql_varchar" value="#local.orderItemIDList#" list="true"/>)
+		</cfquery>
+		
+		<cfreturn local.appliedPromotions />
 	</cffunction>
 	
 	<cffunction name="deleteOrphanedAppliedPromotions" returntype="void" access="public">

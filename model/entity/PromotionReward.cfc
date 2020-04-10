@@ -381,18 +381,20 @@ property name="personalVolumeAmount" ormtype="big_decimal" hb_formatType="custom
 		return this.hasSkuBySkuID(arguments.orderItem.getSku().getSkuID());
 	}
 	
-	public string function getIncludedStackableRewardsIDList(){
-		if(!structKeyExists(variables,'includedStackableRewardsIDList')){
-			variables.includedStackableRewardsIDList = ArrayToList(getDAO('PromotionDAO').getIncludedStackableRewardsIDListForPromotionReward(this));
+	public string function getIncludedStackableRewardsIDList( boolean includeReciprocalRecords=false ){
+		var cacheKey = 'includedStackableRewardsIDList#arguments.includeReciprocalRecords#';
+		if(!structKeyExists(variables,cacheKey)){
+			variables[cacheKey] = ArrayToList(getDAO('PromotionDAO').getIncludedStackableRewardsIDListForPromotionReward( this, arguments.includeReciprocalRecords ));
 		}
-		return variables.includedStackableRewardsIDList;
+		return variables[cacheKey];
 	}
 	
-	public string function getExcludedStackableRewardsIDList(){
-		if(!structKeyExists(variables,'excludedStackableRewardsIDList')){
-			variables.excludedStackableRewardsIDList = ArrayToList(getDAO('PromotionDAO').getExcludedStackableRewardsIDListForPromotionReward(this));
+	public string function getExcludedStackableRewardsIDList( boolean includeReciprocalRecords=false ){
+		var cacheKey = 'excludedStackableRewardsIDList#arguments.includeReciprocalRecords#';
+		if(!structKeyExists(variables, cacheKey)){
+			variables[cacheKey] = ArrayToList(getDAO('PromotionDAO').getExcludedStackableRewardsIDListForPromotionReward( this, arguments.includeReciprocalRecords ));
 		}
-		return variables.excludedStackableRewardsIDList;
+		return variables[cacheKey];
 	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================

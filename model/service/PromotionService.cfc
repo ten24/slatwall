@@ -343,12 +343,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		} // End Order Item For Loop
 	}
 
-	private void function processOrderRewards(required any order, required any promotionReward){
+	private void function processOrderRewards(required any order, required array orderQualifiedDiscounts, required any promotionReward){
 		var totalDiscountableAmount = arguments.order.getSubtotalAfterItemDiscounts();
 
 		var discountAmount = getDiscountAmount(arguments.promotionReward, totalDiscountableAmount, 1, order.getCurrencyCode());
-
-		var addNew = false;
 
 		// First we make sure that the discountAmount is > 0 before we check if we should add more discount
 		if(discountAmount > 0) {
@@ -483,6 +481,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					}
 	
 				} // END of PromotionReward Loop
+				getHibachiScope().flushORMSession();
 				
 				applyOrderDiscounts(arguments.order, orderQualifiedDiscounts);
 				
@@ -626,9 +625,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	private void function applyOrderDiscounts(required any order, required array orderQualifiedDiscounts){
 		
-		var appliedPromotions = arguments.order.getAppliedPromotions();
-
+		var itemAppliedPromotions = getPromotionDAO().getAppliedPromotionsForOrderItemsByOrder(arguments.order);
+		
 		for(var rewardStruct in arguments.orderQualifiedDiscounts ){
+			
+			var appliedPromotions = order.getAppliedPromotions();
+			arrayAppend(appliedPromotions,itemAppliedPromotions,true);
 			
 			if( rewardCanStack( appliedPromotions, rewardStruct.promotionReward )){
 				applyPromotionToOrder( arguments.order, rewardStruct );
@@ -644,11 +646,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var orderItems = arguments.order.getOrderItems();
 		
 		for(var orderItem in orderItems) {
-			var appliedPromotions = orderItem.getAppliedPromotions();
+			
 			// If the orderItemID exists in the qualifiedDiscounts and there's at least 1 discount available, apply discounts
 			if(structKeyExists(arguments.orderItemQualifiedDiscounts, orderItem.getOrderItemID()) && arrayLen(arguments.orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ]) ) {
 				for(var rewardStruct in arguments.orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ]){
-					
+					var appliedPromotions = orderItem.getAppliedPromotions();
 					if( rewardCanStack( appliedPromotions, rewardStruct.promotionReward )){
 						if(len(appliedPromotions) && rewardStruct.promotionReward.getAmountType() == 'percentageOff'){
 							orderItem.clearVariablesKey('extendedPrice');
@@ -672,22 +674,25 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if( !ArrayLen(appliedPromotions) ){
 			return true;
 		}
-		
-		var rewardType = arguments.promotionReward.getRewardType();
 
+		var rewardType = arguments.promotionReward.getRewardType();
+		
 		var rewardCanStack = true;
 		
 		for( var appliedPromotion in appliedPromotions ){
 			var appliedRewardID = appliedPromotion.getPromotionRewardID();
 			var appliedRewardType = appliedPromotion.getPromotionReward().getRewardType();
+
 			
 			if( appliedRewardType == rewardType ){
-				if( !listContains(arguments.promotionReward.getIncludedStackableRewardsIDList(),appliedRewardID) ){
+				
+				if( !listContains(arguments.promotionReward.getIncludedStackableRewardsIDList( true ), appliedRewardID) ){
 					rewardCanStack = false;
 					break;
 				}
 			}else{
-				if( listContains(arguments.promotionReward.getExcludedStackableRewardsIDList(),appliedRewardID) ){
+				
+				if( listContains(arguments.promotionReward.getExcludedStackableRewardsIDList( true ), appliedRewardID) ){
 					rewardCanStack = false;
 					break;
 				}

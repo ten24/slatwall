@@ -64,13 +64,26 @@ Notes:
 
 <cfset local.includeRewardCollection = $.slatwall.getService('PromotionService').getPromotionRewardCollectionList() />
 <cfset local.includeRewardCollection.setDisplayProperties('promotionPeriod.promotion.promotionName,promotionPeriod.promotionPeriodName,amountType,amount',{isVisible:true}) />
-<cfset local.includeRewardCollection.addDisplayProperty(displayProperty="promotionRewardID",columnConfig={isVisible:false}) >
+<cfset local.includeRewardCollection.addDisplayProperty(displayProperty="promotionRewardID",columnConfig={isVisible:false})>
 <cfset local.includeRewardCollection.addFilter('rewardType',local.includeRewardType) />
+<cfset local.includeRewardCollection.addFilter('promotionRewardID',rc.promotionReward.getPromotionRewardID(),"!=") />
+<cfset local.includeRewardCollection.addFilter('promotionPeriod.promotion.activeFlag',"true") />
+<cfset local.includeRewardCollection.addFilter('promotionPeriod.endDateTime',now(),'>=') />
+<cfif !isNull(rc.promotionPeriod.getPromotion().getSite()) >
+    <cfset local.includeRewardCollection.addFilter(propertyIdentifier='promotionPeriod.promotion.site.siteID',value="#rc.promotionPeriod.getPromotion().getSite().getSiteID()#",filterGroupAlias="site") />
+    <cfset local.includeRewardCollection.addFilter(propertyIdentifier='promotionPeriod.promotion.site.siteID',value="null",logicalOperator="OR",filterGroupAlias="site") />
+</cfif>
 
 <cfset local.excludeRewardCollection = $.slatwall.getService('PromotionService').getPromotionRewardCollectionList() />
 <cfset local.excludeRewardCollection.setDisplayProperties('promotionPeriod.promotion.promotionName,promotionPeriod.promotionPeriodName,amountType,amount',{isVisible:true}) />
 <cfset local.excludeRewardCollection.addDisplayProperty(displayProperty="promotionRewardID",columnConfig={isVisible:false}) >
 <cfset local.excludeRewardCollection.addFilter('rewardType',local.excludeRewardType) />
+<cfset local.includeRewardCollection.addFilter('promotionPeriod.promotion.activeFlag',"true") />
+<cfset local.includeRewardCollection.addFilter('promotionPeriod.endDateTime',now(),'>=') />
+<cfif !isNull(rc.promotionPeriod.getPromotion().getSite()) >
+    <cfset local.excludeRewardCollection.addFilter(propertyIdentifier='promotionPeriod.promotion.site.siteID',value="#rc.promotionPeriod.getPromotion().getSite().getSiteID()#",filterGroupAlias="site") />
+    <cfset local.excludeRewardCollection.addFilter(propertyIdentifier='promotionPeriod.promotion.site.siteID',value="null",logicalOperator="OR",filterGroupAlias="site") />
+</cfif>
 
 <cfset local.includedRewards = rc.promotionReward.getIncludedStackableRewards() />
 <cfset local.includedRewardIDs = "" />
@@ -93,7 +106,6 @@ Notes:
             edit="#rc.edit#" 
             displaytype="plainTitle"
             showSimpleListingControls="false"
-            hideUnfilteredResults="true"
             multiselect="true"
             multiselectPropertyIdentifier="promotionRewardID"
             multiselectFieldName="includedStackableRewards"
@@ -106,10 +118,9 @@ Notes:
 	        edit="#rc.edit#" 
             displaytype="plainTitle"
             showSimpleListingControls="false"
-            hideUnfilteredResults="true"
             multiselect="true"
             multiselectPropertyIdentifier="promotionRewardID"
-            multiselectFieldName="includedStackableRewards"
+            multiselectFieldName="excludedStackableRewards"
             multiselectValues="#local.excludedRewardIDs#"/>
 	</div>
 </cfoutput>
