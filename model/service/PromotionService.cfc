@@ -650,10 +650,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				for(var rewardStruct in arguments.orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ]){
 					
 					if( rewardCanStack( appliedPromotions, rewardStruct.promotionReward )){
-						if(len(appliedPromotions) && rewardStruct.promotionReward.getRewardType() == 'percentageOff'){
+						if(len(appliedPromotions) && rewardStruct.promotionReward.getAmountType() == 'percentageOff'){
+							orderItem.clearVariablesKey('extendedPrice');
 							//Recalculate discount amount based on new price
 							rewardStruct.discountAmount = getDiscountAmount(reward=rewardStruct.promotionReward, price=orderItem.getExtendedUnitPriceAfterDiscount(), quantity=rewardStruct.discountQuantity, currencyCode=orderItem.getCurrencyCode(), sku=orderItem.getSku(), account=arguments.order.getAccount());
 						}
+
 						applyPromotionToOrderItem( orderItem, rewardStruct );
 					}
 					
