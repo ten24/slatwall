@@ -27,7 +27,23 @@ component accessors="true" output="false" extends="Slatwall.integrationServices.
 			legacyImportAPIAuthKey = {fieldType="password", defaultValue=""},
 		    dailyImportAPIDomain = {fieldType="text", defaultValue="https://apisandbox.monatcorp.net:8443"},
 			dailyImportAPIAuthKey = {fieldType="password", defaultValue=""},
-			rafCreditExpirationTerm = {fieldType="select"}
+			rafCreditExpirationTerm = {fieldType="select"},
+			siteSkinProductListingCategoryFilters = {
+			    fieldType="listingMultiselect", 
+			    listingMultiselectEntityName="Category",
+			    listingMultiselectFilters=[{
+					propertyIdentifier="parentCategory.categoryID",
+					value="673cba5d92bf40e18027ede2a51dc5a5"
+				}]
+			},
+			siteHairProductListingCategoryFilters = {
+			    fieldType="listingMultiselect", 
+			    listingMultiselectEntityName="Category",
+			    listingMultiselectFilters=[{
+					propertyIdentifier="parentCategory.categoryID",
+					value="f66d77f60a6b4911a36cb00b11b89a14"
+				}]
+			}
 		};
     }
     
