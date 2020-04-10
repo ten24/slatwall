@@ -78,7 +78,7 @@
 						class="form-control"
 						ng-model="accountAddressCtrl.accountAddress.countryCode"
 						name = "address_country" 
-						ng-readonly=true
+						readonly
 					/>
 					<label ng-bind="accountAddressCtrl.translations.address_country"></label>
 				</div>
@@ -151,7 +151,7 @@
 		<button
 			type="button"
 			class="btn btn-block btn-cancel cancel-dark col-md-2"
-			ng-click="accountAddAddressCtrl.remove()"
+			ng-click="accountAddressCtrl.remove()"
 			sw-rbkey="'frontend.modal.closeButton'"
 		></button>
 	</div>

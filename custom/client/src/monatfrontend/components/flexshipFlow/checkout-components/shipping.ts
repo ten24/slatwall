@@ -52,30 +52,24 @@ class FlexshipCheckoutShippingController {
     	}
     }
     
-    public updateShippingAddress(accountAddress) {
+    public updateShippingAddress() {
         
     	let payload = {};
     	payload['orderTemplateID'] = this.orderTemplate?.orderTemplateID;
-  
     	if(this.selectedShippingAddress.accountAddressID !== 'new') {
     		 payload['shippingAccountAddress.value'] = this.selectedShippingAddress.accountAddressID;
     	} else {
-    		payload['newAccountAddress'] = accountAddress;
+	    	throw("What went wrong????");
     	}
  
-    	payload = this.orderTemplateService.getFlattenObject(payload);
-
     	// make api request
-        this.orderTemplateService.updateShipping(payload)
+        this.orderTemplateService.updateShipping(
+			this.orderTemplateService.getFlattenObject(payload)
+		)
         .then( (response) => {
            if(response.orderTemplate) {
                 this.orderTemplate = response.orderTemplate;
                 this.observerService.notify("orderTemplateUpdated" + response.orderTemplate.orderTemplateID, response.orderTemplate);
-                if(response.newAccountAddress) {
-            		this.observerService.notify("newAccountAddressAdded",response.newAccountAddress);
-            		this.accountAddresses.push(response.newAccountAddress);
-                }
-                		
                 this.setSelectedAccountAddressID(this.orderTemplate.shippingAccountAddress_accountAddressID);
                 this.monatAlertService.success(this.rbkeyService.rbKey('alert.flexship.updateSucceccfull'));
            } else {
@@ -91,22 +85,30 @@ class FlexshipCheckoutShippingController {
         }); 
     }
     
+    public onAddNewAccountAddressSuccess = (newAccountAddress) => {
+		if(newAccountAddress) {
+    		this.accountAddresses.push(newAccountAddress);
+    		this.setSelectedAccountAddressID(newAccountAddress.accountAddressID);
+        }
+        this.updateShippingAddress();
+    	console.log("add account adress, on success", newAccountAddress);
+    	return true;
+    };
+    
+    public onAddNewAccountAddressFailure = (error) => {
+        console.log("add account adress, on failure", error);
+    };
+    
     public showNewAddressForm = (accountAddress?) => {
         
         if(this.newAddressFormRef) {
             return this.newAddressFormRef.show();
         }
         
+        
 		let bindings = {
-			// onSubmitCallback: (accountAddress) => {
-   //         	this.updateShippingAddress(accountAddress);
-   //         }
-			onSuccessCallback: (accountAddress) => {
-            	console.log("add account adress, on success", accountAddress);
-            },
-            onFailureCallback: (error) => {
-            	console.log("ass account adress, on failure", error);
-            }
+			onSuccessCallback: this.onAddNewAccountAddressSuccess,
+			onFailureCallback: this.onAddNewAccountAddressFailure,
 		};
 		
 		if(accountAddress){
@@ -119,10 +121,7 @@ class FlexshipCheckoutShippingController {
 			bindings: bindings
 		})
 		.then( (component) => {
-			component.close.then((result) => {
-			    console.log("onAccountAddressClose", result);
-			    this.newAddressFormRef = undefined;
-			});
+			component.close.then( () =>  this.newAddressFormRef = undefined);
 			this.newAddressFormRef = component.element;
 		})
 		.catch((error) => {

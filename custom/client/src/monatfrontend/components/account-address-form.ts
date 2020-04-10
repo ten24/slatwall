@@ -29,7 +29,7 @@ class AccountAddressFormController {
  
     	this.monatService.getStateCodeOptionsByCountryCode()
     	.then( (options) => this.stateCodeOptions = options )
-    	//todo address-form-field-options
+    	//TODO: address-form-field-options, Q: are we using these (conditional form fields for address)?
     	.catch( (error) => {
 		    console.error(error);
 		})
@@ -65,17 +65,18 @@ class AccountAddressFormController {
 		
         this.monatService.addEditAccountAddress(this.accountAddress)
         .then( (response) => {
-        	if(response?.accountAddress) {
-           	    //if caller returned true ==> success-handeled;
-           		if(this.onSuccessCallback?.(response.accountAddress) === true) return this.remove();
-           		this.observerService.notify("addAccountAddressSaveSuccess", response.accountAddress);
+        	if(response?.newAccountAddress) {
+           	    //if callback return true ==> success-handeled, will close;
+           		if(this.onSuccessCallback?.(response.newAccountAddress) === true) return this.remove();
+           		//beware of the event-name ambiguity, the core-event doesn't pass any data;
+           		this.observerService.notify("newAccountAddressSaveSuccess", response.newAccountAddress);
            		this.remove();
         	} else {
         		throw(response);
         	}
         }) 
         .catch( (error) => {
-        	//if caller returned true ==> error-handeled;
+        	//if callback return true ==> error-handeled, will close;
         	if(this.onFailureCallback?.(error) === true ) return this.remove();
         	this.monatAlertService.showErrorsFromResponse(error);
         })
@@ -101,11 +102,9 @@ class AccountAddressForm {
 		close: "=", //injected via modal-service
 		accountAddress: '<?',
 	    
-	    // we can tap into this to get the form-data, before the api-call, 
-	    // if the callback-function returns true, it won't make the API call;
+	    // we can tap into this to get/update the form-data, before the api-call, 
 	    onSubmitCallback:'=?', 
 	    
-	    // can remove these..., things will be much simpler
 	    onSuccessCallback:'=?',
 	    onFailureCallback:'=?'
 	};

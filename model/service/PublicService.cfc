@@ -524,8 +524,9 @@ component  accessors="true" output="false"
                 getHibachiScope().addActionResult("public:account.addNewAccountAddress", savedAccountAddress.hasErrors());
        	     	if (!savedAccountAddress.hasErrors()){
        	     		getDao('hibachiDao').flushOrmSession();
-                    data.accountAddressID = savedAccountAddress.getAccountAddressID();
-                    arguments.data['ajaxResponse']['newAccountAddressID'] = data.accountAddressID;
+                    arguments.data.accountAddressID = savedAccountAddress.getAccountAddressID();
+                    arguments.data['ajaxResponse']['newAccountAddressID'] = arguments.data.accountAddressID;
+                    arguments.data['ajaxResponse']['newAccountAddress'] = savedAccountAddress.getStructRepresentation();
 
                     var addressVerificationStruct = getService('AddressService').verifyAddressByID(savedAccountAddress.getAddress().getAddressID());
                     arguments.data.ajaxResponse['addressVerification'] = addressVerificationStruct;
@@ -556,12 +557,13 @@ component  accessors="true" output="false"
       		accountAddress.setAddress(newAddress);
       		accountAddress.setAccount(getHibachiScope().getAccount());	
       		var savedAccountAddress = getService("AccountService").saveAccountAddress(accountAddress);
-          getHibachiScope().addActionResult("public:account.addNewAccountAddress", savedAccountAddress.hasErrors());
+            getHibachiScope().addActionResult("public:account.addNewAccountAddress", savedAccountAddress.hasErrors());
    	     	if (!savedAccountAddress.hasErrors()){
    	     		getDao('hibachiDao').flushOrmSession();
-                data.accountAddressID = savedAccountAddress.getAccountAddressID();
-                data['ajaxResponse']['newAccountAddressID'] = data.accountAddressID;
-                
+                arguments.data.accountAddressID = savedAccountAddress.getAccountAddressID();
+                arguments.data['ajaxResponse']['newAccountAddressID'] = arguments.data.accountAddressID;
+                arguments.data['ajaxResponse']['newAccountAddress'] = savedAccountAddress.getStructRepresentation();
+
                 var addressVerificationStruct = getService('AddressService').verifyAddressByID(savedAccountAddress.getAddress().getAddressID());
                 arguments.data.ajaxResponse['addressVerification'] = addressVerificationStruct;
    	     	}
