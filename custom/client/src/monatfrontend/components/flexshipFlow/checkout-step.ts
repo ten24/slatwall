@@ -5,14 +5,13 @@ import { PayPalService } from '@Monat/services/paypalservice';
 
 class FlexshipCheckoutStepController {
 	//states
-	public activePaymentMethod: string = 'creditCard';
-	public state: FlexshipCheckoutState;
+	public state= {} as FlexshipCheckoutState;
+	private stateListeners =[];
 
-	public accountPaymentMethods = [];
-	public orderTemplate;
 
 	//@ngInject
 	constructor(
+		private $timeout,
 		public orderTemplateService,
 		private monatService: MonatService,
 		private payPalService: PayPalService,
@@ -20,17 +19,52 @@ class FlexshipCheckoutStepController {
 	) {}
 
 	public $onInit = () => {
-		this.flexshipCheckoutStore.hook('*', (state: FlexshipCheckoutState) => {
-			this.state = state;
-		});
-
-		this.monatService.getAccountPaymentMethods().then((accountPaymentMethods) => {
-			this.flexshipCheckoutStore.dispatch('SET_PAYMENT_METHODS', {
-				accountPaymentMethods: accountPaymentMethods,
-			});
-		});
+		
+		this.setupStateChangeListeners();
+		
+		this.monatService.getAccountPaymentMethods()
+		.then( data => {
+			this.flexshipCheckoutStore.dispatch( 'SET_PAYMENT_METHODS', {
+				'accountPaymentMethods': data.accountPaymentMethods,
+				'primaryPaymentMethodID': data.primaryPaymentMethodID
+			})
+			return data;
+		})
+		.then( data => {
+			//select a payment method (previous,current,first)
+		})
+		;
 	};
 
+	
+	public setSelectedPaymentProvider(selectedPaymentProvider){
+		this.flexshipCheckoutStore.dispatch( 'SET_SELECTED_PAYMENT_PROVIDER', {
+			'selectedPaymentProvider': selectedPaymentProvider	
+		});
+	}
+	
+	public setSelectedPaymentMethodID(selectedPaymentMethodID){
+		this.flexshipCheckoutStore.dispatch( 'SET_SELECTED_PAYMENT_METHOD_ID', {
+			'selectedPaymentMethodID': selectedPaymentMethodID	
+		});
+	}
+	
+	private onNewStateReceived = (state: FlexshipCheckoutState) => {
+		this.state = state;
+		console.log("checkout-step, on-new-state", this.state);
+	}
+	
+	private setupStateChangeListeners(){
+		this.stateListeners.push(
+			this.flexshipCheckoutStore.hook('*', this.onNewStateReceived)
+		);
+	}
+	
+	public $onDestroy= () => {
+		//to clear all of the listenets 
+		this.stateListeners.map( hook => hook.destroy());
+	}
+	
 	public configurePayPal = () => {
 		this.payPalService.configPayPal();
 	};

@@ -1,6 +1,6 @@
-<flexship-checkout-shipping-address></flexship-checkout-shipping-address>
+<!--<flexship-checkout-shipping-address></flexship-checkout-shipping-address>-->
 
-<flexship-checkout-shipping-method></flexship-checkout-shipping-method>
+<!--<flexship-checkout-shipping-method></flexship-checkout-shipping-method>-->
 
 
 <section class="shipping-page payment-page">
@@ -16,24 +16,28 @@
 					<div class="col">
 						<div class="radio_sec">
 							<div class="custom-radio">
-								<label for="payment_cc" sw-rbkey="'frontend.checkout.payCC'"></label>
 								<input 
-								    value="creditCard" type="radio" name="pmt" id="payment_cc" 
-								    ng-model="flexshipCheckout.activePaymentMethod" 
-								    ng-checked="flexshipCheckout.activePaymentMethod === 'creditCard' " 
+								    type="radio" name="selectedPaymentProvider" id="payment_cc" 
+								    ng-checked="flexshipCheckout.state.selectedPaymentProvider === 'creditCard' " 
 								/>
+								<label for="payment_cc" 
+									sw-rbkey="'frontend.checkout.payCC'"
+									ng-click="flexshipCheckout.setSelectedPaymentProvider('creditCard')"
+								></label>
 							</div>
 						</div>
 					</div>
 					<div class="col">
 						<div class="radio_sec">
 							<div class="custom-radio">
-								<label for="payment_payPal" sw-rbkey="'frontend.checkout.payPaypal'"></label>
 								<input 
-    								value="payPal" type="radio" name="pmt" id="payment_payPal" 
-    								ng-model="flexshipCcheckout.activePaymentMethod" 
-    								ng-checked="flexshipCheckout.activePaymentMethod === 'payPal' " 
+    								type="radio" name="selectedPaymentProvider" id="payment_payPal"
+    								ng-checked="flexshipCheckout.state.selectedPaymentProvider === 'payPal' " 
 								/>
+								<label for="payment_payPal" 
+									sw-rbkey="'frontend.checkout.payPaypal'"
+									ng-click="flexshipCheckout.setSelectedPaymentProvider('payPal')"
+								></label>
 							</div>
 						</div>
 					</div>
@@ -41,20 +45,20 @@
 			</div>
 			
 			<!--paymant-method-paypal-->
-			<div ng-if="flexshipCheckout.activePaymentMethod === 'payPal'">
+			<div ng-if="flexshipCheckout.state.selectedPaymentProvider === 'payPal'">
 				<h4 class="billing-address-title" sw-rbkey="'frontend.checkout.newPaymentMethodPaypal'"></h4>
-				<div id="paypal-button" ng-init="flexshipCheckout.configurePayPal()">
+				<div id="paypal-button" ng-init="flexshipCheckout.configurePayPal()"></div>
 			</div>
 			
 			<!--paymant-method-CC-->
-			<div ng-if="flexshipCheckout.activePaymentMethod === 'creditCard'">
+			<div ng-if="flexshipCheckout.state.selectedPaymentProvider === 'creditCard'">
 				<h4 sw-rbkey="'frontend.checkout.savedCC'"></h4>
 				
 				
 				<!--saved CC-->
 				<div 
 					class="custom-radio py-3"
-					ng-repeat="paymentMethod in flexshipCheckout.accountPaymentMethods | filter:{ moMoneyWallet:false, activeFlag: true }"
+					ng-repeat="paymentMethod in flexshipCheckout.state.accountPaymentMethods "
 					ng-if="paymentMethod.creditCardLastFour.length" 
 					ng-click="flexshipCheckout.setSelectedPaymentMethodID( paymentMethod.accountPaymentMethodID)" 
 				>
@@ -62,7 +66,7 @@
 						type="radio" 
 						name="accountPaymentMethod"
 						id="paymentMethod-{{paymentMethod.accountPaymentMethodID}}"
-						ng-checked="flexshipCheckout.selectedPaymentMethod.accountPaymentMethodID === paymentMethod.accountPaymentMethodID"
+						ng-checked="flexshipCheckout.state.selectedPaymentMethodID === paymentMethod.accountPaymentMethodID"
 					>
 					<label for="paymentMethod-{{paymentMethod.accountPaymentMethodID}}">
 						<i  class="fab fa-2x align-middle mr-2"
@@ -73,7 +77,7 @@
 						></i> 
 						{{paymentMethod.creditCardType}} {{paymentMethod.creditCardLastFour}} 
 						<span class="text-black-50" 
-							ng-if="flexshipCheckout.primaryPaymentMethodID == paymentMethod.accountPaymentMethodID" 
+							ng-if="flexshipCheckout.state.primaryPaymentMethodID == paymentMethod.accountPaymentMethodID" 
 							sw-rbKey="'frontend.global.default'"
 						></span>
 					</label>

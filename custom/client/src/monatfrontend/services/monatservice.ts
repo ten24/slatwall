@@ -327,7 +327,7 @@ export class MonatService {
 		let deferred = this.$q.defer();
 		this.publicService.doAction('getAccountPaymentMethods')
 		.then( (data) => {
-			if(data?.accountPaymentMethods)  deferred.resolve( data.accountPaymentMethods ); 
+			if(data?.accountPaymentMethods)  deferred.resolve( data ); 
 			else  throw(data);
 		})
 		.catch( (e) => {

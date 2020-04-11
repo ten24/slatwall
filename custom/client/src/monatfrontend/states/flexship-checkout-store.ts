@@ -13,6 +13,8 @@ export interface FlexshipCheckoutState {
 
 	// will get updated everytime we add new-payment-method
 	accountPaymentMethods: []; 
+	selectedPaymentProvider: string;
+	
 	selectedPaymentMethodID: string;
 	selectedBillingAddressID: string;
 	showNewPaymentMethodForm: boolean;
@@ -30,11 +32,12 @@ export type FlexshipCheckoutActions = [
 	'SET_ACCOUNT_ADDRESSES',
 	'SET_PAYMENT_METHODS',
 
-	'SET_SELECTED_SHIPPING_ADDRESS',
-	'SET_SELECTED_SHIPPING_METHOD',
+	'SET_SELECTED_SHIPPING_ADDRESS_ID',
+	'SET_SELECTED_SHIPPING_METHOD_ID',
 
-	'SET_SELECTED_PAYMENT_METHOD',
-	'SET_SELECTED_BILLING_ADDRESS',
+	'SET_SELECTED_PAYMENT_PROVIDER',
+	'SET_SELECTED_PAYMENT_METHOD_ID',
+	'SET_SELECTED_BILLING_ADDRESS_ID',
 
 	'TOGGLE_LOADING',
 	'TOGGLE_NEW_SHIPPING_ADDRESS_FORM',
@@ -44,7 +47,7 @@ export type FlexshipCheckoutActions = [
 ];
 
 export class FlexshipCheckoutStore extends NgStore<FlexshipCheckoutState, FlexshipCheckoutActions> {
-	private static defaultState = {
+	public static defaultState = {
 		//defaults
 		loading: false,
 		showNewShippingAddressForm: false,
@@ -55,6 +58,7 @@ export class FlexshipCheckoutStore extends NgStore<FlexshipCheckoutState, Flexsh
 		selectedShippingAddressID: undefined,
 		selectedShippingMethodID: undefined,
 
+		selectedPaymentProvider: 'creditCard', // creditCard | payPal
 		accountPaymentMethods: [],
 		selectedPaymentMethodID: undefined,
 		selectedBillingAddressID: undefined,
