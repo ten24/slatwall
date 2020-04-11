@@ -1,0 +1,40 @@
+<section class="shipping-page payment-page">
+	<div class="container">
+		<div class="payment_sec">
+			
+			<!---===================================== Payment Options Section =====================================--->
+			<h2 class="checkout-heading mt-5" sw-rbkey="'frontend.checkout.howToPay'"></h2>
+			<span class="secured" sw-rbkey="'frontend.checkout.secureCheckout'"></span>
+			
+			<div class="payment-options-form" >
+				<div class="form-row">
+					<div class="col">
+						<div class="radio_sec">
+							<div class="custom-radio">
+								<label for="payment_cc" sw-rbkey="'frontend.checkout.payCC'"></label>
+								<span ng-init="flexshipCheckout.activePaymentMethod = 'creditCard'"></span>
+								<input 
+								    value="creditCard" type="radio" name="pmt" id="payment_cc" 
+								    ng-model="flexshipCheckout.activePaymentMethod" 
+								    ng-checked="flexshipCheckout.activePaymentMethod === 'creditCard' " 
+								/>
+							</div>
+						</div>
+					</div>
+					<div class="col">
+						<div class="radio_sec">
+							<div class="custom-radio">
+								<label for="payment_payPal" sw-rbkey="'frontend.checkout.payPaypal'"></label>
+								<input 
+    								value="payPal" type="radio" name="pmt" id="payment_payPal" 
+    								ng-model="flexshipCcheckout.activePaymentMethod" 
+    								ng-checked="flexshipCheckout.activePaymentMethod === 'payPal' " 
+								/>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>

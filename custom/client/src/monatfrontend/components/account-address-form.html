@@ -3,9 +3,7 @@
 	ng-submit="accountAddressForm.$valid && accountAddressCtrl.onFormSubmit()"
 >
 	<div class="shipping">
-		<!--- Conditional: Add New Shipping Address form --->
 		<div class="row">
-			
 			<div class="col-12 col-md-6">
 				<div class="material-field">
 					<input
@@ -216,7 +214,7 @@
 			type="button"
 			class="btn cancel-dark col-md-2 ml-1"
 			ng-click="accountAddressCtrl.remove()"
-			ng-class="{ 'loading, disabled': accountAddressCtrl.loading}"
+			ng-class="{ disabled : accountAddressCtrl.loading}"
 			ng-disabled = "accountAddressCtrl.loading"
 			sw-rbkey="'frontend.global.cancel'"
 		></button>

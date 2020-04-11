@@ -43,9 +43,7 @@ export type FlexshipCheckoutActions = [
     
     'TOGGLE_NEW_PAYMENT_METHOD_FORM',
     'TOGGLE_NEW_BILLING_ADDRESS_FORM',
-
-  
-];
+]
 
 /**
  * It's a very light-weight state-management library for AngularJS, and currently maintained
@@ -53,7 +51,7 @@ export type FlexshipCheckoutActions = [
  * For Doc, Tutorials visit https://angularjs-store.gitbook.io/docs/tutorials/
  * 
 */ 
-export class FlexshipCheckoutStoreService extends NgStore<FlexshipCheckoutState, FlexshipCheckoutActions> {
+export class FlexshipCheckoutStore extends NgStore<FlexshipCheckoutState, FlexshipCheckoutActions> {
     constructor(
         private monatService, 
         private orderTemplateService, 

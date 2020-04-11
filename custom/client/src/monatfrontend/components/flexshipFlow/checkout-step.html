@@ -17,7 +17,6 @@
 						<div class="radio_sec">
 							<div class="custom-radio">
 								<label for="payment_cc" sw-rbkey="'frontend.checkout.payCC'"></label>
-								<span ng-init="flexshipCheckout.activePaymentMethod = 'creditCard'"></span>
 								<input 
 								    value="creditCard" type="radio" name="pmt" id="payment_cc" 
 								    ng-model="flexshipCheckout.activePaymentMethod" 
@@ -39,10 +38,87 @@
 						</div>
 					</div>
 				</div>
+			</div>
+			
+			<!--paymant-method-paypal-->
+			<div ng-if="flexshipCheckout.activePaymentMethod === 'payPal'">
+				<h4 class="billing-address-title" sw-rbkey="'frontend.checkout.newPaymentMethodPaypal'"></h4>
+				<div id="paypal-button" ng-init="flexshipCheckout.configurePayPal()">
+			</div>
+			
+			<!--paymant-method-CC-->
+			<div ng-if="flexshipCheckout.activePaymentMethod === 'creditCard'">
+				<h4 sw-rbkey="'frontend.checkout.savedCC'"></h4>
+				
+				
+				<!--saved CC-->
+				<div 
+					class="custom-radio py-3"
+					ng-repeat="paymentMethod in flexshipCheckout.accountPaymentMethods | filter:{ moMoneyWallet:false, activeFlag: true }"
+					ng-if="paymentMethod.creditCardLastFour.length" 
+					ng-click="flexshipCheckout.setSelectedPaymentMethodID( paymentMethod.accountPaymentMethodID)" 
+				>
+					<input 
+						type="radio" 
+						name="accountPaymentMethod"
+						id="paymentMethod-{{paymentMethod.accountPaymentMethodID}}"
+						ng-checked="flexshipCheckout.selectedPaymentMethod.accountPaymentMethodID === paymentMethod.accountPaymentMethodID"
+					>
+					<label for="paymentMethod-{{paymentMethod.accountPaymentMethodID}}">
+						<i  class="fab fa-2x align-middle mr-2"
+							ng-class="{
+								'fa-cc-visa': paymentMethod.creditCardType == 'Visa',
+								'fa-cc-mastercard': paymentMethod.creditCardType == 'Mastercard'
+							}"
+						></i> 
+						{{paymentMethod.creditCardType}} {{paymentMethod.creditCardLastFour}} 
+						<span class="text-black-50" 
+							ng-if="flexshipCheckout.primaryPaymentMethodID == paymentMethod.accountPaymentMethodID" 
+							sw-rbKey="'frontend.global.default'"
+						></span>
+					</label>
+				</div>
+				
+				<!--new CC-->
+				<div  class="custom-radio py-3" ng-click="flexshipCheckout.setSelectedPaymentMethodID()" >
+					<input 
+						id="newCard"
+						type="radio" 
+						name="accountPaymentMethod"
+						ng-checked="flexshipCheckout.selectedPaymentMethod.accountPaymentMethodID === 'new'"
+					>
+					<label for="newCard" sw-rbkey="'frontend.paymentmethodmodal.addnewcreditcard'"> </label>
+				</div>
+				
+				
+				<!---============== New Payment Method Section============== --->
+					<!---======== Billing Address Options ========--->
+					  
+					  
+					  	<!---============== New Billing Address Section============== --->
+						
+						
+						
+						<!---============== END: New Billing Address Section============== --->
+					<!---========END: Billing Address Options ========--->
+					  
+					  
+					<!---============== New CC Section============== --->
+					  
+					  
+					<!---==============END New CC Section============== --->
+				<!---==============END: New Payment Method Section============== --->
+				
 				
 			</div>
-
-
+			
+			
+			
+			
+			
+			
+			
+			
 		</div>
 	</div>
 	

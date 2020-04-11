@@ -1,11 +1,13 @@
 import { FlexshipSteps } from '@Monat/components/flexshipFlow/flexshipFlow';
+import { FlexshipCheckoutState as State, FlexshipCheckoutStore } from '@Monat/components/flexshipFlow/flexship-checkout-store';
 import { MonatService } from '@Monat/services/monatservice';
+import { PayPalService } from '@Monat/services/paypalservice';
 
 class FlexshipCheckoutStepController {
 	
 	//states
 	public activePaymentMethod: string = 'creditCard';
-	
+	public state: State;
 	
 	public accountPaymentMethods = [];
 	public orderTemplate;
@@ -13,17 +15,30 @@ class FlexshipCheckoutStepController {
     //@ngInject
     constructor(
     	public orderTemplateService, 
-    	private monatService: MonatService
+    	private monatService: MonatService,
+    	private payPalService: PayPalService,
+    	private flexshipCheckoutStore: FlexshipCheckoutStore
     ) {
     }
 
     public $onInit = () => { 
+		
+		this.flexshipCheckoutStore.hook('*', (state) => {
+			this.state = state;
+		});
+
+		
 		this.monatService.getAccountPaymentMethods()
 		.then( (accountPaymentMethods) => {
-			this.accountPaymentMethods = accountPaymentMethods;
-		})
+			this.flexshipCheckoutStore.dispatch( 'SET_SELECTED_PAYMENT_METHOD', { accountPaymentMethods: accountPaymentMethods }  );
+		});
+		
     }
-
+    
+    public configurePayPal = () =>{
+    	this.payPalService.configPayPal();
+    }
+	
 }
 
 export class FlexshipCheckoutStep {

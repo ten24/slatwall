@@ -84,6 +84,9 @@ import { MonatHttpQueueInterceptor } from './services/monatHttpQueueInterceptor'
 import { MonatAlertService } from './services/monatAlertService';
 import { MonatDatePicker} from './directives/monatdatepicker';
 
+//State-management
+import { FlexshipCheckoutStore } from './components/flexshipFlow/flexship-checkout-store';
+
 //declare variables out of scope
 declare var $: any;
 
@@ -170,6 +173,10 @@ var monatfrontendmodule = angular
 	.service('monatHttpInterceptor', MonatHttpInterceptor)
 	.service("monatHttpQueueInterceptor", MonatHttpQueueInterceptor)
 	.service('monatAlertService', MonatAlertService)
+	
+	//state-stores
+	.service('flexshipCheckoutStore', FlexshipCheckoutStore)
+	
 	.config(['$locationProvider', '$httpProvider','appConfig','localStorageCacheProvider', 'sessionStorageCacheProvider',
 	($locationProvider, $httpProvider, appConfig, localStorageCacheProvider, sessionStorageCacheProvider) => {
 			

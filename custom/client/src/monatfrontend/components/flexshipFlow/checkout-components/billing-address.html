@@ -1,0 +1,58 @@
+<div class="new_address">
+    <section class="shipping-page">
+    	<div class="container">
+           	<div class="shipping_sec mb-5">
+        		<h2 class="checkout-heading">Where do you like your items shiped?</h2>
+    		    
+    		    <!---Existing shipping address --->
+				<div class="shipping-options">
+					<ul>
+						<li ng-repeat="accountAddress in flexshipCheckoutShippingAddress.accountAddresses track by accountAddress.accountAddressID">
+							<div
+								class="custom-radio form-group"
+								ng-click="$parent.flexshipCheckoutShippingAddress.setSelectedAccountAddressID(accountAddress.accountAddressID)"
+							>
+								<input
+									type="radio"
+									name="accountAddressID"
+									id="accountAddress-{{accountAddress.accountAddressID}}" 
+									ng-checked="accountAddress.accountAddressID === flexshipCheckoutShippingAddress.selectedShippingAddress.accountAddressID"
+								/>
+								<label for="accountAddressID">
+									{{
+                                        accountAddress.address_streetAddress
+                                        + ( 
+                                            accountAddress.address_street2Address.length 
+                                                ? ' ' + accountAddress_address.street2Address + ',' 
+                                                : ','
+                                        )
+                                    }}
+                                    {{accountAddress.address_city}},
+                                    {{accountAddress.address_stateCode}}
+                                    {{accountAddress.address_postalCode}}
+								</label>
+							</div>
+						</li>
+						<li>
+						    <div ng-click="flexshipCheckoutShippingAddress.setSelectedAccountAddressID()" class="custom-radio">
+								<input 
+									type="radio" 
+									name="accountAddressID"
+									id="new-account-address" 
+									ng-checked="'new' === flexshipCheckoutShippingAddress.selectedShippingAddress.accountAddressID"
+	                            />
+	                            <label for="accountAddressID">
+	                                <span sw-rbKey="'frontend.checkout.newAccountAddress'"></span>
+	                            </label>
+							</div>
+						</li>
+					</ul>
+				</div>
+				
+				<!--  new Address form will get injected here, because data-attributes are hard to maintain :)-->
+				<div id="shipping-new-account-address-form"></div>
+				
+			</div>
+		</div>
+    </section>
+</div>
