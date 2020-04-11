@@ -29,7 +29,6 @@ import { MonatOrderItems } from './components/monat-order-items';
 import { MaterialTextarea } from './components/material-textarea';
 import { ObserveEvent } from './components/observe-event';
 
-
 import { WishlistDeleteModal } from './components/wishlist-delete-modal';
 import { WishlistEditModal } from './components/wishlist-edit-modal';
 
@@ -51,18 +50,18 @@ import { MonatUpgradeStep } from './components/upgradeFlow/monatupgradestep';
 import { MonatUpgradeMP } from './components/upgradeFlow/monatupgrademp';
 import { ImageManager } from './components/image-manager';
 import { AddressDeleteModal } from './components/address-delete-modal';
-import { MonatConfirmMessageModel } from './components/monat-modal-confirm-message'
-import { MonatBirthday } from './components/monatBirthday'
-import { HybridCart } from './components/hybridCart'
-import { EnrollmentFlexship } from './components/enrollmentFlexship'
-import { AddressVerification } from './components/addressVerificationModal'
-import { OFYEnrollment } from './components/ofyEnrollment'
+import { MonatConfirmMessageModel } from './components/monat-modal-confirm-message';
+import { MonatBirthday } from './components/monatBirthday';
+import { HybridCart } from './components/hybridCart';
+import { EnrollmentFlexship } from './components/enrollmentFlexship';
+import { AddressVerification } from './components/addressVerificationModal';
+import { OFYEnrollment } from './components/ofyEnrollment';
 import { PurchasePlusBar } from './directives/purchase-plus-bar';
 import { FlexshipPurchasePlus } from './components/flexshipPurchasePlus';
 
 import { FlexshipFlow } from './components/flexshipFlow/flexshipFlow';
 import { ProductListingStep } from './components/flexshipFlow/productlistingstep';
-import { FlexshipCheckoutStep} from './components/flexshipFlow/checkout-step'; 
+import { FlexshipCheckoutStep } from './components/flexshipFlow/checkout-step';
 import { FlexshipCheckoutShippingAddress } from './components/flexshipFlow/checkout-components/shipping-address';
 import { FlexshipCheckoutShippingMethod } from './components/flexshipFlow/checkout-components/shipping-method';
 
@@ -80,18 +79,18 @@ import { MonatService } from './services/monatservice';
 import { PayPalService } from './services/paypalservice';
 import { OrderTemplateService } from './services/ordertemplateservice';
 import { MonatHttpInterceptor } from './services/monatHttpInterceptor';
-import { MonatHttpQueueInterceptor } from './services/monatHttpQueueInterceptor'
+import { MonatHttpQueueInterceptor } from './services/monatHttpQueueInterceptor';
 import { MonatAlertService } from './services/monatAlertService';
-import { MonatDatePicker} from './directives/monatdatepicker';
+import { MonatDatePicker } from './directives/monatdatepicker';
 
 //State-management
-import { FlexshipCheckoutStore } from './components/flexshipFlow/flexship-checkout-store';
+import { FlexshipCheckoutStore } from './states/flexship-checkout-store';
 
 //declare variables out of scope
 declare var $: any;
 
 var monatfrontendmodule = angular
-	.module('monatfrontend', [frontendmodule.name,'toaster', 'ngMessages'])
+	.module('monatfrontend', [frontendmodule.name, 'toaster', 'ngMessages'])
 	//constants
 	.constant('monatFrontendBasePath', '/Slatwall/custom/client/src')
 	//directives
@@ -108,11 +107,11 @@ var monatfrontendmodule = angular
 	.directive('monatFlexshipCancelModal', MonatFlexshipCancelModal.Factory())
 	.directive('monatFlexshipNameModal', MonatFlexshipNameModal.Factory())
 	.directive('monatFlexshipAddGiftCardModal', MonatFlexshipAddGiftCardModal.Factory())
-	
+
 	.directive('monatFlexshipCartContainer', MonatFlexshipCartContainer.Factory())
 	.directive('monatFlexshipConfirm', MonatFlexshipConfirm.Factory())
 	.directive('monatFlexshipMenu', MonatFlexshipMenu.Factory())
-	
+
 	.directive('monatEnrollment', MonatEnrollment.Factory())
 	.directive('enrollmentMp', MonatEnrollmentMP.Factory())
 	.directive('monatEnrollmentStep', MonatEnrollmentStep.Factory())
@@ -140,25 +139,25 @@ var monatfrontendmodule = angular
 	.directive('vipUpgradeController', MonatUpgradeVIP.Factory())
 	.directive('monatUpgradeStep', MonatUpgradeStep.Factory())
 	.directive('imageManager', ImageManager.Factory())
-	.directive('monatConfirmMessageModel',MonatConfirmMessageModel.Factory())
-	.directive('monatDatePicker',MonatDatePicker.Factory())
-	.directive('addressVerification',AddressVerification.Factory())
+	.directive('monatConfirmMessageModel', MonatConfirmMessageModel.Factory())
+	.directive('monatDatePicker', MonatDatePicker.Factory())
+	.directive('addressVerification', AddressVerification.Factory())
 
-	.directive('monatBirthday',MonatBirthday.Factory())
-	
+	.directive('monatBirthday', MonatBirthday.Factory())
+
 	.directive('purchasePlusBar', PurchasePlusBar.Factory())
 
-	.directive('hybridCart',HybridCart.Factory())
-	.directive('enrollmentFlexship',EnrollmentFlexship.Factory())
-	.directive('ofyEnrollment',OFYEnrollment.Factory())	
-	.directive('flexshipPurchasePlus',FlexshipPurchasePlus.Factory())
-	.directive('flexshipFlow',FlexshipFlow.Factory())
-	.directive('productListingStep',ProductListingStep.Factory())
+	.directive('hybridCart', HybridCart.Factory())
+	.directive('enrollmentFlexship', EnrollmentFlexship.Factory())
+	.directive('ofyEnrollment', OFYEnrollment.Factory())
+	.directive('flexshipPurchasePlus', FlexshipPurchasePlus.Factory())
+	.directive('flexshipFlow', FlexshipFlow.Factory())
+	.directive('productListingStep', ProductListingStep.Factory())
 	.directive('flexshipCheckoutStep', FlexshipCheckoutStep.Factory())
 	.directive('flexshipCheckoutShippingAddress', FlexshipCheckoutShippingAddress.Factory())
 	.directive('flexshipCheckoutShippingMethod', FlexshipCheckoutShippingMethod.Factory())
 	.directive('accountAddressForm', AccountAddressForm.Factory())
-	
+
 	// Controllers
 	.controller('searchController', MonatSearchController)
 	.controller('forgotPasswordController', MonatForgotPasswordController)
@@ -171,51 +170,64 @@ var monatfrontendmodule = angular
 	.service('payPalService', PayPalService)
 	.service('orderTemplateService', OrderTemplateService)
 	.service('monatHttpInterceptor', MonatHttpInterceptor)
-	.service("monatHttpQueueInterceptor", MonatHttpQueueInterceptor)
+	.service('monatHttpQueueInterceptor', MonatHttpQueueInterceptor)
 	.service('monatAlertService', MonatAlertService)
-	
+
 	//state-stores
 	.service('flexshipCheckoutStore', FlexshipCheckoutStore)
-	
-	.config(['$locationProvider', '$httpProvider','appConfig','localStorageCacheProvider', 'sessionStorageCacheProvider',
-	($locationProvider, $httpProvider, appConfig, localStorageCacheProvider, sessionStorageCacheProvider) => {
-			
+
+	.config([
+		'$locationProvider',
+		'$httpProvider',
+		'appConfig',
+		'localStorageCacheProvider',
+		'sessionStorageCacheProvider',
+		(
+			$locationProvider,
+			$httpProvider,
+			appConfig,
+			localStorageCacheProvider,
+			sessionStorageCacheProvider,
+		) => {
 			$locationProvider.html5Mode({ enabled: true, requireBase: false, rewriteLinks: false });
-			
+
 			//adding monat-http-interceptor
 			$httpProvider.interceptors.push('monatHttpInterceptor');
 			$httpProvider.interceptors.push('monatHttpQueueInterceptor');
-			
+
 			/**
-	         * localStorageCache will be availabe to inject anywhere,
-	         * this cache is shared b/w browser-tabs and windows
-	         * this cache has no max-age
-	         * this cache will be uniqueue per site
-	         * 
-	        */
+			 * localStorageCache will be availabe to inject anywhere,
+			 * this cache is shared b/w browser-tabs and windows
+			 * this cache has no max-age
+			 * this cache will be uniqueue per site
+			 *
+			 */
 			localStorageCacheProvider.override({
-				'name': `ls.${appConfig.cmsSiteID || 'default'}`
+				name: `ls.${appConfig.cmsSiteID || 'default'}`,
 			});
-			
+
 			/**
 			 * sessionStorageCache will be availabe to inject anywhere,
 			 * this cache is unique for every browser-window, and is sahred b/w tabs
 			 * this cache will be uniqueue per site
-			*/
+			 */
 			sessionStorageCacheProvider.override({
-				'name': `ss.${appConfig.cmsSiteID || 'default'}`
+				name: `ss.${appConfig.cmsSiteID || 'default'}`,
 			});
 		},
 	])
-	.run(['appConfig','localStorageCache','sessionStorageCache', 
-	(appConfig,localStorageCache,sessionStorageCache) =>{
-		
-		if(localStorageCache.get('instantiationKey') !== appConfig.instantiationKey){
-			console.log("app-instantiation-key changed, resetting local-storage caches");
-        	localStorageCache.removeAll(); 
-        	localStorageCache.put('instantiationKey', appConfig.instantiationKey);
-        }
-        console.log("app-instantiationKey-key", localStorageCache.get('instantiationKey'));
-	}]);
+	.run([
+		'appConfig',
+		'localStorageCache',
+		'sessionStorageCache',
+		(appConfig, localStorageCache, sessionStorageCache) => {
+			if (localStorageCache.get('instantiationKey') !== appConfig.instantiationKey) {
+				console.log('app-instantiation-key changed, resetting local-storage caches');
+				localStorageCache.removeAll();
+				localStorageCache.put('instantiationKey', appConfig.instantiationKey);
+			}
+			console.log('app-instantiationKey-key', localStorageCache.get('instantiationKey'));
+		},
+	]);
 
 export { monatfrontendmodule };

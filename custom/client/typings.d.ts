@@ -1,2 +1,2 @@
 declare var hibachiConfig: any;
-declare let paypal: any;
+declare var paypal: any;
