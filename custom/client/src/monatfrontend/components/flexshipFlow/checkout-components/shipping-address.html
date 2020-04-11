@@ -6,8 +6,8 @@
     		    
     		    <!---Existing shipping address --->
 				<div class="shipping-options">
-					<ul>
-						<li ng-repeat="accountAddress in flexshipCheckoutShippingAddress.accountAddresses track by accountAddress.accountAddressID">
+					<ul ng-if="!flexshipCheckoutShippingAddress.currentState.showNewShippingAddressForm">
+						<li ng-repeat="accountAddress in flexshipCheckoutShippingAddress.currentState.accountAddresses">
 							<div
 								class="custom-radio form-group"
 								ng-click="$parent.flexshipCheckoutShippingAddress.setSelectedAccountAddressID(accountAddress.accountAddressID)"
@@ -16,7 +16,7 @@
 									type="radio"
 									name="accountAddressID"
 									id="accountAddress-{{accountAddress.accountAddressID}}" 
-									ng-checked="accountAddress.accountAddressID === flexshipCheckoutShippingAddress.selectedShippingAddress.accountAddressID"
+									ng-checked="accountAddress.accountAddressID === flexshipCheckoutShippingAddress.currentState.selectedShippingAddressID"
 								/>
 								<label for="accountAddressID">
 									{{
@@ -39,7 +39,7 @@
 									type="radio" 
 									name="accountAddressID"
 									id="new-account-address" 
-									ng-checked="'new' === flexshipCheckoutShippingAddress.selectedShippingAddress.accountAddressID"
+									ng-checked="!flexshipCheckoutShippingAddress.currentState.selectedShippingAddressID"
 	                            />
 	                            <label for="accountAddressID">
 	                                <span sw-rbKey="'frontend.checkout.newAccountAddress'"></span>

@@ -1,12 +1,17 @@
 import { NgStore } from './angularjs-store';
 
+export type AccountAddress = { accountAddressID:string };
+export type Option = { 'name': string, 'value': string };
+
 // keep is Simple And Stupid, remember it's not a magic-bullet
 export interface FlexshipCheckoutState {
-	flexship: any; //current flexship, will get updated after every change (shipping, billing, payment);
 	loading: boolean;
 
+	flexship: any; 
+	
 	// will get updated everytime we add new-address
-	accountAddresses: []; 
+	accountAddresses: Array<AccountAddress>; 
+	shippingMethodOptions: Array<Option>;
 	selectedShippingAddressID: string;
 	selectedShippingMethodID: string;
 	showNewShippingAddressForm: boolean;
@@ -30,6 +35,7 @@ export type FlexshipCheckoutActions = [
 	'SET_CURRENT_FLEXSHIP',
 
 	'SET_ACCOUNT_ADDRESSES',
+	'SET_SHIPPING_METHODS',
 	'SET_PAYMENT_METHODS',
 
 	'SET_SELECTED_SHIPPING_ADDRESS_ID',

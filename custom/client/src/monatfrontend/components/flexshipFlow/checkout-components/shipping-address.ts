@@ -1,13 +1,13 @@
+import { FlexshipCheckoutState, FlexshipCheckoutStore } from '@Monat/states/flexship-checkout-store';
 import { MonatService } from '@Monat/services/monatservice';
 import { MonatAlertService } from '@Monat/services/monatAlertService';
 import { OrderTemplateService } from '@Monat/services/ordertemplateservice';
 
 class FlexshipCheckoutShippingAddressController {
-	public orderTemplate; 
-
-	public accountAddresses:Array<any>;
-	public selectedShippingAddress = { accountAddressID : undefined }; // this needs to be an object to make radio working in ng-repeat, as that will create a nested scope
 	
+	public currentState = {} as FlexshipCheckoutState;
+	private stateListeners =[];
+
 	private newAddressFormRef;
 	public loading: boolean = false;
 
@@ -15,84 +15,111 @@ class FlexshipCheckoutShippingAddressController {
     constructor(
     	public rbkeyService, 
     	public observerService, 
-    	public orderTemplateService: OrderTemplateService, 
     	public monatAlertService: MonatAlertService,
     	private monatService: MonatService,
-    	private ModalService
+    	private ModalService,
+    	private flexshipCheckoutStore: FlexshipCheckoutStore,
     ) {}
     
     public $onInit = () => {
     	this.loading=true;
-	
-        this.accountAddresses || this.monatService.getAccountAddresses() 
+    	this.setupStateChangeListeners();
+    	this.monatService.getAccountAddresses() 
     	.then( (data) => {
-    		this.accountAddresses = data.accountAddresses;
-	    	
-	    	let oldShippingAddressID = this.orderTemplate?.shippingAccountAddress_accountAddressID?.trim();
-	    	if(oldShippingAddressID === '') oldShippingAddressID = undefined;
-	    	
-	    	//select either one of previously-selected shipping-address, or-primary-sgipping or primary-account-address or first of items
-		    this.setSelectedAccountAddressID(
-		    	oldShippingAddressID 
-		    	|| data.primaryShippingAddressID 
-		    	|| data.primaryAccountAddressID 
-		    	|| this.accountAddresses?.find(e => true)?.accountAddressID //first of the array
-		    );
+    		
+    		this.flexshipCheckoutStore.dispatch( 'SET_ACCOUNT_ADDRESSES', {
+				'accountAddresses': data.accountAddresses,
+				'primaryShippingAddressID': data.primaryShippingAddressID,
+				'primaryBillingAddressID': data.primaryBillingAddressID,
+				'primaryAccountAddressID': data.primaryAccountAddressID,
+			})
     	})
+    	.then( () => this.selectAShippingAddress() )
     	.catch( e =>  console.error(e) )
 		.finally( () => this.loading = false );
     };
     
-    
-    public setSelectedAccountAddressID(accountAddressID:any = 'new') {
-    	this.selectedShippingAddress.accountAddressID = accountAddressID;
-    	if(accountAddressID === 'new'){
-    	    this.showNewAddressForm();
-    	} else {
-    	    this.hideNewAddressForm();
+	/**
+	 * If none provided, select a shippingAddress first of (previous on flexship, primaryShipping, primaryAccount)
+	*/
+    private selectAShippingAddress(selectedShippingAddressID?) {
+		 
+		 if(!selectedShippingAddressID ){
+			selectedShippingAddressID = this.currentState?.flexship?.shippingAccountAddress_accountAddressID?.trim();
+		 }
+    	
+    	if(!selectedShippingAddressID) { 
+    		this.currentState?.primaryShippingAddressID?.trim()
     	}
-    }
-    
-    public updateShippingAddress() {
-        
-    	let payload = {};
-    	payload['orderTemplateID'] = this.orderTemplate?.orderTemplateID;
-    	if(this.selectedShippingAddress.accountAddressID !== 'new') {
-    		 payload['shippingAccountAddress.value'] = this.selectedShippingAddress.accountAddressID;
-    	} else {
-	    	throw("What went wrong????");
+		
+		if(!selectedShippingAddressID) { 
+			this.currentState?.primaryAccountAddressID?.trim() 
+		}
+    	
+    	if( !selectedShippingAddressID  && this.currentState?.accountAddresses?.length) {
+    		//select the first available
+    		selectedShippingAddressID = this.currentState.accountAddresses.find( () => true )?.accountAddressID?.trim();
     	}
- 
-    	// make api request
-        this.orderTemplateService.updateShipping(
-			this.orderTemplateService.getFlattenObject(payload)
-		)
-        .then( (response) => {
-           if(response.orderTemplate) {
-                this.orderTemplate = response.orderTemplate;
-                this.observerService.notify("orderTemplateUpdated" + response.orderTemplate.orderTemplateID, response.orderTemplate);
-                this.setSelectedAccountAddressID(this.orderTemplate.shippingAccountAddress_accountAddressID);
-                this.monatAlertService.success(this.rbkeyService.rbKey('alert.flexship.updateSucceccfull'));
-           } else {
-               	throw(response);
-           }
-        }) 
-        .catch( (error) => {
-            console.error(error);
-	        this.monatAlertService.showErrorsFromResponse(error);
-        })
-        .finally(() => {
-        	this.loading = false;
-        }); 
-    }
+    	
+    	this.setSelectedAccountAddressID(selectedShippingAddressID);
+	}
+	
+	
+	
+	// *********************. states  .**************************** //
+	
+    public setSelectedAccountAddressID(selectedShippingAddressID?){
+		
+		if( selectedShippingAddressID && this.currentState.selectedShippingAddressID != selectedShippingAddressID  ){
+			this.flexshipCheckoutStore.dispatch( 'SET_SELECTED_SHIPPING_ADDRESS_ID', {
+				'selectedShippingAddressID': selectedShippingAddressID	
+			});
+		}
+		
+		if(!selectedShippingAddressID){
+			this.flexshipCheckoutStore.dispatch( 'TOGGLE_NEW_SHIPPING_ADDRESS_FORM', {
+				showNewShippingAddressForm: true
+			});
+			this.showNewAddressForm();
+		}
+		else if( selectedShippingAddressID && this.currentState.showNewShippingAddressForm){
+			this.flexshipCheckoutStore.dispatch( 'TOGGLE_NEW_SHIPPING_ADDRESS_FORM', {
+				showNewShippingAddressForm: false
+			});
+			this.hideNewAddressForm();
+		}
+	}
     
+	private onNewStateReceived = (state: FlexshipCheckoutState) => {
+		this.currentState = state;
+		console.log("checkout-step-->shippingAddress, on-new-state", this.currentState);
+	}
+
+	private setupStateChangeListeners(){
+		this.stateListeners.push(
+			this.flexshipCheckoutStore.hook('*', this.onNewStateReceived)
+		);
+	}
+	
+	public $onDestroy= () => {
+		//to clear all of the listenets 
+		this.stateListeners.map( hook => hook.destroy());
+	}    
+
+
+
+	// *****************. new Address Form  .***********************//
+	
     public onAddNewAccountAddressSuccess = (newAccountAddress) => {
+		
 		if(newAccountAddress) {
-    		this.accountAddresses.push(newAccountAddress);
+			this.currentState.accountAddresses.push(newAccountAddress);
+			this.flexshipCheckoutStore.dispatch('SET_ACCOUNT_ADDRESSES', {
+				accountAddresses : this.currentState.accountAddresses
+			});
     		this.setSelectedAccountAddressID(newAccountAddress.accountAddressID);
         }
-        this.updateShippingAddress();
-    	console.log("add account adress, on success", newAccountAddress);
+    	console.log("add new account adress, on success", newAccountAddress);
     	return true;
     };
     
@@ -105,7 +132,6 @@ class FlexshipCheckoutShippingAddressController {
         if(this.newAddressFormRef) {
             return this.newAddressFormRef.show();
         }
-        
         
 		let bindings = {
 			onSuccessCallback: this.onAddNewAccountAddressSuccess,
@@ -122,7 +148,10 @@ class FlexshipCheckoutShippingAddressController {
 			bindings: bindings
 		})
 		.then( (component) => {
-			component.close.then( () =>  this.newAddressFormRef = undefined);
+			component.close.then( () => {
+				this.newAddressFormRef = undefined;
+				this.selectAShippingAddress(this.currentState.selectedShippingAddressID);
+			});
 			this.newAddressFormRef = component.element;
 		})
 		.catch((error) => {

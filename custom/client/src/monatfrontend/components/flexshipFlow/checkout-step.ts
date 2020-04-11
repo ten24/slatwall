@@ -1,17 +1,17 @@
 import { FlexshipSteps } from '@Monat/components/flexshipFlow/flexshipFlow';
 import { FlexshipCheckoutState, FlexshipCheckoutStore } from '@Monat/states/flexship-checkout-store';
+
 import { MonatService } from '@Monat/services/monatservice';
 import { PayPalService } from '@Monat/services/paypalservice';
 
 class FlexshipCheckoutStepController {
 	//states
-	public state= {} as FlexshipCheckoutState;
+	public currentState = {} as FlexshipCheckoutState;
 	private stateListeners =[];
-
+	private orderTemplate; //TODO: remove, placeholder
 
 	//@ngInject
 	constructor(
-		private $timeout,
 		public orderTemplateService,
 		private monatService: MonatService,
 		private payPalService: PayPalService,
@@ -19,10 +19,11 @@ class FlexshipCheckoutStepController {
 	) {}
 
 	public $onInit = () => {
-		
 		this.setupStateChangeListeners();
 		
-		this.monatService.getAccountPaymentMethods()
+		this.flexshipCheckoutStore.dispatch( 'TOGGLE_LOADING', { 'loading': true });
+		
+		this.monatService.getAccountPaymentMethods()    	
 		.then( data => {
 			this.flexshipCheckoutStore.dispatch( 'SET_PAYMENT_METHODS', {
 				'accountPaymentMethods': data.accountPaymentMethods,
@@ -36,22 +37,25 @@ class FlexshipCheckoutStepController {
 		;
 	};
 
-	
 	public setSelectedPaymentProvider(selectedPaymentProvider){
-		this.flexshipCheckoutStore.dispatch( 'SET_SELECTED_PAYMENT_PROVIDER', {
-			'selectedPaymentProvider': selectedPaymentProvider	
-		});
+		if(!this.currentState.selectedPaymentProvider || this.currentState.selectedPaymentProvider != selectedPaymentProvider ){
+			this.flexshipCheckoutStore.dispatch( 'SET_SELECTED_PAYMENT_PROVIDER', {
+				'selectedPaymentProvider': selectedPaymentProvider	
+			});
+		}
 	}
 	
-	public setSelectedPaymentMethodID(selectedPaymentMethodID){
-		this.flexshipCheckoutStore.dispatch( 'SET_SELECTED_PAYMENT_METHOD_ID', {
-			'selectedPaymentMethodID': selectedPaymentMethodID	
-		});
+	public setSelectedPaymentMethodID(selectedPaymentMethodID?){
+		if(!this.currentState.selectedPaymentMethodID || this.currentState.selectedPaymentMethodID != selectedPaymentMethodID ){
+			this.flexshipCheckoutStore.dispatch( 'SET_SELECTED_PAYMENT_METHOD_ID', {
+				'selectedPaymentMethodID': selectedPaymentMethodID	
+			});
+		}
 	}
 	
 	private onNewStateReceived = (state: FlexshipCheckoutState) => {
-		this.state = state;
-		console.log("checkout-step, on-new-state", this.state);
+		this.currentState = state;
+		console.log("checkout-step, on-new-state", this.currentState);
 	}
 	
 	private setupStateChangeListeners(){
