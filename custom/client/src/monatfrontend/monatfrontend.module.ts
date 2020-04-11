@@ -77,6 +77,7 @@ import { OnlyForYouController } from './controllers/monat-onlyforyou';
 
 //services
 import { MonatService } from './services/monatservice';
+import { PayPalService } from './services/paypalservice';
 import { OrderTemplateService } from './services/ordertemplateservice';
 import { MonatHttpInterceptor } from './services/monatHttpInterceptor';
 import { MonatHttpQueueInterceptor } from './services/monatHttpQueueInterceptor'
@@ -164,6 +165,7 @@ var monatfrontendmodule = angular
 
 	// Services
 	.service('monatService', MonatService)
+	.service('payPalService', PayPalService)
 	.service('orderTemplateService', OrderTemplateService)
 	.service('monatHttpInterceptor', MonatHttpInterceptor)
 	.service("monatHttpQueueInterceptor", MonatHttpQueueInterceptor)
