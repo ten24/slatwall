@@ -26,7 +26,7 @@ class AccountAddressFormController {
     	this.loading=true;
     	this.monatService.getStateCodeOptionsByCountryCode()
     	.then( (options) => { 
-    		this.stateCodeOptions = options.stateCodeOptions ;
+    		this.stateCodeOptions = options.stateCodeOptions;
     		this.addressFormOptions = options.addressOptions;
     	})
     	.catch( (error) => console.error(error))

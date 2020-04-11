@@ -61,6 +61,7 @@ export class FlexshipCheckoutStore extends NgStore<FlexshipCheckoutState, Flexsh
 		showNewBillingAddressForm: false,
 
 		accountAddresses: [],
+		shippingMethodOptions: [],
 		selectedShippingAddressID: undefined,
 		selectedShippingMethodID: undefined,
 
