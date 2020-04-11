@@ -6,6 +6,7 @@
   "repository": "https://github.com/ten24/Slatwall",
   "license": "MIT",
   "dependencies": {
+    "@ranndev/angularjs-store": "^4.0.5",
     "angular": "^1.6.4",
     "angular-chart.js": "^1.1.1",
     "angular-mocks": "^1.6.4",
