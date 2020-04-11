@@ -3,7 +3,7 @@ import * as Braintree from 'braintree-web';
 
 export class PayPalService{
     
-    private payplaClientConfig;
+    
     
     //@ngInject
 	constructor(
@@ -13,34 +13,32 @@ export class PayPalService{
     
     public configPayPal( payPalButtonSelector = '#paypal-button'){
         let deferred = this.$q.defer();
-       
+        let config;
         this.publicService.doAction('configExternalPayPal')
         .then( response => {
             if(!response.paypalClientConfig) {
 			    throw("Error in configExternalPayPal, received no paypalClientConfig.");
 			}
-			this.payplaClientConfig = response.paypalClientConfig;
+			config = response.paypalClientConfig;
         })
-        .then( () => {
-            return this.createBrainTreeClient(this.payplaClientConfig);
-        })
-        .then( brainTreeClient => {
-            return this.createPayPalClient(brainTreeClient);
-        })
-        .then( paypalClient => {
-            return this.renderPayPalButton(paypalClient, this.payplaClientConfig, payPalButtonSelector);
-        })
+        
+        .then( () => this.createBrainTreeClient(config) )
+        
+        .then( brainTreeClient =>   this.createPayPalClient( brainTreeClient ) )
+        
+        .then( paypalClient =>  this.renderPayPalButton( paypalClient, config, payPalButtonSelector) )
+        
         //Will resolve After tokenizing Payment
-        .then( (payload: { nonce: any; }) => {
+        .then( payload  => {
             return this.publicService.doAction('authorizePayPal', { paymentToken : payload.nonce })
         })
         .then( response => {
-			
 			if( !response.newPayPalPaymentMethod ) {
 			    throw("Error in saving account payment method.");
 			}
 			return response;
 		})
+		
 		.then( response => {
 		    return this.publicService.doAction( 'addOrderPayment', {
     		        'accountPaymentMethodID': response.newPayPalPaymentMethod,
@@ -61,7 +59,7 @@ export class PayPalService{
             console.log("PaypalService: configPaypal, all promises have been resolved");
         })
         
-        return deferred;
+        return deferred.promise;
     }
     
     private createBrainTreeClient(paypalConfig){
@@ -78,7 +76,7 @@ export class PayPalService{
                 }
         });
         
-        return deferred;
+        return deferred.promise;
     }
     
     private createPayPalClient(braintreeClient){
@@ -96,7 +94,7 @@ export class PayPalService{
                 }
         });
         
-        return deferred;
+        return deferred.promise;
     }
 
     private renderPayPalButton( paypalClient, paypalConfig, payPalButtonSelector){
@@ -109,11 +107,8 @@ export class PayPalService{
         .then( whatever => {
             console.log("Braintree is ready to use.", whatever);
         })
-        .carch( error => {
-            console.log("Braintree is ready to use.", error);
-        });
 
-        return deferred;
+        return deferred.promise;
     }
     
 }
