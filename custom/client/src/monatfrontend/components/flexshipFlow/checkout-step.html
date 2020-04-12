@@ -44,76 +44,225 @@
 				</div>
 			</div>
 			
+		
+		
+		
+		
 			<!--paymant-method-paypal-->
-			<div ng-if="flexshipCheckout.currentState.selectedPaymentProvider === 'payPal'">
+			<div ng-if="flexshipCheckout.currentState.selectedPaymentProvider === 'payPal'" class="mb-5 pb-5">
 				<h4 class="billing-address-title" sw-rbkey="'frontend.checkout.newPaymentMethodPaypal'"></h4>
 				<div id="paypal-button" ng-init="flexshipCheckout.configurePayPal()"></div>
 			</div>
+		
+		
+		
 			
 			<!--paymant-method-CC-->
-			<div ng-if="flexshipCheckout.currentState.selectedPaymentProvider === 'creditCard'">
-				<h4 sw-rbkey="'frontend.checkout.savedCC'"></h4>
+			<div ng-if="flexshipCheckout.currentState.selectedPaymentProvider === 'creditCard'" class="mb-5 pb-5">
 				
-				
-				<!--saved CC-->
-				<div 
-					class="custom-radio py-3"
-					ng-repeat="paymentMethod in flexshipCheckout.currentState.accountPaymentMethods "
-					ng-if="paymentMethod.creditCardLastFour.length" 
-					ng-click="flexshipCheckout.setSelectedPaymentMethodID( paymentMethod.accountPaymentMethodID)" 
-				>
-					<input 
-						type="radio" 
-						name="accountPaymentMethod"
-						id="paymentMethod-{{paymentMethod.accountPaymentMethodID}}"
-						ng-checked="flexshipCheckout.currentState.selectedPaymentMethodID === paymentMethod.accountPaymentMethodID"
+				<div>
+					<h4 sw-rbkey="'frontend.checkout.savedCC'"></h4>
+	
+					<!--saved CC-->
+					<div 
+						class="custom-radio py-3"
+						ng-repeat="paymentMethod in flexshipCheckout.currentState.accountPaymentMethods "
+						ng-if="paymentMethod.creditCardLastFour.length" 
+						ng-click="flexshipCheckout.setSelectedPaymentMethodID( paymentMethod.accountPaymentMethodID)" 
 					>
-					<label for="paymentMethod-{{paymentMethod.accountPaymentMethodID}}">
-						<i  class="fab fa-2x align-middle mr-2"
-							ng-class="{
-								'fa-cc-visa': paymentMethod.creditCardType == 'Visa',
-								'fa-cc-mastercard': paymentMethod.creditCardType == 'Mastercard'
-							}"
-						></i> 
-						{{paymentMethod.creditCardType}} {{paymentMethod.creditCardLastFour}} 
-						<span class="text-black-50" 
-							ng-if="flexshipCheckout.currentState.primaryPaymentMethodID == paymentMethod.accountPaymentMethodID" 
-							sw-rbKey="'frontend.global.default'"
-						></span>
-					</label>
+						<input 
+							type="radio" 
+							name="accountPaymentMethod"
+							id="paymentMethod-{{paymentMethod.accountPaymentMethodID}}"
+							ng-checked="flexshipCheckout.currentState.selectedPaymentMethodID === paymentMethod.accountPaymentMethodID"
+						>
+						<label for="paymentMethod-{{paymentMethod.accountPaymentMethodID}}">
+							<i  class="fab fa-2x align-middle mr-2"
+								ng-class="{
+									'fa-cc-visa': paymentMethod.creditCardType == 'Visa',
+									'fa-cc-mastercard': paymentMethod.creditCardType == 'Mastercard'
+								}"
+							></i> 
+							{{paymentMethod.creditCardType}} {{paymentMethod.creditCardLastFour}} 
+							<span class="text-black-50" 
+								ng-if="flexshipCheckout.currentState.primaryPaymentMethodID == paymentMethod.accountPaymentMethodID" 
+								sw-rbKey="'frontend.global.default'"
+							></span>
+						</label>
+					</div>
+					
+					<!--new CC-->
+					<div class="custom-radio py-3" ng-click="flexshipCheckout.setSelectedPaymentMethodID('new')" >
+						<input 
+							id="newCard"
+							type="radio" 
+							name="accountPaymentMethod"
+							ng-checked="flexshipCheckout.currentState.showNewPaymentMethodForm"
+						>
+						<label for="newCard" sw-rbkey="'frontend.paymentmethodmodal.addnewcreditcard'"> </label>
+					</div>
 				</div>
 				
-				<!--new CC-->
-				<div  class="custom-radio py-3" ng-click="flexshipCheckout.setSelectedPaymentMethodID()" >
-					<input 
-						id="newCard"
-						type="radio" 
-						name="accountPaymentMethod"
-						ng-checked="flexshipCheckout.selectedPaymentMethod.accountPaymentMethodID === 'new'"
-					>
-					<label for="newCard" sw-rbkey="'frontend.paymentmethodmodal.addnewcreditcard'"> </label>
-				</div>
-				
-				
+				<div ng-if="flexshipCheckout.currentState.showNewPaymentMethodForm" class="w-100 my-5"><hr/></div>
+
 				<!---============== New Payment Method Section============== --->
+				<div ng-if="flexshipCheckout.currentState.showNewPaymentMethodForm">
 					<!---======== Billing Address Options ========--->
-					  
-					  
-					  	<!---============== New Billing Address Section============== --->
+					
+					<div ng-if="!flexshipCheckout.currentState.showNewBillingAddressForm">
 						
+						<p> <span sw-rbKey="'frontend.checkout.billingAddress'" id="payment-method-form-anchor"></span> </p>
+
+						<!--- Billing Same As ShippingAddress CheckBox --->
+						<div ng-if="flexshipCheckout.currentState.billingSameAsShipping" 
+							class="custom-radio checkbox" >
+							<input class="form-check-input" type="checkbox" id="billingsameasshipping"
+								ng-checked="flexshipCheckout.currentState.billingSameAsShipping"
+								ng-click="flexshipCheckout.toggleBillingSameAsShipping()"
+							>
+							<label class="form-check-label" for="billingsameasshipping" 
+								sw-rbkey="'frontend.checkout.billingAddressSame'"
+							></label>
+						</div>
 						
-						
-						<!---============== END: New Billing Address Section============== --->
+						<!--- Billing Address Dropdown Select --->
+						<div ng-if="!flexshipCheckout.currentState.billingSameAsShipping">
+							<div class="material-field">
+								<select 
+									class="form-control mt-3 mb-3" 
+									name="billingAddress" 
+									ng-model="selectedBillingAddressID"
+									ng-change="flexshipCheckout.setSelectedBillingAddressID(selectedBillingAddressID)"
+								>
+									<option value="" sw-rbKey="'frontend.checkout.selectAccountAddress'" disabled></option>
+									<option 
+										ng-repeat="accountAddress in flexshipCheckout.currentState.accountAddresses" 
+										ng-selected="{{ accountAddress.accountAddressID == flexshipCheckout.currentState.selectedBillingAddressID }}"
+										value="{{accountAddress.accountAddressID}}"
+									>
+										{{ accountAddress.address_streetAddress }}
+										{{ accountAddress.address_city }}, 
+										{{ accountAddress.address_stateCode }}
+										{{ accountAddress.address_postalCode }}
+										{{ accountAddress.address_countryCode }}
+									</option>
+								</select>
+							</div>
+							
+							<button type="button" class="btn bg-primary my-4" id="new-billing-address-button"
+								ng-click="flexshipCheckout.setSelectedBillingAddressID()" 
+							>
+								<i class="fa fa-plus-circle"></i>
+								<span sw-rbKey="'frontend.checkout.addBillingAddress'"></span>
+							</button>
+						</div>
+					</div>
+				  	<!---============== New Billing Address Section============== --->
+					<div id="billing-new-account-address-form"></div>
+					<!---============== END: New Billing Address Section============== --->
 					<!---========END: Billing Address Options ========--->
-					  
+					
+					<div ng-if="flexshipCheckout.currentState.showNewPaymentMethodForm" class="w-100 my-5"><hr/></div>
 					  
 					<!---============== New CC Section============== --->
-					  
-					  
+					<form name="newPaymentMethodForm" class="row"
+						ng-if="flexshipCheckout.currentState.showNewPaymentMethodForm"
+						ng-submit="newPaymentMethodForm.$valid && flexshipCheckout.addNewPaymentMethod()"
+					>
+
+						<!--name on card-->
+						<div class="col-12 col-md-6">
+							<div class="material-field">
+								<input type="text" class="form-control"
+									name = "newCreditCard_nameOnCard"
+									swvalidationrequired = "true"
+									ng-model="flexshipCheckout.newAccountPaymentMethod.nameOnCreditCard"
+								/>
+								<label class="form-label" sw-rbkey="'frontend.newCreditCard.nameOnCard'"></label>
+								<div ng-if="newPaymentMethodForm.$submitted" ng-messages="newPaymentMethodForm.newCreditCard_nameOnCard.$error">
+	    						    <div ng-messages-include="monat-form-generic-validation-error-messages"></div>
+	    						</div>
+							</div>
+						</div>
+						
+						<!--card number-->
+						<div class="col-12 col-md-6">
+							<div class="material-field">
+								<input type="text" class="form-control"
+									name = "newAccountPaymentMethod_creditCardNumber"
+									swvalidationrequired = "true" swvalidationnumeric="true"
+									ng-model="flexshipCheckout.newAccountPaymentMethod.creditCardNumber"
+								/>
+								<label class="form-label" sw-rbkey="'frontend.newCreditCard.creditCardNumber'"></label>
+								<div ng-if="newPaymentMethodForm.$submitted" ng-messages="newPaymentMethodForm.newAccountPaymentMethod_creditCardNumber.$error">
+	    						    <div ng-messages-include="monat-form-generic-validation-error-messages"></div>
+	    						</div>
+							</div>
+						</div>
+						
+						<!--exp-month-->
+						<div class="col-12 col-md-4">
+							<div class="material-field">
+								<select type="text" class="form-control"
+									name = "newCreditCard_expirationMonth"
+									swvalidationrequired = "true"
+									ng-model="flexshipCheckout.newAccountPaymentMethod.expirationMonth"
+									ng-options="month for month in flexshipCheckout.expirationMonthOptions"
+								>
+								</select>
+								<label for="expirationMonth" sw-rbkey="'frontend.newCreditCard.expMonth'"></label>
+								<div ng-if="newPaymentMethodForm.$submitted" ng-messages="newPaymentMethodForm.newCreditCard_expirationMonth.$error">
+	    						    <div ng-messages-include="monat-form-generic-validation-error-messages"></div>
+	    						</div>
+							</div>
+						</div>
+						
+						<!--exp-year-->
+						<div class="col-12 col-md-4">
+							<div class="material-field">
+								<select type="text" class="form-control"
+									name = "newCreditCard_expirationYear"
+									swvalidationrequired = "true"
+									ng-model="flexshipCheckout.newAccountPaymentMethod.expirationYear"
+									ng-options="year.VALUE as year.NAME for year in flexshipCheckout.expirationYearOptions"
+								>
+								</select>
+								<label for="expirationMonth" sw-rbkey="'frontend.newCreditCard.expYEAR'"></label>
+								<div ng-if="newPaymentMethodForm.$submitted" ng-messages="newPaymentMethodForm.newCreditCard_expirationYear.$error">
+	    						    <div ng-messages-include="monat-form-generic-validation-error-messages"></div>
+	    						</div>
+							</div>
+						</div>
+	
+						<!--cvv-->
+						<div class="col-12 col-md-4">
+							<div class="material-field">
+								<input type="number" class="form-control"
+									name = "newCreditCard_securityCode"
+									swvalidationrequired = "true"
+									swvalidationnumeric="true" swvalidationmaxlength = "4" swvalidationminlength = "3"
+									ng-model="flexshipCheckout.newAccountPaymentMethod.securityCode"
+								/>
+								<label class="form-label" sw-rbkey="'frontend.newCreditCard.securityCode'"></label>
+								<div ng-if="newPaymentMethodForm.$submitted" ng-messages="newPaymentMethodForm.newCreditCard_securityCode.$error">
+									 <div ng-message="swvalidationmaxlength" sw-Rbkey="'validation.define.maxlength4'" class="text-danger error_text"></div>
+									 <div ng-message="swvalidationminlength" sw-Rbkey="'validation.define.minlength3'" class="text-danger error_text"></div>
+	    						     <div ng-messages-include="monat-form-generic-validation-error-messages"></div>
+	    						</div>
+							</div>
+						</div>
+						
+						<button  type="submit" class="btn bg-primary" 
+							ng-class="{ loading: flexshipCheckout.newAccountPaymentMethod.loading }"
+							ng-disabled = "flexshipCheckout.newAccountPaymentMethod.loading"
+						>
+							<i class="fa fa-plus-circle"></i> 
+							<span sw-rbKey="'frontend.checkout.addPayment'"></span>
+						</button>
+					</form>
 					<!---==============END New CC Section============== --->
+				</div>
 				<!---==============END: New Payment Method Section============== --->
-				
-				
 			</div>
 			
 			

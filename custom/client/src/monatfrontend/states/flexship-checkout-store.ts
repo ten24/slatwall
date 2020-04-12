@@ -1,6 +1,7 @@
 import { NgStore } from './angularjs-store';
 
 export type AccountAddress = { accountAddressID:string };
+export type AccountPaymentMethod = { accountPaymentMethodID:string };
 export type Option = { 'name': string, 'value': string };
 
 // keep is Simple And Stupid, remember it's not a magic-bullet
@@ -17,11 +18,13 @@ export interface FlexshipCheckoutState {
 	showNewShippingAddressForm: boolean;
 
 	// will get updated everytime we add new-payment-method
-	accountPaymentMethods: []; 
+	accountPaymentMethods: Array<AccountPaymentMethod>; 
 	selectedPaymentProvider: string;
 	
 	selectedPaymentMethodID: string;
 	selectedBillingAddressID: string;
+	
+	billingSameAsShipping: boolean;
 	showNewPaymentMethodForm: boolean;
 	showNewBillingAddressForm: boolean;
 	//
@@ -48,6 +51,8 @@ export type FlexshipCheckoutActions = [
 	'TOGGLE_LOADING',
 	'TOGGLE_NEW_SHIPPING_ADDRESS_FORM',
 
+	'TOGGLE_BILLING_SAME_AS_SHIPPING',
+
 	'TOGGLE_NEW_PAYMENT_METHOD_FORM',
 	'TOGGLE_NEW_BILLING_ADDRESS_FORM',
 ];
@@ -56,12 +61,11 @@ export class FlexshipCheckoutStore extends NgStore<FlexshipCheckoutState, Flexsh
 	public static defaultState = {
 		//defaults
 		loading: false,
-		showNewShippingAddressForm: false,
-		showNewPaymentMethodForm: false,
-		showNewBillingAddressForm: false,
-
+		
+		
 		accountAddresses: [],
 		shippingMethodOptions: [],
+		showNewShippingAddressForm: false,
 		selectedShippingAddressID: undefined,
 		selectedShippingMethodID: undefined,
 
@@ -69,6 +73,11 @@ export class FlexshipCheckoutStore extends NgStore<FlexshipCheckoutState, Flexsh
 		accountPaymentMethods: [],
 		selectedPaymentMethodID: undefined,
 		selectedBillingAddressID: undefined,
+		
+		billingSameAsShipping:true,
+		showNewPaymentMethodForm: false,
+		showNewBillingAddressForm: false,
+		
 		//
 		primaryAccountAddressID: undefined,
 		primaryShippingAddressID: undefined,

@@ -44,18 +44,15 @@ class FlexshipCheckoutShippingAddressController {
 	*/
     private selectAShippingAddress(selectedShippingAddressID?) {
 		 
-		 if(!selectedShippingAddressID ){
+		if(!selectedShippingAddressID ){
 			selectedShippingAddressID = this.currentState?.flexship?.shippingAccountAddress_accountAddressID?.trim();
-		 }
-    	
-    	if(!selectedShippingAddressID) { 
-    		this.currentState?.primaryShippingAddressID?.trim()
-    	}
-		
-		if(!selectedShippingAddressID) { 
-			this.currentState?.primaryAccountAddressID?.trim() 
 		}
-    	
+    	if(!selectedShippingAddressID) { 
+    		selectedShippingAddressID = this.currentState?.primaryShippingAddressID?.trim()
+    	}
+		if(!selectedShippingAddressID) { 
+			selectedShippingAddressID = this.currentState?.primaryAccountAddressID?.trim() 
+		}
     	if( !selectedShippingAddressID  && this.currentState?.accountAddresses?.length) {
     		//select the first available
     		selectedShippingAddressID = this.currentState.accountAddresses.find( () => true )?.accountAddressID?.trim();

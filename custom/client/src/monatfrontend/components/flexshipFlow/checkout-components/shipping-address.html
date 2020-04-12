@@ -1,4 +1,4 @@
-<div class="new_address">
+<div class="new_address" ng-cloak>
     <section class="shipping-page">
     	<div class="container">
            	<div class="shipping_sec mb-5">
@@ -39,7 +39,7 @@
 									type="radio" 
 									name="accountAddressID"
 									id="new-account-address" 
-									ng-checked="!flexshipCheckoutShippingAddress.currentState.selectedShippingAddressID"
+									ng-checked="!flexshipCheckoutShippingAddress.currentState.showNewShippingAddressForm"
 	                            />
 	                            <label for="accountAddressID">
 	                                <span sw-rbKey="'frontend.checkout.newAccountAddress'"></span>
