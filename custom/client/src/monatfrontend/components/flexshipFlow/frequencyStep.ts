@@ -2,7 +2,6 @@
 class FrequencyStepController {
 	public orderTemplate;
 	public frequencyTerms;
-	public termMap = {};
 	public flexshipDaysOfMonth = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25]; 
 	public flexshipFrequencyHasErrors:boolean;
 	public loading:boolean;
@@ -10,7 +9,7 @@ class FrequencyStepController {
 	public term;
 	
     //@ngInject
-    constructor( public monatService, public orderTemplateService,public publicService, public $scope) {
+    constructor( public monatService, public orderTemplateService, public observerService) {
 
     }
     
@@ -23,13 +22,6 @@ class FrequencyStepController {
 			this.frequencyTerms = response.frequencyTermOptions;
 			this.term = this.frequencyTerms[0];
 			this.day = this.flexshipDaysOfMonth[0];
-			this.publicService.model = {};
-			for(let term of response.frequencyTermOptions){
-				this.termMap[term.value] = term;
-				if(term.name=='Monthly'){
-					this.publicService.model.term = term;
-				}
-			}
 		});
 	}
 	
@@ -39,7 +31,7 @@ class FrequencyStepController {
         let flexshipID = this.orderTemplateService.currentOrderTemplateID;
         this.orderTemplateService.updateOrderTemplateFrequency(flexshipID, this.term.value, this.day).then(result => {
             this.loading = false;
-            this.$scope.$parent.flexshipFlow.next();
+        	this.observerService.notify('onNext');
         });
     }
 }

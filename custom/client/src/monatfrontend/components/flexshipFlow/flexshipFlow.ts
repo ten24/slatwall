@@ -127,7 +127,6 @@ class FlexshipFlow {
 }
 
 export {
-	FlexshipFlow,
-	FlexshipFlowController
+	FlexshipFlow
 };
 

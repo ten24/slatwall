@@ -142,7 +142,7 @@
 				ng-class="{ 
 					disabled: flexshipFlow.currentStep == flexshipFlow.FlexshipSteps.CHECKOUT, 
 				}"
-				ng-disabled="flexshipFlow.currentStep == flexshipFlow.FlexshipSteps.CHECKOUT"
+				ng-disabled="flexshipFlow.currentStep == flexshipFlow.FlexshipSteps.CHECKOUT || !flexshipFlow.orderTemplateService.mostRecentOrderTemplate.qualifiesForOFYProducts"
 			>
 				<span sw-rbkey="'frontend.global.next'"></span>
 				<i class="fas fa-chevron-right"></i>
