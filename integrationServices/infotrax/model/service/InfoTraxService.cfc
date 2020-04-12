@@ -337,10 +337,10 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 			'distId'            = arguments.orderTemplate.getAccount().getAccountNumber(), //Distributor ID
 			'autoshipNumber'    = arguments.orderTemplate.getShortReferenceID(true), //Autoship Number
 			//'marketingUnit'     = 0, //Source Marketing Unit, will default
-			'salesVolume'       = arguments.orderTemplate.getPersonalVolumeTotal(),//Autoship SalesVolume
-			'qualifyingVolume'  = arguments.orderTemplate.getPersonalVolumeTotal(),//Autoship Qualifying Volume
+			'salesVolume'       = arguments.orderTemplate.getCalculatedPersonalVolumeTotal(),//Autoship SalesVolume
+			'qualifyingVolume'  = arguments.orderTemplate.getCalculatedPersonalVolumeTotal(),//Autoship Qualifying Volume
 		//	'taxableVolume'     = 0, //arguments.orderTemplate.getTaxableAmountTotal(),//Autoship Taxable Volume
-			'commissionVolume'  = arguments.orderTemplate.getCommissionableVolumeTotal(),//Autoship Commission Volume
+			'commissionVolume'  = arguments.orderTemplate.getCalculatedCommissionableVolumeTotal(),//Autoship Commission Volume
 			// 'volume5'           = 0,
 			// 'volume6'           = 0,//PRODUCT PACK?
 			// 'volume7'           = 0,
