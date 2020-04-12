@@ -1,4 +1,3 @@
-import{ FlexshipFlow } from './flexshipFlow';
 
 class FrequencyStepController {
 	public orderTemplate;
@@ -7,10 +6,11 @@ class FrequencyStepController {
 	public flexshipDaysOfMonth = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25]; 
 	public flexshipFrequencyHasErrors:boolean;
 	public loading:boolean;
-	public flexshipFlow:FlexshipFlow;
+	public day:number;
+	public term;
 	
     //@ngInject
-    constructor( public monatService, public orderTemplateService,public publicService) {
+    constructor( public monatService, public orderTemplateService,public publicService, public $scope) {
 
     }
     
@@ -21,6 +21,8 @@ class FrequencyStepController {
 	public getFrequencyTermOptions = ():void =>{
 		this.monatService.getOptions({'frequencyTermOptions': false }).then(response => {
 			this.frequencyTerms = response.frequencyTermOptions;
+			this.term = this.frequencyTerms[0];
+			this.day = this.flexshipDaysOfMonth[0];
 			this.publicService.model = {};
 			for(let term of response.frequencyTermOptions){
 				this.termMap[term.value] = term;
@@ -34,26 +36,10 @@ class FrequencyStepController {
 	
     public setOrderTemplateFrequency = (frequencyTerm, dayOfMonth) => {
 		this.loading = true;
-		
-    	if("string" == typeof(frequencyTerm)){
-			frequencyTerm = this.termMap[frequencyTerm];
-    	}
-
-		if (
-			'undefined' === typeof frequencyTerm
-			|| 'undefined' === typeof dayOfMonth
-		) {
-			this.flexshipFrequencyHasErrors = true;
-			return false;
-		} else {
-			this.flexshipFrequencyHasErrors = false;
-		}
-		
-        
         let flexshipID = this.orderTemplateService.currentOrderTemplateID;
-        this.orderTemplateService.updateOrderTemplateFrequency(flexshipID, frequencyTerm.value, dayOfMonth).then(result => {
-            this.flexshipFlow.next();
+        this.orderTemplateService.updateOrderTemplateFrequency(flexshipID, this.term.value, this.day).then(result => {
             this.loading = false;
+            this.$scope.$parent.flexshipFlow.next();
         });
     }
 }
@@ -66,37 +52,22 @@ class FrequencyStep {
 		flexshipFlow : '^flexshipFlow'
 	}
 	
-	public bindToController = {
-	
-	};
-	
 	public controller = FrequencyStepController;
 	public controllerAs = "frequencyStep";
-
 	public static Factory(){
         var directive:any = (
 		    monatFrontendBasePath,
 			rbkeyService,
-        ) => new FrequencyStep(
-			monatFrontendBasePath,
-			rbkeyService,
-        );
+        ) => new FrequencyStep(monatFrontendBasePath);
         directive.$inject = [
 			'monatFrontendBasePath',
-			'rbkeyService',
         ];
         return directive;
     }
 
-	constructor(private monatFrontendBasePath, 
-				private rbkeyService
-	){
+	constructor(private monatFrontendBasePath){
 		this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/flexshipFlow/frequencyStep.html";
 		this.restrict = "E";
-	}
-
-	public link = (scope, element, attrs) =>{
-
 	}
 
 }

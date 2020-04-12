@@ -10,19 +10,17 @@
 
 			<div class="title-dropdown">
 				<select 
-					ng-model="model.term" 
+					ng-model="frequencyStep.term" 
 					class="title-dropdown__select"
 					ng-options="term.name for term in frequencyStep.frequencyTerms"
-					ng-init="model.term = frequencyStep.frequencyTerms[0]"
 				></select>
 			</div>
 
 			<span sw-rbKey="'frontend.global.onThe'"></span>
 			<div class="title-dropdown">
 				<select 
-					ng-model="model.day" 
+					ng-model="frequencyStep.day" 
 					class="title-dropdown__select"
-					ng-init="model.day = frequencyStep.flexshipDaysOfMonth[0]"
 					ng-options="(day | ordinal) for day in frequencyStep.flexshipDaysOfMonth"
 				></select>
 			</div>
@@ -31,7 +29,7 @@
 	</div>
 </div>
 <button 
-	ng-click="frequencyStep.setOrderTemplateFrequency(model.term, model.day)"
+	ng-click="frequencyStep.setOrderTemplateFrequency()"
 	class="btn btn-secondary forward-btn forward" 
 	ng-class="{loading: frequencyStep.loading}"
 >	

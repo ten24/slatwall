@@ -12,24 +12,24 @@ class FlexshipFlowController {
 	public currentStep = FlexshipSteps.SHOP;
 	public farthestStepReached = FlexshipSteps.SHOP;
 	public orderTemplate:{[key:string]:any};
-
-	
 	public currentOrderTemplateID:string;
 
     //@ngInject
     constructor(
     	public publicService,
     	public orderTemplateService,
-    	private monatService: MonatService
+    	private monatService: MonatService,
+    	public observerService
     ) {
-    
-    	
+    	this.observerService.attach(this.next,'onNext');
     }
     
     public $onInit = () => {
     	
     	this.currentOrderTemplateID = this.monatService.getCurrentFlexship();
-    	
+		this.orderTemplateService.getSetOrderTemplateOnSession('qualifiesForOFYProducts', 'save', false, false).then(res=>{
+			this.orderTemplate = res.orderTemplate;
+		});
 
     }
 	
@@ -98,7 +98,6 @@ class FlexshipFlow {
 	
 	public controller = FlexshipFlowController;
 	public controllerAs = "flexshipFlow";
-	public next:() => FlexshipSteps; //for reference by child components
 	public static Factory(){
         var directive:any = (
 		    monatFrontendBasePath,
@@ -128,6 +127,7 @@ class FlexshipFlow {
 }
 
 export {
-	FlexshipFlow
+	FlexshipFlow,
+	FlexshipFlowController
 };
 
