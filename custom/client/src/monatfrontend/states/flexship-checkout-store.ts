@@ -6,7 +6,8 @@ export type Option = { 'name': string, 'value': string };
 
 // keep is Simple And Stupid, remember it's not a magic-bullet
 export class FlexshipCheckoutState {
-	loading: boolean;
+	loading: boolean= true;
+
 
 	flexship: any; 
 	
@@ -15,18 +16,19 @@ export class FlexshipCheckoutState {
 	shippingMethodOptions: Array<Option>;
 	selectedShippingAddressID: string;
 	selectedShippingMethodID: string;
-	showNewShippingAddressForm: boolean;
+	showNewShippingAddressForm: boolean = false;
 	
-	// will get updated everytime we add new-payment-method
 	accountPaymentMethods: Array<AccountPaymentMethod>; 
-	selectedPaymentProvider: string;
+	selectedPaymentProvider: "creditCard" | "paypal" = "creditCard";
 	
 	selectedPaymentMethodID: string;
 	selectedBillingAddressID: string;
 	
-	billingSameAsShipping: boolean;
-	showNewPaymentMethodForm: boolean;
-	showNewBillingAddressForm: boolean;
+	billingSameAsShipping: boolean = true;
+	showNewPaymentMethodForm: boolean = false;
+	showNewBillingAddressForm: boolean = false;
+	
+	
 	//
 	primaryAccountAddressID: string;
 	primaryShippingAddressID: string;
@@ -45,32 +47,6 @@ export class FlexshipCheckoutState {
 		return this.accountPaymentMethods?.find(p => p.accountPaymentMethodID === this.selectedPaymentMethodID);
 	}
 }
-
-export const  defaultState = {
-		//defaults
-		loading: true,
-		
-		accountAddresses: [],
-		shippingMethodOptions: [],
-		showNewShippingAddressForm: false,
-		selectedShippingAddressID: undefined,
-		selectedShippingMethodID: undefined,
-
-		selectedPaymentProvider: 'creditCard', // creditCard | payPal
-		accountPaymentMethods: [],
-		selectedPaymentMethodID: undefined,
-		selectedBillingAddressID: undefined,
-		
-		billingSameAsShipping:true,
-		showNewPaymentMethodForm: false,
-		showNewBillingAddressForm: false,
-		
-		//
-		primaryAccountAddressID: undefined,
-		primaryShippingAddressID: undefined,
-		primaryBillingAddressID: undefined,
-		primaryPaymentMethodID: undefined,
-	};
 
 
 export type FlexshipCheckoutActions = [
@@ -103,9 +79,8 @@ export class FlexshipCheckoutStore extends NgStore<FlexshipCheckoutState, Flexsh
 
 	constructor(private monatService, private orderTemplateService, private sessionStorageCache) {
 		
-		super(defaultState as FlexshipCheckoutState);
+		super(new FlexshipCheckoutState);
 		
-		this.dispatch('TOGGLE_LOADING', {loading: true});
 		
 		this.monatService.getAccountAddresses() 
     	.then( (data) => {
@@ -123,7 +98,7 @@ export class FlexshipCheckoutStore extends NgStore<FlexshipCheckoutState, Flexsh
 				return state;
     		});
     	})
-    	.then(() => this.monatService.getOptions({'orderTemplateShippingMethodOptions':false}))
+    	.then( () => this.monatService.getOptions({'orderTemplateShippingMethodOptions':false}))
     	.then( (options) => {
     		
     		this.dispatch('SET_SHIPPING_METHODS', (state) => {
@@ -134,7 +109,7 @@ export class FlexshipCheckoutStore extends NgStore<FlexshipCheckoutState, Flexsh
     		
     	})
     	.then( () => this.monatService.getAccountPaymentMethods())
-		.then( data => {
+		.then( (data) => {
 			
 			this.dispatch('SET_SHIPPING_METHODS', (state) => {
 				state.accountPaymentMethods = data.accountPaymentMethods;
