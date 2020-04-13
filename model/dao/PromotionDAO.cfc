@@ -358,8 +358,8 @@ Notes:
 			</cfif>
 					
 		</cfquery>
-		<cfset rewardsArray = ValueArray(local.rewards,'linkedPromotionRewardID') />
-		<cfreturn rewardsArray />
+		<cfset local.rewardsArray = ValueArray(local.rewards,'linkedPromotionRewardID') />
+		<cfreturn local.rewardsArray />
 	</cffunction>
 	
 	<cffunction name="getExcludedStackableRewardsIDListForPromotionReward" returntype="array" access="public">
@@ -379,8 +379,8 @@ Notes:
 				WHERE linkedPromotionRewardID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.promotionReward.getPromotionRewardID()#" />
 			</cfif>
 		</cfquery>
-		<cfset rewardsArray = ValueArray(local.rewards,'linkedPromotionRewardID') />
-		<cfreturn rewardsArray />
+		<cfset local.rewardsArray = ValueArray(local.rewards,'linkedPromotionRewardID') />
+		<cfreturn local.rewardsArray />
 	</cffunction>
 	
 	<cffunction name="getAppliedPromotionsForOrderItemsByOrder" returntype="array" access="public">
