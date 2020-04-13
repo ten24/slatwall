@@ -58,10 +58,16 @@ class HybridCartController {
 		let price = 0;
 		let subtotal = 0;
 		let listPrice = 0;
+		let index = 0;
 		for(let item of this.cart.orderItems){
+			if(!this.isEnrollment && item.sku.product.productType.systemCode == 'VIPCustomerRegistr'){
+				this.cart.orderItems.splice(index);
+				continue;
+			}
 			price += item.extendedPriceAfterDiscount;
 			subtotal += item.extendedPrice;
 			listPrice+= item.calculatedListPrice;
+			index++;
 		}
 		this.otherDiscounts = this.cart.discountTotal - this.cart.purchasePlusTotal;
 		this.total = price;

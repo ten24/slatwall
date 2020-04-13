@@ -1,7 +1,7 @@
 class MonatForgotPasswordController {
 
 	// @ngInject
-	constructor(public observerService) {}
+	constructor(public observerService, public monatService) {}
 
 	public $onInit = () => {
 		this.observerService.attach(() => {

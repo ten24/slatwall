@@ -1,11 +1,11 @@
 
 <div class="header-cart" ng-click="hybridCart.toggleCart()">
 	<a href="#">
-		<span ng-if="!hybridCart.cart.totalItemQuantity" class="cart-count">
+		<span ng-if="!hybridCart.cart.orderItems.length" class="cart-count">
 			<i class="far fa-shopping-cart"></i>
 		</span>
-		<span ng-if="hybridCart.cart.totalItemQuantity > 0" class="cart-count">
-			{{hybridCart.cart.totalItemQuantity}}
+		<span ng-if="hybridCart.cart.orderItems.length > 0" class="cart-count">
+			{{hybridCart.cart.orderItems.length}}
 		</span>	
 	</a> 
 </div>
