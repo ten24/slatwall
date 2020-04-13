@@ -314,7 +314,7 @@ component extends="framework.one" {
 
 		var httpRequestData = GetHttpRequestData();
 		
-		// clean any beancache for loca development
+		// clean any beancache for local development
 		if(getHibachiScope().getApplicationValue('applicationEnvironment') == 'local' && structKeyExists(url, "reloadbean")){
 			getBeanFactory().reloadBean(url.reloadbean);
 		}
