@@ -146,7 +146,7 @@ class MonatEnrollmentController {
 	}
 
 	private navigate(index) {
-	
+
 		//If on next returns false, prevent it from navigating
 		if ((index > this.position && !this.steps[this.position].onNext()) || index < 0) {
 			return;

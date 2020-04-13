@@ -35,6 +35,12 @@
 		}}
 		
 	</div>
+	<div ng-if="monatEnrollment.monatService.succesfulActions[0].indexOf('addOrderItem') && monatEnrollment.monatService.showAddToCartMessage" class="alert discount-block text-white promotion-bar-block">
+		<button type="button" class="close" ng-click="monatEnrollment.monatService.showAddToCartMessage = false" aria-label="Close"><i class="fas fa-times"></i></button>
+		{{monatEnrollment.monatService.cart.orderItems[monatEnrollment.monatService.cart.orderItems.length -1].sku.skuDefinition}} 
+		<span sw-rbKey="'frontend.productListing.addProductSuccess'"></span>
+	</div>
+</div>
 </header>
 
 

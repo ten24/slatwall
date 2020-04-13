@@ -13,7 +13,8 @@ export class MonatService {
 	public canPlaceOrder:boolean;
 	public userIsEighteen:boolean;
 	public hasOwnerAccountOnSession:boolean;
-	
+	public succesfulActions = [];
+	public showAddToCartMessage:boolean;
 	//@ngInject
 	constructor(
 		private $q, 
@@ -73,8 +74,11 @@ export class MonatService {
 
 		this.publicService.doAction(action, payload)
 			.then((data) => {
+				this.succesfulActions = [];
 				if (data.cart && data.failureActions.length == 0) {
-					console.log("update-cart, puting it in session-cache")
+					console.log("update-cart, puting it in session-cache");
+					this.succesfulActions = data.successfulActions;
+					this.showAddToCartMessage = true;
 					this.sessionStorageCache.put('cachedCart', data.cart);
 					this.updateCartPropertiesOnService(data);
 					deferred.resolve(data.cart);
