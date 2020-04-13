@@ -1203,8 +1203,10 @@ component extends="Slatwall.model.service.OrderService" {
 								maxQuantity = foundOrderItem.getSku().setting('skuOrderMaximumQuantity')
 							};
 							
-							for (var error in foundOrderItem.getErrors()){
-								for (var errorMessage in foundOrderItem.getErrors()[error]){
+							var foundOrderItemErrors = StructCopy(foundOrderItem.getErrors());
+							
+							for (var error in foundOrderItemErrors){
+								for (var errorMessage in foundOrderItemErrors[error]){
 									var message = getHibachiUtilityService().replaceStringTemplate( errorMessage , messageReplaceKeys);
 									message = foundOrderItem.stringReplace(message);
 								
