@@ -26,7 +26,8 @@ class MonatEnrollmentController {
 	public showBirthday:boolean;
 	public account;
 	public stepMap = {};
-
+	public vipEnrollmentThreshold:number;
+	
 	
 	//@ngInject
 	constructor(public monatService, public observerService, public $rootScope, public publicService, public orderTemplateService) {
@@ -44,7 +45,7 @@ class MonatEnrollmentController {
 		if (angular.isUndefined(this.finishText)) {
 			this.finishText = 'Finish';
 		}
-		
+
     	this.observerService.attach(this.handleCreateAccount.bind(this),"createAccountSuccess");
     	this.observerService.attach(this.next.bind(this),"onNext");
     	this.observerService.attach(this.next.bind(this),"updateSuccess");
@@ -89,6 +90,13 @@ class MonatEnrollmentController {
 				 }else if(cart.monatOrderType?.typeCode.length){
 				 	this.handleUpgradeSteps(cart);
 				 }
+				 
+		 		if(this.type.indexOf('vip') > -1){
+					this.publicService.doAction('getVipEnrollmentMinimum').then(res=>{
+						this.vipEnrollmentThreshold = +res.vipEnrollmentThreshold + this.monatService.cart.orderItems[0].skuPrice;
+					});
+				}
+		
 			});
 		});
 		

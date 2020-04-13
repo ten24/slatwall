@@ -2195,4 +2195,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             getHibachiScope().setCurrentFlexship(orderTemplate);
         }
     }
+    
+    public any function getVipEnrollmentMinimum (required any data){
+        var site = getService('siteService').getSiteByCmsSiteID(arguments.data.cmsSiteID);
+        arguments.data['ajaxResponse']['vipEnrollmentThreshold'] = site.setting('integrationmonatSiteVipEnrollmentOrderMinimum');
+    }
 }

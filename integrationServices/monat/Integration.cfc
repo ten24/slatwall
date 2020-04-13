@@ -28,7 +28,7 @@ component accessors="true" output="false" extends="Slatwall.integrationServices.
 		    dailyImportAPIDomain = {fieldType="text", defaultValue="https://apisandbox.monatcorp.net:8443"},
 			dailyImportAPIAuthKey = {fieldType="password", defaultValue=""},
 			rafCreditExpirationTerm = {fieldType="select"},
-			siteVipEnrollmentOrderMinimum = {fieldType="text", validate = {dataType="numeric", minValue=0}}
+			siteVipEnrollmentOrderMinimum = {fieldType="text", defaultValue=84, validate = {dataType="numeric", minValue=0}}
 		};
     }
     
