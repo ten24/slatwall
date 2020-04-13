@@ -13,6 +13,7 @@ export class MonatService {
 	public canPlaceOrder:boolean;
 	public userIsEighteen:boolean;
 	public hasOwnerAccountOnSession:boolean;
+	public muraContent = {};
 	
 	//@ngInject
 	constructor(

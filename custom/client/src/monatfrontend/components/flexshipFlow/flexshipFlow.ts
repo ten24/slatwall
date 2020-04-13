@@ -13,7 +13,8 @@ class FlexshipFlowController {
 	public farthestStepReached = FlexshipSteps.SHOP;
 	public orderTemplate:{[key:string]:any};
 	public currentOrderTemplateID:string;
-
+	public muraData;
+	
     //@ngInject
     constructor(
     	public publicService,
@@ -30,7 +31,6 @@ class FlexshipFlowController {
 		this.orderTemplateService.getSetOrderTemplateOnSession('qualifiesForOFYProducts', 'save', false, false).then(res=>{
 			this.orderTemplate = res.orderTemplate;
 		});
-
     }
 	
 	public back = ():FlexshipSteps => {
@@ -93,7 +93,7 @@ class FlexshipFlow {
 	
 	public scope = {};
 	public bindToController = {
-	
+		muraData:'<?'
 	};
 	
 	public controller = FlexshipFlowController;

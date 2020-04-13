@@ -12,7 +12,6 @@ class OFYEnrollmentController {
 	}
 
 	public $onInit = () => {
-		console.log(this.flexship);
 		if(this.flexship){
 			this.endpoint = 'getOrderTemplatePromotionSkus';
 			this.action = 'addOrderTemplateItem';
