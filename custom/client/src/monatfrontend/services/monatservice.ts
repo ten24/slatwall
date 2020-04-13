@@ -336,7 +336,6 @@ export class MonatService {
 		let newCart = <Cart>data.cart;
 		var index = 0;
 		for(let item of newCart.orderItems){
-			console.log(this.cart.orderItems[index].quantity);
 			if(this.cart.orderItems[index] && this.cart.orderItems[index].quantity < item.quantity){
 				this.showAddToCartMessage = true;
 				this.lastAddedProduct = item;

@@ -25,7 +25,7 @@ class EnrollmentFlexshipController {
 	public getFlexship():void {
 	
 		this.isLoading = true;
-		let extraProperties = "canPlaceOrderFlag,purchasePlusTotal,appliedPromotionMessagesJson";
+		let extraProperties = "canPlaceOrderFlag,purchasePlusTotal,appliedPromotionMessagesJson,calculatedOrderTemplateItemsCount";
 		if(!this.cartThreshold){
 			extraProperties += ',cartTotalThresholdForOFYAndFreeShipping'
 		}
