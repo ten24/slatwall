@@ -106,10 +106,15 @@ component persistent="false" extends="HibachiService" output="false" accessors="
         
         var skuRecords = getService('skuDAO').getImageFileDataBySkuIDList(arguments.skuIDList);
         for(var skuRecord in skuRecords){
+        	if(!structKeyExists(skuRecord,'imageFile')){
+        		var imageFile = '';
+        	}else{
+        		var imageFile = skuRecord['imageFile'];
+        	}
         	ArrayAppend(
         		resizedImagePaths, 
         		getService('imageService').getResizedImagePath(
-        			width=imageWidth, height=imageHeight, imagePath="#getHibachiScope().getBaseImageURL()#/product/default/#skuRecord['imageFile']#"
+        			width=imageWidth, height=imageHeight, imagePath="#getHibachiScope().getBaseImageURL()#/product/default/#imageFile#"
         		)
         	);
         }
