@@ -56,7 +56,7 @@ class MonatProductModalController {
 	}
 	
 	private getReviewStars = ( productRating ) => {
-	
+		if(!productRating) return;
 		let rating = productRating.toFixed(1).split('.');
 		
 		let full = +rating[0];
