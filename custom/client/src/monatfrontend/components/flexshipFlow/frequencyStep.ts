@@ -49,7 +49,6 @@ class FrequencyStep {
 	public static Factory(){
         var directive:any = (
 		    monatFrontendBasePath,
-			rbkeyService,
         ) => new FrequencyStep(monatFrontendBasePath);
         directive.$inject = [
 			'monatFrontendBasePath',
@@ -67,4 +66,3 @@ class FrequencyStep {
 export {
 	FrequencyStep
 };
-
