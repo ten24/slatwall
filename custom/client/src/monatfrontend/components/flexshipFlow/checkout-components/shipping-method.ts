@@ -21,32 +21,8 @@ class FlexshipCheckoutShippingMethodController {
         
         this.loading=true;
         this.setupStateChangeListeners();
-        
-    	this.monatService.getOptions({'orderTemplateShippingMethodOptions':false}) 
-    	.then( (options) => {
-    		
-    		this.flexshipCheckoutStore.dispatch( 'SET_SHIPPING_METHODS', {
-				shippingMethodOptions: options.orderTemplateShippingMethodOptions
-    		})
-    		this.selectAShippingMethod();
-    	})
-    	.catch( e => console.error(e) )
-		.finally( () => this.loading = false);
     };
-    
-    private selectAShippingMethod(selectedShippingMethodID?) {
-		/**
-		 * If none provided, select a shipping-method first of ( previous on flexship, OR first available )
-		 */
-		if(!selectedShippingMethodID){
-			selectedShippingMethodID = this.currentState?.flexship?.shippingMethod_shippingMethodID?.trim();
-		}
-    	if( !selectedShippingMethodID  && this.currentState?.shippingMethodOptions?.length) {
-    		selectedShippingMethodID = this.currentState?.shippingMethodOptions?.find(e => true)?.value?.trim();
-    	}
-    	
-    	this.setSelectedShippingMethodID( selectedShippingMethodID );
-	}
+
     
     public setSelectedShippingMethodID(selectedShippingMethodID?) {
     	if(this.currentState.selectedShippingMethodID != selectedShippingMethodID ){
@@ -57,16 +33,19 @@ class FlexshipCheckoutShippingMethodController {
     }
     
     private onNewStateReceived = (state: FlexshipCheckoutState) => {
+		console.info("checkout-step--> shippingMethod, on-new-state", state);
 		this.currentState = state;
-		if(this.currentState.selectedShippingMethodID){
-			this.selectAShippingMethod(this.currentState.selectedShippingMethodID);
-		}
-		console.log("checkout-step-->shippingMethod, on-new-state", this.currentState);
 	}
 
 	private setupStateChangeListeners(){
 		this.stateListeners.push(
-			this.flexshipCheckoutStore.hook('*', this.onNewStateReceived)
+			this.flexshipCheckoutStore.hook('TOGGLE_LOADING', this.onNewStateReceived)
+		);
+		this.stateListeners.push(
+			this.flexshipCheckoutStore.hook('SET_SHIPPING_METHODS', this.onNewStateReceived)
+		);
+		this.stateListeners.push(
+			this.flexshipCheckoutStore.hook('SET_SELECTED_SHIPPING_METHOD_ID', this.onNewStateReceived)
 		);
 	}
 	

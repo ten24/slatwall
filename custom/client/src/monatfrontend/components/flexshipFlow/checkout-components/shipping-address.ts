@@ -22,87 +22,43 @@ class FlexshipCheckoutShippingAddressController {
     ) {}
     
     public $onInit = () => {
-    	this.loading=true;
     	this.setupStateChangeListeners();
-    	this.monatService.getAccountAddresses() 
-    	.then( (data) => {
-    		
-    		this.flexshipCheckoutStore.dispatch( 'SET_ACCOUNT_ADDRESSES', {
-				'accountAddresses': data.accountAddresses,
-				'primaryShippingAddressID': data.primaryShippingAddressID,
-				'primaryBillingAddressID': data.primaryBillingAddressID,
-				'primaryAccountAddressID': data.primaryAccountAddressID,
-			})
-    	})
-    	.then( () => this.selectAShippingAddress() )
-    	.catch( e =>  console.error(e) )
-		.finally( () => this.loading = false );
     };
-    
-	/**
-	 * If none provided, select a shippingAddress first of (previous on flexship, primaryShipping, primaryAccount)
-	*/
-    private selectAShippingAddress(selectedShippingAddressID?) {
-		 
-		if(!selectedShippingAddressID ){
-			selectedShippingAddressID = this.currentState?.flexship?.shippingAccountAddress_accountAddressID?.trim();
-		}
-    	if(!selectedShippingAddressID) { 
-    		selectedShippingAddressID = this.currentState?.primaryShippingAddressID?.trim()
-    	}
-		if(!selectedShippingAddressID) { 
-			selectedShippingAddressID = this.currentState?.primaryAccountAddressID?.trim() 
-		}
-    	if( !selectedShippingAddressID  && this.currentState?.accountAddresses?.length) {
-    		//select the first available
-    		selectedShippingAddressID = this.currentState.accountAddresses.find( () => true )?.accountAddressID?.trim();
-    	}
-    	
-    	this.setSelectedAccountAddressID(selectedShippingAddressID);
-	}
-	
-	
-	
+
 	// *********************. states  .**************************** //
 	
-    public setSelectedAccountAddressID(selectedShippingAddressID?){
-		
-		if( selectedShippingAddressID && this.currentState.selectedShippingAddressID != selectedShippingAddressID  ){
-			this.flexshipCheckoutStore.dispatch( 'SET_SELECTED_SHIPPING_ADDRESS_ID', {
-				'selectedShippingAddressID': selectedShippingAddressID	
-			});
-		}
-		
-		if(!selectedShippingAddressID){
-			this.flexshipCheckoutStore.dispatch( 'TOGGLE_NEW_SHIPPING_ADDRESS_FORM', {
-				showNewShippingAddressForm: true
-			});
-			this.showNewAddressForm();
-		}
-		else if( selectedShippingAddressID && this.currentState.showNewShippingAddressForm){
-			this.flexshipCheckoutStore.dispatch( 'TOGGLE_NEW_SHIPPING_ADDRESS_FORM', {
-				showNewShippingAddressForm: false
-			});
-			this.hideNewAddressForm();
-		}
+    public setSelectedShippingAddressID(selectedShippingAddressID?){
+		this.flexshipCheckoutStore.dispatch( 'SET_SELECTED_SHIPPING_ADDRESS_ID', (state) => {
+			return this.flexshipCheckoutStore.setSelectedShippingAddressIDReducer( state, selectedShippingAddressID);
+		});
 	}
     
 	private onNewStateReceived = (state: FlexshipCheckoutState) => {
+		console.info("checkout-step-->shippingAddress, on-new-state ", state);
 		this.currentState = state;
-		console.log("checkout-step-->shippingAddress, on-new-state", this.currentState);
+		this.currentState.showNewShippingAddressForm ? this.showNewAddressForm() : this.hideNewAddressForm();
 	}
 
 	private setupStateChangeListeners(){
 		this.stateListeners.push(
-			this.flexshipCheckoutStore.hook('*', this.onNewStateReceived)
+			this.flexshipCheckoutStore.hook('TOGGLE_LOADING', this.onNewStateReceived)
+		);
+		this.stateListeners.push(
+			this.flexshipCheckoutStore.hook('SET_ACCOUNT_ADDRESSES', this.onNewStateReceived)
+		);
+		this.stateListeners.push(
+			this.flexshipCheckoutStore.hook('SET_SELECTED_SHIPPING_ADDRESS_ID', this.onNewStateReceived)
 		);
 	}
 	
 	public $onDestroy= () => {
-		//to clear all of the listenets 
+		//to clear all of the listeners 
 		this.stateListeners.map( hook => hook.destroy());
 	}    
 
+	public formatAddress = (accountAddress):string =>{
+        return this.monatService.formatAccountAddress(accountAddress);
+    }
 
 
 	// *****************. new Address Form  .***********************//
@@ -114,7 +70,7 @@ class FlexshipCheckoutShippingAddressController {
 			this.flexshipCheckoutStore.dispatch('SET_ACCOUNT_ADDRESSES', {
 				accountAddresses : this.currentState.accountAddresses
 			});
-    		this.setSelectedAccountAddressID(newAccountAddress.accountAddressID);
+    		this.setSelectedShippingAddressID(newAccountAddress.accountAddressID);
         }
     	console.log("add new account adress, on success", newAccountAddress);
     	return true;
@@ -147,7 +103,10 @@ class FlexshipCheckoutShippingAddressController {
 		.then( (component) => {
 			component.close.then( () => {
 				this.newAddressFormRef = undefined;
-				this.selectAShippingAddress(this.currentState.selectedShippingAddressID);
+				// doing this will reopen the form if there's no account-address
+				// otherwise will fallback to either previously-selected, or best available 
+				this.setSelectedShippingAddressID(this.flexshipCheckoutStore.selectAShippingAddress(this.currentState));
+				
 			});
 			this.newAddressFormRef = component.element;
 		})

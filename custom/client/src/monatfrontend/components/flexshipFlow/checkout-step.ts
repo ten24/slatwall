@@ -2,6 +2,9 @@ import { FlexshipSteps } from '@Monat/components/flexshipFlow/flexshipFlow';
 import { FlexshipCheckoutState, FlexshipCheckoutStore } from '@Monat/states/flexship-checkout-store';
 
 import { MonatService } from '@Monat/services/monatservice';
+import { OrderTemplateService } from '@Monat/services/ordertemplateservice';
+import { MonatAlertService } from '@Monat/services/monatAlertService';
+
 import { PayPalService } from '@Monat/services/paypalservice';
 
 class FlexshipCheckoutStepController {
@@ -20,28 +23,19 @@ class FlexshipCheckoutStepController {
 
 	//@ngInject
 	constructor(
-		private orderTemplateService,
-		private monatAlertService,
+		private ModalService,
 		private monatService: MonatService,
 		private payPalService: PayPalService,
-		private ModalService,
+		private monatAlertService: MonatAlertService,
+		private orderTemplateService: OrderTemplateService,
 		private flexshipCheckoutStore: FlexshipCheckoutStore,
 	) {}
 
 	public $onInit = () => {
 		this.setupStateChangeListeners();
 		
-		this.flexshipCheckoutStore.dispatch( 'TOGGLE_LOADING', { 'loading': true });
-		
-		this.monatService.getAccountPaymentMethods()    	
-		.then( data => {
-			this.flexshipCheckoutStore.dispatch( 'SET_PAYMENT_METHODS', {
-				'accountPaymentMethods': data.accountPaymentMethods,
-				'primaryPaymentMethodID': data.primaryPaymentMethodID
-			})
-			this.selectAPaymentMethod();
-		})
-		.then( () => this.monatService.getOptions({'expirationMonthOptions':false, 'expirationYearOptions': false}) )
+		//TODO: refactor into FlexshipCheckoutStore, and make these lazy
+		this.monatService.getOptions({'expirationMonthOptions':false, 'expirationYearOptions': false}) 
     	.then( (options) => {
     		this.expirationMonthOptions = options.expirationMonthOptions;
     		this.expirationYearOptions = options.expirationYearOptions;
@@ -49,54 +43,9 @@ class FlexshipCheckoutStepController {
 	};
 	
 	
-	public setSelectedPaymentProvider(selectedPaymentProvider){
-		if(!this.currentState.selectedPaymentProvider || this.currentState.selectedPaymentProvider != selectedPaymentProvider ){
-			this.flexshipCheckoutStore.dispatch( 'SET_SELECTED_PAYMENT_PROVIDER', {
-				'selectedPaymentProvider': selectedPaymentProvider	
-			});
-		}
-	}
-	
 	public configurePayPal = () => {
 		this.payPalService.configPayPal();
 	};
-	
-
-    private selectAPaymentMethod(selectedPaymentMethodID?) {
-		 
-		if(!selectedPaymentMethodID ){
-			selectedPaymentMethodID = this.currentState?.flexship?.accountPaymentMethod_accountPaymentMethodID?.trim();
-		}
-		if(!selectedPaymentMethodID) { 
-			selectedPaymentMethodID = this.currentState?.primaryPaymentMethodID?.trim() 
-		}
-    	if( !selectedPaymentMethodID  && this.currentState?.accountPaymentMethods?.length) {
-    		selectedPaymentMethodID = this.currentState.accountPaymentMethods.find( () => true )?.accountPaymentMethodID?.trim();
-    	}
-    	
-    	this.setSelectedPaymentMethodID(selectedPaymentMethodID);
-	}
-
-	public setSelectedPaymentMethodID(selectedPaymentMethodID?){
-		
-		if( selectedPaymentMethodID && this.currentState.selectedPaymentMethodID != selectedPaymentMethodID  ){
-			if(selectedPaymentMethodID === 'new') selectedPaymentMethodID = undefined;
-			this.flexshipCheckoutStore.dispatch( 'SET_SELECTED_SHIPPING_ADDRESS_ID', {
-				'selectedPaymentMethodID': selectedPaymentMethodID	
-			});
-		}
-		
-		if(!selectedPaymentMethodID){
-			this.flexshipCheckoutStore.dispatch( 'TOGGLE_NEW_PAYMENT_METHOD_FORM', {
-				showNewPaymentMethodForm: true
-			});
-		}
-		else if( selectedPaymentMethodID && this.currentState.showNewPaymentMethodForm){
-			this.flexshipCheckoutStore.dispatch( 'TOGGLE_NEW_PAYMENT_METHOD_FORM', {
-				showNewPaymentMethodForm: false
-			});
-		}
-	}
 
 	public addNewPaymentMethod = () => {
 		
@@ -106,9 +55,22 @@ class FlexshipCheckoutStepController {
 			'newAccountPaymentMethod': this.newAccountPaymentMethod
 		};
 		
-		this.orderTemplateService.updateBilling(payload)
+		//TODO: Extract newPaymentMethod into seperate-API
+		this.orderTemplateService.updateBilling( 
+			this.orderTemplateService.getFlattenObject(payload)
+		)
         .then( (response) => {
         	
+	        if(response.newAccountPaymentMethod) {
+				this.currentState.accountPaymentMethods.push(response.newAccountPaymentMethod);
+				this.flexshipCheckoutStore.dispatch('SET_PAYMENT_METHODS', {
+					accountPaymentMethods : this.currentState.accountPaymentMethods
+				});
+	    		this.setSelectedPaymentMethodID(response.newAccountPaymentMethod.accountPaymentMethodID);
+	        } else {
+	        	throw response;
+	        }
+	        
         })
         .catch( (error) => {
 	        this.monatAlertService.showErrorsFromResponse(error);
@@ -117,66 +79,61 @@ class FlexshipCheckoutStepController {
         });
 		
 	}
+	
+	public cancelAddNewPayment = () =>{
+		// doing this will reopen the form if there's no payment-methods
+		// otherwise will fallback to either previously-selected, or best available 
+		this.setSelectedPaymentMethodID(this.flexshipCheckoutStore.selectAPaymentMethod(this.currentState));
+	}
 
-
-	public toggleBillingSameAsShipping(){
-		this.flexshipCheckoutStore.dispatch( 'TOGGLE_BILLING_SAME_AS_SHIPPING', {
-			billingSameAsShipping : !this.currentState?.billingSameAsShipping	
+	// *****************. States  .***********************//
+	
+	public setSelectedPaymentProvider(selectedPaymentProvider){
+		
+		if(selectedPaymentProvider === this.currentState.selectedPaymentProvider) return;
+	
+		this.flexshipCheckoutStore.dispatch( 'SET_SELECTED_PAYMENT_PROVIDER', {
+			'selectedPaymentProvider': selectedPaymentProvider	
 		});
-		this.selectABillingAddress();
 	}
 	
-    private selectABillingAddress(selectedBillingAddressID?) {
-		 
-		if(!selectedBillingAddressID && this.currentState?.billingSameAsShipping) { 
-    		selectedBillingAddressID = this.currentState?.selectedShippingAddressID?.trim();
-    	}
-		if(!selectedBillingAddressID ){
-			selectedBillingAddressID = this.currentState?.flexship?.billingAccountAddress_accountAddressID?.trim();
-		}
-    	if(!selectedBillingAddressID) { 
-    		this.currentState?.primaryBillingAddressID?.trim()
-    	}
-		if(!selectedBillingAddressID) { 
-			this.currentState?.primaryAccountAddressID?.trim() 
-		}
-    	if( !selectedBillingAddressID  && this.currentState?.accountAddresses?.length) {
-    		//select the first available
-    		selectedBillingAddressID = this.currentState.accountAddresses.find( () => true )?.accountAddressID?.trim();
-    	}
-    	
-    	this.setSelectedBillingAddressID(selectedBillingAddressID);
+	public setSelectedPaymentMethodID(selectedPaymentMethodID?){
+		
+		this.flexshipCheckoutStore.dispatch( 'SET_SELECTED_PAYMENT_METHOD_ID', (state) => {
+			return this.flexshipCheckoutStore.setSelectedPaymentMethodIDReducer( state, selectedPaymentMethodID);
+		});
+	}
+
+	public toggleBillingSameAsShipping(){
+		this.flexshipCheckoutStore.dispatch( 'TOGGLE_BILLING_SAME_AS_SHIPPING', (state) => {
+			return this.flexshipCheckoutStore.toggleBillingSameAsShippingReducer( state, !this.currentState.billingSameAsShipping);
+		});
 	}
 	
 	public setSelectedBillingAddressID(selectedBillingAddressID?){
 		
-		if( selectedBillingAddressID && this.currentState.selectedBillingAddressID != selectedBillingAddressID  ){
-			this.flexshipCheckoutStore.dispatch( 'SET_SELECTED_BILLING_ADDRESS_ID', {
-				'selectedBillingAddressID': selectedBillingAddressID	
-			});
-		}
-		
-		if(!selectedBillingAddressID){
-			this.flexshipCheckoutStore.dispatch( 'TOGGLE_NEW_BILLING_ADDRESS_FORM', {
-				showNewBillingAddressForm: true
-			});
-			this.showNewAddressForm();
-		}
-		else if( selectedBillingAddressID && this.currentState.showNewBillingAddressForm) {
-			this.flexshipCheckoutStore.dispatch( 'TOGGLE_NEW_BILLING_ADDRESS_FORM', {
-				showNewBillingAddressForm: false
-			});
-			this.hideNewAddressForm();
-		}
-		
-		if(!this.currentState.selectedBillingAddressID || this.currentState.selectedBillingAddressID != selectedBillingAddressID ){
-			this.flexshipCheckoutStore.dispatch( 'SET_SELECTED_BILLING_ADDRESS_ID', {
-				'selectedBillingAddressID': selectedBillingAddressID	
-			});
-		}
+		this.flexshipCheckoutStore.dispatch( 'SET_SELECTED_BILLING_ADDRESS_ID', (state) => {
+			return this.flexshipCheckoutStore.setSelectedBillingAddressIDReducer( state, selectedBillingAddressID);
+		});
 	}
 
+	private onNewStateReceived = (state: FlexshipCheckoutState) => {
+		this.currentState = state;
+		this.currentState.showNewBillingAddressForm ? this.showNewAddressForm() : this.hideNewAddressForm();
+		console.log("checkout-step, on-new-state", this.currentState);
+	}
 	
+	private setupStateChangeListeners(){
+		this.stateListeners.push(
+			this.flexshipCheckoutStore.hook('*', this.onNewStateReceived)
+		);
+	}
+	
+	public $onDestroy= () => {
+		//to clear all of the listenets 
+		this.stateListeners.map( hook => hook.destroy());
+	}
+
 	
 	// *****************. new Address Form  .***********************//
 	
@@ -197,7 +154,7 @@ class FlexshipCheckoutStepController {
         console.log("add billing-account-adress, on failure", error);
     };
     
-    public showNewAddressForm = (accountAddress?) => {
+    public showNewAddressForm = () => {
         
         if(this.newAddressFormRef) {
             return this.newAddressFormRef.show();
@@ -206,21 +163,22 @@ class FlexshipCheckoutStepController {
 		let bindings = {
 			onSuccessCallback: this.onAddNewAccountAddressSuccess,
 			onFailureCallback: this.onAddNewAccountAddressFailure,
+			formHtmlID: Math.random().toString(36).replace('0.', 'new_billing_address_form' || '')
 		};
-		
-		if(accountAddress){
-		    bindings['accountAddress'] = accountAddress;
-		}
 		
 		this.ModalService.showModal({
 			component: 'accountAddressForm',
-			appendElement: '#billing-new-account-address-form', //can be any vlid selector
+			appendElement: '#new-billing-account-address-form', //can be any vlid selector
 			bindings: bindings
 		})
 		.then( (component) => {
 			component.close.then( () => {
 				this.newAddressFormRef = undefined;
-				this.selectABillingAddress(this.currentState.selectedShippingAddressID);
+				
+				// doing this will reopen the form if there's no billing-address
+				// otherwise will fallback to either previously-selected, or best available 
+				this.setSelectedBillingAddressID(this.flexshipCheckoutStore.selectABillingAddress(this.currentState));
+				
 			});
 			this.newAddressFormRef = component.element;
 		})
@@ -232,25 +190,13 @@ class FlexshipCheckoutStepController {
 	private hideNewAddressForm(){
 	    this.newAddressFormRef?.hide();
 	}
-
-
-
-		
-	private onNewStateReceived = (state: FlexshipCheckoutState) => {
-		this.currentState = state;
-		console.log("checkout-step, on-new-state", this.currentState);
-	}
 	
-	private setupStateChangeListeners(){
-		this.stateListeners.push(
-			this.flexshipCheckoutStore.hook('*', this.onNewStateReceived)
-		);
-	}
 	
-	public $onDestroy= () => {
-		//to clear all of the listenets 
-		this.stateListeners.map( hook => hook.destroy());
-	}
+	// *****************. Helpers  .***********************//
+	public formatAddress = (accountAddress):string =>{
+        return this.monatService.formatAccountAddress(accountAddress);
+    }
+
 	
 }
 

@@ -10,7 +10,7 @@
 						<li ng-repeat="accountAddress in flexshipCheckoutShippingAddress.currentState.accountAddresses">
 							<div
 								class="custom-radio form-group"
-								ng-click="$parent.flexshipCheckoutShippingAddress.setSelectedAccountAddressID(accountAddress.accountAddressID)"
+								ng-click="$parent.flexshipCheckoutShippingAddress.setSelectedShippingAddressID(accountAddress.accountAddressID)"
 							>
 								<input
 									type="radio"
@@ -19,27 +19,25 @@
 									ng-checked="accountAddress.accountAddressID === flexshipCheckoutShippingAddress.currentState.selectedShippingAddressID"
 								/>
 								<label for="accountAddressID">
-									{{
-                                        accountAddress.address_streetAddress
-                                        + ( 
-                                            accountAddress.address_street2Address.length 
-                                                ? ' ' + accountAddress_address.street2Address + ',' 
-                                                : ','
-                                        )
-                                    }}
-                                    {{accountAddress.address_city}},
-                                    {{accountAddress.address_stateCode}}
-                                    {{accountAddress.address_postalCode}}
+									{{ flexshipCheckoutShippingAddress.formatAddress(accountAddress) }}
+									<span class="text-black-50" 
+										ng-if="accountAddress.primaryAccountAddressID === flexshipCheckoutShippingAddress.currentState.primaryAccountAddressID" 
+										sw-rbKey="'frontend.global.default'"
+									></span>
+									<span class="text-black-50" 
+										ng-if="accountAddress.accountAddressID === flexshipCheckoutShippingAddress.currentState.primaryShippingAddressID" 
+										sw-rbKey="'frontend.global.shipping'"
+									></span>
 								</label>
 							</div>
 						</li>
 						<li>
-						    <div ng-click="flexshipCheckoutShippingAddress.setSelectedAccountAddressID()" class="custom-radio">
+						    <div ng-click="flexshipCheckoutShippingAddress.setSelectedShippingAddressID('new')" class="custom-radio">
 								<input 
 									type="radio" 
 									name="accountAddressID"
 									id="new-account-address" 
-									ng-checked="!flexshipCheckoutShippingAddress.currentState.showNewShippingAddressForm"
+									ng-checked="!flexshipCheckoutShippingAddress.currentState.selectedShippingAddressID"
 	                            />
 	                            <label for="accountAddressID">
 	                                <span sw-rbKey="'frontend.checkout.newAccountAddress'"></span>

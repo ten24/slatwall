@@ -1,8 +1,9 @@
-import { MonatService, IAddressFormOptions, IOption } from '@Monat/services/monatservice';
+import { MonatService, IOption } from '@Monat/services/monatservice';
 import { MonatAlertService } from '@Monat/services/monatAlertService';
 
 class AccountAddressFormController {
 	public close;
+	public formHtmlID;
 	
 	//callback
 	public onSubmitCallback;
@@ -23,6 +24,9 @@ class AccountAddressFormController {
     ) {}
     
     public $onInit = () => {
+    	
+    	if(!this.formHtmlID) this.formHtmlID = Math.random().toString(36).replace('0.', 'new_account_address_form' || '');
+    	
     	this.loading=true;
     	this.monatService.getStateCodeOptionsByCountryCode()
     	.then( (options) => { 
@@ -37,7 +41,8 @@ class AccountAddressFormController {
     
     public translations = {};
     private makeTranslations = () => {
-    	this.translations['address_name'] = this.rbkeyService.rbKey('frontend.newAddress.name');
+    	this.translations['address_first_name'] = this.rbkeyService.rbKey('frontend.newAddress.firstName');
+    	this.translations['address_last_name'] = this.rbkeyService.rbKey('frontend.newAddress.lastName');
     	this.translations['address_nickName'] = this.rbkeyService.rbKey('frontend.newAddress.nickName');
     	this.translations['address_country'] = this.rbkeyService.rbKey('frontend.newAddress.country');
     	this.translations['address_emailAddress'] = this.rbkeyService.rbKey('frontend.newAddress.emailAddress');
@@ -49,23 +54,23 @@ class AccountAddressFormController {
     	this.loading=true;
     	
 		//if callback returned true ==> the input is handeled; won't make API call
-		if(this.onSubmitCallback?.(this.accountAddress) === true) return this.remove();
+		if(this.onSubmitCallback?.(this.accountAddress) === true) return this.cancel();
 		
         this.monatService.addEditAccountAddress(this.accountAddress)
         .then( (response) => {
         	if(response?.newAccountAddress) {
            	    //if callback return true ==> success-handeled, will close;
-           		if(this.onSuccessCallback?.(response.newAccountAddress) === true) return this.remove();
+           		if(this.onSuccessCallback?.(response.newAccountAddress) === true) return this.cancel();
            		//beware of the event-name ambiguity, the core-event doesn't pass any data;
            		this.observerService.notify("newAccountAddressSaveSuccess", response.newAccountAddress);
-           		this.remove();
+           		this.cancel();
         	} else {
         		throw(response);
         	}
         }) 
         .catch( (error) => {
         	//if callback return true ==> error-handeled, will close;
-        	if(this.onFailureCallback?.(error) === true ) return this.remove();
+        	if(this.onFailureCallback?.(error) === true ) return this.cancel();
         	this.monatAlertService.showErrorsFromResponse(error);
         })
         .finally(() => {
@@ -73,7 +78,7 @@ class AccountAddressFormController {
         }); 
     }
 	
-	public remove(){
+	public cancel(){
 		console.log('removing account-address-form');
 		this.loading = false;
 		this.close?.();
@@ -89,6 +94,7 @@ class AccountAddressForm {
 	
 	public bindToController = {
 		close: "=", //injected via modal-service
+		formHtmlID:"<?",
 		accountAddress: '<?',
 	    
 	    // we can tap into this to get/update the form-data, before the api-call, 
@@ -114,6 +120,35 @@ class AccountAddressForm {
 }
 
 export {
-	AccountAddressForm
+	AccountAddressForm, IAddressFormOptions
 };
+
+type IAddressFormOptions = {
+	
+	streetAddressLabel:string;
+	streetAddressShowFlag:boolean;
+	streetAddressRequiredFlag:boolean;
+	
+	street2AddressLabel:string;
+	street2AddressShowFlag:boolean;
+	street2AddressRequiredFlag:boolean;
+	
+	cityLabel:string;
+	cityShowFlag:boolean;
+	cityRequiredFlag:boolean;
+	
+    postalCodeLabel:string;
+	postalCodeShowFlag:boolean;
+	postalCodeRequiredFlag:boolean;
+       
+    stateCodeLabel:string;
+	stateCodeShowFlag:boolean;
+	stateCodeRequiredFlag:boolean;
+    
+	localityLabel:string;
+	localityShowFlag:boolean;
+	localityRequiredFlag:boolean;
+}
+
+
 

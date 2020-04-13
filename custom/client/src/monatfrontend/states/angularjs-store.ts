@@ -94,14 +94,23 @@ export class NgStore<State extends { [key: string]: any } = {}, Actions extends 
 	 * Implementation.
 	 */
 	public dispatch(action: Actions[number], state: Partial<State> | ((prevState: State) => Partial<State>)) {
-		// @ts-ignore
-		const partialState = angular.isFunction(state) ? state(this.$$stateHolder.get()) : state;
-
-		this.$$stateHolder.set(partialState);
+		
+		this.mutate(state);
 
 		for (const hook of this.$$hooks) {
 			hook.run(action, this.$$stateHolder.get());
 		}
+	}
+	
+	/**
+	 * Extracted to mutate the state without firing hllos,
+	 * usefull preload the state with some defaults
+	*/
+	protected mutate(state: Partial<State> | ((prevState: State) => Partial<State>)){
+		// @ts-ignore
+		const partialState = angular.isFunction(state) ? state(this.$$stateHolder.get()) : state;
+
+		this.$$stateHolder.set(partialState);
 	}
 }
 

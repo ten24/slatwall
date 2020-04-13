@@ -1,38 +1,9 @@
 import { Cache } from 'cachefactory';
 
-export interface IOption {
+export type IOption = {
 	name: string;
 	value: any;
 }
-
-export interface IAddressFormOptions{
-	
-	streetAddressLabel:string;
-	streetAddressShowFlag:boolean;
-	streetAddressRequiredFlag:boolean;
-	
-	street2AddressLabel:string;
-	street2AddressShowFlag:boolean;
-	street2AddressRequiredFlag:boolean;
-	
-	cityLabel:string;
-	cityShowFlag:boolean;
-	cityRequiredFlag:boolean;
-	
-    postalCodeLabel:string;
-	postalCodeShowFlag:boolean;
-	postalCodeRequiredFlag:boolean;
-       
-    stateCodeLabel:string;
-	stateCodeShowFlag:boolean;
-	stateCodeRequiredFlag:boolean;
-    
-	localityLabel:string;
-	localityShowFlag:boolean;
-	localityRequiredFlag:boolean;
-}
-
-
 
 
 export class MonatService {
@@ -374,6 +345,14 @@ export class MonatService {
 		}
 		
 		this.$window.location.href = redirectUrl;
+	}
+	
+	public formatAccountAddress(accountAddress): string{
+		return `
+        		${accountAddress?.accountAddressName} 
+        		- ${accountAddress?.address_streetAddress} ${accountAddress?.address_street2Address?.trim() || ' '}
+    			${accountAddress?.address_city}, ${accountAddress?.address_stateCode} ${accountAddress?.address_postalCode} ${accountAddress?.address_countryCode}
+    	`
 	}
 	
 	public setNewlyCreatedFlexship(flexshipID: string){
