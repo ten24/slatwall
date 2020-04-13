@@ -54,6 +54,16 @@ component accessors="true" output="false" extends="Slatwall.integrationServices.
         }
     }
     
+    // @hint Determines whether integration should allow site specific setting overrides
+	public boolean function getAllowSiteSpecificSettingsFlag() {
+		return true;
+	}
+
+	// @hint comma-delimitd list of settings to display that allow site specific overrides (without 'integration{packageName}' prefix)
+	public string function getAllowedSiteSettingNames() {
+		return "siteHairProductListingCategoryFilters,siteSkinProductListingCategoryFilters";
+	}
+    
     public array function getMenuItems(){
         return [];
     }
