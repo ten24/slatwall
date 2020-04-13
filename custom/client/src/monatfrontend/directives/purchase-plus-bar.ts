@@ -31,9 +31,9 @@ class PurchasePlusBarController {
 	}
 	
 	private getPurchasePlusMessages = () => {
-		
 		this.monatService.getCart().then( data => {
-			this.getMessagesFromCart( data.cart );
+			let cart = data.cart ? data.cart : data;
+			this.getMessagesFromCart( cart );
 		});
 	}
 	

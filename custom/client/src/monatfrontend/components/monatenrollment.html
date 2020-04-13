@@ -14,7 +14,29 @@
 			</div>			
 		</div>
 	</div>
+	<div 
+		ng-if="
+			(monatEnrollment.currentStepName == 'orderListing' &&  monatEnrollment.orderTemplateService.mostRecentOrderTemplate.purchasePlusMessage.message.length) 
+			|| ( monatEnrollment.currentStepName != 'orderListing' && monatEnrollment.monatService.cart.purchasePlusMessage.message.length)" 
+		id="promoBanner" 
+		class="alert discount-block text-white promotion-bar-block"
+	>
+		<button 
+			id="close-promo" 
+			type="button" 
+			class="close" 
+			data-dismiss="alert"
+			aria-label="Close"
+		><i class="fas fa-times"></i></button>
+		{{
+			monatEnrollment.currentStepName == 'orderListing' 
+			? monatEnrollment.orderTemplateService.mostRecentOrderTemplate.purchasePlusMessage.message
+			:monatEnrollment.monatService.cart.purchasePlusMessage.message
+		}}
+		
+	</div>
 </header>
+
 
 <ng-transclude></ng-transclude>
 
