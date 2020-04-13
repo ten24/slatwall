@@ -1732,7 +1732,7 @@ component extends="Slatwall.model.service.OrderService" {
 	public string function getOrderRequirementsList(required any order, struct data = {}) {
 		var orderRequirementsList = "";
 
-		/* CHANGE FOR MONAT
+		/* CHANGES FOR MONAT
 			Added Owner Account check
 		*/
 		// Check if the order still requires a valid account
