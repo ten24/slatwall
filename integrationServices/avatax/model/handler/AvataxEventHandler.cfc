@@ -7,7 +7,11 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 		
 		//Only commit the tax document after the order has been closed
 		var orderStatusType = arguments.order.getOrderStatusType();
-		if (orderStatusType.getTypeCode() == 'rmaReleased' || orderStatusType.getTypeCode() == 'processing1'){
+		var orderType = arguments.order.getOrderType();
+		if ( 
+			( orderStatusType.getSystemCode() == 'ostClosed' && orderType.getSystemCode() != 'otSalesOrder' )
+			|| orderStatusType.getTypeCode() == 'processing1'
+		){
 			//First get integration and make sure the commit tax document flag is set
 			var integration = arguments.slatwallScope.getService('IntegrationService').getIntegrationByIntegrationPackage('avatax');
 					
