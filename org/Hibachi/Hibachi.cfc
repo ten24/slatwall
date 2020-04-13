@@ -314,6 +314,11 @@ component extends="framework.one" {
 
 		var httpRequestData = GetHttpRequestData();
 		
+		// clean any beancache for local development
+		if(getHibachiScope().getApplicationValue('applicationEnvironment') == 'local' && structKeyExists(url, "reloadbean")){
+			getBeanFactory().reloadBean(url.reloadbean);
+		}
+		
         getHibachiScope().setIsAwsInstance(variables.framework.isAwsInstance);
 		
 		// Verify that the application is setup
