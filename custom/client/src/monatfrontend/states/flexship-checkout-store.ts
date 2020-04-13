@@ -6,34 +6,32 @@ export type Option = { 'name': string, 'value': string };
 
 // keep is Simple And Stupid, remember it's not a magic-bullet
 export class FlexshipCheckoutState {
-	loading: boolean= true;
-
-
-	flexship: any; 
+	
+	primaryAccountAddressID:   string   =  null;
+	primaryShippingAddressID:  string   =  null;
+	primaryBillingAddressID:   string   =  null;
+	primaryPaymentMethodID:    string   =  null;
+	
+	
+	loading: boolean  = true;
+	flexship: any     = null; 
 	
 	// will get updated everytime we add new-address
-	accountAddresses: Array<AccountAddress>; 
-	shippingMethodOptions: Array<Option>;
-	selectedShippingAddressID: string;
-	selectedShippingMethodID: string;
-	showNewShippingAddressForm: boolean = false;
-	
-	accountPaymentMethods: Array<AccountPaymentMethod>; 
-	selectedPaymentProvider: "creditCard" | "paypal" = "creditCard";
-	
-	selectedPaymentMethodID: string;
-	selectedBillingAddressID: string;
-	
-	billingSameAsShipping: boolean = true;
-	showNewPaymentMethodForm: boolean = false;
-	showNewBillingAddressForm: boolean = false;
+	accountAddresses:            Array<AccountAddress>  = null; 
+	shippingMethodOptions:       Array<Option>          = null;
+	selectedShippingAddressID:   string                 = null;
+	selectedShippingMethodID:    string                 = null;
+	showNewShippingAddressForm:  boolean                = false;
 	
 	
-	//
-	primaryAccountAddressID: string;
-	primaryShippingAddressID: string;
-	primaryBillingAddressID: string;
-	primaryPaymentMethodID: string;
+	accountPaymentMethods:       Array<AccountPaymentMethod>  = null; 
+	selectedPaymentProvider:     "creditCard" | "paypal"      = "creditCard";
+	selectedPaymentMethodID:     string 					  =  null;
+	selectedBillingAddressID:    string 					  =  null;
+	billingSameAsShipping:       boolean					  =  true;
+	showNewPaymentMethodForm:    boolean					  =  false;
+	showNewBillingAddressForm:   boolean					  =  false;
+	
 	
 	public getSelectedShippingAddress() {
 		return this.accountAddresses?.find(a => a.accountAddressID === this.selectedShippingAddressID);
@@ -232,7 +230,7 @@ export class FlexshipCheckoutStore extends NgStore<FlexshipCheckoutState, Flexsh
 		}
     	if( !selectedShippingAddressID  && currentState.accountAddresses?.length) {
     		//select the first available
-    		selectedShippingAddressID = currentState.accountAddresses.find( () => true )?.accountAddressID?.trim();
+    		selectedShippingAddressID = currentState.accountAddresses.find( () => true )?.accountAddressID?.trim() || 'new';
     	}
     	return selectedShippingAddressID;
 	}
@@ -273,7 +271,7 @@ export class FlexshipCheckoutStore extends NgStore<FlexshipCheckoutState, Flexsh
 		}
     	if( !selectedBillingAddressID  && currentState.accountAddresses?.length) {
     		//select the first available
-    		selectedBillingAddressID = currentState.accountAddresses.find( () => true )?.accountAddressID?.trim();
+    		selectedBillingAddressID = currentState.accountAddresses.find( () => true )?.accountAddressID?.trim() || 'new';
     	}
     	return selectedBillingAddressID;
 	}
@@ -291,7 +289,7 @@ export class FlexshipCheckoutStore extends NgStore<FlexshipCheckoutState, Flexsh
 			selectedPaymentMethodID = currentState.primaryPaymentMethodID?.trim() 
 		}
     	if( !selectedPaymentMethodID  && currentState.accountPaymentMethods?.length) {
-    		selectedPaymentMethodID = currentState.accountPaymentMethods.find( () => true )?.accountPaymentMethodID?.trim();
+    		selectedPaymentMethodID = currentState.accountPaymentMethods.find( () => true )?.accountPaymentMethodID?.trim() || 'new';
     	}
     	
     	return selectedPaymentMethodID;

@@ -40,6 +40,7 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
     this.publicMethods=ListAppend(this.publicMethods, 'getScheduleDateChangeReasonTypeOptions');
     this.publicMethods=ListAppend(this.publicMethods, 'getExpirationMonthOptions');
     this.publicMethods=ListAppend(this.publicMethods, 'getExpirationYearOptions');
+    this.publicMethods=ListAppend(this.publicMethods, 'getStateCodeOptionsByCountryCode');
 
     
     
