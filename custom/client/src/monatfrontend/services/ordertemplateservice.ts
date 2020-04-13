@@ -8,6 +8,7 @@ export class OrderTemplateService {
    public currentOrderTemplateID:string;
    public showAddToCartMessage:boolean;
    public lastAddedProduct;
+   public cartTotalThresholdForOFYAndFreeShipping;
    
    //@ngInject
    constructor(
@@ -382,6 +383,9 @@ export class OrderTemplateService {
                 let promoArray = this.mostRecentOrderTemplate.appliedPromotionMessagesJson?.length ? JSON.parse(this.mostRecentOrderTemplate.appliedPromotionMessagesJson) : [];
                 this.mostRecentOrderTemplate['purchasePlusMessage'] = promoArray.length ? promoArray.filter( message => message.promotion_promotionName.indexOf('Purchase Plus') > -1 )[0] : {};
                 this.mostRecentOrderTemplate['suggestedPrice'] = this.calculateSRPOnOrder(this.mostRecentOrderTemplate);
+                if(this.mostRecentOrderTemplate.cartTotalThresholdForOFYAndFreeShipping){
+                    this.cartTotalThresholdForOFYAndFreeShipping = this.mostRecentOrderTemplate.cartTotalThresholdForOFYAndFreeShipping;
+                }
             }
             deferred.resolve(res);
 	    }).catch( (e) => {
@@ -404,7 +408,7 @@ export class OrderTemplateService {
     //handle any new data on the order template
     public manageOrderTemplate(template){
         let newOT = template;
-        
+      
         if(!this.mostRecentOrderTemplate || !newOT.orderTemplateItems) return;
         
         //if the new orderTemplateItems length is > than the old orderTemplateItems, a new item has been added       
@@ -418,7 +422,11 @@ export class OrderTemplateService {
         
         //Loop over orderTemplateItems to see if quantity has increased on one, if so, the item has been updated
 		for(let item of newOT.orderTemplateItems){
-			if(this.mostRecentOrderTemplate.orderTemplateItems[index] && this.mostRecentOrderTemplate.orderTemplateItems[index].quantity < item.quantity){
+			if(
+			    this.mostRecentOrderTemplate.orderTemplateItems[index] 
+			    && this.mostRecentOrderTemplate.orderTemplateItems[index].orderTemplateItemID == item.orderTemplateItemID
+			    && this.mostRecentOrderTemplate.orderTemplateItems[index].quantity < item.quantity)
+			{
 				this.showAddToCartMessage = true;
 				this.lastAddedProduct = item;
 				break;
