@@ -1730,68 +1730,11 @@ component extends="Slatwall.model.service.OrderService" {
 	
 	
 	public string function getOrderRequirementsList(required any order, struct data = {}) {
-		var orderRequirementsList = "";
-
-		/* CHANGES FOR MONAT
-			Added Owner Account check
-		*/
-		// Check if the order still requires a valid account
-		if(isNull(arguments.order.getAccount()) || isNull(arguments.order.getAccount().getOwnerAccount()) || arguments.order.getAccount().hasErrors()) {
+		
+		var orderRequirementsList = super.getOrderRequirementsList(argumentCollection=arguments);
+		
+		if (!listFindNoCase(orderRequirementsList, "account") && isNull(arguments.order.getAccount().getOwnerAccount())){
 			orderRequirementsList = listAppend(orderRequirementsList, "account");
-		}
-		/* END CHANGES FOR MONAT */
-		
-		// Check each of the orderFulfillments to see if they are ready to process
-		var orderFulfillmentsCount = arrayLen(arguments.order.getOrderFulfillments());
-		for(var i = 1; i <= orderFulfillmentsCount; i++) {
-			if(!arguments.order.getOrderFulfillments()[i].isProcessable( context="placeOrder" )
-				|| arguments.order.getOrderFulfillments()[i].hasErrors()) {
-				orderRequirementsList = listAppend(orderRequirementsList, "fulfillment");
-				break;
-			}
-		}
-
-		// Check each of the orderReturns to see if they are ready to process
-		var orderReturnsCount = arrayLen(arguments.order.getOrderReturns());
-		for(var i = 1; i <= orderReturnsCount; i++) {
-			if(!arguments.order.getOrderReturns()[i].isProcessable( context="placeOrder" ) || arguments.order.getOrderReturns()[i].hasErrors()) {
-				orderRequirementsList = listAppend(orderRequirementsList, "return");
-				break;
-			}
-		}
-		
-		// Check for active promotion rewards of type "canPlaceOrder" and make sure the order qualifies
-		if(!getPromotionService().getOrderQualifiesForCanPlaceOrderReward(arguments.order)){
-			orderRequirementsList = listAppend(orderRequirementsList, "canPlaceOrderReward");
-		}
-
-		if(arguments.order.getPaymentAmountTotal() == 0 && this.isAllowedToPlaceOrderWithoutPayment(arguments.order, arguments.data)){
-			//If is allowed to place order without payment and there is no payment, skip payment order
-			return orderRequirementsList;
-		}
-
-		if(arguments.order.getPaymentAmountTotal() != arguments.order.getTotal()) {
-			orderRequirementsList = listAppend(orderRequirementsList, "payment");
-
-		// Otherwise, make sure that the order payments all pass the isProcessable for placeOrder & does not have any errors
-		} else {
-
-			for(var orderPayment in arguments.order.getOrderPayments()) {
-				if(orderPayment.getStatusCode() eq 'opstActive' && (!orderPayment.isProcessable( context="placeOrder" ) || orderPayment.hasErrors())) {
-					orderRequirementsList = listAppend(orderRequirementsList, "payment");
-					break;
-				}
-			}
-
-
-		}
-
-		//only do this check if no payment has been added yet.
-		if (!listFindNoCase(orderRequirementsList, "payment")){
-			//Check if there is subscription with autopay flag without order payment with account payment method.
-			if (this.validateHasNoSavedAccountPaymentMethodAndSubscriptionWithAutoPay(arguments.order)){
-				orderRequirementsList = listAppend(orderRequirementsList, "payment");
-			}
 		}
 		
 		return orderRequirementsList;
