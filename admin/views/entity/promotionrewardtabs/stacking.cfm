@@ -88,7 +88,7 @@ Notes:
 <cfset local.excludeRewardCollection.addFilter(propertyIdentifier='promotionPeriod.startDateTime',value='null',comparisonOperator="IS",logicalOperator="OR", filterGroupAlias="startDateTime") />
 <cfif !isNull(rc.promotionPeriod.getPromotion().getSite()) >
     <cfset local.excludeRewardCollection.addFilter(propertyIdentifier='promotionPeriod.promotion.site.siteID',value="#rc.promotionPeriod.getPromotion().getSite().getSiteID()#",filterGroupAlias="site") />
-    <cfset local.excludeRewardCollection.addFilter(propertyIdentifier='promotionPeriod.promotion.site.siteID',value="null",logicalOperator="OR",filterGroupAlias="site") />
+    <cfset local.excludeRewardCollection.addFilter(propertyIdentifier='promotionPeriod.promotion.site.siteID',value="null",comparisonOperator="IS",logicalOperator="OR",filterGroupAlias="site") />
 </cfif>
 
 <cfset local.includedRewardIDs = rc.promotionReward.getIncludedStackableRewardsIDList() />
