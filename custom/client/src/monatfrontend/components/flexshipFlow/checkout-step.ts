@@ -210,7 +210,6 @@ class FlexshipCheckoutStepController {
 			});
     		this.setSelectedBillingAddressID(newAccountAddress.accountAddressID);
         }
-    	console.log("add new billing-account adress, on success", newAccountAddress);
     	return true;
     };
     
