@@ -84,6 +84,7 @@ class MonatFlexshipListingController{
 					data.successfulActions &&
 					data.successfulActions.indexOf('public:order.create') > -1
 				) {
+					this.monatService.setNewlyCreatedFlexship(data.orderTemplate); 
 				    this.monatService.redirectToProperSite('/flexship-flow');
 				} else{
 					throw(data);
