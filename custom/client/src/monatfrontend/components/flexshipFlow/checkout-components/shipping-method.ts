@@ -33,7 +33,6 @@ class FlexshipCheckoutShippingMethodController {
     }
     
     private onNewStateReceived = (state: FlexshipCheckoutState) => {
-		console.info("checkout-step--> shippingMethod, on-new-state", state);
 		this.currentState = state;
 	}
 
@@ -84,4 +83,3 @@ class FlexshipCheckoutShippingMethod {
 export {
 	FlexshipCheckoutShippingMethod
 };
-
