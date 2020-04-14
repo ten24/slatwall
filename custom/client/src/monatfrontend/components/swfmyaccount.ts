@@ -48,6 +48,7 @@ class swfAccountController {
     public isNotProfileImagesChoosen:boolean = false;
     public purchasePlusTotal:number;
     public listPrice:number;
+    public orderFees:number;
     
     // @ngInject
     constructor(
@@ -254,6 +255,9 @@ class swfAccountController {
                 for(let item of this.orderItems as Array<any>){
                     this.orderItemTotal += item.quantity;
                     this.listPrice += item.calculatedListPrice;
+                    if(item.sku_product_productType_systemCode == 'VIPCustomerRegistr'){
+                        this.orderFees = item.calculatedExtendedPriceAfterDiscount;
+                    }
                 }
             }
             
