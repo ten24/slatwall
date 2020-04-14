@@ -1,4 +1,4 @@
-import { FlexshipSteps } from '@Monat/components/flexshipFlow/flexshipFlow';
+import { FlexshipSteps, FlexshipFLowEvents } from '@Monat/components/flexshipFlow/flexshipFlow';
 import { FlexshipCheckoutState, FlexshipCheckoutStore } from '@Monat/states/flexship-checkout-store';
 
 import { MonatService } from '@Monat/services/monatservice';
@@ -20,10 +20,11 @@ class FlexshipCheckoutStepController {
 	public newAccountPaymentMethod = {
 		
 	};
-
 	//@ngInject
 	constructor(
 		private ModalService,
+		private rbkeyService,
+		private observerService,
 		private monatService: MonatService,
 		private payPalService: PayPalService,
 		private monatAlertService: MonatAlertService,
@@ -32,15 +33,48 @@ class FlexshipCheckoutStepController {
 	) {}
 
 	public $onInit = () => {
+		
+		this.observerService.attach(this.finalizeCheckout, FlexshipFLowEvents.ON_FINALIZE );
 		this.setupStateChangeListeners();
 		
-		//TODO: refactor into FlexshipCheckoutStore, and make these lazy
-		this.monatService.getOptions({'expirationMonthOptions':false, 'expirationYearOptions': false}) 
-    	.then( (options) => {
+		
+		this.orderTemplateService 
+		//don't like this, instead of making a trip to the server we should cache at the frontend;
+		.getSetOrderTemplateOnSession('', 'save', false, false)
+		.then( response => {
+			this.flexshipCheckoutStore.dispatch('SET_CURRENT_FLEXSHIP', {
+				flexship: response.ordertemplate
+			})
+		})
+		.then( () => this.monatService.getOptions({'expirationMonthOptions':false, 'expirationYearOptions': false}) )
+    	.then( options => {
     		this.expirationMonthOptions = options.expirationMonthOptions;
     		this.expirationYearOptions = options.expirationYearOptions;
-    	});
+    	})
+    	.catch( e => {
+    		this.monatAlertService.showErrorsFromResponse(e);
+    	})
 	};
+	
+	
+	public finalizeCheckout(){
+		this.orderTemplateService.updateOrderTemplateShippingAndBilling(
+			this.currentState.flexship.orderTemplateID,
+			this.currentState.selectedShippingMethodID,
+			this.currentState.selectedShippingAddressID,
+			this.currentState.selectedBillingAddressID,
+			this.currentState.selectedPaymentMethodID
+		)
+		.then( res => {
+			if(res?.failureActions?.length){ throw(res); }
+			// this.monatService.redirectToProperSite('/my-account/flexships'); //TODO: flexship-confirmation-page
+			this.monatAlertService.success(this.rbkeyService.rbKey('alert.flexship.updateSucceccfull'));
+			this.flexshipCheckoutStore.dispatch('SET_CURRENT_FLEXSHIP', res.orderTemplate);
+		})
+		.catch( (error) => {
+	        this.monatAlertService.showErrorsFromResponse(error);
+        });
+	}
 	
 	
 	public configurePayPal = () => {
@@ -60,27 +94,22 @@ class FlexshipCheckoutStepController {
 			this.orderTemplateService.getFlattenObject(payload)
 		)
         .then( (response) => {
-        	
-	        if(response.newAccountPaymentMethod) {
-				this.currentState.accountPaymentMethods.push(response.newAccountPaymentMethod);
-				this.flexshipCheckoutStore.dispatch('SET_PAYMENT_METHODS', {
-					accountPaymentMethods : this.currentState.accountPaymentMethods
-				});
-	    		this.setSelectedPaymentMethodID(response.newAccountPaymentMethod.accountPaymentMethodID);
-	        } else {
-	        	throw response;
-	        }
+	        if(!response.newAccountPaymentMethod)  throw response;
+	        
+			this.currentState.accountPaymentMethods.push(response.newAccountPaymentMethod);
+			this.flexshipCheckoutStore.dispatch('SET_PAYMENT_METHODS', {
+				accountPaymentMethods : this.currentState.accountPaymentMethods
+			});
+    		this.setSelectedPaymentMethodID(response.newAccountPaymentMethod.accountPaymentMethodID);
 	        
         })
         .catch( (error) => {
 	        this.monatAlertService.showErrorsFromResponse(error);
-        }).finally(()=>{
-            this.newAccountPaymentMethod = false;
         });
 		
 	}
 	
-	public cancelAddNewPayment = () =>{
+	public closeAddNewPaymentForm = () =>{
 		// doing this will reopen the form if there's no payment-methods
 		// otherwise will fallback to either previously-selected, or best available 
 		this.setSelectedPaymentMethodID(this.flexshipCheckoutStore.selectAPaymentMethod(this.currentState));
@@ -157,14 +186,20 @@ class FlexshipCheckoutStepController {
     public showNewAddressForm = () => {
         
         if(this.newAddressFormRef) {
-            return this.newAddressFormRef.show();
+            return this.newAddressFormRef?.show?.();
         }
         
 		let bindings = {
 			onSuccessCallback: this.onAddNewAccountAddressSuccess,
 			onFailureCallback: this.onAddNewAccountAddressFailure,
-			formHtmlID: Math.random().toString(36).replace('0.', 'new_billing_address_form' || '')
+			formHtmlId: Math.random().toString(36).replace('0.', 'newbillingaddressform' || '')
 		};
+		
+		// sometimes concurrent calls to this function (caused by concurrent api response), 
+		// creates multiple instance of the modal, as the show-modal function is async 
+		// and waits for angular to load the template from network
+		// to prevent that, we're populating this.newAddressFormRef with some temp-data
+		this.newAddressFormRef = bindings.formHtmlId;
 		
 		this.ModalService.showModal({
 			component: 'accountAddressForm',
@@ -183,14 +218,14 @@ class FlexshipCheckoutStepController {
 			this.newAddressFormRef = component.element;
 		})
 		.catch((error) => {
+			this.newAddressFormRef = undefined;
 			console.error('unable to open new-billing-account-address-form :', error);
 		});
 	};
 	
 	private hideNewAddressForm(){
-	    this.newAddressFormRef?.hide();
+	    this.newAddressFormRef?.hide?.();
 	}
-	
 	
 	// *****************. Helpers  .***********************//
 	public formatAddress = (accountAddress):string =>{

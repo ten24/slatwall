@@ -33,4 +33,9 @@ devConfig.resolve.modules= [
     path.resolve(__dirname, 'src/'),
     'node_modules'
 ];
+
+devConfig.resolve.alias =  {
+      '@Monat': path.resolve(path.join(customPath, './'), 'src/monatfrontend/')
+};
+
 module.exports = devConfig;

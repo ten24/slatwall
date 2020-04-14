@@ -1,3 +1,5 @@
+import { MonatService } from './monatservice';
+
 export class OrderTemplateService { 
    
    private orderTemplateTypeID:string='';
@@ -13,7 +15,8 @@ export class OrderTemplateService {
         public $hibachi,
         public $rootScope,
         public publicService,
-        public $q
+        public $q,
+        private monatService
     ){
 
    } 
@@ -143,6 +146,28 @@ export class OrderTemplateService {
        return this.requestService
                   .newPublicRequest('?slatAction=api:public.activateOrderTemplate', data)
                   .promise;
+    }
+    
+    public updateOrderTemplateShippingAndBilling = ( 
+        orderTemplateID,
+        shippingMethodID, 
+        shippingAccountAddressID, 
+        billingAccountAddressID, 
+        accountPaymentMethodID
+    ) => {
+        
+        let payload =  { 
+			'orderTemplateID'              : orderTemplateID,
+			'shippingMethodID'             : shippingMethodID,
+			'shippingAccountAddress.value' : shippingAccountAddressID,
+			'billingAccountAddress.value'  : billingAccountAddressID,
+			'accountPaymentMethod.value'   : accountPaymentMethodID
+          }
+          
+        return this.requestService.newPublicRequest(
+                    this.monatService.getProperURL('api:public.updateOrderTemplateShippingAndBilling'),
+                    this.getFlattenObject(payload)
+                ).promise;
     }
     
   

@@ -166,7 +166,7 @@ export class FlexshipCheckoutStore extends NgStore<FlexshipCheckoutState, Flexsh
 		
 		// only select a payment-method when user has passed a real-id
 		// we stil want to show previously-select-item(if any) and user clicks on cancel on new-address-form
-		if( newPaymentMethodID && newPaymentMethodID !== 'new' && state.selectedShippingAddressID != newPaymentMethodID ){ 
+		if( newPaymentMethodID && newPaymentMethodID !== 'new' && state.selectedPaymentMethodID != newPaymentMethodID ){ 
 			state.selectedPaymentMethodID = newPaymentMethodID;
 		}
 		

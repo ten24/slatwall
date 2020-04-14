@@ -83,17 +83,21 @@ class FlexshipCheckoutShippingAddressController {
     public showNewAddressForm = (accountAddress?) => {
         
         if(this.newAddressFormRef) {
-            return this.newAddressFormRef.show();
+            return this.newAddressFormRef?.show?.();
         }
         
 		let bindings = {
 			onSuccessCallback: this.onAddNewAccountAddressSuccess,
 			onFailureCallback: this.onAddNewAccountAddressFailure,
+			formHtmlId: Math.random().toString(36).replace('0.', 'newshippingaddressform' || '')
 		};
 		
-		if(accountAddress){
-		    bindings['accountAddress'] = accountAddress;
-		}
+		// sometimes concurrent calls to this function (caused by concurrent api response), 
+		// creates multiple instance of the modal, as the show-modal function is async 
+		// and waits for angular to load the template from network
+		// to prevent that, we're populating this.newAddressFormRef with some temp-data
+		this.newAddressFormRef = bindings.formHtmlId;
+		
 		
 		this.ModalService.showModal({
 			component: 'accountAddressForm',
@@ -111,12 +115,13 @@ class FlexshipCheckoutShippingAddressController {
 			this.newAddressFormRef = component.element;
 		})
 		.catch((error) => {
+			this.newAddressFormRef = undefined;
 			console.error('unable to open new-account-address-form :', error);
 		});
 	};
 	
 	private hideNewAddressForm(){
-	    this.newAddressFormRef?.hide();
+	    this.newAddressFormRef?.hide?.();
 	}
 
 }

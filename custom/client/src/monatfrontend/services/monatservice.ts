@@ -348,6 +348,13 @@ export class MonatService {
 		this.$window.location.href = redirectUrl;
 	}
 	
+	/**
+	 * getProeperURL('api:main:whatever') 
+	*/ 
+	public getProperURL(action:string){
+		`${hibachiConfig.baseURL}?${hibachiConfig.action}=${action}`
+	}
+	
 	public formatAccountAddress(accountAddress): string{
 		return `
         		${accountAddress?.accountAddressName} 

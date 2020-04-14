@@ -7,6 +7,12 @@ export enum FlexshipSteps{
 	CHECKOUT	
 }
 
+export enum FlexshipFLowEvents {
+	ON_NEXT = 'onFlexshipFlowNext',
+	ON_BACK = 'onFlexshipFlowBack',
+	ON_FINALIZE = 'onFlexshipFlowFinalDestiation'
+}
+
 class FlexshipFlowController {
 	public FlexshipSteps = FlexshipSteps; 
 	public currentStep = FlexshipSteps.CHECKOUT;
@@ -18,7 +24,8 @@ class FlexshipFlowController {
     constructor(
     	public publicService,
     	public orderTemplateService,
-    	private monatService: MonatService
+    	private monatService: MonatService,
+    	public observerService
     ) {
     
     	
@@ -80,6 +87,13 @@ class FlexshipFlowController {
 	
 	
 	private setStepAndUpdateProgress(step:FlexshipSteps):FlexshipSteps{
+		
+		if(this.currentStep === step && step === FlexshipSteps.CHECKOUT){
+			this.observerService.notify( FlexshipFLowEvents.ON_FINALIZE );
+
+		}
+		
+		
 		this.updateProgress(step);
 		return this.currentStep = step;
 

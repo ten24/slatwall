@@ -1879,6 +1879,39 @@ component  accessors="true" output="false"
 	    var orderTemplates = orderTemplateCollection.getPageRecords(); 
  		arguments.data['ajaxResponse']['orderTemplate'] = arrayLen(orderTemplates) ? orderTemplates[1] : []; // there should be only one record;  
 	}
+	
+	
+	
+	public void function updateOrderTemplateShippingAndBilling(required any data){
+	    param name="arguments.data.orderTemplateID" default="";
+	
+     	var orderTemplate = getOrderService().getOrderTemplateForAccount(argumentCollection = arguments);
+		if( isNull(orderTemplate) ) {
+			return; 
+		}
+		
+		orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'updateShipping'); 
+        var processObject = orderTemplate.getProcessObject('UpdateShipping');
+        orderTemplate.addErrors( processObject.getErrors() );
+        getHibachiScope().addActionResult( "public:updateOrderTemplateShipping", orderTemplate.hasErrors() );
+        
+        if(!orderTemplate.hasErrors() && !getHibachiScope().getORMHasErrors() && !processObject.hasErrors() ) {
+            getHibachiScope().flushORMSession(); //flushing to make new data availble
+        }
+        
+		orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'updateBilling'); 
+        processObject = orderTemplate.getProcessObject('UpdateBilling');
+        orderTemplate.addErrors( processObject.getErrors() );
+        getHibachiScope().addActionResult( "public:updateOrderTemplateBilling", orderTemplate.hasErrors() );
+
+        if(!orderTemplate.hasErrors() && !getHibachiScope().getORMHasErrors() && !processObject.hasErrors() ) {
+    		getHibachiScope().flushORMSession(); //flushing to make new data availble
+        }
+        
+        setOrderTemplateAjaxResponse(argumentCollection = arguments);
+        addErrors(arguments.data, orderTemplate.getErrors());
+        
+	}
 
 
  	public void function updateOrderTemplateShipping(required any data){ 

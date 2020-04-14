@@ -3,7 +3,7 @@ import { MonatAlertService } from '@Monat/services/monatAlertService';
 
 class AccountAddressFormController {
 	public close;
-	public formHtmlID;
+	public formHtmlId;
 	
 	//callback
 	public onSubmitCallback;
@@ -25,7 +25,7 @@ class AccountAddressFormController {
     
     public $onInit = () => {
     	
-    	if(!this.formHtmlID) this.formHtmlID = Math.random().toString(36).replace('0.', 'new_account_address_form' || '');
+    	if(!this.formHtmlId) this.formHtmlId = Math.random().toString(36).replace('0.', 'newaccountaddressform' || '');
     	
     	this.loading=true;
     	this.monatService.getStateCodeOptionsByCountryCode()
@@ -94,7 +94,7 @@ class AccountAddressForm {
 	
 	public bindToController = {
 		close: "=", //injected via modal-service
-		formHtmlID:"<?",
+		formHtmlId:"<?",
 		accountAddress: '<?',
 	    
 	    // we can tap into this to get/update the form-data, before the api-call, 
