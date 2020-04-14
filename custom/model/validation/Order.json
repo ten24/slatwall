@@ -49,7 +49,7 @@
 	"properties": {
 		"orderCreatedSite": [{"contexts":"save","method":"orderCreatedSiteMatchesAccountCreatedSite"},
 				{ "conditions":"isMarketPartnerNonEnrollmentSalesOrder","contexts": "save", "method": "MarketPartnerValidationMaxOrdersPlaced" },
-				{ "conditions":"isMarketPartnerNonEnrollmentSalesOrder","contexts": "save", "method": "MarketPartnerValidationMaxProductPacksPurchased" }
+				{ "conditions":"isMarketPartnerSalesOrder","contexts": "save", "method": "MarketPartnerValidationMaxProductPacksPurchased" }
 			],
 		"orderStatusType": [ { "contexts": "edit", "method": "isNotClosed" }],
 		"orderItems":[{"conditions":"mpEnrollmentOrder","contexts":"placeOrder","method":"hasProductPackOrderItem"}],
