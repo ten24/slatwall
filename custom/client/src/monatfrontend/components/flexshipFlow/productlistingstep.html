@@ -6,8 +6,8 @@
 	<div class="mx-5 my-3 ">
 	    <div>
 	    	<!---TODO: call for component ---->
-			<h1>Today's Order</h1>
-	        <div class="text-grey">HELLO WORLD</div>
+			<h1 ng-bind-html="flexshipFlow.muraData.plTitle"></h1> 
+	        <div class="text-grey"><div ng-bind-html="flexshipFlow.muraData.plBody"></div></div>
 	    </div>
 	</div>
     
@@ -61,7 +61,7 @@
 					currency-code="slatwall.cart.currencyCode" 
 					all-products="productController.productList" 
 					type="flexship"
-					order-template="productListingStep.orderTemplateService.mostRecentOrderTemplate.orderTemplateID"
+					order-template="productListingStep.orderTemplateService.currentOrderTemplateID"
 					product="item" 
 					index="{{$index}}"
 				></monat-product-card>

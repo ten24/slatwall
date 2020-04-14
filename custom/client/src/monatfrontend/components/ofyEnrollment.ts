@@ -4,12 +4,18 @@ class OFYEnrollmentController {
 	public products:Array<{[key:string]:any}>;
 	public stagedProductID:string;
 	public loading:boolean;
+	public endpoint: 'getOFYProductsForOrder' | 'getOrderTemplatePromotionSkus' = 'getOFYProductsForOrder';
+	public action: 'addOrderTemplateItem' | 'addOrderItem' = 'addOrderItem';
 	
 	//@ngInject
 	constructor( public observerService, public publicService, public orderTemplateService, public ModalService) {
 	}
 
 	public $onInit = () => {
+		if(this.flexship){
+			this.endpoint = 'getOrderTemplatePromotionSkus';
+			this.action = 'addOrderTemplateItem';
+		}
 		this.getPromotionSkus()
 	}
 
@@ -20,8 +26,8 @@ class OFYEnrollmentController {
 			pageRecordsShow: 20,
 		}
 		
-		this.publicService.doAction('getOFYProductsForOrder').then( result => {
-			this.products = result.ofyProducts;
+		this.publicService.doAction(this.endpoint, data).then( result => {
+			this.products = result.ofyProducts ? result.ofyProducts : result.orderTemplatePromotionSkus;
 			this.loading = false;
 		});
 	}
@@ -31,9 +37,10 @@ class OFYEnrollmentController {
 		
 		let data ={
 			skuID: this.stagedProductID,
+			orderTemplateID:this.flexship
         }
         
-		this.publicService.doAction('addOrderItem', data ).then(res=>{
+		this.publicService.doAction(this.action, data ).then(res=>{
 			this.observerService.notify('onNext');	
 			this.loading = false;
 		});
@@ -73,7 +80,6 @@ class OFYEnrollment{
 	public restrict: string = 'E';
 	public transclude: boolean = true;
 	public templateUrl: string;
-	public scope = {};
 	public bindToController = {
 		flexship: '<?',
 	};
