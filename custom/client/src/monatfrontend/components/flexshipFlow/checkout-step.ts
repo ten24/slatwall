@@ -47,7 +47,7 @@ class FlexshipCheckoutStepController {
 			})
 		})
 		.then( () => this.monatService.getOptions({'expirationMonthOptions':false, 'expirationYearOptions': false}) )
-    	.then( options => {
+    	.then( (options) => {
     		this.expirationMonthOptions = options.expirationMonthOptions;
     		this.expirationYearOptions = options.expirationYearOptions;
     	})

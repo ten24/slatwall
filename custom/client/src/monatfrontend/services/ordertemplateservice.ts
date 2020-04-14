@@ -121,7 +121,6 @@ export class OrderTemplateService {
 					this.canPlaceOrderFlag = res.orderTemplate.canPlaceOrderFlag;
 					this.mostRecentOrderTemplate = res.orderTemplate;
 				}
-
 				deferred.resolve(res);
 			})
 			.catch((e) => {
@@ -414,11 +413,10 @@ export class OrderTemplateService {
 				if (res.orderTemplate && typeof res.orderTemplate == 'string') {
 					this.currentOrderTemplateID = res.orderTemplate;
 				} else if (res.orderTemplate) {
-					
 					this.currentOrderTemplateID = res.orderTemplate.orderTemplateID;
 					this.mostRecentOrderTemplate = res.orderTemplate;
 					this.canPlaceOrderFlag = res.orderTemplate.canPlaceOrderFlag;
-					
+
 					let promoArray = this.mostRecentOrderTemplate.appliedPromotionMessagesJson?.length
 						? JSON.parse(this.mostRecentOrderTemplate.appliedPromotionMessagesJson)
 						: [];

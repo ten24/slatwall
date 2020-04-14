@@ -275,34 +275,28 @@ export class MonatService {
 	};
 
 	public addEditAccountAddress(payload) {
-		return this.publicService.doAction('addEditAccountAddress', payload);
+		return this.doAction('addEditAccountAddress', payload);
 	}
 
 	public getAccountAddresses() {
 		let deferred = this.$q.defer<any>();
-		this.publicService
-			.doAction('getAccountAddresses')
+		this.doAction('getAccountAddresses')
 			.then((data) => {
-				if (data?.accountAddresses) deferred.resolve(data);
-				else throw data;
+				if (!data?.accountAddresses) throw data;
+				deferred.resolve(data);
 			})
-			.catch((e) => {
-				deferred.reject(e);
-			});
+			.catch((e) => deferred.reject(e) );
 		return deferred.promise;
 	}
 
 	public getAccountPaymentMethods() {
 		let deferred = this.$q.defer<any>();
-		this.publicService
-			.doAction('getAccountPaymentMethods')
+		this.doAction('getAccountPaymentMethods')
 			.then((data) => {
-				if (data?.accountPaymentMethods) deferred.resolve(data);
-				else throw data;
+				if (!data?.accountPaymentMethods) throw data;
+				deferred.resolve(data);
 			})
-			.catch((e) => {
-				deferred.reject(e);
-			});
+			.catch((e) => deferred.reject(e));
 		return deferred.promise;
 	}
 
@@ -313,17 +307,18 @@ export class MonatService {
 		let cacheKey = `stateCodeOptions_${countryCode}`;
 		let deferred = this.$q.defer<any>();
 
-		if (refresh || this.localStorageCache.get(cacheKey)) {
+		if (refresh || !this.localStorageCache.get(cacheKey)) {
 			this.doAction('getStateCodeOptionsByCountryCode', { countryCode: countryCode })
-				.then((data: any) => {
+				.then((data) => {
 					if (!data?.stateCodeOptions) throw data;
+
 					this.localStorageCache.put(cacheKey, {
 						stateCodeOptions: data.stateCodeOptions,
 						addressOptions: data.addressOptions,
 					});
 					deferred.resolve(data);
 				})
-				.catch(deferred.reject);
+				.catch((e) => deferred.reject(e));
 		} else {
 			deferred.resolve(this.localStorageCache.get(cacheKey));
 		}
@@ -342,12 +337,11 @@ export class MonatService {
 
 	/**
 	 * doAction('actionName', ?{....whatever-data...})
-	*/
- 
+	 */
+
 	public doAction(action: string, data?: any): ng.IPromise<any> {
 		return this.requestService.newPublicRequest(this.createPublicAction(action), data).promise;
 	}
-	
 
 	/**
 	 * getProeperURL('WHATEVER') ==> /Slatwall/?slatAction=api:main:WHATEVER
