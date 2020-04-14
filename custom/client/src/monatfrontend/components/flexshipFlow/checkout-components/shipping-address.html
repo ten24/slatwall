@@ -1,11 +1,11 @@
-<div class="new_address" ng-cloak>
+<div class="new_address">
     <section class="shipping-page">
     	<div class="container">
            	<div class="shipping_sec mb-5">
         		<h2 class="checkout-heading">Where do you like your items shiped?</h2>
     		    
     		    <!---Existing shipping address --->
-				<div class="shipping-options">
+				<div class="shipping-options"  ng-cloak>
 					<ul ng-if="!flexshipCheckoutShippingAddress.currentState.showNewShippingAddressForm">
 						<li ng-repeat="accountAddress in flexshipCheckoutShippingAddress.currentState.accountAddresses">
 							<div
@@ -48,7 +48,7 @@
 				</div>
 				
 				<!--  new Address form will get injected here, because data-attributes are hard to maintain :)-->
-				<div id="shipping-new-account-address-form"></div>
+				<div id="shipping-new-account-address-form" ></div>
 				
 			</div>
 		</div>

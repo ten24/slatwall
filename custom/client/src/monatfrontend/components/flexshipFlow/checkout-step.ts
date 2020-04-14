@@ -42,8 +42,8 @@ class FlexshipCheckoutStepController {
 		//instead of making a trip to the server we should cache at the frontend;
 		.getSetOrderTemplateOnSession('', 'save', false, false)
 		.then( response => {
-			this.flexshipCheckoutStore.dispatch('SET_CURRENT_FLEXSHIP', {
-				flexship: response.ordertemplate
+			this.flexshipCheckoutStore.dispatch('SET_CURRENT_FLEXSHIP', (state) => {
+				return this.flexshipCheckoutStore.setFlexshipReducer(state, response.orderTemplate);
 			})
 		})
 		.then( () => this.monatService.getOptions({'expirationMonthOptions':false, 'expirationYearOptions': false}) )
@@ -61,22 +61,30 @@ class FlexshipCheckoutStepController {
 		
 		//TODO: rb-keys
 		if(!this.currentState.selectedShippingAddressID){
-			this.monatAlertService.error("Please select a shipping address");
+			this.monatAlertService.error(
+					this.rbkeyService.rbKey('alert.frontend.pleseSelectAShippingAddress')
+				);
 			return false;
 		}
 		
 		if(!this.currentState.selectedShippingMethodID){
-			this.monatAlertService.error("Please select a shipping method");
+			this.monatAlertService.error(
+					this.rbkeyService.rbKey('alert.frontend.pleseSelectAShippingMethod')
+				);
 			return false;
 		}
 		
 		if(!this.currentState.selectedBillingAddressID){
-			this.monatAlertService.error("Please select a billing address");
+			this.monatAlertService.error(
+					this.rbkeyService.rbKey('alert.frontend.pleseSelectABillingAddress')
+				);
 			return false;
 		}
 		
 		if(!this.currentState.selectedPaymentMethodID){
-			this.monatAlertService.error("Please select a payment method");
+			this.monatAlertService.error(
+					this.rbkeyService.rbKey('alert.frontend.pleseSelectAPaymentMethod')
+				);
 			return false;
 		}
 		return true;
@@ -97,9 +105,12 @@ class FlexshipCheckoutStepController {
 		)
 		.then( res => {
 			if(res?.failureActions?.length){ throw(res); }
-			// this.monatService.redirectToProperSite('/my-account/flexships'); //TODO: flexship-confirmation-page
+			
 			this.monatAlertService.success( this.rbkeyService.rbKey('alert.flexship.updateSucceccfull') );
 			this.flexshipCheckoutStore.dispatch('SET_CURRENT_FLEXSHIP', res.orderTemplate);
+		
+			//TODO: Redirect to the next screen
+			this.monatService.redirectToProperSite('/my-account/flexships');
 		})
 		.catch( (error) => {
 	        this.monatAlertService.showErrorsFromResponse(error);

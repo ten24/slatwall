@@ -137,6 +137,17 @@ export class FlexshipCheckoutStore extends NgStore<FlexshipCheckoutState, Flexsh
 		// });
 	}
 	
+	public setFlexshipReducer(state: FlexshipCheckoutState, flexship){
+		state.flexship = flexship;
+		state = this.setSelectedShippingAddressIDReducer(state, state.selectedShippingAddressID);
+		state = this.setSelectedBillingAddressIDReducer(state, state.selectedBillingAddressID);
+		state = this.setSelectedPaymentMethodIDReducer(state, state.selectedPaymentMethodID);
+		state = this.setSelectedBillingAddressIDReducer(state, state.selectedBillingAddressID);
+		state.selectedShippingMethodID = this.selectAShippingMethod(state, state.selectedShippingMethodID);
+		return state;	
+	}
+
+	
 	public setSelectedShippingAddressIDReducer(state: FlexshipCheckoutState, newAddressID: string){
 		
 		// only select an accountAddressID when user has passed a real-id

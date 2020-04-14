@@ -10,8 +10,8 @@ export enum FlexshipSteps{
 }
 
 export enum FlexshipFlowEvents {
-	ON_NEXT = 'onFlexshipFlowNext',
-	ON_BACK = 'onFlexshipFlowBack',
+	ON_NEXT = 'onNext',
+	ON_BACK = 'onBack',
 	ON_COMPLETE_CHECKOUT = 'onFlexshipFlowFinalDestiation',
 	ON_COMPLETE_CHECKOUT_SUCCESS = 'onFlexshipFlowFinalDestiationSuccess',
 	ON_COMPLETE_CHECKOUT_FAILURE = 'onFlexshipFlowFinalDestiationFailure'

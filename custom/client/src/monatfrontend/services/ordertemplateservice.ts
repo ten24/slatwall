@@ -1,4 +1,5 @@
 import { MonatService } from './monatservice';
+import { PublicService } from '@Hibachi/core/core.module';
 
 export class OrderTemplateService {
 	private orderTemplateTypeID: string = '';
@@ -9,7 +10,11 @@ export class OrderTemplateService {
 	public currentOrderTemplateID: string;
 
 	//@ngInject
-	constructor(public $q: ng.IQService, public $rootScope: ng.IScope, public monatService: MonatService) {}
+	constructor(
+		public $q: ng.IQService, 
+		public monatService: MonatService, 
+		public publicService: PublicService
+	) {}
 
 	/**
 	 * This function is being used to fetch flexships and wishLists
@@ -41,7 +46,7 @@ export class OrderTemplateService {
 			};
 
 			this.monatService
-				.doAction('?slatAction=api:public.getordertemplates', data)
+				.doAction('getordertemplates', data)
 				.then((result) => {
 					// TODO additional checks to make sure it's a successful response
 					this.cachedGetOrderTemplatesResponse = result;
@@ -306,11 +311,11 @@ export class OrderTemplateService {
 			quantity: quantity,
 		};
 
-		return this.$rootScope.hibachiScope.doAction('addItemAndCreateWishlist', data);
+		return this.publicService.doAction('addItemAndCreateWishlist', data);
 	};
 
 	public deleteOrderTemplateItem = (orderTemplateItemID) => {
-		return this.$rootScope.hibachiScope.doAction('deleteOrderTemplateItem', {
+		return this.publicService.doAction('deleteOrderTemplateItem', {
 			orderTemplateItemID: orderTemplateItemID,
 		});
 	};
@@ -370,22 +375,22 @@ export class OrderTemplateService {
 	};
 
 	public createOrderTemplate = (orderTemplateSystemCode, context = 'save', setOnHibachiScopeFlag = false) => {
-		return this.$rootScope.hibachiScope.doAction('createOrderTemplate', {
+		return this.publicService.doAction('createOrderTemplate', {
 			orderTemplateSystemCode: orderTemplateSystemCode,
 			saveContext: context,
-			returnJSONObjects: '',
+			returnJsonObjects: '',
             setOnHibachiScopeFlag: setOnHibachiScopeFlag
 		});
 	};
 
 	public getOrderTemplatesLight = (orderTemplateTypeID = '2c9280846b712d47016b75464e800014') => {
-		return this.monatService.doAction('getAccountOrderTemplateNamesAndIDs', {
+		return this.publicService.doAction('getAccountOrderTemplateNamesAndIDs', {
 			ordertemplateTypeID: orderTemplateTypeID,
 		});
 	};
 
 	public getOrderTemplateSettings() {
-		return this.monatService.doAction('getDaysToEditOrderTemplateSetting');
+		return this.publicService.doAction('getDaysToEditOrderTemplateSetting');
 	}
 
 	public deleteOrderTemplate(orderTemplateID) {
@@ -405,10 +410,10 @@ export class OrderTemplateService {
 			setIfNullFlag: setIfNullFlag,
 			optionalProperties: optionalProperties,
 			nullAccountFlag: nullAccountFlag,
-			returnJSONObjects: '',
+			returnJsonObjects: '',
 		};
 
-		this.monatService
+		this.publicService
 			.doAction('getSetFlexshipOnSession', data)
 			.then((res) => {
 				if (res.orderTemplate && typeof res.orderTemplate == 'string') {

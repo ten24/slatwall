@@ -275,7 +275,7 @@ export class MonatService {
 	};
 
 	public addEditAccountAddress(payload) {
-		return this.doAction('addEditAccountAddress', payload);
+		return this.publicService.doAction('addEditAccountAddress', payload);
 	}
 
 	public getAccountAddresses() {
