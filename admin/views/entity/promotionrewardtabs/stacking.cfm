@@ -68,18 +68,24 @@ Notes:
 <cfset local.includeRewardCollection.addFilter('rewardType',local.includeRewardType) />
 <cfset local.includeRewardCollection.addFilter('promotionRewardID',rc.promotionReward.getPromotionRewardID(),"!=") />
 <cfset local.includeRewardCollection.addFilter('promotionPeriod.promotion.activeFlag',"true") />
-<cfset local.includeRewardCollection.addFilter('promotionPeriod.endDateTime',now(),'>=') />
+<cfset local.includeRewardCollection.addFilter(propertyIdentifier='promotionPeriod.endDateTime',value='#now()#',comparisonOperator='>=',filterGroupAlias="endDateTime") />
+<cfset local.includeRewardCollection.addFilter(propertyIdentifier='promotionPeriod.endDateTime',value='null',comparisonOperator="IS",logicalOperator="OR",filterGroupAlias="endDateTime") />
+<cfset local.includeRewardCollection.addFilter(propertyIdentifier='promotionPeriod.startDateTime',value='#now()#',comparisonOperator='<=',filterGroupAlias="startDateTime") />
+<cfset local.includeRewardCollection.addFilter(propertyIdentifier='promotionPeriod.startDateTime',value='null',comparisonOperator="IS",logicalOperator="OR", filterGroupAlias="startDateTime") />
 <cfif !isNull(rc.promotionPeriod.getPromotion().getSite()) >
     <cfset local.includeRewardCollection.addFilter(propertyIdentifier='promotionPeriod.promotion.site.siteID',value="#rc.promotionPeriod.getPromotion().getSite().getSiteID()#",filterGroupAlias="site") />
-    <cfset local.includeRewardCollection.addFilter(propertyIdentifier='promotionPeriod.promotion.site.siteID',value="null",logicalOperator="OR",filterGroupAlias="site") />
+    <cfset local.includeRewardCollection.addFilter(propertyIdentifier='promotionPeriod.promotion.site.siteID',value="null",comparisonOperator="IS", logicalOperator="OR",filterGroupAlias="site") />
 </cfif>
 
 <cfset local.excludeRewardCollection = $.slatwall.getService('PromotionService').getPromotionRewardCollectionList() />
 <cfset local.excludeRewardCollection.setDisplayProperties('promotionPeriod.promotion.promotionName,promotionPeriod.promotionPeriodName,amountType,amount',{isVisible:true}) />
 <cfset local.excludeRewardCollection.addDisplayProperty(displayProperty="promotionRewardID",columnConfig={isVisible:false}) >
 <cfset local.excludeRewardCollection.addFilter('rewardType',local.excludeRewardType) />
-<cfset local.includeRewardCollection.addFilter('promotionPeriod.promotion.activeFlag',"true") />
-<cfset local.includeRewardCollection.addFilter('promotionPeriod.endDateTime',now(),'>=') />
+<cfset local.excludeRewardCollection.addFilter('promotionPeriod.promotion.activeFlag',"true") />
+<cfset local.excludeRewardCollection.addFilter(propertyIdentifier='promotionPeriod.endDateTime',value='#now()#',comparisonOperator='>=',filterGroupAlias="endDateTime") />
+<cfset local.excludeRewardCollection.addFilter(propertyIdentifier='promotionPeriod.endDateTime',value='null',comparisonOperator="IS",logicalOperator="OR",filterGroupAlias="endDateTime") />
+<cfset local.excludeRewardCollection.addFilter(propertyIdentifier='promotionPeriod.startDateTime',value='#now()#',comparisonOperator='<=',filterGroupAlias="startDateTime") />
+<cfset local.excludeRewardCollection.addFilter(propertyIdentifier='promotionPeriod.startDateTime',value='null',comparisonOperator="IS",logicalOperator="OR", filterGroupAlias="startDateTime") />
 <cfif !isNull(rc.promotionPeriod.getPromotion().getSite()) >
     <cfset local.excludeRewardCollection.addFilter(propertyIdentifier='promotionPeriod.promotion.site.siteID',value="#rc.promotionPeriod.getPromotion().getSite().getSiteID()#",filterGroupAlias="site") />
     <cfset local.excludeRewardCollection.addFilter(propertyIdentifier='promotionPeriod.promotion.site.siteID',value="null",logicalOperator="OR",filterGroupAlias="site") />
