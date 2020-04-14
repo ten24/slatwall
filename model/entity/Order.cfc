@@ -2384,12 +2384,10 @@ public numeric function getPersonalVolumeSubtotal(){
 	 	
 	 	var site = this.getOrderCreatedSite();
 	 	if(isNull(site) || site.getSiteCode() != 'mura-uk'){
-	 		writeDump('YO!');
 	 	    return true; 
 	 	} 
 	 	
 	 	var accountType = this.getAccountType();
-	 	
 	 	if(isNull(accountType) || accountType != 'marketPartner'){
 	 		return true;
 	 	}
