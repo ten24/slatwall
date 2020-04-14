@@ -253,7 +253,7 @@ class swfAccountController {
                 this.listPrice = 0;
                 for(let item of this.orderItems as Array<any>){
                     this.orderItemTotal += item.quantity;
-                    this.listPrice += item.calculatedListPrice;
+                    this.listPrice += (item.calculatedListPrice * item.quantity);
                 }
             }
             
