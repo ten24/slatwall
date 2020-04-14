@@ -104,6 +104,9 @@ Notes:
 				<cfif rc.amountType neq 'percentageOff'>
 					<hb:HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/currencies"/>
 				</cfif>
+				<cfif listFindNoCase( "merchandise,order", rc.rewardType ) >
+					<hb:HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/stacking" />
+				</cfif>
 				<cfif listFindNoCase("merchandise,subscription,contentaccess", rc.rewardType)>
 					<hb:HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/skus" />
 					<cfif rc.amountType EQ "amount">

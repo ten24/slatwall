@@ -18,6 +18,8 @@ export class MonatService {
 	public successfulActions = [];
 	public showAddToCartMessage:boolean;
 	public lastAddedProduct:cartOrderItem;
+	public muraContent = {};
+
 	
 	//@ngInject
 	constructor(

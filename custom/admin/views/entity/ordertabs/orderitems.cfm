@@ -70,7 +70,7 @@ Notes:
 	
 	<cfset orderItemCollectionList.addDisplayProperty(displayProperty='price',columnConfig={ isVisible :true, isSearchable: true, isDeletable: true}) />
 	<cfset orderItemCollectionList.addDisplayProperty(displayProperty='quantity',columnConfig={ isVisible :true, isSearchable: true, isDeletable: true}) />
-	<cfset orderItemCollectionList.addDisplayProperty(displayProperty='calculatedDiscountAmount',columnConfig={ isVisible :true, isSearchable: true, isDeletable: true}) />
+	<cfset orderItemCollectionList.addDisplayProperty(displayProperty='discountAmount',columnConfig={ isVisible :true, isSearchable: true, isDeletable: true}) />
 	<cfset orderItemCollectionList.addDisplayProperty(displayProperty='extendedPrice',columnConfig={ isVisible :true, isSearchable: true, isDeletable: true}) />
 	<cfset orderItemCollectionList.addDisplayProperty(displayProperty='extendedPersonalVolume',columnConfig={ isVisible :true, isSearchable: true, isDeletable: true}) />
 	<cfset orderItemCollectionList.addDisplayProperty(displayProperty='extendedCommissionableVolume',columnConfig={ isVisible :true, isSearchable: true, isDeletable: true}) />
