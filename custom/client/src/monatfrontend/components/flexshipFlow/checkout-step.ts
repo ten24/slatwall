@@ -1,6 +1,6 @@
-import { FlexshipSteps, FlexshipFLowEvents } from '@Monat/components/flexshipFlow/flexshipFlow';
+import { FlexshipSteps, FlexshipFlowEvents } from '@Monat/components/flexshipFlow/flexshipFlow';
 import { FlexshipCheckoutState, FlexshipCheckoutStore } from '@Monat/states/flexship-checkout-store';
-
+import { ObserverService, RbKeyService } from '@Hibachi/core/core.module';
 import { MonatService } from '@Monat/services/monatservice';
 import { OrderTemplateService } from '@Monat/services/ordertemplateservice';
 import { MonatAlertService } from '@Monat/services/monatAlertService';
@@ -23,8 +23,8 @@ class FlexshipCheckoutStepController {
 	//@ngInject
 	constructor(
 		private ModalService,
-		private rbkeyService,
-		private observerService,
+		private rbkeyService: RbKeyService,
+		private observerService: ObserverService,
 		private monatService: MonatService,
 		private payPalService: PayPalService,
 		private monatAlertService: MonatAlertService,
@@ -34,12 +34,12 @@ class FlexshipCheckoutStepController {
 
 	public $onInit = () => {
 		
-		this.observerService.attach(this.finalizeCheckout, FlexshipFLowEvents.ON_FINALIZE );
+		this.observerService.attach(this.onCompleteCheckout, FlexshipFlowEvents.ON_COMPLETE_CHECKOUT );
 		this.setupStateChangeListeners();
 		
 		
 		this.orderTemplateService 
-		//don't like this, instead of making a trip to the server we should cache at the frontend;
+		//instead of making a trip to the server we should cache at the frontend;
 		.getSetOrderTemplateOnSession('', 'save', false, false)
 		.then( response => {
 			this.flexshipCheckoutStore.dispatch('SET_CURRENT_FLEXSHIP', {
@@ -57,7 +57,37 @@ class FlexshipCheckoutStepController {
 	};
 	
 	
-	public finalizeCheckout(){
+	public canCompleteCheckout = () => {
+		
+		//TODO: rb-keys
+		if(!this.currentState.selectedShippingAddressID){
+			this.monatAlertService.error("Please select a shipping address");
+			return false;
+		}
+		
+		if(!this.currentState.selectedShippingMethodID){
+			this.monatAlertService.error("Please select a shipping method");
+			return false;
+		}
+		
+		if(!this.currentState.selectedBillingAddressID){
+			this.monatAlertService.error("Please select a billing address");
+			return false;
+		}
+		
+		if(!this.currentState.selectedPaymentMethodID){
+			this.monatAlertService.error("Please select a payment method");
+			return false;
+		}
+		return true;
+	}
+	
+	public onCompleteCheckout = () => {
+		
+		if(!this.canCompleteCheckout()){
+			return this.observerService.notify(FlexshipFlowEvents.ON_COMPLETE_CHECKOUT_FAILURE);
+		}
+		
 		this.orderTemplateService.updateOrderTemplateShippingAndBilling(
 			this.currentState.flexship.orderTemplateID,
 			this.currentState.selectedShippingMethodID,
@@ -68,11 +98,12 @@ class FlexshipCheckoutStepController {
 		.then( res => {
 			if(res?.failureActions?.length){ throw(res); }
 			// this.monatService.redirectToProperSite('/my-account/flexships'); //TODO: flexship-confirmation-page
-			this.monatAlertService.success(this.rbkeyService.rbKey('alert.flexship.updateSucceccfull'));
+			this.monatAlertService.success( this.rbkeyService.rbKey('alert.flexship.updateSucceccfull') );
 			this.flexshipCheckoutStore.dispatch('SET_CURRENT_FLEXSHIP', res.orderTemplate);
 		})
 		.catch( (error) => {
 	        this.monatAlertService.showErrorsFromResponse(error);
+	        this.observerService.notify(FlexshipFlowEvents.ON_COMPLETE_CHECKOUT_FAILURE);
         });
 	}
 	
@@ -118,16 +149,12 @@ class FlexshipCheckoutStepController {
 	// *****************. States  .***********************//
 	
 	public setSelectedPaymentProvider(selectedPaymentProvider){
-		
-		if(selectedPaymentProvider === this.currentState.selectedPaymentProvider) return;
-	
 		this.flexshipCheckoutStore.dispatch( 'SET_SELECTED_PAYMENT_PROVIDER', {
 			'selectedPaymentProvider': selectedPaymentProvider	
 		});
 	}
 	
 	public setSelectedPaymentMethodID(selectedPaymentMethodID?){
-		
 		this.flexshipCheckoutStore.dispatch( 'SET_SELECTED_PAYMENT_METHOD_ID', (state) => {
 			return this.flexshipCheckoutStore.setSelectedPaymentMethodIDReducer( state, selectedPaymentMethodID);
 		});
@@ -140,7 +167,6 @@ class FlexshipCheckoutStepController {
 	}
 	
 	public setSelectedBillingAddressID(selectedBillingAddressID?){
-		
 		this.flexshipCheckoutStore.dispatch( 'SET_SELECTED_BILLING_ADDRESS_ID', (state) => {
 			return this.flexshipCheckoutStore.setSelectedBillingAddressIDReducer( state, selectedBillingAddressID);
 		});
@@ -149,7 +175,7 @@ class FlexshipCheckoutStepController {
 	private onNewStateReceived = (state: FlexshipCheckoutState) => {
 		this.currentState = state;
 		this.currentState.showNewBillingAddressForm ? this.showNewAddressForm() : this.hideNewAddressForm();
-		console.log("checkout-step, on-new-state", this.currentState);
+		console.log("checkout-step, on-new-state");
 	}
 	
 	private setupStateChangeListeners(){

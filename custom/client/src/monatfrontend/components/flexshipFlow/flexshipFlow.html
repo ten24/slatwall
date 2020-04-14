@@ -14,6 +14,8 @@
 	</div>
 </header>
 
+<toaster-container></toaster-container>
+
 <!--FLEXSHIP FLOW STEPS--->
 <div class="wrapper">
 		<!--Shop step -->
@@ -32,7 +34,7 @@
 		</div>
 		<!--Checkout step -->
 		<div ng-if="flexshipFlow.currentStep  === flexshipFlow.FlexshipSteps.CHECKOUT"> 			
-			<flexship-checkout-step></flexship-checkout-step>
+			<flexship-checkout-step id="checkout"></flexship-checkout-step>
 		</div>
 </div>
 
@@ -141,11 +143,10 @@
 				style="z-index: 1" 
 				data-ng-click="flexshipFlow.next();"
 				class="btn btn-secondary forward-btn forward" 
-				ng-class="{ 
-					disabled: flexshipFlow.currentStep == flexshipFlow.FlexshipSteps.CHECKOUT, 
-				}"
-				ng-disabled="flexshipFlow.currentStep == flexshipFlow.FlexshipSteps.CHECKOUT || !flexshipFlow.orderTemplateService.mostRecentOrderTemplate.qualifiesForOFYProducts"
+				ng-class="{  'loading,disabled': flexshipFlow.loading }"
+				ng-disabled="flexshipFlow.currentStep == flexshipFlow.loading"
 			>
+				<!--|| !flexshipFlow.orderTemplateService.mostRecentOrderTemplate.qualifiesForOFYProducts-->
 				<span sw-rbkey="'frontend.global.next'"></span>
 				<i class="fas fa-chevron-right"></i>
 			</button>			

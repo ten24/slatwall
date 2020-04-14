@@ -1,6 +1,6 @@
 import { MonatService, IOption } from '@Monat/services/monatservice';
 import { OrderTemplateService } from '@Monat/services/ordertemplateservice';
-import { PublicService } from '@Hibachi/core/services/publicservice'
+import { PublicService, ObserverService } from '@Hibachi/core/core.module'
 
 export enum FlexshipSteps{
 	SHOP,
@@ -9,28 +9,34 @@ export enum FlexshipSteps{
 	CHECKOUT	
 }
 
-export enum FlexshipFLowEvents {
+export enum FlexshipFlowEvents {
 	ON_NEXT = 'onFlexshipFlowNext',
 	ON_BACK = 'onFlexshipFlowBack',
-	ON_FINALIZE = 'onFlexshipFlowFinalDestiation'
+	ON_COMPLETE_CHECKOUT = 'onFlexshipFlowFinalDestiation',
+	ON_COMPLETE_CHECKOUT_SUCCESS = 'onFlexshipFlowFinalDestiationSuccess',
+	ON_COMPLETE_CHECKOUT_FAILURE = 'onFlexshipFlowFinalDestiationFailure'
 }
 
 class FlexshipFlowController {
 	public FlexshipSteps = FlexshipSteps; 
-	public currentStep = FlexshipSteps.CHECKOUT; //TODO: revert to SHOP
-	public farthestStepReached = FlexshipSteps.CHECKOUT; //TODO: revert to SHOP
+	public currentStep = FlexshipSteps.SHOP; //TODO: revert to SHOP
+	public farthestStepReached = FlexshipSteps.SHOP; //TODO: revert to SHOP
 	public orderTemplate:{[key:string]:any};
 	public currentOrderTemplateID:string;
 	public muraData;
+	
+	
+    public loading: boolean;
 	
     //@ngInject
     constructor(
     	public publicService: PublicService,
     	public orderTemplateService: OrderTemplateService,
     	private monatService: MonatService,
-    	public observerService
+    	public observerService: ObserverService
     ) {
-    	this.observerService.attach(this.next,'onNext');
+    	this.observerService.attach(this.next, FlexshipFlowEvents.ON_NEXT);
+    	this.observerService.attach(() => { this.loading = false }, FlexshipFlowEvents.ON_COMPLETE_CHECKOUT_FAILURE);
     }
     
     public $onInit = () => {
@@ -93,7 +99,7 @@ class FlexshipFlowController {
 	private setStepAndUpdateProgress(step:FlexshipSteps):FlexshipSteps{
 		
 		if(this.currentStep === step && step === FlexshipSteps.CHECKOUT){
-			return this.observerService.notify( FlexshipFLowEvents.ON_FINALIZE );
+			return this.observerService.notify( FlexshipFlowEvents.ON_COMPLETE_CHECKOUT );
 		}
 		
 		this.updateProgress(step);

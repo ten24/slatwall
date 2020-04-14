@@ -23,13 +23,8 @@ class RbKeyService{
 		return this._loadedResourceBundle;
 	}
 
-    rbKey= (key,replaceStringData) => {
-		////$log.debug('rbkey');
-		////$log.debug(key);
-		////$log.debug(this.getConfig().rbLocale);
-
+    rbKey= (key: string, replaceStringData?: any) => {
 		var keyValue = this.getRBKey(key,this.appConfig.rbLocale);
-		////$log.debug(keyValue);
 		
 		/**
 		 * const templateString = "Hello ${this.name}!";
@@ -38,7 +33,7 @@ class RbKeyService{
 			}
 		 * 
 		 */ 
-		
+
 		if(replaceStringData) {
 			//coppied from  https://github.com/mikemaccana/dynamic-template
 			keyValue = keyValue.replace(/\${(.*?)}/g, (_, g) => replaceStringData[g]);

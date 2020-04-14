@@ -223,15 +223,17 @@
 	<div class="form-group">
 		<button
 			type="submit"
-			class="btn btn-block bg-primary col-md-3"
-			ng-class="{ 'loading, disabled': accountAddressCtrl.loading}"
+			class="btn bg-primary my-1"
+			ng-class="{ 'loading,disabled': accountAddressCtrl.loading}"
 			ng-disabled = "accountAddressCtrl.loading"
 		>
+			<i class="fa fa-plus-circle"></i> 
 			<span sw-rbkey="'frontend.global.saveAddress'"></span>
 		</button>
+		
 		<button
 			type="button"
-			class="btn cancel-dark col-md-2 ml-1"
+			class="btn cancel-dark my-1 ml-1"
 			ng-click="accountAddressCtrl.cancel()"
 			ng-class="{ disabled : accountAddressCtrl.loading}"
 			ng-disabled = "accountAddressCtrl.loading"

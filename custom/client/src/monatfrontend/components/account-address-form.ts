@@ -29,7 +29,7 @@ class AccountAddressFormController {
     	
     	this.loading=true;
     	this.monatService.getStateCodeOptionsByCountryCode()
-    	.then( options => { 
+    	.then( (options) => { 
     		this.stateCodeOptions = options.stateCodeOptions;
     		this.addressFormOptions = options.addressOptions;
     	})
