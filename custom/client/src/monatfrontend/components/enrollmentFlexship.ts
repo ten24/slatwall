@@ -11,11 +11,12 @@ class EnrollmentFlexshipController {
 	public cartThreshold:number;
 	public suggestedRetailPrice: 0; 
 	public messages:any;
-
+	public type:string;
 	
 	//@ngInject
 	constructor(public monatService, public observerService, public orderTemplateService, public publicService) {
-		this.observerService.attach(this.getFlexship.bind(this), 'addOrderTemplateItemSuccess')
+		this.observerService.attach(this.getFlexship.bind(this), 'addOrderTemplateItemSuccess');
+		console.log(this.hybridCart)
 	}
 
 	public $onInit = () => {
@@ -29,7 +30,10 @@ class EnrollmentFlexshipController {
 		if(!this.cartThreshold){
 			extraProperties += ',cartTotalThresholdForOFYAndFreeShipping'
 		}
-		this.orderTemplateService.getSetOrderTemplateOnSession(extraProperties).then(data => {
+		
+		let nullAccountFlag = this.type != 'vipFlexshipFlow';
+		//todo: use some type of fe caching here to avoid duplicate api calls
+		this.orderTemplateService.getSetOrderTemplateOnSession(extraProperties, 'upgradeFlow', nullAccountFlag, nullAccountFlag ).then(data => {
 
 			if((data.orderTemplate as GenericTemplate) ){
 		
@@ -91,7 +95,8 @@ class EnrollmentFlexship {
 	public scope = {};
 	
 	public bindToController = {
-		orderTemplate: '=?'
+		orderTemplate: '=?',
+		type: '<?'
 	}
 	
 	public require={
