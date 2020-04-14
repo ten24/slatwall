@@ -170,8 +170,8 @@ class MonatProductCardController {
 			this.orderTemplateService.addOrderTemplateItem(skuID, orderTemplateID)
 			.then( (result) =>{
 			    if(result.successfulActions &&
-					result.successfulActions.indexOf('public:cart.addOrderItem') > -1) {
-				 this.monatAlertService.success(this.rbkeyService.rbKey('alert.flexship.addProductsucessfull')); 
+					result.successfulActions.indexOf('public:order.addOrderTemplateItem') > -1) {
+						this.orderTemplateService.getSetOrderTemplateOnSession('qualifiesForOFYProducts', 'save', false, false);
 					}
 				 else{
 				     throw (result);
