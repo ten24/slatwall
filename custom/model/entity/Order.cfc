@@ -508,24 +508,38 @@ component {
 	
 	public boolean function marketPartnerValidationMaxOrderAmount(){
 	 	
-	 	if(isNull(this.getAccount())  || isNull(this.getOrderCreatedSite())){
+	 	var site = this.getOrderCreatedSite();
+	 	if(isNull(site) || site.getSiteCode() != 'mura-uk'){
+	 		writeDump('YO!');
 	 	    return true; 
 	 	} 
 	 	
-	 	var site = this.getOrderCreatedSite();
+	 	var accountType = this.getAccountType();
+	 	
+	 	if(isNull(accountType) || accountType != 'marketPartner'){
+	 		return true;
+	 	}
 	 	
 	    var initialEnrollmentPeriodForMarketPartner = site.setting("siteInitialEnrollmentPeriodForMarketPartner");//7
         var maxAmountAllowedToSpendDuringInitialEnrollmentPeriod = site.setting("siteMaxAmountAllowedToSpendInInitialEnrollmentPeriod");//200
-        var date = getService('orderService').getMarketPartnerEnrollmentOrderDateTime(this.getAccount());
+        
+        if( !isNull(this.getAccount()) ){
+        	var date = getService('orderService').getMarketPartnerEnrollmentOrderDateTime(this.getAccount());
+        }
         
         //If a UK MP is within the first 7 days of enrollment, check that they have not already placed more than 1 order.
-		if (!isNull(this.getAccount()) && this.getAccount().getAccountType() == "marketPartner" 
-			&& site.getSiteCode() == "mura-uk"
-			&& !isNull(date)
-			&& dateDiff("d", date, now()) <= initialEnrollmentPeriodForMarketPartner){
-			
+		if (isNull(date) || dateDiff("d", date, now()) <= initialEnrollmentPeriodForMarketPartner){
+			var total = 0;
+			if(!isNull(this.getAccount())){
+				var orders = account.getOrders();
+				for(var order in orders){
+					total += order.getTotal();
+				}
+			}else{
+				total += this.getTotal();
+			}
 			//If adding the order item will increase the order to over 200 EU return false  
-			if (this.getTotal() > maxAmountAllowedToSpendDuringInitialEnrollmentPeriod){
+			if (total > maxAmountAllowedToSpendDuringInitialEnrollmentPeriod){
 			    return false; // they already have too much.
 			}
 	    }

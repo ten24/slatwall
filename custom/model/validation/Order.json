@@ -11,7 +11,7 @@
 			}
 		},
 		"isMarketPartnerSalesOrder":{
-			"account.accountType":{
+			"accountType":{
 				"eq":"marketPartner"
 			},
 			"orderType.systemCode":{
@@ -31,22 +31,25 @@
 				"eq":"ostProcessing"
 			}
 		},
-		"isMarketPartnerSalesOrder":{
-			"account.accountType":{
+		"isMarketPartnerNonEnrollmentSalesOrder":{
+			"accountType":{
 				"eq":"marketPartner"
 			},
-			"account.accountStatusType.systemCode":{
-				"neq":"astEnrollmentPending"
+			"monatOrderType.systemCode":{
+				"neq":"motMpEnrollment"
 			},
 			"orderType.systemCode":{
 				"eq":"otSalesOrder"
+			},
+			"orderStatusType.systemCode":{
+				"eq":"ostNotPlaced"
 			}
 		}
 	},
 	"properties": {
 		"orderCreatedSite": [{"contexts":"save","method":"orderCreatedSiteMatchesAccountCreatedSite"},
-				{ "conditions":"isMarketPartnerSalesOrder","contexts": "save", "method": "MarketPartnerValidationMaxOrdersPlaced" },
-				{ "conditions":"isMarketPartnerSalesOrder","contexts": "save", "method": "MarketPartnerValidationMaxProductPacksPurchased" }
+				{ "conditions":"isMarketPartnerNonEnrollmentSalesOrder","contexts": "save", "method": "MarketPartnerValidationMaxOrdersPlaced" },
+				{ "conditions":"isMarketPartnerNonEnrollmentSalesOrder","contexts": "save", "method": "MarketPartnerValidationMaxProductPacksPurchased" }
 			],
 		"orderStatusType": [ { "contexts": "edit", "method": "isNotClosed" }],
 		"orderItems":[{"conditions":"mpEnrollmentOrder","contexts":"placeOrder","method":"hasProductPackOrderItem"}],
