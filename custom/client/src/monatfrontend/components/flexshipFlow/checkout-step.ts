@@ -106,7 +106,6 @@ class FlexshipCheckoutStepController {
 			if(res?.failureActions?.length){ throw(res); }
 			
 			this.monatAlertService.success( this.rbkeyService.rbKey('alert.flexship.updateSucceccfull') );
-			this.flexshipCheckoutStore.dispatch('SET_CURRENT_FLEXSHIP', res.orderTemplate);
 		
 			//TODO: Redirect to the next screen
 			this.monatService.redirectToProperSite('/my-account/flexships');
