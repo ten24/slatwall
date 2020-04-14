@@ -1,50 +1,48 @@
 import { Cache } from 'cachefactory';
+import { PublicService, ObserverService, RequestService, UtilityService } from '@Hibachi/core/core.module';
 
 export type IOption = {
 	name: string;
 	value: any;
-}
-
+};
 
 export class MonatService {
 	public cart;
 	public lastAddedSkuID: string = '';
-	public previouslySelectedStarterPackBundleSkuID:string;
-	public canPlaceOrder:boolean;
-	public userIsEighteen:boolean;
-	public hasOwnerAccountOnSession:boolean;
+	public previouslySelectedStarterPackBundleSkuID: string;
+	public canPlaceOrder: boolean;
+	public userIsEighteen: boolean;
+	public hasOwnerAccountOnSession: boolean;
 	public muraContent = {};
-	
+
 	//@ngInject
 	constructor(
-		private $q, 
-		private $window, 
-		private publicService, 
-		private requestService, 
-		private observerService,
-		private utilityService,
-		
+		private $q: ng.IQService,
+		private $window: ng.IWindowService,
+		private publicService: PublicService,
+		private requestService: RequestService,
+		private observerService: ObserverService,
+		private utilityService: UtilityService,
+
 		private localStorageCache: Cache,
 		private sessionStorageCache: Cache,
-		private inMemoryCache: Cache
+		private inMemoryCache: Cache,
 	) {
-		
-		console.log("localCache keys: "+this.localStorageCache.keys());
-		console.log("sessionCache keys: "+this.sessionStorageCache.keys());
-		console.log("memoryCache keys: "+this.inMemoryCache.keys());
+		console.log('localCache keys: ' + this.localStorageCache.keys());
+		console.log('sessionCache keys: ' + this.sessionStorageCache.keys());
+		console.log('memoryCache keys: ' + this.inMemoryCache.keys());
 	}
 
 	public getCart(refresh = false, param = '') {
-
 		var deferred = this.$q.defer();
 		let cachedCart = this.sessionStorageCache.get('cachedCart');
-		
-		if (refresh || angular.isUndefined(cachedCart) ){
-			
-			this.publicService.getCart(refresh, param)
-				.then((data) => { 
-					if(data &&  data.failureActions.length == 0){
-						console.log("get-cart, puting it in session-cache")
+
+		if (refresh || angular.isUndefined(cachedCart)) {
+			this.publicService
+				.getCart(refresh, param)
+				.then((data) => {
+					if (data && data.failureActions.length == 0) {
+						console.log('get-cart, puting it in session-cache');
 						this.updateCartPropertiesOnService(data);
 						deferred.resolve(data.cart);
 					} else {
@@ -52,13 +50,12 @@ export class MonatService {
 					}
 				})
 				.catch((e) => {
-					console.log("get-cart, exception, removing it from session-cache", e);
+					console.log('get-cart, exception, removing it from session-cache', e);
 					this.sessionStorageCache.remove('cachedCart');
 					deferred.reject(e);
 				});
-				
 		} else {
-			this.updateCartPropertiesOnService({cart:cachedCart});
+			this.updateCartPropertiesOnService({ cart: cachedCart });
 			deferred.resolve(cachedCart);
 		}
 		return deferred.promise;
@@ -67,25 +64,26 @@ export class MonatService {
 	/**
 	 * actions => addOrderItem, removeOrderItem, updateOrderItemQuantity, ....
 	 *
-	*/
-	private updateCart = (action: string, payload): Promise<any> => {
+	 */
+	private updateCart = (action: string, payload) => {
 		let deferred = this.$q.defer();
 		payload['returnJSONObjects'] = 'cart';
 
-		this.publicService.doAction(action, payload)
+		this.publicService
+			.doAction(action, payload)
 			.then((data) => {
 				if (data.cart && data.failureActions.length == 0) {
-					console.log("update-cart, puting it in session-cache")
+					console.log('update-cart, puting it in session-cache');
 					this.sessionStorageCache.put('cachedCart', data.cart);
 					this.updateCartPropertiesOnService(data);
 					deferred.resolve(data.cart);
-					this.observerService.notify( 'updatedCart', data.cart ); 
+					this.observerService.notify('updatedCart', data.cart);
 				} else {
 					throw data;
 				}
 			})
 			.catch((e) => {
-				console.log("update-cart, exception, removing it from session-cache", e);
+				console.log('update-cart, exception, removing it from session-cache', e);
 				this.sessionStorageCache.remove('cachedCart');
 				deferred.reject(e);
 			});
@@ -98,7 +96,7 @@ export class MonatService {
 			skuID: skuID,
 			quantity: quantity,
 		};
-		
+
 		this.lastAddedSkuID = skuID;
 
 		return this.updateCart('addOrderItem', payload);
@@ -118,53 +116,50 @@ export class MonatService {
 		};
 		return this.updateCart('updateOrderItemQuantity', payload);
 	}
-	
-	public submitSponsor( sponsorID:string ) {
-		return this.publicService.doAction('submitSponsor',{sponsorID});
+
+	public submitSponsor(sponsorID: string) {
+		return this.publicService.doAction('submitSponsor', { sponsorID });
 	}
-	
-	public addEnrollmentFee( sponsorID:string ) {
+
+	public addEnrollmentFee(sponsorID: string) {
 		return this.publicService.doAction('addEnrollmentFee');
 	}
-	
+
 	public selectStarterPackBundle(skuID: string, quantity: number = 1, upgradeFlow = 0) {
 		let payload = {
 			skuID: skuID,
 			quantity: quantity,
 		};
-		
-		if(upgradeFlow){
+
+		if (upgradeFlow) {
 			payload['upgradeFlowFlag'] = 1;
 		}
-		
-		if(this.previouslySelectedStarterPackBundleSkuID) {
-			payload['previouslySelectedStarterPackBundleSkuID'] = this.previouslySelectedStarterPackBundleSkuID;
+
+		if (this.previouslySelectedStarterPackBundleSkuID) {
+			payload[
+				'previouslySelectedStarterPackBundleSkuID'
+			] = this.previouslySelectedStarterPackBundleSkuID;
 		}
-		
+
 		this.lastAddedSkuID = skuID;
 		this.previouslySelectedStarterPackBundleSkuID = skuID;
-		
+
 		return this.updateCart('selectStarterPackBundle', payload);
 	}
-	
 
 	/**
 	 * options = {optionName:refresh, ---> option2:true, o3:false}
-	*/
+	 */
 	public getOptions(options: {}, refresh = false) {
-		var deferred = this.$q.defer();
+		var deferred = this.$q.defer<any>();
 		var optionsToFetch = this.makeListOfOptionsToFetch(options, refresh);
 
 		if (refresh || (optionsToFetch && optionsToFetch.length)) {
-			this.requestService
-				.newPublicRequest('?slatAction=api:public.getOptions', { optionsList: optionsToFetch })
-				.promise
-				.then((data) => {
-					var { messages, failureActions, successfulActions, ...realOptions } = data; //destructuring we dont want unwanted data in cached options
-					Object.keys(realOptions).forEach( (key) => this.localStorageCache.put(key, realOptions[key] ) );
-					this.returnOptions(options, deferred);
-					//TODO handle errors
-				});
+			this.doAction('getOptions', { optionsList: optionsToFetch }).then((data: any) => {
+				var { messages, failureActions, successfulActions, ...realOptions } = data; //destructuring we dont want unwanted data in cached options
+				Object.keys(realOptions).forEach((key) => this.localStorageCache.put(key, realOptions[key]));
+				this.returnOptions(options, deferred);
+			});
 		} else {
 			this.returnOptions(options, deferred);
 		}
@@ -174,226 +169,237 @@ export class MonatService {
 	private makeListOfOptionsToFetch(options: {}, refresh: boolean = false) {
 		return Object.keys(options)
 			.filter((key) => refresh || !!options[key] || !this.localStorageCache.get(key))
-			.reduce((list, current) =>  this.utilityService.listAppend(list,current), '');
+			.reduce((list, current) => this.utilityService.listAppend(list, current), '');
 	}
 
 	private returnOptions(options: {}, deferred) {
-		let res = Object.keys(options)
-			.reduce( (obj, key) => {
-				return (<any>Object).assign(obj, { [key]: this.localStorageCache.get(key) })
-			}, {});
+		let res = Object.keys(options).reduce((obj, key) => {
+			return (<any>Object).assign(obj, { [key]: this.localStorageCache.get(key) });
+		}, {});
 		deferred.resolve(res);
 	}
-	
 
 	public getOrderTemplateShippingMethodOptions(refresh = false) {
-		return this.getOptions( {'orderTemplateShippingMethodOptions': refresh} );
+		return this.getOptions({ orderTemplateShippingMethodOptions: refresh });
 	}
 
 	public getFrequencyTermOptions(refresh = false) {
-		return this.getOptions( {'frequencyTermOptions': refresh} );
+		return this.getOptions({ frequencyTermOptions: refresh });
 	}
-	
+
 	public getFrequencyDateOptions(refresh = false) {
-		return this.getOptions( {'frequencydateOptions': refresh} );
+		return this.getOptions({ frequencydateOptions: refresh });
 	}
-	
+
 	public getCancellationReasonTypeOptions(refresh = false) {
-		return this.getOptions( {'cancellationReasonTypeOptions': refresh} );
+		return this.getOptions({ cancellationReasonTypeOptions: refresh });
 	}
-	
+
 	public getScheduleDateChangeReasonTypeOptions(refresh = false) {
-		return this.getOptions( {'scheduleDateChangeReasonTypeOptions': refresh} );
+		return this.getOptions({ scheduleDateChangeReasonTypeOptions: refresh });
 	}
-	
+
 	public getExpirationMonthOptions(refresh = false) {
-		return this.getOptions( {'expirationMonthOptions': refresh} );
+		return this.getOptions({ expirationMonthOptions: refresh });
 	}
-	
+
 	public getExpirationYearOptions(refresh = false) {
-		return this.getOptions( {'expirationYearOptions': refresh} );
+		return this.getOptions({ expirationYearOptions: refresh });
 	}
-	
-    /**
-     * TODO: move to the UtilityService
-     * 
-     * This method gets the value of a cookie by its name
-     * Example cookie: "flexshipID=01234567" => "01234567"
-    **/
-    public getCookieValueByCookieName(name:string):string{
+
+	/**
+	 * TODO: move to the UtilityService
+	 *
+	 * This method gets the value of a cookie by its name
+	 * Example cookie: "flexshipID=01234567" => "01234567"
+	 **/
+	public getCookieValueByCookieName(name: string): string {
 		let cookieString = document.cookie;
-		let cookieArray = cookieString.split(';')
-		let cookieValueArray = <Array<string>>cookieArray.filter( el => el.search(name) > -1 );
-		if(!cookieValueArray.length) return '';
-    	return  cookieValueArray[0].substr(cookieValueArray[0].indexOf('=') + 1);
-    }
-    
-    public getFlattenObject = (inObject:Object, delimiter:string='.') : Object => {
-        var objectToReturn = {};
-        for (var key in inObject) {
-            if (!inObject.hasOwnProperty(key)) continue;
-    
-            if ((typeof inObject[key]) == 'object' && inObject[key] !== null) {
-                var flatObject = this.getFlattenObject(inObject[key]);
-                for (var x in flatObject) {
-                    if (!flatObject.hasOwnProperty(x)) continue;
-                    objectToReturn[key + delimiter + x] = flatObject[x];
-                }
-            } else {
-                objectToReturn[key] = inObject[key];
-            }
-        }
-        return objectToReturn;
-    }
-    
-    /**
+		let cookieArray = cookieString.split(';');
+		let cookieValueArray = <Array<string>>cookieArray.filter((el) => el.search(name) > -1);
+		if (!cookieValueArray.length) return '';
+		return cookieValueArray[0].substr(cookieValueArray[0].indexOf('=') + 1);
+	}
+
+	public getFlattenObject = (inObject: Object, delimiter: string = '.'): Object => {
+		var objectToReturn = {};
+		for (var key in inObject) {
+			if (!inObject.hasOwnProperty(key)) continue;
+
+			if (typeof inObject[key] == 'object' && inObject[key] !== null) {
+				var flatObject = this.getFlattenObject(inObject[key]);
+				for (var x in flatObject) {
+					if (!flatObject.hasOwnProperty(x)) continue;
+					objectToReturn[key + delimiter + x] = flatObject[x];
+				}
+			} else {
+				objectToReturn[key] = inObject[key];
+			}
+		}
+		return objectToReturn;
+	};
+
+	/**
     	This method takes a date string and returns age in years
     **/
-	public calculateAge(birthDate:string):number { 
-		if(!birthDate) return;
+	public calculateAge(birthDate: string): number {
+		if (!birthDate) return;
 		let birthDateObj = <any>Date.parse(birthDate);
-	    let years = Date.now() - birthDateObj.getTime();
-	    let age = new Date(years); 
-	    let yearsOld = Math.abs(age.getUTCFullYear() - 1970);
-	    this.userIsEighteen = yearsOld >= 18;
-	    return yearsOld;
+		let years = Date.now() - birthDateObj.getTime();
+		let age = new Date(years);
+		let yearsOld = Math.abs(age.getUTCFullYear() - 1970);
+		this.userIsEighteen = yearsOld >= 18;
+		return yearsOld;
 	}
-	
-		
+
 	public adjustInputFocuses = () => {
-		$('input, select').focus(function() {
+		$('input, select').focus(function () {
 			var ele = $(this);
-			if ( !ele.isInEnrollmentViewport() ) {
-				$('html, body').animate({
-					scrollTop: ele.offset().top - 80 
-				}, 800);
+			if (!ele.isInEnrollmentViewport()) {
+				$('html, body').animate(
+					{
+						scrollTop: ele.offset().top - 80,
+					},
+					800,
+				);
 			}
 		});
-	}
+	};
 
 	public getAccountWishlistItemIDs = () => {
 		var deferred = this.$q.defer();
-		this.publicService.doAction('getWishlistItemsForAccount').then( data => {
-			deferred.resolve( data );
+		this.publicService.doAction('getWishlistItemsForAccount').then((data) => {
+			deferred.resolve(data);
 		});
 		return deferred.promise;
-	}
-	
-	public addEditAccountAddress( payload ) {
+	};
+
+	public addEditAccountAddress(payload) {
 		return this.publicService.doAction('addEditAccountAddress', payload);
 	}
-	
-	public getAccountAddresses(){
-		let deferred = this.$q.defer();
-		this.publicService.doAction('getAccountAddresses')
-		.then( (data) => {
-			if(data?.accountAddresses)  deferred.resolve( data );
-			else  throw(data);
-		})
-		.catch( (e) => {
-			deferred.reject(e);
-		});
-		return deferred.promise;
-	}
-	
-	public getAccountPaymentMethods(){
-		let deferred = this.$q.defer();
-		this.publicService.doAction('getAccountPaymentMethods')
-		.then( (data) => {
-			if(data?.accountPaymentMethods)  deferred.resolve( data ); 
-			else  throw(data);
-		})
-		.catch( (e) => {
-			deferred.reject(e);
-		});
-		return deferred.promise;
-	}
-	
-	public getStateCodeOptionsByCountryCode(countryCode:string = hibachiConfig.countryCode, refresh=false) {
-		
-		let cacheKey = `stateCodeOptions_${countryCode}`;
-		let deferred = this.$q.defer();
-		
-		if(refresh || !this.localStorageCache.get(cacheKey) ){
-			this.requestService
-			.newPublicRequest('?slatAction=api:public.getStateCodeOptionsByCountryCode', { 'countryCode': countryCode })
-			.promise
-			.then( (data) => {
-				if(data?.stateCodeOptions){
-					this.localStorageCache.put( cacheKey, { 
-						'stateCodeOptions': data.stateCodeOptions, 
-						'addressOptions': data.addressOptions
-					});
-					deferred.resolve( data );
-				} else {
-					throw(data);
-				}
+
+	public getAccountAddresses() {
+		let deferred = this.$q.defer<any>();
+		this.publicService
+			.doAction('getAccountAddresses')
+			.then((data) => {
+				if (data?.accountAddresses) deferred.resolve(data);
+				else throw data;
 			})
-			.catch( (e) => {
+			.catch((e) => {
 				deferred.reject(e);
-			});	
-		} else {
-			deferred.resolve( this.localStorageCache.get(cacheKey) );
-		}
-		
+			});
 		return deferred.promise;
 	}
-	
-	
-	public redirectToProperSite(redirectUrl:string){
-		
-		if(hibachiConfig.cmsSiteID != 'default'){
+
+	public getAccountPaymentMethods() {
+		let deferred = this.$q.defer<any>();
+		this.publicService
+			.doAction('getAccountPaymentMethods')
+			.then((data) => {
+				if (data?.accountPaymentMethods) deferred.resolve(data);
+				else throw data;
+			})
+			.catch((e) => {
+				deferred.reject(e);
+			});
+		return deferred.promise;
+	}
+
+	public getStateCodeOptionsByCountryCode(
+		countryCode: string = hibachiConfig.countryCode,
+		refresh = false,
+	) {
+		let cacheKey = `stateCodeOptions_${countryCode}`;
+		let deferred = this.$q.defer<any>();
+
+		if (refresh || this.localStorageCache.get(cacheKey)) {
+			this.doAction('getStateCodeOptionsByCountryCode', { countryCode: countryCode })
+				.then((data: any) => {
+					if (!data?.stateCodeOptions) throw data;
+					this.localStorageCache.put(cacheKey, {
+						stateCodeOptions: data.stateCodeOptions,
+						addressOptions: data.addressOptions,
+					});
+					deferred.resolve(data);
+				})
+				.catch(deferred.reject);
+		} else {
+			deferred.resolve(this.localStorageCache.get(cacheKey));
+		}
+		return deferred.promise;
+	}
+
+	//************************* helper functions *****************************//
+
+	public redirectToProperSite(redirectUrl: string) {
+		if (hibachiConfig.cmsSiteID != 'default') {
 			redirectUrl = '/' + hibachiConfig.cmsSiteID + redirectUrl;
 		}
-		
+
 		this.$window.location.href = redirectUrl;
 	}
-	
+
 	/**
-	 * getProeperURL('api:main:whatever') 
-	*/ 
-	public getProperURL(action:string){
-		`${hibachiConfig.baseURL}?${hibachiConfig.action}=${action}`
+	 * doAction('actionName', ?{....whatever-data...})
+	*/
+ 
+	public doAction(action: string, data?: any): ng.IPromise<any> {
+		return this.requestService.newPublicRequest(this.createPublicAction(action), data).promise;
 	}
 	
-	public formatAccountAddress(accountAddress): string{
+
+	/**
+	 * getProeperURL('WHATEVER') ==> /Slatwall/?slatAction=api:main:WHATEVER
+	 */
+
+	public createPublicAction(action: string) {
+		return `${hibachiConfig.baseURL}?${hibachiConfig.action}=api:public.${action}`;
+	}
+
+	public formatAccountAddress(accountAddress): string {
 		return `
         		${accountAddress?.accountAddressName} 
         		- ${accountAddress?.address_streetAddress} ${accountAddress?.address_street2Address?.trim() || ' '}
-    			${accountAddress?.address_city}, ${accountAddress?.address_stateCode} ${accountAddress?.address_postalCode} ${accountAddress?.address_countryCode}
-    	`
+    			${accountAddress?.address_city}, ${accountAddress?.address_stateCode} 
+    			${accountAddress?.address_postalCode} ${accountAddress?.address_countryCode}
+    		`;
 	}
-	
-	public setNewlyCreatedFlexship(flexshipID: string){
-		if(flexshipID && flexshipID.trim() !== '' ){
+
+	//************************* CACHING helper functions *****************************//
+
+	public setNewlyCreatedFlexship(flexshipID: string) {
+		if (flexshipID && flexshipID.trim() !== '') {
 			this.sessionStorageCache.put('newlyCreatedFlexship', flexshipID);
 		} else {
 			this.sessionStorageCache.remove('newlyCreatedFlexship');
 		}
 	}
-	
+
 	public getNewlyCreatedFlexship(): string {
 		return this.sessionStorageCache.get('newlyCreatedFlexship');
 	}
-	
-	
-	public setCurrentFlexship(flexship: {[key:string]:any}){
-		if(flexship && flexship.hasOwnProperty('orderTemplateID')  ){
+
+	public setCurrentFlexship(flexship) {
+		if (flexship?.orderTemplateID?.trim()?.length > 0) {
 			this.sessionStorageCache.put('currentFlexship', flexship);
 		} else {
 			this.sessionStorageCache.remove('currentFlexship');
 		}
+		return flexship;
 	}
-	
-	public getCurrentFlexship(): {[key:string]:any} {
+
+	public getCurrentFlexship(): { [key: string]: any } {
 		return this.sessionStorageCache.get('currentFlexship');
 	}
-	
-	public updateCartPropertiesOnService(data:{['cart']:any, [key:string]:any}){
+
+	public updateCartPropertiesOnService(data: { ['cart']: any; [key: string]: any }) {
 		this.cart = data.cart;
-		this.cart['purchasePlusMessage'] = data.cart.appliedPromotionMessages ? data.cart.appliedPromotionMessages.filter( message => message.promotionName.indexOf('Purchase Plus') > -1 )[0] : {};
+		this.cart['purchasePlusMessage'] = data.cart.appliedPromotionMessages
+			? data.cart.appliedPromotionMessages.filter(
+					(message) => message.promotionName.indexOf('Purchase Plus') > -1,
+			  )[0]
+			: {};
 		this.canPlaceOrder = data.cart.orderRequirementsList.indexOf('canPlaceOrderReward') == -1;
 	}
-	
-
 }

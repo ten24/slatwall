@@ -1,4 +1,6 @@
 import { MonatService, IOption } from '@Monat/services/monatservice';
+import { OrderTemplateService } from '@Monat/services/ordertemplateservice';
+import { PublicService } from '@Hibachi/core/services/publicservice'
 
 export enum FlexshipSteps{
 	SHOP,
@@ -23,8 +25,8 @@ class FlexshipFlowController {
 	
     //@ngInject
     constructor(
-    	public publicService,
-    	public orderTemplateService,
+    	public publicService: PublicService,
+    	public orderTemplateService: OrderTemplateService,
     	private monatService: MonatService,
     	public observerService
     ) {
@@ -34,7 +36,8 @@ class FlexshipFlowController {
     public $onInit = () => {
     	
     	this.currentOrderTemplateID = this.monatService.getCurrentFlexship()?.orderTemplateID;
-		this.orderTemplateService.getSetOrderTemplateOnSession('qualifiesForOFYProducts', 'save', false, false).then(res=>{
+		this.orderTemplateService.getSetOrderTemplateOnSession('qualifiesForOFYProducts', 'save', false, false)
+		.then(res=>{
 			this.orderTemplate = res.orderTemplate;
 			if(!this.orderTemplate){
 				//redirect to listing
@@ -90,14 +93,11 @@ class FlexshipFlowController {
 	private setStepAndUpdateProgress(step:FlexshipSteps):FlexshipSteps{
 		
 		if(this.currentStep === step && step === FlexshipSteps.CHECKOUT){
-			this.observerService.notify( FlexshipFLowEvents.ON_FINALIZE );
-
+			return this.observerService.notify( FlexshipFLowEvents.ON_FINALIZE );
 		}
-		
 		
 		this.updateProgress(step);
 		return this.currentStep = step;
-
     }
     
     
