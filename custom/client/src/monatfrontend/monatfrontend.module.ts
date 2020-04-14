@@ -61,6 +61,7 @@ import { PurchasePlusBar } from './directives/purchase-plus-bar';
 import { FlexshipPurchasePlus } from './components/flexshipPurchasePlus';
 import { FlexshipFlow } from './components/flexshipFlow/flexshipFlow';
 import {ProductListingStep} from './components/flexshipFlow/productlistingstep';
+import {FrequencyStep} from './components/flexshipFlow/frequencyStep';
 
 // controllers
 import { MonatForgotPasswordController } from './controllers/monat-forgot-password';
@@ -143,6 +144,7 @@ var monatfrontendmodule = angular
 	.directive('flexshipPurchasePlus',FlexshipPurchasePlus.Factory())
 	.directive('flexshipFlow',FlexshipFlow.Factory())
 	.directive('productListingStep',ProductListingStep.Factory())
+	.directive('frequencyStep',FrequencyStep.Factory())
 	
 	// Controllers
 	.controller('searchController', MonatSearchController)

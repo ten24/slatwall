@@ -1,4 +1,6 @@
 <div class="step5_part">
+	<h1 ng-if="ofyEnrollment.flexship" ng-bind-html="flexshipFlow.muraData.ofyTitle"></h1> 
+	<div ng-if="ofyEnrollment.flexship" ng-bind-html="flexshipFlow.muraData.ofyBody"></div> 
 	<div class="subtext subtext1">      
 		<div class="productbox" ng-class="{ 'has-selected' : ofyEnrollment.selectedProductID.length }">
 			<div class="row no-gutters product_list">
