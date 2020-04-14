@@ -59,7 +59,6 @@ class FlexshipCheckoutStepController {
 	
 	public canCompleteCheckout = () => {
 		
-		//TODO: rb-keys
 		if(!this.currentState.selectedShippingAddressID){
 			this.monatAlertService.error(
 					this.rbkeyService.rbKey('alert.frontend.pleseSelectAShippingAddress')

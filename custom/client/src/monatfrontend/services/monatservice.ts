@@ -28,9 +28,6 @@ export class MonatService {
 		private sessionStorageCache: Cache,
 		private inMemoryCache: Cache,
 	) {
-		console.log('localCache keys: ' + this.localStorageCache.keys());
-		console.log('sessionCache keys: ' + this.sessionStorageCache.keys());
-		console.log('memoryCache keys: ' + this.inMemoryCache.keys());
 	}
 
 	public getCart(refresh = false, param = '') {
@@ -363,7 +360,7 @@ export class MonatService {
 	//************************* CACHING helper functions *****************************//
 
 	public setNewlyCreatedFlexship(flexshipID: string) {
-		if (flexshipID && flexshipID.trim() !== '') {
+		if (flexshipID?.trim()) {
 			this.sessionStorageCache.put('newlyCreatedFlexship', flexshipID);
 		} else {
 			this.sessionStorageCache.remove('newlyCreatedFlexship');
@@ -375,7 +372,7 @@ export class MonatService {
 	}
 
 	public setCurrentFlexship(flexship) {
-		if (flexship?.orderTemplateID?.trim()?.length > 0) {
+		if (flexship?.orderTemplateID?.trim()) {
 			this.sessionStorageCache.put('currentFlexship', flexship);
 		} else {
 			this.sessionStorageCache.remove('currentFlexship');

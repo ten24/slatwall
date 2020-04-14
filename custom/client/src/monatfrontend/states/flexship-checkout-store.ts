@@ -151,7 +151,7 @@ export class FlexshipCheckoutStore extends NgStore<FlexshipCheckoutState, Flexsh
 	public setSelectedShippingAddressIDReducer(state: FlexshipCheckoutState, newAddressID: string){
 		
 		// only select an accountAddressID when user has passed a real-id
-		// we stil want to show previously-select-item(if any) and user clicks on cancel on new-address-form
+		// we stil want to show previously-select-item(if any) when user clicks on cancel on new-address-form
 		if( newAddressID && newAddressID !== 'new' && state.selectedShippingAddressID != newAddressID ){ 
 			state.selectedShippingAddressID = newAddressID;
 			
@@ -176,7 +176,7 @@ export class FlexshipCheckoutStore extends NgStore<FlexshipCheckoutState, Flexsh
 	public setSelectedPaymentMethodIDReducer(state: FlexshipCheckoutState, newPaymentMethodID: string){
 		
 		// only select a payment-method when user has passed a real-id
-		// we stil want to show previously-select-item(if any) and user clicks on cancel on new-address-form
+		// we stil want to show previously-select-item(if any) when user clicks on cancel on new-payment-method-form
 		if( newPaymentMethodID && newPaymentMethodID !== 'new' && state.selectedPaymentMethodID != newPaymentMethodID ){ 
 			state.selectedPaymentMethodID = newPaymentMethodID;
 		}
@@ -206,7 +206,7 @@ export class FlexshipCheckoutStore extends NgStore<FlexshipCheckoutState, Flexsh
 	public setSelectedBillingAddressIDReducer(state:FlexshipCheckoutState, newAddressID){
 		
 		// only select an address when user has passed a real-id
-		// we stil want to show previously-select-item(if any) and user clicks on cancel on new-address-form
+		// we still want to show previously-select-item(if any) when user clicks on cancel on new-address-form
 		if( newAddressID && newAddressID !== 'new' && state.selectedBillingAddressID != newAddressID ){ 
 			state.selectedBillingAddressID = newAddressID;
 			state.billingSameAsShipping = newAddressID === state.selectedShippingAddressID
@@ -239,9 +239,9 @@ export class FlexshipCheckoutStore extends NgStore<FlexshipCheckoutState, Flexsh
 		if(!selectedShippingAddressID) { 
 			selectedShippingAddressID =	currentState.primaryAccountAddressID?.trim() 
 		}
-    	if( !selectedShippingAddressID  && currentState.accountAddresses?.length) {
-    		//select the first available
-    		selectedShippingAddressID = currentState.accountAddresses.find( () => true )?.accountAddressID?.trim() || 'new';
+    	if(!selectedShippingAddressID){
+    		//select the first available, else we'd have to show new address form
+    		selectedShippingAddressID = currentState.accountAddresses?.find( () => true )?.accountAddressID?.trim() || 'new';
     	}
     	return selectedShippingAddressID;
 	}
@@ -280,9 +280,9 @@ export class FlexshipCheckoutStore extends NgStore<FlexshipCheckoutState, Flexsh
 		if(!selectedBillingAddressID) { 
 			selectedBillingAddressID = currentState.primaryAccountAddressID?.trim() 
 		}
-    	if( !selectedBillingAddressID  && currentState.accountAddresses?.length) {
+    	if( !selectedBillingAddressID ) {
     		//select the first available
-    		selectedBillingAddressID = currentState.accountAddresses.find( () => true )?.accountAddressID?.trim() || 'new';
+    		selectedBillingAddressID = currentState.accountAddresses?.find( () => true )?.accountAddressID?.trim() || 'new';
     	}
     	return selectedBillingAddressID;
 	}
@@ -299,8 +299,8 @@ export class FlexshipCheckoutStore extends NgStore<FlexshipCheckoutState, Flexsh
 		if(!selectedPaymentMethodID) { 
 			selectedPaymentMethodID = currentState.primaryPaymentMethodID?.trim() 
 		}
-    	if( !selectedPaymentMethodID  && currentState.accountPaymentMethods?.length) {
-    		selectedPaymentMethodID = currentState.accountPaymentMethods.find( () => true )?.accountPaymentMethodID?.trim() || 'new';
+    	if( !selectedPaymentMethodID ) {
+    		selectedPaymentMethodID = currentState.accountPaymentMethods?.find( () => true )?.accountPaymentMethodID?.trim() || 'new';
     	}
     	
     	return selectedPaymentMethodID;
