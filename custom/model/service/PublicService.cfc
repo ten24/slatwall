@@ -1166,16 +1166,16 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var productCollectionList = getProductService().getProductCollectionList();
         productCollectionList.setDisplayProperties('productID');
         productCollectionList.addDisplayProperty('productName');
-        productCollectionList.addDisplayProperty('defaultSku.skuID');
-        productCollectionList.addDisplayProperty('defaultSku.skuPrices.personalVolume');
-        productCollectionList.addDisplayProperty('defaultSku.skuPrices.price');
+        productCollectionList.addDisplayProperty('skus.skuID');
+        productCollectionList.addDisplayProperty('skus.skuPrices.personalVolume');
+        productCollectionList.addDisplayProperty('skus.skuPrices.price');
         productCollectionList.addDisplayProperty('urlTitle');
-        productCollectionList.addDisplayProperty('defaultSku.imageFile');
+        productCollectionList.addDisplayProperty('skus.imageFile');
         
         var currentRequestSite = getHibachiScope().getCurrentRequestSite();
         if(!isNull(currentRequestSite) && currentRequestSite.hasLocation()){
-            productCollectionList.addDisplayProperty('defaultSku.stocks.calculatedQATS');
-            productCollectionList.addFilter('defaultSku.stocks.location.locationID',currentRequestSite.getLocations()[1].getLocationID());
+            productCollectionList.addDisplayProperty('skus.stocks.calculatedQATS');
+            productCollectionList.addFilter('skus.stocks.location.locationID',currentRequestSite.getLocations()[1].getLocationID());
         }
         productCollectionList.addFilter('activeFlag',1);
         productCollectionList.addFilter('publishedFlag',1);
@@ -1185,9 +1185,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         productCollectionList.addFilter(propertyIdentifier = 'publishedEndDateTime',value='NULL', comparisonOperator="IS", logicalOperator="OR", filterGroupAlias = 'publishedEndDateTimeFilter');
         productCollectionList.addFilter('skus.activeFlag',1);
         productCollectionList.addFilter('skus.publishedFlag',1);
-        productCollectionList.addFilter('defaultSku.skuPrices.price', 0.00, '!=');
-        productCollectionList.addFilter('defaultSku.skuPrices.currencyCode',currencyCode);
-        productCollectionList.addFilter('defaultSku.skuPrices.priceGroup.priceGroupCode',priceGroupCode);
+        productCollectionList.addFilter('skus.skuPrices.price', 0.00, '!=');
+        productCollectionList.addFilter('skus.skuPrices.currencyCode',currencyCode);
+        productCollectionList.addFilter('skus.skuPrices.priceGroup.priceGroupCode',priceGroupCode);
         productCollectionList.addFilter('productType.urlTitle','starter-kit','!=');
         productCollectionList.addFilter('productType.urlTitle','productPack','!=');
         productCollectionList.addFilter('productType.parentProductType.urlTitle','other-income','!=');
@@ -1410,22 +1410,22 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         //Looping over the collection list and using helper method to get non persistent properties
         for(var record in arguments.records){
-            productMap[record.defaultSku_skuID] = {
+            productMap[record.skus_skuID] = {
                 'productID': record.productID,
-                'skuID': record.defaultSku_skuID,
-                'personalVolume': record.defaultSku_skuPrices_personalVolume,
-                'price': record.defaultSku_skuPrices_price,
+                'skuID': record.skus_skuID,
+                'personalVolume': record.skus_skuPrices_personalVolume,
+                'price': record.skus_skuPrices_price,
                 'productName': record.productName,
-                'skuImagePath': imageService.getResizedImageByProfileName(record.defaultSku_skuID,'medium'), //TODO: Find a faster method
+                'skuImagePath': imageService.getResizedImageByProfileName(record.skus_skuID,'medium'), //TODO: Find a faster method
                 'skuProductURL': '#productURL##productService.getProductUrlByUrlTitle( record.urlTitle )#',
                 'priceGroupCode': arguments.priceGroupCode,
                 'upgradedPricing': '',
                 'upgradedPriceGroupCode': upgradedPriceGroupCode,
-                'qats': record.defaultSku_stocks_calculatedQATS
+                'qats': record.skus_stocks_calculatedQATS
             };
             
             //add skuID's to skuID array for query below
-            skuIDsToQuery = listAppend(skuIDsToQuery, record.defaultSku_skuID);
+            skuIDsToQuery = listAppend(skuIDsToQuery, record.skus_skuID);
         }
         
         //Query skuPrice table to get upgraded skuPrices for skus in above collection list

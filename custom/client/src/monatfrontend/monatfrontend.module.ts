@@ -61,6 +61,7 @@ import { FlexshipPurchasePlus } from './components/flexshipPurchasePlus';
 
 import { FlexshipFlow } from './components/flexshipFlow/flexshipFlow';
 import { ProductListingStep } from './components/flexshipFlow/productlistingstep';
+import { FrequencyStep } from './components/flexshipFlow/frequencyStep';
 import { FlexshipCheckoutStep } from './components/flexshipFlow/checkout-step';
 import { FlexshipCheckoutShippingAddress } from './components/flexshipFlow/checkout-components/shipping-address';
 import { FlexshipCheckoutShippingMethod } from './components/flexshipFlow/checkout-components/shipping-method';
@@ -153,6 +154,7 @@ var monatfrontendmodule = angular
 	.directive('flexshipPurchasePlus', FlexshipPurchasePlus.Factory())
 	.directive('flexshipFlow', FlexshipFlow.Factory())
 	.directive('productListingStep', ProductListingStep.Factory())
+	.directive('frequencyStep', FrequencyStep.Factory())
 	.directive('flexshipCheckoutStep', FlexshipCheckoutStep.Factory())
 	.directive('flexshipCheckoutShippingAddress', FlexshipCheckoutShippingAddress.Factory())
 	.directive('flexshipCheckoutShippingMethod', FlexshipCheckoutShippingMethod.Factory())

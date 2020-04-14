@@ -12,6 +12,7 @@ component extends="Slatwall.model.service.SettingService" {
 		settingMetaData["siteMaxAmountAllowedToSpendInInitialEnrollmentPeriod"] = {fieldtype="text", defaultValue="200"};
 		settingMetaData["siteMaxDaysAfterAccountCreate"] = {fieldtype="text", defaultValue="30"};
 		settingMetaData["siteDefaultOFYSkuCode"] = {fieldtype="text",defaultValue=""};
+		
 		return settingMetaData;
 	}
 }

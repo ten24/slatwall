@@ -15,10 +15,11 @@ export enum FlexshipFLowEvents {
 
 class FlexshipFlowController {
 	public FlexshipSteps = FlexshipSteps; 
-	public currentStep = FlexshipSteps.CHECKOUT;
-	public farthestStepReached = FlexshipSteps.CHECKOUT;
-	
+	public currentStep = FlexshipSteps.CHECKOUT; //TODO: revert to SHOP
+	public farthestStepReached = FlexshipSteps.CHECKOUT; //TODO: revert to SHOP
 	public orderTemplate:{[key:string]:any};
+	public currentOrderTemplateID:string;
+	public muraData;
 	
     //@ngInject
     constructor(
@@ -27,18 +28,19 @@ class FlexshipFlowController {
     	private monatService: MonatService,
     	public observerService
     ) {
-    
-    	
+    	this.observerService.attach(this.next,'onNext');
     }
     
     public $onInit = () => {
     	
-    	this.orderTemplate = this.monatService.getCurrentFlexship();
-    	
-		if(!this.orderTemplate){
-			//redirect to listing
-			// this.monatService.redirectToProperSite("/my-account/flexships");
-		}
+    	this.currentOrderTemplateID = this.monatService.getCurrentFlexship()?.orderTemplateID;
+		this.orderTemplateService.getSetOrderTemplateOnSession('qualifiesForOFYProducts', 'save', false, false).then(res=>{
+			this.orderTemplate = res.orderTemplate;
+			if(!this.orderTemplate){
+				//redirect to listing
+				// this.monatService.redirectToProperSite("/my-account/flexships");
+			}
+		});
     }
 	
 	public back = ():FlexshipSteps => {
@@ -84,8 +86,7 @@ class FlexshipFlowController {
 			this.farthestStepReached = step;
 		}
 	}
-	
-	
+
 	private setStepAndUpdateProgress(step:FlexshipSteps):FlexshipSteps{
 		
 		if(this.currentStep === step && step === FlexshipSteps.CHECKOUT){
@@ -109,12 +110,11 @@ class FlexshipFlow {
 	
 	public scope = {};
 	public bindToController = {
-	
+		muraData:'<?'
 	};
 	
 	public controller = FlexshipFlowController;
 	public controllerAs = "flexshipFlow";
-
 	public static Factory(){
         var directive:any = (
 		    monatFrontendBasePath,
