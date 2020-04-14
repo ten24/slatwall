@@ -72,7 +72,6 @@ class FlexshipCheckoutShippingAddressController {
 			});
     		this.setSelectedShippingAddressID(newAccountAddress.accountAddressID);
         }
-    	console.log("add new account adress, on success", newAccountAddress);
     	return true;
     };
     
@@ -153,4 +152,3 @@ class FlexshipCheckoutShippingAddress {
 export {
 	FlexshipCheckoutShippingAddress
 };
-
