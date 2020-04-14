@@ -297,8 +297,8 @@ component output="false" accessors="true" extends="HibachiService"  {
 		
 	}
 	
-	public any function getSessionBySessionCookieNPSID(any cookie,boolean isNew=false){
-		var sessionEntity = getDao('accountDAO').getSessionBySessionCookieNPSID();
+	public any function getSessionBySessionCookieNPSID(required any cookieValue,boolean isNew=false){
+		var sessionEntity = getDAO('accountDAO').getSessionBySessionCookieNPSID(arguments.cookieValue);
 		if(isNew && isNull(sessionEntity)){
 			return this.newSession();
 		}
