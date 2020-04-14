@@ -15,7 +15,7 @@ export class MonatService {
 	public canPlaceOrder:boolean;
 	public userIsEighteen:boolean;
 	public hasOwnerAccountOnSession:boolean;
-	public succesfulActions = [];
+	public successfulActions = [];
 	public showAddToCartMessage:boolean;
 	public lastAddedProduct:cartOrderItem;
 	
@@ -78,10 +78,10 @@ export class MonatService {
 
 		this.publicService.doAction(action, payload)
 			.then((data) => {
-				this.succesfulActions = [];
+				this.successfulActions = [];
 				if (data.cart && data.failureActions.length == 0) {
 					console.log("update-cart, puting it in session-cache");
-					this.succesfulActions = data.successfulActions;
+					this.successfulActions = data.successfulActions;
 					this.sessionStorageCache.put('cachedCart', data.cart);
 					this.handleCartResponseActions(data); //call before setting this.cart to snapshot
 					this.updateCartPropertiesOnService(data);
@@ -309,13 +309,13 @@ export class MonatService {
 	}
 	
 	public handleCartResponseActions(data):void{
-		if(!this.succesfulActions.length) return;
+		if(!this.successfulActions.length) return;
 
 		switch(true){
-			case this.succesfulActions[0].indexOf('addOrderItem') > -1:
+			case this.successfulActions[0].indexOf('addOrderItem') > -1:
 				this.handleAddOrderItemSuccess(data);
 				break;
-			case this.succesfulActions[0].indexOf('updateOrderItem') > -1:
+			case this.successfulActions[0].indexOf('updateOrderItem') > -1:
 				this.handleUpdateCartSuccess(data);
 				break;
 		}
