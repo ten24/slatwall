@@ -45,7 +45,7 @@ component accessors="true" output="false" extends="Slatwall.integrationServices.
 					value="f66d77f60a6b4911a36cb00b11b89a14"
 				}]
 			}
->>>>>>> b8f5ea866b2fc1021810c4bc2c9e4d688e571126
+
 		};
     }
     
