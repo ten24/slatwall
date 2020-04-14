@@ -20,7 +20,7 @@ export enum FlexshipFlowEvents {
 class FlexshipFlowController {
 	public FlexshipSteps = FlexshipSteps; 
 	public currentStep = FlexshipSteps.SHOP; 
-	public farthestStepReached = FlexshipSteps.SHOP; //TODO: revert to SHOP
+	public farthestStepReached = FlexshipSteps.SHOP; 
 	public orderTemplate:{[key:string]:any};
 	public currentOrderTemplateID:string;
 	public muraData;
