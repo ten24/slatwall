@@ -1728,4 +1728,14 @@ component extends="Slatwall.model.service.OrderService" {
 		return ofyPromoCL
 	}
 	
+	
+	public any function processOrder_retrySyncPendingOrders(required any order, any processObject, required struct data={}) {
+		return getHibachiScope().getService('integrationService')
+			.getIntegrationByIntegrationPackage('infotrax')
+			.getIntegrationCFC("data")
+			.retrySyncPendingOrders(argumentCollection=arguments);
+			
+			
+	}
+	
 }
