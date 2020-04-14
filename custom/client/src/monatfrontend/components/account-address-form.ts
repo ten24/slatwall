@@ -82,7 +82,6 @@ class AccountAddressFormController {
 		console.log('removing account-address-form');
 		this.loading = false;
 		this.close?.();
-		//todo: close
 	}
 }
 
@@ -149,6 +148,5 @@ type IAddressFormOptions = {
 	localityShowFlag:boolean;
 	localityRequiredFlag:boolean;
 }
-
 
 
