@@ -1742,15 +1742,16 @@ component extends="Slatwall.model.service.OrderService" {
 	}
 	
 
-	public string function getOrderRequirementsList(required any order, struct data = {}) {
+	public any function processOrder_placeOrder(required any order, struct data={}) {
 		
-		var orderRequirementsList = super.getOrderRequirementsList(argumentCollection=arguments);
+
 		
-		if (!listFindNoCase(orderRequirementsList, "account") && isNull(arguments.order.getAccount().getOwnerAccount())){
-			orderRequirementsList = listAppend(orderRequirementsList, "account");
+		if (isNull(arguments.order.getAccount().getOwnerAccount())){
+			arguments.order.addError( 'placeOrder', rbKey("validate.processOrder_PlaceOrder.invalidOwnerAccount") );
+			return arguments.order;
 		}
 		
-		return orderRequirementsList;
+		return super.processOrder_placeOrder(argumentCollection=arguments);
 	}
 
 }

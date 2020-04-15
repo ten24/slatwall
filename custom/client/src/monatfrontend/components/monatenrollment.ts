@@ -1,3 +1,6 @@
+import { Cache } from 'cachefactory';
+
+
 declare var hibachiConfig: any;
 declare var angular: any;
 declare var $: any;
@@ -30,10 +33,14 @@ class MonatEnrollmentController {
 	
 	
 	//@ngInject
-	constructor(public monatService, public observerService, public $rootScope, public publicService, public orderTemplateService) {
+	constructor(public monatService, public observerService, public $rootScope, public publicService, public orderTemplateService, private sessionStorageCache: Cache) {
 		if (hibachiConfig.baseSiteURL) {
 			this.backUrl = hibachiConfig.baseSiteURL;
 		}
+		
+		//clearing session-cache for entollement-process
+		console.log("Clearing sesion-caceh for entollement-process");
+		this.sessionStorageCache.removeAll();
 
 		if (angular.isUndefined(this.onFinish)) {
 			this.$rootScope.slatwall.OrderPayment_addOrderPayment = {} 
@@ -99,6 +106,8 @@ class MonatEnrollmentController {
 		
 			});
 		});
+		
+		this.monatService.getProductFilters();
 		
 	}
 

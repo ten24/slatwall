@@ -179,6 +179,16 @@ component accessors="true" extends="Slatwall.model.process.Order_AddOrderItem" {
         }
         return true;
 	}
+	
+	public boolean function isValidCountry(){
+	    
+         if (!getShippingAddress().getNewFlag() && !isNull(this.getOrder()) && !isNull(this.getOrder().getOrderCreatedSite())){
+             var countryCode = getService('siteService').getCountryCodeBySite(this.getAccount().getAccountCreatedSite());
+             return countryCode == getShippingAddress().getCountryCode();
+         }
+	    
+	    return true;
+	}
     
     // ===============  END: Custom Validation Methods =====================
     
