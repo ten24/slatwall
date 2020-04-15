@@ -146,7 +146,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 					//set renewal-date to one-year-from-enrolmentdate
 					var renewalDate = DateAdd('yyyy', 1, account.getEnrollmentDate());
 					account.setRenewalDate(DateAdd('yyyy', 1, account.getEnrollmentDate()));
-					account.setCareerTitle('MP');
+					account.setCareerTitle('Market Partner');
 					account.setRank(1);
 					
 				}
