@@ -71,14 +71,14 @@ Notes:
 	<cfset local.currencyCode = "#rc.order.getCurrencyCode()#">
 	<cfset local.accountID = "">
 	<cfset local.siteID = "">
-	<cfset local.priceGroupCode = "">
+	<cfset local.accountType = "">
 
 	<cfif NOT IsNull(rc.order.getAccount()) >
 	    <cfset local.accountID = rc.order.getAccount().getAccountID()>
 	 </cfif>
 	 
 	 <cfif NOT IsNull(rc.order.getAccount()) >
-	    <cfset local.priceGroupCode = rc.order.getAccount().getAccountType()>
+	    <cfset local.accountType = rc.order.getAccount().getAccountType()>
 	 </cfif>
 	 
     <cfif NOT IsNull(rc.order.getOrderCreatedSite())>
@@ -93,7 +93,7 @@ Notes:
     	data-simple-representation="'#simpleRepresentation#'" 
     	data-exchange-order-flag="#(rc.order.getOrderType().getSystemCode() == 'otExchangeOrder')#" 
     	data-account-id="'#local.accountID#'" 
-    	data-price-group-code="'#local.priceGroupCode#'"
+    	data-account-type="'#local.accountType#'"
     	data-site-id="'#local.siteID#'" 
     	data-currency-code="'#local.currencyCode#'" 
     	data-sku-properties-to-display-with-config="[{'name': 'personalVolumeByCurrencyCode','rbkey': 'Personal Volume','config': {'isVisible':true,'isSearchable':false,'isDeletable':false,'isEditable':false,'persistent':false,'arguments':{'currencyCode':'#currencyCode#', 'accountID': '#accountID#'}}},{'name': 'commissionableVolumeByCurrencyCode','rbkey': 'Commissionable Volume', 'config': {'isVisible':true,'isSearchable':false,'isDeletable':false,'isEditable':false,'persistent':false,'arguments':{'currencyCode':'#currencyCode#', 'accountID': '#accountID#'}}}]"
