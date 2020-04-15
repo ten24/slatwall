@@ -48,6 +48,7 @@ class swfAccountController {
     public isNotProfileImagesChoosen:boolean = false;
     public purchasePlusTotal:number;
     public listPrice:number;
+    public orderFees:number;
     
     // @ngInject
     constructor(
@@ -59,7 +60,9 @@ class swfAccountController {
         public monatAlertService,
     	public $location,
     ){
+        
         this.observerService.attach(this.loginSuccess,"loginSuccess"); 
+        
         this.observerService.attach(this.closeModals,"addNewAccountAddressSuccess"); 
         this.observerService.attach(this.closeModals,"addAccountPaymentMethodSuccess"); 
         this.observerService.attach(this.closeModals,"addProductReviewSuccess"); 
@@ -91,10 +94,10 @@ class swfAccountController {
 			this.launchAddressModal([addressVerification.address,addressVerification.suggestedAddress]);
 		}
 	}
-	
+        
 	public loginSuccess = (data) =>{
-	    
-	    if(data.redirect){
+    
+	    if(data?.redirect){
 	        if(data.redirect == 'default'){
 	            data.redirect = '';
 	        }else{
@@ -253,7 +256,10 @@ class swfAccountController {
                 this.listPrice = 0;
                 for(let item of this.orderItems as Array<any>){
                     this.orderItemTotal += item.quantity;
-                    this.listPrice += item.calculatedListPrice;
+                    this.listPrice += (item.calculatedListPrice * item.quantity);
+                    if(item.sku_product_productType_systemCode == 'VIPCustomerRegistr'){
+                        this.orderFees = item.calculatedExtendedPriceAfterDiscount;
+                    }
                 }
             }
             

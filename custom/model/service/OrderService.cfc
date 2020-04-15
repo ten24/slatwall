@@ -640,7 +640,7 @@ component extends="Slatwall.model.service.OrderService" {
 		
 		///Order Item Data
 		var ordersItemsList = this.getOrderItemCollectionList();
-		ordersItemsList.setDisplayProperties('quantity,price,calculatedListPrice,sku.product.productName,sku.product.productID,sku.skuID,skuProductURL,skuImagePath,orderFulfillment.shippingAddress.streetAddress,orderFulfillment.shippingAddress.street2Address,orderFulfillment.shippingAddress.city,orderFulfillment.shippingAddress.stateCode,orderFulfillment.shippingAddress.postalCode,orderFulfillment.shippingAddress.name,orderFulfillment.shippingAddress.countryCode,orderFulfillment.shippingMethod.shippingMethodName');
+		ordersItemsList.setDisplayProperties('quantity,price,calculatedListPrice,calculatedExtendedPriceAfterDiscount,sku.product.productName,sku.product.productID,sku.product.productType.systemCode,sku.skuID,skuProductURL,skuImagePath,orderFulfillment.shippingAddress.streetAddress,orderFulfillment.shippingAddress.street2Address,orderFulfillment.shippingAddress.city,orderFulfillment.shippingAddress.stateCode,orderFulfillment.shippingAddress.postalCode,orderFulfillment.shippingAddress.name,orderFulfillment.shippingAddress.countryCode,orderFulfillment.shippingMethod.shippingMethodName');
 		ordersItemsList.addFilter( 'order.orderID', arguments.data.orderID, '=');
 		ordersItemsList.addFilter( 'order.account.accountID', arguments.data.accountID, '=');
 		ordersItemsList.setPageRecordsShow(arguments.data.pageRecordsShow);
@@ -1728,4 +1728,28 @@ component extends="Slatwall.model.service.OrderService" {
 		return ofyPromoCL
 	}
 	
+	
+
+	public any function processOrder_retrySyncPendingOrders(required any order, any processObject, required struct data={}) {
+		return getHibachiScope().getService('integrationService')
+			.getIntegrationByIntegrationPackage('infotrax')
+			.getIntegrationCFC("data")
+			.retrySyncPendingOrders(argumentCollection=arguments);
+			
+			
+	}
+	
+
+	public any function processOrder_placeOrder(required any order, struct data={}) {
+		
+
+		
+		if (isNull(arguments.order.getAccount().getOwnerAccount())){
+			arguments.order.addError( 'placeOrder', rbKey("validate.processOrder_PlaceOrder.invalidOwnerAccount") );
+			return arguments.order;
+		}
+		
+		return super.processOrder_placeOrder(argumentCollection=arguments);
+	}
+
 }

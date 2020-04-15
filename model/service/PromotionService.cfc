@@ -548,20 +548,24 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		var maxMessages = getService('SettingService').getSettingValue('globalMaximumPromotionMessages');
 
-		if(maxMessages < arrayLen(arguments.orderQualifierMessages)){
-			arguments.orderQualifierMessages = arraySlice(arguments.orderQualifierMessages,1,maxMessages);
-		}
-		
+		var messagesApplied = 0;
 		for(var promotionQualifierMessage in arguments.orderQualifierMessages){
-			var newAppliedPromotionMessage = this.newPromotionMessageApplied();
-			newAppliedPromotionMessage.setOrder( arguments.order );
-		
-			newAppliedPromotionMessage.setPromotionQualifierMessage( promotionQualifierMessage );
-			newAppliedPromotionMessage.setPromotionPeriod(promotionQualifierMessage.getPromotionQualifier().getPromotionPeriod());
-			newAppliedPromotionMessage.setPromotion(newAppliedPromotionMessage.getPromotionPeriod().getPromotion());
-			newAppliedPromotionMessage.setMessage( promotionQualifierMessage.getInterpolatedMessage( arguments.order ) );
+			if( promotionQualifierMessage.hasOrderByOrderID(arguments.order) ){
+				var newAppliedPromotionMessage = this.newPromotionMessageApplied();
+				newAppliedPromotionMessage.setOrder( arguments.order );
 			
-			this.savePromotionMessageApplied(newAppliedPromotionMessage);
+				newAppliedPromotionMessage.setPromotionQualifierMessage( promotionQualifierMessage );
+				newAppliedPromotionMessage.setPromotionPeriod(promotionQualifierMessage.getPromotionQualifier().getPromotionPeriod());
+				newAppliedPromotionMessage.setPromotion(newAppliedPromotionMessage.getPromotionPeriod().getPromotion());
+				newAppliedPromotionMessage.setMessage( promotionQualifierMessage.getInterpolatedMessage( arguments.order ) );
+				
+				this.savePromotionMessageApplied(newAppliedPromotionMessage);
+				messagesApplied++;
+			}
+			
+			if(messagesApplied == maxMessages){
+				break;
+			}
 		}
 
 	}
@@ -639,7 +643,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 		}
 		//making sure calculated props run
-		getHibachiScope().addModifiedEntity(order);
+		arguments.order.updateCalculatedProperties(true);
 		
 	}
 
@@ -663,7 +667,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					
 				}
 				//making sure calculated props run
-				getHibachiScope().addModifiedEntity(orderItem);
+				orderItem.updateCalculatedProperties(true);
 			}
 
 		}
@@ -1551,7 +1555,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 			if(arrayLen(promotionReward.getEligiblePriceGroups())) {
 				for(var eligiblePriceGroup in promotionReward.getEligiblePriceGroups()) {
-					newPromotionReward.addEligiblePriceGroups(eligiblePriceGroup);
+					newPromotionReward.addEligiblePriceGroup(eligiblePriceGroup);
 				}
 			}
 			if(arrayLen(promotionReward.getFulfillmentMethods())) {

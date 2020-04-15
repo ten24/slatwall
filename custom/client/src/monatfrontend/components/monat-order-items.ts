@@ -1,3 +1,5 @@
+import { Cache } from 'cachefactory';
+
 declare var hibachiConfig;
 
 class MonatOrderItemsController {
@@ -9,7 +11,7 @@ class MonatOrderItemsController {
 	public siteCode:string = hibachiConfig.cmsSiteID == 'default' ? '' : hibachiConfig.cmsSiteID;
 	
 	//@ngInject
-	constructor(public monatService, public orderTemplateService, public publicService, public observerService, private $scope, private $timeout) {
+	constructor(public monatService, public orderTemplateService, public publicService, public observerService, private $scope, private $timeout, private sessionStorageCache: Cache) {
 		this.observerService.attach(this.getOrderItems,'ownerAccountSelected');
 	}
 
@@ -29,10 +31,16 @@ class MonatOrderItemsController {
 	}
 	
 	public placeOrder = (data) =>{
+		
 		this.publicService.doAction('placeOrder',data).then(result=>{
 			if(result.failureActions.length){
 				this.updateOrderItems(result);
 			}
+		})
+		.finally(() => {
+			//clearing session-cache after place-order
+			console.log("Clearing session-cache after place-order");
+			this.sessionStorageCache.removeAll();
 		})
 	}
 

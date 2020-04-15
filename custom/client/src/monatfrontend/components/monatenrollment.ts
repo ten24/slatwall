@@ -1,3 +1,6 @@
+import { Cache } from 'cachefactory';
+
+
 declare var hibachiConfig: any;
 declare var angular: any;
 declare var $: any;
@@ -26,13 +29,18 @@ class MonatEnrollmentController {
 	public showBirthday:boolean;
 	public account;
 	public stepMap = {};
-
+	public vipEnrollmentThreshold:number;
+	
 	
 	//@ngInject
-	constructor(public monatService, public observerService, public $rootScope, public publicService, public orderTemplateService) {
+	constructor(public monatService, public observerService, public $rootScope, public publicService, public orderTemplateService, private sessionStorageCache: Cache) {
 		if (hibachiConfig.baseSiteURL) {
 			this.backUrl = hibachiConfig.baseSiteURL;
 		}
+		
+		//clearing session-cache for entollement-process
+		console.log("Clearing sesion-caceh for entollement-process");
+		this.sessionStorageCache.removeAll();
 
 		if (angular.isUndefined(this.onFinish)) {
 			this.$rootScope.slatwall.OrderPayment_addOrderPayment = {} 
@@ -44,7 +52,7 @@ class MonatEnrollmentController {
 		if (angular.isUndefined(this.finishText)) {
 			this.finishText = 'Finish';
 		}
-		
+
     	this.observerService.attach(this.handleCreateAccount.bind(this),"createAccountSuccess");
     	this.observerService.attach(this.next.bind(this),"onNext");
     	this.observerService.attach(this.next.bind(this),"updateSuccess");
@@ -89,6 +97,13 @@ class MonatEnrollmentController {
 				 }else if(cart.monatOrderType?.typeCode.length){
 				 	this.handleUpgradeSteps(cart);
 				 }
+				 
+		 		if(this.type.indexOf('vip') > -1){
+					this.publicService.doAction('getVipEnrollmentMinimum').then(res=>{
+						this.vipEnrollmentThreshold = +res.vipEnrollmentThreshold + this.monatService.cart.orderItems[0].skuPrice;
+					});
+				}
+		
 			});
 		});
 		
@@ -148,7 +163,7 @@ class MonatEnrollmentController {
 	}
 
 	private navigate(index) {
-	
+
 		//If on next returns false, prevent it from navigating
 		if ((index > this.position && !this.steps[this.position].onNext()) || index < 0) {
 			return;

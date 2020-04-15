@@ -6,6 +6,9 @@ export class OrderTemplateService {
    public canPlaceOrderFlag:boolean;
    public mostRecentOrderTemplate:any;
    public currentOrderTemplateID:string;
+   public showAddToCartMessage:boolean;
+   public lastAddedProduct;
+   public cartTotalThresholdForOFYAndFreeShipping;
    
    //@ngInject
    constructor(
@@ -338,11 +341,12 @@ export class OrderTemplateService {
       return objectToReturn;
     }
 
-    public createOrderTemplate = (orderTemplateSystemCode, context="save") => {
+    public createOrderTemplate = (orderTemplateSystemCode, context="save", setOnHibachiScopeFlag = false) => {
         return this.$rootScope.hibachiScope.doAction("createOrderTemplate",{
             orderTemplateSystemCode: orderTemplateSystemCode,
             saveContext: context,
-            returnJSONObjects:''
+            returnJSONObjects:'',
+            setOnHibachiScopeFlag:setOnHibachiScopeFlag
         });
     }   
     
@@ -373,12 +377,16 @@ export class OrderTemplateService {
             if(res.orderTemplate && typeof res.orderTemplate == 'string'){
                 this.currentOrderTemplateID = res.orderTemplate;
             }else if(res.orderTemplate){
+                this.manageOrderTemplate(res.orderTemplate); 
                 this.currentOrderTemplateID = res.orderTemplate.orderTemplateID
                 this.mostRecentOrderTemplate = res.orderTemplate;
                 this.canPlaceOrderFlag = res.orderTemplate.canPlaceOrderFlag;
                 let promoArray = this.mostRecentOrderTemplate.appliedPromotionMessagesJson?.length ? JSON.parse(this.mostRecentOrderTemplate.appliedPromotionMessagesJson) : [];
                 this.mostRecentOrderTemplate['purchasePlusMessage'] = promoArray.length ? promoArray.filter( message => message.promotion_promotionName.indexOf('Purchase Plus') > -1 )[0] : {};
                 this.mostRecentOrderTemplate['suggestedPrice'] = this.calculateSRPOnOrder(this.mostRecentOrderTemplate);
+                if(this.mostRecentOrderTemplate.cartTotalThresholdForOFYAndFreeShipping){
+                    this.cartTotalThresholdForOFYAndFreeShipping = this.mostRecentOrderTemplate.cartTotalThresholdForOFYAndFreeShipping;
+                }
             }
             deferred.resolve(res);
 	    }).catch( (e) => {
@@ -392,10 +400,41 @@ export class OrderTemplateService {
     	if(!orderTemplate.orderTemplateItems) return;
     	let suggestedRetailPrice = 0;
     	for(let item of orderTemplate.orderTemplateItems){
-    		suggestedRetailPrice += item.calculatedListPrice;
+    		suggestedRetailPrice += (item.calculatedListPrice * item.quantity);
     	}
     	
     	return suggestedRetailPrice;
+    }
+    
+    //handle any new data on the order template
+    public manageOrderTemplate(template){
+        let newOT = template;
+      
+        if(!this.mostRecentOrderTemplate || !newOT.orderTemplateItems) return;
+        
+        //if the new orderTemplateItems length is > than the old orderTemplateItems, a new item has been added       
+        if(newOT.orderTemplateItems.length > this.mostRecentOrderTemplate.orderTemplateItems.length){
+            this.showAddToCartMessage = true;
+            this.lastAddedProduct = newOT.orderTemplateItems[0];
+            return;
+        }
+        
+        let index = 0;
+        
+        //Loop over orderTemplateItems to see if quantity has increased on one, if so, the item has been updated
+		for(let item of newOT.orderTemplateItems){
+			if(
+			    this.mostRecentOrderTemplate.orderTemplateItems[index] 
+			    && this.mostRecentOrderTemplate.orderTemplateItems[index].orderTemplateItemID == item.orderTemplateItemID
+			    && this.mostRecentOrderTemplate.orderTemplateItems[index].quantity < item.quantity)
+			{
+				this.showAddToCartMessage = true;
+				this.lastAddedProduct = item;
+				break;
+			}
+			index++;
+		}
+
     }
 
 }

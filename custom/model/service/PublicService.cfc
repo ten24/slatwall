@@ -1062,8 +1062,18 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     
 
     public any function addOrderItem(required struct data){
-        var cart = super.addOrderItem(arguments.data);
+        var cart = getHibachiScope().getCart();
         var account = cart.getAccount();
+        
+        if(!cart.hasPriceGroup()){
+            if( !isNull(account) && account.hasPriceGroup() ){
+                cart.setPriceGroup(account.getPriceGroups()[1]);
+            }else{
+                cart.setPriceGroup(getService('PriceGroupService').getPriceGroupByPriceGroupCode(2));
+            }
+        }
+        cart = super.addOrderItem(arguments.data);
+        account = cart.getAccount();
  
         if(
             !cart.hasErrors() 
@@ -2194,5 +2204,10 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         ){
             getHibachiScope().setCurrentFlexship(orderTemplate);
         }
+    }
+    
+    public any function getVipEnrollmentMinimum (required any data){
+        var site = getService('siteService').getSiteByCmsSiteID(arguments.data.cmsSiteID);
+        arguments.data['ajaxResponse']['vipEnrollmentThreshold'] = site.setting('integrationmonatSiteVipEnrollmentOrderMinimum');
     }
 }

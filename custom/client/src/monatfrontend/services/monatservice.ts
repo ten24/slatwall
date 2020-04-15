@@ -1,4 +1,6 @@
 import { Cache } from 'cachefactory';
+import Cart from '../models/cart'
+import cartOrderItem from '../models/cartOrderItem'
 
 export interface IOption {
 	name: string;
@@ -7,15 +9,19 @@ export interface IOption {
 
 
 export class MonatService {
-	public cart;
+	public cart:Cart;
 	public lastAddedSkuID: string = '';
 	public previouslySelectedStarterPackBundleSkuID:string;
 	public canPlaceOrder:boolean;
 	public userIsEighteen:boolean;
 	public hasOwnerAccountOnSession:boolean;
+	public successfulActions = [];
+	public showAddToCartMessage:boolean;
+	public lastAddedProduct:cartOrderItem;
 	public muraContent = {};
 	public hairFilters = [{}];
 	public skinFilters = [{}];
+
 	
 	//@ngInject
 	constructor(
@@ -35,18 +41,46 @@ export class MonatService {
 		console.log("sessionCache keys: "+this.sessionStorageCache.keys());
 		console.log("memoryCache keys: "+this.inMemoryCache.keys());
 	}
+	
+	
+	private enforceCacheOwner(key: string){
+		let cacheOwner = hibachiConfig.accountID?.trim() || 'unknown';
+		if (this.sessionStorageCache.get('cacheOwner') !== cacheOwner ){
+			console.log(
+				`enforceCacheOwner: owner changed, 
+				 setting new owner to: ${cacheOwner} from: ${this.sessionStorageCache.get('cacheOwner')},
+				 and clearing cache for ${key}
+			    `
+			);
+			this.sessionStorageCache.remove(key);
+			this.sessionStorageCache.put('cacheOwner', cacheOwner);
+			return false;
+		} 
+		return true;
+	}
+	
+	public getFromSessionCache(key: string){
+		return this.enforceCacheOwner(key) ? this.sessionStorageCache.get(key) : undefined;
+	}
+	
+	public putIntoSessionCache(key:string, value: any){
+		this.enforceCacheOwner(key);
+		this.sessionStorageCache.put(key, value);
+	}
 
 	public getCart(refresh = false, param = '') {
 
 		var deferred = this.$q.defer();
-		let cachedCart = this.sessionStorageCache.get('cachedCart');
+		let cachedCart = this.getFromSessionCache('cachedCart');
 		
-		if (refresh || angular.isUndefined(cachedCart) ){
+		if (refresh || !cachedCart ){
 			
 			this.publicService.getCart(refresh, param)
-				.then((data) => { 
-					if(data &&  data.failureActions.length == 0){
+				.then((data) => {
+					if(data?.cart){
 						console.log("get-cart, puting it in session-cache")
+						this.putIntoSessionCache('cachedCart', data.cart);
+						
 						this.updateCartPropertiesOnService(data);
 						deferred.resolve(data.cart);
 					} else {
@@ -72,16 +106,23 @@ export class MonatService {
 	*/
 	private updateCart = (action: string, payload): Promise<any> => {
 		let deferred = this.$q.defer();
-		payload['returnJSONObjects'] = 'cart';
+		payload['returnJsonObjects'] = 'cart';
 
 		this.publicService.doAction(action, payload)
 			.then((data) => {
-				if (data.cart && data.failureActions.length == 0) {
-					console.log("update-cart, puting it in session-cache")
-					this.sessionStorageCache.put('cachedCart', data.cart);
+				this.successfulActions = [];
+				//we're not checking for failure actions, as regardless of failures we still need to show the cart to the user
+				if (data?.cart) {
+					console.log("update-cart, puting it in session-cache");
+					this.putIntoSessionCache('cachedCart', data.cart);
+	
+					this.successfulActions = data.successfulActions;
+					this.handleCartResponseActions(data); //call before setting this.cart to snapshot
 					this.updateCartPropertiesOnService(data);
+	
 					deferred.resolve(data.cart);
 					this.observerService.notify( 'updatedCart', data.cart ); 
+	
 				} else {
 					throw data;
 				}
@@ -303,7 +344,44 @@ export class MonatService {
 		this.canPlaceOrder = data.cart.orderRequirementsList.indexOf('canPlaceOrderReward') == -1;
 	}
 	
-	//mock api call
+	public handleCartResponseActions(data):void{
+		if(!this.successfulActions.length) return;
+
+		switch(true){
+			case this.successfulActions[0].indexOf('addOrderItem') > -1:
+				this.handleAddOrderItemSuccess(data);
+				break;
+			case this.successfulActions[0].indexOf('updateOrderItem') > -1:
+				this.handleUpdateCartSuccess(data);
+				break;
+		}
+	}
+	
+	public handleAddOrderItemSuccess(data:{['cart']:any, [key:string]:any}):void{
+		let newCart = <Cart>data.cart;
+	
+		if(this.cart.orderItems.length && newCart.orderItems.length == this.cart.orderItems.length){
+			this.handleUpdateCartSuccess(data);
+			return;
+		}
+		this.showAddToCartMessage = true;
+		this.lastAddedProduct = newCart.orderItems[newCart.orderItems.length - 1];
+	}
+	
+	public handleUpdateCartSuccess(data:{['cart']:any, [key:string]:any}):void{
+		let newCart = <Cart>data.cart;
+		var index = 0;
+		for(let item of newCart.orderItems){
+			if(this.cart.orderItems[index] && this.cart.orderItems[index].quantity < item.quantity){
+				this.showAddToCartMessage = true;
+				this.lastAddedProduct = item;
+				break;
+			}
+			index++;
+		}
+	}
+	
+		//mock api call
 	public getProductFilters(){
 		this.hairFilters = [
 			{'name': 'shampoos', 'categoryID' : '12324121'},
