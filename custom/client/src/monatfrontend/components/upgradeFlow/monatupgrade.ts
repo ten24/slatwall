@@ -1,3 +1,5 @@
+import { Cache } from 'cachefactory';
+
 declare var hibachiConfig: any;
 declare var angular: any;
 
@@ -19,10 +21,14 @@ class MonatUpgradeController {
 	public isUpgradeable:boolean = true;
 	
 	//@ngInject
-	constructor(public monatService, public observerService, public $rootScope, public publicService, public $scope) {
+	constructor(public monatService, public observerService, public $rootScope, public publicService, public $scope, private sessionStorageCache: Cache) {
 		if (hibachiConfig.baseSiteURL) {
 			this.backUrl = hibachiConfig.baseSiteURL;
 		}
+		
+		//clearing session-cache for upgrade-process
+		this.sessionStorageCache.removeAll();
+
 		
 		if (angular.isUndefined(this.onFinish)) {
 			this.$rootScope.slatwall.OrderPayment_addOrderPayment = {} 
