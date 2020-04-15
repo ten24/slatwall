@@ -1728,4 +1728,27 @@ component extends="Slatwall.model.service.OrderService" {
 		return ofyPromoCL
 	}
 	
+	
+
+	public any function processOrder_retrySyncPendingOrders(required any order, any processObject, required struct data={}) {
+		return getHibachiScope().getService('integrationService')
+			.getIntegrationByIntegrationPackage('infotrax')
+			.getIntegrationCFC("data")
+			.retrySyncPendingOrders(argumentCollection=arguments);
+			
+			
+	}
+	
+
+	public string function getOrderRequirementsList(required any order, struct data = {}) {
+		
+		var orderRequirementsList = super.getOrderRequirementsList(argumentCollection=arguments);
+		
+		if (!listFindNoCase(orderRequirementsList, "account") && isNull(arguments.order.getAccount().getOwnerAccount())){
+			orderRequirementsList = listAppend(orderRequirementsList, "account");
+		}
+		
+		return orderRequirementsList;
+	}
+
 }

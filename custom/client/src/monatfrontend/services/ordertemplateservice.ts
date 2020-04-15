@@ -392,7 +392,7 @@ export class OrderTemplateService {
     	if(!orderTemplate.orderTemplateItems) return;
     	let suggestedRetailPrice = 0;
     	for(let item of orderTemplate.orderTemplateItems){
-    		suggestedRetailPrice += item.calculatedListPrice;
+    		suggestedRetailPrice += (item.calculatedListPrice * item.quantity);
     	}
     	
     	return suggestedRetailPrice;

@@ -79,7 +79,7 @@ class EnrollmentFlexshipController {
     	if(!this.orderTemplate.orderTemplateItems) return;
     	this.suggestedRetailPrice = 0;
     	for(let item of this.orderTemplate.orderTemplateItems){
-    		this.suggestedRetailPrice += item.calculatedListPrice;
+    		this.suggestedRetailPrice += (item.calculatedListPrice * item.quantity);
     	}
     }
 

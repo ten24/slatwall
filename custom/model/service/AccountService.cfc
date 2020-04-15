@@ -356,4 +356,11 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 		}
 		return arguments.account;
 	}
+	
+	public any function processAccount_retrySyncPendingAccounts(required any account, any processObject, required struct data={}) {
+		return getHibachiScope().getService('integrationService')
+			.getIntegrationByIntegrationPackage('infotrax')
+			.getIntegrationCFC("data")
+			.retrySyncPendingOrders(argumentCollection=arguments);
+	}
 }

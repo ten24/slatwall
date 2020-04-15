@@ -1551,7 +1551,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 			if(arrayLen(promotionReward.getEligiblePriceGroups())) {
 				for(var eligiblePriceGroup in promotionReward.getEligiblePriceGroups()) {
-					newPromotionReward.addEligiblePriceGroups(eligiblePriceGroup);
+					newPromotionReward.addEligiblePriceGroup(eligiblePriceGroup);
 				}
 			}
 			if(arrayLen(promotionReward.getFulfillmentMethods())) {

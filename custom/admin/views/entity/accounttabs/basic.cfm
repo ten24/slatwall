@@ -15,7 +15,20 @@
 			<hb:HibachiPropertyDisplay object="#rc.account#" property="genderFullWord" edit="false">   
 			<hb:HibachiPropertyDisplay object="#rc.account#" property="complianceStatus" edit="false">
 			<hb:HibachiPropertyDisplay object="#rc.account#" property="username" edit="false">
-			     
+			<div class="form-group">
+				<label class="control-label col-sm-4 title">#$.slatwall.rbKey('entity.account.accountNumber')#</label>
+				<div class="col-sm-8">
+					<p class="form-control-static value">
+						#rc.account.getAccountNumber()# 
+						<cfif not isNull(rc.account.getLastSyncedDateTime())>
+							( <b class="text-success">Synced to Infotrax ICE</b> )
+							<cfelse>
+							( <b class="text-danger">NOT Synced to Infotrax ICE</b> )
+						</cfif>
+					</p>
+
+				</div>
+			</div>
 			
 			
 		</hb:HibachiPropertyList>
