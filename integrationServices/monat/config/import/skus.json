@@ -112,25 +112,25 @@
         },
         {
           "sourceColumn":"productActiveFlag",
-          "sourceColumnDataGenerator":"1",
+          "sourceColumnDataGenerator":"0",
           "propertyIdentifier":"product.activeFlag",
           "updateFlag":false
         },
         {
           "sourceColumn":"productPublishedFlag",
-          "sourceColumnDataGenerator":"1",
+          "sourceColumnDataGenerator":"0",
           "propertyIdentifier":"product.publishedFlag",
           "updateFlag":false
         },
         {
           "sourceColumn":"skuActiveFlag",
-          "sourceColumnDataGenerator":"1",
+          "sourceColumnDataGenerator":"0",
           "propertyIdentifier":"activeFlag",
           "updateFlag":false
         },
         {
           "sourceColumn":"skuPublishedFlag",
-          "sourceColumnDataGenerator":"1",
+          "sourceColumnDataGenerator":"0",
           "propertyIdentifier":"publishedFlag",
           "updateFlag":false
         },
