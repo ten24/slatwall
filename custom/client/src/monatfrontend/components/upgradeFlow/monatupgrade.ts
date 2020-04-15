@@ -27,6 +27,7 @@ class MonatUpgradeController {
 		}
 		
 		//clearing session-cache for upgrade-process
+		console.log("Clearing sesion-caceh for upgrade-process");
 		this.sessionStorageCache.removeAll();
 
 		

@@ -38,7 +38,8 @@ class MonatEnrollmentController {
 			this.backUrl = hibachiConfig.baseSiteURL;
 		}
 		
-		//clearing session-cache for entollement
+		//clearing session-cache for entollement-process
+		console.log("Clearing sesion-caceh for entollement-process");
 		this.sessionStorageCache.removeAll();
 
 		if (angular.isUndefined(this.onFinish)) {
