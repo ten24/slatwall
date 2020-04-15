@@ -1972,6 +1972,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 			orderTemplateItem = this.saveOrderTemplateItem(orderTemplateItem);
 		}
+		
+		for(var oti in arguments.orderTemplate.getOrderTemplateItems()){
+			oti.updateCalculatedProperties();
+		}
 
 		return arguments.orderTemplate; 	
 	} 

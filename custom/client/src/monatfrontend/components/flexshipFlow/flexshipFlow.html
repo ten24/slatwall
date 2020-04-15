@@ -7,7 +7,7 @@
 			</a>			
 			<div class="right-nav">
 				<div class="row justify-content-end">
-					<hybrid-cart type="flexshipFlow.type" is-enrollment="true"></hybrid-cart>
+					<hybrid-cart type="'vipFlexshipFlow'" is-enrollment="false"></hybrid-cart>
 				</div>			
 			</div>			
 		</div>
@@ -21,9 +21,15 @@
 			<product-listing-step></product-listing-step>
 		</div>
 		<!--frequency step -->
-		<div ng-if="flexshipFlow.currentStep == flexshipFlow.FlexshipSteps.FREQUENCY"> FREQUENCY STEP </div>
+		<div ng-if="flexshipFlow.currentStep == flexshipFlow.FlexshipSteps.FREQUENCY"> 
+			<frequency-step></frequency-step>
+		</div>
 		<!--ofy step -->
-		<div ng-if="flexshipFlow.currentStep  == flexshipFlow.FlexshipSteps.OFY"> OFY STEP </div>
+		<div ng-if="flexshipFlow.currentStep  == flexshipFlow.FlexshipSteps.OFY">
+			<div class="container great_part">
+				<ofy-enrollment flexship="flexshipFlow.orderTemplateService.currentOrderTemplateID"></ofy-enrollment>	
+			</div>
+		</div>
 		<!--Checkout step -->
 		<div ng-if="flexshipFlow.currentStep  == flexshipFlow.FlexshipSteps.CHECKOUT"> CHECKOUT STEP </div>
 </div>
@@ -104,7 +110,7 @@
 						'fa-check': (flexshipFlow.farthestStepReached > flexshipFlow.FlexshipSteps.OFY) && (flexshipFlow.currentStep != flexshipFlow.FlexshipSteps.OFY)
 					}"
 				></i>
-				<p class="mb-1" sw-rbkey="'frontend.flexship.frequency'"></p>
+				<p class="mb-1" sw-rbkey="'frontend.flexshipFlow.onlyForYou'"></p>
 			</div>
 			
 			<!--Checkout Icon -->
@@ -136,7 +142,7 @@
 				ng-class="{ 
 					disabled: flexshipFlow.currentStep == flexshipFlow.FlexshipSteps.CHECKOUT, 
 				}"
-				ng-disabled="flexshipFlow.currentStep == flexshipFlow.FlexshipSteps.CHECKOUT"
+				ng-disabled="flexshipFlow.currentStep == flexshipFlow.FlexshipSteps.CHECKOUT || !flexshipFlow.orderTemplateService.mostRecentOrderTemplate.qualifiesForOFYProducts"
 			>
 				<span sw-rbkey="'frontend.global.next'"></span>
 				<i class="fas fa-chevron-right"></i>

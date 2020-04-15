@@ -1,4 +1,6 @@
 import { Cache } from 'cachefactory';
+import Cart from '../models/cart'
+import cartOrderItem from '../models/cartOrderItem'
 
 export interface IOption {
 	name: string;
@@ -7,12 +9,17 @@ export interface IOption {
 
 
 export class MonatService {
-	public cart;
+	public cart:Cart;
 	public lastAddedSkuID: string = '';
 	public previouslySelectedStarterPackBundleSkuID:string;
 	public canPlaceOrder:boolean;
 	public userIsEighteen:boolean;
 	public hasOwnerAccountOnSession:boolean;
+	public successfulActions = [];
+	public showAddToCartMessage:boolean;
+	public lastAddedProduct:cartOrderItem;
+	public muraContent = {};
+
 	
 	//@ngInject
 	constructor(
@@ -34,6 +41,7 @@ export class MonatService {
 	}
 
 	public getCart(refresh = false, param = '') {
+
 		var deferred = this.$q.defer();
 		let cachedCart = this.sessionStorageCache.get('cachedCart');
 		
@@ -43,8 +51,7 @@ export class MonatService {
 				.then((data) => { 
 					if(data &&  data.failureActions.length == 0){
 						console.log("get-cart, puting it in session-cache")
-						this.sessionStorageCache.put('cachedCart',data.cart);
-						this.canPlaceOrder = data.cart.orderRequirementsList.indexOf('canPlaceOrderReward') == -1;
+						this.updateCartPropertiesOnService(data);
 						deferred.resolve(data.cart);
 					} else {
 						throw data;
@@ -57,6 +64,7 @@ export class MonatService {
 				});
 				
 		} else {
+			this.updateCartPropertiesOnService({cart:cachedCart});
 			deferred.resolve(cachedCart);
 		}
 		return deferred.promise;
@@ -72,10 +80,13 @@ export class MonatService {
 
 		this.publicService.doAction(action, payload)
 			.then((data) => {
+				this.successfulActions = [];
 				if (data.cart && data.failureActions.length == 0) {
-					console.log("update-cart, puting it in session-cache")
+					console.log("update-cart, puting it in session-cache");
+					this.successfulActions = data.successfulActions;
 					this.sessionStorageCache.put('cachedCart', data.cart);
-					this.canPlaceOrder = data.cart.orderRequirementsList.indexOf('canPlaceOrderReward') == -1;
+					this.handleCartResponseActions(data); //call before setting this.cart to snapshot
+					this.updateCartPropertiesOnService(data);
 					deferred.resolve(data.cart);
 					this.observerService.notify( 'updatedCart', data.cart ); 
 				} else {
@@ -293,6 +304,47 @@ export class MonatService {
 		return this.sessionStorageCache.get('currentFlexship');
 	}
 	
+	public updateCartPropertiesOnService(data:{['cart']:any, [key:string]:any}){
+		this.cart = data.cart;
+		this.cart['purchasePlusMessage'] = data.cart.appliedPromotionMessages ? data.cart.appliedPromotionMessages.filter( message => message.promotionName.indexOf('Purchase Plus') > -1 )[0] : {};
+		this.canPlaceOrder = data.cart.orderRequirementsList.indexOf('canPlaceOrderReward') == -1;
+	}
 	
+	public handleCartResponseActions(data):void{
+		if(!this.successfulActions.length) return;
+
+		switch(true){
+			case this.successfulActions[0].indexOf('addOrderItem') > -1:
+				this.handleAddOrderItemSuccess(data);
+				break;
+			case this.successfulActions[0].indexOf('updateOrderItem') > -1:
+				this.handleUpdateCartSuccess(data);
+				break;
+		}
+	}
+	
+	public handleAddOrderItemSuccess(data:{['cart']:any, [key:string]:any}):void{
+		let newCart = <Cart>data.cart;
+	
+		if(this.cart.orderItems.length && newCart.orderItems.length == this.cart.orderItems.length){
+			this.handleUpdateCartSuccess(data);
+			return;
+		}
+		this.showAddToCartMessage = true;
+		this.lastAddedProduct = newCart.orderItems[newCart.orderItems.length - 1];
+	}
+	
+	public handleUpdateCartSuccess(data:{['cart']:any, [key:string]:any}):void{
+		let newCart = <Cart>data.cart;
+		var index = 0;
+		for(let item of newCart.orderItems){
+			if(this.cart.orderItems[index] && this.cart.orderItems[index].quantity < item.quantity){
+				this.showAddToCartMessage = true;
+				this.lastAddedProduct = item;
+				break;
+			}
+			index++;
+		}
+	}
 
 }

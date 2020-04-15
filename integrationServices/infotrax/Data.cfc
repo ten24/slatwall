@@ -255,5 +255,27 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 		return postRequest('ICEAutoship.delete', arguments.DTSArguments, getSessionToken());
 	}
 	
+	public any function retrySyncPendingOrders(required any order, any processObject, required struct data={}){
+		if(structKeyExists(arguments.data, 'collectionData')){
+			this.retryBatch('order', arguments.data.collectionData)
+		} 
+		return arguments.order;
+	}
+	
+	public any function retrySyncPendingAccounts(required any account, any processObject, required struct data={}){
+		if(structKeyExists(arguments.data, 'collectionData')){
+			this.retryBatch('account', arguments.data.collectionData)
+		} 
+		return arguments.account;
+	}
+	
+	public void function retryBatch(required string baseObject, required array data){
+		for(var item in arguments.data){
+			if ( !getService('infoTraxService').isEntityQualified(arguments.baseObject, item['#baseObject#ID'], 'after#baseObject#SaveSuccess') ) {
+				continue;
+			}
+			getService('hibachiService').invokeMethod('get#baseObject#', { 1 : item['#baseObject#ID'] });
+		}
+	}
 
 }

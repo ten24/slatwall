@@ -245,8 +245,8 @@
 		</cfoutput>
 
 	<cfelse>
-		<cfsilent>
 
+		<cfsilent>
 
 			<cfif !isObject(attributes.smartList) && !len(attributes.smartlist)>
 				<cfthrow message="The required parameter attributes.smartList was not provided."/>
@@ -299,8 +299,9 @@
 				<cfset attributes.tableclass = listAppend(attributes.tableclass, 'table-expandable', ' ') />
 
 				<cfset attributes.smartList.joinRelatedProperty( attributes.smartList.getBaseEntityName() , attributes.parentPropertyName, "LEFT") />
-				<cfset attributes.smartList.addFilter("#attributes.parentPropertyName#.#thistag.exampleEntity.getPrimaryIDPropertyName()#", "NULL") />
-
+				<cfif !len(attributes.smartList.getFilters("#attributes.parentPropertyName#.#thistag.exampleEntity.getPrimaryIDPropertyName()#")) >
+					<cfset attributes.smartList.addFilter("#attributes.parentPropertyName#.#thistag.exampleEntity.getPrimaryIDPropertyName()#", "NULL") />
+				</cfif>
 				<cfset thistag.allpropertyidentifiers = listAppend(thistag.allpropertyidentifiers, "#thisTag.exampleEntity.getPrimaryIDPropertyName()#Path") />
 
 				<cfset attributes.tableattributes = listAppend(attributes.tableattributes, 'data-parentidproperty="#attributes.parentPropertyName#.#thistag.exampleEntity.getPrimaryIDPropertyName()#"', " ") />
@@ -483,7 +484,7 @@
 			<cfif attributes.administativeCount>
 			</cfif>
 		</cfsilent>
-
+		
 		<cfoutput>
 
 			<div class="s-table-header-nav s-listing-head-margin">

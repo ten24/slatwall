@@ -1,0 +1,37 @@
+<div class="container">
+	<div class="subtext subtext1">       
+		
+		<p class="error_text text-danger bundle-error-text ng-scope" ng-if="frequencyStep.flexshipFrequencyHasErrors" sw-rbkey="'frontend.enrollment.selectMonthDay'"></p>
+		
+		<h2>
+			<span class="choic" sw-rbkey="'frontend.enrollment.greatChoice'"></span> 
+			
+			<span sw-rbKey="'frontend.enrollment.recieveItemsSub'"></span>
+
+			<div class="title-dropdown">
+				<select 
+					ng-model="frequencyStep.term" 
+					class="title-dropdown__select"
+					ng-options="term.name for term in frequencyStep.frequencyTerms"
+				></select>
+			</div>
+
+			<span sw-rbKey="'frontend.global.onThe'"></span>
+			<div class="title-dropdown">
+				<select 
+					ng-model="frequencyStep.day" 
+					class="title-dropdown__select"
+					ng-options="(day | ordinal) for day in frequencyStep.flexshipDaysOfMonth"
+				></select>
+			</div>
+		</h2>
+		<p sw-rbkey="'frontend.enrollment.adjustLater'"></p>
+	</div>
+</div>
+<button 
+	ng-click="frequencyStep.setOrderTemplateFrequency()"
+	class="btn btn-secondary forward-btn forward" 
+	ng-class="{loading: frequencyStep.loading}"
+>	
+	<span sw-rbkey="'frontend.global.next'"></span> <i class="fas fa-chevron-right"></i>
+</button>

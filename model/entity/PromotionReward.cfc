@@ -83,6 +83,8 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 	property name="fulfillmentMethods" singularname="fulfillmentMethod" cfc="FulfillmentMethod" fieldtype="many-to-many" linktable="SwPromoRewardFulfillmentMethod" fkcolumn="promotionRewardID" inversejoincolumn="fulfillmentMethodID";
 	property name="shippingAddressZones" singularname="shippingAddressZone" cfc="AddressZone" fieldtype="many-to-many" linktable="SwPromoRewardShipAddressZone" fkcolumn="promotionRewardID" inversejoincolumn="addressZoneID";
 	property name="shippingMethods" singularname="shippingMethod" cfc="ShippingMethod" fieldtype="many-to-many" linktable="SwPromoRewardShippingMethod" fkcolumn="promotionRewardID" inversejoincolumn="shippingMethodID";
+	property name="includedStackableRewards" singularname="includedStackableReward" cfc="PromotionReward" fieldtype="many-to-many" linktable="SwPromoRewardStackIncl" fkcolumn="promotionRewardID" inversejoincolumn="linkedPromotionRewardID";
+	property name="excludedStackableRewards" singularname="excludedStackableReward" cfc="PromotionReward" fieldtype="many-to-many" linktable="SwPromoRewardStackExcl" fkcolumn="promotionRewardID" inversejoincolumn="linkedPromotionRewardID";
 	
 	// Deprecated Properties
 	property name="brands" singularname="brand" cfc="Brand" fieldtype="many-to-many" linktable="SwPromoRewardBrand" fkcolumn="promotionRewardID" inversejoincolumn="brandID";
@@ -377,6 +379,22 @@ property name="personalVolumeAmount" ormtype="big_decimal" hb_formatType="custom
 	
 	public boolean function hasOrderItemSku(required any orderItem){
 		return this.hasSkuBySkuID(arguments.orderItem.getSku().getSkuID());
+	}
+	
+	public string function getIncludedStackableRewardsIDList( boolean includeReciprocalRecords=false ){
+		var cacheKey = 'includedStackableRewardsIDList#arguments.includeReciprocalRecords#';
+		if(!structKeyExists(variables,cacheKey)){
+			variables[cacheKey] = ArrayToList(getDAO('PromotionDAO').getIncludedStackableRewardsIDListForPromotionReward( this, arguments.includeReciprocalRecords ));
+		}
+		return variables[cacheKey];
+	}
+	
+	public string function getExcludedStackableRewardsIDList( boolean includeReciprocalRecords=false ){
+		var cacheKey = 'excludedStackableRewardsIDList#arguments.includeReciprocalRecords#';
+		if(!structKeyExists(variables, cacheKey)){
+			variables[cacheKey] = ArrayToList(getDAO('PromotionDAO').getExcludedStackableRewardsIDListForPromotionReward( this, arguments.includeReciprocalRecords ));
+		}
+		return variables[cacheKey];
 	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================

@@ -1,9 +1,9 @@
 
-	<div class="order-details-box items-details" >
+	<div class="order-details-box items-details cart-products" >
 		<h3><span ng-bind="monatFlexshipDetail.orderTemplate.calculatedOrderTemplateItemsCount"></span> 
 			<span sw-rbkey="'define.items'"></span>
 		</h3>
-		<table class="table items-details-table" >
+		<table class="table cart-table" >
 			<tr monat-flexship-order-item 
 				ng-if="monatFlexshipDetail.orderTemplate.orderTemplateItems" 
 				ng-repeat="orderItem in monatFlexshipDetail.orderTemplate.orderTemplateItems" 
