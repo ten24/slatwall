@@ -1729,6 +1729,7 @@ component extends="Slatwall.model.service.OrderService" {
 	}
 	
 	
+
 	public any function processOrder_retrySyncPendingOrders(required any order, any processObject, required struct data={}) {
 		return getHibachiScope().getService('integrationService')
 			.getIntegrationByIntegrationPackage('infotrax')
@@ -1738,4 +1739,16 @@ component extends="Slatwall.model.service.OrderService" {
 			
 	}
 	
+
+	public string function getOrderRequirementsList(required any order, struct data = {}) {
+		
+		var orderRequirementsList = super.getOrderRequirementsList(argumentCollection=arguments);
+		
+		if (!listFindNoCase(orderRequirementsList, "account") && isNull(arguments.order.getAccount().getOwnerAccount())){
+			orderRequirementsList = listAppend(orderRequirementsList, "account");
+		}
+		
+		return orderRequirementsList;
+	}
+
 }

@@ -139,7 +139,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 
 				//set the session
 				var NPSID = rt;
-				var sessionEntity = this.getSessionBySessionCookieNPSID( NPSID, true );
+				var sessionEntity = this.getSessionBySessionCookie('sessionCookieNPSID', NPSID, true );
 				foundWithNPSID = true;
 				getHibachiScope().setSessionValue(sessionValue, sessionEntity.getSessionID());
 				request.context["foundWithRequestToken"] = true;
@@ -164,7 +164,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 		
 		} else if(structKeyExists(cookie, "#cookiePrefix#-ExtendedPSID")) {
 			
-			var sessionEntity = this.getSessionBySessionCookieExtendedPSID( cookie["#cookiePrefix#-ExtendedPSID"], true);
+			var sessionEntity = this.getSessionBySessionCookie('sessionCookieExtendedPSID', cookie["#cookiePrefix#-ExtendedPSID"], true);
 
 		
 			if(sessionEntity.getNewFlag()) {
@@ -178,7 +178,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 			
 		} else if(structKeyExists(cookie, "#cookiePrefix#-NPSID")) {
 
-			var sessionEntity = this.getSessionBySessionCookieNPSID( cookie["#cookiePrefix#-NPSID"], true);
+			var sessionEntity = this.getSessionBySessionCookie('sessionCookieNPSID', cookie["#cookiePrefix#-NPSID"], true);
 		
 			if(sessionEntity.getNewFlag()) {
 				getHibachiTagService().cfcookie(name="#cookiePrefix#-NPSID", value='', expires="#now()#");
@@ -191,7 +191,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 		
 		} else if(structKeyExists(cookie, "#cookiePrefix#-PSID")) {
 
-			var sessionEntity = this.getSessionBySessionCookiePSID( cookie["#cookiePrefix#-PSID"], true);
+			var sessionEntity = this.getSessionBySessionCookie('sessionCookiePSID', cookie["#cookiePrefix#-PSID"], true);
 		
 			if(sessionEntity.getNewFlag()) {
 				getHibachiTagService().cfcookie(name="#cookiePrefix#-PSID", value='', expires="#now()#");
@@ -297,8 +297,8 @@ component output="false" accessors="true" extends="HibachiService"  {
 		
 	}
 	
-	public any function getSessionBySessionCookieNPSID(any cookie,boolean isNew=false){
-		var sessionEntity = getDao('accountDAO').getSessionBySessionCookieNPSID();
+	public any function getSessionBySessionCookie(required any cookieName, required any cookieValue,boolean isNew=false){
+		var sessionEntity = getDAO('accountDAO').getSessionBySessionCookie(argumentCollection=arguments);
 		if(isNew && isNull(sessionEntity)){
 			return this.newSession();
 		}
