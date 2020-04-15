@@ -264,7 +264,7 @@ component  accessors="true" output="false"
         param name="arguments.data.deviceID" default="";
         param name="arguments.data.request_token" default="";
 
-        var sessionEntity = getService("HibachiSessionService").getSessionBySessionCookieNPSID( arguments.data.request_token, true );
+        var sessionEntity = getService("HibachiSessionService").getSessionBySessionCookie('sessionCookieNPSID', arguments.data.request_token, true );
         sessionEntity.setDeviceID(arguments.data.deviceID);
         
         //If this is a request from the api, setup the response header and populate it with data.

@@ -1,5 +1,13 @@
-import { Cache } from 'cachefactory';
-import { PublicService, ObserverService, RequestService, UtilityService } from '@Hibachi/core/core.module';
+import { Cache } from "cachefactory";
+import {
+	PublicService,
+	ObserverService,
+	RequestService,
+	UtilityService,
+} from "@Hibachi/core/core.module";
+
+import Cart from "@Monat/models/cart";
+import cartOrderItem from "@Monat/models/cartOrderItem";
 
 export type IOption = {
 	name: string;
@@ -7,12 +15,15 @@ export type IOption = {
 };
 
 export class MonatService {
-	public cart;
-	public lastAddedSkuID: string = '';
+	public cart: Cart;
+	public lastAddedSkuID: string = "";
 	public previouslySelectedStarterPackBundleSkuID: string;
 	public canPlaceOrder: boolean;
 	public userIsEighteen: boolean;
 	public hasOwnerAccountOnSession: boolean;
+	public successfulActions = [];
+	public showAddToCartMessage: boolean;
+	public lastAddedProduct: cartOrderItem;
 	public muraContent = {};
 
 	//@ngInject
@@ -26,20 +37,19 @@ export class MonatService {
 
 		private localStorageCache: Cache,
 		private sessionStorageCache: Cache,
-		private inMemoryCache: Cache,
-	) {
-	}
+		private inMemoryCache: Cache
+	) {}
 
-	public getCart(refresh = false, param = '') {
+	public getCart(refresh = false, param = "") {
 		var deferred = this.$q.defer();
-		let cachedCart = this.sessionStorageCache.get('cachedCart');
+		let cachedCart = this.sessionStorageCache.get("cachedCart");
 
 		if (refresh || angular.isUndefined(cachedCart)) {
 			this.publicService
 				.getCart(refresh, param)
 				.then((data) => {
 					if (data && data.failureActions.length == 0) {
-						console.log('get-cart, puting it in session-cache');
+						console.log("get-cart, putting it in session-cache");
 						this.updateCartPropertiesOnService(data);
 						deferred.resolve(data.cart);
 					} else {
@@ -47,8 +57,8 @@ export class MonatService {
 					}
 				})
 				.catch((e) => {
-					console.log('get-cart, exception, removing it from session-cache', e);
-					this.sessionStorageCache.remove('cachedCart');
+					console.log("get-cart, exception, removing it from session-cache", e);
+					this.sessionStorageCache.remove("cachedCart");
 					deferred.reject(e);
 				});
 		} else {
@@ -64,24 +74,27 @@ export class MonatService {
 	 */
 	private updateCart = (action: string, payload) => {
 		let deferred = this.$q.defer();
-		payload['returnJSONObjects'] = 'cart';
+		payload["returnJSONObjects"] = "cart";
 
 		this.publicService
 			.doAction(action, payload)
 			.then((data) => {
+				this.successfulActions = [];
 				if (data.cart && data.failureActions.length == 0) {
-					console.log('update-cart, puting it in session-cache');
-					this.sessionStorageCache.put('cachedCart', data.cart);
+					console.log("update-cart, putting it in session-cache");
+					this.successfulActions = data.successfulActions;
+					this.sessionStorageCache.put("cachedCart", data.cart);
+					this.handleCartResponseActions(data); //call before setting this.cart to snapshot
 					this.updateCartPropertiesOnService(data);
 					deferred.resolve(data.cart);
-					this.observerService.notify('updatedCart', data.cart);
+					this.observerService.notify("updatedCart", data.cart);
 				} else {
 					throw data;
 				}
 			})
 			.catch((e) => {
-				console.log('update-cart, exception, removing it from session-cache', e);
-				this.sessionStorageCache.remove('cachedCart');
+				console.log("update-cart, exception, removing it from session-cache", e);
+				this.sessionStorageCache.remove("cachedCart");
 				deferred.reject(e);
 			});
 
@@ -96,30 +109,30 @@ export class MonatService {
 
 		this.lastAddedSkuID = skuID;
 
-		return this.updateCart('addOrderItem', payload);
+		return this.updateCart("addOrderItem", payload);
 	}
 
 	public removeFromCart(orderItemID: string) {
 		let payload = {
 			orderItemID: orderItemID,
 		};
-		return this.updateCart('removeOrderItem', payload);
+		return this.updateCart("removeOrderItem", payload);
 	}
 
 	public updateCartItemQuantity(orderItemID: string, quantity: number = 1) {
 		let payload = {
-			'orderItem.orderItemID': orderItemID,
-			'orderItem.quantity': quantity,
+			"orderItem.orderItemID": orderItemID,
+			"orderItem.quantity": quantity,
 		};
-		return this.updateCart('updateOrderItemQuantity', payload);
+		return this.updateCart("updateOrderItemQuantity", payload);
 	}
 
 	public submitSponsor(sponsorID: string) {
-		return this.publicService.doAction('submitSponsor', { sponsorID });
+		return this.publicService.doAction("submitSponsor", { sponsorID });
 	}
 
 	public addEnrollmentFee(sponsorID: string) {
-		return this.publicService.doAction('addEnrollmentFee');
+		return this.publicService.doAction("addEnrollmentFee");
 	}
 
 	public selectStarterPackBundle(skuID: string, quantity: number = 1, upgradeFlow = 0) {
@@ -129,19 +142,19 @@ export class MonatService {
 		};
 
 		if (upgradeFlow) {
-			payload['upgradeFlowFlag'] = 1;
+			payload["upgradeFlowFlag"] = 1;
 		}
 
 		if (this.previouslySelectedStarterPackBundleSkuID) {
 			payload[
-				'previouslySelectedStarterPackBundleSkuID'
+				"previouslySelectedStarterPackBundleSkuID"
 			] = this.previouslySelectedStarterPackBundleSkuID;
 		}
 
 		this.lastAddedSkuID = skuID;
 		this.previouslySelectedStarterPackBundleSkuID = skuID;
 
-		return this.updateCart('selectStarterPackBundle', payload);
+		return this.updateCart("selectStarterPackBundle", payload);
 	}
 
 	/**
@@ -152,9 +165,11 @@ export class MonatService {
 		var optionsToFetch = this.makeListOfOptionsToFetch(options, refresh);
 
 		if (refresh || (optionsToFetch && optionsToFetch.length)) {
-			this.doAction('getOptions', { optionsList: optionsToFetch }).then((data: any) => {
-				var { messages, failureActions, successfulActions, ...realOptions } = data; //destructuring we dont want unwanted data in cached options
-				Object.keys(realOptions).forEach((key) => this.localStorageCache.put(key, realOptions[key]));
+			this.doPublicAction("getOptions", { optionsList: optionsToFetch }).then((data: any) => {
+				var { messages, failureActions, successfulActions, ...realOptions } = data; //destructuring we don't want unwanted data in cached options
+				Object.keys(realOptions).forEach((key) =>
+					this.localStorageCache.put(key, realOptions[key])
+				);
 				this.returnOptions(options, deferred);
 			});
 		} else {
@@ -166,12 +181,14 @@ export class MonatService {
 	private makeListOfOptionsToFetch(options: {}, refresh: boolean = false) {
 		return Object.keys(options)
 			.filter((key) => refresh || !!options[key] || !this.localStorageCache.get(key))
-			.reduce((list, current) => this.utilityService.listAppend(list, current), '');
+			.reduce((list, current) => this.utilityService.listAppend(list, current), "");
 	}
 
 	private returnOptions(options: {}, deferred) {
 		let res = Object.keys(options).reduce((obj, key) => {
-			return (<any>Object).assign(obj, { [key]: this.localStorageCache.get(key) });
+			return (<any>Object).assign(obj, {
+				[key]: this.localStorageCache.get(key),
+			});
 		}, {});
 		deferred.resolve(res);
 	}
@@ -185,7 +202,7 @@ export class MonatService {
 	}
 
 	public getFrequencyDateOptions(refresh = false) {
-		return this.getOptions({ frequencydateOptions: refresh });
+		return this.getOptions({ frequencyDateOptions: refresh });
 	}
 
 	public getCancellationReasonTypeOptions(refresh = false) {
@@ -193,7 +210,9 @@ export class MonatService {
 	}
 
 	public getScheduleDateChangeReasonTypeOptions(refresh = false) {
-		return this.getOptions({ scheduleDateChangeReasonTypeOptions: refresh });
+		return this.getOptions({
+			scheduleDateChangeReasonTypeOptions: refresh,
+		});
 	}
 
 	public getExpirationMonthOptions(refresh = false) {
@@ -212,18 +231,18 @@ export class MonatService {
 	 **/
 	public getCookieValueByCookieName(name: string): string {
 		let cookieString = document.cookie;
-		let cookieArray = cookieString.split(';');
+		let cookieArray = cookieString.split(";");
 		let cookieValueArray = <Array<string>>cookieArray.filter((el) => el.search(name) > -1);
-		if (!cookieValueArray.length) return '';
-		return cookieValueArray[0].substr(cookieValueArray[0].indexOf('=') + 1);
+		if (!cookieValueArray.length) return "";
+		return cookieValueArray[0].substr(cookieValueArray[0].indexOf("=") + 1);
 	}
 
-	public getFlattenObject = (inObject: Object, delimiter: string = '.'): Object => {
+	public getFlattenObject = (inObject: Object, delimiter: string = "."): Object => {
 		var objectToReturn = {};
 		for (var key in inObject) {
 			if (!inObject.hasOwnProperty(key)) continue;
 
-			if (typeof inObject[key] == 'object' && inObject[key] !== null) {
+			if (typeof inObject[key] == "object" && inObject[key] !== null) {
 				var flatObject = this.getFlattenObject(inObject[key]);
 				for (var x in flatObject) {
 					if (!flatObject.hasOwnProperty(x)) continue;
@@ -250,14 +269,14 @@ export class MonatService {
 	}
 
 	public adjustInputFocuses = () => {
-		$('input, select').focus(function () {
+		$("input, select").focus(function () {
 			var ele = $(this);
 			if (!ele.isInEnrollmentViewport()) {
-				$('html, body').animate(
+				$("html, body").animate(
 					{
 						scrollTop: ele.offset().top - 80,
 					},
-					800,
+					800
 				);
 			}
 		});
@@ -265,30 +284,30 @@ export class MonatService {
 
 	public getAccountWishlistItemIDs = () => {
 		var deferred = this.$q.defer();
-		this.publicService.doAction('getWishlistItemsForAccount').then((data) => {
+		this.publicService.doAction("getWishlistItemsForAccount").then((data) => {
 			deferred.resolve(data);
 		});
 		return deferred.promise;
 	};
 
 	public addEditAccountAddress(payload) {
-		return this.publicService.doAction('addEditAccountAddress', payload);
+		return this.publicService.doAction("addEditAccountAddress", payload);
 	}
 
 	public getAccountAddresses() {
 		let deferred = this.$q.defer<any>();
-		this.doAction('getAccountAddresses')
+		this.doPublicAction("getAccountAddresses")
 			.then((data) => {
 				if (!data?.accountAddresses) throw data;
 				deferred.resolve(data);
 			})
-			.catch((e) => deferred.reject(e) );
+			.catch((e) => deferred.reject(e));
 		return deferred.promise;
 	}
 
 	public getAccountPaymentMethods() {
 		let deferred = this.$q.defer<any>();
-		this.doAction('getAccountPaymentMethods')
+		this.doPublicAction("getAccountPaymentMethods")
 			.then((data) => {
 				if (!data?.accountPaymentMethods) throw data;
 				deferred.resolve(data);
@@ -299,13 +318,15 @@ export class MonatService {
 
 	public getStateCodeOptionsByCountryCode(
 		countryCode: string = hibachiConfig.countryCode,
-		refresh = false,
+		refresh = false
 	) {
 		let cacheKey = `stateCodeOptions_${countryCode}`;
 		let deferred = this.$q.defer<any>();
 
 		if (refresh || !this.localStorageCache.get(cacheKey)) {
-			this.doAction('getStateCodeOptionsByCountryCode', { countryCode: countryCode })
+			this.doPublicAction("getStateCodeOptionsByCountryCode", {
+				countryCode: countryCode,
+			})
 				.then((data) => {
 					if (!data?.stateCodeOptions) throw data;
 
@@ -325,8 +346,8 @@ export class MonatService {
 	//************************* helper functions *****************************//
 
 	public redirectToProperSite(redirectUrl: string) {
-		if (hibachiConfig.cmsSiteID != 'default') {
-			redirectUrl = '/' + hibachiConfig.cmsSiteID + redirectUrl;
+		if (hibachiConfig.cmsSiteID != "default") {
+			redirectUrl = "/" + hibachiConfig.cmsSiteID + redirectUrl;
 		}
 
 		this.$window.location.href = redirectUrl;
@@ -336,12 +357,12 @@ export class MonatService {
 	 * doAction('actionName', ?{....whatever-data...})
 	 */
 
-	public doAction(action: string, data?: any): ng.IPromise<any> {
+	public doPublicAction(action: string, data?: any): ng.IPromise<any> {
 		return this.requestService.newPublicRequest(this.createPublicAction(action), data).promise;
 	}
 
 	/**
-	 * getProeperURL('WHATEVER') ==> /Slatwall/?slatAction=api:main:WHATEVER
+	 * createPublicAction('WHATEVER') ==> /Slatwall/?slatAction=api:main:WHATEVER
 	 */
 
 	public createPublicAction(action: string) {
@@ -351,7 +372,9 @@ export class MonatService {
 	public formatAccountAddress(accountAddress): string {
 		return `
         		${accountAddress?.accountAddressName} 
-        		- ${accountAddress?.address_streetAddress} ${accountAddress?.address_street2Address?.trim() || ' '}
+        		- ${accountAddress?.address_streetAddress} ${
+			accountAddress?.address_street2Address?.trim() || " "
+		}
     			${accountAddress?.address_city}, ${accountAddress?.address_stateCode} 
     			${accountAddress?.address_postalCode} ${accountAddress?.address_countryCode}
     		`;
@@ -361,36 +384,79 @@ export class MonatService {
 
 	public setNewlyCreatedFlexship(flexshipID: string) {
 		if (flexshipID?.trim()) {
-			this.sessionStorageCache.put('newlyCreatedFlexship', flexshipID);
+			this.sessionStorageCache.put("newlyCreatedFlexship", flexshipID);
 		} else {
-			this.sessionStorageCache.remove('newlyCreatedFlexship');
+			this.sessionStorageCache.remove("newlyCreatedFlexship");
 		}
 	}
 
 	public getNewlyCreatedFlexship(): string {
-		return this.sessionStorageCache.get('newlyCreatedFlexship');
+		return this.sessionStorageCache.get("newlyCreatedFlexship");
 	}
 
 	public setCurrentFlexship(flexship) {
 		if (flexship?.orderTemplateID?.trim()) {
-			this.sessionStorageCache.put('currentFlexship', flexship);
+			this.sessionStorageCache.put("currentFlexship", flexship);
 		} else {
-			this.sessionStorageCache.remove('currentFlexship');
+			this.sessionStorageCache.remove("currentFlexship");
 		}
 		return flexship;
 	}
 
 	public getCurrentFlexship(): { [key: string]: any } {
-		return this.sessionStorageCache.get('currentFlexship');
+		return this.sessionStorageCache.get("currentFlexship");
 	}
 
-	public updateCartPropertiesOnService(data: { ['cart']: any; [key: string]: any }) {
+	public updateCartPropertiesOnService(data: { ["cart"]: any; [key: string]: any }) {
 		this.cart = data.cart;
-		this.cart['purchasePlusMessage'] = data.cart.appliedPromotionMessages
+		this.cart["purchasePlusMessage"] = data.cart.appliedPromotionMessages
 			? data.cart.appliedPromotionMessages.filter(
-					(message) => message.promotionName.indexOf('Purchase Plus') > -1,
+					(message) => message.promotionName.indexOf("Purchase Plus") > -1
 			  )[0]
 			: {};
-		this.canPlaceOrder = data.cart.orderRequirementsList.indexOf('canPlaceOrderReward') == -1;
+		this.canPlaceOrder = data.cart.orderRequirementsList.indexOf("canPlaceOrderReward") == -1;
+	}
+
+	public handleCartResponseActions(data): void {
+		if (!this.successfulActions.length) return;
+
+		switch (true) {
+			case this.successfulActions[0].indexOf("addOrderItem") > -1:
+				this.handleAddOrderItemSuccess(data);
+				break;
+			case this.successfulActions[0].indexOf("updateOrderItem") > -1:
+				this.handleUpdateCartSuccess(data);
+				break;
+		}
+	}
+
+	public handleAddOrderItemSuccess(data: { ["cart"]: any; [key: string]: any }): void {
+		let newCart = <Cart>data.cart;
+
+		if (
+			this.cart.orderItems.length &&
+			newCart.orderItems.length == this.cart.orderItems.length
+		) {
+			this.handleUpdateCartSuccess(data);
+			return;
+		}
+		this.showAddToCartMessage = true;
+		this.lastAddedProduct = newCart.orderItems[newCart.orderItems.length - 1];
+	}
+
+	public handleUpdateCartSuccess(data: { ["cart"]: any; [key: string]: any }): void {
+		let newCart = <Cart>data.cart;
+		var index = 0;
+		for (let item of newCart.orderItems) {
+			if (
+				this.cart.orderItems[index] &&
+				this.cart.orderItems[index].quantity < item.quantity
+			) {
+				this.showAddToCartMessage = true;
+				this.lastAddedProduct = item;
+				break;
+			}
+			index++;
+		}
 	}
 }

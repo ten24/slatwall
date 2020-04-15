@@ -203,6 +203,9 @@ Notes:
 			
 			<!--- Comments --->
 			<swa:SlatwallAdminTabComments object="#rc.order#" />
+			
+			<!--- Volume --->
+			<hb:HibachiEntityDetailItem view="admin:entity/ordertabs/entityqueue" />
 
 		</hb:HibachiEntityDetailGroup>
 

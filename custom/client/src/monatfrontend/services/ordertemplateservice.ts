@@ -1,19 +1,23 @@
-import { MonatService } from './monatservice';
-import { PublicService } from '@Hibachi/core/core.module';
+import { MonatService } from "./monatservice";
+import { PublicService } from "@Hibachi/core/core.module";
 
 export class OrderTemplateService {
-	private orderTemplateTypeID: string = '';
+	private orderTemplateTypeID: string = "";
 	private cachedGetOrderTemplatesResponse: any;
 	private cachedGetAccountGiftCardsResponse: any;
 	public canPlaceOrderFlag: boolean;
 	public mostRecentOrderTemplate: any;
 	public currentOrderTemplateID: string;
+	public showAddToCartMessage: boolean;
+	public lastAddedProduct;
+	public cartTotalThresholdForOFYAndFreeShipping;
 
 	//@ngInject
 	constructor(
-		public $q: ng.IQService, 
-		public monatService: MonatService, 
-		public publicService: PublicService
+		public $q: ng.IQService,
+		public monatService: MonatService,
+		public publicService: PublicService,
+		public requestService
 	) {}
 
 	/**
@@ -25,11 +29,10 @@ export class OrderTemplateService {
 		orderTemplateTypeID: string,
 		pageRecordsShow = 100,
 		currentPage = 1,
-		refresh = false,
+		refresh = false
 	) => {
 		var deferred = this.$q.defer();
-
-		// if we're gonna use pagination, we shoudn't cache
+		// if we're gonna use pagination, we shouldn't cache
 		if (
 			orderTemplateTypeID == this.orderTemplateTypeID &&
 			this.cachedGetOrderTemplatesResponse &&
@@ -46,7 +49,7 @@ export class OrderTemplateService {
 			};
 
 			this.monatService
-				.doAction('getordertemplates', data)
+				.doPublicAction("getOrderTemplates", data)
 				.then((result) => {
 					// TODO additional checks to make sure it's a successful response
 					this.cachedGetOrderTemplatesResponse = result;
@@ -64,7 +67,7 @@ export class OrderTemplateService {
 
 		if (refresh || !this.cachedGetAccountGiftCardsResponse) {
 			this.monatService
-				.doAction('getAccountGiftCards')
+				.doPublicAction("getAccountGiftCards")
 				.then((data) => {
 					if (!data?.giftCards) throw data;
 
@@ -85,14 +88,14 @@ export class OrderTemplateService {
 			orderTemplateID: orderTemplateID,
 		};
 
-		return this.monatService.doAction('applyGiftCardToOrderTemplate', data);
+		return this.monatService.doPublicAction("applyGiftCardToOrderTemplate", data);
 	};
 
 	public getOrderTemplateItems = (
 		orderTemplateID,
 		pageRecordsShow = 100,
 		currentPage = 1,
-		orderTemplateTypeID?,
+		orderTemplateTypeID?
 	) => {
 		var data = {
 			orderTemplateID: orderTemplateID,
@@ -101,16 +104,16 @@ export class OrderTemplateService {
 		};
 
 		if (orderTemplateTypeID) {
-			data['orderTemplateTypeID'] = orderTemplateTypeID;
+			data["orderTemplateTypeID"] = orderTemplateTypeID;
 		}
 
-		return this.monatService.doAction('getordertemplateitems', data);
+		return this.monatService.doPublicAction("getOrderTemplateItems", data);
 	};
 
 	public getOrderTemplateDetails = (
 		orderTemplateID: string,
-		optionalProperties: string = '',
-		nullAccountFlag = false,
+		optionalProperties: string = "",
+		nullAccountFlag = false
 	) => {
 		var deferred = this.$q.defer();
 		var data = {
@@ -120,7 +123,7 @@ export class OrderTemplateService {
 		};
 
 		this.monatService
-			.doAction('getOrderTemplateDetails', data)
+			.doPublicAction("getOrderTemplateDetails", data)
 			.then((res) => {
 				if (res.orderTemplate && res.orderTemplate.canPlaceOrderFlag) {
 					this.canPlaceOrderFlag = res.orderTemplate.canPlaceOrderFlag;
@@ -135,15 +138,15 @@ export class OrderTemplateService {
 	};
 
 	public updateShipping = (data) => {
-		return this.monatService.doAction('updateOrderTemplateShipping', data);
+		return this.monatService.doPublicAction("updateOrderTemplateShipping", data);
 	};
 
 	public updateBilling = (data) => {
-		return this.monatService.doAction('updateOrderTemplateBilling', data);
+		return this.monatService.doPublicAction("updateOrderTemplateBilling", data);
 	};
 
 	public activateOrderTemplate = (data) => {
-		return this.monatService.doAction('activateOrderTemplate', data);
+		return this.monatService.doPublicAction("activateOrderTemplate", data);
 	};
 
 	public updateOrderTemplateShippingAndBilling = (
@@ -151,38 +154,43 @@ export class OrderTemplateService {
 		shippingMethodID,
 		shippingAccountAddressID,
 		billingAccountAddressID,
-		accountPaymentMethodID,
+		accountPaymentMethodID
 	) => {
 		let payload = {
-			orderTemplateID: orderTemplateID,
-			shippingMethodID: shippingMethodID,
-			'shippingAccountAddress.value': shippingAccountAddressID,
-			'billingAccountAddress.value': billingAccountAddressID,
-			'accountPaymentMethod.value': accountPaymentMethodID,
+			"orderTemplateID": orderTemplateID,
+			"shippingMethodID": shippingMethodID,
+			"shippingAccountAddress.value": shippingAccountAddressID,
+			"billingAccountAddress.value": billingAccountAddressID,
+			"accountPaymentMethod.value": accountPaymentMethodID,
 		};
-		return this.monatService.doAction(
-			'updateOrderTemplateShippingAndBilling',
-			this.getFlattenObject(payload),
+		return this.monatService.doPublicAction(
+			"updateOrderTemplateShippingAndBilling",
+			this.getFlattenObject(payload)
 		);
 	};
 
 	/**
 	 * orderTemplateID:string,
-	 * orderTemplateCancellationReasonType:string,  => OrderTEmplateCancellationReason::TypeID
-	 * orderTemplateCancellationReasonTypeOther?:string => some explaination from user
+	 * orderTemplateCancellationReasonType:string,  => OrderTemplateCancellationReason::TypeID
+	 * orderTemplateCancellationReasonTypeOther?:string => some explanation from user
 	 */
 
 	public cancelOrderTemplate = (
 		orderTemplateID: string,
 		orderTemplateCancellationReasonType: string,
-		orderTemplateCancellationReasonTypeOther: string = '',
+		orderTemplateCancellationReasonTypeOther: string = ""
 	) => {
 		let payload = {};
-		payload['orderTemplateID'] = orderTemplateID;
-		payload['orderTemplateCancellationReasonType'] = orderTemplateCancellationReasonType;
-		payload['orderTemplateCancellationReasonTypeOther'] = orderTemplateCancellationReasonTypeOther;
+		payload["orderTemplateID"] = orderTemplateID;
+		payload["orderTemplateCancellationReasonType"] = orderTemplateCancellationReasonType;
+		payload[
+			"orderTemplateCancellationReasonTypeOther"
+		] = orderTemplateCancellationReasonTypeOther;
 
-		return this.monatService.doAction('cancelOrderTemplate', this.getFlattenObject(payload));
+		return this.monatService.doPublicAction(
+			"cancelOrderTemplate",
+			this.getFlattenObject(payload)
+		);
 	};
 
 	/**
@@ -198,7 +206,7 @@ export class OrderTemplateService {
 			orderTemplateName: orderTemplateName,
 		};
 
-		return this.monatService.doAction('editOrderTemplate', payload);
+		return this.monatService.doPublicAction("editOrderTemplate", payload);
 	};
 
 	/**
@@ -220,31 +228,31 @@ export class OrderTemplateService {
     */
 
 	public updateOrderTemplateSchedule = (data) => {
-		return this.monatService.doAction('updateOrderTemplateSchedule', data);
+		return this.monatService.doPublicAction("updateOrderTemplateSchedule", data);
 	};
 
 	public updateOrderTemplateFrequency = (
 		orderTemplateID: string,
 		frequencyTermID: string,
-		scheduleOrderDayOfTheMonth?: number,
+		scheduleOrderDayOfTheMonth?: number
 	) => {
 		let payload = {
-			orderTemplateID: orderTemplateID,
-			'frequencyTerm.value': frequencyTermID,
+			"orderTemplateID": orderTemplateID,
+			"frequencyTerm.value": frequencyTermID,
 		};
 
 		if (scheduleOrderDayOfTheMonth) {
-			payload['scheduleOrderDayOfTheMonth'] = scheduleOrderDayOfTheMonth;
+			payload["scheduleOrderDayOfTheMonth"] = scheduleOrderDayOfTheMonth;
 		}
 
-		return this.monatService.doAction('updateOrderTemplateFrequency', payload);
+		return this.monatService.doPublicAction("updateOrderTemplateFrequency", payload);
 	};
 
 	public getWishlistItems = (
 		orderTemplateID,
 		pageRecordsShow = 100,
 		currentPage = 1,
-		orderTemplateTypeID?,
+		orderTemplateTypeID?
 	) => {
 		var data = {
 			orderTemplateID: orderTemplateID,
@@ -253,10 +261,10 @@ export class OrderTemplateService {
 		};
 
 		if (orderTemplateTypeID) {
-			data['orderTemplateTypeID'] = orderTemplateTypeID;
+			data["orderTemplateTypeID"] = orderTemplateTypeID;
 		}
 
-		return this.monatService.doAction('getWishlistitems', data);
+		return this.monatService.doPublicAction("getWishlistItems", data);
 	};
 
 	/**
@@ -272,7 +280,7 @@ export class OrderTemplateService {
 		skuID: string,
 		orderTemplateID: string,
 		quantity: number = 1,
-		temporaryFlag: false,
+		temporaryFlag: false
 	) => {
 		let payload = {
 			orderTemplateID: orderTemplateID,
@@ -281,7 +289,7 @@ export class OrderTemplateService {
 			temporaryFlag: temporaryFlag,
 		};
 
-		return this.monatService.doAction('addOrderTemplateItem', payload);
+		return this.monatService.doPublicAction("addOrderTemplateItem", payload);
 	};
 
 	/**
@@ -297,13 +305,13 @@ export class OrderTemplateService {
 			quantity: newQuantity,
 		};
 
-		return this.monatService.doAction('editOrderTemplateItem', payload);
+		return this.monatService.doPublicAction("editOrderTemplateItem", payload);
 	};
 
 	public addOrderTemplateItemAndCreateWishlist = (
 		orderTemplateName: string,
 		skuID,
-		quantity: number = 1,
+		quantity: number = 1
 	) => {
 		const data = {
 			orderTemplateName: orderTemplateName,
@@ -311,11 +319,11 @@ export class OrderTemplateService {
 			quantity: quantity,
 		};
 
-		return this.publicService.doAction('addItemAndCreateWishlist', data);
+		return this.publicService.doAction("addItemAndCreateWishlist", data);
 	};
 
 	public deleteOrderTemplateItem = (orderTemplateItemID) => {
-		return this.publicService.doAction('deleteOrderTemplateItem', {
+		return this.publicService.doAction("deleteOrderTemplateItem", {
 			orderTemplateItemID: orderTemplateItemID,
 		});
 	};
@@ -327,19 +335,19 @@ export class OrderTemplateService {
 
 	public removeOrderTemplateItem = (orderTemplateItemID: string) => {
 		let payload = { orderTemplateItemID: orderTemplateItemID };
-		return this.monatService.doAction('removeOrderTemplateItem', payload);
+		return this.monatService.doPublicAction("removeOrderTemplateItem", payload);
 	};
 
 	/**
 	 * for more details https://gist.github.com/penguinboy/762197
 	 */
 
-	public getFlattenObject = (inObject: Object, delimiter: string = '.'): Object => {
+	public getFlattenObject = (inObject: Object, delimiter: string = "."): Object => {
 		var objectToReturn = {};
 		for (var key in inObject) {
 			if (!inObject.hasOwnProperty(key)) continue;
 
-			if (typeof inObject[key] == 'object' && inObject[key] !== null) {
+			if (typeof inObject[key] == "object" && inObject[key] !== null) {
 				var flatObject = this.getFlattenObject(inObject[key]);
 				for (var x in flatObject) {
 					if (!flatObject.hasOwnProperty(x)) continue;
@@ -356,16 +364,16 @@ export class OrderTemplateService {
 	 * for more details  https://stackoverflow.com/a/42696154
 	 */
 
-	public getUnflattenObject = (inObject: Object, delimiter: string = '_') => {
+	public getUnflattenObject = (inObject: Object, delimiter: string = "_") => {
 		var objectToReturn = {};
-		for (var flattenkey in inObject) {
-			var keys = flattenkey.split(delimiter);
+		for (var flattenKey in inObject) {
+			var keys = flattenKey.split(delimiter);
 			keys.reduce(function (r, e, j) {
 				return (
 					r[e] ||
 					(r[e] = isNaN(Number(keys[j + 1]))
 						? keys.length - 1 == j
-							? inObject[flattenkey]
+							? inObject[flattenKey]
 							: {}
 						: [])
 				);
@@ -374,34 +382,40 @@ export class OrderTemplateService {
 		return objectToReturn;
 	};
 
-	public createOrderTemplate = (orderTemplateSystemCode, context = 'save', setOnHibachiScopeFlag = false) => {
-		return this.publicService.doAction('createOrderTemplate', {
+	public createOrderTemplate = (
+		orderTemplateSystemCode,
+		context = "save",
+		setOnHibachiScopeFlag = false
+	) => {
+		return this.publicService.doAction("createOrderTemplate", {
 			orderTemplateSystemCode: orderTemplateSystemCode,
 			saveContext: context,
-			returnJsonObjects: '',
-            setOnHibachiScopeFlag: setOnHibachiScopeFlag
+			returnJsonObjects: "",
+			setOnHibachiScopeFlag: setOnHibachiScopeFlag,
 		});
 	};
 
-	public getOrderTemplatesLight = (orderTemplateTypeID = '2c9280846b712d47016b75464e800014') => {
-		return this.publicService.doAction('getAccountOrderTemplateNamesAndIDs', {
-			ordertemplateTypeID: orderTemplateTypeID,
+	public getOrderTemplatesLight = (orderTemplateTypeID = "2c9280846b712d47016b75464e800014") => {
+		return this.publicService.doAction("getAccountOrderTemplateNamesAndIDs", {
+			orderTemplateTypeID: orderTemplateTypeID,
 		});
 	};
 
 	public getOrderTemplateSettings() {
-		return this.publicService.doAction('getDaysToEditOrderTemplateSetting');
+		return this.publicService.doAction("getDaysToEditOrderTemplateSetting");
 	}
 
 	public deleteOrderTemplate(orderTemplateID) {
-		return this.monatService.doAction('deleteOrderTemplate', { orderTemplateID: orderTemplateID });
+		return this.monatService.doPublicAction("deleteOrderTemplate", {
+			orderTemplateID: orderTemplateID,
+		});
 	}
 
 	public getSetOrderTemplateOnSession(
-		optionalProperties = '',
-		saveContext = 'upgradeFlow',
+		optionalProperties = "",
+		saveContext = "upgradeFlow",
 		setIfNullFlag = true,
-		nullAccountFlag = true,
+		nullAccountFlag = true
 	) {
 		let deferred = this.$q.defer<any>();
 
@@ -410,30 +424,35 @@ export class OrderTemplateService {
 			setIfNullFlag: setIfNullFlag,
 			optionalProperties: optionalProperties,
 			nullAccountFlag: nullAccountFlag,
-			returnJsonObjects: '',
+			returnJsonObjects: "",
 		};
 
 		this.publicService
-			.doAction('getSetFlexshipOnSession', data)
+			.doAction("getSetFlexshipOnSession", data)
 			.then((res) => {
-				if (res.orderTemplate && typeof res.orderTemplate == 'string') {
+				if (res.orderTemplate && typeof res.orderTemplate == "string") {
 					this.currentOrderTemplateID = res.orderTemplate;
 				} else if (res.orderTemplate) {
 					this.currentOrderTemplateID = res.orderTemplate.orderTemplateID;
 					this.mostRecentOrderTemplate = res.orderTemplate;
 					this.canPlaceOrderFlag = res.orderTemplate.canPlaceOrderFlag;
 
-					let promoArray = this.mostRecentOrderTemplate.appliedPromotionMessagesJson?.length
+					let promoArray = this.mostRecentOrderTemplate.appliedPromotionMessagesJson
+						?.length
 						? JSON.parse(this.mostRecentOrderTemplate.appliedPromotionMessagesJson)
 						: [];
-					this.mostRecentOrderTemplate['purchasePlusMessage'] = promoArray.length
+					this.mostRecentOrderTemplate["purchasePlusMessage"] = promoArray.length
 						? promoArray.filter(
-								(message) => message.promotion_promotionName.indexOf('Purchase Plus') > -1,
+								(message) =>
+									message.promotion_promotionName.indexOf("Purchase Plus") > -1
 						  )[0]
 						: {};
-					this.mostRecentOrderTemplate['suggestedPrice'] = this.calculateSRPOnOrder(
-						this.mostRecentOrderTemplate,
+					this.mostRecentOrderTemplate["suggestedPrice"] = this.calculateSRPOnOrder(
+						this.mostRecentOrderTemplate
 					);
+					if (this.mostRecentOrderTemplate.cartTotalThresholdForOFYAndFreeShipping) {
+						this.cartTotalThresholdForOFYAndFreeShipping = this.mostRecentOrderTemplate.cartTotalThresholdForOFYAndFreeShipping;
+					}
 				}
 				deferred.resolve(res);
 			})
@@ -442,6 +461,39 @@ export class OrderTemplateService {
 			});
 
 		return deferred.promise;
+	}
+
+	//handle any new data on the order template
+	public manageOrderTemplate(template) {
+		let newOT = template;
+
+		if (!this.mostRecentOrderTemplate || !newOT.orderTemplateItems) return;
+
+		//if the new orderTemplateItems length is > than the old orderTemplateItems, a new item has been added
+		if (
+			newOT.orderTemplateItems.length > this.mostRecentOrderTemplate.orderTemplateItems.length
+		) {
+			this.showAddToCartMessage = true;
+			this.lastAddedProduct = newOT.orderTemplateItems[0];
+			return;
+		}
+
+		let index = 0;
+
+		//Loop over orderTemplateItems to see if quantity has increased on one, if so, the item has been updated
+		for (let item of newOT.orderTemplateItems) {
+			if (
+				this.mostRecentOrderTemplate.orderTemplateItems[index] &&
+				this.mostRecentOrderTemplate.orderTemplateItems[index].orderTemplateItemID ==
+					item.orderTemplateItemID &&
+				this.mostRecentOrderTemplate.orderTemplateItems[index].quantity < item.quantity
+			) {
+				this.showAddToCartMessage = true;
+				this.lastAddedProduct = item;
+				break;
+			}
+			index++;
+		}
 	}
 
 	public calculateSRPOnOrder = (orderTemplate): number => {
