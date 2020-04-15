@@ -91,7 +91,6 @@ class SWAddOrderItemsBySkuController{
 			case 'vip': 
 				this.addSkuCollection.addFilter('vipFlag', true, '=', undefined, true);
 				break;
-			case 'customer':
 			default:
 			 this.addSkuCollection.addFilter('retailFlag', true, '=', undefined, true);
 			break;
