@@ -189,7 +189,8 @@ var monatfrontendmodule = angular
 			});
 		},
 	])
-	.run(['appConfig', 'localStorageCache', (appConfig, localStorageCache) =>{
+	.run(['appConfig','localStorageCache','sessionStorageCache','observerService','publicService',
+	(appConfig,localStorageCache,sessionStorageCache,observerService, publicService) =>{
 		
 		if(localStorageCache.get('instantiationKey') !== appConfig.instantiationKey){
 			console.log("app-instantiation-key changed, resetting local-storage caches");
@@ -197,6 +198,21 @@ var monatfrontendmodule = angular
         	localStorageCache.put('instantiationKey', appConfig.instantiationKey);
         }
         console.log("app-instantiationKey-key", localStorageCache.get('instantiationKey'));
+        
+        //we're using the current-account-id as the cache-owner for the sessionStorageCache
+        let logoutSuccessCallback = () => {
+        	console.log("on logoutSuccessCallback");
+        	hibachiConfig.accountID = undefined;
+        };
+        
+        let loginSuccessCallback = () => {
+        	console.log("Called loginSuccessCallback");
+        	hibachiConfig.accountID = publicService.account?.accountID;
+        }
+        
+        observerService.attach( loginSuccessCallback, 'loginSuccess' ); 
+        observerService.attach( logoutSuccessCallback, 'logoutSuccess' ); 
+
 	}]);
 
 export { monatfrontendmodule };

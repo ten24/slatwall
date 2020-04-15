@@ -62,8 +62,7 @@ class swfAccountController {
     ){
         
         this.observerService.attach(this.loginSuccess,"loginSuccess"); 
-        this.observerService.attach( this.logoutSuccessCallback, 'logoutSuccess' ); 
-
+        
         this.observerService.attach(this.closeModals,"addNewAccountAddressSuccess"); 
         this.observerService.attach(this.closeModals,"addAccountPaymentMethodSuccess"); 
         this.observerService.attach(this.closeModals,"addProductReviewSuccess"); 
@@ -95,18 +94,9 @@ class swfAccountController {
 			this.launchAddressModal([addressVerification.address,addressVerification.suggestedAddress]);
 		}
 	}
-	
-	
-	//we're using the current-account-id as the cache-owner for the sessionStorageCache
-    private logoutSuccessCallback = () => {
-    	console.log("on logoutSuccessCallback");
-    	hibachiConfig.accountID = undefined;
-    };
         
 	public loginSuccess = (data) =>{
     
-        hibachiConfig.accountID = this.publicService.account?.accountID;
-	    
 	    if(data?.redirect){
 	        if(data.redirect == 'default'){
 	            data.redirect = '';
