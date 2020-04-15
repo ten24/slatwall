@@ -144,7 +144,7 @@ component accessors="true" output="false" extends="HibachiService" {
 						ormflush();
 					} 
 				}catch(any e){
-					getHibachiEntityQueueDAO().updateModifiedDateTimeAndMostRecentError(entityQueue['entityQueueID'], e.message & " - processEntityQueue_processQueueArray");
+					getHibachiEntityQueueDAO().updateModifiedDateTimeAndMostRecentError(entityQueue['entityQueueID'], e.message);
 				}
 			}
 			if(listLen(entityQueueIDsToBeDeleted)){

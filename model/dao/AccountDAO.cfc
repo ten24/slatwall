@@ -47,11 +47,14 @@ Notes:
 
 --->
 <cfcomponent extends="HibachiDAO">
-	<cfscript>
-		public any function getSessionBySessionCookieNPSID(any cookie){
-			return ORMExecuteQuery('FROM SlatwallSession where sessionCookieNPSID = :cookievar',{cookievar=cookie["#getApplicationValue('applicationKey')#-NPSID"]},true,{maxresults=1});
-		}
-	</cfscript>
+	
+	<cffunction name="getSessionBySessionCookie" access="public">
+		<cfargument name="cookieName" required="true" type="string" />
+		<cfargument name="cookieValue" required="true" type="string" />
+		
+		<cfreturn ORMExecuteQuery('FROM SlatwallSession where #arguments.cookieName# = :cookievalue',{ cookievalue = arguments.cookieValue }, true, { maxresults = 1 }) />
+		
+	</cffunction>
 	
 	<cffunction name="getPrimaryEmailAddressNotInUseFlag" returntype="boolean" access="public">
 		<cfargument name="emailAddress" required="true" type="string" />
