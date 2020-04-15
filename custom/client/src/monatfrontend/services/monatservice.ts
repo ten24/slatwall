@@ -42,12 +42,13 @@ export class MonatService {
 	
 	
 	private enforceCacheOwner(key: string){
-		let cacheOwner = this.publicService.account?.accountID?.trim() || 'unknown';
-		if (this.sessionStorageCache.get('cacehOwner') !== cacheOwner ){
+		let cacheOwner = hibachiConfig.accountID?.trim() || 'unknown';
+		if (this.sessionStorageCache.get('cacheOwner') !== cacheOwner ){
 			console.log(
 				`enforceCacheOwner: owner changed, 
-				setting new owner to: ${cacheOwner} from: ${this.sessionStorageCache.get('cacehOwner')},
-				and clearing cache for ${key}`
+				 setting new owner to: ${cacheOwner} from: ${this.sessionStorageCache.get('cacheOwner')},
+				 and clearing cache for ${key}
+			    `
 			);
 			this.sessionStorageCache.remove(key);
 			this.sessionStorageCache.put('cacheOwner', cacheOwner);
