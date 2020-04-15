@@ -14,8 +14,7 @@
         },
         {
           "sourceColumn":"ontheflykit",
-          "propertyIdentifier":"sku.onTheFlyKitFlag",
-          "updateFlag":false
+          "propertyIdentifier":"sku.onTheFlyKitFlag"
         },
         {
           "sourceColumn":"BundleFlag",

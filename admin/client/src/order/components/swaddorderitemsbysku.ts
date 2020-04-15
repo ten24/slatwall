@@ -13,7 +13,7 @@ class SWAddOrderItemsBySkuController{
     public orderFulfillmentId:string;
     
     public accountId:string;
-
+	
     public siteId:string;
     
     public currencyCode:string;
@@ -42,45 +42,8 @@ class SWAddOrderItemsBySkuController{
 	public $onInit = () =>{
 		    
 	    this.observerService.attach(this.setEdit,'swEntityActionBar')
-	    
-		var skuDisplayProperties = "skuCode,calculatedSkuDefinition,product.productName";
 		
-		if(this.skuPropertiesToDisplay != null){
-			// join the two lists.
-			skuDisplayProperties = skuDisplayProperties + "," + this.skuPropertiesToDisplay;
-			
-		}
-	    
-        this.addSkuCollection = this.collectionConfigService.newCollectionConfig('Sku');
-        this.addSkuCollection.setDisplayProperties(skuDisplayProperties,'',{isVisible:true,isSearchable:true,isDeletable:true,isEditable:false});
-        this.addSkuCollection.addDisplayProperty('product.productType.productTypeName','Product Type',{isVisible:true,isSearchable:false,isDeletable:false,isEditable:false});
-        this.addSkuCollection.addDisplayProperty('priceByCurrencyCode','',{isVisible:true,isSearchable:false,isDeletable:false,isEditable:false, arguments:{accountID:this.accountId,currencyCode:this.currencyCode}});
-        this.addSkuCollection.addDisplayProperty('skuID','',{isVisible:false,isSearchable:false,isDeletable:false,isEditable:false});
-        this.addSkuCollection.addDisplayProperty('imageFile',this.rbkeyService.rbKey('entity.sku.imageFile'),{isVisible:false,isSearchable:false,isDeletable:false})
-        this.addSkuCollection.addDisplayProperty('qats','QATS',{isVisible:true,isSearchable:false,isDeletable:false,isEditable:false});
-        
-        if (this.skuPropertiesToDisplayWithConfig){
-        	// this allows passing in display property information. skuPropertiesToDisplayWithConfig is an array of objects
-        	var skuPropertiesToDisplayWithConfig = this.skuPropertiesToDisplayWithConfig.replace(/'/g, '"');
-        		
-        	//now we can parse into a json array
-        	var skuPropertiesToDisplayWithConfigObject:any = JSON.parse(skuPropertiesToDisplayWithConfig);
-        	
-        	//now we can iterate and add the display properties defined on this attribute..
-        	for (let property of skuPropertiesToDisplayWithConfigObject){
-        		
-        		this.addSkuCollection.addDisplayProperty(property.name, property.rbkey, property.config);
-        	}
-        }
-        
-        this.addSkuCollection.addFilter('activeFlag', true,'=',undefined,true);
-        this.addSkuCollection.addFilter('publishedFlag', true,'=',undefined,true);
-        this.addSkuCollection.addFilter('product.activeFlag', true,'=',undefined,true);
-        this.addSkuCollection.addFilter('product.publishedFlag', true,'=',undefined,true);
-
-		if(angular.isDefined(this.siteId)){
-	        this.addSkuCollection.addFilter('product.sites.siteID', this.siteId,'=',undefined,true);
-		}
+		this.initCollectionConfig();	  
 
 	    this.skuColumns = angular.copy(this.addSkuCollection.getCollectionConfig().columns);
 	    
@@ -143,6 +106,50 @@ class SWAddOrderItemsBySkuController{
 	    
 	    this.observerService.attach(this.addOrderItemListener, "addOrderItem");
         
+	}
+	
+	public initCollectionConfig(){
+		var skuDisplayProperties = "skuCode,calculatedSkuDefinition,product.productName";
+		
+		if(this.skuPropertiesToDisplay != null){
+			// join the two lists.
+			skuDisplayProperties = skuDisplayProperties + "," + this.skuPropertiesToDisplay;
+			
+		}
+	    
+        this.addSkuCollection = this.collectionConfigService.newCollectionConfig('Sku');
+        this.addSkuCollection.setDisplayProperties(skuDisplayProperties,'',{isVisible:true,isSearchable:true,isDeletable:true,isEditable:false});
+        this.addSkuCollection.addDisplayProperty('product.productType.productTypeName','Product Type',{isVisible:true,isSearchable:false,isDeletable:false,isEditable:false});
+        this.addSkuCollection.addDisplayProperty('priceByCurrencyCode','',{isVisible:true,isSearchable:false,isDeletable:false,isEditable:false, arguments:{accountID:this.accountId,currencyCode:this.currencyCode}});
+        this.addSkuCollection.addDisplayProperty('skuID','',{isVisible:false,isSearchable:false,isDeletable:false,isEditable:false});
+        this.addSkuCollection.addDisplayProperty('imageFile',this.rbkeyService.rbKey('entity.sku.imageFile'),{isVisible:false,isSearchable:false,isDeletable:false})
+        this.addSkuCollection.addDisplayProperty('qats','QATS',{isVisible:true,isSearchable:false,isDeletable:false,isEditable:false});
+        
+        if (this.skuPropertiesToDisplayWithConfig){
+        	// this allows passing in display property information. skuPropertiesToDisplayWithConfig is an array of objects
+        	var skuPropertiesToDisplayWithConfig = this.skuPropertiesToDisplayWithConfig.replace(/'/g, '"');
+        		
+        	//now we can parse into a json array
+        	var skuPropertiesToDisplayWithConfigObject:any = JSON.parse(skuPropertiesToDisplayWithConfig);
+        	
+        	//now we can iterate and add the display properties defined on this attribute..
+        	for (let property of skuPropertiesToDisplayWithConfigObject){
+        		
+        		this.addSkuCollection.addDisplayProperty(property.name, property.rbkey, property.config);
+        	}
+        }
+        
+        this.addSkuCollection.addFilter('activeFlag', true,'=',undefined,true);
+        this.addSkuCollection.addFilter('publishedFlag', true,'=',undefined,true);
+        this.addSkuCollection.addFilter('product.activeFlag', true,'=',undefined,true);
+        this.addSkuCollection.addFilter('product.publishedFlag', true,'=',undefined,true);
+
+		if(this.siteId?.trim()){
+	        this.addSkuCollection.addFilter('product.sites.siteID', this.siteId, '=', undefined, true);
+		}
+		if(this.currencyCode?.trim()){
+			this.addSkuCollection.addFilter('skuPrices.currencyCode', this.currencyCode, '=', undefined, true);
+		}
 	}
 	
 	public postData(url = '', data = {}) {
@@ -265,11 +272,11 @@ class SWAddOrderItemsBySku implements ng.IDirective {
         return directive;
     }
 
-	constructor(private orderPartialsPath, 
-				private slatwallPathBuilder, 
-				private $hibachi,
-				private rbkeyService,
-				private alertService
+	constructor(public orderPartialsPath, 
+				public slatwallPathBuilder, 
+				public $hibachi,
+				public rbkeyService,
+				public alertService
 	){
 		this.templateUrl = slatwallPathBuilder.buildPartialsPath(orderPartialsPath) + "/addorderitemsbysku.html";
 	}
@@ -281,6 +288,6 @@ class SWAddOrderItemsBySku implements ng.IDirective {
 }
 
 export {
-	SWAddOrderItemsBySku
+	SWAddOrderItemsBySku, SWAddOrderItemsBySkuController
 };
 

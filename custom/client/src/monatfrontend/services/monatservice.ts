@@ -40,16 +40,43 @@ export class MonatService {
 		private inMemoryCache: Cache
 	) {}
 
+	private enforceCacheOwner(key: string) {
+		let cacheOwner = hibachiConfig.accountID?.trim() || "unknown";
+		if (this.sessionStorageCache.get("cacheOwner") !== cacheOwner) {
+			console.log(
+				`enforceCacheOwner: owner changed, 
+				 setting new owner to: ${cacheOwner} from: ${this.sessionStorageCache.get("cacheOwner")},
+				 and clearing cache for ${key}
+			    `
+			);
+			this.sessionStorageCache.remove(key);
+			this.sessionStorageCache.put("cacheOwner", cacheOwner);
+			return false;
+		}
+		return true;
+	}
+
+	public getFromSessionCache(key: string) {
+		return this.enforceCacheOwner(key) ? this.sessionStorageCache.get(key) : undefined;
+	}
+
+	public putIntoSessionCache(key: string, value: any) {
+		this.enforceCacheOwner(key);
+		this.sessionStorageCache.put(key, value);
+	}
+
 	public getCart(refresh = false, param = "") {
 		var deferred = this.$q.defer();
-		let cachedCart = this.sessionStorageCache.get("cachedCart");
+		let cachedCart = this.getFromSessionCache("cachedCart");
 
-		if (refresh || angular.isUndefined(cachedCart)) {
+		if (refresh || !cachedCart) {
 			this.publicService
 				.getCart(refresh, param)
 				.then((data) => {
-					if (data && data.failureActions.length == 0) {
-						console.log("get-cart, putting it in session-cache");
+					if (data?.cart) {
+						console.log("get-cart, puting it in session-cache");
+						this.putIntoSessionCache("cachedCart", data.cart);
+
 						this.updateCartPropertiesOnService(data);
 						deferred.resolve(data.cart);
 					} else {
@@ -74,18 +101,21 @@ export class MonatService {
 	 */
 	private updateCart = (action: string, payload) => {
 		let deferred = this.$q.defer();
-		payload["returnJSONObjects"] = "cart";
+		payload["returnJsonObjects"] = "cart";
 
 		this.publicService
 			.doAction(action, payload)
 			.then((data) => {
 				this.successfulActions = [];
-				if (data.cart && data.failureActions.length == 0) {
-					console.log("update-cart, putting it in session-cache");
+				//we're not checking for failure actions, as regardless of failures we still need to show the cart to the user
+				if (data?.cart) {
+					console.log("update-cart, puting it in session-cache");
+					this.putIntoSessionCache("cachedCart", data.cart);
+
 					this.successfulActions = data.successfulActions;
-					this.sessionStorageCache.put("cachedCart", data.cart);
 					this.handleCartResponseActions(data); //call before setting this.cart to snapshot
 					this.updateCartPropertiesOnService(data);
+
 					deferred.resolve(data.cart);
 					this.observerService.notify("updatedCart", data.cart);
 				} else {
