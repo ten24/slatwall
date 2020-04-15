@@ -1,4 +1,6 @@
 import { Cache } from 'cachefactory';
+import Cart from '../models/cart'
+import cartOrderItem from '../models/cartOrderItem'
 
 export interface IOption {
 	name: string;
@@ -7,13 +9,17 @@ export interface IOption {
 
 
 export class MonatService {
-	public cart;
+	public cart:Cart;
 	public lastAddedSkuID: string = '';
 	public previouslySelectedStarterPackBundleSkuID:string;
 	public canPlaceOrder:boolean;
 	public userIsEighteen:boolean;
 	public hasOwnerAccountOnSession:boolean;
+	public successfulActions = [];
+	public showAddToCartMessage:boolean;
+	public lastAddedProduct:cartOrderItem;
 	public muraContent = {};
+
 	
 	//@ngInject
 	constructor(
@@ -74,9 +80,12 @@ export class MonatService {
 
 		this.publicService.doAction(action, payload)
 			.then((data) => {
+				this.successfulActions = [];
 				if (data.cart && data.failureActions.length == 0) {
-					console.log("update-cart, puting it in session-cache")
+					console.log("update-cart, puting it in session-cache");
+					this.successfulActions = data.successfulActions;
 					this.sessionStorageCache.put('cachedCart', data.cart);
+					this.handleCartResponseActions(data); //call before setting this.cart to snapshot
 					this.updateCartPropertiesOnService(data);
 					deferred.resolve(data.cart);
 					this.observerService.notify( 'updatedCart', data.cart ); 
@@ -301,5 +310,41 @@ export class MonatService {
 		this.canPlaceOrder = data.cart.orderRequirementsList.indexOf('canPlaceOrderReward') == -1;
 	}
 	
+	public handleCartResponseActions(data):void{
+		if(!this.successfulActions.length) return;
+
+		switch(true){
+			case this.successfulActions[0].indexOf('addOrderItem') > -1:
+				this.handleAddOrderItemSuccess(data);
+				break;
+			case this.successfulActions[0].indexOf('updateOrderItem') > -1:
+				this.handleUpdateCartSuccess(data);
+				break;
+		}
+	}
+	
+	public handleAddOrderItemSuccess(data:{['cart']:any, [key:string]:any}):void{
+		let newCart = <Cart>data.cart;
+	
+		if(this.cart.orderItems.length && newCart.orderItems.length == this.cart.orderItems.length){
+			this.handleUpdateCartSuccess(data);
+			return;
+		}
+		this.showAddToCartMessage = true;
+		this.lastAddedProduct = newCart.orderItems[newCart.orderItems.length - 1];
+	}
+	
+	public handleUpdateCartSuccess(data:{['cart']:any, [key:string]:any}):void{
+		let newCart = <Cart>data.cart;
+		var index = 0;
+		for(let item of newCart.orderItems){
+			if(this.cart.orderItems[index] && this.cart.orderItems[index].quantity < item.quantity){
+				this.showAddToCartMessage = true;
+				this.lastAddedProduct = item;
+				break;
+			}
+			index++;
+		}
+	}
 
 }

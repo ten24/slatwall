@@ -640,7 +640,7 @@ component extends="Slatwall.model.service.OrderService" {
 		
 		///Order Item Data
 		var ordersItemsList = this.getOrderItemCollectionList();
-		ordersItemsList.setDisplayProperties('quantity,price,calculatedListPrice,sku.product.productName,sku.product.productID,sku.skuID,skuProductURL,skuImagePath,orderFulfillment.shippingAddress.streetAddress,orderFulfillment.shippingAddress.street2Address,orderFulfillment.shippingAddress.city,orderFulfillment.shippingAddress.stateCode,orderFulfillment.shippingAddress.postalCode,orderFulfillment.shippingAddress.name,orderFulfillment.shippingAddress.countryCode,orderFulfillment.shippingMethod.shippingMethodName');
+		ordersItemsList.setDisplayProperties('quantity,price,calculatedListPrice,calculatedExtendedPriceAfterDiscount,sku.product.productName,sku.product.productID,sku.product.productType.systemCode,sku.skuID,skuProductURL,skuImagePath,orderFulfillment.shippingAddress.streetAddress,orderFulfillment.shippingAddress.street2Address,orderFulfillment.shippingAddress.city,orderFulfillment.shippingAddress.stateCode,orderFulfillment.shippingAddress.postalCode,orderFulfillment.shippingAddress.name,orderFulfillment.shippingAddress.countryCode,orderFulfillment.shippingMethod.shippingMethodName');
 		ordersItemsList.addFilter( 'order.orderID', arguments.data.orderID, '=');
 		ordersItemsList.addFilter( 'order.account.accountID', arguments.data.accountID, '=');
 		ordersItemsList.setPageRecordsShow(arguments.data.pageRecordsShow);
@@ -1730,4 +1730,27 @@ component extends="Slatwall.model.service.OrderService" {
 		return ofyPromoCL
 	}
 	
+	
+
+	public any function processOrder_retrySyncPendingOrders(required any order, any processObject, required struct data={}) {
+		return getHibachiScope().getService('integrationService')
+			.getIntegrationByIntegrationPackage('infotrax')
+			.getIntegrationCFC("data")
+			.retrySyncPendingOrders(argumentCollection=arguments);
+			
+			
+	}
+	
+
+	public string function getOrderRequirementsList(required any order, struct data = {}) {
+		
+		var orderRequirementsList = super.getOrderRequirementsList(argumentCollection=arguments);
+		
+		if (!listFindNoCase(orderRequirementsList, "account") && isNull(arguments.order.getAccount().getOwnerAccount())){
+			orderRequirementsList = listAppend(orderRequirementsList, "account");
+		}
+		
+		return orderRequirementsList;
+	}
+
 }

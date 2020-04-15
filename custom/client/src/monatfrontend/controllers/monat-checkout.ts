@@ -416,7 +416,7 @@ class MonatCheckoutController {
 	public calculateListPrice(){
 		this.listPrice = 0;
 		for(let item of this.cart.orderItems){
-			this.listPrice += item.calculatedListPrice;
+			this.listPrice += (item.calculatedListPrice * item.quantity);
 		}
 	}
 	

@@ -16,6 +16,36 @@
 	</div>
 	<div 
 		ng-if="
+			monatEnrollment.currentStepName == 'orderListing' 
+			&& +monatEnrollment.orderTemplateService.cartTotalThresholdForOFYAndFreeShipping - monatEnrollment.orderTemplateService.mostRecentOrderTemplate.calculatedSubTotal > 0" 
+			class="alert discount-block text-white promotion-bar-block"
+	>
+
+		<span sw-rbKey="'frontend.flexship.yourFlexshipIs'"></span> 
+		{{
+			+monatEnrollment.orderTemplateService.cartTotalThresholdForOFYAndFreeShipping - monatEnrollment.orderTemplateService.mostRecentOrderTemplate.calculatedSubTotal 
+			| swcurrency:monatEnrollment.cart.currency
+		}} 
+	
+		<span sw-rbKey="'frontend.flexship.beforeYouCanEnroll'"></span>
+	</div>
+	<div 
+		ng-if="
+			monatEnrollment.currentStepName != 'orderListing' 
+			&& monatEnrollment.vipEnrollmentThreshold - (monatEnrollment.monatService.cart.subtotal - monatEnrollment.monatService.cart.discountTotal) > 0" 
+			class="alert discount-block text-white promotion-bar-block"
+	>
+
+		<span sw-rbKey="'frontend.cart.yourOrderIs'"></span> 
+		{{
+			monatEnrollment.vipEnrollmentThreshold - (monatEnrollment.monatService.cart.subtotal - monatEnrollment.monatService.cart.discountTotal)
+			| swcurrency:monatEnrollment.cart.currency
+		}} 
+	
+		<span sw-rbKey="'frontend.flexship.beforeYouCanEnroll'"></span>
+	</div>
+	<div 
+		ng-if="
 			(monatEnrollment.currentStepName == 'orderListing' &&  monatEnrollment.orderTemplateService.mostRecentOrderTemplate.purchasePlusMessage.message.length) 
 			|| ( monatEnrollment.currentStepName != 'orderListing' && monatEnrollment.monatService.cart.purchasePlusMessage.message.length)" 
 		id="promoBanner" 
@@ -35,6 +65,17 @@
 		}}
 		
 	</div>
+	<div ng-if="monatEnrollment.currentStepName != 'orderListing' && monatEnrollment.monatService.showAddToCartMessage" class="alert discount-block text-white promotion-bar-block">
+		<button type="button" class="close" ng-click="monatEnrollment.monatService.showAddToCartMessage = false" aria-label="Close"><i class="fas fa-times"></i></button>
+		{{monatEnrollment.monatService.lastAddedProduct.sku.skuDefinition}} 
+		<span sw-rbKey="'frontend.productListing.addProductSuccess'"></span>
+	</div>
+	<div ng-if="monatEnrollment.currentStepName == 'orderListing' && monatEnrollment.orderTemplateService.showAddToCartMessage" class="alert discount-block text-white promotion-bar-block">
+		<button type="button" class="close" ng-click="monatEnrollment.orderTemplateService.showAddToCartMessage = false" aria-label="Close"><i class="fas fa-times"></i></button>
+		{{monatEnrollment.orderTemplateService.lastAddedProduct.sku_skuDefinition}} 
+		<span sw-rbKey="'frontend.productListing.addToFlexship'"></span>
+	</div>
+</div>
 </header>
 
 
