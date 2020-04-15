@@ -107,7 +107,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
     		
 			}else if(arguments.order.getMonatOrderType().getTypeCode() == 'motMpEnrollment'){
     			account.setAccountType('marketPartner');
-    			account.setCareerTitle('MP');
+    			account.setCareerTitle('Market Partner');
 				account.setRank(1);
     			account.setPriceGroups([getService('PriceGroupService').getPriceGroupByPriceGroupCode(1)]);
 				if(!isFirstOrder){
