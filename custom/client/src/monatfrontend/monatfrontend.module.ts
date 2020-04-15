@@ -189,8 +189,7 @@ var monatfrontendmodule = angular
 			});
 		},
 	])
-	.run(['appConfig','localStorageCache','sessionStorageCache','observerService','publicService',
-	(appConfig,localStorageCache,sessionStorageCache,observerService, publicService) =>{
+	.run(['appConfig', 'localStorageCache', (appConfig, localStorageCache) =>{
 		
 		if(localStorageCache.get('instantiationKey') !== appConfig.instantiationKey){
 			console.log("app-instantiation-key changed, resetting local-storage caches");
