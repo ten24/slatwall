@@ -68417,36 +68417,7 @@ var SWAddOrderItemsBySkuController = /** @class */ (function () {
         this.alertService = alertService;
         this.$onInit = function () {
             _this.observerService.attach(_this.setEdit, 'swEntityActionBar');
-            var skuDisplayProperties = "skuCode,calculatedSkuDefinition,product.productName";
-            if (_this.skuPropertiesToDisplay != null) {
-                // join the two lists.
-                skuDisplayProperties = skuDisplayProperties + "," + _this.skuPropertiesToDisplay;
-            }
-            _this.addSkuCollection = _this.collectionConfigService.newCollectionConfig('Sku');
-            _this.addSkuCollection.setDisplayProperties(skuDisplayProperties, '', { isVisible: true, isSearchable: true, isDeletable: true, isEditable: false });
-            _this.addSkuCollection.addDisplayProperty('product.productType.productTypeName', 'Product Type', { isVisible: true, isSearchable: false, isDeletable: false, isEditable: false });
-            _this.addSkuCollection.addDisplayProperty('priceByCurrencyCode', '', { isVisible: true, isSearchable: false, isDeletable: false, isEditable: false, arguments: { accountID: _this.accountId, currencyCode: _this.currencyCode } });
-            _this.addSkuCollection.addDisplayProperty('skuID', '', { isVisible: false, isSearchable: false, isDeletable: false, isEditable: false });
-            _this.addSkuCollection.addDisplayProperty('imageFile', _this.rbkeyService.rbKey('entity.sku.imageFile'), { isVisible: false, isSearchable: false, isDeletable: false });
-            _this.addSkuCollection.addDisplayProperty('qats', 'QATS', { isVisible: true, isSearchable: false, isDeletable: false, isEditable: false });
-            if (_this.skuPropertiesToDisplayWithConfig) {
-                // this allows passing in display property information. skuPropertiesToDisplayWithConfig is an array of objects
-                var skuPropertiesToDisplayWithConfig = _this.skuPropertiesToDisplayWithConfig.replace(/'/g, '"');
-                //now we can parse into a json array
-                var skuPropertiesToDisplayWithConfigObject = JSON.parse(skuPropertiesToDisplayWithConfig);
-                //now we can iterate and add the display properties defined on this attribute..
-                for (var _i = 0, skuPropertiesToDisplayWithConfigObject_1 = skuPropertiesToDisplayWithConfigObject; _i < skuPropertiesToDisplayWithConfigObject_1.length; _i++) {
-                    var property = skuPropertiesToDisplayWithConfigObject_1[_i];
-                    _this.addSkuCollection.addDisplayProperty(property.name, property.rbkey, property.config);
-                }
-            }
-            _this.addSkuCollection.addFilter('activeFlag', true, '=', undefined, true);
-            _this.addSkuCollection.addFilter('publishedFlag', true, '=', undefined, true);
-            _this.addSkuCollection.addFilter('product.activeFlag', true, '=', undefined, true);
-            _this.addSkuCollection.addFilter('product.publishedFlag', true, '=', undefined, true);
-            if (angular.isDefined(_this.siteId)) {
-                _this.addSkuCollection.addFilter('product.sites.siteID', _this.siteId, '=', undefined, true);
-            }
+            _this.initCollectionConfig();
             _this.skuColumns = angular.copy(_this.addSkuCollection.getCollectionConfig().columns);
             _this.skuColumns.push({
                 'title': _this.rbkeyService.rbKey('define.quantity'),
@@ -68553,6 +68524,42 @@ var SWAddOrderItemsBySkuController = /** @class */ (function () {
             this.edit = false;
         }
     }
+    SWAddOrderItemsBySkuController.prototype.initCollectionConfig = function () {
+        var _a, _b;
+        var skuDisplayProperties = "skuCode,calculatedSkuDefinition,product.productName";
+        if (this.skuPropertiesToDisplay != null) {
+            // join the two lists.
+            skuDisplayProperties = skuDisplayProperties + "," + this.skuPropertiesToDisplay;
+        }
+        this.addSkuCollection = this.collectionConfigService.newCollectionConfig('Sku');
+        this.addSkuCollection.setDisplayProperties(skuDisplayProperties, '', { isVisible: true, isSearchable: true, isDeletable: true, isEditable: false });
+        this.addSkuCollection.addDisplayProperty('product.productType.productTypeName', 'Product Type', { isVisible: true, isSearchable: false, isDeletable: false, isEditable: false });
+        this.addSkuCollection.addDisplayProperty('priceByCurrencyCode', '', { isVisible: true, isSearchable: false, isDeletable: false, isEditable: false, arguments: { accountID: this.accountId, currencyCode: this.currencyCode } });
+        this.addSkuCollection.addDisplayProperty('skuID', '', { isVisible: false, isSearchable: false, isDeletable: false, isEditable: false });
+        this.addSkuCollection.addDisplayProperty('imageFile', this.rbkeyService.rbKey('entity.sku.imageFile'), { isVisible: false, isSearchable: false, isDeletable: false });
+        this.addSkuCollection.addDisplayProperty('qats', 'QATS', { isVisible: true, isSearchable: false, isDeletable: false, isEditable: false });
+        if (this.skuPropertiesToDisplayWithConfig) {
+            // this allows passing in display property information. skuPropertiesToDisplayWithConfig is an array of objects
+            var skuPropertiesToDisplayWithConfig = this.skuPropertiesToDisplayWithConfig.replace(/'/g, '"');
+            //now we can parse into a json array
+            var skuPropertiesToDisplayWithConfigObject = JSON.parse(skuPropertiesToDisplayWithConfig);
+            //now we can iterate and add the display properties defined on this attribute..
+            for (var _i = 0, skuPropertiesToDisplayWithConfigObject_1 = skuPropertiesToDisplayWithConfigObject; _i < skuPropertiesToDisplayWithConfigObject_1.length; _i++) {
+                var property = skuPropertiesToDisplayWithConfigObject_1[_i];
+                this.addSkuCollection.addDisplayProperty(property.name, property.rbkey, property.config);
+            }
+        }
+        this.addSkuCollection.addFilter('activeFlag', true, '=', undefined, true);
+        this.addSkuCollection.addFilter('publishedFlag', true, '=', undefined, true);
+        this.addSkuCollection.addFilter('product.activeFlag', true, '=', undefined, true);
+        this.addSkuCollection.addFilter('product.publishedFlag', true, '=', undefined, true);
+        if ((_a = this.siteId) === null || _a === void 0 ? void 0 : _a.trim()) {
+            this.addSkuCollection.addFilter('product.sites.siteID', this.siteId, '=', undefined, true);
+        }
+        if ((_b = this.currencyCode) === null || _b === void 0 ? void 0 : _b.trim()) {
+            this.addSkuCollection.addFilter('skuPrices.currencyCode', this.currencyCode, '=', undefined, true);
+        }
+    };
     SWAddOrderItemsBySkuController.prototype.postData = function (url, data) {
         if (url === void 0) { url = ''; }
         if (data === void 0) { data = {}; }
@@ -68565,6 +68572,7 @@ var SWAddOrderItemsBySkuController = /** @class */ (function () {
     ;
     return SWAddOrderItemsBySkuController;
 }());
+exports.SWAddOrderItemsBySkuController = SWAddOrderItemsBySkuController;
 var SWAddOrderItemsBySku = /** @class */ (function () {
     function SWAddOrderItemsBySku(orderPartialsPath, slatwallPathBuilder, $hibachi, rbkeyService, alertService) {
         this.orderPartialsPath = orderPartialsPath;
