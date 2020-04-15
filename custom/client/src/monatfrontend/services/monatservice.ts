@@ -74,8 +74,8 @@ export class MonatService {
 		if (refresh || !cachedCart ){
 			
 			this.publicService.getCart(refresh, param)
-				.then((data) => { 
-					if(data?.cart &&  !data.failureActions?.length){
+				.then((data) => {
+					if(data?.cart){
 						console.log("get-cart, puting it in session-cache")
 						this.putIntoSessionCache('cachedCart', data.cart);
 						
@@ -109,8 +109,8 @@ export class MonatService {
 		this.publicService.doAction(action, payload)
 			.then((data) => {
 				this.successfulActions = [];
-	
-				if (data?.cart && !data.failureActions?.length) {
+				//we're not checking for failure actions, as regardless of failures we still need to show the cart to the user
+				if (data?.cart) {
 					console.log("update-cart, puting it in session-cache");
 					this.putIntoSessionCache('cachedCart', data.cart);
 	
