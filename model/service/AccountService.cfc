@@ -1454,7 +1454,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 		if(arguments.data.pointAdjustmentType == "pointsIn"){
 			
-			var currencyCode = arguments.data.currencyCode;
+			var currencyCode = arguments.data.account.getSiteCurrencyCode();
 			var sku = arguments.data.loyaltyAccruement.getGiftCardSku();
 			
 			var giftCard = getExistingGiftCardBySkuAndAccount(sku,arguments.data.account,currencyCode);
