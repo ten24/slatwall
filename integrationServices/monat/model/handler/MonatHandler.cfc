@@ -106,7 +106,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 				}
     		
 			}else if(arguments.order.getMonatOrderType().getTypeCode() == 'motMpEnrollment'){
-    			account.setAccountType('marketPartner');	
+    			account.setAccountType('marketPartner');
+    			account.setCareerTitle('MP');
+				account.setRank(1);
     			account.setPriceGroups([getService('PriceGroupService').getPriceGroupByPriceGroupCode(1)]);
 				if(!isFirstOrder){
 					getHibachiEventService().announceEvent('afterMarketPartnerUpgradeSuccess', {'order':arguments.order, 'entity':arguments.order}); 	
@@ -140,10 +142,13 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 					account.setEnrollmentDate(now());
 				}
 				
-				if( CompareNoCase(account.getAccountType(), 'marketPartner')  == 0  ) {
+				if( account.getAccountType() == 'marketPartner' ) {
 					//set renewal-date to one-year-from-enrolmentdate
 					var renewalDate = DateAdd('yyyy', 1, account.getEnrollmentDate());
 					account.setRenewalDate(DateAdd('yyyy', 1, account.getEnrollmentDate()));
+					account.setCareerTitle('MP');
+					account.setRank(1);
+					
 				}
 				
 				//TODO: Move this logic to account save
