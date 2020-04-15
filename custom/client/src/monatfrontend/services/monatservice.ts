@@ -25,6 +25,8 @@ export class MonatService {
 	public showAddToCartMessage: boolean;
 	public lastAddedProduct: cartOrderItem;
 	public muraContent = {};
+	public hairFilters = [{}];
+	public skinFilters = [{}];
 
 	//@ngInject
 	constructor(
@@ -488,5 +490,31 @@ export class MonatService {
 			}
 			index++;
 		}
+	}
+
+	//mock api call
+	public getProductFilters() {
+		this.hairFilters = [
+			{ name: "shampoos", categoryID: "12324121" },
+			{ name: "conditioner", categoryID: "12324121" },
+			{ name: "men", categoryID: "12324121" },
+			{ name: "women", categoryID: "12324121" },
+			{ name: "boys", categoryID: "12324121" },
+			{ name: "best sellers", categoryID: "12324121" },
+		];
+
+		this.skinFilters = [
+			{ name: "shampoos", categoryID: "12324121" },
+			{ name: "conditioner", categoryID: "12324121" },
+			{ name: "men", categoryID: "12324121" },
+			{ name: "women", categoryID: "12324121" },
+			{ name: "boys", categoryID: "12324121" },
+			{ name: "best sellers", categoryID: "12324121" },
+		];
+
+		return {
+			hairFilters: this.hairFilters,
+			skinFilters: this.skinFilters,
+		};
 	}
 }
