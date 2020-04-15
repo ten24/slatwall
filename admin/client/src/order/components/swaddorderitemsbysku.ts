@@ -93,9 +93,7 @@ class SWAddOrderItemsBySkuController{
 				break;
 			case 'customer':
 			default:
-			if(this.priceGroupCode.toLowerCase() === 'customer'){
-	        	this.addSkuCollection.addFilter('retailFlag', true, '=', undefined, true);
-			}
+			 this.addSkuCollection.addFilter('retailFlag', true, '=', undefined, true);
 			break;
 		}
 		
@@ -305,4 +303,3 @@ class SWAddOrderItemsBySku implements ng.IDirective {
 export {
 	SWAddOrderItemsBySku
 };
-
