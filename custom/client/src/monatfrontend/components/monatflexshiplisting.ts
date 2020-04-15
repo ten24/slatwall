@@ -71,26 +71,21 @@ class MonatFlexshipListingController{
 	public createNewFlexship = () => {
 		this.loading = true;
 		let siteID = this.publicService.cmsSiteID;
-		let createURL = '/shop/?type=flexship&orderTemplateId=';
+		let createURL = '/flexship-flow/';
 		
 		if(siteID != 'default'){
 			createURL = '/' + siteID + createURL;
 		}
 		
-		this.orderTemplateService.createOrderTemplate('ottSchedule')
+		this.orderTemplateService.createOrderTemplate('ottSchedule', 'save', true)
 			.then((data) => {
 				
 				if (
 					data.successfulActions &&
 					data.successfulActions.indexOf('public:order.create') > -1
 				) {
-					
-				    this.monatAlertService.success(this.rbkeyService.rbKey('frontend.flexshipCreateSucess'));
-				    this.monatService.setNewlyCreatedFlexship(data.orderTemplate); 
-				    this.monatService.redirectToProperSite(
-										'/shop/?type=flexship&orderTemplateId=' + data.orderTemplate
-									);
-									
+					this.monatService.setNewlyCreatedFlexship(data.orderTemplate); 
+				    this.monatService.redirectToProperSite('/flexship-flow');
 				} else{
 					throw(data);
 				}

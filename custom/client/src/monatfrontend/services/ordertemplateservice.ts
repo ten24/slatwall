@@ -338,11 +338,12 @@ export class OrderTemplateService {
       return objectToReturn;
     }
 
-    public createOrderTemplate = (orderTemplateSystemCode, context="save") => {
+    public createOrderTemplate = (orderTemplateSystemCode, context="save", setOnHibachiScopeFlag = false) => {
         return this.$rootScope.hibachiScope.doAction("createOrderTemplate",{
             orderTemplateSystemCode: orderTemplateSystemCode,
             saveContext: context,
-            returnJSONObjects:''
+            returnJSONObjects:'',
+            setOnHibachiScopeFlag:setOnHibachiScopeFlag
         });
     }   
     
