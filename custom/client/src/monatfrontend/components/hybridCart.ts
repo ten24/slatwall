@@ -66,7 +66,7 @@ class HybridCartController {
 			}
 			price += item.extendedPriceAfterDiscount;
 			subtotal += item.extendedPrice;
-			listPrice+= item.calculatedListPrice;
+			listPrice+= (item.calculatedListPrice * item.quantity);
 			index++;
 		}
 		this.otherDiscounts = this.cart.discountTotal - this.cart.purchasePlusTotal;
