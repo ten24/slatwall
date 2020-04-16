@@ -4,6 +4,7 @@ import cartSku from './cartSku'
 type genericObject = { [key:string]: any };
 
 export default interface cartOrderItem {
+    freezeQuantity: boolean;
 	skuProductURL: string,
 	calculatedExtendedPersonalVolume: number,
 	errors: genericObject,
