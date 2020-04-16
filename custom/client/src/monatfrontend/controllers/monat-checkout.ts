@@ -20,7 +20,6 @@ enum Screen {
 type Fulfillment = { orderFulfillmentID: string, [key: string]: any };
 
 class MonatCheckoutController {
-	public shippingFulfillment: Array<Fulfillment>;
 	public 	togglePaymentAction = false;
 	public loading = {
 		selectShippingMethod: false
@@ -113,12 +112,10 @@ class MonatCheckoutController {
 	private getCurrentCheckoutScreen = (setDefault = false, hardRefresh = false):Screen | void => {
 	
 		return this.publicService.getCart(hardRefresh).then(data => {
-
+			let screen = Screen.ACCOUNT;
 			this.cart = data.cart; 
-			let screen = Screen.SHIPPING;
-			this.shippingFulfillment = this.cart.orderFulfillments.filter(el => el.fulfillmentMethod.fulfillmentMethodType == 'shipping' );
 			this.calculateListPrice();
-
+			
 			if(this.cart.orderPayments?.length && this.cart.orderPayments[this.cart.orderPayments.length-1].accountPaymentMethod){
 				this.currentPaymentMethodID = this.cart.orderPayments[this.cart.orderPayments.length-1].accountPaymentMethod?.accountPaymentMethodID;
 			}
@@ -137,13 +134,10 @@ class MonatCheckoutController {
 				screen = Screen.PAYMENT;
 			}else if(this.cart.orderRequirementsList.indexOf('account') === -1){
 				screen = Screen.SHIPPING;
-			}else{
-				screen = Screen.ACCOUNT;
 			}
 				
 			this.screen = screen;
 			return screen;
-			
 		});
 	}
 	
@@ -393,16 +387,18 @@ class MonatCheckoutController {
 		this.enrollmentSteps = <number>this.publicService.steps ? <number>this.publicService.steps -1 : 0; 
 		this.account = data.account;
 		let setDefault = true;
-		
+		let hardRefresh = false;
+	
 		if(this.account.accountStatusType && this.account.accountStatusType.systemCode == 'astEnrollmentPending' ) {
 			this.hasSponsor = false;
 			this.totalSteps = 1;
 			setDefault = false;
+			hardRefresh = true
 		}
 		
 		this.totalSteps +=  2 + this.enrollmentSteps; 
 		if(!this.account.accountID.length) return;
-		this.getCurrentCheckoutScreen(setDefault, false);
+		this.getCurrentCheckoutScreen(setDefault, hardRefresh);
 
 	}
 }
