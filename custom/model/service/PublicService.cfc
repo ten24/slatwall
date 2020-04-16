@@ -1063,10 +1063,10 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 
     public any function addOrderItem(required struct data){
         var cart = getHibachiScope().getCart();
-        var account = cart.getAccount();
+        var account = getHibachiScope().getAccount();
         
         if(!cart.hasPriceGroup()){
-            if( !isNull(account) && account.hasPriceGroup() ){
+            if( account.hasPriceGroup() ){
                 cart.setPriceGroup(account.getPriceGroups()[1]);
             }else{
                 cart.setPriceGroup(getService('PriceGroupService').getPriceGroupByPriceGroupCode(2));
@@ -1251,15 +1251,18 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         param name="arguments.data.contentFilterFlag" default= false; //Filter based off slatwall content ID for listing pages
         param name="arguments.data.cmsCategoryFilterFlag" default= false; //Filter based off page categories
         param name="arguments.data.priceGroup" default="";
-
+        param name="arguments.data.categoryFilterFlag" default=false;
+        
         var returnObject = getBaseProductCollectionList(arguments.data);
         var productCollectionList = returnObject.productCollectionList;
         var priceGroupCode = returnObject.priceGroupCode;
         var currencyCode = returnObject.currencyCode;
         var siteCode = (arguments.data.cmsSiteID == 'default') ? '' : arguments.data.cmsSiteID;
+        
         if( arguments.data.contentFilterFlag && !isNull(arguments.data.contentID) && len(arguments.data.contentID)) productCollectionList.addFilter('listingPages.content.contentID',arguments.data.contentID,"=" );
         if( arguments.data.cmsCategoryFilterFlag && !isNull(arguments.data.cmsCategoryID) && len(arguments.data.cmsCategoryID)) productCollectionList.addFilter('categories.cmsCategoryID', arguments.data.cmsCategoryID, "=" );
         if( arguments.data.cmsContentFilterFlag && !isNull(arguments.data.cmsContentID) && len(arguments.data.cmsContentID)) productCollectionList.addFilter('listingPages.content.cmsContentID',arguments.data.cmsContentID,"=" ); 
+        if( arguments.data.categoryFilterFlag && !isNull(arguments.data.categoryID) && len(arguments.data.categoryID)) productCollectionList.addFilter('categories.categoryID', arguments.data.categoryID, "=" );
         
         var recordsCount = productCollectionList.getRecordsCount();
         productCollectionList.setPageRecordsShow(arguments.data.pageRecordsShow);

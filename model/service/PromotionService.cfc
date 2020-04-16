@@ -550,7 +550,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		var messagesApplied = 0;
 		for(var promotionQualifierMessage in arguments.orderQualifierMessages){
-			if( promotionQualifierMessage.hasOrderByOrderID(arguments.order) ){
+			if( promotionQualifierMessage.hasOrderByOrderID(arguments.order.getOrderID()) ){
 				var newAppliedPromotionMessage = this.newPromotionMessageApplied();
 				newAppliedPromotionMessage.setOrder( arguments.order );
 			
@@ -643,7 +643,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 		}
 		//making sure calculated props run
-		arguments.order.updateCalculatedProperties(true);
+		getHibachiScope().addModifiedEntity(order);
 		
 	}
 
@@ -667,7 +667,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					
 				}
 				//making sure calculated props run
-				orderItem.updateCalculatedProperties(true);
+				getHibachiScope().addModifiedEntity(orderItem);
 			}
 
 		}
@@ -684,6 +684,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var rewardCanStack = true;
 		
 		for( var appliedPromotion in appliedPromotions ){
+			if( isNull(appliedPromotion.getPromotionReward()) ){
+				continue;
+			}
 			var appliedRewardID = appliedPromotion.getPromotionRewardID();
 			var appliedRewardType = appliedPromotion.getPromotionReward().getRewardType();
 
