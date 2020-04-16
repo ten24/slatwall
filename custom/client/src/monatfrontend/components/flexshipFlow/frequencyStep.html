@@ -9,9 +9,10 @@
 			<span sw-rbKey="'frontend.enrollment.recieveItemsSub'"></span>
 
 			<div class="title-dropdown">
-				<select 
-					ng-model="frequencyStep.term" 
+				<select  
 					class="title-dropdown__select"
+					ng-model="frequencyStep.term"
+					ng-init="frequencyStep.term = frequencyStep.frequencyTerms[0]"
 					ng-options="term.name for term in frequencyStep.frequencyTerms"
 				></select>
 			</div>
