@@ -191,9 +191,9 @@ export class BaseBootStrapper{
         
         var promises: { [id:string]: ng.IPromise<any> } = {};
         
-        invalidCache.forEach( (thingToChche) => {
-            var functionName = thingToChche.charAt(0).toUpperCase()+thingToChche.slice(1);
-            promises[thingToChche] = this['get'+functionName+'Data'](); // mind the syntax 8)
+        invalidCache.forEach( (thingToCache) => {
+            var functionName = thingToCache.charAt(0).toUpperCase()+ thingToCache.slice(1);
+            promises[thingToCache] = this['get'+functionName+'Data'](); // mind the syntax 8)
         })
         
         return this.$q.all(promises);
