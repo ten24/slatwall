@@ -49,7 +49,7 @@
 												</a>
 												<div class="qty">
 													<button
-														ng-if="item.sku.product.productType.systemCode !== 'VIPCustomerRegistr'"
+														ng-if="!item.freezeQuantity"
 														type="button"
 														class="minus p-0"
 														ng-disabled="item.quantity <= 1"
@@ -65,7 +65,7 @@
 														ng-disabled="item.sku.product.productType.systemCode === 'VIPCustomerRegistr'"
 													/>
 													<button
-														ng-if="item.sku.product.productType.systemCode !== 'VIPCustomerRegistr'"
+														ng-if="!item.freezeQuantity"
 														type="button"
 														class="plus p-0"
 														ng-click="hybridCart.increaseItemQuantity(item)"
@@ -77,7 +77,7 @@
 												</div>
 											</div>
 										</div>
-										<span ng-if="item.sku.product.productType.systemCode !== 'VIPCustomerRegistr'" class="badge badge-pill delete">
+										<span ng-if="!item.freezeQuantity" class="badge badge-pill delete">
 											<a ng-click="hybridCart.removeItem(item)" href="#">
 												<i class="fal fa-times"></i>
 											</a>

@@ -59,10 +59,18 @@ class HybridCartController {
 		let subtotal = 0;
 		let listPrice = 0;
 		let index = 0;
+		
 		for(let item of this.cart.orderItems){
 			if(!this.isEnrollment && item.sku.product.productType.systemCode == 'VIPCustomerRegistr'){
 				this.cart.orderItems.splice(index);
 				continue;
+			}else if(
+				item.sku.product.productType.systemCode == 'VIPCustomerRegistr' 
+				|| item.sku.product.productType.systemCode == 'StarterKit' 
+				|| item.sku.product.productType.systemCode == 'ProductPack'
+				|| item.extendedPriceAfterDiscount == 0
+			){
+				item.freezeQuantity = true;
 			}
 			price += item.extendedPriceAfterDiscount;
 			subtotal += item.extendedPrice;
