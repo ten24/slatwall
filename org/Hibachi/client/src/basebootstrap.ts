@@ -23,27 +23,30 @@ export class BaseBootStrapper{
             instantiationKey : undefined
         }
         // Inspecting app config/model metadata in local storage (retreived from /custom/system/config.json)
-        return angular.lazy(this.myApplication)
-        .resolve( ['$http','$q', ($http, $q) => {
+        return angular.lazy(this.myApplication).resolve( ['$http','$q', ($http, $q) => {
+            
             this.$http = $http;
             this.$q = $q;
             
-            return this.getInstantiationKey()
-            .then( (instantiationKey: string) => {
+            return this.getInstantiationKey().then( (instantiationKey: string) => {
+               
+                this.instantiationKey = instantiationKey;
                 var invalidCache = [];
-                // NOTE: Return a promise so bootstrapping process will wait to continue executing until after the last step of loading the resourceBundles
-                return this.isPrivateMode()
-                .then( (privateMode) => {
-                    if(privateMode){
-                        throw("Private mode");
-                    }else {
+                
+                // NOTE: Return a promise so bootstrapping process will wait to continue executing 
+                // until after the last step of loading the resourceBundles
+                
+                return this.isPrivateMode().then( (privateMode) => {
+                    if(!privateMode){
                         return invalidCache;
                     }
+                    throw("Private mode"); // this gets catched() down the line and we reload everythign from the API, instead of using the cached-data
                 })
                 .then( () => {
-		            // Inspecting attribute model metadata in local storage (retreived from slatAction=api:main.getAttributeModel)
+		            // Inspecting attribute model metadata in local storage 
+		            // (retreived from slatAction=api:main.getAttributeModel)
                     var hashedData = localStorage.getItem('attributeChecksum');
-                    if(hashedData !== null && hibachiConfig.attributeCacheKey === hashedData.toUpperCase() ) {
+                    if(hibachiConfig.attributeCacheKey === hashedData?.toUpperCase() ) {
                         // attributeMetaData is valid and can be restored from local storage cache
                         coremodule.constant('attributeMetaData', JSON.parse(localStorage.getItem('attributeMetaData')) );
                     } else {
@@ -51,47 +54,32 @@ export class BaseBootStrapper{
                     }
                 })
                 .then( () => {
+                    
                     if(localStorage.getItem('appConfig') != null) {
                         this.appConfig = JSON.parse(localStorage.getItem('appConfig'));
-                        // override config
-                        for(var config in hibachiConfig){
-                            this.appConfig[config] = hibachiConfig[config];
-                        }
                     }
                     
-                    if( hibachiConfig.instantiationKey
-                        && this.appConfig.instantiationKey
-                        && hibachiConfig.instantiationKey === this.appConfig.instantiationKey
-                    ){
-                        // appConfig instantiation key is valid (but attribute model may need to be refreshed)
+                    if(  this.instantiationKey === this.appConfig.instantiationKey ) {
+                        // appConfig instantiation key is valid,
+                        // override config with whatever new received in hibachi-config
+                        Object.assign(this.appConfig, hibachiConfig);
                         coremodule.constant('appConfig', this.appConfig);
                     } else {
                         invalidCache.push('instantiationKey');
                     }
                 })
-                .catch( () => {
+                .catch( (e) => {
                     invalidCache.push('attributeCacheKey');
                     invalidCache.push('instantiationKey');
+                    console.log(e);
                 })
-                .then( () => {
-                    // If invalidCache, that indicates a need to refresh attribute metadata prior to retrieving resourceBundles
-                     if (invalidCache.length) {
-                        let deferred = $q.defer();
-                        this.getData(invalidCache) .then(resp => { deferred.resolve(resp); });
-                        return deferred.promise;
-                    }
-                })
-                .then( () =>  {
-                    let deferred = $q.defer();
-                    this.getResourceBundles().then( (resp) => deferred.resolve(resp) )
-                    return deferred.promise;
-                })
+                .then( () => invalidCache.length ? this.getData(invalidCache) : undefined )
+                .then( () => this.getResourceBundles() )
                 .catch( (e) => { 
                     console.error(e);
                 });
            });
       }])
-
     }
     
     getBaseUrl = () => {
@@ -200,12 +188,14 @@ export class BaseBootStrapper{
     };
 
     getData = ( invalidCache: string[] ) => {
+        
         var promises: { [id:string]: ng.IPromise<any> } = {};
-        for(var i in invalidCache) { // attributeCacheKey, instantiationKey
-            var invalidCacheName = invalidCache[i];
-            var functionName = invalidCacheName.charAt(0).toUpperCase()+invalidCacheName.slice(1);
-            promises[invalidCacheName] = this['get'+functionName+'Data'](); // mind the syntax 8)
-        }
+        
+        invalidCache.forEach( (thingToChche) => {
+            var functionName = thingToChche.charAt(0).toUpperCase()+thingToChche.slice(1);
+            promises[thingToChche] = this['get'+functionName+'Data'](); // mind the syntax 8)
+        })
+        
         return this.$q.all(promises);
     };
 
@@ -305,24 +295,35 @@ export class BaseBootStrapper{
     };
     
     getResourceBundles = () => {
-        var rbLocale = this.appConfig.rbLocale;
+        var rbLocale = this.appConfig.rbLocale || 'en';
         
         if(rbLocale == 'en_us'){
             rbLocale = 'en'
         }
+        
+        // we want to wait untill all of the bundles are downloaded, so creating an array of promisses
+        var rbPromises = []; 
+        
+        rbPromises.push( this.getResourceBundle(rbLocale) );
+        
+        // if the locale is like "es_mx", we also want to fetch bundle for 'es', as a fallback language
         var localeListArray = rbLocale.split('_');
-        var rbPromises = [];
-        var rbPromise = this.getResourceBundle(rbLocale);
-        rbPromises.push(rbPromise);
-        
         if(localeListArray.length === 2) {
-            rbPromise = this.getResourceBundle(localeListArray[0]);
-            rbPromises.push(rbPromise);
+            rbPromises.push( this.getResourceBundle(localeListArray[0]) );
         }
         
+        // if the first part of the locale isn't "en", we also want to fetch bundle for 'en' as it's the fallback language
         if(localeListArray[0] !== 'en') {
-            this.getResourceBundle('en');
+            rbPromises.push( this.getResourceBundle('en') );
         }
+        
+        /**
+         * the language fallback order for locale es_mx will be like
+         * 
+         *  >> the locale                               : 'es_mx'  
+         *      >>  the first language of the locale    : 'es'     
+         *          >> the default language             : 'en'
+        */
 
 		return this.$q.all(rbPromises)
 		    .then( (data) => {
