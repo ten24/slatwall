@@ -162,7 +162,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			orderID,
 			calculatedTotalItemQuantity,
 			orderNumber,
-			orderStatusType.typeName
+			orderStatusType.typeName,
+			calculatedTotal,
+			createdDateTime
 		');
 		
 		ordersList.addFilter( 'account.accountID', arguments.account.getAccountID() );

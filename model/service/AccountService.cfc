@@ -153,6 +153,8 @@ component extends="HibachiService" accessors="true" output="false" {
 			orderID,
 			calculatedTotalItemQuantity,
 			orderNumber,
+			calculatedTotal,
+			createdDateTime,
 			orderStatusType.typeName,
 			orderFulfillments.shippingAddress.streetAddress,
 			orderFulfillments.shippingAddress.street2Address,
