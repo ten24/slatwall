@@ -9,12 +9,12 @@ declare let paypal: any;
 ****/
 
 enum Screen {
-	SHIPPING, 
-	SPONSOR, 
-	REVIEW,
-	PAYMENT,
 	EDIT,
-	ACCOUNT
+	ACCOUNT,
+	SHIPPING, 
+	PAYMENT,
+	SPONSOR, 
+	REVIEW
 }
 
 type Fulfillment = { orderFulfillmentID: string, [key: string]: any };

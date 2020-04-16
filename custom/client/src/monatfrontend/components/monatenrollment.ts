@@ -30,7 +30,8 @@ class MonatEnrollmentController {
 	public account;
 	public stepMap = {};
 	public vipEnrollmentThreshold:number;
-	
+	public mpSteps = ['starterPack', 'todaysOrder', 'createAccount','updateAccount', 'checkout']; //the order of this array must reflect the order of the steps
+	public vipSteps = ['todaysOrder', 'ofy', 'subscription', 'orderListing', 'createAccount', 'updateAccount', 'checkout'];
 	
 	//@ngInject
 	constructor(public monatService, public observerService, public $rootScope, public publicService, public orderTemplateService, private sessionStorageCache: Cache) {
