@@ -104,7 +104,7 @@ class MonatCheckoutController {
 			this.account = res.account;
 
 		
-			if( this.account.accountStatusType && this.account.accountStatusType.systemCode != 'astEnrollmentPending' ) {
+			if( this.account.accountStatusType && this.account.accountStatusType.systemCode == 'astEnrollmentPending' ) {
 				this.hasSponsor = true;
 				this.totalSteps = 1;
 			}
