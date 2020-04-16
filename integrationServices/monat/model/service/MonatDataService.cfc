@@ -1013,22 +1013,6 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 		return "SKUItemID,LocationCode";
 	}
 
-	private any function populateSkuBundleQuery( required any skuBundleQuery, required struct skuData ){
-
-		for(var kit in arguments.skuData.KitLines){
-			var skuBundleData = {
-				'SKUItemCode' : trim(skuData['ItemCode']),
-				'ComponentItemCode' : kit['ComponentItemCode'],
-				'importKey' : trim(skuData['ItemCode']) & "-" & kit['ComponentItemCode'],
-				'ComponentQuantity' : kit['ComponentQty']
-			};
-			if(structKeyExists(kit,'ontheflykit')){
-				skuBundleData['ontheflykit'] = kit['ontheflykit'];
-			}
-			QueryAddRow(arguments.skuBundleQuery, skuBundleData);
-		}
-		return arguments.skuBundleQuery;
-	}
 
 
 	private any function associateProductWithSite(required struct siteProductCodes){
@@ -1055,8 +1039,8 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 				LEFT JOIN swproductsite ps ON p.productID = ps.productID AND ps.siteID = :siteID
 				WHERE p.productCode IN (:productCodes) AND  ps.productID IS NULL",
 				{ 
-					productCodes ={value = arrayToList(siteProductCodes[swSite]), list=true}, 
-					siteID = swSites[swSite]
+					'productCodes' = { 'value' = arrayToList(siteProductCodes[swSite]), 'list' = true }, 
+					'siteID' = swSites[swSite]
 				}
 			);
 		}
@@ -1122,6 +1106,8 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 		}
 
 		var basePath = getDirectoryFromPath(getCurrentTemplatePath());
+		
+		var skuBundles = {};
 
 // 		var countryToCurrency = {
 // 			'CAN' : 'CAD',
@@ -1132,14 +1118,14 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 // 			'CAN' : 'CAD',
 // 		};
 
-		var siteProductCodes = {
-			'CAN' = [],
-			'GBR' = [],
-			'AUD' = [],
-			'IRL' = [],
-			'POL' = [],
-			'USA' = []
-		};
+// 		var siteProductCodes = {
+// 			'CAN' = [],
+// 			'GBR' = [],
+// 			'AUD' = [],
+// 			'IRL' = [],
+// 			'POL' = [],
+// 			'USA' = []
+// 		};
 
 		var skuColumns = this.getSkuColumnsList();
 		var skuColumnTypes = [];
@@ -1187,11 +1173,12 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 					'DisableOnFlexShip' : skuData['DisableInFlexShip'] ?: false,
 					'ItemCategoryAccounting' : trim(skuData['ItemCategoryCode']),
 					'CategoryNameAccounting' : trim(skuData['ItemCategoryName']),
-					'EntryDate' : skuData['EntryDate']
+					'EntryDate' : skuData['EntryDate'],
+					'SAPItemCode' : skuData['ItemCode']
 				};
 
-				if (ArrayLen(skuData['SAPItemCodes']) && len(skuData['SAPItemCodes'][1]['SAPItemCode'])) {
-					sku['SAPItemCode'] = skuData['SAPItemCodes'][1]['SAPItemCode'];
+				//if (ArrayLen(skuData['SAPItemCodes']) && len(skuData['SAPItemCodes'][1]['SAPItemCode'])) {
+				//	sku['SAPItemCode'] = skuData['SAPItemCodes'][1]['SAPItemCode'];
 
 					// Create Stock Query
 				// 	stockQuery = this.populateStockQuery(stockQuery, skuData);
@@ -1204,9 +1191,9 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 				// 	}
 
 
-				}else{
-					sku['SAPItemCode'] = skuData['ItemCode'];
-				}
+				//}else{
+				//	sku['SAPItemCode'] = skuData['ItemCode'];
+				//}
 
 
 				// Setup SkuPrice data
@@ -1245,11 +1232,24 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 
 				// Create SkuBundle Query
 				if(arrayLen(skuData['KitLines'])){
-					skuBundleQuery = this.populateSkuBundleQuery(skuBundleQuery, skuData);
+				    
+				    skuBundles[trim(skuData['ItemCode'])] = '';
+
+				    for(var kit in skuData.KitLines){
+            			
+            			skuBundles[trim(skuData['ItemCode'])] = listAppend(skuBundles[trim(skuData['ItemCode'])], kit['ComponentItemCode']);
+            			
+            			QueryAddRow(skuBundleQuery, {
+            				'SKUItemCode' : trim(skuData['ItemCode']),
+            				'ComponentItemCode' : kit['ComponentItemCode'],
+            				'importKey' : trim(skuData['ItemCode']) & "-" & kit['ComponentItemCode'],
+            				'ComponentQuantity' : kit['ComponentQty'],
+            				'ontheflykit' : kit['ontheflykit'] ?: false
+            			});
+            		}
 				}
 			}
 		}
-
 		if(skuQuery.recordCount){
 			var importSkuConfig = FileRead('#basePath#../../config/import/skus.json');
 			getService("HibachiDataService").loadDataFromQuery(skuQuery, importSkuConfig, arguments.rc.dryRun);
@@ -1261,11 +1261,26 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 // 		}
 
 		if(skuBundleQuery.recordCount){
+		    
 			var importSkuBundleConfig = FileRead('#basePath#../../config/import/bundles.json');
 			getService("HibachiDataService").loadDataFromQuery(skuBundleQuery, importSkuBundleConfig, arguments.rc.dryRun);
 
 			var importSkuBundle2Config = FileRead('#basePath#../../config/import/bundles2.json');
 			getService("HibachiDataService").loadDataFromQuery(skuBundleQuery, importSkuBundle2Config, arguments.rc.dryRun);
+			
+			for(var skuID in skuBundles){
+		        QueryExecute(
+    				"DELETE bundle FROM swskubundle bundle
+                    INNER JOIN swSku sku ON bundle.skuID = sku.skuID
+                    INNER JOIN swSku childSku ON bundle.bundledSkuID = childSku.skuID
+                    WHERE sku.skuCode = :skuID
+                    AND childSku.skuCode NOT IN (:childSkuIDs)",
+    				{ 
+    					'skuID' = skuID,
+    					'childSkuIDs' = { 'value' = skuBundles[skuID], 'list' = true }
+    				}
+			    );
+		    }
 		}
 
 // 		if(stockQuery.recordCount){
@@ -1279,11 +1294,11 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 		QueryExecute("UPDATE swProductType SET productTypeIDPath = CONCAT('444df2f7ea9c87e60051f3cd87b435a1,',productTypeIDPath) WHERE parentProductTypeID = '444df2f7ea9c87e60051f3cd87b435a1' AND productTypeIDPath NOT LIKE '444df2f7ea9c87e60051f3cd87b435a1,%'");
 
 // 		//this.addUrlTitlesToProducts();
-		if(!arguments.rc.dryRun){
-			this.associateProductWithSite(siteProductCodes);
-		}else{
-			abort;
-		}
+// 		if(!arguments.rc.dryRun){
+// 			this.associateProductWithSite(siteProductCodes);
+// 		}else{
+// 			abort;
+// 		}
 		
 		abort;
 	}
