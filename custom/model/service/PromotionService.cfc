@@ -47,7 +47,7 @@ component extends="Slatwall.model.service.PromotionService" {
 					
 				}
 				//making sure calculated props run
-				orderItem.updateCalculatedProperties(true);
+				getHibachiScope().addModifiedEntity(orderItem);
 			}
 
 		}
@@ -65,7 +65,6 @@ component extends="Slatwall.model.service.PromotionService" {
 				newAppliedPromotion.invokeMethod('set#key#',{1=arguments.rewardStruct[key]});
 			}
 		}
-		arguments.order.updateCalculatedProperties(true);
 	}
 	
 	private void function applyPromotionToOrderItem( required any orderItem, required struct rewardStruct ){

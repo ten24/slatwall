@@ -1062,18 +1062,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     
 
     public any function addOrderItem(required struct data){
-        var cart = getHibachiScope().getCart();
+        var cart = super.addOrderItem(arguments.data);
         var account = cart.getAccount();
-        
-        if(!cart.hasPriceGroup()){
-            if( !isNull(account) && account.hasPriceGroup() ){
-                cart.setPriceGroup(account.getPriceGroups()[1]);
-            }else{
-                cart.setPriceGroup(getService('PriceGroupService').getPriceGroupByPriceGroupCode(2));
-            }
-        }
-        cart = super.addOrderItem(arguments.data);
-        account = cart.getAccount();
  
         if(
             !cart.hasErrors() 

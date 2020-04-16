@@ -548,24 +548,20 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		var maxMessages = getService('SettingService').getSettingValue('globalMaximumPromotionMessages');
 
-		var messagesApplied = 0;
+		if(maxMessages < arrayLen(arguments.orderQualifierMessages)){
+			arguments.orderQualifierMessages = arraySlice(arguments.orderQualifierMessages,1,maxMessages);
+		}
+		
 		for(var promotionQualifierMessage in arguments.orderQualifierMessages){
-			if( promotionQualifierMessage.hasOrderByOrderID(arguments.order) ){
-				var newAppliedPromotionMessage = this.newPromotionMessageApplied();
-				newAppliedPromotionMessage.setOrder( arguments.order );
+			var newAppliedPromotionMessage = this.newPromotionMessageApplied();
+			newAppliedPromotionMessage.setOrder( arguments.order );
+		
+			newAppliedPromotionMessage.setPromotionQualifierMessage( promotionQualifierMessage );
+			newAppliedPromotionMessage.setPromotionPeriod(promotionQualifierMessage.getPromotionQualifier().getPromotionPeriod());
+			newAppliedPromotionMessage.setPromotion(newAppliedPromotionMessage.getPromotionPeriod().getPromotion());
+			newAppliedPromotionMessage.setMessage( promotionQualifierMessage.getInterpolatedMessage( arguments.order ) );
 			
-				newAppliedPromotionMessage.setPromotionQualifierMessage( promotionQualifierMessage );
-				newAppliedPromotionMessage.setPromotionPeriod(promotionQualifierMessage.getPromotionQualifier().getPromotionPeriod());
-				newAppliedPromotionMessage.setPromotion(newAppliedPromotionMessage.getPromotionPeriod().getPromotion());
-				newAppliedPromotionMessage.setMessage( promotionQualifierMessage.getInterpolatedMessage( arguments.order ) );
-				
-				this.savePromotionMessageApplied(newAppliedPromotionMessage);
-				messagesApplied++;
-			}
-			
-			if(messagesApplied == maxMessages){
-				break;
-			}
+			this.savePromotionMessageApplied(newAppliedPromotionMessage);
 		}
 
 	}
@@ -643,7 +639,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 		}
 		//making sure calculated props run
-		arguments.order.updateCalculatedProperties(true);
+		getHibachiScope().addModifiedEntity(order);
 		
 	}
 
@@ -667,7 +663,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					
 				}
 				//making sure calculated props run
-				orderItem.updateCalculatedProperties(true);
+				getHibachiScope().addModifiedEntity(orderItem);
 			}
 
 		}
