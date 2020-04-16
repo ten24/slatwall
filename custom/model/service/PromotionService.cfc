@@ -194,27 +194,32 @@ component extends="Slatwall.model.service.PromotionService" {
 		});
 		
 		var maxMessages = getService('SettingService').getSettingValue('globalMaximumPromotionMessages');
-
-		if(maxMessages < arrayLen(arguments.orderQualifierMessages)){
-			arguments.orderQualifierMessages = arraySlice(arguments.orderQualifierMessages,1,maxMessages);
-		}
+		var messagesApplied = 0;
 		
 		for(var promotionQualifierMessage in arguments.orderQualifierMessages){
-			var newAppliedPromotionMessage = this.newPromotionMessageApplied();
+			if( promotionQualifierMessage.hasOrderByOrderID(arguments.order.getOrderID()) ){
+				var newAppliedPromotionMessage = this.newPromotionMessageApplied();
+				newAppliedPromotionMessage.setOrder( arguments.order );
 			
-			newAppliedPromotionMessage.setOrder( arguments.order );
-			newAppliedPromotionMessage.setPromotionQualifierMessage( promotionQualifierMessage );
-			newAppliedPromotionMessage.setMessage( promotionQualifierMessage.getInterpolatedMessage( arguments.order ) );
-			newAppliedPromotionMessage.setPromotionPeriod(promotionQualifierMessage.getPromotionQualifier().getPromotionPeriod());
-			newAppliedPromotionMessage.setPromotion(newAppliedPromotionMessage.getPromotionPeriod().getPromotion());
-
-			var qualifierProgress = promotionQualifierMessage.getQualifierProgress( arguments.order );
-			
-			if( !isNull( qualifierProgress ) ){
-				newAppliedPromotionMessage.setQualifierProgress( qualifierProgress );
+				newAppliedPromotionMessage.setPromotionQualifierMessage( promotionQualifierMessage );
+				newAppliedPromotionMessage.setPromotionPeriod(promotionQualifierMessage.getPromotionQualifier().getPromotionPeriod());
+				newAppliedPromotionMessage.setPromotion(newAppliedPromotionMessage.getPromotionPeriod().getPromotion());
+				newAppliedPromotionMessage.setMessage( promotionQualifierMessage.getInterpolatedMessage( arguments.order ) );
+				
+				
+				var qualifierProgress = promotionQualifierMessage.getQualifierProgress( arguments.order );
+				
+				if( !isNull( qualifierProgress ) ){
+					newAppliedPromotionMessage.setQualifierProgress( qualifierProgress );
+				}
+				
+				this.savePromotionMessageApplied(newAppliedPromotionMessage);
+				messagesApplied++;
 			}
 			
-			this.savePromotionMessageApplied(newAppliedPromotionMessage);
+			if(messagesApplied == maxMessages){
+				break;
+			}
 		}
 
 	}
