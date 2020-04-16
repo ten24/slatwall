@@ -680,6 +680,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var rewardCanStack = true;
 		
 		for( var appliedPromotion in appliedPromotions ){
+			if( isNull(appliedPromotion.getPromotionReward()) ){
+				continue;
+			}
 			var appliedRewardID = appliedPromotion.getPromotionRewardID();
 			var appliedRewardType = appliedPromotion.getPromotionReward().getRewardType();
 
