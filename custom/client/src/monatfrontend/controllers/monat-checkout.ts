@@ -119,7 +119,7 @@ class MonatCheckoutController {
 			let screen = Screen.SHIPPING;
 			this.shippingFulfillment = this.cart.orderFulfillments.filter(el => el.fulfillmentMethod.fulfillmentMethodType == 'shipping' );
 			this.calculateListPrice();
-			
+
 			if(this.cart.orderPayments?.length && this.cart.orderPayments[this.cart.orderPayments.length-1].accountPaymentMethod){
 				this.currentPaymentMethodID = this.cart.orderPayments[this.cart.orderPayments.length-1].accountPaymentMethod?.accountPaymentMethodID;
 			}
@@ -346,24 +346,6 @@ class MonatCheckoutController {
 		});
 	}
 	
-	public setInitialShippingMethod():Promise<any>{
-		let defaultOption = <Fulfillment>this.shippingFulfillment[0];
-
-		let data = {
-			'shippingMethodID': defaultOption.shippingMethodOptions[0].value,
-			'fulfillmentID':defaultOption.orderFulfillmentID
-		}
-
-		this.loading.selectShippingMethod = true;
-		return this.publicService.doAction( 'addShippingMethodUsingShippingMethodID', data );
-	}
-	
-	public setInitialShippingAddress():Promise<any> {
-		let accountAddressID = this.account.primaryAddress.accountAddressID;
-		let fulfillmentID = this.shippingFulfillment[0].orderFulfillmentID;
-		return this.publicService.doAction('addShippingAddressUsingAccountAddress', {accountAddressID:accountAddressID,fulfillmentID:fulfillmentID});
-	}
-	
 	public setBillingAddress(defaultAddress = true, _addressID=''):Promise<any>{ 
 		let addressID = _addressID;
 		
@@ -380,15 +362,6 @@ class MonatCheckoutController {
 		this.setBillingAddress(false, addressID).then(res=>{
 			this.currentPaymentMethodID = '';
 		});
-	}
-	
-	public setAccountPrimaryPaymentMethodAsCartPaymentMethod():Promise<any>{
-		let data = {
-			copyFromType: 'accountPaymentMethod',
-			orderID: this.cart.orderID,
-			accountPaymentMethodID: this.account.primaryPaymentMethod.accountPaymentMethodID
-		}
-		return this.publicService.doAction('addOrderPayment', data);
 	}
 	
 	public setCheckoutDefaults(){
@@ -430,15 +403,15 @@ class MonatCheckoutController {
 	}
 	
 	public updateAfterLogin(){
-		this.publicService.getAccount().then(res => {
-			this.setCheckoutDefaults();
+		this.publicService.getAccount(true).then(res => {
+			this.handleAccountResponse(res);
 		});
 	}
 	
 	public handleAccountResponse(data: {account:{[key:string]:any}, [key:string]:any}){
 		this.enrollmentSteps = <number>this.publicService.steps ? <number>this.publicService.steps -1 : 0; 
 		this.account = data.account;
-	
+
 		if(this.account.accountStatusType && this.account.accountStatusType.systemCode == 'astEnrollmentPending' ) {
 			this.hasSponsor = false;
 			this.totalSteps = 1;
