@@ -1063,10 +1063,10 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 
     public any function addOrderItem(required struct data){
         var cart = getHibachiScope().getCart();
-        var account = cart.getAccount();
+        var account = getHibachiScope().getAccount();
         
         if(!cart.hasPriceGroup()){
-            if( !isNull(account) && account.hasPriceGroup() ){
+            if( account.hasPriceGroup() ){
                 cart.setPriceGroup(account.getPriceGroups()[1]);
             }else{
                 cart.setPriceGroup(getService('PriceGroupService').getPriceGroupByPriceGroupCode(2));
