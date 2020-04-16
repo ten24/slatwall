@@ -411,15 +411,17 @@ class MonatCheckoutController {
 	public handleAccountResponse(data: {account:{[key:string]:any}, [key:string]:any}){
 		this.enrollmentSteps = <number>this.publicService.steps ? <number>this.publicService.steps -1 : 0; 
 		this.account = data.account;
-
+		let setDefault = true;
+		
 		if(this.account.accountStatusType && this.account.accountStatusType.systemCode == 'astEnrollmentPending' ) {
 			this.hasSponsor = false;
 			this.totalSteps = 1;
+			setDefault = false;
 		}
 		
 		this.totalSteps +=  2 + this.enrollmentSteps; 
 		if(!this.account.accountID.length) return;
-		this.getCurrentCheckoutScreen(true, false);
+		this.getCurrentCheckoutScreen(setDefault, false);
 
 	}
 }
