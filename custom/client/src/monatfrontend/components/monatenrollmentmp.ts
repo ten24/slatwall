@@ -31,6 +31,8 @@ class EnrollmentMPController {
 	public endpoint: 'setUpgradeOnOrder' | 'setUpgradeOrderType' = 'setUpgradeOnOrder';
 	public showUpgradeErrorMessage = false;
 	public loadingBundles: boolean = false;
+	public hairProductFilter:any;
+	public skinProductFilter:any;
 	
 	// @ngInject
 	constructor(public publicService, public observerService, public monatService, private rbkeyService, private monatAlertService) {}
@@ -212,9 +214,22 @@ class EnrollmentMPController {
 		return tmp.textContent || tmp.innerText || '';
 	};
 
-	public getProductList = () => {
+	public getProductList = ( category:any, categoryType:string ) => {
 		this.loading = true;
-		this.publicService.doAction('getproductsByCategoryOrContentID', {priceGroupCode: 1}).then((result) => {
+		
+		let data:any = {
+			priceGroupCode: 1
+		};
+		
+		if(category){
+			data.categoryFilterFlag = true;
+			data.categoryID = category.value;
+			this.hairProductFilter = null;
+			this.skinProductFilter = null;
+			this[`${categoryType}ProductFilter`] = category;
+		}
+		
+		this.publicService.doAction('getproductsByCategoryOrContentID', data).then((result) => {
 			this.observerService.notify("PromiseComplete");
 			this.productList = result.productList;
 			this.productRecordsCount = result.recordsCount
