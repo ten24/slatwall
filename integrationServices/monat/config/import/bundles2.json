@@ -14,8 +14,7 @@
         },
         {
           "sourceColumn":"ComponentQuantity",
-          "propertyIdentifier":"bundledQuantity",
-          "updateFlag":false
+          "propertyIdentifier":"bundledQuantity"
         }
     ]
 }
