@@ -2213,4 +2213,13 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var site = getService('siteService').getSiteByCmsSiteID(arguments.data.cmsSiteID);
         arguments.data['ajaxResponse']['vipEnrollmentThreshold'] = site.setting('integrationmonatSiteVipEnrollmentOrderMinimum');
     }
+    
+    public void function addOrderTemplateItem(required any data){
+        param name="arguments.data.returnOrderTemplateFlag" default="true";
+        super.addOrderTemplateItem(arguments.data);
+        
+        if(arguments.data.returnOrderTemplateFlag){
+            arguments.data['ajaxResponse']['orderTemplate'] = getOrderService().getOrderTemplateDetailsForAccount(data);
+        }
+    }
 }
