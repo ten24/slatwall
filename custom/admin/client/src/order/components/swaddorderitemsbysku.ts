@@ -26,7 +26,7 @@ class SWAddOrderItemsBySkuController extends AddOrderItemsBySkuController{
 				this.addSkuCollection.addFilter('mpFlag', true, '=', undefined, true);
 				break;
 			case 'vip': 
-				this.addSkuCollection.addFilter('mpFlag', true, '=', undefined, true);
+				this.addSkuCollection.addFilter('vipFlag', true, '=', undefined, true);
 				break;
 			default:
 	        	this.addSkuCollection.addFilter('retailFlag', true, '=', undefined, true);
@@ -81,4 +81,3 @@ export {
 	SWAddOrderItemsBySku,
 	SWAddOrderItemsBySkuController
 };
-
