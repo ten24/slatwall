@@ -97,7 +97,7 @@ class MonatProductModalController {
 		this.loading = true;
 		this.orderTemplateService.addOrderTemplateItem(
 			this.product.skuID, 
-			this.orderTemplateID,
+			this.orderTemplateService.currentOrderTemplateID,
 			this.quantityToAdd
 		)
 		.then((data) => {
