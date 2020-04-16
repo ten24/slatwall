@@ -1088,11 +1088,16 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 
 
 		getService("HibachiTagService").cfsetting(requesttimeout="60000");
+		
+		logHibachi("importMonatProducts - Start", true);
 
 		var extraBody = {};
 		
 
 		if(arguments.rc.days > 0){
+		    
+		    logHibachi("importMonatProducts - Getting data for #arguments.rc.days# days", true);
+		    
 			extraBody = {
 				"Filters": {
 				    "StartDate": DateTimeFormat( now(), "yyyy-mm-dd'T'00:00:01'.693Z'" ),
@@ -1104,6 +1109,8 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 		if(!structKeyExists(arguments.rc, 'pageMax')){
 			arguments.rc.pageMax = this.getLastProductPageNumber(arguments.rc.pageSize, extraBody);
 		}
+		
+		logHibachi("importMonatProducts - Pages found #arguments.rc.pageMax#", true);
 
 		var basePath = getDirectoryFromPath(getCurrentTemplatePath());
 		
@@ -1149,15 +1156,20 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 
 
 		for(var index = arguments.rc.pageNumber; index <= arguments.rc.pageMax; index++){
+		    
+		    logHibachi("importMonatProducts - Current Page #index#", true); 
 			var productResponse = this.getApiResponse( arguments.rc.days > 0 ? "SWGetNewUpdatedSKU" : "QueryItems", index, arguments.rc.pageSize, extraBody );
 
 			//goto next page causing this is erroring!
 			if ( productResponse.hasErrors ){
+			    logHibachi("importMonatProducts - Returned Errors", true); 
 				continue;
 			}
 
 			//Set the pagination info.
 			var monatProducts = productResponse.Data.Records ?: [];
+			
+			logHibachi("importMonatProducts - Product Count #arrayLen(monatProducts)#", true); 
 
 			for (var skuData in monatProducts){
 
@@ -1250,6 +1262,8 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 				}
 			}
 		}
+		
+		logHibachi("importMonatProducts - Importing Products/Sku Count #skuQuery.recordCount#", true); 
 		if(skuQuery.recordCount){
 			var importSkuConfig = FileRead('#basePath#../../config/import/skus.json');
 			getService("HibachiDataService").loadDataFromQuery(skuQuery, importSkuConfig, arguments.rc.dryRun);
@@ -1260,6 +1274,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 // 			getService("HibachiDataService").loadDataFromQuery(skuPriceQuery, importSkuPriceConfig, arguments.rc.dryRun);
 // 		}
 
+        logHibachi("importMonatProducts - Importing SKuBundle Count #skuBundleQuery.recordCount#", true); 
 		if(skuBundleQuery.recordCount){
 		    
 			var importSkuBundleConfig = FileRead('#basePath#../../config/import/bundles.json');
@@ -1299,7 +1314,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 // 		}else{
 // 			abort;
 // 		}
-		
+		logHibachi("importMonatProducts - Done!", true); 
 		abort;
 	}
     
