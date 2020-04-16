@@ -28,7 +28,7 @@ class MonatCheckoutController {
 	public screen = Screen.ACCOUNT;
 	public SCREEN = Screen; //Allows access to Screen Enum in Partial view
 	public account:any;
-	public hasSponsor = false;
+	public hasSponsor = true;
 	public ownerAccountID:string;
 	public cart:any; 
 	public setDefaultShipping = false;
@@ -79,9 +79,8 @@ class MonatCheckoutController {
 		}, 'addBillingAddressSuccess');
 		
 		this.observerService.attach( this.closeNewAddressForm, 'addNewAccountAddressSuccess' ); 
-	
-		this.observerService.attach(this.setCheckoutDefaults.bind(this), 'createAccountSuccess' ); 
-		this.observerService.attach(this.setCheckoutDefaults.bind(this), 'loginSuccess' ); 
+		this.observerService.attach(this.updateAfterLogin.bind(this), 'createAccountSuccess' ); 
+		this.observerService.attach(this.updateAfterLogin.bind(this), 'loginSuccess' ); 
 		
 		//TODO: delete these event listeners and call within function
 		this.observerService.attach(()=>{
@@ -99,19 +98,7 @@ class MonatCheckoutController {
 		this.observerService.attach(this.submitSponsor.bind(this), 'autoAssignSponsor' ); 
 
 		this.publicService.getAccount(true).then(res=>{
-		
-			this.enrollmentSteps = <number>this.publicService.steps ? <number>this.publicService.steps -1 : 0; 
-			this.account = res.account;
-	
-			if( this.account.accountStatusType.systemCode != 'astEnrollmentPending' ) {
-				this.hasSponsor = true;
-			}else{
-				this.totalSteps = 1;
-			}
-			
-			this.totalSteps +=  2 + this.enrollmentSteps; 
-			if(!this.account.accountID.length) return;
-			this.getCurrentCheckoutScreen(true, false);
+			this.handleAccountResponse(res);
 		});
 		
 		const currDate = new Date;
@@ -440,6 +427,27 @@ class MonatCheckoutController {
 		.catch((error) => {
 			console.error('unable to open model :', error);
 		});
+	}
+	
+	public updateAfterLogin(){
+		this.publicService.getAccount().then(res => {
+			this.setCheckoutDefaults();
+		});
+	}
+	
+	public handleAccountResponse(data: {account:{[key:string]:any}, [key:string]:any}){
+		this.enrollmentSteps = <number>this.publicService.steps ? <number>this.publicService.steps -1 : 0; 
+		this.account = data.account;
+	
+		if(this.account.accountStatusType && this.account.accountStatusType.systemCode == 'astEnrollmentPending' ) {
+			this.hasSponsor = false;
+			this.totalSteps = 1;
+		}
+		
+		this.totalSteps +=  2 + this.enrollmentSteps; 
+		if(!this.account.accountID.length) return;
+		this.getCurrentCheckoutScreen(true, false);
+
 	}
 }
 
