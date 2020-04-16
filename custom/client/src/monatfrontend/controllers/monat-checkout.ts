@@ -28,7 +28,7 @@ class MonatCheckoutController {
 	public screen = Screen.ACCOUNT;
 	public SCREEN = Screen; //Allows access to Screen Enum in Partial view
 	public account:any;
-	public hasSponsor = false;
+	public hasSponsor = true;
 	public ownerAccountID:string;
 	public cart:any; 
 	public setDefaultShipping = false;
@@ -103,9 +103,8 @@ class MonatCheckoutController {
 			this.enrollmentSteps = <number>this.publicService.steps ? <number>this.publicService.steps -1 : 0; 
 			this.account = res.account;
 	
-			if( this.account.accountStatusType.systemCode != 'astEnrollmentPending' ) {
-				this.hasSponsor = true;
-			}else{
+			if( this.account.accountStatusType.systemCode == 'astEnrollmentPending' ) {
+				this.hasSponsor = false;
 				this.totalSteps = 1;
 			}
 			
