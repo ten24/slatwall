@@ -102,8 +102,8 @@ class MonatCheckoutController {
 		
 			this.enrollmentSteps = <number>this.publicService.steps ? <number>this.publicService.steps -1 : 0; 
 			this.account = res.account;
-	
-			if( this.account.accountStatusType.systemCode != 'astEnrollmentPending' ) {
+		
+			if( this.account.accountStatusType && this.account.accountStatusType.systemCode != 'astEnrollmentPending' ) {
 				this.hasSponsor = true;
 			}else{
 				this.totalSteps = 1;
