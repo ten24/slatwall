@@ -135,7 +135,7 @@ class MonatProductCardController {
 
 	
 	public launchQuickShopModal = () => {
-	
+		let type = this.type.indexOf('VIP') >-1 || this.type.indexOf('vip') >-1 ? 'flexship' : '';
 		
 		this.ModalService.showModal({
 			component: 'monatProductModal',
@@ -144,7 +144,7 @@ class MonatProductCardController {
 				siteCode:this.siteCode,
 				currencyCode:this.currencyCode,
 				product: this.product,
-				type: this.type,
+				type: type,
 				isEnrollment: this.isEnrollment,
 				orderTemplateID: this.orderTemplate,
 			},
@@ -217,6 +217,7 @@ class MonatProductCardController {
     
 	public launchWishlistModal = (skuID, productName) => {
 		let newSkuID = skuID
+
 		this.ModalService.showModal({
 			component: 'swfWishlist',
 			bodyClass: 'angular-modal-service-active',

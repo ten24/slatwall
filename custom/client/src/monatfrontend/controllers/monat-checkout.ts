@@ -9,12 +9,12 @@ declare let paypal: any;
 ****/
 
 enum Screen {
-	SHIPPING, 
-	SPONSOR, 
-	REVIEW,
-	PAYMENT,
 	EDIT,
-	ACCOUNT
+	ACCOUNT,
+	SHIPPING, 
+	PAYMENT,
+	SPONSOR, 
+	REVIEW
 }
 
 type Fulfillment = { orderFulfillmentID: string, [key: string]: any };
@@ -28,7 +28,7 @@ class MonatCheckoutController {
 	public screen = Screen.ACCOUNT;
 	public SCREEN = Screen; //Allows access to Screen Enum in Partial view
 	public account:any;
-	public hasSponsor = false;
+	public hasSponsor = true;
 	public ownerAccountID:string;
 	public cart:any; 
 	public setDefaultShipping = false;
@@ -102,10 +102,10 @@ class MonatCheckoutController {
 		
 			this.enrollmentSteps = <number>this.publicService.steps ? <number>this.publicService.steps -1 : 0; 
 			this.account = res.account;
-	
-			if( this.account.accountStatusType.systemCode != 'astEnrollmentPending' ) {
+
+		
+			if( this.account.accountStatusType && this.account.accountStatusType.systemCode == 'astEnrollmentPending' ) {
 				this.hasSponsor = true;
-			}else{
 				this.totalSteps = 1;
 			}
 			
