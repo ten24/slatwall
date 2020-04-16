@@ -143,6 +143,7 @@ class MonatCheckoutController {
 				
 			this.screen = screen;
 			return screen;
+			
 		});
 	}
 	
