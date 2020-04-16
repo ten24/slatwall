@@ -449,7 +449,7 @@ component extends="HibachiService" accessors="true" {
 	
 	public any function getAllRelatedProducts(required any productID) {
 		var relatedProducts = this.getProductRelationshipCollectionList();
-		relatedProducts.setDisplayProperties("relatedProduct.productID, relatedProduct.calculatedQATS, relatedProduct.calculatedProductRating, relatedProduct.activeFlag, relatedProduct.urlTitle, relatedProduct.productName, relatedProduct.defaultSku.imageFile, relatedProduct.calculatedSalePrice, relatedProduct.defaultSku.price, relatedProduct.defaultSku.listPrice, relatedProduct.productType.productTypeName, relatedProduct.defaultSku.skuID");
+		relatedProducts.setDisplayProperties("relatedProduct.productID, relatedProduct.calculatedQATS, relatedProduct.calculatedProductRating, relatedProduct.activeFlag, relatedProduct.urlTitle, relatedProduct.productName, relatedProduct.defaultSku.imageFile, relatedProduct.calculatedSalePrice, relatedProduct.defaultSku.price, relatedProduct.defaultSku.listPrice, relatedProduct.productType.productTypeName, relatedProduct.productType.productTypeID, relatedProduct.defaultSku.skuID");
 		relatedProducts.addFilter("product.productID",arguments.productID);
 		relatedProducts.addFilter("product.activeFlag",1);
 		relatedProducts = relatedProducts.getRecords(formatRecords=false);
@@ -474,6 +474,7 @@ component extends="HibachiService" accessors="true" {
 		if(arrayLen(arguments.products)) {
 			var missingImageSetting = getService('SettingService').getSettingValue('imageMissingImagePath');
 			var resizeSizes=['s','m','l']; //add all sized images
+			
 			for(var product in arguments.products) {
 	            var imageFile = product[arguments.propertyName] ? : '';
 	            var imageArray = [];
@@ -488,6 +489,13 @@ component extends="HibachiService" accessors="true" {
 	            
 	            product['images'] = imageArray;
 	        }
+	        
+	        //If there's only one product in response, add alternate images as well
+	        if(arrayLen(arguments.products) == 1) {
+	        	
+	        	arguments.products[1]['altImages'] = this.getProduct(arguments.products[1].productID).getImageGalleryArray();
+	        }
+	        
 		}
 		return arguments.products;
 	}
