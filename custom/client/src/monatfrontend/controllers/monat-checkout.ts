@@ -9,12 +9,12 @@ declare let paypal: any;
 ****/
 
 enum Screen {
-	SHIPPING, 
-	SPONSOR, 
-	REVIEW,
-	PAYMENT,
 	EDIT,
-	ACCOUNT
+	ACCOUNT,
+	SHIPPING, 
+	PAYMENT,
+	SPONSOR, 
+	REVIEW
 }
 
 type Fulfillment = { orderFulfillmentID: string, [key: string]: any };
@@ -33,7 +33,6 @@ class MonatCheckoutController {
 	public cart:any; 
 	public setDefaultShipping = false;
 	public totalSteps = 0;
-	public currentStep:number;
 	public enrollmentSteps = 0;
 	public currentYear:number;
 	public monthOptions:Array<number> = [1,2,3,4,5,6,7,8,9,10,11,12];
@@ -133,37 +132,18 @@ class MonatCheckoutController {
 				this.setCheckoutDefaults();
 				return;
 			} 
-			
-			if(this.publicService.cart && this.publicService.cart.orderRequirementsList.indexOf('account') === -1){
-				if (this.publicService.hasShippingAddressAndMethod() ) {
-					screen = Screen.PAYMENT;
-				} 
-				
-				//send to sponsor selector if the account has no owner
-				if(!this.hasSponsor && this.cart.orderRequirementsList.indexOf('payment') === -1){ 
-					screen = setDefault ? Screen.SPONSOR : Screen.PAYMENT;
-				}
-				
-				//if they have a sponsor, billing, and shipping details, they can go to review
-				if ( this.cart.orderRequirementsList.indexOf('payment') === -1 && this.publicService.cart.orderRequirementsList.indexOf('fulfillment') === -1 && this.publicService.hasShippingAddressAndMethod() && this.hasSponsor) {
-					screen = setDefault ? Screen.REVIEW : Screen.PAYMENT;
-				}
+
+			if(this.cart.orderRequirementsList.indexOf('fulfillment') === -1){ 
+				screen = Screen.PAYMENT;
+			}else if(this.cart.orderRequirementsList.indexOf('account') === -1){
+				screen = Screen.SHIPPING;
+			}else{
+				screen = Screen.ACCOUNT;
 			}
+				
 			this.screen = screen;
-			this.getCurrentStepNumber();
 			return screen;
 		});
-	}
-	
-	public getCurrentStepNumber():void{
-		
-		this.currentStep = (this.screen == Screen.ACCOUNT || this.screen == Screen.SHIPPING || this.screen == Screen.PAYMENT)  //billing /shipping is step one
-			? 1 + this.enrollmentSteps
-			: this.screen == Screen.SPONSOR //if they need to select a sponsor, step 2
-			? 2 + this.enrollmentSteps
-			:(this.screen == Screen.REVIEW && !this.hasSponsor) //if they had to go through the sponsor step, and now are on review, there is 3 total steps
-			? 3 + this.enrollmentSteps
-			: 2 + this.enrollmentSteps; //otherwise 2 total steps
 	}
 	
 	public closeNewAddressForm = () => {

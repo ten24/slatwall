@@ -2046,6 +2046,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var termCollection = getSettingService().getTermCollectionList();
 		termCollection.setDisplayProperties('termID|value,termName|name');
 		termCollection.addFilter('termID', getSettingService().getSettingValue('orderTemplateEligibleTerms'),'in');
+		termCollection.setOrderBy('sortOrder|ASC');
 		return termCollection.getRecords();
 	} 
 	
