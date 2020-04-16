@@ -120,7 +120,7 @@
 			>
 				<i 
 					class="far"
-					ng-class="monatEnrollment.vipSteps.indexOf(monatEnrollment.currentStepName) > monatEnrollment.vipSteps.indexOf('todaysOrder') ? 'fa-check' : 'fa-shopping-basket' "
+					ng-class="monatEnrollment.stepClassArray.indexOf(monatEnrollment.currentStepName) > monatEnrollment.stepClassArray.indexOf('todaysOrder') ? 'fa-check' : 'fa-shopping-basket' "
 				></i>	
 				<p class="mb-1" sw-rbkey="'frontend.cart.todaysOrder'"></p>
 			</div>
@@ -131,7 +131,7 @@
 			>
 				 <i 
 					class="far" 
-					ng-class="monatEnrollment.vipSteps.indexOf(monatEnrollment.currentStepName) > monatEnrollment.vipSteps.indexOf('ofy') ? 'fa-check' : 'fa-gift' "
+					ng-class="monatEnrollment.stepClassArray.indexOf(monatEnrollment.currentStepName) > monatEnrollment.stepClassArray.indexOf('ofy') ? 'fa-check' : 'fa-gift' "
 				></i>	
 				<p class="mb-1" sw-rbkey="'frontend.flexshipFlow.onlyForYou'"></p>
 			</div>
@@ -142,7 +142,7 @@
 			>
 				<i 
 					class="far"
-					ng-class="monatEnrollment.vipSteps.indexOf(monatEnrollment.currentStepName) > monatEnrollment.vipSteps.indexOf('subscription') ? 'fa-check' : 'fa-calendar-plus' "
+					ng-class="monatEnrollment.stepClassArray.indexOf(monatEnrollment.currentStepName) > monatEnrollment.stepClassArray.indexOf('subscription') ? 'fa-check' : 'fa-calendar-plus' "
 				></i>	
 				<p class="mb-1" sw-rbkey="'frontend.flexship.frequency'"></p>
 			</div>
@@ -155,7 +155,7 @@
 			>
 				<i 
 					class="far"
-					ng-class="monatEnrollment.vipSteps.indexOf(monatEnrollment.currentStepName) > monatEnrollment.vipSteps.indexOf('orderListing') ? 'fa-check' : 'fa-shipping-timed' "
+					ng-class="monatEnrollment.stepClassArray.indexOf(monatEnrollment.currentStepName) > monatEnrollment.stepClassArray.indexOf('orderListing') ? 'fa-check' : 'fa-shipping-timed' "
 				></i>
 				<p class="mb-1" sw-rbkey="'entity.OrderTemplate'"></p>
 			</div>
@@ -167,7 +167,7 @@
 			>
 				<i 
 					class="far" 
-					ng-class="monatEnrollment.vipSteps.indexOf(monatEnrollment.currentStepName) > monatEnrollment.vipSteps.indexOf('createAccount') ? 'fa-check' : 'fa-user-plus' "
+					ng-class="monatEnrollment.stepClassArray.indexOf(monatEnrollment.currentStepName) > monatEnrollment.stepClassArray.indexOf('createAccount') ? 'fa-check' : 'fa-user-plus' "
 				></i>
 				<p class="mb-1" sw-rbkey="'frontend.createAccount.createAccountBtn'"></p>
 			</div>
@@ -191,7 +191,7 @@
 			>
 				<i 
 					class="far" 
-					ng-class="monatEnrollment.mpSteps.indexOf(monatEnrollment.currentStepName) > monatEnrollment.mpSteps.indexOf('starterPack') ? 'fa-check' : 'fa-wine-bottle' "
+					ng-class="monatEnrollment.stepClassArray.indexOf(monatEnrollment.currentStepName) > monatEnrollment.stepClassArray.indexOf('starterPack') ? 'fa-check' : 'fa-wine-bottle' "
 				></i>	
 				<p class="mb-1" sw-rbkey="'frontend.global.productPack'"></p>
 			</div>
@@ -204,7 +204,7 @@
 			>
 				<i 
 					class="far"
-					ng-class="monatEnrollment.mpSteps.indexOf(monatEnrollment.currentStepName) > monatEnrollment.mpSteps.indexOf('todaysOrder') ? 'fa-check' : 'fa-shopping-basket' "  
+					ng-class="monatEnrollment.stepClassArray.indexOf(monatEnrollment.currentStepName) > monatEnrollment.stepClassArray.indexOf('todaysOrder') ? 'fa-check' : 'fa-shopping-basket' "  
 				></i>
 				<p class="mb-1" sw-rbkey="'frontend.cart.todaysOrder'"></p>
 			</div>
@@ -218,8 +218,8 @@
 					class="far"
 					ng-class="
 						( 
-							monatEnrollment.mpSteps.indexOf(monatEnrollment.currentStepName) > monatEnrollment.mpSteps.indexOf('createAccount') 
-							&&  monatEnrollment.mpSteps.indexOf(monatEnrollment.currentStepName) > monatEnrollment.mpSteps.indexOf('updateAccount') 
+							monatEnrollment.stepClassArray.indexOf(monatEnrollment.currentStepName) > monatEnrollment.stepClassArray.indexOf('createAccount') 
+							&&  monatEnrollment.stepClassArray.indexOf(monatEnrollment.currentStepName) > monatEnrollment.stepClassArray.indexOf('updateAccount') 
 						) 
 						? 'fa-check' : 'fa-user-plus' "  
 				></i>
@@ -233,7 +233,7 @@
 			>
 				<i 
 					class="far"
-					ng-class="monatEnrollment.mpSteps.indexOf(monatEnrollment.currentStepName) > monatEnrollment.mpSteps.indexOf('updateAccount') ? 'fa-check' : 'fa-briefcase'"
+					ng-class="monatEnrollment.stepClassArray.indexOf(monatEnrollment.currentStepName) > monatEnrollment.stepClassArray.indexOf('updateAccount') ? 'fa-check' : 'fa-briefcase'"
 				></i>
 				<p class="mb-1" sw-rbkey="'frontend.enrollment.businessDetails'"></p>
 			</div>
