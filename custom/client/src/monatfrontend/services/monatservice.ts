@@ -383,28 +383,17 @@ export class MonatService {
 	
 		//mock api call
 	public getProductFilters(){
-		this.hairFilters = [
-			{'name': 'shampoos', 'categoryID' : '12324121'},
-			{'name': 'conditioner', 'categoryID' : '12324121'},
-			{'name': 'men', 'categoryID' : '12324121'},
-			{'name': 'women', 'categoryID' : '12324121'},
-			{'name': 'boys', 'categoryID' : '12324121'},
-			{'name': 'best sellers', 'categoryID' : '12324121'}
-		];
-		
-		this.skinFilters = [
-			{'name': 'shampoos', 'categoryID' : '12324121'},
-			{'name': 'conditioner', 'categoryID' : '12324121'},
-			{'name': 'men', 'categoryID' : '12324121'},
-			{'name': 'women', 'categoryID' : '12324121'},
-			{'name': 'boys', 'categoryID' : '12324121'},
-			{'name': 'best sellers', 'categoryID' : '12324121'}
-		];
-		
-		return {
-			hairFilters: this.hairFilters,
-			skinFilters: this.skinFilters
-		}
+		return this.publicService.doAction('?slatAction=monat:public.getProductListingFilters')
+		.then(response=>{
+			if(response.hairCategories){
+				this.hairFilters = response.hairCategories;
+				this.skinFilters = response.skinCategories;
+			}
+			return {
+				hairFilters: this.hairFilters,
+				skinFilters: this.skinFilters
+			}
+		});
 	}
 
 }
