@@ -33,6 +33,7 @@
 	<div 
 		ng-if="
 			monatEnrollment.currentStepName != 'orderListing' 
+			&& monatEnrollment.vipEnrollmentThreshold
 			&& monatEnrollment.vipEnrollmentThreshold - (monatEnrollment.monatService.cart.subtotal - monatEnrollment.monatService.cart.discountTotal) > 0" 
 			class="alert discount-block text-white promotion-bar-block"
 	>
@@ -119,7 +120,7 @@
 			>
 				<i 
 					class="far"
-					ng-class="monatEnrollment.vipSteps.indexOf(monatEnrollment.currentStepName) > monatEnrollment.mpSteps.indexOf('todaysOrder') && 'fa-check' || 'fa-shopping-basket' "
+					ng-class="monatEnrollment.vipSteps.indexOf(monatEnrollment.currentStepName) > monatEnrollment.vipSteps.indexOf('todaysOrder') ? 'fa-check' : 'fa-shopping-basket' "
 				></i>	
 				<p class="mb-1" sw-rbkey="'frontend.cart.todaysOrder'"></p>
 			</div>
@@ -130,7 +131,7 @@
 			>
 				 <i 
 					class="far" 
-					ng-class="monatEnrollment.vipSteps.indexOf(monatEnrollment.currentStepName) > monatEnrollment.mpSteps.indexOf('ofy') && 'fa-check' || 'fa-gift' "
+					ng-class="monatEnrollment.vipSteps.indexOf(monatEnrollment.currentStepName) > monatEnrollment.vipSteps.indexOf('ofy') ? 'fa-check' : 'fa-gift' "
 				></i>	
 				<p class="mb-1" sw-rbkey="'frontend.flexshipFlow.onlyForYou'"></p>
 			</div>
@@ -141,7 +142,7 @@
 			>
 				<i 
 					class="far"
-					ng-class="monatEnrollment.vipSteps.indexOf(monatEnrollment.currentStepName) > monatEnrollment.mpSteps.indexOf('subscription') && 'fa-check' || 'fa-calendar-plus' "
+					ng-class="monatEnrollment.vipSteps.indexOf(monatEnrollment.currentStepName) > monatEnrollment.vipSteps.indexOf('subscription') ? 'fa-check' : 'fa-calendar-plus' "
 				></i>	
 				<p class="mb-1" sw-rbkey="'frontend.flexship.frequency'"></p>
 			</div>
@@ -154,7 +155,7 @@
 			>
 				<i 
 					class="far"
-					ng-class="monatEnrollment.vipSteps.indexOf(monatEnrollment.currentStepName) > monatEnrollment.mpSteps.indexOf('orderListing') && 'fa-check' || 'fa-shipping-timed' "
+					ng-class="monatEnrollment.vipSteps.indexOf(monatEnrollment.currentStepName) > monatEnrollment.vipSteps.indexOf('orderListing') ? 'fa-check' : 'fa-shipping-timed' "
 				></i>
 				<p class="mb-1" sw-rbkey="'entity.OrderTemplate'"></p>
 			</div>
@@ -164,7 +165,10 @@
 				class="col"
 				ng-style="{ 'opacity' : (monatEnrollment.currentStepName == 'createAccount' ) ? '100%' : '50%' }"
 			>
-				<i class="far fa-user-plus"></i>
+				<i 
+					class="far" 
+					ng-class="monatEnrollment.vipSteps.indexOf(monatEnrollment.currentStepName) > monatEnrollment.vipSteps.indexOf('createAccount') ? 'fa-check' : 'fa-user-plus' "
+				></i>
 				<p class="mb-1" sw-rbkey="'frontend.createAccount.createAccountBtn'"></p>
 			</div>
 			
@@ -173,7 +177,7 @@
 				<p class="mb-1" sw-rbkey="'frontend.global.checkout'"></p>
 			</div>
 			
-			<div ng-if="slatwall.account.accountStatusType.systemCode != 'astGoodStanding'" class="col">
+			<div ng-if="monatEnrollment.account.accountStatusType.systemCode != 'astGoodStanding'" class="col">
 				<i class="far fa-user-friends"></i>
 				<p class="mb-1" sw-rbkey="'frontend.global.sponsor'"></p>
 			</div>
@@ -187,7 +191,7 @@
 			>
 				<i 
 					class="far" 
-					ng-class="monatEnrollment.mpSteps.indexOf(monatEnrollment.currentStepName) > monatEnrollment.mpSteps.indexOf('starterPack') && 'fa-check' || 'fa-wine-bottle' "
+					ng-class="monatEnrollment.mpSteps.indexOf(monatEnrollment.currentStepName) > monatEnrollment.mpSteps.indexOf('starterPack') ? 'fa-check' : 'fa-wine-bottle' "
 				></i>	
 				<p class="mb-1" sw-rbkey="'frontend.global.productPack'"></p>
 			</div>
@@ -200,7 +204,7 @@
 			>
 				<i 
 					class="far"
-					ng-class="monatEnrollment.mpSteps.indexOf(monatEnrollment.currentStepName) > monatEnrollment.mpSteps.indexOf('todaysOrder') && 'fa-check' || 'fa-shopping-basket' "  
+					ng-class="monatEnrollment.mpSteps.indexOf(monatEnrollment.currentStepName) > monatEnrollment.mpSteps.indexOf('todaysOrder') ? 'fa-check' : 'fa-shopping-basket' "  
 				></i>
 				<p class="mb-1" sw-rbkey="'frontend.cart.todaysOrder'"></p>
 			</div>
@@ -217,7 +221,7 @@
 							monatEnrollment.mpSteps.indexOf(monatEnrollment.currentStepName) > monatEnrollment.mpSteps.indexOf('createAccount') 
 							&&  monatEnrollment.mpSteps.indexOf(monatEnrollment.currentStepName) > monatEnrollment.mpSteps.indexOf('updateAccount') 
 						) 
-						&& 'fa-check' || 'fa-user-plus' "  
+						? 'fa-check' : 'fa-user-plus' "  
 				></i>
 				<p class="mb-1" sw-rbkey="'frontend.createAccount.createAccountBtn'"></p>
 			</div>
@@ -229,7 +233,7 @@
 			>
 				<i 
 					class="far"
-					ng-class="monatEnrollment.mpSteps.indexOf(monatEnrollment.currentStepName) > monatEnrollment.mpSteps.indexOf('updateAccount') && 'fa-check' || 'fa-briefcase'"
+					ng-class="monatEnrollment.mpSteps.indexOf(monatEnrollment.currentStepName) > monatEnrollment.mpSteps.indexOf('updateAccount') ? 'fa-check' : 'fa-briefcase'"
 				></i>
 				<p class="mb-1" sw-rbkey="'frontend.enrollment.businessDetails'"></p>
 			</div>
@@ -239,7 +243,7 @@
 				<p class="mb-1" sw-rbkey="'frontend.global.checkout'"></p>
 			</div>
 			
-			<div ng-if="slatwall.account.accountStatusType.systemCode != 'astGoodStanding'" class="col">
+			<div ng-if="monatEnrollment.account.accountStatusType.systemCode != 'astGoodStanding'" class="col">
 				<i class="far fa-user-friends"></i> 
 				<p class="mb-1" sw-rbkey="'frontend.global.sponsor'"></p>
 			</div>
