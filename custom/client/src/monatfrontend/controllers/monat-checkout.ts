@@ -32,7 +32,6 @@ class MonatCheckoutController {
 	public cart:any; 
 	public setDefaultShipping = false;
 	public totalSteps = 0;
-	public enrollmentSteps = 0;
 	public currentYear:number;
 	public monthOptions:Array<number> = [1,2,3,4,5,6,7,8,9,10,11,12];
 	public yearOptions:Array<number> = [];
@@ -98,6 +97,7 @@ class MonatCheckoutController {
 		this.publicService.getAccount(true).then(res=>{
 			this.handleAccountResponse(res);
 		});
+		
 		
 		const currDate = new Date;
         this.currentYear = currDate.getFullYear();
@@ -384,19 +384,16 @@ class MonatCheckoutController {
 	}
 	
 	public handleAccountResponse(data: {account:{[key:string]:any}, [key:string]:any}){
-		this.enrollmentSteps = <number>this.publicService.steps ? <number>this.publicService.steps -1 : 0; 
 		this.account = data.account;
 		let setDefault = true;
 		let hardRefresh = false;
 	
 		if(this.account.accountStatusType && this.account.accountStatusType.systemCode == 'astEnrollmentPending' ) {
 			this.hasSponsor = false;
-			this.totalSteps = 1;
 			setDefault = false;
-			hardRefresh = true
+			hardRefresh = true;
 		}
-		
-		this.totalSteps +=  2 + this.enrollmentSteps; 
+	
 		if(!this.account.accountID.length) return;
 		this.getCurrentCheckoutScreen(setDefault, hardRefresh);
 
