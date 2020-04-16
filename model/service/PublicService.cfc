@@ -87,6 +87,60 @@ component  accessors="true" output="false"
 		
 		throw("You have attempted to call the method #arguments.methodName# which does not exist in publicService");
 	}
+	
+	/**
+     * Function to set primary phone number
+     * @param accountPhoneNumberID required
+     * @return none
+     **/
+     public void function setPrimaryPhoneNumber(required struct data) {
+        param name="arguments.data.accountPhoneNumberID";
+        var accountPhoneNumber = getService('accountService').getAccountPhoneNumber(arguments.data.accountPhoneNumberID);
+        if(!isNull(accountPhoneNumber) && getHibachiScope().getAccount().getAccountID() == accountPhoneNumber.getAccount().getAccountID() ) {
+            
+            getHibachiScope().getAccount().setPrimaryPhoneNumber(accountPhoneNumber);
+            var accountSave = getService('accountService').saveAccount(getHibachiScope().getAccount());
+            getHibachiScope().addActionResult( "public:setPrimaryPhoneNumber", accountSave.hasErrors() );
+        } else {
+            getHibachiScope().addActionResult( "public:setPrimaryPhoneNumber", true );
+        }
+     }
+     
+     /**
+     * Function to set primary email address
+     * @param accountEmailAddressID required
+     * @return none
+     **/
+     public void function setPrimaryEmailAddress(required struct data) {
+        param name="arguments.data.accountEmailAddressID";
+        var accountEmailAddress = getService('accountService').getAccountEmailAddress(arguments.data.accountEmailAddressID);
+        if(!isNull(accountEmailAddress) && getHibachiScope().getAccount().getAccountID() == accountEmailAddress.getAccount().getAccountID() ) {
+            getHibachiScope().getAccount().setPrimaryEmailAddress(accountEmailAddress);
+            var accountSave = getService('accountService').saveAccount(getHibachiScope().getAccount());
+            getHibachiScope().addActionResult( "public:setPrimaryEmailAddress", accountSave.hasErrors() );
+        } else {
+            getHibachiScope().addActionResult( "public:setPrimaryEmailAddress", true );
+        }
+     }
+    
+    
+    /**
+     * Function to set primary account address
+     * @param accountAddressId required
+     * @return none
+     **/
+     public void function setPrimaryAccountAddress(required struct data) {
+        param name="arguments.data.accountAddressID";
+        var accountAddress = getService('accountService').getAccountAddress(arguments.data.accountAddressID);
+        if(!isNull(accountAddress) && getHibachiScope().getAccount().getAccountID() == accountAddress.getAccount().getAccountID() ) {
+            
+            getHibachiScope().getAccount().setPrimaryAddress(accountAddress);
+            var accountSave = getService('accountService').saveAccount(getHibachiScope().getAccount());
+            getHibachiScope().addActionResult( "public:cart.setPrimaryAccountAddress", accountSave.hasErrors() );
+        } else {
+            getHibachiScope().addActionResult( "public:cart.setPrimaryAccountAddress", true );
+        }
+     }
     
     /**
      * Function to get Types by Type Code
@@ -790,7 +844,7 @@ component  accessors="true" output="false"
       		accountAddress.setAddress(newAddress);
       		accountAddress.setAccount(getHibachiScope().getAccount());	
       		var savedAccountAddress = getService("AccountService").saveAccountAddress(accountAddress);
-          getHibachiScope().addActionResult("public:account.addNewAccountAddress", savedAccountAddress.hasErrors());
+            getHibachiScope().addActionResult("public:account.addNewAccountAddress", savedAccountAddress.hasErrors());
    	     	if (!savedAccountAddress.hasErrors()){
    	     		getDao('hibachiDao').flushOrmSession();
                 data.accountAddressID = savedAccountAddress.getAccountAddressID();
