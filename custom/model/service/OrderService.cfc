@@ -1557,7 +1557,6 @@ component extends="Slatwall.model.service.OrderService" {
 			arguments.order.getMonatOrderType().getTypeCode() == 'motMPEnrollment' 
 		){
 			
-			
 			/**
 			 * 1. If orderCreatedSite.SiteCode is UK and order.accountType is MP 
 			 * max 200 pound TOTAL including VAT and Shipping Feed on days 1-7 
@@ -1566,43 +1565,60 @@ component extends="Slatwall.model.service.OrderService" {
 			 * for total instead of all orders.
 			 **/
 			
-			logHibachi("Got errors on order.motMPEnrollment: #SerializeJson(arguments.order.getErrors())#");
+			logHibachi("Got errors on order.motMPEnrollment: #SerializeJson(arguments.order.getErrors())#,  order-total: #arguments.order.getTotal()#");
 			
 			//persist current changes temporarly
 			var oldErrors = StructCopy(arguments.order.getErrors());
 			arguments.order.clearHibachiErrors();
 			getHibachiScope().setORMHasErrors( false );
 
-			logHibachi("Flushing to temporarly saving the order: #arguments.order.getOrderID()#");
+			logHibachi("Flushing to temporarly saving the order: #arguments.order.getOrderID()#,  order-total: #arguments.order.getTotal()#");
 			getHibachiScope().flushORMSession();
-			
 			entityReload(arguments.order);
 
 			if( !IsNull(newOrderItem) ) {
-				logHibachi("Removing new-order-item: #newOrderItem.getOrderItemID()#");
-				arguments.order = this.processOrder(arguments.order, { 'orderItemID': newOrderItem.getOrderItemID() }, 'removeOrderItem');
 				
-				logHibachi("Flushing after removing new-order-item: #newOrderItem.getOrderItemID()#");
+				logHibachi("Removing new-order-item: #newOrderItem.getOrderItemID()#,  (r) order-total: #arguments.order.getTotal()#");
+				arguments.order = this.processOrder(arguments.order, { 'orderItemID': newOrderItem.getOrderItemID() }, 'removeOrderItem');
+				getHibachiScope().setORMHasErrors( false );
+				logHibachi("Flushing after removing new-order-item: #newOrderItem.getOrderItemID()#, order-total: #arguments.order.getTotal()#");
 				getHibachiScope().flushORMSession();
 				
 			} else if( !IsNull(foundOrderItem) ) {
 				
-				logHibachi("Updating foundOrderItem qty to: #foundOrderItem.getQuantity() - arguments.processObject.getQuantity() #");
+				logHibachi("Updating foundOrderItem qty to: #foundOrderItem.getQuantity() - arguments.processObject.getQuantity()#,  order-total: #arguments.order.getTotal()#");
 				foundOrderItem.setQuantity( foundOrderItem.getQuantity() - arguments.processObject.getQuantity() );
-				foundOrderItem = this.saveOrderItem( orderItem=foundOrderItem, updateOrderAmounts=true , updateCalculatedProperties=true);
-				logHibachi("Flushing after reverting qty, found-order-item: #foundOrderItem.getOrderItemID()#");
+				foundOrderItem.clearNonPersistentCalculatedPropertiesCache();
+				foundOrderItem = this.saveOrderItem( orderItem=foundOrderItem, updateOrderAmounts=false , updateCalculatedProperties=false);
+				logHibachi("Errors after reverting qty foundOrderItem: #SerializeJson(foundOrderItem.getErrors())#");
+				logHibachi("Errors after reverting qty order: #SerializeJson(arguments.order.getErrors())#,  order-total: #arguments.order.getTotal()#");
+
+				logHibachi("Flushing after reverting qty, found-order-item: #foundOrderItem.getOrderItemID()#,  order-total: #arguments.order.getTotal()#");
 				getHibachiScope().flushORMSession();
 			}
 			
-				// // reloading for the latest data after calculated props and other changes (update/remove order item)
-				// arguments.order = this.saveOrder( order=arguments.order, updateOrderAmounts=false );
-				
+		   
+			logHibachi("Errors before re-saving the order: #SerializeJson(arguments.order.getErrors())#,  order-total: #arguments.order.getTotal()#");
+			arguments.order = this.saveOrder( order=arguments.order, updateOrderAmounts=true );
+			logHibachi("Errors after re-saving the order: #SerializeJson(arguments.order.getErrors())#,  order-total: #arguments.order.getTotal()#");
+			
+			logHibachi("Flushing after re-saving the order, order-id: #arguments.order.getOrderID()#, (r) order-total: #arguments.order.getTotal()#");
+			getHibachiScope().flushORMSession();
+			
+			
 			arguments.order.addErrors(oldErrors);
 		}
 		
 		
 		return arguments.order;
 	}
+	
+	
+	// public any function revertMpOrderUK(required any order, required any processObject){
+		
+			
+	// 		return arguments.order;
+	// }
 	
 	
 	public boolean function getAccountIsInFlexshipCancellationGracePeriod(required any orderTemplate){

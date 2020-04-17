@@ -174,6 +174,27 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		variables.calculatedUpdateRunFlag = arguments.calculatedUpdateRunFlagValue;
 	}
 	
+	
+	/**
+	 * Due to variable-scope caching, for non-persistent properties, 
+	 * if the it's loaded in the memory there's no direct way to, reload/re-calculate value for these,
+	 * unless if you keep track of all of the properties invloled.
+	 * this helper function is a lazy way of doing that. 
+	 * 
+	 * Note:
+	 * It only care about the current entity, not the nested(related child) properties.
+	 *  
+	 **/ 
+	public void function clearNonPersistentCalculatedPropertiesCache(){
+        // Loop over all properties
+        for(var property in getProperties()) {
+            // Look for any that start with the calculatedXXX naming convention
+            if( left(property.name, 10) == "calculated" && (!structKeyExists(property, "persistent") || property.persistent == "true") ){
+				structDelete(variables, right(property.name, len(property.name)-10));
+            }
+        }
+	}
+	
 	/** runs a update calculated properties only once per request unless explicitly set to false before calling. */
 	public void function updateCalculatedProperties(boolean runAgain=false) {
         if(!structKeyExists(variables, "calculatedUpdateRunFlag") || runAgain) {
