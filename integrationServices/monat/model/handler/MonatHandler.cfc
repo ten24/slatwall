@@ -288,7 +288,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 	public any function afterOrderItemCreateSuccess(required any slatwallScope, required any orderItem, required any data){ 
 		// Flush so the item is there when we need it. 
 		if (!arguments.orderItem.getOrder().hasErrors()){
-			ormFlush();
+			slatwallScope.flushORMSession();
 		}
 		
 		try{
