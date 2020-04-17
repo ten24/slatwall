@@ -30,7 +30,7 @@ class MonatEnrollmentController {
 	public account;
 	public stepMap = {};
 	public vipEnrollmentThreshold:number;
-	
+	public stepClassArray = [];
 	
 	//@ngInject
 	constructor(public monatService, public observerService, public $rootScope, public publicService, public orderTemplateService, private sessionStorageCache: Cache) {
@@ -128,7 +128,7 @@ class MonatEnrollmentController {
 	}
 
 	public addStep = (step) => {
-		
+
 		if(this.publicService.steps){
 			this.publicService.steps++
 		}else{
@@ -138,6 +138,7 @@ class MonatEnrollmentController {
 		if (this.steps.length == 0) {
 			step.selected = true;
 		}
+		this.stepClassArray.push(step.stepClass);
 		this.stepMap[step.stepClass] = Object.keys(this.stepMap).length +1;
 		this.steps.push(step);
 	};

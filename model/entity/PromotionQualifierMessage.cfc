@@ -78,16 +78,15 @@ property name="qualifierProgressTemplate" ormtype="string";
 	
 	private struct function getOrderDataFromRequirementsCollection(required string orderID){
 		var orderCollection = getTransientMessageRequirementsCollection();
-		
-		if( !isNull(orderCollection) ){
-			orderCollection.setPageRecordsShow(1);
-			orderCollection.addFilter(propertyIdentifier='orderID',value=arguments.orderID, filterGroupAlias='orderIDFilter');
-			var orderRecords = orderCollection.getPageRecords();
-			if(arrayLen(orderRecords)){
-				return orderRecords[1];
-			}
+		if(isNull(orderCollection)){
+			return {};
 		}
-		return {};
+		orderCollection.setPageRecordsShow(1);
+		orderCollection.addFilter(propertyIdentifier='orderID',value=arguments.orderID, filterGroupAlias='orderIDFilter');
+		var orderRecords = orderCollection.getPageRecords();
+		if(arrayLen(orderRecords)){
+			return orderRecords[1];
+		}
 	}
 	
 	public string function getInterpolatedMessage(required any order){
@@ -97,7 +96,6 @@ property name="qualifierProgressTemplate" ormtype="string";
 	public string function getInterpolatedField(required any order, required fieldValue){
 		var returnValue = arguments.order.stringReplace(arguments.fieldValue,false,true);
 		var orderRecord = getOrderDataFromRequirementsCollection(arguments.order.getOrderID());
-		
 		returnValue = getService('HibachiUtilityService').replaceStringTemplateFromStruct(returnValue,orderRecord);
     	returnValue = getService('HibachiUtilityService').replaceFunctionTemplate(returnValue);
     	return returnValue;

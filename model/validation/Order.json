@@ -2,10 +2,15 @@
 	"conditions": {
 		"isNotTestOrder": {
 			"testOrderFlag": { "neq": true }
+		},
+		"orderIsPlaced":{
+			"statusCode":{
+				"neq":"ostNotPlaced"
+			}
 		}
 	},
 	"properties": {
-		"account": [{ "contexts": "addOrderPayment,placeOrder", "required": true }],
+		"account": [{ "contexts": "addOrderPayment,placeOrder", "required": true },{"conditions":"orderIsPlaced","contexts":"save","required":true}],
 		"orderType": [{ "contexts": "save", "required": true }],
 		"orderStatusType": [{ "contexts": "save", "required": true }],
 		"paymentAmountDue": [{ "contexts": "retryPayment", "gt": 0 }],

@@ -2168,12 +2168,15 @@ component  accessors="true" output="false"
 		}
 	    
  		orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'addOrderTemplateItem'); 
- 		orderTemplate.updateCalculatedProperties();
+ 		orderTemplate = getOrderService().saveOrderTemplate(orderTemplate);
         getHibachiScope().addActionResult( "public:order.addOrderTemplateItem", orderTemplate.hasErrors() );
             
         if(orderTemplate.hasErrors()) {
             ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
+        }else if(!orderTemplate.hasErrors() && !getHibachiScope().getORMHasErrors()) {
+            getHibachiScope().flushORMSession(); 
         }
+        
     }
     
     

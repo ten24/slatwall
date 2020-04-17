@@ -3,7 +3,7 @@ class MonatFlexshipMenuController {
 	public monatFlexshipCard;
 
 	//@ngInject
-	constructor() {}
+	constructor(public publicService) {}
 
 	public $onInit = () => {};
 

@@ -27,6 +27,7 @@ export class MonatService {
 	public muraContent = {};
 	public hairFilters = [{}];
 	public skinFilters = [{}];
+	public totalItemQuantityAfterDiscount = 0;
 
 	//@ngInject
 	constructor(
@@ -76,7 +77,7 @@ export class MonatService {
 				.getCart(refresh, param)
 				.then((data) => {
 					if (data?.cart) {
-						console.log("get-cart, puting it in session-cache");
+						console.log("get-cart, putting it in session-cache");
 						this.putIntoSessionCache("cachedCart", data.cart);
 
 						this.updateCartPropertiesOnService(data);
@@ -111,7 +112,7 @@ export class MonatService {
 				this.successfulActions = [];
 				//we're not checking for failure actions, as regardless of failures we still need to show the cart to the user
 				if (data?.cart) {
-					console.log("update-cart, puting it in session-cache");
+					console.log("update-cart, putting it in session-cache");
 					this.putIntoSessionCache("cachedCart", data.cart);
 
 					this.successfulActions = data.successfulActions;
@@ -441,12 +442,13 @@ export class MonatService {
 
 	public updateCartPropertiesOnService(data: { ["cart"]: any; [key: string]: any }) {
 		this.cart = data.cart;
-		this.cart["purchasePlusMessage"] = data.cart.appliedPromotionMessages
-			? data.cart.appliedPromotionMessages.filter(
-					(message) => message.promotionName.indexOf("Purchase Plus") > -1
-			  )[0]
-			: {};
+		// prettier-ignore
+		this.cart['purchasePlusMessage'] = data.cart.appliedPromotionMessages ? data.cart.appliedPromotionMessages.filter( message => message.promotionName.indexOf('Purchase Plus') > -1 )[0] : {};
 		this.canPlaceOrder = data.cart.orderRequirementsList.indexOf("canPlaceOrderReward") == -1;
+		this.totalItemQuantityAfterDiscount = 0;
+		for (let item of this.cart.orderItems) {
+			this.totalItemQuantityAfterDiscount += item.extendedPriceAfterDiscount;
+		}
 	}
 
 	public handleCartResponseActions(data): void {
@@ -492,29 +494,18 @@ export class MonatService {
 		}
 	}
 
-	//mock api call
 	public getProductFilters() {
-		this.hairFilters = [
-			{ name: "shampoos", categoryID: "12324121" },
-			{ name: "conditioner", categoryID: "12324121" },
-			{ name: "men", categoryID: "12324121" },
-			{ name: "women", categoryID: "12324121" },
-			{ name: "boys", categoryID: "12324121" },
-			{ name: "best sellers", categoryID: "12324121" },
-		];
-
-		this.skinFilters = [
-			{ name: "shampoos", categoryID: "12324121" },
-			{ name: "conditioner", categoryID: "12324121" },
-			{ name: "men", categoryID: "12324121" },
-			{ name: "women", categoryID: "12324121" },
-			{ name: "boys", categoryID: "12324121" },
-			{ name: "best sellers", categoryID: "12324121" },
-		];
-
-		return {
-			hairFilters: this.hairFilters,
-			skinFilters: this.skinFilters,
-		};
+		return this.publicService
+			.doAction("?slatAction=monat:public.getProductListingFilters")
+			.then((response) => {
+				if (response.hairCategories) {
+					this.hairFilters = response.hairCategories;
+					this.skinFilters = response.skinCategories;
+				}
+				return {
+					hairFilters: this.hairFilters,
+					skinFilters: this.skinFilters,
+				};
+			});
 	}
 }

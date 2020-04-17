@@ -274,25 +274,29 @@ export class OrderTemplateService {
        'quantity'
        temporaryFlag -> For OFY/Promotional item
      * 
-    */
-
-	public addOrderTemplateItem = (
-		skuID: string,
-		orderTemplateID: string,
-		quantity: number = 1,
-		temporaryFlag: false
-	) => {
-		let payload = {
-			orderTemplateID: orderTemplateID,
-			skuID: skuID,
-			quantity: quantity,
-			temporaryFlag: temporaryFlag,
-		};
-
-		return this.monatService.doPublicAction("addOrderTemplateItem", payload);
-	};
-
-	/**
+    */ 
+    public addOrderTemplateItem = (skuID:string, orderTemplateID:string, quantity:number=1, temporaryFlag: false, optionalData = {}) => {
+        optionalData['orderTemplateID'] = orderTemplateID;
+        optionalData['skuID'] = skuID;
+        optionalData['quantity'] = quantity;
+        optionalData['temporaryFlag'] = temporaryFlag;
+        let deferred = this.$q.defer(); 
+	  
+        this.publicService.doAction('addOrderTemplateItem',optionalData).then(res=>{
+            if(res.orderTemplate){
+                this.manageOrderTemplate(res.orderTemplate);
+                this.updateOrderTemplateDataOnService(res.orderTemplate);
+            }
+            deferred.resolve(res);
+        }).catch(e =>{
+            deferred.reject(e);
+        });
+        
+       return deferred.promise;
+    }
+    
+    
+    /**
      * 
        'orderTemplateItemID',
        'quantity'
@@ -343,7 +347,7 @@ export class OrderTemplateService {
 	 */
 
 	public getFlattenObject = (inObject: Object, delimiter: string = "."): Object => {
-		var objectToReturn = {};
+		var outObject = {};
 		for (var key in inObject) {
 			if (!inObject.hasOwnProperty(key)) continue;
 
@@ -351,35 +355,37 @@ export class OrderTemplateService {
 				var flatObject = this.getFlattenObject(inObject[key]);
 				for (var x in flatObject) {
 					if (!flatObject.hasOwnProperty(x)) continue;
-					objectToReturn[key + delimiter + x] = flatObject[x];
+					outObject[key + delimiter + x] = flatObject[x];
 				}
 			} else {
-				objectToReturn[key] = inObject[key];
+				outObject[key] = inObject[key];
 			}
 		}
-		return objectToReturn;
+		return outObject;
 	};
 
 	/**
 	 * for more details  https://stackoverflow.com/a/42696154
 	 */
 
-	public getUnflattenObject = (inObject: Object, delimiter: string = "_") => {
-		var objectToReturn = {};
-		for (var flattenKey in inObject) {
-			var keys = flattenKey.split(delimiter);
-			keys.reduce(function (r, e, j) {
-				return (
-					r[e] ||
-					(r[e] = isNaN(Number(keys[j + 1]))
-						? keys.length - 1 == j
-							? inObject[flattenKey]
-							: {}
-						: [])
-				);
-			}, objectToReturn);
+	public getUnFlattenObject = (inObject: Object, delimiter: string = "_") => {
+		let outObject = {};
+		
+		Object.keys(inObject).forEach( (flattenedKey) => {
+			walkThePathAndSet( flattenedKey.split(delimiter), outObject, inObject[flattenedKey]);
+		})
+
+		let walkThePathAndSet = (path:Array<string>, object:Object, value:any) =>{
+			let [key, ...remainingPath] = path;
+			if(remainingPath?.length){
+				object[key] = object[key] || isNaN(Number(remainingPath[0])) ? {} : [];
+				walkThePathAndSet(remainingPath, object[key], value);
+			} else {
+				object[key] = value;
+			}
 		}
-		return objectToReturn;
+
+		return outObject;
 	};
 
 	public createOrderTemplate = (
@@ -410,84 +416,64 @@ export class OrderTemplateService {
 			orderTemplateID: orderTemplateID,
 		});
 	}
-
-	public getSetOrderTemplateOnSession(
-		optionalProperties = "",
-		saveContext = "upgradeFlow",
-		setIfNullFlag = true,
-		nullAccountFlag = true
-	) {
-		let deferred = this.$q.defer<any>();
-
-		let data = {
-			saveContext: saveContext,
-			setIfNullFlag: setIfNullFlag,
-			optionalProperties: optionalProperties,
-			nullAccountFlag: nullAccountFlag,
-			returnJsonObjects: "",
-		};
-
-		this.publicService
-			.doAction("getSetFlexshipOnSession", data)
-			.then((res) => {
-				if (res.orderTemplate && typeof res.orderTemplate == "string") {
-					this.currentOrderTemplateID = res.orderTemplate;
-				} else if (res.orderTemplate) {
-					this.currentOrderTemplateID = res.orderTemplate.orderTemplateID;
-					this.mostRecentOrderTemplate = res.orderTemplate;
-					this.canPlaceOrderFlag = res.orderTemplate.canPlaceOrderFlag;
-
-					let promoArray = this.mostRecentOrderTemplate.appliedPromotionMessagesJson
-						?.length
-						? JSON.parse(this.mostRecentOrderTemplate.appliedPromotionMessagesJson)
-						: [];
-					this.mostRecentOrderTemplate["purchasePlusMessage"] = promoArray.length
-						? promoArray.filter(
-								(message) =>
-									message.promotion_promotionName.indexOf("Purchase Plus") > -1
-						  )[0]
-						: {};
-					this.mostRecentOrderTemplate["suggestedPrice"] = this.calculateSRPOnOrder(
-						this.mostRecentOrderTemplate
-					);
-					if (this.mostRecentOrderTemplate.cartTotalThresholdForOFYAndFreeShipping) {
-						this.cartTotalThresholdForOFYAndFreeShipping = this.mostRecentOrderTemplate.cartTotalThresholdForOFYAndFreeShipping;
-					}
-				}
-				deferred.resolve(res);
-			})
-			.catch((e) => {
-				deferred.reject(e);
-			});
-
-		return deferred.promise;
+	
+	public getSetOrderTemplateOnSession(optionalProperties = '', saveContext = 'upgradeFlow', setIfNullFlag = true, nullAccountFlag = true){
+        let deferred = this.$q.defer();
+    
+		let data ={
+            saveContext: saveContext,
+            setIfNullFlag: setIfNullFlag,
+            optionalProperties: optionalProperties,
+            nullAccountFlag:nullAccountFlag,
+            returnJSONObjects:''
+        }
+        
+        this.publicService.doAction('getSetFlexshipOnSession', data).then(res=>{
+            if(res.orderTemplate && typeof res.orderTemplate == 'string'){
+                this.currentOrderTemplateID = res.orderTemplate;
+            }else if(res.orderTemplate){
+                this.manageOrderTemplate(res.orderTemplate); 
+                this.updateOrderTemplateDataOnService(res.orderTemplate);
+            }
+            deferred.resolve(res);
+	    }).catch( (e) => {
+           deferred.reject(e);
+       });
+       
+       return deferred.promise;
 	}
-
-	//handle any new data on the order template
-	public manageOrderTemplate(template) {
-		let newOT = template;
-
-		if (!this.mostRecentOrderTemplate || !newOT.orderTemplateItems) return;
-
-		//if the new orderTemplateItems length is > than the old orderTemplateItems, a new item has been added
-		if (
-			newOT.orderTemplateItems.length > this.mostRecentOrderTemplate.orderTemplateItems.length
-		) {
-			this.showAddToCartMessage = true;
-			this.lastAddedProduct = newOT.orderTemplateItems[0];
-			return;
-		}
-
-		let index = 0;
-
-		//Loop over orderTemplateItems to see if quantity has increased on one, if so, the item has been updated
-		for (let item of newOT.orderTemplateItems) {
-			if (
-				this.mostRecentOrderTemplate.orderTemplateItems[index] &&
-				this.mostRecentOrderTemplate.orderTemplateItems[index].orderTemplateItemID ==
-					item.orderTemplateItemID &&
-				this.mostRecentOrderTemplate.orderTemplateItems[index].quantity < item.quantity
-			) {
+	
+    public calculateSRPOnOrder= (orderTemplate):number =>{
+    	if(!orderTemplate.orderTemplateItems) return;
+    	let suggestedRetailPrice = 0;
+    	for(let item of orderTemplate.orderTemplateItems){
+    		suggestedRetailPrice += (item.calculatedListPrice * item.quantity);
+    	}
+    	
+    	return suggestedRetailPrice;
+    }
+    
+    //handle any new data on the order template
+    public manageOrderTemplate(template){
+        let newOT = template;
+        if(!this.mostRecentOrderTemplate || !newOT.orderTemplateItems) return;
+        //if the new orderTemplateItems length is > than the old orderTemplateItems, a new item has been added       
+        if(newOT.orderTemplateItems.length > this.mostRecentOrderTemplate.orderTemplateItems.length || newOT.orderTemplateItems.length && !this.mostRecentOrderTemplate){
+            this.showAddToCartMessage = true;
+            this.lastAddedProduct = newOT.orderTemplateItems[0];
+            return;
+        }
+        
+        
+        let index = 0;
+        
+        //Loop over orderTemplateItems to see if quantity has increased on one, if so, the item has been updated
+		for(let item of newOT.orderTemplateItems){
+			if(
+			    this.mostRecentOrderTemplate.orderTemplateItems[index] 
+			    && this.mostRecentOrderTemplate.orderTemplateItems[index].orderTemplateItemID == item.orderTemplateItemID
+			    && this.mostRecentOrderTemplate.orderTemplateItems[index].quantity < item.quantity)
+			{
 				this.showAddToCartMessage = true;
 				this.lastAddedProduct = item;
 				break;
@@ -496,13 +482,17 @@ export class OrderTemplateService {
 		}
 	}
 
-	public calculateSRPOnOrder = (orderTemplate): number => {
-		if (!orderTemplate.orderTemplateItems) return;
-		let suggestedRetailPrice = 0;
-		for (let item of orderTemplate.orderTemplateItems) {
-			suggestedRetailPrice += item.calculatedListPrice;
-		}
-
-		return suggestedRetailPrice;
-	};
+    
+    public updateOrderTemplateDataOnService(orderTemplate){
+        this.currentOrderTemplateID = orderTemplate.orderTemplateID
+        this.mostRecentOrderTemplate = orderTemplate;
+        this.canPlaceOrderFlag = orderTemplate.canPlaceOrderFlag || this.canPlaceOrderFlag;
+        let promoArray = this.mostRecentOrderTemplate.appliedPromotionMessagesJson?.length ? JSON.parse(this.mostRecentOrderTemplate.appliedPromotionMessagesJson) : [];
+        this.mostRecentOrderTemplate['purchasePlusMessage'] = promoArray.length ? promoArray.filter( message => message.promotion_promotionName.indexOf('Purchase Plus') > -1 )[0] : {};
+        this.mostRecentOrderTemplate['suggestedPrice'] = this.calculateSRPOnOrder(this.mostRecentOrderTemplate);
+       
+        if(this.mostRecentOrderTemplate.cartTotalThresholdForOFYAndFreeShipping){
+            this.cartTotalThresholdForOFYAndFreeShipping = this.mostRecentOrderTemplate.cartTotalThresholdForOFYAndFreeShipping;
+        }
+    }
 }
