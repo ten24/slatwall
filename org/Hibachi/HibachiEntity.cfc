@@ -177,7 +177,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	
 	/**
 	 * Due to variable-scope caching, for non-persistent properties, 
-	 * if the it's loaded in the memory there's no direct way to, reload/re-calculate value for these,
+	 * if these are loaded in the memory there's no direct way to, reload/refresh their values,
 	 * unless if you keep track of all of the properties invloled.
 	 * this helper function is a lazy way of doing that. 
 	 * 
