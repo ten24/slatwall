@@ -254,9 +254,10 @@ export class OrderTemplateService {
 		optionalData['quantity'] = quantity;
 		optionalData['temporaryFlag'] = temporaryFlag;
 	    let deferred = this.$q.defer(); 
-	    console.log(optionalData)
+	  
         this.publicService.doAction('addOrderTemplateItem',optionalData).then(res=>{
             if(res.orderTemplate){
+                this.manageOrderTemplate(res.orderTemplate);
                this.updateOrderTemplateDataOnService(res.orderTemplate);
             }
             deferred.resolve(res);
