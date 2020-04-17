@@ -660,6 +660,8 @@ component  accessors="true" output="false"
       * @ProcessMethod Account_ForgotPassword
       **/
     public any function forgotPassword( required struct data ) {
+        param name="data.domainURL" default="";
+        
         var account = getService("AccountService").processAccount( getHibachiScope().getAccount(), arguments.data, 'forgotPassword');
         //let's hard code the action to always be successful. Indicating failure exposes if the account exists and is a security issue
         getHibachiScope().addActionResult( "public:account.forgotPassword", false );
@@ -667,18 +669,47 @@ component  accessors="true" output="false"
     }
     
     /**
+      * @method resetPasswordUpdate
+      * @http-context resetPasswordUpdate
+      * @http-verb POST
+      * @description  Reset User Password based on reset token - This method to be used as API end point
+      * @http-return <b>(200)</b> Successfully Sent or <b>(400)</b> Bad or Missing Input Data
+      * @param accountID {string}
+      * @param emailAddress {string}
+      * @ProcessMethod Account_ResetPassword
+      **/
+    public void function resetPasswordUpdate( required struct data ) {
+        param name="data.swprid";
+        
+        var account = getAccountService().getAccount( left(arguments.data.swprid, 32) );
+        
+        if(!isNull(account)) {
+            var account = getService("AccountService").processAccount(account, data, "resetPassword");
+            if (account.hasErrors()) {
+                addErrors(arguments.data, account.getProcessObject('resetPassword').getErrors());
+            }
+            
+            getHibachiScope().addActionResult( "public:account.resetPassword", account.hasErrors() );
+            
+        } else {
+            getHibachiScope().addActionResult( "public:account.resetPassword", true );
+        }
+    }
+    
+    /**
       * @method resetPassword
       * @http-context resetPassword
       * @http-verb POST
-      * @description  Sends an email to a user to reset a password.  
+      * @description  Reset password based on reset token - This method to be used with frontend form, it logs userin after successful reset
       * @http-return <b>(200)</b> Successfully Sent or <b>(400)</b> Bad or Missing Input Data
       * @param accountID {string}
       * @param emailAddress {string}
       * @ProcessMethod Account_ResetPassword
       **/
     public void function resetPassword( required struct data ) {
-        param name="data.accountID" default="";
-        var account = getAccountService().getAccount( data.accountID );
+        param name="data.swprid";
+        
+        var account = getAccountService().getAccount( left(arguments.data.swprid, 32) );
         if(!isNull(account)) {
             var account = getService("AccountService").processAccount(account, data, "resetPassword");
             getHibachiScope().addActionResult( "public:account.resetPassword", account.hasErrors() );
