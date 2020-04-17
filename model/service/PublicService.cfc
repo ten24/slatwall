@@ -89,6 +89,26 @@ component  accessors="true" output="false"
 	}
 	
 	/**
+	 * Function add account email address
+	 * @param emailAddress required
+	 * @return none
+	 * */
+	 public void function addAccountEmailAddress(required struct data) {
+	     param name="arguments.data.emailAddress";
+	     
+	     var accountEmailAddress = getService('accountService').newAccountEmailAddress();
+		accountEmailAddress.setAccount(getHibachiScope().getAccount());
+		accountEmailAddress.setEmailAddress(arguments.data.emailAddress);
+		getService('accountService').saveAccountEmailAddress(accountEmailAddress);
+		
+		if( accountEmailAddress.hasErrors() ) {
+		    addErrors(arguments.data, accountEmailAddress.getErrors());
+		}
+		
+		getHibachiScope().addActionResult( "public:setPrimaryPhoneNumber", !accountEmailAddress.hasErrors() );
+	 }
+	
+	/**
      * Function to set primary phone number
      * @param accountPhoneNumberID required
      * @return none
