@@ -387,14 +387,15 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 	    if(arrayLen(orderFulfillment) && !isNull(orderFulfillment[1])) {
 	        var cartShippingAddress = orderFulfillment[1].getShippingAddress();
 	        if(!isNull(cartShippingAddress)) {
+	            
 	            shippingAddress = {
-    	            "postalCode" : cartShippingAddress.getPostalCode(),
-    	            "countryCode" : cartShippingAddress.getCountryCode(),
-    	            "line1" : cartShippingAddress.getStreetAddress(),
-    	            "recipientName" : cartShippingAddress.getName(),
-    	            "city" : cartShippingAddress.getCity(),
-    	            "line2" : cartShippingAddress.getStreet2Address(),
-    	            "state" : cartShippingAddress.getStateCode(),
+    	            "postalCode" : cartShippingAddress.getPostalCode() ? : '',
+    	            "countryCode" : cartShippingAddress.getCountryCode() ? : '',
+    	            "line1" : cartShippingAddress.getStreetAddress() ? : '',
+    	            "recipientName" : cartShippingAddress.getName() ? : '',
+    	            "city" : cartShippingAddress.getCity() ? : '',
+    	            "line2" : cartShippingAddress.getStreet2Address() ? : '',
+    	            "state" : cartShippingAddress.getStateCode() ? : '',
     	        };
 	        }
 	        
@@ -485,6 +486,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         if(!isNull(order) && !isNull(account) && order.getAccount().getAccountID() == account.getAccountID()) {
             for( var orderPayment in order.getOrderPayments() ) {
                 if(orderPayment.isDeletable()) {
+                    orderPayment.setBillingAddress(javacast('null',''));
     				getService("OrderService").deleteOrderPayment(orderPayment);
     			}
     		}
@@ -2212,5 +2214,14 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     public any function getVipEnrollmentMinimum (required any data){
         var site = getService('siteService').getSiteByCmsSiteID(arguments.data.cmsSiteID);
         arguments.data['ajaxResponse']['vipEnrollmentThreshold'] = site.setting('integrationmonatSiteVipEnrollmentOrderMinimum');
+    }
+    
+    public void function addOrderTemplateItem(required any data){
+        param name="arguments.data.returnOrderTemplateFlag" default="true";
+        super.addOrderTemplateItem(arguments.data);
+        
+        if(arguments.data.returnOrderTemplateFlag){
+            arguments.data['ajaxResponse']['orderTemplate'] = getOrderService().getOrderTemplateDetailsForAccount(data);
+        }
     }
 }

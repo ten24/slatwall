@@ -247,17 +247,24 @@ export class OrderTemplateService {
        temporaryFlag -> For OFY/Promotional item
      * 
     */ 
-    public addOrderTemplateItem = (skuID:string, orderTemplateID:string, quantity:number=1, temporaryFlag: false) => {
-        let payload = {
-			'orderTemplateID': orderTemplateID,
-			'skuID': skuID,
-			'quantity': quantity,
-			'temporaryFlag': temporaryFlag
-		};
-		
-       return this.requestService
-                  .newPublicRequest('?slatAction=api:public.addOrderTemplateItem',payload)
-                  .promise;
+    public addOrderTemplateItem = (skuID:string, orderTemplateID:string, quantity:number=1, temporaryFlag: false, optionalData = {}) => {
+        optionalData['orderTemplateID'] = orderTemplateID;
+        optionalData['skuID'] = skuID;
+        optionalData['quantity'] = quantity;
+        optionalData['temporaryFlag'] = temporaryFlag;
+        let deferred = this.$q.defer(); 
+	  
+        this.publicService.doAction('addOrderTemplateItem',optionalData).then(res=>{
+            if(res.orderTemplate){
+                this.manageOrderTemplate(res.orderTemplate);
+                this.updateOrderTemplateDataOnService(res.orderTemplate);
+            }
+            deferred.resolve(res);
+        }).catch(e =>{
+            deferred.reject(e);
+        });
+        
+       return deferred.promise;
     }
     
     
@@ -378,15 +385,7 @@ export class OrderTemplateService {
                 this.currentOrderTemplateID = res.orderTemplate;
             }else if(res.orderTemplate){
                 this.manageOrderTemplate(res.orderTemplate); 
-                this.currentOrderTemplateID = res.orderTemplate.orderTemplateID
-                this.mostRecentOrderTemplate = res.orderTemplate;
-                this.canPlaceOrderFlag = res.orderTemplate.canPlaceOrderFlag;
-                let promoArray = this.mostRecentOrderTemplate.appliedPromotionMessagesJson?.length ? JSON.parse(this.mostRecentOrderTemplate.appliedPromotionMessagesJson) : [];
-                this.mostRecentOrderTemplate['purchasePlusMessage'] = promoArray.length ? promoArray.filter( message => message.promotion_promotionName.indexOf('Purchase Plus') > -1 )[0] : {};
-                this.mostRecentOrderTemplate['suggestedPrice'] = this.calculateSRPOnOrder(this.mostRecentOrderTemplate);
-                if(this.mostRecentOrderTemplate.cartTotalThresholdForOFYAndFreeShipping){
-                    this.cartTotalThresholdForOFYAndFreeShipping = this.mostRecentOrderTemplate.cartTotalThresholdForOFYAndFreeShipping;
-                }
+                this.updateOrderTemplateDataOnService(res.orderTemplate);
             }
             deferred.resolve(res);
 	    }).catch( (e) => {
@@ -435,6 +434,18 @@ export class OrderTemplateService {
 			index++;
 		}
 
+    }
+    
+    public updateOrderTemplateDataOnService(orderTemplate){
+        this.currentOrderTemplateID = orderTemplate.orderTemplateID
+        this.mostRecentOrderTemplate = orderTemplate;
+        this.canPlaceOrderFlag = orderTemplate.canPlaceOrderFlag || this.canPlaceOrderFlag;
+        let promoArray = this.mostRecentOrderTemplate.appliedPromotionMessagesJson?.length ? JSON.parse(this.mostRecentOrderTemplate.appliedPromotionMessagesJson) : [];
+        this.mostRecentOrderTemplate['purchasePlusMessage'] = promoArray.length ? promoArray.filter( message => message.promotion_promotionName.indexOf('Purchase Plus') > -1 )[0] : {};
+        this.mostRecentOrderTemplate['suggestedPrice'] = this.calculateSRPOnOrder(this.mostRecentOrderTemplate);
+        if(this.mostRecentOrderTemplate.cartTotalThresholdForOFYAndFreeShipping){
+            this.cartTotalThresholdForOFYAndFreeShipping = this.mostRecentOrderTemplate.cartTotalThresholdForOFYAndFreeShipping;
+        }
     }
 
 }
