@@ -95,10 +95,23 @@ class MonatProductModalController {
 
 	public addToFlexship = () => {
 		this.loading = true;
+		let extraProperties = "canPlaceOrderFlag,purchasePlusTotal,appliedPromotionMessagesJson,calculatedOrderTemplateItemsCount";
+		if(!this.orderTemplateService.cartTotalThresholdForOFYAndFreeShipping){
+			extraProperties += ',cartTotalThresholdForOFYAndFreeShipping';
+		}
+		
+		let data = {
+			optionalProperties: extraProperties,
+			saveContext: 'upgradeFlow', 
+			setIfNullFlag: false, 
+			nullAccountFlag: true
+		}
+
 		this.orderTemplateService.addOrderTemplateItem(
 			this.product.skuID, 
 			this.orderTemplateService.currentOrderTemplateID,
-			this.quantityToAdd
+			this.quantityToAdd,
+			data
 		)
 		.then((data) => {
 			
