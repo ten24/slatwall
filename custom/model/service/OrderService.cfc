@@ -1565,50 +1565,50 @@ component extends="Slatwall.model.service.OrderService" {
 			 * for total instead of all orders.
 			 **/
 			
-			logHibachi("Got errors on order.motMPEnrollment: #SerializeJson(arguments.order.getErrors())#,  order-total: #arguments.order.getTotal()#");
+			logHibachi("Error encountered on order.motMPEnrollment(#arguments.Order.getOrderID()#), order-total: #arguments.order.getTotal()#, Errors: #SerializeJson(arguments.order.getErrors())#");
 			
-			//persist current changes temporarly
+			//clear previous errors, and temporarly saving order for calculations
 			var oldErrors = StructCopy(arguments.order.getErrors());
 			arguments.order.clearHibachiErrors();
 			getHibachiScope().setORMHasErrors( false );
+			getHibachiScope().flushORMSession(); 
 
-			logHibachi("Flushing to temporarly saving the order: #arguments.order.getOrderID()#,  order-total: #arguments.order.getTotal()#");
-			getHibachiScope().flushORMSession();
+			/**
+			 * If We dont reload the ORN throws
+			 * Cannot delete or update a parent row: a foreign key constraint fails 
+			 * (
+			 *		`monat`.`sworderitemskubundle`, CONSTRAINT `FKD0CB5F2244B9A827` FOREIGN KEY 
+			 *		(`orderItemID`) REFERENCES `sworderitem` (`orderItemID`)
+			 * )
+			**/
 			entityReload(arguments.order);
-
+			
+			
 			if( !IsNull(newOrderItem) ) {
 				
-				logHibachi("Removing new-order-item: #newOrderItem.getOrderItemID()#,  (r) order-total: #arguments.order.getTotal()#");
+				logHibachi("Removing newOrderItem(#newOrderItem.getOrderItemID()#) from the order order-total: #arguments.order.getTotal()# ");
 				arguments.order = this.processOrder(arguments.order, { 'orderItemID': newOrderItem.getOrderItemID() }, 'removeOrderItem');
-				getHibachiScope().setORMHasErrors( false );
-				logHibachi("Flushing after removing new-order-item: #newOrderItem.getOrderItemID()#, order-total: #arguments.order.getTotal()#");
-				getHibachiScope().flushORMSession();
 				
 			} else if( !IsNull(foundOrderItem) ) {
 				
-				logHibachi("Updating foundOrderItem qty to: #foundOrderItem.getQuantity() - arguments.processObject.getQuantity()#,  order-total: #arguments.order.getTotal()#");
+				logHibachi("Reverting foundOrderItem(#foundOrderItem.getOrderItemID()#) qty from: #foundOrderItem.getQuantity()# - to: #foundOrderItem.getQuantity() - arguments.processObject.getQuantity()#,  order-total: #arguments.order.getTotal()#");
 				foundOrderItem.setQuantity( foundOrderItem.getQuantity() - arguments.processObject.getQuantity() );
-				foundOrderItem.clearNonPersistentCalculatedPropertiesCache();
-				foundOrderItem = this.saveOrderItem( orderItem=foundOrderItem, updateOrderAmounts=false , updateCalculatedProperties=false);
-				logHibachi("Errors after reverting qty foundOrderItem: #SerializeJson(foundOrderItem.getErrors())#");
-				logHibachi("Errors after reverting qty order: #SerializeJson(arguments.order.getErrors())#,  order-total: #arguments.order.getTotal()#");
-
-				logHibachi("Flushing after reverting qty, found-order-item: #foundOrderItem.getOrderItemID()#,  order-total: #arguments.order.getTotal()#");
-				getHibachiScope().flushORMSession();
+				//clear non-persistent properties cache, so calculated properties can be updated with real-values
+				foundOrderItem.clearNonPersistentCalculatedPropertiesCache(); 
+				//We'll update order amounts at the last step
+				foundOrderItem = this.saveOrderItem( orderItem=foundOrderItem, updateOrderAmounts=false , updateCalculatedProperties=true);
 			}
 			
-		   
-			logHibachi("Errors before re-saving the order: #SerializeJson(arguments.order.getErrors())#,  order-total: #arguments.order.getTotal()#");
+			//just in case, if remve/upadte order-item fails
+			logHibachi("Errors on Order after reverting changes : #SerializeJson(arguments.order.getErrors())# order-total: #arguments.order.getTotal()#");
 			arguments.order = this.saveOrder( order=arguments.order, updateOrderAmounts=true );
-			logHibachi("Errors after re-saving the order: #SerializeJson(arguments.order.getErrors())#,  order-total: #arguments.order.getTotal()#");
+			arguments.order.updateCalculatedProperties(runAgain=true); //re-calculate-everythign
 			
-			logHibachi("Flushing after re-saving the order, order-id: #arguments.order.getOrderID()#, (r) order-total: #arguments.order.getTotal()#");
+			logHibachi("Flushing after re-saving the order(#arguments.Order.getOrderID()#), order-total: #arguments.order.getTotal()#");
+			//we gotta flush here to persist current changes, before putting-back the old errors
 			getHibachiScope().flushORMSession();
-			
-			
 			arguments.order.addErrors(oldErrors);
 		}
-		
 		
 		return arguments.order;
 	}
