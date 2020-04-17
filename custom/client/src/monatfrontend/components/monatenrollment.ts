@@ -98,12 +98,6 @@ class MonatEnrollmentController {
 				 	this.handleUpgradeSteps(cart);
 				 }
 				 
-		 		if(this.type.indexOf('vip') > -1){
-					this.publicService.doAction('getVipEnrollmentMinimum').then(res=>{
-						this.vipEnrollmentThreshold = +res.vipEnrollmentThreshold + this.monatService.cart.orderItems[0].skuPrice;
-					});
-				}
-		
 			});
 		});
 		

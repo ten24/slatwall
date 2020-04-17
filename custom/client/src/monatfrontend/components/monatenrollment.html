@@ -25,25 +25,16 @@
 		<span sw-rbKey="'frontend.flexship.yourFlexshipIs'"></span> 
 		{{
 			+monatEnrollment.orderTemplateService.cartTotalThresholdForOFYAndFreeShipping - monatEnrollment.orderTemplateService.mostRecentOrderTemplate.calculatedSubTotal 
-			| swcurrency:monatEnrollment.cart.currency
+			| swcurrency: monatEnrollment.orderTemplateService.mostRecentOrderTemplate.currencyCode
 		}} 
 	
 		<span sw-rbKey="'frontend.flexship.beforeYouCanEnroll'"></span>
 	</div>
 	<div 
-		ng-if="
-			monatEnrollment.currentStepName != 'orderListing' 
-			&& monatEnrollment.vipEnrollmentThreshold
-			&& monatEnrollment.vipEnrollmentThreshold - monatEnrollment.monatService.totalItemQuantityAfterDiscount > 0" 
-			class="alert discount-block text-white promotion-bar-block"
+		ng-if="monatEnrollment.monatService.cart.canPlaceOrderMessage.message.length" 
+		class="alert discount-block text-white promotion-bar-block"
 	>
-
-		<span sw-rbKey="'frontend.cart.yourOrderIs'"></span> 
-		{{
-			(monatEnrollment.vipEnrollmentThreshold - monatEnrollment.monatService.totalItemQuantityAfterDiscount)
-			| swcurrency:monatEnrollment.cart.currency
-		}} 
-		<span sw-rbKey="'frontend.flexship.beforeYouCanEnroll'"></span>
+		{{monatEnrollment.monatService.cart.canPlaceOrderMessage.message}} 
 	</div>
 	<div 
 		ng-if="

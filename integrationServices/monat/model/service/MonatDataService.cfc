@@ -998,7 +998,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 	}
 
 	private string function getSkuColumnsList(){
-		return "SKUItemCode,SKUItemID,PRODUCTItemCode,ItemName,Amount,SalesCategoryCode,SAPItemCode,ItemNote,DisableOnRegularOrders,DisableOnFlexship,ItemCategoryAccounting,CategoryNameAccounting,EntryDate,URLTitle";
+		return "SKUItemCode,SKUItemID,ProductName,ProductCode,ItemName,Amount,SalesCategoryCode,SAPItemCode,ItemNote,DisableOnRegularOrders,DisableOnFlexship,ItemCategoryAccounting,CategoryNameAccounting,EntryDate,URLTitle";
 	}
 
 	private string function getSkuPriceColumnsList(){
@@ -1179,7 +1179,8 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 				var sku = {
 					'SKUItemID' : trim(skuData['ItemId']),
 					'SKUItemCode' : trim(skuData['ItemCode']),
-					'PRODUCTItemCode' : trim(skuData['ItemCode']),
+					'ProductCode' : skuData['ProductCodeCode'] ?: trim(skuData['ItemCode']),
+					'ProductName' : skuData['ProductCodeName'] ?: trim(skuData['ItemName']),
 					'ItemName' : trim(skuData['ItemName']),
 					'ItemNote' : skuData['ItemNote'] ?: '',
 					'SalesCategoryCode' : trim(skuData['SalesCategoryCode']),
@@ -1284,7 +1285,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 		
 		logHibachi("importMonatProducts - Importing On The Fly Setting #listLen(onTheFlySkuCodes)#", true); 
 			
-		if(len(onTheFlySkuCodes)){
+		if(!arguments.rc.dryRun && len(onTheFlySkuCodes)){
 		    QueryExecute(
 				"INSERT INTO swsetting (settingID, settingName, settingValue, createdDateTime, modifiedDateTime, skuID, baseObject)
 				 SELECT 
@@ -1320,19 +1321,21 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 			var importSkuBundle2Config = FileRead('#basePath#../../config/import/bundles2.json');
 			getService("HibachiDataService").loadDataFromQuery(skuBundleQuery, importSkuBundle2Config, arguments.rc.dryRun);
 			
-			for(var skuID in skuBundles){
-		        QueryExecute(
-    				"DELETE bundle FROM swskubundle bundle
-                    INNER JOIN swSku sku ON bundle.skuID = sku.skuID
-                    INNER JOIN swSku childSku ON bundle.bundledSkuID = childSku.skuID
-                    WHERE sku.skuCode = :skuID
-                    AND childSku.skuCode NOT IN (:childSkuIDs)",
-    				{ 
-    					'skuID' = skuID,
-    					'childSkuIDs' = { 'value' = skuBundles[skuID], 'list' = true }
-    				}
-			    );
-		    }
+			if(!arguments.rc.dryRun){
+    			for(var skuID in skuBundles){
+    		        QueryExecute(
+        				"DELETE bundle FROM swskubundle bundle
+                        INNER JOIN swSku sku ON bundle.skuID = sku.skuID
+                        INNER JOIN swSku childSku ON bundle.bundledSkuID = childSku.skuID
+                        WHERE sku.skuCode = :skuID
+                        AND childSku.skuCode NOT IN (:childSkuIDs)",
+        				{ 
+        					'skuID' = skuID,
+        					'childSkuIDs' = { 'value' = skuBundles[skuID], 'list' = true }
+        				}
+    			    );
+    		    }
+			}
 		}
 
 // 		if(stockQuery.recordCount){
@@ -1408,8 +1411,8 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
         // Objects we need to set over and over go here...
 		var warehouseMain = getLocationService().getLocationByLocationName("US Warehouse");
 		var warehouseCAN = getLocationService().getLocationByLocationName("CA Warehouse");
-		var warehouseUK = getLocationService().getLocationByLocationName("UK Warehouse");
-		var warehouseIRPOL = getLocationService().getLocationByLocationName("Ire/Pol Warehouse");
+		var warehouseUKIR = getLocationService().getLocationByLocationName("UK/IRE Warehouse");
+		var warehousePOL = getLocationService().getLocationByLocationName("POL Warehouse");
 		 
         //Exit with no data.
         if (!TotalCount){
@@ -1428,81 +1431,82 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
     		}
     		
     		
-    		try{
+    		
     			
     			var inventoryRecords = inventoryResponse.Records;
     			
     			for (var inventory in inventoryRecords){
-    			    index++;
-        		    var sku = getSkuService().getSkuBySkuCode(inventory.itemCode);
-        		    
-        		    if (isNull(sku)){
-        		    	logHibachi("Can't create inventory for a sku that doesn't exist! #inventory.itemCode#", true);
-        		    	continue;
-        		    }
-        		    
-        		    var location = warehouseMain;
-        		    
-        		    if (inventory['CountryCode'] == "US"){
-        		    	location = warehouseMain;	
-        		    }else if (inventory['CountryCode'] == "CA"){
-        		    	location = warehouseCAN;	
-        		    }else if (inventory['CountryCode'] == "UK"){
-        		    	location = warehouseUK;
-        		    } else {
-        		    	location = warehouseIRPOL;
-        		    }
-        		    
-        		    
-        		    //Find if we have a stock for this sku and location.
-        		    var stock = getStockService().getStockBySkuIdAndLocationId( sku.getSkuID(), location.getLocationID() );
-        		    
-        		    
-        		    if (isNull(stock)){
-        		    	// Create the stock
-        		    	var stock = getStockService().newStock();
-        		    	stock.setSku(sku);
-        		    	stock.setLocation(location);
-        		    	stock.setRemoteID(inventory['InventoryAdjustmentId']);
-        		    	stock = getStockService().saveStock(stock);
-        		    }
-        		    
-        		    //Create the inventory record for this stock
-        		    if (!isNull(stock)){
-        		        //check if this inventory has already been imported...
-        		        var newInventory = getStockService().getInventoryByRemoteId( inventory['InventoryAdjustmentId'] );
-        		        
-        		        //Only create the inventory if it doesn't already exist. Everytime an inventory adjustment is made
-        		        //it has a new id, thus a new remoteID.
-        		        if (isNull(newInventory)){
-            			    // Create a new inventory under that stock.
-            			    var newInventory = getStockService().newInventory();
-            			    newInventory.setRemoteID(inventory['InventoryAdjustmentId'] ?: ""); //*
-                			newInventory.setStock(stock);
-                			
-                			var inventoryQuantity = inventory['Quantity'] ?: 0;
-                			
-                			if (inventoryQuantity > 0){
-                        	    newInventory.setQuantityIn(inventoryQuantity);
-                			}else{
-                			    newInventory.setQuantityOut(inventoryQuantity * -1); 
-                			}
-                			
-                        	newInventory.setCreatedDateTime(getDateFromString(inventory['CreatedOn']));
-                        	
-                            newInventory = getStockService().saveInventory(newInventory);
-                        	
-        		        }
-        		    }
-        		    
+    			    
+    			    try{
+        			    index++;
+        			    
+            		    var sku = getSkuService().getSkuBySkuCode(inventory.itemCode);
+            		    
+            		    if (isNull(sku)){
+            		    	logHibachi("Can't create inventory for a sku that doesn't exist! #inventory.itemCode#", true);
+            		    	continue;
+            		    }
+            		    
+            		    var location = warehouseMain;
+            		    
+            		    if (inventory['CountryCode'] == "US"){
+            		    	location = warehouseMain;	
+            		    }else if (inventory['CountryCode'] == "CA"){
+            		    	location = warehouseCAN;	
+            		    }else if (inventory['CountryCode'] == "PL"){
+            		        location = warehousePOL;
+            		    } else {
+            		    	location = warehouseUKIR;
+            		    }
+            		    
+            		    
+            		    //Find if we have a stock for this sku and location.
+            		    var stock = getStockService().getStockBySkuIdAndLocationId( sku.getSkuID(), location.getLocationID() );
+            		    
+            		    
+            		    if (isNull(stock)){
+            		    	// Create the stock
+            		    	var stock = getStockService().newStock();
+            		    	stock.setSku(sku);
+            		    	stock.setLocation(location);
+            		    	stock.setRemoteID(inventory['InventoryAdjustmentId']);
+            		    	stock = getStockService().saveStock(stock);
+            		    }
+            		    
+            		    //Create the inventory record for this stock
+            		    if (!isNull(stock)){
+            		        //check if this inventory has already been imported...
+            		        var newInventory = getStockService().getInventoryByRemoteId( inventory['InventoryAdjustmentId'] );
+            		        
+            		        //Only create the inventory if it doesn't already exist. Everytime an inventory adjustment is made
+            		        //it has a new id, thus a new remoteID.
+            		        if (isNull(newInventory)){
+                			    // Create a new inventory under that stock.
+                			    var newInventory = getStockService().newInventory();
+                			    newInventory.setRemoteID(inventory['InventoryAdjustmentId'] ?: ""); //*
+                    			newInventory.setStock(stock);
+                    			
+                    			var inventoryQuantity = inventory['Quantity'] ?: 0;
+                    			
+                    			if (inventoryQuantity > 0){
+                            	    newInventory.setQuantityIn(inventoryQuantity);
+                    			}else{
+                    			    newInventory.setQuantityOut(inventoryQuantity * -1); 
+                    			}
+                    			
+                            	newInventory.setCreatedDateTime(getDateFromString(inventory['CreatedOn']));
+                            	
+                                newInventory = getStockService().saveInventory(newInventory);
+                            	
+            		        }
+            		    }
+    			    }catch(e){
+            			logHibachi("Stock Import Failed @ Index: #index# PageSize: #pageSize# PageNumber: #pageNumber#", true);
+            			logHibachi(serializeJson(e));
+            			
+    		        }
     			}
     			
-    		}catch(e){
-    			logHibachi("Stock Import Failed @ Index: #index# PageSize: #pageSize# PageNumber: #pageNumber#", true);
-    			logHibachi(serializeJson(e));
-    			
-    		}
-    		
     		this.logHibachi('Import (Updated Inventory) Page #pageNumber# completed ', true);
 		    pageNumber++;
 		}
