@@ -249,16 +249,16 @@ export class OrderTemplateService {
     */ 
     public addOrderTemplateItem = (skuID:string, orderTemplateID:string, quantity:number=1, temporaryFlag: false, optionalData = {}) => {
 
-		optionalData['orderTemplateID'] = orderTemplateID;
-		optionalData['skuID'] = skuID;
-		optionalData['quantity'] = quantity;
-		optionalData['temporaryFlag'] = temporaryFlag;
-	    let deferred = this.$q.defer(); 
+        optionalData['orderTemplateID'] = orderTemplateID;
+        optionalData['skuID'] = skuID;
+        optionalData['quantity'] = quantity;
+        optionalData['temporaryFlag'] = temporaryFlag;
+        let deferred = this.$q.defer(); 
 	  
         this.publicService.doAction('addOrderTemplateItem',optionalData).then(res=>{
             if(res.orderTemplate){
                 this.manageOrderTemplate(res.orderTemplate);
-               this.updateOrderTemplateDataOnService(res.orderTemplate);
+                this.updateOrderTemplateDataOnService(res.orderTemplate);
             }
             deferred.resolve(res);
         }).catch(e =>{
