@@ -3,12 +3,12 @@
     "mapping":[
         {
           "sourceColumn":"SKUItemCode",
-          "propertyIdentifier":"skuCode"
+          "propertyIdentifier":"skuCode",
+          "key":true
         },
         {
           "sourceColumn":"SKUItemID",
           "propertyIdentifier":"remoteID",
-          "key":true,
         },
         {
           "sourceColumn":"ItemName",
@@ -37,8 +37,7 @@
         },
         {
           "sourceColumn":"SalesCategoryCode",
-          "propertyIdentifier":"salesCategoryCode",
-          "updateFlag":false
+          "propertyIdentifier":"salesCategoryCode"
         },
         {
           "sourceColumn":"SAPItemCode",
