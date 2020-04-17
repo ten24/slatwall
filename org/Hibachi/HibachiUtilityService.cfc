@@ -187,6 +187,8 @@
 
 				if(!isNull(translation)){
 					return translation;
+				}else if(!isNull(formatDetails.useFallback) && !formatDetails.useFallback){
+					return '';
 				}
 			}
 			return arguments.value;
