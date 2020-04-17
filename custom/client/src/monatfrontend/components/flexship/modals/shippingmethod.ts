@@ -14,7 +14,6 @@ class MonatFlexshipShippingMethodModalController {
 	public existingShippingMethod; 
 	public selectedShippingMethod = { shippingMethodID : undefined }; // this needs to be an object to make radio working in ng-repeat, as that will create a nested scope
 	
-	// public countryCodeBySite:any;
 	public newAccountAddress = {};
 	public newAddress = {'countryCode': hibachiConfig.countryCode }; 
 	public countryCodeOptions = {};
@@ -168,4 +167,3 @@ class MonatFlexshipShippingMethodModal {
 export {
 	MonatFlexshipShippingMethodModal
 };
-

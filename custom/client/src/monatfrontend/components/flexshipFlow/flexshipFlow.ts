@@ -46,8 +46,8 @@ class FlexshipFlowController {
 		.then(res=>{
 			this.orderTemplate = res.orderTemplate;
 			if(!this.orderTemplate){
-				//redirect to listing
-				// this.monatService.redirectToProperSite("/my-account/flexships");
+				redirect to listing
+			 	this.monatService.redirectToProperSite("/my-account/flexships");
 			}
 		});
     }

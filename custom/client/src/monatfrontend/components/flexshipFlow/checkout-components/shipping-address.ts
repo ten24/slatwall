@@ -34,7 +34,7 @@ class FlexshipCheckoutShippingAddressController {
 	}
     
 	private onNewStateReceived = (state: FlexshipCheckoutState) => {
-		console.info("checkout-step-->shippingAddress, on-new-state ", state);
+		console.info("checkout-step-->shippingAddress, on-new-state ");
 		this.currentState = state;
 		this.currentState.showNewShippingAddressForm ? this.showNewAddressForm() : this.hideNewAddressForm();
 	}
