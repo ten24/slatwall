@@ -34,16 +34,15 @@
 		ng-if="
 			monatEnrollment.currentStepName != 'orderListing' 
 			&& monatEnrollment.vipEnrollmentThreshold
-			&& monatEnrollment.vipEnrollmentThreshold - (monatEnrollment.monatService.cart.subtotal - monatEnrollment.monatService.cart.discountTotal) > 0" 
+			&& monatEnrollment.vipEnrollmentThreshold - monatEnrollment.monatService.totalItemQuantityAfterDiscount > 0" 
 			class="alert discount-block text-white promotion-bar-block"
 	>
 
 		<span sw-rbKey="'frontend.cart.yourOrderIs'"></span> 
 		{{
-			monatEnrollment.vipEnrollmentThreshold - (monatEnrollment.monatService.cart.subtotal - monatEnrollment.monatService.cart.discountTotal)
+			(monatEnrollment.vipEnrollmentThreshold - monatEnrollment.monatService.totalItemQuantityAfterDiscount)
 			| swcurrency:monatEnrollment.cart.currency
 		}} 
-		
 		<span sw-rbKey="'frontend.flexship.beforeYouCanEnroll'"></span>
 	</div>
 	<div 

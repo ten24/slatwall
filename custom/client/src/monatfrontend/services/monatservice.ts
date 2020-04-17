@@ -21,7 +21,7 @@ export class MonatService {
 	public muraContent = {};
 	public hairFilters = [{}];
 	public skinFilters = [{}];
-
+	public totalItemQuantityAfterDiscount = 0;
 	
 	//@ngInject
 	constructor(
@@ -342,11 +342,15 @@ export class MonatService {
 		this.cart = data.cart;
 		this.cart['purchasePlusMessage'] = data.cart.appliedPromotionMessages ? data.cart.appliedPromotionMessages.filter( message => message.promotionName.indexOf('Purchase Plus') > -1 )[0] : {};
 		this.canPlaceOrder = data.cart.orderRequirementsList.indexOf('canPlaceOrderReward') == -1;
+		this.totalItemQuantityAfterDiscount = 0;
+		for(let item of this.cart.orderItems){
+			this.totalItemQuantityAfterDiscount += item.extendedPriceAfterDiscount;
+		}
 	}
 	
 	public handleCartResponseActions(data):void{
 		if(!this.successfulActions.length) return;
-
+		
 		switch(true){
 			case this.successfulActions[0].indexOf('addOrderItem') > -1:
 				this.handleAddOrderItemSuccess(data);
@@ -381,7 +385,7 @@ export class MonatService {
 		}
 	}
 	
-		//mock api call
+	
 	public getProductFilters(){
 		return this.publicService.doAction('?slatAction=monat:public.getProductListingFilters')
 		.then(response=>{
