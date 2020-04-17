@@ -1336,7 +1336,7 @@ component  accessors="true" output="false"
     public void function removeOrderItem(required any data) {
         var cart = getService("OrderService").processOrder( getHibachiScope().cart(), arguments.data, 'removeOrderItem');
         if(!arraylen(cart.getOrderItems())){
-            clearOrder(arguments.data);
+            clearOrder(arguments.data); //todo: override for enrollment
         }
         getHibachiScope().addActionResult( "public:cart.removeOrderItem", cart.hasErrors() );
     }

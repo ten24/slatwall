@@ -5648,6 +5648,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arguments.orderItem.removeOrderReturn();
 		}
 		
+		for( var orderItemSkuBundle in arguments.orderItem.getOrderItemSkuBundles() ) {
+			orderItemSkuBundle.removeOrderItem();
+			this.deleteOrderItemSkuBundle(orderItemSkuBundle);
+		}
+	
 		for(var stockHold in arguments.orderItem.getStockHolds()){
 			getService('stockService').deleteStockHold(stockHold);
 		}

@@ -1550,7 +1550,53 @@ component extends="Slatwall.model.service.OrderService" {
 
 		// Call save order to place in the hibernate session and re-calculate all of the totals
 		arguments.order = this.saveOrder( order=arguments.order, updateOrderAmounts=arguments.processObject.getUpdateOrderAmountFlag() );
+		
+		
+		if( 
+			arguments.order.hasErrors() && arguments.order.hasMonatOrderType() &&
+			arguments.order.getMonatOrderType().getTypeCode() == 'motMPEnrollment' 
+		){
+			logHibachi("Got errors on order.motMPEnrollment: #SerializeJson(arguments.order.getErrors())#");
+			
+			//persist current changes temporarly
+			var oldErrors = StructCopy(arguments.order.getErrors());
+			arguments.order.clearHibachiErrors();
+			getHibachiScope().setORMHasErrors( false );
 
+			logHibachi("Flushing before temporarly saving the order: #arguments.order.getOrderID()#");
+			getHibachiScope().flushORMSession();
+
+			if( !IsNull(newOrderItem) ){
+				
+				for(var it in order.getOrderItems()){
+					logHibachi("Order has order-item: #it.getOrderItemID()#, qty: #it.getQuantity()#, price: #it.getPrice()# ");
+				}
+				
+				logHibachi("Removing new-order-item: #newOrderItem.getOrderItemID()#");
+				arguments.order = this.processOrder(arguments.order, { 'orderItemID': newOrderItem.getOrderItemID() }, 'removeOrderItem');
+				logHibachi("Flushing after removing new-order-item: #newOrderItem.getOrderItemID()#");
+				getHibachiScope().flushORMSession();
+				
+			} else if( !IsNull(foundOrderItem) ) {
+				
+				logHibachi("Updating foundOrderItem qty to: #foundOrderItem.getQuantity() - arguments.processObject.getQuantity() #");
+				foundOrderItem.setQuantity( foundOrderItem.getQuantity() - arguments.processObject.getQuantity() );
+				foundOrderItem = this.saveOrderItem( orderItem=foundOrderItem, updateOrderAmounts=true , updateCalculatedProperties=true);
+				
+				logHibachi("Flushing after reverting qty, found-order-item: #foundOrderItem.getOrderItemID()#");
+				getHibachiScope().flushORMSession();
+				
+			}
+			
+			// Call save order to place in the hibernate session and re-calculate all of the totals
+			arguments.order = this.saveOrder( order=arguments.order, updateOrderAmounts=true );
+			logHibachi("Flushing before re-adding errors on-to the order: #arguments.order.getOrderID()#");
+			getHibachiScope().flushORMSession();
+
+			arguments.order.addErrors(oldErrors);
+		}
+		
+		
 		return arguments.order;
 	}
 	

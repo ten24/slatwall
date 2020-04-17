@@ -80,6 +80,24 @@ component entityname="SlatwallOrderItemSkuBundle" table="SwOrderItemSkuBundle" p
 
 	// ============= START: Bidirectional Helper Methods ===================
 
+	public void function removeOrderItem(any orderItem) {
+		if(!structKeyExists(arguments, "orderItem")) {
+			arguments.orderItem = variables.orderItem;
+		}
+		var index = arrayFind(arguments.orderItem.getOrderItemSkuBundles(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.orderItem.getOrderItemSkuBundles(), index);
+		}
+		structDelete(variables, "orderItem");
+	}
+	
+	public void function setOrderItem(required any orderItem) {
+		variables.orderItem = arguments.orderItem;
+		if(isNew() or !arguments.orderItem.hasOrderItemSkuBundle( this )) {
+			arrayAppend(arguments.orderItem.getOrderItemSkuBundles(), this);
+		}
+	}
+
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// =============== START: Custom Validation Methods ====================
