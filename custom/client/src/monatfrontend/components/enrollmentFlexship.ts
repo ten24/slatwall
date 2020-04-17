@@ -15,12 +15,15 @@ class EnrollmentFlexshipController {
 	
 	//@ngInject
 	constructor(public monatService, public observerService, public orderTemplateService, public publicService) {
-		this.observerService.attach(this.getFlexship.bind(this), 'addOrderTemplateItemSuccess');
-		console.log(this.hybridCart)
+		this.observerService.attach(this.refreshFlexship.bind(this), 'addOrderTemplateItemSuccess');
 	}
 
 	public $onInit = () => {
 		this.getFlexship();
+	}
+	
+	public refreshFlexship = () =>{
+		this.manageNewOrderTemplate(this.orderTemplateService.mostRecentOrderTemplate);
 	}
 	
 	public getFlexship():void {
@@ -36,22 +39,7 @@ class EnrollmentFlexshipController {
 		this.orderTemplateService.getSetOrderTemplateOnSession(extraProperties, 'upgradeFlow', nullAccountFlag, nullAccountFlag ).then(data => {
 
 			if((data.orderTemplate as GenericTemplate) ){
-		
-				this.orderTemplate = data.orderTemplate;
-				if(this.orderTemplate.cartTotalThresholdForOFYAndFreeShipping) this.cartThreshold = +this.orderTemplate.cartTotalThresholdForOFYAndFreeShipping;
-				this.calculateSRPOnOrder();
-				let messages = this.orderTemplate.appliedPromotionMessagesJson ? JSON.parse(this.orderTemplate.appliedPromotionMessagesJson) : [];
-				messages = messages.filter(el => el.promotion_promotionName?.indexOf('Purchase Plus') > -1);
-				
-				if(!messages || !messages.length){
-					this.messages = null;
-				}else{
-					this.messages = {
-						message: messages[0].message,
-						amount: messages[0].promotionPeriod_promotionRewards_amount,
-						qualifierProgress: messages[0].qualifierProgress,
-					}	
-				}
+				this.manageNewOrderTemplate(data.orderTemplate);
 				this.isLoading = false;
 			} else {
 				throw(data);
@@ -85,6 +73,24 @@ class EnrollmentFlexshipController {
     	for(let item of this.orderTemplate.orderTemplateItems){
     		this.suggestedRetailPrice += (item.calculatedListPrice * item.quantity);
     	}
+    }
+    
+    public manageNewOrderTemplate(orderTemplate){
+		this.orderTemplate = orderTemplate;
+		if(this.orderTemplate.cartTotalThresholdForOFYAndFreeShipping) this.cartThreshold = +this.orderTemplate.cartTotalThresholdForOFYAndFreeShipping;
+		this.calculateSRPOnOrder();
+		let messages = this.orderTemplate.appliedPromotionMessagesJson ? JSON.parse(this.orderTemplate.appliedPromotionMessagesJson) : [];
+		messages = messages.filter(el => el.promotion_promotionName?.indexOf('Purchase Plus') > -1);
+		
+		if(!messages || !messages.length){
+			this.messages = null;
+		}else{
+			this.messages = {
+				message: messages[0].message,
+				amount: messages[0].promotionPeriod_promotionRewards_amount,
+				qualifierProgress: messages[0].qualifierProgress,
+			}	
+		}
     }
 
 }

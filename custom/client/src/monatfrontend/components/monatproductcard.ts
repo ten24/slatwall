@@ -167,11 +167,18 @@ class MonatProductCardController {
 		this.lastAddedSkuID = skuID;
 		let orderTemplateID = this.orderTemplate;
 		if (this.type === 'flexship' || this.type==='VIPenrollment') {
-			this.orderTemplateService.addOrderTemplateItem(skuID, orderTemplateID)
+			let extraProperties = "purchasePlusTotal,appliedPromotionMessagesJson,calculatedOrderTemplateItemsCount";
+			let data = {
+				optionalProperties: extraProperties,
+				saveContext: 'upgradeFlow', 
+				setIfNullFlag: false, 
+				nullAccountFlag: true
+			}
+			this.orderTemplateService.addOrderTemplateItem(skuID, orderTemplateID, 1, false, data)
 			.then( (result) =>{
 			    if(result.successfulActions &&
 					result.successfulActions.indexOf('public:order.addOrderTemplateItem') > -1) {
-						this.orderTemplateService.getSetOrderTemplateOnSession('qualifiesForOFYProducts', 'save', false, false);
+					//	this.orderTemplateService.getSetOrderTemplateOnSession('qualifiesForOFYProducts', 'save', false, false);
 					}
 				 else{
 				     throw (result);
