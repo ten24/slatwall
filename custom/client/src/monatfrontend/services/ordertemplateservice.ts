@@ -455,12 +455,12 @@ export class OrderTemplateService {
     
     //handle any new data on the order template
     public manageOrderTemplate(template){
-        let newOT = template;
-        if(!this.mostRecentOrderTemplate || !newOT.orderTemplateItems) return;
+        let newOrderTemplate = template;
+        if(!this.mostRecentOrderTemplate || !newOrderTemplate.orderTemplateItems) return;
         //if the new orderTemplateItems length is > than the old orderTemplateItems, a new item has been added       
-        if(newOT.orderTemplateItems.length > this.mostRecentOrderTemplate.orderTemplateItems.length || newOT.orderTemplateItems.length && !this.mostRecentOrderTemplate){
+        if(newOrderTemplate.orderTemplateItems.length > this.mostRecentOrderTemplate.orderTemplateItems.length || newOrderTemplate.orderTemplateItems.length && !this.mostRecentOrderTemplate){
             this.showAddToCartMessage = true;
-            this.lastAddedProduct = newOT.orderTemplateItems[0];
+            this.lastAddedProduct = newOrderTemplate.orderTemplateItems[0];
             return;
         }
         

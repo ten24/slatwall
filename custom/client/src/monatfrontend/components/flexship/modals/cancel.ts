@@ -53,7 +53,7 @@ class MonatFlexshipCancelModalController {
             	if(data && data.orderTemplate) {
 	                this.orderTemplate = data.orderTemplate;
 	                this.observerService.notify("orderTemplateUpdated" + data.orderTemplate.orderTemplateID, data.orderTemplate);
-	                this.monatAlertService.success(this.rbkeyService.rbKey('alert.flexship.canceledSucessfull'));
+	                this.monatAlertService.success(this.rbkeyService.rbKey('alert.flexship.canceledSuccessful'));
 	                this.closeModal();
             	} else {
             		throw(data);	

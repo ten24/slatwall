@@ -147,7 +147,7 @@ class MonatFlexshipPaymentMethodModalController {
 			    this.setSelectedBillingAccountAddressID(this.orderTemplate.billingAccountAddress_accountAddressID);
 			    this.setSelectedAccountPaymentMethodID(this.orderTemplate.accountPaymentMethod_accountPaymentMethodID);
 			    
-            	this.monatAlertService.success(this.rbkeyService.rbKey('alert.flexship.updateSucceccfull'));
+            	this.monatAlertService.success(this.rbkeyService.rbKey('alert.flexship.updateSuccessful'));
 			
 			    this.observerService.notify("orderTemplateUpdated" + response.orderTemplate.orderTemplateID, response.orderTemplate);
 			    this.closeModal();

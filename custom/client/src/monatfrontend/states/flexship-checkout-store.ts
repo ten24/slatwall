@@ -16,7 +16,7 @@ export class FlexshipCheckoutState {
 	loading: boolean  = true;
 	flexship: any     = null; 
 	
-	// will get updated everytime we add new-address
+	// will get updated every-time we add new-address
 	accountAddresses:            Array<AccountAddress>  = null; 
 	shippingMethodOptions:       Array<Option>          = null;
 	selectedShippingAddressID:   string                 = null;
@@ -79,12 +79,9 @@ export class FlexshipCheckoutStore extends NgStore<FlexshipCheckoutState, Flexsh
 		
 		super(new FlexshipCheckoutState);
 		
-		
-		this.monatService.getAccountAddresses() 
-    	.then( (data) => {
-    		
+		this.monatService.getAccountAddresses()
+		.then( (data) => {
     		this.dispatch('SET_ACCOUNT_ADDRESSES', (state) => {
-	    		
 	    		state.accountAddresses = data.accountAddresses;
 	    		state.primaryShippingAddressID =  data.primaryShippingAddressID;
 				state.primaryBillingAddressID =  data.primaryBillingAddressID;
@@ -92,23 +89,19 @@ export class FlexshipCheckoutStore extends NgStore<FlexshipCheckoutState, Flexsh
 				
 				state = this.setSelectedShippingAddressIDReducer(state, this.selectAShippingAddress(state));
 				state = this.setSelectedBillingAddressIDReducer(state, this.selectABillingAddress(state));
-				
 				return state;
     		});
-    	})
+		})
     	.then( () => this.monatService.getOptions({'orderTemplateShippingMethodOptions':false}))
     	.then( (options) => {
-    		
     		this.dispatch('SET_SHIPPING_METHODS', (state) => {
 	    		state.shippingMethodOptions = options.orderTemplateShippingMethodOptions;
 	    		state.selectedShippingMethodID = this.selectAShippingMethod(state);
 				return state;
     		})
-    		
-    	})
-    	.then( () => this.monatService.getAccountPaymentMethods())
+		})
+		.then( () => this.monatService.getAccountPaymentMethods() )
 		.then( (data) => {
-			
 			this.dispatch('SET_SHIPPING_METHODS', (state) => {
 				state.accountPaymentMethods = data.accountPaymentMethods;
 				state.primaryPaymentMethodID = data.primaryPaymentMethodID
@@ -116,9 +109,9 @@ export class FlexshipCheckoutStore extends NgStore<FlexshipCheckoutState, Flexsh
 				state = this.setSelectedPaymentMethodIDReducer(state, this.selectAPaymentMethod(state));
 				return state;
     		})
-			
 		})
-		.then( () => {
+		.catch( (e) => console.error(e) )
+		.finally( () => {
 			this.dispatch('TOGGLE_LOADING', {loading: false});
 		})
 		
@@ -151,7 +144,7 @@ export class FlexshipCheckoutStore extends NgStore<FlexshipCheckoutState, Flexsh
 	public setSelectedShippingAddressIDReducer(state: FlexshipCheckoutState, newAddressID: string){
 		
 		// only select an accountAddressID when user has passed a real-id
-		// we stil want to show previously-select-item(if any) when user clicks on cancel on new-address-form
+		// we still want to show previously-select-item(if any) when user clicks on cancel on new-address-form
 		if( newAddressID && newAddressID !== 'new' && state.selectedShippingAddressID != newAddressID ){ 
 			state.selectedShippingAddressID = newAddressID;
 			
@@ -176,7 +169,7 @@ export class FlexshipCheckoutStore extends NgStore<FlexshipCheckoutState, Flexsh
 	public setSelectedPaymentMethodIDReducer(state: FlexshipCheckoutState, newPaymentMethodID: string){
 		
 		// only select a payment-method when user has passed a real-id
-		// we stil want to show previously-select-item(if any) when user clicks on cancel on new-payment-method-form
+		// we still want to show previously-select-item(if any) when user clicks on cancel on new-payment-method-form
 		if( newPaymentMethodID && newPaymentMethodID !== 'new' && state.selectedPaymentMethodID != newPaymentMethodID ){ 
 			state.selectedPaymentMethodID = newPaymentMethodID;
 		}
@@ -195,11 +188,10 @@ export class FlexshipCheckoutStore extends NgStore<FlexshipCheckoutState, Flexsh
 	public toggleBillingSameAsShippingReducer(state: FlexshipCheckoutState, checked: boolean ){
 		
 		state.billingSameAsShipping = checked;
-	
+
 		if(state.billingSameAsShipping){
 			state.selectedBillingAddressID = state.selectedShippingAddressID;
 		}
-	
 		return state;
 	}
 
@@ -314,7 +306,7 @@ export class FlexshipCheckoutStore extends NgStore<FlexshipCheckoutState, Flexsh
         To get the current state
         const currentState = exampleStore.copy();
      
-        To dispatch a chenge in state
+        To dispatch a change in state
         exampleStore.dispatch('INCREMENT_COUNT', (oldState) => {
             return { managedProperty: newValue };
         });
@@ -325,10 +317,10 @@ export class FlexshipCheckoutStore extends NgStore<FlexshipCheckoutState, Flexsh
             
             1. STATE: complete-state after any event (inclusive changes)
             
-            2. initialRunFlag: every hoock gets called as soon as it's registered, the flag will be true in that case;
+            2. initialRunFlag: every hook gets called as soon as it's registered, the flag will be true in that case;
             
         })
-        .destroyOn($scope); //will get cleanedup as soon the listener (controlller is destrpyed),
+        .destroyOn($scope); //will get cleaned-up as soon the listener (controller is destroyed),
 
      **/
 }

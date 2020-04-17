@@ -118,7 +118,7 @@ class MonatFlexshipShippingMethodModalController {
                 		
                 this.setSelectedAccountAddressID(this.orderTemplate.shippingAccountAddress_accountAddressID);
                 this.setSelectedShippingMethodID(this.orderTemplate.shippingMethod_shippingMethodID);
-                this.monatAlertService.success(this.rbkeyService.rbKey('alert.flexship.updateSucceccfull'));
+                this.monatAlertService.success(this.rbkeyService.rbKey('alert.flexship.updateSuccessful'));
                 this.closeModal();
            } else {
                	throw(response);

@@ -42,11 +42,10 @@ class FlexshipCheckoutStepController {
 		this.orderTemplateService
 			//instead of making a trip to the server we should cache at the frontend;
 			.getSetOrderTemplateOnSession("", "save", false, false)
-			.then((response) => {
+			.then((response: any) => {
 				this.flexshipCheckoutStore.dispatch("SET_CURRENT_FLEXSHIP", (state) => {
 					return this.flexshipCheckoutStore.setFlexshipReducer(
-						state,
-						response.orderTemplate
+						state, response.orderTemplate
 					);
 				});
 			})
@@ -115,7 +114,7 @@ class FlexshipCheckoutStepController {
 				}
 
 				this.monatAlertService.success(
-					this.rbkeyService.rbKey("alert.flexship.updateSucceccfull")
+					this.rbkeyService.rbKey("alert.flexship.updateSuccessful")
 				);
 
 				//TODO: Redirect to the next screen
@@ -138,7 +137,7 @@ class FlexshipCheckoutStepController {
 			"newAccountPaymentMethod": this.newAccountPaymentMethod,
 		};
 
-		//TODO: Extract newPaymentMethod into seperate-API
+		//TODO: Extract newPaymentMethod into separate-API
 		this.orderTemplateService
 			.updateBilling(this.orderTemplateService.getFlattenObject(payload))
 			.then((response) => {
@@ -213,8 +212,8 @@ class FlexshipCheckoutStepController {
 	}
 
 	public $onDestroy = () => {
-		//to clear all of the listenets
-		this.stateListeners.map((hook) => hook.destroy());
+		//to clear all of the listeners
+		this.stateListeners.forEach((hook) => hook.destroy());
 	};
 
 	// *****************. new Address Form  .***********************//
@@ -230,9 +229,6 @@ class FlexshipCheckoutStepController {
 		return true;
 	};
 
-	public onAddNewAccountAddressFailure = (error) => {
-		console.log("add billing-account-adress, on failure", error);
-	};
 
 	public showNewAddressForm = () => {
 		if (this.newAddressFormRef) {
@@ -241,7 +237,6 @@ class FlexshipCheckoutStepController {
 
 		let bindings = {
 			onSuccessCallback: this.onAddNewAccountAddressSuccess,
-			onFailureCallback: this.onAddNewAccountAddressFailure,
 			formHtmlId: Math.random()
 				.toString(36)
 				.replace("0.", "newbillingaddressform" || ""),
@@ -255,7 +250,7 @@ class FlexshipCheckoutStepController {
 
 		this.ModalService.showModal({
 			component: "accountAddressForm",
-			appendElement: "#new-billing-account-address-form", //can be any vlid selector
+			appendElement: "#new-billing-account-address-form", //can be any valid selector
 			bindings: bindings,
 		})
 			.then((component) => {

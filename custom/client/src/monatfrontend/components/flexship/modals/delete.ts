@@ -12,7 +12,7 @@ class MonatFlexshipDeleteController {
     public deleteOrderTemplateItem = () => {
         this.loading = true;
         this.orderTemplateService.deleteOrderTemplate(this.orderTemplate.orderTemplateID).then( () => {
-            this.monatAlertService.success(this.rbkeyService.rbKey('alert.flexship.deleteSucessfull'));
+            this.monatAlertService.success(this.rbkeyService.rbKey('alert.flexship.deleteSuccessful'));
         }).catch((error)=>{
            this.monatAlertService.showErrorsFromResponse(error);
         }).finally(()=>{

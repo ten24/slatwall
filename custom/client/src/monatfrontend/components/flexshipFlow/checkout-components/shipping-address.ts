@@ -75,9 +75,6 @@ class FlexshipCheckoutShippingAddressController {
     	return true;
     };
     
-    public onAddNewAccountAddressFailure = (error) => {
-        console.log("add account adress, on failure", error);
-    };
     
     public showNewAddressForm = (accountAddress?) => {
         
@@ -87,7 +84,6 @@ class FlexshipCheckoutShippingAddressController {
         
 		let bindings = {
 			onSuccessCallback: this.onAddNewAccountAddressSuccess,
-			onFailureCallback: this.onAddNewAccountAddressFailure,
 			formHtmlId: Math.random().toString(36).replace('0.', 'newshippingaddressform' || '')
 		};
 		

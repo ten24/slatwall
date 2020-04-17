@@ -215,7 +215,7 @@ class MonatFlexshipCardController {
 					);
 					
 					this.monatAlertService.success(
-							this.rbkeyService.rbKey('alert.flexship.activationSuccessfull')
+							this.rbkeyService.rbKey('alert.flexship.activationSuccessful')
 						);
 						
 						this.monatService.redirectToProperSite(
