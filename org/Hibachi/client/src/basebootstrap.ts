@@ -71,7 +71,7 @@ export class BaseBootStrapper{
                 .catch( (e) => {
                     invalidCache.push('attributeCacheKey');
                     invalidCache.push('instantiationKey');
-                    console.log(e);
+                    console.error(e);
                 })
                 .then( () => invalidCache.length ? this.getData(invalidCache) : undefined )
                 .then( () => this.getResourceBundles() )
@@ -191,9 +191,9 @@ export class BaseBootStrapper{
         
         var promises: { [id:string]: ng.IPromise<any> } = {};
         
-        invalidCache.forEach( (thingToCache) => {
-            var functionName = thingToCache.charAt(0).toUpperCase()+ thingToCache.slice(1);
-            promises[thingToCache] = this['get'+functionName+'Data'](); // mind the syntax 8)
+        invalidCache.forEach( (cacheItem) => {
+            var camelCaseFunctionName = cacheItem.charAt(0).toUpperCase() + cacheItem.slice(1);
+            promises[cacheItem] = this['get'+camelCaseFunctionName+'Data'](); // mind the syntax 8)
         })
         
         return this.$q.all(promises);
