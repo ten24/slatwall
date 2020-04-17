@@ -387,14 +387,15 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 	    if(arrayLen(orderFulfillment) && !isNull(orderFulfillment[1])) {
 	        var cartShippingAddress = orderFulfillment[1].getShippingAddress();
 	        if(!isNull(cartShippingAddress)) {
+	            
 	            shippingAddress = {
-    	            "postalCode" : cartShippingAddress.getPostalCode(),
-    	            "countryCode" : cartShippingAddress.getCountryCode(),
-    	            "line1" : cartShippingAddress.getStreetAddress(),
-    	            "recipientName" : cartShippingAddress.getName(),
-    	            "city" : cartShippingAddress.getCity(),
-    	            "line2" : cartShippingAddress.getStreet2Address(),
-    	            "state" : cartShippingAddress.getStateCode(),
+    	            "postalCode" : cartShippingAddress.getPostalCode() ? : '',
+    	            "countryCode" : cartShippingAddress.getCountryCode() ? : '',
+    	            "line1" : cartShippingAddress.getStreetAddress() ? : '',
+    	            "recipientName" : cartShippingAddress.getName() ? : '',
+    	            "city" : cartShippingAddress.getCity() ? : '',
+    	            "line2" : cartShippingAddress.getStreet2Address() ? : '',
+    	            "state" : cartShippingAddress.getStateCode() ? : '',
     	        };
 	        }
 	        
@@ -485,6 +486,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         if(!isNull(order) && !isNull(account) && order.getAccount().getAccountID() == account.getAccountID()) {
             for( var orderPayment in order.getOrderPayments() ) {
                 if(orderPayment.isDeletable()) {
+                    orderPayment.setBillingAddress(javacast('null',''));
     				getService("OrderService").deleteOrderPayment(orderPayment);
     			}
     		}
