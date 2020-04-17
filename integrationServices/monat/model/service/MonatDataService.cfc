@@ -1013,22 +1013,6 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 		return "SKUItemID,LocationCode";
 	}
 
-	private any function populateSkuBundleQuery( required any skuBundleQuery, required struct skuData ){
-
-		for(var kit in arguments.skuData.KitLines){
-			var skuBundleData = {
-				'SKUItemCode' : trim(skuData['ItemCode']),
-				'ComponentItemCode' : kit['ComponentItemCode'],
-				'importKey' : trim(skuData['ItemCode']) & "-" & kit['ComponentItemCode'],
-				'ComponentQuantity' : kit['ComponentQty']
-			};
-			if(structKeyExists(kit,'ontheflykit')){
-				skuBundleData['ontheflykit'] = kit['ontheflykit'];
-			}
-			QueryAddRow(arguments.skuBundleQuery, skuBundleData);
-		}
-		return arguments.skuBundleQuery;
-	}
 
 
 	private any function associateProductWithSite(required struct siteProductCodes){
@@ -1055,8 +1039,8 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 				LEFT JOIN swproductsite ps ON p.productID = ps.productID AND ps.siteID = :siteID
 				WHERE p.productCode IN (:productCodes) AND  ps.productID IS NULL",
 				{ 
-					productCodes ={value = arrayToList(siteProductCodes[swSite]), list=true}, 
-					siteID = swSites[swSite]
+					'productCodes' = { 'value' = arrayToList(siteProductCodes[swSite]), 'list' = true }, 
+					'siteID' = swSites[swSite]
 				}
 			);
 		}
@@ -1104,11 +1088,16 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 
 
 		getService("HibachiTagService").cfsetting(requesttimeout="60000");
+		
+		logHibachi("importMonatProducts - Start", true);
 
 		var extraBody = {};
 		
 
 		if(arguments.rc.days > 0){
+		    
+		    logHibachi("importMonatProducts - Getting data for #arguments.rc.days# days", true);
+		    
 			extraBody = {
 				"Filters": {
 				    "StartDate": DateTimeFormat( now(), "yyyy-mm-dd'T'00:00:01'.693Z'" ),
@@ -1120,8 +1109,13 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 		if(!structKeyExists(arguments.rc, 'pageMax')){
 			arguments.rc.pageMax = this.getLastProductPageNumber(arguments.rc.pageSize, extraBody);
 		}
+		
+		logHibachi("importMonatProducts - Pages found #arguments.rc.pageMax#", true);
 
 		var basePath = getDirectoryFromPath(getCurrentTemplatePath());
+		
+		var skuBundles = {};
+
 
 // 		var countryToCurrency = {
 // 			'CAN' : 'CAD',
@@ -1132,14 +1126,14 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 // 			'CAN' : 'CAD',
 // 		};
 
-		var siteProductCodes = {
-			'CAN' = [],
-			'GBR' = [],
-			'AUD' = [],
-			'IRL' = [],
-			'POL' = [],
-			'USA' = []
-		};
+// 		var siteProductCodes = {
+// 			'CAN' = [],
+// 			'GBR' = [],
+// 			'AUD' = [],
+// 			'IRL' = [],
+// 			'POL' = [],
+// 			'USA' = []
+// 		};
 
 		var skuColumns = this.getSkuColumnsList();
 		var skuColumnTypes = [];
@@ -1161,17 +1155,23 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 // 		ArraySet(stockColumnTypes, 1, ListLen(stockColumns), 'varchar');
 // 		var stockQuery = QueryNew(stockColumns, stockColumnTypes);
 
+        var onTheFlySkuCodes = '';
 
 		for(var index = arguments.rc.pageNumber; index <= arguments.rc.pageMax; index++){
+		    
+		    logHibachi("importMonatProducts - Current Page #index#", true); 
 			var productResponse = this.getApiResponse( arguments.rc.days > 0 ? "SWGetNewUpdatedSKU" : "QueryItems", index, arguments.rc.pageSize, extraBody );
 
 			//goto next page causing this is erroring!
 			if ( productResponse.hasErrors ){
+			    logHibachi("importMonatProducts - Returned Errors", true); 
 				continue;
 			}
 
 			//Set the pagination info.
 			var monatProducts = productResponse.Data.Records ?: [];
+			
+			logHibachi("importMonatProducts - Product Count #arrayLen(monatProducts)#", true); 
 
 			for (var skuData in monatProducts){
 
@@ -1187,11 +1187,13 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 					'DisableOnFlexShip' : skuData['DisableInFlexShip'] ?: false,
 					'ItemCategoryAccounting' : trim(skuData['ItemCategoryCode']),
 					'CategoryNameAccounting' : trim(skuData['ItemCategoryName']),
-					'EntryDate' : skuData['EntryDate']
+					'EntryDate' : skuData['EntryDate'],
+					'SAPItemCode' : skuData['ItemCode'],
+					'Amount' : 0
 				};
 
-				if (ArrayLen(skuData['SAPItemCodes']) && len(skuData['SAPItemCodes'][1]['SAPItemCode'])) {
-					sku['SAPItemCode'] = skuData['SAPItemCodes'][1]['SAPItemCode'];
+				//if (ArrayLen(skuData['SAPItemCodes']) && len(skuData['SAPItemCodes'][1]['SAPItemCode'])) {
+				//	sku['SAPItemCode'] = skuData['SAPItemCodes'][1]['SAPItemCode'];
 
 					// Create Stock Query
 				// 	stockQuery = this.populateStockQuery(stockQuery, skuData);
@@ -1204,9 +1206,9 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 				// 	}
 
 
-				}else{
-					sku['SAPItemCode'] = skuData['ItemCode'];
-				}
+				//}else{
+				//	sku['SAPItemCode'] = skuData['ItemCode'];
+				//}
 
 
 				// Setup SkuPrice data
@@ -1237,35 +1239,100 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 				// 	}
 				// }
 				// If Sku Price not found, set it to 0
-				if(!structKeyExists(sku,'Amount')){
-					sku['Amount'] = 0;
-				}
+				// if(!structKeyExists(sku,'Amount')){
+				// 	sku['Amount'] = 0;
+				// }
 				// Add Sku to CF Query
 				QueryAddRow(skuQuery, sku);
 
 				// Create SkuBundle Query
 				if(arrayLen(skuData['KitLines'])){
-					skuBundleQuery = this.populateSkuBundleQuery(skuBundleQuery, skuData);
+				    
+				    skuBundles[sku['SKUItemCode']] = '';
+				    
+				    var onTheFlyKitAdded = false;
+
+				    for(var kit in skuData.KitLines){
+            			
+            			skuBundles[sku['SKUItemCode']] = listAppend(skuBundles[sku['SKUItemCode']], kit['ComponentItemCode']);
+            			
+            			var skuBundleData = {
+            				'SKUItemCode' : sku['SKUItemCode'],
+            				'ComponentItemCode' : kit['ComponentItemCode'],
+            				'importKey' : sku['SKUItemCode'] & "-" & kit['ComponentItemCode'],
+            				'ComponentQuantity' : kit['ComponentQty'],
+            				'ontheflykit' : kit['OnTheFlyFlag'] ?: false
+            			};
+            			
+            			QueryAddRow(skuBundleQuery, skuBundleData);
+            			
+            			if(!onTheFlyKitAdded && skuBundleData['ontheflykit']){
+            			    
+            			    onTheFlyKitAdded = true;
+            			    onTheFlySkuCodes = listAppend(onTheFlySkuCodes, sku['SKUItemCode']);
+            			}
+            		}
 				}
 			}
 		}
-
+		
+		logHibachi("importMonatProducts - Importing Products/Sku Count #skuQuery.recordCount#", true); 
 		if(skuQuery.recordCount){
 			var importSkuConfig = FileRead('#basePath#../../config/import/skus.json');
 			getService("HibachiDataService").loadDataFromQuery(skuQuery, importSkuConfig, arguments.rc.dryRun);
 		}
+		
+		logHibachi("importMonatProducts - Importing On The Fly Setting #listLen(onTheFlySkuCodes)#", true); 
+			
+		if(len(onTheFlySkuCodes)){
+		    QueryExecute(
+				"INSERT INTO swsetting (settingID, settingName, settingValue, createdDateTime, modifiedDateTime, skuID, baseObject)
+				 SELECT 
+                	LOWER(REPLACE(CAST(UUID() as char character set utf8), '-', ''))  settingID,
+                	'skuBundleAutoMakeupInventoryOnSaleFlag' settingName,
+                	'1' settingValue,
+                	NOW() createdDateTime,
+                	NOW() modifiedDateTime,
+                	sku.skuID skuID,
+                	'sku' baseObject
+                 FROM swSku sku
+                 LEFT JOIN swSetting s ON sku.skuID = s.skuID and s.settingName = 'skuBundleAutoMakeupInventoryOnSaleFlag'
+                 WHERE
+                	skuCode in (:onTheFlySkuCodes) AND s.settingID is NULL",
+				{ 
+					'onTheFlySkuCodes' = { 'value' = onTheFlySkuCodes, 'list' = true }
+				}
+		    );
+	    }
+		
 
 // 		if(skuPriceQuery.recordCount){
 // 			var importSkuPriceConfig = FileRead('#basePath#../../config/import/skuprices.json');
 // 			getService("HibachiDataService").loadDataFromQuery(skuPriceQuery, importSkuPriceConfig, arguments.rc.dryRun);
 // 		}
 
+        logHibachi("importMonatProducts - Importing SKuBundle Count #skuBundleQuery.recordCount#", true); 
 		if(skuBundleQuery.recordCount){
+		    
 			var importSkuBundleConfig = FileRead('#basePath#../../config/import/bundles.json');
 			getService("HibachiDataService").loadDataFromQuery(skuBundleQuery, importSkuBundleConfig, arguments.rc.dryRun);
 
 			var importSkuBundle2Config = FileRead('#basePath#../../config/import/bundles2.json');
 			getService("HibachiDataService").loadDataFromQuery(skuBundleQuery, importSkuBundle2Config, arguments.rc.dryRun);
+			
+			for(var skuID in skuBundles){
+		        QueryExecute(
+    				"DELETE bundle FROM swskubundle bundle
+                    INNER JOIN swSku sku ON bundle.skuID = sku.skuID
+                    INNER JOIN swSku childSku ON bundle.bundledSkuID = childSku.skuID
+                    WHERE sku.skuCode = :skuID
+                    AND childSku.skuCode NOT IN (:childSkuIDs)",
+    				{ 
+    					'skuID' = skuID,
+    					'childSkuIDs' = { 'value' = skuBundles[skuID], 'list' = true }
+    				}
+			    );
+		    }
 		}
 
 // 		if(stockQuery.recordCount){
@@ -1279,12 +1346,12 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 		QueryExecute("UPDATE swProductType SET productTypeIDPath = CONCAT('444df2f7ea9c87e60051f3cd87b435a1,',productTypeIDPath) WHERE parentProductTypeID = '444df2f7ea9c87e60051f3cd87b435a1' AND productTypeIDPath NOT LIKE '444df2f7ea9c87e60051f3cd87b435a1,%'");
 
 // 		//this.addUrlTitlesToProducts();
-		if(!arguments.rc.dryRun){
-			this.associateProductWithSite(siteProductCodes);
-		}else{
-			abort;
-		}
-		
+// 		if(!arguments.rc.dryRun){
+// 			this.associateProductWithSite(siteProductCodes);
+// 		}else{
+// 			abort;
+// 		}
+		logHibachi("importMonatProducts - Done!", true); 
 		abort;
 	}
     
