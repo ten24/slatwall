@@ -161,6 +161,7 @@ class MonatProductModalController {
 	}
 }
 
+
 class MonatProductModal {
 	public restrict: string;
 	public templateUrl: string;
