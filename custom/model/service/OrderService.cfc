@@ -1556,6 +1556,16 @@ component extends="Slatwall.model.service.OrderService" {
 			arguments.order.hasErrors() && arguments.order.hasMonatOrderType() &&
 			arguments.order.getMonatOrderType().getTypeCode() == 'motMPEnrollment' 
 		){
+			
+			
+			/**
+			 * 1. If orderCreatedSite.SiteCode is UK and order.accountType is MP 
+			 * max 200 pound TOTAL including VAT and Shipping Feed on days 1-7 
+			 * from ordering the enrollment kit.
+			 * This only work if the max orders validation also works because this only checks the current order
+			 * for total instead of all orders.
+			 **/
+			
 			logHibachi("Got errors on order.motMPEnrollment: #SerializeJson(arguments.order.getErrors())#");
 			
 			//persist current changes temporarly
@@ -1563,17 +1573,15 @@ component extends="Slatwall.model.service.OrderService" {
 			arguments.order.clearHibachiErrors();
 			getHibachiScope().setORMHasErrors( false );
 
-			logHibachi("Flushing before temporarly saving the order: #arguments.order.getOrderID()#");
+			logHibachi("Flushing to temporarly saving the order: #arguments.order.getOrderID()#");
 			getHibachiScope().flushORMSession();
+			
+			entityReload(arguments.order);
 
-			if( !IsNull(newOrderItem) ){
-				
-				for(var it in order.getOrderItems()){
-					logHibachi("Order has order-item: #it.getOrderItemID()#, qty: #it.getQuantity()#, price: #it.getPrice()# ");
-				}
-				
+			if( !IsNull(newOrderItem) ) {
 				logHibachi("Removing new-order-item: #newOrderItem.getOrderItemID()#");
 				arguments.order = this.processOrder(arguments.order, { 'orderItemID': newOrderItem.getOrderItemID() }, 'removeOrderItem');
+				
 				logHibachi("Flushing after removing new-order-item: #newOrderItem.getOrderItemID()#");
 				getHibachiScope().flushORMSession();
 				
@@ -1582,17 +1590,13 @@ component extends="Slatwall.model.service.OrderService" {
 				logHibachi("Updating foundOrderItem qty to: #foundOrderItem.getQuantity() - arguments.processObject.getQuantity() #");
 				foundOrderItem.setQuantity( foundOrderItem.getQuantity() - arguments.processObject.getQuantity() );
 				foundOrderItem = this.saveOrderItem( orderItem=foundOrderItem, updateOrderAmounts=true , updateCalculatedProperties=true);
-				
 				logHibachi("Flushing after reverting qty, found-order-item: #foundOrderItem.getOrderItemID()#");
 				getHibachiScope().flushORMSession();
-				
 			}
 			
-			// Call save order to place in the hibernate session and re-calculate all of the totals
-			arguments.order = this.saveOrder( order=arguments.order, updateOrderAmounts=true );
-			logHibachi("Flushing before re-adding errors on-to the order: #arguments.order.getOrderID()#");
-			getHibachiScope().flushORMSession();
-
+				// // reloading for the latest data after calculated props and other changes (update/remove order item)
+				// arguments.order = this.saveOrder( order=arguments.order, updateOrderAmounts=false );
+				
 			arguments.order.addErrors(oldErrors);
 		}
 		
