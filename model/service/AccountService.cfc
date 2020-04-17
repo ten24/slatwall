@@ -873,6 +873,7 @@ component extends="HibachiService" accessors="true" output="false" {
 					var email = getEmailService().newEmail();
 					var emailData = {
 						accountID = forgotPasswordAccount.getAccountID(),
+						domainURL = arguments.processObject.getDomainURL(),
 						emailTemplateID = site.setting('siteForgotPasswordEmailTemplate')
 					};
 

@@ -297,7 +297,10 @@ Notes:
 				local[ emailTemplate.getEmailTemplateObject() ] = templateObject;
 				local.emailData["relatedObject"] = mid(templateObject.getEntityName(), 9, len(templateObject.getEntityName())-8);
 				local.emailData["relatedObjectID"] = templateObject.getPrimaryIDValue();
-
+				
+				//update to pass any custom values
+				local.emailData['domainURL'] = arguments.data.domainURL ? : '';
+				
 				if(len(templatePath)) {
 					savecontent variable="templateFileResponse" {
 						include '#templatePath#';
