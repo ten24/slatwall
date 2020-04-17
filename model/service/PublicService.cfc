@@ -89,6 +89,21 @@ component  accessors="true" output="false"
 	}
 	
 	/**
+	 * Function add account phone phone
+	 * @param phoneNumber required
+	 * @return none
+	 * */
+	 public void function addAccountPhoneNumber(required struct data) {
+	     param name="arguments.data.phoneNumber";
+	     
+	     var account = getService("AccountService").processAccount(getHibachiScope().getAccount(), arguments.data, 'addAccountPhoneNumber');
+        if (account.hasErrors()) {
+            addErrors(arguments.data, getHibachiScope().getAccount().getProcessObject('addAccountPhoneNumber').getErrors());
+        }
+        getHibachiScope().addActionResult("public:account.addAccountPhoneNumber",account.hasErrors());
+	 }
+	
+	/**
 	 * Function add account email address
 	 * @param emailAddress required
 	 * @return none
@@ -96,36 +111,28 @@ component  accessors="true" output="false"
 	 public void function addAccountEmailAddress(required struct data) {
 	     param name="arguments.data.emailAddress";
 	     
-	     var accountEmailAddress = getService('accountService').newAccountEmailAddress();
-		accountEmailAddress.setAccount(getHibachiScope().getAccount());
-		accountEmailAddress.setEmailAddress(arguments.data.emailAddress);
-		getService('accountService').saveAccountEmailAddress(accountEmailAddress);
-		
-		if( accountEmailAddress.hasErrors() ) {
-		    addErrors(arguments.data, accountEmailAddress.getErrors());
-		}
-		
-		getHibachiScope().addActionResult( "public:setPrimaryPhoneNumber", !accountEmailAddress.hasErrors() );
+	     var account = getService("AccountService").processAccount(getHibachiScope().getAccount(), arguments.data, 'addAccountEmailAddress');
+        if (account.hasErrors()) {
+            addErrors(arguments.data, getHibachiScope().getAccount().getProcessObject('addAccountEmailAddress').getErrors());
+        }
+        getHibachiScope().addActionResult("public:account.addAccountEmailAddress",account.hasErrors());
 	 }
 	
 	/**
-     * Function to set primary phone number
-     * @param accountPhoneNumberID required
-     * @return none
-     **/
-     public void function setPrimaryPhoneNumber(required struct data) {
-        param name="arguments.data.accountPhoneNumberID";
-        var accountPhoneNumber = getService('accountService').getAccountPhoneNumber(arguments.data.accountPhoneNumberID);
-        if(!isNull(accountPhoneNumber) && getHibachiScope().getAccount().getAccountID() == accountPhoneNumber.getAccount().getAccountID() ) {
-            
-            getHibachiScope().getAccount().setPrimaryPhoneNumber(accountPhoneNumber);
-            var accountSave = getService('accountService').saveAccount(getHibachiScope().getAccount());
-            getHibachiScope().addActionResult( "public:setPrimaryPhoneNumber", accountSave.hasErrors() );
-        } else {
-            getHibachiScope().addActionResult( "public:setPrimaryPhoneNumber", true );
+	 * Function add account email address
+	 * @param emailAddress required
+	 * @return none
+	 * */
+	 public void function addAccountEmailAddress(required struct data) {
+	     param name="arguments.data.emailAddress";
+	     
+	     var account = getService("AccountService").processAccount(getHibachiScope().getAccount(), arguments.data, 'addAccountEmailAddress');
+        if (account.hasErrors()) {
+            addErrors(arguments.data, getHibachiScope().getAccount().getProcessObject('addAccountEmailAddress').getErrors());
         }
-     }
-     
+        getHibachiScope().addActionResult("public:account.addAccountEmailAddress",account.hasErrors());
+	 }
+	
      /**
      * Function to set primary email address
      * @param accountEmailAddressID required
@@ -161,6 +168,26 @@ component  accessors="true" output="false"
             getHibachiScope().addActionResult( "public:cart.setPrimaryAccountAddress", true );
         }
      }
+	
+	
+	/**
+     * Function to set primary phone number
+     * @param accountPhoneNumberID required
+     * @return none
+     **/
+     public void function setPrimaryPhoneNumber(required struct data) {
+        param name="arguments.data.accountPhoneNumberID";
+        var accountPhoneNumber = getService('accountService').getAccountPhoneNumber(arguments.data.accountPhoneNumberID);
+        if(!isNull(accountPhoneNumber) && getHibachiScope().getAccount().getAccountID() == accountPhoneNumber.getAccount().getAccountID() ) {
+            
+            getHibachiScope().getAccount().setPrimaryPhoneNumber(accountPhoneNumber);
+            var accountSave = getService('accountService').saveAccount(getHibachiScope().getAccount());
+            getHibachiScope().addActionResult( "public:setPrimaryPhoneNumber", accountSave.hasErrors() );
+        } else {
+            getHibachiScope().addActionResult( "public:setPrimaryPhoneNumber", true );
+        }
+     }
+     
     
     /**
      * Function to get Types by Type Code
@@ -212,6 +239,10 @@ component  accessors="true" output="false"
     public void function getRelatedProducts(required struct data){
         param name="arguments.data.productID" default="";
         var relatedProducts = getService('productService').getAllRelatedProducts(productID = arguments.data.productID);
+        //add images
+        if(arrayLen(relatedProducts)) {
+            relatedProducts = getService('productService').appendImagesToProduct(relatedProducts, "relatedProduct_defaultSku_imageFile");
+        }
         //add images
         if(arrayLen(relatedProducts)) {
             relatedProducts = getService('productService').appendImagesToProduct(relatedProducts, "relatedProduct_defaultSku_imageFile");
@@ -406,6 +437,7 @@ component  accessors="true" output="false"
             argumentCollection=arguments );
         arguments.data['ajaxResponse']['ordersOnAccount'] = accountOrders;
     }
+	
 	
 	
 	/**
@@ -864,7 +896,7 @@ component  accessors="true" output="false"
       		accountAddress.setAddress(newAddress);
       		accountAddress.setAccount(getHibachiScope().getAccount());	
       		var savedAccountAddress = getService("AccountService").saveAccountAddress(accountAddress);
-            getHibachiScope().addActionResult("public:account.addNewAccountAddress", savedAccountAddress.hasErrors());
+              getHibachiScope().addActionResult("public:account.addNewAccountAddress", savedAccountAddress.hasErrors());
    	     	if (!savedAccountAddress.hasErrors()){
    	     		getDao('hibachiDao').flushOrmSession();
                 data.accountAddressID = savedAccountAddress.getAccountAddressID();
@@ -1010,6 +1042,7 @@ component  accessors="true" output="false"
             if(!isNull(orderFulfillment) && !orderFulfillment.hasErrors()){
               orderFulfillment.setShippingAddress(accountAddress.getAddress());
               orderFulfillment.setAccountAddress(accountAddress);
+              getService("OrderService").saveOrderFulfillment(orderFulfillment);
               getService("OrderService").saveOrderFulfillment(orderFulfillment);
             }
             getService("OrderService").saveOrder(order);
