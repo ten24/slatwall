@@ -59,10 +59,10 @@ class HybridCartController {
 		let subtotal = 0;
 		let listPrice = 0;
 		let index = 0;
-		
+
 		for(let item of this.cart.orderItems){
 			if(!this.isEnrollment && item.sku.product.productType.systemCode == 'VIPCustomerRegistr'){
-				this.cart.orderItems.splice(index);
+				this.cart.orderItems.splice(this.cart.orderItems.indexOf(item), 1);
 				continue;
 			}else if(
 				item.sku.product.productType.systemCode == 'VIPCustomerRegistr' 
