@@ -408,15 +408,14 @@ export class OrderTemplateService {
     //handle any new data on the order template
     public manageOrderTemplate(template){
         let newOT = template;
-      
         if(!this.mostRecentOrderTemplate || !newOT.orderTemplateItems) return;
-        
         //if the new orderTemplateItems length is > than the old orderTemplateItems, a new item has been added       
-        if(newOT.orderTemplateItems.length > this.mostRecentOrderTemplate.orderTemplateItems.length){
+        if(newOT.orderTemplateItems.length > this.mostRecentOrderTemplate.orderTemplateItems.length || newOT.orderTemplateItems.length && !this.mostRecentOrderTemplate){
             this.showAddToCartMessage = true;
             this.lastAddedProduct = newOT.orderTemplateItems[0];
             return;
         }
+        
         
         let index = 0;
         
@@ -443,6 +442,7 @@ export class OrderTemplateService {
         let promoArray = this.mostRecentOrderTemplate.appliedPromotionMessagesJson?.length ? JSON.parse(this.mostRecentOrderTemplate.appliedPromotionMessagesJson) : [];
         this.mostRecentOrderTemplate['purchasePlusMessage'] = promoArray.length ? promoArray.filter( message => message.promotion_promotionName.indexOf('Purchase Plus') > -1 )[0] : {};
         this.mostRecentOrderTemplate['suggestedPrice'] = this.calculateSRPOnOrder(this.mostRecentOrderTemplate);
+       
         if(this.mostRecentOrderTemplate.cartTotalThresholdForOFYAndFreeShipping){
             this.cartTotalThresholdForOFYAndFreeShipping = this.mostRecentOrderTemplate.cartTotalThresholdForOFYAndFreeShipping;
         }

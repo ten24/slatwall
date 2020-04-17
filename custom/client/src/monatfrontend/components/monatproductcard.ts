@@ -167,7 +167,11 @@ class MonatProductCardController {
 		this.lastAddedSkuID = skuID;
 		let orderTemplateID = this.orderTemplate;
 		if (this.type === 'flexship' || this.type==='VIPenrollment') {
-			let extraProperties = "purchasePlusTotal,appliedPromotionMessagesJson,calculatedOrderTemplateItemsCount";
+			let extraProperties = "canPlaceOrderFlag,purchasePlusTotal,appliedPromotionMessagesJson,calculatedOrderTemplateItemsCount";
+			if(!this.orderTemplateService.cartTotalThresholdForOFYAndFreeShipping){
+				extraProperties += ',cartTotalThresholdForOFYAndFreeShipping';
+			}
+			
 			let data = {
 				optionalProperties: extraProperties,
 				saveContext: 'upgradeFlow', 
