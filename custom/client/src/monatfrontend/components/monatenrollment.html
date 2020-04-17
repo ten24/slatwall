@@ -25,7 +25,7 @@
 		<span sw-rbKey="'frontend.flexship.yourFlexshipIs'"></span> 
 		{{
 			+monatEnrollment.orderTemplateService.cartTotalThresholdForOFYAndFreeShipping - monatEnrollment.orderTemplateService.mostRecentOrderTemplate.calculatedSubTotal 
-			| swcurrency:monatEnrollment.cart.currency
+			| swcurrency: monatEnrollment.orderTemplateService.mostRecentOrderTemplate.currencyCode
 		}} 
 	
 		<span sw-rbKey="'frontend.flexship.beforeYouCanEnroll'"></span>
