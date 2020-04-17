@@ -1359,6 +1359,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			'activePromotionRewards':[]
 		};
 		var promotionRewards = getPromotionDAO().getActivePromotionRewards(rewardTypeList="canPlaceOrder", qualificationRequired=true,promotionCodeList=arguments.order.getPromotionCodeList(), promotionEffectiveDateTime=now(),site=arguments.order.getOrderCreatedSite());
+		var qualifierMessages = [];
 		
 		if(arraylen(promotionRewards)){
 			
@@ -1368,11 +1369,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				
 				arrayAppend(canPlaceOrderDetails['activePromotionRewards'], promoReward.getPromotionRewardID());
 				
-				var qualificationDetails = getPromotionPeriodQualificationDetails(promotionPeriod=promoReward.getPromotionPeriod(), order=arguments.order);
+				var qualificationDetails = getPromotionPeriodQualificationDetails(promotionPeriod=promoReward.getPromotionPeriod(), order=arguments.order, orderQualifierMessages=qualifierMessages);
 				if(qualificationDetails.qualificationsMeet){
 					qualificationDetails['canPlaceOrder'] = true;
 					return qualificationDetails; 
 				}
+			}
+			
+			if(arrayLen(qualifierMessages)){
+				getHibachiScope().flushOrmSession();
+				applyPromotionQualifierMessagesToOrder(arguments.order,qualifierMessages);
 			}
 		}
 		return canPlaceOrderDetails; 
