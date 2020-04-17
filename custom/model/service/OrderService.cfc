@@ -1614,13 +1614,6 @@ component extends="Slatwall.model.service.OrderService" {
 	}
 	
 	
-	// public any function revertMpOrderUK(required any order, required any processObject){
-		
-			
-	// 		return arguments.order;
-	// }
-	
-	
 	public boolean function getAccountIsInFlexshipCancellationGracePeriod(required any orderTemplate){
 	
 		var flexshipsCollectionList = this.getOrderTemplateCollectionList();
