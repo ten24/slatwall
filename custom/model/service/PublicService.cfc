@@ -840,6 +840,21 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         this.addOrderItem(argumentCollection = arguments);
     }
 
+
+    public void function removeOrderItem(required any data) {
+        var cart = getService("OrderService").processOrder( getHibachiScope().cart(), arguments.data, 'removeOrderItem');
+        
+        //we dont wan't the cart to loose the price-group info
+        if( 
+            !arraylen(cart.getOrderItems()) &&  !cart.getUpgradeFlag() 
+            &&
+            !ListFindNoCase("motMpEnrollment,motVipEnrollment", cart.getMonatOrderType().getTypeCode()) 
+        ){
+            clearOrder(arguments.data);
+        }
+        getHibachiScope().addActionResult( "public:cart.removeOrderItem", cart.hasErrors() );
+    }
+    
     
     private any function enrollUser(required struct data, required string accountType){
         var accountTypeInfo = {
