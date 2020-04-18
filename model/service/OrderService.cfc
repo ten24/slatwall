@@ -1713,7 +1713,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					}
 				},
 				'saveGiftCardToAccountFlag' : false, 
-				'updateOrderAmountFlag' : false  
+				'UpdateOrderAmountFlag' : false  
 			}
 
 			newOrder = this.process(newOrder, processData, 'addOrderPayment'); 
@@ -1745,7 +1745,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					'typeID': '444df2f0fed139ff94191de8fcd1f61b'
 				}
 			},
-			'saveGiftCardToAccountFlag' : false
+			'saveGiftCardToAccountFlag' : false,
+			'UpdateOrderAmountFlag' : false  
 		}
 
 		if(!arrayIsEmpty(newOrder.getOrderPayments())){
@@ -1798,7 +1799,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			newOrder.setPaymentLastRetryDateTime(now());
 			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has declined payment');
 			newOrder.clearHibachiErrors();
-			newOrder = this.processOrder( newOrder, {}, 'updateOrderAmounts' );
+			//newOrder = this.processOrder( newOrder, {}, 'updateOrderAmounts' );
 			newOrder = this.saveOrder(newOrder);
 			ormFlush(); 
 			//fire retry payment failure event so it can be utilized in workflows
