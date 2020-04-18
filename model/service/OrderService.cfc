@@ -1713,7 +1713,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					}
 				},
 				'saveGiftCardToAccountFlag' : false, 
-				'UpdateOrderAmountFlag' : false  
+				'updateOrderAmountFlag' : false  
 			}
 
 			newOrder = this.process(newOrder, processData, 'addOrderPayment'); 
@@ -1746,7 +1746,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				}
 			},
 			'saveGiftCardToAccountFlag' : false,
-			'UpdateOrderAmountFlag' : false  
+			'updateOrderAmountFlag' : false  
 		}
 
 		if(!arrayIsEmpty(newOrder.getOrderPayments())){
@@ -5252,7 +5252,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// If there were no errors, and the order is not placed, then we can make necessary implicit updates
 		if(!arguments.orderItem.hasErrors() && arguments.orderItem.getOrder().getStatusCode() == "ostNotPlaced") {
 			// If this item was part of a shipping fulfillment then update that fulfillment
-			if(!isNull(arguments.orderItem.getOrderFulfillment()) && arguments.orderItem.getOrderFulfillment().getFulfillmentMethodType() eq "shipping" && !isNull(arguments.orderItem.getOrderFulfillment().getShippingMethod()) && arguments.updateShippingMethodOptions) {
+			if(!isNull(arguments.orderItem.getOrderFulfillment()) && arguments.orderItem.getOrderFulfillment().getFulfillmentMethodType() == "shipping" && !isNull(arguments.orderItem.getOrderFulfillment().getShippingMethod()) && arguments.updateShippingMethodOptions) {
 				getShippingService().updateOrderFulfillmentShippingMethodOptions( arguments.orderItem.getOrderFulfillment() );
 			}
 

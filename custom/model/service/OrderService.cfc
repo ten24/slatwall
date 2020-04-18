@@ -1643,7 +1643,8 @@ component extends="Slatwall.model.service.OrderService" {
 				
 				// if it's OFY, remove and continue, other wise skip template because of error
 				if(!isNull(orderTemplateItem.temporaryFlag) && orderTemplateItem.temporaryFlag == true){
-					for(var orderItem in arguments.order.getOrderItems()) {
+					var orderItems = arguments.order.getOrderItems();
+					for(var orderItem in orderItems) {
 						if(orderTemplateItem['sku_skuID'] == orderItem.getSku().getSkuID()){
 							this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# Remove temporary Item SkuID: #orderTemplateItem['sku_skuID']# because of error', true);
 							arguments.order.removeOrderItem( orderitem );
