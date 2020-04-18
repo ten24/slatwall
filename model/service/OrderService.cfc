@@ -1671,7 +1671,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		newOrder.updateCalculatedProperties(runAgain=true); 
 		ormFlush();//flush so that the order exists
 
-		newOrder = this.processOrder_placeOrder(newOrder,{ignoreCanPlaceOrderFlag:true, updateOrderAmounts:false});
+		newOrder = this.processOrder_placeOrder(newOrder,{ignoreCanPlaceOrderFlag:true, updateOrderAmounts:false, updateShippingMethodOptions:false});
 
 		if(newOrder.hasErrors()){
 			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors on place order #serializeJson(newOrder.getErrors())# when placing order', true);
@@ -5027,7 +5027,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		arguments.order = save(entity=arguments.order, data=arguments.data, context=arguments.context);
 		
 		if(structKeyExists(arguments.data, 'updateOrderAmounts')){
-			arguments.updateOrderAmounts = arguments.data.updateOrderAmounts
+			arguments.updateOrderAmounts = arguments.data.updateOrderAmounts;
+		}
+		
+		if(structKeyExists(arguments.data, 'updateShippingMethodOptions')){
+			arguments.updateShippingMethodOptions = arguments.data.updateShippingMethodOptions;
 		}
 		
 		// If the order has no errors & it has not been placed yet, then we can make necessary implicit updates
