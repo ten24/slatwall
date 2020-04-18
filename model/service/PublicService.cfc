@@ -118,21 +118,6 @@ component  accessors="true" output="false"
         getHibachiScope().addActionResult("public:account.addAccountEmailAddress",account.hasErrors());
 	 }
 	
-	/**
-	 * Function add account email address
-	 * @param emailAddress required
-	 * @return none
-	 * */
-	 public void function addAccountEmailAddress(required struct data) {
-	     param name="arguments.data.emailAddress";
-	     
-	     var account = getService("AccountService").processAccount(getHibachiScope().getAccount(), arguments.data, 'addAccountEmailAddress');
-        if (account.hasErrors()) {
-            addErrors(arguments.data, getHibachiScope().getAccount().getProcessObject('addAccountEmailAddress').getErrors());
-        }
-        getHibachiScope().addActionResult("public:account.addAccountEmailAddress",account.hasErrors());
-	 }
-	
      /**
      * Function to set primary email address
      * @param accountEmailAddressID required
@@ -239,10 +224,6 @@ component  accessors="true" output="false"
     public void function getRelatedProducts(required struct data){
         param name="arguments.data.productID" default="";
         var relatedProducts = getService('productService').getAllRelatedProducts(productID = arguments.data.productID);
-        //add images
-        if(arrayLen(relatedProducts)) {
-            relatedProducts = getService('productService').appendImagesToProduct(relatedProducts, "relatedProduct_defaultSku_imageFile");
-        }
         //add images
         if(arrayLen(relatedProducts)) {
             relatedProducts = getService('productService').appendImagesToProduct(relatedProducts, "relatedProduct_defaultSku_imageFile");
