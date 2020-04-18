@@ -1849,7 +1849,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				orderFulfillment.setShippingMethod(arguments.orderTemplate.getShippingMethod());
 				orderFulfillment.setFulfillmentMethod(arguments.orderTemplate.getShippingMethod().getFulfillmentMethod());
 
-				orderFulfillment = this.saveOrderFulfillment(orderFulfillment=orderFulfillment, updateOrderAmounts=false);
+				orderFulfillment = this.saveOrderFulfillment(orderFulfillment=orderFulfillment, updateOrderAmounts=false, updateShippingMethodOptions=false);
 
 				if (orderFulfillment.hasErrors()){
 					//propegate to parent, because we couldn't create the fulfillment this order is not going to be placed
@@ -1890,6 +1890,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		processOrderAddOrderItem.setPrice(orderTemplateItemPrice);
 		processOrderAddOrderItem.setQuantity(arguments.orderTemplateItemStruct['quantity']);
 		processOrderAddOrderItem.setUpdateOrderAmountFlag(false); 		
+		processOrderAddOrderItem.setUpdateShippingMethodOptionsFlag(false); 		
 
 		if(!isNull(arguments.orderTemplate.getPriceGroup())){
 			processOrderAddOrderItem.setPriceGroup(arguments.orderTemplate.getPriceGroup());
@@ -5145,7 +5146,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.order;
 	}
 
-	public any function saveOrderFulfillment(required any orderFulfillment, struct data={}, string context="save", boolean updateOrderAmounts=true) {
+	public any function saveOrderFulfillment(required any orderFulfillment, struct data={}, string context="save", boolean updateOrderAmounts=true, boolean updateShippingMethodOptions=true) {
 		//if we have a new account address then override shippingaddress data. This must happen before populate
 		if(
 			(
@@ -5193,7 +5194,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
  		}
 
 		// If there were no errors, and the order is not placed, then we can make necessary implicit updates
-		if(!arguments.orderFulfillment.hasErrors() && arguments.orderFulfillment.getOrder().getStatusCode() == "ostNotPlaced") {
+		if(!arguments.orderFulfillment.hasErrors() && arguments.orderFulfillment.getOrder().getStatusCode() == "ostNotPlaced" && arguments.updateShippingMethodOptions) {
 
 			// If this is a shipping fulfillment, then update the shippingMethodOptions and charge
 			if(arguments.orderFulfillment.getFulfillmentMethodType() eq "shipping") {
@@ -5239,7 +5240,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.orderFulfillment;
 	}
 
-	public any function saveOrderItem(required any orderItem, struct data={}, string context="save", boolean updateOrderAmounts=true,boolean updateCalculatedProperties=false) {
+	public any function saveOrderItem(required any orderItem, struct data={}, string context="save", boolean updateOrderAmounts=true,boolean updateCalculatedProperties=false, boolean updateShippingMethodOptions=true) {
 
 		// Call the generic save method to populate and validate
 		arguments.orderItem = save(arguments.orderItem, arguments.data, arguments.context);
@@ -5247,7 +5248,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// If there were no errors, and the order is not placed, then we can make necessary implicit updates
 		if(!arguments.orderItem.hasErrors() && arguments.orderItem.getOrder().getStatusCode() == "ostNotPlaced") {
 			// If this item was part of a shipping fulfillment then update that fulfillment
-			if(!isNull(arguments.orderItem.getOrderFulfillment()) && arguments.orderItem.getOrderFulfillment().getFulfillmentMethodType() eq "shipping" && !isNull(arguments.orderItem.getOrderFulfillment().getShippingMethod())) {
+			if(!isNull(arguments.orderItem.getOrderFulfillment()) && arguments.orderItem.getOrderFulfillment().getFulfillmentMethodType() eq "shipping" && !isNull(arguments.orderItem.getOrderFulfillment().getShippingMethod()) && arguments.updateShippingMethodOptions) {
 				getShippingService().updateOrderFulfillmentShippingMethodOptions( arguments.orderItem.getOrderFulfillment() );
 			}
 
