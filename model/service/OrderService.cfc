@@ -1631,15 +1631,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		newOrder.setBillingAccountAddress(arguments.orderTemplate.getBillingAccountAddress()); 
 		newOrder.setShippingAccountAddress(arguments.orderTemplate.getShippingAccountAddress());  
 		newOrder = this.saveOrder(order=newOrder, updateOrderAmounts=false, updateOrderAmounts=false, updateShippingMethodOptions=false, checkNewAccountAddressSave=false); 
+
 		newOrder = this.createOrderItemsFromOrderTemplateItems(newOrder,arguments.orderTemplate);
 	
 		if(newOrder.hasErrors()){
 			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# after adding order items', true);
-			newOrder.clearHibachiErrors();
-
-			if(arrayIsEmpty(newOrder.getOrderItems())){
-				return arguments.orderTemplate;
-			}
+			arguments.orderTemplate.addErrors(newOrder.getErrors()); 
+			return arguments.orderTemplate;
 		}	
 
 		var promotionCodes = arguments.orderTemplate.getPromotionCodes();
@@ -1663,8 +1661,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		if(newOrder.hasErrors()){
 			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# after adding promotion codes', true);
+			// continue with template without promocode
+			arguments.newOrder.clearHibachiErrors();
 			arguments.orderTemplate.clearHibachiErrors();
-			return arguments.orderTemplate;
 		}
 	
 		this.processOrder( newOrder, {}, 'updateOrderAmounts' );
@@ -1676,7 +1675,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		if(newOrder.hasErrors()){
 			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors on place order #serializeJson(newOrder.getErrors())# when placing order', true);
-			arguments.orderTemplate.clearHibachiErrors();
+			arguments.orderTemplate.addErrors(newOrder.getErrors()); 
 			return arguments.orderTemplate;
 		}
 			
@@ -1759,7 +1758,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(newOrder.hasErrors()){
 			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors on add order payment #serializeJson(newOrder.getErrors())# when adding a payment', true);
 			arguments.orderTemplate.addErrors(newOrder.getErrors()); 
-			arguments.orderTemplate.clearHibachiErrors();
 			return arguments.orderTemplate;
 		}
 		
@@ -1876,7 +1874,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public any function addOrderItemFromTemplateItem(required any order, required struct orderTemplateItemStruct, required any orderTemplate, any orderFulfillment){
 		var processOrderAddOrderItem = arguments.order.getProcessObject('addOrderItem');
 		var sku = getSkuService().getSku(arguments.orderTemplateItemStruct['sku_skuID']);
-
 		
 		if(structKeyExists(arguments.orderTemplateItemStruct,'price')){
 			var orderTemplateItemPrice = arguments.orderTemplateItemStruct.price;
