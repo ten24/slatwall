@@ -1601,7 +1601,7 @@ component extends="Slatwall.model.service.OrderService" {
 		
 		for(var orderTemplateItem in orderTemplateItems){ 
 
-			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()#, adding skuID: #orderTemplateItem['sku_skuID']#', true);
+			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()#, adding skuID: #orderTemplateItem['sku_skuID']#');
 
 			if(!isNull(orderTemplateItem.temporaryFlag) && orderTemplateItem.temporaryFlag == true){
 				temporaryItemFound = true;
