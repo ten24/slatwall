@@ -89,23 +89,35 @@ component  accessors="true" output="false"
 	}
 	
 	/**
-     * Function to set primary phone number
-     * @param accountPhoneNumberID required
-     * @return none
-     **/
-     public void function setPrimaryPhoneNumber(required struct data) {
-        param name="arguments.data.accountPhoneNumberID";
-        var accountPhoneNumber = getService('accountService').getAccountPhoneNumber(arguments.data.accountPhoneNumberID);
-        if(!isNull(accountPhoneNumber) && getHibachiScope().getAccount().getAccountID() == accountPhoneNumber.getAccount().getAccountID() ) {
-            
-            getHibachiScope().getAccount().setPrimaryPhoneNumber(accountPhoneNumber);
-            var accountSave = getService('accountService').saveAccount(getHibachiScope().getAccount());
-            getHibachiScope().addActionResult( "public:setPrimaryPhoneNumber", accountSave.hasErrors() );
-        } else {
-            getHibachiScope().addActionResult( "public:setPrimaryPhoneNumber", true );
+	 * Function add account phone phone
+	 * @param phoneNumber required
+	 * @return none
+	 * */
+	 public void function addAccountPhoneNumber(required struct data) {
+	     param name="arguments.data.phoneNumber";
+	     
+	     var account = getService("AccountService").processAccount(getHibachiScope().getAccount(), arguments.data, 'addAccountPhoneNumber');
+        if (account.hasErrors()) {
+            addErrors(arguments.data, getHibachiScope().getAccount().getProcessObject('addAccountPhoneNumber').getErrors());
         }
-     }
-     
+        getHibachiScope().addActionResult("public:account.addAccountPhoneNumber",account.hasErrors());
+	 }
+	
+	/**
+	 * Function add account email address
+	 * @param emailAddress required
+	 * @return none
+	 * */
+	 public void function addAccountEmailAddress(required struct data) {
+	     param name="arguments.data.emailAddress";
+	     
+	     var account = getService("AccountService").processAccount(getHibachiScope().getAccount(), arguments.data, 'addAccountEmailAddress');
+        if (account.hasErrors()) {
+            addErrors(arguments.data, getHibachiScope().getAccount().getProcessObject('addAccountEmailAddress').getErrors());
+        }
+        getHibachiScope().addActionResult("public:account.addAccountEmailAddress",account.hasErrors());
+	 }
+	
      /**
      * Function to set primary email address
      * @param accountEmailAddressID required
@@ -141,6 +153,26 @@ component  accessors="true" output="false"
             getHibachiScope().addActionResult( "public:cart.setPrimaryAccountAddress", true );
         }
      }
+	
+	
+	/**
+     * Function to set primary phone number
+     * @param accountPhoneNumberID required
+     * @return none
+     **/
+     public void function setPrimaryPhoneNumber(required struct data) {
+        param name="arguments.data.accountPhoneNumberID";
+        var accountPhoneNumber = getService('accountService').getAccountPhoneNumber(arguments.data.accountPhoneNumberID);
+        if(!isNull(accountPhoneNumber) && getHibachiScope().getAccount().getAccountID() == accountPhoneNumber.getAccount().getAccountID() ) {
+            
+            getHibachiScope().getAccount().setPrimaryPhoneNumber(accountPhoneNumber);
+            var accountSave = getService('accountService').saveAccount(getHibachiScope().getAccount());
+            getHibachiScope().addActionResult( "public:setPrimaryPhoneNumber", accountSave.hasErrors() );
+        } else {
+            getHibachiScope().addActionResult( "public:setPrimaryPhoneNumber", true );
+        }
+     }
+     
     
     /**
      * Function to get Types by Type Code
@@ -388,6 +420,7 @@ component  accessors="true" output="false"
     }
 	
 	
+	
 	/**
       * Updates an Account address.
       */
@@ -615,19 +648,49 @@ component  accessors="true" output="false"
     }
     
     /**
+      * @method resetPasswordUpdate
+      * @http-context resetPasswordUpdate
+      * @http-verb POST
+      * @description  Reset User Password based on reset token - This method to be used as API end point
+      * @http-return <b>(200)</b> Successfully Sent or <b>(400)</b> Bad or Missing Input Data
+      * @param accountID {string}
+      * @param emailAddress {string}
+      * @ProcessMethod Account_ResetPassword
+      **/
+    public void function resetPasswordUpdate( required struct data ) {
+        param name="data.swprid";
+        
+        var account = getAccountService().getAccount( left(arguments.data.swprid, 32) );
+        //Check if account is not null and has correct reset token
+        if(!isNull(account) && getAccountService().getPasswordResetID(account, false) == arguments.data.swprid ) {
+            var account = getService("AccountService").processAccount(account, data, "resetPassword");
+            if (account.hasErrors()) {
+                addErrors(arguments.data, account.getProcessObject('resetPassword').getErrors());
+            }
+            
+            getHibachiScope().addActionResult( "public:account.resetPassword", account.hasErrors() );
+            
+        } else {
+            getHibachiScope().addActionResult( "public:account.resetPassword", true );
+        }
+    }
+    
+    /**
       * @method resetPassword
       * @http-context resetPassword
       * @http-verb POST
-      * @description  Sends an email to a user to reset a password.  
+      * @description  Reset password based on reset token - This method to be used with frontend form, it logs userin after successful reset
       * @http-return <b>(200)</b> Successfully Sent or <b>(400)</b> Bad or Missing Input Data
       * @param accountID {string}
       * @param emailAddress {string}
       * @ProcessMethod Account_ResetPassword
       **/
     public void function resetPassword( required struct data ) {
-        param name="data.accountID" default="";
-        var account = getAccountService().getAccount( data.accountID );
-        if(!isNull(account)) {
+        param name="data.swprid";
+        
+        var account = getAccountService().getAccount( left(arguments.data.swprid, 32) );
+        //Check if account is not null and has correct reset token
+        if(!isNull(account) && getAccountService().getPasswordResetID(account, false) == arguments.data.swprid ) {
             var account = getService("AccountService").processAccount(account, data, "resetPassword");
             getHibachiScope().addActionResult( "public:account.resetPassword", account.hasErrors() );
             // As long as there were no errors resetting the password, then we can set the email address in the form scope so that a chained login action will work
@@ -844,7 +907,7 @@ component  accessors="true" output="false"
       		accountAddress.setAddress(newAddress);
       		accountAddress.setAccount(getHibachiScope().getAccount());	
       		var savedAccountAddress = getService("AccountService").saveAccountAddress(accountAddress);
-            getHibachiScope().addActionResult("public:account.addNewAccountAddress", savedAccountAddress.hasErrors());
+              getHibachiScope().addActionResult("public:account.addNewAccountAddress", savedAccountAddress.hasErrors());
    	     	if (!savedAccountAddress.hasErrors()){
    	     		getDao('hibachiDao').flushOrmSession();
                 data.accountAddressID = savedAccountAddress.getAccountAddressID();
@@ -921,14 +984,25 @@ component  accessors="true" output="false"
                 }
                 var order = getHibachiScope().cart();
                 order.setShippingAddress(savedAddress);
+                
                 for(var fulfillment in order.getOrderFulfillments()){
                   if(fulfillment.getOrderFulfillmentID() == data.fulfillmentID){
                     var orderFulfillment = fulfillment;
                   }
                 }
+                
                 if(!isNull(orderFulfillment) && !orderFulfillment.hasErrors()){
                   orderFulfillment.setShippingAddress(savedAddress);
+                  
+                  //Add Shiping Method on Order Fulfillment
+                  if(StructKeyExists(arguments.data, 'shippingMethodID') && !isEmpty(arguments.data.shippingMethodID) ) {
+                    var shippingMethod = getService('ShippingService').getShippingMethod(arguments.data.shippingMethodId);
+                    if(!isNull(shippingMethod)) {
+                        orderFulfillment.setShippingMethod(shippingMethod);
+                    }
+                  }
                 }
+                
                 if (structKeyExists(data, "saveShippingAsBilling") && data.saveShippingAsBilling){
                     order.setBillingAddress(savedAddress);
                 }
@@ -958,6 +1032,7 @@ component  accessors="true" output="false"
     
     /** Adds a shipping address to an order using an account address */
     public void function addShippingAddressUsingAccountAddress(required data){
+        
         if(structKeyExists(data,'accountAddressID')){
           var accountAddressId = data.accountAddressID;
         }else{
@@ -990,8 +1065,18 @@ component  accessors="true" output="false"
             if(!isNull(orderFulfillment) && !orderFulfillment.hasErrors()){
               orderFulfillment.setShippingAddress(accountAddress.getAddress());
               orderFulfillment.setAccountAddress(accountAddress);
+              
+              //Add Shiping Method on Order Fulfillment
+              if(StructKeyExists(arguments.data, 'shippingMethodID') && !isEmpty(arguments.data.shippingMethodID) ) {
+                var shippingMethod = getService('ShippingService').getShippingMethod(arguments.data.shippingMethodId);
+                if(!isNull(shippingMethod)) {
+                    orderFulfillment.setShippingMethod(shippingMethod);
+                }
+              }
+              
               getService("OrderService").saveOrderFulfillment(orderFulfillment);
             }
+            
             getService("OrderService").saveOrder(order);
             getHibachiScope().addActionResult( "public:cart.addShippingAddressUsingAccountAddress", order.hasErrors());
         }else{
@@ -1086,9 +1171,8 @@ component  accessors="true" output="false"
             	var orderFulfillment = order.getOrderFulfillments()[orderFulfillmentWithShippingMethodOptions];
             }
             orderFulfillment.setShippingMethod(shippingMethod);
-            getService("OrderService").saveOrder(order); 
-            getDao('hibachiDao').flushOrmSession();;           
-            getHibachiScope().addActionResult( "public:cart.addShippingMethodUsingShippingMethodID", shippingMethod.hasErrors());          
+            getService("OrderService").saveOrder(order);
+            getHibachiScope().addActionResult( "public:cart.addShippingMethodUsingShippingMethodID", shippingMethod.hasErrors());
         }else{
             this.addErrors(arguments.data, shippingMethod.getErrors()); //add the basic errors
             getHibachiScope().addActionResult( "public:cart.addShippingMethodUsingShippingMethodID", shippingMethod.hasErrors());

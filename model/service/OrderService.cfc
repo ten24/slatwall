@@ -74,7 +74,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="typeService";
 
 	// ===================== START: Logical Methods ===========================
-
+	
 	public string function getOrderRequirementsList(required any order, struct data = {}) {
 		var orderRequirementsList = "";
 
@@ -368,6 +368,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			// First See if we can use an existing order fulfillment
 			var orderFulfillment = processObject.getOrderFulfillment();
+			
 			// Next if orderFulfillment is still null, then we can check the order to see if there is already an orderFulfillment
 			if(isNull(orderFulfillment) && ( isNull(processObject.getOrderFulfillmentID()) || processObject.getOrderFulfillmentID() != 'new' ) && arrayLen(arguments.order.getOrderFulfillments())) {
 				for(var f=1; f<=arrayLen(arguments.order.getOrderFulfillments()); f++) {
@@ -385,6 +386,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				var fulfillmentMethod = arguments.processObject.getFulfillmentMethod();
 
 				// If the fulfillmentMethod is still null because the above didn't execute, then we can pull it in from the first ID in the sku settings
+				
 				if(isNull(fulfillmentMethod) && listLen(arguments.processObject.getSku().setting('skuEligibleFulfillmentMethods'))) {
 					var fulfillmentMethod = getFulfillmentService().getFulfillmentMethod( listFirst(arguments.processObject.getSku().setting('skuEligibleFulfillmentMethods')) );
 				}
@@ -485,7 +487,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 			
 			// Set Stock reference, check the fullfillment for a pickup location
-			if (!isNull(orderFulfillment.getPickupLocation())){
+			if (!arguments.processObject.hasErrors() && !isNull(orderFulfillment.getPickupLocation())){
 				// The item being added to the cart should have its stockID added based on that location
 				var location = orderFulfillment.getPickupLocation();
 				var stock = getService("StockService").getStockBySkuAndLocation(sku=arguments.processObject.getSku(), location=location);
@@ -497,7 +499,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 
 			// Check for the sku in the orderFulfillment already, so long that the order doens't have any errors
-			if(!arguments.order.hasErrors()) {
+			if(!arguments.processObject.hasErrors() && !arguments.order.hasErrors()) {
 				for(var i=arraylen(orderFulfillment.getOrderFulfillmentItems());i>0; i--  ){
 				
 					var orderItem = orderFulfillment.getOrderFulfillmentItems()[i];
