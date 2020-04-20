@@ -985,14 +985,25 @@ component  accessors="true" output="false"
                 }
                 var order = getHibachiScope().cart();
                 order.setShippingAddress(savedAddress);
+                
                 for(var fulfillment in order.getOrderFulfillments()){
                   if(fulfillment.getOrderFulfillmentID() == data.fulfillmentID){
                     var orderFulfillment = fulfillment;
                   }
                 }
+                
                 if(!isNull(orderFulfillment) && !orderFulfillment.hasErrors()){
                   orderFulfillment.setShippingAddress(savedAddress);
+                  
+                  //Add Shiping Method on Order Fulfillment
+                  if(StructKeyExists(arguments.data, 'shippingMethodID') && !isEmpty(arguments.data.shippingMethodID) ) {
+                    var shippingMethod = getService('ShippingService').getShippingMethod(arguments.data.shippingMethodId);
+                    if(!isNull(shippingMethod)) {
+                        orderFulfillment.setShippingMethod(shippingMethod);
+                    }
+                  }
                 }
+                
                 if (structKeyExists(data, "saveShippingAsBilling") && data.saveShippingAsBilling){
                     order.setBillingAddress(savedAddress);
                 }
@@ -1022,6 +1033,7 @@ component  accessors="true" output="false"
     
     /** Adds a shipping address to an order using an account address */
     public void function addShippingAddressUsingAccountAddress(required data){
+        
         if(structKeyExists(data,'accountAddressID')){
           var accountAddressId = data.accountAddressID;
         }else{
@@ -1054,9 +1066,18 @@ component  accessors="true" output="false"
             if(!isNull(orderFulfillment) && !orderFulfillment.hasErrors()){
               orderFulfillment.setShippingAddress(accountAddress.getAddress());
               orderFulfillment.setAccountAddress(accountAddress);
-              getService("OrderService").saveOrderFulfillment(orderFulfillment);
+              
+              //Add Shiping Method on Order Fulfillment
+              if(StructKeyExists(arguments.data, 'shippingMethodID') && !isEmpty(arguments.data.shippingMethodID) ) {
+                var shippingMethod = getService('ShippingService').getShippingMethod(arguments.data.shippingMethodId);
+                if(!isNull(shippingMethod)) {
+                    orderFulfillment.setShippingMethod(shippingMethod);
+                }
+              }
+              
               getService("OrderService").saveOrderFulfillment(orderFulfillment);
             }
+            
             getService("OrderService").saveOrder(order);
             getHibachiScope().addActionResult( "public:cart.addShippingAddressUsingAccountAddress", order.hasErrors());
         }else{
@@ -1151,9 +1172,8 @@ component  accessors="true" output="false"
             	var orderFulfillment = order.getOrderFulfillments()[orderFulfillmentWithShippingMethodOptions];
             }
             orderFulfillment.setShippingMethod(shippingMethod);
-            getService("OrderService").saveOrder(order); 
-            getDao('hibachiDao').flushOrmSession();;           
-            getHibachiScope().addActionResult( "public:cart.addShippingMethodUsingShippingMethodID", shippingMethod.hasErrors());          
+            getService("OrderService").saveOrder(order);
+            getHibachiScope().addActionResult( "public:cart.addShippingMethodUsingShippingMethodID", shippingMethod.hasErrors());
         }else{
             this.addErrors(arguments.data, shippingMethod.getErrors()); //add the basic errors
             getHibachiScope().addActionResult( "public:cart.addShippingMethodUsingShippingMethodID", shippingMethod.hasErrors());
