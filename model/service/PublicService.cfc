@@ -641,8 +641,6 @@ component  accessors="true" output="false"
       * @ProcessMethod Account_ForgotPassword
       **/
     public any function forgotPassword( required struct data ) {
-        param name="data.domainURL" default="";
-        
         var account = getService("AccountService").processAccount( getHibachiScope().getAccount(), arguments.data, 'forgotPassword');
         //let's hard code the action to always be successful. Indicating failure exposes if the account exists and is a security issue
         getHibachiScope().addActionResult( "public:account.forgotPassword", false );

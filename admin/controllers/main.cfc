@@ -307,7 +307,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 
 	public void function forgotPassword(required struct rc) {
-		param name="rc.domainURL" default="";
 		rc.$.slatwall.setPublicPopulateFlag( true );
 
 		var account = getAccountService().processAccount(rc.$.slatwall.getAccount(), rc, "forgotPassword");

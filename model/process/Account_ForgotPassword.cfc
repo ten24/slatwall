@@ -53,7 +53,6 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 	// Data Properties
 	property name="emailAddress";
-	property name="domainURL" default="";
 	property name="siteID";
 	
 	public string function getSiteID() {
