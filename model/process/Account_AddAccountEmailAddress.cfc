@@ -56,14 +56,10 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="emailAddressConfirm";
 	
     public boolean function isUniqueEmailToAccount() {
-        var existingEmailAddresses = [];
-        for (var accountEmailAddressObject in account.getAccountEmailAddresses()) {
-            ArrayAppend(existingEmailAddresses, accountEmailAddressObject.getEmailAddress());
-        }
-        if (ArrayContains(existingEmailAddresses, emailAddress)) {
-            return false;
-        }
-        return true;
+        var collectionList = getService('accountService').getCollectionList('accountEmailAddress');
+        collectionList.addFilter("emailAddress", emailAddress);
+        collectionList.addFilter("account.accountID", account.getAccountID());
+        return collectionList.getRecordsCount() == 0;
         
     }
 }
