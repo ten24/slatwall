@@ -71,11 +71,11 @@ component extends="HibachiService" accessors="true" output="false" {
 		return hash(arguments.password & arguments.salt, 'SHA-512');
 	}
 
-	public string function getPasswordResetID(required any account) {
+	public string function getPasswordResetID(required any account, boolean createNewResetID = true) {
 		var passwordResetID = "";
 		var accountAuthentication = getAccountDAO().getPasswordResetAccountAuthentication(accountID=arguments.account.getAccountID());
 
-		if(isNull(accountAuthentication)) {
+		if(isNull(accountAuthentication) && arguments.createNewResetID) {
 			var accountAuthentication = this.newAccountAuthentication();
 			accountAuthentication.setExpirationDateTime(now() + 7);
 			accountAuthentication.setAccount( arguments.account );

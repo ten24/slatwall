@@ -664,7 +664,7 @@ component  accessors="true" output="false"
         
         var account = getAccountService().getAccount( left(arguments.data.swprid, 32) );
         //Check if account is not null and has correct reset token
-        if(!isNull(account) && getAccountService().getPasswordResetID(account) == arguments.data.swprid ) {
+        if(!isNull(account) && getAccountService().getPasswordResetID(account, false) == arguments.data.swprid ) {
             var account = getService("AccountService").processAccount(account, data, "resetPassword");
             if (account.hasErrors()) {
                 addErrors(arguments.data, account.getProcessObject('resetPassword').getErrors());
@@ -692,7 +692,7 @@ component  accessors="true" output="false"
         
         var account = getAccountService().getAccount( left(arguments.data.swprid, 32) );
         //Check if account is not null and has correct reset token
-        if(!isNull(account) && getAccountService().getPasswordResetID(account) == arguments.data.swprid ) {
+        if(!isNull(account) && getAccountService().getPasswordResetID(account, false) == arguments.data.swprid ) {
             var account = getService("AccountService").processAccount(account, data, "resetPassword");
             getHibachiScope().addActionResult( "public:account.resetPassword", account.hasErrors() );
             // As long as there were no errors resetting the password, then we can set the email address in the form scope so that a chained login action will work
