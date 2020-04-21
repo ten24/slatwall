@@ -184,7 +184,7 @@ class MonatProductCardController {
 				setIfNullFlag: false, 
 				nullAccountFlag: this.flexshipType == 'flexshipHasAccount' ? false : true
 			}
-			
+	
 			this.orderTemplateService.addOrderTemplateItem(skuID, orderTemplateID, 1, false, data)
 			.then( (result) =>{
 			    if(result.successfulActions &&
