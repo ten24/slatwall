@@ -78,6 +78,7 @@ class EnrollmentFlexshipController {
     }
     
     public manageNewOrderTemplate(orderTemplate){
+    	if(!orderTemplate) return;
 		this.orderTemplate = orderTemplate;
 		if(this.orderTemplate.cartTotalThresholdForOFYAndFreeShipping) this.cartThreshold = +this.orderTemplate.cartTotalThresholdForOFYAndFreeShipping;
 		this.calculateSRPOnOrder();
