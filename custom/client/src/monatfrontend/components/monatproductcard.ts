@@ -136,7 +136,11 @@ class MonatProductCardController {
 
 	
 	public launchQuickShopModal = () => {
-		let type = this.type.indexOf('VIP') >-1 && this.type != 'VIPenrollmentOrder' ? 'flexship' : '';
+		let type = '';
+		
+		if(this.type=='flexship' || (this.type.indexOf('VIP') >-1 && this.type != 'VIPenrollmentOrder' ) ){
+			type = 'flexship';
+		};
 	
 		this.ModalService.showModal({
 			component: 'monatProductModal',
