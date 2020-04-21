@@ -35,7 +35,7 @@ class MonatFlexshipShippingMethodModalController {
     	this.makeTranslations();
  
     	this.monatService.getStateCodeOptionsByCountryCode()
-    	.then( (options) => this.stateCodeOptions = options )
+    	.then( (options) => this.stateCodeOptions = options.stateCodeOptions )
     	.then( () => this.monatService.getOptions({'orderTemplateShippingMethodOptions':false}) )
     	.then( (options) => {
     		this.shippingMethodOptions = options.orderTemplateShippingMethodOptions;
@@ -44,9 +44,9 @@ class MonatFlexshipShippingMethodModalController {
 	    	});
 		    this.setSelectedShippingMethodID(this?.existingShippingMethod?.value);
     	})
-    	.then( () => this.accountAddresses || this.monatService.getAccountAddresses() )
-    	.then( (accountAddresses) => {
-    		this.accountAddresses = accountAddresses;
+    	.then( () => this.monatService.getAccountAddresses() )
+    	.then( (data) => {
+    		this.accountAddresses = data.accountAddresses;
 	    	this.existingAccountAddress = this.accountAddresses.find( item => {
 	    		return item.accountAddressID === this.orderTemplate.shippingAccountAddress_accountAddressID;
 	    	});

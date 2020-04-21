@@ -359,17 +359,16 @@ export class MonatService {
 		if (refresh || !this.localStorageCache.get(cacheKey)) {
 			this.doPublicAction("getStateCodeOptionsByCountryCode", {
 				countryCode: countryCode,
-			})
-				.then((data) => {
-					if (!data?.stateCodeOptions) throw data;
+			}).then((data) => {
+				if (!data?.stateCodeOptions) throw data;
 
-					this.localStorageCache.put(cacheKey, {
-						stateCodeOptions: data.stateCodeOptions,
-						addressOptions: data.addressOptions,
-					});
-					deferred.resolve(data);
-				})
-				.catch((e) => deferred.reject(e));
+				this.localStorageCache.put(cacheKey, {
+					stateCodeOptions: data.stateCodeOptions,
+					addressOptions: data.addressOptions,
+				});
+				deferred.resolve(data);
+			})
+			.catch((e) => deferred.reject(e));
 		} else {
 			deferred.resolve(this.localStorageCache.get(cacheKey));
 		}

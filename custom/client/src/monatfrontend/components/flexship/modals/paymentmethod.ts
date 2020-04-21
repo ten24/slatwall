@@ -39,23 +39,23 @@ class MonatFlexshipPaymentMethodModalController {
     	this.makeTranslations();
     	
     	this.monatService.getStateCodeOptionsByCountryCode()
-    	.then( (options) => this.stateCodeOptions = options )
+    	.then( (options) => this.stateCodeOptions = options.stateCodeOptions )
     	.then( () => this.monatService.getOptions({'expirationMonthOptions':false, 'expirationYearOptions': false}) )
     	.then( (options) => {
     		this.expirationMonthOptions = options.expirationMonthOptions;
     		this.expirationYearOptions = options.expirationYearOptions;
     	})
     	.then( () => this.monatService.getAccountAddresses() )
-    	.then( (accountAddresses) => {
-    		this.accountAddresses = accountAddresses;
+    	.then( (data) => {
+    		this.accountAddresses = data.accountAddresses;
     		this.existingBillingAccountAddress = this.accountAddresses.find( item => {
 	    		return item.accountAddressID === this.orderTemplate.billingAccountAddress_accountAddressID;
 	    	});
 		    this.setSelectedBillingAccountAddressID(this?.existingBillingAccountAddress?.accountAddressID);
     	})
     	.then( () => this.monatService.getAccountPaymentMethods() )
-    	.then( (accountPaymentMethods) => {
-    		this.accountPaymentMethods = accountPaymentMethods;
+    	.then( (data) => {
+    		this.accountPaymentMethods = data.accountPaymentMethods;
     		this.existingAccountPaymentMethod = this.accountPaymentMethods.find( item => {
 	    		return item.accountPaymentMethodID === this.orderTemplate.accountPaymentMethod_accountPaymentMethodID; 
 	    	});
