@@ -1349,13 +1349,13 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 		QueryExecute("UPDATE swProductType SET productTypeIDPath = CONCAT('444df2f7ea9c87e60051f3cd87b435a1,',productTypeIDPath) WHERE parentProductTypeID = '444df2f7ea9c87e60051f3cd87b435a1' AND productTypeIDPath NOT LIKE '444df2f7ea9c87e60051f3cd87b435a1,%'");
 
 // 		//this.addUrlTitlesToProducts();
-// 		if(!arguments.rc.dryRun){
-// 			this.associateProductWithSite(siteProductCodes);
-// 		}else{
-// 			abort;
+		if(arguments.rc.dryRun){
+		    abort;
+		}
+//		else{
+//			this.associateProductWithSite(siteProductCodes);
 // 		}
 		logHibachi("importMonatProducts - Done!", true); 
-		abort;
 	}
     
     public any function importInventoryUpdates(){
