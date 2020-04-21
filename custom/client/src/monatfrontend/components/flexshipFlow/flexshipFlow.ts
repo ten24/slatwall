@@ -43,7 +43,7 @@ class FlexshipFlowController {
     public $onInit = () => {
     	
     	this.currentOrderTemplateID = this.monatService.getCurrentFlexship()?.orderTemplateID;
-		this.orderTemplateService.getSetOrderTemplateOnSession('qualifiesForOFYProducts', 'save', false, false)
+		this.orderTemplateService.getSetOrderTemplateOnSession('qualifiesForOFYProducts,purchasePlusTotal', 'save', false, false)
 		.then((res:{[key:string]:any})=>{
 			this.orderTemplate = res.orderTemplate;
 			if(!this.orderTemplate){

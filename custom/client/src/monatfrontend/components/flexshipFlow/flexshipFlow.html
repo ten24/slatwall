@@ -148,9 +148,11 @@
 				data-ng-click="flexshipFlow.next();"
 				class="btn btn-secondary forward-btn forward" 
 				ng-class="{  'loading,disabled': flexshipFlow.loading }"
-				ng-disabled="flexshipFlow.loading || !flexshipFlow.orderTemplateService.mostRecentOrderTemplate.qualifiesForOFYProducts && flexshipFlow.farthestStepReached  != flexshipFlow.FlexshipSteps.CHECKOUT"
+				ng-disabled="
+					flexshipFlow.loading || !flexshipFlow.orderTemplateService.mostRecentOrderTemplate.qualifiesForOFYProducts && flexshipFlow.currentStep != flexshipFlow.FlexshipSteps.CHECKOUT
+				"
 			>
-				<!--|| !flexshipFlow.orderTemplateService.mostRecentOrderTemplate.qualifiesForOFYProducts-->
+
 				<span sw-rbkey="'frontend.global.next'"></span>
 				<i class="fas fa-chevron-right"></i>
 			</button>			

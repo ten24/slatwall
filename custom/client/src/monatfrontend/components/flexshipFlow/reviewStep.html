@@ -21,8 +21,17 @@
 							</p>
 						</li>
 					</ul>
-					<span class="title-sm"><span sw-rbkey="'frontend.flexship.yourItems'"></span></span>
 					<div class="todays-order">
+						<h6 class="title-sm">
+							<span sw-rbKey="'admin.entity.ordertemplatetabs.ordertemplateitems'"></span>
+							<a 
+								href="##" 
+								class="edit" 
+								ng-click="flexshipFlow.goToStep(flexshipFlow.FlexshipSteps.SHOP)"
+								sw-rbkey="'frontend.cart.editItems'"
+							></a>
+							<br><br>
+						</h6>
 						<table class="table review-table" ng-cloak>
 							<tbody>
 							<tr ng-repeat="item in reviewStep.flexship.orderTemplateItems">
@@ -172,7 +181,7 @@
 										<button
 											class="btn bg-primary--small"
 											ng-disabled="swfPromoBox.addPromotionCodeIsLoading"
-											ng-class="{loading:swfPromoBox.addPromotionCodeIsLoading}"
+											ng-class="{loading:swfPromoBox.addPromotionCodeIsLoading}" 
 											ng-click="swfPromoBox.addPromotionCode(promoCode)"
 											sw-rbkey="'frontend.global.apply'"
 										></button>
@@ -190,8 +199,11 @@
 						</ul>
 
 						<button 
-								ng-click="slatwall.mpAgreement ? monatOrderItems.placeOrder(data) : slatwall.showError = true" class="btn bg-secondary btn-block" ng-class="{loading:slatwall.getRequestByAction('placeOrder').loading || slatwall.hasSuccessfulAction('placeOrder')}">
-							#$.slatwall.rbKey('frontend.checkout.placeOrder')#
+							ng-click="slatwall.mpAgreement ? monatOrderItems.placeOrder(data) : slatwall.showError = true" 
+							class="btn bg-secondary btn-block" 
+							ng-class="{loading:slatwall.getRequestByAction('placeOrder').loading || slatwall.hasSuccessfulAction('placeOrder')}"
+						>
+							<span sw-rbKey="'frontend.checkout.placeOrder'"></span>
 							<span ng-show="slatwall.getRequestByAction('placeOrder').loading || slatwall.hasSuccessfulAction('placeOrder')"><i class="fa fa-refresh fa-spin fa-fw"></i></span>
 						</button>
 
