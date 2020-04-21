@@ -7,10 +7,19 @@
 
 					<ul>
 						<li>
-							<h6 class="title-sm"><span sw-rbkey="'frontend.nameFlexshipModal.flexshipName'"> </span></h6>
-							<p>#$.slatwall.hibachiHTMLEditFormat(local.flexship.getOrderTemplateName())#</p>
+							<h6 class="title-sm">
+								<span sw-rbkey="'frontend.checkout.flexshipFrequency'"> </span>
+								<a 
+									href="#" 
+									class="edit" 
+									ng-click="flexshipFlow.goToStep(flexshipFlow.FlexshipSteps.FREQUENCY)"
+									sw-rbkey="'frontend.global.edit'"
+								></a>
+							</h6>
+							<p>
+								{{reviewStep.flexship.frequencyTerm_termName}} <span sw-rbKey="'define.aroundThe'"></span> {{reviewStep.flexship.scheduleOrderDayOfTheMonth | ordinal}}	
+							</p>
 						</li>
-
 					</ul>
 					<span class="title-sm"><span sw-rbkey="'frontend.flexship.yourItems'"></span></span>
 					<div class="todays-order">
