@@ -1551,6 +1551,69 @@ component extends="Slatwall.model.service.OrderService" {
 		// Call save order to place in the hibernate session and re-calculate all of the totals
 		arguments.order = this.saveOrder( order=arguments.order, updateOrderAmounts=arguments.processObject.getUpdateOrderAmountFlag(), updateShippingMethodOptions=arguments.processObject.getUpdateShippingMethodOptionsFlag() );
 
+
+		
+		if( 
+			arguments.order.hasErrors() && arguments.order.hasMonatOrderType() &&
+			arguments.order.getMonatOrderType().getTypeCode() == 'motMPEnrollment' 
+		){
+			
+			/**
+			 * 1. If orderCreatedSite.SiteCode is UK and order.accountType is MP 
+			 * max 200 pound TOTAL including VAT and Shipping Feed on days 1-7 
+			 * from ordering the enrollment kit.
+			 * This only work if the max orders validation also works because this only checks the current order
+			 * for total instead of all orders.
+			 **/
+			
+			logHibachi("Error encountered on order.motMPEnrollment(#arguments.Order.getOrderID()#), order-total: #arguments.order.getTotal()#, Errors: #SerializeJson(arguments.order.getErrors())#");
+			
+			//clear previous errors, and temporarly saving order for calculations
+			var oldErrors = StructCopy(arguments.order.getErrors());
+			arguments.order.clearHibachiErrors();
+			getHibachiScope().setORMHasErrors( false );
+			getHibachiScope().flushORMSession(); 
+
+			/**
+			 * If We dont reload the ORN throws
+			 * Cannot delete or update a parent row: a foreign key constraint fails 
+			 * (
+			 *		`monat`.`sworderitemskubundle`, CONSTRAINT `FKD0CB5F2244B9A827` FOREIGN KEY 
+			 *		(`orderItemID`) REFERENCES `sworderitem` (`orderItemID`)
+			 * )
+			**/
+			entityReload(arguments.order);
+			
+			
+			if( !IsNull(newOrderItem) ) {
+				
+				logHibachi("Removing newOrderItem(#newOrderItem.getOrderItemID()#) from the order order-total: #arguments.order.getTotal()# ");
+				arguments.order = this.processOrder(arguments.order, { 'orderItemID': newOrderItem.getOrderItemID() }, 'removeOrderItem');
+				
+			} else if( !IsNull(foundOrderItem) ) {
+				
+				logHibachi("Reverting foundOrderItem(#foundOrderItem.getOrderItemID()#) qty from: #foundOrderItem.getQuantity()# - to: #foundOrderItem.getQuantity() - arguments.processObject.getQuantity()#,  order-total: #arguments.order.getTotal()#");
+				foundOrderItem.setQuantity( foundOrderItem.getQuantity() - arguments.processObject.getQuantity() );
+				//clear non-persistent properties cache, so calculated properties can be updated with real-values
+				foundOrderItem.clearNonPersistentCalculatedPropertiesCache(); 
+				//We'll update order amounts at the last step
+				foundOrderItem = this.saveOrderItem( orderItem=foundOrderItem, updateOrderAmounts=false , updateCalculatedProperties=true);
+			}
+			
+			//just in case, if remve/upadte order-item fails
+			logHibachi("Errors on Order after reverting changes : #SerializeJson(arguments.order.getErrors())# order-total: #arguments.order.getTotal()#");
+			arguments.order = this.saveOrder( order=arguments.order, updateOrderAmounts=true, updateShippingMethodOptions=arguments.processObject.getUpdateShippingMethodOptionsFlag() );
+			arguments.order.updateCalculatedProperties(runAgain=true); //re-calculate-everythign
+			
+			logHibachi("Flushing after re-saving the order(#arguments.Order.getOrderID()#), order-total: #arguments.order.getTotal()#");
+			//we gotta flush here to persist current changes, before putting-back the old errors
+			getHibachiScope().flushORMSession();
+			
+			//return the order with previous errors
+			arguments.order.addErrors(oldErrors);
+			getHibachiScope().setORMHasErrors( true );
+		}
+		
 		return arguments.order;
 	}
 	
