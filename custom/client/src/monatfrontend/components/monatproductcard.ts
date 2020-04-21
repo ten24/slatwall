@@ -20,7 +20,8 @@ class MonatProductCardController {
     public isAccountWishlistItem: boolean = false;
     public currencyCode:string;
     public siteCode:string;
-
+	public flexshipType:string;
+	
 	// @ngInject
 	constructor(
 		//inject modal service
@@ -168,16 +169,22 @@ class MonatProductCardController {
 		let orderTemplateID = this.orderTemplate;
 		if (this.type === 'flexship' || this.type==='VIPenrollment') {
 			let extraProperties = "canPlaceOrderFlag,purchasePlusTotal,appliedPromotionMessagesJson,calculatedOrderTemplateItemsCount";
+
+			if(this.flexshipType == 'flexshipHasAccount'){
+				extraProperties += ',qualifiesForOFYProducts';
+			}
+			
 			if(!this.orderTemplateService.cartTotalThresholdForOFYAndFreeShipping){
 				extraProperties += ',cartTotalThresholdForOFYAndFreeShipping';
 			}
-			
+	
 			let data = {
 				optionalProperties: extraProperties,
 				saveContext: 'upgradeFlow', 
 				setIfNullFlag: false, 
-				nullAccountFlag: true
+				nullAccountFlag: this.flexshipType == 'flexshipHasAccount' ? false : true
 			}
+			
 			this.orderTemplateService.addOrderTemplateItem(skuID, orderTemplateID, 1, false, data)
 			.then( (result) =>{
 			    if(result.successfulActions &&
@@ -283,7 +290,8 @@ class MonatProductCard {
 		allProducts: '<?',
 		orderTemplate: '<?',
 		currencyCode:'@',
-		siteCode:'@'
+		siteCode:'@',
+		flexshipType:"<?"
 	};
 
 	public controller = MonatProductCardController;

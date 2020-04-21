@@ -7,13 +7,12 @@
     "baseUrl": "src",
     "paths": {
       "@Monat/*": ["monatfrontend/*"],
-      "@Hibachi/*": ["../../../org/Hibachi/client/src/*"]
+      "@Hibachi/*": ["../../org/Hibachi/client/src/*"]
     }
   },
   "include": [
         "./src/**/*",
         "../../org/Hibachi/client/src/*"
-
   ],
   
   "typeRoots": [ "node_modules/@types", "./typings.d.ts" ],

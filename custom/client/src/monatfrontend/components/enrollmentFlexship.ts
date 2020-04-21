@@ -19,7 +19,9 @@ class EnrollmentFlexshipController {
 	}
 
 	public $onInit = () => {
-		this.getFlexship();
+		if(this.type != 'vipFlexshipFlow'){
+			this.getFlexship();
+		}
 	}
 	
 	public refreshFlexship = () =>{
@@ -76,6 +78,7 @@ class EnrollmentFlexshipController {
     }
     
     public manageNewOrderTemplate(orderTemplate){
+    	if(!orderTemplate) return;
 		this.orderTemplate = orderTemplate;
 		if(this.orderTemplate.cartTotalThresholdForOFYAndFreeShipping) this.cartThreshold = +this.orderTemplate.cartTotalThresholdForOFYAndFreeShipping;
 		this.calculateSRPOnOrder();

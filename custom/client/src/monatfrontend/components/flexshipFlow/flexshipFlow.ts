@@ -43,7 +43,7 @@ class FlexshipFlowController {
     	
     	this.currentOrderTemplateID = this.monatService.getCurrentFlexship()?.orderTemplateID;
 		this.orderTemplateService.getSetOrderTemplateOnSession('qualifiesForOFYProducts', 'save', false, false)
-		.then(res=>{
+		.then((res:{[key:string]:any})=>{
 			this.orderTemplate = res.orderTemplate;
 			if(!this.orderTemplate){
 				// redirect to listing

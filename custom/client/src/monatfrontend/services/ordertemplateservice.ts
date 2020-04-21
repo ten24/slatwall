@@ -468,7 +468,7 @@ export class OrderTemplateService {
         let index = 0;
         
         //Loop over orderTemplateItems to see if quantity has increased on one, if so, the item has been updated
-		for(let item of newOT.orderTemplateItems){
+		for(let item of newOrderTemplate.orderTemplateItems){
 			if(
 			    this.mostRecentOrderTemplate.orderTemplateItems[index] 
 			    && this.mostRecentOrderTemplate.orderTemplateItems[index].orderTemplateItemID == item.orderTemplateItemID
