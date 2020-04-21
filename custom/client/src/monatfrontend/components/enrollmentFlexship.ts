@@ -19,7 +19,9 @@ class EnrollmentFlexshipController {
 	}
 
 	public $onInit = () => {
-		this.getFlexship();
+		if(this.type != 'vipFlexshipFlow'){
+			this.getFlexship();
+		}
 	}
 	
 	public refreshFlexship = () =>{

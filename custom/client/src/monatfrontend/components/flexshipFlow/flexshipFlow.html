@@ -144,7 +144,7 @@
 				data-ng-click="flexshipFlow.next();"
 				class="btn btn-secondary forward-btn forward" 
 				ng-class="{  'loading,disabled': flexshipFlow.loading }"
-				ng-disabled="flexshipFlow.currentStep == flexshipFlow.loading"
+				ng-disabled="flexshipFlow.currentStep == flexshipFlow.loading || !flexshipFlow.orderTemplateService.mostRecentOrderTemplate.qualifiesForOFYProducts"
 			>
 				<!--|| !flexshipFlow.orderTemplateService.mostRecentOrderTemplate.qualifiesForOFYProducts-->
 				<span sw-rbkey="'frontend.global.next'"></span>

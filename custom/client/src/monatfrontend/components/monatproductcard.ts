@@ -169,11 +169,15 @@ class MonatProductCardController {
 		let orderTemplateID = this.orderTemplate;
 		if (this.type === 'flexship' || this.type==='VIPenrollment') {
 			let extraProperties = "canPlaceOrderFlag,purchasePlusTotal,appliedPromotionMessagesJson,calculatedOrderTemplateItemsCount";
+
+			if(this.flexshipType == 'flexshipHasAccount'){
+				extraProperties += ',qualifiesForOFYProducts';
+			}
 			
 			if(!this.orderTemplateService.cartTotalThresholdForOFYAndFreeShipping){
 				extraProperties += ',cartTotalThresholdForOFYAndFreeShipping';
 			}
-			console.log(this.flexshipType)
+	
 			let data = {
 				optionalProperties: extraProperties,
 				saveContext: 'upgradeFlow', 
