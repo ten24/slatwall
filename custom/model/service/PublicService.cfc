@@ -647,6 +647,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         account.setPrimaryShippingAddress(shippingAddress);
         account = getAccountService().saveAccount(account);
         getHibachiScope().addActionResult( "public:account.updatePrimaryAccountShippingAddress", account.hasErrors());
+        addErrors(arguments.data, account.getErrors());
     }
     
 	public void function getProducts(required any data){

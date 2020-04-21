@@ -14,24 +14,28 @@
 	</div>
 </header>
 
+<toaster-container></toaster-container>
+
 <!--FLEXSHIP FLOW STEPS--->
 <div class="wrapper">
 		<!--Shop step -->
-		<div ng-if="flexshipFlow.currentStep == flexshipFlow.FlexshipSteps.SHOP" > 
+		<div ng-if="flexshipFlow.currentStep === flexshipFlow.FlexshipSteps.SHOP" > 
 			<product-listing-step></product-listing-step>
 		</div>
 		<!--frequency step -->
-		<div ng-if="flexshipFlow.currentStep == flexshipFlow.FlexshipSteps.FREQUENCY"> 
+		<div ng-if="flexshipFlow.currentStep === flexshipFlow.FlexshipSteps.FREQUENCY"> 
 			<frequency-step></frequency-step>
 		</div>
 		<!--ofy step -->
-		<div ng-if="flexshipFlow.currentStep  == flexshipFlow.FlexshipSteps.OFY">
+		<div ng-if="flexshipFlow.currentStep  === flexshipFlow.FlexshipSteps.OFY">
 			<div class="container great_part">
 				<ofy-enrollment flexship="flexshipFlow.orderTemplateService.currentOrderTemplateID"></ofy-enrollment>	
 			</div>
 		</div>
 		<!--Checkout step -->
-		<div ng-if="flexshipFlow.currentStep  == flexshipFlow.FlexshipSteps.CHECKOUT"> CHECKOUT STEP </div>
+		<div ng-if="flexshipFlow.currentStep  === flexshipFlow.FlexshipSteps.CHECKOUT"> 			
+			<flexship-checkout-step id="checkout"></flexship-checkout-step>
+		</div>
 </div>
 
 <div ng-cloak ng-show="flexshipFlow.showCanPlaceOrderAlert && !flexshipFlow.monatService.canPlaceOrder" class="alert alert-danger alert-dismissible fade show text-center can-place-order-alert" role="alert">
@@ -139,11 +143,10 @@
 				style="z-index: 1" 
 				data-ng-click="flexshipFlow.next();"
 				class="btn btn-secondary forward-btn forward" 
-				ng-class="{ 
-					disabled: flexshipFlow.currentStep == flexshipFlow.FlexshipSteps.CHECKOUT, 
-				}"
-				ng-disabled="flexshipFlow.currentStep == flexshipFlow.FlexshipSteps.CHECKOUT || !flexshipFlow.orderTemplateService.mostRecentOrderTemplate.qualifiesForOFYProducts"
+				ng-class="{  'loading,disabled': flexshipFlow.loading }"
+				ng-disabled="flexshipFlow.currentStep == flexshipFlow.loading"
 			>
+				<!--|| !flexshipFlow.orderTemplateService.mostRecentOrderTemplate.qualifiesForOFYProducts-->
 				<span sw-rbkey="'frontend.global.next'"></span>
 				<i class="fas fa-chevron-right"></i>
 			</button>			

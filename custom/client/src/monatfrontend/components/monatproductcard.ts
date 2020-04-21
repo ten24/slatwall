@@ -135,8 +135,8 @@ class MonatProductCardController {
 
 	
 	public launchQuickShopModal = () => {
-		let type = this.type.indexOf('VIP') >-1 || this.type.indexOf('vip') >-1 ? 'flexship' : '';
-		
+		let type = this.type.indexOf('VIP') >-1 && this.type != 'VIPenrollmentOrder' ? 'flexship' : '';
+	
 		this.ModalService.showModal({
 			component: 'monatProductModal',
 			bodyClass: 'angular-modal-service-active',
@@ -198,7 +198,7 @@ class MonatProductCardController {
 			this.monatService.addToCart(skuID, 1).then((result) => {
 			    if(result.successfulActions &&
 					result.successfulActions.indexOf('public:cart.addOrderItem') > -1) {
-				this.monatAlertService.success(this.rbkeyService.rbKey('alert.flexship.addProductsucessfull')); 
+				this.monatAlertService.success(this.rbkeyService.rbKey('alert.flexship.addProductSuccessful')); 
 			    }
 				else{
 				    throw(result);

@@ -48,7 +48,7 @@ export class OnlyForYouController {
 		.then((data) => {
 
 			this.monatAlertService.success(
-				this.rbkeyService.rbKey('alert.flexship.addProductsucessfull')
+				this.rbkeyService.rbKey('alert.flexship.addProductSuccessful')
 			);
 			
 			this.monatService.redirectToProperSite('/my-account/flexships/');

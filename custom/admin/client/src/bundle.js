@@ -5454,13 +5454,16 @@ __webpack_require__(65);
 //services
 var cacheservice_1 = __webpack_require__(829);
 var publicservice_1 = __webpack_require__(848);
+exports.PublicService = publicservice_1.PublicService;
 var accountservice_1 = __webpack_require__(828);
 var accountaddressservice_1 = __webpack_require__(827);
 var cartservice_1 = __webpack_require__(830);
 var draggableservice_1 = __webpack_require__(831);
 var utilityservice_1 = __webpack_require__(855);
+exports.UtilityService = utilityservice_1.UtilityService;
 var selectionservice_1 = __webpack_require__(852);
 var observerservice_1 = __webpack_require__(846);
+exports.ObserverService = observerservice_1.ObserverService;
 var orderservice_1 = __webpack_require__(305);
 var orderpaymentservice_1 = __webpack_require__(847);
 var formservice_1 = __webpack_require__(835);
@@ -5469,6 +5472,7 @@ var expandableservice_1 = __webpack_require__(833);
 var hibachiauthenticationservice_1 = __webpack_require__(836);
 var metadataservice_1 = __webpack_require__(845);
 var rbkeyservice_1 = __webpack_require__(849);
+exports.RbKeyService = rbkeyservice_1.RbKeyService;
 var typeaheadservice_1 = __webpack_require__(854);
 var hibachiservice_1 = __webpack_require__(840);
 var historyservice_1 = __webpack_require__(843);
@@ -5476,6 +5480,7 @@ var localstorageservice_1 = __webpack_require__(844);
 var hibachiservicedecorator_1 = __webpack_require__(841);
 var hibachiscope_1 = __webpack_require__(839);
 var requestservice_1 = __webpack_require__(850);
+exports.RequestService = requestservice_1.RequestService;
 var scopeservice_1 = __webpack_require__(851);
 var skuservice_1 = __webpack_require__(853);
 var hibachivalidationservice_1 = __webpack_require__(842);
@@ -77545,11 +77550,10 @@ var BaseBootStrapper = /** @class */ (function () {
         };
         this.getData = function (invalidCache) {
             var promises = {};
-            for (var i in invalidCache) { // attributeCacheKey, instantiationKey
-                var invalidCacheName = invalidCache[i];
-                var functionName = invalidCacheName.charAt(0).toUpperCase() + invalidCacheName.slice(1);
-                promises[invalidCacheName] = _this['get' + functionName + 'Data'](); // mind the syntax 8)
-            }
+            invalidCache.forEach(function (cacheItem) {
+                var camelCaseFunctionName = cacheItem.charAt(0).toUpperCase() + cacheItem.slice(1);
+                promises[cacheItem] = _this['get' + camelCaseFunctionName + 'Data'](); // mind the syntax 8)
+            });
             return _this.$q.all(promises);
         };
         this.getAttributeCacheKeyData = function () {
@@ -77636,21 +77640,29 @@ var BaseBootStrapper = /** @class */ (function () {
             return deferred.promise;
         };
         this.getResourceBundles = function () {
-            var rbLocale = _this.appConfig.rbLocale;
+            var rbLocale = _this.appConfig.rbLocale || 'en';
             if (rbLocale == 'en_us') {
                 rbLocale = 'en';
             }
-            var localeListArray = rbLocale.split('_');
+            // we want to wait untill all of the bundles are downloaded, so creating an array of promisses
             var rbPromises = [];
-            var rbPromise = _this.getResourceBundle(rbLocale);
-            rbPromises.push(rbPromise);
+            rbPromises.push(_this.getResourceBundle(rbLocale));
+            // if the locale is like "es_mx", we also want to fetch bundle for 'es', as a fallback language
+            var localeListArray = rbLocale.split('_');
             if (localeListArray.length === 2) {
-                rbPromise = _this.getResourceBundle(localeListArray[0]);
-                rbPromises.push(rbPromise);
+                rbPromises.push(_this.getResourceBundle(localeListArray[0]));
             }
+            // if the first part of the locale isn't "en", we also want to fetch bundle for 'en' as it's the fallback language
             if (localeListArray[0] !== 'en') {
-                _this.getResourceBundle('en');
+                rbPromises.push(_this.getResourceBundle('en'));
             }
+            /**
+             * the language fallback order for locale es_mx will be like
+             *
+             *  >> the locale                               : 'es_mx'
+             *      >>  the first language of the locale    : 'es'
+             *          >> the default language             : 'en'
+            */
             return _this.$q.all(rbPromises)
                 .then(function (data) {
                 core_module_1.coremodule.constant('resourceBundles', _this._resourceBundle);
@@ -77682,27 +77694,25 @@ var BaseBootStrapper = /** @class */ (function () {
             instantiationKey: undefined
         };
         // Inspecting app config/model metadata in local storage (retreived from /custom/system/config.json)
-        return angular.lazy(this.myApplication)
-            .resolve(['$http', '$q', function ($http, $q) {
+        return angular.lazy(this.myApplication).resolve(['$http', '$q', function ($http, $q) {
                 _this.$http = $http;
                 _this.$q = $q;
-                return _this.getInstantiationKey()
-                    .then(function (instantiationKey) {
+                return _this.getInstantiationKey().then(function (instantiationKey) {
+                    _this.instantiationKey = instantiationKey;
                     var invalidCache = [];
-                    // NOTE: Return a promise so bootstrapping process will wait to continue executing until after the last step of loading the resourceBundles
-                    return _this.isPrivateMode()
-                        .then(function (privateMode) {
-                        if (privateMode) {
-                            throw ("Private mode");
-                        }
-                        else {
+                    // NOTE: Return a promise so bootstrapping process will wait to continue executing 
+                    // until after the last step of loading the resourceBundles
+                    return _this.isPrivateMode().then(function (privateMode) {
+                        if (!privateMode) {
                             return invalidCache;
                         }
+                        throw ("Private mode"); // this gets catched() down the line and we reload everythign from the API, instead of using the cached-data
                     })
                         .then(function () {
-                        // Inspecting attribute model metadata in local storage (retreived from slatAction=api:main.getAttributeModel)
+                        // Inspecting attribute model metadata in local storage 
+                        // (retreived from slatAction=api:main.getAttributeModel)
                         var hashedData = localStorage.getItem('attributeChecksum');
-                        if (hashedData !== null && hibachiConfig.attributeCacheKey === hashedData.toUpperCase()) {
+                        if (hibachiConfig.attributeCacheKey === (hashedData === null || hashedData === void 0 ? void 0 : hashedData.toUpperCase())) {
                             // attributeMetaData is valid and can be restored from local storage cache
                             core_module_1.coremodule.constant('attributeMetaData', JSON.parse(localStorage.getItem('attributeMetaData')));
                         }
@@ -77713,38 +77723,24 @@ var BaseBootStrapper = /** @class */ (function () {
                         .then(function () {
                         if (localStorage.getItem('appConfig') != null) {
                             _this.appConfig = JSON.parse(localStorage.getItem('appConfig'));
-                            // override config
-                            for (var config in hibachiConfig) {
-                                _this.appConfig[config] = hibachiConfig[config];
-                            }
                         }
-                        if (hibachiConfig.instantiationKey
-                            && _this.appConfig.instantiationKey
-                            && hibachiConfig.instantiationKey === _this.appConfig.instantiationKey) {
-                            // appConfig instantiation key is valid (but attribute model may need to be refreshed)
+                        if (_this.instantiationKey === _this.appConfig.instantiationKey) {
+                            // appConfig instantiation key is valid,
+                            // override config with whatever new received in hibachi-config
+                            Object.assign(_this.appConfig, hibachiConfig);
                             core_module_1.coremodule.constant('appConfig', _this.appConfig);
                         }
                         else {
                             invalidCache.push('instantiationKey');
                         }
                     })
-                        .catch(function () {
+                        .catch(function (e) {
                         invalidCache.push('attributeCacheKey');
                         invalidCache.push('instantiationKey');
+                        console.error(e);
                     })
-                        .then(function () {
-                        // If invalidCache, that indicates a need to refresh attribute metadata prior to retrieving resourceBundles
-                        if (invalidCache.length) {
-                            var deferred_1 = $q.defer();
-                            _this.getData(invalidCache).then(function (resp) { deferred_1.resolve(resp); });
-                            return deferred_1.promise;
-                        }
-                    })
-                        .then(function () {
-                        var deferred = $q.defer();
-                        _this.getResourceBundles().then(function (resp) { return deferred.resolve(resp); });
-                        return deferred.promise;
-                    })
+                        .then(function () { return invalidCache.length ? _this.getData(invalidCache) : undefined; })
+                        .then(function () { return _this.getResourceBundles(); })
                         .catch(function (e) {
                         console.error(e);
                     });
@@ -84544,6 +84540,10 @@ var SWClickOutside = /** @class */ (function () {
                         scope.swClickOutside();
                     });
                 }
+            });
+            scope.$on('$destroy', function () {
+                elem = null;
+                scope = null;
             });
         };
         this.$document = $document;
@@ -93981,11 +93981,7 @@ var RbKeyService = /** @class */ (function () {
             return _this._loadedResourceBundle;
         };
         this.rbKey = function (key, replaceStringData) {
-            ////$log.debug('rbkey');
-            ////$log.debug(key);
-            ////$log.debug(this.getConfig().rbLocale);
             var keyValue = _this.getRBKey(key, _this.appConfig.rbLocale);
-            ////$log.debug(keyValue);
             /**
              * const templateString = "Hello ${this.name}!";
                const replaceStringData = {

@@ -1,21 +1,25 @@
+import { MonatService } from '@Monat/services/monatservice';
 
 class MonatFlexshipPaymentMethodModalController {
     public orderTemplate; 
-    public accountPaymentMethods: Array<any>;
-    public accountAddresses: Array<any>;
-    public expirationMonthOptions: Array<any>;
-	public expirationYearOptions: Array<any>;
+    
+
+
 	public close; // injected from angularModalService
 
+    public accountPaymentMethods: Array<any>;
+    public expirationMonthOptions: Array<any>;
+	public expirationYearOptions: Array<any>;
+    public accountAddresses: Array<any>;
+	public stateCodeOptions: Array<any>;
     
     public existingBillingAccountAddress; 
-	public selectedBillingAccountAddress = { accountAddressID : 'new' }; // this needs to be an object to make radio working in ng-repeat, as that will create a nested scope
+	public selectedBillingAccountAddress = { accountAddressID : undefined }; // this needs to be an object to make radio working in ng-repeat, as that will create a nested scope
 	public existingAccountPaymentMethod; 
-	public selectedAccountPaymentMethod = { accountPaymentMethodID : 'new' }; // this needs to be an object to make radio working in ng-repeat, as that will create a nested scope
+	public selectedAccountPaymentMethod = { accountPaymentMethodID : undefined }; // this needs to be an object to make radio working in ng-repeat, as that will create a nested scope
 	
 	public newAccountAddress = {};
-	public newAddress = {'countryCode':'US'}; // hard-coded default
-    public countryCodeBySite:any;
+	public newAddress = {'countryCode': hibachiConfig.countryCode }; 
 	public newAccountPaymentMethod = {};
 	public loading : boolean = false;
 
@@ -25,7 +29,7 @@ class MonatFlexshipPaymentMethodModalController {
     	public observerService, 
     	public rbkeyService, 
     	public monatAlertService,
-    	private monatService
+    	private monatService: MonatService
     ) {
     }
     
@@ -33,35 +37,36 @@ class MonatFlexshipPaymentMethodModalController {
     	this.loading = true;
     	
     	this.makeTranslations();
-    	this.newAddress['countryCode']=this.countryCodeBySite;
     	
-    	/**
-    	 * Find and set old billing-address if any
-    	*/ 
-    	this.existingBillingAccountAddress = this.accountAddresses.find( item => {
-    		return item.accountAddressID === this.orderTemplate.billingAccountAddress_accountAddressID;
-    	});
-    	if(!!this.existingBillingAccountAddress && !!this.existingBillingAccountAddress.accountAddressID){
-	    	this.setSelectedBillingAccountAddressID(this.existingBillingAccountAddress.accountAddressID);
-    	}
-    	
-    	/**
-    	 * Find and set old payment-method if any
-    	*/
-    	this.existingAccountPaymentMethod = this.accountPaymentMethods.find( item => {
-    		return item.accountPaymentMethodID === this.orderTemplate.accountPaymentMethod_accountPaymentMethodID; 
-    	});
-    	if(!!this.existingAccountPaymentMethod && !!this.existingAccountPaymentMethod.accountPaymentMethodID){
-	    	this.setSelectedAccountPaymentMethodID(this.existingAccountPaymentMethod.accountPaymentMethodID);
-    	}
-    	
-    	this.monatService.getOptions({'expirationMonthOptions':false, 'expirationYearOptions': false})
+    	this.monatService.getStateCodeOptionsByCountryCode()
+    	.then( (options) => this.stateCodeOptions = options )
+    	.then( () => this.monatService.getOptions({'expirationMonthOptions':false, 'expirationYearOptions': false}) )
     	.then( (options) => {
     		this.expirationMonthOptions = options.expirationMonthOptions;
     		this.expirationYearOptions = options.expirationYearOptions;
     	})
-    	.catch( (e) => console.log(e) )
-    	.finally( () => this.loading=false);
+    	.then( () => this.monatService.getAccountAddresses() )
+    	.then( (accountAddresses) => {
+    		this.accountAddresses = accountAddresses;
+    		this.existingBillingAccountAddress = this.accountAddresses.find( item => {
+	    		return item.accountAddressID === this.orderTemplate.billingAccountAddress_accountAddressID;
+	    	});
+		    this.setSelectedBillingAccountAddressID(this?.existingBillingAccountAddress?.accountAddressID);
+    	})
+    	.then( () => this.monatService.getAccountPaymentMethods() )
+    	.then( (accountPaymentMethods) => {
+    		this.accountPaymentMethods = accountPaymentMethods;
+    		this.existingAccountPaymentMethod = this.accountPaymentMethods.find( item => {
+	    		return item.accountPaymentMethodID === this.orderTemplate.accountPaymentMethod_accountPaymentMethodID; 
+	    	});
+		    this.setSelectedAccountPaymentMethodID(this?.existingAccountPaymentMethod?.accountPaymentMethodID);
+    	})
+    	.catch( (error) => {
+		    console.error(error);
+		})
+		.finally(()=>{
+			this.loading = false;   
+		});
     	
     }
     
@@ -142,7 +147,7 @@ class MonatFlexshipPaymentMethodModalController {
 			    this.setSelectedBillingAccountAddressID(this.orderTemplate.billingAccountAddress_accountAddressID);
 			    this.setSelectedAccountPaymentMethodID(this.orderTemplate.accountPaymentMethod_accountPaymentMethodID);
 			    
-			    this.monatAlertService.success("Your flexship has been updated successfully");
+            	this.monatAlertService.success(this.rbkeyService.rbKey('alert.flexship.updateSuccessful'));
 			
 			    this.observerService.notify("orderTemplateUpdated" + response.orderTemplate.orderTemplateID, response.orderTemplate);
 			    this.closeModal();
@@ -165,55 +170,27 @@ class MonatFlexshipPaymentMethodModalController {
 
 class MonatFlexshipPaymentMethodModal {
 
-	public restrict:string;
+	public restrict = 'E';
 	public templateUrl:string;
 	
-	public scope = {};
 	public bindToController = {
-	    accountPaymentMethods:'<',
- 	    stateCodeOptions:'<',
-	    accountAddresses:'<',
 	    orderTemplate:'<',
-		countryCodeBySite:'<',
 		close:'=' //injected by angularModalService
 	};
+
 	public controller=MonatFlexshipPaymentMethodModalController;
 	public controllerAs="monatFlexshipPaymentMethodModal";
 
-	public static Factory(){
-        var directive:any = (
-		    monatFrontendBasePath,
-			$hibachi,
-			rbkeyService,
-			requestService
-        ) => new MonatFlexshipPaymentMethodModal(
-			monatFrontendBasePath,
-			$hibachi,
-			rbkeyService,
-			requestService
-        );
-        directive.$inject = [
-			'monatFrontendBasePath',
-			'$hibachi',
-			'rbkeyService',
-			'requestService'
-        ];
-        return directive;
+    public static Factory(){
+		//@ngInject
+        return ( monatFrontendBasePath ) => {
+        	return new MonatFlexshipPaymentMethodModal(monatFrontendBasePath);
+        };
     }
 
-	constructor(private monatFrontendBasePath, 
-				private slatwallPathBuilder, 
-				private $hibachi,
-				private rbkeyService
-	){
+	constructor(private monatFrontendBasePath){
 		this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/flexship/modals/paymentmethod.html";
-		this.restrict = "E";
 	}
-
-	public link = (scope, element, attrs) =>{
-
-	}
-
 }
 
 export {
