@@ -103,7 +103,7 @@
 		</div>
 		
 		<!----VIP step icon indicators --->
-		<div ng-if=" monatEnrollment.type=='vip' || monatEnrollment.type=='vipUpgrade'" class="step-status row w-50 text-center align-items-end">
+		<div ng-if=" monatEnrollment.type=='vip' || monatEnrollment.type=='vipUpgrade'" class="vip-steps step-status row text-center align-items-end">
 			<div 
 				class="col mt-1"
 				ng-style="{ 'opacity' : (monatEnrollment.currentStepName == 'todaysOrder' || monatEnrollment.currentStepName == undefined ) ? '100%' : '50%' }"
@@ -174,7 +174,7 @@
 		</div>
 
 		<!----MP Step icon indicators --->
-		<div ng-if="monatEnrollment.type=='mp' || monatEnrollment.type=='mpUpgrade'" class="step-status row w-50 text-center align-items-end">
+		<div ng-if="monatEnrollment.type=='mp' || monatEnrollment.type=='mpUpgrade'" class="mp-steps step-status row text-center align-items-end">
 			<div 
 				class="col mt-1"
 				ng-style="{ 'opacity' : (monatEnrollment.currentStepName == 'starterPack' || monatEnrollment.currentStepName == undefined ) ? '100%' : '50%' }"
