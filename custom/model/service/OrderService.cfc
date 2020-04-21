@@ -1608,7 +1608,10 @@ component extends="Slatwall.model.service.OrderService" {
 			logHibachi("Flushing after re-saving the order(#arguments.Order.getOrderID()#), order-total: #arguments.order.getTotal()#");
 			//we gotta flush here to persist current changes, before putting-back the old errors
 			getHibachiScope().flushORMSession();
+			
+			//return the order with previous errors
 			arguments.order.addErrors(oldErrors);
+			getHibachiScope().setORMHasErrors( true );
 		}
 		
 		return arguments.order;
