@@ -117,8 +117,7 @@ class FlexshipCheckoutStepController {
 					this.rbkeyService.rbKey("alert.flexship.updateSuccessful")
 				);
 
-				//TODO: Redirect to the next screen
-				this.monatService.redirectToProperSite("/my-account/flexships");
+				this.observerService.notify(FlexshipFlowEvents.ON_NEXT);
 			})
 			.catch((error) => {
 				this.monatAlertService.showErrorsFromResponse(error);

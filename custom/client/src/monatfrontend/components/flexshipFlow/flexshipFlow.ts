@@ -6,7 +6,8 @@ export enum FlexshipSteps{
 	SHOP,
 	FREQUENCY,	
 	OFY,
-	CHECKOUT	
+	CHECKOUT,
+	REVIEW
 }
 
 export enum FlexshipFlowEvents {
@@ -70,6 +71,7 @@ class FlexshipFlowController {
 	}
 	
 	public next = ():FlexshipSteps => {
+
 		switch(this.currentStep){
 			case FlexshipSteps.SHOP:
 				return this.setStepAndUpdateProgress(FlexshipSteps.FREQUENCY)
@@ -81,7 +83,7 @@ class FlexshipFlowController {
 				return this.setStepAndUpdateProgress(FlexshipSteps.CHECKOUT);
 				break;
 			default:
-				return this.setStepAndUpdateProgress(FlexshipSteps.CHECKOUT);
+				return this.setStepAndUpdateProgress(FlexshipSteps.REVIEW);
 		}
 		
 	}
