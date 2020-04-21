@@ -2298,24 +2298,20 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	public any function getOrderTemplateForAccount(required struct data, any account=getHibachiScope().getAccount()){
         param name="arguments.data.orderTemplateID" default="";
-	
-		if(len(arguments.data.orderTemplateID) == 0) {
-			ArrayAppend(arguments.data.messages, 'data.orderTemplateID must be set');
-			return;
-		} 
-		
+
 		var orderTemplate = this.getOrderTemplate(arguments.data.orderTemplateID)
 		
 		if( isNull(orderTemplate) ){
 			ArrayAppend(arguments.data.messages, {
-			    'orderTemplate': 'no OrderTemplate found for orderTemplateID: #arguments.data.orderTemplateID#'
+			    'orderTemplate': ['No OrderTemplate found for orderTemplateID: #arguments.data.orderTemplateID#']
 			    });
 			return;
 		}  
 		
 		if( !isNull(orderTemplate.getAccount()) && arguments.account.getAccountID() != orderTemplate.getAccount().getAccountID() ) {
 			ArrayAppend(arguments.data.messages, {
-			    'orderTemplate': "OrderTemplate doesn't belong to the User"});
+			    'orderTemplate': [ "OrderTemplate doesn't belong to the User"] 
+			});
 			return; 
 		}
 	

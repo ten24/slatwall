@@ -18,6 +18,8 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
     this.publicMethods=ListAppend(this.publicMethods, 'editOrderTemplate');
     this.publicMethods=ListAppend(this.publicMethods, 'activateOrderTemplate');
     this.publicMethods=ListAppend(this.publicMethods, 'cancelOrderTemplate');
+    this.publicMethods=ListAppend(this.publicMethods, 'deleteOrderTemplate');
+    
     this.publicMethods=ListAppend(this.publicMethods, 'updateOrderTemplateShipping');
     this.publicMethods=ListAppend(this.publicMethods, 'updateOrderTemplateBilling');
     this.publicMethods=ListAppend(this.publicMethods, 'updateOrderTemplateSchedule');
@@ -35,11 +37,12 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
     this.publicMethods=ListAppend(this.publicMethods, 'getOptions');
     this.publicMethods=ListAppend(this.publicMethods, 'getFrequencyTermOptions');
     this.publicMethods=ListAppend(this.publicMethods, 'getFrequencyDateOptions');
-    this.publicMethods=ListAppend(this.publicMethods, 'getShippingMethodOptions');
+    this.publicMethods=ListAppend(this.publicMethods, 'getOrderTemplateShippingMethodOptions');
     this.publicMethods=ListAppend(this.publicMethods, 'getCancellationReasonTypeOptions');
     this.publicMethods=ListAppend(this.publicMethods, 'getScheduleDateChangeReasonTypeOptions');
     this.publicMethods=ListAppend(this.publicMethods, 'getExpirationMonthOptions');
     this.publicMethods=ListAppend(this.publicMethods, 'getExpirationYearOptions');
+    this.publicMethods=ListAppend(this.publicMethods, 'getStateCodeOptionsByCountryCode');
 
     
     
@@ -127,6 +130,18 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
             this.get(rc);
         }
     }
+    
+    public any function getStateCodeOptionsByCountryCode( required struct rc ){
+		getPublicService().getStateCodeOptionsByCountryCode(arguments.rc); 
+	} 
+	
+	public any function getAccountAddresses( required struct rc ){
+		getPublicService().getAccountAddresses(arguments.rc); 
+	} 
+	
+	public any function getAccountPaymentMethods( required struct rc ){
+		getPublicService().getAccountPaymentMethods(arguments.rc); 
+	} 
 
 	public any function getOrderTemplates( required struct rc ){
 		getPublicService().getOrderTemplates(arguments.rc); 
@@ -142,6 +157,11 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
 
 	public any function getWishlistItems( required struct rc ){
 		getPublicService().getWishlistItems(arguments.rc); 
+	} 
+	
+	
+	public any function updateOrderTemplateShippingAndBilling( required struct rc ){
+		getPublicService().updateOrderTemplateShippingAndBilling(arguments.rc); 
 	} 
 	
 	public any function updateOrderTemplateShipping( required struct rc ){
@@ -163,6 +183,11 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
 	public any function cancelOrderTemplate( required struct rc ){
 		getPublicService().cancelOrderTemplate(arguments.rc); 
 	} 
+	
+	public any function deleteOrderTemplate( required struct rc ){
+		getPublicService().deleteOrderTemplate(arguments.rc); 
+	} 
+	
 	
 	public any function updateOrderTemplateSchedule( required struct rc ){
 		getPublicService().updateOrderTemplateSchedule(arguments.rc); 
@@ -244,9 +269,8 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
 		getPublicService().getFrequencyDateOptions(arguments.rc);
     }
     
-    public void function getShippingMethodOptions(required any rc) {
-        arguments.rc.account = getHibachiScope().getAccount();
-        getPublicService().getShippingMethodOptions(arguments.rc);
+    public void function getOrderTemplateShippingMethodOptions(required any rc) {
+        getPublicService().orderTemplateShippingMethodOptions(arguments.rc);
 	}
     
     public void function getCancellationReasonTypeOptions(required any rc) {

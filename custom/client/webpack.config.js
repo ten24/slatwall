@@ -33,4 +33,10 @@ devConfig.resolve.modules= [
     path.resolve(__dirname, 'src/'),
     'node_modules'
 ];
+
+devConfig.resolve.alias =  {
+      '@Monat': path.resolve(path.join(customPath, './'), 'src/monatfrontend/'),
+      '@Hibachi': path.resolve(path.join(customPath, '../../org/Hibachi/client/'), 'src/')
+};
+
 module.exports = devConfig;

@@ -6,12 +6,17 @@
     
     "baseUrl": "src",
     "paths": {
-      "@Monat/*": ["monatfrontend/*"]
+      "@Monat/*": ["monatfrontend/*"],
+      "@Hibachi/*": ["../../../org/Hibachi/client/src/*"]
     }
   },
   "include": [
-        "./src/**/*"
+        "./src/**/*",
+        "../../org/Hibachi/client/src/*"
+
   ],
+  
+  "typeRoots": [ "node_modules/@types", "./typings.d.ts" ],
 
   "files": [
     "typings.d.ts",

@@ -23,10 +23,6 @@
     <div ng-repeat="orderTemplate in monatFlexshipListing.orderTemplates">
         <monat-flexship-card 
             data-order-template="orderTemplate"
-            data-account-addresses="monatFlexshipListing.accountAddresses"
-            data-account-payment-methods="monatFlexshipListing.accountPaymentMethods"
-            data-state-code-options="monatFlexshipListing.stateCodeOptions"
-            data-country-code-by-site="monatFlexshipListing.countryCodeBySite"
             data-days-to-edit-flexship="{{monatFlexshipListing.daysToEditFlexshipSetting}}"
         ></monat-flexship-card>
     </div>
