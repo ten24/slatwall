@@ -122,16 +122,16 @@
 										<span class="price" ng-bind-html="reviewStep.flexship.fulfillmentHandlingFeeTotal | swcurrency:reviewStep.flexship.currencyCode"></span>
 									</div>
 								</li>
-								<span swf-promo-box ng-cloak>
+								<span ng-cloak>
 									<li 
-										ng-if="reviewStep.flexship.promotionCodes.length" 
+										ng-if="reviewStep.orderTemplateService.appliedPromotionCodeList.length" 
 										ng-class="{loading: reviewStep.removePromotionCodeIsLoading}"
-										ng-repeat="appliedPromoCode in reviewStep.flexship.promotionCodes"
+										ng-repeat="appliedPromoCode in reviewStep.orderTemplateService.appliedPromotionCodeList"
 									>
-										<div class="applied-promo" ng-init="appliedPromoCode.promotion.promoCode = reviewStep.flexship.promotionCodeList.split(',')[ $index ]">
-											<span class="title-sm">{{appliedPromoCode.promotion.promoCode}}</span>
+										<div class="applied-promo">
+											<span class="title-sm">{{appliedPromoCode.promotionCode}}</span>
 		
-											<div class="applied-promo__close" ng-click="reviewStep.removePromotionCode(appliedPromoCode)" ng-show="!reviewStep.removePromotionCodeIsLoading">
+											<div class="applied-promo__close" ng-click="reviewStep.removePromotionCode(appliedPromoCode.promotionCodeID)" ng-show="!reviewStep.removePromotionCodeIsLoading">
 												<i class="fal fa-times"></i>
 											</div>
 										</div>

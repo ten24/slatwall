@@ -43,12 +43,12 @@ class FlexshipFlowController {
     public $onInit = () => {
     	
     	this.currentOrderTemplateID = this.monatService.getCurrentFlexship()?.orderTemplateID;
-		this.orderTemplateService.getSetOrderTemplateOnSession('qualifiesForOFYProducts,purchasePlusTotal,vatTotal,taxTotal,fulfillmentHandlingFeeTotal,promotionCodes.promotionCodeID', 'save', false, false)
+		this.orderTemplateService.getSetOrderTemplateOnSession('qualifiesForOFYProducts,purchasePlusTotal,vatTotal,taxTotal,fulfillmentHandlingFeeTotal', 'save', false, false)
 		.then((res:{[key:string]:any})=>{
 			this.orderTemplate = res.orderTemplate;
 			if(!this.orderTemplate){
 				// redirect to listing
-			 	//this.monatService.redirectToProperSite("/my-account/flexships");
+			 	this.monatService.redirectToProperSite("/my-account/flexships");
 			}
 		});
 		

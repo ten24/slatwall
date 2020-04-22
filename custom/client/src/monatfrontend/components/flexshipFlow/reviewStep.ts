@@ -6,6 +6,7 @@ class ReviewStepController {
 	public flexship;
 	public addPromotionCodeIsLoading:boolean;
 	public promoCodeError:string;
+	public removePromotionCodeIsLoading:boolean;
 	
     //@ngInject
     constructor(
@@ -27,8 +28,17 @@ class ReviewStepController {
     	flexship['listPrice'] = listPrice
     }
     
-    public removePromotionCode(code:string){
-    	
+    public removePromotionCode(promotionCodeID:string){
+		this.removePromotionCodeIsLoading = true;
+		this.orderTemplateService.removePromotionCode(promotionCodeID).then((res: {[key:string]:any}) =>{
+			if(res.errors?.promotionCode){
+				this.promoCodeError = res.errors?.promotionCode[0];
+			}else{
+				this.promoCodeError = '';
+			}
+			
+			this.removePromotionCodeIsLoading = false;
+		});   	
     }
     
     public addPromotionCode(promotionCode:string){

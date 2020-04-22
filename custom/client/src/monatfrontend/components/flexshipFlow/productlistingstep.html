@@ -43,7 +43,7 @@
             <div>
                 <div class="text-white">
                    <div ng-click="slatwall.showHairFilter = !slatwall.showHairFilter; slatwall.showSkinFilter = false">  
-                        <a href="##" class="my-0 text-white"> {{ flexshipFlow.hairProductFilter.name ? 'Hair: '+flexshipFlow.hairProductFilter.name : 'Shop Hair' }}
+                        <a href="##" class="my-0 text-white"> {{ productController.hairProductFilter.name ? 'Hair: '+productController.hairProductFilter.name : 'Shop Hair' }}
                             <i 
                                 class="far"
                                 ng-class="{
@@ -69,7 +69,7 @@
             <div>
                 <div class="text-white">
                    <div ng-click="slatwall.showSkinFilter = !slatwall.showSkinFilter; slatwall.showHairFilter = false">  
-                        <a href="##" class="my-0 text-white"> {{ flexshipFlow.skinProductFilter.name ?'Skin: '+flexshipFlow.skinProductFilter.name : 'Shop Skin' }}
+                        <a href="##" class="my-0 text-white"> {{ productController.skinProductFilter.name ?'Skin: '+productController.skinProductFilter.name : 'Shop Skin' }}
                             <i 
                                 class="far"
                                 ng-class="{

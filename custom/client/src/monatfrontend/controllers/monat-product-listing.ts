@@ -69,7 +69,7 @@ class MonatProductListingController {
         });
 	}
 	
-    public getProducts = (category:any) => {
+    public getProducts = (category?:any, categoryType?:string) => {
         this.loading = true;
         
         // CMS category ID is the only filter applied via ng-init and getting the CF category, due to content modules loop
@@ -87,6 +87,7 @@ class MonatProductListingController {
 			this.argumentsObject['categoryID'] = category.value;
 			this.hairProductFilter = null;
 			this.skinProductFilter = null;
+			this[`${categoryType}ProductFilter`] = category;
 			this.argumentsObject['categoryID'] = category.value;
 		}
         

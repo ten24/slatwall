@@ -11,7 +11,8 @@ export class OrderTemplateService {
 	public showAddToCartMessage: boolean;
 	public lastAddedProduct;
 	public cartTotalThresholdForOFYAndFreeShipping;
-
+	public appliedPromotionCodeList = [];
+	
 	//@ngInject
 	constructor(
 		public $q: ng.IQService,
@@ -505,11 +506,59 @@ export class OrderTemplateService {
         }
         
         this.publicService.doAction('addOrderTemplatePromotionCode', data).then(res=>{
+        	if(res.appliedOrderTemplatePromotionCodes){
+        		this.appliedPromotionCodeList = res.appliedOrderTemplatePromotionCodes;
+        	}
             deferred.resolve(res);
 	    }).catch( (e) => {
            deferred.reject(e);
        });
        
+       return deferred.promise;
+    }
+    
+    public getAppliedPromotionCodes(orderTemplateID = this.currentOrderTemplateID){
+        let deferred = this.$q.defer();
+    
+		let data ={
+            orderTemplateID: orderTemplateID,
+        }
+        
+        this.publicService.doAction('getAppliedOrderTemplatePromotionCodes', data).then(res=>{
+        
+        	if(res.appliedOrderTemplatePromotionCodes){
+        		this.appliedPromotionCodeList = res.appliedOrderTemplatePromotionCodes;
+        	}
+        	
+            deferred.resolve(res);
+	    }).catch( (e) => {
+           deferred.reject(e);
+       });
+       
+ 
+       return deferred.promise;
+    }
+    
+    public removePromotionCode(promotionCodeID:string, orderTemplateID = this.currentOrderTemplateID){
+        let deferred = this.$q.defer();
+    
+		let data ={
+			promotionCodeID: promotionCodeID,
+            orderTemplateID: orderTemplateID
+        }
+        
+        this.publicService.doAction('removeOrderTemplatePromotionCode', data).then(res=>{
+        
+        	if(res.appliedOrderTemplatePromotionCodes){
+        		this.appliedPromotionCodeList = res.appliedOrderTemplatePromotionCodes;
+        	}
+        	
+            deferred.resolve(res);
+	    }).catch( (e) => {
+           deferred.reject(e);
+       });
+       
+ 
        return deferred.promise;
     }
 }

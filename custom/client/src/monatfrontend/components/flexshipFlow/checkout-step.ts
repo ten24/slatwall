@@ -38,7 +38,9 @@ class FlexshipCheckoutStepController {
 			FlexshipFlowEvents.ON_COMPLETE_CHECKOUT
 		);
 		this.setupStateChangeListeners();
-
+		
+		this.orderTemplateService.getAppliedPromotionCodes();
+		
 		this.orderTemplateService
 			//instead of making a trip to the server we should cache at the frontend;
 			.getSetOrderTemplateOnSession("vatTotal,taxTotal,fulfillmentHandlingFeeTotal", "save", false, false)
