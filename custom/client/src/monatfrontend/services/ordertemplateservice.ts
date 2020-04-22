@@ -495,4 +495,21 @@ export class OrderTemplateService {
             this.cartTotalThresholdForOFYAndFreeShipping = this.mostRecentOrderTemplate.cartTotalThresholdForOFYAndFreeShipping;
         }
     }
+    
+    public addPromotionCode(promotionCode:string, orderTemplateID = this.currentOrderTemplateID){
+        let deferred = this.$q.defer();
+    
+		let data ={
+            orderTemplateID: orderTemplateID,
+            promotionCode: promotionCode,
+        }
+        
+        this.publicService.doAction('addOrderTemplatePromotionCode', data).then(res=>{
+            deferred.resolve(res);
+	    }).catch( (e) => {
+           deferred.reject(e);
+       });
+       
+       return deferred.promise;
+    }
 }

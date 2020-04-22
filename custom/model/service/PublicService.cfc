@@ -2240,4 +2240,26 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             arguments.data['ajaxResponse']['orderTemplate'] = getOrderService().getOrderTemplateDetailsForAccount(data);
         }
     }
+    
+    public void function addOrderTemplatePromotionCode(required any data) {
+        if(isNull(arguments.data.orderTemplateID)){
+            return;
+        }
+        var orderTemplate = getService('orderService').getOrderTemplate(arguments.data.orderTemplateID);
+        
+        orderTemplate = getService("OrderService").processOrderTemplate( orderTemplate, arguments.data, 'addPromotionCode');
+        
+        getHibachiScope().addActionResult( "public:orderTemplate.addPromotionCode", orderTemplate.hasErrors() );
+        
+        if(!orderTemplate.hasErrors()) {
+            orderTemplate.clearProcessObject("addPromotionCode");
+        }else{
+            var processObject = orderTemplate.getProcessObject("AddPromotionCode");
+            if(processObject.hasErrors()){
+                addErrors(arguments.data, orderTemplate.getProcessObject("AddPromotionCode").getErrors());
+            }else{
+                addErrors(arguments.data,orderTemplate.getErrors());
+            }
+        }
+    }
 }

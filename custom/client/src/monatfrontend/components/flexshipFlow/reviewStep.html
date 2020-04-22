@@ -125,21 +125,21 @@
 								<span swf-promo-box ng-cloak>
 									<li 
 										ng-if="reviewStep.flexship.promotionCodes.length" 
-										ng-class="{loading: swfPromoBox.removePromotionCodeIsLoading}"
+										ng-class="{loading: reviewStep.removePromotionCodeIsLoading}"
 										ng-repeat="appliedPromoCode in reviewStep.flexship.promotionCodes"
 									>
 										<div class="applied-promo" ng-init="appliedPromoCode.promotion.promoCode = reviewStep.flexship.promotionCodeList.split(',')[ $index ]">
 											<span class="title-sm">{{appliedPromoCode.promotion.promoCode}}</span>
 		
-											<div class="applied-promo__close" ng-click="swfPromoBox.removePromotionCode(appliedPromoCode)" ng-show="!swfPromoBox.removePromotionCodeIsLoading">
+											<div class="applied-promo__close" ng-click="reviewStep.removePromotionCode(appliedPromoCode)" ng-show="!reviewStep.removePromotionCodeIsLoading">
 												<i class="fal fa-times"></i>
 											</div>
 										</div>
 									</li>
 		
 									<li class="promo">
-										<div class="full errors" ng-if="slatwall.getErrors().addPromotionCode.promotionCode[0].length">
-											<swf-alert data-alert-trigger="addPromotionCodeFailure" data-alert-type="danger" data-message="{{slatwall.getErrors().addPromotionCode.promotionCode[0]}}" data-duration="399"></swf-alert>
+										<div class="full errors" ng-if="reviewStep.promoCodeError.length">
+											<swf-alert data-alert-trigger="addPromotionCodeFailure" data-alert-type="danger" data-message="{{reviewStep.promoCodeError}}" data-duration="399"></swf-alert>
 										</div>
 		
 										<div class="left">
@@ -149,9 +149,9 @@
 											<input type="text" ng-model="promoCode" class="form-control" placeholder="Enter Promo Code" required />
 											<button
 												class="btn bg-primary--small"
-												ng-disabled="swfPromoBox.addPromotionCodeIsLoading"
-												ng-class="{loading:swfPromoBox.addPromotionCodeIsLoading}" 
-												ng-click="swfPromoBox.addPromotionCode(promoCode)"
+												ng-disabled="reviewStep.addPromotionCodeIsLoading"
+												ng-class="{loading:reviewStep.addPromotionCodeIsLoading}" 
+												ng-click="reviewStep.addPromotionCode(promoCode)"
 												sw-rbkey="'frontend.global.apply'"
 											></button>
 										</div>

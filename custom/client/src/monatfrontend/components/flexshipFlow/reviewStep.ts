@@ -4,6 +4,8 @@ import { ObserverService } from '@Hibachi/core/core.module'
 
 class ReviewStepController {
 	public flexship;
+	public addPromotionCodeIsLoading:boolean;
+	public promoCodeError:string;
 	
     //@ngInject
     constructor(
@@ -23,6 +25,23 @@ class ReviewStepController {
     		listPrice += item.calculatedListPrice;
     	}
     	flexship['listPrice'] = listPrice
+    }
+    
+    public removePromotionCode(code:string){
+    	
+    }
+    
+    public addPromotionCode(promotionCode:string){
+    	this.addPromotionCodeIsLoading = true;
+    	this.orderTemplateService.addPromotionCode(promotionCode).then((res: {[key:string]:any}) =>{
+    		if(res.errors?.promotionCode){
+    			this.promoCodeError = res.errors?.promotionCode[0];
+    		}else{
+    			this.promoCodeError = '';
+    		}
+ 
+    		this.addPromotionCodeIsLoading = false;
+    	});
     }
     
 }
