@@ -174,7 +174,7 @@ class MonatProductModal {
 		product: '<',
 		type: '<',
 		orderTemplateID: '<?',
-		flexshipHasAccount:'<?'
+		flexshipHasAccount:'<?',
 		close: '=', //injected by angularModalService
 	};
 	public controller = MonatProductModalController;

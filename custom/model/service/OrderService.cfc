@@ -411,7 +411,6 @@ component extends="Slatwall.model.service.OrderService" {
 			request[orderTemplateOrderDetailsKey]['purchasePlusTotal'] = transientOrder.getPurchasePlusTotal();
 			request[orderTemplateOrderDetailsKey]['taxTotal'] = transientOrder.getTaxTotal();
 			request[orderTemplateOrderDetailsKey]['vatTotal'] = transientOrder.getVatTotal();
-			request[orderTemplateOrderDetailsKey]['fulfillmentTotal'] = transientOrder.getFulfillmentTotal();
 			request[orderTemplateOrderDetailsKey]['fulfillmentHandlingFeeTotal'] = transientOrder.getFulfillmentHandlingFeeTotal();
 			
 			try{

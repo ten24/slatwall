@@ -622,14 +622,5 @@ public boolean function getAccountIsNotInFlexshipCancellationGracePeriod(){
 		
 		return variables.fulfillmentHandlingFeeTotal; 	
 	}	
-	
-	public numeric function getFulfillmentTotal(){
-	
-		if(!structKeyExists(variables, 'fulfillmentTotal')){
-			variables.fulfillmentTotal = getService('OrderService').getCustomPropertyFromOrderTemplateOrderDetails('fulfillmentTotal', this);
-		}	
-		
-		return variables.fulfillmentTotal; 	
-	}
 	//CUSTOM FUNCTIONS END
 }

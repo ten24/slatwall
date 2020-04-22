@@ -79,21 +79,16 @@ class ReviewStep {
 	public static Factory(){
         var directive:any = (
 		    monatFrontendBasePath,
-			rbkeyService,
         ) => new ReviewStep(
-			monatFrontendBasePath,
-			rbkeyService,
+			monatFrontendBasePath
         );
         directive.$inject = [
 			'monatFrontendBasePath',
-			'rbkeyService',
         ];
         return directive;
     }
 
-	constructor(private monatFrontendBasePath, 
-				private rbkeyService
-	){
+	constructor(private monatFrontendBasePath){
 		this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/flexshipFlow/reviewStep.html";
 		this.restrict = "E";
 	}
