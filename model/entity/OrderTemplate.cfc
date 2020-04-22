@@ -128,7 +128,9 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 	property name="calculatedPersonalVolumeTotal" ormtype="integer";
 	property name="calculatedProductPackVolumeTotal" ormtype="integer";
 	property name="calculatedRetailCommissionTotal" ormtype="integer"; 
-
+	property name="calculatedTaxTotal" ormtype="big_decimal" hb_formatType="currency"; 
+	property name="calculatedVatTotal" ormtype="big_decimal" hb_formatType="currency";
+	
 	//non-persistents
 	property name="accountIsNotInFlexshipCancellationGracePeriod" persistent="false";
 	property name="lastGeneratedDateTime" ormtype="timestamp";
@@ -148,7 +150,9 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 	property name="qualifiesForOFYProducts" persistent="false";
 	property name="cartTotalThresholdForOFYAndFreeShipping" persistent="false";
 	property name="appliedPromotionMessagesJson" persistent="false"; 
-
+	property name="taxTotal" persistent="false" hb_formatType="currency"; 
+	property name="vatTotal" persistent="false" hb_formatType="currency";
+	
 //CUSTOM PROPERTIES END
 	public string function getEncodedJsonRepresentation(string nonPersistentProperties='subtotal,fulfillmentTotal,fulfillmentDiscount,total'){ 
 		return getService('hibachiUtilityService').hibachiHTMLEditFormat(serializeJson(getStructRepresentation(arguments.nonPersistentProperties)));
@@ -585,9 +589,27 @@ public boolean function getAccountIsNotInFlexshipCancellationGracePeriod(){
 	
 		if(!structKeyExists(variables, 'appliedPromotionMessagesJson')){
 			variables.appliedPromotionMessagesJson = getService('OrderService').getappliedPromotionMessagesJsonForOrderTemplate(this);
-
 		}	
+		
 		return variables.appliedPromotionMessagesJson; 	
+	}
+	
+	public numeric function getTaxTotal(){
+	
+		if(!structKeyExists(variables, 'taxTotal')){
+			variables.taxTotal = getService('OrderService').getTaxTotalForOrderTemplate(this);
+		}	
+		
+		return variables.taxTotal; 	
+	}
+	
+	public numeric function getVatTotal(){
+	
+		if(!structKeyExists(variables, 'vatTotal')){
+			variables.vatTotal = getService('OrderService').getVatTotalForOrderTemplate(this);
+		}	
+		
+		return variables.vatTotal; 	
 	}
 	//CUSTOM FUNCTIONS END
 }

@@ -22,11 +22,8 @@ class ReviewStepController {
     	for(let item of flexship.orderTemplateItems){
     		listPrice += item.calculatedListPrice;
     	}
-    	console.log(listPrice)
     	flexship['listPrice'] = listPrice
     }
-    	
-    
     
 }
 

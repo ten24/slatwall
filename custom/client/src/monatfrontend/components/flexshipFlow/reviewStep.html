@@ -38,7 +38,7 @@
 									<tr ng-repeat="item in reviewStep.flexship.orderTemplateItems">
 										<td class="item-image">
 											<a ng-href="{{item.skuProductURL}}">
-												<img class="img-fluid" ng-src="{{item.sku_imagePath}}" />
+												<img image-manager class="img-fluid" ng-src="{{item.sku_imagePath}}" />
 											</a>
 										</td>
 										<td class="item-name">
@@ -130,29 +130,15 @@
 										<span class="price" ng-bind-html="reviewStep.flexship.taxTotal | swcurrency:reviewStep.flexship.currencyCode"></span>
 									</div>
 								</li>
-								<li ng-if="reviewStep.flexship['VATTotal']">
+								<li ng-if="reviewStep.flexship.vatTotal">
 									<div class="left">
 										<span class="title-sm" sw-rbkey="'frontend.cart.vatTotal'"></span>
 									</div>
 									<div class="right">
-										<span class="price" ng-bind-html="reviewStep.flexship['VATTotal'] | swcurrency:reviewStep.flexship.currencyCode"></span>
+										<span class="price" ng-bind-html="reviewStep.flexship.vatTotal | swcurrency:reviewStep.flexship.currencyCode"></span>
 									</div>
 								</li>
-								<li 
-									ng-if="
-										reviewStep.flexship.calculatedPersonalVolumeTotal 
-										&& reviewStep.flexship.calculatedPersonalVolumeTotal != '$0.00'
-										&& 1 == slatwall.account.priceGroups[0].priceGroupCode
-									"
-									
-								>
-									<div class="left">
-										<span class="title-sm" sw-rbkey="'entity.Order.calculatedPersonalVolumeTotal'"></span>
-									</div>
-									<div class="right">
-										<span class="price" ng-bind="reviewStep.flexship.calculatedPersonalVolumeTotal"></span>
-									</div>
-								</li>
+					
 								<span swf-promo-box ng-cloak>
 									<li 
 										ng-if="reviewStep.flexship.promotionCodes.length" 

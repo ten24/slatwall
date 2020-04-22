@@ -409,6 +409,9 @@ component extends="Slatwall.model.service.OrderService" {
 			request[orderTemplateOrderDetailsKey]['canPlaceOrderDetails'] = getPromotionService().getOrderQualifierDetailsForCanPlaceOrderReward(transientOrder); 
 			request[orderTemplateOrderDetailsKey]['canPlaceOrder'] = request[orderTemplateOrderDetailsKey]['canPlaceOrderDetails']['canPlaceOrder']; 
 			request[orderTemplateOrderDetailsKey]['purchasePlusTotal'] = transientOrder.getPurchasePlusTotal();
+			request[orderTemplateOrderDetailsKey]['taxTotal'] = transientOrder.getTaxTotal();
+			request[orderTemplateOrderDetailsKey]['vatTotal'] = transientOrder.getVatTotal();
+			
 			try{
 				request[orderTemplateOrderDetailsKey]['appliedPromotionMessagesJson'] = serializeJson(this.getAppliedPromotionMessageData(transientOrder.getOrderID()).getRecords());
 			}catch(any e){
@@ -432,7 +435,15 @@ component extends="Slatwall.model.service.OrderService" {
 
 		return request[orderTemplateOrderDetailsKey];
 	}
-
+	
+	public numeric function getTaxTotalForOrderTemplate(required any orderTemplate){
+		return getOrderTemplateOrderDetails(argumentCollection=arguments)['taxTotal'];	
+	}
+	
+	public numeric function getVatTotalForOrderTemplate(required any orderTemplate){
+		return getOrderTemplateOrderDetails(argumentCollection=arguments)['vatTotal'];	
+	}
+	
 	public numeric function getPersonalVolumeTotalForOrderTemplate(required any orderTemplate){
 		return getOrderTemplateOrderDetails(argumentCollection=arguments)['personalVolumeTotal'];	
 	}
