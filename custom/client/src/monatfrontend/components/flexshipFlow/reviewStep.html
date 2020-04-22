@@ -1,217 +1,215 @@
-	<div class="wrapper px-4">
-		<section class="cart-page" ng-cloak>
-		<div class="row no-gutters align-items-start">
-			<div class="col-12 col-md-7">
-				<div class="cart-products review-products">
-					
-					<h2>Review & Create Your Flexship</h2>
-
-					<ul>
-						<li>
-							<h6 class="title-sm">
-								<span sw-rbkey="'frontend.checkout.flexshipFrequency'"> </span>
-								<a 
-									href="#" 
-									class="edit" 
-									ng-click="flexshipFlow.goToStep(flexshipFlow.FlexshipSteps.FREQUENCY)"
-									sw-rbkey="'frontend.global.edit'"
-								></a>
-							</h6>
-							<p>
-								{{reviewStep.flexship.frequencyTerm_termName}} <span sw-rbKey="'define.aroundThe'"></span> {{reviewStep.flexship.scheduleOrderDayOfTheMonth | ordinal}}	
-							</p>
-						</li>
-					</ul>
-					<div class="todays-order">
-						<h6 class="title-sm">
-							<span sw-rbKey="'admin.entity.ordertemplatetabs.ordertemplateitems'"></span>
-							<a 
-								href="##" 
-								class="edit" 
-								ng-click="flexshipFlow.goToStep(flexshipFlow.FlexshipSteps.SHOP)"
-								sw-rbkey="'frontend.cart.editItems'"
-							></a>
-							<br><br>
-						</h6>
-						<table class="table review-table" ng-cloak>
-							<tbody>
-							<tr ng-repeat="item in reviewStep.flexship.orderTemplateItems">
-								<td class="item-image">
-									<a ng-href="{{item.skuProductURL}}">
-										<img class="img-fluid" ng-src="{{item.sku_imagePath}}" />
-									</a>
-								</td>
-								<td class="item-name">
-									<h6 class="title-sm">
-										<a ng-href="{{item.skuProductURL}}">{{item.sku_product_productName}}</a>
-									</h6>
-								</td>
-								<td class="item-quantity">
-									<div class="qty">
-										<span sw-rbkey="'frontend.flexship.qty'"></span> {{item.quantity}}
-									</div>
-								</td>
-								<td class="item-price">
-									<span class="price">{{ item.total| swcurrency: reviewStep.flexship.currencyCode }}</span>
-								</td>
-							</tr>
-						</tbody>
-						</table>
-					</div>
-					
-				</div>
-			</div>
-			
-			<!---colored-box-right--->
-			<div class="col-12 col-md-5">
-				<div class="cart-right-container">
-					<div class="cart-details">
+	<section class="cart-page" ng-cloak>
+		<div class="container">
+			<div class="row no-gutters align-items-start">
+				<div class="col-12 col-md-7">
+					<div class="cart-products review-products">
+						
+						<h2>Review & Create Your Flexship</h2>
+	
 						<ul>
-							<li ng-if="reviewStep.flexship.suggestedPrice">
-								<div class="left">
-									<span class="title-sm" sw-rbkey="'frontend.cart.suggestedRetailPrice'"></span>
-								</div>
-								<div class="right">
-									<span class="price" ng-bind-html="reviewStep.flexship.listPrice  | swcurrency:reviewStep.flexship.currencyCode"></span>
-								</div>
-							</li>
-							<li ng-if="reviewStep.flexship.calculatedSubTotal">
-								<div class="left">
-									<span class="title-sm" sw-rbkey="'frontend.hybridCart.yourPrice'"></span>
-								</div>
-								<div class="right">
-									<span class="price" ng-bind-html="reviewStep.flexship.calculatedSubTotal | swcurrency:reviewStep.flexship.currencyCode"></span>
-								</div>
-							</li>
-							<li ng-if="reviewStep.flexship.purchasePlusTotal">
-								<div class="left">
-									<span class="title-sm" sw-rbkey="'frontend.orderTemplate.purchasePlus'"></span>
-								</div>
-								<div class="right">
-									<span class="price" ng-bind-html="'&minus;' + ( reviewStep.flexship.purchasePlusTotal | swcurrency:reviewStep.flexship.currencyCode )"></span>
-								</div>
-							</li>
-							<li ng-if="reviewStep.flexship.discountTotal &&  (reviewStep.flexship.discountTotal - reviewStep.flexship.purchasePlusTotal > 0) ">
-								<div class="left">
-									<span class="title-sm" sw-rbkey="'frontend.cart.remainingDiscounts'"></span>
-								</div>
-								<div class="right">
-									<span class="price" ng-bind-html="'&minus;' + ( reviewStep.flexship.discountTotal - reviewStep.flexship.purchasePlusTotal | swcurrency:reviewStep.flexship.currencyCode )"></span>
-								</div>
-							</li>
-							<li ng-if="reviewStep.flexship.fulfillmentTotal">
-								<div class="left">
-									<span class="title-sm" sw-rbkey="'frontend.checkout.shipping'"></span>
-								</div>
-								<div class="right">
-									<span class="price" ng-bind-html="(reviewStep.flexship.fulfillmentTotal -  reviewStep.flexship.fulfillmentHandlingFeeTotal )| swcurrency:reviewStep.flexship.currencyCode"></span>
-								</div>
-							</li>
-							<li ng-if="reviewStep.flexship.fulfillmentHandlingFeeTotal">
-								<div class="left">
-									<span class="title-sm" sw-rbkey="'frontend.cart.handlingFee'"></span>
-								</div>
-								<div class="right">
-									<span class="price" ng-bind-html="reviewStep.flexship.fulfillmentHandlingFeeTotal | swcurrency:reviewStep.flexship.currencyCode"></span>
-								</div>
-							</li>
-							<li ng-if="reviewStep.flexship.fulfillmentDiscountAmountTotal">
-								<div class="left">
-									<span class="title-sm" sw-rbkey="'frontend.checkout.shippingDiscount'"></span>
-								</div>
-								<div class="right">
-									<span class="price" ng-bind-html="reviewStep.flexship.fulfillmentDiscountAmountTotal | swcurrency:reviewStep.flexship.currencyCode"></span>
-								</div>
-							</li>
-							<li ng-if="reviewStep.flexship.taxTotal">
-								<div class="left">
-									<span class="title-sm" sw-rbkey="'frontend.checkout.estTax'"></span>
-								</div>
-								<div class="right">
-									<span class="price" ng-bind-html="reviewStep.flexship.taxTotal | swcurrency:reviewStep.flexship.currencyCode"></span>
-								</div>
-							</li>
-							<li ng-if="reviewStep.flexship['VATTotal']">
-								<div class="left">
-									<span class="title-sm" sw-rbkey="'frontend.cart.vatTotal'"></span>
-								</div>
-								<div class="right">
-									<span class="price" ng-bind-html="reviewStep.flexship['VATTotal'] | swcurrency:reviewStep.flexship.currencyCode"></span>
-								</div>
-							</li>
-							<li 
-								ng-if="
-									reviewStep.flexship.calculatedPersonalVolumeTotal 
-									&& reviewStep.flexship.calculatedPersonalVolumeTotal != '$0.00'
-									&& 1 == slatwall.account.priceGroups[0].priceGroupCode
-								"
-								
-							>
-								<div class="left">
-									<span class="title-sm" sw-rbkey="'entity.Order.calculatedPersonalVolumeTotal'"></span>
-								</div>
-								<div class="right">
-									<span class="price" ng-bind="reviewStep.flexship.calculatedPersonalVolumeTotal"></span>
-								</div>
-							</li>
-							<span swf-promo-box ng-cloak>
-								<li 
-									ng-if="reviewStep.flexship.promotionCodes.length" 
-									ng-class="{loading: swfPromoBox.removePromotionCodeIsLoading}"
-									ng-repeat="appliedPromoCode in reviewStep.flexship.promotionCodes"
-								>
-									<div class="applied-promo" ng-init="appliedPromoCode.promotion.promoCode = reviewStep.flexship.promotionCodeList.split(',')[ $index ]">
-										<span class="title-sm">{{appliedPromoCode.promotion.promoCode}}</span>
-	
-										<div class="applied-promo__close" ng-click="swfPromoBox.removePromotionCode(appliedPromoCode)" ng-show="!swfPromoBox.removePromotionCodeIsLoading">
-											<i class="fal fa-times"></i>
-										</div>
-									</div>
-								</li>
-	
-								<li class="promo">
-									<div class="full errors" ng-if="slatwall.getErrors().addPromotionCode.promotionCode[0].length">
-										<swf-alert data-alert-trigger="addPromotionCodeFailure" data-alert-type="danger" data-message="{{slatwall.getErrors().addPromotionCode.promotionCode[0]}}" data-duration="399"></swf-alert>
-									</div>
-	
-									<div class="left">
-										<span class="title-sm" sw-rbkey="'frontend.checkout.promoCode'"></span>
-									</div>
-									<div class="full">
-										<input type="text" ng-model="promoCode" class="form-control" placeholder="Enter Promo Code" required />
-										<button
-											class="btn bg-primary--small"
-											ng-disabled="swfPromoBox.addPromotionCodeIsLoading"
-											ng-class="{loading:swfPromoBox.addPromotionCodeIsLoading}" 
-											ng-click="swfPromoBox.addPromotionCode(promoCode)"
-											sw-rbkey="'frontend.global.apply'"
-										></button>
-									</div>
-								</li>
-							</span>
-							<li class="total" ng-if="reviewStep.flexship.total">
-								<div class="left">
-									<h4 sw-rbkey="'frontend.global.total'"></h4>
-								</div>
-								<div class="right">
-									<h4 ng-bind-html="reviewStep.flexship.total | swcurrency:reviewStep.flexship.currencyCode"></h4>
-								</div>
+							<li>
+								<h6 class="title-sm">
+									<span sw-rbkey="'frontend.checkout.flexshipFrequency'"> </span>
+									<a 
+										href="#" 
+										class="edit" 
+										ng-click="flexshipFlow.goToStep(flexshipFlow.FlexshipSteps.FREQUENCY)"
+										sw-rbkey="'frontend.global.edit'"
+									></a>
+								</h6>
+								<p>
+									{{reviewStep.flexship.frequencyTerm_termName}} <span sw-rbKey="'define.aroundThe'"></span> {{reviewStep.flexship.scheduleOrderDayOfTheMonth | ordinal}}	
+								</p>
 							</li>
 						</ul>
-
-						<button 
-							ng-click="slatwall.mpAgreement ? monatOrderItems.placeOrder(data) : slatwall.showError = true" 
-							class="btn bg-secondary btn-block" 
-							ng-class="{loading:slatwall.getRequestByAction('placeOrder').loading || slatwall.hasSuccessfulAction('placeOrder')}"
-						>
-							<span sw-rbKey="'frontend.checkout.placeOrder'"></span>
-							<span ng-show="slatwall.getRequestByAction('placeOrder').loading || slatwall.hasSuccessfulAction('placeOrder')"><i class="fa fa-refresh fa-spin fa-fw"></i></span>
-						</button>
-
-					</div>	
+						<div class="todays-order">
+							<h6 class="title-sm">
+								<span sw-rbKey="'admin.entity.ordertemplatetabs.ordertemplateitems'"></span>
+								<a 
+									href="##" 
+									class="edit" 
+									ng-click="flexshipFlow.goToStep(flexshipFlow.FlexshipSteps.SHOP)"
+									sw-rbkey="'frontend.cart.editItems'"
+								></a>
+								<br><br>
+							</h6>
+							<table class="table review-table" ng-cloak>
+								<tbody>
+									<tr ng-repeat="item in reviewStep.flexship.orderTemplateItems">
+										<td class="item-image">
+											<a ng-href="{{item.skuProductURL}}">
+												<img class="img-fluid" ng-src="{{item.sku_imagePath}}" />
+											</a>
+										</td>
+										<td class="item-name">
+											<h6 class="title-sm">
+												<a ng-href="{{item.skuProductURL}}">{{item.sku_product_productName}}</a>
+											</h6>
+										</td>
+										<td class="item-quantity">
+											<div class="qty">
+												<span sw-rbkey="'frontend.flexship.qty'"></span> {{item.quantity}}
+											</div>
+										</td>
+										<td class="item-price">
+											<span class="price">{{ item.total| swcurrency: reviewStep.flexship.currencyCode }}</span>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+				
+				<!---colored-box-right--->
+				<div class="col-12 col-md-5">
+					<div class="cart-right-container">
+						<div class="cart-details">
+							<ul>
+								<li ng-if="reviewStep.flexship.suggestedPrice">
+									<div class="left">
+										<span class="title-sm" sw-rbkey="'frontend.cart.suggestedRetailPrice'"></span>
+									</div>
+									<div class="right">
+										<span class="price" ng-bind-html="reviewStep.flexship.listPrice  | swcurrency:reviewStep.flexship.currencyCode"></span>
+									</div>
+								</li>
+								<li ng-if="reviewStep.flexship.calculatedSubTotal">
+									<div class="left">
+										<span class="title-sm" sw-rbkey="'frontend.hybridCart.yourPrice'"></span>
+									</div>
+									<div class="right">
+										<span class="price" ng-bind-html="reviewStep.flexship.calculatedSubTotal | swcurrency:reviewStep.flexship.currencyCode"></span>
+									</div>
+								</li>
+								<li ng-if="reviewStep.flexship.purchasePlusTotal">
+									<div class="left">
+										<span class="title-sm" sw-rbkey="'frontend.orderTemplate.purchasePlus'"></span>
+									</div>
+									<div class="right">
+										<span class="price" ng-bind-html="'&minus;' + ( reviewStep.flexship.purchasePlusTotal | swcurrency:reviewStep.flexship.currencyCode )"></span>
+									</div>
+								</li>
+								<li ng-if="reviewStep.flexship.discountTotal &&  (reviewStep.flexship.discountTotal - reviewStep.flexship.purchasePlusTotal > 0) ">
+									<div class="left">
+										<span class="title-sm" sw-rbkey="'frontend.cart.remainingDiscounts'"></span>
+									</div>
+									<div class="right">
+										<span class="price" ng-bind-html="'&minus;' + ( reviewStep.flexship.discountTotal - reviewStep.flexship.purchasePlusTotal | swcurrency:reviewStep.flexship.currencyCode )"></span>
+									</div>
+								</li>
+								<li ng-if="reviewStep.flexship.fulfillmentTotal">
+									<div class="left">
+										<span class="title-sm" sw-rbkey="'frontend.checkout.shipping'"></span>
+									</div>
+									<div class="right">
+										<span class="price" ng-bind-html="(reviewStep.flexship.fulfillmentTotal -  reviewStep.flexship.fulfillmentHandlingFeeTotal )| swcurrency:reviewStep.flexship.currencyCode"></span>
+									</div>
+								</li>
+								<li ng-if="reviewStep.flexship.fulfillmentHandlingFeeTotal">
+									<div class="left">
+										<span class="title-sm" sw-rbkey="'frontend.cart.handlingFee'"></span>
+									</div>
+									<div class="right">
+										<span class="price" ng-bind-html="reviewStep.flexship.fulfillmentHandlingFeeTotal | swcurrency:reviewStep.flexship.currencyCode"></span>
+									</div>
+								</li>
+								<li ng-if="reviewStep.flexship.fulfillmentDiscountAmountTotal">
+									<div class="left">
+										<span class="title-sm" sw-rbkey="'frontend.checkout.shippingDiscount'"></span>
+									</div>
+									<div class="right">
+										<span class="price" ng-bind-html="reviewStep.flexship.fulfillmentDiscountAmountTotal | swcurrency:reviewStep.flexship.currencyCode"></span>
+									</div>
+								</li>
+								<li ng-if="reviewStep.flexship.taxTotal">
+									<div class="left">
+										<span class="title-sm" sw-rbkey="'frontend.checkout.estTax'"></span>
+									</div>
+									<div class="right">
+										<span class="price" ng-bind-html="reviewStep.flexship.taxTotal | swcurrency:reviewStep.flexship.currencyCode"></span>
+									</div>
+								</li>
+								<li ng-if="reviewStep.flexship['VATTotal']">
+									<div class="left">
+										<span class="title-sm" sw-rbkey="'frontend.cart.vatTotal'"></span>
+									</div>
+									<div class="right">
+										<span class="price" ng-bind-html="reviewStep.flexship['VATTotal'] | swcurrency:reviewStep.flexship.currencyCode"></span>
+									</div>
+								</li>
+								<li 
+									ng-if="
+										reviewStep.flexship.calculatedPersonalVolumeTotal 
+										&& reviewStep.flexship.calculatedPersonalVolumeTotal != '$0.00'
+										&& 1 == slatwall.account.priceGroups[0].priceGroupCode
+									"
+									
+								>
+									<div class="left">
+										<span class="title-sm" sw-rbkey="'entity.Order.calculatedPersonalVolumeTotal'"></span>
+									</div>
+									<div class="right">
+										<span class="price" ng-bind="reviewStep.flexship.calculatedPersonalVolumeTotal"></span>
+									</div>
+								</li>
+								<span swf-promo-box ng-cloak>
+									<li 
+										ng-if="reviewStep.flexship.promotionCodes.length" 
+										ng-class="{loading: swfPromoBox.removePromotionCodeIsLoading}"
+										ng-repeat="appliedPromoCode in reviewStep.flexship.promotionCodes"
+									>
+										<div class="applied-promo" ng-init="appliedPromoCode.promotion.promoCode = reviewStep.flexship.promotionCodeList.split(',')[ $index ]">
+											<span class="title-sm">{{appliedPromoCode.promotion.promoCode}}</span>
+		
+											<div class="applied-promo__close" ng-click="swfPromoBox.removePromotionCode(appliedPromoCode)" ng-show="!swfPromoBox.removePromotionCodeIsLoading">
+												<i class="fal fa-times"></i>
+											</div>
+										</div>
+									</li>
+		
+									<li class="promo">
+										<div class="full errors" ng-if="slatwall.getErrors().addPromotionCode.promotionCode[0].length">
+											<swf-alert data-alert-trigger="addPromotionCodeFailure" data-alert-type="danger" data-message="{{slatwall.getErrors().addPromotionCode.promotionCode[0]}}" data-duration="399"></swf-alert>
+										</div>
+		
+										<div class="left">
+											<span class="title-sm" sw-rbkey="'frontend.checkout.promoCode'"></span>
+										</div>
+										<div class="full">
+											<input type="text" ng-model="promoCode" class="form-control" placeholder="Enter Promo Code" required />
+											<button
+												class="btn bg-primary--small"
+												ng-disabled="swfPromoBox.addPromotionCodeIsLoading"
+												ng-class="{loading:swfPromoBox.addPromotionCodeIsLoading}" 
+												ng-click="swfPromoBox.addPromotionCode(promoCode)"
+												sw-rbkey="'frontend.global.apply'"
+											></button>
+										</div>
+									</li>
+								</span>
+								<li class="total" ng-if="reviewStep.flexship.total">
+									<div class="left">
+										<h4 sw-rbkey="'frontend.global.total'"></h4>
+									</div>
+									<div class="right">
+										<h4 ng-bind-html="reviewStep.flexship.total | swcurrency:reviewStep.flexship.currencyCode"></h4>
+									</div>
+								</li>
+							</ul>
+	
+							<button 
+								ng-click="slatwall.mpAgreement ? monatOrderItems.placeOrder(data) : slatwall.showError = true" 
+								class="btn bg-secondary btn-block" 
+								ng-class="{loading:slatwall.getRequestByAction('placeOrder').loading || slatwall.hasSuccessfulAction('placeOrder')}"
+							>
+								<span sw-rbKey="'frontend.checkout.placeOrder'"></span>
+								<span ng-show="slatwall.getRequestByAction('placeOrder').loading || slatwall.hasSuccessfulAction('placeOrder')"><i class="fa fa-refresh fa-spin fa-fw"></i></span>
+							</button>
+	
+						</div>	
+					</div>
 				</div>
 			</div>
-    		
 		</div>
 	</section>
-	</div>
