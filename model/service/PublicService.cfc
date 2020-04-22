@@ -100,7 +100,7 @@ component  accessors="true" output="false"
 	     if(!isNull(account) && !isEmpty(account.getAccountID())) {
 	         var order = orderService.getOrder(arguments.data.orderID);
 	         if(!isNull(order) && (order.getAccount().getAccountID() == account.getAccountID() || account.getSuperUserFlag() == true ) ) {
-	             arguments.data.ajaxResponse['orderDetails'] = orderService.getOrderDetails(order.getOrderID(), account.getAccountID(), account.getSuperUserFlag());
+	             arguments.data.ajaxResponse['orderDetails'] = orderService.getOrderDetails(order.getOrderID(), account.getAccountID());
 	             getHibachiScope().addActionResult("public:account.getOrderDetails",false);
 	         } else {
 	             getHibachiScope().addActionResult("public:account.getOrderDetails",true);
