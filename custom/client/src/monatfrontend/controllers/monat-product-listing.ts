@@ -17,7 +17,9 @@ class MonatProductListingController {
     public paginationMethod = 'getProductsByCategoryOrContentID';
     public searchTerm:string;
     public wishlistItems;
-
+	public hairProductFilter:any;
+	public skinProductFilter:any;
+	
 	// @ngInject
 	constructor(
 		public publicService,
@@ -67,7 +69,7 @@ class MonatProductListingController {
         });
 	}
 	
-    public getProducts = () => {
+    public getProducts = (category:any) => {
         this.loading = true;
         
         // CMS category ID is the only filter applied via ng-init and getting the CF category, due to content modules loop
@@ -79,6 +81,14 @@ class MonatProductListingController {
 
         if(this.contentFilterFlag) this.argumentsObject['contentFilterFlag'] = true;  
         if(this.cmsCategoryFilterFlag) this.argumentsObject['cmsCategoryFilterFlag'] = true; 
+        
+		if(category){
+			this.argumentsObject['categoryFilterFlag'] = true;
+			this.argumentsObject['categoryID'] = category.value;
+			this.hairProductFilter = null;
+			this.skinProductFilter = null;
+			this.argumentsObject['categoryID'] = category.value;
+		}
         
         this.argumentsObject['pageRecordsShow'] = this.pageRecordsShow;
         
