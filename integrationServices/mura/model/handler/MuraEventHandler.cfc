@@ -424,7 +424,7 @@
 						// Change Title, HTMLTitle & Meta Details of page
 						$.content().setTitle( $.slatwall.getRouteEntity("category").getCategoryName() );
 						if(len($.slatwall.getRouteEntity("category").setting('categoryHTMLTitleString'))) {
-							$.content().setHTMLTitle( $.slatwall.getRouteEntity("category").stringReplace( template = $.slatwall.getRouteEntity("category").setting('categoryHTMLTitleString') ) );	
+							$.content().setHTMLTitle( $.slatwall.getRouteEntity("category").stringReplace( template = $.slatwall.getRouteEntity("category").setting('categoryHTMLTitleString'), formatValues = true ) );	
 						} else {
 							$.content().setHTMLTitle( $.slatwall.getRouteEntity("category").getCategoryName() );
 						}
