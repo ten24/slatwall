@@ -90,38 +90,6 @@
 										<span class="price" ng-bind-html="'&minus;' + ( reviewStep.flexship.purchasePlusTotal | swcurrency:reviewStep.flexship.currencyCode )"></span>
 									</div>
 								</li>
-								<li ng-if="reviewStep.flexship.discountTotal &&  (reviewStep.flexship.discountTotal - reviewStep.flexship.purchasePlusTotal > 0) ">
-									<div class="left">
-										<span class="title-sm" sw-rbkey="'frontend.cart.remainingDiscounts'"></span>
-									</div>
-									<div class="right">
-										<span class="price" ng-bind-html="'&minus;' + ( reviewStep.flexship.discountTotal - reviewStep.flexship.purchasePlusTotal | swcurrency:reviewStep.flexship.currencyCode )"></span>
-									</div>
-								</li>
-								<li ng-if="reviewStep.flexship.fulfillmentTotal">
-									<div class="left">
-										<span class="title-sm" sw-rbkey="'frontend.checkout.shipping'"></span>
-									</div>
-									<div class="right">
-										<span class="price" ng-bind-html="(reviewStep.flexship.fulfillmentTotal -  reviewStep.flexship.fulfillmentHandlingFeeTotal )| swcurrency:reviewStep.flexship.currencyCode"></span>
-									</div>
-								</li>
-								<li ng-if="reviewStep.flexship.fulfillmentHandlingFeeTotal">
-									<div class="left">
-										<span class="title-sm" sw-rbkey="'frontend.cart.handlingFee'"></span>
-									</div>
-									<div class="right">
-										<span class="price" ng-bind-html="reviewStep.flexship.fulfillmentHandlingFeeTotal | swcurrency:reviewStep.flexship.currencyCode"></span>
-									</div>
-								</li>
-								<li ng-if="reviewStep.flexship.fulfillmentDiscountAmountTotal">
-									<div class="left">
-										<span class="title-sm" sw-rbkey="'frontend.checkout.shippingDiscount'"></span>
-									</div>
-									<div class="right">
-										<span class="price" ng-bind-html="reviewStep.flexship.fulfillmentDiscountAmountTotal | swcurrency:reviewStep.flexship.currencyCode"></span>
-									</div>
-								</li>
 								<li ng-if="reviewStep.flexship.taxTotal">
 									<div class="left">
 										<span class="title-sm" sw-rbkey="'frontend.checkout.estTax'"></span>
@@ -138,7 +106,22 @@
 										<span class="price" ng-bind-html="reviewStep.flexship.vatTotal | swcurrency:reviewStep.flexship.currencyCode"></span>
 									</div>
 								</li>
-					
+								<li ng-if="reviewStep.flexship.calculatedFulfillmentTotal">
+									<div class="left">
+										<span class="title-sm" sw-rbkey="'frontend.checkout.shipping'"></span>
+									</div>
+									<div class="right">
+										<span class="price" ng-bind-html="(reviewStep.flexship.calculatedFulfillmentTotal -  reviewStep.flexship.fulfillmentHandlingFeeTotal )| swcurrency:reviewStep.flexship.currencyCode"></span>
+									</div>
+								</li>
+								<li ng-if="reviewStep.flexship.fulfillmentHandlingFeeTotal">
+									<div class="left">
+										<span class="title-sm" sw-rbkey="'frontend.cart.handlingFee'"></span>
+									</div>
+									<div class="right">
+										<span class="price" ng-bind-html="reviewStep.flexship.fulfillmentHandlingFeeTotal | swcurrency:reviewStep.flexship.currencyCode"></span>
+									</div>
+								</li>
 								<span swf-promo-box ng-cloak>
 									<li 
 										ng-if="reviewStep.flexship.promotionCodes.length" 
@@ -174,12 +157,12 @@
 										</div>
 									</li>
 								</span>
-								<li class="total" ng-if="reviewStep.flexship.total">
+								<li class="total" ng-if="reviewStep.flexship.calculatedTotal">
 									<div class="left">
 										<h4 sw-rbkey="'frontend.global.total'"></h4>
 									</div>
 									<div class="right">
-										<h4 ng-bind-html="reviewStep.flexship.total | swcurrency:reviewStep.flexship.currencyCode"></h4>
+										<h4 ng-bind-html="reviewStep.flexship.calculatedTotal | swcurrency:reviewStep.flexship.currencyCode"></h4>
 									</div>
 								</li>
 							</ul>
