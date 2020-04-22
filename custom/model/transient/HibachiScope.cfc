@@ -135,15 +135,4 @@ component output="false" accessors="true" extends="Slatwall.model.transient.Hiba
 		this.clearCookieValue('currentFlexshipID');
 	}
 	
-	
-	public string function getProperSiteURL(required string location) {
-		var cmsSiteID = this.getCurrentRequestSite().getCmsSiteID() ?: 'default';
-		if ( cmsSiteID != "default" ) {
-			return "/#cmsSiteID##arguments.location#";
-		} else {
-			return "#arguments.location#";
-		}
-	}
-
-	
 }
