@@ -168,12 +168,12 @@
 							</ul>
 	
 							<button 
-								ng-click="slatwall.mpAgreement ? monatOrderItems.placeOrder(data) : slatwall.showError = true" 
+								ng-click="reviewStep.activateFlexship()"
 								class="btn bg-secondary btn-block" 
-								ng-class="{loading:slatwall.getRequestByAction('placeOrder').loading || slatwall.hasSuccessfulAction('placeOrder')}"
+								ng-class="{loading:reviewStep.loading}"
 							>
 								<span sw-rbKey="'frontend.checkout.placeOrder'"></span>
-								<span ng-show="slatwall.getRequestByAction('placeOrder').loading || slatwall.hasSuccessfulAction('placeOrder')"><i class="fa fa-refresh fa-spin fa-fw"></i></span>
+								<span ng-show="reviewStep.loading"><i class="fa fa-refresh fa-spin fa-fw"></i></span>
 							</button>
 	
 						</div>	

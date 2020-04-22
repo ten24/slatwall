@@ -21,6 +21,7 @@ class MonatProductModalController {
 	public muraValues:string;
 	public trustedVideoURL:string;
 	public videoRatio;
+	public flexshipHasAccount:boolean;
 	
 	//@ngInject
 	constructor(
@@ -104,7 +105,7 @@ class MonatProductModalController {
 			optionalProperties: extraProperties,
 			saveContext: 'upgradeFlow', 
 			setIfNullFlag: false, 
-			nullAccountFlag: true
+			nullAccountFlag: this.flexshipHasAccount ? false : true
 		}
 
 		this.orderTemplateService.addOrderTemplateItem(
@@ -173,6 +174,7 @@ class MonatProductModal {
 		product: '<',
 		type: '<',
 		orderTemplateID: '<?',
+		flexshipHasAccount:'<?'
 		close: '=', //injected by angularModalService
 	};
 	public controller = MonatProductModalController;

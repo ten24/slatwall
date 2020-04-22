@@ -4,14 +4,16 @@ import { ObserverService } from '@Hibachi/core/core.module'
 
 class ReviewStepController {
 	public flexship;
-	public addPromotionCodeIsLoading:boolean;
 	public promoCodeError:string;
 	public removePromotionCodeIsLoading:boolean;
+	public addPromotionCodeIsLoading:boolean;
+	public loading:boolean;
 	
     //@ngInject
     constructor(
     	public orderTemplateService: OrderTemplateService,
-    	public observerService: ObserverService
+    	public observerService: ObserverService,
+    	public monatService
     ) { }
     
     public $onInit = () => {
@@ -43,15 +45,26 @@ class ReviewStepController {
     
     public addPromotionCode(promotionCode:string){
     	this.addPromotionCodeIsLoading = true;
-    	this.orderTemplateService.addPromotionCode(promotionCode).then((res: {[key:string]:any}) =>{
-    		if(res.errors?.promotionCode){
-    			this.promoCodeError = res.errors?.promotionCode[0];
-    		}else{
-    			this.promoCodeError = '';
-    		}
- 
-    		this.addPromotionCodeIsLoading = false;
-    	});
+		this.orderTemplateService.addPromotionCode(promotionCode).then((res: {[key:string]:any}) =>{
+			if(res.errors?.promotionCode){
+				this.promoCodeError = res.errors?.promotionCode[0];
+			}else{
+				this.promoCodeError = '';
+			}
+			
+			this.addPromotionCodeIsLoading = false;
+		});
+    }
+    
+    public activateFlexship(){
+    	this.loading = true;
+		
+		this.orderTemplateService.activateOrderTemplate({orderTemplateID: this.flexship.orderTemplateID}).then(res =>{
+			if(res.successfulActions.length){
+				this.monatService.redirectToProperSite("/my-account/flexships");
+			}
+			this.loading = false;
+		});
     }
     
 }

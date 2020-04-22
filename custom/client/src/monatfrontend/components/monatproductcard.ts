@@ -152,6 +152,7 @@ class MonatProductCardController {
 				type: type,
 				isEnrollment: this.isEnrollment,
 				orderTemplateID: this.orderTemplate,
+				flexshipHasAccount: this.flexshipType == 'flexshipHasAccount' ? true : false;
 			},
 			preClose: (modal) => {
 				modal.element.modal('hide');
