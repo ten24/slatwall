@@ -72,7 +72,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
         }
         
         //Commission Date
-        arguments.order.setCommissionPeriod(dateFormat( now(), "mm/yyyy" ));
+        arguments.order.setCommissionPeriod(dateFormat( now(), "yyyymm" ));
         
         // Set the Product Pack Purchased Flag
         if( account.getAccountType() == 'marketPartner' && arguments.order.hasProductPack() ) {
