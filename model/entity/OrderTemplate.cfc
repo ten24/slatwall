@@ -130,6 +130,8 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 	property name="calculatedRetailCommissionTotal" ormtype="integer"; 
 	property name="calculatedTaxTotal" ormtype="big_decimal" hb_formatType="currency"; 
 	property name="calculatedVatTotal" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedFulfillmentHandlingFeeTotal" ormtype="big_decimal" hb_formatType="currency"; 
+	property name="calculatedFulfillmentTotal" ormtype="big_decimal" hb_formatType="currency";
 	
 	//non-persistents
 	property name="accountIsNotInFlexshipCancellationGracePeriod" persistent="false";
@@ -152,6 +154,8 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 	property name="appliedPromotionMessagesJson" persistent="false"; 
 	property name="taxTotal" persistent="false" hb_formatType="currency"; 
 	property name="vatTotal" persistent="false" hb_formatType="currency";
+	property name="fulfillmentHandlingFeeTotal" persistent="false" hb_formatType="currency";
+	property name="fulfillmentTotal" persistent="false" hb_formatType="currency";
 	
 //CUSTOM PROPERTIES END
 	public string function getEncodedJsonRepresentation(string nonPersistentProperties='subtotal,fulfillmentTotal,fulfillmentDiscount,total'){ 
@@ -597,7 +601,7 @@ public boolean function getAccountIsNotInFlexshipCancellationGracePeriod(){
 	public numeric function getTaxTotal(){
 	
 		if(!structKeyExists(variables, 'taxTotal')){
-			variables.taxTotal = getService('OrderService').getTaxTotalForOrderTemplate(this);
+			variables.taxTotal = getService('OrderService').getCustomPropertyFromOrderTemplateOrderDetails('taxTotal', this);
 		}	
 		
 		return variables.taxTotal; 	
@@ -606,10 +610,28 @@ public boolean function getAccountIsNotInFlexshipCancellationGracePeriod(){
 	public numeric function getVatTotal(){
 	
 		if(!structKeyExists(variables, 'vatTotal')){
-			variables.vatTotal = getService('OrderService').getVatTotalForOrderTemplate(this);
+			variables.vatTotal = getService('OrderService').getCustomPropertyFromOrderTemplateOrderDetails('vatTotal', this);
 		}	
 		
 		return variables.vatTotal; 	
+	}
+	
+	public numeric function getFulfillmentHandlingFeeTotal(){
+	
+		if(!structKeyExists(variables, 'fulfillmentHandlingFeeTotal')){
+			variables.fulfillmentHandlingFeeTotal = getService('OrderService').getCustomPropertyFromOrderTemplateOrderDetails('fulfillmentHandlingFeeTotal', this);
+		}	
+		
+		return variables.fulfillmentHandlingFeeTotal; 	
+	}	
+	
+	public numeric function getFulfillmentTotal(){
+	
+		if(!structKeyExists(variables, 'fulfillmentTotal')){
+			variables.fulfillmentTotal = getService('OrderService').getCustomPropertyFromOrderTemplateOrderDetails('fulfillmentTotal', this);
+		}	
+		
+		return variables.fulfillmentTotal; 	
 	}
 	//CUSTOM FUNCTIONS END
 }

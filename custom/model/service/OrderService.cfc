@@ -411,6 +411,8 @@ component extends="Slatwall.model.service.OrderService" {
 			request[orderTemplateOrderDetailsKey]['purchasePlusTotal'] = transientOrder.getPurchasePlusTotal();
 			request[orderTemplateOrderDetailsKey]['taxTotal'] = transientOrder.getTaxTotal();
 			request[orderTemplateOrderDetailsKey]['vatTotal'] = transientOrder.getVatTotal();
+			request[orderTemplateOrderDetailsKey]['fulfillmentTotal'] = transientOrder.getFulfillmentTotal();
+			request[orderTemplateOrderDetailsKey]['fulfillmentHandlingFeeTotal'] = transientOrder.getFulfillmentHandlingFeeTotal();
 			
 			try{
 				request[orderTemplateOrderDetailsKey]['appliedPromotionMessagesJson'] = serializeJson(this.getAppliedPromotionMessageData(transientOrder.getOrderID()).getRecords());
@@ -436,12 +438,8 @@ component extends="Slatwall.model.service.OrderService" {
 		return request[orderTemplateOrderDetailsKey];
 	}
 	
-	public numeric function getTaxTotalForOrderTemplate(required any orderTemplate){
-		return getOrderTemplateOrderDetails(argumentCollection=arguments)['taxTotal'];	
-	}
-	
-	public numeric function getVatTotalForOrderTemplate(required any orderTemplate){
-		return getOrderTemplateOrderDetails(argumentCollection=arguments)['vatTotal'];	
+	public any function getCustomPropertyFromOrderTemplateOrderDetails(required string property, required any orderTemplate){
+		return getOrderTemplateOrderDetails(arguments.orderTemplate)[arguments.property];
 	}
 	
 	public numeric function getPersonalVolumeTotalForOrderTemplate(required any orderTemplate){

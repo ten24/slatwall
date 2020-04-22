@@ -175,7 +175,7 @@ class MonatProductCardController {
 			let extraProperties = "canPlaceOrderFlag,purchasePlusTotal,appliedPromotionMessagesJson,calculatedOrderTemplateItemsCount";
 
 			if(this.flexshipType == 'flexshipHasAccount'){
-				extraProperties += ',qualifiesForOFYProducts,vatTotal,taxTotal';
+				extraProperties += ',qualifiesForOFYProducts,vatTotal,taxTotal,fulfillmentHandlingFeeTotal,fulfillmentTotal';
 			}
 			
 			if(!this.orderTemplateService.cartTotalThresholdForOFYAndFreeShipping){
