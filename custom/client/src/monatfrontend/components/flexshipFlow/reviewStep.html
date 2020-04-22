@@ -151,7 +151,7 @@
 												class="btn bg-primary--small"
 												ng-disabled="reviewStep.addPromotionCodeIsLoading"
 												ng-class="{loading:reviewStep.addPromotionCodeIsLoading}" 
-												ng-click="reviewStep.addPromotionCode(promoCode)"
+												ng-click="reviewStep.addPromotionCode(promoCode); promoCode = '' "
 												sw-rbkey="'frontend.global.apply'"
 											></button>
 										</div>
