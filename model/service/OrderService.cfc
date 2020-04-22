@@ -81,7 +81,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	 * - order fulfillment
 	 * - order payments
 	 * */
-	public any function getOrderDetails(required string orderID, string accountID, boolean superUser) {
+	public any function getOrderDetails(required string orderID, string accountID) {
         param name="arguments.orderID";
         param name="arguments.accountID" default=getHibachiScope().getAccount().getAccountID();
         //check if user is a superUser, if yes then we won't check for Account ID with order
