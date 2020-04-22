@@ -5245,7 +5245,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		// Call the generic save method to populate and validate
 		arguments.orderItem = save(arguments.orderItem, arguments.data, arguments.context);
-
+		
+		var order = arguments.orderItem.getOrder();
+		if(arguments.orderItem.getCurrencyCode() != order.getCurrencyCode()){
+			arguments.orderItem.setCurrencyCode(order.getCurrencyCode());
+		}
+		
 		// If there were no errors, and the order is not placed, then we can make necessary implicit updates
 		if(!arguments.orderItem.hasErrors() && arguments.orderItem.getOrder().getStatusCode() == "ostNotPlaced") {
 			// If this item was part of a shipping fulfillment then update that fulfillment
