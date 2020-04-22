@@ -95,7 +95,7 @@ class FlexshipFlowController {
 	
 	public goToStep = (step:FlexshipSteps):FlexshipSteps =>{
 		this.currentStep = this.farthestStepReached >= step ? step : this.currentStep;
-		this.publicService.showFooter = this.currentStep == FlexshipSteps.REVIEW;
+		(this.publicService as any).showFooter = this.currentStep == FlexshipSteps.REVIEW;
 		return this.currentStep;
 	}
 	
@@ -112,9 +112,9 @@ class FlexshipFlowController {
 		}
 
 		if(step == FlexshipSteps.REVIEW){
-			this.publicService.showFooter = true;
+			(this.publicService as any).showFooter = true;
 		}else{
-			this.publicService.showFooter = false;
+			(this.publicService as any).showFooter = false;
 		}
 
 		this.updateProgress(step);
