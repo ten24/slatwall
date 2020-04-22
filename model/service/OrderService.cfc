@@ -92,7 +92,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
         //Order Information
         var orderCollectionList = this.getOrderCollectionList();
         orderCollectionList.addFilter( 'orderID', arguments.orderID, '=');
-		if( !arguments.superUser ) {
+		if( !superUser ) {
 			orderCollectionList.addFilter( 'account.accountID', arguments.accountID, '=');
 		}
 		
@@ -102,7 +102,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var ordersItemsCollectionList = this.getOrderItemCollectionList();
 		ordersItemsCollectionList.setDisplayProperties('quantity, price, calculatedExtendedPriceAfterDiscount, sku.product.productName, sku.product.productID, sku.skuID, sku.calculatedSkuDefinition');
 		ordersItemsCollectionList.addFilter( 'order.orderID', arguments.orderID, '=');
-		if( !arguments.superUser ) {
+		if( !superUser ) {
 			ordersItemsCollectionList.addFilter( 'order.account.accountID', arguments.accountID, '=');
 		}
 		
@@ -113,7 +113,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var orderPaymentCollectionList = this.getOrderPaymentCollectionList();
 		orderPaymentCollectionList.setDisplayProperties('paymentMethod.paymentMethodType, paymentMethod.paymentMethodName, expirationMonth, expirationYear, currencyCode, creditCardLastFour, billingAddress.streetAddress,billingAddress.street2Address, billingAddress.city, billingAddress.stateCode, billingAddress.postalCode, billingAddress.name, billingAddress.countryCode, order.calculatedFulfillmentTotal, order.calculatedSubTotal, order.calculatedTaxTotal, order.calculatedDiscountTotal, order.calculatedTotal, order.orderNumber, order.orderStatusType.typeName, order.orderType.typeName');
 		orderPaymentCollectionList.addFilter( 'order.orderID', arguments.orderID, '=');
-		if( !arguments.superUser ) {
+		if( !superUser ) {
 			orderPaymentCollectionList.addFilter( 'order.account.accountID', arguments.accountID, '=');
 		}
 		
@@ -124,7 +124,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var orderPromotionCollectionList = getHibachiScope().getService('promotionService').getPromotionAppliedCollectionList();
 		orderPromotionCollectionList.addDisplayProperties('promotion.promotionName, discountAmount')
 		orderPromotionCollectionList.addFilter( 'order.orderID', arguments.orderID, '=');
-		if( !arguments.superUser ) {
+		if( !superUser ) {
 			orderPromotionCollectionList.addFilter( 'order.account.accountID', arguments.accountID, '=');
 		}
 		
