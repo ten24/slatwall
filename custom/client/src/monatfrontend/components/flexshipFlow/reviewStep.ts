@@ -14,13 +14,18 @@ class ReviewStepController {
     	public orderTemplateService: OrderTemplateService,
     	public observerService: ObserverService,
     	public monatService
-    ) { }
+    ) {
+		this.observerService.attach(this.initalizeFlexship, 'editOrderTemplateItemSuccess');
+    }
     
     public $onInit = () => {
+		this.initalizeFlexship();
+    }
+    
+    public initalizeFlexship= () => {
     	this.flexship = this.orderTemplateService.mostRecentOrderTemplate;
     	this.manageFlexship(this.flexship);
     }
-    
     public manageFlexship = (flexship) =>{
     	let listPrice = 0;
     	
