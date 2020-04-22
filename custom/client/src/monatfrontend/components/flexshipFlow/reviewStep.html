@@ -4,7 +4,7 @@
 				<div class="col-12 col-md-7">
 					<div class="cart-products review-products">
 						
-						<h2>Review & Create Your Flexship</h2>
+						<h2 sw-rbKey="'frontend.flexship.reviewAndCreate'"></h2>
 	
 						<ul>
 							<li>
@@ -18,7 +18,9 @@
 									></a>
 								</h6>
 								<p>
-									{{reviewStep.flexship.frequencyTerm_termName}} <span sw-rbKey="'define.aroundThe'"></span> {{reviewStep.flexship.scheduleOrderDayOfTheMonth | ordinal}}	
+									{{reviewStep.orderTemplateService.mostRecentOrderTemplate.frequencyTerm_termName}} 
+									<span sw-rbKey="'define.aroundThe'"></span> 
+									{{reviewStep.orderTemplateService.mostRecentOrderTemplate.scheduleOrderDayOfTheMonth | ordinal}}	
 								</p>
 							</li>
 						</ul>

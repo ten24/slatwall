@@ -66,6 +66,9 @@ class FlexshipFlowController {
 			case FlexshipSteps.CHECKOUT:
 				return this.setStepAndUpdateProgress(FlexshipSteps.OFY);
 				break;
+			case FlexshipSteps.REVIEW:
+				return this.setStepAndUpdateProgress(FlexshipSteps.CHECKOUT);
+				break;
 			default:
 				return this.setStepAndUpdateProgress(FlexshipSteps.SHOP);
 		}
@@ -91,7 +94,9 @@ class FlexshipFlowController {
 	}
 	
 	public goToStep = (step:FlexshipSteps):FlexshipSteps =>{
-		return this.currentStep = this.farthestStepReached >= step ? step : this.currentStep;
+		this.currentStep = this.farthestStepReached >= step ? step : this.currentStep;
+		this.publicService.showFooter = this.currentStep == FlexshipSteps.REVIEW;
+		return this.currentStep;
 	}
 	
 	public updateProgress(step:FlexshipSteps):void{
@@ -105,7 +110,13 @@ class FlexshipFlowController {
 		if(this.currentStep === step && step === FlexshipSteps.CHECKOUT){
 			return this.observerService.notify( FlexshipFlowEvents.ON_COMPLETE_CHECKOUT );
 		}
-		
+
+		if(step == FlexshipSteps.REVIEW){
+			this.publicService.showFooter = true;
+		}else{
+			this.publicService.showFooter = false;
+		}
+
 		this.updateProgress(step);
 		return this.currentStep = step;
     }
