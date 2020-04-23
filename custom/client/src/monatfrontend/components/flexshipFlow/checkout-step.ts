@@ -45,7 +45,6 @@ class FlexshipCheckoutStepController {
 			//instead of making a trip to the server we should cache at the frontend;
 			.getSetOrderTemplateOnSession("vatTotal,taxTotal,fulfillmentHandlingFeeTotal", "save", false, false)
 			.then((response: any) => {
-				console.log(response);
 				this.flexshipCheckoutStore.dispatch("SET_CURRENT_FLEXSHIP", (state) => {
 					return this.flexshipCheckoutStore.setFlexshipReducer(
 						state, response.orderTemplate
