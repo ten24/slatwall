@@ -1226,7 +1226,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 		    
 		    
 		    var existingSkus = skuQuery.filter(function(row, rowNumber, qryData){
-                return arrayFind(existinSkuCodes, row.SKUItemCode);
+                return arrayFind(existingSkuCodes, arguments.row.SKUItemCode);
             });
 			var newSkus = skuQuery.filter(function(row, rowNumber, qryData){
                 return !arrayFind(existinSkuCodes, row.SKUItemCode);
