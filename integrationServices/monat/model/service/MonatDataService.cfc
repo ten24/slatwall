@@ -1220,7 +1220,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 				}
 			});
 				
-			var existinSkuCodes = listToArray(skuCodesResult['skuCodes']);
+			var existingSkuCodes = listToArray(skuCodesResult['skuCodes']);
 			
 			
 		    
