@@ -1105,7 +1105,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 				}
 			};
 		}
-arguments.rc.pageMax=1;
+
 		if(!structKeyExists(arguments.rc, 'pageMax')){
 			arguments.rc.pageMax = this.getLastProductPageNumber(arguments.rc.pageSize, extraBody);
 		}
