@@ -75,6 +75,71 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	// ===================== START: Logical Methods ===========================
 	
+	/**
+	 * Function to return order details - it includes following 
+	 * - order items
+	 * - order fulfillment
+	 * - order payments
+	 * */
+	public any function getOrderDetails(required string orderID, string accountID) {
+		
+        param name="arguments.accountID" default=getHibachiScope().getAccount().getAccountID();
+        //check if user is a superUser, if yes then we won't check for Account ID with order
+        var superUser = false;
+        var account = getAccountService().getAccount(arguments.accountID);
+        if(!isNull(account)) {
+        	superUser = getAccountService().getAccount(arguments.accountID).getSuperUserFlag();
+        }
+        
+        
+        var orderDetails = {}; //return object
+        
+        //Order Information
+        var orderCollectionList = this.getOrderCollectionList();
+        orderCollectionList.addFilter( 'orderID', arguments.orderID, '=');
+		if( !superUser ) {
+			orderCollectionList.addFilter( 'account.accountID', arguments.accountID, '=');
+		}
+		
+		orderDetails['orderInfo'] = orderCollectionList.getRecords();
+        
+    	///Order Items Information
+		var ordersItemsCollectionList = this.getOrderItemCollectionList();
+		ordersItemsCollectionList.setDisplayProperties('quantity, price, calculatedExtendedPriceAfterDiscount, sku.product.productName, sku.product.productID, sku.skuID, sku.calculatedSkuDefinition');
+		ordersItemsCollectionList.addFilter( 'order.orderID', arguments.orderID, '=');
+		if( !superUser ) {
+			ordersItemsCollectionList.addFilter( 'order.account.accountID', arguments.accountID, '=');
+		}
+		
+		orderDetails['orderItems'] = ordersItemsCollectionList.getRecords();
+        
+		
+		//Order Payments Information
+		var orderPaymentCollectionList = this.getOrderPaymentCollectionList();
+		orderPaymentCollectionList.setDisplayProperties('paymentMethod.paymentMethodType, paymentMethod.paymentMethodName, expirationMonth, expirationYear, currencyCode, creditCardLastFour, billingAddress.streetAddress,billingAddress.street2Address, billingAddress.city, billingAddress.stateCode, billingAddress.postalCode, billingAddress.name, billingAddress.countryCode, order.calculatedFulfillmentTotal, order.calculatedSubTotal, order.calculatedTaxTotal, order.calculatedDiscountTotal, order.calculatedTotal, order.orderNumber, order.orderStatusType.typeName, order.orderType.typeName');
+		orderPaymentCollectionList.addFilter( 'order.orderID', arguments.orderID, '=');
+		if( !superUser ) {
+			orderPaymentCollectionList.addFilter( 'order.account.accountID', arguments.accountID, '=');
+		}
+		
+		
+		orderDetails['orderPayments'] = orderPaymentCollectionList.getRecords();
+		
+		// //Order Promotions Information
+		var orderPromotionCollectionList = getHibachiScope().getService('promotionService').getPromotionAppliedCollectionList();
+		orderPromotionCollectionList.addDisplayProperties('promotion.promotionName, discountAmount')
+		orderPromotionCollectionList.addFilter( 'order.orderID', arguments.orderID, '=');
+		if( !superUser ) {
+			orderPromotionCollectionList.addFilter( 'order.account.accountID', arguments.accountID, '=');
+		}
+		
+		orderDetails['orderPromotions'] = orderPromotionCollectionList.getRecords();
+		
+		
+		
+		return orderDetails;
+    }
+	
 	public string function getOrderRequirementsList(required any order, struct data = {}) {
 		var orderRequirementsList = "";
 

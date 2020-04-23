@@ -479,7 +479,7 @@ component extends="HibachiService" accessors="true" {
 	            var imageFile = product[arguments.propertyName] ? : '';
 	            var imageArray = [];
 	            for( var size in resizeSizes) {
-	            	var resizeImageData = { 
+	            	var resizeImageData = {
 		                size=size, //Large Image
 		                imagePath = getService('imageService').getProductImagePathByImageFile(imageFile),
 		                missingImagePath = missingImageSetting
@@ -492,8 +492,8 @@ component extends="HibachiService" accessors="true" {
 	        
 	        //If there's only one product in response, add alternate images as well
 	        if(arrayLen(arguments.products) == 1) {
-	        	
-	        	arguments.products[1]['altImages'] = this.getProduct(arguments.products[1].productID).getImageGalleryArray();
+	        	//Modify image size to be used as size index
+	        	arguments.products[1]['altImages'] = this.getProduct(arguments.products[1].productID).getImageGalleryArray([{size='s'},{size='m'},{size='l'},{size='xl'}]);
 	        }
 	        
 		}
