@@ -845,12 +845,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     public void function removeOrderItem(required any data) {
         var cart = getService("OrderService").processOrder( getHibachiScope().cart(), arguments.data, 'removeOrderItem');
         
-        //we dont wan't the cart to loose the price-group info
-        if( 
-            !arraylen(cart.getOrderItems()) &&  !cart.getUpgradeFlag() 
-            &&
-            !ListFindNoCase("motMpEnrollment,motVipEnrollment", cart.getMonatOrderType().getTypeCode()) 
-        ){
+        //we dont wan't the cart to loose the price-group/currency info in case of upgrade/enrollment
+        if(!ArrayLen(cart.getOrderItems()) && !cart.getUpgradeOrEnrollmentOrderFlag() ){
             clearOrder(arguments.data);
         }
         getHibachiScope().addActionResult( "public:cart.removeOrderItem", cart.hasErrors() );

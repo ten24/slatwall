@@ -135,5 +135,4 @@ component output="false" accessors="true" extends="Slatwall.model.transient.Hiba
 		this.clearCookieValue('currentFlexshipID');
 	}
 	
-	
 }

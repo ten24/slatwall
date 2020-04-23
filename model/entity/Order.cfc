@@ -283,6 +283,7 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
     property name="isLockedInProcessingOneFlag" persistent="false";
     property name="isLockedInProcessingTwoFlag" persistent="false";
 	property name="purchasePlusTotal" persistent="false";
+	property name="upgradeOrEnrollmentOrderFlag" persistent="false";
 	
    
  property name="businessDate" ormtype="string";
@@ -2417,5 +2418,21 @@ public numeric function getPersonalVolumeSubtotal(){
 	    }
 	    return true;
 	 }
+	 
+	 public boolean function getUpgradeOrEnrollmentOrderFlag(){
+	 	 
+		if (this.getUpgradeFlag()) {
+			return true;
+		}
+		
+		if( 
+			cart.hasMonatOrderType() && 
+			ListFindNoCase("motMpEnrollment,motVipEnrollment", cart.getMonatOrderType().getTypeCode()) 
+		){
+			return true;
+		}
+		
+		return false;
+	}
 	//CUSTOM FUNCTIONS END
 }
