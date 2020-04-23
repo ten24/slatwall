@@ -1105,7 +1105,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 				}
 			};
 		}
-
+arguments.rc.pageMax=1;
 		if(!structKeyExists(arguments.rc, 'pageMax')){
 			arguments.rc.pageMax = this.getLastProductPageNumber(arguments.rc.pageSize, extraBody);
 		}
@@ -1117,51 +1117,26 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 		var skuBundles = {};
 
 
-// 		var countryToCurrency = {
-// 			'CAN' : 'CAD',
-// 			'GBR' : 'GBP',
-// 			'USA' : 'USD',
-// 			'IRL' : 'EUR',
-// 			'POL' : 'PLN',
-// 			'CAN' : 'CAD',
-// 		};
-
-// 		var siteProductCodes = {
-// 			'CAN' = [],
-// 			'GBR' = [],
-// 			'AUD' = [],
-// 			'IRL' = [],
-// 			'POL' = [],
-// 			'USA' = []
-// 		};
-
 		var skuColumns = this.getSkuColumnsList();
 		var skuColumnTypes = [];
 		ArraySet(skuColumnTypes, 1, ListLen(skuColumns), 'varchar');
 		var skuQuery = QueryNew(skuColumns, skuColumnTypes);
 
-// 		var skuPriceColumns = this.getSkuPriceColumnsList();
-// 		var skuPriceColumnTypes = [];
-// 		ArraySet(skuPriceColumnTypes, 1, ListLen(skuPriceColumns), 'varchar');
-// 		var skuPriceQuery = QueryNew(skuPriceColumns, skuPriceColumnTypes);
 
 		var skuBundleColumns = this.getSkuBundleColumnsList();
 		var skuBundleColumnTypes = [];
 		ArraySet(skuBundleColumnTypes, 1, ListLen(skuBundleColumns), 'varchar');
 		var skuBundleQuery = QueryNew(skuBundleColumns, skuBundleColumnTypes);
 
-// 		var stockColumns = this.getStockColumnsList();
-// 		var stockColumnTypes = [];
-// 		ArraySet(stockColumnTypes, 1, ListLen(stockColumns), 'varchar');
-// 		var stockQuery = QueryNew(stockColumns, stockColumnTypes);
 
         var onTheFlySkuCodes = '';
+        var skuCodes = [];
 
 		for(var index = arguments.rc.pageNumber; index <= arguments.rc.pageMax; index++){
 		    
 		    logHibachi("importMonatProducts - Current Page #index#", true); 
 			var productResponse = this.getApiResponse( arguments.rc.days > 0 ? "SWGetNewUpdatedSKU" : "QueryItems", index, arguments.rc.pageSize, extraBody );
-
+			
 			//goto next page causing this is erroring!
 			if ( productResponse.hasErrors ){
 			    logHibachi("importMonatProducts - Returned Errors", true); 
@@ -1192,57 +1167,9 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 					'SAPItemCode' : skuData['ItemCode'],
 					'Amount' : 0
 				};
-
-				//if (ArrayLen(skuData['SAPItemCodes']) && len(skuData['SAPItemCodes'][1]['SAPItemCode'])) {
-				//	sku['SAPItemCode'] = skuData['SAPItemCodes'][1]['SAPItemCode'];
-
-					// Create Stock Query
-				// 	stockQuery = this.populateStockQuery(stockQuery, skuData);
-
-				// 	for(var sapItem in skuData['SAPItemCodes']){
-				// 		if(!structKeyExists(siteProductCodes, sapItem['countryCode'])){
-				// 			continue;
-				// 		}
-				// 		arrayAppend(siteProductCodes[sapItem['countryCode']], sku['SKUItemCode'])
-				// 	}
-
-
-				//}else{
-				//	sku['SAPItemCode'] = skuData['ItemCode'];
-				//}
-
-
-				// Setup SkuPrice data
-				// if(structKeyExists(skuData, 'PriceLevels') && ArrayLen(skuData['PriceLevels'])){
-				// 	for(var skuPriceData in skuData.PriceLevels){
-				// 		if( skuPriceData['CountryCode'] == 'UNK'){
-				// 			continue;
-				// 		}
-				// 		var skuPrice = {
-				// 			'ItemCode' : skuData.ItemCode,
-				// 			'Commission' : skuPriceData['CommissionableVolume'] ?: 0,
-				// 			'QualifyingPrice' : skuPriceData['QualifyingVolume'] ?: 0,
-				// 			'RetailsCommissions' : skuPriceData['RetailProfit'] ?: 0,
-				// 			'RetailValueVolume' : skuPriceData['RetailVolume'] ?: 0,
-				// 			'SellingPrice' : skuPriceData['SellingPrice'] ?: 0,
-				// 			'TaxablePrice' : skuPriceData['TaxablePrice'] ?: 0,
-				// 			'ProductPackBonus' : skuPriceData['ProductPackVolume'] ?: 0,
-				// 			'PriceLevel' : skuPriceData['PriceLevelCode'],
-				// 			'CurrencyCode' : countryToCurrency[skuPriceData['CountryCode']]
-				// 		};
-
-				// 		// Check if this is the SKU price
-				// 		if(skuPrice['CurrencyCode'] == 'USD' && skuPrice['PriceLevel'] == '2'){
-				// 			sku['Amount'] = skuPrice['SellingPrice'];
-				// 		}
-				// 		// Add SkuPrice to CF Query
-				// 		QueryAddRow(skuPriceQuery, skuPrice);
-				// 	}
-				// }
-				// If Sku Price not found, set it to 0
-				// if(!structKeyExists(sku,'Amount')){
-				// 	sku['Amount'] = 0;
-				// }
+				
+				arrayAppend(skuCodes, sku['SKUItemCode']);
+				
 				// Add Sku to CF Query
 				QueryAddRow(skuQuery, sku);
 
@@ -1277,10 +1204,36 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 			}
 		}
 		
+		
+		
+		
 		logHibachi("importMonatProducts - Importing Products/Sku Count #skuQuery.recordCount#", true); 
 		if(skuQuery.recordCount){
+
 			var importSkuConfig = FileRead('#basePath#../../config/import/skus.json');
-			getService("HibachiDataService").loadDataFromQuery(skuQuery, importSkuConfig, arguments.rc.dryRun);
+			var updateSkuConfig = FileRead('#basePath#../../config/import/skus_update.json');
+			
+			var skuCodesResult = QueryExecute('SELECT GROUP_CONCAT(skuCode) skuCodes from swSku where skuCode IN ( :skuCodes )',{ 
+				'skuCodes' = { 
+				    'value' = arrayToList(skuCodes), 
+				    'list' = true
+				}
+			});
+				
+			var existinSkuCodes = listToArray(skuCodesResult['skuCodes']);
+			
+			
+		    
+		    
+		    var existingSkus = skuQuery.filter(function(row, rowNumber, qryData){
+                return arrayFind(existinSkuCodes, row.SKUItemCode);
+            });
+			var newSkus = skuQuery.filter(function(row, rowNumber, qryData){
+                return !arrayFind(existinSkuCodes, row.SKUItemCode);
+            });
+		
+			getService("HibachiDataService").loadDataFromQuery(existingSkus, updateSkuConfig, arguments.rc.dryRun);
+			getService("HibachiDataService").loadDataFromQuery(newSkus, importSkuConfig, arguments.rc.dryRun);
 		}
 		
 		logHibachi("importMonatProducts - Importing On The Fly Setting #listLen(onTheFlySkuCodes)#", true); 
