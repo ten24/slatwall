@@ -43,7 +43,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="superUserFlag" ormtype="boolean";
 	property name="firstName" hb_populateEnabled="public" ormtype="string";
 	property name="lastName" hb_populateEnabled="public" ormtype="string";
-	property name="company" hb_populateEnabled="public" ormtype="string";
+	property name="company" hb_populateEnabled="false" ormtype="string";
 	property name="loginLockExpiresDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="failedLoginAttemptCount" hb_populateEnabled="false" ormtype="integer" hb_auditable="false";
 	property name="totpSecretKey" hb_populateEnabled="false" ormtype="string" hb_auditable="false";
@@ -55,7 +55,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="accountCode" ormtype="string" hb_populateEnabled="public" index="PI_ACCOUNTCODE";
 	property name="urlTitle" ormtype="string"; //allows this entity to be found via a url title.
 	property name="accountCreateIPAddress" ormtype="string";
-	property name="rank" hb_populateEnabled="public" ormtype="string";
+	property name="rank" hb_populateEnabled="false" ormtype="string";
 	property name="username" hb_populateEnabled="public" ormtype="string";
 
 	//calucluated property
