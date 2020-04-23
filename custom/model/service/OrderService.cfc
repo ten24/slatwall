@@ -437,33 +437,8 @@ component extends="Slatwall.model.service.OrderService" {
 		return request[orderTemplateOrderDetailsKey];
 	}
 	
-	public any function getCustomPropertyFromOrderTemplateOrderDetails(required string property, required any orderTemplate){
-		return getOrderTemplateOrderDetails(arguments.orderTemplate)[arguments.property];
-	}
-	
-	public numeric function getPersonalVolumeTotalForOrderTemplate(required any orderTemplate){
-		return getOrderTemplateOrderDetails(argumentCollection=arguments)['personalVolumeTotal'];	
-	}
-	
-	public numeric function getCommissionableVolumeTotalForOrderTemplate(required any orderTemplate){
-		return getOrderTemplateOrderDetails(argumentCollection=arguments)['commissionableVolumeTotal'];	
-	}
-	
-
-	public numeric function getPurchasePlusTotalForOrderTemplate(required any orderTemplate){
-		return getOrderTemplateOrderDetails(argumentCollection=arguments)['purchasePlusTotal'];	
-	}
-	
-	public numeric function getProductPackVolumeTotalForOrderTemplate(required any orderTemplate){
-		return getOrderTemplateOrderDetails(argumentCollection=arguments)['productPackVolumeTotal'];	
-	}
-	
 	public numeric function getRetailCommissionTotalForOrderTemplate(required any orderTemplate){
 		return getOrderTemplateOrderDetails(argumentCollection=arguments)['retailCommissionTotal'];	
-	}
-	
-	public any function getappliedPromotionMessagesJsonForOrderTemplate(required any orderTemplate){
-		return getOrderTemplateOrderDetails(argumentCollection=arguments)['appliedPromotionMessagesJson'];	
 	}
 	
 	public any function getOrderTemplateItemCollectionForAccount(required struct data, any account=getHibachiScope().getAccount()){

@@ -54,8 +54,7 @@ component {
 	public numeric function getPersonalVolumeTotal(){
 	
 		if(!structKeyExists(variables, 'personalVolumeTotal')){
-			variables.personalVolumeTotal = getService('OrderService').getPersonalVolumeTotalForOrderTemplate(this);
-
+			variables.personalVolumeTotal = getService('OrderService').getCustomPropertyFromOrderTemplateOrderDetails('personalVolumeTotal', this);
 		}	
 		return variables.personalVolumeTotal; 	
 	}
@@ -63,14 +62,14 @@ component {
 	public numeric function getCommissionableVolumeTotal(){
 		
 		if(!structKeyExists(variables, 'commissionableVolumeTotal')){
-			variables.commissionableVolumeTotal = getService('OrderService').getCommissionableVolumeTotalForOrderTemplate(this);	
+			variables.commissionableVolumeTotal = getService('OrderService').getCustomPropertyFromOrderTemplateOrderDetails('commissionableVolumeTotal', this);	
 		}	
 		return variables.commissionableVolumeTotal;
 	} 
 	
 	public numeric function getPurchasePlusTotal(){
 		if(!structKeyExists(variables, 'purchasePlusTotal')){
-			variables.purchasePlusTotal = getService('OrderService').getPurchasePlusTotalForOrderTemplate(this);	
+			variables.purchasePlusTotal = getService('OrderService').getCustomPropertyFromOrderTemplateOrderDetails('purchasePlusTotal', this);	
 		}	
 		return variables.purchasePlusTotal;
 	} 
@@ -78,7 +77,7 @@ component {
 	public numeric function getProductPackVolumeTotal(){
 		
 		if(!structKeyExists(variables, 'productPackVolumeTotal')){
-			variables.productPackVolumeTotal = getService('OrderService').getProductPackVolumeTotalForOrderTemplate(this);	
+			variables.productPackVolumeTotal = getService('OrderService').getCustomPropertyFromOrderTemplateOrderDetails('productPackVolumeTotal', this);	
 		}	
 		return variables.productPackVolumeTotal;
 	} 
@@ -204,7 +203,7 @@ component {
 	public any function getappliedPromotionMessagesJson(){
 	
 		if(!structKeyExists(variables, 'appliedPromotionMessagesJson')){
-			variables.appliedPromotionMessagesJson = getService('OrderService').getappliedPromotionMessagesJsonForOrderTemplate(this);
+			variables.appliedPromotionMessagesJson = getService('OrderService').getCustomPropertyFromOrderTemplateOrderDetails('appliedPromotionMessagesJson', this);
 		}	
 		
 		return variables.appliedPromotionMessagesJson; 	

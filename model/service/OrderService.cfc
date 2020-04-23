@@ -1326,6 +1326,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public boolean function getOrderTemplateCanBePlaced(required any orderTemplate){
 		return getOrderTemplateOrderDetails(argumentCollection=arguments)['canPlaceOrder'];
 	}
+	
+	public any function getCustomPropertyFromOrderTemplateOrderDetails(required string property, required any orderTemplate){
+		return getOrderTemplateOrderDetails(arguments.orderTemplate)[arguments.property];
+	}
 
 	//order transient helper methods
 	public any function newTransientOrderFromOrderTemplate(required any orderTemplate, boolean evictFromSession=true){
@@ -1940,7 +1944,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							quantity = arguments.processObject.getQuantity(),
 							priceGroups = priceGroups
 						);
-						
+		
 		if( IsNull(priceByCurrencyCode) ) {
 			arguments.orderTemplate.addError('priceByCurrencyCode', 
 				rbKey('validate.processOrderTemplate_addOrderTemplateItem.sku.hasPriceByCurrencyCode')
