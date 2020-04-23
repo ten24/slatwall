@@ -89,6 +89,28 @@ component  accessors="true" output="false"
 	}
 	
 	/**
+	 * Get Order Details with Order Invoice
+	 * @param orderID
+	 * @return none
+	 * */
+	 public void function getOrderDetails(required struct data) {
+	     param name="arguments.data.orderID";
+	     
+	     var account = getHibachiScope().getAccount();
+	     if(!isNull(account) && !isEmpty(account.getAccountID())) {
+	         var order = orderService.getOrder(arguments.data.orderID);
+	         if(!isNull(order) && (order.getAccount().getAccountID() == account.getAccountID() || account.getSuperUserFlag() == true ) ) {
+	             arguments.data.ajaxResponse['orderDetails'] = orderService.getOrderDetails(order.getOrderID(), account.getAccountID());
+	             getHibachiScope().addActionResult("public:account.getOrderDetails",false);
+	         } else {
+	             getHibachiScope().addActionResult("public:account.getOrderDetails",true);
+	         }
+	     } else {
+	         getHibachiScope().addActionResult("public:account.getOrderDetails",true);
+	     }
+	 }
+	
+	/**
 	 * Function add account phone phone
 	 * @param phoneNumber required
 	 * @return none
