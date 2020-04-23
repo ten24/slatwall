@@ -29,8 +29,8 @@
                                                    </tr>
                                                    
                                                    <!------- ORDER ITEM LOOP ------->
-													<cfset skuCodeArray = []>
-													<cfset skuIDArray = []>
+													<cfset local.skuCodeArray = []>
+													<cfset local.skuIDArray = []>
 													
 													<cfloop array="#orderTemplate.getOrderTemplateItems()#" index="local.orderTemplateItem">
 														<tr>
@@ -46,7 +46,7 @@
 															</td>
 														</tr>
 													</cfloop>
-													<cfset skuIDList = skuIDArray.toList()>
+													<cfset local.skuIDList = skuIDArray.toList()>
                                                 </table>
                                              </div>
                                              <!--[if (!mso)&(!IE)]><!-->
