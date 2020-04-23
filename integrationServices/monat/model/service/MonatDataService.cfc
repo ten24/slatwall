@@ -1229,7 +1229,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
                 return arrayFind(existingSkuCodes, arguments.row.SKUItemCode);
             });
 			var newSkus = skuQuery.filter(function(row, rowNumber, qryData){
-                return !arrayFind(existinSkuCodes, row.SKUItemCode);
+                return !arrayFind(existingSkuCodes, arguments.row.SKUItemCode);
             });
 		
 			getService("HibachiDataService").loadDataFromQuery(existingSkus, updateSkuConfig, arguments.rc.dryRun);
