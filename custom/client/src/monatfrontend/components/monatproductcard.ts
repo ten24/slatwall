@@ -152,6 +152,7 @@ class MonatProductCardController {
 				type: type,
 				isEnrollment: this.isEnrollment,
 				orderTemplateID: this.orderTemplate,
+				flexshipHasAccount: this.flexshipType == 'flexshipHasAccount' ? true : false
 			},
 			preClose: (modal) => {
 				modal.element.modal('hide');
@@ -175,7 +176,7 @@ class MonatProductCardController {
 			let extraProperties = "canPlaceOrderFlag,purchasePlusTotal,appliedPromotionMessagesJson,calculatedOrderTemplateItemsCount";
 
 			if(this.flexshipType == 'flexshipHasAccount'){
-				extraProperties += ',qualifiesForOFYProducts';
+				extraProperties += ',qualifiesForOFYProducts,vatTotal,taxTotal,fulfillmentHandlingFeeTotal,fulfillmentTotal';
 			}
 			
 			if(!this.orderTemplateService.cartTotalThresholdForOFYAndFreeShipping){
