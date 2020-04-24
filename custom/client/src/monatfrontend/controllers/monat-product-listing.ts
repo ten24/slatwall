@@ -9,7 +9,7 @@ class MonatProductListingController {
     public cmsCategoryFilterFlag:boolean;
     public contentFilterFlag:boolean;
     public cmsContentFilterFlag:boolean;
-    public pageRecordsShow:number = 12;
+    public pageRecordsShow:number = 40;
     public recordsCount:number;
     public showAddToCardAlert;
     public callEndpoint = true;
