@@ -2546,7 +2546,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// Multiple refunds
 		if(!isNull(arguments.processObject.getOrderPayments()) && arrayLen(arguments.processObject.getOrderPayments())){
 			for(var orderPaymentStruct in arguments.processObject.getOrderPayments()){
-				if(structKeyExists(orderPaymentStruct,'originalOrderPaymentID') && len(orderPaymentStruct['originalOrderPaymentID'])){
+				if(structKeyExists(orderPaymentStruct,'amount') 
+					&& orderPaymentStruct.amount != 0 
+					&& structKeyExists(orderPaymentStruct,'originalOrderPaymentID') 
+					&& len(orderPaymentStruct['originalOrderPaymentID'])){
 					var originalOrderPayment = this.getOrderPayment(orderPaymentStruct['originalOrderPaymentID']);
 					if(isObject(originalOrderPayment)){
 						var returnOrderPayment = setupReturnOrderPayment(originalOrderPayment, returnOrder, orderPaymentStruct);
