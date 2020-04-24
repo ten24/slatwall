@@ -409,6 +409,10 @@ component extends="Slatwall.model.service.OrderService" {
 			request[orderTemplateOrderDetailsKey]['canPlaceOrderDetails'] = getPromotionService().getOrderQualifierDetailsForCanPlaceOrderReward(transientOrder); 
 			request[orderTemplateOrderDetailsKey]['canPlaceOrder'] = request[orderTemplateOrderDetailsKey]['canPlaceOrderDetails']['canPlaceOrder']; 
 			request[orderTemplateOrderDetailsKey]['purchasePlusTotal'] = transientOrder.getPurchasePlusTotal();
+			request[orderTemplateOrderDetailsKey]['taxTotal'] = transientOrder.getTaxTotal();
+			request[orderTemplateOrderDetailsKey]['vatTotal'] = transientOrder.getVatTotal();
+			request[orderTemplateOrderDetailsKey]['fulfillmentHandlingFeeTotal'] = transientOrder.getFulfillmentHandlingFeeTotal();
+			
 			try{
 				request[orderTemplateOrderDetailsKey]['appliedPromotionMessagesJson'] = serializeJson(this.getAppliedPromotionMessageData(transientOrder.getOrderID()).getRecords());
 			}catch(any e){
@@ -432,30 +436,9 @@ component extends="Slatwall.model.service.OrderService" {
 
 		return request[orderTemplateOrderDetailsKey];
 	}
-
-	public numeric function getPersonalVolumeTotalForOrderTemplate(required any orderTemplate){
-		return getOrderTemplateOrderDetails(argumentCollection=arguments)['personalVolumeTotal'];	
-	}
-	
-	public numeric function getCommissionableVolumeTotalForOrderTemplate(required any orderTemplate){
-		return getOrderTemplateOrderDetails(argumentCollection=arguments)['commissionableVolumeTotal'];	
-	}
-	
-
-	public numeric function getPurchasePlusTotalForOrderTemplate(required any orderTemplate){
-		return getOrderTemplateOrderDetails(argumentCollection=arguments)['purchasePlusTotal'];	
-	}
-	
-	public numeric function getProductPackVolumeTotalForOrderTemplate(required any orderTemplate){
-		return getOrderTemplateOrderDetails(argumentCollection=arguments)['productPackVolumeTotal'];	
-	}
 	
 	public numeric function getRetailCommissionTotalForOrderTemplate(required any orderTemplate){
 		return getOrderTemplateOrderDetails(argumentCollection=arguments)['retailCommissionTotal'];	
-	}
-	
-	public any function getappliedPromotionMessagesJsonForOrderTemplate(required any orderTemplate){
-		return getOrderTemplateOrderDetails(argumentCollection=arguments)['appliedPromotionMessagesJson'];	
 	}
 	
 	public any function getOrderTemplateItemCollectionForAccount(required struct data, any account=getHibachiScope().getAccount()){

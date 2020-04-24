@@ -6,7 +6,8 @@ export enum FlexshipSteps{
 	SHOP,
 	FREQUENCY,	
 	OFY,
-	CHECKOUT	
+	CHECKOUT,
+	REVIEW
 }
 
 export enum FlexshipFlowEvents {
@@ -42,7 +43,7 @@ class FlexshipFlowController {
     public $onInit = () => {
     	
     	this.currentOrderTemplateID = this.monatService.getCurrentFlexship()?.orderTemplateID;
-		this.orderTemplateService.getSetOrderTemplateOnSession('qualifiesForOFYProducts', 'save', false, false)
+		this.orderTemplateService.getSetOrderTemplateOnSession('qualifiesForOFYProducts,purchasePlusTotal,vatTotal,taxTotal,fulfillmentHandlingFeeTotal', 'save', false, false)
 		.then((res:{[key:string]:any})=>{
 			this.orderTemplate = res.orderTemplate;
 			if(!this.orderTemplate){
@@ -50,6 +51,8 @@ class FlexshipFlowController {
 			 	this.monatService.redirectToProperSite("/my-account/flexships");
 			}
 		});
+		
+		this.monatService.getProductFilters();
     }
 	
 	public back = ():FlexshipSteps => {
@@ -63,6 +66,9 @@ class FlexshipFlowController {
 			case FlexshipSteps.CHECKOUT:
 				return this.setStepAndUpdateProgress(FlexshipSteps.OFY);
 				break;
+			case FlexshipSteps.REVIEW:
+				return this.setStepAndUpdateProgress(FlexshipSteps.CHECKOUT);
+				break;
 			default:
 				return this.setStepAndUpdateProgress(FlexshipSteps.SHOP);
 		}
@@ -70,6 +76,7 @@ class FlexshipFlowController {
 	}
 	
 	public next = ():FlexshipSteps => {
+
 		switch(this.currentStep){
 			case FlexshipSteps.SHOP:
 				return this.setStepAndUpdateProgress(FlexshipSteps.FREQUENCY)
@@ -81,13 +88,15 @@ class FlexshipFlowController {
 				return this.setStepAndUpdateProgress(FlexshipSteps.CHECKOUT);
 				break;
 			default:
-				return this.setStepAndUpdateProgress(FlexshipSteps.CHECKOUT);
+				return this.setStepAndUpdateProgress(FlexshipSteps.REVIEW);
 		}
 		
 	}
 	
 	public goToStep = (step:FlexshipSteps):FlexshipSteps =>{
-		return this.currentStep = this.farthestStepReached >= step ? step : this.currentStep;
+		this.currentStep = this.farthestStepReached >= step ? step : this.currentStep;
+		(this.publicService as any).showFooter = this.currentStep == FlexshipSteps.REVIEW;
+		return this.currentStep;
 	}
 	
 	public updateProgress(step:FlexshipSteps):void{
@@ -101,7 +110,13 @@ class FlexshipFlowController {
 		if(this.currentStep === step && step === FlexshipSteps.CHECKOUT){
 			return this.observerService.notify( FlexshipFlowEvents.ON_COMPLETE_CHECKOUT );
 		}
-		
+
+		if(step == FlexshipSteps.REVIEW){
+			(this.publicService as any).showFooter = true;
+		}else{
+			(this.publicService as any).showFooter = false;
+		}
+
 		this.updateProgress(step);
 		return this.currentStep = step;
     }

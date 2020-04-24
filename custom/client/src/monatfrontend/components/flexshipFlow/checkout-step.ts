@@ -38,10 +38,12 @@ class FlexshipCheckoutStepController {
 			FlexshipFlowEvents.ON_COMPLETE_CHECKOUT
 		);
 		this.setupStateChangeListeners();
-
+		
+		this.orderTemplateService.getAppliedPromotionCodes();
+		
 		this.orderTemplateService
 			//instead of making a trip to the server we should cache at the frontend;
-			.getSetOrderTemplateOnSession("", "save", false, false)
+			.getSetOrderTemplateOnSession("vatTotal,taxTotal,fulfillmentHandlingFeeTotal", "save", false, false)
 			.then((response: any) => {
 				this.flexshipCheckoutStore.dispatch("SET_CURRENT_FLEXSHIP", (state) => {
 					return this.flexshipCheckoutStore.setFlexshipReducer(
@@ -117,8 +119,7 @@ class FlexshipCheckoutStepController {
 					this.rbkeyService.rbKey("alert.flexship.updateSuccessful")
 				);
 
-				//TODO: Redirect to the next screen
-				this.monatService.redirectToProperSite("/my-account/flexships");
+				this.observerService.notify(FlexshipFlowEvents.ON_NEXT);
 			})
 			.catch((error) => {
 				this.monatAlertService.showErrorsFromResponse(error);

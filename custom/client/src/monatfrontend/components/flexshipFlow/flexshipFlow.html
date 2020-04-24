@@ -36,6 +36,10 @@
 		<div ng-if="flexshipFlow.currentStep  === flexshipFlow.FlexshipSteps.CHECKOUT"> 			
 			<flexship-checkout-step id="checkout"></flexship-checkout-step>
 		</div>
+		<!--Review step -->
+		<div ng-if="flexshipFlow.currentStep  === flexshipFlow.FlexshipSteps.REVIEW"> 			
+			<review-step></review-step>
+		</div>
 </div>
 
 <div ng-cloak ng-show="flexshipFlow.showCanPlaceOrderAlert && !flexshipFlow.monatService.canPlaceOrder" class="alert alert-danger alert-dismissible fade show text-center can-place-order-alert" role="alert">
@@ -44,7 +48,7 @@
 
 
  <!----FLEXSHIP FLOW FOOTER-------->
-<footer class="steps-footer d-flex flex-column">
+<footer ng-if="flexshipFlow.currentStep  != flexshipFlow.FlexshipSteps.REVIEW" class="steps-footer d-flex flex-column">
 	<div class="w-100 d-flex justify-content-between align-items-center">
 		
 		<!-- Back button --->
@@ -144,9 +148,11 @@
 				data-ng-click="flexshipFlow.next();"
 				class="btn btn-secondary forward-btn forward" 
 				ng-class="{  'loading,disabled': flexshipFlow.loading }"
-				ng-disabled="flexshipFlow.currentStep == flexshipFlow.loading || !flexshipFlow.orderTemplateService.mostRecentOrderTemplate.qualifiesForOFYProducts"
+				ng-disabled="
+					flexshipFlow.loading || !flexshipFlow.orderTemplateService.mostRecentOrderTemplate.qualifiesForOFYProducts && flexshipFlow.currentStep != flexshipFlow.FlexshipSteps.CHECKOUT
+				"
 			>
-				<!--|| !flexshipFlow.orderTemplateService.mostRecentOrderTemplate.qualifiesForOFYProducts-->
+
 				<span sw-rbkey="'frontend.global.next'"></span>
 				<i class="fas fa-chevron-right"></i>
 			</button>			
