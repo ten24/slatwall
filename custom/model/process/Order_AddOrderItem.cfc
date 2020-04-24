@@ -21,6 +21,7 @@ component accessors="true" extends="Slatwall.model.process.Order_AddOrderItem" {
     
     // Helper Properties
     property name="isPurchasableItemFlag" type="boolean" default="true";
+    property name="updateShippingMethodOptionsFlag" type="boolean" default="true";
     
     // ======================== START: Defaults ============================
     
