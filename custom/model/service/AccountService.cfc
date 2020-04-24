@@ -363,4 +363,18 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 			.getIntegrationCFC("data")
 			.retrySyncPendingOrders(argumentCollection=arguments);
 	}
+	
+	public any function processAccount_importAccountUpdates(required account, required any processObject) {
+		
+		getHibachiScope()
+			.getService('integrationService')
+			.getIntegrationByIntegrationPackage('monat')
+			.getIntegrationCFC("data")
+			.importAccountUpdates();
+
+		return arguments.account;
+	}
+	
+	
+	
 }

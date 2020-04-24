@@ -1766,5 +1766,28 @@ component extends="Slatwall.model.service.OrderService" {
 		
 		return super.processOrder_placeOrder(argumentCollection=arguments);
 	}
+	
+	
+	public any function processOrder_importOrderUpdates(required order, required any processObject) {
+		
+		getHibachiScope()
+			.getService('integrationService')
+			.getIntegrationByIntegrationPackage('monat')
+			.getIntegrationCFC("data")
+			.importOrderUpdates();
+
+		return arguments.order;
+	}
+	
+	public any function processOrder_importOrderShipments(required order, required any processObject) {
+		
+		getHibachiScope()
+			.getService('integrationService')
+			.getIntegrationByIntegrationPackage('monat')
+			.getIntegrationCFC("data")
+			.importOrderShipments();
+
+		return arguments.order;
+	}
 
 }
