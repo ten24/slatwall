@@ -1,12 +1,12 @@
 component extends="Slatwall.model.service.InventoryService" {
     
-	public any function processInventory_importInventoryUpdates(required inventory, required any processObject) {
+	public any function processInventory_importInventoryUpdates() {
 		
 		getHibachiScope()
 			.getService('integrationService')
 			.getIntegrationByIntegrationPackage('monat')
 			.getIntegrationCFC("data")
-			.importInventoryUpdates();
+			.importInventoryUpdates({});
 
 		return arguments.inventory;
 	}

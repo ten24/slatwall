@@ -1768,26 +1768,26 @@ component extends="Slatwall.model.service.OrderService" {
 	}
 	
 	
-	public any function processOrder_importOrderUpdates(required order, required any processObject) {
+	public any function processOrder_importOrderUpdates() {
 		
 		getHibachiScope()
 			.getService('integrationService')
 			.getIntegrationByIntegrationPackage('monat')
 			.getIntegrationCFC("data")
-			.importOrderUpdates();
+			.importOrderUpdates({});
 
-		return arguments.order;
+		return newOrder();
 	}
 	
-	public any function processOrder_importOrderShipments(required order, required any processObject) {
+	public any function processOrder_importOrderShipments() {
 		
 		getHibachiScope()
 			.getService('integrationService')
 			.getIntegrationByIntegrationPackage('monat')
 			.getIntegrationCFC("data")
-			.importOrderShipments();
+			.importOrderShipments({});
 
-		return arguments.order;
+		return newOrder();
 	}
 
 }

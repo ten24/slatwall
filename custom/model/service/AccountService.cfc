@@ -364,13 +364,13 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 			.retrySyncPendingOrders(argumentCollection=arguments);
 	}
 	
-	public any function processAccount_importAccountUpdates(required account, required any processObject) {
+	public any function processAccount_importAccountUpdates() {
 		
 		getHibachiScope()
 			.getService('integrationService')
 			.getIntegrationByIntegrationPackage('monat')
 			.getIntegrationCFC("data")
-			.importAccountUpdates();
+			.importAccountUpdates({});
 
 		return arguments.account;
 	}
