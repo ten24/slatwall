@@ -148,8 +148,6 @@ component accessors="true" output="false" extends="HibachiService" {
 				}
 			}, true, maxThreads);
 			
-			
-			writedump(entityQueueIDsToBeDeletedArray); abort;
 			if(arrayLen(entityQueueIDsToBeDeletedArray)){
 				deleteEntityQueueItems(arrayToList(entityQueueIDsToBeDeletedArray));
 			}
