@@ -122,8 +122,7 @@ component accessors="true" output="false" extends="HibachiService" {
 								    !len(entityQueue['processMethod']);  
 	
 					if(noMethod) { 
-						entityQueueIDsToBeDeleted = listAppend(entityQueueIDsToBeDeleted, entityQueue['entityQueueID']);
-						continue;
+						return entityQueue['entityQueueID'];
 					}
 				
 					var entityService = getServiceForEntityQueue(entityQueue);
@@ -131,14 +130,14 @@ component accessors="true" output="false" extends="HibachiService" {
 					var entity = entityService.invokeMethod( "get#entityQueue['baseObject']#", {1= entityQueue['baseID'] });
 					
 					if(isNull(entity)){
-						entityQueueIDsToBeDeleted = listAppend(entityQueueIDsToBeDeleted, entityQueue['entityQueueID']);
-						continue;
+						return entityQueue['entityQueueID'];
 					}
 	
 					var entityMethodInvoked = invokeMethodOrProcessOnService(entityQueue, entity, entityService);  
 					
 					if(entityMethodInvoked){
 						ormflush();
+						entityQueueIDsToBeDeleted = listAppend(entityQueueIDsToBeDeleted, entityQueue['entityQueueID']);
 					} else {
 						ORMClearSession();
 						getHibachiScope().setORMHasErrors(false);
@@ -150,8 +149,8 @@ component accessors="true" output="false" extends="HibachiService" {
 				}
 			}, true, maxThreads);
 			
-			if(arrayLen(entityQueueIDsToBeDeleted)){
-				deleteEntityQueueItems(arrayToList(entityQueueIDsToBeDeleted));
+			if(arrayLen(entityQueueIDsToBeDeletedArray)){
+				deleteEntityQueueItems(arrayToList(entityQueueIDsToBeDeletedArray));
 			}
 
 		}
