@@ -137,7 +137,6 @@ component accessors="true" output="false" extends="HibachiService" {
 					
 					if(entityMethodInvoked){
 						ormflush();
-						entityQueueIDsToBeDeleted = listAppend(entityQueueIDsToBeDeleted, entityQueue['entityQueueID']);
 					} else {
 						ORMClearSession();
 						getHibachiScope().setORMHasErrors(false);
@@ -149,6 +148,8 @@ component accessors="true" output="false" extends="HibachiService" {
 				}
 			}, true, maxThreads);
 			
+			
+			writedump(entityQueueIDsToBeDeletedArray); abort;
 			if(arrayLen(entityQueueIDsToBeDeletedArray)){
 				deleteEntityQueueItems(arrayToList(entityQueueIDsToBeDeletedArray));
 			}
