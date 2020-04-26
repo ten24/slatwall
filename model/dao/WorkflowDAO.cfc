@@ -131,5 +131,15 @@ Notes:
 		</cfquery>
 	</cffunction>
 	
+	<cffunction name="getExclusiveWorkflowTriggersInvocationDomains">
+		<cfquery name="local.rs">
+			SELECT allowedInvocationDomain FROM SwWorkflowTrigger 
+			WHERE allowedInvocationDomain IS NOT NULL AND allowedInvocationDomain != ''
+			AND exclusiveInvocationDomainFlag = 1
+		</cfquery>
+		
+		<cfreturn valueList(local.rs.allowedInvocationDomain) />
+	</cffunction>
+	
 </cfcomponent>
 
