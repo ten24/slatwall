@@ -1811,9 +1811,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			this.updateOrderStatusBySystemCode(newOrder, 'ostNew');
 		}
 		
-			
+		getOrderDAO().removeTemporaryOrderTemplateItems(arguments.orderTemplate.getOrderTemplateID());	
 		this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# completing place order and has status: #newOrder.getOrderStatusType().getTypeName()#');
-		getHibachiEntityQueueService().insertEntityQueueItem(arguments.orderTemplate.getOrderTemplateID(), 'OrderTemplate', 'processOrderTemplate_removeTemporaryItems');	
 
 		return arguments.orderTemplate; 
 	}
