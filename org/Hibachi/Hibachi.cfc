@@ -144,8 +144,8 @@ component extends="framework.one" {
 			return '';
 		}
 		for(var i = 1; i <= arrayLen(variables.framework.hibachi.availableClusters); i++){
-			if( structKeyExists(variables.framework.hibachi.cluster, '#variables.framework.hibachi.cluster.availableClusters[i]#UrlPattern')){
-				var currentClusterUrlPattern = variables.framework.hibachi.cluster['#variables.framework.hibachi.cluster.availableClusters[i]#UrlPattern'];
+			if( structKeyExists(variables.framework.hibachi.cluster, '#variables.framework.hibachi.availableClusters[i]#UrlPattern')){
+				var currentClusterUrlPattern = variables.framework.hibachi.cluster['#variables.framework.hibachi.availableClusters[i]#UrlPattern'];
 				if(len(currentClusterUrlPattern) && REFindNoCase(currentClusterUrlPattern,cgi.server_name)){
 					return  variables.framework.hibachi.availableClusters[i];
 				}
