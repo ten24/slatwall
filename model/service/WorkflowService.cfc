@@ -153,6 +153,23 @@ component extends="HibachiService" accessors="true" output="false" {
 		}
 	}
 
+	public any function runWorkflowOnAllServers() {
+		// get all active instances in the current cluster
+		var serverInstanceCollectionList = getService('HibachiService').getServerInstanceCollectionList();
+		serverInstanceCollectionList.addFilter('serverInstanceClusterName',getHibachiScope().getApplicationValue('applicationCluster'));
+		
+		var serverInstances = serverInstanceCollectionList.getRecords();
+		for (var serverInstance in serverInstances) {
+	        var offset = findNoCase('Slatwall',cgi.script_name)?'Slatwall/':'';
+			var workflowurl = 'http://#serverInstance["serverInstanceIPAddress"]#:#serverInstance["serverInstancePort"]#/#offset#?slatAction=api:workflow.executeScheduledWorkflows';
+			var req = new http();
+	        req.setMethod("get");
+	        req.setUrl(workflowurl);
+	        req.setTimeOut(3);
+	        var res = req.send().getPrefix();
+		}
+	}
+	
 	public any function runAllWorkflowsByScheduleTrigger() {
 		
 		getWorkflowDAO().resetExpiredWorkflows(); 
