@@ -372,71 +372,136 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
      * @param request data
      * @return none
      * */
-    public any function configExternalPayPal(required struct data) {
+    public any function getPayPalClientConfigForCart(required struct data) {
         //Configure PayPal
+        var braintreeIntegration = getService('integrationService').getIntegrationByIntegrationPackage('braintree');
         var requestBean = getHibachiScope().getTransient('externalTransactionRequestBean');
 	    requestBean.setTransactionType('authorizeAccount');
-	    var account = getHibachiScope().getAccount();
-	    requestBean.setAccount(account);
+        requestBean.setAccount(getHibachiScope().getAccount());
 	    
-	    var responseBean = getHibachiScope().getService('integrationService').getIntegrationByIntegrationPackage('braintree').getIntegrationCFC("Payment").processExternal(requestBean);
+	    var responseBean = braintreeIntegration.getIntegrationCFC("Payment").processExternal(requestBean);
 	    
 	    //Populate shipping address
-	    var orderFulfillment = getHibachiScope().getCart().getOrderFulfillments();
-	    var shippingAddress = {};
-	    if(arrayLen(orderFulfillment) && !isNull(orderFulfillment[1])) {
-	        var cartShippingAddress = orderFulfillment[1].getShippingAddress();
-	        if(!isNull(cartShippingAddress)) {
-	            
-	            shippingAddress = {
-    	            "postalCode" : cartShippingAddress.getPostalCode() ? : '',
-    	            "countryCode" : cartShippingAddress.getCountryCode() ? : '',
-    	            "line1" : cartShippingAddress.getStreetAddress() ? : '',
-    	            "recipientName" : cartShippingAddress.getName() ? : '',
-    	            "city" : cartShippingAddress.getCity() ? : '',
-    	            "line2" : cartShippingAddress.getStreet2Address() ? : '',
-    	            "state" : cartShippingAddress.getStateCode() ? : '',
-    	        };
+	    var formattedAddress = {};
+	    if(getHibachiScope().getCart().hasOrderFulfillment()) {
+            //Q: can we use the address from the cart itself instead of grabing it from a fulfillment?
+	        var shippingAddress = getHibachiScope().getCart().getOrderFulfillments()[1].getShippingAddress();
+	        if(!isNull(shippingAddress)) {
+	            formattedAddress = formatSlatwallAddressForPayPal(shippingAddress);
 	        }
-	        
 	    }
 	    
-		if(responseBean.hasErrors()) {
-		    this.addErrors(data, responseBean.getErrors());
-		}
-		else {
-		    var requestPayload = {
+		if(!responseBean.hasErrors()) {	    	
+	    	arguments.data['ajaxResponse']['paypalClientConfig'] = {
 	    	    'currencyCode' : "#getHibachiScope().cart().getCurrencyCode()#",
-    			'amount' : getHibachiScope().cart().getCalculatedPaymentAmountDue(),
+                //Q: should we change this to a non-calculated property?
+                'amount' : getHibachiScope().cart().getCalculatedPaymentAmountDue(), 
     			'clientAuthToken' : responseBean.getAuthorizationCode(),
-    			'paymentMode' : getService('integrationService').getIntegrationByIntegrationPackage('braintree').setting(settingName='braintreeAccountSandboxFlag') ? 'sandbox' : 'production',
-    			'shippingAddress': shippingAddress,
-	    	}
-	    	
-	    	arguments.data['ajaxResponse']['paypalClientConfig'] = requestPayload;
-		}
+    			'paymentMode' : braintreeIntegration.setting(settingName='braintreeAccountSandboxFlag') ? 'sandbox' : 'production',
+    			'shippingAddress': formattedAddress,
+	    	};
+		} else {
+            this.addErrors(data, responseBean.getErrors());
+        }
 		
     }
+
+    /**
+     * Helper function to create an addtess struct from an instance of slatwall-address;
+     * 
+     */
+    private struct function formatSlatwallAddressForPayPal(any address){
+
+        if(IsNull(arguments.address)){
+            return {};
+        }
+        
+        return {
+            "recipientName" : arguments.address.getName()             ?: '',
+            "line1"         : arguments.address.getStreetAddress()    ?: '',
+            "line2"         : arguments.address.getStreet2Address()   ?: '',
+            "city"          : arguments.address.getCity()             ?: '',
+            "state"         : arguments.address.getStateCode()        ?: '',
+            "postalCode"    : arguments.address.getPostalCode()       ?: '',
+            "countryCode"   : arguments.address.getCountryCode()      ?: '',
+        }
+    }
+
+    /**
+     * Function to cnfigure client side Paypal method for order-template
+     * adds paypalClientConfig in ajaxResponse
+     * @param request data
+     * @return none
+     * */
+     public any function getPayPalClientConfigForOrderTemplate(required struct data) {
+        param name="arguments.data.orderTemplateID" default="";
+        param name="arguments.data.shippingAccountAddressID" default="";
+
+        var orderTemplate = getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
+        if(!IsNull(orderTemplate)){
+            return;
+        }
+
+        var braintreeIntegration = getService('integrationService').getIntegrationByIntegrationPackage('braintree');
+        
+        // Authorize with braintree to get an AuthorizationCode for the client
+        if(!orderTemplate.hasErrors() ){
+            var requestBean = getHibachiScope().getTransient('externalTransactionRequestBean');
+            requestBean.setTransactionType('authorizeAccount');
+            requestBean.setAccount(getHibachiScope().getAccount());
+            
+            var responseBean = braintreeIntegration.getIntegrationCFC("Payment").processExternal(requestBean);
+            if(responseBean.hasErrors()) {
+                orderTemplate.addErrors( responseBean.getErrors() );
+            }
+        }
+        
+        // Convert Slatwall-address to PayPal-compatible-address
+        var formattedAddress = {};
+        if(!orderTemplate.hasErrors()){
+            if( Len(arguments.data.shippingAccountAddressID) ) {
+                var accountAddress = getAccountService().getAccountAddress(arguments.data.shippingAccountAddressID);
+            } else {
+                var accountAddress = orderTemplate.getShippingAccountAddress();
+            }
+
+            if(!IsNull(accountAddress)){
+                formattedAddress = formatSlatwallAddressForPayPal(accountAddress.getAddress());
+            }    
+        }
+
+        if(!orderTemplate.hasErrors()){
+            arguments.data.ajaxResponse['paypalClientConfig'] = {
+                'clientAuthToken': responseBean.getAuthorizationCode(),
+                'currencyCode'   : "#orderTemplate.getCurrencyCode()#",
+                'amount'         : orderTemplate.getTotal(),
+                'paymentMode'    : braintreeIntegration.setting(settingName='braintreeAccountSandboxFlag') ? 'sandbox': 'production',
+                'shippingAddress': formattedAddress,
+            };
+        } else {
+            this.addErrors(arguments.data, orderTemplate.getErrors());
+        }
+    }
+    
     
     /**
      * Function to authorize client account for paypal & Add New Payment Method
      * authorize paypal amd add is as new payment method
      * @param request data
-     * @return none
+     * @return none 
      * */
-    public any function authorizePayPal(required struct data) {
+    public any function createPayPalAccountPaymentMethod(required struct data) {
+        param name="arguments.data.paymentToken" default="";
+
         var paymentIntegration = getService('integrationService').getIntegrationByIntegrationPackage('braintree');
 		var paymentMethod = getService('paymentService').getPaymentMethodByPaymentIntegration(paymentIntegration);
-
 		var requestBean = getHibachiScope().getTransient('externalTransactionRequestBean');
     	requestBean.setProviderToken(data.paymentToken);
- 		requestBean.setTransactionType('authorizePayment');
+        requestBean.setTransactionType('authorizePayment');
+         
 		var responseBean = paymentIntegration.getIntegrationCFC("Payment").processExternal(requestBean);
 
-		if(responseBean.hasErrors()) {
-		    this.addErrors(data, responseBean.getErrors());
-		}
-		else {
+		if(!responseBean.hasErrors()) {
 		    //Create a New accountPaymentMethod
             var accountPaymentMethod = getService('accountService').newAccountPaymentMethod();
             accountPaymentMethod.setAccountPaymentMethodName("PayPal - Braintree");
@@ -445,10 +510,15 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             accountPaymentMethod.setProviderToken( responseBean.getProviderToken() );
             accountPaymentMethod = getService('AccountService').saveAccountPaymentMethod(accountPaymentMethod);
 
-            arguments.data['ajaxResponse']['newPayPalPaymentMethod'] = accountPaymentMethod.getAccountPaymentMethodID();
-            arguments.data['ajaxResponse']['paymentMethodID'] = paymentMethod.getPaymentMethodID();
-		}
-
+            if(accountPaymentMethod.hasErrors()){
+                this.addErrors(data, accountPaymentMethod.getErrors());
+            } else {
+                arguments.data['ajaxResponse']['paymentMethodID'] = paymentMethod.getPaymentMethodID();
+                arguments.data['ajaxResponse']['newPayPalPaymentMethod'] = accountPaymentMethod.getAccountPaymentMethodID();
+            }
+		} else {
+            this.addErrors(data, responseBean.getErrors());
+        }
     }
 
     /**
@@ -1837,7 +1907,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         param name="arguments.data.pageRecordsShow" default=10;
         param name="arguments.data.currentPage" default=1;
         
-        var orderTemplate = getOrderService().getOrderTemplateForAccount( argumentCollection = arguments );
+        var orderTemplate = getOrderService().getOrderTemplateAndEnforceOwnerAccount( argumentCollection = arguments );
         if ( isNull( orderTemplate ) ) {
             return;
         }
@@ -2137,7 +2207,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     public void function getAssociatedOFYProductForFlexship(requred struct data){
         param name="arguments.data.orderTemplateID" default=""; //default to flexship
 
-        var orderTemplate = getOrderService().getOrderTemplateForAccount(argumentCollection = arguments);
+        var orderTemplate = getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
 		if( isNull(orderTemplate) ) {
 			return;
 		}

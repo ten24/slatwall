@@ -193,8 +193,8 @@ class MonatCheckoutController {
 		});
 	}
 	
-	public configExternalPayPalMethod() {
-	    this.publicService.doAction('configExternalPayPal').then(response => {
+	public getPayPalClientConfigForCartMethod() {
+	    this.publicService.doAction('getPayPalClientConfigForCart').then(response => {
     		if(!response.paypalClientConfig) {
 			    console.log("Error in configuring PayPal client.");
 			    return;
@@ -255,7 +255,7 @@ class MonatCheckoutController {
                                 return;
                             }
                             
-							that.publicService.doAction('authorizePayPal', {paymentToken : payload.nonce}).then(response => {
+							that.publicService.doAction('createPayPalAccountPaymentMethod', {paymentToken : payload.nonce}).then(response => {
 								if( !response.newPayPalPaymentMethod ) {
 								    console.log("Error in saving account payment method.");
 								    return;

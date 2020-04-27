@@ -153,7 +153,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
         param name="rc.skuID" default="";
         param name="rc.quantity" default=1;
         
-        var orderTemplate = getOrderService().getOrderTemplateForAccount(data=arguments.rc);
+        var orderTemplate = getOrderService().getOrderTemplateAndEnforceOwnerAccount(data=arguments.rc);
 		if( isNull(orderTemplate) ) {
 			return;
 		}

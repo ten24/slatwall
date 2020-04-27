@@ -1885,7 +1885,7 @@ component  accessors="true" output="false"
 	public void function updateOrderTemplateShippingAndBilling(required any data){
 	    param name="arguments.data.orderTemplateID" default="";
 	
-     	var orderTemplate = getOrderService().getOrderTemplateForAccount(argumentCollection = arguments);
+     	var orderTemplate = getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
 		if( isNull(orderTemplate) ) {
 			return; 
 		}
@@ -1917,7 +1917,7 @@ component  accessors="true" output="false"
  	public void function updateOrderTemplateShipping(required any data){ 
         param name="arguments.data.orderTemplateID" default="";
 	
-     	var orderTemplate = getOrderService().getOrderTemplateForAccount(argumentCollection = arguments);
+     	var orderTemplate = getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
 		if( isNull(orderTemplate) ) {
 			return; 
 		}
@@ -1951,7 +1951,7 @@ component  accessors="true" output="false"
  	public void function updateOrderTemplateBilling(required any data){ 
         param name="arguments.data.orderTemplateID" default="";
 	
-     	var orderTemplate = getOrderService().getOrderTemplateForAccount(argumentCollection = arguments);
+     	var orderTemplate = getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
 		if( isNull(orderTemplate) ) {
 			return; 
 		}
@@ -1985,7 +1985,7 @@ component  accessors="true" output="false"
  	public void function activateOrderTemplate(required any data) { 
         param name="arguments.data.orderTemplateID" default="";
 	
-     	var orderTemplate = getOrderService().getOrderTemplateForAccount(argumentCollection = arguments);
+     	var orderTemplate = getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
 		if( isNull(orderTemplate) ) {
 			return;
 		}
@@ -2008,7 +2008,7 @@ component  accessors="true" output="false"
  	public void function cancelOrderTemplate(required any data) { 
         param name="arguments.data.orderTemplateID" default="";
 	
-     	var orderTemplate = getOrderService().getOrderTemplateForAccount(argumentCollection = arguments);
+     	var orderTemplate = getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
 		if( isNull(orderTemplate) ) {
 			return;
 		}
@@ -2031,7 +2031,7 @@ component  accessors="true" output="false"
  	public any function updateOrderTemplateSchedule( required any data ){
         param name="arguments.data.orderTemplateID" default="";
 	
-     	var orderTemplate = getOrderService().getOrderTemplateForAccount(argumentCollection = arguments);
+     	var orderTemplate = getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
 		if( isNull(orderTemplate) ) {
 			return;
 		}
@@ -2054,7 +2054,7 @@ component  accessors="true" output="false"
 	public any function updateOrderTemplateFrequency( required any data ){
         param name="arguments.data.orderTemplateID" default="";
 	
-     	var orderTemplate = getOrderService().getOrderTemplateForAccount(argumentCollection = arguments);
+     	var orderTemplate = getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
 		if( isNull(orderTemplate) ) {
 			return;
 		}
@@ -2088,7 +2088,7 @@ component  accessors="true" output="false"
 	public any function applyGiftCardToOrderTemplate( required struct data ){
         param name="arguments.data.orderTemplateID" default="";
 	
-     	var orderTemplate = getOrderService().getOrderTemplateForAccount(argumentCollection = arguments);
+     	var orderTemplate = getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
 		if( isNull(orderTemplate) ) {
 			return;
 		}
@@ -2118,7 +2118,7 @@ component  accessors="true" output="false"
 	public any function getOrderTemplatePromotionSkuCollectionConfig( required any data ){
         param name="arguments.data.orderTemplateID" default="";
 	
-     	var orderTemplate = getOrderService().getOrderTemplateForAccount(argumentCollection = arguments);
+     	var orderTemplate = getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
 		if( isNull(orderTemplate) ) {
 			return;
 		}
@@ -2131,7 +2131,7 @@ component  accessors="true" output="false"
         param name="arguments.data.pageRecordsShow" default=10;
         param name="arguments.data.currentPage" default=1;
         
-     	var orderTemplate = getOrderService().getOrderTemplateForAccount(argumentCollection = arguments);
+     	var orderTemplate = getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
 		if( isNull(orderTemplate) ) {
 			return;
 		}
@@ -2162,7 +2162,7 @@ component  accessors="true" output="false"
         param name="data.skuID" default="";
         param name="data.quantity" default=1;
         
-        var orderTemplate = getOrderService().getOrderTemplateForAccount(argumentCollection = arguments);
+        var orderTemplate = getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
 		if( isNull(orderTemplate) ) {
 			return;
 		}
@@ -2237,7 +2237,7 @@ component  accessors="true" output="false"
         param name="data.orderTemplateID" default="";
         param name="data.orderTemplateName" default="";
         
-        var orderTemplate = getOrderService().getOrderTemplateForAccount(argumentCollection = arguments);
+        var orderTemplate = getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
 		if( isNull(orderTemplate) ) {
 			return;
 		}
