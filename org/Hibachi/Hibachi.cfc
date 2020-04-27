@@ -140,6 +140,9 @@ component extends="framework.one" {
 	}
 	
 	public string function getCluster() {
+		if( isServerNameAnIP() ){
+			return '';
+		}
 		for(var i = 1; i <= arrayLen(variables.framework.hibachi.availableClusters); i++){
 			if( structKeyExists(variables.framework.hibachi.cluster, '#variables.framework.hibachi.availableClusters[i]#UrlPattern')){
 				var currentClusterUrlPattern = variables.framework.hibachi.cluster['#variables.framework.hibachi.availableClusters[i]#UrlPattern'];
@@ -151,6 +154,9 @@ component extends="framework.one" {
 		return 'web';
 	}
 	
+	public boolean function isServerNameAnIP() {
+		return REFindNoCase('^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$', cgi.server_name);	
+	}
 	
 	public string function getDatasource(){
 		return this.datasource.name;
@@ -355,6 +361,11 @@ component extends="framework.one" {
 				
 				serverInstance.setSettingsExpired(false);
 				getHibachiScope().getService('hibachiCacheService').saveServerInstance( serverInstance );
+			}
+			// if cluster is not set yet, try to set that
+			if( isNull(serverInstance.getServerInstanceClusterName()) || serverInstance.getServerInstanceClusterName() == '' ){
+				getHibachiScope().setApplicationValue("applicationCluster", getCluster());
+				serverInstance.setServerInstanceClusterName(getHibachiScope().getApplicationValue("applicationCluster"));
 			}
 			getHibachiScope().getService('hibachiCacheDao').updateServerInstanceLastRequestDateTime( serverInstance );
 		}
