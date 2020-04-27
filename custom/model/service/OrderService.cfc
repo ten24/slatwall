@@ -746,7 +746,7 @@ component extends="Slatwall.model.service.OrderService" {
 		    */
 		}
 		
-		logHibachi("updateOrderItemsWithAllocatedOrderDiscountAmount: END",true);
+		logHibachi("updateOrderItemsWithAllocatedOrderDiscountAmount: END");
 		
 		// We are expecting an exact allocation. No discrepancy, if this occurs we need to figure out why
 		if (val(actualAllocatedAmountTotal) - val(arguments.order.getOrderCustomDiscountAmountTotal(arguments.priceField)) != 0) {

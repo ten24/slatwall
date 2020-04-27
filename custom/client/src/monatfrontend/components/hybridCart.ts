@@ -112,7 +112,7 @@ class HybridCart {
 	public restrict: string = 'E';
 	public transclude: boolean = true;
 	public templateUrl: string;
-	public scope = {};
+
 	public bindToController = {
 		isEnrollment: '<?',
 		type: '<?',
