@@ -246,12 +246,12 @@
 						// Change Title, HTMLTitle & Meta Details of page
 						$.content().setTitle( $.slatwall.getProduct().getTitle() );
 						if(len($.slatwall.getProduct().setting('productHTMLTitleString'))) {
-							$.content().setHTMLTitle( $.slatwall.getProduct().stringReplace( $.slatwall.getProduct().setting('productHTMLTitleString') ) );	
+							$.content().setHTMLTitle( $.slatwall.getProduct().stringReplace( template = $.slatwall.getProduct().setting('productHTMLTitleString'), formatValues = true ) );	
 						} else {
 							$.content().setHTMLTitle( $.slatwall.getProduct().getTitle() );
 						}
-						$.content().setMetaDesc( $.slatwall.getProduct().stringReplace( $.slatwall.getProduct().setting('productMetaDescriptionString') ) );
-						$.content().setMetaKeywords( $.slatwall.getProduct().stringReplace( $.slatwall.getProduct().setting('productMetaKeywordsString') ) );
+						$.content().setMetaDesc( $.slatwall.getProduct().stringReplace( template = $.slatwall.getProduct().setting('productMetaDescriptionString'), formatValues = true ) );
+						$.content().setMetaKeywords( $.slatwall.getProduct().stringReplace( template = $.slatwall.getProduct().setting('productMetaKeywordsString'), formatValues = true ) );
 						// Setup CrumbList
 						if(productKeyLocation > 2) {
 							
@@ -297,12 +297,12 @@
 						// Change Title, HTMLTitle & Meta Details of page
 						$.content().setTitle( $.slatwall.getProductType().getProductTypeName() );
 						if(len($.slatwall.getProductType().setting('productTypeHTMLTitleString'))) {
-							$.content().setHTMLTitle( $.slatwall.getProductType().stringReplace( $.slatwall.getProductType().setting('productTypeHTMLTitleString') ) );	
+							$.content().setHTMLTitle( $.slatwall.getProductType().stringReplace( template = $.slatwall.getProductType().setting('productTypeHTMLTitleString'), formatValues = true ) );	
 						} else {
 							$.content().setHTMLTitle( $.slatwall.getProductType().getProductTypeName() );
 						}
-						$.content().setMetaDesc( $.slatwall.getProductType().stringReplace( $.slatwall.getProductType().setting('productTypeMetaDescriptionString') ) );
-						$.content().setMetaKeywords( $.slatwall.getProductType().stringReplace( $.slatwall.getProductType().setting('productTypeMetaKeywordsString') ) );
+						$.content().setMetaDesc( $.slatwall.getProductType().stringReplace( template = $.slatwall.getProductType().setting('productTypeMetaDescriptionString'), formatValues = true ) );
+						$.content().setMetaKeywords( $.slatwall.getProductType().stringReplace( template = $.slatwall.getProductType().setting('productTypeMetaKeywordsString'), formatValues = true ) );
 						
 					} else {
 						
@@ -328,12 +328,12 @@
 						// Change Title, HTMLTitle & Meta Details of page
 						$.content().setTitle( $.slatwall.getBrand().getBrandName() );
 						if(len($.slatwall.getBrand().setting('brandHTMLTitleString'))) {
-							$.content().setHTMLTitle( $.slatwall.getBrand().stringReplace( $.slatwall.getBrand().setting('brandHTMLTitleString') ) );	
+							$.content().setHTMLTitle( $.slatwall.getBrand().stringReplace( template = $.slatwall.getBrand().setting('brandHTMLTitleString'), formatValues = true ) );	
 						} else {
 							$.content().setHTMLTitle( $.slatwall.getBrand().getBrandName() );
 						}
-						$.content().setMetaDesc( $.slatwall.getBrand().stringReplace( $.slatwall.getBrand().setting('brandMetaDescriptionString') ) );
-						$.content().setMetaKeywords( $.slatwall.getBrand().stringReplace( $.slatwall.getBrand().setting('brandMetaKeywordsString') ) );
+						$.content().setMetaDesc( $.slatwall.getBrand().stringReplace( template = $.slatwall.getBrand().setting('brandMetaDescriptionString'), formatValues = true ) );
+						$.content().setMetaKeywords( $.slatwall.getBrand().stringReplace( template = $.slatwall.getBrand().setting('brandMetaKeywordsString'), formatValues = true ) );
 						
 					} else {
 						
@@ -362,12 +362,12 @@
 							$.content().setTitle( $.slatwall.getRouteEntity("address").getName() );
 						}
 						if(len($.slatwall.getRouteEntity("address").setting('addressHTMLTitleString'))) {
-							$.content().setHTMLTitle( $.slatwall.getRouteEntity("address").stringReplace( $.slatwall.getRouteEntity("address").setting('addressHTMLTitleString') ) );	
+							$.content().setHTMLTitle( $.slatwall.getRouteEntity("address").stringReplace( template = $.slatwall.getRouteEntity("address").setting('addressHTMLTitleString'), formatValues = true ) );	
 						} else {
 							$.content().setHTMLTitle( $.slatwall.getRouteEntity("address").getName() );
 						}
-						$.content().setMetaDesc( $.slatwall.getRouteEntity("address").stringReplace( $.slatwall.getRouteEntity("address").setting('addressMetaDescriptionString') ) );
-						$.content().setMetaKeywords( $.slatwall.getRouteEntity("address").stringReplace( $.slatwall.getRouteEntity("address").setting('addressMetaKeywordsString') ) );
+						$.content().setMetaDesc( $.slatwall.getRouteEntity("address").stringReplace( template = $.slatwall.getRouteEntity("address").setting('addressMetaDescriptionString'), formatValues = true ) );
+						$.content().setMetaKeywords( $.slatwall.getRouteEntity("address").stringReplace( template = $.slatwall.getRouteEntity("address").setting('addressMetaKeywordsString'), formatValues = true ) );
 						
 					} else {
 						
@@ -394,12 +394,12 @@
 						// Change Title, HTMLTitle & Meta Details of page
 						$.content().setTitle( $.slatwall.getRouteEntity("account").getFirstName() & " " & $.slatwall.getRouteEntity("account").getLastName() );
 						if(len($.slatwall.getRouteEntity().setting('accountHTMLTitleString'))) {
-							$.content().setHTMLTitle( $.slatwall.getRouteEntity("account").stringReplace( $.slatwall.getRouteEntity("account").setting('accountHTMLTitleString') ) );	
+							$.content().setHTMLTitle( $.slatwall.getRouteEntity("account").stringReplace( template = $.slatwall.getRouteEntity("account").setting('accountHTMLTitleString'), formatValues = true ) );	
 						} else {
 							$.content().setHTMLTitle( $.slatwall.getRouteEntity("account").getFirstName() & " " & $.slatwall.getRouteEntity("account").getLastName() );
 						}
-						$.content().setMetaDesc( $.slatwall.getRouteEntity("account").stringReplace( $.slatwall.getRouteEntity("account").setting('accountMetaDescriptionString') ) );
-						$.content().setMetaKeywords( $.slatwall.getRouteEntity("account").stringReplace( $.slatwall.getRouteEntity("account").setting('accountMetaKeywordsString') ) );
+						$.content().setMetaDesc( $.slatwall.getRouteEntity("account").stringReplace( template = $.slatwall.getRouteEntity("account").setting('accountMetaDescriptionString'), formatValues = true ) );
+						$.content().setMetaKeywords( $.slatwall.getRouteEntity("account").stringReplace( template = $.slatwall.getRouteEntity("account").setting('accountMetaKeywordsString'), formatValues = true ) );
 						
 					} else {
 						
@@ -424,12 +424,12 @@
 						// Change Title, HTMLTitle & Meta Details of page
 						$.content().setTitle( $.slatwall.getRouteEntity("category").getCategoryName() );
 						if(len($.slatwall.getRouteEntity("category").setting('categoryHTMLTitleString'))) {
-							$.content().setHTMLTitle( $.slatwall.getRouteEntity("category").stringReplace( $.slatwall.getRouteEntity("category").setting('categoryHTMLTitleString') ) );	
+							$.content().setHTMLTitle( $.slatwall.getRouteEntity("category").stringReplace( template = $.slatwall.getRouteEntity("category").setting('categoryHTMLTitleString'), formatValues = true ) );	
 						} else {
 							$.content().setHTMLTitle( $.slatwall.getRouteEntity("category").getCategoryName() );
 						}
-						$.content().setMetaDesc( $.slatwall.getRouteEntity("category").stringReplace( $.slatwall.getRouteEntity("category").setting('categoryMetaDescriptionString') ) );
-						$.content().setMetaKeywords( $.slatwall.getRouteEntity("category").stringReplace( $.slatwall.getRouteEntity("category").setting('categoryMetaKeywordsString') ) );
+						$.content().setMetaDesc( $.slatwall.getRouteEntity("category").stringReplace( template = $.slatwall.getRouteEntity("category").setting('categoryMetaDescriptionString'), formatValues = true ) );
+						$.content().setMetaKeywords( $.slatwall.getRouteEntity("category").stringReplace( template = $.slatwall.getRouteEntity("category").setting('categoryMetaKeywordsString'), formatValues = true ) );
 						
 					} else {
 						
@@ -454,12 +454,12 @@
 						// Change Title, HTMLTitle & Meta Details of page
 						$.content().setTitle( $.slatwall.getRouteEntity("attribute").getAttributeName() );
 						if(len($.slatwall.getRouteEntity("attribute").setting('attributeHTMLTitleString'))) {
-							$.content().setHTMLTitle( $.slatwall.getRouteEntity("attribute").stringReplace( $.slatwall.getRouteEntity("attribute").setting('attributeHTMLTitleString') ) );	
+							$.content().setHTMLTitle( $.slatwall.getRouteEntity("attribute").stringReplace( template = $.slatwall.getRouteEntity("attribute").setting('attributeHTMLTitleString'), formatValues = true ) );	
 						} else {
 							$.content().setHTMLTitle( $.slatwall.getRouteEntity("attribute").getAttributeName() );
 						}
-						$.content().setMetaDesc( $.slatwall.getRouteEntity("attribute").stringReplace( $.slatwall.getRouteEntity("attribute").setting('attributeMetaDescriptionString') ) );
-						$.content().setMetaKeywords( $.slatwall.getRouteEntity("attribute").stringReplace( $.slatwall.getRouteEntity("attribute").setting('attributeMetaKeywordsString') ) );
+						$.content().setMetaDesc( $.slatwall.getRouteEntity("attribute").stringReplace( template = $.slatwall.getRouteEntity("attribute").setting('attributeMetaDescriptionString'), formatValues = true ) );
+						$.content().setMetaKeywords( $.slatwall.getRouteEntity("attribute").stringReplace( template = $.slatwall.getRouteEntity("attribute").setting('attributeMetaKeywordsString'), formatValues = true ) );
 						
 					} else {
 						

@@ -524,8 +524,9 @@ component  accessors="true" output="false"
                 getHibachiScope().addActionResult("public:account.addNewAccountAddress", savedAccountAddress.hasErrors());
        	     	if (!savedAccountAddress.hasErrors()){
        	     		getDao('hibachiDao').flushOrmSession();
-                    data.accountAddressID = savedAccountAddress.getAccountAddressID();
-                    arguments.data['ajaxResponse']['newAccountAddressID'] = data.accountAddressID;
+                    arguments.data.accountAddressID = savedAccountAddress.getAccountAddressID();
+                    arguments.data['ajaxResponse']['newAccountAddressID'] = arguments.data.accountAddressID;
+                    arguments.data['ajaxResponse']['newAccountAddress'] = savedAccountAddress.getStructRepresentation();
 
                     var addressVerificationStruct = getService('AddressService').verifyAddressByID(savedAccountAddress.getAddress().getAddressID());
                     arguments.data.ajaxResponse['addressVerification'] = addressVerificationStruct;
@@ -556,12 +557,13 @@ component  accessors="true" output="false"
       		accountAddress.setAddress(newAddress);
       		accountAddress.setAccount(getHibachiScope().getAccount());	
       		var savedAccountAddress = getService("AccountService").saveAccountAddress(accountAddress);
-          getHibachiScope().addActionResult("public:account.addNewAccountAddress", savedAccountAddress.hasErrors());
+            getHibachiScope().addActionResult("public:account.addNewAccountAddress", savedAccountAddress.hasErrors());
    	     	if (!savedAccountAddress.hasErrors()){
    	     		getDao('hibachiDao').flushOrmSession();
-                data.accountAddressID = savedAccountAddress.getAccountAddressID();
-                data['ajaxResponse']['newAccountAddressID'] = data.accountAddressID;
-                
+                arguments.data.accountAddressID = savedAccountAddress.getAccountAddressID();
+                arguments.data['ajaxResponse']['newAccountAddressID'] = arguments.data.accountAddressID;
+                arguments.data['ajaxResponse']['newAccountAddress'] = savedAccountAddress.getStructRepresentation();
+
                 var addressVerificationStruct = getService('AddressService').verifyAddressByID(savedAccountAddress.getAddress().getAddressID());
                 arguments.data.ajaxResponse['addressVerification'] = addressVerificationStruct;
    	     	}
@@ -608,7 +610,6 @@ component  accessors="true" output="false"
         if(!isNull(accountPaymentMethod) && accountPaymentMethod.getAccount().getAccountID() == getHibachiScope().getAccount().getAccountID() ) {
             var deleteOk = getAccountService().deleteAccountPaymentMethod( accountPaymentMethod );
             getHibachiScope().addActionResult( "public:account.deleteAccountPaymentMethod", !deleteOK );
-            
             if(!deleteOk) {
                 ArrayAppend(arguments.data.messages, accountPaymentMethod.getErrors(), true);
             }
@@ -808,7 +809,7 @@ component  accessors="true" output="false"
             }
             orderFulfillment.setShippingMethod(shippingMethod);
             getService("OrderService").saveOrder(order); 
-            getDao('hibachiDao').flushOrmSession();;           
+            getHibachiScope().flushOrmSession();   
             getHibachiScope().addActionResult( "public:cart.addShippingMethodUsingShippingMethodID", shippingMethod.hasErrors());          
         }else{
             this.addErrors(arguments.data, shippingMethod.getErrors()); //add the basic errors
@@ -1810,6 +1811,36 @@ component  accessors="true" output="false"
         var sku = getSkuService().getSku(arguments.data.skuID);
         arguments.data['ajaxResponse']['price'] = sku.getPriceByCurrencyCode(arguments.data.currencyCode, arguments.data.quantity);
     }
+    
+    public void function getAccountAddresses(required struct data){
+        
+        var account = getHibachiScope().getAccount();
+        
+        arguments.data['ajaxResponse']['accountAddresses'] = account.getAccountAddressesCollectionList().getRecords(); 
+        
+        if(account.hasPrimaryAddress()) {
+            arguments.data['ajaxResponse']['primaryAccountAddressID'] = account.getPrimaryAddress().getAccountAddressID(); 
+        }
+        
+        if(account.hasPrimaryBillingAddress()) {
+            arguments.data['ajaxResponse']['primaryBillingAddressID'] = account.getPrimaryBillingAddress().getAccountAddressID(); 
+        }
+        
+        if(account.hasPrimaryShippingAddress()) {
+            arguments.data['ajaxResponse']['primaryShippingAddressID'] = account.getPrimaryShippingAddress().getAccountAddressID(); 
+        }
+    }
+    
+    public void function getAccountPaymentMethods(required struct data){
+	
+		var account = getHibachiScope().getAccount();
+	
+		arguments.data['ajaxResponse']['accountPaymentMethods'] = account.getAccountPaymentMethodsCollectionList().getRecords();  
+		
+		if(account.hasPrimaryPaymentMethod()){
+            arguments.data['ajaxResponse']['primaryPaymentMethodID'] = account.getPrimaryPaymentMethod().getAccountPaymentMethodID(); 
+        }
+    }
    
 	public void function getOrderTemplates(required any data){ 
         param name="arguments.data.pageRecordsShow" default=5;
@@ -1819,19 +1850,6 @@ component  accessors="true" output="false"
 		param name="arguments.data.optionalProperties" default="";
 
 		arguments.data['ajaxResponse']['orderTemplates'] = getOrderService().getOrderTemplatesForAccount(arguments.data); 
-		
-		arguments.data['ajaxResponse']['accountAddresses'] = getHibachiScope().getAccount().getAccountAddressesCollectionList().getRecords();  
-		arguments.data['ajaxResponse']['accountPaymentMethods'] = getHibachiScope().getAccount().getAccountPaymentMethodsCollectionList().getRecords();  
-		
-		var tmpOrderTemplate = getOrderService().newOrderTemplate();
-
-		var tmpAccountPaymentMethod = getAccountService().newAccountPaymentMethod();
-		arguments.data['ajaxResponse']['countryCodeBySite'] = getService('SiteService').getCountryCodeByCurrentSite();
-		//this function will set the stateCodeOptions in ajaxResponce
-		
-		arguments.data['countryCode'] = getService('SiteService').getCountryCodeByCurrentSite();
-		getStateCodeOptionsByCountryCode(arguments.data);
-		
 	}
 	
 	public void function getOrderTemplateItems(required any data){
@@ -1860,6 +1878,39 @@ component  accessors="true" output="false"
 	    orderTemplateCollection.addFilter("orderTemplateID", arguments.data.orderTemplateID); // limit to our order-template
 	    var orderTemplates = orderTemplateCollection.getPageRecords(); 
  		arguments.data['ajaxResponse']['orderTemplate'] = arrayLen(orderTemplates) ? orderTemplates[1] : []; // there should be only one record;  
+	}
+	
+	
+	
+	public void function updateOrderTemplateShippingAndBilling(required any data){
+	    param name="arguments.data.orderTemplateID" default="";
+	
+     	var orderTemplate = getOrderService().getOrderTemplateForAccount(argumentCollection = arguments);
+		if( isNull(orderTemplate) ) {
+			return; 
+		}
+		
+		orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'updateShipping'); 
+        var processObject = orderTemplate.getProcessObject('UpdateShipping');
+        orderTemplate.addErrors( processObject.getErrors() );
+        getHibachiScope().addActionResult( "public:updateOrderTemplateShipping", orderTemplate.hasErrors() );
+        
+        if(!orderTemplate.hasErrors() && !getHibachiScope().getORMHasErrors() && !processObject.hasErrors() ) {
+            getHibachiScope().flushORMSession(); //flushing to make new data availble
+        }
+        
+		orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'updateBilling'); 
+        processObject = orderTemplate.getProcessObject('UpdateBilling');
+        orderTemplate.addErrors( processObject.getErrors() );
+        getHibachiScope().addActionResult( "public:updateOrderTemplateBilling", orderTemplate.hasErrors() );
+
+        if(!orderTemplate.hasErrors() && !getHibachiScope().getORMHasErrors() && !processObject.hasErrors() ) {
+    		getHibachiScope().flushORMSession(); //flushing to make new data availble
+        }
+        
+        setOrderTemplateAjaxResponse(argumentCollection = arguments);
+        addErrors(arguments.data, orderTemplate.getErrors());
+        
 	}
 
 
@@ -2217,6 +2268,10 @@ component  accessors="true" output="false"
         if(!isNull(orderTemplate) && orderTemplate.getAccount().getAccountID() == getHibachiScope().getAccount().getAccountID() ) {
             var deleteOK = getOrderService().deleteOrderTemplate(orderTemplate);
             getHibachiScope().addActionResult( "public:order.deleteOrderTemplate", !deleteOK);
+            if(!deleteOK){
+                ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
+            }
+            return;
         }
         
         getHibachiScope().addActionResult( "public:order.deleteOrderTemplate", true );  

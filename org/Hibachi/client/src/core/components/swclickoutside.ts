@@ -44,7 +44,8 @@ class SWClickOutside{
         });
         
         scope.$on('$destroy', () => {
-            this.$document.off('click');
+           elem = null;
+           scope = null;
         });
     }
     

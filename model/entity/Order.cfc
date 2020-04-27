@@ -190,6 +190,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="refundableAmountMinusRemainingTaxesAndFulfillmentCharge" persistent="false";
 	property name="placeOrderFlag" persistent="false" default="false";
 	property name="refreshCalculateFulfillmentChargeFlag" persistent="false" default="false"; //Flag for Fulfillment Tax Recalculation 
+	property name="orderStatusHistoryTypeCodeList" persistent="false" default="";
 	
     //======= Mocking Injection for Unit Test ======	
 	property name="orderService" persistent="false" type="any";
@@ -283,6 +284,7 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
     property name="isLockedInProcessingOneFlag" persistent="false";
     property name="isLockedInProcessingTwoFlag" persistent="false";
 	property name="purchasePlusTotal" persistent="false";
+	property name="upgradeOrEnrollmentOrderFlag" persistent="false";
 	
    
  property name="businessDate" ormtype="string";
@@ -604,6 +606,21 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 	}
 	
 	// ============ START: Non-Persistent Property Methods =================
+	
+	public string function getOrderStatusHistoryTypeCodeList() {
+		if(!structKeyExists(variables,'orderStatusHistoryTypeCodeList')){
+			var list = "";
+			var orderStatusHistoryCollection = this.getOrderStatusHistoryCollectionList();
+			orderStatusHistoryCollection.setDisplayProperties('createdDateTime,orderStatusHistoryType.typeCode');
+			orderStatusHistoryCollection.addOrderBy('createdDateTime|asc');
+			var records = orderStatusHistoryCollection.getRecords();
+			for(var record in records){
+				list = listAppend(list,record['orderStatusHistoryType_typeCode']);
+			}
+			variables.orderStatusHistoryTypeCodeList = list;
+		}
+		return variables.orderStatusHistoryTypeCodeList;
+	}
 
 	public any function getAddOrderItemSkuOptionsSmartList() {
 		var optionsSmartList = getService("skuService").getSkuSmartList();
@@ -2417,5 +2434,21 @@ public numeric function getPersonalVolumeSubtotal(){
 	    }
 	    return true;
 	 }
+	 
+	 public boolean function getUpgradeOrEnrollmentOrderFlag(){
+	 	 
+		if (this.getUpgradeFlag()) {
+			return true;
+		}
+		
+		if( 
+			cart.hasMonatOrderType() && 
+			ListFindNoCase("motMpEnrollment,motVipEnrollment", cart.getMonatOrderType().getTypeCode()) 
+		){
+			return true;
+		}
+		
+		return false;
+	}
 	//CUSTOM FUNCTIONS END
 }

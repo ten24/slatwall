@@ -1,7 +1,7 @@
 	<div ng-cloak class="card mb-3 w-100">
 		<div class="card-header bg-transparent p-0">
 			<div class="bg-primary">
-				<a class="py-0 collapsed" data-toggle="collapse" href="#flexshipBody">
+				<a ng-click="enrollmentFlexship.refreshFlexship()" class="py-0 collapsed" data-toggle="collapse" href="#flexshipBody">
 					<div class="py-3 px-3 text-white">
 						<span sw-rbKey="'frontend.hybridCart.yourFlexship'"></span> 
 						<span 
@@ -26,7 +26,7 @@
 										<img 
 											image-manager 
 											height="75px" 
-											src="https://monatteam.ten24dev.com/Slatwall/custom/assets/images/product/default/cache/20096800_300w_300h.jpg" 
+											ng-src="{{item.sku_imagePath}}" 
 											alt="{{item.sku_product_productName}}"
 										>
 									</a>

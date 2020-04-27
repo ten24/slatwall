@@ -303,5 +303,10 @@ var coremodule = angular.module('hibachi.core',[
 .directive('swOrderByControls', SWOrderByControls.Factory())
 ;
 export{
-	coremodule
+	coremodule,
+	PublicService,
+	RequestService,
+	ObserverService,
+	UtilityService,
+	RbKeyService
 }

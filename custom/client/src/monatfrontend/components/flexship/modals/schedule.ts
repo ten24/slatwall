@@ -105,7 +105,7 @@ class monatFlexshipScheduleModalController {
         .then( (data) => {
         	if(data.orderTemplate) {
                 this.orderTemplate = data.orderTemplate;
-            	this.monatAlertService.success(this.rbkeyService.rbKey('alert.flexship.updateSucceccfull'));
+            	this.monatAlertService.success(this.rbkeyService.rbKey('alert.flexship.updateSuccessful'));
                 this.observerService.notify("orderTemplateUpdated" + data.orderTemplate.orderTemplateID, data.orderTemplate);
                 this.closeModal();
         	} else {

@@ -1,11 +1,20 @@
 
 <div class="header-cart" ng-click="hybridCart.toggleCart()">
 	<a href="#">
-		<span ng-if="!hybridCart.cart.orderItems.length" class="cart-count">
+		<span 
+			ng-if="
+					(!hybridCart.cart.totalItemQuantity && hybridCart.type != 'vipFlexshipFlow' ) 
+					|| (!hybridCart.orderTemplateService.mostRecentOrderTemplate.calculatedOrderTemplateItemsCount && hybridCart.type == 'vipFlexshipFlow') 
+				"
+			class="cart-count"
+		>
 			<i class="far fa-shopping-cart"></i>
 		</span>
-		<span ng-if="hybridCart.cart.orderItems.length > 0" class="cart-count">
-			{{hybridCart.cart.orderItems.length}}
+		<span ng-if="hybridCart.cart.totalItemQuantity > 0 && hybridCart.type != 'vipFlexshipFlow' " class="cart-count">
+			{{hybridCart.cart.totalItemQuantity}}
+		</span>	
+		<span ng-if="hybridCart.orderTemplateService.mostRecentOrderTemplate.calculatedOrderTemplateItemsCount > 0 && hybridCart.type == 'vipFlexshipFlow' " class="cart-count">
+			{{hybridCart.orderTemplateService.mostRecentOrderTemplate.calculatedOrderTemplateItemsCount}}
 		</span>	
 	</a> 
 </div>

@@ -1,3 +1,4 @@
+import { FlexshipSteps, FlexshipFlowEvents } from '@Monat/components/flexshipFlow/flexshipFlow';
 
 class FrequencyStepController {
 	public orderTemplate;
@@ -31,7 +32,7 @@ class FrequencyStepController {
         let flexshipID = this.orderTemplateService.currentOrderTemplateID;
         this.orderTemplateService.updateOrderTemplateFrequency(flexshipID, this.term.value, this.day).then(result => {
             this.loading = false;
-        	this.observerService.notify('onNext');
+        	this.observerService.notify(FlexshipFlowEvents.ON_NEXT);
         });
     }
 }

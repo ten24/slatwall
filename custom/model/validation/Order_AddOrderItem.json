@@ -18,11 +18,8 @@
 	"properties": {
 		"order" : [{"method": "orderCreatedSiteMatchesAccountCreatedSite"}],
 		"shippingAddress" : [{"method": "isValidCountry"}],
-		"isPurchasableItemFlag" :	[
-			{ "eq": true },
-			{ "conditions":"isMarketPartnerSalesOrder", "eq": true, "method":"marketPartnerValidationMaxOrderAmount" }
-		],
-		"sku":						[{"method": "orderMinimumDaysToRenewMPFailed"}],
+		"isPurchasableItemFlag" :	[ { "eq": true } ],
+		"sku":						[ {"method": "orderMinimumDaysToRenewMPFailed"}],
 		"quantity":[
 			{	
 				"conditions": "renewalFeeFlag",

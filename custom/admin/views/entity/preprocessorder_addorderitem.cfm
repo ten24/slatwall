@@ -47,6 +47,7 @@ Notes:
 
 --->
 <cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="swac" taglib="../../../../custom/tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
 
@@ -293,7 +294,7 @@ Notes:
 										<cfloop array="#rc.processObject.getShippingAccountAddresses()#" index="accountAddress">
 											<span ng-if="shippingAccountAddressID == '#accountAddress.getAccountAddressID()#'">
 												<!--- Address Display --->
-												<swa:SlatwallAdminAddressDisplay address="#accountAddress.getAddress()#" fieldNamePrefix="shippingAddress." />
+												<swac:SlatwallAdminAddressDisplay address="#accountAddress.getAddress()#" fieldNamePrefix="shippingAddress." site="#rc.order.getOrderCreatedSite()#"/>
 											</span>
 										</cfloop>
 
@@ -302,7 +303,7 @@ Notes:
 											<!--- New Address --->
 
 											<!--- Address Display --->
-											<swa:SlatwallAdminAddressDisplay address="#rc.processObject.getShippingAddress()#" fieldNamePrefix="shippingAddress." />
+											<swac:SlatwallAdminAddressDisplay address="#rc.processObject.getShippingAddress()#" fieldNamePrefix="shippingAddress."  site="#rc.order.getOrderCreatedSite()#"/>
 
 											<cfif !isNull(rc.order.getAccount())>
 												<!--- Save New Address --->
