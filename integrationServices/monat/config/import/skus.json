@@ -16,6 +16,11 @@
           "updateFlag":false
         },
         {
+          "sourceColumn":"ItemName",
+          "propertyIdentifier":"calculatedSkuDefinition",
+          "updateFlag":false
+        },
+        {
           "sourceColumn":"ItemNote",
           "propertyIdentifier":"skuDescription",
           "updateFlag":false
@@ -62,17 +67,12 @@
           "updateFlag":false
         },
         {
-          "sourceColumn":"PRODUCTItemCode",
+          "sourceColumn":"productCode",
           "propertyIdentifier":"product.productCode",
-          "updateFlag":false
-        },
-        {
-          "sourceColumn":"SKUItemID",
-          "propertyIdentifier":"product.remoteID",
           "key":true
         },
         {
-          "sourceColumn":"ItemName",
+          "sourceColumn":"ProductName",
           "propertyIdentifier":"product.productName",
           "updateFlag":false
         },

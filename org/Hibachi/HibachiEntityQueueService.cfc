@@ -142,7 +142,10 @@ component accessors="true" output="false" extends="HibachiService" {
 				
 					if(entityMethodInvoked){
 						ormflush();
-					} 
+					} else {
+						ORMClearSession();
+						getHibachiScope().setORMHasErrors(false);
+					}
 				}catch(any e){
 					getHibachiEntityQueueDAO().updateModifiedDateTimeAndMostRecentError(entityQueue['entityQueueID'], e.message);
 				}

@@ -52,38 +52,10 @@ component extends="HibachiDAO" {
 		return left(arguments.serverInstanceIPAddress,4) == '192.' || left(arguments.serverInstanceIPAddress,4) == '127.';
 	}
 	
-	public any function isServerInstanceCacheExpired(required string serverInstanceKey, required string serverInstanceIPAddress){
-		if(isLocalIPAddress(arguments.serverInstanceIPAddress)){
-			return false;
-		}
-		
-		return  ORMExecuteQuery('
-			SELECT si.serverInstanceExpired 
-			FROM #getApplicationKey()#ServerInstance si 
-			WHERE si.serverInstanceKey=:serverInstanceKey',
-			{serverInstanceKey=arguments.serverInstanceKey},
-			true
-		); 
-	}
-
 	public any function getDatabaseCacheByDatabaseCacheKey(required databaseCacheKey){
 		return ormExecuteQuery("FROM #getDao('hibachiDao').getApplicationKey()#DatabaseCache where databaseCacheKey = :databaseCacheKey",{databaseCacheKey=arguments.databaseCacheKey},true,{maxresults=1});
 	}
 	
-	public any function isServerInstanceSettingsCacheExpired(required string serverInstanceKey, required string serverInstanceIPAddress){
-		if(isLocalIPAddress(arguments.serverInstanceIPAddress)){
-			return false;
-		}
-
-		return  ORMExecuteQuery('
-			SELECT si.settingsExpired 
-			FROM #getApplicationKey()#ServerInstance si 
-			WHERE si.serverInstanceKey=:serverInstanceKey',
-			{serverInstanceKey=arguments.serverInstanceKey},
-			true
-		); 
-	}
-
 	public void function updateServerInstanceCache(required any serverInstance){
 		if(!isNull(arguments.serverInstance) && isLocalIPAddress(arguments.serverInstance.getserverInstanceIPAddress())){
 			return;
@@ -111,5 +83,30 @@ component extends="HibachiDAO" {
 			UPDATE #getApplicationKey()#ServerInstance si 
 			SET si.serverInstanceExpired=1 
 		");	
+	}  
+
+	public void function updateServerInstanceLastRequestDateTime(required any serverInstance){
+		var queryService = new query();
+		queryService.addParam(name='now', value='#now()#', CFSQLTYPE='cf_sql_timestamp');
+		queryService.addParam(name='serverInstanceID', value='#arguments.serverInstance.getServerInstanceID()#', CFSQLTYPE='cf_sql_varchar');
+			
+		var sql =	"UPDATE SwServerInstance
+					SET lastRequestDateTime = :now
+					WHERE serverInstanceID = :serverInstanceID
+					";
+						
+		queryService.execute(sql=sql);
+	}  
+
+	public void function deleteStaleServerInstance(){
+		var queryService = new query();
+		queryService.addParam(name='datetimebefore', value='#DateAdd("s",-60,now())#', CFSQLTYPE='cf_sql_timestamp');
+			
+		var sql =	"DELETE FROM SwServerInstance
+					 WHERE lastRequestDateTime < :datetimebefore
+					 AND lastRequestDateTime IS NOT NULL
+					";
+						
+		queryService.execute(sql=sql);
 	}  
 }

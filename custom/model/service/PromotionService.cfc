@@ -26,7 +26,7 @@ component extends="Slatwall.model.service.PromotionService" {
 					    for(var customPriceField in variables.customPriceFields){
 							var extendedCustomUnitPriceAfterDiscount = orderItem.invokeMethod('getExtended#customPriceField#AfterDiscount') / orderItem.getQuantity();
 							if(rewardStruct.promotionReward.getAmountType() == 'amountOff'){
-								var rewardAmount = getProportionalRewardAmount(newAppliedPromotion.getDiscountAmount(), extendedUnitPriceAfterDiscount,extendedCustomUnitPriceAfterDiscount);
+								var rewardAmount = getProportionalRewardAmount(rewardStruct.discountAmount, extendedUnitPriceAfterDiscount,extendedCustomUnitPriceAfterDiscount);
 							}else{
 						        var args = {
 						            reward=rewardStruct.promotionReward,

@@ -911,6 +911,17 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         this.addOrderItem(argumentCollection = arguments);
     }
 
+
+    public void function removeOrderItem(required any data) {
+        var cart = getService("OrderService").processOrder( getHibachiScope().cart(), arguments.data, 'removeOrderItem');
+        
+        //we dont wan't the cart to loose the price-group/currency info in case of upgrade/enrollment
+        if(!ArrayLen(cart.getOrderItems()) && !cart.getUpgradeOrEnrollmentOrderFlag() ){
+            clearOrder(arguments.data);
+        }
+        getHibachiScope().addActionResult( "public:cart.removeOrderItem", cart.hasErrors() );
+    }
+    
     
     private any function enrollUser(required struct data, required string accountType){
         var accountTypeInfo = {
@@ -2294,5 +2305,82 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         if(arguments.data.returnOrderTemplateFlag){
             arguments.data['ajaxResponse']['orderTemplate'] = getOrderService().getOrderTemplateDetailsForAccount(data);
         }
+    }
+    
+    public void function addOrderTemplatePromotionCode(required any data) {
+     	param name="arguments.data.returnAppliedPromotionCodes" default="true";
+        param name="arguments.data.orderTemplateID" default="";
+        
+        if(!len(arguments.data.orderTemplateID)){
+            return;
+        }
+        var orderTemplate = getService('orderService').getOrderTemplate(arguments.data.orderTemplateID);
+        
+        orderTemplate = getService("OrderService").processOrderTemplate( orderTemplate, arguments.data, 'addPromotionCode');
+        
+        getHibachiScope().addActionResult( "public:orderTemplate.addPromotionCode", orderTemplate.hasErrors() );
+        
+        if(!orderTemplate.hasErrors()) {
+            orderTemplate.clearProcessObject("addPromotionCode");
+                if(arguments.data.returnAppliedPromotionCodes){
+                    getHibachiScope().flushORMSession(); 
+                    this.getAppliedOrderTemplatePromotionCodes(arguments.data);
+                }
+        }else{
+            var processObject = orderTemplate.getProcessObject("AddPromotionCode");
+            if(processObject.hasErrors()){
+                addErrors(arguments.data, orderTemplate.getProcessObject("AddPromotionCode").getErrors());
+            }else{
+                addErrors(arguments.data,orderTemplate.getErrors());
+            }
+        }
+
+    }
+    
+    public void function getAppliedOrderTemplatePromotionCodes(required any data){
+        if(isNull(arguments.data.orderTemplateID)) return arguments.data['ajaxResponse']['appliedOrderTemplatePromotionCodes'] = [];
+        
+		var query = new Query();
+		var sql = 
+		" 
+    		SELECT p.promotionCode, p.promotionCodeID
+            FROM swordertemplatepromotioncode o
+            INNER JOIN swpromotioncode p
+            ON p.promotionCodeID = o.promotionCodeID
+            WHERE o.orderTemplateID='#arguments.data.orderTemplateID#'
+		" 
+		var promotionCodes = query.execute( sql = sql, returntype = 'array' ).getResult();
+		arguments.data['ajaxResponse']['appliedOrderTemplatePromotionCodes'] = promotionCodes;
+    }
+    
+    public void function removeOrderTemplatePromotionCode(required any data) {
+     	param name="arguments.data.returnAppliedPromotionCodes" default="true";
+        param name="arguments.data.promotionCodeID" default="";
+        param name="arguments.data.orderTemplateID" default="";
+        
+        if(!len(arguments.data.orderTemplateID) || !len(arguments.data.promotionCodeID)){
+            return;
+        }
+        var orderTemplate = getService('orderService').getOrderTemplate(arguments.data.orderTemplateID);
+        
+        orderTemplate = getService("OrderService").processOrderTemplate( orderTemplate, arguments.data, 'removePromotionCode');
+        
+        getHibachiScope().addActionResult( "public:orderTemplate.removePromotionCode", orderTemplate.hasErrors() );
+        
+        if(!orderTemplate.hasErrors()) {
+            orderTemplate.clearProcessObject("removePromotionCode");
+                if(arguments.data.returnAppliedPromotionCodes){
+                    getHibachiScope().flushORMSession(); 
+                    this.getAppliedOrderTemplatePromotionCodes(arguments.data);
+                }
+        }else{
+            var processObject = orderTemplate.getProcessObject("removePromotionCode");
+            if(processObject.hasErrors()){
+                addErrors(arguments.data, orderTemplate.getProcessObject("removePromotionCode").getErrors());
+            }else{
+                addErrors(arguments.data,orderTemplate.getErrors());
+            }
+        }
+
     }
 }

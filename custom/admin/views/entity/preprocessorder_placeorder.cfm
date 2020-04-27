@@ -47,6 +47,7 @@ Notes:
 
 --->
 <cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="swac" taglib="../../../../custom/tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
 <cfparam name="rc.order" type="any" />
@@ -125,9 +126,9 @@ Notes:
 								<cfif structKeyExists(thisErrorBean.getErrors(), "shippingAddress" ) ||
 									structKeyExists(thisErrorBean.getErrors(), "requiredShippingInfoExistsFlag")>
 									
-									<swa:SlatwallAdminAddressDisplay address="#orderFulfillment.getAddress()#"
+									<swac:SlatwallAdminAddressDisplay address="#orderFulfillment.getAddress()#"
 										fieldNamePrefix="orderFulfillments[#ofIndex#].shippingAddress."
-										edit="#rc.edit#" />
+										edit="#rc.edit#" site="#rc.order.getOrderCreatedSite()#" />
 								</cfif>
 							</cfif>
 

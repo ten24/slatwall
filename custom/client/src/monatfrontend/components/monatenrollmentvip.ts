@@ -160,6 +160,7 @@ class VIPController {
 			this.hairProductFilter = null;
 			this.skinProductFilter = null;
 			this[`${categoryType}ProductFilter`] = category;
+			this.paginationObject['categoryID'] = category.value;
 		}
 		
 		this.publicService.doAction('getproductsByCategoryOrContentID', data).then((result) => {

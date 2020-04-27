@@ -25,25 +25,16 @@
 		<span sw-rbKey="'frontend.flexship.yourFlexshipIs'"></span> 
 		{{
 			+monatEnrollment.orderTemplateService.cartTotalThresholdForOFYAndFreeShipping - monatEnrollment.orderTemplateService.mostRecentOrderTemplate.calculatedSubTotal 
-			| swcurrency:monatEnrollment.cart.currency
+			| swcurrency: monatEnrollment.orderTemplateService.mostRecentOrderTemplate.currencyCode
 		}} 
 	
 		<span sw-rbKey="'frontend.flexship.beforeYouCanEnroll'"></span>
 	</div>
 	<div 
-		ng-if="
-			monatEnrollment.currentStepName != 'orderListing' 
-			&& monatEnrollment.vipEnrollmentThreshold
-			&& monatEnrollment.vipEnrollmentThreshold - monatEnrollment.monatService.totalItemQuantityAfterDiscount > 0" 
-			class="alert discount-block text-white promotion-bar-block"
+		ng-if="monatEnrollment.monatService.cart.canPlaceOrderMessage.message.length" 
+		class="alert discount-block text-white promotion-bar-block"
 	>
-
-		<span sw-rbKey="'frontend.cart.yourOrderIs'"></span> 
-		{{
-			(monatEnrollment.vipEnrollmentThreshold - monatEnrollment.monatService.totalItemQuantityAfterDiscount)
-			| swcurrency:monatEnrollment.cart.currency
-		}} 
-		<span sw-rbKey="'frontend.flexship.beforeYouCanEnroll'"></span>
+		{{monatEnrollment.monatService.cart.canPlaceOrderMessage.message}} 
 	</div>
 	<div 
 		ng-if="
@@ -112,7 +103,7 @@
 		</div>
 		
 		<!----VIP step icon indicators --->
-		<div ng-if=" monatEnrollment.type=='vip' || monatEnrollment.type=='vipUpgrade'" class="step-status row w-50 text-center align-items-end">
+		<div ng-if=" monatEnrollment.type=='vip' || monatEnrollment.type=='vipUpgrade'" class="vip-steps step-status row text-center align-items-end">
 			<div 
 				class="col mt-1"
 				ng-style="{ 'opacity' : (monatEnrollment.currentStepName == 'todaysOrder' || monatEnrollment.currentStepName == undefined ) ? '100%' : '50%' }"
@@ -183,7 +174,7 @@
 		</div>
 
 		<!----MP Step icon indicators --->
-		<div ng-if="monatEnrollment.type=='mp' || monatEnrollment.type=='mpUpgrade'" class="step-status row w-50 text-center align-items-end">
+		<div ng-if="monatEnrollment.type=='mp' || monatEnrollment.type=='mpUpgrade'" class="mp-steps step-status row text-center align-items-end">
 			<div 
 				class="col mt-1"
 				ng-style="{ 'opacity' : (monatEnrollment.currentStepName == 'starterPack' || monatEnrollment.currentStepName == undefined ) ? '100%' : '50%' }"

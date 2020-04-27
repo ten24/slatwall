@@ -72,7 +72,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
         }
         
         //Commission Date
-        arguments.order.setCommissionPeriod(dateFormat( now(), "mm/yyyy" ));
+        arguments.order.setCommissionPeriod(dateFormat( now(), "yyyymm" ));
         
         // Set the Product Pack Purchased Flag
         if( account.getAccountType() == 'marketPartner' && arguments.order.hasProductPack() ) {
@@ -287,15 +287,15 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 	
 	public any function afterOrderItemCreateSuccess(required any slatwallScope, required any orderItem, required any data){ 
 		// Flush so the item is there when we need it. 
-		if (!arguments.orderItem.getOrder().hasErrors()){
-			ormFlush();
+		if (!arguments.slatwallScope.ORMHasErrors()){
+			arguments.slatwallScope.flushORMSession();
+			try{
+				this.createOrderItemSkuBundle( arguments.orderItem );
+			}catch(bundleError){
+				logHibachi("afterOrderItemProcessCreateSuccess failed @ create bundle items for orderitem #orderItem.getOrderItemID()# ");
+			}
 		}
 		
-		try{
-			this.createOrderItemSkuBundle( arguments.orderItem );
-		}catch(bundleError){
-			logHibachi("afterOrderItemProcessCreateSuccess failed @ create bundle items for orderitem #orderItem.getOrderItemID()# ");
-		}
 	}
 	
 	/**

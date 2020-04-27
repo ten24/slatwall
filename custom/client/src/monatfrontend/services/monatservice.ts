@@ -359,17 +359,16 @@ export class MonatService {
 		if (refresh || !this.localStorageCache.get(cacheKey)) {
 			this.doPublicAction("getStateCodeOptionsByCountryCode", {
 				countryCode: countryCode,
-			})
-				.then((data) => {
-					if (!data?.stateCodeOptions) throw data;
+			}).then((data) => {
+				if (!data?.stateCodeOptions) throw data;
 
-					this.localStorageCache.put(cacheKey, {
-						stateCodeOptions: data.stateCodeOptions,
-						addressOptions: data.addressOptions,
-					});
-					deferred.resolve(data);
-				})
-				.catch((e) => deferred.reject(e));
+				this.localStorageCache.put(cacheKey, {
+					stateCodeOptions: data.stateCodeOptions,
+					addressOptions: data.addressOptions,
+				});
+				deferred.resolve(data);
+			})
+			.catch((e) => deferred.reject(e));
 		} else {
 			deferred.resolve(this.localStorageCache.get(cacheKey));
 		}
@@ -444,7 +443,8 @@ export class MonatService {
 		this.cart = data.cart;
 		// prettier-ignore
 		this.cart['purchasePlusMessage'] = data.cart.appliedPromotionMessages ? data.cart.appliedPromotionMessages.filter( message => message.promotionName.indexOf('Purchase Plus') > -1 )[0] : {};
-		this.canPlaceOrder = data.cart.orderRequirementsList.indexOf("canPlaceOrderReward") == -1;
+		this.cart['canPlaceOrderMessage'] = data.cart.appliedPromotionMessages ? data.cart.appliedPromotionMessages.filter( message => message.promotionName.indexOf('Can Place Order') > -1 )[0] : {};
+		this.canPlaceOrder = data.cart.orderRequirementsList.indexOf('canPlaceOrderReward') == -1;
 		this.totalItemQuantityAfterDiscount = 0;
 		for (let item of this.cart.orderItems) {
 			this.totalItemQuantityAfterDiscount += item.extendedPriceAfterDiscount;
