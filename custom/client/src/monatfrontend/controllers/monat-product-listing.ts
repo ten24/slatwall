@@ -88,10 +88,11 @@ class MonatProductListingController {
 			this.hairProductFilter = null;
 			this.skinProductFilter = null;
 			this[`${categoryType}ProductFilter`] = category;
-			this.argumentsObject['categoryID'] = category.value;
 		}
         
         this.argumentsObject['pageRecordsShow'] = this.pageRecordsShow;
+        
+        this.argumentsObject['cmsCategoryFilterFlag'] = !this.argumentsObject['categoryFilterFlag'];
         
         this.publicService.doAction('getProductsByCategoryOrContentID', this.argumentsObject).then(result => {
             this.productList = result.productList;
