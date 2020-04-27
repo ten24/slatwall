@@ -42,6 +42,7 @@ class MonatCheckoutController {
 	public listPrice = 0;
 	public toggleBillingAddressForm:boolean;
 	public sponsorLoading:boolean;
+	public isLoading:boolean;
 	
 	// @ngInject
 	constructor(
@@ -93,7 +94,7 @@ class MonatCheckoutController {
 		}, 'addShippingAddressUsingAccountAddressSuccess' ); 
 
 		this.observerService.attach(this.submitSponsor.bind(this), 'autoAssignSponsor' ); 
-
+		this.isLoading = true;
 		this.publicService.getAccount(true).then(res=>{
 			this.handleAccountResponse(res);
 		});
@@ -102,7 +103,7 @@ class MonatCheckoutController {
 		const currDate = new Date;
         this.currentYear = currDate.getFullYear();
         let manipulateableYear = this.currentYear;
-        
+     
         do {
             this.yearOptions.push(manipulateableYear++);
         }
@@ -110,7 +111,7 @@ class MonatCheckoutController {
 	}
 	
 	private getCurrentCheckoutScreen = (setDefault = false, hardRefresh = false):Screen | void => {
-	
+
 		return this.publicService.getCart(hardRefresh).then(data => {
 			let screen = Screen.ACCOUNT;
 			this.cart = data.cart; 
@@ -135,7 +136,7 @@ class MonatCheckoutController {
 			}else if(this.cart.orderRequirementsList.indexOf('account') === -1){
 				screen = Screen.SHIPPING;
 			}
-				
+			this.isLoading = false;
 			this.screen = screen;
 			return screen;
 		});
