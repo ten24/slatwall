@@ -158,7 +158,16 @@ component extends="HibachiService" accessors="true" output="false" {
 		getWorkflowDAO().resetExpiredWorkflows(); 
 	
 		var workflowTriggers = getWorkflowDAO().getDueWorkflows();
+		var exclusiveInvocationDomains = getWorkflowDAO().getExclusiveWorkflowTriggersInvocationDomains();
 		for(var workflowTrigger in workflowTriggers) {
+			// make sure workflow runs on the allowed domain
+			if( !isNull(workflowTrigger.getAllowedInvocationDomain()) && len(workflowTrigger.getAllowedInvocationDomain()) && !findNoCase(cgi.server_name, workflowTrigger.getAllowedInvocationDomain())) {
+				continue;
+			}
+			// make sure exlcusive domain is only used for those workflows
+			if( findNoCase(cgi.server_name, exclusiveInvocationDomains) && (isNull(workflowTrigger.getAllowedInvocationDomain()) || !findNoCase(workflowTrigger.getAllowedInvocationDomain(), exclusiveInvocationDomains)) ) {
+				continue;
+			}
 			runWorkflowsByScheduleTrigger(workflowTrigger);
 		}
 	}
