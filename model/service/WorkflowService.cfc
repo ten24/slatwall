@@ -162,6 +162,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		for (var serverInstance in serverInstances) {
 	        var offset = findNoCase('Slatwall',cgi.script_name)?'Slatwall/':'';
 			var workflowurl = 'http://#serverInstance["serverInstanceIPAddress"]#:#serverInstance["serverInstancePort"]#/#offset#?slatAction=api:workflow.executeScheduledWorkflows';
+			this.logHibachi('Invoking workflows on #workflowurl#');
 			var req = new http();
 	        req.setMethod("get");
 	        req.setUrl(workflowurl);
