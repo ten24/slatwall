@@ -134,7 +134,7 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 	
 	public void function pushData(required any entity, struct data ={}){
 		
-		logHibachi("InfoTrax - Start pushData - Event: #arguments.data.event#", true);
+		
 		
 		var iceResponse = {};
 		var relatedToAccount = false;
@@ -200,6 +200,9 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 		
 		
 		if(structKeyExists(iceResponse, 'returnserialnumber')){
+			
+			logHibachi("InfoTrax - returnserialnumber: #iceResponse.returnserialnumber#", true);
+			
 			if(relatedToAccount){
 				if(isNull(arguments.entity.getAccount().getLastSyncedDateTime())){
 					getService('HibachiEventService').announceEvent("afterInfotraxAccountCreateSuccess",{ entity : arguments.entity.getAccount() });
@@ -217,8 +220,6 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 		if(structKeyExists(iceResponse, 'recordNumber')){
 			arguments.entity.setIceRecordNumber(iceResponse['recordNumber']);
 		}
-		
-		logHibachi("InfoTrax - End pushData - Event: #arguments.data.event#", true);
 		
 	}
 	
