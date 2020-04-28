@@ -137,6 +137,9 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 		var iceResponse = {};
 		var relatedToAccount = false;
 		
+		var tableName = '';
+		var filter = '';
+		
 		switch ( arguments.data.event ) {
 			
 			case 'afterAccountAddressSaveSuccess':
@@ -144,14 +147,20 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 			case 'afterAccountGovernmentIdentificationCreateSuccess':
 			case 'afterAccountGovernmentIdentificationSaveSuccess':
 				relatedToAccount = true;
+				tableName ='swAccount';
+				filter = 'accountID = #arguments.entity.getAccount().getAccountID()#';
+				
 				if(isNull(arguments.entity.getAccount().getLastSyncedDateTime())){
 					iceResponse = createDistributor(arguments.data.DTSArguments);
 				}else{
 					iceResponse = updateDistributor(arguments.data.DTSArguments);
 				}
+				
 				break;
 			case 'afterAccountEnrollSuccess':
 			case 'afterAccountSaveSuccess':
+				tableName ='swAccount';
+				filter = 'accountID = #arguments.entity.getAccountID()#';
 				if(isNull(arguments.entity.getLastSyncedDateTime())){
 					iceResponse = createDistributor(arguments.data.DTSArguments);
 				}else{
@@ -162,6 +171,8 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 			case 'afterOrderProcess_placeorderSuccess':
 			case 'afterOrderProcess_updateOrderAmountsSuccess':
 			case 'afterOrderSaveSuccess':
+				tableName ='swOrder';
+				filter = 'orderID = #arguments.entity.getOrderID()#';
 				if(arguments.entity.getOrderStatusType().getSystemCode() == 'ostCanceled'){
 					if(len(arguments.entity.getIceRecordNumber())){
 						iceResponse = deleteTransaction(arguments.data.DTSArguments);
@@ -174,12 +185,16 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 				break;
 				
 			case 'afterOrderProcess_cancelOrderSuccess':
+				tableName ='swOrder';
+				filter = 'orderID = #arguments.entity.getOrderID()#';
 				if(len(arguments.entity.getIceRecordNumber())){
 					iceResponse = deleteTransaction(arguments.data.DTSArguments);
 				}
 				break;
 			case 'afterOrderTemplateProcess_activateSuccess':
 			case 'afterOrderTemplateSaveSuccess':
+				tableName ='swOrderTemplate';
+				filter = 'orderTemplateID = #arguments.entity.getOrderTemplateID()#';
 				if(isNull(arguments.entity.getLastSyncedDateTime())){
 					iceResponse = createAutoship(arguments.data.DTSArguments);
 				}else{
@@ -188,6 +203,8 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 				break;
 				
 			case 'afterOrderTemplateProcess_cancelSuccess':
+				tableName ='swOrderTemplate';
+				filter = 'orderTemplateID = #arguments.entity.getOrderTemplateID()#';
 				iceResponse = deleteAutoship(arguments.data.DTSArguments);
 				break;
 				
@@ -201,23 +218,26 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 			
 			logHibachi("InfoTrax - returnserialnumber: #iceResponse.returnserialnumber#", true);
 			
-			if(relatedToAccount){
-				if(isNull(arguments.entity.getAccount().getLastSyncedDateTime())){
-					getService('HibachiEventService').announceEvent("afterInfotraxAccountCreateSuccess",{ entity : arguments.entity.getAccount() });
-				}
-				arguments.entity.getAccount().setLastSyncedDateTime(now());
-			}else{
-				if(arguments.entity.getClassName() == 'Account' && isNull(arguments.entity.getLastSyncedDateTime())){
-					getService('HibachiEventService').announceEvent("afterInfotraxAccountCreateSuccess", { entity : arguments.entity });
-				}
-				arguments.entity.setLastSyncedDateTime(now());
+			if(relatedToAccount && isNull(arguments.entity.getAccount().getLastSyncedDateTime())){
+				getService('HibachiEventService').announceEvent("afterInfotraxAccountCreateSuccess",{ entity : arguments.entity.getAccount() });
+			}else if(arguments.entity.getClassName() == 'Account' && isNull(arguments.entity.getLastSyncedDateTime())){
+				getService('HibachiEventService').announceEvent("afterInfotraxAccountCreateSuccess", { entity : arguments.entity });
 			}
+			
+			query &= 'UPDATE #tableName# SET lastSyncedDateTime = NOW()';
+
+			var params = {};
+			if(structKeyExists(iceResponse, 'recordNumber')){
+				query &= ', iceRecordNumber = :iceRecordNumber';
+				params['iceRecordNumber'] = iceResponse['recordNumber'];
+			}
+			
+			 query &=' WHERE #filter#';
+			
+			QueryExecute(query, params);
 			
 		}
 		
-		if(structKeyExists(iceResponse, 'recordNumber')){
-			arguments.entity.setIceRecordNumber(iceResponse['recordNumber']);
-		}
 		
 	}
 	
