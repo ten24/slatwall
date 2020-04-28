@@ -373,42 +373,52 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
      * @return none
      * */
     public any function getPayPalClientConfigForCart(required struct data) {
-        //Configure PayPal
-        var braintreeIntegration = getService('integrationService').getIntegrationByIntegrationPackage('braintree');
+        
+        var cart = getHibachiScope().cart();
+  	    var responseBean = authorizeCurrentAccountWithBraintree();
+		if(!responseBean.hasErrors()) {	    
+    	    //Populate shipping address
+    	    var formattedAddress = {};
+    	    if(getHibachiScope().getCart().hasOrderFulfillment()) {
+                //Q: can we use the address from the cart itself instead of grabing it from a fulfillment?
+    	        formattedAddress = formatSlatwallAddressForPayPal(
+    	                cart.getOrderFulfillments()[1] 
+    	                .getShippingAddress()
+    	            );
+    	    }
+    	    
+	    	arguments.data['ajaxResponse']['paypalClientConfig'] = {
+	    	
+	    	    'currencyCode'    : cart.getCurrencyCode(),
+                'amount'          : cart.getCalculatedPaymentAmountDue(), //Q: should we change this to a non-calculated property? 
+    			'clientAuthToken' : responseBean.getAuthorizationCode(),
+    			'shippingAddress' : formattedAddress,
+    			'paymentMode'     : getService('integrationService')
+                                    .getIntegrationByIntegrationPackage('braintree')
+                                    .setting(settingName='braintreeAccountSandboxFlag') ? 'sandbox' : 'production'
+	    	};
+	    	
+		} else {
+            this.addErrors(data, responseBean.getErrors());
+		}
+    }
+    
+    /**
+     * Helper function to authorize current account on hibachi-scope with brain-tree;
+    */
+    private any function authorizeCurrentAccountWithBraintree(){
         var requestBean = getHibachiScope().getTransient('externalTransactionRequestBean');
 	    requestBean.setTransactionType('authorizeAccount');
         requestBean.setAccount(getHibachiScope().getAccount());
 	    
-	    var responseBean = braintreeIntegration.getIntegrationCFC("Payment").processExternal(requestBean);
-	    
-	    //Populate shipping address
-	    var formattedAddress = {};
-	    if(getHibachiScope().getCart().hasOrderFulfillment()) {
-            //Q: can we use the address from the cart itself instead of grabing it from a fulfillment?
-	        var shippingAddress = getHibachiScope().getCart().getOrderFulfillments()[1].getShippingAddress();
-	        if(!isNull(shippingAddress)) {
-	            formattedAddress = formatSlatwallAddressForPayPal(shippingAddress);
-	        }
-	    }
-	    
-		if(!responseBean.hasErrors()) {	    	
-	    	arguments.data['ajaxResponse']['paypalClientConfig'] = {
-	    	    'currencyCode' : "#getHibachiScope().cart().getCurrencyCode()#",
-                //Q: should we change this to a non-calculated property?
-                'amount' : getHibachiScope().cart().getCalculatedPaymentAmountDue(), 
-    			'clientAuthToken' : responseBean.getAuthorizationCode(),
-    			'paymentMode' : braintreeIntegration.setting(settingName='braintreeAccountSandboxFlag') ? 'sandbox' : 'production',
-    			'shippingAddress': formattedAddress,
-	    	};
-		} else {
-            this.addErrors(data, responseBean.getErrors());
-        }
-		
+	    return getService('integrationService')
+                .getIntegrationByIntegrationPackage('braintree')
+                .getIntegrationCFC("Payment")
+                .processExternal(requestBean);
     }
 
     /**
      * Helper function to create an addtess struct from an instance of slatwall-address;
-     * 
      */
     private struct function formatSlatwallAddressForPayPal(any address){
 
@@ -442,41 +452,32 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             return;
         }
 
-        var braintreeIntegration = getService('integrationService').getIntegrationByIntegrationPackage('braintree');
-        
         // Authorize with braintree to get an AuthorizationCode for the client
         if(!orderTemplate.hasErrors() ){
-            var requestBean = getHibachiScope().getTransient('externalTransactionRequestBean');
-            requestBean.setTransactionType('authorizeAccount');
-            requestBean.setAccount(getHibachiScope().getAccount());
-            
-            var responseBean = braintreeIntegration.getIntegrationCFC("Payment").processExternal(requestBean);
+            var responseBean = authorizeCurrentAccountWithBraintree();
             if(responseBean.hasErrors()) {
                 orderTemplate.addErrors( responseBean.getErrors() );
             }
         }
         
-        // Convert Slatwall-address to PayPal-compatible-address
-        var formattedAddress = {};
-        if(!orderTemplate.hasErrors()){
-            if( Len(arguments.data.shippingAccountAddressID) ) {
-                var accountAddress = getAccountService().getAccountAddress(arguments.data.shippingAccountAddressID);
-            } else {
-                var accountAddress = orderTemplate.getShippingAccountAddress();
-            }
-
+        if( !orderTemplate.hasErrors() ){
+            var accountAddress = getAccountService()
+                                    .getAccountAddress(arguments.data.shippingAccountAddressID)
+                                        ?: orderTemplate.getShippingAccountAddress();
+                                        
+            var formattedAddress = {};
             if(!IsNull(accountAddress)){
                 formattedAddress = formatSlatwallAddressForPayPal(accountAddress.getAddress());
             }    
-        }
-
-        if(!orderTemplate.hasErrors()){
+            
             arguments.data.ajaxResponse['paypalClientConfig'] = {
                 'clientAuthToken': responseBean.getAuthorizationCode(),
                 'currencyCode'   : "#orderTemplate.getCurrencyCode()#",
                 'amount'         : orderTemplate.getTotal(),
-                'paymentMode'    : braintreeIntegration.setting(settingName='braintreeAccountSandboxFlag') ? 'sandbox': 'production',
                 'shippingAddress': formattedAddress,
+                'paymentMode'    : getService('integrationService')
+                                    .getIntegrationByIntegrationPackage('braintree')
+                                    .setting(settingName='braintreeAccountSandboxFlag') ? 'sandbox' : 'production'
             };
         } else {
             this.addErrors(arguments.data, orderTemplate.getErrors());
@@ -502,7 +503,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		var responseBean = paymentIntegration.getIntegrationCFC("Payment").processExternal(requestBean);
 
 		if(!responseBean.hasErrors()) {
-		    //Create a New accountPaymentMethod
             var accountPaymentMethod = getService('accountService').newAccountPaymentMethod();
             accountPaymentMethod.setAccountPaymentMethodName("PayPal - Braintree");
             accountPaymentMethod.setAccount( getHibachiScope().getAccount() );
@@ -513,8 +513,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             if(accountPaymentMethod.hasErrors()){
                 this.addErrors(data, accountPaymentMethod.getErrors());
             } else {
+                getHibachiScope().flushORMSession(); //flush to make new data available.             
                 arguments.data['ajaxResponse']['paymentMethodID'] = paymentMethod.getPaymentMethodID();
-                arguments.data['ajaxResponse']['newPayPalPaymentMethod'] = accountPaymentMethod.getAccountPaymentMethodID();
+                arguments.data['ajaxResponse']['newPayPalPaymentMethod'] = accountPaymentMethod.getStructRepresentation();
             }
 		} else {
             this.addErrors(data, responseBean.getErrors());

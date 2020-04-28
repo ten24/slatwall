@@ -38,7 +38,7 @@ export class PayPalService {
 			.then((response) => this.createPayPalAccountPaymentMethod(response.nonce))
 			.then((response) => {
 				return this.publicService.doAction("addOrderPayment", {
-					"accountPaymentMethodID": response.newPayPalPaymentMethod,
+					"accountPaymentMethodID": response.newPayPalPaymentMethod.accountPaymentMethodID,
 					"copyFromType": "accountPaymentMethod",
 					"paymentIntegrationType": "braintree",
 					"newOrderPayment.paymentMethod.paymentMethodID": response.paymentMethodID,
@@ -57,7 +57,8 @@ export class PayPalService {
 		orderTemplateID: string,
 		shippingAccountAddressID?: string,
 		payPalButtonSelector = "#paypal-button"
-	) {
+	): ng.IPromise<any> {
+		
 		let deferred = this.$q.defer();
 
 		this.publicService

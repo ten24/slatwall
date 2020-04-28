@@ -3,6 +3,7 @@ import {
 	FlexshipCheckoutState,
 	FlexshipCheckoutStore,
 } from "@Monat/states/flexship-checkout-store";
+
 import { ObserverService, RbKeyService } from "@Hibachi/core/core.module";
 import { MonatService } from "@Monat/services/monatservice";
 import { OrderTemplateService } from "@Monat/services/ordertemplateservice";
@@ -128,7 +129,25 @@ class FlexshipCheckoutStepController {
 	};
 
 	public configurePayPal = () => {
-		this.payPalService.configPayPal();
+		
+		this.payPalService.configPayPalClientForOrderTemplate(
+				this.currentState.flexship.ordertemplateID,
+				this.currentState.selectedShippingAddressID
+			)
+			.then( response => {
+				if(!response?.newPayPalPaymentMethod){
+					throw response;
+				}
+				
+				this.currentState.accountPaymentMethods.push(response.this.newPayPalPaymentMethod);
+				
+				this.flexshipCheckoutStore.dispatch("SET_PAYMENT_METHODS", {
+					accountPaymentMethods: this.currentState.accountPaymentMethods,
+				});
+				this.setSelectedPaymentMethodID(
+					response.newPayPalPaymentMethod.accountPaymentMethodID
+				);
+			})
 	};
 
 	public addNewPaymentMethod = () => {
