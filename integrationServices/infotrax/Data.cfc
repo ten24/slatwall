@@ -134,8 +134,6 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 	
 	public void function pushData(required any entity, struct data ={}){
 		
-		
-		
 		var iceResponse = {};
 		var relatedToAccount = false;
 		

@@ -394,7 +394,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 				
 			case 'OrderTemplate':
 				arguments.data.DTSArguments = convertSwOrderTemplateToIceAutoship(arguments.entity);
-				logHibachi("InfoTrax - Order: #arguments.entity.getOrderTemplateID()#", true);
+				logHibachi("InfoTrax - OrderTemplate: #arguments.entity.getOrderTemplateID()#", true);
 				break;
 				
 			default:
