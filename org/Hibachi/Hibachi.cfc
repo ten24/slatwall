@@ -155,7 +155,7 @@ component extends="framework.one" {
 	}
 	
 	public boolean function isServerNameAnIP() {
-		return REFindNoCase('^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$', cgi.server_name);	
+		return REFindNoCase('^localhost$', cgi.server_name) || REFindNoCase('^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$', cgi.server_name);	
 	}
 	
 	public string function getDatasource(){
@@ -364,8 +364,11 @@ component extends="framework.one" {
 			}
 			// if cluster is not set yet, try to set that
 			if( isNull(serverInstance.getServerInstanceClusterName()) || serverInstance.getServerInstanceClusterName() == '' ){
-				getHibachiScope().setApplicationValue("applicationCluster", getCluster());
-				serverInstance.setServerInstanceClusterName(getHibachiScope().getApplicationValue("applicationCluster"));
+				var clusterName = getCluster();
+				if(clusterName != ''){
+					getHibachiScope().setApplicationValue("applicationCluster", clusterName);
+					getHibachiScope().getService('hibachiCacheDao').updateServerInstanceClusterName( serverInstance, clusterName );
+				}
 			}
 			getHibachiScope().getService('hibachiCacheDao').updateServerInstanceLastRequestDateTime( serverInstance );
 		}

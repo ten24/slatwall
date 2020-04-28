@@ -162,6 +162,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		for (var serverInstance in serverInstances) {
 	        var offset = findNoCase('Slatwall',cgi.script_name)?'Slatwall/':'';
 			var workflowurl = 'http://#serverInstance["serverInstanceIPAddress"]#:#serverInstance["serverInstancePort"]#/#offset#?slatAction=api:workflow.executeScheduledWorkflows';
+			this.logHibachi('Invoking workflows on #workflowurl#');
 			var req = new http();
 	        req.setMethod("get");
 	        req.setUrl(workflowurl);
@@ -175,14 +176,14 @@ component extends="HibachiService" accessors="true" output="false" {
 		getWorkflowDAO().resetExpiredWorkflows(); 
 	
 		var workflowTriggers = getWorkflowDAO().getDueWorkflows();
-		var exclusiveInvocationDomains = getWorkflowDAO().getExclusiveWorkflowTriggersInvocationDomains();
+		var exclusiveInvocationClusters = getWorkflowDAO().getExclusiveWorkflowTriggersInvocationClusters();
 		for(var workflowTrigger in workflowTriggers) {
-			// make sure workflow runs on the allowed domain
-			if( !isNull(workflowTrigger.getAllowedInvocationDomain()) && len(workflowTrigger.getAllowedInvocationDomain()) && !findNoCase(cgi.server_name, workflowTrigger.getAllowedInvocationDomain())) {
+			// make sure workflow runs on the allowed cluster
+			if( !isNull(workflowTrigger.getAllowedInvocationCluster()) && len(workflowTrigger.getAllowedInvocationCluster()) && !findNoCase(getHibachiScope().getApplicationValue('applicationCluster'), workflowTrigger.getAllowedInvocationCluster())) {
 				continue;
 			}
 			// make sure exlcusive domain is only used for those workflows
-			if( findNoCase(cgi.server_name, exclusiveInvocationDomains) && (isNull(workflowTrigger.getAllowedInvocationDomain()) || !findNoCase(workflowTrigger.getAllowedInvocationDomain(), exclusiveInvocationDomains)) ) {
+			if( findNoCase(getHibachiScope().getApplicationValue('applicationCluster'), exclusiveInvocationClusters) && (isNull(workflowTrigger.getAllowedInvocationCluster()) || !findNoCase(workflowTrigger.getAllowedInvocationCluster(), exclusiveInvocationClusters)) ) {
 				continue;
 			}
 			runWorkflowsByScheduleTrigger(workflowTrigger);
