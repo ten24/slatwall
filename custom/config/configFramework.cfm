@@ -5,4 +5,4 @@
 <cfset variables.framework.hibachi.cluster.taskUrlPattern= '^monatstagingtask\.' />
 <cfset variables.framework.hibachi.cluster.flexshipUrlPattern= '^monatstagingtaskflexship\.' />
 <cfset variables.framework.hibachi.cluster.pushUrlPattern= '^monatstagingtaskpush\.' />
-<cfset variables.framework.isECSInstance= true' />
+<cfset variables.framework.isECSInstance= true />

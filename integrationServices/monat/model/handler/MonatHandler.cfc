@@ -295,7 +295,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 				logHibachi("afterOrderItemProcessCreateSuccess failed @ create bundle items for orderitem #orderItem.getOrderItemID()# ");
 			}
 		}
-		
+
 	}
 	
 	/**

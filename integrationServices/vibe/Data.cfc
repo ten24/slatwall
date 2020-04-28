@@ -122,7 +122,7 @@ component accessors='true' output='false' displayname='Vibe' extends='Slatwall.o
 	 * 
 	*/ 
 	public void function pushData(required any entity, struct data ={}) {
-
+		
 		//push to remote endpoint
 		var response = createVibeUser(arguments.data.payload);
 		
@@ -133,6 +133,7 @@ component accessors='true' output='false' displayname='Vibe' extends='Slatwall.o
 			//the call was not successful
 			throw("Error in Vibe::PushData() #SerializeJson(response)#"); //this will comeup in EntityQueue
 		} 
+		
 	}
 
 }

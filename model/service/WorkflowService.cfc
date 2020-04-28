@@ -215,7 +215,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			return arguments.workflowTrigger;
 		}
 		
-		lock name="runWorkflowsByScheduleTrigger_#getHibachiScope().getServerInstanceKey()#_#arguments.workflowTrigger.getWorkflowTriggerID()#" timeout="60" throwontimeout=false{
+		lock name="runWorkflowsByScheduleTrigger_#getHibachiScope().getServerInstanceKey()#_#arguments.workflowTrigger.getWorkflowTriggerID()#" timeout="5" throwontimeout=false{
 			//Change WorkflowTrigger runningFlag to TRUE
 			updateWorkflowTriggerRunning(workflowTrigger=arguments.workflowTrigger, runningFlag=true);
 	

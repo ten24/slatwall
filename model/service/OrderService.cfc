@@ -1636,7 +1636,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		newOrder.setBillingAccountAddress(arguments.orderTemplate.getBillingAccountAddress()); 
 		newOrder.setShippingAccountAddress(arguments.orderTemplate.getShippingAccountAddress());  
 		newOrder = this.saveOrder(order=newOrder, updateOrderAmounts=false, updateOrderAmounts=false, updateShippingMethodOptions=false, checkNewAccountAddressSave=false); 
-
+		
 		newOrder = this.createOrderItemsFromOrderTemplateItems(newOrder,arguments.orderTemplate);
 	
 		if(newOrder.hasErrors()){
@@ -1804,7 +1804,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			newOrder.setPaymentLastRetryDateTime(now());
 			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has declined payment');
 			newOrder.clearHibachiErrors();
-			//newOrder = this.processOrder( newOrder, {}, 'updateOrderAmounts' );
+			// newOrder = this.processOrder( newOrder, {}, 'updateOrderAmounts' );
 			newOrder = this.saveOrder(newOrder);
 			ormFlush(); 
 			//fire retry payment failure event so it can be utilized in workflows
@@ -1894,7 +1894,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		processOrderAddOrderItem.setPrice(orderTemplateItemPrice);
 		processOrderAddOrderItem.setQuantity(arguments.orderTemplateItemStruct['quantity']);
 		processOrderAddOrderItem.setUpdateOrderAmountFlag(false); 		
-		processOrderAddOrderItem.setUpdateShippingMethodOptionsFlag(false); 		
+		processOrderAddOrderItem.setUpdateShippingMethodOptionsFlag(false);
 
 		if(!isNull(arguments.orderTemplate.getPriceGroup())){
 			processOrderAddOrderItem.setPriceGroup(arguments.orderTemplate.getPriceGroup());
