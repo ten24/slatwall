@@ -139,6 +139,7 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 		
 		var tableName = '';
 		var filter = '';
+		var params = {};
 		
 		switch ( arguments.data.event ) {
 			
@@ -148,7 +149,8 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 			case 'afterAccountGovernmentIdentificationSaveSuccess':
 				relatedToAccount = true;
 				tableName ='swAccount';
-				filter = 'accountID = #arguments.entity.getAccount().getAccountID()#';
+				filter = 'accountID = :baseID';
+				params['baseID'] = arguments.entity.getAccount().getAccountID();
 				
 				if(isNull(arguments.entity.getAccount().getLastSyncedDateTime())){
 					iceResponse = createDistributor(arguments.data.DTSArguments);
@@ -160,7 +162,9 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 			case 'afterAccountEnrollSuccess':
 			case 'afterAccountSaveSuccess':
 				tableName ='swAccount';
-				filter = 'accountID = #arguments.entity.getAccountID()#';
+				filter = 'accountID = :baseID';
+				params['baseID'] = arguments.entity.getAccountID();
+				
 				if(isNull(arguments.entity.getLastSyncedDateTime())){
 					iceResponse = createDistributor(arguments.data.DTSArguments);
 				}else{
@@ -172,7 +176,9 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 			case 'afterOrderProcess_updateOrderAmountsSuccess':
 			case 'afterOrderSaveSuccess':
 				tableName ='swOrder';
-				filter = 'orderID = #arguments.entity.getOrderID()#';
+				filter = 'orderID = :baseID';
+				params['baseID'] = arguments.entity.getOrderID();
+				
 				if(arguments.entity.getOrderStatusType().getSystemCode() == 'ostCanceled'){
 					if(len(arguments.entity.getIceRecordNumber())){
 						iceResponse = deleteTransaction(arguments.data.DTSArguments);
@@ -186,7 +192,9 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 				
 			case 'afterOrderProcess_cancelOrderSuccess':
 				tableName ='swOrder';
-				filter = 'orderID = #arguments.entity.getOrderID()#';
+				filter = 'orderID = :baseID';
+				params['baseID'] = arguments.entity.getOrderID();
+				
 				if(len(arguments.entity.getIceRecordNumber())){
 					iceResponse = deleteTransaction(arguments.data.DTSArguments);
 				}
@@ -194,7 +202,9 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 			case 'afterOrderTemplateProcess_activateSuccess':
 			case 'afterOrderTemplateSaveSuccess':
 				tableName ='swOrderTemplate';
-				filter = 'orderTemplateID = #arguments.entity.getOrderTemplateID()#';
+				filter = 'orderTemplateID = :baseID';
+				params['baseID'] = arguments.entity.getOrderTemplateID();
+				
 				if(isNull(arguments.entity.getLastSyncedDateTime())){
 					iceResponse = createAutoship(arguments.data.DTSArguments);
 				}else{
@@ -204,7 +214,9 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 				
 			case 'afterOrderTemplateProcess_cancelSuccess':
 				tableName ='swOrderTemplate';
-				filter = 'orderTemplateID = #arguments.entity.getOrderTemplateID()#';
+				filter = 'orderTemplateID = :baseID';
+				params['baseID'] = arguments.entity.getOrderTemplateID();
+				
 				iceResponse = deleteAutoship(arguments.data.DTSArguments);
 				break;
 				
@@ -226,7 +238,6 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 			
 			query &= 'UPDATE #tableName# SET lastSyncedDateTime = NOW()';
 
-			var params = {};
 			if(structKeyExists(iceResponse, 'recordNumber')){
 				query &= ', iceRecordNumber = :iceRecordNumber';
 				params['iceRecordNumber'] = iceResponse['recordNumber'];
