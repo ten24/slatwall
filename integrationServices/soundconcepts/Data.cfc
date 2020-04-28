@@ -117,6 +117,7 @@ component accessors='true' output='false' displayname='SoundConcepts' extends='S
 	 */ 
 	public void function pushData(required any entity, struct data ={}) {
 	
+		logHibachi("SoundConcepts - Start pushData", true);
 		//push to remote endpoint
 		var response = createSoundConceptsUser(arguments.data.payload);
 
@@ -125,6 +126,8 @@ component accessors='true' output='false' displayname='SoundConcepts' extends='S
 		) {
 			throw("Error in SoundConcepts::PushData() #SerializeJson(response)#");
 		} 
+		
+		logHibachi("SoundConcepts - End pushData", true);
 	}
 
 }
