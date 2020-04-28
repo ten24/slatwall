@@ -55,8 +55,8 @@ component entityname="SlatwallWorkflowTrigger" table="SwWorkflowTrigger" persist
 	property name="timeout" ormtype="integer" default="90"; 
 	property name="scheduleCollectionConfig" ormtype="string" length="8000" hb_auditable="false" hint="json object used to construct the base collection HQL query";
 	property name="lockLevel" ormtype="string" hb_formatfieldtype="select" default="database" hint="if lock level is database, then isRunningFlag is checked in the database for locking. If application then we lock by serverInstanceKey";
-	property name="allowedInvocationDomain" ormtype="string";
-	property name="exclusiveInvocationDomainFlag" ormtype="boolean" hb_formatType="yesno";
+	property name="allowedInvocationCluster" ormtype="string";
+	property name="exclusiveInvocationClusterFlag" ormtype="boolean" hb_formatType="yesno";
 	
 	// Calculated Properties
 
