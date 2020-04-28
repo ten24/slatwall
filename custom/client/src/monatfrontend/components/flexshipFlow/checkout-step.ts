@@ -147,7 +147,10 @@ class FlexshipCheckoutStepController {
 				this.setSelectedPaymentMethodID(
 					response.newPayPalPaymentMethod.accountPaymentMethodID
 				);
+				
+				//TODO: we can finalize the checkout here
 			})
+			.catch( error => this.monatAlertService.showErrorsFromResponse(error));
 	};
 
 	public addNewPaymentMethod = () => {
