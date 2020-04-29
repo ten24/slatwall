@@ -241,7 +241,11 @@ export class OrderTemplateService {
 			"orderTemplateID": orderTemplateID,
 			"frequencyTerm.value": frequencyTermID,
 		};
-
+		
+		if(this.mostRecentOrderTemplate){
+			this.mostRecentOrderTemplate['scheduleOrderDayOfTheMonth'] = scheduleOrderDayOfTheMonth;
+		}
+		 
 		if (scheduleOrderDayOfTheMonth) {
 			payload["scheduleOrderDayOfTheMonth"] = scheduleOrderDayOfTheMonth;
 		}
