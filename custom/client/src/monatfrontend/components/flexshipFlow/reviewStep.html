@@ -37,7 +37,7 @@
 							</h6>
 							<table class="table review-table" ng-cloak>
 								<tbody>
-									<tr ng-repeat="item in reviewStep.flexship.orderTemplateItems">
+									<tr ng-repeat="item in reviewStep.orderTemplateService.mostRecentOrderTemplate.orderTemplateItems">
 										<td class="item-image">
 											<a ng-href="{{item.skuProductURL}}">
 												<img image-manager class="img-fluid" ng-src="{{item.sku_imagePath}}" />
@@ -54,7 +54,7 @@
 											</div>
 										</td>
 										<td class="item-price">
-											<span class="price">{{ item.total| swcurrency: reviewStep.flexship.currencyCode }}</span>
+											<span class="price">{{ item.total| swcurrency: reviewStep.orderTemplateService.mostRecentOrderTemplate.currencyCode }}</span>
 										</td>
 									</tr>
 								</tbody>
@@ -68,60 +68,60 @@
 					<div class="cart-right-container">
 						<div class="cart-details">
 							<ul>
-								<li ng-if="reviewStep.flexship.suggestedPrice">
+								<li ng-if="reviewStep.orderTemplateService.mostRecentOrderTemplate.suggestedPrice">
 									<div class="left">
 										<span class="title-sm" sw-rbkey="'frontend.cart.suggestedRetailPrice'"></span>
 									</div>
 									<div class="right">
-										<span class="price" ng-bind-html="reviewStep.flexship.listPrice  | swcurrency:reviewStep.flexship.currencyCode"></span>
+										<span class="price" ng-bind-html="reviewStep.orderTemplateService.mostRecentOrderTemplate.listPrice  | swcurrency:reviewStep.orderTemplateService.mostRecentOrderTemplate.currencyCode"></span>
 									</div>
 								</li>
-								<li ng-if="reviewStep.flexship.calculatedSubTotal">
+								<li ng-if="reviewStep.orderTemplateService.mostRecentOrderTemplate.calculatedSubTotal">
 									<div class="left">
 										<span class="title-sm" sw-rbkey="'frontend.hybridCart.yourPrice'"></span>
 									</div>
 									<div class="right">
-										<span class="price" ng-bind-html="reviewStep.flexship.calculatedSubTotal | swcurrency:reviewStep.flexship.currencyCode"></span>
+										<span class="price" ng-bind-html="reviewStep.orderTemplateService.mostRecentOrderTemplate.calculatedSubTotal | swcurrency:reviewStep.orderTemplateService.mostRecentOrderTemplate.currencyCode"></span>
 									</div>
 								</li>
-								<li ng-if="reviewStep.flexship.purchasePlusTotal">
+								<li ng-if="reviewStep.orderTemplateService.mostRecentOrderTemplate.purchasePlusTotal">
 									<div class="left">
 										<span class="title-sm" sw-rbkey="'frontend.orderTemplate.purchasePlus'"></span>
 									</div>
 									<div class="right">
-										<span class="price" ng-bind-html="'&minus;' + ( reviewStep.flexship.purchasePlusTotal | swcurrency:reviewStep.flexship.currencyCode )"></span>
+										<span class="price" ng-bind-html="'&minus;' + ( reviewStep.orderTemplateService.mostRecentOrderTemplate.purchasePlusTotal | swcurrency:reviewStep.orderTemplateService.mostRecentOrderTemplate.currencyCode )"></span>
 									</div>
 								</li>
-								<li ng-if="reviewStep.flexship.taxTotal">
+								<li ng-if="reviewStep.orderTemplateService.mostRecentOrderTemplate.taxTotal">
 									<div class="left">
 										<span class="title-sm" sw-rbkey="'frontend.checkout.estTax'"></span>
 									</div>
 									<div class="right">
-										<span class="price" ng-bind-html="reviewStep.flexship.taxTotal | swcurrency:reviewStep.flexship.currencyCode"></span>
+										<span class="price" ng-bind-html="reviewStep.orderTemplateService.mostRecentOrderTemplate.taxTotal | swcurrency:reviewStep.orderTemplateService.mostRecentOrderTemplate.currencyCode"></span>
 									</div>
 								</li>
-								<li ng-if="reviewStep.flexship.vatTotal">
+								<li ng-if="reviewStep.orderTemplateService.mostRecentOrderTemplate.vatTotal">
 									<div class="left">
 										<span class="title-sm" sw-rbkey="'frontend.cart.vatTotal'"></span>
 									</div>
 									<div class="right">
-										<span class="price" ng-bind-html="reviewStep.flexship.vatTotal | swcurrency:reviewStep.flexship.currencyCode"></span>
+										<span class="price" ng-bind-html="reviewStep.orderTemplateService.mostRecentOrderTemplate.vatTotal | swcurrency:reviewStep.orderTemplateService.mostRecentOrderTemplate.currencyCode"></span>
 									</div>
 								</li>
-								<li ng-if="reviewStep.flexship.calculatedFulfillmentTotal">
+								<li ng-if="reviewStep.orderTemplateService.mostRecentOrderTemplate.calculatedFulfillmentTotal">
 									<div class="left">
 										<span class="title-sm" sw-rbkey="'frontend.checkout.shipping'"></span>
 									</div>
 									<div class="right">
-										<span class="price" ng-bind-html="(reviewStep.flexship.calculatedFulfillmentTotal -  reviewStep.flexship.fulfillmentHandlingFeeTotal )| swcurrency:reviewStep.flexship.currencyCode"></span>
+										<span class="price" ng-bind-html="(reviewStep.orderTemplateService.mostRecentOrderTemplate.calculatedFulfillmentTotal -  reviewStep.orderTemplateService.mostRecentOrderTemplate.fulfillmentHandlingFeeTotal )| swcurrency:reviewStep.orderTemplateService.mostRecentOrderTemplate.currencyCode"></span>
 									</div>
 								</li>
-								<li ng-if="reviewStep.flexship.fulfillmentHandlingFeeTotal">
+								<li ng-if="reviewStep.orderTemplateService.mostRecentOrderTemplate.fulfillmentHandlingFeeTotal">
 									<div class="left">
 										<span class="title-sm" sw-rbkey="'frontend.cart.handlingFee'"></span>
 									</div>
 									<div class="right">
-										<span class="price" ng-bind-html="reviewStep.flexship.fulfillmentHandlingFeeTotal | swcurrency:reviewStep.flexship.currencyCode"></span>
+										<span class="price" ng-bind-html="reviewStep.orderTemplateService.mostRecentOrderTemplate.fulfillmentHandlingFeeTotal | swcurrency:reviewStep.orderTemplateService.mostRecentOrderTemplate.currencyCode"></span>
 									</div>
 								</li>
 								<span ng-cloak>
@@ -159,12 +159,12 @@
 										</div>
 									</li>
 								</span>
-								<li class="total" ng-if="reviewStep.flexship.calculatedTotal">
+								<li class="total" ng-if="reviewStep.orderTemplateService.mostRecentOrderTemplate.calculatedTotal">
 									<div class="left">
 										<h4 sw-rbkey="'frontend.global.total'"></h4>
 									</div>
 									<div class="right">
-										<h4 ng-bind-html="reviewStep.flexship.calculatedTotal | swcurrency:reviewStep.flexship.currencyCode"></h4>
+										<h4 ng-bind-html="reviewStep.orderTemplateService.mostRecentOrderTemplate.calculatedTotal | swcurrency:reviewStep.orderTemplateService.mostRecentOrderTemplate.currencyCode"></h4>
 									</div>
 								</li>
 							</ul>
