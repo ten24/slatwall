@@ -36,6 +36,10 @@ export class PayPalService {
 			.then((config) => this.renderPayPalButton(config, payPalButtonSelector))
 			//Will resolve After user authorizes the Payment
 			.then((response) => this.createPayPalAccountPaymentMethod(response.nonce))
+			/**
+			 * response.newPayPalPaymentMethod: AccountPaymentMethod,
+			 * response.paymentMethodID,
+			 */
 			.then((response) => {
 				return this.publicService.doAction("addOrderPayment", {
 					"accountPaymentMethodID": response.newPayPalPaymentMethod.accountPaymentMethodID,
@@ -76,7 +80,7 @@ export class PayPalService {
 			//Will resolve After user authorizes the Payment
 			.then((response) => this.createPayPalAccountPaymentMethod(response.nonce))
 			/**
-			 * response.newPayPalPaymentMethod,
+			 * response.newPayPalPaymentMethod: AccountPaymentMethod,
 			 * response.paymentMethodID,
 			 */
 			.then((response) => deferred.resolve(response))

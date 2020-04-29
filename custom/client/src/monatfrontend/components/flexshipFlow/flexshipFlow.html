@@ -27,6 +27,7 @@
 			<frequency-step></frequency-step>
 		</div>
 		<!--ofy step -->
+		<!-- TODO: handle !flexshipFlow.orderTemplateService.mostRecentOrderTemplate.qualifiesForOFYProducts -->
 		<div ng-if="flexshipFlow.currentStep  === flexshipFlow.FlexshipSteps.OFY">
 			<div class="container great_part">
 				<ofy-enrollment flexship="flexshipFlow.orderTemplateService.currentOrderTemplateID"></ofy-enrollment>	
@@ -149,7 +150,7 @@
 				class="btn btn-secondary forward-btn forward" 
 				ng-class="{  'loading,disabled': flexshipFlow.loading }"
 				ng-disabled="
-					flexshipFlow.loading || !flexshipFlow.orderTemplateService.mostRecentOrderTemplate.qualifiesForOFYProducts && flexshipFlow.currentStep != flexshipFlow.FlexshipSteps.CHECKOUT
+					flexshipFlow.loading && flexshipFlow.currentStep != flexshipFlow.FlexshipSteps.CHECKOUT
 				"
 			>
 

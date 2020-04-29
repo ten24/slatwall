@@ -448,7 +448,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         param name="arguments.data.shippingAccountAddressID" default="";
 
         var orderTemplate = getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
-        if(!IsNull(orderTemplate)){
+        if(IsNull(orderTemplate)){
             return;
         }
 
@@ -505,6 +505,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		if(!responseBean.hasErrors()) {
             var accountPaymentMethod = getService('accountService').newAccountPaymentMethod();
             accountPaymentMethod.setAccountPaymentMethodName("PayPal - Braintree");
+            accountPaymentMethod.setCreditCardType("PayPal");
             accountPaymentMethod.setAccount( getHibachiScope().getAccount() );
             accountPaymentMethod.setPaymentMethod( paymentMethod );
             accountPaymentMethod.setProviderToken( responseBean.getProviderToken() );

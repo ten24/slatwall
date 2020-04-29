@@ -3,7 +3,7 @@ import { OrderTemplateService } from '@Monat/services/ordertemplateservice';
 import { PublicService, ObserverService } from '@Hibachi/core/core.module'
 
 export enum FlexshipSteps{
-	SHOP,
+	SHOP=1,
 	FREQUENCY,	
 	OFY,
 	CHECKOUT,
@@ -23,7 +23,6 @@ class FlexshipFlowController {
 	public currentStep = FlexshipSteps.SHOP; 
 	public farthestStepReached = FlexshipSteps.SHOP; 
 	public orderTemplate:{[key:string]:any};
-	public currentOrderTemplateID:string;
 	public muraData;
 	
 	
@@ -42,17 +41,27 @@ class FlexshipFlowController {
     
     public $onInit = () => {
     	
-    	this.currentOrderTemplateID = this.monatService.getCurrentFlexship()?.orderTemplateID;
-		this.orderTemplateService.getSetOrderTemplateOnSession('qualifiesForOFYProducts,purchasePlusTotal,vatTotal,taxTotal,fulfillmentHandlingFeeTotal', 'save', false, false)
-		.then((res:{[key:string]:any})=>{
-			this.orderTemplate = res.orderTemplate;
-			if(!this.orderTemplate){
-				// redirect to listing
-			 	this.monatService.redirectToProperSite("/my-account/flexships");
+		this.orderTemplateService
+		.getSetOrderTemplateOnSession('qualifiesForOFYProducts,purchasePlusTotal,vatTotal,taxTotal,fulfillmentHandlingFeeTotal', 'save', false, false)
+		.then( (res: {[key:string]:any} ) => {
+			if(!res.orderTemplate){
+				throw(res);
 			}
+			this.orderTemplate = res.orderTemplate;
+		})
+		.then( () => {
+			// chaining here, as the API getSetOrderTemplateOnSession is slow, 
+			// and user has option to add product before there's an order-templateID  
+			return this.monatService.getProductFilters();
+		})
+		.catch( (error) => {
+			// not able to get the current-flexship from the session, redirect back to the flexship-listing
+		 	this.monatService.redirectToProperSite("/my-account/flexships");
+		})
+		.finally(() => {
+			this.loading = false;
 		});
 		
-		this.monatService.getProductFilters();
     }
 	
 	public back = ():FlexshipSteps => {
