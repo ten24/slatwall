@@ -103,7 +103,7 @@
 			>
 				<monat-product-card 
 					site-code="#local.siteCode#" 
-					currency-code="slatwall.cart.currencyCode" 
+					currency-code="{{productListingStep.orderTemplateService.mostRecentOrderTemplate.currencyCode}}" 
 					all-products="productController.productList" 
 					type="flexship"
 					order-template="productListingStep.orderTemplateService.currentOrderTemplateID"

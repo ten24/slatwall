@@ -73817,14 +73817,17 @@ var SWDefaultSkuRadioController = /** @class */ (function () {
         else {
             throw ("You must provide the listingDisplayId to SWDefaultSkuRadioController");
         }
-        defaultSkuService.attachObserver(this.selectionId, this.productProductId);
-        if (angular.isUndefined(this.selectionFieldName)) {
-            this.selectionFieldName = this.selectionId + 'selection';
-        }
         if (angular.isUndefined(this.skuId) && angular.isUndefined(this.sku)) {
             throw ("You must provide a skuID to SWDefaultSkuRadioController");
         }
         this.isDefaultSku = (this.skuId == this.productDefaultSkuSkuId);
+        if (this.isDefaultSku) {
+            defaultSkuService.setDefaultSkuSelection(this.selectionId, this.skuId);
+        }
+        defaultSkuService.attachObserver(this.selectionId, this.productProductId);
+        if (angular.isUndefined(this.selectionFieldName)) {
+            this.selectionFieldName = this.selectionId + 'selection';
+        }
         if (angular.isUndefined(this.sku)) {
             var skuData = {
                 skuID: this.skuId
@@ -75302,6 +75305,9 @@ var DefaultSkuService = /** @class */ (function () {
             });
         };
     }
+    DefaultSkuService.prototype.setDefaultSkuSelection = function (selectionID, skuID) {
+        this.defaultSkuSelections[selectionID] = skuID;
+    };
     return DefaultSkuService;
 }());
 exports.DefaultSkuService = DefaultSkuService;
