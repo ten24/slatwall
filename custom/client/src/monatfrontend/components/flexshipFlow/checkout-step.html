@@ -2,7 +2,7 @@
 
 <flexship-checkout-shipping-method id="shipping_method_sec"></flexship-checkout-shipping-method>
 
-<section class="shipping-page payment-page" id="payment_sec">
+<section class="shipping-page payment-page" id="payment_sec" se-loading="flexshipCheckout.loading">
 	<div class="container">
 		<div class="payment_sec">
 			
@@ -76,7 +76,7 @@
 							<i  class="fab fa-2x align-middle mr-2"
 								ng-class="{
 									'fa-cc-visa': paymentMethod.creditCardType == 'Visa',
-									'fa-cc-mastercard': paymentMethod.creditCardType == 'Mastercard'
+									'fa-cc-mastercard': paymentMethod.creditCardType == 'Mastercard',
 									'fa-paypal': paymentMethod.creditCardType == 'PayPal'
 								}"
 							></i> 

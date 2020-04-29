@@ -121,7 +121,7 @@ class FlexshipCheckoutStepController {
 					this.rbkeyService.rbKey("alert.flexship.updateSuccessful")
 				);
 
-				this.observerService.notify(FlexshipFlowEvents.ON_NEXT);
+				this.observerService.notify(FlexshipFlowEvents.ON_COMPLETE_CHECKOUT_SUCCESS);
 			})
 			.catch((error) => {
 				this.monatAlertService.showErrorsFromResponse(error);

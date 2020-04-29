@@ -36,7 +36,17 @@ class FlexshipFlowController {
     	public observerService: ObserverService
     ) {
     	this.observerService.attach(this.next, FlexshipFlowEvents.ON_NEXT);
-    	this.observerService.attach(() => { this.loading = false }, FlexshipFlowEvents.ON_COMPLETE_CHECKOUT_FAILURE);
+    	this.observerService.attach(
+    		() => { 
+    			this.loading = false; 
+    			this.setStepAndUpdateProgress(FlexshipSteps.REVIEW) 
+    		}, 
+    		FlexshipFlowEvents.ON_COMPLETE_CHECKOUT_SUCCESS
+    	);
+    	this.observerService.attach(
+    		() => { this.loading = false }, 
+    		FlexshipFlowEvents.ON_COMPLETE_CHECKOUT_FAILURE
+    	);
     }
     
     public $onInit = () => {
@@ -89,12 +99,23 @@ class FlexshipFlowController {
 		switch(this.currentStep){
 			case FlexshipSteps.SHOP:
 				return this.setStepAndUpdateProgress(FlexshipSteps.FREQUENCY)
-				break;
 			case FlexshipSteps.FREQUENCY:
-				return this.setStepAndUpdateProgress(FlexshipSteps.OFY);
-				break;
+				return this.setStepAndUpdateProgress(
+					//TODO: we still need to handle the date logic
+					this.orderTemplateService.mostRecentOrderTemplate.qualifiesForOFYProducts ? FlexshipSteps.OFY : FlexshipSteps.CHECKOUT
+				);
 			case FlexshipSteps.OFY:
 				return this.setStepAndUpdateProgress(FlexshipSteps.CHECKOUT);
+			case FlexshipSteps.CHECKOUT: 
+					if(this.loading) return;
+				 // TODO: either use states 
+				 // or figureout a batter way to handle these, 
+				 // the other option can be to ^require flexshipFlow in the checkout-step, 
+				 // and then register a callback from checkout-step, to recieve the on-next event, 
+				 // from there it can return a promise and we can wait for that to resolve,
+				 // before going to the next step
+				 this.observerService.notify( FlexshipFlowEvents.ON_COMPLETE_CHECKOUT );
+				 this.loading = true;
 				break;
 			default:
 				return this.setStepAndUpdateProgress(FlexshipSteps.REVIEW);
@@ -116,10 +137,7 @@ class FlexshipFlowController {
 
 	private setStepAndUpdateProgress(step:FlexshipSteps):FlexshipSteps{
 		
-		if(this.currentStep === step && step === FlexshipSteps.CHECKOUT){
-			return this.observerService.notify( FlexshipFlowEvents.ON_COMPLETE_CHECKOUT );
-		}
-
+		
 		if(step == FlexshipSteps.REVIEW){
 			(this.publicService as any).showFooter = true;
 		}else{

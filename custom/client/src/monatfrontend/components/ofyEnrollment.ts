@@ -39,6 +39,9 @@ class OFYEnrollmentController {
 			skuID: this.stagedProductID,
 			orderTemplateID:this.flexship
         }
+        if(this.action === 'addOrderTemplateItem'){
+        	data['temporaryFlag'] = true;
+        }
         
 		this.publicService.doAction(this.action, data ).then(res=>{
 			this.observerService.notify('onNext');	
