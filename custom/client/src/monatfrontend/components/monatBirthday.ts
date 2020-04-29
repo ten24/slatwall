@@ -41,7 +41,7 @@ class MonatBirthdayController {
 			this.rbkeyService.rbKey('frontend.global.december'),
 			
 		]
-			this.month = this.months[1];
+			this.month = this.months[0];
 			this.upMonth = this.getAdjustedMonth(ActionType.PLUS);
 			this.downMonth = this.getAdjustedMonth(ActionType.MINUS);
 			this.downDay = new Date(this.date.getFullYear(), this.months.indexOf(this.month)+1, 0).getDate();
@@ -59,6 +59,23 @@ class MonatBirthdayController {
 	
 	public showBirthdayPicker():void{
 		this.showPicker = !this.showPicker;
+	}
+	
+	public changeDOB(action: ActionType):void{
+		var date = this.dob.split('/');
+        if(date.length == 3){
+            var monthIndex = parseInt(date[0]) - 1;
+            this.month = this.months[monthIndex];
+            this.day = parseInt(date[1]);
+            this.year = parseInt(date[2]);
+            
+            this.upMonth = this.getAdjustedMonth(ActionType.PLUS);
+            this.downMonth = this.getAdjustedMonth(ActionType.MINUS);
+            this.upDay = this.getAdjustedDay(ActionType.PLUS);
+            this.downDay = this.getAdjustedDay(ActionType.MINUS);
+            
+            this.resetModel();
+        }
 	}
 	
 	public changeMonth(action: ActionType):void{

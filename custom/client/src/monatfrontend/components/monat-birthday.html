@@ -1,16 +1,17 @@
 <div sw-click-outside="monatBirthday.closeThis()" ng-cloak>
 
-	<div ng-if="!monatBirthday.monatService.userIsEighteen" ng-click="monatBirthday.showBirthdayPicker()" class="material-field">
-		<select 
+	<div ng-if="!monatBirthday.monatService.userIsEighteen" class="material-field">
+		<input 
 			id="dob"
-			name="birthDate"
-			class="form-control"
+			type="text"
+			class="form-control mask-date"
 			ng-model="monatBirthday.dob"
 			swvalidationrequired="{{monatBirthday.required}}"
-		>
-			<option disabled></option>
-			<option ng-selected="!monatBirthday.showPicker && monatBirthday.isSet">{{monatBirthday.dob}}</option>
-		</select>
+			ng-focus="monatBirthday.showBirthdayPicker();"
+			ng-blur="monatBirthday.changeDOB(monatBirthday.Actions.INPUT)"
+			value="{{monatBirthday.dob}}"
+		></input>
+
 		<label for="gender_CreateAccount" sw-rbkey="'frontend.global.yourBirthday'"></label>
 	</div>
 	<div  id="birthday-picker" ng-if="monatBirthday.showPicker">
