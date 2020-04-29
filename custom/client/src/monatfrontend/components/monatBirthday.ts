@@ -73,9 +73,8 @@ class MonatBirthdayController {
             this.downMonth = this.getAdjustedMonth(ActionType.MINUS);
             this.upDay = this.getAdjustedDay(ActionType.PLUS);
             this.downDay = this.getAdjustedDay(ActionType.MINUS);
-            
-            this.resetModel();
         }
+        this.resetModel();
 	}
 	
 	public changeMonth(action: ActionType):void{
@@ -156,10 +155,15 @@ class MonatBirthdayController {
 	//updates form values
 	public resetModel(){
 		if(!this.$scope.swfForm || !this.$scope.swfForm.form) return;
-		this.dob = 
-			this.day < 10 ? ((this.months.indexOf(this.month) + 1)) + ('/0' + this.day) + ('/' + this.year )
-			: ((this.months.indexOf(this.month) + 1) ) + ('/' + this.day ) + ('/' +  this.year);
-			
+		
+		var month = this.months.indexOf(this.month) + 1;
+		
+		this.dob = month.toString().length == 2? month : ("0" + month);
+		this.dob += "/";
+		this.dob += this.day.toString().length == 2? this.day : ("0" + this.day);
+		this.dob += "/";
+		this.dob += this.year;
+		
 		this.isSet = true
 	}
 	
