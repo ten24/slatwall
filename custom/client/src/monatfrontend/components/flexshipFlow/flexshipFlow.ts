@@ -127,7 +127,7 @@ class FlexshipFlowController {
     
     private getCanViewOFYStep():boolean{
 		this.orderTemplate = this.orderTemplateService.mostRecentOrderTemplate;
-		let today = new Date().getDate() -20 ;
+		let today = new Date().getDate();
 		this.isOFYEligible = this.orderTemplate.scheduleOrderDayOfTheMonth && this.orderTemplate.scheduleOrderDayOfTheMonth > today;
 		return this.isOFYEligible;
     }
