@@ -1326,6 +1326,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public boolean function getOrderTemplateCanBePlaced(required any orderTemplate){
 		return getOrderTemplateOrderDetails(argumentCollection=arguments)['canPlaceOrder'];
 	}
+	
+	public any function getCustomPropertyFromOrderTemplateOrderDetails(required string property, required any orderTemplate){
+		return getOrderTemplateOrderDetails(arguments.orderTemplate)[arguments.property];
+	}
 
 	//order transient helper methods
 	public any function newTransientOrderFromOrderTemplate(required any orderTemplate, boolean evictFromSession=true){
@@ -1632,7 +1636,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		newOrder.setBillingAccountAddress(arguments.orderTemplate.getBillingAccountAddress()); 
 		newOrder.setShippingAccountAddress(arguments.orderTemplate.getShippingAccountAddress());  
 		newOrder = this.saveOrder(order=newOrder, updateOrderAmounts=false, updateOrderAmounts=false, updateShippingMethodOptions=false, checkNewAccountAddressSave=false); 
-
+		
 		newOrder = this.createOrderItemsFromOrderTemplateItems(newOrder,arguments.orderTemplate);
 	
 		if(newOrder.hasErrors()){
@@ -1800,7 +1804,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			newOrder.setPaymentLastRetryDateTime(now());
 			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has declined payment');
 			newOrder.clearHibachiErrors();
-			//newOrder = this.processOrder( newOrder, {}, 'updateOrderAmounts' );
+			// newOrder = this.processOrder( newOrder, {}, 'updateOrderAmounts' );
 			newOrder = this.saveOrder(newOrder);
 			ormFlush(); 
 			//fire retry payment failure event so it can be utilized in workflows
@@ -1811,9 +1815,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			this.updateOrderStatusBySystemCode(newOrder, 'ostNew');
 		}
 		
-			
-		this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# completing place order and has status: #newOrder.getOrderStatusType().getTypeName()#');
-		getHibachiEntityQueueService().insertEntityQueueItem(arguments.orderTemplate.getOrderTemplateID(), 'OrderTemplate', 'processOrderTemplate_removeTemporaryItems');	
+		getOrderDAO().removeTemporaryOrderTemplateItems(arguments.orderTemplate.getOrderTemplateID());	
+		this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# completing place order and has status: #newOrder.getOrderStatusType().getTypeName()#', true);
 
 		return arguments.orderTemplate; 
 	}
@@ -1891,7 +1894,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		processOrderAddOrderItem.setPrice(orderTemplateItemPrice);
 		processOrderAddOrderItem.setQuantity(arguments.orderTemplateItemStruct['quantity']);
 		processOrderAddOrderItem.setUpdateOrderAmountFlag(false); 		
-		processOrderAddOrderItem.setUpdateShippingMethodOptionsFlag(false); 		
+		processOrderAddOrderItem.setUpdateShippingMethodOptionsFlag(false);
 
 		if(!isNull(arguments.orderTemplate.getPriceGroup())){
 			processOrderAddOrderItem.setPriceGroup(arguments.orderTemplate.getPriceGroup());
@@ -1940,7 +1943,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							quantity = arguments.processObject.getQuantity(),
 							priceGroups = priceGroups
 						);
-						
+		
 		if( IsNull(priceByCurrencyCode) ) {
 			arguments.orderTemplate.addError('priceByCurrencyCode', 
 				rbKey('validate.processOrderTemplate_addOrderTemplateItem.sku.hasPriceByCurrencyCode')
@@ -2546,7 +2549,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// Multiple refunds
 		if(!isNull(arguments.processObject.getOrderPayments()) && arrayLen(arguments.processObject.getOrderPayments())){
 			for(var orderPaymentStruct in arguments.processObject.getOrderPayments()){
-				if(structKeyExists(orderPaymentStruct,'originalOrderPaymentID') && len(orderPaymentStruct['originalOrderPaymentID'])){
+				if(structKeyExists(orderPaymentStruct,'amount') 
+					&& orderPaymentStruct.amount != 0 
+					&& structKeyExists(orderPaymentStruct,'originalOrderPaymentID') 
+					&& len(orderPaymentStruct['originalOrderPaymentID'])){
 					var originalOrderPayment = this.getOrderPayment(orderPaymentStruct['originalOrderPaymentID']);
 					if(isObject(originalOrderPayment)){
 						var returnOrderPayment = setupReturnOrderPayment(originalOrderPayment, returnOrder, orderPaymentStruct);

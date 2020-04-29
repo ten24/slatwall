@@ -52,6 +52,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 	this.publicMethods='';
 	this.publicMethods=listAppend(this.publicMethods, 'executeScheduledWorkflows');
+	this.publicMethods=listAppend(this.publicMethods, 'executeScheduledWorkflowsOnAllServers');
 
 	this.anyAdminMethods='';
 	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'executeScheduleWorkflowTrigger');
@@ -67,6 +68,12 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		if(structKeyExists(arguments.rc, 'workflowTriggerID')){
 			getWorkflowService().runWorkflowTriggerById(arguments.rc.workflowTriggerID);
 		}
+		getFW().setView("public:main.blank");
+		request.layout = false;
+	}
+
+	public void function executeScheduledWorkflowsOnAllServers() {
+		getWorkflowService().runWorkflowOnAllServers();
 		getFW().setView("public:main.blank");
 		request.layout = false;
 	}

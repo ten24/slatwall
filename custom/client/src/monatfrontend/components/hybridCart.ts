@@ -58,11 +58,11 @@ class HybridCartController {
 		let price = 0;
 		let subtotal = 0;
 		let listPrice = 0;
-		let index = 0;
-
+		let itemToRemove;
+		
 		for(let item of this.cart.orderItems){
 			if(!this.isEnrollment && item.sku.product.productType.systemCode == 'VIPCustomerRegistr'){
-				this.cart.orderItems.splice(this.cart.orderItems.indexOf(item), 1);
+				itemToRemove = item;
 				continue;
 			}else if(
 				item.sku.product.productType.systemCode == 'VIPCustomerRegistr' 
@@ -75,8 +75,13 @@ class HybridCartController {
 			price += item.extendedPriceAfterDiscount;
 			subtotal += item.extendedPrice;
 			listPrice+= (item.calculatedListPrice * item.quantity);
-			index++;
 		}
+		
+		if(itemToRemove){
+			this.cart.orderItems.splice(itemToRemove, 1)
+			this.cart.totalItemQuantity -= itemToRemove.quantity;			
+		}
+
 		this.otherDiscounts = this.cart.discountTotal - this.cart.purchasePlusTotal;
 		this.total = price;
 		this.subtotal = subtotal;
@@ -107,7 +112,7 @@ class HybridCart {
 	public restrict: string = 'E';
 	public transclude: boolean = true;
 	public templateUrl: string;
-	public scope = {};
+
 	public bindToController = {
 		isEnrollment: '<?',
 		type: '<?',

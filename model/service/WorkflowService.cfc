@@ -153,12 +153,38 @@ component extends="HibachiService" accessors="true" output="false" {
 		}
 	}
 
+	public any function runWorkflowOnAllServers() {
+		// get all active instances in the current cluster
+		var serverInstanceCollectionList = getService('HibachiService').getServerInstanceCollectionList();
+		serverInstanceCollectionList.addFilter('serverInstanceClusterName',getHibachiScope().getApplicationValue('applicationCluster'));
+		
+		var serverInstances = serverInstanceCollectionList.getRecords();
+		for (var serverInstance in serverInstances) {
+	        var offset = findNoCase('Slatwall',cgi.script_name)?'Slatwall/':'';
+			var workflowurl = 'http://#serverInstance["serverInstanceIPAddress"]#:#serverInstance["serverInstancePort"]#/#offset#?slatAction=api:workflow.executeScheduledWorkflows';
+			var req = new http();
+	        req.setMethod("get");
+	        req.setUrl(workflowurl);
+	        req.setTimeOut(3);
+	        var res = req.send().getPrefix();
+		}
+	}
+	
 	public any function runAllWorkflowsByScheduleTrigger() {
 		
 		getWorkflowDAO().resetExpiredWorkflows(); 
 	
 		var workflowTriggers = getWorkflowDAO().getDueWorkflows();
+		var exclusiveInvocationDomains = getWorkflowDAO().getExclusiveWorkflowTriggersInvocationDomains();
 		for(var workflowTrigger in workflowTriggers) {
+			// make sure workflow runs on the allowed domain
+			if( !isNull(workflowTrigger.getAllowedInvocationDomain()) && len(workflowTrigger.getAllowedInvocationDomain()) && !findNoCase(cgi.server_name, workflowTrigger.getAllowedInvocationDomain())) {
+				continue;
+			}
+			// make sure exlcusive domain is only used for those workflows
+			if( findNoCase(cgi.server_name, exclusiveInvocationDomains) && (isNull(workflowTrigger.getAllowedInvocationDomain()) || !findNoCase(workflowTrigger.getAllowedInvocationDomain(), exclusiveInvocationDomains)) ) {
+				continue;
+			}
 			runWorkflowsByScheduleTrigger(workflowTrigger);
 		}
 	}
@@ -189,7 +215,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			return arguments.workflowTrigger;
 		}
 		
-		lock name="runWorkflowsByScheduleTrigger_#getHibachiScope().getServerInstanceKey()#_#arguments.workflowTrigger.getWorkflowTriggerID()#" timeout="60" throwontimeout=false{
+		lock name="runWorkflowsByScheduleTrigger_#getHibachiScope().getServerInstanceKey()#_#arguments.workflowTrigger.getWorkflowTriggerID()#" timeout="5" throwontimeout=false{
 			//Change WorkflowTrigger runningFlag to TRUE
 			updateWorkflowTriggerRunning(workflowTrigger=arguments.workflowTrigger, runningFlag=true);
 	

@@ -1,0 +1,18 @@
+{
+    "baseentity":"Sku",
+    "mapping":[
+        {
+          "sourceColumn":"SKUItemCode",
+          "propertyIdentifier":"skuCode",
+          "key":true
+        },
+        {
+          "sourceColumn":"SKUItemID",
+          "propertyIdentifier":"remoteID",
+        },
+        {
+          "sourceColumn":"SalesCategoryCode",
+          "propertyIdentifier":"salesCategoryCode"
+        }
+    ]
+}

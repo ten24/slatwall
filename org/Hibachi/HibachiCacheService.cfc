@@ -36,11 +36,17 @@ component accessors="true" output="false" extends="HibachiService" {
 					}
 					serverInstance.setServerInstanceKey(arguments.serverInstanceKey);
 					serverInstance.setServerInstanceIPAddress(arguments.serverInstanceIPAddress);
+					serverInstance.setServerInstancePort(getHibachiScope().getServerInstancePort());
+					serverInstance.setServerInstanceClusterName(getHibachiScope().getApplicationValue('applicationCluster'));
 					serverInstance.setServerInstanceExpired(false);
 					serverInstance.setSettingsExpired(false);
+					serverInstance.setLastRequestDateTime(now());
 					
 					this.saveServerInstance(serverInstance); 
 					getHibachiScope().flushOrmSession();
+					
+					// delete all old server instance
+					getDao('HibachiCacheDAO').deleteStaleServerInstance();
 				}
 			}
 		}
@@ -124,27 +130,6 @@ component accessors="true" output="false" extends="HibachiService" {
 		getDao('hibachiCacheDao').updateServerInstanceSettingsCache(serverInstance);
 	}
 	
-	public boolean function isServerInstanceCacheExpired(required string serverInstanceKey, required string serverInstanceIPAddress){
-		var isExpired = getDao('hibachiCacheDao').isServerInstanceCacheExpired(argumentCollection=arguments);
-		if(isNull(isExpired)){
-			// create server instance if missing, but return false as it's not expired
-			this.getServerInstanceByServerInstanceKey(arguments.serverInstanceKey);
-			return false;
-		}else{
-			return isExpired;
-		}	
-	} 
-	
-	public boolean function isServerInstanceSettingsCacheExpired(required string serverInstanceKey, required string serverInstanceIPAddress){
-		var isExpired = getDao('hibachiCacheDao').isServerInstanceSettingsCacheExpired(argumentCollection=arguments);
-		if(isNull(isExpired)){
-			return false;
-		}else{
-			return isExpired;
-		}	
-
-	} 
-		
 	public any function getCachedValue( required string key ) {
 		verifyCacheKey(arguments.key);
 

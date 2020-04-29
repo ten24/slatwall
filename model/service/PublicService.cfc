@@ -809,7 +809,7 @@ component  accessors="true" output="false"
             }
             orderFulfillment.setShippingMethod(shippingMethod);
             getService("OrderService").saveOrder(order); 
-            getDao('hibachiDao').flushOrmSession();;           
+            getHibachiScope().flushOrmSession();   
             getHibachiScope().addActionResult( "public:cart.addShippingMethodUsingShippingMethodID", shippingMethod.hasErrors());          
         }else{
             this.addErrors(arguments.data, shippingMethod.getErrors()); //add the basic errors
