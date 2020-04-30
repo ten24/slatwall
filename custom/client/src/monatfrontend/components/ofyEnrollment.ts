@@ -8,7 +8,7 @@ class OFYEnrollmentController {
 	public action: 'addOrderTemplateItem' | 'addOrderItem' = 'addOrderItem';
 	
 	//@ngInject
-	constructor( public observerService, public publicService, public orderTemplateService, public ModalService) {
+	constructor( public observerService, public publicService, public orderTemplateService, public ModalService, public monatService) {
 	}
 
 	public $onInit = () => {
@@ -40,10 +40,18 @@ class OFYEnrollmentController {
 			orderTemplateID:this.flexship
         }
         
-		this.publicService.doAction(this.action, data ).then(res=>{
-			this.observerService.notify('onNext');	
-			this.loading = false;
-		});
+        if(this.action == 'addOrderItem'){
+	 		this.monatService.addToCart(this.stagedProductID, 1 ).then(res=>{
+				this.observerService.notify('onNext');	
+				this.loading = false;
+			});       	
+        }else{
+ 	 		this.publicService.doAction(this.action, data ).then(res=>{
+				this.observerService.notify('onNext');	
+				this.loading = false;
+			});        	
+        }
+
 	}
 	
 	public stageProduct(skuID:string):void{
