@@ -88,11 +88,6 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 				'name': 'Account - After Customer To VIP Upgrade Success | afterCustomerToVIPUpgradeSuccess',
 				'value': 'afterCustomerToVIPUpgradeSuccess',
 				'entityName': 'Account' 
-			},
-			{
-				'name': 'Account - After Customer To VIP Upgrade Success | afterCustomerToVIPUpgradeSuccess',
-				'value': 'afterCustomerToVIPUpgradeSuccess',
-				'entityName': 'Account' 
 			}
 		]
 
