@@ -41,7 +41,7 @@ class OFYEnrollmentController {
         }
         
         if(this.action == 'addOrderItem'){
-	 		this.monatService.addToCart(this.stagedProductID, 1 ).then(res=>{
+	 		this.monatService.addOFYItem(this.stagedProductID, 1 ).then(res=>{
 				this.observerService.notify('onNext');	
 				this.loading = false;
 			});       	

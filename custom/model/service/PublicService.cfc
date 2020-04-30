@@ -812,20 +812,16 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		arguments.data['ajaxResponse']['bundles'] = bundles;
 		arguments.data['ajaxResponse']['products'] = products;
     }
+    
+    public any function addProtectedProductType(required struct data){
+        param name="arguments.data.cart" default= getHibachiScope().getCart();
+        param name="arguments.data.protectedSystemCodeList" default='Starterkit,ProductPack';
         
-    public any function selectStarterPackBundle(required struct data){
-        
-         var cart = getHibachiScope().cart();
-         
-        //check to ensure upgrade logic remains on order after first add order item
-        if(!isNull(arguments.data.upgradeFlowFlag) && arguments.data.upgradeFlowFlag == 1 && isNull(cart.getMonatOrderType())){
-            this.setUpgradeOrderType(cart);
-        }
-        
+        var cart = arguments.data.cart;
         var orderService = getService("OrderService");
         var currentOrderItemList = orderService.getOrderItemCollectionList();
         currentOrderItemList.addFilter('order.orderID', cart.getOrderID());
-        currentOrderItemList.addFilter('sku.product.productType.systemCode', 'Starterkit,ProductPack', 'IN');
+        currentOrderItemList.addFilter('sku.product.productType.systemCode', arguments.data.protectedSystemCodeList, 'IN');
         currentOrderItemList.addDisplayProperties('orderItemID');
         var orderItems = currentOrderItemList.getRecords();
         var orderData = {};
@@ -839,6 +835,21 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         orderData['orderItemIDList'] = list;
         if(len(orderData.orderItemIDList)) orderService.processOrder( cart, orderData, 'removeOrderItem');
         this.addOrderItem(argumentCollection = arguments);
+    }
+        
+    public any function selectStarterPackBundle(required struct data){
+        
+         var cart = getHibachiScope().cart();
+         
+        //check to ensure upgrade logic remains on order after first add order item
+        if(!isNull(arguments.data.upgradeFlowFlag) && arguments.data.upgradeFlowFlag == 1 && isNull(cart.getMonatOrderType())){
+            this.setUpgradeOrderType(cart);
+        }
+        
+        arguments.data['cart'] = cart;
+        
+        this.addProtectedProductType(arguments.data);
+
     }
 
 
@@ -2312,5 +2323,10 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             }
         }
 
+    }
+    
+    public any function addOFYProduct(required struct data){
+        arguments.data['protectedSystemCodeList'] = 'PromotionalItems';
+        this.addProtectedProductType(arguments.data);
     }
 }
