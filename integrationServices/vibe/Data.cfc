@@ -71,10 +71,16 @@ component accessors='true' output='false' displayname='Vibe' extends='Slatwall.o
 	 * @requestData struct, required, post-request-payload
 	 * @return struct, of successful-response or formated-error-response 
 	*/ 
-	private struct function createVibeUser(required struct requestData) {
+	private struct function upsertVibeUser(required struct requestData, boolean create=false) {
 		
 		var requestURL = setting('liveModeFlag') ? setting('liveURL') : setting('testURL');
-		requestURL &= '/api/v1/etl/createUser';
+		
+		if(arguments.create){
+			requestURL &= '/api/v1/etl/createUser';
+		}else{
+			requestURL &= '/api/v1/etl/updateUser';
+		}
+		
 		var httpRequest = new http();
 		httpRequest.setMethod('POST');
 		httpRequest.setUrl( requestURL );
@@ -121,15 +127,18 @@ component accessors='true' output='false' displayname='Vibe' extends='Slatwall.o
 	 * Note: in current setup this function will be called from VibeService::push(), which will be called from EntityQueue
 	 * 
 	*/ 
-	public void function pushData(required any entity, struct data ={}) {
-		
+	public void function pushData(required any entity, struct data ={}, boolean create = false) {
 		//push to remote endpoint
-		var response = createVibeUser(arguments.data.payload);
-		
+		var response = upsertVibeUser(arguments.data.payload, arguments.create);
+	
 		if( !structKeyExists(response,'status') || response.status != 'success' || 
 			!StructKeyExists(response ,'id') || 
 			!len( trim(response.id) ) 
 		) {
+			
+			if( !arguments.create && structKeyExists(response, 'message') && FindNoCase('could not be found', response.message) ){
+				return pushData(arguments.data.payload, true);
+			}
 			//the call was not successful
 			throw("Error in Vibe::PushData() #SerializeJson(response)#"); //this will comeup in EntityQueue
 		} 
