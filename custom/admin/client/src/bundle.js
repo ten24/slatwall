@@ -32219,9 +32219,7 @@ var SWAddOrderItemsBySkuController = /** @class */ (function () {
             }
         }
         this.addSkuCollection.addFilter('activeFlag', true, '=', undefined, true);
-        this.addSkuCollection.addFilter('publishedFlag', true, '=', undefined, true);
         this.addSkuCollection.addFilter('product.activeFlag', true, '=', undefined, true);
-        this.addSkuCollection.addFilter('product.publishedFlag', true, '=', undefined, true);
         if ((_a = this.siteId) === null || _a === void 0 ? void 0 : _a.trim()) {
             this.addSkuCollection.addFilter('product.sites.siteID', this.siteId, '=', undefined, true);
         }
