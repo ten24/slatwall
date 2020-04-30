@@ -7,7 +7,7 @@
     "baseUrl": "src",
     "paths": {
       "@Monat/*": ["monatfrontend/*"],
-      "@Hibachi/*": ["../../org/Hibachi/client/src/*"]
+      "@Hibachi/*": ["../../../org/Hibachi/client/src/*"]
     }
   },
   "include": [

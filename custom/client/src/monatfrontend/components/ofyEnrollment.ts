@@ -1,3 +1,4 @@
+import { OrderTemplateService } from '@Monat/services/ordertemplateservice';
 
 class OFYEnrollmentController {
 	public flexship:string;
@@ -8,7 +9,7 @@ class OFYEnrollmentController {
 	public action: 'addOrderTemplateItem' | 'addOrderItem' = 'addOrderItem';
 	
 	//@ngInject
-	constructor( public observerService, public publicService, public orderTemplateService, public ModalService, public monatService) {
+	constructor( public observerService, public publicService, public orderTemplateService: OrderTemplateService, public ModalService, public monatService) {
 	}
 
 	public $onInit = () => {
@@ -34,22 +35,23 @@ class OFYEnrollmentController {
 	
 	public addToCart():void{
 		this.loading = true;
-		
-		let data ={
-			skuID: this.stagedProductID,
-			orderTemplateID:this.flexship
-        }
-        
+
         if(this.action == 'addOrderItem'){
+
 	 		this.monatService.addOFYItem(this.stagedProductID, 1 ).then(res=>{
 				this.observerService.notify('onNext');	
 				this.loading = false;
 			});       	
-        }else{
- 	 		this.publicService.doAction(this.action, data ).then(res=>{
+
+        } else {
+        	
+ 	 		this.orderTemplateService
+ 	 		.addOrderTemplateItem( this.stagedProductID, this.flexship, 1, true)
+ 	 		.then( res => {
 				this.observerService.notify('onNext');	
 				this.loading = false;
 			});        	
+
         }
 
 	}

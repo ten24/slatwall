@@ -44,7 +44,7 @@
     "webpack-stream": "*"
   },
   "devDependencies": {
-    "@types/braintree-web": "^3.47.1",
+    "@types/braintree-web": "^3.47.2",
     "angular": "^1.6.4",
     "angular-mocks": "^1.6.4",
     "bower": "^1.8.0",

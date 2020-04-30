@@ -280,7 +280,7 @@ export class OrderTemplateService {
        temporaryFlag -> For OFY/Promotional item
      * 
     */ 
-    public addOrderTemplateItem = (skuID:string, orderTemplateID:string, quantity:number=1, temporaryFlag: false, optionalData = {}) => {
+    public addOrderTemplateItem = (skuID:string, orderTemplateID:string, quantity:number=1, temporaryFlag=false, optionalData = {}) => {
         optionalData['orderTemplateID'] = orderTemplateID;
         optionalData['skuID'] = skuID;
         optionalData['quantity'] = quantity;
