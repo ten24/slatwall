@@ -66,6 +66,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 		var account = arguments.order.getAccount();
 		arguments.slatwallScope.clearCurrentFlexship(); //if there was any
 		
+		var originalAccountType = account.getAccountType() ?: '';
+		
 		// Snapshot the pricegroups on the order.
 		if ( !isNull(account) && arrayLen(account.getPriceGroups()) ) {
             arguments.order.setPriceGroup(account.getPriceGroups()[1]);
@@ -160,7 +162,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 				// 		logHibachi("afterOrderProcess_placeOrderSuccess failed @ addMemberToListByAccount for #account.getAccountID()#");
 				// 	}
 				// }
-			
+				
+				getHibachiEventService().announceEvent('after#account.getAccountType()#EnrollmentSuccess', {'account':account, 'entity':account}); 
 				getHibachiEventService().announceEvent('afterAccountEnrollmentSuccess', {'account':account, 'entity':account}); 
 
 				if(!isNull(account.getOwnerAccount())){
@@ -177,6 +180,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 				var currentRenewalDate = ParseDateTime(arguments.order.getAccount().getRenewalDate());
 				var renewalDate = DateAdd('yyyy', 1, currentRenewalDate);
 				account.setRenewalDate(renewalDate);
+			}else if(originalAccountType != account.getAccountType()){
+				getHibachiEventService().announceEvent('after#originalAccountType#To#account.getAccountType()#UpgradeSuccess', {'account':account, 'entity':account}); 
 			}else{
     			arguments.order.setOrderOrigin(getService('orderService').getOrderOriginByOrderOriginName('Internet Order'));
 			}
