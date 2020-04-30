@@ -25,7 +25,7 @@ class FlexshipFlowController {
 	public orderTemplate:{[key:string]:any};
 	public currentOrderTemplateID:string;
 	public muraData;
-	
+	public isOFYEligible;
 	
     public loading: boolean;
 	
@@ -55,7 +55,9 @@ class FlexshipFlowController {
 		this.monatService.getProductFilters();
     }
 	
+	
 	public back = ():FlexshipSteps => {
+		let nextFrequencyStep = this.getCanViewOFYStep() ? FlexshipSteps.OFY : FlexshipSteps.FREQUENCY;
 		switch(this.currentStep){
 			case FlexshipSteps.FREQUENCY:
 				return this.setStepAndUpdateProgress(FlexshipSteps.SHOP);
@@ -64,7 +66,7 @@ class FlexshipFlowController {
 				return this.setStepAndUpdateProgress(FlexshipSteps.FREQUENCY);
 				break;
 			case FlexshipSteps.CHECKOUT:
-				return this.setStepAndUpdateProgress(FlexshipSteps.OFY);
+				return this.setStepAndUpdateProgress(nextFrequencyStep);
 				break;
 			case FlexshipSteps.REVIEW:
 				return this.setStepAndUpdateProgress(FlexshipSteps.CHECKOUT);
@@ -77,12 +79,14 @@ class FlexshipFlowController {
 	
 	public next = ():FlexshipSteps => {
 
+		let nextFrequencyStep = this.getCanViewOFYStep() ? FlexshipSteps.OFY : FlexshipSteps.CHECKOUT;
+	
 		switch(this.currentStep){
 			case FlexshipSteps.SHOP:
 				return this.setStepAndUpdateProgress(FlexshipSteps.FREQUENCY)
 				break;
 			case FlexshipSteps.FREQUENCY:
-				return this.setStepAndUpdateProgress(FlexshipSteps.OFY);
+				return this.setStepAndUpdateProgress(nextFrequencyStep);
 				break;
 			case FlexshipSteps.OFY:
 				return this.setStepAndUpdateProgress(FlexshipSteps.CHECKOUT);
@@ -119,6 +123,13 @@ class FlexshipFlowController {
 
 		this.updateProgress(step);
 		return this.currentStep = step;
+    }
+    
+    private getCanViewOFYStep():boolean{
+		this.orderTemplate = this.orderTemplateService.mostRecentOrderTemplate;
+		let today = new Date().getDate();
+		this.isOFYEligible = this.orderTemplate.scheduleOrderDayOfTheMonth && this.orderTemplate.scheduleOrderDayOfTheMonth > today;
+		return this.isOFYEligible;
     }
     
     

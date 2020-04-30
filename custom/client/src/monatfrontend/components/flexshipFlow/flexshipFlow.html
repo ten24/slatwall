@@ -105,6 +105,7 @@
 			
 			<!--OFY Icon -->
 			<div 
+				ng-if="flexshipFlow.isOFYEligible"
 				class="col"
 				ng-click="flexshipFlow.goToStep(flexshipFlow.FlexshipSteps.OFY)"
 				ng-style="{ 
@@ -148,9 +149,7 @@
 				data-ng-click="flexshipFlow.next();"
 				class="btn btn-secondary forward-btn forward" 
 				ng-class="{  'loading,disabled': flexshipFlow.loading }"
-				ng-disabled="
-					flexshipFlow.loading || !flexshipFlow.orderTemplateService.mostRecentOrderTemplate.qualifiesForOFYProducts && flexshipFlow.currentStep != flexshipFlow.FlexshipSteps.CHECKOUT
-				"
+				ng-disabled="flexshipFlow.loading "
 			>
 
 				<span sw-rbkey="'frontend.global.next'"></span>
