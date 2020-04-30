@@ -67,11 +67,6 @@ Notes:
 		isVisible=false,
 		isDeletable=false
 	});
-    locationCollectionList.addDisplayProperty(displayProperty='addressZoneID',columnConfig={
-		isSearchable=false,
-		isVisible=false,
-		isDeletable=false
-	});
 </cfscript>
 
 <cfoutput>
@@ -88,3 +83,4 @@ Notes:
 </cfoutput>
 
 <hb:HibachiActionCaller action="admin:entity.createaddresszonelocation" class="btn btn-default" icon="plus" queryString="addressZoneID=#rc.addressZone.getAddressZoneID()#" modal=true />
+ 
