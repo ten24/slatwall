@@ -40,7 +40,7 @@ class FlexshipCheckoutStepController {
 		
 		this.orderTemplateService
 			//instead of making a trip to the server we should cache at the frontend;
-			.getSetOrderTemplateOnSession("", "save", false, false)
+			.getSetOrderTemplateOnSession("purchasePlusTotal,vatTotal,taxTotal,fulfillmentHandlingFeeTotal", "save", false, false)
 			.then((response: any) => {
 				
 				if(!response.orderTemplate){

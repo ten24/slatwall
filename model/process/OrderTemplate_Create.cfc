@@ -93,8 +93,14 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	
 	
 	public any function getFrequencyTerm() {
-		if(!isNull(variables.frequencyTermID) ){
-			return this.getService('settingService').getTerm(variables.frequencyTermID);
+		
+		if( !isNull(variables.frequencyTerm) ){
+			return variables.frequencyTerm;
+		}
+		
+		if( !isNull(variables.frequencyTermID) ){
+			variables.frequencyTerm = this.getService('settingService').getTerm(variables.frequencyTermID);
+			return variables.frequencyTerm;
 		}
 	}
 	

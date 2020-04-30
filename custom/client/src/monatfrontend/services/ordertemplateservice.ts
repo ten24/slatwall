@@ -241,7 +241,11 @@ export class OrderTemplateService {
 			"orderTemplateID": orderTemplateID,
 			"frequencyTerm.value": frequencyTermID,
 		};
-
+		
+		if(this.mostRecentOrderTemplate){
+			this.mostRecentOrderTemplate['scheduleOrderDayOfTheMonth'] = scheduleOrderDayOfTheMonth;
+		}
+		 
 		if (scheduleOrderDayOfTheMonth) {
 			payload["scheduleOrderDayOfTheMonth"] = scheduleOrderDayOfTheMonth;
 		}
@@ -276,7 +280,7 @@ export class OrderTemplateService {
        temporaryFlag -> For OFY/Promotional item
      * 
     */ 
-    public addOrderTemplateItem = (skuID:string, orderTemplateID:string, quantity:number=1, temporaryFlag: false, optionalData = {}) => {
+    public addOrderTemplateItem = (skuID:string, orderTemplateID:string, quantity:number=1, temporaryFlag=false, optionalData = {}) => {
         optionalData['orderTemplateID'] = orderTemplateID;
         optionalData['skuID'] = skuID;
         optionalData['quantity'] = quantity;

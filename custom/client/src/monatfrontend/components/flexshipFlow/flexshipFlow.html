@@ -107,6 +107,7 @@
 			
 			<!--OFY Icon -->
 			<div 
+				ng-if="flexshipFlow.isOFYEligible"
 				class="col"
 				ng-click="flexshipFlow.goToStep(flexshipFlow.FlexshipSteps.OFY)"
 				ng-style="{ 
@@ -150,9 +151,7 @@
 				class="btn btn-secondary forward-btn forward" 
 				ng-click="flexshipFlow.next();"
 				ng-class="{  'loading,disabled': flexshipFlow.loading }"
-				ng-disabled="
-					flexshipFlow.loading && flexshipFlow.currentStep != flexshipFlow.FlexshipSteps.CHECKOUT
-				"
+				ng-disabled="flexshipFlow.loading "
 			>
 
 				<span sw-rbkey="'frontend.global.next'"></span>
