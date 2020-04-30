@@ -68,6 +68,7 @@ class HybridCartController {
 				item.sku.product.productType.systemCode == 'VIPCustomerRegistr' 
 				|| item.sku.product.productType.systemCode == 'StarterKit' 
 				|| item.sku.product.productType.systemCode == 'ProductPack'
+				|| item.sku.product.productType.systemCode == 'PromotionalItems'
 				|| item.extendedPriceAfterDiscount == 0
 			){
 				item.freezeQuantity = true;
