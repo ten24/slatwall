@@ -7,6 +7,10 @@
           "key":true
         },
         {
+          "sourceColumn":"ItemName",
+          "propertyIdentifier":"skuName"
+        },
+        {
           "sourceColumn":"SKUItemID",
           "propertyIdentifier":"remoteID",
         },
