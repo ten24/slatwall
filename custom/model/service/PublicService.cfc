@@ -621,6 +621,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         processObject.setOrderTemplateTypeID(orderTypeID);
         processObject.setFrequencyTermID(arguments.data.frequencyTermID);
+        //defaulting to the first day of the month, in case is user abandon the flexship-create flow
+        processObject.setScheduleOrderDayOfTheMonth(1); 
         
         if(!isUpgradedFlag){
             processObject.setAccountID(getHibachiScope().getAccount().getAccountID());
