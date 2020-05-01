@@ -198,6 +198,8 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 					||
 					(getHibachiScope().getPublicPopulateFlag() && structKeyExists(currentProperty, "hb_populateEnabled") && currentProperty.hb_populateEnabled == "public")
 					||
+					(getHibachiScope().getWorkflowPopulateFlag() && structKeyExists(currentProperty, "hb_populateEnabled") && currentProperty.hb_populateEnabled == "workflow")
+					||
 					getHibachiScope().authenticateEntityProperty( crudType="update", entityName=this.getClassName(), propertyName=currentProperty.name))
 			) {
 				// ( COLUMN )
