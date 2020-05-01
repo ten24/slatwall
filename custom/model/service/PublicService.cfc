@@ -1240,7 +1240,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     
     public any function getBaseProductCollectionList(required any data){
         var account = getHibachiScope().getAccount();
-        var accountType = account.getAccountType()?: 'retail';
+        var accountType = account.getAccountType()?: 'customer';
         var holdingPriceGroups = account.getPriceGroups();
         var site = getService('SiteService').getSiteByCmsSiteID(arguments.data.cmsSiteID);
         var currencyCode = site.setting('skuCurrency');
@@ -1263,7 +1263,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             }else if(priceGroupCode == 3){
                 accountType == 'VIP'
             }else{
-                accountType == 'retail'
+                accountType == 'customer'
             }
         }else if(!isNull(arguments.data.priceGroupCode) && len(arguments.data.priceGroupCode)){ //argument price group
             priceGroupCode = arguments.data.priceGroupCode;
@@ -1301,7 +1301,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         productCollectionList.addFilter('productType.parentProductType.urlTitle','other-income','!=');
         productCollectionList.addFilter('sites.siteID',site.getSiteID());
 
-        if(isNull(accountType) || accountType == 'retail'){
+        if(isNull(accountType) || accountType == 'customer'){
            productCollectionList.addFilter('skus.retailFlag', 1);
         }else if(accountType == 'marketPartner'){
             productCollectionList.addFilter('skus.mpFlag', 1);
