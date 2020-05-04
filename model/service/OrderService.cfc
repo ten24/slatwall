@@ -1555,7 +1555,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		arguments.orderTemplate.setOrderTemplateType(getTypeService().getType(arguments.processObject.getOrderTemplateTypeID()));
 		arguments.orderTemplate.setScheduleOrderDayOfTheMonth(day(arguments.processObject.getScheduleOrderNextPlaceDateTime()));
 		arguments.orderTemplate.setScheduleOrderNextPlaceDateTime(arguments.processObject.getScheduleOrderNextPlaceDateTime());
-		arguments.orderTemplate.setFrequencyTerm( getSettingService().getTerm(arguments.processObject.getFrequencyTermID()) );
+		arguments.orderTemplate.setFrequencyTerm( arguments.processObject.getFrequencyTerm() );
 		
 		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate, arguments.data); 
 		
@@ -2299,7 +2299,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return getOrderTemplatesCollectionForAccount(argumentCollection=arguments).getPageRecords(); 
 	}  
 
-	public any function getOrderTemplateForAccount(required struct data, any account=getHibachiScope().getAccount()){
+	/**
+	 * helper function to check if there's an ordertemplate  for the padded-in orderTemplateID, 
+	 * and if the order-template belongs to the passsedin account, defaults to the account on HibachiScope
+	 * 
+	 **/
+	public any function getOrderTemplateAndEnforceOwnerAccount(required struct data, any account=getHibachiScope().getAccount()){
         param name="arguments.data.orderTemplateID" default="";
 
 		var orderTemplate = this.getOrderTemplate(arguments.data.orderTemplateID)

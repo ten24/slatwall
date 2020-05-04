@@ -58,7 +58,37 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 				'name': 'Account - After Account Sponsor Account Upgrade Success | afterAccountSponsorUpgradeSuccess',
 				'value': 'afterAccountSponsorUpgradeSuccess',
 				'entityName': 'Account'
-			} 
+			},
+			{
+				'name': 'Account - After Market Partner Enrollment Success | afterMarketPartnerEnrollmentSuccess',
+				'value': 'afterMarketPartnerEnrollmentSuccess',
+				'entityName': 'Account' 
+			},
+			{
+				'name': 'Account - After VIP Enrollment Success | afterVIPEnrollmentSuccess',
+				'value': 'afterVIPEnrollmentSuccess',
+				'entityName': 'Account' 
+			},
+			{
+				'name': 'Account - After Customer Enrollment Success | afterCustomerEnrollmentSuccess',
+				'value': 'afterCustomerEnrollmentSuccess',
+				'entityName': 'Account' 
+			},
+			{
+				'name': 'Account - After Customer To Market Partner Upgrade Success | afterCustomerToMarketPartnerUpgradeSuccess',
+				'value': 'afterCustomerToMarketPartnerUpgradeSuccess',
+				'entityName': 'Account' 
+			},
+			{
+				'name': 'Account - After VIP To Market Partner Upgrade Success | afterVIPToMarketPartnerUpgradeSuccess',
+				'value': 'afterVIPToMarketPartnerUpgradeSuccess',
+				'entityName': 'Account' 
+			},
+			{
+				'name': 'Account - After Customer To VIP Upgrade Success | afterCustomerToVIPUpgradeSuccess',
+				'value': 'afterCustomerToVIPUpgradeSuccess',
+				'entityName': 'Account' 
+			}
 		]
 
 		arrayAppend(eventOptions, customEvents, true); 

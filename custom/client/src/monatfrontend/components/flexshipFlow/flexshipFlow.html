@@ -20,14 +20,16 @@
 <div class="wrapper">
 		<!--Shop step -->
 		<div ng-if="flexshipFlow.currentStep === flexshipFlow.FlexshipSteps.SHOP" > 
-			<product-listing-step></product-listing-step>
+			<!-- we need a better way to handle this, the products api returns before the getSetFlexship, 
+			and when the user clicks on add-to-flexship, there's no order-templateID -->
+			<product-listing-step ng-hide="flexshipFlow.loading"></product-listing-step>
 		</div>
 		<!--frequency step -->
 		<div ng-if="flexshipFlow.currentStep === flexshipFlow.FlexshipSteps.FREQUENCY"> 
 			<frequency-step></frequency-step>
 		</div>
 		<!--ofy step -->
-		<div ng-if="flexshipFlow.currentStep  === flexshipFlow.FlexshipSteps.OFY">
+		<div ng-if="flexshipFlow.currentStep  === flexshipFlow.FlexshipSteps.OFY ">
 			<div class="container great_part">
 				<ofy-enrollment flexship="flexshipFlow.orderTemplateService.currentOrderTemplateID"></ofy-enrollment>	
 			</div>
@@ -105,6 +107,7 @@
 			
 			<!--OFY Icon -->
 			<div 
+				ng-if="flexshipFlow.isOFYEligible"
 				class="col"
 				ng-click="flexshipFlow.goToStep(flexshipFlow.FlexshipSteps.OFY)"
 				ng-style="{ 
@@ -145,12 +148,10 @@
 		<div>
 			<button 
 				style="z-index: 1" 
-				data-ng-click="flexshipFlow.next();"
 				class="btn btn-secondary forward-btn forward" 
+				ng-click="flexshipFlow.next();"
 				ng-class="{  'loading,disabled': flexshipFlow.loading }"
-				ng-disabled="
-					flexshipFlow.loading || !flexshipFlow.orderTemplateService.mostRecentOrderTemplate.qualifiesForOFYProducts && flexshipFlow.currentStep != flexshipFlow.FlexshipSteps.CHECKOUT
-				"
+				ng-disabled="flexshipFlow.loading "
 			>
 
 				<span sw-rbkey="'frontend.global.next'"></span>

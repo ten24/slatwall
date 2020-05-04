@@ -204,7 +204,7 @@ component extends="Slatwall.model.service.OrderService" {
 		
 		if( arguments.context != "upgradeFlow"){
 			arguments.orderTemplate.setAccount(account);
-		}else if(!isNull(arguments.processObject.getPriceGroup())){
+		} else if(!isNull(arguments.processObject.getPriceGroup())){
 			arguments.orderTemplate.setPriceGroup(arguments.processObject.getPriceGroup());
 		}
 	
@@ -212,9 +212,13 @@ component extends="Slatwall.model.service.OrderService" {
 		arguments.orderTemplate.setCurrencyCode( arguments.processObject.getCurrencyCode() );
 		arguments.orderTemplate.setOrderTemplateStatusType(getTypeService().getTypeBySystemCode('otstDraft'));
 		arguments.orderTemplate.setOrderTemplateType(getTypeService().getType(arguments.processObject.getOrderTemplateTypeID()));
-		arguments.orderTemplate.setScheduleOrderNextPlaceDateTime(arguments.processObject.getScheduleOrderNextPlaceDateTime());
-		arguments.orderTemplate.setFrequencyTerm( getSettingService().getTerm(arguments.processObject.getFrequencyTermID()) );
 		
+		arguments.orderTemplate.setFrequencyTerm( arguments.processObject.getFrequencyTerm() );
+		arguments.orderTemplate.setScheduleOrderDayOfTheMonth(
+				day(arguments.processObject.getScheduleOrderNextPlaceDateTime())
+			);
+		arguments.orderTemplate.setScheduleOrderNextPlaceDateTime(arguments.processObject.getScheduleOrderNextPlaceDateTime());
+
 		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate, arguments.data, arguments.context); 
 		
 		return arguments.orderTemplate;
@@ -1802,8 +1806,6 @@ component extends="Slatwall.model.service.OrderService" {
 	
 
 	public any function processOrder_placeOrder(required any order, struct data={}) {
-		
-
 		
 		if (isNull(arguments.order.getAccount().getOwnerAccount())){
 			arguments.order.addError( 'placeOrder', rbKey("validate.processOrder_PlaceOrder.invalidOwnerAccount") );

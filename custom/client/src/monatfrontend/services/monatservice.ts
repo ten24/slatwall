@@ -508,4 +508,25 @@ export class MonatService {
 				};
 			});
 	}
+	
+	public addOFYItem(skuID){
+		var deferred = this.$q.defer<any>();
+		this.publicService.doAction("addOFYProduct", { skuID: skuID, quantity:1 }).then((data: any) => {
+			if (data?.cart) {
+				console.log("update-cart, putting it in session-cache");
+				this.putIntoSessionCache("cachedCart", data.cart);
+
+				this.successfulActions = data.successfulActions;
+				this.handleCartResponseActions(data); 
+				this.updateCartPropertiesOnService(data);
+
+				deferred.resolve(data.cart);
+				this.observerService.notify("updatedCart", data.cart);
+			} else {
+				throw data;
+			}
+		});
+		
+		return deferred.promise;
+	}
 }

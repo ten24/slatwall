@@ -372,83 +372,155 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
      * @param request data
      * @return none
      * */
-    public any function configExternalPayPal(required struct data) {
-        //Configure PayPal
+    public any function getPayPalClientConfigForCart(required struct data) {
+        
+        var cart = getHibachiScope().cart();
+  	    var responseBean = authorizeCurrentAccountWithBraintree();
+		if(!responseBean.hasErrors()) {	    
+    	    //Populate shipping address
+    	    var formattedAddress = {};
+    	    if(getHibachiScope().getCart().hasOrderFulfillment()) {
+                //Q: can we use the address from the cart itself instead of grabing it from a fulfillment?
+    	        formattedAddress = formatSlatwallAddressForPayPal(
+    	                cart.getOrderFulfillments()[1] 
+    	                .getShippingAddress()
+    	            );
+    	    }
+    	    
+	    	arguments.data['ajaxResponse']['paypalClientConfig'] = {
+	    	
+	    	    'currencyCode'    : cart.getCurrencyCode(),
+                'amount'          : cart.getCalculatedPaymentAmountDue(), //Q: should we change this to a non-calculated property? 
+    			'clientAuthToken' : responseBean.getAuthorizationCode(),
+    			'shippingAddress' : formattedAddress,
+    			'paymentMode'     : getService('integrationService')
+                                    .getIntegrationByIntegrationPackage('braintree')
+                                    .setting(settingName='braintreeAccountSandboxFlag') ? 'sandbox' : 'production'
+	    	};
+	    	
+		} else {
+            this.addErrors(data, responseBean.getErrors());
+		}
+    }
+    
+    /**
+     * Helper function to authorize current account on hibachi-scope with brain-tree;
+    */
+    private any function authorizeCurrentAccountWithBraintree(){
         var requestBean = getHibachiScope().getTransient('externalTransactionRequestBean');
 	    requestBean.setTransactionType('authorizeAccount');
-	    var account = getHibachiScope().getAccount();
-	    requestBean.setAccount(account);
+        requestBean.setAccount(getHibachiScope().getAccount());
 	    
-	    var responseBean = getHibachiScope().getService('integrationService').getIntegrationByIntegrationPackage('braintree').getIntegrationCFC("Payment").processExternal(requestBean);
-	    
-	    //Populate shipping address
-	    var orderFulfillment = getHibachiScope().getCart().getOrderFulfillments();
-	    var shippingAddress = {};
-	    if(arrayLen(orderFulfillment) && !isNull(orderFulfillment[1])) {
-	        var cartShippingAddress = orderFulfillment[1].getShippingAddress();
-	        if(!isNull(cartShippingAddress)) {
-	            
-	            shippingAddress = {
-    	            "postalCode" : cartShippingAddress.getPostalCode() ? : '',
-    	            "countryCode" : cartShippingAddress.getCountryCode() ? : '',
-    	            "line1" : cartShippingAddress.getStreetAddress() ? : '',
-    	            "recipientName" : cartShippingAddress.getName() ? : '',
-    	            "city" : cartShippingAddress.getCity() ? : '',
-    	            "line2" : cartShippingAddress.getStreet2Address() ? : '',
-    	            "state" : cartShippingAddress.getStateCode() ? : '',
-    	        };
-	        }
-	        
-	    }
-	    
-		if(responseBean.hasErrors()) {
-		    this.addErrors(data, responseBean.getErrors());
-		}
-		else {
-		    var requestPayload = {
-	    	    'currencyCode' : "#getHibachiScope().cart().getCurrencyCode()#",
-    			'amount' : getHibachiScope().cart().getCalculatedPaymentAmountDue(),
-    			'clientAuthToken' : responseBean.getAuthorizationCode(),
-    			'paymentMode' : getService('integrationService').getIntegrationByIntegrationPackage('braintree').setting(settingName='braintreeAccountSandboxFlag') ? 'sandbox' : 'production',
-    			'shippingAddress': shippingAddress,
-	    	}
-	    	
-	    	arguments.data['ajaxResponse']['paypalClientConfig'] = requestPayload;
-		}
-		
+	    return getService('integrationService')
+                .getIntegrationByIntegrationPackage('braintree')
+                .getIntegrationCFC("Payment")
+                .processExternal(requestBean);
     }
+
+    /**
+     * Helper function to create an addtess struct from an instance of slatwall-address;
+     */
+    private struct function formatSlatwallAddressForPayPal(any address){
+
+        if(IsNull(arguments.address)){
+            return {};
+        }
+        
+        return {
+            "recipientName" : arguments.address.getName()             ?: '',
+            "line1"         : arguments.address.getStreetAddress()    ?: '',
+            "line2"         : arguments.address.getStreet2Address()   ?: '',
+            "city"          : arguments.address.getCity()             ?: '',
+            "state"         : arguments.address.getStateCode()        ?: '',
+            "postalCode"    : arguments.address.getPostalCode()       ?: '',
+            "countryCode"   : arguments.address.getCountryCode()      ?: '',
+        }
+    }
+
+    /**
+     * Function to cnfigure client side Paypal method for order-template
+     * adds paypalClientConfig in ajaxResponse
+     * @param request data
+     * @return none
+     * */
+     public any function getPayPalClientConfigForOrderTemplate(required struct data) {
+        param name="arguments.data.orderTemplateID" default="";
+        param name="arguments.data.shippingAccountAddressID" default="";
+
+        var orderTemplate = getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
+        if(IsNull(orderTemplate)){
+            return;
+        }
+
+        // Authorize with braintree to get an AuthorizationCode for the client
+        if(!orderTemplate.hasErrors() ){
+            var responseBean = authorizeCurrentAccountWithBraintree();
+            if(responseBean.hasErrors()) {
+                orderTemplate.addErrors( responseBean.getErrors() );
+            }
+        }
+        
+        if( !orderTemplate.hasErrors() ){
+            var accountAddress = getAccountService()
+                                    .getAccountAddress(arguments.data.shippingAccountAddressID)
+                                        ?: orderTemplate.getShippingAccountAddress();
+                                        
+            var formattedAddress = {};
+            if(!IsNull(accountAddress)){
+                formattedAddress = formatSlatwallAddressForPayPal(accountAddress.getAddress());
+            }    
+            
+            arguments.data.ajaxResponse['paypalClientConfig'] = {
+                'clientAuthToken': responseBean.getAuthorizationCode(),
+                'currencyCode'   : "#orderTemplate.getCurrencyCode()#",
+                'amount'         : orderTemplate.getTotal(),
+                'shippingAddress': formattedAddress,
+                'paymentMode'    : getService('integrationService')
+                                    .getIntegrationByIntegrationPackage('braintree')
+                                    .setting(settingName='braintreeAccountSandboxFlag') ? 'sandbox' : 'production'
+            };
+        } else {
+            this.addErrors(arguments.data, orderTemplate.getErrors());
+        }
+    }
+    
     
     /**
      * Function to authorize client account for paypal & Add New Payment Method
      * authorize paypal amd add is as new payment method
      * @param request data
-     * @return none
+     * @return none 
      * */
-    public any function authorizePayPal(required struct data) {
+    public any function createPayPalAccountPaymentMethod(required struct data) {
+        param name="arguments.data.paymentToken" default="";
+
         var paymentIntegration = getService('integrationService').getIntegrationByIntegrationPackage('braintree');
 		var paymentMethod = getService('paymentService').getPaymentMethodByPaymentIntegration(paymentIntegration);
-
 		var requestBean = getHibachiScope().getTransient('externalTransactionRequestBean');
     	requestBean.setProviderToken(data.paymentToken);
- 		requestBean.setTransactionType('authorizePayment');
+        requestBean.setTransactionType('authorizePayment');
+         
 		var responseBean = paymentIntegration.getIntegrationCFC("Payment").processExternal(requestBean);
 
-		if(responseBean.hasErrors()) {
-		    this.addErrors(data, responseBean.getErrors());
-		}
-		else {
-		    //Create a New accountPaymentMethod
+		if(!responseBean.hasErrors()) {
             var accountPaymentMethod = getService('accountService').newAccountPaymentMethod();
             accountPaymentMethod.setAccountPaymentMethodName("PayPal - Braintree");
+            accountPaymentMethod.setCreditCardType("PayPal");
             accountPaymentMethod.setAccount( getHibachiScope().getAccount() );
             accountPaymentMethod.setPaymentMethod( paymentMethod );
             accountPaymentMethod.setProviderToken( responseBean.getProviderToken() );
             accountPaymentMethod = getService('AccountService').saveAccountPaymentMethod(accountPaymentMethod);
 
-            arguments.data['ajaxResponse']['newPayPalPaymentMethod'] = accountPaymentMethod.getAccountPaymentMethodID();
-            arguments.data['ajaxResponse']['paymentMethodID'] = paymentMethod.getPaymentMethodID();
-		}
-
+            if(accountPaymentMethod.hasErrors()){
+                this.addErrors(data, accountPaymentMethod.getErrors());
+            } else {
+                getHibachiScope().flushORMSession(); //flush to make new data available.             
+                arguments.data['ajaxResponse']['paymentMethodID'] = paymentMethod.getPaymentMethodID();
+                arguments.data['ajaxResponse']['newPayPalPaymentMethod'] = accountPaymentMethod.getStructRepresentation();
+            }
+		} else {
+            this.addErrors(data, responseBean.getErrors());
+        }
     }
 
     /**
@@ -549,6 +621,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         processObject.setOrderTemplateTypeID(orderTypeID);
         processObject.setFrequencyTermID(arguments.data.frequencyTermID);
+        //defaulting to the first day of the month, in case is user abandon the flexship-create flow
+        processObject.setScheduleOrderDayOfTheMonth(1); 
         
         if(!isUpgradedFlag){
             processObject.setAccountID(getHibachiScope().getAccount().getAccountID());
@@ -812,20 +886,16 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		arguments.data['ajaxResponse']['bundles'] = bundles;
 		arguments.data['ajaxResponse']['products'] = products;
     }
+    
+    public any function addProtectedProductType(required struct data){
+        param name="arguments.data.cart" default= getHibachiScope().getCart();
+        param name="arguments.data.protectedSystemCodeList" default='Starterkit,ProductPack';
         
-    public any function selectStarterPackBundle(required struct data){
-        
-         var cart = getHibachiScope().cart();
-         
-        //check to ensure upgrade logic remains on order after first add order item
-        if(!isNull(arguments.data.upgradeFlowFlag) && arguments.data.upgradeFlowFlag == 1 && isNull(cart.getMonatOrderType())){
-            this.setUpgradeOrderType(cart);
-        }
-        
+        var cart = arguments.data.cart;
         var orderService = getService("OrderService");
         var currentOrderItemList = orderService.getOrderItemCollectionList();
         currentOrderItemList.addFilter('order.orderID', cart.getOrderID());
-        currentOrderItemList.addFilter('sku.product.productType.systemCode', 'Starterkit,ProductPack', 'IN');
+        currentOrderItemList.addFilter('sku.product.productType.systemCode', arguments.data.protectedSystemCodeList, 'IN');
         currentOrderItemList.addDisplayProperties('orderItemID');
         var orderItems = currentOrderItemList.getRecords();
         var orderData = {};
@@ -839,6 +909,21 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         orderData['orderItemIDList'] = list;
         if(len(orderData.orderItemIDList)) orderService.processOrder( cart, orderData, 'removeOrderItem');
         this.addOrderItem(argumentCollection = arguments);
+    }
+        
+    public any function selectStarterPackBundle(required struct data){
+        
+         var cart = getHibachiScope().cart();
+         
+        //check to ensure upgrade logic remains on order after first add order item
+        if(!isNull(arguments.data.upgradeFlowFlag) && arguments.data.upgradeFlowFlag == 1 && isNull(cart.getMonatOrderType())){
+            this.setUpgradeOrderType(cart);
+        }
+        
+        arguments.data['cart'] = cart;
+        
+        this.addProtectedProductType(arguments.data);
+
     }
 
 
@@ -1155,7 +1240,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     
     public any function getBaseProductCollectionList(required any data){
         var account = getHibachiScope().getAccount();
-        var accountType = account.getAccountType()?: 'retail';
+        var accountType = account.getAccountType()?: 'customer';
         var holdingPriceGroups = account.getPriceGroups();
         var site = getService('SiteService').getSiteByCmsSiteID(arguments.data.cmsSiteID);
         var currencyCode = site.setting('skuCurrency');
@@ -1178,7 +1263,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             }else if(priceGroupCode == 3){
                 accountType == 'VIP'
             }else{
-                accountType == 'retail'
+                accountType == 'customer'
             }
         }else if(!isNull(arguments.data.priceGroupCode) && len(arguments.data.priceGroupCode)){ //argument price group
             priceGroupCode = arguments.data.priceGroupCode;
@@ -1216,7 +1301,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         productCollectionList.addFilter('productType.parentProductType.urlTitle','other-income','!=');
         productCollectionList.addFilter('sites.siteID',site.getSiteID());
 
-        if(isNull(accountType) || accountType == 'retail'){
+        if(isNull(accountType) || accountType == 'customer'){
            productCollectionList.addFilter('skus.retailFlag', 1);
         }else if(accountType == 'marketPartner'){
             productCollectionList.addFilter('skus.mpFlag', 1);
@@ -1848,7 +1933,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         param name="arguments.data.pageRecordsShow" default=10;
         param name="arguments.data.currentPage" default=1;
         
-        var orderTemplate = getOrderService().getOrderTemplateForAccount( argumentCollection = arguments );
+        var orderTemplate = getOrderService().getOrderTemplateAndEnforceOwnerAccount( argumentCollection = arguments );
         if ( isNull( orderTemplate ) ) {
             return;
         }
@@ -2148,7 +2233,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     public void function getAssociatedOFYProductForFlexship(requred struct data){
         param name="arguments.data.orderTemplateID" default=""; //default to flexship
 
-        var orderTemplate = getOrderService().getOrderTemplateForAccount(argumentCollection = arguments);
+        var orderTemplate = getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
 		if( isNull(orderTemplate) ) {
 			return;
 		}
@@ -2312,5 +2397,10 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             }
         }
 
+    }
+    
+    public any function addOFYProduct(required struct data){
+        arguments.data['protectedSystemCodeList'] = 'PromotionalItems';
+        this.addProtectedProductType(arguments.data);
     }
 }

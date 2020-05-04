@@ -1,8 +1,6 @@
 import { FlexshipSteps, FlexshipFlowEvents } from "@Monat/components/flexshipFlow/flexshipFlow";
-import {
-	FlexshipCheckoutState,
-	FlexshipCheckoutStore,
-} from "@Monat/states/flexship-checkout-store";
+import { FlexshipCheckoutState, FlexshipCheckoutStore } from "@Monat/states/flexship-checkout-store";
+
 import { ObserverService, RbKeyService } from "@Hibachi/core/core.module";
 import { MonatService } from "@Monat/services/monatservice";
 import { OrderTemplateService } from "@Monat/services/ordertemplateservice";
@@ -33,8 +31,7 @@ class FlexshipCheckoutStepController {
 	) {}
 
 	public $onInit = () => {
-		this.observerService.attach(
-			this.onCompleteCheckout,
+		this.observerService.attach( this.onCompleteCheckout,
 			FlexshipFlowEvents.ON_COMPLETE_CHECKOUT
 		);
 		this.setupStateChangeListeners();
@@ -43,8 +40,13 @@ class FlexshipCheckoutStepController {
 		
 		this.orderTemplateService
 			//instead of making a trip to the server we should cache at the frontend;
-			.getSetOrderTemplateOnSession("vatTotal,taxTotal,fulfillmentHandlingFeeTotal", "save", false, false)
+			.getSetOrderTemplateOnSession("purchasePlusTotal,vatTotal,taxTotal,fulfillmentHandlingFeeTotal", "save", false, false)
 			.then((response: any) => {
+				
+				if(!response.orderTemplate){
+					throw(response);
+				}
+			
 				this.flexshipCheckoutStore.dispatch("SET_CURRENT_FLEXSHIP", (state) => {
 					return this.flexshipCheckoutStore.setFlexshipReducer(
 						state, response.orderTemplate
@@ -119,7 +121,7 @@ class FlexshipCheckoutStepController {
 					this.rbkeyService.rbKey("alert.flexship.updateSuccessful")
 				);
 
-				this.observerService.notify(FlexshipFlowEvents.ON_NEXT);
+				this.observerService.notify(FlexshipFlowEvents.ON_COMPLETE_CHECKOUT_SUCCESS);
 			})
 			.catch((error) => {
 				this.monatAlertService.showErrorsFromResponse(error);
@@ -128,9 +130,21 @@ class FlexshipCheckoutStepController {
 	};
 
 	public configurePayPal = () => {
-		this.payPalService.configPayPal();
+		
+		this.payPalService.configPayPalClientForOrderTemplate(
+				this.currentState.flexship.orderTemplateID,
+				this.currentState.selectedShippingAddressID
+			)
+			.then( response => {
+				if(!response?.newPayPalPaymentMethod) throw response;
+				
+				this.onAddNewAccountPaymentMethod(response.newPayPalPaymentMethod);
+				//we're completing the checkout here, as there isn't anything else to do for the user
+				this.onCompleteCheckout(); 
+			})
+			.catch( error => this.monatAlertService.showErrorsFromResponse(error));
 	};
-
+	
 	public addNewPaymentMethod = () => {
 		let payload = {
 			"orderTemplateID": this.currentState.flexship.ordertemplateID,
@@ -144,13 +158,7 @@ class FlexshipCheckoutStepController {
 			.then((response) => {
 				if (!response.newAccountPaymentMethod) throw response;
 
-				this.currentState.accountPaymentMethods.push(response.newAccountPaymentMethod);
-				this.flexshipCheckoutStore.dispatch("SET_PAYMENT_METHODS", {
-					accountPaymentMethods: this.currentState.accountPaymentMethods,
-				});
-				this.setSelectedPaymentMethodID(
-					response.newAccountPaymentMethod.accountPaymentMethodID
-				);
+				this.onAddNewAccountPaymentMethod(response.newAccountPaymentMethod);
 			})
 			.catch((error) => {
 				this.monatAlertService.showErrorsFromResponse(error);
@@ -169,15 +177,14 @@ class FlexshipCheckoutStepController {
 
 	public setSelectedPaymentProvider(selectedPaymentProvider) {
 		this.flexshipCheckoutStore.dispatch("SET_SELECTED_PAYMENT_PROVIDER", {
-			selectedPaymentProvider: selectedPaymentProvider,
+			'selectedPaymentProvider': selectedPaymentProvider,
 		});
 	}
 
 	public setSelectedPaymentMethodID(selectedPaymentMethodID?) {
 		this.flexshipCheckoutStore.dispatch("SET_SELECTED_PAYMENT_METHOD_ID", (state) => {
 			return this.flexshipCheckoutStore.setSelectedPaymentMethodIDReducer(
-				state,
-				selectedPaymentMethodID
+				state, selectedPaymentMethodID
 			);
 		});
 	}
@@ -185,8 +192,7 @@ class FlexshipCheckoutStepController {
 	public toggleBillingSameAsShipping() {
 		this.flexshipCheckoutStore.dispatch("TOGGLE_BILLING_SAME_AS_SHIPPING", (state) => {
 			return this.flexshipCheckoutStore.toggleBillingSameAsShippingReducer(
-				state,
-				!this.currentState.billingSameAsShipping
+				state, !this.currentState.billingSameAsShipping
 			);
 		});
 	}
@@ -194,17 +200,25 @@ class FlexshipCheckoutStepController {
 	public setSelectedBillingAddressID(selectedBillingAddressID?) {
 		this.flexshipCheckoutStore.dispatch("SET_SELECTED_BILLING_ADDRESS_ID", (state) => {
 			return this.flexshipCheckoutStore.setSelectedBillingAddressIDReducer(
-				state,
-				selectedBillingAddressID
+				state, selectedBillingAddressID
 			);
 		});
+	}
+	
+	private onAddNewAccountPaymentMethod(newAccountPaymentMethod){
+		this.flexshipCheckoutStore.dispatch("SET_PAYMENT_METHODS", {
+			'accountPaymentMethods': [ ...this.currentState.accountPaymentMethods, newAccountPaymentMethod]
+		});
+		this.setSelectedPaymentMethodID(
+			newAccountPaymentMethod.accountPaymentMethodID
+		);
 	}
 
 	private onNewStateReceived = (state: FlexshipCheckoutState) => {
 		this.currentState = state;
 		this.currentState.showNewBillingAddressForm
-			? this.showNewAddressForm()
-			: this.hideNewAddressForm();
+			? this.showNewAddressForm() : this.hideNewAddressForm();
+			
 		console.log("checkout-step, on-new-state");
 	};
 
@@ -223,7 +237,7 @@ class FlexshipCheckoutStepController {
 		if (newAccountAddress) {
 			this.currentState.accountAddresses.push(newAccountAddress);
 			this.flexshipCheckoutStore.dispatch("SET_ACCOUNT_ADDRESSES", {
-				accountAddresses: this.currentState.accountAddresses,
+				'accountAddresses': this.currentState.accountAddresses,
 			});
 			this.setSelectedBillingAddressID(newAccountAddress.accountAddressID);
 		}

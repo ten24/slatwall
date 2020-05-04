@@ -339,35 +339,7 @@
                                                   </tr>
                                                </table>
                                                <![endif]-->
-                                               <!--[if mso]>
-                                               <table width="100%" cellpadding="0" cellspacing="0" border="0">
-                                                  <tr>
-                                                     <td style="padding-right: 10px; padding-left: 10px; padding-top: 20px; padding-bottom: 20px; font-family: Arial, sans-serif">
-                                                        <![endif]-->
-                                                        <div style="color:##555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;line-height:1.2;padding-top:20px;padding-right:10px;padding-bottom:20px;padding-left:10px;">
-                                                           <div style="font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 12px; line-height: 1.2; color: ##555555; mso-line-height-alt: 14px;">
-                                                              <p style="font-size: 14px; line-height: 1.2; text-align: center; mso-line-height-alt: 17px; margin: 0;"><strong><span style="font-size: 16px; color: ##2f294b;"><span style="font-size: 16px;">Thank you for being a</span> <span style="font-size: 16px;">part</span> of MONAT! </span></strong></p>
-                                                           </div>
-                                                        </div>
-                                                        <!--[if mso]>
-                                                     </td>
-                                                  </tr>
-                                               </table>
-                                               <![endif]-->
-											
-												<!--- 
-												
-												Commenting out autoshipping number block we do not currently have a flexship number for this field. 
 
-													<div style="font-size:16px;text-align:center;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif">
-														<div style=" color: ##555555; font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;line-height:120%;padding-top:20px;padding-right:20px;padding-bottom:20px;padding-left:20px;">
-															<div style="background-color: ##E5E5E5; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 12px; line-height: 14px; color: ##555555; text-align:center; padding-top:30px; padding-right:20px; padding-bottom:30px;padding-left:20px;">
-																<p style="font-size: 16px; line-height: 15px; margin: 0;"><span style="font-size: 16px; mso-ansi-font-size: 14px;"><strong>Shipping ##(AUTOSHIPNUMBER) **Internet Order</strong></span></p>
-															</div>
-														</div>
-													</div>
-												--->
-												
 												<!--[if (!mso)&(!IE)]><!-->
                                             </div>
                                             <!--<![endif]-->

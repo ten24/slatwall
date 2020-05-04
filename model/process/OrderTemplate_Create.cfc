@@ -66,9 +66,9 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="passwordConfirm";
 	
 	property name="currencyCode" hb_rbKey="entity.currency" hb_formFieldType="select";
-	property name="frequencyTermID" hb_rbKey="entity.orderTemplate.frequencyTerm" hb_formFieldType="select";
-	property name="orderTemplateTypeID" hb_rbKey="entity.orderTemplate.orderTemplateType" hb_formFieldType="select";
-	property name="siteID" hb_rbKey="entity.orderTemplate.site" hb_formFieldType="select";  
+	property name="frequencyTermID" cfc="Term" hb_rbKey="entity.orderTemplate.frequencyTerm" hb_formFieldType="select";
+	property name="orderTemplateTypeID" cfc="Type" hb_rbKey="entity.orderTemplate.orderTemplateType" hb_formFieldType="select";
+	property name="siteID" cfc="Site" hb_rbKey="entity.orderTemplate.site" hb_formFieldType="select";  
 	
 	property name="cmsSiteID" hb_rbKey="entity.orderTemplate.site";  
 	property name="siteCode" hb_rbKey="entity.orderTemplate.site";  
@@ -89,6 +89,35 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 	public array function getFrequencyTermIDOptions() {
 		return getOrderTemplate().getFrequencyTermOptions();
+	}
+	
+	
+	public any function getFrequencyTerm() {
+		
+		if( !isNull(variables.frequencyTerm) ){
+			return variables.frequencyTerm;
+		}
+		
+		if( !isNull(variables.frequencyTermID) ){
+			variables.frequencyTerm = this.getService('settingService').getTerm(variables.frequencyTermID);
+			return variables.frequencyTerm;
+		}
+	}
+	
+	public any function getScheduleOrderNextPlaceDateTime(){
+		if(isNull(valiables.scheduleOrderNextPlaceDateTime) || !isDate(variables.scheduleOrderNextPlaceDateTime) ){
+			
+			if(isNull(this.getFrequencyTerm()) || isNull(this.getScheduleOrderDayOfTheMonth()) ){
+				return;
+			}
+			
+			// get the next eligible future date from the FrequencyTerm
+		    variables.scheduleOrderNextPlaceDateTime = this.getFrequencyTerm().getEndDate( 
+		    		startDate = now().setDay(this.getScheduleOrderDayOfTheMonth()), 
+		    		multipleIterationsForFutureDateFlag = true
+		    	);
+		}
+		return variables.scheduleOrderNextPlaceDateTime;
 	}
 	
 	public array function getOrderTemplateTypeIDOptions() {

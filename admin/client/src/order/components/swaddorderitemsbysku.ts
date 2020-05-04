@@ -140,9 +140,7 @@ class SWAddOrderItemsBySkuController{
         }
         
         this.addSkuCollection.addFilter('activeFlag', true,'=',undefined,true);
-        this.addSkuCollection.addFilter('publishedFlag', true,'=',undefined,true);
         this.addSkuCollection.addFilter('product.activeFlag', true,'=',undefined,true);
-        this.addSkuCollection.addFilter('product.publishedFlag', true,'=',undefined,true);
 
 		if(this.siteId?.trim()){
 	        this.addSkuCollection.addFilter('product.sites.siteID', this.siteId, '=', undefined, true);
