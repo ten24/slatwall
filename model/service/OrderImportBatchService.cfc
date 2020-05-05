@@ -58,6 +58,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// ===================== START: Logical Methods ===========================
 	
 	public any function processOrderImportBatch_Create(required any orderImportBatch, required any processObject){
+
 		arguments.orderImportBatch.setOrderImportBatchName(arguments.processObject.getOrderImportBatchName());
 		arguments.orderImportBatch.setOrderImportBatchStatusType(getTypeService().getTypeBySystemCode('oibstNew'));
 		
@@ -86,7 +87,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				
 				var importQuery = getHibachiDataService().loadQueryFromCSVFileWithColumnTypeList('#tempDir#/#documentData['serverfile']#');
 				if(importQuery.recordCount){
-					var errors = [];
+					var errors = {};
 					var itemCount = 0;
 					var requiredColumns = 'accountNumber,quantity,skuCode';
 					var columns = listAppend(requiredColumns,'originalOrderNumber');
@@ -109,17 +110,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						
 						var sku = getSkuService().getSkuBySkuCode(skuCode);
 						if(isNull(sku)){
-							ArrayAppend(errors,{'row#i#':'Sku could not be found.'});
+							structAppend(errors,{'row#i#':'Sku could not be found.'});
 							rowError = true;
 						}
 						
 						var account = getAccountService().getAccountByAccountNumber(accountNumber);
 						if(isNull(account)){
-							ArrayAppend(errors,{'row#i#':'Account could not be found.'});
+							structAppend(errors,{'row#i#':'Account with account number: #accountNumber# could not be found.'});
 							rowError = true;
 						}
 						if(!isNumeric(quantity)){
-							ArrayAppend(errors,{'row#i#':'Quantity must be a number.'});
+							structAppend(errors,{'row#i#':'Quantity must be a number.'});
 							rowError = true;
 						}
 						if(rowError){
@@ -164,8 +165,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					if(!arguments.orderImportBatch.hasErrors()){
 						arguments.orderImportBatch.setItemCount(itemCount);
 						this.saveOrderImportBatch(arguments.orderImportBatch);
-						if(arrayLen(errors)){
+						if(structCount(errors)){
 							arguments.orderImportBatch.addErrors(errors,true);
+							getHibachiScope().setORMHasErrors( true );
 						}
 					}
 				// If there were no rows imported then we can add the error message to the processObject
@@ -187,13 +189,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public any function processOrderImportBatch_Process(required any orderImportBatch){
-		var placedOrders = 0;
+		var placedOrders = -1;
 		for(var orderImportBatchItem in arguments.orderImportBatch.getOrderImportBatchItems()){
+
 			//Create Order
 			var order = getOrderService().newOrder();
 			var account = orderImportBatchItem.getAccount();
 			order.setAccount(account);
 			var site = account.getAccountCreatedSite();
+			orderImportBatchItem.setProcessingErrors('');
 			if(!isNull(site)){
 				order.setOrderCreatedSite(account.getAccountCreatedSite());
 				var currencyCode = site.getCurrencyCode();
@@ -205,7 +209,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			order.setCurrencyCode(currencyCode);
 			order.setOrderImportBatch(arguments.orderImportBatch);
 			order.setShippingAddress(orderImportBatchItem.getShippingAddress());
-			
+		
 			//Save Order
 			getOrderService().saveOrder(order);
 			orderImportBatchItem.setOrder(order);
@@ -235,29 +239,35 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				orderItem.setQuantity(orderImportBatchItem.getQuantity());
 				orderItem.setPrice(0);
 				getOrderService().saveOrderItem(orderItem);
-				
 				if(orderItem.hasErrors()){
 					order.addErrors(orderItem.getErrors());
 				}else{
 					orderImportBatchItem.setOrderItem(orderItem);
-					
 					getHibachiDAO().flushORMSession();
-					
 					order = getOrderService().processOrder(order,{'newOrderPayment.paymentMethod.paymentMethodID':'none'},'placeOrder');
+					
 					if(!order.hasErrors()){
-						orderImportBatchItem.setOrderImportBatchItemStatusType(getTypeService().getTypeBySystemCode('oibistPlaced'));	
+						orderImportBatchItem.setOrderImportBatchItemStatusType(getTypeService().getTypeBySystemCode('oibstPlaced'));	
 						placedOrders += 1;
 					}
 				}
 			}
+	
 			if(order.hasErrors()){
 				orderImportBatchItem.setProcessingErrors(serialize(order.getErrors()));
-				orderImportBatchItem.setOrderImportBatchItemStatusType(getTypeService().getTypeBySystemCode('oibistError'))
+				orderImportBatchItem.setOrderImportBatchItemStatusType(getTypeService().getTypeBySystemCode('oibstError'))
 			}
+			
+			getDAO('OrderImportBatchDao').updateOrderImportBatchItem(
+				typeID = orderImportBatchItem.getOrderImportBatchItemStatusType().getTypeID(), 
+				orderImportBatchItemID = orderImportBatchItem.getOrderImportBatchItemID(), 
+				processingErrors = orderImportBatchItem.getProcessingErrors()
+			)
 		}
+		
 		arguments.orderImportBatch.setOrderImportBatchStatusType(getTypeService().getTypeBySystemCode('oibstProcessed'));
 		arguments.orderImportBatch.setPlacedOrdersCount(placedOrders);
-		
+		arguments.orderImportBatch.addErrors(orderImportBatchItem.getErrors());
 		return arguments.orderImportBatch;
 	}
 	
