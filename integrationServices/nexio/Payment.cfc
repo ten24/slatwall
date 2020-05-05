@@ -233,6 +233,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			
 			data['customer']['orderNumber'] = arguments.requestBean.getOrder().getOrderNumber();
 			data['customFields']['ORDER_REF'] = arguments.requestBean.getOrder().getShortReferenceID(true);
+			data['customFields']['SWORDERID'] = arguments.requestBean.getOrder().getOrderID();
 			
 			
 			
