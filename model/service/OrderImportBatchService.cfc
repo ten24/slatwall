@@ -238,6 +238,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				orderItem.setSku(orderImportBatchItem.getSku());
 				orderItem.setQuantity(orderImportBatchItem.getQuantity());
 				orderItem.setPrice(0);
+				orderItem.setSkuPrice(0);
 				getOrderService().saveOrderItem(orderItem);
 				if(orderItem.hasErrors()){
 					order.addErrors(orderItem.getErrors());
