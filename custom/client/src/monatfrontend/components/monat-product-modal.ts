@@ -166,10 +166,6 @@ class MonatProductModalController {
         this.videoRatio = ratio;
 	}
 	
-	public showHowToSection = () => {
-		return (this.productDetails.videoUrl != undefined && this.productDetails.videoUrl.length)? true : false;
-	}
-	
 	public initSlider = () => {
 		if (!this.sliderInitialized) {
 			this.sliderInitialized = true;
