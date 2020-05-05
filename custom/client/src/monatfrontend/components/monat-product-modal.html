@@ -235,67 +235,66 @@
 				        				<span class="steps-count" data-word-step="{{monatProductModal.productHowto.rbkey.step}}" data-word-of="{{monatProductModal.productHowto.rbkey.of}}"></span>
 				        			</div>
 				        				
-				        			<!--<div class="video-block" style="background: url(''); background-size: cover;">-->
-				        			<!--	<div class="video-details">-->
-				        			<!--		<cfif len( local.videoUrl )>-->
-				           <!-- 					<span class="play-video-button" data-featherlight="##how-to-video-lightbox">-->
-				           <!-- 						<i class="fas fa-play"></i>-->
-				           <!-- 					</span>-->
-				           <!-- 				</cfif> -->
-				           <!-- 				<cfif len( local.videoTitle )>-->
-				           <!--             		<h6>#local.videoTitle#</h6>-->
-				           <!--             		<cfif len( local.videoLength )>-->
-				           <!--             		    <span class="time">#local.videoLength#</span>-->
-				           <!--             		</cfif>-->
-				           <!--             	</cfif>-->
-				        			<!--	</div>-->
-				        			<!--	<cfif len( local.videoUrl )>-->
-				           <!-- 				<div class="video-lightbox" id="how-to-video-lightbox" style="padding-top: #local.videoRatio#%; width: #local.videoWidth#px">-->
-				           <!--         			<iframe-->
-				           <!--         			    frameborder="0" -->
-				           <!--         			    allowfullscreen-->
-				           <!--         			    src="#videoUrl#"-->
-				           <!--         			    width="#videoWidth#"-->
-				           <!--         			    height="#videoHeight#"-->
-				           <!--         			></iframe>-->
-				           <!--         		</div>-->
-				           <!--     		</cfif>-->
-				        			<!--</div>-->
+				        			<div class="video-block" style="background: url(''); background-size: cover;">
+				        				<div class="video-details">
+				        					<cfif len( local.videoUrl )>
+				            					<span class="play-video-button" data-featherlight="##how-to-video-lightbox">
+				            						<i class="fas fa-play"></i>
+				            					</span>
+				            				</cfif> 
+				            				<cfif len( local.videoTitle )>
+				                        		<h6>#local.videoTitle#</h6>
+				                        		<cfif len( local.videoLength )>
+				                        		    <span class="time">#local.videoLength#</span>
+				                        		</cfif>
+				                        	</cfif>
+				        				</div>
+				        				<cfif len( local.videoUrl )>
+				            				<div class="video-lightbox" id="how-to-video-lightbox" style="padding-top: #local.videoRatio#%; width: #local.videoWidth#px">
+				                    			<iframe
+				                    			    frameborder="0" 
+				                    			    allowfullscreen
+				                    			    src="#videoUrl#"
+				                    			    width="#videoWidth#"
+				                    			    height="#videoHeight#"
+				                    			></iframe>
+				                    		</div>
+				                		</cfif>
+				        			</div>
 				        			
 				        		</div>
 				        	</div>
-				        	<!--<div class="how-to-use__background-image" style="background-image: url('#m.getAttributeFilePath( $.slatwall.product(), 'productHowBackgroundImage' )#')"></div>-->
+				        	<div class="how-to-use__background-image" style="background-image: url('#m.getAttributeFilePath( $.slatwall.product(), 'productHowBackgroundImage' )#')"></div>
 						</div>	
 					</section>
-						
-						<!--
-						<section id="collapseThree" class="product-video collapse" data-parent="#productAccordion">
-							<div class="video-section">
-								<span class="play-video" data-featherlight="#product-video-lightbox">
-									<i class="fas fa-play"></i>
-								</span>
-								<div class="img-box">
-									<img ng-src="{{monatProductModal.productDetails.videoBackgroundImage}}" alt=""> 
-								</div>
-								<div class="video-box">
-								</div>
-								<div class="video-lightbox" id="product-video-lightbox" 
-								ng-style="{'padding-top': monatProductModal.videoRatio + '%', 'width': monatProductModal.productDetails.videoWidth + 'px'}">
-								<iframe
-									frameborder="0" 
-									allowfullscreen
-									ng-src="{{monatProductModal.trustedVideoURL}}"
-									width="{{monatProductModal.productDetails.videoWidth}}"
-									height="{{monatProductModal.productDetails.videoHeight}}"
-									></iframe>
-								</div>
+					
+					<section id="collapseThree" class="product-video collapse" data-parent="#productAccordion">
+						<div class="video-section">
+							<span class="play-video" data-featherlight="#product-video-lightbox">
+								<i class="fas fa-play"></i>
+							</span>
+							<div class="img-box">
+								<img ng-src="{{monatProductModal.productDetails.videoBackgroundImage}}" alt=""> 
 							</div>
-							<div class="container">
-								<h6>{{monatProductModal.productDetails.videoTitle}} </h6>
-								<span id="duration" class="time">{{monatProductModal.productDetails.videoLength}}</span>
+							<div class="video-box">
 							</div>
-						</section>
-						-->
+							<div class="video-lightbox" id="product-video-lightbox" 
+							ng-style="{'padding-top': monatProductModal.videoRatio + '%', 'width': monatProductModal.productDetails.videoWidth + 'px'}">
+							<iframe
+								frameborder="0" 
+								allowfullscreen
+								ng-src="{{monatProductModal.trustedVideoURL}}"
+								width="{{monatProductModal.productDetails.videoWidth}}"
+								height="{{monatProductModal.productDetails.videoHeight}}"
+								></iframe>
+							</div>
+						</div>
+						<div class="container">
+							<h6>{{monatProductModal.productDetails.videoTitle}}</h6>
+							<span id="duration" class="time">{{monatProductModal.productDetails.videoLength}}</span>
+						</div>
+					</section>
+					
 				</div>
 			</div>
 		</div>
