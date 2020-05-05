@@ -23,6 +23,7 @@ class MonatProductModalController {
 	public trustedVideoURL:string;
 	public videoRatio;
 	public flexshipHasAccount:boolean;
+	public sliderInitialized:boolean = false;
 	public videoBackgroundImage:string;
 	
 	//@ngInject
@@ -166,68 +167,36 @@ class MonatProductModalController {
 	}
 	
 	public showHowToSection = () => {
-		if(!this.videoBackgroundImage.length){
-			return false;
+		return (this.productDetails.videoUrl != undefined && this.productDetails.videoUrl.length)? true : false;
+	}
+	
+	public initSlider = () => {
+		if (!this.sliderInitialized) {
+			this.sliderInitialized = true;
+			
+			$('.how-to-slider').ready(function(){
+				var $stepCount = $('.steps-count');
+				var stepWordStep = $stepCount.attr('data-word-step');
+				var stepWordOf = $stepCount.attr('data-word-of');
+				var $sliderElement = $('.how-to-slider');
+				var sliderOptions = {
+					infinite: true,
+					autoplay: false,
+					autoplaySpeed: 5000,
+					dots: false,
+					arrows: true,
+					prevArrow:"<button type='button' class='slick-prev'><i class='fa fa-chevron-left' aria-hidden='true'></i></button>",
+					nextArrow:"<button type='button' class='slick-next'><i class='fa fa-chevron-right' aria-hidden='true'></i></button>"
+				};
+				
+				$sliderElement.on('init reInit afterChange', function (event, slick, currentSlide, nextSlide) {
+					var i = (currentSlide ? currentSlide : 0) + 1;
+					$stepCount.text(stepWordStep + ' ' + i + ' ' + stepWordOf + ' ' + slick.slideCount);
+				});
+				
+				$sliderElement.slick(sliderOptions);
+			});		
 		}
-		
-		$(".how-to-slider slides").ready(function(){
-			// Re-Initializes Slick Slider
-			var $stepCount = $('.steps-count');
-			var stepWordStep = $stepCount.attr('data-word-step');
-			var stepWordOf = $stepCount.attr('data-word-of');
-			var $sliderElement = $('.how-to-slider');
-			var sliderOptions = {
-				infinite: true,
-				autoplay: false,
-				autoplaySpeed: 5000,
-				dots: false,
-				arrows: true,
-				prevArrow:"<button type='button' class='slick-prev'><i class='fa fa-chevron-left' aria-hidden='true'></i></button>",
-				nextArrow:"<button type='button' class='slick-next'><i class='fa fa-chevron-right' aria-hidden='true'></i></button>"
-			};
-			
-			$sliderElement.slick(sliderOptions);
-			
-			$sliderElement.on('init reInit afterChange', function (event, slick, currentSlide, nextSlide) {
-				if(slick.slideCount == null) {
-					return false;
-				}
-				event.stopPropagation();
-				var i = (currentSlide ? currentSlide : 0) + 1;
-				$stepCount.text( "a " + stepWordStep + ' ' + i + ' ' + stepWordOf + ' ' + slick.slideCount);
-			});
-			
-		});
-		
-		// setTimeout(function(){
-		// 	// Re-Initializes Slick Slider
-		// 	var $stepCount = $('.steps-count');
-		// 	var stepWordStep = $stepCount.attr('data-word-step');
-		// 	var stepWordOf = $stepCount.attr('data-word-of');
-		// 	var $sliderElement = $('.how-to-slider');
-		// 	var sliderOptions = {
-		// 		infinite: true,
-		// 		autoplay: false,
-		// 		autoplaySpeed: 5000,
-		// 		dots: false,
-		// 		arrows: true,
-		// 		prevArrow:"<button type='button' class='slick-prev'><i class='fa fa-chevron-left' aria-hidden='true'></i></button>",
-		// 		nextArrow:"<button type='button' class='slick-next'><i class='fa fa-chevron-right' aria-hidden='true'></i></button>"
-		// 	};
-			
-		// 	$sliderElement.on('init reInit afterChange', function (event, slick, currentSlide, nextSlide) {
-		// 		if(slick.slideCount == null) {
-		// 			return false;
-		// 		}
-		// 		event.stopPropagation();
-		// 		var i = (currentSlide ? currentSlide : 0) + 1;
-		// 		$stepCount.text( stepWordStep + ' ' + i + ' ' + stepWordOf + ' ' + slick.slideCount);
-		// 	});
-			
-		// 	$sliderElement.slick(sliderOptions);	
-		// }, 1500);
-		
-		return true;
 	}
 }
 
