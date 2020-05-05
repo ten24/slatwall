@@ -3594,7 +3594,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	 						listFindNoCase("oitSale,oitDeposit",orderItem.getOrderItemType().getSystemCode()) 
 	 					){
 	 						var skuPrice = val(orderItem.getSkuPrice());
-	 						var skuPriceByCurrencyCode = val(orderItem.getSku().getPriceByCurrencyCode(orderItem.getCurrencyCode(), orderItem.getQuantity()));
+	 						
+	 						var skuPriceArgs = {
+	 							currencyCode=orderItem.getCurrencyCode(),
+	 							quantity=orderItem.getQuantity()
+	 						};
+	 						
+	 						if( !isNull( arguments.order.getAccount() ) ){
+	 							skuPriceArgs['accountID'] = arguments.order.getAccount().getAccountID();
+	 						}
+	 						
+	 						var skuPriceByCurrencyCode = val(orderItem.getSku().getPriceByCurrencyCode( argumentCollection=skuPriceArgs ));
 							
 							if(skuPrice != skuPriceByCurrencyCode) {
 		 						orderItem.setPrice(skuPriceByCurrencyCode);
