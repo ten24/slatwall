@@ -189,7 +189,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public any function processOrderImportBatch_Process(required any orderImportBatch){
-		var placedOrders = -1;
+		var placedOrders = 0;
 		for(var orderImportBatchItem in arguments.orderImportBatch.getOrderImportBatchItems()){
 
 			//Create Order
@@ -265,9 +265,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			)
 		}
 		
-		arguments.orderImportBatch.setOrderImportBatchStatusType(getTypeService().getTypeBySystemCode('oibstProcessed'));
-		arguments.orderImportBatch.setPlacedOrdersCount(placedOrders);
-		arguments.orderImportBatch.addErrors(orderImportBatchItem.getErrors());
+		
+		getDAO('OrderImportBatchDao').updateOrderImportBatch(
+				typeID = getTypeService().getTypeBySystemCode('oibstProcessed').getTypeID(), 
+				placedOrdersCount = placedOrders, 
+				orderImportBatchID=arguments.orderImportBatch.getOrderImportBatchID()
+		)
+		
 		return arguments.orderImportBatch;
 	}
 	

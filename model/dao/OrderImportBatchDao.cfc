@@ -59,5 +59,16 @@ Notes:
 		</cfquery>
 	</cffunction>
 	
+	<cffunction name="updateOrderImportBatch" >
+		<cfargument name="typeID" type="string" required="true" />
+		<cfargument name="orderImportBatchID" type="string" required="true" />
+		<cfargument name="placedOrdersCount" type="numeric" default="" />
+		<cfquery name="local.orderItemCount">
+			    UPDATE sworderimportbatch
+			    set orderimportbatchstatustypeid = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.typeID#" />, placedOrdersCount = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.placedOrdersCount#" />
+			    WHERE orderimportBatchid = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderImportBatchID#" />
+		</cfquery>
+	</cffunction>
+	
 </cfcomponent>
 
