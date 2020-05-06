@@ -235,14 +235,12 @@
 			        						</div>
 				        				</div>
 				        				
-				        				<span class="steps-count" 
-				        				      data-word-step="{{monatProductModal.productHowto.rbkey.step}}" 
-				        				      data-word-of="{{monatProductModal.productHowto.rbkey.of}}"></span>
+				        				<span class="steps-count"></span>
 				        			</div>
 				        			
 				        			<div ng-if="monatProductModal.productDetails.videoUrl" 
 				        				 class="video-block" 
-				        				 style="background: url('{{monatProductModal.productDetails.productHowVideoImage}}'); background-size: cover;">
+				        				 ng-style="{ 'background': 'url(' + monatProductModal.productDetails.productHowVideoImage + ')', 'background-size': 'cover' } ;">
 				        				
 				        				<div class="video-details">
 			            					<span class="play-video-button" data-featherlight="#how-to-video-lightbox">
@@ -252,9 +250,7 @@
 			            						 class="img-box">
 												<img ng-src="{{monatProductModal.productDetails.productVideoBackgroundImage}}" alt=""> 
 											</div>
-			                        		<h6 ng-if="monatProductModal.productDetails.videoTitle">
-			                        			{{monatProductModal.productDetails.videoTitle}}
-		                        			</h6>	
+			                        		<h6 ng-if="monatProductModal.productDetails.videoTitle" ng-bind="monatProductModal.productDetails.videoTitle"></h6>	
 		                        		    <span ng-if="monatProductModal.productDetails.videoLength" class="time">
 		                        		    	{{monatProductModal.productDetails.videoLength}}
 	                        		    	</span>
@@ -262,7 +258,7 @@
 				        				
 				        				<div class="video-lightbox" 
 				        				     id="how-to-video-lightbox" 
-				        				     style="padding-top: {{monatProductModal.videoRatio}}%; width: {{monatProductModal.productDetails.videoWidth}}px">
+				        				     ng-style="{ 'padding-top': monatProductModal.videoRatio + '%', 'width': monatProductModal.productDetails.videoWidth + 'px' } ">
 				        					
 			                    			<iframe
 												frameborder="0" 
@@ -277,8 +273,8 @@
 				        			
 				        		</div>
 				        	</div>
-				        	<div class="how-to-use__background-image" style="background-image: url('{{monatProductModal.productDetails.productHowBackgroundImage}}')"></div>
-						</div>	
+				        	<div class="how-to-use__background-image" ng-style="{ 'background-image': 'url(' + monatProductModal.productDetails.productHowBackgroundImage  + ')' } "></div>
+						</div>
 						
 					</section>
 					
