@@ -528,14 +528,18 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				if( structKeyExists(responseData.gatewayResponse, 'result') ){
 					arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.result", message="#responseData.gatewayResponse.result#");
 				}
-				if (!isNull(responseData.gatewayResponse.batchRef)){
+				if( !isNull(responseData.gatewayResponse.batchRef) ){
 					arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.batchRef", message="#responseData.gatewayResponse.batchRef#");
 				}
 				if( structKeyExists(responseData.gatewayResponse, 'refNumber') ){
 					arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.refNumber", message="#responseData.gatewayResponse.refNumber#");
 				}
-				arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.gatewayName", message="#responseData.gatewayResponse.gatewayName#");
-				arguments.responseBean.addMessage(messageName="nexio.cardNumber", message="#responseData.card.cardNumber#");
+				if( !isNull(responseData.gatewayResponse.gatewayName) ){
+					arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.gatewayName", message="#responseData.gatewayResponse.gatewayName#");
+				}
+				if( !isNull(responseData.card.cardNumber) ){
+					arguments.responseBean.addMessage(messageName="nexio.cardNumber", message="#responseData.card.cardNumber#");
+				}
 			
 			
 			} 

@@ -148,8 +148,12 @@ component accessors="true" output="false" extends="HibachiService" {
 				}
 			}, true, maxThreads);
 			
-			if(arrayLen(entityQueueIDsToBeDeletedArray)){
-				deleteEntityQueueItems(arrayToList(entityQueueIDsToBeDeletedArray));
+			var cleanEntityQueueIDsToBeDeletedArray = entityQueueIDsToBeDeletedArray.filter(function(item){
+			    return len(item);
+			});
+			
+			if(arrayLen(cleanEntityQueueIDsToBeDeletedArray)){
+				deleteEntityQueueItems(arrayToList(cleanEntityQueueIDsToBeDeletedArray));
 			}
 
 		}
