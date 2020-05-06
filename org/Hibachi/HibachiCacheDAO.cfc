@@ -98,6 +98,19 @@ component extends="HibachiDAO" {
 		queryService.execute(sql=sql);
 	}  
 
+	public void function updateServerInstanceClusterName(required any serverInstance, required any clusterName){
+		var queryService = new query();
+		queryService.addParam(name='clusterName', value='#arguments.clusterName#', CFSQLTYPE='cf_sql_varchar');
+		queryService.addParam(name='serverInstanceID', value='#arguments.serverInstance.getServerInstanceID()#', CFSQLTYPE='cf_sql_varchar');
+			
+		var sql =	"UPDATE SwServerInstance
+					SET serverInstanceClusterName = :clusterName
+					WHERE serverInstanceID = :serverInstanceID
+					";
+						
+		queryService.execute(sql=sql);
+	}  
+
 	public void function deleteStaleServerInstance(){
 		var queryService = new query();
 		queryService.addParam(name='datetimebefore', value='#DateAdd("s",-60,now())#', CFSQLTYPE='cf_sql_timestamp');

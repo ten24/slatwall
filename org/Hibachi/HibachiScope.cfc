@@ -156,7 +156,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		var env = createObject( "java", "java.lang.System" ).getENV();
 		
 		// if hostname (dockerid) not available return
-		if(isNull(env['hostname']) || !len(env['hostname'])){
+		if(isNull(env['HOSTNAME']) || !len(env['HOSTNAME'])){
 			var port = '';
 			setApplicationValue("instancePort", port);
 			return port;
@@ -169,7 +169,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 			httpService.setUrl("172.17.0.1:51678/v1/tasks?dockerid=#env['HOSTNAME']#");
 			result = httpService.send().getPrefix();
 	
-			if (result.fileContent != "Connection Timeout" and result.fileContent != "Connection Failure"){
+			if (result.fileContent == "Connection Timeout" || result.fileContent == "Connection Failure"){
 				var port = '';
 				setApplicationValue("instancePort", port);
 				return port;
