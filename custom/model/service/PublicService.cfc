@@ -509,6 +509,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             accountPaymentMethod.setAccount( getHibachiScope().getAccount() );
             accountPaymentMethod.setPaymentMethod( paymentMethod );
             accountPaymentMethod.setProviderToken( responseBean.getProviderToken() );
+            accountPaymentMethod.setCurrencyCode( getHibachiScope().cart().getCurrencyCode() );
             accountPaymentMethod = getService('AccountService').saveAccountPaymentMethod(accountPaymentMethod);
 
             if(accountPaymentMethod.hasErrors()){
