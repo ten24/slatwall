@@ -535,7 +535,9 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 					arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.refNumber", message="#responseData.gatewayResponse.refNumber#");
 				}
 				arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.gatewayName", message="#responseData.gatewayResponse.gatewayName#");
-				arguments.responseBean.addMessage(messageName="nexio.cardNumber", message="#responseData.card.cardNumber#");
+				if(structKeyExists(responseData.card,'cardNumber')){
+					arguments.responseBean.addMessage(messageName="nexio.cardNumber", message="#responseData.card.cardNumber#");
+				}
 			
 			
 			} 
