@@ -748,26 +748,8 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 	public numeric function getFulfillmentHandlingFeeTotal() {
 		var handlingFeeTotal = 0;
 		for(var i=1; i<=arrayLen(getOrderFulfillments()); i++) {
-			
-			// Include any handling fees associated with shipping method rate via settings (but always requires a third party shipping account identifier?)
-			if(!isNull(getOrderFulfillments()[i].getThirdPartyShippingAccountIdentifier()) && len(getOrderFulfillments()[i].getThirdPartyShippingAccountIdentifier())){
-				if(
-					(
-						!isNull(getOrderFulfillments()[i].getShippingMethodRate()) 
-						&& getOrderFulfillments()[i].getShippingMethodRate().setting('shippingMethodRateHandlingFeeFlag')
-					) 
-					|| getService('SettingService').getSettingValue('shippingMethodRateHandlingFeeFlag')
-				){
-					handlingFeeTotal = getService('HibachiUtilityService').precisionCalculate(handlingFeeTotal + getOrderFulfillments()[i].getHandlingFee());
-				}
-				continue;
-				
-			// Include any manual handling fees
-			} else if (getOrderFulfillments()[i].getManualHandlingFeeFlag()) {
-				handlingFeeTotal = getService('HibachiUtilityService').precisionCalculate(handlingFeeTotal + getOrderFulfillments()[i].getHandlingFee());
-			}
+			handlingFeeTotal = getService('HibachiUtilityService').precisionCalculate(handlingFeeTotal + getOrderFulfillments()[i].getHandlingFee());
 		}
-		
 		return handlingFeeTotal;
 	}
 
