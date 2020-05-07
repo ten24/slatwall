@@ -182,6 +182,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
  property name="productIngredient3" cfc="Type" fieldtype="many-to-one" fkcolumn="productIngredient3ID" hb_optionsSmartListData="f:parentType.typeID=2c9180846b8edd11016b8fe51f210032";
  property name="productIngredient4" cfc="Type" fieldtype="many-to-one" fkcolumn="productIngredient4ID" hb_optionsSmartListData="f:parentType.typeID=2c9180846b8edd11016b8fe51f210032";
  property name="productIngredient5" cfc="Type" fieldtype="many-to-one" fkcolumn="productIngredient5ID" hb_optionsSmartListData="f:parentType.typeID=2c9180846b8edd11016b8fe51f210032";
+ property name="productKeywords" ormtype="string";
  property name="hairConcernType" hb_attributeID="2c9380846ab9f798016aba7739ea000e" ormtype="string" hb_formatType="multiselect" hb_formFieldType="select";//CUSTOM PROPERTIES END
 	public any function getNextDeliveryScheduleDate(){
 		if(!structKeyExists(variables,'nextDeliveryScheduleDate')){
