@@ -262,7 +262,7 @@ class MonatCheckoutController {
 								    return;
 								}
 								
-								that.publicService.doAction('addOrderPayment', {accountPaymentMethodID: response.newPayPalPaymentMethod,
+								that.publicService.doAction('addOrderPayment', {accountPaymentMethodID: response.newPayPalPaymentMethod.accountPaymentMethodID,
 									"copyFromType":"accountPaymentMethod",
 									"paymentIntegrationType":"braintree",
 									"newOrderPayment.paymentMethod.paymentMethodID": response.paymentMethodID,
