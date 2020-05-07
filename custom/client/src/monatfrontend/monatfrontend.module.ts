@@ -29,8 +29,9 @@ import { MonatOrderItems } from "./components/monat-order-items";
 import { MaterialTextarea } from "./components/material-textarea";
 import { ObserveEvent } from "./components/observe-event";
 
+import { WishlistEditModal   } from "./components/wishlist-edit-modal";
+import { WishlistShareModal  } from "./components/wishlist-share-modal";
 import { WishlistDeleteModal } from "./components/wishlist-delete-modal";
-import { WishlistEditModal } from "./components/wishlist-edit-modal";
 
 import { SWFReviewListing } from "./components/swfreviewlisting";
 import { SWFWishlist } from "./components/swfwishlist";
@@ -124,8 +125,9 @@ var monatfrontendmodule = angular
 	.directive("sponsorSearchSelector", SponsorSearchSelector.Factory())
 	.directive("paginationController", SWFPagination.Factory())
 	.directive("monatFlexshipDeleteModal", MonatFlexshipDeleteModal.Factory())
-	.directive("wishlistDeleteModal", WishlistDeleteModal.Factory())
 	.directive("wishlistEditModal", WishlistEditModal.Factory())
+	.directive("wishlistShareModal", WishlistShareModal.Factory())
+	.directive("wishlistDeleteModal", WishlistDeleteModal.Factory())
 	.directive("addressDeleteModal", AddressDeleteModal.Factory())
 
 	.directive("swfReviewListing", SWFReviewListing.Factory())

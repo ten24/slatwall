@@ -1,0 +1,73 @@
+<!---- Share wishlist name modal --->
+<div class="modal using-modal-service" id="share-wishlist" tabindex="-1" role="dialog" aria-labelledby="share-wishlist" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content p-0">
+			<form 
+				swf-form 
+				ng-submit="swfForm.submitForm()" 
+				data-method="shareWishlist" 
+				data-after-submit-event-name="myAccountWishlistShared" 
+				ng-model="wishlistShareModal.wishList">
+				
+				<div class="modal-header nameModal pb-3 bg-primary">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<i class="fas text-white fa-times"></i>
+					</button>
+					
+					<p class="text-white h6 mb-0" sw-rbKey="'frontend.blog.share'"> </p>
+				</div>
+				
+				<div class="modal-body row w-100">
+					<div class="col-2 align-self-center">
+						<span>
+							<i class="fa fa-envelope fa-2x mx-auto"></i>
+						</span>
+					</div>
+					
+					<input 
+						type="hidden" 
+						id="orderTemplateID" 
+						name="orderTemplateID"  
+						class="form-control success" 
+						ng-model="wishlistShareModal.wishlist.value"
+					>
+
+                    <div class="material-field mx-auto col-10">
+						<input 
+							id="receiverEmailAddress" 
+							type="text" 
+							name="receiverEmailAddress" 
+							class="form-control success" 
+							ng-model="wishlistShareEmail" 
+							swvalidationdatatype="email" 
+							swvalidationrequired="true"
+						>
+						<label for="receiverEmailAddress">
+							<span sw-rbkey="'frontend.marketPartner.email'"></span>
+						</label>
+						<sw:SwfErrorDisplay propertyIdentifier="receiverEmailAddress" />
+                    </div>
+				</div>
+				
+				
+				<div class="modal-footer">
+					<button type="submit"  
+						class="btn bg-primary save-btn px-5 py-3"
+						sw-rbKey="'frontend.marketPartner.save'" 
+						ng-class="{loading: swfForm.loading}"
+						ng-disabled="swfForm.loading"
+					>
+					<button type="button" 
+						class="btn bg-primary py-3" 
+						data-dismiss="modal" 
+						sw-rbkey="'frontend.wishlist.cancel'"
+						ng-disabled="swfForm.loading"
+						ng-click="wishlistShareModal.close()"
+					>
+					</button>
+				</div>
+				
+			</form>				
+		</div>
+	</div>
+</div>

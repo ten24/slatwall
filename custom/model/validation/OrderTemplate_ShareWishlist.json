@@ -1,7 +1,7 @@
 {
 	"properties": {
 		"receiverEmailAddress": [
-			{ "required": true, "databaseType": "email" }
+			{ "required": true, "dataType": "email" }
 		]
 	}
 }

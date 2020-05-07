@@ -270,9 +270,14 @@ component extends="Slatwall.model.service.OrderService" {
 		return arguments.orderTemplate;
 	}
 
-	public any function processOrderTemplate_share(required any orderTemplate, any processObject, struct data={}){
+	public any function processOrderTemplate_shareWishlist(required any orderTemplate, any processObject, struct data={}){
 
-		//TODO: send email
+		this.sendEmail(
+			emailAddress = arguments.processObject.getReceiverEmailAddress(), 
+			emailTemplateID = "", //?? which-template 
+			emailTemplateObject = arguments.orderTemplate
+		);
+		
 		return arguments.orderTemplate; 		
 	}
 
