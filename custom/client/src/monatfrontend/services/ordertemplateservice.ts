@@ -330,6 +330,14 @@ export class OrderTemplateService {
 
 		return this.publicService.doAction("addItemAndCreateWishlist", data);
 	};
+	
+	public shareWishlist(orderTemlateID: string, receiverEmailAddress: string ){
+		return this.publicService.doAction("shareWishlist", {
+			'orderTemlateID': orderTemlateID, 
+			'receiverEmailAddress': receiverEmailAddress,
+			'returnJsonObjects': ''
+		});
+	}
 
 	public deleteOrderTemplateItem = (orderTemplateItemID) => {
 		return this.publicService.doAction("deleteOrderTemplateItem", {

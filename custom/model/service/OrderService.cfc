@@ -224,6 +224,58 @@ component extends="Slatwall.model.service.OrderService" {
 		return arguments.orderTemplate;
     }
 
+
+	public array function getOrderTemplateEventOptions(){
+		var eventOptions = super.getOrderTemplateEventOptions(); 
+
+		var customEvents = [
+			{
+				'name': 'WishList - After Wishlist AddItem Success | afterWishlistAddItemSuccess',
+				'value': 'afterWishlistAddItemSuccess',
+				'entityName': 'OrderTemplate' 
+			}
+		]
+
+		arrayAppend(eventOptions, customEvents, true); 
+
+		return eventOptions;  
+	} 
+
+	public any function processOrderTemplate_addOrderTemplateItem(required any orderTemplate, required any processObject, required struct data={}){
+		
+		arguments.orderTemplate = super.processOrderTemplate_addOrderTemplateItem(argumentCollection = arguments);
+		
+		// if it's a wishlist announce a custom event
+		if( 
+			!isNull(arguments.orderTemplate.getOrderTemplateType()) 
+			&& arguments.orderTemplate.getOrderTemplateType().getSystemCode() == 'ottWishList' 
+		){
+			
+			var invokeArguments = {};
+			invokeArguments[ "1" ] = arguments.orderTemplate;//compatibility with on missing method
+			invokeArguments[ "data" ] = arguments.data;
+			invokeArguments[ 'orderTemplate' ] = arguments.orderTemplate;
+			invokeArguments[ "processObject" ] = arguments.processObject;
+			invokeArguments.entity = arguments.orderTemplate;
+			
+			
+			if(!arguments.orderTemplate.hasErrors()){
+				getHibachiEventService().announceEvent("afterWishlistAddItemSuccess", invokeArguments);
+			} 
+			else {
+				logHibachi("WishList has errors after addOrderItem, #SerializeJson( arguments.orderTemplate.getErrors() )#");
+			}
+		}
+		
+		return arguments.orderTemplate;
+	}
+
+	public any function processOrderTemplate_share(required any orderTemplate, any processObject, struct data={}){
+
+		//TODO: send email
+		return arguments.orderTemplate; 		
+	}
+
 	public any function processOrder_create(required any order, required any processObject, required struct data={}) {
 	
 		arguments.order = super.processOrder_create(argumentCollection=arguments);

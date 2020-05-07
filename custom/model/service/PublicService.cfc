@@ -652,15 +652,41 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     }
     
     public any function addItemAndCreateWishlist( required struct data ) {
-        var orderTemplate = this.createWishlist(argumentCollection=arguments);
-        var orderTemplateItem = getService("OrderService").newOrderTemplateItem();
-        orderTemplateItem.setOrderTemplate(orderTemplate);
-        var sku = getService("SkuService").getSku(arguments.data['skuID']);
-        orderTemplateItem.setSku(sku);
-        orderTemplateItem.setQuantity(arguments.data['quantity']);
-        //add item to template
+        var orderTemplate = this.createWishlist(argumentCollection= arguments);
+        
+        if( !orderTemplate.hasErrors() ){
+            getHibachiScope().flushORMSession();
+            
+            arguments.data['ordertemplateID'] = orderTemplate.getOrderTemplateID();
+            arguments.data['returnOrderTemplateFlag'] = false;
+            this.addOrderTemplateItem(arguments.data)
+        }
+        
+        this.addErrors(arguments.data, orderTemplate.getErrors());
+        getHibachiScope().addActionResult( "public:orderTemplate.addItemAndCreateWishlist", orderTemplate.hasErrors() );
+    }
+    
+    
+    public any function shareWishlist( required struct data ) {
+
+        param name="arguments.data.orderTemplateID" default="";
+        param name="arguments.data.receiverEmailAddress" default="";
+        
+        var orderTemplate = getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
+        if(IsNull(orderTemplate)){
+            return;
+        }
+
+        var processObject = orderTemplate.getProcessObject("shareWishlist");
+
+		processObject.setReceiverEmailAddress(arguments.data.receiverEmailAddress); 
+        orderTemplate = this.getOrderService().processOrderTemplate(orderTemplate, processObject, "shareWishlist");
+        
+        this.addErrors(arguments.data, orderTemplate.getErrors());
+        getHibachiScope().addActionResult( "public:orderTemplate.shareWishlist", orderTemplate.hasErrors() );
         
     }
+
 
     public void function updatePrimaryPaymentMethod(required any data){
         param name="data.paymentMethodID" default="";
