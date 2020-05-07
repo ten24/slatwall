@@ -21,6 +21,7 @@ class MonatProductModalController {
 	public muraValues:string;
 	public trustedVideoURL:string;
 	public videoRatio;
+	public flexshipHasAccount:boolean;
 	
 	//@ngInject
 	constructor(
@@ -95,15 +96,29 @@ class MonatProductModalController {
 
 	public addToFlexship = () => {
 		this.loading = true;
+		let extraProperties = "canPlaceOrderFlag,purchasePlusTotal,appliedPromotionMessagesJson,calculatedOrderTemplateItemsCount";
+		if(!this.orderTemplateService.cartTotalThresholdForOFYAndFreeShipping){
+			extraProperties += ',cartTotalThresholdForOFYAndFreeShipping';
+		}
+		
+		let data = {
+			optionalProperties: extraProperties,
+			saveContext: 'upgradeFlow', 
+			setIfNullFlag: false, 
+			nullAccountFlag: this.flexshipHasAccount ? false : true
+		}
+
 		this.orderTemplateService.addOrderTemplateItem(
 			this.product.skuID, 
-			this.orderTemplateID,
-			this.quantityToAdd
+			this.orderTemplateService.currentOrderTemplateID,
+			this.quantityToAdd,
+			false,
+			data
 		)
 		.then((data) => {
 			
 			this.monatAlertService.success(
-				this.rbkeyService.rbKey("alert.flexship.addProductsucessfull")
+				this.rbkeyService.rbKey("alert.flexship.addProductSuccessful")
 			);
 			this.closeModal();
 		})
@@ -147,6 +162,7 @@ class MonatProductModalController {
 	}
 }
 
+
 class MonatProductModal {
 	public restrict: string;
 	public templateUrl: string;
@@ -158,6 +174,7 @@ class MonatProductModal {
 		product: '<',
 		type: '<',
 		orderTemplateID: '<?',
+		flexshipHasAccount:'<?',
 		close: '=', //injected by angularModalService
 	};
 	public controller = MonatProductModalController;

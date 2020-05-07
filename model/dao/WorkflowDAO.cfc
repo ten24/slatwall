@@ -131,5 +131,15 @@ Notes:
 		</cfquery>
 	</cffunction>
 	
+	<cffunction name="getExclusiveWorkflowTriggersInvocationClusters">
+		<cfquery name="local.rs">
+			SELECT allowedInvocationCluster FROM SwWorkflowTrigger 
+			WHERE allowedInvocationCluster IS NOT NULL AND allowedInvocationCluster != ''
+			AND exclusiveInvocationClusterFlag = 1
+		</cfquery>
+		
+		<cfreturn valueList(local.rs.allowedInvocationCluster) />
+	</cffunction>
+	
 </cfcomponent>
 

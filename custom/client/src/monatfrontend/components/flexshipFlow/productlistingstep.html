@@ -39,13 +39,58 @@
 	            </div>
 	        </div>
 	    </div>
-	    <!---PENDING CLIENT FEEDBACK: FILTERS GO HERE --->
-	    <div class="col">
-	    
-	    </div>
-	    <div class="col">
-	        
-	    </div>
+        <div sw-click-outside="slatwall.showHairFilter = false" class="filter-col">
+            <div>
+                <div class="text-white">
+                   <div ng-click="slatwall.showHairFilter = !slatwall.showHairFilter; slatwall.showSkinFilter = false">  
+                        <a href="##" class="my-0 text-white"> {{ productController.hairProductFilter.name ? 'Hair: '+productController.hairProductFilter.name : 'Shop Hair' }}
+                            <i 
+                                class="far"
+                                ng-class="{
+                                    'fa-angle-down' : !slatwall.showHairFilter,
+                                    'fa-angle-up' : slatwall.showHairFilter
+                                }"
+                            ></i>
+                        </a>  
+                    </div>
+                    <div 
+                        ng-style="slatwall.showHairFilter && {'display':'block'} || {'display': 'none'}"
+                        class="dropdown-menu rounded-0"
+                    >
+                        <a ng-click="slatwall.showHairFilter = !slatwall.showHairFilter" class="close-filters desktop-hide">Close <i class="fal fa-times"></i></a>
+                        <a ng-click="productController.getProducts(filter,'hair'); slatwall.showHairFilter = false" class="dropdown-item" ng-repeat="filter in flexshipFlow.monatService.hairFilters">
+                            {{filter.name}}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div sw-click-outside="slatwall.showSkinFilter = false" class="filter-col skin">
+            <div>
+                <div class="text-white">
+                   <div ng-click="slatwall.showSkinFilter = !slatwall.showSkinFilter; slatwall.showHairFilter = false">  
+                        <a href="##" class="my-0 text-white"> {{ productController.skinProductFilter.name ?'Skin: '+productController.skinProductFilter.name : 'Shop Skin' }}
+                            <i 
+                                class="far"
+                                ng-class="{
+                                    'fa-angle-down' : !slatwall.showSkinFilter,
+                                    'fa-angle-up' : slatwall.showSkinFilter,
+                                }"
+                            ></i>
+                        </a>  
+                    </div>
+                    <div 
+                        ng-style="slatwall.showSkinFilter && {'display':'block'} || {'display': 'none'}"
+                        class="dropdown-menu rounded-0"
+                    >
+                        <a ng-click="slatwall.showSkinFilter = !slatwall.showSkinFilter" class="close-filters desktop-hide"><span sw-rbKey="'frontend.modal.closeButton'"></span> <i class="fal fa-times"></i></a>
+                        <a ng-click="productController.getProducts(filter,'skin'); slatwall.showSkinFilter = false;" class="dropdown-item" ng-repeat="filter in flexshipFlow.monatService.skinFilters">
+                            {{filter.name}}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
 	</div>
 
 	<div class="container products-listing-section">  
@@ -58,12 +103,13 @@
 			>
 				<monat-product-card 
 					site-code="#local.siteCode#" 
-					currency-code="slatwall.cart.currencyCode" 
+					currency-code="{{productListingStep.orderTemplateService.mostRecentOrderTemplate.currencyCode}}" 
 					all-products="productController.productList" 
 					type="flexship"
 					order-template="productListingStep.orderTemplateService.currentOrderTemplateID"
 					product="item" 
 					index="{{$index}}"
+					flexship-type="'flexshipHasAccount'"
 				></monat-product-card>
 			</div> 
 		</div>

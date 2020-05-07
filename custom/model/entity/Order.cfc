@@ -72,6 +72,7 @@ component {
     property name="isLockedInProcessingOneFlag" persistent="false";
     property name="isLockedInProcessingTwoFlag" persistent="false";
 	property name="purchasePlusTotal" persistent="false";
+	property name="upgradeOrEnrollmentOrderFlag" persistent="false";
 	
     public numeric function getPersonalVolumeSubtotal(){
         return getCustomPriceFieldSubtotal('personalVolume');
@@ -543,5 +544,21 @@ component {
 	    }
 	    return true;
 	 }
+	 
+	 public boolean function getUpgradeOrEnrollmentOrderFlag(){
+	 	 
+		if (this.getUpgradeFlag()) {
+			return true;
+		}
+		
+		if( 
+			cart.hasMonatOrderType() && 
+			ListFindNoCase("motMpEnrollment,motVipEnrollment", cart.getMonatOrderType().getTypeCode()) 
+		){
+			return true;
+		}
+		
+		return false;
+	}
 	
 }

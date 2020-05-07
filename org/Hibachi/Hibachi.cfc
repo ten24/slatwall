@@ -58,6 +58,7 @@ component extends="framework.one" {
 	variables.framework.diEngine='none';
 	variables.framework.diOverrideAllowed=true;
 	variables.framework.isAwsInstance=false;
+	variables.framework.isECSInstance=false;
 
 	/* TODO: add solution to api routing for Rest api*/
 	variables.framework.routes = [
@@ -110,6 +111,8 @@ component extends="framework.one" {
 	variables.framework.hibachi.skipDbData = false;
 	variables.framework.hibachi.useServerInstanceCacheControl=true;
 	variables.framework.hibachi.availableEnvironments = ['local','development','production'];
+	variables.framework.hibachi.cluster = {};
+	variables.framework.hibachi.availableClusters = ['web','admin','task'];
 	
 	// Allow For Application Config
 	try{include "../../config/configFramework.cfm";}catch(any e){}
@@ -136,6 +139,24 @@ component extends="framework.one" {
 		return 'production';
 	}
 	
+	public string function getCluster() {
+		if( isServerNameAnIP() ){
+			return '';
+		}
+		for(var i = 1; i <= arrayLen(variables.framework.hibachi.availableClusters); i++){
+			if( structKeyExists(variables.framework.hibachi.cluster, '#variables.framework.hibachi.availableClusters[i]#UrlPattern')){
+				var currentClusterUrlPattern = variables.framework.hibachi.cluster['#variables.framework.hibachi.availableClusters[i]#UrlPattern'];
+				if(len(currentClusterUrlPattern) && REFindNoCase(currentClusterUrlPattern,cgi.server_name)){
+					return  variables.framework.hibachi.availableClusters[i];
+				}
+			}
+		}
+		return 'web';
+	}
+	
+	public boolean function isServerNameAnIP() {
+		return REFindNoCase('^localhost$', cgi.server_name) || REFindNoCase('^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$', cgi.server_name);	
+	}
 	
 	public string function getDatasource(){
 		return this.datasource.name;
@@ -306,10 +327,6 @@ component extends="framework.one" {
 		}
 	}
 	
-	public boolean function isServerInstanceCacheExpired() {
-		return getHibachiScope().getService('hibachiCacheService').isServerInstanceCacheExpired(server[variables.framework.applicationKey].serverInstanceKey, getHibachiScope().getServerInstanceIPAddress());
-	}
-	
 	public void function setupGlobalRequest() {
 
 		var httpRequestData = GetHttpRequestData();
@@ -320,31 +337,40 @@ component extends="framework.one" {
 		}
 		
         getHibachiScope().setIsAwsInstance(variables.framework.isAwsInstance);
+        getHibachiScope().setIsECSInstance(variables.framework.isECSInstance);
 		
 		// Verify that the application is setup
 		if(
-			variables.framework.hibachi.useServerInstanceCacheControl &&
-			getHibachiScope().getApplicationValue('applicationEnvironment') != 'local' &&
+			getServerInstanceControlEnabled() &&
 			getHibachiScope().hasApplicationValue("initialized") && 
 			getHibachiScope().getApplicationValue("initialized")
 		){
-			if( isServerInstanceCacheExpired() ) {
+			var serverInstance = getHibachiScope().getService('hibachiCacheService').getServerInstanceByServerInstanceKey(server[variables.framework.applicationKey].serverInstanceKey);
+			if( serverInstance.getServerInstanceExpired() ) {
 				writeLog(file="#variables.framework.applicationKey#", text="General Log - Server instance cache expired, starting reload for instance #server[variables.framework.applicationKey].serverInstanceKey#");
 				setupRequestDefaults();
 				setupApplication(reloadByServerInstance=true);
 
-			}else if(getHibachiScope().getService('hibachiCacheService').isServerInstanceSettingsCacheExpired(server[variables.framework.applicationKey].serverInstanceKey, getHibachiScope().getServerInstanceIPAddress())){
+			}else if( serverInstance.getSettingsExpired() ){
 			
 				writeLog(file="#variables.framework.applicationKey#", text="General Log - setting cache expired, resetting setting cache for instance #server[variables.framework.applicationKey].serverInstanceKey#");
-				getBeanFactory().getBean('hibachiCacheService').resetCachedKeyByPrefix('setting',true);
+				getHibachiScope().getService('hibachiCacheService').resetCachedKeyByPrefix('setting',true);
 				
 				//Reset Permission Cache
-				getBeanFactory().getBean('hibachiCacheService').resetPermissionCache();
+				getHibachiScope().getService('hibachiCacheService').resetPermissionCache();
 				
-				var serverInstance = getBeanFactory().getBean('hibachiCacheService').getServerInstanceByServerInstanceKey(server[variables.framework.applicationKey].serverInstanceKey);
 				serverInstance.setSettingsExpired(false);
-				getBeanFactory().getBean('hibachiCacheService').saveServerInstance(serverInstance);
+				getHibachiScope().getService('hibachiCacheService').saveServerInstance( serverInstance );
 			}
+			// if cluster is not set yet, try to set that
+			if( isNull(serverInstance.getServerInstanceClusterName()) || serverInstance.getServerInstanceClusterName() == '' ){
+				var clusterName = getCluster();
+				if(clusterName != ''){
+					getHibachiScope().setApplicationValue("applicationCluster", clusterName);
+					getHibachiScope().getService('hibachiCacheDao').updateServerInstanceClusterName( serverInstance, clusterName );
+				}
+			}
+			getHibachiScope().getService('hibachiCacheDao').updateServerInstanceLastRequestDateTime( serverInstance );
 		}
 		
 		//Sets the correct site for api calls.
@@ -652,6 +678,10 @@ component extends="framework.one" {
 			&& url[variables.framework.reload] == variables.framework.password
 		);
 	}
+	
+	public boolean function getServerInstanceControlEnabled() {
+		return variables.framework.hibachi.useServerInstanceCacheControl && getHibachiScope().getApplicationValue('applicationEnvironment') != 'local';
+	}
 
 	public void function setupApplication(reloadByServerInstance=false) {
 		
@@ -678,7 +708,8 @@ component extends="framework.one" {
 
 				// check if server instance still expired
 				if(arguments.reloadByServerInstance) {
-					arguments.reloadByServerInstance = isServerInstanceCacheExpired();
+					var serverInstance = getHibachiScope().getService('hibachiCacheService').getServerInstanceByServerInstanceKey(server[variables.framework.applicationKey].serverInstanceKey);
+					arguments.reloadByServerInstance = serverInstance.getServerInstanceExpired();
 				}
 				
 				// Check again so that the qued requests don't back up
@@ -702,6 +733,7 @@ component extends="framework.one" {
 					applicationInitData["application"] = 				this;
 					applicationInitData["applicationKey"] = 			variables.framework.applicationKey;
 					applicationInitData["applicationEnvironment"] = 	getEnvironment();
+					applicationInitData["applicationCluster"] = 		getCluster();
 					applicationInitData["applicationRootMappingPath"] = this.mappings[ "/#variables.framework.applicationKey#" ];
 					applicationInitData["applicationReloadKey"] = 		variables.framework.reload;
 					applicationInitData["applicationReloadPassword"] =	variables.framework.password;
@@ -923,13 +955,12 @@ component extends="framework.one" {
 					//==================== START: UPDATE SERVER INSTANCE CACHE STATUS ========================
 
 					//only run the update if it wasn't initiated by serverside cache being expired
-					if(variables.framework.hibachi.useServerInstanceCacheControl && getHibachiScope().getApplicationValue('applicationEnvironment') != 'local'){
+					if( getServerInstanceControlEnabled() ){
 						if( hasReloadKey() ) {
-							getBeanFactory().getBean('hibachiCacheService').updateServerInstanceCache();
+							getHibachiScope().getService('hibachiCacheService').updateServerInstanceCache();
 						} else if( arguments.reloadByServerInstance ) {
-							var serverInstance = getBeanFactory().getBean('hibachiCacheService').getServerInstanceByServerInstanceKey(server[variables.framework.applicationKey].serverInstanceKey, true);
 							serverInstance.setServerInstanceExpired(false);
-							getBeanFactory().getBean('hibachiCacheService').saveServerInstance(serverInstance);
+							getHibachiScope().getService('hibachiCacheService').saveServerInstance(serverInstance);
 							getHibachiScope().flushORMSession();
 							writeLog(file="#variables.framework.applicationKey#", text="General Log - server instance cache reset completed for instance: #server[variables.framework.applicationKey].serverInstanceKey#");
 						}				
@@ -1302,6 +1333,9 @@ component extends="framework.one" {
 	} 
 
 	public void function onError(any exception, string event){
+		ORMClearSession();
+		writeLog(file="#variables.framework.applicationKey#", text="General Log - ORM Session Cleared on error");
+
 		//if something fails for any reason then we want to set the response status so our javascript can handle rest errors
 		var context = getPageContext();
 		var response = context.getResponse();

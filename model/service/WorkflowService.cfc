@@ -153,12 +153,39 @@ component extends="HibachiService" accessors="true" output="false" {
 		}
 	}
 
+	public any function runWorkflowOnAllServers() {
+		// get all active instances in the current cluster
+		var serverInstanceCollectionList = getService('HibachiService').getServerInstanceCollectionList();
+		serverInstanceCollectionList.addFilter('serverInstanceClusterName',getHibachiScope().getApplicationValue('applicationCluster'));
+		
+		var serverInstances = serverInstanceCollectionList.getRecords();
+		for (var serverInstance in serverInstances) {
+	        var offset = findNoCase('Slatwall',cgi.script_name)?'Slatwall/':'';
+			var workflowurl = 'http://#serverInstance["serverInstanceIPAddress"]#:#serverInstance["serverInstancePort"]#/#offset#?slatAction=api:workflow.executeScheduledWorkflows';
+			this.logHibachi('Invoking workflows on #workflowurl#');
+			var req = new http();
+	        req.setMethod("get");
+	        req.setUrl(workflowurl);
+	        req.setTimeOut(3);
+	        var res = req.send().getPrefix();
+		}
+	}
+	
 	public any function runAllWorkflowsByScheduleTrigger() {
 		
 		getWorkflowDAO().resetExpiredWorkflows(); 
 	
 		var workflowTriggers = getWorkflowDAO().getDueWorkflows();
+		var exclusiveInvocationClusters = getWorkflowDAO().getExclusiveWorkflowTriggersInvocationClusters();
 		for(var workflowTrigger in workflowTriggers) {
+			// make sure workflow runs on the allowed cluster
+			if( !isNull(workflowTrigger.getAllowedInvocationCluster()) && len(workflowTrigger.getAllowedInvocationCluster()) && !findNoCase(getHibachiScope().getApplicationValue('applicationCluster'), workflowTrigger.getAllowedInvocationCluster())) {
+				continue;
+			}
+			// make sure exlcusive domain is only used for those workflows
+			if( findNoCase(getHibachiScope().getApplicationValue('applicationCluster'), exclusiveInvocationClusters) && (isNull(workflowTrigger.getAllowedInvocationCluster()) || !findNoCase(workflowTrigger.getAllowedInvocationCluster(), exclusiveInvocationClusters)) ) {
+				continue;
+			}
 			runWorkflowsByScheduleTrigger(workflowTrigger);
 		}
 	}
@@ -189,7 +216,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			return arguments.workflowTrigger;
 		}
 		
-		lock name="runWorkflowsByScheduleTrigger_#getHibachiScope().getServerInstanceKey()#_#arguments.workflowTrigger.getWorkflowTriggerID()#" timeout="60" throwontimeout=false{
+		lock name="runWorkflowsByScheduleTrigger_#getHibachiScope().getServerInstanceKey()#_#arguments.workflowTrigger.getWorkflowTriggerID()#" timeout="5" throwontimeout=false{
 			//Change WorkflowTrigger runningFlag to TRUE
 			updateWorkflowTriggerRunning(workflowTrigger=arguments.workflowTrigger, runningFlag=true);
 	
@@ -503,7 +530,8 @@ component extends="HibachiService" accessors="true" output="false" {
 	
 	public any function processWorkflow_execute(required any workflow, required struct data) {
 	   
-
+		getHibachiScope().setWorkflowPopulateFlag(true);
+		
 		// Loop over all of the tasks for this workflow
 		for(var workflowTask in arguments.workflow.getWorkflowTasks()) {
 

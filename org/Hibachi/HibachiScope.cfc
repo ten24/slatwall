@@ -8,6 +8,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	property name="session" type="any";
 	property name="loggedInAsAdminFlag" type="boolean";
 	property name="publicPopulateFlag" type="boolean";
+	property name="workflowPopulateFlag" type="boolean";
 	property name="persistSessionFlag" type="boolean";
 	property name="sessionFoundNPSIDCookieFlag" type="boolean";
 	property name="sessionFoundPSIDCookieFlag" type="boolean";
@@ -21,6 +22,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	property name="auditsToCommitStruct" type="struct";
 	property name="modifiedEntities" type="array";
 	property name="isAWSInstance" type="boolean" default="0";
+	property name="isECSInstance" type="boolean" default="0";
 	property name="entityURLKeyType" type="string";
 	property name="permissionGroupCacheKey" type="string";
 	property name="entityQueueData" type="struct";
@@ -29,6 +31,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		setORMHasErrors( false );
 		setRBLocale( "en_us" );
 		setPublicPopulateFlag( false );
+		setWorkflowPopulateFlag( false );
 		setPersistSessionFlag( true );
 		setSessionFoundNPSIDCookieFlag( false );
 		setSessionFoundPSIDCookieFlag( false );
@@ -133,6 +136,64 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		}
 
 		return createObject("java", "java.net.InetAddress").localhost.getHostAddress();//returned but not cached.
+	}
+
+	public string function getServerInstancePort(){
+
+		//Check if we already have a instancePort assigned.
+		if(hasApplicationValue("instancePort")){
+			return getApplicationValue("instancePort");
+		}
+		
+		//If we are not using ecs, then assign the instance port and return it.
+		if (!getHibachiScope().getIsECSInstance() || getHibachiScope().getApplicationValue('applicationEnvironment') == 'local'){
+			var port = cgi.server_port;
+			setApplicationValue("instancePort", port);
+			return port;
+		}
+
+		// If ECS find and set port if available
+		var env = createObject( "java", "java.lang.System" ).getENV();
+		
+		// if hostname (dockerid) not available return
+		if(isNull(env['HOSTNAME']) || !len(env['HOSTNAME'])){
+			var port = '';
+			setApplicationValue("instancePort", port);
+			return port;
+		}
+		
+		try {
+			httpService = new http();
+			httpService.setTimeout(3);
+			httpService.setMethod("get");
+			httpService.setUrl("172.17.0.1:51678/v1/tasks?dockerid=#env['HOSTNAME']#");
+			result = httpService.send().getPrefix();
+	
+			if (result.fileContent == "Connection Timeout" || result.fileContent == "Connection Failure"){
+				var port = '';
+				setApplicationValue("instancePort", port);
+				return port;
+			}
+			
+			var instanceMetadata = deserializeJSON(result.fileContent);
+			if( structKeyExists(instanceMetadata, "containers") && structKeyExists(instanceMetadata["containers"][1], "ports")){
+				var ports = instanceMetadata["containers"][1]["ports"];
+				for(var port in ports) {
+					if(port["ContainerPort"] == "80"){
+						var port = port["HostPort"];
+						setApplicationValue("instancePort", port);
+						return port;
+					}
+				}
+			}
+		}catch(any e){
+			writeLog(file="#variables.framework.applicationKey#", text="General Log - Unable to get port number for instance #server[variables.framework.applicationKey].serverInstanceKey#");
+		}
+		
+		// if still no port then set to blank and exit
+		var port = '';
+		setApplicationValue("instancePort", port);
+		return port;
 	}
 
 	public any function getHibachiAuthenticationService(){

@@ -3,16 +3,20 @@
     "mapping":[
         {
           "sourceColumn":"SKUItemCode",
-          "propertyIdentifier":"skuCode"
+          "propertyIdentifier":"skuCode",
+          "key":true
         },
         {
           "sourceColumn":"SKUItemID",
           "propertyIdentifier":"remoteID",
-          "key":true,
         },
         {
           "sourceColumn":"ItemName",
-          "propertyIdentifier":"skuName",
+          "propertyIdentifier":"skuName"
+        },
+        {
+          "sourceColumn":"ItemName",
+          "propertyIdentifier":"calculatedSkuDefinition",
           "updateFlag":false
         },
         {
@@ -37,8 +41,7 @@
         },
         {
           "sourceColumn":"SalesCategoryCode",
-          "propertyIdentifier":"salesCategoryCode",
-          "updateFlag":false
+          "propertyIdentifier":"salesCategoryCode"
         },
         {
           "sourceColumn":"SAPItemCode",
@@ -63,17 +66,12 @@
           "updateFlag":false
         },
         {
-          "sourceColumn":"PRODUCTItemCode",
+          "sourceColumn":"productCode",
           "propertyIdentifier":"product.productCode",
-          "updateFlag":false
-        },
-        {
-          "sourceColumn":"SKUItemID",
-          "propertyIdentifier":"product.remoteID",
           "key":true
         },
         {
-          "sourceColumn":"ItemName",
+          "sourceColumn":"ProductName",
           "propertyIdentifier":"product.productName",
           "updateFlag":false
         },
@@ -112,25 +110,25 @@
         },
         {
           "sourceColumn":"productActiveFlag",
-          "sourceColumnDataGenerator":"1",
+          "sourceColumnDataGenerator":"0",
           "propertyIdentifier":"product.activeFlag",
           "updateFlag":false
         },
         {
           "sourceColumn":"productPublishedFlag",
-          "sourceColumnDataGenerator":"1",
+          "sourceColumnDataGenerator":"0",
           "propertyIdentifier":"product.publishedFlag",
           "updateFlag":false
         },
         {
           "sourceColumn":"skuActiveFlag",
-          "sourceColumnDataGenerator":"1",
+          "sourceColumnDataGenerator":"0",
           "propertyIdentifier":"activeFlag",
           "updateFlag":false
         },
         {
           "sourceColumn":"skuPublishedFlag",
-          "sourceColumnDataGenerator":"1",
+          "sourceColumnDataGenerator":"0",
           "propertyIdentifier":"publishedFlag",
           "updateFlag":false
         },

@@ -8,12 +8,13 @@
 				<img src="/themes/monat/assets/images/logo.svg"  alt="Monat logo">
 			</a>			
 			<div class="right-nav">
-				<div class="row justify-content-end">
+				<div class="header-cart">
 					<hybrid-cart type="monatEnrollment.type" is-enrollment="true"></hybrid-cart>
 				</div>			
 			</div>			
 		</div>
 	</div>
+			<toaster-container></toaster-container>
 	<div 
 		ng-if="
 			monatEnrollment.currentStepName == 'orderListing' 
@@ -24,25 +25,16 @@
 		<span sw-rbKey="'frontend.flexship.yourFlexshipIs'"></span> 
 		{{
 			+monatEnrollment.orderTemplateService.cartTotalThresholdForOFYAndFreeShipping - monatEnrollment.orderTemplateService.mostRecentOrderTemplate.calculatedSubTotal 
-			| swcurrency:monatEnrollment.cart.currency
+			| swcurrency: monatEnrollment.orderTemplateService.mostRecentOrderTemplate.currencyCode
 		}} 
 	
 		<span sw-rbKey="'frontend.flexship.beforeYouCanEnroll'"></span>
 	</div>
 	<div 
-		ng-if="
-			monatEnrollment.currentStepName != 'orderListing' 
-			&& monatEnrollment.vipEnrollmentThreshold - (monatEnrollment.monatService.cart.subtotal - monatEnrollment.monatService.cart.discountTotal) > 0" 
-			class="alert discount-block text-white promotion-bar-block"
+		ng-if="monatEnrollment.monatService.cart.canPlaceOrderMessage.message.length" 
+		class="alert discount-block text-white promotion-bar-block"
 	>
-
-		<span sw-rbKey="'frontend.cart.yourOrderIs'"></span> 
-		{{
-			monatEnrollment.vipEnrollmentThreshold - (monatEnrollment.monatService.cart.subtotal - monatEnrollment.monatService.cart.discountTotal)
-			| swcurrency:monatEnrollment.cart.currency
-		}} 
-	
-		<span sw-rbKey="'frontend.flexship.beforeYouCanEnroll'"></span>
+		{{monatEnrollment.monatService.cart.canPlaceOrderMessage.message}} 
 	</div>
 	<div 
 		ng-if="
@@ -75,7 +67,7 @@
 		{{monatEnrollment.orderTemplateService.lastAddedProduct.sku_skuDefinition}} 
 		<span sw-rbKey="'frontend.productListing.addToFlexship'"></span>
 	</div>
-</div>
+
 </header>
 
 
@@ -111,22 +103,50 @@
 		</div>
 		
 		<!----VIP step icon indicators --->
-		<div ng-if=" monatEnrollment.type=='vip' || monatEnrollment.type=='vipUpgrade'" class="step-status row w-50 text-center align-items-end">
+		<div ng-if=" monatEnrollment.type=='vip' || monatEnrollment.type=='vipUpgrade'" class="vip-steps step-status row text-center align-items-end">
 			<div 
 				class="col mt-1"
-				ng-style="{ 'opacity' : (monatEnrollment.currentStepName == 'todaysOrder' || monatEnrollment.currentStepName == undefined || monatEnrollment.currentStepName == 'ofy') ? '100%' : '50%' }"
+				ng-style="{ 'opacity' : (monatEnrollment.currentStepName == 'todaysOrder' || monatEnrollment.currentStepName == undefined ) ? '100%' : '50%' }"
 			>
-				<i class="far fa-shopping-basket"></i>	
+				<i 
+					class="far"
+					ng-class="monatEnrollment.stepClassArray.indexOf(monatEnrollment.currentStepName) > monatEnrollment.stepClassArray.indexOf('todaysOrder') ? 'fa-check' : 'fa-shopping-basket' "
+				></i>	
 				<p class="mb-1" sw-rbkey="'frontend.cart.todaysOrder'"></p>
+			</div>
+			
+			<div 
+				class="col mt-1"
+				ng-style="{ 'opacity' : (monatEnrollment.currentStepName == 'ofy') ? '100%' : '50%' }"
+			>
+				 <i 
+					class="far" 
+					ng-class="monatEnrollment.stepClassArray.indexOf(monatEnrollment.currentStepName) > monatEnrollment.stepClassArray.indexOf('ofy') ? 'fa-check' : 'fa-gift' "
+				></i>	
+				<p class="mb-1" sw-rbkey="'frontend.flexshipFlow.onlyForYou'"></p>
+			</div>
+			
+			<div 
+				class="col mt-1"
+				ng-style="{ 'opacity' : (monatEnrollment.currentStepName == 'subscription') ? '100%' : '50%' }"
+			>
+				<i 
+					class="far"
+					ng-class="monatEnrollment.stepClassArray.indexOf(monatEnrollment.currentStepName) > monatEnrollment.stepClassArray.indexOf('subscription') ? 'fa-check' : 'fa-calendar-plus' "
+				></i>	
+				<p class="mb-1" sw-rbkey="'frontend.flexship.frequency'"></p>
 			</div>
 			
 			<div 
 				class="col"
 				ng-style="{ 
-					'opacity' : (monatEnrollment.currentStepName == 'shopIntro' || monatEnrollment.currentStepName == 'orderListing' ||  monatEnrollment.currentStepName == 'subscription' ) ? '100%' : '50%' 
+					'opacity' : (monatEnrollment.currentStepName == 'shopIntro' || monatEnrollment.currentStepName == 'orderListing'  ) ? '100%' : '50%' 
 				}"
 			>
-				<i class="far fa-shipping-timed"></i>
+				<i 
+					class="far"
+					ng-class="monatEnrollment.stepClassArray.indexOf(monatEnrollment.currentStepName) > monatEnrollment.stepClassArray.indexOf('orderListing') ? 'fa-check' : 'fa-shipping-timed' "
+				></i>
 				<p class="mb-1" sw-rbkey="'entity.OrderTemplate'"></p>
 			</div>
 			
@@ -135,7 +155,10 @@
 				class="col"
 				ng-style="{ 'opacity' : (monatEnrollment.currentStepName == 'createAccount' ) ? '100%' : '50%' }"
 			>
-				<i class="far fa-user-plus"></i>
+				<i 
+					class="far" 
+					ng-class="monatEnrollment.stepClassArray.indexOf(monatEnrollment.currentStepName) > monatEnrollment.stepClassArray.indexOf('createAccount') ? 'fa-check' : 'fa-user-plus' "
+				></i>
 				<p class="mb-1" sw-rbkey="'frontend.createAccount.createAccountBtn'"></p>
 			</div>
 			
@@ -144,19 +167,22 @@
 				<p class="mb-1" sw-rbkey="'frontend.global.checkout'"></p>
 			</div>
 			
-			<div ng-if="slatwall.account.accountStatusType.systemCode != 'astGoodStanding'" class="col">
+			<div ng-if="monatEnrollment.account.accountStatusType.systemCode != 'astGoodStanding'" class="col">
 				<i class="far fa-user-friends"></i>
 				<p class="mb-1" sw-rbkey="'frontend.global.sponsor'"></p>
 			</div>
 		</div>
 
 		<!----MP Step icon indicators --->
-		<div ng-if="monatEnrollment.type=='mp' || monatEnrollment.type=='mpUpgrade'" class="step-status row w-50 text-center align-items-end">
+		<div ng-if="monatEnrollment.type=='mp' || monatEnrollment.type=='mpUpgrade'" class="mp-steps step-status row text-center align-items-end">
 			<div 
 				class="col mt-1"
 				ng-style="{ 'opacity' : (monatEnrollment.currentStepName == 'starterPack' || monatEnrollment.currentStepName == undefined ) ? '100%' : '50%' }"
 			>
-				<i class="far fa-wine-bottle"></i>	
+				<i 
+					class="far" 
+					ng-class="monatEnrollment.stepClassArray.indexOf(monatEnrollment.currentStepName) > monatEnrollment.stepClassArray.indexOf('starterPack') ? 'fa-check' : 'fa-wine-bottle' "
+				></i>	
 				<p class="mb-1" sw-rbkey="'frontend.global.productPack'"></p>
 			</div>
 			
@@ -166,7 +192,10 @@
 					'opacity' : (monatEnrollment.currentStepName == 'todaysOrder' ) ? '100%' : '50%' 
 				}"
 			>
-				<i class="far fa-shopping-basket"></i>
+				<i 
+					class="far"
+					ng-class="monatEnrollment.stepClassArray.indexOf(monatEnrollment.currentStepName) > monatEnrollment.stepClassArray.indexOf('todaysOrder') ? 'fa-check' : 'fa-shopping-basket' "  
+				></i>
 				<p class="mb-1" sw-rbkey="'frontend.cart.todaysOrder'"></p>
 			</div>
 			
@@ -175,15 +204,27 @@
 				class="col"
 				ng-style="{ 'opacity' : (monatEnrollment.currentStepName == 'createAccount' || monatEnrollment.currentStepName=='updateAccount') ? '100%' : '50%' }"
 			>
-				<i class="far fa-user-plus"></i>
+				<i 
+					class="far"
+					ng-class="
+						( 
+							monatEnrollment.stepClassArray.indexOf(monatEnrollment.currentStepName) > monatEnrollment.stepClassArray.indexOf('createAccount') 
+							&&  monatEnrollment.stepClassArray.indexOf(monatEnrollment.currentStepName) > monatEnrollment.stepClassArray.indexOf('updateAccount') 
+						) 
+						? 'fa-check' : 'fa-user-plus' "  
+				></i>
 				<p class="mb-1" sw-rbkey="'frontend.createAccount.createAccountBtn'"></p>
 			</div>
+			
 			<div 
 				ng-if="monatEnrollment.upgradeFlow"
 				class="col"
 				ng-style="{ 'opacity' : (monatEnrollment.currentStepName == 'createAccount' || monatEnrollment.currentStepName=='updateAccount') ? '100%' : '50%' }"
 			>
-				<i class="far fa-briefcase"></i>
+				<i 
+					class="far"
+					ng-class="monatEnrollment.stepClassArray.indexOf(monatEnrollment.currentStepName) > monatEnrollment.stepClassArray.indexOf('updateAccount') ? 'fa-check' : 'fa-briefcase'"
+				></i>
 				<p class="mb-1" sw-rbkey="'frontend.enrollment.businessDetails'"></p>
 			</div>
 			
@@ -192,7 +233,7 @@
 				<p class="mb-1" sw-rbkey="'frontend.global.checkout'"></p>
 			</div>
 			
-			<div ng-if="slatwall.account.accountStatusType.systemCode != 'astGoodStanding'" class="col">
+			<div ng-if="monatEnrollment.account.accountStatusType.systemCode != 'astGoodStanding'" class="col">
 				<i class="far fa-user-friends"></i> 
 				<p class="mb-1" sw-rbkey="'frontend.global.sponsor'"></p>
 			</div>

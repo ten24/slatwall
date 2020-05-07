@@ -187,6 +187,11 @@
 
 				if(!isNull(translation)){
 					return translation;
+				}else if(!isNull(formatDetails.useFallback) && !formatDetails.useFallback){
+					var globalLocale = getService('SettingService').getSettingValue('globalLocale');
+					if(globalLocale != arguments.formatDetails.locale){
+						return '';
+					}
 				}
 			}
 			return arguments.value;

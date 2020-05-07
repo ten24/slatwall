@@ -206,7 +206,8 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 	}
 	
 	public void function importOrderShipments(){ 
-        logHibachi("Begin importing order deliveries.", true);
+	    
+	    logHibachi("importOrderShipments - Start", true);
         
         /**
          * Allows the user to override the last n HOURS that get checked. 
@@ -276,8 +277,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
         var ormStatelessSession = ormGetSessionFactory().openStatelessSession();
         var shippingMethod = getShippingService().getShippingMethodByShippingMethodCode("defaultShippingMethod");
         
-		logHibachi("Finding deliveries for #startDate# to #endDate#", true);
-		
+		logHibachi("importOrderShipments - Finding deliveries for #startDate# to #endDate#", true);
         /**
          * @param {Struct} hashmap A collection of key value pairs.
          * @param {List<String>} keys A list of keys that reference values in the map.
@@ -309,7 +309,8 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
          * @return {Boolean} Returns True if the order exists. False otherwise.
          */
         var order = function(orderNumber) {
-            return getOrderService().getOrderByOrderNumber(orderNumber);
+            logHibachi("importOrderShipments - Checking Order #arguments.orderNumber#", true); 
+            return getOrderService().getOrderByOrderNumber(arguments.orderNumber);
         };
 
         /**
@@ -319,9 +320,11 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
          */
         var dataExistsToCreateDelivery = function(shipment) {
 
-            if (containsAll(shipment, "OrderNumber,Packages") && 
-                orderExists(shipment.OrderNumber)){
+            
+            if (containsAll(shipment, "OrderNumber,Packages") && orderExists(shipment.OrderNumber)){
                 return true;    
+            }else{
+                logHibachi("importOrderShipments - OrderNumber,Packages Not found", true);
             }
 
             return false;
@@ -425,7 +428,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
          * @return {Void}
          */
         var createDelivery = function(shipment){
-        	logHibachi("createDelivery: #shipment.shipmentNumber#",true);
+            logHibachi("importOrderShipments - createDelivery: #shipment.shipmentNumber#", true);
 			var order = order(shipment.OrderNumber);
 
             if (!isNull(order) && dataExistsToCreateDelivery(shipment) && !orderIsdelivered( order )){
@@ -507,7 +510,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 
         // Map all the shipments -> deliveries.
 
-		logHibachi("Start Shipment Importer",true);
+
         
         //Get the totals on this call.
 		var response = getData(pageNumber, pageSize, dateFilterStart, dateFilterEnd, "SWGetShipmentInfo");
@@ -518,31 +521,39 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
         
         //Exit if there is no data.
         if (!TotalCount){
-            logHibachi("No Shipment Data to import at this time.",true);
+            logHibachi("importOrderShipments - No Shipment Data to import at this time.", true);
         }
         
-        logHibachi("Shipment TotalPages: #totalPages#",true);
+        logHibachi("importOrderShipments - Shipment TotalPages: #totalPages#", true);
         
         // Do one page at a time, flushing and clearing as we go.
         // This wraps the map in a new stateless session to keep things fast
         var tx = ormStatelessSession.beginTransaction();
         while (pageNumber <= TotalPages){
             
-        	logHibachi("Importing pagenumber: #pageNumber#",true);
+            logHibachi("importOrderShipments - Importing pagenumber: #pageNumber#", true);
 	        // Call the api and get shipment records for the date defined as the filter.
 	        var response = getData(pageNumber, pageSize, dateFilterStart, dateFilterEnd, "SWGetShipmentInfo");
 	        
 	        if (isNull(response)){
-	        	logHibachi("Unable to get a usable response from Shipments API #now()#",true);
+	            logHibachi("importOrderShipments - Unable to get a usable response from Shipments API #now()#", true);
 	            throw("Unable to get a usable response from Shipments API #now()#");
 	        }
+            
             
 	        var shipments = response.Records?:"null";
             
             
 	        if (shipments.equals("null")){
-	        	logHibachi("Response did not contain shipments.",true);
+	            logHibachi("importOrderShipments - Response did not contain shipments.", true);
 	            throw("Response did not contain shipments data.");
+	        }else{
+	            logHibachi("importOrderShipments - Records Returned: #arrayLen(shipments)#", true);
+	            
+	            if(arrayLen(shipments) == 0){
+	                logHibachi("importOrderShipments - Returned 0??: #serializeJson(response)#", true);
+	                abort;
+	            }
 	        }
 
 			try{
@@ -553,10 +564,10 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 	    		arrayMap( shipments, createDelivery );
 	    		
 			}catch(any shipmentError){
-				logHibachi("Errors: importing shipment. #shipmentError.message#",true);
+			    logHibachi("importOrderShipments - Errors: importing shipment. #shipmentError.message#", true);
 			}
 			
-			logHibachi("End Importing pagenumber: #pageNumber#",true);
+			logHibachi("importOrderShipments - End Importing pagenumber: #pageNumber#", true);
 			pageNumber++;
         }
         tx.commit();
@@ -575,7 +586,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 		    ormFlush();
 		}
 		
-		writeDump("End: #pageNumber# - #pageSize#");
+		logHibachi("importOrderShipments - End: #pageNumber# - #pageSize#", true);
         // Sets the default view 
 
     }
@@ -844,6 +855,8 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
     }
     
     public any function importOrderUpdates(){
+        
+        logHibachi("importOrderUpdates - Start", true);
         //get the api key from integration settings.
 		var integration = getService("IntegrationService").getIntegrationByIntegrationPackage("monat");
 		var ormStatelessSession = ormGetSessionFactory().openStatelessSession();
@@ -998,7 +1011,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 	}
 
 	private string function getSkuColumnsList(){
-		return "SKUItemCode,SKUItemID,PRODUCTItemCode,ItemName,Amount,SalesCategoryCode,SAPItemCode,ItemNote,DisableOnRegularOrders,DisableOnFlexship,ItemCategoryAccounting,CategoryNameAccounting,EntryDate,URLTitle";
+		return "SKUItemCode,SKUItemID,ProductName,ProductCode,ItemName,Amount,SalesCategoryCode,SAPItemCode,ItemNote,DisableOnRegularOrders,DisableOnFlexship,ItemCategoryAccounting,CategoryNameAccounting,EntryDate,URLTitle";
 	}
 
 	private string function getSkuPriceColumnsList(){
@@ -1013,22 +1026,6 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 		return "SKUItemID,LocationCode";
 	}
 
-	private any function populateSkuBundleQuery( required any skuBundleQuery, required struct skuData ){
-
-		for(var kit in arguments.skuData.KitLines){
-			var skuBundleData = {
-				'SKUItemCode' : trim(skuData['ItemCode']),
-				'ComponentItemCode' : kit['ComponentItemCode'],
-				'importKey' : trim(skuData['ItemCode']) & "-" & kit['ComponentItemCode'],
-				'ComponentQuantity' : kit['ComponentQty']
-			};
-			if(structKeyExists(kit,'ontheflykit')){
-				skuBundleData['ontheflykit'] = kit['ontheflykit'];
-			}
-			QueryAddRow(arguments.skuBundleQuery, skuBundleData);
-		}
-		return arguments.skuBundleQuery;
-	}
 
 
 	private any function associateProductWithSite(required struct siteProductCodes){
@@ -1055,8 +1052,8 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 				LEFT JOIN swproductsite ps ON p.productID = ps.productID AND ps.siteID = :siteID
 				WHERE p.productCode IN (:productCodes) AND  ps.productID IS NULL",
 				{ 
-					productCodes ={value = arrayToList(siteProductCodes[swSite]), list=true}, 
-					siteID = swSites[swSite]
+					'productCodes' = { 'value' = arrayToList(siteProductCodes[swSite]), 'list' = true }, 
+					'siteID' = swSites[swSite]
 				}
 			);
 		}
@@ -1104,11 +1101,16 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 
 
 		getService("HibachiTagService").cfsetting(requesttimeout="60000");
+		
+		logHibachi("importMonatProducts - Start", true);
 
 		var extraBody = {};
 		
 
 		if(arguments.rc.days > 0){
+		    
+		    logHibachi("importMonatProducts - Getting data for #arguments.rc.days# days", true);
+		    
 			extraBody = {
 				"Filters": {
 				    "StartDate": DateTimeFormat( now(), "yyyy-mm-dd'T'00:00:01'.693Z'" ),
@@ -1120,58 +1122,44 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 		if(!structKeyExists(arguments.rc, 'pageMax')){
 			arguments.rc.pageMax = this.getLastProductPageNumber(arguments.rc.pageSize, extraBody);
 		}
+		
+		logHibachi("importMonatProducts - Pages found #arguments.rc.pageMax#", true);
 
 		var basePath = getDirectoryFromPath(getCurrentTemplatePath());
+		
+		var skuBundles = {};
 
-		var countryToCurrency = {
-			'CAN' : 'CAD',
-			'GBR' : 'GBP',
-			'USA' : 'USD',
-			'IRL' : 'EUR',
-			'POL' : 'PLN',
-			'CAN' : 'CAD',
-		};
-
-		var siteProductCodes = {
-			'CAN' = [],
-			'GBR' = [],
-			'AUD' = [],
-			'IRL' = [],
-			'POL' = [],
-			'USA' = []
-		};
 
 		var skuColumns = this.getSkuColumnsList();
 		var skuColumnTypes = [];
 		ArraySet(skuColumnTypes, 1, ListLen(skuColumns), 'varchar');
 		var skuQuery = QueryNew(skuColumns, skuColumnTypes);
 
-		var skuPriceColumns = this.getSkuPriceColumnsList();
-		var skuPriceColumnTypes = [];
-		ArraySet(skuPriceColumnTypes, 1, ListLen(skuPriceColumns), 'varchar');
-		var skuPriceQuery = QueryNew(skuPriceColumns, skuPriceColumnTypes);
 
 		var skuBundleColumns = this.getSkuBundleColumnsList();
 		var skuBundleColumnTypes = [];
 		ArraySet(skuBundleColumnTypes, 1, ListLen(skuBundleColumns), 'varchar');
 		var skuBundleQuery = QueryNew(skuBundleColumns, skuBundleColumnTypes);
 
-		var stockColumns = this.getStockColumnsList();
-		var stockColumnTypes = [];
-		ArraySet(stockColumnTypes, 1, ListLen(stockColumns), 'varchar');
-		var stockQuery = QueryNew(stockColumns, stockColumnTypes);
 
+        var onTheFlySkuCodes = '';
+        var skuCodes = [];
 
 		for(var index = arguments.rc.pageNumber; index <= arguments.rc.pageMax; index++){
+		    
+		    logHibachi("importMonatProducts - Current Page #index#", true); 
 			var productResponse = this.getApiResponse( arguments.rc.days > 0 ? "SWGetNewUpdatedSKU" : "QueryItems", index, arguments.rc.pageSize, extraBody );
-
+			
 			//goto next page causing this is erroring!
 			if ( productResponse.hasErrors ){
+			    logHibachi("importMonatProducts - Returned Errors", true); 
 				continue;
 			}
 
 			//Set the pagination info.
 			var monatProducts = productResponse.Data.Records ?: [];
+			
+			logHibachi("importMonatProducts - Product Count #arrayLen(monatProducts)#", true); 
 
 			for (var skuData in monatProducts){
 
@@ -1179,7 +1167,8 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 				var sku = {
 					'SKUItemID' : trim(skuData['ItemId']),
 					'SKUItemCode' : trim(skuData['ItemCode']),
-					'PRODUCTItemCode' : trim(skuData['ItemCode']),
+					'ProductCode' : skuData['ProductCodeCode'] ?: trim(skuData['ItemCode']),
+					'ProductName' : skuData['ProductCodeName'] ?: trim(skuData['ItemName']),
 					'ItemName' : trim(skuData['ItemName']),
 					'ItemNote' : skuData['ItemNote'] ?: '',
 					'SalesCategoryCode' : trim(skuData['SalesCategoryCode']),
@@ -1187,91 +1176,138 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 					'DisableOnFlexShip' : skuData['DisableInFlexShip'] ?: false,
 					'ItemCategoryAccounting' : trim(skuData['ItemCategoryCode']),
 					'CategoryNameAccounting' : trim(skuData['ItemCategoryName']),
-					'EntryDate' : skuData['EntryDate']
+					'EntryDate' : skuData['EntryDate'],
+					'SAPItemCode' : skuData['ItemCode'],
+					'Amount' : 0
 				};
-
-				if (ArrayLen(skuData['SAPItemCodes'])) {
-					sku['SAPItemCode'] = skuData['SAPItemCodes'][1]['SAPItemCode'];
-
-					// Create Stock Query
-					stockQuery = this.populateStockQuery(stockQuery, skuData);
-
-					for(var sapItem in skuData['SAPItemCodes']){
-						if(!structKeyExists(siteProductCodes, sapItem['countryCode'])){
-							continue;
-						}
-						arrayAppend(siteProductCodes[sapItem['countryCode']], sku['SKUItemCode'])
-					}
-
-
-				}else{
-					sku['SAPItemCode'] = skuData['ItemCode'];
-				}
-
-
-				// Setup SkuPrice data
-				if(structKeyExists(skuData, 'PriceLevels') && ArrayLen(skuData['PriceLevels'])){
-					for(var skuPriceData in skuData.PriceLevels){
-						if( skuPriceData['CountryCode'] == 'UNK'){
-							continue;
-						}
-						var skuPrice = {
-							'ItemCode' : skuData.ItemCode,
-							'Commission' : skuPriceData['CommissionableVolume'] ?: 0,
-							'QualifyingPrice' : skuPriceData['QualifyingVolume'] ?: 0,
-							'RetailsCommissions' : skuPriceData['RetailProfit'] ?: 0,
-							'RetailValueVolume' : skuPriceData['RetailVolume'] ?: 0,
-							'SellingPrice' : skuPriceData['SellingPrice'] ?: 0,
-							'TaxablePrice' : skuPriceData['TaxablePrice'] ?: 0,
-							'ProductPackBonus' : skuPriceData['ProductPackVolume'] ?: 0,
-							'PriceLevel' : skuPriceData['PriceLevelCode'],
-							'CurrencyCode' : countryToCurrency[skuPriceData['CountryCode']]
-						};
-
-						// Check if this is the SKU price
-						if(skuPrice['CurrencyCode'] == 'USD' && skuPrice['PriceLevel'] == '2'){
-							sku['Amount'] = skuPrice['SellingPrice'];
-						}
-						// Add SkuPrice to CF Query
-						QueryAddRow(skuPriceQuery, skuPrice);
-					}
-				}
-				// If Sku Price not found, set it to 0
-				if(!structKeyExists(sku,'Amount')){
-					sku['Amount'] = 0;
-				}
+				
+				arrayAppend(skuCodes, sku['SKUItemCode']);
+				
 				// Add Sku to CF Query
 				QueryAddRow(skuQuery, sku);
 
 				// Create SkuBundle Query
 				if(arrayLen(skuData['KitLines'])){
-					skuBundleQuery = this.populateSkuBundleQuery(skuBundleQuery, skuData);
+				    
+				    skuBundles[sku['SKUItemCode']] = '';
+				    
+				    var onTheFlyKitAdded = false;
+
+				    for(var kit in skuData.KitLines){
+            			
+            			skuBundles[sku['SKUItemCode']] = listAppend(skuBundles[sku['SKUItemCode']], kit['ComponentItemCode']);
+            			
+            			var skuBundleData = {
+            				'SKUItemCode' : sku['SKUItemCode'],
+            				'ComponentItemCode' : kit['ComponentItemCode'],
+            				'importKey' : sku['SKUItemCode'] & "-" & kit['ComponentItemCode'],
+            				'ComponentQuantity' : kit['ComponentQty'],
+            				'ontheflykit' : kit['OnTheFlyFlag'] ?: false
+            			};
+            			
+            			QueryAddRow(skuBundleQuery, skuBundleData);
+            			
+            			if(!onTheFlyKitAdded && skuBundleData['ontheflykit']){
+            			    
+            			    onTheFlyKitAdded = true;
+            			    onTheFlySkuCodes = listAppend(onTheFlySkuCodes, sku['SKUItemCode']);
+            			}
+            		}
 				}
 			}
 		}
-
+		
+		
+		
+		
+		logHibachi("importMonatProducts - Importing Products/Sku Count #skuQuery.recordCount#", true); 
 		if(skuQuery.recordCount){
+
 			var importSkuConfig = FileRead('#basePath#../../config/import/skus.json');
-			getService("HibachiDataService").loadDataFromQuery(skuQuery, importSkuConfig, arguments.rc.dryRun);
+			var updateSkuConfig = FileRead('#basePath#../../config/import/skus_update.json');
+			
+			var skuCodesResult = QueryExecute('SELECT GROUP_CONCAT(skuCode) skuCodes from swSku where skuCode IN ( :skuCodes )',{ 
+				'skuCodes' = { 
+				    'value' = arrayToList(skuCodes), 
+				    'list' = true
+				}
+			});
+				
+			var existingSkuCodes = listToArray(skuCodesResult['skuCodes']);
+			
+			
+		    
+		    
+		    var existingSkus = skuQuery.filter(function(row, rowNumber, qryData){
+                return arrayFind(existingSkuCodes, arguments.row.SKUItemCode);
+            });
+			var newSkus = skuQuery.filter(function(row, rowNumber, qryData){
+                return !arrayFind(existingSkuCodes, arguments.row.SKUItemCode);
+            });
+		
+			getService("HibachiDataService").loadDataFromQuery(existingSkus, updateSkuConfig, arguments.rc.dryRun);
+			getService("HibachiDataService").loadDataFromQuery(newSkus, importSkuConfig, arguments.rc.dryRun);
 		}
+		
+		logHibachi("importMonatProducts - Importing On The Fly Setting #listLen(onTheFlySkuCodes)#", true); 
+			
+		if(!arguments.rc.dryRun && len(onTheFlySkuCodes)){
+		    QueryExecute(
+				"INSERT INTO swsetting (settingID, settingName, settingValue, createdDateTime, modifiedDateTime, skuID, baseObject)
+				 SELECT 
+                	LOWER(REPLACE(CAST(UUID() as char character set utf8), '-', ''))  settingID,
+                	'skuBundleAutoMakeupInventoryOnSaleFlag' settingName,
+                	'1' settingValue,
+                	NOW() createdDateTime,
+                	NOW() modifiedDateTime,
+                	sku.skuID skuID,
+                	'sku' baseObject
+                 FROM swSku sku
+                 LEFT JOIN swSetting s ON sku.skuID = s.skuID and s.settingName = 'skuBundleAutoMakeupInventoryOnSaleFlag'
+                 WHERE
+                	skuCode in (:onTheFlySkuCodes) AND s.settingID is NULL",
+				{ 
+					'onTheFlySkuCodes' = { 'value' = onTheFlySkuCodes, 'list' = true }
+				}
+		    );
+	    }
+		
 
-		if(skuPriceQuery.recordCount){
-			var importSkuPriceConfig = FileRead('#basePath#../../config/import/skuprices.json');
-			getService("HibachiDataService").loadDataFromQuery(skuPriceQuery, importSkuPriceConfig, arguments.rc.dryRun);
-		}
+// 		if(skuPriceQuery.recordCount){
+// 			var importSkuPriceConfig = FileRead('#basePath#../../config/import/skuprices.json');
+// 			getService("HibachiDataService").loadDataFromQuery(skuPriceQuery, importSkuPriceConfig, arguments.rc.dryRun);
+// 		}
 
+        logHibachi("importMonatProducts - Importing SKuBundle Count #skuBundleQuery.recordCount#", true); 
 		if(skuBundleQuery.recordCount){
+		    
 			var importSkuBundleConfig = FileRead('#basePath#../../config/import/bundles.json');
 			getService("HibachiDataService").loadDataFromQuery(skuBundleQuery, importSkuBundleConfig, arguments.rc.dryRun);
 
 			var importSkuBundle2Config = FileRead('#basePath#../../config/import/bundles2.json');
 			getService("HibachiDataService").loadDataFromQuery(skuBundleQuery, importSkuBundle2Config, arguments.rc.dryRun);
+			
+			if(!arguments.rc.dryRun){
+    			for(var skuID in skuBundles){
+    		        QueryExecute(
+        				"DELETE bundle FROM swskubundle bundle
+                        INNER JOIN swSku sku ON bundle.skuID = sku.skuID
+                        INNER JOIN swSku childSku ON bundle.bundledSkuID = childSku.skuID
+                        WHERE sku.skuCode = :skuID
+                        AND childSku.skuCode NOT IN (:childSkuIDs)",
+        				{ 
+        					'skuID' = skuID,
+        					'childSkuIDs' = { 'value' = skuBundles[skuID], 'list' = true }
+        				}
+    			    );
+    		    }
+			}
 		}
 
-		if(stockQuery.recordCount){
-			var importStockConfig = FileRead('#basePath#../../config/import/stocks.json');
-			getService("HibachiDataService").loadDataFromQuery(stockQuery, importStockConfig, arguments.rc.dryRun);
-		}
+// 		if(stockQuery.recordCount){
+// 			var importStockConfig = FileRead('#basePath#../../config/import/stocks.json');
+// 			getService("HibachiDataService").loadDataFromQuery(stockQuery, importStockConfig, arguments.rc.dryRun);
+// 		}
 		
 		
 		//Fix ProductTypes:
@@ -1279,13 +1315,13 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 		QueryExecute("UPDATE swProductType SET productTypeIDPath = CONCAT('444df2f7ea9c87e60051f3cd87b435a1,',productTypeIDPath) WHERE parentProductTypeID = '444df2f7ea9c87e60051f3cd87b435a1' AND productTypeIDPath NOT LIKE '444df2f7ea9c87e60051f3cd87b435a1,%'");
 
 // 		//this.addUrlTitlesToProducts();
-		if(!arguments.rc.dryRun){
-			this.associateProductWithSite(siteProductCodes);
-		}else{
-			abort;
+		if(arguments.rc.dryRun){
+		    abort;
 		}
-		
-		abort;
+//		else{
+//			this.associateProductWithSite(siteProductCodes);
+// 		}
+		logHibachi("importMonatProducts - Done!", true); 
 	}
     
     public any function importInventoryUpdates(){
@@ -1341,8 +1377,8 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
         // Objects we need to set over and over go here...
 		var warehouseMain = getLocationService().getLocationByLocationName("US Warehouse");
 		var warehouseCAN = getLocationService().getLocationByLocationName("CA Warehouse");
-		var warehouseUK = getLocationService().getLocationByLocationName("UK Warehouse");
-		var warehouseIRPOL = getLocationService().getLocationByLocationName("Ire/Pol Warehouse");
+		var warehouseUKIR = getLocationService().getLocationByLocationName("UK/IRE Warehouse");
+		var warehousePOL = getLocationService().getLocationByLocationName("POL Warehouse");
 		 
         //Exit with no data.
         if (!TotalCount){
@@ -1361,81 +1397,82 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
     		}
     		
     		
-    		try{
+    		
     			
     			var inventoryRecords = inventoryResponse.Records;
     			
     			for (var inventory in inventoryRecords){
-    			    index++;
-        		    var sku = getSkuService().getSkuBySkuCode(inventory.itemCode);
-        		    
-        		    if (isNull(sku)){
-        		    	logHibachi("Can't create inventory for a sku that doesn't exist! #inventory.itemCode#", true);
-        		    	continue;
-        		    }
-        		    
-        		    var location = warehouseMain;
-        		    
-        		    if (inventory['CountryCode'] == "US"){
-        		    	location = warehouseMain;	
-        		    }else if (inventory['CountryCode'] == "CA"){
-        		    	location = warehouseCAN;	
-        		    }else if (inventory['CountryCode'] == "UK"){
-        		    	location = warehouseUK;
-        		    } else {
-        		    	location = warehouseIRPOL;
-        		    }
-        		    
-        		    
-        		    //Find if we have a stock for this sku and location.
-        		    var stock = getStockService().getStockBySkuIdAndLocationId( sku.getSkuID(), location.getLocationID() );
-        		    
-        		    
-        		    if (isNull(stock)){
-        		    	// Create the stock
-        		    	var stock = getStockService().newStock();
-        		    	stock.setSku(sku);
-        		    	stock.setLocation(location);
-        		    	stock.setRemoteID(inventory['InventoryAdjustmentId']);
-        		    	stock = getStockService().saveStock(stock);
-        		    }
-        		    
-        		    //Create the inventory record for this stock
-        		    if (!isNull(stock)){
-        		        //check if this inventory has already been imported...
-        		        var newInventory = getStockService().getInventoryByRemoteId( inventory['InventoryAdjustmentId'] );
-        		        
-        		        //Only create the inventory if it doesn't already exist. Everytime an inventory adjustment is made
-        		        //it has a new id, thus a new remoteID.
-        		        if (isNull(newInventory)){
-            			    // Create a new inventory under that stock.
-            			    var newInventory = getStockService().newInventory();
-            			    newInventory.setRemoteID(inventory['InventoryAdjustmentId'] ?: ""); //*
-                			newInventory.setStock(stock);
-                			
-                			var inventoryQuantity = inventory['Quantity'] ?: 0;
-                			
-                			if (inventoryQuantity > 0){
-                        	    newInventory.setQuantityIn(inventoryQuantity);
-                			}else{
-                			    newInventory.setQuantityOut(inventoryQuantity * -1); 
-                			}
-                			
-                        	newInventory.setCreatedDateTime(getDateFromString(inventory['CreatedOn']));
-                        	
-                            newInventory = getStockService().saveInventory(newInventory);
-                        	
-        		        }
-        		    }
-        		    
+    			    
+    			    try{
+        			    index++;
+        			    
+            		    var sku = getSkuService().getSkuBySkuCode(inventory.itemCode);
+            		    
+            		    if (isNull(sku)){
+            		    	logHibachi("Can't create inventory for a sku that doesn't exist! #inventory.itemCode#", true);
+            		    	continue;
+            		    }
+            		    
+            		    var location = warehouseMain;
+            		    
+            		    if (inventory['CountryCode'] == "US"){
+            		    	location = warehouseMain;	
+            		    }else if (inventory['CountryCode'] == "CA"){
+            		    	location = warehouseCAN;	
+            		    }else if (inventory['CountryCode'] == "PL"){
+            		        location = warehousePOL;
+            		    } else {
+            		    	location = warehouseUKIR;
+            		    }
+            		    
+            		    
+            		    //Find if we have a stock for this sku and location.
+            		    var stock = getStockService().getStockBySkuIdAndLocationId( sku.getSkuID(), location.getLocationID() );
+            		    
+            		    
+            		    if (isNull(stock)){
+            		    	// Create the stock
+            		    	var stock = getStockService().newStock();
+            		    	stock.setSku(sku);
+            		    	stock.setLocation(location);
+            		    	stock.setRemoteID(inventory['InventoryAdjustmentId']);
+            		    	stock = getStockService().saveStock(stock);
+            		    }
+            		    
+            		    //Create the inventory record for this stock
+            		    if (!isNull(stock)){
+            		        //check if this inventory has already been imported...
+            		        var newInventory = getStockService().getInventoryByRemoteId( inventory['InventoryAdjustmentId'] );
+            		        
+            		        //Only create the inventory if it doesn't already exist. Everytime an inventory adjustment is made
+            		        //it has a new id, thus a new remoteID.
+            		        if (isNull(newInventory)){
+                			    // Create a new inventory under that stock.
+                			    var newInventory = getStockService().newInventory();
+                			    newInventory.setRemoteID(inventory['InventoryAdjustmentId'] ?: ""); //*
+                    			newInventory.setStock(stock);
+                    			
+                    			var inventoryQuantity = inventory['Quantity'] ?: 0;
+                    			
+                    			if (inventoryQuantity > 0){
+                            	    newInventory.setQuantityIn(inventoryQuantity);
+                    			}else{
+                    			    newInventory.setQuantityOut(inventoryQuantity * -1); 
+                    			}
+                    			
+                            	newInventory.setCreatedDateTime(getDateFromString(inventory['CreatedOn']));
+                            	
+                                newInventory = getStockService().saveInventory(newInventory);
+                            	
+            		        }
+            		    }
+    			    }catch(e){
+            			logHibachi("Stock Import Failed @ Index: #index# PageSize: #pageSize# PageNumber: #pageNumber#", true);
+            			logHibachi(serializeJson(e));
+            			
+    		        }
     			}
     			
-    		}catch(e){
-    			logHibachi("Stock Import Failed @ Index: #index# PageSize: #pageSize# PageNumber: #pageNumber#", true);
-    			logHibachi(serializeJson(e));
-    			
-    		}
-    		
     		this.logHibachi('Import (Updated Inventory) Page #pageNumber# completed ', true);
 		    pageNumber++;
 		}

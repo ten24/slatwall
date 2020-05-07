@@ -82,25 +82,34 @@ component accessors="true" output="false" displayname="Monat" extends="Slatwall.
 	}
 	
 	public any function pullData(){
-		
+
+	}
+	
+	public void function importAccountUpdates(required struct rc){
 		try{
 			getService("MonatDataService").importAccountUpdates();
 		}catch(any accountErrors){
 			logHibachi("The account update failed with #accountErrors.message#");
 		}
-		
+	}
+	
+	public void function importOrderUpdates(required struct rc){
 		try{
 			getService("MonatDataService").importOrderUpdates();
 		}catch(any orderErrors){
 			logHibachi("The order update failed with #orderErrors.message#");
 		}
-		
+	}
+	
+	public void function importOrderShipments(required struct rc){
 		try{
 			getService("MonatDataService").importOrderShipments();
 		}catch(any shipmentErrors){
 			logHibachi("The shipment update failed with #shipmentErrors.message#");
 		}
-		
+	}
+	
+	public void function importInventoryUpdates(required struct rc){
 		try{
 			getService("MonatDataService").importInventoryUpdates();
 		}catch(any inventoryErrors){
@@ -109,7 +118,11 @@ component accessors="true" output="false" displayname="Monat" extends="Slatwall.
 	}
 	
 	public void function importMonatProducts(required struct rc){
-		getService("MonatDataService").importMonatProducts(argumentCollection=arguments);
+		try{
+			getService("MonatDataService").importMonatProducts(argumentCollection=arguments);
+		}catch(any inventoryErrors){
+			logHibachi("The product update failed with #inventoryErrors.message#");
+		}
 	}
 }
 

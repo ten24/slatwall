@@ -36,6 +36,8 @@ class VIPController {
 	public upgradeFlow:boolean;
 	public endpoint: 'setUpgradeOnOrder' | 'setUpgradeOrderType' = 'setUpgradeOnOrder';
 	public showUpgradeErrorMessage:boolean;
+	public hairProductFilter:any;
+	public skinProductFilter:any;
 	
 	// @ngInject
 	constructor(public publicService, public observerService, public monatService, public orderTemplateService) {
@@ -66,11 +68,9 @@ class VIPController {
 		this.publicService.doAction('getFrequencyTermOptions').then(response => {
 			this.frequencyTerms = response.frequencyTermOptions;
 			this.publicService.model = {};
+			this.publicService.term = response.frequencyTermOptions[0]; 
 			for(let term of response.frequencyTermOptions){
 				this.termMap[term.value] = term;
-				if(term.name=='Monthly'){
-					this.publicService.model.term = term;
-				}
 			}
 		});
 	}
@@ -147,9 +147,23 @@ class VIPController {
 		});
 	}
 
-	public getProductList = () => {
+	public getProductList = ( category:any, categoryType:string ) => {
 		this.loading = true;
-		this.publicService.doAction('getproductsByCategoryOrContentID', {priceGroupCode: 3}).then((result) => {
+		
+		let data:any = {
+			priceGroupCode: 3
+		};
+		
+		if(category){
+			data.categoryFilterFlag = true;
+			data.categoryID = category.value;
+			this.hairProductFilter = null;
+			this.skinProductFilter = null;
+			this[`${categoryType}ProductFilter`] = category;
+			this.paginationObject['categoryID'] = category.value;
+		}
+		
+		this.publicService.doAction('getproductsByCategoryOrContentID', data).then((result) => {
 			this.observerService.notify("PromiseComplete");
 			this.productList = result.productList;
 			this.productRecordsCount = result.recordsCount

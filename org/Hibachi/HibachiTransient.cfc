@@ -198,6 +198,8 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 					||
 					(getHibachiScope().getPublicPopulateFlag() && structKeyExists(currentProperty, "hb_populateEnabled") && currentProperty.hb_populateEnabled == "public")
 					||
+					(getHibachiScope().getWorkflowPopulateFlag() && structKeyExists(currentProperty, "hb_populateEnabled") && currentProperty.hb_populateEnabled == "workflow")
+					||
 					getHibachiScope().authenticateEntityProperty( crudType="update", entityName=this.getClassName(), propertyName=currentProperty.name))
 			) {
 				// ( COLUMN )
@@ -625,7 +627,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 		}
 	}
 
-	public any function getFormattedValue(required string propertyName, string formatType, string locale ) {
+	public any function getFormattedValue(required string propertyName, string formatType, string locale, boolean useFallback=true ) {
 		arguments.value = invokeMethod("get#arguments.propertyName#");
 		// check if a formatType was passed in, if not then use the getPropertyFormatType() method to figure out what it should be by default
 		if(!structKeyExists(arguments, "formatType")) {
@@ -659,7 +661,8 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 			var formatDetails = {
 				locale:arguments.locale,
 				object:this,
-				propertyName:arguments.propertyName
+				propertyName:arguments.propertyName,
+				useFallback:arguments.useFallback
 			};
 			
 			if(this.hasProperty('currencyCode') && !isNull(getCurrencyCode())) {

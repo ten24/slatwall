@@ -21,6 +21,7 @@ component accessors="true" extends="Slatwall.model.process.Order_AddOrderItem" {
     
     // Helper Properties
     property name="isPurchasableItemFlag" type="boolean" default="true";
+    property name="updateShippingMethodOptionsFlag" type="boolean" default="true";
     
     // ======================== START: Defaults ============================
     
@@ -132,40 +133,6 @@ component accessors="true" extends="Slatwall.model.process.Order_AddOrderItem" {
         return true;
 	}
 	
-	/**
-	 * 1. If orderCreatedSite.SiteCode is UK and order.accountType is MP 
-	 * max 200 pound TOTAL including VAT and Shipping Feed on days 1-7 
-	 * from ordering the enrollment kit.
-	 * This only work if the max orders validation also works because this only checks the current order
-	 * for total instead of all orders.
-	 **/
-	 
-	 public boolean function marketPartnerValidationMaxOrderAmount(){
-	 	var order = this.getOrder();
-	 	
-	 	if(isNull(order.getAccount())  || isNull(order.getOrderCreatedSite())){
-	 	    return true; 
-	 	} 
-	 	
-	 	var site = order.getOrderCreatedSite();
-	 	
-	    var initialEnrollmentPeriodForMarketPartner = site.setting("siteInitialEnrollmentPeriodForMarketPartner");//7
-        var maxAmountAllowedToSpendDuringInitialEnrollmentPeriod = site.setting("siteMaxAmountAllowedToSpendInInitialEnrollmentPeriod");//200
-        var date = getService('orderService').getMarketPartnerEnrollmentOrderDateTime(order.getAccount());
-        
-        //If a UK MP is within the first 7 days of enrollment, check that they have not already placed more than 1 order.
-		if (!isNull(order.getAccount()) && order.getAccount().getAccountType() == "marketPartner" 
-			&& site.getSiteCode() == "mura-uk"
-			&& !isNull(date)
-			&& dateDiff("d", date, now()) <= initialEnrollmentPeriodForMarketPartner){
-			
-			//If adding the order item will increase the order to over 200 EU return false  
-			if ((order.getTotal() + this.getPrice()) > maxAmountAllowedToSpendDuringInitialEnrollmentPeriod){
-			    return false; // they already have too much.
-			}
-	    }
-	    return true;
-	 }
 	 
 	 /**
 	 * This validates that the orders site matches the accounts created site
@@ -178,6 +145,16 @@ component accessors="true" extends="Slatwall.model.process.Order_AddOrderItem" {
             }
         }
         return true;
+	}
+	
+	public boolean function isValidCountry(){
+	    
+         if (!getShippingAddress().getNewFlag() && !isNull(this.getOrder()) && !isNull(this.getOrder().getOrderCreatedSite())){
+             var countryCode = getService('siteService').getCountryCodeBySite(this.getAccount().getAccountCreatedSite());
+             return countryCode == getShippingAddress().getCountryCode();
+         }
+	    
+	    return true;
 	}
     
     // ===============  END: Custom Validation Methods =====================

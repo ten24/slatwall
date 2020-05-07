@@ -204,7 +204,7 @@ component extends="Slatwall.model.service.OrderService" {
 		
 		if( arguments.context != "upgradeFlow"){
 			arguments.orderTemplate.setAccount(account);
-		}else if(!isNull(arguments.processObject.getPriceGroup())){
+		} else if(!isNull(arguments.processObject.getPriceGroup())){
 			arguments.orderTemplate.setPriceGroup(arguments.processObject.getPriceGroup());
 		}
 	
@@ -212,9 +212,13 @@ component extends="Slatwall.model.service.OrderService" {
 		arguments.orderTemplate.setCurrencyCode( arguments.processObject.getCurrencyCode() );
 		arguments.orderTemplate.setOrderTemplateStatusType(getTypeService().getTypeBySystemCode('otstDraft'));
 		arguments.orderTemplate.setOrderTemplateType(getTypeService().getType(arguments.processObject.getOrderTemplateTypeID()));
-		arguments.orderTemplate.setScheduleOrderNextPlaceDateTime(arguments.processObject.getScheduleOrderNextPlaceDateTime());
-		arguments.orderTemplate.setFrequencyTerm( getSettingService().getTerm(arguments.processObject.getFrequencyTermID()) );
 		
+		arguments.orderTemplate.setFrequencyTerm( arguments.processObject.getFrequencyTerm() );
+		arguments.orderTemplate.setScheduleOrderDayOfTheMonth(
+				day(arguments.processObject.getScheduleOrderNextPlaceDateTime())
+			);
+		arguments.orderTemplate.setScheduleOrderNextPlaceDateTime(arguments.processObject.getScheduleOrderNextPlaceDateTime());
+
 		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate, arguments.data, arguments.context); 
 		
 		return arguments.orderTemplate;
@@ -409,6 +413,10 @@ component extends="Slatwall.model.service.OrderService" {
 			request[orderTemplateOrderDetailsKey]['canPlaceOrderDetails'] = getPromotionService().getOrderQualifierDetailsForCanPlaceOrderReward(transientOrder); 
 			request[orderTemplateOrderDetailsKey]['canPlaceOrder'] = request[orderTemplateOrderDetailsKey]['canPlaceOrderDetails']['canPlaceOrder']; 
 			request[orderTemplateOrderDetailsKey]['purchasePlusTotal'] = transientOrder.getPurchasePlusTotal();
+			request[orderTemplateOrderDetailsKey]['taxTotal'] = transientOrder.getTaxTotal();
+			request[orderTemplateOrderDetailsKey]['vatTotal'] = transientOrder.getVatTotal();
+			request[orderTemplateOrderDetailsKey]['fulfillmentHandlingFeeTotal'] = transientOrder.getFulfillmentHandlingFeeTotal();
+			
 			try{
 				request[orderTemplateOrderDetailsKey]['appliedPromotionMessagesJson'] = serializeJson(this.getAppliedPromotionMessageData(transientOrder.getOrderID()).getRecords());
 			}catch(any e){
@@ -432,30 +440,9 @@ component extends="Slatwall.model.service.OrderService" {
 
 		return request[orderTemplateOrderDetailsKey];
 	}
-
-	public numeric function getPersonalVolumeTotalForOrderTemplate(required any orderTemplate){
-		return getOrderTemplateOrderDetails(argumentCollection=arguments)['personalVolumeTotal'];	
-	}
-	
-	public numeric function getCommissionableVolumeTotalForOrderTemplate(required any orderTemplate){
-		return getOrderTemplateOrderDetails(argumentCollection=arguments)['commissionableVolumeTotal'];	
-	}
-	
-
-	public numeric function getPurchasePlusTotalForOrderTemplate(required any orderTemplate){
-		return getOrderTemplateOrderDetails(argumentCollection=arguments)['purchasePlusTotal'];	
-	}
-	
-	public numeric function getProductPackVolumeTotalForOrderTemplate(required any orderTemplate){
-		return getOrderTemplateOrderDetails(argumentCollection=arguments)['productPackVolumeTotal'];	
-	}
 	
 	public numeric function getRetailCommissionTotalForOrderTemplate(required any orderTemplate){
 		return getOrderTemplateOrderDetails(argumentCollection=arguments)['retailCommissionTotal'];	
-	}
-	
-	public any function getappliedPromotionMessagesJsonForOrderTemplate(required any orderTemplate){
-		return getOrderTemplateOrderDetails(argumentCollection=arguments)['appliedPromotionMessagesJson'];	
 	}
 	
 	public any function getOrderTemplateItemCollectionForAccount(required struct data, any account=getHibachiScope().getAccount()){
@@ -763,7 +750,7 @@ component extends="Slatwall.model.service.OrderService" {
 		    */
 		}
 		
-		logHibachi("updateOrderItemsWithAllocatedOrderDiscountAmount: END",true);
+		logHibachi("updateOrderItemsWithAllocatedOrderDiscountAmount: END");
 		
 		// We are expecting an exact allocation. No discrepancy, if this occurs we need to figure out why
 		if (val(actualAllocatedAmountTotal) - val(arguments.order.getOrderCustomDiscountAmountTotal(arguments.priceField)) != 0) {
@@ -1142,7 +1129,7 @@ component extends="Slatwall.model.service.OrderService" {
 					//Sets the status type
 					orderFulfillment.setOrderFulfillmentInvStatType(orderFulfillment.getOrderFulfillmentInvStatType());
 					//we will update order amounts at the end of the process
-					orderFulfillment = this.saveOrderFulfillment( orderFulfillment=orderFulfillment, updateOrderAmounts=false );
+					orderFulfillment = this.saveOrderFulfillment( orderFulfillment=orderFulfillment, updateOrderAmounts=false, updateShippingMethodOptions=arguments.processObject.getUpdateShippingMethodOptionsFlag() );
                     //check the fulfillment and display errors if needed.
                     if (orderFulfillment.hasErrors()){
                         arguments.order.addError('addOrderItem', orderFulfillment.getErrors());
@@ -1308,11 +1295,11 @@ component extends="Slatwall.model.service.OrderService" {
 			}
 
 			if(arguments.order.isNew()){
-				this.saveOrder(order=arguments.order, updateOrderAmounts=arguments.processObject.getUpdateOrderAmountFlag());
+				this.saveOrder(order=arguments.order, updateOrderAmounts=arguments.processObject.getUpdateOrderAmountFlag(), updateShippingMethodOptions=arguments.processObject.getUpdateShippingMethodOptionsFlag());
 			}
 
 			// Save the new order items don't update order amounts we'll do it at the end of this process
-			newOrderItem = this.saveOrderItem( orderItem=newOrderItem, updateOrderAmounts=false , updateCalculatedProperties=true);
+			newOrderItem = this.saveOrderItem( orderItem=newOrderItem, updateOrderAmounts=false , updateCalculatedProperties=true, updateShippingMethodOptions=arguments.processObject.getUpdateShippingMethodOptionsFlag());
 
 			if(newOrderItem.hasErrors()) {
 				//String replace the max order qty to give user feedback with the minimum of 0
@@ -1549,8 +1536,71 @@ component extends="Slatwall.model.service.OrderService" {
 		}
 
 		// Call save order to place in the hibernate session and re-calculate all of the totals
-		arguments.order = this.saveOrder( order=arguments.order, updateOrderAmounts=arguments.processObject.getUpdateOrderAmountFlag() );
+		arguments.order = this.saveOrder( order=arguments.order, updateOrderAmounts=arguments.processObject.getUpdateOrderAmountFlag(), updateShippingMethodOptions=arguments.processObject.getUpdateShippingMethodOptionsFlag() );
 
+
+		
+		if( 
+			arguments.order.hasErrors() && arguments.order.hasMonatOrderType() &&
+			arguments.order.getMonatOrderType().getTypeCode() == 'motMPEnrollment' 
+		){
+			
+			/**
+			 * 1. If orderCreatedSite.SiteCode is UK and order.accountType is MP 
+			 * max 200 pound TOTAL including VAT and Shipping Feed on days 1-7 
+			 * from ordering the enrollment kit.
+			 * This only work if the max orders validation also works because this only checks the current order
+			 * for total instead of all orders.
+			 **/
+			
+			logHibachi("Error encountered on order.motMPEnrollment(#arguments.Order.getOrderID()#), order-total: #arguments.order.getTotal()#, Errors: #SerializeJson(arguments.order.getErrors())#");
+			
+			//clear previous errors, and temporarly saving order for calculations
+			var oldErrors = StructCopy(arguments.order.getErrors());
+			arguments.order.clearHibachiErrors();
+			getHibachiScope().setORMHasErrors( false );
+			getHibachiScope().flushORMSession(); 
+
+			/**
+			 * If We dont reload the ORN throws
+			 * Cannot delete or update a parent row: a foreign key constraint fails 
+			 * (
+			 *		`monat`.`sworderitemskubundle`, CONSTRAINT `FKD0CB5F2244B9A827` FOREIGN KEY 
+			 *		(`orderItemID`) REFERENCES `sworderitem` (`orderItemID`)
+			 * )
+			**/
+			entityReload(arguments.order);
+			
+			
+			if( !IsNull(newOrderItem) ) {
+				
+				logHibachi("Removing newOrderItem(#newOrderItem.getOrderItemID()#) from the order order-total: #arguments.order.getTotal()# ");
+				arguments.order = this.processOrder(arguments.order, { 'orderItemID': newOrderItem.getOrderItemID() }, 'removeOrderItem');
+				
+			} else if( !IsNull(foundOrderItem) ) {
+				
+				logHibachi("Reverting foundOrderItem(#foundOrderItem.getOrderItemID()#) qty from: #foundOrderItem.getQuantity()# - to: #foundOrderItem.getQuantity() - arguments.processObject.getQuantity()#,  order-total: #arguments.order.getTotal()#");
+				foundOrderItem.setQuantity( foundOrderItem.getQuantity() - arguments.processObject.getQuantity() );
+				//clear non-persistent properties cache, so calculated properties can be updated with real-values
+				foundOrderItem.clearNonPersistentCalculatedPropertiesCache(); 
+				//We'll update order amounts at the last step
+				foundOrderItem = this.saveOrderItem( orderItem=foundOrderItem, updateOrderAmounts=false , updateCalculatedProperties=true);
+			}
+			
+			//just in case, if remve/upadte order-item fails
+			logHibachi("Errors on Order after reverting changes : #SerializeJson(arguments.order.getErrors())# order-total: #arguments.order.getTotal()#");
+			arguments.order = this.saveOrder( order=arguments.order, updateOrderAmounts=true, updateShippingMethodOptions=arguments.processObject.getUpdateShippingMethodOptionsFlag() );
+			arguments.order.updateCalculatedProperties(runAgain=true); //re-calculate-everythign
+			
+			logHibachi("Flushing after re-saving the order(#arguments.Order.getOrderID()#), order-total: #arguments.order.getTotal()#");
+			//we gotta flush here to persist current changes, before putting-back the old errors
+			getHibachiScope().flushORMSession();
+			
+			//return the order with previous errors
+			arguments.order.addErrors(oldErrors);
+			getHibachiScope().setORMHasErrors( true );
+		}
+		
 		return arguments.order;
 	}
 	
@@ -1601,6 +1651,8 @@ component extends="Slatwall.model.service.OrderService" {
 		
 		for(var orderTemplateItem in orderTemplateItems){ 
 
+			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()#, adding skuID: #orderTemplateItem['sku_skuID']#');
+
 			if(!isNull(orderTemplateItem.temporaryFlag) && orderTemplateItem.temporaryFlag == true){
 				temporaryItemFound = true;
 			}
@@ -1615,7 +1667,7 @@ component extends="Slatwall.model.service.OrderService" {
 			}
 			
 			arguments.order = this.addOrderItemFromTemplateItem(argumentCollection=args);
-			
+
 			//define order fulfillment for the rest of the loop	
 			if( isNull(orderFulfillment) && 
 				!arrayIsEmpty(arguments.order.getOrderItems()) && 
@@ -1627,7 +1679,7 @@ component extends="Slatwall.model.service.OrderService" {
 				orderFulfillment.setShippingMethod(arguments.orderTemplate.getShippingMethod());
 				orderFulfillment.setFulfillmentMethod(arguments.orderTemplate.getShippingMethod().getFulfillmentMethod());
 
-				orderFulfillment = this.saveOrderFulfillment( orderFulfillment=orderFulfillment, updateOrderAmounts=false );
+				orderFulfillment = this.saveOrderFulfillment( orderFulfillment=orderFulfillment, updateOrderAmounts=false, updateShippingMethodOptions=false );
 
 				if (orderFulfillment.hasErrors()){
 					//propegate to parent, because we couldn't create the fulfillment this order is not going to be placed
@@ -1638,10 +1690,23 @@ component extends="Slatwall.model.service.OrderService" {
 
 			if(arguments.order.hasErrors()){
 				this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(arguments.order.getErrors())# when adding order item skuID: #orderTemplateItem['sku_skuID']#', true);
-				arguments.order.clearHibachiErrors();
-				arguments.orderTemplate.clearHibachiErrors();
-				//try to place as much of the order as possible should only fail in OFY case
-				continue;
+				
+				// if it's OFY, remove and continue, other wise skip template because of error
+				if(!isNull(orderTemplateItem.temporaryFlag) && orderTemplateItem.temporaryFlag == true){
+					var orderItems = arguments.order.getOrderItems();
+					for(var orderItem in orderItems) {
+						if(orderTemplateItem['sku_skuID'] == orderItem.getSku().getSkuID()){
+							this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# Remove temporary Item SkuID: #orderTemplateItem['sku_skuID']# because of error', true);
+							arguments.order.removeOrderItem( orderitem );
+							continue;
+						}
+					}
+					arguments.order.clearHibachiErrors();
+					arguments.orderTemplate.clearHibachiErrors();
+					continue;
+				} else {
+					return arguments.order;
+				}
 			}
 		}
 		
@@ -1740,15 +1805,37 @@ component extends="Slatwall.model.service.OrderService" {
 	}
 	
 
-	public string function getOrderRequirementsList(required any order, struct data = {}) {
+	public any function processOrder_placeOrder(required any order, struct data={}) {
 		
-		var orderRequirementsList = super.getOrderRequirementsList(argumentCollection=arguments);
-		
-		if (!listFindNoCase(orderRequirementsList, "account") && isNull(arguments.order.getAccount().getOwnerAccount())){
-			orderRequirementsList = listAppend(orderRequirementsList, "account");
+		if (isNull(arguments.order.getAccount().getOwnerAccount())){
+			arguments.order.addError( 'placeOrder', rbKey("validate.processOrder_PlaceOrder.invalidOwnerAccount") );
+			return arguments.order;
 		}
 		
-		return orderRequirementsList;
+		return super.processOrder_placeOrder(argumentCollection=arguments);
+	}
+	
+	
+	public any function processOrder_importOrderUpdates() {
+		
+		getHibachiScope()
+			.getService('integrationService')
+			.getIntegrationByIntegrationPackage('monat')
+			.getIntegrationCFC("data")
+			.importOrderUpdates({});
+
+		return newOrder();
+	}
+	
+	public any function processOrder_importOrderShipments() {
+		
+		getHibachiScope()
+			.getService('integrationService')
+			.getIntegrationByIntegrationPackage('monat')
+			.getIntegrationCFC("data")
+			.importOrderShipments({});
+
+		return newOrder();
 	}
 
 }

@@ -17,6 +17,14 @@
 				<strong class="text-danger"> &nbsp;-&nbsp; <u sw-rbkey="'frontend.flexshipCard.menu.editPaymentMethod'"></u> </strong>
 			</a>
 		</div>
+		
+		<div ng-if="!monatFlexshipCard.orderTemplate.frequencyTerm_termID.trim().length" class="alert alert-danger">
+			<i class="fa fa-info-circle" aria-hidden="true"></i>
+			<span sw-rbkey="'frontend.flexship.actionRequired'"></span> &nbsp;-&nbsp; <span sw-rbkey="'frontend.flexship.noFrequency'"></span>
+			<a href="#" ng-click="monatFlexshipCard.showFlexshipScheduleModal()">
+				<strong> &nbsp;-&nbsp; <u sw-rbkey="'frontend.flexshipCard.menu.editSchedule'"></u> </strong>
+			</a>
+		</div>
 	</div>
 	
 	<div class="alert alert-success text-center" ng-if="monatFlexshipCard.orderTemplate.isNew">
@@ -106,9 +114,6 @@
 					<monat-flexship-menu 
 						ng-if="monatFlexshipCard.orderTemplate.statusCode !== 'otstCancelled'"
 						data-order-template="monatFlexshipCard.orderTemplate"
-						data-account-addresses="monatFlexshipCard.accountAddresses"
-						data-account-payment-methods="monatFlexshipCard.accountPaymentMethods"
-						data-state-code-options="monatFlexshipCard.stateCodeOptions"
 					></monat-flexship-menu>
 				</div>
 				

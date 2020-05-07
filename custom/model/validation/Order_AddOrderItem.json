@@ -17,11 +17,9 @@
 	},
 	"properties": {
 		"order" : [{"method": "orderCreatedSiteMatchesAccountCreatedSite"}],
-		"isPurchasableItemFlag" :	[
-			{ "eq": true },
-			{ "conditions":"isMarketPartnerSalesOrder", "eq": true, "method":"marketPartnerValidationMaxOrderAmount" }
-		],
-		"sku":						[{"method": "orderMinimumDaysToRenewMPFailed"}],
+		"shippingAddress" : [{"method": "isValidCountry"}],
+		"isPurchasableItemFlag" :	[ { "eq": true } ],
+		"sku":						[ {"method": "orderMinimumDaysToRenewMPFailed"}],
 		"quantity":[
 			{	
 				"conditions": "renewalFeeFlag",

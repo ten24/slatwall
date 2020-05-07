@@ -114,41 +114,46 @@ component accessors="true" output="false" extends="HibachiService" {
 			}
 		}else{
 			var entityQueueIDsToBeDeleted = '';
-			
-			for(var entityQueue in arguments.entityQueueArray){
-
+			var maxThreads = createObject( "java", "java.lang.Runtime" ).getRuntime().availableProcessors();
+			var entityQueueIDsToBeDeletedArray = arguments.entityQueueArray.map( function( entityQueue ){
 				try{
 					var noMethod = !structKeyExists(entityQueue, 'processMethod') || 
 									isNull(entityQueue['processMethod']) || 
 								    !len(entityQueue['processMethod']);  
-
+	
 					if(noMethod) { 
-						entityQueueIDsToBeDeleted = listAppend(entityQueueIDsToBeDeleted, entityQueue['entityQueueID']);
-						continue;
+						return entityQueue['entityQueueID'];
 					}
 				
 					var entityService = getServiceForEntityQueue(entityQueue);
-
+	
 					var entity = entityService.invokeMethod( "get#entityQueue['baseObject']#", {1= entityQueue['baseID'] });
 					
 					if(isNull(entity)){
-						entityQueueIDsToBeDeleted = listAppend(entityQueueIDsToBeDeleted, entityQueue['entityQueueID']);
-						continue;
+						return entityQueue['entityQueueID'];
 					}
-
+	
 					var entityMethodInvoked = invokeMethodOrProcessOnService(entityQueue, entity, entityService);  
 					
-					entityQueueIDsToBeDeleted = listAppend(entityQueueIDsToBeDeleted, entityQueue['entityQueueID']);
-				
 					if(entityMethodInvoked){
 						ormflush();
-					} 
+					} else {
+						ORMClearSession();
+						getHibachiScope().setORMHasErrors(false);
+					}
+					
+					return entityQueue['entityQueueID'];
 				}catch(any e){
 					getHibachiEntityQueueDAO().updateModifiedDateTimeAndMostRecentError(entityQueue['entityQueueID'], e.message);
 				}
-			}
-			if(listLen(entityQueueIDsToBeDeleted)){
-				deleteEntityQueueItems(entityQueueIDsToBeDeleted);
+			}, true, maxThreads);
+			
+			var cleanEntityQueueIDsToBeDeletedArray = entityQueueIDsToBeDeletedArray.filter(function(item){
+			    return len(item);
+			});
+			
+			if(arrayLen(cleanEntityQueueIDsToBeDeletedArray)){
+				deleteEntityQueueItems(arrayToList(cleanEntityQueueIDsToBeDeletedArray));
 			}
 
 		}

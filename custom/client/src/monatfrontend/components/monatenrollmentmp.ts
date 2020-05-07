@@ -31,9 +31,12 @@ class EnrollmentMPController {
 	public endpoint: 'setUpgradeOnOrder' | 'setUpgradeOrderType' = 'setUpgradeOnOrder';
 	public showUpgradeErrorMessage = false;
 	public loadingBundles: boolean = false;
+	public hairProductFilter:any;
+	public skinProductFilter:any;
+	public sortedBundles = [];
 	
 	// @ngInject
-	constructor(public publicService, public observerService, public monatService, private rbkeyService) {}
+	constructor(public publicService, public observerService, public monatService, private rbkeyService, private monatAlertService) {}
 	
 	public $onInit = () => {
 		this.getDateOptions();
@@ -58,12 +61,18 @@ class EnrollmentMPController {
 			}
 			
 			this.isInitialized = true;
+			let unsortedBundles = [];
 			
 			for(let bundle in this.bundles){
 				let str = this.stripHtml(this.bundles[bundle].description);
 				this.bundles[bundle].description = str.length > 70 ? str.substring(0, str.indexOf(' ', 60)) + '...' : str;
+				unsortedBundles.push(this.bundles[bundle]);
 			}
 			
+			this.sortedBundles = unsortedBundles.sort(function(a, b) {
+				  return (a.sortOrder > b.sortOrder) ? 1 : -1
+			});
+
 		});
 	}
 	
@@ -158,8 +167,6 @@ class EnrollmentMPController {
         if ( this.selectedBundleID.length ) {
 			this.loading = true;
 			this.monatService.selectStarterPackBundle( this.selectedBundleID ).then(data => {
-				this.loading = false;
-        		
 				if ( data.hasErrors ) {
 					for ( let error in data.errors ) {
 						this.bundleErrors = this.bundleErrors.concat( data.errors[ error ] );
@@ -167,7 +174,10 @@ class EnrollmentMPController {
 				} else {
 					this.observerService.notify('onNext');
 				}
-    		});
+    		})
+    		.catch((e) => this.monatAlertService.showErrorsFromResponse(e))
+    		.finally( () => this.loading = false);
+    		
         } else {
             this.bundleErrors.push( this.rbkeyService.rbKey('frontend.enrollment.selectPack'));
         }
@@ -189,8 +199,9 @@ class EnrollmentMPController {
 				}else{
 					this.sponsorErrors.submit = true;
 				}
-				this.loading = false;
 			})
+			.catch((e) => this.monatAlertService.showErrorsFromResponse(e))
+    		.finally( () => this.loading = false);
 		} else {
 			this.sponsorErrors.selected = true;
 			this.loading = false;
@@ -210,9 +221,23 @@ class EnrollmentMPController {
 		return tmp.textContent || tmp.innerText || '';
 	};
 
-	public getProductList = () => {
+	public getProductList = ( category:any, categoryType:string ) => {
 		this.loading = true;
-		this.publicService.doAction('getproductsByCategoryOrContentID', {priceGroupCode: 1}).then((result) => {
+		
+		let data:any = {
+			priceGroupCode: 1
+		};
+		
+		if(category){
+			data.categoryFilterFlag = true;
+			data.categoryID = category.value;
+			this.hairProductFilter = null;
+			this.skinProductFilter = null;
+			this[`${categoryType}ProductFilter`] = category;
+			this.paginationObject['categoryID'] = category.value;
+		}
+		
+		this.publicService.doAction('getproductsByCategoryOrContentID', data).then((result) => {
 			this.observerService.notify("PromiseComplete");
 			this.productList = result.productList;
 			this.productRecordsCount = result.recordsCount

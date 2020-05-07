@@ -66,13 +66,15 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 		var account = arguments.order.getAccount();
 		arguments.slatwallScope.clearCurrentFlexship(); //if there was any
 		
+		var originalAccountType = account.getAccountType() ?: '';
+		
 		// Snapshot the pricegroups on the order.
 		if ( !isNull(account) && arrayLen(account.getPriceGroups()) ) {
             arguments.order.setPriceGroup(account.getPriceGroups()[1]);
         }
         
         //Commission Date
-        arguments.order.setCommissionPeriod(dateFormat( now(), "mm/yyyy" ));
+        arguments.order.setCommissionPeriod(dateFormat( now(), "yyyymm" ));
         
         // Set the Product Pack Purchased Flag
         if( account.getAccountType() == 'marketPartner' && arguments.order.hasProductPack() ) {
@@ -106,7 +108,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 				}
     		
 			}else if(arguments.order.getMonatOrderType().getTypeCode() == 'motMpEnrollment'){
-    			account.setAccountType('marketPartner');	
+    			account.setAccountType('marketPartner');
+    			account.setCareerTitle('Market Partner');
+				account.setRank(1);
     			account.setPriceGroups([getService('PriceGroupService').getPriceGroupByPriceGroupCode(1)]);
 				if(!isFirstOrder){
 					getHibachiEventService().announceEvent('afterMarketPartnerUpgradeSuccess', {'order':arguments.order, 'entity':arguments.order}); 	
@@ -140,10 +144,13 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 					account.setEnrollmentDate(now());
 				}
 				
-				if( CompareNoCase(account.getAccountType(), 'marketPartner')  == 0  ) {
+				if( account.getAccountType() == 'marketPartner' ) {
 					//set renewal-date to one-year-from-enrolmentdate
 					var renewalDate = DateAdd('yyyy', 1, account.getEnrollmentDate());
 					account.setRenewalDate(DateAdd('yyyy', 1, account.getEnrollmentDate()));
+					account.setCareerTitle('Market Partner');
+					account.setRank(1);
+					
 				}
 				
 				//TODO: Move this logic to account save
@@ -155,7 +162,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 				// 		logHibachi("afterOrderProcess_placeOrderSuccess failed @ addMemberToListByAccount for #account.getAccountID()#");
 				// 	}
 				// }
-			
+				
+				getHibachiEventService().announceEvent('after#account.getAccountType()#EnrollmentSuccess', {'account':account, 'entity':account}); 
 				getHibachiEventService().announceEvent('afterAccountEnrollmentSuccess', {'account':account, 'entity':account}); 
 
 				if(!isNull(account.getOwnerAccount())){
@@ -172,6 +180,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 				var currentRenewalDate = ParseDateTime(arguments.order.getAccount().getRenewalDate());
 				var renewalDate = DateAdd('yyyy', 1, currentRenewalDate);
 				account.setRenewalDate(renewalDate);
+			}else if(originalAccountType != account.getAccountType()){
+				getHibachiEventService().announceEvent('after#originalAccountType#To#account.getAccountType()#UpgradeSuccess', {'account':account, 'entity':account}); 
 			}else{
     			arguments.order.setOrderOrigin(getService('orderService').getOrderOriginByOrderOriginName('Internet Order'));
 			}
@@ -282,15 +292,15 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 	
 	public any function afterOrderItemCreateSuccess(required any slatwallScope, required any orderItem, required any data){ 
 		// Flush so the item is there when we need it. 
-		if (!arguments.orderItem.getOrder().hasErrors()){
-			ormFlush();
+		if (!arguments.slatwallScope.ORMHasErrors()){
+			arguments.slatwallScope.flushORMSession();
+			try{
+				this.createOrderItemSkuBundle( arguments.orderItem );
+			}catch(bundleError){
+				logHibachi("afterOrderItemProcessCreateSuccess failed @ create bundle items for orderitem #orderItem.getOrderItemID()# ");
+			}
 		}
-		
-		try{
-			this.createOrderItemSkuBundle( arguments.orderItem );
-		}catch(bundleError){
-			logHibachi("afterOrderItemProcessCreateSuccess failed @ create bundle items for orderitem #orderItem.getOrderItemID()# ");
-		}
+
 	}
 	
 	/**

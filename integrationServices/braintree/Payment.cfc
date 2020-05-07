@@ -150,7 +150,7 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 			"variables" : { "clientToken": { "merchantAccountId": "#merchantAccountId#", "customerId": "#arguments.requestBean.getAccount().getAccountID()#" } }
 		};
 		httpRequest.addParam(type="body",value=SerializeJson(payload));
-		
+
 		var response = httpRequest.send().getPrefix();
 
 		if (!IsJSON(response.FileContent)) {
@@ -295,19 +295,35 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 		// define discount
 		if(arguments.requestBean.getOrder().getDiscountTotal() > 0) {
 			discount += arguments.requestBean.getOrder().getDiscountTotal();
+			
+			item_payload.append({
+					'name' : 'Discount',
+					'kind' : 'CREDIT',
+					'quantity' : '1',
+					'unitAmount' : '#arguments.requestBean.getOrder().getDiscountTotal()#',
+					'productCode' : '',
+					"totalAmount" : "#arguments.requestBean.getOrder().getDiscountTotal()#"
+			});
 		}
-
-		var total = arguments.requestBean.getOrder().getTotal(); 
-
+		
 		if(arguments.requestBean.getOrder().hasGiftCardOrderPaymentAmount()) {
 			discount += arguments.requestBean.getOrder().getGiftCardOrderPaymentAmount();
-			total -= arguments.requestBean.getOrder().getGiftCardOrderPaymentAmount(); 
-		}	
+			
+			item_payload.append({
+					'name' : 'Gift Card Payment',
+					'kind' : 'CREDIT',
+					'quantity' : '1',
+					'unitAmount' : '#arguments.requestBean.getOrder().getGiftCardOrderPaymentAmount()#',
+					'productCode' : '',
+					"totalAmount" : "#arguments.requestBean.getOrder().getGiftCardOrderPaymentAmount()#"
+			});
+		}
+
+		var total = arguments.requestBean.getOrder().getTotal();
 
 		var client_token = arguments.requestBean.getProviderToken();
 
 		//Formatting total to be 2 decimal places
-		var totalWithDiscount  = NumberFormat(total + discount, "0.00");
 		total = NumberFormat(total, "0.00");
 		
 		//Populate shipping address if orderFulFillment exits
@@ -337,11 +353,14 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 		        };	
 	        }
 	    }
+	    
+	    var merchantAccountId = setting(settingName='braintreeAccountMerchantID', requestBean=arguments.requestBean);
 
 		//request payload
-		var payload = { "query" : "mutation CaptureTransaction($input: ChargePaymentMethodInput!) { chargePaymentMethod(input: $input) { transaction { id status } } }",
+		var payload = { "query" : "mutation ChargePaymentMethod($input: ChargePaymentMethodInput!) { chargePaymentMethod(input: $input) { transaction { id status } } }",
 			"variables" : { "input": { "paymentMethodId": "#client_token#", "transaction" : { 
-				"amount" : '#totalWithDiscount#',
+				"amount" : '#total#',
+				"merchantAccountId" : "#merchantAccountId#",
 				"orderId" : "#arguments.requestBean.getOrder().getOrderNumber()#",
 				'discountAmount' : '#discount#',
 				'shipping' : { 
@@ -355,7 +374,6 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 
 		httpRequest.addParam(type="body",value=SerializeJson(payload));
 		var response = httpRequest.send().getPrefix();
-
 		if ( !IsJSON(response.FileContent)) {
 		    responseBean.addError("Processing error", "Not able to process this request. Invalid response.");
 		}

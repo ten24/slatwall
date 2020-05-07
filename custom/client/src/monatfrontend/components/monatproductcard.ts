@@ -20,7 +20,8 @@ class MonatProductCardController {
     public isAccountWishlistItem: boolean = false;
     public currencyCode:string;
     public siteCode:string;
-
+	public flexshipType:string;
+	
 	// @ngInject
 	constructor(
 		//inject modal service
@@ -135,8 +136,12 @@ class MonatProductCardController {
 
 	
 	public launchQuickShopModal = () => {
-	
+		let type = '';
 		
+		if(this.type=='flexship' || (this.type.indexOf('VIP') >-1 && this.type != 'VIPenrollmentOrder' ) ){
+			type = 'flexship';
+		};
+	
 		this.ModalService.showModal({
 			component: 'monatProductModal',
 			bodyClass: 'angular-modal-service-active',
@@ -144,9 +149,10 @@ class MonatProductCardController {
 				siteCode:this.siteCode,
 				currencyCode:this.currencyCode,
 				product: this.product,
-				type: this.type,
+				type: type,
 				isEnrollment: this.isEnrollment,
 				orderTemplateID: this.orderTemplate,
+				flexshipHasAccount: this.flexshipType == 'flexshipHasAccount' ? true : false
 			},
 			preClose: (modal) => {
 				modal.element.modal('hide');
@@ -167,11 +173,28 @@ class MonatProductCardController {
 		this.lastAddedSkuID = skuID;
 		let orderTemplateID = this.orderTemplate;
 		if (this.type === 'flexship' || this.type==='VIPenrollment') {
-			this.orderTemplateService.addOrderTemplateItem(skuID, orderTemplateID)
+			let extraProperties = "canPlaceOrderFlag,purchasePlusTotal,appliedPromotionMessagesJson,calculatedOrderTemplateItemsCount";
+
+			if(this.flexshipType == 'flexshipHasAccount'){
+				extraProperties += ',qualifiesForOFYProducts,vatTotal,taxTotal,fulfillmentHandlingFeeTotal,fulfillmentTotal';
+			}
+			
+			if(!this.orderTemplateService.cartTotalThresholdForOFYAndFreeShipping){
+				extraProperties += ',cartTotalThresholdForOFYAndFreeShipping';
+			}
+	
+			let data = {
+				optionalProperties: extraProperties,
+				saveContext: 'upgradeFlow', 
+				setIfNullFlag: false, 
+				nullAccountFlag: this.flexshipType == 'flexshipHasAccount' ? false : true
+			}
+	
+			this.orderTemplateService.addOrderTemplateItem(skuID, orderTemplateID, 1, false, data)
 			.then( (result) =>{
 			    if(result.successfulActions &&
 					result.successfulActions.indexOf('public:order.addOrderTemplateItem') > -1) {
-						this.orderTemplateService.getSetOrderTemplateOnSession('qualifiesForOFYProducts', 'save', false, false);
+					//	this.orderTemplateService.getSetOrderTemplateOnSession('qualifiesForOFYProducts', 'save', false, false);
 					}
 				 else{
 				     throw (result);
@@ -187,7 +210,7 @@ class MonatProductCardController {
 			this.monatService.addToCart(skuID, 1).then((result) => {
 			    if(result.successfulActions &&
 					result.successfulActions.indexOf('public:cart.addOrderItem') > -1) {
-				this.monatAlertService.success(this.rbkeyService.rbKey('alert.flexship.addProductsucessfull')); 
+				this.monatAlertService.success(this.rbkeyService.rbKey('alert.flexship.addProductSuccessful')); 
 			    }
 				else{
 				    throw(result);
@@ -217,6 +240,7 @@ class MonatProductCardController {
     
 	public launchWishlistModal = (skuID, productName) => {
 		let newSkuID = skuID
+
 		this.ModalService.showModal({
 			component: 'swfWishlist',
 			bodyClass: 'angular-modal-service-active',
@@ -271,7 +295,8 @@ class MonatProductCard {
 		allProducts: '<?',
 		orderTemplate: '<?',
 		currencyCode:'@',
-		siteCode:'@'
+		siteCode:'@',
+		flexshipType:"<?"
 	};
 
 	public controller = MonatProductCardController;

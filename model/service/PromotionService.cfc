@@ -548,20 +548,24 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		var maxMessages = getService('SettingService').getSettingValue('globalMaximumPromotionMessages');
 
-		if(maxMessages < arrayLen(arguments.orderQualifierMessages)){
-			arguments.orderQualifierMessages = arraySlice(arguments.orderQualifierMessages,1,maxMessages);
-		}
-		
+		var messagesApplied = 0;
 		for(var promotionQualifierMessage in arguments.orderQualifierMessages){
-			var newAppliedPromotionMessage = this.newPromotionMessageApplied();
-			newAppliedPromotionMessage.setOrder( arguments.order );
-		
-			newAppliedPromotionMessage.setPromotionQualifierMessage( promotionQualifierMessage );
-			newAppliedPromotionMessage.setPromotionPeriod(promotionQualifierMessage.getPromotionQualifier().getPromotionPeriod());
-			newAppliedPromotionMessage.setPromotion(newAppliedPromotionMessage.getPromotionPeriod().getPromotion());
-			newAppliedPromotionMessage.setMessage( promotionQualifierMessage.getInterpolatedMessage( arguments.order ) );
+			if( promotionQualifierMessage.hasOrderByOrderID(arguments.order.getOrderID()) ){
+				var newAppliedPromotionMessage = this.newPromotionMessageApplied();
+				newAppliedPromotionMessage.setOrder( arguments.order );
 			
-			this.savePromotionMessageApplied(newAppliedPromotionMessage);
+				newAppliedPromotionMessage.setPromotionQualifierMessage( promotionQualifierMessage );
+				newAppliedPromotionMessage.setPromotionPeriod(promotionQualifierMessage.getPromotionQualifier().getPromotionPeriod());
+				newAppliedPromotionMessage.setPromotion(newAppliedPromotionMessage.getPromotionPeriod().getPromotion());
+				newAppliedPromotionMessage.setMessage( promotionQualifierMessage.getInterpolatedMessage( arguments.order ) );
+				
+				this.savePromotionMessageApplied(newAppliedPromotionMessage);
+				messagesApplied++;
+			}
+			
+			if(messagesApplied == maxMessages){
+				break;
+			}
 		}
 
 	}
@@ -680,6 +684,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var rewardCanStack = true;
 		
 		for( var appliedPromotion in appliedPromotions ){
+			if( isNull(appliedPromotion.getPromotionReward()) ){
+				continue;
+			}
 			var appliedRewardID = appliedPromotion.getPromotionRewardID();
 			var appliedRewardType = appliedPromotion.getPromotionReward().getRewardType();
 
@@ -1352,6 +1359,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			'activePromotionRewards':[]
 		};
 		var promotionRewards = getPromotionDAO().getActivePromotionRewards(rewardTypeList="canPlaceOrder", qualificationRequired=true,promotionCodeList=arguments.order.getPromotionCodeList(), promotionEffectiveDateTime=now(),site=arguments.order.getOrderCreatedSite());
+		var qualifierMessages = [];
 		
 		if(arraylen(promotionRewards)){
 			
@@ -1361,11 +1369,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				
 				arrayAppend(canPlaceOrderDetails['activePromotionRewards'], promoReward.getPromotionRewardID());
 				
-				var qualificationDetails = getPromotionPeriodQualificationDetails(promotionPeriod=promoReward.getPromotionPeriod(), order=arguments.order);
+				var qualificationDetails = getPromotionPeriodQualificationDetails(promotionPeriod=promoReward.getPromotionPeriod(), order=arguments.order, orderQualifierMessages=qualifierMessages);
 				if(qualificationDetails.qualificationsMeet){
 					qualificationDetails['canPlaceOrder'] = true;
 					return qualificationDetails; 
 				}
+			}
+			
+			if(arrayLen(qualifierMessages)){
+				getHibachiScope().flushOrmSession();
+				applyPromotionQualifierMessagesToOrder(arguments.order,qualifierMessages);
 			}
 		}
 		return canPlaceOrderDetails; 
@@ -1457,7 +1470,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var innerFiltersOrFilterGroups = skuCollectionConfig['filterGroups'][1]['filterGroup'];
 	
 			for(var innerFilterOrFilterGroup in innerFiltersOrFilterGroups){
-				this.logHibachi('promotion reward #promotionReward.getPromotionRewardID()# innerFilterGroup #serializeJson(innerFilterOrFilterGroup)#',true);
+				this.logHibachi('promotion reward #promotionReward.getPromotionRewardID()# innerFilterGroup #serializeJson(innerFilterOrFilterGroup)#');
 				arrayAppend(masterSkuCollection.getCollectionConfigStruct()['filterGroups'][filterGroupIndex]['filterGroup'], innerFilterOrFilterGroup);
 			} 
 		} 

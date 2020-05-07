@@ -42,6 +42,11 @@ class SWClickOutside{
                 });
             }
         });
+        
+        scope.$on('$destroy', () => {
+           elem = null;
+           scope = null;
+        });
     }
     
     

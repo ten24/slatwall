@@ -13,7 +13,7 @@
 			<!--- Account --->
 			
 			<cfif rc.edit>
-				<hb:HibachiPropertyDisplay object="#rc.order#" property="account" fieldtype="textautocomplete" autocompletePropertyIdentifiers="adminIcon,fullName,company,emailAddress,phoneNumber,address.simpleRepresentation" edit="true">
+				<hb:HibachiPropertyDisplay object="#rc.order#" property="account" fieldtype="textautocomplete" autocompletePropertyIdentifiers="adminIcon,fullName,company,emailAddress,phoneNumber,address.simpleRepresentation" edit="#rc.order.getStatusCode() == 'ostNotPlaced'#">
 				<cfif rc.order.hasAccount() >
 					<cfloop index="local.priceGroup" array="#rc.order.getAccount().getPriceGroups()#">
 						<hb:HibachiPropertyDisplay object="#local.priceGroup#" property="priceGroupName">

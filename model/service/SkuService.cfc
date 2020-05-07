@@ -629,10 +629,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		arguments.sku.setProduct(arguments.processObject.getProduct());
 		arguments.sku = this.saveSku(arguments.sku);		
-	
-		if(originalProduct.getSkusCount() == 1){
+		if(isDefaultSku){
+			originalProduct.setDefaultSku(JavaCast('null',''));
+		}
+		getHibachiScope().flushORMSession();
+		if(originalProduct.getSkusCount() == 0){
 			originalProduct.setSkus([]);
 			var success = getProductService().deleteProduct(originalProduct); 
+			if(!success){
+				arguments.sku.addError('deleteProduct',rbKey('validate.delete.product'));
+			}
 		} else if(isDefaultSku){
 			originalProduct.setDefaultSku(originalProduct.getSkus()[1]); 
 			originalProduct = getProductService().saveProduct(originalProduct); 

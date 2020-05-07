@@ -34,13 +34,15 @@ component extends="Slatwall.model.service.SkuService" accessors="true" output="f
 		return price; //not returning return the NULL null, as cf won't set that in any var
 	}
 
-	public any function processSku_skuImport() {
-		var data = {
-			'days' : 1
-		}
-		getHibachiScope().getService('integrationService').getIntegrationByIntegrationPackage('monat').getIntegrationCFC("data").importMonatProducts(data);
+	public any function processSku_skuImport(required sku, required any processObject) {
+		
+		getHibachiScope()
+			.getService('integrationService')
+			.getIntegrationByIntegrationPackage('monat')
+			.getIntegrationCFC("data")
+			.importMonatProducts({ 'days' : 1 });
 
-		return this.new('Sku');
+		return arguments.sku;
 	}
 }
 
