@@ -1435,9 +1435,29 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             productData['ingredients'] = [];
             productData['productDescription'] = product.getFormattedValue('productDescription');
             
+            var steps = {};
+            var counter = 1;
+            for ( i = 0;  i < 5 ; i++ ) {
+                steps[i]["title"] = product.getFormattedValue("productHowStepTitle" & counter);
+                steps[i]["description"] = product.getFormattedValue("productHowStepDescription" & counter);
+                
+                counter++;
+            }
+            productData['productHowto']["steps"] = steps;
+            
+            var rbkey = {};
+            rbkey["step"] = getHibachiScope().rbKey('frontend.global.step');
+            rbkey["of"] = getHibachiScope().rbKey('frontend.global.of');
+            productData['productHowto']["rbkey"] = rbkey;
+            
             var fileName = product.getAttributeValue( 'productVideoBackgroundImage' );
-            var videoBackgroundImage = getService('imageService').getResizedImagePath(imagePath = "#getHibachiScope().getBaseImageURL()#'/'#fileName#",width = 300, height =300);
-            productData['videoBackgroundImage'] = videoBackgroundImage;
+            productData['productVideoBackgroundImage'] = getService('imageService').getResizedImagePath(imagePath = "#getHibachiScope().getBaseImageURL()#'/'#fileName#",width = 300, height =300);
+            
+            var fileName = product.getAttributeValue( 'productHowBackgroundImage' );
+            productData['productHowBackgroundImage'] = getService('imageService').getResizedImagePath(imagePath = "#getHibachiScope().getBaseImageURL()#'/'#fileName#",width = 300, height =300);
+            
+            var fileName = product.getAttributeValue( 'productHowVideoImage' );
+            productData['productHowVideoImage'] = getService('imageService').getResizedImagePath(imagePath = "#getHibachiScope().getBaseImageURL()#'/'#fileName#",width = 300, height =300);
             
             if(!isNull(product.getProductIngredient1())){
                 var productIngredient1 = {};
