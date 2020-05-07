@@ -332,6 +332,10 @@ component extends="HibachiService" output="false" accessors="true" {
 				fieldType="listingMultiselect",
 				listingMultiselectEntityName="Term"
 			},		
+			orderTemplateEligibleShippingMethods = {
+				fieldType="listingMultiselect",
+				listingMultiselectEntityName="ShippingMethod"
+			},
 			orderTemplateRequirePaymentFlag = {fieldtype="yesno", defaultValue=1},
 			// Payment Method
 			paymentMethodMaximumOrderTotalPercentageAmount = {fieldType="text", defaultValue=100, formatType="percentage", validate={dataType="numeric", minValue=0, maxValue=100}},
@@ -385,6 +389,7 @@ component extends="HibachiService" output="false" accessors="true" {
             siteRecaptchaSiteKey = {fieldType="text"},
 			siteRecaptchaSecretKey = {fieldType="text"},
 			siteRecaptchaProtectedEvents = {fieldType="multiselect", defaultValue=""},
+			
 			
 			// Shipping Method
 			shippingMethodQualifiedRateSelection = {fieldType="select", defaultValue="lowest"},
