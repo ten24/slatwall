@@ -236,4 +236,11 @@ component {
 		return variables.fulfillmentHandlingFeeTotal; 	
 	}	
 	
+	public any function getShippingMethodOptions(){
+		var shippingMethodCollection = getService('ShippingService').getShippingMethodCollectionList();
+		shippingMethodCollection.setDisplayProperties('shippingMethodName|name,shippingMethodID|value'); 
+		shippingMethodCollection.addFilter('shippingMethodID',this.getSite().setting('siteOrderTemplateEligibleShippingMethods'),'in'); 
+		return shippingMethodCollection.getRecords();
+	}
+	
 }

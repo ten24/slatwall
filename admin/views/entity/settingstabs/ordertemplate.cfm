@@ -48,7 +48,6 @@
 		<swa:SlatwallSetting settingName="orderTemplateEligibleTerms" />
 		<swa:SlatwallSetting settingName="orderTemplateDefaultFrequencyTerm" />
 		<swa:slatwallSetting settingName="orderTemplateCanPlaceFutureScheduleDateFlag" />
-		<swa:SlatwallSetting settingName="orderTemplateEligibleShippingMethods" />
 		<swa:SlatwallSetting settingName="orderTemplateRequirePaymentFlag" />
         <swa:SlatwallSetting settingName="orderTemplateDaysAllowedToEditNextOrderTemplate" />
 	</swa:SlatwallSettingTable>

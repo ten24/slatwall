@@ -165,8 +165,8 @@ component extends="Slatwall.model.service.OrderService" {
         if(isNull(arguments.data.orderTemplateName)  || !len(trim(arguments.data.orderTemplateName)) ) {
 			arguments.data.orderTemplateName = "My Flexship, Created on " & dateFormat(now(), "long");
         }
-        
-        var siteCountryCode = getSiteService().getCountryCodeBySite(arguments.processObject.getSite());
+        var site = arguments.processObject.getSite();
+        var siteCountryCode = getSiteService().getCountryCodeBySite(site);
 		
 		//grab and set shipping-account-address from account
 		//Add Address only when it belongs to same country as site
@@ -176,10 +176,9 @@ component extends="Slatwall.model.service.OrderService" {
 		    arguments.orderTemplate.setShippingAccountAddress(account.getPrimaryAddress());
 		}
 		
-		
 		//NOTE: there's only one shipping method allowed for flexship
 		var shippingMethod = getService('ShippingService').getShippingMethod( 
-		            ListFirst( arguments.orderTemplate.setting('orderTemplateEligibleShippingMethods') )
+		            ListFirst( site.setting('siteOrderTemplateEligibleShippingMethods') )
 			   );
 		orderTemplate.setShippingMethod(shippingMethod);
 		
