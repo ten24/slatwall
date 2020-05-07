@@ -291,6 +291,20 @@ component entityname="SlatwallShippingMethodRate" table="SwShippingMethodRate" p
         }    
     }
     
+	public numeric function getHandlingFeeAsNumericValue(required any orderFulfillment) {
+		var type = this.setting('shippingMethodRateHandlingFeeType') ?: '';
+		if(type=='amount'){
+			return this.setting('shippingMethodRateHandlingFeeAmount');
+		}else if(type=='percentage'){
+			var percentage = getChargeAmountByRatePercentage(arguments.orderFulfillment,this.setting('shippingMethodRateHandlingFeePercentage'));
+			var handlingFee = 0;
+			for(var item in arguments.orderFulfillment.getOrderFulfillmentItems()){
+				handlingFee += val(getService('HibachiUtilityService').precisionCalculate(item.getItemTotal() * (percentage / 100)));
+			}
+			return handlingFee;
+		}
+	}
+	
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// =============== START: Custom Validation Methods ====================
