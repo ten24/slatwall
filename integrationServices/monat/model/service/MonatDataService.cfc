@@ -198,8 +198,8 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 			fsResponse.hasErrors = false;
 		    return fsResponse;
 		}
-
-		logHibachi("Could not import #name#(s) on this page: PS-#arguments.pageSize# PN-#pageNumber#", true);
+writedump(apiData); abort;
+		logHibachi("Could not import #endpoint#(s) on this page: PS-#arguments.pageSize# PN-#pageNumber#", true);
 		fsResponse.hasErrors = true;
 
 
@@ -245,7 +245,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 				pageSize = arguments.rc.pageSize,
 				dateFilterStart = DateTimeFormat( DateAdd('h', arguments.rc.hours * -1, now()), "yyyy-mm-dd'T'HH:NN:SS'.000Z'" ),
 				dateFilterEnd = DateTimeFormat( now(), "yyyy-mm-dd'T'HH:NN:SS'.000Z'" ),
-				endpoint = 'SWGetShipmentInfo'
+			endpoint = 'SWGetShipmentInfo'
 			);
 			arguments.rc.pageMax = response.totalPages ?: 0;
 		}
@@ -286,7 +286,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 					logHibachi("importOrderShipments - Delivery #shipment.shipmentId# Already Exists - Order Number:#shipment.orderNumber#", true);
 					continue;
 				}
-				persist = true;
+				
 				logHibachi("importOrderShipments - Creating: #shipment.shipmentId#", true);
 				
 				var order = getOrderService().getOrderByOrderNumber(shipment.OrderNumber);
@@ -294,6 +294,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 					logHibachi("importOrderShipments - Delivery #shipment.shipmentId# Order Not Found - Order Number:#shipment.orderNumber#", true);
 					continue;
 				}
+				
 				
 				logHibachi("importOrderShipments - Creating OrderDelivery: #shipment.shipmentId#", true);
 				
@@ -344,7 +345,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 					}
     			}
                 ormStatelessSession.insert("SlatwallOrderDelivery", orderDelivery );
-                
+                persist = true;
                 
                 
                 for(var item in shipment.Items){
@@ -376,6 +377,9 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 		            
 		            
 					ormStatelessSession.insert("SlatwallOrderDeliveryItem", orderDeliveryItem);
+					
+					orderItem.setCalculatedQuantityDelivered(val(orderItem.getCalculatedQuantityDelivered()) + item['QuantityShipped']);
+					orderItem.setCalcQtyDeliveredMinusReturns(val(orderItem.getCalcQtyDeliveredMinusReturns()) + item['QuantityShipped']);
                 }
                 
                 logHibachi("importOrderShipments - Created a delivery for orderNumber: #shipment['OrderNumber']#",true);
