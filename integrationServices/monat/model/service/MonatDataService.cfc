@@ -167,8 +167,9 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 			datePart("d",date));
 	}
 	
-	private any function getData(pageNumber,pageSize,dateFilterStart,dateFilterEnd,name){
-	    var uri = setting('baseImportURL') & name;
+	private any function getData(pageNumber,pageSize,dateFilterStart,dateFilterEnd,endpoint){
+		logHibachi("getData - #endpoint# between #dateFilterStart# - #dateFilterEnd#", true); 
+	    var uri = setting('baseImportURL') & endpoint;
 		var authKeyName = "authkey";
 		var authKey = setting(authKeyName);
 	    var fsResponse = {hasErrors: false};
@@ -205,7 +206,198 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 		return fsResponse;
 	}
 	
+	private any function getShippingMethod(required string shipMethodCode) {
+		if(!structKeyExists(variables, "shippingMethods")) {
+			variables.shippingMethods = {};
+		}
+		if(!structKeyExists(variables.shippingMethods, arguments.shipMethodCode)) {
+			variables.shippingMethods[arguments.shipMethodCode] = getShippingService().getShippingMethodByShippingMethodCode(arguments.shipMethodCode);
+		}
+		return variables.shippingMethods[arguments.shipMethodCode];
+	}
+	
+	
+	private any function getLocation(required string currencyCode) {
+		if(!structKeyExists(variables, "locationStruct")) {
+			variables.locationStruct = {};
+		}
+		if(!structKeyExists(variables.locationStruct, arguments.currencyCode)) {
+			variables.locationStruct[arguments.currencyCode] = getLocationService().getLocationByCurrencyCode(arguments.currencyCode);
+		}
+		return variables.locationStruct[arguments.currencyCode];
+	}
+	
+	
+	
 	public void function importOrderShipments(){ 
+		param name="arguments.rc.pageNumber" default=1;
+		param name="arguments.rc.pageSize" default=50;
+		param name="arguments.rc.hours" default=48;
+
+
+		getService("HibachiTagService").cfsetting(requesttimeout="60000");
+		
+		logHibachi("importOrderShipments - Start", true);
+
+		if(!structKeyExists(arguments.rc, 'pageMax')){
+			var response = getData(
+				pageNumber = arguments.rc.pageNumber,
+				pageSize = arguments.rc.pageSize,
+				dateFilterStart = DateTimeFormat( DateAdd('h', arguments.rc.hours * -1, now()), "yyyy-mm-dd'T'HH:NN:SS'.000Z'" ),
+				dateFilterEnd = DateTimeFormat( now(), "yyyy-mm-dd'T'HH:NN:SS'.000Z'" ),
+				endpoint = 'SWGetShipmentInfo'
+			);
+			arguments.rc.pageMax = response.totalPages ?: 0;
+		}
+		
+		logHibachi("importMonatProducts - Total Pages: #arguments.rc.pageMax#", true);
+		
+		var ormStatelessSession = ormGetSessionFactory().openStatelessSession();
+		var tx = ormStatelessSession.beginTransaction();
+
+        var SHIPPED = getTypeService().getTypeByTypeName("Shipped");
+        
+		for(var index = arguments.rc.pageNumber; index <= arguments.rc.pageMax; index++){
+			var persist = false;
+		    
+		    logHibachi("importMonatProducts - Current Page #index#", true); 
+			var shipmentResponse = getData(
+				pageNumber = arguments.rc.pageNumber,
+				pageSize = arguments.rc.pageSize,
+				dateFilterStart = DateTimeFormat( DateAdd('h', arguments.rc.hours * -1, now()), "yyyy-mm-dd'T'HH:NN:SS'.000Z'" ),
+				dateFilterEnd = DateTimeFormat( now(), "yyyy-mm-dd'T'HH:NN:SS'.000Z'" ),
+				endpoint = 'SWGetShipmentInfo'
+			);
+			
+			for(var shipment in shipmentResponse['Records'] ){
+				
+				logHibachi("importOrderShipments - Checking: #shipment.shipmentNumber#", true);
+				
+				if(isNull(shipment.OrderNumber) || isNull(shipment.Packages) || !len(shipment.OrderNumber) || !arrayLen(shipment.Packages) || !arrayLen(shipment.Items)){
+					logHibachi("importOrderShipments - Delivery #shipment.shipmentId# required data missing", true);
+					continue;
+				}
+				
+				var countOrderDelivery = QueryExecute('SELECT count(*) total FROM sworderdelivery WHERE remoteID = :remoteID',{ 
+					 'remoteID' = { value=shipment.shipmentId, cfsqltype="cf_sql_varchar"},
+				});
+				
+				if(countOrderDelivery['total'] > 0){
+					logHibachi("importOrderShipments - Delivery #shipment.shipmentId# Already Exists - Order Number:#shipment.orderNumber#", true);
+					continue;
+				}
+				persist = true;
+				logHibachi("importOrderShipments - Creating: #shipment.shipmentId#", true);
+				
+				var order = getOrderService().getOrderByOrderNumber(shipment.OrderNumber);
+				if(isNull(order)){
+					logHibachi("importOrderShipments - Delivery #shipment.shipmentId# Order Not Found - Order Number:#shipment.orderNumber#", true);
+					continue;
+				}
+				
+				logHibachi("importOrderShipments - Creating OrderDelivery: #shipment.shipmentId#", true);
+				
+				try{
+    				var shippingMethod = getShippingMethod(shipment.ShipMethodCode);
+    				var location = getLocation(order.getCurrencyCode());
+				}catch(any e){
+					logHibachi("importOrderShipments - OrderDelivery #shipment.shipmentId# error getting shipment: #shipment.ShipMethodCode# or location: #order.getCurrencyCode()#", true);
+					continue;
+				}
+				
+				
+				// Create the delivery.  
+                var orderDelivery = new Slatwall.model.entity.OrderDelivery();
+                
+                orderDelivery.setRemoteID( shipment.shipmentId );
+    			orderDelivery.setOrder( order );
+    			orderDelivery.setModifiedDateTime( now() );
+                orderDelivery.setShippingMethod( shippingMethod );
+                orderDelivery.setFulfillmentMethod( shippingMethod.getFulfillmentMethod() );
+    			
+    			if(!isNull(shipment.shipmentNumber)){
+    				orderDelivery.setShipmentNumber( shipment.shipmentNumber );
+    			}
+    			if(!isNull(shipment.orderShipSequence)){
+    				orderDelivery.setShipmentSequence( shipment.orderShipSequence );
+    			}
+    			if(!isNull(shipment.PONumber)){
+    				orderDelivery.setPurchaseOrderNumber( shipment.PONumber );
+    			}
+    			
+    			if(!isNull(shipment.Packages[1]['ScanDate'])){
+    				orderDelivery.setScanDate( getDateFromString( shipment.Packages[1]['ScanDate'] ) );
+    			}
+    			if(!isNull(shipment.Packages[1]['UndeliveredReasonDescription'])){
+    				orderDelivery.setUndeliverableOrderReason( shipment.Packages[1]['UndeliveredReasonDescription'] );
+    			}
+    			if(!isNull(shipment.Packages[1]['PackageShipDate'])){
+    				orderDelivery.setCreatedDateTime( getDateFromString( shipment.Packages[1]['PackageShipDate'] ) );
+    			}
+    			
+    			if(!isNull(shipment.Packages[1]['TrackingNumber'])){
+    				orderDelivery.setTrackingNumber( shipment.Packages[1]['TrackingNumber'] );
+    		    	var trackingUrl = orderDelivery.getShippingMethod().setting("shippingMethodTrackingURL");
+    		    	if (!isNull(trackingUrl)){
+						trackingUrl = trackingUrl.replace("${trackingNumber}", orderDelivery.getTrackingNumber());
+						orderDelivery.setTrackingURL( trackingUrl );
+					}
+    			}
+                ormStatelessSession.insert("SlatwallOrderDelivery", orderDelivery );
+                
+                
+                
+                for(var item in shipment.Items){
+
+					var orderItem = ormExecuteQuery("FROM SlatwallOrderItem where sku.skuCode = :skuCode AND order.orderID= :orderID", {
+						skuCode = item.ItemCode, 
+						orderID = order.getOrderID()
+					}, true);
+					
+					if(isNull(orderItem)){
+						continue;
+					}
+                	
+                	var orderDeliveryItem = new Slatwall.model.entity.OrderDeliveryItem();
+		            orderDeliveryItem.setQuantity(item['QuantityShipped']);
+		            //get Order Item by skuID and OrderID
+		            
+		            orderDeliveryItem.setOrderItem(orderItem);
+		            orderDeliveryItem.setOrderDelivery(orderDelivery);
+		            
+		             //now try to find the stock to attach
+		            var stock = orderItem.getStock();
+		            
+		            if (isNull(stock)){
+		                stock = getStockService().getStockBySkuAndLocation(orderItem.getSku(), location);
+		            }
+		            
+		            orderDeliveryItem.setStock(stock);
+		            
+		            
+					ormStatelessSession.insert("SlatwallOrderDeliveryItem", orderDeliveryItem);
+                }
+                
+                logHibachi("importOrderShipments - Created a delivery for orderNumber: #shipment['OrderNumber']#",true);
+                
+                // Close the order.
+                //now fire the event for this delivery.
+                var eventData = {entity: orderDelivery};
+                getHibachiScope().getService("hibachiEventService").announceEvent(eventName="afterOrderDeliveryCreateSuccess", eventData=eventData);
+				order.setOrderStatusType(SHIPPED);
+			}
+			if(persist){
+				tx.commit();
+				ormGetSession().clear();
+			}
+		
+		}
+		ormStatelessSession.close();
+		
+		
+	}
+	
+	public void function importOrderShipments2(){ 
 	    
 	    logHibachi("importOrderShipments - Start", true);
         
@@ -213,7 +405,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
          * Allows the user to override the last n HOURS that get checked. 
          * Defaults to 60 Minutes ago.
          **/
-        var intervalOverride = 1;
+        var intervalOverride = 9;
         
         /**
          * The ids of the orderitems to be added to the entity queue (List)
@@ -256,7 +448,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 		 * This only adds a delivery IF its not already delivered, so we can do that.
 		 * 
 		 **/
-	    var startDate = "#year(sixtyMinutesAgo)#-#numberFormat(month(sixtyMinutesAgo),'00')#-#numberFormat(day(sixtyMinutesAgo),'00')#T#numberformat(hour(sixtyMinutesAgo),'00')#:#numberformat(minute(sixtyMinutesAgo), '00')#:#numberformat(second(sixtyMinutesAgo), '00')#.693Z";
+	    var startDate = "#year(sixtyMinutesAgo)#-#numberFormat(month(sixtyMinutesAgo),'00')#-#numberFormat(day(sixtyMinutesAgo),'00')#T00:#numberformat(minute(sixtyMinutesAgo), '00')#:#numberformat(second(sixtyMinutesAgo), '00')#.693Z";
 	
 		/**
 		 * This should always equal now.
@@ -320,8 +512,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
          */
         var dataExistsToCreateDelivery = function(shipment) {
 
-            
-            if (containsAll(shipment, "OrderNumber,Packages") && orderExists(shipment.OrderNumber)){
+            if (containsAll(shipment, "OrderNumber,Packages")){
                 return true;    
             }else{
                 logHibachi("importOrderShipments - OrderNumber,Packages Not found", true);
@@ -379,7 +570,6 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
             }
             
 			ormStatelessSession.insert("SlatwallOrderDeliveryItem", orderDeliveryItem);
-			
             return orderDeliveryItem;
         };
 
@@ -428,6 +618,21 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
          * @return {Void}
          */
         var createDelivery = function(shipment){
+            
+            if(listLen(modifiedEntityIDs) > 1){
+			    return;
+			}
+			
+			
+			var orderDelivery = QueryExecute('SELECT count(*) total FROM sworderdelivery WHERE remoteID = :remoteID',{ 
+				 'remoteID' = { value=shipment.shipmentId, cfsqltype="cf_sql_varchar"},
+			});
+			
+			if(orderDelivery['total'] > 0 ){
+			    logHibachi("createDelivery: Can't create the delivery - already exists or data not present.", true);
+			    return;
+			}
+    			
             logHibachi("importOrderShipments - createDelivery: #shipment.shipmentNumber#", true);
 			var order = order(shipment.OrderNumber);
 
@@ -503,6 +708,8 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
                 var eventData = {entity: orderDelivery};
                 getHibachiScope().getService("hibachiEventService").announceEvent(eventName="afterOrderDeliveryCreateSuccess", eventData=eventData);
                 
+                
+                
             }else{
                 logHibachi("createDelivery: Can't create the delivery - already exists or data not present.", true);
             }
@@ -530,6 +737,10 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
         // This wraps the map in a new stateless session to keep things fast
         var tx = ormStatelessSession.beginTransaction();
         while (pageNumber <= TotalPages){
+            if(listLen(modifiedEntityIDs) > 1){
+                pageNumber = 999999999;
+			    break;
+			}
             
             logHibachi("importOrderShipments - Importing pagenumber: #pageNumber#", true);
 	        // Call the api and get shipment records for the date defined as the filter.
@@ -542,6 +753,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
             
             
 	        var shipments = response.Records?:"null";
+	        
             
             
 	        if (shipments.equals("null")){
@@ -568,24 +780,34 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 			}
 			
 			logHibachi("importOrderShipments - End Importing pagenumber: #pageNumber#", true);
+		
+			
+			logHibachi("importOrderShipments - modifiedEntityIDs: #listLen(modifiedEntityIDs)#", true);
+			
+			
 			pageNumber++;
         }
+        	logHibachi("importOrderShipments - commit", true);
         tx.commit();
+        logHibachi("importOrderShipments - close", true);
 		ormStatelessSession.close();
 		
+		logHibachi("importOrderShipments - Loop", true);
 		//now set al the orders to closed.
 		for (var orderID in modifiedEntityIDs){
 		    var order = getService("OrderService").getOrderByOrderID(orderID);
 		    order.setOrderStatusType(CLOSEDSTATUS);
-		    var orderItems = order.getOrderItems();
-		    for(var orderItem in orderItems){
-		        orderItem.updateCalculatedProperties(true);
-		    }
+		    //var orderItems = order.getOrderItems();
+		  //  for(var orderItem in orderItems){
+		  //      logHibachi("importOrderShipments - loop orderItems", true);
+		  //      orderItem.updateCalculatedProperties(true);
+		  //  }
+		    logHibachi("importOrderShipments - save order", true);
 		    getService("OrderService").saveOrder(order);
-		    
-		    ormFlush();
+		    logHibachi("importOrderShipments - flush", true);
+		   
 		}
-		
+		 ormFlush();
 		logHibachi("importOrderShipments - End: #pageNumber# - #pageSize#", true);
         // Sets the default view 
 
@@ -987,7 +1209,6 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 		try {
 			httpService.setTimeout(10000)
 			responseJson = httpService.send().getPrefix();
-
 			var response = deserializeJson(responseJson.fileContent);
 
 			if(isArray(response)){
@@ -1086,7 +1307,8 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 
 
 	private numeric function getLastProductPageNumber(numeric pageSize = 25, struct extraBody ={}){
-		var initProductData = this.getApiResponse(!structIsEmpty(extraBody) ? "SWGetNewUpdatedSKU" : "QueryItems", 1, arguments.pageSize, arguments.extraBody );
+
+		var initProductData = this.getApiResponse("SWGetNewUpdatedSKU", 1, arguments.pageSize, arguments.extraBody );
 		if(structKeyExists(initProductData, 'Data') && structKeyExists(initProductData['Data'], 'TotalPages')){
 			return initProductData['Data']['TotalPages'];
 		}
@@ -1113,11 +1335,12 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 		    
 			extraBody = {
 				"Filters": {
-				    "StartDate": DateTimeFormat( now(), "yyyy-mm-dd'T'00:00:01'.693Z'" ),
+				    "StartDate": DateTimeFormat( DateAdd('d', arguments.rc.days * -1, now()), "yyyy-mm-dd'T'00:00:01'.693Z'" ),
 		            "EndDate": DateTimeFormat( now(), "yyyy-mm-dd'T'23:59:59'.693Z'" )
 				}
 			};
 		}
+		
 
 		if(!structKeyExists(arguments.rc, 'pageMax')){
 			arguments.rc.pageMax = this.getLastProductPageNumber(arguments.rc.pageSize, extraBody);
@@ -1148,7 +1371,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 		for(var index = arguments.rc.pageNumber; index <= arguments.rc.pageMax; index++){
 		    
 		    logHibachi("importMonatProducts - Current Page #index#", true); 
-			var productResponse = this.getApiResponse( arguments.rc.days > 0 ? "SWGetNewUpdatedSKU" : "QueryItems", index, arguments.rc.pageSize, extraBody );
+			var productResponse = this.getApiResponse("SWGetNewUpdatedSKU", index, arguments.rc.pageSize, extraBody );
 			
 			//goto next page causing this is erroring!
 			if ( productResponse.hasErrors ){
@@ -1494,7 +1717,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 		arguments.rc.pageMax = this.getLastProductPageNumber(arguments.rc.pageSize, extraBody);
 	
 		for(var index = arguments.rc.pageNumber; index <= arguments.rc.pageMax; index++){
-			var productResponse = this.getApiResponse( arguments.rc.days > 0 ? "SWGetNewUpdatedSKU" : "QueryItems", index, arguments.rc.pageSize, extraBody );
+			var productResponse = this.getApiResponse("SWGetNewUpdatedSKU", index, arguments.rc.pageSize, extraBody );
 
 			//goto next page causing this is erroring!
 			if ( productResponse.hasErrors ){
