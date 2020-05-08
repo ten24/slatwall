@@ -274,7 +274,7 @@ component extends="Slatwall.model.service.OrderService" {
 
 		this.sendEmail(
 			emailAddress = arguments.processObject.getReceiverEmailAddress(), 
-			emailTemplateID = "", //?? which-template 
+			emailTemplateID = "2c9280846c2f994c016c30157bdc0009", // QQ should we create a custom-setting for this?
 			emailTemplateObject = arguments.orderTemplate
 		);
 		
