@@ -1287,6 +1287,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         productCollectionList.addDisplayProperty('skus.skuID');
         productCollectionList.addDisplayProperty('skus.skuPrices.personalVolume');
         productCollectionList.addDisplayProperty('skus.skuPrices.price');
+        productCollectionList.addDisplayProperty('calculatedAllowBackorderFlag');
         productCollectionList.addDisplayProperty('urlTitle');
         productCollectionList.addDisplayProperty('skus.imageFile');
         
@@ -1562,7 +1563,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                 'priceGroupCode': arguments.priceGroupCode,
                 'upgradedPricing': '',
                 'upgradedPriceGroupCode': upgradedPriceGroupCode,
-                'qats': record.skus_stocks_calculatedQATS
+                'qats': record.skus_stocks_calculatedQATS,
+                'calculatedAllowBackorderFlag': record.calculatedAllowBackorderFlag
             };
             
             //add skuID's to skuID array for query below
