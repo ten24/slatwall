@@ -131,14 +131,14 @@ Notes:
 		</cfquery>
 	</cffunction>
 	
-	<cffunction name="getExclusiveWorkflowTriggersInvocationDomains">
+	<cffunction name="getExclusiveWorkflowTriggersInvocationClusters">
 		<cfquery name="local.rs">
-			SELECT allowedInvocationDomain FROM SwWorkflowTrigger 
-			WHERE allowedInvocationDomain IS NOT NULL AND allowedInvocationDomain != ''
-			AND exclusiveInvocationDomainFlag = 1
+			SELECT allowedInvocationCluster FROM SwWorkflowTrigger 
+			WHERE allowedInvocationCluster IS NOT NULL AND allowedInvocationCluster != ''
+			AND exclusiveInvocationClusterFlag = 1
 		</cfquery>
 		
-		<cfreturn valueList(local.rs.allowedInvocationDomain) />
+		<cfreturn valueList(local.rs.allowedInvocationCluster) />
 	</cffunction>
 	
 </cfcomponent>

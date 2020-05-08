@@ -83,6 +83,18 @@
 	</cffunction>
 	
 	
+	<cffunction name="setScheduleOrderProcessingFlag" access="public" returntype="void" output="false">
+		<cfargument name="orderTemplateID" type="string" required="true" />
+		<cfargument name="value" type="boolean" required="true" />
+
+		<cfset var rs = "" />
+
+		<cfquery name="rs">
+			UPDATE SwOrderTemplate SET scheduleOrderProcessingFlag = <cfqueryparam cfsqltype="cf_sql_bit" value="#arguments.value#" /> WHERE orderTemplateID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderTemplateID#" />
+		</cfquery>
+	</cffunction>
+	
+	
     <cfscript>
 		public any function getMostRecentNotPlacedOrderByAccountID( required string accountID ) {
 			return ormExecuteQuery(" FROM SlatwallOrder o WHERE o.account.accountID = :accountID AND o.orderStatusType.systemCode = :orderStatusType AND o.orderType.systemCode = :orderType AND o.orderCreatedSite.siteID = :requestSite ORDER BY modifiedDateTime DESC", 
@@ -90,5 +102,6 @@
 			);
 		}	
 	</cfscript>
+	
 	
 </cfcomponent>

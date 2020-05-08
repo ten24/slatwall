@@ -25,6 +25,8 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
     this.publicMethods=ListAppend(this.publicMethods, 'updateOrderTemplateSchedule');
     this.publicMethods=ListAppend(this.publicMethods, 'updateOrderTemplateFrequency');
     this.publicMethods=ListAppend(this.publicMethods, 'getAccountGiftCards');
+    this.publicMethods=ListAppend(this.publicMethods, 'getAccountAddresses');
+    this.publicMethods=ListAppend(this.publicMethods, 'getAccountPaymentMethods');
     this.publicMethods=ListAppend(this.publicMethods, 'applyGiftCardToOrderTemplate');
     this.publicMethods=ListAppend(this.publicMethods, 'getOrderTemplatePromotionSkuCollectionConfig');
     this.publicMethods=ListAppend(this.publicMethods, 'getOrderTemplatePromotionSkus');

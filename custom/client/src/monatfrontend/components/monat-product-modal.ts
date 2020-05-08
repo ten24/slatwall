@@ -19,9 +19,17 @@ class MonatProductModalController {
 	};
 	public muraContentIngredients:string;
 	public muraValues:string;
+	public productHowto: any = {
+		rbkey : {
+			'step': '',
+			'of': ''
+		},
+		steps : {}
+	};
 	public trustedVideoURL:string;
 	public videoRatio;
 	public flexshipHasAccount:boolean;
+	public sliderInitialized:boolean = false;
 	
 	//@ngInject
 	constructor(
@@ -49,6 +57,7 @@ class MonatProductModalController {
 			this.trustedVideoURL = this.$sce.trustAsResourceUrl(data.productData.videoUrl);
 			this.muraContentIngredients = data.muraIngredients.length ? data.muraIngredients[0] : '';
 			this.muraValues = data.muraValues.length ? data.muraValues[0] : '';
+			this.productHowto = data.productData.productHowto;
 			
 			if(this.productDetails.videoHeight){
 				this.setVideoRatio();
@@ -159,6 +168,34 @@ class MonatProductModalController {
     	let ratio = 16 / 9;
         ratio = Math.round( this.productDetails.videoHeight / this.productDetails.videoWidth * 100 * 10000 ) / 10000;
         this.videoRatio = ratio;
+	}
+	
+	public initSlider = () => {
+		if (!this.sliderInitialized) {
+			this.sliderInitialized = true;
+			
+			var wordStep = this.productHowto.rbkey.step;
+			var wordOf = this.productHowto.rbkey.of;
+			
+			$('.how-to-slider').ready(function(){
+				var $sliderElement = $('.how-to-slider');
+				
+				$sliderElement.on('init reInit afterChange', function (event, slick, currentSlide, nextSlide) {
+					var i = (currentSlide ? currentSlide : 0) + 1;
+					$('.steps-count').text(wordStep + ' ' + i + ' ' + wordOf + ' ' + slick.slideCount);
+				});
+				
+				$sliderElement.slick({
+					infinite: true,
+					autoplay: false,
+					autoplaySpeed: 5000,
+					dots: false,
+					arrows: true,
+					prevArrow:"<button type='button' class='slick-prev'><i class='fa fa-chevron-left' aria-hidden='true'></i></button>",
+					nextArrow:"<button type='button' class='slick-next'><i class='fa fa-chevron-right' aria-hidden='true'></i></button>"
+				});
+			});		
+		}
 	}
 }
 

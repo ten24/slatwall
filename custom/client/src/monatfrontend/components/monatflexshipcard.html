@@ -2,19 +2,19 @@
 	
 	<div ng-if="monatFlexshipCard.orderTemplate.statusCode !== 'otstCancelled'">
 		
-		<div ng-if="!monatFlexshipCard.orderTemplate.shippingAccountAddress_accountAddressID.trim().length" class="alert alert-danger">
+		<div ng-if="!monatFlexshipCard.orderTemplate.shippingAccountAddress_accountAddressID.trim().length" class="alert alert-danger text-danger pl-5">
 			<i class="fa fa-info-circle" aria-hidden="true"></i>
 			<span sw-rbkey="'frontend.flexship.actionRequired'"></span> &nbsp;-&nbsp; <span sw-rbkey="'frontend.flexship.noDeliveryAddress'"></span>
 			<a href="#" ng-click="monatFlexshipCard.showFlexshipEditShippingMethodModal()">
-				<strong> &nbsp;-&nbsp; <u sw-rbkey="'frontend.flexshipCard.menu.editDeliveryAddress'"></u> </strong>
+				<strong class="text-danger"> &nbsp;-&nbsp; <u sw-rbkey="'frontend.flexshipCard.menu.editDeliveryAddress'"></u> </strong>
 			</a>
 		</div>
 		
-		<div ng-if="!monatFlexshipCard.orderTemplate.accountPaymentMethod_accountPaymentMethodID.trim().length" class="alert alert-danger">
+		<div ng-if="!monatFlexshipCard.orderTemplate.accountPaymentMethod_accountPaymentMethodID.trim().length" class="alert alert-danger text-danger pl-5">
 			<i class="fa fa-info-circle" aria-hidden="true"></i>
 			<span sw-rbkey="'frontend.flexship.actionRequired'"></span> &nbsp;-&nbsp; <span sw-rbkey="'frontend.flexship.noPaymentMethod'"></span>
 			<a href="#" ng-click="monatFlexshipCard.showFlexshipEditPaymentMethodModal()">
-				<strong> &nbsp;-&nbsp; <u sw-rbkey="'frontend.flexshipCard.menu.editPaymentMethod'"></u> </strong>
+				<strong class="text-danger"> &nbsp;-&nbsp; <u sw-rbkey="'frontend.flexshipCard.menu.editPaymentMethod'"></u> </strong>
 			</a>
 		</div>
 		
@@ -32,9 +32,10 @@
 		<span sw-rbkey="'frontend.flexshipCreateSucess'"></span>
 	</div>
 	
-	<div class="alert alert-success" ng-if="
+	<div class="alert alert-success pl-5" ng-if="
 				monatFlexshipCard.orderTemplate.billingAccountAddress_accountAddressID.trim().length 
 	            && monatFlexshipCard.orderTemplate.shippingAccountAddress_accountAddressID.trim().length
+	            && monatFlexshipCard.orderTemplate.frequencyTerm_termID.trim().length
 	            && monatFlexshipCard.orderTemplate.statusCode === 'otstDraft'
 	 ">
 		<i class="fa fa-check" aria-hidden="true"></i>

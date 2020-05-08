@@ -33,6 +33,7 @@ class EnrollmentMPController {
 	public loadingBundles: boolean = false;
 	public hairProductFilter:any;
 	public skinProductFilter:any;
+	public sortedBundles = [];
 	
 	// @ngInject
 	constructor(public publicService, public observerService, public monatService, private rbkeyService, private monatAlertService) {}
@@ -60,12 +61,18 @@ class EnrollmentMPController {
 			}
 			
 			this.isInitialized = true;
+			let unsortedBundles = [];
 			
 			for(let bundle in this.bundles){
 				let str = this.stripHtml(this.bundles[bundle].description);
 				this.bundles[bundle].description = str.length > 70 ? str.substring(0, str.indexOf(' ', 60)) + '...' : str;
+				unsortedBundles.push(this.bundles[bundle]);
 			}
 			
+			this.sortedBundles = unsortedBundles.sort(function(a, b) {
+				  return (a.sortOrder > b.sortOrder) ? 1 : -1
+			});
+
 		});
 	}
 	

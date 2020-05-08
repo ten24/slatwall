@@ -819,6 +819,8 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 					}else if(len(getThirdPartyShippingAccountIdentifier())){
 						setFulfillmentCharge(0);
 					}
+					
+					setHandlingFee(getFulfillmentShippingMethodOptions()[i].getShippingMethodRate().getHandlingFeeAsNumericValue(this));
 				}
 			}
 		} else {

@@ -509,6 +509,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             accountPaymentMethod.setAccount( getHibachiScope().getAccount() );
             accountPaymentMethod.setPaymentMethod( paymentMethod );
             accountPaymentMethod.setProviderToken( responseBean.getProviderToken() );
+            accountPaymentMethod.setCurrencyCode( getHibachiScope().cart().getCurrencyCode() );
             accountPaymentMethod = getService('AccountService').saveAccountPaymentMethod(accountPaymentMethod);
 
             if(accountPaymentMethod.hasErrors()){
@@ -824,7 +825,12 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		bundlePersistentCollectionList.addFilter( 'sku.product.activeFlag', true );
 		bundlePersistentCollectionList.addFilter( 'sku.product.publishedFlag', true );
 		bundlePersistentCollectionList.addFilter( 'sku.product.productType.urlTitle', 'starter-kit,productPack','in' );
-		bundlePersistentCollectionList.addOrderBy( 'createdDateTime|DESC');
+		bundlePersistentCollectionList.addFilter('sku.product.listingPages.content.contentID',arguments.data.contentID,"=" );
+		var content = getService('contentService').getContent(arguments.data.contentID)
+        var orderByProp = replace(content.getProductSortProperty(), '_productlistingpage_', '');
+        var orderByDirection = content.getProductSortDefaultDirection();
+     
+		bundlePersistentCollectionList.addOrderBy( 'sku.#orderByProp#|#orderByDirection#');
 		
 		if(!isNull(getHibachiScope().getCurrentRequestSite())){
 		    bundlePersistentCollectionList.addFilter('sku.product.sites.siteID',getHibachiScope().getCurrentRequestSite().getSiteID());
@@ -865,19 +871,22 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         bundlePersistentCollectionList.addFilter('bundledSku.skuPrices.priceGroup.priceGroupCode',1);
         
 		var skuBundles = bundlePersistentCollectionList.getRecords();
-	
+	    
 		// Build out bundles struct
 		var bundles = {};
 		var skuBundleCount = arrayLen(skuBundles);
 		var products = {};
+		var sortOrder = 0;
+		
 		for ( var i=1; i<=skuBundleCount; i++ ){
 			var skuBundle = skuBundles[i]; 
-		
+		    
 			var skuID = skuBundle.sku_product_defaultSku_skuID;
 			var subProductTypeID = skuBundle.bundledSku_product_productType_productTypeID;
-		
+		   
 			// If this is the first time the parent product is looped over, setup the product.
 			if ( ! structKeyExists( bundles, skuID ) ) {
+			    sortOrder++
 				bundles[ skuID ] = {
 					'ID': skuID,
 					'name': skuBundle.sku_product_productName,
@@ -886,7 +895,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 					'image': baseImageUrl & skuBundle.sku_product_defaultSku_imageFile,
 					'personalVolume': skuBundle.sku_skuPrices_personalVolume,
 					'productTypes': {},
-					'currencyCode': visibleColumnConfigWithArguments['arguments']['currencyCode']
+					'currencyCode': visibleColumnConfigWithArguments['arguments']['currencyCode'],
+					'sortOrder': sortOrder
 				};
 			}
 			
@@ -1451,9 +1461,29 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             productData['ingredients'] = [];
             productData['productDescription'] = product.getFormattedValue('productDescription');
             
+            var steps = {};
+            var counter = 1;
+            for ( i = 0;  i < 5 ; i++ ) {
+                steps[i]["title"] = product.getFormattedValue("productHowStepTitle" & counter);
+                steps[i]["description"] = product.getFormattedValue("productHowStepDescription" & counter);
+                
+                counter++;
+            }
+            productData['productHowto']["steps"] = steps;
+            
+            var rbkey = {};
+            rbkey["step"] = getHibachiScope().rbKey('frontend.global.step');
+            rbkey["of"] = getHibachiScope().rbKey('frontend.global.of');
+            productData['productHowto']["rbkey"] = rbkey;
+            
             var fileName = product.getAttributeValue( 'productVideoBackgroundImage' );
-            var videoBackgroundImage = getService('imageService').getResizedImagePath(imagePath = "#getHibachiScope().getBaseImageURL()#'/'#fileName#",width = 300, height =300);
-            productData['videoBackgroundImage'] = videoBackgroundImage;
+            productData['productVideoBackgroundImage'] = getService('imageService').getResizedImagePath(imagePath = "#getHibachiScope().getBaseImageURL()#'/'#fileName#",width = 300, height =300);
+            
+            var fileName = product.getAttributeValue( 'productHowBackgroundImage' );
+            productData['productHowBackgroundImage'] = getService('imageService').getResizedImagePath(imagePath = "#getHibachiScope().getBaseImageURL()#'/'#fileName#",width = 300, height =300);
+            
+            var fileName = product.getAttributeValue( 'productHowVideoImage' );
+            productData['productHowVideoImage'] = getService('imageService').getResizedImagePath(imagePath = "#getHibachiScope().getBaseImageURL()#'/'#fileName#",width = 300, height =300);
             
             if(!isNull(product.getProductIngredient1())){
                 var productIngredient1 = {};

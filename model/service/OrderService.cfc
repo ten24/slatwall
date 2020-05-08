@@ -1617,11 +1617,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public any function processOrderTemplate_createAndPlaceOrder(required any orderTemplate, any processObject, required struct data={}){
 
 		this.logHibachi('Start Processing OrderTemplate #arguments.orderTemplate.getOrderTemplateID()#', true);
-		var nextPlaceDate = arguments.orderTemplate.getFrequencyTerm().getEndDate(arguments.orderTemplate.getScheduleOrderNextPlaceDateTime());  	
-
-		//we set this first so that even if there's a problem with the order a workflow won't attempt retry	
-		arguments.orderTemplate.setScheduleOrderNextPlaceDateTime(nextPlaceDate);
-		arguments.orderTemplate.setScheduleOrderProcessingFlag(false);
+		
+		// if next process date is in future and not a logged in user skip
+		if( (!isNull(arguments.orderTemplate.getScheduleOrderProcessingFlag()) && arguments.orderTemplate.getScheduleOrderProcessingFlag()) ) {
+			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# - Already processing', true);
+			return arguments.orderTemplate;
+		}
+		
+		//we set this first and persist so that even if there's a problem with the order a workflow won't attempt retry	
+		getOrderDAO().setScheduleOrderProcessingFlag(arguments.orderTemplate.getOrderTemplateID(), true);
 
 		var newOrder = this.newOrder(); 
 		newOrder = this.processOrder_Create(newOrder, getOrderCreateProcessObjectForOrderTemplate(arguments.orderTemplate, newOrder)); 	
@@ -1629,6 +1633,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(newOrder.hasErrors()){
 			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# when creating', true);
 			arguments.orderTemplate.clearHibachiErrors();
+			getOrderDAO().setScheduleOrderProcessingFlag(arguments.orderTemplate.getOrderTemplateID(), false);
 			return arguments.orderTemplate; 
 		} 
 
@@ -1638,10 +1643,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		newOrder = this.saveOrder(order=newOrder, updateOrderAmounts=false, updateOrderAmounts=false, updateShippingMethodOptions=false, checkNewAccountAddressSave=false); 
 		
 		newOrder = this.createOrderItemsFromOrderTemplateItems(newOrder,arguments.orderTemplate);
-	
+		
 		if(newOrder.hasErrors()){
 			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# after adding order items', true);
 			arguments.orderTemplate.addErrors(newOrder.getErrors()); 
+			getOrderDAO().setScheduleOrderProcessingFlag(arguments.orderTemplate.getOrderTemplateID(), false);
 			return arguments.orderTemplate;
 		}	
 
@@ -1671,7 +1677,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arguments.orderTemplate.clearHibachiErrors();
 		}
 	
-		this.processOrder( newOrder, {}, 'updateOrderAmounts' );
+		this.processOrder_updateOrderAmounts(newOrder);
 
 		newOrder.updateCalculatedProperties(runAgain=true); 
 		ormFlush();//flush so that the order exists
@@ -1683,7 +1689,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arguments.orderTemplate.addErrors(newOrder.getErrors()); 
 			return arguments.orderTemplate;
 		}
-			
+		
+		var nextPlaceDate = arguments.orderTemplate.getFrequencyTerm().getEndDate(arguments.orderTemplate.getScheduleOrderNextPlaceDateTime());  	
+		arguments.orderTemplate.setScheduleOrderNextPlaceDateTime(nextPlaceDate);
 		arguments.orderTemplate.setLastOrderPlacedDateTime( now() );
 	
 		var eventData = { entity: newOrder, order: newOrder, data: {} };
@@ -1764,6 +1772,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(newOrder.hasErrors()){
 			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors on add order payment #serializeJson(newOrder.getErrors())# when adding a payment', true);
 			arguments.orderTemplate.addErrors(newOrder.getErrors()); 
+			getOrderDAO().setScheduleOrderProcessingFlag(arguments.orderTemplate.getOrderTemplateID(), false);
 			return arguments.orderTemplate;
 		}
 		
@@ -1817,7 +1826,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		getOrderDAO().removeTemporaryOrderTemplateItems(arguments.orderTemplate.getOrderTemplateID());	
 		this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# completing place order and has status: #newOrder.getOrderStatusType().getTypeName()#', true);
-
+		
+		getOrderDAO().setScheduleOrderProcessingFlag(arguments.orderTemplate.getOrderTemplateID(), false);
 		return arguments.orderTemplate; 
 	}
 	
@@ -3594,7 +3604,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	 						listFindNoCase("oitSale,oitDeposit",orderItem.getOrderItemType().getSystemCode()) 
 	 					){
 	 						var skuPrice = val(orderItem.getSkuPrice());
-	 						var skuPriceByCurrencyCode = val(orderItem.getSku().getPriceByCurrencyCode(orderItem.getCurrencyCode(), orderItem.getQuantity()));
+	 						
+	 						var skuPriceArgs = {
+	 							currencyCode=orderItem.getCurrencyCode(),
+	 							quantity=orderItem.getQuantity()
+	 						};
+	 						
+	 						if( !isNull( arguments.order.getAccount() ) ){
+	 							skuPriceArgs['accountID'] = arguments.order.getAccount().getAccountID();
+	 						}
+	 						
+	 						var skuPriceByCurrencyCode = val(orderItem.getSku().getPriceByCurrencyCode( argumentCollection=skuPriceArgs ));
 							
 							if(skuPrice != skuPriceByCurrencyCode) {
 		 						orderItem.setPrice(skuPriceByCurrencyCode);
