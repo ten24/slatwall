@@ -2303,8 +2303,12 @@ component  accessors="true" output="false"
     }
     
     public void function getSiteOrderTemplateShippingMethodOptions(required any data) {
-        var tmpOrderTemplate = getOrderService().newOrderTemplate();
-		arguments.data['ajaxResponse']['siteOrderTemplateShippingMethodOptions'] = tmpOrderTemplate.getShippingMethodOptions();
+        var orderTemplate = getOrderService().getOrderTemplate(arguments.data.orderTemplateID);
+        if(isNull(orderTemplate)){
+            return arguments.data['ajaxResponse']['siteOrderTemplateShippingMethodOptions'] = {};   
+        }
+        
+		arguments.data['ajaxResponse']['siteOrderTemplateShippingMethodOptions'] = orderTemplate.getShippingMethodOptions();
     }
     
     public void function getCancellationReasonTypeOptions(required any data) {

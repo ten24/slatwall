@@ -36,7 +36,7 @@ class MonatFlexshipShippingMethodModalController {
  
     	this.monatService.getStateCodeOptionsByCountryCode()
     	.then( (options) => this.stateCodeOptions = options.stateCodeOptions )
-    	.then( () => this.monatService.getOptions({'siteOrderTemplateShippingMethodOptions':false}) )
+    	.then( () => this.monatService.getOptions({'siteOrderTemplateShippingMethodOptions':false}, false, this.orderTemplate.orderTemplateID) )
     	.then( (options) => {
     		this.shippingMethodOptions = options.siteOrderTemplateShippingMethodOptions;
 	    	this.existingShippingMethod = this.shippingMethodOptions.find( item => {
