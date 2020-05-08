@@ -1626,11 +1626,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		//we set this first and persist so that even if there's a problem with the order a workflow won't attempt retry	
 		getOrderDAO().setScheduleOrderProcessingFlag(arguments.orderTemplate.getOrderTemplateID(), true);
-		
-		var nextPlaceDate = arguments.orderTemplate.getFrequencyTerm().getEndDate(arguments.orderTemplate.getScheduleOrderNextPlaceDateTime());  	
-
-		//we set this first so that even if there's a problem with the order a workflow won't attempt retry	
-		arguments.orderTemplate.setScheduleOrderNextPlaceDateTime(nextPlaceDate);
 
 		var newOrder = this.newOrder(); 
 		newOrder = this.processOrder_Create(newOrder, getOrderCreateProcessObjectForOrderTemplate(arguments.orderTemplate, newOrder)); 	
@@ -1648,6 +1643,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		newOrder = this.saveOrder(order=newOrder, updateOrderAmounts=false, updateOrderAmounts=false, updateShippingMethodOptions=false, checkNewAccountAddressSave=false); 
 		
 		newOrder = this.createOrderItemsFromOrderTemplateItems(newOrder,arguments.orderTemplate);
+		
+		var nextPlaceDate = arguments.orderTemplate.getFrequencyTerm().getEndDate(arguments.orderTemplate.getScheduleOrderNextPlaceDateTime());  	
+		//we set this first so that even if there's a problem with the order a workflow won't attempt retry	
+		arguments.orderTemplate.setScheduleOrderNextPlaceDateTime(nextPlaceDate);
 	
 		if(newOrder.hasErrors()){
 			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# after adding order items', true);
