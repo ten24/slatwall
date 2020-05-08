@@ -1,15 +1,36 @@
+import { MonatAlertService } from "@Monat/services/monatAlertService";
+import { RbKeyService, ObserverService } from "@Hibachi/core/core.module";
 
 class WishlistShareModalConroller {
     public wishlist; 
 	public close; // injected from angularModalService
 
     //@ngInject
-    constructor(public rbkeyService, public observerService) {
-        this.observerService.attach(this.closeModal,'shareWishlistSuccess');
+    constructor(
+    	public rbkeyService		  : RbKeyService, 
+    	public observerService	  : ObserverService, 
+    	private monatAlertService : MonatAlertService
+    ) {
+        
     }
     
     public $onInit = () => {
+    	this.observerService
+        .attach( 
+        	() => { 
+	    		this.monatAlertService.success(
+	    			this.rbkeyService.rbKey('frontend.wishlist.sharingSuccess')
+	    		);
+	        	this.closeModal();
+	        },
+        	'shareWishlistSuccess',
+        	"WishlistShareModalConroller"
+        );
     };
+    
+	public $onDestroy= () => {
+		this.observerService.detachByEventAndId("shareWishlistSuccess", "WishlistShareModalConroller");
+	} 
    
     public closeModal = () => {
      	this.close(null);
