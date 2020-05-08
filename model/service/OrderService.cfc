@@ -1644,10 +1644,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		newOrder = this.createOrderItemsFromOrderTemplateItems(newOrder,arguments.orderTemplate);
 		
-		var nextPlaceDate = arguments.orderTemplate.getFrequencyTerm().getEndDate(arguments.orderTemplate.getScheduleOrderNextPlaceDateTime());  	
-		//we set this first so that even if there's a problem with the order a workflow won't attempt retry	
-		arguments.orderTemplate.setScheduleOrderNextPlaceDateTime(nextPlaceDate);
-	
 		if(newOrder.hasErrors()){
 			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# after adding order items', true);
 			arguments.orderTemplate.addErrors(newOrder.getErrors()); 
@@ -1693,7 +1689,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arguments.orderTemplate.addErrors(newOrder.getErrors()); 
 			return arguments.orderTemplate;
 		}
-			
+		
+		var nextPlaceDate = arguments.orderTemplate.getFrequencyTerm().getEndDate(arguments.orderTemplate.getScheduleOrderNextPlaceDateTime());  	
+		arguments.orderTemplate.setScheduleOrderNextPlaceDateTime(nextPlaceDate);
 		arguments.orderTemplate.setLastOrderPlacedDateTime( now() );
 	
 		var eventData = { entity: newOrder, order: newOrder, data: {} };
