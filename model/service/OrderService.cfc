@@ -1631,9 +1631,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		//we set this first so that even if there's a problem with the order a workflow won't attempt retry	
 		arguments.orderTemplate.setScheduleOrderNextPlaceDateTime(nextPlaceDate);
-		
-		
-		getOrderDAO().setScheduleOrderProcessingFlag(arguments.orderTemplate.getOrderTemplateID(), false);
 
 		var newOrder = this.newOrder(); 
 		newOrder = this.processOrder_Create(newOrder, getOrderCreateProcessObjectForOrderTemplate(arguments.orderTemplate, newOrder)); 	
@@ -1641,6 +1638,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(newOrder.hasErrors()){
 			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# when creating', true);
 			arguments.orderTemplate.clearHibachiErrors();
+			getOrderDAO().setScheduleOrderProcessingFlag(arguments.orderTemplate.getOrderTemplateID(), false);
 			return arguments.orderTemplate; 
 		} 
 
@@ -1654,6 +1652,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(newOrder.hasErrors()){
 			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# after adding order items', true);
 			arguments.orderTemplate.addErrors(newOrder.getErrors()); 
+			getOrderDAO().setScheduleOrderProcessingFlag(arguments.orderTemplate.getOrderTemplateID(), false);
 			return arguments.orderTemplate;
 		}	
 
@@ -1776,6 +1775,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(newOrder.hasErrors()){
 			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors on add order payment #serializeJson(newOrder.getErrors())# when adding a payment', true);
 			arguments.orderTemplate.addErrors(newOrder.getErrors()); 
+			getOrderDAO().setScheduleOrderProcessingFlag(arguments.orderTemplate.getOrderTemplateID(), false);
 			return arguments.orderTemplate;
 		}
 		
@@ -1829,7 +1829,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		getOrderDAO().removeTemporaryOrderTemplateItems(arguments.orderTemplate.getOrderTemplateID());	
 		this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# completing place order and has status: #newOrder.getOrderStatusType().getTypeName()#', true);
-
+		
+		getOrderDAO().setScheduleOrderProcessingFlag(arguments.orderTemplate.getOrderTemplateID(), false);
 		return arguments.orderTemplate; 
 	}
 	
