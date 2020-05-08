@@ -1287,11 +1287,10 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         productCollectionList.addDisplayProperty('skus.skuID');
         productCollectionList.addDisplayProperty('skus.skuPrices.personalVolume');
         productCollectionList.addDisplayProperty('skus.skuPrices.price');
-        productCollectionList.addDisplayProperty('calculatedAllowBackorderFlag');
         productCollectionList.addDisplayProperty('urlTitle');
         productCollectionList.addDisplayProperty('skus.imageFile');
         
-        var currentRequestSite = getHibachiScope().getCurrentRequestSite();
+        var currentRequestSite = getService('siteService').getSiteByCMSSiteID(arguments.data.cmsSiteID);
         if(!isNull(currentRequestSite) && currentRequestSite.hasLocation()){
             productCollectionList.addDisplayProperty('skus.stocks.calculatedQATS');
             productCollectionList.addFilter('skus.stocks.location.locationID',currentRequestSite.getLocations()[1].getLocationID());
