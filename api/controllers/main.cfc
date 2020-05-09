@@ -1,6 +1,7 @@
 component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiControllerREST"{
 	
 	public any function get( required struct rc ) {
+		
 	    super.get(arguments.rc);
 	    
 	    //Append Images for Products
@@ -11,6 +12,18 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	        arguments.rc.apiResponse.content.collectionObject== "Product"
 	    ) {
 	        arguments.rc.apiResponse.content.pageRecords = getService("productService").appendImagesToProduct(arguments.rc.apiResponse.content.pageRecords);
+	    }
+	    
+	    //Append Settings value when SKU is accessed for specific product
+	    if(
+	    	( StructKeyExists(arguments.rc, "f:product.productID") || StructKeyExists(arguments.rc, "productID") )
+	    	&&
+	        StructKeyExists(arguments.rc, "apiResponse") &&
+	        StructKeyExists(arguments.rc.apiResponse, "content") &&
+	        StructKeyExists(arguments.rc.apiResponse.content, "collectionObject") &&
+	        arguments.rc.apiResponse.content.collectionObject== "Sku"
+	    ) {
+	        arguments.rc.apiResponse.content.pageRecords = getService("skuService").appendSettingsToSku(arguments.rc.apiResponse.content.pageRecords);
 	    }
 	}
 }

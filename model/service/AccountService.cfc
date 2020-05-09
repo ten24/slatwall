@@ -82,8 +82,13 @@ component extends="HibachiService" accessors="true" output="false" {
 
 			accountAuthentication = this.saveAccountAuthentication( accountAuthentication );
 		}
-
-		return lcase("#arguments.account.getAccountID()##hash(accountAuthentication.getAccountAuthenticationID() & arguments.account.getAccountID())#");
+		
+		if(!isNull(accountAuthentication)) {
+			return lcase("#arguments.account.getAccountID()##hash(accountAuthentication.getAccountAuthenticationID() & arguments.account.getAccountID())#");
+		} else {
+			return "";
+		}
+		
 	}
 
 	// ===================== START: Logical Methods ===========================

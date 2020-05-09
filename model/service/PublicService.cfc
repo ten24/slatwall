@@ -683,6 +683,7 @@ component  accessors="true" output="false"
         param name="data.swprid";
         
         var account = getAccountService().getAccount( left(arguments.data.swprid, 32) );
+        
         //Check if account is not null and has correct reset token
         if(!isNull(account) && getAccountService().getPasswordResetID(account, false) == arguments.data.swprid ) {
             var account = getService("AccountService").processAccount(account, data, "resetPassword");
@@ -1846,26 +1847,37 @@ component  accessors="true" output="false"
 
 
         if (data.newOrderPayment.requireBillingAddress || data.newOrderPayment.saveShippingAsBilling) {
-            if (!structKeyExists(data.newOrderPayment, 'billingAddress')) {
-
-                var orderPayment = getPaymentService().newOrderPayment();
-                orderPayment.populate(data.newOrderPayment);
-                orderPayment.setOrder(getHibachiScope().getCart());
-                if (orderPayment.getPaymentMethod().getPaymentMethodType() == 'termPayment') {
-                    orderPayment.setTermPaymentAccount(getHibachiScope().getAccount());
+            
+            //If we have saveShippingAsBilling
+             if( structKeyExists(data.newOrderPayment,'saveShippingAsBilling') && data.newOrderPayment.saveShippingAsBilling ) {
+                 
+                 var addressData = {
+                    address=order.getShippingAddress()
+                };
+                 
+                 var newBillingAddress = this.addBillingAddress(addressData, "billing");
+                 
+             } else {
+                if (!structKeyExists(data.newOrderPayment, 'billingAddress') ) {
+                    var orderPayment = getPaymentService().newOrderPayment();
+                    orderPayment.populate(data.newOrderPayment);
+                    orderPayment.setOrder(getHibachiScope().getCart());
+                    if (orderPayment.getPaymentMethod().getPaymentMethodType() == 'termPayment') {
+                        orderPayment.setTermPaymentAccount(getHibachiScope().getAccount());
+                    }
+                    //Add billing address error
+                    orderPayment.addError('addBillingAddress', getHibachiScope().rbKey('validate.processOrder_addOrderPayment.billingAddress'));
+                    //Validate to get all errors
+                    orderPayment.validate('save');
+    
+                    this.addErrors(data, orderPayment.getErrors());
+    
+                    getHibachiScope().addActionResult("public:cart.addOrderPayment", true);
+                    return;
                 }
-                //Add billing address error
-                orderPayment.addError('addBillingAddress', getHibachiScope().rbKey('validate.processOrder_addOrderPayment.billingAddress'));
-                //Validate to get all errors
-                orderPayment.validate('save');
-
-                this.addErrors(data, orderPayment.getErrors());
-
-                getHibachiScope().addActionResult("public:cart.addOrderPayment", true);
-                return;
-            }
-            //use this billing information
-            var newBillingAddress = this.addBillingAddress(data.newOrderPayment.billingAddress, "billing");
+                //use this billing information
+                var newBillingAddress = this.addBillingAddress(data.newOrderPayment.billingAddress, "billing");
+             }
         }
 
         if (!isNull(newBillingAddress) && newBillingAddress.hasErrors()) {
