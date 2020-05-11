@@ -92,7 +92,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				maximumUsePerQualification = 1000000,
 				orderItemsUsage = [],
 				totalDiscountAmount=0,
-				priority = arguments.promotionReward.getPromotionPeriod().getPromotion().getPriority()
+				priority = arguments.promotionReward.getPromotionPeriod().getPromotion().getPriority(),
+				amountType = arguments.promotionReward.getAmountType
 			};
 
 			if( !isNull(arguments.promotionReward.getMaximumUsePerOrder()) && arguments.promotionReward.getMaximumUsePerOrder() > 0) {
@@ -698,16 +699,31 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	private array function getPromotionRewardUsageArray( required struct promotionRewardUsageDetails ){
 		var promotionRewardUsageArray = [];
+		
+		var amountTypeHierarchy = {
+			'amount':1,
+			'amountOff':2,
+			'percentageOff':3
+		};
+		
 		for( var promotionRewardID in promotionRewardUsageDetails ){
 			var promotionRewardUsage = promotionRewardUsageDetails[promotionRewardID];
 			promotionRewardUsage['promotionRewardID'] = promotionRewardID;
 			var length = ArrayLen(promotionRewardUsageArray);
 			var found = false;
 			for(var i = 1; i <= length; i++){
+				// Variables to determine ordering
 				var higherPriority = promotionRewardUsage['priority'] < promotionRewardUsageArray[i].priority;
-				var samePriorityHigherDiscount = ( promotionRewardUsage['priority'] == promotionRewardUsageArray[i].priority)
+				var samePriority = promotionRewardUsage['priority'] == promotionRewardUsageArray[i].priority;
+				var samePriorityHigherAmountTypeHierarchy = samePriority
+					&& amountTypeHierarchy[ promotionRewardUsage.amountType ] < amountTypeHierarchy[ promotionRewardUsageArray[i].amountType ];
+				var samePriorityHigherDiscount = samePriority 
 					&& (promotionRewardUsage['totalDiscountAmount'] > promotionRewardUsageArray[i].totalDiscountAmount);
-				if( higherPriority || samePriorityHigherDiscount ){
+				
+
+				if( higherPriority 
+				|| samePriorityHigherAmountTypeHierarchy
+				|| samePriorityHigherDiscount ){
 					arrayInsertAt(promotionRewardUsageArray, i, promotionRewardUsage);
 					found=true;
 					break;
@@ -725,29 +741,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var order = arguments.orderItem.getOrder();
 		if( rewardCanStack( appliedPromotions, arguments.rewardStruct.promotionReward )){
 			if(len(appliedPromotions)){
-				
-				// // Because we're currently in an order item loop, before rechecking the qualification status of the current reward
-				// // we need to ensure that any previously applied rewards have been applied to all order items
-				// for(var appliedPromotion in appliedPromotions){
-				// 	var promotionRewardID = appliedPromotion.getPromotionReward().getPromotionRewardID();
-				// 	var orderItems = order.getOrderItems();
-				// 	for(var otherOrderItem in orderItems){
-				// 		//Continue if it's the same order item or if other order item has no discounts
-				// 		if(otherOrderItem.getOrderItemID() == arguments.orderItem.getOrderItemID()
-				// 			|| !structKeyExists(arguments.orderItemQualifiedDiscounts, otherOrderItem.getOrderItemID()) ){
-				// 			continue;
-				// 		}
-				// 		// Because this runs for each reward, a max of one applied promotion will not have already been applied across
-				// 		// the other order items, so this will only go up to one level deeper
-				// 		for(var otherRewardStruct in arguments.orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ]){
-				// 			if(rewardStruct.promotionReward.getPromotionRewardID() == promotionRewardID){
-				// 				applyPromotionToOrderItemIfValid( otherOrderItem, otherRewardStruct, arguments.orderItemQualifiedDiscounts );
-				// 			}
-				// 		}
-				// 	}
-				// }
-				// //Flush to ensure we're working with the latest data
-				// getHibachiScope().flushORMSession();
 				
 				if(arguments.rewardStruct.promotionReward.getAmountType() == 'percentageOff'){
 					//Recalculate discount amount based on new price
