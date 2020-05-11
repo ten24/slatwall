@@ -669,6 +669,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 			
 			var orderItems = arguments.order.getOrderItems();
+			// if(promotionRewardUsage.amountType == 'percentageOff'){
+				orderItems.sort(function(a,b){
+					if(a.getExtendedPriceAfterDiscount() <= b.getExtendedPriceAfterDiscount()){
+						return -1;
+					}else{
+						return 1;
+					}
+				});
+			// }
+			writeDump(orderItems);abort;
 			for(var orderItem in orderItems) {
 				if(promotionRewardUsage.usedInOrder == promotionRewardUsage.maximumUsePerOrder){
 					break;
