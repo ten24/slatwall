@@ -228,30 +228,13 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
         
         return arguments.accountPaymentMethod;
 	}
-
-	public any function saveAccount(required any account, struct data={}, string context="save"){
 	
-		var originalAccountType = arguments.account.getAccountType(); 
-
-		arguments.account = super.saveAccount(argumentCollection=arguments);
-
-		var newAccountType = arguments.account.getAccountType();
-
-		if( (isNull(newAccountType) && isNull(originalAccountType)) ||
-			(!isNull(newAccountType) && !isNull(originalAccountType) && newAccountType == originalAccountType)
-		){
-			this.logHibachi('account not changed, not updated order template properties')
-			return arguments.account; 
-		} 
-
-		var orderTemplates = arguments.account.getOrderTemplates();
+	public void function afterAccountUpgradeSuccess(any slatwallScope, any entity, any eventData) {
+		var orderTemplates = arguments.entity.getOrderTemplates();
 
 		for(var orderTemplate in orderTemplates){
-			this.logHibachi('updatingOrderTemplateCalculatedPropertiesForAccount #orderTemplate.getOrderTemplateID()#');
 			getOrderService().processOrderTemplate(orderTemplate, {}, 'updateCalculatedProperties');
 		}
-
-		return arguments.account; 
 	}
 	
 	public any function addOrderToAccount(required any account, required any order){
