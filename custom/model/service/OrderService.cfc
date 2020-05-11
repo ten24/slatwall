@@ -143,7 +143,7 @@ component extends="Slatwall.model.service.OrderService" {
     
     
     public any function processOrderTemplate_create(required any orderTemplate, required any processObject, required struct data={}, required string context="save") {
-        
+
 		if(arguments.processObject.getNewAccountFlag()) {
 			
 			var account = getAccountService().processAccount(getAccountService().newAccount(), arguments.data, "create");
@@ -165,7 +165,7 @@ component extends="Slatwall.model.service.OrderService" {
         if(isNull(arguments.data.orderTemplateName)  || !len(trim(arguments.data.orderTemplateName)) ) {
 			arguments.data.orderTemplateName = "My Flexship, Created on " & dateFormat(now(), "long");
         }
-        
+
         var siteCountryCode = getSiteService().getCountryCodeBySite(arguments.processObject.getSite());
 		
 		//grab and set shipping-account-address from account
@@ -214,8 +214,9 @@ component extends="Slatwall.model.service.OrderService" {
 		arguments.orderTemplate.setOrderTemplateType(getTypeService().getType(arguments.processObject.getOrderTemplateTypeID()));
 		
 		arguments.orderTemplate.setFrequencyTerm( arguments.processObject.getFrequencyTerm() );
+		var date = arguments.processObject.getScheduleOrderNextPlaceDateTime() ?: arguments.data.scheduleOrderNextPlaceDateTime;
 		arguments.orderTemplate.setScheduleOrderDayOfTheMonth(
-				day(arguments.processObject.getScheduleOrderNextPlaceDateTime())
+				day(date)
 			);
 		arguments.orderTemplate.setScheduleOrderNextPlaceDateTime(arguments.processObject.getScheduleOrderNextPlaceDateTime());
 
