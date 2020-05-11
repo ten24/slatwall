@@ -86,10 +86,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(!structKeyExists(arguments.promotionRewardUsageDetails, arguments.promotionReward.getPromotionRewardID())) {
 			arguments.promotionRewardUsageDetails[ arguments.promotionReward.getPromotionRewardID() ] = {
 				usedInOrder = 0,
+				potentialUsedInOrder=0,
 				maximumUsePerOrder = 1000000,
 				maximumUsePerItem = 1000000,
 				maximumUsePerQualification = 1000000,
-				orderItemsUsage = []
+				orderItemsUsage = [],
+				totalDiscountAmount=0,
+				priority = arguments.promotionReward.getPromotionPeriod().getPromotion().getPriority()
 			};
 
 			if( !isNull(arguments.promotionReward.getMaximumUsePerOrder()) && arguments.promotionReward.getMaximumUsePerOrder() > 0) {
@@ -242,8 +245,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							}
 							// setup the discountQuantity based on the qualification quantity.  If there were no qualification constrints than this will just be the orderItem quantity
 							// Subtract the number of times this promotion reward has already been used in this order
-							var discountQuantity = maxUsages - promotionRewardUsageDetail.usedInOrder;
-
+							var discountQuantity = maxUsages;
+							var potentialDiscountQuantity = maxUsages - promotionRewardUsageDetail.potentialUsedInOrder;
 							// If the discountQuantity is > the orderItem quantity then just set it to the orderItem quantity
 							if(discountQuantity > orderItem.getQuantity()) {
 								discountQuantity = orderItem.getQuantity();
@@ -251,6 +254,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							// If the discountQuantity is > than maximumUsePerItem then set it to maximumUsePerItem
 							if(discountQuantity > promotionRewardUsageDetail.maximumUsePerItem) {
 								discountQuantity = promotionRewardUsageDetail.maximumUsePerItem;
+							}
+							if(discountQuantity < potentialDiscountQuantity){
+								potentialDiscountQuantity = discountQuantity;
 							}
 							if(discountQuantity != 0){
 								// If there is not applied Price Group, or if this reward has the applied pricegroup as an eligible one then use priceExtended... otherwise use skuPriceExtended and then adjust the discount.
@@ -275,7 +281,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 								// First thing that we are going to want to do is add this orderItem to the orderItemQualifiedDiscounts if it doesn't already exist
 								if(!structKeyExists(orderItemQualifiedDiscounts, orderItem.getOrderItemID())) {
 									// Set it as a blank array
-									orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ] = [];
+									orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ] = {};
 								}
 								var promotion = arguments.promotionReward.getPromotionPeriod().getPromotion();
 								
@@ -287,14 +293,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 									discountQuantity=discountQuantity
 								}
 								
-								// Insert this value into the potential discounts array
-								arrayAppend(orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ], rewardStruct);
+								// Insert this value into the potential discounts struct
+								orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ][arguments.promotionReward.getPromotionRewardID()]=rewardStruct;
 
 
 								// Increment the number of times this promotion reward has been used
-
-								promotionRewardUsageDetail.usedInOrder += discountQuantity;
+								promotionRewardUsageDetail.potentialUsedInOrder += potentialDiscountQuantity;
+								
 								var discountPerUseValue = val(getService('HibachiUtilityService').precisionCalculate(discountAmount / discountQuantity));
+								promotionRewardUsageDetail.totalDiscountAmount += potentialDiscountQuantity * discountPerUseValue;
 
 								var usageAdded = false;
 
@@ -472,10 +479,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					// Only runs on last iteration of loop before looking for orders
 					if(!orderRewards and pr == arrayLen(promotionRewards)) {
 						// Now that we has setup all the potential discounts for orderItems sorted by best price, we want to strip out any of the discounts that would exceed the maximum order use counts.
-						removeDiscountsExceedingMaxOrderUseCounts(promotionRewardUsageDetails,orderItemQualifiedDiscounts);
+						// removeDiscountsExceedingMaxOrderUseCounts(promotionRewardUsageDetails,orderItemQualifiedDiscounts);
 		
 						// Loop over the orderItems one last time, and look for the discounts that can be applied
-						applyOrderItemDiscounts(arguments.order,orderItemQualifiedDiscounts);
+						applyOrderItemDiscounts(arguments.order,orderItemQualifiedDiscounts, promotionRewardUsageDetails);
 						pr = 0;
 						orderRewards = true;
 					}
@@ -647,36 +654,156 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 	}
 
-	private void function applyOrderItemDiscounts(required any order, required any orderItemQualifiedDiscounts){
-		var orderItems = arguments.order.getOrderItems();
+	private void function applyOrderItemDiscounts(required any order, required struct orderItemQualifiedDiscounts, required struct promotionRewardUsageDetails){
 		
-		for(var orderItem in orderItems) {
+		var promotionRewardUsageArray = getPromotionRewardUsageArray( arguments.promotionRewardUsageDetails );
+		var length = arrayLen(promotionRewardUsageArray);
+		for(var i = 1; i <= length; i++){
+			var promotionRewardUsage = promotionRewardUsageArray[i];
+			var promotionRewardID = promotionRewardUsage.promotionRewardID;
 			
-			// If the orderItemID exists in the qualifiedDiscounts and there's at least 1 discount available, apply discounts
-			if(structKeyExists(arguments.orderItemQualifiedDiscounts, orderItem.getOrderItemID()) && arrayLen(arguments.orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ]) ) {
-				for(var rewardStruct in arguments.orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ]){
-					var appliedPromotions = orderItem.getAppliedPromotions();
-					if( rewardCanStack( appliedPromotions, rewardStruct.promotionReward )){
-						if(len(appliedPromotions) && rewardStruct.promotionReward.getAmountType() == 'percentageOff'){
-							//Recalculate discount amount based on new price
-							rewardStruct.discountAmount = getDiscountAmount(reward=rewardStruct.promotionReward, price=orderItem.getExtendedUnitPriceAfterDiscount(), quantity=rewardStruct.discountQuantity, currencyCode=orderItem.getCurrencyCode(), sku=orderItem.getSku(), account=arguments.order.getAccount());
-						}
-
-						applyPromotionToOrderItem( orderItem, rewardStruct );
+			if( i > 1 &&
+				!getUpdatedQualificationStatus( arguments.order, arguments.orderItemQualifiedDiscounts, promotionRewardID ) ){
+				continue;
+			}
+			
+			var orderItems = arguments.order.getOrderItems();
+			for(var orderItem in orderItems) {
+				if(promotionRewardUsage.usedInOrder == promotionRewardUsage.maximumUsePerOrder){
+					break;
+				}
+				var orderItemID = orderItem.getOrderItemID();
+				// If the orderItemID exists in the qualifiedDiscounts and there's at least 1 discount available, apply discounts
+				if(structKeyExists( arguments.orderItemQualifiedDiscounts, orderItemID )
+					&& structKeyExists( arguments.orderItemQualifiedDiscounts[orderItemID], promotionRewardID)
+				) {
+					var rewardStruct = arguments.orderItemQualifiedDiscounts[orderItemID][promotionRewardID];
+					
+					if(promotionRewardUsage.maximumUsePerOrder < promotionRewardUsage.usedInOrder + rewardStruct.discountQuantity){
+						var newDiscountQuantity = rewardStruct.maximumUsePerOrder - promotionRewardUsage.usedInOrder;
+						var newDiscountAmount = getHibachiUtilityService.precisionCalculate(rewardStruct.discountAmount * newDiscountQuantity / rewardStruct.discountQuantity);
+						rewardStruct.discountQuantity = newDiscountQuantity;
+						rewardStruct.discountAmount = newDiscountAmount;
 					}
 					
+					var applied = applyPromotionToOrderItemIfValid( orderItem,rewardStruct );
+					if(applied){
+						promotionRewardUsage.usedInOrder += rewardStruct.discountQuantity;
+					}
 				}
-				//making sure calculated props run
-				getHibachiScope().addModifiedEntity(orderItem);
+			}
+			getHibachiScope().flushORMSession();
+		}
+	}
+	
+	private array function getPromotionRewardUsageArray( required struct promotionRewardUsageDetails ){
+		var promotionRewardUsageArray = [];
+		for( var promotionRewardID in promotionRewardUsageDetails ){
+			var promotionRewardUsage = promotionRewardUsageDetails[promotionRewardID];
+			promotionRewardUsage['promotionRewardID'] = promotionRewardID;
+			var length = ArrayLen(promotionRewardUsageArray);
+			var found = false;
+			for(var i = 1; i <= length; i++){
+				var higherPriority = promotionRewardUsage['priority'] < promotionRewardUsageArray[i].priority;
+				var samePriorityHigherDiscount = ( promotionRewardUsage['priority'] == promotionRewardUsageArray[i].priority)
+					&& (promotionRewardUsage['totalDiscountAmount'] > promotionRewardUsageArray[i].totalDiscountAmount);
+				if( higherPriority || samePriorityHigherDiscount ){
+					arrayInsertAt(promotionRewardUsageArray, i, promotionRewardUsage);
+					found=true;
+					break;
+				}
+			}
+			if(!found){
+				arrayAppend(promotionRewardUsageArray, promotionRewardUsage);
+			}
+		}
+		return promotionRewardUsageArray;
+	}
+	
+	private boolean function applyPromotionToOrderItemIfValid( required any orderItem, required struct rewardStruct,required struct orderItemQualifiedDiscounts ){
+		var appliedPromotions = arguments.orderItem.getAppliedPromotions();
+		var order = arguments.orderItem.getOrder();
+		if( rewardCanStack( appliedPromotions, arguments.rewardStruct.promotionReward )){
+			if(len(appliedPromotions)){
+				
+				// // Because we're currently in an order item loop, before rechecking the qualification status of the current reward
+				// // we need to ensure that any previously applied rewards have been applied to all order items
+				// for(var appliedPromotion in appliedPromotions){
+				// 	var promotionRewardID = appliedPromotion.getPromotionReward().getPromotionRewardID();
+				// 	var orderItems = order.getOrderItems();
+				// 	for(var otherOrderItem in orderItems){
+				// 		//Continue if it's the same order item or if other order item has no discounts
+				// 		if(otherOrderItem.getOrderItemID() == arguments.orderItem.getOrderItemID()
+				// 			|| !structKeyExists(arguments.orderItemQualifiedDiscounts, otherOrderItem.getOrderItemID()) ){
+				// 			continue;
+				// 		}
+				// 		// Because this runs for each reward, a max of one applied promotion will not have already been applied across
+				// 		// the other order items, so this will only go up to one level deeper
+				// 		for(var otherRewardStruct in arguments.orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ]){
+				// 			if(rewardStruct.promotionReward.getPromotionRewardID() == promotionRewardID){
+				// 				applyPromotionToOrderItemIfValid( otherOrderItem, otherRewardStruct, arguments.orderItemQualifiedDiscounts );
+				// 			}
+				// 		}
+				// 	}
+				// }
+				// //Flush to ensure we're working with the latest data
+				// getHibachiScope().flushORMSession();
+				
+				if(arguments.rewardStruct.promotionReward.getAmountType() == 'percentageOff'){
+					//Recalculate discount amount based on new price
+					arguments.rewardStruct.discountAmount = getDiscountAmount(reward=arguments.rewardStruct.promotionReward, price=arguments.orderItem.getExtendedUnitPriceAfterDiscount(), quantity=arguments.rewardStruct.discountQuantity, currencyCode=arguments.orderItem.getCurrencyCode(), sku=arguments.orderItem.getSku(), account=order.getAccount());
+				}
 			}
 
+			applyPromotionToOrderItem( arguments.orderItem, arguments.rewardStruct );
+			getHibachiScope().addModifiedEntity(orderItem);
+			return true;
 		}
+		return false;
+	}
+	
+	private boolean function getUpdatedQualificationStatus( required any order, required struct orderItemQualifiedDiscounts, required string promotionRewardID ){
+		var promotionReward = getPromotionReward( arguments.promotionRewardID );
+		var cacheKey = arguments.promotionRewardID;
+
+		if( !structKeyExists( arguments.orderItemQualifiedDiscounts, 'updatedQualifications' ) ){
+			arguments.orderItemQualifiedDiscounts['updatedQualifications'] = {};
+		}
+		// If we've already requalified the order at this stage, we can return that value
+		if( structKeyExists( arguments.orderItemQualifiedDiscounts.updatedQualifications, cacheKey ) ){
+			return arguments.orderItemQualifiedDiscounts.updatedQualifications[cacheKey];
+		}
+		
+		//Flush to make sure we're working with updated values
+		getHibachiScope().flushORMSession();
+		// Recheck qualification for order qualifiers only; merchandise / fulfillment qualifiers will not have changed
+		var qualifiers = promotionReward.getPromotionPeriod().getPromotionQualifiers();
+		var qualified = false;
+		for(var qualifier in qualifiers){
+			if(qualifier.getRewardType() != 'order'){
+				continue;
+			}
+			if(qualifier.hasOrderByOrderID(arguments.orderID)){
+				qualified = true;
+				break;
+			}
+		}
+		arguments.orderItemQualifiedDiscounts.updatedQualifications[cacheKey] = qualified;
+		return qualified;
 	}
 	
 	private boolean function rewardCanStack( required array appliedPromotions, required any promotionReward ){
 		
 		if( !ArrayLen(appliedPromotions) ){
 			return true;
+		}
+		var promoRewardID = arguments.promotionReward.getPromotionRewardID();
+		
+		// Return false if this promo is already applied
+		if( ArrayFind(appliedPromotions, function(item,promotionRewardID=promoRewardID){
+			return item.getPromotionReward().getPromotionRewardID() == promoRewardID;
+		}) ){
+			return false;
 		}
 
 		var rewardType = arguments.promotionReward.getRewardType();
