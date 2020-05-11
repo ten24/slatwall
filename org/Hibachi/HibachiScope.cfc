@@ -296,7 +296,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	}
 
 	public void function addModifiedEntity( required any entity ) {
-		if(!arrayFindNoCase(getIgnoredEntityNames(), arguments.entity.getClassName())){
+		if(!arrayFindNoCase(getExcludedModifiedEntityNames(), arguments.entity.getClassName())){
 			arrayAppend(getModifiedEntities(), arguments.entity);
 		}
 	}
@@ -306,13 +306,13 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	}
 	
 	public void function addExcludedModifiedEntityName( required string entityName ) {
-		if(!arrayFindNoCase(getIgnoredEntityNames(), arguments.entityName)){
-			arrayAppend(getIgnoredEntityNames(), arguments.entityName);
+		if(!arrayFindNoCase(getExcludedModifiedEntityNames(), arguments.entityName)){
+			arrayAppend(getExcludedModifiedEntityNames(), arguments.entityName);
 		}
 	}
 	
 	public void function removeExcludedModifiedEntityName( required string entityName ) {
-		ArrayDeleteNoCase(getIgnoredEntityNames(),arguments.entityName);
+		ArrayDeleteNoCase(getExcludedModifiedEntityNames(),arguments.entityName);
 	}
 	
 	public void function clearExcludedModifiedEntityNames() {
