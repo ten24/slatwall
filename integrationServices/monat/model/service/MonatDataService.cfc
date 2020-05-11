@@ -289,17 +289,13 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 				
 				if(countOrderDelivery['total'] > 0){
 					logHibachi("importOrderShipments - Delivery #shipment.shipmentId# Already Exists - Order Number:#shipment.orderNumber#", true);
+					//Fix status
 					if(order.getOrderStatusCode() != 'ostClosed'){
 						order.setOrderStatusType(SHIPPED);
 					}
 					continue;
 				}
-				
-				logHibachi("importOrderShipments - Creating: #shipment.shipmentId#", true);
-				
 			
-				
-				
 				logHibachi("importOrderShipments - Creating OrderDelivery: #shipment.shipmentId#", true);
 				
 				try{
