@@ -21,7 +21,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	property name="successfulActions" type="array";
 	property name="auditsToCommitStruct" type="struct";
 	property name="modifiedEntities" type="array";
-	property name="ignoredEntityNames" type="array" hint="List of entities ignored by modifiedEntities";
+	property name="excludedModifiedEntityNames" type="array" hint="List of entities ignored by modifiedEntities during the current request";
 	property name="isAWSInstance" type="boolean" default="0";
 	property name="isECSInstance" type="boolean" default="0";
 	property name="entityURLKeyType" type="string";
@@ -42,7 +42,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		setFailureActions( [] );
 		setAuditsToCommitStruct( {} );
 		setModifiedEntities( [] );
-		setIgnoredEntityNames( [] );
+		setExcludedModifiedEntityNames( [] );
 
 		return super.init();
 	}
@@ -305,17 +305,17 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		setModifiedEntities([]);
 	}
 	
-	public void function addIgnoredEntityName( required string entityName ) {
+	public void function addExcludedModifiedEntityName( required string entityName ) {
 		if(!arrayFindNoCase(getIgnoredEntityNames(), arguments.entityName)){
 			arrayAppend(getIgnoredEntityNames(), arguments.entityName);
 		}
 	}
 	
-	public void function removeIgnoredEntityName( required string entityName ) {
+	public void function removeExcludedModifiedEntityName( required string entityName ) {
 		ArrayDeleteNoCase(getIgnoredEntityNames(),arguments.entityName);
 	}
 	
-	public void function clearIgnoredEntityNames() {
+	public void function clearExcludedModifiedEntityNames() {
 		setIgnoredEntityNames([]);
 	}
 
