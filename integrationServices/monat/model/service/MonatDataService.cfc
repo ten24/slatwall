@@ -236,7 +236,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 
 		getService("HibachiTagService").cfsetting(requesttimeout="60000");
 		
-		getHibachiScope().addIgnoredEntityName('Order');
+		getHibachiScope().addExcludedModifiedEntityName('Order');
 		
 		logHibachi("importOrderShipments - Start", true);
 
