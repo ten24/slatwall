@@ -3,7 +3,10 @@
 
 <cfparam name="rc.order" type="any" />
 <cfparam name="rc.edit" type="boolean" />
-
+<cfif arrayLen(rc.order.getOrderItems()) && !isNull(rc.order.getOrderItems()[1].getOrderFulfillment())>
+	<cfset local.fulfillmentCharge = "#rc.order.getOrderItems()[1].getOrderFulfillment().getFulfillmentCharge() ?: 0#">
+	<cfset local.handlingFee = "#rc.order.getOrderItems()[1].getOrderFulfillment().getHandlingFee() ?: 0#">
+</cfif>
 <cfoutput>
 	<cfset local.OrderJSON = rc.order.getEncodedJsonRepresentation()>
 	
@@ -125,9 +128,9 @@
 				<cfif rc.order.getVATTotal() EQ 0 >
 					<sw-simple-property-display object="#OrderJSON#" property="calculatedTaxTotal" title="Tax Total" currency-flag="true"  edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
 				</cfif>
-				<cfif arrayLen(rc.order.getOrderItems()) && !isNull(rc.order.getOrderItems()[1].getOrderFulfillment())>
-					<sw-simple-property-display object="#OrderJSON#" property="Fulfillment Charge" default="#rc.order.getOrderItems()[1].getOrderFulfillment().getFulfillmentCharge() ?: 0#" currency-flag="true"  title="Shipping" edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
-					<sw-simple-property-display object="#OrderJSON#" property="handlingFee" default="#rc.order.getOrderItems()[1].getOrderFulfillment().getHandlingFee() ?: 0#" currency-flag="true"  title="Handling Fee" edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
+				<cfif !isNull(local.fulfillmentCharge)>
+					<sw-simple-property-display object="#OrderJSON#" property="Fulfillment Charge" default="#local.fulfillmentCharge#" currency-flag="true"  title="Shipping" edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
+					<sw-simple-property-display object="#OrderJSON#" property="handlingFee" default="#local.handlingFee#" currency-flag="true"  title="Handling Fee" edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
 				</cfif>
 				<sw-simple-property-display object="#OrderJSON#" property="calculatedFulfillmentTotal" currency-flag="true"  title="Fulfillment Total" edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
 				<sw-simple-property-display object="#OrderJSON#" property="calculatedDiscountTotal" currency-flag="true"  title="Discount Total" edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
