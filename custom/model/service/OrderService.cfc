@@ -212,16 +212,11 @@ component extends="Slatwall.model.service.OrderService" {
 		arguments.orderTemplate.setCurrencyCode( arguments.processObject.getCurrencyCode() );
 		arguments.orderTemplate.setOrderTemplateStatusType(getTypeService().getTypeBySystemCode('otstDraft'));
 		arguments.orderTemplate.setOrderTemplateType(getTypeService().getType(arguments.processObject.getOrderTemplateTypeID()));
-		
 		arguments.orderTemplate.setFrequencyTerm( arguments.processObject.getFrequencyTerm() );
 		var date = arguments.processObject.getScheduleOrderNextPlaceDateTime() ?: arguments.data.scheduleOrderNextPlaceDateTime;
-		arguments.orderTemplate.setScheduleOrderDayOfTheMonth(
-				day(date)
-			);
-		arguments.orderTemplate.setScheduleOrderNextPlaceDateTime(arguments.processObject.getScheduleOrderNextPlaceDateTime());
-
+		arguments.orderTemplate.setScheduleOrderDayOfTheMonth(day(date));
+		arguments.orderTemplate.setScheduleOrderNextPlaceDateTime(parseDateTime(date));
 		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate, arguments.data, arguments.context); 
-		
 		return arguments.orderTemplate;
     }
 
