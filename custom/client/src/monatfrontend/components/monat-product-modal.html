@@ -219,17 +219,17 @@
 							</button>
 						</h2>
 					</div>
-					<section id="collapseThree" class="collapse" data-parent="#productAccordion">
+					<div id="collapseThree" class="collapse" data-parent="#productAccordion">
 
-						<div class="how-to-use">
+						<section class="how-to-use">
 							<div class="container">
 				        		<div class="content-row">
 				        			
-				        			<div ng-show="monatProductModal.productHowto"
+				        			<div ng-show="monatProductModal.productHowtoSteps"
 				        				 class="content">
 				        				
 				        				<div class="how-to-slider">
-				       						<div ng-repeat="step in monatProductModal.productHowto.steps" ng-if="step.title">
+				       						<div ng-repeat="step in monatProductModal.productHowtoSteps.steps" ng-if="step.title">
 			        							<h3>{{step.title}}</h3>
 			        							<div ng-bind-html="step.description"></div>
 			        						</div>
@@ -238,7 +238,7 @@
 				        				<span class="steps-count"></span>
 				        			</div>
 				        			
-				        			<div ng-if="monatProductModal.productDetails.videoUrl" 
+				        			<div ng-if="monatProductModal.productDetails.productHowVideoUrl" 
 				        				 class="video-block" 
 				        				 ng-style="{ 'background': 'url(' + monatProductModal.productDetails.productHowVideoImage + ')', 'background-size': 'cover' } ;">
 				        				
@@ -250,22 +250,22 @@
 			            						 class="img-box">
 												<img ng-src="{{monatProductModal.productDetails.productVideoBackgroundImage}}" alt=""> 
 											</div>
-			                        		<h6 ng-if="monatProductModal.productDetails.videoTitle" ng-bind="monatProductModal.productDetails.videoTitle"></h6>	
-		                        		    <span ng-if="monatProductModal.productDetails.videoLength" class="time">
-		                        		    	{{monatProductModal.productDetails.videoLength}}
+			                        		<h6 ng-if="monatProductModal.productDetails.productHowVideoTitle" ng-bind="monatProductModal.productDetails.productHowVideoTitle"></h6>	
+		                        		    <span ng-if="monatProductModal.productDetails.productHowVideoLength" class="time">
+		                        		    	{{monatProductModal.productDetails.productHowVideoLength}}
 	                        		    	</span>
 				        				</div>
 				        				
 				        				<div class="video-lightbox" 
 				        				     id="how-to-video-lightbox" 
-				        				     ng-style="{ 'padding-top': monatProductModal.videoRatio + '%', 'width': monatProductModal.productDetails.videoWidth + 'px' } ">
+				        				     ng-style="{ 'padding-top': monatProductModal.videoRatio + '%', 'width': monatProductModal.productDetails.productHowVideoWidth + 'px' } ">
 				        					
 			                    			<iframe
 												frameborder="0" 
 												allowfullscreen
-												ng-src="{{monatProductModal.trustedVideoURL}}"
-												width="{{monatProductModal.productDetails.videoWidth}}"
-												height="{{monatProductModal.productDetails.videoHeight}}"
+												ng-src="{{monatProductModal.trustedHowtoVideoURL}}"
+												width="{{monatProductModal.productDetails.productHowVideoWidth}}"
+												height="{{monatProductModal.productDetails.productHowVideoHeight}}"
 												></iframe>
 			                    		</div>
 			                    		
@@ -274,9 +274,9 @@
 				        		</div>
 				        	</div>
 				        	<div class="how-to-use__background-image" ng-style="{ 'background-image': 'url(' + monatProductModal.productDetails.productHowBackgroundImage  + ')' } "></div>
-						</div>
+						</section>
 						
-					</section>
+					</div>
 					
 				</div>
 			</div>
