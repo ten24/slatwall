@@ -98,10 +98,15 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 		
 		if( structKeyExists(response, 'errors') && arrayLen(response.errors) ){
 			var errorMessages = '';
+			var errorCodes = '';
 			for(var error in response.errors){
 				errorMessages = listAppend(errorMessages, error['detail']);
+				errorCodes = listAppend(errorCodes, error['errorcode']);
 			}
-			if(len(errorMessages) && !FindNoCase('already exists', errorMessages )){
+			//1152 order
+			//1139 flexship
+			//1014 account
+			if(len(errorMessages) && !listFind('1152,1139,1014', errorCodes)){
 				throw(errorMessages);
 			}
 		}
