@@ -635,12 +635,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var itemAppliedPromotions = getPromotionDAO().getAppliedPromotionsForOrderItemsByOrder(arguments.order);
 		
 		for(var rewardStruct in arguments.orderQualifiedDiscounts ){
-			
+			if( !getUpdatedQualificationStatus( arguments.order, rewardStruct.promotionReward.getPromotionRewardID() ) ){
+				continue;
+			}
 			var appliedPromotions = order.getAppliedPromotions();
-			arrayAppend(appliedPromotions,itemAppliedPromotions,true);
 			
-			if( rewardCanStack( appliedPromotions, rewardStruct.promotionReward )){
+			if( rewardCanStack( appliedPromotions, rewardStruct.promotionReward )
+				&& rewardCanStack( itemAppliedPromotions, rewardStruct.promotionReward )
+			){
 				applyPromotionToOrder( arguments.order, rewardStruct );
+				order.updateCalculatedProperties(true);
 			}
 			
 		}
@@ -655,14 +659,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		for(var i = 1; i <= length; i++){
 			var promotionRewardUsage = promotionRewardUsageArray[i];
 			var promotionRewardID = promotionRewardUsage.promotionRewardID;
-			
-			//DEBUG BLOCK _ Find out hwat we're checking
-			var promotionReward = this.getPromotionReward(promotionRewardID);
-			var promotionName = promotionReward.getPromotionPeriod().getPromotion().getPromotionName();
-			// var promotionPeriodName = promotionReward.getPromotionPeriod().getPromotionPeriodName();
 
 			if( i > 1 &&
-				!getUpdatedQualificationStatus( arguments.order, arguments.orderItemQualifiedDiscounts, promotionRewardID ) ){
+				!getUpdatedQualificationStatus( arguments.order, promotionRewardID, arguments.orderItemQualifiedDiscounts ) ){
 				continue;
 			}
 			
@@ -753,16 +752,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return false;
 	}
 	
-	private boolean function getUpdatedQualificationStatus( required any order, required struct qualifiedDiscountsStruct, required string promotionRewardID ){
+	private boolean function getUpdatedQualificationStatus( required any order, required string promotionRewardID, struct qualifiedDiscountsStruct ){
 		var promotionReward = this.getPromotionReward( arguments.promotionRewardID );
 		var cacheKey = arguments.promotionRewardID;
-
-		if( !structKeyExists( arguments.qualifiedDiscountsStruct, 'updatedQualifications' ) ){
-			arguments.qualifiedDiscountsStruct['updatedQualifications'] = {};
-		}
-		// If we've already requalified the order at this stage, we can return that value
-		if( structKeyExists( arguments.qualifiedDiscountsStruct.updatedQualifications, cacheKey ) ){
-			return arguments.qualifiedDiscountsStruct.updatedQualifications[cacheKey];
+		
+		if(structKeyExists(arguments, 'qualifiedDiscountsStruct')){
+			if( !structKeyExists( arguments.qualifiedDiscountsStruct, 'updatedQualifications' ) ){
+				arguments.qualifiedDiscountsStruct['updatedQualifications'] = {};
+			}
+			// If we've already requalified the order at this stage, we can return that value
+			if( structKeyExists( arguments.qualifiedDiscountsStruct.updatedQualifications, cacheKey ) ){
+				return arguments.qualifiedDiscountsStruct.updatedQualifications[cacheKey];
+			}
 		}
 		
 		//Flush to make sure we're working with updated values
@@ -783,7 +784,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				}
 			}
 		}
-		arguments.orderItemQualifiedDiscounts.updatedQualifications[cacheKey] = qualified;
+		if(structKeyExists(arguments, 'qualifiedDiscountsStruct')){
+			arguments.orderItemQualifiedDiscounts.updatedQualifications[cacheKey] = qualified;
+		}
 		return qualified;
 	}
 	

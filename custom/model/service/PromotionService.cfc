@@ -4,54 +4,6 @@ component extends="Slatwall.model.service.PromotionService" {
     	super.init(argumentCollection=arguments);
     	variables.customPriceFields = 'personalVolume,taxableAmount,commissionableVolume,retailCommission,productPackVolume,retailValueVolume';
     }
-    
- //   private void function applyOrderItemDiscounts(required any order, required any orderItemQualifiedDiscounts){
-	// 	var orderItems = arguments.order.getOrderItems();
-		
-	// 	for(var orderItem in orderItems) {
-	// 		var appliedPromotions = orderItem.getAppliedPromotions();
-	// 		// If the orderItemID exists in the qualifiedDiscounts and there's at least 1 discount available, apply discounts
-	// 		if(structKeyExists(arguments.orderItemQualifiedDiscounts, orderItem.getOrderItemID()) && arrayLen(arguments.orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ]) ) {
-	// 			for(var rewardStruct in arguments.orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ]){
-	// 				if( rewardCanStack( appliedPromotions, rewardStruct.promotionReward )){
-						
-	// 					var extendedUnitPriceAfterDiscount = orderItem.getExtendedUnitPriceAfterDiscount();
-						
-	// 					if(len(appliedPromotions) && rewardStruct.promotionReward.getAmountType() == 'percentageOff'){
-	// 						//Recalculate discount amount based on new price
-	// 						rewardStruct.discountAmount = getDiscountAmount(reward=rewardStruct.promotionReward, price=extendedUnitPriceAfterDiscount, quantity=rewardStruct.discountQuantity, currencyCode=orderItem.getCurrencyCode(), sku=orderItem.getSku(), account=arguments.order.getAccount());
-	// 					}
-						
-						// //Custom price fields
-					 //   for(var customPriceField in variables.customPriceFields){
-						// 	var extendedCustomUnitPriceAfterDiscount = orderItem.invokeMethod('getExtended#customPriceField#AfterDiscount') / orderItem.getQuantity();
-						// 	if(rewardStruct.promotionReward.getAmountType() == 'amountOff'){
-						// 		var rewardAmount = getProportionalRewardAmount(rewardStruct.discountAmount, extendedUnitPriceAfterDiscount,extendedCustomUnitPriceAfterDiscount);
-						// 	}else{
-						//         var args = {
-						//             reward=rewardStruct.promotionReward,
-						//             price=extendedCustomUnitPriceAfterDiscount,
-						//             quantity=orderItem.getQuantity(),
-						//             customPriceField=customPriceField,
-						//             sku=orderItem.getSku(),
-						//             account=arguments.order.getAccount()
-						//         };
-						//         var rewardAmount = getCustomDiscountAmount(argumentCollection=args);
-						// 	}
-						// 	rewardStruct['#customPriceField#DiscountAmount'] = rewardAmount;
-			        		
-					 //   }
-
-	// 					applyPromotionToOrderItem( orderItem, rewardStruct );
-	// 				}
-					
-	// 			}
-	// 			//making sure calculated props run
-	// 			getHibachiScope().addModifiedEntity(orderItem);
-	// 		}
-
-	// 	}
-	// }
 	
 	private boolean function applyPromotionToOrderItemIfValid( required any orderItem, required struct rewardStruct ){
 		var appliedPromotions = arguments.orderItem.getAppliedPromotions();
