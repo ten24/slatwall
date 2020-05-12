@@ -1287,10 +1287,11 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         productCollectionList.addDisplayProperty('skus.skuID');
         productCollectionList.addDisplayProperty('skus.skuPrices.personalVolume');
         productCollectionList.addDisplayProperty('skus.skuPrices.price');
+        productCollectionList.addDisplayProperty('calculatedAllowBackorderFlag');
         productCollectionList.addDisplayProperty('urlTitle');
         productCollectionList.addDisplayProperty('skus.imageFile');
         
-        var currentRequestSite = getHibachiScope().getCurrentRequestSite();
+        var currentRequestSite = getService('siteService').getSiteByCMSSiteID(arguments.data.cmsSiteID);
         if(!isNull(currentRequestSite) && currentRequestSite.hasLocation()){
             productCollectionList.addDisplayProperty('skus.stocks.calculatedQATS');
             productCollectionList.addFilter('skus.stocks.location.locationID',currentRequestSite.getLocations()[1].getLocationID());
@@ -1443,21 +1444,32 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                 
                 counter++;
             }
-            productData['productHowto']["steps"] = steps;
+            productData['productHowtoSteps']["steps"] = steps;
             
             var rbkey = {};
             rbkey["step"] = getHibachiScope().rbKey('frontend.global.step');
             rbkey["of"] = getHibachiScope().rbKey('frontend.global.of');
-            productData['productHowto']["rbkey"] = rbkey;
+            productData['productHowtoSteps']["rbkey"] = rbkey;
+            
+            if ( len( product.getFormattedValue( 'productHowVideoVimeoURL' ) ) ) {
+                productData['productHowVideoUrl'] = product.getFormattedValue( 'productHowVideoVimeoURL' );
+            } else if ( len( product.getFormattedValue( 'productHowVideoYoutubeURL' ) ) ) {
+                productData['productHowVideoUrl'] = product.getFormattedValue( 'productHowVideoYoutubeURL' );
+            }
+            
+            productData['productHowVideoTitle'] = product.getFormattedValue( 'productHowVideoTitle' );
+            productData['productHowVideoLength'] = product.getAttributeValue( 'productHowVideoLength' );
+            productData['productHowVideoWidth'] = product.getAttributeValue( 'productHowVideoWidth' );
+            productData['productHowVideoHeight'] = product.getAttributeValue( 'productHowVideoHeight' );
             
             var fileName = product.getAttributeValue( 'productVideoBackgroundImage' );
-            productData['productVideoBackgroundImage'] = getService('imageService').getResizedImagePath(imagePath = "#getHibachiScope().getBaseImageURL()#'/'#fileName#",width = 300, height =300);
+            productData['productVideoBackgroundImage'] = '/Slatwall/custom/assets/files/' & lCase( 'productVideoBackgroundImage' ) & '/' & fileName;
             
             var fileName = product.getAttributeValue( 'productHowBackgroundImage' );
-            productData['productHowBackgroundImage'] = getService('imageService').getResizedImagePath(imagePath = "#getHibachiScope().getBaseImageURL()#'/'#fileName#",width = 300, height =300);
+            productData['productHowBackgroundImage'] = '/Slatwall/custom/assets/files/' & lCase( 'productHowBackgroundImage' ) & '/' & fileName;
             
             var fileName = product.getAttributeValue( 'productHowVideoImage' );
-            productData['productHowVideoImage'] = getService('imageService').getResizedImagePath(imagePath = "#getHibachiScope().getBaseImageURL()#'/'#fileName#",width = 300, height =300);
+            productData['productHowVideoImage'] = '/Slatwall/custom/assets/files/' & lCase( 'productHowVideoImage' ) & '/' & fileName;
             
             if(!isNull(product.getProductIngredient1())){
                 var productIngredient1 = {};
@@ -1562,7 +1574,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                 'priceGroupCode': arguments.priceGroupCode,
                 'upgradedPricing': '',
                 'upgradedPriceGroupCode': upgradedPriceGroupCode,
-                'qats': record.skus_stocks_calculatedQATS
+                'qats': record.skus_stocks_calculatedQATS,
+                'calculatedAllowBackorderFlag': record.calculatedAllowBackorderFlag
             };
             
             //add skuID's to skuID array for query below

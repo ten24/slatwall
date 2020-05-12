@@ -19,7 +19,7 @@ class MonatProductModalController {
 	};
 	public muraContentIngredients:string;
 	public muraValues:string;
-	public productHowto: any = {
+	public productHowtoSteps: any = {
 		rbkey : {
 			'step': '',
 			'of': ''
@@ -27,6 +27,7 @@ class MonatProductModalController {
 		steps : {}
 	};
 	public trustedVideoURL:string;
+	public trustedHowtoVideoURL:string;
 	public videoRatio;
 	public flexshipHasAccount:boolean;
 	public sliderInitialized:boolean = false;
@@ -55,9 +56,10 @@ class MonatProductModalController {
 			this.getReviewStars( this.productRating );
 			this.productDetails = data.productData;
 			this.trustedVideoURL = this.$sce.trustAsResourceUrl(data.productData.videoUrl);
+			this.trustedHowtoVideoURL = this.$sce.trustAsResourceUrl(data.productData.productHowVideoUrl);
 			this.muraContentIngredients = data.muraIngredients.length ? data.muraIngredients[0] : '';
 			this.muraValues = data.muraValues.length ? data.muraValues[0] : '';
-			this.productHowto = data.productData.productHowto;
+			this.productHowtoSteps = data.productData.productHowtoSteps;
 			
 			if(this.productDetails.videoHeight){
 				this.setVideoRatio();
@@ -174,8 +176,8 @@ class MonatProductModalController {
 		if (!this.sliderInitialized) {
 			this.sliderInitialized = true;
 			
-			var wordStep = this.productHowto.rbkey.step;
-			var wordOf = this.productHowto.rbkey.of;
+			var wordStep = this.productHowtoSteps.rbkey.step;
+			var wordOf = this.productHowtoSteps.rbkey.of;
 			
 			$('.how-to-slider').ready(function(){
 				var $sliderElement = $('.how-to-slider');
