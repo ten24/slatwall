@@ -573,6 +573,10 @@ component output="false" accessors="true" extends="HibachiTransient" {
 			dataString = dataString & "_#integrationID#"; 
 		}
 		
+		if (structKeyExists(arguments, "entityQueueData") && len(arguments.entityQueueData)){
+			dataString = dataString & '_' & hash( entityQueueData, 'MD5' ); 
+		}
+		
 		arguments.entityQueueProcessingDateTime = now(); //this will be processed in this request.
 		
 		if(!structKeyExists(variables.entityQueueData, dataString)){
