@@ -101,7 +101,7 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 			for(var error in response.errors){
 				errorMessages = listAppend(errorMessages, error['detail']);
 			}
-			if(len(errorMessages)){
+			if(len(errorMessages) && !FindNoCase('already exists', errorMessages )){
 				throw(errorMessages);
 			}
 		}
