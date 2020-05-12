@@ -137,7 +137,7 @@ component accessors='true' output='false' displayname='Vibe' extends='Slatwall.o
 		) {
 			
 			if( !arguments.create && structKeyExists(response, 'message') && FindNoCase('could not be found', response.message) ){
-				return pushData(arguments.data.payload, true);
+				return pushData(arguments.entity, arguments.data, true);
 			}
 			//the call was not successful
 			throw("Error in Vibe::PushData() #SerializeJson(response)#"); //this will comeup in EntityQueue
