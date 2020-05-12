@@ -22,25 +22,25 @@ component extends="Slatwall.model.service.PromotionService" {
 	// 						rewardStruct.discountAmount = getDiscountAmount(reward=rewardStruct.promotionReward, price=extendedUnitPriceAfterDiscount, quantity=rewardStruct.discountQuantity, currencyCode=orderItem.getCurrencyCode(), sku=orderItem.getSku(), account=arguments.order.getAccount());
 	// 					}
 						
-	// 					//Custom price fields
-	// 				    for(var customPriceField in variables.customPriceFields){
-	// 						var extendedCustomUnitPriceAfterDiscount = orderItem.invokeMethod('getExtended#customPriceField#AfterDiscount') / orderItem.getQuantity();
-	// 						if(rewardStruct.promotionReward.getAmountType() == 'amountOff'){
-	// 							var rewardAmount = getProportionalRewardAmount(rewardStruct.discountAmount, extendedUnitPriceAfterDiscount,extendedCustomUnitPriceAfterDiscount);
-	// 						}else{
-	// 					        var args = {
-	// 					            reward=rewardStruct.promotionReward,
-	// 					            price=extendedCustomUnitPriceAfterDiscount,
-	// 					            quantity=orderItem.getQuantity(),
-	// 					            customPriceField=customPriceField,
-	// 					            sku=orderItem.getSku(),
-	// 					            account=arguments.order.getAccount()
-	// 					        };
-	// 					        var rewardAmount = getCustomDiscountAmount(argumentCollection=args);
-	// 						}
-	// 						rewardStruct['#customPriceField#DiscountAmount'] = rewardAmount;
+						// //Custom price fields
+					 //   for(var customPriceField in variables.customPriceFields){
+						// 	var extendedCustomUnitPriceAfterDiscount = orderItem.invokeMethod('getExtended#customPriceField#AfterDiscount') / orderItem.getQuantity();
+						// 	if(rewardStruct.promotionReward.getAmountType() == 'amountOff'){
+						// 		var rewardAmount = getProportionalRewardAmount(rewardStruct.discountAmount, extendedUnitPriceAfterDiscount,extendedCustomUnitPriceAfterDiscount);
+						// 	}else{
+						//         var args = {
+						//             reward=rewardStruct.promotionReward,
+						//             price=extendedCustomUnitPriceAfterDiscount,
+						//             quantity=orderItem.getQuantity(),
+						//             customPriceField=customPriceField,
+						//             sku=orderItem.getSku(),
+						//             account=arguments.order.getAccount()
+						//         };
+						//         var rewardAmount = getCustomDiscountAmount(argumentCollection=args);
+						// 	}
+						// 	rewardStruct['#customPriceField#DiscountAmount'] = rewardAmount;
 			        		
-	// 				    }
+					 //   }
 
 	// 					applyPromotionToOrderItem( orderItem, rewardStruct );
 	// 				}
@@ -52,6 +52,45 @@ component extends="Slatwall.model.service.PromotionService" {
 
 	// 	}
 	// }
+	
+	private boolean function applyPromotionToOrderItemIfValid( required any orderItem, required struct rewardStruct ){
+		var appliedPromotions = arguments.orderItem.getAppliedPromotions();
+		var order = arguments.orderItem.getOrder();
+
+		if( rewardCanStack( appliedPromotions, arguments.rewardStruct.promotionReward )){
+			
+			var extendedUnitPriceAfterDiscount = arguments.orderItem.getExtendedUnitPriceAfterDiscount();
+			
+			if(len(appliedPromotions) && arguments.rewardStruct.promotionReward.getAmountType() == 'percentageOff'){
+				//Recalculate discount amount based on new price
+				arguments.rewardStruct.discountAmount = getDiscountAmount(reward=arguments.rewardStruct.promotionReward, price=extendedUnitPriceAfterDiscount, quantity=arguments.rewardStruct.discountQuantity, currencyCode=arguments.orderItem.getCurrencyCode(), sku=arguments.orderItem.getSku(), account=order.getAccount());
+			}
+			//Custom price fields
+		    for(var customPriceField in variables.customPriceFields){
+				var extendedCustomUnitPriceAfterDiscount = arguments.orderItem.invokeMethod('getExtended#customPriceField#AfterDiscount') / arguments.orderItem.getQuantity();
+				if(rewardStruct.promotionReward.getAmountType() == 'amountOff'){
+					var rewardAmount = getProportionalRewardAmount(arguments.rewardStruct.discountAmount, extendedUnitPriceAfterDiscount,extendedCustomUnitPriceAfterDiscount);
+				}else{
+			        var args = {
+			            reward=arguments.rewardStruct.promotionReward,
+			            price=extendedCustomUnitPriceAfterDiscount,
+			            quantity=arguments.rewardStruct.discountQuantity,
+			            customPriceField=customPriceField,
+			            sku=arguments.orderItem.getSku(),
+			            account=order.getAccount()
+			        };
+			        var rewardAmount = getCustomDiscountAmount(argumentCollection=args);
+				}
+				arguments.rewardStruct['#customPriceField#DiscountAmount'] = rewardAmount;
+        		
+		    }
+
+			applyPromotionToOrderItem( arguments.orderItem, arguments.rewardStruct );
+			getHibachiScope().addModifiedEntity(orderItem);
+			return true;
+		}
+		return false;
+	}
 	
 	private void function applyPromotionToOrder(required any order,required any rewardStruct){
 		var newAppliedPromotion = this.newPromotionApplied();

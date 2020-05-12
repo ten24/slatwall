@@ -409,8 +409,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
  			accountID = arguments.order.getAccount().getAccountID();
  		}
  		
- 		var promotionCacheKey = hash(orderItemIDList&orderFulfillmentList&arguments.order.getTotalItemQuantity()&accountID,'md5');
-		
+ 		// var promotionCacheKey = hash(orderItemIDList&orderFulfillmentList&arguments.order.getTotalItemQuantity()&accountID,'md5');
+		var promotionCacheKey = createUUID();
 		if(isNull(arguments.order.getPromotionCacheKey()) || arguments.order.getPromotionCacheKey() != promotionCacheKey){
 			arguments.order.setPromotionCacheKey(promotionCacheKey);
 			// Sale & Exchange Orders
@@ -753,16 +753,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return false;
 	}
 	
-	private boolean function getUpdatedQualificationStatus( required any order, required struct orderItemQualifiedDiscounts, required string promotionRewardID ){
+	private boolean function getUpdatedQualificationStatus( required any order, required struct qualifiedDiscountsStruct, required string promotionRewardID ){
 		var promotionReward = this.getPromotionReward( arguments.promotionRewardID );
 		var cacheKey = arguments.promotionRewardID;
 
-		if( !structKeyExists( arguments.orderItemQualifiedDiscounts, 'updatedQualifications' ) ){
-			arguments.orderItemQualifiedDiscounts['updatedQualifications'] = {};
+		if( !structKeyExists( arguments.qualifiedDiscountsStruct, 'updatedQualifications' ) ){
+			arguments.qualifiedDiscountsStruct['updatedQualifications'] = {};
 		}
 		// If we've already requalified the order at this stage, we can return that value
-		if( structKeyExists( arguments.orderItemQualifiedDiscounts.updatedQualifications, cacheKey ) ){
-			return arguments.orderItemQualifiedDiscounts.updatedQualifications[cacheKey];
+		if( structKeyExists( arguments.qualifiedDiscountsStruct.updatedQualifications, cacheKey ) ){
+			return arguments.qualifiedDiscountsStruct.updatedQualifications[cacheKey];
 		}
 		
 		//Flush to make sure we're working with updated values
