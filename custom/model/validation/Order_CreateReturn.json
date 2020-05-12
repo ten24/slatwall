@@ -1,7 +1,14 @@
 {
+    "conditions": {
+		"orderTypeNotRefund": {
+			"order.orderType.systemCode": {
+				"neq": "otRefundOrder"
+			}
+		}
+	},
     "properties":{
         "returnReasonType":[{"method":"hasAtLeastOneReturnReasonType"}],
         "secondaryReturnReasonType":[{"method":"hasAtLeastOneReturnReasonType"}],
-		"orderItems": [{ "conditions": "orderTypeNotRefund", "method":"hasReturnItems" }]
+		"locationID": [{ "conditions": "orderTypeNotRefund", "method":"hasReturnItems" }]
     }
 }

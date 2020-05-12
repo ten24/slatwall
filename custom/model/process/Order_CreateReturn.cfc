@@ -70,7 +70,15 @@ component accessors="true" extends="Slatwall.model.process.Order_CreateReturn" {
     }
     
     public boolean function hasReturnItems(){
-        return arrayLen(this.getOrderItems());
+        var hasItems = false;
+        
+        for(var item in this.getOrderItems()){
+            if(item.quantity > 0){
+                hasItems = true;
+                break;
+            }
+        }
+        return hasItems;
     }
     
     // ===============  END: Custom Validation Methods =====================
