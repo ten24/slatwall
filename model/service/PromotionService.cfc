@@ -409,8 +409,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
  			accountID = arguments.order.getAccount().getAccountID();
  		}
  		
- 		// var promotionCacheKey = hash(orderItemIDList&orderFulfillmentList&arguments.order.getTotalItemQuantity()&accountID,'md5');
-		var promotionCacheKey = createUUID();
+ 		var promotionCacheKey = hash(orderItemIDList&orderFulfillmentList&arguments.order.getTotalItemQuantity()&accountID,'md5');
+
 		if(isNull(arguments.order.getPromotionCacheKey()) || arguments.order.getPromotionCacheKey() != promotionCacheKey){
 			arguments.order.setPromotionCacheKey(promotionCacheKey);
 			// Sale & Exchange Orders
@@ -473,9 +473,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					// This forces the loop to repeat looking for "order" discounts
 					// Only runs on last iteration of loop before looking for orders
 					if(!orderRewards and pr == arrayLen(promotionRewards)) {
-						// Now that we has setup all the potential discounts for orderItems sorted by best price, we want to strip out any of the discounts that would exceed the maximum order use counts.
-						// removeDiscountsExceedingMaxOrderUseCounts(promotionRewardUsageDetails,orderItemQualifiedDiscounts);
-		
 						// Loop over the orderItems one last time, and look for the discounts that can be applied
 						applyOrderItemDiscounts(arguments.order,orderItemQualifiedDiscounts, promotionRewardUsageDetails);
 						pr = 0;
@@ -681,12 +678,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					break;
 				}
 				var orderItemID = orderItem.getOrderItemID();
-				// If the orderItemID exists in the qualifiedDiscounts and there's at least 1 discount available, apply discounts
+				// If order item exists in discounts struct and has this reward, apply
 				if(structKeyExists( arguments.orderItemQualifiedDiscounts, orderItemID )
 					&& structKeyExists( arguments.orderItemQualifiedDiscounts[orderItemID], promotionRewardID)
 				) {
 					var rewardStruct = arguments.orderItemQualifiedDiscounts[orderItemID][promotionRewardID];
-					
+					//Update quantity and amount to not exeed max usages
 					if(promotionRewardUsage.maximumUsePerOrder < promotionRewardUsage.usedInOrder + rewardStruct.discountQuantity){
 						var newDiscountQuantity = promotionRewardUsage.maximumUsePerOrder - promotionRewardUsage.usedInOrder;
 						var newDiscountAmount = getHibachiUtilityService().precisionCalculate(rewardStruct.discountAmount * newDiscountQuantity / rewardStruct.discountQuantity);
@@ -709,6 +706,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		for( var promotionRewardID in promotionRewardUsageDetails ){
 			var promotionRewardUsage = promotionRewardUsageDetails[promotionRewardID];
+			if(promotionRewardUsage.totalDiscountAmount == 0){
+				continue;
+			}
 			promotionRewardUsage['promotionRewardID'] = promotionRewardID;
 			var length = ArrayLen(promotionRewardUsageArray);
 			var found = false;
