@@ -1,6 +1,7 @@
 {
     "properties":{
         "returnReasonType":[{"method":"hasAtLeastOneReturnReasonType"}],
-        "secondaryReturnReasonType":[{"method":"hasAtLeastOneReturnReasonType"}]
+        "secondaryReturnReasonType":[{"method":"hasAtLeastOneReturnReasonType"}],
+		"orderItems": [{ "conditions": "orderTypeNotRefund", "method":"hasReturnItems" }]
     }
 }

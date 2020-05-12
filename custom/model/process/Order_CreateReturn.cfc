@@ -69,6 +69,10 @@ component accessors="true" extends="Slatwall.model.process.Order_CreateReturn" {
         return true;
     }
     
+    public boolean function hasReturnItems(){
+        return arrayLen(this.getOrderItems());
+    }
+    
     // ===============  END: Custom Validation Methods =====================
     
 }
