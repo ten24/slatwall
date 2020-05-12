@@ -1444,21 +1444,32 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                 
                 counter++;
             }
-            productData['productHowto']["steps"] = steps;
+            productData['productHowtoSteps']["steps"] = steps;
             
             var rbkey = {};
             rbkey["step"] = getHibachiScope().rbKey('frontend.global.step');
             rbkey["of"] = getHibachiScope().rbKey('frontend.global.of');
-            productData['productHowto']["rbkey"] = rbkey;
+            productData['productHowtoSteps']["rbkey"] = rbkey;
+            
+            if ( len( product.getFormattedValue( 'productHowVideoVimeoURL' ) ) ) {
+                productData['productHowVideoUrl'] = product.getFormattedValue( 'productHowVideoVimeoURL' );
+            } else if ( len( product.getFormattedValue( 'productHowVideoYoutubeURL' ) ) ) {
+                productData['productHowVideoUrl'] = product.getFormattedValue( 'productHowVideoYoutubeURL' );
+            }
+            
+            productData['productHowVideoTitle'] = product.getFormattedValue( 'productHowVideoTitle' );
+            productData['productHowVideoLength'] = product.getAttributeValue( 'productHowVideoLength' );
+            productData['productHowVideoWidth'] = product.getAttributeValue( 'productHowVideoWidth' );
+            productData['productHowVideoHeight'] = product.getAttributeValue( 'productHowVideoHeight' );
             
             var fileName = product.getAttributeValue( 'productVideoBackgroundImage' );
-            productData['productVideoBackgroundImage'] = getService('imageService').getResizedImagePath(imagePath = "#getHibachiScope().getBaseImageURL()#'/'#fileName#",width = 300, height =300);
+            productData['productVideoBackgroundImage'] = '/Slatwall/custom/assets/files/' & lCase( 'productVideoBackgroundImage' ) & '/' & fileName;
             
             var fileName = product.getAttributeValue( 'productHowBackgroundImage' );
-            productData['productHowBackgroundImage'] = getService('imageService').getResizedImagePath(imagePath = "#getHibachiScope().getBaseImageURL()#'/'#fileName#",width = 300, height =300);
+            productData['productHowBackgroundImage'] = '/Slatwall/custom/assets/files/' & lCase( 'productHowBackgroundImage' ) & '/' & fileName;
             
             var fileName = product.getAttributeValue( 'productHowVideoImage' );
-            productData['productHowVideoImage'] = getService('imageService').getResizedImagePath(imagePath = "#getHibachiScope().getBaseImageURL()#'/'#fileName#",width = 300, height =300);
+            productData['productHowVideoImage'] = '/Slatwall/custom/assets/files/' & lCase( 'productHowVideoImage' ) & '/' & fileName;
             
             if(!isNull(product.getProductIngredient1())){
                 var productIngredient1 = {};
