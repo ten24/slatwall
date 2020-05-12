@@ -739,9 +739,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	private boolean function applyPromotionToOrderItemIfValid( required any orderItem, required struct rewardStruct ){
 		var appliedPromotions = arguments.orderItem.getAppliedPromotions();
 		var order = arguments.orderItem.getOrder();
-		writeDump(arguments.rewardStruct.promotionReward.getPromotionPeriod().getPromotion().getPromotionName());
+
 		if( rewardCanStack( appliedPromotions, arguments.rewardStruct.promotionReward )){
-			writeDump('reward can stack motherfucker');
 			if(len(appliedPromotions) && arguments.rewardStruct.promotionReward.getAmountType() == 'percentageOff'){
 					//Recalculate discount amount based on new price
 					arguments.rewardStruct.discountAmount = getDiscountAmount(reward=arguments.rewardStruct.promotionReward, price=arguments.orderItem.getExtendedUnitPriceAfterDiscount(), quantity=arguments.rewardStruct.discountQuantity, currencyCode=arguments.orderItem.getCurrencyCode(), sku=arguments.orderItem.getSku(), account=order.getAccount());
