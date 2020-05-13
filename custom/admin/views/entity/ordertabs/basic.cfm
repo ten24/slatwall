@@ -3,10 +3,6 @@
 
 <cfparam name="rc.order" type="any" />
 <cfparam name="rc.edit" type="boolean" />
-<cfif arrayLen(rc.order.getOrderItems()) && !isNull(rc.order.getOrderItems()[1].getOrderFulfillment())>
-	<cfset local.fulfillmentCharge = "#rc.order.getOrderItems()[1].getOrderFulfillment().getFulfillmentCharge() ?: 0#">
-	<cfset local.handlingFee = "#rc.order.getOrderItems()[1].getOrderFulfillment().getHandlingFee() ?: 0#">
-</cfif>
 <cfoutput>
 	<cfset local.OrderJSON = rc.order.getEncodedJsonRepresentation()>
 	
