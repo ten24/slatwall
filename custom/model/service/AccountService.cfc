@@ -388,6 +388,45 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 		return arguments.account;
 	}
 	
+	public any function updateSponsor(required any account, required string sponsorAccountNumber){
+		try{
+		    var ormStatelessSession = ormGetSessionFactory().openStatelessSession();
+            var tx = ormStatelessSession.beginTransaction();
+            
+            var newSponsorAccount = this.getAccountByAccountNumber(arguments.sponsorAccountNumber);
+ 
+    		var newAccountRelationship = this.getAccountRelationshipByChildAccount(arguments.account, false);
+
+    		var isNewAccountRelationship = isNull(newAccountRelationship);
+    		
+    		if (isNewAccountRelationship){
+    			newAccountRelationship = new Slatwall.model.entity.AccountRelationship();
+    		}
+    		
+        	newAccountRelationship.setParentAccount(newSponsorAccount);
+        	newAccountRelationship.setChildAccount(account);
+        	newAccountRelationship.setActiveFlag( true );
+        	newAccountRelationship.setCreatedDateTime( now() );
+        	newAccountRelationship.setModifiedDateTime( now() );
+        	
+        	//insert the relationship
+        	
+        	if (isNewAccountRelationship){
+        		ormStatelessSession.insert("SlatwallAccountRelationship", newAccountRelationship);
+        	}else{
+        		
+        		ormStatelessSession.update("SlatwallAccountRelationship", newAccountRelationship);
+        	}
+        	
+        	account.setOwnerAccount(newSponsorAccount);
+    	}catch(any e){
+    	    ormStatelessSession.close();
+    		rethrow;
+        }
+		ormStatelessSession.close();
+
+	}
+	
 	
 	
 }

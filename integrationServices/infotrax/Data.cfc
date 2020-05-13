@@ -155,7 +155,7 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 				relatedToAccount = true;
 				tableName ='swAccount';
 				filter = 'accountID = :baseID';
-				params['baseID'] = { value=arguments.entity.getAccount().getAccountID(), cfsqltype="cf_sql_varchar"};
+				params['baseID'] = { value=arguments.entity.getAccount().getAccountID(), cfsqltype='cf_sql_varchar'};
 				
 				if(isNull(arguments.entity.getAccount().getLastSyncedDateTime())){
 					iceResponse = createDistributor(arguments.data.DTSArguments);
@@ -168,7 +168,7 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 			case 'afterAccountSaveSuccess':
 				tableName ='swAccount';
 				filter = 'accountID = :baseID';
-				params['baseID'] = { value=arguments.entity.getAccountID(), cfsqltype="cf_sql_varchar"};
+				params['baseID'] = { value=arguments.entity.getAccountID(), cfsqltype='cf_sql_varchar'};
 				
 				if(isNull(arguments.entity.getLastSyncedDateTime())){
 					iceResponse = createDistributor(arguments.data.DTSArguments);
@@ -182,7 +182,7 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 			case 'afterOrderSaveSuccess':
 				tableName ='swOrder';
 				filter = 'orderID = :baseID';
-				params['baseID'] = { value=arguments.entity.getOrderID(), cfsqltype="cf_sql_varchar"};
+				params['baseID'] = { value=arguments.entity.getOrderID(), cfsqltype='cf_sql_varchar'};
 				
 				if(arguments.entity.getOrderStatusType().getSystemCode() == 'ostCanceled'){
 					if(len(arguments.entity.getIceRecordNumber())){
@@ -198,7 +198,7 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 			case 'afterOrderProcess_cancelOrderSuccess':
 				tableName ='swOrder';
 				filter = 'orderID = :baseID';
-				params['baseID'] = { value=arguments.entity.getOrderID(), cfsqltype="cf_sql_varchar"};
+				params['baseID'] = { value=arguments.entity.getOrderID(), cfsqltype='cf_sql_varchar'};
 				
 				if(len(arguments.entity.getIceRecordNumber())){
 					iceResponse = deleteTransaction(arguments.data.DTSArguments);
@@ -208,7 +208,7 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 			case 'afterOrderTemplateSaveSuccess':
 				tableName ='swOrderTemplate';
 				filter = 'orderTemplateID = :baseID';
-				params['baseID'] = { value=arguments.entity.getOrderTemplateID(), cfsqltype="cf_sql_varchar"};
+				params['baseID'] = { value=arguments.entity.getOrderTemplateID(), cfsqltype='cf_sql_varchar'};
 				
 				if(isNull(arguments.entity.getLastSyncedDateTime())){
 					iceResponse = createAutoship(arguments.data.DTSArguments);
@@ -220,7 +220,7 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 			case 'afterOrderTemplateProcess_cancelSuccess':
 				tableName ='swOrderTemplate';
 				filter = 'orderTemplateID = :baseID';
-				params['baseID'] = { value=arguments.entity.getOrderTemplateID(), cfsqltype="cf_sql_varchar"};
+				params['baseID'] = { value=arguments.entity.getOrderTemplateID(), cfsqltype='cf_sql_varchar'};
 				
 				iceResponse = deleteAutoship(arguments.data.DTSArguments);
 				break;
@@ -230,28 +230,58 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 		}
 		
 		
-		
 		if(structKeyExists(iceResponse, 'returnserialnumber')){
 			
-			logHibachi("InfoTrax - returnserialnumber: #iceResponse.returnserialnumber#", true);
-			
-			if(relatedToAccount && isNull(arguments.entity.getAccount().getLastSyncedDateTime())){
-				getService('HibachiEventService').announceEvent("afterInfotraxAccountCreateSuccess",{ entity : arguments.entity.getAccount() });
-			}else if(arguments.entity.getClassName() == 'Account' && isNull(arguments.entity.getLastSyncedDateTime())){
-				getService('HibachiEventService').announceEvent("afterInfotraxAccountCreateSuccess", { entity : arguments.entity });
-			}
+			logHibachi('InfoTrax - returnserialnumber: #iceResponse.returnserialnumber#', true);
 			
 			var query = 'UPDATE #tableName# SET lastSyncedDateTime = NOW()';
 
-			if(structKeyExists(iceResponse, 'recordNumber')){
-				query &= ', iceRecordNumber = :iceRecordNumber';
-				params['iceRecordNumber'] = { value=iceResponse['recordNumber'], cfsqltype="cf_sql_varchar"};
+			if( tableName == 'swAccount' ){
+				
+				var account = relatedToAccount ? arguments.entity.getAccount() : arguments.entity;
+				
+				if( structKeyExists(iceResponse, 'marketpartnerid') ){
+					query &= ', uplineMarketPartnerNumber = :uplineMarketPartnerNumber';
+					params['uplineMarketPartnerNumber'] = { 
+						value=iceResponse['marketpartnerid'], 
+						cfsqltype='cf_sql_varchar'
+					};
+				}
+				
+				if( structKeyExists(iceResponse, 'diststatus') && iceResponse.diststatus != getInfoTraxService().formatDistributorType(account.getAccountType()) ){
+					query &= ', accountType = :accountType';
+					params['accountType'] = { 
+						value = getInfoTraxService().distributorTypeToAccountType(iceResponse.diststatus), 
+						cfsqltype = 'cf_sql_varchar'
+					};
+				}
+				
+				if( structKeyExists(iceResponse, 'sponsorid') && iceResponse.sponsorid != account.getOwnerAccount().getAccountNumber() ){
+					getService('accountService').updateSponsor(account, iceResponse.sponsorid);
+				}
+				
+				
+				
+			}else{
+				
+				if( structKeyExists(iceResponse, 'recordNumber') ){
+					query &= ', iceRecordNumber = :iceRecordNumber';
+					params['iceRecordNumber'] = { 
+						value=iceResponse['recordNumber'], 
+						cfsqltype='cf_sql_varchar'
+					};
+				}
 			}
+			
 			
 			query &=' WHERE #filter#';
 			 
 			QueryExecute(query, params);
 			
+			
+			if( !isNull(account) && isNull(account.getLastSyncedDateTime()) ){
+				getService('HibachiEventService').announceEvent('afterInfotraxAccountCreateSuccess',{ entity : account });
+			}
 		}
 		
 		
