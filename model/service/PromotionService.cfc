@@ -1734,7 +1734,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				}
 			}
 			if(arrayLen(promotionReward.getExcludedSkus())) {
-				for(var excludedSkus in promotionReward.getExcludedSkuss()) {
+				for(var excludedSkus in promotionReward.getExcludedSkus()) {
 					newPromotionReward.addExcludedSkus(excludedSkus);
 				}
 			}
@@ -1748,8 +1748,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					newPromotionReward.addExcludedProductType(excludedProductType);
 				}
 			}
+			
+			if(!isNull(promotionReward.getExcludedSkusCollectionConfig())) newPromotionReward.setExcludedSkusCollectionConfig(newPromotionReward.getPromotionRewardID(), promotionReward.getExcludedSkusCollectionConfig());
+			if(!isNull(promotionReward.getIncludedSkusCollectionConfig())) newPromotionReward.setIncludedSkusCollectionConfig(promotionReward.getIncludedSkusCollectionConfig());
+		
 			newPromotionPeriod.addPromotionReward(newPromotionReward);
 		}
+
 		// Duplicate promotionQualifiers
 		for(var promotionQualifier in arguments.promotionPeriod.getPromotionQualifiers()){
 			var newpromotionQualifier = this.newpromotionQualifier();
@@ -1830,7 +1835,28 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					newpromotionQualifier.addExcludedProductType(excludedProductType);
 				}
 			}
+			if(!isNull(promotionQualifier.getIncludedOrdersCollectionConfig())) newpromotionQualifier.setIncludedOrdersCollectionConfig(promotionQualifier.getIncludedOrdersCollectionConfig());
+			if(!isNull(promotionQualifier.getExcludedOrdersCollectionConfig())) newpromotionQualifier.setExcludedOrdersCollectionConfig(promotionQualifier.getExcludedOrdersCollectionConfig());
+			if(!isNull(promotionQualifier.getExcludedSkusCollectionConfig())) newpromotionQualifier.setExcludedSkusCollectionConfig(promotionQualifier.getExcludedSkusCollectionConfig());
+			if(!isNull(promotionQualifier.getIncludedSkusCollectionConfig())) newpromotionQualifier.setIncludedSkusCollectionConfig(promotionQualifier.getIncludedSkusCollectionConfig());
 			newPromotionPeriod.addPromotionQualifier(newpromotionQualifier);
+		}
+		
+		if(!newPromotionPeriod.hasErrors()){
+			this.savePromotionPeriod(newPromotionPeriod);
+			getHibachiScope().flushOrmSession();
+			var copyFromList = [];
+			var index = 1;
+			
+			for(var reward in arguments.promotionPeriod.getPromotionRewards()){
+				arrayAppend(copyFromList, reward.getPromotionRewardID());
+			}
+
+			for(var reward in newPromotionPeriod.getPromotionRewards()){
+				getPromotionDAO().cloneAndInsertIncludedStackableRewards(copyFromID = copyFromList[index], newPromoRewardID = reward.getPromotionRewardID());
+				index++;
+			}
+			
 		}
 
 		return newPromotionPeriod;
