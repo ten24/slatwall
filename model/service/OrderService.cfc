@@ -1133,6 +1133,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				
 		for(var orderItem in arguments.order.getOrderItems()){
 			if(!isNull(orderItem.getStock())){
+				getHibachiScope().addModifiedEntity(orderItem);
 				getHibachiScope().addModifiedEntity(orderItem.getStock());
 				getHibachiScope().addModifiedEntity(orderItem.getStock().getSkuLocationQuantity());
 			}
@@ -1141,7 +1142,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// Change the status
 		this.updateOrderStatusBySystemCode(arguments.order, "ostCanceled");
 		arguments.order.setOrderCanceledDateTime(now());
-		
 		return arguments.order;
 	}
 
