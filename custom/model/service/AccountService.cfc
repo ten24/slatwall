@@ -229,14 +229,6 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
         return arguments.accountPaymentMethod;
 	}
 	
-	public void function afterAccountUpgradeSuccess(any slatwallScope, any entity, any eventData) {
-		var orderTemplates = arguments.entity.getOrderTemplates();
-
-		for(var orderTemplate in orderTemplates){
-			getOrderService().processOrderTemplate(orderTemplate, {}, 'updateCalculatedProperties');
-		}
-	}
-	
 	public any function addOrderToAccount(required any account, required any order){
 		
 		arguments.order = super.addOrderToAccount(argumentCollection = arguments);
