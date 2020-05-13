@@ -77,7 +77,7 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 					SET serverInstanceKey=NULL
 					WHERE 
 						serverInstanceKey IS NOT NULL
-						AND modifiedDateTime < :timeoutDateTime
+						AND entityQueueProcessingDateTime < :timeoutDateTime
 					";
 						
 		queryService.execute(sql=sql);
@@ -92,10 +92,12 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 		var queryService = new query();
 		queryService.addParam(name='serverInstanceKey', value=getHibachiScope().getServerInstanceKey(), CFSQLTYPE='CF_SQL_STRING');
 		queryService.addParam(name='entityQueueIDs', value=entityQueueIDs, CFSQLTYPE='CF_SQL_STRING', list=true);
+		queryService.addParam(name='dateTimeNow', value='#now()#', CFSQLTYPE="CF_SQL_TIMESTAMP");
 		
 		var sql =	"UPDATE 
 						SwEntityQueue 
-					SET serverInstanceKey=:serverInstanceKey
+					SET serverInstanceKey=:serverInstanceKey,
+					entityQueueProcessingDateTime = :dateTimeNow
 					WHERE 
 						entityQueueID IN (:entityQueueIDs)
 					AND

@@ -198,7 +198,6 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 			fsResponse.hasErrors = false;
 		    return fsResponse;
 		}
-writedump(apiData); abort;
 		logHibachi("Could not import #endpoint#(s) on this page: PS-#arguments.pageSize# PN-#pageNumber#", true);
 		fsResponse.hasErrors = true;
 
