@@ -1619,7 +1619,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		this.logHibachi('Start Processing OrderTemplate #arguments.orderTemplate.getOrderTemplateID()#', true);
 		
 		// if next process date is in future and not a logged in user skip
-		if( (!isNull(arguments.orderTemplate.getScheduleOrderProcessingFlag()) && arguments.orderTemplate.getScheduleOrderProcessingFlag()) ) {
+		if( (!isNull(arguments.orderTemplate.getScheduleOrderProcessingFlag()) && arguments.orderTemplate.getScheduleOrderProcessingFlag()) || (dateCompare( arguments.orderTemplate.getScheduleOrderNextPlaceDateTime(), now() ) == 1 && !getHibachiScope().getLoggedInFlag()) ) {
 			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# - Already processing', true);
 			return arguments.orderTemplate;
 		}
