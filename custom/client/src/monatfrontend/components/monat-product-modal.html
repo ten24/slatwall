@@ -240,7 +240,8 @@
 				        			
 				        			<div ng-if="monatProductModal.productDetails.productHowVideoUrl" 
 				        				 class="video-block" 
-				        				 ng-style="{ 'background': 'url(' + monatProductModal.productDetails.productHowVideoImage + ')', 'background-size': 'cover' } ;">
+				        				 ng-style="{'background-image': 'url(\'' + monatProductModal.productDetails.productHowVideoImage + '\')', 'background-size': 'cover' }"
+				        				 >
 				        				
 				        				<div class="video-details">
 			            					<span class="play-video-button" data-featherlight="#how-to-video-lightbox">
@@ -255,7 +256,7 @@
 		                        		    	{{monatProductModal.productDetails.productHowVideoLength}}
 	                        		    	</span>
 				        				</div>
-				        				
+				        					
 				        				<div class="video-lightbox" 
 				        				     id="how-to-video-lightbox" 
 				        				     ng-style="{ 'padding-top': monatProductModal.videoRatio + '%', 'width': monatProductModal.productDetails.productHowVideoWidth + 'px' } ">
@@ -273,7 +274,7 @@
 				        			
 				        		</div>
 				        	</div>
-				        	<div class="how-to-use__background-image" ng-style="{ 'background-image': 'url(' + monatProductModal.productDetails.productHowBackgroundImage  + ')' } "></div>
+				        	<div class="how-to-use__background-image" ng-style="{ 'background-image': 'url(\'' + monatProductModal.productDetails.productHowBackgroundImage + '\')' } "></div>
 						</section>
 						
 					</div>
