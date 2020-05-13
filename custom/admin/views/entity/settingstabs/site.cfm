@@ -60,6 +60,7 @@ Notes:
 		<swa:SlatwallSetting settingName="siteRecaptchaSecretKey" />
 		<swa:SlatwallSetting settingName="siteRecaptchaProtectedEvents" />
 		<swa:SlatwallSetting settingName="siteDefaultOFYSkuCode" />
+		<swa:SlatwallSetting settingName="siteWishlistShareEmailTemplate" />
 	</swa:SlatwallSettingTable>
 </cfoutput>
 

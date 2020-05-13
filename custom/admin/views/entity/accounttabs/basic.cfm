@@ -43,6 +43,7 @@
 			<hb:HibachiPropertyDisplay object="#rc.account#" property="phoneNumber" edit="false">
 			<hb:HibachiPropertyDisplay object="#rc.account#" property="emailAddress" edit="false">  
 			<hb:HibachiPropertyDisplay object="#rc.account#" property="accountType" edit="false">
+			<hb:HibachiPropertyDisplay object="#rc.account#" property="superUserFlag" edit="#rc.edit and $.slatwall.getAccount().getSuperUserFlag()#">
 			<cfif NOT IsNULL( rc.account.getOwnerAccount() )>
 				<hb:HibachiPropertyDisplay object="#rc.account.getOwnerAccount()#" property="fullName" edit="false" title = "Sponsor Name"> 
 			</cfif>

@@ -653,15 +653,41 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     }
     
     public any function addItemAndCreateWishlist( required struct data ) {
-        var orderTemplate = this.createWishlist(argumentCollection=arguments);
-        var orderTemplateItem = getService("OrderService").newOrderTemplateItem();
-        orderTemplateItem.setOrderTemplate(orderTemplate);
-        var sku = getService("SkuService").getSku(arguments.data['skuID']);
-        orderTemplateItem.setSku(sku);
-        orderTemplateItem.setQuantity(arguments.data['quantity']);
-        //add item to template
+        var orderTemplate = this.createWishlist(argumentCollection= arguments);
+        
+        if( !orderTemplate.hasErrors() ){
+            getHibachiScope().flushORMSession();
+            
+            arguments.data['ordertemplateID'] = orderTemplate.getOrderTemplateID();
+            arguments.data['returnOrderTemplateFlag'] = false;
+            this.addOrderTemplateItem(arguments.data)
+        }
+        
+        this.addErrors(arguments.data, orderTemplate.getErrors());
+        getHibachiScope().addActionResult( "public:orderTemplate.addItemAndCreateWishlist", orderTemplate.hasErrors() );
+    }
+    
+    
+    public any function shareWishlist( required struct data ) {
+
+        param name="arguments.data.orderTemplateID" default="";
+        param name="arguments.data.receiverEmailAddress" default="";
+        
+        var orderTemplate = getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
+        if(IsNull(orderTemplate)){
+            return;
+        }
+
+        var processObject = orderTemplate.getProcessObject("shareWishlist");
+
+		processObject.setReceiverEmailAddress(arguments.data.receiverEmailAddress); 
+        orderTemplate = this.getOrderService().processOrderTemplate(orderTemplate, processObject, "shareWishlist");
+        
+        this.addErrors(arguments.data, orderTemplate.getErrors());
+        getHibachiScope().addActionResult( "public:orderTemplate.shareWishlist", orderTemplate.hasErrors() );
         
     }
+
 
     public void function updatePrimaryPaymentMethod(required any data){
         param name="data.paymentMethodID" default="";
@@ -1287,10 +1313,11 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         productCollectionList.addDisplayProperty('skus.skuID');
         productCollectionList.addDisplayProperty('skus.skuPrices.personalVolume');
         productCollectionList.addDisplayProperty('skus.skuPrices.price');
+        productCollectionList.addDisplayProperty('calculatedAllowBackorderFlag');
         productCollectionList.addDisplayProperty('urlTitle');
         productCollectionList.addDisplayProperty('skus.imageFile');
         
-        var currentRequestSite = getHibachiScope().getCurrentRequestSite();
+        var currentRequestSite = getService('siteService').getSiteByCMSSiteID(arguments.data.cmsSiteID);
         if(!isNull(currentRequestSite) && currentRequestSite.hasLocation()){
             productCollectionList.addDisplayProperty('skus.stocks.calculatedQATS');
             productCollectionList.addFilter('skus.stocks.location.locationID',currentRequestSite.getLocations()[1].getLocationID());
@@ -1443,21 +1470,32 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                 
                 counter++;
             }
-            productData['productHowto']["steps"] = steps;
+            productData['productHowtoSteps']["steps"] = steps;
             
             var rbkey = {};
             rbkey["step"] = getHibachiScope().rbKey('frontend.global.step');
             rbkey["of"] = getHibachiScope().rbKey('frontend.global.of');
-            productData['productHowto']["rbkey"] = rbkey;
+            productData['productHowtoSteps']["rbkey"] = rbkey;
+            
+            if ( len( product.getFormattedValue( 'productHowVideoVimeoURL' ) ) ) {
+                productData['productHowVideoUrl'] = product.getFormattedValue( 'productHowVideoVimeoURL' );
+            } else if ( len( product.getFormattedValue( 'productHowVideoYoutubeURL' ) ) ) {
+                productData['productHowVideoUrl'] = product.getFormattedValue( 'productHowVideoYoutubeURL' );
+            }
+            
+            productData['productHowVideoTitle'] = product.getFormattedValue( 'productHowVideoTitle' );
+            productData['productHowVideoLength'] = product.getAttributeValue( 'productHowVideoLength' );
+            productData['productHowVideoWidth'] = product.getAttributeValue( 'productHowVideoWidth' );
+            productData['productHowVideoHeight'] = product.getAttributeValue( 'productHowVideoHeight' );
             
             var fileName = product.getAttributeValue( 'productVideoBackgroundImage' );
-            productData['productVideoBackgroundImage'] = getService('imageService').getResizedImagePath(imagePath = "#getHibachiScope().getBaseImageURL()#'/'#fileName#",width = 300, height =300);
+            productData['productVideoBackgroundImage'] = '/Slatwall/custom/assets/files/' & lCase( 'productVideoBackgroundImage' ) & '/' & fileName;
             
             var fileName = product.getAttributeValue( 'productHowBackgroundImage' );
-            productData['productHowBackgroundImage'] = getService('imageService').getResizedImagePath(imagePath = "#getHibachiScope().getBaseImageURL()#'/'#fileName#",width = 300, height =300);
+            productData['productHowBackgroundImage'] = '/Slatwall/custom/assets/files/' & lCase( 'productHowBackgroundImage' ) & '/' & fileName;
             
             var fileName = product.getAttributeValue( 'productHowVideoImage' );
-            productData['productHowVideoImage'] = getService('imageService').getResizedImagePath(imagePath = "#getHibachiScope().getBaseImageURL()#'/'#fileName#",width = 300, height =300);
+            productData['productHowVideoImage'] = '/Slatwall/custom/assets/files/' & lCase( 'productHowVideoImage' ) & '/' & fileName;
             
             if(!isNull(product.getProductIngredient1())){
                 var productIngredient1 = {};
@@ -1562,7 +1600,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                 'priceGroupCode': arguments.priceGroupCode,
                 'upgradedPricing': '',
                 'upgradedPriceGroupCode': upgradedPriceGroupCode,
-                'qats': record.skus_stocks_calculatedQATS
+                'qats': record.skus_stocks_calculatedQATS,
+                'calculatedAllowBackorderFlag': record.calculatedAllowBackorderFlag
             };
             
             //add skuID's to skuID array for query below

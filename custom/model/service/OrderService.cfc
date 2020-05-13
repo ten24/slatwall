@@ -143,7 +143,7 @@ component extends="Slatwall.model.service.OrderService" {
     
     
     public any function processOrderTemplate_create(required any orderTemplate, required any processObject, required struct data={}, required string context="save") {
-        
+
 		if(arguments.processObject.getNewAccountFlag()) {
 			
 			var account = getAccountService().processAccount(getAccountService().newAccount(), arguments.data, "create");
@@ -211,17 +211,70 @@ component extends="Slatwall.model.service.OrderService" {
 		arguments.orderTemplate.setCurrencyCode( arguments.processObject.getCurrencyCode() );
 		arguments.orderTemplate.setOrderTemplateStatusType(getTypeService().getTypeBySystemCode('otstDraft'));
 		arguments.orderTemplate.setOrderTemplateType(getTypeService().getType(arguments.processObject.getOrderTemplateTypeID()));
-		
 		arguments.orderTemplate.setFrequencyTerm( arguments.processObject.getFrequencyTerm() );
-		arguments.orderTemplate.setScheduleOrderDayOfTheMonth(
-				day(arguments.processObject.getScheduleOrderNextPlaceDateTime())
-			);
-		arguments.orderTemplate.setScheduleOrderNextPlaceDateTime(arguments.processObject.getScheduleOrderNextPlaceDateTime());
-
+		var date = arguments.processObject.getScheduleOrderNextPlaceDateTime() ?: arguments.data.scheduleOrderNextPlaceDateTime;
+		arguments.orderTemplate.setScheduleOrderDayOfTheMonth(day(date));
+		arguments.orderTemplate.setScheduleOrderNextPlaceDateTime(parseDateTime(date));
 		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate, arguments.data, arguments.context); 
-		
 		return arguments.orderTemplate;
     }
+
+
+	public array function getOrderTemplateEventOptions(){
+		var eventOptions = super.getOrderTemplateEventOptions(); 
+
+		var customEvents = [
+			{
+				'name': 'WishList - After Wishlist AddItem Success | afterWishlistAddItemSuccess',
+				'value': 'afterWishlistAddItemSuccess',
+				'entityName': 'OrderTemplate' 
+			}
+		]
+
+		arrayAppend(eventOptions, customEvents, true); 
+
+		return eventOptions;  
+	} 
+
+	public any function processOrderTemplate_addOrderTemplateItem(required any orderTemplate, required any processObject, required struct data={}){
+		
+		arguments.orderTemplate = super.processOrderTemplate_addOrderTemplateItem(argumentCollection = arguments);
+		
+		// if it's a wishlist announce a custom event
+		if( 
+			!isNull(arguments.orderTemplate.getOrderTemplateType()) 
+			&& arguments.orderTemplate.getOrderTemplateType().getSystemCode() == 'ottWishList' 
+		){
+			
+			var invokeArguments = {};
+			invokeArguments[ "1" ] = arguments.orderTemplate;//compatibility with on missing method
+			invokeArguments[ "data" ] = arguments.data;
+			invokeArguments[ 'orderTemplate' ] = arguments.orderTemplate;
+			invokeArguments[ "processObject" ] = arguments.processObject;
+			invokeArguments.entity = arguments.orderTemplate;
+			
+			
+			if(!arguments.orderTemplate.hasErrors()){
+				getHibachiEventService().announceEvent("afterWishlistAddItemSuccess", invokeArguments);
+			} 
+			else {
+				logHibachi("WishList has errors after addOrderItem, #SerializeJson( arguments.orderTemplate.getErrors() )#");
+			}
+		}
+		
+		return arguments.orderTemplate;
+	}
+
+	public any function processOrderTemplate_shareWishlist(required any orderTemplate, any processObject, struct data={}){
+
+		this.sendEmail(
+			emailAddress = arguments.processObject.getReceiverEmailAddress(), 
+			emailTemplateID =  arguments.ordertemplate.getSite().setting('siteWishlistShareEmailTemplate'),
+			emailTemplateObject = arguments.orderTemplate
+		);
+		
+		return arguments.orderTemplate; 		
+	}
 
 	public any function processOrder_create(required any order, required any processObject, required struct data={}) {
 	
@@ -626,7 +679,7 @@ component extends="Slatwall.model.service.OrderService" {
 		
 		///Order Item Data
 		var ordersItemsList = this.getOrderItemCollectionList();
-		ordersItemsList.setDisplayProperties('quantity,price,calculatedListPrice,calculatedExtendedPriceAfterDiscount,sku.product.productName,sku.product.productID,sku.product.productType.systemCode,sku.skuID,skuProductURL,skuImagePath,orderFulfillment.shippingAddress.streetAddress,orderFulfillment.shippingAddress.street2Address,orderFulfillment.shippingAddress.city,orderFulfillment.shippingAddress.stateCode,orderFulfillment.shippingAddress.postalCode,orderFulfillment.shippingAddress.name,orderFulfillment.shippingAddress.countryCode,orderFulfillment.shippingMethod.shippingMethodName');
+		ordersItemsList.setDisplayProperties('quantity,price,calculatedListPrice,calculatedExtendedPriceAfterDiscount,sku.product.productName,sku.product.productID,sku.product.productType.systemCode,sku.skuID,skuProductURL,skuImagePath,orderFulfillment.shippingAddress.streetAddress,orderFulfillment.shippingAddress.street2Address,orderFulfillment.shippingAddress.city,orderFulfillment.shippingAddress.stateCode,orderFulfillment.shippingAddress.postalCode,orderFulfillment.shippingAddress.name,orderFulfillment.shippingAddress.countryCode,orderFulfillment.shippingMethod.shippingMethodName,orderFulfillment.handlingFee,orderFulfillment.fulfillmentCharge');
 		ordersItemsList.addFilter( 'order.orderID', arguments.data.orderID, '=');
 		ordersItemsList.addFilter( 'order.account.accountID', arguments.data.accountID, '=');
 		ordersItemsList.setPageRecordsShow(arguments.data.pageRecordsShow);
@@ -1697,6 +1750,7 @@ component extends="Slatwall.model.service.OrderService" {
 						if(orderTemplateItem['sku_skuID'] == orderItem.getSku().getSkuID()){
 							this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# Remove temporary Item SkuID: #orderTemplateItem['sku_skuID']# because of error', true);
 							arguments.order.removeOrderItem( orderitem );
+							temporaryItemFound = false;
 							continue;
 						}
 					}
