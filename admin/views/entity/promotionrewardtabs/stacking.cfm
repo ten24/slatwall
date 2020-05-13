@@ -63,7 +63,7 @@ Notes:
 </cfif>
 
 <cfset local.includeRewardCollection = $.slatwall.getService('PromotionService').getPromotionRewardCollectionList() />
-<cfset local.includeRewardCollection.setDisplayProperties('promotionPeriod.promotion.promotionName,promotionPeriod.promotionPeriodName,amountType,amount',{isVisible:true}) />
+<cfset local.includeRewardCollection.setDisplayProperties('promotionPeriod.promotion.promotionName,promotionPeriod.promotionPeriodName,amountType,amount',{isVisible:true,isSearchable:true}) />
 <cfset local.includeRewardCollection.addDisplayProperty(displayProperty="promotionRewardID",columnConfig={isVisible:false})>
 <cfset local.includeRewardCollection.addFilter('rewardType',local.includeRewardType) />
 <cfset local.includeRewardCollection.addFilter('promotionRewardID',rc.promotionReward.getPromotionRewardID(),"!=") />
@@ -78,7 +78,7 @@ Notes:
 </cfif>
 
 <cfset local.excludeRewardCollection = $.slatwall.getService('PromotionService').getPromotionRewardCollectionList() />
-<cfset local.excludeRewardCollection.setDisplayProperties('promotionPeriod.promotion.promotionName,promotionPeriod.promotionPeriodName,amountType,amount',{isVisible:true}) />
+<cfset local.excludeRewardCollection.setDisplayProperties('promotionPeriod.promotion.promotionName,promotionPeriod.promotionPeriodName,amountType,amount',{isVisible:true,isSearchable:true}) />
 <cfset local.excludeRewardCollection.addDisplayProperty(displayProperty="promotionRewardID",columnConfig={isVisible:false}) >
 <cfset local.excludeRewardCollection.addFilter('rewardType',local.excludeRewardType) />
 <cfset local.excludeRewardCollection.addFilter('promotionPeriod.promotion.activeFlag',"true") />
@@ -93,7 +93,10 @@ Notes:
 
 <cfset local.includedRewardIDs = rc.promotionReward.getIncludedStackableRewardsIDList() />
 <cfset local.excludedRewardIDs = rc.promotionReward.getExcludedStackableRewardsIDList() />
-
+<cfif NOT rc.edit>
+    <cfset local.includeRewardCollection.addFilter('promotionRewardID',local.includedRewardIDs,'IN') />
+    <cfset local.excludeRewardCollection.addFilter('promotionRewardID',local.excludedRewardIDs,'IN') />
+</cfif>
 
 
 <cfoutput>
@@ -108,6 +111,7 @@ Notes:
             multiselectPropertyIdentifier="promotionRewardID"
             multiselectFieldName="includedStackableRewards"
             multiselectValues="#local.includedRewardIDs#"/>
+        <input type="hidden" name="includedStackableRewards" value="" />
 	</div>
 	<div class="col-md-6">
 	    <hb:HibachiListingDisplay 
@@ -120,5 +124,6 @@ Notes:
             multiselectPropertyIdentifier="promotionRewardID"
             multiselectFieldName="excludedStackableRewards"
             multiselectValues="#local.excludedRewardIDs#"/>
+        <input type="hidden" name="excludedStackableRewards" value="" />
 	</div>
 </cfoutput>
