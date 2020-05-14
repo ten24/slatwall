@@ -240,12 +240,11 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 				
 				var account = relatedToAccount ? arguments.entity.getAccount() : arguments.entity;
 				
-				if( structKeyExists(iceResponse, 'marketpartnerid') ){
-					query &= ', uplineMarketPartnerNumber = :uplineMarketPartnerNumber';
-					params['uplineMarketPartnerNumber'] = { 
-						value=iceResponse['marketpartnerid'], 
-						cfsqltype='cf_sql_varchar'
-					};
+				if( structKeyExists(iceResponse, 'marketpartnerid') &&  ( isNull(account.getUplineAccount()) || account.getUplineAccount().getAccountCode() != iceResponse.marketpartnerid ) ){
+					var newUplineAccount = this.getAccountByAccountNumber(iceResponse.marketpartnerid);
+					if(!isNull(newUplineAccount)){
+						account.setUplineAccount(newUplineAccount);
+					}
 				}
 				
 				if( structKeyExists(iceResponse, 'diststatus') && iceResponse.diststatus != getInfoTraxService().formatDistributorType(account.getAccountType()) ){
@@ -259,8 +258,6 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 				if( structKeyExists(iceResponse, 'sponsorid') && iceResponse.sponsorid != account.getOwnerAccount().getAccountNumber() ){
 					getService('accountService').updateSponsor(account, iceResponse.sponsorid);
 				}
-				
-				
 				
 			}else{
 				
