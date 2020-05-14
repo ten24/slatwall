@@ -15,6 +15,8 @@ component {
 	property name="spouseFirstName" persistent = "false";
 	property name="spouseLastName" persistent = "false";
 	property name="governmentIdentificationLastFour" persistent = "false";
+	
+	property name="uplineMPAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="uplineMPAccountID";
 
 	public numeric function getSuccessfulFlexshipOrdersThisYearCount(){
 		if(!structKeyExists(variables, 'successfulFlexshipOrdersThisYearCount')){

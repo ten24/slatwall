@@ -212,7 +212,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 				
 				//NOTE: there's only one shipping method allowed for flexship
 				var shippingMethod = getService('ShippingService').getShippingMethod(
-					ListFirst( orderTemplate.setting('orderTemplateEligibleShippingMethods') )
+					ListFirst( orderTemplate.getSite().setting('siteOrderTemplateEligibleShippingMethods') )
 				);
 				
 				var accountPaymentMethod = arguments.order.getOrderPayments()[1].getAccountPaymentMethod();
@@ -275,19 +275,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 			logHibachi("afterOrderProcess_placeOrderSuccess failed @ set initialOrderFlag #serializeJson(dateError)#");	
 		}
 		
-	}
-
-	/** Any time we place and order from a flexship we want to recalculate all properties at the flexship level.
-	  *
-      */
-	public any function afterOrderTemplateProcess_createAndPlaceOrderSuccess(required any slatwallScope, required any orderTemplate, any data={}){
-
-		getDAO('HibachiEntityQueueDAO').insertEntityQueue(
-				baseID          = arguments.orderTemplate.getOrderTemplateID(),
-				baseObject      = 'OrderTemplate',
-				processMethod   = 'updateCalculatedProperties',
-				entityQueueData = {} //no data needed 
-		); 	
 	}
 	
 	public any function afterOrderItemCreateSuccess(required any slatwallScope, required any orderItem, required any data){ 

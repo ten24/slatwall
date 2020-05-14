@@ -41,34 +41,28 @@ class FlexshipCheckoutStepController {
 		
 		this.orderTemplateService.getAppliedPromotionCodes();
 		
-		this.orderTemplateService
-			//instead of making a trip to the server we should cache at the frontend;
-			.getSetOrderTemplateOnSession("purchasePlusTotal,vatTotal,taxTotal,fulfillmentHandlingFeeTotal", "save", false, false)
-			.then((response: any) => {
-				
-				if(!response.orderTemplate){
-					throw(response);
-				}
+		let orderTemplate = this.orderTemplateService.mostRecentOrderTemplate;
+		if(!orderTemplate){
+			throw('No order template on service');
+		}
 			
-				this.flexshipCheckoutStore.dispatch("SET_CURRENT_FLEXSHIP", (state) => {
-					return this.flexshipCheckoutStore.setFlexshipReducer(
-						state, response.orderTemplate
-					);
-				});
-			})
-			.then(() =>
-				this.monatService.getOptions({
-					expirationMonthOptions: false,
-					expirationYearOptions: false,
-				})
-			)
-			.then((options) => {
-				this.expirationMonthOptions = options.expirationMonthOptions;
-				this.expirationYearOptions = options.expirationYearOptions;
-			})
-			.catch((e) => {
-				this.monatAlertService.showErrorsFromResponse(e);
-			});
+		this.flexshipCheckoutStore.dispatch("SET_CURRENT_FLEXSHIP", (state) => {
+			return this.flexshipCheckoutStore.setFlexshipReducer(
+				state, orderTemplate
+			);
+		});
+		
+		this.monatService.getOptions({
+			expirationMonthOptions: false,
+			expirationYearOptions: false,
+		})
+		.then((options) => {
+			this.expirationMonthOptions = options.expirationMonthOptions;
+			this.expirationYearOptions = options.expirationYearOptions;
+		})
+		.catch((e) => {
+			this.monatAlertService.showErrorsFromResponse(e);
+		});
 	};
 
 	public canCompleteCheckout = () => {
@@ -106,7 +100,7 @@ class FlexshipCheckoutStepController {
 		if (!this.canCompleteCheckout()) {
 			return this.observerService.notify(FlexshipFlowEvents.ON_COMPLETE_CHECKOUT_FAILURE);
 		}
-
+		
 		this.orderTemplateService
 			.updateOrderTemplateShippingAndBilling(
 				this.currentState.flexship.orderTemplateID,
@@ -149,6 +143,7 @@ class FlexshipCheckoutStepController {
 	};
 	
 	public addNewPaymentMethod = () => {
+
 		let payload = {
 			"orderTemplateID": this.currentState.flexship.orderTemplateID,
 			"billingAccountAddress.value": this.currentState.selectedBillingAddressID,

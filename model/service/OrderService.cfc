@@ -1133,6 +1133,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				
 		for(var orderItem in arguments.order.getOrderItems()){
 			if(!isNull(orderItem.getStock())){
+				getHibachiScope().addModifiedEntity(orderItem);
 				getHibachiScope().addModifiedEntity(orderItem.getStock());
 				getHibachiScope().addModifiedEntity(orderItem.getStock().getSkuLocationQuantity());
 			}
@@ -1141,7 +1142,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// Change the status
 		this.updateOrderStatusBySystemCode(arguments.order, "ostCanceled");
 		arguments.order.setOrderCanceledDateTime(now());
-		
 		return arguments.order;
 	}
 
@@ -1333,7 +1333,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	//order transient helper methods
 	public any function newTransientOrderFromOrderTemplate(required any orderTemplate, boolean evictFromSession=true){
-		
+
 		arguments.transientOrder = new Slatwall.model.entity.Order();
 		arguments.transientOrder.setOrderTemplate(arguments.orderTemplate); 
 		
@@ -1615,11 +1615,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	} 
 
 	public any function processOrderTemplate_createAndPlaceOrder(required any orderTemplate, any processObject, required struct data={}){
+		
+		getHibachiScope().addExcludedModifiedEntityName('TaxApplied');
+		getHibachiScope().addExcludedModifiedEntityName('PromotionApplied');
 
 		this.logHibachi('Start Processing OrderTemplate #arguments.orderTemplate.getOrderTemplateID()#', true);
 		
 		// if next process date is in future and not a logged in user skip
-		if( (!isNull(arguments.orderTemplate.getScheduleOrderProcessingFlag()) && arguments.orderTemplate.getScheduleOrderProcessingFlag()) ) {
+		if( (!isNull(arguments.orderTemplate.getScheduleOrderProcessingFlag()) && arguments.orderTemplate.getScheduleOrderProcessingFlag()) || (dateCompare( arguments.orderTemplate.getScheduleOrderNextPlaceDateTime(), now() ) == 1 && !getHibachiScope().getLoggedInFlag()) ) {
 			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# - Already processing', true);
 			return arguments.orderTemplate;
 		}
@@ -1828,6 +1831,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# completing place order and has status: #newOrder.getOrderStatusType().getTypeName()#', true);
 		
 		getOrderDAO().setScheduleOrderProcessingFlag(arguments.orderTemplate.getOrderTemplateID(), false);
+		
+		getHibachiScope().removeExcludedModifiedEntityName('TaxApplied');
+		getHibachiScope().removeExcludedModifiedEntityName('PromotionApplied');
 		return arguments.orderTemplate; 
 	}
 	

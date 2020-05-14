@@ -76966,7 +76966,7 @@ var SWAddOrderItemsBySkuController = /** @class */ (function (_super) {
         var _a, _b;
         _super.prototype.initCollectionConfig.call(this);
         switch ((_b = (_a = this.accountType) === null || _a === void 0 ? void 0 : _a.trim()) === null || _b === void 0 ? void 0 : _b.toLowerCase()) {
-            case 'marketpartenr':
+            case 'marketpartner':
                 this.addSkuCollection.addFilter('mpFlag', true, '=', undefined, true);
                 break;
             case 'vip':

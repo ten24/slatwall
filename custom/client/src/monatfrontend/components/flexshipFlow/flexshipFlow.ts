@@ -27,7 +27,6 @@ class FlexshipFlowController {
 	public orderTemplate: OrderTemplate;
 	public muraData;
 	public isOFYEligible;
-	
     public loading: boolean;
 	
     //@ngInject

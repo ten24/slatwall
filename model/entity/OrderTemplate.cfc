@@ -189,7 +189,7 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 	public any function getShippingMethodOptions(){
 		var shippingMethodCollection = getService('ShippingService').getShippingMethodCollectionList();
 		shippingMethodCollection.setDisplayProperties('shippingMethodName|name,shippingMethodID|value'); 
-		shippingMethodCollection.addFilter('shippingMethodID',setting('orderTemplateEligibleShippingMethods'),'in'); 
+		shippingMethodCollection.addFilter('shippingMethodID',this.getSite().setting('siteOrderTemplateEligibleShippingMethods'),'in'); 
 		return shippingMethodCollection.getRecords();
 	}
 	

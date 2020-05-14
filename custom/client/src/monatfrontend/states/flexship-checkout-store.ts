@@ -96,10 +96,10 @@ export class FlexshipCheckoutStore extends NgStore<FlexshipCheckoutState, Flexsh
 				return state;
     		});
 		})
-    	.then( () => this.monatService.getOptions({'orderTemplateShippingMethodOptions':false}))
+    	.then( () => this.monatService.getOptions({'siteOrderTemplateShippingMethodOptions':false}, false, this.orderTemplateService.currentOrderTemplateID))
     	.then( (options) => {
     		this.dispatch('SET_SHIPPING_METHODS', (state) => {
-	    		state.shippingMethodOptions = options.orderTemplateShippingMethodOptions;
+	    		state.shippingMethodOptions = options.siteOrderTemplateShippingMethodOptions;
 	    		state.selectedShippingMethodID = this.selectAShippingMethod(state);
 				return state;
     		})
