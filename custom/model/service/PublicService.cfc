@@ -2384,6 +2384,16 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     
     public void function addOrderTemplateItem(required any data){
         param name="arguments.data.returnOrderTemplateFlag" default="true";
+        
+        if(arguments.data.temporaryFlag){
+            var orderTemplate = getService('orderService').getOrderTemplate(arguments.data.orderTemplateID);
+            var ofyItem = getOrderService().getAssociatedOFYProductForFlexship(arguments.data.orderTemplateID);
+            
+            if(!isNull(ofyItem) && structKeyExists(ofyItem,'orderTemplateItemID') ){
+                orderTemplate.removeOrderTemplateItem(getOrderService().getOrderTemplateItem(ofyItem.orderTemplateItemID));
+            }
+        }
+
         super.addOrderTemplateItem(arguments.data);
         
         if(arguments.data.returnOrderTemplateFlag){
