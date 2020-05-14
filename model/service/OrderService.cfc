@@ -5614,7 +5614,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			'productType':'product.productType.productTypeID',
 			'brand':'product.brand.brandID'
 		};
-		
+
 		for(var record in refundSkuSettingRecords){
 			var listString = "Not";
 			if(settingValue = 1){
@@ -5637,7 +5637,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				refundSkuCollectionList.addFilter('#settingLevels[level]#',local["#level#NotInList"],"NOT IN","AND","","notInLists");
 			}
 		}
-		
+
 		refundSkuCollectionList.setDisplayProperties('skuID,skuCode,skuName,calculatedSkuDefinition,product.calculatedTitle,price',{isVisible:true});
 		return refundSkuCollectionList;
 	}

@@ -781,6 +781,7 @@ property name="personalVolume" ormtype="big_decimal";
 	}
 	
 	public numeric function getQuantityDeliveredMinusReturns(){
+		getService('HibachiService').logHibachi('qor: #getQuantityOnReturnOrders()#, qd:#getQuantityDelivered()# ',true);
 		return getQuantityDelivered() - getQuantityOnReturnOrders();
 	}
 	
@@ -792,13 +793,9 @@ property name="personalVolume" ormtype="big_decimal";
 		returnOrderItemCollectionList.setDisplayProperties('quantity');
 		returnOrderItemCollectionList.addFilter(propertyIdentifier='orderItemType.systemCode',value='oitReturn');
 		returnOrderItemCollectionList.addFilter(propertyIdentifier='order.orderType.systemCode',value='otReturnOrder,otExchangeOrder',comparisonOperator='IN');
-		returnOrderItemCollectionList.addFilter(propertyIdentifier='order.orderStatusType.systemCode',value='ostCanceled,ostNotPlaced',comparisonOperator='NOT IN');
+		returnOrderItemCollectionList.addFilter(propertyIdentifier='order.orderStatusType.systemCode',value='ostCanceled,ostNotPlaced,',comparisonOperator='NOT IN');
 		returnOrderItemCollectionList.addFilter(propertyIdentifier='referencedOrderItem.orderItemID',value=getOrderItemID());
-		returnOrderItemCollectionList.addFilterGroupWithAlias('replacement','OR');
-		returnOrderItemCollectionList.addFilter(propertyIdentifier='orderItemType.systemCode',value='oitReplacement',filterGroupAlias="replacement");
-		returnOrderItemCollectionList.addFilter(propertyIdentifier='order.orderType.systemCode',value='otReplacementOrder',filterGroupAlias="replacement");
-		returnOrderItemCollectionList.addFilter(propertyIdentifier='order.orderStatusType.systemCode',value='ostCanceled,ostNotPlaced',comparisonOperator='NOT IN',filterGroupAlias="replacement");
-		returnOrderItemCollectionList.addFilter(propertyIdentifier='referencedOrderItem.orderItemID',value=getOrderItemID(),filterGroupAlias="replacement");
+
 		var result = returnOrderItemCollectionList.getRecords();
 		if(!isNull(result) && arrayLen(result)){
 			for(var item in result){

@@ -297,17 +297,35 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			}
 			variables.refundOrderItemList = refundOrderItemList;
 		}
+		
+	//	dd(variables.refundOrderItemList)
 		return variables.refundOrderItemList;
 	}
 	
 	public boolean function orderItemsWithinOriginalQuantity(){
 		
 		if ( !isnull(this.getOrderItems()) ){
-			
+		
 			for (var orderItem in this.getOrderItems()){
 
 				var originalItem = getService("OrderService").getOrderItem(orderItem.referencedOrderItem.orderItemID);
 				if (orderItem.quantity > originalItem.getQuantityDeliveredMinusReturns()){
+					return false;
+				}
+			}			
+		}
+		
+		return true;
+	}
+	
+	public boolean function orderItemQuantitiesAreWithinOriginalQuantity(){
+		
+		if ( !isnull(this.getOrderItems()) ){
+			
+			for (var orderItem in this.getOrderItems()){
+
+				var originalItem = getService("OrderService").getOrderItem(orderItem.referencedOrderItem.orderItemID);
+				if (orderItem.quantity > originalItem.getQuantity()){
 					return false;
 				}
 			}			

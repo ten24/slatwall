@@ -8,7 +8,7 @@
 	},
 	"properties": {
 		"fulfillmentRefundAmount": [{ "dataType": "numeric", "minValue": 0 }],
-		"orderItems": [{ "conditions": "orderTypeNotRefund", "method": "orderItemsWithinOriginalQuantity" }],
+		"orderItems": [{ "conditions": "orderTypeNotRefund", "method": "orderItemQuantitiesAreWithinOriginalQuantity" }],
 		"orderPayments": [{ "method": "paymentAmountsWithinAllowedAmount" }]
 	}
 }
