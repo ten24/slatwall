@@ -101,7 +101,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
  				orderFulfillmentList = listAppend(orderFulfillmentList,orderFulfillment.getPickupLocation().getLocationID());
  			}
  			
- 			orderFulfillmentList = listAppend(orderFulfillmentList,orderFulfillment.getFulfillmentCharge());
+ 			orderFulfillmentList = listAppend(orderFulfillmentList,orderFulfillment.getFulfillmentChargeTotal());
  		}
  		
 
