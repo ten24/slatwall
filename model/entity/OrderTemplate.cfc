@@ -415,7 +415,18 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 
 		return getHibachiScope().hibachiHTMLEditFormat(html); 
 	}
-
+	
+	public numeric function getOrderTemplateItemsCount(){
+		if(!structKeyExists(variables, 'orderTemplateItemsCount')){
+			var count = 0;
+			for(var item in this.getOrderTemplateItems()){
+				count += item.getQuantity();
+			}
+			variables.orderTemplateItemsCount = count;
+		}
+		
+		return variables.orderTemplateItemsCount;
+	}
 	
 	//CUSTOM FUNCTIONS BEGIN
 
