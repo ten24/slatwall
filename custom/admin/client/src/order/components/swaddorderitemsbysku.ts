@@ -22,7 +22,7 @@ class SWAddOrderItemsBySkuController extends AddOrderItemsBySkuController{
 		super.initCollectionConfig();
 		
 		switch(this.accountType?.trim()?.toLowerCase()){
-			case 'marketpartenr': 
+			case 'marketpartner': 
 				this.addSkuCollection.addFilter('mpFlag', true, '=', undefined, true);
 				break;
 			case 'vip': 

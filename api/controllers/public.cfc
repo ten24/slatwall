@@ -271,8 +271,8 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
 		getPublicService().getFrequencyDateOptions(arguments.rc);
     }
     
-    public void function getOrderTemplateShippingMethodOptions(required any rc) {
-        getPublicService().orderTemplateShippingMethodOptions(arguments.rc);
+    public void function getSiteOrderTemplateShippingMethodOptions(required any rc) {
+        getPublicService().getSiteOrderTemplateShippingMethodOptions(arguments.rc);
 	}
     
     public void function getCancellationReasonTypeOptions(required any rc) {

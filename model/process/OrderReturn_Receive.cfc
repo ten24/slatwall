@@ -87,6 +87,8 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	}
 	
 	public boolean function validReturnItemsQuantity(){
+		var hasReturnItems = false;
+		
 		if ( isNull( this.getOrderReturnItems() ) ){
 			return false;
 		}
@@ -97,10 +99,14 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			}
 			if ( val(returnItem.quantity) > returnItem.unreceivedQuantity || val(returnItem.quantity) < 0 ){
 				return false;
-			}			
+			}
+			
+			if(returnItem.quantity > 0){
+				hasReturnItems = true;
+			}
 		}
 		
-		return true;
+		return true && hasReturnItems;
 	}
 	
 	public boolean function validStockLossQuantity(){

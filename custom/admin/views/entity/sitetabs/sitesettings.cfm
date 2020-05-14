@@ -66,10 +66,13 @@ Notes:
 		<swa:SlatwallSetting settingName="siteMaxAmountAllowedToSpendInInitialEnrollmentPeriod" settingObject="#rc.site#" />
 		<swa:SlatwallSetting settingName="siteMaxDaysAfterAccountCreate" settingObject="#rc.site#" />
 		<swa:SlatwallSetting settingName="siteDefaultOFYSkuCode" settingObject="#rc.site#" />
+		<swa:SlatwallSetting settingName="siteWishlistShareEmailTemplate" settingObject="#rc.site#" />
 		<swa:SlatwallSetting settingName="integrationmonatSiteMinCartTotalAfterVIPUserIsEligibleForOFYAndFreeShipping" settingObject="#rc.site#" />
 		<swa:SlatwallSetting settingName="integrationmonatSiteMinCartTotalAfterMPUserIsEligibleForOFYAndFreeShipping" settingObject="#rc.site#" />
 		<swa:SlatwallSetting settingName="integrationmonatSiteFlexshipCancellationGracePeriodForMPUsers" settingObject="#rc.site#" />
 		<swa:SlatwallSetting settingName="integrationmonatSiteVipEnrollmentOrderMinimum" settingObject="#rc.site#" />
+		<swa:SlatwallSetting settingName="siteOrderTemplateEligibleShippingMethods" settingObject="#rc.site#" />
+
 	
 	</swa:SlatwallSettingTable>
 </cfoutput>

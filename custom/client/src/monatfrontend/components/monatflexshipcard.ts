@@ -46,7 +46,7 @@ class MonatFlexshipCardController {
 			this.userCanEditOFYProductFlag = ( today <= addEditOFYUntilDate );
 
 			//we'll show add OFY callout, if next-scheduled-order-date is within current-month
-			this.showAddOFYProductCallout = ( today <= addEditOFYUntilDate && today.getMonth() == nextScheduledOrderDate.getMonth() );
+			this.showAddOFYProductCallout = ( today <= addEditOFYUntilDate && today.getMonth() <= nextScheduledOrderDate.getMonth() );
 			
 		}
 

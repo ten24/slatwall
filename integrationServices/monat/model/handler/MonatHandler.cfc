@@ -212,7 +212,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 				
 				//NOTE: there's only one shipping method allowed for flexship
 				var shippingMethod = getService('ShippingService').getShippingMethod(
-					ListFirst( orderTemplate.setting('orderTemplateEligibleShippingMethods') )
+					ListFirst( orderTemplate.getSite().setting('siteOrderTemplateEligibleShippingMethods') )
 				);
 				
 				var accountPaymentMethod = arguments.order.getOrderPayments()[1].getAccountPaymentMethod();

@@ -330,7 +330,7 @@ export class OrderTemplateService {
 
 		return this.publicService.doAction("addItemAndCreateWishlist", data);
 	};
-
+	
 	public deleteOrderTemplateItem = (orderTemplateItemID) => {
 		return this.publicService.doAction("deleteOrderTemplateItem", {
 			orderTemplateItemID: orderTemplateItemID,
