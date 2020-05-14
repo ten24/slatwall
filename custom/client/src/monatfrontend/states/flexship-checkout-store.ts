@@ -223,7 +223,7 @@ export class FlexshipCheckoutStore extends NgStore<FlexshipCheckoutState, Flexsh
 			selectedShippingAddressID = currentState.selectedShippingAddressID;
 		} 
 		if(!selectedShippingAddressID ){
-			selectedShippingAddressID = currentState.flexship?.ShippingAccountAddress_accountAddressID?.trim();
+			selectedShippingAddressID = currentState.flexship?.shippingAccountAddress_accountAddressID?.trim();
 		}
     	if(!selectedShippingAddressID) { 
     		selectedShippingAddressID = currentState.primaryShippingAddressID?.trim()
