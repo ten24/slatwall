@@ -11,7 +11,7 @@
           
 	</cfquery>
     <cfcatch >
-        <cflog file="Slatwall" text="ERROR UPDATE SCRIPT - SwOrderItem Update Calculated Properties (#cfcatch.detail#)">
+        <cflog file="Slatwall" text="ERROR UPDATE SCRIPT - SwAccount Add mp/vip-UpgradeDateTime (#cfcatch.detail#)">
     	<cfset local.scriptHasErrors = true />
     </cfcatch>
 </cftry>

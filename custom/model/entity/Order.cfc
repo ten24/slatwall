@@ -498,31 +498,30 @@ component {
 	 	
 	 	var site = this.getOrderCreatedSite();
 	 	if(isNull(site) || site.getSiteCode() != 'mura-uk'){
+	 	    logHibachi("Site is not mura-uk returning #site.getSiteCode()#");
 	 	    return true; 
 	 	} 
 	 	
 	 	var accountType = this.getAccountType();
 	 	if(isNull(accountType) || accountType != 'marketPartner'){
+	 	    logHibachi("Accounttype is not mp returning, #this.getAccountType()#");
 	 		return true;
 	 	}
 	 	
-	    var initialEnrollmentPeriodForMarketPartner = site.setting("siteInitialEnrollmentPeriodForMarketPartner");//7
-        var maxAmountAllowedToSpendDuringInitialEnrollmentPeriod = site.setting("siteMaxAmountAllowedToSpendInInitialEnrollmentPeriod");//200
+	    var initialEnrollmentPeriodForMarketPartner = site.setting("siteInitialEnrollmentPeriodForMarketPartner"); // 7-days
+	    
+        var isEnrollmentPeriodOver = !isNull(this.getAccount()) && !isNull(this.getAccount().getEnrollmentDate() ) && dateDiff( "d", this.getAccount().getEnrollmentDate(), now() ) > initialEnrollmentPeriodForMarketPartner;
         
-        var hasUpgradePeriodPassed = true;
-        var hasEnrollmentPeriodPassed = true;
-        
+        var isUpgradePeriodOver = true;
         if( !isNull(this.getAccount()) ){
-            
-        	var enrollmentDate = this.getAccount().getEnrollmentDate();
-            hasEnrollmentPeriodPassed = isNull(enrollmentDate ) || dateDiff( "d", enrollmentDate, now() ) > initialEnrollmentPeriodForMarketPartner;
-
             var mpUpgradeDateTime = this.getAccount().getMpUpgradeDateTime();
-            hasEnrollmentPeriodPassed = isNull(mpUpgradeDateTime ) || dateDiff( "d", mpUpgradeDateTime, now() ) > initialEnrollmentPeriodForMarketPartner;
+            isUpgradePeriodOver = isNull(mpUpgradeDateTime ) || dateDiff( "d", mpUpgradeDateTime, now() ) > initialEnrollmentPeriodForMarketPartner;
         }
         
+        logHibachi(" isUpgradePeriodOver: #isUpgradePeriodOver#, isEnrollmentPeriodOver: #isEnrollmentPeriodOver#");
+        
         //If a UK MP is within the first 7 days of enrollment/upgrade, check that they have not already placed more than 1 order.
-		if ( !hasUpgradePeriodPassed || !hasEnrollmentPeriodPassed ){
+		if ( !isEnrollmentPeriodOver || !isUpgradePeriodPassed  ){
 			var total = 0;
 			if(!isNull(this.getAccount())){
 				var orders = account.getOrders();
@@ -532,6 +531,8 @@ component {
 			}else{
 				total += this.getTotal();
 			}
+            
+            var maxAmountAllowedToSpendDuringInitialEnrollmentPeriod = site.setting("siteMaxAmountAllowedToSpendInInitialEnrollmentPeriod");//200
 			//If adding the order item will increase the order to over 200 EU return false  
 			if (total > maxAmountAllowedToSpendDuringInitialEnrollmentPeriod){
 			    return false; // they already have too much.
