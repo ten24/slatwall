@@ -1333,7 +1333,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	//order transient helper methods
 	public any function newTransientOrderFromOrderTemplate(required any orderTemplate, boolean evictFromSession=true){
-		
+
 		arguments.transientOrder = new Slatwall.model.entity.Order();
 		arguments.transientOrder.setOrderTemplate(arguments.orderTemplate); 
 		
@@ -1615,6 +1615,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	} 
 
 	public any function processOrderTemplate_createAndPlaceOrder(required any orderTemplate, any processObject, required struct data={}){
+		
+		getHibachiScope().addExcludedModifiedEntityName('TaxApplied');
+		getHibachiScope().addExcludedModifiedEntityName('PromotionApplied');
 
 		this.logHibachi('Start Processing OrderTemplate #arguments.orderTemplate.getOrderTemplateID()#', true);
 		
@@ -1828,6 +1831,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# completing place order and has status: #newOrder.getOrderStatusType().getTypeName()#', true);
 		
 		getOrderDAO().setScheduleOrderProcessingFlag(arguments.orderTemplate.getOrderTemplateID(), false);
+		
+		getHibachiScope().removeExcludedModifiedEntityName('TaxApplied');
+		getHibachiScope().removeExcludedModifiedEntityName('PromotionApplied');
 		return arguments.orderTemplate; 
 	}
 	

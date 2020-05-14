@@ -193,12 +193,12 @@ export class MonatService {
 	/**
 	 * options = {optionName:refresh, ---> option2:true, o3:false}
 	 */
-	public getOptions(options: {}, refresh = false) {
+	public getOptions(options: {}, refresh = false, orderTemplateID='') {
 		var deferred = this.$q.defer<any>();
 		var optionsToFetch = this.makeListOfOptionsToFetch(options, refresh);
 
 		if (refresh || (optionsToFetch && optionsToFetch.length)) {
-			this.doPublicAction("getOptions", { optionsList: optionsToFetch }).then((data: any) => {
+			this.doPublicAction("getOptions", { optionsList: optionsToFetch, orderTemplateID:orderTemplateID }).then((data: any) => {
 				var { messages, failureActions, successfulActions, ...realOptions } = data; //destructuring we don't want unwanted data in cached options
 				Object.keys(realOptions).forEach((key) =>
 					this.localStorageCache.put(key, realOptions[key])
@@ -226,8 +226,8 @@ export class MonatService {
 		deferred.resolve(res);
 	}
 
-	public getOrderTemplateShippingMethodOptions(refresh = false) {
-		return this.getOptions({ orderTemplateShippingMethodOptions: refresh });
+	public getSiteOrderTemplateShippingMethodOptions(refresh = false, orderTemplateID = '') {
+		return this.getOptions({ siteOrderTemplateShippingMethodOptions: refresh });
 	}
 
 	public getFrequencyTermOptions(refresh = false) {

@@ -228,31 +228,6 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
         
         return arguments.accountPaymentMethod;
 	}
-
-	public any function saveAccount(required any account, struct data={}, string context="save"){
-	
-		var originalAccountType = arguments.account.getAccountType(); 
-
-		arguments.account = super.saveAccount(argumentCollection=arguments);
-
-		var newAccountType = arguments.account.getAccountType();
-
-		if( (isNull(newAccountType) && isNull(originalAccountType)) ||
-			(!isNull(newAccountType) && !isNull(originalAccountType) && newAccountType == originalAccountType)
-		){
-			this.logHibachi('account not changed, not updated order template properties')
-			return arguments.account; 
-		} 
-
-		var orderTemplates = arguments.account.getOrderTemplates();
-
-		for(var orderTemplate in orderTemplates){
-			this.logHibachi('updatingOrderTemplateCalculatedPropertiesForAccount #orderTemplate.getOrderTemplateID()#');
-			getOrderService().processOrderTemplate(orderTemplate, {}, 'updateCalculatedProperties');
-		}
-
-		return arguments.account; 
-	}
 	
 	public any function addOrderToAccount(required any account, required any order){
 		
@@ -403,6 +378,45 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 			.importAccountUpdates({});
 
 		return arguments.account;
+	}
+	
+	public any function updateSponsor(required any account, required string sponsorAccountNumber){
+		try{
+		    var ormStatelessSession = ormGetSessionFactory().openStatelessSession();
+            var tx = ormStatelessSession.beginTransaction();
+            
+            var newSponsorAccount = this.getAccountByAccountNumber(arguments.sponsorAccountNumber);
+ 
+    		var newAccountRelationship = this.getAccountRelationshipByChildAccount(arguments.account, false);
+
+    		var isNewAccountRelationship = isNull(newAccountRelationship);
+    		
+    		if (isNewAccountRelationship){
+    			newAccountRelationship = new Slatwall.model.entity.AccountRelationship();
+    		}
+    		
+        	newAccountRelationship.setParentAccount(newSponsorAccount);
+        	newAccountRelationship.setChildAccount(account);
+        	newAccountRelationship.setActiveFlag( true );
+        	newAccountRelationship.setCreatedDateTime( now() );
+        	newAccountRelationship.setModifiedDateTime( now() );
+        	
+        	//insert the relationship
+        	
+        	if (isNewAccountRelationship){
+        		ormStatelessSession.insert("SlatwallAccountRelationship", newAccountRelationship);
+        	}else{
+        		
+        		ormStatelessSession.update("SlatwallAccountRelationship", newAccountRelationship);
+        	}
+        	
+        	account.setOwnerAccount(newSponsorAccount);
+    	}catch(any e){
+    	    ormStatelessSession.close();
+    		rethrow;
+        }
+		ormStatelessSession.close();
+
 	}
 	
 	

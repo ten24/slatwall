@@ -236,6 +236,8 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 
 		getService("HibachiTagService").cfsetting(requesttimeout="60000");
 		
+		getHibachiScope().addExcludedModifiedEntityName('Order');
+		
 		logHibachi("importOrderShipments - Start", true);
 
 		if(!structKeyExists(arguments.rc, 'pageMax')){
@@ -249,7 +251,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 			arguments.rc.pageMax = response.totalPages ?: 0;
 		}
 		
-		logHibachi("importMonatProducts - Total Pages: #arguments.rc.pageMax#", true);
+		logHibachi("importOrderShipments - Total Pages: #arguments.rc.pageMax#", true);
 		
 		var ormStatelessSession = ormGetSessionFactory().openStatelessSession();
 		var tx = ormStatelessSession.beginTransaction();
@@ -259,7 +261,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 		for(var index = arguments.rc.pageNumber; index <= arguments.rc.pageMax; index++){
 			var persist = false;
 		    
-		    logHibachi("importMonatProducts - Current Page #index#", true); 
+		    logHibachi("importOrderShipments - Current Page #index#", true); 
 			var shipmentResponse = getData(
 				pageNumber = arguments.rc.pageNumber,
 				pageSize = arguments.rc.pageSize,
@@ -281,20 +283,21 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 					 'remoteID' = { value=shipment.shipmentId, cfsqltype="cf_sql_varchar"},
 				});
 				
-				if(countOrderDelivery['total'] > 0){
-					logHibachi("importOrderShipments - Delivery #shipment.shipmentId# Already Exists - Order Number:#shipment.orderNumber#", true);
-					continue;
-				}
-				
-				logHibachi("importOrderShipments - Creating: #shipment.shipmentId#", true);
-				
 				var order = getOrderService().getOrderByOrderNumber(shipment.OrderNumber);
 				if(isNull(order)){
 					logHibachi("importOrderShipments - Delivery #shipment.shipmentId# Order Not Found - Order Number:#shipment.orderNumber#", true);
 					continue;
 				}
 				
-				
+				if(countOrderDelivery['total'] > 0){
+					logHibachi("importOrderShipments - Delivery #shipment.shipmentId# Already Exists - Order Number:#shipment.orderNumber#", true);
+					//Fix status
+					if(order.getOrderStatusCode() != 'ostClosed'){
+						order.setOrderStatusType(SHIPPED);
+					}
+					continue;
+				}
+			
 				logHibachi("importOrderShipments - Creating OrderDelivery: #shipment.shipmentId#", true);
 				
 				try{
@@ -378,15 +381,15 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 					ormStatelessSession.insert("SlatwallOrderDeliveryItem", orderDeliveryItem);
 					
 					orderItem.setCalculatedQuantityDelivered(val(orderItem.getCalculatedQuantityDelivered()) + item['QuantityShipped']);
-					orderItem.setCalcQtyDeliveredMinusReturns(val(orderItem.getCalcQtyDeliveredMinusReturns()) + item['QuantityShipped']);
+					orderItem.setCalculatedQuantityDeliveredMinusReturns(val(orderItem.getCalculatedQuantityDeliveredMinusReturns()) + item['QuantityShipped']);
                 }
                 
                 logHibachi("importOrderShipments - Created a delivery for orderNumber: #shipment['OrderNumber']#",true);
                 
                 // Close the order.
                 //now fire the event for this delivery.
-                var eventData = {entity: orderDelivery};
-                getHibachiScope().getService("hibachiEventService").announceEvent(eventName="afterOrderDeliveryCreateSuccess", eventData=eventData);
+                //var eventData = {entity: orderDelivery};
+                //getHibachiScope().getService("hibachiEventService").announceEvent(eventName="afterOrderDeliveryCreateSuccess", eventData=eventData);
 				order.setOrderStatusType(SHIPPED);
 			}
 			if(persist){

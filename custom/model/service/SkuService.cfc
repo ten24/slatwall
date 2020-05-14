@@ -34,7 +34,7 @@ component extends="Slatwall.model.service.SkuService" accessors="true" output="f
 		return price; //not returning return the NULL null, as cf won't set that in any var
 	}
 
-	public any function processSku_skuImport(required sku, required any processObject) {
+	public any function processSku_skuImport() {
 		
 		getHibachiScope()
 			.getService('integrationService')
@@ -42,7 +42,7 @@ component extends="Slatwall.model.service.SkuService" accessors="true" output="f
 			.getIntegrationCFC("data")
 			.importMonatProducts({ 'days' : 1 });
 
-		return arguments.sku;
+		return this.newSku();
 	}
 }
 

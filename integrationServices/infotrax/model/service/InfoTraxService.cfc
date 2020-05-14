@@ -150,7 +150,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		return left(distributorName, 60);
 	}
 	
-	private string function formatDistributorType(string accountType){
+	public string function formatDistributorType(string accountType){
 		
 		if(!structKeyExists(arguments, 'accountType')){
 			return 'C';
@@ -162,6 +162,17 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		};
 		
 		return structKeyExists(mapping, arguments.accountType) ? mapping[arguments.accountType] : 'C';
+	}
+	
+	public string function distributorTypeToAccountType(required string distType){
+
+		var mapping = {
+			'D' = 'MarketPartner',
+			'P' = 'VIP',
+			'C' = 'Customer'
+		};
+		
+		return mapping[arguments.distType];
 	}
 	
 	private string function formatOrderType(required any order){
