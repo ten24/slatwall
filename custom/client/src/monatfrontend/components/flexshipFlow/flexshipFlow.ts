@@ -2,6 +2,8 @@ import { MonatService, IOption } from '@Monat/services/monatservice';
 import { OrderTemplateService } from '@Monat/services/ordertemplateservice';
 import { PublicService, ObserverService } from '@Hibachi/core/core.module'
 
+import { OrderTemplate } from '@Monat/models';
+
 export enum FlexshipSteps{
 	SHOP=1,
 	FREQUENCY,	
@@ -22,7 +24,7 @@ class FlexshipFlowController {
 	public FlexshipSteps = FlexshipSteps; 
 	public currentStep = FlexshipSteps.SHOP; 
 	public farthestStepReached = FlexshipSteps.SHOP; 
-	public orderTemplate:{[key:string]:any};
+	public orderTemplate: OrderTemplate;
 	public muraData;
 	public isOFYEligible;
 	
