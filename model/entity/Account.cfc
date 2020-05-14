@@ -190,7 +190,6 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
  property name="gender" ormtype="string" hb_formFieldType="select";
  property name="accountNumber" ormtype="string";
  property name="careerTitle" ormtype="string" hb_formFieldType="select";
- property name="country" cfc="Country" fieldtype="many-to-one" fkcolumn="countryID";
  property name="referType" ormtype="string" hb_formFieldType="select";
  property name="profileImage" hb_fileUpload="true" hb_fileAcceptMIMEType="*/*" ormtype="string" hb_formFieldType="file";
  property name="terminationDate" ormtype="timestamp" hb_formatType="date";
