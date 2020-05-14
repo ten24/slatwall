@@ -509,12 +509,20 @@ component {
 	    var initialEnrollmentPeriodForMarketPartner = site.setting("siteInitialEnrollmentPeriodForMarketPartner");//7
         var maxAmountAllowedToSpendDuringInitialEnrollmentPeriod = site.setting("siteMaxAmountAllowedToSpendInInitialEnrollmentPeriod");//200
         
+        var hasUpgradePeriodPassed = true;
+        var hasEnrollmentPeriodPassed = true;
+        
         if( !isNull(this.getAccount()) ){
-        	var date = this.getAccount().getEnrollmentDate();
+            
+        	var enrollmentDate = this.getAccount().getEnrollmentDate();
+            hasEnrollmentPeriodPassed = isNull(enrollmentDate ) || dateDiff( "d", enrollmentDate, now() ) > initialEnrollmentPeriodForMarketPartner;
+
+            var mpUpgradeDateTime = this.getAccount().getMpUpgradeDateTime();
+            hasEnrollmentPeriodPassed = isNull(mpUpgradeDateTime ) || dateDiff( "d", mpUpgradeDateTime, now() ) > initialEnrollmentPeriodForMarketPartner;
         }
         
-        //If a UK MP is within the first 7 days of enrollment, check that they have not already placed more than 1 order.
-		if (isNull(date) || dateDiff("d", date, now()) <= initialEnrollmentPeriodForMarketPartner){
+        //If a UK MP is within the first 7 days of enrollment/upgrade, check that they have not already placed more than 1 order.
+		if ( !hasUpgradePeriodPassed || !hasEnrollmentPeriodPassed ){
 			var total = 0;
 			if(!isNull(this.getAccount())){
 				var orders = account.getOrders();
