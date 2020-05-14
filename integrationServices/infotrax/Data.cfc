@@ -240,10 +240,10 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 				
 				var account = relatedToAccount ? arguments.entity.getAccount() : arguments.entity;
 				
-				if( structKeyExists(iceResponse, 'marketpartnerid') &&  ( isNull(account.getUplineAccount()) || account.getUplineAccount().getAccountCode() != iceResponse.marketpartnerid ) ){
-					var newUplineAccount = this.getAccountByAccountNumber(iceResponse.marketpartnerid);
-					if(!isNull(newUplineAccount)){
-						account.setUplineAccount(newUplineAccount);
+				if( structKeyExists(iceResponse, 'marketpartnerid') &&  ( isNull(account.getUplineMPAccount()) || account.getUplineMPAccount().getAccountCode() != iceResponse.marketpartnerid ) ){
+					var newUplineMPAccount = this.getAccountByAccountNumber(iceResponse.marketpartnerid);
+					if(!isNull(newUplineMPAccount)){
+						account.setUplineMPAccount(newUplineMPAccount);
 					}
 				}
 				
