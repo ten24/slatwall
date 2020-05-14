@@ -2372,13 +2372,11 @@ public numeric function getPersonalVolumeSubtotal(){
 	 	
 	 	var site = this.getOrderCreatedSite();
 	 	if(isNull(site) || site.getSiteCode() != 'mura-uk'){
-	 	    logHibachi("Site is not mura-uk returning #site.getSiteCode()#");
 	 	    return true; 
 	 	} 
 	 	
 	 	var accountType = this.getAccountType();
 	 	if(isNull(accountType) || accountType != 'marketPartner'){
-	 	    logHibachi("Accounttype is not mp returning, #this.getAccountType()#");
 	 		return true;
 	 	}
 	 	
@@ -2391,8 +2389,6 @@ public numeric function getPersonalVolumeSubtotal(){
             var mpUpgradeDateTime = this.getAccount().getMpUpgradeDateTime();
             isUpgradePeriodOver = isNull(mpUpgradeDateTime ) || dateDiff( "d", mpUpgradeDateTime, now() ) > initialEnrollmentPeriodForMarketPartner;
         }
-        
-        logHibachi(" isUpgradePeriodOver: #isUpgradePeriodOver#, isEnrollmentPeriodOver: #isEnrollmentPeriodOver#");
         
         //If a UK MP is within the first 7 days of enrollment/upgrade, check that they have not already placed more than 1 order.
 		if ( !isEnrollmentPeriodOver || !isUpgradePeriodPassed  ){
