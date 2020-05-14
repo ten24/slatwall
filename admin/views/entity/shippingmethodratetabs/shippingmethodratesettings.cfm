@@ -61,5 +61,6 @@ Notes:
 		<swa:SlatwallSetting settingName="shippingMethodRateHandlingFeeType" settingObject="#rc.shippingMethodRate#"  />
 		<swa:SlatwallSetting settingName="shippingMethodRateHandlingFeeAmount" settingObject="#rc.shippingMethodRate#"  />
 		<swa:SlatwallSetting settingName="shippingMethodRateHandlingFeePercentage" settingObject="#rc.shippingMethodRate#"  />
+		<swa:SlatwallSetting settingName="shippingMethodRateTaxCategory" settingObject="#rc.shippingMethodRate#"  />
 	</swa:SlatwallSettingTable>
 </cfoutput>
