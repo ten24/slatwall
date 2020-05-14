@@ -400,7 +400,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			shippingMethodRateHandlingFeeFlag = {fieldType="yesno",defaultValue=0},
 			shippingMethodRateHandlingFeeType = {fieldType="select",defaultValue="amount"},
 			shippingMethodRateHandlingFeeAmount = {fieldType="text", formatType="currency",defaultValue=0,validate={dataType="numeric"}},
-			shippingMethodRateHandlingFeeTaxCategory = {fieldType="select", defaultValue="444df2c8cce9f1417627bd164a65f133"},
+			shippingMethodRateHandlingFeeTaxCategory = {fieldType="select", defaultValue=""},
 			shippingMethodRateAdjustmentType = {fieldType="select", defaultValue="increasePercentage"},
 			shippingMethodRateAdjustmentAmount = {fieldType="text", defaultValue=0},
 			shippingMethodRateMinimumAmount = {fieldType="text", defaultValue=0},
@@ -656,7 +656,7 @@ component extends="HibachiService" output="false" accessors="true" {
 				return [{name='Sort Order', value='sortOrder'}, {name='Lowest Rate', value='lowest'}, {name='Highest Rate', value='highest'}];
 			case "ShippingMethodRateHandlingFeeType" :
 				return [{name='Amount', value='amount'}, {name='Percentage', value='percentage'}];
-			case "shippingMethodRateTaxCategory":
+			case "shippingMethodRateHandlingFeeTaxCategory":
 				var optionSL = getTaxService().getTaxCategorySmartList();
 				optionSL.addFilter('activeFlag', 1);
 				optionSL.addSelect('taxCategoryName', 'name');
