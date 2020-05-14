@@ -65,6 +65,7 @@ component entityname="SlatwallShippingMethodRate" table="SwShippingMethodRate" p
 	property name="splitShipmentWeight" ormtype="float" hb_nullRBKey="define.unlimited";
 	property name="activeFlag" ormtype="boolean";
 	property name="rateType" ormtype="string" hb_formFieldType="select" default="amount";
+	property name="rateRequirementsCollectionConfig" ormtype="text";
 	
 	// Related Object Properties (many-to-one)
 	property name="shippingIntegration" cfc="Integration" fieldtype="many-to-one" fkcolumn="shippingIntegrationID";
@@ -96,6 +97,7 @@ component entityname="SlatwallShippingMethodRate" table="SwShippingMethodRate" p
 	property name="shipmentItemPriceRange" type="string" persistent="false";
 	property name="shippingMethodRateName" type="string" persistent="false";
 	property name="hasPriceGroups" type="string" persistent="false";
+	property name="rateRequirementsCollection" persistent="false";
 	
 	// ============ START: Non-Persistent Property Methods =================
 	
@@ -247,6 +249,66 @@ component entityname="SlatwallShippingMethodRate" table="SwShippingMethodRate" p
 		}
 		
 		return variables.shippingMethodRateName;
+	}
+	
+	public any function getRateRequirementsCollection(){
+		if(isNull(variables.rateRequirementsCollection)){
+			var collectionConfig = getRateRequirementsCollectionConfig();
+			if(!isNull(collectionConfig)){
+				variables.rateRequirementsCollection = getService("HibachiCollectionService").createTransientCollection(entityName='OrderFulfillment',collectionConfig=collectionConfig);
+			}else{
+				variables.rateRequirementsCollection = getService("HibachiCollectionService").getOrderFulfillmentCollectionList();
+				variables.rateRequirementsCollection.setDisplayProperties(displayPropertiesList='order.orderNumber',columnConfig={
+					'isDeletable':true,
+					'isVisible':true,
+					'isSearchable':true,
+					'isExportable':true
+				});
+				for(var column in ['createdDateTime','calculatedSubTotal','calculatedSubTotalAfterDiscounts','calculatedTotalShippingQuantity']){
+					variables.rateRequirementsCollection.addDisplayProperty(displayProperty=column,columnConfig={
+						'isDeletable':true,
+						'isVisible':true,
+						'isSearchable':false,
+						'isExportable':true
+					});
+				}
+				variables.rateRequirementsCollection.addDisplayProperty(displayProperty='orderFulfillmentID',columnConfig={
+					'isDeletable':false,
+					'isVisible':false,
+					'isSearchable':false,
+					'isExportable':true
+				});
+			}
+		}
+		return variables.rateRequirementsCollection;
+	}
+	
+	public void function saveRateRequirementsCollection(){
+		var collectionConfig = serializeJSON(getRateRequirementsCollection().getCollectionConfigStruct());
+		setRateRequirementsCollectionConfig(collectionConfig);
+	}
+	
+	public any function getTransientRateRequirementsCollection(){
+	    if(!isNull(getRateRequirementsCollectionConfig())){
+	        return getService("HibachiCollectionService").createTransientCollection(entityName='OrderFulfillment',collectionConfig=getRateRequirementsCollectionConfig());
+	    }
+	}
+	
+	// Collection Orders
+	public boolean function requirementsCollectionHasOrderFulfillmentByOrderFulfillmentID(required any orderFulfillmentID){
+		var orderFulfillmentCollection = getTransientRateRequirementsCollection();
+		
+		if(isNull(orderFulfillmentCollection)){
+			return true;
+		}
+		
+    	orderFulfillmentCollection.setDisplayProperties('orderFulfillmentID'); 
+		orderFulfillmentCollection.setPageRecordsShow(1); 
+		orderFulfillmentCollection.addFilter(propertyIdentifier='orderFulfillmentID',value=arguments.orderFulfillmentID, filterGroupAlias='orderFulfillmentIDFilter');
+		
+		var hasOrderFulfillment = !arrayIsEmpty(orderFulfillmentCollection.getPageRecords(formatRecords=false,refresh=true));
+
+		return hasOrderFulfillment;
 	}
 	
 	// ============  END:  Non-Persistent Property Methods =================
