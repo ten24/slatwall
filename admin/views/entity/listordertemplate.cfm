@@ -78,6 +78,7 @@ Notes:
 	<hb:HibachiListingDisplay 
 		collectionList="#rc.orderTemplateCollectionList#"
 		usingPersonalCollection="true"
+		personalCollectionKey='#request.context.entityactiondetails.itemname#'
 		recordEditAction="admin:entity.editordertemplate"
 		recordDetailAction="admin:entity.detailordertemplate"
 		enableAveragesAndSums="false"
