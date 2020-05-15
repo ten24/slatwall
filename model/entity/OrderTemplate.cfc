@@ -419,7 +419,8 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 	public numeric function getOrderTemplateItemsCount(){
 		if(!structKeyExists(variables, 'orderTemplateItemsCount')){
 			var count = 0;
-			for(var item in this.getOrderTemplateItems()){
+			var orderTemplateItems = this.getOrderTemplateItems() ?: [];
+			for(var item in orderTemplateItems){
 				count += item.getQuantity();
 			}
 			variables.orderTemplateItemsCount = count;
