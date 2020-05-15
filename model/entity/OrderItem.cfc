@@ -792,7 +792,7 @@ property name="personalVolume" ormtype="big_decimal";
 		returnOrderItemCollectionList.setDisplayProperties('quantity');
 		returnOrderItemCollectionList.addFilter(propertyIdentifier='orderItemType.systemCode',value='oitReturn');
 		returnOrderItemCollectionList.addFilter(propertyIdentifier='order.orderType.systemCode',value='otReturnOrder,otExchangeOrder',comparisonOperator='IN');
-		returnOrderItemCollectionList.addFilter(propertyIdentifier='order.orderStatusType.systemCode',value='ostCanceled,ostNotPlaced,',comparisonOperator='NOT IN');
+		returnOrderItemCollectionList.addFilter(propertyIdentifier='order.orderStatusType.systemCode',value='ostCanceled,ostNotPlaced',comparisonOperator='NOT IN');
 		returnOrderItemCollectionList.addFilter(propertyIdentifier='referencedOrderItem.orderItemID',value=getOrderItemID());
 
 		var result = returnOrderItemCollectionList.getRecords();

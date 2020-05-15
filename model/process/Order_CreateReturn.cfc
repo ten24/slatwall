@@ -298,7 +298,6 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			variables.refundOrderItemList = refundOrderItemList;
 		}
 		
-	//	dd(variables.refundOrderItemList)
 		return variables.refundOrderItemList;
 	}
 	
