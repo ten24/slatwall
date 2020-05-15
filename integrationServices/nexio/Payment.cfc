@@ -90,7 +90,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 	// The main entry point to process credit card (Slatwall convention)
 	public any function processCreditCard(required any requestBean) {
 		var responseBean = getTransient('CreditCardTransactionResponseBean');
-		
+
 		// Set default currency
 		if (isNull(arguments.requestBean.getTransactionCurrencyCode()) || !len(arguments.requestBean.getTransactionCurrencyCode())) {
 			arguments.requestBean.setTransactionCurrencyCode(setting(settingName='skuCurrency', requestBean=arguments.requestBean));
@@ -116,7 +116,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			responseBean.addError("Processing error", "Nexio Payment Integration has not been implemented to handle #arguments.requestBean.getTransactionType()#");
 			// throw("Nexio Payment Integration has not been implemented to handle #arguments.requestBean.getTransactionType()#");
 		}
-		
+
 		return responseBean;
 	}
 	
@@ -738,7 +738,6 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			var responseData = {};
 			
 			responseData = deserializeJSON(httpResponse.fileContent);
-			
 			return responseData;
 		} else {
 			var responseData = {};
@@ -791,10 +790,9 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			// Server response successful
 			} else {
 				arguments.responseBean.setStatusCode(httpResponse.status_code);
-	
 				// Convert JSON response
 				responseData = deserializeJSON(httpResponse.fileContent);
-				
+				arguments.responseBean.setReferenceNumber(responseData.gatewayResponse.refNumber)
 				// ---> Comment Out:
 				// fileWrite('#logPath#/#timeSufix#_AVS_response.json',httpResponse.fileContent);
 				// Comment Out: <---
