@@ -613,10 +613,6 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 		}
 	}
 	
-	private void function sendRequestToBlindCredit(required any requestBean, required any responseBean) {
-		
-	}
-	
 	private void function sendRequestToVoid(required any requestBean, required any responseBean) {
 		if (!isNull(arguments.requestBean.getOriginalChargeProviderTransactionID()) && len(arguments.requestBean.getOriginalChargeProviderTransactionID())) {
 			// Void Authorize & Charge
