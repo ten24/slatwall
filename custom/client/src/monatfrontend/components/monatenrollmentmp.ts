@@ -62,8 +62,7 @@ class EnrollmentMPController {
 			
 			this.isInitialized = true;
 			let unsortedBundles = [];
-			let direction;
-			let manualSortFlag = false;
+			let direction:string;
 			
 			for(let bundle in this.bundles){
 				if(!direction){
