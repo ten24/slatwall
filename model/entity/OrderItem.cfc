@@ -781,7 +781,6 @@ property name="personalVolume" ormtype="big_decimal";
 	}
 	
 	public numeric function getQuantityDeliveredMinusReturns(){
-		getService('HibachiService').logHibachi('qor: #getQuantityOnReturnOrders()#, qd:#getQuantityDelivered()# ',true);
 		return getQuantityDelivered() - getQuantityOnReturnOrders();
 	}
 	

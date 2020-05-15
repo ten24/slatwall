@@ -318,22 +318,6 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		return true;
 	}
 	
-	public boolean function orderItemQuantitiesAreWithinOriginalQuantity(){
-		
-		if ( !isnull(this.getOrderItems()) ){
-			
-			for (var orderItem in this.getOrderItems()){
-
-				var originalItem = getService("OrderService").getOrderItem(orderItem.referencedOrderItem.orderItemID);
-				if (orderItem.quantity > originalItem.getQuantity()){
-					return false;
-				}
-			}			
-		}
-		
-		return true;
-	}
-	
 	public boolean function paymentAmountsWithinAllowedAmount(){
 		var amount = 0;
 		if(!isNull(this.getOrderPayments())){
