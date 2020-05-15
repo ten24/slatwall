@@ -49,7 +49,9 @@ class EnrollmentMPController {
 			this.endpoint = 'setUpgradeOrderType';
 		}
 		
-		this.publicService.doAction(this.endpoint + ',getStarterPackBundleStruct', {upgradeType: 'marketPartner',returnJsonObjects:''}).then(res=>{
+		this.publicService
+		.doAction(this.endpoint + ',getStarterPackBundleStruct', {upgradeType: 'marketPartner',returnJsonObjects:'', contentID: this.contentId })
+		.then(res=>{
 			this.monatService.hasOwnerAccountOnSession = res.hasOwnerAccountOnSession;
 			this.bundles = res.bundles;
 			this.bundledProducts = res.products;

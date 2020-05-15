@@ -828,9 +828,11 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		bundlePersistentCollectionList.addFilter('sku.product.listingPages.content.contentID',arguments.data.contentID,"=" );
 		var content = getService('contentService').getContent(arguments.data.contentID)
         var orderByProp = replace(content.getProductSortProperty(), '_productlistingpage_', '');
-        var orderByDirection = content.getProductSortDefaultDirection();
-     
-		bundlePersistentCollectionList.addOrderBy( 'sku.#orderByProp#|#orderByDirection#');
+        var orderByDirection = content.getProductSortDefaultDirection() ?: "ASC";
+        
+        if(!isNull(orderByProp) && len(trim(orderByProp)) ){
+		    bundlePersistentCollectionList.addOrderBy( 'sku.#orderByProp#|#orderByDirection#');
+        }
 		
 		if(!isNull(getHibachiScope().getCurrentRequestSite())){
 		    bundlePersistentCollectionList.addFilter('sku.product.sites.siteID',getHibachiScope().getCurrentRequestSite().getSiteID());
