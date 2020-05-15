@@ -101,7 +101,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
  				orderFulfillmentList = listAppend(orderFulfillmentList,orderFulfillment.getPickupLocation().getLocationID());
  			}
  			
- 			orderFulfillmentList = listAppend(orderFulfillmentList,orderFulfillment.getFulfillmentChargeTotal());
+ 			orderFulfillmentList = listAppend(orderFulfillmentList,orderFulfillment.getFulfillmentCharge());
  		}
  		
 
@@ -478,210 +478,71 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			// Apply Tax for order except returns
 			if(arguments.order.getTypeCode() != 'otReturnOrder') {
-
-				// Get this sku's taxCategory
-				var taxCategory = this.getTaxCategory(orderFulfillment.getFulfillmentMethod().setting('fulfillmentMethodTaxCategory'));
-
-				// Make sure the taxCategory isn't null and is active
-				if(!isNull(taxCategory) && taxCategory.getActiveFlag()) {
-
-					// Setup the orderFulfillment level taxShippingAddress
-					structDelete(taxAddresses, "taxShippingAddress");
-					if(orderFulfillment.getFulfillmentMethodType() == 'pickup' && !isNull(orderFulfillment.getPickupLocation()) && !isNull(orderFulfillment.getPickupLocation().getPrimaryAddress()) ) {
-						taxAddresses.taxShippingAddress = orderFulfillment.getPickupLocation().getPrimaryAddress().getAddress();
-					} else if(!getHibachiValidationService().validate(object=orderFulfillment.getShippingAddress(), context="full", setErrors=false).hasErrors()) {
-						taxAddresses.taxShippingAddress = orderFulfillment.getShippingAddress();
+				var feeType = 'shipping';
+				var done = false;
+				while(!done){
+					if(feeType == 'shipping'){
+						var taxCategoryID = orderFulfillment.getFulfillmentMethod().setting('fulfillmentMethodTaxCategory')
+					}else{
+						var taxCategoryID = orderFulfillment.getHandlingFeeTaxCategory();
 					}
-					
-					var taxCategoryRateRecords = getTaxCategoryRateRecordsByTaxCategory(taxCategory);
-
-					// Loop over the rates of that category, to potentially apply
-					for(var taxCategoryRateData in taxCategoryRateRecords) {
-
-						var taxAddress = getTaxAddressByTaxAddressLookup(taxAddressLookup=taxCategoryRateData['taxAddressLookup'], taxAddresses=taxAddresses);
-
-						if(!isNull(taxAddress) 
-							&&
-							(
-								!structKeyExists(taxCategoryRateData,'addressZone_addressZoneID')
-								|| 
-								getAddressService().isAddressInZoneByZoneID(addressZoneID=taxCategoryRateData['addressZone_addressZoneID'], address=taxAddress)
-							)
-						) {
-
-							// If this rate has an integration, then try to pull the data from the response bean for that integration
-							if(structKeyExists(taxCategoryRateData,'taxIntegration_integrationID')) {
-							
-								// if account is tax exempt return after removing any tax previously applied to order
-								if(!isNull(arguments.order.getAccount()) && !isNull(arguments.order.getAccount().getTaxExemptFlag()) && arguments.order.getAccount().getTaxExemptFlag()) {
-									continue;
-								}
-
-								// Look for all of the rates responses for this interation, on this orderItem
-								if(structKeyExists(ratesResponseBeans, taxCategoryRateData['taxIntegration_integrationID'])){
-
-									var thisResponseBean = ratesResponseBeans[ taxCategoryRateData['taxIntegration_integrationID'] ];
-									var responseBeanMessage =serializeJSON(thisResponseBean.getMessages());
-									
-									for(var taxRateItemResponse in thisResponseBean.getTaxRateItemResponseBeans()) {
-
-										if(taxRateItemResponse.getReferenceObjectType() == 'OrderFulfillment' && taxRateItemResponse.getOrderFulfillmentID() == orderFulfillment.getOrderFulfillmentID()){
-											var taxCategoryRate = this.getTaxCategoryRate(taxCategoryRateData['taxCategoryRateID']);
-											// Add a new AppliedTax
-											var newAppliedTax = this.newTaxApplied();
-											newAppliedTax.setAppliedType("orderFulfillment");
-											newAppliedTax.setTaxRate( taxRateItemResponse.getTaxRate() );
-											newAppliedTax.setTaxCategoryRate( taxCategoryRate );
-											newAppliedTax.setOrderFulfillment( orderFulfillment );
-											newAppliedTax.setCurrencyCode( arguments.order.getCurrencyCode() );
-											newAppliedTax.setTaxLiabilityAmount( taxRateItemResponse.getTaxAmount() );
-
-											newAppliedTax.setTaxImpositionID( taxRateItemResponse.getTaxImpositionID() );
-											newAppliedTax.setTaxImpositionName( taxRateItemResponse.getTaxImpositionName() );
-											newAppliedTax.setTaxImpositionType( taxRateItemResponse.getTaxImpositionType() );
-											newAppliedTax.setTaxJurisdictionID( taxRateItemResponse.getTaxJurisdictionID() );
-											newAppliedTax.setTaxJurisdictionName( taxRateItemResponse.getTaxJurisdictionName() );
-											newAppliedTax.setTaxJurisdictionType( taxRateItemResponse.getTaxJurisdictionType() );
-
-											newAppliedTax.setTaxStreetAddress( taxRateItemResponse.getTaxStreetAddress() );
-											newAppliedTax.setTaxStreet2Address( taxRateItemResponse.getTaxStreet2Address() );
-											newAppliedTax.setTaxLocality( taxRateItemResponse.getTaxLocality() );
-											newAppliedTax.setTaxCity( taxRateItemResponse.getTaxCity() );
-											newAppliedTax.setTaxStateCode( taxRateItemResponse.getTaxStateCode() );
-											newAppliedTax.setTaxPostalCode( taxRateItemResponse.getTaxPostalCode() );
-											newAppliedTax.setTaxCountryCode( taxRateItemResponse.getTaxCountryCode() );
-											
-											newAppliedTax.setMessage(responseBeanMessage);
-											
-											// Set the taxAmount to the taxLiabilityAmount, if that is supposed to be charged to the customer
-											if(taxCategoryRate.getTaxLiabilityAppliedToItemFlag() == true){
-												newAppliedTax.setTaxAmount( newAppliedTax.getTaxLiabilityAmount() );
-											} else {
-												newAppliedTax.setTaxAmount( 0 );
-											}
-
-										}
-
-									}
-
-								}
-
-							// Else if there is no itegration or if there was supposed to be a response bean but we didn't get one, then just calculate based on this rate data store in our DB
-							} else {
-
-								// if account is tax exempt return after removing any tax previously applied to order
-								if(!isNull(arguments.order.getAccount()) && !isNull(arguments.order.getAccount().getTaxExemptFlag()) && arguments.order.getAccount().getTaxExemptFlag()) {
-									continue;
-								}
-								var taxCategoryRate = this.getTaxCategoryRate(taxCategoryRateData['taxCategoryRateID']);
-								var newAppliedTax = this.newTaxApplied();
-								newAppliedTax.setAppliedType("orderFulfillment");
-								newAppliedTax.setTaxRate( taxCategoryRate.getTaxRate() );
-								newAppliedTax.setTaxCategoryRate( taxCategoryRate );
-								newAppliedTax.setOrderFulfillment( orderFulfillment );
-								newAppliedTax.setCurrencyCode( arguments.order.getCurrencyCode() );
-								//newAppliedTax.setTaxLiabilityAmount( getService('hibachiUtilityService').precisionCalculate((orderFulfillment.getFulfillmentCharge() - orderFulfillment.getDiscountAmount()) * taxCategoryRate.getTaxRate() / 100) );
-								newAppliedTax.setTaxLiabilityAmount( round(orderFulfillment.getFulfillmentCharge() * taxCategoryRate.getTaxRate()) / 100 );
-
-								newAppliedTax.setTaxStreetAddress( taxAddress.getStreetAddress() );
-								newAppliedTax.setTaxStreet2Address( taxAddress.getStreet2Address() );
-								newAppliedTax.setTaxLocality( taxAddress.getLocality() );
-								newAppliedTax.setTaxCity( taxAddress.getCity() );
-								newAppliedTax.setTaxStateCode( taxAddress.getStateCode() );
-								newAppliedTax.setTaxPostalCode( taxAddress.getPostalCode() );
-								newAppliedTax.setTaxCountryCode( taxAddress.getCountryCode() );
-
-								// Set the taxAmount to the taxLiabilityAmount, if that is supposed to be charged to the customer
-								if(taxCategoryRate.getTaxLiabilityAppliedToItemFlag() == true){
-									newAppliedTax.setTaxAmount( newAppliedTax.getTaxLiabilityAmount() );
-								} else {
-									newAppliedTax.setTaxAmount( 0 );
-								}
-
-							}
-
-						}
-
-					}
-
-				}
-
-			// Apply Tax for return items
-			}/* else if (false) {
-
-				// TODO: Need to determine which prior orderFulfillment to reference
-				if(false && !isNull(orderFulfillment.getReferencedOrderFulfillment())) {
-
-					var originalAppliedTaxes = orderFulfillment.getReferencedOrderFulfillment().getAppliedTaxes();
-
-					for(var originalAppliedTax in orderFulfillment.getReferencedOrderFulfillment().getAppliedTaxes()) {
-
-						var newAppliedTax = this.newTaxApplied();
-
-						newAppliedTax.setAppliedType("orderFulfillment");
-						newAppliedTax.setTaxRate( originalAppliedTax.getTaxRate() );
-						newAppliedTax.setTaxCategoryRate( originalAppliedTax.getTaxCategoryRate() );
-						newAppliedTax.setOrderFulfillment( orderFulfillment );
-						newAppliedTax.setCurrencyCode( arguments.order.getCurrencyCode() );
-						newAppliedTax.setTaxLiabilityAmount( originalAppliedTax.getTaxAmount() );
-
-						newAppliedTax.setTaxImpositionID( originalAppliedTax.getTaxImpositionID() );
-						newAppliedTax.setTaxImpositionName( originalAppliedTax.getTaxImpositionName() );
-						newAppliedTax.setTaxImpositionType( originalAppliedTax.getTaxImpositionType() );
-						newAppliedTax.setTaxJurisdictionID( originalAppliedTax.getTaxJurisdictionID() );
-						newAppliedTax.setTaxJurisdictionName( originalAppliedTax.getTaxJurisdictionName() );
-						newAppliedTax.setTaxJurisdictionType( originalAppliedTax.getTaxJurisdictionType() );
-
-						newAppliedTax.setTaxStreetAddress( originalAppliedTax.getTaxStreetAddress() );
-						newAppliedTax.setTaxStreet2Address( originalAppliedTax.getTaxStreet2Address() );
-						newAppliedTax.setTaxLocality( originalAppliedTax.getTaxLocality() );
-						newAppliedTax.setTaxCity( originalAppliedTax.getTaxCity() );
-						newAppliedTax.setTaxStateCode( originalAppliedTax.getTaxStateCode() );
-						newAppliedTax.setTaxPostalCode( originalAppliedTax.getTaxPostalCode() );
-						newAppliedTax.setTaxCountryCode( originalAppliedTax.getTaxCountryCode() );
-						if(originalAppliedTax.getTaxCategoryRate().getTaxLiabilityAppliedToItemFlag() == true){
-							newAppliedTax.setTaxAmount( newAppliedTax.getTaxLiabilityAmount() );
-						} else {
-							newAppliedTax.setTaxAmount( 0 );
-						}
-					}
-				//Then calculate the tax if there is no referenced item.
-				} else {
 					// Get this sku's taxCategory
-					var taxCategory = this.getTaxCategory(orderFulfillment.getFulfillmentMethod().setting('fulfillmentMethodTaxCategory'));
+					if( !isNull( taxCategoryID) ){
+						var taxCategory = this.getTaxCategory( taxCategoryID );
+					}
 	
 					// Make sure the taxCategory isn't null and is active
 					if(!isNull(taxCategory) && taxCategory.getActiveFlag()) {
 	
 						// Setup the orderFulfillment level taxShippingAddress
 						structDelete(taxAddresses, "taxShippingAddress");
-						// TODO: Need to determine which orderReturn to reference
-						if(!isNull(orderFulfillment.getOrder().getOrderReturns()) && !isNull(orderFulfillment.getOrder().getOrderReturns()[1].getReturnLocation()) && !isNull(orderFulfillment.getOrder().getOrderReturns()[1].getReturnLocation().getPrimaryAddress()) ) {
-							taxAddresses.taxShippingAddress = orderFulfillment.getOrder().getOrderReturns()[1].getReturnLocation().getPrimaryAddress().getAddress();
+						if(orderFulfillment.getFulfillmentMethodType() == 'pickup' && !isNull(orderFulfillment.getPickupLocation()) && !isNull(orderFulfillment.getPickupLocation().getPrimaryAddress()) ) {
+							taxAddresses.taxShippingAddress = orderFulfillment.getPickupLocation().getPrimaryAddress().getAddress();
+						} else if(!getHibachiValidationService().validate(object=orderFulfillment.getShippingAddress(), context="full", setErrors=false).hasErrors()) {
+							taxAddresses.taxShippingAddress = orderFulfillment.getShippingAddress();
 						}
+						
+						var taxCategoryRateRecords = getTaxCategoryRateRecordsByTaxCategory(taxCategory);
 	
 						// Loop over the rates of that category, to potentially apply
-						for(var taxCategoryRate in taxCategory.getTaxCategoryRates()) {
+						for(var taxCategoryRateData in taxCategoryRateRecords) {
 	
-							var taxAddress = getTaxAddressByTaxCategoryRate(taxCategoryRate=taxCategoryRate, taxAddresses=taxAddresses);
+							var taxAddress = getTaxAddressByTaxAddressLookup(taxAddressLookup=taxCategoryRateData['taxAddressLookup'], taxAddresses=taxAddresses);
 	
-							if(!isNull(taxAddress) && getTaxCategoryRateIncludesTaxAddress(taxCategoryRate=taxCategoryRate, taxAddress=taxAddress)) {
+							if(!isNull(taxAddress) 
+								&&
+								(
+									!structKeyExists(taxCategoryRateData,'addressZone_addressZoneID')
+									|| 
+									getAddressService().isAddressInZoneByZoneID(addressZoneID=taxCategoryRateData['addressZone_addressZoneID'], address=taxAddress)
+								)
+							) {
 	
 								// If this rate has an integration, then try to pull the data from the response bean for that integration
-								if(!isNull(taxCategoryRate.getTaxIntegration())) {
+								if(structKeyExists(taxCategoryRateData,'taxIntegration_integrationID')) {
+								
+									// if account is tax exempt return after removing any tax previously applied to order
+									if(!isNull(arguments.order.getAccount()) && !isNull(arguments.order.getAccount().getTaxExemptFlag()) && arguments.order.getAccount().getTaxExemptFlag()) {
+										continue;
+									}
 	
 									// Look for all of the rates responses for this interation, on this orderItem
-									if(structKeyExists(ratesResponseBeans, taxCategoryRate.getTaxIntegration().getIntegrationID())){
+									if(structKeyExists(ratesResponseBeans, taxCategoryRateData['taxIntegration_integrationID'])){
 	
-										var thisResponseBean = ratesResponseBeans[ taxCategoryRate.getTaxIntegration().getIntegrationID() ];
-	
+										var thisResponseBean = ratesResponseBeans[ taxCategoryRateData['taxIntegration_integrationID'] ];
+										var responseBeanMessage =serializeJSON(thisResponseBean.getMessages());
+										
 										for(var taxRateItemResponse in thisResponseBean.getTaxRateItemResponseBeans()) {
 	
-											if(taxRateItemResponse.getReferenceObjectType() == 'OrderFulfillment' && taxRateItemResponse.getOrderFulfillmentID() == orderFulfillment.getOrderFulfillmentID()){
-	
+											if(taxRateItemResponse.getReferenceObjectType() == 'OrderFulfillment'
+												&& taxRateItemResponse.getOrderFulfillmentID() == orderFulfillment.getOrderFulfillmentID()
+												&& (!isNull(taxRateItemResponse.getFeeType()) || taxRateItemResponse.getFeeType() == feeType)
+											){
+												var taxCategoryRate = this.getTaxCategoryRate(taxCategoryRateData['taxCategoryRateID']);
 												// Add a new AppliedTax
 												var newAppliedTax = this.newTaxApplied();
 												newAppliedTax.setAppliedType("orderFulfillment");
+												newAppliedTax.setFeeType( feeType );
 												newAppliedTax.setTaxRate( taxRateItemResponse.getTaxRate() );
 												newAppliedTax.setTaxCategoryRate( taxCategoryRate );
 												newAppliedTax.setOrderFulfillment( orderFulfillment );
@@ -702,7 +563,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 												newAppliedTax.setTaxStateCode( taxRateItemResponse.getTaxStateCode() );
 												newAppliedTax.setTaxPostalCode( taxRateItemResponse.getTaxPostalCode() );
 												newAppliedTax.setTaxCountryCode( taxRateItemResponse.getTaxCountryCode() );
-	
+												
+												newAppliedTax.setMessage(responseBeanMessage);
+												
 												// Set the taxAmount to the taxLiabilityAmount, if that is supposed to be charged to the customer
 												if(taxCategoryRate.getTaxLiabilityAppliedToItemFlag() == true){
 													newAppliedTax.setTaxAmount( newAppliedTax.getTaxLiabilityAmount() );
@@ -723,9 +586,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 									if(!isNull(arguments.order.getAccount()) && !isNull(arguments.order.getAccount().getTaxExemptFlag()) && arguments.order.getAccount().getTaxExemptFlag()) {
 										continue;
 									}
-	
+									var taxCategoryRate = this.getTaxCategoryRate(taxCategoryRateData['taxCategoryRateID']);
 									var newAppliedTax = this.newTaxApplied();
 									newAppliedTax.setAppliedType("orderFulfillment");
+									newAppliedTax.setFeeType( feeType );
 									newAppliedTax.setTaxRate( taxCategoryRate.getTaxRate() );
 									newAppliedTax.setTaxCategoryRate( taxCategoryRate );
 									newAppliedTax.setOrderFulfillment( orderFulfillment );
@@ -755,11 +619,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						}
 	
 					}
-				
-					
+					if(feeType == 'handling'){
+						done = true;
+					}else{
+						feeType = 'handling';
+					}
 				}
-			}*/
-
+			}
 		}
 	}
 
@@ -1009,31 +875,48 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		var orderFulfillments = arguments.order.getOrderFulfillments();
 		for (var orderFulfillment in orderFulfillments) {
-			// Get this sku's taxCategory
-			var taxCategory = this.getTaxCategory(orderFulfillment.getFulfillmentMethod().setting('fulfillmentMethodTaxCategory'));
-			if (!isNull(taxCategory) && taxCategory.getActiveFlag()) {
-				// Setup the orderItem level taxShippingAddress
-				structDelete(taxAddresses, "taxShippingAddress");
-				if(orderFulfillment.getFulfillmentMethodType() eq 'pickup' && !isNull(orderFulfillment.getPickupLocation()) && !isNull(orderFulfillment.getPickupLocation().getPrimaryAddress()) ) {
-					taxAddresses.taxShippingAddress = orderFulfillment.getPickupLocation().getPrimaryAddress().getAddress();
-				} else if(!getHibachiValidationService().validate(object=orderFulfillment.getShippingAddress(), context="full", setErrors=false).hasErrors()) {
-					taxAddresses.taxShippingAddress = orderFulfillment.getShippingAddress();
+			var feeType = 'shipping';
+			var done = false;
+			while(!done){
+				if(feeType == 'shipping'){
+					var taxCategoryID = orderFulfillment.getFulfillmentMethod().setting('fulfillmentMethodTaxCategory')
+				}else{
+					var taxCategoryID = orderFulfillment.getHandlingFeeTaxCategory();
 				}
-
-				// Loop over the rates of that category, looking for a unique integration
-				for(var taxCategoryRate in taxCategory.getTaxCategoryRates()) {
-
-					// If a unique integration is found, then we add it to the integrations to call
-					if(!isNull(taxCategoryRate.getTaxIntegration()) && taxCategoryRate.getTaxIntegration().getIntegrationID() == arguments.integration.getIntegrationID()){
-
-						var taxAddress = getTaxAddressByTaxCategoryRate(taxCategoryRate=taxCategoryRate, taxAddresses=taxAddresses);
-
-						if(!isNull(taxAddress) && getTaxCategoryRateIncludesTaxAddress(taxCategoryRate=taxCategoryRate, taxAddress=taxAddress)) {
-							taxRatesRequestBean.addTaxRateItemRequestBean(referenceObject=orderFulfillment, taxCategoryRate=taxCategoryRate, taxAddress=taxAddress);
-						}
+				// Get the taxCategory
+				if( !isNull(taxCategoryID) ){
+					var taxCategory = this.getTaxCategory( taxCategoryID );
+				}
+				
+				if (!isNull(taxCategory) && taxCategory.getActiveFlag()) {
+					// Setup the orderItem level taxShippingAddress
+					structDelete(taxAddresses, "taxShippingAddress");
+					if(orderFulfillment.getFulfillmentMethodType() eq 'pickup' && !isNull(orderFulfillment.getPickupLocation()) && !isNull(orderFulfillment.getPickupLocation().getPrimaryAddress()) ) {
+						taxAddresses.taxShippingAddress = orderFulfillment.getPickupLocation().getPrimaryAddress().getAddress();
+					} else if(!getHibachiValidationService().validate(object=orderFulfillment.getShippingAddress(), context="full", setErrors=false).hasErrors()) {
+						taxAddresses.taxShippingAddress = orderFulfillment.getShippingAddress();
 					}
-
-				} // End TaxCategoryRate Loop
+	
+					// Loop over the rates of that category, looking for a unique integration
+					for(var taxCategoryRate in taxCategory.getTaxCategoryRates()) {
+	
+						// If a unique integration is found, then we add it to the integrations to call
+						if(!isNull(taxCategoryRate.getTaxIntegration()) && taxCategoryRate.getTaxIntegration().getIntegrationID() == arguments.integration.getIntegrationID()){
+	
+							var taxAddress = getTaxAddressByTaxCategoryRate(taxCategoryRate=taxCategoryRate, taxAddresses=taxAddresses);
+	
+							if(!isNull(taxAddress) && getTaxCategoryRateIncludesTaxAddress(taxCategoryRate=taxCategoryRate, taxAddress=taxAddress)) {
+								taxRatesRequestBean.addTaxRateItemRequestBean(referenceObject=orderFulfillment, taxCategoryRate=taxCategoryRate, taxAddress=taxAddress, feeType=feeType);
+							}
+						}
+	
+					} // End TaxCategoryRate Loop
+				}
+				if(feeType == 'handling'){
+					done = true;
+				}else{
+					feeType = 'handling';
+				}
 			}
 		}
 		var orderReturns = arguments.order.getOrderReturns();

@@ -271,7 +271,7 @@ extends = "Slatwall.integrationServices.BaseTax" {
 					}
 					
 					var itemData = {};
-					itemData.LineNo = item.getOrderFulfillmentID();
+					itemData.LineNo = item.getOrderFulfillmentID() & item.getFeeType();
 					itemData.DestinationCode = addressIndex;
 					itemData.OriginCode = 1;
 					itemData.ItemCode = 'Shipping';
@@ -362,6 +362,10 @@ extends = "Slatwall.integrationServices.BaseTax" {
 						for(var taxDetail in taxLine.TaxDetails) {
 							// For each detail make sure that it is applied to this item
 							if(taxDetail.Tax > 0 && !listContains(setting("VATCountries"),taxDetail.Country)) {
+								if( listFindNoCase( 'shipping,handling',right( taxLine.LineNo,8 ) ) ){
+									var feeType = right(taxLine.LineNo,8);
+									taxLine.LineNo = left(taxLine.LineNo, len(taxLine.LineNo) - 8);
+								}
 								var args = {
 									"#primaryIDName#" = taxLine.LineNo,
 									taxAmount = taxDetail.Tax, 
@@ -371,7 +375,9 @@ extends = "Slatwall.integrationServices.BaseTax" {
 									taxImpositionName=taxDetail.TaxName,
 									referenceObjectType="#referenceObjectType#"
 								};
-								
+								if(!isNull(feeType)){
+									args.feeType = feeType;
+								}
 								// Add the details of the taxes charged
 								responseBean.addTaxRateItem(
 									argumentCollection=args

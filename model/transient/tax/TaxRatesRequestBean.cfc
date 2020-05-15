@@ -111,7 +111,7 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 		}
 	}
 	
-	public void function addTaxRateItemRequestBean(required any referenceObject, required any taxCategoryRate, any taxAddress) {
+	public void function addTaxRateItemRequestBean(required any referenceObject, required any taxCategoryRate, any taxAddress, string feeType) {
 		var taxRateItemRequestBean = getTransient('TaxRateItemRequestBean');
 
 		// Check reference object type. Value should either be 'orderFulfillment' or 'orderItem' or 'OrderDeliveryItem'
@@ -134,7 +134,7 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 		if (arguments.referenceObject.getClassName() == 'OrderItem') {
 			taxRateItemRequestBean.populateWithOrderItem(arguments.referenceObject);
 		} else if (arguments.referenceObject.getClassName() == 'OrderFulfillment') {
-			taxRateItemRequestBean.populateWithOrderFulfillment(arguments.referenceObject);
+			taxRateItemRequestBean.populateWithOrderFulfillment(arguments.referenceObject,arguments.feeType);
 		} else if (arguments.referenceObject.getClassName() == 'OrderDeliveryItem' ){
 			taxRateItemRequestBean.populateWithOrderDeliveryItem(arguments.referenceObject);
 		} else if (arguments.referenceObject.getClassName() == 'OrderReturn' ){
