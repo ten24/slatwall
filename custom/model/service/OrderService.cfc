@@ -432,15 +432,20 @@ component extends="Slatwall.model.service.OrderService" {
 			var currentOrderTemplate = request[orderTemplateOrderDetailsKey]['orderTemplate'];
 			var hasInfoForFulfillment = !isNull( currentOrderTemplate.getShippingMethod() ); 
 
-			var transientOrder = getService('OrderService').newTransientOrderFromOrderTemplate( currentOrderTemplate, false );  
+			var transientOrder = getService('OrderService').newTransientOrderFromOrderTemplate( orderTemplate=currentOrderTemplate, evictFromSession=false, updateShippingMethodOptions=false );  
 			//only update amounts if we can
 			transientOrder = this.saveOrder( order=transientOrder, updateOrderAmounts=hasInfoForFulfillment );
-			transientOrderItems = transientOrder.getOrderItems();
+			var transientOrderItems = transientOrder.getOrderItems();
 			for(var orderItem in transientOrderItems){
 				orderItem.updateCalculatedProperties(); 
 			}
 			transientOrder.updateCalculatedProperties(); 	
 			getHibachiDAO().flushORMSession();
+			
+			var transientOrderFulfillments = transientOrder.getOrderFulfillments();
+			for(var orderFulfillment in transientOrderFulfillments){
+				getService('ShippingService').updateOrderFulfillmentShippingMethodOptions(orderFulfillment, false);
+			}
 		
 			if(hasInfoForFulfillment){	
 				request[orderTemplateOrderDetailsKey]['fulfillmentTotal'] = transientOrder.getFulfillmentTotal(); 
