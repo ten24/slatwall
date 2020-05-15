@@ -1265,7 +1265,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 			for(var orderFulfillment in transientOrder){
 				getService('ShippingService').updateOrderFulfillmentShippingMethodOptions(orderFulfillment, false);
-				writeDump(var=orderFulfillment.getShippingMethodOptions(),top=4);abort;
 			}
 			
 			if(hasInfoForFulfillment){	
@@ -1630,11 +1629,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		this.logHibachi('Start Processing OrderTemplate #arguments.orderTemplate.getOrderTemplateID()#', true);
 		
-		// // if next process date is in future and not a logged in user skip
-		// if( (!isNull(arguments.orderTemplate.getScheduleOrderProcessingFlag()) && arguments.orderTemplate.getScheduleOrderProcessingFlag()) || (dateCompare( arguments.orderTemplate.getScheduleOrderNextPlaceDateTime(), now() ) == 1 && !getHibachiScope().getLoggedInFlag()) ) {
-		// 	this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# - Already processing', true);
-		// 	return arguments.orderTemplate;
-		// }
+		// if next process date is in future and not a logged in user skip
+		if( (!isNull(arguments.orderTemplate.getScheduleOrderProcessingFlag()) && arguments.orderTemplate.getScheduleOrderProcessingFlag()) || (dateCompare( arguments.orderTemplate.getScheduleOrderNextPlaceDateTime(), now() ) == 1 && !getHibachiScope().getLoggedInFlag()) ) {
+			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# - Already processing', true);
+			return arguments.orderTemplate;
+		}
 		
 		//we set this first and persist so that even if there's a problem with the order a workflow won't attempt retry	
 		getOrderDAO().setScheduleOrderProcessingFlag(arguments.orderTemplate.getOrderTemplateID(), true);
