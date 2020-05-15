@@ -788,7 +788,10 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				arguments.responseBean.setStatusCode(httpResponse.status_code);
 				// Convert JSON response
 				responseData = deserializeJSON(httpResponse.fileContent);
-				arguments.responseBean.setReferenceNumber(responseData.gatewayResponse.refNumber)
+				if(structKeyExists(responseData, 'gatewayResponse') && structKeyExists(responseData['gatewayResponse'], 'refNumber')){
+					arguments.responseBean.setReferenceNumber(responseData.gatewayResponse.refNumber)
+				}
+				
 				// ---> Comment Out:
 				// fileWrite('#logPath#/#timeSufix#_AVS_response.json',httpResponse.fileContent);
 				// Comment Out: <---

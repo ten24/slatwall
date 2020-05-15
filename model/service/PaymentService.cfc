@@ -469,7 +469,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							// Populate the Credit Card Transaction with the details of this process
 							
 							//payment ref number 
-							arguments.paymentTransaction.setReferenceNumber(response.getReferenceNumber());
+							if(!isNull(response.getReferenceNumber())){
+								arguments.paymentTransaction.setReferenceNumber(response.getReferenceNumber());	
+							}
 							
 							// messages
 							arguments.paymentTransaction.setMessage(serializeJSON(response.getMessages()));
