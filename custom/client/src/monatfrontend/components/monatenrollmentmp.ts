@@ -62,15 +62,21 @@ class EnrollmentMPController {
 			
 			this.isInitialized = true;
 			let unsortedBundles = [];
+			let direction;
+			let manualSortFlag = false;
 			
 			for(let bundle in this.bundles){
+				if(!direction){
+					direction = this.bundles[bundle].sortDirection == 'DESC' || 'MANUAL' ? '>' : '<';
+				}
+				this.bundles[bundle].sortOrder = this.bundles[bundle].sortDirection == 'MANUAL' ? this.bundles[bundle].sortOrder : this.bundles[bundle].recordSort;
 				let str = this.stripHtml(this.bundles[bundle].description);
 				this.bundles[bundle].description = str.length > 70 ? str.substring(0, str.indexOf(' ', 60)) + '...' : str;
 				unsortedBundles.push(this.bundles[bundle]);
 			}
-			
+	
 			this.sortedBundles = unsortedBundles.sort(function(a, b) {
-				  return (a.sortOrder > b.sortOrder) ? 1 : -1
+				return eval(a.sortOrder + direction + b.sortOrder) ? 1 : -1
 			});
 
 		});
