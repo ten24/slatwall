@@ -1643,6 +1643,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		// Duplicate promotion period and set new values from process object
 		var newPromotionPeriod = this.newPromotionPeriod();
+		var newMessages = [];
 		newPromotionPeriod.setPromotionPeriodName(arguments.processObject.getPromotionPeriodName());
 		if(!isNull(arguments.processObject.getStartDateTime()) && len(arguments.processObject.getStartDateTime())) {
 			newPromotionPeriod.setStartDateTime(arguments.processObject.getStartDateTime());
@@ -1835,6 +1836,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					newpromotionQualifier.addExcludedProductType(excludedProductType);
 				}
 			}
+			
+			if(arrayLen(promotionQualifier.getPromotionQualifierMessages())) {
+				for(var originalMessage in promotionQualifier.getPromotionQualifierMessages()) {
+					var newMessage = this.newPromotionQualifierMessage();
+					newMessage.setMessage(originalMessage.getMessage());
+					newMessage.setMessageRequirementsCollectionConfig(originalMessage.getMessageRequirementsCollectionConfig());
+					newMessage.setPriority(originalMessage.getPriority());
+					newMessage.setQualifierProgressTemplate(originalMessage.getQualifierProgressTemplate());
+					newMessage.setPromotionQualifier(newpromotionQualifier);
+					arrayAppend(newMessages, newMessage);
+				}
+			}			
 			if(!isNull(promotionQualifier.getIncludedOrdersCollectionConfig())) newpromotionQualifier.setIncludedOrdersCollectionConfig(promotionQualifier.getIncludedOrdersCollectionConfig());
 			if(!isNull(promotionQualifier.getExcludedOrdersCollectionConfig())) newpromotionQualifier.setExcludedOrdersCollectionConfig(promotionQualifier.getExcludedOrdersCollectionConfig());
 			if(!isNull(promotionQualifier.getExcludedSkusCollectionConfig())) newpromotionQualifier.setExcludedSkusCollectionConfig(promotionQualifier.getExcludedSkusCollectionConfig());
@@ -1844,6 +1857,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		if(!newPromotionPeriod.hasErrors()){
 			this.savePromotionPeriod(newPromotionPeriod);
+			for(var message in newMessages){
+				this.savePromotionQualifierMessage(message);
+			}
 			getHibachiScope().flushOrmSession();
 			var copyFromList = [];
 			var index = 1;
