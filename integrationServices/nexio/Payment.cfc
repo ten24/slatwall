@@ -111,19 +111,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 		} else if (arguments.requestBean.getTransactionType() == "chargePreAuthorization") {
 			sendRequestToChargePreAuthorization(arguments.requestBean, responseBean);
 		} else if (arguments.requestBean.getTransactionType() == "credit") {
-			var originalTransactionHasSettled = getOriginalTransactionHasSettled(arguments.requestBean);
-			if(originalTransactionHasSettled){
-				sendRequestToCredit(arguments.requestBean, responseBean);
-			}else {
-				if(!isNull(arguments.requestBean.getOrderPayment()) && !isNull(arguments.requestBean.getOrderPayment().getReferencedOrderPayment())){
-					var originalAmountReceived = arguments.requestBean.getOrderPayment().getReferencedOrderPayment().getAmountReceived();
-					if(originalAmountReceived == arguments.requestBean.getTransactionAmount()){
-						sendRequestToVoid(arguments.requestBean, responseBean);
-					}else{
-						responseBean.addError("Processing Error", rbKey('validate.orderPayment.partialVoid'));
-					}
-				}
-			}
+			sendRequestToCredit(arguments.requestBean, responseBean);
 		} else {
 			responseBean.addError("Processing error", "Nexio Payment Integration has not been implemented to handle #arguments.requestBean.getTransactionType()#");
 			// throw("Nexio Payment Integration has not been implemented to handle #arguments.requestBean.getTransactionType()#");
@@ -623,6 +611,10 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			responseBean.addError("Processing error", "There is no 'originalAuthorizationProviderTransactionID' in the transactionRequestBean. Expecting the value be a reference to transactionID for the original charge/capture.");
 			// throw("There is no 'originalAuthorizationProviderTransactionID' in the transactionRequestBean. Expecting the value be a reference to transactionID for the original charge/capture.");
 		}
+	}
+	
+	private void function sendRequestToBlindCredit(required any requestBean, required any responseBean) {
+		
 	}
 	
 	private void function sendRequestToVoid(required any requestBean, required any responseBean) {
