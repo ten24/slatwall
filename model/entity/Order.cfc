@@ -2368,6 +2368,7 @@ public numeric function getPersonalVolumeSubtotal(){
 		return variables.currencyCode;
 	}
 	
+	//If a UK MP is within the first 7 days of enrollment/(vip to mp-upgrade), they can't spend more than 200(*setting)
 	public boolean function marketPartnerValidationMaxOrderAmount(){
 	 	
 	 	var site = this.getOrderCreatedSite();
