@@ -2391,7 +2391,7 @@ public numeric function getPersonalVolumeSubtotal(){
         }
         
         //If a UK MP is within the first 7 days of enrollment/upgrade, check that they have not already placed more than 1 order.
-		if ( !isEnrollmentPeriodOver || !isUpgradePeriodPassed  ){
+		if ( !isEnrollmentPeriodOver || !isUpgradePeriodOver  ){
 			var total = 0;
 			if(!isNull(this.getAccount())){
 				var orders = account.getOrders();
