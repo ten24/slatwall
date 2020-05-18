@@ -589,17 +589,16 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 					'currency': arguments.requestBean.getTransactionCurrencyCode()
 		    	},
 		    	'tokenex': {
-					'token': arguments.requestBean.getOriginalChargeProviderTransactionID()
+					'token': arguments.requestBean.getProviderToken()
 				},
 			    "card" = {
 			    	"expirationMonth" = arguments.requestBean.getExpirationMonth(),
-			    	"expirationYear" = arguments.requestBean.getExpirationYear(),
+			    	"expirationYear" = arguments.requestBean.getExpirationYear()
 			    },
 			    "processingOptions" = {
 				    'merchantID' = setting(settingName='merchantIDTest', requestBean=arguments.requestBean)
 			    }
 			}
-
 			responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'credit', requestData);
 			
 			// Response Data
@@ -700,7 +699,6 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			httpRequest.addParam(type="body", value=serializeJSON(arguments.data));
 			apiUrl &= '/pay/v3/vault/card/#arguments.requestBean.getProviderToken()#';
 		}
-		
 		var basicAuthCredentialsBase64 = toBase64('#username#:#password#');
 		var httpRequest = new http();
 		httpRequest.setUrl(apiUrl);
