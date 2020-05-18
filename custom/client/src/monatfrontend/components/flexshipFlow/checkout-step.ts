@@ -8,6 +8,8 @@ import { MonatAlertService } from "@Monat/services/monatAlertService";
 
 import { PayPalService } from "@Monat/services/paypalservice";
 
+import { Option, AccountPaymentMethod, AccountAddress } from '@Monat/models';
+
 class FlexshipCheckoutStepController {
 	//states
 	public currentState = {} as FlexshipCheckoutState;
@@ -15,9 +17,10 @@ class FlexshipCheckoutStepController {
 
 	private newAddressFormRef;
 
-	public expirationMonthOptions;
-	public expirationYearOptions;
-	public newAccountPaymentMethod = {};
+	public expirationMonthOptions: Option[];
+	public expirationYearOptions: Option[];
+	public newAccountPaymentMethod = {} as AccountPaymentMethod;
+	
 	//@ngInject
 	constructor(
 		private ModalService,
@@ -200,7 +203,7 @@ class FlexshipCheckoutStepController {
 		});
 	}
 	
-	private onAddNewAccountPaymentMethod(newAccountPaymentMethod){
+	private onAddNewAccountPaymentMethod(newAccountPaymentMethod: AccountPaymentMethod){
 		this.flexshipCheckoutStore.dispatch("SET_PAYMENT_METHODS", {
 			'accountPaymentMethods': [ ...this.currentState.accountPaymentMethods, newAccountPaymentMethod]
 		});
@@ -228,7 +231,7 @@ class FlexshipCheckoutStepController {
 
 	// *****************. new Address Form  .***********************//
 
-	public onAddNewAccountAddressSuccess = (newAccountAddress) => {
+	public onAddNewAccountAddressSuccess = (newAccountAddress: AccountAddress) => {
 		if (newAccountAddress) {
 			this.currentState.accountAddresses.push(newAccountAddress);
 			this.flexshipCheckoutStore.dispatch("SET_ACCOUNT_ADDRESSES", {

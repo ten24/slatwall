@@ -122,6 +122,7 @@ Notes:
 				<hb:HibachiEntityDetailItem view="admin:entity/shippingmethodratetabs/manualrateshippingintegrations" />
 			</cfif>
 			<hb:HibachiEntityDetailItem view="admin:entity/shippingmethodratetabs/shippingmethodratepricegroups" />
+			<hb:HibachiEntityDetailItem view="admin:entity/shippingmethodratetabs/shippingmethodraterequirements" />
 			<hb:HibachiEntityDetailItem view="admin:entity/shippingmethodratetabs/shippingmethodratesettings" />
 		</hb:HibachiEntityDetailGroup>
 		

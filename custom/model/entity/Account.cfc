@@ -1,6 +1,9 @@
 component {
 	property name="accountType" ormtype="string" hb_formFieldType="select";
 	property name="enrollmentDate" ormtype="timestamp";
+	property name="vipUpgradeDateTime" ormtype="timestamp";
+	property name="mpUpgradeDateTime" ormtype="timestamp";
+	
 	property name="sponsorIDNumber" ormtype="string";
 	property name="lastSyncedDateTime" ormtype="timestamp";
 	property name="calculatedSuccessfulFlexshipOrdersThisYearCount" ormtype="integer";
@@ -15,6 +18,8 @@ component {
 	property name="spouseFirstName" persistent = "false";
 	property name="spouseLastName" persistent = "false";
 	property name="governmentIdentificationLastFour" persistent = "false";
+	
+	property name="uplineMPAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="uplineMPAccountID";
 
 	public numeric function getSuccessfulFlexshipOrdersThisYearCount(){
 		if(!structKeyExists(variables, 'successfulFlexshipOrdersThisYearCount')){

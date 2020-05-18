@@ -2282,7 +2282,7 @@ component  accessors="true" output="false"
     ///    ############### .  getXXXOptions();  .  ###############   
     
     /**
-     *  data.optionsList = "frequencyTermOptions,orderTemplateShippingMethodOptions,cancellationReasonTypeOptions....."; 
+     *  data.optionsList = "frequencyTermOptions,siteOrderTemplateShippingMethodOptions,cancellationReasonTypeOptions....."; 
     */ 
     public void function getOptions(required any data){
         param name="data.optionsList" default="" pattern="^[\w,]+$"; //option-name-list
@@ -2302,9 +2302,13 @@ component  accessors="true" output="false"
 		arguments.data['ajaxResponse']['frequencyDateOptions'] = getOrderService().getOrderTemplateFrequencyDateOptions();
     }
     
-    public void function getOrderTemplateShippingMethodOptions(required any data) {
-        var tmpOrderTemplate = getOrderService().newOrderTemplate();
-		arguments.data['ajaxResponse']['orderTemplateShippingMethodOptions'] = tmpOrderTemplate.getShippingMethodOptions();
+    public void function getSiteOrderTemplateShippingMethodOptions(required any data) {
+        var orderTemplate = getOrderService().getOrderTemplate(arguments.data.orderTemplateID);
+        if(isNull(orderTemplate)){
+            return arguments.data['ajaxResponse']['siteOrderTemplateShippingMethodOptions'] = {};   
+        }
+        
+		arguments.data['ajaxResponse']['siteOrderTemplateShippingMethodOptions'] = orderTemplate.getShippingMethodOptions();
     }
     
     public void function getCancellationReasonTypeOptions(required any data) {

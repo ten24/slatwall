@@ -828,9 +828,11 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		bundlePersistentCollectionList.addFilter('sku.product.listingPages.content.contentID',arguments.data.contentID,"=" );
 		var content = getService('contentService').getContent(arguments.data.contentID)
         var orderByProp = replace(content.getProductSortProperty(), '_productlistingpage_', '');
-        var orderByDirection = content.getProductSortDefaultDirection();
-     
-		bundlePersistentCollectionList.addOrderBy( 'sku.#orderByProp#|#orderByDirection#');
+        var orderByDirection = content.getProductSortDefaultDirection() ?: "ASC";
+        
+        if(!isNull(orderByProp) && len(trim(orderByProp)) ){
+		    bundlePersistentCollectionList.addOrderBy( 'sku.#orderByProp#|#orderByDirection#');
+        }
 		
 		if(!isNull(getHibachiScope().getCurrentRequestSite())){
 		    bundlePersistentCollectionList.addFilter('sku.product.sites.siteID',getHibachiScope().getCurrentRequestSite().getSiteID());
@@ -2384,6 +2386,16 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     
     public void function addOrderTemplateItem(required any data){
         param name="arguments.data.returnOrderTemplateFlag" default="true";
+        
+        if(arguments.data.temporaryFlag){
+            var orderTemplate = getService('orderService').getOrderTemplate(arguments.data.orderTemplateID);
+            var ofyItem = getOrderService().getAssociatedOFYProductForFlexship(arguments.data.orderTemplateID);
+            
+            if(!isNull(ofyItem) && structKeyExists(ofyItem,'orderTemplateItemID') ){
+                orderTemplate.removeOrderTemplateItem(getOrderService().getOrderTemplateItem(ofyItem.orderTemplateItemID));
+            }
+        }
+
         super.addOrderTemplateItem(arguments.data);
         
         if(arguments.data.returnOrderTemplateFlag){

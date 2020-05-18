@@ -21,6 +21,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	property name="successfulActions" type="array";
 	property name="auditsToCommitStruct" type="struct";
 	property name="modifiedEntities" type="array";
+	property name="excludedModifiedEntityNames" type="array" hint="List of entities ignored by modifiedEntities during the current request";
 	property name="isAWSInstance" type="boolean" default="0";
 	property name="isECSInstance" type="boolean" default="0";
 	property name="entityURLKeyType" type="string";
@@ -41,6 +42,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		setFailureActions( [] );
 		setAuditsToCommitStruct( {} );
 		setModifiedEntities( [] );
+		setExcludedModifiedEntityNames( [] );
 
 		return super.init();
 	}
@@ -294,11 +296,27 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	}
 
 	public void function addModifiedEntity( required any entity ) {
-		arrayAppend(getModifiedEntities(), arguments.entity);
+		if(!arrayFindNoCase(getExcludedModifiedEntityNames(), arguments.entity.getClassName())){
+			arrayAppend(getModifiedEntities(), arguments.entity);
+		}
 	}
 
 	public void function clearModifiedEntities() {
 		setModifiedEntities([]);
+	}
+	
+	public void function addExcludedModifiedEntityName( required string entityName ) {
+		if(!arrayFindNoCase(getExcludedModifiedEntityNames(), arguments.entityName)){
+			arrayAppend(getExcludedModifiedEntityNames(), arguments.entityName);
+		}
+	}
+	
+	public void function removeExcludedModifiedEntityName( required string entityName ) {
+		ArrayDeleteNoCase(getExcludedModifiedEntityNames(),arguments.entityName);
+	}
+	
+	public void function clearExcludedModifiedEntityNames() {
+		setIgnoredEntityNames([]);
 	}
 
 	public void function clearAuditsToCommitStruct() {
@@ -553,6 +571,10 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		
 		if (structKeyExists(arguments, "integrationID") && len(arguments.integrationID)){
 			dataString = dataString & "_#integrationID#"; 
+		}
+		
+		if (structKeyExists(arguments, "entityQueueData") && len(arguments.entityQueueData)){
+			dataString = dataString & '_' & hash( entityQueueData, 'MD5' ); 
 		}
 		
 		arguments.entityQueueProcessingDateTime = now(); //this will be processed in this request.

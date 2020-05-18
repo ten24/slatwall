@@ -245,13 +245,13 @@ Notes:
 							</hb:HibachiActionCallerDropdown>
 							<hb:HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.tools_nav')#" icon="magnet icon-white" type="nav">
 								<hb:HibachiDividerHider>
-									<hb:HibachiActionCaller action="admin:report.revenuerecognitionreport" type="list">
+									<!---<hb:HibachiActionCaller action="admin:report.revenuerecognitionreport" type="list">--->
 									<!---deprecated--->
 									<!---<hb:HibachiActionCaller action="admin:report.deferredrevenuereport" type="list">
 									<hb:HibachiActionCaller action="admin:report.earnedrevenuereport" type="list">--->
-									<hb:HibachiActionCaller action="admin:report.subscriptionOrdersReport" type="list">
+									<!---<hb:HibachiActionCaller action="admin:report.subscriptionOrdersReport" type="list">
 									<hb:HibachiActionCaller action="admin:report.cancelledOrdersReport" type="list">
-									<hb:HibachiActionCaller action="admin:report" type="list">
+									<hb:HibachiActionCaller action="admin:report" type="list">--->
 									<hb:HibachiActionCaller action="admin:entity.listeventtrigger" type="list" text="#getHibachiScope().rbkey('entity.eventTrigger_plural')# (#getHibachiScope().rbkey('define.disabled')#)">
 									<hb:HibachiActionCaller action="admin:entity.listschedule" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listsession" type="list">

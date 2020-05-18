@@ -189,7 +189,7 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 	public any function getShippingMethodOptions(){
 		var shippingMethodCollection = getService('ShippingService').getShippingMethodCollectionList();
 		shippingMethodCollection.setDisplayProperties('shippingMethodName|name,shippingMethodID|value'); 
-		shippingMethodCollection.addFilter('shippingMethodID',setting('orderTemplateEligibleShippingMethods'),'in'); 
+		shippingMethodCollection.addFilter('shippingMethodID',this.getSite().setting('siteOrderTemplateEligibleShippingMethods'),'in'); 
 		return shippingMethodCollection.getRecords();
 	}
 	
@@ -415,7 +415,19 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 
 		return getHibachiScope().hibachiHTMLEditFormat(html); 
 	}
-
+	
+	public numeric function getOrderTemplateItemsCount(){
+		if(!structKeyExists(variables, 'orderTemplateItemsCount')){
+			var count = 0;
+			var orderTemplateItems = this.getOrderTemplateItems() ?: [];
+			for(var item in orderTemplateItems){
+				count += item.getQuantity();
+			}
+			variables.orderTemplateItemsCount = count;
+		}
+		
+		return variables.orderTemplateItemsCount;
+	}
 	
 	//CUSTOM FUNCTIONS BEGIN
 

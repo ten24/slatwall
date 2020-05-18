@@ -1,8 +1,12 @@
 import { NgStore } from './angularjs-store';
+import { 
+    AccountAddress, 
+    AccountPaymentMethod,
+    OrderTemplate, 
+    OrderTemplateItem, 
+    Option
+} from '@Monat/models';
 
-export type AccountAddress = { accountAddressID:string };
-export type AccountPaymentMethod = { accountPaymentMethodID:string };
-export type Option = { 'name': string, 'value': string };
 
 // keep is Simple And Stupid, remember it's not a magic-bullet
 export class FlexshipCheckoutState {
@@ -14,7 +18,7 @@ export class FlexshipCheckoutState {
 	
 	
 	loading: boolean  = true;
-	flexship: any     = null; 
+	flexship: OrderTemplate     = null; 
 	
 	// will get updated every-time we add new-address
 	accountAddresses:            Array<AccountAddress>  = null; 
@@ -33,15 +37,15 @@ export class FlexshipCheckoutState {
 	showNewBillingAddressForm:   boolean					  =  false;
 	
 	
-	public getSelectedShippingAddress() {
+	public getSelectedShippingAddress() : AccountAddress{
 		return this.accountAddresses?.find(a => a.accountAddressID === this.selectedShippingAddressID);
 	}
 	
-	public getSelectedBillingAddress() {
+	public getSelectedBillingAddress() : AccountAddress {
 		return this.accountAddresses?.find(a => a.accountAddressID === this.selectedBillingAddressID);
 	}
 
-	public getSelectedPaymentMethod() {
+	public getSelectedPaymentMethod() : AccountPaymentMethod {
 		return this.accountPaymentMethods?.find(p => p.accountPaymentMethodID === this.selectedPaymentMethodID);
 	}
 }
@@ -92,10 +96,10 @@ export class FlexshipCheckoutStore extends NgStore<FlexshipCheckoutState, Flexsh
 				return state;
     		});
 		})
-    	.then( () => this.monatService.getOptions({'orderTemplateShippingMethodOptions':false}))
+    	.then( () => this.monatService.getOptions({'siteOrderTemplateShippingMethodOptions':false}, false, this.orderTemplateService.currentOrderTemplateID))
     	.then( (options) => {
     		this.dispatch('SET_SHIPPING_METHODS', (state) => {
-	    		state.shippingMethodOptions = options.orderTemplateShippingMethodOptions;
+	    		state.shippingMethodOptions = options.siteOrderTemplateShippingMethodOptions;
 	    		state.selectedShippingMethodID = this.selectAShippingMethod(state);
 				return state;
     		})
@@ -223,7 +227,7 @@ export class FlexshipCheckoutStore extends NgStore<FlexshipCheckoutState, Flexsh
 			selectedShippingAddressID = currentState.selectedShippingAddressID;
 		} 
 		if(!selectedShippingAddressID ){
-			selectedShippingAddressID = currentState.flexship?.ShippingAccountAddress_accountAddressID?.trim();
+			selectedShippingAddressID = currentState.flexship?.shippingAccountAddress_accountAddressID?.trim();
 		}
     	if(!selectedShippingAddressID) { 
     		selectedShippingAddressID = currentState.primaryShippingAddressID?.trim()

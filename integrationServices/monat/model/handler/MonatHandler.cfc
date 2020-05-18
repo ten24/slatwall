@@ -170,7 +170,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 					getHibachiEventService().announceEvent('afterAccountSponsorEnrollmentSuccess', {'account':account.getOwnerAccount(), 'entity':account.getOwnerAccount()}); 
 				} 
 	
-			} else if ( 
+			} 
+			else if ( 
 				account.getAccountStatusType().getSystemCode() == 'astGoodStanding' 
 				&& CompareNoCase(account.getAccountType(), 'marketPartner')  == 0 
 				&& arguments.order.hasMPRenewalFee()
@@ -180,9 +181,20 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 				var currentRenewalDate = ParseDateTime(arguments.order.getAccount().getRenewalDate());
 				var renewalDate = DateAdd('yyyy', 1, currentRenewalDate);
 				account.setRenewalDate(renewalDate);
-			}else if(originalAccountType != account.getAccountType()){
+			}
+			else if( originalAccountType != account.getAccountType() ){
+			    
+			    switch ( account.getAccountType() ) {
+			        case 'vip':
+    			            account.setVipUpgradeDateTime( now() );
+			            break;
+			        case 'marketPartner':
+    			            account.setMpUpgradeDateTime( now() );
+			            break;
+			    }
 				getHibachiEventService().announceEvent('after#originalAccountType#To#account.getAccountType()#UpgradeSuccess', {'account':account, 'entity':account}); 
-			}else{
+			}
+			else {
     			arguments.order.setOrderOrigin(getService('orderService').getOrderOriginByOrderOriginName('Internet Order'));
 			}
 			getAccountService().saveAccount(account);
@@ -212,7 +224,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 				
 				//NOTE: there's only one shipping method allowed for flexship
 				var shippingMethod = getService('ShippingService').getShippingMethod(
-					ListFirst( orderTemplate.setting('orderTemplateEligibleShippingMethods') )
+					ListFirst( orderTemplate.getSite().setting('siteOrderTemplateEligibleShippingMethods') )
 				);
 				
 				var accountPaymentMethod = arguments.order.getOrderPayments()[1].getAccountPaymentMethod();
@@ -275,19 +287,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 			logHibachi("afterOrderProcess_placeOrderSuccess failed @ set initialOrderFlag #serializeJson(dateError)#");	
 		}
 		
-	}
-
-	/** Any time we place and order from a flexship we want to recalculate all properties at the flexship level.
-	  *
-      */
-	public any function afterOrderTemplateProcess_createAndPlaceOrderSuccess(required any slatwallScope, required any orderTemplate, any data={}){
-
-		getDAO('HibachiEntityQueueDAO').insertEntityQueue(
-				baseID          = arguments.orderTemplate.getOrderTemplateID(),
-				baseObject      = 'OrderTemplate',
-				processMethod   = 'updateCalculatedProperties',
-				entityQueueData = {} //no data needed 
-		); 	
 	}
 	
 	public any function afterOrderItemCreateSuccess(required any slatwallScope, required any orderItem, required any data){ 

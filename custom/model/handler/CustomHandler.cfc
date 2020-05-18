@@ -36,6 +36,21 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
         }
     }
     
+    public void function afterAccountUpgradeSuccess(any slatwallScope, any entity, any eventData) {
+        // afterAccountUpgradeSuccess event passes the Order as the entity
+		var orderTemplatesCollection = arguments.entity.getAccount().getOrderTemplatesCollectionList();
+		orderTemplatesCollection.setDisplayProperties('orderTemplateID');
+		orderTemplatesCollection.addFilter('orderTemplateStatusType.systemCode', 'otstActive');
+		var orderTemplates = orderTemplatesCollection.getRecords();
+
+		for(var orderTemplateID in orderTemplates){
+		    var orderTemplate = arguments.slatwallScope.getService('orderService').getOrderTemplate(orderTemplateID);
+		    if(!isNull(orderTemplate)){
+		    	getOrderService().processOrderTemplate(orderTemplate, {}, 'updateCalculatedProperties');
+		    }
+		}
+	}
+    
     public void function afterAccountProcess_loginSuccess(required any slatwallScope, required any account, required any data ={}) {
         
         //If the user is logging in and has items in the cart,
