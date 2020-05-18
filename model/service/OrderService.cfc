@@ -1133,10 +1133,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				
 		for(var orderItem in arguments.order.getOrderItems()){
 			if(!isNull(orderItem.getStock())){
-				getHibachiScope().addModifiedEntity(orderItem);
 				getHibachiScope().addModifiedEntity(orderItem.getStock());
 				getHibachiScope().addModifiedEntity(orderItem.getStock().getSkuLocationQuantity());
 			}
+			getHibachiScope().addModifiedEntity(orderItem);
 		}
 
 		// Change the status
