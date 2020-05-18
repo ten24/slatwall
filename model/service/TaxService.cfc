@@ -536,7 +536,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 											if(taxRateItemResponse.getReferenceObjectType() == 'OrderFulfillment'
 												&& taxRateItemResponse.getOrderFulfillmentID() == orderFulfillment.getOrderFulfillmentID()
-												&& (!isNull(taxRateItemResponse.getFeeType()) || taxRateItemResponse.getFeeType() == feeType)
+												&& ( isNull(taxRateItemResponse.getFeeType()) || taxRateItemResponse.getFeeType() == feeType )
 											){
 												var taxCategoryRate = this.getTaxCategoryRate(taxCategoryRateData['taxCategoryRateID']);
 												// Add a new AppliedTax
@@ -594,8 +594,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 									newAppliedTax.setTaxCategoryRate( taxCategoryRate );
 									newAppliedTax.setOrderFulfillment( orderFulfillment );
 									newAppliedTax.setCurrencyCode( arguments.order.getCurrencyCode() );
+									if(feeType == 'shipping'){
+										var price = orderFulfillment.getFulfillmentCharge();
+									}else{
+										var price = orderFulfillment.getHandlingFee();
+									}
 									//newAppliedTax.setTaxLiabilityAmount( getService('hibachiUtilityService').precisionCalculate((orderFulfillment.getFulfillmentCharge() - orderFulfillment.getDiscountAmount()) * taxCategoryRate.getTaxRate() / 100) );
-									newAppliedTax.setTaxLiabilityAmount( round(orderFulfillment.getFulfillmentCharge() * taxCategoryRate.getTaxRate()) / 100 );
+									newAppliedTax.setTaxLiabilityAmount( round(price * taxCategoryRate.getTaxRate()) / 100 );
 	
 									newAppliedTax.setTaxStreetAddress( taxAddress.getStreetAddress() );
 									newAppliedTax.setTaxStreet2Address( taxAddress.getStreet2Address() );
