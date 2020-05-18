@@ -1690,13 +1690,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(newOrder.hasErrors()){
 			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors on place order #serializeJson(newOrder.getErrors())# when placing order', true);
 			arguments.orderTemplate.addErrors(newOrder.getErrors()); 
+			getOrderDAO().setScheduleOrderProcessingFlag(arguments.orderTemplate.getOrderTemplateID(), false);
 			return arguments.orderTemplate;
 		}
 		
 		var nextPlaceDate = arguments.orderTemplate.getFrequencyTerm().getEndDate(arguments.orderTemplate.getScheduleOrderNextPlaceDateTime());  	
 		arguments.orderTemplate.setScheduleOrderNextPlaceDateTime(nextPlaceDate);
 		arguments.orderTemplate.setLastOrderPlacedDateTime( now() );
-	
+		arguments.orderTemplate.setScheduleOrderProcessingFlag( false );
+		ormFlush();
+		
 		var eventData = { entity: newOrder, order: newOrder, data: {} };
         getHibachiScope().getService("hibachiEventService").announceEvent(eventName="afterOrderProcess_PlaceOrderSuccess", eventData=eventData);	
 	
@@ -1829,8 +1832,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		getOrderDAO().removeTemporaryOrderTemplateItems(arguments.orderTemplate.getOrderTemplateID());	
 		this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# completing place order and has status: #newOrder.getOrderStatusType().getTypeName()#', true);
-		
-		getOrderDAO().setScheduleOrderProcessingFlag(arguments.orderTemplate.getOrderTemplateID(), false);
 		
 		getHibachiScope().removeExcludedModifiedEntityName('TaxApplied');
 		getHibachiScope().removeExcludedModifiedEntityName('PromotionApplied');

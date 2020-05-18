@@ -78,7 +78,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		clearPreviouslyAppliedPromotionsForOrderItems(arguments.order.getOrderItems());
 		clearPreviouslyAppliedPromotionsForOrderFulfillments(arguments.order.getOrderFulfillments());
 		clearPreviouslyAppliedPromotionsForOrder(arguments.order);
-		getPromotionDAO().deleteOrphanedAppliedPromotions();
 	}
 
 	private void function setupPromotionRewardUsageDetails(required any promotionReward, required any promotionRewardUsageDetails){
