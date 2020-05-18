@@ -585,9 +585,19 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			// Request Data
 			var requestData = {
 				'data' = {
-					'amount' = LSParseNumber(arguments.requestBean.getTransactionAmount())
+					'amount' = LSParseNumber(arguments.requestBean.getTransactionAmount()),
+					'currency': arguments.requestBean.getTransactionCurrencyCode()
 		    	},
-		    	'id' = arguments.requestBean.getOriginalChargeProviderTransactionID()
+		    	'tokenex': {
+					'token': arguments.requestBean.getOriginalChargeProviderTransactionID()
+				},
+			    "card" = {
+			    	"expirationMonth" = arguments.requestBean.getExpirationMonth(),
+			    	"expirationYear" = arguments.requestBean.getExpirationYear(),
+			    },
+			    "processingOptions" = {
+				    'merchantID' = setting(settingName='merchantIDTest', requestBean=arguments.requestBean)
+			    }
 			}
 
 			responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'credit', requestData);
@@ -681,12 +691,13 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 		} else if (arguments.transactionName == 'chargePreAuthorization') {
 			apiUrl &= '/pay/v3/capture';
 		} else if (arguments.transactionName == 'credit') {
-			apiUrl &= '/pay/v3/refund';
+			apiUrl &= '/pay/v3/credit';
 		} else if (arguments.transactionName == 'void') {
 			apiUrl &= '/pay/v3/void';
 		} else if(arguments.transactionName == 'transactionStatus'){
 			apiUrl &= '/transaction/v3?plugin.originalId=#arguments.data.transactionID#&gateway.&customer.';
 		} else if(arguments.transactionName == "cardView") {
+			httpRequest.addParam(type="body", value=serializeJSON(arguments.data));
 			apiUrl &= '/pay/v3/vault/card/#arguments.requestBean.getProviderToken()#';
 		}
 		
@@ -706,7 +717,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			httpRequest.addParam(type="header", name="Content-Type", value='application/json');
 			httpRequest.addParam(type="body", value=serializeJSON(arguments.data));
 		}
-		
+
 		// ---> Comment Out:
 		// var logPath = expandPath('/Slatwall/integrationServices/nexio/log');
 		// if (!directoryExists(logPath)){
