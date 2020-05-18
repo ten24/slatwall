@@ -823,7 +823,10 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 						setFulfillmentCharge(0);
 					}
 					
-					setHandlingFee(getFulfillmentShippingMethodOptions()[i].getShippingMethodRate().getHandlingFeeAsNumericValue(this));
+					if(!listContains('otExchangeOrder,otReplacementOrder', getOrder().getOrderType().getSystemCode())){
+						setHandlingFee(getFulfillmentShippingMethodOptions()[i].getShippingMethodRate().getHandlingFeeAsNumericValue(this));	
+					}
+					
 				}
 			}
 		} else {
