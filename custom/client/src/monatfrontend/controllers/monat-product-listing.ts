@@ -92,7 +92,10 @@ class MonatProductListingController {
         
         this.argumentsObject['pageRecordsShow'] = this.pageRecordsShow;
         
-        this.argumentsObject['cmsCategoryFilterFlag'] = !this.argumentsObject['categoryFilterFlag'];
+        if(this.argumentsObject['categoryFilterFlag']){
+        	this.argumentsObject['cmsCategoryFilterFlag'] = false;
+        }
+        
         
         this.publicService.doAction('getProductsByCategoryOrContentID', this.argumentsObject).then(result => {
             this.productList = result.productList;
