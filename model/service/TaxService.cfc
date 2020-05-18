@@ -478,13 +478,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			// Apply Tax for order except returns
 			if(arguments.order.getTypeCode() != 'otReturnOrder') {
-				var feeType = 'shipping';
-				var done = false;
-				while(!done){
-					if(feeType == 'shipping'){
-						var taxCategoryID = orderFulfillment.getFulfillmentMethod().setting('fulfillmentMethodTaxCategory')
-					}else{
+				var feeTypes = ['shipping','handling','none'];
+				
+				for( var feeType in feeTypes ){
+					if(feeType == 'handling'){
 						var taxCategoryID = orderFulfillment.getHandlingFeeTaxCategory();
+					}else{
+						var taxCategoryID = orderFulfillment.getFulfillmentMethod().setting('fulfillmentMethodTaxCategory')
 					}
 					// Get this sku's taxCategory
 					if( !isNull( taxCategoryID) ){
@@ -536,7 +536,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 											if(taxRateItemResponse.getReferenceObjectType() == 'OrderFulfillment'
 												&& taxRateItemResponse.getOrderFulfillmentID() == orderFulfillment.getOrderFulfillmentID()
-												&& ( isNull(taxRateItemResponse.getFeeType()) || taxRateItemResponse.getFeeType() == feeType )
+												&& ( 
+													(feeType == 'none' && isNull(taxRateItemResponse.getFeeType())) 
+													|| taxRateItemResponse.getFeeType() == feeType 
+												)
 											){
 												var taxCategoryRate = this.getTaxCategoryRate(taxCategoryRateData['taxCategoryRateID']);
 												// Add a new AppliedTax
@@ -616,18 +619,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 									} else {
 										newAppliedTax.setTaxAmount( 0 );
 									}
-	
 								}
-	
 							}
-	
 						}
-	
-					}
-					if(feeType == 'handling'){
-						done = true;
-					}else{
-						feeType = 'handling';
 					}
 				}
 			}
