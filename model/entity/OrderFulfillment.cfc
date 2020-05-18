@@ -70,6 +70,9 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	// Calculated Properties
 	property name="calculatedChargeTaxAmount" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedShippingIntegrationName" ormtype="string";
+	property name="calculatedSubtotal" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedSubtotalAfterDiscounts" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedTotalShippingQuantity" ormtype="integer";
 	
 	//hash of the integrationResponse used to decide if we need to rebuild the shippingMethodOptions
 	property name="fulfillmentMethodOptionsCacheKey" column="fulfillMethOptionsCacheKey" ormtype="string" hb_auditable="false";

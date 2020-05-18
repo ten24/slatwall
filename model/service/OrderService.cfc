@@ -1252,7 +1252,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var currentOrderTemplate = request[orderTemplateOrderDetailsKey]['orderTemplate'];
 			var hasInfoForFulfillment = !isNull( currentOrderTemplate.getShippingMethod() ); 
 
-			var transientOrder = getService('OrderService').newTransientOrderFromOrderTemplate( currentOrderTemplate, false );  
+			var transientOrder = getService('OrderService').newTransientOrderFromOrderTemplate( orderTemplate=currentOrderTemplate, evictFromSession=false, updateShippingMethodOptions=false );  
+			
 			//only update amounts if we can
 			transientOrder = this.saveOrder( order=transientOrder, updateOrderAmounts=hasInfoForFulfillment );
 			transientOrderItems = transientOrder.getOrderItems();
@@ -1261,7 +1262,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 			transientOrder.updateCalculatedProperties(); 	
 			getHibachiDAO().flushORMSession();
-		
+			
+			for(var orderFulfillment in transientOrder){
+				getService('ShippingService').updateOrderFulfillmentShippingMethodOptions(orderFulfillment, false);
+			}
+			
 			if(hasInfoForFulfillment){	
 				request[orderTemplateOrderDetailsKey]['fulfillmentTotal'] = transientOrder.getFulfillmentTotal(); 
 				request[orderTemplateOrderDetailsKey]['fulfillmentDiscount'] = transientOrder.getFulfillmentDiscountAmountTotal(); 
@@ -1288,7 +1293,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 			StructDelete(request[orderTemplateOrderDetailsKey], 'orderTemplate'); //we don't need it anymore
 		}
-		//join thread so we can return synchronously
+		// //join thread so we can return synchronously
 		threadJoin(threadName);
 
 		//if we have any error we probably don't have the required data for returning the total
@@ -1332,7 +1337,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	//order transient helper methods
-	public any function newTransientOrderFromOrderTemplate(required any orderTemplate, boolean evictFromSession=true){
+	public any function newTransientOrderFromOrderTemplate(required any orderTemplate, boolean evictFromSession=true, boolean updateShippingMethodOptions=true){
 
 		arguments.transientOrder = new Slatwall.model.entity.Order();
 		arguments.transientOrder.setOrderTemplate(arguments.orderTemplate); 
@@ -1374,7 +1379,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.transientOrder;
 	}
 
-	public any function newTransientOrderFulfillmentFromOrderTemplate(required any orderTemplate, boolean evictFromSession=true, any transientOrder){
+	public any function newTransientOrderFulfillmentFromOrderTemplate(required any orderTemplate, boolean evictFromSession=true, any transientOrder, boolean updateShippingMethodOptions=true){
 		
 		arguments.transientOrderFulfillment = new Slatwall.model.entity.OrderFulfillment();
 	
@@ -1408,12 +1413,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		this.populateOrderItemsFromOrderTemplate(argumentCollection=arguments);
 
 		arguments.transientOrderFulfillment.setShippingMethod(arguments.orderTemplate.getShippingMethod(), false);  	
-		getService('ShippingService').updateOrderFulfillmentShippingMethodOptions(arguments.transientOrderFulfillment, false);
 
-		if(arguments.evictFromSession){	
-			for(var shippingMethodOption in arguments.transientOrderFulfillment.getFulfillmentShippingMethodOptions()){
-				ORMGetSession().evict(shippingMethodOption);
-			}	
+		if(arguments.updateShippingMethodOptions){
+			getService('ShippingService').updateOrderFulfillmentShippingMethodOptions(arguments.transientOrderFulfillment, false);
+	
+			if(arguments.evictFromSession){	
+				for(var shippingMethodOption in arguments.transientOrderFulfillment.getFulfillmentShippingMethodOptions()){
+					ORMGetSession().evict(shippingMethodOption);
+				}	
+			}
 		}
 		return arguments.transientOrderFulfillment; 
 	}
@@ -1684,7 +1692,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		newOrder.updateCalculatedProperties(runAgain=true); 
 		ormFlush();//flush so that the order exists
-
+		
+		var orderFulfillments = newOrder.getOrderFulfillments();
+		for( var orderFulfillment in orderFulfillments ){
+			getService('ShippingService').updateOrderFulfillmentShippingMethodOptions(orderFulfillment);
+		}
+		ormFlush();
 		newOrder = this.processOrder_placeOrder(newOrder,{ignoreCanPlaceOrderFlag:true, updateOrderAmounts:false, updateShippingMethodOptions:false});
 
 		if(newOrder.hasErrors()){
@@ -1889,7 +1902,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				continue;
 			}
 		}
-		
+
 		return arguments.order;
 	}
 	
@@ -5542,11 +5555,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		for(var shippingMethodOption in arguments.orderFulfillment.getFulfillmentShippingMethodOptions()) {
 
 			var thisOption = {};
-			if(!isNull(arguments.orderFulfillment.getHandlingFee()) && arguments.orderFulfillment.getHandlingFee() > 0){
-				thisOption['name'] = shippingMethodOption.getShippingMethodRate().getShippingMethod().getShippingMethodName();
-			}else{
-				thisOption['name'] = shippingMethodOption.getSimpleRepresentation();
-			}
+			thisOption['name'] = shippingMethodOption.getSimpleRepresentation();
 			thisOption['value'] = shippingMethodOption.getShippingMethodRate().getShippingMethod().getShippingMethodID();
 			thisOption['totalCharge'] = shippingMethodOption.getTotalCharge();
 			thisOption['totalChargeAfterDiscount'] = shippingMethodOption.getTotalChargeAfterDiscount();
