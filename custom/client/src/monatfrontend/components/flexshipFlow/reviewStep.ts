@@ -73,7 +73,7 @@ class ReviewStepController {
     }
     
     public backToListing(){
-		this.monatService.redirectToProperSite("/my-account/flexships");
+		return this.monatService.redirectToProperSite("/my-account/flexships");
     }
 }
 
