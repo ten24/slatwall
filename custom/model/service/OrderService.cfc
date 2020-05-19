@@ -605,7 +605,6 @@ component extends="Slatwall.model.service.OrderService" {
 				// closed(shipped) orders
 	            arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="5"));
 			} else {
-				dd(arguments.order.getOrderType().getTypeCode())
 				// RMA closed orders
 	            arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="rmaReleased"));
 			}
