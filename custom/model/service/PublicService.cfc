@@ -817,6 +817,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 
 	} 
     
+    
     public void function getStarterPackBundleStruct( required any data ) {
 
         var baseImageUrl = getHibachiScope().getBaseImageURL() & '/product/default/';
@@ -828,10 +829,11 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		bundlePersistentCollectionList.addFilter('sku.product.listingPages.content.contentID',arguments.data.contentID,"=" );
 		var content = getService('contentService').getContent(arguments.data.contentID)
         var orderByProp = replace(content.getProductSortProperty(), '_productlistingpage_', '');
-        var orderByDirection = content.getProductSortDefaultDirection() ?: "ASC";
+        var orderByDirection = content.getProductSortDefaultDirection() ?: 'ASC';
         
-        if(!isNull(orderByProp) && len(trim(orderByProp)) ){
-		    bundlePersistentCollectionList.addOrderBy( 'sku.#orderByProp#|#orderByDirection#');
+        if(!isNull(orderByProp) && !isNull(orderByDirection) && len(trim(orderByProp)) && orderByDirection != 'MANUAL'){
+            if(orderByProp == '_productlistingpage.sortOrder') orderByProp = 'product.listingPages.sortOrder';
+            bundlePersistentCollectionList.addOrderBy( 'sku.#orderByProp#|#orderByDirection#');
         }
 		
 		if(!isNull(getHibachiScope().getCurrentRequestSite())){
@@ -855,7 +857,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 			sku.product.productDescription,
 			sku.product.defaultSku.imageFile,
 			sku.skuPrices.price,
-			sku.skuPrices.personalVolume
+			sku.skuPrices.personalVolume,
+			sku.product.listingPages.sortOrder
 		');
 
 		var visibleColumnConfigWithArguments = {
@@ -878,7 +881,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		var bundles = {};
 		var skuBundleCount = arrayLen(skuBundles);
 		var products = {};
-		var sortOrder = 0;
+		var recordCount = 0;
 		
 		for ( var i=1; i<=skuBundleCount; i++ ){
 			var skuBundle = skuBundles[i]; 
@@ -888,7 +891,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		   
 			// If this is the first time the parent product is looped over, setup the product.
 			if ( ! structKeyExists( bundles, skuID ) ) {
-			    sortOrder++
+			    recordCount++;
 				bundles[ skuID ] = {
 					'ID': skuID,
 					'name': skuBundle.sku_product_productName,
@@ -898,8 +901,10 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 					'personalVolume': skuBundle.sku_skuPrices_personalVolume,
 					'productTypes': {},
 					'currencyCode': visibleColumnConfigWithArguments['arguments']['currencyCode'],
-					'sortOrder': sortOrder
-				};
+					'sortOrder': skuBundle.sku_product_listingPages_sortOrder,
+					'sortDirection': content.getProductSortDefaultDirection() ?: 'ASC',
+					'recordSort': recordCount
+				}
 			}
 			
 			// If this is the first product type of it's kind, setup the product type.
