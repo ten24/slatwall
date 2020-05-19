@@ -47,7 +47,6 @@ Notes:
 
 */
 component displayname="Gateway Response"  accessors="true" output="false" extends="Slatwall.model.transient.payment.TransactionResponseBean" {
-	property name="referenceNumber" type="numeric";
 
 	// Deprecated Method - Use setAmountReceived() instead
 	public void function setAmountCharged(required numeric amountCharged) {
