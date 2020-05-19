@@ -37,7 +37,7 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
     }
     
     public void function afterAccountUpgradeSuccess(any slatwallScope, any entity, any eventData) {
-		var orderTemplatesCollection = arguments.entity.getOrderTemplatesCollectionList();
+		var orderTemplatesCollection = arguments.entity.getOrderTemplateCollectionList();
 		orderTemplatesCollection.setDisplayProperties('orderTemplateID');
 		orderTemplatesCollection.addFilter('orderTemplateStatusType.systemCode', 'otstActive');
 		var orderTemplates = orderTemplatesCollection.getRecords();
