@@ -696,7 +696,6 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 		} else if(arguments.transactionName == 'transactionStatus'){
 			apiUrl &= '/transaction/v3?plugin.originalId=#arguments.data.transactionID#&gateway.&customer.';
 		} else if(arguments.transactionName == "cardView") {
-			httpRequest.addParam(type="body", value=serializeJSON(arguments.data));
 			apiUrl &= '/pay/v3/vault/card/#arguments.requestBean.getProviderToken()#';
 		}
 		var basicAuthCredentialsBase64 = toBase64('#username#:#password#');
