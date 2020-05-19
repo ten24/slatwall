@@ -223,13 +223,14 @@ component extends="Slatwall.model.service.PromotionService" {
 		var difference = personalVolumeTotal - roundedPersonalVolumeTotal;
 		
 		if(difference != 0){
-			if(arguments.order.hasAppliedPromotion()){
-				
+			if( arguments.order.hasAppliedPromotion() ){
 				var appliedPromotion = arguments.order.getAppliedPromotions()[1];
 				var currentPVDiscountAmount = appliedPromotion.getPersonalVolumeDiscountAmount();
-				appliedPromotion.setPersonalVolumeDiscountAmount(currentPVDiscountAmount + difference);
-			}else{
-				
+				if( !isNull(currentPVDiscountAmount) ){
+				    appliedPromotion.setPersonalVolumeDiscountAmount(currentPVDiscountAmount + difference);
+				}
+			}
+			else {
 				this.allocatePersonalVolumeDiscountToOrderItems(arguments.order, difference);
 			}
 		}

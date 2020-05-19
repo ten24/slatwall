@@ -134,7 +134,7 @@
 		<div class="col-md-8 p-0 m-0">
 			<div ng-if="monatFlexshipCard.orderTemplate.associatedOFYProduct.sku_product_productName" class="p-2">
 				<span sw-rbkey="'alert.frontend.ofy_callout_yourNextOrder'"></span> 
-				<i sw-rbkey="'alert.frontend.ofy_callout_OnlyForYou'"></i>
+				<em sw-rbkey="'alert.frontend.ofy_callout_OnlyForYou'"></em>
 				<span sw-rbkey="'alert.frontend.ofy_callout_product'"></span>
 				{{monatFlexshipCard.orderTemplate.associatedOFYProduct.sku_product_productName}}
 				
@@ -145,8 +145,8 @@
 			
 			<div ng-if="monatFlexshipCard.orderTemplate.qualifiesForOFYProducts && monatFlexshipCard.showAddOFYProductCallout" 
 				class="bg-primary  p-2">
-				<span sw-rbkey="'alert.frontend.ofy_callout_youQualify'"></span>
-				<i sw-rbkey="'alert.frontend.ofy_callout_OnlyForYou'"></i>
+				<span sw-rbkey="'alert.frontend.ofy_callout_youQualifyForAFree'"></span>
+				<em sw-rbkey="'alert.frontend.ofy_callout_OnlyForYou'"></em>
 				<span sw-rbkey="'alert.frontend.ofy_callout_product'"></span>
 				<a href="#" class="text-white" ng-click="monatFlexshipCard.goToOFYProductListingPage()">
 					<strong> &nbsp;-&nbsp; <u sw-rbkey="'frontend.flexshipCard.menu.selectYourFreeProducts'"></u> </strong>

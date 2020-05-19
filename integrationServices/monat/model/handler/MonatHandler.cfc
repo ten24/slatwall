@@ -170,7 +170,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 					getHibachiEventService().announceEvent('afterAccountSponsorEnrollmentSuccess', {'account':account.getOwnerAccount(), 'entity':account.getOwnerAccount()}); 
 				} 
 	
-			} else if ( 
+			} 
+			else if ( 
 				account.getAccountStatusType().getSystemCode() == 'astGoodStanding' 
 				&& CompareNoCase(account.getAccountType(), 'marketPartner')  == 0 
 				&& arguments.order.hasMPRenewalFee()
@@ -180,9 +181,20 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 				var currentRenewalDate = ParseDateTime(arguments.order.getAccount().getRenewalDate());
 				var renewalDate = DateAdd('yyyy', 1, currentRenewalDate);
 				account.setRenewalDate(renewalDate);
-			}else if(originalAccountType != account.getAccountType()){
+			}
+			else if( originalAccountType != account.getAccountType() ){
+			    
+			    switch ( account.getAccountType() ) {
+			        case 'vip':
+    			            account.setVipUpgradeDateTime( now() );
+			            break;
+			        case 'marketPartner':
+    			            account.setMpUpgradeDateTime( now() );
+			            break;
+			    }
 				getHibachiEventService().announceEvent('after#originalAccountType#To#account.getAccountType()#UpgradeSuccess', {'account':account, 'entity':account}); 
-			}else{
+			}
+			else {
     			arguments.order.setOrderOrigin(getService('orderService').getOrderOriginByOrderOriginName('Internet Order'));
 			}
 			getAccountService().saveAccount(account);

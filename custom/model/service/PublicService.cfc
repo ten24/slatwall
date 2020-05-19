@@ -829,9 +829,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		bundlePersistentCollectionList.addFilter('sku.product.listingPages.content.contentID',arguments.data.contentID,"=" );
 		var content = getService('contentService').getContent(arguments.data.contentID)
         var orderByProp = replace(content.getProductSortProperty(), '_productlistingpage_', '');
-        var orderByDirection = content.getProductSortDefaultDirection() ?: "ASC";
+        var orderByDirection = content.getProductSortDefaultDirection() ?: 'ASC';
         
-        if(!isNull(orderByProp) && !isNull(orderByDirection) && orderByDirection != 'MANUAL'){
+        if(!isNull(orderByProp) && !isNull(orderByDirection) && len(trim(orderByProp)) && orderByDirection != 'MANUAL'){
             if(orderByProp == '_productlistingpage.sortOrder') orderByProp = 'product.listingPages.sortOrder';
             bundlePersistentCollectionList.addOrderBy( 'sku.#orderByProp#|#orderByDirection#');
         }
