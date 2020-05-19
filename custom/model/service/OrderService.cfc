@@ -601,7 +601,7 @@ component extends="Slatwall.model.service.OrderService" {
 
         } else if (arguments.systemCode == 'ostClosed') {
 			
-			if(arguments.order.getOrderType().getSystemCode() == 'otSalesOrder') {
+			if(arguments.order.getOrderType().getSystemCode() == 'otSalesOrder' || arguments.order.getOrderType().getSystemCode() == 'otReplacementOrder') {
 				// closed(shipped) orders
 	            arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="5"));
 			} else {
