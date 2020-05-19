@@ -68,6 +68,7 @@ component entityname="SlatwallTaxApplied" table="SwTaxApplied" persistent="true"
 	property name="taxPostalCode" hb_populateEnabled="public" ormtype="string";
 	property name="taxCountryCode" hb_populateEnabled="public" ormtype="string";
 	property name="manualTaxAmountFlag" ormtype="boolean" default="false";
+	property name="feeType" ormtype="string"; // Used to distinguish Shipping and Handling taxes on Order Fulfillments
 	property name="message" ormtype="string" length="4000"; // @hint this is a pipe and tilda delimited list of any messages that came back in the response.
 	
 	//Persitent Integration Properties

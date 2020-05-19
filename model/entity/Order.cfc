@@ -243,7 +243,6 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
     property name="productPackVolumeTotal" persistent="false";
     property name="retailValueVolumeTotal" persistent="false";
     property name="vipEnrollmentOrderFlag" persistent="false";
-    property name="marketPartnerEnrollmentOrderDateTime" persistent="false";
     property name="marketPartnerEnrollmentOrderID" persistent="false";
     
     property name="calculatedVipEnrollmentOrderFlag" ormtype="boolean";
@@ -2087,21 +2086,6 @@ public numeric function getPersonalVolumeSubtotal(){
 	    return orderItemCollectionList.getRecordsCount() > 0;
 	}
 	
-	public any function getMarketPartnerEnrollmentOrderDateTime(){
-	    
-	    if (!structKeyExists(variables, "marketPartnerEnrollmentOrderDateTime")){
-			var value = getService('orderService').getMarketPartnerEnrollmentOrderDateTime(getAccount());
-    	    if (!isNull(value)){
-    	        variables.marketPartnerEnrollmentOrderDateTime = value;
-    	        return value;
-    	    }
-	    }
-	    
-	    if (!isNull(variables.marketPartnerEnrollmentOrderDateTime)){
-	    	return variables.marketPartnerEnrollmentOrderDateTime;
-	    }
-	}
-	
 	public any function getMarketPartnerEnrollmentOrderID(){
 	    if (!structKeyExists(variables, "marketPartnerEnrollmentOrderID")){
     	    var orderItemCollectionList = getService("OrderService").getOrderItemCollectionList();
@@ -2226,52 +2210,55 @@ public numeric function getPersonalVolumeSubtotal(){
         return true;
 	}
 	 
+	 
 	 /**
 	  * 2. If Site is UK and account is MP Max Order 1 placed in first 7 days 
 	  * after enrollment order.
 	  **/
-	 public boolean function MarketPartnerValidationMaxOrdersPlaced(){
-	 	
-	    // If they've never enrolled, they can enroll.
-	    if (!isNull(getAccount()) && getAccount().getAccountType() == "marketPartner" 
-			&& this.getOrderCreatedSite().getSiteCode() == "mura-uk"){
-			    var hasEnrollmentOrder = getMarketPartnerEnrollmentOrderID();
-			    if (isNull(hasEnrollmentOrder)){
-			        return true;
-			    }
-		}
-	    
+	 public boolean function marketPartnerValidationMaxOrdersPlaced(){
+	     
+	    if( isNull( this.getAccount() ) 
+	        || this.getAccount().getAccountType() != "marketPartner" 
+	        || this.getOrderCreatedSite().getSiteCode() != "mura-uk" 
+	        || isNull( this.getMarketPartnerEnrollmentOrderID() ) // If they've never enrolled, they can enroll.
+	    ){
+	        return true;
+	    }
+
         var initialEnrollmentPeriodForMarketPartner = this.getOrderCreatedSite().setting("siteInitialEnrollmentPeriodForMarketPartner");
         
+        if( isNull(initialEnrollmentPeriodForMarketPartner) ){
+            return true;
+        }
+        if( isNull( this.getAccount().getEnrollmentDate() ) ){
+            return true;
+        }
+        
         //If a UK MP is within the first 7 days of enrollment, check that they have not already placed more than 1 order.
-		if (!isNull(initialEnrollmentPeriodForMarketPartner) && !isNull(getAccount()) && getAccount().getAccountType() == "marketPartner" 
-			&& this.getOrderCreatedSite().getSiteCode() == "mura-uk"
-			&& !isNull(getMarketPartnerEnrollmentOrderDateTime())
-			&& !isNull(getMarketPartnerEnrollmentOrderID())
-			&& dateDiff("d", getMarketPartnerEnrollmentOrderDateTime(), now()) <= initialEnrollmentPeriodForMarketPartner){
+		if ( dateDiff("d", this.getAccount().getEnrollmentDate(), now() ) <= initialEnrollmentPeriodForMarketPartner ){
 		
 			//This order is 1, so if they have any previous that is not the enrollment order,
 			//they can't place this one.
-			var previouslyOrdered = getService("OrderService").getOrderCollectionList();
+			var previouslyOrdered = getService("orderService").getOrderCollectionList();
 
 			//Find if they have placed more than the initial enrollment order already.
-			previouslyOrdered.addFilter("orderID", getMarketPartnerEnrollmentOrderID(),"!=");
+			previouslyOrdered.addFilter("orderID", getMarketPartnerEnrollmentOrderID(), "!=");
 			previouslyOrdered.addFilter("account.accountID", getAccount().getAccountID());
 			previouslyOrdered.addFilter("orderStatusType.systemCode", "ostNotPlaced", "!=");
 			previouslyOrdered.addFilter("orderType.systemCode", "otSalesOrder");
 			
-			
-			if (previouslyOrdered.getRecordsCount() > 0){
+			if ( previouslyOrdered.getRecordsCount() > 0 ){
 				return false; //they can not purchase this because they already have purchased it.
 			}
-		} 
+		}
+		
 		return true;
 	 }
 	 
 	 /**
 	  * 3. MP (Any site) can't purchase one past 30 days from account creation.
 	  **/
-	 public boolean function MarketPartnerValidationMaxProductPacksPurchased(){
+	 public boolean function marketPartnerValidationMaxProductPacksPurchased(){
 	 	
 	 	if(this.getOrderStatusType().getSystemCode() != 'ostNotPlaced'){
 	 		return true;
@@ -2393,15 +2380,18 @@ public numeric function getPersonalVolumeSubtotal(){
 	 		return true;
 	 	}
 	 	
-	    var initialEnrollmentPeriodForMarketPartner = site.setting("siteInitialEnrollmentPeriodForMarketPartner");//7
-        var maxAmountAllowedToSpendDuringInitialEnrollmentPeriod = site.setting("siteMaxAmountAllowedToSpendInInitialEnrollmentPeriod");//200
+	    var initialEnrollmentPeriodForMarketPartner = site.setting("siteInitialEnrollmentPeriodForMarketPartner"); // 7-days
+	    
+        var isEnrollmentPeriodOver = !isNull(this.getAccount()) && !isNull(this.getAccount().getEnrollmentDate() ) && dateDiff( "d", this.getAccount().getEnrollmentDate(), now() ) > initialEnrollmentPeriodForMarketPartner;
         
+        var isUpgradePeriodOver = true;
         if( !isNull(this.getAccount()) ){
-        	var date = getService('orderService').getMarketPartnerEnrollmentOrderDateTime(this.getAccount());
+            var mpUpgradeDateTime = this.getAccount().getMpUpgradeDateTime();
+            isUpgradePeriodOver = isNull(mpUpgradeDateTime ) || dateDiff( "d", mpUpgradeDateTime, now() ) > initialEnrollmentPeriodForMarketPartner;
         }
         
-        //If a UK MP is within the first 7 days of enrollment, check that they have not already placed more than 1 order.
-		if (isNull(date) || dateDiff("d", date, now()) <= initialEnrollmentPeriodForMarketPartner){
+        //If a UK MP is within the first 7 days of enrollment/upgrade, check that they have not already placed more than 1 order.
+		if ( !isEnrollmentPeriodOver || !isUpgradePeriodOver  ){
 			var total = 0;
 			if(!isNull(this.getAccount())){
 				var orders = account.getOrders();
@@ -2411,6 +2401,8 @@ public numeric function getPersonalVolumeSubtotal(){
 			}else{
 				total += this.getTotal();
 			}
+            
+            var maxAmountAllowedToSpendDuringInitialEnrollmentPeriod = site.setting("siteMaxAmountAllowedToSpendInInitialEnrollmentPeriod");//200
 			//If adding the order item will increase the order to over 200 EU return false  
 			if (total > maxAmountAllowedToSpendDuringInitialEnrollmentPeriod){
 			    return false; // they already have too much.

@@ -3,6 +3,8 @@ import { MonatService } from '@Monat/services/monatservice';
 import { MonatAlertService } from '@Monat/services/monatAlertService';
 import { OrderTemplateService } from '@Monat/services/ordertemplateservice';
 
+import {AccountAddress } from '@Monat/models';
+
 class FlexshipCheckoutShippingAddressController {
 	
 	public currentState = {} as FlexshipCheckoutState;
@@ -63,7 +65,7 @@ class FlexshipCheckoutShippingAddressController {
 
 	// *****************. new Address Form  .***********************//
 	
-    public onAddNewAccountAddressSuccess = (newAccountAddress) => {
+    public onAddNewAccountAddressSuccess = (newAccountAddress: AccountAddress) => {
 		
 		if(newAccountAddress) {
 			this.currentState.accountAddresses.push(newAccountAddress);

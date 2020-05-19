@@ -263,7 +263,6 @@ extends = "Slatwall.integrationServices.BaseTax" {
 					
 				}else if (item.getReferenceObjectType() == 'OrderFulfillment' && item.getOrderFulfillment().hasOrderFulfillmentItem()){
 					// Setup the itemData
-					
 					var amount = item.getPrice();
 					
 					if(!isNull(item.getOrderFulfillment().getHandlingFee())){
@@ -271,7 +270,7 @@ extends = "Slatwall.integrationServices.BaseTax" {
 					}
 					
 					var itemData = {};
-					itemData.LineNo = item.getOrderFulfillmentID();
+					itemData.LineNo = item.getOrderFulfillmentID() & item.getFeeType();
 					itemData.DestinationCode = addressIndex;
 					itemData.OriginCode = 1;
 					itemData.ItemCode = 'Shipping';
@@ -349,6 +348,7 @@ extends = "Slatwall.integrationServices.BaseTax" {
 				responseBean.addMessage("Request", serializeJSON(requestDataStruct));
 				responseBean.addMessage("Response", serializeJSON(responseData));
 			}
+
 			if (structKeyExists(fileContent, 'TaxLines')){
 				// Loop over all orderItems in response
 				for(var taxLine in fileContent.TaxLines) {
@@ -360,6 +360,12 @@ extends = "Slatwall.integrationServices.BaseTax" {
 						var referenceObjectType = left(taxLine.taxCode,2) == "FR" ? "OrderFulfillment" : "OrderItem";
 						// Loop over the details of that taxAmount
 						for(var taxDetail in taxLine.TaxDetails) {
+							
+							if( listFindNoCase( 'shipping,handling',right( taxLine.LineNo,8 ) ) ){
+								var feeType = right(taxLine.LineNo,8);
+								taxLine.LineNo = left(taxLine.LineNo, len(taxLine.LineNo) - 8);
+							}
+							
 							// For each detail make sure that it is applied to this item
 							if(taxDetail.Tax > 0 && !listContains(setting("VATCountries"),taxDetail.Country)) {
 								var args = {
@@ -371,7 +377,9 @@ extends = "Slatwall.integrationServices.BaseTax" {
 									taxImpositionName=taxDetail.TaxName,
 									referenceObjectType="#referenceObjectType#"
 								};
-								
+								if(!isNull(feeType)){
+									args.feeType = feeType;
+								}
 								// Add the details of the taxes charged
 								responseBean.addTaxRateItem(
 									argumentCollection=args
@@ -388,7 +396,9 @@ extends = "Slatwall.integrationServices.BaseTax" {
 									taxImpositionName=taxDetail.TaxName,
 									referenceObjectType="#referenceObjectType#"
 								};
-								
+								if(!isNull(feeType)){
+									args.feeType = feeType;
+								}
 								// Add the details of the taxes charged
 								responseBean.addTaxRateItem(
 									argumentCollection=args
