@@ -371,7 +371,7 @@ component extends="framework.one" {
 				}
 			} else if( getHibachiScope().getApplicationValue("applicationCluster", clusterName) != serverInstance.getServerInstanceClusterName() ) {
 				writeLog(file="#variables.framework.applicationKey#", text="General Log - Resetting Cluster Name in application scope");
-				getHibachiScope().setApplicationValue("applicationCluster", clusterName);
+				getHibachiScope().setApplicationValue("applicationCluster", serverInstance.getServerInstanceClusterName());
 			}
 			getHibachiScope().getService('hibachiCacheDao').updateServerInstanceLastRequestDateTime( serverInstance );
 		}
