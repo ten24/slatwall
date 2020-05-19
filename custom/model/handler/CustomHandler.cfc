@@ -38,7 +38,7 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
     
     public void function afterAccountUpgradeSuccess(any slatwallScope, any entity, any eventData) {
         // afterAccountUpgradeSuccess event passes the Order as the entity
-		var orderTemplatesCollection = arguments.entity.getAccount().getOrderTemplatesCollectionList();
+		var orderTemplatesCollection = arguments.entity.getAccount().getOrderTemplateCollectionList();
 		orderTemplatesCollection.setDisplayProperties('orderTemplateID');
 		orderTemplatesCollection.addFilter('orderTemplateStatusType.systemCode', 'otstActive');
 		var orderTemplates = orderTemplatesCollection.getRecords();
@@ -46,7 +46,7 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 		for(var orderTemplateID in orderTemplates){
 		    var orderTemplate = arguments.slatwallScope.getService('orderService').getOrderTemplate(orderTemplateID);
 		    if(!isNull(orderTemplate)){
-		    	getOrderService().processOrderTemplate(orderTemplate, {}, 'updateCalculatedProperties');
+		    	arguments.slatwallScope.getService('orderService').processOrderTemplate(orderTemplate, {}, 'updateCalculatedProperties');
 		    }
 		}
 	}
