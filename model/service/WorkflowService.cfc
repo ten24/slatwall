@@ -359,16 +359,18 @@ component extends="HibachiService" accessors="true" output="false" {
 		}
 
 		// Update the taskSechedules nextRunDateTime
-		var runDateTimeData = {};
-		if(!isNull(arguments.workflowTrigger.getStartDateTime())){
-			runDateTimeData['startDateTime'] = arguments.workflowTrigger.getStartDateTime();
+		if(!isNull(arguments.workflowTrigger.getSchedule())){
+			var runDateTimeData = {};
+			if(!isNull(arguments.workflowTrigger.getStartDateTime())){
+				runDateTimeData['startDateTime'] = arguments.workflowTrigger.getStartDateTime();
+			}
+			if(!isNull(arguments.workflowTrigger.getEndDateTime())){
+				runDateTimeData['endDateTime'] = arguments.workflowTrigger.getEndDateTime();
+			}
+			var nextRunDateTime = arguments.workflowTrigger.getSchedule().getNextRunDateTime(argumentCollection=runDateTimeData);
+	
+			workflowTrigger.setNextRunDateTime( nextRunDateTime );
 		}
-		if(!isNull(arguments.workflowTrigger.getEndDateTime())){
-			runDateTimeData['endDateTime'] = arguments.workflowTrigger.getEndDateTime();
-		}
-		var nextRunDateTime = arguments.workflowTrigger.getSchedule().getNextRunDateTime(argumentCollection=runDateTimeData);
-
-		workflowTrigger.setNextRunDateTime( nextRunDateTime );
 		this.saveWorkflowTrigger(entity=workflowTrigger, resetCacheFlag=false);
 
 

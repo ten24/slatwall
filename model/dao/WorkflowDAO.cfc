@@ -110,7 +110,7 @@ Notes:
 									AND
 										(runningFlag is NULL or runningFlag = false)
 									AND
-										nextRunDateTime <= CURRENT_TIMESTAMP()
+										(nextRunDateTime is null or nextRunDateTime <= CURRENT_TIMESTAMP())
 								',{triggerType='Schedule'})/>
 
 	</cffunction>
