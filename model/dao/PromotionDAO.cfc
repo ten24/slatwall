@@ -427,13 +427,13 @@ Notes:
 		
 		<cfquery>
 			INSERT INTO swpromorewardstackexcl (promotionRewardID, linkedPromotionRewardID)
-			SELECT <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.copyFromID#" /> as promotionRewardID, linkedPromotionRewardID
+			SELECT promotionRewardID, <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.newPromoRewardID#" /> as linkedPromotionRewardID			
 			FROM swpromorewardstackexcl 
-			WHERE promotionRewardID IN(<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.newPromoRewardID#" />)
+			WHERE promotionRewardID IN(<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.copyFromID#" />)
 			UNION
 				SELECT promotionRewardID, linkedPromotionRewardID
 				FROM swpromorewardstackexcl 
-				WHERE linkedPromotionRewardID IN(<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.newPromoRewardID#" />);
+				WHERE linkedPromotionRewardID IN(<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.copyFromID#" />);
 		</cfquery>
 	</cffunction>
 	
