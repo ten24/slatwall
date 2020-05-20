@@ -88,8 +88,7 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 			httpRequest.addParam(type='formfield',name='#key#',value='#requestData[key]#');
 		}
 		
-		var rawRequest = httpRequest.send().getPrefix();
-		var response = deserializeJson(rawRequest.fileContent);
+		var response = getService('hibachiUtilityService').getHttpResponse(httpRequest);
 		
 		// if(structKeyExists(arguments, 'jsessionid')){
 		// 	writedump(requestData); 
