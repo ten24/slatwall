@@ -1756,7 +1756,7 @@ component extends="Slatwall.model.service.OrderService" {
 					for(var orderItem in orderItems) {
 						if(orderTemplateItem['sku_skuID'] == orderItem.getSku().getSkuID()){
 							this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# Remove temporary Item skuCode: #orderTemplateItem['sku_skuCode']# because of error', true);
-							arguments.order.removeOrderItem( orderitem );
+							arguments.order.removeOrderItem( orderItem );
 							temporaryItemFound = false;
 							continue;
 						}
