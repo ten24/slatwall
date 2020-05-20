@@ -3,6 +3,20 @@
 	<cfproperty name="hibachiTagService" type="any" />
 
 	<cfscript>
+	
+		public any function getHttpResponse(required any http, numeric timeout = 3, boolean throwOnTimeout = true){
+			arguments.http.setTimeout(arguments.timeout);
+			var result = arguments.http.send().getPrefix();
+			if( arguments.throwOnTimeout && result['status_code'] == 408 ){
+				throw(result['errordetail']);
+			}
+			if( findNoCase('application/json', result['header']) ){
+				return deserializeJson(result['filecontent']);
+			}else{
+				return result['filecontent'];
+			}
+		}
+		
 		public string function getDatabaseUUID(){
 			switch(getHibachiScope().getApplicationValue('databaseType')){
 				case 'Oracle10g':

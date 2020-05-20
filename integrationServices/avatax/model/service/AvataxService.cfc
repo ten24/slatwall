@@ -213,7 +213,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
     	setHttpHeaders(httpRequest);
     	
     	httpRequest.addParam(type='body', value="#SerializeJson(arguments.payload)#");
-		httpRequest.setTimeout(60);
+		httpRequest.setTimeout(5);
 
 		var rawResponse = httpRequest.send().getPrefix();
 		
