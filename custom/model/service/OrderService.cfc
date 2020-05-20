@@ -432,15 +432,20 @@ component extends="Slatwall.model.service.OrderService" {
 			var currentOrderTemplate = request[orderTemplateOrderDetailsKey]['orderTemplate'];
 			var hasInfoForFulfillment = !isNull( currentOrderTemplate.getShippingMethod() ); 
 
-			var transientOrder = getService('OrderService').newTransientOrderFromOrderTemplate( currentOrderTemplate, false );  
+			var transientOrder = getService('OrderService').newTransientOrderFromOrderTemplate( orderTemplate=currentOrderTemplate, evictFromSession=false, updateShippingMethodOptions=false );  
 			//only update amounts if we can
 			transientOrder = this.saveOrder( order=transientOrder, updateOrderAmounts=hasInfoForFulfillment );
-			transientOrderItems = transientOrder.getOrderItems();
+			var transientOrderItems = transientOrder.getOrderItems();
 			for(var orderItem in transientOrderItems){
 				orderItem.updateCalculatedProperties(); 
 			}
 			transientOrder.updateCalculatedProperties(); 	
 			getHibachiDAO().flushORMSession();
+			
+			var transientOrderFulfillments = transientOrder.getOrderFulfillments();
+			for(var orderFulfillment in transientOrderFulfillments){
+				getService('ShippingService').updateOrderFulfillmentShippingMethodOptions(orderFulfillment, false);
+			}
 		
 			if(hasInfoForFulfillment){	
 				request[orderTemplateOrderDetailsKey]['fulfillmentTotal'] = transientOrder.getFulfillmentTotal(); 
@@ -596,7 +601,7 @@ component extends="Slatwall.model.service.OrderService" {
 
         } else if (arguments.systemCode == 'ostClosed') {
 			
-			if(arguments.order.getOrderType().getSystemCode() == 'otSalesOrder') {
+			if(arguments.order.getOrderType().getSystemCode() == 'otSalesOrder' || arguments.order.getOrderType().getSystemCode() == 'otReplacementOrder') {
 				// closed(shipped) orders
 	            arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="5"));
 			} else {
@@ -655,7 +660,7 @@ component extends="Slatwall.model.service.OrderService" {
         
         if (arguments.systemCode != "ostNotPlaced" && !isNull(currentOrderStatusType) && currentOrderStatusType.getTypeID() != arguments.order.getOrderStatusType().getTypeID()){
             // create status change history.
-            orderStatusHistory = this.newOrderStatusHistory();
+            var orderStatusHistory = this.newOrderStatusHistory();
             orderStatusHistory.setOrder(arguments.order);
             orderStatusHistory.setChangeDateTime(now());
 			orderStatusHistory.setOrderStatusHistoryType(arguments.order.getOrderStatusType());
@@ -697,12 +702,12 @@ component extends="Slatwall.model.service.OrderService" {
 		
 		//Order promotion data
 		var orderPromotionList = getHibachiScope().getService('promotionService').getPromotionAppliedCollectionList();
-		orderPromotionList.addDisplayProperties('discountAmount,currencyCode,promotion.promotionName')
+		orderPromotionList.addDisplayProperties('discountAmount,currencyCode,promotion.promotionName');
 		orderPromotionList.addFilter( 'order.orderID', arguments.data.orderID, '=');
 		
 		//Tracking info
 		var orderDeliveriesList = this.getOrderDeliveryCollectionList();
-		orderDeliveriesList.setDisplayProperties('trackingUrl')
+		orderDeliveriesList.setDisplayProperties('trackingUrl');
 		orderDeliveriesList.addFilter( 'order.orderID', arguments.data.orderID, '=');
 		
 		var orderPayments = orderPaymentList.getPageRecords();
@@ -1079,7 +1084,7 @@ component extends="Slatwall.model.service.OrderService" {
 		if(listFindNoCase("oitSale,oitDeposit",arguments.processObject.getOrderItemTypeSystemCode())) {
 
 			// First See if we can use an existing order fulfillment
-			var orderFulfillment = processObject.getOrderFulfillment();
+			var orderFulfillment = arguments.processObject.getOrderFulfillment();
 			// Next if orderFulfillment is still null, then we can check the order to see if there is already an orderFulfillment
 			if(isNull(orderFulfillment) && ( isNull(processObject.getOrderFulfillmentID()) || processObject.getOrderFulfillmentID() != 'new' ) && arrayLen(arguments.order.getOrderFulfillments())) {
 				for(var f=1; f<=arrayLen(arguments.order.getOrderFulfillments()); f++) {
@@ -1132,7 +1137,7 @@ component extends="Slatwall.model.service.OrderService" {
 						} else {
 
 							// Check to see if the new shipping address passes full validation.
-							fullAddressErrors = getHibachiValidationService().validate( arguments.processObject.getShippingAddress(), 'full', false );
+							var fullAddressErrors = getHibachiValidationService().validate( arguments.processObject.getShippingAddress(), 'full', false );
 
 							if(!fullAddressErrors.hasErrors()) {
 								// First we need to persist the address from the processObject
@@ -1419,7 +1424,7 @@ component extends="Slatwall.model.service.OrderService" {
 						// This process should really be done using a process like processOrderItem_AddGiftRecipient(..., {orderItemGiftRecipient=...}, 'create') so a new process object for each
 						// Because same instance of a process object will be used for entire life of the order object
 						// TODO: Refactor later
-						addOrderItemGiftRecipientProcessObject = arguments.order.getProcessObject('addOrderItemGiftRecipient', {
+						var addOrderItemGiftRecipientProcessObject = arguments.order.getProcessObject('addOrderItemGiftRecipient', {
 							orderItem = orderItem,
 							recipient = orderItemGiftRecipient
 						});
@@ -1607,16 +1612,16 @@ component extends="Slatwall.model.service.OrderService" {
 			 * for total instead of all orders.
 			 **/
 			
-			logHibachi("Error encountered on order.motMPEnrollment(#arguments.Order.getOrderID()#), order-total: #arguments.order.getTotal()#, Errors: #SerializeJson(arguments.order.getErrors())#");
+			logHibachi("Error encountered on order.motMPEnrollment(#arguments.order.getOrderID()#), order-total: #arguments.order.getTotal()#, Errors: #SerializeJson(arguments.order.getErrors())#");
 			
-			//clear previous errors, and temporarly saving order for calculations
+			//clear previous errors, and temporarily saving order for calculations
 			var oldErrors = StructCopy(arguments.order.getErrors());
 			arguments.order.clearHibachiErrors();
 			getHibachiScope().setORMHasErrors( false );
 			getHibachiScope().flushORMSession(); 
 
 			/**
-			 * If We dont reload the ORN throws
+			 * If We don't reload the ORN throws
 			 * Cannot delete or update a parent row: a foreign key constraint fails 
 			 * (
 			 *		`monat`.`sworderitemskubundle`, CONSTRAINT `FKD0CB5F2244B9A827` FOREIGN KEY 
@@ -1641,12 +1646,12 @@ component extends="Slatwall.model.service.OrderService" {
 				foundOrderItem = this.saveOrderItem( orderItem=foundOrderItem, updateOrderAmounts=false , updateCalculatedProperties=true);
 			}
 			
-			//just in case, if remve/upadte order-item fails
+			//just in case, if remove/update order-item fails
 			logHibachi("Errors on Order after reverting changes : #SerializeJson(arguments.order.getErrors())# order-total: #arguments.order.getTotal()#");
 			arguments.order = this.saveOrder( order=arguments.order, updateOrderAmounts=true, updateShippingMethodOptions=arguments.processObject.getUpdateShippingMethodOptionsFlag() );
-			arguments.order.updateCalculatedProperties(runAgain=true); //re-calculate-everythign
+			arguments.order.updateCalculatedProperties(runAgain=true); //re-calculate-everything
 			
-			logHibachi("Flushing after re-saving the order(#arguments.Order.getOrderID()#), order-total: #arguments.order.getTotal()#");
+			logHibachi("Flushing after re-saving the order(#arguments.order.getOrderID()#), order-total: #arguments.order.getTotal()#");
 			//we gotta flush here to persist current changes, before putting-back the old errors
 			getHibachiScope().flushORMSession();
 			
@@ -1736,7 +1741,7 @@ component extends="Slatwall.model.service.OrderService" {
 				orderFulfillment = this.saveOrderFulfillment( orderFulfillment=orderFulfillment, updateOrderAmounts=false, updateShippingMethodOptions=false );
 
 				if (orderFulfillment.hasErrors()){
-					//propegate to parent, because we couldn't create the fulfillment this order is not going to be placed
+					//propagate to parent, because we couldn't create the fulfillment this order is not going to be placed
 					arguments.order.addErrors(orderFulfillment.getErrors());	
 					return arguments.order; 
 				}	
@@ -1806,20 +1811,6 @@ component extends="Slatwall.model.service.OrderService" {
 		return arguments.order;
 	}
 	
-	public any function getMarketPartnerEnrollmentOrderDateTime(required any account){
-		var orderItemCollectionList = this.getOrderItemCollectionList();
-		orderItemCollectionList.addFilter("order.orderStatusType.systemCode", "ostNotPlaced", "!=");
-		orderItemCollectionList.addFilter("order.account.accountID", arguments.account.getAccountID());
-		orderItemCollectionList.addFilter("order.monatOrderType.typeCode","motMPEnrollment");
-		orderItemCollectionList.setDisplayProperties("order.orderOpenDateTime");// Date placed 
-		orderItemCollectionList.setPageRecordsShow(1);
-		var records = orderItemCollectionList.getRecords();
-		
-		if (arrayLen(records)){
-		    return records[1]['order_orderOpenDateTime'];
-		}
-	}
-	
 	public any function getOFYProductsForOrder(required any order ){
 		var freeRewardSkuCollection = getSkuService().getSkuCollectionList();
 		var freeRewardSkuIDs = getPromotionService().getQualifiedFreePromotionRewardSkuIDs(arguments.order);
@@ -1831,7 +1822,7 @@ component extends="Slatwall.model.service.OrderService" {
 	public any function getPurchasePlusInformationForOrderItems(required string orderID=''){
 		if(!len(arguments.orderID)) return [];
 		var orderItemCL = this.getOrderItemCollectionList();
-		orderItemCL.addFilter('order.orderID', arguments.orderID)
+		orderItemCL.addFilter('order.orderID', arguments.orderID);
 		orderItemCL.addDisplayProperty('orderItemID');
 		orderItemCL = orderItemCL.getRecords();
 		var orderItemIDs = ''

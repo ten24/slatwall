@@ -297,13 +297,14 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			}
 			variables.refundOrderItemList = refundOrderItemList;
 		}
+		
 		return variables.refundOrderItemList;
 	}
 	
 	public boolean function orderItemsWithinOriginalQuantity(){
 		
 		if ( !isnull(this.getOrderItems()) ){
-			
+		
 			for (var orderItem in this.getOrderItems()){
 
 				var originalItem = getService("OrderService").getOrderItem(orderItem.referencedOrderItem.orderItemID);

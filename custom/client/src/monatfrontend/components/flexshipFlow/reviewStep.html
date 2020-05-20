@@ -3,9 +3,10 @@
 			<div class="row no-gutters align-items-start">
 				<div class="col-12 col-md-7">
 					<div class="cart-products review-products">
-						
 						<h2 sw-rbKey="'frontend.flexship.reviewAndCreate'"></h2>
-	
+						<div class="border-bottom my-3">
+							<p class="mb-1 todays-order-text border-0" sw-rbkey="'frontend.enrollment.yourNextFlexshipOrder'"></p>
+						</div>
 						<ul>
 							<li>
 								<h6 class="title-sm">
@@ -132,7 +133,6 @@
 									>
 										<div class="applied-promo">
 											<span class="title-sm">{{appliedPromoCode.promotionCode}}</span>
-		
 											<div class="applied-promo__close" ng-click="reviewStep.removePromotionCode(appliedPromoCode.promotionCodeID)" ng-show="!reviewStep.removePromotionCodeIsLoading">
 												<i class="fal fa-times"></i>
 											</div>

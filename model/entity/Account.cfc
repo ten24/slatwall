@@ -156,6 +156,9 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	 	//CUSTOM PROPERTIES BEGIN
 property name="accountType" ormtype="string" hb_formFieldType="select";
 	property name="enrollmentDate" ormtype="timestamp";
+	property name="vipUpgradeDateTime" ormtype="timestamp";
+	property name="mpUpgradeDateTime" ormtype="timestamp";
+	
 	property name="sponsorIDNumber" ormtype="string";
 	property name="lastSyncedDateTime" ormtype="timestamp";
 	property name="calculatedSuccessfulFlexshipOrdersThisYearCount" ormtype="integer";
@@ -190,6 +193,8 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
  property name="gender" ormtype="string" hb_formFieldType="select";
  property name="accountNumber" ormtype="string";
  property name="careerTitle" ormtype="string" hb_formFieldType="select";
+ property name="rank" ormtype="string";
+ property name="uplineMarketPartnerNumber" ormtype="string";
  property name="referType" ormtype="string" hb_formFieldType="select";
  property name="profileImage" hb_fileUpload="true" hb_fileAcceptMIMEType="*/*" ormtype="string" hb_formFieldType="file";
  property name="terminationDate" ormtype="timestamp" hb_formatType="date";

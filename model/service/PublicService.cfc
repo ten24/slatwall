@@ -733,6 +733,7 @@ component  accessors="true" output="false"
       for(var fulfillment in orderFulfillments){
         if(fulfillment.getOrderFulfillmentID() == data.fulfillmentID){
           var orderFulfillment = fulfillment;
+          break;
         }
       }
 
@@ -750,29 +751,45 @@ component  accessors="true" output="false"
             entityReload(orderFulfillment);
             getHibachiScope().addActionResult('public:cart.addEmailFulfillmentAddress', orderFulfillment.hasErrors());
         }
+      }else{
+          getHibachiScope().addActionResult('public:cart.addEmailFulfillmentAddress', true);
       }
     }
 
     /** Set store pickup location */
-    public void function addPickupFulfillmentLocation(required data){
-      var locationID = data.value;
+    public void function addPickupFulfillmentLocation(required struct data){
+      param name="arguments.data.value" default="";
+      
+      if(!len(arguments.data.value)){
+          getHibachiScope().addActionResult('public:cart.addPickupFulfillmentLocation', true);
+          return;
+      }
+      var location = getService('LocationService').getLocation(arguments.data.value);
+      
+      if(isNull(location)){
+          getHibachiScope().addActionResult('public:cart.addPickupFulfillmentLocation', true);
+          return;
+      }
       var order = getHibachiScope().getCart();
       var orderFulfillments = order.getOrderFulfillments();
 
       for(var fulfillment in orderFulfillments){
-        if(!isNull(data.fulfillmentID)){
-          if(fulfillment.getOrderFulfillmentID() == data.fulfillmentID){
+        if(!isNull(arguments.data.fulfillmentID)){
+          if(fulfillment.getOrderFulfillmentID() == arguments.data.fulfillmentID){
             var orderFulfillment = fulfillment;
+            break;
           }
         }else if(fulfillment.getFulfillmentMethod().getFulfillmentMethodType() == 'pickup'){
           var orderFulfillment = fulfillment;
+          break;
         }
       }
 
       if(!isNull(orderFulfillment) && !orderFulfillment.hasErrors()){
-        orderFulfillment.setPickupLocation(getService('LocationService').getLocation(locationID));
+        orderFulfillment.setPickupLocation(location);
+        orderFulfillment = getService("OrderService").saveOrderFulfillment(orderFulfillment);
         getService("OrderService").saveOrder(order);
-        getDao('hibachiDao').flushOrmSession();
+        getDAO('HibachiDAO').flushOrmSession();
         getHibachiScope().addActionResult('public:cart.addPickupFulfillmentLocation', order.hasErrors());
       }else{
         if(!isNull(orderFulfillment)){
@@ -782,40 +799,62 @@ component  accessors="true" output="false"
       }
     }
     
-    /** Sets the shipping method to an order shippingMethodID */
-    public void function addShippingMethodUsingShippingMethodID(required data){
-        var shippingMethodId = data.shippingMethodID;
-        var orderFulfillmentWithShippingMethodOptions = 1;
-        if (!isNull(data.orderFulfillmentWithShippingMethodOptions)){
-          orderFulfillmentWithShippingMethodOptions = data.orderFulfillmentWithShippingMethodOptions + 1; //from js to cf
-        }
-        if (isNull(shippingMethodId)){
+   /** Sets the shipping method to an order shippingMethodID */
+    public void function addShippingMethodUsingShippingMethodID(required struct data){
+        param name="arguments.data.shippingMethodID" default="";
+        
+        if(!len(arguments.data.shippingMethodID)){
+            getHibachiScope().addActionResult( "public:cart.addShippingMethodUsingShippingMethodID", true);  
             return;
         }
-        var shippingMethod = getService('ShippingService').getShippingMethod(shippingMethodId);
         
-        if (!isNull(shippingMethod) && !shippingMethod.hasErrors()){
-            var order = getHibachiScope().cart();
-
-            var orderFulfillments = order.getOrderFulfillments();
-            if (!isNull(data.fulfillmentID)){
-              for(var fulfillment in orderFulfillments){
+        if(structKeyExists(arguments.data, 'orderFulfillmentWithShippingMethodOptions')){
+            arguments.data.orderFulfillmentWithShippingMethodOptions += 1;//from js to cf
+        }else{
+            arguments.data.orderFulfillmentWithShippingMethodOptions = 1;
+        }
+        
+        var shippingMethod = getService('ShippingService').getShippingMethod(arguments.data.shippingMethodID);
+        
+        if(isNull(shippingMethod)){
+            getHibachiScope().addActionResult( "public:cart.addShippingMethodUsingShippingMethodID", true);
+            return;
+        }
+        
+        if (shippingMethod.hasErrors()){
+            getHibachiScope().addActionResult( "public:cart.addShippingMethodUsingShippingMethodID", shippingMethod.hasErrors());
+            return;
+        }
+        
+        var order = getHibachiScope().cart();
+        var orderFulfillments = order.getOrderFulfillments();
+        
+        if(structKeyExists(arguments.data, 'fulfillmentID')){
+            //TODO: Refactor this loop
+            for(var fulfillment in orderFulfillments){
                 if(fulfillment.getOrderFulfillmentID() == data.fulfillmentID){
-                  var orderFulfillment = fulfillment;
+                    var orderFulfillment = fulfillment;
+                    break;
                 }
-              }
-            }else{
-            	var orderFulfillment = order.getOrderFulfillments()[orderFulfillmentWithShippingMethodOptions];
             }
             orderFulfillment.setShippingMethod(shippingMethod);
             getService("OrderService").saveOrder(order); 
             getHibachiScope().flushOrmSession();   
             getHibachiScope().addActionResult( "public:cart.addShippingMethodUsingShippingMethodID", shippingMethod.hasErrors());          
         }else{
-            this.addErrors(arguments.data, shippingMethod.getErrors()); //add the basic errors
-            getHibachiScope().addActionResult( "public:cart.addShippingMethodUsingShippingMethodID", shippingMethod.hasErrors());
+             getHibachiScope().addActionResult( "public:cart.addShippingMethodUsingShippingMethodID", true);
+            return;
         }
         
+        orderFulfillment.setShippingMethod(shippingMethod);
+        orderFulfillment = getService("OrderService").saveOrderFulfillment(orderFulfillment);
+        if(orderFulfillment.hasErrors()){
+            getHibachiScope().addActionResult( "public:cart.addShippingMethodUsingShippingMethodID", orderFulfillment.hasErrors());
+            return;
+        }
+        order = getService("OrderService").saveOrder(order); 
+        getDao('hibachiDao').flushOrmSession();
+        getHibachiScope().addActionResult( "public:cart.addShippingMethodUsingShippingMethodID", order.hasErrors());          
     }
     
     public any function addBillingAddressUsingAccountAddress(required data){

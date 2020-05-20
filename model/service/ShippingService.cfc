@@ -261,11 +261,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			useAddressZone = true;
 		}
 		// Check using address
-		if(!useAddressZone && isShippingMethodRateUsable(arguments.shippingMethodRate, arguments.orderFulfillment.getShippingAddress(), priceGroups)) {
+		if(!useAddressZone && isShippingMethodRateUsable(arguments.shippingMethodRate, arguments.orderFulfillment, 'shippingAddress', priceGroups)) {
 			return arguments.shippingMethodRate.getShippingIntegration();
 		}
 		// Check using address zone
-		if(useAddressZone && isShippingMethodRateUsable(arguments.shippingMethodRate, orderFulfillment.getAddressZone(), priceGroups)) {
+		if(useAddressZone && isShippingMethodRateUsable(arguments.shippingMethodRate, arguments.orderFulfillment, 'addressZone', priceGroups)) {
 			return arguments.shippingMethodRate.getShippingIntegration();
 		}
 	}	
@@ -402,12 +402,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					useAddressZone = true;
 				}
 				// Check using address
-				if(!useAddressZone && isShippingMethodRateUsable(shippingMethodRate, arguments.orderFulfillment.getShippingAddress(), priceGroups)) {
+				if(!useAddressZone && isShippingMethodRateUsable(shippingMethodRate, arguments.orderFulfillment, 'shippingAddress', priceGroups)) {
 						var qualifiedRateOption = newQualifiedRateOption(shippingMethodRate, chargeAmount);
 						arrayAppend(qualifiedRateOptions, qualifiedRateOption);
 				}
 				// Check using address zone
-				if(useAddressZone && isShippingMethodRateUsable(shippingMethodRate, orderFulfillment.getAddressZone(), priceGroups)) {
+				if(useAddressZone && isShippingMethodRateUsable(shippingMethodRate, arguments.orderFulfillment, 'addressZone', priceGroups)) {
 						var qualifiedRateOption = newQualifiedRateOption(shippingMethodRate, chargeAmount);
 						arrayAppend(qualifiedRateOptions, qualifiedRateOption);
 				}
@@ -454,7 +454,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						useAddressZone = true;
 					}
 					// Check using address
-					if(!useAddressZone && isShippingMethodRateUsable(shippingMethodRate, arguments.orderFulfillment.getShippingAddress(), priceGroups)) {
+					if(!useAddressZone && isShippingMethodRateUsable(shippingMethodRate, arguments.orderFulfillment, 'shippingAddress', priceGroups)) {
 							var qualifiedRateOption = newQualifiedRateOption(
 							shippingMethodRate,
 							nullReplace(shippingMethodRate.getDefaultAmount(), 0),
@@ -462,7 +462,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							arrayAppend(qualifiedRateOptions, qualifiedRateOption);
 					}
 					// Check using address zone
-					if(useAddressZone && isShippingMethodRateUsable(shippingMethodRate, orderFulfillment.getAddressZone(), priceGroups)) {
+					if(useAddressZone && isShippingMethodRateUsable(shippingMethodRate, arguments.orderFulfillment, 'addressZone', priceGroups)) {
 							var qualifiedRateOption = newQualifiedRateOption(
 							shippingMethodRate,
 							nullReplace(shippingMethodRate.getDefaultAmount(), 0),
@@ -749,14 +749,20 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return true;
 	}
 
-	public boolean function isShippingMethodRateUsable(required any shippingMethodRate, required any shipToAddressOrAddressZone, any accountPriceGroups) {
+	public boolean function isShippingMethodRateUsable(required any shippingMethodRate, required any orderFulfillment, required string lookupType, any accountPriceGroups) {
+		
+		if(!shippingMethodRate.requirementsCollectionHasOrderFulfillmentByOrderFulfillmentID(arguments.orderFulfillment.getOrderFulfillmentID())){
+			return false;
+		}
+		
 		var useAddressZoneLookup = false;
 		
 		//Check if we are to use an Address Zone to calculate the rate instead of a the shipping address
-        if (shipToAddressOrAddressZone.getEntityName() == "SlatwallAddressZone") {
+        if (arguments.lookupType == 'addressZone') {
         	useAddressZoneLookup = true;
-        }else if(shipToAddressOrAddressZone.getEntityName() == "SlatwallAddress"){
-        	useAddressZoneLookup = false ;
+        	var addressZone = arguments.orderFulfillment.getAddressZone();
+        }else if(arguments.lookupType == 'shippingAddress'){
+        	var shippingAddress = arguments.orderFulfillment.getShippingAddress();
         }
         
         // *** Make sure that the shipping method rates price-group is one that the user has access to on account.
@@ -784,11 +790,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
         }
         
         // Make sure that the addresszones match
-        if (useAddressZoneLookup == true && !isNull(arguments.shipToAddressOrAddressZone) && !isNull(arguments.shipToAddressOrAddressZone.getAddressZoneCode()) && arguments.shipToAddressOrAddressZone.getAddressZoneCode() != arguments.shippingMethodRate.getAddressZone().getAddressZoneCode()){
+        if (useAddressZoneLookup == true && !isNull(addressZone) && !isNull(addressZone.getAddressZoneCode()) && addressZone.getAddressZoneCode() != arguments.shippingMethodRate.getAddressZone().getAddressZoneCode()){
         	return false;
         	
         // Make sure that the address is in the address zone
-        } else if(!useAddressZoneLookup && !isNull(arguments.shippingMethodRate.getAddressZone()) && !getAddressService().isAddressInZone(arguments.shipToAddressOrAddressZone, arguments.shippingMethodRate.getAddressZone())) {
+        } else if(!useAddressZoneLookup && !isNull(arguments.shippingMethodRate.getAddressZone()) && !getAddressService().isAddressInZone(shippingAddress, arguments.shippingMethodRate.getAddressZone())) {
 			return false;
 		}
 		
