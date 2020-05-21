@@ -90,7 +90,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 	// The main entry point to process credit card (Slatwall convention)
 	public any function processCreditCard(required any requestBean) {
 		var responseBean = getTransient('CreditCardTransactionResponseBean');
-		
+
 		// Set default currency
 		if (isNull(arguments.requestBean.getTransactionCurrencyCode()) || !len(arguments.requestBean.getTransactionCurrencyCode())) {
 			arguments.requestBean.setTransactionCurrencyCode(setting(settingName='skuCurrency', requestBean=arguments.requestBean));
@@ -111,24 +111,12 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 		} else if (arguments.requestBean.getTransactionType() == "chargePreAuthorization") {
 			sendRequestToChargePreAuthorization(arguments.requestBean, responseBean);
 		} else if (arguments.requestBean.getTransactionType() == "credit") {
-			var originalTransactionHasSettled = getOriginalTransactionHasSettled(arguments.requestBean);
-			if(originalTransactionHasSettled){
-				sendRequestToCredit(arguments.requestBean, responseBean);
-			}else {
-				if(!isNull(arguments.requestBean.getOrderPayment()) && !isNull(arguments.requestBean.getOrderPayment().getReferencedOrderPayment())){
-					var originalAmountReceived = arguments.requestBean.getOrderPayment().getReferencedOrderPayment().getAmountReceived();
-					if(originalAmountReceived == arguments.requestBean.getTransactionAmount()){
-						sendRequestToVoid(arguments.requestBean, responseBean);
-					}else{
-						responseBean.addError("Processing Error", rbKey('validate.orderPayment.partialVoid'));
-					}
-				}
-			}
+			sendRequestToCredit(arguments.requestBean, responseBean);
 		} else {
 			responseBean.addError("Processing error", "Nexio Payment Integration has not been implemented to handle #arguments.requestBean.getTransactionType()#");
 			// throw("Nexio Payment Integration has not been implemented to handle #arguments.requestBean.getTransactionType()#");
 		}
-		
+
 		return responseBean;
 	}
 	
@@ -597,11 +585,20 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			// Request Data
 			var requestData = {
 				'data' = {
-					'amount' = LSParseNumber(arguments.requestBean.getTransactionAmount())
+					'amount' = LSParseNumber(arguments.requestBean.getTransactionAmount()),
+					'currency': arguments.requestBean.getTransactionCurrencyCode()
 		    	},
-		    	'id' = arguments.requestBean.getOriginalChargeProviderTransactionID()
+		    	'tokenex': {
+					'token': arguments.requestBean.getProviderToken()
+				},
+			    "card" = {
+			    	"expirationMonth" = arguments.requestBean.getExpirationMonth(),
+			    	"expirationYear" = arguments.requestBean.getExpirationYear()
+			    },
+			    "processingOptions" = {
+				    'merchantID' = setting(settingName='merchantIDTest', requestBean=arguments.requestBean)
+			    }
 			}
-
 			responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'credit', requestData);
 			
 			// Response Data
@@ -693,7 +690,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 		} else if (arguments.transactionName == 'chargePreAuthorization') {
 			apiUrl &= '/pay/v3/capture';
 		} else if (arguments.transactionName == 'credit') {
-			apiUrl &= '/pay/v3/refund';
+			apiUrl &= '/pay/v3/credit';
 		} else if (arguments.transactionName == 'void') {
 			apiUrl &= '/pay/v3/void';
 		} else if(arguments.transactionName == 'transactionStatus'){
@@ -701,7 +698,6 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 		} else if(arguments.transactionName == "cardView") {
 			apiUrl &= '/pay/v3/vault/card/#arguments.requestBean.getProviderToken()#';
 		}
-		
 		var basicAuthCredentialsBase64 = toBase64('#username#:#password#');
 		var httpRequest = new http();
 		httpRequest.setUrl(apiUrl);
@@ -718,7 +714,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			httpRequest.addParam(type="header", name="Content-Type", value='application/json');
 			httpRequest.addParam(type="body", value=serializeJSON(arguments.data));
 		}
-		
+
 		// ---> Comment Out:
 		// var logPath = expandPath('/Slatwall/integrationServices/nexio/log');
 		// if (!directoryExists(logPath)){
@@ -746,7 +742,6 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			var responseData = {};
 			
 			responseData = deserializeJSON(httpResponse.fileContent);
-			
 			return responseData;
 		} else {
 			var responseData = {};
@@ -799,9 +794,11 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			// Server response successful
 			} else {
 				arguments.responseBean.setStatusCode(httpResponse.status_code);
-	
 				// Convert JSON response
 				responseData = deserializeJSON(httpResponse.fileContent);
+				if(structKeyExists(responseData, 'gatewayResponse') && structKeyExists(responseData['gatewayResponse'], 'refNumber')){
+					arguments.responseBean.setReferenceNumber(responseData.gatewayResponse.refNumber)
+				}
 				
 				// ---> Comment Out:
 				// fileWrite('#logPath#/#timeSufix#_AVS_response.json',httpResponse.fileContent);

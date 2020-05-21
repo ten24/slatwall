@@ -336,6 +336,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// ===================== START: Process Methods ===========================
 
 	public any function processPaymentTransaction_voidTransaction(required any paymentTransaction, required struct data) {
+
 		var originalPaymentTransaction = arguments.paymentTransaction;
 		
 		// Create a new payment transaction
@@ -463,11 +464,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							logHibachi("#integration.getIntegrationName()# Payment Integration Transaction Request - Started (#arguments.data.transactionType#)", true);
 
 							var response = integrationPaymentCFC.invokeMethod("process#arguments.paymentTransaction.getPayment().getPaymentMethod().getPaymentMethodType()#", {requestBean=requestBean});
-
 							logHibachi("#integration.getIntegrationName()# Payment Integration Transaction Request - Finished (#arguments.data.transactionType#)", true);
 
 							// Populate the Credit Card Transaction with the details of this process
-
+							
+							//payment ref number 
+							if(!isNull(response.getReferenceNumber())){
+								arguments.paymentTransaction.setReferenceNumber(response.getReferenceNumber());	
+							}
+							
 							// messages
 							arguments.paymentTransaction.setMessage(serializeJSON(response.getMessages()));
 
