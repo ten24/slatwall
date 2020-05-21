@@ -37,18 +37,19 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
     }
     
     public void function afterAccountUpgradeSuccess(any slatwallScope, any entity, any eventData) {
-        // afterAccountUpgradeSuccess event passes the Order as the entity
-		var orderTemplatesCollection = arguments.entity.getAccount().getOrderTemplateCollectionList();
-		orderTemplatesCollection.setDisplayProperties('orderTemplateID');
-		orderTemplatesCollection.addFilter('orderTemplateStatusType.systemCode', 'otstActive');
-		var orderTemplates = orderTemplatesCollection.getRecords();
+        //TODO: Find a better solution
+        
+// 		var orderTemplatesCollection = arguments.entity.getOrderTemplateCollectionList();
+// 		orderTemplatesCollection.setDisplayProperties('orderTemplateID');
+// 		orderTemplatesCollection.addFilter('orderTemplateStatusType.systemCode', 'otstActive');
+// 		var orderTemplates = orderTemplatesCollection.getRecords();
 
-		for(var orderTemplateID in orderTemplates){
-		    var orderTemplate = arguments.slatwallScope.getService('orderService').getOrderTemplate(orderTemplateID);
-		    if(!isNull(orderTemplate)){
-		    	arguments.slatwallScope.getService('orderService').processOrderTemplate(orderTemplate, {}, 'updateCalculatedProperties');
-		    }
-		}
+// 		for(var orderTemplateID in orderTemplates){
+// 		    var orderTemplate = arguments.slatwallScope.getService('orderService').getOrderTemplate(orderTemplateID);
+// 		    if(!isNull(orderTemplate)){
+// 		    	getOrderService().processOrderTemplate(orderTemplate, {}, 'updateCalculatedProperties');
+// 		    }
+// 		}
 	}
     
     public void function afterAccountProcess_loginSuccess(required any slatwallScope, required any account, required any data ={}) {
