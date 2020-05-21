@@ -72,6 +72,9 @@ class ReviewStepController {
 		});
     }
     
+    public backToListing(){
+		return this.monatService.redirectToProperSite("/my-account/flexships");
+    }
 }
 
 class ReviewStep {

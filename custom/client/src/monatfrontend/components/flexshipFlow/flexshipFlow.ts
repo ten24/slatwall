@@ -105,10 +105,7 @@ class FlexshipFlowController {
 			case FlexshipSteps.SHOP:
 				return this.setStepAndUpdateProgress(FlexshipSteps.FREQUENCY)
 			case FlexshipSteps.FREQUENCY:
-				return this.setStepAndUpdateProgress(
-					//TODO: we still need to handle the date logic
-					this.orderTemplateService.mostRecentOrderTemplate.qualifiesForOFYProducts ? FlexshipSteps.OFY : FlexshipSteps.CHECKOUT
-				);
+				return this.setStepAndUpdateProgress(nextFrequencyStep);
 			case FlexshipSteps.OFY:
 				return this.setStepAndUpdateProgress(FlexshipSteps.CHECKOUT);
 			case FlexshipSteps.CHECKOUT: 

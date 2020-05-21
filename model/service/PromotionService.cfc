@@ -1642,6 +1642,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		// Duplicate promotion period and set new values from process object
 		var newPromotionPeriod = this.newPromotionPeriod();
+		var newMessages = [];
 		newPromotionPeriod.setPromotionPeriodName(arguments.processObject.getPromotionPeriodName());
 		if(!isNull(arguments.processObject.getStartDateTime()) && len(arguments.processObject.getStartDateTime())) {
 			newPromotionPeriod.setStartDateTime(arguments.processObject.getStartDateTime());
@@ -1733,7 +1734,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				}
 			}
 			if(arrayLen(promotionReward.getExcludedSkus())) {
-				for(var excludedSkus in promotionReward.getExcludedSkuss()) {
+				for(var excludedSkus in promotionReward.getExcludedSkus()) {
 					newPromotionReward.addExcludedSkus(excludedSkus);
 				}
 			}
@@ -1747,8 +1748,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					newPromotionReward.addExcludedProductType(excludedProductType);
 				}
 			}
+			
+			if(!isNull(promotionReward.getExcludedSkusCollectionConfig())) newPromotionReward.setExcludedSkusCollectionConfig(newPromotionReward.getPromotionRewardID(), promotionReward.getExcludedSkusCollectionConfig());
+			if(!isNull(promotionReward.getIncludedSkusCollectionConfig())) newPromotionReward.setIncludedSkusCollectionConfig(promotionReward.getIncludedSkusCollectionConfig());
+		
 			newPromotionPeriod.addPromotionReward(newPromotionReward);
 		}
+
 		// Duplicate promotionQualifiers
 		for(var promotionQualifier in arguments.promotionPeriod.getPromotionQualifiers()){
 			var newpromotionQualifier = this.newpromotionQualifier();
@@ -1829,7 +1835,43 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					newpromotionQualifier.addExcludedProductType(excludedProductType);
 				}
 			}
+			
+			if(arrayLen(promotionQualifier.getPromotionQualifierMessages())) {
+				for(var originalMessage in promotionQualifier.getPromotionQualifierMessages()) {
+					var newMessage = this.newPromotionQualifierMessage();
+					newMessage.setMessage(originalMessage.getMessage());
+					newMessage.setMessageRequirementsCollectionConfig(originalMessage.getMessageRequirementsCollectionConfig());
+					newMessage.setPriority(originalMessage.getPriority());
+					newMessage.setQualifierProgressTemplate(originalMessage.getQualifierProgressTemplate());
+					newMessage.setPromotionQualifier(newpromotionQualifier);
+					arrayAppend(newMessages, newMessage);
+				}
+			}			
+			if(!isNull(promotionQualifier.getIncludedOrdersCollectionConfig())) newpromotionQualifier.setIncludedOrdersCollectionConfig(promotionQualifier.getIncludedOrdersCollectionConfig());
+			if(!isNull(promotionQualifier.getExcludedOrdersCollectionConfig())) newpromotionQualifier.setExcludedOrdersCollectionConfig(promotionQualifier.getExcludedOrdersCollectionConfig());
+			if(!isNull(promotionQualifier.getExcludedSkusCollectionConfig())) newpromotionQualifier.setExcludedSkusCollectionConfig(promotionQualifier.getExcludedSkusCollectionConfig());
+			if(!isNull(promotionQualifier.getIncludedSkusCollectionConfig())) newpromotionQualifier.setIncludedSkusCollectionConfig(promotionQualifier.getIncludedSkusCollectionConfig());
 			newPromotionPeriod.addPromotionQualifier(newpromotionQualifier);
+		}
+		
+		if(!newPromotionPeriod.hasErrors()){
+			this.savePromotionPeriod(newPromotionPeriod);
+			for(var message in newMessages){
+				this.savePromotionQualifierMessage(message);
+			}
+			getHibachiScope().flushOrmSession();
+			var copyFromList = [];
+			var index = 1;
+			
+			for(var reward in arguments.promotionPeriod.getPromotionRewards()){
+				arrayAppend(copyFromList, reward.getPromotionRewardID());
+			}
+
+			for(var reward in newPromotionPeriod.getPromotionRewards()){
+				getPromotionDAO().cloneAndInsertIncludedStackableRewards(copyFromID = copyFromList[index], newPromoRewardID = reward.getPromotionRewardID());
+				index++;
+			}
+			
 		}
 
 		return newPromotionPeriod;

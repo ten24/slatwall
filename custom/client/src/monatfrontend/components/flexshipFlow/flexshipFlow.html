@@ -107,7 +107,7 @@
 			
 			<!--OFY Icon -->
 			<div 
-				ng-if="flexshipFlow.isOFYEligible"
+				ng-if="flexshipFlow.currentStep == flexshipFlow.FlexshipSteps.OFY"
 				class="col"
 				ng-click="flexshipFlow.goToStep(flexshipFlow.FlexshipSteps.OFY)"
 				ng-style="{ 
