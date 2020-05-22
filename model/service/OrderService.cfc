@@ -1919,6 +1919,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				);
 		}
 		
+		if( isNull(orderTemplateItemPrice) ){
+			arguments.order.addError('addOrderItem', 'Pricing info not available for skuCode: #sku.getSkuCode()#');
+			getHibachiScope().setORMHasErrors(true);
+			return arguments.order;
+		}
 		processOrderAddOrderItem.setSku(sku);
 		processOrderAddOrderItem.setPrice(orderTemplateItemPrice);
 		processOrderAddOrderItem.setQuantity(arguments.orderTemplateItemStruct['quantity']);
