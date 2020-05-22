@@ -88,8 +88,7 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 			httpRequest.addParam(type='formfield',name='#key#',value='#requestData[key]#');
 		}
 		
-		var rawRequest = httpRequest.send().getPrefix();
-		var response = deserializeJson(rawRequest.fileContent);
+		var response = getService('hibachiUtilityService').getHttpResponse(httpRequest);
 		
 		// if(structKeyExists(arguments, 'jsessionid')){
 		// 	writedump(requestData); 
@@ -222,7 +221,7 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 				filter = 'orderTemplateID = :baseID';
 				params['baseID'] = { value=arguments.entity.getOrderTemplateID(), cfsqltype='cf_sql_varchar'};
 				
-				iceResponse = deleteAutoship(arguments.data.DTSArguments);
+				iceResponse = cancelAutoship(arguments.data.DTSArguments);
 				break;
 				
 			default:
@@ -313,6 +312,10 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 		return postRequest('ICEAutoship.create', arguments.DTSArguments, getSessionToken());
 	}
 	
+	public struct function cancelAutoship(required struct DTSArguments){
+		return postRequest('ICEAutoship.cancel', arguments.DTSArguments, getSessionToken());
+	}
+	
 	public struct function updateAutoship(required struct DTSArguments){
 		return postRequest('ICEAutoship.update', arguments.DTSArguments, getSessionToken());
 	}
@@ -335,6 +338,13 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 		return arguments.account;
 	}
 	
+	public any function retrySyncPendingOrderTemplates(required any orderTemplate, any processObject, required struct data={}){
+		if(structKeyExists(arguments.data, 'collectionData')){
+			this.retryBatch('orderTemplate', arguments.data.collectionData)
+		} 
+		return arguments.orderTemplate;
+	}
+
 	public void function retryBatch(required string baseObject, required array data){
 		for(var item in arguments.data){
 			if ( !getService('infoTraxService').isEntityQualified(arguments.baseObject, item['#baseObject#ID'], 'after#baseObject#SaveSuccess') ) {

@@ -145,6 +145,7 @@ component accessors="true" output="false" extends="HibachiService" {
 					return entityQueue['entityQueueID'];
 				}catch(any e){
 					getHibachiEntityQueueDAO().updateModifiedDateTimeAndMostRecentError(entityQueue['entityQueueID'], e.message);
+					logHibachiException(e);
 				}
 			}, true, maxThreads);
 			

@@ -1344,7 +1344,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return {'#arguments.orderItem.getOrderItemID()#':priceDetails};
 	}
 
-	public struct function getOrderTemplateItemSalePricesByPromoRewardSkuCollection(required any orderTemplateItem){
+	public any function getOrderTemplateItemSalePricesByPromoRewardSkuCollection(required any orderTemplateItem){
 		var orderTemplate = arguments.orderTemplateItem.getOrderTemplate();
 		var activePromotionRewardsWithSkuCollection = getPromotionDAO().getActivePromotionRewards( rewardTypeList="merchandise,subscription,contentAccess", promotionCodeList="", excludeRewardsWithQualifiers=true, site=orderTemplate.getSite());
 		
@@ -1352,12 +1352,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		if(!isNull(orderTemplate.getAccount())){
 			var originalPrice = arguments.orderTemplateItem.getSku().getPriceByCurrencyCode(currencyCode=currencyCode,accountID=orderTemplate.getAccount().getAccountID());
+			if( isNull(originalPrice) ) return;
 			var priceDetails = getPriceDetailsForPromoRewards( promoRewards=activePromotionRewardsWithSkuCollection,
 															sku=arguments.orderTemplateItem.getSku(),
 															originalPrice=originalPrice,
 															currencyCode=currencyCode );
 		}else if(!isNull(orderTemplate.getPriceGroup())){
 			var originalPrice = arguments.orderTemplateItem.getSku().getPriceByCurrencyCode(currencyCode=currencyCode,priceGroups=[orderTemplate.getPriceGroup()] );
+			if( isNull(originalPrice) ) return;
 			var priceDetails = getPriceDetailsForPromoRewards( promoRewards=activePromotionRewardsWithSkuCollection,
 															sku=arguments.orderTemplateItem.getSku(),
 															originalPrice=originalPrice,

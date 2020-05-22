@@ -190,11 +190,13 @@ component extends="HibachiService" accessors="true" output="false" {
 		}
 	}
 
-	public void function updateWorkflowTriggerRunning(required any workflowTrigger,required boolean runningFlag){
+	public boolean function updateWorkflowTriggerRunning(required any workflowTrigger,required boolean runningFlag){
+		var okToRunWorkflow = true;
 		//application based workflows rely on application locking instead of database so keep running flag false
 		if(arguments.workflowTrigger.getLockLevel()=='database' || !arguments.runningFlag){
-			getWorkflowDAO().updateWorkflowTriggerRunning(workflowTriggerID=arguments.workflowTrigger.getWorkflowTriggerID(), runningFlag=arguments.runningFlag);
+			okToRunWorkflow = getWorkflowDAO().updateWorkflowTriggerRunning(workflowTriggerID=arguments.workflowTrigger.getWorkflowTriggerID(), runningFlag=arguments.runningFlag);
 		}
+		return okToRunWorkflow;
 	}
 
 	public any function runWorkflowsByScheduleTrigger(required any workflowTrigger) {
@@ -218,8 +220,11 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 		lock name="runWorkflowsByScheduleTrigger_#getHibachiScope().getServerInstanceKey()#_#arguments.workflowTrigger.getWorkflowTriggerID()#" timeout="5" throwontimeout=false{
 			//Change WorkflowTrigger runningFlag to TRUE
-			updateWorkflowTriggerRunning(workflowTrigger=arguments.workflowTrigger, runningFlag=true);
-	
+			var okToRunWorkflow = updateWorkflowTriggerRunning(workflowTrigger=arguments.workflowTrigger, runningFlag=true);
+			if( !okToRunWorkflow ){
+				return arguments.workflowTrigger;
+			}
+			
 			if(workflowTrigger.getSaveTriggerHistoryFlag() == true){
 				// Create a new workflowTriggerHistory to be logged
 				var workflowTriggerHistory = this.newWorkflowTriggerHistory();

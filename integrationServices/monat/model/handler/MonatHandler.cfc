@@ -111,6 +111,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
     			account.setAccountType('marketPartner');
     			account.setCareerTitle('Market Partner');
 				account.setRank(1);
+				account.setRenewalDate(DateAdd('yyyy', 1, now()));
     			account.setPriceGroups([getService('PriceGroupService').getPriceGroupByPriceGroupCode(1)]);
 				if(!isFirstOrder){
 					getHibachiEventService().announceEvent('afterMarketPartnerUpgradeSuccess', {'order':arguments.order, 'entity':arguments.order}); 	
@@ -146,7 +147,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 				
 				if( account.getAccountType() == 'marketPartner' ) {
 					//set renewal-date to one-year-from-enrolmentdate
-					var renewalDate = DateAdd('yyyy', 1, account.getEnrollmentDate());
 					account.setRenewalDate(DateAdd('yyyy', 1, account.getEnrollmentDate()));
 					account.setCareerTitle('Market Partner');
 					account.setRank(1);

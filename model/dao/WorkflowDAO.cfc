@@ -115,20 +115,24 @@ Notes:
 
 	</cffunction>
 
-	<cffunction name="updateWorkflowTriggerRunning">
+	<cffunction name="updateWorkflowTriggerRunning" returnType="Boolean">
 		<cfargument name="workflowTriggerID" required="true" type="string" />
 		<cfargument name="runningFlag" required="true" type="boolean" />
 		<cfargument name="timeout" required="false" type="numeric" />
 
 		<cfset var rs = "" />
-		<cfquery name="rs">
+		<cfquery name="rs" result="local.result">
 			UPDATE SwWorkflowTrigger 
 			SET runningFlag = <cfqueryparam cfsqltype="cf_sql_bit" value="#arguments.runningFlag#"> 
 			WHERE workflowTriggerID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.workflowTriggerID#">
+			AND runningFlag != <cfqueryparam cfsqltype="cf_sql_bit" value="#arguments.runningFlag#"> 
 			<cfif structKeyExists(arguments, "timeout")>
 				AND nextRunDateTime <= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#dateAdd('n',(-1 * arguments.timeout),now())#"> 
 			</cfif> 
 		</cfquery>
+		
+		<cfreturn local.result.recordcount != 0 />
+		
 	</cffunction>
 	
 	<cffunction name="getExclusiveWorkflowTriggersInvocationClusters">
