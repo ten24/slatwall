@@ -4926,7 +4926,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				};
 
 				orderPayment = this.createTransactionAndCheckErrors(orderPayment, processData);
-
+				
 				if(orderPayment.hasErrors() || arguments.order.hasErrors()){
 					if(!arguments.order.hasErrors()){
 						arguments.order.addErrors(orderPayment.getErrors());
@@ -5036,7 +5036,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public any function createTransactionAndCheckErrors(required any orderPayment, required any processData){
   		// Call the processing method
   		arguments.orderPayment = this.processOrderPayment(arguments.orderPayment, processData, 'createTransaction');
-
+	
   		// If there was expected authorize, receive, or credit
   		/*
   		(arguments.orderPayment.getOrder().hasDepositItemsOnOrder() == true && listFindNoCase("authorize", processData.transactionType) && arguments.orderPayment.getAmountAuthorized() lt arguments.orderPayment.getOrder().getTotalDepositAmount())
