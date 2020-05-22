@@ -100,7 +100,9 @@ property name="calculatedCommissionableVolumeTotal" ormtype="integer";
 			if(!isNull(getSku()) && !isNull(getQuantity())){
 				
 				var rewardSkuSalePriceDetails = getService('PromotionService').getOrderTemplateItemSalePricesByPromoRewardSkuCollection(this); 
-				variables.total += rewardSkuSalePriceDetails[this.getOrderTemplateItemID()]['salePrice'] * getQuantity();
+				if( !isNull(rewardSkuSalePriceDetails) ) {
+					variables.total += rewardSkuSalePriceDetails[this.getOrderTemplateItemID()]['salePrice'] * getQuantity();
+				}
 			} 	
 		}
 		

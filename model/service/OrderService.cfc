@@ -1643,7 +1643,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		if(newOrder.hasErrors()){
 			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# when creating', true);
-			arguments.orderTemplate.clearHibachiErrors();
 			getOrderDAO().setScheduleOrderProcessingFlag(arguments.orderTemplate.getOrderTemplateID(), false);
 			return arguments.orderTemplate; 
 		} 
@@ -1940,11 +1939,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		} 	
 
 		processOrderAddOrderItem.setPreProcessDisplayedFlag(1); //this's a hacky way to pass the the validation;
-		processOrderAddOrderItem.validate( context="addOrderItem");
-
+		processOrderAddOrderItem.validate( context="addOrderItem" );
+		
 		if( !processOrderAddOrderItem.hasErrors() ){
 			arguments.order = this.processOrder_addOrderItem(arguments.order, processOrderAddOrderItem);
-		}	
+		} else {
+			arguments.order.addErrors(processOrderAddOrderItem.getErrors());
+			getHibachiScope().setORMHasErrors(true);
+		}
 		return arguments.order;
 	}
 

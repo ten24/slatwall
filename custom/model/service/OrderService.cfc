@@ -1702,7 +1702,7 @@ component extends="Slatwall.model.service.OrderService" {
 	
 	public any function createOrderItemsFromOrderTemplateItems(required any order, required any orderTemplate){
 		var orderTemplateItemCollection = this.getOrderTemplateItemCollectionList(); 
-		orderTemplateItemCollection.setDisplayProperties('orderTemplateItemID,sku.skuID,quantity,temporaryFlag'); 
+		orderTemplateItemCollection.setDisplayProperties('orderTemplateItemID,sku.skuID,sku.skuCode,quantity,temporaryFlag'); 
 		orderTemplateItemCollection.addFilter('orderTemplate.orderTemplateID', arguments.orderTemplate.getOrderTemplateID()); 
 
 		var orderTemplateItems = orderTemplateItemCollection.getRecords();
@@ -1710,7 +1710,7 @@ component extends="Slatwall.model.service.OrderService" {
 		
 		for(var orderTemplateItem in orderTemplateItems){ 
 
-			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()#, adding skuID: #orderTemplateItem['sku_skuID']#');
+			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()#, adding skuCode: #orderTemplateItem['sku_skuCode']#');
 
 			if(!isNull(orderTemplateItem.temporaryFlag) && orderTemplateItem.temporaryFlag == true){
 				temporaryItemFound = true;
@@ -1748,14 +1748,14 @@ component extends="Slatwall.model.service.OrderService" {
 			}	
 
 			if(arguments.order.hasErrors()){
-				this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(arguments.order.getErrors())# when adding order item skuID: #orderTemplateItem['sku_skuID']#', true);
+				this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(arguments.order.getErrors())# when adding order item skuCode: #orderTemplateItem['sku_skuCode']#', true);
 				
 				// if it's OFY, remove and continue, other wise skip template because of error
 				if(!isNull(orderTemplateItem.temporaryFlag) && orderTemplateItem.temporaryFlag == true){
 					var orderItems = arguments.order.getOrderItems();
 					for(var orderItem in orderItems) {
 						if(orderTemplateItem['sku_skuID'] == orderItem.getSku().getSkuID()){
-							this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# Remove temporary Item SkuID: #orderTemplateItem['sku_skuID']# because of error', true);
+							this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# Remove temporary Item skuCode: #orderTemplateItem['sku_skuCode']# because of error', true);
 							arguments.order.removeOrderItem( orderItem );
 							temporaryItemFound = false;
 							continue;
@@ -1763,6 +1763,7 @@ component extends="Slatwall.model.service.OrderService" {
 					}
 					arguments.order.clearHibachiErrors();
 					arguments.orderTemplate.clearHibachiErrors();
+					getHibachiScope().setORMHasErrors(false);
 					continue;
 				} else {
 					return arguments.order;

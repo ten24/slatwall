@@ -53,11 +53,11 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 	// Lazy / Injected Objects
 	property name="stock" hb_rbKey="entity.stock";
-	property name="sku" hb_rbKey="entity.sku";
+	property name="sku" hb_rbKey="entity.sku" cfc="Sku";
 	property name="product" hb_rbKey="entity.product";
 	property name="fulfillmentMethod" hb_rbKey="entity.fulfillmentMethod";
 	property name="location" hb_rbKey="entity.location" cfc="Location";
-	property name="orderFulfillment" hb_rbKey="entity.orderFulfillment";
+	property name="orderFulfillment" hb_rbKey="entity.orderFulfillment" cfc="OrderFulfillment";
 	property name="orderReturn" hb_rbKey="entity.orderReturn";
 	property name="returnLocation" hb_rbKey="entity.location";
 
