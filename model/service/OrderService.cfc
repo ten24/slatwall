@@ -1842,6 +1842,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			this.updateOrderStatusBySystemCode(newOrder, 'ostNew');
 		}
 		
+		// Flush everything before removing items so it doesn't persit the item in session after remove
+		ormFlush();
 		getOrderDAO().removeTemporaryOrderTemplateItems(arguments.orderTemplate.getOrderTemplateID());	
 		this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# completing place order and has status: #newOrder.getOrderStatusType().getTypeName()#', true);
 		
