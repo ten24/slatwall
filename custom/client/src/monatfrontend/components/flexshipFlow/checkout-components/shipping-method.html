@@ -16,7 +16,7 @@
 									type="radio"
 									name="shippingMethodID"
 									id="accountAddress-{{shippingMethod.shippingMethodID}}" 
-									ng-checked="shippingMethod.value === flexshipCheckoutShippingMethod.currentState.selectedShippingMethodID"
+									ng-checked="shippingMethod.value === $parent.flexshipCheckoutShippingMethod.currentState.selectedShippingMethodID"
 								/>
 								<label for="shippingMethodID" ng-bind="shippingMethod.name"></label>
 							</div>

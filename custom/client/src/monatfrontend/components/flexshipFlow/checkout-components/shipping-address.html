@@ -20,13 +20,13 @@
 								/>
 								<label for="accountAddressID">
 									{{ flexshipCheckoutShippingAddress.formatAddress(accountAddress) }}
-									<span class="text-black-50" 
-										ng-if="accountAddress.primaryAccountAddressID === flexshipCheckoutShippingAddress.currentState.primaryAccountAddressID" 
+									<span class="text-black-50 ml-3" 
+										ng-if=" 
+										accountAddress.accountAddressID === flexshipCheckoutShippingAddress.currentState.primaryAccountAddressID
+										|| 
+										accountAddress.accountAddressID === flexshipCheckoutShippingAddress.currentState.primaryShippingAddressID
+										" 
 										sw-rbKey="'frontend.global.default'"
-									></span>
-									<span class="text-black-50" 
-										ng-if="accountAddress.accountAddressID === flexshipCheckoutShippingAddress.currentState.primaryShippingAddressID" 
-										sw-rbKey="'frontend.global.shipping'"
 									></span>
 								</label>
 							</div>
