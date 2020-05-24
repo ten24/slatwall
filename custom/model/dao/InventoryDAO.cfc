@@ -30,12 +30,18 @@
 			var QOO = [];
 
 			for (var record in records){
+				var stockStruct = getStockLocation(record.skuID);
 				var hm = {};
 				hm['QOO'] = record.quantity;
 				hm['skuID'] = record.skuID;
 				hm['stockID'] = record.stockID;
-				hm['locationID'] = getStockLocation(record.skuID)[record.stockID]['locationID'];
-				hm['locationIDPath'] = getStockLocation(record.skuID)[record.stockID]['locationIDPath'];
+				if(structKeyExists(stockStruct, record.stockID)) {
+					hm['locationID'] = getStockLocation(record.skuID)[record.stockID]['locationID'];
+					hm['locationIDPath'] = getStockLocation(record.skuID)[record.stockID]['locationIDPath'];
+				} else {
+					hm['locationID'] = javacast('null','');
+					hm['locationIDPath'] = javacast('null','');
+				}
 				arrayAppend(QOO, hm);
 			}
 
