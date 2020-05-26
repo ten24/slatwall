@@ -72,6 +72,7 @@ Notes:
 		<swa:SlatwallSetting settingName="integrationmonatSiteFlexshipCancellationGracePeriodForMPUsers" settingObject="#rc.site#" />
 		<swa:SlatwallSetting settingName="integrationmonatSiteVipEnrollmentOrderMinimum" settingObject="#rc.site#" />
 		<swa:SlatwallSetting settingName="siteOrderTemplateEligibleShippingMethods" settingObject="#rc.site#" />
+		<swa:SlatwallSetting settingName="siteInvoiceInformation" settingObject="#rc.site#" />
 
 	
 	</swa:SlatwallSettingTable>
