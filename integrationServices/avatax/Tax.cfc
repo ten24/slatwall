@@ -329,6 +329,7 @@ extends = "Slatwall.integrationServices.BaseTax" {
         getAvataxService().setHttpHeaders(httpRequest, requestDataStruct);
         
 		httpRequest.addParam(type="body", value=serializeJSON(requestDataStruct));
+		httpRequest.setTimeout(5);
 	
 		var responseData = httpRequest.send().getPrefix();
 

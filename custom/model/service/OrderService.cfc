@@ -1847,11 +1847,15 @@ component extends="Slatwall.model.service.OrderService" {
 			.getIntegrationByIntegrationPackage('infotrax')
 			.getIntegrationCFC("data")
 			.retrySyncPendingOrders(argumentCollection=arguments);
-			
-			
 	}
 	
-
+	public any function processOrder_retrySyncPendingOrderTemplates(required any orderTemplate, any processObject, required struct data={}) {
+		return getHibachiScope().getService('integrationService')
+			.getIntegrationByIntegrationPackage('infotrax')
+			.getIntegrationCFC("data")
+			.retrySyncPendingOrderTemplates(argumentCollection=arguments);
+	}
+	
 	public any function processOrder_placeOrder(required any order, struct data={}) {
 		
 		if (isNull(arguments.order.getAccount().getOwnerAccount())){
