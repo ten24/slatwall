@@ -48,6 +48,8 @@ component extends="Slatwall.model.entity.HibachiEntity" displayname="OrderImport
 			}
 			
 			var shippingMethodsCollectionList = getService('ShippingService').getShippingMethodCollectionList();
+			shippingMethodsCollectionList.addFilter(propertyIdentifier='activeFlag',value= 1);
+
 			if(!isNull(shippingAddress)){
 				if(!isNull(shippingAddress.getPostalCode())){
 					shippingMethodsCollectionList.addFilter(propertyIdentifier='shippingMethodRates.addressZone.addressZoneLocations.postalCode',value=shippingAddress.getPostalCode());
@@ -66,7 +68,7 @@ component extends="Slatwall.model.entity.HibachiEntity" displayname="OrderImport
 					shippingMethodsCollectionList.addFilter(propertyIdentifier='shippingMethodRates.addressZone.addressZoneLocations.countryCode',value='null',comparisonOperator='IS',logicalOperator='OR',filterGroupAlias='countryCode');
 				}
 			}
-			shippingMethodsCollectionList.setDisplayProperties('shippingMethodName|name,shippingMethodID|value');
+			shippingMethodsCollectionList.setDisplayProperties('shippingMethodCode|name,shippingMethodID|value');
 			variables.shippingMethodOptions = shippingMethodsCollectionList.getRecords();
 		}
 		return variables.shippingMethodOptions;
