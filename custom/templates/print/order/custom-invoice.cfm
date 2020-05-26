@@ -526,7 +526,7 @@ Notes:
 			</tr>
 			
 		</table>
-		<cfabort>
+	
 	</cfoutput>
 	
 
