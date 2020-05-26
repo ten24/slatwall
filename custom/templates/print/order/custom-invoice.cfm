@@ -308,7 +308,7 @@ Notes:
 								</td>
 								
 								<td>
-									<cfif not isNull(orderFulfillment.getShippingMethod()) >
+									<cfif not isNull(orderFulfillment) AND not isNull(orderFulfillment.getShippingMethod()) >
 										#orderFulfillment.getShippingMethod().getShippingMethodName()#
 									<cfelse>
 										Shipping Information Unavailable 
@@ -316,15 +316,15 @@ Notes:
 								</td>
 								
 								<td>
-									&nbsp;
+									#left(order.getCreatedByAccount().getFirstName(),1)# #left(order.getCreatedByAccount().getLastName(),1)#
 								</td>
 								
 								<td>
-									&nbsp;
+									#dateFormat(order.getOrderOpenDateTime())#
 								</td>
 								
 								<td>
-									&nbsp;
+									#timeFormat(order.getOrderOpenDateTime())#
 								</td>
 								
 							</tr>

@@ -553,4 +553,8 @@ component {
 		return false;
 	}
 	
+	public any function getCreatedByAccount(){
+		return getService('accountService').getAccount(this.getCreatedByAccountID());
+	}
+	
 }

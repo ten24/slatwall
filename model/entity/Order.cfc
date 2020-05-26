@@ -2426,5 +2426,9 @@ public numeric function getPersonalVolumeSubtotal(){
 		
 		return false;
 	}
+	
+	public any function getCreatedByAccount(){
+		return getService('accountService').getAccount(this.getCreatedByAccountID());
+	}
 	//CUSTOM FUNCTIONS END
 }
