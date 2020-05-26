@@ -32,6 +32,7 @@ component {
 	property name="taxTotal" persistent="false" hb_formatType="currency"; 
 	property name="vatTotal" persistent="false" hb_formatType="currency";
 	property name="fulfillmentHandlingFeeTotal" persistent="false" hb_formatType="currency";
+	property name="mostRecentError" ormtype="string";
 	
 	public boolean function getAccountIsNotInFlexshipCancellationGracePeriod(){
 		if(	getHibachiScope().getAccount().getAdminAccountFlag() ){

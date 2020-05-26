@@ -154,6 +154,7 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 	property name="taxTotal" persistent="false" hb_formatType="currency"; 
 	property name="vatTotal" persistent="false" hb_formatType="currency";
 	property name="fulfillmentHandlingFeeTotal" persistent="false" hb_formatType="currency";
+	property name="mostRecentError" ormtype="string";
 	
 //CUSTOM PROPERTIES END
 	public string function getEncodedJsonRepresentation(string nonPersistentProperties='subtotal,fulfillmentTotal,fulfillmentDiscount,total'){ 
