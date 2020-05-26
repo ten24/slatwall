@@ -244,11 +244,11 @@
 						$.event('muraForceFilename', false);
 						
 						// Change Title, HTMLTitle & Meta Details of page
-						$.content().setTitle( $.slatwall.getProduct().getTitle() );
+						$.content().setTitle( $.slatwall.getProduct().getFormatedValue('title') );
 						if(len($.slatwall.getProduct().setting('productHTMLTitleString'))) {
 							$.content().setHTMLTitle( $.slatwall.getProduct().stringReplace( template = $.slatwall.getProduct().setting('productHTMLTitleString'), formatValues = true ) );	
 						} else {
-							$.content().setHTMLTitle( $.slatwall.getProduct().getTitle() );
+							$.content().setHTMLTitle( $.slatwall.getProduct().getFormatedValue('title') );
 						}
 						$.content().setMetaDesc( $.slatwall.getProduct().stringReplace( template = $.slatwall.getProduct().setting('productMetaDescriptionString'), formatValues = true ) );
 						$.content().setMetaKeywords( $.slatwall.getProduct().stringReplace( template = $.slatwall.getProduct().setting('productMetaKeywordsString'), formatValues = true ) );
