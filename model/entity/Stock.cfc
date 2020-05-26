@@ -224,6 +224,9 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	}
 
 	public numeric function getCurrentSkuPrice() {
+		if(getSku().setting('skuDisableAverageCostCalculation') == true){
+			return 0;
+		}
 	    var currencyCode = "USD";
 	    
 	    //Find it on the location.
