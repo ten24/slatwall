@@ -84,9 +84,8 @@ Notes:
 	<cfset local.taxType = 'Tax'>
 </cfif>
 
-
+<cfdocument format="PDF" orientation="portrait">
 	<cfset local.defaultTable = 'width: 100%; font-family: Arial, sans-serif; font-size: 11px; color: ##848484; border-collapse: collapse;' />
-	
 	<cfoutput>
 		
 		<table style="#local.defaultTable#">
@@ -316,7 +315,9 @@ Notes:
 								</td>
 								
 								<td>
-									#left(order.getCreatedByAccount().getFirstName(),1)# #left(order.getCreatedByAccount().getLastName(),1)#
+									<cfif !isNull(order.getCreatedByAccount())>
+										#left(order.getCreatedByAccount().getFirstName(),1)# #left(order.getCreatedByAccount().getLastName(),1)#
+									</cfif>
 								</td>
 								
 								<td>
@@ -528,5 +529,5 @@ Notes:
 		</table>
 	
 	</cfoutput>
-	
+</cfdocument>
 
