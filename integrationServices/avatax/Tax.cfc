@@ -264,8 +264,8 @@ extends = "Slatwall.integrationServices.BaseTax" {
 				}else if (item.getReferenceObjectType() == 'OrderFulfillment' && item.getOrderFulfillment().hasOrderFulfillmentItem()){
 					// Setup the itemData
 					var amount = item.getPrice();
-					
-					if(!isNull(item.getOrderFulfillment().getHandlingFee())){
+
+					if(!isNull(item.getOrderFulfillment().getHandlingFee()) && item.getFeeType() != 'handling' && item.getFeeType() != 'shipping'){
 						amount += item.getOrderFulfillment().getHandlingFee();
 					}
 					
@@ -277,6 +277,8 @@ extends = "Slatwall.integrationServices.BaseTax" {
 					itemData.TaxCode = item.getTaxCategoryCode();
 					itemData.Qty = 1;
 					itemData.Amount = amount;
+					
+					logHibachi('FULFILLMENT FEEEEEEEEE: #item.getFeeType()# - #serializeJSON(itemData)#')
 					
 					if (orderFulfillmentDiscount > 0){
 						itemData.Discounted = true;
@@ -304,6 +306,7 @@ extends = "Slatwall.integrationServices.BaseTax" {
 					
 
 				}
+				
 				if(listContains(setting("VATCountries"),addressData.Country)){
 					itemData.taxIncluded = true;
 				}
