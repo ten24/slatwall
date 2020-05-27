@@ -264,8 +264,8 @@ extends = "Slatwall.integrationServices.BaseTax" {
 				}else if (item.getReferenceObjectType() == 'OrderFulfillment' && item.getOrderFulfillment().hasOrderFulfillmentItem()){
 					// Setup the itemData
 					var amount = item.getPrice();
-					
-					if(!isNull(item.getOrderFulfillment().getHandlingFee())){
+
+					if(!isNull(item.getOrderFulfillment().getHandlingFee()) && item.getFeeType() != 'handling' && item.getFeeType() != 'shipping'){
 						amount += item.getOrderFulfillment().getHandlingFee();
 					}
 					
@@ -304,6 +304,7 @@ extends = "Slatwall.integrationServices.BaseTax" {
 					
 
 				}
+				
 				if(listContains(setting("VATCountries"),addressData.Country)){
 					itemData.taxIncluded = true;
 				}
