@@ -1323,7 +1323,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         productCollectionList.addDisplayProperty('calculatedAllowBackorderFlag');
         productCollectionList.addDisplayProperty('urlTitle');
         productCollectionList.addDisplayProperty('skus.imageFile');
-        
+        productCollectionList.addDisplayProperty('skus.displayOnlyFlag');
+
         var currentRequestSite = getService('siteService').getSiteByCMSSiteID(arguments.data.cmsSiteID);
         if(!isNull(currentRequestSite) && currentRequestSite.hasLocation()){
             productCollectionList.addDisplayProperty('skus.stocks.calculatedQATS');
@@ -1337,11 +1338,10 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         productCollectionList.addFilter(propertyIdentifier = 'publishedEndDateTime',value='NULL', comparisonOperator="IS", logicalOperator="OR", filterGroupAlias = 'publishedEndDateTimeFilter');
         productCollectionList.addFilter('skus.activeFlag',1);
         productCollectionList.addFilter('skus.publishedFlag',1);
-        productCollectionList.addFilter('skus.skuPrices.price', 0.00, '!=');
+        productCollectionList.addFilter(propertyIdentifier ="skus.skuPrices.price", value= 0.00, comparisonOperator = "!=", filterGroupAlias="skuPrice");
+        productCollectionList.addFilter(propertyIdentifier ="skus.displayOnlyFlag", value= 1, comparisonOperator= "=", logicalOperator="OR", filterGroupAlias="skuPrice");
         productCollectionList.addFilter('skus.skuPrices.currencyCode',currencyCode);
         productCollectionList.addFilter('skus.skuPrices.priceGroup.priceGroupCode',priceGroupCode);
-        productCollectionList.addFilter('productType.urlTitle','starter-kit','!=');
-        productCollectionList.addFilter('productType.urlTitle','productPack','!=');
         productCollectionList.addFilter('productType.parentProductType.urlTitle','other-income','!=');
         productCollectionList.addFilter('sites.siteID',site.getSiteID());
 
@@ -1351,6 +1351,11 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             productCollectionList.addFilter('skus.mpFlag', 1);
         }else{
             productCollectionList.addFilter('skus.vipFlag', 1);
+        }
+        
+        if(structKeyExists(arguments.data,"hideProductPacks") && arguments.data.hideProductPacks){
+            productCollectionList.addFilter('productType.urlTitle','starter-kit','!=');
+            productCollectionList.addFilter('productType.urlTitle','productPack','!=');    
         }
 
         return { productCollectionList: productCollectionList, priceGroupCode: priceGroupCode, currencyCode: currencyCode };
@@ -1608,7 +1613,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                 'upgradedPricing': '',
                 'upgradedPriceGroupCode': upgradedPriceGroupCode,
                 'qats': record.skus_stocks_calculatedQATS,
-                'calculatedAllowBackorderFlag': record.calculatedAllowBackorderFlag
+                'calculatedAllowBackorderFlag': record.calculatedAllowBackorderFlag,
+                'displayOnlyFlag': record.skus_displayOnlyFlag
             };
             
             //add skuID's to skuID array for query below

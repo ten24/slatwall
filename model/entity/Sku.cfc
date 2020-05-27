@@ -234,6 +234,7 @@ property name="sapItemCode" ormtype="string";
 	property name="commissionableVolumeByCurrencyCode" persistent="false";
 
 
+ property name="displayOnlyFlag" ormtype="boolean" hb_formatType="yesno" default="0";
  property name="salesCategoryCode" ormtype="string" hb_formFieldType="select";
  property name="backorderDate" ormtype="timestamp" hb_formatType="date";//CUSTOM PROPERTIES END
 	public any function getSkuBundleCollectionList(){
