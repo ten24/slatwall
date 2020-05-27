@@ -278,8 +278,6 @@ extends = "Slatwall.integrationServices.BaseTax" {
 					itemData.Qty = 1;
 					itemData.Amount = amount;
 					
-					logHibachi('FULFILLMENT FEEEEEEEEE: #item.getFeeType()# - #serializeJSON(itemData)#')
-					
 					if (orderFulfillmentDiscount > 0){
 						itemData.Discounted = true;
 					}
