@@ -1342,8 +1342,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         productCollectionList.addFilter(propertyIdentifier ="skus.displayOnlyFlag", value= 1, comparisonOperator= "=", logicalOperator="OR", filterGroupAlias="skuPrice");
         productCollectionList.addFilter('skus.skuPrices.currencyCode',currencyCode);
         productCollectionList.addFilter('skus.skuPrices.priceGroup.priceGroupCode',priceGroupCode);
-        productCollectionList.addFilter('productType.urlTitle','starter-kit','!=');
-        productCollectionList.addFilter('productType.urlTitle','productPack','!=');
         productCollectionList.addFilter('productType.parentProductType.urlTitle','other-income','!=');
         productCollectionList.addFilter('sites.siteID',site.getSiteID());
 
@@ -1353,6 +1351,11 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             productCollectionList.addFilter('skus.mpFlag', 1);
         }else{
             productCollectionList.addFilter('skus.vipFlag', 1);
+        }
+        
+        if(structKeyExists(arguments.data,"hideProductPacks") && arguments.data.hideProductPacks){
+            productCollectionList.addFilter('productType.urlTitle','starter-kit','!=');
+            productCollectionList.addFilter('productType.urlTitle','productPack','!=');    
         }
 
         return { productCollectionList: productCollectionList, priceGroupCode: priceGroupCode, currencyCode: currencyCode };
