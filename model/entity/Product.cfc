@@ -213,6 +213,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 			if(!isNull(priceStruct[priceOb.priceGroup_priceGroupCode])) {
 				arrayAppend(priceStruct[priceOb.priceGroup_priceGroupCode], priceOb);
+				continue;
 			}
 			priceStruct[priceOb.priceGroup_priceGroupCode] = [priceOb];
 		}
