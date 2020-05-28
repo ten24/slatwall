@@ -1344,7 +1344,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         productCollectionList.addFilter('skus.skuPrices.priceGroup.priceGroupCode',priceGroupCode);
         productCollectionList.addFilter('productType.parentProductType.urlTitle','other-income','!=');
         productCollectionList.addFilter('sites.siteID',site.getSiteID());
-
+        productCollectionList.addFilter('skus.skuPrices.currencyCode',currencyCode);
+        productCollectionList.addFilter('skus.skuPrices.promotionReward.promotionRewardID','NULL','IS')
+        
         if(isNull(accountType) || accountType == 'customer'){
            productCollectionList.addFilter('skus.retailFlag', 1);
         }else if(accountType == 'marketPartner'){

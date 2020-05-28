@@ -204,12 +204,17 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		var skuPriceCollectionList = getService('skuService').getSkuPriceCollectionList();
 		skuPriceCollectionList.addFilter('sku.product.productID', this.getProductID());
 		skuPriceCollectionList.addFilter('activeFlag', 1);
+		skuPriceCollectionList.addFilter('promotionReward.promotionRewardID', 'NULL', 'Is');
 		skuPriceCollectionList.addFilter('currencyCode', arguments.currencyCode);
 		var skuPrices = skuPriceCollectionList.getRecords();
 		var priceStruct = {};
 		
 		for(var priceOb in skuPrices){
-			priceStruct[priceOb.priceGroup_priceGroupCode] = priceOb.price;
+
+			if(!isNull(priceStruct[priceOb.priceGroup_priceGroupCode])) {
+				arrayAppend(priceStruct[priceOb.priceGroup_priceGroupCode], priceOb);
+			}
+			priceStruct[priceOb.priceGroup_priceGroupCode] = [priceOb];
 		}
 		
 		return priceStruct;
