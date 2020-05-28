@@ -44,9 +44,16 @@ class OFYEnrollmentController {
 			});       	
 
         } else {
-        	
+    		let extraProperties = "canPlaceOrderFlag,purchasePlusTotal,appliedPromotionMessagesJson,calculatedOrderTemplateItemsCount,vatTotal,taxTotal,fulfillmentHandlingFeeTotal";
+			let data = {
+				optionalProperties: extraProperties,
+				saveContext: 'upgradeFlow', 
+				setIfNullFlag: false, 
+				nullAccountFlag: false
+			}
+			
  	 		this.orderTemplateService
- 	 		.addOrderTemplateItem( this.stagedProductID, this.flexship, 1, true)
+ 	 		.addOrderTemplateItem( this.stagedProductID, this.flexship, 1, true, data)
  	 		.then( res => {
 				this.observerService.notify('onNext');	
 				this.loading = false;
