@@ -99,6 +99,10 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		} else {
 			arguments.object = settingService;	
 		} 
+		
+		if(arguments.formatValue && !structKeyExists(formatDetails, 'locale')){
+			formatDetails.locale = getHibachiScope().getSession().getRbLocale();
+		}
 
 		var cacheArguments = {
 			key = settingService.getSettingCacheKey(argumentCollection=arguments), 
