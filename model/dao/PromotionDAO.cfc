@@ -410,4 +410,31 @@ Notes:
 		</cfquery>
 	</cffunction>
 	
+	<cffunction name="cloneAndInsertIncludedStackableRewards" returntype="void" access="public">
+		<cfargument name="copyFromID" required="true" type="any" />
+		<cfargument name="newPromoRewardID" required="true" type="any" />
+
+		<cfquery>
+		INSERT INTO swpromorewardstackincl (promotionRewardID, linkedPromotionRewardID)
+		SELECT <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.newPromoRewardID#" /> as promotionRewardID, linkedPromotionRewardID
+		FROM swpromorewardstackincl 
+		WHERE promotionRewardID IN(<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.copyFromID#" />)
+		UNION
+			SELECT promotionRewardID, <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.newPromoRewardID#" /> as linkedPromotionRewardID
+			FROM swpromorewardstackincl 
+			WHERE linkedPromotionRewardID IN(<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.copyFromID#" />);
+		</cfquery>
+		
+		<cfquery>
+			INSERT INTO swpromorewardstackexcl (promotionRewardID, linkedPromotionRewardID)
+			SELECT <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.newPromoRewardID#" /> as promotionRewardID, linkedPromotionRewardID
+			FROM swpromorewardstackexcl 
+			WHERE promotionRewardID IN(<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.copyFromID#" />)
+			UNION
+				SELECT promotionRewardID, <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.newPromoRewardID#" /> as linkedPromotionRewardID
+				FROM swpromorewardstackexcl 
+				WHERE linkedPromotionRewardID IN(<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.copyFromID#" />);
+		</cfquery>
+	</cffunction>
+	
 </cfcomponent>

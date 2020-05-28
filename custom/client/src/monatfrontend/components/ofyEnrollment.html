@@ -5,7 +5,7 @@
 		<div class="productbox" ng-class="{ 'has-selected' : ofyEnrollment.selectedProductID.length }">
 			<div class="row no-gutters product_list">
 				<div 
-					class="start col-12 col-sm-12 col-md-4 col-lg-4 col-xl-4 product-box" 
+					class="start col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4" 
 					ng-repeat="item in ofyEnrollment.products"
 					ng-click="ofyEnrollment.stageProduct(item.skuID)"
 					ng-class="{ 'selected': item.skuID == ofyEnrollment.stagedProductID }"
@@ -15,11 +15,14 @@
 							<img image-manager ng-src="{{ item.skuImagePath[0] }}" />
 						</figure>
 						
-						<h4 ng-bind="item.skuName"></h4>
+						<div>
+							<h4 ng-bind="item.skuName"></h4>
+							
+							<p class="price">
+								<span sw-rbKey="'frontend.freeProduct.free'"></span> 
+							</p>	
+						</div>
 						
-						<p class="price">
-							<span sw-rbKey="'frontend.freeProduct.free'"></span> 
-						</p>
 					</div>
 				</div>
 			</div>

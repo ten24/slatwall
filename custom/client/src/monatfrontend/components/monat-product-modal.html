@@ -87,7 +87,7 @@
 		  			</div> 
 		  			<!--- end price group block-->
 	
-					<div class="qty-block">
+					<div  ng-if="monatProductModal.product.displayOnlyFlag != true" class="qty-block">
 						<label sw-rbkey="'frontend.global.quantity'"></label>
 						<div class="qty">
 							<button type="button" 
@@ -114,6 +114,7 @@
 					</div>
 	
 					<button 
+						ng-if="monatProductModal.product.displayOnlyFlag != true"
 						class="btn bg-primary"
 						ng-click="monatProductModal.onAddButtonClick()" 
 						ng-class="{ loading: monatProductModal.loading }"

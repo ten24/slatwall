@@ -1849,7 +1849,7 @@ component extends="Slatwall.model.service.OrderService" {
 			.retrySyncPendingOrders(argumentCollection=arguments);
 	}
 	
-	public any function processOrder_retrySyncPendingOrderTemplates(required any orderTemplate, any processObject, required struct data={}) {
+	public any function processOrderTemplate_retrySyncPendingOrderTemplates(required any orderTemplate, any processObject, required struct data={}) {
 		return getHibachiScope().getService('integrationService')
 			.getIntegrationByIntegrationPackage('infotrax')
 			.getIntegrationCFC("data")

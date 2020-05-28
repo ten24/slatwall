@@ -2425,6 +2425,5 @@ public numeric function getPersonalVolumeSubtotal(){
 		}
 		
 		return false;
-	}
-	//CUSTOM FUNCTIONS END
+	}//CUSTOM FUNCTIONS END
 }

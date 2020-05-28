@@ -32,7 +32,7 @@ class VIPController {
 	public isInitialized = false;
 	public paginationMethod = 'getproductsByCategoryOrContentID';
 	public productRecordsCount: number;
-	public paginationObject = {};
+	public paginationObject = {hideProductPacks: true};
 	public upgradeFlow:boolean;
 	public endpoint: 'setUpgradeOnOrder' | 'setUpgradeOrderType' = 'setUpgradeOnOrder';
 	public showUpgradeErrorMessage:boolean;
@@ -138,7 +138,7 @@ class VIPController {
 	};
 	
 	public searchByKeyword = (keyword:string) =>{
-		this.publicService.doAction('getProductsByKeyword', {keyword: keyword, priceGroupCode: 1}).then(res=> {
+		this.publicService.doAction('getProductsByKeyword', {keyword: keyword, priceGroupCode: 1, hideProductPacks: true}).then(res=> {
 			this.paginationMethod = 'getProductsByKeyword';
 			this.productRecordsCount = res.recordsCount;
 			this.paginationObject['keyword'] = keyword;
@@ -151,7 +151,8 @@ class VIPController {
 		this.loading = true;
 		
 		let data:any = {
-			priceGroupCode: 3
+			priceGroupCode: 3,
+			hideProductPacks: true
 		};
 		
 		if(category){

@@ -78,10 +78,14 @@ Notes:
 	<cfset local.siteLink = "https://monatglobal.com/" />
 </cfif>
 
-<cfdocument format="PDF" orientation="portrait">
+<cfif !isNull(order.getVATTotal()) && order.getVATTotal() > 0>
+	<cfset local.taxType = 'VAT'>
+<cfelse>
+	<cfset local.taxType = 'Tax'>
+</cfif>
 
+<cfdocument format="PDF" orientation="portrait">
 	<cfset local.defaultTable = 'width: 100%; font-family: Arial, sans-serif; font-size: 11px; color: ##848484; border-collapse: collapse;' />
-	
 	<cfoutput>
 		
 		<table style="#local.defaultTable#">
@@ -95,11 +99,7 @@ Notes:
 						<tr>
 							<td width="33%" valign="top">
 								<p>
-									United Kingdom Warehouse<br>
-									Cygnia<br>
-									Goweton Road<br>
-									Brackmills Northhampton, UK NN4 7BW<br>
-									GRB
+									#order.getOrderCreatedSite().setting('siteInvoiceInformation') ?: ''#
 								</p>
 							</td>
 							<td width="33%" valign="top" style="text-align: right;">
@@ -145,10 +145,6 @@ Notes:
 							
 							<td width="33%" valign="top" style="text-align: center;">
 								<b style="color: ##555; font-size: 15px;">Invoice</b>
-							</td>
-							
-							<td width="33%" valign="top" style="text-align: center;">
-								BARCODE?
 							</td>
 							
 						</tr>
@@ -303,15 +299,15 @@ Notes:
 							<tr>
 								
 								<td>
-									&nbsp;
+									#order.getAccount().getAccountNumber()#
 								</td>
 								
 								<td>
-									&nbsp;
+									#order.getCommissionPeriod()#
 								</td>
 								
 								<td>
-									<cfif not isNull(orderFulfillment.getShippingMethod()) >
+									<cfif not isNull(orderFulfillment) AND not isNull(orderFulfillment.getShippingMethod()) >
 										#orderFulfillment.getShippingMethod().getShippingMethodName()#
 									<cfelse>
 										Shipping Information Unavailable 
@@ -319,15 +315,17 @@ Notes:
 								</td>
 								
 								<td>
-									&nbsp;
+									<cfif !isNull(order.getCreatedByAccount())>
+										#left(order.getCreatedByAccount().getFirstName(),1)# #left(order.getCreatedByAccount().getLastName(),1)#
+									</cfif>
 								</td>
 								
 								<td>
-									&nbsp;
+									#dateFormat(order.getOrderOpenDateTime())#
 								</td>
 								
 								<td>
-									&nbsp;
+									#timeFormat(order.getOrderOpenDateTime())#
 								</td>
 								
 							</tr>
@@ -351,7 +349,7 @@ Notes:
 								<td style="padding: 5px 3px; text-align: right;">Total<br>Vol</td>
 								<td style="padding: 5px 3px; text-align: right;">Unit<br>Price</td>
 								<td style="padding: 5px 3px; text-align: right;">Net<br>Amt</td>
-								<td style="padding: 5px 3px; text-align: right;">VAT<br>Amt</td>
+								<td style="padding: 5px 3px; text-align: right;"> #local.taxType == 'VAT' ? 'VAT' :'Tax'# <br>Amt</td>
 								<td style="padding: 5px 3px; text-align: right;">Gross<br>Amt</td>
 							</tr>
 						</thead>
@@ -385,7 +383,12 @@ Notes:
 										
 									</td>
 									<td style="border-top: 1px solid ##FFF; font-size: 9px; padding: 5px 3px; text-align: right;">
-										
+										<cfif local.taxType == 'VAT'>
+												#local.orderItem.getFormattedValue('vatAmount', 'currency')#
+										<cfelse>
+											#local.orderItem.getFormattedValue('taxAmount', 'currency')#
+										</cfif>
+									
 									</td>
 									<td style="border-top: 1px solid ##FFF; font-size: 9px; padding: 5px 3px; text-align: right;">
 										
@@ -524,7 +527,7 @@ Notes:
 			</tr>
 			
 		</table>
-		
-	</cfoutput>
 	
+	</cfoutput>
 </cfdocument>
+
