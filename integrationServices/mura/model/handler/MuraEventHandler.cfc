@@ -297,7 +297,7 @@
 						// Change Title, HTMLTitle & Meta Details of page
 						$.content().setTitle( $.slatwall.getProductType().getProductTypeName() );
 						if(len($.slatwall.getProductType().setting(settingName='productTypeHTMLTitleString', formatValue=true))) {
-							$.content().setHTMLTitle( $.slatwall.getProductType().stringReplace( template = $.slatwall.getProductType().setting(settingName'productTypeHTMLTitleString', formatValue=true), formatValues = true ) );	
+							$.content().setHTMLTitle( $.slatwall.getProductType().stringReplace( template = $.slatwall.getProductType().setting(settingName='productTypeHTMLTitleString', formatValue=true), formatValues = true ) );	
 						} else {
 							$.content().setHTMLTitle( $.slatwall.getProductType().getProductTypeName() );
 						}
@@ -327,7 +327,7 @@
 						
 						// Change Title, HTMLTitle & Meta Details of page
 						$.content().setTitle( $.slatwall.getBrand().getBrandName() );
-						if(len($.slatwall.getBrand().setting(settingName'brandHTMLTitleString', formatValue=true))) {
+						if(len($.slatwall.getBrand().setting(settingName='brandHTMLTitleString', formatValue=true))) {
 							$.content().setHTMLTitle( $.slatwall.getBrand().stringReplace( template = $.slatwall.getBrand().setting(settingName='brandHTMLTitleString', formatValue=true), formatValues = true ) );	
 						} else {
 							$.content().setHTMLTitle( $.slatwall.getBrand().getBrandName() );
@@ -453,7 +453,7 @@
 						
 						// Change Title, HTMLTitle & Meta Details of page
 						$.content().setTitle( $.slatwall.getRouteEntity("attribute").getAttributeName() );
-						if(len($.slatwall.getRouteEntity("attribute").setting(settingName='attributeHTMLTitleString', formatValue=true)) {
+						if(len($.slatwall.getRouteEntity("attribute").setting(settingName='attributeHTMLTitleString', formatValue=true))) {
 							$.content().setHTMLTitle( $.slatwall.getRouteEntity("attribute").stringReplace( template = $.slatwall.getRouteEntity("attribute").setting(settingName='attributeHTMLTitleString', formatValue=true), formatValues = true ) );	
 						} else {
 							$.content().setHTMLTitle( $.slatwall.getRouteEntity("attribute").getAttributeName() );
