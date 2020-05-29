@@ -13,7 +13,7 @@
 		   <cfloop array="#orderTemplate.getOrderTemplateItems()#" index="local.orderTemplateItem">
 			   <tr>
 			      <td style="border-bottom: 1px solid ##dddddd; text-align: left; padding: 10px;">
-			          <img src="#orderTemplateItem.getSku().getImagepath()#" width="100" height="100">
+			          <img src="#orderTemplateItem.getSku().getImagePath()#" width="100" height="100">
 			      </td>
 			      <td style="border-bottom: 1px solid ##dddddd; text-align: left; padding: 10px;">#orderTemplateItem.getSku().getSkuCode()#</td>
 			      <td style="border-bottom: 1px solid ##dddddd; text-align: left; padding: 10px;">#orderTemplateItem.getSku().getSkuDefinition()#</td>
