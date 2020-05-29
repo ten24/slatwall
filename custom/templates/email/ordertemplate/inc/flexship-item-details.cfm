@@ -1,6 +1,6 @@
 <cfparam name="orderTemplate" />
 <cfoutput>
-	<table style="margin: 0 auto; font-family: arial, sans-serif; border-collapse: collapse;width: 100%; font-size:13px; width:80%; shashi:ranjan;" >
+	<table style="margin: 0 auto; font-family: arial, sans-serif; border-collapse: collapse;width: 100%; font-size:13px; width:80%;" >
 		<tbody>
 		   <tr>
 		       <th style="background-color: ##2F294B; color:##fff; border-bottom: 1px solid ##dddddd; text-align: left; padding: 10px;">IMAGE</th>
