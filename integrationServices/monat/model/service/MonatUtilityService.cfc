@@ -4,12 +4,12 @@ component extends="Slatwall.model.service.HibachiService" {
         var siteStruct = {
             'North America'={},
             'Europe'={},
-            'Australia'={}
+            //'Australia'={}
         };
         var continentMap = {
             'mura-pl'='Europe',
             'mura-ie'='Europe',
-            'mura-au'='Australia',
+            //'mura-au'='Australia',
             'mura-uk'='Europe',
             'mura-ca'='North America',
             'mura-default'='North America'
@@ -18,8 +18,8 @@ component extends="Slatwall.model.service.HibachiService" {
             'en'='English',
             'fr'='French',
             'es'='Spanish',
-            'pl'='Polish',
-            'ga'='Gaelic'
+            'pl'='Polish'
+            //'ga'='Gaelic'
         };
         var siteCollectionList = getService('siteService').getSiteCollectionList();
         siteCollectionList.setDisplayProperties('siteCode,siteName,siteAvailableLocales,flagImageFilename');
