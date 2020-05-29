@@ -378,7 +378,6 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 		    responseBean.addError("Processing error", "Not able to process this request. Invalid response.");
 		}
 		else {
-			logHibachi(response.FileContent);
 			var fileContent = DeserializeJSON(response.FileContent);
 			if (
 				structKeyExists(fileContent, 'data') && 
@@ -391,6 +390,12 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 				arguments.responseBean.setProviderTransactionID(fileContent.data.chargePaymentMethod.transaction.id);
 				arguments.responseBean.setAmountAuthorized(total);
 				arguments.responseBean.setAmountReceived(total);
+				if(
+					structKeyExists(fileContent.data.chargePaymentMethod.transaction, 'paymentMethodSnapshot')
+					&& structKeyExists(fileContent.data.chargePaymentMethod.transaction.paymentMethodSnapshot, 'captureId')
+				){
+					arguments.responseBean.setReferenceNumber(fileContent.data.chargePaymentMethod.transaction.paymentMethodSnapshot.captureId);
+				}
 			}
 			else{
 				responseBean.addError("Processing error", "Not able to process this request.");
