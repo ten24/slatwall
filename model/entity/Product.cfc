@@ -200,7 +200,26 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			return variables.nextDeliveryScheduleDate;
 		}
 	}
+	public any function getActiveSkuPricesForProductByCurrencyCode(required string currencyCode){
+		var skuPriceCollectionList = getService('skuService').getSkuPriceCollectionList();
+		skuPriceCollectionList.addFilter('sku.product.productID', this.getProductID());
+		skuPriceCollectionList.addFilter('activeFlag', 1);
+		skuPriceCollectionList.addFilter('promotionReward.promotionRewardID', 'NULL', 'Is');
+		skuPriceCollectionList.addFilter('currencyCode', arguments.currencyCode);
+		var skuPrices = skuPriceCollectionList.getRecords();
+		var priceStruct = {};
+		
+		for(var priceOb in skuPrices){
 
+			if(!isNull(priceStruct[priceOb.priceGroup_priceGroupCode])) {
+				arrayAppend(priceStruct[priceOb.priceGroup_priceGroupCode], priceOb);
+				continue;
+			}
+			priceStruct[priceOb.priceGroup_priceGroupCode] = [priceOb];
+		}
+		
+		return priceStruct;
+	}
 	public boolean function getDeferredRevenueFlag(){
 		if(!structKeyExists(variables,'deferredRevenueFlag')){
 			return false;
@@ -784,7 +803,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 		return productCrumbData;
 	}
-
+	
 	// Availability
 	public struct function getEstimatedReceivalDetails() {
 		if(!structKeyExists(variables, "estimatedReceivalDetails")) {
@@ -1278,7 +1297,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 		return variables.eventRegistrationsSmartList;
 	}
-
+	
 	// ============  END:  Non-Persistent Property Methods =================
 
 	// ============= START: Bidirectional Helper Methods ===================
