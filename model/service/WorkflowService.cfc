@@ -147,7 +147,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 
 	public void function runWorkflowTriggerById(required string workflowTriggerID){
-		var	workflowTrigger = runWorkflowsByScheduleTrigger(getHibachiScope().getEntity('WorkflowTrigger', arguments.workflowTriggerID));
+		var	workflowTrigger = runWorkflowsByScheduleTrigger(getHibachiScope().getEntity('WorkflowTrigger', arguments.workflowTriggerID), true);
 		if(!isNull(workflowTrigger.getWorkflowTriggerException())){
 			throw(workflowTrigger.getWorkflowTriggerException());
 		}
@@ -199,7 +199,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		return okToRunWorkflow;
 	}
 
-	public any function runWorkflowsByScheduleTrigger(required any workflowTrigger) {
+	public any function runWorkflowsByScheduleTrigger(required any workflowTrigger, boolean skipTriggerRunningCheck = false) {
 		var timeout = workflowTrigger.getTimeout();
 		if(!isNull(timeout)){
 			//convert to seconds
@@ -221,7 +221,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		lock name="runWorkflowsByScheduleTrigger_#getHibachiScope().getServerInstanceKey()#_#arguments.workflowTrigger.getWorkflowTriggerID()#" timeout="5" throwontimeout=false{
 			//Change WorkflowTrigger runningFlag to TRUE
 			var okToRunWorkflow = updateWorkflowTriggerRunning(workflowTrigger=arguments.workflowTrigger, runningFlag=true);
-			if( !okToRunWorkflow ){
+			if( !okToRunWorkflow && !skipTriggerRunningCheck){
 				return arguments.workflowTrigger;
 			}
 			
