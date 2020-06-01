@@ -151,9 +151,7 @@ class FlexshipFlowController {
     private getCanViewOFYStep():boolean{
 		this.orderTemplate = this.orderTemplateService.mostRecentOrderTemplate;
 		let today = new Date().getDate();
-		console.log(this.orderTemplate.scheduleOrderDayOfTheMonth > today )
-		console.log(this.orderTemplate.qualifiesForOFYProducts )
-		console.log(this.ofyProducts?.length)
+
 		if( this.currentStep === FlexshipSteps.SHOP){
 			this.loading = true;
 			let data = {
