@@ -357,7 +357,7 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 	    var merchantAccountId = setting(settingName='braintreeAccountMerchantID', requestBean=arguments.requestBean);
 
 		//request payload
-		var payload = { "query" : "mutation ChargePaymentMethod($input: ChargePaymentMethodInput!) { chargePaymentMethod(input: $input) { transaction { id status } } }",
+		var payload = { "query" : "mutation ChargePaymentMethod($input: ChargePaymentMethodInput!) { chargePaymentMethod(input: $input) { transaction { id status paymentMethodSnapshot {...on PayPalTransactionDetails { authorizationId captureId payer { email payerId firstName lastName } } } } } }",
 			"variables" : { "input": { "paymentMethodId": "#client_token#", "transaction" : { 
 				"amount" : '#total#',
 				"merchantAccountId" : "#merchantAccountId#",
@@ -390,6 +390,12 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 				arguments.responseBean.setProviderTransactionID(fileContent.data.chargePaymentMethod.transaction.id);
 				arguments.responseBean.setAmountAuthorized(total);
 				arguments.responseBean.setAmountReceived(total);
+				if(
+					structKeyExists(fileContent.data.chargePaymentMethod.transaction, 'paymentMethodSnapshot')
+					&& structKeyExists(fileContent.data.chargePaymentMethod.transaction.paymentMethodSnapshot, 'captureId')
+				){
+					arguments.responseBean.setReferenceNumber(fileContent.data.chargePaymentMethod.transaction.paymentMethodSnapshot.captureId);
+				}
 			}
 			else{
 				responseBean.addError("Processing error", "Not able to process this request.");
