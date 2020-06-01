@@ -107,7 +107,7 @@ class monatFlexshipScheduleModalController {
             	if(data.successfulActions?.indexOf('public:order.deleteOrderTemplatePromoItem') > -1){
             		data.orderTemplate.qualifiesForOFYProducts = true;
             	}else{
-            		data.orderTemplate.qualifiesForOFYProducts = this.orderTemplate.qualifiesForOFYProducts;
+            		data.orderTemplate.qualifiesForOFYProducts = this.qualifiesSnapShot;
             	}
                 this.observerService.notify("orderTemplateUpdated" + data.orderTemplate.orderTemplateID, data.orderTemplate);
                 this.closeModal();
