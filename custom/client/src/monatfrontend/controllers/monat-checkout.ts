@@ -43,6 +43,7 @@ class MonatCheckoutController {
 	public toggleBillingAddressForm:boolean;
 	public sponsorLoading:boolean;
 	public isLoading:boolean;
+	public addingSavedPaymentMethod = false;
 	
 	// @ngInject
 	constructor(
@@ -73,7 +74,10 @@ class MonatCheckoutController {
 		
 		this.observerService.attach(()=>{
 			this.toggleBillingAddressForm = false;
-			this.currentPaymentMethodID = '';
+			if (!this.addingSavedPaymentMethod) {
+				this.currentPaymentMethodID = '';	
+			}
+			this.addingSavedPaymentMethod = false;
 		}, 'addBillingAddressSuccess');
 		
 		this.observerService.attach( this.closeNewAddressForm, 'addNewAccountAddressSuccess' ); 
