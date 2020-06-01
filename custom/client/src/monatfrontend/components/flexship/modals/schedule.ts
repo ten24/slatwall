@@ -104,7 +104,6 @@ class monatFlexshipScheduleModalController {
         	this.orderTemplateService.getFlattenObject(payload)
         )
         .then( (data) => {
-    
         	if(data.orderTemplate) {
                 this.orderTemplate = data.orderTemplate;
             	this.monatAlertService.success(this.rbkeyService.rbKey('alert.flexship.updateSuccessful'));
