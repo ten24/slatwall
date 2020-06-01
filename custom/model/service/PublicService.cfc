@@ -2510,10 +2510,13 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     
     public any function updateOrderTemplateFrequency( required any data ){
         var result = false;
-    	if(!isNull(getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments))){
+        var orderTemplate = getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
+    	if(!isNull(orderTemplate)){
     	    result = getOrderService().deleteOrderTemplatePromoItems(arguments.data.orderTemplateID);
+	        arguments.data['ajaxResponse']['qualifiesForOFY'] = orderTemplate.getQualifiesForOFYProducts();
     	}
-	    getHibachiScope().addActionResult( "public:order.deleteOrderTemplatePromoItem", !result );  	    
+    	
+	    getHibachiScope().addActionResult( "public:order.deleteOrderTemplatePromoItem", !result );  
         super.updateOrderTemplateFrequency(arguments.data);
     }
     
