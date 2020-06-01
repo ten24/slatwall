@@ -1889,8 +1889,7 @@ component extends="Slatwall.model.service.OrderService" {
 		return newOrder();
 	}
 	
-	public any function deleteOrderTemplatePromoItems(required string orderTemplateID){
-		logHibachi('getting ordere items to delete')
+	public boolean function deleteOrderTemplatePromoItems(required string orderTemplateID){
 		var orderTemplateItemCollectionList = this.getOrderTemplateItemCollectionList();
 		orderTemplateItemCollectionList.addFilter('orderTemplate.orderTemplateID', arguments.orderTemplateID);
 		orderTemplateItemCollectionList.addFilter('temporaryFlag', true);
@@ -1899,7 +1898,9 @@ component extends="Slatwall.model.service.OrderService" {
 		for(var item in records){
 			var orderTemplateItem = this.getOrderTemplateItem( item.orderTemplateItemID );
 			deleteok = this.deleteOrderTemplateItem(orderTemplateItem);
+			ormFlush();
 		}
+	
 		return deleteok;
 	}
 

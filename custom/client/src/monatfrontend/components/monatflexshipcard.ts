@@ -30,7 +30,15 @@ class MonatFlexshipCardController {
 			this.updateOrderTemplate,
 			'orderTemplateUpdated' + this.orderTemplate.orderTemplateID,
 		);
-		
+		this.showAddOFYProductCallout = this.getCanSelectOFY();
+	};
+	
+	public $onDestroy = () => {
+		this.observerService.detachById('orderTemplateUpdated' + this.orderTemplate.orderTemplateID);
+	};
+	
+	
+	public getCanSelectOFY = ():boolean =>{
 		if(this.orderTemplate.scheduleOrderNextPlaceDateTime){
 			
 			let nextScheduledOrderDate = new Date(Date.parse(this.orderTemplate.scheduleOrderNextPlaceDateTime));
@@ -46,18 +54,14 @@ class MonatFlexshipCardController {
 			this.userCanEditOFYProductFlag = ( today <= addEditOFYUntilDate );
 
 			//we'll show add OFY callout, if next-scheduled-order-date is within current-month
-			this.showAddOFYProductCallout = ( today <= addEditOFYUntilDate && today.getMonth() <= nextScheduledOrderDate.getMonth() );
+			return ( today <= addEditOFYUntilDate && today.getMonth() <= nextScheduledOrderDate.getMonth() );
 			
 		}
-
-	};
-
-	public $onDestroy = () => {
-		this.observerService.detachById('orderTemplateUpdated' + this.orderTemplate.orderTemplateID);
-	};
-
+	}
+	
 	public updateOrderTemplate = (orderTemplate?) => {
 		this.orderTemplate = orderTemplate;
+		this.showAddOFYProductCallout = this.getCanSelectOFY();
 	};
 
 	//TODO refactorout to fexship listing, observerservice can be used to do that, or a whole new MonalModalService

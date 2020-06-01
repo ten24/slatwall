@@ -16,7 +16,7 @@ class monatFlexshipScheduleModalController {
 	public endDate;
 	public startDate;
 	public nextPlaceDateTime;
-
+	public qualifiesSnapShot = this.orderTemplate.qualifiesForOFYProducts
 	
 	public formData = {
 		delayOrSkip : 'delay',
@@ -80,7 +80,8 @@ class monatFlexshipScheduleModalController {
     
     public updateSchedule() {
         this.loading = true;
-    	
+        console.log('hello world')
+    	debugger;
     	let payload = {};
         payload['orderTemplateID'] = this.orderTemplate.orderTemplateID;
     	
@@ -103,9 +104,15 @@ class monatFlexshipScheduleModalController {
         	this.orderTemplateService.getFlattenObject(payload)
         )
         .then( (data) => {
+    
         	if(data.orderTemplate) {
                 this.orderTemplate = data.orderTemplate;
             	this.monatAlertService.success(this.rbkeyService.rbKey('alert.flexship.updateSuccessful'));
+            	if(data.successfulActions?.indexOf('public:order.deleteOrderTemplatePromoItem') > -1){
+            		data.orderTemplate.qualifiesForOFYProducts = true;
+            	}else{
+            		data.orderTemplate.qualifiesForOFYProducts = this.orderTemplate.qualifiesForOFYProducts;
+            	}
                 this.observerService.notify("orderTemplateUpdated" + data.orderTemplate.orderTemplateID, data.orderTemplate);
                 this.closeModal();
         	} else {

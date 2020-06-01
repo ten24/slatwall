@@ -2499,19 +2499,22 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     }
     
     public any function updateOrderTemplateSchedule( required any data ){
-        super.updateOrderTemplateSchedule(arguments.data);
-    	var orderTemplate = getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
-    	if(isNull(orderTemplate)) return;
-    	var result = getOrderService().deleteOrderTemplatePromoItems(arguments.data.orderTemplateID);
-    	getHibachiScope().addActionResult( "public:order.deleteOrderTemplatePromoItem", !result );
+        var result = false;
+    	if(!isNull(getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments))){
+    	    result = getOrderService().deleteOrderTemplatePromoItems(arguments.data.orderTemplateID);
+    	}
+    	getHibachiScope().addActionResult( "public:order.deleteOrderTemplatePromoItem", !result );  
+    	super.updateOrderTemplateSchedule(arguments.data);
+  
     }
     
     public any function updateOrderTemplateFrequency( required any data ){
+        var result = false;
+    	if(!isNull(getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments))){
+    	    result = getOrderService().deleteOrderTemplatePromoItems(arguments.data.orderTemplateID);
+    	}
+	    getHibachiScope().addActionResult( "public:order.deleteOrderTemplatePromoItem", !result );  	    
         super.updateOrderTemplateFrequency(arguments.data);
-    	var orderTemplate = getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
-    	if(isNull(orderTemplate)) return;
-    	var result = getOrderService().deleteOrderTemplatePromoItems(arguments.data.orderTemplateID);
-    	getHibachiScope().addActionResult( "public:order.deleteOrderTemplatePromoItem", !result );
     }
     
     
