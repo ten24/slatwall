@@ -16,7 +16,7 @@ class monatFlexshipScheduleModalController {
 	public endDate;
 	public startDate;
 	public nextPlaceDateTime;
-	public qualifiesSnapShot = this.orderTemplate.qualifiesForOFYProducts
+	public qualifiesSnapShot:boolean;
 	
 	public formData = {
 		delayOrSkip : 'delay',
@@ -42,7 +42,7 @@ class monatFlexshipScheduleModalController {
         this.loading = true;
     	this.makeTranslations();
     	this.calculateNextPlacedDateTime();
-    	
+    	this.qualifiesSnapShot = this.orderTemplate.qualifiesForOFYProducts;
 		this.monatService.getOptions({ 'frequencyTermOptions':false, 'scheduleDateChangeReasonTypeOptions':false})
 		.then( (options) => {
 			
@@ -80,8 +80,6 @@ class monatFlexshipScheduleModalController {
     
     public updateSchedule() {
         this.loading = true;
-        console.log('hello world')
-    	debugger;
     	let payload = {};
         payload['orderTemplateID'] = this.orderTemplate.orderTemplateID;
     	
@@ -97,8 +95,7 @@ class monatFlexshipScheduleModalController {
     	}
     
     	payload['frequencyTermID'] = this.formData.selectedFrequencyTermID;
-    	
-    	
+    
         this.orderTemplateService
         .updateOrderTemplateSchedule(
         	this.orderTemplateService.getFlattenObject(payload)
