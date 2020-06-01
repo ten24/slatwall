@@ -499,6 +499,27 @@ component extends="HibachiService" accessors="true" {
 		}
 		return arguments.products;
 	}
+	
+	public any function appendCategoriesToProduct(required array products) {
+		if(arrayLen(arguments.products)) {
+			for(var product in arguments.products) {
+				
+				var currentProduct = this.getProduct(product.productID);
+				var categories = [];
+				if( arrayLen(currentProduct.getCategories()) ) {
+					var productCategories = currentProduct.getCategories();
+					for( var i=1; i<= arrayLen(productCategories); i++ ) {
+						categories[i]['categoryID'] = productCategories[i].getCategoryID();
+						categories[i]['categoryName'] = productCategories[i].getCategoryName();
+					}
+				}
+				
+				product['categories'] = categories;
+			}
+		}
+		
+		return arguments.products;
+	}
 
 
 	// =====================  END: Logical Methods ============================
