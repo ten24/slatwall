@@ -146,7 +146,7 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 		queryService.execute(sql=sql);
 	} 
 
-	public void function bulkInsertEntityQueueByFlagPropertyName(required string flagPropertyName, required string entityName, required string processMethod, boolean flagValue=true){
+	public void function bulkInsertEntityQueueByFlagPropertyName(required string flagPropertyName, required string entityName, required string processMethod, boolean unique=false, boolean flagValue=true){
 		
 		var primaryIDPropertyName = getHibachiService().getPrimaryIDPropertyNameByEntityName(arguments.entityName);	
 		var queryService = new query();
@@ -170,6 +170,13 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 		
 		sql &= "FROM #getHibachiService().getTableNameByEntityName(arguments.entityName)# ";
 		sql &= "WHERE #arguments.flagPropertyName# = :flagValue";
+	
+		if(arguments.unique){
+			sql &= " AND #primaryIDPropertyName# not in (";
+			sql &= " SELECT baseID FROM swEntityQueue";
+			sql &= " WHERE processMethod = :processMethod";
+			sql &= ")";
+		} 
 	
 		queryService.addParam(name='flagValue', value=arguments.flagValue, CFSQLTYPE="CF_SQL_BIT");
 		queryService.addParam(name='processMethod', value=arguments.processMethod, CFSQLTYPE="CF_SQL_VARCHAR");

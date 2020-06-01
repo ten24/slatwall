@@ -382,6 +382,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			// Site
 			siteAvailableLocales = {fieldType="multiselect", defaultValue="en_us"},
 			siteDefaultAccountPaymentMethod = {fieldtype="select", defaultValue="444df303dedc6dab69dd7ebcc9b8036a"},	
+			siteDefaultLocale = {fieldType="select"},
 			siteForgotPasswordEmailTemplate = {fieldType="select", defaultValue="dbb327e796334dee73fb9d8fd801df91"},
 			siteVerifyAccountEmailAddressEmailTemplate = {fieldType="select", defaultValue="61d29dd9f6ca76d9e352caf55500b458"},
 			siteOrderOrigin = {fieldType="select"},
@@ -640,6 +641,8 @@ component extends="HibachiService" output="false" accessors="true" {
 			case "productImageOptionCodeDelimiter":
 				return ['-','_'];
 			case "siteAvailableLocales":
+				return getTranslationService().getSiteAvailableLocalesOptions();
+			case "siteDefaultLocale":
 				return getTranslationService().getSiteAvailableLocalesOptions();
 			case "siteDefaultAccountPaymentMethod":
 				return getPaymentService().getActivePaymentMethodOptions();

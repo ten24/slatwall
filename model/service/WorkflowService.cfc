@@ -147,7 +147,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 
 	public void function runWorkflowTriggerById(required string workflowTriggerID){
-		var	workflowTrigger = runWorkflowsByScheduleTrigger(getHibachiScope().getEntity('WorkflowTrigger', arguments.workflowTriggerID));
+		var	workflowTrigger = runWorkflowsByScheduleTrigger(getHibachiScope().getEntity('WorkflowTrigger', arguments.workflowTriggerID), true);
 		if(!isNull(workflowTrigger.getWorkflowTriggerException())){
 			throw(workflowTrigger.getWorkflowTriggerException());
 		}
@@ -199,7 +199,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		return okToRunWorkflow;
 	}
 
-	public any function runWorkflowsByScheduleTrigger(required any workflowTrigger) {
+	public any function runWorkflowsByScheduleTrigger(required any workflowTrigger, boolean skipTriggerRunningCheck = false) {
 		var timeout = workflowTrigger.getTimeout();
 		if(!isNull(timeout)){
 			//convert to seconds
@@ -221,7 +221,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		lock name="runWorkflowsByScheduleTrigger_#getHibachiScope().getServerInstanceKey()#_#arguments.workflowTrigger.getWorkflowTriggerID()#" timeout="5" throwontimeout=false{
 			//Change WorkflowTrigger runningFlag to TRUE
 			var okToRunWorkflow = updateWorkflowTriggerRunning(workflowTrigger=arguments.workflowTrigger, runningFlag=true);
-			if( !okToRunWorkflow ){
+			if( !okToRunWorkflow && !arguments.skipTriggerRunningCheck){
 				return arguments.workflowTrigger;
 			}
 			
@@ -475,8 +475,13 @@ component extends="HibachiService" accessors="true" output="false" {
 					entityCollection.executeUpdate(updateData);		
 
 					//call entity queue dao to insert into with a select
-					getHibachiEntityQueueDAO().bulkInsertEntityQueueByFlagPropertyName(processEntityQueueFlagPropertyName, arguments.entity.getClassName(), arguments.workflowTaskAction.getProcessMethod(), updateData[processEntityQueueFlagPropertyName]);
+					getHibachiEntityQueueDAO().bulkInsertEntityQueueByFlagPropertyName(processEntityQueueFlagPropertyName, arguments.entity.getClassName(), arguments.workflowTaskAction.getProcessMethod(), arguments.workflowTaskAction.getUniqueFlag(), updateData[processEntityQueueFlagPropertyName]);
 					
+					var updateData = {
+						'#processEntityQueueFlagPropertyName#': false
+					};
+
+					entityCollection.executeUpdate(updateData);		
 					actionSuccess = true; 
 					break; 
 				} 
@@ -486,7 +491,7 @@ component extends="HibachiService" accessors="true" output="false" {
 					
 					var primaryIDName = getHibachiService().getPrimaryIDPropertyNameByEntityName(arguments.entity.getClassName()); 
 					var primaryIDsToQueue = getHibachiUtilityService().arrayOfStructsToList(arguments.data.collectionData, primaryIDName);
-					getHibachiEntityQueueDAO().bulkInsertEntityQueueByPrimaryIDs(primaryIDsToQueue, arguments.entity.getClassName(), arguments.workflowTaskAction.getProcessMethod(), workflowTaskAction.getUniqueFlag());
+					getHibachiEntityQueueDAO().bulkInsertEntityQueueByPrimaryIDs(primaryIDsToQueue, arguments.entity.getClassName(), arguments.workflowTaskAction.getProcessMethod(), arguments.workflowTaskAction.getUniqueFlag());
 					
 					actionSuccess = true; 
 				}
