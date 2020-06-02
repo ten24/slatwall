@@ -84,7 +84,7 @@ Notes:
 	<cfset local.taxType = 'Tax'>
 </cfif>
 
-<cfdocument format="PDF" orientation="portrait">
+
 	<cfset local.defaultTable = 'width: 100%; font-family: Arial, sans-serif; font-size: 11px; color: ##848484; border-collapse: collapse;' />
 	<cfoutput>
 		
@@ -115,14 +115,6 @@ Notes:
 										<td style="text-align: right;">Order Date:</td>
 										<td style="text-align: right;">#DateFormat(order.getOrderOpenDateTime(), "MM/DD/YYYY")#</td>
 									</tr>
-									<tr>
-										<td style="text-align: right;">Shipment Number:</td>
-										<td style="text-align: right;">&nbsp;</td>
-									</tr>
-									<tr>
-										<td style="text-align: right;">Invoice Number:</td>
-										<td style="text-align: right;">#order.getInvoiceNumber()#</td>
-									</tr>
 								</table>
 							</td>
 						</tr>
@@ -147,6 +139,9 @@ Notes:
 								<b style="color: ##555; font-size: 15px;">Invoice</b>
 							</td>
 							
+							<td width="33%" valign="top" style="text-align: center;">
+								&nbsp;
+							</td>
 						</tr>
 					</table>
 					
@@ -529,5 +524,4 @@ Notes:
 		</table>
 	
 	</cfoutput>
-</cfdocument>
 
