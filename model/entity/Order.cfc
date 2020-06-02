@@ -1471,13 +1471,18 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 		for(var i=1; i<=arrayLen(orderItems); i++) {
 			if( listFindNoCase("oitSale,oitDeposit,oitReplacement",orderItems[i].getTypeCode()) ) {
 				vatTotal = getService('HibachiUtilityService').precisionCalculate(vatTotal + orderItems[i].getVATAmount());
+				if(!isNull(orderItems[i].getOrderFulfillment()) && !isNull(orderItems[i].getOrderFulfillment().getChargeTaxAmount())){
+					vatTotal = getService('HibachiUtilityService').precisionCalculate(vatTotal + orderItems[i].getOrderFulfillment().getChargeTaxAmount());
+				}
+				
 			} else if ( orderItems[i].getTypeCode() == "oitReturn" ) {
 				vatTotal = getService('HibachiUtilityService').precisionCalculate(vatTotal - orderItems[i].getVATAmount());
 			} else {
 				throw("there was an issue calculating the subtotal because of a orderItemType associated with one of the items");
 			}
 		}
-
+		
+		vatTotal = getService('HibachiUtilityService').precisionCalculate(vatTotal + this.getFulfillmentChargeVATAmount());
 		variables.vatTotal = vatTotal;
 		
 		return vatTotal;
@@ -1515,6 +1520,19 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 			variables.refreshCalculateFulfillmentChargeFlag = false;
 		}
 		return variables.fulfillmentChargeTaxAmount;
+	}
+	
+	public numeric function getFulfillmentChargeVATAmount(){
+		if(!structKeyExists(variables,'fulfillmentChargeVATAmount') || ( variables.refreshCalculateFulfillmentChargeFlag ) ){
+			var vatTotal = 0;
+			for(var orderFulfillment in this.getOrderFulfillments()) {
+				getService('HibachiUtilityService').logHibachi(orderFulfillment.getChargeVATAmount())
+				vatTotal = getService('HibachiUtilityService').precisionCalculate(vatTotal + orderFulfillment.getChargeVATAmount());
+			}
+			variables.fulfillmentChargeVATAmount = vatTotal;
+			variables.refreshCalculateFulfillmentChargeFlag = false;
+		}
+		return variables.fulfillmentChargeVATAmount;
 	}
 
 	public numeric function getTotal() {
