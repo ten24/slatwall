@@ -265,15 +265,11 @@ extends = "Slatwall.integrationServices.BaseTax" {
 					// Setup the itemData
 					var amount = item.getPrice();
 
-					if(!isNull(item.getOrderFulfillment().getHandlingFee()) && item.getFeeType() != 'handling' && item.getFeeType() != 'shipping'){
-						amount += item.getOrderFulfillment().getHandlingFee();
-					}
-					
 					var itemData = {};
 					itemData.LineNo = item.getOrderFulfillmentID() & item.getFeeType();
 					itemData.DestinationCode = addressIndex;
 					itemData.OriginCode = 1;
-					itemData.ItemCode = item.getFeeType();
+					itemData.ItemCode = item.getFeeType() == 'handling' ? 'OH010000' : 'Shipping';
 					itemData.TaxCode = item.getTaxCategoryCode();
 					itemData.Qty = 1;
 					itemData.Amount = amount;
