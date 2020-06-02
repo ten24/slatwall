@@ -802,7 +802,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	public void function setShippingMethod( any shippingMethod, boolean persistShippingMethodOption=true ) {
 		if(structKeyExists(arguments, "shippingMethod")) {
 			
-			if(!isNull(getOrder().getOrderTemplate())){
+			if(!isNull(getOrder().getOrderTemplate()) || this.getManualFulfillmentChargeFlag() == true){
 				variables.shippingMethod=arguments.shippingMethod;
 				return;
 			}
