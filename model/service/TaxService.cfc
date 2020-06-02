@@ -343,7 +343,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						newAppliedTax.setTaxAmount( newAppliedTax.getTaxLiabilityAmount() );
 					}
 					
-					var correctProportionalTaxAmount = originalOrderItem.getTaxAmount() * orderItem.getQuantity() / originalOrderItem.getQuantity();
+					var correctProportionalTaxAmount = round(originalOrderItem.getTaxAmount() * orderItem.getQuantity() * 100 / originalOrderItem.getQuantity()) / 100;
 					var appliedTaxDifference = correctProportionalTaxAmount - orderItem.getTaxAmount();
 					
 					if(appliedTaxDifference != 0){
