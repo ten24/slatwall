@@ -128,6 +128,8 @@ Notes:
 			AND runningFlag != <cfqueryparam cfsqltype="cf_sql_bit" value="#arguments.runningFlag#"> 
 			<cfif structKeyExists(arguments, "timeout")>
 				AND nextRunDateTime <= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#dateAdd('n',(-1 * arguments.timeout),now())#"> 
+			<cfelse>
+				AND (nextRunDateTime is null or nextRunDateTime <= CURRENT_TIMESTAMP())
 			</cfif> 
 		</cfquery>
 		

@@ -226,10 +226,8 @@
 						}
 					}
 				}
-				
 				// Setup the proper content node and populate it with our FW/1 view on any keys that might have been found, use whichever key was farthest right
 				if( productKeyLocation && productKeyLocation > productTypeKeyLocation && productKeyLocation > brandKeyLocation && !$.slatwall.getProduct().isNew() && $.slatwall.getProduct().getActiveFlag() && ($.slatwall.getProduct().getPublishedFlag() || $.slatwall.getProduct().setting('productShowDetailWhenNotPublishedFlag'))) {
-					
 					// Attempt to load up the content template node, based on this products setting
 					var productTemplateContent = $.slatwall.getService("contentService").getContent( $.slatwall.getProduct().setting('productDisplayTemplate', [$.slatwall.getSite()]) );
 					

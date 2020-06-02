@@ -1771,7 +1771,7 @@ component extends="Slatwall.model.service.OrderService" {
 			}
 		}
 		
-		if(!temporaryItemFound){
+		if(!temporaryItemFound && !isNull(orderFulfillment)){
 			arguments.order = addDefaultOFYSkuIfEligible(arguments.order,arguments.orderTemplate,orderFulfillment);
 		}
 		
