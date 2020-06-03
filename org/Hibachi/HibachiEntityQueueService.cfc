@@ -80,7 +80,6 @@ component accessors="true" output="false" extends="HibachiService" {
 			
 			var hibachiErrors = getHibachiValidationService().validate(entity, processContext, false);//don't set errors on object
 			entityValidToInvoke = !hibachiErrors.hasErrors();
-			//set validation errors on entity queue for tracking purposes? 	
 			
 			if(entityValidToInvoke){
 				arguments.entity = 	arguments.service.process(arguments.entity, entityQueueData, processContext); 	
@@ -88,7 +87,9 @@ component accessors="true" output="false" extends="HibachiService" {
 				if(!entityValidToInvoke){
 					this.logHibachi('entity queue encountered errors after invoking process #serializeJson(arguments.entity.getErrors())#',true);
 				} 
-			}   
+			}else{
+				throw('Validation Errors: '&serializeJson(hibachiErrors.getErrors()));
+			}
 		} else if(entityValidToInvoke) {
 			var methodData = { '1'=entity };
 			if(hasEntityQueueData){
