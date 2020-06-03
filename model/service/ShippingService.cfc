@@ -637,7 +637,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					}
 				}
 				// If the previously selected shipping method does not exist in the options now, then we just remove it.
-				if( !isNull(arguments.orderFulfillment.getShippingMethod()) && !listFindNoCase(shippingMethodIDOptionsList, arguments.orderFulfillment.getShippingMethod().getShippingMethodID())) {
+				if( !orderFulfillment.getManualFulfillmentChargeFlag() && !isNull(arguments.orderFulfillment.getShippingMethod()) && !listFindNoCase(shippingMethodIDOptionsList, arguments.orderFulfillment.getShippingMethod().getShippingMethodID())) {
 					arguments.orderFulfillment.setFulfillmentCharge(0);
 					arguments.orderFulfillment.setShippingMethod(javaCast("null",""));
 				}
