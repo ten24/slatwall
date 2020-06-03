@@ -58,7 +58,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			removeTaxesFromAllOrderItemsAndOrderFulfillments(arguments.order);
 			return;
 		}
-		
+		logHibachi('UPDATING TAX AMOUNTS')
 		var ratesResponseBeans = {};
 		var taxAddresses = addTaxAddressesStructBillingAddressKey(arguments.order);
 
@@ -216,7 +216,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 									var responseBeanMessage =serializeJSON(thisResponseBean.getMessages());
 
 									for(var taxRateItemResponse in thisResponseBean.getTaxRateItemResponseBeans()) {
-
+									
 										if(taxRateItemResponse.getReferenceObjectType() == 'OrderItem' && taxRateItemResponse.getOrderItemID() == orderItem.getOrderItemID()){
 											var taxCategoryRate = this.getTaxCategoryRate(taxCategoryRateData['taxCategoryRateID']);
 											// Add a new AppliedTax
@@ -533,7 +533,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 										var responseBeanMessage =serializeJSON(thisResponseBean.getMessages());
 										
 										for(var taxRateItemResponse in thisResponseBean.getTaxRateItemResponseBeans()) {
-	
+												logHibachi('UPDATING TAX AMOUNTS fee type: #taxRateItemResponse.getFeeType()# REFERENCE OBJECT: #taxRateItemResponse.getReferenceObjectType()#=================')
 											if(taxRateItemResponse.getReferenceObjectType() == 'OrderFulfillment'
 												&& taxRateItemResponse.getOrderFulfillmentID() == orderFulfillment.getOrderFulfillmentID()
 												&& ( 
