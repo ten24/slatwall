@@ -622,7 +622,6 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 		for(var taxApplied in getAppliedTaxes()) {
 			if(isNull(taxApplied.getVATAmount())) continue;
 			vatAmount = getService('HibachiUtilityService').precisionCalculate(vatAmount + taxApplied.getVATAmount());
-			getService('HibachiUtilityService').logHibachi(vatAmount)
 		}
 
 		return vatAmount;
