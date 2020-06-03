@@ -59,7 +59,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			removeTaxesFromAllOrderItemsAndOrderFulfillments(arguments.order);
 			return;
 		}
-		logHibachi('=========================UPDATING TAX============================')
+
 		var ratesResponseBeans = {};
 		var taxAddresses = addTaxAddressesStructBillingAddressKey(arguments.order);
 
@@ -217,7 +217,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 									var responseBeanMessage =serializeJSON(thisResponseBean.getMessages());
 
 									for(var taxRateItemResponse in thisResponseBean.getTaxRateItemResponseBeans()) {
-
+									
 										if(taxRateItemResponse.getReferenceObjectType() == 'OrderItem' && taxRateItemResponse.getOrderItemID() == orderItem.getOrderItemID()){
 											var taxCategoryRate = this.getTaxCategoryRate(taxCategoryRateData['taxCategoryRateID']);
 											// Add a new AppliedTax
@@ -308,10 +308,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// Apply Tax for return items
 			} else if (orderItem.getOrderItemType().getSystemCode() == "oitReturn") {
 				if(!isNull(orderItem.getReferencedOrderItem())) {
+					var originalOrderItem = orderItem.getReferencedOrderItem();
+					var originalAppliedTaxes = originalOrderItem.getAppliedTaxes();
 
-					var originalAppliedTaxes = orderItem.getReferencedOrderItem().getAppliedTaxes();
-
-					for(var originalAppliedTax in orderItem.getReferencedOrderItem().getAppliedTaxes()) {
+					for(var originalAppliedTax in originalAppliedTaxes) {
 
 						var newAppliedTax = this.newTaxApplied();
 
@@ -322,7 +322,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						newAppliedTax.setTaxCategoryRate( originalAppliedTax.getTaxCategoryRate() );
 						newAppliedTax.setOrderItem( orderItem );
 						newAppliedTax.setCurrencyCode( orderItem.getCurrencyCode() );
-						var taxAmount = round((originalAppliedTax.getTaxAmount()/orderItem.getReferencedOrderItem().getQuantity())*orderitem.getQuantity() * 100) / 100;
+						var taxAmount = round((originalAppliedTax.getTaxAmount()/originalOrderItem.getQuantity())*orderitem.getQuantity() * 100) / 100;
+						
 						newAppliedTax.setTaxLiabilityAmount( taxamount );
 
 						newAppliedTax.setTaxImpositionID( originalAppliedTax.getTaxImpositionID() );
@@ -342,6 +343,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						
 						newAppliedTax.setTaxAmount( newAppliedTax.getTaxLiabilityAmount() );
 					}
+					
+					var correctProportionalTaxAmount = round(originalOrderItem.getTaxAmount() * orderItem.getQuantity() * 100 / originalOrderItem.getQuantity()) / 100;
+					var appliedTaxDifference = correctProportionalTaxAmount - orderItem.getTaxAmount();
+					
+					if(appliedTaxDifference != 0){
+						newAppliedTax.setTaxAmount( newAppliedTax.getTaxAmount() + appliedTaxDifference );
+						newAppliedTax.setTaxLiabilityAmount( newAppliedTax.getTaxAmount() );
+					}
+					
 				//Then calculate the tax if there is no referenced item.
 				} else {
 					// Get this sku's taxCategory
@@ -536,7 +546,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 										var responseBeanMessage =serializeJSON(thisResponseBean.getMessages());
 										
 										for(var taxRateItemResponse in thisResponseBean.getTaxRateItemResponseBeans()) {
-	
 											if(taxRateItemResponse.getReferenceObjectType() == 'OrderFulfillment'
 												&& taxRateItemResponse.getOrderFulfillmentID() == orderFulfillment.getOrderFulfillmentID()
 												&& ( 

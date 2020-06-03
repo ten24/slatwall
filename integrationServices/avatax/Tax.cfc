@@ -264,16 +264,11 @@ extends = "Slatwall.integrationServices.BaseTax" {
 				}else if (item.getReferenceObjectType() == 'OrderFulfillment' && item.getOrderFulfillment().hasOrderFulfillmentItem()){
 					// Setup the itemData
 					var amount = item.getPrice();
-
-					if(!isNull(item.getOrderFulfillment().getHandlingFee()) && item.getFeeType() != 'handling' && item.getFeeType() != 'shipping'){
-						amount += item.getOrderFulfillment().getHandlingFee();
-					}
-					
 					var itemData = {};
 					itemData.LineNo = item.getOrderFulfillmentID() & item.getFeeType();
 					itemData.DestinationCode = addressIndex;
 					itemData.OriginCode = 1;
-					itemData.ItemCode = 'Shipping';
+					itemData.ItemCode = item.getFeeType() == 'handling' ? 'OH010000' : 'Shipping';
 					itemData.TaxCode = item.getTaxCategoryCode();
 					itemData.Qty = 1;
 					itemData.Amount = amount;
@@ -358,8 +353,8 @@ extends = "Slatwall.integrationServices.BaseTax" {
 					// Make sure that there is a taxAmount for this orderItem
 					if(taxLine.Tax > 0) {
 						
-						var primaryIDName = left(taxLine.taxCode,2) == "FR" ? "orderFulfillmentId" : "orderItemId";
-						var referenceObjectType = left(taxLine.taxCode,2) == "FR" ? "OrderFulfillment" : "OrderItem";
+						var primaryIDName = left(taxLine.taxCode,2) == "FR" || left(taxLine.taxCode,2) == "OH" ? "orderFulfillmentId" : "orderItemId";
+						var referenceObjectType = left(taxLine.taxCode,2) == "FR" || left(taxLine.taxCode,2) == "OH" ? "OrderFulfillment" : "OrderItem";
 						// Loop over the details of that taxAmount
 						for(var taxDetail in taxLine.TaxDetails) {
 							
