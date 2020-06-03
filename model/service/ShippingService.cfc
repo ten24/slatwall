@@ -522,8 +522,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var manualShippingMethodRateHash = hash(serializeJson(shippingMethodRatesCollectionList.getRecords(formatRecords=false)),'md5');
 			arrayAppend(fulfillmentMethodOptionsCacheKeyArray,manualShippingMethodRateHash);
 			
-			// var fulfillmentMethodOptionsCacheKey = hash(ArrayToList(fulfillmentMethodOptionsCacheKeyArray,''),'md5');
-			var fulfillmentMethodOptionsCacheKey = createUUID();
+			var fulfillmentMethodOptionsCacheKey = hash(ArrayToList(fulfillmentMethodOptionsCacheKeyArray,''),'md5');
+
 			if(isNull(arguments.orderFulfillment.getFulfillmentMethodOptionsCacheKey()) || arguments.orderFulfillment.getFulfillmentMethodOptionsCacheKey() != fulfillmentMethodOptionsCacheKey){
 				
 				var shippingMethodRateResponseBeans = getShippingMethodRatesResponseBeansByIntegrationsAndOrderFulfillment(integrations,arguments.orderFulfillment,shippingMethodRatesRequestBeans);
