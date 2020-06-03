@@ -216,7 +216,8 @@ component extends="HibachiService" output="false" accessors="true" {
 			fulfillmentMethodAutoLocation = {fieldType="select", defaultValue="88e6d435d3ac2e5947c81ab3da60eba2"},
 			fulfillmentMethodAutoMinReceivedPercentage = {fieldType="text", formatType="percentage", defaultValue=100},
 			fulfillmentMethodTaxCategory = {fieldType="select", defaultValue="444df2c8cce9f1417627bd164a65f133"},
-
+			fulfillmentMethodHandlingFeeTaxCategory = {fieldType="select", defaultValue="d3ee781492d311e9a4b9124eec8f77b2"},
+			
 			// Global
 			globalInspectRestrictionDisplays={fieldType="yesno",defaultValue=0},
 			globalAllowCustomBranchUpdates={fieldType="yesno",defaultValue=0},
@@ -401,7 +402,6 @@ component extends="HibachiService" output="false" accessors="true" {
 			shippingMethodRateHandlingFeeFlag = {fieldType="yesno",defaultValue=0},
 			shippingMethodRateHandlingFeeType = {fieldType="select",defaultValue="amount"},
 			shippingMethodRateHandlingFeeAmount = {fieldType="text", formatType="currency",defaultValue=0,validate={dataType="numeric"}},
-			shippingMethodRateHandlingFeeTaxCategory = {fieldType="select", defaultValue=""},
 			shippingMethodRateAdjustmentType = {fieldType="select", defaultValue="increasePercentage"},
 			shippingMethodRateAdjustmentAmount = {fieldType="text", defaultValue=0},
 			shippingMethodRateMinimumAmount = {fieldType="text", defaultValue=0},
@@ -659,7 +659,7 @@ component extends="HibachiService" output="false" accessors="true" {
 				return [{name='Sort Order', value='sortOrder'}, {name='Lowest Rate', value='lowest'}, {name='Highest Rate', value='highest'}];
 			case "ShippingMethodRateHandlingFeeType" :
 				return [{name='Amount', value='amount'}, {name='Percentage', value='percentage'}];
-			case "shippingMethodRateHandlingFeeTaxCategory":
+			case "fulfillmentMethodHandlingFeeTaxCategory":
 				var optionSL = getTaxService().getTaxCategorySmartList();
 				optionSL.addFilter('activeFlag', 1);
 				optionSL.addSelect('taxCategoryName', 'name');

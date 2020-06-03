@@ -827,7 +827,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 					if(!listContains('otExchangeOrder,otReplacementOrder', getOrder().getOrderType().getSystemCode())){
 						var shippingMethodRate = getFulfillmentShippingMethodOptions()[i].getShippingMethodRate();
 						setHandlingFee(shippingMethodRate.getHandlingFeeAsNumericValue(this));
-						setHandlingFeeTaxCategory(shippingMethodRate.setting('shippingMethodRateHandlingFeeTaxCategory'));
+						setHandlingFeeTaxCategory(this.setting('fulfillmentMethodHandlingFeeTaxCategory'));
 					}
 				}
 			}
