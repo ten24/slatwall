@@ -54,11 +54,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="settingService" type="any";
 
 	public void function updateOrderAmountsWithTaxes(required any order) {
+				logHibachi('=========================UPDATING TAX============================')
 		if (!arguments.order.hasOrderItem()){
 			removeTaxesFromAllOrderItemsAndOrderFulfillments(arguments.order);
 			return;
 		}
-		
+		logHibachi('=========================UPDATING TAX============================')
 		var ratesResponseBeans = {};
 		var taxAddresses = addTaxAddressesStructBillingAddressKey(arguments.order);
 
@@ -550,7 +551,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 												newAppliedTax.setTaxCategoryRate( taxCategoryRate );
 												newAppliedTax.setOrderFulfillment( orderFulfillment );
 												newAppliedTax.setCurrencyCode( arguments.order.getCurrencyCode() );
-												newAppliedTax.setTaxLiabilityAmount( taxRateItemResponse.getTaxAmount() );
+												newAppliedTax.setTaxLiabilityAmount( taxRateItemResponse.getVATAmount() );
 	
 												newAppliedTax.setTaxImpositionID( taxRateItemResponse.getTaxImpositionID() );
 												newAppliedTax.setTaxImpositionName( taxRateItemResponse.getTaxImpositionName() );
@@ -568,10 +569,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 												newAppliedTax.setTaxCountryCode( taxRateItemResponse.getTaxCountryCode() );
 												
 												newAppliedTax.setMessage(responseBeanMessage);
-												
+												logHibachi('setting tax amount for #newAppliedTax.gettaxAppliedID()# Type: #feeType# taxAmount: #taxRateItemResponse.getTaxAmount()# vatAmount: #taxRateItemResponse.getVATAmount()#')
+												logHibachi('======================= setting tax amount for #newAppliedTax.gettaxAppliedID()# amount: #newAppliedTax.getTaxLiabilityAmount()# =================')
 												// Set the taxAmount to the taxLiabilityAmount, if that is supposed to be charged to the customer
 												if(taxCategoryRate.getTaxLiabilityAppliedToItemFlag() == true){
-													newAppliedTax.setTaxAmount( newAppliedTax.getTaxLiabilityAmount() );
+													newAppliedTax.setVATAmount( newAppliedTax.getTaxLiabilityAmount() );
 												} else {
 													newAppliedTax.setTaxAmount( 0 );
 												}
@@ -612,7 +614,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 									newAppliedTax.setTaxStateCode( taxAddress.getStateCode() );
 									newAppliedTax.setTaxPostalCode( taxAddress.getPostalCode() );
 									newAppliedTax.setTaxCountryCode( taxAddress.getCountryCode() );
-	
+						logHibachi('line 616 setting tax amount for #newAppliedTax.gettaxAppliedID()#')
+												logHibachi('======================= setting tax amount for #newAppliedTax.gettaxAppliedID()# amount: #newAppliedTax.getTaxLiabilityAmount()# =================')
 									// Set the taxAmount to the taxLiabilityAmount, if that is supposed to be charged to the customer
 									if(taxCategoryRate.getTaxLiabilityAppliedToItemFlag() == true){
 										newAppliedTax.setTaxAmount( newAppliedTax.getTaxLiabilityAmount() );
