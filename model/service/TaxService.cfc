@@ -54,7 +54,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="settingService" type="any";
 
 	public void function updateOrderAmountsWithTaxes(required any order) {
-				logHibachi('=========================UPDATING TAX============================')
 		if (!arguments.order.hasOrderItem()){
 			removeTaxesFromAllOrderItemsAndOrderFulfillments(arguments.order);
 			return;
@@ -586,11 +585,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 												newAppliedTax.setTaxCountryCode( taxRateItemResponse.getTaxCountryCode() );
 												
 												newAppliedTax.setMessage(responseBeanMessage);
-												logHibachi('setting tax amount for #newAppliedTax.gettaxAppliedID()# Type: #feeType# taxAmount: #taxRateItemResponse.getTaxAmount()# vatAmount: #taxRateItemResponse.getVATAmount()#')
-												logHibachi('======================= setting tax amount for #newAppliedTax.gettaxAppliedID()# amount: #newAppliedTax.getTaxLiabilityAmount()# =================')
-												
-												
-												logHibachi('IS VAT ORDER!!!!!!!!!!! #isVATApplicable#')
 												// Set the taxAmount to the taxLiabilityAmount, if that is supposed to be charged to the customer
 												if(taxCategoryRate.getTaxLiabilityAppliedToItemFlag() == true){
 													if(isVATApplicable){
@@ -640,8 +634,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 									newAppliedTax.setTaxStateCode( taxAddress.getStateCode() );
 									newAppliedTax.setTaxPostalCode( taxAddress.getPostalCode() );
 									newAppliedTax.setTaxCountryCode( taxAddress.getCountryCode() );
-						logHibachi('line 616 setting tax amount for #newAppliedTax.gettaxAppliedID()#')
-												logHibachi('======================= setting tax amount for #newAppliedTax.gettaxAppliedID()# amount: #newAppliedTax.getTaxLiabilityAmount()# =================')
 									// Set the taxAmount to the taxLiabilityAmount, if that is supposed to be charged to the customer
 									if(taxCategoryRate.getTaxLiabilityAppliedToItemFlag() == true){
 										newAppliedTax.setTaxAmount( newAppliedTax.getTaxLiabilityAmount() );

@@ -1522,7 +1522,6 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 		if(!structKeyExists(variables,'fulfillmentChargeVATAmount') || ( variables.refreshCalculateFulfillmentChargeFlag ) ){
 			var vatTotal = 0;
 			for(var orderFulfillment in this.getOrderFulfillments()) {
-				getService('HibachiUtilityService').logHibachi(orderFulfillment.getChargeVATAmount())
 				vatTotal = getService('HibachiUtilityService').precisionCalculate(vatTotal + orderFulfillment.getChargeVATAmount());
 			}
 			variables.fulfillmentChargeVATAmount = vatTotal;

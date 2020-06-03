@@ -620,11 +620,8 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 		var vatAmount = 0;
 
 		for(var taxApplied in getAppliedTaxes()) {
-					getService('HibachiUtilityService').logHibachi(taxApplied.gettaxappliedID())
 			if(isNull(taxApplied.getVATAmount())) continue;
 			vatAmount = getService('HibachiUtilityService').precisionCalculate(vatAmount + taxApplied.getVATAmount());
-				getService('HibachiUtilityService').logHibachi(taxApplied.gettaxappliedID())
-				getService('HibachiUtilityService').logHibachi(taxApplied.getVATAmount())
 			getService('HibachiUtilityService').logHibachi(vatAmount)
 		}
 
@@ -932,11 +929,6 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 		}
 		return variables.orderFulfillmentStatusType;
 	}
-	
-	public any function getVATAmount() {
-		
-	}
-
 
 	// ==================  END:  Overridden Methods ========================
 
