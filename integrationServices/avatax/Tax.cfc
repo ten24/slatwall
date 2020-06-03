@@ -264,7 +264,8 @@ extends = "Slatwall.integrationServices.BaseTax" {
 				}else if (item.getReferenceObjectType() == 'OrderFulfillment' && item.getOrderFulfillment().hasOrderFulfillmentItem()){
 					// Setup the itemData
 					var amount = item.getPrice();
-
+					logHibachi('FEE TYPEE: #item.getFeeType()# !!!!!!!!');
+					logHibachi('FEE CODE: #item.getTaxCategoryCode()# !!!!!!')
 					var itemData = {};
 					itemData.LineNo = item.getOrderFulfillmentID() & item.getFeeType();
 					itemData.DestinationCode = addressIndex;
