@@ -693,9 +693,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					var applied = applyPromotionToOrderItemIfValid( orderItem,rewardStruct );
 					if(applied){
 						promotionRewardUsage.usedInOrder += rewardStruct.discountQuantity;
+						orderItem.updateCalculatedProperties(runAgain=true,cascadeCalculateFlag=false);
 					}
 				}
 			}
+			arguments.order.updateCalculatedProperties(runAgain=true,cascadeCalculateFlag=false)
 			getHibachiScope().flushORMSession();
 		}
 	}
@@ -781,10 +783,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					qualified = true;
 					break;
 				}
+				// todO: add qualifier message to array
 			}
 		}
 		if(structKeyExists(arguments, 'qualifiedDiscountsStruct')){
-			arguments.orderItemQualifiedDiscounts.updatedQualifications[cacheKey] = qualified;
+			arguments.qualifiedDiscountsStruct.updatedQualifications[cacheKey] = qualified;
 		}
 		return qualified;
 	}

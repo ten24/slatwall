@@ -200,7 +200,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	}
 	
 	/** runs a update calculated properties only once per request unless explicitly set to false before calling. */
-	public void function updateCalculatedProperties(boolean runAgain=false) {
+	public void function updateCalculatedProperties(boolean runAgain=false, boolean cascadeCalculateFlag=true) {
         if(!structKeyExists(variables, "calculatedUpdateRunFlag") || runAgain) {
             // Set calculated to true so that this only runs 1 time per request unless explicitly told to run again.
             variables.calculatedUpdateRunFlag = true;
@@ -226,7 +226,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
                         variables[ property.name ] = value;
                     }
 
-                } else if (structKeyExists(property, "hb_cascadeCalculate") && property.hb_cascadeCalculate && structKeyExists(variables, property.name) && isObject( variables[ property.name ] ) ) {
+                } else if (arguments.cascadeCalculateFlag == true && structKeyExists(property, "hb_cascadeCalculate") && property.hb_cascadeCalculate && structKeyExists(variables, property.name) && isObject( variables[ property.name ] ) ) {
                 	
                 	// Need to check if entity specifices that the property's cascadeCalculate should be applied conditionally (only when explicitly defined)
                 	if (verifyPerformCascadeCalculateForProperty(property)) {
