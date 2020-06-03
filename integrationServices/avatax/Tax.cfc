@@ -353,8 +353,8 @@ extends = "Slatwall.integrationServices.BaseTax" {
 					// Make sure that there is a taxAmount for this orderItem
 					if(taxLine.Tax > 0) {
 						
-						var primaryIDName = left(taxLine.taxCode,2) == "FR" || taxLine.taxCode == "OH010000" ? "orderFulfillmentId" : "orderItemId";
-						var referenceObjectType = left(taxLine.taxCode,2) == "FR" || taxLine.taxCode == "OH010000" ? "OrderFulfillment" : "OrderItem";
+						var primaryIDName = left(taxLine.taxCode,2) == "FR" || left(taxLine.taxCode,2) == "OH" ? "orderFulfillmentId" : "orderItemId";
+						var referenceObjectType = left(taxLine.taxCode,2) == "FR" || left(taxLine.taxCode,2) == "OH" ? "OrderFulfillment" : "OrderItem";
 						// Loop over the details of that taxAmount
 						for(var taxDetail in taxLine.TaxDetails) {
 							
