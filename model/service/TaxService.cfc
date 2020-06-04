@@ -513,8 +513,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						}
 						
 						var taxCategoryRateRecords = getTaxCategoryRateRecordsByTaxCategory(taxCategory);
-						var isVATApplicable = listFind('GBP,EUR,PLN', arguments.order.getCurrencyCode());
-						
+				
 						// Loop over the rates of that category, to potentially apply
 						for(var taxCategoryRateData in taxCategoryRateRecords) {
 	
@@ -553,6 +552,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 												)
 											){
 												var taxCategoryRate = this.getTaxCategoryRate(taxCategoryRateData['taxCategoryRateID']);
+												var isVATApplicable = false;
+											
+												if(
+													!isNull(taxCategoryRate.getTaxIntegration()) 
+													&& !isNull(taxCategoryRate.getTaxIntegration().setting('VATCountries'))
+													&& !isNull(orderFulfillment.getShippingAddress())
+													&& !isNull(orderFulfillment.getShippingAddress().getCountryCode())
+												){
+													var isVATApplicable = listFind(taxCategoryRate.getTaxIntegration().setting('VATCountries'), orderFulfillment.getShippingAddress().getCountryCode());
+												}
+												
 												// Add a new AppliedTax
 												var newAppliedTax = this.newTaxApplied();
 												newAppliedTax.setAppliedType("orderFulfillment");
