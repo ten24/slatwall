@@ -1356,7 +1356,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             productCollectionList.addFilter('skus.vipFlag', 1);
         }
         
-        if(structKeyExists(arguments.data,"hideProductPacks") && arguments.data.hideProductPacks){
+        if(structKeyExists(arguments.data,"hideProductPacksAndDisplayOnly") && arguments.data.hideProductPacksAndDisplayOnly){
             productCollectionList.addFilter(propertyIdentifier ="skus.displayOnlyFlag", value= 1, comparisonOperator= "!=");
             productCollectionList.addFilter('productType.urlTitle','starter-kit','!=');
             productCollectionList.addFilter('productType.urlTitle','productPack','!=');    
