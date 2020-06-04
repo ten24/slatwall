@@ -2499,23 +2499,25 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     }
     
     public any function updateOrderTemplateSchedule( required any data ){
-        var orderTemplate = getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
-    	if(!isNull(orderTemplate)){
-    	    getDao('orderDao').removeTemporaryOrderTemplateItems(arguments.data.orderTemplateID);
-    	    getHibachiScope().addActionResult( "public:order.deleteOrderTemplatePromoItem", false );  
-	        arguments.data['ajaxResponse']['qualifiesForOFY'] = orderTemplate.getQualifiesForOFYProducts();
-        	super.updateOrderTemplateSchedule(arguments.data);
-    	}
-  
+        this.deleteOrderTemplatePromoItems(arguments.data);
+	    super.updateOrderTemplateSchedule(arguments.data);
     }
     
     public any function updateOrderTemplateFrequency( required any data ){
+        this.deleteOrderTemplatePromoItems(arguments.data);
+        super.updateOrderTemplateFrequency(arguments.data);
+    }
+    
+    public any function deleteOrderTemplatePromoItems(required any data ){
         var orderTemplate = getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
+
     	if(!isNull(orderTemplate)){
+	        var itemCountSnapshot = orderTemplate.getOrderTemplateItemsCount();
     	    getDao('orderDao').removeTemporaryOrderTemplateItems(arguments.data.orderTemplateID);
-    	    getHibachiScope().addActionResult( "public:order.deleteOrderTemplatePromoItem", false );  
-	        arguments.data['ajaxResponse']['qualifiesForOFY'] = orderTemplate.getQualifiesForOFYProducts();
-            super.updateOrderTemplateFrequency(arguments.data);
+            getHibachiScope().flushORMSession();    
+            var qualifiesForOFY = orderTemplate.getQualifiesForOFYProducts();
+	        arguments.data['ajaxResponse']['qualifiesForOFY'] = qualifiesForOFY;
+            getHibachiScope().addActionResult( "public:order.deleteOrderTemplatePromoItem", !qualifiesForOFY );  
     	}
     }
     
