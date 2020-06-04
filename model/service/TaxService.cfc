@@ -560,7 +560,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 													&& !isNull(orderFulfillment.getShippingAddress())
 													&& !isNull(orderFulfillment.getShippingAddress().getCountryCode())
 												){
-													var isVATApplicable = listFind(taxCategoryRate.getTaxIntegration().setting('VATCountries'), orderFulfillment.getShippingAddress().getCountryCode());
+													isVATApplicable = listFind(taxCategoryRate.getTaxIntegration().setting('VATCountries'), orderFulfillment.getShippingAddress().getCountryCode());
 												}
 												
 												// Add a new AppliedTax
