@@ -1228,11 +1228,11 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
             		    
             		    var location = warehouseMain;
             		    
-            		    if (inventory['CountryCode'] == "US"){
+            		    if (inventory['CountryCode'] == "USA"){
             		    	location = warehouseMain;	
-            		    }else if (inventory['CountryCode'] == "CA"){
+            		    }else if (inventory['CountryCode'] == "CAN"){
             		    	location = warehouseCAN;	
-            		    }else if (inventory['CountryCode'] == "PL"){
+            		    }else if (inventory['CountryCode'] == "POL"){
             		        location = warehousePOL;
             		    } else {
             		    	location = warehouseUKIR;
