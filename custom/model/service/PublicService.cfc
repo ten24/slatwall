@@ -2512,7 +2512,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var orderTemplate = getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
 
     	if(!isNull(orderTemplate)){
-	        var itemCountSnapshot = orderTemplate.getOrderTemplateItemsCount();
     	    getDao('orderDao').removeTemporaryOrderTemplateItems(arguments.data.orderTemplateID);
             getHibachiScope().flushORMSession();    
             var qualifiesForOFY = orderTemplate.getQualifiesForOFYProducts();
