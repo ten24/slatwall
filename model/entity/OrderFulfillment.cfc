@@ -121,6 +121,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	property name="fulfillmentChargeAndHandleFee" persistent="false";
 	property name="chargeAfterDiscount" type="numeric" persistent="false" hb_formatType="currency";
 	property name="chargeTaxAmount" type="numeric" persistent="false" hb_formatType="currency";
+	property name="chargeVATAmount" type="numeric" persistent="false" hb_formatType="currency";
 	property name="chargeTaxLiabilityAmount" persistent="false" hb_formatType="currency";
 	property name="discountAmount" type="numeric" persistent="false" hb_formatType="currency";
 	property name="fulfillmentMethodType" type="numeric" persistent="false";
@@ -614,6 +615,17 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 
 		return taxAmount;
 	}
+	
+	public numeric function getChargeVATAmount() {
+		var vatAmount = 0;
+
+		for(var taxApplied in getAppliedTaxes()) {
+			if(isNull(taxApplied.getVATAmount())) continue;
+			vatAmount = getService('HibachiUtilityService').precisionCalculate(vatAmount + taxApplied.getVATAmount());
+		}
+
+		return vatAmount;
+	}
 
 	public numeric function getChargeTaxLiabilityAmount() {
 		var taxLiabilityAmount = 0;
@@ -916,7 +928,6 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 		}
 		return variables.orderFulfillmentStatusType;
 	}
-
 
 	// ==================  END:  Overridden Methods ========================
 

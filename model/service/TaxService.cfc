@@ -58,6 +58,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			removeTaxesFromAllOrderItemsAndOrderFulfillments(arguments.order);
 			return;
 		}
+
 		var ratesResponseBeans = {};
 		var taxAddresses = addTaxAddressesStructBillingAddressKey(arguments.order);
 
@@ -512,7 +513,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						}
 						
 						var taxCategoryRateRecords = getTaxCategoryRateRecordsByTaxCategory(taxCategory);
-	
+				
 						// Loop over the rates of that category, to potentially apply
 						for(var taxCategoryRateData in taxCategoryRateRecords) {
 	
@@ -529,7 +530,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 								// If this rate has an integration, then try to pull the data from the response bean for that integration
 								if(structKeyExists(taxCategoryRateData,'taxIntegration_integrationID')) {
-								
+							
+									
 									// if account is tax exempt return after removing any tax previously applied to order
 									if(!isNull(arguments.order.getAccount()) && !isNull(arguments.order.getAccount().getTaxExemptFlag()) && arguments.order.getAccount().getTaxExemptFlag()) {
 										continue;
@@ -550,6 +552,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 												)
 											){
 												var taxCategoryRate = this.getTaxCategoryRate(taxCategoryRateData['taxCategoryRateID']);
+												var isVATApplicable = false;
+											
+												if(
+													!isNull(taxCategoryRate.getTaxIntegration()) 
+													&& !isNull(taxCategoryRate.getTaxIntegration().setting('VATCountries'))
+													&& !isNull(orderFulfillment.getShippingAddress())
+													&& !isNull(orderFulfillment.getShippingAddress().getCountryCode())
+												){
+													isVATApplicable = listFind(taxCategoryRate.getTaxIntegration().setting('VATCountries'), orderFulfillment.getShippingAddress().getCountryCode());
+												}
+												
 												// Add a new AppliedTax
 												var newAppliedTax = this.newTaxApplied();
 												newAppliedTax.setAppliedType("orderFulfillment");
@@ -558,7 +571,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 												newAppliedTax.setTaxCategoryRate( taxCategoryRate );
 												newAppliedTax.setOrderFulfillment( orderFulfillment );
 												newAppliedTax.setCurrencyCode( arguments.order.getCurrencyCode() );
-												newAppliedTax.setTaxLiabilityAmount( taxRateItemResponse.getTaxAmount() );
+												
+												if(isVATApplicable){
+													newAppliedTax.setTaxLiabilityAmount( taxRateItemResponse.getVATAmount() );
+												}else{
+													newAppliedTax.setTaxLiabilityAmount( taxRateItemResponse.getTaxAmount() );
+												}
+											
 	
 												newAppliedTax.setTaxImpositionID( taxRateItemResponse.getTaxImpositionID() );
 												newAppliedTax.setTaxImpositionName( taxRateItemResponse.getTaxImpositionName() );
@@ -576,10 +595,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 												newAppliedTax.setTaxCountryCode( taxRateItemResponse.getTaxCountryCode() );
 												
 												newAppliedTax.setMessage(responseBeanMessage);
-												
 												// Set the taxAmount to the taxLiabilityAmount, if that is supposed to be charged to the customer
 												if(taxCategoryRate.getTaxLiabilityAppliedToItemFlag() == true){
-													newAppliedTax.setTaxAmount( newAppliedTax.getTaxLiabilityAmount() );
+													if(isVATApplicable){
+														newAppliedTax.setVATAmount( newAppliedTax.getTaxLiabilityAmount() );
+													}else{
+														newAppliedTax.setTaxAmount( newAppliedTax.getTaxLiabilityAmount() );
+													}
 												} else {
 													newAppliedTax.setTaxAmount( 0 );
 												}
@@ -597,6 +619,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 									if(!isNull(arguments.order.getAccount()) && !isNull(arguments.order.getAccount().getTaxExemptFlag()) && arguments.order.getAccount().getTaxExemptFlag()) {
 										continue;
 									}
+									
+								
 									var taxCategoryRate = this.getTaxCategoryRate(taxCategoryRateData['taxCategoryRateID']);
 									var newAppliedTax = this.newTaxApplied();
 									newAppliedTax.setAppliedType("orderFulfillment");
@@ -612,7 +636,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 									}
 									//newAppliedTax.setTaxLiabilityAmount( getService('hibachiUtilityService').precisionCalculate((orderFulfillment.getFulfillmentCharge() - orderFulfillment.getDiscountAmount()) * taxCategoryRate.getTaxRate() / 100) );
 									newAppliedTax.setTaxLiabilityAmount( round(price * taxCategoryRate.getTaxRate()) / 100 );
-	
+						
 									newAppliedTax.setTaxStreetAddress( taxAddress.getStreetAddress() );
 									newAppliedTax.setTaxStreet2Address( taxAddress.getStreet2Address() );
 									newAppliedTax.setTaxLocality( taxAddress.getLocality() );
@@ -620,7 +644,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 									newAppliedTax.setTaxStateCode( taxAddress.getStateCode() );
 									newAppliedTax.setTaxPostalCode( taxAddress.getPostalCode() );
 									newAppliedTax.setTaxCountryCode( taxAddress.getCountryCode() );
-	
 									// Set the taxAmount to the taxLiabilityAmount, if that is supposed to be charged to the customer
 									if(taxCategoryRate.getTaxLiabilityAppliedToItemFlag() == true){
 										newAppliedTax.setTaxAmount( newAppliedTax.getTaxLiabilityAmount() );
