@@ -27,10 +27,14 @@ class OFYEnrollmentController {
 			pageRecordsShow: 20,
 		}
 		
-		this.publicService.doAction(this.endpoint, data).then( result => {
-			this.products = result.ofyProducts ? result.ofyProducts : result.orderTemplatePromotionSkus;
-			this.loading = false;
-		});
+		if(!this.products){ 
+			this.publicService.doAction(this.endpoint, data).then( result => {
+				this.products = result.ofyProducts ? result.ofyProducts : result.orderTemplatePromotionSkus;
+				this.loading = false;
+			});
+		}
+		
+		this.loading = false;
 	}
 	
 	public addToCart():void{
@@ -44,7 +48,7 @@ class OFYEnrollmentController {
 			});       	
 
         } else {
-    		let extraProperties = "canPlaceOrderFlag,purchasePlusTotal,appliedPromotionMessagesJson,calculatedOrderTemplateItemsCount,vatTotal,taxTotal,fulfillmentHandlingFeeTotal";
+    		let extraProperties = "qualifiesForOFYProducts,canPlaceOrderFlag,purchasePlusTotal,appliedPromotionMessagesJson,calculatedOrderTemplateItemsCount,vatTotal,taxTotal,fulfillmentHandlingFeeTotal";
 			let data = {
 				optionalProperties: extraProperties,
 				saveContext: 'upgradeFlow', 
@@ -99,6 +103,7 @@ class OFYEnrollment{
 	public templateUrl: string;
 	public bindToController = {
 		flexship: '<?',
+		products:'<?'
 	};
 	public controller = OFYEnrollmentController;
 	public controllerAs = 'ofyEnrollment';

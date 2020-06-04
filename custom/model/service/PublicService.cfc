@@ -501,7 +501,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         requestBean.setTransactionType('authorizePayment');
          
 		var responseBean = paymentIntegration.getIntegrationCFC("Payment").processExternal(requestBean);
-
+        
 		if(!responseBean.hasErrors()) {
             var accountPaymentMethod = getService('accountService').newAccountPaymentMethod();
             accountPaymentMethod.setAccountPaymentMethodName("PayPal - Braintree");
@@ -2497,4 +2497,28 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         arguments.data['protectedSystemCodeList'] = 'PromotionalItems';
         this.addProtectedProductType(arguments.data);
     }
+    
+    public any function updateOrderTemplateSchedule( required any data ){
+        this.deleteOrderTemplatePromoItems(arguments.data);
+	    super.updateOrderTemplateSchedule(arguments.data);
+    }
+    
+    public any function updateOrderTemplateFrequency( required any data ){
+        this.deleteOrderTemplatePromoItems(arguments.data);
+        super.updateOrderTemplateFrequency(arguments.data);
+    }
+    
+    public any function deleteOrderTemplatePromoItems(required any data ){
+        var orderTemplate = getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
+
+    	if(!isNull(orderTemplate)){
+    	    getDao('orderDao').removeTemporaryOrderTemplateItems(arguments.data.orderTemplateID);
+            getHibachiScope().flushORMSession();    
+            var qualifiesForOFY = orderTemplate.getQualifiesForOFYProducts();
+	        arguments.data['ajaxResponse']['qualifiesForOFY'] = qualifiesForOFY;
+            getHibachiScope().addActionResult( "public:order.deleteOrderTemplatePromoItem", !qualifiesForOFY );  
+    	}
+    }
+    
+    
 }

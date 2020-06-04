@@ -32,6 +32,7 @@ class FrequencyStepController {
         let flexshipID = this.orderTemplateService.currentOrderTemplateID;
         this.orderTemplateService.updateOrderTemplateFrequency(flexshipID, this.term.value, this.day).then(result => {
             this.loading = false;
+            if(typeof result.qualifiesForOFY == 'boolean') this.orderTemplateService.mostRecentOrderTemplate.qualifiesForOFYProducts = result.qualifiesForOFY;
         	this.observerService.notify(FlexshipFlowEvents.ON_NEXT);
         });
     }
