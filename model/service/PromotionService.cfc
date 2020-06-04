@@ -473,7 +473,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					// Only runs on last iteration of loop before looking for orders
 					if(!orderRewards and pr == arrayLen(promotionRewards)) {
 						// Loop over the orderItems one last time, and look for the discounts that can be applied
-						applyOrderItemDiscounts(arguments.order,orderItemQualifiedDiscounts, promotionRewardUsageDetails);
+						applyOrderItemDiscounts(arguments.order,orderItemQualifiedDiscounts, promotionRewardUsageDetails, orderQualifierMessages);
 						pr = 0;
 						orderRewards = true;
 					}
@@ -482,7 +482,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				getHibachiScope().flushORMSession();
 				
 				ArraySort(orderQualifiedDiscounts, rewardSortFunction);
-				applyOrderDiscounts(arguments.order, orderQualifiedDiscounts);
+				applyOrderDiscounts(arguments.order, orderQualifiedDiscounts, orderQualifierMessages);
 				
 				if(arrayLen(orderQualifierMessages)){
 					getHibachiScope().flushOrmSession();
@@ -626,12 +626,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	}
 	
-	private void function applyOrderDiscounts(required any order, required array orderQualifiedDiscounts){
+	private void function applyOrderDiscounts(required any order, required array orderQualifiedDiscounts, array orderQualifierMessages){
 		
 		var itemAppliedPromotions = getPromotionDAO().getAppliedPromotionsForOrderItemsByOrder(arguments.order);
 		
 		for(var rewardStruct in arguments.orderQualifiedDiscounts ){
-			if( !getUpdatedQualificationStatus( arguments.order, rewardStruct.promotionReward.getPromotionRewardID() ) ){
+			if( !getUpdatedQualificationStatus( arguments.order, rewardStruct.promotionReward.getPromotionRewardID(), arguments.orderQualifierMessages ) ){
 				continue;
 			}
 			var appliedPromotions = order.getAppliedPromotions();
@@ -649,7 +649,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 	}
 
-	private void function applyOrderItemDiscounts(required any order, required struct orderItemQualifiedDiscounts, required struct promotionRewardUsageDetails){
+	private void function applyOrderItemDiscounts(required any order, required struct orderItemQualifiedDiscounts, required struct promotionRewardUsageDetails, array orderQualifierMessages){
 		var promotionRewardUsageArray = getPromotionRewardUsageArray( arguments.promotionRewardUsageDetails );
 		var length = arrayLen(promotionRewardUsageArray);
 		for(var i = 1; i <= length; i++){
@@ -657,7 +657,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var promotionRewardID = promotionRewardUsage.promotionRewardID;
 
 			if( i > 1 &&
-				!getUpdatedQualificationStatus( arguments.order, promotionRewardID, arguments.orderItemQualifiedDiscounts ) ){
+				!getUpdatedQualificationStatus( arguments.order, promotionRewardID, arguments.orderQualifierMessages, arguments.orderItemQualifiedDiscounts ) ){
 				continue;
 			}
 			
@@ -753,7 +753,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return false;
 	}
 	
-	private boolean function getUpdatedQualificationStatus( required any order, required string promotionRewardID, struct qualifiedDiscountsStruct ){
+	private boolean function getUpdatedQualificationStatus( required any order, required string promotionRewardID, array orderQualifierMessages, struct qualifiedDiscountsStruct ){
 		var promotionReward = this.getPromotionReward( arguments.promotionRewardID );
 		var cacheKey = arguments.promotionRewardID;
 		
@@ -782,8 +782,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				if(qualifier.hasOrderByOrderID(arguments.order.getOrderID())){
 					qualified = true;
 					break;
+				}else{
+					var promoQualifierMessages = qualifier.getPromotionQualifierMessages();
+					for(var promoQualifierMessage in promoQualifierMessages){
+						if(promoQualifierMessage.hasOrderByOrderID( arguments.order.getOrderID() )){
+							arrayAppend(arguments.orderQualifierMessages, promoQualifierMessage);
+						}
+					}	
 				}
-				// todO: add qualifier message to array
 			}
 		}
 		if(structKeyExists(arguments, 'qualifiedDiscountsStruct')){
