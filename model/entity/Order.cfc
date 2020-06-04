@@ -1478,10 +1478,9 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 			}
 		}
 		
-		vatTotal = getService('HibachiUtilityService').precisionCalculate(vatTotal + this.getFulfillmentChargeVATAmount());
-		variables.vatTotal = vatTotal;
+		variables.vatTotal = getService('HibachiUtilityService').precisionCalculate(vatTotal + this.getFulfillmentChargeVATAmount());
 		
-		return vatTotal;
+		return variables.vatTotal;
 	}
 	
 
