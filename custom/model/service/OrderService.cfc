@@ -1888,20 +1888,5 @@ component extends="Slatwall.model.service.OrderService" {
 
 		return newOrder();
 	}
-	
-	public boolean function deleteOrderTemplatePromoItems(required string orderTemplateID){
-		var orderTemplateItemCollectionList = this.getOrderTemplateItemCollectionList();
-		orderTemplateItemCollectionList.addFilter('orderTemplate.orderTemplateID', arguments.orderTemplateID);
-		orderTemplateItemCollectionList.addFilter('temporaryFlag', true);
-		var records = orderTemplateItemCollectionList.getRecords();
-		var deleteok = false;
-		for(var item in records){
-			var orderTemplateItem = this.getOrderTemplateItem( item.orderTemplateItemID );
-			deleteok = this.deleteOrderTemplateItem(orderTemplateItem);
-			ormFlush();
-		}
-	
-		return deleteok;
-	}
 
 }
