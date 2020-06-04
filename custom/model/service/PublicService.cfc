@@ -950,7 +950,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         }
         
         orderData['orderItemIDList'] = list;
-        if(len(orderData.orderItemIDList)) orderService.processOrder( cart, orderData, 'removeOrderItem');
+        if(len(orderData.orderItemIDList)) {
+           orderService.processOrder( cart, orderData, 'removeOrderItem'); 
+        }
         this.addOrderItem(argumentCollection = arguments);
     }
         
@@ -1339,7 +1341,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         productCollectionList.addFilter('skus.activeFlag',1);
         productCollectionList.addFilter('skus.publishedFlag',1);
         productCollectionList.addFilter(propertyIdentifier ="skus.skuPrices.price", value= 0.00, comparisonOperator = "!=", filterGroupAlias="skuPrice");
-        productCollectionList.addFilter(propertyIdentifier ="skus.displayOnlyFlag", value= 1, comparisonOperator= "=", logicalOperator="OR", filterGroupAlias="skuPrice");
         productCollectionList.addFilter('skus.skuPrices.currencyCode',currencyCode);
         productCollectionList.addFilter('skus.skuPrices.priceGroup.priceGroupCode',priceGroupCode);
         productCollectionList.addFilter('productType.parentProductType.urlTitle','other-income','!=');
@@ -1356,8 +1357,11 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         }
         
         if(structKeyExists(arguments.data,"hideProductPacks") && arguments.data.hideProductPacks){
+            productCollectionList.addFilter(propertyIdentifier ="skus.displayOnlyFlag", value= 1, comparisonOperator= "!=");
             productCollectionList.addFilter('productType.urlTitle','starter-kit','!=');
             productCollectionList.addFilter('productType.urlTitle','productPack','!=');    
+        }else{
+            productCollectionList.addFilter(propertyIdentifier ="skus.displayOnlyFlag", value= 1, comparisonOperator= "=", logicalOperator="OR", filterGroupAlias="skuPrice");
         }
 
         return { productCollectionList: productCollectionList, priceGroupCode: priceGroupCode, currencyCode: currencyCode };

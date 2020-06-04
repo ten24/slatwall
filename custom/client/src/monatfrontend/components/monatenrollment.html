@@ -242,7 +242,7 @@
 		<!-----NEXT BUTTONS ---->
 		<div ng-if="
 			(monatEnrollment.monatService.canPlaceOrder && !monatEnrollment.flexshipShouldBeChecked) 
-			|| (monatEnrollment.monatService.canPlaceOrder && monatEnrollment.orderTemplateService.canPlaceOrderFlag)
+			|| (monatEnrollment.monatService.canPlaceOrder && monatEnrollment.orderTemplateService.mostRecentOrderTemplate.canPlaceOrderFlag)
 		">
 			<button 
 				style="z-index: 1" 
