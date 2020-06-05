@@ -45,11 +45,11 @@
 							 sw-rbkey="'entity.order.' + property">
 						</div>
 						<div class="col-xs-6 s-value" 
-							 ng-if="property === 'fulfillmentTotal' || property === 'fulfillmentDiscount' || property === 'subtotal' || property === 'total'"
+							 ng-if="property === 'calculatedFulfillmentTotal' || property === 'calculatedFulfillmentDiscount' || property === 'calculatedSubtotal' || property === 'calculatedTotal'"
 						     ng-bind-html="swCustomerAccountPaymentMethodCard.baseEntity[property] | swcurrency:swCustomerAccountPaymentMethodCard.baseEntity['currencyCode']">
 						</div>
 						<div class="col-xs-6 s-value" 
-							 ng-if="property !== 'fulfillmentTotal' && property !== 'fulfillmentDiscount' && property !== 'subtotal' && property !== 'total'"
+							 ng-if="property !== 'calculatedFulfillmentTotal' && property !== 'calculatedFulfillmentDiscount' && property !== 'calculatedSubtotal' && property !== 'calculatedTotal'"
 						     ng-bind="swCustomerAccountPaymentMethodCard.baseEntity[property] | number">
 						</div>
 					</div>
