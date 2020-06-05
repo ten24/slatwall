@@ -50,7 +50,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	private void function clearPreviouslyAppliedPromotionsForOrderItems(required array orderItems){
 		// Clear all previously applied promotions for order items
 		for(var oi=1; oi<=arrayLen(arguments.orderItems); oi++) {
-			ArrayClear(arguments.orderItems[oi].getAppliedPromotions());
+			var orderItem = arguments.orderItems[oi];
+			var appliedPromotions = orderItem.getAppliedPromotions();
+			for(var appliedPromotion in appliedPromotions){
+				appliedPromotion.removeOrderItem(reciprocateFlag=false);
+			}
+			ArrayClear(appliedPromotions);
 		}
 	}
 
