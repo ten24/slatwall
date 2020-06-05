@@ -78,13 +78,13 @@ Notes:
 	<cfset local.siteLink = "https://monatglobal.com/" />
 </cfif>
 
-<cfif !isNull(order.getVATTotal()) && order.getVATTotal() > 0>
+<cfif !isNull(order.getVATTotal()) && order.getVATTotal() >
 	<cfset local.taxType = 'VAT'>
 <cfelse>
 	<cfset local.taxType = 'Tax'>
 </cfif>
 
-
+<cfdocument format="PDF" orientation="portrait">
 	<cfset local.defaultTable = 'width: 100%; font-family: Arial, sans-serif; font-size: 11px; color: ##848484; border-collapse: collapse;' />
 	<cfoutput>
 		
@@ -366,27 +366,27 @@ Notes:
 										#NumberFormat(local.orderItem.getQuantity())#
 									</td>
 									<td style="border-top: 1px solid ##FFF; font-size: 9px; padding: 5px 3px; text-align: right;">
-										
+										#local.orderItem.getPersonalVolume()#
 									</td>
 									<td style="border-top: 1px solid ##FFF; font-size: 9px; padding: 5px 3px; text-align: right;">
-										
+										#local.orderItem.getExtendedPersonalVolumeAfterDiscount()#
 									</td>
 									<td style="border-top: 1px solid ##FFF; font-size: 9px; padding: 5px 3px; text-align: right;">
 										#local.orderItem.getFormattedValue('skuPrice', 'currency')#
 									</td>
 									<td style="border-top: 1px solid ##FFF; font-size: 9px; padding: 5px 3px; text-align: right;">
-										
+										#local.orderItem.getFormattedValue('netAmount', 'currency')#
 									</td>
 									<td style="border-top: 1px solid ##FFF; font-size: 9px; padding: 5px 3px; text-align: right;">
 										<cfif local.taxType == 'VAT'>
-												#local.orderItem.getFormattedValue('vatAmount', 'currency')#
+											#local.orderItem.getFormattedValue('vatAmount', 'currency')#
 										<cfelse>
 											#local.orderItem.getFormattedValue('taxAmount', 'currency')#
 										</cfif>
 									
 									</td>
 									<td style="border-top: 1px solid ##FFF; font-size: 9px; padding: 5px 3px; text-align: right;">
-										
+										#local.orderItem.getFormattedValue('extendedPriceAfterDiscount', 'currency')#
 									</td>
 									
 								</tr>
@@ -415,7 +415,7 @@ Notes:
 								</td>
 								
 								<td valign="top" style="width: 33%; padding-top: 13px;">
-									Total Volume: 324.00
+									Total Volume: 	#order.getPersonalVolumeTotal()#
 								</td>
 								
 								<td valign="top" style="width: 33%;">
@@ -426,7 +426,7 @@ Notes:
 												Subtotal
 											</td>
 											<td style="padding: 2px 0;">
-												198.75
+												#order.getFormattedValue('subtotal', 'currency')#
 											</td>
 										</tr>
 										<tr>
@@ -434,31 +434,23 @@ Notes:
 												Shipping/Handling
 											</td>
 											<td style="padding: 2px 0;">
-												6.95
+												#order.getFormattedValue('fulfillmentTotal', 'currency')#
 											</td>
 										</tr>
 										<tr>
 											<td style="padding: 2px 0;">
-												Misc
+												Discount	
 											</td>
 											<td style="padding: 2px 0;">
-												0.00
-											</td>
-										</tr>
-										<tr>
-											<td style="padding: 2px 0;">
-												Discount
-											</td>
-											<td style="padding: 2px 0;">
-												0.00
+												#order.getFormattedValue('discountTotal', 'currency')# 
 											</td>
 										</tr>
 										<tr>
 											<td style="padding: 2px 0; border-bottom: 1px solid ##C0C0C0;">
-												Total Tax
+												Total  #local.taxType#
 											</td>
 											<td style="padding: 2px 0; border-bottom: 1px solid ##C0C0C0;">
-												34.26
+												#order.getFormattedValue('#local.taxType#Total', 'currency')# 
 											</td>
 										</tr>
 										<tr>
@@ -466,7 +458,7 @@ Notes:
 												Amount Due
 											</td>
 											<td style="padding: 2px 0;">
-												205.70
+												#order.getFormattedValue('total', 'currency')# 
 											</td>
 										</tr>
 										<tr>
@@ -474,7 +466,7 @@ Notes:
 												Amount Paid
 											</td>
 											<td style="padding: 2px 0;">
-												205.70
+												#order.getFormattedValue('paymentAmountReceivedTotal', 'currency')#
 											</td>
 										</tr>
 										<tr>
@@ -482,7 +474,7 @@ Notes:
 												Invoice Balance
 											</td>
 											<td style="padding: 2px 0;">
-												0.00
+												#order.getFormattedValue('paymentAmountDue', 'currency')# 
 											</td>
 										</tr>
 									</table>
@@ -522,6 +514,6 @@ Notes:
 			</tr>
 			
 		</table>
-	
 	</cfoutput>
+</cfdocument>
 

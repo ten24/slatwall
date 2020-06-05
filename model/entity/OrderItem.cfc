@@ -183,6 +183,7 @@ property name="personalVolume" ormtype="big_decimal";
 	property name="mainCreditCardOnOrder" persistent="false";
 	property name="mainCreditCardExpirationDate" persistent="false";
 	property name="mainPromotionOnOrder" persistent="false";
+	property name="netAmount" persistent="false" hb_formatType="currency";
 
     property name="calculatedExtendedPersonalVolume" ormtype="big_decimal" hb_formatType="none";
     property name="calculatedExtendedTaxableAmount" ormtype="big_decimal" hb_formatType="none";
@@ -1361,6 +1362,13 @@ public void function refreshAmounts(){
     
     public any function getExtendedRetailValueVolumeAfterAllDiscounts(){
         return getCustomExtendedPriceAfterAllDiscounts('retailValueVolume');
+    }
+    
+    public any function getNetAmount(){
+        if(!structKeyExists(variables,'netAmount')){
+            variables.netAmount = getService('HibachiUtilityService').precisionCalculate(this.getExtendedPriceAfterDiscount() - this.getExtendedPersonalVolumeAfterDiscount())
+        }
+        return variables.netAmount;
     }
     
 	private numeric function getCustomPriceFieldAmount(required string customPriceField){
