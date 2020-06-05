@@ -33,7 +33,7 @@ class MonatEnrollmentController {
 	public stepClassArray = [];
 	
 	//@ngInject
-	constructor(public monatService, public observerService, public $rootScope, public publicService, public orderTemplateService, private sessionStorageCache: Cache) {
+	constructor(public monatService, public observerService, public $rootScope, public publicService, public orderTemplateService, private sessionStorageCache: Cache, public monatAlertService, public rbkeyService) {
 		if (hibachiConfig.baseSiteURL) {
 			this.backUrl = hibachiConfig.baseSiteURL;
 		}
@@ -249,6 +249,10 @@ class MonatEnrollmentController {
 		}else if(!this.showBirthday && this.type =='mpUpgrade' && this.account?.accountCode.length){
 			this.steps = this.steps.filter(el => el.stepClass !== 'updateAccount');
 		}
+	}
+	
+	public warn = (warningRbKey:string):void =>{
+		this.monatAlertService.error(this.rbkeyService.rbKey(warningRbKey));
 	}
 }
 

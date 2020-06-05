@@ -679,17 +679,13 @@ property name="personalVolume" ormtype="big_decimal";
 	}
 
 	public numeric function getTaxAmount() {
-		if(!structKeyExists(variables,'taxAmount')){
-			var taxAmount = 0;
+		var taxAmount = 0;
 
-			for(var taxApplied in getAppliedTaxes()) {
-				taxAmount = getService('HibachiUtilityService').precisionCalculate(taxAmount + taxApplied.getTaxAmount());
-			}
-			variables.taxAmount = taxAmount;
+		for(var taxApplied in getAppliedTaxes()) {
+			taxAmount = getService('HibachiUtilityService').precisionCalculate(taxAmount + taxApplied.getTaxAmount());
 		}
-		
 
-		return variables.taxAmount;
+		return taxAmount;
 	}
 	
 	public numeric function getVATAmount() {

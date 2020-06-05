@@ -25,7 +25,7 @@ class EnrollmentMPController {
 	public currentDate: any;
 	public productRecordsCount:any;
 	public paginationMethod = 'getproductsByCategoryOrContentID';
-	public paginationObject = {hideProductPacks: true};
+	public paginationObject = {hideProductPacksAndDisplayOnly: true};
 	public isInitialized = false;
 	public upgradeFlow:boolean;
 	public endpoint: 'setUpgradeOnOrder' | 'setUpgradeOrderType' = 'setUpgradeOnOrder';
@@ -106,7 +106,7 @@ class EnrollmentMPController {
 	}
 	
 	public searchByKeyword = (keyword:string) =>{
-		this.publicService.doAction('getProductsByKeyword', {keyword: keyword, priceGroupCode: 1, hideProductPacks: true}).then(res=> {
+		this.publicService.doAction('getProductsByKeyword', {keyword: keyword, priceGroupCode: 1, hideProductPacksAndDisplayOnly: true}).then(res=> {
 			this.paginationMethod = 'getProductsByKeyword';
 			this.productRecordsCount = res.recordsCount;
 			this.paginationObject['keyword'] = keyword;
@@ -233,7 +233,7 @@ class EnrollmentMPController {
 		
 		let data:any = {
 			priceGroupCode: 1,
-			hideProductPacks: true
+			hideProductPacksAndDisplayOnly: true
 		};
 		
 		if(category){

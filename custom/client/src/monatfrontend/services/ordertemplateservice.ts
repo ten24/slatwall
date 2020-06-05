@@ -237,11 +237,13 @@ export class OrderTemplateService {
 		frequencyTermID: string,
 		scheduleOrderDayOfTheMonth?: number
 	) => {
+		
+		let deferred = this.$q.defer(); 
 		let payload = {
 			"orderTemplateID": orderTemplateID,
 			"frequencyTerm.value": frequencyTermID,
 		};
-		
+		 
 		if(this.mostRecentOrderTemplate){
 			this.mostRecentOrderTemplate['scheduleOrderDayOfTheMonth'] = scheduleOrderDayOfTheMonth;
 		}
@@ -249,10 +251,31 @@ export class OrderTemplateService {
 		if (scheduleOrderDayOfTheMonth) {
 			payload["scheduleOrderDayOfTheMonth"] = scheduleOrderDayOfTheMonth;
 		}
-
-		return this.monatService.doPublicAction("updateOrderTemplateFrequency", payload);
+		
+		 this.monatService.doPublicAction("updateOrderTemplateFrequency", payload).then(res => {
+		 	if(res.successfulActions && res.successfulActions.indexOf('public:order.deleteOrderTemplatePromoItem') > -1){
+		 		this.splicePromoItem();
+		 	}
+		 	
+    		deferred.resolve(res);
+        }).catch(e =>{
+            deferred.reject(e);
+        });
+        
+		return deferred.promise;
 	};
-
+	
+	public splicePromoItem = () => {
+		let index = 0;
+		for(let item of this.mostRecentOrderTemplate.orderTemplateItems){
+			if(item.temporaryFlag){
+				this.mostRecentOrderTemplate.orderTemplateItems.splice(index, 1);
+				this.mostRecentOrderTemplate.calculatedOrderTemplateItemsCount--;
+			}
+			index++;
+		}
+	}
+	
 	public getWishlistItems = (
 		orderTemplateID,
 		pageRecordsShow = 100,

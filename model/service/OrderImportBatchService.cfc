@@ -218,18 +218,20 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var orderFulfillment = getOrderService().newOrderFulfillment();
 			orderFulfillment.setOrder(order);
 			orderFulfillment.setFulfillmentMethod(getService('fulfillmentService').getFulfillmentMethodByFulfillmentMethodName('Shipping'));
-			
-			if(!isNull(arguments.orderImportBatch.getShippingMethod())){
-				orderFulfillment.setShippingMethod(arguments.orderImportBatch.getShippingMethod());
-			}
 			orderFulfillment.setShippingAddress(orderImportBatchItem.getShippingAddress());
 			orderFulfillment.setFulfillmentCharge(0);
 			orderFulfillment.setManualFulfillmentChargeFlag(true);
-			//Save Order Fulfillment
+			
 			this.saveOrderFulfillment(orderFulfillment);
+
+			//Save Order Fulfillment
 			if(orderFulfillment.hasErrors()){
 				order.addErrors(orderFulfillment.getErrors())
 			}else{
+				if(!isNull(arguments.orderImportBatch.getShippingMethod())){
+					orderFulfillment.setShippingMethod(arguments.orderImportBatch.getShippingMethod());
+				}
+				
 				//Create Order Item
 				var orderItem = getOrderService().newOrderItem();
 				orderItem.setOrder(order);
@@ -239,10 +241,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				orderItem.setQuantity(orderImportBatchItem.getQuantity());
 				orderItem.setPrice(0);
 				orderItem.setSkuPrice(0);
-				getOrderService().saveOrderItem(orderItem);
+				getOrderService().saveOrderItem( orderItem=orderItem, updateShippingMethodOptions=false );
+				
 				if(orderItem.hasErrors()){
 					order.addErrors(orderItem.getErrors());
 				}else{
+					
 					orderImportBatchItem.setOrderItem(orderItem);
 					getHibachiDAO().flushORMSession();
 					order = getOrderService().processOrder(order,{'newOrderPayment.paymentMethod.paymentMethodID':'none'},'placeOrder');

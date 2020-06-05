@@ -28,6 +28,7 @@ class FlexshipFlowController {
 	public muraData;
 	public isOFYEligible;
     public loading: boolean;
+	public ofyProducts:any;
 	
     //@ngInject
     constructor(
@@ -72,9 +73,7 @@ class FlexshipFlowController {
 		.finally(() => {
 			this.loading = false;
 		});
-		
     }
-	
 	
 	public back = ():FlexshipSteps => {
 		let nextFrequencyStep = this.getCanViewOFYStep() ? FlexshipSteps.OFY : FlexshipSteps.FREQUENCY;
@@ -139,7 +138,6 @@ class FlexshipFlowController {
 
 	private setStepAndUpdateProgress(step:FlexshipSteps):FlexshipSteps{
 		
-		
 		if(step == FlexshipSteps.REVIEW){
 			(this.publicService as any).showFooter = true;
 		}else{
@@ -153,7 +151,25 @@ class FlexshipFlowController {
     private getCanViewOFYStep():boolean{
 		this.orderTemplate = this.orderTemplateService.mostRecentOrderTemplate;
 		let today = new Date().getDate();
-		this.isOFYEligible = this.orderTemplate.scheduleOrderDayOfTheMonth && this.orderTemplate.scheduleOrderDayOfTheMonth > today;
+
+		if( this.currentStep === FlexshipSteps.SHOP){
+			this.loading = true;
+			let data = {
+				orderTemplateId: this.orderTemplate.orderTemplateID,
+				pageRecordsShow: 20,
+			}
+			this.publicService.doAction('getOrderTemplatePromotionSkus', data).then( result => {
+				this.ofyProducts = result.orderTemplatePromotionSkus;
+				this.loading = false;
+			});
+		}
+		this.isOFYEligible = (
+			this.orderTemplate.scheduleOrderDayOfTheMonth 
+			&& this.orderTemplate.scheduleOrderDayOfTheMonth > today 
+			&& this.orderTemplate.qualifiesForOFYProducts 
+			&& this.ofyProducts?.length
+		);
+
 		return this.isOFYEligible;
     }
     

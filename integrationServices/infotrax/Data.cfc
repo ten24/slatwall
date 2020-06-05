@@ -240,7 +240,7 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 				var account = relatedToAccount ? arguments.entity.getAccount() : arguments.entity;
 				
 				if( structKeyExists(iceResponse, 'marketpartnerid') &&  ( isNull(account.getUplineMPAccount()) || account.getUplineMPAccount().getAccountCode() != iceResponse.marketpartnerid ) ){
-					var newUplineMPAccount = this.getAccountByAccountNumber(iceResponse.marketpartnerid);
+					var newUplineMPAccount = getService('accountService').getAccountByAccountNumber(iceResponse.marketpartnerid);
 					if(!isNull(newUplineMPAccount)){
 						account.setUplineMPAccount(newUplineMPAccount);
 					}

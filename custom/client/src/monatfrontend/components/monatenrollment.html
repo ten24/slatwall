@@ -242,7 +242,7 @@
 		<!-----NEXT BUTTONS ---->
 		<div ng-if="
 			(monatEnrollment.monatService.canPlaceOrder && !monatEnrollment.flexshipShouldBeChecked) 
-			|| (monatEnrollment.monatService.canPlaceOrder && monatEnrollment.orderTemplateService.canPlaceOrderFlag)
+			|| (monatEnrollment.monatService.canPlaceOrder && monatEnrollment.orderTemplateService.mostRecentOrderTemplate.canPlaceOrderFlag)
 		">
 			<button 
 				style="z-index: 1" 
@@ -266,11 +266,11 @@
 		
 		<div ng-if="
 				(!monatEnrollment.monatService.canPlaceOrder && !monatEnrollment.flexshipShouldBeChecked) 
-			|| (!monatEnrollment.monatService.canPlaceCartOrder && !monatEnrollment.orderTemplateService.canPlaceOrderFlag && monatEnrollment.flexshipShouldBeChecked)
+			|| (!monatEnrollment.monatService.canPlaceCartOrder && !monatEnrollment.orderTemplateService.mostRecentOrderTemplate.canPlaceOrderFlag && monatEnrollment.flexshipShouldBeChecked)
 		">
 			<button 
 				style="z-index: 1" 
-				data-ng-click="monatEnrollment.showCanPlaceOrderAlert = true" 
+				data-ng-click="monatEnrollment.showCanPlaceOrderAlert = true; monatEnrollment.warn('frontend.order.canPlaceOrderFailure')" 
 				class="btn btn-secondary forward-btn forward disabled" 
 				ng-if="monatEnrollment.position + 1 != monatEnrollment.steps.length && monatEnrollment.reviewContext == false"
 			>

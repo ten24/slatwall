@@ -1751,8 +1751,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				}
 			}
 			
-			if(!isNull(promotionReward.getExcludedSkusCollectionConfig())) newPromotionReward.setExcludedSkusCollectionConfig(newPromotionReward.getPromotionRewardID(), promotionReward.getExcludedSkusCollectionConfig());
-			if(!isNull(promotionReward.getIncludedSkusCollectionConfig())) newPromotionReward.setIncludedSkusCollectionConfig(promotionReward.getIncludedSkusCollectionConfig());
+			if(!isNull(promotionReward.getExcludedSkusCollectionConfig()) && len(promotionReward.getExcludedSkusCollectionConfig())) newPromotionReward.setExcludedSkusCollectionConfig(newPromotionReward.getPromotionRewardID(), promotionReward.getExcludedSkusCollectionConfig());
+			if(!isNull(promotionReward.getIncludedSkusCollectionConfig()) && len(promotionReward.getIncludedSkusCollectionConfig())) newPromotionReward.setIncludedSkusCollectionConfig(promotionReward.getIncludedSkusCollectionConfig());
 		
 			newPromotionPeriod.addPromotionReward(newPromotionReward);
 		}
@@ -1849,10 +1849,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					arrayAppend(newMessages, newMessage);
 				}
 			}			
-			if(!isNull(promotionQualifier.getIncludedOrdersCollectionConfig())) newpromotionQualifier.setIncludedOrdersCollectionConfig(promotionQualifier.getIncludedOrdersCollectionConfig());
-			if(!isNull(promotionQualifier.getExcludedOrdersCollectionConfig())) newpromotionQualifier.setExcludedOrdersCollectionConfig(promotionQualifier.getExcludedOrdersCollectionConfig());
-			if(!isNull(promotionQualifier.getExcludedSkusCollectionConfig())) newpromotionQualifier.setExcludedSkusCollectionConfig(promotionQualifier.getExcludedSkusCollectionConfig());
-			if(!isNull(promotionQualifier.getIncludedSkusCollectionConfig())) newpromotionQualifier.setIncludedSkusCollectionConfig(promotionQualifier.getIncludedSkusCollectionConfig());
+			if(!isNull(promotionQualifier.getIncludedOrdersCollectionConfig()) && len(promotionQualifier.getIncludedOrdersCollectionConfig()) ) newpromotionQualifier.setIncludedOrdersCollectionConfig(promotionQualifier.getIncludedOrdersCollectionConfig());
+			if(!isNull(promotionQualifier.getExcludedOrdersCollectionConfig()) && len(promotionQualifier.getExcludedOrdersCollectionConfig())  ) newpromotionQualifier.setExcludedOrdersCollectionConfig(promotionQualifier.getExcludedOrdersCollectionConfig());
+			if(!isNull(promotionQualifier.getExcludedSkusCollectionConfig()) && len(promotionQualifier.getExcludedSkusCollectionConfig()) ) newpromotionQualifier.setExcludedSkusCollectionConfig(promotionQualifier.getExcludedSkusCollectionConfig());
+			if(!isNull(promotionQualifier.getIncludedSkusCollectionConfig()) && len(promotionQualifier.getIncludedSkusCollectionConfig()) ) newpromotionQualifier.setIncludedSkusCollectionConfig(promotionQualifier.getIncludedSkusCollectionConfig());
 			newPromotionPeriod.addPromotionQualifier(newpromotionQualifier);
 		}
 		

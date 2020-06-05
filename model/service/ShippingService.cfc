@@ -364,7 +364,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					nullReplace(shippingMethodRate.getRateMultiplierAmount(),0)
 					);
 				}
-				
+
 				var containerStruct = arguments.orderFulfillment.getContainerStruct();
 				if(!structKeyExists(containerStruct,'packageCount')){
 					containerStruct['packageCount'] = 0;
@@ -375,20 +375,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					containerStruct.packageCount,
 					nullReplace(shippingMethodRate.getRatePerContainer(),0)
 				);
-				
-				//Handling must be calculated after the charge amount for container
-				//or gets overwritten.
-				//if handling fee setting is on,let's add it to the charge
-				if(shippingMethodRate.setting('shippingMethodRateHandlingFeeFlag')){
-					switch(shippingMethodRate.setting('shippingMethodRateHandlingFeeType')){
-						case 'amount':
-							chargeAmount += shippingMethodRate.setting('shippingMethodRateHandlingFeeAmount');
-						break;
-						case 'percentage':
-							chargeAmount += getChargeAmountByRatePercentage(arguments.orderFulfillment,shippingMethodRate.setting('shippingMethodRateHandlingFeePercentage'));
-						break;
-					}
-				}
 				
 				//make sure the manual rate is usable
 				var priceGroups = [];
@@ -537,7 +523,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arrayAppend(fulfillmentMethodOptionsCacheKeyArray,manualShippingMethodRateHash);
 			
 			var fulfillmentMethodOptionsCacheKey = hash(ArrayToList(fulfillmentMethodOptionsCacheKeyArray,''),'md5');
-			
+
 			if(isNull(arguments.orderFulfillment.getFulfillmentMethodOptionsCacheKey()) || arguments.orderFulfillment.getFulfillmentMethodOptionsCacheKey() != fulfillmentMethodOptionsCacheKey){
 				
 				var shippingMethodRateResponseBeans = getShippingMethodRatesResponseBeansByIntegrationsAndOrderFulfillment(integrations,arguments.orderFulfillment,shippingMethodRatesRequestBeans);
@@ -637,7 +623,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					}
 				}
 				// If the previously selected shipping method does not exist in the options now, then we just remove it.
-				if( !isNull(arguments.orderFulfillment.getShippingMethod()) && !listFindNoCase(shippingMethodIDOptionsList, arguments.orderFulfillment.getShippingMethod().getShippingMethodID())) {
+				if( !orderFulfillment.getManualFulfillmentChargeFlag() && !isNull(arguments.orderFulfillment.getShippingMethod()) && !listFindNoCase(shippingMethodIDOptionsList, arguments.orderFulfillment.getShippingMethod().getShippingMethodID())) {
 					arguments.orderFulfillment.setFulfillmentCharge(0);
 					arguments.orderFulfillment.setShippingMethod(javaCast("null",""));
 				}

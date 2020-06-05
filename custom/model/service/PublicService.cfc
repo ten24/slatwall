@@ -501,7 +501,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         requestBean.setTransactionType('authorizePayment');
          
 		var responseBean = paymentIntegration.getIntegrationCFC("Payment").processExternal(requestBean);
-
+        
 		if(!responseBean.hasErrors()) {
             var accountPaymentMethod = getService('accountService').newAccountPaymentMethod();
             accountPaymentMethod.setAccountPaymentMethodName("PayPal - Braintree");
@@ -950,7 +950,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         }
         
         orderData['orderItemIDList'] = list;
-        if(len(orderData.orderItemIDList)) orderService.processOrder( cart, orderData, 'removeOrderItem');
+        if(len(orderData.orderItemIDList)) {
+           orderService.processOrder( cart, orderData, 'removeOrderItem'); 
+        }
         this.addOrderItem(argumentCollection = arguments);
     }
         
@@ -1339,7 +1341,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         productCollectionList.addFilter('skus.activeFlag',1);
         productCollectionList.addFilter('skus.publishedFlag',1);
         productCollectionList.addFilter(propertyIdentifier ="skus.skuPrices.price", value= 0.00, comparisonOperator = "!=", filterGroupAlias="skuPrice");
-        productCollectionList.addFilter(propertyIdentifier ="skus.displayOnlyFlag", value= 1, comparisonOperator= "=", logicalOperator="OR", filterGroupAlias="skuPrice");
         productCollectionList.addFilter('skus.skuPrices.currencyCode',currencyCode);
         productCollectionList.addFilter('skus.skuPrices.priceGroup.priceGroupCode',priceGroupCode);
         productCollectionList.addFilter('productType.parentProductType.urlTitle','other-income','!=');
@@ -1355,9 +1356,12 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             productCollectionList.addFilter('skus.vipFlag', 1);
         }
         
-        if(structKeyExists(arguments.data,"hideProductPacks") && arguments.data.hideProductPacks){
+        if(structKeyExists(arguments.data,"hideProductPacksAndDisplayOnly") && arguments.data.hideProductPacksAndDisplayOnly){
+            productCollectionList.addFilter(propertyIdentifier ="skus.displayOnlyFlag", value= 1, comparisonOperator= "!=");
             productCollectionList.addFilter('productType.urlTitle','starter-kit','!=');
             productCollectionList.addFilter('productType.urlTitle','productPack','!=');    
+        }else{
+            productCollectionList.addFilter(propertyIdentifier ="skus.displayOnlyFlag", value= 1, comparisonOperator= "=", logicalOperator="OR", filterGroupAlias="skuPrice");
         }
 
         return { productCollectionList: productCollectionList, priceGroupCode: priceGroupCode, currencyCode: currencyCode };
@@ -2497,4 +2501,28 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         arguments.data['protectedSystemCodeList'] = 'PromotionalItems';
         this.addProtectedProductType(arguments.data);
     }
+    
+    public any function updateOrderTemplateSchedule( required any data ){
+        this.deleteOrderTemplatePromoItems(arguments.data);
+	    super.updateOrderTemplateSchedule(arguments.data);
+    }
+    
+    public any function updateOrderTemplateFrequency( required any data ){
+        this.deleteOrderTemplatePromoItems(arguments.data);
+        super.updateOrderTemplateFrequency(arguments.data);
+    }
+    
+    public any function deleteOrderTemplatePromoItems(required any data ){
+        var orderTemplate = getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
+
+    	if(!isNull(orderTemplate)){
+    	    getDao('orderDao').removeTemporaryOrderTemplateItems(arguments.data.orderTemplateID);
+            getHibachiScope().flushORMSession();    
+            var qualifiesForOFY = orderTemplate.getQualifiesForOFYProducts();
+	        arguments.data['ajaxResponse']['qualifiesForOFY'] = qualifiesForOFY;
+            getHibachiScope().addActionResult( "public:order.deleteOrderTemplatePromoItem", !qualifiesForOFY );  
+    	}
+    }
+    
+    
 }

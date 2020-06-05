@@ -29,9 +29,9 @@
 			<frequency-step></frequency-step>
 		</div>
 		<!--ofy step -->
-		<div ng-if="flexshipFlow.currentStep  === flexshipFlow.FlexshipSteps.OFY ">
+		<div ng-if="flexshipFlow.currentStep === flexshipFlow.FlexshipSteps.OFY ">
 			<div class="container great_part">
-				<ofy-enrollment flexship="flexshipFlow.orderTemplateService.currentOrderTemplateID"></ofy-enrollment>	
+				<ofy-enrollment products="flexshipFlow.ofyProducts" flexship="flexshipFlow.orderTemplateService.currentOrderTemplateID"></ofy-enrollment>	
 			</div>
 		</div>
 		<!--Checkout step -->

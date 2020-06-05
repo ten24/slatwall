@@ -16,7 +16,7 @@ class monatFlexshipScheduleModalController {
 	public endDate;
 	public startDate;
 	public nextPlaceDateTime;
-
+	public qualifiesSnapShot:boolean;
 	
 	public formData = {
 		delayOrSkip : 'delay',
@@ -42,7 +42,7 @@ class monatFlexshipScheduleModalController {
         this.loading = true;
     	this.makeTranslations();
     	this.calculateNextPlacedDateTime();
-    	
+    	this.qualifiesSnapShot = this.orderTemplate.qualifiesForOFYProducts;
 		this.monatService.getOptions({ 'frequencyTermOptions':false, 'scheduleDateChangeReasonTypeOptions':false})
 		.then( (options) => {
 			
@@ -80,7 +80,6 @@ class monatFlexshipScheduleModalController {
     
     public updateSchedule() {
         this.loading = true;
-    	
     	let payload = {};
         payload['orderTemplateID'] = this.orderTemplate.orderTemplateID;
     	
@@ -96,8 +95,7 @@ class monatFlexshipScheduleModalController {
     	}
     
     	payload['frequencyTermID'] = this.formData.selectedFrequencyTermID;
-    	
-    	
+    
         this.orderTemplateService
         .updateOrderTemplateSchedule(
         	this.orderTemplateService.getFlattenObject(payload)
@@ -106,6 +104,11 @@ class monatFlexshipScheduleModalController {
         	if(data.orderTemplate) {
                 this.orderTemplate = data.orderTemplate;
             	this.monatAlertService.success(this.rbkeyService.rbKey('alert.flexship.updateSuccessful'));
+            	if(data.successfulActions?.indexOf('public:order.deleteOrderTemplatePromoItem') > -1){
+            		data.orderTemplate.qualifiesForOFYProducts = true;
+            	}else{
+            		data.orderTemplate.qualifiesForOFYProducts = this.qualifiesSnapShot;
+            	}
                 this.observerService.notify("orderTemplateUpdated" + data.orderTemplate.orderTemplateID, data.orderTemplate);
                 this.closeModal();
         	} else {
