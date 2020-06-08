@@ -1765,8 +1765,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				}
 			}
 			
-			if(!isNull(promotionReward.getExcludedSkusCollectionConfig()) && len(promotionReward.getExcludedSkusCollectionConfig())) newPromotionReward.setExcludedSkusCollectionConfig(newPromotionReward.getPromotionRewardID(), promotionReward.getExcludedSkusCollectionConfig());
-			if(!isNull(promotionReward.getIncludedSkusCollectionConfig()) && len(promotionReward.getIncludedSkusCollectionConfig())) newPromotionReward.setIncludedSkusCollectionConfig(promotionReward.getIncludedSkusCollectionConfig());
+			if( !isNull( promotionReward.getExcludedSkusCollectionConfig() ) 
+				&& len( promotionReward.getExcludedSkusCollectionConfig() ) ){
+					newPromotionReward.setExcludedSkusCollectionConfig( promotionReward.getExcludedSkusCollectionConfig() );	
+				} 
+			if( !isNull(promotionReward.getIncludedSkusCollectionConfig() )
+				&& len( promotionReward.getIncludedSkusCollectionConfig() ) ){
+					newPromotionReward.setIncludedSkusCollectionConfig( promotionReward.getIncludedSkusCollectionConfig() );
+				}
 		
 			newPromotionPeriod.addPromotionReward(newPromotionReward);
 		}
