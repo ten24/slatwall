@@ -1221,7 +1221,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	 * Note: we're using request Scope as it's shared b/w the Request and Thread
 	 * 
 	 */ 
-	private struct function getOrderTemplateOrderDetails(required any orderTemplate){	
+	public struct function getOrderTemplateOrderDetails(required any orderTemplate){	
 		var orderTemplateOrderDetailsKey = "orderTemplateOrderDetails#arguments.orderTemplate.getOrderTemplateID()#"
 
 		if(structKeyExists(request, orderTemplateOrderDetailsKey)){
@@ -2393,7 +2393,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		param name="arguments.data.nullAccountFlag" type="boolean" default=false;  
 		
 		//Making PropertiesList
-		var orderTemplateCollectionPropList = "calculatedFulfillmentTotal,shippingMethod.shippingMethodName"; //extra prop we need
+		var orderTemplateCollectionPropList = "calculatedFulfillmentTotal,shippingMethod.shippingMethodName,calculatedTaxTotal"; //extra prop we need
 		
 		var	accountPaymentMethodProps = "creditCardLastFour,expirationMonth,expirationYear";
 		accountPaymentMethodProps =   getService('hibachiUtilityService').prefixListItem(accountPaymentMethodProps, "accountPaymentMethod.");

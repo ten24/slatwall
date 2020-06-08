@@ -394,7 +394,7 @@ component extends="Slatwall.model.service.OrderService" {
 	 * Note: we're using request Scope as it's shared b/w the Request and Thread
 	 * 
 	 */ 
-	private struct function getOrderTemplateOrderDetails(required any orderTemplate){	
+	public struct function getOrderTemplateOrderDetails(required any orderTemplate){	
 		
 		var orderTemplateOrderDetailsKey = "orderTemplateOrderDetails#arguments.orderTemplate.getOrderTemplateID()#"
 

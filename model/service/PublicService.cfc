@@ -1947,7 +1947,8 @@ component  accessors="true" output="false"
     		getHibachiScope().flushORMSession(); //flushing to make new data availble
         }
         
-        setOrderTemplateAjaxResponse(argumentCollection = arguments);
+        getService('OrderService').getOrderTemplateOrderDetails(orderTemplate);
+        getOrderTemplateDetails(argumentCollection=arguments);
         addErrors(arguments.data, orderTemplate.getErrors());
         
 	}
