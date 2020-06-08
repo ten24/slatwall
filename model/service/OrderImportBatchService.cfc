@@ -209,7 +209,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			order.setCurrencyCode(currencyCode);
 			order.setOrderImportBatch(arguments.orderImportBatch);
 			order.setShippingAddress(orderImportBatchItem.getShippingAddress());
-		
+			order.setQuoteFlag(true);
 			//Save Order
 			getOrderService().saveOrder(order);
 			orderImportBatchItem.setOrder(order);
@@ -240,7 +240,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				orderItem.setSku(orderImportBatchItem.getSku());
 				orderItem.setQuantity(orderImportBatchItem.getQuantity());
 				orderItem.setPrice(0);
-				orderItem.setSkuPrice(0);
+				orderItem.setSkuPrice(orderImportBatchItem.getSku().getPriceByCurrencyCode(currencyCode=currencyCode,quantity=orderItem.getQuantity(),accountID=account.getAccountID()));
+				if(isNull(orderItem.getSkuPrice())){
+					orderItem.setSkuPrice(0);
+				}
 				getOrderService().saveOrderItem( orderItem=orderItem, updateShippingMethodOptions=false );
 				
 				if(orderItem.hasErrors()){
