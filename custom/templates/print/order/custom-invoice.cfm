@@ -83,7 +83,7 @@ Notes:
 <cfelse>
 	<cfset local.taxType = 'Tax'>
 </cfif>
-
+<cfdocument format="PDF" orientation="portrait">
 	<cfset local.defaultTable = 'width: 100%; font-family: Arial, sans-serif; font-size: 11px; color: ##848484; border-collapse: collapse;' />
 	<cfoutput>
 		
@@ -514,5 +514,5 @@ Notes:
 			
 		</table>
 	</cfoutput>
-<cfabort>
+</cfdocument>
 
