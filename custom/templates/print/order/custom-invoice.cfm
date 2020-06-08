@@ -83,7 +83,6 @@ Notes:
 <cfelse>
 	<cfset local.taxType = 'Tax'>
 </cfif>
-
 <cfdocument format="PDF" orientation="portrait">
 	<cfset local.defaultTable = 'width: 100%; font-family: Arial, sans-serif; font-size: 11px; color: ##848484; border-collapse: collapse;' />
 	<cfoutput>
@@ -160,7 +159,7 @@ Notes:
 									<b>Billing Address:</b>
 									
 									<br>
-									Last Name, Name
+										#order.getAccount().getLastName()#, #order.getAccount().getFirstName()#
 									<br>
 									<cfif not isNull(order.getAccount()) and not isNull(order.getAccount().getCompany())>
 										#order.getAccount().getCompany()#<br />
@@ -223,7 +222,7 @@ Notes:
 								<p>
 									<b>Shipping Address:</b>
 									<br>
-									Full Name
+									#order.getAccount().getCalculatedFullName()#
 									<cfloop array="#order.getOrderFulfillments()#" index="local.orderFulfillment">
 										<cfif local.orderFulfillment.getFulfillmentMethodType() EQ "shipping">
 											<br>
