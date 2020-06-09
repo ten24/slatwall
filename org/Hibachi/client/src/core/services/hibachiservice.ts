@@ -555,13 +555,13 @@ class HibachiService{
 
 		var urlString = this.getUrlWithActionPrefix()+'api:main.getResourceBundle&instantiationKey='+this.appConfig.instantiationKey+'&locale='+locale;
 
-		let request = this.requestService.newAdminRequest(urlString);
+		let request = this.requestService.newAdminRequest(urlString, null, 'GET');
 		return request.promise
 	};
 
 	getCurrencies = () =>{
 		var urlString = this.getUrlWithActionPrefix()+'api:main.getCurrencies&instantiationKey='+this.appConfig.instantiationKey;
-		let request = this.requestService.newAdminRequest(urlString);
+		let request = this.requestService.newAdminRequest(urlString, null, 'GET');
 
 		return request.promise;
 	};
