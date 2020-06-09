@@ -2144,7 +2144,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var shippingMethod = processObject.getShippingMethod();
 
 		orderTemplate.setShippingMethod(shippingMethod);	
-		
 		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate); 
 
 		return arguments.orderTemplate;

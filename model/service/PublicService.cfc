@@ -1948,6 +1948,7 @@ component  accessors="true" output="false"
         }
         
         getService('OrderService').getOrderTemplateOrderDetails(orderTemplate);
+        writeDump(var=orderTemplate.getTaxTotal(),label="here");abort;
         getOrderTemplateDetails(argumentCollection=arguments);
         addErrors(arguments.data, orderTemplate.getErrors());
         

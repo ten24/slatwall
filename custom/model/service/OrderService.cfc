@@ -422,13 +422,13 @@ component extends="Slatwall.model.service.OrderService" {
 		request[orderTemplateOrderDetailsKey]['skuCollection'] = skuCollection;
 		request[orderTemplateOrderDetailsKey]['promotionalRewardSkuCollectionConfig'] = skuCollection.getCollectionConfigStruct(); 
 
-		var threadName = "t" & getHibachiUtilityService().generateRandomID(15);	
-		
-		thread 
-			name="#threadName#" 
-			action="run" 
-			orderTemplateOrderDetailsKey = "#orderTemplateOrderDetailsKey#" 
-		{	
+		// var threadName = "t" & getHibachiUtilityService().generateRandomID(15);	
+
+		// thread 
+		// 	name="#threadName#" 
+		// 	action="run" 
+		// 	orderTemplateOrderDetailsKey = "#orderTemplateOrderDetailsKey#" 
+		// {	
 			var currentOrderTemplate = request[orderTemplateOrderDetailsKey]['orderTemplate'];
 			var hasInfoForFulfillment = !isNull( currentOrderTemplate.getShippingMethod() ); 
 
@@ -472,6 +472,7 @@ component extends="Slatwall.model.service.OrderService" {
 			request[orderTemplateOrderDetailsKey]['canPlaceOrderDetails'] = getPromotionService().getOrderQualifierDetailsForCanPlaceOrderReward(transientOrder); 
 			request[orderTemplateOrderDetailsKey]['canPlaceOrder'] = request[orderTemplateOrderDetailsKey]['canPlaceOrderDetails']['canPlaceOrder']; 
 			request[orderTemplateOrderDetailsKey]['purchasePlusTotal'] = transientOrder.getPurchasePlusTotal();
+			writeDump(var=transientOrder.getTaxTotal(),label="transient");
 			request[orderTemplateOrderDetailsKey]['taxTotal'] = transientOrder.getTaxTotal();
 			request[orderTemplateOrderDetailsKey]['vatTotal'] = transientOrder.getVatTotal();
 			request[orderTemplateOrderDetailsKey]['fulfillmentHandlingFeeTotal'] = transientOrder.getFulfillmentHandlingFeeTotal();
@@ -487,15 +488,15 @@ component extends="Slatwall.model.service.OrderService" {
 			ormFlush();
 			StructDelete(request[orderTemplateOrderDetailsKey], 'orderTemplate'); //we don't need it anymore
 			
-		}
+		// }
 		
-		//join thread so we can return synchronously
-		threadJoin(threadName);
+		// //join thread so we can return synchronously
+		// threadJoin(threadName);
 		
-		//if we have any error we probably don't have the required data for returning the total
-		if(structKeyExists(evaluate(threadName), "ERROR")){
-			this.logHibachi('encountered error in get Fulfillment Total For Order Template: #arguments.orderTemplate.getOrderTemplateID()# and e: #serializeJson(evaluate(threadName).error)#',true);
-		} 
+		// //if we have any error we probably don't have the required data for returning the total
+		// if(structKeyExists(evaluate(threadName), "ERROR")){
+		// 	this.logHibachi('encountered error in get Fulfillment Total For Order Template: #arguments.orderTemplate.getOrderTemplateID()# and e: #serializeJson(evaluate(threadName).error)#',true);
+		// } 
 
 		return request[orderTemplateOrderDetailsKey];
 	}
