@@ -46,8 +46,8 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../../tags" />
-<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+<cfimport prefix="swa" taglib="../../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../../org/Hibachi/HibachiTags" />
 
 <cfparam name="rc.orderFulfillment" type="any" />
 
@@ -60,7 +60,7 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="taxImpositionName" />
 		<hb:HibachiListingColumn propertyIdentifier="taxJurisdictionName" />
 		<hb:HibachiListingColumn propertyIdentifier="taxRate" />
-		<cfif rc.orderFulfillment.getVATAmount() GT 0>
+		<cfif rc.orderFulfillment.getChargeVATAmount() GT 0>
     		<hb:HibachiListingColumn propertyIdentifier="VATAmount" />
     	<cfelse>
     		<hb:HibachiListingColumn propertyIdentifier="taxAmount" />
