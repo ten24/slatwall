@@ -92,6 +92,7 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	property name="calculatedSubTotal" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedFulfillmentTotal" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedTaxableAmountTotal" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedFulfillmentDiscount" ormtype="big_decimal" hb_formatType="currency";
 
 	// Remote properties
 	property name="remoteID" ormtype="string";
@@ -158,7 +159,7 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 	property name="mostRecentError" ormtype="string";
 	
 //CUSTOM PROPERTIES END
-	public string function getEncodedJsonRepresentation(string nonPersistentProperties='subtotal,fulfillmentTotal,fulfillmentDiscount,total'){ 
+	public string function getEncodedJsonRepresentation(string nonPersistentProperties='calculatedSubTotal,calculatedFulfillmentTotal,calculatedFulfillmentDiscount,calculatedTotal'){ 
 		return getService('hibachiUtilityService').hibachiHTMLEditFormat(serializeJson(getStructRepresentation(arguments.nonPersistentProperties)));
 	} 
 	

@@ -1341,11 +1341,10 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         productCollectionList.addFilter('skus.activeFlag',1);
         productCollectionList.addFilter('skus.publishedFlag',1);
         productCollectionList.addFilter(propertyIdentifier ="skus.skuPrices.price", value= 0.00, comparisonOperator = "!=", filterGroupAlias="skuPrice");
-        productCollectionList.addFilter('skus.skuPrices.currencyCode',currencyCode);
-        productCollectionList.addFilter('skus.skuPrices.priceGroup.priceGroupCode',priceGroupCode);
+        productCollectionList.addFilter(propertyIdentifier='skus.skuPrices.currencyCode', value= currencyCode, comparisonOperator="=", filterGroupAlias="skuPrice");
+        productCollectionList.addFilter(propertyIdentifier='skus.skuPrices.priceGroup.priceGroupCode',value=priceGroupCode,filterGroupAlias="skuPrice");
         productCollectionList.addFilter('productType.parentProductType.urlTitle','other-income','!=');
         productCollectionList.addFilter('sites.siteID',site.getSiteID());
-        productCollectionList.addFilter('skus.skuPrices.currencyCode',currencyCode);
         productCollectionList.addFilter('skus.skuPrices.promotionReward.promotionRewardID','NULL','IS')
         
         if(isNull(accountType) || accountType == 'customer'){
