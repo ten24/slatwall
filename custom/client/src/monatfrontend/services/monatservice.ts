@@ -28,7 +28,8 @@ export class MonatService {
 	public hairFilters = [{}];
 	public skinFilters = [{}];
 	public totalItemQuantityAfterDiscount = 0;
-
+	public ofyItems;
+	
 	//@ngInject
 	constructor(
 		private $q: ng.IQService,
@@ -527,6 +528,23 @@ export class MonatService {
 			}
 		});
 		
+		return deferred.promise;
+	}
+	
+	public getOFYItemsForOrder(hardRefresh = false){
+		var deferred = this.$q.defer<any>();
+		if(this.ofyItems && !hardRefresh){
+			deferred.resolve(this.ofyItems);
+		}else{
+			this.publicService.doAction("getOFYProductsForOrder").then((data: any) => {
+				if (data?.ofyProducts) {
+					this.ofyItems = data.ofyProducts;
+					deferred.resolve(this.ofyItems);
+				} else {
+					throw data;
+				}
+			});
+		}
 		return deferred.promise;
 	}
 }
