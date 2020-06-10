@@ -53,6 +53,11 @@
 			<hb:HibachiPropertyDisplay object="#rc.order#" property="orderCreatedSite" edit="false">
 			
 			<hb:HibachiPropertyDisplay object="#rc.order#" property="orderOrigin" edit="#rc.edit#">
+			
+			<!--- Flexship --->
+			<cfif !isNull(rc.order.getOrderTemplate()) >
+				<hb:HibachiPropertyDisplay object="#rc.order#" property="orderTemplate" valuelink="?slatAction=admin:entity.detailordertemplate&orderTemplateID=#rc.order.getOrderTemplate().getOrderTemplateID()#" edit="false">
+			</cfif>
 
 			<!--- Order Type --->
 			<hb:HibachiPropertyDisplay object="#rc.order#" property="orderType" edit="false">
