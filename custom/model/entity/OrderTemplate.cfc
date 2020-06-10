@@ -33,6 +33,7 @@ component {
 	property name="vatTotal" persistent="false" hb_formatType="currency";
 	property name="fulfillmentHandlingFeeTotal" persistent="false" hb_formatType="currency";
 	property name="mostRecentError" ormtype="string";
+	property name="scheduleOrderNextPlaceDateTimeMinusOne" persistent="false" hb_formatType="dateTime"; 
 	
 	public boolean function getAccountIsNotInFlexshipCancellationGracePeriod(){
 		if(	getHibachiScope().getAccount().getAdminAccountFlag() ){
@@ -237,4 +238,7 @@ component {
 		return variables.fulfillmentHandlingFeeTotal; 	
 	}	
 	
+	public any function getScheduleOrderNextPlaceDateTimeMinusOne(){
+		return DateAdd("d",-1 , this.getScheduleOrderNextPlaceDateTime()); 
+	}
 }
