@@ -467,7 +467,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					}
 					// If this promotion period is ok to apply based on general useCount
 					if(promotionPeriodQualifications[ reward.getPromotionPeriod().getPromotionPeriodID() ].qualificationsMeet) {
-						if(arguments.order.hasOrderTemplate()){
+						if(arguments.order.hasOrderTemplate() && ((!orderRewards && reward.getRewardType() != 'order') || (orderRewards && reward.getRewardType() == 'order') ) ){
 							logHibachi('Qualifications met for #reward.getPromotionPeriod().getPromotion().getPromotionName()#');
 						}
 						// =============== Order Item Reward ==============
