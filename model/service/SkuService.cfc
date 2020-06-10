@@ -168,6 +168,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	            var currentSku = this.getSku(sku.skuID);
 	            sku['skuOrderMinimumQuantity'] = currentSku.setting('skuOrderMinimumQuantity');
 	            sku['skuOrderMaximumQuantity'] = currentSku.setting('skuOrderMaximumQuantity');
+	            sku['skuFulfillmentMethods'] = currentSku.getEligibleFulfillmentMethodsWithShippingMethods();
 	        }
 		}
 		return arguments.skus;
