@@ -90889,12 +90889,12 @@ var HibachiService = /** @class */ (function () {
                 return _this._resourceBundle[locale];
             }
             var urlString = _this.getUrlWithActionPrefix() + 'api:main.getResourceBundle&instantiationKey=' + _this.appConfig.instantiationKey + '&locale=' + locale;
-            var request = _this.requestService.newAdminRequest(urlString);
+            var request = _this.requestService.newAdminRequest(urlString, null, 'GET');
             return request.promise;
         };
         this.getCurrencies = function () {
             var urlString = _this.getUrlWithActionPrefix() + 'api:main.getCurrencies&instantiationKey=' + _this.appConfig.instantiationKey;
-            var request = _this.requestService.newAdminRequest(urlString);
+            var request = _this.requestService.newAdminRequest(urlString, null, 'GET');
             return request.promise;
         };
         this.getConfig = function () {
@@ -92604,7 +92604,7 @@ var PublicService = /** @class */ (function () {
             if (refresh === void 0) { refresh = false; }
             var urlBase = _this.baseActionPath + 'getCountries/';
             if (!_this.countryDataPromise || refresh) {
-                _this.countryDataPromise = _this.getData(urlBase, "countries", "");
+                _this.countryDataPromise = _this.getData(urlBase, "countries", "", "get");
             }
             return _this.countryDataPromise;
         };
@@ -92621,7 +92621,7 @@ var PublicService = /** @class */ (function () {
                 countryCode = "US";
             var urlBase = _this.baseActionPath + 'getStateCodeOptionsByCountryCode/';
             if (!_this.getRequestByAction('getStateCodeOptionsByCountryCode') || !_this.getRequestByAction('getStateCodeOptionsByCountryCode').loading || refresh) {
-                _this.stateDataPromise = _this.getData(urlBase, "states", "?countryCode=" + countryCode);
+                _this.stateDataPromise = _this.getData(urlBase, "states", "?countryCode=" + countryCode, "get");
                 return _this.stateDataPromise;
             }
             return _this.stateDataPromise;
@@ -92666,15 +92666,16 @@ var PublicService = /** @class */ (function () {
             }
             var urlBase = _this.baseActionPath + 'getAddressOptionsByCountryCode/';
             if (!_this.getRequestByAction('getAddressOptionsByCountryCode') || !_this.getRequestByAction('getAddressOptionsByCountryCode').loading || refresh) {
-                _this.addressOptionData = _this.getData(urlBase, "addressOptions", "?countryCode=" + countryCode);
+                _this.addressOptionData = _this.getData(urlBase, "addressOptions", "?countryCode=" + countryCode, "get");
                 return _this.addressOptionData;
             }
             return _this.addressOptionData;
         };
         /** accessors for states */
-        this.getData = function (url, setter, param) {
+        this.getData = function (url, setter, param, method) {
+            if (method === void 0) { method = 'post'; }
             var urlBase = url + param;
-            var request = _this.requestService.newPublicRequest(urlBase);
+            var request = _this.requestService.newPublicRequest(urlBase, null, method);
             request.promise.then(function (result) {
                 //don't need account and cart for anything other than account and cart calls.
                 if (setter.indexOf('account') == -1) {

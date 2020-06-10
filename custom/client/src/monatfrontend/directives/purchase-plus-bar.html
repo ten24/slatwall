@@ -54,5 +54,7 @@
 <div 
 	class="purchase-plus-message alert alert-success rounded-0" 
 	ng-if="purchasePlusBar.showMessages === true && purchasePlusBar.hasPurchasePlusMessage" 
-	ng-bind="purchasePlusBar.message"
-></div>
+>
+<span ng-bind="purchasePlusBar.message"></span>
+<a id="purchase-plus-questionmark" data-target="#purchasePlusModal" data-toggle="modal" type="button"><i class="far fa-question-circle"></i></a>
+</div>

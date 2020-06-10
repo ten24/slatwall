@@ -1342,7 +1342,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         productCollectionList.addFilter('skus.publishedFlag',1);
         productCollectionList.addFilter(propertyIdentifier ="skus.skuPrices.price", value= 0.00, comparisonOperator = "!=", filterGroupAlias="skuPrice");
         productCollectionList.addFilter(propertyIdentifier='skus.skuPrices.currencyCode', value= currencyCode, comparisonOperator="=", filterGroupAlias="skuPrice");
-        productCollectionList.addFilter('skus.skuPrices.priceGroup.priceGroupCode',priceGroupCode);
+        productCollectionList.addFilter(propertyIdentifier='skus.skuPrices.priceGroup.priceGroupCode',value=priceGroupCode,filterGroupAlias="skuPrice");
         productCollectionList.addFilter('productType.parentProductType.urlTitle','other-income','!=');
         productCollectionList.addFilter('sites.siteID',site.getSiteID());
         productCollectionList.addFilter('skus.skuPrices.promotionReward.promotionRewardID','NULL','IS')
@@ -1426,7 +1426,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         arguments.data['ajaxResponse']['recordsCount'] = recordsCount;
     }
     
-    public void function getQuickShopModalBySkuID(required any data) {
+    public any function getQuickShopModalBySkuID(required any data) {
         param name="arguments.data.skuID" default="";
         
         arguments.data['ajaxResponse']['skuBundles'] = [];
@@ -1555,26 +1555,27 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             }
             
             arguments.data['ajaxResponse']['productData'] = productData;
-            
-            var muraIngredients = QueryExecute("SELECT body FROM tContent WHERE htmlTitle='No Toxic Ingredients' AND active=1 AND siteID=:siteID", {siteID: arguments.data.cmsSiteID});
-            var queryProductValues = [];
-            
-            for(var record in muraIngredients){
-                arrayAppend(queryProductValues,record.body);
-            }
-            
-            
-            var muraValues = QueryExecute("SELECT body FROM tContent WHERE htmlTitle='Product Details: Values Bar' AND active=1 AND siteID=:siteID", {siteID: arguments.data.cmsSiteID});
-            var queryCompanyValues = [];
-            for(var record in muraValues){
-                arrayAppend(queryCompanyValues,record.body);
-            }
+            if(structKeyExists(arguments.data,'cmsSiteID')){
+                var muraIngredients = QueryExecute("SELECT body FROM tContent WHERE htmlTitle='No Toxic Ingredients' AND active=1 AND siteID=:siteID", {siteID: arguments.data.cmsSiteID});
+                var queryProductValues = [];
+                
+                for(var record in muraIngredients){
+                    arrayAppend(queryProductValues,record.body);
+                }
+                
+                
+                var muraValues = QueryExecute("SELECT body FROM tContent WHERE htmlTitle='Product Details: Values Bar' AND active=1 AND siteID=:siteID", {siteID: arguments.data.cmsSiteID});
+                var queryCompanyValues = [];
+                for(var record in muraValues){
+                    arrayAppend(queryCompanyValues,record.body);
+                }
 
-            arguments.data['ajaxResponse']['muraIngredients'] = queryProductValues;
-            arguments.data['ajaxResponse']['muraValues'] = queryCompanyValues;
+                arguments.data['ajaxResponse']['muraIngredients'] = queryProductValues;
+                arguments.data['ajaxResponse']['muraValues'] = queryCompanyValues;
+            }
             
         }
-    
+        return productData;
     }
     
     public any function getCommonNonPersistentProductProperties(required array records, required string priceGroupCode, required string currencyCode, required string siteID = 'default'){

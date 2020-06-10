@@ -139,6 +139,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	property name="subtotalAfterDiscounts" type="array" persistent="false" hb_formatType="currency";
 	property name="subtotalAfterDiscountsWithTax" type="array" persistent="false" hb_formatType="currency";
 	property name="taxAmount" type="numeric" persistent="false" hb_formatType="currency";
+	property name="VATAmount" type="numeric" persistent="false" hb_formatType="currency";
 	property name="totalShippingWeight" type="numeric" persistent="false" hb_formatType="weight";
     property name="totalShippingQuantity" type="numeric" persistent="false" hb_formatType="weight";
     property name="shipmentItemMultiplier" type="numeric" persistent="false";
@@ -604,6 +605,16 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	    	}
     	}
     	return variables.taxAmount;
+    }
+    
+    public numeric function getVATAmount() {
+    	if( !structkeyExists(variables, "VATAmount") ) {
+    		variables.VATAmount = 0;
+	    	for( var i=1; i<=arrayLen(getOrderFulfillmentItems()); i++ ) {
+	    		variables.VATAmount = getService('HibachiUtilityService').precisionCalculate(variables.VATAmount + getOrderFulfillmentItems()[i].getVATAmount());
+	    	}
+    	}
+    	return variables.VATAmount;
     }
 
 	public numeric function getChargeTaxAmount() {
