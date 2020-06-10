@@ -52,7 +52,8 @@ class MonatCheckoutController {
 		public $rootScope,
 		public $scope,
 		public ModalService,
-		public monatAlertService
+		public monatAlertService,
+		public monatService
 	) {}
 
 	public $onInit = () => {

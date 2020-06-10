@@ -89,12 +89,10 @@ class MonatEnrollmentController {
 					}else if(account.accountID.length && cart.monatOrderType?.typeCode.length && account.accountCode.length){
 						this.hasSkippedSteps = true;
 						this.steps = this.steps.filter(el => reqList.indexOf(el.stepClass) == -1);
-						this.next();
 					//if they have an account and an upgraded order remove create account
 					}else if(account.accountID.length && cart.monatOrderType?.typeCode.length && !this.upgradeFlow){
 						this.hasSkippedSteps = true;
 						this.steps = this.steps.filter(el => el.stepClass !== 'createAccount');
-						this.next();
 					}
 				 }else if(cart.monatOrderType?.typeCode.length){
 				 	this.handleUpgradeSteps(cart);
