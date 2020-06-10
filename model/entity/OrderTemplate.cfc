@@ -157,7 +157,7 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 	property name="vatTotal" persistent="false" hb_formatType="currency";
 	property name="fulfillmentHandlingFeeTotal" persistent="false" hb_formatType="currency";
 	property name="mostRecentError" ormtype="string";
-	property name="scheduleOrderNextPlaceDateTimeMinusOne" persistent="false";
+	property name="scheduleOrderNextPlaceDateTimeMinusOne" persistent="false" hb_formatType="dateTime"; 
 	
 //CUSTOM PROPERTIES END
 	public string function getEncodedJsonRepresentation(string nonPersistentProperties='calculatedSubTotal,calculatedFulfillmentTotal,calculatedFulfillmentDiscount,calculatedTotal'){ 
@@ -638,7 +638,7 @@ public boolean function getAccountIsNotInFlexshipCancellationGracePeriod(){
 		return variables.fulfillmentHandlingFeeTotal; 	
 	}	
 	
-	pubic any function getScheduleOrderNextPlaceDateTimeMinusOne(){
+	public any function getScheduleOrderNextPlaceDateTimeMinusOne(){
 		return DateAdd("d",-1 , this.getScheduleOrderNextPlaceDateTime()); 
 	}//CUSTOM FUNCTIONS END
 }
