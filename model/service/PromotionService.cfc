@@ -335,6 +335,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 									});
 
 								}
+							}else{
+								if(arguments.order.hasOrderTemplate()){
+									logHibachi('Discount amount 0, not applying #arguments.promotionReward.getPromotionPeriod().getPromotion().getPromotionName()#');
+									
+								}
 							}
 
 						} // End OrderItem in reward IF
@@ -451,6 +456,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				var orderRewards = false;
 				for(var pr=1; pr<=arrayLen(promotionRewards); pr++) {
 					var reward = promotionRewards[pr];
+					if(arguments.order.hasOrderTemplate() && ((!orderRewards && reward.getRewardType() != 'order') || (orderRewards && reward.getRewardType() == 'order') ) ){
+						logHibachi('Checking #reward.getRewardType()# reward for #reward.getPromotionPeriod().getPromotion().getPromotionName()#');
+					}
 					// Setup the promotionReward usage Details. This will be used for the maxUsePerQualification & and maxUsePerItem up front, and then later to remove discounts that violate max usage
 					setupPromotionRewardUsageDetails(reward,promotionRewardUsageDetails);
 					// Setup the boolean for if the promotionPeriod is okToApply based on general use count
@@ -459,6 +467,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					}
 					// If this promotion period is ok to apply based on general useCount
 					if(promotionPeriodQualifications[ reward.getPromotionPeriod().getPromotionPeriodID() ].qualificationsMeet) {
+						if(arguments.order.hasOrderTemplate()){
+							logHibachi('Qualifications met for #reward.getPromotionPeriod().getPromotion().getPromotionName()#');
+						}
 						// =============== Order Item Reward ==============
 						if( !orderRewards and listFindNoCase("merchandise,subscription,contentAccess", reward.getRewardType()) ) {
 
@@ -655,6 +666,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	private void function applyOrderItemDiscounts(required any order, required struct orderItemQualifiedDiscounts, required struct promotionRewardUsageDetails, array orderQualifierMessages){
+		if(arguments.order.hasOrderTemplate()){
+			logHibachi('Applying Order Item discounts for order #arguments.order.getOrderID()#');
+		}
 		var promotionRewardUsageArray = getPromotionRewardUsageArray( arguments.promotionRewardUsageDetails );
 		var length = arrayLen(promotionRewardUsageArray);
 		for(var i = 1; i <= length; i++){

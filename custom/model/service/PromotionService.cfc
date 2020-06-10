@@ -8,7 +8,9 @@ component extends="Slatwall.model.service.PromotionService" {
 	private boolean function applyPromotionToOrderItemIfValid( required any orderItem, required struct rewardStruct ){
 		var appliedPromotions = arguments.orderItem.getAppliedPromotions();
 		var order = arguments.orderItem.getOrder();
-
+		if(arguments.orderItem.getOrder().hasOrderTemplate()){
+			logHibachi('Checking stacking for #rewardStruct.promotionReward.getPromotionPeriod().getPromotion().getPromotionName()#');
+		}
 		if( rewardCanStack( appliedPromotions, arguments.rewardStruct.promotionReward )){
 			
 			var extendedUnitPriceAfterDiscount = arguments.orderItem.getExtendedUnitPriceAfterDiscount();
@@ -59,6 +61,9 @@ component extends="Slatwall.model.service.PromotionService" {
 	}
 	
 	private void function applyPromotionToOrderItem( required any orderItem, required struct rewardStruct ){
+		if(arguments.orderItem.getOrder().hasOrderTemplate()){
+			logHibachi('Applying promotion for #rewardStruct.promotionReward.getPromotionPeriod().getPromotion().getPromotionName()#');
+		}
 		var newAppliedPromotion = this.newPromotionApplied();
 		newAppliedPromotion.setAppliedType('orderItem');
 		newAppliedPromotion.setPromotion( arguments.rewardStruct.promotion );
