@@ -115,8 +115,7 @@ component accessors="true" output="false" extends="HibachiService" {
 			}
 		}else{
 			var entityQueueIDsToBeDeleted = '';
-			var maxThreads = createObject( "java", "java.lang.Runtime" ).getRuntime().availableProcessors();
-			var entityQueueIDsToBeDeletedArray = arguments.entityQueueArray.map( function( entityQueue ){
+			var entityQueueIDsToBeDeletedArray = getService('hibachiUtilityService').hibachiArrayMap(arguments.entityQueueArray, function( entityQueue ){
 				try{
 					var noMethod = !structKeyExists(entityQueue, 'processMethod') || 
 									isNull(entityQueue['processMethod']) || 
@@ -129,7 +128,6 @@ component accessors="true" output="false" extends="HibachiService" {
 					var entityService = getServiceForEntityQueue(entityQueue);
 	
 					var entity = entityService.invokeMethod( "get#entityQueue['baseObject']#", {1= entityQueue['baseID'] });
-					
 					if(isNull(entity)){
 						return entityQueue['entityQueueID'];
 					}
@@ -145,10 +143,11 @@ component accessors="true" output="false" extends="HibachiService" {
 					
 					return entityQueue['entityQueueID'];
 				}catch(any e){
+					
 					getHibachiEntityQueueDAO().updateModifiedDateTimeAndMostRecentError(entityQueue['entityQueueID'], e.message);
 					logHibachiException(e);
 				}
-			}, true, maxThreads);
+			});
 			
 			var cleanEntityQueueIDsToBeDeletedArray = entityQueueIDsToBeDeletedArray.filter(function(item){
 			    return len(item);
