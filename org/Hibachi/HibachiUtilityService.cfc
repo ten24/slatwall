@@ -4,6 +4,35 @@
 
 	<cfscript>
 	
+		public any function hibachiArrayMap(required array data, required any closure, numeric parallelThreadNumber){
+			if(!structKeyExists(arguments, 'parallelThreadNumber')){
+				arguments.parallelThreadNumber = createObject( "java", "java.lang.Runtime" ).getRuntime().availableProcessors();
+			}
+			
+			if(!isClosure(arguments.closure)){
+				throw('Invalid argument type, hibachiArrayMap expects a closure');
+			}
+			
+			var resultArray = [];
+			
+			var dataCount = arrayLen(arguments.data);
+			for( var i = 1; i <= dataCount; i++ ){
+				thread item=arguments.data[i] closure=arguments.closure {
+					writeOutput(closure(item));
+				}
+				if(i % arguments.parallelThreadNumber == 0){
+					thread action="join" name=cfthread.keyList();
+					
+					for(var threadResult in cfthread){
+						if(!structKeyExists(cfthread[threadResult], 'error')){
+							arrayAppend(resultArray, cfthread[threadResult]['output']);
+						}
+					}
+				}
+			}
+			return resultArray;
+		}
+	
 		public any function getHttpResponse(required any http, numeric timeout = 3, boolean throwOnTimeout = true){
 			arguments.http.setTimeout(arguments.timeout);
 			var result = arguments.http.send().getPrefix();
