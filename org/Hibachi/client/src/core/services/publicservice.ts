@@ -168,7 +168,7 @@ class PublicService {
     public getCountries=(refresh=false):any =>  {
         let urlBase = this.baseActionPath+'getCountries/';
         if(!this.countryDataPromise || refresh){
-            this.countryDataPromise = this.getData(urlBase, "countries", "");
+            this.countryDataPromise = this.getData(urlBase, "countries", "","get");
         }
         return this.countryDataPromise;
     }
@@ -188,7 +188,7 @@ class PublicService {
 
        if(!this.getRequestByAction('getStateCodeOptionsByCountryCode') || !this.getRequestByAction('getStateCodeOptionsByCountryCode').loading || refresh){
            
-           this.stateDataPromise = this.getData(urlBase, "states", "?countryCode="+countryCode);
+           this.stateDataPromise = this.getData(urlBase, "states", "?countryCode="+countryCode, "get");
            return this.stateDataPromise;
        }
 
@@ -238,17 +238,17 @@ class PublicService {
 
        let urlBase = this.baseActionPath+'getAddressOptionsByCountryCode/';
        if(!this.getRequestByAction('getAddressOptionsByCountryCode') || !this.getRequestByAction('getAddressOptionsByCountryCode').loading || refresh){
-           this.addressOptionData = this.getData(urlBase, "addressOptions", "?countryCode="+countryCode);
+           this.addressOptionData = this.getData(urlBase, "addressOptions", "?countryCode="+countryCode, "get");
            return this.addressOptionData;
        }
        return this.addressOptionData;
     }
 
     /** accessors for states */
-    public getData=(url, setter, param):any =>  {
+    public getData=(url, setter, param, method='post'):any =>  {
 
         let urlBase = url + param;
-        let request = this.requestService.newPublicRequest(urlBase);
+        let request = this.requestService.newPublicRequest(urlBase, null, method);
 
         request.promise.then((result:any)=>{
             //don't need account and cart for anything other than account and cart calls.
