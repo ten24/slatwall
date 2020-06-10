@@ -16,8 +16,13 @@ class OFYEnrollmentController {
 		if(this.flexship){
 			this.endpoint = 'getOrderTemplatePromotionSkus';
 			this.action = 'addOrderTemplateItem';
+			this.getPromotionSkus()
+		}else{
+			this.monatService.getOFYItemsForOrder().then(res => {
+				console.log(res);
+				this.products = res;
+			})
 		}
-		this.getPromotionSkus()
 	}
 
 	private getPromotionSkus = () => {
@@ -31,6 +36,9 @@ class OFYEnrollmentController {
 			this.publicService.doAction(this.endpoint, data).then( result => {
 				this.products = result.ofyProducts ? result.ofyProducts : result.orderTemplatePromotionSkus;
 				this.loading = false;
+				if(!this.flexship && !this.products.length){
+					this.observerService.notify('onNext');
+				}
 			});
 		}
 		

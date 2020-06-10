@@ -31,6 +31,8 @@ class MonatEnrollmentController {
 	public stepMap = {};
 	public vipEnrollmentThreshold:number;
 	public stepClassArray = [];
+	public hasOFYItems;
+	public loading:boolean;
 	
 	//@ngInject
 	constructor(public monatService, public observerService, public $rootScope, public publicService, public orderTemplateService, private sessionStorageCache: Cache, public monatAlertService, public rbkeyService) {
@@ -87,12 +89,10 @@ class MonatEnrollmentController {
 					}else if(account.accountID.length && cart.monatOrderType?.typeCode.length && account.accountCode.length){
 						this.hasSkippedSteps = true;
 						this.steps = this.steps.filter(el => reqList.indexOf(el.stepClass) == -1);
-						this.next();
 					//if they have an account and an upgraded order remove create account
 					}else if(account.accountID.length && cart.monatOrderType?.typeCode.length && !this.upgradeFlow){
 						this.hasSkippedSteps = true;
 						this.steps = this.steps.filter(el => el.stepClass !== 'createAccount');
-						this.next();
 					}
 				 }else if(cart.monatOrderType?.typeCode.length){
 				 	this.handleUpgradeSteps(cart);
@@ -104,7 +104,7 @@ class MonatEnrollmentController {
 		this.monatService.getProductFilters();
 		
 	}
-
+	
 	public handleCreateAccount = () => {
 		this.next();
 		this.publicService.getAccount().then(res=>{
@@ -166,16 +166,42 @@ class MonatEnrollmentController {
 		if (index >= this.steps.length) {
 			return this.onFinish();
 		}
-		this.position = index;
 		
+		this.checkForOFYAndUpateStep(index);
+		
+	}
+	
+	public checkForOFYAndUpateStep(index:number){
+		if(this.steps[index].stepClass == 'ofy' && typeof this.hasOFYItems == 'undefined'){
+			this.loading = true;
+			this.monatService.getOFYItemsForOrder().then( (res: Array<Object>) => {
+				if(!res.length){
+					this.hasOFYItems = false;
+					index =  index > this.position ? ++index : --index;
+				}else{
+					this.hasOFYItems = true;
+				}
+				this.updateSteps(index);
+			});
+		}else if(this.steps[index].stepClass == 'ofy' && this.hasOFYItems === false){
+			index =  index > this.position ? ++index : --index;
+			this.updateSteps(index);
+		}else{
+			this.updateSteps(index);
+		}
+	}
+	
+	public updateSteps(index:number){
+		this.position = index;
 		this.showMiniCart = ( this.steps[ this.position ].showMiniCart == 'true' ); 
 		this.showFlexshipCart = ( this.steps[ this.position ].showFlexshipCart == 'true' ); 
 		
 		angular.forEach(this.steps, (step) => {
 			step.selected = false;
 		});
-		this.steps[this.position].selected = true;
+		
 		this.currentStepName = this.steps[this.position].stepClass;
+		this.steps[this.position].selected = true;
 		if(this.currentStepName == 'orderListing') this.flexshipShouldBeChecked = true;
 	}
 	
