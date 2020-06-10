@@ -10,7 +10,7 @@
 			}
 			
 			if(!isClosure(arguments.closure)){
-				throw('Invalid argument type, hibachiMap expects a closure');
+				throw('Invalid argument type, hibachiArrayMap expects a closure');
 			}
 			
 			var resultArray = [];
