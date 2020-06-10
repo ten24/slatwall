@@ -325,7 +325,7 @@ extends = "Slatwall.integrationServices.BaseTax" {
         getAvataxService().setHttpHeaders(httpRequest, requestDataStruct);
         
 		httpRequest.addParam(type="body", value=serializeJSON(requestDataStruct));
-		httpRequest.setTimeout(5);
+		httpRequest.setTimeout(60);
 	
 		var responseData = httpRequest.send().getPrefix();
 
@@ -409,8 +409,9 @@ extends = "Slatwall.integrationServices.BaseTax" {
 			responseBean.setData(responseData.Responseheader.Explanation);
 			logHibachi(serialize(responseBean.getData()));
 		}else{
+			logHibachi('Avatax Error: ' & serialize(responseData));
 			responseBean.setData('An Error occured when attempting to retrieve tax information');
-			logHibachi(serialize(responseBean.getData()));
+			
 		}
 
 		return responseBean;
