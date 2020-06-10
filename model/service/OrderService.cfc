@@ -1651,7 +1651,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		newOrder.setBillingAccountAddress(arguments.orderTemplate.getBillingAccountAddress()); 
 		newOrder.setShippingAccountAddress(arguments.orderTemplate.getShippingAccountAddress());  
 		newOrder = this.saveOrder(order=newOrder, updateOrderAmounts=false, updateOrderAmounts=false, updateShippingMethodOptions=false, checkNewAccountAddressSave=false); 
-		
+
 		newOrder = this.createOrderItemsFromOrderTemplateItems(newOrder,arguments.orderTemplate);
 		
 		if(newOrder.hasErrors()){
@@ -1842,6 +1842,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			this.updateOrderStatusBySystemCode(newOrder, 'ostNew');
 		}
 		
+		newOrder.setOrderOrigin(getSettingService().getOrderOrigin(getSettingService().getSettingValue('globalOrderTemplateOrderOrigin')));
 		// Flush everything before removing items so it doesn't persit the item in session after remove
 		ormFlush();
 		getOrderDAO().removeTemporaryOrderTemplateItems(arguments.orderTemplate.getOrderTemplateID());	

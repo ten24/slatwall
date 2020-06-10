@@ -69,6 +69,7 @@ Notes:
 		<swa:SlatwallSetting settingName="globalMissingImagePath" />
 		<swa:SlatwallSetting settingName="globalMaximumPromotionMessages" />
 		<swa:SlatwallSetting settingName="globalOrderNumberGeneration" />
+		<swa:SlatwallSetting settingName="globalOrderTemplateOrderOrigin" />
 		<swa:SlatwallSetting settingName="globalURLKeyAttribute" />
 		<swa:SlatwallSetting settingName="globalURLKeyBrand" />
 		<swa:SlatwallSetting settingName="globalURLKeyCategory" />

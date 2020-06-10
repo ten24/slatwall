@@ -259,6 +259,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalNoSessionIPRegex = {fieldType="text",defaultValue=""},
 			globalNoSessionPersistDefault = {fieldType="yesno",defaultValue=0},
 			globalOrderNumberGeneration = {fieldType="select",defaultValue="Internal"},
+			globalOrderTemplateOrderOrigin = {fieldType="select",defaultValue="2c91808a6dcc9393016dcf5c4a27006d"},
 			globalPublicAutoLogoutMinutes = {fieldtype="text", defaultValue=30, validate={dataType="numeric", required=true}},
 			globalLocale = {fieldType="select",defaultValue="en_us"},
 			globalRemoteIDShowFlag = {fieldType="yesno",defaultValue=0},
@@ -615,6 +616,10 @@ component extends="HibachiService" output="false" accessors="true" {
 			case "globalOrderNumberGeneration":
 				var options = getCustomIntegrationOptions();
 				arrayPrepend(options, {name='Internal', value='internal'});
+				return options;
+			case "globalOrderTemplateOrderOrigin":
+				var optionsCollection = this.getOrderOriginCollectionList();
+				var options = optionsCollection.getRecordOptions(false);
 				return options;
 			case "globalIntegrationForAddressVerification":
 				var options = getAddressIntegrationOptions();
