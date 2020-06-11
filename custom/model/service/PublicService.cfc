@@ -1938,7 +1938,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         var promotionCount = arrayLen(order.getAppliedPromotions());
         for(var i = promotionCount; i > 0; i--){
-            var promotionApplied = order.getAppliedPromotions[i];
+            var promotionApplied = order.getAppliedPromotions()[i];
             if(promotionApplied.getEnrollmentFeeRefundFlag()){
                 promotionApplied.removeOrder();
             }
