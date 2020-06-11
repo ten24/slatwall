@@ -14,22 +14,38 @@
 			}
 			
 			var resultArray = [];
-			
+			var threadNameList = '';
 			var dataCount = arrayLen(arguments.data);
 			for( var i = 1; i <= dataCount; i++ ){
-				thread item=arguments.data[i] closure=arguments.closure {
+				var threadName = 'hibachiArrayMap-#CreateUUID()#-#i#';
+				threadNameList = listAppend(threadNameList, threadName);
+				
+				thread item=arguments.data[i] closure=arguments.closure name=threadName {
 					writeOutput(closure(item));
 				}
 				if(i % arguments.parallelThreadNumber == 0){
-					thread action="join" name=cfthread.keyList();
-					
-					for(var threadResult in cfthread){
+				
+					thread action="join" name=threadNameList;
+				
+					for(var threadResult in threadNameList){
 						if(!structKeyExists(cfthread[threadResult], 'error')){
 							arrayAppend(resultArray, cfthread[threadResult]['output']);
 						}
 					}
+					threadNameList = '';
 				}
 			}
+			
+			if(len(threadNameList)){
+				thread action="join" name=threadNameList;
+				
+				for(var threadResult in threadNameList){
+					if(!structKeyExists(cfthread[threadResult], 'error')){
+						arrayAppend(resultArray, cfthread[threadResult]['output']);
+					}
+				}
+			}
+			
 			return resultArray;
 		}
 	
