@@ -735,6 +735,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		for( var promotionRewardID in arguments.promotionRewardUsageDetails ){
 			var promotionRewardUsage = arguments.promotionRewardUsageDetails[promotionRewardID];
 			if(promotionRewardUsage.totalDiscountAmount == 0){
+				logHibachi('Reward #promotionRewardID# totalDiscountAMount = 0, skipping');
 				continue;
 			}
 			promotionRewardUsage['promotionRewardID'] = promotionRewardID;
