@@ -394,7 +394,7 @@ component extends="Slatwall.model.service.OrderService" {
 	 * Note: we're using request Scope as it's shared b/w the Request and Thread
 	 * 
 	 */ 
-	private struct function getOrderTemplateOrderDetails(required any orderTemplate){	
+	public struct function getOrderTemplateOrderDetails(required any orderTemplate){	
 		
 		var orderTemplateOrderDetailsKey = "orderTemplateOrderDetails#arguments.orderTemplate.getOrderTemplateID()#"
 
@@ -423,7 +423,7 @@ component extends="Slatwall.model.service.OrderService" {
 		request[orderTemplateOrderDetailsKey]['promotionalRewardSkuCollectionConfig'] = skuCollection.getCollectionConfigStruct(); 
 
 		var threadName = "t" & getHibachiUtilityService().generateRandomID(15);	
-		
+
 		thread 
 			name="#threadName#" 
 			action="run" 
@@ -472,6 +472,7 @@ component extends="Slatwall.model.service.OrderService" {
 			request[orderTemplateOrderDetailsKey]['canPlaceOrderDetails'] = getPromotionService().getOrderQualifierDetailsForCanPlaceOrderReward(transientOrder); 
 			request[orderTemplateOrderDetailsKey]['canPlaceOrder'] = request[orderTemplateOrderDetailsKey]['canPlaceOrderDetails']['canPlaceOrder']; 
 			request[orderTemplateOrderDetailsKey]['purchasePlusTotal'] = transientOrder.getPurchasePlusTotal();
+
 			request[orderTemplateOrderDetailsKey]['taxTotal'] = transientOrder.getTaxTotal();
 			request[orderTemplateOrderDetailsKey]['vatTotal'] = transientOrder.getVatTotal();
 			request[orderTemplateOrderDetailsKey]['fulfillmentHandlingFeeTotal'] = transientOrder.getFulfillmentHandlingFeeTotal();

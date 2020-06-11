@@ -264,6 +264,9 @@ extends = "Slatwall.integrationServices.BaseTax" {
 				}else if (item.getReferenceObjectType() == 'OrderFulfillment' && item.getOrderFulfillment().hasOrderFulfillmentItem()){
 					// Setup the itemData
 					var amount = item.getPrice();
+					if( isNull(amount) || !len(amount) ){
+						amount = 0;
+					}
 					var itemData = {};
 					itemData.LineNo = item.getOrderFulfillmentID() & item.getFeeType();
 					itemData.DestinationCode = addressIndex;
