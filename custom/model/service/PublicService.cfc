@@ -1466,8 +1466,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             
             var product = getService('skuService').getSku(arguments.data.skuID).getProduct();
             var productData = {}
-            productData['videoUrl'] = len(product.getProductVideoVimeoURL()) ? product.getProductVideoVimeoURL() : product.getProductVideoYoutubeURL();
-            productData['videoTitle'] = product.getProductVideoTitle();
+            productData['videoUrl'] = len(product.getProductHowVideoVimeoURL()) ? product.getProductHowVideoVimeoURL() : product.getProductHowVideoYoutubeURL();
+            productData['videoTitle'] = product.getProductHowVideoTitle();
             productData['videoLength'] = product.getProductVideoLength();
             productData['videoWidth'] = product.getProductVideoWidth();
             productData['videoHeight'] = product.getProductVideoHeight();
