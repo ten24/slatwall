@@ -93,12 +93,12 @@
 										<span class="price" ng-bind-html="'&minus;' + ( reviewStep.orderTemplateService.mostRecentOrderTemplate.purchasePlusTotal | swcurrency:reviewStep.orderTemplateService.mostRecentOrderTemplate.currencyCode )"></span>
 									</div>
 								</li>
-								<li ng-if="reviewStep.orderTemplateService.mostRecentOrderTemplate.taxTotal">
+								<li ng-if="reviewStep.orderTemplateService.mostRecentOrderTemplate.calculatedTaxTotal">
 									<div class="left">
 										<span class="title-sm" sw-rbkey="'frontend.checkout.estTax'"></span>
 									</div>
 									<div class="right">
-										<span class="price" ng-bind-html="reviewStep.orderTemplateService.mostRecentOrderTemplate.taxTotal | swcurrency:reviewStep.orderTemplateService.mostRecentOrderTemplate.currencyCode"></span>
+										<span class="price" ng-bind-html="reviewStep.orderTemplateService.mostRecentOrderTemplate.calculatedTaxTotal | swcurrency:reviewStep.orderTemplateService.mostRecentOrderTemplate.currencyCode"></span>
 									</div>
 								</li>
 								<li ng-if="reviewStep.orderTemplateService.mostRecentOrderTemplate.vatTotal">
