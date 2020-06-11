@@ -172,6 +172,27 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		return variables.attributeValuesForEntity;
 	}
 
+	public any function getAttributeValueFormatted( required string attribute, required string formatType, string locale, boolean useFallback=true){
+		var attributeValue = getAttributeValue(attribute=arguments.attribute, returnEntity=false);
+
+		if(!structKeyExists(arguments, 'locale')){
+			arguments.locale = getHibachiScope().getSession().getRbLocale();
+		}
+
+		var formatDetails = {
+				locale:arguments.locale,
+				object:this,
+				useFallback:arguments.useFallback
+		};		
+			
+		if(this.hasProperty('currencyCode') && !isNull(getCurrencyCode())) {
+			formatDetails.currencyCode = getCurrencyCode();
+		}
+
+		return getService("hibachiUtilityService").formatValue(value=attributeValue, formatType=arguments.formatType, formatDetails=formatDetails);
+		
+	} 
+
 	public any function getAttributeValue(required string attribute, returnEntity=false){
 		//If custom property exists for this attribute, return the property value instead
 		if(getService('HibachiUtilityService').isHibachiUUID(arguments.attribute)) {
