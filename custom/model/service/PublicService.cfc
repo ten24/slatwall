@@ -2524,5 +2524,15 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     	}
     }
     
+    public any function removeOrderTemplateItem(required any data){
+        super.removeOrderTemplateItem(arguments.data);
+        var orderTemplateItem = getOrderService().getOrderTemplateItem( arguments.data.orderTemplateItemID );
+        if(!isNull(orderTemplateItem)){
+            arguments.data['orderTemplateID'] = orderTemplateItem.getOrderTemplate().getOrderTemplateID();
+            this.deleteOrderTemplatePromoItems(arguments.data);
+        }
+        
+    }
+    
     
 }
