@@ -182,6 +182,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		var formatDetails = {
 				locale:arguments.locale,
 				object:this,
+				propertyName:arguments.attribute,
 				useFallback:arguments.useFallback
 		};		
 			
@@ -189,8 +190,9 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 			formatDetails.currencyCode = getCurrencyCode();
 		}
 
-		return getService("hibachiUtilityService").formatValue(value=attributeValue, formatType=arguments.formatType, formatDetails=formatDetails);
-		
+		var attributeValueFormatted = getService("hibachiUtilityService").formatValue(value=attributeValue, formatType=arguments.formatType, formatDetails=formatDetails);
+
+		return attributeValueFormatted;
 	} 
 
 	public any function getAttributeValue(required string attribute, returnEntity=false){
