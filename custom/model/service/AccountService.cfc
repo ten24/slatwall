@@ -55,6 +55,16 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 				'entityName': 'Account'
 			}, 
 			{
+				'name': 'Account - After Account VIP Upgrade Success | afterVIPUpgradeSuccess',
+				'value': 'afterVIPUpgradeSuccess',
+				'entityName': 'Account'
+			}, 
+			{
+				'name': 'Account - After Account MP Upgrade Success | afterMarketPartnerUpgradeSuccess',
+				'value': 'afterMarketPartnerUpgradeSuccess',
+				'entityName': 'Account'
+			}, 
+			{
 				'name': 'Account - After Account Sponsor Account Upgrade Success | afterAccountSponsorUpgradeSuccess',
 				'value': 'afterAccountSponsorUpgradeSuccess',
 				'entityName': 'Account'
