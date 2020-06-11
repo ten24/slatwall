@@ -1030,11 +1030,11 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	 * */
 	public array function getEligibleFulfillmentMethodsWithShippingMethods() {
 		if(!structKeyExists(variables, "eligibleFulfillmentMethodsWithShippingMethods")) {
-			var sl = getService("fulfillmentService").getFulfillmentMethodCollectionList();
-			sl.setDisplayProperties("fulfillmentMethodID, fulfillmentMethodName, fulfillmentMethodType")
-			sl.addFilter('fulfillmentMethodID', setting('skuEligibleFulfillmentMethods'), "IN");
-			sl.addOrderBy('sortOrder');
-			variables.eligibleFulfillmentMethodsWithShippingMethods = sl.getRecords(formatRecord = false);
+			var fulfillmentMethod = getService("fulfillmentService").getFulfillmentMethodCollectionList();
+			fulfillmentMethod.setDisplayProperties("fulfillmentMethodID, fulfillmentMethodName, fulfillmentMethodType")
+			fulfillmentMethod.addFilter('fulfillmentMethodID', setting('skuEligibleFulfillmentMethods'), "IN");
+			fulfillmentMethod.addOrderBy('sortOrder');
+			variables.eligibleFulfillmentMethodsWithShippingMethods = fulfillmentMethod.getRecords(formatRecord = false);
 		}
 		return variables.eligibleFulfillmentMethodsWithShippingMethods;
 	}
