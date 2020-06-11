@@ -2177,11 +2177,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			var joins = getValidJoins();
 			for(var join in joins){
 				var removeJoinAlias = alias & '.' & replaceNoCase( listRest(join.alias,'_'), '_', '.', 'ALL' );
-				
-				this.logHibachi('removeJoinAlias #removeJoinALias#');
 	
 				filterGroupHQL = replaceNoCase( filterGroupHQL, join.alias, removeJoinAlias, 'ALL' );
-				this.logHibachi('filterGroupHQL #filterGroupHQL#');
 			}
 				
 			updateHQL &= filterGroupHQL;	

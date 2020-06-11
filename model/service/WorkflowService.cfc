@@ -471,10 +471,7 @@ component extends="HibachiService" accessors="true" output="false" {
 
 			case 'processEmailByQueue' : 
 
-				this.logHibachi('processEmailByQueue');
-
 				if(isNull(arguments.workflowTaskAction.getEmailTemplate())){
-					this.logHibachi('processEmailByQueuei failed no template');
 					actionSuccess = false;
 					break; 
 				} 

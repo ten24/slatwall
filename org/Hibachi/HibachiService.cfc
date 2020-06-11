@@ -873,8 +873,6 @@
 
 		private function onMissingEmailProcessMethod( required string missingMethodName, required struct missingMethodArguments ) { 
 
-			this.logHibachi('missingEmail #structKeyList(arguments.missingMethodArguments)#');
-
 			var entity = arguments.missingMethodArguments['1'];
 
 			var emailService = getService('emailService'); 

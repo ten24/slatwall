@@ -178,8 +178,6 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 			sql &= " WHERE processMethod = :processMethod";
 			sql &= ")";
 		}
-
-		this.logHibachi('bulk insert SQL: #sql#', true); 
 	
 		queryService.addParam(name='flagValue', value=arguments.flagValue, CFSQLTYPE="CF_SQL_BIT");
 		queryService.addParam(name='processMethod', value=arguments.processMethod, CFSQLTYPE="CF_SQL_VARCHAR");
