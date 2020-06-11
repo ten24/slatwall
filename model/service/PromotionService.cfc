@@ -206,12 +206,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	private boolean function rewardSortFunction( required struct a, required struct b ){
-		if(a.priority < b.priority){
+		if(arguments.a.priority < arguments.b.priority){
 			return -1;
-		}else if( a.priority > b.priority ){
+		}else if( arguments.a.priority > arguments.b.priority ){
 			return 1;
 		}else{
-			return a.discountAmount < b.discountAmount ? 1 : -1;
+			return arguments.a.discountAmount < arguments.b.discountAmount ? 1 : -1;
 		}
 	}
 
@@ -284,9 +284,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							if(discountAmount > 0) {
 
 								// First thing that we are going to want to do is add this orderItem to the orderItemQualifiedDiscounts if it doesn't already exist
-								if(!structKeyExists(orderItemQualifiedDiscounts, orderItem.getOrderItemID())) {
+								if(!structKeyExists(arguments.orderItemQualifiedDiscounts, orderItem.getOrderItemID())) {
 									// Set it as a blank array
-									orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ] = {};
+									arguments.orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ] = {};
 								}
 								var promotion = arguments.promotionReward.getPromotionPeriod().getPromotion();
 								
@@ -299,7 +299,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 								}
 								
 								// Insert this value into the potential discounts struct
-								orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ][arguments.promotionReward.getPromotionRewardID()]=rewardStruct;
+								arguments.orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ][arguments.promotionReward.getPromotionRewardID()]=rewardStruct;
 
 
 								// Increment the number of times this promotion reward has been used
@@ -350,15 +350,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				
 			} // END Sale Item If
 			
-			//Now add the order item to the modified entities to recalculate.
-			getHibachiScope().addModifiedEntity(orderItem);
 		} // End Order Item For Loop
 	}
 
 	private void function processOrderRewards(required any order, required array orderQualifiedDiscounts, required any promotionReward){
 		var totalDiscountableAmount = arguments.order.getSubtotalAfterItemDiscounts();
 
-		var discountAmount = getDiscountAmount(arguments.promotionReward, totalDiscountableAmount, 1, order.getCurrencyCode());
+		var discountAmount = getDiscountAmount(arguments.promotionReward, totalDiscountableAmount, 1, arguments.order.getCurrencyCode());
 
 		// First we make sure that the discountAmount is > 0 before we check if we should add more discount
 		if(discountAmount > 0) {
@@ -373,7 +371,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 			
 			// Insert this value into the potential discounts array
-			arrayAppend(orderQualifiedDiscounts, rewardStruct);
+			arrayAppend(arguments.orderQualifiedDiscounts, rewardStruct);
 		}
 	}
 
@@ -431,7 +429,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				for(var orderItem in arguments.order.getOrderItems()){
 					orderItem.updateCalculatedProperties(true);
 				}
-				
+
 				getHibachiScope().flushOrmSession();
 				
 				// This is a structure of promotionPeriods that will get checked and cached as to if we are still within the period use count, and period account use count
@@ -525,10 +523,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	private void function applyPromotionToOrder(required any order,required any rewardStruct){
 		var newAppliedPromotion = this.newPromotionApplied();
 		newAppliedPromotion.setAppliedType('order');
-		newAppliedPromotion.setPromotion( rewardStruct.promotion );
-		newAppliedPromotion.setPromotionReward( rewardStruct.promotionReward );
+		newAppliedPromotion.setPromotion( arguments.rewardStruct.promotion );
+		newAppliedPromotion.setPromotionReward( arguments.rewardStruct.promotionReward );
 		newAppliedPromotion.setOrder( arguments.order );
-		newAppliedPromotion.setDiscountAmount( rewardStruct.discountAmount );
+		newAppliedPromotion.setDiscountAmount( arguments.rewardStruct.discountAmount );
 	}
 	
 	private void function applyPromotionToOrderItem( required any orderItem, required struct rewardStruct ){
@@ -536,7 +534,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		newAppliedPromotion.setAppliedType('orderItem');
 		newAppliedPromotion.setPromotion( arguments.rewardStruct.promotion );
 		newAppliedPromotion.setPromotionReward( arguments.rewardStruct.promotionReward );
-		newAppliedPromotion.setOrderItem( orderItem );
+		newAppliedPromotion.setOrderItem( arguments.orderItem );
 		newAppliedPromotion.setDiscountAmount( arguments.rewardStruct.discountAmount );
 	}
 	
@@ -650,18 +648,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			if( !getUpdatedQualificationStatus( arguments.order, rewardStruct.promotionReward.getPromotionRewardID(), arguments.orderQualifierMessages ) ){
 				continue;
 			}
-			var appliedPromotions = order.getAppliedPromotions();
+			var appliedPromotions = arguments.order.getAppliedPromotions();
 			
 			if( rewardCanStack( appliedPromotions, rewardStruct.promotionReward )
 				&& rewardCanStack( itemAppliedPromotions, rewardStruct.promotionReward )
 			){
 				applyPromotionToOrder( arguments.order, rewardStruct );
-				order.updateCalculatedProperties(true);
+				arguments.order.updateCalculatedProperties(true);
 			}
 			
 		}
 		//making sure calculated props run
-		getHibachiScope().addModifiedEntity(order);
+		getHibachiScope().addModifiedEntity(arguments.order);
 		
 	}
 
@@ -734,8 +732,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	private array function getPromotionRewardUsageArray( required struct promotionRewardUsageDetails ){
 		var promotionRewardUsageArray = [];
 		
-		for( var promotionRewardID in promotionRewardUsageDetails ){
-			var promotionRewardUsage = promotionRewardUsageDetails[promotionRewardID];
+		for( var promotionRewardID in arguments.promotionRewardUsageDetails ){
+			var promotionRewardUsage = arguments.promotionRewardUsageDetails[promotionRewardID];
 			if(promotionRewardUsage.totalDiscountAmount == 0){
 				continue;
 			}
@@ -776,7 +774,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 
 			applyPromotionToOrderItem( arguments.orderItem, arguments.rewardStruct );
-			getHibachiScope().addModifiedEntity(orderItem);
+			getHibachiScope().addModifiedEntity(arguments.orderItem);
 			return true;
 		}
 		return false;
@@ -829,14 +827,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	private boolean function rewardCanStack( required array appliedPromotions, required any promotionReward ){
 		
-		if( !ArrayLen(appliedPromotions) ){
+		if( !ArrayLen(arguments.appliedPromotions) ){
 			return true;
 		}
 		var rewardType = arguments.promotionReward.getRewardType();
 		
 		var rewardCanStack = true;
 		
-		for( var appliedPromotion in appliedPromotions ){
+		for( var appliedPromotion in arguments.appliedPromotions ){
 			if( isNull(appliedPromotion.getPromotionReward()) ){
 				continue;
 			}
@@ -1037,7 +1035,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				qualificationCount = 0
 			};
 
-			if( getOrderItemInQualifier(qualifier=qualifier, orderItem=orderItem) ){
+			if( getOrderItemInQualifier(qualifier=arguments.qualifier, orderItem=orderItem) ){
 				qualifiedOrderItemDetails.qualificationCount = orderItem.getQuantity();
 				qualifiedItemsQuantity += orderItem.getQuantity();
 
@@ -1053,7 +1051,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// Lastly if there was a minimumItemQuantity then we can make this qualification based on the quantity ordered divided by minimum
 			if( !isNull(arguments.qualifier.getMinimumItemQuantity()) && arguments.qualifier.getMinimumItemQuantity() != 0) {
 
-				arguments.qualifierDetails.qualificationCount = int(qualifiedItemsQuantity / qualifier.getMinimumItemQuantity() );
+				arguments.qualifierDetails.qualificationCount = int(qualifiedItemsQuantity / arguments.qualifier.getMinimumItemQuantity() );
 			}else if(isNull(arguments.qualifier.getMinimumItemQuantity()) || arguments.qualifier.getMinimumItemQuantity() == 0){
 				arguments.qualifierDetails.qualificationCount++;
 			}
@@ -1083,17 +1081,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// ORDER
 		if(arguments.qualifier.getQualifierType() == "order") {
 
-			getQualifierQualificationDetailsForOrder(arguments.qualifier, arguments.order, qualifierDetails, orderQualifierMessages);
+			getQualifierQualificationDetailsForOrder(arguments.qualifier, arguments.order, qualifierDetails, arguments.orderQualifierMessages);
 
 		// FULFILLMENT
 		} else if (arguments.qualifier.getQualifierType() == "fulfillment") {
 
-			getQualifierQualificationDetailsForOrderFulfillments(arguments.qualifier, arguments.order, qualifier);
+			getQualifierQualificationDetailsForOrderFulfillments(arguments.qualifier, arguments.order, arguments.qualifier);
 
 		// ORDER ITEM
 		} else if (listFindNoCase("contentAccess,merchandise,subscription", arguments.qualifier.getQualifierType())) {
 
-			getQualifierQualificationDetailsForOrderItems(arguments.qualifier,arguments.order,qualifierDetails, orderQualifierMessages);
+			getQualifierQualificationDetailsForOrderItems(arguments.qualifier,arguments.order,qualifierDetails, arguments.orderQualifierMessages);
 
 		}
 
@@ -1208,24 +1206,24 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	public boolean function getOrderItemInQualifier(required any qualifier, required any orderItem) {
 		if(!isObject(arguments.orderItem)){
-			var qualifierHasSku = qualifier.hasSkuBySkuID(arguments.orderItem['sku_skuID']);
-			var price = orderItem['price'];
+			var qualifierHasSku = arguments.qualifier.hasSkuBySkuID(arguments.orderItem['sku_skuID']);
+			var price = arguments.orderItem['price'];
 		}else{
-			var qualifierHasSku = qualifier.hasOrderItemSku(arguments.orderItem);
-			var price = orderItem.getPrice();
+			var qualifierHasSku = arguments.qualifier.hasOrderItemSku(arguments.orderItem);
+			var price = arguments.orderItem.getPrice();
 		}
 		return (
 			qualifierHasSku 
 			&&
-			( isNull(qualifier.getMinimumItemPrice()) || qualifier.getMinimumItemPrice() <= price )
+			( isNull(arguments.qualifier.getMinimumItemPrice()) || arguments.qualifier.getMinimumItemPrice() <= price )
 			&&
-			( isNull(qualifier.getMaximumItemPrice()) || qualifier.getMaximumItemPrice() >= price )
+			( isNull(arguments.qualifier.getMaximumItemPrice()) || arguments.qualifier.getMaximumItemPrice() >= price )
 		);
 		
 	}
 
 	public boolean function getOrderItemInReward(required any reward, required any orderItem) {
-		return reward.hasOrderItemSku(arguments.orderItem);
+		return arguments.reward.hasOrderItemSku(arguments.orderItem);
 	}
 
 	private numeric function getDiscountAmount(required any reward, numeric price=0, required numeric quantity, string currencyCode, any sku, any account) {
@@ -1257,7 +1255,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					discountAmountPreRounding = val(getService('HibachiUtilityService').precisionCalculate(originalAmount * (rewardAmount/100)));
 					break;
 				case "amountOff" :
-					discountAmountPreRounding = rewardAmount * quantity;
+					discountAmountPreRounding = rewardAmount * arguments.quantity;
 					break;
 				case "amount" :
 					discountAmountPreRounding = val(getService('HibachiUtilityService').precisionCalculate((arguments.price - rewardAmount) * arguments.quantity));
@@ -1268,7 +1266,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
 		if(!isNull(reward.getRoundingRule())) {
-			roundedFinalAmount = getRoundingRuleService().roundValueByRoundingRule(value=val(getService('HibachiUtilityService').precisionCalculate(originalAmount - discountAmountPreRounding)), roundingRule=reward.getRoundingRule());
+			roundedFinalAmount = getRoundingRuleService().roundValueByRoundingRule(value=val(getService('HibachiUtilityService').precisionCalculate(originalAmount - discountAmountPreRounding)), roundingRule=arguments.reward.getRoundingRule());
 			discountAmount = val(getService('HibachiUtilityService').precisionCalculate(originalAmount - roundedFinalAmount));
 		} else {
 			discountAmount = discountAmountPreRounding;
@@ -1351,7 +1349,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
         
 		if(isNull(originalPrice)){
 			
-			var account = var account = arguments.orderItem.getOrder().getAccount();	
+			var account = arguments.orderItem.getOrder().getAccount();	
 	        
 	        /*
 	            Price group is prioritized as so: 
@@ -1419,12 +1417,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			salePriceExpirationDateTime:''
 		};
 		var discountAmount = 0;
-		for( var promoReward in promoRewards ){
+		for( var promoReward in arguments.promoRewards ){
 			if( promoReward.hasSkuBySkuID( arguments.sku.getSkuID() ) ){
 				var promoDiscountAmount = getDiscountAmount( promoReward, 
-															originalPrice, 
+															arguments.originalPrice, 
 															1,
-															currencyCode,
+															arguments.currencyCode,
 															arguments.sku);
 				if(promoDiscountAmount > discountAmount){
 					discountAmount = promoDiscountAmount;
