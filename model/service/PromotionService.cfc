@@ -284,9 +284,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							if(discountAmount > 0) {
 
 								// First thing that we are going to want to do is add this orderItem to the orderItemQualifiedDiscounts if it doesn't already exist
-								if(!structKeyExists(orderItemQualifiedDiscounts, orderItem.getOrderItemID())) {
+								if(!structKeyExists(arguments.orderItemQualifiedDiscounts, orderItem.getOrderItemID())) {
 									// Set it as a blank array
-									orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ] = {};
+									arguments.orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ] = {};
 								}
 								var promotion = arguments.promotionReward.getPromotionPeriod().getPromotion();
 								
@@ -299,7 +299,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 								}
 								
 								// Insert this value into the potential discounts struct
-								orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ][arguments.promotionReward.getPromotionRewardID()]=rewardStruct;
+								arguments.orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ][arguments.promotionReward.getPromotionRewardID()]=rewardStruct;
 
 
 								// Increment the number of times this promotion reward has been used
@@ -727,6 +727,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		for( var promotionRewardID in promotionRewardUsageDetails ){
 			var promotionRewardUsage = promotionRewardUsageDetails[promotionRewardID];
 			if(promotionRewardUsage.totalDiscountAmount == 0){
+				logHibachi('Reward #promotionRewardID# totalDiscountAMount = 0, skipping');
 				continue;
 			}
 			promotionRewardUsage['promotionRewardID'] = promotionRewardID;
