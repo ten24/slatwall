@@ -331,10 +331,14 @@ component output="false" accessors="true" extends="HibachiService" {
 
 	public boolean function validate_null(required any object, required string propertyIdentifier, boolean constraintValue) {
 		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
-		if(!isNull(propertyObject)) {
+		if(!isNull(propertyObject) && structKeyExists(propertyObject, "get#listLast(arguments.propertyIdentifier,'.')#")) {
+			
 			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");
-		}
-		return arguments.constraintValue == isNull(propertyValue);			
+			
+			return arguments.constraintValue == isNull(propertyValue);			
+		} else {
+			return arguments.constraintValue == isNull(propertyObject); 
+		} 
 	}
 
 	public boolean function validate_dataType(required any object, required string propertyIdentifier, required any constraintValue) {

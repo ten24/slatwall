@@ -20,7 +20,7 @@
 			#getEmailContent('#account.getAccountType()##account.getaccountCreatedSite().getRemoteID()#Header', emailTemplate)#
 		</cfif>
 		
-		<cfset local.emailBody = emailTemplate.getAttributeValueFormatted(attribute='#account.getAccountType()##account.getAccountCreatedSite().getRemoteId()#Body', formatType='language', locale=locale) />
+		<cfset local.emailBody = emailTemplate.getFormattedAttributeValue(attribute='#account.getAccountType()##account.getAccountCreatedSite().getRemoteId()#Body', formatType='language', locale=locale) />
 	
 		<cfif NOT len(Trim(emailBody)) >
 		    	<cfset emailBody = emailTemplate.getFormattedValue(propertyName='#account.getAccountType()#Body', locale=locale) />

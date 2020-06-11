@@ -618,7 +618,8 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 
 	public any function getLastObjectByPropertyIdentifier(required string propertyIdentifier) {
 
-		if(listLen(arguments.propertyIdentifier, ".") eq 1) {
+		//if 0 property identifier points to an object not a property on an object
+		if(listLen(arguments.propertyIdentifier, ".") <= 1) {
 			return this;
 		}
 		var object = invokeMethod("get#listFirst(arguments.propertyIdentifier, '.')#");
