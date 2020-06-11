@@ -29,7 +29,7 @@
 				
 					for(var threadResult in threadNameList){
 						if(!structKeyExists(cfthread[threadResult], 'error')){
-							arrayAppend(resultArray, cfthread[threadResult]['output']);
+							arrayAppend(resultArray, trim(cfthread[threadResult]['output']));
 						}
 					}
 					threadNameList = '';
@@ -41,7 +41,7 @@
 				
 				for(var threadResult in threadNameList){
 					if(!structKeyExists(cfthread[threadResult], 'error')){
-						arrayAppend(resultArray, cfthread[threadResult]['output']);
+						arrayAppend(resultArray, trim(cfthread[threadResult]['output']));
 					}
 				}
 			}
