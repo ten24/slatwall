@@ -671,12 +671,19 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		var promotionRewardUsageArray = getPromotionRewardUsageArray( arguments.promotionRewardUsageDetails );
 		var length = arrayLen(promotionRewardUsageArray);
+		
 		for(var i = 1; i <= length; i++){
+			if(arguments.order.hasOrderTemplate()){
+				logHibachi('Discount #i#');
+			}
 			var promotionRewardUsage = promotionRewardUsageArray[i];
 			var promotionRewardID = promotionRewardUsage.promotionRewardID;
 
 			if( i > 1 &&
 				!getUpdatedQualificationStatus( arguments.order, promotionRewardID, arguments.orderQualifierMessages, arguments.orderItemQualifiedDiscounts ) ){
+				if(arguments.order.hasOrderTemplate()){
+					logHibachi('Reward #promotionRewardID# no longer qualified');
+				}
 				continue;
 			}
 			
@@ -693,6 +700,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			for(var orderItem in orderItems) {
 				if(promotionRewardUsage.usedInOrder == promotionRewardUsage.maximumUsePerOrder){
+					if(arguments.order.hasOrderTemplate()){
+						logHibachi('Reward #promotionRewardID# at max usage');
+					}
 					break;
 				}
 				var orderItemID = orderItem.getOrderItemID();
