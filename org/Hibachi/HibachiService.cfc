@@ -143,8 +143,9 @@
 		
 			// Create the invoke arguments struct
 			var invokeArguments = {};
-			invokeArguments[ "1" ] = arguments.entity;//compatibility with on missing method
+			invokeArguments[ "1" ] = arguments.entity;//compatibility with on missing method 
 			invokeArguments[ "data" ] = arguments.data;
+			invokeArguments[ "2" ] = arguments.data;//compatibility with on missing method 
 			invokeArguments[ lcase(arguments.entity.getClassName()) ] = arguments.entity;
 			invokeArguments.entity = arguments.entity;
 			
@@ -437,7 +438,9 @@
 			} else if ( lCaseMissingMethodName.startsWith( 'export' ) ) {
 				return onMissingExportMethod( arguments.missingMethodName, arguments.missingMethodArguments );
 			} else if ( lCaseMissingMethodName.startsWith( 'process' ) ) {
-				if(right(lCaseMissingMethodName,27) == "_updateCalculatedProperties") {
+				if( right(lCaseMissingMethodName,6) == "_email" ) {
+					return onMissingEmailProcessMethod ( arguments.missingMethodName, arguments.missingMethodArguments ); 
+				} else if (right(lCaseMissingMethodName,27) == "_updateCalculatedProperties") {
 					return onMissingUpdateCalculatedProperties(arguments.missingMethodName, arguments.missingMethodArguments);
 				}else{
 					return onMissingProcessMethod( arguments.missingMethodName, arguments.missingMethodArguments );
@@ -866,6 +869,33 @@
 			} else if ( structKeyExists( arguments.missingMethodArguments, '2' ) ) {
 				return process( entity = arguments.missingMethodArguments[1], processContext = arguments.missingMethodArguments[2]);
 			}
+		}
+
+		private function onMissingEmailProcessMethod( required string missingMethodName, required struct missingMethodArguments ) { 
+
+			var entity = arguments.missingMethodArguments['1'];
+
+			var emailService = getService('emailService'); 
+			
+			//this depends on emailService in ../../model/service/EmailService	
+			if( isNull(emailService) ||
+				structCount(arguments.missingMethodArguments) < 2
+			){
+				return entity; 
+			}
+
+			if(!structKeyExists(arguments.missingMethodArguments, '3')){
+				var email = emailService.generateAndSendFromEntityAndEmailTemplate( entity=entity, emailTemplate=arguments.missingMethodArguments['2'] ); 
+			} else {
+				var email = emailService.generateAndSendFromEntityAndEmailTemplate( entity=entity, emailTemplate=arguments.missingMethodArguments['2'], locale=arguments.missingMethodArguments['3'] ); 
+			}
+
+			if(email.hasErrors()){
+				entity.addErrors(email.getErrors());
+			}
+
+			return entity;
+			
 		}
 		
 		/**

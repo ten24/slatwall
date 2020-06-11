@@ -103557,7 +103557,8 @@ var SWWorkflowTaskActionsController = /** @class */ (function () {
          * Returns the correct object based on the selected object type.
          */
         var getObjectByActionType = function (workflowTaskAction) {
-            if (workflowTaskAction.data.actionType === 'email') {
+            if (workflowTaskAction.data.actionType === 'email' ||
+                workflowTaskAction.data.actionType === 'processEmailByQueue') {
                 workflowTaskAction.$$getEmailTemplate().finally(function () {
                     getEmailTemplateLinkByAction(workflowTaskAction);
                 });
@@ -103570,6 +103571,7 @@ var SWWorkflowTaskActionsController = /** @class */ (function () {
             if (workflowTaskAction == null ||
                 workflowTaskAction.data == null ||
                 workflowTaskAction.data.actionType != 'email' ||
+                workflowTaskAction.data.actionType != 'processEmailByQueue' ||
                 workflowTaskAction.data.emailTemplate == null ||
                 workflowTaskAction.data.emailTemplate.data == null ||
                 workflowTaskAction.data.emailTemplate.data.emailTemplateID == null) {

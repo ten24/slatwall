@@ -2144,7 +2144,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
     }
 
 	public void function executeUpdate(required struct updateSetStruct){
-		ormExecuteQuery(getUpdateHQL(argumentCollection=arguments), getHQLParams());
+
+		var updateHQL = getUpdateHQL(argumentCollection=arguments); 
+
+		ormExecuteQuery(updateHQL, getHQLParams());
 	}
 
 	public string function getUpdateHQL(required struct updateSetStruct){
@@ -2169,10 +2172,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		if(arraylen(filterGroupArray)){
 			var filterGroupHQL = getFilterHQL(filterGroupArray);
 		
+			//please note that this function will not behave correctly with any join that can't be determined by foreign key in the table being updated
+			//TODO: implement fallback to sql
 			var joins = getValidJoins();
 			for(var join in joins){
 				var removeJoinAlias = alias & '.' & replaceNoCase( listRest(join.alias,'_'), '_', '.', 'ALL' );
-					
+	
 				filterGroupHQL = replaceNoCase( filterGroupHQL, join.alias, removeJoinAlias, 'ALL' );
 			}
 				
