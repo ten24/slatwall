@@ -330,7 +330,11 @@ Notes:
 				local.order = templateObject.getOrder(); 
 				local.emailData['order'] = templateObject.getOrder(); 
 				local.account = local.order.getAccount(); 
-				local.emailData['account'] = local.order.getAccount(); 
+				local.emailData['account'] = local.order.getAccount();	
+			}
+
+			if(structKeyExists(local, 'account') && len(local.account.getPreferredLocale())){
+				local.locale = local.account.getPreferredLocale();	
 			}
 
 			if(len(templatePath)) {

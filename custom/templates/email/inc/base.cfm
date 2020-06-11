@@ -4,7 +4,8 @@
 		    var emailContentType = getHibachiScope().getService("typeService").getTypeByTypeCode(
 		        arguments.attributeValue
 			);
-			return getHibachiScope().getService("attributeService").getAttributeValueByType(emailContentType).getAttributeValue();		
+			var attributeValue = getHibachiScope().getService("attributeService").getAttributeValueByType(emailContentType)
+			return attributeValue.getFormattedValue(propertyName='attributeValue', locale=locale);		
 		}catch(e){
 			return '';
 		}
@@ -19,7 +20,7 @@
 			#getEmailContent('#account.getAccountType()##account.getaccountCreatedSite().getRemoteID()#Header', emailTemplate)#
 		</cfif>
 		
-		<cfset local.emailBody = emailTemplate.getAttributeValue(attribute='#account.getAccountType()##account.getaccountCreatedSite().getRemoteId()#Body', locale=locale) />
+		<cfset local.emailBody = emailTemplate.getAttributeValueFormatted(attribute='#account.getAccountType()##account.getAccountCreatedSite().getRemoteId()#Body', formatType='language', locale=locale) />
 	
 		<cfif NOT len(Trim(emailBody)) >
 		    	<cfset emailBody = emailTemplate.getFormattedValue(propertyName='#account.getAccountType()#Body', locale=locale) />
