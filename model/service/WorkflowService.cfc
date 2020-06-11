@@ -762,6 +762,11 @@ component extends="HibachiService" accessors="true" output="false" {
 			}else{
 				var comparisonOperator = getComparisonOperator(workflowCondition.comparisonOperator);
 				if(len(comparisonOperator)){
+
+					if(comparisonOperator == 'null'){
+						workflowCondition.value = (lcase(workflowCondition.comparisonOperator) == 'is');
+					} 
+
 					workflowConditionGroupString &= " #logicalOperator# #getHibachiValidationService().invokeMethod('validate_#comparisonOperator#',{1=arguments.entity, 2=listRest(workflowCondition.propertyIdentifier,'.'), 3=workflowCondition.value})# " ;	
 				}
 			}
@@ -775,6 +780,12 @@ component extends="HibachiService" accessors="true" output="false" {
 	private string function getComparisonOperator(required string comparisonOperator)
 	{
 		switch(arguments.comparisonOperator){
+			case "is not":
+				return "null"
+			break; 
+			case "is":
+				return "null"
+			break; 
 			case "=":
 				return "eq";
 			break;
