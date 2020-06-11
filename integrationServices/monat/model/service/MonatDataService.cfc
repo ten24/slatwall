@@ -1,6 +1,5 @@
 component extends="Slatwall.model.service.HibachiService" accessors="true" {
     property name="productService";
-	property name="settingService";
 	property name="addressService";
 	property name="accountService";
 	property name="typeService";
@@ -253,6 +252,8 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 		
 		logHibachi("importOrderShipments - Total Pages: #arguments.rc.pageMax#", true);
 		
+		var orderDeliveryRemoteIDList = '';
+
 		var ormStatelessSession = ormGetSessionFactory().openStatelessSession();
 		var tx = ormStatelessSession.beginTransaction();
 
@@ -386,11 +387,9 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
                 
                 logHibachi("importOrderShipments - Created a delivery for orderNumber: #shipment['OrderNumber']#",true);
                 
-                // Close the order.
-                //now fire the event for this delivery.
-                //var eventData = {entity: orderDelivery};
-                //getHibachiScope().getService("hibachiEventService").announceEvent(eventName="afterOrderDeliveryCreateSuccess", eventData=eventData);
 				order.setOrderStatusType(SHIPPED);
+
+				orderDeliveryRemoteIDList = listAppend(orderDeliveryRemoteIDList, shipment.shipmentId)
 			}
 			if(persist){
 				tx.commit();
@@ -399,7 +398,21 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 		
 		}
 		ormStatelessSession.close();
-		
+	
+		var orderDeliveryRemoteIDs = listToArray(orderDeliveryRemoteIDList);
+
+		for(var remoteID in orderDeliveryRemoteIDs){
+			
+			var orderDelivery = getOrderService().getOrderDeliveryByRemoteID(remoteID); 
+			
+			if(isNull(orderDelivery)){
+				continue;  
+			}
+
+			var eventData = { entity: orderDelivery };
+			getHibachiScope().getService("hibachiEventService").announceEvent(eventName="afterOrderDeliveryCreateSuccess", eventData=eventData);
+
+		}	
 		
 	}
     
