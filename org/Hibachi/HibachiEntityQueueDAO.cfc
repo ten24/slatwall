@@ -146,16 +146,17 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 		queryService.execute(sql=sql);
 	} 
 
-	public void function bulkInsertEntityQueueByFlagPropertyName(required string flagPropertyName, required string entityName, required string processMethod, boolean unique=false, boolean flagValue=true){
+	public void function bulkInsertEntityQueueByFlagPropertyName(required string flagPropertyName, required string entityName, required string processMethod, boolean unique = false, boolean flagValue = true, struct entityQueueData = {} ){
 		
 		var primaryIDPropertyName = getHibachiService().getPrimaryIDPropertyNameByEntityName(arguments.entityName);	
 		var queryService = new query();
 		
-		var sql = "INSERT INTO SwEntityQueue (entityQueueID, baseObject, baseID, processMethod, createdDateTime, modifiedDateTime, createdByAccountID, modifiedByAccountID, tryCount) ";
+		var sql = "INSERT INTO SwEntityQueue (entityQueueID, baseObject, baseID, processMethod, entityQueueData, createdDateTime, modifiedDateTime, createdByAccountID, modifiedByAccountID, tryCount) ";
 		sql &= "SELECT LOWER(REPLACE(CAST(UUID() as char character set utf8),'-','')) as entityQueueID, "; 
 		sql &= "'#arguments.entityName#' as baseObject, ";  
 		sql &= "#primaryIDPropertyName# as baseID, ";
 		sql &= "'#arguments.processMethod#' as processMethod, ";
+		sql &= "'#serializeJson(arguments.entityQueueData)#' as entityQueueData, ";
 		sql &= "now() as createdDateTime, ";
 		sql &= "now() as modifiedDateTime, ";
 
@@ -176,7 +177,9 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 			sql &= " SELECT baseID FROM swEntityQueue";
 			sql &= " WHERE processMethod = :processMethod";
 			sql &= ")";
-		} 
+		}
+
+		this.logHibachi('bulk insert SQL: #sql#', true); 
 	
 		queryService.addParam(name='flagValue', value=arguments.flagValue, CFSQLTYPE="CF_SQL_BIT");
 		queryService.addParam(name='processMethod', value=arguments.processMethod, CFSQLTYPE="CF_SQL_VARCHAR");

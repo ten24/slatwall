@@ -257,8 +257,14 @@ Notes:
 
 	public any function processEmail_createFromTemplate(required any email, required struct data) {
 	
-		if(structKeyExists(arguments.data, "emailTemplate") && isObject(arguments.data.emailTemplate)) {
-			var emailTemplate = arguments.data.emailTemplate;
+		if(structKeyExists(arguments.data, "emailTemplate") ) {
+		
+			if( isObject(arguments.data.emailTemplate) ){
+				var emailTemplate = arguments.data.emailTemplate;
+			} else if( isStruct(arguments.data.emailTemplate['emailTemplate']) && structKeyExists( arguments.data.emailTemplate['emailTemplate'], 'emailTemplateID') ){
+				var emailTemplate = this.getEmailTemplate(arguments.data.emailTemplate['emailTemplate']['emailTemplateID']);
+			}
+
 		} else if(structKeyExists(arguments.data, "emailTemplateID")) {
 			var emailTemplate = getTemplateService().getEmailTemplate( arguments.data.emailTemplateID );
 		}

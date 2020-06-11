@@ -443,7 +443,7 @@ component extends="HibachiService" accessors="true" output="false" {
 					var entityService = getServiceByEntityName( entityName=arguments.workflowTaskAction.getWorkflowTask().getWorkflow().getWorkflowObject());
 					var processData = {};
 					try{
-						var processMethod = entityService.invokeMethod(workflowTaskAction.getProcessMethod(), processData);
+						var processMethod = entityService.invokeMethod(arguments.workflowTaskAction.getProcessMethod(), processData);
 						actionSuccess = true;
 					}catch(any e){
 						actionSuccess = false;
@@ -452,40 +452,12 @@ component extends="HibachiService" accessors="true" output="false" {
 				
 				break;
 			case 'processByQueue' :
-				//we need some form of collection data for this to work	
-				if(!structKeyExists(arguments.data, 'collectionData') && !structKeyExists(arguments.data, 'collectionConfig')){
-					actionSuccess = false; 
-					break;
-				}
 
-				var processEntityQueueFlagPropertyName = arguments.workflowTaskAction.getProcessEntityQueueFlagPropertyName(); 
-				if(!isNull(processEntityQueueFlagPropertyName)){
-					if(!arguments.entity.hasProperty(processEntityQueueFlagPropertyName)){
-						actionSuccess = false; 
-						break;
-					}	
-
-					var entityCollection = arguments.entity.getEntityCollectionList();
-					entityCollection.setCollectionConfigStruct(arguments.data.collectionConfig); 
-					
-					var updateData = {
-						'#processEntityQueueFlagPropertyName#': true
-					};
-
-					entityCollection.executeUpdate(updateData);		
-
-					//call entity queue dao to insert into with a select
-					getHibachiEntityQueueDAO().bulkInsertEntityQueueByFlagPropertyName(processEntityQueueFlagPropertyName, arguments.entity.getClassName(), arguments.workflowTaskAction.getProcessMethod(), arguments.workflowTaskAction.getUniqueFlag(), updateData[processEntityQueueFlagPropertyName]);
-					
-					var updateData = {
-						'#processEntityQueueFlagPropertyName#': false
-					};
-
-					entityCollection.executeUpdate(updateData);		
-					actionSuccess = true; 
+				if(!isNull(arguments.workflowTaskAction.getProcessEntityQueueFlagPropertyName())){		
+					actionSuccess = bulkEntityQueueInsertByEntityQueueFlagProperty(argumentCollection=arguments); 
 					break; 
-				} 
-				
+				} 				
+
 				//fallback solution not ideal for large data sets
 				if(structKeyExists(arguments.data, 'collectionData')){ 	
 					
@@ -496,6 +468,27 @@ component extends="HibachiService" accessors="true" output="false" {
 					actionSuccess = true; 
 				}
 				break;
+
+			case 'processEmailByQueue' : 
+
+				this.logHibachi('processEmailByQueue');
+
+				if(isNull(arguments.workflowTaskAction.getEmailTemplate())){
+					this.logHibachi('processEmailByQueuei failed no template');
+					actionSuccess = false;
+					break; 
+				} 
+
+				arguments.processMethod = 'process#arguments.entity.getClassName()#_email';
+
+				arguments.entityQueueData = {
+					'emailTemplate' : {
+						'emailTemplateID' : arguments.workflowTaskAction.getEmailTemplate().getEmailTemplateID()
+					} 
+				}; 
+	
+				actionSuccess = bulkEntityQueueInsertByEntityQueueFlagProperty(argumentCollection=arguments); 
+				break; 
 
 			//IMPORT
 			case 'import' :
@@ -530,6 +523,57 @@ component extends="HibachiService" accessors="true" output="false" {
 				break;
 		}
 		return actionSuccess;
+	}
+
+	private boolean function bulkEntityQueueInsertByEntityQueueFlagProperty( required any workflowTaskAction, required any entity, string processEntityQueueFlagPropertyName, string processMethod, struct data = {}, struct entityQueueData = {}){
+
+
+			if(!structKeyExists(arguments, 'processMethod')){	
+				arguments.processMethod = arguments.workflowTaskAction.getProcessMethod(); 
+			}	
+
+			if(isNull(arguments.processMethod)){
+				return false; 
+			} 
+
+			if(!structKeyExists(arguments, 'processEntityQueueFlagPropertyName')){
+				arguments.processEntityQueueFlagPropertyName = arguments.workflowTaskAction.getProcessEntityQueueFlagPropertyName();	
+			} 
+
+			if(isNull(arguments.processEntityQueueFlagPropertyName)){
+				return false; 
+			} 
+			
+			if(!structKeyExists(arguments, 'processMethod')){
+				return false; 	
+			} 
+			
+			//we need some form of collection data for this to work
+			if(!structKeyExists(arguments.data, 'collectionData') && !structKeyExists(arguments.data, 'collectionConfig')){
+				return false;
+			}
+			
+			if(!arguments.entity.hasProperty(arguments.processEntityQueueFlagPropertyName)){
+				return false; 
+			}	
+
+			var entityCollection = arguments.entity.getEntityCollectionList();
+			entityCollection.setCollectionConfigStruct(arguments.data.collectionConfig); 
+					
+			var updateData = {
+				'#arguments.processEntityQueueFlagPropertyName#': true
+			};
+
+			entityCollection.executeUpdate(updateData);		
+
+			//call entity queue dao to insert into with a select
+			getHibachiEntityQueueDAO().bulkInsertEntityQueueByFlagPropertyName(arguments.processEntityQueueFlagPropertyName, arguments.entity.getClassName(), arguments.processMethod, arguments.workflowTaskAction.getUniqueFlag(), updateData[processEntityQueueFlagPropertyName], arguments.entityQueueData);
+					
+			updateData['#arguments.processEntityQueueFlagPropertyName#'] = false;
+
+			entityCollection.executeUpdate(updateData);
+
+			return true; 
 	}
 	
 	// =====================  END: Logical Methods ============================
@@ -808,7 +852,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			arguments.taskConditions = rereplace(arguments.taskConditions,'"eq"','"="','all');
 			arguments.taskConditions = rereplace(arguments.taskConditions,'"neq"','"!="','all');
 			arguments.taskConditions = deserializeJSON(arguments.taskConditions);
-			
+
 			entityCollectionlist.setCollectionConfigStruct(arguments.taskConditions);
 			entityCollectionlist.addFilter(arguments.entity.getPrimaryIDPropertyName(),arguments.entity.getPrimaryIDValue(),'=','AND',"","isolatedFilter");
 			entityCollectionlist.setDisplayProperties(arguments.entity.getPrimaryIDPropertyName());
