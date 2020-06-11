@@ -12,7 +12,9 @@ component extends="Slatwall.model.service.PromotionService" {
 			logHibachi('Checking stacking for #rewardStruct.promotionReward.getPromotionPeriod().getPromotion().getPromotionName()#');
 		}
 		if( rewardCanStack( appliedPromotions, arguments.rewardStruct.promotionReward )){
-			
+			if(arguments.orderItem.getOrder().hasOrderTemplate()){
+				logHibachi('Can stack');
+			}
 			var extendedUnitPriceAfterDiscount = arguments.orderItem.getExtendedUnitPriceAfterDiscount();
 			
 			if(len(appliedPromotions) && arguments.rewardStruct.promotionReward.getAmountType() == 'percentageOff'){
