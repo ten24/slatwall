@@ -70,33 +70,33 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 				'entityName': 'Account'
 			},
 			{
-				'name': 'Account - After Market Partner Enrollment Success | afterMarketPartnerEnrollmentSuccess',
-				'value': 'afterMarketPartnerEnrollmentSuccess',
+				'name': 'Account - After Account Market Partner Enrollment Success | afterAccountMarketPartnerEnrollmentSuccess',
+				'value': 'afterAccountMarketPartnerEnrollmentSuccess',
 				'entityName': 'Account' 
 			},
 			{
-				'name': 'Account - After VIP Enrollment Success | afterVIPEnrollmentSuccess',
-				'value': 'afterVIPEnrollmentSuccess',
+				'name': 'Account - After Account VIP Enrollment Success | afterAccountVIPEnrollmentSuccess',
+				'value': 'afterAccountVIPEnrollmentSuccess',
 				'entityName': 'Account' 
 			},
 			{
-				'name': 'Account - After Customer Enrollment Success | afterCustomerEnrollmentSuccess',
-				'value': 'afterCustomerEnrollmentSuccess',
+				'name': 'Account - After Account Customer Enrollment Success | afterAccountCustomerEnrollmentSuccess',
+				'value': 'afterAccountCustomerEnrollmentSuccess',
 				'entityName': 'Account' 
 			},
 			{
-				'name': 'Account - After Customer To Market Partner Upgrade Success | afterCustomerToMarketPartnerUpgradeSuccess',
-				'value': 'afterCustomerToMarketPartnerUpgradeSuccess',
+				'name': 'Account - After Account Customer To Market Partner Upgrade Success | afterAccountCustomerToMarketPartnerUpgradeSuccess',
+				'value': 'afterAccountCustomerToMarketPartnerUpgradeSuccess',
 				'entityName': 'Account' 
 			},
 			{
-				'name': 'Account - After VIP To Market Partner Upgrade Success | afterVIPToMarketPartnerUpgradeSuccess',
-				'value': 'afterVIPToMarketPartnerUpgradeSuccess',
+				'name': 'Account - After Account VIP To Market Partner Upgrade Success | afterAccountVIPToMarketPartnerUpgradeSuccess',
+				'value': 'afterAccountVIPToMarketPartnerUpgradeSuccess',
 				'entityName': 'Account' 
 			},
 			{
-				'name': 'Account - After Customer To VIP Upgrade Success | afterCustomerToVIPUpgradeSuccess',
-				'value': 'afterCustomerToVIPUpgradeSuccess',
+				'name': 'Account - After Account Customer To VIP Upgrade Success | afterAccountCustomerToVIPUpgradeSuccess',
+				'value': 'afterAccountCustomerToVIPUpgradeSuccess',
 				'entityName': 'Account' 
 			}
 		]

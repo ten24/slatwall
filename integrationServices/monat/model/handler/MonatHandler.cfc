@@ -163,7 +163,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 				// 	}
 				// }
 				
-				getHibachiEventService().announceEvent('after#account.getAccountType()#EnrollmentSuccess', {'account':account, 'entity':account}); 
+				getHibachiEventService().announceEvent('afterAccount#account.getAccountType()#EnrollmentSuccess', {'account':account, 'entity':account}); 
 				getHibachiEventService().announceEvent('afterAccountEnrollmentSuccess', {'account':account, 'entity':account}); 
 
 				if(!isNull(account.getOwnerAccount())){
@@ -192,7 +192,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
     			            account.setMpUpgradeDateTime( now() );
 			            break;
 			    }
-				getHibachiEventService().announceEvent('after#originalAccountType#To#account.getAccountType()#UpgradeSuccess', {'account':account, 'entity':account}); 
+				getHibachiEventService().announceEvent('afterAccount#originalAccountType#To#account.getAccountType()#UpgradeSuccess', {'account':account, 'entity':account}); 
 			}
 			else {
     			arguments.order.setOrderOrigin(getService('orderService').getOrderOriginByOrderOriginName('Internet Order'));
