@@ -80,14 +80,14 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 		requestURL &= '&apikey=' & setting('apikey');
 		requestURL &= '&service=' & arguments.service;
 		
-		var requestData = '';
+		var postData = '';
 		
-		for(var key in requestData){
-			requestData = listAppend(requestData, '#key#=#requestData[key]#', '&');
+		for(var key in arguments.requestData){
+			postData = listAppend(postData, '#key#=#requestData[key]#', '&');
 		}
 		
-		var rawResponse = getService('hibachiUtilityService').hibachiHttp(requestURL, 'POST', requestData);
-
+		var rawResponse = getService('hibachiUtilityService').hibachiHttp(requestURL, 'POST', postData);
+		
 		var response = deserializeJson(rawResponse['fileContent']);
 		
 		// if(structKeyExists(arguments, 'jsessionid')){
