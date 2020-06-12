@@ -111,7 +111,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			ordersItemsCollectionList.addFilter( 'order.account.accountID', arguments.accountID, '=');
 		}
 		
-		orderDetails['orderItems'] = ordersItemsCollectionList.getRecords();
+		orderDetails['orderItems'] = ordersItemsCollectionList.getRecords(formatRecords = false);
         
 		
 		//Order Payments Information
@@ -123,7 +123,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		
-		orderDetails['orderPayments'] = orderPaymentCollectionList.getRecords();
+		orderDetails['orderPayments'] = orderPaymentCollectionList.getRecords(formatRecords = false);
 		
 		// //Order Promotions Information
 		var orderPromotionCollectionList = getHibachiScope().getService('promotionService').getPromotionAppliedCollectionList();
@@ -133,9 +133,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			orderPromotionCollectionList.addFilter( 'order.account.accountID', arguments.accountID, '=');
 		}
 		
-		orderDetails['orderPromotions'] = orderPromotionCollectionList.getRecords();
+		orderDetails['orderPromotions'] = orderPromotionCollectionList.getRecords(formatRecords = false);
 		
+		///Order Fulfillment Information
+		var ordersFulfillmentCollectionList = this.getOrderItemCollectionList();
+		ordersFulfillmentCollectionList.setDisplayProperties('sku.skuID, orderFulfillment.fulfillmentCharge, orderFulfillment.currencyCode, orderFulfillment.estimatedDeliveryDateTime, orderFulfillment.estimatedFulfillmentDateTime, orderFulfillment.fulfillmentMethod.fulfillmentMethodName, orderFulfillment.fulfillmentMethod.fulfillmentMethodType, orderFulfillment.pickupLocation.locationName, orderFulfillment.shippingAddress.streetAddress, orderFulfillment.shippingAddress.street2Address, orderFulfillment.shippingAddress.city, orderFulfillment.shippingAddress.stateCode, orderFulfillment.shippingAddress.postalCode, orderFulfillment.shippingAddress.name, orderFulfillment.shippingAddress.countryCode, orderFulfillment.shippingMethod.shippingMethodName, orderFulfillment.shippingMethod.shippingMethodCode');
+		ordersFulfillmentCollectionList.addFilter( 'order.orderID', arguments.orderID, '=');
+		if( !superUser ) {
+			ordersFulfillmentCollectionList.addFilter( 'order.account.accountID', arguments.accountID, '=');
+		}
 		
+		orderDetails['orderFulfillments'] = ordersFulfillmentCollectionList.getRecords(formatRecords = false);
 		
 		return orderDetails;
     }

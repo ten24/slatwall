@@ -477,6 +477,9 @@ component extends="HibachiService" accessors="true" {
 			
 			for(var product in arguments.products) {
 	            var imageFile = product[arguments.propertyName] ? : '';
+	            if( isEmpty(imageFile) ) {
+	            	continue;
+	            }
 	            var imageArray = [];
 	            for( var size in resizeSizes) {
 	            	var resizeImageData = {

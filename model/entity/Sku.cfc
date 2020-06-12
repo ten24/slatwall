@@ -168,6 +168,8 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="eligibleCurrencyCodeList" type="string" persistent="false";
 	property name="defaultFlag" type="boolean" persistent="false";
 	property name="eligibleFulfillmentMethods" type="array" persistent="false";
+	property name="eligibleFulfillmentMethodsWithShippingMethods" type="array" persistent="false";
+	
 	property name="eventConflictsSmartList" persistent="false";
 	property name="eventConflictExistsFlag" type="boolean" persistent="false";
 	property name="eventOverbookedFlag" type="boolean" persistent="false";
@@ -1021,6 +1023,20 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 			variables.eligibleFulfillmentMethods = sl.getRecords();
 		}
 		return variables.eligibleFulfillmentMethods;
+	}
+	
+	/**
+	 * Helper method to populate Eligible Fulfillment methods for SKU
+	 * */
+	public array function getEligibleFulfillmentMethodsWithShippingMethods() {
+		if(!structKeyExists(variables, "eligibleFulfillmentMethodsWithShippingMethods")) {
+			var fulfillmentMethod = getService("fulfillmentService").getFulfillmentMethodCollectionList();
+			fulfillmentMethod.setDisplayProperties("fulfillmentMethodID, fulfillmentMethodName, fulfillmentMethodType")
+			fulfillmentMethod.addFilter('fulfillmentMethodID', setting('skuEligibleFulfillmentMethods'), "IN");
+			fulfillmentMethod.addOrderBy('sortOrder');
+			variables.eligibleFulfillmentMethodsWithShippingMethods = fulfillmentMethod.getRecords(formatRecord = false);
+		}
+		return variables.eligibleFulfillmentMethodsWithShippingMethods;
 	}
 
 	public any function getBundledSkusCount() {
