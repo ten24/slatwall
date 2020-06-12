@@ -205,8 +205,40 @@
 	"afterOrderProcess_updateOrderAmountsSuccess" : {
 		"filters" : "validOrder"
 	},
-	"afterOrderProcess_releaseSuccess" : {
+	"afterOrderProcess_releaseCreditsSuccess" : {
 		"filters" : "validOrder"
+	},
+	"afterOrderProcess_OrderCloseSuccess" : {
+		"filters" : [
+			
+			{
+				"propertyIdentifier": "remoteID",
+				"comparisonOperator": "is",
+				"value": "null",
+				"ormtype": "string"
+			},
+			{
+				"propertyIdentifier": "orderNumber",
+				"comparisonOperator": "is not",
+				"value": "null",
+				"ormtype": "string"
+			},
+			{
+				"propertyIdentifier": "orderType.systemCode",
+				"comparisonOperator": "=",
+				"logicalOperator": "AND",
+				"value": "otReplacementOrder",
+				"ormtype": "string"
+			},
+			{
+				"propertyIdentifier": "account.accountNumber",
+				"comparisonOperator": "IS NOT",
+				"logicalOperator": "AND",
+				"value": "NULL",
+				"ormtype": "string"
+			}
+		
+		]
 	},
 	
 	"afterOrderTemplateProcess_activateSuccess" : {

@@ -609,7 +609,7 @@ component extends="Slatwall.model.service.OrderService" {
 				// RMA closed orders
 	            arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="rmaReleased"));
 			}
-
+        	getService("hibachiEventService").announceEvent(eventName="afterOrderProcess_OrderCloseSuccess", eventData={ entity: arguments.order, order: arguments.order, data: {} });
         } else if (arguments.systemCode == 'ostNew') {
 
 			//if the order is paid don't set to new, otherwise set to new
