@@ -745,6 +745,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			if(promotionRewardUsage.totalDiscountAmount == 0){
 				logHibachi('Reward #promotionRewardID# totalDiscountAMount = 0, skipping');
 				continue;
+			}else{
+				logHibachi('ADDING Reward #promotionRewardID# TO PROMOTIONREWARDUSAGEARRAY');
 			}
 			promotionRewardUsage['promotionRewardID'] = promotionRewardID;
 			var length = ArrayLen(promotionRewardUsageArray);
