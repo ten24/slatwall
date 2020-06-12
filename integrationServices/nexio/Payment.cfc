@@ -728,7 +728,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 		} else {
 			var responseData = {};
 			// Server error handling - Unavailable or Communication Problem
-			if (httpResponse.statusCode == 0 || left(httpResponse.statusCode, 1) == 5 || left(httpResponse.statusCode, 1) == 4) {
+			if (httpResponse.status_code == 0 || left(httpResponse.status_code, 1) == 5 || left(httpResponse.status_code, 1) == 4) {
 				arguments.responseBean.setStatusCode("ERROR");
 				
 				// Public error message
@@ -736,20 +736,20 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				if ( isStruct( responseContent ) && structKeyExists( responseContent, 'message' ) ) {
 					arguments.responseBean.addError( 'serverCommunicationFault', responseContent.message );
 				} else {
-					arguments.responseBean.addError( 'serverCommunicationFault', "#rbKey('nexio.error.serverCommunication_public')# #httpResponse.statusCode#" );
+					arguments.responseBean.addError( 'serverCommunicationFault', "#rbKey('nexio.error.serverCommunication_public')# #httpResponse.status_code#" );
 				}
 				
 				// Only for admin purposes
-				arguments.responseBean.addMessage('serverCommunicationFault', "#rbKey('nexio.error.serverCommunication_admin')# - #httpResponse.statusCode#. Check the payment transaction for more details.");
+				arguments.responseBean.addMessage('serverCommunicationFault', "#rbKey('nexio.error.serverCommunication_admin')# - #httpResponse.status_code#. Check the payment transaction for more details.");
 				
 				// No response from server
-				if (httpResponse.statusCode == 0) {
-					arguments.responseBean.addMessage('serverCommunicationFaultReason', "#httpResponse.statuscode#. #httpResponse.errorDetail#. Verify Nexio integration is configured using the proper endpoint URLs. Otherwise Nexio may be unavailable.");
+				if (httpResponse.status_code == 0) {
+					arguments.responseBean.addMessage('serverCommunicationFaultReason', "#httpResponse.status_code#. #httpResponse.errorDetail#. Verify Nexio integration is configured using the proper endpoint URLs. Otherwise Nexio may be unavailable.");
 	
 				// Error response
 				} else {
-					arguments.responseBean.setStatusCode(httpResponse.statusCode);
-					arguments.responseBean.addMessage('errorStatusCode', "#httpResponse.statusCode#");
+					arguments.responseBean.setStatusCode(httpResponse.status_code);
+					arguments.responseBean.addMessage('errorStatusCode', "#httpResponse.status_code#");
 	
 					// Convert JSON response
 					responseData = deserializeJSON(httpResponse.fileContent);
@@ -765,17 +765,17 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 	
 					if (structKeyExists(responseData, 'message')) {
 						// Add additional instructions for unauthorized error.
-						if (httpResponse.statusCode == '401') {
+						if (httpResponse.status_code == '401') {
 							responseData.message &= ". Verify Nexio integration is configured using the proper credentials and encryption key/password.";
 						}
 	
-						arguments.responseBean.addMessage('errorMessage', "#httpResponse.statuscode#. #responseData.message#");
+						arguments.responseBean.addMessage('errorMessage', "#httpResponse.status_code#. #responseData.message#");
 					}
 				}
 	
 			// Server response successful
 			} else {
-				arguments.responseBean.setStatusCode(httpResponse.statusCode);
+				arguments.responseBean.setStatusCode(httpResponse.status_code);
 				// Convert JSON response
 				responseData = deserializeJSON(httpResponse.fileContent);
 				if(structKeyExists(responseData, 'gatewayResponse') && structKeyExists(responseData['gatewayResponse'], 'refNumber')){

@@ -42,7 +42,7 @@
 			var httpEntity = httpResponseObject.getEntity();
 			
 			var httpResponse = {
-				'statusCode' : httpResponseObject.getStatusLine().getStatusCode(),
+				'status_code' : httpResponseObject.getStatusLine().getStatusCode(),
 				'errorDetail' : httpResponseObject.getStatusLine().getReasonPhrase(),
 				'fileContent' : entityUtils.toString(httpEntity)
 			};
