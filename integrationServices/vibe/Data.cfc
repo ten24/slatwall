@@ -105,8 +105,6 @@ component accessors='true' output='false' displayname='Vibe' extends='Slatwall.o
 		*/
 		
 		if( !structKeyExists(response,'status') || response.status != 'success') {
-			response['requestAttributes'] = httpRequest.getAttributes() ;
-			response['requestParams'] = httpRequest.getParams();
 			response['content'] = rawRequest.fileContent;
 		}
 		
