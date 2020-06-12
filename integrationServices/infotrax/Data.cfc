@@ -239,10 +239,32 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 				
 				var account = relatedToAccount ? arguments.entity.getAccount() : arguments.entity;
 				
-				if( structKeyExists(iceResponse, 'marketpartnerid') &&  ( isNull(account.getUplineMPAccount()) || account.getUplineMPAccount().getAccountCode() != iceResponse.marketpartnerid ) ){
+				if( structKeyExists(iceResponse, 'marketpartnerid') ){
+
+					if( !isNull(account.getUplineMPAccount() ){
+						var oldUplineMPAccount = account.getUplineMPAccount(); 
+					} 			
+				
 					var newUplineMPAccount = getService('accountService').getAccountByAccountNumber(iceResponse.marketpartnerid);
-					if(!isNull(newUplineMPAccount)){
-						account.setUplineMPAccount(newUplineMPAccount);
+					
+					if( !isNull(newUplineMPAccount) ) { 
+
+						if(
+							(
+								isNull(oldUplineMPAccount) || 
+								oldUplineMPAccount.getAccountCode() != iceResponse.marketpartnerid 
+							)
+						){
+							account.setUplineMPAccount(newUplineMPAccount);
+
+							if(!isNull(oldUplineMPAccount)){
+								getService('HibachiEventService').announceEvent('afterAccountUplineMPAccountChangedSuccess', {'account' : oldUplineMPAccount,'entity' : oldUplineMPAccount, 'downlineAccount': account});
+							}	
+						}
+
+						if(!isNull(oldUplineMPAccount) && oldUplineMPAccount.getAccountCode() == iceResponse.marketpartnerid ){
+							getService('HibachiEventService').announceEvent('afterAccountUplineMPAccountNotChangedSuccess', {'account' : oldUplineMPAccount,'entity' : oldUplineMPAccount, 'downlineAccount': account});
+						} 
 					}
 				}
 				
