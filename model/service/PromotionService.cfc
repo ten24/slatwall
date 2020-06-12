@@ -230,6 +230,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			if(orderItem.getOrderItemType().getSystemCode() == "oitSale") {
 				// Make sure that this order item is in the acceptable fulfillment list
 				if(arrayFind(promotionPeriodQualification.qualifiedFulfillmentIDs, orderItem.getOrderFulfillment().getOrderFulfillmentID())) {
+					if(arguments.order.hasOrderTemplate()){
+						logHibachi('Order fulfillment in acceptable fulfillment list');
+					}
+					
 					// Now that we know the fulfillment is ok, lets check and cache then number of times this orderItem qualifies based on the promotionPeriod
 					if(!structKeyExists(promotionPeriodQualification.orderItems, orderItem.getOrderItemID())) {
 						promotionPeriodQualification.orderItems[ orderItem.getOrderItemID() ] = getPromotionPeriodOrderItemQualificationCount(promotionPeriod=arguments.promotionReward.getPromotionPeriod(), orderItem=orderItem, order=arguments.order);
@@ -237,9 +241,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 					// If the qualification count for this order item is > 0 then we can try to apply the reward
 					if(promotionPeriodQualification.orderItems[ orderItem.getOrderItemID() ]) {
+						if(arguments.order.hasOrderTemplate()){
+							logHibachi('Order Item qualified');
+						}
 						// Check the reward settings to see if this orderItem applies
 						if( getOrderItemInReward(arguments.promotionReward, orderItem) ) {
-
+							if(arguments.order.hasOrderTemplate()){
+								logHibachi('Order item in reward');
+							}
 							var qualificationQuantity = promotionPeriodQualification.orderItems[ orderItem.getOrderItemID() ];
 							var maxUsages = qualificationQuantity * promotionRewardUsageDetail.maximumUsePerQualification;
 							
@@ -338,7 +347,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							}else{
 								if(arguments.order.hasOrderTemplate()){
 									logHibachi('Discount amount 0, not applying #arguments.promotionReward.getPromotionPeriod().getPromotion().getPromotionName()#');
-									
 								}
 							}
 
