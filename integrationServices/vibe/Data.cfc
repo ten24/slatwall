@@ -81,15 +81,20 @@ component accessors='true' output='false' displayname='Vibe' extends='Slatwall.o
 			requestURL &= '/api/v1/etl/updateUser';
 		}
 		
-		var headers = {
-			'Content-Type' : 'application/json',
-			'auth-token': setting('authToken'),
-			'user-name': setting('username')
-		}
-		
-    	arguments.requestData = { "user" : arguments.requestData } ; // payload signature --> { "user": {...payload...}};
+		var httpRequest = new http();
+		httpRequest.setMethod('POST');
+		httpRequest.setUrl( requestURL );
 
-		var rawRequest = getService('hibachiUtilityService').hibachiHttp(requestURL, 'POST', serializeJSON(arguments.requestData), headers);
+    	httpRequest.addParam( type='header', name='Content-Type', value='application/json');
+		// Authentication headers
+    	httpRequest.addParam( type='header', name='auth-token', value= setting('authToken') );
+    	httpRequest.addParam( type='header', name='user-name', value= setting('username') );
+    	
+    	arguments.requestData = { "user" : arguments.requestData } ; // payload signature --> { "user": {...payload...}};
+    	
+    	httpRequest.addParam(type='body', value="#SerializeJson(arguments.requestData)#");
+
+		var rawRequest = httpRequest.send().getPrefix();
 		
 		var response = {};
 		if( IsJson(rawRequest.fileContent) ) {
@@ -105,6 +110,8 @@ component accessors='true' output='false' displayname='Vibe' extends='Slatwall.o
 		*/
 		
 		if( !structKeyExists(response,'status') || response.status != 'success') {
+			response['requestAttributes'] = httpRequest.getAttributes() ;
+			response['requestParams'] = httpRequest.getParams();
 			response['content'] = rawRequest.fileContent;
 		}
 		
