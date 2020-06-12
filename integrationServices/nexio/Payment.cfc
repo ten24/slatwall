@@ -142,7 +142,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			'transactionId' = arguments.transactionID
 		}
 
-		responseData = sendHttpAPIRequest(arguments.requestBean, responseBean, 'transactionStatus', requestData);
+		var responseData = sendHttpAPIRequest(arguments.requestBean, responseBean, 'transactionStatus', requestData);
 
 		// Response Data
 		if (!responseBean.hasErrors()){
@@ -442,7 +442,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				    'merchantID' = setting(settingName='merchantIDTest', requestBean=arguments.requestBean)
 			    }
 			};	
-			responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'authorize', requestData);
+			var responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'authorize', requestData);
 			
 			// Response Data
 			if (!responseBean.hasErrors()) {
@@ -496,7 +496,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			    }
 			};	
 
-			responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'authorizeAndCharge', requestData);
+			var responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'authorizeAndCharge', requestData);
 	
 			// Response Data
 			if (!responseBean.hasErrors()) {
@@ -550,7 +550,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 		    	'id' = arguments.requestBean.getOriginalAuthorizationProviderTransactionID()
 			}
 
-			responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'chargePreAuthorization', requestData);
+			var responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'chargePreAuthorization', requestData);
 			
 			// Response Data
 			if (!responseBean.hasErrors()) {
@@ -599,7 +599,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				    'merchantID' = setting(settingName='merchantIDTest', requestBean=arguments.requestBean)
 			    }
 			}
-			responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'credit', requestData);
+			var responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'credit', requestData);
 			
 			// Response Data
 			if (!responseBean.hasErrors()) {
@@ -640,7 +640,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 		    	'id': voidRequiredTransactionID
 			}
 			
-			responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'void', requestData);
+			var responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'void', requestData);
 			
 			// Response Data
 			if (!responseBean.hasErrors()) {
