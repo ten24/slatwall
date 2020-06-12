@@ -71,17 +71,19 @@ component accessors='true' output='false' displayname='SoundConcepts' extends='S
 		
 		var requestURL = setting('liveModeFlag') ? setting('liveURL') : setting('testURL');
 		requestURL &= '/remote/users/add.json';
+		var httpRequest = new http();
+		httpRequest.setMethod('POST');
+		httpRequest.setUrl( requestURL );
 
-		var headers = {
-			'Content-Type' : 'application/json'
-		}
-		
 		//Authentaction details required by SoundConcepts
 		arguments.requestData['master_username'] = setting('masterUsername');
 		arguments.requestData['master_password'] = setting('masterPassword');
+		
+    	httpRequest.addParam(type='header', name='Content-Type', value='application/json');
+    	httpRequest.addParam(type='body', value="#SerializeJson(arguments.requestData)#");
 
-		var rawRequest = getService('hibachiUtilityService').hibachiHttp(requestURL, 'POST', serializeJSON(arguments.requestData), headers);
-
+		var rawRequest = httpRequest.send().getPrefix();
+		
 		var response = {};
 		if( IsJson(rawRequest.fileContent) ) {
 			response = DeSerializeJson(rawRequest.fileContent); 
@@ -95,6 +97,8 @@ component accessors='true' output='false' displayname='SoundConcepts' extends='S
 		 * typical successful response: { "success": { "username": "xyg" }, "server": {} }
 		*/
 		if( !StructKeyExists(response, 'success') ) {
+			response['requestAttributes'] = httpRequest.getAttributes() ;
+			response['requestParams'] = httpRequest.getParams();
 			response['content'] = rawRequest.fileContent;
 		}
 		
