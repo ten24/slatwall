@@ -21,9 +21,9 @@ class SWFAlertController{
     
     public displayAlert=()=>{
         this.alertDisplaying = true;
-         this.$timeout(()=>{
-            this.alertDisplaying = false;
-        },this.duration * 1000);
+        //  this.$timeout(()=>{
+        //     this.alertDisplaying = false;
+        // },this.duration * 1000);
     }
 }
 

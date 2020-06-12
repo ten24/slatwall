@@ -114,15 +114,15 @@
 										<span class="title-sm" sw-rbkey="'frontend.checkout.shipping'"></span>
 									</div>
 									<div class="right">
-										<span class="price" ng-bind-html="(reviewStep.orderTemplateService.mostRecentOrderTemplate.calculatedFulfillmentTotal -  reviewStep.orderTemplateService.mostRecentOrderTemplate.fulfillmentHandlingFeeTotal )| swcurrency:reviewStep.orderTemplateService.mostRecentOrderTemplate.currencyCode"></span>
+										<span class="price" ng-bind-html="(reviewStep.orderTemplateService.mostRecentOrderTemplate.calculatedFulfillmentTotal -  reviewStep.orderTemplateService.mostRecentOrderTemplate.calculatedFulfillmentHandlingFeeTotal )| swcurrency:reviewStep.orderTemplateService.mostRecentOrderTemplate.currencyCode"></span>
 									</div>
 								</li>
-								<li ng-if="reviewStep.orderTemplateService.mostRecentOrderTemplate.fulfillmentHandlingFeeTotal">
+								<li ng-if="reviewStep.orderTemplateService.mostRecentOrderTemplate.calculatedFulfillmentHandlingFeeTotal">
 									<div class="left">
 										<span class="title-sm" sw-rbkey="'frontend.cart.handlingFee'"></span>
 									</div>
 									<div class="right">
-										<span class="price" ng-bind-html="reviewStep.orderTemplateService.mostRecentOrderTemplate.fulfillmentHandlingFeeTotal | swcurrency:reviewStep.orderTemplateService.mostRecentOrderTemplate.currencyCode"></span>
+										<span class="price" ng-bind-html="reviewStep.orderTemplateService.mostRecentOrderTemplate.calculatedFulfillmentHandlingFeeTotal | swcurrency:reviewStep.orderTemplateService.mostRecentOrderTemplate.currencyCode"></span>
 									</div>
 								</li>
 								<span ng-cloak>
