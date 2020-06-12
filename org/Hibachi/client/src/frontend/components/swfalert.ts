@@ -9,21 +9,24 @@ class SWFAlertController{
     public alertType:string;
     public duration:number = 2;
     public message:string;
+    public displayOnInit:boolean;
     
     constructor(private $rootScope, private $timeout, private $scope, private observerService){
         this.$rootScope = $rootScope;
         this.observerService.attach(this.displayAlert, this.alertTrigger);
     }
     
-    public $oninit=()=>{
-        
+    public $onInit=()=>{
+        if(this.displayOnInit){
+            this.displayAlert();
+        }
     }
     
     public displayAlert=()=>{
         this.alertDisplaying = true;
-        //  this.$timeout(()=>{
-        //     this.alertDisplaying = false;
-        // },this.duration * 1000);
+         this.$timeout(()=>{
+            this.alertDisplaying = false;
+        },this.duration * 1000);
     }
 }
 
@@ -34,7 +37,8 @@ class SWFAlert{
                 alertTrigger:'@?',
                 alertType: '@?',
                 duration: '<?',
-                message: '@?'
+                message: '@?',
+                displayOnInit:'<?'
     };
     public controller = SWFAlertController
     public controllerAs = "swfAlert";
