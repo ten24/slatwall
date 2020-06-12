@@ -95,8 +95,6 @@ component accessors='true' output='false' displayname='SoundConcepts' extends='S
 		 * typical successful response: { "success": { "username": "xyg" }, "server": {} }
 		*/
 		if( !StructKeyExists(response, 'success') ) {
-			response['requestAttributes'] = httpRequest.getAttributes() ;
-			response['requestParams'] = httpRequest.getParams();
 			response['content'] = rawRequest.fileContent;
 		}
 		
