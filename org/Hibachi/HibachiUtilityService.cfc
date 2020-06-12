@@ -4,6 +4,56 @@
 
 	<cfscript>
 	
+	
+		function hibachiHttp(required string urlString, string method='GET', string data = '', struct headers = {}) {
+			var urlObject = createObject('java','java.net.URL').init(arguments.urlString);
+			var entityUtils = createObject('java','org.apache.http.util.EntityUtils');
+			var defaultHttpClient = createObject('java','org.apache.http.impl.client.DefaultHttpClient').init();
+			
+			var httpHost = createObject('java','org.apache.http.HttpHost').init(
+				javaCast('string',urlObject.getHost()),
+				javaCast('int',urlObject.getProtocol() == 'https' ? 443 : 80),
+				javaCast('string',urlObject.getProtocol())
+			);
+			
+			var methodObject = createObject('java','org.apache.http.client.methods.Http#UcFirst(arguments.method, false, true)#').init(
+				javaCast('string',urlObject.getFile())
+			);
+			
+			if(!structKeyExists(arguments.headers, 'User-Agent')){
+				arguments.headers['User-Agent'] = 'Slatwall/#getHibachiScope().getApplicationValue("version")# (+https://www.slatwallcommerce.com/)';
+			}
+			
+			for(var header in arguments.headers){
+				methodObject.addHeader(header, arguments.headers[header] );
+			}
+			if(arguments.method == 'POST'){
+				var stringEntity = createObject('java','org.apache.http.entity.StringEntity').init(
+					javaCast('string',arguments.data),
+					javaCast('string',arguments.headers['Content-type'] ?: 'application/x-www-form-urlencoded'),
+					javaCast('string','utf-8')
+				);
+				
+				methodObject.setEntity(stringEntity);
+			}
+			
+			var httpResponseObject = defaultHttpClient.execute(httpHost,methodObject);
+			
+			var httpEntity = httpResponseObject.getEntity();
+			
+			var httpResponse = {
+				'statusCode' : httpResponseObject.getStatusLine().getStatusCode(),
+				'errorDetail' : httpResponseObject.getStatusLine().getReasonPhrase(),
+				'fileContent' : entityUtils.toString(httpEntity)
+			};
+			
+			entityUtils.consume(httpEntity);
+			
+			defaultHttpClient.getConnectionManager().shutdown();
+	
+			return httpResponse;
+		}
+	
 		public any function hibachiArrayMap(required array data, required any closure, numeric parallelThreadNumber){
 			if(!structKeyExists(arguments, 'parallelThreadNumber')){
 				arguments.parallelThreadNumber = createObject( "java", "java.lang.Runtime" ).getRuntime().availableProcessors();

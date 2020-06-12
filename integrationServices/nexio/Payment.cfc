@@ -698,45 +698,27 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 		} else if(arguments.transactionName == "cardView") {
 			apiUrl &= '/pay/v3/vault/card/#arguments.requestBean.getProviderToken()#';
 		}
-		var basicAuthCredentialsBase64 = toBase64('#username#:#password#');
-		var httpRequest = new http();
-		httpRequest.setUrl(apiUrl);
-		if(arguments.transactionName == 'transactionStatus' || arguments.transactionName == 'cardView'){
-			httpRequest.setMethod('GET');
-		}else{
-			httpRequest.setMethod('POST');
-		}
-		httpRequest.setCharset('UTF-8');
-		httpRequest.addParam(type="header", name="Authorization", value="Basic #basicAuthCredentialsBase64#"); // (https://github.com/nexiopay/payment-service-example-node/blob/master/ClientSideToken.js#L92)
-		if(arguments.transactionName == 'transactionStatus' || arguments.transactionName == 'cardView'){
-			httpRequest.addParam(type="header", name="Accept", value="application/json");
-		} else {
-			httpRequest.addParam(type="header", name="Content-Type", value='application/json');
-			httpRequest.addParam(type="body", value=serializeJSON(arguments.data));
-		}
-
-		// ---> Comment Out:
-		// var logPath = expandPath('/Slatwall/integrationServices/nexio/log');
-		// if (!directoryExists(logPath)){
-		// 	directoryCreate(logPath);
-		// }
-		// var timeSufix = getTickCount() & createHibachiUUID(); 
 		
-		// var httpRequestData = {
-		// 	'httpAuthHeader'='Basic #basicAuthCredentialsBase64#',
-		// 	'apiUrl'=apiUrl,
-		// 	'username' = username,
-		// 	'password' = password,
-		// 	'httpContentTypeHeader' = 'application/json',
-		// 	'publicKey' = getPublicKey(arguments.requestBean),
-		// 	'cardEncryptionMethod' = 'toBase64(encrypt(creditCardNumber, publicKey, "rsa" ))'
-		// };
-
-		// fileWrite('#logPath#/#timeSufix#_AVS_request.json',serializeJSON({'httpRequestData'=httpRequestData,'httpBody'=arguments.data}));
-		// Comment Out: <---
+		
+		var httpMethod = 'POST';
+		var basicAuthCredentialsBase64 = toBase64('#username#:#password#');
+		
+		
+		if(arguments.transactionName == 'transactionStatus' || arguments.transactionName == 'cardView'){
+			httpMethod = ('GET');
+		}
+		var headers = {
+			'Authorization' : 'Basic #basicAuthCredentialsBase64#'
+		}
+		
+		if(arguments.transactionName == 'transactionStatus' || arguments.transactionName == 'cardView'){
+			headers['Accept'] = 'application/json';
+		} else {
+			headers['Content-Type'] = 'application/json';
+		}
 		
 		// Make HTTP request to endpoint
-		var httpResponse = httpRequest.send().getPrefix();
+		var httpResponse = getService('hibachiUtilityService').hibachiHttp(apiUrl, httpMethod, serializeJSON(arguments.data), headers);
 
 		if (arguments.transactionName == 'deleteToken') {
 			var responseData = {};
@@ -746,7 +728,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 		} else {
 			var responseData = {};
 			// Server error handling - Unavailable or Communication Problem
-			if (httpResponse.status_code == 0 || left(httpResponse.status_code, 1) == 5 || left(httpResponse.status_code, 1) == 4) {
+			if (httpResponse.statusCode == 0 || left(httpResponse.statusCode, 1) == 5 || left(httpResponse.statusCode, 1) == 4) {
 				arguments.responseBean.setStatusCode("ERROR");
 				
 				// Public error message
@@ -761,13 +743,13 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				arguments.responseBean.addMessage('serverCommunicationFault', "#rbKey('nexio.error.serverCommunication_admin')# - #httpResponse.statusCode#. Check the payment transaction for more details.");
 				
 				// No response from server
-				if (httpResponse.status_code == 0) {
+				if (httpResponse.statusCode == 0) {
 					arguments.responseBean.addMessage('serverCommunicationFaultReason', "#httpResponse.statuscode#. #httpResponse.errorDetail#. Verify Nexio integration is configured using the proper endpoint URLs. Otherwise Nexio may be unavailable.");
 	
 				// Error response
 				} else {
-					arguments.responseBean.setStatusCode(httpResponse.status_code);
-					arguments.responseBean.addMessage('errorStatusCode', "#httpResponse.status_code#");
+					arguments.responseBean.setStatusCode(httpResponse.statusCode);
+					arguments.responseBean.addMessage('errorStatusCode', "#httpResponse.statusCode#");
 	
 					// Convert JSON response
 					responseData = deserializeJSON(httpResponse.fileContent);
@@ -783,7 +765,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 	
 					if (structKeyExists(responseData, 'message')) {
 						// Add additional instructions for unauthorized error.
-						if (httpResponse.status_code == '401') {
+						if (httpResponse.statusCode == '401') {
 							responseData.message &= ". Verify Nexio integration is configured using the proper credentials and encryption key/password.";
 						}
 	
@@ -793,7 +775,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 	
 			// Server response successful
 			} else {
-				arguments.responseBean.setStatusCode(httpResponse.status_code);
+				arguments.responseBean.setStatusCode(httpResponse.statusCode);
 				// Convert JSON response
 				responseData = deserializeJSON(httpResponse.fileContent);
 				if(structKeyExists(responseData, 'gatewayResponse') && structKeyExists(responseData['gatewayResponse'], 'refNumber')){
