@@ -559,7 +559,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	private void function applyPromotionQualifierMessagesToOrder(required any order, required array orderQualifierMessages){
 		
 		ArraySort(arguments.orderQualifierMessages,function(a,b){
-			if(a.getPriority() <= b.getPriority()){
+			if(arguments.a.getPriority() <= arguments.b.getPriority()){
 				return -1;
 			}else{
 				return 1;
@@ -696,7 +696,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var orderItems = arguments.order.getOrderItems();
 			if(promotionRewardUsage.amountType == 'percentageOff'){
 				orderItems.sort(function(a,b){
-					if(a.getExtendedUnitPriceAfterDiscount() >= b.getExtendedUnitPriceAfterDiscount()){
+					if(arguments.a.getExtendedUnitPriceAfterDiscount() >= arguments.b.getExtendedUnitPriceAfterDiscount()){
 						return -1;
 					}else{
 						return 1;
@@ -1278,9 +1278,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		if(!isNull(reward.getRoundingRule())) {
 			roundedFinalAmount = getRoundingRuleService().roundValueByRoundingRule(value=val(getService('HibachiUtilityService').precisionCalculate(originalAmount - discountAmountPreRounding)), roundingRule=arguments.reward.getRoundingRule());
-			discountAmount = val(getService('HibachiUtilityService').precisionCalculate(originalAmount - roundedFinalAmount));
+			var discountAmount = val(getService('HibachiUtilityService').precisionCalculate(originalAmount - roundedFinalAmount));
 		} else {
-			discountAmount = discountAmountPreRounding;
+			var discountAmount = discountAmountPreRounding;
 		}
 
 		// This makes sure that the discount never exceeds the original amount

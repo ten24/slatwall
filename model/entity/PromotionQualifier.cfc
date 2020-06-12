@@ -270,7 +270,7 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 			if(isNull(getIncludedOrdersCollectionConfig())){
 				return;
 			}
-			return getIncludedOrdersCollection();
+			return getService('hibachiCollectionService').createTransientCollection('Order',getIncludedOrdersCollectionConfig());
 		}
 			
 		if(!isNull(getIncludedOrdersCollectionConfig())){
