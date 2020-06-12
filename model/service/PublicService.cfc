@@ -2147,4 +2147,11 @@ component  accessors="true" output="false"
         data['ajaxResponse']['price'] = sku.getPriceByCurrencyCode(arguments.data.currencyCode, arguments.data.quantity);
     }
     
+    public any function loginAndReturnAuthToken(required any data){
+        this.login(arguments.data);
+        if(getHibachiScope().getLoggedInFlag()){
+            data['ajaxResponse']['token'] = getService('HibachiJWTService').createToken();
+        }
+    }
+    
 }
