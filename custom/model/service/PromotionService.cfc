@@ -160,9 +160,9 @@ component extends="Slatwall.model.service.PromotionService" {
 
 		if(!isNull(arguments.reward.getRoundingRule())) {
 			roundedFinalAmount = getRoundingRuleService().roundValueByRoundingRule(value=val(getService('HibachiUtilityService').precisionCalculate(originalAmount - discountAmountPreRounding)), roundingRule=arguments.reward.getRoundingRule());
-			discountAmount = val(getService('HibachiUtilityService').precisionCalculate(originalAmount - roundedFinalAmount));
+			var discountAmount = val(getService('HibachiUtilityService').precisionCalculate(originalAmount - roundedFinalAmount));
 		} else {
-			discountAmount = discountAmountPreRounding;
+			var discountAmount = discountAmountPreRounding;
 		}
 
 		// This makes sure that the discount never exceeds the original amount
@@ -184,7 +184,7 @@ component extends="Slatwall.model.service.PromotionService" {
     private void function applyPromotionQualifierMessagesToOrder(required any order, required array orderQualifierMessages){
 		
 		ArraySort(arguments.orderQualifierMessages,function(a,b){
-			if(a.getPriority() <= b.getPriority()){
+			if(arguments.a.getPriority() <= arguments.b.getPriority()){
 				return -1;
 			}else{
 				return 1;
