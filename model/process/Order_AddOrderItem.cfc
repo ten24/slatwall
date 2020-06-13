@@ -95,7 +95,8 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="assignedGiftRecipientQuantity";
 	property name="sellOnBackOrderFlag";
 	property name="thirdPartyShippingAccountIdentifier";
-
+	property name="userDefinedPriceFlag";
+	
 	// Data Properties (Related Entity Populate)
 	property name="priceGroup" cfc="PriceGroup" fieldType="many-to-one" persistent="false" fkcolumn="priceGroupID";
 	property name="shippingAddress" cfc="Address" fieldType="many-to-one" persistent="false" fkcolumn="addressID";

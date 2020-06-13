@@ -549,7 +549,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				}
 
 			}
-
+			
+			logHibachi(" =================ORDER ITEM PRICE 553 #arguments.processObject.getPrice()#=================");
+			
 			// Setup the Sku / Quantity / Price/ SKU-Price details
 			addNewOrderItemSetup(newOrderItem, arguments.processObject);
 
@@ -1630,10 +1632,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		this.logHibachi('Start Processing OrderTemplate #arguments.orderTemplate.getOrderTemplateID()#', true);
 		
 		// if next process date is in future and not a logged in user skip
-		if( (!isNull(arguments.orderTemplate.getScheduleOrderProcessingFlag()) && arguments.orderTemplate.getScheduleOrderProcessingFlag()) || (dateCompare( arguments.orderTemplate.getScheduleOrderNextPlaceDateTime(), now() ) == 1 && !getHibachiScope().getLoggedInFlag()) ) {
-			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# - Already processing', true);
-			return arguments.orderTemplate;
-		}
+		// if( (!isNull(arguments.orderTemplate.getScheduleOrderProcessingFlag()) && arguments.orderTemplate.getScheduleOrderProcessingFlag()) || (dateCompare( arguments.orderTemplate.getScheduleOrderNextPlaceDateTime(), now() ) == 1 && !getHibachiScope().getLoggedInFlag()) ) {
+		// 	this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# - Already processing', true);
+		// 	return arguments.orderTemplate;
+		// }
 		
 		//we set this first and persist so that even if there's a problem with the order a workflow won't attempt retry	
 		getOrderDAO().setScheduleOrderProcessingFlag(arguments.orderTemplate.getOrderTemplateID(), true);
@@ -1909,11 +1911,27 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public any function addOrderItemFromTemplateItem(required any order, required struct orderTemplateItemStruct, required any orderTemplate, any orderFulfillment){
+		arguments.order.clearProcessObject('addOrderItem');
 		var processOrderAddOrderItem = arguments.order.getProcessObject('addOrderItem');
 		var sku = getSkuService().getSku(arguments.orderTemplateItemStruct['sku_skuID']);
+		processOrderAddOrderItem.setAccount(arguments.orderTemplate.getAccount());
+		processOrderAddOrderItem.setSku(sku);
+		processOrderAddOrderItem.setQuantity(arguments.orderTemplateItemStruct['quantity']);
+		processOrderAddOrderItem.setUpdateOrderAmountFlag(false); 		
+		processOrderAddOrderItem.setUpdateShippingMethodOptionsFlag(false);
+		logHibachi("#serializeJson(arguments.orderTemplateItemStruct)#");
+		
+		if(!isNull(arguments.orderTemplate.getPriceGroup())){
+			processOrderAddOrderItem.setPriceGroup(arguments.orderTemplate.getPriceGroup());
+		} else if(!isNull(arguments.orderTemplate.getAccount()) && arguments.orderTemplate.getAccount().hasPriceGroup()){
+			processOrderAddOrderItem.setPriceGroup(arguments.orderTemplate.getAccount().getPriceGroups()[1]);
+		}
+		
+		logHibachi("DO WE HAVE A PRICE ON THE STRUCT #structKeyExists(arguments.orderTemplateItemStruct,'price')#");
 		
 		if(structKeyExists(arguments.orderTemplateItemStruct,'price')){
 			var orderTemplateItemPrice = arguments.orderTemplateItemStruct.price;
+			logHibachi('ORDER TEMP PROMO ITEM PRICEE #arguments.orderTemplateItemStruct.price#')
 		}else{
 			var orderTemplateItemPrice = sku.getPriceByCurrencyCode(
 					currencyCode = arguments.orderTemplate.getCurrencyCode(), 
@@ -1923,22 +1941,22 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		if( isNull(orderTemplateItemPrice) ){
-			arguments.order.addError('addOrderItem', 'Pricing info not available for skuCode: #sku.getSkuCode()#');
-			getHibachiScope().setORMHasErrors(true);
+			
+			//We only want to add an error if the order template item is not temporary as it will result in the order not placing
+			if(isNull(arguments.orderTemplateItemStruct['temporaryFlag']) || !arguments.orderTemplateItemStruct['temporaryFlag']){
+				arguments.order.addError('addOrderItem', 'Pricing info not available for skuCode: #sku.getSkuCode()#');
+				getHibachiScope().setORMHasErrors(true);				
+			}
+
 			return arguments.order;
 		}
-		processOrderAddOrderItem.setSku(sku);
-		processOrderAddOrderItem.setPrice(orderTemplateItemPrice);
-		processOrderAddOrderItem.setQuantity(arguments.orderTemplateItemStruct['quantity']);
-		processOrderAddOrderItem.setUpdateOrderAmountFlag(false); 		
-		processOrderAddOrderItem.setUpdateShippingMethodOptionsFlag(false);
-
-		if(!isNull(arguments.orderTemplate.getPriceGroup())){
-			processOrderAddOrderItem.setPriceGroup(arguments.orderTemplate.getPriceGroup());
-		} else if(!isNull(arguments.orderTemplate.getAccount()) && arguments.orderTemplate.getAccount().hasPriceGroup()){
-			processOrderAddOrderItem.setPriceGroup(arguments.orderTemplate.getAccount().getPriceGroups()[1]);
+		
+		if(structKeyExists(arguments.orderTemplateItemStruct,'userDefinedPriceFlag')){
+			processOrderAddOrderItem.setUserDefinedPriceFlag(arguments.orderTemplateItemStruct['userDefinedPriceFlag']);
 		}
-
+		
+		processOrderAddOrderItem.setPrice(orderTemplateItemPrice);
+		logHibachi('ORDER TEMP PROMO ITEM PRICEE #processOrderAddOrderItem.getPrice()#')
 		if(isNull(arguments.orderFulfillment)){
 			processOrderAddOrderItem.setShippingAccountAddressID(arguments.orderTemplate.getShippingAccountAddress().getAccountAddressID());
 			processOrderAddOrderItem.setShippingAddress(arguments.orderTemplate.getShippingAccountAddress().getAddress());
@@ -1949,12 +1967,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		processOrderAddOrderItem.setPreProcessDisplayedFlag(1); //this's a hacky way to pass the the validation;
 		processOrderAddOrderItem.validate( context="addOrderItem" );
 		
+		logHibachi("=================ADDING ORDER ITEM HAS ERRORS: #serializeJson(processOrderAddOrderItem.getErrors())#=================" );
+		
 		if( !processOrderAddOrderItem.hasErrors() ){
+			logHibachi("=================Adding #sku.getSkuCode()#=================" );
 			arguments.order = this.processOrder_addOrderItem(arguments.order, processOrderAddOrderItem);
-		} else {
-			arguments.order.addErrors(processOrderAddOrderItem.getErrors());
-			getHibachiScope().setORMHasErrors(true);
-		}
+		} 
+		
 		return arguments.order;
 	}
 
@@ -5744,9 +5763,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		arguments.newOrderItem.setCurrencyCode( arguments.newOrderItem.getOrder().getCurrencyCode() );
 		arguments.newOrderItem.setQuantity( arguments.processObject.getQuantity() );
 		
+		var userDefinedPriceFlagOnSKU = arguments.newOrderItem.getSku().getUserDefinedPriceFlag() ?: false;
+		
 		// If the sku is allowed to have a user defined price OR the current account has permissions to edit price
-		if(
-			arguments.newOrderItem.getSku().getUserDefinedPriceFlag() ?: false
+		if( userDefinedPriceFlagOnSKU
 			|| //Admin-users can override price from the Slatwall-UI
 			(
 				arguments.processObject.getUserDefinedPriceFlag() 
@@ -5759,13 +5779,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		) {
 
 			arguments.newOrderItem.setUserDefinedPriceFlag( true );
+			logHibachi('5784 #arguments.processObject.getPrice()#')
 			arguments.newOrderItem.setPrice( arguments.processObject.getPrice() );
 			arguments.newOrderItem.setSkuPrice( arguments.processObject.getPrice() );
 			
 		} else {
-			
+			logHibachi('for some reason we are in the if statement==============');
 			var skuPrice = addNewOrderItemSetupGetSkuPrice(argumentCollection=arguments);
-			
+				logHibachi('5779 THE ACRTUAL ORDER ITEM PRICE #skuPrice#')
 			if(isNull(skuPrice)){
 				return;
 			}

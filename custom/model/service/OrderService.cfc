@@ -1704,24 +1704,29 @@ component extends="Slatwall.model.service.OrderService" {
 	}
 	
 	public any function createOrderItemsFromOrderTemplateItems(required any order, required any orderTemplate){
+		logHibachi("==============================ADDING ITEMS==============================")
 		var orderTemplateItemCollection = this.getOrderTemplateItemCollectionList(); 
 		orderTemplateItemCollection.setDisplayProperties('orderTemplateItemID,sku.skuID,sku.skuCode,quantity,temporaryFlag'); 
 		orderTemplateItemCollection.addFilter('orderTemplate.orderTemplateID', arguments.orderTemplate.getOrderTemplateID()); 
-
+		var foundPromoItems = [];
 		var orderTemplateItems = orderTemplateItemCollection.getRecords();
-		var temporaryItemFound = false;
+		var orderTemplateItemData = {}; //instantiating here as the OF in the loop 
+		orderTemplateItemData['orderFulfillmentHasErrors'] = false;
 		
 		for(var orderTemplateItem in orderTemplateItems){ 
+			logHibachi("==============================IN THE LOOP==============================")
 
 			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()#, adding skuCode: #orderTemplateItem['sku_skuCode']#');
-
+			
 			if(!isNull(orderTemplateItem.temporaryFlag) && orderTemplateItem.temporaryFlag == true){
-				temporaryItemFound = true;
+				arrayAppend(foundPromoItems, orderTemplateItem.sku_skuID);
 			}
+			
 			var args = {
 				'order'=arguments.order,
 				'orderTemplateItemStruct'=orderTemplateItem,
-				'orderTemplate'=arguments.orderTemplate
+				'orderTemplate'=arguments.orderTemplate,
+				'temporaryFlag'= orderTemplateItem.temporaryFlag ?: false
 			}
 			
 			if(!isNull(orderFulfillment)){
@@ -1729,6 +1734,7 @@ component extends="Slatwall.model.service.OrderService" {
 			}
 			
 			arguments.order = this.addOrderItemFromTemplateItem(argumentCollection=args);
+			logHibachi("ORDER HAS ZERO ORDER ITEMS #arrayIsEmpty(arguments.order.getOrderItems())#")
 
 			//define order fulfillment for the rest of the loop	
 			if( isNull(orderFulfillment) && 
@@ -1742,40 +1748,36 @@ component extends="Slatwall.model.service.OrderService" {
 				orderFulfillment.setFulfillmentMethod(arguments.orderTemplate.getShippingMethod().getFulfillmentMethod());
 
 				orderFulfillment = this.saveOrderFulfillment( orderFulfillment=orderFulfillment, updateOrderAmounts=false, updateShippingMethodOptions=false );
-
+				orderTemplateItemData['orderFulfillment'] = orderFulfillment;
+				
 				if (orderFulfillment.hasErrors()){
+					orderTemplateItemData['orderFulfillmentHasErrors'] = true;
 					//propagate to parent, because we couldn't create the fulfillment this order is not going to be placed
 					arguments.order.addErrors(orderFulfillment.getErrors());	
 					return arguments.order; 
 				}	
 			}	
-
-			if(arguments.order.hasErrors()){
-				this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(arguments.order.getErrors())# when adding order item skuCode: #orderTemplateItem['sku_skuCode']#', true);
-				
-				// if it's OFY, remove and continue, other wise skip template because of error
-				if(!isNull(orderTemplateItem.temporaryFlag) && orderTemplateItem.temporaryFlag == true){
-					var orderItems = arguments.order.getOrderItems();
-					for(var orderItem in orderItems) {
-						if(orderTemplateItem['sku_skuID'] == orderItem.getSku().getSkuID()){
-							this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# Remove temporary Item skuCode: #orderTemplateItem['sku_skuCode']# because of error', true);
-							arguments.order.removeOrderItem( orderItem );
-							temporaryItemFound = false;
-							continue;
-						}
-					}
-					arguments.order.clearHibachiErrors();
-					arguments.orderTemplate.clearHibachiErrors();
-					getHibachiScope().setORMHasErrors(false);
-					continue;
-				} else {
-					return arguments.order;
-				}
-			}
 		}
 		
-		if(!temporaryItemFound && !isNull(orderFulfillment)){
-			arguments.order = addDefaultOFYSkuIfEligible(arguments.order,arguments.orderTemplate,orderFulfillment);
+		logHibachi("==============================EXITING THE LOOP PROMO ITEMS BELOW==============================")
+		logHibachi("#serializeJson(foundPromoItems)#")
+		logHibachi("ORDER TEMPLATE HAS A FULFILLMENT: #!isNull(orderTemplateItemData['orderFulfillment'])#")
+		logHibachi("FULFILLMENT HAS ERRORS: #orderTemplateItemData['orderFulfillmentHasErrors']#")
+	
+		if(!isNull(orderTemplateItemData['orderFulfillment']) && !orderTemplateItemData['orderFulfillmentHasErrors']){
+
+			//if we have the promoItem skuID in the actual order, we can remove from the array
+			for(var item in arguments.order.getOrderItems()){
+				arrayDelete(foundPromoItems,item);
+			}
+			
+			
+			//loop over skus in foundPromoItems that do not exist in the order and add a default for it
+			//this should only be one item but using array in case we wish to have multiple
+			for(var item in foundPromoItems){
+				logHibachi("==============================REMAINING PROMO ITEMS #item# ==============================")
+				arguments.order = addDefaultOFYSkuIfEligible(arguments.order,arguments.orderTemplate,orderTemplateItemData['orderFulfillment']);
+			}
 		}
 		
 		return arguments.order;
@@ -1783,30 +1785,26 @@ component extends="Slatwall.model.service.OrderService" {
 	
 	public any function addDefaultOFYSkuIfEligible(required any order, required any orderTemplate, required any orderFulfillment){
 		var defaultOFYSkuCode = arguments.orderTemplate.getAccount().getAccountCreatedSite().setting('siteDefaultOFYSkuCode');
+		logHibachi("==============================ADDING DEFAULT SKU #defaultOFYSkuCode# ==============================")
+		var sku = getService('skuService').getSkuBySkuCode(defaultOFYSkuCode);
+	
+		logHibachi("==============================FOUND THE DEFAULT SKU #!isNull(sku)# ==============================")
 		
-		var freeRewardSkuCollection = getSkuService().getSkuCollectionList();
-		var freeRewardSkuIDs = getPromotionService().getQualifiedFreePromotionRewardSkuIDs(arguments.order);
-		freeRewardSkuCollection.addFilter('skuID', freeRewardSkuIDs, 'in');
-		freeRewardSkuCollection.addFilter('skuCode',defaultOFYSkuCode);
-		freeRewardSkuCollection.setDisplayProperties('skuID,skuCode');
-		var result = freeRewardSkuCollection.getRecords();
-		
-		if(arrayLen(result)){
-			var skuID = result[1].skuID;
-			
+		if(!isNull(sku) && sku.getActiveFlag() && sku.getPublishedFlag()){
 			var orderTemplateItem = this.newOrderTemplateItem();
 			orderTemplateItem.setTemporaryFlag(true);
-			orderTemplateItem.setSku(getSkuService().getSku(skuID));
+			orderTemplateItem.setSku(sku);
 			orderTemplateItem.setQuantity(1);
 			orderTemplateItem = this.saveOrderTemplateItem(orderTemplateItem);
 			
 			var orderTemplateItemStruct = {
-				'sku_skuID'=skuID,
+				'sku_skuID'=sku.getSkuID(),
 				'quantity'=1,
 				'orderTemplateItemID'=orderTemplateItem.getOrderTemplateItemID(),
-				'price'=0
+				'price'=0,
+				'userDefinedPriceFlag'=true
 			};
-			
+			logHibachi("==============================ADDING DEFAULT SKU #defaultOFYSkuCode# ==============================")
 			arguments.order = this.addOrderItemFromTemplateItem(arguments.order, orderTemplateItemStruct, arguments.orderTemplate, arguments.orderFulfillment);
 			arguments.order = this.saveOrder(arguments.order);
 		}
