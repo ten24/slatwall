@@ -544,8 +544,8 @@ component {
 		}
 		
 		if( 
-			cart.hasMonatOrderType() && 
-			ListFindNoCase("motMpEnrollment,motVipEnrollment", cart.getMonatOrderType().getTypeCode()) 
+			this.hasMonatOrderType() && 
+			ListFindNoCase("motMpEnrollment,motVipEnrollment", this.getMonatOrderType().getTypeCode()) 
 		){
 			return true;
 		}
