@@ -2524,5 +2524,47 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     	}
     }
     
+    public any function removeOrderTemplateItem(required any data){
+        super.removeOrderTemplateItem(arguments.data);
+        var orderTemplateItem = getOrderService().getOrderTemplateItem( arguments.data.orderTemplateItemID );
+        if(!isNull(orderTemplateItem)){
+            arguments.data['orderTemplateID'] = orderTemplateItem.getOrderTemplate().getOrderTemplateID();
+            this.deleteOrderTemplatePromoItems(arguments.data);
+        }
+    }
+    
+    public void function editOrderTemplateItem(required any data) {
+        param name="data.orderTemplateItemID" default="";
+        param name="data.quantity" default=1;
+        
+    	var shouldDeletePromoItems = false;
+        var orderTemplateItem = getOrderService().getOrderTemplateItemForAccount( argumentCollection=arguments );
+        
+        if( isNull(orderTemplateItem) ) {
+			return;
+		}
+		
+		// they are deleting an order template item we should delete the OFY item as well per monat reqs
+		if(arguments.data.quantity < orderTemplateItem.getQuantity()){
+		    shouldDeletePromoItems = true;
+		}
+		
+		orderTemplateItem.setQuantity(arguments.data.quantity); 
+        var orderTemplateItem = getOrderService().saveOrderTemplateItem( orderTemplateItem, arguments.data );
+        orderTemplateItem.getOrderTemplate().updateCalculatedProperties();
+
+        getHibachiScope().addActionResult( "public:order.editOrderTemplateItem", orderTemplateItem.hasErrors() );
+            
+        if(orderTemplateItem.hasErrors()) {
+            ArrayAppend(arguments.data.messages, orderTemplateItem.getErrors(), true);
+        }
+        
+        //check shouldDeletePromoItems and ensure the order template item updated succesfully before removing promoItems
+        if(shouldDeletePromoItems && !orderTemplateItem.hasErrors()){
+            data['orderTemplateID'] = orderTemplateItem.getOrderTemplate().getOrderTemplateID();
+            this.deleteOrderTemplatePromoItems(arguments.data);
+        }
+    }
+    
     
 }
