@@ -55,18 +55,38 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 				'entityName': 'Account'
 			}, 
 			{
-				'name': 'Account - After Account VIP Upgrade Success | afterVIPUpgradeSuccess',
-				'value': 'afterVIPUpgradeSuccess',
+				'name': 'Account - After Account VIP Upgrade Success | afterAccountVIPUpgradeSuccess',
+				'value': 'afterAccountVIPUpgradeSuccess',
 				'entityName': 'Account'
 			}, 
 			{
-				'name': 'Account - After Account MP Upgrade Success | afterMarketPartnerUpgradeSuccess',
-				'value': 'afterMarketPartnerUpgradeSuccess',
+				'name': 'Account - After Account VIP Upgrade Success | afterAccountSponsorVIPUpgradeSuccess',
+				'value': 'afterAccountSponsorVIPUpgradeSuccess',
+				'entityName': 'Account'
+			}, 
+			{
+				'name': 'Account - After Account MP Upgrade Success | afterAccountMarketPartnerUpgradeSuccess',
+				'value': 'afterAccountMarketPartnerUpgradeSuccess',
+				'entityName': 'Account'
+			}, 
+			{
+				'name': 'Account - After Account MP Upgrade Success | afterAccountSponsorMarketPartnerUpgradeSuccess',
+				'value': 'afterAccountSponsorMarketPartnerUpgradeSuccess',
 				'entityName': 'Account'
 			}, 
 			{
 				'name': 'Account - After Account Sponsor Account Upgrade Success | afterAccountSponsorUpgradeSuccess',
 				'value': 'afterAccountSponsorUpgradeSuccess',
+				'entityName': 'Account'
+			},
+			{
+				'name': 'Account - After Account Upline MP Account Changed to Orginal Upline Success | afterAccountUplineMPAccountChangedSuccess',
+				'value': 'afterAccountUplineMPAccountChangedSuccess',
+				'entityName': 'Account'
+			},
+			{
+				'name': 'Account - After Account Upline MP Account Not Changed to Current Upline Success | afterAccountUplineMPAccountNotChangedSuccess',
+				'value': 'afterAccountUplineMPAccountNotChangedSuccess',
 				'entityName': 'Account'
 			},
 			{

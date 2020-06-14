@@ -9,10 +9,20 @@ component extends="Slatwall.model.service.OrderService" {
 
 		var customEvents = [
 			{
-				'name': 'Order - After Market Partner Upgrade Success | afterMarketPartnerUpgradeSuccess',
-				'value': 'afterMarketPartnerUpgradeSuccess',
-				'entityName': 'Account' 
-			}
+				'name': 'Order - After Order Account Upgrade Success | afterOrderAccountUpgradeSuccess',
+				'value': 'afterOrderAccountUpgradeSuccess',
+				'entityName': 'Order'
+			},
+			{
+				'name': 'Order - After Order Account MP Upgrade Success | afterOrderMarketPartnerUpgradeSuccess',
+				'value': 'afterOrderMarketPartnerUpgradeSuccess',
+				'entityName': 'Order'
+			}, 
+			{
+				'name': 'Order - After Order Account VIP Upgrade Success | afterOrderVIPUpgradeSuccess',
+				'value': 'afterOrderVIPUpgradeSuccess',
+				'entityName': 'Order'
+			} 
 		]
 
 		arrayAppend(eventOptions, customEvents, true); 
