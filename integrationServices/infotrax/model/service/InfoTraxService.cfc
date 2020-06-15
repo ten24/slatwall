@@ -223,7 +223,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 	}
 	
 	public any function getAmount(required any order, required string fieldName){
-		var amount = order.invokeMethod('get#arguments.fieldName#');
+		var amount = arguments.order.invokeMethod('get#arguments.fieldName#');
 		
 		if(arguments.order.getOrderType().getSystemCode() == 'otReturnOrder' && amount > 0){
 			amount = amount * -1;
