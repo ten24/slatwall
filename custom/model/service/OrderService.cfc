@@ -1772,10 +1772,7 @@ component extends="Slatwall.model.service.OrderService" {
 	
 	public any function addDefaultOFYSkuIfEligible(required any order, required any orderTemplate, required any orderFulfillment){
 		var defaultOFYSkuCode = arguments.orderTemplate.getAccount().getAccountCreatedSite().setting('siteDefaultOFYSkuCode');
-		logHibachi("==============================ADDING DEFAULT SKU #defaultOFYSkuCode# ==============================")
 		var sku = getService('skuService').getSkuBySkuCode(defaultOFYSkuCode);
-	
-		logHibachi("==============================FOUND THE DEFAULT SKU #!isNull(sku)# ==============================")
 		
 		if(!isNull(sku) && sku.getActiveFlag() && sku.getPublishedFlag()){
 			var orderTemplateItem = this.newOrderTemplateItem();
