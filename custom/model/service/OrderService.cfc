@@ -848,6 +848,7 @@ component extends="Slatwall.model.service.OrderService" {
 	    arguments.order = super.processOrder_releaseCredits(argumentCollection=arguments);
 	    if(!order.hasErrors()){
 	    	arguments.order.setOrderStatusType(getService('TypeService').getTypeByTypeCode('rmaReleased'));
+	    	getHibachiScope().flushORMSession();
 	    }
 	    return order;
 	}
