@@ -172,12 +172,12 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
  property name="extendedDescriptionLeft" length="4000"  ormtype="string" hb_formFieldType="wysiwyg";
  property name="extendedDescriptionRight" length="4000"  ormtype="string" hb_formFieldType="wysiwyg";
  property name="extendedDescriptionTitle" length="4000"  ormtype="string" hb_formFieldType="textarea";
- property name="bundledProductHeading" ormtype="string" default="Included in this System";
  property name="productVideoVimeoURL" ormtype="string";
  property name="productVideoYouTubeURL" ormtype="string";
  property name="productVideoTitle" ormtype="string";
  property name="productWhyItWorks" length="4000"  ormtype="string" hb_formFieldType="wysiwyg";
  property name="productIngredient1" cfc="Type" fieldtype="many-to-one" fkcolumn="productIngredient1ID" hb_optionsSmartListData="f:parentType.typeID=2c9180846b8edd11016b8fe51f210032";
+ property name="bundledProductHeading" ormtype="string" default="Included in this System";
  property name="productIngredient2" cfc="Type" fieldtype="many-to-one" fkcolumn="productIngredient2ID" hb_optionsSmartListData="f:parentType.typeID=2c9180846b8edd11016b8fe51f210032";
  property name="productIngredient3" cfc="Type" fieldtype="many-to-one" fkcolumn="productIngredient3ID" hb_optionsSmartListData="f:parentType.typeID=2c9180846b8edd11016b8fe51f210032";
  property name="productIngredient4" cfc="Type" fieldtype="many-to-one" fkcolumn="productIngredient4ID" hb_optionsSmartListData="f:parentType.typeID=2c9180846b8edd11016b8fe51f210032";

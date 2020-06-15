@@ -417,12 +417,15 @@ component extends="Slatwall.model.service.OrderService" {
 		request[orderTemplateOrderDetailsKey]['fulfillmentDiscount'] = 0;
 		request[orderTemplateOrderDetailsKey]['total'] = 0;
 		request[orderTemplateOrderDetailsKey]['subtotal'] = 0;
+		request[orderTemplateOrderDetailsKey]['discountTotal'] = 0;
 		request[orderTemplateOrderDetailsKey]['taxableAmountTotal'] = 0;
 		request[orderTemplateOrderDetailsKey]['personalVolumeTotal'] = 0;
 		request[orderTemplateOrderDetailsKey]['commissionableVolumeTotal'] = 0;
 		request[orderTemplateOrderDetailsKey]['productPackVolumeTotal'] = 0;
 		request[orderTemplateOrderDetailsKey]['retailCommissionTotal'] = 0;
 		request[orderTemplateOrderDetailsKey]['canPlaceOrder'] = false;
+		request[orderTemplateOrderDetailsKey]['purchasePlusTotal'] = 0;
+		request[orderTemplateOrderDetailsKey]['otherDiscountTotal'] = 0;
 		
 		request[orderTemplateOrderDetailsKey]['orderTemplate'] = arguments.orderTemplate;
 
@@ -451,7 +454,7 @@ component extends="Slatwall.model.service.OrderService" {
 			}
 			transientOrder.updateCalculatedProperties(); 	
 			getHibachiDAO().flushORMSession();
-			
+
 			var transientOrderFulfillments = transientOrder.getOrderFulfillments();
 			for(var orderFulfillment in transientOrderFulfillments){
 				getService('ShippingService').updateOrderFulfillmentShippingMethodOptions(orderFulfillment, false);
@@ -462,8 +465,9 @@ component extends="Slatwall.model.service.OrderService" {
 				request[orderTemplateOrderDetailsKey]['fulfillmentDiscount'] = transientOrder.getFulfillmentDiscountAmountTotal(); 
 			}
 	
-			request[orderTemplateOrderDetailsKey]['subtotal'] = transientOrder.getCalculatedSubtotal();
-			request[orderTemplateOrderDetailsKey]['total'] = transientOrder.getCalculatedTotal();
+			request[orderTemplateOrderDetailsKey]['subtotal'] = transientOrder.getSubtotal();
+			request[orderTemplateOrderDetailsKey]['discountTotal'] = transientOrder.getDiscountTotal();
+			request[orderTemplateOrderDetailsKey]['total'] = transientOrder.getTotal();
 			request[orderTemplateOrderDetailsKey]['taxableAmountTotal'] = transientOrder.getTaxableAmountTotal();
 			request[orderTemplateOrderDetailsKey]['personalVolumeTotal'] = transientOrder.getPersonalVolumeSubtotal();
 			request[orderTemplateOrderDetailsKey]['commissionableVolumeTotal'] = transientOrder.getCommissionableVolumeSubtotal(); 
@@ -482,6 +486,7 @@ component extends="Slatwall.model.service.OrderService" {
 			request[orderTemplateOrderDetailsKey]['canPlaceOrderDetails'] = getPromotionService().getOrderQualifierDetailsForCanPlaceOrderReward(transientOrder); 
 			request[orderTemplateOrderDetailsKey]['canPlaceOrder'] = request[orderTemplateOrderDetailsKey]['canPlaceOrderDetails']['canPlaceOrder']; 
 			request[orderTemplateOrderDetailsKey]['purchasePlusTotal'] = transientOrder.getPurchasePlusTotal();
+			request[orderTemplateOrderDetailsKey]['otherDiscountTotal'] = transientOrder.getDiscountTotal() - transientOrder.getPurchasePlusTotal();
 
 			request[orderTemplateOrderDetailsKey]['taxTotal'] = transientOrder.getTaxTotal();
 			request[orderTemplateOrderDetailsKey]['vatTotal'] = transientOrder.getVatTotal();

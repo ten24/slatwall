@@ -2439,6 +2439,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                     getHibachiScope().flushORMSession(); 
                     this.getAppliedOrderTemplatePromotionCodes(arguments.data);
                 }
+                getOrderTemplateDetails(arguments.data);
         }else{
             var processObject = orderTemplate.getProcessObject("AddPromotionCode");
             if(processObject.hasErrors()){
@@ -2486,6 +2487,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                     getHibachiScope().flushORMSession(); 
                     this.getAppliedOrderTemplatePromotionCodes(arguments.data);
                 }
+                this.getOrderTemplateDetails(arguments.data);
         }else{
             var processObject = orderTemplate.getProcessObject("removePromotionCode");
             if(processObject.hasErrors()){
@@ -2494,7 +2496,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                 addErrors(arguments.data,orderTemplate.getErrors());
             }
         }
-
+        
     }
     
     public any function addOFYProduct(required struct data){

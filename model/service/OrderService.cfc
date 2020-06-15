@@ -1027,7 +1027,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(arguments.orderTemplate.hasPromotionCode( promotionCode )) {
 			arguments.orderTemplate.removePromotionCode( promotionCode );
 		}
-		
+		arguments.orderTemplate.updateCalculatedProperties(true);
 		return arguments.orderTemplate;
 	} 
 
@@ -1039,7 +1039,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		} else if(!arguments.orderTemplate.hasPromotionCode( promotionCode )) {
 			arguments.orderTemplate.addPromotionCode( promotionCode );
 		}
-	
+		arguments.orderTemplate.updateCalculatedProperties(true);
+		
 		return arguments.orderTemplate;	 
 	} 
 
@@ -1232,6 +1233,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		request[orderTemplateOrderDetailsKey]['fulfillmentTotal'] = 0;
 		request[orderTemplateOrderDetailsKey]['total'] = 0;
 		request[orderTemplateOrderDetailsKey]['subtotal'] = 0;
+		request[orderTemplateOrderDetailsKey]['discountTotal'] = 0;
 		request[orderTemplateOrderDetailsKey]['taxableAmountTotal'] = 0;
 		request[orderTemplateOrderDetailsKey]['fulfillmentDiscount'] = 0;
 		request[orderTemplateOrderDetailsKey]['canPlaceOrder'] = false;
@@ -1271,7 +1273,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				request[orderTemplateOrderDetailsKey]['fulfillmentTotal'] = transientOrder.getFulfillmentTotal(); 
 				request[orderTemplateOrderDetailsKey]['fulfillmentDiscount'] = transientOrder.getFulfillmentDiscountAmountTotal(); 
 			}
-			request[orderTemplateOrderDetailsKey]['subtotal'] = transientOrder.getCalculatedSubtotal(); 
+			request[orderTemplateOrderDetailsKey]['subtotal'] = transientOrder.getCalculatedSubtotal();
+			request[orderTemplateOrderDetailsKey]['discountTotal'] = transientOrder.getCalculatedDiscountTotal();
 			request[orderTemplateOrderDetailsKey]['total'] = transientOrder.getCalculatedTotal();
 			request[orderTemplateOrderDetailsKey]['taxableAmountTotal'] = transientOrder.getTaxableAmountTotal();
 			var freeRewardSkuCollection = getSkuService().getSkuCollectionList();
@@ -1308,8 +1311,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return getOrderTemplateOrderDetails(argumentCollection=arguments)['fulfillmentDiscount'];	
 	}
 	
+	public numeric function getOrderTemplateTotal(required any orderTemplate){
+		return getOrderTemplateOrderDetails(argumentCollection=arguments)['total'];
+	}
+	
 	public numeric function getOrderTemplateSubtotal(required any orderTemplate){
 		return getOrderTemplateOrderDetails(argumentCollection=arguments)['subtotal'];
+	}
+	
+	public numeric function getOrderTemplateDiscountTotal(required any orderTemplate){
+		return getOrderTemplateOrderDetails(argumentCollection=arguments)['discountTotal'];
 	}
 	
 	public numeric function getFulfillmentTotalForOrderTemplate(required any orderTemplate){
@@ -1368,6 +1379,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		if(arguments.evictFromSession){	
 			ORMGetSession().evict(arguments.transientOrder.getAccount());
+		}
+		var promotionCodes = arguments.orderTemplate.getPromotionCodes();
+		
+		for(var promotionCode in promotionCodes){
+			var processOrderAddPromotionCode = arguments.transientOrder.getProcessObject('addPromotionCode');
+			processOrderAddPromotionCode.setPromotionCode(promotionCode.getPromotionCode()); 
+			processOrderAddPromotionCode.setUpdateOrderAmountFlag(false); 		
+	
+			//errors are populated to the process object for Order_addPromotionCode so any failures should be silent.
+			arguments.transientOrder = this.processOrder_addPromotionCode(arguments.transientOrder, processOrderAddPromotionCode);
+			
 		}
 
 		if(!isNull(arguments.orderTemplate.getShippingMethod())){
@@ -2393,7 +2415,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		param name="arguments.data.nullAccountFlag" type="boolean" default=false;  
 		
 		//Making PropertiesList
-		var orderTemplateCollectionPropList = "calculatedFulfillmentTotal,shippingMethod.shippingMethodName,calculatedTaxTotal,calculatedFulfillmentHandlingFeeTotal"; //extra prop we need
+		var orderTemplateCollectionPropList = "calculatedFulfillmentTotal,shippingMethod.shippingMethodName,calculatedTaxTotal,calculatedFulfillmentHandlingFeeTotal,calculatedDiscountTotal"; //extra prop we need
 		
 		var	accountPaymentMethodProps = "creditCardLastFour,expirationMonth,expirationYear";
 		accountPaymentMethodProps =   getService('hibachiUtilityService').prefixListItem(accountPaymentMethodProps, "accountPaymentMethod.");
