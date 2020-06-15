@@ -1709,7 +1709,7 @@ component extends="Slatwall.model.service.OrderService" {
 		orderTemplateItemCollection.addFilter('orderTemplate.orderTemplateID', arguments.orderTemplate.getOrderTemplateID()); 
 		var foundPromoItems = [];
 		var orderTemplateItems = orderTemplateItemCollection.getRecords();
-		var orderTemplateItemData = {}; //instantiating here as the OF in the loop 
+		var orderTemplateItemData = {}; //instantiating here as the OF in the loop is out of scope
 		orderTemplateItemData['orderFulfillmentHasErrors'] = false;
 		
 		for(var orderTemplateItem in orderTemplateItems){ 
