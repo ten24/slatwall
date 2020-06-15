@@ -1919,7 +1919,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		processOrderAddOrderItem.setQuantity(arguments.orderTemplateItemStruct['quantity']);
 		processOrderAddOrderItem.setUpdateOrderAmountFlag(false); 		
 		processOrderAddOrderItem.setUpdateShippingMethodOptionsFlag(false);
-		logHibachi("#serializeJson(arguments.orderTemplateItemStruct)#");
+		var pricegroup = this.getBestApplicablePriceGroup(arguments.order);
 		
 		if(!isNull(arguments.orderTemplate.getPriceGroup())){
 			processOrderAddOrderItem.setPriceGroup(arguments.orderTemplate.getPriceGroup());
@@ -1927,17 +1927,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			processOrderAddOrderItem.setPriceGroup(arguments.orderTemplate.getAccount().getPriceGroups()[1]);
 		}
 		
-		logHibachi("DO WE HAVE A PRICE ON THE STRUCT #structKeyExists(arguments.orderTemplateItemStruct,'price')#");
-		
 		if(structKeyExists(arguments.orderTemplateItemStruct,'price')){
 			var orderTemplateItemPrice = arguments.orderTemplateItemStruct.price;
-			logHibachi('ORDER TEMP PROMO ITEM PRICEE #arguments.orderTemplateItemStruct.price#')
 		}else{
-			var orderTemplateItemPrice = sku.getPriceByCurrencyCode(
-					currencyCode = arguments.orderTemplate.getCurrencyCode(), 
-					quantity = arguments.orderTemplateItemStruct['quantity'],
-					accountID = arguments.orderTemplate.getAccount().getAccountID()
-				);
+			var orderTemplateItemPrice = processOrderAddOrderItem.getPrice();
 		}
 		
 		if( isNull(orderTemplateItemPrice) ){
@@ -1951,12 +1944,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			return arguments.order;
 		}
 		
-		if(structKeyExists(arguments.orderTemplateItemStruct,'userDefinedPriceFlag')){
-			processOrderAddOrderItem.setUserDefinedPriceFlag(arguments.orderTemplateItemStruct['userDefinedPriceFlag']);
-		}
-		
 		processOrderAddOrderItem.setPrice(orderTemplateItemPrice);
-		logHibachi('ORDER TEMP PROMO ITEM PRICEE #processOrderAddOrderItem.getPrice()#')
+		
 		if(isNull(arguments.orderFulfillment)){
 			processOrderAddOrderItem.setShippingAccountAddressID(arguments.orderTemplate.getShippingAccountAddress().getAccountAddressID());
 			processOrderAddOrderItem.setShippingAddress(arguments.orderTemplate.getShippingAccountAddress().getAddress());
@@ -1967,10 +1956,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		processOrderAddOrderItem.setPreProcessDisplayedFlag(1); //this's a hacky way to pass the the validation;
 		processOrderAddOrderItem.validate( context="addOrderItem" );
 		
-		logHibachi("=================ADDING ORDER ITEM HAS ERRORS: #serializeJson(processOrderAddOrderItem.getErrors())#=================" );
-		
 		if( !processOrderAddOrderItem.hasErrors() ){
-			logHibachi("=================Adding #sku.getSkuCode()#=================" );
 			arguments.order = this.processOrder_addOrderItem(arguments.order, processOrderAddOrderItem);
 		} 
 		
@@ -5779,14 +5765,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		) {
 
 			arguments.newOrderItem.setUserDefinedPriceFlag( true );
-			logHibachi('5784 #arguments.processObject.getPrice()#')
 			arguments.newOrderItem.setPrice( arguments.processObject.getPrice() );
 			arguments.newOrderItem.setSkuPrice( arguments.processObject.getPrice() );
 			
 		} else {
-			logHibachi('for some reason we are in the if statement==============');
 			var skuPrice = addNewOrderItemSetupGetSkuPrice(argumentCollection=arguments);
-				logHibachi('5779 THE ACRTUAL ORDER ITEM PRICE #skuPrice#')
 			if(isNull(skuPrice)){
 				return;
 			}
@@ -5827,7 +5810,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
     
 	}
 	
-
+	public any function getBestApplicablePriceGroup(required any order){
+		var priceGroupCode =  2;
+        if(!isNull(arguments.order.getPriceGroup())){ //order price group
+            return arguments.order.getPriceGroup();
+        }else if(!isNull(arguments.order.getAccount()) && arrayLen(arguments.order.getAccount().getPriceGroups())){ //account price group
+            return arguments.order.getAccount().getPriceGroups()[1];
+        }
+        
+        return getService('priceGroupService').getPriceGroupByPriceGroupCode(priceGroupCode);
+	}
+	
 	// ===================  END: Deprecated Functions =========================
 
 }

@@ -1704,7 +1704,6 @@ component extends="Slatwall.model.service.OrderService" {
 	}
 	
 	public any function createOrderItemsFromOrderTemplateItems(required any order, required any orderTemplate){
-		logHibachi("==============================ADDING ITEMS==============================")
 		var orderTemplateItemCollection = this.getOrderTemplateItemCollectionList(); 
 		orderTemplateItemCollection.setDisplayProperties('orderTemplateItemID,sku.skuID,sku.skuCode,quantity,temporaryFlag'); 
 		orderTemplateItemCollection.addFilter('orderTemplate.orderTemplateID', arguments.orderTemplate.getOrderTemplateID()); 
@@ -1714,10 +1713,7 @@ component extends="Slatwall.model.service.OrderService" {
 		orderTemplateItemData['orderFulfillmentHasErrors'] = false;
 		
 		for(var orderTemplateItem in orderTemplateItems){ 
-			logHibachi("==============================IN THE LOOP==============================")
-
 			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()#, adding skuCode: #orderTemplateItem['sku_skuCode']#');
-			
 			if(!isNull(orderTemplateItem.temporaryFlag) && orderTemplateItem.temporaryFlag == true){
 				arrayAppend(foundPromoItems, orderTemplateItem.sku_skuID);
 			}
@@ -1734,7 +1730,6 @@ component extends="Slatwall.model.service.OrderService" {
 			}
 			
 			arguments.order = this.addOrderItemFromTemplateItem(argumentCollection=args);
-			logHibachi("ORDER HAS ZERO ORDER ITEMS #arrayIsEmpty(arguments.order.getOrderItems())#")
 
 			//define order fulfillment for the rest of the loop	
 			if( isNull(orderFulfillment) && 
@@ -1759,23 +1754,15 @@ component extends="Slatwall.model.service.OrderService" {
 			}	
 		}
 		
-		logHibachi("==============================EXITING THE LOOP PROMO ITEMS BELOW==============================")
-		logHibachi("#serializeJson(foundPromoItems)#")
-		logHibachi("ORDER TEMPLATE HAS A FULFILLMENT: #!isNull(orderTemplateItemData['orderFulfillment'])#")
-		logHibachi("FULFILLMENT HAS ERRORS: #orderTemplateItemData['orderFulfillmentHasErrors']#")
-	
 		if(!isNull(orderTemplateItemData['orderFulfillment']) && !orderTemplateItemData['orderFulfillmentHasErrors']){
 
 			//if we have the promoItem skuID in the actual order, we can remove from the array
 			for(var item in arguments.order.getOrderItems()){
-				arrayDelete(foundPromoItems,item);
+				arrayDelete(foundPromoItems,item.getSku().getSkuID());
 			}
 			
-			
-			//loop over skus in foundPromoItems that do not exist in the order and add a default for it
-			//this should only be one item but using array in case we wish to have multiple
+			//loop over remaining sku's in foundPromoItems, if there are sku's left we can add the default for them
 			for(var item in foundPromoItems){
-				logHibachi("==============================REMAINING PROMO ITEMS #item# ==============================")
 				arguments.order = addDefaultOFYSkuIfEligible(arguments.order,arguments.orderTemplate,orderTemplateItemData['orderFulfillment']);
 			}
 		}
@@ -1804,7 +1791,6 @@ component extends="Slatwall.model.service.OrderService" {
 				'price'=0,
 				'userDefinedPriceFlag'=true
 			};
-			logHibachi("==============================ADDING DEFAULT SKU #defaultOFYSkuCode# ==============================")
 			arguments.order = this.addOrderItemFromTemplateItem(arguments.order, orderTemplateItemStruct, arguments.orderTemplate, arguments.orderFulfillment);
 			arguments.order = this.saveOrder(arguments.order);
 		}
@@ -1889,5 +1875,5 @@ component extends="Slatwall.model.service.OrderService" {
 
 		return newOrder();
 	}
-
+	
 }
