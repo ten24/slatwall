@@ -550,7 +550,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			}
 			
-			logHibachi(" =================ORDER ITEM PRICE 553 #arguments.processObject.getPrice()#=================");
 			
 			// Setup the Sku / Quantity / Price/ SKU-Price details
 			addNewOrderItemSetup(newOrderItem, arguments.processObject);
