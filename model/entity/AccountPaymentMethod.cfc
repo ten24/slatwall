@@ -156,9 +156,9 @@ property name="moMoneyBalance" persistent="false";
 		
 		//saved as 19,20,or 21 for example insteadof 2019,2020
 		if (len("#expirationYear#") == 2){
-			 expirationDate = "20#expirationYear#-#expirationMonth#-01T00:00:00-00:00";	
+			 expirationDate = "20#expirationYear#-#expirationMonth#-15T00:00:00-00:00";	
 		}else{
-			 expirationDate = "#expirationYear#-#expirationMonth#-01T00:00:00-00:00";
+			 expirationDate = "#expirationYear#-#expirationMonth#-15T00:00:00-00:00";
 		}
 		
 		var parsedDate = parseDateTime(expirationDate, "yyyy-MM-dd'T'HH:nn:ssX");
@@ -167,12 +167,9 @@ property name="moMoneyBalance" persistent="false";
 		
 		//make sure the month is not in the past if the year is this year.
 		//date compare will return -1 if the parsedDate is in the past.
-		
 		if (dateCompare(parsedDate, now(), "m") == -1){
 			return failed;
 		}
-		
-		
 		return passed;
 	}
 
