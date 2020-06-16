@@ -151,7 +151,6 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 		};
 		
 		httpRequest.addParam(type="body",value=SerializeJson(payload));
-		logHibachi(SerializeJson(payload))
 		var response = httpRequest.send().getPrefix();
 
 		if (!IsJSON(response.FileContent)) {
