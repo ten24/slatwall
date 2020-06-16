@@ -7,6 +7,7 @@ class swfAccountController {
     public account;
     public accountData;
     public accountAge:number;
+    public addressOptions;
     public loading:boolean;
     public loadingOrders:boolean = false;
     public monthOptions:Array<number> = [1,2,3,4,5,6,7,8,9,10,11,12];
@@ -279,10 +280,30 @@ class swfAccountController {
         });
     }
     
-    public getStateCodeOptions = (countryCode) =>{
+    public getAddressOptionsByCountryCode = (countryCode) =>{
+        
         this.loading = true;
         
-        if(this.cachedCountryCode == countryCode ){
+        if(this.cachedCountryCode == countryCode && this.addressOptions ){
+            return this.addressOptions;
+        }
+        
+        if(countryCode != null){
+            this.cachedCountryCode = countryCode;
+        }
+        
+        return this.publicService.doAction("getAddressOptionsByCountryCode",{ 'countryCode': this.cachedCountryCode }).then(result=>{
+
+            this.addressOptions = result.addressOptions;
+
+            this.loading = false;
+        });
+    }
+    
+    public getStateCodeOptions = (countryCode) =>{
+        this.loading = true;
+    
+        if(this.cachedCountryCode == countryCode && this.stateCodeOptions && this.stateCodeOptions.length){
             return this.stateCodeOptions;
         }
         
