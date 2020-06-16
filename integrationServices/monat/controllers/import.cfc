@@ -604,11 +604,11 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		var ormStatelessSession = ormGetSessionFactory().openStatelessSession();
 		
 		// Objects we need to set over and over go here...
-		var warehouseMain = getWarehouseService().getWarehouseByName("usWarehouse");
-		var warehouseCAN = getWarehouseService().getWarehouseByName("caWarehouse");
-		var warehouseUK = getWarehouseService().getWarehouseByName("ukWarehouse");
-		var warehouseIRPOL = getWarehouseService().getWarehouseByName("irePolWarehouse");
-		
+		var warehouseMain = getLocationService().getLocationByLocationName("US Warehouse");
+		var warehouseCAN = getLocationService().getLocationByLocationName("CA Warehouse");
+		var warehouseUKIR = getLocationService().getLocationByLocationName("UK/IRE Warehouse");
+		var warehousePOL = getLocationService().getLocationByLocationName("POL Warehouse");
+		 
 		while (pageNumber < pageMax){
 			
     		var inventoryResponse = getInventoryData(pageNumber, pageSize);
@@ -617,8 +617,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
     		    pageNumber++;
     		    continue;
     		}
+    		
     		//writedump(accountsResponse);abort;
-    		var inventoryRecords = inventoryResponse.Data.Records;
+    		var inventoryRecords = inventoryResponse.Records;
     		
     		var transactionClosed = false;
     		var index=0;
@@ -636,21 +637,15 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
         		    }
         		    
         		    var location = warehouseMain;
-        		    
-        		    if (inventory['WarehouseName'] == "Main"){
+            		    
+        		    if (inventory['CountryCode'] == "USA"){
         		    	location = warehouseMain;	
-        		    }
-        		    
-        		    else if (inventory['WarehouseName'] == "CAN"){
+        		    }else if (inventory['CountryCode'] == "CAN"){
         		    	location = warehouseCAN;	
-        		    }
-        		    
-        		    else if (inventory['WarehouseName'] == "UK"){
-        		    	
-        		    	location = warehouseUK;	
-        		    
+        		    }else if (inventory['CountryCode'] == "POL"){
+        		        location = warehousePOL;
         		    } else {
-        		    	location = warehouseIRPOL;
+        		    	location = warehouseUKIR;
         		    }
         		    
         		    
@@ -672,7 +667,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
         			newInventory.setStock(stock);
                 	newInventory.setQuantityIn(inventory['StockAvailable']?:0);
                 	newInventory.setCreatedDateTime(getDateFromString(inventory['LastUpdate']));
-                	newInventory.setModifiedDateTime(getDateFromString(inventory['LastUpdate']));
+                	//newInventory.setModifiedDateTime(getDateFromString(inventory['LastUpdate']));
                 	
                     ormStatelessSession.insert("SlatwallInventory", newInventory);
 
