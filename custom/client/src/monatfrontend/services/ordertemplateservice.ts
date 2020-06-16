@@ -163,6 +163,7 @@ export class OrderTemplateService {
 			"shippingAccountAddress.value": shippingAccountAddressID,
 			"billingAccountAddress.value": billingAccountAddressID,
 			"accountPaymentMethod.value": accountPaymentMethodID,
+			"optionalProperties":"purchasePlusTotal,otherDiscountTotal"
 		};
 		return this.monatService.doPublicAction(
 			"updateOrderTemplateShippingAndBilling",
@@ -530,12 +531,14 @@ export class OrderTemplateService {
 		let data ={
             orderTemplateID: orderTemplateID,
             promotionCode: promotionCode,
+            optionalProperties: 'purchasePlusTotal,otherDiscountTotal'
         }
         
         this.publicService.doAction('addOrderTemplatePromotionCode', data).then(res=>{
         	if(res.appliedOrderTemplatePromotionCodes){
         		this.appliedPromotionCodeList = res.appliedOrderTemplatePromotionCodes;
         	}
+        	this.mostRecentOrderTemplate = res.orderTemplate;
             deferred.resolve(res);
 	    }).catch( (e) => {
            deferred.reject(e);
@@ -571,7 +574,8 @@ export class OrderTemplateService {
     
 		let data ={
 			promotionCodeID: promotionCodeID,
-            orderTemplateID: orderTemplateID
+            orderTemplateID: orderTemplateID,
+            'optionalProperties': 'purchasePlusTotal,otherDiscountTotal'
         }
         
         this.publicService.doAction('removeOrderTemplatePromotionCode', data).then(res=>{
@@ -579,7 +583,7 @@ export class OrderTemplateService {
         	if(res.appliedOrderTemplatePromotionCodes){
         		this.appliedPromotionCodeList = res.appliedOrderTemplatePromotionCodes;
         	}
-        	
+        	this.mostRecentOrderTemplate = res.orderTemplate;
             deferred.resolve(res);
 	    }).catch( (e) => {
            deferred.reject(e);
