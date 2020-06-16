@@ -157,7 +157,6 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 		    arguments.responseBean.addError("Processing Error","Error in authorizing the Account.");
 		}
 		else{
-			logHibachi(response.FileContent);
 		    var fileContent = DeserializeJSON(response.FileContent);
 			if (structKeyExists(fileContent, 'errors')) {
 				arguments.responseBean.addError("Processing Error","Error in authorizing the Account.");
