@@ -133,11 +133,27 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 				formattedResponse['message'] = "Resolution quality: #response.resolutionQuality#";
 			}
 		
-		} 
-		else if( structKeyExists(response, 'error') ) {
+		} else if( structKeyExists(response, 'error') ) {
 			formattedResponse['message'] = response['error']['code'] &" "& response['error']['message'];
-		} 
-		else {
+		} else if( structKeyExists(response, 'message') && isArray(response['message']) && !arrayIsEmpty(response['message'])){
+			formattedResponse['message'] = '';
+
+			for(var message in response['message']){
+
+				if(len(formattedResponse['message'])){
+					formattedResponse['message'] &= ', ';
+				} 
+
+				if(structKeyExists(message, 'summary')){
+					formattedResponse['message'] &= message['summary'];
+				}
+
+				if(structKeyExists(message, 'details')){
+					formattedResponse['message'] &= ' - ' & message['details']
+				}
+			}  
+	
+		} else {
 			formattedResponse['message'] = "Something went wrong";
 		}
 		
