@@ -89,6 +89,7 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 		}
 		
 		var response = getService('hibachiUtilityService').getHttpResponse(httpRequest);
+
 		
 		// if(structKeyExists(arguments, 'jsessionid')){
 		// 	writedump(requestData); 
@@ -179,6 +180,8 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 			case 'afterOrderProcess_placeorderSuccess':
 			case 'afterOrderProcess_updateOrderAmountsSuccess':
 			case 'afterOrderSaveSuccess':
+			case 'afterOrderProcess_OrderCloseSuccess':
+			case 'afterOrderProcess_releaseCreditsSuccess':
 				tableName ='swOrder';
 				filter = 'orderID = :baseID';
 				params['baseID'] = { value=arguments.entity.getOrderID(), cfsqltype='cf_sql_varchar'};

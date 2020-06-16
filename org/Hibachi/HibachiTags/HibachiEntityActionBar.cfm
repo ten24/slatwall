@@ -121,7 +121,7 @@
 									<hb:HibachiActionCaller action="#attributes.backAction#" queryString="#attributes.backQueryString#" class="btn btn-default" icon="arrow-left">
 	
 									<!--- Detail: Actions --->
-									<cfif !attributes.object.isNew() && len( trim( thistag.generatedcontent ) ) gt 1>
+									<cfif !attributes.object.isNew() && len( trim( thistag.generatedcontent ) ) gt 1 || attributes.object.hasCalculatedProperties()>
 										<button class="btn dropdown-toggle btn-default" data-toggle="dropdown"><i class="icon-list-alt"></i> #attributes.hibachiScope.rbKey('define.actions')# <span class="caret"></span></button>
 										<ul class="dropdown-menu pull-right">
 											<hb:HibachiDividerHider>

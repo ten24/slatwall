@@ -53,25 +53,27 @@ Notes:
 <cfparam name="rc.edit" type="boolean" /> 
 
 <cfset local.collectionOrderFulfillmentList = $.slatwall.getService('orderService').getOrderFulfillmentCollectionList()  >
-	<cfset local.collectionOrderFulfillmentList.setDisplayProperties("fulfillmentMethod.fulfillmentMethodName,fulfillmentCharge,discountAmount,handlingFee,chargeTaxAmount,chargeAfterDiscount,quantityDelivered,quantityUndelivered",{
+	<cfset local.collectionOrderFulfillmentList.setDisplayProperties("fulfillmentMethod.fulfillmentMethodName,fulfillmentCharge,discountAmount,handlingFee",{
 	    isVisible=true,
 	    isSearchable=true,
 	    isDeletable=true
 	}) >
+	<cfif rc.order.getVATTotal() GT 0 >
+		<cfset local.collectionOrderFulfillmentList.addDisplayProperty(displayProperty="chargeVATAmount",columnConfig={isVisible=true,isDeletable=true})>
+	<cfelse>
+		<cfset local.collectionOrderFulfillmentList.addDisplayProperty(displayProperty="chargeTaxAmount",columnConfig={isVisible=true,isDeletable=true})>
+	</cfif>
+	<cfset local.collectionOrderFulfillmentList.addDisplayProperty(displayProperty="chargeAfterDiscount",columnConfig={isVisible=true,isDeletable=true})>
+	<cfset local.collectionOrderFulfillmentList.addDisplayProperty(displayProperty="quantityDelivered",columnConfig={isVisible=true,isDeletable=true})>
+	<cfset local.collectionOrderFulfillmentList.addDisplayProperty(displayProperty="quantityUndelivered",columnConfig={isVisible=true,isDeletable=true})>
+
 	<cfset local.collectionOrderFulfillmentList.addDisplayProperty(displayProperty="orderFulfillmentID",columnConfig={isVisible=false})>
 	<cfset local.collectionOrderFulfillmentList.addFilter("order.orderID",rc.order.getOrderID())>
 
 <cfoutput>
 	<hb:HibachiListingDisplay collectionList="#local.collectionOrderFulfillmentList#"
 							   recordDetailAction="admin:entity.detailorderfulfillment"
+							   currencyCode="#rc.order.getCurrencyCode()#"
 							   >
-		<hb:HibachiListingColumn tdClass="primary" propertyIdentifier="fulfillmentMethod.fulfillmentMethodName" />
-		<hb:HibachiListingColumn propertyIdentifier="fulfillmentCharge" />
-		<hb:HibachiListingColumn propertyIdentifier="discountAmount" />
-		<hb:HibachiListingColumn propertyIdentifier="handlingFee" />
-		<hb:HibachiListingColumn propertyIdentifier="chargeTaxAmount" />
-		<hb:HibachiListingColumn propertyIdentifier="chargeAfterDiscount" />
-		<hb:HibachiListingColumn propertyIdentifier="quantityDelivered" />
-		<hb:HibachiListingColumn propertyIdentifier="quantityUndelivered" />
 	</hb:HibachiListingDisplay>
 </cfoutput>

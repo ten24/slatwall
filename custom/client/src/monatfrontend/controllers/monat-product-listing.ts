@@ -19,6 +19,7 @@ class MonatProductListingController {
     public wishlistItems;
 	public hairProductFilter:any;
 	public skinProductFilter:any;
+	public loadingAddToCart;
 	
 	// @ngInject
 	constructor(
@@ -26,7 +27,8 @@ class MonatProductListingController {
 		public observerService,
         private monatService,
 		public $rootScope,
-		public ModalService
+		public ModalService,
+		private monatAlertService
 	) {
         this.observerService.attach(() => this.showAddToCardAlert = true,"addOrderItemSuccess"); 
 	}
@@ -141,7 +143,23 @@ class MonatProductListingController {
 			this.loading = false;
 		});
 	}
-
+	
+	public addToCart = (skuID, quantity) => {
+		this.loadingAddToCart = true;
+		this.monatService.addToCart(
+			skuID, 
+			quantity
+		)
+		.then((data) => {
+			this.loadingAddToCart = false;
+			this.monatAlertService.success("Product added to cart successfully");
+		})
+		.catch( (error) => {
+			this.loadingAddToCart = false;
+			console.error(error);
+            this.monatAlertService.showErrorsFromResponse(error);
+		});
+	};
 }
 
 

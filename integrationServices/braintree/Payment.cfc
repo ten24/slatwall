@@ -147,10 +147,10 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 
 		var httpRequest = getApiHeader(requestBean = arguments.requestBean);
 		var payload = { "query" : "mutation ClientToken($input: CreateClientTokenInput) { createClientToken(input: $input) { clientToken } }",
-			"variables" : { "clientToken": { "merchantAccountId": "#merchantAccountId#", "customerId": "#arguments.requestBean.getAccount().getAccountID()#" } }
+			"variables" : { "input": { "clientToken": { "merchantAccountId": "#merchantAccountId#" } } }
 		};
+		
 		httpRequest.addParam(type="body",value=SerializeJson(payload));
-
 		var response = httpRequest.send().getPrefix();
 
 		if (!IsJSON(response.FileContent)) {

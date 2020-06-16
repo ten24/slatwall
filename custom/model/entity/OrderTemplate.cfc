@@ -20,7 +20,8 @@ component {
 	property name="flexshipStatusCode" ormtype="string";
 	property name="addressValidationCode" ormtype="string";
 	property name="commissionableVolumeTotal" persistent="false"; 
-	property name="purchasePlusTotal" persistent="false"; 
+	property name="purchasePlusTotal" persistent="false";
+	property name="otherDiscountTotal" persistent="false";
 	property name="personalVolumeTotal" persistent="false";
 	property name="productPackVolumeTotal" persistent="false"; 
 	property name="retailCommissionTotal" persistent="false";
@@ -74,6 +75,13 @@ component {
 			variables.purchasePlusTotal = getService('OrderService').getCustomPropertyFromOrderTemplateOrderDetails('purchasePlusTotal', this);	
 		}	
 		return variables.purchasePlusTotal;
+	} 
+	
+	public numeric function getOtherDiscountTotal(){
+		if(!structKeyExists(variables, 'otherDiscountTotal')){
+			variables.otherDiscountTotal = getService('OrderService').getCustomPropertyFromOrderTemplateOrderDetails('otherDiscountTotal', this);	
+		}	
+		return variables.otherDiscountTotal;
 	} 
 
 	public numeric function getProductPackVolumeTotal(){

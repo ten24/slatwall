@@ -95,7 +95,8 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="assignedGiftRecipientQuantity";
 	property name="sellOnBackOrderFlag";
 	property name="thirdPartyShippingAccountIdentifier";
-
+	property name="userDefinedPriceFlag" hb_populateEnabled="false";
+	
 	// Data Properties (Related Entity Populate)
 	property name="priceGroup" cfc="PriceGroup" fieldType="many-to-one" persistent="false" fkcolumn="priceGroupID";
 	property name="shippingAddress" cfc="Address" fieldType="many-to-one" persistent="false" fkcolumn="addressID";
@@ -217,6 +218,13 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	//helper function to reduce duplicate-code
 	public any function getCurrentSkuPriceForQuantityAndCurrency(numeric quantity= 1, string currencyCode = this.getCurrencyCode()){
 		
+		if(!isNull(this.getPriceGroup())){
+			var priceGroup = this.getPriceGroup();
+		}else{
+			var priceGroup = getService("orderService").getBestApplicablePriceGroup();
+		}
+		
+		
 		if( IsNull(this.getSku()) ) {
 			return;
 		}
@@ -226,14 +234,16 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			return this.getSku().getPriceByCurrencyCode( 
 				currencyCode= arguments.currencyCode, 
 				quantity= arguments.quantity, 
-				accountID= this.getAccount().getAccountID() 
+				accountID= this.getAccount().getAccountID(),
+				priceGroups = [priceGroup]
 			);
 			
 		} else {
 			
 			return this.getSku().getPriceByCurrencyCode( 
 				currencyCode= this.getCurrencyCode(), 
-				quantity= arguments.quantity 
+				quantity= arguments.quantity,
+				priceGroups = [priceGroup]
 			);
 			
 		}

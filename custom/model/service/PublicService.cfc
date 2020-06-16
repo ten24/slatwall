@@ -1466,8 +1466,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             
             var product = getService('skuService').getSku(arguments.data.skuID).getProduct();
             var productData = {}
-            productData['videoUrl'] = len(product.getProductVideoVimeoURL()) ? product.getProductVideoVimeoURL() : product.getProductVideoYoutubeURL();
-            productData['videoTitle'] = product.getProductVideoTitle();
+            productData['videoUrl'] = len(product.getProductHowVideoVimeoURL()) ? product.getProductHowVideoVimeoURL() : product.getProductHowVideoYoutubeURL();
+            productData['videoTitle'] = product.getProductHowVideoTitle();
             productData['videoLength'] = product.getProductVideoLength();
             productData['videoWidth'] = product.getProductVideoWidth();
             productData['videoHeight'] = product.getProductVideoHeight();
@@ -1506,13 +1506,17 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             productData['productHowVideoHeight'] = product.getAttributeValue( 'productHowVideoHeight' );
             
             var fileName = product.getAttributeValue( 'productVideoBackgroundImage' );
-            productData['productVideoBackgroundImage'] = '/Slatwall/custom/assets/files/' & lCase( 'productVideoBackgroundImage' ) & '/' & fileName;
-            
+            if(len(fileName)){
+                productData['productVideoBackgroundImage'] = '/Slatwall/custom/assets/files/' & lCase( 'productVideoBackgroundImage' ) & '/' & fileName;
+            }
             var fileName = product.getAttributeValue( 'productHowBackgroundImage' );
-            productData['productHowBackgroundImage'] = '/Slatwall/custom/assets/files/' & lCase( 'productHowBackgroundImage' ) & '/' & fileName;
-            
+            if(len(fileName)){
+                productData['productHowBackgroundImage'] = '/Slatwall/custom/assets/files/' & lCase( 'productHowBackgroundImage' ) & '/' & fileName;
+            }
             var fileName = product.getAttributeValue( 'productHowVideoImage' );
-            productData['productHowVideoImage'] = '/Slatwall/custom/assets/files/' & lCase( 'productHowVideoImage' ) & '/' & fileName;
+            if(len(fileName)){
+                productData['productHowVideoImage'] = '/Slatwall/custom/assets/files/' & lCase( 'productHowVideoImage' ) & '/' & fileName;
+            }
             
             if(!isNull(product.getProductIngredient1())){
                 var productIngredient1 = {};
@@ -2439,6 +2443,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                     getHibachiScope().flushORMSession(); 
                     this.getAppliedOrderTemplatePromotionCodes(arguments.data);
                 }
+                getOrderTemplateDetails(arguments.data);
         }else{
             var processObject = orderTemplate.getProcessObject("AddPromotionCode");
             if(processObject.hasErrors()){
@@ -2486,6 +2491,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                     getHibachiScope().flushORMSession(); 
                     this.getAppliedOrderTemplatePromotionCodes(arguments.data);
                 }
+                this.getOrderTemplateDetails(arguments.data);
         }else{
             var processObject = orderTemplate.getProcessObject("removePromotionCode");
             if(processObject.hasErrors()){
@@ -2494,7 +2500,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                 addErrors(arguments.data,orderTemplate.getErrors());
             }
         }
-
+        
     }
     
     public any function addOFYProduct(required struct data){
@@ -2522,6 +2528,48 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 	        arguments.data['ajaxResponse']['qualifiesForOFY'] = qualifiesForOFY;
             getHibachiScope().addActionResult( "public:order.deleteOrderTemplatePromoItem", !qualifiesForOFY );  
     	}
+    }
+    
+    public any function removeOrderTemplateItem(required any data){
+        super.removeOrderTemplateItem(arguments.data);
+        var orderTemplateItem = getOrderService().getOrderTemplateItem( arguments.data.orderTemplateItemID );
+        if(!isNull(orderTemplateItem)){
+            arguments.data['orderTemplateID'] = orderTemplateItem.getOrderTemplate().getOrderTemplateID();
+            this.deleteOrderTemplatePromoItems(arguments.data);
+        }
+    }
+    
+    public void function editOrderTemplateItem(required any data) {
+        param name="data.orderTemplateItemID" default="";
+        param name="data.quantity" default=1;
+        
+    	var shouldDeletePromoItems = false;
+        var orderTemplateItem = getOrderService().getOrderTemplateItemForAccount( argumentCollection=arguments );
+        
+        if( isNull(orderTemplateItem) ) {
+			return;
+		}
+		
+		// they are deleting an order template item we should delete the OFY item as well per monat reqs
+		if(arguments.data.quantity < orderTemplateItem.getQuantity()){
+		    shouldDeletePromoItems = true;
+		}
+		
+		orderTemplateItem.setQuantity(arguments.data.quantity); 
+        var orderTemplateItem = getOrderService().saveOrderTemplateItem( orderTemplateItem, arguments.data );
+        orderTemplateItem.getOrderTemplate().updateCalculatedProperties();
+
+        getHibachiScope().addActionResult( "public:order.editOrderTemplateItem", orderTemplateItem.hasErrors() );
+            
+        if(orderTemplateItem.hasErrors()) {
+            ArrayAppend(arguments.data.messages, orderTemplateItem.getErrors(), true);
+        }
+        
+        //check shouldDeletePromoItems and ensure the order template item updated succesfully before removing promoItems
+        if(shouldDeletePromoItems && !orderTemplateItem.hasErrors()){
+            data['orderTemplateID'] = orderTemplateItem.getOrderTemplate().getOrderTemplateID();
+            this.deleteOrderTemplatePromoItems(arguments.data);
+        }
     }
     
     

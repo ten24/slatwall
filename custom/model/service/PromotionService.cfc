@@ -51,8 +51,8 @@ component extends="Slatwall.model.service.PromotionService" {
 	private void function applyPromotionToOrder(required any order,required any rewardStruct){
 		var newAppliedPromotion = this.newPromotionApplied();
 		newAppliedPromotion.setAppliedType('order');
-		newAppliedPromotion.setPromotion( rewardStruct.promotion );
-		newAppliedPromotion.setPromotionReward( rewardStruct.promotionReward );
+		newAppliedPromotion.setPromotion( arguments.rewardStruct.promotion );
+		newAppliedPromotion.setPromotionReward( arguments.rewardStruct.promotionReward );
 		newAppliedPromotion.setOrder( arguments.order );
 		
 		for(var key in arguments.rewardStruct){
@@ -70,7 +70,7 @@ component extends="Slatwall.model.service.PromotionService" {
 		newAppliedPromotion.setAppliedType('orderItem');
 		newAppliedPromotion.setPromotion( arguments.rewardStruct.promotion );
 		newAppliedPromotion.setPromotionReward( arguments.rewardStruct.promotionReward );
-		newAppliedPromotion.setOrderItem( orderItem );
+		newAppliedPromotion.setOrderItem( arguments.orderItem );
 
 		for(var key in arguments.rewardStruct){
 			if(right(key,14) == 'DiscountAmount'){
@@ -82,7 +82,7 @@ component extends="Slatwall.model.service.PromotionService" {
 	private void function processOrderRewards(required any order, required array orderQualifiedDiscounts, required any promotionReward){
 		var totalDiscountableAmount = arguments.order.getSubtotalAfterItemDiscounts();
 
-		var discountAmount = getDiscountAmount(arguments.promotionReward, totalDiscountableAmount, 1, order.getCurrencyCode());
+		var discountAmount = getDiscountAmount(arguments.promotionReward, totalDiscountableAmount, 1, arguments.order.getCurrencyCode());
 		
 		// First we make sure that the discountAmount is > 0 before we check if we should add more discount
 		if(discountAmount > 0) {
@@ -101,14 +101,14 @@ component extends="Slatwall.model.service.PromotionService" {
 					if(arguments.promotionReward.getAmountType() == 'amountOff'){
 						var rewardAmount = getProportionalRewardAmount( discountAmount, totalDiscountableAmount, totalCustomDiscountableAmount );
 					}else{
-						var rewardAmount = getCustomDiscountAmount(arguments.promotionReward, totalCustomDiscountableAmount, 1, order.getCurrencyCode(),customPriceField);
+						var rewardAmount = getCustomDiscountAmount(arguments.promotionReward, totalCustomDiscountableAmount, 1, arguments.order.getCurrencyCode(),customPriceField);
 					}
 					rewardStruct['#customPriceField#DiscountAmount'] = rewardAmount;
 				}
 			}
 			
 			// Insert this value into the potential discounts array
-			arrayAppend(orderQualifiedDiscounts, rewardStruct);
+			arrayAppend(arguments.orderQualifiedDiscounts, rewardStruct);
 		}
 	}
 	
@@ -121,7 +121,7 @@ component extends="Slatwall.model.service.PromotionService" {
 		var amountParams = {
 			quantity:arguments.quantity
 		};
-		if(reward.getAmountType() != "amountOff"){
+		if(arguments.reward.getAmountType() != "amountOff"){
 			if(structKeyExists(arguments,'customPriceField')){
 				amountMethod &= 'get#arguments.customPriceField#Amount';
 			}else{
@@ -148,7 +148,7 @@ component extends="Slatwall.model.service.PromotionService" {
 					discountAmountPreRounding = val(getService('HibachiUtilityService').precisionCalculate(originalAmount * (rewardAmount/100)));
 					break;
 				case "amountOff" :
-					discountAmountPreRounding = rewardAmount * quantity;
+					discountAmountPreRounding = rewardAmount * arguments.quantity;
 					break;
 				case "amount" :
 					discountAmountPreRounding = val(getService('HibachiUtilityService').precisionCalculate((arguments.price - rewardAmount) * arguments.quantity));
@@ -158,11 +158,11 @@ component extends="Slatwall.model.service.PromotionService" {
 			discountAmountPreRounding = 0;
 		}
 
-		if(!isNull(reward.getRoundingRule())) {
-			roundedFinalAmount = getRoundingRuleService().roundValueByRoundingRule(value=val(getService('HibachiUtilityService').precisionCalculate(originalAmount - discountAmountPreRounding)), roundingRule=reward.getRoundingRule());
-			discountAmount = val(getService('HibachiUtilityService').precisionCalculate(originalAmount - roundedFinalAmount));
+		if(!isNull(arguments.reward.getRoundingRule())) {
+			roundedFinalAmount = getRoundingRuleService().roundValueByRoundingRule(value=val(getService('HibachiUtilityService').precisionCalculate(originalAmount - discountAmountPreRounding)), roundingRule=arguments.reward.getRoundingRule());
+			var discountAmount = val(getService('HibachiUtilityService').precisionCalculate(originalAmount - roundedFinalAmount));
 		} else {
-			discountAmount = discountAmountPreRounding;
+			var discountAmount = discountAmountPreRounding;
 		}
 
 		// This makes sure that the discount never exceeds the original amount
@@ -184,7 +184,7 @@ component extends="Slatwall.model.service.PromotionService" {
     private void function applyPromotionQualifierMessagesToOrder(required any order, required array orderQualifierMessages){
 		
 		ArraySort(arguments.orderQualifierMessages,function(a,b){
-			if(a.getPriority() <= b.getPriority()){
+			if(arguments.a.getPriority() <= arguments.b.getPriority()){
 				return -1;
 			}else{
 				return 1;
@@ -261,12 +261,12 @@ component extends="Slatwall.model.service.PromotionService" {
 			}
 			
 			// Approximate amount to allocate (rounded to nearest penny)
-		    var currentOrderItemAllocationAmount = round(currentOrderItemAmountAsPercentage * amountToDistribute * 100) / 100;
+		    var currentOrderItemAllocationAmount = round(currentOrderItemAmountAsPercentage * arguments.amountToDistribute * 100) / 100;
 		    
 		    var actualAllocatedAmountTotalUnadjusted = actualAllocatedAmountTotal + currentOrderItemAllocationAmount;
 		    
 		    // Recalculated each iteration for maximum precision of how much is expected to have been allocated at current stage in process
-		    var expectedAllocatedAmountTotal = (actualAllocatedAmountAsPercentage + currentOrderItemAmountAsPercentage) * amountToDistribute;
+		    var expectedAllocatedAmountTotal = (actualAllocatedAmountAsPercentage + currentOrderItemAmountAsPercentage) * arguments.amountToDistribute;
 		    
 			// Rather than letting a sum of discrepancies accumulate during each iteration and become a significant adjustment to the final order item, lets handle it immediately and make minor adjustment to order item
 			// This allows the discrepancy of no more than a cent to be accumulated, and appropriately allocated to the current order item when it first appears

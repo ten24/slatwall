@@ -549,7 +549,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				}
 
 			}
-
+			
+			
 			// Setup the Sku / Quantity / Price/ SKU-Price details
 			addNewOrderItemSetup(newOrderItem, arguments.processObject);
 
@@ -1027,7 +1028,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(arguments.orderTemplate.hasPromotionCode( promotionCode )) {
 			arguments.orderTemplate.removePromotionCode( promotionCode );
 		}
-		
+		arguments.orderTemplate.updateCalculatedProperties(true);
 		return arguments.orderTemplate;
 	} 
 
@@ -1039,7 +1040,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		} else if(!arguments.orderTemplate.hasPromotionCode( promotionCode )) {
 			arguments.orderTemplate.addPromotionCode( promotionCode );
 		}
-	
+		arguments.orderTemplate.updateCalculatedProperties(true);
+		
 		return arguments.orderTemplate;	 
 	} 
 
@@ -1232,6 +1234,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		request[orderTemplateOrderDetailsKey]['fulfillmentTotal'] = 0;
 		request[orderTemplateOrderDetailsKey]['total'] = 0;
 		request[orderTemplateOrderDetailsKey]['subtotal'] = 0;
+		request[orderTemplateOrderDetailsKey]['discountTotal'] = 0;
 		request[orderTemplateOrderDetailsKey]['taxableAmountTotal'] = 0;
 		request[orderTemplateOrderDetailsKey]['fulfillmentDiscount'] = 0;
 		request[orderTemplateOrderDetailsKey]['canPlaceOrder'] = false;
@@ -1271,7 +1274,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				request[orderTemplateOrderDetailsKey]['fulfillmentTotal'] = transientOrder.getFulfillmentTotal(); 
 				request[orderTemplateOrderDetailsKey]['fulfillmentDiscount'] = transientOrder.getFulfillmentDiscountAmountTotal(); 
 			}
-			request[orderTemplateOrderDetailsKey]['subtotal'] = transientOrder.getCalculatedSubtotal(); 
+			request[orderTemplateOrderDetailsKey]['subtotal'] = transientOrder.getCalculatedSubtotal();
+			request[orderTemplateOrderDetailsKey]['discountTotal'] = transientOrder.getCalculatedDiscountTotal();
 			request[orderTemplateOrderDetailsKey]['total'] = transientOrder.getCalculatedTotal();
 			request[orderTemplateOrderDetailsKey]['taxableAmountTotal'] = transientOrder.getTaxableAmountTotal();
 			var freeRewardSkuCollection = getSkuService().getSkuCollectionList();
@@ -1308,8 +1312,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return getOrderTemplateOrderDetails(argumentCollection=arguments)['fulfillmentDiscount'];	
 	}
 	
+	public numeric function getOrderTemplateTotal(required any orderTemplate){
+		return getOrderTemplateOrderDetails(argumentCollection=arguments)['total'];
+	}
+	
 	public numeric function getOrderTemplateSubtotal(required any orderTemplate){
 		return getOrderTemplateOrderDetails(argumentCollection=arguments)['subtotal'];
+	}
+	
+	public numeric function getOrderTemplateDiscountTotal(required any orderTemplate){
+		return getOrderTemplateOrderDetails(argumentCollection=arguments)['discountTotal'];
 	}
 	
 	public numeric function getFulfillmentTotalForOrderTemplate(required any orderTemplate){
@@ -1368,6 +1380,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		if(arguments.evictFromSession){	
 			ORMGetSession().evict(arguments.transientOrder.getAccount());
+		}
+		var promotionCodes = arguments.orderTemplate.getPromotionCodes();
+		
+		for(var promotionCode in promotionCodes){
+			var processOrderAddPromotionCode = arguments.transientOrder.getProcessObject('addPromotionCode');
+			processOrderAddPromotionCode.setPromotionCode(promotionCode.getPromotionCode()); 
+			processOrderAddPromotionCode.setUpdateOrderAmountFlag(false); 		
+	
+			//errors are populated to the process object for Order_addPromotionCode so any failures should be silent.
+			arguments.transientOrder = this.processOrder_addPromotionCode(arguments.transientOrder, processOrderAddPromotionCode);
+			
 		}
 
 		if(!isNull(arguments.orderTemplate.getShippingMethod())){
@@ -1909,36 +1932,41 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public any function addOrderItemFromTemplateItem(required any order, required struct orderTemplateItemStruct, required any orderTemplate, any orderFulfillment){
+		arguments.order.clearProcessObject('addOrderItem');
 		var processOrderAddOrderItem = arguments.order.getProcessObject('addOrderItem');
 		var sku = getSkuService().getSku(arguments.orderTemplateItemStruct['sku_skuID']);
-		
-		if(structKeyExists(arguments.orderTemplateItemStruct,'price')){
-			var orderTemplateItemPrice = arguments.orderTemplateItemStruct.price;
-		}else{
-			var orderTemplateItemPrice = sku.getPriceByCurrencyCode(
-					currencyCode = arguments.orderTemplate.getCurrencyCode(), 
-					quantity = arguments.orderTemplateItemStruct['quantity'],
-					accountID = arguments.orderTemplate.getAccount().getAccountID()
-				);
-		}
-		
-		if( isNull(orderTemplateItemPrice) ){
-			arguments.order.addError('addOrderItem', 'Pricing info not available for skuCode: #sku.getSkuCode()#');
-			getHibachiScope().setORMHasErrors(true);
-			return arguments.order;
-		}
+		processOrderAddOrderItem.setAccount(arguments.orderTemplate.getAccount());
 		processOrderAddOrderItem.setSku(sku);
-		processOrderAddOrderItem.setPrice(orderTemplateItemPrice);
 		processOrderAddOrderItem.setQuantity(arguments.orderTemplateItemStruct['quantity']);
 		processOrderAddOrderItem.setUpdateOrderAmountFlag(false); 		
 		processOrderAddOrderItem.setUpdateShippingMethodOptionsFlag(false);
-
+		var pricegroup = this.getBestApplicablePriceGroup(arguments.order);
+		
 		if(!isNull(arguments.orderTemplate.getPriceGroup())){
 			processOrderAddOrderItem.setPriceGroup(arguments.orderTemplate.getPriceGroup());
 		} else if(!isNull(arguments.orderTemplate.getAccount()) && arguments.orderTemplate.getAccount().hasPriceGroup()){
 			processOrderAddOrderItem.setPriceGroup(arguments.orderTemplate.getAccount().getPriceGroups()[1]);
 		}
+		
+		if(structKeyExists(arguments.orderTemplateItemStruct,'price')){
+			var orderTemplateItemPrice = arguments.orderTemplateItemStruct.price;
+		}else{
+			var orderTemplateItemPrice = processOrderAddOrderItem.getPrice();
+		}
+		
+		if( isNull(orderTemplateItemPrice) ){
+			
+			//We only want to add an error if the order template item is not temporary as it will result in the order not placing
+			if(isNull(arguments.orderTemplateItemStruct['temporaryFlag']) || !arguments.orderTemplateItemStruct['temporaryFlag']){
+				arguments.order.addError('addOrderItem', 'Pricing info not available for skuCode: #sku.getSkuCode()#');
+				getHibachiScope().setORMHasErrors(true);				
+			}
 
+			return arguments.order;
+		}
+		
+		processOrderAddOrderItem.setPrice(orderTemplateItemPrice);
+		
 		if(isNull(arguments.orderFulfillment)){
 			processOrderAddOrderItem.setShippingAccountAddressID(arguments.orderTemplate.getShippingAccountAddress().getAccountAddressID());
 			processOrderAddOrderItem.setShippingAddress(arguments.orderTemplate.getShippingAccountAddress().getAddress());
@@ -1951,10 +1979,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		if( !processOrderAddOrderItem.hasErrors() ){
 			arguments.order = this.processOrder_addOrderItem(arguments.order, processOrderAddOrderItem);
-		} else {
-			arguments.order.addErrors(processOrderAddOrderItem.getErrors());
-			getHibachiScope().setORMHasErrors(true);
-		}
+		} 
+		
 		return arguments.order;
 	}
 
@@ -2393,7 +2419,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		param name="arguments.data.nullAccountFlag" type="boolean" default=false;  
 		
 		//Making PropertiesList
-		var orderTemplateCollectionPropList = "calculatedFulfillmentTotal,shippingMethod.shippingMethodName,calculatedTaxTotal"; //extra prop we need
+		var orderTemplateCollectionPropList = "calculatedFulfillmentTotal,shippingMethod.shippingMethodName,calculatedTaxTotal,calculatedFulfillmentHandlingFeeTotal,calculatedDiscountTotal"; //extra prop we need
 		
 		var	accountPaymentMethodProps = "creditCardLastFour,expirationMonth,expirationYear";
 		accountPaymentMethodProps =   getService('hibachiUtilityService').prefixListItem(accountPaymentMethodProps, "accountPaymentMethod.");
@@ -5744,9 +5770,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		arguments.newOrderItem.setCurrencyCode( arguments.newOrderItem.getOrder().getCurrencyCode() );
 		arguments.newOrderItem.setQuantity( arguments.processObject.getQuantity() );
 		
+		var userDefinedPriceFlagOnSKU = arguments.newOrderItem.getSku().getUserDefinedPriceFlag() ?: false;
+		
 		// If the sku is allowed to have a user defined price OR the current account has permissions to edit price
-		if(
-			arguments.newOrderItem.getSku().getUserDefinedPriceFlag() ?: false
+		if( userDefinedPriceFlagOnSKU
 			|| //Admin-users can override price from the Slatwall-UI
 			(
 				arguments.processObject.getUserDefinedPriceFlag() 
@@ -5763,9 +5790,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arguments.newOrderItem.setSkuPrice( arguments.processObject.getPrice() );
 			
 		} else {
-			
 			var skuPrice = addNewOrderItemSetupGetSkuPrice(argumentCollection=arguments);
-			
 			if(isNull(skuPrice)){
 				return;
 			}
@@ -5806,7 +5831,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
     
 	}
 	
-
+	public any function getBestApplicablePriceGroup(required any order){
+		var priceGroupCode =  2;
+        if(!isNull(arguments.order.getPriceGroup())){ //order price group
+            return arguments.order.getPriceGroup();
+        }else if(!isNull(arguments.order.getAccount()) && arrayLen(arguments.order.getAccount().getPriceGroups())){ //account price group
+            return arguments.order.getAccount().getPriceGroups()[1];
+        }
+        
+        return getService('priceGroupService').getPriceGroupByPriceGroupCode(priceGroupCode);
+	}
+	
 	// ===================  END: Deprecated Functions =========================
 
 }
