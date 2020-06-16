@@ -245,9 +245,16 @@ var monatfrontendmodule = angular
 				console.log("Called loginSuccessCallback");
 				hibachiConfig.accountID = publicService.account?.accountID;
 			};
-
+			
 			observerService.attach(loginSuccessCallback, "loginSuccess");
 			observerService.attach(logoutSuccessCallback, "logoutSuccess");
+			
+			publicService.getAccount().then(result=>{
+				observerService.notify('getAccountSuccess',result);
+			})
+			.catch(result=>{
+				observerService.notify('getAccountFailure',result);
+			})
 		},
 	]);
 
