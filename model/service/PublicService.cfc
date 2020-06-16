@@ -155,6 +155,15 @@ component  accessors="true" output="false"
         } else {
             getHibachiScope().addActionResult( "public:setPrimaryEmailAddress", true );
         }
+        
+        if(isNull(accountEmailAddress)){
+            addErrors(arguments.data, getHibachiScope().rbKey('validate.setPrimaryEmailAddress.accountEmailAddressID.isRequired')) ;
+        }else if(getHibachiScope().getAccount().getAccountID() != accountEmailAddress.getAccount().getAccountID()){
+            addErrors(arguments.data, getHibachiScope().rbKey('validate.addAccountEmailAddress.Account_AddAccountEmailAddress.emailAddress.isUniqueEmailToAccount'));
+        }
+        
+        
+        
      }
     
     
