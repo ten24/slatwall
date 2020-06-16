@@ -911,7 +911,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(qualificationDetails.qualificationsMeet) {
 			var hasQualifiedQualifier = false;
 			var qualifiers = arguments.promotionPeriod.getPromotionQualifiers();
-			
+			var qualifierLogicalOperator = arguments.promotionPeriod.getQualifierLogicalOperator();
 			if(!arrayLen(qualifiers)){
 				hasQualifiedQualifier=true;
 			}else{
@@ -941,6 +941,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						// Attach the qualification details
 						arrayAppend(qualificationDetails.qualifierDetails, thisQualifierDetails);
 	
+					}else if(qualifierLogicalOperator == 'AND'){
+						hasQualifiedQualifier = false;
+						break;
 					}
 				}
 			}
