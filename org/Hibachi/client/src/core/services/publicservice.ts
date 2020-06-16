@@ -345,7 +345,6 @@ class PublicService {
             }
         }else{
             urlBase += (urlBase.indexOf('?') == -1) ? '?' : '&';
-            urlBase += "returnJsonObject=cart,account";
             if(this.cmsSiteID){
                 urlBase += "&cmsSiteID=" + this.cmsSiteID;
             }

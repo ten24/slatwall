@@ -38,6 +38,7 @@ class MonatProductListingController {
         this.observerService.attach(this.handleAddItem,'addItemSuccess');
         this.observerService.attach(this.handleAddItem,'createWishlistSuccess');
         this.observerService.attach(this.handleAddItem,'addOrderTemplateItemSuccess');
+        this.publicService.getCart();
         this.getWishlistItems();
     }
     
@@ -98,6 +99,7 @@ class MonatProductListingController {
         	this.argumentsObject['cmsCategoryFilterFlag'] = false;
         }
         
+        this.argumentsObject.returnJsonObjects='';
         
         this.publicService.doAction('getProductsByCategoryOrContentID', this.argumentsObject).then(result => {
             this.productList = result.productList;

@@ -72,7 +72,12 @@ export class MonatService {
 	public getCart(refresh = false, param = "") {
 		var deferred = this.$q.defer();
 		let cachedCart = this.getFromSessionCache("cachedCart");
-
+		
+		if(!cachedCart && this.publicService.cart){
+			cachedCart = this.publicService.cart;
+			this.putIntoSessionCache('cachedCart',cachedCart);
+		}
+		
 		if (refresh || !cachedCart) {
 			this.publicService
 				.getCart(refresh, param)
