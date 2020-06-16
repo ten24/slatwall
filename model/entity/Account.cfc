@@ -232,7 +232,7 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 		
 		if(!StructKeyExists(variables, "countryCode") || isNull(variables.countryCode)) {
 			
-			var site = getAccountCreatedSite(); 
+			var site = getAccountCreatedSite() ?: getHibachiScope().getCurrentRequestSite();
 		
 			if(!isNull(site)){
 				variables.countryCode = getService('SiteService').getCountryCodeBySite(site);
