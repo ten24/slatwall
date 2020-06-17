@@ -792,7 +792,7 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 		for(var i=1; i<=arrayLen(getOrderFulfillments()); i++) {
 			fulfillmentChargeAfterDiscountTotal = getService('HibachiUtilityService').precisionCalculate(fulfillmentChargeAfterDiscountTotal + getOrderFulfillments()[i].getChargeAfterDiscount());
 		}
-		fulfillmentChargeAfterDiscountTotal -= getFulfillmentRefundAmount();
+		fulfillmentChargeAfterDiscountTotal -= getFulfillmentRefundTotal();
 		return fulfillmentChargeAfterDiscountTotal;
 	}
 	
