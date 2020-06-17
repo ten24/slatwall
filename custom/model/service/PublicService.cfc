@@ -68,6 +68,24 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             getService('orderService').processOrder(getHibachiScope().getCart(), arguments.data, 'clear');
             getHibachiScope().flushORMSession();             
         }
+        
+        if(
+            !isNull(getHibachiScope().getAccount().getAccountType()) 
+            && getHibachiScope().getAccount().getAccountType() == 'marketPartner'
+            && !isNull(getHibachiScope().getAccount().getRenewalDate())
+            && dateCompare(getHibachiScope().getAccount().getRenewalDate(), DateAdd("d",30,now())) < 1
+            && !isNull(arguments.data.cmsSiteID)
+            &&  !isNull(getService('siteService').getSiteByCMSSiteID(arguments.data.cmsSiteID)) 
+        ){
+            var site = getService('siteService').getSiteByCMSSiteID(arguments.data.cmsSiteID);
+            var renewalSkuID = site.setting('siteRenewalSkuID');
+            var renewalMessage = site.setting('siteRenewalNoticeMessage');
+            var renewalData = {};
+            renewalData['skuID'] = renewalSkuID ?: '';
+            renewalData['message'] = renewalMessage ?: '';
+            arguments.data.ajaxResponse['renewalInformation'] = renewalData;
+            getHibachiScope().addActionResult( "public:account.impendingRenewalWarning", false); 
+        }
     }
     
     /**
