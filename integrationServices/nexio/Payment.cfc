@@ -581,7 +581,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 		// NOTE: Nexio does not support "Follow-on" or "Stand-alone" credit transactions. A reference to the original charge transactionID is required.
 		// The amount of the credit is allowed to exceed the original charge with proper configuration in the external Nexio admin dashboard
 		
-		if (!isNull(arguments.requestBean.getOriginalChargeProviderTransactionID()) && len(arguments.requestBean.getOriginalChargeProviderTransactionID())) {
+		if ( !isNull(arguments.requestBean.getProviderToken()) ) {
 			// Request Data
 			var requestData = {
 				'data' = {
@@ -617,7 +617,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.refNumber", message="#responseData.gatewayResponse.refNumber#");
 			}
 		} else {
-			responseBean.addError("Processing error", "There is no 'originalAuthorizationProviderTransactionID' in the transactionRequestBean. Expecting the value be a reference to transactionID for the original charge/capture.");
+			responseBean.addError("Processing error", "There is no token in the transactionRequestBean.");
 			// throw("There is no 'originalAuthorizationProviderTransactionID' in the transactionRequestBean. Expecting the value be a reference to transactionID for the original charge/capture.");
 		}
 	}

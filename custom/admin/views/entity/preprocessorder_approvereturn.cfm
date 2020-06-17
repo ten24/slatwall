@@ -63,8 +63,8 @@ Notes:
 		    <hb:HibachiPropertyTableBreak header="Order Item Quantities" />
 		    <cfset oiIndex=0 />
 			<cfloop array=#rc.order.getOrderItems()# index="local.orderItem">
-			    <cfset oiIndex++ />
 			    <cfif local.orderItem.getQuantity() NEQ local.orderItem.getQuantityReceived()>
+			        <cfset oiIndex++ />
 			        
 			            <input type="hidden" name="orderItems[#oiIndex#].orderItemID" value="#local.orderItem.getOrderItemID()#">
 			       
