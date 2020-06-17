@@ -2584,10 +2584,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         ){
             var site = getService('siteService').getSiteByCMSSiteID(arguments.data.cmsSiteID);
             var renewalSkuID = site.setting('siteRenewalSkuID');
-            var renewalMessage = site.setting('siteRenewalNoticeMessage');
             var renewalData = {};
             renewalData['skuID'] = renewalSkuID ?: '';
-            renewalData['message'] = renewalMessage ?: '';
             arguments.data.ajaxResponse['renewalInformation'] = renewalData;
             getHibachiScope().addActionResult( "public:account.impendingRenewalWarning", false); 
         }else{

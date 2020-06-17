@@ -14,7 +14,6 @@ component extends="Slatwall.model.service.SettingService" {
 		settingMetaData["siteDefaultOFYSkuCode"] = {fieldtype="text",defaultValue=""};
 		settingMetaData["siteInvoiceInformation"] = {fieldtype="textarea",defaultValue=""};
 		settingMetaData["siteWishlistShareEmailTemplate"] = { fieldtype="select", defaultValue="2c9280846c2f994c016c30157bdc0009", validate={required=true} };
-		settingMetaData["siteRenewalNoticeMessage"] = { fieldtype="text", defaultValue="", validate={required=true} };
 		settingMetaData["siteRenewalSkuID"] = { fieldtype="text", defaultValue="", validate={required=true} };
 
 		return settingMetaData;
