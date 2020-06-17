@@ -82,8 +82,9 @@ class MonatCheckoutController {
 		}, 'addBillingAddressSuccess');
 		
 		this.observerService.attach( this.closeNewAddressForm, 'addNewAccountAddressSuccess' ); 
-		this.observerService.attach(this.updateAfterLogin.bind(this), 'createAccountSuccess' ); 
-		this.observerService.attach(this.updateAfterLogin.bind(this), 'loginSuccess' ); 
+		this.observerService.attach(this.handleAccountResponse, 'createAccountSuccess' ); 
+		this.observerService.attach(this.handleAccountResponse, 'getAccountSuccess' ); 
+		this.observerService.attach(this.handleAccountResponse, 'loginSuccess' ); 
 		
 		//TODO: delete these event listeners and call within function
 		this.observerService.attach(()=>{
@@ -100,10 +101,6 @@ class MonatCheckoutController {
 
 		this.observerService.attach(this.submitSponsor.bind(this), 'autoAssignSponsor' ); 
 		this.isLoading = true;
-		this.publicService.getAccount(true).then(res=>{
-			this.handleAccountResponse(res);
-		});
-		
 		
 		const currDate = new Date;
         this.currentYear = currDate.getFullYear();
@@ -383,13 +380,7 @@ class MonatCheckoutController {
 		});
 	}
 	
-	public updateAfterLogin(){
-		this.publicService.getAccount(true).then(res => {
-			this.handleAccountResponse(res);
-		});
-	}
-	
-	public handleAccountResponse(data: {account:{[key:string]:any}, [key:string]:any}){
+	public handleAccountResponse = (data: {account:{[key:string]:any}, [key:string]:any})=>{
 		this.account = data.account;
 		let setDefault = true;
 		let hardRefresh = false;

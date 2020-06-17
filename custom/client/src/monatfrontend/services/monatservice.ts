@@ -38,45 +38,12 @@ export class MonatService {
 		private requestService: RequestService,
 		private observerService: ObserverService,
 		private utilityService: UtilityService,
-
-		private localStorageCache: Cache,
-		private sessionStorageCache: Cache,
-		private inMemoryCache: Cache
+		private localStorageCache: Cache
 	) {}
-
-	private enforceCacheOwner(key: string) {
-		let cacheOwner = hibachiConfig.accountID?.trim() || "unknown";
-		if (this.sessionStorageCache.get("cacheOwner") !== cacheOwner) {
-			console.log(
-				`enforceCacheOwner: owner changed, 
-				 setting new owner to: ${cacheOwner} from: ${this.sessionStorageCache.get("cacheOwner")},
-				 and clearing cache for ${key}
-			    `
-			);
-			this.sessionStorageCache.remove(key);
-			this.sessionStorageCache.put("cacheOwner", cacheOwner);
-			return false;
-		}
-		return true;
-	}
-
-	public getFromSessionCache(key: string) {
-		return this.enforceCacheOwner(key) ? this.sessionStorageCache.get(key) : undefined;
-	}
-
-	public putIntoSessionCache(key: string, value: any) {
-		this.enforceCacheOwner(key);
-		this.sessionStorageCache.put(key, value);
-	}
 
 	public getCart(refresh = false, param = "") {
 		var deferred = this.$q.defer();
-		let cachedCart = this.getFromSessionCache("cachedCart");
-		
-		if(!cachedCart && this.publicService.cart){
-			cachedCart = this.publicService.cart;
-			this.putIntoSessionCache('cachedCart',cachedCart);
-		}
+		let cachedCart = this.publicService.getFromSessionCache("cachedCart");
 		
 		if (refresh || !cachedCart) {
 			this.publicService
@@ -84,7 +51,7 @@ export class MonatService {
 				.then((data) => {
 					if (data?.cart) {
 						console.log("get-cart, putting it in session-cache");
-						this.putIntoSessionCache("cachedCart", data.cart);
+						this.publicService.putIntoSessionCache("cachedCart", data.cart);
 
 						this.updateCartPropertiesOnService(data);
 						deferred.resolve(data.cart);
@@ -94,7 +61,7 @@ export class MonatService {
 				})
 				.catch((e) => {
 					console.log("get-cart, exception, removing it from session-cache", e);
-					this.sessionStorageCache.remove("cachedCart");
+					this.publicService.removeFromSessionCache("cachedCart");
 					deferred.reject(e);
 				});
 		} else {
@@ -119,7 +86,7 @@ export class MonatService {
 				//we're not checking for failure actions, as regardless of failures we still need to show the cart to the user
 				if (data?.cart) {
 					console.log("update-cart, putting it in session-cache");
-					this.putIntoSessionCache("cachedCart", data.cart);
+					this.publicService.putIntoSessionCache("cachedCart", data.cart);
 
 					this.successfulActions = data.successfulActions;
 					this.handleCartResponseActions(data); //call before setting this.cart to snapshot
@@ -133,7 +100,7 @@ export class MonatService {
 			})
 			.catch((e) => {
 				console.log("update-cart, exception, removing it from session-cache", e);
-				this.sessionStorageCache.remove("cachedCart");
+				this.publicService.removeFromSessionCache("cachedCart");
 				deferred.reject(e);
 			});
 
@@ -422,27 +389,27 @@ export class MonatService {
 
 	public setNewlyCreatedFlexship(flexshipID: string) {
 		if (flexshipID?.trim()) {
-			this.sessionStorageCache.put("newlyCreatedFlexship", flexshipID);
+			this.publicService.putIntoSessionCache("newlyCreatedFlexship", flexshipID);
 		} else {
-			this.sessionStorageCache.remove("newlyCreatedFlexship");
+			this.publicService.removeFromSessionCache("newlyCreatedFlexship");
 		}
 	}
 
 	public getNewlyCreatedFlexship(): string {
-		return this.sessionStorageCache.get("newlyCreatedFlexship");
+		return this.publicService.getFromSessionCache("newlyCreatedFlexship");
 	}
 
 	public setCurrentFlexship(flexship) {
 		if (flexship?.orderTemplateID?.trim()) {
-			this.sessionStorageCache.put("currentFlexship", flexship);
+			this.publicService.putIntoSessionCache("currentFlexship", flexship);
 		} else {
-			this.sessionStorageCache.remove("currentFlexship");
+			this.publicService.removeFromSessionCache("currentFlexship");
 		}
 		return flexship;
 	}
 
 	public getCurrentFlexship(): { [key: string]: any } {
-		return this.sessionStorageCache.get("currentFlexship");
+		return this.publicService.getFromSessionCache("currentFlexship");
 	}
 
 	public updateCartPropertiesOnService(data: { ["cart"]: any; [key: string]: any }) {
@@ -520,7 +487,7 @@ export class MonatService {
 		this.publicService.doAction("addOFYProduct", { skuID: skuID, quantity:1 }).then((data: any) => {
 			if (data?.cart) {
 				console.log("update-cart, putting it in session-cache");
-				this.putIntoSessionCache("cachedCart", data.cart);
+				this.publicService.putIntoSessionCache("cachedCart", data.cart);
 
 				this.successfulActions = data.successfulActions;
 				this.handleCartResponseActions(data); 

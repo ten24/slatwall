@@ -4,7 +4,7 @@
 import {Cart} from "../model/entity/cart";
 import {Account} from "../model/entity/account";
 import {PublicRequest} from "../model/transient/publicrequest";
-
+import { Cache } from "cachefactory";
 declare var hibachiConfig: any;
 
 class PublicService {
@@ -87,7 +87,9 @@ class PublicService {
         public observerService,
         public appConfig,
         public $timeout,
-        public hibachiAuthenticationService
+        public hibachiAuthenticationService,
+    	private sessionStorageCache: Cache,
+    	private inMemoryCache: Cache
     ) {
         this.orderService = orderService;
         this.cartService = cartService;
@@ -197,7 +199,7 @@ class PublicService {
 
     public refreshAddressOptions = (address) =>{
         this.getStates(null, address);
-        this.getAddressOptions(null,address);
+
     }
 
     public getStateByStateCode = (stateCode)=>{
@@ -312,6 +314,36 @@ class PublicService {
 
         }
     }
+    
+    private enforceCacheOwner(key: string) {
+		let cacheOwner = hibachiConfig.accountID?.trim() || "unknown";
+		if (this.sessionStorageCache.get("cacheOwner") !== cacheOwner) {
+			console.log(
+				`enforceCacheOwner: owner changed, 
+				 setting new owner to: ${cacheOwner} from: ${this.sessionStorageCache.get("cacheOwner")},
+				 and clearing cache for ${key}
+			    `
+			);
+			this.sessionStorageCache.remove(key);
+			this.sessionStorageCache.put("cacheOwner", cacheOwner);
+			return false;
+		}
+		return true;
+	}
+
+	public getFromSessionCache(key: string) {
+		return this.enforceCacheOwner(key) ? this.sessionStorageCache.get(key) : undefined;
+	}
+
+	public putIntoSessionCache(key: string, value: any) {
+		this.enforceCacheOwner(key);
+		this.sessionStorageCache.put(key, value);
+	}
+	
+	public removeFromSessionCache(key: string) {
+		this.enforceCacheOwner(key);
+		this.sessionStorageCache.remove(key);
+	}
 
     /** this is the generic method used to call all server side actions.
     *  @param action {string} the name of the action (method) to call in the public service.
@@ -443,6 +475,7 @@ class PublicService {
         if(response.cart){
             this.cart.populate(response.cart);
             this.cart.request = request;
+            this.putIntoSessionCache("cachedCart", response.cart);
         }
         this.errors = response.errors;
         if(response.messages){
