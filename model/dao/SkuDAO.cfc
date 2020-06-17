@@ -117,7 +117,7 @@ Notes:
 	<cfscript>
 		
 	public array function getImageFileDataBySkuIDList(required string skuIDList){
-		var hql = "SELECT NEW MAP(imageFile as imageFile,skuID as skuID) FROM #getApplicationKey()#Sku WHERE skuID IN (:skuIDList)";
+		var hql = "SELECT NEW MAP(imageFile as imageFile,skuID as skuID, product.defaultSku.imageFile as defaultImage) FROM #getApplicationKey()#Sku WHERE skuID IN (:skuIDList)";
 		
 		var params = {skuIDList=arguments.skuIDList};
 		
