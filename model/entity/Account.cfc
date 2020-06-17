@@ -152,6 +152,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="fullNameWithPermissionGroups" persistent="false";
     property name="permissionGroupNameList" persistent="false";
     property name="preferredLocale" persistent="false";
+	property name="countryCode" persistent="false"; 
 	
 	 	//CUSTOM PROPERTIES BEGIN
 property name="accountType" ormtype="string" hb_formFieldType="select";
@@ -193,6 +194,8 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
  property name="gender" ormtype="string" hb_formFieldType="select";
  property name="accountNumber" ormtype="string";
  property name="careerTitle" ormtype="string" hb_formFieldType="select";
+ property name="rank" ormtype="string";
+ property name="uplineMarketPartnerNumber" ormtype="string";
  property name="referType" ormtype="string" hb_formFieldType="select";
  property name="profileImage" hb_fileUpload="true" hb_fileAcceptMIMEType="*/*" ormtype="string" hb_formFieldType="file";
  property name="terminationDate" ormtype="timestamp" hb_formatType="date";
@@ -227,7 +230,7 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	
 	public string function getCountryCode() {
 		
-		if(!StructKeyExists(variables, "countryCode")) {
+		if(!StructKeyExists(variables, "countryCode") || isNull(variables.countryCode)) {
 			
 			var site = getAccountCreatedSite() ?: getHibachiScope().getCurrentRequestSite();
 		

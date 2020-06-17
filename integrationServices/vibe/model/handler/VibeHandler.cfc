@@ -30,7 +30,7 @@ component extends='Slatwall.org.Hibachi.HibachiEventHandler' {
 	
 	
 	public void function afterAccountUpgradeSuccess(any slatwallScope, any entity, any eventData) {
-		addToQueue(arguments.entity.getAccount());
+		addToQueue(arguments.entity);
 	}
 	
 	

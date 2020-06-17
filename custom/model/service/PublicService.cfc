@@ -1506,13 +1506,17 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             productData['productHowVideoHeight'] = product.getAttributeValue( 'productHowVideoHeight' );
             
             var fileName = product.getAttributeValue( 'productVideoBackgroundImage' );
-            productData['productVideoBackgroundImage'] = '/Slatwall/custom/assets/files/' & lCase( 'productVideoBackgroundImage' ) & '/' & fileName;
-            
+            if(len(fileName)){
+                productData['productVideoBackgroundImage'] = '/Slatwall/custom/assets/files/' & lCase( 'productVideoBackgroundImage' ) & '/' & fileName;
+            }
             var fileName = product.getAttributeValue( 'productHowBackgroundImage' );
-            productData['productHowBackgroundImage'] = '/Slatwall/custom/assets/files/' & lCase( 'productHowBackgroundImage' ) & '/' & fileName;
-            
+            if(len(fileName)){
+                productData['productHowBackgroundImage'] = '/Slatwall/custom/assets/files/' & lCase( 'productHowBackgroundImage' ) & '/' & fileName;
+            }
             var fileName = product.getAttributeValue( 'productHowVideoImage' );
-            productData['productHowVideoImage'] = '/Slatwall/custom/assets/files/' & lCase( 'productHowVideoImage' ) & '/' & fileName;
+            if(len(fileName)){
+                productData['productHowVideoImage'] = '/Slatwall/custom/assets/files/' & lCase( 'productHowVideoImage' ) & '/' & fileName;
+            }
             
             if(!isNull(product.getProductIngredient1())){
                 var productIngredient1 = {};
@@ -2439,6 +2443,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                     getHibachiScope().flushORMSession(); 
                     this.getAppliedOrderTemplatePromotionCodes(arguments.data);
                 }
+                getOrderTemplateDetails(arguments.data);
         }else{
             var processObject = orderTemplate.getProcessObject("AddPromotionCode");
             if(processObject.hasErrors()){
@@ -2486,6 +2491,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                     getHibachiScope().flushORMSession(); 
                     this.getAppliedOrderTemplatePromotionCodes(arguments.data);
                 }
+                this.getOrderTemplateDetails(arguments.data);
         }else{
             var processObject = orderTemplate.getProcessObject("removePromotionCode");
             if(processObject.hasErrors()){
@@ -2494,7 +2500,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                 addErrors(arguments.data,orderTemplate.getErrors());
             }
         }
-
+        
     }
     
     public any function addOFYProduct(required struct data){

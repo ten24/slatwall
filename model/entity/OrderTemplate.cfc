@@ -90,6 +90,7 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	property name="calculatedOrderTemplateItemsCount" ormtype="integer";
 	property name="calculatedTotal" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedSubTotal" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedDiscountTotal" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedFulfillmentTotal" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedTaxableAmountTotal" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedFulfillmentDiscount" ormtype="big_decimal" hb_formatType="currency";
@@ -118,6 +119,7 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	property name="scheduledOrderDates" persistent="false";
 	property name="shippingMethodOptions" persistent="false"; 
 	property name="subtotal" persistent="false";
+	property name="discountTotal" persistent="false";
 	property name="statusCode" persistent="false";
 	property name="typeCode" persistent="false";
 	property name="total" persistent="false" hb_formatType="currency";
@@ -144,7 +146,8 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 	property name="flexshipStatusCode" ormtype="string";
 	property name="addressValidationCode" ormtype="string";
 	property name="commissionableVolumeTotal" persistent="false"; 
-	property name="purchasePlusTotal" persistent="false"; 
+	property name="purchasePlusTotal" persistent="false";
+	property name="otherDiscountTotal" persistent="false";
 	property name="personalVolumeTotal" persistent="false";
 	property name="productPackVolumeTotal" persistent="false"; 
 	property name="retailCommissionTotal" persistent="false";
@@ -268,6 +271,13 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 		}
 		return variables.subtotal; 
 	}
+	
+	public numeric function getDiscountTotal(){
+		if(!structKeyExists(variables, 'discountTotal')){
+			variables.discountTotal = getService('orderService').getOrderTemplateDiscountTotal(this);
+		}
+		return variables.discountTotal; 
+	}
 
 	public numeric function getTaxableAmountTotal() {
 		if(!structKeyExists(variables, 'taxableAmountTotal')){
@@ -277,7 +287,10 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 	}
 
 	public numeric function getTotal(){ 
-		return this.getSubtotal() + this.getFulfillmentTotal(); 
+		if(!structKeyExists(variables, 'total')){
+			variables.total = getService('orderService').getOrderTemplateTotal(this);
+		}
+		return variables.total; 
 	} 
 
 	public any function getDefaultCollectionProperties(string includesList = "orderTemplateID,orderTemplateName,account.accountID,account.firstName,account.lastName,account.primaryEmailAddress.emailAddress,createdDateTime,calculatedTotal,currencyCode,scheduleOrderNextPlaceDateTime,site.siteName,account.accountNumber", string excludesList=""){
@@ -474,6 +487,13 @@ public boolean function getAccountIsNotInFlexshipCancellationGracePeriod(){
 			variables.purchasePlusTotal = getService('OrderService').getCustomPropertyFromOrderTemplateOrderDetails('purchasePlusTotal', this);	
 		}	
 		return variables.purchasePlusTotal;
+	} 
+	
+	public numeric function getOtherDiscountTotal(){
+		if(!structKeyExists(variables, 'otherDiscountTotal')){
+			variables.otherDiscountTotal = getService('OrderService').getCustomPropertyFromOrderTemplateOrderDetails('otherDiscountTotal', this);	
+		}	
+		return variables.otherDiscountTotal;
 	} 
 
 	public numeric function getProductPackVolumeTotal(){
