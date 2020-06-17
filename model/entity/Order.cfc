@@ -744,7 +744,7 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 	}
 
 	public numeric function getFulfillmentTotal() {
-		return getService('HibachiUtilityService').precisionCalculate(getFulfillmentChargeTotal() - getFulfillmentRefundTotal());
+		return getService('HibachiUtilityService').precisionCalculate(getFulfillmentChargeTotal() - getFulfillmentRefundPreTax());
 	}
 	
 	public numeric function getFulfillmentHandlingFeeTotal() {
@@ -773,6 +773,8 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 			fulfillmentChargeTotalBeforeHandlingFees = getService('HibachiUtilityService').precisionCalculate(fulfillmentChargeTotalBeforeHandlingFees + getOrderFulfillments()[i].getFulfillmentCharge());
 		}
 		
+		fulfillmentChargeTotalBeforeHandlingFees -= getFulfillmentRefundPreTax();
+		
 		return fulfillmentChargeTotalBeforeHandlingFees;
 	}
 
@@ -790,7 +792,7 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 		for(var i=1; i<=arrayLen(getOrderFulfillments()); i++) {
 			fulfillmentChargeAfterDiscountTotal = getService('HibachiUtilityService').precisionCalculate(fulfillmentChargeAfterDiscountTotal + getOrderFulfillments()[i].getChargeAfterDiscount());
 		}
-
+		fulfillmentChargeAfterDiscountTotal -= getFulfillmentRefundAmount();
 		return fulfillmentChargeAfterDiscountTotal;
 	}
 	
@@ -799,7 +801,7 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 		for(var i=1; i<=arrayLen(getOrderFulfillments()); i++) {
 			fulfillmentChargeAfterDiscountTotal = getService('HibachiUtilityService').precisionCalculate(fulfillmentChargeAfterDiscountTotal + getOrderFulfillments()[i].getChargeAfterDiscountPreTax());
 		}
-
+		fulfillmentChargeAfterDiscountTotal -= getFulfillmentRefundPretax();
 		return fulfillmentChargeAfterDiscountTotal;
 	}
 	
@@ -1499,10 +1501,23 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 		}
 
 		taxTotal += getFulfillmentChargeTaxAmount();
-
+		taxTotal -= getOrderReturnFulfillmentTaxRefund();
 		variables.taxTotal = taxTotal;
 
 		return taxTotal;
+	}
+	
+	public numeric function getOrderReturnFulfillmentTaxRefund(){
+		if(!structKeyExists(variables,'orderReturnFulfillmentTaxRefund') || ( variables.refreshCalculateFulfillmentChargeFlag ) ){
+			var taxTotal = 0;
+			for(var orderReturn in this.getOrderReturns()) {
+				taxTotal = getService('HibachiUtilityService').precisionCalculate(taxTotal + orderReturn.getFulfillmentTaxRefund());
+			}
+			variables.orderReturnFulfillmentTaxRefund = taxTotal;
+			
+			variables.refreshCalculateFulfillmentChargeFlag = false;
+		}
+		return variables.orderReturnFulfillmentTaxRefund;
 	}
 	
 	public numeric function getFulfillmentChargeTaxAmount(){
