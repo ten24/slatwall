@@ -539,6 +539,8 @@ component  accessors="true" output="false"
      */
     
     public any function login( required struct data ){
+        param name="arguments.data.returnTokenFlag" default="0";
+        
         var accountProcess = getService("AccountService").processAccount( getHibachiScope().getAccount(), arguments.data, 'login' );
         getHibachiScope().addActionResult( "public:account.login", accountProcess.hasErrors() );
         if (accountProcess.hasErrors()){
@@ -547,6 +549,11 @@ component  accessors="true" output="false"
             }
             addErrors(data, getHibachiScope().getAccount().getProcessObject("login").getErrors());
         }
+        
+        if(arguments.data.returnTokenFlag && getHibachiScope().getLoggedInFlag()){
+            data['ajaxResponse']['token'] = getService('HibachiJWTService').createToken();
+        }
+        
         return accountProcess;
     }
     
