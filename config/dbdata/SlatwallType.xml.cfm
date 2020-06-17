@@ -145,6 +145,10 @@
 
 		<Record typeID="154dcdd2f3fd4b5ab5498e93470957b8" typeIDPath="154dcdd2f3fd4b5ab5498e93470957b8" parentTypeID="NULL" typeName="Product Bundle Group Types" systemCode="productBundleGroupType" sortOrder="1" />
 
+		<Record typeID="444df2ef9cb25116d6396b34da32aab3" typeIDPath="444df2ef9cb25116d6396b34da32aab3" parentTypeID="NULL" typeName="Qualifier Logical Operator Types" systemCode="qualifierLogicalOperatorType" childRequiresSystemCodeFlag="1" />
+		<Record typeID="444df2f0671939ff94191de8f5f0134d" typeIDPath="444df2ef9cb25116d6396b34da32aab3,444df2f0671939ff94191de8f5f0134d" parentTypeID="444df2ef9cb25116d6396b34da32aab3" typeName="OR" systemCode="qlotOr" sortOrder="1" />
+		<Record typeID="43cb12f1cc40d0ea8a2de6f54175bcdf" typeIDPath="444df2ef9cb25116d6396b34da32aab3,43cb12f1cc40d0ea8a2de6f54175bcdf" parentTypeID="444df2ef9cb25116d6396b34da32aab3" typeName="AND" systemCode="qlotAnd" sortOrder="2" />
+
 		<Record typeID="444df2e4e0ec725f718318de5bd3b973" typeIDPath="444df2e4e0ec725f718318de5bd3b973" parentTypeID="NULL" typeName="Stock Adjustment Types" systemCode="stockAdjustmentType" childRequiresSystemCodeFlag="1" />
 		<Record typeID="444df2e5cb27169f418279f3f859a4f7" typeIDPath="444df2e4e0ec725f718318de5bd3b973,444df2e5cb27169f418279f3f859a4f7" parentTypeID="444df2e4e0ec725f718318de5bd3b973" typeName="Location Transfer" systemCode="satLocationTransfer" sortOrder="2" />
 		<Record typeID="444df2e60db81c12589c9b39346009f2" typeIDPath="444df2e4e0ec725f718318de5bd3b973,444df2e60db81c12589c9b39346009f2" parentTypeID="444df2e4e0ec725f718318de5bd3b973" typeName="Manual In" systemCode="satManualIn" sortOrder="3" />

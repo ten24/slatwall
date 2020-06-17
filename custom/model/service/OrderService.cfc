@@ -1636,6 +1636,9 @@ component extends="Slatwall.model.service.OrderService" {
 			var oldErrors = StructCopy(arguments.order.getErrors());
 			arguments.order.clearHibachiErrors();
 			getHibachiScope().setORMHasErrors( false );
+			if(!isNull(newOrderItem)){
+				newOrderItem.clearHibachiErrors();
+			}
 			getHibachiScope().flushORMSession(); 
 
 			/**
