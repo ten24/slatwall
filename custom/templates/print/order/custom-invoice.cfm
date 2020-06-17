@@ -83,7 +83,12 @@ Notes:
 <cfelse>
 	<cfset local.taxType = 'Tax'>
 </cfif>
-<cfdocument format="PDF" orientation="portrait">
+<cfdocument 
+	format="PDF" 
+	orientation="portrait"
+	authUser="ten24"
+	authPassword="40Blue96"
+>
 	<cfset local.defaultTable = 'width: 100%; font-family: Arial, sans-serif; font-size: 11px; color: ##848484; border-collapse: collapse;' />
 	<cfoutput>
 		
@@ -514,5 +519,5 @@ Notes:
 			
 		</table>
 	</cfoutput>
-</cfdocument>
+	</cfdocument
 
