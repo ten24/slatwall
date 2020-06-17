@@ -107,7 +107,7 @@ component persistent="false" extends="HibachiService" output="false" accessors="
         
         var skuRecords = getService('skuDAO').getImageFileDataBySkuIDList(arguments.skuIDList);
         for(var skuRecord in skuRecords){
-			logHibachi(serializeJson(skuRecord));
+		
         	if(!structKeyExists(skuRecord,'imageFile') && !structKeyExists(skuRecord,'defaultImage')){
         		var imageFile = '';
         	}else if(structKeyExists(skuRecord,'imageFile') && fileExists(expandPath("#basePath#/#skuRecord['imageFile']#"))){
@@ -115,7 +115,7 @@ component persistent="false" extends="HibachiService" output="false" accessors="
         	}else{
         		var imageFile = skuRecord['defaultImage'];
         	}
-				     logHibachi(imageFile)
+				    
         	ArrayAppend(
         		resizedImagePaths, 
         		getService('imageService').getResizedImagePath(
