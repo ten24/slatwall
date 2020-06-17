@@ -66,11 +66,12 @@ class swfAccountController {
         this.observerService.attach(this.closeModals,"addNewAccountAddressSuccess"); 
         this.observerService.attach(this.closeModals,"addAccountPaymentMethodSuccess"); 
         this.observerService.attach(this.closeModals,"addProductReviewSuccess"); 
+        this.observerService.attach(this.closeModals,"impendingRenewalWarningSuccess"); 
+        
         this.observerService.attach(option => this.holdingWishlist = option,"myAccountWishlistSelected"); 
         this.observerService.attach(()=>{
     		this.monatAlertService.error(this.rbkeyService.rbKey('frontend.deleteAccountPaymentMethodFailure'));
         },"deleteAccountPaymentMethodFailure");
-        
         
         const currDate = new Date;
         this.currentYear = currDate.getFullYear();
