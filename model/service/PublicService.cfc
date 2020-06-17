@@ -853,8 +853,10 @@ component  accessors="true" output="false"
             return;
         }
         order = getService("OrderService").saveOrder(order); 
-        getDao('hibachiDao').flushOrmSession();
-        getHibachiScope().addActionResult( "public:cart.addShippingMethodUsingShippingMethodID", order.hasErrors());          
+        if(!order.hasErrors()){
+			getDao('hibachiDao').flushOrmSession();
+        }
+		getHibachiScope().addActionResult( "public:cart.addShippingMethodUsingShippingMethodID", order.hasErrors());          
     }
     
     public any function addBillingAddressUsingAccountAddress(required data){

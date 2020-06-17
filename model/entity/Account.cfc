@@ -152,6 +152,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="fullNameWithPermissionGroups" persistent="false";
     property name="permissionGroupNameList" persistent="false";
     property name="preferredLocale" persistent="false";
+	property name="countryCode" persistent="false"; 
 	
 	 	//CUSTOM PROPERTIES BEGIN
 property name="accountType" ormtype="string" hb_formFieldType="select";
@@ -229,7 +230,7 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	
 	public string function getCountryCode() {
 		
-		if(!StructKeyExists(variables, "countryCode")) {
+		if(!StructKeyExists(variables, "countryCode") || isNull(variables.countryCode)) {
 			
 			var site = getAccountCreatedSite() ?: getHibachiScope().getCurrentRequestSite();
 		
