@@ -717,7 +717,7 @@ class PublicService {
         if(this.cart.orderFulfillments[fulfillmentIndex] && this.cart.orderFulfillments[fulfillmentIndex].accountAddress){
             oldAccountAddressID = this.cart.orderFulfillments[fulfillmentIndex].accountAddress.accountAddressID;
         }
-        this.doAction('addShippingAddressUsingAccountAddress', {accountAddressID:accountAddressID,fulfillmentID:orderFulfillmentID}).then(result=>{
+        this.doAction('addShippingAddressUsingAccountAddress', {accountAddressID:accountAddressID,fulfillmentID:orderFulfillmentID,returnJsonObjects:'cart'}).then(result=>{
             if(result && result.failureActions && result.failureActions.length){
                 this.$timeout(()=>{
                     if(oldAccountAddressID){
