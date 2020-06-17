@@ -519,5 +519,5 @@ Notes:
 			
 		</table>
 	</cfoutput>
-	</cfdocument
+</cfdocument>
 
