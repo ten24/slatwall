@@ -575,7 +575,8 @@ class swfAccountController {
 	    this.loading = true;
 	    this.monatService.addToCart(this.renewalSku, 1).then(result =>{
 		    if(result.successfulActions &&
-				result.successfulActions.indexOf('public:cart.addOrderItem') > -1) {
+				result.successfulActions.indexOf('public:cart.addOrderItem') > -1
+			) {
 			    this.monatAlertService.success(this.rbkeyService.rbKey('alert.flexship.addProductSuccessful')); 
 			    this.showRenewalModal = false;
 		    }else{
