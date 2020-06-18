@@ -192,13 +192,12 @@ class MonatProductCardController {
 	
 			this.orderTemplateService.addOrderTemplateItem(skuID, orderTemplateID, 1, false, data)
 			.then( (result) =>{
-			    if(result.successfulActions &&
-					result.successfulActions.indexOf('public:order.addOrderTemplateItem') > -1) {
-					//	this.orderTemplateService.getSetOrderTemplateOnSession('qualifiesForOFYProducts', 'save', false, false);
-					}
-				 else{
-				     throw (result);
-				 }
+			    if(!result.hasErrors) {	
+			    	this.monatAlertService.success(this.rbkeyService.rbKey('alert.cart.addProductSuccessful')); 
+				}
+				else{
+				    throw(result);
+				}
 			} )
 			.catch((error)=>{
 			  this.monatAlertService.showErrorsFromResponse(error);  
