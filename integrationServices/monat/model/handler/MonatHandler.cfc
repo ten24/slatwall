@@ -68,11 +68,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 		
 		var originalAccountType = account.getAccountType() ?: '';
 		
-		// Snapshot the pricegroups on the order.
-		if ( !isNull(account) && arrayLen(account.getPriceGroups()) ) {
-            arguments.order.setPriceGroup(account.getPriceGroups()[1]);
-        }
-        
         //Commission Date
         arguments.order.setCommissionPeriod(dateFormat( now(), "yyyymm" ));
         
@@ -133,7 +128,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 			} 
     	}
     	
-    	
+		// Snapshot the pricegroups on the order.
+		if ( !isNull(account) && arrayLen(account.getPriceGroups()) ) {
+            arguments.order.setPriceGroup(account.getPriceGroups()[1]);
+        }
 		
 		// Sets the account status type, activeFlag and accountNumber
 		if( 
