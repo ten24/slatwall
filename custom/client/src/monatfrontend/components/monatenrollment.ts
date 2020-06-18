@@ -37,6 +37,7 @@ class MonatEnrollmentController {
 		if (hibachiConfig.baseSiteURL) {
 			this.backUrl = hibachiConfig.baseSiteURL;
 		}
+		this.currentStepName = "todaysOrder";
 		
 		//clearing session-cache for entollement-process
 		console.log("Clearing sesion-caceh for entollement-process");
