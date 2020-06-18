@@ -889,6 +889,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		} else if( len(arguments.processObject.getAccountAddressID()) ) {
 			
 			var accountAddress = getAccountService().getAccountAddress( arguments.processObject.getAccountAddressID() );
+
 			if(!isNull(accountAddress)) {
 				newOrderPayment.setBillingAccountAddress(accountAddress);
 				newOrderPayment.setBillingAddress( accountAddress.getAddress().copyAddress( true ) );
@@ -5085,10 +5086,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
   				||
   			(listFindNoCase("credit", processData.transactionType) && arguments.orderPayment.getAmountCredited() lt arguments.orderPayment.getAmount())
   		) {
-
   			// Add a generic payment processing error and make it persistable
-  			arguments.orderPayment.getOrder().addError('runPlaceOrderTransaction', rbKey('entity.order.process.placeOrder.paymentProcessingError'), true);
-
+			if(arguments.orderPayment.getOrder().getPaymentAmountDue() != 0){
+	  			arguments.orderPayment.getOrder().addError('runPlaceOrderTransaction', rbKey('entity.order.process.placeOrder.paymentProcessingError'), true);
+			}
   			// Add the actual message
   			if(arguments.orderPayment.hasError('createTransaction')) {
   				arguments.orderPayment.getOrder().addError('runPlaceOrderTransaction', arguments.orderPayment.getError('createTransaction'), true);

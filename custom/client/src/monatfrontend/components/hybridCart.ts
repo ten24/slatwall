@@ -32,6 +32,8 @@ class HybridCartController {
 		this.observerService.attach(this.getCart.bind(this),'removeOrderItemSuccess');
 		this.observerService.attach(this.getCart.bind(this),'addOrderItemSuccess');
 		this.observerService.attach(()=> this.getCart(true),'downGradeOrderSuccess');
+		this.observerService.attach(()=> this.showCart = false,'closeCart');
+
 	}
 
 	public $onInit = () => { }
