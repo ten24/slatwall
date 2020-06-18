@@ -149,7 +149,9 @@ class MonatProductModalController {
 			this.quantityToAdd
 		)
 		.then((data) => {
-			this.monatAlertService.success("Product added to cart successfully");
+			this.monatAlertService.success(
+				this.rbkeyService.rbKey("alert.cart.addProductSuccessful")
+			);
 			this.closeModal();
 		})
 		.catch( (error) => {
@@ -157,7 +159,7 @@ class MonatProductModalController {
             this.monatAlertService.showErrorsFromResponse(error);
 		})
 		.finally(() => {
-			this.loading = true;
+			this.loading = false;
 		});
 	};
 
