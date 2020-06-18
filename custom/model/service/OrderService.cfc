@@ -665,12 +665,12 @@ component extends="Slatwall.model.service.OrderService" {
 	
 	                arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode(systemCode='ostProcessing', typeCode="rmaApproved"));
 	                
-				} else if( !listFindNoCase( 'otReplacementOrder,otExchangeOrder', arguments.order.getTypeCode() ) ){
+				} else if( listFindNoCase( 'otReplacementOrder,otExchangeOrder', arguments.order.getTypeCode() ) ){
 	
-	                arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="rmaReceived"));
-	
-	            } else{
 	            	arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode=arguments.typeCode));
+	
+	            } else if( isNull(arguments.typeCode) || arguments.typeCode == 'rmaReceived' ){
+	                arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="rmaReceived"));
 	            }
 	        }
 
