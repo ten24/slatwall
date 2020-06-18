@@ -103,14 +103,19 @@ component persistent="false" extends="HibachiService" output="false" accessors="
 
         var resizedImagePaths = [];
         //var skus = [];
+        var basePath = "#getHibachiScope().getBaseImageURL()#/product/default";
         
         var skuRecords = getService('skuDAO').getImageFileDataBySkuIDList(arguments.skuIDList);
         for(var skuRecord in skuRecords){
-        	if(!structKeyExists(skuRecord,'imageFile')){
+		
+        	if(!structKeyExists(skuRecord,'imageFile') && !structKeyExists(skuRecord,'defaultImage')){
         		var imageFile = '';
-        	}else{
+        	}else if(structKeyExists(skuRecord,'imageFile') && fileExists(expandPath("#basePath#/#skuRecord['imageFile']#"))){
         		var imageFile = skuRecord['imageFile'];
+        	}else{
+        		var imageFile = skuRecord['defaultImage'];
         	}
+				    
         	ArrayAppend(
         		resizedImagePaths, 
         		getService('imageService').getResizedImagePath(
