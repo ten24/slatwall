@@ -62,6 +62,8 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
             return [];
         }
         
+        //Monat only wants this search to return MP's 
+        arguments.data.accountSearchType = 'marketPartner';
         var marketPartnerCollection = this.getAccountCollection(arguments.data);
         
         return this.getAccountCollection(arguments.data);
