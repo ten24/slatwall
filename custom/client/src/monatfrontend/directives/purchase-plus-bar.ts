@@ -66,6 +66,10 @@ class PurchasePlusBarController {
 			this.percentage = +appliedMessage.qualifierProgress + 1; // Add 1 for UI reasons.
 		}
 	}
+	
+	public closeCart = () => {
+		this.observerService.notify('closeCart')
+	}
 }
 
 class PurchasePlusBar {
