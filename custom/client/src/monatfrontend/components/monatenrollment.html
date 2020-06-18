@@ -40,7 +40,6 @@
 		ng-if="
 			(monatEnrollment.currentStepName == 'orderListing' &&  monatEnrollment.orderTemplateService.mostRecentOrderTemplate.purchasePlusMessage.message.length) 
 			|| ( monatEnrollment.currentStepName != 'orderListing' && monatEnrollment.monatService.cart.purchasePlusMessage.message.length)" 
-		id="promoBanner" 
 		class="alert discount-block text-white promotion-bar-block"
 	>
 		<button 
@@ -49,7 +48,7 @@
 			class="close" 
 			data-dismiss="alert"
 			aria-label="Close"
-		><i class="fas fa-times"></i></button>
+		><i class="far fa-times"></i></button>
 		{{
 			monatEnrollment.currentStepName == 'orderListing' 
 			? monatEnrollment.orderTemplateService.mostRecentOrderTemplate.purchasePlusMessage.message
