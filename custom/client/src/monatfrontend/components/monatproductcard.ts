@@ -208,10 +208,9 @@ class MonatProductCardController {
 			});
 		} else {
 			this.monatService.addToCart(skuID, 1).then((result) => {
-			    if(result.successfulActions &&
-					result.successfulActions.indexOf('public:cart.addOrderItem') > -1) {
-				this.monatAlertService.success(this.rbkeyService.rbKey('alert.flexship.addProductSuccessful')); 
-			    }
+				if(!result.hasErrors) {	
+			    	this.monatAlertService.success(this.rbkeyService.rbKey('alert.cart.addProductSuccessful')); 
+				}
 				else{
 				    throw(result);
 				}
@@ -220,7 +219,7 @@ class MonatProductCardController {
 			    this.monatAlertService.showErrorsFromResponse(error);
 			})
 			.finally(()=>{
-			 this.loading=false;
+				this.loading=false;
 			});
 		}
 	};
