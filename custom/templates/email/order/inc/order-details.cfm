@@ -165,7 +165,7 @@
                                                         <cfif not isNull(order.getAccount().getAccountNumber()) && len(order.getAccount().getAccountNumber())>
                                                             <th style="text-align: center; padding: 8px;">Distributor ID</th>
                                                         </cfif>
-                                                        <cfif not isNull(local.orderFulfillment.getShippingMethod())>
+                                                        <cfif not isNull(local.orderFulfillment) and not isNull(local.orderFulfillment.getShippingMethod())>
                                                         	<th style="text-align: center; padding: 8px;">Ship Via</th>
                                                         </cfif>
                                                         <cfif not isNull(order.getCommissionPeriod()) && len(order.getCommissionPeriod())>
@@ -178,7 +178,7 @@
                                                         <cfif not isNull(order.getAccount().getAccountNumber()) && len(order.getAccount().getAccountNumber())>
                                                             <td style="text-align: center; padding: 5px;">#order.getAccount().getAccountNumber()#</td>
                                                         </cfif>
-                                                        <cfif not isNull(local.orderFulfillment.getShippingMethod())>
+                                                        <cfif not isNull(local.orderFulfillment) and not isNull(local.orderFulfillment.getShippingMethod())>
                                                     		<td style="text-align: center; padding: 5px;">#local.orderFulfillment.getShippingMethod().getShippingMethodName()#</td>
                                                         </cfif>
                                                         <cfif not isNull(order.getCommissionPeriod()) && len(order.getCommissionPeriod())>
