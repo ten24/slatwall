@@ -1291,7 +1291,12 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
                             	newInventory.setCreatedDateTime(getDateFromString(inventory['CreatedOn']));
                             	
                                 newInventory = getStockService().saveInventory(newInventory);
-                            	
+                                
+                                getDAO('HibachiEntityQueueDAO').insertEntityQueue(
+									baseID          = sku.getSkuID(),
+									baseObject      = 'Sku',
+									processMethod   = 'processSku_updateCalculatedProperties'
+								);
             		        }
             		    }
     			    }catch(e){
