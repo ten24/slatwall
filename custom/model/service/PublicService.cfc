@@ -1378,6 +1378,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var currencyCode = returnObject.currencyCode;
         var siteCode = (arguments.data.cmsSiteID == 'default') ? '' : arguments.data.cmsSiteID;
         
+        var locale = getHibachiScope().getSession().getRbLocale();
+        var sql = "";
+        
         if ( len( arguments.data.keyword ) ) {
             productCollectionList.addFilter('productName', '%#arguments.data.keyword#%', 'LIKE');
         }
