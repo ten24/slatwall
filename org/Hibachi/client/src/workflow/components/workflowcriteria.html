@@ -1,0 +1,349 @@
+<div class="col-xs-6 s-criteria">
+
+	<h4>Criteria</h4>
+
+	<!--- Filter Criteria Start --->
+	<form action="index.html" method="post">
+		<div class="s-filter-group-item">
+
+			<div class="alert alert-warning" role="alert">Select field or dataset to begin</div>
+
+		</div>
+	</form>
+	<!--- //Filter Criteria End --->
+
+	
+
+	<br/><br/><br/>
+
+	<h4>Options</h4>
+
+	<!--- Filter Criteria Start --->
+	<form action="index.html" method="post">
+		<div class="s-filter-group-item">
+
+			<div class="s-options-group">
+				<div class="radio">
+					<input class="s-account-field-radio" type="radio" name="radio1" id="radio1" value="option1" checked>
+					<label for="radio1">
+							Use account field:
+					</label>
+					<div class="col-sm-12 s-no-paddings s-account-field-select">
+						<select class="form-control input-sm">
+							<option disabled="disabled" selected="selected"> Select From Account </option>
+							<option>First Name</option>
+							<option>Last Name</option>
+							<option>Company</option>
+							<option disabled="disabled">---</option>
+							<option>Primary E-Mail Address</option>
+							<option disabled="disabled">---</option>
+							<option>Addresses</option>
+						</select>
+					</div>
+					<div class="clearfix"></div>
+				</div>
+				<div class="radio">
+					<input type="radio" name="radio1" id="radio2" value="option2">
+					<label for="radio2">
+							Has account
+					</label>
+				</div>
+				<div class="radio">
+					<input type="radio" name="radio1" id="radio3" value="option3">
+					<label for="radio3">
+							Doesn't Has account
+					</label>
+				</div>
+			</div>
+
+		</div>
+	</form>
+	<!--- //Filter Criteria End --->
+
+	<br/><br/><br/>
+
+
+	<h4>Criteria</h4>
+
+	<!--- Filter Criteria Start --->
+	<form action="index.html" method="post">
+		<div class="s-filter-group-item">
+			<span>
+				<button class="btn btn-xs s-btn-ten24"> <button class="btn btn-xs btn-lgrey" id="j-edit-btn"><i class="fa fa-times"></i> Remove</button>
+			</span>
+			<div class="form-group form-group-sm">
+				<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Criteria Name:</label>
+				<div class="col-sm-12 s-no-paddings">
+					<input type="text" class="form-control" id="input" placeholder="12">
+				</div>
+				<div class="clearfix"></div>
+			</div>
+			<div class="form-group form-group-sm">
+				<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Condition:</label>
+				<div class="col-sm-12 s-no-paddings">
+					<select class="form-control input-sm">
+						<option value="-- Condition">- Condition --</option>
+						<option value="Equals">Equals</option>
+						<option value="Does Not Equal">Does Not Equal</option>
+						<option selected="selected" value="Contains">Contains</option>
+						<option value="Does Not Contain">Does Not Contain</option>
+						<option value="Starts With">Starts With</option>
+						<option value="Ends With">Ends With</option>
+						<option value="Like">Like</option>
+						<option value="Not Lke">Not Lke</option>
+						<option value="In">In</option>
+						<option value="Not In">Not In</option>
+					</select>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+			<div class="form-group form-group-sm">
+				<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Criteria Value:</label>
+				<div class="col-sm-12 s-no-paddings">
+					<input type="text" class="form-control" id="input" placeholder="12">
+				</div>
+				<div class="clearfix"></div>
+			</div>
+		</div>
+		<div>
+			<div>
+				<button class="btn btn-xs btn-default">AND</button>
+				<button class="btn btn-xs btn-defualt active">OR</button>
+			</div>
+		</div>
+		<div>
+			<span>
+				<button class="btn btn-xs s-btn-ten24" style="display:none;"> <button class="btn btn-xs btn-lgrey" id="j-edit-btn"><i class="fa fa-times"></i> Remove</button>
+			</span>
+			<div class="form-group form-group-sm">
+				<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Criteria Name:</label>
+				<div class="col-sm-12 s-no-paddings">
+					<input type="text" class="form-control" id="input" placeholder="12">
+				</div>
+				<div class="clearfix"></div>
+			</div>
+			<div class="form-group form-group-sm">
+				<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Condition:</label>
+				<div class="col-sm-12 s-no-paddings">
+					<select class="form-control input-sm">
+						<option value="-- Condition">- Condition --</option>
+						<option selected="selected" value="Equals">Equals</option>
+						<option value="Does Not Equal">Does Not Equal</option>
+						<option value="Contains">Contains</option>
+						<option value="Does Not Contain">Does Not Contain</option>
+						<option value="Starts With">Starts With</option>
+						<option value="Ends With">Ends With</option>
+						<option value="Like">Like</option>
+						<option value="Not Lke">Not Lke</option>
+						<option value="In">In</option>
+						<option value="Not In">Not In</option>
+					</select>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+			<div class="form-group form-group-sm">
+				<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Criteria Value:</label>
+				<div class="col-sm-12 s-no-paddings">
+					<input type="text" class="form-control" id="input" placeholder="12">
+				</div>
+				<div class="clearfix"></div>
+			</div>
+		</div>
+
+		<button class="btn btn-xs s-btn-ten24" data-toggle="collapse" data-target="#j-add-row-6">Add Display Field</button>
+		<div class="collapse" id="j-add-row-6">
+			<div class="s-filter-group-item">
+				<div class="form-group form-group-sm">
+					<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Criteria Name:</label>
+					<div class="col-sm-12 s-no-paddings">
+						<input type="text" class="form-control" id="input" placeholder="12">
+					</div>
+					<div class="clearfix"></div>
+				</div>
+				<div class="form-group form-group-sm">
+					<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Condition:</label>
+					<div class="col-sm-12 s-no-paddings">
+						<select class="form-control input-sm">
+							<option value="-- Condition">- Condition --</option>
+							<option value="Equals">Equals</option>
+							<option value="Does Not Equal">Does Not Equal</option>
+							<option selected="selected" value="Contains">Contains</option>
+							<option value="Does Not Contain">Does Not Contain</option>
+							<option value="Starts With">Starts With</option>
+							<option value="Ends With">Ends With</option>
+							<option value="Like">Like</option>
+							<option value="Not Lke">Not Lke</option>
+							<option value="In">In</option>
+							<option value="Not In">Not In</option>
+						</select>
+					</div>
+					<div class="clearfix"></div>
+				</div>
+				<div class="form-group form-group-sm">
+					<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Criteria Value:</label>
+					<div class="col-sm-12 s-no-paddings">
+						<input type="text" class="form-control" id="input" placeholder="12">
+					</div>
+					<div class="clearfix"></div>
+				</div>
+				<button name="button" class="btn s-btn-ten24 btn-xs"><i class="fa fa-plus"></i> Column</button>
+				<button class="btn btn-danger btn-xs"><i class="fa fa-times"></i> Remove</button>
+			</div>
+		</div>
+
+	</form>
+	<!--- //Filter Criteria End --->
+
+	<br/><br/><br/>
+
+	<h4>Criteria</h4>
+
+	<!--- Filter Criteria Start --->
+	<form action="index.html" method="post">
+		<div class="s-filter-group-item">
+
+			<!-- Define Filter List group -->
+			<ul class="list-group s-define-filter-group">
+
+				<!-- //Filter item -->
+				<li class="s-define-filter-item">
+					<span class="s-define-filter-number">1</span>
+					<span class="s-define-filter-title">
+						<span class="s-define-filter-title-edit"><input type="text" value="T-Shirt"><button class="btn btn-xs s-btn-ten24 s-save-btn">Save</button></span>
+						<a href="#" class="j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Edit">T-Shirts</a>
+
+					</span>
+					<span>
+						<select class="form-control input-sm">
+
+							<option value="-- Condition">- Condition --</option>
+							<option value="Equals">Equals</option>
+							<option value="Does Not Equal">Does Not Equal</option>
+							<option selected="selected" value="Contains">Contains</option>
+							<option value="Does Not Contain">Does Not Contain</option>
+							<option value="Starts With">Starts With</option>
+							<option value="Ends With">Ends With</option>
+							<option value="Like">Like</option>
+							<option value="Not Lke">Not Lke</option>
+							<option value="In">In</option>
+							<option value="Not In">Not In</option>
+
+						</select>
+					</span>
+					<span class="s-define-filter-compare">
+						<span class="s-define-filter-compare-edit"><input type="text" value="Coolness Shirt"><button class="btn btn-xs s-btn-ten24 s-save-btn">Save</button></span>
+						<a href="#" class="j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Edit">Coolness Shirt</a>
+					</span>
+					<span class="s-define-filter-remove"><a class="btn btn-default s-remove j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Remove"><i class="fa fa-times"></i></a></span>
+				</li>
+				<!-- //Filter item -->
+
+				<!-- //Filter item -->
+				<li class="s-define-filter-item">
+					<span class="s-define-filter-number">2</span>
+					<span class="s-define-filter-title">
+						<span class="s-define-filter-title-edit"><input type="text" value="T-Shirt"><button class="btn btn-xs s-btn-ten24 s-save-btn">Save</button></span>
+						<a href="#" class="j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Edit">T-Shirts</a>
+
+					</span>
+					<span>
+						<select class="form-control input-sm">
+
+							<option value="-- Condition">- Condition --</option>
+							<option value="Equals">Equals</option>
+							<option value="Does Not Equal">Does Not Equal</option>
+							<option value="Contains">Contains</option>
+							<option value="Does Not Contain">Does Not Contain</option>
+							<option selected="selected" value="Starts With">Starts With</option>
+							<option value="Ends With">Ends With</option>
+							<option value="Like">Like</option>
+							<option value="Not Lke">Not Lke</option>
+							<option value="In">In</option>
+							<option value="Not In">Not In</option>
+
+						</select>
+					</span>
+					<span class="s-define-filter-compare">
+						<span class="s-define-filter-compare-edit"><input type="text" value="Coolness Shirt"><button class="btn btn-xs s-btn-ten24 s-save-btn">Save</button></span>
+						<a href="#" class="j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Edit">Happy</a>
+					</span>
+					<span class="s-define-filter-remove"><a class="btn btn-default s-remove j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Remove"><i class="fa fa-times"></i></a></span>
+				</li>
+				<!-- //Filter item -->
+
+				<!-- //Filter item -->
+				<li class="s-define-filter-item">
+					<span class="s-define-filter-number">3</span>
+					<span class="s-define-filter-title">
+						<span class="s-define-filter-title-edit"><input type="text" value="T-Shirt"><button class="btn btn-xs s-btn-ten24 s-save-btn">Save</button></span>
+						<a href="#" class="j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Edit">T-Shirts</a>
+
+					</span>
+					<span>
+						<select class="form-control input-sm">
+							<option value="-- Condition">- Condition --</option>
+							<option selected="selected" value="Equals">Equals</option>
+							<option value="Does Not Equal">Does Not Equal</option>
+							<option value="Contains">Contains</option>
+							<option value="Does Not Contain">Does Not Contain</option>
+							<option value="Starts With">Starts With</option>
+							<option value="Ends With">Ends With</option>
+							<option value="Like">Like</option>
+							<option value="Not Lke">Not Lke</option>
+							<option value="In">In</option>
+							<option value="Not In">Not In</option>
+						</select>
+					</span>
+					<span class="s-define-filter-compare">
+						<span class="s-define-filter-compare-edit"><input type="text" value="Coolness Shirt"><button class="btn btn-xs s-btn-ten24 s-save-btn">Save</button></span>
+						<a href="#" class="j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Edit">Simple</a>
+					</span>
+					<span class="s-define-filter-remove"><a class="btn btn-default s-remove j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Remove"><i class="fa fa-times"></i></a></span>
+				</li>
+				<!-- //Filter item -->
+			</ul>
+
+			<!--- Message if no items --->
+			<div class="s-none-selected" style="display:none;">There are no fields selected</div>
+
+			<!--- Button to show create option --->
+			<button class="btn btn-xs s-btn-ten24" data-toggle="collapse" data-target="#j-add-row">Add Display Field</button>
+
+			<!--- Create option dropdown --->
+			<div class="row s-add-display-field collapse" id="j-add-row">
+				<div class="col-xs-12">
+					<form role="form">
+						<div class="form-group">
+							<label for="exampleInputEmail2">Criteria Name</label>
+							<input type="text" class="form-control">
+						</div>
+						<div class="form-group">
+							<label for="">Criteria</label>
+							<select class="form-control input-sm">
+								<option value="-- Condition">- Condition --</option>
+								<option selected="selected" value="Equals">Equals</option>
+								<option value="Does Not Equal">Does Not Equal</option>
+								<option value="Contains">Contains</option>
+								<option value="Does Not Contain">Does Not Contain</option>
+								<option value="Starts With">Starts With</option>
+								<option value="Ends With">Ends With</option>
+								<option value="Like">Like</option>
+								<option value="Not Lke">Not Lke</option>
+								<option value="In">In</option>
+								<option value="Not In">Not In</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<label for="">Criteria Value</label>
+							<input type="text" class="form-control">
+						</div>
+						<button name="button" class="btn s-btn-ten24 btn-xs"><i class="fa fa-plus"></i> Column</button>
+						<button class="btn btn-danger btn-xs"><i class="fa fa-times"></i> Remove</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</form>
+	<!--- //Filter Criteria End --->
+
+</div>

@@ -1,0 +1,391 @@
+[
+  {
+    "favoriteFruit": "banana",
+    "greeting": "Hello, Constance! You have 9 unread messages.",
+    "friends": [
+      {
+        "name": "Nixon Lambert",
+        "id": 0
+      },
+      {
+        "name": "Margaret Sheppard",
+        "id": 1
+      },
+      {
+        "name": "Karin Wagner",
+        "id": 2
+      }
+    ],
+    "_tags": [
+      "qui",
+      "est",
+      "est",
+      "cillum",
+      "sit"
+    ],
+    "longitude": "50.852238",
+    "latitude": "66.078568",
+    "registered": "Tuesday, August 2, 2016 1:02 AM",
+    "about": "Est occaecat qui proident mollit pariatur irure eiusmod nisi minim ipsum. Ipsum labore commodo nisi quis reprehenderit ex laboris eiusmod consequat adipisicing sunt ut nisi. Aute culpa nulla labore cillum ipsum ut nisi dolore labore anim labore exercitation. Laboris magna ea cupidatat cillum quis. Officia adipisicing culpa anim ipsum consectetur reprehenderit pariatur elit.",
+    "address": "624 Gunther Place, Snowville, Indiana, 384",
+    "phone": "+1 (989) 584-2658",
+    "email": "constance.ellis@ziore.us",
+    "company": "ZIORE",
+    "lastName": "Ellis",
+    "firstName": "Constance",
+    "eyeColor": "green",
+    "age": 21,
+    "picture": "http://placehold.it/32x32",
+    "balance": "$2,810.39",
+    "isActive": true,
+    "guid": "3aadcbf7-0568-4b2f-962d-61c776712174",
+    "index": 0,
+    "objectID":"nnn",
+    "_id": "59a4b39612ac5c2c1dbbf76e"
+  },
+  {
+    "favoriteFruit": "strawberry",
+    "greeting": "Hello, Moreno! You have 5 unread messages.",
+    "friends": [
+      {
+        "name": "Jeri Matthews",
+        "id": 0
+      },
+      {
+        "name": "Lavonne Barker",
+        "id": 1
+      },
+      {
+        "name": "Ines Justice",
+        "id": 2
+      }
+    ],
+    "_tags": [
+      "id",
+      "cupidatat",
+      "magna",
+      "adipisicing",
+      "minim"
+    ],
+    "longitude": "-137.214575",
+    "latitude": "-85.506647",
+    "registered": "Saturday, March 4, 2017 6:47 PM",
+    "about": "Incididunt sit veniam aute tempor sint pariatur minim sint consectetur. Sunt sit sint est sunt. Officia consequat non ad velit fugiat consequat. Ea sint nostrud adipisicing adipisicing commodo eiusmod irure magna voluptate. Elit fugiat proident et fugiat nulla proident ipsum amet cillum ex.",
+    "address": "140 Ingraham Street, Helen, New Mexico, 2501",
+    "phone": "+1 (931) 568-3666",
+    "email": "moreno.carroll@bezal.name",
+    "company": "BEZAL",
+    "lastName": "Carroll",
+    "firstName": "Moreno",
+    "eyeColor": "brown",
+    "age": 40,
+    "picture": "http://placehold.it/32x32",
+    "balance": "$2,555.74",
+    "isActive": true,
+    "guid": "7b7db4a1-8163-40a7-805b-4b2b8c69eed8",
+    "index": 1,
+    "_id": "59a4b39625e7060792c9f256"
+  },
+  {
+    "favoriteFruit": "banana",
+    "greeting": "Hello, Savannah! You have 8 unread messages.",
+    "friends": [
+      {
+        "name": "Amie Bond",
+        "id": 0
+      },
+      {
+        "name": "Mable Kim",
+        "id": 1
+      },
+      {
+        "name": "Romero Larsen",
+        "id": 2
+      }
+    ],
+    "_tags": [
+      "dolore",
+      "velit",
+      "Lorem",
+      "voluptate",
+      "pariatur"
+    ],
+    "longitude": "41.166154",
+    "latitude": "74.746775",
+    "registered": "Friday, August 26, 2016 2:25 AM",
+    "about": "Incididunt ut veniam voluptate pariatur proident sint nisi. Quis commodo consectetur culpa deserunt non aliquip eiusmod labore aliqua. Cillum ad veniam dolore nulla et mollit ipsum. Labore quis esse do ut. Non aliquip duis exercitation nisi. Sit proident cupidatat in anim pariatur in sit anim nostrud sint cillum dolore veniam exercitation.",
+    "address": "105 Belvidere Street, Boling, Pennsylvania, 8937",
+    "phone": "+1 (838) 410-2604",
+    "email": "savannah.greene@spacewax.biz",
+    "company": "SPACEWAX",
+    "lastName": "Greene",
+    "firstName": "Savannah",
+    "eyeColor": "brown",
+    "age": 36,
+    "picture": "http://placehold.it/32x32",
+    "balance": "$1,437.20",
+    "isActive": false,
+    "guid": "edae2867-9994-4c7c-a93f-1c754b97f612",
+    "index": 2,
+    "_id": "59a4b3963b03d8898cde6928"
+  },
+  {
+    "favoriteFruit": "banana",
+    "greeting": "Hello, Earlene! You have 6 unread messages.",
+    "friends": [
+      {
+        "name": "Anastasia Hubbard",
+        "id": 0
+      },
+      {
+        "name": "Arlene Woodward",
+        "id": 1
+      },
+      {
+        "name": "Maynard Shelton",
+        "id": 2
+      }
+    ],
+    "_tags": [
+      "amet",
+      "cupidatat",
+      "voluptate",
+      "excepteur",
+      "do"
+    ],
+    "longitude": "76.11485",
+    "latitude": "32.50896",
+    "registered": "Monday, September 8, 2014 4:23 PM",
+    "about": "Est culpa aute aliquip culpa aute cupidatat sint fugiat do. Dolore excepteur adipisicing esse ea veniam laborum cupidatat officia enim ullamco est quis mollit. Duis ex nisi anim duis adipisicing velit et. Amet aute excepteur reprehenderit est laborum tempor. Anim ad aute duis anim proident minim non amet excepteur consequat fugiat reprehenderit dolore. Duis nisi et esse laboris minim nulla excepteur. Pariatur nisi irure commodo occaecat incididunt officia aliquip laborum consequat duis nostrud ut.",
+    "address": "769 Gelston Avenue, Longbranch, South Dakota, 8860",
+    "phone": "+1 (941) 583-3804",
+    "email": "earlene.simpson@scentric.me",
+    "company": "SCENTRIC",
+    "lastName": "Simpson",
+    "firstName": "Earlene",
+    "eyeColor": "brown",
+    "age": 30,
+    "picture": "http://placehold.it/32x32",
+    "balance": "$1,399.01",
+    "isActive": true,
+    "guid": "5d2d178a-1312-4aa8-b298-0f2a0b7ece64",
+    "index": 3,
+    "_id": "59a4b396bfb264ef04cd5d5c"
+  },
+  {
+    "favoriteFruit": "banana",
+    "greeting": "Hello, Pierce! You have 5 unread messages.",
+    "friends": [
+      {
+        "name": "Boyer Benson",
+        "id": 0
+      },
+      {
+        "name": "Alissa Farley",
+        "id": 1
+      },
+      {
+        "name": "Keisha Hinton",
+        "id": 2
+      }
+    ],
+    "_tags": [
+      "eiusmod",
+      "non",
+      "mollit",
+      "aliquip",
+      "cupidatat"
+    ],
+    "longitude": "45.22999",
+    "latitude": "77.042253",
+    "registered": "Monday, July 13, 2015 2:10 PM",
+    "about": "Velit est et do Lorem irure proident ad excepteur ullamco Lorem reprehenderit adipisicing ipsum. Ad cillum velit ea et. Aliquip cupidatat eu voluptate eu pariatur voluptate tempor duis cillum. Reprehenderit fugiat id irure exercitation dolor. Do culpa tempor culpa dolore dolore ad esse nisi voluptate irure.",
+    "address": "198 Chestnut Avenue, Cavalero, California, 5037",
+    "phone": "+1 (883) 543-2860",
+    "email": "pierce.faulkner@geekology.net",
+    "company": "GEEKOLOGY",
+    "lastName": "Faulkner",
+    "firstName": "Pierce",
+    "eyeColor": "green",
+    "age": 39,
+    "picture": "http://placehold.it/32x32",
+    "balance": "$3,701.21",
+    "isActive": false,
+    "guid": "b6599a4b-33f3-495a-ad0c-fc7fa652b86d",
+    "index": 4,
+    "_id": "59a4b39697d73e55c7ea5679"
+  },
+  {
+    "favoriteFruit": "apple",
+    "greeting": "Hello, Lopez! You have 7 unread messages.",
+    "friends": [
+      {
+        "name": "Barbara Hale",
+        "id": 0
+      },
+      {
+        "name": "Gladys Nolan",
+        "id": 1
+      },
+      {
+        "name": "Hopkins Leblanc",
+        "id": 2
+      }
+    ],
+    "_tags": [
+      "anim",
+      "occaecat",
+      "do",
+      "adipisicing",
+      "aliquip"
+    ],
+    "longitude": "14.944317",
+    "latitude": "35.630258",
+    "registered": "Monday, October 26, 2015 3:17 PM",
+    "about": "Ullamco consectetur dolor duis fugiat sint laboris voluptate ut aliquip veniam velit magna. Sit minim et officia reprehenderit voluptate irure aliqua irure occaecat. Duis occaecat id labore labore elit. Ullamco aliquip duis consectetur ex labore eiusmod sit do. Qui magna laborum ullamco laboris velit labore incididunt.",
+    "address": "824 Hunts Lane, Belmont, Ohio, 2349",
+    "phone": "+1 (848) 410-2892",
+    "email": "lopez.richmond@signidyne.biz",
+    "company": "SIGNIDYNE",
+    "lastName": "Richmond",
+    "firstName": "Lopez",
+    "eyeColor": "brown",
+    "age": 20,
+    "picture": "http://placehold.it/32x32",
+    "balance": "$2,085.57",
+    "isActive": false,
+    "guid": "9e42be70-74ad-46dd-bf99-392195b185b4",
+    "index": 5,
+    "_id": "59a4b396ac04dedf35843552"
+  },
+  {
+    "favoriteFruit": "strawberry",
+    "greeting": "Hello, Leanne! You have 5 unread messages.",
+    "friends": [
+      {
+        "name": "Saunders Myers",
+        "id": 0
+      },
+      {
+        "name": "Carey Sweet",
+        "id": 1
+      },
+      {
+        "name": "Britt Ashley",
+        "id": 2
+      }
+    ],
+    "_tags": [
+      "eiusmod",
+      "nulla",
+      "dolor",
+      "veniam",
+      "culpa"
+    ],
+    "longitude": "54.486737",
+    "latitude": "16.215374",
+    "registered": "Tuesday, May 2, 2017 7:52 PM",
+    "about": "In ut incididunt irure aute mollit reprehenderit incididunt excepteur sit sunt nulla Lorem. Dolore exercitation excepteur magna adipisicing aliquip sit incididunt mollit aute adipisicing. Culpa tempor voluptate proident magna occaecat in occaecat.",
+    "address": "676 Revere Place, Hamilton, Missouri, 4454",
+    "phone": "+1 (883) 466-3935",
+    "email": "leanne.sims@enthaze.io",
+    "company": "ENTHAZE",
+    "lastName": "Sims",
+    "firstName": "Leanne",
+    "eyeColor": "green",
+    "age": 31,
+    "picture": "http://placehold.it/32x32",
+    "balance": "$2,940.50",
+    "isActive": true,
+    "guid": "2f80bb89-e521-4e16-a3be-c9cf7670ebd9",
+    "index": 6,
+    "_id": "59a4b396124fb28eb9697045"
+  },
+  {
+    "favoriteFruit": "banana",
+    "greeting": "Hello, Roslyn! You have 8 unread messages.",
+    "friends": [
+      {
+        "name": "Scott Richards",
+        "id": 0
+      },
+      {
+        "name": "Mccoy Robinson",
+        "id": 1
+      },
+      {
+        "name": "Steele Bowers",
+        "id": 2
+      }
+    ],
+    "_tags": [
+      "sit",
+      "adipisicing",
+      "officia",
+      "enim",
+      "aute"
+    ],
+    "longitude": "-135.202761",
+    "latitude": "-44.390576",
+    "registered": "Wednesday, May 3, 2017 7:58 PM",
+    "about": "Qui nisi eiusmod adipisicing quis qui ullamco incididunt anim voluptate ea tempor in elit pariatur. Dolor ad cillum fugiat culpa culpa nulla aliqua sunt eiusmod. Ea magna et laborum dolor deserunt exercitation est proident ut veniam do Lorem ex. Commodo dolore fugiat laboris in mollit reprehenderit fugiat consequat sint consectetur duis officia.",
+    "address": "959 Lee Avenue, Austinburg, Delaware, 8897",
+    "phone": "+1 (802) 458-2659",
+    "email": "roslyn.wynn@geekola.tv",
+    "company": "GEEKOLA",
+    "lastName": "Wynn",
+    "firstName": "Roslyn",
+    "eyeColor": "green",
+    "age": 32,
+    "picture": "http://placehold.it/32x32",
+    "balance": "$3,163.30",
+    "isActive": true,
+    "guid": "7b200ff2-eb5d-4130-93e7-e71886326653",
+    "index": 7,
+    "_id": "59a4b396c3db56df15a3fe41"
+  },
+  {
+    "favoriteFruit": "apple",
+    "greeting": "Hello, Heath! You have 7 unread messages.",
+    "friends": [
+      {
+        "name": "Shelley Huffman",
+        "id": 0
+      },
+      {
+        "name": "Kari Bray",
+        "id": 1
+      },
+      {
+        "name": "Lana Savage",
+        "id": 2
+      }
+    ],
+    "_tags": [
+      "laborum",
+      "anim",
+      "fugiat",
+      "dolore",
+      "aute"
+    ],
+    "longitude": "-170.547274",
+    "latitude": "-75.616216",
+    "registered": "Saturday, May 16, 2015 11:25 PM",
+    "about": "Enim laborum reprehenderit enim eu eiusmod deserunt proident aliqua et commodo adipisicing Lorem anim. Laboris cillum veniam do sunt sunt commodo ipsum proident cupidatat magna ad labore. Laborum adipisicing occaecat enim laboris esse duis. Proident est eiusmod adipisicing ut incididunt qui magna aute esse sit exercitation exercitation exercitation Lorem. Eiusmod sit enim labore ex proident nostrud nisi veniam amet qui reprehenderit. Cupidatat nulla incididunt consectetur irure ut.",
+    "address": "635 Kane Place, Datil, Oklahoma, 3623",
+    "phone": "+1 (898) 472-3061",
+    "email": "heath.espinoza@ceprene.org",
+    "company": "CEPRENE",
+    "lastName": "Espinoza",
+    "firstName": "Heath",
+    "eyeColor": "blue",
+    "age": 33,
+    "picture": "http://placehold.it/32x32",
+    "balance": "$1,141.78",
+    "isActive": false,
+    "guid": "5eb2ae58-6a36-4fdd-aa82-5694f9b0f8c4",
+    "index": 8,
+    "_id": "59a4b39657a8cc60b3df90e4"
+  }
+  
+]

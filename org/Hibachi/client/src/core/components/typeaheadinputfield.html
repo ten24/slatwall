@@ -1,0 +1,17 @@
+ <div sw-typeahead-search 
+        data-collection-config="swTypeaheadInputField.typeaheadCollectionConfig"
+        data-placeholder-rb-key="{{swTypeaheadInputField.placeholderRbKey}}"
+        data-placeholder-text="{{swTypeaheadInputField.placeholderText}}"
+        data-add-function="swTypeaheadInputField.addFunction"
+        data-validate-required="swTypeaheadInputField.validateRequired"
+        data-all-records="swTypeaheadInputField.allRecords"
+        data-max-records="swTypeaheadInputField.maxRecords"
+        data-property-to-show="swTypeaheadInputField.propertyToShow"
+        data-search-text="swTypeaheadInputField.searchText"
+        data-initial-entity-id="{{swTypeaheadInputField.initialEntityId}}"
+        data-search-endpoint="{{swTypeaheadInputField.searchEndpoint}}"
+        data-title-text="{{swTypeaheadInputField.titleText}}"
+        >
+        <ng-transclude></ng-transclude>
+</div>
+<input type="hidden" readonly style="display:none" ng-model="swTypeaheadInputField.modelValue" name="{{swTypeaheadInputField.fieldName}}" value="{{swTypeaheadInputField.modelValue}}">

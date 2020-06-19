@@ -1,0 +1,12 @@
+ <a class="s-contents-page-title s-no-arrow"
+    ng-click=""    
+    >
+    <span style="margin-left:{{(swListingDisplayCell.pageRecord.depth*40)||0}}px;padding-left: 12px;"
+            ng-bind="swListingDisplayCell.value"
+            popover="{{swListingDisplay.replaceStringWithProperties(column.tooltip, pageRecord)}}"
+            popover-trigger="mouseenter"
+            popover-placement="bottom"
+            popover-popup-delay="50"
+            popover-append-to-body="true">
+    </span>
+</a>

@@ -1,0 +1,9 @@
+{
+	"properties":{
+		"eventStartDateTime": [{"required":true,"dataType":"date","ltDateTimeProperty":"eventEndDateTime", "gtNow":true}],
+		"eventEndDateTime": [{"required":true,"dataType":"date","gtNow":true}], 
+		"startReservationDateTime": [{"required":true,"dataType":"date","ltDateTimeProperty":"endReservationDateTime", "gtNow":true}],
+		"endReservationDateTime": [{"required":true,"dataType":"date","gtNow":true}]
+	}
+}
+

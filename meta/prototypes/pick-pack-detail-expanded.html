@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="slatwalladmin">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Products | Slatwall</title>
+        <link rel="icon" href="/assets/images/favicon.png" type="image/png">
+        <link rel="shortcut icon" href="/assets/images/favicon.png" type="image/png">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0">
+        <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+        <link href="/org/Hibachi/HibachiAssets/css/jquery-ui-1.9.2.custom.css" rel="stylesheet">
+        <link href="/admin/client/css/main.css" rel="stylesheet">
+        <link href="/assets/flags/css/flag-icon.min.css" rel="stylesheet">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,800,700" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+        <link href="/client/lib/metismenu/metismenu.css" rel="stylesheet">
+        <link href="/client/lib/ngTagsInput/ng-tags-input.css" rel="stylesheet">
+        <script type="text/javascript" src="/org/Hibachi/HibachiAssets/js/jquery-1.7.1.min.js"></script>
+        <script type="text/javascript" src="/org/Hibachi/HibachiAssets/js/jquery-ui-1.9.2.custom.min.js"></script>
+        <script type="text/javascript" src="/org/Hibachi/HibachiAssets/js/jquery-ui-timepicker-addon-1.3.1.js"></script>
+        <script type="text/javascript" src="/org/Hibachi/HibachiAssets/js/jquery-validate-1.9.0.min.js"></script>
+        <script type="text/javascript" src="/org/Hibachi/HibachiAssets/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="/org/Hibachi/HibachiAssets/js/jquery-typewatch-2.0.js"></script>
+        <script type="text/javascript" src="/client/lib/selectBoxIt/selectBoxIt.min.js"></script>
+        <script type="text/javascript" src="/org/Hibachi/HibachiAssets/js/hibachi-scope.js"></script><script type="text/javascript">(function( $ ){$.slatwall = new Hibachi({"rbLocale":"en_us","timeFormat":"hh:mm tt","instantiationKey":"56F7EDDC-C8DE-E248-23C7259A2EC812D9","debugFlag":true,"action":"slatAction","dateFormat":"mmm dd, yyyy","baseURL":""});})( jQuery );</script> 
+        <script type="text/javascript">
+            var hibachiConfig = $.slatwall.getConfig();
+        </script>
+        <script type="text/javascript" src="/org/Hibachi/HibachiAssets/js/global.js"></script>
+        <script type="text/javascript" src="/assets/js/admin.js"></script>
+        <script type="text/javascript" src="/org/Hibachi/ckeditor/ckeditor.js"></script>
+        <style>.cke{visibility:hidden;}</style>
+        <script type="text/javascript" src="/org/Hibachi/ckeditor/adapters/jquery.js"></script>
+        <script type="text/javascript" src="/org/Hibachi/ckfinder/ckfinder.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js"></script>
+    </head>
+    <body>
+        <section class="s-ds-header">
+            <div class="container">
+                <h1>Pick Pack Ship Detail View</h1>
+                <p>Example prototype of the pick pack ship detail view.</p>
+            </div>
+        </section>
+        <section class="container">
+            <div class="row">
+                <!---******Start pick pack ship detail******--->
+                <div class="col-md-12">
+                    <div class="row s-body-nav">
+                        <nav class="navbar navbar-default" role="navigation">
+                            <div class="col-md-6 s-header-info">
+                                <ul class="list-unstyled list-inline">
+                                </ul>
+                                <h1 class="actionbar-title">Batch - <span>Overnight Orders</span> </h1>
+							</div>
+							<div class="col-md-6">
+								<div class="btn-toolbar">
+									
+									<div class="btn-group btn-group-sm">
+										<button class="btn dropdown-toggle btn-default" data-toggle="dropdown"><i class="icon-list-alt"></i> Actions <span class="caret"></span></button>
+										<ul class="dropdown-menu pull-right">
+											<li>
+												<a  href="##" class="s-remove" target="_self">Delete</a>
+												<a  href="##" target="_self">Print Picking List</a>
+											</li> 
+											
+										</ul>
+									</div>
+								</div>
+                            </div>
+                        </nav>
+                    </div>
+                    <div class="row s-detail-modules-wrapper">
+						<div class="col-sm-6 col-md-6 col-lg-4 s-detail-module s-md-content-block">
+                            <div class="s-md-content-block-inner">
+                                <div class="s-title">Details</div>
+                                <div class="s-body">
+                                    <ul class="list-unstyled">
+                                        <li>
+                                            <div class="row s-line-item s-strong">
+                                                <div class="col-xs-6 s-title">ID:</div>
+                                                <div class="col-xs-6 s-value" >34534252345</div>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="row s-line-item">
+                                                <div class="col-xs-6 s-title s-select">Assigned To:</div>
+                                                <div class="col-xs-6 s-value">
+													
+													<div class="s-select-list-wrapper s-small-select s-search" id="j-single-location-view">
+													    <div class="form-group">
+													        <!-- Option select field wrapper -->
+													        <div class="input-group">
+													            <div class="s-input-btn">
+													            
+													                <input id="searchinput" type="search" value="Tom Evens" disabled="" class="input-sm form-control" placeholder="Search...">
+													                <span class="glyphicon glyphicon-remove"></span>
+													            
+													            </div>
+													            <div class="input-group-btn">
+													                <button class="btn btn-xs btn-default" type="submit"><i class="fa fa-caret-down"></i></button>
+													            </div>
+													        </div>
+													    </div>
+													    <!-- Dropdown wrapper -->
+													    <div class="dropdown s-search-results-wrapper" style="display: none;">
+													        <ul class="dropdown-menu" style="">
+													            <!-- Item-->
+													            <li>
+													                <a>
+													                    <div class="row">
+													                        <div class="col-xs-2 s-photo">
+													                            <img src="http://placehold.it/350x350">	
+													                        </div>
+													                        <div class="col-xs-10 s-info">
+													                            <div class="s-name">Reyjay Solares</div>
+													                            <div class="s-email">reinaldosolares@gmail.com</div>
+													                        </div>
+													                    </div>
+													                </a>
+													            </li>
+													            <!-- //Item-->
+													            <!-- Item-->
+													            <li>
+													                <a>
+													                    <div class="row">
+													                        <div class="col-xs-2 s-photo">
+													                            <img src="http://placehold.it/350x350">	
+													                        </div>
+													                        <div class="col-xs-10 s-info">
+													                            <div class="s-name">Reyjay Solares</div>
+													                            <div class="s-email">reinaldosolares@gmail.com</div>
+													                        </div>
+													                    </div>
+													                </a>
+													            </li>
+													            <!-- //Item-->
+													        </ul>
+													    </div>
+													</div>
+
+												</div>
+                                            </div>
+                                        </li>
+										<li>
+                                            <div class="row s-line-item">
+                                                <div class="col-xs-6 s-title">Location:</div>
+                                                <div class="col-xs-6 s-value">San Diego</div>
+                                            </div>
+                                        </li>
+										<li>
+                                            <div class="row s-line-item">
+                                                <div class="col-xs-6 s-title">Date Created:</div>
+                                                <div class="col-xs-6 s-value">05/23/15 - 3:30pm EST</div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+						
+						<div class="col-sm-6 col-md-6 col-lg-4 s-detail-module s-md-content-block">
+                            <div class="s-md-content-block-inner">
+                                <div class="s-title">Description</div>
+                                <div class="s-body">
+                                    <textarea class="form-control s-recipient-message">Donec sed odio dui. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.</textarea>
+                                </div>
+                            </div>
+                        </div>
+						
+						<div class="col-sm-6 col-md-6 col-lg-4 s-detail-module s-md-content-block">
+                            <div class="s-md-content-block-inner">
+                                <div class="s-title">
+                                    Status
+                                    <div class="dropdown s-action">
+                                        <a href="##" class="dropdown-toggle hide" id="dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="fa fa-ellipsis-h" title="actions"></i>
+                                        </a>
+                                        <ul class="dropdown-menu pull-right hide" aria-labelledby="dropdownMenu1">
+                                            <li><a href="#">Add Funds</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="s-body">
+                                    <ul class="list-unstyled">
+                                        <li>
+                                            <div class="row s-line-item s-strong">
+                                                <div class="col-xs-6 s-title">Fulfillments:</div>
+                                                <div class="col-xs-6 s-value" >200</div>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="row s-line-item">
+                                                <div class="col-xs-6 s-title">Completed:</div>
+                                                <div class="col-xs-6 s-value">100</div>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="row s-line-item">
+                                                <div class="col-xs-12">
+                                                    <div class="progress">
+                                                        <div class="progress-bar" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width:50%">
+                                                            50% 
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+						
+                    </div>
+                    <div class="row s-detail-content-wrapper">
+                        <div class="col-xs-12">
+                            <div class="s-detail-body">
+                                <div class="s-content-header">
+                                    <h2>Fulfillments</h2>
+                                    <span class="pull-right">
+                                        <div class="form-group s-default-search">
+                                            <input type="text" name="search" class="form-control" placeholder="Search">
+                                            <span class="s-search-action"><i class="fa fa-search"></i></span>
+                                        </div>
+                                    </span>
+                                </div>
+                                <div class="s-detail-notifications">
+									<div class="row">
+										<div class="col-sm-8">
+											<span>All <b>50</b> items on this page are selected.</span> 
+		                                    <a href="##">Select all <b>5,720</b> items</span></a>
+										</div>
+										<div class="col-sm-4" style="text-align:right;">
+											<form class="form-inline">
+												<select class="input-sm form-control">
+													<option value="">Fulfill Selected</option>
+													<option value="">Print Selected Pick List</option>
+													<option value="">Remove Selected</option>
+													<option value="">Put On Hold</option>
+												</select>
+												<button type="submit" class="btn btn-xs btn-primary">Apply</button>
+											</form>
+										</div>
+									</div>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered s-detail-content-table">
+                                        <thead>
+                                            <tr>
+                                                <th class="s-table-checkbox">
+                                                    <div class="s-checkbox">
+                                                        <input type="checkbox" id="exampleID">
+                                                        <label for="exampleID"></label>
+                                                    </div>
+                                                </th>
+                                                <th>
+                                                    Fulfillment <i class="fa fa-sort"></i>
+                                                </th>
+                                                <th>
+                                                    Date <i class="fa fa-sort"></i>
+                                                </th>
+                                                <th>
+                                                    Items
+                                                </th>
+                                                <th>
+                                                    Shipping <i class="fa fa-sort"></i>
+                                                </th>
+                                                <th>
+                                                    State <i class="fa fa-sort"></i>
+                                                </th>
+                                                <th>
+                                                    Inventory Status
+                                                </th>
+                                                <th>
+                                                    Action
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <style>
+                                            
+                                        </style>
+                                        <tbody>
+                                            <tr>
+                                                <td class="s-table-checkbox">
+                                                    <div class="s-checkbox">
+                                                        <input type="checkbox">
+                                                        <label for="exampleID"></label>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <a href="##">383745</a> 
+                                                    <div class="s-comments-wrapper">
+                                                        <a href="##" class="s-comments-link s-new">
+                                                            <i class="fa fa-comment"></i>
+                                                        </a>
+                                                        <!-- <div class="s-comment-items">
+                                                            <ul class="list-unstyled">
+                                                                <li class="s-comment-item">
+                                                                    <p>Integer posuere erat a ante venenatis dapibus posuere velit aliquet.</p>
+                                                                    <div class="s-info">
+                                                                        <span class="s-user">By: Reinaldo Solares -</span>
+                                                                        <span class="s-date"> 02/23/16 12:20pm</span>
+                                                                    </div>
+                                                                </li>
+                                                                <li class="s-comment-item">
+                                                                    <p>Integer posuere erat a ante venenatis dapibus posuere velit aliquet.</p>
+                                                                    <div class="s-info">
+                                                                        <span class="s-user">By: Reinaldo Solares</span> -
+                                                                        <span class="s-date"> 02/23/16 12:20pm</span>
+                                                                    </div>
+                                                                </li>
+                                                            </ul>
+                                                        </div> -->
+                                                    </div>
+                                                </td>
+                                                <td>11/2/15</td>
+                                                <td class="s-number">0</td>
+                                                <td>Overnight</td>
+                                                <td>California</td>
+                                                <td>
+                                                    <span class="s-success">
+                                                    Open
+                                                    </span>
+                                                </td>
+                                                <td class="admin admin2">
+                                                    <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                    <i class="fa fa-eye"></i> 
+                                                    </a> 
+                                                    <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                    <i class="fa fa-remove"></i> 
+                                                    </a> 
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="s-table-checkbox">
+                                                    <div class="s-checkbox">
+                                                        <input type="checkbox">
+                                                        <label for="exampleID"></label>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <a href="##">383745</a> 
+                                                    <div class="s-comments-wrapper">
+                                                        <a href="##" class="s-comments-link s-new">
+                                                            <i class="fa fa-comment"></i>
+                                                        </a>
+                                                    </div>
+                                                </td>
+                                                <td>11/2/15</td>
+                                                <td class="s-number">0</td>
+                                                <td>Overnight</td>
+                                                <td>California</td>
+                                                <td>
+                                                    <span class="s-success">
+                                                    Open
+                                                    </span>
+                                                </td>
+                                                <td class="admin admin2">
+                                                    <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                    <i class="fa fa-eye"></i> 
+                                                    </a> 
+                                                    <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                    <i class="fa fa-remove"></i> 
+                                                    </a> 
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="s-table-checkbox">
+                                                    <div class="s-checkbox">
+                                                        <input type="checkbox">
+                                                        <label for="exampleID"></label>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <a href="##">383745</a> 
+                                                    <div class="s-comments-wrapper">
+                                                        <a href="##" class="s-comments-link s-new">
+                                                            <i class="fa fa-comment"></i>
+                                                        </a>
+                                                    </div>
+                                                </td>
+                                                <td>11/2/15</td>
+                                                <td class="s-number">0</td>
+                                                <td>Overnight</td>
+                                                <td>California</td>
+                                                <td>
+                                                    <span class="s-success">
+                                                    Open
+                                                    </span>
+                                                </td>
+                                                <td class="admin admin2">
+                                                    <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                    <i class="fa fa-eye"></i> 
+                                                    </a> 
+                                                    <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                    <i class="fa fa-remove"></i> 
+                                                    </a> 
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="s-table-checkbox">
+                                                    <div class="s-checkbox">
+                                                        <input type="checkbox">
+                                                        <label for="exampleID"></label>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <a href="##">383745</a> 
+                                                    <div class="s-comments-wrapper">
+                                                        <a href="##" class="s-comments-link s-new">
+                                                            <i class="fa fa-comment"></i>
+                                                        </a>
+                                                    </div>
+                                                </td>
+                                                <td>11/2/15</td>
+                                                <td class="s-number">0</td>
+                                                <td>Overnight</td>
+                                                <td>California</td>
+                                                <td>
+                                                    <span class="s-success">
+                                                    Open
+                                                    </span>
+                                                </td>
+                                                <td class="admin admin2">
+                                                    <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                    <i class="fa fa-eye"></i> 
+                                                    </a> 
+                                                    <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                    <i class="fa fa-remove"></i> 
+                                                    </a> 
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="s-table-checkbox">
+                                                    <div class="s-checkbox">
+                                                        <input type="checkbox">
+                                                        <label for="exampleID"></label>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <a href="##">383745</a> 
+                                                    <div class="s-comments-wrapper">
+                                                        <a href="##" class="s-comments-link s-new">
+                                                            <i class="fa fa-comment"></i>
+                                                        </a>
+                                                    </div>
+                                                </td>
+                                                <td>11/2/15</td>
+                                                <td class="s-number">0</td>
+                                                <td>Overnight</td>
+                                                <td>California</td>
+                                                <td>
+                                                    <span class="s-success">
+                                                    Open
+                                                    </span>
+                                                </td>
+                                                <td class="admin admin2">
+                                                    <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                    <i class="fa fa-eye"></i> 
+                                                    </a> 
+                                                    <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                    <i class="fa fa-remove"></i> 
+                                                    </a> 
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="s-table-checkbox">
+                                                    <div class="s-checkbox">
+                                                        <input type="checkbox">
+                                                        <label for="exampleID"></label>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <a href="##">383745</a> 
+                                                    <div class="s-comments-wrapper">
+                                                        <a href="##" class="s-comments-link s-new">
+                                                            <i class="fa fa-comment"></i>
+                                                        </a>
+                                                    </div>
+                                                </td>
+                                                <td>11/2/15</td>
+                                                <td class="s-number">0</td>
+                                                <td>Overnight</td>
+                                                <td>California</td>
+                                                <td>
+                                                    <span class="s-success">
+                                                    Open
+                                                    </span>
+                                                </td>
+                                                <td class="admin admin2">
+                                                    <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                    <i class="fa fa-eye"></i> 
+                                                    </a> 
+                                                    <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                    <i class="fa fa-remove"></i> 
+                                                    </a> 
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="s-table-checkbox">
+                                                    <div class="s-checkbox">
+                                                        <input type="checkbox">
+                                                        <label for="exampleID"></label>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <a href="##">383745</a> 
+                                                    <div class="s-comments-wrapper">
+                                                        <a href="##" class="s-comments-link s-new">
+                                                            <i class="fa fa-comment"></i>
+                                                        </a>
+                                                    </div>
+                                                </td>
+                                                <td>11/2/15</td>
+                                                <td class="s-number">0</td>
+                                                <td>Overnight</td>
+                                                <td>California</td>
+                                                <td>
+                                                    <span class="s-success">
+                                                    Open
+                                                    </span>
+                                                </td>
+                                                <td class="admin admin2">
+                                                    <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                    <i class="fa fa-eye"></i> 
+                                                    </a> 
+                                                    <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                    <i class="fa fa-remove"></i> 
+                                                    </a> 
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="s-table-checkbox">
+                                                    <div class="s-checkbox">
+                                                        <input type="checkbox">
+                                                        <label for="exampleID"></label>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <a href="##">383745</a> 
+                                                    <div class="s-comments-wrapper">
+                                                        <a href="##" class="s-comments-link s-new">
+                                                            <i class="fa fa-comment"></i>
+                                                        </a>
+                                                    </div>
+                                                </td>
+                                                <td>11/2/15</td>
+                                                <td class="s-number">0</td>
+                                                <td>Overnight</td>
+                                                <td>California</td>
+                                                <td>
+                                                    <span class="s-success">
+                                                    Open
+                                                    </span>
+                                                </td>
+                                                <td class="admin admin2">
+                                                    <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                    <i class="fa fa-eye"></i> 
+                                                    </a> 
+                                                    <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                    <i class="fa fa-remove"></i> 
+                                                    </a> 
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="s-table-checkbox">
+                                                    <div class="s-checkbox">
+                                                        <input type="checkbox">
+                                                        <label for="exampleID"></label>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <a href="##">383745</a> 
+                                                    <div class="s-comments-wrapper">
+                                                        <a href="##" class="s-comments-link s-new">
+                                                            <i class="fa fa-comment"></i>
+                                                        </a>
+                                                    </div>
+                                                </td>
+                                                <td>11/2/15</td>
+                                                <td class="s-number">0</td>
+                                                <td>Overnight</td>
+                                                <td>California</td>
+                                                <td>
+                                                    <span class="s-success">
+                                                    Open
+                                                    </span>
+                                                </td>
+                                                <td class="admin admin2">
+                                                    <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                    <i class="fa fa-eye"></i> 
+                                                    </a> 
+                                                    <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                    <i class="fa fa-remove"></i> 
+                                                    </a> 
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="s-pagination-wrapper">
+                                <ul class="pagination">
+                                    <li><a href="#" class="paging-show-toggle">Show <span class="details">(1 - 10 of 2411)</span></a></li>
+                                    <li><a href="#" class="show-option" data-show="10" style="display: none;">10</a></li>
+                                    <li><a href="#" class="show-option" data-show="25" style="display: none;">25</a></li>
+                                    <li><a href="#" class="show-option" data-show="50" style="display: none;">50</a></li>
+                                    <li><a href="#" class="show-option" data-show="100" style="display: none;">100</a></li>
+                                    <li><a href="#" class="show-option" data-show="500" style="display: none;">500</a></li>
+                                    <li><a href="#" class="show-option" data-show="ALL" style="display: none;">ALL</a></li>
+                                    <li class="disabled"><a href="#" class="page-option prev">«</a></li>
+                                    <li class="active"><a href="#" class="listing-pager page-option" data-page="1">1</a></li>
+                                    <li><a href="#" class="listing-pager page-option" data-page="2">2</a></li>
+                                    <li><a href="#" class="listing-pager page-option" data-page="3">3</a></li>
+                                    <li><a href="#" class="listing-pager page-option" data-page="4">4</a></li>
+                                    <li><a href="#" class="listing-pager page-option" data-page="5">5</a></li>
+                                    <li><a href="#" class="listing-pager page-option" data-page="4">...</a></li>
+                                    <li><a href="#" class="listing-pager page-option" data-page="242">242</a></li>
+                                    <li><a href="#" class="listing-pager page-option next" data-page="2">»</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <br/>
+                    <br/><br/><br/><br/><!--- remove these --->
+                    <script>
+                        $('.s-detail-modules-wrapper .s-click').click(function(){
+                        	$(this).find('.s-sm-content-block').toggleClass('s-selected');
+                        });
+                    </script>
+                </div>
+            </div>
+        </section>
+        <!-- For now I am leaving this css in the design system.  It's only use is to format the design systems layout, and not effect any elements within -->
+        <style>
+            /*Overwirtes*/
+            body {
+            padding:0px;
+            }
+            /*Header*/
+            .s-ds-header {
+            background: #F58620;
+            color: #fff;
+            padding: 30px;
+            }
+            .s-ds-header h1 {
+            margin-top:0px;
+            }
+            .s-ds-header a {
+            color: #fff;
+            text-decoration: underline;
+            }
+            .s-ds-header a:hover {
+            color: #eee;
+            }
+            /*Sidebar*/
+            .s-ds-sidebar h2 {
+            font-size: 22px;
+            margin-bottom: 3px;
+            }
+            /*Type Object Group*/
+            .s-ds-type-group > h2 {
+            border-bottom: 2px solid #AAA;
+            font-weight: 600;
+            text-transform: uppercase;
+            }
+            .s-ds-obj-listing li {
+            margin-bottom: 10px;
+            }
+            .s-ds-type-item-objs .s-ds-type-item-obj {
+            padding: 20px;
+            background: #fff;
+            border-radius: 4px;
+            }
+        </style>
+        <script type="text/javascript" src="/client/lib/ngTagsInput/ng-tags-input.min.js"></script>
+        <script>
+            var app = angular.module('slatwalladmin', ['ngTagsInput']);
+            
+            app.controller('MainCtrl', function($scope, $http) {
+            	$scope.locations = [
+            	    { text: 'San Diego > ... > Floor c' },
+            	    { text: 'Tag2' },
+            	    { text: 'Tag3' }
+            	  ];
+            	 $scope.allLocations = [
+            	  { "text": "Tag1" },
+            	  { "text": "Tag2" },
+            	  { "text": "Tag3" },
+            	  { "text": "Tag4" },
+            	  { "text": "Tag5" },
+            	  { "text": "Tag6" },
+            	  { "text": "Tag7" },
+            	  { "text": "Tag8" },
+            	  { "text": "Tag9" },
+            	  { "text": "Tag10" }
+            	]
+            	$scope.loadLocations = function(query) {
+            		return $scope.allLocations;
+            	};
+            	$scope.placeholder = function(){
+            		if($scope.locations.length){
+            			
+            		};
+            	};
+            });
+            
+        </script>
+    </body>
+</html>

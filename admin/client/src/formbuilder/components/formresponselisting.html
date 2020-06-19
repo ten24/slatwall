@@ -1,0 +1,50 @@
+<div class="s-table-header-nav s-listing-head-margin"  ng-if="swFormResponseListing.columns.length && swFormResponseListing.pageRecords.length">
+    <div class="col-xs-6 s-table-view-options s-no-padding-right pull-right">
+        <ul class="list-inline list-unstyled">
+            <li class="s-table-action">
+                <div class="btn-group navbar-left dropdown">
+                    <button type="button" class="btn btn-no-style dropdown-toggle" aria-haspopup="true" aria-expanded="false"><i class="fa fa-cog"></i></button>
+                    <ul class="dropdown-menu pull-right" role="menu">
+                        <li>
+                            <a ng-click="swFormResponseListing.export()">
+                                <span sw-rbKey="'define.export'"></span> <span sw-rbKey="'admin.entity.formtabs.formResponses'"></span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+            <li class="s-table-header-search">
+                
+            </li>
+        </ul>
+    </div>
+</div>
+<div ng-if="swFormResponseListing.columns.length && swFormResponseListing.pageRecords.length" class="table-responsive s-listing-display-table-wrapper">
+	 <table id="" class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th class="data primary" data-ng-repeat="column in swFormResponseListing.columns">	
+                    <span ng-bind="column.question"></span>
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr id="{{record.formResponseID}}" data-ng-repeat="record in swFormResponseListing.pageRecords" >                
+                <td class="primary" ng-bind="record[column.questionID]" data-ng-repeat="column in swFormResponseListing.columns"></td>
+                <td>
+                	
+                	<a title="" class="adminentitydetailattribute btn btn-default btn-xs" target="_self" href="{{$root.buildUrl('entity.deleteFormResponse','formResponseID='+record.formResponseID)}}">
+						<i class="glyphicon glyphicon-trash"></i> 
+					</a>
+                </td>
+            </tr>
+        </tbody>
+	</table>
+    <sw-pagination-bar data-paginator="swFormResponseListing.paginator"></sw-pagination-bar>
+</div>
+<div ng-if="!swFormResponseListing.columns.length && !swFormResponseListing.pageRecords.length">
+    <div class="alert alert-info" role="alert">
+        <span sw-rbKey="'admin.define.nosearchresults'"></span>
+    </div>
+</div>								
