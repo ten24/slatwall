@@ -252,7 +252,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 	public any function convertSwAccountToIceDistributor(required any account){
 		
 		var distributorData = { 
-			'referenceID' = arguments.account.getAccountNumber(), //Potentially Slatwall ID (may only retain in MGB Hub) 
+			//'referenceID' = arguments.account.getAccountNumber(), //Potentially Slatwall ID (may only retain in MGB Hub) 
 			'distId'      = arguments.account.getAccountNumber(), //Slatwall will be master
 			'name'        = formatDistibutorName(arguments.account), // Distributor Name (lastname, firstname)
 			'distType'    = formatDistributorType(arguments.account.getAccountType()),//D (MP), P (VIP), C (Customer) 
@@ -268,11 +268,11 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 			distributorData['birthDate'] = dateFormat(arguments.account.getBirthDate(), 'yyyymmdd');//Member Birthday YYYYMMDD
 		}
 		
-		if(len(arguments.account.getRenewalDate())){
+		if( len(arguments.account.getRenewalDate()) ){
 			distributorData['renewalDate'] = dateFormat(arguments.account.getRenewalDate(), 'yyyymmdd');//Renewal Date (YYYYMMDD)
 		}
 		
-		if( arguments.account.getAccountGovernmentIdentificationsCount() ){
+		if( arguments.account.getAccountGovernmentIdentificationsCount() && len(arguments.account.getAccountGovernmentIdentifications()[1].getGovernmentIdentificationNumber()) ){
 			distributorData['governmentId'] = arguments.account.getAccountGovernmentIdentifications()[1].getGovernmentIdentificationNumber();//Government ID (Only necessary if using ICE for payout)
 		}
 		
@@ -280,7 +280,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 			distributorData['homePhone'] = left(formatNumbersOnly(arguments.account.getPhoneNumber()), 20);//Home Phone (NNNNNNNNNN)
 		}
 		
-		if(!isNull(arguments.account.getPrimaryAddress()) && !isNull(arguments.account.getPrimaryAddress().getAddress()) ){
+		if( !isNull(arguments.account.getPrimaryAddress()) && !isNull(arguments.account.getPrimaryAddress().getAddress()) ){
 			
 			distributorData['country']     = arguments.account.getPrimaryAddress().getAddress().getCountry().getCountryCode3Digit();//Member country(ISO Format) e.g. USA
 			distributorData['address1']    = left(arguments.account.getPrimaryAddress().getAddress().getStreetAddress(), 60);//Member Street Address
