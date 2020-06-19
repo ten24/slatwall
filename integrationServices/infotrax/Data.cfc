@@ -244,7 +244,7 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 				
 				if( structKeyExists(iceResponse, 'marketpartnerid') ){
 
-					if( !isNull(account.getUplineMPAccount() ){
+					if( !isNull(account.getUplineMPAccount()) ){
 						var oldUplineMPAccount = account.getUplineMPAccount(); 
 					} 			
 				

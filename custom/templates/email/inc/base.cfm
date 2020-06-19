@@ -1,11 +1,11 @@
 <cfscript>
-	function getEmailContent(required string attributeValue, required any emailTemplate){
+	function getEmailContent(required string attributeValue, required any emailTemplate, required string locale){
 		try{
 		    var emailContentType = getHibachiScope().getService("typeService").getTypeByTypeCode(
 		        arguments.attributeValue
 			);
 			var attributeValue = getHibachiScope().getService("attributeService").getAttributeValueByType(emailContentType)
-			return attributeValue.getFormattedValue(propertyName='attributeValue', locale=locale);		
+			return attributeValue.getFormattedValue(propertyName='attributeValue', locale=arguments.locale);		
 		}catch(e){
 			return '';
 		}
@@ -17,7 +17,7 @@
 	<cfoutput>
 
 	    <cfif emailTemplate.getAttributeValue('useGlobalHeaderAndFooterFlag')> 
-			#getEmailContent('#account.getAccountType()##account.getaccountCreatedSite().getRemoteID()#Header', emailTemplate)#
+			#getEmailContent(attributeValue='#account.getAccountType()##account.getaccountCreatedSite().getRemoteID()#Header', emailTemplate=emailTemplate, locale=locale)#
 		</cfif>
 		
 		<cfset local.emailBody = emailTemplate.getFormattedAttributeValue(attribute='#account.getAccountType()##account.getAccountCreatedSite().getRemoteId()#Body', formatType='language', locale=locale) />
@@ -29,7 +29,7 @@
 		 #templateObject.stringReplace( emailBody, true )#
 		
 		<cfif emailTemplate.getAttributeValue('useGlobalHeaderAndFooterFlag') >
-		    #getEmailContent('#account.getAccountType()##account.getaccountCreatedSite().getRemoteId()#Footer', emailTemplate)#
+		    #getEmailContent(attributeValue='#account.getAccountType()##account.getaccountCreatedSite().getRemoteId()#Footer', emailTemplate=emailTemplate, locale=locale)#
 		</cfif>
 		
 	</cfoutput>

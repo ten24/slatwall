@@ -74,6 +74,7 @@ Notes:
 		<swa:SlatwallSetting settingName="integrationmonatSiteVipEnrollmentOrderMinimum" settingObject="#rc.site#" />
 		<swa:SlatwallSetting settingName="siteOrderTemplateEligibleShippingMethods" settingObject="#rc.site#" />
 		<swa:SlatwallSetting settingName="siteInvoiceInformation" settingObject="#rc.site#" />
+		<swa:SlatwallSetting settingName="siteRenewalSkuID" settingObject="#rc.site#" />
 
 	
 	</swa:SlatwallSettingTable>

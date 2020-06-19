@@ -472,7 +472,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		var filenames = [];
 		var skuCollection = this.getSkusCollectionList();
 		skuCollection.setDisplayProperties('skuID,imageFile');
-		if(arguments.defaultSkuOnlyFlag) {
+		if(arguments.defaultSkuOnlyFlag && !isNull(getDefaultSku()) ) {
 			skuCollection.addFilter("skuID",getDefaultSku().getSkuID());
 		}
 		var skuCollectionRecords = skuCollection.getRecords();

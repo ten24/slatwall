@@ -11,7 +11,6 @@ class MonatProductListingController {
     public cmsContentFilterFlag:boolean;
     public pageRecordsShow:number = 40;
     public recordsCount:number;
-    public showAddToCardAlert;
     public callEndpoint = true;
     public showWishlist:boolean;
     public paginationMethod = 'getProductsByCategoryOrContentID';
@@ -30,7 +29,7 @@ class MonatProductListingController {
 		public ModalService,
 		private monatAlertService
 	) {
-        this.observerService.attach(() => this.showAddToCardAlert = true,"addOrderItemSuccess"); 
+        
 	}
 
     
@@ -54,10 +53,6 @@ class MonatProductListingController {
 	    if ( $('.product-img-section .wishlist .far').length ) {
 	        $('.product-img-section .wishlist .far').removeClass('far').addClass('fas no-hover')
 	    }
-	}
-	
-	public hideAlert = () =>{
-	    this.showAddToCardAlert = false
 	}
 	
 	public getWishlistItems = () => {
