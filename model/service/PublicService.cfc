@@ -1430,7 +1430,14 @@ component  accessors="true" output="false"
             arguments.data['cartDataOptions']='full';
         }
     
-        arguments.data.ajaxResponse = getHibachiScope().getCartData(cartDataOptions=arguments.data['cartDataOptions']);
+        var cartDataOptions = getHibachiScope().getCartData(cartDataOptions=arguments.data['cartDataOptions']);
+        
+        //Append fulfillment method with order items
+        for(var orderItem in cartDataOptions.orderItems) {
+            orderItem['skuFulfillmentMethods'] = getService('skuService').getSku(orderItem.sku.skuID).getEligibleFulfillmentMethodsWithShippingMethods();
+        }
+        
+        arguments.data.ajaxResponse = cartDataOptions;
     }
     
     public void function getAccountData(any data) {
