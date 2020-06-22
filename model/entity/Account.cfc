@@ -169,7 +169,7 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	property name="successfulFlexshipOrdersThisYearCount" persistent="false"; 
 	property name="saveablePaymentMethodsCollectionList" persistent="false";
 	property name="canCreateFlexshipFlag" persistent="false";
-	property name="subscribedToMailchimp" persistent="false";
+	property name="allowCorporateEmailsFlag" persistent="false";
 	property name="genderFullWord" persistent = "false";
 	property name="spouseFirstName" persistent = "false";
 	property name="spouseLastName" persistent = "false";
@@ -194,8 +194,6 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
  property name="gender" ormtype="string" hb_formFieldType="select";
  property name="accountNumber" ormtype="string";
  property name="careerTitle" ormtype="string" hb_formFieldType="select";
- property name="rank" ormtype="string";
- property name="uplineMarketPartnerNumber" ormtype="string";
  property name="referType" ormtype="string" hb_formFieldType="select";
  property name="profileImage" hb_fileUpload="true" hb_fileAcceptMIMEType="*/*" ormtype="string" hb_formFieldType="file";
  property name="terminationDate" ormtype="timestamp" hb_formatType="date";
@@ -1365,16 +1363,16 @@ public numeric function getSuccessfulFlexshipOrdersThisYearCount(){
 		return arrayLen(this.getPriceGroups()) <= 1;
 	}
 	
-	public boolean function getSubscribedToMailchimp(){
-		if(!structKeyExists(variables, 'subscribedToMailchimp')){
-			variables.subscribedToMailchimp = false;
+	public boolean function getAllowCorporateEmailsFlag(){
+		if(!structKeyExists(variables, 'allowCorporateEmailsFlag')){
+			variables.allowCorporateEmailsFlag = false;
 			
 			if(getHibachiScope().getLoggedInFlag() && getHibachiScope().hasService('MailchimpAPIService')){
-				variables.subscribedToMailchimp = getService('MailchimpAPIService').getSubscribedFlagByEmailAddress( getHibachiScope().account().getPrimaryEmailAddress().getEmailAddress() ); 	
+				variables.allowCorporateEmailsFlag = getService('MailchimpAPIService').getSubscribedFlagByEmailAddress( getHibachiScope().account().getPrimaryEmailAddress().getEmailAddress() ); 	
 			}
 		}
 		
-		return variables.subscribedToMailchimp;
+		return variables.allowCorporateEmailsFlag;
 	}
 	
 	public string function getProfileImageFullPath(numeric width = 250, numeric height = 250){

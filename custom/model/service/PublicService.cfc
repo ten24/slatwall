@@ -1112,8 +1112,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             }
             
             // Update subscription in Mailchimp.
-            if ( structKeyExists( arguments.data, 'subscribedToMailchimp' ) ) {
-                getService('MailchimpAPIService').updateSubscriptionByAccount( account, arguments.data.subscribedToMailchimp );
+            if ( structKeyExists( arguments.data, 'allowCorporateEmailsFlag' ) ) {
+                getService('MailchimpAPIService').updateSubscriptionByAccount( account, arguments.data.allowCorporateEmailsFlag );
             }
         }
         
