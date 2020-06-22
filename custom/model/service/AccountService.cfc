@@ -1,6 +1,6 @@
 component extends="Slatwall.model.service.AccountService" accessors="true" output="false" {
 	public string function getCustomAvailableProperties() {
-		return 'priceGroups.priceGroupCode,profileImage,createdDateTime,canCreateFlexshipFlag,accountCode,accountNumber,accountType,subscribedToMailchimp';
+		return 'priceGroups.priceGroupCode,profileImage,createdDateTime,canCreateFlexshipFlag,accountCode,accountNumber,accountType,allowCorporateEmailsFlag';
 	}
 	
 	public any function processAccountLoyalty_referAFriend(required any accountLoyalty, required struct data) {
