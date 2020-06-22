@@ -59,6 +59,7 @@ component  accessors="true" output="false"
     property name="hibachiSessionService" type="any";
     property name="hibachiUtilityService" type="any";
     property name="productService" type="any";
+    property name="skuService" type="any";
     property name="hibachiAuditService" type="any";
     property name="validationService" type="any";
     property name="hibachiService" type="any";
@@ -1434,7 +1435,7 @@ component  accessors="true" output="false"
         
         //Append fulfillment method with order items
         for(var orderItem in cartDataOptions.orderItems) {
-            orderItem['skuFulfillmentMethods'] = getService('skuService').getSku(orderItem.sku.skuID).getEligibleFulfillmentMethodsWithShippingMethods();
+            orderItem['skuFulfillmentMethods'] = getSkuService().getSku(orderItem.sku.skuID).getEligibleFulfillmentMethodsWithShippingMethods();
         }
         
         arguments.data.ajaxResponse = cartDataOptions;
