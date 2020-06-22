@@ -557,7 +557,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         //Remove any existing order payments
         //It's to remove default payment from order when adding any new method
-        if(!isNull(order) && !isNull(account) && order.getAccount().getAccountID() == account.getAccountID()) {
+        if(!isNull(order) && !isNull(order.getAccount()) && order.getAccount().getAccountID() == account.getAccountID()) {
             for( var orderPayment in order.getOrderPayments() ) {
                 if(orderPayment.isDeletable()) {
                     orderPayment.setBillingAddress(javacast('null',''));

@@ -1,0 +1,17 @@
+File: INSTALL.txt
+To install cfbarbecue open the cfbarbecue.zip file in your favorite
+ZIP program. The "com" directory should go in your application's web root.
+The "docs" folder may go wherever you please. All files in the "lib"
+folder must go in your ColdFusion classpath.
+
+ColdFusion Standalone:
+	/{ColdFusion Install Dir}/lib
+	
+ColdFusion Multi-Server:
+	/JRun4/servers/{server name}/cfusion.ear/cfusion.war/WEB-INF/cfusion/lib
+	
+JEE Deployment:
+	/{web-root}/WEB-INF/cfusion/lib
+	
+Your server must be restarted for ColdFusion to pick up the new libraries.
+
