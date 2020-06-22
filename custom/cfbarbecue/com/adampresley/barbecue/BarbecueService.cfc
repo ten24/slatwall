@@ -398,8 +398,8 @@
 			Adam Presley
 	--->
 	<cffunction name="__prepareVariables" returntype="void" access="private" output="false">
-		<cfset variables.barcodeFactory = createObject("java", "net.sourceforge.barbecue.BarcodeFactory") />
-		<cfset variables.imageHandler = createObject("java", "net.sourceforge.barbecue.BarcodeImageHandler") />
+		<cfset variables.barcodeFactory = createObject("java", "net.sourceforge.barbecue.BarcodeFactory","../../../lib/barbecue-1.5-beta1.jar") />
+		<cfset variables.imageHandler = createObject("java", "net.sourceforge.barbecue.BarcodeImageHandler","../../../lib/barbecue-1.5-beta1.jar") />
 	</cffunction>
 
 
