@@ -96,23 +96,27 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
         
         //Order Information
         var orderCollectionList = this.getOrderCollectionList();
+        orderCollectionList.setDisplayProperties('orderID, calculatedTotalQuantity, estimatedFulfillmentDateTime, currencyCode, calculatedSubTotalAfterItemDiscounts, orderCloseDateTime, calculatedDiscountTotal, calculatedTaxTotal, quoteFlag, calculatedTotalItems, calculatedTotal, calculatedSubTotal, orderOpenDateTime, calculatedFulfillmentTotal, orderNumber, modifiedDateTime, orderStatusType.typeName');
         orderCollectionList.addFilter( 'orderID', arguments.orderID, '=');
 		if( !superUser ) {
 			orderCollectionList.addFilter( 'account.accountID', arguments.accountID, '=');
 		}
 		
-		orderDetails['orderInfo'] = orderCollectionList.getRecords();
+		orderDetails['orderInfo'] = orderCollectionList.getRecords(formatRecords = false);
         
     	///Order Items Information
 		var ordersItemsCollectionList = this.getOrderItemCollectionList();
-		ordersItemsCollectionList.setDisplayProperties('quantity, price, calculatedExtendedPriceAfterDiscount, sku.product.productName, sku.product.productID, sku.skuID, sku.calculatedSkuDefinition');
+		ordersItemsCollectionList.setDisplayProperties('quantity, price, calculatedExtendedPriceAfterDiscount, sku.product.productName, sku.product.productID, sku.skuID, sku.calculatedSkuDefinition, sku.imageFile, sku.product.urlTitle');
 		ordersItemsCollectionList.addFilter( 'order.orderID', arguments.orderID, '=');
 		if( !superUser ) {
 			ordersItemsCollectionList.addFilter( 'order.account.accountID', arguments.accountID, '=');
 		}
 		
-		orderDetails['orderItems'] = ordersItemsCollectionList.getRecords(formatRecords = false);
-        
+		var orderItems = ordersItemsCollectionList.getRecords(formatRecords = false);
+		//Append images to products
+		orderItems = getService("productService").appendImagesToProduct(orderItems, "sku_imageFile", false);
+		
+        orderDetails['orderItems'] = orderItems;
 		
 		//Order Payments Information
 		var orderPaymentCollectionList = this.getOrderPaymentCollectionList();

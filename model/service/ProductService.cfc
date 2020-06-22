@@ -468,9 +468,10 @@ component extends="HibachiService" accessors="true" {
 	/** Function append Images to existing product List
 	 * @param - array of products
 	 * @param - image property name
+	 * @param - addAltImage - boolean to ignore alt images
 	 * @return - updated array of products
 	 **/
-	public array function appendImagesToProduct(required array products, required string propertyName="defaultSku_imageFile") {
+	public array function appendImagesToProduct(required array products, required string propertyName="defaultSku_imageFile", boolean addAltImage = true) {
 		if(arrayLen(arguments.products)) {
 			var missingImageSetting = getService('SettingService').getSettingValue('imageMissingImagePath');
 			var resizeSizes=['s','m','l','xl']; //add all sized images
@@ -494,7 +495,7 @@ component extends="HibachiService" accessors="true" {
 	        }
 	        
 	        //If there's only one product in response, add alternate images as well
-	        if(arrayLen(arguments.products) == 1) {
+	        if(arrayLen(arguments.products) == 1 && arguments.addAltImage ) {
 	        	//Modify image size to be used as size index
 	        	arguments.products[1]['altImages'] = this.getProduct(arguments.products[1].productID).getImageGalleryArray([{size='s'},{size='m'},{size='l'},{size='xl'}]);
 	        }
