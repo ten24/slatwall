@@ -59,6 +59,7 @@ component  accessors="true" output="false"
     property name="hibachiSessionService" type="any";
     property name="hibachiUtilityService" type="any";
     property name="productService" type="any";
+    property name="skuService" type="any";
     property name="hibachiAuditService" type="any";
     property name="validationService" type="any";
     property name="hibachiService" type="any";
@@ -1430,7 +1431,14 @@ component  accessors="true" output="false"
             arguments.data['cartDataOptions']='full';
         }
     
-        arguments.data.ajaxResponse = getHibachiScope().getCartData(cartDataOptions=arguments.data['cartDataOptions']);
+        var cartDataOptions = getHibachiScope().getCartData(cartDataOptions=arguments.data['cartDataOptions']);
+        
+        //Append fulfillment method with order items
+        for(var orderItem in cartDataOptions.orderItems) {
+            orderItem['skuFulfillmentMethods'] = getSkuService().getSku(orderItem.sku.skuID).getEligibleFulfillmentMethodsWithShippingMethods();
+        }
+        
+        arguments.data.ajaxResponse = cartDataOptions;
     }
     
     public void function getAccountData(any data) {
