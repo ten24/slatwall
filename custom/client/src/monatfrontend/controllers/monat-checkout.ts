@@ -82,28 +82,25 @@ class MonatCheckoutController {
 		}, 'addBillingAddressSuccess');
 		
 		this.observerService.attach( this.closeNewAddressForm, 'addNewAccountAddressSuccess' ); 
-		this.observerService.attach(this.updateAfterLogin.bind(this), 'createAccountSuccess' ); 
-		this.observerService.attach(this.updateAfterLogin.bind(this), 'loginSuccess' ); 
+		this.observerService.attach(this.handleAccountResponse, 'createAccountSuccess' ); 
+		this.observerService.attach(this.handleAccountResponse, 'getAccountSuccess' ); 
+		this.observerService.attach(this.handleAccountResponse, 'loginSuccess' ); 
 		
 		//TODO: delete these event listeners and call within function
 		this.observerService.attach(()=>{
-			this.getCurrentCheckoutScreen(false, true);
+			this.getCurrentCheckoutScreen(false, false);
 		}, 'addShippingAddressSuccess' ); 
 		
 		this.observerService.attach(()=>{
-			this.getCurrentCheckoutScreen(false, true);
+			this.getCurrentCheckoutScreen(false, false);
 		}, 'addOrderPaymentSuccess' ); 
 		
 		this.observerService.attach(()=>{
-			this.getCurrentCheckoutScreen(false, true);
+			this.getCurrentCheckoutScreen(false, false);
 		}, 'addShippingAddressUsingAccountAddressSuccess' ); 
 
 		this.observerService.attach(this.submitSponsor.bind(this), 'autoAssignSponsor' ); 
 		this.isLoading = true;
-		this.publicService.getAccount(true).then(res=>{
-			this.handleAccountResponse(res);
-		});
-		
 		
 		const currDate = new Date;
         this.currentYear = currDate.getFullYear();
@@ -116,7 +113,7 @@ class MonatCheckoutController {
 	}
 	
 	private getCurrentCheckoutScreen = (setDefault = false, hardRefresh = false):Screen | void => {
-
+		
 		return this.publicService.getCart(hardRefresh).then(data => {
 			let screen = Screen.ACCOUNT;
 			this.cart = data.cart; 
@@ -165,8 +162,9 @@ class MonatCheckoutController {
 		}
 		
 		let data = {
-			'shippingMethodID': option.value,
-			'fulfillmentID':orderFulfillment.orderFulfillmentID
+			shippingMethodID: option.value,
+			fulfillmentID:orderFulfillment.orderFulfillmentID,
+			returnJsonObjects:'cart'
 		}
 		
 		this.loading.selectShippingMethod = true;
@@ -348,7 +346,7 @@ class MonatCheckoutController {
 	public setCheckoutDefaults(){
 	
 		if(!this.publicService.cart.orderID.length || this.publicService.cart.orderRequirementsList.indexOf('fulfillment') === -1) return this.getCurrentCheckoutScreen(false, false);
-		this.publicService.doAction('setIntialShippingAndBilling').then(res=>{
+		this.publicService.doAction('setIntialShippingAndBilling',{returnJsonObjects:'cart'}).then(res=>{
 			this.cart = res.cart; 
 			this.getCurrentCheckoutScreen(false, false);
 		});
@@ -383,16 +381,10 @@ class MonatCheckoutController {
 		});
 	}
 	
-	public updateAfterLogin(){
-		this.publicService.getAccount(true).then(res => {
-			this.handleAccountResponse(res);
-		});
-	}
-	
-	public handleAccountResponse(data: {account:{[key:string]:any}, [key:string]:any}){
+	public handleAccountResponse = (data: {account:{[key:string]:any}, [key:string]:any})=>{
 		this.account = data.account;
 		let setDefault = true;
-		let hardRefresh = false;
+		let hardRefresh = true;
 	
 		if(this.account.accountStatusType && this.account.accountStatusType.systemCode == 'astEnrollmentPending' ) {
 			this.hasSponsor = false;

@@ -28,9 +28,9 @@ class HybridCartController {
 	
 	//@ngInject
 	constructor(public monatService, public observerService, public orderTemplateService, public publicService) {
-		this.observerService.attach(()=> this.getCart(true),'updateOrderItemSuccess');
-		this.observerService.attach(()=> this.getCart(true),'removeOrderItemSuccess');
-		this.observerService.attach(this.getCart.bind(this),'addOrderItemSuccess');
+		this.observerService.attach(this.getCart.bind(this,false),'updateOrderItemSuccess');
+		this.observerService.attach(this.getCart.bind(this,false),'removeOrderItemSuccess');
+		this.observerService.attach(this.getCart.bind(this,false),'addOrderItemSuccess');
 		this.observerService.attach(()=> this.getCart(true),'downGradeOrderSuccess');
 		this.observerService.attach(()=> this.showCart = false,'closeCart');
 
