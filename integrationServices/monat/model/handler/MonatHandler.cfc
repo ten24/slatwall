@@ -268,6 +268,14 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 					orderTemplate.setAccount(arguments.order.getAccount());
 				}
 				orderTemplate = getOrderService().processOrderTemplate_activate(orderTemplate, {}, {'context': 'upgradeFlow'});
+				
+				getDAO('HibachiEntityQueueDAO').insertEntityQueue(
+					baseID          = orderTemplate.getOrderTemplateID(),
+					baseObject      = 'OrderTemplate',
+					processMethod   = 'push',
+					entityQueueData = { 'event' = 'afterOrderTemplateProcess_activateSuccess' },
+					integrationID   = getService('integrationService').getIntegrationByIntegrationPackage('infotrax').getIntegrationID()
+				);
 		
 			}
 			
