@@ -1112,8 +1112,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             }
             
             // Update subscription in Mailchimp.
-            if ( structKeyExists( arguments.data, 'subscribedToMailchimp' ) ) {
-                getService('MailchimpAPIService').updateSubscriptionByAccount( account, arguments.data.subscribedToMailchimp );
+            if ( structKeyExists( arguments.data, 'allowCorporateEmailsFlag' ) ) {
+                getService('MailchimpAPIService').updateSubscriptionByAccount( account, arguments.data.allowCorporateEmailsFlag );
             }
         }
         
@@ -1379,7 +1379,23 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var siteCode = (arguments.data.cmsSiteID == 'default') ? '' : arguments.data.cmsSiteID;
         
         if ( len( arguments.data.keyword ) ) {
-            productCollectionList.addFilter('productName', '%#arguments.data.keyword#%', 'LIKE');
+            var locale = getHibachiScope().getSession().getRbLocale();
+            var sql = "SELECT 
+                        baseID 
+                        FROM swtranslation 
+                        WHERE locale=:locale 
+                        AND baseObject='Product' 
+                        AND basePropertyName='productName'
+                        AND value like :keyword";
+            var params = {
+                locale=locale,
+                keyword='%#arguments.data.keyword#%'
+            };
+            var productIDQuery = queryExecute(sql,params);
+            var productIDs = ValueList(productIDQuery.baseID);
+            
+            productCollectionList.addFilter(propertyIdentifier='productName',value='%#arguments.data.keyword#%', comparisonOperator='LIKE',filterGroup='keyword');
+            productCollectionList.addFilter(propertyIdentifier='productID',value=productIDs,comparisonOperator='IN',logicalOperator='OR',filterGroup='keyword');
         }
         
         var recordsCount = productCollectionList.getRecordsCount();

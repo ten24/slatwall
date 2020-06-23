@@ -66,6 +66,7 @@ class swfAccountController {
     ){
         
         this.observerService.attach(this.loginSuccess,"loginSuccess"); 
+        this.observerService.attach(this.getAccountData,"getAccountSuccess");
         
         this.observerService.attach(this.closeModals,"addNewAccountAddressSuccess"); 
         this.observerService.attach(this.closeModals,"addAccountPaymentMethodSuccess"); 
@@ -87,7 +88,7 @@ class swfAccountController {
     }
     
 	public $onInit = () =>{
-        this.getAccount();
+        // this.getAccount();
         if(this.$location.search().orderid){
             this.getOrderItemsByOrderID();
         }
@@ -110,8 +111,8 @@ class swfAccountController {
 	        window.location.href = data.redirect + '/my-account/';
 	        return;
 	    }
-	    this.getAccount();
-	    this.publicService.getCart(true);
+	    this.getAccountData(data);
+	   // this.publicService.getCart(true);
 	}
 	
 	private getRAFGiftCard = () => {
@@ -173,12 +174,20 @@ class swfAccountController {
         
         this.publicService.getAccount(true).then((response)=>{
             
-            this.accountData = response.account;
-            this.checkAndApplyAccountAge();
-            this.userIsLoggedIn = true;
+            this.getAccountData(response);
+            
+            this.loading = false;
+        });
+    }
+    
+    public getAccountData = (data)=>{
+        this.accountData = data.account;
+        this.checkAndApplyAccountAge();
+        this.userIsLoggedIn = this.accountData.accountID?.trim();
+        
+        if(this.accountData.accountID?.trim()){
             this.accountPaymentMethods = this.accountData.accountPaymentMethods;
             const url = window.location.pathname;
-            
             switch(true){
                 case (url.indexOf('/my-account/order-history/') > -1):
                     this.getOrdersOnAccount();
@@ -199,16 +208,16 @@ class swfAccountController {
             }
             
             if(this.accountData?.accountType =='marketPartner'){
+                this.loading=true;
                 this.publicService.doAction('getMPRenewalData').then(res=>{
                     if(res.renewalInformation){
                         this.renewalSku = res.renewalInformation.skuID;
                         this.showRenewalModal = true;
                     }
+                    this.loading = false;
                 })
             }
-            
-            this.loading = false;
-        });
+        }
     }
     
     // Determine how many years old the account owner is
@@ -222,7 +231,7 @@ class swfAccountController {
     public getMostRecentFlexship = () => {
         this.loading = true;
         const accountID = this.accountData.accountID;
-        return this.publicService.doAction("getMostRecentOrderTemplate", {'accountID': accountID}).then(result=>{
+        return this.publicService.doAction("getMostRecentOrderTemplate", {'accountID': accountID,'returnJsonObjects':''}).then(result=>{
             if(result.mostRecentOrderTemplate.length){
                 this.mostRecentFlexship = result.mostRecentOrderTemplate[0];
                 this.mostRecentFlexshipDeliveryDate = Date.parse(this.mostRecentFlexship.scheduleOrderNextPlaceDateTime);
@@ -238,7 +247,7 @@ class swfAccountController {
         this.loading = true;
         const accountID = this.accountData.accountID;
         this.ordersArgumentObject['accountID'] = accountID;
-        return this.publicService.doAction("getAllOrdersOnAccount", {'accountID' : accountID, 'pageRecordsShow': pageRecordsShow, 'currentPage': pageNumber}).then(result=>{
+        return this.publicService.doAction("getAllOrdersOnAccount", {'accountID' : accountID, 'pageRecordsShow': pageRecordsShow, 'currentPage': pageNumber,'returnJsonObjects':'cart'}).then(result=>{
             this.observerService.notify("PromiseComplete")
             this.ordersOnAccount = result.ordersOnAccount.ordersOnAccount;
             this.totalOrders = result.ordersOnAccount.records;
