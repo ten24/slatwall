@@ -72,7 +72,7 @@ Notes:
 <cfparam name="order" type="any" />
 
 <!-- Logo will only work on DEV or STAGING -->
-<cfif FindNoCase('ten24dev', cgi.server_name )>
+<cfif FindNoCase('ten24dev', cgi.server_name ) || true>
 	<cfset local.siteLink = "http://monat.ten24dev.com/" />
 <cfelse>
 	<cfset local.siteLink = "https://monatglobal.com/" />
@@ -83,12 +83,7 @@ Notes:
 <cfelse>
 	<cfset local.taxType = 'Tax'>
 </cfif>
-<cfdocument 
-	format="PDF" 
-	orientation="portrait"
-	authUser="ten24"
-	authPassword="40Blue96"
->
+
 	<cfset local.defaultTable = 'width: 100%; font-family: Arial, sans-serif; font-size: 11px; color: ##848484; border-collapse: collapse;' />
 	<cfoutput>
 		
@@ -106,8 +101,8 @@ Notes:
 									#order.getOrderCreatedSite().setting('siteInvoiceInformation') ?: ''#
 								</p>
 							</td>
-							<td width="33%" valign="top" style="text-align: right;">
-								<img src="#local.siteLink#themes/monat/assets/images/logo.svg" alt="Monat logo">
+							<td width="33%" valign="top">
+								<img src="/themes/monat/assets/images/logo.png" alt="Monat logo">
 							</td>
 							<td width="33%" valign="top" style="text-align: right;">
 								<table>
@@ -519,5 +514,5 @@ Notes:
 			
 		</table>
 	</cfoutput>
-</cfdocument>
+
 
