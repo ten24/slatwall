@@ -214,17 +214,6 @@ extends = "Slatwall.integrationServices.BaseTax" {
 				allItemsHaveDiscount = true;
 				requestDataStruct.Discount = orderDiscount;
 			}
-			
-			var orderFulfillmentDiscount = arguments.requestBean.getOrder().getFulfillmentDiscountAmountTotal();
-			
-			// Adds the fulfillment discount to the orderItems like the order discount
-			if (orderFulfillmentDiscount > 0){
-				if(structKeyExists(requestDataStruct, 'Discount')){
-					requestDataStruct.Discount += orderFulfillmentDiscount;
-				} else { 
-					requestDataStruct.Discount = orderFulfillmentDiscount;
-				}
-			}
 
 			// Loop over each unique item for this address
 			for(var item in addressTaxRequestItems) {
@@ -263,7 +252,7 @@ extends = "Slatwall.integrationServices.BaseTax" {
 					
 				}else if (item.getReferenceObjectType() == 'OrderFulfillment' && item.getOrderFulfillment().hasOrderFulfillmentItem()){
 					// Setup the itemData
-					var amount = item.getPrice();
+					var amount = item.getExtendedPriceAfterDiscount();
 					if( isNull(amount) || !len(amount) ){
 						amount = 0;
 					}
@@ -275,11 +264,7 @@ extends = "Slatwall.integrationServices.BaseTax" {
 					itemData.TaxCode = item.getTaxCategoryCode();
 					itemData.Qty = 1;
 					itemData.Amount = amount;
-					
-					if (orderFulfillmentDiscount > 0){
-						itemData.Discounted = true;
-					}
-					
+					itemData.Discounted = false;
 
 				}else if (item.getReferenceObjectType() == 'OrderReturn'){
 					// Setup the itemData
