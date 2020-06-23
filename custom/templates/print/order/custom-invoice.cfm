@@ -72,7 +72,7 @@ Notes:
 <cfparam name="order" type="any" />
 
 <!-- Logo will only work on DEV or STAGING -->
-<cfif FindNoCase('ten24dev', cgi.server_name ) || true>
+<cfif FindNoCase('ten24dev', cgi.server_name ) >
 	<cfset local.siteLink = "http://monat.ten24dev.com/" />
 <cfelse>
 	<cfset local.siteLink = "https://monatglobal.com/" />
