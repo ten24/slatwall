@@ -624,7 +624,10 @@ Notes:
 		){
 			arguments.removeMissingKeys = true;
 		}
-		return super.replaceStringTemplate(argumentCollection=arguments);
+
+		var returnString = super.replaceStringTemplate(argumentCollection=arguments);
+
+		return replaceFunctionTemplate(returnString);
 	}
 	
 	private array function getFunctionTemplateKeys(required string template){
@@ -669,7 +672,7 @@ Notes:
 		var templateKeys = getFunctionTemplateKeys(arguments.template);
 		var replacementArray = [];
 		var returnString = arguments.template;
-		
+
 		for(var i=1; i<=arrayLen(templateKeys); i++) {
 			var replaceDetails = {};
 			replaceDetails.key = templateKeys[i];
@@ -680,11 +683,11 @@ Notes:
 			var methodArgumentsStringArray = reMatchNoCase("\(.+\)",valueKey);
 			
 			if(arrayLen(methodArgumentsStringArray) && arrayLen(method)){
-				method = method[1];
+				method = trim(method[1]);
 				var methodArgumentsString = methodArgumentsStringArray[1];
 				methodArgumentsString = replace(replace(methodArgumentsString,"(",""),")","");
 				var methodArguments = listToArray(methodArgumentsString,',');
-				
+
 				if(arrayLen(methodArguments)){
 					switch(method){
 						case 'subtract':
@@ -698,6 +701,20 @@ Notes:
 							break;
 						case 'divide':
 							replaceDetails.value = this.divideItems(methodArguments);
+							break;
+						case 'dateAdd':
+							if( arrayLen( methodArguments ) >= 3 ){
+								var datePart = trim(methodArguments[1]);
+								var number = methodArguments[2];
+								var date = methodArguments[3];
+								for(var i = 4; i <= arrayLen( methodArguments ); i++){
+									date &= ','&methodArguments[ i ];
+								}
+								if(date == 'now()'){
+									date = now();
+								}
+								replaceDetails.value = dateFormat( dateAdd( datePart, number, date ), 'medium' );
+							}
 							break;
 					}
 				}
