@@ -87,7 +87,7 @@ class MonatEnrollmentController {
 						this.steps = this.steps.filter(el => reqList.indexOf(el.stepClass) == -1);
 						this.goToLastStep();
 					//if they have account with a username and upgraded order type, remove account steps and send to shop page
-					}else if(account.accountID.length && cart.monatOrderType?.typeCode.length && account.accountCode.length){
+					}else if(account.accountID.length && cart.monatOrderType?.typeCode.length){
 						this.hasSkippedSteps = true;
 						this.steps = this.steps.filter(el => reqList.indexOf(el.stepClass) == -1);
 					//if they have an account and an upgraded order remove create account
@@ -203,7 +203,14 @@ class MonatEnrollmentController {
 		
 		this.currentStepName = this.steps[this.position].stepClass;
 		this.steps[this.position].selected = true;
-		if(this.currentStepName == 'orderListing') this.flexshipShouldBeChecked = true;
+		if(this.currentStepName == 'orderListing'){
+			this.flexshipShouldBeChecked = true;	
+		} 
+		
+		if(this.account.accountID.length){
+			this.hasSkippedSteps = true;
+			this.steps = this.steps.filter(el => el.stepClass !== 'createAccount');
+		}
 	}
 	
 	public editFlexshipItems = () => {
