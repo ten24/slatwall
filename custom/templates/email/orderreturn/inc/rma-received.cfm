@@ -12,10 +12,10 @@
     			#NumberFormat(local.orderItem.getQuantityReceived())#
     		</td>
     		<td style="width: 15%; text-align: center;">
-    		    #DollarFormat(local.orderItem.getReferencedOrderItem().getCalculatedExtendedPriceAfterDiscount())#
+    		    #local.orderItem.getReferencedOrderItem().getFormattedValue(propertyName='extendedPriceAfterDiscount', locale = locale)#
     		</td>
     		<td style="width: 15%; text-align: center;">
-    		    #DollarFormat(local.orderItem.getCalculatedExtendedPriceAfterDiscount())#
+				#local.orderItem.getFormattedValue(propertyName='extendedPriceAfterDiscount', formatType='currency', locale = locale)#
     		</td>
     	</tr>
     </cfloop>

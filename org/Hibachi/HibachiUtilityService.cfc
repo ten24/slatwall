@@ -286,11 +286,15 @@
 		}
 
 		public any function formatValue_currency( required string value, struct formatDetails={} ) {
-			if(structKeyExists(arguments.formatDetails, "currencyCode") && len(arguments.formatDetails.currencyCode) == 3 ) {
-				return LSCurrencyFormat(arguments.value, arguments.formatDetails.currencyCode, getHibachiScope().getRBLocale());
+
+			if(!structKeyExists(arguments, 'formatDetails')){
+				arguments.formatDetails.locale = getHibachiScope().getRBLocale();   
 			}
-			// If no currency code was passed in then we can default to USD
-			return LSCurrencyFormat(arguments.value, "USD", getHibachiScope().getRBLocale());
+
+			if(structKeyExists(arguments.formatDetails, "currencyCode") && len(arguments.formatDetails.currencyCode) == 3 ) {
+				return LSCurrencyFormat(arguments.value, arguments.formatDetails.currencyCode, arguments.formatDetails.locale);
+			}
+			return LSCurrencyFormat(arguments.value, "local", arguments.formatDetails.locale);
 		}
 
 		public any function formatValue_datetime( required string value, struct formatDetails={} ) {
@@ -585,7 +589,7 @@
 		}
 
 		//replace single brackets ${}
-		public string function replaceStringTemplate(required string template, required any object, boolean formatValues=false, boolean removeMissingKeys=false, string templateContextPathList) {
+		public string function replaceStringTemplate(required string template, required any object, boolean formatValues=false, boolean removeMissingKeys=false, string templateContextPathList, string locale=getHibachiScope().getSession().getRbLocale()) {
 
 			var templateKeys = getTemplateKeys(arguments.template);
 			var replacementArray = [];
@@ -630,6 +634,8 @@
 						} else if(isStruct(arguments.object)) {
 							structAppend(local, arguments.object); 
 						}
+
+						local.locale = arguments.locale;
 
 						savecontent variable="templateBody" {
 							include '#templateContextPath#';
