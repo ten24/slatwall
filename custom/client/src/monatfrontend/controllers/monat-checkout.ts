@@ -57,6 +57,7 @@ class MonatCheckoutController {
 	) {}
 
 	public $onInit = () => {
+		this.cart = this.publicService.cart;
 		this.getCurrentCheckoutScreen(false,false);
 		this.observerService.attach((account)=>{
 		    if (this.$scope.Account_CreateAccount){
@@ -115,6 +116,8 @@ class MonatCheckoutController {
             this.yearOptions.push(manipulateableYear++);
         }
         while(this.yearOptions.length <= 9);
+        
+        this.handleAccountResponse({account:this.publicService.account});
 	}
 	
 	private getCurrentCheckoutScreen = (setDefault = false, hardRefresh = false):Screen | void => {
