@@ -119,9 +119,7 @@ export class MonatService {
 					this.successfulActions = data.successfulActions;
 					this.handleCartResponseActions(data); //call before setting this.cart to snapshot
 					this.updateCartPropertiesOnService(data);
-					if(data.successfulActions){
-						data.cart['successfulActions'] = data.successfulActions;
-					}
+
 					deferred.resolve(data.cart);
 					this.observerService.notify("updatedCart", data.cart);
 				} else {

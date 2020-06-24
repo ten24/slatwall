@@ -3,7 +3,7 @@ import { MonatService } from '@Monat/services/monatservice';
 class MonatFlexshipPaymentMethodModalController {
     public orderTemplate; 
     
-	public countryName;
+
 
 	public close; // injected from angularModalService
 
@@ -174,7 +174,6 @@ class MonatFlexshipPaymentMethodModal {
 	public templateUrl:string;
 	
 	public bindToController = {
-		countryName:'<',
 	    orderTemplate:'<',
 		close:'=' //injected by angularModalService
 	};

@@ -3,7 +3,6 @@ class MonatFlexshipListingController{
 	public orderTemplates: any[];
 	public accountAddresses: any[];
 	public accountPaymentMethods: any[];
-	public countryName:string;
 	public stateCodeOptions: any[];
 	public daysToEditFlexshipSetting:any;
 	public account:any;
@@ -112,9 +111,7 @@ class MonatFlexshipListing {
 	public restrict:string;
 	public templateUrl:string;
 	public scope = {};
-	public bindToController = {
-		countryName:"@?"
-	};
+	public bindToController = {};
 	public controller=MonatFlexshipListingController;
 	public controllerAs="monatFlexshipListing";
 

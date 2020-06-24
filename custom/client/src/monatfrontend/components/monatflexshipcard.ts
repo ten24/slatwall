@@ -1,8 +1,6 @@
 declare var hibachiConfig;
 
 class MonatFlexshipCardController {
-
-	public countryName: string;
 	public dayOfMonthFormatted: string;
 
 	public orderTemplate: any;
@@ -165,7 +163,6 @@ class MonatFlexshipCardController {
 			component: 'monatFlexshipPaymentMethodModal',
 			bodyClass: 'angular-modal-service-active',
 			bindings: {
-				countryName: this.countryName,
 				orderTemplate: this.orderTemplate
 			},
 			preClose: (modal) => {
@@ -189,7 +186,6 @@ class MonatFlexshipCardController {
 			component: 'monatFlexshipShippingMethodModal',
 			bodyClass: 'angular-modal-service-active',
 			bindings: {
-				countryName: this.countryName,
 				orderTemplate: this.orderTemplate
 			},
 			preClose: (modal) => {
@@ -280,7 +276,6 @@ class MonatFlexshipCard {
 	public templateUrl: string;
 	public scope = {};
 	public bindToController = {
-		countryName: '@?',
 		orderTemplate: '<',
 		daysToEditFlexship:'@?',
 	};
