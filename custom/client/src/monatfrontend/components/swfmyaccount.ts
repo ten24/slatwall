@@ -198,7 +198,7 @@ class swfAccountController {
                     break;
             }
             
-            if(this.accountData?.accountType =='marketPartner'){
+            if(this.accountData?.accountType?.toLowerCase() =='marketpartner'){
                 this.publicService.doAction('getMPRenewalData').then(res=>{
                     if(res.renewalInformation){
                         this.renewalSku = res.renewalInformation.skuID;
