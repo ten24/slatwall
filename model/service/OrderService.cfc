@@ -2721,7 +2721,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public any function updateReturnOrderWithAllocatedDiscounts(required any order, required any returnOrder, required any processObject){
-		var allocatedOrderDiscountAmount = arguments.processObject.getAllocatedOrderDiscountAmountTotal();
+
+		if(arguments.order.getSubtotalAfterItemDiscounts() != 0){
+			var subtotalRatio = arguments.returnOrder.getSubtotalAfterItemDiscounts() / arguments.order.getSubtotalAfterItemDiscounts();
+			var discount = arguments.order.getOrderDiscountAmountTotal() * subtotalRatio;
+			var allocatedOrderDiscountAmount = getService('HibachiUtilityService').precisionCalculate(discount);
+		}
+		
 		if(!isNull(allocatedOrderDiscountAmount) && allocatedOrderDiscountAmount > 0){
 			var promotionApplied = getService('PromotionService').newPromotionApplied();
 			promotionApplied.setOrder(returnOrder);

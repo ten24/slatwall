@@ -72,7 +72,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="saveAccountPaymentMethodFlag" hb_formFieldType="yesno" hb_populateEnabled="public";
 	property name="saveAccountPaymentMethodName" hb_rbKey="entity.accountPaymentMethod.accountPaymentMethodName" hb_populateEnabled="public";
 	property name="orderTypeCode" hb_formFieldType="select" hb_rbKey="entity.order.orderType";
-	property name="allocatedOrderDiscountAmountTotal";
+
 	property name="refundOrderItemList";
 	// Option Properties
     property name="returnReasonTypeOptions";
@@ -334,29 +334,4 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		return amount <= maxRefundAmount;
 	}
 	
-	// public numeric function getAllocatedOrderDiscountAmountTotal(){
-	// 	if( !structKeyExists( variables, 'allocatedOrderDiscountAmountTotal' ) ){
-	// 		var allocatedOrderDiscountAmount = 0;
-	// 		var orderItems = getOrderItems();
-	// 		for(var orderItemStruct in orderItems){
-	// 			allocatedOrderDiscountAmountTotal += getOrderItemAllocatedDiscountAmount(orderItemStruct);
-	// 		}
-	// 		variables.allocatedOrderDiscountAmountTotal = allocatedOrderDiscountAmountTotal;
-	// 	}
-	// 	return variables.allocatedOrderDiscountAmountTotal;
-	// }
-	
-	// private numeric function getOrderItemAllocatedDiscountAmount( required struct orderItemStruct ){
-	// 	// this.allocatedOrderDiscountAmount * this.refundTotal * 100 * this.maxRefund / Math.pow(this.total,2
-	// 	var allocatedDiscountAmount = 0;
-	// 	var orderItem = getService('OrderService').getOrderItem( arguments.orderItemStruct.orderItemID );
-	// 	var originalOrderItem = orderItem.getReferencedOrderItem();
-	// 	if( !isNull( originalOrderItem ) ){
-	// 		var originalAllocatedDiscountAmount = originalOrderItem.getAllocatedOrderDiscountAmount();
-	// 		if( !isNull(originalAllocatedDiscountAmount) ){
-				
-	// 		}
-	// 	}
-		
-	// }
 }
