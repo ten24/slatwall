@@ -2833,7 +2833,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 			returnOrderItem.setReferencedOrderItem( originalOrderItem );
 			returnOrderItem.setSkuPrice( originalOrderItem.getSkuPrice() );
-			returnOrderItem.setCurrencyCode( originalOrderItem.getSku().getCurrencyCode() );
+			returnOrderItem.setCurrencyCode( originalOrderItem.getCurrencyCode() );
 			returnOrderItem.setSku( originalOrderItem.getSku() );
 		}else{
 			
