@@ -362,10 +362,8 @@ component extends="Slatwall.model.service.OrderService" {
     }
     
     public any function updateReturnOrderWithAllocatedDiscounts(required any order, required any returnOrder, required any processObject){
-		var allocatedOrderDiscountAmount = arguments.processObject.getAllocatedOrderDiscountAmountTotal();
-		var allocatedOrderPVDiscountAmount = arguments.processObject.getAllocatedOrderPVDiscountAmountTotal();
-		var allocatedOrderCVDiscountAmount = arguments.processObject.getAllocatedOrderCVDiscountAmountTotal();
-		
+		var allocatedOrderDiscountAmount = arguments.returnOrder.getSubtotalAfterItemDiscounts() / arguments.order.getSubtotalAfterItemDiscounts();
+
 		if(!isNull(allocatedOrderDiscountAmount) && allocatedOrderDiscountAmount > 0){
 			var promotionApplied = getService('PromotionService').newPromotionApplied();
 			promotionApplied.setOrder(returnOrder);

@@ -333,4 +333,30 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		var maxRefundAmount = getOrder().getPaymentAmountReceivedTotal() - getOrder().getTotalAmountCreditedIncludingReferencingPayments();
 		return amount <= maxRefundAmount;
 	}
+	
+	// public numeric function getAllocatedOrderDiscountAmountTotal(){
+	// 	if( !structKeyExists( variables, 'allocatedOrderDiscountAmountTotal' ) ){
+	// 		var allocatedOrderDiscountAmount = 0;
+	// 		var orderItems = getOrderItems();
+	// 		for(var orderItemStruct in orderItems){
+	// 			allocatedOrderDiscountAmountTotal += getOrderItemAllocatedDiscountAmount(orderItemStruct);
+	// 		}
+	// 		variables.allocatedOrderDiscountAmountTotal = allocatedOrderDiscountAmountTotal;
+	// 	}
+	// 	return variables.allocatedOrderDiscountAmountTotal;
+	// }
+	
+	// private numeric function getOrderItemAllocatedDiscountAmount( required struct orderItemStruct ){
+	// 	// this.allocatedOrderDiscountAmount * this.refundTotal * 100 * this.maxRefund / Math.pow(this.total,2
+	// 	var allocatedDiscountAmount = 0;
+	// 	var orderItem = getService('OrderService').getOrderItem( arguments.orderItemStruct.orderItemID );
+	// 	var originalOrderItem = orderItem.getReferencedOrderItem();
+	// 	if( !isNull( originalOrderItem ) ){
+	// 		var originalAllocatedDiscountAmount = originalOrderItem.getAllocatedOrderDiscountAmount();
+	// 		if( !isNull(originalAllocatedDiscountAmount) ){
+				
+	// 		}
+	// 	}
+		
+	// }
 }
