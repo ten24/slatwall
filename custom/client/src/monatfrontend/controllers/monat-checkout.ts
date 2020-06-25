@@ -57,6 +57,8 @@ class MonatCheckoutController {
 	) {}
 
 	public $onInit = () => {
+		this.cart = this.publicService.cart;
+		this.getCurrentCheckoutScreen(false,false);
 		this.observerService.attach((account)=>{
 		    if (this.$scope.Account_CreateAccount){
 		        this.$scope.Account_CreateAccount.ownerAccount = account.accountID;
@@ -98,6 +100,10 @@ class MonatCheckoutController {
 		this.observerService.attach(()=>{
 			this.getCurrentCheckoutScreen(false, false);
 		}, 'addShippingAddressUsingAccountAddressSuccess' ); 
+		
+		this.observerService.attach(()=>{
+			this.getCurrentCheckoutScreen(false, false);
+		}, 'addShippingMethodUsingShippingMethodIDSuccess' ); 
 
 		this.observerService.attach(this.submitSponsor.bind(this), 'autoAssignSponsor' ); 
 		this.isLoading = true;
@@ -110,13 +116,19 @@ class MonatCheckoutController {
             this.yearOptions.push(manipulateableYear++);
         }
         while(this.yearOptions.length <= 9);
+        
+        this.handleAccountResponse({account:this.publicService.account});
 	}
 	
 	private getCurrentCheckoutScreen = (setDefault = false, hardRefresh = false):Screen | void => {
-		
+		if("undefined" == typeof this.cart){
+			hardRefresh = true;
+		}
 		return this.publicService.getCart(hardRefresh).then(data => {
+			if(hardRefresh){
+				this.cart = this.publicService.cart;
+			}
 			let screen = Screen.ACCOUNT;
-			this.cart = data.cart; 
 			this.calculateListPrice();
 			
 			if(this.cart.orderPayments?.length && this.cart.orderPayments[this.cart.orderPayments.length-1].accountPaymentMethod){
@@ -132,7 +144,7 @@ class MonatCheckoutController {
 				this.setCheckoutDefaults();
 				return;
 			} 
-
+			
 			if(this.cart.orderRequirementsList.indexOf('fulfillment') === -1){ 
 				screen = Screen.PAYMENT;
 			}else if(this.cart.orderRequirementsList.indexOf('account') === -1){
@@ -347,15 +359,16 @@ class MonatCheckoutController {
 	
 		if(!this.publicService.cart.orderID.length || this.publicService.cart.orderRequirementsList.indexOf('fulfillment') === -1) return this.getCurrentCheckoutScreen(false, false);
 		this.publicService.doAction('setIntialShippingAndBilling',{returnJsonObjects:'cart'}).then(res=>{
-			this.cart = res.cart; 
 			this.getCurrentCheckoutScreen(false, false);
 		});
 	}
 	
 	public calculateListPrice(){
 		this.listPrice = 0;
-		for(let item of this.cart.orderItems){
-			this.listPrice += (item.calculatedListPrice * item.quantity);
+		if(this.cart){
+			for(let item of this.cart.orderItems){
+				this.listPrice += (item.calculatedListPrice * item.quantity);
+			}
 		}
 	}
 	
