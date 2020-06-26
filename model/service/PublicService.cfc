@@ -1747,8 +1747,8 @@ component  accessors="true" output="false"
         var cart = getHibachiScope().getCart();
         
         var orderItemIDList = ListToArray(arguments.data.orderItemIDList);
-        
-        for(var orderItem in cart.getOrderItems()) {
+        var orderItems = cart.getOrderItems();
+        for(var orderItem in orderItems) {
             
             //Get List of eligible methods
             var eligibleFulfillmentMethods = listToArray(orderItem.getSku().setting("skuEligibleFulfillmentMethods"));
