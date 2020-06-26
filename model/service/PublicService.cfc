@@ -1734,6 +1734,48 @@ component  accessors="true" output="false"
         
         getHibachiScope().addActionResult( "public:cart.updateOrderFulfillment", cart.hasErrors() );
     }
+    
+    /**
+     * Method To change fulfillment method on existing order items
+     * @param - orderItemIDList
+     * @param - fulfillmentMethodID
+     * */
+    public void function changeOrderFulfillment(required any data) {
+        param name="orderItemIDList";
+        param name="fulfillmentMethodID";
+        
+        var cart = getHibachiScope().getCart();
+        
+        var orderItemIDList = ListToArray(arguments.data.orderItemIDList);
+        
+        for(var orderItem in cart.getOrderItems()) {
+            
+            //Get List of eligible methods
+            var eligibleFulfillmentMethods = listToArray(orderItem.getSku().setting("skuEligibleFulfillmentMethods"));
+            
+            //Check if item id exists, existing fulfillment method is different than the one we're passing, and new fulfillment should be eligible
+            if( ArrayContains(orderItemIDList, orderItem.getOrderItemID()) && orderItem.getOrderFulfillment().getFulfillmentMethod().getFulfillmentMethodID() != arguments.data.fulfillmentMethodID &&  ArrayContains(eligibleFulfillmentMethods, arguments.data.fulfillmentMethodID) ) {
+                
+                //Remove existing method
+                orderItem.removeOrderFulfillment(orderItem.getOrderFulfillment());
+                
+                //get fulfillment method
+                var fulfillmentMethod = getService('fulfillmentService').getFulfillmentMethod( arguments.data.fulfillmentMethodID );
+                
+                //create new method
+                var orderFulfillment = getService("OrderService").newOrderFulfillment();
+                orderFulfillment.setOrder( cart );
+                orderFulfillment.setFulfillmentMethod( fulfillmentMethod );
+				orderFulfillment.setCurrencyCode( cart.getCurrencyCode() );
+                
+                orderItem.setOrderFulfillment( orderFulfillment );
+            }
+        }
+        
+        getService("OrderService").saveOrder(getHibachiScope().getCart());
+        
+        getHibachiScope().addActionResult( "public:cart.changeOrderFulfillment", cart.hasErrors() );
+    }
 
 
     /** 
