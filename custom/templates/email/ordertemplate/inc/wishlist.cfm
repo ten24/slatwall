@@ -1,3 +1,4 @@
+<cfparam name="orderTemplate" />
 <cfoutput>
 <div style="background-color:transparent;">
    <div class="block-grid" style="Margin: 0 auto; min-width: 320px; max-width: 600px; overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; background-color: ##FFFFFF;">
