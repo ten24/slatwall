@@ -10,14 +10,13 @@
 					    orderitem.skuID as skuID, 
 					    orderitem.stockID as stockID 
 					    FROM SwOrderItem orderitem 
-					        inner join SwOrder ord on orderitem.orderID=ord.orderID  
+					        inner join SwOrder ord use INDEX (FKF6447F2AAFCD1B25) on orderitem.orderID=ord.orderID  
 					        inner join SwSku sku on orderitem.skuID=sku.skuID 
 					    WHERE sku.productID=:productID 
 					        and 
 					        	(
 					        		ord.orderStatusTypeID not in ('2c9180866b4d105e016b4e2666760029','444df2b8b98441f8e8fc6b5b4266548c','444df2b498de93b4b33001593e96f4be','444df2b90f62f72711eb5b3c90848e7e')
-				        		or
-					        		ord.paymentProcessingInProgressFlag = 1
+				        		
 					        	)
 					        and orderitem.orderItemTypeID='444df2e9a6622ad1614ea75cd5b982ce' 
 					    GROUP BY orderitem.skuID, orderitem.stockID
@@ -58,7 +57,7 @@
 					    stock.locationID as locationID,
 					    location.locationIDPath as locationIDPath
 					    FROM SwOrderItem orderitem 
-					        inner join SwOrder ord on orderitem.orderID=ord.orderID  
+					        inner join SwOrder ord use INDEX (FKF6447F2AAFCD1B25) on orderitem.orderID=ord.orderID  
 					        inner join SwSku sku on orderitem.skuID=sku.skuID 
 					        left join SwOrderDeliveryItem orderdeliveryitem on orderitem.orderItemID=orderdeliveryitem.orderItemID 
 					        left join SwStock stock on orderdeliveryitem.stockID=stock.stockID
