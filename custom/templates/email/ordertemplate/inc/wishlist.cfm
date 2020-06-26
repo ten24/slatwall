@@ -1,4 +1,12 @@
-<cfparam name="orderTemplate" />
+<cfparam name="orderTemplate" type="any" />
+<cfsilent>
+	<cfif FindNoCase('ten24dev', CGI.SERVER_NAME )>
+		<cfset local.siteLink = "http://monat.ten24dev.com/" />
+	<cfelse>
+		<cfset local.siteLink = "https://monatglobal.com/" />
+	</cfif>
+</cfsilent>
+
 <cfoutput>
 <div style="background-color:transparent;">
    <div class="block-grid" style="Margin: 0 auto; min-width: 320px; max-width: 600px; overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; background-color: ##FFFFFF;">
