@@ -3,7 +3,7 @@
 	<cfif FindNoCase('ten24dev', CGI.SERVER_NAME )>
 		<cfset local.siteLink = "http://monat.ten24dev.com/" />
 	<cfelse>
-		<cfset local.siteLink = "https://monatglobal.com/" />
+		<cfset local.siteLink = "https://www.monatglobal.com/" />
 	</cfif>
 </cfsilent>
 
