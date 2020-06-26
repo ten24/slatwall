@@ -4,7 +4,8 @@
 
 	<cfscript>
 	
-		public any function hibachiArrayMap(required array data, required any closure, numeric parallelThreadNumber){
+		public any function hibachiArrayMap(required array data, required any closure, numeric parallelThreadNumber, boolean debug = false){
+		
 			if(!structKeyExists(arguments, 'parallelThreadNumber')){
 				arguments.parallelThreadNumber = createObject( "java", "java.lang.Runtime" ).getRuntime().availableProcessors();
 			}
@@ -30,6 +31,8 @@
 					for(var threadResult in threadNameList){
 						if(!structKeyExists(cfthread[threadResult], 'error')){
 							arrayAppend(resultArray, trim(cfthread[threadResult]['output']));
+						}else if(arguments.debug){
+							throw(cfthread[threadResult].error);
 						}
 					}
 					threadNameList = '';
@@ -37,11 +40,14 @@
 			}
 			
 			if(len(threadNameList)){
+			
 				thread action="join" name=threadNameList;
 				
 				for(var threadResult in threadNameList){
 					if(!structKeyExists(cfthread[threadResult], 'error')){
 						arrayAppend(resultArray, trim(cfthread[threadResult]['output']));
+					}else if(arguments.debug){
+						throw(cfthread[threadResult].error);
 					}
 				}
 			}

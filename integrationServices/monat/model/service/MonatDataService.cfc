@@ -383,6 +383,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 					
 					orderItem.setCalculatedQuantityDelivered(val(orderItem.getCalculatedQuantityDelivered()) + item['QuantityShipped']);
 					orderItem.setCalculatedQuantityDeliveredMinusReturns(val(orderItem.getCalculatedQuantityDeliveredMinusReturns()) + item['QuantityShipped']);
+					ormStatelessSession.update("SlatwallOrderItem",orderItem);
                 }
                 
                 logHibachi("importOrderShipments - Created a delivery for orderNumber: #shipment['OrderNumber']#",true);
@@ -1289,7 +1290,12 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
                             	newInventory.setCreatedDateTime(getDateFromString(inventory['CreatedOn']));
                             	
                                 newInventory = getStockService().saveInventory(newInventory);
-                            	
+                                
+                                getDAO('HibachiEntityQueueDAO').insertEntityQueue(
+									baseID          = sku.getSkuID(),
+									baseObject      = 'Sku',
+									processMethod   = 'processSku_updateCalculatedProperties'
+								);
             		        }
             		    }
     			    }catch(e){

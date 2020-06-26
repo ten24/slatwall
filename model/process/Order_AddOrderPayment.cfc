@@ -153,7 +153,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		return variables.accountAddressID;
 	}
 
-	public string function getAccountAddressID() {
+	public string function getAddressID() {
 		if(!structKeyExists(variables, "addressID")) {
 			variables.addressID = "";
 		}

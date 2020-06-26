@@ -50,6 +50,8 @@ class swfAccountController {
     public purchasePlusTotal:number;
     public listPrice:number;
     public orderFees:number;
+    public showRenewalModal:boolean;
+    public renewalSku:string;
     
     // @ngInject
     constructor(
@@ -60,6 +62,7 @@ class swfAccountController {
         public rbkeyService,
         public monatAlertService,
     	public $location,
+    	public monatService
     ){
         
         this.observerService.attach(this.loginSuccess,"loginSuccess"); 
@@ -67,11 +70,11 @@ class swfAccountController {
         this.observerService.attach(this.closeModals,"addNewAccountAddressSuccess"); 
         this.observerService.attach(this.closeModals,"addAccountPaymentMethodSuccess"); 
         this.observerService.attach(this.closeModals,"addProductReviewSuccess"); 
+        
         this.observerService.attach(option => this.holdingWishlist = option,"myAccountWishlistSelected"); 
         this.observerService.attach(()=>{
     		this.monatAlertService.error(this.rbkeyService.rbKey('frontend.deleteAccountPaymentMethodFailure'));
         },"deleteAccountPaymentMethodFailure");
-        
         
         const currDate = new Date;
         this.currentYear = currDate.getFullYear();
@@ -193,6 +196,15 @@ class swfAccountController {
                     this.getOrdersOnAccount(1);
                     this.getMostRecentFlexship(); 
                     break;
+            }
+            
+            if(this.accountData?.accountType?.toLowerCase() =='marketpartner'){
+                this.publicService.doAction('getMPRenewalData').then(res=>{
+                    if(res.renewalInformation){
+                        this.renewalSku = res.renewalInformation.skuID;
+                        this.showRenewalModal = true;
+                    }
+                })
             }
             
             this.loading = false;
@@ -557,6 +569,21 @@ class swfAccountController {
 		.catch((error) => {
 			console.error('unable to open model :', error);
 		});
+	}
+	
+	public orderRenewalFee = () =>{
+	    this.loading = true;
+	    this.monatService.addToCart(this.renewalSku, 1).then(result =>{
+		    if(result.successfulActions &&
+				result.successfulActions.indexOf('public:cart.addOrderItem') > -1
+			) {
+			    this.monatAlertService.success(this.rbkeyService.rbKey('alert.flexship.addProductSuccessful')); 
+			    this.showRenewalModal = false;
+		    }else{
+		        throw(result);
+			}
+			this.loading = false;
+	    });
 	}
 }
 
