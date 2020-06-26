@@ -230,7 +230,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			if(orderItem.getOrderItemType().getSystemCode() == "oitSale") {
 				// Make sure that this order item is in the acceptable fulfillment list
 				if(arrayFind(promotionPeriodQualification.qualifiedFulfillmentIDs, orderItem.getOrderFulfillment().getOrderFulfillmentID())) {
-					if(true ||arguments.order.hasOrderTemplate()){
+					if(arguments.order.hasOrderTemplate()){
 						logHibachi('Order fulfillment in acceptable fulfillment list');
 					}
 					
@@ -241,12 +241,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 					// If the qualification count for this order item is > 0 then we can try to apply the reward
 					if(promotionPeriodQualification.orderItems[ orderItem.getOrderItemID() ]) {
-						if(true ||arguments.order.hasOrderTemplate()){
+						if(arguments.order.hasOrderTemplate()){
 							logHibachi('Order Item qualified');
 						}
 						// Check the reward settings to see if this orderItem applies
 						if( getOrderItemInReward(arguments.promotionReward, orderItem) ) {
-							if(true ||arguments.order.hasOrderTemplate()){
+							if(arguments.order.hasOrderTemplate()){
 								logHibachi('Order item in reward');
 							}
 							var qualificationQuantity = promotionPeriodQualification.orderItems[ orderItem.getOrderItemID() ];
@@ -345,7 +345,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 								}
 							}else{
-								if(true ||arguments.order.hasOrderTemplate()){
+								if(arguments.order.hasOrderTemplate()){
 									logHibachi('Discount amount 0, not applying #arguments.promotionReward.getPromotionPeriod().getPromotion().getPromotionName()#');
 								}
 							}
@@ -462,7 +462,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				var orderRewards = false;
 				for(var pr=1; pr<=arrayLen(promotionRewards); pr++) {
 					var reward = promotionRewards[pr];
-					if(true ||arguments.order.hasOrderTemplate() && ((!orderRewards && reward.getRewardType() != 'order') || (orderRewards && reward.getRewardType() == 'order') ) ){
+					if(arguments.order.hasOrderTemplate() && ((!orderRewards && reward.getRewardType() != 'order') || (orderRewards && reward.getRewardType() == 'order') ) ){
 						logHibachi('Checking #reward.getRewardType()# reward for #reward.getPromotionPeriod().getPromotion().getPromotionName()#');
 					}
 					// Setup the promotionReward usage Details. This will be used for the maxUsePerQualification & and maxUsePerItem up front, and then later to remove discounts that violate max usage
@@ -473,7 +473,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					}
 					// If this promotion period is ok to apply based on general useCount
 					if(promotionPeriodQualifications[ reward.getPromotionPeriod().getPromotionPeriodID() ].qualificationsMeet) {
-						if(true ||arguments.order.hasOrderTemplate() && ((!orderRewards && reward.getRewardType() != 'order') || (orderRewards && reward.getRewardType() == 'order') ) ){
+						if(arguments.order.hasOrderTemplate() && ((!orderRewards && reward.getRewardType() != 'order') || (orderRewards && reward.getRewardType() == 'order') ) ){
 							logHibachi('Qualifications met for #reward.getPromotionPeriod().getPromotion().getPromotionName()#');
 						}
 						// =============== Order Item Reward ==============
@@ -672,14 +672,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	private void function applyOrderItemDiscounts(required any order, required struct orderItemQualifiedDiscounts, required struct promotionRewardUsageDetails, array orderQualifierMessages){
-		if(true ||arguments.order.hasOrderTemplate()){
+		if(arguments.order.hasOrderTemplate()){
 			logHibachi('Applying Order Item discounts for order #arguments.order.getOrderID()#');
 		}
 		var promotionRewardUsageArray = getPromotionRewardUsageArray( arguments.promotionRewardUsageDetails );
 		var length = arrayLen(promotionRewardUsageArray);
 		
 		for(var i = 1; i <= length; i++){
-			if(true ||arguments.order.hasOrderTemplate()){
+			if(arguments.order.hasOrderTemplate()){
 				logHibachi('Discount #i#');
 			}
 			var promotionRewardUsage = promotionRewardUsageArray[i];
@@ -687,7 +687,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			if( i > 1 &&
 				!getUpdatedQualificationStatus( arguments.order, promotionRewardID, arguments.orderQualifierMessages, arguments.orderItemQualifiedDiscounts ) ){
-				if(true ||arguments.order.hasOrderTemplate()){
+				if(arguments.order.hasOrderTemplate()){
 					logHibachi('Reward #promotionRewardID# no longer qualified');
 				}
 				continue;
@@ -706,7 +706,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			for(var orderItem in orderItems) {
 				if(promotionRewardUsage.usedInOrder == promotionRewardUsage.maximumUsePerOrder){
-					if(true ||arguments.order.hasOrderTemplate()){
+					if(arguments.order.hasOrderTemplate()){
 						logHibachi('Reward #promotionRewardID# at max usage');
 					}
 					break;
@@ -809,30 +809,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		getHibachiScope().flushORMSession();
 		// Recheck qualification for order qualifiers only; merchandise / fulfillment qualifiers will not have changed
 		var promotionPeriod = promotionReward.getPromotionPeriod();
-		var qualifiers = promotionPeriod.getPromotionQualifiers();
-		var qualifierLogicalOperator = promotionPeriod.getQualifierLogicalOperator();
 		
-		if(!arrayLen(qualifiers)){
-			var qualified = true;
-		}else{
-			var qualified = false;
-			for(var qualifier in qualifiers){
-				if(qualifier.getQualifierType() != 'order'){
-					continue;
-				}
-				if(qualifier.hasOrderByOrderID(arguments.order.getOrderID())){
-					qualified = true;
-					break;
-				}else{
-					var promoQualifierMessages = qualifier.getPromotionQualifierMessages();
-					for(var promoQualifierMessage in promoQualifierMessages){
-						if(promoQualifierMessage.hasOrderByOrderID( arguments.order.getOrderID() )){
-							arrayAppend(arguments.orderQualifierMessages, promoQualifierMessage);
-						}
-					}	
-				}
-			}
-		}
+		var qualificationDetails = getPromotionPeriodQualificationDetails(promotionPeriod, arguments.order, arguments.orderQualifierMessages);
+		
+		var qualified = qualificationDetails.qualificationsMeet;
+		
 		if(structKeyExists(arguments, 'qualifiedDiscountsStruct')){
 			arguments.qualifiedDiscountsStruct.updatedQualifications[cacheKey] = qualified;
 		}
