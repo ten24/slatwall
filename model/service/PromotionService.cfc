@@ -732,7 +732,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					}
 				}
 			}
-			logHibachi('==============UPDATING CALC PROPS=================')
 			getHibachiScope().flushORMSession();
 			arguments.order.updateCalculatedProperties(runAgain=true,cascadeCalculateFlag=false)
 			getHibachiScope().flushORMSession();
