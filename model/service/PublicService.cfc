@@ -1747,6 +1747,19 @@ component  accessors="true" output="false"
         var cart = getHibachiScope().getCart();
         
         var orderItemIDList = ListToArray(arguments.data.orderItemIDList);
+        
+        var existingOrderFulfillment = "";
+        
+        //check if fulfillment method already exists on order
+        var allOrderFulfillments = cart.getOrderFulfillments();
+        for(var orderFulfillment in allOrderFulfillments) {
+            
+            //get existing fulfillment method based on fulfillment method ID
+            if(orderFulfillment.getFulfillmentMethod().getFulfillmentMethodID() == arguments.data.fulfillmentMethodID ) {
+                existingOrderFulfillment = orderFulfillment;
+            }
+        }
+        
         var orderItems = cart.getOrderItems();
         for(var orderItem in orderItems) {
             
@@ -1759,16 +1772,20 @@ component  accessors="true" output="false"
                 //Remove existing method
                 orderItem.removeOrderFulfillment(orderItem.getOrderFulfillment());
                 
-                //get fulfillment method
-                var fulfillmentMethod = getService('fulfillmentService').getFulfillmentMethod( arguments.data.fulfillmentMethodID );
+                if( !isEmpty(existingOrderFulfillment) ) {
+                    orderItem.setOrderFulfillment( existingOrderFulfillment );
+                } else {
+                    //get fulfillment method
+                    var fulfillmentMethod = getService('fulfillmentService').getFulfillmentMethod( arguments.data.fulfillmentMethodID );
                 
-                //create new method
-                var orderFulfillment = getService("OrderService").newOrderFulfillment();
-                orderFulfillment.setOrder( cart );
-                orderFulfillment.setFulfillmentMethod( fulfillmentMethod );
-				orderFulfillment.setCurrencyCode( cart.getCurrencyCode() );
-                
-                orderItem.setOrderFulfillment( orderFulfillment );
+                    //create new method
+                    var orderFulfillment = getService("OrderService").newOrderFulfillment();
+                    orderFulfillment.setOrder( cart );
+                    orderFulfillment.setFulfillmentMethod( fulfillmentMethod );
+    				orderFulfillment.setCurrencyCode( cart.getCurrencyCode() );
+                    
+                    orderItem.setOrderFulfillment( orderFulfillment );
+                }
             }
         }
         
