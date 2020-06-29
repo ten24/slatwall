@@ -380,11 +380,14 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 		            
 		            orderDeliveryItem.setStock(stock);
 		            
+		            orderDeliveryItem.setCreatedDateTime(orderDelivery.getCreatedDateTime());
+		            orderDeliveryItem.setModifiedDateTime(orderDelivery.getModifiedDateTime());
 		            
 					ormStatelessSession.insert("SlatwallOrderDeliveryItem", orderDeliveryItem);
 					
 					orderItem.setCalculatedQuantityDelivered(val(orderItem.getCalculatedQuantityDelivered()) + item['QuantityShipped']);
 					orderItem.setCalculatedQuantityDeliveredMinusReturns(val(orderItem.getCalculatedQuantityDeliveredMinusReturns()) + item['QuantityShipped']);
+					ormStatelessSession.update("SlatwallOrderItem",orderItem);
                 }
                 
                 logHibachi("importOrderShipments - Created a delivery for orderNumber: #shipment['OrderNumber']#",true);

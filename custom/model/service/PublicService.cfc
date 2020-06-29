@@ -2201,7 +2201,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 	}
 	
 	public void function setShippingSameAsBilling(order = getHibachiScope().getCart()){
-	    if(isNull(arguments.order.getOrderFulfillments()[1]) || isNull(arguments.order.getOrderFulfillments()[1].getShippingAddress())) return;
+	    if(!arrayLen(arguments.order.getOrderFulfillments()) || isNull(arguments.order.getOrderFulfillments()[1]) || isNull(arguments.order.getOrderFulfillments()[1].getShippingAddress())) return;
         var addressID = arguments.order.getOrderFulfillments()[1].getShippingAddress().getAddressID();
         super.addBillingAddress({addressID: addressID});
 	}
