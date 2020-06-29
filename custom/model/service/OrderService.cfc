@@ -362,26 +362,42 @@ component extends="Slatwall.model.service.OrderService" {
     }
     
     public any function updateReturnOrderWithAllocatedDiscounts(required any order, required any returnOrder, required any processObject){
-		var allocatedOrderDiscountAmount = arguments.processObject.getAllocatedOrderDiscountAmountTotal();
-		var allocatedOrderPVDiscountAmount = arguments.processObject.getAllocatedOrderPVDiscountAmountTotal();
-		var allocatedOrderCVDiscountAmount = arguments.processObject.getAllocatedOrderCVDiscountAmountTotal();
+		var discountAmounts = {};
 		
-		if(!isNull(allocatedOrderDiscountAmount) && allocatedOrderDiscountAmount > 0){
+		if(arguments.order.getSubtotalAfterItemDiscounts() != 0){
+			var subtotalRatio = arguments.returnOrder.getSubtotalAfterItemDiscounts() / arguments.order.getSubtotalAfterItemDiscounts();
+			var discount = arguments.order.getOrderDiscountAmountTotal() * subtotalRatio;
+			var allocatedOrderDiscountAmount = getService('HibachiUtilityService').precisionCalculate(discount);
+			discountAmounts['discountAmount'] = allocatedOrderDiscountAmount;
+		}
+		
+		if(!isNull(allocatedOrderDiscountAmount) && allocatedOrderDiscountAmount < 0){
+
 			var promotionApplied = getService('PromotionService').newPromotionApplied();
 			promotionApplied.setOrder(returnOrder);
+			
 			if( arguments.order.hasAppliedPromotion() ){
 				var originalPromo = arguments.order.getAppliedPromotions()[1].getPromotion();
 				if( !isNull(originalPromo) ){
 					promotionApplied.setPromotion( originalPromo );
 				}
 			}
-			promotionApplied.setDiscountAmount(allocatedOrderDiscountAmount * -1);
-			promotionApplied.setPersonalVolumeDiscountAmount(allocatedOrderPVDiscountAmount * -1);
-			promotionApplied.setCommissionableVolumeDiscountAmount(allocatedOrderCVDiscountAmount * -1);
+			
+			for(var priceField in variables.customPriceFields){
+				if(arguments.order.getCustomPriceFieldSubtotalAfterItemDiscounts(priceField) > 0){
+					var subtotalRatio = arguments.returnOrder.getCustomPriceFieldSubtotalAfterItemDiscounts(priceField) / arguments.order.getCustomPriceFieldSubtotalAfterItemDiscounts(priceField);
+					var discount = arguments.order.getOrderCustomDiscountAmountTotal(priceField) * subtotalRatio;
+					discountAmounts['#priceField#DiscountAmount'] = getService('HibachiUtilityService').precisionCalculate(discount);
+				}
+			}
+			for(var key in discountAmounts){
+				promotionApplied.invokeMethod('set#key#',{1=discountAmounts[key]});
+			}
 			
 			promotionApplied.setManualDiscountAmountFlag(true);
 			promotionApplied = getService('PromotionService').savePromotionApplied(promotionApplied);
 		}
+
 		return returnOrder;
 	}
 
