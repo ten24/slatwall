@@ -589,7 +589,9 @@ class swfAccountController {
 			    this.monatAlertService.success(this.rbkeyService.rbKey('alert.flexship.addProductSuccessful')); 
 			    this.showRenewalModal = false;
 		    }else{
-		        throw(result);
+		        let errorMessage = result.errors;
+	            this.monatAlertService.error(errorMessage);
+                this.loading = true;
 			}
 			this.loading = false;
 	    });
