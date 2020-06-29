@@ -15,6 +15,12 @@
 					createdDateTime TIMESTAMP
 				);
 			</cfquery>
+			<cfquery name="createOrderTemplateNumberColumn">
+			    ALTER TABLE swordertemplate 
+                    LOCK=NONE,
+                    ALGORITHM=INPLACE,
+                    ADD COLUMN orderTemplateNumber int(11);
+			</cfquery>
 		</cfif>
 		
 	</cfif>
