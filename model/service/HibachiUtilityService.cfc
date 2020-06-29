@@ -53,11 +53,15 @@ Notes:
 	<cfscript>
 		
 		public any function formatValue_currency( required string value, struct formatDetails={} ) {
-			if(structKeyExists(arguments.formatDetails, "currencyCode")) {
+			if(structKeyExists(arguments.formatDetails, 'currencyCode')) {
 				var currencySymbol = getCurrencySymbolByCurrencyCode(arguments.formatDetails.currencyCode);
 				if(!isNull(currencySymbol)){
 					return currencySymbol & LSNumberFormat(arguments.value, ',.__');
 				}
+			}
+
+			if(structKeyExists(arguments.formatDetails, 'locale')){
+				return LSCurrencyFormat(arguments.value, "local", arguments.formatDetails.locale);
 			}
 
 			// Otherwsie use the global currencyLocal
