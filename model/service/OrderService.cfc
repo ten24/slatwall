@@ -2792,7 +2792,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		replacementOrderItem.setOrder( returnOrder );
 
 		replacementOrderItem.setSkuPrice( originalOrderItem.getSkuPrice() );
-		replacementOrderItem.setCurrencyCode( originalOrderItem.getSku().getCurrencyCode() );
+		replacementOrderItem.setCurrencyCode( originalOrderItem.getCurrencyCode() );
 		replacementOrderItem.setSku( originalOrderItem.getSku() );
 		replacementOrderItem.setPrice( arguments.orderItemStruct.price );
 		replacementOrderItem.setSkuPrice( arguments.orderItemStruct.price );
@@ -2839,14 +2839,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 			returnOrderItem.setReferencedOrderItem( originalOrderItem );
 			returnOrderItem.setSkuPrice( originalOrderItem.getSkuPrice() );
-			returnOrderItem.setCurrencyCode( originalOrderItem.getSku().getCurrencyCode() );
 			returnOrderItem.setSku( originalOrderItem.getSku() );
 		}else{
 			
 			returnOrderItem.setSku(getService('skuService').getSku(arguments.orderItemStruct.sku.skuID));
-			returnOrderItem.setCurrencyCode( arguments.returnOrder.getCurrencyCode() );
 		}
 		
+		returnOrderItem.setCurrencyCode( arguments.returnOrder.getCurrencyCode() );
 		returnOrderItem.setPrice( arguments.orderItemStruct.price );
 		returnOrderItem.setSkuPrice( arguments.orderItemStruct.price );
 		returnOrderItem.setUserDefinedPriceFlag(true);

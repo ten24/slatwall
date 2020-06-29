@@ -122,7 +122,7 @@
 				<sw-simple-property-display object="#OrderJSON#" property="calculatedCommissionableVolumeSubtotal" title="Commissionable Volume Subtotal" edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
 				<sw-simple-property-display object="#OrderJSON#" property="calculatedCommissionableVolumeDiscountTotal" title="Commissionable Volume Discount Total" edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
 				<sw-simple-property-display object="#OrderJSON#" property="calculatedCommissionableVolumeTotal" title="Commissionable Volume Total" edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
-				<cfif rc.order.getVATTotal() GT 0 >
+				<cfif rc.order.getVATTotal() NEQ 0 >
 					<sw-simple-property-display object="#OrderJSON#" property="calculatedVATTotal" title="VAT Total" currency-flag="true"  edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
 				</cfif>
 				<sw-simple-property-display object="#OrderJSON#" property="calculatedSubTotal" title="Subtotal" currency-flag="true" edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>

@@ -58,7 +58,7 @@ Notes:
 	    isSearchable=true,
 	    isDeletable=true
 	}) >
-	<cfif rc.order.getVATTotal() GT 0 >
+	<cfif rc.order.getVATTotal() NEQ 0 >
 		<cfset local.collectionOrderFulfillmentList.addDisplayProperty(displayProperty="chargeVATAmount",columnConfig={isVisible=true,isDeletable=true})>
 	<cfelse>
 		<cfset local.collectionOrderFulfillmentList.addDisplayProperty(displayProperty="chargeTaxAmount",columnConfig={isVisible=true,isDeletable=true})>
