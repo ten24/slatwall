@@ -89157,12 +89157,14 @@ var PublicRequest = /** @class */ (function (_super) {
             _this.successfulActions = result.successfulActions;
             for (var i in _this.successfulActions) {
                 var successfulAction = _this.successfulActions[i];
-                _this.observerService.notify(successfulAction.split('.')[1] + 'Success', result.data);
+                var data_1 = result.data ? result.data : result;
+                _this.observerService.notify(successfulAction.split('.')[1] + 'Success', data_1);
             }
             _this.failureActions = result.failureActions;
             for (var i in _this.failureActions) {
                 var failureAction = _this.failureActions[i];
-                _this.observerService.notify(failureAction.split('.')[1] + 'Failure', result.data);
+                var data_2 = result.data ? result.data : result;
+                _this.observerService.notify(failureAction.split('.')[1] + 'Failure', data_2);
             }
             _this.messages = result.messages;
         }).catch(function (response) {
@@ -92523,7 +92525,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var PublicService = /** @class */ (function () {
     ///index.cfm/api/scope/
     //@ngInject
-    function PublicService($http, $q, $window, $location, $hibachi, $injector, requestService, accountService, accountAddressService, cartService, orderService, observerService, appConfig, $timeout, hibachiAuthenticationService) {
+    function PublicService($http, $q, $window, $location, $hibachi, $injector, requestService, accountService, accountAddressService, cartService, orderService, observerService, appConfig, $timeout, hibachiAuthenticationService, sessionStorageCache, inMemoryCache) {
         var _this = this;
         this.$http = $http;
         this.$q = $q;
@@ -92540,6 +92542,8 @@ var PublicService = /** @class */ (function () {
         this.appConfig = appConfig;
         this.$timeout = $timeout;
         this.hibachiAuthenticationService = hibachiAuthenticationService;
+        this.sessionStorageCache = sessionStorageCache;
+        this.inMemoryCache = inMemoryCache;
         this.requests = {};
         this.errors = {};
         this.baseActionPath = "";
@@ -92628,7 +92632,6 @@ var PublicService = /** @class */ (function () {
         };
         this.refreshAddressOptions = function (address) {
             _this.getStates(null, address);
-            _this.getAddressOptions(null, address);
         };
         this.getStateByStateCode = function (stateCode) {
             if (!angular.isDefined(_this.states) || !angular.isDefined(_this.states.stateCodeOptions) || !angular.isDefined(stateCode)) {
@@ -92765,7 +92768,6 @@ var PublicService = /** @class */ (function () {
             }
             else {
                 urlBase += (urlBase.indexOf('?') == -1) ? '?' : '&';
-                urlBase += "returnJsonObject=cart,account";
                 if (_this.cmsSiteID) {
                     urlBase += "&cmsSiteID=" + _this.cmsSiteID;
                 }
@@ -92850,6 +92852,7 @@ var PublicService = /** @class */ (function () {
             if (response.cart) {
                 _this.cart.populate(response.cart);
                 _this.cart.request = request;
+                _this.putIntoSessionCache("cachedCart", response.cart);
             }
             _this.errors = response.errors;
             if (response.messages) {
@@ -93051,7 +93054,7 @@ var PublicService = /** @class */ (function () {
             if (_this.cart.orderFulfillments[fulfillmentIndex] && _this.cart.orderFulfillments[fulfillmentIndex].accountAddress) {
                 oldAccountAddressID = _this.cart.orderFulfillments[fulfillmentIndex].accountAddress.accountAddressID;
             }
-            _this.doAction('addShippingAddressUsingAccountAddress', { accountAddressID: accountAddressID, fulfillmentID: orderFulfillmentID }).then(function (result) {
+            _this.doAction('addShippingAddressUsingAccountAddress', { accountAddressID: accountAddressID, fulfillmentID: orderFulfillmentID, returnJsonObjects: 'cart' }).then(function (result) {
                 if (result && result.failureActions && result.failureActions.length) {
                     _this.$timeout(function () {
                         if (oldAccountAddressID) {
@@ -93942,6 +93945,28 @@ var PublicService = /** @class */ (function () {
         this.hibachiAuthenticationService = hibachiAuthenticationService;
         this.setOrderConfirmationUrl();
     }
+    PublicService.prototype.enforceCacheOwner = function (key) {
+        var _a;
+        var cacheOwner = ((_a = hibachiConfig.accountID) === null || _a === void 0 ? void 0 : _a.trim()) || "unknown";
+        if (this.sessionStorageCache.get("cacheOwner") !== cacheOwner) {
+            console.log("enforceCacheOwner: owner changed, \n\t\t\t\t setting new owner to: " + cacheOwner + " from: " + this.sessionStorageCache.get("cacheOwner") + ",\n\t\t\t\t and clearing cache for " + key + "\n\t\t\t    ");
+            this.sessionStorageCache.remove(key);
+            this.sessionStorageCache.put("cacheOwner", cacheOwner);
+            return false;
+        }
+        return true;
+    };
+    PublicService.prototype.getFromSessionCache = function (key) {
+        return this.enforceCacheOwner(key) ? this.sessionStorageCache.get(key) : undefined;
+    };
+    PublicService.prototype.putIntoSessionCache = function (key, value) {
+        this.enforceCacheOwner(key);
+        this.sessionStorageCache.put(key, value);
+    };
+    PublicService.prototype.removeFromSessionCache = function (key) {
+        this.enforceCacheOwner(key);
+        this.sessionStorageCache.remove(key);
+    };
     PublicService.prototype.authenticateEntityProperty = function (crudType, entityName, propertyName) {
         return this.hibachiAuthenticationService.authenticateEntityPropertyCrudByAccount(crudType, entityName, propertyName);
     };
