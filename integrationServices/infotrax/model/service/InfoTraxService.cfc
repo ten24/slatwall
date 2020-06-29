@@ -346,7 +346,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 	public any function convertSwOrderTemplateToIceAutoship(required any orderTemplate){
 		var autoshipData = { 
 			'distId'            = arguments.orderTemplate.getAccount().getAccountNumber(), //Distributor ID
-			'autoshipNumber'    = arguments.orderTemplate.getShortReferenceID(true), //Autoship Number
+			'autoshipNumber'    = arguments.orderTemplate.getOrderTemplateNumber(), //Autoship Number
 			//'marketingUnit'     = 0, //Source Marketing Unit, will default
 			'salesVolume'       = arguments.orderTemplate.getCalculatedPersonalVolumeTotal(),//Autoship SalesVolume
 			'qualifyingVolume'  = arguments.orderTemplate.getCalculatedPersonalVolumeTotal(),//Autoship Qualifying Volume

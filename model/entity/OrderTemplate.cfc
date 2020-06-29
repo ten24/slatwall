@@ -51,6 +51,7 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	// Persistent Properties
 	property name="orderTemplateID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="orderTemplateName" ormtype="string" hb_populateEnabled="public";
+	property name="orderTemplateNumber" ormtype="integer";
 	property name="scheduleOrderNextPlaceDateTime" ormtype="timestamp";
 	property name="scheduleOrderDayOfTheMonth" ormtype="integer";
 	property name="addToEntityQueueFlag" ormtype="boolean" default="false";
@@ -164,6 +165,20 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 	property name="scheduleOrderNextPlaceDateTimeMinusOne" persistent="false" hb_formatType="dateTime"; 
 	
 //CUSTOM PROPERTIES END
+
+	public any function getOrderTemplateNumber(){
+		if(!getNewFlag() && !structKeyExists(variables,'accountNumber') && !isNull(this.getOrderTemplateStatusType()) && this.orderTemplateStatusType().getSystemCode() == 'otstActive'){
+			var maxOrderTemplateNumberQuery = new query();
+			maxOrderTemplateNumberQuery.setSQL('insert into swordertemplatenumber (orderTemplateID,createdDateTime) VALUES (:orderTemplateID,:createdDateTime)');
+			maxOrderTemplateNumberQuery.addParam(name="orderTemplateID",value=this.getOrderTemplateID());
+			maxOrderTemplateNumberQuery.addParam(name="createdDateTime",value=now(),cfsqltype="cf_sql_timestamp" );
+			variables.orderTemplateNumber = maxOrderTemplateNumberQuery.execute().getPrefix().generatedKey;
+		}
+	
+		if(!isNull(variables.orderTemplateNumber)){
+			return variables.orderTemplateNumber;
+		}
+	}
 	public string function getEncodedJsonRepresentation(string nonPersistentProperties='calculatedSubTotal,calculatedFulfillmentTotal,calculatedFulfillmentDiscount,calculatedTotal'){ 
 		return getService('hibachiUtilityService').hibachiHTMLEditFormat(serializeJson(getStructRepresentation(arguments.nonPersistentProperties)));
 	} 
