@@ -2360,19 +2360,20 @@ public numeric function getPersonalVolumeSubtotal(){
 				);
 	}
 	
-	public numeric function getPurchasePlusTotal(){
-
+	public numeric function getPurchasePlusTotal(bustCache = false){
+	
 		var purchasePlusRecords = getService('orderService').getPurchasePlusInformationForOrderItems(this.getOrderID());
 		var total = 0;
-
-		if(!isArray(purchasePlusRecords)){
-			purchasePlusRecords = purchasePlusRecords.getRecords();
-			for (var item in purchasePlusRecords){
-				total +=  item.discountAmount;
+		if (!structKeyExists(variables, "purchasePlusTotal") || arguments.bustCache){
+			if(!isArray(purchasePlusRecords)){
+				purchasePlusRecords = purchasePlusRecords.getRecords();
+				for (var item in purchasePlusRecords){
+					total +=  item.discountAmount;
+				}
 			}
+			variables.purchasePlusTotal = total;
 		}
-		variables.purchasePlusTotal = total;
-
+		
 		return variables.purchasePlusTotal;
 	}
 	
