@@ -1046,7 +1046,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             
             // Email opt-in
             if ( structKeyExists( arguments.data, 'allowCorporateEmailsFlag' ) && arguments.data.allowCorporateEmailsFlag ) {
-                var response = getService('MailchimpAPIService').addMemberToListByAccount( account );
+                account.setAllowCorporateEmailsFlag( arguments.data.allowCorporateEmailsFlag );
             }
         }
         
@@ -1113,7 +1113,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             
             // Update subscription in Mailchimp.
             if ( structKeyExists( arguments.data, 'allowCorporateEmailsFlag' ) ) {
-                getService('MailchimpAPIService').updateSubscriptionByAccount( account, arguments.data.allowCorporateEmailsFlag );
+                account.setAllowCorporateEmailsFlag( arguments.data.allowCorporateEmailsFlag );
             }
         }
         
