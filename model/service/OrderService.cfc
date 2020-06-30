@@ -1897,7 +1897,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 			
 			arguments.order = this.addOrderItemFromTemplateItem(argumentCollection=args);
-	
+
 			//define order fulfillment for the rest of the loop	
 			if( isNull(orderFulfillment) && 
 				!arrayIsEmpty(arguments.order.getOrderItems()) && 
