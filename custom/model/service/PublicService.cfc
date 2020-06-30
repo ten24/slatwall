@@ -2160,10 +2160,11 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 	public void function addShippingAddressUsingAccountAddress(data){
 	    super.addShippingAddressUsingAccountAddress(arguments.data);
 	    var cart = getHibachiScope().getCart();
+
         this.setDefaultShippingMethod();
-        if(isNull(cart.getOrderPayments()) || !arrayLen(cart.getOrderPayments())) {
-            this.setShippingSameAsBilling();
-        }
+        // if(isNull(cart.getOrderPayments()) || !arrayLen(cart.getOrderPayments())) {
+        //     this.setShippingSameAsBilling();
+        // }
 	}
 	
 	//override core to also set the cheapest shippinng method as the default, and set shipping same as billing
