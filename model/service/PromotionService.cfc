@@ -363,16 +363,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 					} // End orderItem qualification count > 0
 
-				}else{
-					if(arguments.order.hasOrderTemplate()){
-						logHibachi('Order fulfillment NOT in acceptable fulfillment list, bailing');
-					}
 				} // End orderItem fulfillment in qualifiedFulfillment list
 				
-			}else{
-				if(arguments.order.hasOrderTemplate()){
-					logHibachi('Order Item type NOT oitSale, bailing');
-				}
 			} // END Sale Item If
 			
 		} // End Order Item For Loop
