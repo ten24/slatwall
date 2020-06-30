@@ -1747,6 +1747,8 @@ component extends="Slatwall.model.service.OrderService" {
 		var orderTemplateItemData = {}; //instantiating here as the OF in the loop is out of scope
 		orderTemplateItemData['orderFulfillmentHasErrors'] = false;
 		
+		orderTemplateItems = this.consolidateOrderTemplateItemsBySku(orderTemplateItems);
+
 		for(var orderTemplateItem in orderTemplateItems){ 
 			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()#, adding skuCode: #orderTemplateItem['sku_skuCode']#');
 			if(!isNull(orderTemplateItem.temporaryFlag) && orderTemplateItem.temporaryFlag == true){
@@ -1765,7 +1767,7 @@ component extends="Slatwall.model.service.OrderService" {
 			}
 			
 			arguments.order = this.addOrderItemFromTemplateItem(argumentCollection=args);
-
+			
 			//define order fulfillment for the rest of the loop	
 			if( isNull(orderFulfillment) && 
 				!arrayIsEmpty(arguments.order.getOrderItems()) && 
@@ -1788,7 +1790,7 @@ component extends="Slatwall.model.service.OrderService" {
 				}	
 			}	
 		}
-		
+
 		if(!isNull(orderTemplateItemData['orderFulfillment']) && !orderTemplateItemData['orderFulfillmentHasErrors']){
 
 			//if we have the promoItem skuID in the actual order, we can remove from the array
@@ -1801,8 +1803,26 @@ component extends="Slatwall.model.service.OrderService" {
 				arguments.order = addDefaultOFYSkuIfEligible(arguments.order,arguments.orderTemplate,orderTemplateItemData['orderFulfillment']);
 			}
 		}
-		
+
 		return arguments.order;
+	}
+	
+	private array function consolidateOrderTemplateItemsBySku( required array orderTemplateItems ){
+		
+		var templateItemMap = {};
+		var returnArray = [];
+		for(var orderTemplateItemStruct in arguments.orderTemplateItems){
+			if( !structKeyExists( templateItemMap, orderTemplateItemStruct['sku_skuID'] ) ){
+				templateItemMap[ orderTemplateItemStruct['sku_skuID'] ] = orderTemplateItemStruct;
+			}else{
+				templateItemMap[ orderTemplateItemStruct['sku_skuID'] ].quantity += orderTemplateItemStruct.quantity;
+			}
+		}
+		
+		for(var key in templateItemMap){
+			returnArray.append( templateItemMap[ key ] );
+		}
+		return returnArray;
 	}
 	
 	public any function addDefaultOFYSkuIfEligible(required any order, required any orderTemplate, required any orderFulfillment){
