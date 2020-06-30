@@ -344,9 +344,12 @@ component  accessors="true" output="false"
      **/
     public void function getAvailableShippingMethods(required any data) {
         var orderFulfillments = getHibachiScope().getCart().getOrderFulfillments();
-        if(arrayLen(orderFulfillments)) {
-            var shippingMethods = getOrderService().getShippingMethodOptions(orderFulfillments[1]);
-		    arguments.data['ajaxResponse']['availableShippingMethods'] = shippingMethods;
+        for(var orderFulfillment in orderFulfillments) {
+            if(orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() == "shipping") {
+                var shippingMethods = getOrderService().getShippingMethodOptions(orderFulfillment);
+	            arguments.data['ajaxResponse']['availableShippingMethods'] = shippingMethods;
+	            break;
+            }
         }
     }
 	
