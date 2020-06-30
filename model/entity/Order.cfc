@@ -271,6 +271,8 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
     property name="calculatedRetailCommissionDiscountTotal" ormtype="big_decimal" hb_formatType="none";
     property name="calculatedProductPackVolumeDiscountTotal" ormtype="big_decimal" hb_formatType="none";
     property name="calculatedRetailValueVolumeDiscountTotal" ormtype="big_decimal" hb_formatType="none";
+	property name="calculatedPurchasePlusTotal" ormtype="big_decimal" hb_formatType="none";
+
     property name="accountType" ormtype="string";
     property name="accountPriceGroup" ormtype="string";
 	
@@ -2358,12 +2360,11 @@ public numeric function getPersonalVolumeSubtotal(){
 				);
 	}
 	
-	public numeric function getPurchasePlusTotal(){
-		
-		 if (!structKeyExists(variables, "purchasePlusTotal")){
-			var purchasePlusRecords = getService('orderService').getPurchasePlusInformationForOrderItems(this.getOrderID());
-			var total = 0;
+	public numeric function getPurchasePlusTotal(bustCache = false){
 	
+		var purchasePlusRecords = getService('orderService').getPurchasePlusInformationForOrderItems(this.getOrderID());
+		var total = 0;
+		if (!structKeyExists(variables, "purchasePlusTotal") || arguments.bustCache){
 			if(!isArray(purchasePlusRecords)){
 				purchasePlusRecords = purchasePlusRecords.getRecords();
 				for (var item in purchasePlusRecords){
@@ -2372,6 +2373,7 @@ public numeric function getPersonalVolumeSubtotal(){
 			}
 			variables.purchasePlusTotal = total;
 		}
+		
 		return variables.purchasePlusTotal;
 	}
 	

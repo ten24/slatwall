@@ -732,6 +732,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					}
 				}
 			}
+			getHibachiScope().flushORMSession();
 			arguments.order.updateCalculatedProperties(runAgain=true,cascadeCalculateFlag=false)
 			getHibachiScope().flushORMSession();
 		}
