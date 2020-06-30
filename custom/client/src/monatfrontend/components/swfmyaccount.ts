@@ -591,7 +591,6 @@ class swfAccountController {
 		    }else{
                 let errorMessage = result.errors;
                 this.monatAlertService.error(errorMessage);
-                this.loading = true;
 			}
 			this.loading = false;
 	    });
