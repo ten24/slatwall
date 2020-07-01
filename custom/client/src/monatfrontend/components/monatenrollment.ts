@@ -66,7 +66,7 @@ class MonatEnrollmentController {
 
 	public $onInit = () => {
 	
-		this.publicService.getAccount().then(result=>{
+		this.publicService.getAccount(true).then(result=>{
 			
 			this.account = result.account ? result.account : result;
 			this.monatService.calculateAge(this.account.birthDate);
