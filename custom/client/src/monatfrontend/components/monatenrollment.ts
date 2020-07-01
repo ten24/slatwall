@@ -71,7 +71,7 @@ class MonatEnrollmentController {
 			this.account = result.account ? result.account : result;
 			this.monatService.calculateAge(this.account.birthDate);
 			
-			//if account has a flexship send to checkout review
+			// if account has a flexship send to checkout review
 			this.monatService.getCart().then(res =>{
 				let cart = res.cart ? res.cart : res;
 				this.canPlaceCartOrder = cart.orderRequirementsList.indexOf('canPlaceOrderReward') == -1;
