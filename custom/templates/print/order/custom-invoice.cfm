@@ -101,11 +101,11 @@ Notes:
 									#order.getOrderCreatedSite().setting('siteInvoiceInformation') ?: ''#
 								</p>
 							</td>
-							<td width="33%" valign="top">
+							<td width="33%" valign="top" style="text-align: center;">
 								<img src="/themes/monat/assets/images/logo.png" alt="Monat logo">
 							</td>
 							<td width="33%" valign="top" style="text-align: right;">
-								<table>
+								<table style="#local.defaultTable#">
 									<tr>
 										<td style="text-align: right;">Order Number:</td>
 										<td style="text-align: right;">#order.getOrderNumber()#</td>
@@ -134,8 +134,10 @@ Notes:
 								&nbsp;
 							</td>
 							
-							<td width="33%" valign="top" style="text-align: center;">
-								<b style="color: ##555; font-size: 15px;">Invoice</b>
+							<td width="33%" valign="top" style="text-align: center; padding-bottom: 10px;">
+								<div style="font-size: 16px;">Market Partner</div>
+								<b style="color: ##333; font-size: 16px; letter-spacing: -1px;">Invoice</b>
+								<div style="font-size: 14px; margin-top: 4px;">*** RePrint ***</div>
 							</td>
 							
 							<td width="33%" valign="top" style="text-align: center;">
@@ -356,10 +358,7 @@ Notes:
 										#local.orderItem.getSku().getSkuCode()#
 									</td>
 									<td style="border-top: 1px solid ##FFF; font-size: 9px; padding: 5px 3px; text-align: left;">
-										#local.orderItem.getSku().getProduct().getTitle()#<br>
-										<cfif len(local.orderItem.getSku().getProduct().getProductDescription())>
-											<strong>#local.orderItem.getSku().getProduct().getProductDescription()#</strong>
-										</cfif>
+										#local.orderItem.getSku().getProduct().getTitle()#
 									</td>
 									<td style="border-top: 1px solid ##FFF; font-size: 9px; padding: 5px 3px; text-align: center;">
 										#NumberFormat(local.orderItem.getQuantity())#
@@ -513,6 +512,7 @@ Notes:
 			</tr>
 			
 		</table>
+		
 	</cfoutput>
 
 
