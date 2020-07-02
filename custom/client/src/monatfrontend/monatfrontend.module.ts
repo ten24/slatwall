@@ -248,7 +248,10 @@ var monatfrontendmodule = angular
 			
 			observerService.attach(loginSuccessCallback, "loginSuccess");
 			observerService.attach(logoutSuccessCallback, "logoutSuccess");
-			if(window.location.pathname.indexOf('enrollment') == -1){
+			if(
+				window.location.pathname.indexOf('enrollment') == -1
+				&& window.location.pathname.indexOf('upgrade') == -1
+			){
 				publicService.getAccount().then(result=>{
 					observerService.notify('getAccountSuccess',result);
 				})
