@@ -65,17 +65,15 @@ class MonatEnrollmentController {
 	}
 
 	public $onInit = () => {
-	
-		this.publicService.getAccount().then(result=>{
 			
-			this.account = result.account ? result.account : result;
-			this.monatService.calculateAge(this.account.birthDate);
+		this.account = this.$rootScope.slatwall.account;
+		this.monatService.calculateAge(this.account.birthDate);
 			
-			//if account has a flexship send to checkout review
-			this.monatService.getCart().then(res =>{
+		// if account has a flexship send to checkout review
+		this.monatService.getCart().then(res =>{
 				let cart = res.cart ? res.cart : res;
 				this.canPlaceCartOrder = cart.orderRequirementsList.indexOf('canPlaceOrderReward') == -1;
-				let account = result.account;
+				let account = this.$rootScope.slatwall.account;
 				let reqList = 'createAccount,updateAccount';
 	
 				if(!this.upgradeFlow){
@@ -100,7 +98,6 @@ class MonatEnrollmentController {
 				 }
 				 
 			});
-		});
 		
 		this.monatService.getProductFilters();
 		
