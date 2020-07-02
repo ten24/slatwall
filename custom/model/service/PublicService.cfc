@@ -1835,8 +1835,18 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var account = getHibachiScope().getAccount();
         var accountType = account.getAccountType();    
 
-        //User can not: upgrade while logged out, upgrade to same type, or downgrade from MP to VIP        
-        if(!getHibachiScope().getLoggedInFlag()){
+        //User can not: upgrade while logged out, upgrade to same type, or downgrade from MP to VIP, upgrade mid enrollment         
+        if(
+            !getHibachiScope().getLoggedInFlag()
+            ||
+            ( 
+                getHibachiScope().getLoggedInFlag() 
+                && ( 
+                        isNull(account.getAccountStatusType()) 
+                        || account.getAccountStatusType().getSystemCode() != 'astGoodStanding' 
+                    )
+             )
+        ){
             arguments.data['ajaxResponse']['upgradeResponseFailure'] = getHibachiScope().rbKey('validate.upgrade.userMustBeLoggedIn'); 
             return;
         }else if(accountType == arguments.data.upgradeType){
