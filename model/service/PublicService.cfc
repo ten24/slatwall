@@ -704,11 +704,13 @@ component  accessors="true" output="false"
                 var order = getHibachiScope().getCart();
             }
             if(structKeyExists(data,'fulfillmentID')){
+                
                 var orderFulfillment = getOrderService().getOrderFulfillment(arguments.data.fulfillmentID);
-                if(orderFulfillment.getOrder().getOrderID() == order.getOrderID()){
+                if(!isNull( orderFulfillment ) && !isNull( orderFulfillment.getOrder() ) && orderFulfillment.getOrder().getOrderID() == order.getOrderID()){
                     orderFulfillment.setShippingAddress(accountAddress.getAddress());
                     orderFulfillment.setAccountAddress(accountAddress);
                 }
+                
             }else{
                 for(var fulfillment in order.getOrderFulfillments()){
                     fulfillment.setShippingAddress(accountAddress.getAddress());
