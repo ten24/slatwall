@@ -555,7 +555,9 @@ component  accessors="true" output="false"
       	
       	if (!newAddress.hasErrors()){
       		accountAddress.setAddress(newAddress);
-      		accountAddress.setAccount(getHibachiScope().getAccount());	
+      		if( !getHibachiScope().getAccount().getNewFlag() ){
+      		    accountAddress.setAccount(getHibachiScope().getAccount());	
+      		}
       		var savedAccountAddress = getService("AccountService").saveAccountAddress(accountAddress);
             getHibachiScope().addActionResult("public:account.addNewAccountAddress", savedAccountAddress.hasErrors());
    	     	if (!savedAccountAddress.hasErrors()){
