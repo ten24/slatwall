@@ -72,7 +72,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="saveAccountPaymentMethodFlag" hb_formFieldType="yesno" hb_populateEnabled="public";
 	property name="saveAccountPaymentMethodName" hb_rbKey="entity.accountPaymentMethod.accountPaymentMethodName" hb_populateEnabled="public";
 	property name="orderTypeCode" hb_formFieldType="select" hb_rbKey="entity.order.orderType";
-	property name="allocatedOrderDiscountAmountTotal";
+
 	property name="refundOrderItemList";
 	// Option Properties
     property name="returnReasonTypeOptions";
@@ -333,4 +333,5 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		var maxRefundAmount = getOrder().getPaymentAmountReceivedTotal() - getOrder().getTotalAmountCreditedIncludingReferencingPayments();
 		return amount <= maxRefundAmount;
 	}
+	
 }

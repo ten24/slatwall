@@ -698,21 +698,21 @@ component  accessors="true" output="false"
                     getHibachiScope().addActionResult( "public:cart.addShippingAddressUsingAccountAddress", true);
                     return;
                 }
+            }else{
+                var order = getHibachiScope().getCart();
             }
-            var order = getHibachiScope().getCart();
-            for(var fulfillment in order.getOrderFulfillments()){
-              if(structKeyExists(data,'fulfillmentID') && fulfillment.getOrderFulfillmentID() == data.fulfillmentID){
-                var orderFulfillment = fulfillment;
-                break;
-              }else if(!structKeyExists(data,'fulfillmentID')){
-                fulfillment.setShippingAddress(accountAddress.getAddress());
-                fulfillment.setAccountAddress(accountAddress);
-                getService("OrderService").saveOrderFulfillment(fulfillment);
-              }
-            }
-            if(!isNull(orderFulfillment) && !orderFulfillment.hasErrors()){
-              orderFulfillment.setShippingAddress(accountAddress.getAddress());
-              orderFulfillment.setAccountAddress(accountAddress);
+            if(structKeyExists(data,'fulfillmentID')){
+                var orderFulfillment = getOrderService().getOrderFulfillment(arguments.data.fulfillmentID);
+                if(orderFulfillment.getOrder().getOrderID() == order.getOrderID()){
+                    orderFulfillment.setShippingAddress(accountAddress.getAddress());
+                    orderFulfillment.setAccountAddress(accountAddress);
+                }
+            }else{
+                for(var fulfillment in order.getOrderFulfillments()){
+                    fulfillment.setShippingAddress(accountAddress.getAddress());
+                    fulfillment.setAccountAddress(accountAddress);
+                    getService("OrderService").saveOrderFulfillment(fulfillment);
+                }
             }
             getService("OrderService").saveOrder(order);
             getHibachiScope().addActionResult( "public:cart.addShippingAddressUsingAccountAddress", order.hasErrors());

@@ -1046,7 +1046,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             
             // Email opt-in
             if ( structKeyExists( arguments.data, 'allowCorporateEmailsFlag' ) && arguments.data.allowCorporateEmailsFlag ) {
-                var response = getService('MailchimpAPIService').addMemberToListByAccount( account );
+                account.setAllowCorporateEmailsFlag( arguments.data.allowCorporateEmailsFlag );
             }
         }
         
@@ -1113,7 +1113,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             
             // Update subscription in Mailchimp.
             if ( structKeyExists( arguments.data, 'allowCorporateEmailsFlag' ) ) {
-                getService('MailchimpAPIService').updateSubscriptionByAccount( account, arguments.data.allowCorporateEmailsFlag );
+                account.setAllowCorporateEmailsFlag( arguments.data.allowCorporateEmailsFlag );
             }
         }
         
@@ -2160,10 +2160,11 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 	public void function addShippingAddressUsingAccountAddress(data){
 	    super.addShippingAddressUsingAccountAddress(arguments.data);
 	    var cart = getHibachiScope().getCart();
+
         this.setDefaultShippingMethod();
-        if(isNull(cart.getOrderPayments()) || !arrayLen(cart.getOrderPayments())) {
-            this.setShippingSameAsBilling();
-        }
+        // if(isNull(cart.getOrderPayments()) || !arrayLen(cart.getOrderPayments())) {
+        //     this.setShippingSameAsBilling();
+        // }
 	}
 	
 	//override core to also set the cheapest shippinng method as the default, and set shipping same as billing
@@ -2598,14 +2599,27 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             && !isNull(arguments.data.cmsSiteID)
             &&  !isNull(getService('siteService').getSiteByCMSSiteID(arguments.data.cmsSiteID)) 
         ){
+            var hasRenewalFeeInCart = false;
             var site = getService('siteService').getSiteByCMSSiteID(arguments.data.cmsSiteID);
             var renewalSkuID = site.setting('siteRenewalSkuID');
-            var renewalData = {};
-            renewalData['skuID'] = renewalSkuID ?: '';
-            arguments.data.ajaxResponse['renewalInformation'] = renewalData;
-            getHibachiScope().addActionResult( "public:account.impendingRenewalWarning", false); 
-        }else{
-            getHibachiScope().addActionResult( "public:account.impendingRenewalWarning", true); 
+            var orderItems = getHibachiScope().getCart().getOrderItems();
+            for(var item in orderItems){
+                gethibachiscope().loghibachi(item.getSku().getSkuID())
+                if(item.getSku().getSkuID() == renewalSkuID){
+                    hasRenewalFeeInCart = true;
+                    break;
+                }
+            }
+            
+            if(!hasRenewalFeeInCart){
+                var renewalData = {};
+                renewalData['skuID'] = renewalSkuID ?: '';
+                arguments.data.ajaxResponse['renewalInformation'] = renewalData;
+                getHibachiScope().addActionResult( "public:account.impendingRenewalWarning", false); 
+                return;
+            }
+            
+            getHibachiScope().addActionResult( "public:account.impendingRenewalWarning", true);    
         }
     }
     

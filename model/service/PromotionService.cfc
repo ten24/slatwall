@@ -220,10 +220,19 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var promotionPeriodQualification = arguments.promotionPeriodQualifications[arguments.promotionReward.getPromotionPeriod().getPromotionPeriodID()];
 		
 		//Get all orderitems in descending order of price
-		var orderItemSmartlist = arguments.order.getOrderItemsSmartList();
-		orderItemSmartlist.addOrder('price DESC');
-		orderItemSmartlist.addOrder('skuCode ASC');
-		var orderItems = orderItemSmartlist.getRecords();
+		var orderItems = arguments.order.getOrderItems();
+		orderItems.sort(function(a,b){
+			if(arguments.a.getExtendedUnitPriceAfterDiscount() >= arguments.b.getExtendedUnitPriceAfterDiscount()){
+				return -1;
+			}else{
+				return 1;
+			}
+		});
+		
+		if(arguments.order.hasOrderTemplate() && !arrayLen(orderItems) ){
+			logHibachi('NO order items in array, bailing');
+		}
+		
 		// Loop over all the orderItems
 		for(var orderItem in orderItems) {
 			// Verify that this is an item being sold
@@ -732,6 +741,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					}
 				}
 			}
+			getHibachiScope().flushORMSession();
 			arguments.order.updateCalculatedProperties(runAgain=true,cascadeCalculateFlag=false)
 			getHibachiScope().flushORMSession();
 		}
@@ -808,28 +818,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		//Flush to make sure we're working with updated values
 		getHibachiScope().flushORMSession();
 		// Recheck qualification for order qualifiers only; merchandise / fulfillment qualifiers will not have changed
-		var qualifiers = promotionReward.getPromotionPeriod().getPromotionQualifiers();
-		if(!arrayLen(qualifiers)){
-			var qualified = true;
-		}else{
-			var qualified = false;
-			for(var qualifier in qualifiers){
-				if(qualifier.getQualifierType() != 'order'){
-					continue;
-				}
-				if(qualifier.hasOrderByOrderID(arguments.order.getOrderID())){
-					qualified = true;
-					break;
-				}else{
-					var promoQualifierMessages = qualifier.getPromotionQualifierMessages();
-					for(var promoQualifierMessage in promoQualifierMessages){
-						if(promoQualifierMessage.hasOrderByOrderID( arguments.order.getOrderID() )){
-							arrayAppend(arguments.orderQualifierMessages, promoQualifierMessage);
-						}
-					}	
-				}
-			}
-		}
+		var promotionPeriod = promotionReward.getPromotionPeriod();
+		
+		var qualificationDetails = getPromotionPeriodQualificationDetails(promotionPeriod, arguments.order, arguments.orderQualifierMessages);
+		
+		var qualified = qualificationDetails.qualificationsMeet;
+		
 		if(structKeyExists(arguments, 'qualifiedDiscountsStruct')){
 			arguments.qualifiedDiscountsStruct.updatedQualifications[cacheKey] = qualified;
 		}

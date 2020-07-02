@@ -133,6 +133,10 @@ component extends="HibachiService" accessors="true" output="false" {
 	public any function getEstimatedReceivalDetails(required string productID) {
 		return createEstimatedReceivalDataStruct( getStockDAO().getEstimatedReceival(arguments.productID) );
 	}
+	
+	public any function updateStockCalculatedProperties(string skuID) {
+		return getStockDAO().updateStockCalculatedProperties(argumentCollection=arguments);
+	}
 
 	private struct function createEstimatedReceivalDataStruct(required array receivalArray) {
 
