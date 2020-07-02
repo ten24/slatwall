@@ -1,13 +1,4 @@
-<div 
-    ng-class="{
-        'border-0': monatProductCard.type === 'enrollment', 
-        'mx-md-4': monatProductCard.type === 'enrollment', 
-        'product-box': 
-            monatProductCard.type != 'productListing' 
-            && monatProductCard.type !== 'VIPenrollmentOrder' 
-            && monatProductCard.type !== 'VIPenrollment'
-    }"
->
+<div>
    <div class="pr-box">
     <!-- Product Card -->
     
@@ -24,8 +15,7 @@
                     'fas no-hover': monatProductCard.isAccountWishlistItem,
                     'far' : !monatProductCard.isAccountWishlistItem
                 }"
-            ></i></button
-        >  
+            ></i></button>  
       
         <!-- If the product is being viewed as a wishlist item, show the button to launch delete item from wishlist -->
         <button 
