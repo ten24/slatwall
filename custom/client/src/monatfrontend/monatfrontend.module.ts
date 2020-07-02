@@ -248,13 +248,15 @@ var monatfrontendmodule = angular
 			
 			observerService.attach(loginSuccessCallback, "loginSuccess");
 			observerService.attach(logoutSuccessCallback, "logoutSuccess");
-			
-			publicService.getAccount().then(result=>{
-				observerService.notify('getAccountSuccess',result);
-			})
-			.catch(result=>{
-				observerService.notify('getAccountFailure',result);
-			})
+			if(window.location.pathname.indexOf('enrollment') == -1){
+				console.log('getting account')
+				publicService.getAccount().then(result=>{
+					observerService.notify('getAccountSuccess',result);
+				})
+				.catch(result=>{
+					observerService.notify('getAccountFailure',result);
+				})
+			}
 		},
 	]);
 
