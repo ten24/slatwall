@@ -373,7 +373,7 @@ component extends="framework.one" {
 				writeLog(file="#variables.framework.applicationKey#", text="General Log - Resetting Cluster Name in application scope");
 				getHibachiScope().setApplicationValue("applicationCluster", serverInstance.getServerInstanceClusterName());
 			}
-			getHibachiScope().getService('hibachiCacheDao').updateServerInstanceLastRequestDateTime( serverInstance );
+			
 		}
 		
 		//Sets the correct site for api calls.
