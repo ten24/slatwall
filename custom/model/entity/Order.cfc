@@ -458,7 +458,7 @@ component {
 				);
 	}
 	
-	public numeric function getPurchasePlusTotal(bustCache = false){
+	public numeric function getPurchasePlusTotal(){
 	
 		var purchasePlusRecords = getService('orderService').getPurchasePlusInformationForOrderItems(this.getOrderID());
 		var total = 0;
