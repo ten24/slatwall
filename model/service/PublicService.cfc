@@ -555,7 +555,9 @@ component  accessors="true" output="false"
       	
       	if (!newAddress.hasErrors()){
       		accountAddress.setAddress(newAddress);
-      		accountAddress.setAccount(getHibachiScope().getAccount());	
+      		if( !getHibachiScope().getAccount().getNewFlag() ){
+      		    accountAddress.setAccount(getHibachiScope().getAccount());	
+      		}
       		var savedAccountAddress = getService("AccountService").saveAccountAddress(accountAddress);
             getHibachiScope().addActionResult("public:account.addNewAccountAddress", savedAccountAddress.hasErrors());
    	     	if (!savedAccountAddress.hasErrors()){
@@ -702,11 +704,13 @@ component  accessors="true" output="false"
                 var order = getHibachiScope().getCart();
             }
             if(structKeyExists(data,'fulfillmentID')){
+                
                 var orderFulfillment = getOrderService().getOrderFulfillment(arguments.data.fulfillmentID);
-                if(orderFulfillment.getOrder().getOrderID() == order.getOrderID()){
+                if(!isNull( orderFulfillment ) && !isNull( orderFulfillment.getOrder() ) && orderFulfillment.getOrder().getOrderID() == order.getOrderID()){
                     orderFulfillment.setShippingAddress(accountAddress.getAddress());
                     orderFulfillment.setAccountAddress(accountAddress);
                 }
+                
             }else{
                 for(var fulfillment in order.getOrderFulfillments()){
                     fulfillment.setShippingAddress(accountAddress.getAddress());
