@@ -135,7 +135,15 @@ Notes:
 							</td>
 							
 							<td width="33%" valign="top" style="text-align: center; padding-bottom: 10px;">
-								<div style="font-size: 16px;">Market Partner</div>
+								<div style="font-size: 16px;">
+									<cfif order.getAccount().getAccountType() == "customer">
+										Retail
+									<cfelseif order.getAccount().getAccountType() == "marketPartner">
+										Market Partner
+									<cfelseif order.getAccount().getAccountType() == "VIP">
+										VIP
+									</cfif>
+								</div>
 								<b style="color: ##333; font-size: 16px; letter-spacing: -1px;">Invoice</b>
 								<div style="font-size: 14px; margin-top: 4px;">*** RePrint ***</div>
 							</td>
