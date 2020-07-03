@@ -68,6 +68,7 @@
 		"isLockedInProcessingOneFlag": [
 			{ "contexts": "placeInProcessingOne", "eq": false },
 			{ "contexts": "placeInProcessingTwo", "eq": true },
-		]
+		],
+		"account.activeFlag": [{"contexts":"placeOrder","eq":"1"}]
 	}
 }
