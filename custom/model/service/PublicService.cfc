@@ -985,6 +985,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     
     
     private any function enrollUser(required struct data, required string accountType){
+
         var accountTypeInfo = {
             'VIP':{
                 'priceGroupCode':'3',
@@ -1009,9 +1010,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         
         arguments.data.accountType = arguments.accountType;
-        
         var account = super.createAccount(arguments.data);
-        
+
         if(account.hasErrors()){
             addErrors(arguments.data, account.getProcessObject("create").getErrors());
             getHibachiScope().addActionResult('public:account.create',false);
@@ -1019,7 +1019,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         }
         
         account.setActiveFlag(accountTypeInfo[arguments.accountType].activeFlag);
-        
+            
         var priceGroup = getService('PriceGroupService').getPriceGroupByPriceGroupCode(accountTypeInfo[arguments.accountType].priceGroupCode);
         
         if(!isNull(priceGroup)){
@@ -1033,8 +1033,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         if(!isNull(getHibachiScope().getCurrentRequestSite())){
             account.setAccountCreatedSite(getHibachiScope().getCurrentRequestSite());
         }
-        
-        account = getAccountService().saveAccount(account);
 
         if(account.hasErrors()){
             addErrors(arguments.data, account.getErrors());
@@ -1060,7 +1058,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         }else{
             getHibachiScope().addActionResult('public:account.createAccount',false);
         }
-        
+
         return account;
     }
     
