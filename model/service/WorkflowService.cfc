@@ -161,9 +161,6 @@ component extends="HibachiService" accessors="true" output="false" {
 		var serverInstances = serverInstanceCollectionList.getRecords();
 		for (var serverInstance in serverInstances) {
 			
-			// update timestamp on server instance
-			getDao('hibachiCacheDAO').updateServerInstanceLastRequestDateTime( serverInstance );
-			
 	        var offset = findNoCase('Slatwall',cgi.script_name)?'Slatwall/':'';
 			var workflowurl = 'http://#serverInstance["serverInstanceIPAddress"]#:#serverInstance["serverInstancePort"]#/#offset#?slatAction=api:workflow.executeScheduledWorkflows';
 			this.logHibachi('Invoking workflows on #workflowurl#');
@@ -178,6 +175,9 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 	
 	public any function runAllWorkflowsByScheduleTrigger() {
+		
+		// update timestamp on server instance
+		getDao('hibachiCacheDAO').updateServerInstanceLastRequestDateTime();
 		
 		getWorkflowDAO().resetExpiredWorkflows(); 
 		
