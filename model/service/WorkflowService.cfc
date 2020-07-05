@@ -206,6 +206,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 
 	public any function runWorkflowsByScheduleTrigger(required any workflowTrigger, boolean skipTriggerRunningCheck = false) {
+		this.logHibachi('Start executing workflow: #arguments.workflowTrigger.getWorkflow().getWorkflowName()#', true);
 		var timeout = workflowTrigger.getTimeout();
 		if(!isNull(timeout)){
 			//convert to seconds
@@ -387,6 +388,7 @@ component extends="HibachiService" accessors="true" output="false" {
 
 		// Flush the DB again to persist all updates
 		getHibachiDAO().flushORMSession();
+		this.logHibachi('Finished executing workflow: #arguments.workflowTrigger.getWorkflow().getWorkflowName()#', true);
 		return workflowTrigger;
 	}
 
