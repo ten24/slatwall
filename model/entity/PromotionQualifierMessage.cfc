@@ -118,7 +118,7 @@ public any function getQualifierProgress(required any order){
 	public string function getInterpolatedField(required any order, required fieldValue){
 		var returnValue = arguments.order.stringReplace(arguments.fieldValue,false,true);
 		var orderRecord = getOrderDataFromRequirementsCollection(arguments.order.getOrderID());
-		orderRecord['calculatedPurchasePlusTotal'] = arguments.order.getPurchasePlusTotal(true);
+		orderRecord['calculatedPurchasePlusTotal'] = arguments.order.getPurchasePlusTotal();
 		returnValue = getService('HibachiUtilityService').replaceStringTemplateFromStruct(returnValue,orderRecord);
     	returnValue = getService('HibachiUtilityService').replaceFunctionTemplate(returnValue);
     	return returnValue;
