@@ -580,7 +580,6 @@ component extends="Slatwall.model.service.OrderService" {
         var orderType        = arguments.order.getOrderType();
         var currentOrderStatusType  = arguments.order.getOrderStatusType();
         
-        
         /** 
          * if order is locked it can go back and forth b/w processsing1 and processing2 status 
          * but if that's not the case, we're checking further
@@ -679,15 +678,15 @@ component extends="Slatwall.model.service.OrderService" {
 					
 	            }
 			        // Return Orders
-	        } else if (listFindNoCase('otReturnOrder,otExchangeOrder,otReplacementOrder,otRefundOrder', orderType.getTypeCode()) ){
-	           
+	        } else if (listFindNoCase('otReturnOrder,otExchangeOrder,otReplacementOrder,otRefundOrder', orderType.getSystemCode()) ){
+	            
 	            if (arguments.typeCode == 'rmaApproved'){
 	
 	                arguments.order.setOrderStatusType(
     	                    this.getTypeService().getTypeBySystemCode(systemCode='ostProcessing', typeCode="rmaApproved")
     	                );
 	               
-				} else if( listFindNoCase('otReplacementOrder,otExchangeOrder', orderType.getTypeCode()) ){
+				} else if( listFindNoCase('otReplacementOrder,otExchangeOrder', orderType.getSystemCode()) ){
 	
 	            	arguments.order.setOrderStatusType(
     	            	    this.getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode=arguments.typeCode)
