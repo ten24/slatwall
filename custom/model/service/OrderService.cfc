@@ -627,11 +627,13 @@ component extends="Slatwall.model.service.OrderService" {
 
             arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode));
 
-        } else if (arguments.systemCode == 'ostCanceled') {
+        } 
+        else if (arguments.systemCode == 'ostCanceled') {
 
             arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="9"));
 
-        } else if (arguments.systemCode == 'ostClosed') {
+        } 
+        else if (arguments.systemCode == 'ostClosed') {
 			
 			if(arguments.order.getOrderType().getSystemCode() == 'otSalesOrder' || arguments.order.getOrderType().getSystemCode() == 'otReplacementOrder') {
 				// closed(shipped) orders
@@ -641,7 +643,8 @@ component extends="Slatwall.model.service.OrderService" {
 	            arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="rmaReleased"));
 			}
         	getService("hibachiEventService").announceEvent(eventName="afterOrderProcess_OrderCloseSuccess", eventData={ entity: arguments.order, order: arguments.order, data: {} });
-        } else if (arguments.systemCode == 'ostNew') {
+        } 
+        else if (arguments.systemCode == 'ostNew') {
 
 			//if the order is paid don't set to new, otherwise set to new
 			if (  arguments.order.getPaymentAmountDue() <= 0  && arguments.order.getOrderType().getSystemCode() == 'otSalesOrder' ){
@@ -652,7 +655,8 @@ component extends="Slatwall.model.service.OrderService" {
 				arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode( systemCode=arguments.systemCode, typeCode="1")); 
 			}
 				
-        } else if (arguments.systemCode == 'ostProcessing') {
+        } 
+        else if (arguments.systemCode == 'ostProcessing') {
 			
 			if (arguments.order.getOrderType().getSystemCode() == 'otSalesOrder'){
 				
@@ -664,7 +668,7 @@ component extends="Slatwall.model.service.OrderService" {
 					
 					// we should narrow down the flow of status here
 					if (Len(arguments.typeCode) ) {
-						
+		
 						// all processing status allowed when called with a specific typecode
 						arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode( systemCode=arguments.systemCode, typeCode=arguments.typeCode) );
 						
@@ -675,21 +679,32 @@ component extends="Slatwall.model.service.OrderService" {
 					}
 					
 	            }
-			        // Return Orders
-	        } else if (listFindNoCase('otReturnOrder,otExchangeOrder,otReplacementOrder,otRefundOrder', arguments.order.getTypeCode())) {
-	            if (arguments.typeCode == 'rmaApproved') {
-	
-	                arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode(systemCode='ostProcessing', typeCode="rmaApproved"));
+	            
+	        } 
+	        // Return Orders
+	        else if(
+	            listFindNoCase('otReturnOrder,otExchangeOrder,otReplacementOrder,otRefundOrder', currentOrderStatusType.getTypeCode())
+	       ){
+	            
+	            if (arguments.typeCode == 'rmaApproved' ){
+	       
+	                arguments.order.setOrderStatusType(
+	                    getTypeService().getTypeBySystemCode(systemCode='ostProcessing', typeCode="rmaApproved")
+	                );
+				} 
+				else if( listFindNoCase( 'otReplacementOrder,otExchangeOrder', currentOrderStatusType.getTypeCode() ) ){
+				    
+	            	arguments.order.setOrderStatusType(
+	            	    getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode=arguments.typeCode)
+	            	);
+	            } 
+	            else if( !len(arguments.typeCode) || arguments.typeCode == 'rmaReceived' ){
 	                
-				} else if( listFindNoCase( 'otReplacementOrder,otExchangeOrder', arguments.order.getTypeCode() ) ){
-	
-	            	arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode=arguments.typeCode));
-	
-	            } else if( !len(arguments.typeCode) || arguments.typeCode == 'rmaReceived' ){
-	                arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="rmaReceived"));
+	                arguments.order.setOrderStatusType(
+	                    getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="rmaReceived")
+	                );
 	            }
 	        }
-
         }
         
         if (arguments.systemCode != "ostNotPlaced" && !isNull(currentOrderStatusType) && currentOrderStatusType.getTypeID() != arguments.order.getOrderStatusType().getTypeID()){
