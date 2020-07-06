@@ -685,7 +685,7 @@ component extends="Slatwall.model.service.OrderService" {
 	
 	            	arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode=arguments.typeCode));
 	
-	            } else if( isNull(arguments.typeCode) || arguments.typeCode == 'rmaReceived' ){
+	            } else if( !len(arguments.typeCode) || arguments.typeCode == 'rmaReceived' ){
 	                arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="rmaReceived"));
 	            }
 	        }
