@@ -371,7 +371,9 @@ component persistent="false" extends="HibachiService" output="false" accessors="
 					}
 				} catch(any e) {
 					// log the error
-					logHibachiException(e);
+					if(getHibachiScope().setting("globalLogMessages") == "detail"){
+						logHibachiException(e);
+					}
 				}
 			}
 		}
