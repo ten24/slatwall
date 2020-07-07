@@ -1431,7 +1431,7 @@
 		
 		public string function getOrmTypeByEntityNameAndPropertyIdentifier(required string entityName, required string propertyIdentifier) {
 		
-			var cacheKey = 'getOrmTypeByEntityNameAndPropertyIdentifier-#arguments.entityName#-#arguments.propertyIdentifier#');
+			var cacheKey = 'getOrmTypeByEntityNameAndPropertyIdentifier-#arguments.entityName#-#arguments.propertyIdentifier#';
 			if(!structKeyExists(variables,cacheKey)){
 				variables[cacheKey] = "";
 				var lastEntityName =  getLastEntityNameInPropertyIdentifier(arguments.entityName, arguments.propertyIdentifier );
