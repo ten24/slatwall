@@ -1982,7 +1982,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		if( !processOrderAddOrderItem.hasErrors() ){
 			arguments.order = this.processOrder_addOrderItem(arguments.order, processOrderAddOrderItem);
-		} 
+		} else if(isNull(arguments.orderTemplateItemStruct['temporaryFlag']) || !arguments.orderTemplateItemStruct['temporaryFlag']){
+			arguments.order.addError('addOrderItem', processOrderAddOrderItem.getErrors());
+			getHibachiScope().setORMHasErrors(true);
+		}
 		
 		return arguments.order;
 	}
