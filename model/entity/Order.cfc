@@ -2455,5 +2455,19 @@ public numeric function getPersonalVolumeSubtotal(){
 		}
 		
 		return false;
+	}
+	
+	//Returns an array of one shipping fulfillment if there is a shipping fulfillment on the order, otherwise it returns an empty array
+	public array function getFirstShippingFulfillment(){
+		var shippingFulfillmentArray = [];
+		var fulfillments = this.getOrderFulfillments() ?:[];
+		for(var fulfillment in fulfillments){
+			if(!isNull(fulfillment.getFulfillmentMethod()) && fulfillment.getFulfillmentMethod().getFulfillmentMethodType() =='shipping'){
+				shippingFulfillmentArray = [fulfillment];
+				break;
+			}
+		}
+		
+		return shippingFulfillmentArray
 	}//CUSTOM FUNCTIONS END
 }
