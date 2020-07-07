@@ -1734,6 +1734,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		arguments.orderTemplate.setScheduleOrderNextPlaceDateTime(nextPlaceDate);
 		arguments.orderTemplate.setLastOrderPlacedDateTime( now() );
 		arguments.orderTemplate.setScheduleOrderProcessingFlag( false );
+		arguments.orderTemplate.setMostRecentError( javacast('null','') );
+		arguments.orderTemplate.setMostRecentErrorDateTime( javacast('null','') );
 		ormFlush();
 		
 		var eventData = { entity: newOrder, order: newOrder, data: {} };
