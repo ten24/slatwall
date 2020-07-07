@@ -13,6 +13,7 @@ if(typeof bootstrap !== 'undefined'){
 }
 delete devConfig.entry.vendor; //remove the vendor info from this version.
 devConfig.output.path = PATHS.app;
+devConfig.output.filename = 'monat.js';
 devConfig.context = PATHS.app;
 devConfig.watch = false;
 //don't need the vendor bundle generated here because we include the vendor bundle already.
@@ -42,4 +43,17 @@ devConfig.plugins =  [
     	}
 	})
 ];   
+
+devConfig.resolve.modules= [
+    path.resolve(path.join(customPath, './'), 'src/'),
+    path.resolve(path.join(customPath, '../../admin/client'), 'src/'),
+    path.resolve(path.join(customPath, '../../client'), 'src/'),
+    path.resolve(__dirname, 'src/'),
+    'node_modules'
+];
+
+devConfig.resolve.alias =  {
+      '@Monat': path.resolve(path.join(customPath, './'), 'src/monatfrontend/'),
+      '@Hibachi': path.resolve(path.join(customPath, '../../org/Hibachi/client/'), 'src/')
+};
 module.exports = devConfig;
