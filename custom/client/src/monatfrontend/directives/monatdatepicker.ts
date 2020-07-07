@@ -33,7 +33,7 @@ class MonatDatePicker {
         
         if($scope.maxDate) {
             var date = new Date($scope.maxDate);
-              date.setDate(date.getDate()+15);
+              date.setDate(date.getDate()+60);
               let newDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
                
                $scope.options.maxDate=newDate;
@@ -58,7 +58,17 @@ class MonatDatePicker {
 		if (!$scope.startDate) {
 			$scope.startDate = Date.now();
 		}
+   
+		$scope.options.disableDates = function(date) {
+			var dayOfMonth = date.getDate();
+			var dateToCompare = date;
+			if (typeof dateToCompare !== 'number') {
+				dateToCompare = dateToCompare.getTime();
+			}
 
+			return dayOfMonth <= $scope.endDayOfTheMonth;
+		};
+	
 		$(element).datepicker($scope.options);
 	};
 
