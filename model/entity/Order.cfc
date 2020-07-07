@@ -2056,9 +2056,9 @@ public numeric function getPersonalVolumeSubtotal(){
 		var orderItemsCount = arrayLen(orderItems);
 		for(var i=1; i<=orderItemsCount; i++) {
 			if( listFindNoCase("oitSale,oitDeposit,oitReplacement",orderItems[i].getTypeCode()) ) {
-				subtotal = getService('HibachiUtilityService').precisionCalculate(subtotal + orderItems[i].getCustomExtendedPrice(customPriceField));
+				subtotal = getService('HibachiUtilityService').precisionCalculate(subtotal + orderItems[i].getCustomExtendedPrice(arguments.customPriceField));
 			} else if ( orderItems[i].getTypeCode() == "oitReturn" ) {
-				subtotal = getService('HibachiUtilityService').precisionCalculate(subtotal - orderItems[i].getCustomExtendedPrice(customPriceField));
+				subtotal = getService('HibachiUtilityService').precisionCalculate(subtotal - orderItems[i].getCustomExtendedPrice(arguments.customPriceField));
 			} else {
 				throw("there was an issue calculating the subtotal because of a orderItemType associated with one of the items");
 			}
@@ -2067,7 +2067,7 @@ public numeric function getPersonalVolumeSubtotal(){
     }
 	
 	public numeric function getCustomPriceFieldSubtotalAfterItemDiscounts(customPriceField) {
-		return getService('HibachiUtilityService').precisionCalculate(getCustomPriceFieldSubtotal(customPriceField) - getItemCustomDiscountAmountTotal(customPriceField));
+		return getService('HibachiUtilityService').precisionCalculate(getCustomPriceFieldSubtotal(arguments.customPriceField) - getItemCustomDiscountAmountTotal(arguments.customPriceField));
 	}
     
     public numeric function getItemCustomDiscountAmountTotal(required string customPriceField) {
@@ -2075,9 +2075,9 @@ public numeric function getPersonalVolumeSubtotal(){
 		var orderItems = getRootOrderItems(); 
 		for(var i=1; i<=arrayLen(orderItems); i++) {
 			if( listFindNoCase("oitSale,oitDeposit,oitReplacement",orderItems[i].getTypeCode()) ) {
-				discountTotal = getService('HibachiUtilityService').precisionCalculate(discountTotal + orderItems[i].getCustomDiscountAmount(customPriceField));
+				discountTotal = getService('HibachiUtilityService').precisionCalculate(discountTotal + orderItems[i].getCustomDiscountAmount(arguments.customPriceField));
 			} else if ( orderItems[i].getTypeCode() == "oitReturn" ) {
-				discountTotal = getService('HibachiUtilityService').precisionCalculate(discountTotal - orderItems[i].getCustomDiscountAmount(customPriceField));
+				discountTotal = getService('HibachiUtilityService').precisionCalculate(discountTotal - orderItems[i].getCustomDiscountAmount(arguments.customPriceField));
 			} else {
 				throw("there was an issue calculating the itemDiscountAmountTotal because of a orderItemType associated with one of the items");
 			}
@@ -2086,21 +2086,21 @@ public numeric function getPersonalVolumeSubtotal(){
 	}
     
     public numeric function getCustomDiscountTotal(customPriceField) {
-		return getService('HibachiUtilityService').precisionCalculate(getItemCustomDiscountAmountTotal(customPriceField) + getOrderCustomDiscountAmountTotal(customPriceField));
+		return getService('HibachiUtilityService').precisionCalculate(getItemCustomDiscountAmountTotal(arguments.customPriceField) + getOrderCustomDiscountAmountTotal(arguments.customPriceField));
 	}
 	
 	public numeric function getOrderCustomDiscountAmountTotal(customPriceField) {
 		var discountAmount = 0;
 
 		for(var i=1; i<=arrayLen(getAppliedPromotions()); i++) {
-			discountAmount = getService('HibachiUtilityService').precisionCalculate(discountAmount + getAppliedPromotions()[i].getCustomDiscountAmount(customPriceField));
+			discountAmount = getService('HibachiUtilityService').precisionCalculate(discountAmount + getAppliedPromotions()[i].getCustomDiscountAmount(arguments.customPriceField));
 		}
 
 		return discountAmount;
 	}
 	
 	public numeric function getCustomPriceFieldTotal(customPriceField) {
-		return val(getService('HibachiUtilityService').precisionCalculate(getCustomPriceFieldSubtotal(customPriceField)  - getCustomDiscountTotal(customPriceField)));
+		return val(getService('HibachiUtilityService').precisionCalculate(getCustomPriceFieldSubtotal(arguments.customPriceField)  - getCustomDiscountTotal(arguments.customPriceField)));
 	}
 	
 	public boolean function isNotPaid() {

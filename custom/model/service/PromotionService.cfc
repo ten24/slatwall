@@ -24,7 +24,7 @@ component extends="Slatwall.model.service.PromotionService" {
 			//Custom price fields
 		    for(var customPriceField in variables.customPriceFields){
 				var extendedCustomUnitPriceAfterDiscount = arguments.orderItem.invokeMethod('getExtended#customPriceField#AfterDiscount') / arguments.orderItem.getQuantity();
-				if(rewardStruct.promotionReward.getAmountType() == 'amountOff'){
+				if(arguments.rewardStruct.promotionReward.getAmountType() == 'amountOff'){
 					var rewardAmount = getProportionalRewardAmount(arguments.rewardStruct.discountAmount, extendedUnitPriceAfterDiscount,extendedCustomUnitPriceAfterDiscount);
 				}else{
 			        var args = {
@@ -42,7 +42,7 @@ component extends="Slatwall.model.service.PromotionService" {
 		    }
 
 			applyPromotionToOrderItem( arguments.orderItem, arguments.rewardStruct );
-			getHibachiScope().addModifiedEntity(orderItem);
+			getHibachiScope().addModifiedEntity(arguments.orderItem);
 			return true;
 		}
 		return false;
@@ -143,7 +143,7 @@ component extends="Slatwall.model.service.PromotionService" {
 		
 		var rewardAmount = arguments.reward.invokeMethod(amountMethod,amountParams);
 		if(!isNull(rewardAmount)){
-			switch(reward.getAmountType()) {
+			switch(arguments.reward.getAmountType()) {
 				case "percentageOff" :
 					discountAmountPreRounding = val(getService('HibachiUtilityService').precisionCalculate(originalAmount * (rewardAmount/100)));
 					break;
@@ -256,8 +256,9 @@ component extends="Slatwall.model.service.PromotionService" {
 			// The percentage of overall order discount that needs to be properly allocated to the order item. This is to perform weighted calculations.
 			var currentOrderItemAmountAsPercentage=0;
 			
-			if(!isNull(arguments.order.getPersonalVolumeSubtotalAfterItemDiscounts()) && arguments.order.getPersonalVolumeSubtotalAfterItemDiscounts() != 0){
-				currentOrderItemAmountAsPercentage = orderItem.getExtendedPersonalVolumeAfterDiscount() / arguments.order.getPersonalVolumeSubtotalAfterItemDiscounts();	
+			var personalVolumeSubtotalAfterItemDiscounts = arguments.order.getPersonalVolumeSubtotalAfterItemDiscounts();
+			if(!isNull(personalVolumeSubtotalAfterItemDiscounts) && personalVolumeSubtotalAfterItemDiscounts != 0){
+				currentOrderItemAmountAsPercentage = orderItem.getExtendedPersonalVolumeAfterDiscount() / personalVolumeSubtotalAfterItemDiscounts;	
 			}
 			
 			// Approximate amount to allocate (rounded to nearest penny)

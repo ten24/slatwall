@@ -93,6 +93,14 @@ component {
         
 		return this.getCustomPriceByCurrencyCode(argumentCollection=arguments);
     }
+    
+    public any function getSkuPricesForSkuCurrencyCodeAndQuantity(required string skuID, required string currencyCode, required numeric quantity, array priceGroups=[], string priceGroupIDList){
+    	if(!structKeyExists(variables, 'skuPricesForSkuCurrencyCodeAndQuantity')){
+    		variables.skuPricesForSkuCurrencyCodeAndQuantity = getDAO("SkuPriceDAO").getSkuPricesForSkuCurrencyCodeAndQuantity(argumentCollection=arguments);
+    	}else{
+    		return variables.skuPricesForSkuCurrencyCodeAndQuantity;
+    	}
+    }
 
     public any function getCustomPriceByCurrencyCode( string customPriceField, string currencyCode='USD', numeric quantity=1, array priceGroups ) {
 		var cacheKey = 'get#customPriceField#ByCurrencyCode#arguments.currencyCode#';
@@ -116,7 +124,7 @@ component {
 
 		arguments.skuID = this.getSkuID(); 
 		if(!structKeyExists(variables,cacheKey)){
-			var skuPriceResults = getDAO("SkuPriceDAO").getSkuPricesForSkuCurrencyCodeAndQuantity(argumentCollection=arguments);
+			var skuPriceResults = getSkuPricesForSkuCurrencyCodeAndQuantity(argumentCollection=arguments);
 
 			if(!isNull(skuPriceResults) && isArray(skuPriceResults) && arrayLen(skuPriceResults) > 0){
 				var sortFunction = function(a,b){

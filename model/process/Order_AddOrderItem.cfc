@@ -855,20 +855,26 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		var assignedOrderItemAttributeSetRecords = assignedOrderItemAttributeSetCollectionList.getRecords();
 		
 		var attributeSetIDArray = [];
+		
 		for(var assignedOrderItemAttributeSetRecord in assignedOrderItemAttributeSetRecords){
 			arrayAppend(attributeSetIDArray,assignedOrderItemAttributeSetRecord['attributeSetID']);
-				}
+		}
 		var cacheKey = "Order_AddOrderItem_populate#arrayToList(attributeSetIDArray)#";
 		
-		if(!getService('HibachiCacheService').hasCachedValue(cacheKey)){
-			var attributeCollectionList = getService('attributeService').getAttributeCollectionList();
-			attributeCollectionList.setDisplayProperties('attributeCode');
-			attributeCollectionList.addFilter('attributeSet.attributeSetID',arrayToList(attributeSetIDArray),'IN');
-			
-			getService('HibachiCacheService').setCachedValue(cacheKey,attributeCollectionList.getRecords());
-		}
-		attributeCollectionListRecords = getService('HibachiCacheService').getCachedValue(cacheKey);
+		var attributeCollectionListRecords = [];
 		
+		if(!getService('HibachiCacheService').hasCachedValue(cacheKey)){
+			if(arrayLen(attributeSetIDArray)){
+				var attributeCollectionList = getService('attributeService').getAttributeCollectionList();
+				attributeCollectionList.setDisplayProperties('attributeCode');
+				attributeCollectionList.addFilter('attributeSet.attributeSetID',arrayToList(attributeSetIDArray),'IN');
+				attributeCollectionListRecords = attributeCollectionList.getRecords();
+			}
+			
+			getService('HibachiCacheService').setCachedValue(cacheKey, attributeCollectionListRecords);
+		}else{
+			attributeCollectionListRecords = getService('HibachiCacheService').getCachedValue(cacheKey);
+		}
 		
 		for(var attributeCollectionListRecord in attributeCollectionListRecords){
 			if(len(trim(attributeCollectionListRecord['attributeCode']))){

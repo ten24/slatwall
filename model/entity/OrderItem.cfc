@@ -1395,12 +1395,12 @@ public void function refreshAmounts(){
 		var discountAmount = 0;
 	
 		for(var i=1; i<=arrayLen(getAppliedPromotions()); i++) {
-			discountAmount = getService('HibachiUtilityService').precisionCalculate(discountAmount + getAppliedPromotions()[i].invokeMethod('get#priceField#DiscountAmount'));
+			discountAmount = getService('HibachiUtilityService').precisionCalculate(discountAmount + getAppliedPromotions()[i].invokeMethod('get#arguments.priceField#DiscountAmount'));
 		}
 		
 		if(!isNull(getSku()) && getSku().getProduct().getProductType().getSystemCode() == 'productBundle'){
 			for(var childOrderItem in this.getChildOrderItems()){
-				discountAmount = getService('HibachiUtilityService').precisionCalculate(discountAmount + childOrderItem.getCustomDiscountAmount(priceField));
+				discountAmount = getService('HibachiUtilityService').precisionCalculate(discountAmount + childOrderItem.getCustomDiscountAmount(arguments.priceField));
 			}
 		}
 		
