@@ -51,15 +51,9 @@
 	
 </div>
 
-<!--- <div 
-	class="text-center purchase-plus-message alert alert-success rounded-0" 
-	ng-if="flexshipPurchasePlus.messages"
-	ng-bind="flexshipPurchasePlus.messages.message"
-></div> --->
-
 <div 
 	class="purchase-plus-message alert alert-success rounded-0" 
-	ng-if="flexshipPurchasePlus.messages === true && purchasePlusBar.hasPurchasePlusMessage" 
+	ng-if="flexshipPurchasePlus.messages"
 >
 	<span ng-bind="flexshipPurchasePlus.messages.message"></span>
 	<a id="purchase-plus-questionmark" ng-click="purchasePlusBar.closeCart()" data-target="#purchasePlusModal" data-toggle="modal" type="button"><i class="far fa-question-circle"></i></a>
