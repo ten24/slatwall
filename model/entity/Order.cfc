@@ -2463,7 +2463,7 @@ public numeric function getPersonalVolumeSubtotal(){
 		var fulfillments = this.getOrderFulfillments() ?:[];
 		for(var fulfillment in fulfillments){
 			if(!isNull(fulfillment.getFulfillmentMethod()) && fulfillment.getFulfillmentMethod().getFulfillmentMethodType() =='shipping'){
-				shippingFulfillmentArray = [fulfillment];
+				arrayAppend(shippingFulfillmentArray, fulfillment);
 				break;
 			}
 		}
