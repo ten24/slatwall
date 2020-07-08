@@ -207,7 +207,7 @@ class swfAccountController {
                     break;
             }
             
-            if(this.accountData?.accountType.toLowerCase() =='marketpartner'){
+            if(this.accountData?.accountType?.toLowerCase() =='marketpartner'){
                 this.loading=true;
                 this.publicService.doAction('getMPRenewalData').then(res=>{
                     if(res.renewalInformation){
