@@ -132,6 +132,7 @@ class SWReturnOrderItemsController{
                 calculatedExtendedPriceAfterDiscount,
                 calculatedExtendedUnitPriceAfterDiscount,
                 calculatedTaxAmount,
+                calculatedTaxAmountNotRefunded,
                 allocatedOrderDiscountAmount,
                 allocatedOrderPersonalVolumeDiscountAmount,
                 allocatedOrderCommissionableVolumeDiscountAmount,
@@ -140,7 +141,6 @@ class SWReturnOrderItemsController{
                 calculatedQuantityDeliveredMinusReturns,
                 calculatedExtendedPersonalVolumeAfterDiscount,
                 calculatedExtendedCommissionableVolumeAfterDiscount`.replace(/\s+/gi,'');
-                
     }
     
     constructor(
@@ -193,8 +193,8 @@ class SWReturnOrderItemsController{
            orderItem.refundUnitCV = 0;
            orderItem.refundCVTotal = 0;
        }
-       
-       orderItem.taxRefundAmount = Math.round((orderItem.taxTotal / orderItem.quantity * orderItem.returnQuantity)*100)/100;
+       console.log(orderItem.taxTotal * orderItem.returnQuantity / orderItem.quantity);
+       orderItem.taxRefundAmount = Math.round((orderItem.taxTotal * orderItem.returnQuantity / orderItem.quantity )*100)/100;
        
        if(maxRefund == undefined){
            let refundTotal = this.orderItems.reduce((total:number,item:any)=>{

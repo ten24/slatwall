@@ -2,6 +2,7 @@
 <cfimport prefix="hb" taglib="../../../../../org/Hibachi/HibachiTags" />
 
 <cfoutput>
+	<cfdump var=#rc.order.getTaxTotalNotRefunded()#>
 	<hb:HibachiPropertyRow divAttributes="style='overflow-x:auto'">
 		<hb:HibachiPropertyList>
 			<!--- Items Selector --->

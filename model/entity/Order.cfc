@@ -2186,6 +2186,9 @@ public numeric function getPersonalVolumeSubtotal(){
 	}
 	
 	public boolean function subtotalWithinAllowedPercentage(){
+		if(!listFindNoCase('otReturnOrder,otRefundOrder',this.getOrderType().getSystemCode())){
+			return true;
+		}
 	    var referencedOrder = this.getReferencedOrder();
 	    if(isNull(referencedOrder)){
 	        return true;

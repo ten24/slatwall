@@ -76652,7 +76652,7 @@ var SWReturnOrderItemsController = /** @class */ (function () {
             });
         };
         this.getDisplayPropertiesList = function () {
-            return "orderItemID,\n                quantity,\n                sku.calculatedSkuDefinition,\n                calculatedDiscountAmount,\n                calculatedExtendedPriceAfterDiscount,\n                calculatedExtendedUnitPriceAfterDiscount,\n                calculatedTaxAmount,\n                allocatedOrderDiscountAmount,\n                allocatedOrderPersonalVolumeDiscountAmount,\n                allocatedOrderCommissionableVolumeDiscountAmount,\n                sku.skuCode,\n                sku.product.calculatedTitle,\n                calculatedQuantityDeliveredMinusReturns,\n                calculatedExtendedPersonalVolumeAfterDiscount,\n                calculatedExtendedCommissionableVolumeAfterDiscount".replace(/\s+/gi, '');
+            return "orderItemID,\n                quantity,\n                sku.calculatedSkuDefinition,\n                calculatedDiscountAmount,\n                calculatedExtendedPriceAfterDiscount,\n                calculatedExtendedUnitPriceAfterDiscount,\n                calculatedTaxAmount,\n                calculatedTaxAmountNotRefunded,\n                allocatedOrderDiscountAmount,\n                allocatedOrderPersonalVolumeDiscountAmount,\n                allocatedOrderCommissionableVolumeDiscountAmount,\n                sku.skuCode,\n                sku.product.calculatedTitle,\n                calculatedQuantityDeliveredMinusReturns,\n                calculatedExtendedPersonalVolumeAfterDiscount,\n                calculatedExtendedCommissionableVolumeAfterDiscount".replace(/\s+/gi, '');
         };
         this.updateOrderItem = function (orderItem, maxRefund, attemptNum) {
             var orderMaxRefund;
@@ -76674,7 +76674,8 @@ var SWReturnOrderItemsController = /** @class */ (function () {
                 orderItem.refundUnitCV = 0;
                 orderItem.refundCVTotal = 0;
             }
-            orderItem.taxRefundAmount = Math.round((orderItem.taxTotal / orderItem.quantity * orderItem.returnQuantity) * 100) / 100;
+            console.log(orderItem.taxTotal * orderItem.returnQuantity / orderItem.quantity);
+            orderItem.taxRefundAmount = Math.round((orderItem.taxTotal * orderItem.returnQuantity / orderItem.quantity) * 100) / 100;
             if (maxRefund == undefined) {
                 var refundTotal = _this.orderItems.reduce(function (total, item) {
                     return (item == orderItem) ? total : total += item.refundTotal;
