@@ -36,7 +36,7 @@
 		</li>
 
 		
-		<li ng-if="monatFlexshipMenu.orderTemplate.statusCode === 'otstActive' && monatFlexshipMenu.publicService.account.accountType?.toLowerCase() != 'vip' ">
+		<li ng-if="monatFlexshipMenu.orderTemplate.statusCode === 'otstActive' && monatFlexshipMenu.publicService.account.accountType.toLowerCase() != 'vip' ">
 		    <a href="##" ng-click="monatFlexshipMenu.showCancelFlexshipModal()"><span sw-rbkey="'frontend.flexshipCard.menu.cancelFlexship'"></span></a>
 		</li>
 		<li ng-if="monatFlexshipMenu.orderTemplate.statusCode != 'otstActive'">
