@@ -1734,6 +1734,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		arguments.orderTemplate.setScheduleOrderNextPlaceDateTime(nextPlaceDate);
 		arguments.orderTemplate.setLastOrderPlacedDateTime( now() );
 		arguments.orderTemplate.setScheduleOrderProcessingFlag( false );
+		arguments.orderTemplate.setMostRecentError( javacast('null','') );
+		arguments.orderTemplate.setMostRecentErrorDateTime( javacast('null','') );
 		ormFlush();
 		
 		var eventData = { entity: newOrder, order: newOrder, data: {} };
@@ -1980,7 +1982,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		if( !processOrderAddOrderItem.hasErrors() ){
 			arguments.order = this.processOrder_addOrderItem(arguments.order, processOrderAddOrderItem);
-		} 
+		} else if(isNull(arguments.orderTemplateItemStruct['temporaryFlag']) || !arguments.orderTemplateItemStruct['temporaryFlag']){
+			arguments.order.addError('addOrderItem', processOrderAddOrderItem.getErrors());
+			getHibachiScope().setORMHasErrors(true);
+		}
 		
 		return arguments.order;
 	}
