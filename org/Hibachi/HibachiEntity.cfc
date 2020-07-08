@@ -1407,6 +1407,10 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	public boolean function isNew() {
 		return getNewFlag();
 	}
+	
+	public boolean function verifyPerformCascadeCalculateForProperty(required any property) {
+		return verifyPerformCalculateForProperty(argumentCollection=arguments);
+	}
 
 	// ==================  END:  Deprecated Methods ========================
 }
