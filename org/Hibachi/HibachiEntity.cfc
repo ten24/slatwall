@@ -207,11 +207,12 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
             // Loop over all properties
             for(var property in getProperties()) {
             	
-        		if (!verifyPerformCalculateForProperty(property)) {
-        			continue;
-        		}
                 // Look for any that start with the calculatedXXX naming convention
                 if(left(property.name, 10) == "calculated" && (!structKeyExists(property, "persistent") || property.persistent == "true")) {
+                	
+                	if (!verifyPerformCalculateForProperty(property)) {
+	        			continue;
+	        		}
 					//prior to invoking we should remove any first level caching that would cause a stale calculation
 					var nonPersistentProperty = right(property.name, len(property.name)-10);
 					if(listFindNoCase('Product,Sku,Stock,SkuLocationQuantity',this.getClassName())){
@@ -230,7 +231,10 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
                     }
 
                 } else if (arguments.cascadeCalculateFlag == true && structKeyExists(property, "hb_cascadeCalculate") && property.hb_cascadeCalculate && structKeyExists(variables, property.name) && isObject( variables[ property.name ] ) ) {
-                	variables[ property.name ].updateCalculatedProperties();
+                	// Need to check if entity specifices that the property's cascadeCalculate should be applied conditionally (only when explicitly defined)
+                	if (verifyPerformCascadeCalculateForProperty(property)) {
+                    	variables[ property.name ].updateCalculatedProperties();
+                	}
                 }
             }
 
@@ -955,6 +959,10 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		
 		return performCalculateFlag;
 	}
+	
+	public boolean function verifyPerformCascadeCalculateForProperty(required any property) {
+		return verifyPerformCalculateForProperty(argumentCollection=arguments);
+	}
 
 	// @hint Generic abstract dynamic ORM methods by convention via onMissingMethod.
 	public any function onMissingMethod(required string missingMethodName, required struct missingMethodArguments) {
@@ -1374,7 +1382,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
             if (structKeyExists(property, "hb_cascadeCalculate") && property.hb_cascadeCalculate && structKeyExists(variables, property.name) && isObject( variables[ property.name ] ) ) {
             	
             	// Need to check if entity specifices that the property's cascadeCalculate should be applied conditionally (only when explicitly defined)
-                if (verifyPerformCalculateForProperty(property)) {
+                if (verifyPerformCascadeCalculateForProperty(property)) {
                 	getHibachiScope().addModifiedEntity(variables[ property.name ]);
 				}
             }
@@ -1406,10 +1414,6 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	// @hint public method that returns if this entity has persisted to the database yet or not.
 	public boolean function isNew() {
 		return getNewFlag();
-	}
-	
-	public boolean function verifyPerformCascadeCalculateForProperty(required any property) {
-		return verifyPerformCalculateForProperty(argumentCollection=arguments);
 	}
 
 	// ==================  END:  Deprecated Methods ========================
