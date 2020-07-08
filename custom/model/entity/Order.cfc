@@ -558,15 +558,18 @@ component {
 	public boolean function validateActiveStatus(){
 		var isValidOrder = false;
 		if(
-			activeFlag 
-			||	(
-					!activeFlag 
-					&& this.getUpgradeOrEnrollmentOrderFlag()
-					&& !isNull(this.getAccount())
-					&& !isNull(this.getAccount().getAccountStatusType())
-					&& this.getAccount().getAccountStatusType().getSystemCode() == 'astEnrollmentPending'
+			!isNull(this.getAccount())
+			&& (
+				this.getAccount().getActiveFlag()
+				||	(
+						!this.getAccount().getActiveFlag() 
+						&& this.getUpgradeOrEnrollmentOrderFlag()
+						&& !isNull(this.getAccount().getAccountStatusType())
+						&& this.getAccount().getAccountStatusType().getSystemCode() == 'astEnrollmentPending'
+					)
 				)
-			){
+			)
+		{
 			isValidOrder = true;
 		}
 		

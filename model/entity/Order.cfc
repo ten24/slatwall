@@ -2455,5 +2455,26 @@ public numeric function getPersonalVolumeSubtotal(){
 		}
 		
 		return false;
+	}
+	
+	public boolean function validateActiveStatus(){
+		var isValidOrder = false;
+		if(
+			!isNull(this.getAccount())
+			&& (
+				this.getAccount().getActiveFlag()
+				||	(
+						!this.getAccount().getActiveFlag() 
+						&& this.getUpgradeOrEnrollmentOrderFlag()
+						&& !isNull(this.getAccount().getAccountStatusType())
+						&& this.getAccount().getAccountStatusType().getSystemCode() == 'astEnrollmentPending'
+					)
+				)
+			)
+		{
+			isValidOrder = true;
+		}
+		
+		return isValidOrder;
 	}//CUSTOM FUNCTIONS END
 }
