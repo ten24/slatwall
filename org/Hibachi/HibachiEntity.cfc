@@ -949,7 +949,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
     	// Entity has defined method for this property to handle determining whether calculation should cascade in the current state
 		if (structKeyExists(this, 'get#arguments.property.name#PerformCalculateFlag')) {
 			performCalculateFlag = this.invokeMethod('get#arguments.property.name#PerformCalculateFlag');
-		} else if (structKeyExists(this, 'getPerformCascadeCalculateFlag') ) {
+		} else if (structKeyExists(this, 'getPerformCalculateFlag') ) {
 			performCalculateFlag = this.invokeMethod('getPerformCalculateFlag',{ 1 = arguments.property });
 		}
 		
