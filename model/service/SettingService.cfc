@@ -448,6 +448,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			skuStockHoldTime = {fieldType="text", defaultValue=0,  validate={dataType="numeric"}},
 			skuTaxCategory = {fieldType="select", defaultValue="444df2c8cce9f1417627bd164a65f133"},
 			skuTrackInventoryFlag = {fieldType="yesno", defaultValue=0},
+			skuTrackQATSBelowThreshold = {fieldType="text", defaultValue=1000},
 			skuShippingCostExempt = {fieldType="yesno", defaultValue=0},
 			skuDisableAverageCostCalculation = {fieldType="yesno", defaultValue=0},
 			skuDisableQoQCalculation = {fieldType="yesno", defaultValue=0},
