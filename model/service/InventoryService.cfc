@@ -385,7 +385,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		}
 		
 		// if current calculated QATS is more the skuTrackQATSBelowThreshold then return calculatedQATS, unless updating calculated property
-		if( !arguments.entity.getCalculatedUpdateRunFlag() && skuTrackQATSBelowThreshold != 0 && arguments.entity.getCalculatedQATS() > skuTrackQATSBelowThreshold ) {
+		if( !arguments.entity.getCalculatedUpdateRunFlag() && skuTrackQATSBelowThreshold != 0 && val(arguments.entity.getCalculatedQATS()) > skuTrackQATSBelowThreshold ) {
 			return arguments.entity.getCalculatedQATS();
 		}
 		
