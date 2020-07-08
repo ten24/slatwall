@@ -944,15 +944,21 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		return getApplicationValue("classAuditablePropertyStructCache_#getClassFullname()#");
 	}
 	
-	public boolean function verifyPerformCalculateForProperty(required any property) {
+	public boolean function verifyPerformCalculateForProperty(required any property, boolean cascadeCalculateFlag = true) {
 		// NOTE: Need to check if entity specifices that the property's cascadeCalculate should be applied conditionally (only when explicitly defined)
         
     	// Implies calculation should cascade in any state
     	var performCalculateFlag = true;
     	
     	// Entity has defined method for this property to handle determining whether calculation should cascade in the current state
-		if (structKeyExists(this, 'get#arguments.property.name#PerformCalculateFlag')) {
-			performCalculateFlag = this.invokeMethod('get#arguments.property.name#PerformCalculateFlag');
+    	var propertyMethodName = 'get#arguments.property.name#Perform';
+    	if(arguments.cascadeCalculateFlag){
+    		propertyMethodName &= 'Cascade';
+    	}
+    	propertyMethodName &= 'CalculateFlag';
+    	
+		if (structKeyExists(this, propertyMethodName)) {
+			performCalculateFlag = this.invokeMethod(propertyMethodName);
 		} else if (structKeyExists(this, 'getPerformCalculateFlag') ) {
 			performCalculateFlag = this.invokeMethod('getPerformCalculateFlag',{ 1 = arguments.property });
 		}
@@ -960,7 +966,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		return performCalculateFlag;
 	}
 	
-	public boolean function verifyPerformCascadeCalculateForProperty(required any property) {
+	public boolean function verifyPerformCascadeCalculateForProperty(required any property, boolean cascadeCalculateFlag = true) {
 		return verifyPerformCalculateForProperty(argumentCollection=arguments);
 	}
 
