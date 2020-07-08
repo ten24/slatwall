@@ -944,7 +944,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		return getApplicationValue("classAuditablePropertyStructCache_#getClassFullname()#");
 	}
 	
-	public boolean function verifyPerformCalculateForProperty(required any property, boolean cascadeCalculateFlag = true) {
+	public boolean function verifyPerformCalculateForProperty(required any property, boolean cascadeCalculateFlag = false) {
 		// NOTE: Need to check if entity specifices that the property's cascadeCalculate should be applied conditionally (only when explicitly defined)
         
     	// Implies calculation should cascade in any state
