@@ -206,7 +206,10 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
             variables.calculatedUpdateRunFlag = true;
             // Loop over all properties
             for(var property in getProperties()) {
-
+            	
+        		if (!verifyPerformCalculateForProperty(property)) {
+        			continue;
+        		}
                 // Look for any that start with the calculatedXXX naming convention
                 if(left(property.name, 10) == "calculated" && (!structKeyExists(property, "persistent") || property.persistent == "true")) {
 					//prior to invoking we should remove any first level caching that would cause a stale calculation
@@ -227,11 +230,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
                     }
 
                 } else if (arguments.cascadeCalculateFlag == true && structKeyExists(property, "hb_cascadeCalculate") && property.hb_cascadeCalculate && structKeyExists(variables, property.name) && isObject( variables[ property.name ] ) ) {
-                	
-                	// Need to check if entity specifices that the property's cascadeCalculate should be applied conditionally (only when explicitly defined)
-                	if (verifyPerformCascadeCalculateForProperty(property)) {
-                    	variables[ property.name ].updateCalculatedProperties();
-					}
+                	variables[ property.name ].updateCalculatedProperties();
                 }
             }
 
@@ -941,18 +940,20 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		return getApplicationValue("classAuditablePropertyStructCache_#getClassFullname()#");
 	}
 	
-	public boolean function verifyPerformCascadeCalculateForProperty(required any property) {
+	public boolean function verifyPerformCalculateForProperty(required any property) {
 		// NOTE: Need to check if entity specifices that the property's cascadeCalculate should be applied conditionally (only when explicitly defined)
         
     	// Implies calculation should cascade in any state
-    	var performCascadeCalculateFlag = true;
+    	var performCalculateFlag = true;
     	
     	// Entity has defined method for this property to handle determining whether calculation should cascade in the current state
-		if (structKeyExists(this, 'get#arguments.property.name#PerformCascadeCalculateFlag')) {
-			performCascadeCalculateFlag = this.invokeMethod('get#arguments.property.name#PerformCascadeCalculateFlag');
+		if (structKeyExists(this, 'get#arguments.property.name#PerformCalculateFlag')) {
+			performCalculateFlag = this.invokeMethod('get#arguments.property.name#PerformCalculateFlag');
+		} else if (structKeyExists(this, 'getPerformCascadeCalculateFlag') ) {
+			performCalculateFlag = this.invokeMethod('getPerformCalculateFlag',{ 1 = arguments.property });
 		}
 		
-		return performCascadeCalculateFlag;
+		return performCalculateFlag;
 	}
 
 	// @hint Generic abstract dynamic ORM methods by convention via onMissingMethod.
@@ -1373,7 +1374,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
             if (structKeyExists(property, "hb_cascadeCalculate") && property.hb_cascadeCalculate && structKeyExists(variables, property.name) && isObject( variables[ property.name ] ) ) {
             	
             	// Need to check if entity specifices that the property's cascadeCalculate should be applied conditionally (only when explicitly defined)
-                if (verifyPerformCascadeCalculateForProperty(property)) {
+                if (verifyPerformCalculateForProperty(property)) {
                 	getHibachiScope().addModifiedEntity(variables[ property.name ]);
 				}
             }
