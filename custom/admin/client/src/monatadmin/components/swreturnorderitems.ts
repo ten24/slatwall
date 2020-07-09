@@ -59,21 +59,21 @@ class ReturnOrderItem{
     public getAllocatedRefundOrderDiscountAmount = ()=>{
         if(this.returnQuantity >= 0){
             
-            return Math.round(this.allocatedOrderDiscountAmount * this.refundTotal * 100 * this.maxRefund / Math.pow(this.total,2)) / 100;
+            return Number( (this.allocatedOrderDiscountAmount * this.refundTotal * this.maxRefund / Math.pow(this.total,2)).toFixed(2) );
         }
         return 0;
     }
     
     public getAllocatedRefundOrderPVDiscountAmount = ()=>{
         if(this.returnQuantity >= 0){
-            return Math.round(this.allocatedOrderPersonalVolumeDiscountAmount * this.refundPVTotal * 100 * this.maxRefund / (this.pvTotal * this.total)) / 100;
+            return Number( (this.allocatedOrderPersonalVolumeDiscountAmount * this.refundPVTotal * this.maxRefund / (this.pvTotal * this.total)).toFixed(2) );
         }
         return 0;
     }
     
     public getAllocatedRefundOrderCVDiscountAmount = ()=>{
         if(this.returnQuantity >= 0){
-            return Math.round(this.allocatedOrderCommissionableVolumeDiscountAmount * this.refundCVTotal * 100 * this.maxRefund / (this.cvTotal * this.total) ) / 100;
+            return Number( (this.allocatedOrderCommissionableVolumeDiscountAmount * this.refundCVTotal * this.maxRefund / (this.cvTotal * this.total) ).toFixed(2) );
         }
         return 0;
     }
@@ -89,7 +89,7 @@ class SWReturnOrderItemsController{
     public orderItemCollectionList;
     private refundOrderItems;
     public orderItems:Array<ReturnOrderItem>;
-    public orderPayments:Array<Object> = [];
+    public orderPayments:Array<any> = [];
     public refundSubtotal:number=0;
     public refundTotal:number=0;
     public refundPVTotal:number=0;
@@ -105,6 +105,7 @@ class SWReturnOrderItemsController{
     public fulfillmentRefundTaxAmount:number=0;
     public fulfillmentRefundTotal:number;
     public orderDiscountAmount:number;
+    public maxRefundAmount:number;
     
     public setupOrderItemCollectionList = ( orderDiscountRatio ) =>{
         this.orderItemCollectionList = this.collectionConfigService.newCollectionConfig("OrderItem");
@@ -171,6 +172,11 @@ class SWReturnOrderItemsController{
         $hibachi.getCurrencies().then(result=>{
             this.currencySymbol = result.data[this.currencyCode];
         })
+        let maxRefundAmount = 0;
+        for(let i=0; i<this.orderPayments.length; i++){
+            maxRefundAmount += this.orderPayments[i].amountToRefund;
+        }
+        this.maxRefundAmount = maxRefundAmount;
     }
 
     public updateOrderItem = (orderItem,maxRefund,attemptNum) => {
@@ -183,9 +189,9 @@ class SWReturnOrderItemsController{
 
        orderItem.refundTotal = orderItem.returnQuantity * orderItem.refundUnitPrice;
        if(orderItem.returnQuantity > 0 && orderItem.total > 0){
-           orderItem.refundUnitPV = Math.round(orderItem.refundTotal * orderItem.pvTotal * 100 / (orderItem.total * orderItem.returnQuantity)) / 100;
+           orderItem.refundUnitPV = Number( (orderItem.refundTotal * orderItem.pvTotal / (orderItem.total * orderItem.returnQuantity)).toFixed(2) );
            orderItem.refundPVTotal = Number((orderItem.refundUnitPV * orderItem.returnQuantity).toFixed(2));
-           orderItem.refundUnitCV = Math.round(orderItem.refundTotal * orderItem.cvTotal * 100 / (orderItem.total * orderItem.returnQuantity)) / 100;
+           orderItem.refundUnitCV = Number( (orderItem.refundTotal * orderItem.cvTotal / (orderItem.total * orderItem.returnQuantity)).toFixed(2) );
            orderItem.refundCVTotal = Number((orderItem.refundUnitCV * orderItem.returnQuantity).toFixed(2));
        }else{
            orderItem.refundUnitPV = 0;
@@ -194,7 +200,7 @@ class SWReturnOrderItemsController{
            orderItem.refundCVTotal = 0;
        }
        console.log(orderItem.taxTotal * orderItem.returnQuantity / orderItem.quantity);
-       orderItem.taxRefundAmount = Math.round((orderItem.taxTotal * orderItem.returnQuantity / orderItem.quantity )*100)/100;
+       orderItem.taxRefundAmount = Number( (orderItem.taxTotal * orderItem.returnQuantity / orderItem.quantity ).toFixed(2) );
        
        if(maxRefund == undefined){
            let refundTotal = this.orderItems.reduce((total:number,item:any)=>{
@@ -283,6 +289,7 @@ class SWReturnOrderItemsController{
 
         this.fulfillmentRefundTotal = this.fulfillmentRefundAmount + this.fulfillmentRefundTaxAmount;
         this.refundTotal = Number((refundSubtotal + this.fulfillmentRefundTotal - this.allocatedOrderDiscountAmountTotal).toFixed(2));
+        this.refundTotal = Math.min(this.maxRefundAmount,this.refundTotal);
         this.refundPVTotal = Number(refundPVTotal.toFixed(2));
         this.refundCVTotal = Number(refundCVTotal.toFixed(2));
     }

@@ -76582,19 +76582,19 @@ var ReturnOrderItem = /** @class */ (function () {
         //  Following equations have a (this.maxRefund / this.total) term included in order to get the remaining values
         this.getAllocatedRefundOrderDiscountAmount = function () {
             if (_this.returnQuantity >= 0) {
-                return Math.round(_this.allocatedOrderDiscountAmount * _this.refundTotal * 100 * _this.maxRefund / Math.pow(_this.total, 2)) / 100;
+                return Number((_this.allocatedOrderDiscountAmount * _this.refundTotal * _this.maxRefund / Math.pow(_this.total, 2)).toFixed(2));
             }
             return 0;
         };
         this.getAllocatedRefundOrderPVDiscountAmount = function () {
             if (_this.returnQuantity >= 0) {
-                return Math.round(_this.allocatedOrderPersonalVolumeDiscountAmount * _this.refundPVTotal * 100 * _this.maxRefund / (_this.pvTotal * _this.total)) / 100;
+                return Number((_this.allocatedOrderPersonalVolumeDiscountAmount * _this.refundPVTotal * _this.maxRefund / (_this.pvTotal * _this.total)).toFixed(2));
             }
             return 0;
         };
         this.getAllocatedRefundOrderCVDiscountAmount = function () {
             if (_this.returnQuantity >= 0) {
-                return Math.round(_this.allocatedOrderCommissionableVolumeDiscountAmount * _this.refundCVTotal * 100 * _this.maxRefund / (_this.cvTotal * _this.total)) / 100;
+                return Number((_this.allocatedOrderCommissionableVolumeDiscountAmount * _this.refundCVTotal * _this.maxRefund / (_this.cvTotal * _this.total)).toFixed(2));
             }
             return 0;
         };
@@ -76663,9 +76663,9 @@ var SWReturnOrderItemsController = /** @class */ (function () {
             orderItem = _this.setValuesWithinConstraints(orderItem);
             orderItem.refundTotal = orderItem.returnQuantity * orderItem.refundUnitPrice;
             if (orderItem.returnQuantity > 0 && orderItem.total > 0) {
-                orderItem.refundUnitPV = Math.round(orderItem.refundTotal * orderItem.pvTotal * 100 / (orderItem.total * orderItem.returnQuantity)) / 100;
+                orderItem.refundUnitPV = Number((orderItem.refundTotal * orderItem.pvTotal / (orderItem.total * orderItem.returnQuantity)).toFixed(2));
                 orderItem.refundPVTotal = Number((orderItem.refundUnitPV * orderItem.returnQuantity).toFixed(2));
-                orderItem.refundUnitCV = Math.round(orderItem.refundTotal * orderItem.cvTotal * 100 / (orderItem.total * orderItem.returnQuantity)) / 100;
+                orderItem.refundUnitCV = Number((orderItem.refundTotal * orderItem.cvTotal / (orderItem.total * orderItem.returnQuantity)).toFixed(2));
                 orderItem.refundCVTotal = Number((orderItem.refundUnitCV * orderItem.returnQuantity).toFixed(2));
             }
             else {
@@ -76675,7 +76675,7 @@ var SWReturnOrderItemsController = /** @class */ (function () {
                 orderItem.refundCVTotal = 0;
             }
             console.log(orderItem.taxTotal * orderItem.returnQuantity / orderItem.quantity);
-            orderItem.taxRefundAmount = Math.round((orderItem.taxTotal * orderItem.returnQuantity / orderItem.quantity) * 100) / 100;
+            orderItem.taxRefundAmount = Number((orderItem.taxTotal * orderItem.returnQuantity / orderItem.quantity).toFixed(2));
             if (maxRefund == undefined) {
                 var refundTotal = _this.orderItems.reduce(function (total, item) {
                     return (item == orderItem) ? total : total += item.refundTotal;
@@ -76750,6 +76750,7 @@ var SWReturnOrderItemsController = /** @class */ (function () {
             _this.refundSubtotal = refundSubtotal;
             _this.fulfillmentRefundTotal = _this.fulfillmentRefundAmount + _this.fulfillmentRefundTaxAmount;
             _this.refundTotal = Number((refundSubtotal + _this.fulfillmentRefundTotal - _this.allocatedOrderDiscountAmountTotal).toFixed(2));
+            _this.refundTotal = Math.min(_this.maxRefundAmount, _this.refundTotal);
             _this.refundPVTotal = Number(refundPVTotal.toFixed(2));
             _this.refundCVTotal = Number(refundCVTotal.toFixed(2));
         };
@@ -76816,6 +76817,11 @@ var SWReturnOrderItemsController = /** @class */ (function () {
         $hibachi.getCurrencies().then(function (result) {
             _this.currencySymbol = result.data[_this.currencyCode];
         });
+        var maxRefundAmount = 0;
+        for (var i = 0; i < this.orderPayments.length; i++) {
+            maxRefundAmount += this.orderPayments[i].amountToRefund;
+        }
+        this.maxRefundAmount = maxRefundAmount;
     }
     return SWReturnOrderItemsController;
 }());

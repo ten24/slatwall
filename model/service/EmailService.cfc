@@ -88,14 +88,21 @@ Notes:
 		</cfif>
 		<cfset cfmailAttributes["charset"] = "utf-8" />
 		<cfset cfmailAttributes["spoolEnable"] = arguments.async />
+		
+		<cfif structKeyExists(arguments, 'emailTemplate')>
 
-		<cfif structKeyExists(arguments, 'emailTemplate') AND !isNull(arguments.emailTemplate) AND len(arguments.emailTemplate.setting('emailSMTPServer'))>
-			<cfset cfmailAttributes["server"] = arguments.emailTemplate.setting('emailSMTPServer') />
-			<cfset cfmailAttributes["port"] = arguments.emailTemplate.setting('emailSMTPPort') />
-			<cfset cfmailAttributes["useSSL"] = arguments.emailTemplate.setting('emailSMTPUseSSL') />
-			<cfset cfmailAttributes["useTLS"] = arguments.emailTemplate.setting('emailSMTPUseTLS') />
-			<cfset cfmailAttributes["username"] = arguments.emailTemplate.setting('emailSMTPUsername') />
-			<cfset cfmailAttributes["password"] = arguments.emailTemplate.setting('emailSMTPPassword') />
+			<cfif isStruct(arguments.emailTemplate) AND structKeyExists(arguments.emailTemplate, 'emailTemplate') AND structKeyExists(arguments.emailTemplate['emailTemplate'],'emailTemplateID')>
+				<cfset arguments.emailTemplate = this.getEmailTemplate(arguments.emailTemplate['emailTemplate']['emailTemplateID']) />
+			</cfif>
+
+			<cfif !isNull(arguments.emailTemplate) AND len(arguments.emailTemplate.setting('emailSMTPServer'))>
+				<cfset cfmailAttributes["server"] = arguments.emailTemplate.setting('emailSMTPServer') />
+				<cfset cfmailAttributes["port"] = arguments.emailTemplate.setting('emailSMTPPort') />
+				<cfset cfmailAttributes["useSSL"] = arguments.emailTemplate.setting('emailSMTPUseSSL') />
+				<cfset cfmailAttributes["useTLS"] = arguments.emailTemplate.setting('emailSMTPUseTLS') />
+				<cfset cfmailAttributes["username"] = arguments.emailTemplate.setting('emailSMTPUsername') />
+				<cfset cfmailAttributes["password"] = arguments.emailTemplate.setting('emailSMTPPassword') />
+			</cfif>
 		</cfif>
 
 
