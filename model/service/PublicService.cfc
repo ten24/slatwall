@@ -552,8 +552,6 @@ component  accessors="true" output="false"
      */
     
     public any function login( required struct data ){
-        param name="arguments.data.returnTokenFlag" default="0";
-        
         var accountProcess = getService("AccountService").processAccount( getHibachiScope().getAccount(), arguments.data, 'login' );
         getHibachiScope().addActionResult( "public:account.login", accountProcess.hasErrors() );
         if (accountProcess.hasErrors()){
@@ -561,10 +559,6 @@ component  accessors="true" output="false"
                 acountProcess.$errors = getHibachiScope().getAccount().getErrors();
             }
             addErrors(data, getHibachiScope().getAccount().getProcessObject("login").getErrors());
-        }
-        
-        if(arguments.data.returnTokenFlag && getHibachiScope().getLoggedInFlag()){
-            data['ajaxResponse']['token'] = getService('HibachiJWTService').createToken();
         }
         
         return accountProcess;
@@ -632,11 +626,18 @@ component  accessors="true" output="false"
      */
     public any function createAccount( required struct data ) {
         param name="arguments.data.createAuthenticationFlag" default="1";
+        param name="arguments.data.returnTokenFlag" default="0";        
         
         var account = getService("AccountService").processAccount( getHibachiScope().getAccount(), arguments.data, 'create');
 
         if(account.hasErrors()){
             addErrors(arguments.data, getHibachiScope().getAccount().getProcessObject("create").getErrors());
+        } else if(arguments.data.returnTokenFlag) {
+            //Attempt Login
+            var accountProcess = getService("AccountService").processAccount( getHibachiScope().getAccount(), arguments.data, 'login' );
+            if ( !accountProcess.hasErrors() && getHibachiScope().getLoggedinFlag() ){
+                arguments.data.ajaxResponse['token'] = getService('HibachiJWTService').createToken();
+            }
         }
 
         getHibachiScope().addActionResult( "public:account.create", account.hasErrors() );
