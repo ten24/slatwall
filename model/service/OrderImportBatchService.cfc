@@ -190,7 +190,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	public any function processOrderImportBatch_Process(required any orderImportBatch){
 		var placedOrders = 0;
-		var origin = getOrderService().getOrderOriginByOrderOriginName('Import');
+		var origin = getOrderService().getOrderOriginByOrderOriginName('Batch Import');
 
 		for(var orderImportBatchItem in arguments.orderImportBatch.getOrderImportBatchItems()){
 
