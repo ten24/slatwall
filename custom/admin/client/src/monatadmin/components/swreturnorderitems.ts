@@ -4,7 +4,7 @@ function getDecimalRep(input,scale?){
     if('undefined' == typeof scale){
         scale = 2;
     }
-    console.log(input);
+    
     return bigDecimal.BigDecimal(input.toString()).setScale(scale,bigDecimal.RoundingMode.HALF_UP()).longValue();
 }
 
@@ -70,21 +70,21 @@ class ReturnOrderItem{
     public getAllocatedRefundOrderDiscountAmount = ()=>{
         if(this.returnQuantity >= 0){
             
-            return Number( (this.allocatedOrderDiscountAmount * this.refundTotal * this.maxRefund / Math.pow(this.total,2)).toFixed(2) );
+            return getDecimalRep( (this.allocatedOrderDiscountAmount * this.refundTotal * this.maxRefund / Math.pow(this.total,2)) );
         }
         return 0;
     }
     
     public getAllocatedRefundOrderPVDiscountAmount = ()=>{
         if(this.returnQuantity >= 0){
-            return Number( (this.allocatedOrderPersonalVolumeDiscountAmount * this.refundPVTotal * this.maxRefund / (this.pvTotal * this.total)).toFixed(2) );
+            return getDecimalRep( (this.allocatedOrderPersonalVolumeDiscountAmount * this.refundPVTotal * this.maxRefund / (this.pvTotal * this.total)) );
         }
         return 0;
     }
     
     public getAllocatedRefundOrderCVDiscountAmount = ()=>{
         if(this.returnQuantity >= 0){
-            return Number( (this.allocatedOrderCommissionableVolumeDiscountAmount * this.refundCVTotal * this.maxRefund / (this.cvTotal * this.total) ).toFixed(2) );
+            return getDecimalRep( (this.allocatedOrderCommissionableVolumeDiscountAmount * this.refundCVTotal * this.maxRefund / (this.cvTotal * this.total) ) );
         }
         return 0;
     }
@@ -160,7 +160,7 @@ class SWReturnOrderItemsController{
         public publicService,
         private collectionConfigService
     ){
-        this.maxFulfillmentRefundAmount = Number(this.initialFulfillmentRefundAmount);
+        this.maxFulfillmentRefundAmount = getDecimalRep(this.initialFulfillmentRefundAmount);
         this.fulfillmentRefundAmount = 0;
         if(this.fulfillmentTaxAmount == undefined){
             this.fulfillmentTaxAmount = 0;
@@ -353,7 +353,7 @@ class SWReturnOrderItemsController{
            orderPayment.amount = 0;
        }
        if(orderPayment.amount > maxRefund){
-           orderPayment.amount = getDecimalRep((Math.max(maxRefund,0)));
+           orderPayment.amount = getDecimalRep(Math.max(maxRefund,0));
        }
    }
 
