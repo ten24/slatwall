@@ -1168,6 +1168,9 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	// =================== START: ORM Event Hooks  =========================
 
 	public void function preInsert(){
+		// set errorextradata to capture info in case of error
+		getHibachiScope().setErrorExtraData({'EntityName': getEntityName() });
+		
 		if(!this.isPersistable()) {
 			for(var errorName in getErrors()) {
 				for(var i=1; i<=arrayLen(getErrors()[errorName]); i++) {
@@ -1262,6 +1265,9 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	}
 
 	public void function preUpdate(struct oldData){
+		// set errorextradata to capture info in case of error
+		getHibachiScope().setErrorExtraData({'EntityName': getEntityName() });
+
 		if(!this.isPersistable()) {
 			for(var errorName in getErrors()) {
 				for(var i=1; i<=arrayLen(getErrors()[errorName]); i++) {
