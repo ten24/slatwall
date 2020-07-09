@@ -178,7 +178,6 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	property name="uplineMPAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="uplineMPAccountID";
 
 
- property name="allowCorporateEmailsFlag" ormtype="boolean" hb_formatType="yesno";
  property name="productPackPurchasedFlag" ormtype="boolean" hb_formatType="yesno" default="false";
  property name="accountStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="accountStatusTypeID" hb_optionsSmartListData="f:parentType.typeID=2c9180836dacb117016dad1168c2000d";
  property name="subscriptionType" ormtype="string" hb_formFieldType="select";
@@ -194,8 +193,6 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
  property name="gender" ormtype="string" hb_formFieldType="select";
  property name="accountNumber" ormtype="string";
  property name="careerTitle" ormtype="string" hb_formFieldType="select";
- property name="rank" ormtype="string";
- property name="uplineMarketPartnerNumber" ormtype="string";
  property name="referType" ormtype="string" hb_formFieldType="select";
  property name="profileImage" hb_fileUpload="true" hb_fileAcceptMIMEType="*/*" ormtype="string" hb_formFieldType="file";
  property name="terminationDate" ormtype="timestamp" hb_formatType="date";
