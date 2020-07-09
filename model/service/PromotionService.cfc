@@ -55,7 +55,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			for(var appliedPromotion in appliedPromotions){
 				appliedPromotion.removeOrderItem(reciprocateFlag=false);
 			}
-			ArrayClear(appliedPromotions);
+			ArrayClear(orderItem.getAppliedPromotions());
 		}
 	}
 
@@ -478,6 +478,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					setupPromotionRewardUsageDetails(reward,promotionRewardUsageDetails);
 					// Setup the boolean for if the promotionPeriod is okToApply based on general use count
 					if(!structKeyExists(promotionPeriodQualifications, reward.getPromotionPeriod().getPromotionPeriodID())) {
+						if(arguments.order.hasOrderTemplate() && ((!orderRewards && reward.getRewardType() != 'order') || (orderRewards && reward.getRewardType() == 'order') ) ){
+							logHibachi('Checking Qualifications');
+						}
 						promotionPeriodQualifications[ reward.getPromotionPeriod().getPromotionPeriodID() ] = getPromotionPeriodQualificationDetails(promotionPeriod=reward.getPromotionPeriod(), order=arguments.order, orderQualifierMessages=orderQualifierMessages);
 					}
 					// If this promotion period is ok to apply based on general useCount
@@ -902,11 +905,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		// If the above two conditions are ok, then we can find out the rest of the details
 		if(qualificationDetails.qualificationsMeet) {
+			if(arguments.order.hasOrderTemplate()){
+				logHibachi('Initial qualificationsmeet');
+			}
 			var hasQualifiedQualifier = false;
 			var qualifiers = arguments.promotionPeriod.getPromotionQualifiers();
 			var qualifierLogicalOperator = arguments.promotionPeriod.getQualifierLogicalOperator();
 			if(!arrayLen(qualifiers)){
 				hasQualifiedQualifier=true;
+				if(arguments.order.hasOrderTemplate()){
+					logHibachi('No qualifiers');
+				}
 			}else{
 				// Loop over each of the qualifiers
 				for(var qualifier in qualifiers) {
@@ -933,8 +942,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 						// Attach the qualification details
 						arrayAppend(qualificationDetails.qualifierDetails, thisQualifierDetails);
-	
+					
 					}else if(qualifierLogicalOperator == 'AND'){
+						if(arguments.order.hasOrderTemplate()){
+							logHibachi('Failed due to AND qualifier logical operator.');
+						}
 						hasQualifiedQualifier = false;
 						break;
 					}
@@ -964,6 +976,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if( arguments.qualifier.hasOrderByOrderID( arguments.order.getOrderID() ) ){
 			arguments.qualifierDetails.qualificationCount = 1;
 		}else if(structKeyExists(arguments,'orderQualifierMessages')){
+			if(arguments.order.hasOrderTemplate()){
+				logHibachi('Order qualifier failed');
+			}
 			for(var promoQualifierMessage in arguments.qualifier.getPromotionQualifierMessages()){
 
 				if(promoQualifierMessage.hasOrderByOrderID( arguments.order.getOrderID() )){
@@ -1093,7 +1108,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// FULFILLMENT
 		} else if (arguments.qualifier.getQualifierType() == "fulfillment") {
 
-			getQualifierQualificationDetailsForOrderFulfillments(arguments.qualifier, arguments.order, arguments.qualifier);
+			getQualifierQualificationDetailsForOrderFulfillments(arguments.qualifier, arguments.order, qualifierDetails);
 
 		// ORDER ITEM
 		} else if (listFindNoCase("contentAccess,merchandise,subscription", arguments.qualifier.getQualifierType())) {

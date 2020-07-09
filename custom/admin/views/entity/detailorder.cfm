@@ -109,7 +109,7 @@ Notes:
 						AND rc.order.getOrderStatusType().getTypeCode() eq 'rmaApproved'
 					) OR rc.order.getOrderType().getSystemCode() eq 'otRefundOrder'
 				>
-					<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="releaseCredits" type="list" modal="true"/>
+					<hb:HibachiProcessCaller action="admin:entity.processOrder" entity="#rc.order#" processContext="releaseCredits" type="list"/>
 				</cfif>
 				<hb:HibachiProcessCaller action="admin:entity.processOrder" entity="#rc.order#" processContext="updateStatus" type="list" />
 				<hb:HibachiProcessCaller action="admin:entity.processOrder" entity="#rc.order#" processContext="updateOrderAmounts" type="list" />
