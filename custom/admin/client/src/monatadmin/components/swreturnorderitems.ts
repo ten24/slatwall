@@ -1,3 +1,13 @@
+import * as bigDecimal from '../inc/bigdecimal.js';
+
+function getDecimalRep(input,scale?){
+    if('undefined' == typeof scale){
+        scale = 2;
+    }
+    console.log(input);
+    return bigDecimal.BigDecimal(input.toString()).setScale(scale,bigDecimal.RoundingMode.HALF_UP()).longValue();
+}
+
 class ReturnOrderItem{
     public orderItemID:string;
     public quantity:number;
@@ -8,6 +18,7 @@ class ReturnOrderItem{
     public calculatedExtendedCommissionableVolumeAfterDiscount:number;
     public calculatedExtendedUnitPriceAfterDiscount:number;
     public calculatedTaxAmount:number;
+    public calculatedTaxAmountNotRefunded:number;
     public allocatedOrderDiscountAmount;
     public allocatedOrderPersonalVolumeDiscountAmount:number;
     public allocatedOrderCommissionableVolumeDiscountAmount:number;
@@ -172,11 +183,6 @@ class SWReturnOrderItemsController{
         $hibachi.getCurrencies().then(result=>{
             this.currencySymbol = result.data[this.currencyCode];
         })
-        let maxRefundAmount = 0;
-        for(let i=0; i<this.orderPayments.length; i++){
-            maxRefundAmount += this.orderPayments[i].amountToRefund;
-        }
-        this.maxRefundAmount = maxRefundAmount;
     }
 
     public updateOrderItem = (orderItem,maxRefund,attemptNum) => {
@@ -189,19 +195,22 @@ class SWReturnOrderItemsController{
 
        orderItem.refundTotal = orderItem.returnQuantity * orderItem.refundUnitPrice;
        if(orderItem.returnQuantity > 0 && orderItem.total > 0){
-           orderItem.refundUnitPV = Number( (orderItem.refundTotal * orderItem.pvTotal / (orderItem.total * orderItem.returnQuantity)).toFixed(2) );
-           orderItem.refundPVTotal = Number((orderItem.refundUnitPV * orderItem.returnQuantity).toFixed(2));
-           orderItem.refundUnitCV = Number( (orderItem.refundTotal * orderItem.cvTotal / (orderItem.total * orderItem.returnQuantity)).toFixed(2) );
-           orderItem.refundCVTotal = Number((orderItem.refundUnitCV * orderItem.returnQuantity).toFixed(2));
+           orderItem.refundUnitPV = getDecimalRep( (orderItem.refundTotal * orderItem.pvTotal / (orderItem.total * orderItem.returnQuantity)) );
+           orderItem.refundPVTotal = getDecimalRep( (orderItem.refundUnitPV * orderItem.returnQuantity) );
+           orderItem.refundUnitCV = getDecimalRep( (orderItem.refundTotal * orderItem.cvTotal / (orderItem.total * orderItem.returnQuantity)) );
+           orderItem.refundCVTotal = getDecimalRep((orderItem.refundUnitCV * orderItem.returnQuantity));
        }else{
            orderItem.refundUnitPV = 0;
            orderItem.refundPVTotal = 0;
            orderItem.refundUnitCV = 0;
            orderItem.refundCVTotal = 0;
        }
-       console.log(orderItem.taxTotal * orderItem.returnQuantity / orderItem.quantity);
-       orderItem.taxRefundAmount = Number( (orderItem.taxTotal * orderItem.returnQuantity / orderItem.quantity ).toFixed(2) );
+
+       orderItem.taxRefundAmount = getDecimalRep( orderItem.taxTotal * orderItem.returnQuantity / orderItem.quantity );
        
+       if('undefined' != typeof orderItem.calculatedTaxAmountNotRefunded){
+            orderItem.taxRefundAmount = Math.min(orderItem.taxRefundAmount,orderItem.calculatedTaxAmountNotRefunded);
+       }
        if(maxRefund == undefined){
            let refundTotal = this.orderItems.reduce((total:number,item:any)=>{
                return (item == orderItem) ?  total : total += item.refundTotal;
@@ -213,8 +222,8 @@ class SWReturnOrderItemsController{
        
        if((orderItem.refundTotal > maxRefund)){
            orderItem.refundUnitPrice = (Math.max(maxRefund,0) / orderItem.returnQuantity);
-           orderItem.refundTotal = Number((orderItem.refundUnitPrice * orderItem.quantity).toFixed(2));
-           orderItem.refundUnitPrice = Number(orderItem.refundUnitPrice.toFixed(2));
+           orderItem.refundTotal = getDecimalRep((orderItem.refundUnitPrice * orderItem.quantity));
+           orderItem.refundUnitPrice = getDecimalRep(orderItem.refundUnitPrice);
            if(attemptNum > 2){
                maxRefund += 0.01;
            }
@@ -250,6 +259,15 @@ class SWReturnOrderItemsController{
     } 
    
     private updateTotals = () =>{
+        
+        if(!this.maxRefundAmount){
+            let maxRefundAmount = 0;
+            for(let i=0; i<this.orderPayments.length; i++){
+                maxRefundAmount += this.orderPayments[i].amountToRefund;
+            }
+            this.maxRefundAmount = maxRefundAmount;
+        }
+        
         this.updateRefundTotals();
         this.updatePaymentTotals();
     }
@@ -288,10 +306,10 @@ class SWReturnOrderItemsController{
         this.refundSubtotal = refundSubtotal;
 
         this.fulfillmentRefundTotal = this.fulfillmentRefundAmount + this.fulfillmentRefundTaxAmount;
-        this.refundTotal = Number((refundSubtotal + this.fulfillmentRefundTotal - this.allocatedOrderDiscountAmountTotal).toFixed(2));
+        this.refundTotal = getDecimalRep((refundSubtotal + this.fulfillmentRefundTotal - this.allocatedOrderDiscountAmountTotal));
         this.refundTotal = Math.min(this.maxRefundAmount,this.refundTotal);
-        this.refundPVTotal = Number(refundPVTotal.toFixed(2));
-        this.refundCVTotal = Number(refundCVTotal.toFixed(2));
+        this.refundPVTotal = getDecimalRep(refundPVTotal);
+        this.refundCVTotal = getDecimalRep(refundCVTotal);
     }
    
    private updatePaymentTotals = ()=>{
@@ -335,7 +353,7 @@ class SWReturnOrderItemsController{
            orderPayment.amount = 0;
        }
        if(orderPayment.amount > maxRefund){
-           orderPayment.amount = Number((Math.max(maxRefund,0)).toFixed(2));
+           orderPayment.amount = getDecimalRep((Math.max(maxRefund,0)));
        }
    }
 

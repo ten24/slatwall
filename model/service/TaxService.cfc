@@ -309,7 +309,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				if(!isNull(orderItem.getReferencedOrderItem())) {
 					var originalOrderItem = orderItem.getReferencedOrderItem();
 					var originalAppliedTaxes = originalOrderItem.getAppliedTaxes();
-
+					var totalItemTax = 0;
 					for(var originalAppliedTax in originalAppliedTaxes) {
 
 						var newAppliedTax = this.newTaxApplied();
@@ -322,6 +322,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						newAppliedTax.setOrderItem( orderItem );
 						newAppliedTax.setCurrencyCode( orderItem.getCurrencyCode() );
 						var taxAmount = round((originalAppliedTax.getTaxAmount()/originalOrderItem.getQuantity())*orderitem.getQuantity() * 100) / 100;
+						
+						totalItemTax += taxAmount;
+						
+						var taxAdjusted = false;
+						if(totalItemTax > originalOrderItem.getTaxAmountNotRefunded()){
+							taxAmount -= totalItemTax - originalOrderItem.getTaxAmountNotRefunded();
+							taxAdjusted = true;
+						}
 						
 						newAppliedTax.setTaxLiabilityAmount( taxamount );
 
@@ -343,12 +351,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						newAppliedTax.setTaxAmount( newAppliedTax.getTaxLiabilityAmount() );
 					}
 					
-					var correctProportionalTaxAmount = round(originalOrderItem.getTaxAmount() * orderItem.getQuantity() * 100 / originalOrderItem.getQuantity()) / 100;
-					var appliedTaxDifference = correctProportionalTaxAmount - orderItem.getTaxAmount();
-					
-					if(appliedTaxDifference != 0){
-						newAppliedTax.setTaxAmount( newAppliedTax.getTaxAmount() + appliedTaxDifference );
-						newAppliedTax.setTaxLiabilityAmount( newAppliedTax.getTaxAmount() );
+					if(!taxAdjusted){
+						var correctProportionalTaxAmount = round(originalOrderItem.getTaxAmount() * orderItem.getQuantity() * 100 / originalOrderItem.getQuantity()) / 100;
+						var appliedTaxDifference = correctProportionalTaxAmount - orderItem.getTaxAmount();
+						
+						if(appliedTaxDifference != 0){
+							newAppliedTax.setTaxAmount( newAppliedTax.getTaxAmount() + appliedTaxDifference );
+							newAppliedTax.setTaxLiabilityAmount( newAppliedTax.getTaxAmount() );
+						}
 					}
 					
 				//Then calculate the tax if there is no referenced item.

@@ -700,7 +700,11 @@ property name="personalVolume" ormtype="big_decimal";
 		
 		for(var referencingOrderItem in getReferencingOrderItems()){
 			if(!listFindNoCase('ostNotPlaced,ostCanceled',referencingOrderItem.getOrder().getOrderStatusType().getSystemCode())){
-				taxAmountOnReferencingItems += referencingOrderItem.getTaxAmount();
+				if(referencingOrderItem.getOrderItemType().getSystemCode() == 'oitReturn'){
+					taxAmountOnReferencingItems -= referencingOrderItem.getTaxAmount();
+				}else{
+					taxAmountOnReferencingItems += referencingOrderItem.getTaxAmount();
+				}
 			}
 		}
 		return taxAmountOnReferencingItems;
