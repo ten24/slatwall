@@ -1941,4 +1941,43 @@ component extends="Slatwall.model.service.OrderService" {
 		return newOrder();
 	}
 	
+	public any function processOrder_resyncToAvalara(required any order){
+		
+		//Only commit the tax document after the order has been closed
+		var orderStatusType = arguments.order.getOrderStatusType();
+		var orderType = arguments.order.getOrderType();
+		
+
+		var orderIsClosed = orderStatusType.getSystemCode() == 'ostClosed';
+		var orderIsClosedRMA = orderIsClosed && orderType.getSystemCode() != 'otSalesOrder';
+		
+		if(orderIsClosed && !orderIsClosedRMA){
+			var orderStatusHistory = arguments.order.getOrderStatusHistoryTypeCodeList();
+		}
+		var orderSkippedProcessingOne = !orderIsClosedRMA && orderIsClosed && !listContains(orderStatusHistory,'processing1');
+		
+		if ( orderIsClosedRMA || orderSkippedProcessingOne || orderStatusType.getTypeCode() == 'processing1'){
+			
+			//First get integration and make sure the commit tax document flag is set
+			var integration = arguments.slatwallScope.getService('IntegrationService').getIntegrationByIntegrationPackage('avatax');
+					
+			if (integration.setting('commitTaxDocumentFlag')){
+				//Create the request scope for the account
+				var taxRatesRequestBean = arguments.slatwallScope.getService('TaxService').generateTaxRatesRequestBeanForIntegration(arguments.order, integration);
+				taxRatesRequestBean.setCommitTaxDocFlag(true);
+								
+				var integrationTaxAPI = integration.getIntegrationCFC("tax");
+				
+				// Call the API and store the responseBean by integrationID
+				try{
+					integrationTaxAPI.getTaxRates( taxRatesRequestBean );
+				}catch (any e){
+					logHibachi('An error occured with the Avatax integration when trying to call commitTaxDocument()', true);
+					logHibachiException(e);
+				}
+			}
+		}
+		return arguments.order;
+	}
+	
 }
