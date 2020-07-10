@@ -168,12 +168,12 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 	 * 
 	*/ 
 	public void function push(required any entity, any data ={}){
-		logHibachi("VIBE - Start pushData - Account: #arguments.entity.getAccountID()#", true);
+		logHibachi("VIBE - Start pushData - Account: #arguments.entity.getAccountID()#");
 		
 		arguments.data.payload = this.convertSwAccountToVibeAccount(arguments.entity);
 		getDataIntegrationCFC().pushData(argumentCollection=arguments);
 		
-		logHibachi("VIBE - End pushData", true);
+		logHibachi("VIBE - End pushData");
 	}
 	
 	
