@@ -1,11 +1,10 @@
-const webpack = require('webpack');
 const path = require('path');
-
-const CompressionPlugin = require("compression-webpack-plugin");
-const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
-const ProgressBarPlugin = require('progress-bar-webpack-plugin');
+const webpack = require('webpack');
+const WebpackBar = require('webpackbar');
 const ThreadLoader = require('thread-loader');
+const CompressionPlugin = require("compression-webpack-plugin");
 const NgAnnotateWebPackPlugin = require('ng-annotate-webpack-plugin');
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 const PATHS = {
 	clientRoot      :	__dirname ,
@@ -35,9 +34,13 @@ if (calculateNumberOfWorkers() > 0) {
 let devConfig = { 
     
     mode        : 'development',
+    stats       : 'errors-warnings', //detailed, errors-warnings, errors-only
     devtool     : 'source-map',
-    watch       : true,
     context     : PATHS.clientSrc,
+    watch       : true,
+    performance : {
+        hints: false // to ignore annoying warnings
+    },
     
     entry: { 
         monatFrontend: [ path.join(PATHS.clientSrc, './bootstrap.ts') ] 
@@ -132,7 +135,15 @@ devConfig.plugins =  [
         tsconfig: path.resolve(PATHS.clientRoot, 'tsconfig.json')
     }),
     
-    new ProgressBarPlugin()
+    new WebpackBar({
+        name: "Monat Frontend",
+        reporters: [ 'basic', 'fancy', 'profile', 'stats' ],
+        basic: true,
+        fancy: true,
+        profile: true,
+        stats: true,
+    })
+
 ];   
 
 module.exports = devConfig;

@@ -14,12 +14,12 @@ var monatadminmodule = angular.module('monatadmin',[
 ])
 
 // Left here for debugging angulat-bootstrapping errors
-// .factory('$exceptionHandler', function() {
-//   return function(exception, cause) {
-//     exception.message += ` caused by '${cause || "no cause given"}' `;
-//     throw exception;
-//   };
-// })
+.factory('$exceptionHandler', () => {
+    return (exception, cause) => {
+        exception.message += ` caused by '${cause || "no cause given"}' `;
+        throw exception;
+    };
+})
 
 //constants
 .constant('monatBasePath','/Slatwall/custom/admin/client/src')

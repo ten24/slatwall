@@ -1,40 +1,10 @@
-// var devConfig = require('../../../org/Hibachi/client/webpack.config');
-// var CompressionPlugin = require("compression-webpack-plugin");
-// var webpack = require('webpack');
-// var path = require('path');
-// var customPath = __dirname;
-// var PATHS = {
-//     app: path.join(customPath, '/src'),
-//     lib: path.join(customPath, '/lib')
-// };
-
-// if(typeof bootstrap !== 'undefined'){
-//     devConfig.entry.app[this.entry.app.length - 1] = bootstrap;
-// }
-// delete devConfig.entry.vendor; //remove the vendor info from this version.
-// devConfig.output.path = PATHS.app;
-// devConfig.context = PATHS.app;
-// //don't need the vendor bundle generated here because we include the vendor bundle already.
-// devConfig.plugins =  [
-// ];   
-// devConfig.resolve.modules= [
-//     path.resolve(path.join(customPath, './'), 'src/'),
-//     path.resolve(path.join(customPath, '../../../admin/client'), 'src/'),
-//     path.resolve(path.join(customPath, '../../client'), 'src/'),
-//     path.resolve(__dirname, 'src/'),
-//     'node_modules'
-// ];
-// module.exports = devConfig;
-
-
-const webpack = require('webpack');
 const path = require('path');
-
-const CompressionPlugin = require("compression-webpack-plugin");
-const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
-const ProgressBarPlugin = require('progress-bar-webpack-plugin');
+const webpack = require('webpack');
+const WebpackBar = require('webpackbar');
 const ThreadLoader = require('thread-loader');
+const CompressionPlugin = require("compression-webpack-plugin");
 const NgAnnotateWebPackPlugin = require('ng-annotate-webpack-plugin');
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 const PATHS = {
 	clientRoot      :	__dirname ,
@@ -64,10 +34,15 @@ if (calculateNumberOfWorkers() > 0) {
 
 let devConfig = { 
     
+    
     mode        : 'development',
+    stats       : 'errors-warnings', //detailed, errors-warnings, errors-only
     devtool     : 'source-map',
-    watch       : true,
     context     : PATHS.clientSrc,
+    watch       : true,
+    performance : {
+        hints: false // to ignore annoying warnings
+    },
     
     entry: { 
         monatAdmin: [ path.join(PATHS.clientSrc, './bootstrap.ts') ] 
@@ -157,7 +132,14 @@ devConfig.plugins =  [
         tsconfig: path.resolve(PATHS.clientRoot, 'tsconfig.json')
     }),
     
-    new ProgressBarPlugin()
+    new WebpackBar({
+        name: "Monat Admin",
+        reporters: [ 'basic', 'fancy', 'profile', 'stats' ],
+        basic: true,
+        fancy: true,
+        profile: true,
+        stats: true,
+    })
 ];   
 
 module.exports = devConfig;
