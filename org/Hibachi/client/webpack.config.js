@@ -9,18 +9,22 @@ var PATHS = {
 };
 
 var appConfig = {
-    context:PATHS.app,
-    entry: {
-        app:['./bootstrap.ts'],
-         vendor: ["../lib/vendor.ts"],
+    context     :PATHS.app,
+    mode        : 'development',
+    devtool     : 'source-map',
+    watch       :true,
+	entry: {
+        vendor  : ["../lib/vendor.ts"],
     },
-    watch:true,
     output: {
         path: PATHS.app,
-        filename: 'bundle.js',
+        filename: (pathData) => {
+            // Use pathData object for generating filename string based on your requirements
+            return `${pathData.chunk.name}.bundle.js`;
+        },
         library: 'hibachi'
     },
-    
+
     resolve: {
         extensions: ['.webpack.js', '.web.js', '.ts', '.js','.html'],
         alias: {
@@ -34,10 +38,15 @@ var appConfig = {
 	      { test: /\.tsx?$/, loader: 'ts-loader' }
 	    ]
 	},
-    plugins: [
-        new webpack.optimize.CommonsChunkPlugin({name:"vendor", filename:"vendor.bundle.js"})
-    ]
-
+	optimization: {
+        splitChunks: {
+            cacheGroups: {
+                vendor : {
+                    filename: "vendor.bundle.js"
+                }
+            }
+        }
+	}
 };
 
 module.exports = appConfig;

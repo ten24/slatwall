@@ -36,10 +36,11 @@ let devConfig = {
     
     mode        : 'development',
     devtool     : 'source-map',
+    watch       : true,
     context     : PATHS.clientSrc,
     
     entry: { 
-        monat: [ path.join(PATHS.clientSrc, './bootstrap.ts') ] 
+        monatFrontend: [ path.join(PATHS.clientSrc, './bootstrap.ts') ] 
     },
                 
     output : {
@@ -88,26 +89,26 @@ devConfig.optimization = {
         cacheGroups: {
             commons: {
                 test: PATHS.nodeModeles,
-                name: 'monatCommon',
+                name: 'monatFrontendVendor',
                 chunks: 'all'
             },
             hibachi: {
                 test: PATHS.hibachiSrc,
-                name: 'hibachi',
+                name: 'hibachiFrontend',
                 chunks: 'all'
             }
         }
     }
 };
 
-//don't need the vendor bundle generated here because we include the vendor bundle already.
 devConfig.plugins =  [
     
+    // TODO update component-definations for base-template-path
 	// https://blog.johnnyreilly.com/2016/07/using-webpacks-defineplugin-with-typescript.html
-    new webpack.DefinePlugin({
-        '__MONAT_FRONTEND_BASE_PATH__': JSON.stringify(PATHS.app),
-        '__DEBUG_MODE__': JSON.stringify(true)
-    }),
+    // new webpack.DefinePlugin({
+    //     '__MONAT_FRONTEND_BASE_PATH__': JSON.stringify(PATHS.app),
+    //     '__DEBUG_MODE__': JSON.stringify(true)
+    // }),
 
     new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en/),
     

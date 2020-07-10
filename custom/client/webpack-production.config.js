@@ -1,16 +1,6 @@
 let devConfig = require('./webpack.config');
 const webpack = require('webpack');
-const path = require('path');
 const TerserPlugin = require("terser-webpack-plugin"); //minimizer
-
-const PATHS = {
-	clientRoot      :	__dirname ,
-    clientSrc       :   path.join(__dirname, '/src'),
-    monatFrontend   :	path.join(__dirname, '/src/monatfrontend'),
-    hibachiSrc      : 	path.resolve(__dirname, '../../org/Hibachi/client/src'),
-    nodeModeles     :   path.resolve(__dirname, '../../node_modules')
-};
-
 
 devConfig.mode = 'production';
 devConfig.devtool = 'none';
