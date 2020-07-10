@@ -338,6 +338,12 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 			hasOrder = !getCollectionHasOrderByOrderID( getExcludedOrdersCollection(transient=true), arguments.orderID );
 		}
 		
+		/* DEBUGGING CODE, TO BE REMOVED */
+		if( !hasOrder && findNoCase( 'Purchase Plus',this.getPromotionPeriod().getPromotion().getPromotionName() ) ){
+			var order = getService('OrderService').getOrder(arguments.orderID);
+			logHibachi('Purchase Plus #this.getPromotionPeriod().getPromotionPeriodName()# failed, order ID #order.getOrderID()#, price group #order.getPriceGroup().getPriceGroupCode()#, subtotalAfterItemDiscounts = #order.getSubtotalAfterItemDiscounts()#, calculatedSubtotalAfterItemDiscounts = #order.getCalculatedSubtotalAfterItemDiscounts()#');
+		}
+		/*      END DEBUGGING CODE      */
 		return hasOrder;
 
 	}
