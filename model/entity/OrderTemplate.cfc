@@ -167,7 +167,7 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 //CUSTOM PROPERTIES END
 
 	public any function getOrderTemplateNumber(){
-		if(!getNewFlag() && !structKeyExists(variables,'accountNumber') && !isNull(this.getOrderTemplateStatusType()) && this.orderTemplateStatusType().getSystemCode() == 'otstActive'){
+		if(!getNewFlag() && !structKeyExists(variables,'orderTemplateNumber') && !isNull(this.getOrderTemplateStatusType()) && this.getOrderTemplateStatusType().getSystemCode() == 'otstActive'){
 			var maxOrderTemplateNumberQuery = new query();
 			maxOrderTemplateNumberQuery.setSQL('insert into swordertemplatenumber (orderTemplateID,createdDateTime) VALUES (:orderTemplateID,:createdDateTime)');
 			maxOrderTemplateNumberQuery.addParam(name="orderTemplateID",value=this.getOrderTemplateID());
