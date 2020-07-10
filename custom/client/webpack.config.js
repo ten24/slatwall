@@ -15,6 +15,9 @@ delete devConfig.entry.vendor; //remove the vendor info from this version.
 devConfig.output.path = PATHS.app;
 devConfig.output.filename = 'monat.js';
 devConfig.context = PATHS.app;
+devConfig.devtool = 'source-map';
+
+
 //don't need the vendor bundle generated here because we include the vendor bundle already.
 devConfig.plugins =  [
     new CompressionPlugin({
@@ -26,6 +29,7 @@ devConfig.plugins =  [
     }),
     new webpack.optimize.OccurrenceOrderPlugin()
 ];   
+
 devConfig.resolve.modules= [
     path.resolve(path.join(customPath, './'), 'src/'),
     path.resolve(path.join(customPath, '../../admin/client'), 'src/'),

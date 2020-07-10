@@ -2457,6 +2457,7 @@ public numeric function getPersonalVolumeSubtotal(){
 		return false;
 	}
 	
+
 	//Returns an array of one shipping fulfillment if there is a shipping fulfillment on the order, otherwise it returns an empty array
 	public array function getFirstShippingFulfillment(){
 		var shippingFulfillmentArray = [];
@@ -2469,5 +2470,27 @@ public numeric function getPersonalVolumeSubtotal(){
 		}
 		
 		return shippingFulfillmentArray
+	}
+	
+	public boolean function validateActiveStatus(){
+		var isValidOrder = false;
+		if(
+			!isNull(this.getAccount())
+			&& (
+				this.getAccount().getActiveFlag()
+				||	(
+						!this.getAccount().getActiveFlag() 
+						&& this.getUpgradeOrEnrollmentOrderFlag()
+						&& !isNull(this.getAccount().getAccountStatusType())
+						&& this.getAccount().getAccountStatusType().getSystemCode() == 'astEnrollmentPending'
+					)
+				)
+			)
+		{
+			isValidOrder = true;
+		}
+		
+		return isValidOrder;
+
 	}//CUSTOM FUNCTIONS END
 }

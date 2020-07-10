@@ -198,7 +198,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 			    }
 				getHibachiEventService().announceEvent('afterAccount#originalAccountType#To#account.getAccountType()#UpgradeSuccess', {'account':account, 'entity':account}); 
 			}
-			else {
+			else if(isNull(arguments.order.getOrderOrigin())){
     			arguments.order.setOrderOrigin(getService('orderService').getOrderOriginByOrderOriginName('Internet Order'));
 			}
 			getAccountService().saveAccount(account);

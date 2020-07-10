@@ -95,6 +95,7 @@
 			SET scheduleOrderProcessingFlag = <cfqueryparam cfsqltype="cf_sql_bit" value="#arguments.value#" /> 
 			<cfif structKeyExists(arguments, "mostRecentError")>
 			    ,mostRecentError = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.mostRecentError#" />
+			    ,mostRecentErrorDateTime = <cfqueryparam cfsqltype="CF_SQL_TIMESTAMP" value="#now()#" />
 			</cfif>
 			WHERE orderTemplateID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderTemplateID#" />
 		</cfquery>

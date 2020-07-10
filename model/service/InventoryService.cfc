@@ -366,6 +366,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			var qatsIncludesQNROSAFlag = arguments.entity.getSku().setting('skuQATSIncludesQNROSAFlag');
 			var holdBackQuantity = arguments.entity.getSku().setting('skuHoldBackQuantity');
 			var qatsIncludesMQATSBOMFlag = arguments.entity.getSku().setting('skuQATSIncludesMQATSBOMFlag');
+			var skuTrackQATSBelowThreshold = val(arguments.entity.getSku().setting('skuTrackQATSBelowThreshold'));
 		} else {
 			var trackInventoryFlag = arguments.entity.setting('skuTrackInventoryFlag');
 			var allowBackorderFlag = arguments.entity.setting('skuAllowBackorderFlag');
@@ -375,11 +376,17 @@ component extends="HibachiService" accessors="true" output="false" {
 			var qatsIncludesQNROSAFlag = arguments.entity.setting('skuQATSIncludesQNROSAFlag');
 			var holdBackQuantity = arguments.entity.setting('skuHoldBackQuantity');
 			var qatsIncludesMQATSBOMFlag = arguments.entity.setting('skuQATSIncludesMQATSBOMFlag');
+			var skuTrackQATSBelowThreshold = val(arguments.entity.setting('skuTrackQATSBelowThreshold'));
 		}
 
 		// If trackInventory is not turned on, or backorder is true then we can set the qats to the max orderQuantity
 		if( !trackInventoryFlag || allowBackorderFlag ) {
 			return orderMaximumQuantity;
+		}
+		
+		// if current calculated QATS is more the skuTrackQATSBelowThreshold then return calculatedQATS, unless updating calculated property
+		if( !arguments.entity.getCalculatedUpdateRunFlag() && skuTrackQATSBelowThreshold != 0 && val(arguments.entity.getCalculatedQATS()) > skuTrackQATSBelowThreshold ) {
+			return arguments.entity.getCalculatedQATS();
 		}
 		
 		// Otherwise we will do a normal bit of calculation logic

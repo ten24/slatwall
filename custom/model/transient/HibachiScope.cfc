@@ -135,4 +135,28 @@ component output="false" accessors="true" extends="Slatwall.model.transient.Hiba
 		this.clearCookieValue('currentFlexshipID');
 	}
 	
+	public struct function getHibachiConfig(){
+		
+		var currentRequestSite = getCurrentRequestSite();
+		
+		var hibachiConfig = {
+			'action' : 'slatAction'
+			,'basePartialsPath' : '/Slatwall/org/Hibachi/client/src/'
+			,'baseURL' : '/Slatwall/'
+			,'rbLocale' : getRBLocale()
+			,'siteCode' : currentRequestSite.getSiteCode()
+			,'currencyCode' : currentRequestSite.getCurrencyCode()
+			,'countryCode' : getService('SiteService').getCountryCodeBySite(currentRequestSite) ?: 'US'
+			,'contentID' : getContent().getContentID()
+			,'accountID' : getAccount().getAccountID()
+			,'siteOwner' : isNull(currentRequestSite.getOwnerAccount()) ? '' : currentRequestSite.getOwnerAccount().getAccountNumber() 
+			,'instantiationKey' : getApplicationValue("instantiationKey")
+			,'attributeCacheKey' : getService("hibachiService").getAttributeCacheKey()
+			,'missingImagePath' : currentRequestSite.setting('siteMissingImagePath')
+		};
+		
+		
+		return hibachiConfig;
+	}
+	
 }

@@ -160,6 +160,7 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 	property name="vatTotal" persistent="false" hb_formatType="currency";
 	property name="fulfillmentHandlingFeeTotal" persistent="false" hb_formatType="currency";
 	property name="mostRecentError" ormtype="string";
+	property name="mostRecentErrorDateTime" ormtype="timestamp";
 	property name="scheduleOrderNextPlaceDateTimeMinusOne" persistent="false" hb_formatType="dateTime"; 
 	
 //CUSTOM PROPERTIES END
