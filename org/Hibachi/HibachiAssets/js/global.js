@@ -2004,11 +2004,13 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 			   return; 
             }
 	        
-	        $injector.invoke(["$compile", "$rootScope", function ($compile, $rootScope) {
-	            //Get the scope of the target, use the rootScope if it does not exists
-	            var $scope = $targetDom.html(htmlToCompile).scope();
-	            $compile($targetDom)($scope || $rootScope);
-	            $rootScope.$digest();
+	        $injector.invoke(["$compile", "$rootScope",  function ($compile, $rootScope) {
+	            // to mkae it not interfere with already running digest-cycle
+	            $rootScope.$apply( () => {
+    	            //Get the scope of the target, use the rootScope if it does not exists
+    	            var $scope = $targetDom.html(htmlToCompile).scope();
+    	            $compile($targetDom)($scope || $rootScope);
+	            });
 	        }]);
 	   }
 
