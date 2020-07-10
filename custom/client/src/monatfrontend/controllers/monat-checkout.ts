@@ -357,7 +357,15 @@ class MonatCheckoutController {
 	
 	public setCheckoutDefaults(){
 	
-		if(!this.publicService.cart.orderID.length || this.publicService.cart.orderRequirementsList.indexOf('fulfillment') === -1) return this.getCurrentCheckoutScreen(false, false);
+		if(
+			!this.publicService.cart.orderID.length 
+			|| ( 
+					this.monatService.cartHasShippingFulfillmentMethodType(this.publicService.cart) 
+					&& this.publicService.cart.orderRequirementsList.indexOf('fulfillment') === -1
+				)
+		){
+			return this.getCurrentCheckoutScreen(false, false);
+		} 
 		this.publicService.doAction('setIntialShippingAndBilling',{returnJsonObjects:'cart'}).then(res=>{
 			this.getCurrentCheckoutScreen(false, false);
 		});
