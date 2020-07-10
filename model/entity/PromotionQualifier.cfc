@@ -129,29 +129,41 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 		];
 	}
 	
-	public any function getIncludedSkusCollection(){
-		if(isNull(variables.includedSkusCollection)){
+	public any function getIncludedSkusCollection( boolean refresh=false , boolean transient=false){
+		if(arguments.refresh || arguments.transient || isNull(variables.includedSkusCollection)){
 			var collectionConfig = getIncludedSkusCollectionConfig();
 			if(!isNull(collectionConfig)){
-				variables.includedSkusCollection = getService("HibachiCollectionService").createTransientCollection(entityName='Sku',collectionConfig=collectionConfig);
+				var includedSkusCollection = getService("HibachiCollectionService").createTransientCollection(entityName='Sku',collectionConfig=collectionConfig);
 			}else{
-				variables.includedSkusCollection = getService("HibachiCollectionService").getSkuCollectionList();
-				variables.includedSkusCollection.setDisplayProperties('skuCode,skuName,activeFlag',{'isVisible': true, 'isSearchable': true, 'isExportable': true});
-				variables.includedSkusCollection.addDisplayProperty('skuID', 'Sku ID', {'isVisible': false, 'isSearchable': false}, true);
+				var includedSkusCollection = getService("HibachiCollectionService").getSkuCollectionList();
+				includedSkusCollection.setDisplayProperties('skuCode,skuName,activeFlag',{'isVisible': true, 'isSearchable': true, 'isExportable': true});
+				includedSkusCollection.addDisplayProperty('skuID', 'Sku ID', {'isVisible': false, 'isSearchable': false}, true);
+			}
+		
+			if(arguments.transient){
+				return includedSkusCollection;
+			}else{
+				variables.includedSkusCollection = includedSkusCollection;
 			}
 		}
 		return variables.includedSkusCollection;
 	}
 	
-	public any function getExcludedSkusCollection(){
-		if(isNull(variables.excludedSkusCollection)){
+	public any function getExcludedSkusCollection( boolean refresh=false, boolean transient=false ){
+		if(arguments.refresh || arguments.transient || isNull(variables.excludedSkusCollection)){
 			var collectionConfig = getExcludedSkusCollectionConfig();
 			if(!isNull(collectionConfig)){
-				variables.excludedSkusCollection = getService("HibachiCollectionService").createTransientCollection(entityName='Sku',collectionConfig=collectionConfig);
+				var excludedSkusCollection = getService("HibachiCollectionService").createTransientCollection(entityName='Sku',collectionConfig=collectionConfig);
 			}else{
-				variables.excludedSkusCollection = getService("HibachiCollectionService").getSkuCollectionList();
-				variables.excludedSkusCollection.setDisplayProperties('skuCode,skuName,activeFlag',{'isVisible': true, 'isSearchable': true, 'isExportable': true});
-				variables.excludedSkusCollection.addDisplayProperty('skuID', 'Sku ID', {'isVisible': false, 'isSearchable': false}, true);
+				var excludedSkusCollection = getService("HibachiCollectionService").getSkuCollectionList();
+				excludedSkusCollection.setDisplayProperties('skuCode,skuName,activeFlag',{'isVisible': true, 'isSearchable': true, 'isExportable': true});
+				excludedSkusCollection.addDisplayProperty('skuID', 'Sku ID', {'isVisible': false, 'isSearchable': false}, true);
+			}
+			
+			if(arguments.transient){
+				return excludedSkusCollection;
+			}else{
+				variables.excludedSkusCollection = excludedSkusCollection;
 			}
 		}
 		return variables.excludedSkusCollection;
@@ -167,89 +179,77 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 		setExcludedSkusCollectionConfig(collectionConfig);
 	}
 	
-	public any function getSkuCollection(){
-
-		if(isNull(getExcludedSkusCollectionConfig())){
-			if(isNull(getIncludedSkusCollectionConfig())){
-				return;
-			}
-			return getService('hibachiCollectionService').createTransientCollection('Sku',getIncludedSkusCollectionConfig());
-		}
-		
-		if(!isNull(getIncludedSkusCollectionConfig())){
-			var skuCollection = getService('hibachiCollectionService').createTransientCollection('Sku',getIncludedSkusCollectionConfig());
-		}else{
-			var skuCollection = getService('hibachiCollectionService').getSkuCollectionList();
-		}
-		
-		if(isNull(variables.excludedSkuIDs)){
-			variables.excludedSkuIDs = getExcludedSkusCollection().getPrimaryIDList();
-		}
-		
-		skuCollection.addFilter('skuID',variables.excludedSkuIDs,'not in');
-		return skuCollection;
-	}
-	
-	public any function getIncludedOrdersCollection(){
-		if(isNull(variables.includedOrdersCollection)){
+	public any function getIncludedOrdersCollection( boolean refresh=false, boolean transient=false ){
+		if(arguments.refresh || arguments.transient || isNull(variables.includedOrdersCollection)){
 			var collectionConfig = getIncludedOrdersCollectionConfig();
 			if(!isNull(collectionConfig)){
-				
-				variables.includedOrdersCollection = getService("HibachiCollectionService").createTransientCollection(entityName='Order',collectionConfig=collectionConfig);
+				var includedOrdersCollection = getService("HibachiCollectionService").createTransientCollection(entityName='Order',collectionConfig=collectionConfig);
 			}else{
-				variables.includedOrdersCollection = getService("HibachiCollectionService").getOrderCollectionList();
-				variables.includedOrdersCollection.setDisplayProperties(displayPropertiesList='orderNumber',columnConfig={
+				var includedOrdersCollection = getService("HibachiCollectionService").getOrderCollectionList();
+				includedOrdersCollection.setDisplayProperties(displayPropertiesList='orderNumber',columnConfig={
 					'isDeletable':true,
 					'isVisible':true,
 					'isSearchable':false,
 					'isExportable':true
 				});
 				for(var column in ['currencyCode','createdDateTime','calculatedSubTotal','calculatedTotalQuantity']){
-					variables.includedOrdersCollection.addDisplayProperty(displayProperty=column,columnConfig={
+					includedOrdersCollection.addDisplayProperty(displayProperty=column,columnConfig={
 						'isDeletable':true,
 						'isVisible':true,
 						'isSearchable':false,
 						'isExportable':true
 					});
 				}
-				variables.includedOrdersCollection.addDisplayProperty(displayProperty='orderID',columnConfig={
+				includedOrdersCollection.addDisplayProperty(displayProperty='orderID',columnConfig={
 					'isDeletable':false,
 					'isVisible':false,
 					'isSearchable':false,
 					'isExportable':true
 				});
+			}
+			
+			if( arguments.transient ){
+				return includedOrdersCollection;
+			}else{
+				variables.includedOrdersCollection = includedOrdersCollection;
 			}
 		}
 		return variables.includedOrdersCollection;
 	}
 	
-	public any function getExcludedOrdersCollection(){
-		if(isNull(variables.excludedOrdersCollection)){
+	public any function getExcludedOrdersCollection( boolean refresh=false, boolean transient=false ){
+		if(arguments.refresh || arguments.transient || isNull(variables.excludedOrdersCollection)){
 			var collectionConfig = getExcludedOrdersCollectionConfig();
 			if(!isNull(collectionConfig)){
-				variables.excludedOrdersCollection = getService("HibachiCollectionService").createTransientCollection(entityName='Order',collectionConfig=collectionConfig);
+				var excludedOrdersCollection = getService("HibachiCollectionService").createTransientCollection(entityName='Order',collectionConfig=collectionConfig);
 			}else{
-				variables.excludedOrdersCollection = getService("HibachiCollectionService").getOrderCollectionList();
-				variables.excludedOrdersCollection.setDisplayProperties(displayPropertiesList='orderNumber',columnConfig={
+				var excludedOrdersCollection = getService("HibachiCollectionService").getOrderCollectionList();
+				excludedOrdersCollection.setDisplayProperties(displayPropertiesList='orderNumber',columnConfig={
 					'isDeletable':true,
 					'isVisible':true,
 					'isSearchable':false,
 					'isExportable':true
 				});
 				for(var column in ['currencyCode','createdDateTime','calculatedSubTotal','calculatedTotalQuantity']){
-					variables.excludedOrdersCollection.addDisplayProperty(displayProperty=column,columnConfig={
+					excludedOrdersCollection.addDisplayProperty(displayProperty=column,columnConfig={
 						'isDeletable':true,
 						'isVisible':true,
 						'isSearchable':false,
 						'isExportable':true
 					});
 				}
-				variables.excludedOrdersCollection.addDisplayProperty(displayProperty='orderID',columnConfig={
+				excludedOrdersCollection.addDisplayProperty(displayProperty='orderID',columnConfig={
 					'isDeletable':false,
 					'isVisible':false,
 					'isSearchable':false,
 					'isExportable':true
 				});
+			}
+			
+			if( arguments.transient ){
+				return excludedOrdersCollection;
+			}else{
+				variables.excludedOrdersCollection = excludedOrdersCollection;
 			}
 		}
 		return variables.excludedOrdersCollection;
@@ -263,27 +263,6 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 	public void function saveExcludedOrdersCollection(){
 		var collectionConfig = serializeJSON(getExcludedOrdersCollection().getCollectionConfigStruct());
 		setExcludedOrdersCollectionConfig(collectionConfig);
-	}
-	
-	public any function getOrderCollection(){
-		if(isNull(getExcludedOrdersCollectionConfig())){
-			if(isNull(getIncludedOrdersCollectionConfig())){
-				return;
-			}
-			return getService('hibachiCollectionService').createTransientCollection('Order',getIncludedOrdersCollectionConfig());
-		}
-			
-		if(!isNull(getIncludedOrdersCollectionConfig())){
-			var orderCollection = getService('hibachiCollectionService').createTransientCollection('Order',getIncludedOrdersCollectionConfig());
-		}else{
-			var orderCollection = getService('hibachiCollectionService').getOrderCollectionList();
-		}
-		if(isNull(variables.excludedOrderIDs)){
-			variables.excludedOrderIDs = getExcludedOrdersCollection().getPrimaryIDList();
-		}
-		
-		orderCollection.addFilter('orderID',variables.excludedOrderIDs,'not in');
-		return orderCollection;
 	}
 	
 	// ============  END:  Non-Persistent Property Methods =================
@@ -311,13 +290,25 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 	// Collection Skus
 	
 	public boolean function hasSkuBySkuID(required any skuID){
-		var skuCollection = getSkuCollection();
-		if(isNull(skuCollection)){
-			return false;
+		var checkExcluded = true;
+		var checkIncluded = true;
+		var hasSku = false;
+		
+		if( isNull( getExcludedSkusCollectionConfig() ) ){
+			checkExcluded = false;
 		}
-		skuCollection.setPageRecordsShow(1);
-		skuCollection.addFilter(propertyIdentifier='skuID',value=arguments.skuID, filterGroupAlias='skuIDFilter');
-		var hasSku = !arrayIsEmpty(skuCollection.getPageRecords(formatRecords=false,refresh=true));
+		if( isNull( getIncludedSkusCollectionConfig() ) ){
+			checkIncluded = false;
+		}
+		
+		if( checkIncluded ){
+			hasSku = getCollectionHasSkuBySkuID( getIncludedSkusCollection(transient=true), arguments.skuID );
+		}
+		
+		if( checkExcluded && ( hasSku || !checkIncluded ) ){
+			hasSku = !getCollectionHasSkuBySkuID( getExcludedSkusCollection(transient=true), arguments.skuID );
+		}
+		
 		return hasSku;
 	}
 	
@@ -327,19 +318,47 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 	
 	// Collection Orders
 	public boolean function hasOrderByOrderID(required any orderID){
-		var orderCollection = getOrderCollection();
+		
+		var checkExcluded = true;
+		var checkIncluded = true;
+		var hasOrder = false;
+		
+		if( isNull( getExcludedOrdersCollectionConfig() ) ){
+			checkExcluded = false;
+		}
+		if( isNull( getIncludedOrdersCollectionConfig() ) ){
+			checkIncluded = false;
+		}
+		
+		if( checkIncluded ){
+			hasOrder = getCollectionHasOrderByOrderID( getIncludedOrdersCollection(transient=true), arguments.orderID );
+		}
+		
+		if( checkExcluded && ( hasOrder || !checkIncluded ) ){
+			hasOrder = !getCollectionHasOrderByOrderID( getExcludedOrdersCollection(transient=true), arguments.orderID );
+		}
+		
+		return hasOrder;
 
-		if(isNull(orderCollection)){
+	}
+	
+	private boolean function getCollectionHasOrderByOrderID( required any orderCollection, required string orderID ){
+		if(isNull(arguments.orderCollection)){
 			return false;
 		}
 
-    	orderCollection.setDisplayProperties('orderID'); 
-		orderCollection.setPageRecordsShow(1); 
-		orderCollection.addFilter(propertyIdentifier='orderID',value=arguments.orderID, filterGroupAlias='orderIDFilter');
-
-		var hasOrder = !arrayIsEmpty(orderCollection.getPageRecords(formatRecords=false,refresh=true));
-		return hasOrder;
-
+    	arguments.orderCollection.setDisplayProperties('orderID'); 
+		arguments.orderCollection.addFilter(propertyIdentifier='orderID',value=arguments.orderID, filterGroupAlias='orderIDFilter');
+		return arguments.orderCollection.getRecordsCount(refresh=true) > 0;
+	}
+	
+	private boolean function getCollectionHasSkuBySkuID( required any skuCollection, required string skuID ){
+		if(isNull(arguments.skuCollection)){
+			return false;
+		}
+		arguments.skuCollection.setDisplayProperties('skuID');
+		arguments.skuCollection.addFilter(propertyIdentifier='skuID',value=arguments.skuID, filterGroupAlias='skuIDFilter');
+		return arguments.skuCollection.getRecordsCount(refresh=true) > 0;
 	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================

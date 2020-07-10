@@ -241,29 +241,41 @@ property name="personalVolumeAmount" ormtype="big_decimal" hb_formatType="custom
 		return getAmount(argumentCollection=amountParams);
 	}
 	
-	public any function getIncludedSkusCollection(){
-		if(isNull(variables.includedSkusCollection)){
+	public any function getIncludedSkusCollection( boolean refresh=false , boolean transient=false){
+		if(arguments.refresh || arguments.transient || isNull(variables.includedSkusCollection)){
 			var collectionConfig = getIncludedSkusCollectionConfig();
 			if(!isNull(collectionConfig)){
-				variables.includedSkusCollection = getService("HibachiCollectionService").createTransientCollection(entityName='Sku',collectionConfig=collectionConfig);
+				var includedSkusCollection = getService("HibachiCollectionService").createTransientCollection(entityName='Sku',collectionConfig=collectionConfig);
 			}else{
-				variables.includedSkusCollection = getService("HibachiCollectionService").getSkuCollectionList();
+				var includedSkusCollection = getService("HibachiCollectionService").getSkuCollectionList();
+				includedSkusCollection.setDisplayProperties('skuCode,skuName,activeFlag',{'isVisible': true, 'isSearchable': true, 'isExportable': true});
+				includedSkusCollection.addDisplayProperty('skuID', 'Sku ID', {'isVisible': false, 'isSearchable': false}, true);
 			}
-			variables.includedSkusCollection.setDisplayProperties('skuCode,skuName,activeFlag',{'isVisible': true, 'isSearchable': true, 'isExportable': true});
-			variables.includedSkusCollection.addDisplayProperty('skuID', 'Sku ID', {'isVisible': false, 'isSearchable': false}, true);
+		
+			if(arguments.transient){
+				return includedSkusCollection;
+			}else{
+				variables.includedSkusCollection = includedSkusCollection;
+			}
 		}
 		return variables.includedSkusCollection;
 	}
 	
-	public any function getExcludedSkusCollection(){
-		if(isNull(variables.excludedSkusCollection)){
+	public any function getExcludedSkusCollection( boolean refresh=false, boolean transient=false ){
+		if(arguments.refresh || arguments.transient || isNull(variables.excludedSkusCollection)){
 			var collectionConfig = getExcludedSkusCollectionConfig();
 			if(!isNull(collectionConfig)){
-				variables.excludedSkusCollection = getService("HibachiCollectionService").createTransientCollection(entityName='Sku',collectionConfig=collectionConfig);
+				var excludedSkusCollection = getService("HibachiCollectionService").createTransientCollection(entityName='Sku',collectionConfig=collectionConfig);
 			}else{
-				variables.excludedSkusCollection = getService("HibachiCollectionService").getSkuCollectionList();
-				variables.excludedSkusCollection.setDisplayProperties('skuCode,skuName,activeFlag',{'isVisible': true, 'isSearchable': true, 'isExportable': true});
-				variables.excludedSkusCollection.addDisplayProperty('skuID', 'Sku ID', {'isVisible': false, 'isSearchable': false}, true);
+				var excludedSkusCollection = getService("HibachiCollectionService").getSkuCollectionList();
+				excludedSkusCollection.setDisplayProperties('skuCode,skuName,activeFlag',{'isVisible': true, 'isSearchable': true, 'isExportable': true});
+				excludedSkusCollection.addDisplayProperty('skuID', 'Sku ID', {'isVisible': false, 'isSearchable': false}, true);
+			}
+			
+			if(arguments.transient){
+				return excludedSkusCollection;
+			}else{
+				variables.excludedSkusCollection = excludedSkusCollection;
 			}
 		}
 		return variables.excludedSkusCollection;
@@ -276,31 +288,6 @@ property name="personalVolumeAmount" ormtype="big_decimal" hb_formatType="custom
 	public void function saveExcludedSkusCollection(){
 		var collectionConfig = serializeJSON(getExcludedSkusCollection().getCollectionConfigStruct());
 		setExcludedSkusCollectionConfig(collectionConfig);
-	}
-	
-	public any function getSkuCollection(){
-
-		if(isNull(getExcludedSkusCollectionConfig())){
-			if(isNull(getIncludedSkusCollectionConfig())){
-				return;
-			}
-			return getService('hibachiCollectionService').createTransientCollection('Sku',getIncludedSkusCollectionConfig());
-		}
-		
-		if(!isNull(getIncludedSkusCollectionConfig())){
-			var skuCollection = getService('hibachiCollectionService').createTransientCollection('Sku',getIncludedSkusCollectionConfig());
-		}else{
-			var skuCollection = getService('hibachiCollectionService').getSkuCollectionList();
-		}
-		
-		if(isNull(variables.excludedSkuIDs)){
-			variables.excludedSkuIDs = getExcludedSkusCollection().getPrimaryIDList();
-		}
-	
-		if(len(variables.excludedSkuIDs)){	
-			skuCollection.addFilter('skuID',variables.excludedSkuIDs,'not in');
-		}
-		return skuCollection;
 	}
 
 	// ============  END:  Non-Persistent Property Methods =================
@@ -368,13 +355,26 @@ property name="personalVolumeAmount" ormtype="big_decimal" hb_formatType="custom
 	// Collection Skus
 	
 	public boolean function hasSkuBySkuID(required any skuID){
-		var skuCollection = getSkuCollection();
-		if(isNull(skuCollection)){
-			return false;
+		var checkExcluded = true;
+		var checkIncluded = true;
+		var hasSku = false;
+		
+		if( isNull( getExcludedSkusCollectionConfig() ) ){
+			checkExcluded = false;
 		}
-		skuCollection.setDisplayProperties('skuID');
-		skuCollection.addFilter(propertyIdentifier='skuID',value=arguments.skuID, filterGroupAlias='skuIDFilter');
-		return skuCollection.getRecordsCount(refresh=true) > 0;
+		if( isNull( getIncludedSkusCollectionConfig() ) ){
+			checkIncluded = false;
+		}
+		
+		if( checkIncluded ){
+			hasSku = getCollectionHasSkuBySkuID( getIncludedSkusCollection(transient=true), arguments.skuID );
+		}
+		
+		if( checkExcluded && ( hasSku || !checkIncluded ) ){
+			hasSku = !getCollectionHasSkuBySkuID( getExcludedSkusCollection(transient=true), arguments.skuID );
+		}
+		
+		return hasSku;
 	}
 	
 	public boolean function hasOrderItemSku(required any orderItem){
@@ -395,6 +395,15 @@ property name="personalVolumeAmount" ormtype="big_decimal" hb_formatType="custom
 			variables[cacheKey] = ArrayToList(getDAO('PromotionDAO').getExcludedStackableRewardsIDListForPromotionReward( this, arguments.includeReciprocalRecords ));
 		}
 		return variables[cacheKey];
+	}
+	
+	private boolean function getCollectionHasSkuBySkuID( required any skuCollection, required string skuID ){
+		if(isNull(arguments.skuCollection)){
+			return false;
+		}
+		arguments.skuCollection.setDisplayProperties('skuID');
+		arguments.skuCollection.addFilter(propertyIdentifier='skuID',value=arguments.skuID, filterGroupAlias='skuIDFilter');
+		return arguments.skuCollection.getRecordsCount(refresh=true) > 0;
 	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================
