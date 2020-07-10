@@ -44,9 +44,7 @@ component accessors="true" output="false" extends="HibachiService" {
 					
 					this.saveServerInstance(serverInstance); 
 					getHibachiScope().flushOrmSession();
-					
-					// delete all old server instance
-					getDao('HibachiCacheDAO').deleteStaleServerInstance();
+
 				}
 			}
 		}

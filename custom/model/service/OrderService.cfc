@@ -362,26 +362,42 @@ component extends="Slatwall.model.service.OrderService" {
     }
     
     public any function updateReturnOrderWithAllocatedDiscounts(required any order, required any returnOrder, required any processObject){
-		var allocatedOrderDiscountAmount = arguments.processObject.getAllocatedOrderDiscountAmountTotal();
-		var allocatedOrderPVDiscountAmount = arguments.processObject.getAllocatedOrderPVDiscountAmountTotal();
-		var allocatedOrderCVDiscountAmount = arguments.processObject.getAllocatedOrderCVDiscountAmountTotal();
+		var discountAmounts = {};
 		
-		if(!isNull(allocatedOrderDiscountAmount) && allocatedOrderDiscountAmount > 0){
+		if(arguments.order.getSubtotalAfterItemDiscounts() != 0){
+			var subtotalRatio = arguments.returnOrder.getSubtotalAfterItemDiscounts() / arguments.order.getSubtotalAfterItemDiscounts();
+			var discount = arguments.order.getOrderDiscountAmountTotal() * subtotalRatio;
+			var allocatedOrderDiscountAmount = getService('HibachiUtilityService').precisionCalculate(discount);
+			discountAmounts['discountAmount'] = allocatedOrderDiscountAmount;
+		}
+		
+		if(!isNull(allocatedOrderDiscountAmount) && allocatedOrderDiscountAmount < 0){
+
 			var promotionApplied = getService('PromotionService').newPromotionApplied();
 			promotionApplied.setOrder(returnOrder);
+			
 			if( arguments.order.hasAppliedPromotion() ){
 				var originalPromo = arguments.order.getAppliedPromotions()[1].getPromotion();
 				if( !isNull(originalPromo) ){
 					promotionApplied.setPromotion( originalPromo );
 				}
 			}
-			promotionApplied.setDiscountAmount(allocatedOrderDiscountAmount * -1);
-			promotionApplied.setPersonalVolumeDiscountAmount(allocatedOrderPVDiscountAmount * -1);
-			promotionApplied.setCommissionableVolumeDiscountAmount(allocatedOrderCVDiscountAmount * -1);
+			
+			for(var priceField in variables.customPriceFields){
+				if(arguments.order.getCustomPriceFieldSubtotalAfterItemDiscounts(priceField) > 0){
+					var subtotalRatio = arguments.returnOrder.getCustomPriceFieldSubtotalAfterItemDiscounts(priceField) / arguments.order.getCustomPriceFieldSubtotalAfterItemDiscounts(priceField);
+					var discount = arguments.order.getOrderCustomDiscountAmountTotal(priceField) * subtotalRatio;
+					discountAmounts['#priceField#DiscountAmount'] = getService('HibachiUtilityService').precisionCalculate(discount);
+				}
+			}
+			for(var key in discountAmounts){
+				promotionApplied.invokeMethod('set#key#',{1=discountAmounts[key]});
+			}
 			
 			promotionApplied.setManualDiscountAmountFlag(true);
 			promotionApplied = getService('PromotionService').savePromotionApplied(promotionApplied);
 		}
+
 		return returnOrder;
 	}
 
@@ -561,8 +577,8 @@ component extends="Slatwall.model.service.OrderService" {
 
     public void function updateOrderStatusBySystemCode(required any order, required string systemCode, string typeCode='') {
 
-        var currentOrderStatusType = arguments.order.getOrderStatusType();
-        
+        var orderType        = arguments.order.getOrderType();
+        var currentOrderStatusType  = arguments.order.getOrderStatusType();
         
         /** 
          * if order is locked it can go back and forth b/w processsing1 and processing2 status 
@@ -617,18 +633,20 @@ component extends="Slatwall.model.service.OrderService" {
 
         } else if (arguments.systemCode == 'ostClosed') {
 			
-			if(arguments.order.getOrderType().getSystemCode() == 'otSalesOrder' || arguments.order.getOrderType().getSystemCode() == 'otReplacementOrder') {
+			if(orderType.getSystemCode() == 'otSalesOrder' || orderType.getSystemCode() == 'otReplacementOrder') {
 				// closed(shipped) orders
 	            arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="5"));
 			} else {
 				// RMA closed orders
 	            arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="rmaReleased"));
 			}
+			
         	getService("hibachiEventService").announceEvent(eventName="afterOrderProcess_OrderCloseSuccess", eventData={ entity: arguments.order, order: arguments.order, data: {} });
+        	
         } else if (arguments.systemCode == 'ostNew') {
 
 			//if the order is paid don't set to new, otherwise set to new
-			if (  arguments.order.getPaymentAmountDue() <= 0  && arguments.order.getOrderType().getSystemCode() == 'otSalesOrder' ){
+			if (  arguments.order.getPaymentAmountDue() <= 0  && orderType.getSystemCode() == 'otSalesOrder' ){
 				//type for PaidOrder  systemCode=ostProcessing, typeCode=2
 				arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode( systemCode='ostProcessing', typeCode="2")); 
 			} else {
@@ -638,7 +656,7 @@ component extends="Slatwall.model.service.OrderService" {
 				
         } else if (arguments.systemCode == 'ostProcessing') {
 			
-			if (arguments.order.getOrderType().getSystemCode() == 'otSalesOrder'){
+			if (orderType.getSystemCode() == 'otSalesOrder'){
 				
 				if(currentOrderStatusType.getSystemCode() == 'ostNew' && arguments.order.getPaymentAmountDue() <= 0) {
 
@@ -647,7 +665,7 @@ component extends="Slatwall.model.service.OrderService" {
 				} else {
 					
 					// we should narrow down the flow of status here
-					if (Len(arguments.typeCode) ) {
+					if (len(arguments.typeCode) ) {
 						
 						// all processing status allowed when called with a specific typecode
 						arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode( systemCode=arguments.systemCode, typeCode=arguments.typeCode) );
@@ -660,17 +678,28 @@ component extends="Slatwall.model.service.OrderService" {
 					
 	            }
 			        // Return Orders
-	        } else if (listFindNoCase('otReturnOrder,otExchangeOrder,otReplacementOrder,otRefundOrder', arguments.order.getTypeCode())) {
-	            if (arguments.typeCode == 'rmaApproved') {
+	        } else if (listFindNoCase('otReturnOrder,otExchangeOrder,otReplacementOrder,otRefundOrder', orderType.getSystemCode()) ){
+	            
+	            if (arguments.typeCode == 'rmaApproved'){
 	
-	                arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode(systemCode='ostProcessing', typeCode="rmaApproved"));
+	                arguments.order.setOrderStatusType(
+    	                    this.getTypeService().getTypeBySystemCode(systemCode='ostProcessing', typeCode="rmaApproved")
+    	                );
+	               
+				} else if( listFindNoCase('otReplacementOrder,otExchangeOrder', orderType.getSystemCode()) ){
+	
+	            	arguments.order.setOrderStatusType(
+    	            	    this.getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode=arguments.typeCode)
+    	            	);
+	            	
+	            } else if( currentOrderStatusType.getSystemCode() == 'ostNew' // only if it's a new RMA order it can be received
+	                            && ( !len(arguments.typeCode) || arguments.typeCode == 'rmaReceived' ) 
+	            ){
 	                
-				} else if( listFindNoCase( 'otReplacementOrder,otExchangeOrder', arguments.order.getTypeCode() ) ){
-	
-	            	arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode=arguments.typeCode));
-	
-	            } else if( isNull(arguments.typeCode) || arguments.typeCode == 'rmaReceived' ){
-	                arguments.order.setOrderStatusType(getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="rmaReceived"));
+	                arguments.order.setOrderStatusType(
+    	                    this.getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode="rmaReceived")
+    	               );
+	  
 	            }
 	        }
 
@@ -1731,6 +1760,8 @@ component extends="Slatwall.model.service.OrderService" {
 		var orderTemplateItemData = {}; //instantiating here as the OF in the loop is out of scope
 		orderTemplateItemData['orderFulfillmentHasErrors'] = false;
 		
+		orderTemplateItems = this.consolidateOrderTemplateItemsBySku(orderTemplateItems);
+
 		for(var orderTemplateItem in orderTemplateItems){ 
 			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()#, adding skuCode: #orderTemplateItem['sku_skuCode']#');
 			if(!isNull(orderTemplateItem.temporaryFlag) && orderTemplateItem.temporaryFlag == true){
@@ -1749,7 +1780,7 @@ component extends="Slatwall.model.service.OrderService" {
 			}
 			
 			arguments.order = this.addOrderItemFromTemplateItem(argumentCollection=args);
-
+			
 			//define order fulfillment for the rest of the loop	
 			if( isNull(orderFulfillment) && 
 				!arrayIsEmpty(arguments.order.getOrderItems()) && 
@@ -1772,7 +1803,7 @@ component extends="Slatwall.model.service.OrderService" {
 				}	
 			}	
 		}
-		
+
 		if(!isNull(orderTemplateItemData['orderFulfillment']) && !orderTemplateItemData['orderFulfillmentHasErrors']){
 
 			//if we have the promoItem skuID in the actual order, we can remove from the array
@@ -1785,8 +1816,26 @@ component extends="Slatwall.model.service.OrderService" {
 				arguments.order = addDefaultOFYSkuIfEligible(arguments.order,arguments.orderTemplate,orderTemplateItemData['orderFulfillment']);
 			}
 		}
-		
+
 		return arguments.order;
+	}
+	
+	private array function consolidateOrderTemplateItemsBySku( required array orderTemplateItems ){
+		
+		var templateItemMap = {};
+		var returnArray = [];
+		for(var orderTemplateItemStruct in arguments.orderTemplateItems){
+			if( !structKeyExists( templateItemMap, orderTemplateItemStruct['sku_skuID'] ) ){
+				templateItemMap[ orderTemplateItemStruct['sku_skuID'] ] = orderTemplateItemStruct;
+			}else{
+				templateItemMap[ orderTemplateItemStruct['sku_skuID'] ].quantity += orderTemplateItemStruct.quantity;
+			}
+		}
+		
+		for(var key in templateItemMap){
+			returnArray.append( templateItemMap[ key ] );
+		}
+		return returnArray;
 	}
 	
 	public any function addDefaultOFYSkuIfEligible(required any order, required any orderTemplate, required any orderFulfillment){

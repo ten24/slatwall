@@ -159,6 +159,7 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	property name="enrollmentDate" ormtype="timestamp";
 	property name="vipUpgradeDateTime" ormtype="timestamp";
 	property name="mpUpgradeDateTime" ormtype="timestamp";
+	property name="allowCorporateEmailsFlag" ormtype="boolean" default="0";
 	
 	property name="sponsorIDNumber" ormtype="string";
 	property name="lastSyncedDateTime" ormtype="timestamp";
@@ -169,7 +170,6 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	property name="successfulFlexshipOrdersThisYearCount" persistent="false"; 
 	property name="saveablePaymentMethodsCollectionList" persistent="false";
 	property name="canCreateFlexshipFlag" persistent="false";
-	property name="allowCorporateEmailsFlag" persistent="false";
 	property name="genderFullWord" persistent = "false";
 	property name="spouseFirstName" persistent = "false";
 	property name="spouseLastName" persistent = "false";
@@ -178,6 +178,7 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	property name="uplineMPAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="uplineMPAccountID";
 
 
+ property name="allowCorporateEmailsFlag" ormtype="boolean" hb_formatType="yesno";
  property name="productPackPurchasedFlag" ormtype="boolean" hb_formatType="yesno" default="false";
  property name="accountStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="accountStatusTypeID" hb_optionsSmartListData="f:parentType.typeID=2c9180836dacb117016dad1168c2000d";
  property name="subscriptionType" ormtype="string" hb_formFieldType="select";
@@ -193,6 +194,8 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
  property name="gender" ormtype="string" hb_formFieldType="select";
  property name="accountNumber" ormtype="string";
  property name="careerTitle" ormtype="string" hb_formFieldType="select";
+ property name="rank" ormtype="string";
+ property name="uplineMarketPartnerNumber" ormtype="string";
  property name="referType" ormtype="string" hb_formFieldType="select";
  property name="profileImage" hb_fileUpload="true" hb_fileAcceptMIMEType="*/*" ormtype="string" hb_formFieldType="file";
  property name="terminationDate" ormtype="timestamp" hb_formatType="date";
@@ -1362,18 +1365,6 @@ public numeric function getSuccessfulFlexshipOrdersThisYearCount(){
 		return arrayLen(this.getPriceGroups()) <= 1;
 	}
 	
-	public boolean function getAllowCorporateEmailsFlag(){
-		if(!structKeyExists(variables, 'allowCorporateEmailsFlag')){
-			variables.allowCorporateEmailsFlag = false;
-			
-			if(getHibachiScope().getLoggedInFlag() && getHibachiScope().hasService('MailchimpAPIService')){
-				variables.allowCorporateEmailsFlag = getService('MailchimpAPIService').getSubscribedFlagByEmailAddress( getHibachiScope().account().getPrimaryEmailAddress().getEmailAddress() ); 	
-			}
-		}
-		
-		return variables.allowCorporateEmailsFlag;
-	}
-	
 	public string function getProfileImageFullPath(numeric width = 250, numeric height = 250){
 		return getService('imageService').getResizedImagePath('#getHibachiScope().getBaseImageURL()#/profileImage/#this.getProfileImage()#', arguments.width, arguments.height)
 	}
@@ -1458,5 +1449,12 @@ public numeric function getSuccessfulFlexshipOrdersThisYearCount(){
 		
 		return false;
 	
+	}
+	
+	public void function setAllowCorporateEmailsFlag( required boolean allowCorporateEmailsFlag ){
+		
+		getService('MailchimpAPIService').updateSubscriptionByAccount( this, arguments.allowCorporateEmailsFlag )
+		variables.allowCorporateEmailsFlag = arguments.allowCorporateEmailsFlag;
+		
 	}//CUSTOM FUNCTIONS END
 }

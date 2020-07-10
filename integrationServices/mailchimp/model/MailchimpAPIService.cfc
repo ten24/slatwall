@@ -26,7 +26,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" outpu
 	public any function getMemberByEmailAddress( required string emailAddress ) {
 		
 		var response = this.searchMembers( arguments.emailAddress );
-		
+
 		// If the response format isn't what's expected
 		if ( !structKeyExists( response, 'exact_matches' ) || !structKeyExists( response.exact_matches, 'members' ) ) {
 			return false;
@@ -58,14 +58,12 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" outpu
 		var member = this.getMemberByEmailAddress( arguments.account.getPrimaryEmailAddress().getEmailAddress() );
 		
 		if ( !isStruct( member ) ) {
-			
 			// If the subscribe flag is set to true, add them to our list.
 			if ( arguments.subscribeFlag ) {
 				this.addMemberToListByAccount( arguments.account );
 			}
 			
 		} else {
-			
 			// Update the subscription status.
 			
 			var list_id = getHibachiScope().setting('integrationmailchimpmailChimpListID');
@@ -93,10 +91,10 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" outpu
 	 */
 	public struct function addMemberToListByAccount( required struct account ) {
 		
-		var currentSiteCode = getService('SiteService').getSlatwallSiteCodeByCurrentSite();
+		var siteCode = getService('SiteService').getSlatwallSiteCodeBySite(arguments.account.getAccountCreatedSite());
 
 		// If slatwall site is default, change to us
-		currentSiteCode = ( 'DEFAULT' == currentSiteCode ) ? 'US' : currentSiteCode;
+		siteCode = ( 'DEFAULT' == siteCode ) ? 'US' : siteCode;
 		
 		var response = this.addMemberToList( 
 			arguments.account.getPrimaryEmailAddress().getEmailAddress(),
@@ -106,7 +104,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" outpu
 				PHONE: arguments.account.getPhoneNumber(),
 				ATYPE: arguments.account.getAccountType(),
 				LPREF: arguments.account.getLanguagePreference(),
-				SITE: currentSiteCode,
+				SITE: siteCode,
 			}
 		);
 		
@@ -191,6 +189,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" outpu
 		}
 		
 		var response = httpRequest.send().getPrefix();
+
 		if(isJson(response.FileContent)){
 			return deserializeJson( response.FileContent );
 		}

@@ -37,8 +37,8 @@ class MonatProductListingController {
         this.observerService.attach(this.handleAddItem,'addItemSuccess');
         this.observerService.attach(this.handleAddItem,'createWishlistSuccess');
         this.observerService.attach(this.handleAddItem,'addOrderTemplateItemSuccess');
+        this.observerService.attach(this.getWishlistItems,'getAccountSuccess');
         this.publicService.getCart();
-        this.getWishlistItems();
     }
     
 	public $postLink = () => {
@@ -56,6 +56,9 @@ class MonatProductListingController {
 	}
 	
 	public getWishlistItems = () => {
+		if(!this.publicService.account?.accountID){
+			return;
+		}
 	    this.monatService.getAccountWishlistItemIDs().then( data => {
             if ( 'undefined' !== typeof data.wishlistItems ) {
                 this.wishlistItems = '';

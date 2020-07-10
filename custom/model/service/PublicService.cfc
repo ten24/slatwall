@@ -985,6 +985,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     
     
     private any function enrollUser(required struct data, required string accountType){
+
         var accountTypeInfo = {
             'VIP':{
                 'priceGroupCode':'3',
@@ -1009,9 +1010,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         
         arguments.data.accountType = arguments.accountType;
-        
         var account = super.createAccount(arguments.data);
-        
+
         if(account.hasErrors()){
             addErrors(arguments.data, account.getProcessObject("create").getErrors());
             getHibachiScope().addActionResult('public:account.create',false);
@@ -1019,7 +1019,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         }
         
         account.setActiveFlag(accountTypeInfo[arguments.accountType].activeFlag);
-        
+            
         var priceGroup = getService('PriceGroupService').getPriceGroupByPriceGroupCode(accountTypeInfo[arguments.accountType].priceGroupCode);
         
         if(!isNull(priceGroup)){
@@ -1033,8 +1033,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         if(!isNull(getHibachiScope().getCurrentRequestSite())){
             account.setAccountCreatedSite(getHibachiScope().getCurrentRequestSite());
         }
-        
-        account = getAccountService().saveAccount(account);
 
         if(account.hasErrors()){
             addErrors(arguments.data, account.getErrors());
@@ -1046,7 +1044,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             
             // Email opt-in
             if ( structKeyExists( arguments.data, 'allowCorporateEmailsFlag' ) && arguments.data.allowCorporateEmailsFlag ) {
-                var response = getService('MailchimpAPIService').addMemberToListByAccount( account );
+                account.setAllowCorporateEmailsFlag( arguments.data.allowCorporateEmailsFlag );
             }
         }
         
@@ -1060,7 +1058,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         }else{
             getHibachiScope().addActionResult('public:account.createAccount',false);
         }
-        
+
         return account;
     }
     
@@ -1113,7 +1111,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             
             // Update subscription in Mailchimp.
             if ( structKeyExists( arguments.data, 'allowCorporateEmailsFlag' ) ) {
-                getService('MailchimpAPIService').updateSubscriptionByAccount( account, arguments.data.allowCorporateEmailsFlag );
+                account.setAllowCorporateEmailsFlag( arguments.data.allowCorporateEmailsFlag );
             }
         }
         
@@ -1835,8 +1833,18 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var account = getHibachiScope().getAccount();
         var accountType = account.getAccountType();    
 
-        //User can not: upgrade while logged out, upgrade to same type, or downgrade from MP to VIP        
-        if(!getHibachiScope().getLoggedInFlag()){
+        //User can not: upgrade while logged out, upgrade to same type, or downgrade from MP to VIP, upgrade mid enrollment         
+        if(
+            !getHibachiScope().getLoggedInFlag()
+            ||
+            ( 
+                getHibachiScope().getLoggedInFlag() 
+                && ( 
+                        isNull(account.getAccountStatusType()) 
+                        || account.getAccountStatusType().getSystemCode() != 'astGoodStanding' 
+                    )
+             )
+        ){
             arguments.data['ajaxResponse']['upgradeResponseFailure'] = getHibachiScope().rbKey('validate.upgrade.userMustBeLoggedIn'); 
             return;
         }else if(accountType == arguments.data.upgradeType){
@@ -2160,10 +2168,11 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 	public void function addShippingAddressUsingAccountAddress(data){
 	    super.addShippingAddressUsingAccountAddress(arguments.data);
 	    var cart = getHibachiScope().getCart();
+
         this.setDefaultShippingMethod();
-        if(isNull(cart.getOrderPayments()) || !arrayLen(cart.getOrderPayments())) {
-            this.setShippingSameAsBilling();
-        }
+        // if(isNull(cart.getOrderPayments()) || !arrayLen(cart.getOrderPayments())) {
+        //     this.setShippingSameAsBilling();
+        // }
 	}
 	
 	//override core to also set the cheapest shippinng method as the default, and set shipping same as billing
@@ -2598,14 +2607,27 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             && !isNull(arguments.data.cmsSiteID)
             &&  !isNull(getService('siteService').getSiteByCMSSiteID(arguments.data.cmsSiteID)) 
         ){
+            var hasRenewalFeeInCart = false;
             var site = getService('siteService').getSiteByCMSSiteID(arguments.data.cmsSiteID);
             var renewalSkuID = site.setting('siteRenewalSkuID');
-            var renewalData = {};
-            renewalData['skuID'] = renewalSkuID ?: '';
-            arguments.data.ajaxResponse['renewalInformation'] = renewalData;
-            getHibachiScope().addActionResult( "public:account.impendingRenewalWarning", false); 
-        }else{
-            getHibachiScope().addActionResult( "public:account.impendingRenewalWarning", true); 
+            var orderItems = getHibachiScope().getCart().getOrderItems();
+            for(var item in orderItems){
+                gethibachiscope().loghibachi(item.getSku().getSkuID())
+                if(item.getSku().getSkuID() == renewalSkuID){
+                    hasRenewalFeeInCart = true;
+                    break;
+                }
+            }
+            
+            if(!hasRenewalFeeInCart){
+                var renewalData = {};
+                renewalData['skuID'] = renewalSkuID ?: '';
+                arguments.data.ajaxResponse['renewalInformation'] = renewalData;
+                getHibachiScope().addActionResult( "public:account.impendingRenewalWarning", false); 
+                return;
+            }
+            
+            getHibachiScope().addActionResult( "public:account.impendingRenewalWarning", true);    
         }
     }
     

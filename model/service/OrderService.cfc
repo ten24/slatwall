@@ -1734,6 +1734,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		arguments.orderTemplate.setScheduleOrderNextPlaceDateTime(nextPlaceDate);
 		arguments.orderTemplate.setLastOrderPlacedDateTime( now() );
 		arguments.orderTemplate.setScheduleOrderProcessingFlag( false );
+		arguments.orderTemplate.setMostRecentError( javacast('null','') );
+		arguments.orderTemplate.setMostRecentErrorDateTime( javacast('null','') );
 		ormFlush();
 		
 		var eventData = { entity: newOrder, order: newOrder, data: {} };
@@ -1897,7 +1899,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 			
 			arguments.order = this.addOrderItemFromTemplateItem(argumentCollection=args);
-	
+
 			//define order fulfillment for the rest of the loop	
 			if( isNull(orderFulfillment) && 
 				!arrayIsEmpty(arguments.order.getOrderItems()) && 
@@ -1980,7 +1982,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		if( !processOrderAddOrderItem.hasErrors() ){
 			arguments.order = this.processOrder_addOrderItem(arguments.order, processOrderAddOrderItem);
-		} 
+		} else if(isNull(arguments.orderTemplateItemStruct['temporaryFlag']) || !arguments.orderTemplateItemStruct['temporaryFlag']){
+			arguments.order.addError('addOrderItem', processOrderAddOrderItem.getErrors());
+			getHibachiScope().setORMHasErrors(true);
+		}
 		
 		return arguments.order;
 	}
@@ -2721,7 +2726,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public any function updateReturnOrderWithAllocatedDiscounts(required any order, required any returnOrder, required any processObject){
-		var allocatedOrderDiscountAmount = arguments.processObject.getAllocatedOrderDiscountAmountTotal();
+
+		if(arguments.order.getSubtotalAfterItemDiscounts() != 0){
+			var subtotalRatio = arguments.returnOrder.getSubtotalAfterItemDiscounts() / arguments.order.getSubtotalAfterItemDiscounts();
+			var discount = arguments.order.getOrderDiscountAmountTotal() * subtotalRatio;
+			var allocatedOrderDiscountAmount = getService('HibachiUtilityService').precisionCalculate(discount);
+		}
+		
 		if(!isNull(allocatedOrderDiscountAmount) && allocatedOrderDiscountAmount > 0){
 			var promotionApplied = getService('PromotionService').newPromotionApplied();
 			promotionApplied.setOrder(returnOrder);
@@ -2786,7 +2797,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		replacementOrderItem.setOrder( returnOrder );
 
 		replacementOrderItem.setSkuPrice( originalOrderItem.getSkuPrice() );
-		replacementOrderItem.setCurrencyCode( originalOrderItem.getSku().getCurrencyCode() );
+		replacementOrderItem.setCurrencyCode( originalOrderItem.getCurrencyCode() );
 		replacementOrderItem.setSku( originalOrderItem.getSku() );
 		replacementOrderItem.setPrice( arguments.orderItemStruct.price );
 		replacementOrderItem.setSkuPrice( arguments.orderItemStruct.price );
@@ -2833,14 +2844,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 			returnOrderItem.setReferencedOrderItem( originalOrderItem );
 			returnOrderItem.setSkuPrice( originalOrderItem.getSkuPrice() );
-			returnOrderItem.setCurrencyCode( originalOrderItem.getCurrencyCode() );
+
 			returnOrderItem.setSku( originalOrderItem.getSku() );
 		}else{
 			
 			returnOrderItem.setSku(getService('skuService').getSku(arguments.orderItemStruct.sku.skuID));
-			returnOrderItem.setCurrencyCode( arguments.returnOrder.getCurrencyCode() );
 		}
 		
+		returnOrderItem.setCurrencyCode( arguments.returnOrder.getCurrencyCode() );
 		returnOrderItem.setPrice( arguments.orderItemStruct.price );
 		returnOrderItem.setSkuPrice( arguments.orderItemStruct.price );
 		returnOrderItem.setUserDefinedPriceFlag(true);

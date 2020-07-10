@@ -18,8 +18,14 @@ class MonatSearchController {
 		if ( 'undefined' !== typeof this.$location.search().keyword ) {
 			this.getProductsByKeyword( this.$location.search().keyword );
 		}
-		
-		this.monatService.getAccountWishlistItemIDs().then( data => {
+		this.observerService.attach(this.getWishlistItems,'getAccountSuccess');
+	}
+	
+	public getWishlistItems = () => {
+		if(!this.publicService.account?.accountID){
+			return;
+		}
+	    this.monatService.getAccountWishlistItemIDs().then( data => {
             if ( 'undefined' !== typeof data.wishlistItems ) {
                 this.wishlistItems = data.wishlistItems;
                 this.observerService.notify('accountWishlistItemsSuccess');

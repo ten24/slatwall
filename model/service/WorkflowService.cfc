@@ -160,6 +160,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 		var serverInstances = serverInstanceCollectionList.getRecords();
 		for (var serverInstance in serverInstances) {
+			
 	        var offset = findNoCase('Slatwall',cgi.script_name)?'Slatwall/':'';
 			var workflowurl = 'http://#serverInstance["serverInstanceIPAddress"]#:#serverInstance["serverInstancePort"]#/#offset#?slatAction=api:workflow.executeScheduledWorkflows';
 			this.logHibachi('Invoking workflows on #workflowurl#');
@@ -169,12 +170,17 @@ component extends="HibachiService" accessors="true" output="false" {
 	        req.setTimeOut(3);
 	        var res = req.send().getPrefix();
 		}
+		// delete all old server instance
+		getDao('HibachiCacheDAO').deleteStaleServerInstance();
 	}
 	
 	public any function runAllWorkflowsByScheduleTrigger() {
 		
+		// update timestamp on server instance
+		getDao('hibachiCacheDAO').updateServerInstanceLastRequestDateTime();
+		
 		getWorkflowDAO().resetExpiredWorkflows(); 
-	
+		
 		var workflowTriggers = getWorkflowDAO().getDueWorkflows();
 		var exclusiveInvocationClusters = getWorkflowDAO().getExclusiveWorkflowTriggersInvocationClusters();
 		for(var workflowTrigger in workflowTriggers) {
@@ -200,6 +206,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 
 	public any function runWorkflowsByScheduleTrigger(required any workflowTrigger, boolean skipTriggerRunningCheck = false) {
+		this.logHibachi('Start executing workflow: #arguments.workflowTrigger.getWorkflow().getWorkflowName()#', true);
 		var timeout = workflowTrigger.getTimeout();
 		if(!isNull(timeout)){
 			//convert to seconds
@@ -381,6 +388,7 @@ component extends="HibachiService" accessors="true" output="false" {
 
 		// Flush the DB again to persist all updates
 		getHibachiDAO().flushORMSession();
+		this.logHibachi('Finished executing workflow: #arguments.workflowTrigger.getWorkflow().getWorkflowName()#', true);
 		return workflowTrigger;
 	}
 

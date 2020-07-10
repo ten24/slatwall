@@ -65,7 +65,6 @@ class MonatEnrollmentController {
 	}
 
 	public $onInit = () => {
-	
 		this.publicService.getAccount().then(result=>{
 			
 			this.account = result.account ? result.account : result;

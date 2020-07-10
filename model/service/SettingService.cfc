@@ -69,6 +69,7 @@ component extends="HibachiService" output="false" accessors="true" {
 	property name="translationService" type="any";
 	property name="typeService" type="any";
 	property name="skuService" type="any";
+	property name="stockService" type="any";
 
 	// ====================== START: META DATA SETUP ============================
 
@@ -447,6 +448,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			skuStockHoldTime = {fieldType="text", defaultValue=0,  validate={dataType="numeric"}},
 			skuTaxCategory = {fieldType="select", defaultValue="444df2c8cce9f1417627bd164a65f133"},
 			skuTrackInventoryFlag = {fieldType="yesno", defaultValue=0},
+			skuTrackQATSBelowThreshold = {fieldType="text", defaultValue=1000},
 			skuShippingCostExempt = {fieldType="yesno", defaultValue=0},
 			skuDisableAverageCostCalculation = {fieldType="yesno", defaultValue=0},
 			skuDisableQoQCalculation = {fieldType="yesno", defaultValue=0},
@@ -857,18 +859,16 @@ component extends="HibachiService" output="false" accessors="true" {
 
 	}
 
-	public void function updateStockCalculated() {
-
-		var updateStockThread = "";
-
-		// We do this in a thread so that it doesn't hold anything else up
-		thread action="run" name="updateStockThread" {
-			setupData = {};
-			setupData["p:show"] = 200;
-			setupData["f:sku.activeFlag"] = 1;
-			setupData["f:sku.product.activeFlag"] = 1;
-			getTaskService().updateEntityCalculatedProperties("Stock", setupData);
+	public void function updateStockCalculated(required any entity, struct data={}) {
+	
+		var stockArgs = {};
+		if(!isNull(arguments.entity.getSku())){
+			stockArgs['skuID'] = arguments.entity.getSku().getSkuID();
 		}
+		if(!isNull(arguments.entity.getProduct())){
+			stockArgs['productID'] = arguments.entity.getProduct().getProductID();
+		}
+		getStockService().updateStockCalculatedProperties(argumentCollection=stockArgs);
 	}
 
 	public any function getSettingMetaData(required string settingName) {
@@ -1352,7 +1352,7 @@ component extends="HibachiService" output="false" accessors="true" {
 
 			// If calculation is needed, then we should do it
 			if(calculateStockNeeded) {
-				updateStockCalculated();
+				updateStockCalculated(argumentCollection=arguments);
 			}
 		}
 
@@ -1386,7 +1386,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			
 			// If calculation is needed, then we should do it
 			if(listFindNoCase("skuAllowBackorderFlag,skuAllowPreorderFlag,skuQATSIncludesQNROROFlag,skuQATSIncludesQNROVOFlag,skuQATSIncludesQNROSAFlag,skuTrackInventoryFlag", arguments.entity.getSettingName())) {
-				updateStockCalculated();
+				updateStockCalculated(argumentCollection=arguments);
 			}
 		}
 

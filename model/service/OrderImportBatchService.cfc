@@ -190,6 +190,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	public any function processOrderImportBatch_Process(required any orderImportBatch){
 		var placedOrders = 0;
+		var origin = getOrderService().getOrderOriginByOrderOriginName('Batch Import');
+
 		for(var orderImportBatchItem in arguments.orderImportBatch.getOrderImportBatchItems()){
 
 			//Create Order
@@ -209,11 +211,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			order.setCurrencyCode(currencyCode);
 			order.setOrderImportBatch(arguments.orderImportBatch);
 			order.setShippingAddress(orderImportBatchItem.getShippingAddress());
-			
+			if(!isNull(origin)){
+				order.setOrderOrigin(origin);
+			}
 			//Save Order
 			getOrderService().saveOrder(order);
 			orderImportBatchItem.setOrder(order);
-			
+
 			//Create Order Fulfillment
 			var orderFulfillment = getOrderService().newOrderFulfillment();
 			orderFulfillment.setOrder(order);
@@ -221,7 +225,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			orderFulfillment.setShippingAddress(orderImportBatchItem.getShippingAddress());
 			orderFulfillment.setFulfillmentCharge(0);
 			orderFulfillment.setManualFulfillmentChargeFlag(true);
-			
 			this.saveOrderFulfillment(orderFulfillment);
 
 			//Save Order Fulfillment

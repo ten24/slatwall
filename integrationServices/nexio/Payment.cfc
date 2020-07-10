@@ -364,7 +364,6 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				arguments.responseBean.setAuthorizationCode(arguments.requestBean.getOriginalAuthorizationCode());
 				arguments.responseBean.setAvsCode(responseDataAvsCode);
 				
-				arguments.responseBean.addMessage(messageName="nexio.key", message="#responseData.key#");
 				
 				if (!isNull(responseData.kountResponse)){
 					arguments.responseBean.addMessage(messageName="nexio.kountResponse.status", message="#responseData.kountResponse.status#");
@@ -456,10 +455,6 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				arguments.responseBean.addMessage(messageName="nexio.transactionStatus", message="#responseData.transactionStatus#");
 				arguments.responseBean.addMessage(messageName="nexio.transactionType", message="#responseData.transactionType#");
 				arguments.responseBean.addMessage(messageName="nexio.transactionCurrency", message="#responseData.currency#");
-				arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.result", message="#responseData.gatewayResponse.result#");
-				if (!isNull(responseData.gatewayResponse.batchRef)){
-					arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.batchRef", message="#responseData.gatewayResponse.batchRef#");
-				}
 				arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.refNumber", message="#responseData.gatewayResponse.refNumber#");
 				arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.gatewayName", message="#responseData.gatewayResponse.gatewayName#");
 				arguments.responseBean.addMessage(messageName="nexio.cardNumber", message="#responseData.card.cardNumber#");
@@ -513,12 +508,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				arguments.responseBean.addMessage(messageName="nexio.transactionStatus", message="#responseData.transactionStatus#");
 				arguments.responseBean.addMessage(messageName="nexio.transactionType", message="#responseData.transactionType#");
 				arguments.responseBean.addMessage(messageName="nexio.transactionCurrency", message="#responseData.currency#");
-				if( structKeyExists(responseData.gatewayResponse, 'result') ){
-					arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.result", message="#responseData.gatewayResponse.result#");
-				}
-				if( !isNull(responseData.gatewayResponse.batchRef) ){
-					arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.batchRef", message="#responseData.gatewayResponse.batchRef#");
-				}
+
 				if( structKeyExists(responseData.gatewayResponse, 'refNumber') ){
 					arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.refNumber", message="#responseData.gatewayResponse.refNumber#");
 				}
@@ -564,10 +554,6 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				arguments.responseBean.addMessage(messageName="nexio.transactionStatus", message="#responseData.transactionStatus#");
 				arguments.responseBean.addMessage(messageName="nexio.transactionType", message="#responseData.transactionType#");
 				arguments.responseBean.addMessage(messageName="nexio.transactionCurrency", message="#responseData.currency#");
-				arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.result", message="#responseData.gatewayResponse.result#");
-				if (!isNull(responseData.gatewayResponse.batchRef)){
-					arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.batchRef", message="#responseData.gatewayResponse.batchRef#");
-				}
 				arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.refNumber", message="#responseData.gatewayResponse.refNumber#");
 				arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.gatewayName", message="#responseData.gatewayResponse.gatewayName#");
 			}
@@ -610,10 +596,6 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				arguments.responseBean.addMessage(messageName="nexio.transactionDate", message="#responseData.transactionDate#");
 				arguments.responseBean.addMessage(messageName="nexio.transactionStatus", message="#responseData.transactionStatus#");
 				arguments.responseBean.addMessage(messageName="nexio.transactionType", message="#responseData.transactionType#");
-				arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.result", message="#responseData.gatewayResponse.result#");
-				if (!isNull(responseData.gatewayResponse.batchRef)){
-					arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.batchRef", message="#responseData.gatewayResponse.batchRef#");
-				}
 				arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.refNumber", message="#responseData.gatewayResponse.refNumber#");
 			}
 		} else {
@@ -651,11 +633,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				arguments.responseBean.addMessage(messageName="nexio.transactionDate", message="#responseData.transactionDate#");
 				arguments.responseBean.addMessage(messageName="nexio.transactionStatus", message="#responseData.transactionStatus#");
 				arguments.responseBean.addMessage(messageName="nexio.transactionType", message="#responseData.transactionType#");
-				if (!isNull(responseData.gatewayResponse.batchRef)){
-					arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.batchRef", message="#responseData.gatewayResponse.batchRef#");
-				}
 				arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.refNumber", message="#responseData.gatewayResponse.refNumber#");
-				arguments.responseBean.addMessage(messageName="nexio.gatewayResponse.message", message="#responseData.gatewayResponse.message#");
 			}
 		} else {
 			throw("There is no 'originalChargeProviderTransactionID' or originalAuthorizationProviderTransactionID' in the transactionRequestBean. Expecting the value to be a reference to transactionID for the original charge/capture or credit.");

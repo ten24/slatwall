@@ -8,8 +8,7 @@ component accessors="true" extends="Slatwall.model.process.Order_CreateReturn" {
     
     // Data Properties (Inputs)
     property name="orderPayments" type="array" hb_populateArray="true";
-    property name="allocatedOrderPVDiscountAmountTotal";
-    property name="allocatedOrderCVDiscountAmountTotal";
+    
     // Data Properties (Related Entity Populate)
     property name="secondaryReturnReasonType" cfc="Type" fieldtype="many-to-one" fkcolumn="secondaryReturnReasonTypeID";
     

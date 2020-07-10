@@ -85,14 +85,14 @@ component extends="HibachiDAO" {
 		");	
 	}  
 
-	public void function updateServerInstanceLastRequestDateTime(required any serverInstance){
+	public void function updateServerInstanceLastRequestDateTime(){
 		var queryService = new query();
 		queryService.addParam(name='now', value='#now()#', CFSQLTYPE='cf_sql_timestamp');
-		queryService.addParam(name='serverInstanceID', value='#arguments.serverInstance.getServerInstanceID()#', CFSQLTYPE='cf_sql_varchar');
+		queryService.addParam(name='serverInstanceKey', value='#getHibachiScope().getServerInstanceKey()#', CFSQLTYPE='cf_sql_varchar');
 			
 		var sql =	"UPDATE SwServerInstance
 					SET lastRequestDateTime = :now
-					WHERE serverInstanceID = :serverInstanceID
+					WHERE serverInstanceKey = :serverInstanceKey
 					";
 						
 		queryService.execute(sql=sql);
@@ -113,7 +113,7 @@ component extends="HibachiDAO" {
 
 	public void function deleteStaleServerInstance(){
 		var queryService = new query();
-		queryService.addParam(name='datetimebefore', value='#DateAdd("s",-60,now())#', CFSQLTYPE='cf_sql_timestamp');
+		queryService.addParam(name='datetimebefore', value='#DateAdd("n",-10,now())#', CFSQLTYPE='cf_sql_timestamp');
 			
 		var sql =	"DELETE FROM SwServerInstance
 					 WHERE lastRequestDateTime < :datetimebefore

@@ -56,6 +56,8 @@ component {
     property name="calculatedRetailCommissionDiscountTotal" ormtype="big_decimal" hb_formatType="none";
     property name="calculatedProductPackVolumeDiscountTotal" ormtype="big_decimal" hb_formatType="none";
     property name="calculatedRetailValueVolumeDiscountTotal" ormtype="big_decimal" hb_formatType="none";
+	property name="calculatedPurchasePlusTotal" ormtype="big_decimal" hb_formatType="none";
+
     property name="accountType" ormtype="string";
     property name="accountPriceGroup" ormtype="string";
 	
@@ -457,19 +459,19 @@ component {
 	}
 	
 	public numeric function getPurchasePlusTotal(){
-		
-		 if (!structKeyExists(variables, "purchasePlusTotal")){
-			var purchasePlusRecords = getService('orderService').getPurchasePlusInformationForOrderItems(this.getOrderID());
-			var total = 0;
 	
-			if(!isArray(purchasePlusRecords)){
-				purchasePlusRecords = purchasePlusRecords.getRecords();
-				for (var item in purchasePlusRecords){
-					total +=  item.discountAmount;
-				}
+		var purchasePlusRecords = getService('orderService').getPurchasePlusInformationForOrderItems(this.getOrderID());
+		var total = 0;
+
+		if(!isArray(purchasePlusRecords)){
+			purchasePlusRecords = purchasePlusRecords.getRecords();
+			for (var item in purchasePlusRecords){
+				total +=  item.discountAmount;
 			}
-			variables.purchasePlusTotal = total;
 		}
+		variables.purchasePlusTotal = total;
+
+		
 		return variables.purchasePlusTotal;
 	}
 	
