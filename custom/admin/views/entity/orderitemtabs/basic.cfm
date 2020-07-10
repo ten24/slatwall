@@ -31,6 +31,7 @@
 				<sw-simple-property-display object="#OrderItemJSON#" property="calculatedExtendedCommissionableVolume" title="Commissionable Volume (Extended)" edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
 				<sw-simple-property-display object="#OrderItemJSON#" property="calculatedExtendedProductPackVolume" title="Product Pack Volume (Extended)" edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
 				<sw-simple-property-display object="#OrderItemJSON#" property="calculatedExtendedRetailValueVolume" title="Retail Value Volume (Extended)" edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
+				<sw-simple-property-display object="#OrderItemJSON#" property="calculatedExtendedRetailCommission" title="Retail Commission (Extended)" edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
 				<sw-simple-property-display object="#OrderItemJSON#" property="calculatedExtendedTaxableAmount" title="Taxable Amount (Extended)" currency-flag="true"  edit="false" display-type="table" refresh-event="refreshOrder#rc.order.getOrderID()#"></sw-simple-property-display>
 			</div>
 		</hb:HibachiPropertyList>
