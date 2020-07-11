@@ -41,9 +41,8 @@ class WishlistShareModalConroller {
 class WishlistShareModal {
 
 	public restrict = "E";
-	public templateUrl:string;
-	
 	public scope = {};
+	
 	public bindToController = {
 	    wishlist:'<',
 		close:'=' //injected by angularModalService
@@ -52,14 +51,10 @@ class WishlistShareModal {
 	public controller = WishlistShareModalConroller;
 	public controllerAs = "wishlistShareModal";
 
-	public static Factory(){
-        var directive:any = ( monatFrontendBasePath ) => new WishlistShareModal( monatFrontendBasePath);
-        directive.$inject = ['monatFrontendBasePath'];
-        return directive;
-    }
+    public template = require('./wishlist-share-modal.html');
 
-	constructor(private monatFrontendBasePath){
-		this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/wishlist-share-modal.html";
+	public static Factory() {
+		return () => new this();
 	}
 }
 

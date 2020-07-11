@@ -95,7 +95,29 @@ devConfig.module = {
                 }
             ],
             exclude: /node_modules/
-		}
+		},
+		// Load raw HTML files for inlining our templates
+        { 
+            test: /\.(html)$/, 
+            exclude: /index\.html/,
+            include: [
+                PATHS.clientSrc // only processing custom-frontend templates
+            ],
+            use: [
+                {
+                    loader: 'html-loader',
+                    options: {
+                        // Disables attributes processing
+                        attributes: false,
+                        esModule: true,
+                        minimize: {
+                            removeComments: this.mode === 'production',
+                            collapseWhitespace: this.mode === 'production',
+                        },
+                    },
+                }
+            ]
+        },
     ]
 };
 
