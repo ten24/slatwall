@@ -22,6 +22,7 @@
     "@types/braintree-web": "^3.47.2",
     "angular-mocks": "^1.6.4",
     "cache-loader": "^4.1.0",
+    "clean-webpack-plugin": "^3.0.0",
     "compression-webpack-plugin": "^4.0.0",
     "force-case-sensitivity-webpack-plugin": "^0.1.1",
     "fork-ts-checker-webpack-plugin": "^4.1.6",
@@ -30,12 +31,14 @@
     "gulp-inject": "^3.0.0",
     "gulp-util": "^3.0.8",
     "html-loader": "^0.5.5",
+    "html-webpack-link-type-plugin": "^1.0.3",
+    "html-webpack-plugin": "^4.3.0",
     "jasmine": "^2.5.2",
     "jasmine-core": "^2.8.0",
     "json-loader": "^0.5.4",
     "less": "*",
     "ng-annotate-loader": "^0.6.1",
-    "ng-annotate-patched": "^1.9.0",
+    "ng-annotate-patched": "^1.12.0",
     "ng-annotate-webpack-plugin": "^0.3.0",
     "run-sequence": "1.1.4",
     "script-loader": "^0.7.2",
@@ -49,6 +52,7 @@
     "webpack": "^4.43.0",
     "webpack-cli": "*",
     "webpack-dev-server": "^3.1.11",
+    "webpack-merge": "^5.0.9",
     "webpack-stream": "*",
     "webpackbar": "^4.0.0"
   },
@@ -70,10 +74,10 @@
     "buildFrontend:prod": "cd org/Hibachi/client && webpack --config webpack-frontend-production.config.js",
     "buildSpec": "cd admin/client && webpack --config webpack-test.config.js",
     "buildCSS": "lessc admin/client/css/main.less admin/client/css/main.css",
-    "buildCustomAdmin": "cd custom/admin/client && webpack --config webpack-production.config.js",
-    "buildCustomAdmin:debug": "cd custom/admin/client && webpack --config webpack.config.js",
-    "buildCustomFrontend": "cd custom/client && webpack --config webpack-production.config.js",
-    "buildCustomFrontend:debug": "cd custom/client && webpack --config webpack.config.js"
+    "buildCustomAdmin": "cd custom/admin/client && webpack --config webpack-production.config.js --bail",
+    "buildCustomAdmin:debug": "cd custom/admin/client && webpack --config webpack.config.js --bail",
+    "buildCustomFrontend": "cd custom/client && webpack --config webpack-production.config.js --bail",
+    "buildCustomFrontend:debug": "cd custom/client && webpack --config webpack.config.js --bail"
   },
   "jshintConfig": {
     "predef": [

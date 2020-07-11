@@ -2,17 +2,23 @@ const path = require('path');
 const webpack = require('webpack');
 const WebpackBar = require('webpackbar');
 const ThreadLoader = require('thread-loader');
+const HtmlWebpackPlugin = require("html-webpack-plugin"); // create index template
 const CompressionPlugin = require("compression-webpack-plugin");
 const NgAnnotateWebPackPlugin = require('ng-annotate-webpack-plugin');
+const HtmlWebpackLinkTypePlugin = require('html-webpack-link-type-plugin').HtmlWebpackLinkTypePlugin;
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+
+const { CleanWebpackPlugin } = require('clean-webpack-plugin'); // to auto-clean dist-dir
 
 const PATHS = {
 	clientRoot      :	__dirname ,
     clientSrc       :   path.join(__dirname, '/src'),
+    clientDist      :   path.join(__dirname, '/dist'),
     slatwallSrc     : 	path.resolve(__dirname, '../../../admin/client/src'),
     monatAdmin      :	path.join(__dirname, '/src/monatadmin'),
     hibachiSrc      : 	path.resolve(__dirname, '../../../org/Hibachi/client/src'),
-    nodeModeles     :   path.resolve(__dirname, '../../../node_modules')
+    nodeModeles     :   path.resolve(__dirname, '../../../node_modules'),
+    templateFile    :   path.join(__dirname, "./template.html")
 };
 
 const calculateNumberOfWorkers = () => {
@@ -34,23 +40,23 @@ if (calculateNumberOfWorkers() > 0) {
 
 let devConfig = { 
     
-    
     mode        : 'development',
     stats       : 'errors-warnings', //detailed, errors-warnings, errors-only
     devtool     : 'source-map',
-    context     : PATHS.clientSrc,
+    context     : PATHS.clientSrc, // The base directory, an absolute path, for resolving entry points
     watch       : true,
+    
     performance : {
-        hints: false // to ignore annoying warnings
+        hints: false // to ignore annoying bundel-size warnings
     },
     
     entry: { 
-        monatAdmin: [ path.join(PATHS.clientSrc, './bootstrap.ts') ] 
+        monatAdmin: [ './bootstrap.ts' ] 
     },
                 
     output : {
-        path:  PATHS.clientSrc,
-        filename : '[name].bundle.js'
+        path:  PATHS.clientDist,
+        filename: "[name].[contenthash].bundle.js",
     },
     
     resolve : {
@@ -62,11 +68,17 @@ let devConfig = {
             PATHS.nodeModeles 
         ],
         alias       : { 
-            '@Monat': PATHS.monatAdmin, 
-            '@Hibachi': PATHS.hibachiSrc 
+            '@Monat'    : PATHS.monatAdmin, 
+            '@Hibachi'  : PATHS.hibachiSrc,
+            '@Slatwall' : PATHS.slatwallSrc
         }
-    }
+    },
+    
+    externals: {
+        jquery: "jQuery"
+    },
 };
+
 
 devConfig.module = {
     rules: [
@@ -111,10 +123,21 @@ devConfig.optimization = {
 devConfig.plugins =  [
     
     new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en/),
+    new webpack.HashedModuleIdsPlugin(), // so that file hashes don't change unexpectedly
+    
+    new CleanWebpackPlugin(),
+    new HtmlWebpackLinkTypePlugin(),
+
+    new HtmlWebpackPlugin({
+        template: PATHS.templateFile,
+        filename: "MonatAdminBundels.cfm",
+        inject: false,
+        minify: false,
+        cache: false // there's a bug in current versions HTML-plugin (it doesn't generte the template in watch mode)
+    }),
     
     new NgAnnotateWebPackPlugin({
         add: true,
-        // other ng-annotate options here
     }),
     
     new CompressionPlugin({
@@ -135,10 +158,9 @@ devConfig.plugins =  [
     new WebpackBar({
         name: "Monat Admin",
         reporters: [ 'basic', 'fancy', 'profile', 'stats' ],
-        basic: true,
         fancy: true,
-        profile: true,
-        stats: true,
+        profile: false,
+        stats: true
     })
 ];   
 
