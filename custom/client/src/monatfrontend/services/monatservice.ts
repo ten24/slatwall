@@ -521,4 +521,15 @@ export class MonatService {
 		}
 		return deferred.promise;
 	}
+	
+	public cartHasShippingFulfillmentMethodType(cart:Cart):boolean{
+		let hasShippingMethodOption = false;
+		for(let fulfillment of cart.orderFulfillments){
+			if(fulfillment.fulfillmentMethod?.fulfillmentMethodType === 'shipping'){
+				hasShippingMethodOption = true;
+				break;
+			}
+		}
+		return hasShippingMethodOption;
+	}
 }

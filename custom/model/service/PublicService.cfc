@@ -2233,20 +2233,24 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         if(isNull(account) || !arrayLen(orderFulfillments)) return;
         
 	    //if the default shipping flag is passed in, and the account has a primary shipping address, set shipping address with it otherwise use data passed in as arguments
-	   
-	    if(arguments.data.defaultShippingFlag && !isNull(account.getPrimaryShippingAddress())) {
-	        var shippingFulfillmentID = orderFulfillments[1].getOrderFulfillmentID();
+	    var shippingFulfillmentArray = cart.getFirstShippingFulfillment();
+	    
+	    if(
+	        arguments.data.defaultShippingFlag 
+	        && !isNull(account.getPrimaryShippingAddress())
+	        && arrayLen(shippingFulfillmentArray)
+	    ) {
+	        var shippingFulfillmentID = shippingFulfillmentArray[1].getOrderFulfillmentID(); 
 	        var addressID = account.getPrimaryShippingAddress().getAccountAddressID();
 	        var data = {shippingFulfillmentID:shippingFulfillmentID, accountAddressID: addressID};
 	        this.addShippingAddressUsingAccountAddress(data); 
-	    }else if(!isNull(arguments.data.streetAddress)){
+	    }else if(!isNull(arguments.data.streetAddress) && arrayLen(shippingFulfillmentArray)){
 	        this.addOrderShippingAddress(arguments.data);
 	    }
         
        
         //Set up the billing information, if there is a primary account payment method
-        if(!isNull(account.getPrimaryPaymentMethod())){
-              
+        if(!isNull(account.getPrimaryPaymentMethod()) && !cart.hasOrderPaymentWithSavablePaymentMethod()){
             var paymentData = {  requireBillingAddress: 0, copyFromType: 'accountPaymentMethod', accountPaymentMethodID: account.getPrimaryPaymentMethod().getAccountPaymentMethodID() };
             super.addOrderPayment(paymentData);
         }
