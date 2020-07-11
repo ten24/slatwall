@@ -76,17 +76,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 			account.setProductPackPurchasedFlag(true);
         }
     	
-		// Snapshot the account type to the order. This is placed before the upgrade logic
-		// so that we can capture that this account was still another account type at this time.
-		// on the users next order, they will be the upgraded type.
-		if (!isNull(account)){
-			if (!isNull(account.getAccountType())){
-				arguments.order.setAccountType(account.getAccountType());
-			}else{
-				logHibachi("afterOrderProcess_placeOrderSuccess Account Type should NEVER be empty on place order.", true);
-			}
-		}
-	
     	// Set the AccountType and PriceGroup IF this is an upgrade flow.
     	if(arguments.order.getUpgradeFlag() == true){
     		
@@ -128,6 +117,15 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 			} 
     	}
     	
+		// Snapshot the account type to the order. 
+		if (!isNull(account)){
+			if (!isNull(account.getAccountType())){
+				arguments.order.setAccountType(account.getAccountType());
+			}else{
+				logHibachi("afterOrderProcess_placeOrderSuccess Account Type should NEVER be empty on place order.", true);
+			}
+		}
+	
 		// Snapshot the pricegroups on the order.
 		if ( !isNull(account) && arrayLen(account.getPriceGroups()) ) {
             arguments.order.setPriceGroup(account.getPriceGroups()[1]);
