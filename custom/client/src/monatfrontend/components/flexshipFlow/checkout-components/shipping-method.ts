@@ -67,15 +67,10 @@ class FlexshipCheckoutShippingMethod {
 	public controller=FlexshipCheckoutShippingMethodController;
 	public controllerAs="flexshipCheckoutShippingMethod";
 
-	public static Factory(){
-        //@ngInject
-        return ( monatFrontendBasePath ) => {
-            return new FlexshipCheckoutShippingMethod( monatFrontendBasePath);
-        }; 
-    }
+	public template = require('./shipping-method.htm');
 
-	constructor(private monatFrontendBasePath){
-		this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/flexshipFlow/checkout-components/shipping-method.html";
+	public static Factory() {
+		return () => new this();
 	}
 
 }

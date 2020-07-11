@@ -134,15 +134,10 @@ class FlexshipCheckoutShippingAddress {
 	public controller=FlexshipCheckoutShippingAddressController;
 	public controllerAs="flexshipCheckoutShippingAddress";
 
-	public static Factory(){
-        //@ngInject
-        return ( monatFrontendBasePath ) => {
-            return new FlexshipCheckoutShippingAddress( monatFrontendBasePath);
-        }; 
-    }
+	public template = require('./shipping-address.html');
 
-	constructor(private monatFrontendBasePath){
-		this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/flexshipFlow/checkout-components/shipping-address.html";
+	public static Factory() {
+		return () => new this();
 	}
 
 }

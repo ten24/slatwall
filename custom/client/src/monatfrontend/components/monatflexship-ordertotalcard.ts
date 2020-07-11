@@ -8,7 +8,8 @@ class MonatFlexshipOrderTotalCardController {
 }
 
 class MonatFlexshipOrderTotalCard {
-
+	
+	public restrict = 'EA'
 	public restrict:string;
 	public templateUrl:string;
 	
@@ -19,36 +20,11 @@ class MonatFlexshipOrderTotalCard {
 	public controller = MonatFlexshipOrderTotalCardController;
 	public controllerAs = "monatFlexshipOrderTotalCard";
 
-	public static Factory(){
-        var directive:any = (
-		    monatFrontendBasePath,
-			$hibachi,
-			rbkeyService,
-			requestService
-        ) => new MonatFlexshipOrderTotalCard(
-			monatFrontendBasePath,
-			$hibachi,
-			rbkeyService,
-			requestService
-        );
-        directive.$inject = [
-			'monatFrontendBasePath',
-			'$hibachi',
-			'rbkeyService',
-			'requestService'
-        ];
-        return directive;
-    }
+	public template = require('./monatflexship-ordertotalcard.html');
 
-	constructor(private monatFrontendBasePath, 
-				private slatwallPathBuilder, 
-				private $hibachi,
-				private rbkeyService
-	){
-		this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/monatflexship-ordertotalcard.html";
-		this.restrict = "E";
+	public static Factory() {
+		return () => new this();
 	}
-
 	public link = (scope, element, attrs) =>{
 
 	}

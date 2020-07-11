@@ -1,5 +1,7 @@
 
 class MonatFlexshipDetailController {
+	
+	public restrict = 'EA'
     public orderTemplateId: string;
     public orderTemplate: any;
     public loading: boolean = false;
@@ -39,34 +41,10 @@ class MonatFlexshipDetail {
 	public controller=MonatFlexshipDetailController;
 	public controllerAs="monatFlexshipDetail";
 
-	public static Factory(){
-        var directive:any = (
-		    monatFrontendBasePath,
-			$hibachi,
-			rbkeyService,
-			requestService
-        ) => new MonatFlexshipDetail(
-			monatFrontendBasePath,
-			$hibachi,
-			rbkeyService,
-			requestService
-        );
-        directive.$inject = [
-			'monatFrontendBasePath',
-			'$hibachi',
-			'rbkeyService',
-			'requestService'
-        ];
-        return directive;
-    }
+	public template = require('./monatflexshipdetail.html');
 
-	constructor(private monatFrontendBasePath, 
-				private slatwallPathBuilder, 
-				private $hibachi,
-				private rbkeyService
-	){
-		this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/monatflexshipdetail.html";
-		this.restrict = "EA";
+	public static Factory() {
+		return () => new this();
 	}
 
 	public link = (scope, element, attrs) =>{

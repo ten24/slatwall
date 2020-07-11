@@ -300,14 +300,10 @@ class MonatProductCard {
 	public controller = MonatProductCardController;
 	public controllerAs = 'monatProductCard';
 
-	public static Factory() {
-		var directive: any = (monatFrontendBasePath) => new this(monatFrontendBasePath);
-		directive.$inject = ['monatFrontendBasePath'];
-		return directive;
-	}
+	public template = require('./monatproductcard.html');
 
-	constructor(private monatFrontendBasePath) {
-		this.templateUrl = monatFrontendBasePath + '/monatfrontend/components/monatproductcard.html';
+	public static Factory() {
+		return () => new this();
 	}
 }
 

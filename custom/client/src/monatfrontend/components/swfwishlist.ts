@@ -171,7 +171,7 @@ class SWFWishlist  {
     public priority = 1000;
     public scope = true;
 	public templateUrl:string;
-    public restrict:string;
+    public restrict:"AE";
 
    /**
     * Binds all of our variables to the controller so we can access using this
@@ -190,18 +190,10 @@ class SWFWishlist  {
         /**
      * Handles injecting the partials path into this class
      */
-    public static Factory(){
-        var directive: any = (monatFrontendBasePath) => new SWFWishlist(
-			monatFrontendBasePath,
-        );
-		directive.$inject = ['monatFrontendBasePath'];
-        return directive;
-    }
-    
-    // @ngInject
-	constructor(private monatFrontendBasePath){
-		this.templateUrl = monatFrontendBasePath + '/monatfrontend/components/swfwishlist.html';
-		this.restrict = "AE";
+	public template = require('./swfwishlist.html');
+
+	public static Factory() {
+		return () => new this();
 	}
     /**
         * Sets the context of this form

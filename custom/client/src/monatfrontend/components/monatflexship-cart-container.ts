@@ -1,5 +1,6 @@
 declare var angular;
 class MonatFlexshipCartContainerController {
+    public restrict = 'EA'
     public orderTemplateId: string;
     public orderTemplate:any; // orderTemplateDetails
     public orderTemplateItems: any[];
@@ -210,37 +211,12 @@ class MonatFlexshipCartContainer {
 	};
 	public controller=MonatFlexshipCartContainerController;
 	public controllerAs="monatFlexshipCartContainer";
+    
+    public template = require('./monatflexship-cart-container.html');
 
-	public static Factory(){
-        var directive:any = (
-		    monatFrontendBasePath,
-			$hibachi,
-			rbkeyService,
-			requestService
-        ) => new MonatFlexshipCartContainer(
-			monatFrontendBasePath,
-			$hibachi,
-			rbkeyService,
-			requestService
-        );
-        directive.$inject = [
-			'monatFrontendBasePath',
-			'$hibachi',
-			'rbkeyService',
-			'requestService'
-        ];
-        return directive;
-    }
-
-	constructor(private monatFrontendBasePath, 
-				private slatwallPathBuilder, 
-				private $hibachi,
-				private rbkeyService
-	){
-		this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/monatflexship-cart-container.html";
-		this.restrict = "EA";
+	public static Factory() {
+		return () => new this();
 	}
-
 	public link = (scope, element, attrs) =>{
 		
 	}

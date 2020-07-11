@@ -12,14 +12,10 @@ class MonatUpgradeStep {
 	}
 	public require = '^monatUpgrade';
 
-	public static Factory(){
-		var directive:any = (monatFrontendBasePath) => new this(monatFrontendBasePath);
-		directive.$inject = ['monatFrontendBasePath'];
-		return directive;
-	}
+	public template = require('./monatupgradestep.html');
 
-	constructor( private monatFrontendBasePath ){
-		this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/upgradeFlow/monatupgradestep.html";
+	public static Factory() {
+		return () => new this();
 	}
 	
 	public link = (scope, element, attrs, monatUpgrade) =>{

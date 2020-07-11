@@ -181,14 +181,10 @@ class MonatBirthday {
 	public bindToController = {
 		required: '<?'
 	}
-	public static Factory() {
-		var directive: any = (monatFrontendBasePath) => new this(monatFrontendBasePath);
-		directive.$inject = ['monatFrontendBasePath'];
-		return directive;
-	}
+	public template = require('./monat-birthday.html');
 
-	constructor(private monatFrontendBasePath) {
-		this.templateUrl = monatFrontendBasePath + '/monatfrontend/components/monat-birthday.html';
+	public static Factory() {
+		return () => new this();
 	}
 }
 

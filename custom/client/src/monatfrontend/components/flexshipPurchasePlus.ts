@@ -24,14 +24,10 @@ class FlexshipPurchasePlus {
 	public bindToController = {
 		messages: '<'
 	}
-	public static Factory() {
-		var directive: any = (monatFrontendBasePath) => new this(monatFrontendBasePath);
-		directive.$inject = ['monatFrontendBasePath'];
-		return directive;
-	}
+	public template = require('./flexshipPurchasePlus.html');
 
-	constructor(private monatFrontendBasePath) {
-		this.templateUrl = monatFrontendBasePath + '/monatfrontend/components/flexshipPurchasePlus.html';
+	public static Factory() {
+		return () => new this();
 	}
 }
 

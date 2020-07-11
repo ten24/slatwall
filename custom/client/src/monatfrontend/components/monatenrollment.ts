@@ -303,14 +303,10 @@ class MonatEnrollment {
 	public controller = MonatEnrollmentController;
 	public controllerAs = 'monatEnrollment';
 
-	public static Factory() {
-		var directive: any = (monatFrontendBasePath) => new this(monatFrontendBasePath);
-		directive.$inject = ['monatFrontendBasePath'];
-		return directive;
-	}
+	public template = require('./monatenrollment.html');
 
-	constructor(private monatFrontendBasePath) {
-		this.templateUrl = monatFrontendBasePath + '/monatfrontend/components/monatenrollment.html';
+	public static Factory() {
+		return () => new this();
 	}
 }
 

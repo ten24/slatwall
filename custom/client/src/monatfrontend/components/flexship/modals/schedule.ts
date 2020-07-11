@@ -143,7 +143,7 @@ class monatFlexshipScheduleModalController {
 
 class MonatFlexshipScheduleModal {
 
-	public restrict:string;
+	public restrict = "E";
 	public templateUrl:string;
 	
 	public scope = {};
@@ -154,35 +154,10 @@ class MonatFlexshipScheduleModal {
 	public controller=monatFlexshipScheduleModalController;
 	public controllerAs="monatFlexshipScheduleModal";
 
-	public static Factory(){
-        var directive:any = (
-		    monatFrontendBasePath,
-			$hibachi,
-			rbkeyService,
-			requestService
-        ) => new MonatFlexshipScheduleModal(
-			monatFrontendBasePath,
-			$hibachi,
-			rbkeyService,
-			requestService
-        );
-        directive.$inject = [
-			'monatFrontendBasePath',
-			'$hibachi',
-			'rbkeyService',
-			'requestService'
-        ];
-        return directive;
-    }
+	public template = require('./schedule.html');
 
-	//@ngInject
-	constructor(private monatFrontendBasePath, 
-				private slatwallPathBuilder, 
-				private $hibachi,
-				private rbkeyService
-	){
-		this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/flexship/modals/schedule.html";
-		this.restrict = "E";
+	public static Factory() {
+		return () => new this();
 	}
 
 }
