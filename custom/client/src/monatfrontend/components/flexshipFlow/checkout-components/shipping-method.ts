@@ -67,7 +67,7 @@ class FlexshipCheckoutShippingMethod {
 	public controller=FlexshipCheckoutShippingMethodController;
 	public controllerAs="flexshipCheckoutShippingMethod";
 
-	public template = require('./shipping-method.htm');
+	public template = require('./shipping-method.html');
 
 	public static Factory() {
 		return () => new this();

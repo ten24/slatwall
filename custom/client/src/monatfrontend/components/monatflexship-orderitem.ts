@@ -11,10 +11,8 @@ class MonatFlexshipOrderItemController {
 class MonatFlexshipOrderItem {
 	
 	public restrict = 'EA'
-	public restrict:string;
-	public templateUrl:string;
-	
 	public scope = {};
+	
 	public bindToController = {
 	    orderItem:'<'
 	};
@@ -26,10 +24,6 @@ class MonatFlexshipOrderItem {
 	public static Factory() {
 		return () => new this();
 	}
-	public link = (scope, element, attrs) =>{
-
-	}
-
 }
 
 export {

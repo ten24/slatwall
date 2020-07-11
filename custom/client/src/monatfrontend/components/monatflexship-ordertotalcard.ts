@@ -10,13 +10,12 @@ class MonatFlexshipOrderTotalCardController {
 class MonatFlexshipOrderTotalCard {
 	
 	public restrict = 'EA'
-	public restrict:string;
-	public templateUrl:string;
 	
 	public scope = {};
 	public bindToController = {
 	    orderTemplate:'='
 	};
+	
 	public controller = MonatFlexshipOrderTotalCardController;
 	public controllerAs = "monatFlexshipOrderTotalCard";
 
@@ -25,10 +24,6 @@ class MonatFlexshipOrderTotalCard {
 	public static Factory() {
 		return () => new this();
 	}
-	public link = (scope, element, attrs) =>{
-
-	}
-
 }
 
 export {

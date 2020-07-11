@@ -49,7 +49,7 @@ class FrequencyStep {
 	public controller = FrequencyStepController;
 	public controllerAs = "frequencyStep";
 	
-	public template = require('./wishlist-edit-modal.html');
+	public template = require('./frequencyStep.html');
 
 	public static Factory() {
 		return () => new this();
