@@ -28,7 +28,6 @@ class MonatFlexshipDeleteController {
 class MonatFlexshipDeleteModal {
 
 	public restrict = 'E';
-	public templateUrl:string;
 	
 	public scope = {};
 	public bindToController = {
@@ -53,4 +52,3 @@ class MonatFlexshipDeleteModal {
 export {
 	MonatFlexshipDeleteModal
 };
-

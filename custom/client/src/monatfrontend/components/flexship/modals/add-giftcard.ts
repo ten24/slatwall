@@ -74,7 +74,6 @@ class MonatFlexshipAddGiftCardModalController {
 class MonatFlexshipAddGiftCardModal {
 
 	public restrict = 'E';
-	public templateUrl:string;
 	
 	public scope = {};
 	public bindToController = {

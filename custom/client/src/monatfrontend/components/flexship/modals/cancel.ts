@@ -76,7 +76,6 @@ class MonatFlexshipCancelModalController {
 class MonatFlexshipCancelModal {
 
 	public restrict = 'E';
-	public templateUrl:string;
 	
 	public scope = {};
 	public bindToController = {

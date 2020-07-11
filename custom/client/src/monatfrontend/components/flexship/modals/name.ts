@@ -57,7 +57,6 @@ class MonatFlexshipNameModalController {
 class MonatFlexshipNameModal {
 
 	public restrict = 'E';
-	public templateUrl:string;
 	
 	public scope = {};
 	public bindToController = {
@@ -81,4 +80,3 @@ class MonatFlexshipNameModal {
 export {
 	MonatFlexshipNameModal
 };
-

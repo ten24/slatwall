@@ -46,7 +46,6 @@ class AddressVerificationController {
 class AddressVerification {
 
 	public restrict = 'E';
-	public templateUrl:string;
 	
 	public scope = {};
 	public bindToController = {
@@ -71,4 +70,3 @@ class AddressVerification {
 export {
 	AddressVerification
 }
-

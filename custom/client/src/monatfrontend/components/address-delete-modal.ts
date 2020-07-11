@@ -38,7 +38,6 @@ class AddressDeleteModalController {
 class AddressDeleteModal {
 
 	public restrict = 'E';
-	public templateUrl:string;
 	
 	public scope = {};
 	public bindToController = {
@@ -64,4 +63,3 @@ class AddressDeleteModal {
 export {
 	AddressDeleteModal
 };
-
