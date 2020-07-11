@@ -88,32 +88,25 @@ class AccountAddressFormController {
 class AccountAddressForm {
 
 	public restrict:"E";
-	public templateUrl:string;
 	public scope = {};
 	
 	public bindToController = {
 		close: "=", //injected via modal-service
 		formHtmlId:"<?",
 		accountAddress: '<?',
-	    
 	    // we can tap into this to get/update the form-data, before the api-call, 
 	    onSubmitCallback:'=?', 
-	    
 	    onSuccessCallback:'=?',
 	    onFailureCallback:'=?'
 	};
+	
 	public controller=AccountAddressFormController;
 	public controllerAs="accountAddressCtrl";
 
-	public static Factory(){
-        //@ngInject
-        return ( monatFrontendBasePath ) => {
-            return new AccountAddressForm( monatFrontendBasePath);
-        }; 
-    }
+	public template = require('./account-address-form.html');
 
-	constructor(private monatFrontendBasePath){
-		this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/account-address-form.html";
+	public static Factory() {
+		return () => new this();
 	}
 
 }
