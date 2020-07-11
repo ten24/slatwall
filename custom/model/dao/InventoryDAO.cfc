@@ -138,6 +138,7 @@
 					        LEFT JOIN SwStock ON SwSku.skuID = SwStock.skuID AND SwStock.locationID = SwLocationSite.locationID
 					
 						WHERE SwOrder.orderID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderID#" />
+						AND SwOrderItem.orderItemTypeID='444df2e9a6622ad1614ea75cd5b982ce' 
 						
 					UNION
 					
@@ -160,6 +161,7 @@
 					        LEFT JOIN SwStock ON SwSku.skuID = SwStock.skuID AND SwStock.locationID = SwLocationSite.locationID
 					
 						WHERE SwOrder.orderID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderID#" />
+						AND SwOrderItem.orderItemTypeID='444df2e9a6622ad1614ea75cd5b982ce' 
 				</cfquery>
 			</cfcase>
 			<cfcase value="update">
