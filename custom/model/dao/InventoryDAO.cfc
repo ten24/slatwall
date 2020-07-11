@@ -6,20 +6,12 @@
 		public array function getQOO(required string productID, string productRemoteID){
 			var q = new Query();
 			var sql = "SELECT 
-					    coalesce(sum(orderitem.quantity), 0) as quantity, 
-					    orderitem.skuID as skuID, 
-					    orderitem.stockID as stockID 
-					    FROM SwOrderItem orderitem 
-					        inner join SwOrder ord use INDEX (FKF6447F2AAFCD1B25) on orderitem.orderID=ord.orderID  
-					        inner join SwSku sku on orderitem.skuID=sku.skuID 
-					    WHERE sku.productID=:productID 
-					        and 
-					        	(
-					        		ord.orderStatusTypeID not in ('2c9180866b4d105e016b4e2666760029','444df2b8b98441f8e8fc6b5b4266548c','444df2b498de93b4b33001593e96f4be','444df2b90f62f72711eb5b3c90848e7e')
-				        		
-					        	)
-					        and orderitem.orderItemTypeID='444df2e9a6622ad1614ea75cd5b982ce' 
-					    GROUP BY orderitem.skuID, orderitem.stockID
+					    coalesce(sum(ooi.quantity), 0) as quantity, 
+					    ooi.skuID as skuID, 
+					    ooi.stockID as stockID 
+					    FROM SwOpenOrderItem ooi
+					    WHERE ooi.productID=:productID 
+					    GROUP BY ooi.skuID, ooi.stockID
 						  	 ";
 						  	 
 			q.addParam(name="productID", value="#arguments.productID#", cfsqltype="CF_SQL_VARCHAR");	
@@ -51,21 +43,15 @@
 		public array function getQDOO(required string productID, string productRemoteID){
 			var q = new Query();
 			var sql = "SELECT 
-					    coalesce(sum(orderdeliveryitem.quantity), 0) as quantity, 
-					    orderitem.skuID as skuID, 
-					    stock.stockID as stockID, 
-					    stock.locationID as locationID,
+					    coalesce(sum(ooi.quantityDelivered), 0) as quantity, 
+					    ooi.skuID as skuID, 
+					    ooi.stockID as stockID, 
+					    ooi.locationID as locationID,
 					    location.locationIDPath as locationIDPath
-					    FROM SwOrderItem orderitem 
-					        inner join SwOrder ord use INDEX (FKF6447F2AAFCD1B25) on orderitem.orderID=ord.orderID  
-					        inner join SwSku sku on orderitem.skuID=sku.skuID 
-					        left join SwOrderDeliveryItem orderdeliveryitem on orderitem.orderItemID=orderdeliveryitem.orderItemID 
-					        left join SwStock stock on orderdeliveryitem.stockID=stock.stockID
-					        left join SwLocation location on stock.locationID=location.locationID 
-					    WHERE sku.productID=:productID 
-					        and ord.orderStatusTypeID not in ('2c9180866b4d105e016b4e2666760029','444df2b8b98441f8e8fc6b5b4266548c','444df2b498de93b4b33001593e96f4be','444df2b90f62f72711eb5b3c90848e7e')
-					        and orderitem.orderItemTypeID='444df2e9a6622ad1614ea75cd5b982ce' 
-					    GROUP BY orderitem.skuID, stock.stockID, stock.locationID, location.locationIDPath
+					    FROM SwOpenOrderItem ooi 
+					        left join SwLocation location on ooi.locationID=location.locationID 
+					    WHERE ooi.productID=:productID 
+					    GROUP BY ooi.skuID, ooi.stockID, ooi.locationID, location.locationIDPath
 						  	 ";
 			q.addParam(name="productID", value="#arguments.productID#", cfsqltype="CF_SQL_VARCHAR");	
 			q.setSQL(sql);
@@ -113,5 +99,89 @@
 		}	
 		
 	</cfscript>
+	
+	<cffunction name="manageOpenOrderItem" returntype="void" access="public">
+		<cfargument name="actionType" type="string" required="true"/>
+		<cfargument name="orderID" type="string" required="false"/>
+		<cfargument name="orderItemID" type="string" required="false"/>
+		<cfargument name="quantityDelivered" type="numeric" required="false"/>
+		
+		<cfset var rs = "" />
+		<cfswitch expression="#arguments.actionType#">
+			<cfcase value="add">
+				<cfquery name="rs">
+					INSERT INTO SwOpenOrderItem (openOrderItemID,
+                               orderID,
+                               orderItemID,
+                               productID,
+                               skuID,
+                               stockID,
+                               locationID,
+                               quantity,
+                               quantityDelivered)
 
+					SELECT 
+					    LOWER(REPLACE(CAST(UUID() as char character set utf8),'-','')),
+					    SwOrderItem.orderID,
+					    SwOrderItem.orderItemID,
+					    SwSku.productID, 
+					    SwSku.skuID, 
+					    SwStock.stockID, 
+					    SwStock.locationID,
+					    SwOrderItem.quantity,
+					    0
+											
+					    FROM SwOrderItem
+					        INNER JOIN SwOrder ON SwOrderItem.orderID = SwOrder.orderID
+					        INNER JOIN SwSku ON SwOrderItem.skuID = SwSku.skuID
+					        INNER JOIN SwLocationSite ON SwOrder.orderCreatedSiteID = SwLocationSite.siteID
+					        LEFT JOIN SwStock ON SwSku.skuID = SwStock.skuID AND SwStock.locationID = SwLocationSite.locationID
+					
+						WHERE SwOrder.orderID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderID#" />
+						
+					UNION
+					
+					SELECT 
+					    LOWER(REPLACE(CAST(UUID() as char character set utf8),'-','')),
+					    SwOrderItem.orderID,
+					    SwOrderItem.orderItemID,
+					    SwSku.productID, 
+					    SwSku.skuID, 
+					    SwStock.stockID, 
+					    SwStock.locationID,
+					    SwOrderItem.quantity*SwOrderItemSkuBundle.quantity,
+					    0
+											
+					    FROM SwOrderItemSkuBundle
+                            INNER JOIN SwOrderItem ON SwOrderItemSkuBundle.orderItemID = SwOrderItem.orderItemID
+					        INNER JOIN SwOrder ON SwOrderItem.orderID = SwOrder.orderID
+					        INNER JOIN SwSku ON SwOrderItemSkuBundle.skuID = SwSku.skuID
+					        INNER JOIN SwLocationSite ON SwOrder.orderCreatedSiteID = SwLocationSite.siteID
+					        LEFT JOIN SwStock ON SwSku.skuID = SwStock.skuID AND SwStock.locationID = SwLocationSite.locationID
+					
+						WHERE SwOrder.orderID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderID#" />
+				</cfquery>
+			</cfcase>
+			<cfcase value="update">
+				<cfquery name="rs">
+					UPDATE SwOpenOrderItem ooi
+						INNER JOIN SwOrderItem oi ON ooi.orderItemID = oi.orderItemID AND ooi.skuID = oi.skuID
+					SET ooi.quantityDelivered = <cfqueryparam cfsqltype="cf_sql_numeric" value="#arguments.quantityDelivered#" />
+					WHERE oi.orderItemID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderItemID#" />
+					;
+					UPDATE SwOpenOrderItem ooi
+						INNER JOIN SwOrderItem oi ON ooi.orderItemID = oi.orderItemID AND ooi.skuID <> oi.skuID
+					SET ooi.quantityDelivered = ooi.quantity * <cfqueryparam cfsqltype="cf_sql_numeric" value="#arguments.quantityDelivered#" />
+					WHERE oi.orderItemID =  <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderItemID#" />
+				</cfquery>
+			</cfcase>
+			<cfcase value="delete">
+				<cfquery name="rs">
+					DELETE FROM SwOpenOrderItem
+					WHERE orderID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderID#" />
+				</cfquery>
+			</cfcase>
+		</cfswitch>
+	</cffunction>
+	
 </cfcomponent>

@@ -452,12 +452,17 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 			for(var orderPayment in getOrderPayments()) {
 				orderPayment.setAmount( orderPayment.getAmount() );
 			}
+			
+			// create openorderitem records
+			getDAO('InventoryDAO').manageOpenOrderItem(actionType = 'add', orderID = getOrderID());
 
 		}
 
 		// If the order is closed, and has no close dateTime
 		if(!isNull(getOrderStatusType()) && !isNull(getOrderStatusType().getSystemCode()) && getOrderStatusType().getSystemCode() == "ostClosed" && isNull(getOrderCloseDateTime())) {
 			setOrderCloseDateTime( now() );
+			// delete openorderitem records
+			getDAO('InventoryDAO').manageOpenOrderItem(actionType = 'delete', orderID = getOrderID());
 		}
 	}
 
