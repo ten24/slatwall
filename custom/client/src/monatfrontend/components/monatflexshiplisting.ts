@@ -1,6 +1,5 @@
 class MonatFlexshipListingController{
 	
-	public restrict = 'EA'
 	public orderTemplates: any[];
 	public accountAddresses: any[];
 	public accountPaymentMethods: any[];
@@ -109,8 +108,7 @@ class MonatFlexshipListingController{
 
 class MonatFlexshipListing {
 
-	public restrict:string;
-	public templateUrl:string;
+	public restrict = 'EA'
 	public scope = {};
 	public bindToController = {};
 	public controller=MonatFlexshipListingController;
@@ -121,11 +119,6 @@ class MonatFlexshipListing {
 	public static Factory() {
 		return () => new this();
 	}
-
-	public link = (scope, element, attrs) =>{
-
-	}
-
 }
 
 export {

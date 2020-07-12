@@ -290,16 +290,21 @@ class MonatEnrollmentController {
 }
 
 class MonatEnrollment {
+
 	public restrict: string = 'EA';
-	public transclude: boolean = true;
-	public templateUrl: string;
+
+	public transclude  = true;
+	public replace:true;
+
 	public scope = {};
+
 	public bindToController = {
 		finishText: '@',
 		onFinish: '=?',
 		upgradeFlow:'<?',
 		type:'<?'
 	};
+	
 	public controller = MonatEnrollmentController;
 	public controllerAs = 'monatEnrollment';
 

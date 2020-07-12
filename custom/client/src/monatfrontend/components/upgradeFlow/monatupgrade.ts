@@ -204,12 +204,14 @@ class MonatUpgrade {
 	public restrict: string = 'EA';
 	public transclude: boolean = true;
 	public templateUrl: string;
+	
 	public scope = {};
 	public bindToController = {
 		finishText: '@',
 		onFinish: '=?',
 	};
-	public controller = MonatUpgradeController;
+
+    public controller = MonatUpgradeController;
 	public controllerAs = 'monatUpgrade';
 
 	public template = require('./monatupgrade.html');
