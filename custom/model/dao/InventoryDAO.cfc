@@ -104,6 +104,7 @@
 		<cfargument name="actionType" type="string" required="true"/>
 		<cfargument name="orderID" type="string" required="false"/>
 		<cfargument name="orderItemID" type="string" required="false"/>
+		<cfargument name="skuID" type="string" required="false"/>
 		<cfargument name="quantityDelivered" type="numeric" required="false"/>
 		
 		<cfset var rs = "" />
@@ -137,7 +138,12 @@
 					        INNER JOIN SwLocationSite ON SwOrder.orderCreatedSiteID = SwLocationSite.siteID
 					        LEFT JOIN SwStock ON SwSku.skuID = SwStock.skuID AND SwStock.locationID = SwLocationSite.locationID
 					
-						WHERE SwOrder.orderID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderID#" />
+						WHERE 
+						<cfif structKeyExists(arguments, "orderItemID")>
+							SwOrderItem.orderItemID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderItemID#" />
+						<cfelse>
+							SwOrder.orderID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderID#" />
+						</cfif>
 						AND SwOrderItem.orderItemTypeID='444df2e9a6622ad1614ea75cd5b982ce' 
 						
 					UNION
@@ -160,7 +166,12 @@
 					        INNER JOIN SwLocationSite ON SwOrder.orderCreatedSiteID = SwLocationSite.siteID
 					        LEFT JOIN SwStock ON SwSku.skuID = SwStock.skuID AND SwStock.locationID = SwLocationSite.locationID
 					
-						WHERE SwOrder.orderID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderID#" />
+						WHERE 
+						<cfif structKeyExists(arguments, "orderItemID")>
+							SwOrderItem.orderItemID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderItemID#" />
+						<cfelse>
+							SwOrder.orderID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderID#" />
+						</cfif>
 						AND SwOrderItem.orderItemTypeID='444df2e9a6622ad1614ea75cd5b982ce' 
 				</cfquery>
 			</cfcase>
@@ -168,19 +179,49 @@
 				<cfquery name="rs">
 					UPDATE SwOpenOrderItem ooi
 						INNER JOIN SwOrderItem oi ON ooi.orderItemID = oi.orderItemID AND ooi.skuID = oi.skuID
-					SET ooi.quantityDelivered = <cfqueryparam cfsqltype="cf_sql_numeric" value="#arguments.quantityDelivered#" />
+					SET ooi.quantityDelivered = ooi.quantityDelivered + <cfqueryparam cfsqltype="cf_sql_numeric" value="#arguments.quantityDelivered#" />
 					WHERE oi.orderItemID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderItemID#" />
 					;
 					UPDATE SwOpenOrderItem ooi
 						INNER JOIN SwOrderItem oi ON ooi.orderItemID = oi.orderItemID AND ooi.skuID <> oi.skuID
-					SET ooi.quantityDelivered = ooi.quantity * <cfqueryparam cfsqltype="cf_sql_numeric" value="#arguments.quantityDelivered#" />
+					SET ooi.quantityDelivered = ooi.quantityDelivered + (ooi.quantity * <cfqueryparam cfsqltype="cf_sql_numeric" value="#arguments.quantityDelivered#" />)
 					WHERE oi.orderItemID =  <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderItemID#" />
 				</cfquery>
 			</cfcase>
 			<cfcase value="delete">
 				<cfquery name="rs">
 					DELETE FROM SwOpenOrderItem
-					WHERE orderID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderID#" />
+					WHERE 
+					<cfif structKeyExists(arguments, "orderItemID")>
+						orderItemID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderItemID#" />
+					<cfelse>
+						orderID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderID#" />
+					</cfif>
+				</cfquery>
+			</cfcase>
+			<cfcase value="updateItemQuantity">
+				<cfquery name="rs">
+					UPDATE SwOpenOrderItem ooi
+						INNER JOIN SwOrderItem oi ON ooi.orderItemID = oi.orderItemID AND ooi.skuID = oi.skuID
+					SET ooi.quantity = oi.quantity
+					WHERE 
+					<cfif structKeyExists(arguments, "skuID")>
+						oi.skuID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.skuID#" />
+					<cfelse>
+						oi.orderItemID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderItemID#" />
+					</cfif>
+					;
+					UPDATE SwOpenOrderItem ooi
+						INNER JOIN SwOrderItem oi ON ooi.orderItemID = oi.orderItemID AND ooi.skuID <> oi.skuID
+                        INNER JOIN SwOrderItemSkuBundle oisb ON oi.orderItemID = oisb.orderItemID
+					SET ooi.quantity = oi.quantity*oisb.quantity
+					WHERE 
+					<cfif structKeyExists(arguments, "skuID")>
+						oi.skuID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.skuID#" />
+					<cfelse>
+						oi.orderItemID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderItemID#" />
+					</cfif>
+
 				</cfquery>
 			</cfcase>
 		</cfswitch>

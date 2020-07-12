@@ -308,9 +308,36 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 			}catch(bundleError){
 				logHibachi("afterOrderItemProcessCreateSuccess failed @ create bundle items for orderitem #orderItem.getOrderItemID()# ");
 			}
+			// add open orderitem records
+			if(!isNull(arguments.orderItem.getOrder().getOrderOpenDatetime())){
+				getDAO('InventoryDAO').manageOpenOrderItem(actionType = 'add', orderItemID = arguments.orderItem.getOrderItemID());
+			}
 		}
 
 	}
+	
+	public void function afterOrderItemUpdateSuccess(required any slatwallScope, required any orderItem, required any data){
+		if (!isNull(arguments.orderItem.getOrder().getOrderOpenDatetime()) && !arguments.slatwallScope.ORMHasErrors()){
+			arguments.slatwallScope.flushORMSession();
+			var oldData = arguments.orderItem.getPreUpdateData();
+			
+			if(!isNull(oldData) && structKeyExists(oldData, "quantity") && oldData["quantity"] != arguments.orderItem.getQuantity()){
+				getDAO('InventoryDAO').manageOpenOrderItem(actionType = 'updateItemQuantity', orderItemID = arguments.orderItem.getOrderItemID());
+			}
+		}
+	}
+
+	public void function afterOrderProcess_addOrderItemSuccess(required any slatwallScope, required any order, required any data){
+		if (!isNull(arguments.order.getOrderOpenDatetime()) && !arguments.slatwallScope.ORMHasErrors()){
+			arguments.slatwallScope.flushORMSession();
+
+			if(structKeyExists(arguments.data, "skuID")){
+				getDAO('InventoryDAO').manageOpenOrderItem(actionType = 'updateItemQuantity', skuID = arguments.data.skuID);
+			}
+		}
+	}
+
+
 	
 	/**
 	 * Adds the calculated bundled order items
