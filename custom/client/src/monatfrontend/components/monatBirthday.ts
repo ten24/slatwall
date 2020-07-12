@@ -62,8 +62,8 @@ class MonatBirthdayController {
 	}
 	
 	public changeDOB(action: ActionType):void{
-		var date = this.dob.split('/');
-        if(date.length == 3){
+		var date = this.dob?.split('/');
+        if(date?.length == 3){
             var monthIndex = parseInt(date[0]) - 1;
             this.month = this.months[monthIndex];
             this.day = parseInt(date[1]);
