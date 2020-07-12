@@ -184,7 +184,8 @@
 					;
 					UPDATE SwOpenOrderItem ooi
 						INNER JOIN SwOrderItem oi ON ooi.orderItemID = oi.orderItemID AND ooi.skuID <> oi.skuID
-					SET ooi.quantityDelivered = ooi.quantityDelivered + (ooi.quantity * <cfqueryparam cfsqltype="cf_sql_numeric" value="#arguments.quantityDelivered#" />)
+						INNER JOIN SwOrderItemSkuBundle oisb ON oi.orderItemID = oisb.orderItemID
+					SET ooi.quantityDelivered = ooi.quantityDelivered + (oisb.quantity * <cfqueryparam cfsqltype="cf_sql_numeric" value="#arguments.quantityDelivered#" />)
 					WHERE oi.orderItemID =  <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderItemID#" />
 				</cfquery>
 			</cfcase>
