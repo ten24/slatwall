@@ -1,4 +1,3 @@
-import "angular-modal-service";
 import "angularjs-toaster";
 
 import { frontendmodule } from "../../../../org/Hibachi/client/src/frontend/frontend.module";
@@ -181,7 +180,13 @@ var monatfrontendmodule = angular
 
 	//state-stores
 	.service("flexshipCheckoutStore", FlexshipCheckoutStore)
-
+    // Left here for debugging angulat-bootstrapping errors
+    .factory('$exceptionHandler', () => {
+        return (exception, cause) => {
+            exception.message += ` caused by '${cause || "no cause given"}' `;
+            throw exception;
+        };
+    })
 	.config([
 		"$locationProvider",
 		"$httpProvider",

@@ -8,7 +8,6 @@
   "dependencies": {
     "angular": "^1.6.4",
     "angular-chart.js": "^1.1.1",
-    "angular-modal-service": "^0.15.3",
     "angularjs-toaster": "^3.0.0",
     "blueimp-md5": "^1.1.0",
     "braintree-web": "^3.57.0",
