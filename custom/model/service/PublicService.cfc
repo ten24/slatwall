@@ -2016,7 +2016,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
 		upgradedCollectionList.addFilter('sku.product.activeFlag',1);
 		upgradedCollectionList.addFilter('sku.skuID',upgradedSkuList,'IN');
 		upgradedCollectionList.addFilter('priceGroup.priceGroupCode',3);
-		var upgradedOrder = upgradedCollectionList.getRecords(formatRecords=false);
+		var upgradedOrder = upgradedCollectionList.getRecords();
 		
 		if(!arrayLen(upgradedOrder)) return;
 		
