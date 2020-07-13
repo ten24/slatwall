@@ -1,5 +1,5 @@
 import { MonatService } from "./monatservice";
-import { PublicService } from "@Hibachi/core/core.module";
+import { PublicService } from "@Monat/monatfrontend.module";
 
 export class OrderTemplateService {
 	private orderTemplateTypeID: string = "";

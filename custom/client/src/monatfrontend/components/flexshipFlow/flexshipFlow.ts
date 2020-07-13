@@ -1,6 +1,7 @@
 import { MonatService, IOption } from '@Monat/services/monatservice';
 import { OrderTemplateService } from '@Monat/services/ordertemplateservice';
-import { PublicService, ObserverService } from '@Hibachi/core/core.module'
+import { ObserverService } from '@Hibachi/core/core.module'
+import { PublicService } from "@Monat/monatfrontend.module";
 
 import { OrderTemplate } from '@Monat/models';
 

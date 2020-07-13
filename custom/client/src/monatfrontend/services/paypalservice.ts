@@ -1,4 +1,4 @@
-import { PublicService } from "@Hibachi/core/core.module";
+import { PublicService } from "@Monat/monatfrontend.module";
 import * as Braintree from "braintree-web";
 
 export type PayPalClientConfig = {

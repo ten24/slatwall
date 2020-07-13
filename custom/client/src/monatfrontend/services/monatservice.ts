@@ -1,10 +1,12 @@
 import { Cache } from "cachefactory";
 import {
-	PublicService,
 	ObserverService,
 	RequestService,
 	UtilityService,
 } from "@Hibachi/core/core.module";
+
+import { PublicService } from "@Monat/monatfrontend.module";
+
 
 import Cart from "@Monat/models/cart";
 import cartOrderItem from "@Monat/models/cartOrderItem";
@@ -486,7 +488,8 @@ export class MonatService {
 	
 	public addOFYItem(skuID){
 		var deferred = this.$q.defer<any>();
-		this.publicService.doAction("addOFYProduct", { skuID: skuID, quantity:1 }).then((data: any) => {
+		this.publicService.doAction("addOFYProduct", { skuID: skuID, quantity:1 })
+		.then((data: any) => {
 			if (data?.cart) {
 				console.log("update-cart, putting it in session-cache");
 				this.publicService.putIntoSessionCache("cachedCart", data.cart);
