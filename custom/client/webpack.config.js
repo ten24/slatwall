@@ -134,7 +134,7 @@ devConfig.plugins =  [
 
     new HtmlWebpackPlugin({
         template: PATHS.templateFile,
-        filename: "MonatFrontendBundels.cfm",
+        filename: "MonatFrontendBundle.cfm",
         inject: false,
         minify: false,
         cache: false // there's a bug in current versions HTML-plugin (it doesn't generte the template in watch mode)
@@ -170,4 +170,3 @@ devConfig.plugins =  [
 ];   
 
 module.exports = devConfig;
-

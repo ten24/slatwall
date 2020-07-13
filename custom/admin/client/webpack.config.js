@@ -47,7 +47,7 @@ let devConfig = {
     watch       : true,
     
     performance : {
-        hints: false // to ignore annoying bundel-size warnings
+        hints: false // to ignore annoying bundle-size warnings
     },
     
     entry: { 
@@ -130,7 +130,7 @@ devConfig.plugins =  [
 
     new HtmlWebpackPlugin({
         template: PATHS.templateFile,
-        filename: "MonatAdminBundels.cfm",
+        filename: "MonatAdminBundle.cfm",
         inject: false,
         minify: false,
         cache: false // there's a bug in current versions HTML-plugin (it doesn't generte the template in watch mode)
@@ -165,5 +165,4 @@ devConfig.plugins =  [
 ];   
 
 module.exports = devConfig;
-
 

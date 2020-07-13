@@ -475,7 +475,7 @@ Notes:
 		</cfif>
 
  	    <!--- Webpack bundles--->
-	    <cfinclude template="#request.slatwallScope.getBaseURL()#/custom/admin/client/dist/MonatAdminBundels.cfm" />
+	    <cfinclude template="#request.slatwallScope.getBaseURL()#/custom/admin/client/dist/MonatAdminBundle.cfm" />
 	
 		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/global.js"></hb:HibachiScript>
 	</body>
