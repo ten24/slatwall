@@ -125,9 +125,11 @@ class MonatCheckoutController {
 			hardRefresh = true;
 		}
 		return this.publicService.getCart(hardRefresh).then(data => {
+			
 			if(hardRefresh){
 				this.cart = this.publicService.cart;
 			}
+			
 			let screen = Screen.ACCOUNT;
 			this.calculateListPrice();
 			
@@ -145,11 +147,14 @@ class MonatCheckoutController {
 				return;
 			} 
 			
-			if(this.cart.orderRequirementsList.indexOf('fulfillment') === -1){ 
+			let reqList = this.cart.orderRequirementsList;
+			
+			if(reqList.indexOf('fulfillment') === -1 && reqList.indexOf('account') === -1){ 
 				screen = Screen.PAYMENT;
-			}else if(this.cart.orderRequirementsList.indexOf('account') === -1){
+			}else if(reqList.indexOf('account') === -1){
 				screen = Screen.SHIPPING;
 			}
+			
 			this.isLoading = false;
 			this.screen = screen;
 			return screen;

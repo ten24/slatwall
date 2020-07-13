@@ -13,7 +13,7 @@ var monatadminmodule = angular.module('monatadmin',[
   slatwalladminmodule.name
 ])
 
-// Left here for debugging angulat-bootstrapping errors
+// Left here for debugging angular-bootstrapping errors
 .factory('$exceptionHandler', () => {
     return (exception, cause) => {
         exception.message += ` caused by '${cause || "no cause given"}' `;

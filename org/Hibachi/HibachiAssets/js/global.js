@@ -2005,7 +2005,7 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
             }
 	        
 	        $injector.invoke(["$compile", "$rootScope", "$timeout",  function ($compile, $rootScope, $timeout) {
-	            // to mkae it not interfere with already running digest-cycle
+	            // to make it not interfere with already running digest-cycle
 	            $timeout( () => {
     	            //Get the scope of the target, use the rootScope if it does not exists
     	            var $scope = $targetDom.html(htmlToCompile).scope();
