@@ -358,7 +358,7 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 		}
 		/*      END DEBUGGING CODE      */
 		return hasOrder;
-//productPack,starter-kit,other-income,enrollment-fee-vip,renewal-fee-mp,vpn-customer-registr,termination-fee,samples-and-pop,gift-card,miscFee,refund
+
 	}
 	
 	private boolean function getCollectionHasOrderByOrderID( required any orderCollection, required string orderID ){
