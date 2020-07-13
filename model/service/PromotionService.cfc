@@ -55,7 +55,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			for(var appliedPromotion in appliedPromotions){
 				appliedPromotion.removeOrderItem(reciprocateFlag=false);
 			}
-			ArrayClear(appliedPromotions);
+			ArrayClear(orderItem.getAppliedPromotions());
 		}
 	}
 
@@ -934,8 +934,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 						// Attach the qualification details
 						arrayAppend(qualificationDetails.qualifierDetails, thisQualifierDetails);
-	
+					
 					}else if(qualifierLogicalOperator == 'AND'){
+						if(arguments.order.hasOrderTemplate()){
+							logHibachi('Failed due to AND qualifier logical operator.');
+						}
 						hasQualifiedQualifier = false;
 						break;
 					}
@@ -1094,7 +1097,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// FULFILLMENT
 		} else if (arguments.qualifier.getQualifierType() == "fulfillment") {
 
-			getQualifierQualificationDetailsForOrderFulfillments(arguments.qualifier, arguments.order, arguments.qualifier);
+			getQualifierQualificationDetailsForOrderFulfillments(arguments.qualifier, arguments.order, qualifierDetails);
 
 		// ORDER ITEM
 		} else if (listFindNoCase("contentAccess,merchandise,subscription", arguments.qualifier.getQualifierType())) {
