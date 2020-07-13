@@ -5,15 +5,14 @@ class MonatDatePicker {
 
 	public scope = {
 		options: '<?',
-		startDayOfTheMonth: '<?',
-		endDayOfTheMonth: '<?',
-		startDate: '=?',
-		endDate: '=?',
-		maxDate:'=?',
-		minDate:'=?'
+		startDayOfTheMonth: '<?', // integer value for the first eligible day of every month, will default to 1 if not set
+		endDayOfTheMonth: '<?', // integer value for the last eligible day of every month, will default to 31 if not set
+		startDate: '=?', //The first eligible date a user can select, bound as a timestamp value ie: 2020-11-01 00:00:00, will default to now() if not set
+		maxDate:'=?', //The final eligible date a user can select, bound as a timestamp value ie: 2020-11-01 00:00:00
+		dayOffset: '@?' //The amount of days to increase max date, will default to 0 if not set
 	};
 
-	constructor() {}
+	constructor() { }
 
 	public link: ng.IDirectiveLinkFn = (
 		$scope,
@@ -26,17 +25,14 @@ class MonatDatePicker {
 				autoclose: true,
 				format: 'mm/dd/yyyy',
 				setDate: new Date(),
-				minDate: new Date()
-				
 			};
 		}
-        
+
         if($scope.maxDate) {
-            var date = new Date($scope.maxDate);
-              date.setDate(date.getDate()+60);
-              let newDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-               
-               $scope.options.maxDate=newDate;
+        	let daysToIncrease = $scope.dayOffset ? +$scope.dayOffset : 0;
+            let date = new Date($scope.maxDate);
+        	date.setDate(date.getDate()+daysToIncrease);
+    		$scope.maxDateAdjusted=new Date(date.getFullYear(), date.getMonth(), date.getDate());
         }
         
 		if (!$scope.startDayOfTheMonth) {
@@ -51,22 +47,27 @@ class MonatDatePicker {
 			$scope.startDate = Date.parse($scope.startDateString);
 		}
 
-		if ($scope.endDateString) {
-			$scope.endDate = Date.parse($scope.endDateString);
-		}
-
 		if (!$scope.startDate) {
 			$scope.startDate = Date.now();
 		}
-   
+
+		$scope.startDateClone = new Date($scope.startDate); //clone it to not affect ng-model
+		$scope.options.value = $scope.startDateClone; //setting as initial value
+		
 		$scope.options.disableDates = function(date) {
-			var dayOfMonth = date.getDate();
-			var dateToCompare = date;
+			let dayOfMonth = date.getDate();
+			let dateToCompare = date;
+			
 			if (typeof dateToCompare !== 'number') {
 				dateToCompare = dateToCompare.getTime();
 			}
-
-			return dayOfMonth <= $scope.endDayOfTheMonth;
+			
+			let condition1 = $scope.endDayOfTheMonth ? dayOfMonth <= $scope.endDayOfTheMonth : true;
+			let condition2  = $scope.startDayOfTheMonth ? dayOfMonth >= $scope.startDayOfTheMonth : true;
+			let condition3 = $scope.startDateClone ? dateToCompare >= $scope.startDateClone.getTime() : true;
+			let condition4 = $scope.maxDateAdjusted ? dateToCompare <= $scope.maxDateAdjusted.getTime() : true;
+		
+			return (condition1 && condition2 && condition3 && condition4);
 		};
 	
 		$(element).datepicker($scope.options);
