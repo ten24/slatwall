@@ -403,7 +403,7 @@ property name="personalVolumeAmount" ormtype="big_decimal" hb_formatType="custom
 		}
 		arguments.skuCollection.setDisplayProperties('skuID');
 		arguments.skuCollection.addFilter(propertyIdentifier='skuID',value=arguments.skuID, filterGroupAlias='skuIDFilter');
-		return arguments.skuCollection.getRecordsCount(refresh=true) > 0;
+		return !arrayIsEmpty(arguments.skuCollection.getPageRecords(formatRecords=false,refresh=true));
 	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================

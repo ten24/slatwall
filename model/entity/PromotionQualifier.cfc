@@ -355,7 +355,7 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 
     	arguments.orderCollection.setDisplayProperties('orderID'); 
 		arguments.orderCollection.addFilter(propertyIdentifier='orderID',value=arguments.orderID, filterGroupAlias='orderIDFilter');
-		return arguments.orderCollection.getRecordsCount(refresh=true) > 0;
+		return !arrayIsEmpty(arguments.orderCollection.getPageRecords(formatRecords=false,refresh=true));
 	}
 	
 	private boolean function getCollectionHasSkuBySkuID( required any skuCollection, required string skuID ){
@@ -364,7 +364,8 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 		}
 		arguments.skuCollection.setDisplayProperties('skuID');
 		arguments.skuCollection.addFilter(propertyIdentifier='skuID',value=arguments.skuID, filterGroupAlias='skuIDFilter');
-		return arguments.skuCollection.getRecordsCount(refresh=true) > 0;
+		
+		return !arrayIsEmpty(arguments.skuCollection.getPageRecords(formatRecords=false,refresh=true));
 	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================
