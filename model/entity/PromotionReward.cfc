@@ -800,5 +800,9 @@ public numeric function getPersonalVolumeAmount(any sku, string currencyCode){
 		
 		return formatValue(this.invokeMethod('get#customPriceField#Amount'), "currency");
 	}
+	
+	public any function getSkuCollection(){
+		return getIncludedSkusCollection();
+	}
     //CUSTOM FUNCTIONS END
 }

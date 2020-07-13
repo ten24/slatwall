@@ -1593,7 +1593,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var qualifiedPromotionRewards = this.getQualifiedPromotionRewardsForOrder( arguments.order );
 		
 		for(var promotionReward in qualifiedPromotionRewards){
-			var skuCollection = promotionReward.getIncludedSkusCollection();
+			var skuCollection = promotionReward.getSkuCollection();
 		
 			if(isNull(skuCollection)){
 				continue; 
