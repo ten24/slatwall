@@ -447,7 +447,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					orderItem.updateCalculatedProperties(runAgain=true,cascadeCalculateFlag=false);
 				}
 				arguments.order.updateCalculatedProperties(runAgain=true,cascadeCalculateFlag=false);
-				getHibachiScope().flushOrmSession();
+				try{
+					getHibachiDAO().flushOrmSession();
+				}catch(any e){
+					logHibachi('Pre-promotion: #e.message#');
+				}
 				
 				// This is a structure of promotionPeriods that will get checked and cached as to if we are still within the period use count, and period account use count
 				var promotionPeriodQualifications = {};
