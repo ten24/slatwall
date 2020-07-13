@@ -181,15 +181,10 @@ class MonatFlexshipPaymentMethodModal {
 	public controller=MonatFlexshipPaymentMethodModalController;
 	public controllerAs="monatFlexshipPaymentMethodModal";
 
-    public static Factory(){
-		//@ngInject
-        return ( monatFrontendBasePath ) => {
-        	return new MonatFlexshipPaymentMethodModal(monatFrontendBasePath);
-        };
-    }
+	public template = require('./paymentmethod.html');
 
-	constructor(private monatFrontendBasePath){
-		this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/flexship/modals/paymentmethod.html";
+	public static Factory() {
+		return () => new this();
 	}
 }
 

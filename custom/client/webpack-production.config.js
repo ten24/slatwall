@@ -1,38 +1,35 @@
-var devConfig = require('./webpack.config');
-var CompressionPlugin = require("compression-webpack-plugin");
-var webpack = require('webpack');
+let devConfig = require('./webpack.config');
+const webpack = require('webpack');
+const TerserPlugin = require("terser-webpack-plugin"); //minimizer
 
-devConfig.devtool= 'none';
+devConfig.mode = 'production';
+devConfig.devtool = 'none';
 
-//don't need the vendor bundle generated here because we include the vendor bundle already.
-devConfig.plugins =  [
-    
-    new CompressionPlugin({
-      asset: "[path].gz[query]",
-      algorithm: "gzip",
-      test: /\.js$|\.css$|\.html$/,
-      threshold: 10240,
-      minRatio: 0.8
-    }),
-    
-    new webpack.optimize.AggressiveMergingPlugin(),//Merge chunks
-    
-    new webpack.optimize.OccurrenceOrderPlugin(),
-    
-    new webpack.optimize.UglifyJsPlugin({
-	    mangle: false,
-	    minimize: true,
-	    compress: {
-	         // remove warnings
-	            warnings: false,
-	
-	         // Drop console statements
-	            drop_console: true
-	       },
-	    output: {
-        	comments: false
-    	}
-	})
-];   
+devConfig.optimization.minimizer = [
+  new TerserPlugin({
+    cache: true,
+    parallel: true,
+    extractComments: false,// will extract licenses
+    terserOptions: {
+        warnings: false,
+        parse: {},
+        compress: {
+            drop_console: true, 
+        },
+        mangle: false, // this will reduce the size of the bundles significently, but can cause problem with angular if components are not annotated properly
+        module: false,
+        output: {
+            comments: false
+        },
+        toplevel: false,
+        nameCache: null,
+        ie8: true,
+        keep_classnames: false,
+        keep_fnames: false,
+        safari10: true
+    }
+  })
+];
+
 
 module.exports = devConfig;

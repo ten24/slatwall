@@ -204,22 +204,20 @@ class MonatUpgrade {
 	public restrict: string = 'EA';
 	public transclude: boolean = true;
 	public templateUrl: string;
+	
 	public scope = {};
 	public bindToController = {
 		finishText: '@',
 		onFinish: '=?',
 	};
-	public controller = MonatUpgradeController;
+
+    public controller = MonatUpgradeController;
 	public controllerAs = 'monatUpgrade';
 
-	public static Factory() {
-		var directive: any = (monatFrontendBasePath) => new this(monatFrontendBasePath);
-		directive.$inject = ['monatFrontendBasePath'];
-		return directive;
-	}
+	public template = require('./monatupgrade.html');
 
-	constructor(private monatFrontendBasePath) {
-		this.templateUrl = monatFrontendBasePath + '/monatfrontend/components/upgradeFlow/monatupgrade.html';
+	public static Factory() {
+		return () => new this();
 	}
 }
 

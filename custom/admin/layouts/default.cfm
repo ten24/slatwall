@@ -474,8 +474,9 @@ Notes:
 			<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/ckfinder/ckfinder.js"></hb:HibachiScript>
 		</cfif>
 
- 		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/custom/admin/client/src/bundle.js" charset="utf-8"></hb:HibachiScript>
- 		
+ 	    <!--- Webpack bundles--->
+	    <cfinclude template="#request.slatwallScope.getBaseURL()#/custom/admin/client/dist/MonatAdminBundle.cfm" />
+	
 		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/global.js"></hb:HibachiScript>
 	</body>
 

@@ -2,7 +2,9 @@
   "compilerOptions": {
     "target":"es5",
     "module": "commonjs",
-    "sourceMap": true
+    "sourceMap": true,
+    "skipLibCheck": true,
+
   },
   "files": [
     "../../../org/Hibachi/client/typings/hibachiTypescript.d.ts",

@@ -1,5 +1,6 @@
 
 class MonatFlexshipConfirmController {
+	public restrict = 'EA'
     public orderTemplate:any; // orderTemplateDetails
     public redirectUrl:string;
     
@@ -82,37 +83,12 @@ class MonatFlexshipConfirm {
 	};
 	public controller=MonatFlexshipConfirmController;
 	public controllerAs="monatFlexshipConfirm";
+	
+	public template = require('./monatflexship-confirm.html');
 
-	public static Factory(){
-        var directive:any = (
-		    monatFrontendBasePath,
-			$hibachi,
-			rbkeyService,
-			requestService
-        ) => new MonatFlexshipConfirm(
-			monatFrontendBasePath,
-			$hibachi,
-			rbkeyService,
-			requestService
-        );
-        directive.$inject = [
-			'monatFrontendBasePath',
-			'$hibachi',
-			'rbkeyService',
-			'requestService'
-        ];
-        return directive;
-    }
-
-	constructor(private monatFrontendBasePath, 
-				private slatwallPathBuilder, 
-				private $hibachi,
-				private rbkeyService
-	){
-		this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/monatflexship-confirm.html";
-		this.restrict = "EA";
+	public static Factory() {
+		return () => new this();
 	}
-
 	public link = (scope, element, attrs) =>{
 		
 	}

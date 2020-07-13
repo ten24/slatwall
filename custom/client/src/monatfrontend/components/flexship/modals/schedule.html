@@ -47,7 +47,9 @@
 									placeholder="{{ monatFlexshipScheduleModal.translations.forHowLong }}"
 									monat-date-picker
 									data-end-day-of-the-month="monatFlexshipScheduleModal.endDayOfTheMonth"
-									data-max-date="monatFlexshipScheduleModal.nextPlaceDateTime"
+									data-max-date="monatFlexshipScheduleModal.orderTemplate.scheduleOrderNextPlaceDateTime"
+									data-start-date="monatFlexshipScheduleModal.orderTemplate.scheduleOrderNextPlaceDateTime"
+									data-day-offset="60"
 									ng-disabled="monatFlexshipScheduleModal.formData.delayOrSkip !== 'delay'"
 									ng-model="monatFlexshipScheduleModal.nextPlaceDateTime"
 									autocomplete="off"

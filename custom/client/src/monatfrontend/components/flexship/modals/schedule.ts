@@ -17,7 +17,6 @@ class monatFlexshipScheduleModalController {
 	public startDate;
 	public nextPlaceDateTime;
 	public qualifiesSnapShot:boolean;
-	
 	public formData = {
 		delayOrSkip : 'delay',
 		otherReasonNotes: undefined,
@@ -59,6 +58,8 @@ class monatFlexshipScheduleModalController {
 		.finally(()=>{
 			this.loading = false;   
 		});
+		
+		
     };
     
     private makeTranslations = () => {
@@ -125,7 +126,7 @@ class monatFlexshipScheduleModalController {
     private calculateNextPlacedDateTime = () => {
     	var date = new Date(Date.parse(this.orderTemplate.scheduleOrderNextPlaceDateTime));
     	//format mm/dd/yyyy
-	    this.nextPlaceDateTime = `${(date.getMonth() + 1)}/${date.getDate()}/${date.getFullYear()}`;
+        this.nextPlaceDateTime = (date.getMonth() +1) + '/' + date.getDate() + '/' + date.getFullYear();
 	    this.endDate = new Date(date.setMonth(date.getMonth()+2)); //next one month
     }
     
@@ -133,7 +134,7 @@ class monatFlexshipScheduleModalController {
     	this.formData.delayOrSkip = delayOrSkip;
         var date = new Date(Date.parse(this.orderTemplate.scheduleOrderNextPlaceDateTime));
         var monthsToAdd = delayOrSkip === 'skip' ? 2 : 1;
-        this.nextPlaceDateTime = `${(date.getMonth() + monthsToAdd)}/${date.getDate()}/${date.getFullYear()}`;  
+        this.nextPlaceDateTime = (date.getMonth() + monthsToAdd) + '/' + date.getDate() + '/' + date.getFullYear();
     }
     
     public closeModal = () => {
@@ -143,7 +144,7 @@ class monatFlexshipScheduleModalController {
 
 class MonatFlexshipScheduleModal {
 
-	public restrict:string;
+	public restrict = "E";
 	public templateUrl:string;
 	
 	public scope = {};
@@ -154,35 +155,10 @@ class MonatFlexshipScheduleModal {
 	public controller=monatFlexshipScheduleModalController;
 	public controllerAs="monatFlexshipScheduleModal";
 
-	public static Factory(){
-        var directive:any = (
-		    monatFrontendBasePath,
-			$hibachi,
-			rbkeyService,
-			requestService
-        ) => new MonatFlexshipScheduleModal(
-			monatFrontendBasePath,
-			$hibachi,
-			rbkeyService,
-			requestService
-        );
-        directive.$inject = [
-			'monatFrontendBasePath',
-			'$hibachi',
-			'rbkeyService',
-			'requestService'
-        ];
-        return directive;
-    }
+	public template = require('./schedule.html');
 
-	//@ngInject
-	constructor(private monatFrontendBasePath, 
-				private slatwallPathBuilder, 
-				private $hibachi,
-				private rbkeyService
-	){
-		this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/flexship/modals/schedule.html";
-		this.restrict = "E";
+	public static Factory() {
+		return () => new this();
 	}
 
 }

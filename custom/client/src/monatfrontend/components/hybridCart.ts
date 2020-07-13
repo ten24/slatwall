@@ -123,14 +123,10 @@ class HybridCart {
 	public controller = HybridCartController;
 	public controllerAs = 'hybridCart';
 
-	public static Factory() {
-		var directive: any = (monatFrontendBasePath) => new this(monatFrontendBasePath);
-		directive.$inject = ['monatFrontendBasePath'];
-		return directive;
-	}
+	public template = require('./hybrid-cart.html');
 
-	constructor(private monatFrontendBasePath) {
-		this.templateUrl = monatFrontendBasePath + '/monatfrontend/components/hybrid-cart.html';
+	public static Factory() {
+		return () => new this();
 	}
 }
 

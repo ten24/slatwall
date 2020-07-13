@@ -79,28 +79,17 @@ class ReviewStepController {
 
 class ReviewStep {
 
-	public restrict:string;
+	public restrict = 'E'
 	public templateUrl:string;
 	
 	public controller = ReviewStepController;
 	public controllerAs = "reviewStep";
-	public static Factory(){
-        var directive:any = (
-		    monatFrontendBasePath,
-        ) => new ReviewStep(
-			monatFrontendBasePath
-        );
-        directive.$inject = [
-			'monatFrontendBasePath',
-        ];
-        return directive;
-    }
+	
+	public template = require('./reviewStep.html');
 
-	constructor(private monatFrontendBasePath){
-		this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/flexshipFlow/reviewStep.html";
-		this.restrict = "E";
+	public static Factory() {
+		return () => new this();
 	}
-
 	public link = (scope, element, attrs) =>{
 
 	}

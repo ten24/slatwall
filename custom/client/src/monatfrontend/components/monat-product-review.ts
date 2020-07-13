@@ -37,7 +37,7 @@ class MonatProductReviewController {
 }
 
 class MonatProductReview {
-	public restrict: string;
+	public restrict = 'E';
 	public templateUrl: string;
 
 	public scope = {};
@@ -49,24 +49,11 @@ class MonatProductReview {
 	public controller = MonatProductReviewController;
 	public controllerAs = 'monatProductReview';
 
+	public template = require('./monat-product-review.html');
+
 	public static Factory() {
-		var directive: any = (monatFrontendBasePath, $hibachi, rbkeyService, requestService) =>
-			new MonatProductReview(monatFrontendBasePath, $hibachi, rbkeyService, requestService);
-		directive.$inject = ['monatFrontendBasePath', '$hibachi', 'rbkeyService', 'requestService'];
-		return directive;
+		return () => new this();
 	}
-
-	//@ngInject
-	constructor(
-		private monatFrontendBasePath,
-		private slatwallPathBuilder,
-		private $hibachi,
-		private rbkeyService,
-	) {
-		this.templateUrl = monatFrontendBasePath + '/monatfrontend/components/monat-product-review.html';
-		this.restrict = 'E';
-	}
-
 	public link = (scope, element, attrs) => {};
 }
 

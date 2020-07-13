@@ -139,39 +139,11 @@ class SWFReviewListing {
 	};
 	public controller=SWFReviewListingController;
 	public controllerAs="swfReviewListing";
+	
+	public template = require('./reviewlisting.html');
 
-	public static Factory(){
-        var directive:any = (
-		    monatFrontendBasePath,
-			$hibachi,
-			rbkeyService,
-			requestService
-        ) => new SWFReviewListing(
-			monatFrontendBasePath,
-			$hibachi,
-			rbkeyService,
-			requestService
-        );
-        directive.$inject = [
-			'monatFrontendBasePath',
-			'$hibachi',
-			'rbkeyService',
-			'requestService'
-        ];
-        return directive;
-    }
-
-	constructor(private monatFrontendBasePath, 
-				private slatwallPathBuilder, 
-				private $hibachi,
-				private rbkeyService
-	){
-		this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/reviewlisting.html";
-		this.restrict = "E";
-	}
-
-	public link = (scope, element, attrs) =>{
-
+	public static Factory() {
+		return () => new this();
 	}
 
 }

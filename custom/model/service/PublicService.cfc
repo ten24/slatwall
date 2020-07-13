@@ -1277,7 +1277,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         orderTemplateItemList.setDisplayProperties('sku.product.productID|productID');
         orderTemplateItemList.addFilter( 'orderTemplate.account.accountID', accountID );
         orderTemplateItemList.addFilter( 'orderTemplate.orderTemplateType.typeID', '2c9280846b712d47016b75464e800014' ); // wishlist typeID
-        var accountWishlistItems = orderTemplateItemList.getRecords();
+        var accountWishlistItems = orderTemplateItemList.getRecords(formatRecords=false);
         
         arguments.data['ajaxResponse']['wishlistItems'] = accountWishlistItems;
     }
