@@ -11,6 +11,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	property name="auditSmartList" type="any" persistent="false";
 	property name="dataCacheProperties" type="array" persistent="false";
 	property name="disableRecordLevelPermissions" persistent="false"; 
+	property name="preUpdateData" persistent="false"; 
 
 	// Audit Properties
 	property name="createdByAccount" persistent="false";
@@ -1276,7 +1277,9 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			}
 			throw("An ormFlush has been called on the hibernate session, however there is a #getEntityName()# entity in the hibernate session with errors - #serializeJSON(getErrors())#");
 		}
-
+		
+		variables.preUpdateData = arguments.oldData;
+		
 		var timestamp = now();
 
 		// Update the Modified datetime if one exists
