@@ -5729,6 +5729,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// ================== START: Private Helper Functions =====================
 
 	private void function removeOrderItemAndChildItemRelationshipsAndDelete( required any orderItem ) {
+		
+		// delete open orderitem records
+		if(!isNull(arguments.orderItem.getOrder().getOrderOpenDatetime())){
+			getDAO('InventoryDAO').manageOpenOrderItem(actionType = 'delete', orderItemID = arguments.orderItem.getOrderItemID());
+		}
 
 		// Call on all ChildItems First
 		for(var ci=arrayLen(arguments.orderItem.getChildOrderItems()); ci >= 1; ci--) {
