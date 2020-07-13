@@ -1589,7 +1589,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	public string function getQualifiedFreePromotionRewardSkuIDs( required any order ){
-		getHibachiScope().logHibachi('promotion service line 1592 executing', true)
 		var qualifiedFreePromotionRewardSkuIDList = '';	
 		var qualifiedPromotionRewards = this.getQualifiedPromotionRewardsForOrder( arguments.order );
 		
