@@ -32,7 +32,7 @@ export class OrderTemplateService {
 		currentPage = 1,
 		refresh = false
 	) => {
-		var deferred = this.$q.defer();
+		var deferred = this.$q.defer<any>();
 		// if we're gonna use pagination, we shouldn't cache
 		if (
 			orderTemplateTypeID == this.orderTemplateTypeID &&

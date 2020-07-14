@@ -1,4 +1,4 @@
-declare var hibachiConfig;
+import { MonatAlertService } from "./monatAlertService";
 
 /**
  * Interceptor to queue HTTP requests.
@@ -14,7 +14,8 @@ class MonatHttpQueueInterceptor implements ng.IHttpInterceptor {
 	//@ngInject
 	constructor(    
 	    private $q  : ng.IQService, 
-	    private $timeout : ng.ITimeoutService
+	    private $timeout : ng.ITimeoutService,
+	    private monatAlertService: MonatAlertService,
 	) {
 		this.queueMap = {};
 	}
@@ -43,8 +44,8 @@ class MonatHttpQueueInterceptor implements ng.IHttpInterceptor {
 	/**
 	 * for each unique type of request we're creating a different queue,
 	 * currently the logic relies on the API-endpoint
-	 */
-	public getRequestQueue(request) {
+	*/
+	public getRequestQueue(request: ng.IRequestConfig) {
 		let key = request.url || 'default';
 
 		if (!this.queueMap.hasOwnProperty(key)) this.queueMap[key] = [];
@@ -55,18 +56,18 @@ class MonatHttpQueueInterceptor implements ng.IHttpInterceptor {
 	/**
 	 * Currently we're checking for only POST, PUT, and PATCH requests,
 	 * or there can be an extra config on the request like --> $http.get(url, { processInQueue: true})
-	 */
-
+	*/
 	public queueableRequest(config): boolean {
-		return this.config.methods.indexOf(config.method) !== -1 || config.processInQueue;
+		return this.config?.methods?.indexOf(config.method) !== -1 || config.processInQueue || false;
 	}
 
 	/**
 	 * Blocks quable request on thir specific-queue. If the first request, processes immediately.
 	*/
-	public request = (config) => {
-		if (this.queueableRequest(config)) {
-			let deferred = this.$q.defer();
+	public request = (config : ng.IRequestConfig): ng.IRequestConfig | ng.IPromise<ng.IRequestConfig> => {
+        
+		if (this.queueableRequest(config) ){
+			let deferred = this.$q.defer<ng.IRequestConfig>();
 			let queue = this.getRequestQueue(config);
 
 			queue.push(() => deferred.resolve(config));
@@ -82,7 +83,7 @@ class MonatHttpQueueInterceptor implements ng.IHttpInterceptor {
      * response?: <T>(response: IHttpPromiseCallbackArg<T>) => IPromise<T>|T;
 	 * After each response completes, unblocks the next eligible request
 	*/
-	public response = (response) => {
+	public response = (response: ng.IHttpPromiseCallbackArg<any>): any => {
 		this.dequeue(response.config);
 		return response;
 	};
@@ -92,23 +93,62 @@ class MonatHttpQueueInterceptor implements ng.IHttpInterceptor {
 	 * requestError?: (rejection: any) => any;
 	 * After each request-error, unblocks the next eligible request
 	*/
-	public requestError = (error) => {
-		this.handleError(error);
+	public requestError = (rejection) => {
+		return this.handleError(rejection);
 	};
 	
 	/**
 	 * responseError?: (rejection: any) => any;
 	 * After each response-error, unblocks the next eligible request
 	*/
-	public responseError = (error) => {
-		this.handleError(error);
+	public responseError = (rejection) => {
+		return this.handleError(rejection);
 	};
 	
-	private handleError = (error) => {
-	    this.dequeue(error.config);
-    
+	private handleError = (rejection) => {
+	    this.dequeue(rejection.config);
+	    
+        /**
+            data?:  ==> {
+                data?:
+                messages: [ 
+                            {   
+                                key: [] 
+                            }, 
+                            { 
+                                key2: [] 
+                            } 
+                        ],
+                errors: { 
+                            'key'   :  [ssdsds, sdsdsd, dsdsdsd ],
+                            'key2'  :  [dfwfw,sfdwrv,frgebtt,qfrbe]
+                        },
+                        
+                successfulActions: [gufyg, gufg],
+                
+                failureActions: [vgjhkj, ytguhijkl],
+                
+                [string]xxx-key : [any] value
+            }
+            
+        */
+         
         //handle statuses, logout, format-messages
-	    return this.$q.reject(error);
+        if (rejection?.status === 401) {
+            // loggedout, notify
+        } 
+        else if (rejection?.status === 500) {
+            
+            rejection.data = { 
+                originalResponse    : rejection.data || {},
+                successfulActions   : [],
+                failureActions      : [],
+                messages            : [],
+                errors              : { 'server': [ 'An internal error occurred, please try again'] }
+            }
+        }
+        
+	    return this.$q.reject(rejection);
 	}
 }
 
