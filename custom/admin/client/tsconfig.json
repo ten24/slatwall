@@ -1,16 +1,24 @@
 {
-  "compilerOptions": {
-    "target":"es5",
-    "module": "commonjs",
-    "sourceMap": true,
-    "skipLibCheck": true,
+    "compilerOptions": {
+        "target":"es5",
+        "module": "commonjs",
+        "sourceMap": true,
+        "skipLibCheck": true,
+    },
+    
+    "include": [
+        "./src/**/*",
+        "../../../org/Hibachi/client/src/*"
+    ],
+    
+    "typeRoots": [ "node_modules/@types", "./typings.d.ts" ],
 
-  },
-  "files": [
-    "../../../org/Hibachi/client/typings/hibachiTypescript.d.ts",
-    "../../../org/Hibachi/client/typings/tsd.d.ts",
-    "../../../org/Hibachi/client/typings/requirejs/require.d.ts",
-    "../../../org/Hibachi/client/typings/js-md5/md5.d.ts",
-    "../../../org/Hibachi/client/typings/datejs/datejs.d.ts"
-  ]
+    "files": [
+        "./typings.d.ts",
+        "../../../org/Hibachi/client/typings/hibachiTypescript.d.ts",
+        "../../../org/Hibachi/client/typings/tsd.d.ts",
+        "../../../org/Hibachi/client/typings/requirejs/require.d.ts",
+        "../../../org/Hibachi/client/typings/js-md5/md5.d.ts",
+        "../../../org/Hibachi/client/typings/datejs/datejs.d.ts"
+    ]
 }

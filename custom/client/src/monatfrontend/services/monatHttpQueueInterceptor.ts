@@ -4,7 +4,7 @@ declare var hibachiConfig;
  * Interceptor to queue HTTP requests.
  * Logic is put together form answers here https://stackoverflow.com/questions/14464945/add-queueing-to-angulars-http-service
  */
-class MonatHttpQueueInterceptor {
+class MonatHttpQueueInterceptor implements ng.IHttpInterceptor {
 	private queueMap;
 
 	private config = {
@@ -12,7 +12,10 @@ class MonatHttpQueueInterceptor {
 	};
 
 	//@ngInject
-	constructor(private $q) {
+	constructor(    
+	    private $q  : ng.IQService, 
+	    private $timeout : ng.ITimeoutService
+	) {
 		this.queueMap = {};
 	}
 
@@ -30,7 +33,7 @@ class MonatHttpQueueInterceptor {
 			return;
 		}
 
-		setTimeout(() => {
+		this.$timeout( () => {
 			let queue = this.getRequestQueue(config);
 			queue.shift();
 			if (queue.length > 0) queue[0]();
@@ -39,7 +42,7 @@ class MonatHttpQueueInterceptor {
 
 	/**
 	 * for each unique type of request we're creating a different queue,
-	 * currently the logic relys on the API-endpoint
+	 * currently the logic relies on the API-endpoint
 	 */
 	public getRequestQueue(request) {
 		let key = request.url || 'default';
@@ -60,7 +63,7 @@ class MonatHttpQueueInterceptor {
 
 	/**
 	 * Blocks quable request on thir specific-queue. If the first request, processes immediately.
-	 */
+	*/
 	public request = (config) => {
 		if (this.queueableRequest(config)) {
 			let deferred = this.$q.defer();
@@ -76,20 +79,37 @@ class MonatHttpQueueInterceptor {
 	};
 
 	/**
+     * response?: <T>(response: IHttpPromiseCallbackArg<T>) => IPromise<T>|T;
 	 * After each response completes, unblocks the next eligible request
-	 */
+	*/
 	public response = (response) => {
 		this.dequeue(response.config);
 		return response;
 	};
+	
 
-	/**
-	 * After each response error, unblocks the next eligible request
-	 */
-	public responseError = (error) => {
-		this.dequeue(error.config);
-		return this.$q.reject(error);
+    /**
+	 * requestError?: (rejection: any) => any;
+	 * After each request-error, unblocks the next eligible request
+	*/
+	public requestError = (error) => {
+		this.handleError(error);
 	};
+	
+	/**
+	 * responseError?: (rejection: any) => any;
+	 * After each response-error, unblocks the next eligible request
+	*/
+	public responseError = (error) => {
+		this.handleError(error);
+	};
+	
+	private handleError = (error) => {
+	    this.dequeue(error.config);
+    
+        //handle statuses, logout, format-messages
+	    return this.$q.reject(error);
+	}
 }
 
 export { MonatHttpQueueInterceptor };
