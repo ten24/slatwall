@@ -1858,7 +1858,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has declined payment');
 			newOrder.clearHibachiErrors();
 			// newOrder = this.processOrder( newOrder, {}, 'updateOrderAmounts' );
-			newOrder = this.saveOrder(newOrder);
+			newOrder = this.saveOrder(newOrder, updateOrderAmounts=false, updateShippingMethodOptions=false, checkNewAccountAddressSave=false); 
 			ormFlush(); 
 			//fire retry payment failure event so it can be utilized in workflows
 			getHibachiEventService().announceEvent("afterOrderProcess_retryPaymentFailure", {"entity":newOrder, "order":newOrder});
