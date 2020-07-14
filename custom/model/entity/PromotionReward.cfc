@@ -153,6 +153,10 @@ component {
 		
 		return formatValue(this.invokeMethod('get#customPriceField#Amount'), "currency");
 	}
+	
+	public any function getSkuCollection(){
+		return getIncludedSkusCollection();
+	}
     
 }
 
