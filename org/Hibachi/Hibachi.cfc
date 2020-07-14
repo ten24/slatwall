@@ -1144,7 +1144,7 @@ component extends="framework.one" {
 	public void function endHibachiLifecycle() {
 
 		if(getHibachiScope().getPersistSessionFlag()) {
-			getHibachiScope().getService("hibachiSessionService").persistSession(true);
+			getHibachiScope().getService("hibachiSessionService").persistSession();
 		}
 		
 		if(!getHibachiScope().getORMHasErrors()) {
