@@ -200,8 +200,8 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	
 	// ======================  END: Data Options ===========================
 	
-	public numeric function getFulfillmentRefundAmount() {
-		if(!structKeyExists(variables, "fulfillmentRefundAmount")) {
+	public numeric function getFulfillmentRefundAmount(boolean refresh=false) {
+		if(arguments.refresh || !structKeyExists(variables, "fulfillmentRefundAmount")) {
 			variables.fulfillmentRefundAmount = 0;
 			if(!getPreProcessDisplayedFlag() && getOrderTypeCode() == 'otReturnOrder') {
 				variables.fulfillmentRefundAmount = getOrder().getFulfillmentChargeNotRefunded();	
@@ -322,16 +322,20 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		if(!isNull(this.getOrderPayments())){
 			for( var orderPayment in this.getOrderPayments() ){
 				var originalOrderPayment = getService('orderService').getOrderPayment(orderPayment.originalOrderPaymentID);
-				if(isNull(originalOrderPayment) || orderPayment.amount > originalOrderPayment.getRefundableAmount()){
+				var compAmount = round(val(orderPayment.amount) * 100);
+				var refundableAmount = round(originalOrderPayment.getRefundableAmount() * 100);
+
+				if(isNull(originalOrderPayment) || compAmount > refundableAmount ){
 					return false;
 				}
-				amount += orderPayment.amount;
+				amount += compAmount;
 				
 			}
 		}
-		
 		var maxRefundAmount = getOrder().getPaymentAmountReceivedTotal() - getOrder().getTotalAmountCreditedIncludingReferencingPayments();
-		return amount <= maxRefundAmount;
+		var compMaxAmount = round(maxRefundAmount * 100);
+		
+		return amount <= compMaxAmount;
 	}
 	
 }

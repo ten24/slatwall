@@ -80,7 +80,7 @@ class SWFWishlistController {
         this.orderTemplateService.addOrderTemplateItem(this.sku ? this.sku : skuID, this.wishlistTemplateID)
         .then(result=>{
             this.loading = false;
-            this.onAddItemSuccess(this.sku);
+            this.onAddItemSuccess();
         });
     }
 
@@ -90,7 +90,7 @@ class SWFWishlistController {
         return this.orderTemplateService.addOrderTemplateItemAndCreateWishlist(this.wishlistTemplateName, this.sku, quantity).then(result=>{
             this.loading = false;
             this.getAllWishlists();
-            this.onAddItemSuccess(this.sku);
+            this.onAddItemSuccess();
             this.observerService.attach(this.successfulAlert,"createWishlistSuccess");
             return result;
         });
@@ -146,14 +146,14 @@ class SWFWishlistController {
     }
     
     
-    public onAddItemSuccess = (skuid) => {
+    public onAddItemSuccess = () => {
         
         // Set the heart to be filled on the product details page
-        $('#skuID_' + skuid).removeClass('far').addClass('fas');
+        // this.sku is skuID
+        $('#skuID_' + this.sku).removeClass('far').addClass('fas');
         
         // Close the modal
-        if(!this.close) return;
-     	this.close(null); // close, but give 100ms to animate
+     	this.close?.();
     };
     
     public redirectPageToShop(){
@@ -171,7 +171,7 @@ class SWFWishlist  {
     public priority = 1000;
     public scope = true;
 	public templateUrl:string;
-    public restrict:string;
+    public restrict:"AE";
 
    /**
     * Binds all of our variables to the controller so we can access using this
@@ -190,18 +190,10 @@ class SWFWishlist  {
         /**
      * Handles injecting the partials path into this class
      */
-    public static Factory(){
-        var directive: any = (monatFrontendBasePath) => new SWFWishlist(
-			monatFrontendBasePath,
-        );
-		directive.$inject = ['monatFrontendBasePath'];
-        return directive;
-    }
-    
-    // @ngInject
-	constructor(private monatFrontendBasePath){
-		this.templateUrl = monatFrontendBasePath + '/monatfrontend/components/swfwishlist.html';
-		this.restrict = "AE";
+	public template = require('./swfwishlist.html');
+
+	public static Factory() {
+		return () => new this();
 	}
     /**
         * Sets the context of this form

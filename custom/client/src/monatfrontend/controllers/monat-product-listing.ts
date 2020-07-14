@@ -59,12 +59,15 @@ class MonatProductListingController {
 		if(!this.publicService.account?.accountID){
 			return;
 		}
-	    this.monatService.getAccountWishlistItemIDs().then( data => {
-            if ( 'undefined' !== typeof data.wishlistItems ) {
+	    this.monatService.getAccountWishlistItemIDs()
+	    .then( data => {
+            if ( data?.wishlistItems ) {
+                
                 this.wishlistItems = '';
-                data.wishlistItems.forEach(item=>{
+                data.wishlistItems.forEach(item => {
                     this.wishlistItems += item.productID + ',';
                 });
+                
                 this.observerService.notify('accountWishlistItemsSuccess');
             }
         });

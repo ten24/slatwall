@@ -74,7 +74,6 @@ class PurchasePlusBarController {
 
 class PurchasePlusBar {
 	public restrict: string = 'E';
-	public templateUrl: string;
 	public scope: boolean = true;
 
 	public bindToController = {
@@ -84,15 +83,11 @@ class PurchasePlusBar {
 
 	public controller = PurchasePlusBarController;
 	public controllerAs = 'purchasePlusBar';
+    
+    public template = require('./purchase-plus-bar.html');
 
 	public static Factory() {
-		var directive: any = (monatFrontendBasePath) => new this(monatFrontendBasePath);
-		directive.$inject = ['monatFrontendBasePath'];
-		return directive;
-	}
-
-	constructor(private monatFrontendBasePath) {
-		this.templateUrl = monatFrontendBasePath + '/monatfrontend/directives/purchase-plus-bar.html';
+		return () => new this();
 	}
 }
 

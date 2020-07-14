@@ -64,6 +64,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="calculatedExtendedUnitPriceAfterDiscount" column="calcExtdUnitPriceAfterDiscount" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedExtendedPriceAfterDiscountMinusReturns" column="calcExtdPriceAfterDiscMinusReturns" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedTaxAmount" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedTaxAmountNotRefunded" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedItemTotal" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedDiscountAmount" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedQuantityDeliveredMinusReturns" column="calcQtyDeliveredMinusReturns" ormtype="integer";
@@ -133,6 +134,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="skuPerformCascadeCalculateFlag" persistent="false";
 	property name="stockPerformCascadeCalculateFlag" persistent="false";
 	property name="taxAmount" persistent="false" hb_formatType="currency";
+	property name="taxAmountNotRefunded" persistent="false" hb_formatType="currency";
 	property name="VATAmount" persistent="false" hb_formatType="currency";
 	property name="VATPrice" persistent="false" hb_formatType="currency";
 	property name="taxLiabilityAmount" persistent="false" hb_formatType="currency";
@@ -687,6 +689,25 @@ property name="personalVolume" ormtype="big_decimal";
 		}
 
 		return taxAmount;
+	}
+	
+	public numeric function getTaxAmountNotRefunded(){
+		return getService('HibachiUtilityService').precisionCalculate(getTaxAmount() + getTaxAmountOnReferencingItems());
+	}
+	
+	public numeric function getTaxAmountOnReferencingItems(){
+		var taxAmountOnReferencingItems = 0;
+		
+		for(var referencingOrderItem in getReferencingOrderItems()){
+			if(!listFindNoCase('ostNotPlaced,ostCanceled',referencingOrderItem.getOrder().getOrderStatusType().getSystemCode())){
+				if(referencingOrderItem.getOrderItemType().getSystemCode() == 'oitReturn'){
+					taxAmountOnReferencingItems -= referencingOrderItem.getTaxAmount();
+				}else{
+					taxAmountOnReferencingItems += referencingOrderItem.getTaxAmount();
+				}
+			}
+		}
+		return taxAmountOnReferencingItems;
 	}
 	
 	public numeric function getVATAmount() {

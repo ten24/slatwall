@@ -1594,8 +1594,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public string function getQualifiedFreePromotionRewardSkuIDs( required any order ){
 		var qualifiedFreePromotionRewardSkuIDList = '';	
 		var qualifiedPromotionRewards = this.getQualifiedPromotionRewardsForOrder( arguments.order );
+		
 		for(var promotionReward in qualifiedPromotionRewards){
-			
 			var skuCollection = promotionReward.getSkuCollection();
 		
 			if(isNull(skuCollection)){

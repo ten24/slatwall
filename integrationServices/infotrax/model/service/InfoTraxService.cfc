@@ -381,7 +381,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 			return;
 		}
 		
-		logHibachi("InfoTrax - Start pushData - Event: #arguments.data.event#", true);
+		logHibachi("InfoTrax - Start pushData - Event: #arguments.data.event#");
 		
 		switch ( arguments.entity.getClassName() ) {
 			
@@ -390,22 +390,22 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 			case 'AccountPhoneNumber':
 			case 'AccountGovernmentIdentification':
 				arguments.data.DTSArguments = convertSwAccountToIceDistributor(arguments.entity.getAccount());
-				logHibachi("InfoTrax - Account: #arguments.entity.getAccount().getAccountID()#", true);
+				logHibachi("InfoTrax - Account: #arguments.entity.getAccount().getAccountID()#");
 				break;
 			
 			case 'Account':
 				arguments.data.DTSArguments = convertSwAccountToIceDistributor(arguments.entity);
-				logHibachi("InfoTrax - Account: #arguments.entity.getAccountID()#", true);
+				logHibachi("InfoTrax - Account: #arguments.entity.getAccountID()#");
 				break;
 				
 			case 'Order':
 				arguments.data.DTSArguments = convertSwOrderToIceTransaction(arguments.entity);
-				logHibachi("InfoTrax - Order: #arguments.entity.getOrderID()#", true);
+				logHibachi("InfoTrax - Order: #arguments.entity.getOrderID()#");
 				break;
 				
 			case 'OrderTemplate':
 				arguments.data.DTSArguments = convertSwOrderTemplateToIceAutoship(arguments.entity);
-				logHibachi("InfoTrax - OrderTemplate: #arguments.entity.getOrderTemplateID()#", true);
+				logHibachi("InfoTrax - OrderTemplate: #arguments.entity.getOrderTemplateID()#");
 				break;
 				
 			default:
@@ -414,7 +414,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		
 		getIntegration().getIntegrationCFC('data').pushData(argumentCollection=arguments);
 		
-		logHibachi("InfoTrax - End pushData", true);
+		logHibachi("InfoTrax - End pushData");
 	}
 
 	

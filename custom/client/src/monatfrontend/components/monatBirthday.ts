@@ -62,8 +62,8 @@ class MonatBirthdayController {
 	}
 	
 	public changeDOB(action: ActionType):void{
-		var date = this.dob.split('/');
-        if(date.length == 3){
+		var date = this.dob?.split('/');
+        if(date?.length == 3){
             var monthIndex = parseInt(date[0]) - 1;
             this.month = this.months[monthIndex];
             this.day = parseInt(date[1]);
@@ -181,14 +181,10 @@ class MonatBirthday {
 	public bindToController = {
 		required: '<?'
 	}
-	public static Factory() {
-		var directive: any = (monatFrontendBasePath) => new this(monatFrontendBasePath);
-		directive.$inject = ['monatFrontendBasePath'];
-		return directive;
-	}
+	public template = require('./monat-birthday.html');
 
-	constructor(private monatFrontendBasePath) {
-		this.templateUrl = monatFrontendBasePath + '/monatfrontend/components/monat-birthday.html';
+	public static Factory() {
+		return () => new this();
 	}
 }
 

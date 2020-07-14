@@ -151,15 +151,10 @@ class MonatFlexshipShippingMethodModal {
 	public controller=MonatFlexshipShippingMethodModalController;
 	public controllerAs="monatFlexshipShippingMethodModal";
 
-	public static Factory(){
-		//@ngInject
-        return ( monatFrontendBasePath) => {
-        	return new MonatFlexshipShippingMethodModal( 	monatFrontendBasePath)
-        };
-    }
+	public template = require('./shippingmethod.html');
 
-	constructor(private monatFrontendBasePath){
-		this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/flexship/modals/shippingmethod.html";
+	public static Factory() {
+		return () => new this();
 	}
 
 }

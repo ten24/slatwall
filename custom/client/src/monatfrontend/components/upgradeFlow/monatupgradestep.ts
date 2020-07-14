@@ -17,7 +17,9 @@ class MonatUpgradeStep {
 		directive.$inject = ['monatFrontendBasePath'];
 		return directive;
 	}
-
+    
+    // Cant't use require here as the template includes < ng-transclusde > 
+    // which gets included inside another ng-transclude
 	constructor( private monatFrontendBasePath ){
 		this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/upgradeFlow/monatupgradestep.html";
 	}
@@ -37,4 +39,3 @@ class MonatUpgradeStep {
 export {
 	MonatUpgradeStep
 };
-

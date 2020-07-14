@@ -178,7 +178,7 @@ class FlexshipFlowController {
 
 class FlexshipFlow {
 
-	public restrict:string;
+	public restrict = 'E'
 	public templateUrl:string;
 	
 	public scope = {};
@@ -188,26 +188,11 @@ class FlexshipFlow {
 	
 	public controller = FlexshipFlowController;
 	public controllerAs = "flexshipFlow";
-	public static Factory(){
-        var directive:any = (
-		    monatFrontendBasePath,
-			rbkeyService,
-        ) => new FlexshipFlow(
-			monatFrontendBasePath,
-			rbkeyService,
-        );
-        directive.$inject = [
-			'monatFrontendBasePath',
-			'rbkeyService',
-        ];
-        return directive;
-    }
 
-	constructor(private monatFrontendBasePath, 
-				private rbkeyService
-	){
-		this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/flexshipFlow/flexshipFlow.html";
-		this.restrict = "E";
+	public template = require('./flexshipFlow.html');
+
+	public static Factory() {
+		return () => new this();
 	}
 
 	public link = (scope, element, attrs) =>{

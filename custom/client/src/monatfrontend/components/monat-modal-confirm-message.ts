@@ -16,7 +16,7 @@ class MonatConfirmMessageController {
 
 class MonatConfirmMessageModel {
 
-	public restrict:string;
+	public restrict: string = 'E';
 	public templateUrl:string;
 	
 	public scope = {};
@@ -28,37 +28,12 @@ class MonatConfirmMessageModel {
 	};
 	public controller=MonatConfirmMessageController;
 	public controllerAs="monatConfirmMessageModel";
+	
+	public template = require('./monat-modal-confirm-message.html');
 
-	public static Factory(){
-        var directive:any = (
-		    monatFrontendBasePath,
-			$hibachi,
-			rbkeyService,
-			requestService
-        ) => new MonatConfirmMessageModel(
-			monatFrontendBasePath,
-			$hibachi,
-			rbkeyService,
-			requestService
-        );
-        directive.$inject = [
-			'monatFrontendBasePath',
-			'$hibachi',
-			'rbkeyService',
-			'requestService'
-        ];
-        return directive;
-    }
-
-	constructor(private monatFrontendBasePath, 
-				private slatwallPathBuilder, 
-				private $hibachi,
-				private rbkeyService
-	){
-		this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/monat-modal-confirm-message.html";
-		this.restrict = "E";
+	public static Factory() {
+		return () => new this();
 	}
-
 	public link = (scope, element, attrs) =>{
 
 	}

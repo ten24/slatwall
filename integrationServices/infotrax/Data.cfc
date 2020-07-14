@@ -234,7 +234,7 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 		
 		if(structKeyExists(iceResponse, 'returnserialnumber')){
 			
-			logHibachi('InfoTrax - returnserialnumber: #iceResponse.returnserialnumber#', true);
+			logHibachi('InfoTrax - returnserialnumber: #iceResponse.returnserialnumber#');
 			
 			var query = 'UPDATE #tableName# SET lastSyncedDateTime = NOW()';
 

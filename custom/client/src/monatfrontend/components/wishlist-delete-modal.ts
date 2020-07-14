@@ -42,8 +42,7 @@ class WishlistDeleteModalConroller {
 class WishlistDeleteModal {
 
 	public restrict:string;
-	public templateUrl:string;
-	
+
 	public scope = {};
 	public bindToController = {
 	    wishlist:'<',
@@ -53,40 +52,11 @@ class WishlistDeleteModal {
 	public controller = WishlistDeleteModalConroller;
 	public controllerAs = "wishlistDeleteModal";
 
-	public static Factory(){
-        var directive:any = (
-		    monatFrontendBasePath,
-			$hibachi,
-			rbkeyService,
-			requestService
-        ) => new WishlistDeleteModal(
-			monatFrontendBasePath,
-			$hibachi,
-			rbkeyService,
-			requestService
-        );
-        directive.$inject = [
-			'monatFrontendBasePath',
-			'$hibachi',
-			'rbkeyService',
-			'requestService'
-        ];
-        return directive;
-    }
+    public template = require('./wishlist-delete-modal.html');
 
-	constructor(private monatFrontendBasePath, 
-				private slatwallPathBuilder, 
-				private $hibachi,
-				private rbkeyService
-	){
-		this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/wishlist-delete-modal.html";
-		this.restrict = "E";
+	public static Factory() {
+		return () => new this();
 	}
-
-	public link = (scope, element, attrs) =>{
-
-	}
-
 }
 
 export {

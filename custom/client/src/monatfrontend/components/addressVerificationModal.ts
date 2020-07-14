@@ -45,8 +45,7 @@ class AddressVerificationController {
 
 class AddressVerification {
 
-	public restrict:string;
-	public templateUrl:string;
+	public restrict = 'E';
 	
 	public scope = {};
 	public bindToController = {
@@ -57,36 +56,11 @@ class AddressVerification {
 	public controller = AddressVerificationController;
 	public controllerAs = "addressVerification";
 
-	public static Factory(){
-        var directive:any = (
-		    monatFrontendBasePath,
-			$hibachi,
-			rbkeyService,
-			requestService
-        ) => new AddressVerification(
-			monatFrontendBasePath,
-			$hibachi,
-			rbkeyService,
-			requestService
-        );
-        directive.$inject = [
-			'monatFrontendBasePath',
-			'$hibachi',
-			'rbkeyService',
-			'requestService'
-        ];
-        return directive;
-    }
+	public template = require('./address-verification-modal.html');
 
-	constructor(private monatFrontendBasePath, 
-				private slatwallPathBuilder, 
-				private $hibachi,
-				private rbkeyService
-	){
-		this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/address-verification-modal.html";
-		this.restrict = "E";
+	public static Factory() {
+		return () => new this();
 	}
-
 	public link = (scope, element, attrs) =>{
 
 	}
@@ -96,4 +70,3 @@ class AddressVerification {
 export {
 	AddressVerification
 }
-

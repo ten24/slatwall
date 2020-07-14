@@ -132,12 +132,12 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 	*/ 
 	public void function push(required any entity, any data ={}){
 			
-		logHibachi("SoundConcepts - Start pushData - Account: #arguments.entity.getAccountID()#", true);
+		logHibachi("SoundConcepts - Start pushData - Account: #arguments.entity.getAccountID()#");
 		
 		arguments.data.payload = this.convertSwAccountToSoundConceptsAccount(arguments.entity);
 		getDataIntegrationCFC().pushData(argumentCollection=arguments);
 		
-		logHibachi("SoundConcepts - End pushData", true);
+		logHibachi("SoundConcepts - End pushData");
 	}
 
 	

@@ -7,9 +7,8 @@ class bootstrapper extends BaseBootStrapper{
     public myApplication;
     constructor(){
         var angular:any = super(monatadminmodule.name);
-        angular.bootstrap()
+        angular.bootstrap();
     }
-
 
 }
 

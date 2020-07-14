@@ -108,47 +108,17 @@ class MonatFlexshipListingController{
 
 class MonatFlexshipListing {
 
-	public restrict:string;
-	public templateUrl:string;
+	public restrict = 'EA'
 	public scope = {};
 	public bindToController = {};
 	public controller=MonatFlexshipListingController;
 	public controllerAs="monatFlexshipListing";
+	
+	public template = require('./monatflexshiplisting.html');
 
-	public static Factory(){
-		var directive:any = (
-			monatFrontendBasePath,
-			$hibachi,
-			rbkeyService,
-			requestService
-		) => new MonatFlexshipListing (
-			monatFrontendBasePath,
-			$hibachi,
-			rbkeyService,
-			requestService
-		);
-		directive.$inject = [
-			'monatFrontendBasePath',
-			'$hibachi',
-			'rbkeyService',
-			'requestService'
-		];
-		return directive;
+	public static Factory() {
+		return () => new this();
 	}
-
-	constructor(private monatFrontendBasePath, 
-				private slatwallPathBuilder, 
-				private $hibachi,
-				private rbkeyService
-	){
-		this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/monatflexshiplisting.html";
-		this.restrict = "EA";
-	}
-
-	public link = (scope, element, attrs) =>{
-
-	}
-
 }
 
 export {

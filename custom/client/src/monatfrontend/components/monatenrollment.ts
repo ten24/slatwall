@@ -290,27 +290,28 @@ class MonatEnrollmentController {
 }
 
 class MonatEnrollment {
+
 	public restrict: string = 'EA';
-	public transclude: boolean = true;
-	public templateUrl: string;
+
+	public transclude  = true;
+	public replace:true;
+
 	public scope = {};
+
 	public bindToController = {
 		finishText: '@',
 		onFinish: '=?',
 		upgradeFlow:'<?',
 		type:'<?'
 	};
+	
 	public controller = MonatEnrollmentController;
 	public controllerAs = 'monatEnrollment';
 
-	public static Factory() {
-		var directive: any = (monatFrontendBasePath) => new this(monatFrontendBasePath);
-		directive.$inject = ['monatFrontendBasePath'];
-		return directive;
-	}
+	public template = require('./monatenrollment.html');
 
-	constructor(private monatFrontendBasePath) {
-		this.templateUrl = monatFrontendBasePath + '/monatfrontend/components/monatenrollment.html';
+	public static Factory() {
+		return () => new this();
 	}
 }
 

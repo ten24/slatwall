@@ -9,7 +9,7 @@
 				order-type="#rc.processObject.getOrderTypeCode()#"
 				order-id="#rc.order.getOrderID()#" 
 				currency-code="#rc.order.getCurrencyCode()#" 
-				initial-fulfillment-refund-amount="#rc.processObject.getFulfillmentRefundAmount()#"
+				initial-fulfillment-refund-amount="#rc.processObject.getFulfillmentRefundAmount(true)#"
 				order-payments="#$.slatwall.getService('HibachiService').hibachiHTMLEditFormat(serializeJSON(rc.processObject.getRefundOrderPaymentIDOptions()))#"
 				fulfillment-tax-amount="#rc.processObject.getFulfillmentTaxAmountNotRefunded()#"
 				<cfif rc.processObject.getOrderTypeCode() EQ "otRefundOrder">

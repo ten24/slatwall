@@ -127,7 +127,7 @@ class MonatMiniCartController {
 }
 
 class MonatMiniCart {
-	public restrict: string;
+	public restrict = 'EA'
 	public templateUrl: string;
 
 	public scope = {};
@@ -142,23 +142,11 @@ class MonatMiniCart {
 	public controller = MonatMiniCartController;
 	public controllerAs = 'monatMiniCart';
 
+	public template = require('./monat-minicart.html');
+
 	public static Factory() {
-		var directive: any = (monatFrontendBasePath, $hibachi, rbkeyService, requestService) =>
-			new MonatMiniCart(monatFrontendBasePath, $hibachi, rbkeyService, requestService);
-		directive.$inject = ['monatFrontendBasePath', '$hibachi', 'rbkeyService', 'requestService'];
-		return directive;
+		return () => new this();
 	}
-
-	constructor(
-		private monatFrontendBasePath,
-		private slatwallPathBuilder,
-		private $hibachi,
-		private rbkeyService,
-	) {
-		this.templateUrl = monatFrontendBasePath + '/monatfrontend/components/minicart/monat-minicart.html';
-		this.restrict = 'EA';
-	}
-
 	public link = (scope, element, attrs) => {};
 }
 
