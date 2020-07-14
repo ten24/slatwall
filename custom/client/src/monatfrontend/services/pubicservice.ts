@@ -33,9 +33,9 @@ export class PublicService extends PublicServiceCore {
 
         if( data ){
             method = "post";
-            if(data.returnJsonObjects == undefined){
-                data.returnJsonObjects = "cart,account";
-            }
+            // if(data.returnJsonObjects == undefined){
+            //     data.returnJsonObjects = "cart,account";
+            // }
             if( this.cmsSiteID ){
                 data.cmsSiteID = this.cmsSiteID;
             }

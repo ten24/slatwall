@@ -24,7 +24,12 @@ class AddressDeleteModalController {
     
     public deleteAccountAddress = () => {
         this.loading = true;
-        return this.publicService.doAction("deleteAccountAddress", { 'accountAddressID': this.address.accountAddressID}).then(result=>{
+        return this.publicService
+        .doAction("deleteAccountAddress", { 
+            'accountAddressID': this.address.accountAddressID,
+            'returnJsonObjects': 'account'
+        })
+        .then(result=>{
             this.loading = false;
         });
     }

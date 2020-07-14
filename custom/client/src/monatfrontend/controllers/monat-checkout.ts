@@ -332,7 +332,10 @@ class MonatCheckoutController {
 	
 	public submitSponsor():Screen | void{
 		this.sponsorLoading = true;
-		this.publicService.doAction('submitSponsor', {sponsorID: this.ownerAccountID}).then(res=>{
+		this.publicService.doAction('submitSponsor', {
+		    sponsorID: this.ownerAccountID,
+		    returnJsonObjects: 'account'
+		}).then(res=>{
 			if(res.successfulActions.length) {
 				this.next();
 			}else if(res.errors){

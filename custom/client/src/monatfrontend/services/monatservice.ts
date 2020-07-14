@@ -77,7 +77,7 @@ export class MonatService {
 	 * actions => addOrderItem, removeOrderItem, updateOrderItemQuantity, ....
 	 *
 	 */
-	private updateCart = (action: string, payload) => {
+	private updateCart = (action: string, payload): ng.IPromise<any> => {
 		let deferred = this.$q.defer();
 		payload["returnJsonObjects"] = "cart";
 
@@ -138,7 +138,10 @@ export class MonatService {
 	}
 
 	public submitSponsor(sponsorID: string) {
-		return this.publicService.doAction("submitSponsor", { sponsorID });
+		return this.publicService.doAction("submitSponsor", { 
+		    sponsorID:  sponsorID, 
+		    returnJsonObjects: 'account'
+		});
 	}
 
 	public addEnrollmentFee(sponsorID: string) {

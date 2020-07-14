@@ -36,7 +36,9 @@ class HybridCartController {
 
 	}
 
-	public $onInit = () => { }
+	public $onInit = () => { 
+	    this.getCart(); // so it shows the right-cout(without-clicking) after reloading the page
+	}
 	
 	public toggleCart():void{
 		this.showCart = !this.showCart;
