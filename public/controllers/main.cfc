@@ -68,7 +68,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	public void function changeLanguage( required struct rc ){
 		param name="arguments.rc.rbLocale" default="";
 		arguments.rc.$.slatwall.getSession().setRBLocale(hibachiHTMLEditFormat(arguments.rc.rbLocale));
-		arguments.rc.$.slatwall.setPersistSessionFlag( true );
+		arguments.rc.$.slatwall.setPersistSessionFlag( false );
 	}
 
 
