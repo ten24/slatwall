@@ -28,6 +28,7 @@
 							 <!---data-sku-properties-to-display="personalVolumeByCurrencyCode"--->
 							 data-additional-order-template-item-properties-to-display="calculatedPersonalVolumeTotal"
 							 data-sku-property-column-configs="#getHibachiScope().hibachiHtmlEditFormat(serializeJson(rc.skuColumnConfigs))#"
+							 data-additional-filters="[{propertyIdentifier:'disableOnFlexshipFlag',value:false,comparisonOperator:'='}]"
 	></sw-order-template-items>
 </cfoutput>	
 
