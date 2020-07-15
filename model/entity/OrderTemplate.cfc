@@ -183,7 +183,7 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 		return getService('hibachiUtilityService').hibachiHTMLEditFormat(serializeJson(getStructRepresentation(arguments.nonPersistentProperties)));
 	} 
 	
-	public struct function getStructRepresentation(string nonPersistentProperties='subtotal,fulfillmentTotal,fulfillmentDiscount,total', string persistentProperties=''){ 
+	public struct function getStructRepresentation(string nonPersistentProperties='calculatedSubTotal,calculatedFulfillmentTotal,calculatedFulfillmentDiscount,calculatedTotal', string persistentProperties=''){ 
 		var properties = listAppend(getDefaultPropertyIdentifiersList(), arguments.persistentProperties); 
 
 		var orderTemplateStruct = super.getStructRepresentation(properties);
