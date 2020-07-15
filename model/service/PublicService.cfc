@@ -1287,7 +1287,7 @@ component  accessors="true" output="false"
             getHibachiScope().getSession().setOrder( cart );
             
             // Make sure that the session is persisted
-            getHibachiSessionService().persistSession();
+            getHibachiSessionService().persistSession(true);
             
             //flushing for can place order check
             getHibachiScope().flushORMSession(); 

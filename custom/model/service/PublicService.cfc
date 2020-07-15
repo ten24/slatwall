@@ -2437,6 +2437,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     
     public void function addOrderTemplateItem(required any data){
         param name="arguments.data.returnOrderTemplateFlag" default="true";
+        param name="arguments.data.temporaryFlag" default="false";
         
         if(arguments.data.temporaryFlag){
             var orderTemplate = getService('orderService').getOrderTemplate(arguments.data.orderTemplateID);
