@@ -122,6 +122,11 @@ devConfig.optimization = {
 //don't need the vendor bundle generated here because we include the vendor bundle already.
 devConfig.plugins =  [
     
+    // https://blog.johnnyreilly.com/2016/07/using-webpacks-defineplugin-with-typescript.html
+    new webpack.DefinePlugin({
+        '__DEBUG_MODE__': JSON.stringify( this.mode === 'develop' )
+    }),
+
     new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en/),
     new webpack.HashedModuleIdsPlugin(), // so that file hashes don't change unexpectedly
     

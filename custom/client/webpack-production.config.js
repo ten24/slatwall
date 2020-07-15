@@ -14,7 +14,13 @@ devConfig.optimization.minimizer = [
         warnings: false,
         parse: {},
         compress: {
-            drop_console: true, 
+            // drop_console: true, 
+            pure_funcs: [
+                'console.log', 
+                'console.info', 
+                'console.debug', 
+                'console.warn'
+            ] 
         },
         mangle: false, // this will reduce the size of the bundles significently, but can cause problem with angular if components are not annotated properly
         module: false,
