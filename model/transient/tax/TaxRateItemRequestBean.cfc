@@ -184,13 +184,8 @@ component output="false" accessors="true" extends="Slatwall.model.transient.Requ
 		setOrderReturnID(arguments.orderReturn.getOrderReturnID());
 		setCurrencyCode(arguments.orderReturn.getOrder().getCurrencyCode());
 
-		if( !isNull( arguments.orderReturn.getFulfillmentRefundPreTax() ) ){
-			setPrice(arguments.orderReturn.getFulfillmentRefundAmount());
-			setExtendedPrice(arguments.orderReturn.getFulfillmentRefundAmount());
-		}else{
-			setPrice(arguments.orderReturn.getFulfillmentRefundAmount());
-			setExtendedPrice(arguments.orderReturn.getFulfillmentRefundAmount());
-		}
+		setPrice(arguments.orderReturn.getFulfillmentRefundAmount());
+		setExtendedPrice(arguments.orderReturn.getFulfillmentRefundAmount());
 		setDiscountAmount(0);
 		setExtendedPriceAfterDiscount(arguments.orderReturn.getFulfillmentRefundAmount());
 
