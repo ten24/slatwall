@@ -308,7 +308,10 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			for (var orderItem in this.getOrderItems()){
 
 				var originalItem = getService("OrderService").getOrderItem(orderItem.referencedOrderItem.orderItemID);
-				if (orderItem.quantity > originalItem.getQuantityDeliveredMinusReturns()){
+				var quantity = val(orderItem.quantity);
+
+				if (quantity > originalItem.getQuantityDeliveredMinusReturns()){
+					abort;
 					return false;
 				}
 			}			

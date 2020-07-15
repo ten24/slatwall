@@ -56,9 +56,6 @@ Notes:
 
 <hb:HibachiEntityProcessForm entity="#rc.order#" edit="#rc.edit#" sRedirectAction="admin:entity.editorder">
 	
-	<hb:HibachiEntityActionBar type="preprocess" object="#rc.order#">
-	</hb:HibachiEntityActionBar>
-	
 	<hb:HibachiPropertyRow>
 		<hb:HibachiPropertyList>
 			<cfif isnull(rc.processObject.getAccountID())>
