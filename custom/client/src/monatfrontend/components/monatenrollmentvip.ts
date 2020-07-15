@@ -11,6 +11,7 @@ class VIPController {
 	public currentMpPage: number = 1;
 	public isVIPEnrollment: boolean = false;
 	public productList;
+	public flexshipProductList;
 	public sponsorErrors: any = {};
 	public frequencyTerms:any;
 	public flexshipDaysOfMonth:Array<number> = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25]; 
@@ -32,7 +33,9 @@ class VIPController {
 	public isInitialized = false;
 	public paginationMethod = 'getproductsByCategoryOrContentID';
 	public productRecordsCount: number;
+	public flexshipProductRecordsCount:number;
 	public paginationObject = {hideProductPacksAndDisplayOnly: true};
+	public flexshipPaginationObject = {hideProductPacksAndDisplayOnly: true, flexshipFlag: true};
 	public upgradeFlow:boolean;
 	public endpoint: 'setUpgradeOnOrder' | 'setUpgradeOrderType' = 'setUpgradeOnOrder';
 	public showUpgradeErrorMessage:boolean;
@@ -60,6 +63,8 @@ class VIPController {
 			this.isInitialized = true;
 			this.getCountryCodeOptions();
 			this.getFrequencyTermOptions();
+			this.getProductList();
+			this.getFlexshipProductList();
 		});
 		
 	}
@@ -137,17 +142,57 @@ class VIPController {
 		}
 	};
 	
-	public searchByKeyword = (keyword:string) =>{
-		this.publicService.doAction('getProductsByKeyword', {keyword: keyword, priceGroupCode: 1, hideProductPacksAndDisplayOnly: true}).then(res=> {
+	public searchByKeyword = (keyword:string, flexshipFlag?:boolean) =>{
+		let data:any = {
+			keyword: keyword,
+			priceGroupCode: 3,
+			hideProductPacksAndDisplayOnly: true
+		};
+		if(flexshipFlag){
+			data.flexshipFlag = flexshipFlag;
+		}
+		this.publicService.doAction('getProductsByKeyword', data).then(res=> {
 			this.paginationMethod = 'getProductsByKeyword';
-			this.productRecordsCount = res.recordsCount;
-			this.paginationObject['keyword'] = keyword;
-			this.productList = res.productList;
+			if(flexshipFlag){
+				this.flexshipProductRecordsCount = res.recordsCount;
+				this.flexshipPaginationObject['keyword'] = keyword;
+				this.flexshipProductList = res.productList;
+			}else{
+				this.productRecordsCount = res.recordsCount;
+				this.paginationObject['keyword'] = keyword;
+				this.productList = res.productList;
+			}
 			this.observerService.notify("PromiseComplete");
 		});
 	}
+	
+	public getFlexshipProductList = ( category?:any, categoryType?:string ) => {
+		this.loading = true;
+		
+		let data:any = {
+			priceGroupCode: 3,
+			hideProductPacksAndDisplayOnly: true,
+			flexshipFlag:true
+		};
+		
+		if(category){
+			data.categoryFilterFlag = true;
+			data.categoryID = category.value;
+			this.hairProductFilter = null;
+			this.skinProductFilter = null;
+			this[`${categoryType}ProductFilter`] = category;
+			this.paginationObject['categoryID'] = category.value;
+		}
+		
+		this.publicService.doAction('getProductsByCategoryOrContentID', data).then((result) => {
+			this.observerService.notify("PromiseComplete");
+			this.flexshipProductList = result.productList;
+			this.flexshipProductRecordsCount = result.recordsCount
+			this.loading = false;
+		});
+	}
 
-	public getProductList = ( category:any, categoryType:string ) => {
+	public getProductList = ( category?:any, categoryType?:string ) => {
 		this.loading = true;
 		
 		let data:any = {

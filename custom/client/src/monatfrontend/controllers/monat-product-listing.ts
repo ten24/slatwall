@@ -19,6 +19,7 @@ class MonatProductListingController {
 	public hairProductFilter:any;
 	public skinProductFilter:any;
 	public loadingAddToCart;
+	public flexshipFlag:boolean;
 	
 	// @ngInject
 	constructor(
@@ -92,6 +93,10 @@ class MonatProductListingController {
 			this.hairProductFilter = null;
 			this.skinProductFilter = null;
 			this[`${categoryType}ProductFilter`] = category;
+		}
+		
+		if(this.flexshipFlag){
+			this.argumentsObject['flexshipFlag'] = this.flexshipFlag;
 		}
         
         this.argumentsObject['pageRecordsShow'] = this.pageRecordsShow;
