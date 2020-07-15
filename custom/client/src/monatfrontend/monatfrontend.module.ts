@@ -180,13 +180,6 @@ var monatfrontendmodule = angular
 
 	//state-stores
 	.service("flexshipCheckoutStore", FlexshipCheckoutStore)
-    // Left here for debugging angulat-bootstrapping errors
-    .factory('$exceptionHandler', () => {
-        return (exception, cause) => {
-            exception.message += ` caused by '${cause || "no cause given"}' `;
-            throw exception;
-        };
-    })
 	.config([
 		"$locationProvider",
 		"$httpProvider",
@@ -266,5 +259,21 @@ var monatfrontendmodule = angular
 			}
 		},
 	]);
+	
+	// the __DEBUG_MODE__ is driven by webpack-config and only enabled in debug-builds
+	if(__DEBUG_MODE__){
+	    // added here for debugging angular-bootstrapping, and other similar errors
+	    // this will throw all of the angular-exceptions 
+	    //   regardless if they're catched-anywhere ( .catch( error => () ) blocks )
+	    //   and you'll see a lot-more errors in the console
+	    //   this will effect all modules, as $exceptionHandler is part of angular-core
+        monatfrontendmodule.factory('$exceptionHandler', () => {
+            return (exception, cause) => {
+                exception.message += ` caused by '${cause || "no cause given"}' `;
+                // can log to sentry from here as well 
+                throw exception;
+            };
+        })
+    }
 
 export { monatfrontendmodule };

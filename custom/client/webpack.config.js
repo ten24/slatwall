@@ -143,13 +143,9 @@ devConfig.optimization = {
 
 devConfig.plugins =  [
     
-    // TODO update component-definations for base-template-path
-	// https://blog.johnnyreilly.com/2016/07/using-webpacks-defineplugin-with-typescript.html
-    // new webpack.DefinePlugin({
-    //     '__MONAT_FRONTEND_BASE_PATH__': JSON.stringify(PATHS.app),
-    //     '__DEBUG_MODE__': JSON.stringify(true)
-    // }),
-
+    new webpack.DefinePlugin({
+        '__DEBUG_MODE__': JSON.stringify( this.mode === 'develop' )
+    }),
 
     new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en/),
     new webpack.HashedModuleIdsPlugin(), // so that file hashes don't change unexpectedly
