@@ -1442,7 +1442,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         if( arguments.data.cmsContentFilterFlag && !isNull(arguments.data.cmsContentID) && len(arguments.data.cmsContentID)) productCollectionList.addFilter('listingPages.content.cmsContentID',arguments.data.cmsContentID,"=" ); 
         if( arguments.data.categoryFilterFlag && !isNull(arguments.data.categoryID) && len(arguments.data.categoryID)) productCollectionList.addFilter('categories.categoryID', arguments.data.categoryID, "=" );
       
-        productCollectionList.setOrderBy('productID|DESC');
+        productCollectionList.setOrderBy('productName|DESC');
         productCollectionList.setPageRecordsShow(arguments.data.pageRecordsShow);
         productCollectionList.setCurrentPageDeclaration(arguments.data.currentPage);
         var nonPersistentRecords = getCommonNonPersistentProductProperties(productCollectionList.getPageRecords(), priceGroupCode, currencyCode, siteCode);
