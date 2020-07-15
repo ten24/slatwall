@@ -32,10 +32,11 @@ class SWCurrencyFormatter {
                 modelCtrl.$setViewValue(
                     currencyFilter(data, $scope.currencyCode, 2, false)
                 );
+                
                 modelCtrl.$render();
+                
             }, 1500);
             
-
             return modelCtrl.$viewValue;
         });
         
@@ -47,7 +48,7 @@ class SWCurrencyFormatter {
             );
             modelCtrl.$render();
 
-            return modelCtrl.$viewValue;
+            return  modelCtrl.$viewValue;
         });
 	}
 
