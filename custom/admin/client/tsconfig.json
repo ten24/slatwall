@@ -1,19 +1,20 @@
 {
-    "compilerOptions": {
+
+  "compilerOptions": {
         "target":"es5",
         "module": "commonjs",
         "sourceMap": true,
         "skipLibCheck": true,
     },
-    
+
     "include": [
         "./src/**/*",
         "../../../org/Hibachi/client/src/*"
     ],
-    
-    "typeRoots": [ "node_modules/@types", "./typings.d.ts" ],
 
-    "files": [
+    "typeRoots": [ "node_modules/@types", "./typings.d.ts" ],
+    
+     "files": [
         "./typings.d.ts",
         "../../../org/Hibachi/client/typings/hibachiTypescript.d.ts",
         "../../../org/Hibachi/client/typings/tsd.d.ts",
