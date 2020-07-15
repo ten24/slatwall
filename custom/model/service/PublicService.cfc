@@ -1351,8 +1351,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         productCollectionList.addFilter('productType.parentProductType.urlTitle','other-income','!=');
         productCollectionList.addFilter('sites.siteID',site.getSiteID());
         productCollectionList.addFilter('skus.skuPrices.promotionReward.promotionRewardID','NULL','IS')
-        productCollectionList.setOrderBy('productName|DESC');
-        
+    
         if(isNull(accountType) || accountType == 'customer'){
            productCollectionList.addFilter('skus.retailFlag', 1);
         }else if(accountType == 'marketPartner'){
@@ -1443,19 +1442,13 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         if( arguments.data.cmsContentFilterFlag && !isNull(arguments.data.cmsContentID) && len(arguments.data.cmsContentID)) productCollectionList.addFilter('listingPages.content.cmsContentID',arguments.data.cmsContentID,"=" ); 
         if( arguments.data.categoryFilterFlag && !isNull(arguments.data.categoryID) && len(arguments.data.categoryID)) productCollectionList.addFilter('categories.categoryID', arguments.data.categoryID, "=" );
       
-        var recordsCount = productCollectionList.getRecordsCount();
+        productCollectionList.setOrderBy('productID|DESC');
         productCollectionList.setPageRecordsShow(arguments.data.pageRecordsShow);
         productCollectionList.setCurrentPageDeclaration(arguments.data.currentPage);
-        // writeDump(productCollectionList.getOrderBys()); 
-        // writeDump(productCollectionList.getHql());
-        // abort;
-        // writeDump(productCollectionList.getHql()); 
-        // writeDump(productCollectionList.gethqlParams())
-        // abort;
         var nonPersistentRecords = getCommonNonPersistentProductProperties(productCollectionList.getPageRecords(), priceGroupCode, currencyCode, siteCode);
-       
+ 
 		arguments.data['ajaxResponse']['productList'] = nonPersistentRecords;
-        arguments.data['ajaxResponse']['recordsCount'] = recordsCount;
+        arguments.data['ajaxResponse']['recordsCount'] = productCollectionList.getRecordsCount();
     }
     
     public any function getQuickShopModalBySkuID(required any data) {
