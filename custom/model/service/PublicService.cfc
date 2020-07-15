@@ -1290,6 +1290,11 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var currencyCode = site.setting('skuCurrency');
         var order = getHibachiScope().getCart();
         var priceGroupCode =  2;
+        var flexshipFlag = false;
+        
+        if( structKeyExists(arguments.data, 'flexshipFlag') && arguments.data.flexshipFlag == true ){
+            flexshipFlag = true;
+        }
         
         /*
             Price group is prioritized as so: 
@@ -1352,6 +1357,10 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             productCollectionList.addFilter('skus.mpFlag', 1);
         }else{
             productCollectionList.addFilter('skus.vipFlag', 1);
+        }
+        
+        if( flexshipFlag ){
+            productCollectionList.addFilter('skus.disableOnFlexshipFlag', 0);
         }
         
         if(structKeyExists(arguments.data,"hideProductPacksAndDisplayOnly") && arguments.data.hideProductPacksAndDisplayOnly){
