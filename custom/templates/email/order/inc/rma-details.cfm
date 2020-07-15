@@ -1,17 +1,17 @@
 <cfoutput>
-<table style="font-family:arial,sans-serif; font-size:13px; margin:0 auto; width:98%; table-layout: fixed; border-spacing: 5px;">
+<table style="font-family: arial, sans-serif; border-collapse: collapse; font-size:13px; margin:0 auto; width: 98%">
     <cfloop array="#order.getOrderItems()#" index="local.orderItem">
         <tr>
-    		<td style="width: 20%; text-align: left; padding: 10px;">
+    		<td style="border-bottom: 1px solid #dddddd; text-align: left; padding: 10px; color:#5b5b5f; text-align: center;">
     			#local.orderItem.getSku().getSkuCode()#
     		</td>
-    		<td style="width: 20%; text-align: left; padding: 10px;">
+    		<td style="border-bottom: 1px solid #dddddd; text-align: left; padding: 10px; color:#5b5b5f; text-align: center;">
     			#local.orderItem.getSku().getProduct().getTitle()#
     		</td>
-    		<td style="width: 30%; text-align: center; padding: 10px;">
+    		<td style="border-bottom: 1px solid #dddddd; text-align: left; padding: 10px; color:#5b5b5f; text-align: center;">
     			#NumberFormat(local.orderItem.getQuantity())#
     		</td>
-    		<td style="width: 30%; text-align: center; padding: 10px;">
+    		<td style="border-bottom: 1px solid #dddddd; text-align: left; padding: 10px; color:#5b5b5f; text-align: center;">
     		    #NumberFormat(local.orderItem.getQuantityReceived())#
     		</td>
     	</tr>
