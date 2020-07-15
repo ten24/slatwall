@@ -1,6 +1,9 @@
 import * as bigDecimal from '../inc/bigdecimal.js';
 
 function getDecimalRep(input,scale?){
+    
+    if(isNaN(input)) return;
+    
     if('undefined' == typeof scale){
         scale = 2;
     }
@@ -273,6 +276,9 @@ class SWReturnOrderItemsController{
     }
    
     private updateRefundTotals = () =>{
+        
+        if(!this.orderItems) return;
+        
         let refundSubtotal = 0;
         let refundPVTotal = 0;
         let refundCVTotal = 0;
