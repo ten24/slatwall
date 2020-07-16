@@ -38,6 +38,9 @@ Notes:
 */
 
 component extends="Slatwall.org.Hibachi.HibachiCollectionService" accessors="true" output="false" {
+    
+    property name="settingService";
+    property name="hibachiDataDAO";
 	
 	public any function processAccountCollection_Create(required any accountCollection, required any processObject){
 		arguments.accountCollection = this.saveAccountCollection(arguments.processObject.getAccountCollection());	
@@ -80,6 +83,26 @@ component extends="Slatwall.org.Hibachi.HibachiCollectionService" accessors="tru
         newCollection = this.saveCollection(newCollection);
 
         return newCollection;
+    }
+    
+    public boolean function tableSizeExceedsDefaultOrderByLimit(required string tableName){
+        
+        if( !StructKeyExists(variables, 'targetablesIndex') ){
+            variables.targetablesIndex = {};
+            var targeTables = this.getHibachiDataDAO().getTablesHavingRecordsMoreThan(
+                                    this.getSettingService().getSettingValue("globalDefaultOrderByMaxRecordsLimit")
+                                );
+                
+            for(var row in targeTables){
+                variables.targetablesIndex[ row['table_name'] ] = row['table_name'];
+            }
+        }
+        
+        if( StructKeyExists(variables.targetablesIndex, arguments.tableName) ){
+            return true;
+        }
+        
+        return false;
     }
 
 }

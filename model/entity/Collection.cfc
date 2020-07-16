@@ -2312,30 +2312,32 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 
 	public struct function getDefaultOrderBy(){
-		var orderByStruct={};
-		var baseEntityObject = getService('hibachiService').getEntityObject( getCollectionObject() );
+	    writeLog(file:"debug", text: 'called getDefaultOrderBy');
+	
+		var entityName = this.getCollectionObject();
+		var hibachiService = getService('hibachiService');
+		var hibachiCollectionService = getService('hibachiCollectionService');
+		
 		//is default order by based on hb_defaultOrderProperty
-		if(structKeyExists(baseEntityObject.getThisMetaData(), "hb_defaultOrderProperty")) {
-			orderByStruct={
-				propertyIdentifier='_' & lcase(getService('hibachiService').getProperlyCasedShortEntityName(getCollectionObject())) & '.' & baseEntityObject.getThisMetaData()["hb_defaultOrderProperty"],
-				direction="asc"
+		if( hibachiService.hasDfaultOrderByProeprtyNameByEntityName(entityName) ){
+	
+			return {
+				propertyIdentifier = hibachiService.getDefaultOrderByProeprtyIdentifierByEntityName(entityName),
+				direction = "asc"
 			};
-		//if not then does it have a createdDateTime
-		} else if ( baseEntityObject.hasProperty( "createdDateTime" ) ) {
-
-			var orderByStruct={
-				propertyIdentifier='_' & lcase(getService('hibachiService').getProperlyCasedShortEntityName(getCollectionObject())) & '.' & "createdDateTime",
-				direction="desc"
+		} 
+		//if not then does it have a createdDateTime, and the trecords-count in the table doesnot exceed `globalDefaultOrderByMaxRecordsLimit`
+		else if( 
+		    !hibachiCollectionService.tableSizeExceedsDefaultOrderByLimit( hibachiService.getTableNameByEntityName(entityName) ) 
+		    && 
+		    hibachiService.getEntityHasPropertyByEntityName(entityName, "createdDateTime" ) 
+		){
+		    
+			return {
+				propertyIdentifier = hibachiService.getDefaultOrderByProeprtyIdentifierByEntityName( entityName, "createdDateTime"),
+				direction = "desc"
 			};
-
-		//if still not then order by primary id
-		} else {
-			var orderByStruct={
-				propertyIdentifier='_' & lcase(getService('hibachiService').getProperlyCasedShortEntityName(getCollectionObject())) & '.' & baseEntityObject.getPrimaryIDPropertyName(),
-				direction="asc"
-			};
-		}
-		return orderByStruct;
+		} 
 	}
 
 	private string function getOrderByHQL(array orderBy=getOrderBys()){
@@ -2354,10 +2356,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		for(var i = 1; i <= orderByCount; i++){
 			var ordering = arguments.orderBy[i];
 			var direction = '';
+
 			if(!isnull(ordering.direction)){
 				direction = ordering.direction;
 			}
-
+			
 			orderByHQL &= '#getPropertyIdentifierAlias(ordering.propertyIdentifier,'orderBy')# #direction# ';
 
 			//check whether a comma is needed
@@ -4348,30 +4351,34 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}
 				
 				//if we have the collection objects primary id property as a column exclude all others group bys for better performance
-				if(getprimaryIDFound()){
-					if(find(getService('HibachiService').getPrimaryIDPropertyNameByEntityName(getCollectionObject()),groupByOverride)){
-						if(arraylen(getOrderBys()) == 0){
-							groupByOverride = listAppend(groupByOverride,convertALiasToPropertyIdentifier(getDefaultOrderBy().propertyIdentifier));
+				if( getPrimaryIDFound()){
+					
+					if(find(getService('HibachiService').getPrimaryIDPropertyNameByEntityName(getCollectionObject()),groupByOverride) ){
+						
+						if(arraylen(getOrderBys()) == 0 && !isNull(getDefaultOrderBy()) ){
+							groupByOverride = listAppend(groupByOverride, convertALiasToPropertyIdentifier(getDefaultOrderBy().propertyIdentifier) );
 						}
-					variables.groupBys = groupByOverride;
-					return variables.groupBys;
-				}
+    					variables.groupBys = groupByOverride;
+    					return variables.groupBys;
+    				}
 	
-				if(structKeyExists(collectionConfig, 'orderBy') && arraylen(collectionConfig.orderBy) > 0){
-					if(getApplyOrderBysToGroupBys()){
-						for (var j = 1; j <= arraylen(collectionConfig.orderBy); j++) {
-							if (ListFindNoCase(groupByList, collectionConfig.orderBy[j].propertyIdentifier) > 0 || isAggregateFunction(collectionConfig.orderBy[j].propertyIdentifier)) continue;
-							groupByList = listAppend(groupByList, collectionConfig.orderBy[j].propertyIdentifier);
-						}
+    				if(structKeyExists(collectionConfig, 'orderBy') && arraylen(collectionConfig.orderBy) > 0 ){
+    					
+    					if(getApplyOrderBysToGroupBys() ){
+    						for (var j = 1; j <= arraylen(collectionConfig.orderBy); j++ ){
+    							if ( 
+    							    ListFindNoCase(groupByList, collectionConfig.orderBy[j].propertyIdentifier) > 0 
+    							    || isAggregateFunction(collectionConfig.orderBy[j].propertyIdentifier) 
+    							){
+    							    continue;
+    							}
+    							groupByList = listAppend(groupByList, collectionConfig.orderBy[j].propertyIdentifier);
+    						}
+    					}
+    				} 
+    				else if( !getExcludeOrderBy() && !getHasAggregate() && !isNull(getDefaultOrderBy()) ){
+						groupByList = listAppend(groupByList, getDefaultOrderBy().propertyIdentifier);
 					}
-				}else{
-					if(!getExcludeOrderBy()){
-						var orderBy = getDefaultOrderBy();
-						if(!getHasAggregate()){
-							groupByList = listAppend(groupByList,orderBy.propertyIdentifier);
-						}
-					}
-				}
 				}
 				variables.groupBys = groupByList;
 			}

@@ -1347,13 +1347,31 @@
 			
 		}
 		
+		public boolean function hasDfaultOrderByProeprtyNameByEntityName(required string entityName){
+			var entityMetaData = this.getEntityMetaData( arguments.entityName );
+            return StructKeyExists(entityMetaData, "hb_defaultOrderProperty");
+		}
+		
+		public string function getDfaultOrderByProeprtyNameByEntityName(required string entityName){
+			var entityMetaData = this.getEntityMetaData( arguments.entityName );
+            return entityMetaData["hb_defaultOrderProperty"];
+		}
+		
+		public string function getDefaultOrderByProeprtyIdentifierByEntityName(required string entityName, string orderByPropertyName){
+
+			if( !structKeyExists(arguments, 'orderByPropertyName') ){
+			    arguments.orderByPropertyName = this.getDfaultOrderByProeprtyNameByEntityName(arguments.entityName);
+			}
+
+			return '_' & lcase( this.getProperlyCasedShortEntityName(arguments.entityName) ) & '.' & arguments.orderByPropertyName;
+		}
 			
 		public any function getTableTopSortOrder(required string tableName, string contextIDColumn, string contextIDValue) {
 			return getHibachiDAO().getTableTopSortOrder(argumentcollection=arguments);
 		}
 		
 		public string function getTableNameByEntityName(required string entityName){
-			entityMetaData = getEntityMetaData( arguments.entityName );
+			var entityMetaData = getEntityMetaData( arguments.entityName );
 			return entityMetaData.table; 
 		}
 	

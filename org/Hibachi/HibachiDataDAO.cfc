@@ -192,6 +192,23 @@ Notes:
 			truncateQuery.setSQL(sql);
 			truncateQuery.execute();
 		}
+		
+		public any function getTablesHavingRecordsMoreThan(required numeric count){
+
+		    var q = new Query();
+			var sql = " 
+    			Select table_name 
+     	        FROM INFORMATION_SCHEMA.TABLES 
+    	        WHERE table_name like 'sw%'
+                AND table_schema = ( SELECT DATABASE() )
+                AND TABLE_ROWS > #arguments.count#
+            ";
+            
+            WriteLog(file:'debug', text:sql );
+            
+			q.setSQL(sql);
+			return q.execute().getResult();
+		}
 	</cfscript>
 	
 </cfcomponent>
