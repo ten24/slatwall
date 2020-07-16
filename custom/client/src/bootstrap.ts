@@ -10,10 +10,10 @@ class bootstrapper extends BaseBootStrapper{
         
         if(__DEBUG_MODE__){
             bootstraper.loading( () => {
-                console.log("Bootstraping Monat-frontend-moule STARTED, will resolve dependencies(config, rb-keys)");
+                console.log("Boostraping Monat-frontend-module STARTED, will resolve dependencies(config, rb-keys)");
             })
             .done( () => {
-                console.log("Boogtstraping Monat-frontend-moule COMPLETED");
+                console.log("Bootstraping Monat-frontend-module COMPLETED");
             })
         }
         

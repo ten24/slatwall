@@ -65,7 +65,7 @@
             loadingCallback = angular.noop,
             doneCallback = angular.noop;
 
-        var errorCallback =  (e) => console.error(`Boogtstraping ${app} FAILED`, e);
+        var errorCallback =  (e) => console.error(`Bootstraping ${app} FAILED`, e);
             
         return {
 
