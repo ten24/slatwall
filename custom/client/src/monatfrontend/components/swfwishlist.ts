@@ -3,6 +3,9 @@
 declare var $;
 
 import {Option} from "../../../../../org/Hibachi/client/src/form/components/swfselect";
+import { MonatService } from "@Monat/services/monatservice";
+import { OrderTemplateService } from "@Monat/services/ordertemplateservice";
+import { MonatAlertService } from "@Monat/services/monatAlertService";
 
 class SWFWishlistController {
     public orderTemplateItems:Array<any>;
@@ -27,8 +30,9 @@ class SWFWishlistController {
         public $scope,
         public observerService,
         public $timeout,
-        public orderTemplateService,
-        public monatService
+        public orderTemplateService: OrderTemplateService,
+        public monatService: MonatService,
+        private monatAlertService: MonatAlertService
     ){
         if(!this.pageRecordsShow){
             this.pageRecordsShow = 6;
@@ -119,9 +123,14 @@ class SWFWishlistController {
     }
     
     public getWishlistsLight = () =>{
-        this.orderTemplateService.getOrderTemplatesLight().then(response =>{
-            this.orderTemplates = response['orderTemplates'];
-        });
+        this.orderTemplateService.getOrderTemplatesLight()
+        .then(response => {
+            if(!response?.orderTemplates){
+                throw(response);
+            }
+            this.orderTemplates = response.orderTemplates;
+        })
+        .catch(e => this.monatAlertService.showErrorsFromResponse(e));
     }
     
     public successfulAlert = () =>{
@@ -165,12 +174,12 @@ class SWFWishlistController {
 class SWFWishlist  {
     
     
-    public require          = {
+    public require = {
         ngModel:'?^ngModel'    
     };
+
     public priority = 1000;
     public scope = true;
-	public templateUrl:string;
     public restrict:"AE";
 
    /**
@@ -195,13 +204,6 @@ class SWFWishlist  {
 	public static Factory() {
 		return () => new this();
 	}
-    /**
-        * Sets the context of this form
-        */
-    public link:ng.IDirectiveLinkFn = (scope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes, formController) =>
-    {
-    }
-
   
 }
 export{

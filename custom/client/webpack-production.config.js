@@ -22,7 +22,7 @@ devConfig.optimization.minimizer = [
                 'console.warn'
             ] 
         },
-        mangle: false, // this will reduce the size of the bundles significently, but can cause problem with angular if components are not annotated properly
+        mangle: false, // this will reduce the size of the bundles significantly, but can cause problem with angular if components are not annotated properly
         module: false,
         output: {
             comments: false
