@@ -311,7 +311,6 @@ component output="false" accessors="true" extends="HibachiProcess" {
 				var quantity = val(orderItem.quantity);
 
 				if (quantity > originalItem.getQuantityDeliveredMinusReturns()){
-					abort;
 					return false;
 				}
 			}			
