@@ -33,7 +33,7 @@ class PublicService {
     public window:any;
     public finding:boolean;
     public rates:any;
-    private baseActionPath = "";
+    public baseActionPath = "";
     public months = [{name:'01 - JAN',value:1},{name:'02 - FEB',value:2},{name:'03 - MAR',value:3},{name:'04 - APR',value:4},{name:'05 - MAY',value:5},{name:'06 - JUN',value:6},{name:'07 - JUL',value:7},{name:'08 - AUG',value:8},{name:'09 - SEP',value:9},{name:'10 - OCT',value:10},{name:'11 - NOV',value:11},{name:'12 - DEC',value:12}];
     public years = [];
     public shippingAddress = "";
@@ -438,7 +438,7 @@ class PublicService {
         xhr.send(formData);
     }
 
-    private processAction = (response,request:PublicRequest)=>{
+    public processAction = (response,request:PublicRequest)=>{
 
         //Run any specific adjustments needed
         this.runCheckoutAdjustments(response);

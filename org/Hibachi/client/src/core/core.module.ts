@@ -5,6 +5,8 @@ import {HibachiInterceptor,IHibachi,IHibachiConfig,HibachiJQueryStatic} from "./
 //constant
 import {HibachiPathBuilder} from "./services/hibachipathbuilder";
 
+import { PublicRequest } from "./model/transient/publicrequest";
+
 //services
 import {CacheService} from "./services/cacheservice";
 import {PublicService} from "./services/publicservice";
@@ -306,6 +308,7 @@ var coremodule = angular.module('hibachi.core',[
 export{
 	coremodule,
 	PublicService,
+	PublicRequest,
 	RequestService,
 	ObserverService,
 	UtilityService,

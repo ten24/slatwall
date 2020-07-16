@@ -81,10 +81,10 @@ class Request extends BaseTransient {
     public processResponse=(response)=>{
         this.loading = false;
 
-        if(response.errors){
+        if(response?.errors){
             this.errors = response.errors;
         }
-        if(response.messages){
+        if(response?.messages){
             this.messages = response.messages
         }
 

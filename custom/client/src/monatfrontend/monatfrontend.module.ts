@@ -76,6 +76,8 @@ import { MonatCheckoutController } from "./controllers/monat-checkout";
 import { MonatProductListingController } from "./controllers/monat-product-listing";
 import { OnlyForYouController } from "./controllers/monat-onlyforyou";
 
+import { MonatDatePicker } from "./directives/monatdatepicker";
+
 //services
 import { MonatService } from "./services/monatservice";
 import { PayPalService } from "./services/paypalservice";
@@ -83,7 +85,7 @@ import { OrderTemplateService } from "./services/ordertemplateservice";
 import { MonatHttpInterceptor } from "./services/monatHttpInterceptor";
 import { MonatHttpQueueInterceptor } from "./services/monatHttpQueueInterceptor";
 import { MonatAlertService } from "./services/monatAlertService";
-import { MonatDatePicker } from "./directives/monatdatepicker";
+import { PublicService } from "./services/pubicservice";
 
 //State-management
 import { FlexshipCheckoutStore } from "./states/flexship-checkout-store";
@@ -177,6 +179,7 @@ var monatfrontendmodule = angular
 	.service("monatHttpInterceptor", MonatHttpInterceptor)
 	.service("monatHttpQueueInterceptor", MonatHttpQueueInterceptor)
 	.service("monatAlertService", MonatAlertService)
+    .service('publicService', PublicService)
 
 	//state-stores
 	.service("flexshipCheckoutStore", FlexshipCheckoutStore)
@@ -276,4 +279,7 @@ var monatfrontendmodule = angular
         })
     }
 
-export { monatfrontendmodule };
+export { 
+    monatfrontendmodule, 
+    PublicService 
+};

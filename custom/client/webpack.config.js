@@ -143,6 +143,7 @@ devConfig.optimization = {
 
 devConfig.plugins =  [
     
+	// https://blog.johnnyreilly.com/2016/07/using-webpacks-defineplugin-with-typescript.html
     new webpack.DefinePlugin({
         '__DEBUG_MODE__': JSON.stringify( this.mode === 'develop' )
     }),

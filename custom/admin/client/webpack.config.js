@@ -126,7 +126,7 @@ devConfig.plugins =  [
     new webpack.DefinePlugin({
         '__DEBUG_MODE__': JSON.stringify( this.mode === 'develop' )
     }),
-
+    
     new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en/),
     new webpack.HashedModuleIdsPlugin(), // so that file hashes don't change unexpectedly
     
