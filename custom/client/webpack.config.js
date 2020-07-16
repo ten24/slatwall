@@ -114,8 +114,8 @@ devConfig.module = {
                         attributes: false,
                         esModule: true,
                         minimize: {
-                            removeComments: this.mode === 'production',
-                            collapseWhitespace: this.mode === 'production',
+                            removeComments: devConfig.mode === 'production',
+                            collapseWhitespace: devConfig.mode === 'production',
                         },
                     },
                 }
@@ -144,7 +144,7 @@ devConfig.optimization = {
 devConfig.plugins =  [
     
     new webpack.DefinePlugin({
-        '__DEBUG_MODE__': JSON.stringify( this.mode === 'develop' )
+        '__DEBUG_MODE__': JSON.stringify( devConfig.mode === 'development' )
     }),
 
     new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en/),
