@@ -444,10 +444,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				clearPreviouslyAppliedPromotionMessages(arguments.order);
 				getHibachiScope().flushOrmSession();
 				for(var orderItem in arguments.order.getOrderItems()){
-					orderItem.updateCalculatedProperties(true);
+					orderItem.updateCalculatedProperties(runAgain=true,cascadeCalculateFlag=false);
 				}
-
-				getHibachiScope().flushOrmSession();
+				arguments.order.updateCalculatedProperties(runAgain=true,cascadeCalculateFlag=false);
+				try{
+					getHibachiDAO().flushOrmSession();
+				}catch(any e){
+					logHibachi('Pre-promotion: #e.message#');
+				}
 				
 				// This is a structure of promotionPeriods that will get checked and cached as to if we are still within the period use count, and period account use count
 				var promotionPeriodQualifications = {};
@@ -795,7 +799,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 
 			applyPromotionToOrderItem( arguments.orderItem, arguments.rewardStruct );
-			getHibachiScope().addModifiedEntity(arguments.orderItem);
 			return true;
 		}
 		return false;

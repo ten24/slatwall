@@ -42,7 +42,6 @@ component extends="Slatwall.model.service.PromotionService" {
 		    }
 
 			applyPromotionToOrderItem( arguments.orderItem, arguments.rewardStruct );
-			getHibachiScope().addModifiedEntity(orderItem);
 			return true;
 		}
 		return false;
