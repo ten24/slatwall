@@ -233,7 +233,8 @@ class EnrollmentMPController {
 		
 		let data:any = {
 			priceGroupCode: 1,
-			hideProductPacksAndDisplayOnly: true
+			hideProductPacksAndDisplayOnly: true,
+			pageRecordsShow: 40
 		};
 		
 		if(category){
