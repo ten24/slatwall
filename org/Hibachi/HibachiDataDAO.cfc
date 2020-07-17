@@ -204,7 +204,6 @@ Notes:
                 AND TABLE_ROWS > #arguments.count#
             ";
             
-            WriteLog(file:'debug', text:sql );
             
 			q.setSQL(sql);
 			return q.execute().getResult();

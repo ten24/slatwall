@@ -87,8 +87,8 @@ component extends="Slatwall.org.Hibachi.HibachiCollectionService" accessors="tru
     
     public boolean function tableSizeExceedsDefaultOrderByLimit(required string tableName){
         
-        if( !StructKeyExists(variables, 'targetablesIndex') ){
-            variables.targetablesIndex = {};
+        if( !StructKeyExists(variables, 'targeTablesIndex') ){
+            variables.targeTablesIndex = {};
             var targeTables = this.getHibachiDataDAO().getTablesHavingRecordsMoreThan(
                                     this.getSettingService().getSettingValue("globalDefaultOrderByMaxRecordsLimit")
                                 );
@@ -98,7 +98,7 @@ component extends="Slatwall.org.Hibachi.HibachiCollectionService" accessors="tru
             }
         }
         
-        if( StructKeyExists(variables.targetablesIndex, arguments.tableName) ){
+        if( StructKeyExists(variables.targeTablesIndex, arguments.tableName) ){
             return true;
         }
         

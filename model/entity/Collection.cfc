@@ -2312,17 +2312,16 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 
 	public struct function getDefaultOrderBy(){
-	    writeLog(file:"debug", text: 'called getDefaultOrderBy');
 	
 		var entityName = this.getCollectionObject();
 		var hibachiService = getService('hibachiService');
 		var hibachiCollectionService = getService('hibachiCollectionService');
 		
 		//is default order by based on hb_defaultOrderProperty
-		if( hibachiService.hasDfaultOrderByProeprtyNameByEntityName(entityName) ){
+		if( hibachiService.hasDefaultOrderByPropertyNameByEntityName(entityName) ){
 	
 			return {
-				propertyIdentifier = hibachiService.getDefaultOrderByProeprtyIdentifierByEntityName(entityName),
+				propertyIdentifier = hibachiService.getDefaultOrderByPropertyIdentifierByEntityName(entityName),
 				direction = "asc"
 			};
 		} 
@@ -2334,7 +2333,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		){
 		    
 			return {
-				propertyIdentifier = hibachiService.getDefaultOrderByProeprtyIdentifierByEntityName( entityName, "createdDateTime"),
+				propertyIdentifier = hibachiService. getDefaultOrderByPropertyIdentifierByEntityName( entityName, "createdDateTime"),
 				direction = "desc"
 			};
 		} 

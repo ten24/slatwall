@@ -1347,7 +1347,7 @@
 			
 		}
 		
-		public boolean function hasDfaultOrderByProeprtyNameByEntityName(required string entityName){
+		public boolean function hasDefaultOrderByPropertyNameByEntityName(required string entityName){
 			var entityMetaData = this.getEntityMetaData( arguments.entityName );
             return StructKeyExists(entityMetaData, "hb_defaultOrderProperty");
 		}
@@ -1357,7 +1357,7 @@
             return entityMetaData["hb_defaultOrderProperty"];
 		}
 		
-		public string function getDefaultOrderByProeprtyIdentifierByEntityName(required string entityName, string orderByPropertyName){
+		public string function getDefaultOrderByPropertyIdentifierByEntityName(required string entityName, string orderByPropertyName){
 
 			if( !structKeyExists(arguments, 'orderByPropertyName') ){
 			    arguments.orderByPropertyName = this.getDfaultOrderByProeprtyNameByEntityName(arguments.entityName);
