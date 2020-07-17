@@ -124,7 +124,7 @@ devConfig.plugins =  [
     
     // https://blog.johnnyreilly.com/2016/07/using-webpacks-defineplugin-with-typescript.html
     new webpack.DefinePlugin({
-        '__DEBUG_MODE__': JSON.stringify( this.mode === 'develop' )
+        '__DEBUG_MODE__': JSON.stringify( devConfig.mode === 'development' )
     }),
     
     new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en/),
@@ -178,6 +178,7 @@ devConfig.plugins =  [
     
     new WebpackBar({
         name: "Monat Admin",
+        
         reporters: [ 'basic', 'fancy', 'profile', 'stats' ],
         fancy: true,
         profile: false,
