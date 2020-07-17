@@ -1170,7 +1170,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 
 	public void function preInsert(){
 		// set errorextradata to capture info in case of error
-		getHibachiScope().setErrorExtraData({'EntityName': getEntityName() });
+		getHibachiScope().setErrorExtraData({'EntityName': getEntityName(), 'Method': 'preInsert', 'EntityID': getPrimaryIDValue() });
 		
 		if(!this.isPersistable()) {
 			for(var errorName in getErrors()) {
@@ -1267,7 +1267,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 
 	public void function preUpdate(struct oldData){
 		// set errorextradata to capture info in case of error
-		getHibachiScope().setErrorExtraData({'EntityName': getEntityName() });
+		getHibachiScope().setErrorExtraData({'EntityName': getEntityName(), 'Method': 'preUpdate','EntityID': getPrimaryIDValue() });
 
 		if(!this.isPersistable()) {
 			for(var errorName in getErrors()) {
