@@ -152,6 +152,22 @@ devConfig.plugins =  [
       deleteOriginalAssets: false
     }),
     
+    // HTTPS only
+    // https://webpack.js.org/plugins/compression-webpack-plugin/#using-brotli
+    // brotli is much smaller
+    new CompressionPlugin({
+      test: /\.(j|c)ss?$/i,
+      filename: '[path].br[query]',
+      algorithm: 'brotliCompress',
+      threshold: 10240,
+      minRatio: 0.8,
+      compressionOptions: {
+        // zlib’s `level` option matches Brotli’s `BROTLI_PARAM_QUALITY` option.
+        level: 11,
+      },
+      deleteOriginalAssets: false,
+    }),
+    
     new ForkTsCheckerWebpackPlugin({
         async: false,
         useTypescriptIncrementalApi: true,
