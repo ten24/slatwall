@@ -128,14 +128,6 @@ component displayname="Account Address" entityname="SlatwallAccountAddress" tabl
 	
 	// ==================  END:  Overridden Methods ========================
 	
-	public any function getAssociatedFlexshipCollectionList(){
-		var flexshipCollectionList = getService('orderService').getOrderTemplateCollectionList();
-		flexshipCollectionList.addFilter(propertyIdentifier='shippingAccountAddress.accountAddressID', value=this.getAccountAddressID(), comparisonOperator='=', filterGroupAlias ="address");
-		flexshipCollectionList.addFilter(propertyIdentifier='billingAccountAddress.accountAddressID', value=this.getAccountAddressID(), comparisonOperator='=', filterGroupAlias ="address", logicalOperator="OR");
-		flexshipCollectionList.addFilter(propertyIdentifier='orderTemplateType.systemCode', value='ottSchedule', comparisonOperator='=');
-		return flexshipCollectionList;
-	}
-	
 	public boolean function addressHasNoAssociatedFlexship(){
 		var flexshipType = getService('typeService').getTypeBySystemCode('ottSchedule');
 		return getDao('accountAddressDAO').addressHasNoAssociatedOrderTemplateByOTType(accountAddressID = this.getAccountAddressID(), orderTemplateTypeID = flexshipType.getTypeID());
