@@ -73,7 +73,7 @@ var appConfig = {
         }),
     
         new WebpackBar({
-            name: "Monat Frontend",
+            name: "Hibachi: vendor",
             reporters: [ 'basic', 'fancy', 'profile', 'stats' ],
             fancy: true,
             profile: false,
