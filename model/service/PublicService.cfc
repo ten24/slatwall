@@ -476,7 +476,7 @@ component  accessors="true" output="false"
             
             var deleteOk = getAccountService().deleteAccountAddress( accountAddress );
             getHibachiScope().addActionResult( "public:account.deleteAccountAddress", !deleteOK );
-            getHibachiScope().logHibachi('did we delete: #deleteOk#', true)
+         
             if(!deleteOk) {
                 if(accountAddress.hasErrors()){
                      getHibachiScope().logHibachi('adding errors 490?', true)

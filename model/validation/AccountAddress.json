@@ -3,7 +3,7 @@
 		"account": [{ "contexts": "save", "required": true }],
 		"address": [
 				{ "contexts": "delete", "method": "isNotDefaultAccountShippingAddress" },
-				{ "contexts": "delete", "method": "addressHasNoAssociatedFlexship" },
+				{ "contexts": "delete", "method": "addressHasNoAssociatedFlexship" }
 			]
 	},
 	"populatedPropertyValidation": {
