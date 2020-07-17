@@ -468,33 +468,26 @@ component  accessors="true" output="false"
         
         var accountAddress = getAccountService().getAccountAddress( data.accountAddressID );
         
-        if(!accountAddress.addressHasNoAssociatedFlexship()){
-            this.addErrors(arguments.data, [ 
-                { 'AccountAddress': getHibachiScope().rbKey('validate.delete.AccountAddress.AddressHasFlexship') }
-            ]);
-            return;
-        }
-        
         if(!isNull(accountAddress) &&
             !IsNull(accountAddress.getAccount()) &&
             getHibachiScope().getLoggedInFlag()  &&
             accountAddress.getAccount().getAccountID() == getHibachiScope().getAccount().getAccountID() 
         ) {
             
-            getDao('AccountAddressDAO').deleteDependentRelationsByAccountAddressID(data.accountAddressID);
-            
             var deleteOk = getAccountService().deleteAccountAddress( accountAddress );
             getHibachiScope().addActionResult( "public:account.deleteAccountAddress", !deleteOK );
-            
+            getHibachiScope().logHibachi('did we delete: #deleteOk#', true)
             if(!deleteOk) {
-                
                 if(accountAddress.hasErrors()){
+                     getHibachiScope().logHibachi('adding errors 490?', true)
                     this.addErrors( arguments.data, accountAddress.getErrors() );
                 } else {
                     this.addErrors(  arguments.data, [ 
                         { 'AccountAddress': getHibachiScope().rbKey('validate.define.somethingWentWrong') } 
                     ]);
                 }
+            }else{
+                getDao('AccountAddressDAO').deleteDependentRelationsByAccountAddressID(data.accountAddressID);
             }
             
         } else {
