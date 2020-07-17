@@ -2489,19 +2489,31 @@ __webpack_require__(/*! !/home/ec2-user/environment/dev-ops/projects/Monat/Slatw
         }
         return angular.injector(modules);
     }
-
-    function bootstrapApplication(angularApp) {
+    
+    /**
+     * `config = {  strictDi: boolean }`
+     * `strictDi` - disable automatic function annotation for the application. 
+     * This is meant to assist in finding bugs which break minified code. 
+     * 
+     * Defaults to `false`.
+     * 
+     */
+    function bootstrapApplication(angularApp, config) {
+        
         angular.element(document).ready(function () {
         	try{
+        	    // https://docs.angularjs.org/api/ng/function/angular.bootstrap
 	        	if(angular.isArray(angularApp)){
-	        		angular.bootstrap(document, angularApp);
-	        	}else{
-	        		angular.bootstrap(document, [angularApp]);
+	        		angular.bootstrap(document, angularApp, config);
+	        	}
+	        	else {
+	        		angular.bootstrap(document, [angularApp], config);
 	        	}
 	        //if bootstrap fails then fall back to ui.bootstrap exclusively
-        	}catch(e){
+        	}
+        	catch(e) {
         	    console.error(e);
-        		angular.bootstrap(document, ['ui.bootstrap']);
+        		angular.bootstrap(document, ['ui.bootstrap'], config);
         	}
         });
     }
@@ -2511,10 +2523,11 @@ __webpack_require__(/*! !/home/ec2-user/environment/dev-ops/projects/Monat/Slatw
         var injector = createInjector(modules),
             $q = injector.get('$q'),
             promises = [],
-            errorCallback = angular.noop,
             loadingCallback = angular.noop,
             doneCallback = angular.noop;
 
+        var errorCallback =  (e) => console.error(`Boogtstraping ${app} FAILED`, e);
+            
         return {
 
             resolve: function (promise) {
@@ -2523,12 +2536,12 @@ __webpack_require__(/*! !/home/ec2-user/environment/dev-ops/projects/Monat/Slatw
                 return this;
             },
 
-            bootstrap: function () {
+            bootstrap: function (strictDi=false) {
                 loadingCallback();
 
                 return $q.all(promises)
                     .then(function () {
-                        bootstrapApplication(app);
+                        bootstrapApplication(app, { 'strictDi': strictDi } );
                     }, errorCallback)
                     .finally(doneCallback);
             },
