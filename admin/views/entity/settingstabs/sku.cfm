@@ -77,6 +77,7 @@ Notes:
 		<swa:SlatwallSetting settingName="skuShippingWeight" />
 		<swa:SlatwallSetting settingName="skuShippingWeightUnitCode" />
 		<swa:SlatwallSetting settingName="skuTrackInventoryFlag" />
+		<swa:SlatwallSetting settingName="skuTrackQATSBelowThreshold" />
 		<swa:SlatwallSetting settingName="skuQATSIncludesQNROROFlag" />
 		<swa:SlatwallSetting settingName="skuQATSIncludesQNROVOFlag" />
 		<swa:SlatwallSetting settingName="skuQATSIncludesQNROSAFlag" />

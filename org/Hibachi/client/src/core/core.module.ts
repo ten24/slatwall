@@ -4,7 +4,9 @@
 import {HibachiInterceptor,IHibachi,IHibachiConfig,HibachiJQueryStatic} from "./services/hibachiinterceptor";
 //constant
 import {HibachiPathBuilder} from "./services/hibachipathbuilder";
-import 'angular-modal-service';
+
+import { PublicRequest } from "./model/transient/publicrequest";
+
 //services
 import {CacheService} from "./services/cacheservice";
 import {PublicService} from "./services/publicservice";
@@ -96,6 +98,7 @@ import {SWOrderByControls} from "./components/sworderbycontrols";
 import {alertmodule} from "../alert/alert.module";
 import {dialogmodule} from "../dialog/dialog.module";
 import {cacheModule} from "../cache/cache.module";
+import {angularModalModule} from "../modal/modal.module";
 
 import {BaseObject} from "./model/baseobject";
 declare var $:any;
@@ -110,7 +113,7 @@ var coremodule = angular.module('hibachi.core',[
   dialogmodule.name,
   //3rdParty modules
   'ui.bootstrap',
-  'angularModalService'
+  angularModalModule.name
 ])
 .config(
     [ '$compileProvider','$httpProvider','$logProvider',
@@ -305,6 +308,7 @@ var coremodule = angular.module('hibachi.core',[
 export{
 	coremodule,
 	PublicService,
+	PublicRequest,
 	RequestService,
 	ObserverService,
 	UtilityService,

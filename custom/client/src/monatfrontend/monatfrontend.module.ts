@@ -1,4 +1,3 @@
-import "angular-modal-service";
 import "angularjs-toaster";
 
 import { frontendmodule } from "../../../../org/Hibachi/client/src/frontend/frontend.module";
@@ -77,6 +76,8 @@ import { MonatCheckoutController } from "./controllers/monat-checkout";
 import { MonatProductListingController } from "./controllers/monat-product-listing";
 import { OnlyForYouController } from "./controllers/monat-onlyforyou";
 
+import { MonatDatePicker } from "./directives/monatdatepicker";
+
 //services
 import { MonatService } from "./services/monatservice";
 import { PayPalService } from "./services/paypalservice";
@@ -84,7 +85,7 @@ import { OrderTemplateService } from "./services/ordertemplateservice";
 import { MonatHttpInterceptor } from "./services/monatHttpInterceptor";
 import { MonatHttpQueueInterceptor } from "./services/monatHttpQueueInterceptor";
 import { MonatAlertService } from "./services/monatAlertService";
-import { MonatDatePicker } from "./directives/monatdatepicker";
+import { PublicService } from "./services/pubicservice";
 
 //State-management
 import { FlexshipCheckoutStore } from "./states/flexship-checkout-store";
@@ -178,10 +179,10 @@ var monatfrontendmodule = angular
 	.service("monatHttpInterceptor", MonatHttpInterceptor)
 	.service("monatHttpQueueInterceptor", MonatHttpQueueInterceptor)
 	.service("monatAlertService", MonatAlertService)
+    .service('publicService', PublicService)
 
 	//state-stores
 	.service("flexshipCheckoutStore", FlexshipCheckoutStore)
-
 	.config([
 		"$locationProvider",
 		"$httpProvider",
@@ -261,5 +262,24 @@ var monatfrontendmodule = angular
 			}
 		},
 	]);
+	
+	// the __DEBUG_MODE__ is driven by webpack-config and only enabled in debug-builds
+	if(__DEBUG_MODE__){
+	    // added here for debugging angular-bootstrapping, and other similar errors
+	    // this will throw all of the angular-exceptions 
+	    //   regardless if they're catched-anywhere ( .catch( error => () ) blocks )
+	    //   and you'll see a lot-more errors in the console
+	    //   this will effect all modules, as $exceptionHandler is part of angular-core
+        monatfrontendmodule.factory('$exceptionHandler', () => {
+            return (exception, cause) => {
+                exception.message += ` caused by '${cause || "no cause given"}' `;
+                // can log to sentry from here as well 
+                throw exception;
+            };
+        })
+    }
 
-export { monatfrontendmodule };
+export { 
+    monatfrontendmodule, 
+    PublicService 
+};

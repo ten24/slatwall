@@ -1734,6 +1734,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		arguments.orderTemplate.setScheduleOrderNextPlaceDateTime(nextPlaceDate);
 		arguments.orderTemplate.setLastOrderPlacedDateTime( now() );
 		arguments.orderTemplate.setScheduleOrderProcessingFlag( false );
+		arguments.orderTemplate.setMostRecentError( javacast('null','') );
+		arguments.orderTemplate.setMostRecentErrorDateTime( javacast('null','') );
 		ormFlush();
 		
 		var eventData = { entity: newOrder, order: newOrder, data: {} };
@@ -1856,7 +1858,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has declined payment');
 			newOrder.clearHibachiErrors();
 			// newOrder = this.processOrder( newOrder, {}, 'updateOrderAmounts' );
-			newOrder = this.saveOrder(newOrder);
+			newOrder = this.saveOrder(newOrder, updateOrderAmounts=false, updateShippingMethodOptions=false, checkNewAccountAddressSave=false); 
 			ormFlush(); 
 			//fire retry payment failure event so it can be utilized in workflows
 			getHibachiEventService().announceEvent("afterOrderProcess_retryPaymentFailure", {"entity":newOrder, "order":newOrder});
@@ -1980,7 +1982,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		if( !processOrderAddOrderItem.hasErrors() ){
 			arguments.order = this.processOrder_addOrderItem(arguments.order, processOrderAddOrderItem);
-		} 
+		} else if(isNull(arguments.orderTemplateItemStruct['temporaryFlag']) || !arguments.orderTemplateItemStruct['temporaryFlag']){
+			arguments.order.addError('addOrderItem', processOrderAddOrderItem.getErrors());
+			getHibachiScope().setORMHasErrors(true);
+		}
 		
 		return arguments.order;
 	}
@@ -2665,6 +2670,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// If the order doesn't have any errors, then we can flush the ormSession
 		if(!returnOrder.hasErrors()) {
 			getHibachiDAO().flushORMSession();
+			
 			if(listFindNoCase('otReturnOrder,otExchangeOrder,otReplacementOrder,otRefundOrder',arguments.processObject.getOrderTypeCode()) && orderItemFoundFlag) {
 				// 'placeOrder' process will handle logic for the order payment
 				returnOrder = this.processOrder(returnOrder, placeOrderData, 'placeOrder');
@@ -5723,6 +5729,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// ================== START: Private Helper Functions =====================
 
 	private void function removeOrderItemAndChildItemRelationshipsAndDelete( required any orderItem ) {
+		
+		// delete open orderitem records
+		if(!isNull(arguments.orderItem.getOrder().getOrderOpenDatetime())){
+			getDAO('InventoryDAO').manageOpenOrderItem(actionType = 'delete', orderItemID = arguments.orderItem.getOrderItemID());
+		}
 
 		// Call on all ChildItems First
 		for(var ci=arrayLen(arguments.orderItem.getChildOrderItems()); ci >= 1; ci--) {

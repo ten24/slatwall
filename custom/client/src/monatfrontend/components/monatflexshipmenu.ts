@@ -1,4 +1,5 @@
 class MonatFlexshipMenuController {
+	public restrict = 'EA'
 	public orderTemplate: any;
 	public monatFlexshipCard;
 
@@ -70,21 +71,10 @@ class MonatFlexshipMenu {
 	public controller = MonatFlexshipMenuController;
 	public controllerAs = 'monatFlexshipMenu';
 
-	public static Factory() {
-		var directive: any = (monatFrontendBasePath, $hibachi, rbkeyService, requestService) =>
-			new MonatFlexshipMenu(monatFrontendBasePath, $hibachi, rbkeyService, requestService);
-		directive.$inject = ['monatFrontendBasePath', '$hibachi', 'rbkeyService', 'requestService'];
-		return directive;
-	}
+	public template = require('./monatflexshipmenu.html');
 
-	constructor(
-		private monatFrontendBasePath,
-		private slatwallPathBuilder,
-		private $hibachi,
-		private rbkeyService,
-	) {
-		this.templateUrl = monatFrontendBasePath + '/monatfrontend/components/monatflexshipmenu.html';
-		this.restrict = 'EA';
+	public static Factory() {
+		return () => new this();
 	}
 
 	public link = (scope, element, attrs) => {};

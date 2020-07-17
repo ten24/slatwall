@@ -27,8 +27,7 @@ class MonatFlexshipDeleteController {
 
 class MonatFlexshipDeleteModal {
 
-	public restrict:string;
-	public templateUrl:string;
+	public restrict = 'E';
 	
 	public scope = {};
 	public bindToController = {
@@ -38,34 +37,10 @@ class MonatFlexshipDeleteModal {
 	public controller=MonatFlexshipDeleteController;
 	public controllerAs="monatFlexshipDeleteModal";
 
-	public static Factory(){
-        var directive:any = (
-		    monatFrontendBasePath,
-			$hibachi,
-			rbkeyService,
-			requestService
-        ) => new MonatFlexshipDeleteModal(
-			monatFrontendBasePath,
-			$hibachi,
-			rbkeyService,
-			requestService
-        );
-        directive.$inject = [
-			'monatFrontendBasePath',
-			'$hibachi',
-			'rbkeyService',
-			'requestService'
-        ];
-        return directive;
-    }
+	public template = require('./delete.html');
 
-	constructor(private monatFrontendBasePath, 
-				private slatwallPathBuilder, 
-				private $hibachi,
-				private rbkeyService
-	){
-		this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/flexship/modals/delete.html";
-		this.restrict = "E";
+	public static Factory() {
+		return () => new this();
 	}
 
 	public link = (scope, element, attrs) =>{
@@ -77,4 +52,3 @@ class MonatFlexshipDeleteModal {
 export {
 	MonatFlexshipDeleteModal
 };
-

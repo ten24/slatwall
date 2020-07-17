@@ -302,14 +302,9 @@ export class FlexshipCheckoutStep {
 	public controllerAs = "flexshipCheckout";
 	public bindToController = {};
 
-	constructor(private basePath) {
-		this.templateUrl = basePath + "/monatfrontend/components/flexshipFlow/checkout-step.html";
-	}
+	public template = require('./checkout-step.html');
 
 	public static Factory() {
-		//@ngInject
-		return (monatFrontendBasePath) => {
-			return new FlexshipCheckoutStep(monatFrontendBasePath);
-		};
+		return () => new this();
 	}
 }

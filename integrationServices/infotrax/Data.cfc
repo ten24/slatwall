@@ -234,7 +234,7 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 		
 		if(structKeyExists(iceResponse, 'returnserialnumber')){
 			
-			logHibachi('InfoTrax - returnserialnumber: #iceResponse.returnserialnumber#', true);
+			logHibachi('InfoTrax - returnserialnumber: #iceResponse.returnserialnumber#');
 			
 			var query = 'UPDATE #tableName# SET lastSyncedDateTime = NOW()';
 
@@ -334,6 +334,7 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 	}
 	
 	public struct function createAutoship(required struct DTSArguments){
+		arguments.DTSArguments['Status'] = 1;
 		return postRequest('ICEAutoship.create', arguments.DTSArguments, getSessionToken());
 	}
 	

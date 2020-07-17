@@ -159,17 +159,11 @@ class SponsorSearchSelector {
 
 	public controller = SponsorSearchSelectorController;
 	public controllerAs = 'sponsorSearchSelector';
+	
+	public template = require('./sponsor-search-selector.html');
 
 	public static Factory() {
-		var directive = monatFrontendBasePath => new this( monatFrontendBasePath );
-		directive.$inject = ['monatFrontendBasePath'];
-		return directive;
-	}
-	
-	constructor(
-		private monatFrontendBasePath
-	) {
-		this.templateUrl = monatFrontendBasePath + '/monatfrontend/components/sponsor-search-selector.html';
+		return () => new this();
 	}
 }
 

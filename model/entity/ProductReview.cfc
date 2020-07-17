@@ -64,6 +64,9 @@ component displayname="Product Review" entityname="SlatwallProductReview" table=
 	
 	// Related Object Properties (one-to-many)
  	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" fkcolumn="productReviewID" inverse="true" cascade="all-delete-orphan";
+	
+	// Related Object Properties (many-to-many)
+	property name="productReviewSites" singularname="productReviewSite" cfc="Site" type="array" fieldtype="many-to-many" linktable="SwProductReviewSite" fkcolumn="productReviewID" inversejoincolumn="siteID";
 
 	// Remote Properties
 	property name="remoteID" ormtype="string";

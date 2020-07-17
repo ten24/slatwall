@@ -125,15 +125,11 @@ class SWFPagination {
 
 	public controller = SWFPaginationController;
 	public controllerAs = 'paginationController';
+	
+	public template = require('./swfpagination.html');
 
 	public static Factory() {
-		var directive: any = (monatFrontendBasePath) => new this(monatFrontendBasePath);
-		directive.$inject = ['monatFrontendBasePath'];
-		return directive;
-	}
-
-	constructor(private monatFrontendBasePath) {
-		this.templateUrl = monatFrontendBasePath + '/monatfrontend/components/swfpagination.html';
+		return () => new this();
 	}
 }
 

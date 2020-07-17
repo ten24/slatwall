@@ -1,45 +1,41 @@
-var devConfig = require('../../org/Hibachi/client/webpack.config');
-var CompressionPlugin = require("compression-webpack-plugin");
-var webpack = require('webpack');
-var path = require('path');
-var customPath = __dirname;
-var PATHS = {
-    app: path.join(customPath, '/src'),
-    lib: path.join(customPath, '/lib')
-};
+let devConfig = require('./webpack.config');
+const webpack = require('webpack');
+const TerserPlugin = require("terser-webpack-plugin"); //minimizer
 
-if(typeof bootstrap !== 'undefined'){
-    devConfig.entry.app[this.entry.app.length - 1] = bootstrap;
-}
-delete devConfig.entry.vendor; //remove the vendor info from this version.
-devConfig.output.path = PATHS.app;
-devConfig.context = PATHS.app;
-devConfig.watch = false;
-//don't need the vendor bundle generated here because we include the vendor bundle already.
-devConfig.plugins =  [
-    new CompressionPlugin({
-      asset: "[path].gz[query]",
-      algorithm: "gzip",
-      test: /\.js$|\.css$|\.html$/,
-      threshold: 10240,
-      minRatio: 0.8
-    }),
-    
-    new webpack.optimize.AggressiveMergingPlugin(),//Merge chunks
-    new webpack.optimize.OccurrenceOrderPlugin(),
-    new webpack.optimize.UglifyJsPlugin({
-	    mangle: false,
-	    minimize: true,
-	    compress: {
-	         // remove warnings
-	            warnings: false,
-	
-	         // Drop console statements
-	            drop_console: true
-	       },
-	    output: {
-        	comments: false
-    	}
-	})
-];   
+devConfig.mode = 'production';
+devConfig.devtool = 'none';
+
+devConfig.optimization.minimizer = [
+  new TerserPlugin({
+    cache: true,
+    parallel: true,
+    extractComments: false,// will extract licenses
+    terserOptions: {
+        warnings: false,
+        parse: {},
+        compress: {
+            // drop_console: true, 
+            pure_funcs: [
+                'console.log', 
+                'console.info', 
+                'console.debug', 
+                'console.warn'
+            ] 
+        },
+        mangle: false, // this will reduce the size of the bundles significantly, but can cause problem with angular if components are not annotated properly
+        module: false,
+        output: {
+            comments: false
+        },
+        toplevel: false,
+        nameCache: null,
+        ie8: true,
+        keep_classnames: false,
+        keep_fnames: false,
+        safari10: true
+    }
+  })
+];
+
+
 module.exports = devConfig;

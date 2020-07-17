@@ -20,6 +20,8 @@ class SWOrderTemplateItemsController{
     public skuPropertyColumnConfigs:any[];
     
     public additionalOrderTemplateItemPropertiesToDisplay:string;
+    
+    public additionalFilters:any[];
 
 	constructor(public $hibachi,
 	            public collectionConfigService, 
@@ -57,6 +59,11 @@ class SWOrderTemplateItemsController{
 	    	this.addSkuCollection.addFilter('product.sites.siteID', this.siteId,'=',undefined,true);
 	    }
 	    
+	    if( angular.isDefined(this.additionalFilters) ){
+	    	for(var filter of this.additionalFilters){
+	    		this.addSkuCollection.addFilter(filter.propertyIdentifier, filter.value, filter.comparisonOperator);
+	    	}
+	    }
 	    this.skuColumns = angular.copy(this.addSkuCollection.getCollectionConfig().columns);
 	    this.editOrderTemplateColumns = angular.copy( this.viewOrderTemplateItemsCollection.getCollectionConfig().columns);
 	    this.viewOrderTemplateColumns = angular.copy( this.editOrderTemplateItemsCollection.getCollectionConfig().columns); 
@@ -87,6 +94,7 @@ class SWOrderTemplateItems implements ng.IDirective {
 	public scope = {};
 	public bindToController = {
 		additionalOrderTemplateItemPropertiesToDisplay: '@?',
+		additionalFilters: '<?',
 		currencyCode: '@?',
 		edit:"=?",
         orderTemplate: '<?', 

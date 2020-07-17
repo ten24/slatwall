@@ -56,8 +56,7 @@ class MonatFlexshipNameModalController {
 
 class MonatFlexshipNameModal {
 
-	public restrict:string;
-	public templateUrl:string;
+	public restrict = 'E';
 	
 	public scope = {};
 	public bindToController = {
@@ -67,37 +66,11 @@ class MonatFlexshipNameModal {
 	public controller=MonatFlexshipNameModalController;
 	public controllerAs="monatFlexshipNameModal";
 
-	public static Factory(){
-        var directive:any = (
-		    monatFrontendBasePath,
-			$hibachi,
-			rbkeyService,
-			requestService
-        ) => new MonatFlexshipNameModal(
-			monatFrontendBasePath,
-			$hibachi,
-			rbkeyService,
-			requestService
-        );
-        directive.$inject = [
-			'monatFrontendBasePath',
-			'$hibachi',
-			'rbkeyService',
-			'requestService'
-        ];
-        return directive;
-    }
+	public template = require('./name.html');
 
-	//@ngInject
-	constructor(private monatFrontendBasePath, 
-				private slatwallPathBuilder, 
-				private $hibachi,
-				private rbkeyService
-	){
-		this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/flexship/modals/name.html";
-		this.restrict = "E";
+	public static Factory() {
+		return () => new this();
 	}
-
 	public link = (scope, element, attrs) =>{
 
 	}
@@ -107,4 +80,3 @@ class MonatFlexshipNameModal {
 export {
 	MonatFlexshipNameModal
 };
-

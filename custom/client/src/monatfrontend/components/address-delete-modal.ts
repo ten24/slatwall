@@ -24,7 +24,12 @@ class AddressDeleteModalController {
     
     public deleteAccountAddress = () => {
         this.loading = true;
-        return this.publicService.doAction("deleteAccountAddress", { 'accountAddressID': this.address.accountAddressID}).then(result=>{
+        return this.publicService
+        .doAction("deleteAccountAddress", { 
+            'accountAddressID': this.address.accountAddressID,
+            'returnJsonObjects': 'account'
+        })
+        .then(result=>{
             this.loading = false;
         });
     }
@@ -37,8 +42,7 @@ class AddressDeleteModalController {
 
 class AddressDeleteModal {
 
-	public restrict:string;
-	public templateUrl:string;
+	public restrict = 'E';
 	
 	public scope = {};
 	public bindToController = {
@@ -49,34 +53,10 @@ class AddressDeleteModal {
 	public controller = AddressDeleteModalController;
 	public controllerAs = "addressDeleteModal";
 
-	public static Factory(){
-        var directive:any = (
-		    monatFrontendBasePath,
-			$hibachi,
-			rbkeyService,
-			requestService
-        ) => new AddressDeleteModal(
-			monatFrontendBasePath,
-			$hibachi,
-			rbkeyService,
-			requestService
-        );
-        directive.$inject = [
-			'monatFrontendBasePath',
-			'$hibachi',
-			'rbkeyService',
-			'requestService'
-        ];
-        return directive;
-    }
+	public template = require('./address-delete-modal.html');
 
-	constructor(private monatFrontendBasePath, 
-				private slatwallPathBuilder, 
-				private $hibachi,
-				private rbkeyService
-	){
-		this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/address-delete-modal.html";
-		this.restrict = "E";
+	public static Factory() {
+		return () => new this();
 	}
 
 	public link = (scope, element, attrs) =>{
@@ -88,4 +68,3 @@ class AddressDeleteModal {
 export {
 	AddressDeleteModal
 };
-

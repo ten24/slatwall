@@ -3,6 +3,9 @@
 declare var $;
 
 import {Option} from "../../../../../org/Hibachi/client/src/form/components/swfselect";
+import { MonatService } from "@Monat/services/monatservice";
+import { OrderTemplateService } from "@Monat/services/ordertemplateservice";
+import { MonatAlertService } from "@Monat/services/monatAlertService";
 
 class SWFWishlistController {
     public orderTemplateItems:Array<any>;
@@ -27,8 +30,9 @@ class SWFWishlistController {
         public $scope,
         public observerService,
         public $timeout,
-        public orderTemplateService,
-        public monatService
+        public orderTemplateService: OrderTemplateService,
+        public monatService: MonatService,
+        private monatAlertService: MonatAlertService
     ){
         if(!this.pageRecordsShow){
             this.pageRecordsShow = 6;
@@ -80,7 +84,7 @@ class SWFWishlistController {
         this.orderTemplateService.addOrderTemplateItem(this.sku ? this.sku : skuID, this.wishlistTemplateID)
         .then(result=>{
             this.loading = false;
-            this.onAddItemSuccess(this.sku);
+            this.onAddItemSuccess();
         });
     }
 
@@ -90,7 +94,7 @@ class SWFWishlistController {
         return this.orderTemplateService.addOrderTemplateItemAndCreateWishlist(this.wishlistTemplateName, this.sku, quantity).then(result=>{
             this.loading = false;
             this.getAllWishlists();
-            this.onAddItemSuccess(this.sku);
+            this.onAddItemSuccess();
             this.observerService.attach(this.successfulAlert,"createWishlistSuccess");
             return result;
         });
@@ -119,9 +123,14 @@ class SWFWishlistController {
     }
     
     public getWishlistsLight = () =>{
-        this.orderTemplateService.getOrderTemplatesLight().then(response =>{
-            this.orderTemplates = response['orderTemplates'];
-        });
+        this.orderTemplateService.getOrderTemplatesLight()
+        .then(response => {
+            if(!response?.orderTemplates){
+                throw(response);
+            }
+            this.orderTemplates = response.orderTemplates;
+        })
+        .catch(e => this.monatAlertService.showErrorsFromResponse(e));
     }
     
     public successfulAlert = () =>{
@@ -146,14 +155,14 @@ class SWFWishlistController {
     }
     
     
-    public onAddItemSuccess = (skuid) => {
+    public onAddItemSuccess = () => {
         
         // Set the heart to be filled on the product details page
-        $('#skuID_' + skuid).removeClass('far').addClass('fas');
+        // this.sku is skuID
+        $('#skuID_' + this.sku).removeClass('far').addClass('fas');
         
         // Close the modal
-        if(!this.close) return;
-     	this.close(null); // close, but give 100ms to animate
+     	this.close?.();
     };
     
     public redirectPageToShop(){
@@ -165,13 +174,13 @@ class SWFWishlistController {
 class SWFWishlist  {
     
     
-    public require          = {
+    public require = {
         ngModel:'?^ngModel'    
     };
+
     public priority = 1000;
     public scope = true;
-	public templateUrl:string;
-    public restrict:string;
+    public restrict:"AE";
 
    /**
     * Binds all of our variables to the controller so we can access using this
@@ -190,26 +199,11 @@ class SWFWishlist  {
         /**
      * Handles injecting the partials path into this class
      */
-    public static Factory(){
-        var directive: any = (monatFrontendBasePath) => new SWFWishlist(
-			monatFrontendBasePath,
-        );
-		directive.$inject = ['monatFrontendBasePath'];
-        return directive;
-    }
-    
-    // @ngInject
-	constructor(private monatFrontendBasePath){
-		this.templateUrl = monatFrontendBasePath + '/monatfrontend/components/swfwishlist.html';
-		this.restrict = "AE";
-	}
-    /**
-        * Sets the context of this form
-        */
-    public link:ng.IDirectiveLinkFn = (scope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes, formController) =>
-    {
-    }
+	public template = require('./swfwishlist.html');
 
+	public static Factory() {
+		return () => new this();
+	}
   
 }
 export{

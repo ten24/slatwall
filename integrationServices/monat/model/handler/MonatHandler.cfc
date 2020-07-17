@@ -76,17 +76,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 			account.setProductPackPurchasedFlag(true);
         }
     	
-		// Snapshot the account type to the order. This is placed before the upgrade logic
-		// so that we can capture that this account was still another account type at this time.
-		// on the users next order, they will be the upgraded type.
-		if (!isNull(account)){
-			if (!isNull(account.getAccountType())){
-				arguments.order.setAccountType(account.getAccountType());
-			}else{
-				logHibachi("afterOrderProcess_placeOrderSuccess Account Type should NEVER be empty on place order.", true);
-			}
-		}
-	
     	// Set the AccountType and PriceGroup IF this is an upgrade flow.
     	if(arguments.order.getUpgradeFlag() == true){
     		
@@ -128,6 +117,15 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 			} 
     	}
     	
+		// Snapshot the account type to the order. 
+		if (!isNull(account)){
+			if (!isNull(account.getAccountType())){
+				arguments.order.setAccountType(account.getAccountType());
+			}else{
+				logHibachi("afterOrderProcess_placeOrderSuccess Account Type should NEVER be empty on place order.", true);
+			}
+		}
+	
 		// Snapshot the pricegroups on the order.
 		if ( !isNull(account) && arrayLen(account.getPriceGroups()) ) {
             arguments.order.setPriceGroup(account.getPriceGroups()[1]);
@@ -198,7 +196,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 			    }
 				getHibachiEventService().announceEvent('afterAccount#originalAccountType#To#account.getAccountType()#UpgradeSuccess', {'account':account, 'entity':account}); 
 			}
-			else {
+			else if(isNull(arguments.order.getOrderOrigin())){
     			arguments.order.setOrderOrigin(getService('orderService').getOrderOriginByOrderOriginName('Internet Order'));
 			}
 			getAccountService().saveAccount(account);
@@ -310,9 +308,36 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 			}catch(bundleError){
 				logHibachi("afterOrderItemProcessCreateSuccess failed @ create bundle items for orderitem #orderItem.getOrderItemID()# ");
 			}
+			// add open orderitem records
+			if(!isNull(arguments.orderItem.getOrder().getOrderOpenDatetime())){
+				getDAO('InventoryDAO').manageOpenOrderItem(actionType = 'add', orderItemID = arguments.orderItem.getOrderItemID());
+			}
 		}
 
 	}
+	
+	public void function afterOrderItemUpdateSuccess(required any slatwallScope, required any orderItem, required any data){
+		if (!isNull(arguments.orderItem.getOrder().getOrderOpenDatetime()) && !arguments.slatwallScope.ORMHasErrors()){
+			arguments.slatwallScope.flushORMSession();
+			var oldData = arguments.orderItem.getPreUpdateData();
+			
+			if(!isNull(oldData) && structKeyExists(oldData, "quantity") && oldData["quantity"] != arguments.orderItem.getQuantity()){
+				getDAO('InventoryDAO').manageOpenOrderItem(actionType = 'updateItemQuantity', orderItemID = arguments.orderItem.getOrderItemID());
+			}
+		}
+	}
+
+	public void function afterOrderProcess_addOrderItemSuccess(required any slatwallScope, required any order, required any data){
+		if (!isNull(arguments.order.getOrderOpenDatetime()) && !arguments.slatwallScope.ORMHasErrors()){
+			arguments.slatwallScope.flushORMSession();
+
+			if(structKeyExists(arguments.data, "skuID")){
+				getDAO('InventoryDAO').manageOpenOrderItem(actionType = 'updateItemQuantity', skuID = arguments.data.skuID);
+			}
+		}
+	}
+
+
 	
 	/**
 	 * Adds the calculated bundled order items

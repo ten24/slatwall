@@ -55,7 +55,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			for(var appliedPromotion in appliedPromotions){
 				appliedPromotion.removeOrderItem(reciprocateFlag=false);
 			}
-			ArrayClear(appliedPromotions);
+			ArrayClear(orderItem.getAppliedPromotions());
 		}
 	}
 
@@ -444,10 +444,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				clearPreviouslyAppliedPromotionMessages(arguments.order);
 				getHibachiScope().flushOrmSession();
 				for(var orderItem in arguments.order.getOrderItems()){
-					orderItem.updateCalculatedProperties(true);
+					orderItem.updateCalculatedProperties(runAgain=true,cascadeCalculateFlag=false);
 				}
-
-				getHibachiScope().flushOrmSession();
+				arguments.order.updateCalculatedProperties(runAgain=true,cascadeCalculateFlag=false);
+				try{
+					getHibachiDAO().flushOrmSession();
+				}catch(any e){
+					logHibachi('Pre-promotion: #e.message#');
+				}
 				
 				// This is a structure of promotionPeriods that will get checked and cached as to if we are still within the period use count, and period account use count
 				var promotionPeriodQualifications = {};
@@ -795,7 +799,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 
 			applyPromotionToOrderItem( arguments.orderItem, arguments.rewardStruct );
-			getHibachiScope().addModifiedEntity(arguments.orderItem);
 			return true;
 		}
 		return false;
@@ -934,8 +937,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 						// Attach the qualification details
 						arrayAppend(qualificationDetails.qualifierDetails, thisQualifierDetails);
-	
+					
 					}else if(qualifierLogicalOperator == 'AND'){
+						if(arguments.order.hasOrderTemplate()){
+							logHibachi('Failed due to AND qualifier logical operator.');
+						}
 						hasQualifiedQualifier = false;
 						break;
 					}
@@ -1094,7 +1100,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// FULFILLMENT
 		} else if (arguments.qualifier.getQualifierType() == "fulfillment") {
 
-			getQualifierQualificationDetailsForOrderFulfillments(arguments.qualifier, arguments.order, arguments.qualifier);
+			getQualifierQualificationDetailsForOrderFulfillments(arguments.qualifier, arguments.order, qualifierDetails);
 
 		// ORDER ITEM
 		} else if (listFindNoCase("contentAccess,merchandise,subscription", arguments.qualifier.getQualifierType())) {
@@ -1588,8 +1594,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public string function getQualifiedFreePromotionRewardSkuIDs( required any order ){
 		var qualifiedFreePromotionRewardSkuIDList = '';	
 		var qualifiedPromotionRewards = this.getQualifiedPromotionRewardsForOrder( arguments.order );
+		
 		for(var promotionReward in qualifiedPromotionRewards){
-			
 			var skuCollection = promotionReward.getSkuCollection();
 		
 			if(isNull(skuCollection)){

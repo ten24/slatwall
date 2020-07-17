@@ -125,9 +125,11 @@ class MonatCheckoutController {
 			hardRefresh = true;
 		}
 		return this.publicService.getCart(hardRefresh).then(data => {
+			
 			if(hardRefresh){
 				this.cart = this.publicService.cart;
 			}
+			
 			let screen = Screen.ACCOUNT;
 			this.calculateListPrice();
 			
@@ -145,11 +147,14 @@ class MonatCheckoutController {
 				return;
 			} 
 			
-			if(this.cart.orderRequirementsList.indexOf('fulfillment') === -1){ 
+			let reqList = this.cart.orderRequirementsList;
+			
+			if(reqList.indexOf('fulfillment') === -1 && reqList.indexOf('account') === -1){ 
 				screen = Screen.PAYMENT;
-			}else if(this.cart.orderRequirementsList.indexOf('account') === -1){
+			}else if(reqList.indexOf('account') === -1){
 				screen = Screen.SHIPPING;
 			}
+			
 			this.isLoading = false;
 			this.screen = screen;
 			return screen;
@@ -327,7 +332,10 @@ class MonatCheckoutController {
 	
 	public submitSponsor():Screen | void{
 		this.sponsorLoading = true;
-		this.publicService.doAction('submitSponsor', {sponsorID: this.ownerAccountID}).then(res=>{
+		this.publicService.doAction('submitSponsor', {
+		    sponsorID: this.ownerAccountID,
+		    returnJsonObjects: 'account'
+		}).then(res=>{
 			if(res.successfulActions.length) {
 				this.next();
 			}else if(res.errors){
@@ -357,7 +365,15 @@ class MonatCheckoutController {
 	
 	public setCheckoutDefaults(){
 	
-		if(!this.publicService.cart.orderID.length || this.publicService.cart.orderRequirementsList.indexOf('fulfillment') === -1) return this.getCurrentCheckoutScreen(false, false);
+		if(
+			!this.publicService.cart.orderID.length 
+			|| ( 
+					this.monatService.cartHasShippingFulfillmentMethodType(this.publicService.cart) 
+					&& this.publicService.cart.orderRequirementsList.indexOf('fulfillment') === -1
+				)
+		){
+			return this.getCurrentCheckoutScreen(false, false);
+		} 
 		this.publicService.doAction('setIntialShippingAndBilling',{returnJsonObjects:'cart'}).then(res=>{
 			this.getCurrentCheckoutScreen(false, false);
 		});

@@ -157,6 +157,10 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
         productReviewCollection.addFilter("product.productID", arguments.data.productID, "=");
         productReviewCollection.addFilter("activeFlag", 1, "=");
         productReviewCollection.addFilter("productReviewStatusType.typeID", "9c60366a4091434582f5085f90d81bad");
+        
+        if( !isNull( getHibachiScope().getCurrentRequestSite() ) ){
+        	productReviewCollection.addFilter("productReviewSites.siteID", getHibachiScope().getCurrentRequestSite().getSiteID(), "=");
+        }
         return productReviewCollection;
     }
     //getOrderUpdatesData
@@ -392,6 +396,8 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 					
 					var orderFulfillment = orderItem.getOrderFulfillment();
 					orderFulfillment.setOrderFulfillmentStatusType(fulfilledStatusType);
+					
+					getDAO('InventoryDAO').manageOpenOrderItem(actionType = 'update', orderItemID = orderItem.getOrderItemID(), quantityDelivered = orderDeliveryItem.getQuantity());
                 }
                 ormStatelessSession.update("SlatwallOrderFulfillment",orderFulfillment);
                 logHibachi("importOrderShipments - Created a delivery for orderNumber: #shipment['OrderNumber']#",true);

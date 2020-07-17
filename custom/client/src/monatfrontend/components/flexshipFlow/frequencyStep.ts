@@ -40,7 +40,7 @@ class FrequencyStepController {
 
 class FrequencyStep {
 
-	public restrict:string;
+	public restrict = 'E'
 	public templateUrl:string;
 	public require={
 		flexshipFlow : '^flexshipFlow'
@@ -48,19 +48,11 @@ class FrequencyStep {
 	
 	public controller = FrequencyStepController;
 	public controllerAs = "frequencyStep";
-	public static Factory(){
-        var directive:any = (
-		    monatFrontendBasePath,
-        ) => new FrequencyStep(monatFrontendBasePath);
-        directive.$inject = [
-			'monatFrontendBasePath',
-        ];
-        return directive;
-    }
+	
+	public template = require('./frequencyStep.html');
 
-	constructor(private monatFrontendBasePath){
-		this.templateUrl = monatFrontendBasePath + "/monatfrontend/components/flexshipFlow/frequencyStep.html";
-		this.restrict = "E";
+	public static Factory() {
+		return () => new this();
 	}
 
 }

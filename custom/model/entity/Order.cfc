@@ -554,4 +554,39 @@ component {
 		
 		return false;
 	}
+	
+	//Returns an array of one shipping fulfillment if there is a shipping fulfillment on the order, otherwise it returns an empty array
+	public array function getFirstShippingFulfillment(){
+		var shippingFulfillmentArray = [];
+		var fulfillments = this.getOrderFulfillments() ?:[];
+		for(var fulfillment in fulfillments){
+			if(!isNull(fulfillment.getFulfillmentMethod()) && fulfillment.getFulfillmentMethod().getFulfillmentMethodType() =='shipping'){
+				arrayAppend(shippingFulfillmentArray, fulfillment);
+				break;
+			}
+		}
+		
+		return shippingFulfillmentArray
+	}
+	
+	public boolean function validateActiveStatus(){
+		var isValidOrder = false;
+		if(
+			!isNull(this.getAccount())
+			&& (
+				this.getAccount().getActiveFlag()
+				||	(
+						!this.getAccount().getActiveFlag() 
+						&& this.getUpgradeOrEnrollmentOrderFlag()
+						&& !isNull(this.getAccount().getAccountStatusType())
+						&& this.getAccount().getAccountStatusType().getSystemCode() == 'astEnrollmentPending'
+					)
+				)
+			)
+		{
+			isValidOrder = true;
+		}
+		
+		return isValidOrder;
+	}
 }

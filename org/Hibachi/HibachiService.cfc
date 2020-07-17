@@ -228,6 +228,9 @@
 				if (isNew){
 					getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#Create", arguments);
 					getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#CreateSuccess", arguments);
+				} else {
+					getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#Update", arguments);
+					getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#UpdateSuccess", arguments);
 				}
 		    } else {
 
@@ -239,6 +242,9 @@
 				if (isNew){
 					getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#Create", arguments);
 					getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#CreateFailure", arguments);
+				} else {
+					getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#Update", arguments);
+					getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#UpdateFailure", arguments);
 				}
 	        }
 

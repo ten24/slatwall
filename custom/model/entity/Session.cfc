@@ -19,7 +19,7 @@ component{
 		}
 		
 		var currentIPAddress = listFirst(getRemoteAddress());
-		if(len(currentIPAddress)){
+		if(len(currentIPAddress) && !IsIPv6(currentIPAddress)){
 
 			var ips_parts = ListToArray(currentIPAddress, ".");
 			var ipNumber =   16777216 * ips_parts[1] + 65536 * ips_parts[2] + 256 * ips_parts[3] + ips_parts[4];

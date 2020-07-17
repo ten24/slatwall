@@ -12,24 +12,30 @@
 	}
 </cfscript>
 
+<cfset local.accountType = account.getAccountType() />  
+
+<cfif local.accountType EQ 'Unassigned' OR local.accountType EQ 'retail'>
+	<cfset local.accountType = 'customer' />
+</cfif> 
+
 <cfsavecontent variable="emailData.emailBodyHTML">
 	
 	<cfoutput>
 
 	    <cfif emailTemplate.getAttributeValue('useGlobalHeaderAndFooterFlag')> 
-			#getEmailContent(attributeValue='#account.getAccountType()##account.getaccountCreatedSite().getRemoteID()#Header', emailTemplate=emailTemplate, locale=locale)#
+			#getEmailContent(attributeValue='#local.accountType##account.getaccountCreatedSite().getRemoteID()#Header', emailTemplate=emailTemplate, locale=locale)#
 		</cfif>
 		
-		<cfset local.emailBody = emailTemplate.getFormattedAttributeValue(attribute='#account.getAccountType()##account.getAccountCreatedSite().getRemoteId()#Body', formatType='language', locale=locale) />
+		<cfset local.emailBody = emailTemplate.getFormattedAttributeValue(attribute='#local.accountType##account.getAccountCreatedSite().getRemoteId()#Body', formatType='language', locale=locale) />
 	
 		<cfif NOT len(Trim(emailBody)) >
-		    	<cfset emailBody = emailTemplate.getFormattedValue(propertyName='#account.getAccountType()#Body', locale=locale) />
+		    	<cfset emailBody = emailTemplate.getFormattedValue(propertyName='#local.accountType#Body', locale=locale) />
 		 </cfif>
 		 
 		 #templateObject.stringReplace( emailBody, true )#
 		
 		<cfif emailTemplate.getAttributeValue('useGlobalHeaderAndFooterFlag') >
-		    #getEmailContent(attributeValue='#account.getAccountType()##account.getaccountCreatedSite().getRemoteId()#Footer', emailTemplate=emailTemplate, locale=locale)#
+		    #getEmailContent(attributeValue='#local.accountType##account.getaccountCreatedSite().getRemoteId()#Footer', emailTemplate=emailTemplate, locale=locale)#
 		</cfif>
 		
 	</cfoutput>

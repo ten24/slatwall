@@ -115,14 +115,10 @@ class EnrollmentFlexship {
 	public controller = EnrollmentFlexshipController;
 	public controllerAs = 'enrollmentFlexship';
 
-	public static Factory() {
-		var directive: any = (monatFrontendBasePath) => new this(monatFrontendBasePath);
-		directive.$inject = ['monatFrontendBasePath'];
-		return directive;
-	}
+	public template = require('./enrollment-flexship.html');
 
-	constructor(private monatFrontendBasePath) {
-		this.templateUrl = monatFrontendBasePath + '/monatfrontend/components/enrollment-flexship.html';
+	public static Factory() {
+		return () => new this();
 	}
 }
 

@@ -1,6 +1,8 @@
 declare var hibachiConfig;
 
 class MonatFlexshipCardController {
+	
+	public restrict = 'EA'
 	public dayOfMonthFormatted: string;
 
 	public orderTemplate: any;
@@ -282,21 +284,10 @@ class MonatFlexshipCard {
 	public controller = MonatFlexshipCardController;
 	public controllerAs = 'monatFlexshipCard';
 
-	public static Factory() {
-		var directive: any = (monatFrontendBasePath, $hibachi, rbkeyService, requestService) =>
-			new MonatFlexshipCard(monatFrontendBasePath, $hibachi, rbkeyService, requestService);
-		directive.$inject = ['monatFrontendBasePath', '$hibachi', 'rbkeyService', 'requestService'];
-		return directive;
-	}
+	public template = require('./monatflexshipcard.html');
 
-	constructor(
-		private monatFrontendBasePath,
-		private slatwallPathBuilder,
-		private $hibachi,
-		private rbkeyService,
-	) {
-		this.templateUrl = monatFrontendBasePath + '/monatfrontend/components/monatflexshipcard.html';
-		this.restrict = 'EA';
+	public static Factory() {
+		return () => new this();
 	}
 
 	public link = (scope, element, attrs) => {};

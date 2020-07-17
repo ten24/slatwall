@@ -629,5 +629,15 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		return variables.serverInstance;
 	}
 	
+	public any function setErrorExtraData(required struct data){
+		if(!structKeyExists(request, "errorExtraData")){
+			request.errorExtraData = {};
+		}
+		
+		for( var item in arguments.data ){
+			request.errorExtraData[item] = arguments.data[item];
+		}
+		
+	}
 	
 }

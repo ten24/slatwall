@@ -122,13 +122,15 @@ Notes:
 	<cffunction name="getGovernmentIdNotInUseFlag" returntype="boolean" access="public">
 		<cfargument name="governmentIdentificationNumberHashed" required="true" type="string" />
 		<cfargument name="siteID" required="true" type="string" />
-
-		<cfset var params = [arguments.governmentIdentificationNumberHashed, arguments.siteID]/>
+		<cfargument name="accountID" required="true" type="string" />
+		
+		<cfset var params = [arguments.governmentIdentificationNumberHashed, arguments.siteID, arguments.accountID]/>
 		<cfset var hql ="
 					Select count(accountGovIdentificationID) 
 					FROM SlatwallAccountGovernmentIdentification gid 
 					WHERE gid.governmentIdentificationNumberHashed = ? 
 					AND gid.account.accountCreatedSite.siteID = ?
+					AND gid.account.accountID != ?
 		"/>
 		<cfset var count = ormExecuteQuery( hql, params, true, {maxresults=1} )/>
 

@@ -19,7 +19,8 @@ component {
 		if(!isNull(getGovernmentIdentificationNumberHashed())){
 			return getDAO("accountDAO").getGovernmentIdNotInUseFlag(
 					this.getGovernmentIdentificationNumberHashed(),
-					this.getAccount().getAccountCreatedSite().getSiteID()
+					this.getAccount().getAccountCreatedSite().getSiteID(),
+					this.getAccount().getAccountID()
 			);
 		}
 		return true;

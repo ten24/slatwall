@@ -8,6 +8,7 @@ class SWFFormController {
     public form:any;
     public ngModel:any;
     public method:string;
+    public returnJsonObjects: string;
     public sRedirectUrl:string;
     public fRedirectUrl:string;
     public sAction;
@@ -51,6 +52,7 @@ class SWFFormController {
                 formData[key]=this.form[key].$modelValue||this.form[key].$viewValue;
             }
         }
+        formData['returnJsonObjects'] = this.returnJsonObjects;
         return formData;
     }
     
@@ -193,6 +195,7 @@ class SWFForm  {
     */
     public bindToController = {
         method:"@?",
+        returnJsonObjects: '@?',
         sRedirectUrl:"@?",
         fRedirectUrl:"@?",
         sAction:"=?",

@@ -1,6 +1,8 @@
 /// <reference path='../../../../../org/Hibachi/client/typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../../../org/Hibachi/client/typings/tsd.d.ts' />
 
+import { MonatService } from "@Monat/services/monatservice";
+
 declare var $;
 
 class swfAccountController {
@@ -62,7 +64,7 @@ class swfAccountController {
         public rbkeyService,
         public monatAlertService,
     	public $location,
-    	public monatService
+    	public monatService: MonatService
     ){
         
         this.observerService.attach(this.loginSuccess,"loginSuccess"); 
@@ -172,12 +174,12 @@ class swfAccountController {
          
         //Do this when then account data returns
         
-        this.publicService.getAccount(true).then((response)=>{
-            
+        this.publicService.getAccount(true)
+        .then((response)=>{
             this.getAccountData(response);
-            
-            this.loading = false;
-        });
+        })
+        .catch(console.error)
+		.finally( ()=> this.loading = false );
     }
     
     public getAccountData = (data)=>{
@@ -188,6 +190,8 @@ class swfAccountController {
         if(this.accountData.accountID?.trim()){
             this.accountPaymentMethods = this.accountData.accountPaymentMethods;
             const url = window.location.pathname;
+            
+            // TODO: use ng-init or something like that, instead of fetching all of the data here
             switch(true){
                 case (url.indexOf('/my-account/order-history/') > -1):
                     this.getOrdersOnAccount();
@@ -209,13 +213,16 @@ class swfAccountController {
             
             if(this.accountData?.accountType?.toLowerCase() =='marketpartner'){
                 this.loading=true;
-                this.publicService.doAction('getMPRenewalData').then(res=>{
-                    if(res.renewalInformation){
-                        this.renewalSku = res.renewalInformation.skuID;
-                        this.showRenewalModal = true;
+                this.publicService.doAction('getMPRenewalData')
+                .then( res => {
+                    if(!res.renewalInformation){
+                        throw res;
                     }
-                    this.loading = false;
+                    this.renewalSku = res.renewalInformation.skuID;
+                    this.showRenewalModal = true;
                 })
+                .catch(console.error)
+		        .finally( ()=> this.loading = false );
             }
         }
     }
@@ -231,34 +238,47 @@ class swfAccountController {
     public getMostRecentFlexship = () => {
         this.loading = true;
         const accountID = this.accountData.accountID;
-        return this.publicService.doAction("getMostRecentOrderTemplate", {'accountID': accountID,'returnJsonObjects':''}).then(result=>{
+        return this.publicService.doAction("getMostRecentOrderTemplate", {
+            'accountID': accountID
+        })
+        .then(result=>{
             if(result.mostRecentOrderTemplate.length){
                 this.mostRecentFlexship = result.mostRecentOrderTemplate[0];
                 this.mostRecentFlexshipDeliveryDate = Date.parse(this.mostRecentFlexship.scheduleOrderNextPlaceDateTime);
                 this.editFlexshipUntilDate = new Date(this.mostRecentFlexshipDeliveryDate);
                 this.editFlexshipUntilDate.setDate(this.editFlexshipUntilDate.getDate() -result.daysToEditFlexship);          
             }
-  
-            this.loading = false;
-        });
+        })
+        .catch(console.error)
+		.finally( ()=> this.loading = false );
     }
     
     public getOrdersOnAccount = ( pageRecordsShow = 12, pageNumber = 1, direction:any = false) => {
         this.loading = true;
         const accountID = this.accountData.accountID;
         this.ordersArgumentObject['accountID'] = accountID;
-        return this.publicService.doAction("getAllOrdersOnAccount", {'accountID' : accountID, 'pageRecordsShow': pageRecordsShow, 'currentPage': pageNumber,'returnJsonObjects':'cart'}).then(result=>{
+        return this.publicService.doAction("getAllOrdersOnAccount", {
+            'accountID' : accountID, 
+            'pageRecordsShow': pageRecordsShow, 
+            'currentPage': pageNumber,
+            'returnJsonObjects':'cart'
+        }).then(result=>{
             this.observerService.notify("PromiseComplete")
             this.ordersOnAccount = result.ordersOnAccount.ordersOnAccount;
             this.totalOrders = result.ordersOnAccount.records;
-            this.loading = false;
             this.loadingOrders = false;
-        });
+        })
+        .catch(console.error)
+		.finally( ()=> this.loading = false );
     }
     
     public getOrderItemsByOrderID = (orderID = this.$location.search().orderid, pageRecordsShow = 5, currentPage = 1) => {
         this.loading = true;
-        return this.publicService.doAction("getOrderItemsByOrderID", {orderID: orderID,currentPage:currentPage,pageRecordsShow: pageRecordsShow}).then(result=>{
+        return this.publicService.doAction("getOrderItemsByOrderID", {
+            orderID: orderID,
+            currentPage:currentPage,
+            pageRecordsShow: pageRecordsShow
+        }).then(result=>{
             if(result.OrderItemsByOrderID){
 
                 this.orderItems = result.OrderItemsByOrderID.orderItems;
@@ -284,9 +304,9 @@ class swfAccountController {
                     }
                 }
             }
-            
-            this.loading = false;
-        });
+        })
+        .catch(console.error)
+		.finally( ()=> this.loading = false );
     }
     
     public getCountryCodeOptions = ():Promise<any>=>{
@@ -295,15 +315,15 @@ class swfAccountController {
             return this.countryCodeOptions;
         }
 
-        return this.publicService.doAction("getCountries").then(result=>{
+        return this.publicService.doAction("getCountries")
+        .then(result => {
             this.countryCodeOptions = result.countryCodeOptions;
-            this.loading = false;
-        });
+        })
+        	    .catch(console.error)
+		.finally( ()=> this.loading = false );
     }
     
     public getAddressOptionsByCountryCode = (countryCode) =>{
-        
-        this.loading = true;
         
         if(this.cachedCountryCode == countryCode && this.addressOptions ){
             return this.addressOptions;
@@ -312,39 +332,40 @@ class swfAccountController {
         if(countryCode != null){
             this.cachedCountryCode = countryCode;
         }
-        
-        return this.publicService.doAction("getAddressOptionsByCountryCode",{ 'countryCode': this.cachedCountryCode }).then(result=>{
-
-            this.addressOptions = result.addressOptions;
-
-            this.loading = false;
-        });
+ 
+        this.loading = true;
+        this.monatService.getStateCodeOptionsByCountryCode(countryCode)
+    	.then( (options) => { 
+    		this.stateCodeOptions = options.stateCodeOptions;
+    		this.addressOptions = options.addressOptions;
+    	})
+    	.catch(console.error)
+		.finally( ()=> this.loading = false );
     }
     
     public getStateCodeOptions = (countryCode) =>{
-        this.loading = true;
     
         if(this.cachedCountryCode == countryCode && this.stateCodeOptions && this.stateCodeOptions.length){
             return this.stateCodeOptions;
         }
         
+        this.loading = true;
         this.cachedCountryCode = countryCode;
-        return this.publicService.doAction("getStateCodeOptionsByCountryCode",{countryCode}).then(result=>{
-            //Resets the state code options on each click so they dont add up incorrectly
-            if(this.stateCodeOptions.length){
-                this.stateCodeOptions = [];
-            }
-            result.stateCodeOptions.forEach(stateCode =>{
-                this.stateCodeOptions.push(stateCode);
-            });
-
-            this.loading = false;
-        });
+        this.monatService.getStateCodeOptionsByCountryCode(countryCode)
+    	.then( (options) => { 
+    		this.stateCodeOptions = options.stateCodeOptions;
+    		this.addressOptions = options.addressOptions;
+    	})
+    	.catch(console.error)
+		.finally( ()=> this.loading = false );
     }
     
     public setPrimaryPaymentMethod = (methodID) => {
         this.loading = true;
-        return this.publicService.doAction("updatePrimaryPaymentMethod",{paymentMethodID: methodID} ).then(result=>{
+        return this.publicService.doAction("updatePrimaryPaymentMethod", {
+            paymentMethodID: methodID,
+            'returnJsonObjects': 'account'
+        }).then(result=>{
             this.loading = false;
         });
     }
@@ -366,11 +387,15 @@ class swfAccountController {
     
     public deletePaymentMethod = (paymentMethodID, index) => {
         this.loading = true;
-        return this.publicService.doAction("deleteAccountPaymentMethod", { 'accountPaymentMethodID': paymentMethodID }).then(result=>{
+        return this.publicService.doAction("deleteAccountPaymentMethod", { 
+            'accountPaymentMethodID': paymentMethodID,
+            'returnJsonObjects': 'account'
+        })
+        .then(result=>{
             this.accountPaymentMethods.splice(index, 1);
-            this.loading = false;
-            return this.accountPaymentMethods
-        });
+        })
+        .catch(console.error)
+		.finally( ()=> this.loading = false );
     }
     
     public setEditAddress = (newAddress = true, address) => {
@@ -384,14 +409,22 @@ class swfAccountController {
     
     public setPrimaryAddress = (addressID) => {
         this.loading = true;
-        return this.publicService.doAction("updatePrimaryAccountShippingAddress", {'accountAddressID' : addressID}).then(result=>{
+        return this.publicService.doAction("updatePrimaryAccountShippingAddress", {
+            'accountAddressID' : addressID,
+            'returnJsonObjects': 'account'
+        })
+        .then( result => {
             this.loading = false;
         });
     }
     
     public deleteAccountAddress = (addressID, index) => {
         this.loading = true;
-        return this.publicService.doAction("deleteAccountAddress", { 'accountAddressID': addressID }).then(result=>{
+        return this.publicService.doAction("deleteAccountAddress", { 
+            'accountAddressID': addressID,
+            'returnJsonObjects': 'account'
+        })
+        .then( result => {
             this.loading = false;
         });
     }
@@ -588,12 +621,14 @@ class swfAccountController {
 			) {
 			    this.monatAlertService.success(this.rbkeyService.rbKey('alert.flexship.addProductSuccessful')); 
 			    this.showRenewalModal = false;
-		    }else{
+		    }
+		    else {
                 let errorMessage = result.errors;
                 this.monatAlertService.error(errorMessage);
 			}
-			this.loading = false;
-	    });
+	    })
+	    .catch(console.error)
+		.finally( ()=> this.loading = false );
 	}
 }
 

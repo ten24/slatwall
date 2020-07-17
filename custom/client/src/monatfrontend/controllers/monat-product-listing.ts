@@ -19,6 +19,7 @@ class MonatProductListingController {
 	public hairProductFilter:any;
 	public skinProductFilter:any;
 	public loadingAddToCart;
+	public flexshipFlag:boolean;
 	
 	// @ngInject
 	constructor(
@@ -59,12 +60,15 @@ class MonatProductListingController {
 		if(!this.publicService.account?.accountID){
 			return;
 		}
-	    this.monatService.getAccountWishlistItemIDs().then( data => {
-            if ( 'undefined' !== typeof data.wishlistItems ) {
+	    this.monatService.getAccountWishlistItemIDs()
+	    .then( data => {
+            if ( data?.wishlistItems ) {
+                
                 this.wishlistItems = '';
-                data.wishlistItems.forEach(item=>{
+                data.wishlistItems.forEach(item => {
                     this.wishlistItems += item.productID + ',';
                 });
+                
                 this.observerService.notify('accountWishlistItemsSuccess');
             }
         });
@@ -89,6 +93,10 @@ class MonatProductListingController {
 			this.hairProductFilter = null;
 			this.skinProductFilter = null;
 			this[`${categoryType}ProductFilter`] = category;
+		}
+		
+		if(this.flexshipFlag){
+			this.argumentsObject['flexshipFlag'] = this.flexshipFlag;
 		}
         
         this.argumentsObject['pageRecordsShow'] = this.pageRecordsShow;

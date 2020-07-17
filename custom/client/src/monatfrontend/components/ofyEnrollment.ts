@@ -116,14 +116,10 @@ class OFYEnrollment{
 	public controller = OFYEnrollmentController;
 	public controllerAs = 'ofyEnrollment';
 
-	public static Factory() {
-		var directive: any = (monatFrontendBasePath) => new this(monatFrontendBasePath);
-		directive.$inject = ['monatFrontendBasePath'];
-		return directive;
-	}
+	public template = require('./ofyEnrollment.html');
 
-	constructor(private monatFrontendBasePath) {
-		this.templateUrl = monatFrontendBasePath + '/monatfrontend/components/ofyEnrollment.html';
+	public static Factory() {
+		return () => new this();
 	}
 }
 

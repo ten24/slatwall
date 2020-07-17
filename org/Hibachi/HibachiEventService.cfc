@@ -32,6 +32,8 @@
 // after{EntityName}ProcessFailure
 // after{EntityName}CreateSuccess
 // after{EntityName}CreateFailure
+// after{EntityName}UpdateSuccess
+// after{EntityName}UpdateFailure
 // before{EntityName}Process_{processContext}
 // after{EntityName}Process_{processContext}
 // after{EntityName}Process_{processContext}Success
