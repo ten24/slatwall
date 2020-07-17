@@ -62,4 +62,16 @@ component extends="HibachiDAO" {
 		
 	}
 	
+	public any function addressHasNoAssociatedOrderTemplateByOTType(required string accountAddressID, orderTemplateTypeID){
+			var sql = "
+				SELECT orderTemplateID 
+				FROM swOrderTemplate 
+				WHERE orderTemplateTypeID=:statusTypeID
+					AND (shippingAccountAddressID=:shipAddress OR billingAccountAddressID=:billAddress) 
+				LIMIT 1
+			";
+			var result = QueryExecute(sql, {shipAddress: arguments.accountAddressID, billAddress: arguments.accountAddressID, statusTypeID: orderTemplateTypeID });
+			return  ( isNull(result) || isNull(result['orderTemplateID']) || !len(result['orderTemplateID']) );
+	}
+	
 }

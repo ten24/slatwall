@@ -1,6 +1,7 @@
 {
 	"properties": {
-		"account": [{ "contexts": "save", "required": true }]
+		"account": [{ "contexts": "save", "required": true }],
+		"address": [{ "contexts": "delete", "method": "isNotDefaultAccountShippingAddress" }]
 	},
 	"populatedPropertyValidation": {
 		"address": [{ "validate": "full" }]

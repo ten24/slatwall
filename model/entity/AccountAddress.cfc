@@ -59,6 +59,7 @@ component displayname="Account Address" entityname="SlatwallAccountAddress" tabl
 	
 	// Related Object Properties One-To-Many
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="accountAddressID" cascade="all-delete-orphan" inverse="true";
+
 	// Remote properties
 	property name="remoteID" ormtype="string";
 	
@@ -126,6 +127,23 @@ component displayname="Account Address" entityname="SlatwallAccountAddress" tabl
 	}
 	
 	// ==================  END:  Overridden Methods ========================
+	
+	public any function getAssociatedFlexshipCollectionList(){
+		var flexshipCollectionList = getService('orderService').getOrderTemplateCollectionList();
+		flexshipCollectionList.addFilter(propertyIdentifier='shippingAccountAddress.accountAddressID', value=this.getAccountAddressID(), comparisonOperator='=', filterGroupAlias ="address");
+		flexshipCollectionList.addFilter(propertyIdentifier='billingAccountAddress.accountAddressID', value=this.getAccountAddressID(), comparisonOperator='=', filterGroupAlias ="address", logicalOperator="OR");
+		flexshipCollectionList.addFilter(propertyIdentifier='orderTemplateType.systemCode', value='ottSchedule', comparisonOperator='=');
+		return flexshipCollectionList;
+	}
+	
+	public boolean function addressHasNoAssociatedFlexship(){
+		var flexshipType = getService('typeService').getTypeBySystemCode('ottSchedule');
+		return getDao('accountAddressDAO').addressHasNoAssociatedOrderTemplateByOTType(accountAddressID = this.getAccountAddressID(), orderTemplateTypeID = flexshipType.getTypeID());
+	}
+	
+	public boolean function isNotDefaultAccountShippingAddress(){
+		return ( isNull(this.getAccount().getPrimaryShippingAddress()) || this.getAccount().getPrimaryShippingAddress().getAccountAddressID() != this.getAccountAddressID() );
+	}
 	
 	// =================== START: ORM Event Hooks  =========================
 	

@@ -468,6 +468,13 @@ component  accessors="true" output="false"
         
         var accountAddress = getAccountService().getAccountAddress( data.accountAddressID );
         
+        if(!accountAddress.addressHasNoAssociatedFlexship()){
+            this.addErrors(arguments.data, [ 
+                { 'AccountAddress': getHibachiScope().rbKey('validate.delete.AccountAddress.AddressHasFlexship') }
+            ]);
+            return;
+        }
+        
         if(!isNull(accountAddress) &&
             !IsNull(accountAddress.getAccount()) &&
             getHibachiScope().getLoggedInFlag()  &&
