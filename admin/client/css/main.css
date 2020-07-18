@@ -8816,6 +8816,13 @@ table.s-detail-content-table tbody tr.s-done {
 .fullpage-loader-default[data-inverse]:after {
   animation-direction: reverse;
 }
+
 #adminModal .modal-body {
   min-height: 50vh;
+}
+
+.ng-enter {
+  /* standard transition code */
+  transition: 0.3s ease all;
+  opacity: 0.2;
 }
