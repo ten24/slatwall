@@ -111,7 +111,7 @@ Notes:
 				</div>
 			</nav>
 		</div>
-		
+		<hb:HibachiMessageDisplay />
 		<div class="panel p-20">
 			<hb:HibachiPropertyRow>
 			

@@ -427,10 +427,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	*/ 
 	public void function setCollectionObjectListingSearchConfig(required struct listingSearchConfig) {
 		
-		variables['collectionObjectListingSearchConfig'] = this.getCollectionEntityObject().getListingSearchConfig();
 		if(StructKeyExists(this.getCollectionConfigStruct(), 'listingSearchConfig')){
-			collectionObjectListingSearchConfig = this.getCollectionConfigStruct()['listingSearchConfig'];
+			variables['collectionObjectListingSearchConfig'] = this.getCollectionConfigStruct()['listingSearchConfig'];
+		}else{
+			variables['collectionObjectListingSearchConfig'] = this.getCollectionEntityObject().getListingSearchConfig();
 		}
+		
 		StructAppend(variables['collectionObjectListingSearchConfig'], arguments.listingSearchConfig,true);// Merge and override
 		
 		//update The CollectionConfigStruct
@@ -826,7 +828,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 		var displayProperties = listToArray(arguments.displayPropertiesList);
 		for(var displayProperty in displayProperties){
-			addDisplayProperty(displayProperty=displayProperty.trim(), columnConfig=columnConfig);
+			addDisplayProperty(displayProperty=displayProperty.trim(), columnConfig=arguments.columnConfig);
 		}
 
 	}
@@ -1220,7 +1222,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			var columnsArray = [];
 			
 			//check to see if we are supposed to add default columns
-			if(addDefaultColumns){
+			if(arguments.addDefaultColumns){
 					
 				var cacheKey = 'defaultColumns' & arguments.collectionObject & '#getReportFlag()#';
 				var cachedColumnsArray = getCollectionCacheValue(cacheKey);
@@ -1380,7 +1382,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			joinSyntax = 'join fetch';
 		} 
 		//Alias_
-		var fullJoinName = "#parentAlias##separator##arguments.join.associationName#";
+		var fullJoinName = "#arguments.parentAlias##separator##arguments.join.associationName#";
 		addHQLAlias(fullJoinName,arguments.join.alias);
 		var joinHQL = ' #joinSyntax# #fullJoinName# as #arguments.join.alias# ';
 		if(!isnull(arguments.join.joins)){
@@ -1448,7 +1450,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	private string function formatAggregateFunction(aggregate){
 		var aggregateFunction = '';
-		switch(LCASE(aggregate)){
+		switch(LCASE(arguments.aggregate)){
 			case "average":
 				aggregateFunction = 'avg';
 				break;
@@ -1457,7 +1459,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			case "avg":
 			case "sum":
 			case "count":
-				aggregateFunction = LCASE(aggregate);
+				aggregateFunction = LCASE(arguments.aggregate);
 				break;
 		}
 		return aggregateFunction;

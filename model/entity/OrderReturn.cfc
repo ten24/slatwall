@@ -53,6 +53,7 @@ component displayname="Order Return" entityname="SlatwallOrderReturn" table="SwO
 	property name="fulfillmentRefundAmount" ormtype="big_decimal";
 	property name="fulfillmentRefundPreTax" ormtype="big_decimal";
 	property name="fulfillmentTaxRefund" ormtype="big_decimal";
+	property name="fulfillmentVATRefund" ormtype="big_decimal";
 	property name="currencyCode" ormtype="string" length="3";
 	
 	// Related Object Properties (many-to-one)
