@@ -1292,7 +1292,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			request[orderTemplateOrderDetailsKey]['canPlaceOrder'] = request[orderTemplateOrderDetailsKey]['canPlaceOrderDetails']['canPlaceOrder']; 
 
 			var deleteOk = this.deleteOrder(transientOrder); 
-			this.logHibachi('transient order deleted #deleteOk# hasErrors #transientOrder.hasErrors()#',true);
+			this.logHibachi('transient order deleted #deleteOk# hasErrors #transientOrder.hasErrors()#');
 
 			ormFlush();	
 			
@@ -1666,7 +1666,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		newOrder = this.processOrder_Create(newOrder, getOrderCreateProcessObjectForOrderTemplate(arguments.orderTemplate, newOrder)); 	
 		
 		if(newOrder.hasErrors()){
-			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# when creating', true);
+			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# when creating');
 			getOrderDAO().setScheduleOrderProcessingFlag(arguments.orderTemplate.getOrderTemplateID(), false, serializeJson(newOrder.getErrors()));
 			return arguments.orderTemplate; 
 		} 
@@ -1679,7 +1679,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		newOrder = this.createOrderItemsFromOrderTemplateItems(newOrder,arguments.orderTemplate);
 		
 		if(newOrder.hasErrors()){
-			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# after adding order items', true);
+			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# after adding order items');
 			arguments.orderTemplate.addErrors(newOrder.getErrors()); 
 			getOrderDAO().setScheduleOrderProcessingFlag(arguments.orderTemplate.getOrderTemplateID(), false, serializeJson(newOrder.getErrors()));
 			return arguments.orderTemplate;
@@ -1695,7 +1695,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			//errors are populated to the process object for Order_addPromotionCode so any failures should be silent.
 			newOrder = this.processOrder_addPromotionCode(newOrder, processOrderAddPromotionCode);
 
-			this.logHibachi('Attempting to apply promo code: #promotionCode.getPromotionCode()# to order from flexship success: #!newOrder.hasErrors()#',true);
+			this.logHibachi('Attempting to apply promo code: #promotionCode.getPromotionCode()# to order from flexship success: #!newOrder.hasErrors()#');
 
 			var processOrderTemplateRemovePromotionCode = arguments.orderTemplate.getProcessObject('removePromotionCode');
 			processOrderTemplateRemovePromotionCode.setPromotionCode(promotionCode);
@@ -1705,7 +1705,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		
 		if(newOrder.hasErrors()){
-			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# after adding promotion codes', true);
+			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors #serializeJson(newOrder.getErrors())# after adding promotion codes');
 			// continue with template without promocode
 			arguments.newOrder.clearHibachiErrors();
 			arguments.orderTemplate.clearHibachiErrors();
@@ -1724,7 +1724,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		newOrder = this.processOrder_placeOrder(newOrder,{ignoreCanPlaceOrderFlag:true, updateOrderAmounts:true, updateShippingMethodOptions:false});
 
 		if(newOrder.hasErrors()){
-			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors on place order #serializeJson(newOrder.getErrors())# when placing order', true);
+			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors on place order #serializeJson(newOrder.getErrors())# when placing order');
 			arguments.orderTemplate.addErrors(newOrder.getErrors()); 
 			getOrderDAO().setScheduleOrderProcessingFlag(arguments.orderTemplate.getOrderTemplateID(), false, serializeJson(newOrder.getErrors()));
 			return arguments.orderTemplate;
@@ -1751,7 +1751,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				orderTemplateAppliedGiftCard.setAmountToApply(giftCardBalanceAmount);	
 				orderTemplateAppliedGiftCard = this.saveOrderTemplateAppliedGiftCard(orderTemplateAppliedGiftCard);
 			} 
-			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# applying GC #giftCardBalanceAmount# < #orderTemplateAppliedGiftCard.getAmountToApply()# when placing order', true);
+			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# applying GC #giftCardBalanceAmount# < #orderTemplateAppliedGiftCard.getAmountToApply()# when placing order');
 
 			var processData = {	
 				'giftCardID' : orderTemplateAppliedGiftCard.getGiftCard().getGiftCardID(),
@@ -1777,7 +1777,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			newOrder.clearProcessObject('addOrderPayment');	
 
 			if(newOrder.hasErrors()){
-				this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors on gift card payment #serializeJson(newOrder.getErrors())# when placing order', true);
+				this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors on gift card payment #serializeJson(newOrder.getErrors())# when placing order');
 				arguments.orderTemplate.clearHibachiErrors();
 				newOrder.clearHibachiErrors(); 	
 				
@@ -1814,7 +1814,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate, {}, 'placeOrder'); 	
 		
 		if(newOrder.hasErrors()){
-			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors on add order payment #serializeJson(newOrder.getErrors())# when adding a payment', true);
+			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors on add order payment #serializeJson(newOrder.getErrors())# when adding a payment');
 			arguments.orderTemplate.addErrors(newOrder.getErrors()); 
 			getOrderDAO().setScheduleOrderProcessingFlag(arguments.orderTemplate.getOrderTemplateID(), false, serializeJson(newOrder.getErrors()));
 			return arguments.orderTemplate;
@@ -3651,7 +3651,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	public any function processOrder_updateOrderAmounts(required any order, struct data) {
-		this.logHibachi('updating order amounts called', true); 
+		this.logHibachi('updating order amounts called'); 
 		
 		//only allow promos to be applied to orders that have not been closed or canceled
 		if(!listFindNoCase("ostCanceled,ostClosed", arguments.order.getOrderStatusType().getSystemCode())) {
@@ -3713,7 +3713,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 			//update the calculated properties
 			getHibachiScope().addModifiedEntity(arguments.order);
-			this.logHibachi('Order added to modified entities and is being saved.', true);
+			this.logHibachi('Order added to modified entities and is being saved.');
 			
 		}
 		
