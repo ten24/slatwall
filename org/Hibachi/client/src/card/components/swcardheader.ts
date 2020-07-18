@@ -16,29 +16,18 @@ class SWCardHeaderController {
 class SWCardHeader implements ng.IDirective {
     public controller:any=SWCardHeaderController;
     public controllerAs:string = 'SwCardHeaderController';
+   
     public scope = {};
     public bindToController:{[key: string]:string} = {
         addBorder: '@?'
     };
     public transclude:boolean = true;
     public require:string = "^SWCardView";
-    /**
-     * This is a wrapper class for the card components that allow you to define the columns.
-     */
-    public templateUrl:string = "";
     
-    //@ngInject
-    constructor(cardPartialsPath, hibachiPathBuilder) { 
-        this.templateUrl = hibachiPathBuilder.buildPartialsPath(cardPartialsPath + '/cardheader.html');
-    }
+    public template:string = require('./cardheader.html');
     
-    /**
-     * Handles injecting the partials path into this class
-     */
     public static Factory(){
-        var component:ng.IDirectiveFactory=(cardPartialsPath,hibachiPathBuilder)=>new SWCardHeader(cardPartialsPath, hibachiPathBuilder);
-        component.$inject = ['cardPartialsPath','hibachiPathBuilder']
-        return component;
+        return () => new this();
     }
 }
 export {SWCardHeaderController, SWCardHeader};

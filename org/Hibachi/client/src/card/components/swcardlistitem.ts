@@ -15,6 +15,7 @@ class SWCardListItemController {
 class SWCardListItem implements ng.IDirective {
     public controller:any=SWCardListItemController;
     public controllerAs:string = 'SwCardListItemController';
+    
     public scope = {};
     public bindToController = {
        title: "@?",
@@ -22,25 +23,14 @@ class SWCardListItem implements ng.IDirective {
        strong: "@?",
        style: "@?"
     };
+   
     public transclude:boolean = true;
     public require:string = "^SWCardView";
-    /**
-     * This is a wrapper class for the card components that allow you to define the columns.
-     */
-    public templateUrl:string = "";
+
+    public template:string = require('./cardlistitem.html');
     
-    //@ngInject
-    constructor(cardPartialsPath, hibachiPathBuilder) { 
-        this.templateUrl = hibachiPathBuilder.buildPartialsPath(cardPartialsPath + '/cardlistitem.html');
-    }
-    
-    /**
-     * Handles injecting the partials path into this class
-     */
     public static Factory(){
-        var component:ng.IDirectiveFactory=(cardPartialsPath,hibachiPathBuilder)=>new SWCardListItem(cardPartialsPath, hibachiPathBuilder);
-        component.$inject = ['cardPartialsPath','hibachiPathBuilder']
-        return component;
+        return () => new this();
     }
 
 }
