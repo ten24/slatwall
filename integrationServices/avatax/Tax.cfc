@@ -279,10 +279,19 @@ extends = "Slatwall.integrationServices.BaseTax" {
 					itemData.TaxCode = item.getTaxCategoryCode();
 					itemData.Qty = 1;
 					itemData.Amount = amount;
-					itemData.taxOverride = {
-						taxOverrideType:"TaxAmount",
-						taxAmount:-1*item.getOrderReturn().getFulfillmentTaxRefund(),
-						reason:"Return"
+
+					if(listContains(setting("VATCountries"),addressData.Country)){
+						itemData.taxOverride = {
+							taxOverrideType:"TaxAmount",
+							taxAmount:-1*item.getOrderReturn().getFulfillmentVATRefund(),
+							reason:"Return"
+						}
+					}else{
+						itemData.taxOverride = {
+							taxOverrideType:"TaxAmount",
+							taxAmount:-1*item.getOrderReturn().getFulfillmentTaxRefund(),
+							reason:"Return"
+						}
 					}
 					
 

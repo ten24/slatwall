@@ -88,9 +88,9 @@ var hibachi =
 /******/ ({
 
 /***/ "../../../../node_modules/raw-loader/index.js!../../HibachiAssets/js/jquery-3.3.1.min.js":
-/*!******************************************************************************************************************************************************************************************************!*\
-  !*** /home/ec2-user/environment/dev-ops/projects/Monat/Slatwall/node_modules/raw-loader!/home/ec2-user/environment/dev-ops/projects/Monat/Slatwall/org/Hibachi/HibachiAssets/js/jquery-3.3.1.min.js ***!
-  \******************************************************************************************************************************************************************************************************/
+/*!**********************************************************************************************************************************************************************!*\
+  !*** /Users/nitinyadav/Workspace/Monat/Slatwall/node_modules/raw-loader!/Users/nitinyadav/Workspace/Monat/Slatwall/org/Hibachi/HibachiAssets/js/jquery-3.3.1.min.js ***!
+  \**********************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -99,9 +99,9 @@ module.exports = "/*! jQuery v3.3.1 | (c) JS Foundation and other contributors |
 /***/ }),
 
 /***/ "../../../../node_modules/raw-loader/index.js!../../HibachiAssets/js/jquery-migrate-1.4.1.min.js":
-/*!**************************************************************************************************************************************************************************************************************!*\
-  !*** /home/ec2-user/environment/dev-ops/projects/Monat/Slatwall/node_modules/raw-loader!/home/ec2-user/environment/dev-ops/projects/Monat/Slatwall/org/Hibachi/HibachiAssets/js/jquery-migrate-1.4.1.min.js ***!
-  \**************************************************************************************************************************************************************************************************************/
+/*!******************************************************************************************************************************************************************************!*\
+  !*** /Users/nitinyadav/Workspace/Monat/Slatwall/node_modules/raw-loader!/Users/nitinyadav/Workspace/Monat/Slatwall/org/Hibachi/HibachiAssets/js/jquery-migrate-1.4.1.min.js ***!
+  \******************************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -110,9 +110,9 @@ module.exports = "/*! jQuery Migrate v1.4.1 | (c) jQuery Foundation and other co
 /***/ }),
 
 /***/ "../../../../node_modules/raw-loader/index.js!../../HibachiAssets/js/jquery-ui.min.js":
-/*!***************************************************************************************************************************************************************************************************!*\
-  !*** /home/ec2-user/environment/dev-ops/projects/Monat/Slatwall/node_modules/raw-loader!/home/ec2-user/environment/dev-ops/projects/Monat/Slatwall/org/Hibachi/HibachiAssets/js/jquery-ui.min.js ***!
-  \***************************************************************************************************************************************************************************************************/
+/*!*******************************************************************************************************************************************************************!*\
+  !*** /Users/nitinyadav/Workspace/Monat/Slatwall/node_modules/raw-loader!/Users/nitinyadav/Workspace/Monat/Slatwall/org/Hibachi/HibachiAssets/js/jquery-ui.min.js ***!
+  \*******************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -121,9 +121,9 @@ module.exports = "/*! jQuery UI - v1.12.0 - 2016-07-08\n* http://jqueryui.com\n*
 /***/ }),
 
 /***/ "../../../../node_modules/raw-loader/index.js!../../HibachiAssets/js/jquery-validate-1.9.0.min.js":
-/*!***************************************************************************************************************************************************************************************************************!*\
-  !*** /home/ec2-user/environment/dev-ops/projects/Monat/Slatwall/node_modules/raw-loader!/home/ec2-user/environment/dev-ops/projects/Monat/Slatwall/org/Hibachi/HibachiAssets/js/jquery-validate-1.9.0.min.js ***!
-  \***************************************************************************************************************************************************************************************************************/
+/*!*******************************************************************************************************************************************************************************!*\
+  !*** /Users/nitinyadav/Workspace/Monat/Slatwall/node_modules/raw-loader!/Users/nitinyadav/Workspace/Monat/Slatwall/org/Hibachi/HibachiAssets/js/jquery-validate-1.9.0.min.js ***!
+  \*******************************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -132,9 +132,9 @@ module.exports = "/**\n * jQuery Validation Plugin 1.9.0\n *\n * http://bassista
 /***/ }),
 
 /***/ "../../../../node_modules/script-loader/addScript.js":
-/*!**********************************************************************************************************!*\
-  !*** /home/ec2-user/environment/dev-ops/projects/Monat/Slatwall/node_modules/script-loader/addScript.js ***!
-  \**********************************************************************************************************/
+/*!******************************************************************************************!*\
+  !*** /Users/nitinyadav/Workspace/Monat/Slatwall/node_modules/script-loader/addScript.js ***!
+  \******************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -170,53 +170,53 @@ module.exports = function(src) {
 /***/ }),
 
 /***/ "../../../../node_modules/script-loader/index.js!../../HibachiAssets/js/jquery-3.3.1.min.js":
-/*!*********************************************************************************************************************************************************************************************************!*\
-  !*** /home/ec2-user/environment/dev-ops/projects/Monat/Slatwall/node_modules/script-loader!/home/ec2-user/environment/dev-ops/projects/Monat/Slatwall/org/Hibachi/HibachiAssets/js/jquery-3.3.1.min.js ***!
-  \*********************************************************************************************************************************************************************************************************/
+/*!*************************************************************************************************************************************************************************!*\
+  !*** /Users/nitinyadav/Workspace/Monat/Slatwall/node_modules/script-loader!/Users/nitinyadav/Workspace/Monat/Slatwall/org/Hibachi/HibachiAssets/js/jquery-3.3.1.min.js ***!
+  \*************************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! !/home/ec2-user/environment/dev-ops/projects/Monat/Slatwall/node_modules/script-loader/addScript.js */ "../../../../node_modules/script-loader/addScript.js")(__webpack_require__(/*! !/home/ec2-user/environment/dev-ops/projects/Monat/Slatwall/node_modules/raw-loader!/home/ec2-user/environment/dev-ops/projects/Monat/Slatwall/org/Hibachi/HibachiAssets/js/jquery-3.3.1.min.js */ "../../../../node_modules/raw-loader/index.js!../../HibachiAssets/js/jquery-3.3.1.min.js"))
+__webpack_require__(/*! !/Users/nitinyadav/Workspace/Monat/Slatwall/node_modules/script-loader/addScript.js */ "../../../../node_modules/script-loader/addScript.js")(__webpack_require__(/*! !/Users/nitinyadav/Workspace/Monat/Slatwall/node_modules/raw-loader!/Users/nitinyadav/Workspace/Monat/Slatwall/org/Hibachi/HibachiAssets/js/jquery-3.3.1.min.js */ "../../../../node_modules/raw-loader/index.js!../../HibachiAssets/js/jquery-3.3.1.min.js"))
 
 /***/ }),
 
 /***/ "../../../../node_modules/script-loader/index.js!../../HibachiAssets/js/jquery-migrate-1.4.1.min.js":
-/*!*****************************************************************************************************************************************************************************************************************!*\
-  !*** /home/ec2-user/environment/dev-ops/projects/Monat/Slatwall/node_modules/script-loader!/home/ec2-user/environment/dev-ops/projects/Monat/Slatwall/org/Hibachi/HibachiAssets/js/jquery-migrate-1.4.1.min.js ***!
-  \*****************************************************************************************************************************************************************************************************************/
+/*!*********************************************************************************************************************************************************************************!*\
+  !*** /Users/nitinyadav/Workspace/Monat/Slatwall/node_modules/script-loader!/Users/nitinyadav/Workspace/Monat/Slatwall/org/Hibachi/HibachiAssets/js/jquery-migrate-1.4.1.min.js ***!
+  \*********************************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! !/home/ec2-user/environment/dev-ops/projects/Monat/Slatwall/node_modules/script-loader/addScript.js */ "../../../../node_modules/script-loader/addScript.js")(__webpack_require__(/*! !/home/ec2-user/environment/dev-ops/projects/Monat/Slatwall/node_modules/raw-loader!/home/ec2-user/environment/dev-ops/projects/Monat/Slatwall/org/Hibachi/HibachiAssets/js/jquery-migrate-1.4.1.min.js */ "../../../../node_modules/raw-loader/index.js!../../HibachiAssets/js/jquery-migrate-1.4.1.min.js"))
+__webpack_require__(/*! !/Users/nitinyadav/Workspace/Monat/Slatwall/node_modules/script-loader/addScript.js */ "../../../../node_modules/script-loader/addScript.js")(__webpack_require__(/*! !/Users/nitinyadav/Workspace/Monat/Slatwall/node_modules/raw-loader!/Users/nitinyadav/Workspace/Monat/Slatwall/org/Hibachi/HibachiAssets/js/jquery-migrate-1.4.1.min.js */ "../../../../node_modules/raw-loader/index.js!../../HibachiAssets/js/jquery-migrate-1.4.1.min.js"))
 
 /***/ }),
 
 /***/ "../../../../node_modules/script-loader/index.js!../../HibachiAssets/js/jquery-ui.min.js":
-/*!******************************************************************************************************************************************************************************************************!*\
-  !*** /home/ec2-user/environment/dev-ops/projects/Monat/Slatwall/node_modules/script-loader!/home/ec2-user/environment/dev-ops/projects/Monat/Slatwall/org/Hibachi/HibachiAssets/js/jquery-ui.min.js ***!
-  \******************************************************************************************************************************************************************************************************/
+/*!**********************************************************************************************************************************************************************!*\
+  !*** /Users/nitinyadav/Workspace/Monat/Slatwall/node_modules/script-loader!/Users/nitinyadav/Workspace/Monat/Slatwall/org/Hibachi/HibachiAssets/js/jquery-ui.min.js ***!
+  \**********************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! !/home/ec2-user/environment/dev-ops/projects/Monat/Slatwall/node_modules/script-loader/addScript.js */ "../../../../node_modules/script-loader/addScript.js")(__webpack_require__(/*! !/home/ec2-user/environment/dev-ops/projects/Monat/Slatwall/node_modules/raw-loader!/home/ec2-user/environment/dev-ops/projects/Monat/Slatwall/org/Hibachi/HibachiAssets/js/jquery-ui.min.js */ "../../../../node_modules/raw-loader/index.js!../../HibachiAssets/js/jquery-ui.min.js"))
+__webpack_require__(/*! !/Users/nitinyadav/Workspace/Monat/Slatwall/node_modules/script-loader/addScript.js */ "../../../../node_modules/script-loader/addScript.js")(__webpack_require__(/*! !/Users/nitinyadav/Workspace/Monat/Slatwall/node_modules/raw-loader!/Users/nitinyadav/Workspace/Monat/Slatwall/org/Hibachi/HibachiAssets/js/jquery-ui.min.js */ "../../../../node_modules/raw-loader/index.js!../../HibachiAssets/js/jquery-ui.min.js"))
 
 /***/ }),
 
 /***/ "../../../../node_modules/script-loader/index.js!../../HibachiAssets/js/jquery-validate-1.9.0.min.js":
-/*!******************************************************************************************************************************************************************************************************************!*\
-  !*** /home/ec2-user/environment/dev-ops/projects/Monat/Slatwall/node_modules/script-loader!/home/ec2-user/environment/dev-ops/projects/Monat/Slatwall/org/Hibachi/HibachiAssets/js/jquery-validate-1.9.0.min.js ***!
-  \******************************************************************************************************************************************************************************************************************/
+/*!**********************************************************************************************************************************************************************************!*\
+  !*** /Users/nitinyadav/Workspace/Monat/Slatwall/node_modules/script-loader!/Users/nitinyadav/Workspace/Monat/Slatwall/org/Hibachi/HibachiAssets/js/jquery-validate-1.9.0.min.js ***!
+  \**********************************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! !/home/ec2-user/environment/dev-ops/projects/Monat/Slatwall/node_modules/script-loader/addScript.js */ "../../../../node_modules/script-loader/addScript.js")(__webpack_require__(/*! !/home/ec2-user/environment/dev-ops/projects/Monat/Slatwall/node_modules/raw-loader!/home/ec2-user/environment/dev-ops/projects/Monat/Slatwall/org/Hibachi/HibachiAssets/js/jquery-validate-1.9.0.min.js */ "../../../../node_modules/raw-loader/index.js!../../HibachiAssets/js/jquery-validate-1.9.0.min.js"))
+__webpack_require__(/*! !/Users/nitinyadav/Workspace/Monat/Slatwall/node_modules/script-loader/addScript.js */ "../../../../node_modules/script-loader/addScript.js")(__webpack_require__(/*! !/Users/nitinyadav/Workspace/Monat/Slatwall/node_modules/raw-loader!/Users/nitinyadav/Workspace/Monat/Slatwall/org/Hibachi/HibachiAssets/js/jquery-validate-1.9.0.min.js */ "../../../../node_modules/raw-loader/index.js!../../HibachiAssets/js/jquery-validate-1.9.0.min.js"))
 
 /***/ }),
 
 /***/ "../../HibachiAssets/js/jquery-typewatch-2.0.js":
-/*!***********************************************************************************************************************!*\
-  !*** /home/ec2-user/environment/dev-ops/projects/Monat/Slatwall/org/Hibachi/HibachiAssets/js/jquery-typewatch-2.0.js ***!
-  \***********************************************************************************************************************/
+/*!*******************************************************************************************************!*\
+  !*** /Users/nitinyadav/Workspace/Monat/Slatwall/org/Hibachi/HibachiAssets/js/jquery-typewatch-2.0.js ***!
+  \*******************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -314,9 +314,9 @@ __webpack_require__(/*! !/home/ec2-user/environment/dev-ops/projects/Monat/Slatw
 /***/ }),
 
 /***/ "../../HibachiAssets/js/jquery-ui-timepicker-addon-1.3.1.js":
-/*!***********************************************************************************************************************************!*\
-  !*** /home/ec2-user/environment/dev-ops/projects/Monat/Slatwall/org/Hibachi/HibachiAssets/js/jquery-ui-timepicker-addon-1.3.1.js ***!
-  \***********************************************************************************************************************************/
+/*!*******************************************************************************************************************!*\
+  !*** /Users/nitinyadav/Workspace/Monat/Slatwall/org/Hibachi/HibachiAssets/js/jquery-ui-timepicker-addon-1.3.1.js ***!
+  \*******************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -2526,7 +2526,7 @@ __webpack_require__(/*! !/home/ec2-user/environment/dev-ops/projects/Monat/Slatw
             loadingCallback = angular.noop,
             doneCallback = angular.noop;
 
-        var errorCallback =  (e) => console.error(`Boogtstraping ${app} FAILED`, e);
+        var errorCallback =  (e) => console.error(`Bootstraping ${app} FAILED`, e);
             
         return {
 
@@ -2565,6 +2565,7 @@ __webpack_require__(/*! !/home/ec2-user/environment/dev-ops/projects/Monat/Slatw
     };
 
 })(angular);
+
 
 /***/ }),
 

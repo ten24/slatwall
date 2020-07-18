@@ -2821,6 +2821,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			orderReturn.setOrder( arguments.returnOrder );
 			if(!isNull(arguments.processObject.getFulfillmentRefundAmount())){
 				orderReturn.setFulfillmentRefundAmount( arguments.processObject.getFulfillmentRefundAmount() );
+				
+				var originalOrder = arguments.returnOrder.getReferencedOrder();
+			
+				var originalOrderFulfillmentChargeVATAmount = originalOrder.getFulfillmentChargeVATAmount();
+				var originalOrderFulfillmentCharge = originalOrder.getFulfillmentChargeTotal();
+				
+				if( originalOrderFulfillmentChargeVATAmount != 0 && originalOrderFulfillmentCharge != 0 ){
+					var vatRefund = getService('HibachiUtilityService').precisionCalculate(originalOrderFulfillmentChargeVATAmount * orderReturn.getFulfillmentRefundAmount() / originalOrderFulfillmentCharge);
+					orderReturn.setFulfillmentVATRefund( vatRefund );
+				}
+				
 			}
 			if(!isNull(arguments.processObject.getFulfillmentRefundPreTax())){
 				orderReturn.setFulfillmentRefundPreTax( arguments.processObject.getFulfillmentRefundPreTax() );
@@ -2828,6 +2839,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			if(!isNull(arguments.processObject.getFulfillmentTaxRefund())){
 				orderReturn.setFulfillmentTaxRefund( arguments.processObject.getFulfillmentTaxRefund() );
 			}
+			
 			orderReturn.setReturnLocation( arguments.processObject.getLocation() );
 			this.saveOrderReturn(orderReturn);
 		}
