@@ -23,18 +23,18 @@ const PATHS = {
 
 const calculateNumberOfWorkers = () => {
 	const cpus = require('os').cpus() || { length: 1 };
-	return Math.max(1, cpus.length - 1);
+	return Math.max(2, cpus.length - 1);
 };
 
 const workerPool = {
 	workers: calculateNumberOfWorkers(),
-	workerParallelJobs: 5,
+	workerParallelJobs: 10,
 	poolRespawn: process.env.NODE_ENV !== 'production',
 	poolTimeout: process.env.NODE_ENV !== 'production' ? Infinity : 2000
 };
 
 if (calculateNumberOfWorkers() > 0) {
-	ThreadLoader.warmup(workerPool, ['ts-loader']);
+	ThreadLoader.warmup(workerPool, ['ts-loader', 'html-loader']);
 }
 
 
@@ -107,6 +107,9 @@ devConfig.module = {
                 PATHS.clientSrc // only processing custom-frontend templates
             ],
             use: [
+                {
+					loader: 'cache-loader'
+				},
                 {
                     loader: 'html-loader',
                     options: {
