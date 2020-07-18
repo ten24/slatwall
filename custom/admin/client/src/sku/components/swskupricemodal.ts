@@ -1,4 +1,3 @@
-// var swEditSkuPriceModalLauncherHTML = require("html-loader!sku/components/editskupricemodallauncher");
 import {SWSkuPriceModal as SkuPriceModal} from "../../../../../../admin/client/src/sku/components/swskupricemodal";
 import {SWSkuPriceModalController as SkuPriceModalController} from "../../../../../../admin/client/src/sku/components/swskupricemodal";
 
@@ -58,58 +57,8 @@ class SWSkuPriceModalController extends SkuPriceModalController{
 }
 
 class SWSkuPriceModal extends SkuPriceModal implements ng.IDirective{
-    
+    public template = require('./skupricemodal.html');
     public controller = SWSkuPriceModalController;
-    
-    public static Factory(){
-        var directive = (
-            $hibachi,
-            entityService,
-            observerService,
-            scopeService,
-            collectionConfigService,
-            skuPartialsPath,
-            slatwallPathBuilder
-        )=> new SWSkuPriceModal(
-            $hibachi, 
-            entityService,
-            observerService,
-            scopeService,
-            collectionConfigService,
-            skuPartialsPath,
-            slatwallPathBuilder
-        );
-        directive.$inject = [
-            '$hibachi',
-            'entityService',
-            'observerService',
-            'scopeService',
-            'collectionConfigService',
-            'skuPartialsPath',
-            'slatwallPathBuilder'
-        ];
-        return directive;
-    }
-    
-    constructor(
-        public $hibachi, 
-        public entityService,
-        public observerService,
-        public scopeService, 
-        public collectionConfigService, 
-        public skuPartialsPath,
-        public slatwallPathBuilder
-    ){
-        super(
-            $hibachi, 
-            entityService,
-            observerService,
-            scopeService, 
-            collectionConfigService, 
-            skuPartialsPath,
-            slatwallPathBuilder
-        );
-    }
 }
 
 export{

@@ -1,7 +1,3 @@
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
-var swEditSkuPriceModalLauncherHTML = require("html-loader!sku/components/editskupricemodallauncher");
-
 class SWEditSkuPriceModalLauncherController{
     
     public pageRecord:any; 
@@ -217,12 +213,11 @@ class SWEditSkuPriceModalLauncherController{
 }
 
 class SWEditSkuPriceModalLauncher implements ng.IDirective{
-    public template;
+    public template = require("./editskupricemodallauncher.html");;
     public restrict = 'EA';
-    public scope = {}; 
-    public skuData = {}; 
-    public imagePathToUse;
     public transclude = true; 
+    
+    public scope = {};
     public bindToController = {
         sku:"=?",
         pageRecord:"=?",
@@ -236,57 +231,9 @@ class SWEditSkuPriceModalLauncher implements ng.IDirective{
     };
     public controller = SWEditSkuPriceModalLauncherController;
     public controllerAs="swEditSkuPriceModalLauncher";
-   
-   
-    public static Factory(){
-        var directive = (
-            $hibachi,
-            entityService,
-            observerService,
-            scopeService,
-            collectionConfigService,
-            skuPartialsPath,
-            slatwallPathBuilder
-        )=> new SWEditSkuPriceModalLauncher(
-            $hibachi, 
-            entityService,
-            observerService,
-            scopeService,
-            collectionConfigService,
-            skuPartialsPath,
-            slatwallPathBuilder
-        );
-        directive.$inject = [
-            '$hibachi',
-            'entityService',
-            'observerService',
-            'scopeService',
-            'collectionConfigService',
-            'skuPartialsPath',
-            'slatwallPathBuilder'
-        ];
-        return directive;
-    }
-    constructor(
-        public $hibachi, 
-        public entityService,
-        public observerService,
-        public scopeService, 
-        public collectionConfigService, 
-        public skuPartialsPath,
-        public slatwallPathBuilder
-    ){
-        this.template = swEditSkuPriceModalLauncherHTML;
-        
-    }
     
-    public compile = (element: JQuery, attrs: angular.IAttributes) => {
-        return {
-            pre: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
-            },
-            post: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
-            }
-        };
+    public static Factory(){
+        return () => new this();
     }
 }
 export{
