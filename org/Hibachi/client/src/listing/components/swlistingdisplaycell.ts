@@ -215,17 +215,7 @@ class SWListingDisplayCell {
     `;
 
     public static Factory(){
-        var directive:ng.IDirectiveFactory=(
-        ) => new SWListingDisplayCell(
-        );
-        directive.$inject =[
-        ];
-        return directive;
-    }
-    //@ngInject
-    constructor(
-    ){
-
+        return /** @ngInject */ () => new this();
     }
 }
 export{
