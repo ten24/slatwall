@@ -1,6 +1,7 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 class SWEntityActionBarButtonGroupController{
+	// @ngInject;
 	constructor(){
 
 	}

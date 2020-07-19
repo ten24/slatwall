@@ -5,7 +5,15 @@
 class SWLoginController{
     public account_login;
     //@ngInject
-    constructor(private $route,private $log:ng.ILogService, private $window:ng.IWindowService, private corePartialsPath, private $hibachi, private dialogService, public hibachiScope){
+    constructor(
+        private $route,
+        private $log:ng.ILogService, 
+        private $window:ng.IWindowService, 
+        private corePartialsPath, 
+        private $hibachi, 
+        private dialogService, 
+        public hibachiScope
+    ){
         this.$hibachi = $hibachi;
         this.$window = $window;
         this.$route = $route;

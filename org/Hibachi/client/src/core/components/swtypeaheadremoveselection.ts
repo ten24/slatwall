@@ -9,6 +9,7 @@ class SWTypeaheadRemoveSelectionController {
     public typeaheadDataKey:string; 
     public disabled:boolean; 
 
+    // @ngInject;
     constructor(
         public $scope,
         public listingService,

@@ -9,6 +9,7 @@ class SWActionCallerDropdownController{
     public dropdownId:string;
     public buttonClass:string;
     
+    // @ngInject;
     constructor(){
         this.title = this.title || '';
         this.icon = this.icon || 'plus';

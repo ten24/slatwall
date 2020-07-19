@@ -48,7 +48,8 @@ class SWTooltip implements ng.IDirective{
 		return /** @ngInject; */ ($document) => new this($document);
 	}
 
-	constructor( public $document){ }
+    // @ngInject;
+	constructor( public $document : ng.IDocumentService){ }
 
 	public link:ng.IDirectiveLinkFn = (scope:any, element:any, attrs:any, controller:any, transclude:any) => {
       var tooltip = element.find(".tooltip");

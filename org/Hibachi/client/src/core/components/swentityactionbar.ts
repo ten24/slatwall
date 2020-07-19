@@ -207,6 +207,4 @@ export{
     SWEntityActionBar
 }
 
-//	angular.module('slatwalladmin').directive('swEntityActionBar',['corePartialsPath',(corePartialsPath) => new SWEntityActionBar(corePartialsPath)]);
-
 

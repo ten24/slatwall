@@ -440,6 +440,7 @@ class SWTypeaheadSearch implements ng.IDirective{
     public controller=SWTypeaheadSearchController;
     public controllerAs="swTypeaheadSearch";
     
+    // @ngInject;
     constructor(public $compile, public typeaheadService){}
     
     public compile = (element: JQuery, attrs: angular.IAttributes, transclude: any) => {

@@ -341,6 +341,7 @@ class SWActionCaller implements ng.IDirective{
     public controller=SWActionCallerController;
     public controllerAs="swActionCaller";
     
+    // @ngInject;
     constructor(private $templateCache: ng.ITemplateCacheService){}
 
 	public static Factory(){

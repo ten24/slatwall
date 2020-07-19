@@ -74,6 +74,7 @@ class SWProcessCaller implements ng.IDirective{
 	public controller=SWProcessCallerController
 	public controllerAs="swProcessCaller";
 	
+    // @ngInject;
 	constructor(private $templateCache: ng.ITemplateCacheService){}
 
 	public static Factory(){

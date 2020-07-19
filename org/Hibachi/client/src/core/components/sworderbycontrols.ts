@@ -137,6 +137,7 @@ class SWOrderByControls implements ng.IDirective{
 		return /** @ngInject; */ ($compile,scopeService ,listingService) => new this($compile,scopeService ,listingService);
 	}
 
+    // @ngInject;
     constructor( public $compile,
                  private scopeService,
                  private listingService,

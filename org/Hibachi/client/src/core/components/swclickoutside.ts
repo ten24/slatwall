@@ -7,15 +7,9 @@ class SWClickOutside{
     };
     
     public static Factory(){
-        var directive = (
-            $document,$timeout,utilityService
-        )=>new SWClickOutside(
-            $document,$timeout,utilityService
-        );
-        directive.$inject = [
-            '$document', '$timeout', 'utilityService'
-        ];
-        return directive;
+        return /** @ngInject; */ ($document,$timeout,utilityService ) => {
+            return new this( $document,$timeout,utilityService );
+        }
     }
     //@ngInject
     constructor(
