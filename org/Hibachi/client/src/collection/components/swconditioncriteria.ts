@@ -1,98 +1,104 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
+
+const criteriaTemplateString = require('./criteria.html');
+
+const criteriaDateTemplateString = require('./criteriadate.html');
+const criteriaStringTemplateString = require('./criteriastring.html');
+const criteriaNumberTemplateString = require('./criterianumber.html');
+const criteriaBooleanTemplateString = require('./criteriaboolean.html');
+
+const criteriaManyToOneTemplateString = require('./criteriamanytoone.html');
+const criteriaOneToManyTemplateString = require('./criteriaonetomany.html');
+const criteriaManyToManyTemplateString = require('./criteriamanytomany.html');
+
 declare var Date:any;
+
 class SWConditionCriteria{
+    
 	public static Factory(){
-		var directive:ng.IDirectiveFactory = (
-			$http,
-			$compile,
-			$templateCache,
-			$log,
-			$hibachi,
-			$filter,
-			collectionPartialsPath,
-			metadataService,
-			hibachiPathBuilder
-		)=>new SWConditionCriteria(
-			$http,
-			$compile,
-			$templateCache,
-			$log,
-			$hibachi,
-			$filter,
-			collectionPartialsPath,
-			metadataService,
-			hibachiPathBuilder
-		);
-		directive.$inject = [
-			'$http',
-			'$compile',
-			'$templateCache',
-			'$log',
-			'$hibachi',
-			'$filter',
-			'collectionPartialsPath',
-			'metadataService',
-			'hibachiPathBuilder'
-		];
-		return directive;
+		return /** @ngInject; */ ( $http, $compile, $templateCache, $templateRequest, $log, $hibachi, $filter, metadataService) => {
+		    
+		    if(!$templateCache.get('criteriaTemplateString') ){
+		        $templateCache.put('criteriaTemplateString', criteriaTemplateString);
+		    }
+		    if(!$templateCache.get('criteriaDateTemplateString') ){
+		        $templateCache.put('criteriaDateTemplateString', criteriaDateTemplateString);
+		    }
+		    if(!$templateCache.get('criteriaStringTemplateString') ){
+		        $templateCache.put('criteriaStringTemplateString', criteriaStringTemplateString);
+		    }
+		    if(!$templateCache.get('criteriaNumberTemplateString') ){
+		        $templateCache.put('criteriaNumberTemplateString', criteriaNumberTemplateString);
+		    }
+		    if(!$templateCache.get('criteriaBooleanTemplateString') ){
+		        $templateCache.put('criteriaBooleanTemplateString', criteriaBooleanTemplateString);
+		    }
+		    if(!$templateCache.get('criteriaManyToOneTemplateString') ){
+		        $templateCache.put('criteriaManyToOneTemplateString', criteriaManyToOneTemplateString);
+		    }
+		    if(!$templateCache.get('criteriaOneToManyTemplateString') ){
+		        $templateCache.put('criteriaOneToManyTemplateString', criteriaOneToManyTemplateString);
+		    }
+		    if(!$templateCache.get('criteriaManyToManyTemplateString') ){
+		        $templateCache.put('criteriaManyToManyTemplateString', criteriaManyToManyTemplateString);
+		    }
+		    
+		    return new this($http, $compile, $templateRequest, $log, $hibachi, $filter, metadataService);
+		}
 	}
+	
     //@ngInject
 	constructor(
 		$http,
 		$compile,
-		$templateCache,
+		$templateRequest,
 		$log,
 		$hibachi,
 		$filter,
-		collectionPartialsPath,
 		metadataService,
-		hibachiPathBuilder
 	){
 		/* Template info begin*/
 		var getTemplate = function(selectedFilterProperty){
-			var template = '';
-			var templatePath = '';
+			var templateName = '';
 
 			if(angular.isUndefined(selectedFilterProperty.ormtype) && angular.isUndefined(selectedFilterProperty.fieldtype)){
-				templatePath = hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"criteria.html";
+				templateName = 'criteriaTemplateString';
 			}else{
 				var criteriaormtype = selectedFilterProperty.ormtype;
 				var criteriafieldtype = selectedFilterProperty.fieldtype;
 				/*TODO: convert all switches to object literals*/
 				switch(criteriaormtype){
 					case 'boolean':
-					templatePath = hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"criteriaboolean.html";
+					templateName = 'criteriaBooleanTemplateString';
 						break;
 					case 'string':
-						templatePath = hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"criteriastring.html";
+						templateName = 'criteriaStringTemplateString';
 						break;
 					case 'timestamp':
-						templatePath = hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"criteriadate.html";
+						templateName = 'criteriaDateTemplateString';
 						break;
 					case 'big_decimal':
 					case 'integer':
 					case 'float':
-						templatePath = hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"criterianumber.html";
+						templateName = 'criteriaNumberTemplateString';
 						break;
-
-
 				}
 
 				switch(criteriafieldtype){
 					case "many-to-one":
-						templatePath = hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"criteriamanytoone.html";
+						templateName = 'criteriaManyToOneTemplateString';
 						break;
 					case "many-to-many":
-						templatePath = hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"criteriamanytomany.html";
+						templateName = 'criteriaManyToManyTemplateString';
 						break;
 					case "one-to-many":
-						templatePath = hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"criteriaonetomany.html";
+						templateName = 'criteriaOneToManyTemplateString';
 						break;
 				}
 			}
 
-			var templateLoader = $http.get(templatePath,{cache:$templateCache});
+			var templateLoader = $templateRequest(templateName);
 
 			return templateLoader;
 		};

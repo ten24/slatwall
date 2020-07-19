@@ -26,7 +26,8 @@ class SWCriteriaDate{
 	){
 		return {
 			restrict: 'E',
-			templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+'criteriadate.html',
+			template: require('./criteriadate.html'),
+			
 			link: function(scope, element, attrs){
 					
 				var getDateOptions = function(type){

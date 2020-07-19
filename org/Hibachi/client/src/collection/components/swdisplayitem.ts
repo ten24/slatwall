@@ -39,7 +39,9 @@ class SWDisplayItem{
 				selectedPropertyChanged:"&"
 
 			},
-			templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"displayitem.html",
+			
+			template: require("./displayitem.html"),
+			
 			link: function(scope, element,attrs,displayOptionsController){
 				scope.showDisplayItem = false;
 

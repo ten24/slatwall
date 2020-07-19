@@ -59,7 +59,9 @@ class SWDisplayOptions{
                 baseEntityName:"<?",
                 listingName:"@?"
             },
-            templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"displayoptions.html",
+            
+            template: require("./displayoptions.html"),
+            
             controller:['$scope','$element','$attrs',function($scope,$element,$attrs){
 
                 this.removeColumn = function(columnIndex){
