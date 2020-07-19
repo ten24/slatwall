@@ -32,7 +32,7 @@ class SWClickOutside{
             }
             if(e.target !== elem && elem && elem[0] && !this.utilityService.isDescendantElement(elem[0],e.target)){
                 this.$timeout(()=>{
-                    scope.swClickOutside();
+                    scope?.swClickOutside?.();
                 });
             }
         });
