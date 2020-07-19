@@ -2,7 +2,10 @@
 /// <reference path="../../typings/slatwallTypescript.d.ts" />
 import {hibachimodule} from "../../../../org/Hibachi/client/src/hibachi/hibachi.module";
 import {workflowmodule} from "../../../../org/Hibachi/client/src/workflow/workflow.module";
-import {entitymodule} from "../../../../org/Hibachi/client/src/entity/entity.module";
+import {collectionmodule} from "../../../../org/Hibachi/client/src/collection/collection.module";
+import {listingmodule} from "../../../../org/Hibachi/client/src/listing/listing.module";
+import {cardmodule} from "../../../../org/Hibachi/client/src/card/card.module";
+
 import {accountmodule} from "../account/account.module";
 import {addressmodule} from "../address/address.module";
 import {contentmodule} from "../content/content.module";
@@ -34,9 +37,13 @@ pace.start();
 declare var $:any;
 
 var slatwalladminmodule = angular.module('slatwalladmin',[
-  //custom modules
+  // core modules
   hibachimodule.name,
-  entitymodule.name,
+  workflowmodule.name,
+  collectionmodule.name,
+  listingmodule.name,
+  cardmodule.name,
+  //custom modules
   accountmodule.name,
   addressmodule.name,
   contentmodule.name,
@@ -53,8 +60,7 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
   sitemodule.name,
   skumodule.name,
   subscriptionusagemodule.name,
-  termmodule.name,
-  workflowmodule.name
+  termmodule.name
 ])
 .constant("baseURL", $.slatwall.getConfig().baseURL)
 .constant('slatwallPathBuilder', new SlatwallPathBuilder())
