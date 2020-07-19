@@ -104,7 +104,8 @@ devConfig.module = {
             test: /\.(html)$/, 
             exclude: /index\.html/,
             include: [
-                PATHS.clientSrc // only processing custom-frontend templates
+                PATHS.clientSrc,
+                PATHS.hibachiSrc
             ],
             use: [
                 {
