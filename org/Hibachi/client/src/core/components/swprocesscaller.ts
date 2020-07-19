@@ -1,10 +1,10 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 
+const processCallerTemplateString = require("./processcaller.html");
 
 class SWProcessCallerController{
-	public utilityService;
-    
+
     public action:string;
     public title:string;
     public titleRbKey:string;
@@ -12,24 +12,24 @@ class SWProcessCallerController{
 	public type:string;
 	public queryString:string;
 	public processContext:string;
+	
 	//@ngInject
 	constructor( private rbkeyService, 
-				 public $templateRequest:ng.ITemplateRequestService, 
 				 public $compile:ng.ICompileService,
-				 public corePartialsPath,
 				 public $scope,
 				 public $element,
-				 public $transclude:ng.ITranscludeFunction,utilityService,
-			     hibachiPathBuilder
+				 public $transclude : ng.ITranscludeFunction,
+				 public $templateRequest : ng.ITemplateRequestService,
+				 public utilityService
 	){
 		this.type = this.type || 'link';
 		this.queryString = this.queryString || '';
-	
-		this.$templateRequest(hibachiPathBuilder.buildPartialsPath(this.corePartialsPath)+"processcaller.html").then((html)=>{
-			var template = angular.element(html);
-			this.$element.parent().append(template);
-			$compile(template)(this.$scope);
-		});
+		
+		this.$templateRequest('processCallerTemplateString').then((html)=>{
+    		var template = angular.element(html);
+    		this.$element.parent().append(template);
+    		$compile(template)(this.$scope);
+        });
 		
         if(angular.isDefined(this.titleRbKey)){
             this.title = this.rbkeyService.getRBKey(this.titleRbKey);
@@ -49,6 +49,7 @@ class SWProcessCallerController{
 class SWProcessCaller implements ng.IDirective{
 
 	public restrict:string = 'E';
+
 	public scope = {};
 	public bindToController={
 		action:"@",
@@ -69,27 +70,19 @@ class SWProcessCaller implements ng.IDirective{
 		disabledText:"@",
 		modal:"="
 	};
+	
 	public controller=SWProcessCallerController
 	public controllerAs="swProcessCaller";
-	public static $inject = ['corePartialsPath','utilityService'];
-	constructor(private corePartialsPath,private utilityService){
-		this.corePartialsPath = corePartialsPath;
-		this.utilityService = utilityService;
-	}
+	
+	constructor(private $templateCache: ng.ITemplateCacheService){}
 
 	public static Factory(){
-		var directive = (
-			corePartialsPath,utilityService
-		)=> new SWProcessCaller(
-			corePartialsPath,utilityService
-		);
-		directive.$inject = [
-			'corePartialsPath','utilityService'
-		];
-		return directive;
-	}
-
-	public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
+		return /** @ngInject; */ ($templateCache) => {
+		    if( !$templateCache.get('processCallerTemplateString') ){
+		        $templateCache.put('processCallerTemplateString', processCallerTemplateString);
+		    }
+		    return new this($templateCache);
+		};
 	}
 }
  export{

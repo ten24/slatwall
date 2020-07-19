@@ -106,8 +106,7 @@ class SWModalLauncherController {
 
 class SWModalLauncher implements ng.IDirective{
 
-    public templateUrl;
-    transclude = {
+    public transclude = {
         button: '?swModalButton',
         staticButton: '?swModalStaticButton',
         content: '?swModalContent'
@@ -131,11 +130,12 @@ class SWModalLauncher implements ng.IDirective{
     };
     public controller=SWModalLauncherController;
     public controllerAs="swModalLauncher";
+    
+    public template = require("./modallauncher.html");
 
-    // @ngInject
-    constructor(public $compile, private corePartialsPath,hibachiPathBuilder){
-        this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "modallauncher.html";
-    }
+	public static Factory(){
+		return /** @ngInject; */ () => new this();
+	}
 
     public compile = (element: JQuery, attrs: angular.IAttributes, transclude: any) => {
         return {
@@ -153,22 +153,6 @@ class SWModalLauncher implements ng.IDirective{
             post: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
             }
         };
-    }
-
-    public static Factory(){
-        var directive:ng.IDirectiveFactory = (
-            $compile
-            ,corePartialsPath
-            ,hibachiPathBuilder
-
-        )=> new SWModalLauncher(
-            $compile
-            ,corePartialsPath
-            ,hibachiPathBuilder
-        );
-        directive.$inject = ["$compile","corePartialsPath",
-            'hibachiPathBuilder'];
-        return directive;
     }
 }
 export{

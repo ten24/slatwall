@@ -108,7 +108,6 @@ class SWTypeaheadMultiselectController {
 
 class SWTypeaheadMultiselect implements ng.IDirective{
 
-	public templateUrl;
     public transclude=true; 
 	public restrict = "EA";
 	public scope = {};
@@ -137,29 +136,14 @@ class SWTypeaheadMultiselect implements ng.IDirective{
     
 	public controller=SWTypeaheadMultiselectController;
 	public controllerAs="swTypeaheadMultiselect";
+	
+	public template = require("./typeaheadmultiselect.html");
 
     // @ngInject
-	constructor(public $compile, public scopeService, public typeaheadService, private corePartialsPath,hibachiPathBuilder){
-		this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "typeaheadmultiselect.html";
-	}
+	constructor(public $compile, public scopeService, public typeaheadService ){}
 
 	public static Factory(){
-		var directive:ng.IDirectiveFactory = (
-            $compile
-            ,scopeService
-            ,typeaheadService
-			,corePartialsPath
-            ,hibachiPathBuilder
-
-		)=> new SWTypeaheadMultiselect(
-            $compile
-            ,scopeService
-            ,typeaheadService
-            ,corePartialsPath
-            ,hibachiPathBuilder
-		);
-		directive.$inject = ["$compile","scopeService","typeaheadService","corePartialsPath",'hibachiPathBuilder'];
-		return directive;
+		return /** @ngInject; */ ($compile, scopeService, typeaheadService) => new this($compile, scopeService, typeaheadService);
 	}
     
     public compile = (element: JQuery, attrs: angular.IAttributes, transclude: any) => {

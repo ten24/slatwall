@@ -139,8 +139,9 @@ class SWEntityActionBarController{
 class SWEntityActionBar implements ng.IDirective{
 
     public restrict:string = 'E';
-    public scope = {};
     public transclude = true;
+    
+    public scope = {};
     public bindToController={
         /*Core settings*/
         type:"@",
@@ -195,25 +196,12 @@ class SWEntityActionBar implements ng.IDirective{
     };
     public controller=SWEntityActionBarController
     public controllerAs="swEntityActionBar";
-    public templateUrl;
+    
+    public template = require("./entityactionbar.html");
 
-    public static Factory(){
-        var directive:ng.IDirectiveFactory=(
-            corePartialsPath,hibachiPathBuilder
-        ) => new SWEntityActionBar(corePartialsPath,hibachiPathBuilder);
-        directive.$inject = ['corePartialsPath','hibachiPathBuilder'];
-        return directive;
-
-    }
-
-    //@ngInject
-    constructor(private corePartialsPath,hibachiPathBuilder){
-        this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath)+'entityactionbar.html';
-    }
-
-    public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
-
-    }
+	public static Factory(){
+		return /** @ngInject; */ () => new this();
+	}
 }
 export{
     SWEntityActionBar

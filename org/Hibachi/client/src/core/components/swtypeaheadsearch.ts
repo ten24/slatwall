@@ -394,11 +394,11 @@ class SWTypeaheadSearchController {
 
 class SWTypeaheadSearch implements ng.IDirective{
 
-    public templateUrl;
+    public template = require("./typeaheadsearch.html");
     public transclude=true; 
     public restrict = "EA";
+    
     public scope = {};
-
     public bindToController = {
         collectionConfig:"=?",
         entity:"@?",
@@ -436,13 +436,11 @@ class SWTypeaheadSearch implements ng.IDirective{
         urlBase:'@?', 
         urlProperty:'@?'
     };
+    
     public controller=SWTypeaheadSearchController;
     public controllerAs="swTypeaheadSearch";
     
-    // @ngInject
-    constructor(public $compile, public typeaheadService, private corePartialsPath,hibachiPathBuilder){
-        this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "typeaheadsearch.html";
-    }
+    constructor(public $compile, public typeaheadService){}
     
     public compile = (element: JQuery, attrs: angular.IAttributes, transclude: any) => {
         return {
@@ -516,21 +514,7 @@ class SWTypeaheadSearch implements ng.IDirective{
     }
 
     public static Factory(){
-        var directive:ng.IDirectiveFactory = (
-            $compile
-            ,typeaheadService
-            ,corePartialsPath
-            ,hibachiPathBuilder
-
-        )=> new SWTypeaheadSearch(
-            $compile
-            ,typeaheadService
-            ,corePartialsPath
-            ,hibachiPathBuilder
-        );
-        directive.$inject = ["$compile","typeaheadService","corePartialsPath",
-            'hibachiPathBuilder'];
-        return directive;
+        return /** @ngIngect */ ($compile,typeaheadService) => new this($compile,typeaheadService);
     }
 }
 export{
