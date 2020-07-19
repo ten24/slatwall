@@ -1027,12 +1027,46 @@ class SWListingDisplay implements ng.IDirective{
     };
     public controller:any=SWListingDisplayController;
     public controllerAs="swListingDisplay";
-    
-    public template= require('./listingdisplay.html');
+    public templateUrl;
     
     public static Factory(){
-        return /** @ngInject */ () => new this();
+        var directive:ng.IDirectiveFactory=(
+            listingPartialPath,
+            hibachiPathBuilder
+        ) => new SWListingDisplay(
+            listingPartialPath,
+            hibachiPathBuilder
+        );
+        directive.$inject =[
+            'listingPartialPath',
+            'hibachiPathBuilder'
+        ];
+        return directive;
     }
+    //@ngInject
+    constructor(
+        public listingPartialPath,
+        public hibachiPathBuilder
+    ){
+        this.listingPartialPath = listingPartialPath;
+        this.templateUrl = hibachiPathBuilder.buildPartialsPath(this.listingPartialPath)+'listingdisplay.html';
+    }
+
+    public compile = (element: JQuery, attrs: angular.IAttributes) => {
+        return {
+            pre: ($scope: any, element: JQuery, attrs: angular.IAttributes, transclude) => {
+            },
+            post: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
+            }
+        };
+    }
+    
+    // packaginh the template makes it load too fast, and causes issues with Workflow-detail and content-listing pages
+    // public template= require('./listingdisplay.html');
+    
+    // public static Factory(){
+    //     return /** @ngInject */ () => new this();
+    // }
 }
 export{
     SWListingDisplay
