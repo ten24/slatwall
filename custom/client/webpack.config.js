@@ -118,8 +118,8 @@ devConfig.module = {
                         attributes: false,
                         esModule: true,
                         minimize: {
-                            removeComments: devConfig.mode === 'production',
-                            collapseWhitespace: devConfig.mode === 'production',
+                            removeComments: process.env.NODE_ENV === 'production',
+                            collapseWhitespace: process.env.NODE_ENV === 'production',
                         },
                     },
                 }
@@ -149,7 +149,7 @@ devConfig.plugins =  [
     
 	// https://blog.johnnyreilly.com/2016/07/using-webpacks-defineplugin-with-typescript.html
     new webpack.DefinePlugin({
-        '__DEBUG_MODE__': JSON.stringify( devConfig.mode === 'development' )
+        '__DEBUG_MODE__': JSON.stringify( process.env.NODE_ENV === 'development' )
     }),
 
     new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en/),
