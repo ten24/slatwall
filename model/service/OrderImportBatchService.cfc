@@ -242,13 +242,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				orderItem.setOrderFulfillment(orderFulfillment);
 				orderItem.setSku(orderImportBatchItem.getSku());
 				orderItem.setQuantity(orderImportBatchItem.getQuantity());
-				orderItem.setPrice(0);
 				orderItem.setSkuPrice(orderImportBatchItem.getSku().getPriceByCurrencyCode(currencyCode=currencyCode,quantity=orderItem.getQuantity(),accountID=account.getAccountID()));
 				if(isNull(orderItem.getSkuPrice())){
 					orderItem.setSkuPrice(0);
 				}
+				orderItem.setPrice(orderItem.getSkuPrice());
 				orderItem.setUserDefinedPriceFlag(true);
 				getOrderService().saveOrderItem( orderItem=orderItem, updateShippingMethodOptions=false );
+				getHibachiScope().logHibachi('======================SETTING ORDER ITEM PRICE: #orderItem.getPrice()#, and sku price: #orderItem.getSkuPrice()#===========================');
 				
 				if(orderItem.hasErrors()){
 					order.addErrors(orderItem.getErrors());
