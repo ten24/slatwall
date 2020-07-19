@@ -42,7 +42,7 @@ class SWOptions{
                allRecords: true,
                columnsConfig: angular.toJson(columnsConfig)
            })
-           .then(function(value){
+           .then( (value) => {
                 scope.swOptions.options = value.records;
                 this.observerService.notify('optionsLoaded');
             });

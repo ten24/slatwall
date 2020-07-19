@@ -145,7 +145,7 @@ class SWExpandableRecord implements ng.IDirective{
         parentId:"=",
         entity:"=",
         collectionConfig:"=?",
-        childCollectionConfig:"=?",
+        childCollectionConfig:"<?",
         refreshChildrenEvent:"=?",
         listingId:"@?",
         records:"=",
