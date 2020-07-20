@@ -330,7 +330,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		//transactionData['entryInitials'] = //Initials of user entering the transaction
 		
 		
-		if( transactionData['orderType'] == 'C' && len(arguments.order.getReferencedOrder().getIceRecordNumber())){
+		if( transactionData['transactionType'] == 'C' && len(arguments.order.getReferencedOrder().getIceRecordNumber())){
 			transactionData['originalRecordNumber'] = arguments.order.getReferencedOrder().getIceRecordNumber();//Used for RMA orders. When a return or refund is needed the order number of the order being returned
 		}
 		
