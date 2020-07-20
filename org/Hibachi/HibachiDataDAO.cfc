@@ -196,17 +196,23 @@ Notes:
 		public any function getTablesHavingRecordsMoreThan(required numeric count){
 
 		    var q = new Query();
-			var sql = " 
-    			Select table_name 
-     	        FROM INFORMATION_SCHEMA.TABLES 
-    	        WHERE table_name like 'sw%'
-                AND table_schema = ( SELECT DATABASE() )
-                AND TABLE_ROWS > #arguments.count#
-            ";
-            
-            
-			q.setSQL(sql);
-			return q.execute().getResult();
+		    
+		    if( getApplicationValue("databaseType") == "mySQL" ){
+    			var sql = " 
+        			Select table_name 
+         	        FROM INFORMATION_SCHEMA.TABLES 
+        	        WHERE table_name like 'sw%'
+                    AND table_schema = ( SELECT DATABASE() )
+                    AND TABLE_ROWS > #val(arguments.count)#
+                ";
+                
+    			q.setSQL(sql);
+    			return q.execute().getResult();
+		    } 
+		    else {
+		        throw("Database Type is not MYSQL, please add support for #getApplicationValue('databaseType')#");  
+		    }
+		    
 		}
 	</cfscript>
 	
