@@ -62,7 +62,7 @@ component extends="HibachiDAO" {
 		
 	}
 	
-	public any function addressHasNoAssociatedOrderTemplateByOTType(required string accountAddressID, orderTemplateTypeID){
+	public any function addressHasNoAssociatedOrderTemplateByOTType(required string accountAddressID, required string orderTemplateTypeID){
 			var sql = "
 				SELECT orderTemplateID 
 				FROM swOrderTemplate 
@@ -70,7 +70,7 @@ component extends="HibachiDAO" {
 					AND (shippingAccountAddressID=:shipAddress OR billingAccountAddressID=:billAddress) 
 				LIMIT 1
 			";
-			var result = QueryExecute(sql, {shipAddress: arguments.accountAddressID, billAddress: arguments.accountAddressID, statusTypeID: orderTemplateTypeID });
+			var result = QueryExecute(sql, {shipAddress: arguments.accountAddressID, billAddress: arguments.accountAddressID, statusTypeID: arguments.orderTemplateTypeID });
 			return  ( isNull(result) || isNull(result['orderTemplateID']) || !len(result['orderTemplateID']) );
 	}
 	
