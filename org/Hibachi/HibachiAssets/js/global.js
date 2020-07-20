@@ -1578,8 +1578,10 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 		jQuery('#' + elementID).before(loadingDiv);
 		jQuery('#loading' + elementID).width(jQuery('#' + elementID).width() + 2);
 		jQuery('#loading' + elementID).height(jQuery('#' + elementID).height() + 2);
+		
 		if(jQuery('#' + elementID).height() > 66) {
-			jQuery('#loading' + elementID + ' img').css('margin-top', ((jQuery('#' + elementID).height() / 2) - 66) + 'px');
+			jQuery('#loading' + elementID + ' img')
+			.css('margin-top', ((jQuery('#' + elementID).height() / 2) - 33) + 'px');
 		}
 	}
 	
