@@ -326,7 +326,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						
 						totalItemTax += taxAmount;
 						
-						taxAdjusted = false;
 						if(totalItemTax > originalOrderItem.getTaxAmountNotRefunded()){
 							taxAmount -= totalItemTax - originalOrderItem.getTaxAmountNotRefunded();
 							taxAdjusted = true;
