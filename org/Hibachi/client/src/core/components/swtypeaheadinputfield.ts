@@ -110,7 +110,6 @@ class SWTypeaheadInputFieldController {
 
 class SWTypeaheadInputField implements ng.IDirective{
 
-    public templateUrl;
     public transclude=true; 
     public restrict = "EA";
     public scope = {};
@@ -140,23 +139,12 @@ class SWTypeaheadInputField implements ng.IDirective{
     public controller=SWTypeaheadInputFieldController;
     public controllerAs="swTypeaheadInputField";
 
-    // @ngInject
-    constructor(private corePartialsPath,hibachiPathBuilder){
-        this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "typeaheadinputfield.html";
-    }
+    public template = require("./typeaheadinputfield.html");
 
-    public static Factory(){
-        var directive:ng.IDirectiveFactory = (
-            corePartialsPath
-            ,hibachiPathBuilder
+	public static Factory(){
+		return /** @ngInject; */ () => new this();
+	}
 
-        )=> new SWTypeaheadInputField(
-            corePartialsPath
-            ,hibachiPathBuilder
-        );
-        directive.$inject = ["corePartialsPath",'hibachiPathBuilder'];
-        return directive;
-    }
 }
 export{
     SWTypeaheadInputField,

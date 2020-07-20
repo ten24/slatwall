@@ -1,7 +1,3 @@
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
-var skuPriceModalLauncherHTML = require("html-loader!sku/components/addskupricemodallauncher");
-
 class SWAddSkuPriceModalLauncherController{
     
     public pageRecord:any;
@@ -159,12 +155,11 @@ class SWAddSkuPriceModalLauncherController{
 }
 
 class SWAddSkuPriceModalLauncher implements ng.IDirective{
-    public template;
+    public template = require("./addskupricemodallauncher.html");
     public restrict = 'EA';
-    public scope = {}; 
-    public skuData = {}; 
-    public imagePathToUse;
     public transclude = true; 
+    
+    public scope = {};
     public bindToController = {
         sku:"=?",
         pageRecord:"=?",
@@ -177,60 +172,12 @@ class SWAddSkuPriceModalLauncher implements ng.IDirective{
         defaultCurrencyOnly:"=?",
         disableAllFieldsButPrice:"=?"
     };
+    
     public controller = SWAddSkuPriceModalLauncherController;
     public controllerAs="swAddSkuPriceModalLauncher";
    
-   
     public static Factory(){
-        var directive = (
-            $hibachi,
-            entityService,
-            observerService,
-            scopeService,
-            collectionConfigService,
-            skuPartialsPath,
-            slatwallPathBuilder
-        )=> new SWAddSkuPriceModalLauncher(
-            $hibachi, 
-            entityService,
-            observerService,
-            scopeService,
-            collectionConfigService,
-            skuPartialsPath,
-            slatwallPathBuilder
-        );
-        directive.$inject = [
-            '$hibachi',
-            'entityService',
-            'observerService',
-            'scopeService',
-            'collectionConfigService',
-            'skuPartialsPath',
-            'slatwallPathBuilder'
-        ];
-        return directive;
-    }
-    constructor(
-        private $hibachi, 
-        private entityService,
-        private observerService,
-        private scopeService, 
-        private collectionConfigService, 
-        private skuPartialsPath,
-        private slatwallPathBuilder
-    ){
-        this.template = skuPriceModalLauncherHTML;
-    }
-    
-    public compile = (element: JQuery, attrs: angular.IAttributes) => {
-        return {
-            pre: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
-                
-            },
-            post: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
-                
-            }
-        };
+        return () => new this();
     }
 }
 export{

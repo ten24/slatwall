@@ -1,7 +1,3 @@
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
-var swPricingManagerHTML = require("html-loader!sku/components/pricingmanager");
-
 class SWPricingManagerController{
     
     public productId;
@@ -46,51 +42,22 @@ class SWPricingManagerController{
 }
 
 class SWPricingManager implements ng.IDirective{
-    public template;
+    public template = require("./pricingmanager.html");
+    
     public restrict = 'EA';
     public priority = 1000;
+    
     public scope = {}; 
     public bindToController = {
         productId:"@",
         trackInventory:"=?"
     };
+    
     public controller = SWPricingManagerController;
     public controllerAs="swPricingManager";
    
     public static Factory(){
-        var directive = (
-            $hibachi, 
-            skuPartialsPath,
-			slatwallPathBuilder
-        )=> new SWPricingManager(
-            $hibachi, 
-            skuPartialsPath,
-			slatwallPathBuilder
-        );
-        directive.$inject = [
-            '$hibachi',
-            'skuPartialsPath',
-			'slatwallPathBuilder'
-        ];
-        return directive;
-    }
-    
-    // @ngInject
-    constructor(
-        public $hibachi, 
-		public skuPartialsPath,
-	    public slatwallPathBuilder
-    ){
-        this.template = swPricingManagerHTML;
-    }
-    
-    public compile = (element: JQuery, attrs: angular.IAttributes) => {
-        return {
-            pre: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
-            },
-            post: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
-            }
-        };
+        return () => new this();
     }
 }
 export{

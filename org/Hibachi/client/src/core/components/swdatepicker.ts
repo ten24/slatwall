@@ -12,6 +12,7 @@ class SWDatePicker {
 		endDateString: '@?',
 	};
 
+    // @ngInject;
 	constructor() {}
 
 	public link: ng.IDirectiveLinkFn = (
@@ -92,9 +93,8 @@ class SWDatePicker {
 	};
 
 	public static Factory() {
-		var directive = () => new SWDatePicker();
-		directive.$inject = [];
-		return directive;
+		return /** @ngInject; */ () => new SWDatePicker();
+
 	}
 }
 

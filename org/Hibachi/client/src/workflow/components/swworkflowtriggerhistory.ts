@@ -33,7 +33,9 @@ class SWWorkflowTriggerHistory{
             scope : {
                 workflow : "="
             },
-            templateUrl : hibachiPathBuilder.buildPartialsPath(workflowPartialsPath) + "workflowtriggerhistory.html",
+            
+            template: require("./workflowtriggerhistory.html"),
+            
             link : function(scope, element, attrs) {
                 $rootScope.workflowID = scope.workflow.data.workflowID;
                 //Build the history collection.

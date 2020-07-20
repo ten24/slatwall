@@ -18,40 +18,8 @@ class SWPricingManagerController extends PricingManagerController{
     }
 }
 
-class SWPricingManager extends PricingManager{
-    
+class SWPricingManager extends PricingManager {
     public controller = SWPricingManagerController;
-    
-    public static Factory(){
-        var directive = (
-            $hibachi, 
-            skuPartialsPath,
-			slatwallPathBuilder
-        )=> new SWPricingManager(
-            $hibachi, 
-            skuPartialsPath,
-			slatwallPathBuilder
-        );
-        directive.$inject = [
-            '$hibachi',
-            'skuPartialsPath',
-			'slatwallPathBuilder'
-        ];
-        return directive;
-    }
-    
-    constructor(
-        public $hibachi, 
-		public skuPartialsPath,
-	    public slatwallPathBuilder
-    ){
-        super(
-            $hibachi,
-            skuPartialsPath,
-            slatwallPathBuilder
-        );
-        
-    }
 }
 
 export{

@@ -310,8 +310,8 @@ class SWWorkflowTaskActionsController {
 
 class SWWorkflowTaskActions  implements ng.IDirective{
 
-    public static $inject = ['workflowPartialsPath', 'hibachiPathBuilder'];
-    public templateUrl;
+    public template = require("./workflowtaskactions.html");
+
     public restrict = 'AE';
     public scope = {};
 
@@ -320,29 +320,10 @@ class SWWorkflowTaskActions  implements ng.IDirective{
     };
     public controller=SWWorkflowTaskActionsController;
     public controllerAs="swWorkflowTaskActions";
-
-    constructor(
-        public workflowPartialsPath,
-        public hibachiPathBuilder
-    ){
-        this.templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.workflowPartialsPath) + "workflowtaskactions.html";
-    }
-    public link:ng.IDirectiveLinkFn = ($scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
-
-    };
-
-    public static Factory(){
-        var directive = (
-             workflowPartialsPath,
-             hibachiPathBuilder
-        )=> new SWWorkflowTaskActions(
-            workflowPartialsPath,
-            hibachiPathBuilder
-        );
-        directive.$inject = [ 'workflowPartialsPath', 'hibachiPathBuilder'];
-
-        return directive;
-    }
+    
+	public static Factory(){
+		return /** @ngInject */ ()=> new this();
+	}
 }
 export{
     SWWorkflowTaskActions

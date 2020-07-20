@@ -43,7 +43,6 @@ class SWModalWindowController {
 
 class SWModalWindow implements ng.IDirective{
 
-    public templateUrl;
     public transclude={
         modalBody:"?swModalBody"
     }; 
@@ -69,36 +68,15 @@ class SWModalWindow implements ng.IDirective{
     };
     public controller=SWModalWindowController;
     public controllerAs="swModalWindow";
+    
+    public template = require("./modalwindow.html");
+
+	public static Factory(){
+		return /** @ngInject; */ ($compile) => new this($compile);
+	}
 
     // @ngInject
-    constructor(public $compile, private corePartialsPath,hibachiPathBuilder){
-        this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "modalwindow.html";
-    }
-
-    public compile = (element: JQuery, attrs: angular.IAttributes, transclude: any) => {
-        return {
-            pre: ($scope: any, element: JQuery, attrs) => {      
-            },
-            post: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
-            }
-        };
-    }
-
-    public static Factory(){
-        var directive:ng.IDirectiveFactory = (
-            $compile
-            ,corePartialsPath
-            ,hibachiPathBuilder
-
-        )=> new SWModalWindow(
-            $compile
-            ,corePartialsPath
-            ,hibachiPathBuilder
-        );
-        directive.$inject = ["$compile","corePartialsPath",
-            'hibachiPathBuilder'];
-        return directive;
-    }
+    constructor(public $compile){}
 }
 export{
     SWModalWindow,

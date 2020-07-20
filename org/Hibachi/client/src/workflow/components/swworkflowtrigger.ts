@@ -2,6 +2,7 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 class SWWorkflowTrigger{
+
 	public static Factory(){
 		var directive = (
             $http,
@@ -53,7 +54,9 @@ class SWWorkflowTrigger{
 				workflowTrigger:"=",
 				workflowTriggers:"="
 			},
-			templateUrl:hibachiPathBuilder.buildPartialsPath(workflowPartialsPath)+"workflowtrigger.html",
+			
+			template: require("./workflowtrigger.html"),
+			
 			link: function(scope, element,attrs){
 
 				/**
