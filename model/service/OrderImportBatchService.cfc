@@ -245,6 +245,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				var priceFields = ['personalVolume', 'taxableAmount', 'commissionableVolume', 'retailCommission', 'productPackVolume', 'retailValueVolume', 'listPrice', 'price'];
 				
 				for(var priceField in priceFields){
+					orderItem.invokeMethod('set#priceField#', {1=0});
 					Evaluate('orderItem.set#priceField#(0)');
 				}
 				
