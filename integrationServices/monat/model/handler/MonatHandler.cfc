@@ -346,9 +346,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 	 **/
 	 public any function createOrderItemSkuBundle(required any orderItem){
 	 	
-	 	var bundledSkus = orderItem.getSku().getBundledSkus();
-	 	
-	 	if (isNull(bundledSkus) || !arrayLen(bundledSkus)){
+	 	var bundledSkuSQL = "SELECT bundledSkuID,bundledQuantity from SwSkuBundle where skuID = '#arguments.orderItem.getSkuID()#'";
+	 	var bundledSkus = QueryExecute( bundledSkuSQL );
+
+	 	if (isNull(bundledSkus) || !bundledSkus.RECORDCOUNT){
 	 		return;	
 	 	}
 	 	
@@ -358,7 +359,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 		//VALUES (100, 1), (100, 2), (100, 3)
 		var valueList = "";
 		for (var skuBundle in bundledSkus){ 
-			valueList = listAppend(valueList, "('#replace(lcase(createUUID()), '-', '', 'all')#', #now()#, #now()#, '#skuBundle.getBundledSku().getSkuID()#', '#orderItem.getOrderItemID()#', #skuBundle.getBundledQuantity()#)");
+			valueList = listAppend(valueList, "('#replace(lcase(createUUID()), '-', '', 'all')#', #now()#, #now()#, '#skuBundle.bundledSkuID#', '#orderItem.getOrderItemID()#', #skuBundle.bundledQuantity#)");
 		}
 		insertSQL = insertSQL & valueList;
 		
