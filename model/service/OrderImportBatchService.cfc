@@ -242,7 +242,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				orderItem.setOrderFulfillment(orderFulfillment);
 				orderItem.setSku(orderImportBatchItem.getSku());
 				orderItem.setQuantity(orderImportBatchItem.getQuantity());
-				var priceFields = ['personalVolume', 'commissionableVolume', 'retailCommission', 'productPackVolume', 'retailValueVolume', 'price'];
+				var priceFields = ['personalVolume', 'taxableAmount', 'commissionableVolume', 'retailCommission', 'productPackVolume', 'retailValueVolume', 'price'];
 				
 				for(var priceField in priceFields){
 					Evaluate('orderItem.set#priceField#(0)');
