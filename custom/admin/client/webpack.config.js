@@ -45,6 +45,9 @@ let devConfig = {
     devtool     : 'source-map',
     context     : PATHS.clientSrc, // The base directory, an absolute path, for resolving entry points
     watch       : true,
+    watchOptions: {
+        ignored: ['**/bundle.js', 'node_modules/**']
+    },
     
     performance : {
         hints: false // to ignore annoying bundle-size warnings
