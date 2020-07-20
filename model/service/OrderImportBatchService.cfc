@@ -249,7 +249,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				orderItem.setPrice(orderItem.getSkuPrice());
 				orderItem.setUserDefinedPriceFlag(true);
 				getOrderService().saveOrderItem( orderItem=orderItem, updateShippingMethodOptions=false );
-				getHibachiScope().logHibachi('======================SETTING ORDER ITEM PRICE: #orderItem.getPrice()#, and sku price: #orderItem.getSkuPrice()#===========================');
 				
 				if(orderItem.hasErrors()){
 					order.addErrors(orderItem.getErrors());
