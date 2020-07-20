@@ -49,7 +49,9 @@ class SWWorkflowTriggers{
 			scope:{
 				workflow:"="
 			},
-			templateUrl:hibachiPathBuilder.buildPartialsPath(workflowPartialsPath)+"workflowtriggers.html",
+			
+			template: require("./workflowtriggers.html"),
+			
 			link: function(scope, element,attrs,formController){
                 
                 scope.schedule = {};

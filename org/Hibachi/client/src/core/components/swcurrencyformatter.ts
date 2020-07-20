@@ -14,6 +14,7 @@ class SWCurrencyFormatter {
         currencyCode:'@?'
     }
 
+    // @ngInject;
 	constructor(public $filter:ng.IFilterService, public $timeout:ng.ITimeoutService){
 	}
 
@@ -53,18 +54,7 @@ class SWCurrencyFormatter {
 	}
 
 	public static Factory(){
-		var directive = (
-            $filter,
-            $timeout
-        )=> new SWCurrencyFormatter(
-            $filter,
-            $timeout
-        );
-        directive.$inject = [
-            '$filter',
-            '$timeout'
-        ];
-        return directive;
+		return /** @ngInject; */ ($filter,$timeout) => new this($filter,$timeout);
 	}
 
 }

@@ -363,8 +363,9 @@ class SWListingSearchController {
 
 class SWListingSearch  implements ng.IDirective{
 
-    public templateUrl;
+    public template = require("./listingsearch.html");
     public restrict = 'EA';
+    
     public scope = {};
     public require = {swListingDisplay:"?^swListingDisplay",swListingControls:'?^swListingControls'}
     public bindToController =  {
@@ -375,28 +376,9 @@ class SWListingSearch  implements ng.IDirective{
     };
     public controller = SWListingSearchController;
     public controllerAs = 'swListingSearch';
-
-    //@ngInject
-    constructor(
-        public scopeService,
-        public collectionPartialsPath,
-        public hibachiPathBuilder
-    ){
-        this.templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.collectionPartialsPath) + "listingsearch.html";
-    }
-
+    
     public static Factory(){
-        var directive = (
-            scopeService,
-            listingPartialPath,
-            hibachiPathBuilder
-        )=> new SWListingSearch(
-            scopeService,
-            listingPartialPath,
-            hibachiPathBuilder
-        );
-        directive.$inject = [ 'scopeService', 'listingPartialPath', 'hibachiPathBuilder'];
-        return directive;
+        return /** @ngInject */ ()=> new this()
     }
 
 }

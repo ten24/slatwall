@@ -7450,13 +7450,6 @@ sw-sku-thumbnail .thumbnail .caption {
 .s-page-table-wrapper .s-detail-content-wrapper .s-detail-body {
   border: 1px solid #e7eaec;
 }
-.s-detail-content-wrapper .s-content-header .s-expand-icon {
-  font-size: 15px;
-  display: none;
-}
-.s-page-table-wrapper .s-detail-content-wrapper .s-detail-body {
-  border: 1px solid #e7eaec;
-}
 .s-detail-content-wrapper .s-content-header .s-compress-icon {
   font-size: 17px;
   display: inline-block;
@@ -7525,12 +7518,11 @@ sw-sku-thumbnail .thumbnail .caption {
 .s-detail-content-wrapper .s-detail-body {
   position: relative;
   background: #fff;
-  margin-bottom: 5px;
-  padding: 0 10px;
-  border: 1px solid rgba(0, 0, 0, 0);
+  margin-bottom: 10px;
+  padding: 10px 10px;
   border-radius: 4px;
-  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+  box-shadow: 2px 2px 2px #0000000f;
+  -webkit-box-shadow: 2px 2px 2px #0000000f;
 }
 .s-detail-content-wrapper .s-detail-body.s-arrow {
   margin-bottom: 16px;
@@ -8816,11 +8808,9 @@ table.s-detail-content-table tbody tr.s-done {
 .fullpage-loader-default[data-inverse]:after {
   animation-direction: reverse;
 }
-
 #adminModal .modal-body {
   min-height: 50vh;
 }
-
 .ng-enter {
   /* standard transition code */
   transition: 0.3s ease all;

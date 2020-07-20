@@ -71,7 +71,9 @@ class SWEditFilterItem{
 				comparisonType:"=",
                 simple:"="
 			},
-			templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"editfilteritem.html",
+			
+			template: require("./editfilteritem.html"),
+			
 			link: function(scope, element,attrs,filterGroupsController){
 
 

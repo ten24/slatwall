@@ -23,18 +23,18 @@ const PATHS = {
 
 const calculateNumberOfWorkers = () => {
 	const cpus = require('os').cpus() || { length: 1 };
-	return Math.max(1, cpus.length - 1);
+	return Math.max(2, cpus.length - 1);
 };
 
 const workerPool = {
 	workers: calculateNumberOfWorkers(),
-	workerParallelJobs: 5,
+	workerParallelJobs: 10,
 	poolRespawn: process.env.NODE_ENV !== 'production',
 	poolTimeout: process.env.NODE_ENV !== 'production' ? Infinity : 2000
 };
 
 if (calculateNumberOfWorkers() > 0) {
-	ThreadLoader.warmup(workerPool, ['ts-loader']);
+	ThreadLoader.warmup(workerPool, ['ts-loader', 'html-loader']);
 }
 
 
@@ -99,6 +99,32 @@ devConfig.module = {
             ],
             exclude: /node_modules/
 		},
+		// Load raw HTML files for inlining our templates
+        { 
+            test: /\.(html)$/, 
+            exclude: /index\.html/,
+            include: [
+                PATHS.clientSrc,
+                PATHS.slatwallSrc,
+                PATHS.hibachiSrc
+            ],
+            use: [
+                {
+					loader: 'cache-loader'
+				},
+                {
+                    loader: 'html-loader',
+                    options: {
+                        attributes: false, // Disables attributes processing
+                        esModule: true,
+                        minimize: {
+                            removeComments: process.env.NODE_ENV === 'production',
+                            collapseWhitespace: process.env.NODE_ENV === 'production',
+                        },
+                    },
+                }
+            ]
+        },
     ]
 };
 
@@ -124,7 +150,7 @@ devConfig.plugins =  [
     
     // https://blog.johnnyreilly.com/2016/07/using-webpacks-defineplugin-with-typescript.html
     new webpack.DefinePlugin({
-        '__DEBUG_MODE__': JSON.stringify( devConfig.mode === 'development' )
+        '__DEBUG_MODE__': JSON.stringify( process.env.NODE_ENV === 'development' )
     }),
     
     new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en/),

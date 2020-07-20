@@ -1028,7 +1028,7 @@ class SWListingDisplay implements ng.IDirective{
     public controller:any=SWListingDisplayController;
     public controllerAs="swListingDisplay";
     public templateUrl;
-
+    
     public static Factory(){
         var directive:ng.IDirectiveFactory=(
             listingPartialPath,
@@ -1060,6 +1060,13 @@ class SWListingDisplay implements ng.IDirective{
             }
         };
     }
+    
+    // packaginh the template makes it load too fast, and causes issues with Workflow-detail and content-listing pages
+    // public template= require('./listingdisplay.html');
+    
+    // public static Factory(){
+    //     return /** @ngInject */ () => new this();
+    // }
 }
 export{
     SWListingDisplay
