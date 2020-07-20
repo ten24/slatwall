@@ -310,6 +310,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					var originalOrderItem = orderItem.getReferencedOrderItem();
 					var originalAppliedTaxes = originalOrderItem.getAppliedTaxes();
 					var totalItemTax = 0;
+					var taxAdjusted = false;
 					for(var originalAppliedTax in originalAppliedTaxes) {
 
 						var newAppliedTax = this.newTaxApplied();
@@ -325,7 +326,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						
 						totalItemTax += taxAmount;
 						
-						var taxAdjusted = false;
+						taxAdjusted = false;
 						if(totalItemTax > originalOrderItem.getTaxAmountNotRefunded()){
 							taxAmount -= totalItemTax - originalOrderItem.getTaxAmountNotRefunded();
 							taxAdjusted = true;
