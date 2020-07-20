@@ -181,9 +181,9 @@ extends = "Slatwall.integrationServices.BaseTax" {
 			var stateCode = addressTaxRequestItems[1].getTaxStateCode();
 			var countryCode = addressTaxRequestItems[1].getTaxCountryCode();
 			
-			if(stateCode == 'JEY'){
+			if(stateCode == 'JEY' && countryCode =='GB'){
 				countryCode = 'JE'
-			}else if(stateCode == 'GGY'){
+			}else if(stateCode == 'GGY' && countryCode =='GB'){
 				countryCode = 'GG'
 			}
 		
