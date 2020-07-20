@@ -335,8 +335,7 @@ extends = "Slatwall.integrationServices.BaseTax" {
 		var responseData = httpRequest.send().getPrefix();
 
 		if (IsJSON(responseData.FileContent)){
-			getHibachiScope().logHIbachi(serializeJSON(requestDataStruct), true);
-			getHibachiScope().logHIbachi(responseData.fileContent, true);
+	
 			// a valid response was retrieved
 			// health check passed
 			responseBean.healthcheckFlag = true;
