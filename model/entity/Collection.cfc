@@ -2313,7 +2313,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		);
 	}
 
-	public struct function getDefaultOrderBy(){
+	public any function getDefaultOrderBy(){
 	
 		var entityName = this.getCollectionObject();
 		var hibachiService = getService('hibachiService');
@@ -2338,7 +2338,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				propertyIdentifier = hibachiService. getDefaultOrderByPropertyIdentifierByEntityName( entityName, "createdDateTime"),
 				direction = "desc"
 			};
-		} 
+		}
 	}
 
 	private string function getOrderByHQL(array orderBy=getOrderBys()){
@@ -2349,9 +2349,13 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 		var orderByCount = arraylen(arguments.orderBy);
 		//if order by count is 0, then use the default order by
-		if(orderByCount == 0 && !getHasAggregate()){
-			arrayAppend(arguments.orderby,getDefaultOrderBy());
-			orderByCount++;
+		
+		if(orderByCount == 0 && !getHasAggregate() ){
+			var defaultOrderBy = getDefaultOrderBy();
+			if( !isNull(defaultOrderBy) ){
+				arrayAppend( arguments.orderby, defaultOrderBy );
+				orderByCount++;
+			}
 		}
 
 		for(var i = 1; i <= orderByCount; i++){
