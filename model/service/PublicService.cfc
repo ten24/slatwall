@@ -479,7 +479,6 @@ component  accessors="true" output="false"
          
             if(!deleteOk) {
                 if(accountAddress.hasErrors()){
-                     getHibachiScope().logHibachi('adding errors 490?', true)
                     this.addErrors( arguments.data, accountAddress.getErrors() );
                 } else {
                     this.addErrors(  arguments.data, [ 
