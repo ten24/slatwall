@@ -64,6 +64,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		var filePath = configDirectoryPath & 'config.json';
 		fileWrite(filePath,json,'utf-8');
+		
+		Compress("gzip", filePath, filePath & '.gz');
     }
     
     /**
@@ -336,9 +338,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
                 }
                 data[lcase(key)] = resourceBundle[key];
             }
+            
             var json = serializeJson(data);
             var filePath = systemrbpath & '/#locale#.json';
             fileWrite(filePath,json,'utf-8');
+            
+		    Compress("gzip", filePath, filePath & '.gz');
         }
     }
     

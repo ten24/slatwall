@@ -491,7 +491,7 @@ export class MonatService {
 	
 	public addOFYItem(skuID){
 		var deferred = this.$q.defer<any>();
-		this.publicService.doAction("addOFYProduct", { skuID: skuID, quantity:1 })
+		this.publicService.doAction("addOFYProduct", { skuID: skuID, quantity: 1, returnJsonObjects: "cart" })
 		.then((data: any) => {
 			if (data?.cart) {
 				console.log("update-cart, putting it in session-cache");

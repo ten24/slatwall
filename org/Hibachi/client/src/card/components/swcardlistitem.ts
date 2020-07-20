@@ -38,7 +38,6 @@ class SWCardListItem implements ng.IDirective {
      * Handles injecting the partials path into this class
      */
     public static Factory(){
-        console.log("Getting new list item");
         var component:ng.IDirectiveFactory=(cardPartialsPath,hibachiPathBuilder)=>new SWCardListItem(cardPartialsPath, hibachiPathBuilder);
         component.$inject = ['cardPartialsPath','hibachiPathBuilder']
         return component;

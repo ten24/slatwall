@@ -88,9 +88,9 @@ var hibachi =
 /******/ ({
 
 /***/ "../../../../node_modules/raw-loader/index.js!../../HibachiAssets/js/jquery-3.3.1.min.js":
-/*!******************************************************************************************************************************************************************************************************!*\
-  !*** /home/ec2-user/environment/dev-ops/projects/Monat/Slatwall/node_modules/raw-loader!/home/ec2-user/environment/dev-ops/projects/Monat/Slatwall/org/Hibachi/HibachiAssets/js/jquery-3.3.1.min.js ***!
-  \******************************************************************************************************************************************************************************************************/
+/*!**********************************************************************************************************************************************************************!*\
+  !*** /Users/nitinyadav/Workspace/Monat/Slatwall/node_modules/raw-loader!/Users/nitinyadav/Workspace/Monat/Slatwall/org/Hibachi/HibachiAssets/js/jquery-3.3.1.min.js ***!
+  \**********************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -99,9 +99,9 @@ module.exports = "/*! jQuery v3.3.1 | (c) JS Foundation and other contributors |
 /***/ }),
 
 /***/ "../../../../node_modules/raw-loader/index.js!../../HibachiAssets/js/jquery-migrate-1.4.1.min.js":
-/*!**************************************************************************************************************************************************************************************************************!*\
-  !*** /home/ec2-user/environment/dev-ops/projects/Monat/Slatwall/node_modules/raw-loader!/home/ec2-user/environment/dev-ops/projects/Monat/Slatwall/org/Hibachi/HibachiAssets/js/jquery-migrate-1.4.1.min.js ***!
-  \**************************************************************************************************************************************************************************************************************/
+/*!******************************************************************************************************************************************************************************!*\
+  !*** /Users/nitinyadav/Workspace/Monat/Slatwall/node_modules/raw-loader!/Users/nitinyadav/Workspace/Monat/Slatwall/org/Hibachi/HibachiAssets/js/jquery-migrate-1.4.1.min.js ***!
+  \******************************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -110,9 +110,9 @@ module.exports = "/*! jQuery Migrate v1.4.1 | (c) jQuery Foundation and other co
 /***/ }),
 
 /***/ "../../../../node_modules/raw-loader/index.js!../../HibachiAssets/js/jquery-ui.min.js":
-/*!***************************************************************************************************************************************************************************************************!*\
-  !*** /home/ec2-user/environment/dev-ops/projects/Monat/Slatwall/node_modules/raw-loader!/home/ec2-user/environment/dev-ops/projects/Monat/Slatwall/org/Hibachi/HibachiAssets/js/jquery-ui.min.js ***!
-  \***************************************************************************************************************************************************************************************************/
+/*!*******************************************************************************************************************************************************************!*\
+  !*** /Users/nitinyadav/Workspace/Monat/Slatwall/node_modules/raw-loader!/Users/nitinyadav/Workspace/Monat/Slatwall/org/Hibachi/HibachiAssets/js/jquery-ui.min.js ***!
+  \*******************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -121,9 +121,9 @@ module.exports = "/*! jQuery UI - v1.12.0 - 2016-07-08\n* http://jqueryui.com\n*
 /***/ }),
 
 /***/ "../../../../node_modules/raw-loader/index.js!../../HibachiAssets/js/jquery-validate-1.9.0.min.js":
-/*!***************************************************************************************************************************************************************************************************************!*\
-  !*** /home/ec2-user/environment/dev-ops/projects/Monat/Slatwall/node_modules/raw-loader!/home/ec2-user/environment/dev-ops/projects/Monat/Slatwall/org/Hibachi/HibachiAssets/js/jquery-validate-1.9.0.min.js ***!
-  \***************************************************************************************************************************************************************************************************************/
+/*!*******************************************************************************************************************************************************************************!*\
+  !*** /Users/nitinyadav/Workspace/Monat/Slatwall/node_modules/raw-loader!/Users/nitinyadav/Workspace/Monat/Slatwall/org/Hibachi/HibachiAssets/js/jquery-validate-1.9.0.min.js ***!
+  \*******************************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -132,9 +132,9 @@ module.exports = "/**\n * jQuery Validation Plugin 1.9.0\n *\n * http://bassista
 /***/ }),
 
 /***/ "../../../../node_modules/script-loader/addScript.js":
-/*!**********************************************************************************************************!*\
-  !*** /home/ec2-user/environment/dev-ops/projects/Monat/Slatwall/node_modules/script-loader/addScript.js ***!
-  \**********************************************************************************************************/
+/*!******************************************************************************************!*\
+  !*** /Users/nitinyadav/Workspace/Monat/Slatwall/node_modules/script-loader/addScript.js ***!
+  \******************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -170,53 +170,53 @@ module.exports = function(src) {
 /***/ }),
 
 /***/ "../../../../node_modules/script-loader/index.js!../../HibachiAssets/js/jquery-3.3.1.min.js":
-/*!*********************************************************************************************************************************************************************************************************!*\
-  !*** /home/ec2-user/environment/dev-ops/projects/Monat/Slatwall/node_modules/script-loader!/home/ec2-user/environment/dev-ops/projects/Monat/Slatwall/org/Hibachi/HibachiAssets/js/jquery-3.3.1.min.js ***!
-  \*********************************************************************************************************************************************************************************************************/
+/*!*************************************************************************************************************************************************************************!*\
+  !*** /Users/nitinyadav/Workspace/Monat/Slatwall/node_modules/script-loader!/Users/nitinyadav/Workspace/Monat/Slatwall/org/Hibachi/HibachiAssets/js/jquery-3.3.1.min.js ***!
+  \*************************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! !/home/ec2-user/environment/dev-ops/projects/Monat/Slatwall/node_modules/script-loader/addScript.js */ "../../../../node_modules/script-loader/addScript.js")(__webpack_require__(/*! !/home/ec2-user/environment/dev-ops/projects/Monat/Slatwall/node_modules/raw-loader!/home/ec2-user/environment/dev-ops/projects/Monat/Slatwall/org/Hibachi/HibachiAssets/js/jquery-3.3.1.min.js */ "../../../../node_modules/raw-loader/index.js!../../HibachiAssets/js/jquery-3.3.1.min.js"))
+__webpack_require__(/*! !/Users/nitinyadav/Workspace/Monat/Slatwall/node_modules/script-loader/addScript.js */ "../../../../node_modules/script-loader/addScript.js")(__webpack_require__(/*! !/Users/nitinyadav/Workspace/Monat/Slatwall/node_modules/raw-loader!/Users/nitinyadav/Workspace/Monat/Slatwall/org/Hibachi/HibachiAssets/js/jquery-3.3.1.min.js */ "../../../../node_modules/raw-loader/index.js!../../HibachiAssets/js/jquery-3.3.1.min.js"))
 
 /***/ }),
 
 /***/ "../../../../node_modules/script-loader/index.js!../../HibachiAssets/js/jquery-migrate-1.4.1.min.js":
-/*!*****************************************************************************************************************************************************************************************************************!*\
-  !*** /home/ec2-user/environment/dev-ops/projects/Monat/Slatwall/node_modules/script-loader!/home/ec2-user/environment/dev-ops/projects/Monat/Slatwall/org/Hibachi/HibachiAssets/js/jquery-migrate-1.4.1.min.js ***!
-  \*****************************************************************************************************************************************************************************************************************/
+/*!*********************************************************************************************************************************************************************************!*\
+  !*** /Users/nitinyadav/Workspace/Monat/Slatwall/node_modules/script-loader!/Users/nitinyadav/Workspace/Monat/Slatwall/org/Hibachi/HibachiAssets/js/jquery-migrate-1.4.1.min.js ***!
+  \*********************************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! !/home/ec2-user/environment/dev-ops/projects/Monat/Slatwall/node_modules/script-loader/addScript.js */ "../../../../node_modules/script-loader/addScript.js")(__webpack_require__(/*! !/home/ec2-user/environment/dev-ops/projects/Monat/Slatwall/node_modules/raw-loader!/home/ec2-user/environment/dev-ops/projects/Monat/Slatwall/org/Hibachi/HibachiAssets/js/jquery-migrate-1.4.1.min.js */ "../../../../node_modules/raw-loader/index.js!../../HibachiAssets/js/jquery-migrate-1.4.1.min.js"))
+__webpack_require__(/*! !/Users/nitinyadav/Workspace/Monat/Slatwall/node_modules/script-loader/addScript.js */ "../../../../node_modules/script-loader/addScript.js")(__webpack_require__(/*! !/Users/nitinyadav/Workspace/Monat/Slatwall/node_modules/raw-loader!/Users/nitinyadav/Workspace/Monat/Slatwall/org/Hibachi/HibachiAssets/js/jquery-migrate-1.4.1.min.js */ "../../../../node_modules/raw-loader/index.js!../../HibachiAssets/js/jquery-migrate-1.4.1.min.js"))
 
 /***/ }),
 
 /***/ "../../../../node_modules/script-loader/index.js!../../HibachiAssets/js/jquery-ui.min.js":
-/*!******************************************************************************************************************************************************************************************************!*\
-  !*** /home/ec2-user/environment/dev-ops/projects/Monat/Slatwall/node_modules/script-loader!/home/ec2-user/environment/dev-ops/projects/Monat/Slatwall/org/Hibachi/HibachiAssets/js/jquery-ui.min.js ***!
-  \******************************************************************************************************************************************************************************************************/
+/*!**********************************************************************************************************************************************************************!*\
+  !*** /Users/nitinyadav/Workspace/Monat/Slatwall/node_modules/script-loader!/Users/nitinyadav/Workspace/Monat/Slatwall/org/Hibachi/HibachiAssets/js/jquery-ui.min.js ***!
+  \**********************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! !/home/ec2-user/environment/dev-ops/projects/Monat/Slatwall/node_modules/script-loader/addScript.js */ "../../../../node_modules/script-loader/addScript.js")(__webpack_require__(/*! !/home/ec2-user/environment/dev-ops/projects/Monat/Slatwall/node_modules/raw-loader!/home/ec2-user/environment/dev-ops/projects/Monat/Slatwall/org/Hibachi/HibachiAssets/js/jquery-ui.min.js */ "../../../../node_modules/raw-loader/index.js!../../HibachiAssets/js/jquery-ui.min.js"))
+__webpack_require__(/*! !/Users/nitinyadav/Workspace/Monat/Slatwall/node_modules/script-loader/addScript.js */ "../../../../node_modules/script-loader/addScript.js")(__webpack_require__(/*! !/Users/nitinyadav/Workspace/Monat/Slatwall/node_modules/raw-loader!/Users/nitinyadav/Workspace/Monat/Slatwall/org/Hibachi/HibachiAssets/js/jquery-ui.min.js */ "../../../../node_modules/raw-loader/index.js!../../HibachiAssets/js/jquery-ui.min.js"))
 
 /***/ }),
 
 /***/ "../../../../node_modules/script-loader/index.js!../../HibachiAssets/js/jquery-validate-1.9.0.min.js":
-/*!******************************************************************************************************************************************************************************************************************!*\
-  !*** /home/ec2-user/environment/dev-ops/projects/Monat/Slatwall/node_modules/script-loader!/home/ec2-user/environment/dev-ops/projects/Monat/Slatwall/org/Hibachi/HibachiAssets/js/jquery-validate-1.9.0.min.js ***!
-  \******************************************************************************************************************************************************************************************************************/
+/*!**********************************************************************************************************************************************************************************!*\
+  !*** /Users/nitinyadav/Workspace/Monat/Slatwall/node_modules/script-loader!/Users/nitinyadav/Workspace/Monat/Slatwall/org/Hibachi/HibachiAssets/js/jquery-validate-1.9.0.min.js ***!
+  \**********************************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! !/home/ec2-user/environment/dev-ops/projects/Monat/Slatwall/node_modules/script-loader/addScript.js */ "../../../../node_modules/script-loader/addScript.js")(__webpack_require__(/*! !/home/ec2-user/environment/dev-ops/projects/Monat/Slatwall/node_modules/raw-loader!/home/ec2-user/environment/dev-ops/projects/Monat/Slatwall/org/Hibachi/HibachiAssets/js/jquery-validate-1.9.0.min.js */ "../../../../node_modules/raw-loader/index.js!../../HibachiAssets/js/jquery-validate-1.9.0.min.js"))
+__webpack_require__(/*! !/Users/nitinyadav/Workspace/Monat/Slatwall/node_modules/script-loader/addScript.js */ "../../../../node_modules/script-loader/addScript.js")(__webpack_require__(/*! !/Users/nitinyadav/Workspace/Monat/Slatwall/node_modules/raw-loader!/Users/nitinyadav/Workspace/Monat/Slatwall/org/Hibachi/HibachiAssets/js/jquery-validate-1.9.0.min.js */ "../../../../node_modules/raw-loader/index.js!../../HibachiAssets/js/jquery-validate-1.9.0.min.js"))
 
 /***/ }),
 
 /***/ "../../HibachiAssets/js/jquery-typewatch-2.0.js":
-/*!***********************************************************************************************************************!*\
-  !*** /home/ec2-user/environment/dev-ops/projects/Monat/Slatwall/org/Hibachi/HibachiAssets/js/jquery-typewatch-2.0.js ***!
-  \***********************************************************************************************************************/
+/*!*******************************************************************************************************!*\
+  !*** /Users/nitinyadav/Workspace/Monat/Slatwall/org/Hibachi/HibachiAssets/js/jquery-typewatch-2.0.js ***!
+  \*******************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -314,9 +314,9 @@ __webpack_require__(/*! !/home/ec2-user/environment/dev-ops/projects/Monat/Slatw
 /***/ }),
 
 /***/ "../../HibachiAssets/js/jquery-ui-timepicker-addon-1.3.1.js":
-/*!***********************************************************************************************************************************!*\
-  !*** /home/ec2-user/environment/dev-ops/projects/Monat/Slatwall/org/Hibachi/HibachiAssets/js/jquery-ui-timepicker-addon-1.3.1.js ***!
-  \***********************************************************************************************************************************/
+/*!*******************************************************************************************************************!*\
+  !*** /Users/nitinyadav/Workspace/Monat/Slatwall/org/Hibachi/HibachiAssets/js/jquery-ui-timepicker-addon-1.3.1.js ***!
+  \*******************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -2452,10 +2452,10 @@ __webpack_require__(/*! !/home/ec2-user/environment/dev-ops/projects/Monat/Slatw
 
 /***/ }),
 
-/***/ "../lib/angular-lazy-bootstrap/bootstrap.js":
-/*!**************************************************!*\
-  !*** ../lib/angular-lazy-bootstrap/bootstrap.js ***!
-  \**************************************************/
+/***/ "./angular-lazy-bootstrap/bootstrap.js":
+/*!*********************************************!*\
+  !*** ./angular-lazy-bootstrap/bootstrap.js ***!
+  \*********************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -2489,19 +2489,31 @@ __webpack_require__(/*! !/home/ec2-user/environment/dev-ops/projects/Monat/Slatw
         }
         return angular.injector(modules);
     }
-
-    function bootstrapApplication(angularApp) {
+    
+    /**
+     * `config = {  strictDi: boolean }`
+     * `strictDi` - disable automatic function annotation for the application. 
+     * This is meant to assist in finding bugs which break minified code. 
+     * 
+     * Defaults to `false`.
+     * 
+     */
+    function bootstrapApplication(angularApp, config) {
+        
         angular.element(document).ready(function () {
         	try{
+        	    // https://docs.angularjs.org/api/ng/function/angular.bootstrap
 	        	if(angular.isArray(angularApp)){
-	        		angular.bootstrap(document, angularApp);
-	        	}else{
-	        		angular.bootstrap(document, [angularApp]);
+	        		angular.bootstrap(document, angularApp, config);
+	        	}
+	        	else {
+	        		angular.bootstrap(document, [angularApp], config);
 	        	}
 	        //if bootstrap fails then fall back to ui.bootstrap exclusively
-        	}catch(e){
+        	}
+        	catch(e) {
         	    console.error(e);
-        		angular.bootstrap(document, ['ui.bootstrap']);
+        		angular.bootstrap(document, ['ui.bootstrap'], config);
         	}
         });
     }
@@ -2511,10 +2523,11 @@ __webpack_require__(/*! !/home/ec2-user/environment/dev-ops/projects/Monat/Slatw
         var injector = createInjector(modules),
             $q = injector.get('$q'),
             promises = [],
-            errorCallback = angular.noop,
             loadingCallback = angular.noop,
             doneCallback = angular.noop;
 
+        var errorCallback =  (e) => console.error(`Bootstraping ${app} FAILED`, e);
+            
         return {
 
             resolve: function (promise) {
@@ -2523,12 +2536,12 @@ __webpack_require__(/*! !/home/ec2-user/environment/dev-ops/projects/Monat/Slatw
                 return this;
             },
 
-            bootstrap: function () {
+            bootstrap: function (strictDi=false) {
                 loadingCallback();
 
                 return $q.all(promises)
                     .then(function () {
-                        bootstrapApplication(app);
+                        bootstrapApplication(app, { 'strictDi': strictDi } );
                     }, errorCallback)
                     .finally(doneCallback);
             },
@@ -2553,12 +2566,13 @@ __webpack_require__(/*! !/home/ec2-user/environment/dev-ops/projects/Monat/Slatw
 
 })(angular);
 
+
 /***/ }),
 
-/***/ "../lib/angular-ui-bootstrap/ui.bootstrap.min.js":
-/*!*******************************************************!*\
-  !*** ../lib/angular-ui-bootstrap/ui.bootstrap.min.js ***!
-  \*******************************************************/
+/***/ "./angular-ui-bootstrap/ui.bootstrap.min.js":
+/*!**************************************************!*\
+  !*** ./angular-ui-bootstrap/ui.bootstrap.min.js ***!
+  \**************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -2575,10 +2589,10 @@ angular.module("ui.bootstrap",["ui.bootstrap.tpls","ui.bootstrap.transition","ui
 
 /***/ }),
 
-/***/ "../lib/angular/angular-animate.min.js":
-/*!*********************************************!*\
-  !*** ../lib/angular/angular-animate.min.js ***!
-  \*********************************************/
+/***/ "./angular/angular-animate.min.js":
+/*!****************************************!*\
+  !*** ./angular/angular-animate.min.js ***!
+  \****************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -2642,10 +2656,10 @@ c.event,c.classes,c.options)}return function(a){if(a.from&&a.to){var b=d(a.from)
 
 /***/ }),
 
-/***/ "../lib/angular/angular-cookies.min.js":
-/*!*********************************************!*\
-  !*** ../lib/angular/angular-cookies.min.js ***!
-  \*********************************************/
+/***/ "./angular/angular-cookies.min.js":
+/*!****************************************!*\
+  !*** ./angular/angular-cookies.min.js ***!
+  \****************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -2662,10 +2676,10 @@ f+" > 4096 bytes)!");k.cookie=e}}c.module("ngCookies",["ng"]).provider("$cookies
 
 /***/ }),
 
-/***/ "../lib/angular/angular-messages.min.js":
-/*!**********************************************!*\
-  !*** ../lib/angular/angular-messages.min.js ***!
-  \**********************************************/
+/***/ "./angular/angular-messages.min.js":
+/*!*****************************************!*\
+  !*** ./angular/angular-messages.min.js ***!
+  \*****************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -2685,10 +2699,10 @@ a=l.$$createComment?l.$$createComment("ngMessagesInclude",k):n[0].createComment(
 
 /***/ }),
 
-/***/ "../lib/angular/angular-resource.min.js":
-/*!**********************************************!*\
-  !*** ../lib/angular/angular-resource.min.js ***!
-  \**********************************************/
+/***/ "./angular/angular-resource.min.js":
+/*!*****************************************!*\
+  !*** ./angular/angular-resource.min.js ***!
+  \*****************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -2711,10 +2725,10 @@ c.charAt(0)?c:b+c})});k.defaults.stripTrailingSlashes&&(c=c.replace(/\/+$/,"")||
 
 /***/ }),
 
-/***/ "../lib/angular/angular-route.min.js":
-/*!*******************************************!*\
-  !*** ../lib/angular/angular-route.min.js ***!
-  \*******************************************/
+/***/ "./angular/angular-route.min.js":
+/*!**************************************!*\
+  !*** ./angular/angular-route.min.js ***!
+  \**************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -2737,10 +2751,10 @@ d){if(0===d)c.push(a);else{var f=a.match(/(\w+)(?:[?*])?(.*)/),g=f[1];c.push(b[g
 
 /***/ }),
 
-/***/ "../lib/angular/angular-sanitize.min.js":
-/*!**********************************************!*\
-  !*** ../lib/angular/angular-sanitize.min.js ***!
-  \**********************************************/
+/***/ "./angular/angular-sanitize.min.js":
+/*!*****************************************!*\
+  !*** ./angular/angular-sanitize.min.js ***!
+  \*****************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -2763,10 +2777,10 @@ G=h("script,style"),u=e.extend({},A,q,k,v),z=h("background,cite,href,longdesc,sr
 
 /***/ }),
 
-/***/ "../lib/angular/angular.min.js":
-/*!*************************************!*\
-  !*** ../lib/angular/angular.min.js ***!
-  \*************************************/
+/***/ "./angular/angular.min.js":
+/*!********************************!*\
+  !*** ./angular/angular.min.js ***!
+  \********************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -3088,10 +3102,10 @@ c){var e=a|0,f=c;void 0===f&&(f=Math.min(b(a),3));Math.pow(10,f);return 1==e&&0=
 
 /***/ }),
 
-/***/ "../lib/angularjs-datetime-picker/angularjs-datetime-picker.js":
-/*!*********************************************************************!*\
-  !*** ../lib/angularjs-datetime-picker/angularjs-datetime-picker.js ***!
-  \*********************************************************************/
+/***/ "./angularjs-datetime-picker/angularjs-datetime-picker.js":
+/*!****************************************************************!*\
+  !*** ./angularjs-datetime-picker/angularjs-datetime-picker.js ***!
+  \****************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -3454,10 +3468,10 @@ c){var e=a|0,f=c;void 0===f&&(f=Math.min(b(a),3));Math.pow(10,f);return 1==e&&0=
 
 /***/ }),
 
-/***/ "../lib/chart.js/Chart.min.js":
-/*!************************************!*\
-  !*** ../lib/chart.js/Chart.min.js ***!
-  \************************************/
+/***/ "./chart.js/Chart.min.js":
+/*!*******************************!*\
+  !*** ./chart.js/Chart.min.js ***!
+  \*******************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -3474,10 +3488,10 @@ var require;var require;/*!
 
 /***/ }),
 
-/***/ "../lib/date/date.min.js":
-/*!*******************************!*\
-  !*** ../lib/date/date.min.js ***!
-  \*******************************/
+/***/ "./date/date.min.js":
+/*!**************************!*\
+  !*** ./date/date.min.js ***!
+  \**************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -3485,10 +3499,10 @@ Date.CultureInfo={name:"en-US",englishName:"English (United States)",nativeName:
 
 /***/ }),
 
-/***/ "../lib/metismenu/metismenu.js":
-/*!*************************************!*\
-  !*** ../lib/metismenu/metismenu.js ***!
-  \*************************************/
+/***/ "./metismenu/metismenu.js":
+/*!********************************!*\
+  !*** ./metismenu/metismenu.js ***!
+  \********************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -3609,10 +3623,10 @@ Date.CultureInfo={name:"en-US",englishName:"English (United States)",nativeName:
 
 /***/ }),
 
-/***/ "../lib/vendor.ts":
-/*!************************!*\
-  !*** ../lib/vendor.ts ***!
-  \************************/
+/***/ "./vendor.ts":
+/*!*******************!*\
+  !*** ./vendor.ts ***!
+  \*******************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -3623,33 +3637,33 @@ __webpack_require__(/*! script-loader!../../HibachiAssets/js/jquery-3.3.1.min.js
 __webpack_require__(/*! script-loader!../..//HibachiAssets/js/jquery-migrate-1.4.1.min.js */ "../../../../node_modules/script-loader/index.js!../../HibachiAssets/js/jquery-migrate-1.4.1.min.js");
 __webpack_require__(/*! script-loader!../..//HibachiAssets/js/jquery-ui.min.js */ "../../../../node_modules/script-loader/index.js!../../HibachiAssets/js/jquery-ui.min.js");
 __webpack_require__(/*! script-loader!../..//HibachiAssets/js/jquery-validate-1.9.0.min.js */ "../../../../node_modules/script-loader/index.js!../../HibachiAssets/js/jquery-validate-1.9.0.min.js");
-__webpack_require__(/*! ./date/date.min.js */ "../lib/date/date.min.js");
-__webpack_require__(/*! ./angular/angular.min.js */ "../lib/angular/angular.min.js");
-__webpack_require__(/*! ./angular-lazy-bootstrap/bootstrap.js */ "../lib/angular-lazy-bootstrap/bootstrap.js");
-__webpack_require__(/*! ./angular-ui-bootstrap/ui.bootstrap.min.js */ "../lib/angular-ui-bootstrap/ui.bootstrap.min.js");
-__webpack_require__(/*! ./angular/angular-resource.min.js */ "../lib/angular/angular-resource.min.js");
-__webpack_require__(/*! ./angular/angular-cookies.min.js */ "../lib/angular/angular-cookies.min.js");
-__webpack_require__(/*! ./angular/angular-route.min.js */ "../lib/angular/angular-route.min.js");
-__webpack_require__(/*! ./angular/angular-animate.min.js */ "../lib/angular/angular-animate.min.js");
-__webpack_require__(/*! ./angular/angular-sanitize.min.js */ "../lib/angular/angular-sanitize.min.js");
-__webpack_require__(/*! ./angular/angular-messages.min.js */ "../lib/angular/angular-messages.min.js");
-__webpack_require__(/*! ./metismenu/metismenu.js */ "../lib/metismenu/metismenu.js");
-__webpack_require__(/*! ./angularjs-datetime-picker/angularjs-datetime-picker.js */ "../lib/angularjs-datetime-picker/angularjs-datetime-picker.js");
+__webpack_require__(/*! ./date/date.min.js */ "./date/date.min.js");
+__webpack_require__(/*! ./angular/angular.min.js */ "./angular/angular.min.js");
+__webpack_require__(/*! ./angular-lazy-bootstrap/bootstrap.js */ "./angular-lazy-bootstrap/bootstrap.js");
+__webpack_require__(/*! ./angular-ui-bootstrap/ui.bootstrap.min.js */ "./angular-ui-bootstrap/ui.bootstrap.min.js");
+__webpack_require__(/*! ./angular/angular-resource.min.js */ "./angular/angular-resource.min.js");
+__webpack_require__(/*! ./angular/angular-cookies.min.js */ "./angular/angular-cookies.min.js");
+__webpack_require__(/*! ./angular/angular-route.min.js */ "./angular/angular-route.min.js");
+__webpack_require__(/*! ./angular/angular-animate.min.js */ "./angular/angular-animate.min.js");
+__webpack_require__(/*! ./angular/angular-sanitize.min.js */ "./angular/angular-sanitize.min.js");
+__webpack_require__(/*! ./angular/angular-messages.min.js */ "./angular/angular-messages.min.js");
+__webpack_require__(/*! ./metismenu/metismenu.js */ "./metismenu/metismenu.js");
+__webpack_require__(/*! ./angularjs-datetime-picker/angularjs-datetime-picker.js */ "./angularjs-datetime-picker/angularjs-datetime-picker.js");
 __webpack_require__(/*! ../../HibachiAssets/js/jquery-typewatch-2.0.js */ "../../HibachiAssets/js/jquery-typewatch-2.0.js");
 __webpack_require__(/*! ../../HibachiAssets/js/jquery-ui-timepicker-addon-1.3.1.js */ "../../HibachiAssets/js/jquery-ui-timepicker-addon-1.3.1.js");
-__webpack_require__(/*! ./chart.js/Chart.min.js */ "../lib/chart.js/Chart.min.js");
+__webpack_require__(/*! ./chart.js/Chart.min.js */ "./chart.js/Chart.min.js");
 
 
 /***/ }),
 
 /***/ 0:
-/*!******************************!*\
-  !*** multi ../lib/vendor.ts ***!
-  \******************************/
+/*!*************************!*\
+  !*** multi ./vendor.ts ***!
+  \*************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! ../lib/vendor.ts */"../lib/vendor.ts");
+module.exports = __webpack_require__(/*! ./vendor.ts */"./vendor.ts");
 
 
 /***/ })

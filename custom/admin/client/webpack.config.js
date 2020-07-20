@@ -124,7 +124,7 @@ devConfig.plugins =  [
     
     // https://blog.johnnyreilly.com/2016/07/using-webpacks-defineplugin-with-typescript.html
     new webpack.DefinePlugin({
-        '__DEBUG_MODE__': JSON.stringify( this.mode === 'develop' )
+        '__DEBUG_MODE__': JSON.stringify( devConfig.mode === 'development' )
     }),
     
     new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en/),
@@ -152,6 +152,22 @@ devConfig.plugins =  [
       deleteOriginalAssets: false
     }),
     
+    // HTTPS only
+    // https://webpack.js.org/plugins/compression-webpack-plugin/#using-brotli
+    // brotli is much smaller
+    new CompressionPlugin({
+      test: /\.(j|c)ss?$/i,
+      filename: '[path].br[query]',
+      algorithm: 'brotliCompress',
+      threshold: 10240,
+      minRatio: 0.8,
+      compressionOptions: {
+        // zlib’s `level` option matches Brotli’s `BROTLI_PARAM_QUALITY` option.
+        level: 11,
+      },
+      deleteOriginalAssets: false,
+    }),
+    
     new ForkTsCheckerWebpackPlugin({
         async: false,
         useTypescriptIncrementalApi: true,
@@ -162,6 +178,7 @@ devConfig.plugins =  [
     
     new WebpackBar({
         name: "Monat Admin",
+        
         reporters: [ 'basic', 'fancy', 'profile', 'stats' ],
         fancy: true,
         profile: false,
