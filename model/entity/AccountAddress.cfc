@@ -128,9 +128,9 @@ component displayname="Account Address" entityname="SlatwallAccountAddress" tabl
 	
 	// ==================  END:  Overridden Methods ========================
 	
-	public boolean function addressHasNoAssociatedFlexship(){
-		var flexshipType = getService('typeService').getTypeBySystemCode('ottSchedule');
-		return getDao('accountAddressDAO').addressHasNoAssociatedOrderTemplateByOTType(accountAddressID = this.getAccountAddressID(), orderTemplateTypeID = flexshipType.getTypeID());
+	public boolean function addressHasNoAssociatedScheduleOrderTemplate(){
+		var scheduleOrderTemplateType = getService('typeService').getTypeBySystemCode('ottSchedule');
+		return getDao('accountAddressDAO').addressHasNoAssociatedOrderTemplateByOTType(accountAddressID = this.getAccountAddressID(), orderTemplateTypeID = scheduleOrderTemplateType.getTypeID());
 	}
 	
 	public boolean function isNotDefaultAccountShippingAddress(){
