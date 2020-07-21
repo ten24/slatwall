@@ -177,7 +177,7 @@ Notes:
 			<cfset arguments.email = getHibachiDAO().save(arguments.email) />
 
 			<cfif not success>
-				<cfset getHibachiEntityQueueDAO().insertEntityQueue(baseID = guments.email.getEmailID(), baseObject = 'Email', processMethod = 'processEmail_send') />	
+				<cfset getHibachiEntityQueueDAO().insertEntityQueue(baseID = arguments.email.getEmailID(), baseObject = 'Email', processMethod = 'processEmail_send') />	
 			</cfif> 
 		</cfif>
 	</cffunction>
