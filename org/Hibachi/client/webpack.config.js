@@ -9,12 +9,16 @@ var PATHS = {
 };
 
 var appConfig = {
-    context     :PATHS.lib,
+    context     : PATHS.lib,
     mode        : 'development',
     devtool     : 'source-map',
-    watch       :true,
+    stats       : 'errors-warnings', //detailed, errors-warnings, errors-only
+    watch       : true,
 	entry: {
         vendor : ["./vendor.ts"],
+    },
+    performance : {
+        hints: false // to ignore annoying bundel-size warnings
     },
     output: {
         path: PATHS.app, // we should create another dist folder here
@@ -46,8 +50,13 @@ var appConfig = {
                 }
             }
         }
-	},
+    },
+
 	plugins :  [
+	    
+	    new webpack.DefinePlugin({
+            '__DEBUG_MODE__': JSON.stringify( process.env.NODE_ENV === 'development' )
+        }),
 
         new CompressionPlugin({
           test: /\.(j|c)ss?$/i,
