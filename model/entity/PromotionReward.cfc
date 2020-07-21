@@ -68,6 +68,7 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 	property name="maximumUsePerQualification" ormtype="integer" hb_nullRBKey="define.unlimited";
 	property name="includedSkusCollectionConfig" ormtype="text" hb_formFieldType="json";
 	property name="excludedSkusCollectionConfig" ormtype="text" hb_formFieldType="json";
+	property name="rewardSkuQuantity" ormtype="int" default=0;
 
 	// Related Object Properties (many-to-one)
 	property name="promotionPeriod" cfc="PromotionPeriod" fieldtype="many-to-one" fkcolumn="promotionPeriodID";
@@ -125,7 +126,8 @@ property name="personalVolumeAmount" ormtype="big_decimal" hb_formatType="custom
     property name="retailCommissionAmount" ormtype="big_decimal" hb_formatType="custom";
     property name="productPackVolumeAmount" ormtype="big_decimal" hb_formatType="custom";
     property name="retailValueVolumeAmount" ormtype="big_decimal" hb_formatType="custom";
-    
+    property name="showRewardSkuInCartFlag" ormtype="bit" default=1 hb_formatType="yesno";
+        
    //CUSTOM PROPERTIES END
 	public boolean function getIsDeletableFlag(){
  		return getPromotionPeriod().getIsDeletableFlag();
