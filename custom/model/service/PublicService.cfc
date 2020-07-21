@@ -2408,7 +2408,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var account = cart.getAccount();
         
         if(isNull(account)){
-            cart.addError('runPlaceOrderTransaction',{"account": getHibachiScope().rbKey('validate.order.account.populate')},true);
+            cart.addError('runPlaceOrderTransaction',[{"account": getHibachiScope().rbKey('validate.order.account.populate')}],true);
             return; 
         }
         
