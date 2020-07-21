@@ -2408,7 +2408,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var account = cart.getAccount();
         
         if(isNull(account)){
-            cart.addError('runPlaceOrderTransaction',getHibachiScope().rbKey('validate.order.account.populate'),true);
+            cart.addError('runPlaceOrderTransaction',{"account": getHibachiScope().rbKey('validate.order.account.populate')},true);
             return; 
         }
         
@@ -2420,7 +2420,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         //frontend validation to ensure that non retail enrollments have primary address
         if(nonRetailEnrollmentFlag && noPrimaryAddressFlag){
-            addErrors(arguments.data, getHibachiScope().rbKey('validate.placeorder.Account.primaryAddress'));
+            cart.addError('runPlaceOrderTransaction', [{"address" : getHibachiScope().rbKey('validate.placeorder.Account.primaryAddress')}],true);
+            addErrors(arguments.data, [{"runPlaceOrderTransaction" : getHibachiScope().rbKey('validate.placeorder.Account.primaryAddress')}], true);
             getHibachiScope().addActionResult('public:cart.placeOrder',true);
             return; 
         }
