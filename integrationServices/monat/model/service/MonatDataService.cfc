@@ -434,6 +434,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
     
     public any function importAccountUpdates(struct rc){
     	
+    	
     	logHibachi("importAccountUpdates - Start",true);
         //get the api key from integration settings.
 		var integration = getService("IntegrationService").getIntegrationByIntegrationPackage("monat");
@@ -503,7 +504,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
         	logHibachi("importAccountUpdates - No account data to import at this time.",true);
         	return;
         }
-        
+
         //Iterate all the pages.
 		while (pageNumber <= totalPages){
 		    
