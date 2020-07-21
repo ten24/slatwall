@@ -528,33 +528,33 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 	}
 	
-	public void function importInventoryUpdates(rc){  
+	public void function importInventoryUpdates(struct rc){  
 		getService("HibachiTagService").cfsetting(requesttimeout="60000");
 		getFW().setView("public:main.blank");
 		//This is just for testing...The workflow uses Data.cfc to call the same.
 		//Use a service instead so that it can be run on a workflow.
-		getService("MonatDataService").importInventoryUpdates();
+		getService("MonatDataService").importInventoryUpdates(argumentCollection=arguments);
 		
 	}
 	
-	public void function importDailyAccountUpdates(rc){  
+	public void function importDailyAccountUpdates(struct rc){  
 		getService("HibachiTagService").cfsetting(requesttimeout="60000");
 		getFW().setView("public:main.blank");
 		
 		//Use a service instead.
-		getService("MonatDataService").importAccountUpdates( );
+		getService("MonatDataService").importAccountUpdates(argumentCollection=arguments);
 		
 	}
 	
-	public void function importOrderUpdates(rc){  
+	public void function importOrderUpdates(struct rc){  
 		getService("HibachiTagService").cfsetting(requesttimeout="60000");
 		getFW().setView("public:main.blank");
 		//Use a service instead.
-		getService("MonatDataService").importOrderUpdates(  );
+		getService("MonatDataService").importOrderUpdates(argumentCollection=arguments);
 		
 	}
 	
-	public void function importOrderShipments(rc){  
+	public void function importOrderShipments(struct rc){  
 		getService("HibachiTagService").cfsetting(requesttimeout="60000");
 		getFW().setView("public:main.blank");
 		
