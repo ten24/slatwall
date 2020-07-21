@@ -705,7 +705,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 						}
                     }
 			    }catch( any e){
-			    	
+			    	logHibachi("importAccountUpdates - Account Number: #account['AccountNumber']# ERROR: #serializeJson(e)#",true);
 			    }
 			}
 			
