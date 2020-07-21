@@ -2405,6 +2405,26 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     public void function placeOrder(required struct data){
         var cart = getHibachiScope().getCart();
         var cartPriceGroup = cart.getPriceGroup();
+        var account = cart.getAccount();
+        
+        if(isNull(account)){
+            cart.addError('runPlaceOrderTransaction',getHibachiScope().rbKey('validate.order.account.populate'),true);
+            return; 
+        }
+        
+        var nonRetailEnrollmentFlag = cart.getUpgradeFlag() && !isNull(cart.getPriceGroup()) && cart.getPriceGroup().getPriceGroupCode() != 2;
+        var noPrimaryAddressFlag = 
+            isNull(account.getAddress()) 
+            || isNull(account.getAddress().getStateCode())
+            || !len(account.getAddress().getStateCode());
+        
+        //frontend validation to ensure that non retail enrollments have primary address
+        if(nonRetailEnrollmentFlag && noPrimaryAddressFlag){
+            addErrors(arguments.data, getHibachiScope().rbKey('validate.placeorder.Account.primaryAddress'));
+            getHibachiScope().addActionResult('public:cart.placeOrder',true);
+            return; 
+        }
+        
         if(
             (!structKeyExists(arguments.data,'upgradeFlag') || !arguments.data.upgradeFlag)
             && cart.getUpgradeFlag()
