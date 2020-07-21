@@ -127,4 +127,26 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 		}
 	}
 	
+	/**
+	 * Method override to setup cart information on session
+	 * */
+	public void function setAccountSessionByAuthToken(required string authToken) {
+		super.setAccountSessionByAuthToken(arguments.authToken);
+		
+		//Set Cart on Session
+		if(!isNull(getHibachiScope().getSession()) && getHibachiScope().getSession().getLoggedInFlag() && !isNull(getHibachiScope().getSession().getAccount()) ) {
+			var mostRecentCart = getOrderService().getMostRecentNotPlacedOrderByAccountID( getHibachiScope().getSession().getAccount().getAccountID() );
+			if(!isNull(mostRecentCart)) {
+				
+				getHibachiScope().getSession().setOrder( mostRecentCart );
+				
+				this.saveSession(getHibachiScope().getSession());
+				
+				// Force persistance
+				getHibachiDAO().flushORMSession();
+			}
+		}
+		
+	}
+	
 }
