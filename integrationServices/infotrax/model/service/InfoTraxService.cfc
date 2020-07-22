@@ -321,14 +321,9 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 			'volume8'           = 0,
 			'volume9'           = arguments.order.getFulfillmentChargeTotal(), // Handling Fee
 			'orderType'         = formatOrderType(arguments.order),//Type of order. W for regular order, R for retail, X for exchange, R for replacement, and C for RMA.
-			'periodDate'        = arguments.order.getCommissionPeriod()//Volume period date of the order (YYYYMM). This will get assigned to the default volume period if not included
+			'periodDate'        = arguments.order.getCommissionPeriod(),//Volume period date of the order (YYYYMM). This will get assigned to the default volume period if not included
+			'DIST_STATUS'       = formatDistributorType(arguments.order.getAccount().getAccountType())
 		};
-		
-		
-		
-		//transactionData['salesPersonId'] = //ID of person who sold order to Customer. This is only used on customer related transactions.Commission check–using ID to represent where volume was attributed at time of order entry.
-		//transactionData['entryInitials'] = //Initials of user entering the transaction
-		
 		
 		if( transactionData['transactionType'] == 'C' && len(arguments.order.getReferencedOrder().getIceRecordNumber())){
 			transactionData['originalRecordNumber'] = arguments.order.getReferencedOrder().getIceRecordNumber();//Used for RMA orders. When a return or refund is needed the order number of the order being returned
