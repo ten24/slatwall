@@ -17,7 +17,7 @@
 		"statusCode": [
 			{ "contexts": "placeOrder", "inList": "ostNotPlaced" },
 			{ "conditions": "isNotTestOrder", "contexts": "delete", "inList": "ostNotPlaced" },
-			{ "contexts": "delete", "inList": "ostNotPlaced,ostCanceled" },
+			{ "contexts": "delete", "inList": "ostNotPlaced" },
 			{
 				"contexts": "addSaleOrderItem,addOrderPayment,addPromotionCode,updateStatus",
 				"inList": "ostNotPlaced,ostNew,ostProcessing,ostOnHold"
