@@ -405,19 +405,26 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		//the quantity for which the free order item should have
 		var skuRewardQuantity = arguments.promotionReward.getRewardSkuQuantity() ?: 0;
 		
-		if( isNull(rewardSkusCollection) || !arrayLen(rewardSkusCollection) || orderItemQuantity <= 0){
+		if( isNull(rewardSkusCollection) || !arrayLen(rewardSkusCollection) || skuRewardQuantity <= 0){
 			return;	
 		}
 		
 		var orderService = getService("OrderService");
 		
 		for(var skuRecord in rewardSkusCollection){
-			var processObject = arguments.order.getProcessObject('addOrderItem');
-			processObject.setQuantity(skuRewardQuantity);
-			processObject.setSkuID(skuRecord.skuID)
-			orderService.processOrder( arguments.order, arguments.data, 'addOrderItem');
+			
+			var addOrderItemData = {
+				quantity: skuRewardQuantity,
+				skuID: record.skuID
+			}
+			
+			orderService.processOrder( arguments.order, addOrderItemData, 'addOrderItem');
+			
+			if(!arguments.order.hasErrors()){
+				getHibachiScope().flushORMSession();
+			}
+			
 			arguments.order.clearProcessObject("addOrderItem");
-			getHibachiScope().flushORMSession();
 		}
 		
 	}
