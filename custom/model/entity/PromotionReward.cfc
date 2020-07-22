@@ -6,7 +6,8 @@ component {
     property name="retailCommissionAmount" ormtype="big_decimal" hb_formatType="custom";
     property name="productPackVolumeAmount" ormtype="big_decimal" hb_formatType="custom";
     property name="retailValueVolumeAmount" ormtype="big_decimal" hb_formatType="custom";
-    
+    property name="showRewardSkuInCartFlag" ormtype="boolean" default=1 hb_formatType="yesno";
+        
     public numeric function getPersonalVolumeAmount(any sku, string currencyCode){
         arguments['customPriceField'] = 'personalVolume';
         return getCustomAmount(argumentCollection=arguments);
