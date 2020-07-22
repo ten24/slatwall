@@ -1,3 +1,9 @@
+import { MonatService } from "@Monat/services/monatservice";
+import { PublicService } from "@Monat/monatfrontend.module";
+import { ObserverService, RbKeyService } from "@Hibachi/core/core.module";
+import { OrderTemplateService } from "@Monat/services/ordertemplateservice";
+import { MonatAlertService } from "@Monat/services/monatAlertService";
+
 declare var $;
 declare var hibachiConfig;
 
@@ -6,7 +12,6 @@ class MonatProductCardController {
 	public type: string;
 	public loading: boolean;
 	public lastAddedSkuID: string; 
-	public newTemplateID: string;
 	public orderTemplates: Array<any>;
 	public pageRecordsShow: number = 5;
 	public currentPage: number = 1;
@@ -24,18 +29,17 @@ class MonatProductCardController {
 	
 	// @ngInject
 	constructor(
-		//inject modal service
-		public orderTemplateService,
-		public monatService,
-        public observerService,
+        public $scope               : ng.IScope,
+        public $location            : ng.ILocationService,
         public ModalService,
-        public $scope,
-        private monatAlertService,
-        public rbkeyService,
-        public $location
+        public monatService         : MonatService, 
+        public rbkeyService         : RbKeyService,
+	    public publicService        : PublicService, 
+	    public observerService      : ObserverService, 
+        private monatAlertService   : MonatAlertService,
+	    public orderTemplateService : OrderTemplateService,
+	    
 	) { 
-        this.observerService.attach(this.closeModals,"createWishlistSuccess"); 
-        this.observerService.attach(this.closeModals,"addOrderTemplateItemSuccess"); 
         this.observerService.attach(this.closeModals,"deleteOrderTemplateItemSuccess"); 
 	}
 	
@@ -62,32 +66,8 @@ class MonatProductCardController {
 			this.orderTemplate = this.$location.search().orderTemplateId;
 		}
 	}
-	
-	public getAllWishlists = (
-		pageRecordsToShow: number = this.pageRecordsShow,
-		setNewTemplates: boolean = true,
-		setNewTemplateID: boolean = false,
-	) => {
-		this.loading = true;
 
-		this.orderTemplateService
-			.getOrderTemplates(this.wishlistTypeID, pageRecordsToShow, this.currentPage)
-			.then((result) => {
-				if (setNewTemplates) {
-					this.orderTemplates = result['orderTemplates'];
-				} else if (setNewTemplateID) {
-					this.newTemplateID = result.orderTemplates[0].orderTemplateID;
-				}
-			})
-			.catch((error)=>{
-			    this.monatAlertService.showErrorsFromResponse(error)
-			})
-			.finally(()=>{
-			    this.loading=false;
-			});
-	};
-
-	public deleteItem = (index) => {
+	public deleteWishlistItem = (index) => {
 		this.loading = true;
 		const item = this.allProducts[index];
 		this.orderTemplateService.deleteOrderTemplateItem(item.orderItemID).then((result) => {
@@ -102,38 +82,6 @@ class MonatProductCardController {
 		    this.loading =false;
 		});
 	};
-
-	public addItemAndCreateWishlist = (orderTemplateName: string, skuID, quantity: number = 1) => {
-		this.loading = true;
-		this.orderTemplateService
-			.addOrderTemplateItemAndCreateWishlist(orderTemplateName, skuID, quantity)
-			.then((result) => {
-				this.getAllWishlists();
-				this.isAccountWishlistItem = true;
-				return result;
-			})
-			.catch((error)=>{
-			 this.monatAlertService.showErrorsFromResponse(error);   
-			})
-			.finally(()=>{
-			  this.loading = false;  
-			});
-	};
-
-	public addWishlistItem = (skuID) => {
-		this.loading = true;
-		this.orderTemplateService.addOrderTemplateItem(skuID, this.wishlistTemplateID).then((result) => {
-			this.isAccountWishlistItem = true;
-			return result;
-		})
-		.catch((error)=>{
-		    this.monatAlertService.showErrorsFromResponse(error);
-		})
-		.finally(()=>{
-		    this.loading = false;
-		});
-	};
-
 	
 	public launchQuickShopModal = () => {
 		let type = '';
@@ -191,7 +139,7 @@ class MonatProductCardController {
 			}
 	
 			this.orderTemplateService.addOrderTemplateItem(skuID, orderTemplateID, 1, false, data)
-			.then( (result) =>{
+			.then( (result: any) =>{
 			    if(!result.hasErrors) {	
 			    	this.monatAlertService.success(this.rbkeyService.rbKey('alert.cart.addProductSuccessful')); 
 				}
@@ -223,42 +171,14 @@ class MonatProductCardController {
 		}
 	};
 
-	public setWishlistID = (newID) => {
-		this.wishlistTemplateID = newID;
-	};
-
-	public setWishlistName = (newName) => {
-		this.wishlistTemplateName = newName;
-	};
 	
     public closeModals = () =>{
         $('.modal').modal('hide');
         $('.modal-backdrop').remove() 
     }
     
-	public launchWishlistModal = (skuID, productName) => {
-		let newSkuID = skuID
-
-		this.ModalService.showModal({
-			component: 'swfWishlist',
-			bodyClass: 'angular-modal-service-active',
-			bindings: {
-				sku: newSkuID,
-				productName: productName
-			},
-			preClose: (modal) => {
-				modal.element.modal('hide');
-				this.ModalService.closeModals();
-			},
-		})
-			.then((modal) => {
-				//it's a bootstrap element, use 'modal' to show it
-				modal.element.modal();
-				modal.close.then((result) => {});
-			})
-			.catch((error) => {
-				console.error('unable to open model :', error);
-			});
+	public launchWishlistsModal = () => {
+    	this.monatService.launchWishlistsModal(this.product.skuID, this.product.productID, this.product.productName);
 	};
 	
 	private setIsEnrollment = (): void => {

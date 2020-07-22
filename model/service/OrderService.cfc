@@ -2069,6 +2069,28 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.orderTemplateItem;
 	}  
 
+
+	public any function processOrderTemplate_addWishlistItem(required any orderTemplate, required any processObject, required struct data={}){
+
+		// TODO: max-collection validation
+		var orderTemplateItemCollectionList = this.getOrderTemplateItemCollectionList(); 
+		orderTemplateItemCollectionList.addFilter('orderTemplate.orderTemplateID', arguments.orderTemplate.getOrderTemplateID()); 
+		orderTemplateItemCollectionList.addFilter('sku.skuID', processObject.getSku().getSkuID());
+		
+		if(orderTemplateItemCollectionList.getRecordsCount() == 0){
+			
+			var newOrderTemplateItem = this.newOrderTemplateItem();
+
+			newOrderTemplateItem.setSku(arguments.processObject.getSku()); 
+			newOrderTemplateItem.setQuantity(1); 
+			newOrderTemplateItem.setOrderTemplate(arguments.orderTemplate);	
+			newOrderTemplateItem = this.saveOrderTemplateItem(newOrderTemplateItem);
+		} 
+
+		return arguments.orderTemplate; 	
+	} 
+
+
 	public any function processOrderTemplate_removeOrderTemplateItem(required any orderTemplate, required any processObject, struct data={}){
 		
 		this.logHibachi('removing oti is null #isNull(arguments.processObject.getOrderTemplateItem())#', true);

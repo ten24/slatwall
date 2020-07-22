@@ -1,30 +1,30 @@
-/// <reference path='../../../../../org/Hibachi/client/typings/hibachiTypescript.d.ts' />
-/// <reference path='../../../../../org/Hibachi/client/typings/tsd.d.ts' />
-declare var $;
-
-import {Option} from "../../../../../org/Hibachi/client/src/form/components/swfselect";
 import { MonatService } from "@Monat/services/monatservice";
-import { OrderTemplateService } from "@Monat/services/ordertemplateservice";
+import { OrderTemplateService, OrderTemplateLight, WishlistItemLight } from "@Monat/services/ordertemplateservice";
 import { MonatAlertService } from "@Monat/services/monatAlertService";
 
 class SWFWishlistController {
-    public orderTemplateItems:Array<any>;
-    public orderTemplates:Array<any>;
+    private wishlistTypeID:string = '2c9280846b712d47016b75464e800014';
+    
+    // bindings
+    public skuId:string;
+    public productId:string;
+    public productName;
+	public close; // injected from angularModalService
+    
+    // internal vars
+    public orderTemplateItems : Array<WishlistItemLight>;
+    public orderTemplates : Array<OrderTemplateLight>;
+
     public pageRecordsShow:number;
     public currentPage:number;
-    public currentList:Option;
+    
+    // ui
     public loading:boolean;
-    public isVIPAccount:boolean;
-    private wishlistTypeID:string = '2c9280846b712d47016b75464e800014';
     public wishlistTemplateID:string;
     public wishlistTemplateName:string;
-    public sku:string;
-    public newTemplateID:string;
-    public showTemplateList:boolean = false;
-    public showWishlistModal:boolean;
-	public close; // injected from angularModalService
-    public productName;
     public newWishlist:boolean = false;
+    
+    
     // @ngInject
     constructor(
         public $scope,
@@ -41,102 +41,10 @@ class SWFWishlistController {
         if(!this.currentPage){
             this.currentPage = 1;
         }
-        
-        this.observerService.attach(this.refreshList,"myAccountWishlistSelected");        
-        this.observerService.attach(this.successfulAlert,"OrderTemplateAddOrderTemplateItemSuccess");
-        this.observerService.attach(this.onAddItemSuccess,"createWishlistSuccess"); 
-        this.observerService.attach(this.onAddItemSuccess,"addItemSuccess"); 
     }
     
-    private refreshList = (option:Option)=>{
-        this.loading = true;
-        this.currentList = option;
-        
-        if(!option){
-           this.loading = false; 
-           return;
-        }
-        
-        this.orderTemplateService
-        .getWishlistItems(option.value,this.pageRecordsShow,this.currentPage,this.wishlistTypeID)
-        .then(result=>{
-            this.orderTemplateItems = result.orderTemplateItems;
-            this.loading = false;
-        });
-        
-    }
-
-    public deleteItem =(index)=>{
-        this.loading = true;
-        const item = this.orderTemplateItems[index];
-        
-        this.orderTemplateService.deleteOrderTemplateItem(item.orderItemID).then(result=>{
-            
-            this.orderTemplateItems.splice(index, 1);
-            this.refreshList(this.currentList);
-            this.loading = false;
-            return result;
-        });
-    }
-    
-    public addWishlistItem =(skuID)=>{ 
-        this.loading = true;
-        this.orderTemplateService.addOrderTemplateItem(this.sku ? this.sku : skuID, this.wishlistTemplateID)
-        .then(result=>{
-            this.loading = false;
-            this.onAddItemSuccess();
-        });
-    }
-
-    public addItemAndCreateWishlist = (orderTemplateName:string, quantity:number = 1)=>{
-        this.loading = true;
-        this.setWishlistName(orderTemplateName)
-        return this.orderTemplateService.addOrderTemplateItemAndCreateWishlist(this.wishlistTemplateName, this.sku, quantity).then(result=>{
-            this.loading = false;
-            this.getAllWishlists();
-            this.onAddItemSuccess();
-            this.observerService.attach(this.successfulAlert,"createWishlistSuccess");
-            return result;
-        });
-    }
-    
-    public getAllWishlists = (pageRecordsToShow:number = this.pageRecordsShow, setNewTemplates:boolean = true, setNewTemplateID:boolean = false) => {
-        this.loading = true;
-        
-        this.orderTemplateService
-        .getOrderTemplates(this.wishlistTypeID, pageRecordsToShow, this.currentPage)
-        .then( (result) => {
-            
-            if(setNewTemplates){
-                this.orderTemplates = result['orderTemplates'];                
-            } else if(setNewTemplateID){
-                this.newTemplateID = result.orderTemplates[0].orderTemplateID;
-            }
-        })
-        .catch( (e) => {
-            //TODO
-            console.error(e);
-        })
-        .finally( () => {
-            this.loading = false;
-        });
-    }
-    
-    public getWishlistsLight = () =>{
-        this.orderTemplateService.getOrderTemplatesLight()
-        .then(response => {
-            if(!response?.orderTemplates){
-                throw(response);
-            }
-            this.orderTemplates = response.orderTemplates;
-        })
-        .catch(e => this.monatAlertService.showErrorsFromResponse(e));
-    }
-    
-    public successfulAlert = () =>{
-        const wishlistAddAlertBox = document.getElementById("wishlistAddAlert");
-        const wishlistInnerText = document.getElementById("wishlistTextWrapper");
-        wishlistAddAlertBox.style.display = "block";
+    public $onInit = () => {
+        this.getWishlistsLight();
     }
     
     public setWishlistID = (newID) => {
@@ -146,28 +54,54 @@ class SWFWishlistController {
     public setWishlistName = (newName) => {
         this.wishlistTemplateName = newName;
     }
-    
-    public addToCart =(index)=>{
         
+    public getWishlistsLight = () => {
+        this.loading = true;
+        this.orderTemplateService.getWishLists().then( wishlists => {
+            this.orderTemplates = wishlists;
+        })
+        .catch(e => this.monatAlertService.showErrorsFromResponse(e))
+        .finally( () => this.loading = false);
     }
     
-    public search =()=>{
+    public addWishlistItem =()=>{ 
+        this.loading = true;
+        
+        this.orderTemplateService.addWishlistItem(
+            this.wishlistTemplateID, 
+            this.skuId, 
+            this.productId
+        )
+        .then( (result) => this.onAddItemSuccess() )
+        .catch( (e) => this.monatAlertService.showErrorsFromResponse(e))
+        .finally( () => this.loading = false);
     }
-    
+
+    public addItemAndCreateWishlist = (orderTemplateName:string, quantity:number = 1)=>{
+        this.loading = true;
+        this.setWishlistName(orderTemplateName);
+        
+        this.orderTemplateService.addItemAndCreateWishlist(
+            this.wishlistTemplateName,
+            this.skuId, 
+            this.productId 
+        )
+        .then( (result) => this.onAddItemSuccess() )
+        .catch( (e) => this.monatAlertService.showErrorsFromResponse(e))
+        .finally( () => this.loading = false);
+    }
     
     public onAddItemSuccess = () => {
         
+        const wishlistAddAlertBox = document.getElementById("wishlistAddAlert");
+        if(wishlistAddAlertBox){
+            wishlistAddAlertBox.style.display = "block";
+        }
         // Set the heart to be filled on the product details page
-        // this.sku is skuID
-        $('#skuID_' + this.sku).removeClass('far').addClass('fas');
-        
+        $('#skuID_' + this.skuId).removeClass('far').addClass('fas');
         // Close the modal
      	this.close?.();
     };
-    
-    public redirectPageToShop(){
-        this.monatService.redirectToProperSite('/shop')
-    }
     
 }
 
@@ -188,7 +122,8 @@ class SWFWishlist  {
     public bindToController = {
         pageRecordsShow:"@?",
         currentPage:"@?",
-        sku:"<?",
+        skuId:"<?",
+        productId:"<?",
         productName:"<?",
         showWishlistModal:"<?",
         close:'=' //injected by angularModalService;

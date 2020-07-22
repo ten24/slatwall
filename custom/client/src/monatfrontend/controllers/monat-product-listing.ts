@@ -1,3 +1,9 @@
+import { MonatAlertService } from "@Monat/services/monatAlertService";
+import { PublicService } from "@Monat/monatfrontend.module";
+import { MonatService } from "@Monat/services/monatservice";
+import { ObserverService } from "@Hibachi/core/core.module";
+import { OrderTemplateService } from "@Monat/services/ordertemplateservice";
+
 declare var $;
 
 class MonatProductListingController {
@@ -23,54 +29,40 @@ class MonatProductListingController {
 	
 	// @ngInject
 	constructor(
-		public publicService,
-		public observerService,
-        private monatService,
-		public $rootScope,
-		public ModalService,
-		private monatAlertService
-	) {
-        
-	}
+		public $rootScope           : ng.IRootScopeService,
+		public publicService        : PublicService,
+		public observerService      : ObserverService,
+        private monatService        : MonatService,
+		private monatAlertService   : MonatAlertService,
+		private orderTemplateService: OrderTemplateService
+	) {}
 
     
     public $onInit = () => {
-        this.observerService.attach(this.handleAddItem,'addItemSuccess');
-        this.observerService.attach(this.handleAddItem,'createWishlistSuccess');
-        this.observerService.attach(this.handleAddItem,'addOrderTemplateItemSuccess');
-        this.observerService.attach(this.getWishlistItems,'getAccountSuccess');
         this.publicService.getCart();
+        this.getWishlistItems();
     }
     
 	public $postLink = () => {
         if(this.callEndpoint) this.getProducts();
-	}
-	
-	public handleAddItem = () =>{
-	    this.getWishlistItems();
-	    if(!this.callEndpoint) this.showWishlist = true;
-	    
-	    // On product detail page, fill the heart.
-	    if ( $('.product-img-section .wishlist .far').length ) {
-	        $('.product-img-section .wishlist .far').removeClass('far').addClass('fas no-hover')
-	    }
+        
+        this.observerService.attach(this.getWishlistItems,'getAccountSuccess');
 	}
 	
 	public getWishlistItems = () => {
 		if(!this.publicService.account?.accountID){
 			return;
 		}
-	    this.monatService.getAccountWishlistItemIDs()
-	    .then( data => {
-            if ( data?.wishlistItems ) {
-                
-                this.wishlistItems = '';
-                data.wishlistItems.forEach(item => {
-                    this.wishlistItems += item.productID + ',';
-                });
-                
-                this.observerService.notify('accountWishlistItemsSuccess');
-            }
+	    
+	    this.orderTemplateService.getAccountWishlistItemIDs()
+	    .then( wishlistItems => {
+
+            this.wishlistItems = '';
+            wishlistItems.forEach(item => {
+                this.wishlistItems += item.productID + ',';
+            });
+            
+            this.observerService.notify('accountWishlistItemsSuccess');
         });
 	}
 	
@@ -115,28 +107,8 @@ class MonatProductListingController {
         });
     }
     
-	public launchWishlistModal = (skuID, productName) => {
-		let newSkuID = skuID
-		this.ModalService.showModal({
-			component: 'swfWishlist',
-			bodyClass: 'angular-modal-service-active',
-			bindings: {
-				sku: newSkuID,
-				productName: productName
-			},
-			preClose: (modal) => {
-				modal.element.modal('hide');
-				this.ModalService.closeModals();
-			},
-		})
-			.then((modal) => {
-				//it's a bootstrap element, use 'modal' to show it
-				modal.element.modal();
-				modal.close.then((result) => {});
-			})
-			.catch((error) => {
-				console.error('unable to open model :', error);
-			});
+	public launchWishlistsModal = (skuID, productID, productName) => {
+	    this.monatService.launchWishlistsModal(skuID, productID, productName);
 	}
 	
 	public searchByKeyword = ():void =>{

@@ -1,3 +1,8 @@
+import { PublicService } from "@Monat/monatfrontend.module";
+import { MonatService } from "@Monat/services/monatservice";
+import { ObserverService } from "@Hibachi/core/core.module";
+import { OrderTemplateService, WishlistItemLight } from "@Monat/services/ordertemplateservice";
+
 class MonatSearchController {
 	
 	public productList: Array<any> = [];
@@ -6,14 +11,15 @@ class MonatSearchController {
 	public recordsCount: any;
 	public priceGroupCode;
 	public argumentsObject: any;
-	public wishlistItems: Array<any>;
+	public wishlistItems: Array<WishlistItemLight>;
 
 	// @ngInject
 	constructor(
-		public publicService,
-		public monatService,
 		public $location,
-		public observerService
+		public monatService         : MonatService,
+		public publicService        : PublicService,
+		public observerService      : ObserverService,
+		public orderTemplateService : OrderTemplateService
 	) {
 		if ( 'undefined' !== typeof this.$location.search().keyword ) {
 			this.getProductsByKeyword( this.$location.search().keyword );
@@ -25,11 +31,9 @@ class MonatSearchController {
 		if(!this.publicService.account?.accountID){
 			return;
 		}
-	    this.monatService.getAccountWishlistItemIDs().then( data => {
-            if ( 'undefined' !== typeof data.wishlistItems ) {
-                this.wishlistItems = data.wishlistItems;
-                this.observerService.notify('accountWishlistItemsSuccess');
-            }
+	    this.orderTemplateService.getAccountWishlistItemIDs().then( wishlistItems => {
+            this.wishlistItems = wishlistItems;
+            this.observerService.notify('accountWishlistItemsSuccess');
         });
 	}
 

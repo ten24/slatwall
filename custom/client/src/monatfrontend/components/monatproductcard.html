@@ -4,7 +4,7 @@
     
         <!-- If the product is not being viewed as a wishlist or enrollment item, show the button to launch add to wishlist modal -->
         <button 
-            ng-click="monatProductCard.launchWishlistModal(monatProductCard.product.skuID,monatProductCard.product.productName)" 
+            ng-click=" !monatProductCard.isAccountWishlistItem && monatProductCard.launchWishlistsModal()" 
             ng-if="slatwall.account.userIsLoggedIn() && monatProductCard.type != 'wishlist' && !monatProductCard.isEnrollment" 
             type="button" 
             class="wishlist"
@@ -155,7 +155,7 @@
 						/>
 						<button
 							class="btn bg-primary w-100"
-							ng-click="monatProductCard.deleteItem(slatwall.currentProductCardIndex)"
+							ng-click="monatProductCard.deleteWishlistItem(slatwall.currentProductCardIndex)"
 							sw-rbKey="'define.yes'"
 							ng-class="{loading: monatProductCard.loading}"
 							ng-disabled="monatProductCard.product.displayOnlyFlag"

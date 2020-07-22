@@ -26,7 +26,8 @@ var appConfig = {
             // Use pathData object for generating filename string based on your requirements
             return `${pathData.chunk.name}.bundle.js`;
         },
-        library: 'hibachi'
+        library: 'hibachi',
+        pathinfo: false,
     },
 
     resolve: {

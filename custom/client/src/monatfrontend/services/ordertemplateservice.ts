@@ -1,6 +1,16 @@
 import { MonatService } from "./monatservice";
 import { PublicService } from "@Monat/monatfrontend.module";
 
+
+export type OrderTemplateLight = {
+    orderTemplateID     : string,
+    orderTemplateName   : string
+};
+
+export type WishlistItemLight = {
+    productID: string
+}
+
 export class OrderTemplateService {
 	private orderTemplateTypeID: string = "";
 	private cachedGetOrderTemplatesResponse: any;
@@ -18,7 +28,6 @@ export class OrderTemplateService {
 		public $q: ng.IQService,
 		public monatService: MonatService,
 		public publicService: PublicService,
-		public requestService
 	) {}
 
 	/**
@@ -276,7 +285,7 @@ export class OrderTemplateService {
 			index++;
 		}
 	}
-	
+
 	public getWishlistItems = (
 		orderTemplateID,
 		pageRecordsShow = 100,
@@ -340,21 +349,8 @@ export class OrderTemplateService {
 
 		return this.monatService.doPublicAction("editOrderTemplateItem", payload);
 	};
-
-	public addOrderTemplateItemAndCreateWishlist = (
-		orderTemplateName: string,
-		skuID,
-		quantity: number = 1
-	) => {
-		const data = {
-			orderTemplateName: orderTemplateName,
-			skuID: skuID,
-			quantity: quantity,
-		};
-
-		return this.publicService.doAction("addItemAndCreateWishlist", data);
-	};
 	
+
 	public deleteOrderTemplateItem = (orderTemplateItemID) => {
 		return this.publicService.doAction("deleteOrderTemplateItem", {
 			orderTemplateItemID: orderTemplateItemID,
@@ -592,4 +588,128 @@ export class OrderTemplateService {
  
        return deferred.promise;
     }
+    
+    
+    
+    
+    /*********************** Wish-List *************************/
+
+	public addItemAndCreateWishlist = ( orderTemplateName: string, skuID: string, productID: string) => {
+	   
+	   let deferred = this.$q.defer();
+
+		return this.publicService.doAction("addItemAndCreateWishlist", { orderTemplateName, skuID }).then( data => {
+    	    if( !data?.successfulActions?.includes('public:orderTemplate.addItemAndCreateWishlist') ){ throw(data) }
+		    
+		    //  update cache
+		    this.addProductIdIntoWishlistItemsCache(productID);
+		    this.addWishlistIntoSessionCache(data.newWishlist);
+		    deferred.resolve(data);
+        })
+        .catch( deferred.reject );
+        
+        return deferred.promise;
+	};
+	
+	
+    public addWishlistItem = (orderTemplateID:string, skuID:string, productID: string) => {
+        let deferred = this.$q.defer(); 
+	  
+        this.publicService.doAction('addWishlistItem',{ orderTemplateID, skuID }).then( data => {
+            
+            if(!data?.successfulActions?.includes('public:orderTemplate.addWishlistItem') ){ throw(data) }
+            
+            this.addProductIdIntoWishlistItemsCache(productID);
+            deferred.resolve(data);
+        })
+        .catch( deferred.reject );
+        
+        return deferred.promise;
+    }
+    
+    /**
+	 * This function gets the wishlisItems `[ { productID: string }]` and cache them on session-cache
+	*/
+    public getAccountWishlistItemIDs = (refresh=false) => {
+	    
+	    var deferred = this.$q.defer<WishlistItemLight[]>();
+	    
+		let cachedAccountWishlistItemIDs = this.publicService.getFromSessionCache("cachedAccountWishlistItemIDs");
+		
+		if (refresh || !cachedAccountWishlistItemIDs) {
+			this.publicService.doAction("getWishlistItemsForAccount")
+			.then((data) => {
+			    
+			    if(!data?.wishlistItems){
+                    throw(data);
+                }
+				console.log("cachedAccountWishlistItemIDs, putting it in session-cache");
+				
+				this.publicService.putIntoSessionCache("cachedAccountWishlistItemIDs", data.wishlistItems);
+				
+				deferred.resolve(data.wishlistItems);
+			})
+			.catch((e) => {
+				console.log("cachedAccountWishlistItemIDs, exception, removing it from session-cache", e);
+				this.publicService.removeFromSessionCache("cachedAccountWishlistItemIDs");
+				deferred.reject(e);
+			});
+		} 
+		else {
+			deferred.resolve(cachedAccountWishlistItemIDs);
+		}
+		
+		return deferred.promise;
+	};
+	
+	private addProductIdIntoWishlistItemsCache( productID:string ){
+        //update-cache, put new product into wishlist-items
+        let cachedAccountWishlistItemIDs = this.publicService.getFromSessionCache('cachedAccountWishlistItemIDs') || [];
+        cachedAccountWishlistItemIDs.push({'productID': productID});
+        this.publicService.putIntoSessionCache("cachedAccountWishlistItemIDs", cachedAccountWishlistItemIDs);
+    }
+    
+    private addWishlistIntoSessionCache = ( wishlist: OrderTemplateLight) => {
+        //update-cache, put new product into wishlist-items
+        let cachedWishlists = this.publicService.getFromSessionCache('cachedWishlists') || [];
+        cachedWishlists.push(wishlist);
+        this.publicService.putIntoSessionCache("cachedWishlists", cachedWishlists);
+    }
+    
+	
+	/**
+	 * This function gets the wishlists `{ namd, ID }` and cache them on session-cache
+	*/
+	public getWishLists = ( refresh = false ) => {
+	    
+	    var deferred = this.$q.defer<OrderTemplateLight[]>();
+		let cachedWishlists = this.publicService.getFromSessionCache("cachedWishlists");
+		
+		if (refresh || !cachedWishlists) {
+			
+			this.getOrderTemplatesLight('2c9280846b712d47016b75464e800014')
+			.then( (data) => {
+			
+			    if(!data?.orderTemplates){
+                    throw(data);
+                }
+				
+				console.log("getWishLists, success, putting in session-cache");
+				this.publicService.putIntoSessionCache("cachedWishlists", data.orderTemplates);
+				deferred.resolve(data.orderTemplates);
+			})
+			.catch( (e) => {
+				console.log("getWishLists, exception, removing from session-cache", e);
+				this.publicService.removeFromSessionCache("cachedWishlists");
+				deferred.reject(e);
+			});
+		} 
+		else {
+			deferred.resolve(cachedWishlists);
+		}
+		
+		return deferred.promise;
+	};
+	
+	
 }
