@@ -321,7 +321,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 			'volume8'           = 0,
 			'volume9'           = arguments.order.getFulfillmentChargeTotal(), // Handling Fee
 			'orderType'         = formatOrderType(arguments.order),//Type of order. W for regular order, R for retail, X for exchange, R for replacement, and C for RMA.
-			'periodDate'        = listLast(arguments.order.getCommissionPeriod(), '/') & listFirst(arguments.order.getCommissionPeriod(), '/')//Volume period date of the order (YYYYMM). This will get assigned to the default volume period if not included
+			'periodDate'        = arguments.order.getCommissionPeriod()//Volume period date of the order (YYYYMM). This will get assigned to the default volume period if not included
 		};
 		
 		
@@ -330,7 +330,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		//transactionData['entryInitials'] = //Initials of user entering the transaction
 		
 		
-		if( transactionData['orderType'] == 'C' && len(arguments.order.getReferencedOrder().getIceRecordNumber())){
+		if( transactionData['transactionType'] == 'C' && len(arguments.order.getReferencedOrder().getIceRecordNumber())){
 			transactionData['originalRecordNumber'] = arguments.order.getReferencedOrder().getIceRecordNumber();//Used for RMA orders. When a return or refund is needed the order number of the order being returned
 		}
 		

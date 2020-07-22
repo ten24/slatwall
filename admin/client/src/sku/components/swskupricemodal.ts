@@ -1,7 +1,3 @@
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
-var swSkuPriceModalHTML = require("html-loader!sku/components/skupricemodal");
-
 class SWSkuPriceModalController{
     
     public productId:string;
@@ -425,15 +421,15 @@ class SWSkuPriceModalController{
 }
 
 class SWSkuPriceModal implements ng.IDirective{
-    public template;
+    public template = require("./skupricemodal.html");;
+    public transclude = true; 
     public restrict = 'EA';
+    
     public require = {
         ngForm : '?ngForm'
     }
     public scope = {}; 
-    public skuData = {}; 
-    public imagePathToUse;
-    public transclude = true; 
+    
     public bindToController = {
         sku:"=?",
         pageRecord:"=?",
@@ -453,55 +449,9 @@ class SWSkuPriceModal implements ng.IDirective{
    
    
     public static Factory(){
-        var directive = (
-            $hibachi,
-            entityService,
-            observerService,
-            scopeService,
-            collectionConfigService,
-            skuPartialsPath,
-            slatwallPathBuilder
-        )=> new SWSkuPriceModal(
-            $hibachi, 
-            entityService,
-            observerService,
-            scopeService,
-            collectionConfigService,
-            skuPartialsPath,
-            slatwallPathBuilder
-        );
-        directive.$inject = [
-            '$hibachi',
-            'entityService',
-            'observerService',
-            'scopeService',
-            'collectionConfigService',
-            'skuPartialsPath',
-            'slatwallPathBuilder'
-        ];
-        return directive;
+        return () => new this();
     }
-    constructor(
-        public $hibachi, 
-        public entityService,
-        public observerService,
-        public scopeService, 
-        public collectionConfigService, 
-        public skuPartialsPath,
-        public slatwallPathBuilder
-    ){
-        this.template = swSkuPriceModalHTML;
-        
-    }
-    
-    public compile = (element: JQuery, attrs: angular.IAttributes) => {
-        return {
-            pre: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
-            },
-            post: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
-            }
-        };
-    }
+
 }
 export{
     SWSkuPriceModal,

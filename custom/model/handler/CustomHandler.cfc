@@ -3,7 +3,7 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
     public void function beforeOrderSave(any slatwallScope, any order, any data) {
         
         // Sets the actual order created site from the account.
-        var account = order.getAccount();
+        var account = arguments.order.getAccount();
         if ( ! isNull( account ) ) {
             var accountCreatedSite = account.getAccountCreatedSite();
         }
@@ -11,20 +11,20 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
         // If the account does not have a created site (which it will), set a default.
         // Otherwise, set the site on the order.
         if ( isNull(accountCreatedSite) ){
-            order.setOrderCreatedSite(getHibachiScope().getCurrentRequestSite());
+            arguments.order.setOrderCreatedSite(getHibachiScope().getCurrentRequestSite());
         } else {
             
             // Set the order created site to account created site.
-            order.setOrderCreatedSite(accountCreatedSite);
+            arguments.order.setOrderCreatedSite(accountCreatedSite);
             
             //sets the default currency on the order.
             var currencyCode = accountCreatedSite.setting("skuCurrency");
             
             if (!isNull(currencyCode)){
-                order.setCurrencyCode(currencyCode);
+                arguments.order.setCurrencyCode(currencyCode);
             }else{
                 // used as a default.
-                order.setCurrencyCode("USD");
+                arguments.order.setCurrencyCode("USD");
             }
         }
     }

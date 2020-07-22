@@ -354,7 +354,7 @@ component displayname="Promotion Qualifier" entityname="SlatwallPromotionQualifi
 					qualifyingItemCount += 1;
 				}
 			}
-			logHibachi('Purchase Plus #this.getPromotionPeriod().getPromotionPeriodName()# failed, order ID #order.getOrderID()#, price group #order.getPriceGroup().getPriceGroupCode()#, subtotalAfterItemDiscounts = #order.getSubtotalAfterItemDiscounts()#, calculatedSubtotalAfterItemDiscounts = #order.getCalculatedSubtotalAfterItemDiscounts()#, qualifyingTotal = #qualifyingTotal#, qualifyingCalculatedTotal = #qualifyingCalculatedTotal#, qualifyingItemCount = #qualifyingItemCount#');
+			//logHibachi('Purchase Plus #this.getPromotionPeriod().getPromotionPeriodName()# failed, order ID #order.getOrderID()#, price group #order.getPriceGroup().getPriceGroupCode()#, subtotalAfterItemDiscounts = #order.getSubtotalAfterItemDiscounts()#, calculatedSubtotalAfterItemDiscounts = #order.getCalculatedSubtotalAfterItemDiscounts()#, qualifyingTotal = #qualifyingTotal#, qualifyingCalculatedTotal = #qualifyingCalculatedTotal#, qualifyingItemCount = #qualifyingItemCount#');
 		}
 		/*      END DEBUGGING CODE      */
 		return hasOrder;

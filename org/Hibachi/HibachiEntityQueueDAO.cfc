@@ -185,10 +185,19 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 		queryService.execute(sql=sql);
 	}	
 
-	public void function insertEntityQueue(required string baseID, required string baseObject, string processMethod='', string entityQueueID = createHibachiUUID(), struct entityQueueData={}, string integrationID=''){
+	public void function insertEntityQueue(required string baseID, required string baseObject, string entityQueueID, string processMethod='', struct entityQueueData={}, string integrationID=''){
+
+		if(!structKeyExists(arguments, 'entityQueueID')){
+			var dataString = "#arguments.baseObject#_#arguments.baseID#_#arguments.processMethod#_#serializeJSON(arguments.entityQueueData)#";
+			
+			if (structKeyExists(arguments, "integrationID") && len(arguments.integrationID)){
+				dataString = dataString & "_#integrationID#"; 
+			}
+			arguments.entityQueueID = hash(dataString, 'MD5');
+		}
+		
 		var queryService = new query();
 		queryService.addParam(name='entityQueueID', value='#arguments.entityQueueID#', CFSQLTYPE="CF_SQL_STRING");
-		// queryService.addParam(name='entityQueueType', value='#arguments.entityQueueType#', CFSQLTYPE="CF_SQL_STRING");
 		queryService.addParam(name='baseObject', value='#arguments.baseObject#', CFSQLTYPE="CF_SQL_STRING");
 		queryService.addParam(name='baseID', value='#arguments.baseID#', CFSQLTYPE="CF_SQL_STRING");
 		queryService.addParam(name='processMethod', value='#arguments.processMethod#', CFSQLTYPE="CF_SQL_STRING");
@@ -204,7 +213,7 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 		
 		queryService.addParam(name='accountID', value='#getHibachiScope().getAccount().getAccountID()#', CFSQLTYPE="CF_SQL_STRING");
 		
-		var sql =	"INSERT INTO 
+		var sql =	"INSERT IGNORE INTO
 						SwEntityQueue (entityQueueID,baseObject,baseID,processMethod,entityQueueData,integrationID,createdDateTime,createdByAccountID,modifiedByAccountID,modifiedDateTime,tryCount,entityQueueProcessingDateTime)
 					VALUES 
 						(:entityQueueID,:baseObject,:baseID,:processMethod,:entityQueueData,:integrationID,:dateTimeNow,:accountID,:accountID,:dateTimeNow,1,:entityQueueProcessingDateTime)";

@@ -11,7 +11,7 @@
 			<input type="hidden" name="rewardType" value="#rc.rewardType#" />
 			<input type="hidden" name="promotionperiod.promotionperiodID" value="#rc.promotionperiod.getPromotionperiodID()#" />
 			<input type="hidden" name="promotionperiodID" value="#rc.promotionperiod.getPromotionperiodID()#" />
-			<cfif rc.rewardType NEQ "canPlaceOrder">
+			<cfif rc.rewardType NEQ "canPlaceOrder" AND rc.rewardType NEQ "rewardSku" >
 				<hb:HibachiPropertyDisplay object="#rc.promotionreward#" property="amountType" fieldType="select" edit="#rc.edit#" />
 				<hb:HibachiPropertyDisplay object="#rc.promotionreward#" property="amount" edit="#rc.edit#" />
 				<hb:HibachiDisplayToggle selector="select[name=amountType]" showValues="percentageOff" loadVisable="#rc.promotionReward.getNewFlag() || rc.promotionReward.getValueByPropertyIdentifier('amountType') eq 'percentageOff'#">
@@ -28,6 +28,10 @@
 					<hb:HibachiPropertyDisplay object="#rc.promotionreward#" property="maximumUsePerItem" edit="#rc.edit#" />
 					<hb:HibachiPropertyDisplay object="#rc.promotionreward#" property="maximumUsePerQualification" edit="#rc.edit#" />
 				</cfif>
+			</cfif>
+			<cfif rc.rewardType EQ "rewardSku">
+				<hb:HibachiPropertyDisplay object="#rc.promotionreward#" property="rewardSkuQuantity" edit="#rc.edit#" />
+				<hb:HibachiPropertyDisplay object="#rc.promotionreward#" property="showRewardSkuInCartFlag" edit="#rc.edit#" />
 			</cfif>
 			<cfif !isNull(rc.promotionReward.getAmountType()) AND rc.promotionreward.getAmountType() NEQ 'amountOff'>
 				<hb:HibachiPropertyDisplay object="#rc.promotionreward#" property="personalVolumeAmount" edit="#rc.edit#" />

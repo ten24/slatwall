@@ -178,15 +178,23 @@ extends = "Slatwall.integrationServices.BaseTax" {
 			
 			// Pull out just the items for this address
 			var addressTaxRequestItems = arguments.requestBean.getTaxRateItemRequestBeansByAddressID()[ taxAddressID ];
-
+			var stateCode = addressTaxRequestItems[1].getTaxStateCode();
+			var countryCode = addressTaxRequestItems[1].getTaxCountryCode();
+			
+			if(stateCode == 'JEY' && countryCode =='GB'){
+				countryCode = 'JE'
+			}else if(stateCode == 'GGY' && countryCode =='GB'){
+				countryCode = 'GG'
+			}
+		
 			// Setup this address data
 			var addressData = {
 				AddressCode = addressIndex,
 				Line1 = addressTaxRequestItems[1].getTaxStreetAddress(),
 				Line2 = addressTaxRequestItems[1].getTaxStreet2Address(),
 				City = addressTaxRequestItems[1].getTaxCity(),
-				Region = addressTaxRequestItems[1].getTaxStateCode(),
-				Country = addressTaxRequestItems[1].getTaxCountryCode(),
+				Region = stateCode,
+				Country = countryCode,
 				PostalCode = addressTaxRequestItems[1].getTaxPostalCode()
 			};
 			
@@ -279,10 +287,19 @@ extends = "Slatwall.integrationServices.BaseTax" {
 					itemData.TaxCode = item.getTaxCategoryCode();
 					itemData.Qty = 1;
 					itemData.Amount = amount;
-					itemData.taxOverride = {
-						taxOverrideType:"TaxAmount",
-						taxAmount:-1*item.getOrderReturn().getFulfillmentTaxRefund(),
-						reason:"Return"
+
+					if(listContains(setting("VATCountries"),addressData.Country)){
+						itemData.taxOverride = {
+							taxOverrideType:"TaxAmount",
+							taxAmount:-1*item.getOrderReturn().getFulfillmentVATRefund(),
+							reason:"Return"
+						}
+					}else{
+						itemData.taxOverride = {
+							taxOverrideType:"TaxAmount",
+							taxAmount:-1*item.getOrderReturn().getFulfillmentTaxRefund(),
+							reason:"Return"
+						}
 					}
 					
 
@@ -318,7 +335,7 @@ extends = "Slatwall.integrationServices.BaseTax" {
 		var responseData = httpRequest.send().getPrefix();
 
 		if (IsJSON(responseData.FileContent)){
-			
+	
 			// a valid response was retrieved
 			// health check passed
 			responseBean.healthcheckFlag = true;

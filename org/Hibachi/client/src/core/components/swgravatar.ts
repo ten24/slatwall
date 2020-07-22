@@ -28,13 +28,9 @@ class SWGravatar implements ng.IDirective{
 	public controller=SWGravatarController;
 	public controllerAs="swGravatar";
 
+    // @ngInject;
 	constructor(){
 	}
-
-	public link:ng.IDirectiveLinkFn = (scope:any, element:any, attrs:any, controller:any, transclude:any) =>{
-	}
-
-
 
 	public static Factory(){
 		var directive:ng.IDirectiveFactory = () => new SWGravatar();

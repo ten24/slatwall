@@ -1,6 +1,19 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 
+const listingdisplaycell = require('./listingdisplaycell.html');
+const listingdisplaycelldate = require('./listingdisplaycelldate.html');
+const listingdisplaycellnumeric = require('./listingdisplaycellnumeric.html');
+const listingdisplaycellcurrency = require('./listingdisplaycellcurrency.html');
+const listingdisplaycellaggregate = require('./listingdisplaycellaggregate.html');
+
+const listingdisplaycelledit = require('./listingdisplaycelledit.html');
+const listingdisplaycelleditselect = require('./listingdisplaycelleditselect.html');
+
+const listingdisplayselectablecellexpandable = require('./listingdisplayselectablecellexpandable.html');
+
+
+
 class SWListingDisplayCellController{
     /* local state variables */
     public swListingDisplay:any;
@@ -28,7 +41,7 @@ class SWListingDisplayCellController{
         public listingService, 
         public utilityService,
         public $scope,
-        public observerService
+        public observerService,
     ){
         
         if(!this.pageRecordKey && this.column){
@@ -99,18 +112,18 @@ class SWListingDisplayCellController{
             }
             
             if (this.column.type == "select") {
-                return basePartialPath + 'listingdisplaycelleditselect.html';
+                return 'listingdisplaycelleditselect';
             }else{
-                return basePartialPath + 'listingdisplaycelledit.html';    
+                return 'listingdisplaycelledit';    
             }
         }
         
-        var templateUrl = basePartialPath + 'listingdisplaycell.html';
+        var templateUrl ='listingdisplaycell';
         
         var listingDisplayIsExpandableAndPrimaryColumn = (this.swListingDisplay.expandable && this.column.tdclass && this.column.tdclass === 'primary');
         
         if(this.expandable || listingDisplayIsExpandableAndPrimaryColumn){
-            templateUrl = basePartialPath + 'listingdisplayselectablecellexpandable.html';
+            templateUrl = 'listingdisplayselectablecellexpandable';
         } else if(!listingDisplayIsExpandableAndPrimaryColumn){
             
             if(this.column.ormtype === 'timestamp'){
@@ -118,7 +131,7 @@ class SWListingDisplayCellController{
                     this.dateFormat = 'MM/dd/yyyy hh:mm a';
                 }
                 
-                templateUrl = basePartialPath + 'listingdisplaycelldate.html';
+                templateUrl = 'listingdisplaycelldate';
             }else if(this.column.type === 'currency'){
                 if(this.hasAggregate() && this.pageRecord){
                     var pageRecordKey = this.swListingDisplay.getPageRecordKey(this.column.aggregate.aggregateAlias);
@@ -148,23 +161,15 @@ class SWListingDisplayCellController{
                 } else if (this.currencyCode == undefined || this.currencyCode == ""){
                         this.currencyCode = 'USD';
                 }
-                
-                templateUrl = basePartialPath + 'listingdisplaycellcurrency.html';
-            }else if([
-                "double", 
-                "float", 
-                "integer", 
-                "long", 
-                "short", 
-                "big_decimal"
-            ].indexOf(this.column.ormtype) != -1){  
-                templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.listingPartialPath)+'listingdisplaycellnumeric.html'; 
-            }else if(this.hasAggregate()){
-                this.value = this.pageRecord[this.swListingDisplay.getPageRecordKey(this.column.aggregate.aggregateAlias)];
-                templateUrl = basePartialPath + 'listingdisplaycellaggregate.html';
+                templateUrl = 'listingdisplaycellcurrency';
             }
-        
-            
+            else if(["double", "float", "integer", "long", "short", "big_decimal"].indexOf(this.column.ormtype) != -1){  
+                    templateUrl = 'listingdisplaycellnumeric'; 
+            }
+            else if(this.hasAggregate()){
+                this.value = this.pageRecord[this.swListingDisplay.getPageRecordKey(this.column.aggregate.aggregateAlias)];
+                templateUrl =  'listingdisplaycellaggregate';
+            }
         }
 
         return templateUrl;
@@ -215,17 +220,35 @@ class SWListingDisplayCell {
     `;
 
     public static Factory(){
-        var directive:ng.IDirectiveFactory=(
-        ) => new SWListingDisplayCell(
-        );
-        directive.$inject =[
-        ];
-        return directive;
-    }
-    //@ngInject
-    constructor(
-    ){
-
+        return /** @ngInject */ ($templateCache: ng.ITemplateCacheService) => {
+            
+            if(!$templateCache.get('listingdisplaycell') ){
+                $templateCache.put('listingdisplaycell', listingdisplaycell);
+            }
+            if(!$templateCache.get('listingdisplaycelldate') ){
+                $templateCache.put('listingdisplaycelldate', listingdisplaycelldate);
+            }
+            if(!$templateCache.get('listingdisplaycellnumeric') ){
+                $templateCache.put('listingdisplaycellnumeric', listingdisplaycellnumeric);
+            }
+            if(!$templateCache.get('listingdisplaycellcurrency') ){
+                $templateCache.put('listingdisplaycellcurrency', listingdisplaycellcurrency);
+            }
+            if(!$templateCache.get('listingdisplaycellaggregate') ){
+                $templateCache.put('listingdisplaycellaggregate', listingdisplaycellaggregate);
+            }
+            if(!$templateCache.get('listingdisplaycelledit') ){
+                $templateCache.put('listingdisplaycelledit', listingdisplaycelledit);
+            }
+            if(!$templateCache.get('listingdisplaycelleditselect') ){
+                $templateCache.put('listingdisplaycelleditselect', listingdisplaycelleditselect);
+            }
+            if(!$templateCache.get('listingdisplayselectablecellexpandable') ){
+                $templateCache.put('listingdisplayselectablecellexpandable', listingdisplayselectablecellexpandable);
+            }
+            
+            return new this();
+        }
     }
 }
 export{

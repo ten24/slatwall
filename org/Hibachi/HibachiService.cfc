@@ -19,6 +19,7 @@
 	<cfset variables.entityHasProperty = {} />
 	<cfset variables.entityHasAttribute = {} />
 	<cfset variables.processComponentDirectoryListing = [] />
+	<cfset variables.properlyCasedShortEntityName = {} />
 	
 	<cfscript>
 		public any function get(required string entityName, required any idOrFilter, boolean isReturnNewOnNotFound = false ) {
@@ -956,6 +957,10 @@
 		// ======================= START: Entity Name Helper Methods ==============================
 		
 		public string function getProperlyCasedShortEntityName( required string entityName, boolean returnBlankIfNotFound=false ) {
+		
+			if(structKeyExists(variables.properlyCasedShortEntityName, arguments.entityName)){
+				return variables.properlyCasedShortEntityName[arguments.entityName];
+			}
 			if(left(arguments.entityName, len(getApplicationValue('applicationKey'))) == getApplicationValue('applicationKey')) {
 				arguments.entityName = right(arguments.entityName, len(arguments.entityName)-len(getApplicationValue('applicationKey')));
 			}
@@ -963,7 +968,8 @@
 			if( structKeyExists(getEntitiesMetaData(), arguments.entityName) ) {
 				var keyList = structKeyList(getEntitiesMetaData());
 				var keyIndex = listFindNoCase(keyList, arguments.entityName);
-				return listGetAt(keyList, keyIndex);
+				variables.properlyCasedShortEntityName[arguments.entityName] = listGetAt(keyList, keyIndex)
+				return variables.properlyCasedShortEntityName[arguments.entityName];
 			}
 			
 			if(arguments.returnBlankIfNotFound) {
@@ -1347,13 +1353,31 @@
 			
 		}
 		
+		public boolean function hasDefaultOrderByPropertyNameByEntityName(required string entityName){
+			var entityMetaData = this.getEntityMetaData( arguments.entityName );
+            return StructKeyExists(entityMetaData, "hb_defaultOrderProperty");
+		}
+		
+		public string function getDfaultOrderByProeprtyNameByEntityName(required string entityName){
+			var entityMetaData = this.getEntityMetaData( arguments.entityName );
+            return entityMetaData["hb_defaultOrderProperty"];
+		}
+		
+		public string function getDefaultOrderByPropertyIdentifierByEntityName(required string entityName, string orderByPropertyName){
+
+			if( !structKeyExists(arguments, 'orderByPropertyName') ){
+			    arguments.orderByPropertyName = this.getDfaultOrderByProeprtyNameByEntityName(arguments.entityName);
+			}
+
+			return '_' & lcase( this.getProperlyCasedShortEntityName(arguments.entityName) ) & '.' & arguments.orderByPropertyName;
+		}
 			
 		public any function getTableTopSortOrder(required string tableName, string contextIDColumn, string contextIDValue) {
 			return getHibachiDAO().getTableTopSortOrder(argumentcollection=arguments);
 		}
 		
 		public string function getTableNameByEntityName(required string entityName){
-			entityMetaData = getEntityMetaData( arguments.entityName );
+			var entityMetaData = getEntityMetaData( arguments.entityName );
 			return entityMetaData.table; 
 		}
 	
@@ -1430,18 +1454,23 @@
 		
 		
 		public string function getOrmTypeByEntityNameAndPropertyIdentifier(required string entityName, required string propertyIdentifier) {
-			var lastEntityName =  getLastEntityNameInPropertyIdentifier(arguments.entityName, arguments.propertyIdentifier );
-
-			var object =  getEntityObject(lastEntityName);
-			var propertyName = listLast(arguments.propertyIdentifier, '.');
-			if(
-				!isNull(object)
-				&& !isSimpleValue(object)
-				&& structKeyExists(object.getPropertyMetaData(propertyName),'ormtype')
-			) {
-				return object.getPropertyMetaData(propertyName).ormtype;
+		
+			var cacheKey = 'getOrmTypeByEntityNameAndPropertyIdentifier-#arguments.entityName#-#arguments.propertyIdentifier#';
+			if(!structKeyExists(variables,cacheKey)){
+				variables[cacheKey] = "";
+				var lastEntityName =  getLastEntityNameInPropertyIdentifier(arguments.entityName, arguments.propertyIdentifier );
+	
+				var object =  getEntityObject(lastEntityName);
+				var propertyName = listLast(arguments.propertyIdentifier, '.');
+				if(
+					!isNull(object)
+					&& !isSimpleValue(object)
+					&& structKeyExists(object.getPropertyMetaData(propertyName),'ormtype')
+				) {
+					variables[cacheKey] = object.getPropertyMetaData(propertyName).ormtype;
+				}
 			}
-			return "";
+			return variables[cacheKey];
 		}
 		
 		public array function getOptionsByEntityNameAndPropertyIdentifier(

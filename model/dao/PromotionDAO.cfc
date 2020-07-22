@@ -102,7 +102,7 @@ Notes:
 			<cfset hql &= " EXISTS( SELECT pq.promotionQualifierID FROM SlatwallPromotionQualifier pq WHERE pq.promotionPeriod.promotionPeriodID = spp.promotionPeriodID )" />
 
 			<!--- Or a promotion code exists --->
-			<cfif len(promotionCodeList)>
+			<cfif len(arguments.promotionCodeList)>
 				<cfset hql &= " OR EXISTS ( SELECT c.promotionCodeID FROM SlatwallPromotionCode c WHERE c.promotion.promotionID = sp.promotionID AND c.promotionCode IN (:promotionCodeList) AND (c.startDateTime is null or c.startDateTime < :promotionEffectiveDateTime) AND (c.endDateTime is null or c.endDateTime > :promotionEffectiveDateTime) )" />
 			</cfif>
 
@@ -124,7 +124,7 @@ Notes:
 		<cfset hql &= " NOT EXISTS ( SELECT c.promotionCodeID FROM SlatwallPromotionCode c WHERE c.promotion.promotionID = sp.promotionID )" />
 
 		<!--- Or if there are promotion codes then we have passed that pomotion code in --->
-		<cfif len(promotionCodeList)>
+		<cfif len(arguments.promotionCodeList)>
 			<cfset hql &= " OR EXISTS ( SELECT c.promotionCodeID FROM SlatwallPromotionCode c WHERE c.promotion.promotionID = sp.promotionID AND c.promotionCode IN (:promotionCodeList) AND (c.startDateTime is null or c.startDateTime < :promotionEffectiveDateTime) AND (c.endDateTime is null or c.endDateTime > :promotionEffectiveDateTime) )" />
 		</cfif>
 
@@ -144,7 +144,7 @@ Notes:
 			<cfset params.noQualRequiredList = listToArray(noQualRequiredList) />
 		</cfif>
 
-		<cfif len(promotionCodeList)>
+		<cfif len(arguments.promotionCodeList)>
 			<cfset params.promotionCodeList = listToArray(arguments.promotionCodeList) />
 		</cfif>
 		

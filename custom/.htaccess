@@ -1,7 +1,0 @@
-# webpack regenerates the files everytime we build, regardless of whether their-cotent has changed, 
-# if the content isn't changed the hash will remain same, so we'd what the browsers to cache the files forever
-<FilesMatch "\.bundle.js$">
-	Header unset Last-Modified
-	Header unset Etag
-	Header set Cache-Control "max-age=31557600"
-</FilesMatch>

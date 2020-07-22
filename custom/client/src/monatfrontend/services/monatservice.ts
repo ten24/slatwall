@@ -40,7 +40,8 @@ export class MonatService {
 		private requestService: RequestService,
 		private observerService: ObserverService,
 		private utilityService: UtilityService,
-		private localStorageCache: Cache
+		private localStorageCache: Cache,
+		private ModalService,
 	) {}
 
 	public getCart(refresh = false, param = "") {
@@ -295,13 +296,6 @@ export class MonatService {
 		});
 	};
 
-	public getAccountWishlistItemIDs = () => {
-		var deferred = this.$q.defer();
-		this.publicService.doAction("getWishlistItemsForAccount").then((data) => {
-			deferred.resolve(data);
-		});
-		return deferred.promise;
-	};
 
 	public addEditAccountAddress(payload) {
 		return this.publicService.doAction("addEditAccountAddress", payload);
@@ -491,7 +485,7 @@ export class MonatService {
 	
 	public addOFYItem(skuID){
 		var deferred = this.$q.defer<any>();
-		this.publicService.doAction("addOFYProduct", { skuID: skuID, quantity:1 })
+		this.publicService.doAction("addOFYProduct", { skuID: skuID, quantity: 1, returnJsonObjects: "cart" })
 		.then((data: any) => {
 			if (data?.cart) {
 				console.log("update-cart, putting it in session-cache");
@@ -537,5 +531,34 @@ export class MonatService {
 			}
 		}
 		return hasShippingMethodOption;
+	}
+	
+	
+	
+	
+	// common-modals
+	
+	public launchWishlistsModal = (skuId:string, productId:string, productName:string) => {
+		this.ModalService.showModal({
+			component: 'swfWishlist',
+			bodyClass: 'angular-modal-service-active',
+			bindings: {
+				skuId: skuId,
+				productId: productId,
+				productName: productName
+			},
+			preClose: (modal) => {
+				modal.element.modal('hide');
+				this.ModalService.closeModals();
+			},
+		})
+		.then((modal) => {
+			//it's a bootstrap element, use 'modal' to show it
+			modal.element.modal();
+			modal.close.then((result) => {});
+		})
+		.catch((error) => {
+			console.error('unable to open model : swfWishlist ', error);
+		});
 	}
 }

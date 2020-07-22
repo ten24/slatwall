@@ -1574,12 +1574,20 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 	}
 	
 	function addLoadingDiv( elementID ) {
+		var element = jQuery('#' + elementID);
 		var loadingDiv = '<div id="loading' + elementID + '" style="position:absolute;float:left;text-align:center;background-color:#FFFFFF;opacity:.9;z-index:900;"><img style="position:relative;" src="' + hibachiConfig.baseURL + '/org/Hibachi/HibachiAssets/images/loading.gif" title="loading" /></div>';	
-		jQuery('#' + elementID).before(loadingDiv);
-		jQuery('#loading' + elementID).width(jQuery('#' + elementID).width() + 2);
-		jQuery('#loading' + elementID).height(jQuery('#' + elementID).height() + 2);
-		if(jQuery('#' + elementID).height() > 66) {
-			jQuery('#loading' + elementID + ' img').css('margin-top', ((jQuery('#' + elementID).height() / 2) - 66) + 'px');
+		
+		element.before(loadingDiv);
+		
+		jQuery('#loading' + elementID)
+    		.width( element.outerWidth() )
+    		.height( element.outerHeight() )
+    	    .css('padding', element.css('padding') )
+    	    .css('margin', element.css('margin') );
+	
+		if(element.height() > 66) {
+			jQuery('#loading' + elementID + ' img')
+			.css('margin-top', ((element.height() / 2) - 33) + 'px');
 		}
 	}
 	

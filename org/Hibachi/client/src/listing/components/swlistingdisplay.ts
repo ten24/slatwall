@@ -169,21 +169,42 @@ class SWListingDisplayController{
 
     }
     
+    public $onInit = () => {
+        // giving it a time-out to run this code in next digest-cycle, so everything is rendered 
+        this.$timeout( () =>  this.startLoading() );
+    }
+    
     public refreshListingDisplay = () => {
-
+        this.startLoading();
+        
         this.getCollection = this.collectionConfig.getEntity().then((data)=>{
-            this.collectionData = data;
+            this.setCollectionData(data);
             this.observerService.notifyById('swPaginationUpdate',this.tableID, this.collectionData);
-        });
+        })
+        .finally( () => this.stopLoading() );
+    }
+    
+    public setCollectionData = ( collectionData) =>{
+        this.collectionData = collectionData;
+        this.stopLoading();
     }
     
     public startLoading = () => {
+        
+        if(this.loading) return;
+        
         this.loading = true;
+        // @ts-ignore from hibachiAssets/js/global.js
+        window?.addLoadingDiv?.(this.tableID);
     }
-    
     
     public stopLoading = () => {
         this.loading = false;
+        
+        this.$timeout( ()=> {
+            // @ts-ignore from hibachiAssets/js/global.js
+            window?.removeLoadingDiv?.(this.tableID);
+        },100); // to avoide flickring of ng-repeat
     }
     
    /**
@@ -261,6 +282,7 @@ class SWListingDisplayController{
             var originalMultiSlotValue = angular.copy(this.multiSlot);
             this.multiSlot = false;
             
+            this.startLoading();
             personalCollection.getEntity().then((data)=>{
                 if(data.pageRecords.length){
 
@@ -277,7 +299,8 @@ class SWListingDisplayController{
                     this.multiSlot = originalMultiSlotValue;
                 }
                 this.processCollection();
-            });
+            })
+            .finally( () => this.stopLoading());
 
          }else{
             $rootScope.hibachiScope.selectedPersonalCollection = undefined;
@@ -390,12 +413,8 @@ class SWListingDisplayController{
                     this.collectionConfig.baseEntityNameType = 'Collection';
                     this.collectionConfig.id = this.collectionId;
                 }
-
-                this.getCollection = this.collectionConfig.getEntity().then((data)=>{
-                    this.collectionData = data;
-                    this.observerService.notifyById('swPaginationUpdate',this.tableID, this.collectionData);
-                });
-    
+                
+                this.refreshListingDisplay();
             }
         }else{
             this.collectionData = null;
@@ -1028,7 +1047,7 @@ class SWListingDisplay implements ng.IDirective{
     public controller:any=SWListingDisplayController;
     public controllerAs="swListingDisplay";
     public templateUrl;
-
+    
     public static Factory(){
         var directive:ng.IDirectiveFactory=(
             listingPartialPath,
@@ -1060,6 +1079,13 @@ class SWListingDisplay implements ng.IDirective{
             }
         };
     }
+    
+    // packaginh the template makes it load too fast, and causes issues with Workflow-detail and content-listing pages
+    // public template= require('./listingdisplay.html');
+    
+    // public static Factory(){
+    //     return /** @ngInject */ () => new this();
+    // }
 }
 export{
     SWListingDisplay

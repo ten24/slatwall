@@ -8,7 +8,7 @@
     },
 
     "include": [
-        "./src/**/*",
+        "./**/*",
         "../../../org/Hibachi/client/src/*"
     ],
 

@@ -1,3 +1,8 @@
+import { MonatService } from "@Monat/services/monatservice";
+import { PublicService } from "@Monat/monatfrontend.module";
+import { ObserverService } from "@Hibachi/core/core.module";
+import { OrderTemplateService } from "@Monat/services/ordertemplateservice";
+
 class VIPController {
 	public loading:boolean=false;
 	public pageTracker: number;
@@ -43,8 +48,12 @@ class VIPController {
 	public skinProductFilter:any;
 	
 	// @ngInject
-	constructor(public publicService, public observerService, public monatService, public orderTemplateService) {
-	}
+	constructor(
+	    public monatService         : MonatService, 
+	    public publicService        : PublicService, 
+	    public observerService      : ObserverService, 
+	    public orderTemplateService : OrderTemplateService
+	){}
 
 	public $onInit = () => {
 		if(this.upgradeFlow){
@@ -72,8 +81,8 @@ class VIPController {
 	public getFrequencyTermOptions = ():void =>{
 		this.publicService.doAction('getFrequencyTermOptions').then(response => {
 			this.frequencyTerms = response.frequencyTermOptions;
-			this.publicService.model = {};
-			this.publicService.term = response.frequencyTermOptions[0]; 
+			this.publicService['model'] = {};
+			this.publicService['term'] = response.frequencyTermOptions[0]; 
 			for(let term of response.frequencyTermOptions){
 				this.termMap[term.value] = term;
 			}
@@ -104,7 +113,7 @@ class VIPController {
 	};
 
 	public getMpResults = (model) => {
-		this.publicService.marketPartnerResults = this.publicService.doAction(
+		this.publicService['marketPartnerResults'] = this.publicService.doAction(
 			'/?slatAction=monat:public.getmarketpartners' +
 				'&search=' +
 				model.mpSearchText +
@@ -247,7 +256,9 @@ class VIPController {
     public getFlexshipDetails = () => {
     	this.loading = true;
     	const flexshipID = this.orderTemplateService.currentOrderTemplateID;
-        this.orderTemplateService.getWishlistItems(flexshipID).then(result => {
+    	
+    	// Q: why get-wishlist-items
+        this.orderTemplateService.getWishlistItems(flexshipID).then(result => { 
         	this.flexshipItemList = result.orderTemplateItems;
 			this.flexshipTotal = result.orderTotal;
 			this.observerService.notify('onNext');
@@ -258,7 +269,7 @@ class VIPController {
 	public showAddToCartMessage = () => {
 		var skuID = this.monatService.lastAddedSkuID;
 		
-		this.monatService.getCart().then( data => {
+		this.monatService.getCart().then( (data: any) => {
 
 			var orderItem;
 			data.orderItems.forEach( item => {

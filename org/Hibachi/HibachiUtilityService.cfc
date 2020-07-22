@@ -463,9 +463,9 @@
 		public any function buildPropertyIdentifierDataStruct(required parentObject, required string propertyIdentifier, required any data) {
 			if(listLen(arguments.propertyIdentifier, ".") eq 1) {
 				if(structkeyExists(arguments.parentObject,'getValueByPropertyIdentifier')){
-					data[ arguments.propertyIdentifier ] = arguments.parentObject.getValueByPropertyIdentifier( arguments.propertyIdentifier );
+					arguments.data[ arguments.propertyIdentifier ] = arguments.parentObject.getValueByPropertyIdentifier( arguments.propertyIdentifier );
 				}else{
-					data[ arguments.propertyIdentifier ] = arguments.parentObject[ arguments.propertyIdentifier ];
+					arguments.data[ arguments.propertyIdentifier ] = arguments.parentObject[ arguments.propertyIdentifier ];
 				}
 				return;
 			}
@@ -478,31 +478,31 @@
 			//only structs using closures
 			if(!isNull(object) && (isObject(object) || isStruct(object))) {
 				var thisProperty = listFirst(arguments.propertyIdentifier, '.');
-				param name="data[thisProperty]" default="#structNew()#";
+				param name="arguments.data[thisProperty]" default="#structNew()#";
 
-				if(!structKeyExists(data[thisProperty],"errors")) {
+				if(!structKeyExists(arguments.data[thisProperty],"errors")) {
 					// add error messages
-					data[thisProperty]["hasErrors"] = object.hasErrors();
-					data[thisProperty]["errors"] = object.getErrors();
+					arguments.data[thisProperty]["hasErrors"] = object.hasErrors();
+					arguments.data[thisProperty]["errors"] = object.getErrors();
 				}
 
-				buildPropertyIdentifierDataStruct(object,listDeleteAt(arguments.propertyIdentifier, 1, "."), data[thisProperty]);
+				buildPropertyIdentifierDataStruct(object,listDeleteAt(arguments.propertyIdentifier, 1, "."), arguments.data[thisProperty]);
 			} else if(!isNull(object) && isArray(object)) {
 				var thisProperty = listFirst(arguments.propertyIdentifier, '.');
-				param name="data[thisProperty]" default="#arrayNew(1)#";
+				param name="arguments.data[thisProperty]" default="#arrayNew(1)#";
 
 				for(var i = 1; i <= arrayLen(object); i++){
-					param name="data[thisProperty][i]" default="#structNew()#";
+					param name="arguments.data[thisProperty][i]" default="#structNew()#";
 
-					if(!structKeyExists(data[thisProperty][i],"errors")) {
+					if(!structKeyExists(arguments.data[thisProperty][i],"errors")) {
 						// add error messages
 						try{
 							if(structKeyExists(data[thisProperty][i],'hasErrors')){
-								data[thisProperty][i]["hasErrors"] = object[i].hasErrors();
-								data[thisProperty][i]["errors"] = object[i].getErrors();
+								arguments.data[thisProperty][i]["hasErrors"] = object[i].hasErrors();
+								arguments.data[thisProperty][i]["errors"] = object[i].getErrors();
 							}else{
-								data[thisProperty][i]["hasErrors"] = false;
-								data[thisProperty][i]["errors"] = {};
+								arguments.data[thisProperty][i]["hasErrors"] = false;
+								arguments.data[thisProperty][i]["errors"] = {};
 							}
 
 

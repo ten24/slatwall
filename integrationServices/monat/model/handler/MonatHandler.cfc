@@ -345,22 +345,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 	 * a bundle.
 	 **/
 	 public any function createOrderItemSkuBundle(required any orderItem){
-	 	
-	 	var bundledSkus = orderItem.getSku().getBundledSkus();
-	 	
-	 	if (isNull(bundledSkus) || !arrayLen(bundledSkus)){
-	 		return;	
-	 	}
-	 	
  		//create
- 		var insertSQL = "INSERT INTO SwOrderItemSkuBundle (orderItemSkuBundleID, createdDateTime, modifiedDateTime, skuID, orderItemID, quantity) VALUES ";
-		
-		//VALUES (100, 1), (100, 2), (100, 3)
-		var valueList = "";
-		for (var skuBundle in bundledSkus){ 
-			valueList = listAppend(valueList, "('#replace(lcase(createUUID()), '-', '', 'all')#', #now()#, #now()#, '#skuBundle.getBundledSku().getSkuID()#', '#orderItem.getOrderItemID()#', #skuBundle.getBundledQuantity()#)");
-		}
-		insertSQL = insertSQL & valueList;
+ 		var insertSQL = "INSERT INTO SwOrderItemSkuBundle (orderItemSkuBundleID, createdDateTime, modifiedDateTime, skuID, orderItemID, quantity) ";
+		insertSQL &= "SELECT REPLACE(CAST(UUID() as char character set utf8), '-', ''), #now()#, #now()#, bundledSkuID, '#orderItem.getOrderItemID()#', bundledQuantity FROM SwSkuBundle where skuID = '#arguments.orderItem.getSkuID()#'";
 		
  		QueryExecute(insertSQL);
 	}

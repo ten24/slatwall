@@ -330,23 +330,26 @@ class ListingService{
     }
     
      public updatePageRecords = (listingID,data) =>{
-        this.getListing(listingID).collectionData = data;
+         
+        let currentListing = this.getListing(listingID);
+
+        currentListing.setCollectionData(data);
         this.setupDefaultCollectionInfo(listingID);
-        if(this.getListing(listingID).collectionConfig != null && this.getListing(listingID).collectionConfig.hasColumns()){
-            this.setupColumns(listingID, this.getListing(listingID).collectionConfig, this.getListing(listingID).collectionObject);
+        if(currentListing.collectionConfig != null && currentListing.collectionConfig.hasColumns()){
+            this.setupColumns(listingID, currentListing.collectionConfig, currentListing.collectionObject);
         }else{
-            this.getListing(listingID).collectionConfig.loadJson(data.collectionConfig);
+            currentListing.collectionConfig.loadJson(data.collectionConfig);
         }
         this.notifyListingPageRecordsUpdate(listingID);
-        this.getListing(listingID).collectionData.pageRecords = this.getListing(listingID).collectionData.pageRecords ||
-                                                                this.getListing(listingID).collectionData.records;
+        currentListing.collectionData.pageRecords = currentListing.collectionData.pageRecords ||
+                                                                currentListing.collectionData.records;
 
-        this.getListing(listingID).paginator.setPageRecordsInfo( this.getListing(listingID).collectionData );
-        this.getListing(listingID).searching = false;
+        currentListing.paginator.setPageRecordsInfo( currentListing.collectionData );
+        currentListing.searching = false;
 
-        this.getListing(listingID).columnCount = this.getListing(listingID).columns.length + 1; 
-        if(this.getListing(listingID).selectable || this.getListing(listingID).multiselectable || this.getListing(listingID).sortable){
-            this.getListing(listingID).columnCount++; 
+        currentListing.columnCount = currentListing.columns.length + 1; 
+        if(currentListing.selectable || currentListing.multiselectable || currentListing.sortable){
+            currentListing.columnCount++; 
         }
     }
 
@@ -424,37 +427,43 @@ class ListingService{
 
     //Setup Functions
     public setupInSingleCollectionConfigMode = (listingID:string, listingDisplayScope) =>{
+        
+        let currentListing = this.getListing(listingID);
 
-        if( this.getListing(listingID).collectionObject != null &&
-            this.getListing(listingID).collectionConfig != null
-        ){
-            this.getListing(listingID).collectionObject = this.getListing(listingID).collectionConfig.baseEntityName;
+        if( currentListing.collectionObject != null && currentListing.collectionConfig != null ){
+            currentListing.collectionObject = currentListing.collectionConfig.baseEntityName;
         }
 
-        this.initCollectionConfigData( listingID, this.getListing(listingID).collectionConfig );
-
-        this.setupColumns( listingID, this.getListing(listingID).collectionConfig, this.getListing(listingID).collectionObject );
+        this.initCollectionConfigData( listingID, currentListing.collectionConfig );
+        
+        this.setupColumns( listingID, currentListing.collectionConfig, currentListing.collectionObject );
 
         listingDisplayScope.$watch('swListingDisplay.collectionPromise',(newValue,oldValue)=>{
             if(newValue){
-                this.$q.when(this.getListing(listingID).collectionPromise).then((data)=>{
-                    this.getListing(listingID).collectionData = data;
+                
+                this.$q.when(currentListing.collectionPromise).then((data)=>{
+                    
+                    currentListing.setCollectionData(data);
+                    
                     this.setupDefaultCollectionInfo(listingID);
-                    if(this.getListing(listingID).collectionConfig != null && this.getListing(listingID).collectionConfig.hasColumns()){
-                        this.setupColumns(listingID, this.getListing(listingID).collectionConfig, this.getListing(listingID).collectionObject);
-                    }else{
-                        this.getListing(listingID).collectionConfig.loadJson(data.collectionConfig);
+                    
+                    if(currentListing.collectionConfig != null && currentListing.collectionConfig.hasColumns()){
+                        this.setupColumns(listingID, currentListing.collectionConfig, currentListing.collectionObject);
                     }
+                    else{
+                        currentListing.collectionConfig.loadJson(data.collectionConfig);
+                    }
+                    
                     this.notifyListingPageRecordsUpdate(listingID);
-                    this.getListing(listingID).collectionData.pageRecords = this.getListing(listingID).collectionData.pageRecords ||
-                                                                            this.getListing(listingID).collectionData.records;
+                    currentListing.collectionData.pageRecords = currentListing.collectionData.pageRecords ||
+                                                                            currentListing.collectionData.records;
 
-                    this.getListing(listingID).paginator.setPageRecordsInfo( this.getListing(listingID).collectionData );
-                    this.getListing(listingID).searching = false;
+                    currentListing.paginator.setPageRecordsInfo( currentListing.collectionData );
+                    currentListing.searching = false;
 
-                    this.getListing(listingID).columnCount = this.getListing(listingID).columns.length + 1; 
-                    if(this.getListing(listingID).selectable || this.getListing(listingID).multiselectable || this.getListing(listingID).sortable){
-                        this.getListing(listingID).columnCount++; 
+                    currentListing.columnCount = currentListing.columns.length + 1; 
+                    if(currentListing.selectable || currentListing.multiselectable || currentListing.sortable){
+                        currentListing.columnCount++; 
                     }   
                 });
             }
@@ -462,39 +471,41 @@ class ListingService{
     };
 
     public setupInMultiCollectionConfigMode = (listingID:string) => {
-        angular.forEach(this.getListing(listingID).collectionConfigs,(value,key)=>{
-            this.getListing(listingID).collectionObjects[key] = value.baseEntityName;
+        let currentListing = this.getListing(listingID);
+        angular.forEach(currentListing.collectionConfigs,(value,key)=>{
+            currentListing.collectionObjects[key] = value.baseEntityName;
         });
     };
 
     private setupDefaultCollectionInfo = (listingID:string) =>{
-        if(this.getListing(listingID).hasCollectionPromise
-            && angular.isDefined(this.getListing(listingID).collection)
-            && this.getListing(listingID).collectionConfig == null
-        ){
-            this.getListing(listingID).collectionObject = this.getListing(listingID).collection.collectionObject;
-            this.getListing(listingID).collectionConfig = this.collectionConfigService.newCollectionConfig(this.getListing(listingID).collectionObject);
-            this.getListing(listingID).collectionConfig.loadJson(this.getListing(listingID).collection.collectionConfig);
+        let currentListing = this.getListing(listingID);
 
+        if(currentListing.hasCollectionPromise
+            && angular.isDefined(currentListing.collection)
+            && currentListing.collectionConfig == null
+        ){
+            currentListing.collectionObject = currentListing.collection.collectionObject;
+            currentListing.collectionConfig = this.collectionConfigService.newCollectionConfig(currentListing.collectionObject);
+            currentListing.collectionConfig.loadJson(currentListing.collection.collectionConfig);
         }
-        if(this.getListing(listingID).multiSlot == false){
+        
+        if(currentListing.multiSlot == false){
         	this.$timeout(()=>{
-            this.getListing(listingID).collectionConfig.loadJson(this.getListing(listingID).collectionData.collectionConfig);
+            currentListing.collectionConfig.loadJson(currentListing.collectionData.collectionConfig);
                 //only override columns if they were not specified programmatically (editable listing displays, with non-persistent columns)
-                if(this.getListing(listingID).listingColumns == null){
-                    this.getListing(listingID).columns = this.getListing(listingID).collectionConfig.columns;
+                if(currentListing.listingColumns == null){
+                    currentListing.columns = currentListing.collectionConfig.columns;
                 }
         	});
         }
 
-        if( this.getListing(listingID).paginator != null
-            && this.getListing(listingID).collectionConfig != null
+        if( currentListing.paginator != null
+            && currentListing.collectionConfig != null
         ){
-            this.getListing(listingID).collectionConfig.setPageShow(this.getListing(listingID).paginator.getPageShow());
-            this.getListing(listingID).collectionConfig.setCurrentPage(this.getListing(listingID).paginator.getCurrentPage());
+            currentListing.collectionConfig.setPageShow(currentListing.paginator.getPageShow());
+            currentListing.collectionConfig.setCurrentPage(currentListing.paginator.getCurrentPage());
         }
     };
-
 
 
     public addColumn = (listingID:string, column) =>{
@@ -830,37 +841,38 @@ class ListingService{
     };
 
     public setupDefaultGetCollection = (listingID:string) =>{
+        let currentListing = this.getListing(listingID);
 
-        if(this.getListing(listingID).collectionConfigs.length == 0){
-            if(this.getListing(listingID).collectionId){
+        if(currentListing.collectionConfigs.length == 0){
+            if(currentListing.collectionId){
             
-                this.getListing(listingID).collectionConfig.baseEntityNameType = 'Collection';
-                this.getListing(listingID).collectionConfig.id = this.getListing(listingID).collectionId;
+                currentListing.collectionConfig.baseEntityNameType = 'Collection';
+                currentListing.collectionConfig.id = currentListing.collectionId;
             }
-            this.getListing(listingID).collectionPromise = this.getListing(listingID).collectionConfig.getEntity();
+            currentListing.collectionPromise = currentListing.collectionConfig.getEntity();
 
             return () =>{
-                this.getListing(listingID).collectionConfig.setCurrentPage(this.getListing(listingID).paginator.getCurrentPage());
-                this.getListing(listingID).collectionConfig.setPageShow(this.getListing(listingID).paginator.getPageShow());
-                if(this.getListing(listingID).multiSlot){
-                	this.getListing(listingID).collectionConfig.getEntity().then(
+                currentListing.collectionConfig.setCurrentPage(currentListing.paginator.getCurrentPage());
+                currentListing.collectionConfig.setPageShow(currentListing.paginator.getPageShow());
+                if(currentListing.multiSlot){
+                	currentListing.collectionConfig.getEntity().then(
                         (data)=>{
-                            this.getListing(listingID).collectionData = data;
+                            currentListing.setCollectionData(data);
                             this.setupDefaultCollectionInfo(listingID);
-                            this.getListing(listingID).collectionData.pageRecords = data.pageRecords || data.records;
-                            this.getListing(listingID).paginator.setPageRecordsInfo(this.getListing(listingID).collectionData);
+                            currentListing.collectionData.pageRecords = data.pageRecords || data.records;
+                            currentListing.paginator.setPageRecordsInfo(currentListing.collectionData);
                         },
                         (reason)=>{
                             throw("Listing Service encounter a problem when trying to get collection. Reason: " + reason);
                         }
                     );
                 }else{
-                	this.getListing(listingID).collectionPromise.then(
+                	currentListing.collectionPromise.then(
                     (data)=>{
-                        this.getListing(listingID).collectionData = data;
+                        currentListing.setCollectionData(data);
                         this.setupDefaultCollectionInfo(listingID);
-                        this.getListing(listingID).collectionData.pageRecords = data.pageRecords || data.records;
-                        this.getListing(listingID).paginator.setPageRecordsInfo(this.getListing(listingID).collectionData);
+                        currentListing.collectionData.pageRecords = data.pageRecords || data.records;
+                        currentListing.paginator.setPageRecordsInfo(currentListing.collectionData);
                     },
                     (reason)=>{
                         throw("Listing Service encounter a problem when trying to get collection. Reason: " + reason);
@@ -872,18 +884,18 @@ class ListingService{
 
         } else {
             return () =>{
-                this.getListing(listingID).collectionData = {};
-                this.getListing(listingID).collectionData.pageRecords = [];
+                currentListing.collectionData = {};
+                currentListing.collectionData.pageRecords = [];
                 var allGetEntityPromises = [];
-                angular.forEach(this.getListing(listingID).collectionConfigs,(collectionConfig,key)=>{
+                angular.forEach(currentListing.collectionConfigs,(collectionConfig,key)=>{
                     allGetEntityPromises.push(collectionConfig.getEntity());
                 });
                 if(allGetEntityPromises.length){
                     this.$q.all(allGetEntityPromises).then(
                         (results)=>{
                             angular.forEach(results,(result,key)=>{
-                                this.getListing(listingID).listingService.setupColumns(listingID,this.getListing(listingID).collectionConfigs[key], this.getListing(listingID).collectionObjects[key]);
-                                this.getListing(listingID).collectionData.pageRecords = this.getListing(listingID).collectionData.pageRecords.concat(result.records);
+                                currentListing.listingService.setupColumns(listingID,currentListing.collectionConfigs[key], currentListing.collectionObjects[key]);
+                                currentListing.collectionData.pageRecords = currentListing.collectionData.pageRecords.concat(result.records);
                             });
                         },
                         (reason)=>{

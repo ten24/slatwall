@@ -44,7 +44,9 @@ class SWColumnItem{
 				propertiesList:"<",
 				orderBy:"="
 			},
-			templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"columnitem.html",
+			
+			template: require("./columnitem.html"),
+			
 			link: function(scope, element,attrs,controller){
 				
 				scope.getReportLabelColor=(chart)=>{

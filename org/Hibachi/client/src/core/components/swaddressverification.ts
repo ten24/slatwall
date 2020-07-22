@@ -49,8 +49,7 @@ class SWAddressVerificationController {
 class SWAddressVerification {
 
 	public restrict:string;
-	public templateUrl:string;
-	
+
 	public scope = {};
 	public bindToController = {
 	    suggestedAddresses:'<',
@@ -62,20 +61,11 @@ class SWAddressVerification {
 	public controller = SWAddressVerificationController;
 	public controllerAs = "swAddressVerification";
 
+    public template = require("./addressverification.html");
+
 	public static Factory(){
-        var directive = (corePartialsPath,hibachiPathBuilder) => new SWAddressVerification(corePartialsPath,hibachiPathBuilder);
-        directive.$inject = ['corePartialsPath','hibachiPathBuilder'];
-        return directive;
-    }
-
-    constructor(private corePartialsPath,hibachiPathBuilder){
-        this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath)+'addressverification.html';
-    }
-
-	public link = (scope, element, attrs) =>{
-
+		return /** @ngInject; */ () => new this();
 	}
-
 }
 
 export {

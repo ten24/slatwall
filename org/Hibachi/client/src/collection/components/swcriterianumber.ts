@@ -21,7 +21,8 @@ class SWCriteriaNumber{
 	){
 		return {
 			restrict: 'E',
-			templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+'criterianumber.html',
+			template: require('./criterianumber.html'),
+			
 			link: function(scope, element, attrs){
 				var getNumberOptions = function(type){
 					if(angular.isUndefined(type)){

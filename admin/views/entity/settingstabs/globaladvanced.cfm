@@ -75,7 +75,10 @@ Notes:
 		<swa:SlatwallSetting settingName="globalUseShippingIntegrationForTrackingNumberOption" />
 		<swa:SlatwallSetting settingName="globalIntegrationForAddressVerification" />
 		<swa:SlatwallSetting settingName="globalSmartListGetAllRecordsLimit" />
+		
 		<swa:SlatwallSetting settingName="globalCollectionKeywordWildcardConfig" />
+		<swa:SlatwallSetting settingName="globalDefaultOrderByMaxRecordsLimit" />
+		
 		<swa:SlatwallSetting settingName="globalAllowCustomBranchUpdates"/>
 		<swa:SlatwallSetting settingName="globalDisableSearchSettings"/>
 		

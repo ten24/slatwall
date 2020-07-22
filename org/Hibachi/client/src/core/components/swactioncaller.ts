@@ -1,5 +1,6 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
+const actionCallerTemplateString = require("./actioncaller.html");
 
 class SWActionCallerController{
     public type:string;
@@ -19,8 +20,7 @@ class SWActionCallerController{
     public text:string;
     public disabled:boolean;
     public actionItemEntityName:string;
-    public hibachiPathBuilder:any;
-    
+
     public eventListeners:any;
     public eventListenerId:string;
     public actionUrl:string;
@@ -44,21 +44,9 @@ class SWActionCallerController{
         private $hibachi,
         private rbkeyService,
         private hibachiAuthenticationService,
-        hibachiPathBuilder
         
     ){
-        this.$rootScope = $rootScope;
-        this.$scope = $scope;
-        this.$element = $element;
-        this.$timeout = $timeout;
-        this.$templateRequest = $templateRequest;
-        this.$compile = $compile;
-        this.rbkeyService = rbkeyService;
-        this.$hibachi = $hibachi;
-        this.utilityService = utilityService;
-        this.hibachiPathBuilder = hibachiPathBuilder;
-        this.hibachiAuthenticationService = hibachiAuthenticationService;
-        this.$templateRequest(this.hibachiPathBuilder.buildPartialsPath(corePartialsPath)+"actioncaller.html").then((html)=>{
+        this.$templateRequest('actionCallerTemplateString').then((html)=>{
             var template = angular.element(html);
             this.$element.parent().prepend(template);
             $compile(template)($scope);
@@ -320,6 +308,7 @@ class SWActionCallerController{
 
 class SWActionCaller implements ng.IDirective{
     public restrict:string = 'EA';
+    
     public scope:any={};
     public bindToController:any={
         action:"@?",
@@ -348,34 +337,22 @@ class SWActionCaller implements ng.IDirective{
         eventListenerId:'@?'
     };
     public require={formController:"^?swForm",form:"^?form"};
+    
     public controller=SWActionCallerController;
     public controllerAs="swActionCaller";
-    public templateUrl;
-    public static Factory():ng.IDirectiveFactory{
-        var directive:ng.IDirectiveFactory = (
-            partialsPath,
-            utiltiyService,
-            $hibachi
-        ) => new SWActionCaller(
-            partialsPath,
-            utiltiyService,
-            $hibachi
-        );
-        directive.$inject = [
-            'partialsPath',
-            'utilityService',
-            '$hibachi'
-        ];
-        return directive;
-    }
+    
+    // @ngInject;
+    constructor(private $templateCache: ng.ITemplateCacheService){}
 
-    constructor(
-        public partialsPath,
-        public utiltiyService,
-        public $hibachi
-        ){
-    }
-
+	public static Factory(){
+		return /** @ngInject; */ ($templateCache) => {
+		    if( !$templateCache.get('actionCallerTemplateString') ){
+		        $templateCache.put('actionCallerTemplateString', actionCallerTemplateString);
+		    }
+		    return new this($templateCache);
+		};
+	}
+	
     public link:ng.IDirectiveLinkFn = (scope:any, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
         if (angular.isDefined(scope.swActionCaller.formController)){
              scope.formController = scope.swActionCaller.formController;
