@@ -1,5 +1,6 @@
+import { Option } from "@Hibachi/form/components/swfselect";
 import { MonatService } from "@Monat/services/monatservice";
-import { OrderTemplateService, OrderTemplateLight, WishlistItemLight } from "@Monat/services/ordertemplateservice";
+import { OrderTemplateService} from "@Monat/services/ordertemplateservice";
 import { MonatAlertService } from "@Monat/services/monatAlertService";
 
 class SWFWishlistController {
@@ -7,22 +8,24 @@ class SWFWishlistController {
     
     // bindings
     public skuId:string;
-    public productId:string;
     public productName;
 	public close; // injected from angularModalService
     
     // internal vars
-    public orderTemplateItems : Array<WishlistItemLight>;
-    public orderTemplates : Array<OrderTemplateLight>;
+    public orderTemplateItems : Array<any>;
+    public orderTemplates : Array<any>;
 
     public pageRecordsShow:number;
     public currentPage:number;
+    public currentList:Option;
     
     // ui
     public loading:boolean;
     public wishlistTemplateID:string;
     public wishlistTemplateName:string;
     public newWishlist:boolean = false;
+    public newTemplateID:string;
+
     
     
     // @ngInject
@@ -44,7 +47,7 @@ class SWFWishlistController {
     }
     
     public $onInit = () => {
-        this.getWishlistsLight();
+        this.observerService.attach(this.refreshList,"myAccountWishlistSelected");    
     }
     
     public setWishlistID = (newID) => {
@@ -54,7 +57,9 @@ class SWFWishlistController {
     public setWishlistName = (newName) => {
         this.wishlistTemplateName = newName;
     }
-        
+    
+    // functions for swf-wishlist modal
+    
     public getWishlistsLight = () => {
         this.loading = true;
         this.orderTemplateService.getWishLists().then( wishlists => {
@@ -69,8 +74,7 @@ class SWFWishlistController {
         
         this.orderTemplateService.addWishlistItem(
             this.wishlistTemplateID, 
-            this.skuId, 
-            this.productId
+            this.skuId
         )
         .then( (result) => this.onAddItemSuccess() )
         .catch( (e) => this.monatAlertService.showErrorsFromResponse(e))
@@ -83,12 +87,55 @@ class SWFWishlistController {
         
         this.orderTemplateService.addItemAndCreateWishlist(
             this.wishlistTemplateName,
-            this.skuId, 
-            this.productId 
+            this.skuId
         )
         .then( (result) => this.onAddItemSuccess() )
         .catch( (e) => this.monatAlertService.showErrorsFromResponse(e))
         .finally( () => this.loading = false);
+    }
+    
+    
+    // finctions for my-wishlists page
+    
+        
+    private refreshList = (option:Option)=>{
+        this.loading = true;
+        this.currentList = option;
+
+        if(!option){
+           this.loading = false; 
+           return;
+        }
+
+        this.orderTemplateService
+        .getWishlistItems(option.value,this.pageRecordsShow,this.currentPage,this.wishlistTypeID)
+        .then(result=>{
+            this.orderTemplateItems = result.orderTemplateItems;
+            this.loading = false;
+        });
+
+    }
+
+    public getAllWishlists = (pageRecordsToShow:number = this.pageRecordsShow, setNewTemplates:boolean = true, setNewTemplateID:boolean = false) => {
+        this.loading = true;
+
+        this.orderTemplateService
+        .getOrderTemplates(this.wishlistTypeID, pageRecordsToShow, this.currentPage)
+        .then( (result) => {
+
+            if(setNewTemplates){
+                this.orderTemplates = result['orderTemplates'];                
+            } else if(setNewTemplateID){
+                this.newTemplateID = result.orderTemplates[0].orderTemplateID;
+            }
+        })
+        .catch( (e) => {
+            //TODO
+            console.error(e);
+        })
+        .finally( () => {
+            this.loading = false;
+        });
     }
     
     public onAddItemSuccess = () => {
@@ -102,6 +149,10 @@ class SWFWishlistController {
         // Close the modal
      	this.close?.();
     };
+    
+    public redirectPageToShop(){
+        this.monatService.redirectToProperSite('/shop')
+    }
     
 }
 
@@ -123,7 +174,6 @@ class SWFWishlist  {
         pageRecordsShow:"@?",
         currentPage:"@?",
         skuId:"<?",
-        productId:"<?",
         productName:"<?",
         showWishlistModal:"<?",
         close:'=' //injected by angularModalService;

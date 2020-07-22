@@ -14,7 +14,8 @@
 			<form 
 			ng-model="createWishList"
 			>
-				<ul class="wishlist-names" ng-init="createWishList = {}">
+				<ul class="wishlist-names"  
+				    ng-init="swfWishlist.getWishlistsLight(); createWishList = {}">
 				     
 					<li ng-if="swfWishlist.orderTemplates" ng-repeat="wishlist in swfWishlist.orderTemplates track by $index" ng-cloak>
 						<div class="radio">

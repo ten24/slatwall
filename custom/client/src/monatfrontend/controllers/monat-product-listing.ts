@@ -21,7 +21,7 @@ class MonatProductListingController {
     public showWishlist:boolean;
     public paginationMethod = 'getProductsByCategoryOrContentID';
     public searchTerm:string;
-    public wishlistItems;
+    public wishlistItems : string[];
 	public hairProductFilter:any;
 	public skinProductFilter:any;
 	public loadingAddToCart;
@@ -50,19 +50,14 @@ class MonatProductListingController {
 	}
 	
 	public getWishlistItems = () => {
+	    
 		if(!this.publicService.account?.accountID){
 			return;
 		}
 	    
-	    this.orderTemplateService.getAccountWishlistItemIDs()
-	    .then( wishlistItems => {
-
-            this.wishlistItems = '';
-            wishlistItems.forEach(item => {
-                this.wishlistItems += item.productID + ',';
-            });
-            
-            this.observerService.notify('accountWishlistItemsSuccess');
+	    this.orderTemplateService.getAccountWishlistItemIDs().then( wishlistItems => {
+            this.wishlistItems = [];
+            wishlistItems.forEach( item => this.wishlistItems.push(item.skuID) );
         });
 	}
 	

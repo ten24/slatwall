@@ -8,7 +8,7 @@ export type OrderTemplateLight = {
 };
 
 export type WishlistItemLight = {
-    productID: string
+    skuID: string
 }
 
 export class OrderTemplateService {
@@ -594,7 +594,7 @@ export class OrderTemplateService {
     
     /*********************** Wish-List *************************/
 
-	public addItemAndCreateWishlist = ( orderTemplateName: string, skuID: string, productID: string) => {
+	public addItemAndCreateWishlist = ( orderTemplateName: string, skuID: string) => {
 	   
 	   let deferred = this.$q.defer();
 
@@ -602,7 +602,7 @@ export class OrderTemplateService {
     	    if( !data?.successfulActions?.includes('public:orderTemplate.addItemAndCreateWishlist') ){ throw(data) }
 		    
 		    //  update cache
-		    this.addProductIdIntoWishlistItemsCache(productID);
+		    this.addSkuIdIntoWishlistItemsCache(skuID);
 		    this.addWishlistIntoSessionCache(data.newWishlist);
 		    deferred.resolve(data);
         })
@@ -612,14 +612,14 @@ export class OrderTemplateService {
 	};
 	
 	
-    public addWishlistItem = (orderTemplateID:string, skuID:string, productID: string) => {
+    public addWishlistItem = (orderTemplateID:string, skuID:string,) => {
         let deferred = this.$q.defer(); 
 	  
         this.publicService.doAction('addWishlistItem',{ orderTemplateID, skuID }).then( data => {
             
             if(!data?.successfulActions?.includes('public:orderTemplate.addWishlistItem') ){ throw(data) }
             
-            this.addProductIdIntoWishlistItemsCache(productID);
+            this.addSkuIdIntoWishlistItemsCache(skuID);
             deferred.resolve(data);
         })
         .catch( deferred.reject );
@@ -628,7 +628,7 @@ export class OrderTemplateService {
     }
     
     /**
-	 * This function gets the wishlisItems `[ { productID: string }]` and cache them on session-cache
+	 * This function gets the wishlisItems `WishlistItemLight[]` and cache them on session-cache
 	*/
     public getAccountWishlistItemIDs = (refresh=false) => {
 	    
@@ -662,10 +662,10 @@ export class OrderTemplateService {
 		return deferred.promise;
 	};
 	
-	private addProductIdIntoWishlistItemsCache( productID:string ){
+	private addSkuIdIntoWishlistItemsCache( skuID:string ){
         //update-cache, put new product into wishlist-items
         let cachedAccountWishlistItemIDs = this.publicService.getFromSessionCache('cachedAccountWishlistItemIDs') || [];
-        cachedAccountWishlistItemIDs.push({'productID': productID});
+        cachedAccountWishlistItemIDs.push({'skuID': skuID});
         this.publicService.putIntoSessionCache("cachedAccountWishlistItemIDs", cachedAccountWishlistItemIDs);
     }
     

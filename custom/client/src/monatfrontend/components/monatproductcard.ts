@@ -66,14 +66,23 @@ class MonatProductCardController {
 			this.orderTemplate = this.$location.search().orderTemplateId;
 		}
 	}
+	
+	private removeSkuIdFromWishlistItemsCache( skuID:string ){
+        //update-cache, put new product into wishlist-items
+        let cachedAccountWishlistItemIDs = this.publicService.getFromSessionCache('cachedAccountWishlistItemIDs') || [];
+        cachedAccountWishlistItemIDs = cachedAccountWishlistItemIDs.filter( item =>  item.skuID !== skuID );
+        this.publicService.putIntoSessionCache("cachedAccountWishlistItemIDs", cachedAccountWishlistItemIDs);
+    }
 
 	public deleteWishlistItem = (index) => {
 		this.loading = true;
 		const item = this.allProducts[index];
-		this.orderTemplateService.deleteOrderTemplateItem(item.orderItemID).then((result) => {
+		this.orderTemplateService.deleteOrderTemplateItem(item.orderItemID)
+		.then((result) => {
+			
+			this.removeSkuIdFromWishlistItemsCache(item.skuID);
 			this.allProducts.splice(index, 1);
 			document.body.classList.remove('modal-open'); // If it's the last item, the modal will be deleted and not properly closed.
-			return result;
 		})
 		.catch((error)=>{
 		    this.monatAlertService.error(this.rbkeyService.rbKey('alert.flexship.addProducterror'));
@@ -190,12 +199,7 @@ class MonatProductCardController {
 	}
 	
 	public setIsAccountWishlistItem = () => {
-		if ( 
-			'undefined' !== typeof this.accountWishlistItems 
-			&& this.accountWishlistItems.length
-		) {
-			this.isAccountWishlistItem = this.accountWishlistItems.indexOf(this.product.productID) > -1;
-		}
+		this.isAccountWishlistItem = this.accountWishlistItems?.includes?.(this.product.skuID);
 	}
 
 }

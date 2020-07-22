@@ -11,7 +11,7 @@ class MonatSearchController {
 	public recordsCount: any;
 	public priceGroupCode;
 	public argumentsObject: any;
-	public wishlistItems: Array<WishlistItemLight>;
+	public wishlistItems: string[];
 
 	// @ngInject
 	constructor(
@@ -28,12 +28,14 @@ class MonatSearchController {
 	}
 	
 	public getWishlistItems = () => {
+	    
 		if(!this.publicService.account?.accountID){
 			return;
 		}
+		
 	    this.orderTemplateService.getAccountWishlistItemIDs().then( wishlistItems => {
-            this.wishlistItems = wishlistItems;
-            this.observerService.notify('accountWishlistItemsSuccess');
+            this.wishlistItems = [];
+            wishlistItems.forEach( item => this.wishlistItems.push(item.skuID) );
         });
 	}
 
