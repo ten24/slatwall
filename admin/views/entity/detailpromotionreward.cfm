@@ -101,13 +101,13 @@ Notes:
 				<hb:HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
 			</cfif>
 			<cfif rc.rewardType neq "canPlaceOrder">
-				<cfif rc.amountType neq 'percentageOff'>
+				<cfif rc.amountType neq 'percentageOff' AND rc.rewardType neq 'rewardSku' >
 					<hb:HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/currencies"/>
 				</cfif>
 				<cfif listFindNoCase( "merchandise,order", rc.rewardType ) >
 					<hb:HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/stacking" />
 				</cfif>
-				<cfif listFindNoCase("merchandise,subscription,contentaccess", rc.rewardType)>
+				<cfif listFindNoCase("merchandise,subscription,contentaccess,rewardSku", rc.rewardType)>
 					<hb:HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/skus" />
 					<cfif rc.amountType EQ "amount">
 						<hb:HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/skuprices" />
