@@ -20,6 +20,7 @@ component {
     property name="allocatedOrderRetailCommissionDiscountAmount" ormtype="big_decimal" hb_formatType="currency";
     property name="allocatedOrderProductPackVolumeDiscountAmount" ormtype="big_decimal" hb_formatType="currency";
     property name="allocatedOrderRetailValueVolumeDiscountAmount" ormtype="big_decimal" hb_formatType="currency";
+    property name="showInCartFlag" ormtype="boolean" default=1;
     
     property name="extendedPersonalVolume" persistent="false";
     property name="extendedTaxableAmount" persistent="false";

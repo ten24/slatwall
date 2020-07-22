@@ -527,7 +527,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							logHibachi('Qualifications met for #reward.getPromotionPeriod().getPromotion().getPromotionName()#');
 						}
 						// =============== Order Item Reward ==============
-						if( !orderRewards and listFindNoCase("merchandise,subscription,contentAccess,rewardSku", reward.getRewardType()) ) {
+						if( !orderRewards and listFindNoCase("merchandise,subscription,contentAccess", reward.getRewardType()) ) {
 
 							processOrderItemRewards(arguments.order, promotionPeriodQualifications, promotionRewardUsageDetails, orderItemQualifiedDiscounts, reward);
 							
