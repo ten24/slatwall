@@ -170,15 +170,11 @@ class SWListingDisplayController{
     }
     
     public $onInit = () => {
-        this.$timeout( () => {
-            // wait for it to render properly
-            this.startLoading();
-        }, 50);
+        // giving it a time-out to run this code in next digest-cycle, so everything is rendered 
+        this.$timeout( () =>  this.startLoading() );
     }
     
     public refreshListingDisplay = () => {
-        if(this.loading) return;
-
         this.startLoading();
         
         this.getCollection = this.collectionConfig.getEntity().then((data)=>{
@@ -194,6 +190,9 @@ class SWListingDisplayController{
     }
     
     public startLoading = () => {
+        
+        if(this.loading) return;
+        
         this.loading = true;
         // @ts-ignore from hibachiAssets/js/global.js
         window?.addLoadingDiv?.(this.tableID);
@@ -201,10 +200,11 @@ class SWListingDisplayController{
     
     public stopLoading = () => {
         this.loading = false;
-        this.$timeout( () => {
+        
+        this.$timeout( ()=> {
             // @ts-ignore from hibachiAssets/js/global.js
             window?.removeLoadingDiv?.(this.tableID);
-        }, 100);
+        },100); // to avoide flickring of ng-repeat
     }
     
    /**
