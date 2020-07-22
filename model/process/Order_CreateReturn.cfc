@@ -203,7 +203,8 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	public numeric function getFulfillmentRefundAmount(boolean refresh=false) {
 		if(arguments.refresh || !structKeyExists(variables, "fulfillmentRefundAmount")) {
 			variables.fulfillmentRefundAmount = 0;
-			if(!getPreProcessDisplayedFlag() && getOrderTypeCode() == 'otReturnOrder') {
+			
+			if( (arguments.refresh || !getPreProcessDisplayedFlag()) && getOrderTypeCode() == 'otReturnOrder') {
 				variables.fulfillmentRefundAmount = getOrder().getFulfillmentChargeNotRefunded();	
 			}
 		}
