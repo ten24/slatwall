@@ -62,7 +62,7 @@ component extends="HibachiDAO" {
 		
 	}
 	
-	public any function addressHasNoAssociatedOrderTemplateByOTType(required string accountAddressID, required string orderTemplateTypeID){
+	public any function addressHasNoAssociatedOrderTemplateByOrderTemplateType(required string accountAddressID, required string orderTemplateTypeID){
 			var sql = "
 				SELECT orderTemplateID 
 				FROM swOrderTemplate 

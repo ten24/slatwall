@@ -130,7 +130,7 @@ component displayname="Account Address" entityname="SlatwallAccountAddress" tabl
 	
 	public boolean function addressHasNoAssociatedScheduleOrderTemplate(){
 		var scheduleOrderTemplateType = getService('typeService').getTypeBySystemCode('ottSchedule');
-		return getDao('accountAddressDAO').addressHasNoAssociatedOrderTemplateByOTType(accountAddressID = this.getAccountAddressID(), orderTemplateTypeID = scheduleOrderTemplateType.getTypeID());
+		return getDao('accountAddressDAO').addressHasNoAssociatedOrderTemplateByOrderTemplateType(accountAddressID = this.getAccountAddressID(), orderTemplateTypeID = scheduleOrderTemplateType.getTypeID());
 	}
 	
 	public boolean function isNotDefaultAccountShippingAddress(){
