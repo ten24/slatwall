@@ -114,7 +114,13 @@ class MonatProductListingController {
 	public searchByKeyword = ():void =>{
 	    this.loading = true;
         this.argumentsObject['pageRecordsShow'] = this.pageRecordsShow;
-		this.publicService.doAction('getProductsByKeyword', {keyword: this.searchTerm }).then(res=> {
+        let data:any={keyword: this.searchTerm };
+        
+        if(this.flexshipFlag){
+        	data.flexshipFlag = this.flexshipFlag;
+        }
+        
+		this.publicService.doAction('getProductsByKeyword', data).then(res=> {
 			this.paginationMethod = 'getProductsByKeyword';
 			this.recordsCount = res.recordsCount;
 			this.argumentsObject['keyword'] = this.searchTerm;

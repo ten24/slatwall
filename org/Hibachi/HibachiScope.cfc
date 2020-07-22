@@ -566,21 +566,17 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		if(!structKeyExists(variables, "entityQueueData")) {
 			variables.entityQueueData = {};
 		}
-		var dataString = "#arguments.baseObject#_#arguments.baseID#_#arguments.processMethod#";
-		arguments.entityQueueID = getDAO('HibachiDAO').createHibachiUUID();
+		var dataString = "#arguments.baseObject#_#arguments.baseID#_#arguments.processMethod#_#serializeJSON(arguments.entityQueueData)#";
 		
 		if (structKeyExists(arguments, "integrationID") && len(arguments.integrationID)){
 			dataString = dataString & "_#integrationID#"; 
 		}
 		
-		if (structKeyExists(arguments, "entityQueueData") && len(arguments.entityQueueData)){
-			dataString = dataString & '_' & hash( entityQueueData, 'MD5' ); 
-		}
-		
+		arguments.entityQueueID = hash(dataString, 'MD5');
 		arguments.entityQueueProcessingDateTime = now(); //this will be processed in this request.
 		
-		if(!structKeyExists(variables.entityQueueData, dataString)){
-			variables.entityQueueData[dataString] = arguments;
+		if(!structKeyExists(variables.entityQueueData, arguments.entityQueueID)){
+			variables.entityQueueData[arguments.entityQueueID] = arguments;
 			getService('HibachiEntityQueueService').insertEntityQueueItem(argumentCollection=arguments);
 		}
 	}

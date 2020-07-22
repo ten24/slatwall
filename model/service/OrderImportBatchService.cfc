@@ -242,7 +242,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				orderItem.setOrderFulfillment(orderFulfillment);
 				orderItem.setSku(orderImportBatchItem.getSku());
 				orderItem.setQuantity(orderImportBatchItem.getQuantity());
-				orderItem.setPrice(0);
+				var priceFields = ['personalVolume', 'taxableAmount', 'commissionableVolume', 'retailCommission', 'productPackVolume', 'retailValueVolume', 'listPrice', 'price'];
+				
+				for(var priceField in priceFields){
+					orderItem.invokeMethod('set#priceField#', {1=0});
+				}
+				
+			
 				orderItem.setSkuPrice(orderImportBatchItem.getSku().getPriceByCurrencyCode(currencyCode=currencyCode,quantity=orderItem.getQuantity(),accountID=account.getAccountID()));
 				if(isNull(orderItem.getSkuPrice())){
 					orderItem.setSkuPrice(0);

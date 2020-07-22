@@ -159,11 +159,18 @@ component accessors="true" output="false" displayname="HyperWallet" implements="
 			return;
 		}
 		
+		var shortReferenceID = '';
+		
+		if(!isNull(arguments.requestBean.getOrder())){
+			shortReferenceID = arguments.requestBean.getOrder().getShortReferenceID(true);
+		}
+		
 		//request to commit transfer
 		var requestData = {
 			'transition' = 'SCHEDULED',
-			'notes' = 'Completing the Partial-Balance Transfer'
+			'notes' = shortReferenceID
 		};
+		
 
 		// Response Data
 		var responseData = sendHttpAPIRequest(arguments.requestBean, 'transfers/#arguments.responseBean.getAuthorizationCode()#/status-transitions', requestData);
@@ -200,15 +207,23 @@ component accessors="true" output="false" displayname="HyperWallet" implements="
 			return;
 		}
 
+		var shortReferenceID = '';
+		
+		if(!isNull(arguments.requestBean.getOrder())){
+			shortReferenceID = arguments.requestBean.getOrder().getShortReferenceID(true);
+		}
+		
 		var requestData = {
 			'amount' = LSParseNumber(arguments.requestBean.getTransactionAmount()),
 			'clientPaymentId' = arguments.requestBean.getTransactionID(),
 			'currency' = arguments.requestBean.getTransactionCurrencyCode(),
 			'destinationToken' = arguments.requestBean.getProviderToken(), //It is customer account payment method token for refund
 			'programToken' = setting(settingName='program', requestBean=arguments.requestBean),
-			'purpose': 'OTHER'
+			'purpose': 'OTHER',
+			'memo': shortReferenceID
 		};
-
+		
+		
 		// Response Data
 		var responseData = sendHttpAPIRequest(arguments.requestBean, 'payments', requestData);
 		
