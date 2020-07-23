@@ -410,11 +410,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			|| skuRewardQuantity <= 0
 		){
 			return;
-			//if it has a value but not the current PromotionRewardID, append it
 		}else if(getHibachiScope().hasValue('processedRewardSkuPromotionIDs')){ 
+			//if it has a value but not the current PromotionRewardID, append it
 			listAppend(getHibachiScope().getValue('processedRewardSkuPromotionIDs'), arguments.promotionReward.getPromotionRewardID());
-			//if there is no value, set it to the current PromotionRewardID			
-		}else{ 
+		}else{
+			//if there is no value, set it to the current PromotionRewardID	
 			getHibachiScope().setValue('processedRewardSkuPromotionIDs', arguments.promotionReward.getPromotionRewardID());
 		}
 		
@@ -920,7 +920,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(!structKeyExists(arguments,'orderQualifierMessages')){
 			arguments['orderQualifierMessages'] = [];
 		}
-		logHibachi('getting promo period qual details for #arguments.promotionPeriod.getpromotionPeriodID()#')
 		// Create a return struct
 		var qualificationDetails = {
 			qualificationsMeet = true,
