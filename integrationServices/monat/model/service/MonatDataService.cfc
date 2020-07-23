@@ -430,8 +430,12 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 		}	
 		
 	}
+	
     
-    public any function importAccountUpdates(){
+    public any function importAccountUpdates(struct rc){
+    	
+    	
+    	logHibachi("importAccountUpdates - Start",true);
         //get the api key from integration settings.
 		var integration = getService("IntegrationService").getIntegrationByIntegrationPackage("monat");
 		var ormStatelessSession = ormGetSessionFactory().openStatelessSession();
@@ -442,7 +446,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
          * Allows the user to override the last h HOURS that get checked. 
          * Defaults to 60 Minutes ago.
          **/
-        var intervalOverride = 1;
+        var intervalOverride = arguments.rc.hours ?: 1;
         
         /**
          * The page number to start with 
@@ -483,57 +487,69 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
         "PageSize": 25,
         "TotalPages": 82721,*/
         
-        logHibachi("Start Account Updater", true);
+        var paymentMethod = getService("PaymentService").getPaymentMethod('444df303dedc6dab69dd7ebcc9b8036a');
+        var goodStanding = getService("TypeService").getTypeByTypeID("2c9180836dacb117016dad11ebf2000e");
+		var terminated = getService("TypeService").getTypeByTypeID("2c9180836dacb117016dad1296c90010");
+		var suspended = getService("TypeService").getTypeByTypeID("2c9180836dacb117016dad1239ac000f");
+		var deleted = getService("TypeService").getTypeByTypeID("2c9180836dacb117016dad12e37c0011");
+		var enrollmentPending = getService("TypeService").getTypeByTypeID("2c9180836dacb117016dad1329790012");
         
         //Get the totals on this call.
 		var accountsResponse = getData(pageNumber, pageSize, dateFilterStart, dateFilterEnd, "SwGetUpdatedAccounts");
-		var TotalCount = accountsResponse.totalCount?:0;
-		var TotalPages = accountsResponse.totalPages?:0;
+		var totalCount = accountsResponse.totalCount?:0;
+		var totalPages = accountsResponse.totalPages?:0;
         
         //Exit if there is no data.
-        if (!TotalCount){
-            logHibachi("No account data to import at this time.", true);
+        if (!totalCount){
+        	logHibachi("importAccountUpdates - No account data to import at this time.",true);
+        	return;
         }
-        
+
         //Iterate all the pages.
-		while (pageNumber <= TotalPages){
+		while (pageNumber <= totalPages){
 		    
 		    accountsResponse = getData(pageNumber, pageSize, dateFilterStart, dateFilterEnd, "SwGetUpdatedAccounts");
     		
     		if (accountsResponse.hasErrors){
+    			logHibachi("importAccountUpdates - Page #pageNumber# - Has Errors",true);
     		    //goto next page causing this is erroring!
     		    pageNumber++;
     		    continue;
     		}
     		
-			var goodStanding = getService("TypeService").getTypeByTypeID("2c9180836dacb117016dad11ebf2000e");
-			var terminated = getService("TypeService").getTypeByTypeID("2c9180836dacb117016dad1296c90010");
-			var suspended = getService("TypeService").getTypeByTypeID("2c9180836dacb117016dad1239ac000f");
-			var deleted = getService("TypeService").getTypeByTypeID("2c9180836dacb117016dad12e37c0011");
-			var enrollmentPending = getService("TypeService").getTypeByTypeID("2c9180836dacb117016dad1329790012");
+			logHibachi("importAccountUpdates - Page #pageNumber#",true);
     		var accounts = accountsResponse.Records;
     		
     		/**
-    		 *  {
-			      "AccountNumber": "string",
-			      "AccountStatusCode": "string",
-			      "SponsorNumber": "string",
-			      "EnrollerNumber": "string",
-			      "AccountTypeCode": "string",
-			      "EntryDate": "2019-11-20T19:16:28.725Z",
-			      "EntryPeriod": "string",
-			      "FlagAccountTypeCode": "string",
-			      "GovernmentNumber": "string",
-			      "CareerTitleCode": "string"
-			    }
+    		{
+	            "AccountNumber": "string",
+	            "AccountStatusCode": "string",
+	            "AccountStatusName": "string",
+	            "SponsorNumber": "string",
+	            "EnrollerNumber": "string",
+	            "UplineMpNumber": "string",
+	            "AccountTypeCode": "string",
+	            "AccountTypeName": "string",
+	            "EntryDate": "2017-10-25T09:59:12.18",
+	            "EntryPeriod": "201710",
+	            "FlagAccountTypeCode": null,
+	            "FlagAccountTypeName": null,
+	            "CareerTitleCode": "string",
+	            "CareerTitleName": "string",
+	            "HyperWalletToken": "string"
+	         }
     		 **/
     		
-    		try{
-    			var tx = ormStatelessSession.beginTransaction();
-    			
-    			for (var account in accounts){
-    			    index++;
-        		    
+ 
+			var tx = ormStatelessSession.beginTransaction();
+			
+			for (var account in accounts){
+				
+				logHibachi("importAccountUpdates - Account Number: #account['AccountNumber']#",true);
+			    index++;
+			    
+			    try{
+    		    
         			// Create a new account and then use the mapping file to map it.
         			var foundAccount = getService("AccountService").getAccountByAccountNumber( account['AccountNumber'] );
         			
@@ -561,6 +577,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
                     	        }
                     	        if (account['AccountStatusName'] == "Terminated"){
                     	            statusType = terminated;
+                    	            foundAccount.setTerminationDate(now());
                     	        }
                     	        if (account['AccountStatusName'] == "Suspended"){
                     	            statusType = suspended;
@@ -671,18 +688,30 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
                     foundAccount.setCareerTitle( account['CareerTitleCode']?:"" );
                     
                     ormStatelessSession.update("SlatwallAccount", foundAccount);
-
-    			}
-    			
-    			tx.commit();
-    		}catch(e){
-    			
-    			logHibachi("Daily Account Import Failed @ Index: #index# PageSize: #pageSize# PageNumber: #pageNumber#", true);
-    			logHibachi(serializeJson(e));
-    			ormGetSession().clear();
-    			ormStatelessSession.close();
-    			abort;
-    		}
+                    
+                    if(!isNull(account['HyperWalletToken'])){
+                    
+	                    // MoMoney Logic
+						var accountPaymentMethod = getAccountService().getAccountPaymentMethodByProviderToken(account['HyperWalletToken'], false);
+						
+						if(isNull(accountPaymentMethod)){	
+							accountPaymentMethod = new Slatwall.model.entity.AccountPaymentMethod();
+							accountPaymentMethod.setAccount(foundAccount);
+							accountPaymentMethod.setActiveFlag(1);
+							accountPaymentMethod.setAccountPaymentMethodName('MoMoney');
+							accountPaymentMethod.setCurrencyCode(foundAccount.getSiteCurrencyCode());
+							accountPaymentMethod.setProviderToken(account['HyperWalletToken']); 
+							accountPaymentMethod.setPaymentMethod(paymentMethod);
+							ormStatelessSession.insert("SlatwallAccountPaymentMethod", accountPaymentMethod);
+						}
+                    }
+			    }catch( any e){
+			    	logHibachi("importAccountUpdates - Account Number: #account['AccountNumber']# ERROR: #serializeJson(e)#",true);
+			    }
+			}
+			
+			tx.commit();
+    		
     		
     		//echo("Clear session");
     		this.logHibachi('Import (Daily Updated Accounts) Page #pageNumber# completed ', true);

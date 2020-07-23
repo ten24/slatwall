@@ -235,6 +235,7 @@ component extends="Slatwall.model.service.OrderService" {
 	public array function getOrderTemplateEventOptions(){
 		var eventOptions = super.getOrderTemplateEventOptions(); 
 
+        // TODO: remove, instead use afterProcessOrderTemplate_addWishlistItemSuccess
 		var customEvents = [
 			{
 				'name': 'WishList - After Wishlist AddItem Success | afterWishlistAddItemSuccess',
@@ -248,30 +249,25 @@ component extends="Slatwall.model.service.OrderService" {
 		return eventOptions;  
 	} 
 
-	public any function processOrderTemplate_addOrderTemplateItem(required any orderTemplate, required any processObject, required struct data={}){
+	public any function processOrderTemplate_addWishlistItem(required any orderTemplate, required any processObject, required struct data={}){
 		
-		arguments.orderTemplate = super.processOrderTemplate_addOrderTemplateItem(argumentCollection = arguments);
+		arguments.orderTemplate = super.processOrderTemplate_addWishlistItem(argumentCollection = arguments);
+		
+		//TODO: remove override, migrate to default event
 		
 		// if it's a wishlist announce a custom event
-		if( 
-			!isNull(arguments.orderTemplate.getOrderTemplateType()) 
-			&& arguments.orderTemplate.getOrderTemplateType().getSystemCode() == 'ottWishList' 
-		){
+		var invokeArguments = {};
+		invokeArguments[ "1" ] = arguments.orderTemplate;//compatibility with on missing method
+		invokeArguments[ "data" ] = arguments.data;
+		invokeArguments[ 'orderTemplate' ] = arguments.orderTemplate;
+		invokeArguments[ "processObject" ] = arguments.processObject;
+		invokeArguments.entity = arguments.orderTemplate;
 			
-			var invokeArguments = {};
-			invokeArguments[ "1" ] = arguments.orderTemplate;//compatibility with on missing method
-			invokeArguments[ "data" ] = arguments.data;
-			invokeArguments[ 'orderTemplate' ] = arguments.orderTemplate;
-			invokeArguments[ "processObject" ] = arguments.processObject;
-			invokeArguments.entity = arguments.orderTemplate;
-			
-			
-			if(!arguments.orderTemplate.hasErrors()){
-				getHibachiEventService().announceEvent("afterWishlistAddItemSuccess", invokeArguments);
-			} 
-			else {
-				logHibachi("WishList has errors after addOrderItem, #SerializeJson( arguments.orderTemplate.getErrors() )#");
-			}
+		if(!arguments.orderTemplate.hasErrors()){
+			getHibachiEventService().announceEvent("afterWishlistAddItemSuccess", invokeArguments);
+		} 
+		else {
+			logHibachi("WishList has errors after addOrderItem, #SerializeJson( arguments.orderTemplate.getErrors() )#");
 		}
 		
 		return arguments.orderTemplate;

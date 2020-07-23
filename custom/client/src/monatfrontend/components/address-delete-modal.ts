@@ -7,7 +7,7 @@ class AddressDeleteModalController {
 	public address;
 	
     //@ngInject
-    constructor(public rbkeyService, public observerService, public publicService) {
+    constructor(public rbkeyService, public observerService, public publicService, public monatAlertService) {
         this.observerService.attach(this.closeModal,'deleteAccountAddressSuccess')
     }
     
@@ -30,6 +30,10 @@ class AddressDeleteModalController {
             'returnJsonObjects': 'account'
         })
         .then(result=>{
+            if(result.errors){
+                this.monatAlertService.error(result.errors);
+            }
+            
             this.loading = false;
         });
     }

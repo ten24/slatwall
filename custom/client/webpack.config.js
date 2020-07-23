@@ -60,7 +60,7 @@ let devConfig = {
     output : {
         path:  PATHS.clientDist,
         // publicPath: PATHS.clientDist, // assets path relative domain/server  `custom/client/dist/``
-        pathinfo: true,
+        pathinfo: false,
         filename: "[name].[contenthash].bundle.js",
         library: '[name]',
     },

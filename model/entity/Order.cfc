@@ -1489,6 +1489,7 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 		}
 		
 		variables.vatTotal = getService('HibachiUtilityService').precisionCalculate(vatTotal + this.getFulfillmentChargeVATAmount());
+		variables.vatTotal = getService('HibachiUtilityService').precisionCalculate(vatTotal - this.getOrderReturnFulfillmentVATRefund());
 		
 		return variables.vatTotal;
 	}
@@ -1525,6 +1526,19 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 			variables.refreshCalculateFulfillmentChargeFlag = false;
 		}
 		return variables.orderReturnFulfillmentTaxRefund;
+	}
+	
+	public numeric function getOrderReturnFulfillmentVATRefund(){
+		if(!structKeyExists(variables,'orderReturnFulfillmentVATRefund') || ( variables.refreshCalculateFulfillmentChargeFlag ) ){
+			var vatTotal = 0;
+			for(var orderReturn in this.getOrderReturns()) {
+				vatTotal = getService('HibachiUtilityService').precisionCalculate(vatTotal + orderReturn.getFulfillmentVATRefund());
+			}
+			variables.orderReturnFulfillmentVATRefund = vatTotal;
+			
+			variables.refreshCalculateFulfillmentChargeFlag = false;
+		}
+		return variables.orderReturnFulfillmentVATRefund;
 	}
 	
 	public numeric function getFulfillmentChargeTaxAmount(){

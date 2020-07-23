@@ -794,7 +794,10 @@ component output="false" accessors="true" extends="HibachiService" {
 		}
 		return false;
 	}
-
+	
+	public boolean function validate_notInList(required any object, required string propertyIdentifier, required string constraintValue) {
+		return !this.validate_inList(arguments.object, arguments.propertyIdentifier, arguments.constraintValue);
+	}
 
 	private boolean function validateAsNumeric(required any object, required string propertyName, string comparePropertyName){
 

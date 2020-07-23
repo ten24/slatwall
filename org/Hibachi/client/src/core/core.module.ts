@@ -128,10 +128,29 @@ var coremodule = angular.module('hibachi.core',[
     hibachiPathBuilder.setBaseURL(appConfig.baseURL);
     hibachiPathBuilder.setBasePartialsPath('/org/Hibachi/client/src/');
 
-    if(!appConfig.debugFlag){
-        appConfig.debugFlag = false;    
+    
+    if(__DEBUG_MODE__){
+        $logProvider.debugEnabled( true );
+        $compileProvider.debugInfoEnabled(true);
+    } 
+    else {
+        /**
+         * https://docs.angularjs.org/guide/production
+         * 
+         */
+        $logProvider.debugEnabled( false );
+        
+        /**
+         *  No  `angular.element($0).scope()`` after disabling this
+         *  you can do `andular.reloadWithDebugInfo()` from browser's console to enable this temporarily
+         */
+        $compileProvider.debugInfoEnabled(false);
+        
+        //available after 1.6
+        // $compileProvider.commentDirectivesEnabled(false);
+        // $compileProvider.cssClassDirectivesEnabled(false);
     }
-    $logProvider.debugEnabled( appConfig.debugFlag );
+    
     
     $filterProvider.register('likeFilter',function(){
          return function(text){

@@ -59,6 +59,7 @@ component displayname="Account Address" entityname="SlatwallAccountAddress" tabl
 	
 	// Related Object Properties One-To-Many
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="accountAddressID" cascade="all-delete-orphan" inverse="true";
+
 	// Remote properties
 	property name="remoteID" ormtype="string";
 	
@@ -126,6 +127,15 @@ component displayname="Account Address" entityname="SlatwallAccountAddress" tabl
 	}
 	
 	// ==================  END:  Overridden Methods ========================
+	
+	public boolean function addressHasNoAssociatedScheduleOrderTemplate(){
+		var scheduleOrderTemplateType = getService('typeService').getTypeBySystemCode('ottSchedule');
+		return getDao('accountAddressDAO').addressHasNoAssociatedOrderTemplateByOrderTemplateType(accountAddressID = this.getAccountAddressID(), orderTemplateTypeID = scheduleOrderTemplateType.getTypeID());
+	}
+	
+	public boolean function isNotDefaultAccountShippingAddress(){
+		return ( isNull(this.getAccount().getPrimaryShippingAddress()) || this.getAccount().getPrimaryShippingAddress().getAccountAddressID() != this.getAccountAddressID() );
+	}
 	
 	// =================== START: ORM Event Hooks  =========================
 	

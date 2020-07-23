@@ -569,28 +569,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         super.addOrderPayment(argumentCollection = arguments);
     }
     
-    public any function createWishlist( required struct data ) {
-        param name="arguments.data.orderTemplateName";
-        
-        if(getHibachiScope().getAccount().isNew()){
-            return;
-        }
-        
-        var orderTemplate = getOrderService().newOrderTemplate();
-        var processObject = orderTemplate.getProcessObject("createWishlist");
-        var wishlistTypeID = getTypeService().getTypeBySystemCode('ottWishList').getTypeID();
-
-        processObject.setOrderTemplateName(arguments.data.orderTemplateName);
-        processObject.setAccountID(getHibachiScope().getAccount().getAccountID());
-        processObject.setOrderTemplateTypeID(wishlistTypeID);
-        
-        orderTemplate = getOrderService().processOrderTemplate(orderTemplate,processObject,"createWishlist");
-        
-        getHibachiScope().addActionResult( "public:order.createWishlist", orderTemplate.hasErrors() );
-        
-        return orderTemplate;
-    }
-    
     public any function createOrderTemplate( required struct data ) {
 
         param name="arguments.data.orderTemplateSystemCode" default="ottSchedule";
@@ -652,16 +630,44 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             this.addErrors(arguments.data, orderTemplate.getErrors());
         }
     }
-    
+   
+    public any function createWishlist( required struct data ) {
+        param name="arguments.data.orderTemplateName";
+        
+        if(getHibachiScope().getAccount().isNew()){
+            return;
+        }
+        
+        var orderTemplate = getOrderService().newOrderTemplate();
+        var processObject = orderTemplate.getProcessObject("createWishlist");
+        var wishlistTypeID = getTypeService().getTypeBySystemCode('ottWishList').getTypeID();
+
+        processObject.setOrderTemplateName(arguments.data.orderTemplateName);
+        processObject.setAccountID(getHibachiScope().getAccount().getAccountID());
+        processObject.setOrderTemplateTypeID(wishlistTypeID);
+        
+        orderTemplate = getOrderService().processOrderTemplate(orderTemplate,processObject,"createWishlist");
+        
+        getHibachiScope().addActionResult( "public:orderTemplate.createWishlist", orderTemplate.hasErrors() );
+        
+        if( !orderTemplate.hasErrors() ){
+            arguments.data['ajaxResponse']['newWishlist'] = {
+    		    "orderTemplateID"   : orderTemplate.getOrderTemplateID(),
+    		    "orderTemplateName" : orderTemplate.getOrderTemplateName()
+    		};
+        }
+        
+        return orderTemplate;
+    }
+        
     public any function addItemAndCreateWishlist( required struct data ) {
         var orderTemplate = this.createWishlist(argumentCollection= arguments);
         
         if( !orderTemplate.hasErrors() ){
             getHibachiScope().flushORMSession();
             
-            arguments.data['ordertemplateID'] = orderTemplate.getOrderTemplateID();
-            arguments.data['returnOrderTemplateFlag'] = false;
-            this.addOrderTemplateItem(arguments.data)
+            arguments.data['orderTemplateID'] = orderTemplate.getOrderTemplateID();
+            this.addWishlistItem(arguments.data)
         }
         
         this.addErrors(arguments.data, orderTemplate.getErrors());
@@ -1191,6 +1197,10 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         }
     }
 
+
+    /**
+     * 
+    */
     public any function getAccountOrderTemplateNamesAndIDs(required struct data){
         param name="arguments.data.ordertemplateTypeID" default="2c9280846b712d47016b75464e800014"; //default to wishlist
 
@@ -1274,7 +1284,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var accountID = getHibachiScope().getAccount().getAccountID();
         
         var orderTemplateItemList = getService('OrderService').getOrderTemplateItemCollectionList();
-        orderTemplateItemList.setDisplayProperties('sku.product.productID|productID');
+        orderTemplateItemList.setDisplayProperties('sku.skuID|skuID');
         orderTemplateItemList.addFilter( 'orderTemplate.account.accountID', accountID );
         orderTemplateItemList.addFilter( 'orderTemplate.orderTemplateType.typeID', '2c9280846b712d47016b75464e800014' ); // wishlist typeID
         var accountWishlistItems = orderTemplateItemList.getRecords(formatRecords=false);

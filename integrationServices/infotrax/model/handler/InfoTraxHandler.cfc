@@ -11,7 +11,6 @@ component extends='Slatwall.org.Hibachi.HibachiEventHandler' {
 	
 	public void function onEvent(required any eventName, required struct eventData={}){
 		
-		
 		 try {
 			//Only focus on entity events
 			if ( !structKeyExists(arguments,'entity') ) {
@@ -24,6 +23,7 @@ component extends='Slatwall.org.Hibachi.HibachiEventHandler' {
 				var orders = getService('infoTraxService').pendingPushOrders(arguments.entity.getPrimaryIDValue());
 				for(var order in orders){
 					getDAO('HibachiEntityQueueDAO').insertEntityQueue(
+						entityQueueID   = hash("Order_#order['orderID']#_push_#getIntegration().getIntegrationID()#", 'MD5'), //Custom ID to ignore EntityQueueData
 						baseID          = order['orderID'],
 						baseObject      = 'Order',
 						processMethod   = 'push',
@@ -39,6 +39,7 @@ component extends='Slatwall.org.Hibachi.HibachiEventHandler' {
 			}
 			
 			getDAO('HibachiEntityQueueDAO').insertEntityQueue(
+				entityQueueID   = hash("#arguments.entity.getClassName()#_#arguments.entity.getPrimaryIDValue()#_push_#getIntegration().getIntegrationID()#", 'MD5'), //Custom ID to ignore EntityQueueData
 				baseID          = arguments.entity.getPrimaryIDValue(),
 				baseObject      = arguments.entity.getClassName(),
 				processMethod   = 'push',

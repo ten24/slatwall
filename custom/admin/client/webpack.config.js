@@ -59,6 +59,7 @@ let devConfig = {
                 
     output : {
         path:  PATHS.clientDist,
+        pathinfo: false,
         filename: "[name].[contenthash].bundle.js",
     },
     
