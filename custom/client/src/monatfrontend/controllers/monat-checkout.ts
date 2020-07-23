@@ -86,7 +86,9 @@ class MonatCheckoutController {
 		this.observerService.attach( this.closeNewAddressForm, 'addNewAccountAddressSuccess' ); 
 		this.observerService.attach(this.handleAccountResponse, 'createAccountSuccess' ); 
 		this.observerService.attach(this.handleAccountResponse, 'getAccountSuccess' ); 
-		this.observerService.attach(this.handleAccountResponse, 'loginSuccess' ); 
+		this.observerService.attach( () => {
+		    this.handleAccountResponse({account:this.publicService.account});
+		}, 'loginSuccess' ); 
 		
 		//TODO: delete these event listeners and call within function
 		this.observerService.attach(()=>{
