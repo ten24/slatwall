@@ -5650,13 +5650,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var inserted = false;
 
 			arrayAppend(optionsArray, thisOption);
-				}
+		}
+		
 		var sortProperty = "";
+		
 		if(sortType == 'price'){
 			sortProperty = 'totalCharge';
-		}else if(sortType == 'sortOrder'){
+		}
+		else if(sortType == 'sortOrder'){
 			sortProperty = 'shippingMethodSortOrder';
-			}
+		}
 
 		optionsArray = getService('hibachiUtilityService').arrayOfStructsSort(optionsArray,sortProperty);
 
