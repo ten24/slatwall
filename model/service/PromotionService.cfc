@@ -1720,7 +1720,39 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		return rewardSkuIDs;
 	}
-
+	
+	public void function processAfterAddOrderItemPromotions(required any order, required boolean ormHasflushed){
+		
+		var hasPromoItemsToAdd = getHibachiScope().hasValue('promoItemsToBeAdded') && arrayLen(getHibachiScope().getValue('promoItemsToBeAdded'))
+		var freeItemsPromoHasRan = getHibachiScope().hasValue('afterOrderItemPromoHasRan') && getHibachiScope().getValue('afterOrderItemPromoHasRan');
+		var orderHasErrors = arguments.order.hasErrors();
+		
+		if(!hasPromoItemsToAdd || freeItemsPromoHasRan || orderHasErrors || getHibachiScope().ORMHasErrors()){
+			return;
+		}else{
+			arguments.order.clearProcessObject("addOrderItem");
+			getHibachiScope().setValue('afterOrderItemPromoHasRan', true);
+		}
+		
+		if(!arguments.ormHasflushed){
+			getHibachiScope().flushORMSession();
+		}
+		
+		for(var item in getHibachiScope().getValue('promoItemsToBeAdded')){
+			
+			if(item.orderID != arguments.order.getOrderID()){
+				continue;
+			}
+			
+	        arguments.order = getService("OrderService").processOrder( arguments.order, item, 'addOrderItem');
+        	getHibachiScope().addActionResult( "public:cart.addOrderItem", arguments.order.hasErrors() );
+			if(!arguments.order.hasErrors()){
+				getHibachiScope().flushORMSession();
+				arguments.order.clearProcessObject("addOrderItem");
+			}
+		}
+	}
+	
 	// ===================== START: Logical Methods ===========================
 
 	// =====================  END: Logical Methods ============================
