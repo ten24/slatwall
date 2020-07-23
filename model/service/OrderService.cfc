@@ -2847,7 +2847,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				var originalOrder = arguments.returnOrder.getReferencedOrder();
 			
 				var originalOrderFulfillmentChargeVATAmount = originalOrder.getFulfillmentChargeVATAmount();
-				var originalOrderFulfillmentCharge = originalOrder.getFulfillmentChargeTotal();
+				var originalOrderFulfillmentCharge = originalOrder.getFulfillmentChargeAfterDiscountTotal();
 				
 				if( originalOrderFulfillmentChargeVATAmount != 0 && originalOrderFulfillmentCharge != 0 ){
 					var vatRefund = getService('HibachiUtilityService').precisionCalculate(originalOrderFulfillmentChargeVATAmount * orderReturn.getFulfillmentRefundAmount() / originalOrderFulfillmentCharge);
