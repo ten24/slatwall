@@ -328,11 +328,49 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 	}
 
 	public void function afterOrderProcess_addOrderItemSuccess(required any slatwallScope, required any order, required any data){
+		
+		var ormHasflushed = false;
+		
 		if (!isNull(arguments.order.getOrderOpenDatetime()) && !arguments.slatwallScope.ORMHasErrors()){
 			arguments.slatwallScope.flushORMSession();
-
+			ormHasflushed = true;
 			if(structKeyExists(arguments.data, "skuID")){
 				getDAO('InventoryDAO').manageOpenOrderItem(actionType = 'updateItemQuantity', skuID = arguments.data.skuID);
+			}
+		}
+		
+		arguments.slatwallScope.logHibachi('orm has been flushed: #ormHasflushed#');
+		
+		var hasPromoItemsToAdd = arguments.slatwallScope.hasValue('promoItemsToBeAdded') && arrayLen(arguments.slatwallScope.getValue('promoItemsToBeAdded'))
+		var freeItemsPromoHasRan = arguments.slatwallScope.hasValue('afterOrderItemPromoHasRan') && arguments.slatwallScope.getValue('afterOrderItemPromoHasRan');
+		var orderHasErrors = arguments.order.hasErrors();
+		
+		if(!hasPromoItemsToAdd || freeItemsPromoHasRan || orderHasErrors || arguments.slatwallScope.ORMHasErrors()){
+			return;
+		}else{
+			arguments.order.clearProcessObject("addOrderItem");
+			arguments.slatwallScope.setValue('afterOrderItemPromoHasRan', true);
+		}
+		
+		if(!ormHasflushed){
+			arguments.slatwallScope.logHibachi('FlUSHNIG ORM SESSION');
+			arguments.slatwallScope.flushORMSession();
+		}
+		
+		for(var item in arguments.slatwallScope.getValue('promoItemsToBeAdded')){
+			
+			if(item.orderID != arguments.order.getOrderID()){
+				continue;
+			}
+			
+			arguments.slatwallScope.logHibachi('==========adding skuID: #item.skuID#==========');
+	        
+	        arguments.order = getService("OrderService").processOrder( arguments.order, item, 'addOrderItem');
+        	arguments.slatwallScope.addActionResult( "public:cart.addOrderItem", arguments.order.hasErrors() );
+        	
+			if(!arguments.order.hasErrors()){
+				arguments.slatwallScope.flushORMSession();
+				arguments.order.clearProcessObject("addOrderItem");
 			}
 		}
 	}

@@ -393,38 +393,51 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public void function processRewardSkuPromotionReward(required any order, required array orderQualifiedDiscounts, required any promotionReward){
+		
+		//skus to be added 
 		var rewardSkusCollection = arguments.promotionReward.getIncludedSkusCollection();
 		
-		if(isNull(rewardSkusCollection)){
+		//the quantity of free skus that we should add
+		var skuRewardQuantity = arguments.promotionReward.getRewardSkuQuantity() ?: 0;
+		
+		//if this promo reward has already been processed in the request, or it has no reward sku's /quantity return
+		if(
+			(
+				getHibachiScope().hasValue('processedRewardSkuPromotionIDs') 
+				&& listContains(getHibachiScope().getValue('processedRewardSkuPromotionIDs'), arguments.promotionReward.getPromotionRewardID())  
+			)
+			|| isNull(rewardSkusCollection)
+			|| skuRewardQuantity <= 0
+		){
+			logHibachi("===================*******value found:#arguments.promotionReward.getPromotionRewardID()#*******===================")
 			return;
+			//if it has a value but not the current PromotionRewardID, append it
+		}else if(getHibachiScope().hasValue('processedRewardSkuPromotionIDs')){ 
+			logHibachi("*******===================WE HAVE A VALUEE BUT THIS ONE IS NOT FOUND:#arguments.promotionReward.getPromotionRewardID()# found values: #getHibachiScope().hasValue('processedRewardSkuPromotionIDs')#")
+			listAppend(getHibachiScope().getValue('processedRewardSkuPromotionIDs'), arguments.promotionReward.getPromotionRewardID());
+			//if there is no value, set it to the current PromotionRewardID			
+		}else{ 
+			logHibachi("===================*******no found values, setting it to:#arguments.promotionReward.getPromotionRewardID()#*******===================")
+			getHibachiScope().setValue('processedRewardSkuPromotionIDs', arguments.promotionReward.getPromotionRewardID());
+		}
+		
+		if(!getHibachiScope().hasValue('promoItemsToBeAdded')){
+			getHibachiScope().setValue('promoItemsToBeAdded', []);
 		}
 		
 		//the skus to be added to the order
 		rewardSkusCollection = rewardSkusCollection.getRecords();
-		
-		//the quantity for which the free order item should have
-		var skuRewardQuantity = arguments.promotionReward.getRewardSkuQuantity() ?: 0;
-		
-		if( isNull(rewardSkusCollection) || !arrayLen(rewardSkusCollection) || skuRewardQuantity <= 0){
-			return;	
-		}
-		
 		var orderService = getService("OrderService");
 		
 		for(var skuRecord in rewardSkusCollection){
-			
 			var addOrderItemData = {
 				quantity: skuRewardQuantity,
-				skuID: record.skuID
+				skuID: skuRecord.skuID,
+				orderID: arguments.order.getOrderID(),
+				userDefinedPriceFlag: true,
+				price:0
 			}
-			
-			orderService.processOrder( arguments.order, addOrderItemData, 'addOrderItem');
-			
-			if(!arguments.order.hasErrors()){
-				getHibachiScope().flushORMSession();
-			}
-			
-			arguments.order.clearProcessObject("addOrderItem");
+			arrayAppend(getHibachiScope().getValue('promoItemsToBeAdded'), addOrderItemData);
 		}
 		
 	}
@@ -538,7 +551,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						} else if (orderRewards and reward.getRewardType() eq "order" ) {
 							processOrderRewards(arguments.order, orderQualifiedDiscounts, reward);
 						}else if(orderRewards and reward.getRewardType() eq "rewardSku"){
-							processRewardSkuPromotionReward()
+							processRewardSkuPromotionReward(arguments.order, orderQualifiedDiscounts, Reward)
 						}// ============= END ALL REWARD TYPES
 	
 					} // END Promotion Period OK IF
