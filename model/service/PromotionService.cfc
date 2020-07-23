@@ -409,15 +409,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			|| isNull(rewardSkusCollection)
 			|| skuRewardQuantity <= 0
 		){
-			logHibachi("===================*******value found:#arguments.promotionReward.getPromotionRewardID()#*******===================")
 			return;
 			//if it has a value but not the current PromotionRewardID, append it
 		}else if(getHibachiScope().hasValue('processedRewardSkuPromotionIDs')){ 
-			logHibachi("*******===================WE HAVE A VALUEE BUT THIS ONE IS NOT FOUND:#arguments.promotionReward.getPromotionRewardID()# found values: #getHibachiScope().hasValue('processedRewardSkuPromotionIDs')#")
 			listAppend(getHibachiScope().getValue('processedRewardSkuPromotionIDs'), arguments.promotionReward.getPromotionRewardID());
 			//if there is no value, set it to the current PromotionRewardID			
 		}else{ 
-			logHibachi("===================*******no found values, setting it to:#arguments.promotionReward.getPromotionRewardID()#*******===================")
 			getHibachiScope().setValue('processedRewardSkuPromotionIDs', arguments.promotionReward.getPromotionRewardID());
 		}
 		
@@ -1739,7 +1736,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		for(var item in getHibachiScope().getValue('promoItemsToBeAdded')){
-			
 			if(item.orderID != arguments.order.getOrderID()){
 				continue;
 			}
