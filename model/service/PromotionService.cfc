@@ -548,7 +548,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						} else if (orderRewards and reward.getRewardType() eq "order" ) {
 							processOrderRewards(arguments.order, orderQualifiedDiscounts, reward);
 						}else if(orderRewards and reward.getRewardType() eq "rewardSku"){
-							processRewardSkuPromotionReward(arguments.order, orderQualifiedDiscounts, Reward)
+							processRewardSkuPromotionReward(arguments.order, orderQualifiedDiscounts, reward)
 						}// ============= END ALL REWARD TYPES
 	
 					} // END Promotion Period OK IF
@@ -713,7 +713,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	private void function applyOrderDiscounts(required any order, required array orderQualifiedDiscounts, array orderQualifierMessages){
 		
 		var itemAppliedPromotions = getPromotionDAO().getAppliedPromotionsForOrderItemsByOrder(arguments.order);
-		getHibachiScope().logHibachi('APPLYING DISCOUNT TO ORDER', true)
 		for(var rewardStruct in arguments.orderQualifiedDiscounts ){
 			if( !getUpdatedQualificationStatus( arguments.order, rewardStruct.promotionReward.getPromotionRewardID(), arguments.orderQualifierMessages ) ){
 				continue;
@@ -1144,17 +1143,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		// ORDER
 		if(arguments.qualifier.getQualifierType() == "order") {
-			getHibachiScope().logHibachi('getting order qualifier details for #arguments.qualifier.getPromotionQualifierID()#')
 			getQualifierQualificationDetailsForOrder(arguments.qualifier, arguments.order, qualifierDetails, arguments.orderQualifierMessages);
 
 		// FULFILLMENT
 		} else if (arguments.qualifier.getQualifierType() == "fulfillment") {
-			getHibachiScope().logHibachi('getting order fulfillment qualifier details for #arguments.qualifier.getPromotionQualifierID()#')
 			getQualifierQualificationDetailsForOrderFulfillments(arguments.qualifier, arguments.order, qualifierDetails);
 
 		// ORDER ITEM
 		} else if (listFindNoCase("contentAccess,merchandise,subscription", arguments.qualifier.getQualifierType())) {
-			getHibachiScope().logHibachi('getting order item qualifier details for #arguments.qualifier.getPromotionQualifierID()#')
 			getQualifierQualificationDetailsForOrderItems(arguments.qualifier,arguments.order,qualifierDetails, arguments.orderQualifierMessages);
 
 		}

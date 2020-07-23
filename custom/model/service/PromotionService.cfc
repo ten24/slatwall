@@ -49,7 +49,6 @@ component extends="Slatwall.model.service.PromotionService" {
 	}
 	
 	private void function applyPromotionToOrder(required any order,required any rewardStruct){
-		getHibachiScope().logHibachi('applying promotion to order', true)
 		var newAppliedPromotion = this.newPromotionApplied();
 		newAppliedPromotion.setAppliedType('order');
 		newAppliedPromotion.setPromotion( arguments.rewardStruct.promotion );

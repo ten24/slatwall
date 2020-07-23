@@ -3072,7 +3072,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	public boolean function hasQuantityWithinMaxOrderQuantity(any orderItem){
-			getHibachiScope().logHibachi("returning 3075")
 		return getDao('OrderDao').hasQuantityWithinMaxOrderQuantity(arguments.orderItem);
 	}
 

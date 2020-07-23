@@ -244,7 +244,6 @@ property name="personalVolumeAmount" ormtype="big_decimal" hb_formatType="custom
 	}
 	
 	public any function getIncludedSkusCollection( boolean refresh=false , boolean transient=false){
-		getHibachiScope().logHibachi('getting sku collection', true)
 		if(arguments.refresh || arguments.transient || isNull(variables.includedSkusCollection)){
 			var collectionConfig = getIncludedSkusCollectionConfig();
 			if(!isNull(collectionConfig)){
