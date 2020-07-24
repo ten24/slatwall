@@ -711,15 +711,32 @@ property name="personalVolume" ormtype="big_decimal";
 	}
 	
 	public numeric function getVATAmount() {
-		if(!structKeyExists(variables,'VATAmount')){
-			var VATAmount = 0;
+		var VATAmount = 0;
 
-			for(var taxApplied in getAppliedTaxes()) {
-				VATAmount = getService('HibachiUtilityService').precisionCalculate(VATAmount + taxApplied.getVATAmount());
-			}
-			variables.VATAmount = VATAmount;
+		for(var taxApplied in getAppliedTaxes()) {
+			VATAmount = getService('HibachiUtilityService').precisionCalculate(VATAmount + taxApplied.getVATAmount());
 		}
-		return variables.VATAmount;
+
+		return VATAmount;
+	}
+	
+	public numeric function getVATAmountNotRefunded(){
+		return getService('HibachiUtilityService').precisionCalculate(getVATAmount() + getVATAmountOnReferencingItems());
+	}
+	
+	public numeric function getVATAmountOnReferencingItems(){
+		var VATAmountOnReferencingItems = 0;
+		
+		for(var referencingOrderItem in getReferencingOrderItems()){
+			if(!listFindNoCase('ostNotPlaced,ostCanceled',referencingOrderItem.getOrder().getOrderStatusType().getSystemCode())){
+				if(referencingOrderItem.getOrderItemType().getSystemCode() == 'oitReturn'){
+					VATAmountOnReferencingItems -= referencingOrderItem.getVATAmount();
+				}else{
+					VATAmountOnReferencingItems += referencingOrderItem.getVATAmount();
+				}
+			}
+		}
+		return VATAmountOnReferencingItems;
 	}
 	
 	public numeric function getVATPrice() {

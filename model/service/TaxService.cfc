@@ -310,6 +310,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					var originalOrderItem = orderItem.getReferencedOrderItem();
 					var originalAppliedTaxes = originalOrderItem.getAppliedTaxes();
 					var totalItemTax = 0;
+					var totalItemVAT = 0;
 					var taxAdjusted = false;
 					
 					for(var originalAppliedTax in originalAppliedTaxes) {
@@ -319,17 +320,34 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						newAppliedTax.setAppliedType("orderItem");
 						newAppliedTax.setTaxRate( originalAppliedTax.getTaxRate() );
 						newAppliedTax.setVATPrice( originalAppliedTax.getVATPrice() );
-						newAppliedTax.setVATAmount( originalAppliedTax.getVATAmount() );
 						newAppliedTax.setTaxCategoryRate( originalAppliedTax.getTaxCategoryRate() );
 						newAppliedTax.setOrderItem( orderItem );
 						newAppliedTax.setCurrencyCode( orderItem.getCurrencyCode() );
+						
+						var VATAmount = round((originalAppliedTax.getVATAmount()/originalOrderItem.getQuantity())*orderitem.getQuantity() * 100) / 100;
+						
+						totalItemVAT += VATAmount;
+						
+						if(totalItemVAT > originalOrderItem.getVATAmountNotRefunded()){
+							VATAmount -= totalItemVAT - originalOrderItem.getVATAmountNotRefunded();
+							VATAdjusted = true;
+						}else if(totalItemVAT == getService('HibachiUtilityService').precisionCalculate(originalOrderItem.getVATAmountNotRefunded() - 0.01)){
+							VATAmount += 0.01;
+							totalItemVAT += 0.01;
+							VATAdjusted = true;
+						}
+						newAppliedTax.setVATAmount( VATAmount );
+						
 						var taxAmount = round((originalAppliedTax.getTaxAmount()/originalOrderItem.getQuantity())*orderitem.getQuantity() * 100) / 100;
 						
 						totalItemTax += taxAmount;
 						
-						
 						if(totalItemTax > originalOrderItem.getTaxAmountNotRefunded()){
 							taxAmount -= totalItemTax - originalOrderItem.getTaxAmountNotRefunded();
+							taxAdjusted = true;
+						}else if(totalItemTax == getService('HibachiUtilityService').precisionCalculate(originalOrderItem.getTaxAmountNotRefunded() - 0.01)){
+							taxAmount += 0.01;
+							totalItemTax += 0.01;
 							taxAdjusted = true;
 						}
 						
@@ -493,7 +511,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 
 		}
-
 
 		// Final Loop over orderFulfillments to apply taxRates either from internal calculation, or from integrations rate calculation
 		for(var orderFulfillment in arguments.order.getOrderFulfillments()) {
