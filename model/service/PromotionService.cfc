@@ -1394,7 +1394,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	public struct function getProductSkuSalePricesByPromoRewardSkuCollection( required string productID, string currencyCode ){
 		var product = getService('productService').getProduct( arguments.productID );
-		var activePromotionRewardsWithSkuCollection = getPromotionDAO().getActivePromotionRewards( rewardTypeList="merchandise,subscription,contentAccess,rewardSku", promotionCodeList="", onlyRewardsWithSkuCollections=true, excludeRewardsWithQualifiers=true, site=getHibachiScope().getCart().getOrderCreatedSite() );
+		var activePromotionRewardsWithSkuCollection = getPromotionDAO().getActivePromotionRewards( rewardTypeList="merchandise,subscription,contentAccess", promotionCodeList="", onlyRewardsWithSkuCollections=true, excludeRewardsWithQualifiers=true, site=getHibachiScope().getCart().getOrderCreatedSite() );
 
 		var skus = product.getSkus();
 		var priceDetails = {};
@@ -1419,7 +1419,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	public struct function getOrderItemSalePricesByPromoRewardSkuCollection(required any orderItem){
 		
-		var activePromotionRewardsWithSkuCollection = getPromotionDAO().getActivePromotionRewards( rewardTypeList="merchandise,subscription,contentAccess,rewardSku", promotionCodeList="", excludeRewardsWithQualifiers=true, site=arguments.orderItem.getOrder().getOrderCreatedSite());
+		var activePromotionRewardsWithSkuCollection = getPromotionDAO().getActivePromotionRewards( rewardTypeList="merchandise,subscription,contentAccess", promotionCodeList="", excludeRewardsWithQualifiers=true, site=arguments.orderItem.getOrder().getOrderCreatedSite());
 		var originalPrice = arguments.orderItem.getSkuPrice();
 		var currencyCode = arguments.orderItem.getCurrencyCode();
 		if(isNull(currencyCode)){
@@ -1461,7 +1461,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	public any function getOrderTemplateItemSalePricesByPromoRewardSkuCollection(required any orderTemplateItem){
 		var orderTemplate = arguments.orderTemplateItem.getOrderTemplate();
-		var activePromotionRewardsWithSkuCollection = getPromotionDAO().getActivePromotionRewards( rewardTypeList="merchandise,subscription,contentAccess,rewardSku", promotionCodeList="", excludeRewardsWithQualifiers=true, site=orderTemplate.getSite());
+		var activePromotionRewardsWithSkuCollection = getPromotionDAO().getActivePromotionRewards( rewardTypeList="merchandise,subscription,contentAccess", promotionCodeList="", excludeRewardsWithQualifiers=true, site=orderTemplate.getSite());
 		
 		var currencyCode = orderTemplate.getCurrencyCode();
 		
