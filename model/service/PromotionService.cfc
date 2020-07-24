@@ -579,6 +579,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						newOrderItem.setQuantity( item.quantity );
 						newOrderItem.setSku(sku);
 						newOrderItem.setOrder(arguments.order);
+						newOrderItem.setTemporaryFlag(true);
 						getService('orderService').saveOrderItem(newOrderItem);
 						if(!newOrderItem.hasErrors() && !arguments.order.hasErrors()){
 							getHibachiScope().flushORMSession();
