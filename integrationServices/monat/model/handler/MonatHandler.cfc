@@ -202,13 +202,16 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 			getAccountService().saveAccount(account);
 			
 			getDAO('HibachiDAO').flushORMSession();
+			
+			var integrationID = getService('integrationService').getIntegrationByIntegrationPackage('infotrax').getIntegrationID();
 
 			getDAO('HibachiEntityQueueDAO').insertEntityQueue(
+				entityQueueID   = hash("Account_#account.getAccountID()#_push_#integrationID#", 'MD5'), //Custom ID to ignore EntityQueueData
 				baseID          = account.getAccountID(),
 				baseObject      = 'Account',
 				processMethod   = 'push',
 				entityQueueData = { 'event' = 'afterAccountSaveSuccess' },
-				integrationID   = getService('integrationService').getIntegrationByIntegrationPackage('infotrax').getIntegrationID()
+				integrationID   = integrationID
 			);
 		}
 		
@@ -267,12 +270,14 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 				}
 				orderTemplate = getOrderService().processOrderTemplate_activate(orderTemplate, {}, {'context': 'upgradeFlow'});
 				
+				var integrationID = getService('integrationService').getIntegrationByIntegrationPackage('infotrax').getIntegrationID();
 				getDAO('HibachiEntityQueueDAO').insertEntityQueue(
+					entityQueueID   = hash("OrderTemplate_#orderTemplate.getOrderTemplateID()#_push_#integrationID#", 'MD5'), //Custom ID to ignore EntityQueueData
 					baseID          = orderTemplate.getOrderTemplateID(),
 					baseObject      = 'OrderTemplate',
 					processMethod   = 'push',
 					entityQueueData = { 'event' = 'afterOrderTemplateProcess_activateSuccess' },
-					integrationID   = getService('integrationService').getIntegrationByIntegrationPackage('infotrax').getIntegrationID()
+					integrationID   = integrationID
 				);
 		
 			}
@@ -328,19 +333,13 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 	}
 
 	public void function afterOrderProcess_addOrderItemSuccess(required any slatwallScope, required any order, required any data){
-		
-		var ormHasflushed = false;
-		
 		if (!isNull(arguments.order.getOrderOpenDatetime()) && !arguments.slatwallScope.ORMHasErrors()){
 			arguments.slatwallScope.flushORMSession();
-			ormHasflushed = true;
+
 			if(structKeyExists(arguments.data, "skuID")){
 				getDAO('InventoryDAO').manageOpenOrderItem(actionType = 'updateItemQuantity', skuID = arguments.data.skuID);
 			}
 		}
-		
-		arguments.slatwallScope.getService('promotionService').processAfterAddOrderItemPromotions(arguments.order, ormHasflushed);
-
 	}
 
 

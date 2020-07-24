@@ -392,7 +392,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 	}
 	
-	public void function processRewardSkuPromotionReward(required any order, required array orderQualifiedDiscounts, required any promotionReward){
+	public void function processRewardSkuPromotionReward(required any order, required array itemsToBeAdded, required any promotionReward){
+		
+		if(arguments.promotionReward.getPromoHasRan()){
+			return;
+		}
+		
+		arguments.promotionReward.setPromoHasRan(true);
 		
 		//skus to be added 
 		var rewardSkusCollection = arguments.promotionReward.getIncludedSkusCollection();
@@ -417,7 +423,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				userDefinedPriceFlag: true,
 				price:0
 			}
-			arrayAppend(getHibachiScope().getValue('promoItemsToBeAdded'), addOrderItemData);
+			arrayAppend(arguments.itemsToBeAdded, addOrderItemData);
 		}
 		
 	}
@@ -498,6 +504,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				// This is an array of qualifier messages for qualifiers not met by the order
 				var orderQualifierMessages = [];
 				
+				//Promotional items to be added at the end of the loop
+				var itemsToBeAdded = [];
+				
 				setupOrderItemQualifiedDiscounts(arguments.order, orderItemQualifiedDiscounts);
 
 				// Loop over all Potential Discounts that require qualifications
@@ -506,8 +515,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				for(var pr=1; pr<=arrayLen(promotionRewards); pr++) {
 					var reward = promotionRewards[pr];
 					
-					//Promotional items to be added at the end of the loop
-					var itemsToBeAdded = [];
 					if(arguments.order.hasOrderTemplate() && ((!orderRewards && reward.getRewardType() != 'order') || (orderRewards && reward.getRewardType() == 'order') ) ){
 						logHibachi('Checking #reward.getRewardType()# reward for #reward.getPromotionPeriod().getPromotion().getPromotionName()#');
 					}
@@ -534,7 +541,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						} else if (orderRewards and reward.getRewardType() eq "order" ) {
 							processOrderRewards(arguments.order, orderQualifiedDiscounts, reward);
 						}else if(orderRewards and reward.getRewardType() eq "rewardSku"){
-							processRewardSkuPromotionReward(arguments.order, orderQualifiedDiscounts, reward)
+							processRewardSkuPromotionReward(arguments.order, itemsToBeAdded, reward)
 						}// ============= END ALL REWARD TYPES
 	
 					} // END Promotion Period OK IF
@@ -548,36 +555,38 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						orderRewards = true;
 					}
 					
-					
-					if(arraylen(itemsToBeAdded) && arrayLen(arguments.order.getFirstShippingFulfillmentArray())){
-						var fulfillment = arguments.order.getFirstShippingFulfillmentArray();
-						
-						for(var item in itemsToBeAdded){
-							var sku = getService('skuService').getSku(item.skuID);
-							if(isNull(sku)){
-								continue;
-							}
-							
-							var newOrderItem = getService("OrderService").newOrderItem();
-							newOrderItem.setPrice(0);
-							newOrderItem.setSkuPrice(0);
-							newOrderItem.setUserDefinedPriceFlag(true);
-							newOrderItem.setOrderItemType( getTypeService().getTypeBySystemCode('oitSale') );
-							newOrderItem.setOrderFulfillment( fulfillment );
-							newOrderItem.setQuantity( item.quantity );
-							newOrderItem.setSku(sku);
-							newOrderItem.setOrder(arguments.order);
-							getService('orderService').saveOrderItem(newOrderItem);
-							if(!newOrderItem.hasErrors() && !arguments.order.hasErrors()){
-								getHibachiScope().flushORMSession();
-							}
-						}
-					}
 				} // END of PromotionReward Loop
 				getHibachiScope().flushORMSession();
-				
+									
 				ArraySort(orderQualifiedDiscounts, rewardSortFunction);
 				applyOrderDiscounts(arguments.order, orderQualifiedDiscounts, orderQualifierMessages);
+				
+				if( arraylen(itemsToBeAdded) && arrayLen(arguments.order.getFirstShippingFulfillmentArray()) ){
+					var fulfillmentArray = arguments.order.getFirstShippingFulfillmentArray();
+									
+					for(var item in itemsToBeAdded){
+						var sku = getService('skuService').getSku(item.skuID);
+						if(isNull(sku)){
+							continue;
+						}
+						
+						var newOrderItem = getService("OrderService").newOrderItem();
+						newOrderItem.setPrice(0);
+						newOrderItem.setSkuPrice(0);
+						newOrderItem.setUserDefinedPriceFlag(true);
+						newOrderItem.setOrderItemType( getService('typeService').getTypeBySystemCode('oitSale') );
+						newOrderItem.setOrderFulfillment( fulfillmentArray[1] );
+						newOrderItem.setQuantity( item.quantity );
+						newOrderItem.setSku(sku);
+						newOrderItem.setOrder(arguments.order);
+						getService('orderService').saveOrderItem(newOrderItem);
+						if(!newOrderItem.hasErrors() && !arguments.order.hasErrors()){
+							getHibachiScope().flushORMSession();
+						}
+					}
+					
+					itemsToBeAdded = [];
+				}
 				
 				if(arrayLen(orderQualifierMessages)){
 					getHibachiScope().flushOrmSession();
@@ -1725,12 +1734,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public void function processAfterAddOrderItemPromotions(required any order, required boolean ormHasflushed){
-		
-		var hasPromoItemsToAdd = getHibachiScope().hasValue('promoItemsToBeAdded') && arrayLen(getHibachiScope().getValue('promoItemsToBeAdded'))
+
 		var freeItemsPromoHasRan = getHibachiScope().hasValue('afterOrderItemPromoHasRan') && getHibachiScope().getValue('afterOrderItemPromoHasRan');
 		var orderHasErrors = arguments.order.hasErrors();
 		
-		if(!hasPromoItemsToAdd || freeItemsPromoHasRan || orderHasErrors || getHibachiScope().ORMHasErrors()){
+		if(freeItemsPromoHasRan || orderHasErrors || getHibachiScope().ORMHasErrors()){
 			return;
 		}else{
 			arguments.order.clearProcessObject("addOrderItem");
