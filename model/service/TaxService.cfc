@@ -345,10 +345,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						if(totalItemTax > originalOrderItem.getTaxAmountNotRefunded()){
 							taxAmount -= totalItemTax - originalOrderItem.getTaxAmountNotRefunded();
 							taxAdjusted = true;
-						}else if(totalItemTax == getService('HibachiUtilityService').precisionCalculate(originalOrderItem.getTaxAmountNotRefunded() - 0.01)){
-							taxAmount += 0.01;
-							totalItemTax += 0.01;
-							taxAdjusted = true;
 						}
 						
 						newAppliedTax.setTaxLiabilityAmount( taxamount );
