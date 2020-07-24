@@ -421,11 +421,44 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				skuID: skuRecord.skuID,
 				orderID: arguments.order.getOrderID(),
 				userDefinedPriceFlag: true,
-				price:0
+				price:0,
+				promotionReward: arguments.promotionReward
 			}
 			arrayAppend(arguments.itemsToBeAdded, addOrderItemData);
 		}
 		
+	}
+	
+	public void function addRewardSkusToOrder(required array itemsToBeAdded, required any order, required any fulfillment,required array promotionRewards){
+		var skuService = getService('skuService');
+		for(var item in arguments.itemsToBeAdded){
+			var sku = skuService.getSku(item.skuID);
+			if(isNull(sku)){
+				continue;
+			}
+			
+			var newOrderItem = getService("OrderService").newOrderItem();
+			newOrderItem.setPrice(0);
+			newOrderItem.setSkuPrice(0);
+			newOrderItem.setUserDefinedPriceFlag(true);
+			newOrderItem.setOrderItemType( getService('typeService').getTypeBySystemCode('oitSale') );
+			newOrderItem.setOrderFulfillment( arguments.fulfillment );
+			newOrderItem.setQuantity( item.quantity );
+			newOrderItem.setSku(sku);
+			newOrderItem.setOrder(arguments.order);
+			newOrderItem.setTemporaryFlag(true);
+			getService('orderService').saveOrderItem(newOrderItem);
+			if(!newOrderItem.hasErrors() && !arguments.order.hasErrors()){
+				getHibachiScope().flushORMSession();
+				var data = {
+					promotion: promo,
+					promotionReward: "rewardSku",
+					order: arguments.order,
+					discountAmount: 0
+				}
+				applyPromotionToOrderItem(newOrderItem,data);
+			}
+		}
 	}
 	
 	public void function updateOrderAmountsWithPromotions(required any order) {
@@ -561,31 +594,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				ArraySort(orderQualifiedDiscounts, rewardSortFunction);
 				applyOrderDiscounts(arguments.order, orderQualifiedDiscounts, orderQualifierMessages);
 				
-				if( arraylen(itemsToBeAdded) && arrayLen(arguments.order.getFirstShippingFulfillmentArray()) ){
-					var fulfillmentArray = arguments.order.getFirstShippingFulfillmentArray();
-									
-					for(var item in itemsToBeAdded){
-						var sku = getService('skuService').getSku(item.skuID);
-						if(isNull(sku)){
-							continue;
-						}
-						
-						var newOrderItem = getService("OrderService").newOrderItem();
-						newOrderItem.setPrice(0);
-						newOrderItem.setSkuPrice(0);
-						newOrderItem.setUserDefinedPriceFlag(true);
-						newOrderItem.setOrderItemType( getService('typeService').getTypeBySystemCode('oitSale') );
-						newOrderItem.setOrderFulfillment( fulfillmentArray[1] );
-						newOrderItem.setQuantity( item.quantity );
-						newOrderItem.setSku(sku);
-						newOrderItem.setOrder(arguments.order);
-						newOrderItem.setTemporaryFlag(true);
-						getService('orderService').saveOrderItem(newOrderItem);
-						if(!newOrderItem.hasErrors() && !arguments.order.hasErrors()){
-							getHibachiScope().flushORMSession();
-						}
-					}
-					
+				if( arraylen(itemsToBeAdded) && arrayLen(arguments.order.getFirstShippingFulfillment()) ){
+					addRewardSkusToOrder(itemsToBeAdded,arguments.order, arguments.order.getFirstShippingFulfillment()[1]);
 					itemsToBeAdded = [];
 				}
 				

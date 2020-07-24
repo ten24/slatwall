@@ -2478,16 +2478,20 @@ public numeric function getPersonalVolumeSubtotal(){
 	
 	//Returns an array of one shipping fulfillment if there is a shipping fulfillment on the order, otherwise it returns an empty array
 	public array function getFirstShippingFulfillment(){
-		var shippingFulfillmentArray = [];
-		var fulfillments = this.getOrderFulfillments() ?:[];
-		for(var fulfillment in fulfillments){
-			if(!isNull(fulfillment.getFulfillmentMethod()) && fulfillment.getFulfillmentMethod().getFulfillmentMethodType() =='shipping'){
-				arrayAppend(shippingFulfillmentArray, fulfillment);
-				break;
+		
+		if(isNull(variables.firstShippingFulfillmentArray)){
+			var shippingFulfillmentArray = [];
+			var fulfillments = this.getOrderFulfillments() ?:[];
+			for(var fulfillment in fulfillments){
+				if(!isNull(fulfillment.getFulfillmentMethod()) && fulfillment.getFulfillmentMethod().getFulfillmentMethodType() =='shipping'){
+					arrayAppend(shippingFulfillmentArray, fulfillment);
+					break;
+				}
 			}
+			variables.firstShippingFulfillmentArray = shippingFulfillmentArray;
 		}
 		
-		return shippingFulfillmentArray
+		return variables.firstShippingFulfillmentArray;
 	}
 	
 	public boolean function validateActiveStatus(){

@@ -1751,7 +1751,7 @@ component  accessors="true" output="false"
         
         var addressOptions = {};
         var cacheKey = 'PublicService.getAddressOptionsByCountryCode#arguments.data.countryCode#';
-        if(getHibachiCacheService().hasCachedValue(cacheKey)){
+        if(false){
           addressOptions = getHibachiCacheService().getCachedValue(cacheKey);
         }else{
           var country = getAddressService().getCountry(data.countryCode);
