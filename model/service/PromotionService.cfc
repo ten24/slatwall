@@ -401,25 +401,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var skuRewardQuantity = arguments.promotionReward.getRewardSkuQuantity() ?: 0;
 		
 		//if this promo reward has already been processed in the request, or it has no reward sku's /quantity return
-		if(
-			(
-				getHibachiScope().hasValue('processedRewardSkuPromotionIDs') 
-				&& listContains(getHibachiScope().getValue('processedRewardSkuPromotionIDs'), arguments.promotionReward.getPromotionRewardID())  
-			)
-			|| isNull(rewardSkusCollection)
-			|| skuRewardQuantity <= 0
-		){
+		if( isNull(rewardSkusCollection) || skuRewardQuantity <= 0 ){
 			return;
-		}else if(getHibachiScope().hasValue('processedRewardSkuPromotionIDs')){ 
-			//if it has a value but not the current PromotionRewardID, append it
-			listAppend(getHibachiScope().getValue('processedRewardSkuPromotionIDs'), arguments.promotionReward.getPromotionRewardID());
-		}else{
-			//if there is no value, set it to the current PromotionRewardID	
-			getHibachiScope().setValue('processedRewardSkuPromotionIDs', arguments.promotionReward.getPromotionRewardID());
-		}
-		
-		if(!getHibachiScope().hasValue('promoItemsToBeAdded')){
-			getHibachiScope().setValue('promoItemsToBeAdded', []);
 		}
 		
 		//the skus to be added to the order
@@ -514,7 +497,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				
 				// This is an array of qualifier messages for qualifiers not met by the order
 				var orderQualifierMessages = [];
-	
+				
 				setupOrderItemQualifiedDiscounts(arguments.order, orderItemQualifiedDiscounts);
 
 				// Loop over all Potential Discounts that require qualifications
@@ -522,6 +505,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				var orderRewards = false;
 				for(var pr=1; pr<=arrayLen(promotionRewards); pr++) {
 					var reward = promotionRewards[pr];
+					
+					//Promotional items to be added at the end of the loop
+					var itemsToBeAdded = [];
 					if(arguments.order.hasOrderTemplate() && ((!orderRewards && reward.getRewardType() != 'order') || (orderRewards && reward.getRewardType() == 'order') ) ){
 						logHibachi('Checking #reward.getRewardType()# reward for #reward.getPromotionPeriod().getPromotion().getPromotionName()#');
 					}
@@ -561,7 +547,32 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						pr = 0;
 						orderRewards = true;
 					}
-	
+					
+					
+					if(arraylen(itemsToBeAdded) && arrayLen(arguments.order.getFirstShippingFulfillmentArray())){
+						var fulfillment = arguments.order.getFirstShippingFulfillmentArray();
+						
+						for(var item in itemsToBeAdded){
+							var sku = getService('skuService').getSku(item.skuID);
+							if(isNull(sku)){
+								continue;
+							}
+							
+							var newOrderItem = getService("OrderService").newOrderItem();
+							newOrderItem.setPrice(0);
+							newOrderItem.setSkuPrice(0);
+							newOrderItem.setUserDefinedPriceFlag(true);
+							newOrderItem.setOrderItemType( getTypeService().getTypeBySystemCode('oitSale') );
+							newOrderItem.setOrderFulfillment( fulfillment );
+							newOrderItem.setQuantity( item.quantity );
+							newOrderItem.setSku(sku);
+							newOrderItem.setOrder(arguments.order);
+							getService('orderService').saveOrderItem(newOrderItem);
+							if(!newOrderItem.hasErrors() && !arguments.order.hasErrors()){
+								getHibachiScope().flushORMSession();
+							}
+						}
+					}
 				} // END of PromotionReward Loop
 				getHibachiScope().flushORMSession();
 				
