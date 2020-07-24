@@ -80,11 +80,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
  		for(var orderItem in arguments.order.getOrderItems()){
  			orderItemIDList = listAppend(orderItemIDList,orderItem.getSku().getSkuID());
  			for(var appliedPromotion in orderItem.getAppliedPromotions()){
- 				orderItemIDList = listAppend(orderItemIDList,appliedPromotion.getPromotionAppliedID());
+ 				orderItemIDList = listAppend(orderItemIDList,appliedPromotion.getDiscountAmount());
  			}
  		}
  		for(var appliedPromotion in arguments.order.getAppliedPromotions()){
- 			orderItemIDList = listAppend(orderItemIDList,appliedPromotion.getPromotionAppliedID());
+ 			orderItemIDList = listAppend(orderItemIDList,appliedPromotion.getDiscountAmount());
  		}
  		
  		var orderFulfillmentList ="";
@@ -104,8 +104,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
  			orderFulfillmentList = listAppend(orderFulfillmentList,orderFulfillment.getFulfillmentCharge());
  		}
  		
-
- 		
  		var taxRateCacheKey = hash(taxAddressList&orderItemIDList&taxIntegrationIDList&orderFulfillmentList&arguments.order.getTotalItemQuantity()&arguments.order.getSubtotal(),'md5');
 
 		var newCacheKey = true;
@@ -117,6 +115,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		if(!newCacheKey){
 			return;
+		}else{
+			arguments.order.setTaxRateCacheKey(taxRateCacheKey);
+			QueryExecute("UPDATE sworder SET taxRateCacheKey = '#taxRateCacheKey#' WHERE orderID = '#arguments.order.getOrderID()#'");
 		}
 		
 		var hasOrderFulfillmentList = len(orderFulfillmentList);
@@ -130,7 +131,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		
-		arguments.order.setTaxRateCacheKey(taxRateCacheKey);
 		//Remove existing taxes from OrderItems and OrderFulfillments
 		removeTaxesFromAllOrderItemsAndOrderFulfillments(arguments.order);
 
