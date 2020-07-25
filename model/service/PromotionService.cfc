@@ -422,7 +422,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				orderID: arguments.order.getOrderID(),
 				userDefinedPriceFlag: true,
 				price:0,
-				promotionReward: arguments.promotionReward
+				promotionReward: arguments.promotionReward,
+				promotion: arguments.promotionReward.getPromotionPeriod().getPromotion()
 			}
 			arrayAppend(arguments.itemsToBeAdded, addOrderItemData);
 		}
@@ -451,14 +452,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			if(!newOrderItem.hasErrors() && !arguments.order.hasErrors()){
 				getHibachiScope().flushORMSession();
 				var data = {
-					promotion: promo,
+					promotionReward: promotionReward,
 					promotionReward: "rewardSku",
-					order: arguments.order,
-					discountAmount: 0
+					discountAmount: 0,
+					promotion:item.promo
 				}
-				applyPromotionToOrderItem(newOrderItem,data);
+		
+				applyPromotionToOrderItem(newOrderItem, data);
 			}
 		}
+		arguments.itemsToBeAdded = [];
 	}
 	
 	public void function updateOrderAmountsWithPromotions(required any order) {
