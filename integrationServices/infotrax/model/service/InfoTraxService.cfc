@@ -322,7 +322,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 			'volume9'           = arguments.order.getFulfillmentChargeTotal(), // Handling Fee
 			'orderType'         = formatOrderType(arguments.order),//Type of order. W for regular order, R for retail, X for exchange, R for replacement, and C for RMA.
 			'periodDate'        = arguments.order.getCommissionPeriod(),//Volume period date of the order (YYYYMM). This will get assigned to the default volume period if not included
-			'DIST_STATUS'       = formatDistributorType(arguments.order.getAccount().getAccountType())
+			'distType'       = formatDistributorType(arguments.order.getAccount().getAccountType())
 		};
 		
 		if( transactionData['transactionType'] == 'C' && len(arguments.order.getReferencedOrder().getIceRecordNumber())){
