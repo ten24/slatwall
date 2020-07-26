@@ -419,18 +419,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var addOrderItemData = {
 				quantity: skuRewardQuantity,
 				skuID: skuRecord.skuID,
-				orderID: arguments.order.getOrderID(),
-				userDefinedPriceFlag: true,
+				order: arguments.order,
 				price:0,
 				promotionReward: arguments.promotionReward,
-				promotion: arguments.promotionReward.getPromotionPeriod().getPromotion()
+				promotion: arguments.promotionReward.getPromotionPeriod().getPromotion(),
+				promotionRewardID: arguments.promotionReward.getPromotionRewardID()
 			}
 			arrayAppend(arguments.itemsToBeAdded, addOrderItemData);
 		}
 		
 	}
 	
-	public void function addRewardSkusToOrder(required array itemsToBeAdded, required any order, required any fulfillment,required array promotionRewards){
+	public void function addRewardSkusToOrder(required array itemsToBeAdded, required any order, required any fulfillment){
 		var skuService = getService('skuService');
 		for(var item in arguments.itemsToBeAdded){
 			var sku = skuService.getSku(item.skuID);
@@ -449,16 +449,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			newOrderItem.setOrder(arguments.order);
 			newOrderItem.setTemporaryFlag(true);
 			getService('orderService').saveOrderItem(newOrderItem);
+			var rewardID = '';
 			if(!newOrderItem.hasErrors() && !arguments.order.hasErrors()){
 				getHibachiScope().flushORMSession();
-				var data = {
-					promotionReward: promotionReward,
-					promotionReward: "rewardSku",
-					discountAmount: 0,
-					promotion:item.promo
+				if(item.promotionReward.getPromotionRewardID() != rewardID){
+					rewardID = item.promotionReward.getPromotionRewardID();
+					var data = {
+						promotionReward: item.promotionReward,
+						discountAmount: 0,
+						promotion:item.promotion
+					}
+					applyPromotionToOrder(item.order, data);
 				}
-		
-				applyPromotionToOrderItem(newOrderItem, data);
 			}
 		}
 		arguments.itemsToBeAdded = [];
