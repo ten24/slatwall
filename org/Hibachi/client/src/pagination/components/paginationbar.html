@@ -38,15 +38,17 @@
 		                <label class="control-label col-xs-4">View</label>
 		                <div class="col-xs-5 s-no-padding-right">
 		                    <span class="s-select-wrapper">
-		                        <select size="1" class="form-control input-sm" name="pageShowOptions" aria-controls="" class="form-control" ng-model="swPaginationBar.paginator.selectedPageShowOption" ng-options="pageShowOption as pageShowOption.display for pageShowOption in swPaginationBar.paginator.pageShowOptions"
-		                        ng-change="swPaginationBar.paginator.pageShowOptionChanged(swPaginationBar.paginator.getSelectedPageShowOption())">
+		                        <select size="1" class="form-control input-sm" name="pageShowOptions" aria-controls="" class="form-control" 
+		                            ng-model="swPaginationBar.paginator.selectedPageShowOption" 
+		                            ng-options="pageShowOption as pageShowOption.display for pageShowOption in swPaginationBar.paginator.pageShowOptions"
+		                            ng-change="swPaginationBar.paginator.pageShowOptionChanged(swPaginationBar.paginator.getSelectedPageShowOption())">
 		                        </select>
 		                    </span>
 						</div>
 		                <div class="col-xs-3 s-no-padding-right">
 							<!-- Documentation: Optional toggle flag to fetch all records  ng-show="swPaginationBar.paginationService.showToggleDisplayOptions" -->
 							<span sw-tooltip class="col-xs-5 tool-tip-item" data-text="Toggle Records Count" data-position="right">
-								<button class="btn btn-sm btn-default" type="button" data-ng-click="swPaginationBar.toggleCountLimit()">
+								<button class="btn btn-sm btn-default" type="button" data-ng-click="swPaginationBar.toggleCountLimit(); $event.stopPropagation();">
 									<i class="fa fa-list" ng-if="swPaginationBar.limitCountTotal > 0"></i>
 									<i class="fa fa-list-alt" ng-if="swPaginationBar.limitCountTotal === 0"></i>
 								</button>
@@ -65,8 +67,8 @@
 				++++<span ng-bind="swPaginationBar.paginator.selectedPageShowOption.display"></span>
 				-->
 		        <ul class="pagination pagination-sm" ng-show="swPaginationBar.paginator.pageShowOptions.selectedPageShowOption.value !== 'Auto'">
-		            <li ng-click="swPaginationBar.paginator.previousPage()" ng-class="{disabled:swPaginationBar.paginator.hasPrevious()}">
-		                <a href="">&laquo;</a>
+		            <li ng-class="{disabled:swPaginationBar.paginator.hasPrevious()}">
+		                <a href="javascript:void(0)" ng-click="swPaginationBar.paginator.previousPage(); $event.stopPropagation();" >&laquo;</a>
 		            </li>
 					<!-- For now, commenting this functionality on the html only. Since any search result beyond 250 isn't going to be navigable/UX friendly using these buttons, this may need to be removed in slatwall core merge. Encourage useers to further filter down search criteria instead.
 					
@@ -89,7 +91,7 @@
 		            </li>
 					-->
 		            <li ng-class="{disabled:swPaginationBar.paginator.hasNext()}">
-		                <a href="javascript:void(0)" ng-click="swPaginationBar.paginator.nextPage()">&raquo;</a>
+		                <a href="javascript:void(0)" ng-click="swPaginationBar.paginator.nextPage(); $event.stopPropagation();">&raquo;</a>
 		            </li>
 		
 		        </ul>

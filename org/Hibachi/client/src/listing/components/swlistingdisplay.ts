@@ -395,28 +395,24 @@ class SWListingDisplayController{
         
         if(!this.hideUnfilteredResults || this.searchText || this.configHasFilters(this.collectionConfig) ){
             if(state.type){
-                switch(state.type){
-                    case 'setCurrentPage':
-                        this.collectionConfig.currentPage = state.payload;
-                        break;
-                    case 'nextPage':
-                        this.collectionConfig.currentPage = state.payload;
-                        break;
-                    case 'prevPage':
-                        this.collectionConfig.currentPage = state.payload;
-                        break;
-                    case 'setPageShow':
-                        this.collectionConfig.currentPage = 1;
-                        this.collectionConfig.setPageShow(state.payload);
-                        break;
-                }
-                if(this.collectionId){
                 
+                //Q: It doesn't make sense Here.
+                if(this.collectionId){
                     this.collectionConfig.baseEntityNameType = 'Collection';
                     this.collectionConfig.id = this.collectionId;
                 }
                 
-                this.refreshListingDisplay();
+                switch(state.type){
+                    case 'setCurrentPage':
+                        this.collectionConfig.currentPage = state.payload;
+                            this.refreshListingDisplay();
+                        break;
+                    case 'setPageShow':
+                        this.collectionConfig.currentPage = 1;
+                        this.collectionConfig.setPageShow(state.payload);
+                            this.refreshListingDisplay();
+                        break;
+                }
             }
         } 
         else {
