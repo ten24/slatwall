@@ -235,7 +235,6 @@ class SWEditFilterItem{
                     if(scope.filterItem.$$isNew === true){
                         scope.removeFilterItem({filterItemIndex:scope.filterItemIndex});
                     }else{
-                        filterGroupsController.swListingControls
                         observerService.notifyById('filterItemAction', filterGroupsController.swListingControls.tableId, {action: 'close',filterItemIndex:scope.filterItemIndex});
                     }
                 };
