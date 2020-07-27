@@ -76,7 +76,7 @@ class SWListingControlsController {
             metadataService.formatPropertiesList(this.filterPropertiesList[this.collectionConfig.baseEntityAlias], this.collectionConfig.baseEntityAlias);
         });
 
-        this.observerService.attach(this.filterActions, 'filterItemAction');
+        this.observerService.attach(this.filterActions, 'filterItemAction', this.tableId);
 
     }
     public filterActions =(res)=>{

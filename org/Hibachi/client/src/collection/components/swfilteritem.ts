@@ -31,17 +31,17 @@ class SWFilterItem{
 		}
 		scope.filterItem.setItemInUse = filterGroupsController.setItemInUse;
 
-		scope.selectFilterItem = function(filterItem){
+		scope.selectFilterItem = (filterItem) => {
 			this.collectionService.selectFilterItem(filterItem);
 		};
 
-		scope.removeFilterItem = function(){
+		scope.removeFilterItem = () => {
 			filterGroupsController.removeFilterItem(scope.filterItemIndex,filterGroupsController.getFilterGroupItem());
 		};
 
 		scope.filterGroupItem = filterGroupsController.getFilterGroupItem();
 
-		scope.logicalOperatorChanged = function(logicalOperatorValue){
+		scope.logicalOperatorChanged = (logicalOperatorValue) => {
 			this.$log.debug('logicalOperatorChanged');
 			this.$log.debug(logicalOperatorValue);
 			scope.filterItem.logicalOperator = logicalOperatorValue;
@@ -54,7 +54,7 @@ class SWFilterItem{
 	}
     
     // 	@ngInject;
-	constructor( $log, collectionService ){
+	constructor( private $log, private collectionService ){
 	}
 }
 export{

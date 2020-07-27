@@ -216,7 +216,7 @@ class SWEditFilterItem{
                     scope.selectedFilterProperty = selectedFilterProperty;
                 };
 
-                scope.addFilterItem = function(){
+                scope.addFilterItem = () => {
                     collectionService.newFilterItem(filterGroupsController.swFilterGroups.getFilterGroupItem(),filterGroupsController.swFilterGroups.setItemInUse);
                     this.observerService.notify('collectionConfigUpdated', {
                         collectionConfig: collectionService
@@ -235,7 +235,8 @@ class SWEditFilterItem{
                     if(scope.filterItem.$$isNew === true){
                         scope.removeFilterItem({filterItemIndex:scope.filterItemIndex});
                     }else{
-                        observerService.notify('filterItemAction', {action: 'close',filterItemIndex:scope.filterItemIndex});
+                        filterGroupsController.swListingControls
+                        observerService.notifyById('filterItemAction', filterGroupsController.swListingControls.tableId, {action: 'close',filterItemIndex:scope.filterItemIndex});
                     }
                 };
 
@@ -450,8 +451,17 @@ class SWEditFilterItem{
                         var timeoutpromise = $timeout(function(){
                             callback();
                         });
+                        
                         timeoutpromise.then(()=>{
-                            observerService.notify('filterItemAction', {action: 'add',filterItemIndex:scope.filterItemIndex,collectionConfig:this.collectionConfig});
+                           
+                            observerService.notifyById( 'filterItemAction', filterGroupsController.swListingControls.tableId, 
+                                {
+                                    action: 'add',
+                                    filterItemIndex:scope.filterItemIndex,
+                                    collectionConfig:this.collectionConfig
+                                }
+                            );
+                            
                         });
 
 
