@@ -1659,7 +1659,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                 'upgradedPriceGroupCode': upgradedPriceGroupCode,
                 'qats': record.skus_stocks_calculatedQATS,
                 'calculatedAllowBackorderFlag': record.calculatedAllowBackorderFlag,
-                'displayOnlyFlag': record.skus_displayOnlyFlag
+                'displayOnlyFlag': record.skus_displayOnlyFlag,
+                'uuid': getHibachiScope().createHibachiUUID()
             };
             
             //add skuID's to skuID array for query below
