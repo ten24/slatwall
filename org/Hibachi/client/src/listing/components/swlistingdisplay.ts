@@ -172,6 +172,7 @@ class SWListingDisplayController{
     public $onInit = () => {
         // giving it a time-out to run this code in next digest-cycle, so everything is rendered 
         this.$timeout( () =>  this.startLoading() );
+        
     }
     
     public refreshListingDisplay = () => {
@@ -283,6 +284,7 @@ class SWListingDisplayController{
             this.multiSlot = false;
             
             this.startLoading();
+            
             personalCollection.getEntity().then((data)=>{
                 if(data.pageRecords.length){
 
@@ -416,8 +418,9 @@ class SWListingDisplayController{
                 
                 this.refreshListingDisplay();
             }
-        }else{
-            this.collectionData = null;
+        } 
+        else {
+            this.setCollectionData(null);
         }
     }
 
@@ -429,13 +432,12 @@ class SWListingDisplayController{
 
         this.paginator.getCollection = this.getCollection;
 
-        var getCollectionEventID = this.tableID;
-
+        // var getCollectionEventID = this.tableID;
         //this.observerService.attach(this.getCollectionObserver,'getCollection',getCollectionEventID);
         if(!this.hideUnfilteredResults || this.searchText || this.configHasFilters(this.collectionConfig) ){
             this.listingService.getCollection(this.tableID);
         }else{
-            this.collectionData = null;
+            this.setCollectionData(null);
         }
     }
 
@@ -455,7 +457,7 @@ class SWListingDisplayController{
                 }
             );
         }else{
-            this.collectionData = null;
+            this.setCollectionData(null);
         }
     };
 
