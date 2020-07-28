@@ -164,17 +164,6 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		return structKeyExists(mapping, arguments.accountType) ? mapping[arguments.accountType] : 'C';
 	}
 	
-	public string function formatDistributorTypeFromPriceGroupCode(required string priceGroupCode){
-		
-		var mapping = {
-			'1' = 'D',
-			'3' = 'P',
-			'2' = 'C'
-		};
-		
-		return structKeyExists(mapping, arguments.priceGroupCode) ? mapping[arguments.priceGroupCode] : 'C';
-	}
-	
 	public string function distributorTypeToAccountType(required string distType){
 
 		var mapping = {
@@ -332,7 +321,8 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 			'volume8'           = 0,
 			'volume9'           = arguments.order.getFulfillmentChargeTotal(), // Handling Fee
 			'orderType'         = formatOrderType(arguments.order),//Type of order. W for regular order, R for retail, X for exchange, R for replacement, and C for RMA.
-			'periodDate'        = arguments.order.getCommissionPeriod()//Volume period date of the order (YYYYMM). This will get assigned to the default volume period if not included
+			'periodDate'        = arguments.order.getCommissionPeriod(),//Volume period date of the order (YYYYMM). This will get assigned to the default volume period if not included
+			'distType'       = formatDistributorType(arguments.order.getAccountType())
 		};
 		
 		if( transactionData['transactionType'] == 'C' && len(arguments.order.getReferencedOrder().getIceRecordNumber())){
@@ -341,10 +331,6 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		
 		if(len(arguments.order.getIceRecordNumber())){
 			transactionData['recordNumber'] = arguments.order.getIceRecordNumber()
-		}
-		
-		if( !isNull(arguments.order.getPriceGroup()) ){
-			transactionData['distType'] = formatDistributorTypeFromPriceGroupCode(arguments.order.getPriceGroup().getPriceGroupCode());
 		}
 		
 		return transactionData;
