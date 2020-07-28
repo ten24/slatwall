@@ -256,6 +256,10 @@ component extends="HibachiService" accessors="true" output="false" {
 					
 					var scheduleCollection = arguments.workflowTrigger.getCollection();
 					var currentObjectName = arguments.workflowTrigger.getCollection().getCollectionObject();
+					
+					if(currentObjectName == 'EntityQueue' && isNumeric(arguments.workflowTrigger.getMaxTryCount())){
+						scheduleCollection.addFilter('tryCount', arguments.workflowTrigger.getMaxTryCount());
+					}
 				
 					if(arguments.workflowTrigger.getCollectionPassthrough()){
 							
