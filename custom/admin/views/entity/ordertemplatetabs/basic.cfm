@@ -14,6 +14,10 @@
 			<hb:HibachiPropertyList>
 				<cfif rc.orderTemplate.getOrderTemplateType().getSystemCode() NEQ 'ottWishList'>
 					<div class="col-md-2">
+						<label class="control-label">#getHibachiScope().rbKey('entity.orderTemplate.flexshipNumber')#</label>
+						<p class="form-control-static">#rc.orderTemplate.getOrderTemplateNumber()#</p>
+					</div> 
+					<div class="col-md-2">
 						<label class="control-label">#getHibachiScope().rbKey('entity.orderTemplate.createdDateTime')#</label>
 						<p class="form-control-static">#DateFormat(rc.orderTemplate.getCreatedDateTime(),'mm/dd/yyyy')#</p>
 					</div> 
