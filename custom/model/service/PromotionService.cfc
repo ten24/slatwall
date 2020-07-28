@@ -71,12 +71,21 @@ component extends="Slatwall.model.service.PromotionService" {
 		newAppliedPromotion.setPromotion( arguments.rewardStruct.promotion );
 		newAppliedPromotion.setPromotionReward( arguments.rewardStruct.promotionReward );
 		newAppliedPromotion.setOrderItem( arguments.orderItem );
-
+		
+		if(!isNull(arguments.rewardStruct.sku)){
+			logHibachi('adding promotion to skuID: #arguments.rewardStruct.sku.getSkuID()#')
+			newAppliedPromotion.setRewardSku(arguments.rewardStruct.sku);
+		}
+		
 		for(var key in arguments.rewardStruct){
 			if(right(key,14) == 'DiscountAmount'){
 				newAppliedPromotion.invokeMethod('set#key#',{1=arguments.rewardStruct[key]});
 			}
 		}
+		if(!isNull(arguments.rewardStruct.savePromotion) && arguments.rewardStruct.savePromotion){
+			this.savePromotionApplied(newAppliedPromotion);
+		}
+	
 	}
 	
 	private void function processOrderRewards(required any order, required array orderQualifiedDiscounts, required any promotionReward){
@@ -308,6 +317,7 @@ component extends="Slatwall.model.service.PromotionService" {
 	}
 	
 	public void function addRewardSkusToOrder(required array itemsToBeAdded, required any order, required any fulfillment){
+		logHibachi('==============applying reward skus to order==============', true)
 		var skuService = getService('skuService');
 		for(var item in arguments.itemsToBeAdded){
 			var sku = skuService.getSku(item.skuID);
@@ -329,18 +339,17 @@ component extends="Slatwall.model.service.PromotionService" {
 			newOrderItem.setShowInCartFlag(showInCartFlag);
 			getService('orderService').saveOrderItem(newOrderItem);
 			
-			var rewardID = '';
 			if(!newOrderItem.hasErrors() && !arguments.order.hasErrors()){
 				getHibachiScope().flushORMSession();
-				if(item.promotionReward.getPromotionRewardID() != rewardID){
-					rewardID = item.promotionReward.getPromotionRewardID();
-					var data = {
-						promotionReward: item.promotionReward,
-						discountAmount: 0,
-						promotion:item.promotion
-					}
-					applyPromotionToOrder(item.order, data);
+				var data = {
+					promotionReward: item.promotionReward,
+					discountAmount: 0,
+					promotion:item.promotion,
+					sku: sku,
+					savePromotion: true
 				}
+				getHibachiScope().logHibachi('applying promotion to order item: #newOrderItem.getOrderItemID()#')
+				applyPromotionToOrderItem(newOrderItem, data);
 			}
 		}
 		arguments.itemsToBeAdded = [];

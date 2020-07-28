@@ -436,6 +436,11 @@ export class MonatService {
 				this.handleUpdateCartSuccess(data);
 				break;
 		}
+		this.hideNonPublicItems(data);
+	}
+	
+	public hideNonPublicItems(data: { ["cart"]: Cart; [key: string]: any }){
+		data.cart.orderItems = data.cart.orderItems.filter( item => item.showInCartFlag);
 	}
 
 	public handleAddOrderItemSuccess(data: { ["cart"]: any; [key: string]: any }): void {
