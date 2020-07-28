@@ -218,6 +218,7 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
     property name="commissionPeriodEndDateTime" ormtype="timestamp" hb_formatType="dateTime" hb_nullRBKey="define.forever";
     property name="secondaryReturnReasonType" cfc="Type" fieldtype="many-to-one" fkcolumn="secondaryReturnReasonTypeID"; // Intended to be used by Ops accounts
      property name="monatOrderType" cfc="Type" fieldtype="many-to-one" fkcolumn="monatOrderTypeID" hb_optionsSmartListData="f:parentType.typeID=2c9280846deeca0b016deef94a090038";
+    property name="dropSkuRemovedFlag" ormtype="boolean" default=0;
 
     property name="personalVolumeSubtotal" persistent="false";
     property name="taxableAmountSubtotal" persistent="false";
@@ -1681,6 +1682,9 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 		structDelete(variables,'rootOrderItems');
 	}
 	public void function removeOrderItem(required any orderItem) {
+		if(!isNull(arguments.orderItem.getTemporaryFlag()) && arguments.orderItem.getTemporaryFlag()){
+			this.setDropSkuRemovedFlag(true);
+		}
 		arguments.orderItem.removeOrder( this );
 		structDelete(variables,'rootOrderItems');
 	}
