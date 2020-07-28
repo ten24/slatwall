@@ -615,7 +615,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				applyOrderDiscounts(arguments.order, orderQualifiedDiscounts, orderQualifierMessages);
 
 				if( arraylen(itemsToBeAdded) && arrayLen(arguments.order.getFirstShippingFulfillment()) ){
-					logHibachi('about to add skus! ')
 					addRewardSkusToOrder(itemsToBeAdded,arguments.order, arguments.order.getFirstShippingFulfillment()[1]);
 					itemsToBeAdded = [];
 				}
