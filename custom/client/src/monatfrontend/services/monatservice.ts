@@ -414,6 +414,7 @@ export class MonatService {
 	}
 
 	public updateCartPropertiesOnService(data: { ["cart"]: any; [key: string]: any }) {
+		data = this.hideNonPublicItems(data);
 		this.cart = data.cart;
 		// prettier-ignore
 		this.cart['purchasePlusMessage'] = data.cart.appliedPromotionMessages ? data.cart.appliedPromotionMessages.filter( message => message.promotionName.indexOf('Purchase Plus') > -1 )[0] : {};
@@ -436,11 +437,17 @@ export class MonatService {
 				this.handleUpdateCartSuccess(data);
 				break;
 		}
-		this.hideNonPublicItems(data);
 	}
 	
 	public hideNonPublicItems(data: { ["cart"]: Cart; [key: string]: any }){
-		data.cart.orderItems = data.cart.orderItems.filter( item => item.showInCartFlag);
+		data.cart.orderItems = data.cart.orderItems.filter( item => {
+			if(!item.showInCartFlag){
+				data.cart.totalItemQuantity -= item.quantity;
+			}
+			return item.showInCartFlag;
+		});
+		
+		return data;
 	}
 
 	public handleAddOrderItemSuccess(data: { ["cart"]: any; [key: string]: any }): void {
