@@ -291,6 +291,8 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 						value=iceResponse['recordNumber'], 
 						cfsqltype='cf_sql_varchar'
 					};
+				}else{
+					logHibachi('InfoTrax - NO recordNumber for #filter# - Response: #serializeJson(iceResponse)#');
 				}
 			}
 			
