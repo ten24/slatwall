@@ -613,7 +613,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 									
 				ArraySort(orderQualifiedDiscounts, rewardSortFunction);
 				applyOrderDiscounts(arguments.order, orderQualifiedDiscounts, orderQualifierMessages);
-				logHibachi('should we apply reward skus: #arraylen(itemsToBeAdded)# && #arrayLen(arguments.order.getFirstShippingFulfillment())#')
+
 				if( arraylen(itemsToBeAdded) && arrayLen(arguments.order.getFirstShippingFulfillment()) ){
 					logHibachi('about to add skus! ')
 					addRewardSkusToOrder(itemsToBeAdded,arguments.order, arguments.order.getFirstShippingFulfillment()[1]);
@@ -984,7 +984,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			qualificationsMeet = true,
 			qualifiedFulfillmentIDs = [],
 			qualifierDetails = [],
-			orderItems = {},
+			orderItems = {}
 		};
 
 		for(var orderFulfillment in arguments.order.getOrderFulfillments()) {
