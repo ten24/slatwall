@@ -418,7 +418,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		for(var skuRecord in rewardSkusCollection){
 			var addOrderItemData = {
 				quantity: skuRewardQuantity,
-				skuID: skuRecord.skuID,
+				skuID: skuRecord['skuID'],
 				order: arguments.order,
 				price:0,
 				promotionReward: arguments.promotionReward,
