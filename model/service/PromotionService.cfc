@@ -412,7 +412,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		//the skus to be added to the order
-		rewardSkusCollection = rewardSkusCollection.getRecords();
+		rewardSkusCollection = rewardSkusCollection.getRecords(formatRecords=false);
 		var orderService = getService("OrderService");
 		
 		for(var skuRecord in rewardSkusCollection){
