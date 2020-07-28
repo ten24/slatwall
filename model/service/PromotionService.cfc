@@ -472,9 +472,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					promotionReward: item.promotionReward,
 					discountAmount: 0,
 					promotion:item.promotion,
-					sku:sku
+					sku:sku,
+					savePromotion: true
 				}
-				getHibachiScope().logHibachi('applying promotion to order item: #newOrderItem.getOrderItemID()#')
 				applyPromotionToOrderItem(newOrderItem, data);
 			}
 		}
@@ -660,6 +660,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		newAppliedPromotion.setDiscountAmount( arguments.rewardStruct.discountAmount );
 		if(!isNull(arguments.rewardStruct.sku)){
 			newAppliedPromotion.setRewardSku(arguments.rewardStruct.sku);
+		}
+		
+		if(!isNull(arguments.rewardStruct.savePromotion) && arguments.rewardStruct.savePromotion){
+			this.savePromotionApplied(newAppliedPromotion);
 		}
 	}
 	

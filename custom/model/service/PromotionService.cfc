@@ -73,7 +73,6 @@ component extends="Slatwall.model.service.PromotionService" {
 		newAppliedPromotion.setOrderItem( arguments.orderItem );
 		
 		if(!isNull(arguments.rewardStruct.sku)){
-			logHibachi('adding promotion to skuID: #arguments.rewardStruct.sku.getSkuID()#')
 			newAppliedPromotion.setRewardSku(arguments.rewardStruct.sku);
 		}
 		
@@ -82,6 +81,7 @@ component extends="Slatwall.model.service.PromotionService" {
 				newAppliedPromotion.invokeMethod('set#key#',{1=arguments.rewardStruct[key]});
 			}
 		}
+		
 		if(!isNull(arguments.rewardStruct.savePromotion) && arguments.rewardStruct.savePromotion){
 			this.savePromotionApplied(newAppliedPromotion);
 		}
@@ -317,7 +317,6 @@ component extends="Slatwall.model.service.PromotionService" {
 	}
 	
 	public void function addRewardSkusToOrder(required array itemsToBeAdded, required any order, required any fulfillment){
-		logHibachi('==============applying reward skus to order==============', true)
 		var skuService = getService('skuService');
 		for(var item in arguments.itemsToBeAdded){
 			var sku = skuService.getSku(item.skuID);
@@ -348,7 +347,6 @@ component extends="Slatwall.model.service.PromotionService" {
 					sku: sku,
 					savePromotion: true
 				}
-				getHibachiScope().logHibachi('applying promotion to order item: #newOrderItem.getOrderItemID()#')
 				applyPromotionToOrderItem(newOrderItem, data);
 			}
 		}
