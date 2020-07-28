@@ -1682,7 +1682,11 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 		structDelete(variables,'rootOrderItems');
 	}
 	public void function removeOrderItem(required any orderItem) {
-		if(!isNull(arguments.orderItem.getTemporaryFlag()) && arguments.orderItem.getTemporaryFlag()){
+		if(
+			!isNull(arguments.orderItem.getTemporaryFlag())
+			&& arguments.orderItem.getTemporaryFlag()
+			&& !arguments.orderItem.getPromotionProcessingFlag()
+		){
 			this.setDropSkuRemovedFlag(true);
 		}
 		arguments.orderItem.removeOrder( this );

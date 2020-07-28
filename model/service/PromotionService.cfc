@@ -55,8 +55,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var appliedPromotions = orderItem.getAppliedPromotions();
 			for(var appliedPromotion in appliedPromotions){
 				appliedPromotion.removeOrderItem(reciprocateFlag=false);
-				if(appliedPromotion.getPromotionReward().getRewardType() =='rewardSku' && !isNull(orderItem.getOrder())){
+				if(
+					!isNull(appliedPromotion.getPromotionReward())
+					&& appliedPromotion.getPromotionReward().getRewardType() =='rewardSku' 
+					&& !isNull(orderItem.getOrder())
+				){
 					order = orderItem.getOrder();
+					orderItem.setPromotionProcessingFlag(true);
 					order.removeOrderItem(orderItem);
 					orderService.saveOrder(order);
 				}

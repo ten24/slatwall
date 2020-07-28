@@ -146,6 +146,8 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="salePrice" type="struct" persistent="false";
 	property name="totalWeight" persistent="false";
 	property name="quantityHasChanged" persistent="false" default="0";
+	property name="promotionProcessingFlag" persistent="false" default="false";
+	
  	//CUSTOM PROPERTIES BEGIN
 property name="personalVolume" ormtype="big_decimal";
     property name="taxableAmount" ormtype="big_decimal";
