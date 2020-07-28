@@ -21,5 +21,6 @@
 		<Record updateScriptID="93a2c1defa334192b4fc4910546c1e67" scriptPath="database/ordertemplatecalculatedproperties.cfm" loadOrder="118" maxExecutionCount="1" />
 		<Record updateScriptID="b5fbc1519be1402083f0fe5291aa3a90" scriptPath="database/ordertemplatevolumecalculatedproperties.cfm" loadOrder="119" maxExecutionCount="1" />
 		<Record updateScriptID="ae3e9000a1806262a8980cc27c53f06d" scriptPath="database/customproperties_account_mp_vip_upgradeDateTime.cfm" loadOrder="120" maxExecutionCount="1" />
+		<Record updateScriptID="ae3e9000a1806262a8980cc27c53f06e" scriptPath="database/workflowtaskmaxtrycount.cfm" loadOrder="121" maxExecutionCount="1" />
 	</Records> 
 </Table>
