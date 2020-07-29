@@ -52,8 +52,14 @@ class MonatOrderItemsController {
 	
 	private updateOrderItems = (data) =>{
 		let cart = data.cart ? data.cart : data;
-
+		
 		if ( undefined !== cart.orderItems ) {
+			cart.orderItems = cart.orderItems.filter( item => {
+				if(!item.showInCartFlag){
+					data.cart.totalItemQuantity -= item.quantity;
+				}
+				return item.showInCartFlag;
+			});
 			this.orderItems = cart.orderItems;
 			this.aggregateOrderItems( cart.orderItems );
 		}

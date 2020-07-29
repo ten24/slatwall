@@ -465,17 +465,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			newOrderItem.setOrder(arguments.order);
 			newOrderItem.setTemporaryFlag(true);
 			getService('orderService').saveOrderItem(newOrderItem);
-		
+			
 			if(!newOrderItem.hasErrors() && !arguments.order.hasErrors()){
-				getHibachiScope().flushORMSession();
-				var data = {
-					promotionReward: item.promotionReward,
-					discountAmount: 0,
-					promotion:item.promotion,
-					sku:sku,
-					savePromotion: true
-				}
-				applyPromotionToOrderItem(newOrderItem, data);
+				getPromotionDAO().insertAppliedPromotionFromOrderItem(
+						orderItemID=newOrderItem.getOrderItemID(), 
+						promotionID =item.promotion.getPromotionID(),
+						promotionRewardID= item.promotionReward.getPromotionRewardID()
+					);
 			}
 		}
 		arguments.itemsToBeAdded = [];
@@ -661,9 +657,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			newAppliedPromotion.setRewardSku(arguments.rewardStruct.sku);
 		}
 		
-		if(!isNull(arguments.rewardStruct.savePromotion) && arguments.rewardStruct.savePromotion){
-			this.savePromotionApplied(newAppliedPromotion);
-		}
 	}
 	
 	private void function clearPreviouslyAppliedPromotionMessages(required any order){

@@ -81,11 +81,6 @@ component extends="Slatwall.model.service.PromotionService" {
 				newAppliedPromotion.invokeMethod('set#key#',{1=arguments.rewardStruct[key]});
 			}
 		}
-		
-		if(!isNull(arguments.rewardStruct.savePromotion) && arguments.rewardStruct.savePromotion){
-			this.savePromotionApplied(newAppliedPromotion);
-		}
-	
 	}
 	
 	private void function processOrderRewards(required any order, required array orderQualifiedDiscounts, required any promotionReward){
@@ -339,15 +334,12 @@ component extends="Slatwall.model.service.PromotionService" {
 			getService('orderService').saveOrderItem(newOrderItem);
 			
 			if(!newOrderItem.hasErrors() && !arguments.order.hasErrors()){
-				getHibachiScope().flushORMSession();
-				var data = {
-					promotionReward: item.promotionReward,
-					discountAmount: 0,
-					promotion:item.promotion,
-					sku: sku,
-					savePromotion: true
-				}
-				applyPromotionToOrderItem(newOrderItem, data);
+				
+				getPromotionDAO().insertAppliedPromotionFromOrderItem(
+						orderItemID=newOrderItem.getOrderItemID(), 
+						promotionID =item.promotion.getPromotionID(),
+						promotionRewardID= item.promotionReward.getPromotionRewardID()
+					);
 			}
 		}
 		arguments.itemsToBeAdded = [];
