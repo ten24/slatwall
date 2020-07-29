@@ -4854,7 +4854,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				paymentTransaction.setOrderPayment( arguments.orderPayment );
 
 				// Setup the transaction data
-				transactionData = {
+				var transactionData = {
 					transactionType = arguments.processObject.getTransactionType(),
 					amount = thisToCharge,
 					preAuthorizationCode = uncapturedAuthorizations[a].authorizationCode,
@@ -4884,7 +4884,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			paymentTransaction.setOrderPayment( arguments.orderPayment );
 
 			// Setup the transaction data
-			transactionData = {
+			var transactionData = {
 				transactionType = arguments.processObject.getTransactionType(),
 				amount = arguments.processObject.getAmount()
 			};
