@@ -30,11 +30,18 @@ component accessors="true" output="false" extends="HibachiService" {
 	//delegates to processEntityQueueArray so we're not maintaining one function for object and one for hash map
 	//entry point will always be from workflow which should pass collectionData  
 	public any function processEntityQueue_processQueue(required any entityQueue, struct data={}){
+		
+		var maxTryCount = 3;
+		
+		if(structKeyExists(arguments.data, 'workflowTrigger') && isNumeric(arguments.data.workflowTrigger.getMaxTryCount())){
+			maxTryCount = arguments.data.workflowTrigger.getMaxTryCount();
+		}
+		
 		if(structKeyExists(arguments.data, 'collectionData')){
-			this.processEntityQueueArray(arguments.data.collectionData); 
+			this.processEntityQueueArray(entityQueueArray=arguments.data.collectionData, maxTryCount=maxTryCount); 
 		} else if(!entityQueue.getNewFlag()){
 			var entityQueueArray = [ arguments.entityQueue.getStructRepresentation() ];
-			this.processEntityQueueArray(entityQueueArray); 
+			this.processEntityQueueArray(entityQueueArray=entityQueueArray, maxTryCount=maxTryCount); 
 		} 
 		return arguments.entityQueue;
 	}
@@ -102,7 +109,7 @@ component accessors="true" output="false" extends="HibachiService" {
 	} 
  
 
-	public any function processEntityQueueArray(required array entityQueueArray, useThread = false){
+	public any function processEntityQueueArray(required array entityQueueArray, boolean useThread = false, numeric maxTryCount = 3){
 		
 		if(!arraylen(arguments.entityQueueArray)){
 			return;
@@ -111,19 +118,19 @@ component accessors="true" output="false" extends="HibachiService" {
 		if(arguments.useThread == true && !getService('hibachiUtilityService').isInThread()){
 			var threadName = "updateCalculatedProperties_#replace(createUUID(),'-','','ALL')#";
 			thread name="#threadName#" entityQueueArray="#arguments.entityQueueArray#" {
-				processEntityQueueArray(entityQueueArray, false);
+				processEntityQueueArray(entityQueueArray=entityQueueArray, useThread=false, maxTryCount=arguments.maxTryCount);
 			}
 		}else{
 			var entityQueueIDsToBeDeleted = '';
 			var maxThreads = createObject( "java", "java.lang.Runtime" ).getRuntime().availableProcessors();
-			var entityQueueIDsToBeDeletedArray = arguments.entityQueueArray.map( function( entityQueue ){
+			var entityQueueIDsToBeDeletedArray = arguments.entityQueueArray.each( function( entityQueue ){
 				try{
 					var noMethod = !structKeyExists(entityQueue, 'processMethod') || 
 									isNull(entityQueue['processMethod']) || 
 								    !len(entityQueue['processMethod']);  
 	
 					if(noMethod) { 
-						return entityQueue['entityQueueID'];
+						return;
 					}
 				
 					var entityService = getServiceForEntityQueue(entityQueue);
@@ -141,25 +148,20 @@ component accessors="true" output="false" extends="HibachiService" {
 						ORMClearSession();
 						getHibachiScope().setORMHasErrors(false);
 					}
-					
-					return entityQueue['entityQueueID'];
+					deleteEntityQueueItem(entityQueue['entityQueueID']);
 				}catch(any e){
+				
+					if(val(entityQueue['tryCount']) >= maxTryCount){
+						getHibachiEntityQueueDAO().archiveEntityQueue(entityQueue['entityQueueID']);
+					}else{
+						getHibachiEntityQueueDAO().updateModifiedDateTimeAndMostRecentError(entityQueue['entityQueueID'], e.message);
+					}
 					
-					getHibachiEntityQueueDAO().updateModifiedDateTimeAndMostRecentError(entityQueue['entityQueueID'], e.message);
 					if(getHibachiScope().setting("globalLogMessages") == "detail"){
 						logHibachiException(e);
 					}
 				}
-			}, true, maxThreads);
-			
-			var cleanEntityQueueIDsToBeDeletedArray = entityQueueIDsToBeDeletedArray.filter(function(item){
-			    return len(item);
-			});
-			
-			if(arrayLen(cleanEntityQueueIDsToBeDeletedArray)){
-				deleteEntityQueueItems(arrayToList(cleanEntityQueueIDsToBeDeletedArray));
-			}
-
+			}, false, maxThreads);
 		}
 	}
 	
@@ -169,8 +171,8 @@ component accessors="true" output="false" extends="HibachiService" {
 		getHibachiEntityQueueDAO().insertEntityQueue(argumentCollection=arguments);
 	}
 	
-	public void function deleteEntityQueueItems(required string entityQueueID){
-		getHibachiEntityQueueDAO().deleteEntityQueues(entityQueueID);
+	public void function deleteEntityQueueItem(required string entityQueueID){
+		getHibachiEntityQueueDAO().deleteEntityQueueItem(entityQueueID);
 	}
 	
 	public void function updateModifiedDateTime(required string entityQueueID){

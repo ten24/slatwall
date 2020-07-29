@@ -221,10 +221,10 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 		queryService.execute(sql=sql);
 	}
 	
-	public void function deleteEntityQueues(required string entityQueueIDs){
+	public void function deleteEntityQueueItem(required string entityQueueID){
 		var queryService = new query();
-		queryService.addParam(name='entityQueueID',value='#arguments.entityQueueIDs#',CFSQLTYPE="CF_SQL_STRING", list="true");
-		var sql = "DELETE FROM SwEntityQueue WHERE entityQueueID IN ( :entityQueueID )";
+		queryService.addParam(name='entityQueueID',value='#arguments.entityQueueID#',CFSQLTYPE="CF_SQL_STRING", list="true");
+		var sql = "DELETE FROM SwEntityQueue WHERE entityQueueID = :entityQueueID";
 
 
 		queryService.execute(sql=sql);
@@ -241,25 +241,24 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 	}
 	
 	
-	public void function bulkInsertEntityQueueFailures(required string entityQueueIDs ){
-	
+	public void function archiveEntityQueue(required string entityQueueID ){
 	
 		var columns = 'baseObject, baseID, processMethod, entityQueueType, entityQueueDateTime, entityQueueData, mostRecentError, integrationID, createdDateTime, modifiedDateTime, createdByAccountID, modifiedByAccountID, tryCount';
 		
 		var insertQuery = new query();
 		
 		var sql = "INSERT INTO SwEntityQueueFailure (entityQueueFailureID, remoteID, #columns#) ";
-		sql &= "SELECT LOWER(REPLACE(CAST(UUID() as char character set utf8),'-','')) as entityQueueFailureID, entitQueueID as remoteID, #columns#";
-		sql &= "FROM swEntityQueue";
-		sql &= "WHERE entityQueueID IN (:entityQueueIDs)";
-		insertQuery.addParam(name='entityQueueIDs', value=arguments.entityQueueIDs, CFSQLTYPE="CF_SQL_VARCHAR", list=true);
-		var inserts = insertQuery.execute(sql=sql);
-		dd(inserts);
+		sql &= "SELECT LOWER(REPLACE(CAST(UUID() as char character set utf8),'-','')) as entityQueueFailureID, entityQueueID as remoteID, #columns# ";
+		sql &= "FROM swEntityQueue ";
+		sql &= "WHERE entityQueueID = :entityQueueID";
+		insertQuery.addParam(name='entityQueueID', value=arguments.entityQueueID, CFSQLTYPE="CF_SQL_VARCHAR");
+		insertQuery.execute(sql=sql);
+
 		
 		var deleteQuery = new query();
 		
-		sql = "DELETE FROM swEntityQueue WHERE entityQueueID IN (:entityQueueIDs)";
-		deleteQuery.addParam(name='entityQueueIDs', value=arguments.entityQueueIDs, CFSQLTYPE="CF_SQL_VARCHAR", list=true);
+		sql = "DELETE FROM swEntityQueue WHERE entityQueueID = :entityQueueID";
+		deleteQuery.addParam(name='entityQueueID', value=arguments.entityQueueID, CFSQLTYPE="CF_SQL_VARCHAR");
 		deleteQuery.execute(sql=sql);
 		
 	}	
