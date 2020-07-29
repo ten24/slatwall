@@ -306,4 +306,43 @@ component extends="Slatwall.model.service.PromotionService" {
 		    }
 		}
 	}
+	
+	public void function addRewardSkusToOrder(required array itemsToBeAdded, required any order, required any fulfillment){
+		var skuService = getService('skuService');
+		for(var item in arguments.itemsToBeAdded){
+			var sku = skuService.getSku(item.skuID);
+			if(isNull(sku)){
+				continue;
+			}
+			
+			var newOrderItem = getService("OrderService").newOrderItem();
+			newOrderItem.setPrice(0);
+			newOrderItem.setSkuPrice(0);
+			newOrderItem.setUserDefinedPriceFlag(true);
+			newOrderItem.setOrderItemType( getService('typeService').getTypeBySystemCode('oitSale') );
+			newOrderItem.setOrderFulfillment( arguments.fulfillment );
+			newOrderItem.setQuantity( item.quantity );
+			newOrderItem.setSku(sku);
+			newOrderItem.setOrder(arguments.order);
+			newOrderItem.setTemporaryFlag(true);
+			var showInCartFlag = item.promotionReward.getShowRewardSkuInCartFlag() ?: true;
+			newOrderItem.setShowInCartFlag(showInCartFlag);
+			getService('orderService').saveOrderItem(newOrderItem);
+			
+			var rewardID = '';
+			if(!newOrderItem.hasErrors() && !arguments.order.hasErrors()){
+				getHibachiScope().flushORMSession();
+				if(item.promotionReward.getPromotionRewardID() != rewardID){
+					rewardID = item.promotionReward.getPromotionRewardID();
+					var data = {
+						promotionReward: item.promotionReward,
+						discountAmount: 0,
+						promotion:item.promotion
+					}
+					applyPromotionToOrder(item.order, data);
+				}
+			}
+		}
+		arguments.itemsToBeAdded = [];
+	}
 }

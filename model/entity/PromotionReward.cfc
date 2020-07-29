@@ -119,6 +119,8 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 	property name="includedSkusCollection" persistent="false";
 	property name="excludedSkusCollection" persistent="false";
 	property name="skuCollection" persistent="false";
+	property name="promoHasRan" persistent="false";
+	
 	//CUSTOM PROPERTIES BEGIN
 property name="personalVolumeAmount" ormtype="big_decimal" hb_formatType="custom";
     property name="taxableAmountAmount" ormtype="big_decimal" hb_formatType="custom";
@@ -445,6 +447,19 @@ property name="personalVolumeAmount" ormtype="big_decimal" hb_formatType="custom
 			variables.excludedSkusCollectionConfig = arguments.collectionConfig;	
 		}
 	}
+	
+	public any function getPromoHasRan(){
+		if(isNull(variables.promoHasRan)){
+			variables.promoHasRan = false;
+		}
+		return variables.promoHasRan;
+	}
+	
+	public any function setPromoHasRan(required boolean hasRan){
+		variables.promoHasRan = arguments.hasRan;
+	}
+	
+
 	
 	// ==================  END:  Overridden Methods ========================
 

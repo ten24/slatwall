@@ -391,7 +391,81 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arrayAppend(arguments.orderQualifiedDiscounts, rewardStruct);
 		}
 	}
-
+	
+	public void function processRewardSkuPromotionReward(required any order, required array itemsToBeAdded, required any promotionReward){
+		
+		if(arguments.promotionReward.getPromoHasRan()){
+			return;
+		}
+		
+		arguments.promotionReward.setPromoHasRan(true);
+		
+		//skus to be added 
+		var rewardSkusCollection = arguments.promotionReward.getIncludedSkusCollection();
+		
+		//the quantity of free skus that we should add
+		var skuRewardQuantity = arguments.promotionReward.getRewardSkuQuantity() ?: 0;
+		
+		//if this promo reward has already been processed in the request, or it has no reward sku's /quantity return
+		if( isNull(rewardSkusCollection) || skuRewardQuantity <= 0 ){
+			return;
+		}
+		
+		//the skus to be added to the order
+		rewardSkusCollection = rewardSkusCollection.getRecords(formatRecords=false);
+		var orderService = getService("OrderService");
+		
+		for(var skuRecord in rewardSkusCollection){
+			var addOrderItemData = {
+				quantity: skuRewardQuantity,
+				skuID: skuRecord['skuID'],
+				order: arguments.order,
+				price:0,
+				promotionReward: arguments.promotionReward,
+				promotion: arguments.promotionReward.getPromotionPeriod().getPromotion(),
+				promotionRewardID: arguments.promotionReward.getPromotionRewardID()
+			}
+			arrayAppend(arguments.itemsToBeAdded, addOrderItemData);
+		}
+		
+	}
+	
+	public void function addRewardSkusToOrder(required array itemsToBeAdded, required any order, required any fulfillment){
+		var skuService = getService('skuService');
+		for(var item in arguments.itemsToBeAdded){
+			var sku = skuService.getSku(item.skuID);
+			if(isNull(sku)){
+				continue;
+			}
+			
+			var newOrderItem = getService("OrderService").newOrderItem();
+			newOrderItem.setPrice(0);
+			newOrderItem.setSkuPrice(0);
+			newOrderItem.setUserDefinedPriceFlag(true);
+			newOrderItem.setOrderItemType( getService('typeService').getTypeBySystemCode('oitSale') );
+			newOrderItem.setOrderFulfillment( arguments.fulfillment );
+			newOrderItem.setQuantity( item.quantity );
+			newOrderItem.setSku(sku);
+			newOrderItem.setOrder(arguments.order);
+			newOrderItem.setTemporaryFlag(true);
+			getService('orderService').saveOrderItem(newOrderItem);
+			var rewardID = '';
+			if(!newOrderItem.hasErrors() && !arguments.order.hasErrors()){
+				getHibachiScope().flushORMSession();
+				if(item.promotionReward.getPromotionRewardID() != rewardID){
+					rewardID = item.promotionReward.getPromotionRewardID();
+					var data = {
+						promotionReward: item.promotionReward,
+						discountAmount: 0,
+						promotion:item.promotion
+					}
+					applyPromotionToOrder(item.order, data);
+				}
+			}
+		}
+		arguments.itemsToBeAdded = [];
+	}
+	
 	public void function updateOrderAmountsWithPromotions(required any order) {
 		//Save before flushing 
 		if(arguments.order.getNewFlag()){
@@ -467,14 +541,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				
 				// This is an array of qualifier messages for qualifiers not met by the order
 				var orderQualifierMessages = [];
-	
+				
+				//Promotional items to be added at the end of the loop
+				var itemsToBeAdded = [];
+				
 				setupOrderItemQualifiedDiscounts(arguments.order, orderItemQualifiedDiscounts);
 
 				// Loop over all Potential Discounts that require qualifications
-				var promotionRewards = getPromotionDAO().getActivePromotionRewards(rewardTypeList="merchandise,subscription,contentAccess,order,fulfillment", promotionCodeList=arguments.order.getPromotionCodeList(), qualificationRequired=true, promotionEffectiveDateTime=promotionEffectiveDateTime, site=arguments.order.getOrderCreatedSite());
+				var promotionRewards = getPromotionDAO().getActivePromotionRewards(rewardTypeList="merchandise,subscription,contentAccess,order,fulfillment,rewardSku", promotionCodeList=arguments.order.getPromotionCodeList(), qualificationRequired=true, promotionEffectiveDateTime=promotionEffectiveDateTime, site=arguments.order.getOrderCreatedSite());
 				var orderRewards = false;
 				for(var pr=1; pr<=arrayLen(promotionRewards); pr++) {
 					var reward = promotionRewards[pr];
+					
 					if(arguments.order.hasOrderTemplate() && ((!orderRewards && reward.getRewardType() != 'order') || (orderRewards && reward.getRewardType() == 'order') ) ){
 						logHibachi('Checking #reward.getRewardType()# reward for #reward.getPromotionPeriod().getPromotion().getPromotionName()#');
 					}
@@ -500,7 +578,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						// ================== Order Reward =========================
 						} else if (orderRewards and reward.getRewardType() eq "order" ) {
 							processOrderRewards(arguments.order, orderQualifiedDiscounts, reward);
-						} // ============= END ALL REWARD TYPES
+						}else if(orderRewards and reward.getRewardType() eq "rewardSku"){
+							processRewardSkuPromotionReward(arguments.order, itemsToBeAdded, reward)
+						}// ============= END ALL REWARD TYPES
 	
 					} // END Promotion Period OK IF
 	
@@ -512,12 +592,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						pr = 0;
 						orderRewards = true;
 					}
-	
+					
 				} // END of PromotionReward Loop
 				getHibachiScope().flushORMSession();
-				
+									
 				ArraySort(orderQualifiedDiscounts, rewardSortFunction);
 				applyOrderDiscounts(arguments.order, orderQualifiedDiscounts, orderQualifierMessages);
+				
+				if( arraylen(itemsToBeAdded) && arrayLen(arguments.order.getFirstShippingFulfillment()) ){
+					addRewardSkusToOrder(itemsToBeAdded,arguments.order, arguments.order.getFirstShippingFulfillment()[1]);
+					itemsToBeAdded = [];
+				}
 				
 				if(arrayLen(orderQualifierMessages)){
 					getHibachiScope().flushOrmSession();
@@ -664,7 +749,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	private void function applyOrderDiscounts(required any order, required array orderQualifiedDiscounts, array orderQualifierMessages){
 		
 		var itemAppliedPromotions = getPromotionDAO().getAppliedPromotionsForOrderItemsByOrder(arguments.order);
-		
 		for(var rewardStruct in arguments.orderQualifiedDiscounts ){
 			if( !getUpdatedQualificationStatus( arguments.order, rewardStruct.promotionReward.getPromotionRewardID(), arguments.orderQualifierMessages ) ){
 				continue;
@@ -1094,17 +1178,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		// ORDER
 		if(arguments.qualifier.getQualifierType() == "order") {
-
 			getQualifierQualificationDetailsForOrder(arguments.qualifier, arguments.order, qualifierDetails, arguments.orderQualifierMessages);
 
 		// FULFILLMENT
 		} else if (arguments.qualifier.getQualifierType() == "fulfillment") {
-
 			getQualifierQualificationDetailsForOrderFulfillments(arguments.qualifier, arguments.order, qualifierDetails);
 
 		// ORDER ITEM
 		} else if (listFindNoCase("contentAccess,merchandise,subscription", arguments.qualifier.getQualifierType())) {
-
 			getQualifierQualificationDetailsForOrderItems(arguments.qualifier,arguments.order,qualifierDetails, arguments.orderQualifierMessages);
 
 		}
@@ -1558,7 +1639,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			promotionEffectiveDateTime = arguments.order.getOrderOpenDateTime();
 		}
 		// Loop over all Potential Discounts that require qualifications
-		var promotionRewards = getPromotionDAO().getActivePromotionRewards(rewardTypeList="merchandise,subscription,contentAccess,order,fulfillment", promotionCodeList=arguments.order.getPromotionCodeList(), qualificationRequired=true, promotionEffectiveDateTime=promotionEffectiveDateTime, site=arguments.order.getOrderCreatedSite());
+		var promotionRewards = getPromotionDAO().getActivePromotionRewards(rewardTypeList="merchandise,subscription,contentAccess,order,fulfillment,rewardSku", promotionCodeList=arguments.order.getPromotionCodeList(), qualificationRequired=true, promotionEffectiveDateTime=promotionEffectiveDateTime, site=arguments.order.getOrderCreatedSite());
 		for(var promoReward in promotionRewards){
 			var promoPeriod = promoReward.getPromotionPeriod();
 			var qualificationDetails = getPromotionPeriodQualificationDetails( promoPeriod, arguments.order );
@@ -1667,7 +1748,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		return rewardSkuIDs;
 	}
-
+	
+	
 	// ===================== START: Logical Methods ===========================
 
 	// =====================  END: Logical Methods ============================
