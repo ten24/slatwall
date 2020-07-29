@@ -177,4 +177,5 @@ component accessors="true" output="false" extends="HibachiService" {
 		getHibachiEntityQueueDAO().updateModifiedDateTime(entityQueueID);
 	}
 	
+	
 }

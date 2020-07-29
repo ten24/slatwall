@@ -258,7 +258,12 @@ component extends="HibachiService" accessors="true" output="false" {
 					var currentObjectName = arguments.workflowTrigger.getCollection().getCollectionObject();
 					
 					if(currentObjectName == 'EntityQueue' && isNumeric(arguments.workflowTrigger.getMaxTryCount())){
-						scheduleCollection.addFilter('tryCount', arguments.workflowTrigger.getMaxTryCount());
+						scheduleCollection.addFilter(
+							propertyIdentifier = 'tryCount',
+							value = arguments.workflowTrigger.getMaxTryCount(),
+							comparisonOperator = "<=",
+							filterGroupAlias = "maxTryCount"
+						);
 					}
 				
 					if(arguments.workflowTrigger.getCollectionPassthrough()){
@@ -936,6 +941,35 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 		
 		return responseData;
+	}
+	
+	public void function processWorkflowTrigger_archiveEntityQueueFailures(required any workflowTrigger, required struct data) {
+		getService('hibachiTagService').cfsetting(requesttimeout=6000);
+		
+		if(isNull(arguments.workflowTrigger.getCollection()) || !isNumeric(arguments.workflowTrigger.getMaxTryCount())){
+			return arguments.workflowTrigger;
+		}
+		
+		var entityQueueCollection = arguments.workflowTrigger.getCollection();
+		arguments.workflowTrigger.addFilter(
+			propertyIdentifier = 'tryCount',
+			value = arguments.workflowTrigger.getMaxTryCount(),
+			comparisonOperator = ">",
+			filterGroupAlias = "maxTryCount"
+		);
+		
+		var entityQueueCollectionResult = entityQueueCollection.getPrimaryIDs();
+		
+		if(arrayLen(entityQueueCollectionResult)){
+			var entityQueueIDs = entityQueueCollectionResult.map(function(entityQueue){
+				return entityQueue['entityQueueID'];
+			});
+			
+			getDAO('HibachiEntityQueueDAO').bulkInsertEntityQueueFailures(arrayToList(entityQueueIDs));
+		}
+		
+		return arguments.workflowTrigger;
+		
 	}
 	
 	// ==================  END:  Private Helper Functions =====================
