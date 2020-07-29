@@ -234,7 +234,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
         
 		var ordersList = this.getOrderCollectionList();
 
-		ordersList.addOrderBy('orderOpenDateTime|DESC');
+		ordersList.addOrderBy('createdDateTime|DESC');
 		ordersList.setDisplayProperties('
 			orderID,
 			calculatedTotalItemQuantity,
