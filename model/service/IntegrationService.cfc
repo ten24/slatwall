@@ -80,7 +80,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	public any function getAllSettingMetaData() {
 		var allSettingMetaData = {};
-		var dirList = directoryList( expandPath("/Slatwall") & "/integrationServices" );
+		var dirList = directoryList( expandPath("/Slatwall/integrationServices") );
 		
 		// Loop over each integration in the integration directory
 		for(var i=1; i<= arrayLen(dirList); i++) {
@@ -175,7 +175,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		integrationCollectionList.setDisplayProperties('integrationPackage');
 		var integrations = integrationCollectionList.getRecords();
 		for(var integrationData in integrations){
-			var integrationPath = "#this.getApplicationRootMappingPath()#/integrationServices/#integrationData['integrationPackage']#";
+			var integrationPath = expandPath('/Slatwall') & "/integrationServices/#integrationData['integrationPackage']#";
 			if(directoryExists(integrationPath)){
 				var integrationDbDataPath = integrationPath & '/config/dbdata';
 				if(directoryExists(integrationDbDataPath) && !getApplicationValue('skipDbData')){
@@ -277,7 +277,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 								
 								var beanCFC = listLast(replace(modelFilePath,"\","/","all"),'/');
 								var beanName = listFirst(beanCFC,'.');
-								var modelDestinationPath = this.getApplicationRootMappingPath() & "/model/entity/" & beanCFC;
+								var modelDestinationPath = expandPath("/Slatwall") & "/model/entity/" & beanCFC;
 								
 								FileCopy(modelFilePath,modelDestinationPath);
 								
@@ -390,7 +390,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			isl.addFilter('installedFlag', 1);
 			
 			for(var integration in isl.getRecords()) {
-				var integrationPath = "#this.getApplicationRootMappingPath()#/integrationServices/#integration.getIntegrationPackage()#";
+				var integrationPath = expandPath("/Slatwall/integrationServices")&'/#integration.getIntegrationPackage()#';
 				if(integration.getEnabledFlag() && directoryExists(integrationPath)) {
 					additions &= integration.getIntegrationCFC().getJSObjectAdditions();
 				}
