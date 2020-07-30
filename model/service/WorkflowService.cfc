@@ -106,7 +106,6 @@ component extends="HibachiService" accessors="true" output="false" {
 				}
 				successFlag = true;
 			} catch (any e){
-				rethrow;
 				successFlag = false;
 				if (!isNull(workflowTriggerHistory)) {
 					// Update the workflowTriggerHistory
@@ -361,7 +360,6 @@ component extends="HibachiService" accessors="true" output="false" {
 				}
 	
 			} catch(any e){
-				rethrow;
 				if(!isNull(workflowTriggerHistory)) {
 					// Update the workflowTriggerHistory
 					workflowTriggerHistory.setSuccessFlag(false);
@@ -466,7 +464,6 @@ component extends="HibachiService" accessors="true" output="false" {
 						var processMethod = entityService.invokeMethod(arguments.workflowTaskAction.getProcessMethod(), processData);
 						actionSuccess = true;
 					}catch(any e){
-						rethrow;
 						actionSuccess = false;
 					}
 				}
