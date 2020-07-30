@@ -73,9 +73,9 @@ Notes:
 		
 		<hb:HibachiEntityDetailGroup object="#rc.integration#">
 			<hb:HibachiEntityDetailItem view="admin:entity/integrationtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
-			<cfif !isNull(integrationCFC)>
+			<cfif !isNull(integrationCFC) >
 			    <hb:HibachiEntityDetailItem view="admin:entity/integrationtabs/settings" />
-			</cfic>
+			</cfif>
 		</hb:HibachiEntityDetailGroup>
 		
 	</hb:HibachiEntityDetailForm>
