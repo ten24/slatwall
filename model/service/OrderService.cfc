@@ -3438,7 +3438,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	 *  Example: processOrder_removeOrderItem(order, {orderItemIDList="#id#,#id2#"})
 	 */
 	public any function processOrder_removeOrderItem(required any order, required struct data) {
-		throw('i was called')
+
 		var orderItemsToRemove = [];
 		var orderItemRemoved = false;
 		
