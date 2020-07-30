@@ -84,10 +84,12 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		var token = ToBase64(md5hash);
 		
 		if( Find("?", arguments.urlString) ) {
-			arguments.urlString &= "&token=#token#&consultant_id=#accountNumber#"
+			arguments.urlString &= "&";
 		} else{
-			arguments.urlString &= "?token=#token#&consultant_id=#accountNumber#"
+			arguments.urlString &= "?";
 		}
+		
+		arguments.urlString &= "token=#token#&consultant_id=#accountNumber#&swtoken=#getService('HibachiJWTService').createToken()#";
 		return arguments.urlString;
 	}
 	
