@@ -66,7 +66,7 @@ Notes:
     <cfset accountCollectionList = getHibachiScope().getService('accountService').getAccountCollectionList()>
 
 	<cfset serchableDisplayProperties = "firstName,lastName,primaryEmailAddress.emailAddress,company"/>
-	zdsetDisplayProperties(
+	<cfset accountCollectionList.setDisplayProperties(
 	serchableDisplayProperties,
 	{
 		isVisible=true,
