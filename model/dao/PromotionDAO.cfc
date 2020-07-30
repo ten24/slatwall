@@ -437,4 +437,23 @@ Notes:
 		</cfquery>
 	</cffunction>
 	
+	<cffunction name="insertAppliedPromotionFromOrderItem" returntype="void" access="public">
+		<cfargument name="orderItemID" required="true" type="any" />
+		<cfargument name="promotionID" required="true" type="any" />
+		<cfargument name="promotionRewardID" required="true" type="any" />
+	
+		<cfquery>
+			INSERT INTO swPromotionApplied (promotionAppliedID, appliedType, promotionID, promotionRewardID, orderItemID, skuID)
+			SELECT 
+				'#getHibachiScope().createHibachiUUID()#' as promotionAppliedID,
+				'orderItem' as appliedType, 
+				<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.promotionID#" /> as promotionID,
+				<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.promotionRewardID#" /> as promotionRewardID,
+				orderItemID,
+				skuID
+			FROM swOrderItem
+			WHERE orderItemID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderItemID#" />
+		</cfquery>
+	</cffunction>
+	
 </cfcomponent>

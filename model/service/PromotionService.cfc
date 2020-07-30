@@ -48,12 +48,23 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="skuService" type="any";
 
 	private void function clearPreviouslyAppliedPromotionsForOrderItems(required array orderItems){
+		var orderService = getService('orderService');
 		// Clear all previously applied promotions for order items
 		for(var oi=1; oi<=arrayLen(arguments.orderItems); oi++) {
 			var orderItem = arguments.orderItems[oi];
 			var appliedPromotions = orderItem.getAppliedPromotions();
 			for(var appliedPromotion in appliedPromotions){
 				appliedPromotion.removeOrderItem(reciprocateFlag=false);
+				if(
+					!isNull(appliedPromotion.getPromotionReward())
+					&& appliedPromotion.getPromotionReward().getRewardType() =='rewardSku' 
+					&& !isNull(orderItem.getOrder())
+					&& !appliedPromotion.getPromotionReward().getPromotionRewardProcessingFlag()
+				){
+					order = orderItem.getOrder();
+					order.removeOrderItem(orderItem);
+					orderService.saveOrder(order);
+				}
 			}
 			ArrayClear(orderItem.getAppliedPromotions());
 		}
@@ -80,7 +91,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	private void function clearPreviouslyAppliedPromotions(required any order){
-		clearPreviouslyAppliedPromotionsForOrderItems(arguments.order.getOrderItems());
+		var orderItems = arguments.order.getOrderItems();
+		clearPreviouslyAppliedPromotionsForOrderItems(orderItems);
 		clearPreviouslyAppliedPromotionsForOrderFulfillments(arguments.order.getOrderFulfillments());
 		clearPreviouslyAppliedPromotionsForOrder(arguments.order);
 	}
@@ -398,6 +410,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			return;
 		}
 		
+		promotionReward.setPromotionRewardProcessingFlag(true);
+		
 		arguments.promotionReward.setPromoHasRan(true);
 		
 		//skus to be added 
@@ -414,7 +428,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		//the skus to be added to the order
 		rewardSkusCollection = rewardSkusCollection.getRecords(formatRecords=false);
 		var orderService = getService("OrderService");
-		
+	
 		for(var skuRecord in rewardSkusCollection){
 			var addOrderItemData = {
 				quantity: skuRewardQuantity,
@@ -431,6 +445,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public void function addRewardSkusToOrder(required array itemsToBeAdded, required any order, required any fulfillment){
+		
+		if(arguments.order.getDropSkuRemovedFlag()){
+			return;
+		}
+		
 		var skuService = getService('skuService');
 		for(var item in arguments.itemsToBeAdded){
 			var sku = skuService.getSku(item.skuID);
@@ -447,20 +466,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			newOrderItem.setQuantity( item.quantity );
 			newOrderItem.setSku(sku);
 			newOrderItem.setOrder(arguments.order);
-			newOrderItem.setTemporaryFlag(true);
+			newOrderItem.setRewardSkuFlag(true);
 			getService('orderService').saveOrderItem(newOrderItem);
-			var rewardID = '';
+			
 			if(!newOrderItem.hasErrors() && !arguments.order.hasErrors()){
-				getHibachiScope().flushORMSession();
-				if(item.promotionReward.getPromotionRewardID() != rewardID){
-					rewardID = item.promotionReward.getPromotionRewardID();
-					var data = {
-						promotionReward: item.promotionReward,
-						discountAmount: 0,
-						promotion:item.promotion
-					}
-					applyPromotionToOrder(item.order, data);
-				}
+				getPromotionDAO().insertAppliedPromotionFromOrderItem(
+						orderItemID=newOrderItem.getOrderItemID(), 
+						promotionID =item.promotion.getPromotionID(),
+						promotionRewardID= item.promotionReward.getPromotionRewardID()
+					);
 			}
 		}
 		arguments.itemsToBeAdded = [];
@@ -598,7 +612,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 									
 				ArraySort(orderQualifiedDiscounts, rewardSortFunction);
 				applyOrderDiscounts(arguments.order, orderQualifiedDiscounts, orderQualifierMessages);
-				
+
 				if( arraylen(itemsToBeAdded) && arrayLen(arguments.order.getFirstShippingFulfillment()) ){
 					addRewardSkusToOrder(itemsToBeAdded,arguments.order, arguments.order.getFirstShippingFulfillment()[1]);
 					itemsToBeAdded = [];
@@ -642,6 +656,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		newAppliedPromotion.setPromotionReward( arguments.rewardStruct.promotionReward );
 		newAppliedPromotion.setOrderItem( arguments.orderItem );
 		newAppliedPromotion.setDiscountAmount( arguments.rewardStruct.discountAmount );
+		if(!isNull(arguments.rewardStruct.sku)){
+			newAppliedPromotion.setRewardSku(arguments.rewardStruct.sku);
+		}
+		
 	}
 	
 	private void function clearPreviouslyAppliedPromotionMessages(required any order){

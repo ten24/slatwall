@@ -56,7 +56,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="stockLoss" ormtype="boolean"; //Stock Loss flag for order return items;
 	property name="stockLossReason" ormtype="string"; //Stock Loss reason for Order Return Items;
 	property name="userDefinedPriceFlag" ormtype="boolean" default="0" hint="To flag if the price can be set by user/admin, in that case the price won't get updated to the best available price";
-	property name="temporaryFlag" ormtype="boolean" default=0;
+	property name="rewardSkuFlag" ormtype="boolean" default=0;
 		
 	// Calculated Properties
 	property name="calculatedExtendedPrice" ormtype="big_decimal" hb_formatType="currency";
@@ -146,6 +146,8 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="salePrice" type="struct" persistent="false";
 	property name="totalWeight" persistent="false";
 	property name="quantityHasChanged" persistent="false" default="0";
+
+	
  	//CUSTOM PROPERTIES BEGIN
 property name="personalVolume" ormtype="big_decimal";
     property name="taxableAmount" ormtype="big_decimal";
@@ -877,6 +879,7 @@ property name="personalVolume" ormtype="big_decimal";
 
 		return variables.OrderItemSalePrice;
 	}
+	
 
 	// ============  END:  Non-Persistent Property Methods =================
 

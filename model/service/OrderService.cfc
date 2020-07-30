@@ -3441,7 +3441,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		var orderItemsToRemove = [];
 		var orderItemRemoved = false;
-
+		
 		// Make sure that an orderItemID was passed in
 		if(structKeyExists(arguments.data, "orderItemIDList")) {
 			orderItemsToRemove = listToArray(arguments.data.orderItemIDList);
@@ -3456,6 +3456,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// concurrent invocation error caused by reading and modifying the array in the same request.
 			for(var n = ArrayLen(orderItemsToRemove); n >=1; n--)	{
 				var orderItem = this.getOrderItem(orderItemsToRemove[n]);
+
 				if(arraylen(orderItem.getStockHolds())){
 					//currently only supporting singular stockholds
 					var stockHold = orderItem.getStockHolds()[1];
@@ -5550,7 +5551,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			// Remove the primary fields so that we can delete this entity
 			var order = arguments.orderItem.getOrder();
-
+			order.setDropSkuRemovedFlag(true);
 			removeOrderItemAndChildItemRelationshipsAndDelete( arguments.orderItem );
 
 			// Recalculate the order amounts
