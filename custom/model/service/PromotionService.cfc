@@ -312,6 +312,11 @@ component extends="Slatwall.model.service.PromotionService" {
 	}
 	
 	public void function addRewardSkusToOrder(required array itemsToBeAdded, required any order, required any fulfillment){
+		
+		if(arguments.order.getDropSkuRemovedFlag()){
+			return;
+		}
+		
 		var skuService = getService('skuService');
 		for(var item in arguments.itemsToBeAdded){
 			var sku = skuService.getSku(item.skuID);
@@ -328,7 +333,7 @@ component extends="Slatwall.model.service.PromotionService" {
 			newOrderItem.setQuantity( item.quantity );
 			newOrderItem.setSku(sku);
 			newOrderItem.setOrder(arguments.order);
-			newOrderItem.setTemporaryFlag(true);
+			newOrderItem.setRewardSkuFlag(true);
 			var showInCartFlag = item.promotionReward.getShowRewardSkuInCartFlag() ?: true;
 			newOrderItem.setShowInCartFlag(showInCartFlag);
 			getService('orderService').saveOrderItem(newOrderItem);

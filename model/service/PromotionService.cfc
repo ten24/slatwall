@@ -62,7 +62,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					&& !appliedPromotion.getPromotionReward().getPromotionRewardProcessingFlag()
 				){
 					order = orderItem.getOrder();
-					orderItem.setPromotionProcessingFlag(true);
 					order.removeOrderItem(orderItem);
 					orderService.saveOrder(order);
 				}
@@ -447,6 +446,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	public void function addRewardSkusToOrder(required array itemsToBeAdded, required any order, required any fulfillment){
 		
+		if(arguments.order.getDropSkuRemovedFlag()){
+			return;
+		}
+		
 		var skuService = getService('skuService');
 		for(var item in arguments.itemsToBeAdded){
 			var sku = skuService.getSku(item.skuID);
@@ -463,7 +466,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			newOrderItem.setQuantity( item.quantity );
 			newOrderItem.setSku(sku);
 			newOrderItem.setOrder(arguments.order);
-			newOrderItem.setTemporaryFlag(true);
+			newOrderItem.setRewardSkuFlag(true);
 			getService('orderService').saveOrderItem(newOrderItem);
 			
 			if(!newOrderItem.hasErrors() && !arguments.order.hasErrors()){
