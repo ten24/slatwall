@@ -161,7 +161,7 @@ component accessors="true" output="false" extends="HibachiService" {
 						logHibachiException(e);
 					}
 				}
-			}, false, maxThreads);
+			}, true, maxThreads);
 		}
 	}
 	

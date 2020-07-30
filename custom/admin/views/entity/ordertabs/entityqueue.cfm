@@ -87,7 +87,7 @@ Notes:
 	
 	<div>
 	    <span class="h5">Failures</span>
-	    <hb:HibachiActionCaller action="admin:entity.retryEntityQueueFailures" queryString="entityName=Order&orderID=#rc.order.getPrimaryIDValue()#" class="pull-right">
+	    <hb:HibachiActionCaller action="admin:entity.retryEntityQueueFailures" queryString="entityName=Order&orderID=#rc.order.getPrimaryIDValue()#" class="btn btn-primary pull-right" type="link">
 	</div>
 	
 	
