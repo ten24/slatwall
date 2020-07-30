@@ -87,6 +87,9 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 	property name="includedStackableRewards" singularname="includedStackableReward" cfc="PromotionReward" fieldtype="many-to-many" linktable="SwPromoRewardStackIncl" fkcolumn="promotionRewardID" inversejoincolumn="linkedPromotionRewardID";
 	property name="excludedStackableRewards" singularname="excludedStackableReward" cfc="PromotionReward" fieldtype="many-to-many" linktable="SwPromoRewardStackExcl" fkcolumn="promotionRewardID" inversejoincolumn="linkedPromotionRewardID";
 	
+	//Non persistent properties
+	property name="promotionRewardProcessingFlag" persistent="false";
+	
 	// Deprecated Properties
 	property name="brands" singularname="brand" cfc="Brand" fieldtype="many-to-many" linktable="SwPromoRewardBrand" fkcolumn="promotionRewardID" inversejoincolumn="brandID";
 	property name="options" singularname="option" cfc="Option" fieldtype="many-to-many" linktable="SwPromoRewardOption" fkcolumn="promotionRewardID" inversejoincolumn="optionID";
@@ -119,6 +122,8 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 	property name="includedSkusCollection" persistent="false";
 	property name="excludedSkusCollection" persistent="false";
 	property name="skuCollection" persistent="false";
+	property name="promoHasRan" persistent="false";
+	
 	//CUSTOM PROPERTIES BEGIN
 property name="personalVolumeAmount" ormtype="big_decimal" hb_formatType="custom";
     property name="taxableAmountAmount" ormtype="big_decimal" hb_formatType="custom";
@@ -281,6 +286,13 @@ property name="personalVolumeAmount" ormtype="big_decimal" hb_formatType="custom
 			}
 		}
 		return variables.excludedSkusCollection;
+	}
+		
+	public boolean function getPromotionRewardProcessingFlag(){
+		if(isNull(variables.promotionRewardProcessingFlag)){
+			variables.promotionRewardProcessingFlag = false;
+		}
+		return variables.promotionRewardProcessingFlag;
 	}
 	
 	public void function saveIncludedSkusCollection(){
@@ -445,6 +457,19 @@ property name="personalVolumeAmount" ormtype="big_decimal" hb_formatType="custom
 			variables.excludedSkusCollectionConfig = arguments.collectionConfig;	
 		}
 	}
+	
+	public any function getPromoHasRan(){
+		if(isNull(variables.promoHasRan)){
+			variables.promoHasRan = false;
+		}
+		return variables.promoHasRan;
+	}
+	
+	public any function setPromoHasRan(required boolean hasRan){
+		variables.promoHasRan = arguments.hasRan;
+	}
+	
+
 	
 	// ==================  END:  Overridden Methods ========================
 

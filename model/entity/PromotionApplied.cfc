@@ -61,6 +61,7 @@ component displayname="Promotion Applied" entityname="SlatwallPromotionApplied" 
 	property name="orderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="orderItemID" hb_cascadeCalculate="true";
 	property name="orderFulfillment" cfc="OrderFulfillment" fieldtype="many-to-one" fkcolumn="orderfulfillmentID";
 	property name="order" cfc="Order" fieldtype="many-to-one" fkcolumn="orderID";
+	property name="rewardSku" cfc="Sku" fieldtype="many-to-one" fkcolumn="skuID";
 	
 	// Remote properties
 	property name="remoteID" ormtype="string";

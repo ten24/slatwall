@@ -71,7 +71,11 @@ component extends="Slatwall.model.service.PromotionService" {
 		newAppliedPromotion.setPromotion( arguments.rewardStruct.promotion );
 		newAppliedPromotion.setPromotionReward( arguments.rewardStruct.promotionReward );
 		newAppliedPromotion.setOrderItem( arguments.orderItem );
-
+		
+		if(!isNull(arguments.rewardStruct.sku)){
+			newAppliedPromotion.setRewardSku(arguments.rewardStruct.sku);
+		}
+		
 		for(var key in arguments.rewardStruct){
 			if(right(key,14) == 'DiscountAmount'){
 				newAppliedPromotion.invokeMethod('set#key#',{1=arguments.rewardStruct[key]});
@@ -305,5 +309,44 @@ component extends="Slatwall.model.service.PromotionService" {
 				this.savePromotionApplied(newAppliedPromotion);
 		    }
 		}
+	}
+	
+	public void function addRewardSkusToOrder(required array itemsToBeAdded, required any order, required any fulfillment){
+		
+		if(arguments.order.getDropSkuRemovedFlag()){
+			return;
+		}
+		
+		var skuService = getService('skuService');
+		for(var item in arguments.itemsToBeAdded){
+			var sku = skuService.getSku(item.skuID);
+			if(isNull(sku)){
+				continue;
+			}
+			
+			var newOrderItem = getService("OrderService").newOrderItem();
+			newOrderItem.setPrice(0);
+			newOrderItem.setSkuPrice(0);
+			newOrderItem.setUserDefinedPriceFlag(true);
+			newOrderItem.setOrderItemType( getService('typeService').getTypeBySystemCode('oitSale') );
+			newOrderItem.setOrderFulfillment( arguments.fulfillment );
+			newOrderItem.setQuantity( item.quantity );
+			newOrderItem.setSku(sku);
+			newOrderItem.setOrder(arguments.order);
+			newOrderItem.setRewardSkuFlag(true);
+			var showInCartFlag = item.promotionReward.getShowRewardSkuInCartFlag() ?: true;
+			newOrderItem.setShowInCartFlag(showInCartFlag);
+			getService('orderService').saveOrderItem(newOrderItem);
+			
+			if(!newOrderItem.hasErrors() && !arguments.order.hasErrors()){
+				
+				getPromotionDAO().insertAppliedPromotionFromOrderItem(
+						orderItemID=newOrderItem.getOrderItemID(), 
+						promotionID =item.promotion.getPromotionID(),
+						promotionRewardID= item.promotionReward.getPromotionRewardID()
+					);
+			}
+		}
+		arguments.itemsToBeAdded = [];
 	}
 }

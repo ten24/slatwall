@@ -17,7 +17,7 @@ class MonatFlexshipShippingMethodModalController {
 	public newAccountAddress = {};
 	public newAddress = {'countryCode': hibachiConfig.countryCode }; 
 	public countryCodeOptions = {};
-	
+	public addressOptions: any;
 	public loading: boolean = false;
 
 	//@ngInject
@@ -35,7 +35,10 @@ class MonatFlexshipShippingMethodModalController {
     	this.makeTranslations();
  
     	this.monatService.getStateCodeOptionsByCountryCode()
-    	.then( (options) => this.stateCodeOptions = options.stateCodeOptions )
+    	.then( (options) => {
+    		this.stateCodeOptions = options.stateCodeOptions 
+    		this.addressOptions = options.addressOptions
+    	})
     	.then( () => this.monatService.getOptions({'siteOrderTemplateShippingMethodOptions':false}, false, this.orderTemplate.orderTemplateID) )
     	.then( (options) => {
     		this.shippingMethodOptions = options.siteOrderTemplateShippingMethodOptions;
