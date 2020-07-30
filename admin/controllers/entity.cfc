@@ -109,6 +109,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	this.secureMethods=listAppend(this.secureMethods, 'listaccountrelationshiprole');
 	this.secureMethods=listAppend(this.secureMethods, 'listgiftcard');
 	this.secureMethods=listAppend(this.secureMethods, 'editPermissionGroup');
+	this.secureMethods=listAppend(this.secureMethods, 'retryEntityQueueFailures');
 	
 	this.secureMethods=listAppend(this.secureMethods, 'preprocessorderfulfillment_manualfulfillmentcharge');
 	this.secureMethods=listAppend(this.secureMethods, 'preprocessaccount_changepassword');
@@ -731,8 +732,25 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			rc=params
 		);
 	}
+	
+	public void function retryEntityQueueFailures(required struct rc){
+		super.genericDetailMethod(rc.entityName, arguments.rc);
+		
+		var entity = rc[rc.entityName];
 
-
+		getDAO('HibachiEntityQueueDAO').reQueueItems(rc.entityName, entity.getPrimaryIDValue())
+	
+		var params = {};
+		params[entity.getPrimaryIDPropertyName()] = entity.getPrimaryIDValue();
+		
+		getHibachiScope().showMessage(getHibachiScope().rbKey("admin.entity.retryEntityQueueFailures_success"), "success"); 
+		
+		renderOrRedirectSuccess( 
+			defaultAction="admin:entity.detail#lcase(rc.entityName)#", 
+			maintainQueryString=true,
+			rc=params
+		);
+	}
 
 	// Task Schedule
 	public void function saveTaskSchedule(required struct rc){

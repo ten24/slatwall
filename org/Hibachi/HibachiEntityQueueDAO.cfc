@@ -258,7 +258,28 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 		deleteQuery.addParam(name='entityQueueID', value=arguments.entityQueueID, CFSQLTYPE="CF_SQL_VARCHAR");
 		deleteQuery.execute(sql=sql);
 		
-	}	
+	}
+	
+	public void function ReQueueItems(required string baseObject, required string baseID){
+	
+		var columns = 'baseObject, baseID, processMethod, entityQueueType, entityQueueDateTime, entityQueueData, mostRecentError, integrationID, createdDateTime, createdByAccountID';
+		
+		var insertQuery = new query();
+		var sql = "INSERT IGNORE INTO SwEntityQueue (entityQueueID, #columns#, tryCount, modifiedDateTime, modifiedByAccountID) ";
+		sql &= "SELECT remoteID as entityQueueID, #columns#, 0, now(), '#getHibachiScope().getAccount().getAccountID()#' ";
+		sql &= "FROM swEntityQueueFailure ";
+		sql &= "WHERE baseObject = :baseObject AND baseID = :baseID";
+		insertQuery.addParam(name='baseObject', value=arguments.baseObject, CFSQLTYPE="CF_SQL_VARCHAR");
+		insertQuery.addParam(name='baseID', value=arguments.baseID, CFSQLTYPE="CF_SQL_VARCHAR");
+		insertQuery.execute(sql=sql);
+		
+		var deleteQuery = new query();
+		sql = "DELETE FROM swEntityQueueFailure WHERE baseObject = :baseObject AND baseID = :baseID";
+		deleteQuery.addParam(name='baseObject', value=arguments.baseObject, CFSQLTYPE="CF_SQL_VARCHAR");
+		deleteQuery.addParam(name='baseID', value=arguments.baseID, CFSQLTYPE="CF_SQL_VARCHAR");
+		deleteQuery.execute(sql=sql);
+		
+	}
 	
 	// ===================== START: Logical Methods ===========================
 	
