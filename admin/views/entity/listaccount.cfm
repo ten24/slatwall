@@ -66,7 +66,7 @@ Notes:
     <cfset accountCollectionList = getHibachiScope().getService('accountService').getAccountCollectionList()>
 
 	<cfset serchableDisplayProperties = "firstName,lastName,primaryEmailAddress.emailAddress,company"/>
-	<cfset accountCollectionList.setDisplayProperties(
+	zdsetDisplayProperties(
 	serchableDisplayProperties,
 	{
 		isVisible=true,
@@ -91,6 +91,7 @@ Notes:
 		isSearchable=false,
 		isDeletable=false
 	})/>
+	<cfset accountCollectionList.addOrderBy('createdDateTime|DESC') />
 	
 	<hb:HibachiListingDisplay 
 		collectionList="#accountCollectionList#"

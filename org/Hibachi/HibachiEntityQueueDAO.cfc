@@ -241,16 +241,17 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 	}
 	
 	
-	public void function archiveEntityQueue(required string entityQueueID ){
+	public void function archiveEntityQueue(required string entityQueueID, string mostRecentError = '' ){
 	
-		var columns = 'baseObject, baseID, processMethod, entityQueueType, entityQueueDateTime, entityQueueData, mostRecentError, integrationID, createdDateTime, modifiedDateTime, createdByAccountID, modifiedByAccountID, tryCount';
+		var columns = 'baseObject, baseID, processMethod, entityQueueType, entityQueueDateTime, entityQueueData, integrationID, createdDateTime, modifiedDateTime, createdByAccountID, modifiedByAccountID, tryCount';
 		
 		var insertQuery = new query();
-		var sql = "INSERT INTO SwEntityQueueFailure (entityQueueFailureID, remoteID, #columns#) ";
-		sql &= "SELECT LOWER(REPLACE(CAST(UUID() as char character set utf8),'-','')) as entityQueueFailureID, entityQueueID as remoteID, #columns# ";
+		var sql = "INSERT INTO SwEntityQueueFailure (entityQueueFailureID, remoteID, #columns#, mostRecentError) ";
+		sql &= "SELECT LOWER(REPLACE(CAST(UUID() as char character set utf8),'-','')) as entityQueueFailureID, entityQueueID as remoteID, #columns#, :mostRecentError as mostRecentError ";
 		sql &= "FROM swEntityQueue ";
 		sql &= "WHERE entityQueueID = :entityQueueID";
 		insertQuery.addParam(name='entityQueueID', value=arguments.entityQueueID, CFSQLTYPE="CF_SQL_VARCHAR");
+		insertQuery.addParam(name='mostRecentError', value=arguments.mostRecentError, CFSQLTYPE="CF_SQL_VARCHAR");
 		insertQuery.execute(sql=sql);
 		
 		var deleteQuery = new query();
@@ -262,7 +263,7 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 	
 	public void function ReQueueItems(required string baseObject, required string baseID){
 	
-		var columns = 'baseObject, baseID, processMethod, entityQueueType, entityQueueDateTime, entityQueueData, mostRecentError, integrationID, createdDateTime, createdByAccountID';
+		var columns = 'baseObject, baseID, processMethod, entityQueueType, entityQueueDateTime, entityQueueData, integrationID, createdDateTime, createdByAccountID';
 		
 		var insertQuery = new query();
 		var sql = "INSERT IGNORE INTO SwEntityQueue (entityQueueID, #columns#, tryCount, modifiedDateTime, modifiedByAccountID) ";

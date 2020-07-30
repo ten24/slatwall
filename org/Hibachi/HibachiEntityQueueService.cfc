@@ -110,7 +110,7 @@ component accessors="true" output="false" extends="HibachiService" {
  
 
 	public any function processEntityQueueArray(required array entityQueueArray, boolean useThread = false, numeric maxTryCount = 3){
-		
+
 		if(!arraylen(arguments.entityQueueArray)){
 			return;
 		}
@@ -150,9 +150,8 @@ component accessors="true" output="false" extends="HibachiService" {
 					}
 					deleteEntityQueueItem(entityQueue['entityQueueID']);
 				}catch(any e){
-				
 					if(val(entityQueue['tryCount']) >= maxTryCount){
-						getHibachiEntityQueueDAO().archiveEntityQueue(entityQueue['entityQueueID']);
+						getHibachiEntityQueueDAO().archiveEntityQueue(entityQueue['entityQueueID'], e.message);
 					}else{
 						getHibachiEntityQueueDAO().updateModifiedDateTimeAndMostRecentError(entityQueue['entityQueueID'], e.message);
 					}
