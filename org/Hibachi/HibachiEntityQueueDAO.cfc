@@ -246,17 +246,14 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 		var columns = 'baseObject, baseID, processMethod, entityQueueType, entityQueueDateTime, entityQueueData, mostRecentError, integrationID, createdDateTime, modifiedDateTime, createdByAccountID, modifiedByAccountID, tryCount';
 		
 		var insertQuery = new query();
-		
 		var sql = "INSERT INTO SwEntityQueueFailure (entityQueueFailureID, remoteID, #columns#) ";
 		sql &= "SELECT LOWER(REPLACE(CAST(UUID() as char character set utf8),'-','')) as entityQueueFailureID, entityQueueID as remoteID, #columns# ";
 		sql &= "FROM swEntityQueue ";
 		sql &= "WHERE entityQueueID = :entityQueueID";
 		insertQuery.addParam(name='entityQueueID', value=arguments.entityQueueID, CFSQLTYPE="CF_SQL_VARCHAR");
 		insertQuery.execute(sql=sql);
-
 		
 		var deleteQuery = new query();
-		
 		sql = "DELETE FROM swEntityQueue WHERE entityQueueID = :entityQueueID";
 		deleteQuery.addParam(name='entityQueueID', value=arguments.entityQueueID, CFSQLTYPE="CF_SQL_VARCHAR");
 		deleteQuery.execute(sql=sql);
