@@ -99,7 +99,7 @@ Notes:
 		collectionList="#orderItemCollectionList#"
 		usingPersonalCollection="true"
 		recordEditAction="admin:entity.edit#lcase(orderItemCollectionList.getCollectionObject())#"
-		recordDeleteAction="admin:entity.adminDeleteOrderItem&sRedirectAction=admin:entity.detailOrder&orderID=#rc.order.getOrderID()#"
+		recordDeleteAction="admin:entity.deleteOrderItem&sRedirectAction=admin:entity.detailOrder&orderID=#rc.order.getOrderID()#"
 		recordDeleteActionProperty="orderItemID"
 		recordDetailAction="admin:entity.detail#lcase(orderItemCollectionList.getCollectionObject())#"
 		refreshEvent="refreshOrderItemListing"
