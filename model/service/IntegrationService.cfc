@@ -129,43 +129,23 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	public any function getAuthenticationIntegrationCFC(required any integration) {
-		if(!structKeyExists(variables.authenticationIntegrationCFCs, arguments.integration.getIntegrationPackage())) {
-			var integrationCFC = createObject("component", "Slatwall.integrationServices.#arguments.integration.getIntegrationPackage()#.Authentication").init();
-			variables.authenticationIntegrationCFCs[ arguments.integration.getIntegrationPackage() ] = integrationCFC;
-		}
-		return variables.authenticationIntegrationCFCs[ arguments.integration.getIntegrationPackage() ];
+		return this.getIntegrationTypeCFC(arguments.integration, "Authentication");
 	}
 
 	public any function getPaymentIntegrationCFC(required any integration) {
-		if(!structKeyExists(variables.paymentIntegrationCFCs, arguments.integration.getIntegrationPackage())) {
-			var integrationCFC = createObject("component", "Slatwall.integrationServices.#arguments.integration.getIntegrationPackage()#.Payment").init();
-			variables.paymentIntegrationCFCs[ arguments.integration.getIntegrationPackage() ] = integrationCFC;
-		}
-		return variables.paymentIntegrationCFCs[ arguments.integration.getIntegrationPackage() ];
+		return this.getIntegrationTypeCFC(arguments.integration, "Payment");
 	}
 	
 	public any function getShippingIntegrationCFC(required any integration) {
-		if(!structKeyExists(variables.shippingIntegrationCFCs, arguments.integration.getIntegrationPackage())) {
-			var integrationCFC = createObject("component", "Slatwall.integrationServices.#arguments.integration.getIntegrationPackage()#.Shipping").init();
-			variables.shippingIntegrationCFCs[ arguments.integration.getIntegrationPackage() ] = integrationCFC;
-		}
-		return variables.shippingIntegrationCFCs[ arguments.integration.getIntegrationPackage() ];
+		return this.getIntegrationTypeCFC(arguments.integration, "Shipping");
 	}
 	
 	public any function getDataIntegrationCFC(required any integration) {
-		if(!structKeyExists(variables.dataIntegrationCFCs, arguments.integration.getIntegrationPackage())) {
-			var integrationCFC = createObject("component", "Slatwall.integrationServices.#arguments.integration.getIntegrationPackage()#.Data").init();
-			variables.dataIntegrationCFCs[ arguments.integration.getIntegrationPackage() ] = integrationCFC;
-		}
-		return variables.dataIntegrationCFCs[ arguments.integration.getIntegrationPackage() ];
+		return this.getIntegrationTypeCFC(arguments.integration, "Data");
 	}
 
 	public any function getTaxIntegrationCFC(required any integration) {
-		if(!structKeyExists(variables.taxIntegrationCFCs, arguments.integration.getIntegrationPackage())) {
-			var integrationCFC = createObject("component", "Slatwall.integrationServices.#arguments.integration.getIntegrationPackage()#.Tax").init();
-			variables.taxIntegrationCFCs[ arguments.integration.getIntegrationPackage() ] = integrationCFC;
-		}
-		return variables.taxIntegrationCFCs[ arguments.integration.getIntegrationPackage() ];
+		return this.getIntegrationTypeCFC(arguments.integration, "Tax");
 	}
 	
 	public any function updateIntegrationsFromDirectory() {
