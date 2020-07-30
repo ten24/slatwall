@@ -719,6 +719,7 @@ component extends="framework.one" {
 					var hibachiBF = new framework.hibachiaop("/#variables.framework.applicationKey#/org/Hibachi", {
 						constants={
 							'applicationKey'=variables.framework.applicationKey,
+							'applicationRootMappingPath' = applicationInitData["applicationRootMappingPath"],
 							'hibachiInstanceApplicationScopeKey'=getHibachiInstanceApplicationScopeKey()
 						},
 						recurse=false,
