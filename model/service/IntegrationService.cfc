@@ -111,9 +111,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	/**
 	 * Helper function to return ['IntegrationType'].cfc Object, e.g. Data.cfc, Adress.cfc
 	 * 
-	 * TODO: refactor other function to use this function, 
-	 * or inplement onMissingMethod for pattern get['Address']IntegrationCFC(required integration);
-	 * 
 	*/ 
 	public any function getIntegrationTypeCFC(required any integration, required string integrationTypeName ){
         return this.getBean("#arguments.integration.getIntegrationPackage()##arguments.integrationTypeName#CFC");
