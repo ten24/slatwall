@@ -438,7 +438,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		for(var skuRecord in rewardSkusCollection){
-			
 			var addOrderItemData = {
 				quantity: skuRewardQuantity,
 				skuID: skuRecord['skuID'],
@@ -461,14 +460,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		var skuService = getService('skuService');
 		
-		
 		for(var item in arguments.itemsToBeAdded){
 			var sku = skuService.getSku(item.skuID);
 			if(isNull(sku)){
 				continue;
 			}
-			dd(item); abort;
-			logHibachi('adding item: #sku.getSkuName()#')
+
 			var newOrderItem = getService("OrderService").newOrderItem();
 			newOrderItem.setPrice(0);
 			newOrderItem.setSkuPrice(0);
