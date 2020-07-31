@@ -738,7 +738,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		
 		var entity = arguments.rc[arguments.rc.entityName];
 
-		getDAO('HibachiEntityQueueDAO').reQueueItems(rc.entityName, entity.getPrimaryIDValue())
+		getDAO('HibachiEntityQueueDAO').reQueueItems(arguments.rc.entityName, entity.getPrimaryIDValue())
 	
 		var params = {};
 		params[entity.getPrimaryIDPropertyName()] = entity.getPrimaryIDValue();
