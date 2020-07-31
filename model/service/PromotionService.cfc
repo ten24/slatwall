@@ -432,12 +432,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		rewardSkusCollection = rewardSkusCollection.getRecords(formatRecords=false);
 
 		var orderService = getService("OrderService");
-		var counter = 50;
+		
+		if(arrayLen(rewardSkusCollection) > 50){
+			throw('Reward skus in excess of 50 are not allowed')
+		}
 		
 		for(var skuRecord in rewardSkusCollection){
-			if(counter > 50){
-				throw('Reward skus in excess of 50 are not allowed')
-			}
 			
 			var addOrderItemData = {
 				quantity: skuRewardQuantity,
@@ -449,7 +449,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				promotionRewardID: arguments.promotionReward.getPromotionRewardID()
 			}
 			arrayAppend(arguments.itemsToBeAdded, addOrderItemData);
-			counter++
 		}
 		
 	}
