@@ -434,7 +434,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var orderService = getService("OrderService");
 		
 		if(arrayLen(rewardSkusCollection) > 50){
-			throw('Reward skus in excess of 50 are not allowed')
+			throw('Reward skus in excess of 50 are not allowed');
 		}
 		
 		for(var skuRecord in rewardSkusCollection){
