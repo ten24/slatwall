@@ -419,17 +419,26 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		//the quantity of free skus that we should add
 		var skuRewardQuantity = arguments.promotionReward.getRewardSkuQuantity() ?: 0;
+		var filterGroups = rewardSkusCollection.getCollectionConfigStruct()['filterGroups'];
+		var hasFilterGroups = !isNull(filterGroups) && arrayLen(filterGroups) && arrayLen(rewardSkusCollection.getCollectionConfigStruct()['filterGroups'][1]['filterGroup']);
 		
-		//if this promo reward has already been processed in the request, or it has no reward sku's /quantity return
-		if( isNull(rewardSkusCollection) || skuRewardQuantity <= 0 ){
+		//if this promo reward has already been processed in the request, or it has no reward sku's /quantity 
+		//or if the promo has no filters on it's reward sku collection return
+		if(skuRewardQuantity <= 0 || !hasFilterGroups ){
 			return;
-		}
-		
+		}	
+
 		//the skus to be added to the order
 		rewardSkusCollection = rewardSkusCollection.getRecords(formatRecords=false);
+
 		var orderService = getService("OrderService");
-	
+		var counter = 50;
+		
 		for(var skuRecord in rewardSkusCollection){
+			if(counter > 50){
+				throw('Reward skus in excess of 50 are not allowed')
+			}
+			
 			var addOrderItemData = {
 				quantity: skuRewardQuantity,
 				skuID: skuRecord['skuID'],
@@ -440,23 +449,27 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				promotionRewardID: arguments.promotionReward.getPromotionRewardID()
 			}
 			arrayAppend(arguments.itemsToBeAdded, addOrderItemData);
+			counter++
 		}
 		
 	}
 	
 	public void function addRewardSkusToOrder(required array itemsToBeAdded, required any order, required any fulfillment){
-		
+	
 		if(arguments.order.getDropSkuRemovedFlag()){
 			return;
 		}
 		
 		var skuService = getService('skuService');
+		
+		
 		for(var item in arguments.itemsToBeAdded){
 			var sku = skuService.getSku(item.skuID);
 			if(isNull(sku)){
 				continue;
 			}
-			
+			dd(item); abort;
+			logHibachi('adding item: #sku.getSkuName()#')
 			var newOrderItem = getService("OrderService").newOrderItem();
 			newOrderItem.setPrice(0);
 			newOrderItem.setSkuPrice(0);
