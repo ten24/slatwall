@@ -736,7 +736,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	public void function retryEntityQueueFailures(required struct rc){
 		super.genericDetailMethod(arguments.rc.entityName, arguments.rc);
 		
-		var entity = rc[rc.entityName];
+		var entity = arguments.rc[arguments.rc.entityName];
 
 		getDAO('HibachiEntityQueueDAO').reQueueItems(rc.entityName, entity.getPrimaryIDValue())
 	
