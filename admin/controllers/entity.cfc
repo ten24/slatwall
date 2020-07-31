@@ -734,7 +734,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	}
 	
 	public void function retryEntityQueueFailures(required struct rc){
-		super.genericDetailMethod(rc.entityName, arguments.rc);
+		super.genericDetailMethod(arguments.rc.entityName, arguments.rc);
 		
 		var entity = rc[rc.entityName];
 
