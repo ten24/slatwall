@@ -417,8 +417,7 @@ extends = "Slatwall.integrationServices.BaseTax" {
 			logHibachi('Avatax Error: ' & serialize(responseData));
 			responseBean.setData('An Error occured when attempting to retrieve tax information');
 		}
-		writeDump(responseData);
-		writeDump(responseBean);abort;
+
 		return responseBean;
 	}
 	
