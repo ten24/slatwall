@@ -53,15 +53,30 @@ Notes:
 <cfparam name="rc.edit" type="boolean" /> 
 
 <cfset local.collectionEntityQueue = $.slatwall.getService('hibachiEntityQueueService').getEntityQueueCollectionList()  >
-	<cfset local.collectionEntityQueue.setDisplayProperties('modifiedDateTime,processMethod,integration.integrationName,mostRecentError,tryCount',{
-	    isVisible=true,
-	    isDeletable=true
-	}) >
-	<cfset local.collectionEntityQueue.addDisplayProperty(displayProperty='baseID',columnConfig={isVisible=false})>
-	<cfset local.collectionEntityQueue.addFilter('baseID',rc.order.getOrderID())>
-	<cfset local.collectionEntityQueue.addFilter('baseObject','Order')>
+<cfset local.collectionEntityQueue.setDisplayProperties('modifiedDateTime,processMethod,integration.integrationName,mostRecentError,tryCount',{
+    isVisible=true,
+    isDeletable=true
+}) >
+<cfset local.collectionEntityQueue.addDisplayProperty(displayProperty='baseID',columnConfig={isVisible=false})>
+<cfset local.collectionEntityQueue.addFilter('baseID',rc.order.getOrderID())>
+<cfset local.collectionEntityQueue.addFilter('baseObject','Order')>
+
+
+<cfset local.collectionEntityQueueFailure = $.slatwall.getService('hibachiEntityQueueService').getEntityQueueFailureCollectionList()  >
+<cfset local.collectionEntityQueueFailure.setDisplayProperties('modifiedDateTime,processMethod,integration.integrationName,mostRecentError,tryCount',{
+    isVisible=true,
+    isDeletable=true
+}) >
+<cfset local.collectionEntityQueueFailure.addDisplayProperty(displayProperty='baseID',columnConfig={isVisible=false})>
+<cfset local.collectionEntityQueueFailure.addFilter('baseID',rc.order.getOrderID())>
+<cfset local.collectionEntityQueueFailure.addFilter('baseObject','Order')>
 
 <cfoutput>
+    
+    <div>
+	    <span class="h5">Pending processing</span>
+	</div>
+    
 	<hb:HibachiListingDisplay collectionList="#local.collectionEntityQueue#">
 		<hb:HibachiListingColumn tdClass="primary" propertyIdentifier="modifiedDateTime" />
 		<hb:HibachiListingColumn propertyIdentifier="processMethod" />
@@ -69,4 +84,19 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="mostRecentError" />
 		<hb:HibachiListingColumn propertyIdentifier="tryCount" />
 	</hb:HibachiListingDisplay>
+	
+	<div>
+	    <span class="h5">Failures</span>
+	    <hb:HibachiActionCaller action="admin:entity.retryEntityQueueFailures" queryString="entityName=Order&orderID=#rc.order.getPrimaryIDValue()#" class="btn btn-primary pull-right" type="link">
+	</div>
+	
+	
+	<hb:HibachiListingDisplay collectionList="#local.collectionEntityQueueFailure#">
+		<hb:HibachiListingColumn tdClass="primary" propertyIdentifier="modifiedDateTime" />
+		<hb:HibachiListingColumn propertyIdentifier="processMethod" />
+		<hb:HibachiListingColumn propertyIdentifier="integration.integrationName" />
+		<hb:HibachiListingColumn propertyIdentifier="mostRecentError" />
+		<hb:HibachiListingColumn propertyIdentifier="tryCount" />
+	</hb:HibachiListingDisplay>
+	
 </cfoutput>

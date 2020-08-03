@@ -97,6 +97,8 @@ Notes:
 		isDeletable=false
 	})/>
 	
+	<cfset accountCollectionList.addOrderBy('createdDateTime|DESC') />
+	
 	<hb:HibachiListingDisplay 
 		collectionList="#accountCollectionList#"
 		usingPersonalCollection="true"

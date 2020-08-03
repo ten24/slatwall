@@ -57,6 +57,7 @@ component entityname="SlatwallWorkflowTrigger" table="SwWorkflowTrigger" persist
 	property name="lockLevel" ormtype="string" hb_formatfieldtype="select" default="database" hint="if lock level is database, then isRunningFlag is checked in the database for locking. If application then we lock by serverInstanceKey";
 	property name="allowedInvocationCluster" ormtype="string";
 	property name="exclusiveInvocationClusterFlag" ormtype="boolean" hb_formatType="yesno";
+	property name="maxTryCount" ormtype="integer" default="10";
 	
 	// Calculated Properties
 

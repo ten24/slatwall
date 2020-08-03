@@ -84,16 +84,16 @@ component extends="HibachiService" accessors="true" output="false" {
 				// If the triggerObject is the same as this event, then we just use it
 				if (isNull(arguments.workflowTrigger.getObjectPropertyIdentifier()) || !len(arguments.workflowTrigger.getObjectPropertyIdentifier()) || arguments.workflowTrigger.getObjectPropertyIdentifier() == arguments.entity.getClassName()) {
 	
-					processData.entity = arguments.entity;
+					processData['entity'] = arguments.entity;
 	
 				} else {
-					processData.entity = arguments.entity.getValueByPropertyIdentifier(arguments.workflowTrigger.getObjectPropertyIdentifier());
+					processData['entity'] = arguments.entity.getValueByPropertyIdentifier(arguments.workflowTrigger.getObjectPropertyIdentifier());
 	
 				}
 	
 				// As long as the processEntity was found, then we can process the workflow
 				if (structKeyExists(processData, "entity") && !isNull(processData.entity) && isObject(processData.entity) && processData.entity.getClassName() == arguments.workflowTrigger.getWorkflow().getWorkflowObject()) {
-					processData.workflowTrigger = arguments.workflowTrigger;
+					processData['workflowTrigger'] = arguments.workflowTrigger;
 	
 					this.processWorkflow(arguments.workflowTrigger.getWorkflow(), processData, 'execute');
 				}
@@ -256,14 +256,24 @@ component extends="HibachiService" accessors="true" output="false" {
 					
 					var scheduleCollection = arguments.workflowTrigger.getCollection();
 					var currentObjectName = arguments.workflowTrigger.getCollection().getCollectionObject();
+					
+					if(currentObjectName == 'EntityQueue' && isNumeric(arguments.workflowTrigger.getMaxTryCount())){
+						scheduleCollection.addDisplayProperty('tryCount');
+						scheduleCollection.addFilter(
+							propertyIdentifier = 'tryCount',
+							value = arguments.workflowTrigger.getMaxTryCount(),
+							comparisonOperator = "<=",
+							filterGroupAlias = "maxTryCount"
+						);
+					}
 				
 					if(arguments.workflowTrigger.getCollectionPassthrough()){
 							
 							//Don't Instantiate every object, just passthrough the collection records returned
 							var processData = {
-								entity : this.invokeMethod('new#currentObjectName#'),
-								workflowTrigger : arguments.workflowTrigger,
-								collectionData : { 'collectionConfig' = scheduleCollection.getCollectionConfigStruct() }
+								'entity' : this.invokeMethod('new#currentObjectName#'),
+								'workflowTrigger' : arguments.workflowTrigger,
+								'collectionConfig' : scheduleCollection.getCollectionConfigStruct() 
 							};
 
 							if(arguments.workflowTrigger.getCollectionFetchRecordsFlag()){
@@ -271,9 +281,9 @@ component extends="HibachiService" accessors="true" output="false" {
 								
 								if(isNumeric(arguments.workflowTrigger.getCollectionFetchSize()) && arguments.workflowTrigger.getCollectionFetchSize() > 0){
 									scheduleCollection.setPageRecordsShow(arguments.workflowTrigger.getCollectionFetchSize());
-									processData.collectionData['collectionData'] = scheduleCollection.getPageRecords();
+									processData['collectionData'] = scheduleCollection.getPageRecords(formatRecords=false);
 								}else{
-									processData.collectionData['collectionData'] = scheduleCollection.getRecords();
+									processData['collectionData'] = scheduleCollection.getRecords(formatRecords=false);
 								}
 								
 							}
@@ -295,8 +305,8 @@ component extends="HibachiService" accessors="true" output="false" {
 			
 								var workflowTrigger = getHibachiScope().getEntity('WorkflowTrigger', workflowTriggerID);
 								var processData = {
-									entity = getHibachiScope().getEntity(currentObjectName, currentObjectID),
-									workflowTrigger = workflowTrigger
+									'entity' : getHibachiScope().getEntity(currentObjectName, currentObjectID),
+									'workflowTrigger' : workflowTrigger
 								};
 			
 								//Call proccess method to execute Tasks
@@ -325,7 +335,7 @@ component extends="HibachiService" accessors="true" output="false" {
 				//run process without collection
 				}else{
 					var processData = {
-						workflowTrigger = arguments.workflowTrigger
+						'workflowTrigger' : arguments.workflowTrigger
 					};
 
 					//Call proccess method to execute Tasks
@@ -619,15 +629,11 @@ component extends="HibachiService" accessors="true" output="false" {
 								arguments.data.entity.setAnnounceEvent(false);
 							}
 							
-							if(!structKeyExists(arguments.data,'collectionData')){
-								arguments.data.collectionData = {};
-							}
-							
 							//Execute ACTION
 							if(structKeyExists(arguments.data,'entity')){
-								var actionSuccess = executeTaskAction(workflowTaskAction, arguments.data.entity, data.workflowTrigger.getTriggerType(), arguments.data.collectionData);
+								var actionSuccess = executeTaskAction(workflowTaskAction, arguments.data.entity, data.workflowTrigger.getTriggerType(), arguments.data);
 							}else{
-								var actionSuccess = executeTaskAction(workflowTaskAction, javacast('null',''), data.workflowTrigger.getTriggerType(), arguments.data.collectionData);
+								var actionSuccess = executeTaskAction(workflowTaskAction, javacast('null',''), data.workflowTrigger.getTriggerType(), arguments.data);
 							}
 
 							if(data.workflowTrigger.getTriggerType() == 'Event') {
