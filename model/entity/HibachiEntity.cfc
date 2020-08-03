@@ -55,11 +55,16 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		// Call the super populate to do all the standard logic
 		super.populate(argumentcollection=arguments);
 
-		var attributes = getAssignedAttributes();
-		for(var attribute in attributes) {
-			if(structKeyExists(arguments.data, attribute['attributeCode'])) {
-				setAttributeValue( attribute['attributeCode'], nullReplace(data[ attribute['attributeCode'] ], ""), this.getRollbackProcessedFlag() && attribute['attributeInputType'] == "password");
+		// Loop over attribute sets
+		for(var attributeSet in getAssignedAttributeSetSmartList().getRecords()) {
+			
+			// Loop over attributes
+			for(var attribute in attributeSet.getAttributes()) {
+				if(structKeyExists(arguments.data, attribute.getAttributeCode())) {
+					setAttributeValue( attribute.getAttributeCode(), nullReplace(data[ attribute.getAttributeCode() ], ""), this.getRollbackProcessedFlag() && attribute.getAttributeInputType() == "password");
+				}
 			}
+			
 		}
 		
 		// Return this object
@@ -389,7 +394,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 	
 	public array function getAssignedAttributes() {
 		 //cacheing structure of attribute code and type info
-		 var cacheKey = "attributes_getAssignedAttributes_"&getClassName();
+		 var cacheKey = "attributes_getAssignedAttribtues"&getClassName();
 		 if(!getService('HibachiCacheService').hasCachedValue(cacheKey)){
 			var assignedAttributesArray = [];
 		 	
@@ -445,13 +450,15 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		if( !getHibachiScope().hasApplicationValue("classAuditablePropertyCache_#getClassFullname()#") ) {
 			var auditableProperties = super.getAuditableProperties();
 			
-			var attributes = getAssignedAttributes();
-			var propertyExclusionList = getAuditablePropertyExclusionList();
-			// Loop over attributes
-			for(var attribute in attributes) {
-				if (!listFindNoCase(propertyExclusionList, attribute['attributeCode'])) {
-					arrayAppend(auditableProperties, {name=attribute['attributeCode'], attributeFlag=true});
+			for(var attributeSet in getAssignedAttributeSetSmartList().getRecords()) {
+			
+				// Loop over attributes
+				for(var attribute in attributeSet.getAttributes()) {
+					if (!listFindNoCase(getAuditablePropertyExclusionList(), attribute.getAttributeCode())) {
+						arrayAppend(auditableProperties, {name=attribute.getAttributeCode(), attributeFlag=true});
+					}
 				}
+				
 			}
 
 			setApplicationValue("classAuditablePropertyCache_#getClassFullname()#", auditableProperties);
