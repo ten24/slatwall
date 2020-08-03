@@ -178,7 +178,7 @@ extends = "Slatwall.integrationServices.BaseTax" {
 			
 			// Pull out just the items for this address
 			var addressTaxRequestItems = arguments.requestBean.getTaxRateItemRequestBeansByAddressID()[ taxAddressID ];
-			var stateCode = addressTaxRequestItems[1].getTaxStateCode();
+			var stateCode = addressTaxRequestItems[1].getTaxStateCode()?:'';
 			var countryCode = addressTaxRequestItems[1].getTaxCountryCode();
 			
 			if(stateCode == 'JEY' && countryCode =='GB'){
@@ -416,6 +416,7 @@ extends = "Slatwall.integrationServices.BaseTax" {
 		}else{
 			logHibachi('Avatax Error: ' & serialize(responseData));
 			responseBean.setData('An Error occured when attempting to retrieve tax information');
+			
 		}
 
 		return responseBean;
