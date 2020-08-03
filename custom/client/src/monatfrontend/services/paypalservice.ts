@@ -46,6 +46,7 @@ export class PayPalService {
 					"copyFromType": "accountPaymentMethod",
 					"paymentIntegrationType": "braintree",
 					"newOrderPayment.paymentMethod.paymentMethodID": response.paymentMethodID,
+					"returnJSONObjects":"cart"
 				});
 			})
 			.then((response) => deferred.resolve(response))
