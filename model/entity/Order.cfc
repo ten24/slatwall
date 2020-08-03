@@ -283,12 +283,14 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
     property name="calculatedPaymentAmountDue" ormtype="big_decimal";
     property name="priceGroup" cfc="PriceGroup" fieldtype="many-to-one" fkcolumn="priceGroupID";
     property name="upgradeFlag" ormtype="boolean" default="0";
+	property name="avalaraCommitTransactionID" ormtype="string";
 
     property name="isLockedInProcessingFlag" persistent="false";
     property name="isLockedInProcessingOneFlag" persistent="false";
     property name="isLockedInProcessingTwoFlag" persistent="false";
 	property name="purchasePlusTotal" persistent="false";
 	property name="upgradeOrEnrollmentOrderFlag" persistent="false";
+	
 	
    
  property name="businessDate" ormtype="string";
