@@ -200,6 +200,7 @@ class MonatCheckoutController {
 					"copyFromType":"accountPaymentMethod",
 					"paymentIntegrationType":"hyperwallet",
 					"newOrderPayment.paymentMethod.paymentMethodID": response.hyperWalletPaymentMethod,
+					"returnJSONObjects":"cart"
 				});
 			}
 			
@@ -288,6 +289,7 @@ class MonatCheckoutController {
 									"copyFromType":"accountPaymentMethod",
 									"paymentIntegrationType":"braintree",
 									"newOrderPayment.paymentMethod.paymentMethodID": response.paymentMethodID,
+									"returnJSONObjects":"cart"
 								});
 							});
                         });
