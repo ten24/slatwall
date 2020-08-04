@@ -142,6 +142,16 @@ component accessors="true" output="false" displayname="HyperWallet" implements="
 			
 		} else {
 			arguments.responseBean.addError("Processing error", "Error in attempting to authorize.");
+			if(structKeyExists(responseData,'fileContent')){
+				if(IsJson(responseData.fileContent)) {
+					responseData = deserializeJSON(responseData.fileContent);
+				}
+				if(structKeyExists(responseData,'errors')){
+					for(var error in responseData.errors){
+						arguments.responseBean.addMessage(error.code,error.message);
+					}
+				}
+			}
 		}
 		
 	}
@@ -191,6 +201,16 @@ component accessors="true" output="false" displayname="HyperWallet" implements="
 			
 		} else {
 			arguments.responseBean.addError("Processing error", "Error in attempting to Charge.");
+			if(structKeyExists(responseData,'fileContent')){
+				if(IsJson(responseData.fileContent)) {
+					responseData = deserializeJSON(responseData.fileContent);
+				}
+				if(structKeyExists(responseData,'errors')){
+					for(var error in responseData.errors){
+						arguments.responseBean.addMessage(error.code,error.message);
+					}
+				}
+			}
 		}
 		
 	}
