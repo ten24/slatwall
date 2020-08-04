@@ -76,6 +76,7 @@ component {
 	property name="purchasePlusTotal" persistent="false";
 	property name="upgradeOrEnrollmentOrderFlag" persistent="false";
 	
+	
     public numeric function getPersonalVolumeSubtotal(){
         return getCustomPriceFieldSubtotal('personalVolume');
     }
