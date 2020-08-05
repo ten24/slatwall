@@ -4,7 +4,7 @@ component {
 	property name="vipUpgradeDateTime" ormtype="timestamp";
 	property name="mpUpgradeDateTime" ormtype="timestamp";
 	property name="allowCorporateEmailsFlag" ormtype="boolean" default="0";
-	property name="upgradeSyncedFlag" ormtype="boolean" default="1";
+	property name="upgradeSyncFlag" ormtype="boolean" default="0";
 	
 	property name="sponsorIDNumber" ormtype="string";
 	property name="lastSyncedDateTime" ormtype="timestamp";
@@ -22,13 +22,13 @@ component {
 	
 	property name="uplineMPAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="uplineMPAccountID";
 
-	public boolean function getUpgradeSyncedFlag(){
-		//default to true if not set.
-		if(!structKeyExists(variables, 'upgradeSyncedFlag')){
-			variables.upgradeSyncedFlag =  true;
+	public boolean function getUpgradeSyncFlag(){
+		//default to false if not set.
+		if(!structKeyExists(variables, 'upgradeSyncFlag')){
+			variables.upgradeSyncFlag =  false;
 		}
 		
-		return variables.upgradeSyncedFlag;
+		return variables.upgradeSyncFlag;
 	}
 	
 	public numeric function getSuccessfulFlexshipOrdersThisYearCount(){

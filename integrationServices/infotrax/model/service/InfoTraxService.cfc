@@ -260,7 +260,7 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		};
 		
 		
-		if(isNull(arguments.account.getLastSyncedDateTime()) || !arguments.account.getUpgradeSyncedFlag()){
+		if(isNull(arguments.account.getLastSyncedDateTime()) || arguments.account.getUpgradeSyncFlag()){
 			distributorData['distType'] = formatDistributorType(arguments.account.getAccountType()),//D (MP), P (VIP), C (Customer) 
 		}
 		
