@@ -261,7 +261,7 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 							account.setUplineMPAccount(newUplineMPAccount);
 
 							if(!isNull(oldUplineMPAccount)){
-								getService('HibachiEventService').announceEvent('afterAccountUplineMPAccountChangedSuccess', {'account' : oldUplineMPAccount,'entity' : oldUplineMPAccount, 'downlineAccount': account});
+								getService('HibachiEventService').announceEvent('afterAccountUplineMPAccountChangedSuccess', {'account' : newUplineMPAccount,'entity' : newUplineMPAccount, 'downlineAccount': account});
 							}	
 						}
 
