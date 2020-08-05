@@ -265,6 +265,21 @@ component extends="HibachiService" accessors="true" output="false" {
 							comparisonOperator = "<=",
 							filterGroupAlias = "maxTryCount"
 						);
+						
+						scheduleCollection.addFilter(
+							propertyIdentifier = 'entityQueueDateTime',
+							value = 'NULL',
+							comparisonOperator = 'IS',
+							filterGroupAlias = 'processingTime'
+						);
+						
+						scheduleCollection.addFilter(
+							logicalOperator='OR',
+							propertyIdentifier = 'entityQueueDateTime',
+							value = now(),
+							comparisonOperator = '<=',
+							filterGroupAlias = 'processingTime'
+						);
 					}
 				
 					if(arguments.workflowTrigger.getCollectionPassthrough()){

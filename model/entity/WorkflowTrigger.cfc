@@ -58,6 +58,7 @@ component entityname="SlatwallWorkflowTrigger" table="SwWorkflowTrigger" persist
 	property name="allowedInvocationCluster" ormtype="string";
 	property name="exclusiveInvocationClusterFlag" ormtype="boolean" hb_formatType="yesno";
 	property name="maxTryCount" ormtype="integer" default="10";
+	property name="retryDelay" ormtype="integer" default="0" hint="Value in seconds";
 	
 	// Calculated Properties
 
