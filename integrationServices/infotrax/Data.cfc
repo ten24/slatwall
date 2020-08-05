@@ -240,6 +240,10 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 
 			if( tableName == 'swAccount' ){
 				
+				if(structKeyExists(arguments.data.DTSArguments, 'distType')){
+					query &= ', upgradeSyncedFlag = 1'	
+				}
+				
 				var account = relatedToAccount ? arguments.entity.getAccount() : arguments.entity;
 				
 				if( structKeyExists(iceResponse, 'marketpartnerid') ){

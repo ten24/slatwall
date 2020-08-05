@@ -79,6 +79,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
     	// Set the AccountType and PriceGroup IF this is an upgrade flow.
     	if(arguments.order.getUpgradeFlag() == true){
     		
+    		account.setUpgradeSyncedFlag(0);
+    		
     		//If the order isFirstOrder it is enrollment, if its not its an account type upgrade
     		var isFirstOrder = !isNull(arguments.order.getAccount().getAccountStatusType()) && arguments.order.getAccount().getAccountStatusType().getSystemCode() == 'astEnrollmentPending' ? true : false;
     		

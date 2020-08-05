@@ -253,12 +253,15 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		
 		var distributorData = { 
 			//'referenceID' = arguments.account.getAccountNumber(), //Potentially Slatwall ID (may only retain in MGB Hub) 
-			'distId'      = arguments.account.getAccountNumber(), //Slatwall will be master
-			'name'        = formatDistibutorName(arguments.account), // Distributor Name (lastname, firstname)
-			'distType'    = formatDistributorType(arguments.account.getAccountType()),//D (MP), P (VIP), C (Customer) 
+			'distId'      = arguments.account.getAccountNumber(), //Slatwall will be masterastname, firstname)
 			'email'       = left(arguments.account.getEmailAddress(), 60),
 			'referralId' = arguments.account.getOwnerAccount().getAccountNumber()//ID of Member who referred person to the business
 		};
+		
+		
+		if(isNull(arguments.account.getLastSyncedDateTime()) || !arguments.account.getUpgradeSyncedFlag()){
+			distributorData['distType'] = formatDistributorType(arguments.account.getAccountType()),//D (MP), P (VIP), C (Customer) 
+		}
 		
 		if(!isNull(arguments.account.getCompany()) && len(arguments.account.getCompany())){
 			distributorData['companyname'] = arguments.account.getCompany(); // Distributor Company
