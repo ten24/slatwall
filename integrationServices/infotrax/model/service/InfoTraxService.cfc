@@ -253,7 +253,8 @@ component extends='Slatwall.model.service.HibachiService' persistent='false' acc
 		
 		var distributorData = { 
 			//'referenceID' = arguments.account.getAccountNumber(), //Potentially Slatwall ID (may only retain in MGB Hub) 
-			'distId'      = arguments.account.getAccountNumber(), //Slatwall will be masterastname, firstname)
+			'distId'      = arguments.account.getAccountNumber(), //Slatwall will be master
+			'name'        = formatDistibutorName(arguments.account), // Distributor Name (lastname, firstname)
 			'email'       = left(arguments.account.getEmailAddress(), 60),
 			'referralId' = arguments.account.getOwnerAccount().getAccountNumber()//ID of Member who referred person to the business
 		};
