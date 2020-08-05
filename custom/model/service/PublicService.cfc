@@ -1257,6 +1257,15 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             }
         }
         
+        if(!cart.hasErrors() && !cart.hasOrderPayment()){
+            var accountPaymentMethod = account.getPrimaryPaymentMethod();
+            if( !accountPaymentMethod.getNewFlag() && accountPaymentMethod.getPaymentMethod().getPaymentMethodType() == 'creditCard'){
+                var data = {
+                    accountPaymentMethodID: accountPaymentMethod.getAccountPaymentMethodID()
+                };
+                getOrderService().processOrder( cart, data, 'addOrderPayment' );
+            }
+        }
         
         return cart;
     }
