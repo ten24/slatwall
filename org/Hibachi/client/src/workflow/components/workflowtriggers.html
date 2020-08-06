@@ -455,6 +455,13 @@
                                                     data-is-dirty="true"
                                                     ng-if="workflow.data.workflowObject && workflow.data.workflowObject.toLowerCase() == 'entityqueue'"
                                             ></sw-property-display>
+                                            <sw-property-display
+                                                    data-object="workflowTriggers.selectedTrigger"
+                                                    data-property-identifier="retryDelay"
+                                                    data-editing="true"
+                                                    data-is-dirty="true"
+                                                    ng-if="workflow.data.workflowObject && workflow.data.workflowObject.toLowerCase() == 'entityqueue'"
+                                            ></sw-property-display>
                                             
                                         </div>
 									</div>

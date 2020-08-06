@@ -32,16 +32,21 @@ component accessors="true" output="false" extends="HibachiService" {
 	public any function processEntityQueue_processQueue(required any entityQueue, struct data={}){
 		
 		var maxTryCount = 3;
+		var retryDelay = 0;
 		
 		if(structKeyExists(arguments.data, 'workflowTrigger') && isNumeric(arguments.data.workflowTrigger.getMaxTryCount())){
 			maxTryCount = arguments.data.workflowTrigger.getMaxTryCount();
 		}
 		
+		if(structKeyExists(arguments.data, 'workflowTrigger') && isNumeric(arguments.data.workflowTrigger.getRetryDelay())){
+			retryDelay = arguments.data.workflowTrigger.getRetryDelay();
+		}
+		
 		if(structKeyExists(arguments.data, 'collectionData')){
-			this.processEntityQueueArray(entityQueueArray=arguments.data.collectionData, maxTryCount=maxTryCount); 
+			this.processEntityQueueArray(entityQueueArray=arguments.data.collectionData, maxTryCount=maxTryCount, retryDelay=retryDelay); 
 		} else if(!entityQueue.getNewFlag()){
 			var entityQueueArray = [ arguments.entityQueue.getStructRepresentation() ];
-			this.processEntityQueueArray(entityQueueArray=entityQueueArray, maxTryCount=maxTryCount); 
+			this.processEntityQueueArray(entityQueueArray=entityQueueArray, maxTryCount=maxTryCount, retryDelay=retryDelay); 
 		} 
 		return arguments.entityQueue;
 	}
@@ -109,7 +114,7 @@ component accessors="true" output="false" extends="HibachiService" {
 	} 
  
 
-	public any function processEntityQueueArray(required array entityQueueArray, boolean useThread = false, numeric maxTryCount = 3){
+	public any function processEntityQueueArray(required array entityQueueArray, boolean useThread = false, numeric maxTryCount = 3, numeric retryDelay = 0){
 
 		if(!arraylen(arguments.entityQueueArray)){
 			return;
@@ -117,8 +122,8 @@ component accessors="true" output="false" extends="HibachiService" {
 	
 		if(arguments.useThread == true && !getService('hibachiUtilityService').isInThread()){
 			var threadName = "updateCalculatedProperties_#replace(createUUID(),'-','','ALL')#";
-			thread name="#threadName#" entityQueueArray="#arguments.entityQueueArray#" {
-				processEntityQueueArray(entityQueueArray=entityQueueArray, useThread=false, maxTryCount=arguments.maxTryCount);
+			thread name="#threadName#" entityQueueArray="#arguments.entityQueueArray#" maxTryCount="#arguments.tryCount#" retryDelay="#arguments.retryDelay#" {
+				processEntityQueueArray(entityQueueArray=entityQueueArray, useThread=false, maxTryCount=maxTryCount, retryDelay=retryDelay);
 			}
 		}else{
 			var entityQueueIDsToBeDeleted = '';
@@ -153,7 +158,7 @@ component accessors="true" output="false" extends="HibachiService" {
 					if(val(entityQueue['tryCount']) >= maxTryCount){
 						getHibachiEntityQueueDAO().archiveEntityQueue(entityQueue['entityQueueID'], e.message);
 					}else{
-						getHibachiEntityQueueDAO().updateModifiedDateTimeAndMostRecentError(entityQueue['entityQueueID'], e.message);
+						getHibachiEntityQueueDAO().updateNextRetryDateAndMostRecentError(entityQueue['entityQueueID'], e.message);
 					}
 					
 					if(getHibachiScope().setting("globalLogMessages") == "detail"){
