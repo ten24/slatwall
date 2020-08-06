@@ -46,13 +46,13 @@
 Notes:
 
 */
-component entityname="SlatwallBatchEntityQueue" table="SwBatchEntityQueue" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="HibachiEntityQueueService" {
+component entityname="SlatwallBatchEntity" table="SwBatchEntity" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="HibachiEntityQueueService" {
 
 	// Persistent Properties
-	property name="batchEntityQueueID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="batchEntityID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="baseObject" ormType="string" index="EI_BASEOBJECT";
 	property name="baseID" ormType="string" index="EI_BASEID";
-	property name="batchEntityQueueType" ormType="string" hb_formatType="rbKey"; // dependent on the integration
+	property name="batchEntityType" ormType="string" hb_formatType="rbKey"; // dependent on the integration
 	property name="batchDescription" ormtype="string";
 	property name="batchCalculatedDescription" ormtype="string";
 	property name="successFlag" ormtype="boolean";

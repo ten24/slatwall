@@ -65,7 +65,7 @@ component entityname="SlatwallEntityQueue" table="SwEntityQueue" persistent="tru
 	property name="integration" hb_populateEnabled="public" cfc="Integration" fieldtype="many-to-one" fkcolumn="integrationID";
 
 	// Related Object Properties (one-to-many)
-	property name="batch" hb_populateEnabled="public" cfc="BatchEntityQueue" fieldtype="many-to-one" fkcolumn="batchEntityQueueID";
+	property name="batch" hb_populateEnabled="public" cfc="BatchEntity" fieldtype="many-to-one" fkcolumn="batchEntityID";
 	// Related Object Properties (many-to-many)
 
 	// Remote Properties
