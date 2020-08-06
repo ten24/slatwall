@@ -2,7 +2,8 @@
 	"entity": "Account",
 	"mapping": {
 	    "firstName": {
-		    "propertyIdentifier" : "firstName"
+		    "propertyIdentifier" : "firstName",
+		    "required": true
 		},
 		"lastName": {
 		    "propertyIdentifier" : "firstName",
@@ -12,6 +13,7 @@
 		}
 		"emailAddress": {
 		    "propertyIdentifier" : "primaryEmailAddress.emailAddress",
+		    "dtatType": "email",
 		},
 	}
 }

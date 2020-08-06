@@ -48,29 +48,87 @@ Notes:
 */
 component extends="Slatwall.model.service.HibachiService" persistent="false" accessors="true" output="false"{
 	
+	property name="hibachiEntityQueueService";
 
-	// ===================== START: Logical Methods ===========================
+
+
+
+
+	public struct function getAccountMapping(){
+	    
+	    if( !structKeyExists(variables, 'accountMapping') ){
+	        
+	        //Read from file/DB whatever 
+	        var mapingJson = FileRead( ExpandPath('/Slatwall') & '/integrationServices/slatwallimporter/config/mappings/Account.json');
+	        
+	        variables.accountMapping = serializeJson(mapingJson);
+	    }
+	    
+        return variables.accountMapping;
+	}
 	
-	// =====================  END: Logical Methods ============================
-
-	// ===================== START: DAO Passthrough ===========================
-
-	// ===================== START: DAO Passthrough ===========================
-
-	// ===================== START: Process Methods ===========================
-
-	// =====================  END: Process Methods ============================
-
-	// ====================== START: Save Overrides ===========================
-
-	// ======================  END: Save Overrides ============================
-
-	// ==================== START: Smart List Overrides =======================
-
-	// ====================  END: Smart List Overrides ========================
-
-	// ====================== START: Get Overrides ============================
-
-	// ======================  END: Get Overrides =============================
-
+	
+	
+	
+	
+	//////////////////////////////////////////////////////////////////////////////////////
+	
+	
+	
+	public any function importAccounts(required struct queryOrArrayOfStruct ){
+	    
+	    //Create a new Batch
+	    var newBatch = this.getHibachiEntityQueueService().newBatch();
+	    //populate other details
+	    this.getHibachiEntityQueueService().saveBatch(newBatch);
+	    
+	    for( var accountData in queryOrArrayOfStruct ){
+	        this.importAccount(accountData, newBatch);
+	    }
+	}
+	
+	public any function importAccount( required struct data, required any batch ){
+	    
+	    var mapping = this.getAccountMapping();
+	    
+	    //TODO validate the incoming data 
+	    
+	    this.validateData(arguments.data, mapping);
+	    
+	    //TODO format the data using mappings
+	    
+	    var formatterData = this.transformData(arguments.data, mapping);
+	    
+	    
+	    // TODO insert into EntityQueue
+	}
+	
+	
+	
+	
+	// TODO ...... other entities
+	
+	
+	
+	//////////////////////////////////////////////////////////////////////////////////////
+	
+	
+	
+	
+	
+	public boolean function validateData( required struct data, required struct mapping ){
+	    
+	    //TODO add support for basic validation using mapping // required, data-type etc...
+	    
+	    return true;
+	}
+	
+	public struct function transformData( required struct data, required struct mapping ){
+	    var transformedData = {};
+	    
+	    // TODO 
+	    
+	    return transformedData;
+	}
+	
 }
