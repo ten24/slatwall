@@ -1,4 +1,4 @@
-<!---
+/**
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,38 +45,15 @@
 
 Notes:
 
---->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+*/
 
+interface{
 
-<cfparam name="rc.integration" type="any" />
-<cfparam name="rc.edit" type="boolean" />
+   /**
+     * this is a generic method to start importing any entity
+     * @entityName, the entity we want to import --> Product/SKU...
+     * 
+    */
+    any function import(required string enittyName);
 
-<cfset integrationCFC = rc.integration.getIntegrationCFC()/>
-
-<cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.integration#" edit="#rc.edit#">
-		
-		<hb:HibachiEntityActionBar type="detail" object="#rc.integration#" showDelete="false">
-			<hb:HibachiProcessCaller action="admin:entity.processIntegration" entity="#rc.integration#" processContext="test" type="list" hideDisabled="false" />
-			<cfif !isNull(integrationCFC)>
-    			<cfloop array="#integrationCFC.getDetailActions()#" index="local.detailAction">
-    			    <hb:HibachiActionCaller 
-    			        action="#local.detailAction.action#" 
-    			        type="list" 
-    			        modal="#structKeyExists(local.detailAction, 'modal' ) ? local.detailAction.modal : false #"
-    			    />
-    			</cfloop>
-    		</cfif>
-		</hb:HibachiEntityActionBar>
-		
-		<hb:HibachiEntityDetailGroup object="#rc.integration#">
-			<hb:HibachiEntityDetailItem view="admin:entity/integrationtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
-			<cfif !isNull(integrationCFC) >
-			    <hb:HibachiEntityDetailItem view="admin:entity/integrationtabs/settings" />
-			</cfif>
-		</hb:HibachiEntityDetailGroup>
-		
-	</hb:HibachiEntityDetailForm>
-</cfoutput>
+}

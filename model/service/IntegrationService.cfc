@@ -50,6 +50,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	// Place holder properties that get populated lazily
 	property name="settings" type="any";
+	property name="applicationKey" type="string";
+	property name="applicationRootMappingPath" type="string";
 	
 	variables.integrationCFCs = {};
 	variables.paymentIntegrationCFCs = {};
@@ -99,68 +101,52 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				}
 			}
 		}
-		
 		return allSettingMetaData;
 	}
 	
-	public any function getIntegrationCFC(required any integration) {
-		if(!structKeyExists(variables.integrationCFCs, arguments.integration.getIntegrationPackage())) {
-			
-			// Verify the cfc file exists before attempting to instantiate.
-			if (!fileExists(expandPath("/Slatwall/integrationServices/#arguments.integration.getIntegrationPackage()#/Integration.cfc"))) {
-				return;
-			}
-			
-			var integrationCFC = createObject("component", "Slatwall.integrationServices.#arguments.integration.getIntegrationPackage()#.Integration").init();
-			//populateIntegrationCFCFromIntegration(integrationCFC, arguments.integration);
-			variables.integrationCFCs[ arguments.integration.getIntegrationPackage() ] = integrationCFC;
-		}
-		return variables.integrationCFCs[ arguments.integration.getIntegrationPackage() ];
+	public any function getIntegrationCFC(required any integration ){
+        return this.getBean("#arguments.integration.getIntegrationPackage()#IntegrationCFC");
+	}
+	
+	/**
+	 * Helper function to return ['IntegrationType'].cfc Object, e.g. Data.cfc, Adress.cfc
+	 * 
+	*/ 
+	public any function getIntegrationTypeCFC(required any integration, required string integrationTypeName ){
+        return this.getBean("#arguments.integration.getIntegrationPackage()##arguments.integrationTypeName#CFC");
+	}
+	
+	/**
+	 * Function to return an *Importer-Integration* Object for the the given *Integration*.
+	 *
+	 * @integration the associated *Integration-Entity* for the "Integration-Package"; ==> getIntegrationByIntegrationPackage('SlatwallImporter');
+	*/ 
+	public any function getImporterIntegrationCFC(required any integration) {
+		return this.getIntegrationTypeCFC(arguments.integration, "Importer");
 	}
 
 	public any function getAuthenticationIntegrationCFC(required any integration) {
-		if(!structKeyExists(variables.authenticationIntegrationCFCs, arguments.integration.getIntegrationPackage())) {
-			var integrationCFC = createObject("component", "Slatwall.integrationServices.#arguments.integration.getIntegrationPackage()#.Authentication").init();
-			variables.authenticationIntegrationCFCs[ arguments.integration.getIntegrationPackage() ] = integrationCFC;
-		}
-		return variables.authenticationIntegrationCFCs[ arguments.integration.getIntegrationPackage() ];
+		return this.getIntegrationTypeCFC(arguments.integration, "Authentication");
 	}
 
 	public any function getPaymentIntegrationCFC(required any integration) {
-		if(!structKeyExists(variables.paymentIntegrationCFCs, arguments.integration.getIntegrationPackage())) {
-			var integrationCFC = createObject("component", "Slatwall.integrationServices.#arguments.integration.getIntegrationPackage()#.Payment").init();
-			variables.paymentIntegrationCFCs[ arguments.integration.getIntegrationPackage() ] = integrationCFC;
-		}
-		return variables.paymentIntegrationCFCs[ arguments.integration.getIntegrationPackage() ];
+		return this.getIntegrationTypeCFC(arguments.integration, "Payment");
 	}
 	
 	public any function getShippingIntegrationCFC(required any integration) {
-		if(!structKeyExists(variables.shippingIntegrationCFCs, arguments.integration.getIntegrationPackage())) {
-			var integrationCFC = createObject("component", "Slatwall.integrationServices.#arguments.integration.getIntegrationPackage()#.Shipping").init();
-			variables.shippingIntegrationCFCs[ arguments.integration.getIntegrationPackage() ] = integrationCFC;
-		}
-		return variables.shippingIntegrationCFCs[ arguments.integration.getIntegrationPackage() ];
+		return this.getIntegrationTypeCFC(arguments.integration, "Shipping");
 	}
 	
 	public any function getDataIntegrationCFC(required any integration) {
-		if(!structKeyExists(variables.dataIntegrationCFCs, arguments.integration.getIntegrationPackage())) {
-			var integrationCFC = createObject("component", "Slatwall.integrationServices.#arguments.integration.getIntegrationPackage()#.Data").init();
-			variables.dataIntegrationCFCs[ arguments.integration.getIntegrationPackage() ] = integrationCFC;
-		}
-		return variables.dataIntegrationCFCs[ arguments.integration.getIntegrationPackage() ];
+		return this.getIntegrationTypeCFC(arguments.integration, "Data");
 	}
 
 	public any function getTaxIntegrationCFC(required any integration) {
-		if(!structKeyExists(variables.taxIntegrationCFCs, arguments.integration.getIntegrationPackage())) {
-			var integrationCFC = createObject("component", "Slatwall.integrationServices.#arguments.integration.getIntegrationPackage()#.Tax").init();
-			variables.taxIntegrationCFCs[ arguments.integration.getIntegrationPackage() ] = integrationCFC;
-		}
-		return variables.taxIntegrationCFCs[ arguments.integration.getIntegrationPackage() ];
+		return this.getIntegrationTypeCFC(arguments.integration, "Tax");
 	}
 	
 	public any function updateIntegrationsFromDirectory() {
 		var dirList = directoryList( expandPath("/Slatwall") & '/integrationServices' );
-		var integrationList = this.listIntegration();
 		var installedIntegrationList = "";
 		
 		// Loop over each integration in the integration directory
@@ -173,10 +159,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		// Turn off the installed and ready flags on any previously setup integration entities
-		ORMExecuteQuery("UPDATE #getDao('hibachiDao').getApplicationKey()#Integration Set activeFlag=0, installedFlag=0 WHERE integrationPackage not in (#listQualify(installedIntegrationList,"'")#)");
-		getHibachiDAO().flushORMSession();
+		if( this.getHibachiScope().setting('globalDisableUninstalledIntegration') ){
+    		ORMExecuteQuery("UPDATE #this.getApplicationKey()#Integration Set activeFlag=0, installedFlag=0 WHERE integrationPackage not in (#listQualify(installedIntegrationList,"'")#)");
+		}
 		
-		return getBeanFactory();
+		this.getHibachiDAO().flushORMSession();
 	}
 	
 	public void function loadDataFromIntegrations(){
@@ -198,18 +185,27 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public string function updateIntegrationFromDirectory(required string directoryList, any integrationEntity){
+		var beanFactory = getBeanFactory();
 		var fileInfo = getFileInfo(arguments.directoryList);
-		
+
 		if(fileInfo.type == "directory" && fileExists("#fileInfo.path#/Integration.cfc") ) {
 			
 			var integrationPackage = listLast(arguments.directoryList,"\/");
 			var integrationCFC = createObject("component", "Slatwall.integrationServices.#integrationPackage#.Integration").init();
 			var integrationMeta = getMetaData(integrationCFC);
 			
-			if(structKeyExists(integrationMeta, "Implements") && structKeyExists(integrationMeta.implements, "Slatwall.integrationServices.IntegrationInterface")) {
-				if(isNull(arguments.integration)){
+			if(
+			    structKeyExists(integrationMeta, "Implements") 
+			    && structKeyExists(integrationMeta.implements, "Slatwall.integrationServices.IntegrationInterface")
+			){
+			    
+			    beanFactory.declare("#integrationPackage#IntegrationCFC")
+				    .instanceOf("Slatwall.integrationServices.#integrationPackage#.Integration").asSingleton();
+				
+				if(isNull(arguments.integrationEntity)){
 					var integration = this.getIntegrationByIntegrationPackage(integrationPackage, true);	
-				}else{
+				}
+				else {
 					var integration = arguments.integrationEntity;
 				}
 				
@@ -226,25 +222,31 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				getHibachiDAO().save( integration );
 				getHibachiDAO().flushORMSession();
 				
+				
+				
 				// If this integration is active lets register all of its event handlers, and decorate the getBeanFactory() with it
 				if( integration.getEnabledFlag() ) {
-					var beanFactory = getBeanFactory();
+				    
 					
+					// register event-handlers
 					for(var e=1; e<=arrayLen(integrationCFC.getEventHandlers()); e++) {
 					
 						var beanComponentPath = integrationCFC.getEventHandlers()[e];
 						var beanName = listLast(beanComponentPath,'.');
-						if(!(
-								len(beanName) > len(integrationPackage) && left(beanName, len(integrationPackage)) eq integrationPackage
-							)
-						) {
-							beanName=integrationPackage&beanName;
+						
+						if( len(beanName) < len(integrationPackage) || left( beanName, len(integrationPackage) ) != integrationPackage ){
+							beanName = integrationPackage&beanName;
 						}
-						if(!beanFactory.containsBean(beanName)){
+						
+						if(!beanFactory.containsBean(beanName) ){
 							beanFactory.declareBean( beanName, beanComponentPath, true );
-							if(len(beanName) < len('Handler') || right(beanName,len('Handler'))!='Handler'){
+							
+							if( len(beanName) < len('Handler')  ||  right( beanName, len('Handler') ) != 'Handler' ){
 								beanFactory.addAlias(beanName&'Handler',beanName);
 							}
+						} 
+						else {
+						    throw("Error while loading integration `#integrationPackage#`, #beanName# already exist in the bean-factory");
 						}
 					}
 					
@@ -252,23 +254,40 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						logHibachi("The Integration: #integrationPackage# has had #arrayLen(integrationCFC.getEventHandlers())# eventHandler(s) registered");	
 					}
 					
-					if(directoryExists("#getApplicationValue("applicationRootMappingPath")#/integrationServices/#integrationPackage#/model")) {
+					/**
+	                 * Register the integrationType.cfcs with bean-factory, so the DI works and we won't have to manage it
+	                 * the the se can be accessedFrom the beanFactory as, beanFactory.getBean('paypalIntegrationCFC'), getBean('paypalPaymentCFC')...
+	                */
+				    for(var integrationType in integrationCFC.getIntegrationTypes() ){
+				        beanFactory.declare("#integrationPackage##integrationType#CFC")
+    					    .instanceOf("Slatwall.integrationServices.#integrationPackage#.#integrationType#").asSingleton();
+				    }
+				    
+					
+					if(directoryExists("#this.getApplicationRootMappingPath()#/integrationServices/#integrationPackage#/model")) {
 						
 						//if we have entities then copy them into root model/entity
-						if(directoryExists("#getApplicationValue("applicationRootMappingPath")#/integrationServices/#integrationPackage#/model/entity")){
+						if( directoryExists("#this.getApplicationRootMappingPath()#/integrationServices/#integrationPackage#/model/entity") ){
+							
 							var modelList = directoryList( expandPath("/Slatwall") & "/integrationServices/#integrationPackage#/model/entity" );
+							
 							for(var modelFilePath in modelList){
+								
 								var beanCFC = listLast(replace(modelFilePath,"\","/","all"),'/');
 								var beanName = listFirst(beanCFC,'.');
 								var modelDestinationPath = expandPath("/Slatwall") & "/model/entity/" & beanCFC;
+								
 								FileCopy(modelFilePath,modelDestinationPath);
-								if(!beanFactory.containsBean(beanName)){
-									beanFactory.declareBean(beanName, "#getHibachiDao().getApplicationValue('applicationKey')#.model.entity.#beanName#",false);
+								
+								if(!beanFactory.containsBean(beanName) ){
+									beanFactory.declareBean(beanName, "#this.getApplicationKey()#.model.entity.#beanName#",false);
 								}
 							}
+							
 						}
 						
-						var integrationBF = new framework.hibachiaop("/Slatwall/integrationServices/#integrationPackage#/model", {
+						// Register remaining beans with the Bean-factory;
+						var integrationBF = new framework.hibachiaop("#this.getApplicationRootMappingPath()#/integrationServices/#integrationPackage#/model", {
 							transients=["process", "transient", "report"],
 							exclude=["entity"],
 							omitDirectoryAliases = getApplicationValue("hibachiConfig").beanFactoryOmitDirectoryAliases
@@ -276,20 +295,36 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						
 						var integrationBFBeans = integrationBF.getBeanInfo();
 						for(var beanName in integrationBFBeans.beanInfo) {
-							if(
-								isStruct(integrationBFBeans.beanInfo[beanName]) 
-								&& structKeyExists(integrationBFBeans.beanInfo[beanName], "cfc") 
-								&& structKeyExists(integrationBFBeans.beanInfo[beanName], "isSingleton")
-							) {
-								if(len(beanName) > len(integrationPackage) && left(beanName, len(integrationPackage)) eq integrationPackage) {
-									beanFactory.declareBean( beanName, integrationBFBeans.beanInfo[ beanName ].cfc, integrationBFBeans.beanInfo[ beanName ].isSingleton );
-								} else {
-									beanFactory.declareBean( "#integrationPackage##beanName#", integrationBFBeans.beanInfo[ beanName ].cfc, integrationBFBeans.beanInfo[ beanName ].isSingleton );
-								}
-
+						    var thisBeanInfo = integrationBFBeans.beanInfo[ beanName ];
+						    
+							if( isStruct(thisBeanInfo) && structKeyExists(thisBeanInfo, "cfc")  && structKeyExists(thisBeanInfo, "isSingleton") ){
+								
+							    /**
+							     * We'll declare a new bean if it doesn't exist in the bean-fctory (to avoide bean-overrides from here), 
+							     * and will register an aliaas for that as `package+beanName` if bean-name doesn't starts with integration-package-name;
+							     * otherwise we'll try to declare it with `package+beanName` name;
+							     * 
+							     * for Integrations, as a *rule of thumb* declare your beans with package-name prepend to avoid bean-not-found issues;
+							     * This doesn't go along with other conventions like `entity.getProcessObject('context');`
+							     * but as long as the entity-names are uniqueue that shuldn't be a problem.
+							    */
+								if( !beanFactory.containsBean(beanName) ){
+        							beanFactory.declareBean( beanName, thisBeanInfo.cfc, thisBeanInfo.isSingleton );
+        						
+        							if( len(beanName) < len(integrationPackage) || left( beanName, len(integrationPackage) ) != integrationPackage ){
+                                        beanFactory.addAlias("#integrationPackage##beanName#", beanName);
+    								} 
+        						} 
+        						else if( len(beanName) < len(integrationPackage) || left( beanName, len(integrationPackage) ) != integrationPackage ){
+        						    beanFactory.declareBean( "#integrationPackage##beanName#", thisBeanInfo.cfc, thisBeanInfo.isSingleton );
+        						}
+        						else {
+        						    throw("Error while loading integration beans from #integrationPackage#/model directory, #beanName# already exist in the bean-factory");
+        						}
 							}
 							
 						}
+						
 					}
 
 				}

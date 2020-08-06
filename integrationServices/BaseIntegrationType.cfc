@@ -1,5 +1,4 @@
-<!---
-
+/*
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
 	
@@ -26,7 +25,6 @@
     custom code, regardless of the license terms of these independent
     modules, and to copy and distribute the resulting program under terms 
     of your choice, provided that you follow these specific guidelines: 
-
 	- You also meet the terms and conditions of the license of each 
 	  independent module 
 	- You must not alter the default display of the Slatwall name or logo from  
@@ -34,7 +32,6 @@
 	- Your custom code must not alter or create any files inside Slatwall, 
 	  except in the following directories:
 		/integrationServices/
-
 	You may copy and distribute the modified version of this program that meets 
 	the above guidelines as a combined work under the terms of GPL for this program, 
 	provided that you include the source code of that other code when and as the 
@@ -42,41 +39,39 @@
     
     If you modify this program, you may extend this exception to your version 
     of the program, but you are not obligated to do so.
-
 Notes:
+*/
+component extends="Slatwall.org.Hibachi.HibachiObject" {
 
---->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+	public any function init() {
+		return this;
+	}
 
+	/**
+	 * Helper function to return the value for a Setting by 'settingName'.
+	 * 
+	 * @settingName name of the setting
+ 	 */
+	public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
+		if(structKeyExists(getIntegration().getSettings(), arguments.settingName)) {
+			return getService('settingService').getSettingValue(settingName='integration#getPackageName()##arguments.settingName#', object=this, filterEntities=arguments.filterEntities, formatValue=arguments.formatValue);
+		}
+		return getService('settingService').getSettingValue(settingName=arguments.settingName, object=this, filterEntities=arguments.filterEntities, formatValue=arguments.formatValue);
+	}
 
-<cfparam name="rc.integration" type="any" />
-<cfparam name="rc.edit" type="boolean" />
+	/**
+	 * Helper function to return the associated Integration-entity, for this integration.
+	 * 
+	 */
+	public any function getIntegration() {
+		return getService('integrationService').getIntegrationByIntegrationPackage(getPackageName());
+	}
 
-<cfset integrationCFC = rc.integration.getIntegrationCFC()/>
+	/**
+	 * Helper function to return the The Package-name, for this integration.
+	 */
+	public string function getPackageName() {
+		return lcase(listGetAt(getClassFullname(), listLen(getClassFullname(), '.') - 1, '.'));
+	}
 
-<cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.integration#" edit="#rc.edit#">
-		
-		<hb:HibachiEntityActionBar type="detail" object="#rc.integration#" showDelete="false">
-			<hb:HibachiProcessCaller action="admin:entity.processIntegration" entity="#rc.integration#" processContext="test" type="list" hideDisabled="false" />
-			<cfif !isNull(integrationCFC)>
-    			<cfloop array="#integrationCFC.getDetailActions()#" index="local.detailAction">
-    			    <hb:HibachiActionCaller 
-    			        action="#local.detailAction.action#" 
-    			        type="list" 
-    			        modal="#structKeyExists(local.detailAction, 'modal' ) ? local.detailAction.modal : false #"
-    			    />
-    			</cfloop>
-    		</cfif>
-		</hb:HibachiEntityActionBar>
-		
-		<hb:HibachiEntityDetailGroup object="#rc.integration#">
-			<hb:HibachiEntityDetailItem view="admin:entity/integrationtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
-			<cfif !isNull(integrationCFC) >
-			    <hb:HibachiEntityDetailItem view="admin:entity/integrationtabs/settings" />
-			</cfif>
-		</hb:HibachiEntityDetailGroup>
-		
-	</hb:HibachiEntityDetailForm>
-</cfoutput>
+} 

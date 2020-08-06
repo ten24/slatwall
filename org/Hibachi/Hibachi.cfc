@@ -325,6 +325,11 @@ component extends="framework.one" {
 		var httpRequestData = GetHttpRequestData();
         getHibachiScope().setIsAwsInstance(variables.framework.isAwsInstance);
         
+        // clean any beancache for local development
+		if( this.getEnvironment() == 'local' && structKeyExists(url, "reloadbean") ){
+			getBeanFactory().reloadBean(url.reloadbean);
+		}
+        
         if(!structKeyExists(server, variables.framework.applicationKey) || !isStruct(server[variables.framework.applicationKey])){
 			server[variables.framework.applicationKey] = {};
 		}
@@ -719,6 +724,7 @@ component extends="framework.one" {
 					var hibachiBF = new framework.hibachiaop("/#variables.framework.applicationKey#/org/Hibachi", {
 						constants={
 							'applicationKey'=variables.framework.applicationKey,
+							'applicationRootMappingPath' = applicationInitData["applicationRootMappingPath"],
 							'hibachiInstanceApplicationScopeKey'=getHibachiInstanceApplicationScopeKey()
 						},
 						recurse=false,
@@ -1273,6 +1279,7 @@ component extends="framework.one" {
 	} 
 
 	public void function onError(any exception, string event){
+	    ormClearSession();
 		//if something fails for any reason then we want to set the response status so our javascript can handle rest errors
 		var context = getPageContext();
 		var response = context.getResponse();
