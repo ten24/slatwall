@@ -46,26 +46,22 @@
 Notes:
 
 */
-component entityname="SlatwallEntityQueue" table="SwEntityQueue" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="HibachiEntityQueueService" {
+component entityname="SlatwallBatchEntityQueue" table="SwBatchEntityQueue" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="HibachiEntityQueueService" {
 
 	// Persistent Properties
-	property name="entityQueueID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="batchEntityQueueID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="baseObject" ormType="string" index="EI_BASEOBJECT";
 	property name="baseID" ormType="string" index="EI_BASEID";
-	property name="processMethod" ormType="string";
-	property name="entityQueueType" ormType="string" hb_formatType="rbKey"; // dependent on the integration
-	property name="entityQueueDateTime" ormtype="timestamp";
-	property name="entityQueueData" ormtype="string" length="8000";
-	property name="logHistoryFlag" ormtype="boolean" default="0";
-	property name="mostRecentError" ormtype="string" length="8000";
-	property name="tryCount" ormType="integer" default="0";
-
+	property name="batchEntityQueueType" ormType="string" hb_formatType="rbKey"; // dependent on the integration
+	property name="batchDescription" ormtype="string";
+	property name="batchCalculatedDescription" ormtype="string";
+	property name="successFlag" ormtype="boolean";
 	// Related Object Properties (many-to-one)
 	
 	property name="integration" hb_populateEnabled="public" cfc="Integration" fieldtype="many-to-one" fkcolumn="integrationID";
 
 	// Related Object Properties (one-to-many)
-	property name="batch" hb_populateEnabled="public" cfc="BatchEntityQueue" fieldtype="many-to-one" fkcolumn="batchEntityQueueID";
+
 	// Related Object Properties (many-to-many)
 
 	// Remote Properties
