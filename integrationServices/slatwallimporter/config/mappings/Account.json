@@ -1,0 +1,17 @@
+{
+	"entity": "Account",
+	"mapping": {
+	    "firstName": {
+		    "propertyIdentifier" : "firstName"
+		},
+		"lastName": {
+		    "propertyIdentifier" : "firstName",
+		},
+		"username": {
+		    "propertyIdentifier" : "username",
+		}
+		"emailAddress": {
+		    "propertyIdentifier" : "primaryEmailAddress.emailAddress",
+		},
+	}
+}
