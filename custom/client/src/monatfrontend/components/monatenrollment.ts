@@ -39,7 +39,11 @@ class MonatEnrollmentController {
 		if (hibachiConfig.baseSiteURL) {
 			this.backUrl = hibachiConfig.baseSiteURL;
 		}
-		this.currentStepName = "todaysOrder";
+		if(this.type == 'mp' || this.type == 'mpUpgrade'){
+			this.currentStepName = 'starterPack';
+		}else{
+			this.currentStepName = "todaysOrder";
+		}
 		
 		//clearing session-cache for entollement-process
 		console.log("Clearing sesion-caceh for entollement-process");
