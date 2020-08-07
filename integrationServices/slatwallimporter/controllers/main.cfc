@@ -12,6 +12,20 @@ component extends="Slatwall.org.Hibachi.HibachiController" accessors="true" outp
 	
 	//TODO upload/download CSVs, UI
 	
+	public any function importCsvData(required any rc){	
+		getService("hibachiTagService").cfsetting(requesttimeout=60000);
+        var pathToImport = ExpandPath('/Slatwall') & '/integrationServices/slatwallimporter/assets/csv/'; 
+		if(FileExists(pathToImport)){
+			FileDelete(pathToImport); 
+		} 
+		if(!DirectoryExists(pathToImport)){
+			DirectoryCreate(pathToImport);
+		}	
+		var file = FileUpload(pathToImport, "importFile", "*", "Overwrite");
+	    //FileDelete(pathToImport&file.serverfile);
+	}
+
+	
 	
 	
 	public void function after( required struct rc ) {
