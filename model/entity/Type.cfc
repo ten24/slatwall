@@ -88,10 +88,6 @@ component entityname="SlatwallType" table="SwType" persistent="true" accessors="
 
 	// ==================== START: Logical Methods =========================
 	
-	
-	//CUSTOM PROPERTIES BEGIN
-
- property name="typeSummary" ormtype="string";//CUSTOM PROPERTIES END
 	public boolean function hasPeerTypeWithMatchingSystemCode() {
 		if(isNull(getSystemCode())) {
 			return true;

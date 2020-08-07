@@ -206,6 +206,7 @@ component extends="framework.one" {
 	this.ormenabled = true;
 	this.ormsettings = {};
 	this.ormsettings.cfclocation = [ "/#variables.framework.applicationKey#/model/entity" ];
+	this.ormSettings.dialect = "MySQL"
 	this.ormSettings.dbcreate = "update";
 	this.ormSettings.flushAtRequestEnd = false;
 	this.ormsettings.eventhandling = true;

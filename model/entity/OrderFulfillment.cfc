@@ -154,13 +154,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 
 
 	// ==================== START: Logical Methods =========================
-		//CUSTOM PROPERTIES BEGIN
 
- property name="carrierCode" ormtype="string";
- property name="shipmentTypeCode" ormtype="string";
- property name="shippingMethodCode" ormtype="string";
- property name="warehouseCode" ormtype="string";
- property name="freightTypeCode" ormtype="string";//CUSTOM PROPERTIES END
 	public boolean function getVerifiedShippingAddressFlag(){
 		if( !isNull(this.getShippingAddress()) ){
 			return this.getShippingAddress().getVerifiedByIntegrationFlag();

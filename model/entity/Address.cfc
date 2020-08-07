@@ -98,12 +98,7 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 	property name="addressName" persistent="false" type="string";
 	
 	// ==================== START: Logical Methods =========================
-		//CUSTOM PROPERTIES BEGIN
 
- property name="street3Address" ormtype="string";
- property name="street4Address" ormtype="string";
- property name="addressValidationStatus" ormtype="string";
- property name="addressSequence" ormtype="string";//CUSTOM PROPERTIES END
 	public boolean function getAddressMatchFlag( required any address ) {
 		if(
 			nullReplace(getCountryCode(),"") != nullReplace(arguments.address.getCountryCode(),"")
