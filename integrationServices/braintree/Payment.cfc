@@ -401,7 +401,6 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 			else{
 				if(structKeyExists(fileContent,'errors')){
 					for(var error in fileContent.errors){
-						responseBean.addError('error', error.message);
 						responseBean.addMessage('error', error.message);
 					}
 				}
