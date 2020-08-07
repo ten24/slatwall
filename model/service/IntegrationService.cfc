@@ -259,6 +259,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	                 * the the se can be accessedFrom the beanFactory as, beanFactory.getBean('paypalIntegrationCFC'), getBean('paypalPaymentCFC')...
 	                */
 				    for(var integrationType in integrationCFC.getIntegrationTypes() ){
+				        
+				        if( integrationType == 'fw1' ){
+				            continue;
+				        }
+				        
 				        beanFactory.declare("#integrationPackage##integrationType#CFC")
     					    .instanceOf("Slatwall.integrationServices.#integrationPackage#.#integrationType#").asSingleton();
 				    }
