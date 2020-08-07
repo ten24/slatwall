@@ -154,6 +154,24 @@
           "sourceColumn": "URLTitle",
           "propertyIdentifier": "product.urlTitle",
           "updateFlag":false
+        },
+        {
+          "sourceColumn":"calculatedQOH",
+          "sourceColumnDataGenerator":"0",
+          "propertyIdentifier":"calculatedQOH",
+          "updateFlag":false
+        },
+        {
+          "sourceColumn":"calculatedQATS",
+          "sourceColumnDataGenerator":"0",
+          "propertyIdentifier":"calculatedQATS",
+          "updateFlag":false
+        },
+        {
+          "sourceColumn":"calculatedQOQ",
+          "sourceColumnDataGenerator":"0",
+          "propertyIdentifier":"calculatedQOQ",
+          "updateFlag":false
         }
     ]
 }
