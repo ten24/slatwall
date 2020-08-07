@@ -61,6 +61,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	property name="pickupDate" ormtype="timestamp" hb_populateenabled="true";
 	property name="thirdPartyShippingAccountIdentifier" column="thirdPartyShipAccntIdentifier" ormtype="string";
 	property name="handlingFee" ormtype="big_decimal" hb_formatType="currency";
+	property name="handlingFeeTaxCategory" ormtype="string";
 	property name="verifiedShippingAddressFlag" ormtype="boolean";
  
 	//for shipping integration saves response with success or why a shipping integration failed
@@ -70,6 +71,9 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	// Calculated Properties
 	property name="calculatedChargeTaxAmount" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedShippingIntegrationName" ormtype="string";
+	property name="calculatedSubtotal" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedSubtotalAfterDiscounts" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedTotalShippingQuantity" ormtype="integer";
 	
 	//hash of the integrationResponse used to decide if we need to rebuild the shippingMethodOptions
 	property name="fulfillmentMethodOptionsCacheKey" column="fulfillMethOptionsCacheKey" ormtype="string" hb_auditable="false";
@@ -79,7 +83,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	property name="accountEmailAddress" hb_populateEnabled="public" cfc="AccountEmailAddress" fieldtype="many-to-one" fkcolumn="accountEmailAddressID";
 	property name="fulfillmentMethod" hb_populateEnabled="public" cfc="FulfillmentMethod" fieldtype="many-to-one" fkcolumn="fulfillmentMethodID";
 	property name="order" cfc="Order" fieldtype="many-to-one" fkcolumn="orderID";
-	property name="pickupLocation" hb_populateEnabled="public" cfc="Location" fieldtype="many-to-one" fkcolumn="locationID";
+	property name="pickupLocation" hb_populateEnabled="public" cfc="Location" fieldtype="many-to-one" fkcolumn="locationID" hb_formFieldType="typeahead";
 	property name="shippingAddress" hb_populateEnabled="public" cfc="Address" fieldtype="many-to-one" fkcolumn="shippingAddressID";
 	property name="shippingMethod" hb_populateEnabled="public" cfc="ShippingMethod" fieldtype="many-to-one" fkcolumn="shippingMethodID";
 	property name="orderFulfillmentStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderFulfillmentStatusTypeID" hb_optionsSmartListData="f:parentType.systemCode=orderFulfillmentStatusType";
@@ -114,8 +118,10 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	property name="saveAccountAddressFlag" hb_populateEnabled="public" persistent="false";
 	property name="saveAccountAddressName" hb_populateEnabled="public" persistent="false";
 	property name="requiredShippingInfoExistsFlag" persistent="false";
+	property name="fulfillmentChargeAndHandleFee" persistent="false";
 	property name="chargeAfterDiscount" type="numeric" persistent="false" hb_formatType="currency";
 	property name="chargeTaxAmount" type="numeric" persistent="false" hb_formatType="currency";
+	property name="chargeVATAmount" type="numeric" persistent="false" hb_formatType="currency";
 	property name="chargeTaxLiabilityAmount" persistent="false" hb_formatType="currency";
 	property name="discountAmount" type="numeric" persistent="false" hb_formatType="currency";
 	property name="fulfillmentMethodType" type="numeric" persistent="false";
@@ -133,6 +139,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	property name="subtotalAfterDiscounts" type="array" persistent="false" hb_formatType="currency";
 	property name="subtotalAfterDiscountsWithTax" type="array" persistent="false" hb_formatType="currency";
 	property name="taxAmount" type="numeric" persistent="false" hb_formatType="currency";
+	property name="VATAmount" type="numeric" persistent="false" hb_formatType="currency";
 	property name="totalShippingWeight" type="numeric" persistent="false" hb_formatType="weight";
     property name="totalShippingQuantity" type="numeric" persistent="false" hb_formatType="weight";
     property name="shipmentItemMultiplier" type="numeric" persistent="false";
@@ -147,7 +154,13 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 
 
 	// ==================== START: Logical Methods =========================
-	
+		//CUSTOM PROPERTIES BEGIN
+
+ property name="carrierCode" ormtype="string";
+ property name="shipmentTypeCode" ormtype="string";
+ property name="shippingMethodCode" ormtype="string";
+ property name="warehouseCode" ormtype="string";
+ property name="freightTypeCode" ormtype="string";//CUSTOM PROPERTIES END
 	public boolean function getVerifiedShippingAddressFlag(){
 		if( !isNull(this.getShippingAddress()) ){
 			return this.getShippingAddress().getVerifiedByIntegrationFlag();
@@ -158,18 +171,28 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 
 	public string function getSuggestedShippingAddressName(){
 		if( !isNull(this.getShippingAddress()) ){
-			var verificationStruct = getService("AddressService").verifyAddressWithShippingIntegration(this.getShippingAddress().getAddressID());
-			if(!isNull(verificationStruct) && structKeyExists(verificationStruct,"suggestedAddress")){
-				return getService("AddressService").getAddressName(verificationStruct.suggestedAddress);
+			if(!structKeyExists(variables,'suggestedShippingAddressName')){
+				var verificationStruct = getService("AddressService").verifyAddressByID(this.getShippingAddress().getAddressID());
+				if(!isNull(verificationStruct) && structKeyExists(verificationStruct,"suggestedAddress")){
+					variables.suggestedShippingAddressName = getService("AddressService").getAddressName(verificationStruct.suggestedAddress);
+				}
+			}
+			if(structKeyExists(variables,'suggestedShippingAddressName')){
+				return variables.suggestedShippingAddressName;
 			}
 		}
 	}
 
 	public any function getSuggestedShippingAddressStruct(){
 		if( !isNull(this.getShippingAddress()) ){
-			var verificationStruct = getService("AddressService").verifyAddressWithShippingIntegration(this.getShippingAddress().getAddressID());
-			if(!isNull(verificationStruct) && structKeyExists(verificationStruct,"suggestedAddress")){
-				return verificationStruct.suggestedAddress;
+			if(!structKeyExists(variables,'suggestedShippingAddressStruct')){
+				var verificationStruct = getService("AddressService").verifyAddressByID(this.getShippingAddress().getAddressID());
+				if(!isNull(verificationStruct) && structKeyExists(verificationStruct,"suggestedAddress")){
+					variables.suggestedShippingAddressStruct = verificationStruct.suggestedAddress;
+				}
+			}
+			if(structKeyExists(variables,'suggestedShippingAddressStruct')){
+				return variables.suggestedShippingAddressStruct;
 			}
 		}
 	}
@@ -236,7 +259,13 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
     public void function checkNewAccountAddressSave() {
 
 		// If this isn't a guest, there isn't an accountAddress, save is on - copy over an account address
-    	if(!isNull(getOrder().getAccount()) && !getOrder().getAccount().getGuestAccountFlag() && isNull(getAccountAddress()) && !isNull(getShippingAddress()) && !getShippingAddress().hasErrors() && getSaveAccountAddressFlag()) {
+    	if(!isNull(getOrder().getAccount()) && !
+			getOrder().getAccount().getGuestAccountFlag() && 
+			isNull(getAccountAddress()) && 
+			!isNull(getShippingAddress()) && 
+			!getShippingAddress().hasErrors() && 
+			getSaveAccountAddressFlag()
+		) {
 
     		// Create a New Account Address, Copy over Shipping Address, and save
     		var accountAddress = getService('accountService').newAccountAddress();
@@ -380,7 +409,11 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	}
 
 	public numeric function getChargeAfterDiscount() {
-		return getService('HibachiUtilityService').precisionCalculate(getFulfillmentCharge() + getChargeTaxAmount() - getDiscountAmount());
+		return getService('HibachiUtilityService').precisionCalculate(getFulfillmentCharge() + getHandlingFee() + getChargeTaxAmount() - getDiscountAmount());
+	}
+	
+	public numeric function getChargeAfterDiscountPreTax() {
+		return getService('HibachiUtilityService').precisionCalculate(getFulfillmentCharge() + getHandlingFee() - getDiscountAmount());
 	}
 
 	public numeric function getDiscountAmount() {
@@ -573,6 +606,16 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
     	}
     	return variables.taxAmount;
     }
+    
+    public numeric function getVATAmount() {
+    	if( !structkeyExists(variables, "VATAmount") ) {
+    		variables.VATAmount = 0;
+	    	for( var i=1; i<=arrayLen(getOrderFulfillmentItems()); i++ ) {
+	    		variables.VATAmount = getService('HibachiUtilityService').precisionCalculate(variables.VATAmount + getOrderFulfillmentItems()[i].getVATAmount());
+	    	}
+    	}
+    	return variables.VATAmount;
+    }
 
 	public numeric function getChargeTaxAmount() {
 		var taxAmount = 0;
@@ -582,6 +625,19 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 		}
 
 		return taxAmount;
+	}
+	
+	public numeric function getChargeVATAmount() {
+		var vatAmount = 0;
+
+		for(var taxApplied in getAppliedTaxes()) {
+			if(isNull(taxApplied.getVATAmount())){
+				continue;
+			} 
+			vatAmount = getService('HibachiUtilityService').precisionCalculate(vatAmount + taxApplied.getVATAmount());
+		}
+
+		return vatAmount;
 	}
 
 	public numeric function getChargeTaxLiabilityAmount() {
@@ -725,11 +781,18 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 		return variables.fulfillmentCharge;
 	}
 
-	public boolean function getManualfulfillmentChargeFlag() {
+	public boolean function getManualFulfillmentChargeFlag() {
 		if(!structKeyExists(variables, "manualFulfillmentChargeFlag")) {
 			variables.manualFulfillmentChargeFlag = 0;
 		}
 		return variables.manualFulfillmentChargeFlag;
+	}
+	
+	public boolean function getManualHandlingFeeFlag() {
+		if(!structKeyExists(variables, "manualHandlingFeeFlag")) {
+			variables.manualHandlingFeeFlag = 0;
+		}
+		return variables.manualHandlingFeeFlag;
 	}
 
 	public struct function getContainerStruct() {
@@ -761,10 +824,16 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	}
 
 	// sets it up so that the charge for the shipping method is pulled out of the shippingMethodOptions
-	public void function setShippingMethod( any shippingMethod ) {
+	public void function setShippingMethod( any shippingMethod, boolean persistShippingMethodOption=true ) {
 		if(structKeyExists(arguments, "shippingMethod")) {
-			if(!arrayLen(getFulfillmentShippingMethodOptions())){
-				getService("shippingService").updateOrderFulfillmentShippingMethodOptions( this );
+			
+			if(!isNull(getOrder().getOrderTemplate()) || this.getManualFulfillmentChargeFlag() == true){
+				variables.shippingMethod=arguments.shippingMethod;
+				return;
+			}
+
+			if(arrayIsEmpty(getFulfillmentShippingMethodOptions())){
+				getService("shippingService").updateOrderFulfillmentShippingMethodOptions( this, arguments.persistShippingMethodOption );
 			}
 			// make sure that the shippingMethod exists in the fulfillmentShippingMethodOptions
 			for(var i=1; i<=arrayLen(getFulfillmentShippingMethodOptions()); i++) {
@@ -778,6 +847,12 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 						setFulfillmentCharge( getFulfillmentShippingMethodOptions()[i].getTotalCharge() );
 					}else if(len(getThirdPartyShippingAccountIdentifier())){
 						setFulfillmentCharge(0);
+					}
+					
+					if(!listContains('otExchangeOrder,otReplacementOrder', getOrder().getOrderType().getSystemCode())){
+						var shippingMethodRate = getFulfillmentShippingMethodOptions()[i].getShippingMethodRate();
+						setHandlingFee(shippingMethodRate.getHandlingFeeAsNumericValue(this));
+						setHandlingFeeTaxCategory(this.setting('fulfillmentMethodHandlingFeeTaxCategory'));
 					}
 				}
 			}
@@ -866,7 +941,6 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 		}
 		return variables.orderFulfillmentStatusType;
 	}
-
 
 	// ==================  END:  Overridden Methods ========================
 

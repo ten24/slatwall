@@ -107,14 +107,14 @@
 		        <ns:RequestedPackageLineItems>
 					<ns:SequenceNumber>1</ns:SequenceNumber>
 					<ns:GroupPackageCount>1</ns:GroupPackageCount>
-		            <ns:InsuredValue>
-		                <ns:Currency>USD</ns:Currency>
-		                <ns:Amount>#arguments.requestBean.getTotalValue()#</ns:Amount>
-		            </ns:InsuredValue>
-		            <ns:Weight>
-		                <ns:Units>LB</ns:Units>
-		                <ns:Value>#arguments.requestBean.getTotalWeight( unitCode='lb' )#</ns:Value>
-					</ns:Weight>
+	            <ns:InsuredValue>
+	                <ns:Currency>USD</ns:Currency>
+	                <ns:Amount>#arguments.requestBean.getTotalValue()#</ns:Amount>
+	            </ns:InsuredValue>
+	            <ns:Weight>
+	                <ns:Units>LB</ns:Units>
+	                <ns:Value>#arguments.requestBean.getTotalWeight( unitCode='lb' )#</ns:Value>
+	            </ns:Weight>
 					<cfif setting('specialServiceAlcoholFlag')>
 					<ns:SpecialServicesRequested>
 							<ns:SpecialServiceTypes>ALCOHOL</ns:SpecialServiceTypes>

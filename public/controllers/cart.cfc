@@ -147,6 +147,28 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		}
 	}
 	
+	//temp for demo only
+	public void function addOrderTemplateItem(required any rc) {
+        param name="rc.orderTemplateID" default="";
+        param name="rc.skuID" default="";
+        param name="rc.quantity" default=1;
+        
+        var orderTemplate = getOrderService().getOrderTemplateAndEnforceOwnerAccount(data=arguments.rc);
+		if( isNull(orderTemplate) ) {
+			return;
+		}
+	    
+ 		orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.rc, 'addOrderTemplateItem'); 
+        getHibachiScope().addActionResult( "public:orderTemplate.addItem", orderTemplate.hasErrors() );
+            
+        if(!orderTemplate.hasErrors() && !getHibachiScope().getORMHasErrors()) {
+            orderTemplate.clearProcessObject("addOrderTemplateItem");
+             getHibachiScope().flushORMSession(); //flushing to make new data availble
+        } else {
+            ArrayAppend(arguments.rc.messages , orderTemplate.getErrors(), true);
+        }
+    }
+	
  	// Add Order Items
   	public void function addOrderItems(required any rc) {
   		param name="data.skuIds" default="";

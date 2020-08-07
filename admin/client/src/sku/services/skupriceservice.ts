@@ -150,6 +150,48 @@ export class SkuPriceService {
         } 
         return "N/A";//will become NaN
     }
+    
+    public getPriceGroupOptions = () => {
+        let priceGroupOptions;
+        let priceGroupCollectionConfig = this.collectionConfigService.newCollectionConfig("PriceGroup");
+        priceGroupCollectionConfig.setDisplayProperties("priceGroupID,priceGroupCode,priceGroupName");
+        priceGroupCollectionConfig.addFilter("activeFlag", true, "=");
+        priceGroupCollectionConfig.setAllRecords(true);
+        
+        return priceGroupCollectionConfig.getEntity();
+        
+    }
+    
+    public getSkuOptions = (productID) =>{
+        let skuOptions;
+        let skuColectionConfig = this.collectionConfigService.newCollectionConfig("Sku");
+        skuColectionConfig.setDisplayProperties("skuID,skuName,skuCode,imagePath");
+        
+        skuColectionConfig.addFilter("product.productID", productID, "=");
+        skuColectionConfig.setAllRecords(true);
+        
+        return skuColectionConfig.getEntity();
+    }
+    
+    public getCurrencyOptions = () =>{
+        let currenyOptions;
+        let currencyCollectionConfig = this.collectionConfigService.newCollectionConfig("Currency");
+        currencyCollectionConfig.setDisplayProperties("currencyCode");
+        currencyCollectionConfig.addFilter("activeFlag", true, "=");
+        currencyCollectionConfig.setAllRecords(true);
+        
+        return currencyCollectionConfig.getEntity();
+    }
+    
+    public getSkuCollectionConfig = (productID) =>{
+        let config = this.collectionConfigService.newCollectionConfig("Sku");
+        config.setDisplayProperties("skuID,skuName,skuCode");
+        config.addDisplayProperty("imagePath", "" , {'isSearchable': false});
+        config.addFilter("product.productID", productID, "=");
+
+        return config;
+    }
+    
 
     private createInferredSkuPriceForCurrency = (sku, skuPrice, currencyCode) =>{
         var nonPersistedSkuPrice = this.entityService.newEntity('SkuPrice'); 

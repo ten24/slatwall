@@ -55,6 +55,8 @@ component entityname="SlatwallSite" table="SwSite" persistent="true" accessors="
 	property name="domainNames" ormtype="string";
 	property name="allowAdminAccessFlag" ormtype="boolean";
 	property name="resetSettingCache" ormtype="boolean";
+	property name="currencyCode" ormtype="string";
+	
 	// CMS Properties
 	property name="cmsSiteID" ormtype="string" index="RI_CMSSITEID";
 
@@ -83,7 +85,13 @@ component entityname="SlatwallSite" table="SwSite" persistent="true" accessors="
 	property name="sitePath" persistent="false";
 	property name="templatesPath" persistent="false";
 	property name="assetsPath" persistent="false";
+	//CUSTOM PROPERTIES BEGIN
+property name="siteAvailableLocales" persistent="false";
+	property name="ownerAccount" persistent="false";
+	
+	
 
+ property name="flagImageFilename" ormtype="string";//CUSTOM PROPERTIES END
 	public boolean function getAllowAdminAccessFlag() {
 		if(isNull(variables.allowAdminAccessFlag)) {
 			variables.allowAdminAccessFlag = 0;
@@ -215,5 +223,39 @@ component entityname="SlatwallSite" table="SwSite" persistent="true" accessors="
 
 	// ================== START: Deprecated Methods ========================
 
-	// ==================  END:  Deprecated Methods ========================
+	// ==================  END:  Deprecated Methods ========================	//CUSTOM FUNCTIONS BEGIN
+
+public any function getOwnerAccount() {
+		if(structKeyExists(variables, 'ownerAccount')) {
+			return variables.ownerAccount;
+		}
+		
+
+		var accountCode = getHibachiScope().getSubdomain();
+		if(len(accountCode)){
+			var account = getService('accountService').getAccountByAccountCode(accountCode);
+			
+			if(!isNull(account)){
+				variables.ownerAccount = account;
+				return variables.ownerAccount;
+			}
+		}
+	
+	}
+	
+	public string function getSiteAvailableLocales() {
+		if ( ! structKeyExists( variables, 'siteAvailableLocales' ) ) {
+			variables.siteAvailableLocales = setting('siteAvailableLocales');
+		}
+		return variables.siteAvailableLocales;
+	}
+	
+	public any function getDefaultCollectionPropertiesList(){
+		return "siteID,siteName,siteCode,resetSettingCache,flagImageFilename,domainNames,allowAdminAccessFlag";
+	}
+	
+	public any function getDefaultCollectionProperties(){
+		var includesList = this.getDefaultCollectionPropertiesList();
+		return super.getDefaultCollectionProperties( includesList, '' );
+	}//CUSTOM FUNCTIONS END
 }

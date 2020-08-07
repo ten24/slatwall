@@ -1,7 +1,5 @@
 {
-	"properties":{
-		"amount":				[
-			{"required":true, "dataType":"numeric","minValue":0}
-		]
+	"properties": {
+		"amount": [{ "required": true, "dataType": "numeric", "minValue": 0 }]
 	}
 }

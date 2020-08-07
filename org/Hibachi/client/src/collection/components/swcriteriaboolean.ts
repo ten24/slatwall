@@ -21,7 +21,8 @@ class SWCriteriaBoolean{
 	){
 		return {
 			restrict: 'E',
-			templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+'criteriaboolean.html',
+			template: require('./criteriaboolean.html'),
+			
 			link: function(scope, element, attrs){
 				 var getBooleanOptions = function(type){
 				 	if(angular.isUndefined(type)){

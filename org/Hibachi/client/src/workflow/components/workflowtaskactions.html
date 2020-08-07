@@ -15,8 +15,12 @@
                     Detail: 
                     <ng-switch on="workflowTaskAction.data.actionType" ng-if="workflowTaskAction.data.actionType">
                         <span data-ng-switch-when="print" data-ng-bind="workflowTaskAction.data.printTemplate.data.printTemplateName"></span>
-                        <span data-ng-switch-when="email" data-ng-bind="workflowTaskAction.data.emailTemplate.data.emailTemplateName"></span>
+                        <a data-ng-switch-when="email" ng-if="swWorkflowTaskActions.emailTemplateLinks[workflowTaskAction.data.emailTemplate.data.emailTemplateID] != null" ng-href="{{swWorkflowTaskActions.emailTemplateLinks[workflowTaskAction.data.emailTemplate.data.emailTemplateID]}}" target="_blank">
+                            <span data-ng-bind="workflowTaskAction.data.emailTemplate.data.emailTemplateName"></span>
+                        </a> 
                         <span data-ng-switch-when="process" data-ng-bind="workflowTaskAction.data.processMethod"></span>
+                        <span data-ng-switch-when="processByQueue" data-ng-bind="workflowTaskAction.data.processMethod"></span>
+                        <span data-ng-switch-when="processEmailByQueue" data-ng-bind="workflowTaskAction.data.emailTemplate.data.emailTemplateName"></span>
                     </ng-switch>
                 </li>
             </ul>
@@ -114,19 +118,19 @@
 	                        </div>
 	                        <!-- //Filter Criteria End -->
 	                        <!-- Filter Criteria Start -->
-	                        <div class="s-filter-group-item"
+	                        <div 	class="s-filter-group-item"
                                     data-ng-if="swWorkflowTaskActions.workflowTaskActions.selectedTaskAction.data.actionType === 'webhook'"
 	                            >
 	                            <h4>Webhook URL</h4>
 	                            <div class="form-group form-group-sm">
 	                                <sw-property-display
-	                                data-object="swWorkflowTaskActions.workflowTaskActions.selectedTaskAction"
-	                                data-property-identifier="webhookURL"
-	                                data-editable="true"
-	                                data-editing="true"
-	                                data-options-arguments="{property:'webhookURL'}"
-	                                >
-	                            </sw-property-display>
+    	                                data-object="swWorkflowTaskActions.workflowTaskActions.selectedTaskAction"
+    	                                data-property-identifier="webhookURL"
+    	                                data-editable="true"
+    	                                data-editing="true"
+    	                                data-options-arguments="{property:'webhookURL'}"
+    	                                >
+    	                            </sw-property-display>
 	                            </div>
 	                        </div>
 	                        <!-- //Filter Criteria End -->
@@ -183,6 +187,90 @@
 	                                <!--</div>-->
 	                            <!--</div>-->
 	                        </div>
+	                        
+	                         <div 	class="s-filter-group-item"
+									data-ng-if="swWorkflowTaskActions.workflowTaskActions.selectedTaskAction.data.actionType === 'processByQueue'">
+                                <h4>Process Method</h4>
+                                <div class="form-group form-group-sm">
+                                    <div class="s-select-list-wrapper s-search">
+                                        <div class="form-group">
+                                            <div class="input-group">
+                                                <div class="s-input-btn">
+                                                    <input type="search" class="form-control" name="processMethod" placeholder="Search&hellip;" data-ng-model="swWorkflowTaskActions.searchProcess.name" data-ng-focus="swWorkflowTaskActions.searchProcess.name = ''" data-ng-change="swWorkflowTaskActions.getProcessOptions(swWorkflowTaskActions.workflowTask.data.workflow.data.workflowObject)">
+
+                                                </div>
+                                                <div class="input-group-btn" data-ng-if="swWorkflowTaskActions.workflowTask.data.workflow.data.workflowObject">
+                                                    <button class="btn btn-sm btn-default" data-ng-click="swWorkflowTaskActions.getProcessOptions(swWorkflowTaskActions.workflowTask.data.workflow.data.workflowObject);"><i class="fa fa-caret-down"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="dropdown s-search-results-wrapper" data-ng-if="swWorkflowTaskActions.showProcessOptions">
+                                            <ul class="dropdown-menu" ng-if="swWorkflowTaskActions.processOptions">
+                                                <li data-ng-repeat="processOption in swWorkflowTaskActions.processOptions | filter:swWorkflowTaskActions.searchProcess.name">
+                                                    <a data-ng-click="swWorkflowTaskActions.selectProcess(processOption)">{{processOption.name}}</a>
+                                                </li>
+                                                <li data-ng-if="(processOptions | filter:swWorkflowTaskActions.searchProcess.name).length == 0">
+                                                    <a sw-rbkey="'admin.entity.workflowtabs.triggers.norecordsfound'"><!-- Message created by rb key --></a>
+                                                </li>
+                                            </ul>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <sw-property-display
+    	                                data-object="swWorkflowTaskActions.workflowTaskActions.selectedTaskAction"
+    	                                data-property-identifier="processEntityQueueFlagPropertyName"
+    	                                data-editable="true"
+    	                                data-editing="true"
+    	                                data-options-arguments="{property:'processEntityQueueFlagPropertyName'}"
+    	                                >
+    	                       </sw-property-display>
+                                <sw-property-display
+    	                                data-object="swWorkflowTaskActions.workflowTaskActions.selectedTaskAction"
+    	                                data-property-identifier="uniqueFlag"
+    	                                data-editable="true"
+    	                                data-editing="true"
+    	                                >
+    	                       </sw-property-display>
+	                        </div>
+	                        
+	                        
+	                        <div 	class="s-filter-group-item"
+									data-ng-if="swWorkflowTaskActions.workflowTaskActions.selectedTaskAction.data.actionType === 'processEmailByQueue'">
+
+                                <h4>Email Template</h4>
+	                            <div class="form-group form-group-sm">
+                                    <div sw-typeahead-search
+                                         data-search-on-load="false"
+                                         data-collection-config="swWorkflowTaskActions.emailTemplateCollectionConfig"
+                                         data-property-to-show="'emailTemplateName'"
+                                         data-placeholder-text="Search Email templates..."
+                                         data-add-function="swWorkflowTaskActions.selectEmailTemplate"
+                                         data-search-text="swWorkflowTaskActions.emailTemplateSelected">
+                                        <span sw-typeahead-search-line-item
+                                              data-property-identifier="emailTemplateName"
+                                              ng-bind="item.emailTemplateName"></span>
+                                    </div>
+	                            </div>
+      
+                                <sw-property-display
+    	                                data-object="swWorkflowTaskActions.workflowTaskActions.selectedTaskAction"
+    	                                data-property-identifier="processEntityQueueFlagPropertyName"
+    	                                data-editable="true"
+    	                                data-editing="true"
+    	                                data-options-arguments="{property:'processEntityQueueFlagPropertyName'}"
+    	                                >
+    	                       </sw-property-display>
+                                <sw-property-display
+    	                                data-object="swWorkflowTaskActions.workflowTaskActions.selectedTaskAction"
+    	                                data-property-identifier="uniqueFlag"
+    	                                data-editable="true"
+    	                                data-editing="true"
+    	                                >
+    	                       </sw-property-display>
+	                        </div>
+	                        
+	                        
 	                        <!-- //Filter Criteria End -->
 	                        <!-- Filter Criteria Start -->
 	                        <div 	class="s-filter-group-item"

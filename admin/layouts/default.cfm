@@ -74,7 +74,7 @@ Notes:
 		<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/fonts/opensans/opensans.css" rel="stylesheet">
 		<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/css/bootstrap.min.css" rel="stylesheet">
 		<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/css/jquery-ui.min.css" rel="stylesheet">
-		<link href="#request.slatwallScope.getBaseURL()#/admin/client/css/main.css?v=#$.slatwall.getApplicationValue('version')#" rel="stylesheet">
+		<link href="#request.slatwallScope.getBaseURL()#/admin/client/css/main.css?v=#$.slatwall.getApplicationValue('instantiationKey')#" rel="stylesheet">
 		<link href="#request.slatwallScope.getBaseURL()#/assets/flags/css/flag-icon.min.css" rel="stylesheet">
 		<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/client/lib/font-awesome/css/font-awesome.min.css" rel="stylesheet" type='text/css'>
 		<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/client/lib/metismenu/metismenu.css" rel="stylesheet">
@@ -144,7 +144,9 @@ Notes:
 							<hb:HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.orders_nav')#" icon="inbox icon-white" type="nav">
 								<hb:HibachiDividerHider>
 									<hb:HibachiActionCaller action="admin:entity.listorder" type="list">
+									<hb:HibachiActionCaller action="admin:entity.listordertemplate" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listcartandquote" type="list">
+									<hb:HibachiActionCaller action="admin:entity.listwishlist" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listorderitem" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listorderpayment" type="list">
 									<li class="divider"></li>
@@ -155,6 +157,7 @@ Notes:
 									<hb:HibachiActionCaller action="admin:entity.listvendororder" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listvendororderitem" type="list">
 									<li class="divider"></li>
+									<hb:HibachiActionCaller action="admin:entity.listorderimportbatch" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listeventregistration" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listgiftcard" type="list">
 								</hb:HibachiDividerHider>
@@ -228,6 +231,7 @@ Notes:
 									<hb:HibachiActionCaller action="admin:entity.listpaymentterm" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listprinttemplate" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listroundingrule" type="list">
+									<hb:HibachiActionCaller action="admin:entity.listresourcebundle" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listsite" type="list">
 									
 									<hb:HibachiActionCaller action="admin:entity.listtaxcategory" type="list">
@@ -241,13 +245,13 @@ Notes:
 							</hb:HibachiActionCallerDropdown>
 							<hb:HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.tools_nav')#" icon="magnet icon-white" type="nav">
 								<hb:HibachiDividerHider>
-									<hb:HibachiActionCaller action="admin:report.revenuerecognitionreport" type="list">
+									<!---<hb:HibachiActionCaller action="admin:report.revenuerecognitionreport" type="list">--->
 									<!---deprecated--->
 									<!---<hb:HibachiActionCaller action="admin:report.deferredrevenuereport" type="list">
 									<hb:HibachiActionCaller action="admin:report.earnedrevenuereport" type="list">--->
-									<hb:HibachiActionCaller action="admin:report.subscriptionOrdersReport" type="list">
+									<!---<hb:HibachiActionCaller action="admin:report.subscriptionOrdersReport" type="list">
 									<hb:HibachiActionCaller action="admin:report.cancelledOrdersReport" type="list">
-									<hb:HibachiActionCaller action="admin:report" type="list">
+									<hb:HibachiActionCaller action="admin:report" type="list">--->
 									<hb:HibachiActionCaller action="admin:entity.listeventtrigger" type="list" text="#getHibachiScope().rbkey('entity.eventTrigger_plural')# (#getHibachiScope().rbkey('define.disabled')#)">
 									<hb:HibachiActionCaller action="admin:entity.listschedule" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listsession" type="list">

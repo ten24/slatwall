@@ -67,14 +67,9 @@ Notes:
 		
 		<input type="hidden" name="promotion.promotionID" value="#rc.promotion.getPromotionID()#" />
 		
-		<hb:HibachiPropertyRow>
-			<hb:HibachiPropertyList>
-				<hb:HibachiPropertyDisplay object="#rc.promotioncode#" property="promotioncode" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.promotioncode#" property="startDateTime" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.promotioncode#" property="endDateTime" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.promotioncode#" property="maximumUseCount" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.promotioncode#" property="maximumAccountUseCount" edit="#rc.edit#">
-			</hb:HibachiPropertyList>
-		</hb:HibachiPropertyRow>
+		<hb:HibachiEntityDetailGroup object="#rc.promotionCode#">
+			<hb:HibachiEntityDetailItem view="admin:entity/promotioncodetabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+			<hb:HibachiEntityDetailItem view="admin:entity/promotioncodetabs/account" count="#rc.promotionCode.getAccountsCount()#" />
+		</hb:HibachiEntityDetailGroup>
 	</hb:HibachiEntityDetailForm>
 </cfoutput>

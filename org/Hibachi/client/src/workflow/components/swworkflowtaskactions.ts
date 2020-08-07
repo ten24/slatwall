@@ -26,6 +26,7 @@ class SWWorkflowTaskActionsController {
     private selectPrintTemplate;
     private emailTemplateCollectionConfig;
     private printTemplateCollectionConfig;
+    private emailTemplateLinks={};
     //@ngInject
     constructor(
         public $log,
@@ -34,7 +35,8 @@ class SWWorkflowTaskActionsController {
         public workflowPartialsPath,
         public hibachiPathBuilder,
         public collectionConfigService,
-        public observerService
+        public observerService,
+        public appConfig
     ){
 
         this.$log.debug('Workflow Task Actions Init');
@@ -57,13 +59,37 @@ class SWWorkflowTaskActionsController {
          * Returns the correct object based on the selected object type.
          */
         var getObjectByActionType = (workflowTaskAction) =>{
-            if (workflowTaskAction.data.actionType === 'email') {
-                workflowTaskAction.$$getEmailTemplate();
+            if (workflowTaskAction.data.actionType === 'email' ||
+                workflowTaskAction.data.actionType === 'processEmailByQueue'
+            ) {
+                    
+                    workflowTaskAction.$$getEmailTemplate().finally(()=>{
+                        getEmailTemplateLinkByAction(workflowTaskAction);
+                    });
 
             } else if (workflowTaskAction.data.actionType === 'print') {
                 workflowTaskAction.$$getPrintTemplate();
             }
         };
+        
+        var getEmailTemplateLinkByAction = (workflowTaskAction) =>{
+            
+            if(workflowTaskAction == null ||
+                workflowTaskAction.data == null ||
+                workflowTaskAction.data.actionType != 'email' ||
+                workflowTaskAction.data.actionType != 'processEmailByQueue' ||
+                workflowTaskAction.data.emailTemplate == null ||
+                workflowTaskAction.data.emailTemplate.data == null ||
+                workflowTaskAction.data.emailTemplate.data.emailTemplateID == null
+            ){
+                return;
+            }
+            
+            var emailTemplateID = workflowTaskAction.data.emailTemplate.data.emailTemplateID;
+            this.emailTemplateLinks[emailTemplateID] = this.appConfig.baseURL + '?slatAction=admin:entity.detailemailtemplate&emailTemplateID=' + emailTemplateID;
+            
+        }
+        
         /**
          * --------------------------------------------------------------------------------------------------------
          * Returns workflow task action, and saves them to the scope variable workflowtaskactions
@@ -284,8 +310,8 @@ class SWWorkflowTaskActionsController {
 
 class SWWorkflowTaskActions  implements ng.IDirective{
 
-    public static $inject = ['workflowPartialsPath', 'hibachiPathBuilder'];
-    public templateUrl;
+    public template = require("./workflowtaskactions.html");
+
     public restrict = 'AE';
     public scope = {};
 
@@ -294,29 +320,10 @@ class SWWorkflowTaskActions  implements ng.IDirective{
     };
     public controller=SWWorkflowTaskActionsController;
     public controllerAs="swWorkflowTaskActions";
-
-    constructor(
-        public workflowPartialsPath,
-        public hibachiPathBuilder
-    ){
-        this.templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.workflowPartialsPath) + "workflowtaskactions.html";
-    }
-    public link:ng.IDirectiveLinkFn = ($scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
-
-    };
-
-    public static Factory(){
-        var directive = (
-             workflowPartialsPath,
-             hibachiPathBuilder
-        )=> new SWWorkflowTaskActions(
-            workflowPartialsPath,
-            hibachiPathBuilder
-        );
-        directive.$inject = [ 'workflowPartialsPath', 'hibachiPathBuilder'];
-
-        return directive;
-    }
+    
+	public static Factory(){
+		return /** @ngInject */ ()=> new this();
+	}
 }
 export{
     SWWorkflowTaskActions

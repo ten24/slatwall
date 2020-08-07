@@ -73,7 +73,7 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 	property name="verifiedByIntegrationFlag" hb_populateEnabled="false" ormtype="boolean";
 	property name="IntegrationVerificationErrorMessage" hb_populateEnabled="public" ormtype="string";
 	property name="verificationCacheKey" ormtype="string" hb_auditable="false";
-	property name="verificationJson" ormtype="string" hb_auditable="false";
+	property name="verificationJson" ormtype="string" length="8000" hb_formFieldType="json" hb_auditable="false"; //Avalara returns a big json
 	
 	//Calculated Properties
 	property name="calculatedAddressName" ormtype="string" length="1024"; 
@@ -98,7 +98,12 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 	property name="addressName" persistent="false" type="string";
 	
 	// ==================== START: Logical Methods =========================
-	
+		//CUSTOM PROPERTIES BEGIN
+
+ property name="street3Address" ormtype="string";
+ property name="street4Address" ormtype="string";
+ property name="addressValidationStatus" ormtype="string";
+ property name="addressSequence" ormtype="string";//CUSTOM PROPERTIES END
 	public boolean function getAddressMatchFlag( required any address ) {
 		if(
 			nullReplace(getCountryCode(),"") != nullReplace(arguments.address.getCountryCode(),"")
@@ -171,6 +176,9 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 	public any function getCountry() {
 		if(!structKeyExists(variables, "country") && !isNull(getCountryCode())) {
 			variables.country = getService("addressService").getCountry(getCountryCode());
+			if(isNull(variables.country)){
+				variables.country = getService('addressService').getCountryByCountryCode3Digit(getCountryCode());
+			}
 		}
 		if(structKeyExists(variables, "country")) {
 			return variables.country;	
@@ -206,17 +214,16 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 	
 	public array function getStateCodeOptions() {
 		if(!structKeyExists(variables, "stateCodeOptions")) {
-			var smartList = getService("addressService").getStateSmartList();
-			smartList.addSelect(propertyIdentifier="stateName", alias="name");
-			smartList.addSelect(propertyIdentifier="stateCode", alias="value");
+			var collectionList = getService("addressService").getStateCollectionList();
+			collectionList.setDisplayProperties('stateName|name, stateCode|value');
 			if(!isNull(getCountryCode())) {
-				smartList.addFilter("countryCode", getCountryCode());	
+				collectionList.addFilter("countryCode", getCountryCode());	
 			} else {
-				smartList.addFilter("countryCode", 'US');
+				collectionList.addFilter("countryCode", 'US');
 			}
-			smartList.addOrder("stateName|ASC");
-			variables.stateCodeOptions = smartList.getRecords();
-			arrayPrepend(variables.stateCodeOptions, {value="", name=rbKey('define.select')});
+			collectionList.addOrderBy("stateName|ASC");
+			variables.stateCodeOptions = collectionList.getRecords();
+			arrayPrepend(variables.stateCodeOptions, {'value'="", 'name'=rbKey('define.select')});
 		}
 		return variables.stateCodeOptions;
 	}

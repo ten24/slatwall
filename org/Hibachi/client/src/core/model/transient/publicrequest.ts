@@ -31,14 +31,14 @@ class PublicRequest extends Request{
 
             for(var i in this.successfulActions){
                 let successfulAction:string = this.successfulActions[i];
-
-
-                this.observerService.notify(successfulAction.split('.')[1]+'Success',result.data);
+                let data = result.data ? result.data : result;
+                this.observerService.notify(successfulAction.split('.')[1]+'Success',data);
             }
             this.failureActions = result.failureActions;
             for(var i in this.failureActions){
                 let failureAction:string = this.failureActions[i];
-                this.observerService.notify(failureAction.split('.')[1]+'Failure',result.data);
+                let data = result.data ? result.data : result;
+                this.observerService.notify(failureAction.split('.')[1]+'Failure',data);
             }
             this.messages = result.messages;
         }).catch((response)=>{

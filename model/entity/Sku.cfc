@@ -52,9 +52,11 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="skuID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="activeFlag" ormtype="boolean" default="1";
 	property name="publishedFlag" ormtype="boolean" default="0";
+	property name="publishedStartDateTime" ormtype="timestamp" description="This field can be set to restrict the beginning of a time period when this product can be published.";
+	property name="publishedEndDateTime" ormtype="timestamp" description="This field can be set to restrict the end of a time period when this product can be published.";
 	property name="skuName" ormtype="string";
 	property name="skuDescription" ormtype="string" length="4000" hb_formFieldType="wysiwyg";
-	property name="skuCode" ormtype="string" unique="true" length="50" index="PI_SKUCODE";
+	property name="skuCode" ormtype="string" unique="true" length="50" index="PI_SKUCODE" hb_translate="false";
 	property name="eventAttendanceCode" ormtype="string" length="8" hint="Unique code to track event attendance";
 	property name="listPrice" ormtype="big_decimal" hb_formatType="currency" default="0";
 	property name="price" ormtype="big_decimal" hb_formatType="currency" default="0";
@@ -185,6 +187,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="optionsIDList" persistent="false";
 	property name="placedOrderItemsSmartList" type="any" persistent="false";
 	property name="productScheduleSmartList" type="any" persistent="false";
+	property name="priceByCurrencyCode" persistent="false" hb_formatType="currency";
 	property name="bundledSkusCount" type="any" persistent="false";
 	property name="eventStatus" type="any" persistent="false";
 	property name="qats" type="numeric" persistent="false";
@@ -216,7 +219,24 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 
 
 	// ==================== START: Logical Methods =========================	
+
+	//CUSTOM PROPERTIES BEGIN
+property name="sapItemCode" ormtype="string";
+    property name="disableOnFlexshipFlag" ormtype="boolean";
+    property name="disableOnRegularOrderFlag" ormtype="boolean";
+	property name="onTheFlyKitFlag" ormtype="boolean";
+	property name="vipFlag" ormtype="boolean" default="1";
+	property name="mpFlag" ormtype="boolean" default="1";
+	property name="retailFlag" ormtype="boolean" default="1";
 	
+	// Non-persistent properties
+    property name="personalVolumeByCurrencyCode" persistent="false";
+	property name="commissionableVolumeByCurrencyCode" persistent="false";
+
+
+ property name="displayOnlyFlag" ormtype="boolean" hb_formatType="yesno" default="0";
+ property name="salesCategoryCode" ormtype="string" hb_formFieldType="select";
+ property name="backorderDate" ormtype="timestamp" hb_formatType="date";//CUSTOM PROPERTIES END
 	public any function getSkuBundleCollectionList(){
 		var skuCollectionList = getService('skuService').getSkuCollectionList();
 		skuCollectionList.addFilter('assignedSkuBundles.sku.skuID',getSkuID());
@@ -230,18 +250,30 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	}
 
 	public numeric function getAveragePriceSold(required string currencyCode="USD"){
+		if(setting('skuDisableAverageCostCalculation') == true){
+			return 0;
+		}
 		return getDao('skuDao').getAveragePriceSold(skuID=this.getSkuID(),currencyCode=arguments.currencyCode);
 	}
 	
 	public numeric function getAveragePriceSoldAfterDiscount(required string currencyCode="USD"){
+		if(setting('skuDisableAverageCostCalculation') == true){
+			return 0;
+		}
 		return getDao('skuDao').getAveragePriceSoldAfterDiscount(skuID=this.getSkuID(),currencyCode=arguments.currencyCode);
 	}
 	
 	public numeric function getAverageDiscountAmount(required string currencyCode="USD"){
+		if(setting('skuDisableAverageCostCalculation') == true){
+			return 0;
+		}
 		return getDao('skuDao').getAverageDiscountAmount(skuID=this.getSkuID(),currencyCode=arguments.currencyCode);
 	}
 
 	public numeric function getCurrentAssetValue(required string currencyCode="USD"){
+		if(setting('skuDisableAverageCostCalculation') == true){
+			return 0;
+		}
 		return getQOH(currencyCode=arguments.currencyCode) * getAverageCost(arguments.currencyCode);
 	}
 	
@@ -251,30 +283,51 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 //	}
 	
 	public numeric function getCurrentMargin(required string currencyCode="USD"){
+		if(setting('skuDisableAverageCostCalculation') == true){
+			return 0;
+		}
 		return getDao('skuDao').getCurrentMargin(this.getSkuID(),arguments.currencyCode);
 	}
 	
 	public numeric function getCurrentMarginBeforeDiscount(required string currencyCode="USD"){
+		if(setting('skuDisableAverageCostCalculation') == true){
+			return 0;
+		}
 		return getDao('skuDao').getCurrentMarginBeforeDiscount(this.getSkuID(),arguments.currencyCode);
 	}
 	
 	public numeric function getCurrentLandedMargin(required string currencyCode="USD"){
+		if(setting('skuDisableAverageCostCalculation') == true){
+			return 0;
+		}
 		return getDao('skuDao').getCurrentLandedMargin(this.getSkuID(),arguments.currencyCode);
 	}
 
 	public numeric function getAverageProfit(required string currencyCode="USD"){
+		if(setting('skuDisableAverageCostCalculation') == true){
+			return 0;
+		}
 		return getDao('skuDao').getAverageProfit(this.getSkuID(),arguments.currencyCode);
 	}
 	
 	public numeric function getAverageLandedProfit(required string currencyCode="USD"){
+		if(setting('skuDisableAverageCostCalculation') == true){
+			return 0;
+		}
 		return getDao('skuDao').getAverageLandedProfit(this.getSkuID(),arguments.currencyCode);
 	}
 	
 	public numeric function getAverageMarkup(required string currencyCode="USD"){
+		if(setting('skuDisableAverageCostCalculation') == true){
+			return 0;
+		}
 		return getDao('skuDao').getAverageMarkup(this.getSkuID(),arguments.currencyCode);
 	}
 	
 	public numeric function getAverageLandedMarkup(required string currencyCode="USD"){
+		if(setting('skuDisableAverageCostCalculation') == true){
+			return 0;
+		}
 		return getDao('skuDao').getAverageLandedMarkup(this.getSkuID(),arguments.currencyCode);
 	}
 
@@ -598,49 +651,57 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	public any function getAppliedPriceGroupRateByPriceGroup( required any priceGroup) {
 		return getService("priceGroupService").getRateForSkuBasedOnPriceGroup(sku=this, priceGroup=arguments.priceGroup);
 	}
-
-	public any function getPriceByCurrencyCode( string currencyCode='USD', numeric quantity=1, array priceGroups=getHibachiScope().getAccount().getPriceGroups() ) {
+	
+	public any function getPriceByCurrencyCode( string currencyCode='USD', numeric quantity=1, array priceGroups, string accountID, string priceGroupCode) {
 		var cacheKey = 'getPriceByCurrencyCode#arguments.currencyCode#';
 		
-		for(var priceGroup in arguments.priceGroups){
-			cacheKey &= '_#priceGroup.getPriceGroupID()#';
+		if( ! IsNull(arguments.priceGroupCode) ) {
+			arguments.priceGroups = [ getService('priceGroupService').getPriceGroupByPriceGroupCode(arguments.priceGroupCode) ];
 		}
 		
-		if(structKeyExists(arguments, "quantity")){
-			cacheKey &= '#arguments.quantity#';
-			if(!structKeyExists(variables,cacheKey)){
-				var skuPriceResults = getDAO("SkuPriceDAO").getSkuPricesForSkuCurrencyCodeAndQuantity(this.getSkuID(), arguments.currencyCode, arguments.quantity,arguments.priceGroups);
-				if(!isNull(skuPriceResults) && isArray(skuPriceResults) && arrayLen(skuPriceResults) > 0){
-					var prices = [];
-					for(var i=1; i <= arrayLen(skuPriceResults); i++){
-						ArrayAppend(prices, skuPriceResults[i]['price']);
-					}
-					ArraySort(prices, "numeric","asc");
-					variables[cacheKey]= prices[1];
-				} 
-				
-				if(structKeyExists(variables,cacheKey)){
-					return variables[cacheKey];
-				}
-				
-				var baseSkuPrice = getDAO("SkuPriceDAO").getBaseSkuPriceForSkuByCurrencyCode(this.getSkuID(), arguments.currencyCode);  
-				if(!isNull(baseSkuPrice)){
-					variables[cacheKey] = baseSkuPrice.getPrice(); 
-				}
-				
+		if( !structKeyExists(arguments,'priceGroups') ) {
+			
+			if(structKeyExists(arguments, 'accountID') && len(arguments.accountID)){
+				var account = getService('AccountService').getAccount(arguments.accountID);
+			} else {
+				var account = getHibachiScope().getAccount();
 			}
 			
-			if(structKeyExists(variables,cacheKey)){
+			arguments.priceGroups = account.getPriceGroups(); 
+		}
+		
+		for(var priceGroup in arguments.priceGroups){
+			cacheKey &= '_pg:#priceGroup.getPriceGroupCode()#';
+		}
+		
+
+		if(structKeyExists(arguments, "quantity")) {
+
+			cacheKey &= '_q:#arguments.quantity#';
+				
+			if(!structKeyExists(variables, cacheKey) ) {
+				arguments.skuID = this.getSkuID(); 
+				variables[cacheKey] = getService('SkuService').getPriceBySkuIDAndCurrencyCodeAndQuantity( argumentCollection=arguments ); 
+			}
+			
+			if( StructKeyExists(variables, cacheKey) ) {
+				//we return 'null' string from custom service, instead of the NULL val
+				if(variables[cacheKey] == "null") { 
+					return;
+				}
 				return variables[cacheKey];
 			}
-			
 		}
 		
 		
     	if(structKeyExists(getCurrencyDetails(), arguments.currencyCode)) {
     		variables[cacheKey]= getCurrencyDetails()[ arguments.currencyCode ].price;
     		return variables[cacheKey];
+    	}else if(structKeyExists(getCurrencyDetails(), "price")){
+    		variables[cacheKey]= getCurrencyDetails().price;
+    		return variables[cacheKey];
     	}
+    	
     }
 
     public any function getListPriceByCurrencyCode( required string currencyCode ) {
@@ -679,46 +740,46 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 			cacheKey &= arguments.currencyCode;
 		}
 		if( !structKeyExists(variables, cacheKey) ) {
-			// Request for calculated quantity
-			if( listFindNoCase("MQATSBOM,QC,QE,QNC,QATS,QIATS,QOQ", arguments.quantityType) ) {
-				// If this is a calculated quantity and locationID exists, then delegate
-				if( structKeyExists(arguments, "locationID") ) {
-					
-					// Don't need to loop over locations for MQATSBOM as this is handled in the service calculationa.
-					if (arguments.quantityType == 'MQATSBOM' ){
-						var stock = getService("stockService").findStockBySkuIDAndLocationID(this.getSkuID(), arguments.locationID);
+		// Request for calculated quantity
+		if( listFindNoCase("MQATSBOM,QC,QE,QNC,QATS,QIATS,QOQ", arguments.quantityType) ) {
+			// If this is a calculated quantity and locationID exists, then delegate
+			if( structKeyExists(arguments, "locationID") ) {
+				
+				// Don't need to loop over locations for MQATSBOM as this is handled in the service calculationa.
+				if (arguments.quantityType == 'MQATSBOM' ){
+					var stock = getService("stockService").findStockBySkuIDAndLocationID(this.getSkuID(), arguments.locationID);
 						var totalQuantity = stock.getQuantity(arguments.quantityType);
 						setDataCache(cacheKey,totalQuantity);
 						return totalQuantity;
-						
-					}else{
-						//Need to get location and all children of location
-						var locations = getService("locationService").getLocationAndChildren(arguments.locationID);
-						var totalQuantity = 0;
-						
-						for(var i=1;i<=arraylen(locations);i++) {
-							var location = getService('locationService').getLocation(locations[i]['value']);
-							if ( arguments.quantityType != 'QATS' || ( arguments.quantityType == 'QATS' && ( !location.setting('locationExcludeFromQATS') && !location.hasChildLocation() )) ){
-								var stock = getService("stockService").findStockBySkuIDAndLocationID(this.getSkuID(), locations[i]['value']);
-								totalQuantity += stock.getQuantity(arguments.quantityType);
-								
-							}  
-					}
+					
+				}else{
+					//Need to get location and all children of location
+					var locations = getService("locationService").getLocationAndChildren(arguments.locationID);
+					var totalQuantity = 0;
+					
+					for(var i=1;i<=arraylen(locations);i++) {
+						var location = getService('locationService').getLocation(locations[i]['value']);
+						if ( arguments.quantityType != 'QATS' || ( arguments.quantityType == 'QATS' && ( !location.setting('locationExcludeFromQATS') && !location.hasChildLocation() )) ){
+							var stock = getService("stockService").findStockBySkuIDAndLocationID(this.getSkuID(), locations[i]['value']);
+							totalQuantity += stock.getQuantity(arguments.quantityType);
+							
+						}  
+				}
 					setDataCache(cacheKey,totalQuantity);
-					return totalQuantity;
-	
-					}
-	
-				// If this is a calculated quantity and stockID exists, then delegate
-				} else if ( structKeyExists(arguments, "stockID") ) {
-					var stock = getService("stockService").getStock(arguments.stockID);
+				return totalQuantity;
+
+				}
+
+			// If this is a calculated quantity and stockID exists, then delegate
+			} else if ( structKeyExists(arguments, "stockID") ) {
+				var stock = getService("stockService").getStock(arguments.stockID);
 					var totalQuantity = stock.getQuantity(arguments.quantityType);
 					setDataCache(cacheKey,totalQuantity);
 					return totalQuantity;
-				}
 			}
+		}
 
-			// Standard Logic
+		// Standard Logic
 		
 			if(listFindNoCase("QOH,QOSH,QNDOO,QNDORVO,QNDOSA,QNRORO,QNROVO,QNROSA,QDOO", arguments.quantityType)) {
 				arguments.skuID = this.getSkuID();
@@ -935,7 +996,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 						variables.currencyDetails[ currentCurrencyCode ].priceFormatted = baseSkuPriceForCurrencyCode.getFormattedValue("price");
 						variables.currencyDetails[ currentCurrencyCode ].converted = false;
 						variables.currencyDetails[ currentCurrencyCode ].skuPriceID = baseSkuPriceForCurrencyCode.getSkuPriceID();
-
+						
 					}
 					// Use a conversion mechinism
 					if(!structKeyExists(variables.currencyDetails[ currentCurrencyCode ], "price")) {
@@ -1309,6 +1370,11 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	}
 	
 	public any function getQOQ(string locationID) {
+		
+		if(setting('skuDisableQoQCalculation') == true){
+			return 0;
+		}
+		
 		if ( structKeyExists(arguments, 'locationID') ){
 			return getQuantity(quantityType="QOQ", locationID=arguments.locationID );
 		}	
@@ -1450,6 +1516,9 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	}
 
 	public any function getAverageCost(required string currencyCode, any location){
+		if(this.setting('skuDisableAverageCostCalculation') == true){
+			return 0;
+		}
 		var params.skuID = this.getSkuID();
 		params.currencyCode = arguments.currencyCode;
 		if(!isNull(arguments.location)){
@@ -1460,6 +1529,9 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	}
 	
 	public any function getAverageLandedCost(required string currencyCode, any location){
+		if(this.setting('skuDisableAverageCostCalculation') == true){
+			return 0;
+		}
 		var params.skuID = this.getSkuID();
 		params.currencyCode = arguments.currencyCode;
 		if(!isNull(arguments.location)){
@@ -1783,6 +1855,16 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return true;
 	}
 
+	public boolean function isValidPublishedEndDateTime() {
+		return 	isNull(this.getPublishedStartDateTime()) || 
+				isNull(this.getPublishedEndDateTime()) ||
+				(
+					!isNull(this.getPublishedStartDateTime()) && 
+					!isNull(this.getPublishedEndDateTime()) &&
+					dateDiff("n", this.getPublishedStartDateTime(), this.getPublishedEndDateTime()) >= 0
+				);
+	}
+
 	// ===============  END: Custom Validation Methods =====================
 
 	// =============== START: Custom Formatting Methods ====================
@@ -1915,6 +1997,48 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	// ==================  END:  Overridden Methods ========================
 
 	// =================== START: ORM Event Hooks  =========================
+	
+	public void function preInsert(){
+		super.preInsert();
+		
+		var skuPrice = getService("SkuPriceService").newSkuPrice();
+		
+		skuPrice.setCurrencyCode(this.getCurrencyCode());
+		skuPrice.setSku(this);
+		skuPrice.setPrice(this.getPrice());
+		skuPrice.setCreatedDateTime(NOW());
+
+		skuPrice = getService("SkuPriceService").saveSkuPrice(skuPrice);
+	}
+
+	public void function preUpdate(Struct oldData){
+		super.preUpdate(argumentCollection=arguments);
+		
+		var sql =  "UPDATE 
+						swskuprice 
+					SET 
+						price = :price 
+					WHERE 
+						minQuantity IS NULL 
+					AND 
+						maxQuantity IS NULL 
+					AND 
+						priceGroupID IS NULL
+					AND
+						promotionRewardID IS NULL
+					AND 
+						currencyCode = :currencyCode 
+					AND 
+						skuID = :skuID";
+		
+		var params = {
+			price = this.getPrice(),
+			currencyCode = this.getCurrencyCode(),
+			skuID = this.getSkuID()
+		};
+		
+		var query = QueryExecute(sql, params);
+	}
 
 	// ===================  END:  ORM Event Hooks  =========================
 
@@ -1949,7 +2073,154 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return !getDefaultFlag();
     }
 
-	// ==================  END:  Deprecated Methods ========================
+	// ==================  END:  Deprecated Methods ========================	//CUSTOM FUNCTIONS BEGIN
 
+public boolean function canBePurchased(required any account, any order){
+		if( !isNull(arguments.order) && !isNull(arguments.order.getAccountType()) ){
+			var accountType = arguments.order.getAccountType();
+		} else if ( !isNull(arguments.account.getAccountType()) ) {
+			var accountType = arguments.account.getAccountType();
+		}
+		
+		if( isNull(accountType) ){
+			return this.getRetailFlag() == true;
+		}else{
+		
+			var notValidVipItem = ( accountType == "vip" && this.getVipFlag() != true );
+			var notValidMpItem = ( accountType == "marketPartner" && this.getMpFlag() != true );
+			var notValidRetailItem = ( accountType == "customer" && this.getRetailFlag() != true );
+			
+			if( notValidRetailItem || notValidVipItem || notValidMpItem ){
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	
+    public any function getPersonalVolumeByCurrencyCode(string currencyCode, string accountID){
+    	if (!structKeyExists(arguments, "currencyCode") || isNull(arguments.currencyCode)){
+    		arguments.currencyCode = this.getCurrencyCode();
+    	}
+    	
+		arguments.customPriceField = 'personalVolume';
+    	
+        return this.getCustomPriceByCurrencyCode(argumentCollection=arguments);
+    }
+    
+    public any function getTaxableAmountByCurrencyCode(string currencyCode, string accountID){
+    	if (!structKeyExists(arguments, "currencyCode") || isNull(arguments.currencyCode)){
+    		arguments.currencyCode = this.getCurrencyCode();
+    	}
+    	
+    	arguments.customPriceField = 'taxableAmount';
+        
+		return this.getCustomPriceByCurrencyCode(argumentCollection=arguments);
+    }
+    
+    public any function getCommissionableVolumeByCurrencyCode(string currencyCode, string accountID){
+    	if (!structKeyExists(arguments, "currencyCode") || isNull(arguments.currencyCode)){
+    		arguments.currencyCode = this.getCurrencyCode();
+    	}
+    	
+    	arguments.customPriceField = 'commissionableVolume';
+        
+		return this.getCustomPriceByCurrencyCode(argumentCollection=arguments);
+    }
+    
+    public any function getRetailCommissionByCurrencyCode(string currencyCode, string accountID){
+    	if (!structKeyExists(arguments, "currencyCode") || isNull(arguments.currencyCode)){
+    		arguments.currencyCode = this.getCurrencyCode();
+    	}
+    	
+    	arguments.customPriceField = 'retailCommission';
+        
+		return this.getCustomPriceByCurrencyCode(argumentCollection=arguments);
+    }
+    
+    public any function getProductPackVolumeByCurrencyCode(string currencyCode, string accountID){
+    	if (!structKeyExists(arguments, "currencyCode") || isNull(arguments.currencyCode)){
+    		arguments.currencyCode = this.getCurrencyCode();
+    	}
+    	
+    	arguments.customPriceField = 'productPackVolume';
+        
+		return this.getCustomPriceByCurrencyCode(argumentCollection=arguments);
+    }
+    
+    public any function getRetailValueVolumeByCurrencyCode(string currencyCode, string accountID){
+    	if (!structKeyExists(arguments, "currencyCode") || isNull(arguments.currencyCode)){
+    		arguments.currencyCode = this.getCurrencyCode();
+    	}
+    	
+    	arguments.customPriceField = 'retailValueVolume';
+        
+		return this.getCustomPriceByCurrencyCode(argumentCollection=arguments);
+    }
 
+    public any function getCustomPriceByCurrencyCode( string customPriceField, string currencyCode='USD', numeric quantity=1, array priceGroups ) {
+		var cacheKey = 'get#customPriceField#ByCurrencyCode#arguments.currencyCode#';
+	
+		var account = getHibachiScope().getAccount();
+		if(structKeyExists(arguments,'accountID') && len(arguments.accountID)){
+			account = getService('AccountService').getAccount(arguments.accountID);
+		}	
+
+		if(!structKeyExists(arguments,'priceGroups')){
+			arguments.priceGroups = account.getPriceGroups(); 
+		}
+	
+		for(var priceGroup in arguments.priceGroups){
+			cacheKey &= '_#priceGroup.getPriceGroupID()#';
+		}
+		
+		if(structKeyExists(arguments, "quantity")){
+			cacheKey &= '#arguments.quantity#';
+		}
+
+		arguments.skuID = this.getSkuID(); 
+		if(!structKeyExists(variables,cacheKey)){
+			var skuPriceResults = getDAO("SkuPriceDAO").getSkuPricesForSkuCurrencyCodeAndQuantity(argumentCollection=arguments);
+
+			if(!isNull(skuPriceResults) && isArray(skuPriceResults) && arrayLen(skuPriceResults) > 0){
+				var sortFunction = function(a,b){
+				   	if(isNull(a[customPriceField])){
+						a[customPriceField] = 0;
+					}
+					
+					if(isNull(b[customPriceField])){
+						b[customPriceField] = 0;
+					}
+				   
+				    if(a[customPriceField] < b[customPriceField]){ return -1;}
+				    else if (a[customPriceField] > b[customPriceField]){ return 1; }
+				    else{ return 0; }
+					
+				};
+				ArraySort(skuPriceResults, 
+				sortFunction
+				);
+				variables[cacheKey]= skuPriceResults[1];
+			} 
+			
+			if(structKeyExists(variables,cacheKey) && structKeyExists(variables[cacheKey],customPriceField)){
+				return variables[cacheKey][customPriceField];
+			}
+			
+			var baseSkuPrice = getDAO("SkuPriceDAO").getBaseSkuPriceForSkuByCurrencyCode(this.getSkuID(), arguments.currencyCode);  
+			if(!isNull(baseSkuPrice)){
+				variables[cacheKey] = baseSkuPrice.invokeMethod('get#customPriceField#'); 
+			}
+			
+		}
+        
+		if(structKeyExists(variables, cacheKey)){
+		    if(isStruct(variables[cacheKey]) && structKeyExists(variables[cacheKey],customPriceField)){
+		        return variables[cacheKey][customPriceField];
+		    } else if (!isStruct(variables[cacheKey])){
+				return variables[cacheKey];
+			} 	 
+		}    
+	}
+   //CUSTOM FUNCTIONS END
 }

@@ -276,7 +276,41 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		return returnList;
 	}
+	
+	
+	public array function getCardExpirationMonthOptions() {
+		return [
+			'01',
+			'02',
+			'03',
+			'04',
+			'05',
+			'06',
+			'07',
+			'08',
+			'09',
+			'10',
+			'11',
+			'12'
+		];
+	}
 
+	public array function getCardExpirationYearOptions( yearsCount=20) {
+		var yearOptions = [];
+		var currentYear = year(now());
+		for(var i = 0; i < arguments.yearsCount; i++) {
+			var nextYear = currentYear + i;
+			arrayAppend(yearOptions,{name=nextYear, value=right(nextYear,2)});
+		}
+		return yearOptions;
+	}
+
+	public array function getActivePaymentMethodOptions() {
+		var paymentMethodCollection =  this.getPaymentMethodCollectionList();
+		paymentMethodCollection.setDisplayProperties('paymentMethodName|name,paymentMethodID|value');
+		paymentMethodCollection.addFilter('activeFlag', true);
+		return paymentMethodCollection.getRecords();
+	} 
 	// =====================  END: Logical Methods ============================
 
 	// ===================== START: DAO Passthrough ===========================
@@ -302,6 +336,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// ===================== START: Process Methods ===========================
 
 	public any function processPaymentTransaction_voidTransaction(required any paymentTransaction, required struct data) {
+
 		var originalPaymentTransaction = arguments.paymentTransaction;
 		
 		// Create a new payment transaction
@@ -353,7 +388,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 				// Add the duplicate error to the payment, if this was
 				if(isDuplicateTransaction) {
-
 					arguments.paymentTransaction.addError('runTransaction', "This transaction is duplicate of an already processed transaction.", true);
 
 				// Otherwise continue with processing
@@ -389,6 +423,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						requestBean.setTransactionID( arguments.paymentTransaction.getPaymentTransactionID() );
 						requestBean.setTransactionType( arguments.data.transactionType );
 						requestBean.setTransactionAmount( arguments.data.amount );
+						
+						if(structKeyExists(arguments.data,'originalPaymentTransaction')){
+							requestBean.setOriginalPaymentTransaction(arguments.data.originalPaymentTransaction);
+						}
+						
 						if(structKeyExists(arguments.data, "preAuthorizationCode")) {
 							requestBean.setPreAuthorizationCode( arguments.data.preAuthorizationCode );
 						}
@@ -425,11 +464,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							logHibachi("#integration.getIntegrationName()# Payment Integration Transaction Request - Started (#arguments.data.transactionType#)", true);
 
 							var response = integrationPaymentCFC.invokeMethod("process#arguments.paymentTransaction.getPayment().getPaymentMethod().getPaymentMethodType()#", {requestBean=requestBean});
-
 							logHibachi("#integration.getIntegrationName()# Payment Integration Transaction Request - Finished (#arguments.data.transactionType#)", true);
 
 							// Populate the Credit Card Transaction with the details of this process
-
+							
+							//payment ref number 
+							if(!isNull(response.getReferenceNumber())){
+								arguments.paymentTransaction.setReferenceNumber(response.getReferenceNumber());	
+							}
+							
 							// messages
 							arguments.paymentTransaction.setMessage(serializeJSON(response.getMessages()));
 
@@ -565,7 +608,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
                                 var giftCardProcessObject = giftCard.getProcessObject("AddCredit");
 
-                                giftCardProcessObject.setOrderPayments(arguments.paymentTransaction.getOrderPayment().getOrder().getOrderPayments());
+                                giftCardProcessObject.setOrderPayment(arguments.paymentTransaction.getOrderPayment());
                                 giftCardProcessObject.setOrderItems(arguments.paymentTransaction.getOrderPayment().getOrder().getOrderItems());
 
                                 giftCardProcessObject.setCreditAmount(amount);

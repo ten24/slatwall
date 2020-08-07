@@ -10,7 +10,7 @@
 	<cfparam name="attributes.valueOptionsCollectionList" type="any" default="" />
 	<cfparam name="attributes.fieldAttributes" type="string" default="" />
 	<cfparam name="attributes.modalCreateAction" type="string" default="" />			<!--- hint: This allows for a special admin action to be passed in where the saving of that action will automatically return the results to this field --->
-
+	<cfparam name="attributes.notRequiredClass" type="string" default="" />
 	<cfparam name="attributes.autocompletePropertyIdentifiers" type="string" default="" />
 	<cfparam name="attributes.autocompleteNameProperty" type="string" default="" />
 	<cfparam name="attributes.autocompleteValueProperty" type="string" default="" />
@@ -22,6 +22,10 @@
 
 	<cfparam name="attributes.multiselectPropertyIdentifier" type="string" default="" />
 	<cfparam name="attributes.showEmptySelectBox" type="boolean" default="#false#" />
+	<cfparam name="attributes.translateAttributes" type="any" default="" />
+	<cfparam name="attributes.enableOtherInputForRadioGroup" type="any" default="true" />
+
+	<cfparam name="attributes.enableOtherInputForRadioGroupShowHide" type="any" default="true" />
 	<!---
 	attributes.fieldType have the following options:
 		checkbox			|	As a single checkbox this doesn't require any options, but it will create a hidden field for you so that the key gets submitted even when not checked.  The value of the checkbox will be 1
@@ -84,12 +88,12 @@
 		</cfcase>
 		<cfcase value="date">
 			<cfoutput>
-				<input type="text" name="#attributes.fieldName#" value="#attributes.value#" class="#attributes.fieldClass# datepicker form-control" #attributes.fieldAttributes# />
+				<input type="text" name="#attributes.fieldName#" value="#attributes.value#" class="#attributes.fieldClass# datetimepicker form-control"  #attributes.fieldAttributes#  autocomplete="off"/>
 			</cfoutput>
 		</cfcase>
 		<cfcase value="dateTime">
 			<cfoutput>
-				<input type="text" name="#attributes.fieldName#" value="#attributes.value#" class="#attributes.fieldClass# datetimepicker form-control" #attributes.fieldAttributes# />
+				<input type="text" name="#attributes.fieldName#" value="#attributes.value#" class="#attributes.fieldClass# datetimepicker form-control" #attributes.fieldAttributes#  autocomplete="off"/>
 			</cfoutput>
 		</cfcase>
 		<cfcase value="file">
@@ -180,7 +184,7 @@
 						</cfif>
 						<cfset thisOptionValue = isSimpleValue(option) ? option : structKeyExists(option, 'value') ? structFind(option, 'value') : '' />
 						<cfset thisOptionName = isSimpleValue(option) ? option : structFind(option, 'name') />
-						<option value="#thisOptionValue#" <cfif listFindNoCase(attributes.value, thisOptionValue)> selected="selected"</cfif>>#thisOptionName#</option>
+						<option value="#thisOptionValue#" <cfif listFindNoCase(decodeForHTML(attributes.value), thisOptionValue)> selected="selected"</cfif>>#thisOptionName#</option>
 					</cfloop>
 				</select>
 			</cfoutput>
@@ -207,12 +211,22 @@
 				<cfloop array="#attributes.valueOptions#" index="option">
 					<cfset thisOptionValue = isSimpleValue(option) ? option : structKeyExists(option, 'value') ? structFind(option, 'value') : '' />
 					<cfset thisOptionName = isSimpleValue(option) ? option : structFind(option, 'name') />
+
 					<div class="radio">
-						<input type="radio" id="#thisOptionValue#" name="#attributes.fieldName#" value="#thisOptionValue#" class="#attributes.fieldClass#" <cfif attributes.value EQ thisOptionValue> checked="checked"</cfif> #attributes.fieldAttributes# />
+						<input type="radio" ng-model="#attributes.fieldName#" id="#thisOptionValue#" name="#attributes.fieldName#" value="#thisOptionValue#" class="#attributes.fieldClass#" <cfif attributes.value EQ thisOptionValue> checked="checked"</cfif> #attributes.fieldAttributes# />
 						<label for="#thisOptionValue#">
 							#thisOptionName#
 						</label>
-					</div>	
+					</div>
+					
+					<cfif findNoCase(thisOptionName, 'other') AND len(thisOptionName) EQ 5 AND attributes.enableOtherInputForRadioGroup> 
+						<input type="text" name="#attributes.fieldName#Other"	
+
+							<cfif attributes.enableOtherInputForRadioGroupShowHide >
+								ng-if="#attributes.fieldName#.toString() == '#thisOptionValue#'"  
+							</cfif>
+						/>
+					</cfif>	
 				</cfloop>
 			</cfoutput>
 		</cfcase>
@@ -257,109 +271,89 @@
 		</cfcase>
 		<cfcase value="text,email">
 			<cfoutput>
-				<input type="text" name="#attributes.fieldName#" value="#attributes.value#" class="form-control #attributes.fieldClass#" #attributes.fieldAttributes# />
+				<input type="text" name="#attributes.fieldName#" value="#attributes.value#" class="form-control #attributes.fieldClass# <cfif attributes.notRequiredClass == 's-not-required'>s-not-required</cfif>" #attributes.fieldAttributes# />
+				<cfif !structKeyExists(url, 'modal') AND isStruct(attributes.translateAttributes)>
+					<cfset attributes.translateAttributes.entity = "Translation" />
+					<cfset attributes.translateAttributes.action = "admin:entity.preprocesstranslation" />
+					<cfset attributes.translateAttributes.processContext = "updateProperty" />
+					<cfset attributes.translateAttributes.class = "form-control-feedback" />
+					<cfset attributes.translateAttributes.icon = "globe" />
+					<cfset attributes.translateAttributes.iconOnly = "true" />
+					<cfset attributes.translateAttributes.modal = "true" />
+					<cfset attributes.translateAttributes.currentAction = request.context[request.context.fw.getAction()] />
+					<hb:HibachiProcessCaller attributeCollection="#attributes.translateAttributes#" />
+				</cfif>
 			</cfoutput>
 		</cfcase>
-		<cfcase value="textautocomplete">
-			<cfoutput>
+		
+		<cfcase value="textautocomplete,typeahead">
+			<cfscript>
+				if(attributes.object.isPersistent()){
+					lastEntityName = attributes.hibachiScope.getService('hibachiService').getLastEntityNameInPropertyIdentifier(attributes.object.getClassName(),attributes.property);
+					propsStruct = attributes.hibachiScope.getService('hibachiService').getPropertiesStructByEntityName(lastEntityName);
+				}else{
+					lastEntityName = attributes.object.getClassName();
+					propsStruct = attributes.hibachiScope.getService('hibachiService').getTransient(lastEntityName).getPropertiesStruct();
+				}
+				relatedEntity = listLast(attributes.property,'.');
+				propertyMetaData = propsStruct[relatedEntity];
+				if (!attributes.object.isPersistent() || attributes.hibachiScope.getService('hibachiService').getPropertyIsObjectByEntityNameAndPropertyIdentifier(attributes.object.getClassName(),attributes.property,true)){
+					primaryIDName = attributes.hibachiScope.getService('hibachiService').getPrimaryIDPropertyNameByEntityName(propertyMetaData.cfc);
+					simpleRepresentationName = attributes.hibachiScope.getService('hibachiService').getSimpleRepresentationPropertyNameByEntityName(propertyMetaData.cfc);
+				}else{
+				}
+				propertynamerbkey = attributes.hibachiScope.rbkey('entity.#propertyMetaData.cfc#_plural');
+			</cfscript>
 			
-				<cfscript>
-					if(attributes.object.isPersistent()){
-						lastEntityName = attributes.hibachiScope.getService('hibachiService').getLastEntityNameInPropertyIdentifier(attributes.object.getClassName(),attributes.property);
-						propsStruct = attributes.hibachiScope.getService('hibachiService').getPropertiesStructByEntityName(lastEntityName);
-					}else{
-						lastEntityName = attributes.object.getClassName();
-						propsStruct = attributes.hibachiScope.getService('hibachiService').getTransient(lastEntityName).getPropertiesStruct();
-					}
-					
-					relatedEntity = listLast(attributes.property,'.');
-					propertyMetaData = propsStruct[relatedEntity];
-					if (!attributes.object.isPersistent() || attributes.hibachiScope.getService('hibachiService').getPropertyIsObjectByEntityNameAndPropertyIdentifier(attributes.object.getClassName(),attributes.property,true)){
-						primaryIDName = attributes.hibachiScope.getService('hibachiService').getPrimaryIDPropertyNameByEntityName(propertyMetaData.cfc);
-						simpleRepresentationName = attributes.hibachiScope.getService('hibachiService').getSimpleRepresentationPropertyNameByEntityName(propertyMetaData.cfc);
-					}else{
-					}
-					propertynamerbkey = attributes.hibachiScope.rbkey('entity.#propertyMetaData.cfc#_plural');
-				</cfscript>
-				
-				<sw-typeahead-input-field
-					data-entity-name="#propertyMetaData.cfc#"
-			        data-property-to-save="#primaryIDName#"
-			        data-property-to-show="#simpleRepresentationName#"
-			        data-properties-to-load="#primaryIDName#,#simpleRepresentationName#"
-			        data-show-add-button="true"
-			        data-show-view-button="true"
-			        data-placeholder-rb-key="#propertynamerbkey#"
-			        data-placeholder-text="Search #propertynamerbkey#"
-			        data-multiselect-mode="false"
-			        data-filter-flag="false"
-			        data-selected-format-string="##"
-			        data-field-name="#attributes.fieldName#"
-			        data-initial-entity-id="#attributes.value#"
-			        data-max-records="20"
-			        data-order-by-list="#simpleRepresentationName#|ASC">
+			<cfset typeAheadCollectionListMethodName = 'get#attributes.property#TypeAheadCollectionList'/>
 			
-
-
-					<span sw-typeahead-search-line-item data-property-identifier="#simpleRepresentationName#" is-searchable="true"></span><br>
-	
-				</sw-typeahead-input-field>
-			</cfoutput>
-		</cfcase>
-		<cfcase value="typeahead">
+			<cfif 
+				attributes.object.isPersistent() 
+				OR (
+					!attributes.object.isPersistent() 
+					AND structKeyExists(attributes.object,typeAheadCollectionListMethodName)
+				) 
+			>
+				<cfset entityCollectionList=attributes.object.invokeMethod(typeAheadCollectionListMethodName)/>
+			<cfelse>
+				<cfset entityCollectionList=attributes.hibachiScope.getService('hibachiService').invokeMethod('get#propertyMetaData.cfc#CollectionList')/>
+			</cfif>
+			
+			<cfset entityCollectionList.setDisplayProperties('#primaryIDName#',{isVisible=false,isSearchable=false})/>
+			<cfset entityCollectionList.addDisplayProperties('#simpleRepresentationName#',{isVisible=true,isSearchable=true})/>
+			
 			<cfoutput>
-				<div ng-cloak class="form-group #attributes.fieldClass#" #attributes.fieldAttributes#>
-					<!--- Generic Configured brand --->
-					<sw-typeahead-input-field
-							data-entity-name="#attributes.autocompleteDataEntity#"
-					        data-property-to-save="#attributes.autocompleteValueProperty#"
-					        data-property-to-show="#attributes.autocompleteNameProperty#"
-					        data-properties-to-load="#attributes.autocompletePropertyIdentifiers#"
-					        data-show-add-button="true"
-					        data-show-view-button="true"
-					        data-placeholder-rb-key=""
-					        data-placeholder-text="Search #attributes.autocompleteDataEntity#"
-					        data-multiselect-mode="false"
-					        data-filter-flag="true"
-					        data-field-name="#attributes.fieldName#"
-					        data-initial-entity-id="#attributes.value#"
-					        data-max-records="#attributes.maxrecords#"
-					        data-order-by-list="#attributes.autocompleteNameProperty#|ASC">
-
-					    <sw-collection-config
-					            data-entity-name="#attributes.autocompleteDataEntity#"
-					            data-collection-config-property="typeaheadCollectionConfig"
-					            data-parent-directive-controller-as-name="swTypeaheadInputField"
-					            data-all-records="true">
-					    	
-					    	<!--- Columns --->
- 							<sw-collection-columns>
- 								<sw-collection-column data-property-identifier="#attributes.autocompleteNameProperty#" is-searchable="true"></sw-collection-column>
- 								<sw-collection-column data-property-identifier="#attributes.autocompleteValueProperty#" is-searchable="false"></sw-collection-column>
- 							</sw-collection-columns>
- 							
- 							<!--- Order By --->
- 					    	<sw-collection-order-bys>
- 					        	<sw-collection-order-by data-order-by="#attributes.autocompleteNameProperty#|ASC"></sw-collection-order-by>
- 					    	</sw-collection-order-bys>
-
-					    	<!--- Filters --->
-					    	<cfif attributes.showActiveFlag EQ true>
-						    	<sw-collection-filters>
-		                            <sw-collection-filter data-property-identifier="activeFlag" data-comparison-operator="=" data-comparison-value="1"></sw-collection-filter>
-		                        </sw-collection-filters>
-					    	</cfif>
-					    </sw-collection-config>
-
-						<span sw-typeahead-search-line-item data-property-identifier="#attributes.autocompleteNameProperty#" dropdownOpen="false" is-searchable="true"></span><br>
-
-					</sw-typeahead-input-field>
+				<div ng-cloak class="#attributes.fieldClass#" #attributes.fieldAttributes#>
+					<hb:HibachiTypeahead 
+						edit="#attributes.edit#" 
+						collectionList="#entityCollectionList#"
+						fieldName="#attributes.fieldName#"
+						labelText=""
+						placeholder="Search #propertynamerbkey#"
+						initialEntityID="#attributes.value#"
+						data-max-records="20"
+					></hb:HibachiTypeahead>
 				</div>
 			</cfoutput>
+			
 		</cfcase>
+
 		<cfcase value="textarea">
 			<cfoutput>
-				<textarea name="#attributes.fieldName#" class="#attributes.fieldClass# form-control" #attributes.fieldAttributes#>#attributes.value#</textarea>
+				<div class="position-relative">
+					<textarea name="#attributes.fieldName#" class="#attributes.fieldClass# form-control" #attributes.fieldAttributes#>#attributes.value#</textarea>
+					<cfif !structKeyExists(url, 'modal') AND isStruct(attributes.translateAttributes)>
+						<cfset attributes.translateAttributes.entity = "Translation" />
+						<cfset attributes.translateAttributes.action = "admin:entity.preprocesstranslation" />
+						<cfset attributes.translateAttributes.processContext = "updateProperty" />
+						<cfset attributes.translateAttributes.class = "form-control-feedback" />
+						<cfset attributes.translateAttributes.icon = "globe" />
+						<cfset attributes.translateAttributes.iconOnly = "true" />
+						<cfset attributes.translateAttributes.modal = "true" />
+						<cfset attributes.translateAttributes.currentAction = request.context[request.context.fw.getAction()] />
+						<hb:HibachiProcessCaller attributeCollection="#attributes.translateAttributes#" />
+					</cfif>
+				</div>
 			</cfoutput>
 		</cfcase>
 		<cfcase value="time">
@@ -374,19 +368,32 @@
 			<cfset request.isWysiwygPage = true />
 			<cfoutput>
 				<textarea name="#attributes.fieldName#" class="#attributes.fieldClass# wysiwyg form-control" #attributes.fieldAttributes#>#attributes.value#</textarea>
+				<cfif !structKeyExists(url, 'modal') AND isStruct(attributes.translateAttributes)>
+					<cfset attributes.translateAttributes.entity = "Translation" />
+					<cfset attributes.translateAttributes.action = "admin:entity.preprocesstranslation" />
+					<cfset attributes.translateAttributes.processContext = "updateProperty" />
+					<cfset attributes.translateAttributes.class = "form-control-feedback" />
+					<cfset attributes.translateAttributes.icon = "globe" />
+					<cfset attributes.translateAttributes.iconOnly = "true" />
+					<cfset attributes.translateAttributes.modal = "true" />
+					<cfset attributes.translateAttributes.currentAction = request.context[request.context.fw.getAction()] />
+					<hb:HibachiProcessCaller attributeCollection="#attributes.translateAttributes#" />
+				</cfif>
 			</cfoutput>
 		</cfcase>
 		<cfcase value="yesno">
 			<cfoutput>
+				<!--- Generate unique ID so it doesn't overlap --->
+				<cfset local.radioGroupID = "#CreateUUID()#_" />
 				<div class="radio">
-					<input type="radio" name="#attributes.fieldName#" id="#attributes.fieldName#Yes" class="#attributes.fieldClass# yes" value="1" <cfif isBoolean(attributes.value) && attributes.value>checked="checked"</cfif> #attributes.fieldAttributes# />
-					<label for="#attributes.fieldName#Yes">
+					<input type="radio" name="#attributes.fieldName#" id="#local.radioGroupID##attributes.fieldName#Yes" class="#attributes.fieldClass# yes" value="1" <cfif isBoolean(attributes.value) && attributes.value>checked="checked"</cfif> #attributes.fieldAttributes# />
+					<label for="#local.radioGroupID##attributes.fieldName#Yes">
 						#yesNoFormat(1)#
 					</label>
 				</div>
 				<div class="radio">
-					<input type="radio" name="#attributes.fieldName#" id="#attributes.fieldName#No" class="#attributes.fieldClass# yes" value="0" <cfif (isboolean(attributes.value) && not attributes.value) || not isBoolean(attributes.value)>checked="checked"</cfif> #attributes.fieldAttributes# />
-					<label for="#attributes.fieldName#No">
+					<input type="radio" name="#attributes.fieldName#" id="#local.radioGroupID##attributes.fieldName#No" class="#attributes.fieldClass# yes" value="0" <cfif (isboolean(attributes.value) && not attributes.value) || not isBoolean(attributes.value)>checked="checked"</cfif> #attributes.fieldAttributes# />
+					<label for="#local.radioGroupID##attributes.fieldName#No">
 						#yesNoFormat(0)#
 					</label>
 				</div>

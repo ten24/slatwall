@@ -1,0 +1,25 @@
+{
+    "baseentity":"SkuBundle",
+    "mapping":[
+        {
+          "sourcecolumn":"importKey",
+          "sourceColumnDataGenerator":"SKUItemCode + '-' + ComponentItemCode",
+          "propertyidentifier":"remoteID",
+          "key":true
+        },
+        {
+          "sourceColumn":"SKUItemCode",
+          "propertyIdentifier":"sku.skuCode",
+          "key":true
+        },
+        {
+          "sourceColumn":"ontheflykit",
+          "propertyIdentifier":"sku.onTheFlyKitFlag"
+        },
+        {
+          "sourceColumn":"BundleFlag",
+          "sourceColumnDataGenerator":"1",
+          "propertyIdentifier":"sku.bundleFlag"
+        }
+    ]
+}

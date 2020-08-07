@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="this" hb_processContexts="addOrderItem,addOrderPayment,addPromotionCode,cancelOrder,changeCurrencyCode,clear,create,createReturn,duplicateOrder,placeOrder,placeOnHold,removeOrderItem,removeOrderPayment,removePersonalInfo,removePromotionCode,takeOffHold,updateStatus,updateOrderAmounts,updateOrderFulfillment" {
+component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="this" hb_processContexts="addOrderItem,addOrderPayment,addPromotionCode,cancelOrder,changeCurrencyCode,clear,create,createReturn,duplicateOrder,placeOrder,placeOnHold,removeOrderItem,removeOrderPayment,removePersonalInfo,removePromotionCode,takeOffHold,updateStatus,updateOrderAmounts,updateOrderFulfillment,retryPayment,releaseCredits" {
 
 	// Persistent Properties
 	property name="orderID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -61,9 +61,13 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="quotePriceExpiration" ormtype="timestamp";
 	property name="quoteFlag" ormtype="boolean" default="0";
 	property name="testOrderFlag" ormtype="boolean";
+	property name="paymentLastRetryDateTime" ormtype="timestamp";
 	property name="paymentProcessingInProgressFlag" ormtype="boolean" default="false";
+	property name="paymentTryCount" ormtype="integer" default="0";
 	property name="orderCanceledDateTime" ormtype="timestamp";
 	property name="orderNotes" ormtype="text";
+	property name="addToEntityQueueFlag" ormtype="boolean";
+	property name="taxCommitDateTime" ormtype="timestamp";
 	
 	//used to check whether tax calculations should be run again
 	property name="taxRateCacheKey" ormtype="string" hb_auditable="false";
@@ -75,20 +79,24 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="assignedAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="assignedAccountID";
 	property name="billingAccountAddress" hb_populateEnabled="public" cfc="AccountAddress" fieldtype="many-to-one" fkcolumn="billingAccountAddressID";
 	property name="billingAddress" hb_populateEnabled="public" cfc="Address" fieldtype="many-to-one" fkcolumn="billingAddressID";
-	property name="defaultStockLocation" cfc="Location" fieldtype="many-to-one" fkcolumn="locationID";
+	property name="defaultStockLocation" cfc="Location" fieldtype="many-to-one" fkcolumn="locationID" hb_formFieldType="typeahead";
+	property name="orderTemplate" cfc="OrderTemplate" fieldtype="many-to-one" fkcolumn="orderTemplateID";
 	property name="orderType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderTypeID" hb_optionsSmartListData="f:parentType.systemCode=orderType";
 	property name="orderStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderStatusTypeID" hb_optionsSmartListData="f:parentType.systemCode=orderStatusType";
 	property name="orderOrigin" cfc="OrderOrigin" fieldtype="many-to-one" fkcolumn="orderOriginID" hb_optionsNullRBKey="define.none";
 	property name="referencedOrder" cfc="Order" fieldtype="many-to-one" fkcolumn="referencedOrderID";	// Points at the "parent" (NOT return) order.
+	property name="returnReasonType" cfc="Type" fieldtype="many-to-one" fkcolumn="returnReasonTypeID";
 	property name="shippingAccountAddress" hb_populateEnabled="public" cfc="AccountAddress" fieldtype="many-to-one" fkcolumn="shippingAccountAddressID";
 	property name="shippingAddress" hb_populateEnabled="public" cfc="Address" fieldtype="many-to-one" fkcolumn="shippingAddressID";
 	property name="orderCreatedSite" hb_populateEnabled="public" cfc="Site" fieldtype="many-to-one" fkcolumn="orderCreatedSiteID";
 	property name="orderPlacedSite" hb_populateEnabled="public" cfc="Site" fieldtype="many-to-one" fkcolumn="orderPlacedSiteID";
+	property name="orderImportBatch" cfc="OrderImportBatch" fieldtype="many-to-one" fkColumn="orderImportBatchID";
 
 	// Related Object Properties (one-To-many)
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="orderID" cascade="all-delete-orphan" inverse="true";
 	property name="orderItems" hb_populateEnabled="public" singularname="orderItem" cfc="OrderItem" fieldtype="one-to-many" fkcolumn="orderID" cascade="all-delete-orphan" inverse="true";
 	property name="appliedPromotions" singularname="appliedPromotion" cfc="PromotionApplied" fieldtype="one-to-many" fkcolumn="orderID" cascade="all-delete-orphan" inverse="true";
+	property name="appliedPromotionMessages" singularname="appliedPromotionMessage" cfc="PromotionMessageApplied" fieldtype="one-to-many" fkcolumn="orderID" cascade="all-delete-orphan" inverse="true";
 	property name="orderDeliveries" singularname="orderDelivery" cfc="OrderDelivery" fieldtype="one-to-many" fkcolumn="orderID" cascade="delete-orphan" inverse="true";
 	property name="orderFulfillments" hb_populateEnabled="public" singularname="orderFulfillment" cfc="OrderFulfillment" fieldtype="one-to-many" fkcolumn="orderID" cascade="all-delete-orphan" inverse="true";
 	property name="orderPayments" hb_populateEnabled="public" singularname="orderPayment" cfc="OrderPayment" fieldtype="one-to-many" fkcolumn="orderID" cascade="all-delete-orphan" inverse="true";
@@ -96,7 +104,8 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="stockReceivers" singularname="stockReceiver" cfc="StockReceiver" type="array" fieldtype="one-to-many" fkcolumn="orderID" cascade="all-delete-orphan" inverse="true";
 	property name="referencingOrders" singularname="referencingOrder" cfc="Order" fieldtype="one-to-many" fkcolumn="referencedOrderID" cascade="all-delete-orphan" inverse="true";
 	property name="accountLoyaltyTransactions" singularname="accountLoyaltyTransaction" cfc="AccountLoyaltyTransaction" type="array" fieldtype="one-to-many" fkcolumn="orderID" cascade="all" inverse="true";
-
+	property name="orderStatusHistory" singularname="orderStatusHistory"  cfc="OrderStatusHistory" type="array" fieldtype="one-to-many" fkcolumn="orderID" cascade="all-delete-orphan" inverse="true";
+	
 	// Related Object Properties (many-To-many - owner)
 	property name="promotionCodes" singularname="promotionCode" cfc="PromotionCode" fieldtype="many-to-many" linktable="SwOrderPromotionCode" fkcolumn="orderID" inversejoincolumn="promotionCodeID";
 
@@ -128,8 +137,11 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="fulfillmentDiscountAmountTotal" persistent="false" hb_formatType="currency";
 	property name="fulfillmentTotal" persistent="false" hb_formatType="currency";
 	property name="fulfillmentChargeTotal" persistent="false" hb_formatType="currency";
+	property name="fulfillmentChargeTotalBeforeHandlingFees" persistent="false" hb_formatType="currency";
 	property name="fulfillmentRefundTotal" persistent="false" hb_formatType="currency";
+	property name="fulfillmentHandlingFeeTotal" persistent="false" hb_formatType="currency";
 	property name="fulfillmentChargeAfterDiscountTotal" persistent="false" hb_formatType="currency";
+	property name="fulfillmentChargeNotRefunded" persistent="false" hb_formatType="currency";
 	property name="nextEstimatedDeliveryDateTime" type="timestamp" persistent="false";
 	property name="nextEstimatedFulfillmentDateTime" type="timestamp" persistent="false";
 	property name="orderDiscountAmountTotal" persistent="false" hb_formatType="currency";
@@ -147,12 +159,17 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="paymentAmountDueAfterGiftCards" persistent="false" hb_formatType="currency";
 	property name="paymentMethodOptionsSmartList" persistent="false";
 	property name="promotionCodeList" persistent="false";
+	property name="qualifiedPromotionRewards" persistent="false";
+	property name="qualifiedRewardSkus" persistent="false";
+	property name="qualifiedRewardSkuIDs" persistent="false";
 	property name="quantityDelivered" persistent="false";
 	property name="quantityUndelivered" persistent="false";
 	property name="quantityReceived" persistent="false";
 	property name="quantityUnreceived" persistent="false";
 	property name="returnItemSmartList" persistent="false";
 	property name="referencingPaymentAmountCreditedTotal" persistent="false" hb_formatType="currency";
+	property name="refundableAmount" persistent="false" hb_formatType="currency";
+	property name="totalAmountCreditedIncludingReferencingPayments" persistent="false" hb_formatType="currency";
 	property name="rootOrderItems" persistent="false";
 	property name="saleItemSmartList" persistent="false";
 	property name="saveBillingAccountAddressFlag" hb_populateEnabled="public" persistent="false";
@@ -163,6 +180,8 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="subTotal" persistent="false" hb_formatType="currency";
 	property name="subTotalAfterItemDiscounts" persistent="false" hb_formatType="currency";
 	property name="taxTotal" persistent="false" hb_formatType="currency";
+	property name="VATTotal" persistent="false" hb_formatType="currency";
+	property name="taxTotalNotRefunded" persistent="false";
 	property name="total" persistent="false" hb_formatType="currency";
 	property name="totalItems" persistent="false";
 	property name="totalItemQuantity" persistent="false"; 
@@ -170,7 +189,10 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="totalSaleQuantity" persistent="false";
 	property name="totalReturnQuantity" persistent="false";
 	property name="totalDepositAmount" persistent="false" hb_formatType="currency";
+	property name="refundableAmountMinusRemainingTaxesAndFulfillmentCharge" persistent="false";
 	property name="placeOrderFlag" persistent="false" default="false";
+	property name="refreshCalculateFulfillmentChargeFlag" persistent="false" default="false"; //Flag for Fulfillment Tax Recalculation 
+	property name="orderStatusHistoryTypeCodeList" persistent="false" default="";
 	
     //======= Mocking Injection for Unit Test ======	
 	property name="orderService" persistent="false" type="any";
@@ -183,13 +205,116 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="calculatedDiscountTotal" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedSubTotalAfterItemDiscounts" column="calcSubTotalAfterItemDiscounts" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedTaxTotal" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedVATTotal" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedTotalItems" ormtype="integer";
 	property name="calculatedTotalQuantity" ormtype="integer";
 	property name="calculatedTotalSaleQuantity" ormtype="integer";
 	property name="calculatedTotalReturnQuantity" ormtype="integer";
 	property name="calculatedTotalDepositAmount" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedTotalItemQuantity" ormtype="integer"; 
+	property name="calculatedFulfillmentHandlingFeeTotal" ormtype="big_decimal" hb_formatType="currency";
+
+	//CUSTOM PROPERTIES BEGIN
+property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType="dateTime" hb_nullRBKey="define.forever";
+    property name="commissionPeriodEndDateTime" ormtype="timestamp" hb_formatType="dateTime" hb_nullRBKey="define.forever";
+    property name="secondaryReturnReasonType" cfc="Type" fieldtype="many-to-one" fkcolumn="secondaryReturnReasonTypeID"; // Intended to be used by Ops accounts
+     property name="monatOrderType" cfc="Type" fieldtype="many-to-one" fkcolumn="monatOrderTypeID" hb_optionsSmartListData="f:parentType.typeID=2c9280846deeca0b016deef94a090038";
+    property name="dropSkuRemovedFlag" ormtype="boolean" default=0;
+
+    property name="personalVolumeSubtotal" persistent="false";
+    property name="taxableAmountSubtotal" persistent="false";
+    property name="commissionableVolumeSubtotal" persistent="false";
+    property name="retailCommissionSubtotal" persistent="false";
+    property name="productPackVolumeSubtotal" persistent="false";
+    property name="retailValueVolumeSubtotal" persistent="false";
+    property name="personalVolumeSubtotalAfterItemDiscounts" persistent="false";
+    property name="taxableAmountSubtotalAfterItemDiscounts" persistent="false";
+    property name="commissionableVolumeSubtotalAfterItemDiscounts" persistent="false";
+    property name="retailCommissionSubtotalAfterItemDiscounts" persistent="false";
+    property name="productPackVolumeSubtotalAfterItemDiscounts" persistent="false";
+    property name="retailValueVolumeSubtotalAfterItemDiscounts" persistent="false";
+    property name="personalVolumeDiscountTotal" persistent="false";
+    property name="taxableAmountDiscountTotal" persistent="false";
+    property name="commissionableVolumeDiscountTotal" persistent="false";
+    property name="retailCommissionDiscountTotal" persistent="false";
+    property name="productPackVolumeDiscountTotal" persistent="false";
+    property name="retailValueVolumeDiscountTotal" persistent="false";
+    property name="personalVolumeTotal" persistent="false";
+    property name="taxableAmountTotal" persistent="false";
+    property name="commissionableVolumeTotal" persistent="false";
+    property name="retailCommissionTotal" persistent="false";
+    property name="productPackVolumeTotal" persistent="false";
+    property name="retailValueVolumeTotal" persistent="false";
+    property name="vipEnrollmentOrderFlag" persistent="false";
+    property name="marketPartnerEnrollmentOrderID" persistent="false";
+    
+    property name="calculatedVipEnrollmentOrderFlag" ormtype="boolean";
+    property name="calculatedPersonalVolumeSubtotal" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedTaxableAmountSubtotal" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedCommissionableVolumeSubtotal" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedRetailCommissionSubtotal" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedProductPackVolumeSubtotal" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedRetailValueVolumeSubtotal" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedPersonalVolumeSubtotalAfterItemDiscounts" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedTaxableAmountSubtotalAfterItemDiscounts" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedCommissionableVolumeSubtotalAfterItemDiscounts" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedRetailCommissionSubtotalAfterItemDiscounts" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedProductPackVolumeSubtotalAfterItemDiscounts" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedRetailValueVolumeSubtotalAfterItemDiscounts" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedPersonalVolumeTotal" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedTaxableAmountTotal" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedCommissionableVolumeTotal" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedRetailCommissionTotal" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedProductPackVolumeTotal" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedRetailValueVolumeTotal" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedPersonalVolumeDiscountTotal" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedTaxableAmountDiscountTotal" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedCommissionableVolumeDiscountTotal" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedRetailCommissionDiscountTotal" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedProductPackVolumeDiscountTotal" ormtype="big_decimal" hb_formatType="none";
+    property name="calculatedRetailValueVolumeDiscountTotal" ormtype="big_decimal" hb_formatType="none";
+	property name="calculatedPurchasePlusTotal" ormtype="big_decimal" hb_formatType="none";
+
+    property name="accountType" ormtype="string";
+    property name="accountPriceGroup" ormtype="string";
 	
+    property name="shipMethodCode" ormtype="string";
+    property name="iceRecordNumber" ormtype="string";
+    property name="commissionPeriodCode" ormtype="string";
+    property name="lastSyncedDateTime" ormtype="timestamp";
+    property name="calculatedPaymentAmountDue" ormtype="big_decimal";
+    property name="priceGroup" cfc="PriceGroup" fieldtype="many-to-one" fkcolumn="priceGroupID";
+    property name="upgradeFlag" ormtype="boolean" default="0";
+
+    property name="isLockedInProcessingFlag" persistent="false";
+    property name="isLockedInProcessingOneFlag" persistent="false";
+    property name="isLockedInProcessingTwoFlag" persistent="false";
+	property name="purchasePlusTotal" persistent="false";
+	property name="upgradeOrEnrollmentOrderFlag" persistent="false";
+	
+	
+   
+ property name="businessDate" ormtype="string";
+ property name="commissionPeriod" ormtype="string";
+ property name="importFlexshipNumber" ormtype="string";
+ property name="initialOrderFlag" ormtype="boolean";
+ property name="orderSource" ormtype="string" hb_formFieldType="select";
+ property name="commissionPeriodCode" ormtype="string" hb_formFieldType="select";
+ property name="undeliverableOrderReasons" ormtype="string" hb_formFieldType="select";
+ property name="orderAccountNumber" ormtype="string";
+ property name="orderCountryCode" ormtype="string";
+ property name="orderPartnerNumber" ormtype="string";
+ property name="invoiceNumber" ormtype="string";
+ property name="miscChargeAmount" ormtype="string";
+ property name="redeemPoints" ormtype="string";
+ property name="remoteAmountTotal" ormtype="string";
+ property name="orderSourceCode" ormtype="string";
+ property name="FSNumber" ormtype="string";
+ property name="importOriginalRMANumber" ormtype="string";
+ property name="monatOrderType" cfc="Type" fieldtype="many-to-one" fkcolumn="monatOrderTypeID" hb_optionsSmartListData="f:parentType.typeID=2c9280846deeca0b016deef94a090038";
+ property name="priceLevelCode" ormtype="string";
+ property name="orderTypeCode" ormtype="string";
+ property name="orderStatusCode" ormtype="string";//CUSTOM PROPERTIES END
 	public void function init(){
 		setOrderService(getService('orderService'));
 		setOrderDao(getDAO('OrderDAO'));
@@ -330,12 +455,17 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 			for(var orderPayment in getOrderPayments()) {
 				orderPayment.setAmount( orderPayment.getAmount() );
 			}
+			
+			// create openorderitem records
+			getDAO('InventoryDAO').manageOpenOrderItem(actionType = 'add', orderID = getOrderID());
 
 		}
 
 		// If the order is closed, and has no close dateTime
 		if(!isNull(getOrderStatusType()) && !isNull(getOrderStatusType().getSystemCode()) && getOrderStatusType().getSystemCode() == "ostClosed" && isNull(getOrderCloseDateTime())) {
 			setOrderCloseDateTime( now() );
+			// delete openorderitem records
+			getDAO('InventoryDAO').manageOpenOrderItem(actionType = 'delete', orderID = getOrderID());
 		}
 	}
 
@@ -387,7 +517,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 
     //alias method for validation
     public boolean function canCancel(){
-          return !hasGiftCardOrderItems();
+        return getOrderService().orderCanBeCanceled(this);
     }
 
 	public boolean function hasGiftCardOrderItems(orderItemID=""){
@@ -488,6 +618,21 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	}
 	
 	// ============ START: Non-Persistent Property Methods =================
+	
+	public string function getOrderStatusHistoryTypeCodeList() {
+		if(!structKeyExists(variables,'orderStatusHistoryTypeCodeList')){
+			var list = "";
+			var orderStatusHistoryCollection = this.getOrderStatusHistoryCollectionList();
+			orderStatusHistoryCollection.setDisplayProperties('createdDateTime,orderStatusHistoryType.typeCode');
+			orderStatusHistoryCollection.addOrderBy('createdDateTime|asc');
+			var records = orderStatusHistoryCollection.getRecords();
+			for(var record in records){
+				list = listAppend(list,record['orderStatusHistoryType_typeCode']);
+			}
+			variables.orderStatusHistoryTypeCodeList = list;
+		}
+		return variables.orderStatusHistoryTypeCodeList;
+	}
 
 	public any function getAddOrderItemSkuOptionsSmartList() {
 		var optionsSmartList = getService("skuService").getSkuSmartList();
@@ -585,7 +730,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		var discountTotal = 0;
 		var orderItems = getRootOrderItems(); 
 		for(var i=1; i<=arrayLen(orderItems); i++) {
-			if( listFindNoCase("oitSale,oitDeposit",orderItems[i].getTypeCode()) ) {
+			if( listFindNoCase("oitSale,oitDeposit,oitReplacement",orderItems[i].getTypeCode()) ) {
 				discountTotal = getService('HibachiUtilityService').precisionCalculate(discountTotal + orderItems[i].getDiscountAmount());
 			} else if ( orderItems[i].getTypeCode() == "oitReturn" ) {
 				discountTotal = getService('HibachiUtilityService').precisionCalculate(discountTotal - orderItems[i].getDiscountAmount());
@@ -609,25 +754,38 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	}
 
 	public numeric function getFulfillmentTotal() {
-		return getService('HibachiUtilityService').precisionCalculate(getFulfillmentChargeTotal() - getFulfillmentRefundTotal());
+		return getService('HibachiUtilityService').precisionCalculate(getFulfillmentChargeTotal() - getFulfillmentRefundPreTax());
+	}
+	
+	public numeric function getFulfillmentHandlingFeeTotal() {
+		var handlingFeeTotal = 0;
+		for(var i=1; i<=arrayLen(getOrderFulfillments()); i++) {
+			handlingFeeTotal = getService('HibachiUtilityService').precisionCalculate(handlingFeeTotal + getOrderFulfillments()[i].getHandlingFee());
+		}
+		return handlingFeeTotal;
 	}
 
 	public numeric function getFulfillmentChargeTotal() {
 		var fulfillmentChargeTotal = 0;
-		for(var i=1; i<=arrayLen(getOrderFulfillments()); i++) {
-			if(!isNull(getOrderFulfillments()[i].getThirdPartyShippingAccountIdentifier()) && len(getOrderFulfillments()[i].getThirdPartyShippingAccountIdentifier())){
-				if(
-					(!isNull(getOrderFulfillments()[i].getShippingMethodRate()) &&
-					getOrderFulfillments()[i].getShippingMethodRate().setting('shippingMethodRateHandlingFeeFlag')) ||
-					getService('SettingService').getSettingValue('shippingMethodRateHandlingFeeFlag')
-				){
-					fulfillmentChargeTotal = getService('HibachiUtilityService').precisionCalculate(fulfillmentChargeTotal + getOrderFulfillments()[i].getHandlingFee());
-				}
-				continue;
-			}
+		var numFulfillments = arrayLen(getOrderFulfillments());
+		for(var i=1; i<=numFulfillments; i++) {
 			fulfillmentChargeTotal = getService('HibachiUtilityService').precisionCalculate(fulfillmentChargeTotal + getOrderFulfillments()[i].getFulfillmentCharge());
 		}
+		fulfillmentChargeTotal = getService('HibachiUtilityService').precisionCalculate(fulfillmentChargeTotal + getFulfillmentHandlingFeeTotal());
+		
 		return fulfillmentChargeTotal;
+	}
+	
+	public numeric function getFulfillmentChargeTotalBeforeHandlingFees() {
+		var fulfillmentChargeTotalBeforeHandlingFees = 0;
+		var numFulfillments = arrayLen(getOrderFulfillments());
+		for(var i=1; i<=numFulfillments; i++) {
+			fulfillmentChargeTotalBeforeHandlingFees = getService('HibachiUtilityService').precisionCalculate(fulfillmentChargeTotalBeforeHandlingFees + getOrderFulfillments()[i].getFulfillmentCharge());
+		}
+		
+		fulfillmentChargeTotalBeforeHandlingFees -= getFulfillmentRefundPreTax();
+		
+		return fulfillmentChargeTotalBeforeHandlingFees;
 	}
 
 	public numeric function getFulfillmentRefundTotal() {
@@ -644,8 +802,41 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		for(var i=1; i<=arrayLen(getOrderFulfillments()); i++) {
 			fulfillmentChargeAfterDiscountTotal = getService('HibachiUtilityService').precisionCalculate(fulfillmentChargeAfterDiscountTotal + getOrderFulfillments()[i].getChargeAfterDiscount());
 		}
-
+		fulfillmentChargeAfterDiscountTotal -= getFulfillmentRefundTotal();
 		return fulfillmentChargeAfterDiscountTotal;
+	}
+	
+	public numeric function getFulfillmentChargeAfterDiscountPreTaxTotal() {
+		var fulfillmentChargeAfterDiscountTotal = 0;
+		for(var i=1; i<=arrayLen(getOrderFulfillments()); i++) {
+			fulfillmentChargeAfterDiscountTotal = getService('HibachiUtilityService').precisionCalculate(fulfillmentChargeAfterDiscountTotal + getOrderFulfillments()[i].getChargeAfterDiscountPreTax());
+		}
+		fulfillmentChargeAfterDiscountTotal -= getFulfillmentRefundPretax();
+		return fulfillmentChargeAfterDiscountTotal;
+	}
+	
+	public numeric function getFulfillmentChargeNotRefunded() {
+		return getService('HibachiUtilityService').precisionCalculate(getFulfillmentChargeAfterDiscountPreTaxTotal() - getFulfillmentRefundPreTaxOnReferencingOrders());
+	}
+	
+	public numeric function getFulfillmentRefundPreTaxOnReferencingOrders(){
+		var fulfillmentRefundTotal = 0;
+		for(var referencingOrder in getReferencingOrders()){
+			if(!listFindNoCase('ostNotPlaced,ostCanceled',referencingOrder.getOrderStatusType().getSystemCode())){
+				fulfillmentRefundTotal += referencingOrder.getFulfillmentRefundPreTax();
+				fulfillmentRefundTotal -= referencingOrder.getFulfillmentChargeAfterDiscountPreTaxTotal();
+			}
+		}
+		return fulfillmentRefundTotal;
+	}
+	
+	public numeric function getFulfillmentRefundPreTax(){
+		var fulfillmentRefundPreTax = 0;
+		for(var i=1; i<=arrayLen(getOrderReturns()); i++) {
+			fulfillmentRefundPreTax = getService('HibachiUtilityService').precisionCalculate(fulfillmentRefundPreTax + getOrderReturns()[i].getFulfillmentRefundPreTax());
+		}
+
+		return fulfillmentRefundPreTax;
 	}
 
 	/**
@@ -716,10 +907,10 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	}
 
 	public numeric function getOrderPaymentAmountNeeded() {
-
+		
 		var nonNullPayments = getOrderService().getOrderPaymentNonNullAmountTotal(orderID=getOrderID());
 		var orderPaymentAmountNeeded = getService('HibachiUtilityService').precisionCalculate(getTotal() - nonNullPayments);
-	
+			
 		if(orderPaymentAmountNeeded gt 0 && isNull(getDynamicChargeOrderPayment())) {
 			return orderPaymentAmountNeeded;
 		} else if (orderPaymentAmountNeeded lt 0 && isNull(getDynamicCreditOrderPayment())) {
@@ -746,11 +937,22 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		return orderPaymentAmountNeeded * -1;
 	}
 
-	public any function getDynamicChargeOrderPayment() {
-		for(var orderPayment in getOrderPayments()) {
-			if(orderPayment.getDynamicAmountFlag()
-			   && orderPayment.getStatusCode() == 'opstActive'
-			   && orderPayment.getOrderPaymentType().getSystemCode() eq 'optCharge') {
+	public any function getDynamicChargeOrderPayment(any orderPayment) {
+			
+		var orderPayments = getOrderPayments();  
+		for(var orderPayment in orderPayments) {
+			
+			//don't consider a passed orderPayment as the dynamic 
+			if( structKeyExists(arguments, 'orderPayment') &&
+				arguments.orderPayment.getOrderPaymentID() == orderPayment.getOrderPaymentID() 
+			){
+				continue; 	
+			} 
+			
+			if(orderPayment.getDynamicAmountFlag() &&
+			   orderPayment.getStatusCode() == 'opstActive' &&
+			   orderPayment.getOrderPaymentType().getSystemCode() == 'optCharge'
+			){
 				return orderPayment;
 			} 
 		}
@@ -922,6 +1124,41 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 
 		return totalReferencingPaymentsCredited;
 	}
+	
+	public numeric function getTotalAmountCreditedIncludingReferencingPayments(){
+		return getPaymentAmountCreditedTotal() + getReferencingPaymentAmountCreditedTotal();
+	}
+	
+	public numeric function getRefundableAmount(){
+		if(!structKeyExists(variables,'refundableAmount')){
+			var refundableAmount = 0;
+			for(var orderPayment in getOrderPayments()){
+				refundableAmount += orderPayment.getRefundableAmount();
+			}
+			variables.refundableAmount = refundableAmount;
+		}
+		return variables.refundableAmount;
+	}
+	/* This function does exactly what it says, don't @ me */
+	public numeric function getRefundableAmountMinusRemainingTaxesAndFulfillmentCharge(){
+		return getRefundableAmount() - getTaxTotalNotRefunded() - getFulfillmentChargeNotRefunded();
+	}
+	
+	public numeric function getTaxTotalNotRefunded(){
+		return getService('HibachiUtilityService').precisionCalculate(getTaxTotal() + getTaxTotalOnReturnOrders());
+	}
+	
+	public numeric function getTaxTotalOnReturnOrders(){
+		var taxTotalOnReturnOrders = 0;
+		
+		for(var referencingOrder in getReferencingOrders()){
+			if(!listFindNoCase('ostNotPlaced,ostCanceled',referencingOrder.getOrderStatusType().getSystemCode()) && listFindNoCase('otReturnOrder,otExchangeOrder,otRefundOrder',referencingOrder.getOrderType().getSystemCode())){
+				taxTotalOnReturnOrders += referencingOrder.getTaxTotal();
+			}
+		}
+		return taxTotalOnReturnOrders;
+	}
+
 
 	public any function getPaymentMethodOptionsSmartList() {
 		if(!structKeyExists(variables, "paymentMethodOptionsSmartList")) {
@@ -993,14 +1230,13 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 			
 			var appliedPromotionCodesOrderFulfillmentCollectionList = appliedPromotionCodesCollectionList.duplicateCollection();
 			
-			appliedPromotionCodesCollectionList.addFilter('promotion.appliedPromotions.order.orderID', getOrderID(), "=",'OR');
+			appliedPromotionCodesCollectionList.addFilter('promotion.appliedPromotions.order.orderID', getOrderID(), "=");
 			
-			appliedPromotionCodesOrderItemCollectionList.addFilter('promotion.appliedPromotions.orderItem.order.orderID', getOrderID(), "=", "OR");
+			appliedPromotionCodesOrderItemCollectionList.addFilter('promotion.appliedPromotions.orderItem.order.orderID', getOrderID(), "=");
 			
-			appliedPromotionCodesOrderFulfillmentCollectionList.addFilter('promotion.appliedPromotions.orderFulfillment.order.orderID', getOrderID(), "=", "OR");
-			
+			appliedPromotionCodesOrderFulfillmentCollectionList.addFilter('promotion.appliedPromotions.orderFulfillment.order.orderID', getOrderID(), "=");
+
 			var appliedPromotionCodes = appliedPromotionCodesCollectionList.getRecords();
-			
 			arrayAppend(appliedPromotionCodes,appliedPromotionCodesOrderItemCollectionList.getRecords(),true);
 			arrayAppend(appliedPromotionCodes,appliedPromotionCodesOrderFulfillmentCollectionList.getRecords(),true);
 			
@@ -1106,7 +1342,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	public numeric function getTotalSaleQuantity() {
 		var saleQuantity = 0;
 		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
-			if( listFindNoCase("oitSale,oitDeposit",getOrderItems()[i].getOrderItemType().getSystemCode()) ) {
+			if( listFindNoCase("oitSale,oitDeposit,oitReplacement",getOrderItems()[i].getOrderItemType().getSystemCode()) ) {
 				saleQuantity += getOrderItems()[i].getQuantity();
 			}
 		}
@@ -1137,7 +1373,8 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	}
 
  	public boolean function hasDepositItemsOnOrder(){
- 		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
+		var orderItemsCount = arrayLen(getOrderItems());  
+ 		for(var i=1; i<=orderItemsCount; i++) {
  			if(getOrderItems()[i].getOrderItemType().getSystemCode() eq "oitSale" && !isNull(getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder")) && len(getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder")) != 0) {
  				
  				return true;
@@ -1226,7 +1463,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		var subtotal = 0;
 		var orderItems = this.getRootOrderItems();
 		for(var i=1; i<=arrayLen(orderItems); i++) {
-			if( listFindNoCase("oitSale,oitDeposit",orderItems[i].getTypeCode()) ) {
+			if( listFindNoCase("oitSale,oitDeposit,oitReplacement",orderItems[i].getTypeCode()) ) {
 				subtotal = getService('HibachiUtilityService').precisionCalculate(subtotal + orderItems[i].getExtendedPrice());
 			} else if ( orderItems[i].getTypeCode() == "oitReturn" ) {
 				subtotal = getService('HibachiUtilityService').precisionCalculate(subtotal - orderItems[i].getExtendedPrice());
@@ -1240,12 +1477,34 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	public numeric function getSubtotalAfterItemDiscounts() {
 		return getService('HibachiUtilityService').precisionCalculate(getSubtotal() - getItemDiscountAmountTotal());
 	}
+	
+	public numeric function getVATTotal() {
+		var vatTotal = 0;
+		var orderItems = this.getRootOrderItems(); 
+		for(var i=1; i<=arrayLen(orderItems); i++) {
+			if( listFindNoCase("oitSale,oitDeposit,oitReplacement",orderItems[i].getTypeCode()) ) {
+				vatTotal = getService('HibachiUtilityService').precisionCalculate(vatTotal + orderItems[i].getVATAmount());
+			} else if ( orderItems[i].getTypeCode() == "oitReturn" ) {
+				vatTotal = getService('HibachiUtilityService').precisionCalculate(vatTotal - orderItems[i].getVATAmount());
+			} else {
+				throw("there was an issue calculating the subtotal because of a orderItemType associated with one of the items");
+			}
+		}
+		
+		vatTotal = getService('HibachiUtilityService').precisionCalculate(vatTotal + this.getFulfillmentChargeVATAmount());
+		vatTotal = getService('HibachiUtilityService').precisionCalculate(vatTotal - this.getOrderReturnFulfillmentVATRefund());
+		
+		variables.vatTotal = vatTotal;
+		
+		return variables.vatTotal;
+	}
+	
 
 	public numeric function getTaxTotal() {
 		var taxTotal = 0;
 		var orderItems = this.getRootOrderItems(); 
 		for(var i=1; i<=arrayLen(orderItems); i++) {
-			if( listFindNoCase("oitSale,oitDeposit",orderItems[i].getTypeCode()) ) {
+			if( listFindNoCase("oitSale,oitDeposit,oitReplacement",orderItems[i].getTypeCode()) ) {
 				taxTotal = getService('HibachiUtilityService').precisionCalculate(taxTotal + orderItems[i].getTaxAmount());
 			} else if ( orderItems[i].getTypeCode() == "oitReturn" ) {
 				taxTotal = getService('HibachiUtilityService').precisionCalculate(taxTotal - orderItems[i].getTaxAmount());
@@ -1254,13 +1513,62 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 			}
 		}
 
-		for(var orderFulfillment in this.getOrderFulfillments()) {
-			taxTotal = getService('HibachiUtilityService').precisionCalculate(taxTotal + orderFulfillment.getChargeTaxAmount());
-		}
-
+		taxTotal += getFulfillmentChargeTaxAmount();
+		taxTotal -= getOrderReturnFulfillmentTaxRefund();
 		variables.taxTotal = taxTotal;
 
 		return taxTotal;
+	}
+	
+	public numeric function getOrderReturnFulfillmentTaxRefund(){
+		if(!structKeyExists(variables,'orderReturnFulfillmentTaxRefund') || ( variables.refreshCalculateFulfillmentChargeFlag ) ){
+			var taxTotal = 0;
+			for(var orderReturn in this.getOrderReturns()) {
+				taxTotal = getService('HibachiUtilityService').precisionCalculate(taxTotal + orderReturn.getFulfillmentTaxRefund());
+			}
+			variables.orderReturnFulfillmentTaxRefund = taxTotal;
+			
+			variables.refreshCalculateFulfillmentChargeFlag = false;
+		}
+		return variables.orderReturnFulfillmentTaxRefund;
+	}
+	
+	public numeric function getOrderReturnFulfillmentVATRefund(){
+		if(!structKeyExists(variables,'orderReturnFulfillmentVATRefund') || ( variables.refreshCalculateFulfillmentChargeFlag ) ){
+			var vatTotal = 0;
+			for(var orderReturn in this.getOrderReturns()) {
+				vatTotal = getService('HibachiUtilityService').precisionCalculate(vatTotal + orderReturn.getFulfillmentVATRefund());
+			}
+			variables.orderReturnFulfillmentVATRefund = vatTotal;
+			
+			variables.refreshCalculateFulfillmentChargeFlag = false;
+		}
+		return variables.orderReturnFulfillmentVATRefund;
+	}
+	
+	public numeric function getFulfillmentChargeTaxAmount(){
+		if(!structKeyExists(variables,'fulfillmentChargeTaxAmount') || ( variables.refreshCalculateFulfillmentChargeFlag ) ){
+			var taxTotal = 0;
+			for(var orderFulfillment in this.getOrderFulfillments()) {
+				taxTotal = getService('HibachiUtilityService').precisionCalculate(taxTotal + orderFulfillment.getChargeTaxAmount());
+			}
+			variables.fulfillmentChargeTaxAmount = taxTotal;
+			
+			variables.refreshCalculateFulfillmentChargeFlag = false;
+		}
+		return variables.fulfillmentChargeTaxAmount;
+	}
+	
+	public numeric function getFulfillmentChargeVATAmount(){
+		if(!structKeyExists(variables,'fulfillmentChargeVATAmount') || ( variables.refreshCalculateFulfillmentChargeFlag ) ){
+			var vatTotal = 0;
+			for(var orderFulfillment in this.getOrderFulfillments()) {
+				vatTotal = getService('HibachiUtilityService').precisionCalculate(vatTotal + orderFulfillment.getChargeVATAmount());
+			}
+			variables.fulfillmentChargeVATAmount = vatTotal;
+			variables.refreshCalculateFulfillmentChargeFlag = false;
+		}
+		return variables.fulfillmentChargeVATAmount;
 	}
 
 	public numeric function getTotal() {
@@ -1292,7 +1600,34 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 			} 
 		}
 		return totalItemQuantity; 
-	}	
+	}
+	
+	public array function getQualifiedPromotionRewards( boolean refresh=false ){
+		if(!structKeyExists(variables, 'qualifiedPromotionRewards') || arguments.refresh ){
+			return getService('PromotionService').getQualifiedPromotionRewardsForOrder( this );
+		}
+	}
+	
+	public array function getQualifiedPromotionRewardSkus( numeric pageRecordsShow=25, boolean refresh=false ){
+		if( !structKeyExists(variables,'qualifiedRewardSkus') || arguments.refresh ){
+			
+			variables.qualifiedRewardSkus = getService('PromotionService').getQualifiedPromotionRewardSkusForOrder( order=this, pageRecordsShow=arguments.pageRecordsShow );
+		}
+		return variables.qualifiedRewardSkus;
+	}
+	
+	public string function getQualifiedPromotionRewardSkuIDs( numeric pageRecordsShow=25, boolean refresh=false ){
+		if( !structKeyExists(variables,'qualifiedRewardSkuIDs') || arguments.refresh ){
+			variables.qualifiedRewardSkuIDs = getService('PromotionService').getQualifiedPromotionRewardSkuIDsForOrder( order=this, pageRecordsShow=arguments.pageRecordsShow );
+		}
+		return variables.qualifiedRewardSkuIDs;
+	}
+	
+	public string function getQualifiedFreePromotionRewardSkuIDs( numeric pageRecordsShow=25 ){
+		
+		return getService('PromotionService').getQualifiedFreePromotionRewardSkuIDs( order=this, pageRecordsShow=arguments.pageRecordsShow )?:"";
+		
+	}
 
 
 	// ============  END:  Non-Persistent Property Methods =================
@@ -1300,12 +1635,13 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	// ============= START: Bidirectional Helper Methods ===================
 
 	// Account (many-to-one)
-	public any function setAccount(required any account) {
+	public any function setAccount(required any account, boolean skipBidirectional=false) {
 		variables.account = arguments.account;
-		if(isNew() or !arguments.account.hasOrder( this )) {
-			arrayAppend(arguments.account.getOrders(), this);
-		}
-		return this;
+		if(arguments.skipBidirectional){
+			return this;
+		} 
+		arguments.order = this;
+		return getService('AccountService').addOrderToAccount(argumentCollection=arguments);
 	}
 	public void function removeAccount(any account) {
 		if(!structKeyExists(arguments, "account")) {
@@ -1422,6 +1758,15 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	public void function removeAppliedPromotion(required any appliedPromotion) {
 		arguments.appliedPromotion.removeOrder( this );
 	}
+	
+	// Order Status History (one-to-many)
+	public void function addOrderStatusHistory(required any orderStatusHistory) {
+		arguments.orderStatusHistory.setOrder( this );
+	}
+	
+	public void function removeOrderStatusHistory(required any orderStatusHistory) {
+		arguments.orderStatusHistory.removeOrder( this );
+	}
 
 	// =============  END:  Bidirectional Helper Methods ===================
 
@@ -1512,17 +1857,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	}
 
 	public string function getSimpleRepresentation() {
-		if(!isNull(getOrderNumber()) && len(getOrderNumber())) {
-			var representation = getOrderNumber();
-		} else {
-			var representation = rbKey('define.cart');
-		}
-
-		if(!isNull(getAccount())) {
-			representation &= " - #getAccount().getFullname()#";
-		}
-
-		return representation;
+		return getOrderService().getSimpleRepresentation(this);
 	}
 
 	public any function getReferencingOrdersSmartList() {
@@ -1664,4 +1999,524 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	}
 
 	// ===================  END:  ORM Event Hooks  =========================
+		//CUSTOM FUNCTIONS BEGIN
+
+public numeric function getPersonalVolumeSubtotal(){
+        return getCustomPriceFieldSubtotal('personalVolume');
+    }
+    public numeric function getTaxableAmountSubtotal(){
+        return getCustomPriceFieldSubtotal('taxableAmount');
+    }
+    public numeric function getCommissionableVolumeSubtotal(){
+        return getCustomPriceFieldSubtotal('commissionableVolume');
+    }
+    public numeric function getRetailCommissionSubtotal(){
+        return getCustomPriceFieldSubtotal('retailCommission');
+    }
+    public numeric function getProductPackVolumeSubtotal(){
+        return getCustomPriceFieldSubtotal('productPackVolume');
+    }
+    public numeric function getRetailValueVolumeSubtotal(){
+        return getCustomPriceFieldSubtotal('retailValueVolume');
+    }
+    public numeric function getPersonalVolumeSubtotalAfterItemDiscounts(){
+        return getCustomPriceFieldSubtotalAfterItemDiscounts('personalVolume');
+    }
+    public numeric function getTaxableAmountSubtotalAfterItemDiscounts(){
+        return getCustomPriceFieldSubtotalAfterItemDiscounts('taxableAmount');
+    }
+    public numeric function getCommissionableVolumeSubtotalAfterItemDiscounts(){
+        return getCustomPriceFieldSubtotalAfterItemDiscounts('commissionableVolume');
+    }
+    public numeric function getRetailCommissionSubtotalAfterItemDiscounts(){
+        return getCustomPriceFieldSubtotalAfterItemDiscounts('retailCommission');
+    }
+    public numeric function getProductPackVolumeSubtotalAfterItemDiscounts(){
+        return getCustomPriceFieldSubtotalAfterItemDiscounts('productPackVolume');
+    }
+    public numeric function getRetailValueVolumeSubtotalAfterItemDiscounts(){
+        return getCustomPriceFieldSubtotalAfterItemDiscounts('retailValueVolume');
+    }
+    public numeric function getPersonalVolumeTotal(){
+        return getCustomPriceFieldTotal('personalVolume');
+    }
+    public numeric function getTaxableAmountTotal(){
+        return getCustomPriceFieldTotal('taxableAmount');
+    }
+    public numeric function getCommissionableVolumeTotal(){
+        return getCustomPriceFieldTotal('commissionableVolume');
+    }
+    public numeric function getRetailCommissionTotal(){
+        return getCustomPriceFieldTotal('retailCommission');
+    }
+    public numeric function getProductPackVolumeTotal(){
+        return getCustomPriceFieldTotal('productPackVolume');
+    }
+    public numeric function getRetailValueVolumeTotal(){
+        return getCustomPriceFieldTotal('retailValueVolume');
+    }
+    public numeric function getPersonalVolumeDiscountTotal(){
+        return getCustomDiscountTotal('personalVolume');
+    }
+    public numeric function getTaxableAmountDiscountTotal(){
+        return getCustomDiscountTotal('taxableAmount');
+    }
+    public numeric function getCommissionableVolumeDiscountTotal(){
+        return getCustomDiscountTotal('commissionableVolume');
+    }
+    public numeric function getRetailCommissionDiscountTotal(){
+        return getCustomDiscountTotal('retailCommission');
+    }
+    public numeric function getProductPackVolumeDiscountTotal(){
+        return getCustomDiscountTotal('productPackVolume');
+    }
+    public numeric function getRetailValueVolumeDiscountTotal(){
+        return getCustomDiscountTotal('retailValueVolume');
+    }
+    
+    public numeric function getCustomPriceFieldSubtotal(required string customPriceField){
+        var subtotal = 0;
+		var orderItems = this.getRootOrderItems();
+		var orderItemsCount = arrayLen(orderItems);
+		for(var i=1; i<=orderItemsCount; i++) {
+			if( listFindNoCase("oitSale,oitDeposit,oitReplacement",orderItems[i].getTypeCode()) ) {
+				subtotal = getService('HibachiUtilityService').precisionCalculate(subtotal + orderItems[i].getCustomExtendedPrice(arguments.customPriceField));
+			} else if ( orderItems[i].getTypeCode() == "oitReturn" ) {
+				subtotal = getService('HibachiUtilityService').precisionCalculate(subtotal - orderItems[i].getCustomExtendedPrice(arguments.customPriceField));
+			} else {
+				throw("there was an issue calculating the subtotal because of a orderItemType associated with one of the items");
+			}
+		}
+		return subtotal;
+    }
+	
+	public numeric function getCustomPriceFieldSubtotalAfterItemDiscounts(customPriceField) {
+		return getService('HibachiUtilityService').precisionCalculate(getCustomPriceFieldSubtotal(arguments.customPriceField) - getItemCustomDiscountAmountTotal(arguments.customPriceField));
+	}
+    
+    public numeric function getItemCustomDiscountAmountTotal(required string customPriceField) {
+		var discountTotal = 0;
+		var orderItems = getRootOrderItems(); 
+		for(var i=1; i<=arrayLen(orderItems); i++) {
+			if( listFindNoCase("oitSale,oitDeposit,oitReplacement",orderItems[i].getTypeCode()) ) {
+				discountTotal = getService('HibachiUtilityService').precisionCalculate(discountTotal + orderItems[i].getCustomDiscountAmount(arguments.customPriceField));
+			} else if ( orderItems[i].getTypeCode() == "oitReturn" ) {
+				discountTotal = getService('HibachiUtilityService').precisionCalculate(discountTotal - orderItems[i].getCustomDiscountAmount(arguments.customPriceField));
+			} else {
+				throw("there was an issue calculating the itemDiscountAmountTotal because of a orderItemType associated with one of the items");
+			}
+		}
+		return discountTotal;
+	}
+    
+    public numeric function getCustomDiscountTotal(customPriceField) {
+		return getService('HibachiUtilityService').precisionCalculate(getItemCustomDiscountAmountTotal(arguments.customPriceField) + getOrderCustomDiscountAmountTotal(arguments.customPriceField));
+	}
+	
+	public numeric function getOrderCustomDiscountAmountTotal(customPriceField) {
+		var discountAmount = 0;
+
+		for(var i=1; i<=arrayLen(getAppliedPromotions()); i++) {
+			discountAmount = getService('HibachiUtilityService').precisionCalculate(discountAmount + getAppliedPromotions()[i].getCustomDiscountAmount(arguments.customPriceField));
+		}
+
+		return discountAmount;
+	}
+	
+	public numeric function getCustomPriceFieldTotal(customPriceField) {
+		return val(getService('HibachiUtilityService').precisionCalculate(getCustomPriceFieldSubtotal(arguments.customPriceField)  - getCustomDiscountTotal(arguments.customPriceField)));
+	}
+	
+	public boolean function isNotPaid() {
+		return getPaymentAmountDue() > 0;
+	}
+	
+	public boolean function getVipEnrollmentOrderFlag(){
+	    var orderItemCollectionList = getService("OrderService").getOrderItemCollectionList();
+	    orderItemCollectionList.addFilter("order.orderID",this.getOrderID());
+	    //Product code for the VIP registration fee
+	    orderItemCollectionList.addFilter("sku.product.productType.urlTitle","vpn-customer-registr");
+	    orderItemCollectionList.setDisplayProperties("orderItemID");
+	    return orderItemCollectionList.getRecordsCount() > 0;
+	}
+	
+	public any function getMarketPartnerEnrollmentOrderID(){
+	    if (!structKeyExists(variables, "marketPartnerEnrollmentOrderID")){
+    	    var orderItemCollectionList = getService("OrderService").getOrderItemCollectionList();
+    	    orderItemCollectionList.addFilter("order.account.accountID", "#getAccount().getAccountID()#");
+    	    orderItemCollectionList.addFilter("order.orderStatusType.systemCode", "ostNotPlaced", "!=");
+    	    orderItemCollectionList.addFilter("order.monatOrderType.typeCode","motMPEnrollment");
+    	    orderItemCollectionList.setDisplayProperties("order.orderID");// Date placed 
+    	    var records = orderItemCollectionList.getRecords();
+    	    if (arrayLen(records)){
+    	        variables.marketPartnerEnrollmentOrderID = records[1]['order_orderID'];
+    	        return records[1]['order_orderID'];
+    	    }
+	    }
+	    
+	    if (!isNull(variables.marketPartnerEnrollmentOrderID)){
+	    	return variables.marketPartnerEnrollmentOrderID;
+	    }
+	}
+	
+	public any function getAccountType() {
+	    
+	    if (structKeyExists(variables, "accountType")){
+	        return variables.accountType;
+	    }
+
+	    if (!isNull(getAccount()) && !isNull(getAccount().getAccountType()) && len(getAccount().getAccountType())){
+	        variables.accountType = getAccount().getAccountType();
+	    }else{
+	        variables.accountType = "";
+	    }
+	    return variables.accountType;
+	}
+	
+	public any function getAccountPriceGroup() {
+	    if (structKeyExists(variables, "accountPriceGroup")){
+	        return variables.accountPriceGroup;
+	    }
+	    
+	    if (!isNull(getAccount()) && !isNull(getAccount().getPriceGroups())){
+	        var priceGroups = getAccount().getPriceGroups();
+    	    if (arraylen(priceGroups)){
+    	        //there should only be 1 max.
+    	        variables.accountPriceGroup = priceGroups[1].getPriceGroupCode();
+    	        return variables.accountPriceGroup;
+    	    }
+	    }
+	   
+	}
+	
+	public struct function getListingSearchConfig() {
+	   	param name = "arguments.selectedSearchFilterCode" default="lastTwoMonths"; //limiting listingdisplays to show only last 3 months of record by default
+	    param name = "arguments.wildCardPosition" default = "exact";
+	    return super.getListingSearchConfig(argumentCollection = arguments);
+	}
+	
+	public boolean function hasMPRenewalFee() {
+	    if(!structKeyExists(variables,'orderHasMPRenewalFee')){
+            variables.orderHasMPRenewalFee = getService('orderService').orderHasMPRenewalFee(this.getOrderID());
+		}
+		return variables.orderHasMPRenewalFee;
+	}
+	
+	public boolean function hasProductPack() {
+	    if(!structKeyExists(variables,'orderHasProductPack')){
+            variables.orderHasProductPack = getService('orderService').orderHasProductPack(this.getOrderID());
+		}
+		return variables.orderHasProductPack;
+	}
+	
+	public boolean function subtotalWithinAllowedPercentage(){
+	    var referencedOrder = this.getReferencedOrder();
+	    if(isNull(referencedOrder)){
+	        return true;
+	    }
+	    var dateDiff = 0;
+	    if(!isNull(referencedOrder.getOrderCloseDateTime())){
+    	         dateDiff = dateDiff('d',referencedOrder.getOrderCloseDateTime(),now());
+	    }
+	    if(dateDiff <= 30){
+	        return true;
+	    }else if(dateDiff > 365){
+	        return false;
+	    }else{
+	        var originalSubtotal = referencedOrder.getSubTotal();
+	        
+	        var returnSubtotal = 0;
+	        
+	        var originalOrderReturnCollectionList = getService('OrderService').getOrderCollectionList();
+	        originalOrderReturnCollectionList.setDisplayProperties('orderID,calculatedSubTotal');
+	        originalOrderReturnCollectionList.addFilter('referencedOrder.orderID',referencedOrder.getOrderID());
+	        originalOrderReturnCollectionList.addFilter("orderType.systemCode","otReturnOrder,otRefundOrder","in");
+	        originalOrderReturnCollectionList.addFilter("orderID", "#getOrderID()#","!=");
+	        originalOrderReturnCollectionList.addFilter("orderStatusType.systemCode","ostNew,ostClosed,ostProcessing","IN");
+	        var originalOrderReturns = originalOrderReturnCollectionList.getRecords(formatRecords=false);
+	        
+	        for(var order in originalOrderReturns){
+	            returnSubtotal += order['calculatedSubTotal'];
+	        }
+
+	        return abs(originalSubtotal * 0.9) - abs(returnSubtotal) >= abs(getSubTotal());
+	    }
+        return true;
+	}
+	
+	public boolean function hasProductPackOrderItem(){
+        var orderItemCollectionList = getService('orderService').getOrderItemCollectionList();
+        orderItemCollectionList.addFilter('order.orderID',getOrderID());
+        orderItemCollectionList.addFilter('sku.product.productType.urlTitle','productPack,starter-kit','in');
+        return orderItemCollectionList.getRecordsCount() > 0;
+	}
+	
+	/**
+	 * This validates that the orders site matches the accounts created site
+	 * if the order has an account already.
+	 **/
+	public boolean function orderCreatedSiteMatchesAccountCreatedSite(){
+        if (!isNull(this.getAccount()) && !isNull(this.getAccount().getAccountCreatedSite())){
+            if (this.getOrderCreatedSite().getSiteID() != this.getAccount().getAccountCreatedSite().getSiteID()){
+                return false;
+            }
+        }
+        return true;
+	}
+	 
+	 
+	 /**
+	  * 2. If Site is UK and account is MP Max Order 1 placed in first 7 days 
+	  * after enrollment order.
+	  **/
+	 public boolean function marketPartnerValidationMaxOrdersPlaced(){
+	     
+	    if( isNull( this.getAccount() ) 
+	        || this.getAccount().getAccountType() != "marketPartner" 
+	        || this.getOrderCreatedSite().getSiteCode() != "mura-uk" 
+	        || isNull( this.getMarketPartnerEnrollmentOrderID() ) // If they've never enrolled, they can enroll.
+	    ){
+	        return true;
+	    }
+
+        var initialEnrollmentPeriodForMarketPartner = this.getOrderCreatedSite().setting("siteInitialEnrollmentPeriodForMarketPartner");
+        
+        if( isNull(initialEnrollmentPeriodForMarketPartner) ){
+            return true;
+        }
+        if( isNull( this.getAccount().getEnrollmentDate() ) ){
+            return true;
+        }
+        
+        //If a UK MP is within the first 7 days of enrollment, check that they have not already placed more than 1 order.
+		if ( dateDiff("d", this.getAccount().getEnrollmentDate(), now() ) <= initialEnrollmentPeriodForMarketPartner ){
+		
+			//This order is 1, so if they have any previous that is not the enrollment order,
+			//they can't place this one.
+			var previouslyOrdered = getService("orderService").getOrderCollectionList();
+
+			//Find if they have placed more than the initial enrollment order already.
+			previouslyOrdered.addFilter("orderID", getMarketPartnerEnrollmentOrderID(), "!=");
+			previouslyOrdered.addFilter("account.accountID", getAccount().getAccountID());
+			previouslyOrdered.addFilter("orderStatusType.systemCode", "ostNotPlaced", "!=");
+			previouslyOrdered.addFilter("orderType.systemCode", "otSalesOrder");
+			
+			if ( previouslyOrdered.getRecordsCount() > 0 ){
+				return false; //they can not purchase this because they already have purchased it.
+			}
+		}
+		
+		return true;
+	 }
+	 
+	 /**
+	  * 3. MP (Any site) can't purchase one past 30 days from account creation.
+	  **/
+	 public boolean function marketPartnerValidationMaxProductPacksPurchased(){
+	 	
+	 	if(this.getOrderStatusType().getSystemCode() != 'ostNotPlaced'){
+	 		return true;
+	 	}
+	    
+	    var maxDaysAfterAccountCreate = this.getOrderCreatedSite().setting("siteMaxDaysAfterAccountCreate");
+	    
+	    //Check if this is MP account AND created MORE THAN 30 days AND is trying to add a product pack.
+		if (!isNull(maxDaysAfterAccountCreate) && !isNull(getAccount()) && getAccount().getAccountType() == "marketPartner" 
+			&& !isNull(getAccount().getCreatedDateTime()) 
+			&& dateDiff("d", getAccount().getCreatedDateTime(), now()) > maxDaysAfterAccountCreate
+			&& this.hasProductPackOrderItem()){
+		
+			return false; //they can not purchase this because they already have purchased it.
+		
+		//Check if they have previously purchased a product pack, then they also can't purchase a new one.
+		} else if (!isNull(maxDaysAfterAccountCreate) && !isNull(getAccount()) && getAccount().getAccountType() == "marketPartner" 
+				&& !isNull(getAccount().getCreatedDateTime()) 
+				&& dateDiff("d", getAccount().getCreatedDateTime(), now()) <= maxDaysAfterAccountCreate
+				&& this.hasProductPackOrderItem()){
+
+			var previouslyPurchasedProductPacks = getService("OrderService").getOrderItemCollectionList();
+
+			//Find all valid previous placed sales orders for this account with a product pack on them.
+			previouslyPurchasedProductPacks.addFilter("order.account.accountID", getAccount().getAccountID());
+			previouslyPurchasedProductPacks.addFilter("order.orderStatusType.systemCode", "ostNotPlaced", "!=");
+			previouslyPurchasedProductPacks.addFilter("order.orderType.systemCode", "otSalesOrder");
+			previouslyPurchasedProductPacks.addFilter("sku.product.productType.productTypeName", "Product Pack");
+
+			if (previouslyPurchasedProductPacks.getRecordsCount() > 0){
+				return false; //they can not purchase this because they already have purchased it.
+			}
+		}
+		return true;
+	 }
+	 
+	public any function getDefaultStockLocation(){
+	 	if(!structKeyExists(variables,'defaultStockLocation')){
+	 		if(!isNull(getOrderCreatedSite())){
+	 			var locations = getOrderCreatedSite().getLocations();
+	 			if(!isNull(locations) && arrayLen(locations)){
+	 				variables.defaultStockLocation = locations[1];
+	 			}
+	 		}
+	 	}
+	 	if(structKeyExists(variables,'defaultStockLocation')){
+	 		return variables.defaultStockLocation;
+	 	}
+	}
+	 
+	public boolean function getIsLockedInProcessingOneFlag(){
+		return getOrderStatusType().getSystemCode() == "ostProcessing" && getOrderStatusType().getTypeCode() == "processing1";
+	}
+	
+	public boolean function getIsLockedInProcessingTwoFlag(){
+		return getOrderStatusType().getSystemCode() == "ostProcessing" && getOrderStatusType().getTypeCode() == "processing2";
+	}
+	
+	public boolean function getIsLockedInProcessingFlag(){
+	
+		return  (
+					getOrderStatusType().getSystemCode() == "ostProcessing" 
+					&& 
+					(
+						getOrderStatusType().getTypeCode() == "processing1"
+						||
+						getOrderStatusType().getTypeCode() == "processing2"
+					)
+				);
+	}
+	
+	public numeric function getPurchasePlusTotal(){
+	
+		var purchasePlusRecords = getService('orderService').getPurchasePlusInformationForOrderItems(this.getOrderID());
+		var total = 0;
+
+		if(!isArray(purchasePlusRecords)){
+			purchasePlusRecords = purchasePlusRecords.getRecords();
+			for (var item in purchasePlusRecords){
+				total +=  item.discountAmount;
+			}
+		}
+		variables.purchasePlusTotal = total;
+
+		
+		return variables.purchasePlusTotal;
+	}
+	
+	public boolean function orderPriceGroupMatchesAccount(){
+		//first check account, account price groups should both not be null and have a length  
+		//then we check if the order has a price group, if it does it should match the price group on the account - inverses are checked as to avoid nested logic
+		return (isNull(this.getAccount().getPriceGroups()) || !arrayLen(this.getAccount().getPriceGroups()) 
+				|| (!isNull(this.getPriceGroup().getPriceGroupCode()) && this.getPriceGroup().getPriceGroupCode() != this.getAccount().getPriceGroups()[1].getPriceGroupCode()) ) ? false : true;
+	}
+	
+	public any function getCurrencyCode(){
+		if(
+			isNull(variables.currencyCode) 
+			|| (
+				!isNull(getOrderCreatedSite()) 
+				&& !isNull(getOrderCreatedSite().getCurrencyCode())
+				&& getOrderCreatedSite().getCurrencyCode() != variables.currencyCode
+			)
+		){
+			variables.currencyCode = getOrderCreatedSite().getCurrencyCode()
+		}
+		return variables.currencyCode;
+	}
+	
+	public boolean function marketPartnerValidationMaxOrderAmount(){
+	 	
+	 	var site = this.getOrderCreatedSite();
+	 	if(isNull(site) || site.getSiteCode() != 'mura-uk'){
+	 	    return true; 
+	 	} 
+	 	
+	 	var accountType = this.getAccountType();
+	 	if(isNull(accountType) || accountType != 'marketPartner'){
+	 		return true;
+	 	}
+	 	
+	    var initialEnrollmentPeriodForMarketPartner = site.setting("siteInitialEnrollmentPeriodForMarketPartner"); // 7-days
+	    
+        var isEnrollmentPeriodOver = !isNull(this.getAccount()) && !isNull(this.getAccount().getEnrollmentDate() ) && dateDiff( "d", this.getAccount().getEnrollmentDate(), now() ) > initialEnrollmentPeriodForMarketPartner;
+        
+        var isUpgradePeriodOver = true;
+        if( !isNull(this.getAccount()) ){
+            var mpUpgradeDateTime = this.getAccount().getMpUpgradeDateTime();
+            isUpgradePeriodOver = isNull(mpUpgradeDateTime ) || dateDiff( "d", mpUpgradeDateTime, now() ) > initialEnrollmentPeriodForMarketPartner;
+        }
+        
+        //If a UK MP is within the first 7 days of enrollment/upgrade, check that they have not already placed more than 1 order.
+		if ( !isEnrollmentPeriodOver || !isUpgradePeriodOver  ){
+			var total = 0;
+			if(!isNull(this.getAccount())){
+				var orders = account.getOrders();
+				for(var order in orders){
+					total += order.getTotal();
+				}
+			}else{
+				total += this.getTotal();
+			}
+            
+            var maxAmountAllowedToSpendDuringInitialEnrollmentPeriod = site.setting("siteMaxAmountAllowedToSpendInInitialEnrollmentPeriod");//200
+			//If adding the order item will increase the order to over 200 EU return false  
+			if (total > maxAmountAllowedToSpendDuringInitialEnrollmentPeriod){
+			    return false; // they already have too much.
+			}
+	    }
+	    return true;
+	 }
+	 
+	 public boolean function getUpgradeOrEnrollmentOrderFlag(){
+	 	 
+		if (this.getUpgradeFlag()) {
+			return true;
+		}
+		
+		if( 
+			this.hasMonatOrderType() && 
+			ListFindNoCase("motMpEnrollment,motVipEnrollment", this.getMonatOrderType().getTypeCode()) 
+		){
+			return true;
+		}
+		
+		return false;
+	}
+	
+	//Returns an array of one shipping fulfillment if there is a shipping fulfillment on the order, otherwise it returns an empty array
+	public array function getFirstShippingFulfillment(){
+		
+		if(isNull(variables.firstShippingFulfillmentArray)){
+			var shippingFulfillmentArray = [];
+			var fulfillments = this.getOrderFulfillments() ?:[];
+			for(var fulfillment in fulfillments){
+				if(!isNull(fulfillment.getFulfillmentMethod()) && fulfillment.getFulfillmentMethod().getFulfillmentMethodType() =='shipping'){
+					arrayAppend(shippingFulfillmentArray, fulfillment);
+					break;
+				}
+			}
+			variables.firstShippingFulfillmentArray = shippingFulfillmentArray;
+		}
+		
+		return variables.firstShippingFulfillmentArray;
+	}
+	
+	public boolean function validateActiveStatus(){
+		var isValidOrder = false;
+		if(
+			!isNull(this.getAccount())
+			&& (
+				this.getAccount().getActiveFlag()
+				||	(
+						!this.getAccount().getActiveFlag() 
+						&& this.getUpgradeOrEnrollmentOrderFlag()
+						&& !isNull(this.getAccount().getAccountStatusType())
+						&& this.getAccount().getAccountStatusType().getSystemCode() == 'astEnrollmentPending'
+					)
+				)
+			)
+		{
+			isValidOrder = true;
+		}
+		
+		return isValidOrder;
+	}//CUSTOM FUNCTIONS END
 }

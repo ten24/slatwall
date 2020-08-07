@@ -67,6 +67,25 @@ component extends="HibachiService" accessors="true" {
 	property name="typeService" type="any";
 
 	// ===================== START: Logical Methods ===========================
+	
+	public any function getAllRelatedProducts(required any productID) {
+		var relatedProducts = this.getProductRelationshipCollectionList();
+		relatedProducts.setDisplayProperties("relatedProduct.productID, relatedProduct.calculatedQATS, relatedProduct.calculatedProductRating, relatedProduct.activeFlag, relatedProduct.urlTitle, relatedProduct.productName");
+		relatedProducts.addFilter("product.productID",arguments.productID);
+		relatedProducts.addFilter("product.activeFlag",1);
+		relatedProducts = relatedProducts.getRecords(formatRecords=false);
+		return relatedProducts;
+	}
+
+	public any function getAllProductReviews(required any productID) {
+		var relatedProducts = this.getProductReviewCollectionList();
+		relatedProducts.setDisplayProperties("reviewerName, review, reviewTitle, rating, activeFlag");
+		relatedProducts.addFilter("product.productID",arguments.productID);
+		relatedProducts.addFilter("product.activeFlag",1);
+		relatedProducts = relatedProducts.getRecords(formatRecords=false);
+		return relatedProducts;
+	}
+	
 
 	public numeric function getProductRating(required any product){
 		return getDao('productDao').getProductRating(arguments.product);
@@ -886,6 +905,10 @@ component extends="HibachiService" accessors="true" {
 		//GENERATE - GIFT SKUS
 		}else if(arguments.processObject.getBaseProductType() == 'gift-card'){
 			arguments.product = createGiftCardProduct(arguments.product,arguments.processObject);
+			
+		// GENERATE - FEE fi fo fum SKUS smell the blood of an englishman
+		} else if (arguments.processObject.getGenerateSkusFlag() && arguments.processObject.getBaseProductType() == "miscFee") {
+			arguments.product = createSingleSku(arguments.product, arguments.processObject);
 		}
 
 		// Generate the URL Title
@@ -1223,7 +1246,11 @@ component extends="HibachiService" accessors="true" {
 		if(!arguments.productReview.hasErrors()){
 			getHibachiScope().addModifiedEntity(arguments.productReview.getProduct());
 		}
-		
+		// setting up default status as Unapproved
+		if(isNull(arguments.productReview.getProductReviewStatusType()))
+		{
+			arguments.productReview.setProductReviewStatusType(getService('typeService').getTypeByTypeID('f0558da55e9f48f7bbd0eb4c95d6b378'));
+		}
 		return arguments.productReview;
 		
 	}
@@ -1290,6 +1317,7 @@ component extends="HibachiService" accessors="true" {
 	public any function getResizedImageByProfileName(required any skuIDList="", any profileName="") {
 		return this.getImageService().getResizedImageByProfileName(arguments.skuIDList,arguments.profileName);
 	}
+	
 
 	//  ====================  END: Wrapper Methods ========================
 

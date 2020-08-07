@@ -67,7 +67,8 @@ component displayname="Session" entityname="SlatwallSession" table="SwSession" p
 	property name="account" type="any" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID" fetch="join";
 	property name="accountAuthentication" cfc="AccountAuthentication" fieldtype="many-to-one" fkcolumn="accountAuthenticationID" fetch="join";
 	property name="order" type="any" cfc="Order" fieldtype="many-to-one" fkcolumn="orderID";
-	
+	property name="site" type="any" cfc="Site" fieldtype="many-to-one" fkcolumn="siteID" fetch="join";
+
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
@@ -76,9 +77,14 @@ component displayname="Session" entityname="SlatwallSession" table="SwSession" p
 	property name="requestAccount" type="any" persistent="false"; 
 	
 	
-	/**
+	/*
 	 * Handles all of the cases on the session that the user is not logged in.
 	 */
+	//CUSTOM PROPERTIES BEGIN
+property name="currentFlexship" type="any" cfc="OrderTemplate" fieldtype="many-to-one" fkcolumn="currentFlexshipID"; 
+	property name="countryCode" ormtype="string";
+	
+//CUSTOM PROPERTIES END
 	public any function getLoggedInFlag(){
 		//If this is a new session, then the user is not logged in.
 		if (getNewFlag() && !isNull(getSessionCookieExtendedPSID())){
@@ -125,12 +131,32 @@ component displayname="Session" entityname="SlatwallSession" table="SwSession" p
 		return variables.requestAccount;
 	}
 	
+	public any function getSite(){
+		if(structKeyExists(variables, "site")) { 
+			return variables.site;
+		}
+		
+		var requestSite = getHibachiScope().getCurrentRequestSite();
+		if (!isNull(requestSite)){
+			//If no site is set on this site and one exists, use that one.
+			this.setSite( requestSite );
+			return variables.site;
+		}
+	
+	}
+
+	public any function setSite(site){
+		variables.site = arguments.site;
+	}
+	
 	
 	
 	public any function getOrder() {
-		if(structKeyExists(variables, "order")) {
+		if(structKeyExists(variables, "order") && variables.order.getOrderCreatedSite().getSiteID() == getHibachiScope().getCurrentRequestSite().getSiteID()) {
+			
 			return variables.order;
 		} else if (!structKeyExists(variables, "requestOrder")) {
+			
 			variables.requestOrder = getService("orderService").newOrder();
 			
 			// Set default stock location based on current request site, uses first location by default
@@ -148,8 +174,8 @@ component displayname="Session" entityname="SlatwallSession" table="SwSession" p
 				var siteOrderOrigin = getService('HibachiService').getOrderOrigin(site.setting('siteOrderOrigin'));
 				requestOrder.setOrderOrigin(siteOrderOrigin);
 			}
-			//Setup Site Created if using slatwall cms
-			if(!isNull(getHibachiScope().getSite()) && getHibachiScope().getSite().isSlatwallCMS() && !isNull(getHibachiScope().getCurrentRequestSite())){
+			//Setup Site Created 
+			if(!isNull(getHibachiScope().getCurrentRequestSite())){
 				variables.requestOrder.setOrderCreatedSite(getHibachiScope().getCurrentRequestSite());
 			}
 			
@@ -175,6 +201,30 @@ component displayname="Session" entityname="SlatwallSession" table="SwSession" p
 		}
 	}
 	
+	public string function getRbLocale(){
+		if(structKeyExists(variables, 'rbLocale')){
+			return variables.rbLocale;
+		}
+		
+		if(len(getAccount().getPreferredLocale())){
+			variables.rbLocale = getAccount().getPreferredLocale();
+		}else if(structKeyExists(COOKIE, 'rbLocale')){
+			variables.rbLocale = COOKIE['rbLocale'];
+		}else{
+			variables.rbLocale = 'en_us';
+		}
+		
+		return variables.rbLocale;
+	}
+	
+	public string function setRbLocale(required string rbLocale){
+		if(isValid('regex',arguments.rbLocale,'\w{2}(_\w{2})?')){
+			getService("hibachiTagService").cfcookie(name='rbLocale', value=arguments.rbLocale,expires='never');
+			variables.rbLocale = arguments.rbLocale;
+			getHibachiScope().setRbLocale(arguments.rbLocale);
+		}
+	}
+	
 	
 	// ============ START: Non-Persistent Property Methods =================
 	
@@ -187,4 +237,45 @@ component displayname="Session" entityname="SlatwallSession" table="SwSession" p
 	// =================== START: ORM Event Hooks  =========================
 	
 	// ===================  END:  ORM Event Hooks  =========================
+	//CUSTOM FUNCTIONS BEGIN
+public any function getCountryCode(){
+		if(structKeyExists(variables, 'countryCode')){
+			return variables.countryCode;
+		}
+		
+		if(getHibachiScope().getApplicationValue('applicationEnvironment') == 'local'){
+			variables.countryCode = 'US';
+			return variables.countryCode;
+		}
+		
+		if(getHibachiScope().hasSessionValue('requestCountryOrigin')){
+			variables.countryCode = getHibachiScope().getSessionValue('requestCountryOrigin');
+			return variables.countryCode;
+		}
+		
+		var currentIPAddress = listFirst(getRemoteAddress());
+		if(len(currentIPAddress) && !IsIPv6(currentIPAddress)){
+
+			var ips_parts = ListToArray(currentIPAddress, ".");
+			var ipNumber =   16777216 * ips_parts[1] + 65536 * ips_parts[2] + 256 * ips_parts[3] + ips_parts[4];
+			var geoIpQuery = new query();
+			geoIpQuery.setSQL('SELECT country_code FROM ip2location  WHERE ip_from <= :ip_number AND ip_to >= :ip_number');
+			geoIpQuery.addParam(name="ip_number",value=ipNumber);
+			var queryResult = geoIpQuery.execute().getResult();
+			if(queryResult.recordCount){
+				variables.countryCode = queryResult.country_code;
+				getHibachiScope().setSessionValue('requestCountryOrigin', variables.countryCode);
+				return variables.countryCode;
+			}else{
+				getHibachiScope().setSessionValue('requestCountryOrigin', 'US');
+			}
+		}
+		return 'US';
+	}
+	
+	public void function preInsert(){
+		super.preInsert();
+		getCountryCode();
+	}
+//CUSTOM FUNCTIONS END
 }

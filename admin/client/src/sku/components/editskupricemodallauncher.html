@@ -1,10 +1,7 @@
-<sw-modal-launcher ng-if="swEditSkuPriceModalLauncher.skuPrice"
+<sw-modal-launcher data-launch-event-name="EDIT_SKUPRICE"
                    data-modal-name="{{swEditSkuPriceModalLauncher.uniqueName}}" 
                    data-title="Edit Sku Price Detail" 
                    data-save-action="swEditSkuPriceModalLauncher.save">
-    <sw-modal-button>
-        <ng-transclude></ng-transclude>
-    </sw-modal-button>
     
     <sw-modal-content> 
         
@@ -12,6 +9,7 @@
                  name="{{swEditSkuPriceModalLauncher.formName}}" 
                  data-object="swEditSkuPriceModalLauncher.skuPrice"    
                  data-context="save"
+                 
                  >
             <div ng-show="!swEditSkuPriceModalLauncher.saveSuccess" class="alert alert-error" role="alert" sw-rbkey="'admin.entity.addskuprice.invalid'"></div>
             <div class="row">
@@ -22,20 +20,24 @@
                     <div class="col-sm-8">
                         <div class="row">
                             <div class="col-sm-6">
-                                <sw-property-display data-object="swEditSkuPriceModalLauncher.skuPrice" 
-                                                     data-property-identifier="price"
-                                                     data-editing="true"
-                                                     data-editable="true"
-                                                     data-is-dirty="true" 
-                                                     >
-                                </sw-property-display>
+                                <label  class="control-label"
+                                        sw-rbKey="'entity.SkuPrice.price'">
+                                </label>
+                                <input  class="form-control" 
+                                        type="text" 
+                                        name="price" 
+                                        ng-model="swEditSkuPriceModalLauncher.skuPrice.price"
+                                />
                             </div> 
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label for="" class="control-label">Currency Code</label>
+                                    <label  class="control-label"
+                                            sw-rbKey="'entity.SkuPrice.currencyCode'">
+                                        
+                                    </label>
                                     <select class="form-control" 
                                             name="currencyCode"
-                                            ng-model="swEditSkuPriceModalLauncher.skuPrice.data.currencyCode"
+                                            ng-model="swEditSkuPriceModalLauncher.selectedCurrencyCode"
                                             ng-options="item as item for item in swEditSkuPriceModalLauncher.currencyCodeOptions track by item"
                                             ng-disabled="(swEditSkuPriceModalLauncher.disableAllFieldsButPrice || swEditSkuPriceModalLauncher.defaultCurrencyOnly) && !swEditSkuPriceModalLauncher.currencyCodeEditable"
                                             >
@@ -46,44 +48,44 @@
                         
                         <div class="row">
                             <div class="col-sm-6">
-                               <sw-property-display data-object="swEditSkuPriceModalLauncher.skuPrice" 
-                                                    data-property-identifier="minQuantity"
-                                                    data-editing="true"
-                                                    data-editable="!swEditSkuPriceModalLauncher.disableAllFieldsButPrice"
-                                                    data-is-dirty="true" 
-                                                    >
-                                </sw-property-display>
+                                <label  class="control-label"
+                                        sw-rbKey="'entity.SkuPrice.minQuantity'">
+                                </label>
+                                <input  class="form-control" 
+                                        type="text" 
+                                        name="minQuantity" 
+                                        ng-model="swEditSkuPriceModalLauncher.skuPrice.minQuantity"
+                                />
                             </div>
                             <div class="col-sm-6">
-                                <sw-property-display data-object="swEditSkuPriceModalLauncher.skuPrice" 
-                                                    data-property-identifier="maxQuantity"
-                                                    data-editing="true"
-                                                    data-editable="!swEditSkuPriceModalLauncher.disableAllFieldsButPrice"
-                                                    data-is-dirty="true" 
-                                                    >
-                                </sw-property-display>
+                                <label  class="control-label"
+                                        sw-rbKey="'entity.SkuPrice.maxQuantity'">
+                                </label>
+                                <input  class="form-control" 
+                                        type="text" 
+                                        name="maxQuantity" 
+                                        ng-model="swEditSkuPriceModalLauncher.skuPrice.maxQuantity"
+                                />
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-sm-12">
-                                <sw-property-display data-object="swEditSkuPriceModalLauncher.skuPrice" 
-                                                    data-property-identifier="priceGroup"
-                                                    data-editing="true"
-                                                    data-editable="!swEditSkuPriceModalLauncher.disableAllFieldsButPrice"
-                                                    data-is-dirty="true"
-                                                    >
-                                </sw-property-display>
+                                <label  class="control-label"
+                                        sw-rbKey="'entity.PriceGroup'">
+                                        
+                                </label>
+                                <select class="form-control" 
+                                        ng-model="swEditSkuPriceModalLauncher.selectedPriceGroup"
+                                        ng-options="item as item.priceGroupName for item in swEditSkuPriceModalLauncher.priceGroupOptions track by item.priceGroupID"
+                                        ng-change="swEditSkuPriceModalLauncher.setSelectedPriceGroup(swEditSkuPriceModalLauncher.selectedPriceGroup)"
+                                        ng-disabled="swEditSkuPriceModalLauncher.priceGroupEditable == false"
+                                        >
+                                </select>
+                                <input type="text" readonly name="priceGroup" ng-if="swEditSkuPriceModalLauncher.submittedPriceGroup" ng-model="swEditSkuPriceModalLauncher.submittedPriceGroup" />
                             </div>
                         </div>
                         <!-- BEGIN HIDDEN FIELDS -->
-                         <sw-property-display data-object="swEditSkuPriceModalLauncher.sku"
-                                data-property-identifier="skuID"
-                                data-is-dirty="true"
-                                data-is-hidden="true"
-                                data-editing="true"   
-                                data-editable="true"
-                        >
-                        </sw-property-display>
+                        
                         <!-- END HIDDEN FIELDS -->
                     </div>
                 </div>

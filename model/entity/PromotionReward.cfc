@@ -66,6 +66,9 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 	property name="maximumUsePerOrder" ormType="integer" hb_nullRBKey="define.unlimited";
 	property name="maximumUsePerItem" ormtype="integer" hb_nullRBKey="define.unlimited";
 	property name="maximumUsePerQualification" ormtype="integer" hb_nullRBKey="define.unlimited";
+	property name="includedSkusCollectionConfig" ormtype="text" hb_formFieldType="json";
+	property name="excludedSkusCollectionConfig" ormtype="text" hb_formFieldType="json";
+	property name="rewardSkuQuantity" ormtype="integer" default=0;
 
 	// Related Object Properties (many-to-one)
 	property name="promotionPeriod" cfc="PromotionPeriod" fieldtype="many-to-one" fkcolumn="promotionPeriodID";
@@ -73,6 +76,7 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 
 	// Related Object Properties (one-to-many)
 	property name="promotionRewardCurrencies" singularname="promotionRewardCurrency" cfc="PromotionRewardCurrency" type="array" fieldtype="one-to-many" fkcolumn="promotionRewardID" cascade="all-delete-orphan" inverse="true";
+	property name="skuPrices" singularname="skuPrice" cfc="SkuPrice" type="array" fieldtype="one-to-many" fkcolumn="promotionRewardID" cascade="all-delete-orphan" inverse="true";
 
 	// Related Object Properties (many-to-many - owner)
 	property name="eligiblePriceGroups" singularname="eligiblePriceGroup" cfc="PriceGroup" type="array" fieldtype="many-to-many" linktable="SwPromoRewardEligiblePriceGrp" fkcolumn="promotionRewardID" inversejoincolumn="priceGroupID";
@@ -80,7 +84,13 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 	property name="fulfillmentMethods" singularname="fulfillmentMethod" cfc="FulfillmentMethod" fieldtype="many-to-many" linktable="SwPromoRewardFulfillmentMethod" fkcolumn="promotionRewardID" inversejoincolumn="fulfillmentMethodID";
 	property name="shippingAddressZones" singularname="shippingAddressZone" cfc="AddressZone" fieldtype="many-to-many" linktable="SwPromoRewardShipAddressZone" fkcolumn="promotionRewardID" inversejoincolumn="addressZoneID";
 	property name="shippingMethods" singularname="shippingMethod" cfc="ShippingMethod" fieldtype="many-to-many" linktable="SwPromoRewardShippingMethod" fkcolumn="promotionRewardID" inversejoincolumn="shippingMethodID";
+	property name="includedStackableRewards" singularname="includedStackableReward" cfc="PromotionReward" fieldtype="many-to-many" linktable="SwPromoRewardStackIncl" fkcolumn="promotionRewardID" inversejoincolumn="linkedPromotionRewardID";
+	property name="excludedStackableRewards" singularname="excludedStackableReward" cfc="PromotionReward" fieldtype="many-to-many" linktable="SwPromoRewardStackExcl" fkcolumn="promotionRewardID" inversejoincolumn="linkedPromotionRewardID";
 	
+	//Non persistent properties
+	property name="promotionRewardProcessingFlag" persistent="false";
+	
+	// Deprecated Properties
 	property name="brands" singularname="brand" cfc="Brand" fieldtype="many-to-many" linktable="SwPromoRewardBrand" fkcolumn="promotionRewardID" inversejoincolumn="brandID";
 	property name="options" singularname="option" cfc="Option" fieldtype="many-to-many" linktable="SwPromoRewardOption" fkcolumn="promotionRewardID" inversejoincolumn="optionID";
 	property name="skus" singularname="sku" cfc="Sku" fieldtype="many-to-many" linktable="SwPromoRewardSku" fkcolumn="promotionRewardID" inversejoincolumn="skuID";
@@ -92,6 +102,7 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 	property name="excludedSkus" singularname="excludedSku" cfc="Sku" fieldtype="many-to-many" linktable="SwPromoRewardExclSku" fkcolumn="promotionRewardID" inversejoincolumn="skuID";
 	property name="excludedProducts" singularname="excludedProduct" cfc="Product" fieldtype="many-to-many" linktable="SwPromoRewardExclProduct" fkcolumn="promotionRewardID" inversejoincolumn="productID";
 	property name="excludedProductTypes" singularname="excludedProductType" cfc="ProductType" fieldtype="many-to-many" linktable="SwPromoRewardExclProductType" fkcolumn="promotionRewardID" inversejoincolumn="productTypeID";
+	// End Deprecated Properties
 	
 	// Remote Properties
 	property name="remoteID" ormtype="string";
@@ -107,8 +118,22 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 	property name="applicableTermOptions" persistent="false";
 	property name="rewards" type="string" persistent="false";
 	property name="currencyCodeOptions" persistent="false";
-	property name="isDeletableFlag" type="boolean" persistent="false"; 
+	property name="isDeletableFlag" type="boolean" persistent="false";
+	property name="includedSkusCollection" persistent="false";
+	property name="excludedSkusCollection" persistent="false";
+	property name="skuCollection" persistent="false";
+	property name="promoHasRan" persistent="false";
 	
+	//CUSTOM PROPERTIES BEGIN
+property name="personalVolumeAmount" ormtype="big_decimal" hb_formatType="custom";
+    property name="taxableAmountAmount" ormtype="big_decimal" hb_formatType="custom";
+    property name="commissionableVolumeAmount" ormtype="big_decimal" hb_formatType="custom";
+    property name="retailCommissionAmount" ormtype="big_decimal" hb_formatType="custom";
+    property name="productPackVolumeAmount" ormtype="big_decimal" hb_formatType="custom";
+    property name="retailValueVolumeAmount" ormtype="big_decimal" hb_formatType="custom";
+    property name="showRewardSkuInCartFlag" ormtype="boolean" default=1 hb_formatType="yesno";
+        
+   //CUSTOM PROPERTIES END
 	public boolean function getIsDeletableFlag(){
  		return getPromotionPeriod().getIsDeletableFlag();
  	}
@@ -155,10 +180,55 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 		}
 		return variables.currencyCode;
 	}
+	
+	public numeric function getAmount(any sku, string currencyCode, numeric quantity, any account){
+		
+		//Get price from sku prices table for fixed amount rewards
+		if(getAmountType() == 'amount' && structKeyExists(arguments,'sku')){
+			if(!structKeyExists(arguments,'currencyCode')){
+				arguments.currencyCode = getCurrencyCode();
+			}
+			var skuPrice = getSkuPriceBySkuAndCurrencyCode(argumentCollection=arguments);
 
+			if(!isNull(skuPrice)){
+				return skuPrice.getPrice();
+			}
+		}
+		
+		if(!structKeyExists(variables,'amount')){
+			variables.amount = 0;
+		}
+		return variables.amount;
+	}
 
-	public numeric function getAmountByCurrencyCode(required string currencyCode){
-		if(arguments.currencyCode neq getCurrencyCode() and getAmountType() neq 'percentageOff'){
+	private any function getSkuPriceBySkuAndCurrencyCode(required any sku, required string currencyCode, numeric quantity, any account){
+		var daoArguments = {
+			skuID:arguments.sku.getSkuID(),
+			promotionRewardID:this.getPromotionRewardID(),
+			currencyCode:arguments.currencyCode
+		};
+		if(!isNull(arguments.quantity)){
+			daoArguments.quantity = arguments.quantity;
+		}
+		if(!isNull(arguments.account)){
+			daoArguments.account = arguments.account;
+		}
+
+		return getService('skuPriceService').getPromotionRewardSkuPriceForSkuByCurrencyCode(argumentCollection=daoArguments);
+	}
+
+	public numeric function getAmountByCurrencyCode(required string currencyCode, any sku, numeric quantity, any account){
+		var amountParams = {};
+		if(structKeyExists(arguments,'quantity')){
+			amountParams['quantity'] = arguments.quantity;
+		}
+		if(structKeyExists(arguments,'sku')){
+			amountParams['sku'] = arguments.sku;
+		}
+		if(structKeyExists(arguments,'account')){
+			amountParams['account'] = arguments.account;
+		}
+		if(arguments.currencyCode neq getCurrencyCode() and getAmountType() eq 'amountOff'){
 			//Check for explicity defined promotion reward currencies
 			for(var i=1;i<=arraylen(variables.promotionRewardCurrencies);i++){
 				if(variables.promotionRewardCurrencies[i].getCurrencyCode() eq arguments.currencyCode){
@@ -168,12 +238,70 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 			//Check for defined conversion rate 
 			var currencyRate = getService("currencyService").getCurrencyDAO().getCurrentCurrencyRateByCurrencyCodes(originalCurrencyCode=getCurrencyCode(), convertToCurrencyCode=arguments.currencyCode, conversionDateTime=now());
 			if(!isNull(currencyRate)) {
-				return getService('HibachiUtilityService').precisionCalculate(currencyRate.getConversionRate()*getAmount());
+				return getService('HibachiUtilityService').precisionCalculate(currencyRate.getConversionRate()*getAmount(amountParams));
 			}
 		
+		}else if(arguments.currencyCode != getCurrencyCode()){
+			amountParams['currencyCode'] = arguments.currencyCode;
 		}
 		//Either no conversion was needed, or we couldn't find a conversion rate.
-		return getAmount();
+		return getAmount(argumentCollection=amountParams);
+	}
+	
+	public any function getIncludedSkusCollection( boolean refresh=false , boolean transient=false){
+		if(arguments.refresh || arguments.transient || isNull(variables.includedSkusCollection)){
+			var collectionConfig = getIncludedSkusCollectionConfig();
+			if(!isNull(collectionConfig)){
+				var includedSkusCollection = getService("HibachiCollectionService").createTransientCollection(entityName='Sku',collectionConfig=collectionConfig);
+			}else{
+				var includedSkusCollection = getService("HibachiCollectionService").getSkuCollectionList();
+				includedSkusCollection.setDisplayProperties('skuCode,skuName,activeFlag',{'isVisible': true, 'isSearchable': true, 'isExportable': true});
+				includedSkusCollection.addDisplayProperty('skuID', 'Sku ID', {'isVisible': false, 'isSearchable': false}, true);
+			}
+		
+			if(arguments.transient){
+				return includedSkusCollection;
+			}else{
+				variables.includedSkusCollection = includedSkusCollection;
+			}
+		}
+		return variables.includedSkusCollection;
+	}
+	
+	public any function getExcludedSkusCollection( boolean refresh=false, boolean transient=false ){
+		if(arguments.refresh || arguments.transient || isNull(variables.excludedSkusCollection)){
+			var collectionConfig = getExcludedSkusCollectionConfig();
+			if(!isNull(collectionConfig)){
+				var excludedSkusCollection = getService("HibachiCollectionService").createTransientCollection(entityName='Sku',collectionConfig=collectionConfig);
+			}else{
+				var excludedSkusCollection = getService("HibachiCollectionService").getSkuCollectionList();
+				excludedSkusCollection.setDisplayProperties('skuCode,skuName,activeFlag',{'isVisible': true, 'isSearchable': true, 'isExportable': true});
+				excludedSkusCollection.addDisplayProperty('skuID', 'Sku ID', {'isVisible': false, 'isSearchable': false}, true);
+			}
+			
+			if(arguments.transient){
+				return excludedSkusCollection;
+			}else{
+				variables.excludedSkusCollection = excludedSkusCollection;
+			}
+		}
+		return variables.excludedSkusCollection;
+	}
+		
+	public boolean function getPromotionRewardProcessingFlag(){
+		if(isNull(variables.promotionRewardProcessingFlag)){
+			variables.promotionRewardProcessingFlag = false;
+		}
+		return variables.promotionRewardProcessingFlag;
+	}
+	
+	public void function saveIncludedSkusCollection(){
+		var collectionConfig = serializeJSON(getIncludedSkusCollection().getCollectionConfigStruct());
+		setIncludedSkusCollectionConfig(collectionConfig);
+	}
+	public void function saveExcludedSkusCollection(){
+		var collectionConfig = serializeJSON(getExcludedSkusCollection().getCollectionConfigStruct());
+		setExcludedSkusCollectionConfig(collectionConfig);
 	}
 
 	// ============  END:  Non-Persistent Property Methods =================
@@ -237,7 +365,120 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 			arrayDeleteAt(arguments.shippingMethod.getPromotionRewards(), thatIndex);    
 		}    
 	}
+	
+	// Collection Skus
+	
+	public boolean function hasSkuBySkuID(required any skuID){
+		var checkExcluded = true;
+		var checkIncluded = true;
+		var hasSku = false;
+		
+		if( isNull( getExcludedSkusCollectionConfig() ) ){
+			checkExcluded = false;
+		}
+		if( isNull( getIncludedSkusCollectionConfig() ) ){
+			checkIncluded = false;
+		}
+		
+		if( checkIncluded ){
+			hasSku = getCollectionHasSkuBySkuID( getIncludedSkusCollection(transient=true), arguments.skuID );
+		}
+		
+		if( checkExcluded && ( hasSku || !checkIncluded ) ){
+			hasSku = !getCollectionHasSkuBySkuID( getExcludedSkusCollection(transient=true), arguments.skuID );
+		}
+		
+		return hasSku;
+	}
+	
+	public boolean function hasOrderItemSku(required any orderItem){
+		return this.hasSkuBySkuID(arguments.orderItem.getSku().getSkuID());
+	}
+	
+	public string function getIncludedStackableRewardsIDList( boolean includeReciprocalRecords=false ){
+		var cacheKey = 'includedStackableRewardsIDList#arguments.includeReciprocalRecords#';
+		if(!structKeyExists(variables,cacheKey)){
+			variables[cacheKey] = ArrayToList(getDAO('PromotionDAO').getIncludedStackableRewardsIDListForPromotionReward( this, arguments.includeReciprocalRecords ));
+		}
+		return variables[cacheKey];
+	}
+	
+	public string function getExcludedStackableRewardsIDList( boolean includeReciprocalRecords=false ){
+		var cacheKey = 'excludedStackableRewardsIDList#arguments.includeReciprocalRecords#';
+		if(!structKeyExists(variables, cacheKey)){
+			variables[cacheKey] = ArrayToList(getDAO('PromotionDAO').getExcludedStackableRewardsIDListForPromotionReward( this, arguments.includeReciprocalRecords ));
+		}
+		return variables[cacheKey];
+	}
+	
+	private boolean function getCollectionHasSkuBySkuID( required any skuCollection, required string skuID ){
+		if(isNull(arguments.skuCollection)){
+			return false;
+		}
+		arguments.skuCollection.setDisplayProperties('skuID');
+		arguments.skuCollection.addFilter(propertyIdentifier='skuID',value=arguments.skuID, filterGroupAlias='skuIDFilter');
+		return !arrayIsEmpty(arguments.skuCollection.getPageRecords(formatRecords=false,refresh=true));
+	}
+	
+	// =============  END:  Bidirectional Helper Methods ===================
+	
+	// =============== START: Custom Formatting Methods ====================
+	
+	public string function getAmountFormatted() {
+		if(getAmountType() == "percentageOff") {
+			return formatValue(getAmount(), "percentage");
+		}
+		
+		return formatValue(getAmount(), "currency");
+	}
+	
+	// ===============  END: Custom Formatting Methods =====================
 
+	// ================== START: Overridden Methods ========================
+	
+	public string function getSimpleRepresentationPropertyName() {
+		return "rewardType";
+	}
+
+	public boolean function isDeletable() {
+		return !getPromotionPeriod().isExpired() && getPromotionPeriod().getPromotion().isDeletable();
+	}
+	
+	public void function setIncludedSkusCollectionConfig( required string collectionConfig ){
+		var collectionConfigStruct = deserializeJSON(arguments.collectionConfig);
+		if(getService('hibachiCollectionService').collectionConfigStructHasFilter(collectionConfigStruct)){
+			variables.includedSkusCollectionConfig = arguments.collectionConfig;	
+		}
+	}
+	
+	public void function setExcludedSkusCollectionConfig( required string collectionConfig ){
+		var collectionConfigStruct = deserializeJSON(arguments.collectionConfig);
+		if(getService('hibachiCollectionService').collectionConfigStructHasFilter(collectionConfigStruct)){
+			variables.excludedSkusCollectionConfig = arguments.collectionConfig;	
+		}
+	}
+	
+	public any function getPromoHasRan(){
+		if(isNull(variables.promoHasRan)){
+			variables.promoHasRan = false;
+		}
+		return variables.promoHasRan;
+	}
+	
+	public any function setPromoHasRan(required boolean hasRan){
+		variables.promoHasRan = arguments.hasRan;
+	}
+	
+
+	
+	// ==================  END:  Overridden Methods ========================
+
+	// =================== START: ORM Event Hooks  =========================
+	
+	// ===================  END:  ORM Event Hooks  =========================
+	
+	// ================= START: Deprecated Methods  ========================
+	
 	// Brands (many-to-many - owner)
 	public void function addBrand(required any brand) {
 		if(arguments.brand.isNew() or !hasBrand(arguments.brand)) {
@@ -438,33 +679,157 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 		}
 	}
 	
-	// =============  END:  Bidirectional Helper Methods ===================
+	// =================  END: Deprecated Methods   ========================		//CUSTOM FUNCTIONS BEGIN
+
+public numeric function getPersonalVolumeAmount(any sku, string currencyCode){
+        arguments['customPriceField'] = 'personalVolume';
+        return getCustomAmount(argumentCollection=arguments);
+    }
+    
+    public numeric function getTaxableAmountAmount(any sku, string currencyCode){
+        arguments['customPriceField'] = 'taxableAmount';
+        return getCustomAmount(argumentCollection=arguments);
+    }
+    
+    public numeric function getCommissionableVolumeAmount(any sku, string currencyCode){
+        arguments['customPriceField'] = 'commissionableVolume';
+        return getCustomAmount(argumentCollection=arguments);
+    }
+    
+    public numeric function getRetailCommissionAmount(any sku, string currencyCode){
+        arguments['customPriceField'] = 'retailCommission';
+        return getCustomAmount(argumentCollection=arguments);
+    }
+    
+    public numeric function getProductPackVolumeAmount(any sku, string currencyCode){
+        arguments['customPriceField'] = 'productPackVolume';
+        return getCustomAmount(argumentCollection=arguments);
+    }
+    
+    public numeric function getRetailValueVolumeAmount(any sku, string currencyCode){
+        arguments['customPriceField'] = 'retailValueVolume';
+        return getCustomAmount(argumentCollection=arguments);
+    }
+    
+    public string function getPersonalVolumeAmountFormatted(){
+        arguments['customPriceField'] = 'personalVolume';
+        return getCustomAmountFormatted(argumentCollection=arguments);
+    }
+    
+    public string function getTaxableAmountAmountFormatted(){
+        arguments['customPriceField'] = 'taxableAmount';
+        return getCustomAmountFormatted(argumentCollection=arguments);
+    }
+    
+    public string function getCommissionableVolumeAmountFormatted(){
+        arguments['customPriceField'] = 'commissionableVolume';
+        return getCustomAmountFormatted(argumentCollection=arguments);
+    }
+    
+    public string function getRetailCommissionAmountFormatted(){
+        arguments['customPriceField'] = 'retailCommission';
+        return getCustomAmountFormatted(argumentCollection=arguments);
+    }
+    
+    public string function getProductPackVolumeAmountFormatted(){
+        arguments['customPriceField'] = 'productPackVolume';
+        return getCustomAmountFormatted(argumentCollection=arguments);
+    }
+    
+    public string function getRetailValueVolumeAmountFormatted(){
+        arguments['customPriceField'] = 'retailValueVolume';
+        return getCustomAmountFormatted(argumentCollection=arguments);
+    }
+    
+    public numeric function getPersonalVolumeAmountByCurrencyCode(required string currencyCode, any sku){
+        arguments['customPriceField'] = 'personalVolume';
+        return getCustomAmountByCurrencyCode(argumentCollection=arguments);
+    }
+    
+    public numeric function getTaxableAmountAmountByCurrencyCode(required string currencyCode, any sku){
+        arguments['customPriceField'] = 'taxableAmount';
+        return getCustomAmountByCurrencyCode(argumentCollection=arguments);
+    }
+    
+    public numeric function getCommissionableVolumeAmountByCurrencyCode(required string currencyCode, any sku){
+        arguments['customPriceField'] = 'commissionableVolume';
+        return getCustomAmountByCurrencyCode(argumentCollection=arguments);
+    }
+    
+    public numeric function getRetailCommissionAmountByCurrencyCode(required string currencyCode, any sku){
+        arguments['customPriceField'] = 'retailCommission';
+        return getCustomAmountByCurrencyCode(argumentCollection=arguments);
+    }
+    
+    public numeric function getProductPackVolumeAmountByCurrencyCode(required string currencyCode, any sku){
+        arguments['customPriceField'] = 'productPackVolume';
+        return getCustomAmountByCurrencyCode(argumentCollection=arguments);
+    }
+    
+    public numeric function getRetailValueVolumeAmountByCurrencyCode(required string currencyCode, any sku){
+        arguments['customPriceField'] = 'retailValueVolume';
+        return getCustomAmountByCurrencyCode(argumentCollection=arguments);
+    }
+    
+    public numeric function getCustomAmountByCurrencyCode(required string customPriceField, required string currencyCode, any sku, numeric quantity, any account){
+		var amountParams = {
+		    'customPriceField':arguments.customPriceField
+		};
+		if(structKeyExists(arguments,'sku')){
+			amountParams['sku'] = arguments.sku;
+		}
+		if(structKeyExists(arguments,'account')){
+			amountParams['account'] = arguments.account;
+		}
+		if(arguments.currencyCode != getCurrencyCode() and getAmountType() == 'amountOff'){
+		    //Check for explicity defined promotion reward currencies
+			for(var i=1;i<=arraylen(variables.promotionRewardCurrencies);i++){
+				if(variables.promotionRewardCurrencies[i].getCurrencyCode() == arguments.currencyCode){
+					return variables.promotionRewardCurrencies[i].invokeMethod('get#customPriceField#Amount');
+				}
+			}
+			//Check for defined conversion rate 
+			var currencyRate = getService("currencyService").getCurrencyDAO().getCurrentCurrencyRateByCurrencyCodes(originalCurrencyCode=getCurrencyCode(), convertToCurrencyCode=arguments.currencyCode, conversionDateTime=now());
+			if(!isNull(currencyRate)) {
+				return getService('HibachiUtilityService').precisionCalculate(currencyRate.getConversionRate()*invokeMethod('get#customPriceField#Amount'));
+			}
+		
+		}else if(arguments.currencyCode != getCurrencyCode()){
+			amountParams['currencyCode'] = arguments.currencyCode;
+		}
+		//Either no conversion was needed, or we couldn't find a conversion rate.
+		return getCustomAmount(argumentCollection=amountParams);
+	}
 	
-	// =============== START: Custom Formatting Methods ====================
-	
-	public string function getAmountFormatted() {
-		if(getAmountType() == "percentageOff") {
-			return formatValue(getAmount(), "percentage");
+	public numeric function getCustomAmount(required string customPriceField, any sku, string currencyCode, numeric quantity, any account){
+
+		//Get price from sku prices table for fixed amount rewards
+		if(getAmountType() == 'amount' && structKeyExists(arguments,'sku')){
+			if(!structKeyExists(arguments,'currencyCode')){
+				arguments.currencyCode = getCurrencyCode();
+			}
+			var skuPrice = getSkuPriceBySkuAndCurrencyCode(argumentCollection=arguments);
+			if(!isNull(skuPrice)){
+				return skuPrice.invokeMethod('get#customPriceField#');
+			}
 		}
 		
-		return formatValue(getAmount(), "currency");
+		if(!structKeyExists(variables,'#customPriceField#Amount')){
+			variables['#customPriceField#Amount'] = getAmount(argumentCollection=arguments);
+		}
+		return variables['#customPriceField#Amount'];
 	}
 	
-	// ===============  END: Custom Formatting Methods =====================
-
-	// ================== START: Overridden Methods ========================
-	
-	public string function getSimpleRepresentationPropertyName() {
-		return "rewardType";
-	}
-
-	public boolean function isDeletable() {
-		return !getPromotionPeriod().isExpired() && getPromotionPeriod().getPromotion().isDeletable();
+    public string function getCustomAmountFormatted( required string customPriceField ) {
+		if(getAmountType() == "percentageOff") {
+			return formatValue(this.invokeMethod('get#customPriceField#Amount'), "percentage");
+		}
+		
+		return formatValue(this.invokeMethod('get#customPriceField#Amount'), "currency");
 	}
 	
-	// ==================  END:  Overridden Methods ========================
-
-	// =================== START: ORM Event Hooks  =========================
-	
-	// ===================  END:  ORM Event Hooks  =========================
+	public any function getSkuCollection(){
+		return getIncludedSkusCollection();
+	}
+    //CUSTOM FUNCTIONS END
 }

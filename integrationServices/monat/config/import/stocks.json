@@ -1,0 +1,20 @@
+{
+    "baseentity":"Stock",
+    "mapping":[
+        {
+          "sourceColumn":"SKUItemID",
+          "propertyIdentifier":"sku.remoteID",
+          "key":true
+        },
+        {
+          "sourceColumn":"LocationCode",
+          "propertyIdentifier":"location.locationCode",
+          "key":true
+        },
+        {
+          "sourcecolumn":"RemoteID",
+          "sourceColumnDataGenerator":"LocationCode + '-' + SKUItemID",
+          "propertyidentifier":"remoteID"
+        }
+    ]
+} 

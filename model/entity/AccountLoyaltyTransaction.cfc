@@ -41,6 +41,7 @@ component displayname="AccountLoyaltyTransaction" entityname="SlatwallAccountLoy
 	// Persistent Properties
 	property name="accountLoyaltyTransactionID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="accruementType" ormType="string";
+	property name="accruementEvent" ormType="string";
 	property name="redemptionType" ormType="string";
 	property name="pointsIn" ormType="integer";
 	property name="pointsOut" ormType="integer";		
@@ -53,6 +54,11 @@ component displayname="AccountLoyaltyTransaction" entityname="SlatwallAccountLoy
 	property name="order" cfc="Order" fieldtype="many-to-one" fkcolumn="orderID";
 	property name="orderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="orderItemID";
 	property name="orderFulfillment" cfc="OrderFulfillment" fieldtype="many-to-one" fkcolumn="orderFulfillmentID";
+	
+	//In the case a loyalty transaction actually grants a promotion code or an gift card, we'll want to save
+	// that for future reference
+	property name="promotionCode" cfc="PromotionCode" fieldtype="many-to-one" fkcolumn="promotionCodeID";
+	property name="giftCard" cfc="GiftCard" fieldtype="many-to-one" fkcolumn="giftCardID";
 	
 	
 	// Remote Properties
@@ -69,20 +75,11 @@ component displayname="AccountLoyaltyTransaction" entityname="SlatwallAccountLoy
 	// ============ START: Non-Persistent Property Methods =================
 	
 	public array function getAccruementTypeOptions() {
-		return [
-			{name=rbKey('entity.accountLoyaltyAccruement.accruementType.itemFulfilled'), value="itemFulfilled"},
-			{name=rbKey('entity.accountLoyaltyAccruement.accruementType.orderClosed'), value="orderClosed"},
-			{name=rbKey('entity.accountLoyaltyAccruement.accruementType.fulfillmentMethodUsed'), value="fulfillmentMethodUsed"},
-			{name=rbKey('entity.accountLoyaltyAccruement.accruementType.enrollment'), value="enrollment"}
-		];
+		return this.getService("LoyaltyService").getAccruementTypeOptions();
 	}
 	
 	public array function getRedemptionTypeOptions() {
-		return [
-			{name=rbKey('entity.accountLoyaltyAccruement.redemptionType.productPurchase'), value="productPurchase"},
-			{name=rbKey('entity.accountLoyaltyAccruement.redemptionType.cashCouponCreation'), value="cashCouponCreation"},
-			{name=rbKey('entity.accountLoyaltyAccruement.redemptionType.priceGroupAssignment'), value="priceGroupAssignment"}
-		];
+		return this.getService("LoyaltyService").getRedemptionTypeOptions();
 	}
 	
 	// ============  END:  Non-Persistent Property Methods =================

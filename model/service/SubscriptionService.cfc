@@ -440,6 +440,25 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 		}
 	}
+	
+	/**
+     * Function to get list of subscription usage for user
+     * @param accountID optional
+     * @param pageRecordsShow optional
+     * @param currentPage optional
+     * return struct of subscriptionsUsageOnAccount and total count
+     **/
+	public any function getSubscriptionsUsageOnAccount(required any account, struct data={}) {
+        param name="arguments.data.currentPage" default=1;
+        param name="arguments.data.pageRecordsShow" default=getHibachiScope().setting('GLOBALAPIPAGESHOWLIMIT');
+        
+		var subscriptionUsageList = this.getSubscriptionUsageBenefitAccountCollectionList();
+		subscriptionUsageList.addFilter( 'account.accountID', arguments.account.getAccountID() );
+		subscriptionUsageList.setPageRecordsShow(arguments.data.pageRecordsShow);
+		subscriptionUsageList.setCurrentPageDeclaration(arguments.data.currentPage); 
+
+		return { "subscriptionsUsageOnAccount":  subscriptionUsageList.getPageRecords(), "recordsCount": subscriptionUsageList.getRecordsCount() }
+	}
 
 
 	// ===================== START: Logical Methods ===========================
@@ -649,7 +668,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				arguments.subscriptionUsage.setFirstReminderEmailDateBasedOnNextBillDate();
 
 				//set as new
-				order.setOrderStatusType(getService('SettingService').getTypeBySystemCode("ostNew"));
+				getOrderService().updateOrderStatusBySystemCode(arguments.order, "ostProcessing");
 
 				//create orderid and close
 				order.confirmOrderNumberOpenDateCloseDatePaymentAmount();

@@ -19,126 +19,135 @@ export class BaseBootStrapper{
 
     constructor(myApplication){
         this.myApplication = myApplication;
-        return angular.lazy(this.myApplication).resolve(['$http','$q', ($http,$q)=> {
+        this.appConfig = {
+            instantiationKey : undefined
+        }
+        // Inspecting app config/model metadata in local storage (retreived from /custom/system/config.json)
+        return angular.lazy(this.myApplication).resolve( ['$http','$q', ($http, $q) => {
+            
             this.$http = $http;
             this.$q = $q;
-            var baseURL = hibachiConfig.baseURL;
-            if(!baseURL) {
-                baseURL = ''
-            }
-            if(baseURL.length && baseURL.slice(-1) !== '/'){
-                baseURL += '/';
-            }
-
-           return this.getInstantiationKey(baseURL).then((instantiationKey:string)=>{
+            
+            return this.getInstantiationKey().then( (instantiationKey: string) => {
+               
                 this.instantiationKey = instantiationKey;
                 var invalidCache = [];
                 
-                return this.isPrivateMode().then((isPrivate)=>{
-                    if(!isPrivate){
-                        this.isPrivate = true;
+                // NOTE: Return a promise so bootstrapping process will wait to continue executing 
+                // until after the last step of loading the resourceBundles
+                
+                return this.isPrivateMode().then( (privateMode) => {
+                    if(!privateMode){
+                        return invalidCache;
                     }
-		    
-		            // Inspecting attribute model metadata in local storage (retreived from slatAction=api:main.getAttributeModel)
-                    try{
-                        var hashedData = localStorage.getItem('attributeChecksum');
-			
+                    throw("Private mode"); // this gets catched() down the line and we reload everythign from the API, instead of using the cached-data
+                })
+                .then( () => {
+		            // Inspecting attribute model metadata in local storage 
+		            // (retreived from slatAction=api:main.getAttributeModel)
+                    var hashedData = localStorage.getItem('attributeChecksum');
+                    if(hibachiConfig.attributeCacheKey === hashedData?.toUpperCase() ) {
                         // attributeMetaData is valid and can be restored from local storage cache
-                        if(hashedData !== null && hibachiConfig.attributeCacheKey === hashedData.toUpperCase()){
-                            coremodule.constant('attributeMetaData',JSON.parse(localStorage.getItem('attributeMetaData')));
-			    
-                        // attributeMetaData is invalid and needs to be refreshed
-                        }else{
-                            invalidCache.push('attributeCacheKey');
-                        }
-		    
-                    // attributeMetaData is invalid and needs to be refreshed
-                    }catch(e){
+                        coremodule.constant('attributeMetaData', JSON.parse(localStorage.getItem('attributeMetaData')) );
+                    } else {
                         invalidCache.push('attributeCacheKey');
                     }
-    
-                    // Inspecting app config/model metadata in local storage (retreived from /custom/system/config.json)
-                    try{
-                        if(!isPrivate){
-                            this.appConfig = JSON.parse(localStorage.getItem('appConfig'));
-                        }else{
-                            this.appConfig={
-                                instantiationKey:undefined
-                            };
-                            
-                        }
-			
-                        // appConfig instantiation key is valid (but attribute model may need to be refreshed)
-                        if(
-                            hibachiConfig.instantiationKey
-                            && this.appConfig.instantiationKey
-                            && hibachiConfig.instantiationKey === this.appConfig.instantiationKey
-                        ){
-
-
-                            // NOTE: Return a promise so bootstrapping process will wait to continue executing until after the last step of loading the resourceBundles
-			    
-                            coremodule.constant('appConfig', this.appConfig);
-                            // If invalidCache, that indicates a need to refresh attribute metadata prior to retrieving resourceBundles
-                            if (invalidCache.length) {
-                                let deferred = $q.defer();
-                                this.getData(invalidCache).then(resp => {
-                                    this.getResourceBundles().then((resp) => {
-                                        deferred.resolve(resp);
-                                    });
-                                });
-                                
-                                // Ends bootstrapping the process
-                                return deferred.promise;
-                            }
-                        
-                            // All appConfig and attribute model valid, nothing to refresh prior, ends the bootstrapping process
-                            return this.getResourceBundles();
-			    
-
-                        // Entire app config needs to be refreshed
-                        }else{
-                            invalidCache.push('instantiationKey');
-                        }
-			
-                    // Entire app config needs to be refreshed
-                    }catch(e){
+                })
+                .then( () => {
+                    
+                    if(localStorage.getItem('appConfig') != null) {
+                        this.appConfig = JSON.parse(localStorage.getItem('appConfig'));
+                    }
+                    
+                    if(  this.instantiationKey === this.appConfig.instantiationKey ) {
+                        // appConfig instantiation key is valid,
+                        // override config with whatever new received in hibachi-config
+                        Object.assign(this.appConfig, hibachiConfig);
+                        coremodule.constant('appConfig', this.appConfig);
+                    } else {
                         invalidCache.push('instantiationKey');
                     }
-    
-                    // NOTE: If invalidCache array does not contain 'instantiationKey' this will not work because getResourceBundles will not be in the promise chain when the bootstrapping process ends
-                    return this.getData(invalidCache);
+                })
+                .catch( (e) => {
+                    invalidCache.push('attributeCacheKey');
+                    invalidCache.push('instantiationKey');
+                    console.error(e);
+                })
+                .then( () => invalidCache.length ? this.getData(invalidCache) : undefined )
+                .then( () => this.getResourceBundles() )
+                .catch( (e) => { 
+                    console.error(e);
                 });
-                
-            });
+           });
       }])
-
     }
     
-    isPrivateMode=()=> {
-      return new Promise((resolve) => {
-        const on = () => resolve(true); // is in private mode
-        const off = () => resolve(false); // not private mode
+    getBaseUrl = () => {
+        var urlString = "";
+        
+        if(!hibachiConfig){
+            hibachiConfig = {};
+        }
+        
+        if(!hibachiConfig.baseURL){
+            hibachiConfig.baseURL = '';
+        }
+        
+        urlString += hibachiConfig.baseURL;
+        if( hibachiConfig.baseURL.length && hibachiConfig.baseURL.charAt(hibachiConfig.baseURL.length-1) != '/' ) {
+            urlString += '/';
+        }
+        
+        return urlString;
+    }
+    
+    isPrivateMode = () => {
+        
+      return this.$q( (resolve, reject) => {
+        
+        const on = () => {
+            this.isPrivate = true;// is in private mode
+            resolvePromise();
+        }
+        
+        const off = () => {
+            this.isPrivate = false; // not private mode 
+            resolvePromise()
+        }
+        
+        const resolvePromise = () => {
+            resolve(this.isPrivate);
+        }
+        
+        
+        if(this.isPrivate !== null) { //if already determined, (in some earlier call)
+            return resolvePromise();
+        }
+        
         const testLocalStorage = () => {
-          try {
-            if (localStorage.length) off();
-            else {
-              localStorage.setItem('x','1');
-              localStorage.removeItem('x');
-              off();
+          
+            try {
+                if(localStorage.length) {
+                    off();
+                } else {
+                  localStorage.setItem('x','1');
+                  localStorage.removeItem('x');
+                  off();
+                }
+            } catch (e) {
+                // Safari only enables cookie in private mode
+                // if cookie is disabled then all client side storage is disabled
+                // if all client side storage is disabled, then there is no point
+                // in using private mode
+                navigator.cookieEnabled ? on() : off();
             }
-          } catch (e) {
-            // Safari only enables cookie in private mode
-            // if cookie is disabled then all client side storage is disabled
-            // if all client side storage is disabled, then there is no point
-            // in using private mode
-            navigator.cookieEnabled ? on() : off();
-          }
         };
+        
         // Chrome & Opera
         if (window.webkitRequestFileSystem) {
           return void window.webkitRequestFileSystem(0, 0, off, on);
         }
+        
         // Firefox
         if ('MozAppearance' in document.documentElement.style) {
           const db = indexedDB.open('test');
@@ -146,163 +155,201 @@ export class BaseBootStrapper{
           db.onsuccess = off;
           return void 0;
         }
+        
         // Safari
         if (/constructor/i.test(window.HTMLElement)) {
           return testLocalStorage();
         }
+        
         // IE10+ & Edge
         if (!window.indexedDB && (window.PointerEvent || window.MSPointerEvent)) {
           return on();
         }
+        
         // others
         return off();
       });
     }
 
-    getInstantiationKey=(baseURL:string):ng.IPromise<any>=>{
-        return this.$q((resolve, reject)=> {
-            if(hibachiConfig.instantiationKey){
+    getInstantiationKey = (): ng.IPromise<any> => {
+        return this.$q( (resolve, reject) => {
+            if(this.instantiationKey) {
+                resolve(this.instantiationKey);
+            } else if(hibachiConfig.instantiationKey) {
                 resolve(hibachiConfig.instantiationKey);
-            }else{
-
-                this.$http.get(baseURL+'?'+hibachiConfig.action+'=api:main.getInstantiationKey').then((resp:any) => resolve(resp.data.data.instantiationKey));
-
+            } else {
+                this.$http.get(this.getBaseUrl() + '?' + hibachiConfig.action + '=api:main.getInstantiationKey')
+                .then( (resp:any) => { 
+                    this.instantiationKey = resp.data.data.instantiationKey;
+                    resolve(this.instantiationKey); 
+                })
             }
         });
     };
 
-
-    getData=(invalidCache:string[])=>{
-        var promises:{[id:string]:ng.IPromise<any>} ={};
-        for(var i in invalidCache){
-            var invalidCacheName = invalidCache[i];
-            var functionName = invalidCacheName.charAt(0).toUpperCase()+invalidCacheName.slice(1);
-            promises[invalidCacheName] = this['get'+functionName+'Data']();
-
-        }
+    getData = ( invalidCache: string[] ) => {
+        
+        var promises: { [id:string]: ng.IPromise<any> } = {};
+        
+        invalidCache.forEach( (cacheItem) => {
+            var camelCaseFunctionName = cacheItem.charAt(0).toUpperCase() + cacheItem.slice(1);
+            promises[cacheItem] = this['get'+camelCaseFunctionName+'Data'](); // mind the syntax 8)
+        })
+        
         return this.$q.all(promises);
     };
 
-    getAttributeCacheKeyData = ()=>{
-        var urlString = "";
-
-        if(!hibachiConfig){
-            hibachiConfig = {};
-        }
-
-        if(!hibachiConfig.baseURL){
-            hibachiConfig.baseURL = '';
-        }
-        urlString += hibachiConfig.baseURL;
-
-        if(urlString.length && urlString.slice(-1) !== '/'){
-            urlString += '/';
-        }
-
-        return this.$http.get(urlString+'?'+hibachiConfig.action+'=api:main.getAttributeModel')
-        .then( (resp:any)=> {
-            coremodule.constant('attributeMetaData',resp.data.data);
-            //for safari private mode which has no localStorage
-            try{
-                localStorage.setItem('attributeMetaData',JSON.stringify(resp.data.data));
-                localStorage.setItem('attributeChecksum',md5(JSON.stringify(resp.data.data)));
-                
-                // NOTE: at this point attributeChecksum == hibachiConfig.attributeCacheKey
-                // Keeps localStorage appConfig.attributeCacheKey consistent after attributeChecksum updates (even though it is not referenced apparently)
-                this.appConfig.attributeCacheKey = localStorage.getItem('attributeChecksum').toUpperCase();
-                localStorage.setItem('appConfig',JSON.stringify(this.appConfig));
-            }catch(e){}
-            this.attributeMetaData = resp.data.data;
-        });
-
-    };
-
-    getInstantiationKeyData = ()=>{
-        if(!this.instantiationKey){
-            var d = new Date();
-            var n = d.getTime();
-            this.instantiationKey = n.toString();
-        }
-        var urlString = "";
-        if(!hibachiConfig){
-            hibachiConfig = {};
-        }
-        if(!hibachiConfig.baseURL){
-            hibachiConfig.baseURL = '';
-        }
-        urlString += hibachiConfig.baseURL;
-        if(hibachiConfig.baseURL.length && hibachiConfig.baseURL.charAt(hibachiConfig.baseURL.length-1) != '/'){
-            urlString+='/';
-        }
+    getAttributeCacheKeyData = () => {
         
-        return this.$http.get(urlString+'/custom/system/config.json?instantiationKey='+this.instantiationKey)
-        .then( (resp:any)=> {
-            
-        	var appConfig = resp.data.data;
-            if(hibachiConfig.baseURL.length){
-                appConfig.baseURL=urlString;    
-            }
-            coremodule.constant('appConfig',appConfig);
-            try{
-                if(!this.isPrivate){
-                    localStorage.setItem('appConfig',JSON.stringify(resp.data.data));
-                }
-            }catch(e){}
-            this.appConfig = appConfig;
-            return this.getResourceBundles();
+        var urlString = this.getBaseUrl();
+
+        return this.$http
+        .get( urlString + '?' + hibachiConfig.action + '=api:main.getAttributeModel' )
+        .then( (resp:any) => resp.data.data )
+        .then( (data) => {
+            coremodule.constant('attributeMetaData', data);
+            this.attributeMetaData = data;
+            return data;
+        })
+        .then( (data) => {
+            return this.$q( (resolve, reject) => {
+                this.isPrivateMode().then( (privateMode) => {
+                    if(!privateMode) {
+                        var metadataSreing = JSON.stringify(data);
+                        localStorage.setItem('attributeMetaData', metadataSreing );
+                        localStorage.setItem('attributeChecksum', md5(metadataSreing) );
+                        
+                        // NOTE: at this point attributeChecksum == hibachiConfig.attributeCacheKey
+                        // Keeps localStorage appConfig.attributeCacheKey consistent after attributeChecksum updates (even though it is not referenced apparently)
+                        this.appConfig['attributeCacheKey'] = localStorage.getItem('attributeChecksum').toUpperCase();
+                        localStorage.setItem('appConfig', JSON.stringify(this.appConfig));
+                    }
+                    resolve(data);
+                });
+            });
+        })
+        .catch( (e) => {
+            console.error(e); 
         });
 
     };
 
-    getResourceBundle= (locale) => {
+    getInstantiationKeyData = () => {
+        
+        var urlString = this.getBaseUrl();
+        
+        return this.getInstantiationKey()
+        .then( (instantiationKey) => {
+            return this.$http.get( urlString + '/custom/system/config.json?instantiationKey=' + instantiationKey ) 
+        })
+        .then( (resp: any) => resp.data.data )
+        .then( (data) => {
+            return this.$q( (resolve, reject) => {
+                this.isPrivateMode().then( (privateMode) => {
+                    if(!privateMode) {
+                        localStorage.setItem('appConfig', JSON.stringify(data) );
+                    }
+                    resolve(data);
+                });
+            });
+        })
+        .then( (appConfig: any) => {
+            // override config
+            for(var config in hibachiConfig){
+                appConfig[config] = hibachiConfig[config];
+            }
+            coremodule.constant('appConfig', appConfig);
+            this.appConfig = appConfig;
+        })
+        .then( () => this.getResourceBundles() )
+        .catch( (e) => {
+            console.error(e); 
+        });
+
+    };
+
+    getResourceBundle = (locale) => {
         var deferred = this.$q.defer();
         var locale = locale || this.appConfig.rbLocale;
 
-        if(this._resourceBundle[locale]) {
+        if(this._resourceBundle[locale] ) {
             return this._resourceBundle[locale];
         }
 
-        var urlString = this.appConfig.baseURL+'/custom/system/resourceBundles/'+locale+'.json?instantiationKey='+this.appConfig.instantiationKey;
-
-        this.$http({
-            url:urlString,
-            method:"GET"
-        }).success((response:any,status,headersGetter) => {
+        var urlString = this.appConfig.baseURL + '/custom/system/resourceBundles/' + locale + '.json?instantiationKey=' + this.appConfig.instantiationKey;
+        this.$http({ url:urlString,  method:"GET" })
+        .success( (response:any, status, headersGetter ) => {
             this._resourceBundle[locale] = response;
             deferred.resolve(response);
-        }).error((response:any,status) => {
+        })
+        .error( (response:any, status) => {
             if(status === 404){
                 this._resourceBundle[locale] = {};
                 deferred.resolve(response);
-            }else{
+            } else {
                 deferred.reject(response);
             }
         });
+        
         return deferred.promise
     };
-
-    getResourceBundles= () => {
-        var rbLocale = this.appConfig.rbLocale;
+    
+    getResourceBundles = () => {
+        var rbLocale = this.appConfig.rbLocale || 'en';
+        
         if(rbLocale == 'en_us'){
             rbLocale = 'en'
         }
+        
+        // we want to wait untill all of the bundles are downloaded, so creating an array of promisses
+        var rbPromises = []; 
+        
+        rbPromises.push( this.getResourceBundle(rbLocale) );
+        
+        // if the locale is like "es_mx", we also want to fetch bundle for 'es', as a fallback language
         var localeListArray = rbLocale.split('_');
-        var rbPromises = [];
-        var rbPromise = this.getResourceBundle(rbLocale);
-        rbPromises.push(rbPromise);
         if(localeListArray.length === 2) {
-            rbPromise = this.getResourceBundle(localeListArray[0]);
-            rbPromises.push(rbPromise);
+            rbPromises.push( this.getResourceBundle(localeListArray[0]) );
         }
+        
+        // if the first part of the locale isn't "en", we also want to fetch bundle for 'en' as it's the fallback language
         if(localeListArray[0] !== 'en') {
-            this.getResourceBundle('en');
+            rbPromises.push( this.getResourceBundle('en') );
         }
-        return this.$q.all(rbPromises).then((data) => {
-            coremodule.constant('resourceBundles',this._resourceBundle);
-        },(error) =>{
-            //can enter here due to 404
-            coremodule.constant('resourceBundles',this._resourceBundle);
-        });
+        
+        /**
+         * the language fallback order for locale es_mx will be like
+         * 
+         *  >> the locale                               : 'es_mx'  
+         *      >>  the first language of the locale    : 'es'     
+         *          >> the default language             : 'en'
+        */
 
+		return this.$q.all(rbPromises)
+		    .then( (data) => {
+                coremodule.constant('resourceBundles', this._resourceBundle);
+            })
+            .catch( (e) => {
+                //can enter here due to 404
+                coremodule.constant('resourceBundles', this._resourceBundle);
+                console.error(e);
+            });
     }
+
+    getAuthInfo = () => {
+		return this.$http
+		.get(this.appConfig.baseURL + '?' + this.appConfig.action + '=api:main.login' )
+		.then( (loginResponse:any) => {
+			if(loginResponse.status === 200){
+				coremodule.value('token', loginResponse.data.token);
+			} else {
+			    throw loginResponse;
+			}
+		})
+		.catch( (e) => {
+		    coremodule.value('token', 'invalidToken');
+            console.error(e);
+        });
+    }
+
 }
