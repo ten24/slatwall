@@ -2434,8 +2434,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         var nonRetailEnrollmentFlag = cart.getUpgradeFlag() && !isNull(cart.getPriceGroup()) && cart.getPriceGroup().getPriceGroupCode() != 2;
         var noPrimaryAddressFlag = 
             isNull(account.getAddress()) 
-            || isNull(account.getAddress().getStateCode())
-            || !len(account.getAddress().getStateCode());
+            || account.getAddress().getNewFlag();
         
         //frontend validation to ensure that non retail enrollments have primary address
         if(nonRetailEnrollmentFlag && noPrimaryAddressFlag){
