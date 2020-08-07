@@ -71,6 +71,21 @@ Notes:
 
 			<base href="#baseHREF#" />
 		</cfif>
+		<link href="#request.slatwallScope.getBaseURL()#/admin/client/css/pacejs/pace-theme-flash.css" rel="stylesheet">
+		<script>
+		    // custom options for pace-js
+			window.paceOptions = {
+			    document: true, // disabled
+			    eventLag: true,
+			    restartOnPushState: true,
+			    restartOnRequestAfter: true,
+			    ajax: {
+			        trackMethods: [ 'POST','GET']
+			    }
+			};
+			
+		</script>
+		
 		<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/fonts/opensans/opensans.css" rel="stylesheet">
 		<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/css/bootstrap.min.css" rel="stylesheet">
 		<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/css/jquery-ui.min.css" rel="stylesheet">
@@ -80,6 +95,24 @@ Notes:
 		<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/client/lib/metismenu/metismenu.css" rel="stylesheet">
         <link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/client/lib/angularjs-datetime-picker/angularjs-datetime-picker.css" rel="stylesheet">
 		<!---<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/ng-ckeditor/ng-ckeditor.css" rel="stylesheet" type='text/css'>--->
+		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/client/lib/RetryProxy/lib/RetryProxyES5.js" charset="utf-8"></hb:HibachiScript>
+        <script>
+            function failSafeGlobalFunction(name) { //extra-args
+				var args = [];
+				for (var i = 1; i < arguments.length; ++i) {
+		            args[i-1] = arguments[i];
+		        }
+		        
+				//it will retry every 500ms, until succeed, or tried 2000 times 
+				new RetryProxyES5(window, name, 500, 2000,true)
+                .setArgs(args).run()
+
+			}
+			
+			function failSafeGetTabHTMLForTabGroup( element, tab) {
+				failSafeGlobalFunction('getTabHTMLForTabGroup', element, tab);
+			}
+        </script>
 
 		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/client/src/vendor.bundle.js" charset="utf-8"></hb:HibachiScript>
 		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/bootstrap.min.js"></hb:HibachiScript>
@@ -430,8 +463,9 @@ Notes:
 
 		<!-- code split vendor bundle before the other bundles because its common among them. -->
  		
- 		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/src/bundle.js" charset="utf-8"></hb:HibachiScript>
- 		
+        <!--- Webpack bundles--->
+	    <cfinclude template="#request.slatwallScope.getBaseURL()#/admin/client/dist/SlatwallAdminBundle.cfm" />
+
 		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/global.js"></hb:HibachiScript>
 	</body>
 </html>

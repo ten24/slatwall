@@ -15,6 +15,10 @@ component output="false" accessors="true" extends="HibachiService"  {
 		if( right(config['baseURL'], 1) != '/'){
 			config['baseURL'] = config['baseURL']&'/'; 
 		}
+		
+		if( config['baseURL'] == '/' ){
+		    config['baseURL'] = ""; // we have a lot of logic that adds `/` anyways, and having '/' as the baseURL breaks stuff all over the places
+		}
 
 		config[ 'action' ] = getApplicationValue('action');
 		config[ 'dateFormat' ] = 'mmm dd, yyyy';
