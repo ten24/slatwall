@@ -1,4 +1,4 @@
-/*
+<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,46 +45,41 @@
 
 Notes:
 
-*/
-component entityname="SlatwallBatch" table="SwBatch" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="HibachiEntityQueueService" {
+--->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
-	// Persistent Properties
-	property name="batchID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="baseObject" ormType="string" index="EI_BASEOBJECT";
-	property name="baseID" ormType="string" index="EI_BASEID";
-	property name="batchType" ormType="string" hb_formatType="rbKey"; // dependent on the integration
-	property name="batchDescription" ormtype="string";
-	property name="batchCalculatedDescription" ormtype="string";
-	// Related Object Properties (many-to-one)
+
+<cfparam name="rc.batchSmartList" type="any" />
+
+<cfset rc.batchSmartList.addOrder('createdDateTime|DESC') />
+
+<hb:HibachiEntityActionBar type="listing" object="#rc.batchSmartList#" showCreate="false">
+</hb:HibachiEntityActionBar>
+
+<cfset auditCollectionList = getHibachiScope().getService('hibachiAuditService').getAuditCollectionList()>
+	<cfset displayProperties = "createdDateTime,batchType,baseObject,baseID"/>
+	<cfset auditCollectionList.setDisplayProperties(
+	displayProperties,
+	{
+		isVisible=true,
+		isSearchable=true,
+		isDeletable=true
+	})/>
 	
-	// Related Object Properties (one-to-many)
-	property name="batchItems" singularname="batchItem" fieldtype="one-to-many" type="array" fkcolumn="batchID" cfc="EntityQueue";
-
-	// Related Object Properties (many-to-many)
-
-	// Remote Properties
-
-	// Audit Properties
-	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
-	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
-
-	// Non-Persistent Properties
-
-	// ============ START: Non-Persistent Property Methods =================
-
-	// ============  END:  Non-Persistent Property Methods =================
-
-	// ============= START: Bidirectional Helper Methods ===================
-
-	// =============  END:  Bidirectional Helper Methods ===================
-
-	// ================== START: Overridden Methods ========================
-
-	// ==================  END:  Overridden Methods ========================
-
-	// =================== START: ORM Event Hooks  =========================
-
-	// ===================  END:  ORM Event Hooks  =========================
-}
+	<cfset auditCollectionList.addDisplayProperty(
+	displayProperty='batchID',
+	columnConfig={
+		isVisible=false,
+		isSearchable=false,
+		isDeletable=false
+	})/>
+	
+		<hb:HibachiListingDisplay 
+		collectionList="#auditCollectionList#"
+		usingPersonalCollection="true"
+		personalCollectionKey='#request.context.entityactiondetails.itemname#'
+		recordEditAction="admin:entity.edit#lcase(auditCollectionList.getCollectionObject())#"
+		recordDetailAction="admin:entity.detail#lcase(auditCollectionList.getCollectionObject())#"
+	>
+	</hb:HibachiListingDisplay>
