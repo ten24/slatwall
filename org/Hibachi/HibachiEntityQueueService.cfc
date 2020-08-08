@@ -117,8 +117,8 @@ component accessors="true" output="false" extends="HibachiService" {
 	
 		if(arguments.useThread == true && !getService('hibachiUtilityService').isInThread()){
 			var threadName = "updateCalculatedProperties_#replace(createUUID(),'-','','ALL')#";
-			thread name="#threadName#" entityQueueArray="#arguments.entityQueueArray#" {
-				processEntityQueueArray(entityQueueArray=entityQueueArray, useThread=false, maxTryCount=arguments.maxTryCount);
+			thread name="#threadName#" entityQueueArray="#arguments.entityQueueArray#" maxTryCount="#arguments.maxTryCount#" {
+				processEntityQueueArray(entityQueueArray=entityQueueArray, useThread=false, maxTryCount=maxTryCount);
 			}
 		}else{
 			var entityQueueIDsToBeDeleted = '';
