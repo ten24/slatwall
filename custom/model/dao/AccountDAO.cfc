@@ -36,7 +36,7 @@
 		</cfquery>
 		
 		<cfif local.coordinatesByZipcode.recordCount EQ 0>
-			<cfreturn 'there are no records 38. pre left:#arguments.zipcode# postLeft:#Left(arguments.zipcode,5)# ' />
+			<cfreturn '' />
 		</cfif>
 		
 		<cfloop index="local.currentRadius" from="#arguments.step#" to="#arguments.maxRadius#" step="#arguments.step#">
@@ -90,7 +90,7 @@
 			</cfif>
 		</cfloop>
 
-		<cfreturn 'there are no records 93' />
+		<cfreturn '' />
 		
 	</cffunction>
 	
