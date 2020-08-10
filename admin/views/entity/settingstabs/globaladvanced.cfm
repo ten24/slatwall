@@ -57,6 +57,7 @@ Notes:
         <swa:SlatwallSetting settingName="globalTestingEmailDomain" />
 		<swa:SlatwallSetting settingName="globalAPIDirtyRead" />
 		<swa:SlatwallSetting settingName="globalAPIPageShowLimit" />
+		<swa:SlatwallSetting settingName="globalAPIExportLimit" />
 		<swa:SlatwallSetting settingName="globalClientSecret" />
 		<swa:SlatwallSetting settingName="globalDeploySitesAndApplicationsOnUpdate" />
 		<swa:SlatwallSetting settingName="globalEncryptionAlgorithm" />

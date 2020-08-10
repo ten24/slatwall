@@ -1252,7 +1252,17 @@ component output="false" accessors="true" extends="HibachiService" {
 		} else {
 			exportFileName = arguments.collectionEntity.getCollectionConfigStruct().baseEntityName;
 		}
-		var collectionData = arguments.collectionEntity.getRecords(forExport=true,formatRecords=false);
+		var collectionData = [];
+		var exportRecordsCountLimit = getHibachiScope().setting('globalAPIExportLimit');
+		
+		if(isNumeric(exportRecordsCountLimit)){
+			arguments.collectionEntity.setPageRecordsShow(exportRecordsCountLimit);
+			collectionData = arguments.collectionEntity.getPageRecords(forExport=true,formatRecords=false);
+		}else{
+			collectionData = arguments.collectionEntity.getRecords(forExport=true,formatRecords=false);
+		}
+		
+		
 		var headers = getHeadersListByCollection(arguments.collectionEntity);
 		var title =  getHeadersListByCollection(arguments.collectionEntity, true);
 		
