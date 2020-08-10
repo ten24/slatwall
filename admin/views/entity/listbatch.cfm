@@ -57,7 +57,7 @@ Notes:
 <hb:HibachiEntityActionBar type="listing" object="#rc.batchSmartList#" showCreate="false">
 </hb:HibachiEntityActionBar>
 
-<cfset auditCollectionList = getHibachiScope().getService('hibachiAuditService').getAuditCollectionList()>
+<cfset auditCollectionList = getHibachiScope().getService('hibachiAuditService').getBatchCollectionList()>
 	<cfset displayProperties = "createdDateTime,batchType,baseObject,baseID"/>
 	<cfset auditCollectionList.setDisplayProperties(
 	displayProperties,
