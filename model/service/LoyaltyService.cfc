@@ -60,6 +60,69 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	// ===================== START: Process Methods ===========================
 	
+	public any function processLoyaltyAccruement_addGiftCardValueByCurrency(required any loyaltyAccruement, required struct data) {
+		
+		accruementCurrency = this.newAccruementCurrency();
+		
+		accruementCurrency.setCurrencyCode(arguments.processObject.getCurrencyCode());
+		
+		accruementCurrency.setGiftCardValue(arguments.processObject.getGiftCardValue());
+
+		accruementCurrency.setLoyaltyAccruement(arguments.loyaltyAccruement);
+
+		accruementCurrency = this.saveAccruementCurrency(accruementCurrency);
+		
+		if(accruementCurrency.hasErrors()){
+			arguments.loyaltyAccruement.addErrors(accruementCurrency.getErrors());
+		}
+		
+		return arguments.loyaltyAccruement;	
+	}
+	
+	public any function processLoyaltyAccruement_addPromotionEligibleCurrency(required any loyaltyAccruement, required struct data) {
+		
+		var accruementCurrency = this.newAccruementCurrency();
+		
+		accruementCurrency.setCurrencyCode(arguments.processObject.getCurrencyCode());
+		
+		accruementCurrency.setLoyaltyAccruement(arguments.loyaltyAccruement);
+
+		accruementCurrency = this.saveAccruementCurrency(accruementCurrency);
+		
+		if(accruementCurrency.hasErrors()){
+			arguments.loyaltyAccruement.addErrors(accruementCurrency.getErrors());
+		}
+		
+		return arguments.loyaltyAccruement;	
+	}
+	
+	public any function deleteLoyalty(required any loyalty){
+		var accruements = loyalty.getLoyaltyAccruements();
+		for (var accruement in accruements){
+			getDAO("LoyaltyDAO").removeAccruementCurrencies(accruement.getLoyaltyAccruementID());
+		}
+		return delete(arguments.loyalty);	
+	}
+	
+	public any function processLoyaltyAccruement_addPointsPerCurrencyUnit(required any loyaltyAccruement, required struct data) {
+		
+		accruementCurrency = this.newAccruementCurrency();
+		
+		accruementCurrency.setCurrencyCode(arguments.processObject.getCurrencyCode());
+		
+		accruementCurrency.setPointQuantity(arguments.processObject.getPointQuantity());
+
+		accruementCurrency.setLoyaltyAccruement(arguments.loyaltyAccruement);
+
+		accruementCurrency = this.saveAccruementCurrency(accruementCurrency);
+		
+		if(accruementCurrency.hasErrors()){
+			arguments.loyaltyAccruement.setErrors(accruementCurrency.getErrors());
+		}
+		
+		return arguments.loyaltyAccruement;	
+	}
+	
 	public any function processLoyaltyRedemption_redeem(required any loyaltyRedemption, required struct data) {
 		var lifeTimeBalance = arguments.data.accountLoyalty.getLifetimeBalance();
 
@@ -84,6 +147,41 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		return arguments.loyaltyRedemption;	
+	}
+	
+	public array function getPointTypeOptions() {
+		return [
+			{name=rbKey('define.select'), value=""},
+			{name=rbKey('entity.loyaltyAccruement.pointType.fixed'), value="fixed"},
+			{name=rbKey('entity.loyaltyAccruement.pointType.pointsPerCurrencyUnit'), value="pointsPerCurrencyUnit"}
+		];
+	}
+	
+	public array function getAccruementEventOptions() {
+		return [
+			{name=rbKey('define.select'), value=""},
+			{name=rbKey('entity.accountLoyaltyAccruement.accruementEvent.itemFulfilled'), value="itemFulfilled"},
+			{name=rbKey('entity.accountLoyaltyAccruement.accruementEvent.orderClosed'), value="orderClosed"},
+			{name=rbKey('entity.accountLoyaltyAccruement.accruementEvent.fulfillmentMethodUsed'), value="fulfillmentMethodUsed"},
+			{name=rbKey('entity.accountLoyaltyAccruement.accruementEvent.enrollment'), value="enrollment"}
+		];
+	}
+	
+	public array function getAccruementTypeOptions() {
+		return [
+			{name=rbKey('define.select'), value=""},
+			{name=rbKey('entity.accountLoyaltyAccruement.accruementType.points'), value="points"},
+			{name=rbKey('entity.accountLoyaltyAccruement.accruementType.giftCard'), value="giftCard"},
+			{name=rbKey('entity.accountLoyaltyAccruement.accruementType.promotion'), value="promotion"}
+		];
+	}
+	
+	public array function getRedemptionTypeOptions() {
+		return [
+			{name=rbKey('entity.accountLoyaltyAccruement.redemptionType.productPurchase'), value="productPurchase"},
+			{name=rbKey('entity.accountLoyaltyAccruement.redemptionType.cashCouponCreation'), value="cashCouponCreation"},
+			{name=rbKey('entity.accountLoyaltyAccruement.redemptionType.priceGroupAssignment'), value="priceGroupAssignment"}
+		];
 	}
 	
 	// =====================  END: Process Methods ============================

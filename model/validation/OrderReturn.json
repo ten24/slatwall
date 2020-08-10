@@ -1,6 +1,7 @@
 {
-	"properties":{
-		"orderStatusCode":			[{"contexts":"edit,delete","inList":"ostNotPlaced,ostNew,ostProcessing,ostOnHold"}]
+	"properties": {
+		"orderStatusCode": [
+			{ "contexts": "edit,delete", "inList": "ostNotPlaced,ostNew,ostProcessing,ostOnHold" }
+		]
 	}
 }
-

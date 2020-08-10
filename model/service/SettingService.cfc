@@ -66,8 +66,10 @@ component extends="HibachiService" output="false" accessors="true" {
 	property name="siteService" type="any";
 	property name="taskService" type="any";
 	property name="taxService" type="any";
+	property name="translationService" type="any";
 	property name="typeService" type="any";
 	property name="skuService" type="any";
+	property name="stockService" type="any";
 
 	// ====================== START: META DATA SETUP ============================
 
@@ -99,7 +101,8 @@ component extends="HibachiService" output="false" accessors="true" {
 			"physical",
 			"location",
 			"integration",
-			"order"
+			"order",
+			"orderTemplate"
 		];
 	}
 
@@ -143,6 +146,7 @@ component extends="HibachiService" output="false" accessors="true" {
 
 			// Account Authentication
 			accountAuthenticationAutoLogoutTimespan = {fieldType="text"},
+			accountLoginEmailOrUserName = {fieldType="select", defaultValue="email", valueOptions=[{name="Email",value="email"}, {name="Email or Username",value="emailOrUsername"}]},
 
 			// Address
 			addressDisplayTemplate = {fieldType="select"},
@@ -192,6 +196,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			emailIMAPServerPort = {fieldType="text"},
 			emailIMAPServerUsername = {fieldType="text"},
 			emailIMAPServerPassword = {fieldType="password"},
+			emailLocaleString = {fieldType="text"},
 			emailReplyToAddress = {fieldType="text", defaultValue=""},
 			emailSubject = {fieldType="text", defaultValue="Notification From Slatwall"},
 			emailSMTPServer = {fieldType="text", defaultValue=""},
@@ -212,7 +217,8 @@ component extends="HibachiService" output="false" accessors="true" {
 			fulfillmentMethodAutoLocation = {fieldType="select", defaultValue="88e6d435d3ac2e5947c81ab3da60eba2"},
 			fulfillmentMethodAutoMinReceivedPercentage = {fieldType="text", formatType="percentage", defaultValue=100},
 			fulfillmentMethodTaxCategory = {fieldType="select", defaultValue="444df2c8cce9f1417627bd164a65f133"},
-
+			fulfillmentMethodHandlingFeeTaxCategory = {fieldType="select", defaultValue="d3ee781492d311e9a4b9124eec8f77b2"},
+			
 			// Global
 			globalInspectRestrictionDisplays={fieldType="yesno",defaultValue=0},
 			globalAllowCustomBranchUpdates={fieldType="yesno",defaultValue=0},
@@ -228,6 +234,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalAuditAutoArchiveVersionLimit = {fieldType="text", defaultValue=10, validate={dataType="numeric", minValue=0}},
 			globalAuditCommitMode = {fieldType="select", defaultValue="thread", valueOptions=[{name="separate thread",value="thread"}, {name="same request",value="sameRequest"}]},
 			globalCopyCartToNewSessionOnLogout = {fieldtype="yesno", defaultValue=0},
+			globalCartResponseIncludeAttributeValues = {fieldtype="yesno",defaultValue=1},
 			globalClientSecret = {fieldtype="text",defaultValue="#createUUID()#"},
 			globalCurrencyLocale = {fieldType="select",defaultValue="English (US)"},
 			globalCurrencyType = {fieldType="select",defaultValue="Local"},
@@ -243,21 +250,28 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalFileTypeWhiteList = {fieldtype="text", defaultValue="pdf,zip,xml,txt,csv,xls,doc,jpeg,jpg,png,gif"},
 			globalForceCreditCardOverSSL = {fieldtype="yesno",defaultValue=1},
 			globalGiftCardMessageLength = {fieldType="text", defaultValue="250", validate={dataType="numeric",required=true,maxValue=4000}},
+			globalGiftCardAllowNegativeBalance = {fieldType="yesno", defaultValue=0},
 			globalLogApiRequests = {fieldtype="yesno",defaultValue=0},
 			globalLogMessages = {fieldType="select",defaultValue="General"},
 			globalMaximumFulfillmentsPerOrder = {fieldtype="text", defaultValue=1000, validate={dataType="numeric", required=true}},
+			globalMaximumPromotionMessages = {fieldType="text", defaultValue=1, validate={dataType="numeric"}},
 			globalMIMETypeWhiteList = {fieldtype="text", defaultValue="image/jpeg,image/png,image/gif,text/csv,application/pdf,application/rss+xml,application/msword,application/zip,text/plain,application/vnd.ms-excel,"},
 			globalMissingImagePath = {fieldType="text", defaultValue=getURLFromPath(getApplicationValue('applicationRootMappingPath')) & '/custom/assets/images/missingimage.jpg'},
 			globalNoSessionIPRegex = {fieldType="text",defaultValue=""},
 			globalNoSessionPersistDefault = {fieldType="yesno",defaultValue=0},
 			globalOrderNumberGeneration = {fieldType="select",defaultValue="Internal"},
+			globalOrderTemplateOrderOrigin = {fieldType="select",defaultValue="2c91808a6dcc9393016dcf5c4a27006d"},
 			globalPublicAutoLogoutMinutes = {fieldtype="text", defaultValue=30, validate={dataType="numeric", required=true}},
+			globalLocale = {fieldType="select",defaultValue="en_us"},
 			globalRemoteIDShowFlag = {fieldType="yesno",defaultValue=0},
 			globalRemoteIDEditFlag = {fieldType="yesno",defaultValue=0},
 			globalDisableRecordLevelPermissions = {fieldtype="yesno", defaultValue=0},
 			globalSmartListGetAllRecordsLimit = {fieldType="text",defaultValue=250},
-			globalCollectionKeywordWildcardConfig={fieldType='select', defaultValue="both", valueOptions=[{name="wildcard on both sides %example%",value="both"}, {name="wildcard on left sides %example",value="left"}, {name="wildcard on right sides example%",value="right"}]},
+			globalCollectionKeywordWildcardConfig = {fieldType='select', defaultValue="both", valueOptions=[{name="wildcard on both sides %example%",value="both"}, {name="wildcard on left sides %example",value="left"}, {name="wildcard on right sides example%",value="right"}]},
+			globalDefaultOrderByMaxRecordsLimit = { fieldType='text', defaultValue=100000, validate={dataType="numeric", required=true} },
 			globalTimeFormat = {fieldType="text",defaultValue="hh:mm tt"},
+			globalTranslateEntities = {fieldType="multiselect",defaultValue="Product,Sku"},
+			globalTranslateLocales = {fieldType="multiselect",defaultValue="en_us"},
 			globalURLKeyAttribute = {fieldType="text",defaultValue="att"},
 			globalURLKeyBrand = {fieldType="text",defaultValue="sb"},
 			globalURLKeyProduct = {fieldType="text",defaultValue="sp"},
@@ -269,7 +283,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalUsageStats = {fieldType="yesno",defaultValue=0},
 			globalUseExtendedSession = {fieldtype="yesno", defaultValue=0},
 			globalUseShippingIntegrationForTrackingNumberOption = {fieldtype="yesno", defaultValue=0},
-			globalShippingIntegrationForAddressVerification = {fieldtype="select"},
+			globalIntegrationForAddressVerification = {fieldtype="select"},
 			globalWeightUnitCode = {fieldType="select",defaultValue="lb"},
 			globalAdminAutoLogoutMinutes = {fieldtype="text", defaultValue=15, validate={dataType="numeric",required=true,maxValue=15}},
 			globalS3Bucket = {fieldtype="text"},
@@ -281,7 +295,9 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalEntityQueueDataProcessCount = {fieldType="text", defaultValue=0, validate={dataType="numeric", required=true}},
 			globalQuotePriceFreezeExpiration = {fieldtype="text", defaultValue="90", validate={dataType="numeric", required=true}},
 			globalEntityQueueDataProcessCount = {fieldType="text", defaultValue=0, validate={dataType="numeric", required=true}},
-			
+			globalDisableUninstalledIntegration = {fieldType="yesno",defaultValue=1},
+			globalPromotionIgnorePriceGroupEligibility = {fieldType="yesno",defaultValue=0},
+
 			// Image
 			imageAltString = {fieldType="text",defaultValue=""},
 			imageMissingImagePath = {fieldType="text",defaultValue="/assets/images/missingimage.jpg"},
@@ -301,7 +317,30 @@ component extends="HibachiService" output="false" accessors="true" {
 			
 			//Order
 			orderShowUnpublishedSkusFlag = {fieldtype="yesno", defaultValue=0},
-
+			orderReturnReasonTypeOptions = {
+				fieldType="listingMultiselect", 
+				listingMultiselectEntityName="Type"
+			},
+			orderExchangeReasonTypeOptions = {
+				fieldType="listingMultiselect", 
+				listingMultiselectEntityName="Type"
+			},
+			orderReplacementReasonTypeOptions = {
+				fieldType="listingMultiselect", 
+				listingMultiselectEntityName="Type"
+			},
+			//Order Template
+			orderTemplateCanPlaceFutureScheduleDateFlag = {fieldtype="yesno", defaultValue=0},
+			orderTemplateDefaultFrequencyTerm = {fieldType="select", defaultValue=""},
+			orderTemplateEligibleTerms = {
+				fieldType="listingMultiselect",
+				listingMultiselectEntityName="Term"
+			},		
+			orderTemplateEligibleShippingMethods = {
+				fieldType="listingMultiselect",
+				listingMultiselectEntityName="ShippingMethod"
+			},
+			orderTemplateRequirePaymentFlag = {fieldtype="yesno", defaultValue=1},
 			// Payment Method
 			paymentMethodMaximumOrderTotalPercentageAmount = {fieldType="text", defaultValue=100, formatType="percentage", validate={dataType="numeric", minValue=0, maxValue=100}},
 
@@ -345,6 +384,9 @@ component extends="HibachiService" output="false" accessors="true" {
 			productTypeMetaKeywordsString = {fieldType="textarea", defaultValue="${productTypeName}, ${parentProductType.productTypeName}"},
 
 			// Site
+			siteAvailableLocales = {fieldType="multiselect", defaultValue="en_us"},
+			siteDefaultAccountPaymentMethod = {fieldtype="select", defaultValue="444df303dedc6dab69dd7ebcc9b8036a"},	
+			siteDefaultLocale = {fieldType="select"},
 			siteForgotPasswordEmailTemplate = {fieldType="select", defaultValue="dbb327e796334dee73fb9d8fd801df91"},
 			siteVerifyAccountEmailAddressEmailTemplate = {fieldType="select", defaultValue="61d29dd9f6ca76d9e352caf55500b458"},
 			siteOrderOrigin = {fieldType="select"},
@@ -352,10 +394,12 @@ component extends="HibachiService" output="false" accessors="true" {
             siteRecaptchaSiteKey = {fieldType="text"},
 			siteRecaptchaSecretKey = {fieldType="text"},
 			siteRecaptchaProtectedEvents = {fieldType="multiselect", defaultValue=""},
-
+			siteOrderTemplateEligibleShippingMethods = {fieldType="listingMultiselect", listingMultiselectEntityName="ShippingMethod"},
+			
 			// Shipping Method
 			shippingMethodQualifiedRateSelection = {fieldType="select", defaultValue="lowest"},
-
+			shippingMethodTrackingURL = {fieldType="text", defaultValue=""},
+			
 			// Shipping Method Rate
 			shippingMethodRateHandlingFeePercentage = {fieldType="text",formatType="percentage",defaultValue=0,validate={dataType="numeric"}},
 			shippingMethodRateHandlingFeeFlag = {fieldType="yesno",defaultValue=0},
@@ -365,7 +409,8 @@ component extends="HibachiService" output="false" accessors="true" {
 			shippingMethodRateAdjustmentAmount = {fieldType="text", defaultValue=0},
 			shippingMethodRateMinimumAmount = {fieldType="text", defaultValue=0},
 			shippingMethodRateMaximumAmount = {fieldType="text", defaultValue=1000},
-
+		
+			
 			// Sku
 			skuAllowBackorderFlag = {fieldType="yesno", defaultValue=0},
 			skuAllowPreorderFlag = {fieldType="yesno", defaultValue=0},
@@ -387,6 +432,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			skuGiftCardRecipientRequired = {fieldType="yesno", defaultValue=1},
 			skuOrderItemGiftRecipientEmailTemplate = {fieldType="select", defaultValue=""},
 			skuHoldBackQuantity = {fieldType="text", defaultValue=0},
+			skuIsRefundFee = {fieldType="yesno", defaultValue=0},
 			skuMarkAttendanceAsBundle = {fieldType="text", defaultValue=0},
 			skuMinimumPaymentPercentageToWaitlist = {fieldType="text", defaultValue=0},
 			skuOrderMinimumQuantity = {fieldType="text", defaultValue=1},
@@ -403,7 +449,10 @@ component extends="HibachiService" output="false" accessors="true" {
 			skuStockHoldTime = {fieldType="text", defaultValue=0,  validate={dataType="numeric"}},
 			skuTaxCategory = {fieldType="select", defaultValue="444df2c8cce9f1417627bd164a65f133"},
 			skuTrackInventoryFlag = {fieldType="yesno", defaultValue=0},
+			skuTrackQATSBelowThreshold = {fieldType="text", defaultValue=1000},
 			skuShippingCostExempt = {fieldType="yesno", defaultValue=0},
+			skuDisableAverageCostCalculation = {fieldType="yesno", defaultValue=0},
+			skuDisableQoQCalculation = {fieldType="yesno", defaultValue=0},
 			
 			skuRevenueLedgerAccount = {fieldType="select", defaultValue="54cf9c67d219bd4eddc6aa7dfe32aa02"},
 			skuCogsLedgerAccount = {fieldType="select", defaultValue="54cd90d6dd39c2e90c99cdb675371a05"},
@@ -571,20 +620,40 @@ component extends="HibachiService" output="false" accessors="true" {
 				var options = getCustomIntegrationOptions();
 				arrayPrepend(options, {name='Internal', value='internal'});
 				return options;
-			case "globalShippingIntegrationForAddressVerification":
-				var options = getShippingIntegrationOptions();
+			case "globalOrderTemplateOrderOrigin":
+				var optionsCollection = this.getOrderOriginCollectionList();
+				var options = optionsCollection.getRecordOptions(false);
+				return options;
+			case "globalIntegrationForAddressVerification":
+				var options = getAddressIntegrationOptions();
 				arrayPrepend(options, {name='Internal', value='internal'});
 				return options;
+			case "globalLocale":
+				return getHibachiRBService().getAvailableLocaleOptions();
+			case "globalTranslateEntities":
+				return getTranslationService().getEntityNameOptions();
+			case "globalTranslateLocales":
+				return getHibachiRBService().getAvailableLocaleOptions();
 			case "globalWeightUnitCode": case "skuShippingWeightUnitCode":
 				var optionSL = getMeasurementService().getMeasurementUnitSmartList();
 				optionSL.addFilter('measurementType', 'weight');
 				optionSL.addSelect('unitName', 'name');
 				optionSL.addSelect('unitCode', 'value');
 				return optionSL.getRecords();
+			case "orderTemplateDefaultFrequencyTerm" :
+				var termCollection = this.getTermCollectionList();
+				termCollection.setDisplayProperties('termID|value,termName|name');
+				return termCollection.getRecords(); 
 			case "paymentMethodCheckoutTransactionType" :
 				return [{name='None', value='none'}, {name='Authorize Only', value='authorize'}, {name='Authorize And Charge', value='authorizeAndCharge'}];
 			case "productImageOptionCodeDelimiter":
 				return ['-','_'];
+			case "siteAvailableLocales":
+				return getTranslationService().getSiteAvailableLocalesOptions();
+			case "siteDefaultLocale":
+				return getTranslationService().getSiteAvailableLocalesOptions();
+			case "siteDefaultAccountPaymentMethod":
+				return getPaymentService().getActivePaymentMethodOptions();
 			case "siteForgotPasswordEmailTemplate":
 				return getEmailService().getEmailTemplateOptions( "Account" );
 			case "siteVerifyAccountEmailAddressEmailTemplate":
@@ -598,6 +667,12 @@ component extends="HibachiService" output="false" accessors="true" {
 				return [{name='Sort Order', value='sortOrder'}, {name='Lowest Rate', value='lowest'}, {name='Highest Rate', value='highest'}];
 			case "ShippingMethodRateHandlingFeeType" :
 				return [{name='Amount', value='amount'}, {name='Percentage', value='percentage'}];
+			case "fulfillmentMethodHandlingFeeTaxCategory":
+				var optionSL = getTaxService().getTaxCategorySmartList();
+				optionSL.addFilter('activeFlag', 1);
+				optionSL.addSelect('taxCategoryName', 'name');
+				optionSL.addSelect('taxCategoryID', 'value');
+				return optionSL.getRecords();
 			case "shippingMethodRateAdjustmentType" :
 				return [{name='Increase Percentage', value='increasePercentage'}, {name='Decrease Percentage', value='decreasePercentage'}, {name='Increase Amount', value='increaseAmount'}, {name='Decrease Amount', value='decreaseAmount'}];
 			case "skuCurrency" :
@@ -665,11 +740,11 @@ component extends="HibachiService" output="false" accessors="true" {
 	}
 
 
-	public array function getShippingIntegrationOptions() {
+	public array function getAddressIntegrationOptions() {
 		var integrationCollectionList = getService("IntegrationService").getIntegrationCollectionList();
 		integrationCollectionList.addFilter('activeFlag', '1');
 		integrationCollectionList.addFilter('installedFlag', '1');
-		integrationCollectionList.addFilter('integrationTypeList', 'shipping',"in");
+		integrationCollectionList.addFilter('integrationTypeList', '%address%',"like");
 		integrationCollectionList.setDisplayProperties('integrationName|name,integrationPackage|value');
 		var options = integrationCollectionList.getRecords();
 		return options;
@@ -785,18 +860,16 @@ component extends="HibachiService" output="false" accessors="true" {
 
 	}
 
-	public void function updateStockCalculated() {
-
-		var updateStockThread = "";
-
-		// We do this in a thread so that it doesn't hold anything else up
-		thread action="run" name="updateStockThread" {
-			setupData = {};
-			setupData["p:show"] = 200;
-			setupData["f:sku.activeFlag"] = 1;
-			setupData["f:sku.product.activeFlag"] = 1;
-			getTaskService().updateEntityCalculatedProperties("Stock", setupData);
+	public void function updateStockCalculated(required any entity, struct data={}) {
+	
+		var stockArgs = {};
+		if(!isNull(arguments.entity.getSku())){
+			stockArgs['skuID'] = arguments.entity.getSku().getSkuID();
 		}
+		if(!isNull(arguments.entity.getProduct())){
+			stockArgs['productID'] = arguments.entity.getProduct().getProductID();
+		}
+		getStockService().updateStockCalculatedProperties(argumentCollection=stockArgs);
 	}
 
 	public any function getSettingMetaData(required string settingName) {
@@ -829,12 +902,38 @@ component extends="HibachiService" output="false" accessors="true" {
 		return settingDetails.settingValueFormatted;
 	}
 
-	public any function getSettingDetails(required string settingName, any object, array filterEntities=[], boolean disableFormatting=false) {
+	public string function getSettingCacheKey(required string settingName, any object, array filterEntities=[],struct formatDetails={}){
+		// Build out the cached key (handles sites)
+		var cacheKey = "setting_#arguments.settingName#";
+
+		if(this.isGlobalSetting(arguments.settingName)){
+			return cacheKey; 
+		} 
+
+		if(structKeyExists(arguments, "object") && arguments.object.isPersistent()) {
+			cacheKey &= "_#arguments.object.getPrimaryIDValue()#";
+		}
+		if(structKeyExists(arguments, "filterEntities")) {
+			for(var entity in arguments.filterEntities) {
+				cacheKey &= "_#entity.getPrimaryIDValue()#";
+			}
+		}
+		if(structKeyExists(arguments,"formatDetails")){
+			for(var key in arguments.formatDetails) {
+				cacheKey &= "_#key#-#arguments.formatDetails[key]#";
+			}
+		}
+
+		return cacheKey; 
+	} 
+
+	public any function getSettingDetails(required string settingName, any object, array filterEntities=[], boolean disableFormatting=false, struct formatDetails={}) {
 		// Automatically add the site-level context, we may find a setting value within the context of the site handling the request
-		if (!isNull(getHibachiScope().getCurrentRequestSite())) {
+		if (!isNull(getHibachiScope().getCurrentRequestSite()) && (isNull(arguments.object) || arguments.object.getClassName() != 'Site')) {
 
 			// Make sure a site entity does not already exist in the filterEntities, we do not want to unecessarily add the additional site combo that can't exist
 			var siteFound = false;
+			
 			for(var entity in arguments.filterEntities) {
 				if (entity.getClassName() == 'Site') {
 					siteFound = true;
@@ -847,19 +946,8 @@ component extends="HibachiService" output="false" accessors="true" {
 			}
 		}
 
-		// Build out the cached key (handles sites)
-		var cacheKey = "setting_#arguments.settingName#";
-		if(structKeyExists(arguments, "object") && arguments.object.isPersistent()) {
-			cacheKey &= "_#arguments.object.getPrimaryIDValue()#";
-		}
-		if(structKeyExists(arguments, "filterEntities")) {
-			for(var entity in arguments.filterEntities) {
-				cacheKey &= "_#entity.getPrimaryIDValue()#";
-			}
-		}
-
 		// Get the setting details using the cacheKey to try and get it from cache first
-		return getHibachiCacheService().getOrCacheFunctionValue(cacheKey, this, "getSettingDetailsFromDatabase", arguments);
+		return getHibachiCacheService().getOrCacheFunctionValue(this.getSettingCacheKey(argumentCollection=arguments), this, "getSettingDetailsFromDatabase", arguments);  
 	}
 
 	public string function getSettingPrefix(required string settingName){
@@ -878,8 +966,7 @@ component extends="HibachiService" output="false" accessors="true" {
 		return left(arguments.settingName, 6) == "global";
 	}
 
-	public any function getSettingDetailsFromDatabase(required string settingName, any object, array filterEntities=[], boolean disableFormatting=false) {
-		
+	public any function getSettingDetailsFromDatabase(required string settingName, any object, array filterEntities=[], boolean disableFormatting=false,struct formatDetails={}) {
 		// Create some placeholder Var's
 		var foundValue = false;
 		var settingRecord = "";
@@ -894,7 +981,8 @@ component extends="HibachiService" output="false" accessors="true" {
 			siteContext = {
 				siteID = "",
 				siteCode = ""
-			}
+			},
+			fieldType = ""
 		};
 		var settingMetaData = getSettingMetaData(arguments.settingName);
 
@@ -922,6 +1010,10 @@ component extends="HibachiService" output="false" accessors="true" {
 			if(structKeyExists(arguments, "object") && arguments.object.isPersistent()) {
 				settingDetails.settingInherited = true;
 			}
+		}
+		
+		if (structKeyExists(settingMetaData, "fieldType")) {
+			settingDetails.fieldType = settingMetaData.fieldType;
 		}
 
 		// If this is a global setting there isn't much we need to do because we already know there aren't any relationships
@@ -971,10 +1063,12 @@ component extends="HibachiService" output="false" accessors="true" {
 
 				// Attempt object level value resolution without site context if necessary
 				if (!foundValue) {
-					// Delete any siteID from settingRelationship if present
-					structDelete(settingDetails.settingRelationships, 'siteID');
+					// Delete any siteID from settingRelationship if present unless the base object is a Site entity itself (otherwise we still want the siteID filter applied because it will appear identical if overridden at global level with siteID being null)
+					if (arguments.object.getClassName() != 'Site') {
+						structDelete(settingDetails.settingRelationships, 'siteID');
+					}
 
-					// Now try just object level value resolution without siteID in settingRelationships
+					// Now try just object level value resolution without siteID in settingRelationships except if Site of course.
 					settingRecord = getSettingRecordBySettingRelationships(settingName=arguments.settingName, settingRelationships=settingDetails.settingRelationships);
 					if(settingRecord.recordCount) {
 						foundValue = true;
@@ -1092,8 +1186,8 @@ component extends="HibachiService" output="false" accessors="true" {
 					settingDetails.settingRelationships[ arguments.filterEntities[fe].getPrimaryIDPropertyName() ] = arguments.filterEntities[fe].getPrimaryIDValue();
 				}
 
-				// Site was auto provided so we need to try and resolve on object's site level and possibly global level also
-				if (settingDetails.siteProvided) {
+				// Site was auto provided so we need to try and resolve on object's site level and possibly global level also (Edge case to exclude Site. No reason to introduce unecessary complexity by allowing Site to also specify site settings!)
+				if (settingDetails.siteProvided && (isNull(arguments.object) || arguments.object.getClassName() != 'Site')) {
 					// Trying site level value resolution with the siteID and any other specified relationships
 					settingRecord = getSettingRecordBySettingRelationships(settingName=arguments.settingName, settingRelationships=settingDetails.settingRelationships);
 					if(settingRecord.recordCount) {
@@ -1131,12 +1225,9 @@ component extends="HibachiService" output="false" accessors="true" {
 			}
 		}
 
-		if(!disableFormatting) {
-			// First we look for a formatType in the meta data
-			if( structKeyExists(settingMetaData, "formatType") ) {
-				settingDetails.settingValueFormatted = getHibachiUtilityService().formatValue(settingDetails.settingValue, settingMetaData.formatType);
+		if(!arguments.disableFormatting) {
 			// Now we are looking at different fieldTypes
-			} else if( structKeyExists(settingMetaData, "fieldType") ) {
+			if( structKeyExists(settingMetaData, "fieldType") ) {
 				// Listing Multiselect
 				if(settingMetaData.fieldType == "listingMultiselect") {
 					settingDetails.settingValueFormatted = "";
@@ -1181,14 +1272,30 @@ component extends="HibachiService" output="false" accessors="true" {
 					} else {
 						settingDetails.settingValueFormatted = "";
 					}
-				} else {
-					settingDetails.settingValueFormatted = getHibachiUtilityService().formatValue(settingDetails.settingValue, settingMetaData.fieldType);
+				} else if(structKeyExists(settingDetails,'settingID') && len(settingDetails.settingID)){
+					var settingObject=this.getSetting(settingDetails.settingID);
+					var formatDetails = arguments.formatDetails;
+					formatDetails.propertyName = 'settingValue';
+					formatDetails.object = settingObject;
+
+					settingDetails.settingValueFormatted = getHibachiUtilityService().formatValue(settingDetails.settingValue, '', formatDetails);
 				}
 			// This is the no deffinition case
-			} else {
-				settingDetails.settingValueFormatted = settingDetails.settingValue;
+			} else if(structKeyExists(settingDetails,'settingID') && len(settingDetails.settingID)){
+				var settingObject=this.getSetting(settingDetails.settingID);
+				var formatDetails = arguments.formatDetails;
+				formatDetails.propertyName = 'settingValue';
+				formatDetails.object = settingObject;
+				
+				if( structKeyExists(settingMetaData, "formatType") ) {
+					var formatType = settingMetaData.formatType;
+				}else{
+					var formatType = '';
+				}
+				settingDetails.settingValueFormatted = getHibachiUtilityService().formatValue(settingDetails.settingValue, formatType, formatDetails);
 			}
-		} else {
+		}
+		if(!structKeyExists(settingDetails,'settingValueFormatted')){
 			settingDetails.settingValueFormatted = settingDetails.settingValue;
 		}
 
@@ -1246,7 +1353,7 @@ component extends="HibachiService" output="false" accessors="true" {
 
 			// If calculation is needed, then we should do it
 			if(calculateStockNeeded) {
-				updateStockCalculated();
+				updateStockCalculated(argumentCollection=arguments);
 			}
 		}
 
@@ -1280,7 +1387,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			
 			// If calculation is needed, then we should do it
 			if(listFindNoCase("skuAllowBackorderFlag,skuAllowPreorderFlag,skuQATSIncludesQNROROFlag,skuQATSIncludesQNROVOFlag,skuQATSIncludesQNROSAFlag,skuTrackInventoryFlag", arguments.entity.getSettingName())) {
-				updateStockCalculated();
+				updateStockCalculated(argumentCollection=arguments);
 			}
 		}
 

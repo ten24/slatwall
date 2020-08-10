@@ -1,7 +1,7 @@
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfif thisTag.executionMode is "start">
 	<cfparam name="attributes.hibachiScope" type="any" default="#request.context.fw.getHibachiScope()#" />
-	<cfparam name="attributes.csrf" type="string" default="#request.context.csrf#" />
+	<cfparam name="attributes.csrf" type="string" default="" />
 	<cfparam name="attributes.object" type="any" />
 	<cfparam name="attributes.saveAction" type="string" default="#request.context.entityActionDetails.saveaction#" />
 	<cfparam name="attributes.saveActionQueryString" type="string" default="" />
@@ -19,7 +19,11 @@
 	<cfparam name="attributes.forceSSLFlag" type="boolean" default="false" />
 	
 	<!--- Make sure we don't have a stale token (this will happen when validation fails) --->
-	<cfif not attributes.hibachiScope.verifyCSRFToken(attributes.csrf)>
+	<cfif structKeyExists(request.context, 'csrf')>
+		<cfset attributes.csrf = request.context.csrf />   
+	</cfif>
+	
+	<cfif not len(attributes.csrf) OR not attributes.hibachiScope.verifyCSRFToken(attributes.csrf)>
 		<cfset attributes.csrf = attributes.hibachiScope.generateCSRFToken() />
 	</cfif> 
 	

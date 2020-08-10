@@ -40,7 +40,6 @@ class SWTabContentController {
 
 class SWTabContent implements ng.IDirective{
 
-    public templateUrl;
     public transclude=true; 
     public restrict = "EA";
     public scope = {};
@@ -53,11 +52,15 @@ class SWTabContent implements ng.IDirective{
     };
     public controller=SWTabContentController;
     public controllerAs="swTabContent";
+    
+    public template = require("./tabcontent.html");
+
+	public static Factory(){
+		return /** @ngInject; */ ($compile, scopeService, observerService) => new this($compile, scopeService, observerService);
+	}
 
     // @ngInject
-    constructor(public $compile, private scopeService, private observerService, private corePartialsPath,hibachiPathBuilder){
-        this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "tabcontent.html";
-    }
+    constructor(public $compile, private scopeService, private observerService){}
 
     public compile = (element: JQuery, attrs: angular.IAttributes, transclude: any) => {
         return {
@@ -72,29 +75,6 @@ class SWTabContent implements ng.IDirective{
                 }
             }
         };
-    }
-
-    public static Factory(){
-        var directive:ng.IDirectiveFactory = (
-            $compile
-            ,scopeService 
-            ,observerService
-            ,corePartialsPath
-            ,hibachiPathBuilder
-
-        )=> new SWTabContent(
-            $compile
-            ,scopeService
-            ,observerService
-            ,corePartialsPath
-            ,hibachiPathBuilder
-        );
-        directive.$inject = ["$compile",
-                             "scopeService",
-                             "observerService",
-                             "corePartialsPath",
-                             "hibachiPathBuilder"];
-        return directive;
     }
 }
 export{

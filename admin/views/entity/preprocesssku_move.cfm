@@ -65,18 +65,18 @@ Notes:
 					<div class="alert alert-info" role="alert">	
 						<span data-sw-rbkey="'entity.sku.process.move.warning'"></span>
 					</div>
-					<sw-typeahead-input-field data-field-name="productID"
-											  data-entity-name="Product"
-											  data-validate-required="true"
-											  data-properties-to-load="productID,productName,productCode"
-											  data-placeholder-rb-key="entity.Sku.process.move.placeholder"
-											  data-placeholder-text="#$.slatwall.rbkey('entity.Sku.process.move.placeholder')#"
-											  data-property-to-show="productName"
-											  data-property-to-save="productID">
-						<sw-typeahead-search-line-item data-property-identifier="productName"></sw-typeahead-search-line-item>
-					</sw-typeahead-input-field>
-
-							
+					
+				    <hb:HibachiTypeahead 
+						edit="true" 
+						collectionList="#rc.processObject.getProductTypeAheadCollectionList()#"
+                        placeHolder="#$.slatwall.rbkey('entity.Sku.process.move.placeholder')#"
+                        propertyToLoad="productName,productCode"
+                        selectedFormatString="${productCode} >> ${propertyName}"
+                        rbKey="processObject.Sku_Move.product"
+                        title="#$.slatwall.rbkey('entity.Sku.process.move')#"
+						initialEntityID="#rc.processObject.getProductID()#"
+						data-max-records="20"
+					></hb:HibachiTypeahead>
 				</hb:HibachiPropertyList>
 			</hb:HibachiPropertyRow>
 			

@@ -57,6 +57,35 @@ Notes:
 			WHERE locationID = <cfqueryparam value="#arguments.fromLocationID#" cfsqltype="cf_sql_varchar" >
 		</cfquery>
 	</cffunction>
+	
+	
+	<cffunction name="updateStockCalculatedProperties">
+		<cfargument name="skuID" type="string" >
+		<cfargument name="productID" type="string" >
+		
+		<cfquery name="local.updatestock" >
+			INSERT IGNORE INTO swentityqueue (entityQueueID, baseObject, baseID, processMethod, createdDateTime, modifiedDateTime, tryCount)
+			SELECT 
+				stock.stockID entityQueueID,
+				'Stock' baseObject, 
+				stock.stockID baseID, 
+				'processStock_updateCalculatedProperties' processMethod,
+				NOW() createdDateTime,
+				NOW() modifiedDateTime,
+				0 tryCount
+			FROM swStock stock
+			INNER JOIN swSku sku ON stock.skuID = sku.skuID
+			INNER JOIN swProduct product ON sku.productID = product.productID
+			WHERE
+				sku.activeFlag = 1 AND product.activeFlag = 1
+			<cfif structKeyExists(arguments, 'skuID')>
+				AND sku.skuID = <cfqueryparam value="#arguments.skuID#" cfsqltype="cf_sql_varchar" >
+			</cfif>
+			<cfif structKeyExists(arguments, 'productID')>
+				AND product.productID = <cfqueryparam value="#arguments.productID#" cfsqltype="cf_sql_varchar" >
+			</cfif>
+		</cfquery>
+	</cffunction>
 		
 
 	<cfscript>

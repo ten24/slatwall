@@ -31,7 +31,7 @@ class SWListingDisplayController{
     }
     set columns(newArray: Array<any>) {
         this._columns = newArray;
-        this.columnCount = this._columns.length;
+        this.columnCount = this._columns ? this._columns.length : 0;
     }
     
     public columnCount;
@@ -53,6 +53,7 @@ class SWListingDisplayController{
     public getChildCount;
     public hasCollectionPromise;
     public hideRules = [];
+    public listingColumns;
     public multiSlot:boolean;
     public multiselectable:boolean = false;
     public multiselectFieldName;
@@ -71,13 +72,36 @@ class SWListingDisplayController{
     public pageRecordsWithManualSortOrder = {};
     public parentPropertyName:string;
     public processObjectProperties;
+    public hasRecordAddAction:boolean=false;
+    public recordAddEvent:string;
     public recordAddAction:string;
+    
+    public hasRecordDetailAction:boolean=false;
+    public recordDetailModal:boolean;
+    public recordDetailEvent:string
     public recordDetailAction:string;
-    public recordDetailActionIdProperty:string;
-    public recordDetailActionIdKey:string;
     public recordDetailActionProperty:string;
+    public recordDetailActionPropertyIdentifier:string;
+    public recordDetailQueryString:string;
+    
+    public hasRecordEditAction:boolean=false;
+    public recordEditDisabled:boolean;
+    public recordEditModal:boolean;
+    public recordEditEvent:string
     public recordEditAction:string;
+    public recordEditActionProperty:string;
+    public recordEditActionPropertyIdentifier:string;
+    public recordEditQueryString:string;
+    public recordEditIcon:string='pencil';
+    
+    public hasRecordDeleteAction:boolean=false;
+    public recordDeleteModal:boolean;
+    public recordDeleteEvent:string
     public recordDeleteAction:string;
+    public recordDeleteActionProperty:string;
+    public recordDeleteActionPropertyIdentifier:string;
+    public recordDeleteQueryString:string;
+    
     public recordProcessButtonDisplayFlag:boolean;
     public reportAction:string;
     public searching:boolean = false;
@@ -106,6 +130,7 @@ class SWListingDisplayController{
     public baseEntity:any;
     public baseEntityName:string;
     public baseEntityID:string;
+    public currencyCode:string;
 
     public selections;
     public multiselectCount;
@@ -116,6 +141,12 @@ class SWListingDisplayController{
     public personalCollectionIdentifier:string;
     public personalCollectionKey:string;
     public persistedReportCollections:any;
+    public customEndpoint: string;
+    public hideUnfilteredResults:boolean;
+    public refreshEvent: string;
+    public loading: boolean;
+    
+    
     //@ngInject
     constructor(
         public $scope,
@@ -133,12 +164,67 @@ class SWListingDisplayController{
         public rbkeyService,
         public localStorageService
     ){
-        //Invariant - We must have some way to instantiate. Everything can't be optional. --commented out due to breaking sku listing on product detail page
-        // if (!(this.collectionConfig) && !this.collectionConfigs.length && !this.collection){
-        //     return;
-        // }
-        if(angular.isUndefined(this.personalCollectionKey)){
-            this.personalCollectionKey = this.baseEntityName.toLowerCase();
+       //init
+       this.initListingDisplay( $q, $rootScope, true );
+
+    }
+    
+    public $onInit = () => {
+        // giving it a time-out to run this code in next digest-cycle, so everything is rendered 
+        this.$timeout( () =>  this.startLoading() );
+        
+    }
+    
+    public refreshListingDisplay = () => {
+        this.startLoading();
+        
+        this.getCollection = this.collectionConfig.getEntity().then((data)=>{
+            this.setCollectionData(data);
+            this.observerService.notifyById('swPaginationUpdate',this.tableID, this.collectionData);
+        })
+        .finally( () => this.stopLoading() );
+    }
+    
+    public setCollectionData = ( collectionData) =>{
+        this.collectionData = collectionData;
+        this.stopLoading();
+    }
+    
+    public startLoading = () => {
+        
+        if(this.loading) return;
+        
+        this.loading = true;
+        // @ts-ignore from hibachiAssets/js/global.js
+        window?.addLoadingDiv?.(this.tableID);
+    }
+    
+    public stopLoading = () => {
+        this.loading = false;
+        
+        this.$timeout( ()=> {
+            // @ts-ignore from hibachiAssets/js/global.js
+            window?.removeLoadingDiv?.(this.tableID);
+        },100); // to avoide flickring of ng-repeat
+    }
+    
+   /**
+    * I pulled the ctor logic into its own method so we can reinintialize the 
+    * collection on demand (refresh).
+    **/
+    public initListingDisplay = ($q, $rootScope, initial) => {
+        
+        //setup a listener for refreshing this listing based on a refrsh event string 
+        if (this.refreshEvent && initial){
+            this.observerService.attach(this.refreshListingDisplay, this.refreshEvent);
+        }
+        
+        if (initial){
+            this.observerService.attach(this.startLoading, "addOrderItemStartLoading");
+        }
+        
+        if (initial){
+            this.observerService.attach(this.stopLoading, "addOrderItemStopLoading");
         }
         
         if(angular.isUndefined(this.usingPersonalCollection)){
@@ -153,8 +239,6 @@ class SWListingDisplayController{
            this.showFilters = true;
         }
         
-        
-
         //promises to determine which set of logic will run
         this.multipleCollectionDeffered = $q.defer();
         this.multipleCollectionPromise = this.multipleCollectionDeffered.promise;
@@ -189,11 +273,18 @@ class SWListingDisplayController{
                 )
             )
         ){
+            if(angular.isUndefined(this.personalCollectionKey)){
+                this.personalCollectionKey = this.baseEntityName.toLowerCase();
+            }
+            
             var personalCollection = this.listingService.getPersonalCollectionByBaseEntityName(this.personalCollectionKey);
            
            // personalCollection.addFilter('collectionDescription',this.personalCollectionIdentifier);
             var originalMultiSlotValue = angular.copy(this.multiSlot);
             this.multiSlot = false;
+            
+            this.startLoading();
+            
             personalCollection.getEntity().then((data)=>{
                 if(data.pageRecords.length){
 
@@ -209,8 +300,9 @@ class SWListingDisplayController{
                 }else{
                     this.multiSlot = originalMultiSlotValue;
                 }
-                 this.processCollection();
-            });
+                this.processCollection();
+            })
+            .finally( () => this.stopLoading());
 
          }else{
             $rootScope.hibachiScope.selectedPersonalCollection = undefined;
@@ -220,20 +312,19 @@ class SWListingDisplayController{
         if(!this.reportAction && this.baseEntityName){
             this.reportAction = 'entity.reportlist'+this.baseEntityName.toLowerCase();
         }
-
     }
     
-
     public processCollection = () =>{
-
+        
         this.initializeState();
 
-        if(angular.isDefined(this.collectionPromise)){
+        if(angular.isDefined(this.collectionPromise) ){
                 this.hasCollectionPromise = true;
                 this.multipleCollectionDeffered.reject();
+                console.log("Reject");
         }
 
-        if(this.collectionConfig != null){
+        if(this.collectionConfig != null ){
             this.multipleCollectionDeffered.reject();
         }
 
@@ -246,6 +337,7 @@ class SWListingDisplayController{
         this.$transclude(this.$scope,()=>{});
 
         this.hasCollectionPromise = angular.isDefined(this.collectionPromise);
+        
         if(this.multiSlot){
             this.singleCollectionPromise.then(()=>{
                 this.multipleCollectionDeffered.reject();
@@ -266,16 +358,21 @@ class SWListingDisplayController{
                     if(angular.isUndefined(this.getCollection)){
                         this.getCollection = this.listingService.setupDefaultGetCollection(this.tableID);
                     }
-
                     this.paginator.getCollection = this.getCollection;
                     this.observerService.attach(this.getCollectionObserver,'getCollection',this.tableID);
                     
                 }
             );
         }else if(this.multiSlot == false){
+            
             if(this.columns && this.columns.length){
                 this.collectionConfig.columns = this.columns;
+            } else if (this.listingColumns && this.listingColumns.length){
+                this.columns = this.listingColumns;
+            } else if (this.collectionConfig.columns && this.collectionConfig.columns.length){
+                this.columns = this.collectionConfig.columns;
             }
+            
             //setup selectable
             this.listingService.setupSelect(this.tableID);
             this.listingService.setupMultiselect(this.tableID);
@@ -295,34 +392,32 @@ class SWListingDisplayController{
     }
     
     public getCollectionByPagination = (state) =>{
-        if(state.type){
-            switch(state.type){
-                case 'setCurrentPage':
-                    this.collectionConfig.currentPage = state.payload;
-                    break;
-                case 'nextPage':
-                    this.collectionConfig.currentPage = state.payload;
-                    break;
-                case 'prevPage':
-                    this.collectionConfig.currentPage = state.payload;
-                    break;
-                case 'setPageShow':
-                    this.collectionConfig.currentPage = 1;
-                    this.collectionConfig.setPageShow(state.payload);
-                    break;
+        
+        if(!this.hideUnfilteredResults || this.searchText || this.configHasFilters(this.collectionConfig) ){
+            if(state.type){
+                
+                //Q: It doesn't make sense Here.
+                if(this.collectionId){
+                    this.collectionConfig.baseEntityNameType = 'Collection';
+                    this.collectionConfig.id = this.collectionId;
+                }
+                
+                switch(state.type){
+                    case 'setCurrentPage':
+                        this.collectionConfig.currentPage = state.payload;
+                            this.refreshListingDisplay();
+                        break;
+                    case 'setPageShow':
+                        this.collectionConfig.currentPage = 1;
+                        this.collectionConfig.setPageShow(state.payload);
+                            this.refreshListingDisplay();
+                        break;
+                }
             }
-            if(this.collectionId){
-            
-                this.collectionConfig.baseEntityNameType = 'Collection';
-                this.collectionConfig.id = this.collectionId;
-            }
-            this.getCollection = this.collectionConfig.getEntity().then((data)=>{
-                this.collectionData = data;
-                this.observerService.notifyById('swPaginationUpdate',this.tableID, this.collectionData);
-            });
-
+        } 
+        else {
+            this.setCollectionData(null);
         }
-
     }
 
     private setupCollectionPromise=()=>{
@@ -333,11 +428,13 @@ class SWListingDisplayController{
 
         this.paginator.getCollection = this.getCollection;
 
-        var getCollectionEventID = this.tableID;
-
+        // var getCollectionEventID = this.tableID;
         //this.observerService.attach(this.getCollectionObserver,'getCollection',getCollectionEventID);
-
-        this.listingService.getCollection(this.tableID);
+        if(!this.hideUnfilteredResults || this.searchText || this.configHasFilters(this.collectionConfig) ){
+            this.listingService.getCollection(this.tableID);
+        }else{
+            this.setCollectionData(null);
+        }
     }
 
     private getCollectionObserver=(param)=> {
@@ -348,11 +445,16 @@ class SWListingDisplayController{
         }
         
         this.collectionData = undefined;
-        this.$timeout(
-            ()=>{
-                this.getCollection();
-            }
-        );
+        
+        if(!this.hideUnfilteredResults || this.searchText || this.configHasFilters(this.collectionConfig) ){
+            this.$timeout(
+                ()=>{
+                    this.getCollection();
+                }
+            );
+        }else{
+            this.setCollectionData(null);
+        }
     };
 
     private initializeState = () =>{
@@ -374,22 +476,43 @@ class SWListingDisplayController{
         } else {
 	        this.administrativeCount = 0;
         }
-        if(this.recordDetailAction && this.recordDetailAction.length){
+        
+        //Administractive Action Setup
+        this.hasRecordDetailAction = (this.recordDetailAction && this.recordDetailAction.length !== 0) || 
+                                     (this.recordDetailEvent && this.recordDetailEvent.length !== 0);
+        
+        this.hasRecordEditAction = (this.recordEditAction && this.recordEditAction.length !== 0) || 
+                                   (this.recordEditEvent && this.recordEditEvent.length !== 0);
+        
+        
+        this.hasRecordDeleteAction = (this.recordDeleteAction && this.recordDeleteAction.length !== 0) || 
+                                     (this.recordDeleteEvent && this.recordDeleteEvent.length !== 0);
+        
+        
+        this.hasRecordAddAction = (this.recordAddAction && this.recordAddAction.length !== 0) ||
+                                  (this.recordAddEvent && this.recordAddEvent.length !== 0);
+        
+        
+        if( this.hasRecordDetailAction ){
             this.administrativeCount++;
-            this.adminattributes = this.getAdminAttributesByType('detail');
+            // this.getAdminAttributesByType('detail');
         }
-        if(this.recordEditAction && this.recordEditAction.length){
+        
+        if( this.hasRecordEditAction ){
             this.administrativeCount++;
-            this.adminattributes = this.getAdminAttributesByType('edit');
+            // this.getAdminAttributesByType('edit');
         }
-        if(this.recordDeleteAction && this.recordDeleteAction.length){
+        
+        if( this.hasRecordDeleteAction ){
             this.administrativeCount++;
-            this.adminattributes = this.getAdminAttributesByType('delete');
+            // this.getAdminAttributesByType('delete');
         }
-        if(this.recordAddAction && this.recordAddAction.length){
+        
+        if( this.hasRecordAddAction ){
             this.administrativeCount++;
-            this.adminattributes = this.getAdminAttributesByType('add');
+            // this.getAdminAttributesByType('add');
         }
+        
         if( this.collectionConfig != null &&
             angular.isDefined(this.collection) &&
             angular.isDefined(this.collection.collectionConfig)
@@ -456,6 +579,9 @@ class SWListingDisplayController{
         this.tableclass = this.utilityService.listPrepend(this.tableclass, 'table table-bordered table-hover', ' ');
         if(this.collectionConfig){
             this.collectionConfig.setEventID(this.tableID);
+            if(this.customEndpoint && this.customEndpoint.length){
+                this.collectionConfig.setCustomEndpoint(this.customEndpoint);
+            }
         }
        
         if(angular.isDefined(this.sortableFieldName)){
@@ -538,6 +664,19 @@ class SWListingDisplayController{
         // Show all of the chosen calculations
         $(`.sw-${show}`).show();
     }
+    
+    public hasAverageOrTotal(){
+        if(this.collectionData){
+            for(var key in this.collectionData){
+                if(key.indexOf('recordsAvg') > -1 || key.indexOf('recordsTotal') > -1){
+                    return true
+                }   
+            }
+        }
+        
+        return false;
+    }
+    
     public hasNumerical=()=>{
         
         // Iterate over columns, find out if we have any numericals and return
@@ -549,6 +688,13 @@ class SWListingDisplayController{
             }, 0);    
         }
         return false;
+    }
+    
+    private configHasFilters = (collectionConfig) =>{
+        return collectionConfig.filterGroups 
+            && collectionConfig.filterGroups.length
+            && collectionConfig.filterGroups[0].filterGroup
+            && collectionConfig.filterGroups[0].filterGroup.length
     }
 
     public columnOrderByIndex = (column) =>{
@@ -592,18 +738,55 @@ class SWListingDisplayController{
        return this.listingService.getPageRecordKey(propertyIdentifier);
     };
 
+    //not in use
     private getAdminAttributesByType = (type:string):void =>{
-        var recordActionName = 'record'+type.toUpperCase()+'Action';
+        var recordActionName = 'record' + this.capitalize(type) + 'Action';
         var recordActionPropertyName = recordActionName + 'Property';
-        var recordActionQueryStringName = recordActionName + 'QueryString';
-        var recordActionModalName = recordActionName + 'Modal';
+        
+        var recordActionModalName = 'record' + this.capitalize(type) + 'Modal';
+        var recordQueryStringName = 'record' + this.capitalize(type) + 'QueryString';
+        
         this.adminattributes = this.utilityService.listAppend(this.adminattributes, 'data-'+type+'action="'+this[recordActionName]+'"', " ");
+        
         if(this[recordActionPropertyName] && this[recordActionPropertyName].length){
             this.adminattributes = this.utilityService.listAppend(this.adminattributes,'data-'+type+'actionproperty="'+this[recordActionPropertyName]+'"', " ");
         }
-        this.adminattributes = this.utilityService.listAppend(this.adminattributes, 'data-'+type+'querystring="'+this[recordActionQueryStringName]+'"', " ");
+        
+        this.adminattributes = this.utilityService.listAppend(this.adminattributes, 'data-'+type+'querystring="'+this[recordQueryStringName]+'"', " ");
         this.adminattributes = this.utilityService.listAppend(this.adminattributes, 'data-'+type+'modal="'+this[recordActionModalName]+'"', " ");
     };
+    
+    public  makeQueryStringForAction(action:string, pageRecord) {
+        let queryString = "";
+        action = this.capitalize(action);
+        
+        let actionProppertyName = `record${action}ActionProperty`;
+        let actionPropertyIdentifierName = `record${action}ActionPropertyIdentifier`;
+        
+        if( this[actionProppertyName] ) {
+            queryString += '&' + this[actionProppertyName];
+            if( this[actionPropertyIdentifierName] ) {
+                queryString += '=' + pageRecord[this[actionPropertyIdentifierName]];
+            } else {
+                queryString += '=' + pageRecord[this[actionProppertyName]];
+            }
+        } else {
+            queryString += '&' + this.exampleEntity.$$getIDName() + '=' + pageRecord[this.exampleEntity.$$getIDName()];
+        }
+        
+        let actionQueryStringName = `record${action}QueryString`;
+        if(this[actionQueryStringName]) {
+            queryString += '&' + this[actionQueryStringName];
+        } 
+        
+        return queryString;
+    }
+
+    private capitalize = (s) => {
+      if (typeof s !== 'string' || s.length === 0) return s;
+      
+      return s.charAt(0).toUpperCase() + s.slice(1)
+    }
 
     public getExportAction = ():string =>{
         return this.exportAction + this.collectionID;
@@ -694,7 +877,7 @@ class SWListingDisplayController{
         persistedReportsCollectionList.setDisplayProperties('collectionID,collectionName,collectionConfig');
         persistedReportsCollectionList.addFilter('reportFlag',1);
         persistedReportsCollectionList.addFilter('collectionObject',this.collectionConfig.baseEntityName);
-        persistedReportsCollectionList.addFilter('accountOwner.accountID',this.$rootScope.slatwall.account.accountID,'=','OR',true,true,false,'accountOwner');
+        persistedReportsCollectionList.addFilter('accountOwner.accountID','${account.accountID}','=','OR',true,true,false,'accountOwner');
         persistedReportsCollectionList.addFilter('accountOwner.accountID','NULL','IS','OR',true,true,false,'accountOwner');
         persistedReportsCollectionList.setAllRecords(true);
         persistedReportsCollectionList.getEntity().then((data)=>{
@@ -743,24 +926,37 @@ class SWListingDisplay implements ng.IDirective{
             baseEntity:"<?",
             baseEntityName:"@?",
             baseEntityId:"@?",
+            customEndpoint:"@?",
 
             /*Admin Actions*/
             actions:"<?",
             administrativeCount:"@?",
+            
+            recordEditModal:"<?",
+            recordEditEvent:"@?",
             recordEditAction:"@?",
             recordEditActionProperty:"@?",
+            recordEditActionPropertyIdentifier:"@?",
             recordEditQueryString:"@?",
-            recordEditModal:"<?",
             recordEditDisabled:"<?",
+            recordEditIcon:"@?",
+            
+            recordDetailModal:"<?",
+            recordDetailEvent:"@?",
             recordDetailAction:"@?",
             recordDetailActionProperty:"@?",
-            recordDetailActionIdProperty:"@?",
-            recordDetailActionIdKey:"@?",
+            recordDetailActionPropertyIdentifier:"@?",
             recordDetailQueryString:"@?",
-            recordDetailModal:"<?",
+            
+            recordDeleteModal:"<?",
+            recordDeleteEvent:"@?",
             recordDeleteAction:"@?",
             recordDeleteActionProperty:"@?",
+            recordDeleteActionPropertyIdentifier:"@?",
             recordDeleteQueryString:"@?",
+            
+            
+            recordAddEvent:"@?",
             recordAddAction:"@?",
             recordAddActionProperty:"@?",
             recordAddQueryString:"@?",
@@ -783,6 +979,7 @@ class SWListingDisplay implements ng.IDirective{
             }
             ]
             */
+            listingColumns:'<?',
 
             /*Hierachy Expandable*/
             parentPropertyName:"@?",
@@ -835,17 +1032,20 @@ class SWListingDisplay implements ng.IDirective{
             createAction:"@?",
             createQueryString:"@?",
             exportAction:"@?",
-
+            
+            currencyCode:"@?",
             getChildCount:"<?",
             hasSearch:"<?",
             hasActionBar:"<?",
             multiSlot:"=?",
-            customListingControls:"<?"
+            customListingControls:"<?",
+            hideUnfilteredResults:"<?",
+            refreshEvent:"@?"
     };
     public controller:any=SWListingDisplayController;
     public controllerAs="swListingDisplay";
     public templateUrl;
-
+    
     public static Factory(){
         var directive:ng.IDirectiveFactory=(
             listingPartialPath,
@@ -877,6 +1077,13 @@ class SWListingDisplay implements ng.IDirective{
             }
         };
     }
+    
+    // packaginh the template makes it load too fast, and causes issues with Workflow-detail and content-listing pages
+    // public template= require('./listingdisplay.html');
+    
+    // public static Factory(){
+    //     return /** @ngInject */ () => new this();
+    // }
 }
 export{
     SWListingDisplay

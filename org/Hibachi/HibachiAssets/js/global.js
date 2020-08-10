@@ -41,8 +41,99 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 		if(jQuery('.paging-show-toggle').length) {
 			jQuery('.paging-show-toggle').closest('ul').find('.show-option').hide();
 		}
+		
+		//Call on Load
+		//Show Loader
+		setTimeout(()=> {
+			loadTabs();
+		}, 0);
+		
+		
 	
 	});
+	
+	function showFullPageLoader() {
+		jQuery("#accordion").append('<div class="fullpage-loader is-active fullpage-loader-default" data-text="Please wait loading tabs"></div>');
+	}
+	
+	function removeFullPageLoader() {
+		setTimeout(()=>{
+			jQuery(".fullpage-loader").remove();
+		}, 1)
+		
+	}
+	
+	//Helper search function
+	function getKeyByValue(object, value) { 
+        return Object.keys(object).find(key => object[key] === value); 
+    }
+	
+	/**
+     * Function to load from Config JSON and udpate tab positions
+     * */
+    function loadTabs() {
+    	
+    	//If detail tab does not exists
+		if( !jQuery('div[id^="tabdetails_"]').length ) {
+			return;
+		}
+		
+    	//get path of global.js
+    	var scripts = document.getElementsByTagName("script");
+    	//derive config json path
+    	var src = scripts[scripts.length-1].src;
+    	var path = (src.substring(0, src.lastIndexOf('/'))).replace("/org/Hibachi/HibachiAssets/js","");
+    	//Load Config JSON file
+		var tabsConfigPath = path+'/custom/system/config.json';
+		//Ready from JSON File
+		jQuery.getJSON( tabsConfigPath, function(tabsConfig) {
+			
+			//check if correct json is loaded
+			if( !tabsConfig.hasOwnProperty('data') || !tabsConfig.data.hasOwnProperty('entityTabs') ) {
+				return;	
+			}
+			
+			//Load tabs info from config
+			tabsConfig = tabsConfig.data.entityTabs;
+			
+			var idsArray = jQuery('div[id^="tabdetails_"]').first().attr("id").split("_");
+			if(idsArray.length != 3  || !tabsConfig.hasOwnProperty(idsArray[1])) {
+				return;
+			}
+			showFullPageLoader();
+			
+			
+			var tabsList = [];
+			var entityName = "";
+			
+			jQuery('#accordion').css({ "display": "flex", "flex-flow": "column"});
+			
+			//Loop through available detail tabs from HTML DOMs
+			jQuery('div[id^="tabdetails_"]').each(function(item, obj){
+				
+				//create IDs array as defined on element
+				//1st index will be entity name
+				//2nd index will be name of view
+				var idsArray = jQuery(obj).attr("id").split("_");
+				//Skip any element with invalid ID
+				if(idsArray.length != 3  || !tabsConfig.hasOwnProperty(idsArray[1])) {
+					return;
+				}
+					
+				//get position of tab
+				//get post by entity name and view name form JSON
+				var position = getKeyByValue( JSON.parse(tabsConfig[ idsArray[1] ]), idsArray[2] );
+				if( position ) {
+					jQuery(obj).css({ "order" : position });
+				}
+				return;
+			});
+			
+			removeFullPageLoader();
+			
+		});
+
+	}
 	
 	function initUIElements( scopeSelector ) {
 	
@@ -842,6 +933,13 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 		});
 		jQuery('.hibachi-permission-checkbox:checked').change();
 	
+		jQuery('body').on('lazyLoadComplete',function(){
+			jQuery('.hibachi-permission-checkbox').each(function() {
+				if(jQuery(this).attr('checked')=='checked'){
+					updatePermissionCheckboxDisplay( jQuery(this) );
+				}
+			});
+		});
 	
 		// Report Hooks ============================================
 	
@@ -1068,9 +1166,9 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 		    var $rootScope = injector.get('$rootScope');
 		    jQuery('#adminModal').html($compile(html)($rootScope));
 		}else{
-			jQuery('#adminModal').html(html);
+			AngularHelper.Compile($('#adminModal'),html);
 		}
-
+		
 		initUIElements('#adminModal');
 
 		jQuery('#adminModal').css({
@@ -1476,12 +1574,20 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 	}
 	
 	function addLoadingDiv( elementID ) {
+		var element = jQuery('#' + elementID);
 		var loadingDiv = '<div id="loading' + elementID + '" style="position:absolute;float:left;text-align:center;background-color:#FFFFFF;opacity:.9;z-index:900;"><img style="position:relative;" src="' + hibachiConfig.baseURL + '/org/Hibachi/HibachiAssets/images/loading.gif" title="loading" /></div>';	
-		jQuery('#' + elementID).before(loadingDiv);
-		jQuery('#loading' + elementID).width(jQuery('#' + elementID).width() + 2);
-		jQuery('#loading' + elementID).height(jQuery('#' + elementID).height() + 2);
-		if(jQuery('#' + elementID).height() > 66) {
-			jQuery('#loading' + elementID + ' img').css('margin-top', ((jQuery('#' + elementID).height() / 2) - 66) + 'px');
+		
+		element.before(loadingDiv);
+		
+		jQuery('#loading' + elementID)
+    		.width( element.outerWidth() )
+    		.height( element.outerHeight() )
+    	    .css('padding', element.css('padding') )
+    	    .css('margin', element.css('margin') );
+	
+		if(element.height() > 66) {
+			jQuery('#loading' + elementID + ' img')
+			.css('margin-top', ((element.height() / 2) - 33) + 'px');
 		}
 	}
 	
@@ -1761,72 +1867,72 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 	
 	function updateReport( page ) {
 		if(jQuery("#hibachi-report").length){
-			var data = {
-				slatAction: 'admin:report.default',
-				reportID: jQuery('input[name="reportID"]').val(),
-				reportName: jQuery('#hibachi-report').data('reportname'),
-				reportStartDateTime: jQuery('input[name="reportStartDateTime"]').val(),
-				reportEndDateTime: jQuery('input[name="reportEndDateTime"]').val(),
-				reportCompareStartDateTime: jQuery('input[name="reportCompareStartDateTime"]').val(),
-				reportCompareEndDateTime: jQuery('input[name="reportCompareEndDateTime"]').val(),
-				reportDateTimeGroupBy: jQuery('a.hibachi-report-date-group.active').data('groupby'),
-				reportDateTime: jQuery('select[name="reportDateTime"]').val(),
-				reportCompareFlag: jQuery('input[name="reportCompareFlag"]').val(),
-				dimensions: jQuery('input[name="dimensions"]').val(),
-				metrics: jQuery('input[name="metrics"]').val(),
-				reportType: jQuery('select[name="reporttype"]').val(), 
-				orderByType: jQuery('select[name="orderbytype"]').val()
-			};
+		var data = {
+			slatAction: 'admin:report.default',
+			reportID: jQuery('input[name="reportID"]').val(),
+			reportName: jQuery('#hibachi-report').data('reportname'),
+			reportStartDateTime: jQuery('input[name="reportStartDateTime"]').val(),
+			reportEndDateTime: jQuery('input[name="reportEndDateTime"]').val(),
+			reportCompareStartDateTime: jQuery('input[name="reportCompareStartDateTime"]').val(),
+			reportCompareEndDateTime: jQuery('input[name="reportCompareEndDateTime"]').val(),
+			reportDateTimeGroupBy: jQuery('a.hibachi-report-date-group.active').data('groupby'),
+			reportDateTime: jQuery('select[name="reportDateTime"]').val(),
+			reportCompareFlag: jQuery('input[name="reportCompareFlag"]').val(),
+			dimensions: jQuery('input[name="dimensions"]').val(),
+			metrics: jQuery('input[name="metrics"]').val(),
+			reportType: jQuery('select[name="reporttype"]').val(), 
+			orderByType: jQuery('select[name="orderbytype"]').val()
+		};
+	
+		if(jQuery('input[name="showReport"]').is(':checked')){
+			data.showReport = true; 
+		} else { 
+			data.showReport = false; 
+		}
 		
-			if(jQuery('input[name="showReport"]').is(':checked')){
-				data.showReport = true; 
-			} else { 
-				data.showReport = false; 
-			}
-			
-			if(jQuery('select[name="limitresults"]').val() != undefined){ 
-				data.limitResults = jQuery('select[name="limitresults"]').val();
-			}
-		
-			if(page != undefined) {
-				data.currentPage = page;
-			}
-		
-			jQuery.ajax({
-				url: hibachiConfig.baseURL + '/',
-				method: 'post',
-				data: data,
-				dataType: 'json',
-				beforeSend: function (xhr) { xhr.setRequestHeader('X-Hibachi-AJAX', true) },
-				error: function( r ) {
-					// Error
-					removeLoadingDiv( 'hibachi-report' );
-				},
-				success: function( r ) {
-					if(r.report.hideChart !== undefined){ 
-						jQuery("#hibachi-report-chart").remove();
-						jQuery("#hibachi-report-chart-wrapper").hide();
-					} else { 
-						if(r.report.chartData.series !== undefined){
-							var html = "<div id='hibachi-report-chart'></div>";
-							jQuery("#hibachi-report-chart-wrapper").html(html);
-							var chart = new Highcharts.Chart(r.report.chartData);	
-						}
-						jQuery("#hibachi-report-chart-wrapper").show();
+		if(jQuery('select[name="limitresults"]').val() != undefined){ 
+			data.limitResults = jQuery('select[name="limitresults"]').val();
+		}
+	
+		if(page != undefined) {
+			data.currentPage = page;
+		}
+	
+		jQuery.ajax({
+			url: hibachiConfig.baseURL + '/',
+			method: 'post',
+			data: data,
+			dataType: 'json',
+			beforeSend: function (xhr) { xhr.setRequestHeader('X-Hibachi-AJAX', true) },
+			error: function( r ) {
+				// Error
+				removeLoadingDiv( 'hibachi-report' );
+			},
+			success: function( r ) {
+				if(r.report.hideChart !== undefined){ 
+					jQuery("#hibachi-report-chart").remove();
+					jQuery("#hibachi-report-chart-wrapper").hide();
+				} else { 
+					if(r.report.chartData.series !== undefined){
+						var html = "<div id='hibachi-report-chart'></div>";
+						jQuery("#hibachi-report-chart-wrapper").html(html);
+						var chart = new Highcharts.Chart(r.report.chartData);	
 					}
-					
-					if(r.report.hideReport !== undefined){
-						jQuery("#reportDataTable").remove();
-					} else { 
-						jQuery('#hibachi-report-table').html(r.report.dataTable);
-						jQuery("#hibachi-report-table").show();
-					}
-						
-					jQuery('#hibachi-report-configure-bar').html(r.report.configureBar);		
-					initUIElements('#hibachi-report');
-					removeLoadingDiv( 'hibachi-report' );
+					jQuery("#hibachi-report-chart-wrapper").show();
 				}
-			});
+				
+				if(r.report.hideReport !== undefined){
+					jQuery("#reportDataTable").remove();
+				} else { 
+					jQuery('#hibachi-report-table').html(r.report.dataTable);
+					jQuery("#hibachi-report-table").show();
+				}
+					
+				jQuery('#hibachi-report-configure-bar').html(r.report.configureBar);		
+				initUIElements('#hibachi-report');
+				removeLoadingDiv( 'hibachi-report' );
+			}
+		});
 		}
 	
 	}
@@ -1862,7 +1968,7 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 		if($('#'+tabID).html().trim().length === 0){
 			//add loading spinner prior to loading
 			$('#'+tabID).html(''+
-				'<i  class="fa fa-refresh fa-spin"></i>'+
+				'<div class="text-center"> <i class="fa fa-spinner fa-spin"></i><div>'+
 			'');
 			$('#'+tabID).load(window.location.href,{viewPath:view.split(/\/(.+)/)[1]},function(htmlToCompile){
 
@@ -1870,10 +1976,9 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 				AngularHelper.Compile($('#'+tabID),htmlToCompile);
 				//jquery should work
 				initUIElements($('#'+tabID));
+				$('body').trigger('lazyLoadComplete');
 			});
 		}
-		
-		
 	}
 	/**
 	 * AngularHelper : Contains methods that help using angular without being in the scope of an angular controller or directive
@@ -1892,13 +1997,28 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 	         * @htmlToCompile : The html to compile using angular
 	         */
 	    AngularHelper.Compile = function ($targetDom, htmlToCompile) {
-	        var $injector = angular.element(document).injector();
-
-	        $injector.invoke(["$compile", "$rootScope", function ($compile, $rootScope) {
-	                        //Get the scope of the target, use the rootScope if it does not exists
-	            var $scope = $targetDom.html(htmlToCompile).scope();
-	            $compile($targetDom)($scope || $rootScope);
-	            $rootScope.$digest();
+	        
+	        try {
+	        	var $injector = angular.element(document).injector();
+	        	if($injector == null) {
+	        		throw("Unable to get Injector for", $targetDom.selector);
+	        	}
+            }
+            catch(err){
+			   console.warn("Will retry in 1 sec: error->", err);
+               setTimeout(function(){
+                    AngularHelper.Compile( $targetDom, htmlToCompile);
+               }, 500);
+			   return; 
+            }
+	        
+	        $injector.invoke(["$compile", "$rootScope", "$timeout",  function ($compile, $rootScope, $timeout) {
+	            // to make it not interfere with already running digest-cycle
+	            $timeout( () => {
+    	            //Get the scope of the target, use the rootScope if it does not exists
+    	            var $scope = $targetDom.html(htmlToCompile).scope();
+    	            $compile($targetDom)($scope || $rootScope);
+	            }, 0);
 	        }]);
 	   }
 

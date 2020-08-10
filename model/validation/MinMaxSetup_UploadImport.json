@@ -1,5 +1,5 @@
 {
-	"properties":{
-	    "uploadFile":				[{"required":true}]
+	"properties": {
+		"uploadFile": [{ "required": true }]
 	}
 }

@@ -1,5 +1,5 @@
 {
-	"properties":{
-		"title":[{"contexts":"create","required":true}]
+	"properties": {
+		"title": [{ "contexts": "create", "required": true }]
 	}
-} 
+}

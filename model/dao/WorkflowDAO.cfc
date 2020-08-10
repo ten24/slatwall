@@ -90,7 +90,7 @@ Notes:
 								   WHERE runningFlag=true') />
 
 	</cffunction> 
-	
+
 	<cffunction name="resetExpiredWorkflows">
 		<cfset var rs = "" />
 		<cfquery name="rs">
@@ -110,25 +110,41 @@ Notes:
 									AND
 										(runningFlag is NULL or runningFlag = false)
 									AND
-										nextRunDateTime <= CURRENT_TIMESTAMP()
+										(nextRunDateTime is null or nextRunDateTime <= CURRENT_TIMESTAMP())
 								',{triggerType='Schedule'})/>
 
 	</cffunction>
 
-	<cffunction name="updateWorkflowTriggerRunning">
+	<cffunction name="updateWorkflowTriggerRunning" returnType="Boolean">
 		<cfargument name="workflowTriggerID" required="true" type="string" />
 		<cfargument name="runningFlag" required="true" type="boolean" />
 		<cfargument name="timeout" required="false" type="numeric" />
 
 		<cfset var rs = "" />
-		<cfquery name="rs">
+		<cfquery name="rs" result="local.result">
 			UPDATE SwWorkflowTrigger 
 			SET runningFlag = <cfqueryparam cfsqltype="cf_sql_bit" value="#arguments.runningFlag#"> 
 			WHERE workflowTriggerID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.workflowTriggerID#">
+			AND runningFlag != <cfqueryparam cfsqltype="cf_sql_bit" value="#arguments.runningFlag#"> 
 			<cfif structKeyExists(arguments, "timeout")>
 				AND nextRunDateTime <= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#dateAdd('n',(-1 * arguments.timeout),now())#"> 
+			<cfelse>
+				AND (nextRunDateTime is null or nextRunDateTime <= CURRENT_TIMESTAMP())
 			</cfif> 
 		</cfquery>
+		
+		<cfreturn local.result.recordcount != 0 />
+		
+	</cffunction>
+	
+	<cffunction name="getExclusiveWorkflowTriggersInvocationClusters">
+		<cfquery name="local.rs">
+			SELECT allowedInvocationCluster FROM SwWorkflowTrigger 
+			WHERE allowedInvocationCluster IS NOT NULL AND allowedInvocationCluster != ''
+			AND exclusiveInvocationClusterFlag = 1
+		</cfquery>
+		
+		<cfreturn valueList(local.rs.allowedInvocationCluster) />
 	</cffunction>
 	
 </cfcomponent>
