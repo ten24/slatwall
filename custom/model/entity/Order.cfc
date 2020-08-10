@@ -526,7 +526,9 @@ component {
 			if(!isNull(this.getAccount())){
 				var orders = account.getOrders();
 				for(var order in orders){
-					total += order.getTotal();
+					if(order.getAccountType() == 'marketPartner'){
+						total += order.getTotal();
+					}
 				}
 			}else{
 				total += this.getTotal();
