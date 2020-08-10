@@ -210,7 +210,7 @@
 								ng-model="monatFlexshipShippingMethodModal.newAddress.postalCode"
 								name="newAddress_zipCode"
 							/>
-							<label ng-bind="monatFlexshipShippingMethodModal.translations.newAddress_zipCode"></label>
+							<label ng-bind="monatFlexshipShippingMethodModal.translations.newAddress_zipCode"><span ng-show="monatFlexshipShippingMethodModal.addressOptions.postalCodeRequiredFlag">*</span></label>
 							<div ng-if="updateShippingAddressForm.$submitted" ng-messages="updateShippingAddressForm.newAddress_zipCode.$error">
     						    <div ng-messages-include="monat-form-generic-validation-error-messages"></div>
     						</div>
