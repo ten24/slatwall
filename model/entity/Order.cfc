@@ -2447,14 +2447,20 @@ public numeric function getPersonalVolumeSubtotal(){
         //If a UK MP is within the first 7 days of enrollment/upgrade, check that they have not already placed more than 1 order.
 		if ( !isEnrollmentPeriodOver || !isUpgradePeriodOver  ){
 			var total = 0;
+			
 			if(!isNull(this.getAccount())){
-				var orders = account.getOrders();
+				var orderCollectionList = account.getOrdersCollectionList();
+				orderCollectionList.setDisplayProperties('calculatedTotal');
+				orderCollectionList.addFilter('accountType','marketPartner');
+				orderCollectionList.addFilter('orderStatusType.systemCode', 'ostNew,ostProcessing,ostClosed', 'IN');
+				orderCollectionList.addFilter('orderID',this.getOrderID(),'!=')
+				var orders = orderCollectionList.getRecords();
 				for(var order in orders){
-					total += order.getTotal();
+					total+=order.calculatedTotal;
 				}
-			}else{
-				total += this.getTotal();
 			}
+			
+			total += this.getTotal();
             
             var maxAmountAllowedToSpendDuringInitialEnrollmentPeriod = site.setting("siteMaxAmountAllowedToSpendInInitialEnrollmentPeriod");//200
 			//If adding the order item will increase the order to over 200 EU return false  
