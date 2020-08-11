@@ -61,6 +61,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	variables.dataIntegrationCFCs = {};
 	variables.jsObjectAdditions = '';
 	
+	variables.addressIntegrationCFCs = {};
+	
 	public void function clearActiveFW1Subsystems() {
 		structDelete(variables, "activeFW1Subsystems");
 	}
@@ -124,6 +126,46 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public any function getImporterIntegrationCFC(required any integration) {
 		return this.getIntegrationTypeCFC(arguments.integration, "Importer");
 	}
+	
+	/**
+	 * Helper function to (if not already cached, create and cache and then) return a cached ['IntegrationType'].cfc Object, e.g. Data.cfc, Adress.cfc
+	 * 
+	 * TODO: refacot other function to use this function, 
+	 * or inplement onMissingMethod for pattern get['Address']IntegrationCFC(required integration);
+	 * 
+	*/ 
+	public any function getIntegrationTypeCFC(required any integration, required string integrationTypeName) {
+		
+		// Verify the cfc file exists before attempting to instantiate.
+		if (!fileExists(expandPath("/Slatwall/integrationServices/#arguments.integration.getIntegrationPackage()#/#arguments.integrationTypeName#.cfc"))) {
+			throw("IntegrationType: #arguments.integrationTypeName# does not exist for Integration: #arguments.integration.getDisplayName()#");
+		}
+		
+		var cacheKey = "#lcase(arguments.integrationTypeName)#IntegrationCFCs"; // e.g. paymentIntegrationCFCs, addressIntegrationCFCs
+		if( !structKeyExists( variables[cacheKey], arguments.integration.getIntegrationPackage()) ) {
+			
+			//TODO: ability to pass arguments in the constructor, 
+			variables[cacheKey][arguments.integration.getIntegrationPackage()] = createObject("component", "Slatwall.integrationServices.#arguments.integration.getIntegrationPackage()#.#arguments.integrationTypeName#").init();
+
+		}
+
+		return variables[cacheKey][arguments.integration.getIntegrationPackage()];
+	}
+	
+	
+	/**
+	 * Function to return an *Address-Integration* Object for the the given *Integration*.
+	 *
+	 * Note: the integrations are cached in the memory, hence treat them as singletons;
+	 *
+	 * @integration the associated *Integration-Entity* for the "Integration-Package";
+	 * 
+	 * TODO: add functions like get['Type']IntegrationBy(required string 'PackageName' );
+	*/ 
+	public any function getAddressIntegrationCFC(required any integration) {
+		return getIntegrationTypeCFC(arguments.integration, "Address");
+	}
+	
 
 	public any function getAuthenticationIntegrationCFC(required any integration) {
 		return this.getIntegrationTypeCFC(arguments.integration, "Authentication");

@@ -3,7 +3,7 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <a class="close" data-dismiss="modal">×</a>
+                <a ng-if="swModalWindow.showExit" class="close" data-dismiss="modal">×</a>
                 <!-- HEADER TITLE HERE -->
                 <h3><span ng-bind="swModalWindow.title"></span></h3>
             </div>
@@ -13,13 +13,22 @@
             </div>
             <div class="modal-footer">
                 <a href="#" 
+                   ng-if="swModalWindow.hasCancelAction"
                    class="btn btn-default s-remove"
                    data-dismiss="modal" 
                    ng-click="swModalWindow.cancelAction()()">
                    <span class="glyphicon glyphicon-remove icon-white"></span> 
                    <span ng-bind="swModalWindow.cancelActionText"></span>
                 </a>
-                <button class="btn btn-success" type="button" data-dismiss="modal" ng-click="swModalWindow.saveAction()()"><i class="glyphicon glyphicon-ok icon-white"></i> <span ng-bind="swModalWindow.saveActionText"></span></button> 
+                <button ng-if="swModalWindow.hasSaveAction"
+                        ng-disabled="swModalWindow.saveDisabled"
+                        class="btn btn-success" 
+                        type="button" 
+                        data-dismiss="modal" 
+                        ng-click="swModalWindow.saveAction()()">
+                    <i class="glyphicon glyphicon-ok icon-white"></i> 
+                    <span ng-bind="swModalWindow.saveActionText"></span>
+                </button> 
             </div>
         </div>
     </div>

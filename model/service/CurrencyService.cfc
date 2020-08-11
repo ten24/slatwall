@@ -80,13 +80,12 @@ component  extends="HibachiService" accessors="true" {
 	}
 
 	public array function getCurrencyOptions() {
-		var csl = this.getCurrencySmartList();
+		var currencyCollection = this.getCurrencyCollectionList();
 
-		csl.addFilter('activeFlag', 1);
-		csl.addSelect(propertyIdentifier="currencyName", alias="name");
-		csl.addSelect(propertyIdentifier="currencyCode", alias="value");
+		currencyCollection.setDisplayProperties('currencyName|name,currencyCode|value');	
+		currencyCollection.addFilter('activeFlag', 1);
 
-		return csl.getRecords();
+		return currencyCollection.getRecords();
 	}
 
 	public any function getAllAvailableCurrencyRates() {

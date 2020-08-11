@@ -49,6 +49,7 @@ Notes:
 component accessors="true" extends="Slatwall.org.Hibachi.HibachiRBService" {
 
 	property name="integrationService" type="any";
+	property name="hibachiJsonService" type="any";
 
 	// Override the getResourceBundle method so that we can look in other places as well
 	public struct function getResourceBundle(required string locale="en_us") {
@@ -69,9 +70,41 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiRBService" {
 					// No RB File Found
 				}
 			}
-				
+			
+			structAppend(thisRB, this.getResourceBundleFromDB(locale) );
 			variables.resourceBundles[ arguments.locale ] = thisRB;
 		}
 		return variables.resourceBundles[ arguments.locale ];
 	}
+	
+	public struct function getResourceBundleFromDB(required string locale="en_us"){
+
+
+	    var rbkeyCollectionList = this.getResourceBundleCollectionList();
+	    rbkeyCollectionList.setDisplayProperties('resourceBundleKey,resourceBundleValue');
+	    rbkeyCollectionList.addFilter('activeFlag','true');
+	    rbkeyCollectionList.addFilter('resourceBundleValue', 'NULL',  'IS NOT');
+	    rbkeyCollectionList.addFilter('resourceBundleLocale', arguments.locale);
+
+	    var records = rbkeyCollectionList.getRecords(formatRecords=false);
+	    var rbkeysStruct =  StructNew();
+	    for(var i = 1; i<= arrayLen(records); i++){
+            rbkeysStruct[ records[i]['resourceBundleKey'] ] = records[i]['resourcebundleValue'];
+	    }
+
+	    return rbkeysStruct;
+	}
+	
+	public void function updateCachedResourceBunbleValueByKeyAndLocale(required string key, required string locale, string value=""){
+		if(StructKeyExists(arguments, 'value') && len( trim(arguments.value) ) ){
+			variables.resourceBundles[ arguments.locale ][arguments.key] = arguments.value;
+		} else {
+			StructDelete( variables.resourceBundles[ arguments.locale ], arguments.key );
+		}
+		
+		//TODO: update for across-servers and performance
+		getHibachiJsonService().createRBJson();
+	}
+	
+
 }

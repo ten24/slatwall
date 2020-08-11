@@ -66,7 +66,7 @@ component displayname="Sku Bundle" entityname="SlatwallSkuBundle" table="SwSkuBu
 	
 	// Non-Persistent Properties
 	property name="measurementUnitOptions" persistent="false";
-
+	
 	public numeric function getBundleQATS(string locationID=''){
 		
 		var locationArray = getService('LocationService').getLocationOptions(arguments.locationID);

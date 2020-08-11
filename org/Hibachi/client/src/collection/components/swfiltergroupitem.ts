@@ -1,43 +1,25 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
+const filterGroupItemTemplateString = require("./filtergroupitem.html");
+
 class SWFilterGroupItem{
+    
 	public static Factory(){
-		var directive = (
-			$http,
-			$compile,
-			$templateCache,
-			$log,
-			collectionService,
-			collectionPartialsPath,
-			hibachiPathBuilder
-		)=> new SWFilterGroupItem(
-			$http,
-			$compile,
-			$templateCache,
-			$log,
-			collectionService,
-			collectionPartialsPath,
-			hibachiPathBuilder
-		);
-		directive.$inject = [
-			'$http',
-			'$compile',
-			'$templateCache',
-			'$log',
-			'collectionService',
-			'collectionPartialsPath',
-			'hibachiPathBuilder'
-		];
+		var directive = /** @ngInject; */ ($compile, $templateCache, $templateRequest, $log, collectionService) => {
+		    if( !$templateCache.get('filterGroupItemTemplateString') ){
+		        $templateCache.put('filterGroupItemTemplateString', filterGroupItemTemplateString);
+		    }
+		    return new this($compile, $templateCache, $templateRequest, $log, collectionService );
+		}
 		return directive;
 	}
+	
 	constructor(
-		$http,
 		$compile,
 		$templateCache,
+		$templateRequest,
 		$log,
-		collectionService,
-		collectionPartialsPath,
-		hibachiPathBuilder
+		collectionService
 	){
 		return {
 			restrict: 'A',
@@ -52,14 +34,13 @@ class SWFilterGroupItem{
 				comparisonType:"="
 			},
 			link: function(scope, element,attrs,filterGroupsController){
-				var Partial = hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"filtergroupitem.html";
-				var templateLoader = $http.get(Partial,{cache:$templateCache});
-				var promise = templateLoader.success(function(html){
-					element.html(html);
-				}).then(function(response){
+
+				$templateRequest('filterGroupItemTemplateString')
+				.then( (html) => element.html(html) )
+                .then( () => {
 					element.replaceWith($compile(element.html())(scope));
 				});
-
+				
 				//for(item in filterGroupItem){}
 				scope.filterGroupItem.setItemInUse = filterGroupsController.setItemInUse;
 				scope.filterGroupItem.$$index = scope.filterGroupItemIndex;

@@ -1,0 +1,21 @@
+<div class="agenda">
+    <div class="table-responsive">
+        <table class="table table-condensed table-bordered">
+            <tbody data-ng-repeat="date in swTermScheduleTable.scheduledDates">
+            <tr>
+                <td class="agenda-date active">
+                    <div class="dayofmonth" 
+                         data-ng-bind="date.toLocaleDateString(undefined, {day:'2-digit'})">
+                    </div>
+                    <div class="shortdate">
+                        {{date.toLocaleDateString(undefined, {month:'long'})}}, {{date.toLocaleDateString(undefined, {year:'numeric'})}}
+                    </div>
+                    <div class="dayofweek text-muted" 
+                         data-ng-bind="date.toLocaleDateString(undefined, {weekday:'long'})">
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

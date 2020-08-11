@@ -26,7 +26,7 @@
 						data-base-entity-name="swListingControls.collectionConfig.baseEntityName"
 				>
 					<li class="list-group-item"
-						ng-repeat="column in swListingControls.collectionConfig.columns"
+						ng-repeat="column in swListingControls.collectionConfig.columns track by $index"
 						ng-if="swListingControls.canDisplayColumn(column)"
 						sw-column-item
 						data-column="column"
@@ -79,7 +79,7 @@
         </div>
         <!--  //ADD FILTER -->
     </div>
-    <div class="s-filter-wrapper"  ng-show="swListingControls.showFilters || swListingControls.simple">
+    <div class="s-filter-wrapper"  ng-show="swListingControls.showFilters">
         <div class="s-filters">
             <!-- Filter -->
             <div class="btn-group"

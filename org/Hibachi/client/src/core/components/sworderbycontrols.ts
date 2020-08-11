@@ -112,7 +112,6 @@ class SWOrderByControlsController {
 
 class SWOrderByControls implements ng.IDirective{
 
-    public templateUrl;
     public transclude=true;
     public restrict = "EA";
     public scope = {};
@@ -131,16 +130,18 @@ class SWOrderByControls implements ng.IDirective{
     public require = {swListingDisplay:'?^swListingDisplay'};
     public controller=SWOrderByControlsController;
     public controllerAs="swOrderByControls";
+    
+    public template = require("./orderbycontrols.html");
 
-    // @ngInject
+	public static Factory(){
+		return /** @ngInject; */ ($compile,scopeService ,listingService) => new this($compile,scopeService ,listingService);
+	}
+
+    // @ngInject;
     constructor( public $compile,
                  private scopeService,
                  private listingService,
-                 private corePartialsPath,
-                 hibachiPathBuilder
-    ){
-        this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "orderbycontrols.html";
-    }
+    ){}
 
     public compile = (element: JQuery, attrs: angular.IAttributes, transclude: any) => {
         return {
@@ -162,26 +163,6 @@ class SWOrderByControls implements ng.IDirective{
 
             }
         };
-    }
-
-    public static Factory(){
-        var directive:ng.IDirectiveFactory = (
-            $compile
-            ,scopeService
-            ,listingService
-            ,corePartialsPath
-            ,hibachiPathBuilder
-
-        )=> new SWOrderByControls(
-            $compile
-            ,scopeService
-            ,listingService
-            ,corePartialsPath
-            ,hibachiPathBuilder
-        );
-        directive.$inject = ["$compile","scopeService","listingService","corePartialsPath",
-            "hibachiPathBuilder"];
-        return directive;
     }
 }
 export{

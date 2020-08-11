@@ -41,9 +41,12 @@ component entityname="SlatwallWorkflowTaskAction" table="SwWorkflowTaskAction" p
 	// Persistent Properties
 	property name="workflowTaskActionID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="actionType" ormtype="string" hb_formFieldType="select" hb_formatType="rbKey";
+	property name="uniqueFlag" ormtype="boolean" default="true";
 	property name="updateData" ormtype="string" length="8000" hb_auditable="false" hb_formFieldType="json";
+	property name="processEntityQueueFlagPropertyName" ormtype="string" hb_formFieldType="select" hb_formatType="rbKey";
 	property name="processMethod" ormtype="string";
 	property name="webhookURL" ormtype="string";
+	
 	
 	// Calculated Properties
 
@@ -69,6 +72,7 @@ component entityname="SlatwallWorkflowTaskAction" table="SwWorkflowTaskAction" p
 	
 	// Non-Persistent Properties
 	property name="actionTypeOptions" persistent="false"; 
+	property name="processEntityQueueFlagPropertyNameOptions" persistent="false"; 
 	property name="updateDataStruct" type="struct" persistent="false";
 	// Deprecated Properties
 	
@@ -78,7 +82,7 @@ component entityname="SlatwallWorkflowTaskAction" table="SwWorkflowTaskAction" p
 			Print || Email || Update || Process || Import || Export || Delete
 		*/
 		var actionTypeOptions = [];
-		var valuesList = 'print,email,delete,process,webhook';
+		var valuesList = 'print,email,delete,process,processByQueue,processEmailByQueue,webhook';
 		var valuesArray = ListToArray(valuesList);
 		
 		for(var value in valuesArray){
@@ -89,21 +93,32 @@ component entityname="SlatwallWorkflowTaskAction" table="SwWorkflowTaskAction" p
 		}
     	return actionTypeOptions;
     }
-    
+ 
+	public array function getProcessEntityQueueFlagPropertyNameOptions() {
+		var entityName = getWorkflowTask().getWorkflow().getWorkflowObject(); 
+		var options = [];
+		var properties = getService('HibachiService').getPropertiesWithAttributesByEntityName(entityName, false); 
+	
+		for(var property in properties){
+			if(!structKeyExists(property, 'cfc')){
+				arrayAppend(options, 
+					{
+						'name' : property['displayPropertyIdentifier'],
+						'value' : property['name']
+					}
+				);
+			}
+		} 
+
+		return options; 
+    }     
+
     public any function getUpdateDataStruct(){
 		if(isNull(variables.updateDataStruct)){
 			variables.updateDataStruct = deserializeUpdateDataConfig();
 		}
 		return variables.updateDataStruct;
 	}
-	
-//	variables.taskConditionsConfig = '';
-//			var defaultTaskConditionsConfig = {};
-//			defaultTaskConditionsConfig["filterGroups"] = ArrayNew(1);
-//			var workflowConditionGroupStuct = {};
-//			workflowConditionGroupStuct["filterGroup"] = ArrayNew(1);
-//			ArrayAppend(defaultTaskConditionsConfig["filterGroups"],workflowConditionGroupStuct);
-//			variables.taskConditionsConfig = serializeJson(defaultTaskConditionsConfig);
 	
 	public any function getUpdateData(){
 		if(isNull(variables.updateData)){
@@ -118,7 +133,7 @@ component entityname="SlatwallWorkflowTaskAction" table="SwWorkflowTaskAction" p
 	public any function deserializeUpdateData(){
 		return deserializeJSON(getUpdateData());
 	}
-    
+  
     // Workflow (many-to-one)
 	public void function setWorkflowTask(required any WorkflowTask) {
 		variables.WorkflowTask = arguments.WorkflowTask;
@@ -144,8 +159,10 @@ component entityname="SlatwallWorkflowTaskAction" table="SwWorkflowTaskAction" p
 		switch(variables.actionType){
 			case 'delete':
 			case 'process':
+			case 'processByQueue':
 				var crudType = 'delete';
 				break;
+			case 'processEmailByQueue':
 			case 'print':
 			case 'email':
 			case 'webhook':

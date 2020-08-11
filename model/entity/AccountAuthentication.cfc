@@ -87,7 +87,7 @@ component displayname="Account Authentication" entityname="SlatwallAccountAuthen
 
 
 	// ============ START: Non-Persistent Property Methods =================
-
+	
 	public boolean function getForceLogoutFlag() {
 		/*
 			//if(!isNull(session.getAccountAuthentication().getIntegration()) && !currentSession.getAccountAuthentication().getIntegration().getIntegrationCFC( "authentication" ).verifySessionLogin( currentSession )) {

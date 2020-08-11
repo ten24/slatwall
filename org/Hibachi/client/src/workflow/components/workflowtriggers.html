@@ -223,58 +223,32 @@
 										<!-- <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">{{workflowTriggers.selectedTrigger.data.workflow.data.workflowObject}} Collection:</label> -->
 										<div class="col-sm-12 s-no-paddings">
 										    
-                                            <sw-listing-display
-                                                ng-if="!workflowTriggers.selectedTrigger.data.scheduleCollectionConfig"
-                                                data-using-personal-collection="false"
-                                                data-collection="workflow.data.workflowObject"
-                                                data-edit="false"
-                                        	    data-has-search="true"
-                                        	    data-is-angular-route="false"
-                                        	    data-angular-links="false"
-                                        	    data-has-action-bar="false"
-                                            >
-                                            </sw-listing-display>
-                                            <sw-listing-display
-                                                ng-if="workflowTriggers.selectedTrigger.workflowTriggerCollectionConfig"
-                                                data-using-personal-collection="false"
-                                                data-collection-config="workflowTriggers.selectedTrigger.workflowTriggerCollectionConfig"
-                                                data-edit="false"
-                                        	    data-has-search="true"
-                                        	    data-is-angular-route="false"
-                                        	    data-angular-links="false"
-                                        	    data-has-action-bar="false"
-                                            >
-                                            </sw-listing-display>
-                                            <!--- no longer supporting persisted collections via ui--->
-                                           <!-- <h4>{{workflowTriggers.selectedTrigger.data.workflow.data.workflowObject}} Collection</h4>
-                                            <div class="form-group form-group-sm">
-                                                <div sw-typeahead-search
-                                                     data-collection-config="collectionCollectionConfig"
-                                                     data-property-to-show="'collectionName'"
-                                                     data-placeholder-text="Search Collection..."
-                                                     data-add-function="selectCollection"
-                                                     data-view-function="viewCollection"
-                                                     data-show-add-button="true"
-                                                     data-show-view-button="true"
-                                                     data-search-text="selectedCollection"
-                                                     data-validate-required="true">
-                                                    <span sw-typeahead-search-line-item data-property-identifier="collectionName"></span>
-                                                </div>
-                                            </div>-->
-
-											<!--- search --->
-											<!--<div class="s-search-filter">-->
-												<!--<sw-property-display-->
-													<!--data-object="workflowTriggers.selectedTrigger"-->
-													<!--data-property-identifier="scheduleCollection"-->
-													<!--data-field-type="search-select"-->
-													<!--data-editing="true"-->
-													<!--data-is-dirty="true"-->
-													<!--data-title="workflowTriggers.selectedTrigger.data.workflow.data.workflowObject+' Collection'"-->
-												<!--</sw-property-display>-->
-											<!--</div>-->
-											<!-- // search -->
-
+										    <ng-form name="listingForm" sw-isolate-child-form>
+										    
+                                                <sw-listing-display
+                                                    ng-if="!workflowTriggers.selectedTrigger.data.scheduleCollectionConfig"
+                                                    data-using-personal-collection="false"
+                                                    data-collection="workflow.data.workflowObject"
+                                                    data-edit="false"
+                                            	    data-has-search="true"
+                                            	    data-is-angular-route="false"
+                                            	    data-angular-links="false"
+                                            	    data-has-action-bar="false"
+                                                >
+                                                </sw-listing-display>
+                                                <sw-listing-display
+                                                    ng-if="workflowTriggers.selectedTrigger.workflowTriggerCollectionConfig"
+                                                    data-using-personal-collection="false"
+                                                    data-collection-config="workflowTriggers.selectedTrigger.workflowTriggerCollectionConfig"
+                                                    data-edit="false"
+                                            	    data-has-search="true"
+                                            	    data-is-angular-route="false"
+                                            	    data-angular-links="false"
+                                            	    data-has-action-bar="false"
+                                                >
+                                                </sw-listing-display>
+                                               
+                                            </ng-form>
 										</div>
 										<sw-property-display
                                                 data-object="workflowTriggers.selectedTrigger"
@@ -283,26 +257,6 @@
                                                 data-is-dirty="true"
                                                 style="display:none"
                                             ></sw-property-display>
-										<div class="clearfix"></div>
-                                        <sw-property-display
-                                                data-object="workflowTriggers.selectedTrigger"
-                                                data-property-identifier="collectionFetchSize"
-                                                data-editing="true"
-                                                data-is-dirty="true"
-                                        ></sw-property-display>
-										<div class="clearfix"></div>
-                                        <sw-property-display
-                                                data-object="workflowTriggers.selectedTrigger"
-                                                data-property-identifier="timeout"
-                                                data-editing="true"
-                                                data-is-dirty="true"
-                                        ></sw-property-display>
-                                        <sw-property-display
-                                                data-object="workflowTriggers.selectedTrigger"
-                                                data-property-identifier="collectionPassthrough"
-                                                data-editing="true"
-                                                data-is-dirty="true"
-                                        ></sw-property-display>
 									</div>
 
 									<div class="form-group form-group-sm">
@@ -328,9 +282,7 @@
                                                          data-placeholder-text="Search Schedule..."
                                                          data-add-function="selectSchedule"
                                                          data-search-text="schedule.selectedName"
-                                                         data-add-button-function="addNewSchedule"
-                                                         data-disabled="workflowTriggers.selectedTrigger.$$isPersisted()"
-                                                         data-validate-required="true">
+                                                         data-add-button-function="addNewSchedule">
                                                     <span sw-typeahead-search-line-item data-property-identifier="scheduleName"></span>
                                                     </div>
                                                 </div>
@@ -468,6 +420,50 @@
                                                     ></sw-property-display>
                                         </div>
 										<div class="clearfix"></div>
+										<a href ng-init="showAdvanced=false" ng-click="showAdvanced=!showAdvanced">{{showAdvanced ? 'Hide' : 'Show' }} Advanced Options</a>
+										<div class="clearfix"></div>
+										<div class="advanced well" ng-show="showAdvanced">
+                                            <sw-property-display
+                                                    data-object="workflowTriggers.selectedTrigger"
+                                                    data-property-identifier="collectionFetchSize"
+                                                    data-editing="true"
+                                                    data-is-dirty="true"
+                                            ></sw-property-display>
+    										<div class="clearfix"></div>
+                                            <sw-property-display
+                                                    data-object="workflowTriggers.selectedTrigger"
+                                                    data-property-identifier="timeout"
+                                                    data-editing="true"
+                                                    data-is-dirty="true"
+                                            ></sw-property-display>
+                                            <sw-property-display
+                                                    data-object="workflowTriggers.selectedTrigger"
+                                                    data-property-identifier="collectionPassthrough"
+                                                    data-editing="true"
+                                                    data-is-dirty="true"
+                                            ></sw-property-display>
+                                            <sw-property-display
+                                                    data-object="workflowTriggers.selectedTrigger"
+                                                    data-property-identifier="collectionFetchRecordsFlag"
+                                                    data-editing="true"
+                                                    data-is-dirty="true"
+                                            ></sw-property-display>
+                                            <sw-property-display
+                                                    data-object="workflowTriggers.selectedTrigger"
+                                                    data-property-identifier="maxTryCount"
+                                                    data-editing="true"
+                                                    data-is-dirty="true"
+                                                    ng-if="workflow.data.workflowObject && workflow.data.workflowObject.toLowerCase() == 'entityqueue'"
+                                            ></sw-property-display>
+                                            <sw-property-display
+                                                    data-object="workflowTriggers.selectedTrigger"
+                                                    data-property-identifier="retryDelay"
+                                                    data-editing="true"
+                                                    data-is-dirty="true"
+                                                    ng-if="workflow.data.workflowObject && workflow.data.workflowObject.toLowerCase() == 'entityqueue'"
+                                            ></sw-property-display>
+                                            
+                                        </div>
 									</div>
 								</div>
 							</span>

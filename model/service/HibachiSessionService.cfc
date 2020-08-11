@@ -51,10 +51,29 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 	property name="orderService" type="any";
 
 	// ======================= OVERRIDE METHODS =============================
+
+	public struct function getConfig(){
+		var config = super.getConfig(); 
+
+		//slatwall configuration		
+		config[ 'baseImageURL' ] = getHibachiScope().getBaseImageURL();
+		config[ 'missingImageURL' ] = getHibachiScope().setting('globalMissingImagePath'); 
+
+		//overrides hardcoded options with settings
+		config[ 'rbLocale' ] = getHibachiScope().getRBLocale();
+		config[ 'dateFormat' ] = getHibachiScope().setting('globalDateFormat');
+		config[ 'timeFormat' ] = getHibachiScope().setting('globalTimeFormat');
+			
+		return config; 
+	}
+	
+	public string function hibachiLoginAccount(required any account, required any accountAuthentication){
+		super.loginAccount(argumentCollection=arguments);
+	}
 	
 	public string function loginAccount(required any account, required any accountAuthentication) {
 		super.loginAccount(argumentCollection=arguments);
-		
+
 		if(
 			(
 				structKeyExists(request,'context') 
@@ -67,6 +86,7 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 			)
 		){
 		
+			
 			// If the current order has an account, and it is different from the one being logged in... then create a copy of the order without any personal information
 			if( !isNull(getHibachiScope().getSession().getOrder().getAccount()) && getHibachiScope().getSession().getOrder().getAccount().getAccountID() != arguments.account.getAccountID()) {
 				
@@ -119,8 +139,8 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 		
 		// If the session was set with a persistent cookie, and the session has an non new order on it... then remove all of the personal information
 		if(getHibachiScope().getSessionFoundPSIDCookieFlag() && !getHibachiScope().getSession().getOrder().getNewFlag()) {
-			getOrderService().processOrder(getHibachiScope().getSession().getOrder(), 'removePersonalInfo');
 			
+			getOrderService().processOrder(getHibachiScope().getSession().getOrder(), 'removePersonalInfo');
 			// Force persistance
 			getHibachiDAO().flushORMSession();
 		}

@@ -136,19 +136,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		return variables.filesSmartList;
 	}
 	
-	// @hint helper function to return a Setting
-	public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
-		//preventing multiple look ups on the external cache look up
-		var cacheKey = "#arguments.settingName##arguments.formatValue#";
-		for(var filterEntity in arguments.filterEntities){
-			cacheKey &= filterEntity.getPrimaryIDValue();
-		}
-		if(!structKeyExists(variables,cacheKey)){
-			variables[cacheKey] = getService("settingService").getSettingValue(settingName=arguments.settingName, object=this, filterEntities=arguments.filterEntities, formatValue=arguments.formatValue);
-		}
-		
-		return variables[cacheKey];
-	}
+
 	
 	
 
@@ -183,6 +171,28 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		}
 		return variables.attributeValuesForEntity;
 	}
+
+	//please note that getAttributeValueFormatted is reserved by the entity AttributeValue
+	public any function getFormattedAttributeValue( required string attribute, required string formatType, string locale, boolean useFallback=true){
+		var attributeValue = getAttributeValue(attribute=arguments.attribute, returnEntity=false);
+
+		if(!structKeyExists(arguments, 'locale')){
+			arguments.locale = getHibachiScope().getSession().getRbLocale();
+		}
+
+		var formatDetails = {
+				locale:arguments.locale,
+				object:this,
+				propertyName:arguments.attribute,
+				useFallback:arguments.useFallback
+		};		
+			
+		if(this.hasProperty('currencyCode') && !isNull(getCurrencyCode())) {
+			formatDetails.currencyCode = getCurrencyCode();
+		}
+
+		return getService("hibachiUtilityService").formatValue(value=attributeValue, formatType=arguments.formatType, formatDetails=formatDetails);
+	} 
 
 	public any function getAttributeValue(required string attribute, returnEntity=false){
 		//If custom property exists for this attribute, return the property value instead
@@ -456,7 +466,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 
 		return getApplicationValue("classAuditablePropertyCache_#getClassFullname()#");
 	}
-	
+
 	public any function getPropertyCountCollectionList(required string propertyName, string propertyCountName){
 		var propertyCollection = super.getPropertyCountCollectionList(argumentCollection=arguments);
 
@@ -504,9 +514,9 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		return listToArray( defaultPropertyIdentifiersList );
 	}
 	
-	public string function getDefaultPropertyIdentifiersList(){
+	public string function getDefaultPropertyIdentifiersList(string includesList, string excludesList){
 		// Lets figure out the properties that need to be returned
-		var defaultProperties = getDefaultCollectionProperties();
+		var defaultProperties = this.getDefaultCollectionProperties(argumentCollection = arguments);
 		var defaultPropertyIdentifiersList = "";
 		for(var i=1; i<=arrayLen(defaultProperties); i++) {
 			defaultPropertyIdentifiersList = listAppend(defaultPropertyIdentifiersList, defaultProperties[i]['name']);
@@ -569,6 +579,29 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 	}
 	
 	
+	/**
+	 * param  wildCardPosition  => left, right, both; default driven by sys-stting
+	 * param searchFilterPropertyIdentifier => any propertyIdentifier where  ormtype = dateTime
+	 * 
+	*/ 
 	
-
+	public struct function getListingSearchConfig() {
+		param name = "arguments.wildCardPosition" default = getHibachiScope().setting('globalCollectionKeywordWildcardConfig');
+		param name = "arguments.showWildCardPositionDropdown" default = true; // ability to change wildcard position
+		param name = "arguments.searchFilterPropertyIdentifier" default = 'createdDateTime';
+		param name = "arguments.showSearchFilterDropDown" default = true; // ability to change search filter period
+		param name = "arguments.ignoreSearchFilters" default = false; // searchFilters will be ignored
+		param name = "arguments.selectedSearchFilterCode" default = "allRecords";
+		
+		var listingSearchConfig  = {
+			"wildCardPosition" = arguments.wildCardPosition,
+			"showWildCardPositionDropdown" = arguments.showWildCardPositionDropdown,
+			"searchFilterPropertyIdentifier" = arguments.searchFilterPropertyIdentifier,
+			"showSearchFilterDropDown" = arguments.showSearchFilterDropDown,
+			"ignoreSearchFilters" = arguments.ignoreSearchFilters,
+			"selectedSearchFilterCode" = arguments.selectedSearchFilterCode,
+		};
+		return listingSearchConfig;
+	}
+	
 }
