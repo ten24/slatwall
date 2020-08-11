@@ -46,6 +46,7 @@ class HibachiInterceptor implements IInterceptor{
 			localStorageService,
 			alertService,
 			appConfig:string,
+			// token:string,
 			dialogService,
 			utilityService,
             hibachiPathBuilder,
@@ -61,6 +62,7 @@ class HibachiInterceptor implements IInterceptor{
 			localStorageService,
 			alertService,
 			appConfig,
+			// token,
 			dialogService,
 			utilityService,
             hibachiPathBuilder,
@@ -77,6 +79,7 @@ class HibachiInterceptor implements IInterceptor{
 			'localStorageService',
 			'alertService',
 			'appConfig',
+			// 'token',
 			'dialogService',
 			'utilityService',
             'hibachiPathBuilder',
@@ -92,6 +95,8 @@ class HibachiInterceptor implements IInterceptor{
     public baseUrl:string;
     public loginResponse=null;
     public authPromise=null;
+    private preProcessDisplayedFlagMessage = "Pre Process Displayed Flag must be equal to 1";
+    
 	//@ngInject
     constructor(
         public $location:ng.ILocationService,
@@ -103,6 +108,7 @@ class HibachiInterceptor implements IInterceptor{
 		public localStorageService,
 		public alertService,
 		public appConfig:any,
+		// public token:string,
 		public dialogService,
         public utilityService,
         public hibachiPathBuilder,
@@ -119,6 +125,7 @@ class HibachiInterceptor implements IInterceptor{
 		this.localStorageService = localStorageService;
 		this.alertService = alertService;
 		this.appConfig = appConfig;
+		// this.token = token;
 		this.dialogService = dialogService;
         this.utilityService = utilityService;
         this.hibachiPathBuilder = hibachiPathBuilder;
@@ -126,33 +133,9 @@ class HibachiInterceptor implements IInterceptor{
         this.hibachiAuthenticationService = hibachiAuthenticationService;
     }
     
-    public getJWTDataFromToken = (str):void =>{
-	    // Going backwards: from bytestream, to percent-encoding, to original string.
-	    str = str.split('.')[1];
-	    var decodedString = decodeURIComponent(this.$window.atob(str).split('').map((c)=> {
-	        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-	    }).join(''));
-	    
-	    var jwtData = angular.fromJson(decodedString);
-		var now = +new Date();
-		var nowString = now.toString().substr(0,jwtData.exp.toString().length);
-		now = +nowString;
-		if(jwtData.issuer && jwtData.issuer == this.$window.location.hostname && jwtData.exp > now){
-		    if(!this.$rootScope.slatwall.account){
-		    	this.$rootScope.slatwall.account = {};
-		    }
-		    this.$rootScope.slatwall.account.accountID = jwtData.accountid;
-		    //important to check to prevent recursion between $http and hibachinterceptor
-		    if(!this.$rootScope.slatwall.role){
-	    		this.$rootScope.slatwall.role=jwtData.role;
-	    		this.hibachiAuthenticationService.getRoleBasedData(jwtData);
-	    		if(jwtData.permissionGroups){
-	    			this.$rootScope.slatwall.permissionGroups=jwtData.permissionGroups;
-	    		}
-	    		
-		    }
-    	}
-	}
+ //   public getJWTDataFromToken = ():void =>{
+	//     this.hibachiAuthenticationService.getJWTDataFromToken(this.token);
+	// }
     
 	public request = (config): ng.IPromise<any> => {
         this.$log.debug('request');
@@ -169,10 +152,10 @@ class HibachiInterceptor implements IInterceptor{
         }
         config.cache = true;
         config.headers = config.headers || {};
-        if (this.localStorageService.hasItem('token')) {
-            config.headers['Auth-Token'] = 'Bearer ' + this.localStorageService.getItem('token');
-            this.getJWTDataFromToken(this.localStorageService.getItem('token'));
-        }
+        // if(this.token){
+        // 	config.headers['Auth-Token'] = 'Bearer ' + this.token;
+        //     this.getJWTDataFromToken();
+        // }
         var queryParams = this.utilityService.getQueryParamsFromUrl(config.url);
 		if(config.method == 'GET' && (queryParams[this.appConfig.action] && queryParams[this.appConfig.action] === 'api:main.get')){
             this.$log.debug(config);
@@ -204,14 +187,13 @@ class HibachiInterceptor implements IInterceptor{
 		return this.$q.reject(rejection);
     }
     public response = (response): ng.IPromise<any> => {
-		if(response.data.messages){
-            var alerts = this.alertService.formatMessagesToAlerts(response.data.messages);
-            this.alertService.addAlerts(alerts);
+		if(response?.data?.messages){
+			//We have 1 'error' that we use to display preprocess forms that we don't want displaying.
+			if (response.data.messages.length && response.data.messages[0].message && response.data.messages[0].message != this.preProcessDisplayedFlagMessage){
+            	var alerts = this.alertService.formatMessagesToAlerts(response.data.messages);
+            	this.alertService.addAlerts(alerts);
+			}
 
-        }
-
-        if(response.data.hasOwnProperty('token')){
-        	this.localStorageService.setItem('token',response.data.token);
         }
 		return response;
     }
@@ -246,10 +228,11 @@ class HibachiInterceptor implements IInterceptor{
                     	return this.authPromise = $http.get(this.baseUrl+'?'+this.appConfig.action+'=api:main.login').then(  (loginResponse:IHibachiInterceptorPromise<any>)=>{
 	                        this.loginResponse=loginResponse;
 	                        if(loginResponse.status === 200){
-	                            this.localStorageService.setItem('token',loginResponse.data.token);
+	                            this.hibachiAuthenticationService.token = loginResponse.data.token;
 	                            rejection.config.headers = rejection.config.headers || {};
-	                            rejection.config.headers['Auth-Token'] = 'Bearer ' + loginResponse.data.token;
-	                            this.getJWTDataFromToken(loginResponse.data.token);
+	                            // rejection.config.headers['Auth-Token'] = 'Bearer ' + loginResponse.data.token;
+	                            // this.token = loginResponse.data.token;
+	                            // this.getJWTDataFromToken();
 	                            return $http(rejection.config).then(function(response) {
 	                               return response;
 	                            });
@@ -264,10 +247,11 @@ class HibachiInterceptor implements IInterceptor{
                         
                         if(this.loginResponse.status === 200){
                         	
-                            this.localStorageService.setItem('token',this.loginResponse.data.token);
                             rejection.config.headers = rejection.config.headers || {};
-                            rejection.config.headers['Auth-Token'] = 'Bearer ' + this.loginResponse.data.token;
-                            this.getJWTDataFromToken(this.loginResponse.data.token);
+                            // rejection.config.headers['Auth-Token'] = 'Bearer ' + this.loginResponse.data.token;
+                            
+                            // this.token=this.loginResponse.data.token;
+                            // this.getJWTDataFromToken();
                             
                             return $http(rejection.config).then(function(response) {
                                return response;

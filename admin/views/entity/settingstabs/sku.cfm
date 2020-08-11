@@ -77,6 +77,7 @@ Notes:
 		<swa:SlatwallSetting settingName="skuShippingWeight" />
 		<swa:SlatwallSetting settingName="skuShippingWeightUnitCode" />
 		<swa:SlatwallSetting settingName="skuTrackInventoryFlag" />
+		<swa:SlatwallSetting settingName="skuTrackQATSBelowThreshold" />
 		<swa:SlatwallSetting settingName="skuQATSIncludesQNROROFlag" />
 		<swa:SlatwallSetting settingName="skuQATSIncludesQNROVOFlag" />
 		<swa:SlatwallSetting settingName="skuQATSIncludesQNROSAFlag" />
@@ -91,6 +92,8 @@ Notes:
 		<swa:SlatwallSetting settingName="skuDeferredRevenueLedgerAccount"/>
 		<swa:SlatwallSetting settingName="skuStockHold"/>
 		<swa:SlatwallSetting settingName="skuStockHoldTime"/>
+		<swa:SlatwallSetting settingName="skuDisableAverageCostCalculation"/>
+		<swa:SlatwallSetting settingName="skuDisableQoQCalculation"/>
 
 	</swa:SlatwallSettingTable>
 </cfoutput>

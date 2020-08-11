@@ -9,6 +9,7 @@ class SWActionCallerDropdownController{
     public dropdownId:string;
     public buttonClass:string;
     
+    // @ngInject;
     constructor(){
         this.title = this.title || '';
         this.icon = this.icon || 'plus';
@@ -34,21 +35,12 @@ class SWActionCallerDropdown implements ng.IDirective{
     };
     public controller=SWActionCallerDropdownController
     public controllerAs="swActionCallerDropdown";
-    public templateUrl;
 
-    public static Factory(){
-        var directive = (corePartialsPath,hibachiPathBuilder) => new SWActionCallerDropdown(corePartialsPath,hibachiPathBuilder);
-        directive.$inject = ['corePartialsPath','hibachiPathBuilder'];
-        return directive;
-    }
+    public template = require("./actioncallerdropdown.html");
 
-    constructor(private corePartialsPath,hibachiPathBuilder){
-        this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath)+'actioncallerdropdown.html';
-    }
-
-    public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
-
-    }
+	public static Factory(){
+		return /** @ngInject; */ () => new this();
+	}
 }
 export{
     SWActionCallerDropdownController,

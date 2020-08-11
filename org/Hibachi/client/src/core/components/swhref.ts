@@ -2,16 +2,10 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 class SWHref{
 	public static Factory(){
-		var directive = (
-
-		)=>new SWHref(
-
-		);
-		directive.$inject = [
-
-		];
-		return directive;
+		return () => new SWHref();
 	}
+	
+    // 	@ngInject;
 	constructor(
 
 	){

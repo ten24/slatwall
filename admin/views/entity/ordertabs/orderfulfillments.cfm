@@ -53,7 +53,7 @@ Notes:
 <cfparam name="rc.edit" type="boolean" /> 
 
 <cfset local.collectionOrderFulfillmentList = $.slatwall.getService('orderService').getOrderFulfillmentCollectionList()  >
-	<cfset local.collectionOrderFulfillmentList.setDisplayProperties("fulfillmentMethod.fulfillmentMethodName,fulfillmentCharge,discountAmount,chargeTaxAmount,chargeAfterDiscount,quantityDelivered,quantityUndelivered",{
+	<cfset local.collectionOrderFulfillmentList.setDisplayProperties("fulfillmentMethod.fulfillmentMethodName,fulfillmentCharge,discountAmount,handlingFee,chargeTaxAmount,chargeAfterDiscount,quantityDelivered,quantityUndelivered",{
 	    isVisible=true,
 	    isSearchable=true,
 	    isDeletable=true
@@ -68,6 +68,7 @@ Notes:
 		<hb:HibachiListingColumn tdClass="primary" propertyIdentifier="fulfillmentMethod.fulfillmentMethodName" />
 		<hb:HibachiListingColumn propertyIdentifier="fulfillmentCharge" />
 		<hb:HibachiListingColumn propertyIdentifier="discountAmount" />
+		<hb:HibachiListingColumn propertyIdentifier="handlingFee" />
 		<hb:HibachiListingColumn propertyIdentifier="chargeTaxAmount" />
 		<hb:HibachiListingColumn propertyIdentifier="chargeAfterDiscount" />
 		<hb:HibachiListingColumn propertyIdentifier="quantityDelivered" />

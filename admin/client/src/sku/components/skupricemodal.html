@@ -1,0 +1,122 @@
+<sw-modal-launcher data-launch-event-name="EDIT_SKUPRICE"
+                   data-modal-name="{{swSkuPriceModal.uniqueName}}" 
+                   data-title="Add Sku Price Detail" 
+                   data-save-action="swSkuPriceModal.save">
+    
+    <sw-modal-button>
+        <ng-transclude></ng-transclude>
+    </sw-modal-button>
+    
+    <sw-modal-content> 
+        
+        <sw-form ng-if="swSkuPriceModal.skuPrice"
+                 name="{{swSkuPriceModal.formName}}" 
+                 data-object="swSkuPriceModal.skuPrice"    
+                 data-context="save"
+                 >
+            <div ng-show="!swSkuPriceModal.saveSuccess" class="alert alert-error" role="alert" sw-rbkey="'admin.entity.addskuprice.invalid'"></div>
+            <div class="row">
+                    <div class="col-sm-4">
+                        <sw-sku-thumbnail ng-if="swSkuPriceModal.sku.data" data-sku-data="swSkuPriceModal.sku.data">
+                        </sw-sku-thumbnail>
+                    </div>
+                    <div class="col-sm-8">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <label  class="control-label"
+                                        sw-rbKey="'entity.SkuPrice.price'">
+                                </label>
+                                <input  class="form-control" 
+                                        type="text" 
+                                        name="price" 
+                                        ng-model="swSkuPriceModal.skuPrice.price"
+                                />
+                            </div> 
+                            <div class="col-sm-4">
+                                <label  class="control-label"
+                                        sw-rbKey="'entity.SkuPrice.listPrice'">
+                                </label>
+                                <input  class="form-control" 
+                                        type="text" 
+                                        name="listPrice" 
+                                        ng-model="swSkuPriceModal.skuPrice.listPrice"
+                                />
+                            </div> 
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label for="" class="control-label">Currency Code</label>
+                                    <select class="form-control" 
+                                            name="currencyCode"
+                                            ng-model="swSkuPriceModal.selectedCurrencyCode"
+                                            ng-options="item as item for item in swSkuPriceModal.currencyCodeOptions track by item"
+                                            ng-disabled="swSkuPriceModal.isDefaultSkuPrice()"
+                                            >
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <label  class="control-label"
+                                        sw-rbKey="'entity.SkuPrice.minQuantity'">
+                                </label>
+                                <input  class="form-control" 
+                                        type="text" 
+                                        name="minQuantity" 
+                                        ng-model="swSkuPriceModal.skuPrice.minQuantity"
+                                        ng-disabled="swSkuPriceModal.isDefaultSkuPrice()"
+                                />
+                            </div>
+                            <div class="col-sm-6">
+                                <label  class="control-label"
+                                        sw-rbKey="'entity.SkuPrice.maxQuantity'">
+                                </label>
+                                <input  class="form-control" 
+                                        type="text" 
+                                        name="maxQuantity" 
+                                        ng-model="swSkuPriceModal.skuPrice.maxQuantity"
+                                        ng-disabled="swSkuPriceModal.isDefaultSkuPrice()"
+                                />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <label  class="control-label"
+                                        sw-rbKey="'entity.Sku'">
+                                        
+                                </label>
+                                <sw-typeahead-search    data-collection-config="swSkuPriceModal.skuCollectionConfig"
+                                                        data-disabled="swSkuPriceModal.isDefaultSkuPrice()"
+                                                        data-placeholder-text="Select Sku"
+                                                        data-search-text="swSkuPriceModal.selectedSku['skuCode']"
+                                                        data-add-function="swSkuPriceModal.setSelectedSku"
+                                                        data-property-to-show="skuCode">
+                                    <span sw-typeahead-search-line-item data-property-identifier="skuCode" ng-bind="item.skuCode"></span>
+                                </sw-typeahead-search>
+                                <input type="hidden" readonly style="display:none" name="sku" ng-model="swSkuPriceModal.submittedSku" />
+                            </div>
+                            <div class="col-sm-6">
+                                
+                                <label  class="control-label"
+                                        sw-rbKey="'entity.PriceGroup'">
+                                        
+                                </label>
+                                <select class="form-control" 
+                                        ng-model="swSkuPriceModal.selectedPriceGroup"
+                                        ng-options="item as item.priceGroupName for item in swSkuPriceModal.priceGroupOptions track by item.priceGroupID"
+                                        ng-change="swSkuPriceModal.setSelectedPriceGroup(swSkuPriceModal.selectedPriceGroup)"
+                                        ng-disabled="swSkuPriceModal.isDefaultSkuPrice() || swSkuPriceModal.priceGroupEditable == false"
+                                        >
+                                </select>
+                                <input type="hidden" readonly style="display:none" name="priceGroup" ng-model="swSkuPriceModal.submittedPriceGroup" />
+                            </div>
+                        </div>
+                        <!-- BEGIN HIDDEN FIELDS -->
+                        
+                        <!-- END HIDDEN FIELDS -->
+                    </div>
+                </div>
+            </sw-form>
+    </sw-modal-content> 
+</sw-modal-launcher>

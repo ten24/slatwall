@@ -104,8 +104,8 @@
                         
                         <div class="btn-group s-btn-dropdown" role="group"> 
                             <button type="button" class="btn btn-primary btn-xs" ng-disabled="swFulfillmentBatchDetailController.state.currentRecordOrderDetail['orderFulfillmentStatusType_typeName'] == 'Fulfilled'">
-    		                    <span ng-hide="swFulfillmentBatchDetailController.state.loading">Fulfill</span> 
-                                <span ng-show="swFulfillmentBatchDetailController.state.loading"><i class="fa fa-spinner fa-pulse fa-fw"></i>Loading</span> 
+		                    	<span ng-hide="swFulfillmentBatchDetailController.state.loading">Fulfill</span> 
+		                    	<span ng-show="swFulfillmentBatchDetailController.state.loading"><i class="fa fa-spinner fa-pulse fa-fw"></i>Loading</span> 
 		                    </button>
                             <ul class="dropdown-menu" role="menu">
 								<li><a href="#" ng-click="swFulfillmentBatchDetailController.userCaptureAndFulfill()">Fulfill</a></li>
@@ -129,7 +129,7 @@
                         <span class="s-date"> <small> {{comment.createdDateTime}} </small><!--10 hours ago---></span>
                         <!--- Should only be able to edit own comments. --->
                         <span class="s-actions" style="float: right" ng-if="$root.slatwall.account.accountID && $root.slatwall.account.accountID == comment.createdByAccountID">
-                            <a sw-confirm use-rb-key="false" yes-text="Yes" no-text="No" confirm-text="Are you sure?" message-text="Selecting yes will delete this comment." callback="swFulfillmentBatchDetailController.userDeletingComment(comment)"><i class="fa fa-remove"></i></a>
+                            <a sw-confirm use-rb-key="false" yes-text="Yes" no-text="No" confirm-text="Are you sure?" message-text="Selecting yes will delete this comment." callback="swFulfillmentBatchDetailController.userDeletingComment(comment)"><i class="fa fa-times"></i></a>
                             <a href="#" type="button" ng-click="swFulfillmentBatchDetailController.userEditingComment(comment)"><i class="fas fa-pen"></i></a>
                         </span>
                     </div>
@@ -307,13 +307,13 @@
                                                 <input class="form-control s-tracking-code" type="text" placeholder="tracking code..." ng-model="swFulfillmentBatchDetailController.state.trackingCode">
                                             </div>
                                             <div class="col-xs-3" ng-show="swFulfillmentBatchDetailController.state.useShippingIntegrationForTrackingNumber == 1">
-                                               <label>Choose Shipping Integration</label>
-                                               <select 
-                                                   ng-model="swFulfillmentBatchDetailController.state.shippingIntegrationID" 
-                                                   ng-options="option['VALUE'] as option['NAME'] for option in swFulfillmentBatchDetailController.state.shippingIntegrationOptions"
-                                               >
-                                               </select>
-                                           </div>
+                                                <label>Choose Shipping Integration</label>
+                                                <select 
+                                                    ng-model="swFulfillmentBatchDetailController.state.shippingIntegrationID" 
+                                                    ng-options="option['VALUE'] as option['NAME'] for option in swFulfillmentBatchDetailController.state.shippingIntegrationOptions"
+                                                >
+                                                </select>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="col-xs-12">
@@ -353,7 +353,7 @@
                                                         </td>
                                                         <td>
                                                             <button class="btn btn-default btn-xs s-remove" ng-click="swFulfillmentBatchDetailController.userRemovingBox($index)">
-                                                                <i class="fa fa-remove"></i>
+                                                                <i class="fa fa-times"></i>
                                                             </button>
                                                         </td>
                                                     </tr>
@@ -485,8 +485,8 @@
                                             <ul class="dropdown-menu" role="menu">
 												<li><a href="#" ng-click="swFulfillmentBatchDetailController.userCaptureAndFulfill();swFulfillmentBatchDetailController.state.loading = true">Fulfill</a></li>
 						                    </ul>
-                                            <button type="button" class="btn btn-primary s-btn-select btn-lg" data-toggle="dropdown">
-												<span class="caret"></span>
+						                    <button type="button" class="btn btn-primary s-btn-select btn-lg" data-toggle="dropdown">
+						                        <span class="caret"></span>
 						                    </button>
                                         </div>
                                     </div>

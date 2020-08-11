@@ -366,6 +366,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			var qatsIncludesQNROSAFlag = arguments.entity.getSku().setting('skuQATSIncludesQNROSAFlag');
 			var holdBackQuantity = arguments.entity.getSku().setting('skuHoldBackQuantity');
 			var qatsIncludesMQATSBOMFlag = arguments.entity.getSku().setting('skuQATSIncludesMQATSBOMFlag');
+			var skuTrackQATSBelowThreshold = val(arguments.entity.getSku().setting('skuTrackQATSBelowThreshold'));
 		} else {
 			var trackInventoryFlag = arguments.entity.setting('skuTrackInventoryFlag');
 			var allowBackorderFlag = arguments.entity.setting('skuAllowBackorderFlag');
@@ -375,11 +376,17 @@ component extends="HibachiService" accessors="true" output="false" {
 			var qatsIncludesQNROSAFlag = arguments.entity.setting('skuQATSIncludesQNROSAFlag');
 			var holdBackQuantity = arguments.entity.setting('skuHoldBackQuantity');
 			var qatsIncludesMQATSBOMFlag = arguments.entity.setting('skuQATSIncludesMQATSBOMFlag');
+			var skuTrackQATSBelowThreshold = val(arguments.entity.setting('skuTrackQATSBelowThreshold'));
 		}
 
 		// If trackInventory is not turned on, or backorder is true then we can set the qats to the max orderQuantity
 		if( !trackInventoryFlag || allowBackorderFlag ) {
 			return orderMaximumQuantity;
+		}
+		
+		// if current calculated QATS is more the skuTrackQATSBelowThreshold then return calculatedQATS, unless updating calculated property
+		if( !arguments.entity.getCalculatedUpdateRunFlag() && skuTrackQATSBelowThreshold != 0 && val(arguments.entity.getCalculatedQATS()) > skuTrackQATSBelowThreshold ) {
+			return arguments.entity.getCalculatedQATS();
 		}
 		
 		// Otherwise we will do a normal bit of calculation logic
@@ -440,53 +447,56 @@ component extends="HibachiService" accessors="true" output="false" {
 			var skuID = "";
 		
 			// Increment Product value
-			returnStruct[ arguments.inventoryType ] += arguments.inventoryArray[i][ arguments.inventoryType ];
+			if(structKeyExists(arguments.inventoryArray[i],arguments.inventoryType)){
+				returnStruct[ arguments.inventoryType ] += arguments.inventoryArray[i][ arguments.inventoryType ];
 			
-			// Setup the location
-			if( structKeyExists(arguments.inventoryArray[i], "locationIDPath") ) {
-				for(var l=1; l<=listLen(arguments.inventoryArray[i]["locationIDPath"]); l++) {
-					locationID = listGetAt(arguments.inventoryArray[i]["locationIDPath"], l);
-					
-					if( !structKeyExists(returnStruct.locations, locationID) ) {
-						returnStruct.locations[ locationID ] = 0;
-					}
-					
-					// Increment Location
-					returnStruct.locations[ locationID ] += arguments.inventoryArray[i][ arguments.inventoryType ];	
-				}
-			}
-			
-			// Setup the stock
-			if( structKeyExists(arguments.inventoryArray[i], "stockID") ) {
-				var stockID = arguments.inventoryArray[i]["stockID"];	
-				returnStruct.stocks[ stockID ] = arguments.inventoryArray[i][ arguments.inventoryType ];	
-			}
-			
-			// Setup the sku
-			if( structKeyExists(arguments.inventoryArray[i], "skuID") ) {
-				var skuID = arguments.inventoryArray[i]["skuID"];
 				
-				if(!structKeyExists(returnStruct.skus, skuID)) {
-					returnStruct.skus[ skuID ] = {};
-					returnStruct.skus[ skuID ].locations = {};
-					returnStruct.skus[ skuID ][ arguments.inventoryType ] = 0;
-				}
-				
-				returnStruct.skus[ skuID ][ arguments.inventoryType ] += arguments.inventoryArray[i][ arguments.inventoryType ];
-				
-				// Add location to sku if it exists
-				if(structKeyExists(arguments.inventoryArray[i],'locationIDPath')){
+				// Setup the location
+				if( structKeyExists(arguments.inventoryArray[i], "locationIDPath") ) {
 					for(var l=1; l<=listLen(arguments.inventoryArray[i]["locationIDPath"]); l++) {
 						locationID = listGetAt(arguments.inventoryArray[i]["locationIDPath"], l);
-					
-						if(!structKeyExists(returnStruct.skus[ skuID ].locations, locationID)) {
-							returnStruct.skus[ skuID ].locations[ locationID ] = 0;
+						
+						if( !structKeyExists(returnStruct.locations, locationID) ) {
+							returnStruct.locations[ locationID ] = 0;
 						}
-						returnStruct.skus[ skuID ].locations[ locationID ] += arguments.inventoryArray[i][ arguments.inventoryType ];
+						
+						// Increment Location
+						returnStruct.locations[ locationID ] += arguments.inventoryArray[i][ arguments.inventoryType ];	
 					}
 				}
+			
+				// Setup the stock
+				if( structKeyExists(arguments.inventoryArray[i], "stockID") ) {
+					var stockID = arguments.inventoryArray[i]["stockID"];	
+					returnStruct.stocks[ stockID ] = arguments.inventoryArray[i][ arguments.inventoryType ];	
+				}
 				
-
+				// Setup the sku
+				if( structKeyExists(arguments.inventoryArray[i], "skuID") ) {
+					var skuID = arguments.inventoryArray[i]["skuID"];
+					
+					if(!structKeyExists(returnStruct.skus, skuID)) {
+						returnStruct.skus[ skuID ] = {};
+						returnStruct.skus[ skuID ].locations = {};
+						returnStruct.skus[ skuID ][ arguments.inventoryType ] = 0;
+					}
+					
+					returnStruct.skus[ skuID ][ arguments.inventoryType ] += arguments.inventoryArray[i][ arguments.inventoryType ];
+					
+					// Add location to sku if it exists
+					if(structKeyExists(arguments.inventoryArray[i],'locationIDPath')){
+						for(var l=1; l<=listLen(arguments.inventoryArray[i]["locationIDPath"]); l++) {
+							locationID = listGetAt(arguments.inventoryArray[i]["locationIDPath"], l);
+						
+							if(!structKeyExists(returnStruct.skus[ skuID ].locations, locationID)) {
+								returnStruct.skus[ skuID ].locations[ locationID ] = 0;
+							}
+							returnStruct.skus[ skuID ].locations[ locationID ] += arguments.inventoryArray[i][ arguments.inventoryType ];
+						}
+					}
+					
+	
+				}
 			}
 			
 		}
