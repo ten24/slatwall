@@ -12,7 +12,7 @@ component extends="Slatwall.org.Hibachi.HibachiController" accessors="true" outp
 	
 	//TODO upload/download CSVs, UI
 	
-	public any function importCsvData(required any rc){	
+	public any function uploadCSV (required any rc){	
 		getService("hibachiTagService").cfsetting(requesttimeout=60000);
         var pathToImport = ExpandPath('/Slatwall') & '/integrationServices/slatwallimporter/assets/csv/'; 
 		if(FileExists(pathToImport)){
@@ -21,7 +21,17 @@ component extends="Slatwall.org.Hibachi.HibachiController" accessors="true" outp
 		if(!DirectoryExists(pathToImport)){
 			DirectoryCreate(pathToImport);
 		}	
-		var file = FileUpload(pathToImport, "importFile", "*", "Overwrite");
+		try
+		{
+			var file = FileUpload(pathToImport, "importFile", "*", "Overwrite",".csv");
+			getFW().setView("slatwallimporter:main");
+		}
+		catch(any excpt)
+		{
+			return excpt.Message;
+		}
+		
+	
 	    //FileDelete(pathToImport&file.serverfile);
 	}
 

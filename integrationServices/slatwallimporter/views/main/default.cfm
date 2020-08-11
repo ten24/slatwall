@@ -3,14 +3,30 @@
 
 <cfoutput>
 	<div class="row">
+	<div class="col-md-12">
+		<cfif len(getHibachiScope().getAllErrorsHTML()) >
+			<div class="alert alert-danger">
+				#getHibachiScope().getAllErrorsHTML()#
+			</div> 
+		</cfif> 
+	
+		<cfif len(getHibachiScope().getAllMessagesHTML()) >
+			<div class="alert alert-success">
+				#getHibachiScope().getAllMessagesHTML()# 
+			</div>
+		</cfif> 
+	</div>
+	</div>
+	<div class="row">
 <div class="col-md-6">
  <div class="panel panel-default">
 	  <div class="panel-heading">CSV Upload</div>
 			<div class="panel-body">
 				<form name="csvimport" action="?s=1" method="post" enctype="multipart/form-data">
+						<input type="hidden" name="slatAction" value="slatwallimporter:main.uploadCSV" />
 			<div class="form-group">
 			<label for="importNowFlag">Select Entity</label>
-			<select id="entity" name="slatAction" class="form-control">
+			<select id="entity" name="allenttity" class="form-control">
 				<option value="entity1">entity1</option>
 				<option value="entity2">entity2</option>
 				<option value="entity3">entity3</option>
@@ -38,9 +54,11 @@
 			</div> 
 	    </div>
 		 <cfdirectory action="list" directory="#ExpandPath('/integrationServices/slatwallimporter/assets/downloadsample/')#" name="listRoot">
-			<cfloop query="listRoot">
-				<a id="downloadfile" href="#ExpandPath('/integrationServices/slatwallimporter/assets/downloadsample/#name#')#" download>#name# Sample</a></br>
-		  </cfloop>
+		<ul class="list-group">
+		<cfloop query="listRoot">
+				<li class="list-group-item"><a id="downloadfile" href="#ExpandPath('/integrationServices/slatwallimporter/assets/downloadsample/#name#')#" download>#name# Sample</a></br></li>
+        </cfloop>
+	   </ul>
 		</div>
 	</div>
 </cfoutput>
