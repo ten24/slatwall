@@ -593,7 +593,29 @@ component output="false" accessors="true" extends="HibachiService" {
 		return false;
 	}
 	
-	public boolean function validate_lte(required any object, required string propertyIdentifier, required numeric constraintValue) {
+	public boolean function validate_notInList(required any object, required string propertyIdentifier, required string constraintValue ){
+	    var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
+		
+		if( !isNull(propertyObject) ){
+            return this.validate_notInList_real( 
+                    propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#"),
+                    constraintValue = arguments.constraintValue 
+                );
+		}
+		
+		return false;
+	}
+	
+	public boolean function validate_notInList_real(any propertyValue, required numeric constraintValue ){
+	   
+	    if( !isNull(arguments.propertyValue) && !listFindNoCase(arguments.constraintValue, arguments.propertyValue) ){
+			return true;
+		}
+
+		return false;
+	}
+	
+	public boolean function validate_lte(required any object, required string propertyIdentifier, required numeric constraintValue){
 		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
 		
 		if( !isNull(propertyObject) ){
@@ -986,24 +1008,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		}
 		return getHibachiDAO().isUniqueProperty(propertyName=listLast(arguments.propertyIdentifier,'.'), entity=propertyObject);
 	}
-
-<<<<<<< HEAD
-=======
-	public boolean function validate_regex(required any object, required string propertyIdentifier, required string constraintValue) {
-		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
-		if(!isNull(propertyObject)) {
-			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");
-		}
-		if(isNull(propertyValue) || !len(propertyValue) || isValid("regex", propertyValue, arguments.constraintValue)) {
-			return true;
-		}
-		return false;
-	}
 	
-	public boolean function validate_notInList(required any object, required string propertyIdentifier, required string constraintValue) {
-		return !this.validate_inList(arguments.object, arguments.propertyIdentifier, arguments.constraintValue);
-	}
->>>>>>> origin/develop-team
 
     //private helpers
 	private boolean function validateAsNumeric(required any object, required string propertyName, string comparePropertyName){
