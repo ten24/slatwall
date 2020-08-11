@@ -46,6 +46,30 @@
 Notes:
 
 */
-component extends="Slatwall.integrationServices.BaseImporterService" persistent="false" accessors="true" output="false"{
+component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
+
+	public void function setUp() {
+		super.setup();
+
+		//variables.service = request.slatwallScope.getBean("appService");
+		variables.service = createMock('Slatwall.integrationServices.BaseImporterService');
+
+	}
 	
+
+	/**
+	* @test
+	*/
+	public void function validateDataTest(required struct data, required struct mapping ){
+		throw("Not implemented yet");
+	}
+	
+	/**
+	* @test
+	*/
+	public void function transformDataTest(required struct data, required struct mapping ){
+		throw("Not implemented yet");
+	}
 }
+
+

@@ -1,19 +1,21 @@
 {
 	"entity": "Account",
-	"mapping": {
+	"properties": {
 	    "firstName": {
 		    "propertyIdentifier" : "firstName",
-		    "required": true
+		    "validaations": { "required": true, "dataType": "string" }
 		},
 		"lastName": {
 		    "propertyIdentifier" : "firstName",
+		    "validaations": { "dataType": "string" }
 		},
 		"username": {
 		    "propertyIdentifier" : "username",
+		    "validaations": { "required": true, "dataType": "string" }
 		}
 		"emailAddress": {
 		    "propertyIdentifier" : "primaryEmailAddress.emailAddress",
-		    "dtatType": "email",
+		    "validaations": { "required": true, "dataType": "email" }
 		},
 	}
 }
