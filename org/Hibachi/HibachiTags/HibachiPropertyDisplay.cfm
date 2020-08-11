@@ -10,6 +10,7 @@
 	<!--- These are optional Attributes --->
 	<cfparam name="attributes.edit" type="boolean" default="false" />						<!--- hint: When in edit mode this will create a Form Field, otherwise it will just display the value" --->
 	<cfparam name="attributes.requiredFlag" type="boolean" default="false" />				<!--- Determines whether property is required or not in edit mode --->
+	<cfparam name="attributes.notRequiredClass" type="string" default="false" />			<!--- If set to s-not-required, will override any default validation. We can't reuse the requiredFlag because using requiredFlag false will break other fields.  --->
 	
 	<cfparam name="attributes.title" type="string" default="" />							<!--- hint: This can be used to override the displayName of a property" --->
 	<cfparam name="attributes.hint" type="string" default="" />								<!--- hint: If specified, then this will produce a tooltip around the title --->
@@ -209,6 +210,25 @@
 			
 			<cfif attributes.hint eq "">
 				<cfset attributes.hint = attributes.object.getPropertyHint( attributes.property ) />
+			</cfif>
+			
+			<!--- Setup Translate attributes for persistent entities with string properties --->
+			<cfif 
+				attributes.object.isPersistent() 
+				and listFindNoCase('text,textarea,wysiwyg', attributes.fieldType) 
+				and structKeyExists(attributes.object.getPropertyMetaData(attributes.property), 'ormtype')
+				and attributes.object.getPropertyMetaData(attributes.property).ormtype eq 'string'
+				and listFindNoCase(attributes.hibachiScope.getService('settingService').getSettingValue('globalTranslateEntities'), attributes.object.getClassName())
+				and (
+					not structKeyExists(attributes.object.getPropertyMetaData(attributes.property), "hb_translate") 
+					or attributes.object.getPropertyMetaData(attributes.property).hb_translate
+				)
+			>
+				<cfset attributes.translateAttributes = {} />
+				<cfset attributes.translateAttributes.queryString = '' />
+				<cfset attributes.translateAttributes.queryString = listAppend(attributes.translateAttributes.queryString, "baseObject=#attributes.object.getClassName()#", "&") />
+				<cfset attributes.translateAttributes.queryString = listAppend(attributes.translateAttributes.queryString, "baseID=#attributes.object.getPrimaryIDValue()#", "&") />
+				<cfset attributes.translateAttributes.queryString = listAppend(attributes.translateAttributes.queryString, "basePropertyName=#attributes.property#", "&") />
 			</cfif>
 				
 			<!--- Add the error class to the form field if it didn't pass validation --->

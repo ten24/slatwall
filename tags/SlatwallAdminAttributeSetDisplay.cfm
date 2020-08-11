@@ -58,6 +58,7 @@ Notes:
 
 	<cfset thisTag.attributeSmartList = attributes.attributeSet.getAttributesSmartList() />
 	<cfset thisTag.attributeSmartList.addFilter('activeFlag', 1) />
+	<cfset thisTag.attributeSmartList.addWhereCondition("aslatwallattribute.attributeInputDisplayType != 'hidden'") />
 	<cfset thisTag.attributeSmartList.addOrder("sortOrder|ASC") />
 
 	<cfloop array="#thisTag.attributeSmartList.getRecords()#" index="attribute">
@@ -78,6 +79,19 @@ Notes:
 		<cfset fdAttributes.value = "" />
 
 		<cfif isObject(attributes.entity)>
+			
+			<!--- Setup Translate attributes for persistent entities with string properties --->
+			<cfif 
+				listFindNoCase('text,textarea,wysiwyg', fdattributes.fieldType) 
+				and listFindNoCase(attributes.hibachiScope.getService('settingService').getSettingValue('globalTranslateEntities'), attributes.entity.getClassName())
+			>
+				<cfset fdattributes.translateAttributes = {} />
+				<cfset fdattributes.translateAttributes.queryString = '' />
+				<cfset fdattributes.translateAttributes.queryString = listAppend(fdattributes.translateAttributes.queryString, "baseObject=#attributes.entity.getClassName()#", "&") />
+				<cfset fdattributes.translateAttributes.queryString = listAppend(fdattributes.translateAttributes.queryString, "baseID=#attributes.entity.getPrimaryIDValue()#", "&") />
+				<cfset fdattributes.translateAttributes.queryString = listAppend(fdattributes.translateAttributes.queryString, "basePropertyName=#fdattributes.fieldName#", "&") />
+			</cfif>
+			
 			<cfset thisAttributeValueObject = attributes.entity.getAttributeValue(attribute.getAttributeCode(), true) />
 			<cfif isObject(thisAttributeValueObject)>
 				<cfif attributes.edit>
@@ -119,12 +133,23 @@ Notes:
 			</cfif>
 		</cfif>
 		
-		<cfif not attributes.edit and attribute.getAttributeInputType() eq 'typeSelect' and len(fdAttributes.value)>
+		<cfif (not attributes.edit OR attributes.edit and attribute.getAttributeInputDisplayType() eq 'readOnly' ) and attribute.getAttributeInputType() eq 'typeSelect' and len(fdAttributes.value)>
+
 			<cfset typeObject="#attributes.hibachiScope.getService('TypeService').getType(fdAttributes.value)#" />
 			<cfif !isNull(typeObject)>
 				<cfset fdAttributes.valueLink = "?slatAction=entity.detailtype&typeID=#fdAttributes.value#" />
 				<cfset fdAttributes.value= typeObject.getTypeName() />
 				
+			</cfif>
+		</cfif>
+		
+		<cfif (not attributes.edit OR attributes.edit and attribute.getAttributeInputDisplayType() eq 'readOnly' ) and attribute.getAttributeInputType() eq 'select' and len(fdAttributes.value)>
+			<cfset attributeOptionObject="#attributes.hibachiScope.getDAO('AttributeDAO')
+													.getAttributeOptionByAttributeOptionValueAndAttributeID(
+													    attributeOptionValue= fdAttributes.value, attributeID= attribute.getAttributeID()
+													)#" />
+			<cfif !isNull(attributeOptionObject)>
+				<cfset fdAttributes.value= attributeOptionObject.getAttributeOptionLabel() />
 			</cfif>
 		</cfif>
 
@@ -148,6 +173,11 @@ Notes:
 			<cfset removeLink = "?slatAction=admin:entity.deleteCustomPropertyFile&#attributes.entity.getPrimaryIDPropertyName()#=#attributes.entity.getPrimaryIDValue()#&entityName=#attribute.getAttributeSet().getAttributeSetObject()#&attributeCode=#attribute.getAttributeCode()#&redirectAction=admin:entity.detail#attributes.attributeSet.getAttributeSetObject()#"/>
 			<cfset fdAttributes.removeLink = removeLink/>
 		</cfif>
+		
+		<cfif attributes.edit and attribute.getAttributeInputDisplayType() eq 'readOnly'>
+			<cfset fdAttributes.fieldType = 'readOnly' />
+		</cfif>
+			
 			<hb:HibachiFieldDisplay attributeCollection="#fdAttributes#" />
 
 	</cfloop>

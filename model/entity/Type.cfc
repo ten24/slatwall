@@ -96,6 +96,10 @@ component entityname="SlatwallType" table="SwType" persistent="true" accessors="
 		}
 	}
 	
+	public string function getSimpleRepresentation() {
+		return variables.typeName;
+	}
+	
 	// ====================  END: Logical Methods ==========================
 	
 	// ============ START: Non-Persistent Property Methods =================

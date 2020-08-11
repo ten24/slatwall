@@ -103,13 +103,23 @@ component persistent="false" extends="HibachiService" output="false" accessors="
 
         var resizedImagePaths = [];
         //var skus = [];
+        var basePath = "#getHibachiScope().getBaseImageURL()#/product/default";
         
         var skuRecords = getService('skuDAO').getImageFileDataBySkuIDList(arguments.skuIDList);
         for(var skuRecord in skuRecords){
+		
+        	if(!structKeyExists(skuRecord,'imageFile') && !structKeyExists(skuRecord,'defaultImage')){
+        		var imageFile = '';
+        	}else if(structKeyExists(skuRecord,'imageFile') && fileExists(expandPath("#basePath#/#skuRecord['imageFile']#"))){
+        		var imageFile = skuRecord['imageFile'];
+        	}else{
+        		var imageFile = skuRecord['defaultImage'];
+        	}
+				    
         	ArrayAppend(
         		resizedImagePaths, 
         		getService('imageService').getResizedImagePath(
-        			width=imageWidth, height=imageHeight, imagePath="#getHibachiScope().getBaseImageURL()#/product/default/#skuRecord['imageFile']#"
+        			width=imageWidth, height=imageHeight, imagePath="#getHibachiScope().getBaseImageURL()#/product/default/#imageFile#"
         		)
         	);
         }
@@ -361,7 +371,9 @@ component persistent="false" extends="HibachiService" output="false" accessors="
 					}
 				} catch(any e) {
 					// log the error
-					logHibachiException(e);
+					if(getHibachiScope().setting("globalLogMessages") == "detail"){
+						logHibachiException(e);
+					}
 				}
 			}
 		}
@@ -509,4 +521,3 @@ component persistent="false" extends="HibachiService" output="false" accessors="
 	// ======================  END: Get Overrides =============================
 
 }
-

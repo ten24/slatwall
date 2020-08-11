@@ -53,10 +53,13 @@ component displayname="Gift Card Transaction" entityname="SlatwallGiftCardTransa
 	property name="creditAmount" ormtype="big_decimal" hb_formatType="currency";
 	property name="debitAmount" ormtype="big_decimal" hb_formatType="currency";
 	property name="currencyCode" ormtype="string" length="3";
+	property name="balanceAmount" ormtype="string";
+	property name="expirationDate" ormtype="timestamp";
 
 	// Related Object Properties (many-to-one)
 	property name="orderPayment" cfc="OrderPayment" fieldtype="many-to-one" fkcolumn="orderPaymentID";
 	property name="giftCard" cfc="GiftCard" fieldtype="many-to-one" fkcolumn="giftCardID";
+	property name="adjustedByAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="adjustedByAccountID";
 
 	// Related Object Properties (one-to-many)
 	property name="orderItems" singularname="orderItem" cfc="OrderItem" fieldtype="one-to-many" fkcolumn="giftCardTransactionID" inverse="true" cascade="all-delete-orphan";
@@ -65,7 +68,7 @@ component displayname="Gift Card Transaction" entityname="SlatwallGiftCardTransa
 
 	// Remote Properties
 	property name="remoteID" ormtype="string";
-
+	property name="reasonForAdjustment" ormtype="string";
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
@@ -137,6 +140,11 @@ component displayname="Gift Card Transaction" entityname="SlatwallGiftCardTransa
 	// ==================  END:  Overridden Methods ========================
 
 	// =================== START: ORM Event Hooks  =========================
+
+	public void function preInsert(){
+		this.setBalanceAmount(this.getGiftCard().getBalanceAmount());
+		super.preInsert();
+	}
 
 	// ===================  END:  ORM Event Hooks  =========================
 

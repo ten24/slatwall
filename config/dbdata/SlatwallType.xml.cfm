@@ -5,11 +5,16 @@
 		<column name="typeIDPath" />
 		<column name="parentTypeID" />
 		<column name="typeName" update="false" />
+		<column name="typeDescription" update="false" />
 		<column name="systemCode" update="false" />
 		<column name="sortOrder" update="false" />
 		<column name="childRequiresSystemCodeFlag" datatype="bit" />
 	</Columns>
 	<Records>
+		<Record typeID="443df29db643e69a26c071dabe619e8a" typeIDPath="443df29db643e69a26c071dabe619e8a" parentTypeID="NULL" typeName="Account Government Identification" systemCode="accountGovernmentIdType" />
+		<Record typeID="443df29eaef3cfd1af021d4d31205328" typeIDPath="443df29db643e69a26c071dabe619e8a,443df29eaef3cfd1af021d4d31205328" parentTypeID="443df29db643e69a26c071dabe619e8a" typeName="Social Security" systemCode="agitSSN" sortOrder="1" />
+		<Record typeID="443df29ff763bac292f9aba2d3debafb" typeIDPath="443df29db643e69a26c071dabe619e8a,443df29ff763bac292f9aba2d3debafb" parentTypeID="443df29db643e69a26c071dabe619e8a" typeName="Drivers License" systemCode="agitDriversLicense" sortOrder="2" />
+
 		<Record typeID="444df32cee42886828d43a685445e6a0" typeIDPath="444df32cee42886828d43a685445e6a0" parentTypeID="NULL" typeName="Account Payment Types" systemCode="accountPaymentType" childRequiresSystemCodeFlag="1" />
 		<Record typeID="444df32dd2b0583d59a19f1b77869025" typeIDPath="444df32cee42886828d43a685445e6a0,444df32dd2b0583d59a19f1b77869025" parentTypeID="444df32cee42886828d43a685445e6a0" typeName="Charge" systemCode="aptCharge" sortOrder="1" />
 		<Record typeID="444df32e9b448ea196c18c66e1454c46" typeIDPath="444df32cee42886828d43a685445e6a0,444df32e9b448ea196c18c66e1454c46" parentTypeID="444df32cee42886828d43a685445e6a0" typeName="Credit" systemCode="aptCredit" sortOrder="2" />
@@ -61,6 +66,8 @@
 		<Record typeID="444df2df9f923d6c6fd0942a466e84cc" typeIDPath="444df2deab6476cb2c429946d6538436,444df2df9f923d6c6fd0942a466e84cc" parentTypeID="444df2deab6476cb2c429946d6538436" typeName="Sales Order" systemCode="otSalesOrder" sortOrder="1" />
 		<Record typeID="444df2dd05a67eab0777ba14bef0aab1" typeIDPath="444df2deab6476cb2c429946d6538436,444df2dd05a67eab0777ba14bef0aab1" parentTypeID="444df2deab6476cb2c429946d6538436" typeName="Return Order" systemCode="otReturnOrder" sortOrder="2" />
 		<Record typeID="444df2e00b455a2bae38fb55f640c204" typeIDPath="444df2deab6476cb2c429946d6538436,444df2e00b455a2bae38fb55f640c204" parentTypeID="444df2deab6476cb2c429946d6538436" typeName="Exchange Order" systemCode="otExchangeOrder" sortOrder="3" />
+		<Record typeID="b3bdf58418894bf08e6e3c0e1cd882fe" typeIDPath="444df2deab6476cb2c429946d6538436,b3bdf58418894bf08e6e3c0e1cd882fe" parentTypeID="444df2deab6476cb2c429946d6538436" typeName="Replacement Order" systemCode="otReplacementOrder" sortOrder="4" />
+		<Record typeID="ce5f32ef5ead4abb81e68d76706b0aee" typeIDPath="444df2deab6476cb2c429946d6538436,ce5f32ef5ead4abb81e68d76706b0aee" parentTypeID="444df2deab6476cb2c429946d6538436" typeName="Refund Order" systemCode="otRefundOrder" sortOrder="5" />
 
 		<Record typeID="444df2b3df09f67ddcb27918f02c2d83" typeIDPath="444df2b3df09f67ddcb27918f02c2d83" parentTypeID="NULL" typeName="Order Status Types" systemCode="orderStatusType" childRequiresSystemCodeFlag="1" />
 		<Record typeID="444df2b498de93b4b33001593e96f4be" typeIDPath="444df2b3df09f67ddcb27918f02c2d83,444df2b498de93b4b33001593e96f4be" parentTypeID="444df2b3df09f67ddcb27918f02c2d83" typeName="Not Placed" systemCode="ostNotPlaced" sortOrder="1" />
@@ -69,11 +76,42 @@
 		<Record typeID="444df2b7d7dcce8a3aa485f80264ac3a" typeIDPath="444df2b3df09f67ddcb27918f02c2d83,444df2b7d7dcce8a3aa485f80264ac3a" parentTypeID="444df2b3df09f67ddcb27918f02c2d83" typeName="On Hold" systemCode="ostOnHold" sortOrder="4" />
 		<Record typeID="444df2b8b98441f8e8fc6b5b4266548c" typeIDPath="444df2b3df09f67ddcb27918f02c2d83,444df2b8b98441f8e8fc6b5b4266548c" parentTypeID="444df2b3df09f67ddcb27918f02c2d83" typeName="Closed" systemCode="ostClosed" sortOrder="5" />
 		<Record typeID="444df2b90f62f72711eb5b3c90848e7e" typeIDPath="444df2b3df09f67ddcb27918f02c2d83,444df2b90f62f72711eb5b3c90848e7e" parentTypeID="444df2b3df09f67ddcb27918f02c2d83" typeName="Canceled" systemCode="ostCanceled" sortOrder="6" />
+		<Record typeID="2c9280846bd1f0d8016bd217dc1d002e" typeIDPath="444df2b3df09f67ddcb27918f02c2d83,2c9280846bd1f0d8016bd217dc1d002e" parentTypeID="444df2b3df09f67ddcb27918f02c2d83" typeName="Processing - Payment Declined" systemCode="ostProcessing" sortOrder="7" />
+
+		<Record typeID="443df2c3df09e67dddb27918f02c2d83" typeIDPath="443df2c3df09e67dddb27918f02c2d83" parentTypeID="NULL" typeName="Order Import Batch Status Types" systemCode="orderImportBatchStatusType" childRequiresSystemCodeFlag="1" />
+		<Record typeID="442ef3dbdf29f67fdcb23911f03c1945" typeIDPath="443df2c3df09e67dddb27918f02c2d83,442ef3dbdf29f67fdcb23911f03c1945" parentTypeID="443df2c3df09e67dddb27918f02c2d83" typeName="New" systemCode="oibstNew" sortOrder="1" />
+		<Record typeID="963c1f73115111ea9fa612bff9d404c8" typeIDPath="443df2c3df09e67dddb27918f02c2d83,963c1f73115111ea9fa612bff9d404c8" parentTypeID="443df2c3df09e67dddb27918f02c2d83" typeName="Partially Processed" systemCode="oibstPartial" sortOrder="2" />
+		<Record typeID="b2183cf4115111ea9fa612bff9d404c8" typeIDPath="443df2c3df09e67dddb27918f02c2d83,b2183cf4115111ea9fa612bff9d404c8" parentTypeID="443df2c3df09e67dddb27918f02c2d83" typeName="Processed" systemCode="oibstProcessed" sortOrder="3" />
+		
+		<Record typeID="e96fcde3115111ea9fa612bff9d404c8" typeIDPath="e96fcde3115111ea9fa612bff9d404c8" parentTypeID="NULL" typeName="Order Import Batch Item Status Types" systemCode="orderImportBatchItemStatusType" childRequiresSystemCodeFlag="1" />
+		<Record typeID="03c83b1d115211ea9fa612bff9d404c8" typeIDPath="e96fcde3115111ea9fa612bff9d404c8,03c83b1d115211ea9fa612bff9d404c8" parentTypeID="e96fcde3115111ea9fa612bff9d404c8" typeName="New" systemCode="oibistNew" sortOrder="1" />
+		<Record typeID="1de04d7d115211ea9fa612bff9d404c8" typeIDPath="e96fcde3115111ea9fa612bff9d404c8,1de04d7d115211ea9fa612bff9d404c8" parentTypeID="e96fcde3115111ea9fa612bff9d404c8" typeName="Placed" systemCode="oibstPlaced" sortOrder="2" />
+		<Record typeID="9e86d6dd43a411ea975c0a9c8645709b" typeIDPath="e96fcde3115111ea9fa612bff9d404c8,9e86d6dd43a411ea975c0a9c8645709b" parentTypeID="e96fcde3115111ea9fa612bff9d404c8" typeName="Error" systemCode="oibstError" sortOrder="3" />
+		
+		<Record typeID="2c948084697d51bd01697d5402d40005" typeIDPath="2c948084697d51bd01697d5402d40005" parentTypeID="NULL" typeName="Order Template Types" systemCode="orderTemplateType" childRequiresSystemCodeFlag="1" />
+		<Record typeID="2c948084697d51bd01697d5725650006" typeIDPath="2c948084697d51bd01697d5402d40005,2c948084697d51bd01697d5725650006" parentTypeID="2c948084697d51bd01697d5402d40005" typeName="Schedule Order Template" systemCode="ottSchedule" sortOrder="1"/>
+		<Record typeID="2c9280846b712d47016b75464e800014" typeIDPath="2c948084697d51bd01697d5402d40005,2c9280846b712d47016b75464e800014" parentTypeID="2c948084697d51bd01697d5402d40005" typeName="Wish List" systemCode="ottWishList" sortOrder="9"/>
+
+		<Record typeID="2c948084697d51bd01697d5996d80007" typeIDPath="2c948084697d51bd01697d5996d80007" parentTypeID="NULL" typeName="Order Template Status Types" systemCode="orderTemplateStatusType" childRequiresSystemCodeFlag="1" />
+		<Record typeID="2c948084697d51bd01697d9a592d0009" typeIDPath="2c948084697d51bd01697d5996d80007,2c948084697d51bd01697d9a592d0009" parentTypeID="2c948084697d51bd01697d5996d80007" typeName="Draft" systemCode="otstDraft" />
+		<Record typeID="2c948084697d51bd01697d9be217000a" typeIDPath="2c948084697d51bd01697d5996d80007,2c948084697d51bd01697d9be217000a" parentTypeID="2c948084697d51bd01697d5996d80007" typeName="Active" systemCode="otstActive" />
+		<Record typeID="2c948084697d51bd01697d9d9492000b" typeIDPath="2c948084697d51bd01697d5996d80007,2c948084697d51bd01697d9d9492000b" parentTypeID="2c948084697d51bd01697d5996d80007" typeName="Inactive" systemCode="otstInactive" />
+		<Record typeID="2c9580846ab29168016ab2adbb560013" typeIDPath="2c948084697d51bd01697d5996d80007,2c9580846ab29168016ab2adbb560013" parentTypeID="2c948084697d51bd01697d5996d80007" typeName="Cancelled" systemCode="otstCancelled" />
+		
+		<Record typeID="2c9280846a023949016a028c33ff000b" typeIDPath="2c9280846a023949016a028c33ff000b" parentTypeID="NULL" typeName="Order Template Schedule Date Change Reason Type" systemCode="orderTemplateScheduleDateChangeReasonType" childRequiresSystemCodeFlag="1" />
+		<Record typeID="2c9280846a023949016a029455f0000c" typeIDPath="2c9280846a023949016a028c33ff000b,2c9280846a023949016a029455f0000c" parentTypeID="2c9280846a023949016a028c33ff000b" typeName="Other" typeDescription="Other" systemCode="otsdcrtOther" />
+
+		<Record typeID="2c9480846a9e35d1016a9e5463c10006" typeIDPath="2c9480846a9e35d1016a9e5463c10006" parentTypeID="NULL" typeName="Order Template Cancellation Reason Type" systemCode="orderTemplateCancellationReasonType" childRequiresSystemCodeFlag="1" />
+		<Record typeID="2c9680846ab15673016ab172b08c000c" typeIDPath="2c9480846a9e35d1016a9e5463c10006,2c9680846ab15673016ab172b08c000c" parentTypeID="2c9480846a9e35d1016a9e5463c10006" typeName="Other" typeDescription="Other" systemCode="otcrtOther" />
+
+		<Record typeID="2c9280846e5ae975016e5b2286c7000a" typeIDPath="2c9280846e5ae975016e5b2286c7000a" parentTypeID="NULL" typeName="Order Template System Cancellation Reason Type" systemCode="orderTemplateSystemCancellationReasonType" childRequiresSystemCodeFlag="1" />
+		<Record typeID="2c9280846e5ae975016e5b2505b7000b" typeIDPath="2c9280846e5ae975016e5b2286c7000a,2c9280846e5ae975016e5b2505b7000b" parentTypeID="2c9280846e5ae975016e5b2286c7000a" typeName="Batch Cancelled By Admin" typeDescription="Schedule Order Template was cancelled by admin as part of a workflow" systemCode="otscrtBatch" sortOrder="1" />
 
 		<Record typeID="444df2e8db2712fe6cf790d12afc9661" typeIDPath="444df2e8db2712fe6cf790d12afc9661" parentTypeID="NULL" typeName="Order Item Types" systemCode="orderItemType" childRequiresSystemCodeFlag="1" />
 		<Record typeID="444df2e9a6622ad1614ea75cd5b982ce" typeIDPath="444df2e8db2712fe6cf790d12afc9661,444df2e9a6622ad1614ea75cd5b982ce" parentTypeID="444df2e8db2712fe6cf790d12afc9661" typeName="Sale" systemCode="oitSale" sortOrder="1" />
 		<Record typeID="444df2eac18fa589af0f054442e12733" typeIDPath="444df2e8db2712fe6cf790d12afc9661,444df2eac18fa589af0f054442e12733" parentTypeID="444df2e8db2712fe6cf790d12afc9661" typeName="Return" systemCode="oitReturn" sortOrder="2" />
 		<Record typeID="d98bbd66f5dfafd0eb8c727cc4053b46" typeIDPath="444df2e8db2712fe6cf790d12afc9661,d98bbd66f5dfafd0eb8c727cc4053b46" parentTypeID="444df2e8db2712fe6cf790d12afc9661" typeName="Deposit" systemCode="oitDeposit" sortOrder="3" />
+		<Record typeID="a363729e14364febb92f18db70c070e5" typeIDPath="444df2e8db2712fe6cf790d12afc9661,a363729e14364febb92f18db70c070e5" parentTypeID="444df2e8db2712fe6cf790d12afc9661" typeName="Replacement" systemCode="oitReplacement" sortOrder="4" />
 
 		<Record typeID="444df2bac3f06e0645cf38f1d6a4e443" typeIDPath="444df2bac3f06e0645cf38f1d6a4e443" parentTypeID="NULL" typeName="Order Item Status Types" systemCode="orderItemStatusType" childRequiresSystemCodeFlag="1" />
 		<Record typeID="444df34998ed6b96c0240c34e3b63914" typeIDPath="444df2bac3f06e0645cf38f1d6a4e443,444df34998ed6b96c0240c34e3b63914" parentTypeID="444df2bac3f06e0645cf38f1d6a4e443" typeName="New" systemCode="oistNew" sortOrder="1" />
@@ -106,6 +144,10 @@
 		<Record typeID="5accbf4db8ff07fa9b37d3285919ecc3" typeIDPath="5accbf4bc2f3ffcf702d75529a6692b6,5accbf4db8ff07fa9b37d3285919ecc3" parentTypeID="5accbf4bc2f3ffcf702d75529a6692b6" typeName="Closed" systemCode="pstClosed" sortOrder="2" />
 
 		<Record typeID="154dcdd2f3fd4b5ab5498e93470957b8" typeIDPath="154dcdd2f3fd4b5ab5498e93470957b8" parentTypeID="NULL" typeName="Product Bundle Group Types" systemCode="productBundleGroupType" sortOrder="1" />
+
+		<Record typeID="444df2ef9cb25116d6396b34da32aab3" typeIDPath="444df2ef9cb25116d6396b34da32aab3" parentTypeID="NULL" typeName="Qualifier Logical Operator Types" systemCode="qualifierLogicalOperatorType" childRequiresSystemCodeFlag="1" />
+		<Record typeID="444df2f0671939ff94191de8f5f0134d" typeIDPath="444df2ef9cb25116d6396b34da32aab3,444df2f0671939ff94191de8f5f0134d" parentTypeID="444df2ef9cb25116d6396b34da32aab3" typeName="OR" systemCode="qlotOr" sortOrder="1" />
+		<Record typeID="43cb12f1cc40d0ea8a2de6f54175bcdf" typeIDPath="444df2ef9cb25116d6396b34da32aab3,43cb12f1cc40d0ea8a2de6f54175bcdf" parentTypeID="444df2ef9cb25116d6396b34da32aab3" typeName="AND" systemCode="qlotAnd" sortOrder="2" />
 
 		<Record typeID="444df2e4e0ec725f718318de5bd3b973" typeIDPath="444df2e4e0ec725f718318de5bd3b973" parentTypeID="NULL" typeName="Stock Adjustment Types" systemCode="stockAdjustmentType" childRequiresSystemCodeFlag="1" />
 		<Record typeID="444df2e5cb27169f418279f3f859a4f7" typeIDPath="444df2e4e0ec725f718318de5bd3b973,444df2e5cb27169f418279f3f859a4f7" parentTypeID="444df2e4e0ec725f718318de5bd3b973" typeName="Location Transfer" systemCode="satLocationTransfer" sortOrder="2" />
@@ -173,6 +215,11 @@
 		<Record typeID="7e8942b36f4b11e895c20242ac120002" typeIDPath="7e8942b36f4b11e895c20242ac120002" parentTypeID="NULL" typeName="Cycle Count Batch Status Type" systemCode="cycleCountBatchStatusType" childRequiresSystemCodeFlag="1" />
 		<Record typeID="b453ca526f4b11e895c20242ac120002" typeIDPath="7e8942b36f4b11e895c20242ac120002,b453ca526f4b11e895c20242ac120002" parentTypeID="7e8942b36f4b11e895c20242ac120002" typeName="Open" systemCode="ccbstOpen" sortOrder="1" />
 		<Record typeID="b9f3b9626f4b11e895c20242ac120002" typeIDPath="7e8942b36f4b11e895c20242ac120002,b9f3b9626f4b11e895c20242ac120002" parentTypeID="7e8942b36f4b11e895c20242ac120002" typeName="Closed" systemCode="ccbstClosed" sortOrder="2" />
+		
+		<Record typeID="708cd88615ec4ae2b9b0bf6d34aba5fc" typeIDPath="708cd88615ec4ae2b9b0bf6d34aba5fc" parentTypeID="NULL" typeName="Product Review Status Type" systemCode="productReviewStatusType" childRequiresSystemCodeFlag="1" />
+		<Record typeID="f0558da55e9f48f7bbd0eb4c95d6b378" typeIDPath="708cd88615ec4ae2b9b0bf6d34aba5fc,f0558da55e9f48f7bbd0eb4c95d6b378" parentTypeID="708cd88615ec4ae2b9b0bf6d34aba5fc" typeName="Unapproved" systemCode="prstUnapproved" sortOrder="1" />
+		<Record typeID="9c60366a4091434582f5085f90d81bad" typeIDPath="708cd88615ec4ae2b9b0bf6d34aba5fc,9c60366a4091434582f5085f90d81bad" parentTypeID="708cd88615ec4ae2b9b0bf6d34aba5fc" typeName="Approved" systemCode="prstApproved" sortOrder="2" />
+		<Record typeID="8bab6083921f4df4bff254e3a06d35a7" typeIDPath="708cd88615ec4ae2b9b0bf6d34aba5fc,8bab6083921f4df4bff254e3a06d35a7" parentTypeID="708cd88615ec4ae2b9b0bf6d34aba5fc" typeName="Disapprove" systemCode="prstDisapprove" sortOrder="3" />
 		
 	</Records>
 </Table>

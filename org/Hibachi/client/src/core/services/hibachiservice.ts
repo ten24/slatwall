@@ -149,6 +149,12 @@ class HibachiService{
 		return entityName;
 
 	};
+	
+	getLastPropertyNameInPropertyIdentifier = (propertyIdentifier) => {
+		var propertyIdentifierParts = propertyIdentifier.split('.');
+		return propertyIdentifierParts[propertyIdentifierParts.length-1];
+	};
+	
 	//helper method to inflate a new entity with data
 	populateEntity = (entityName, data)=>{
 		var newEntity = this.newEntity(entityName);
@@ -279,8 +285,15 @@ class HibachiService{
 			params.processContext = options.processContext || '';
 			params.isReport = options.isReport || false;
 			params.periodInterval = options.periodInterval || "";
+			if(angular.isDefined(options.customEndpoint) && options.customEndpoint.length){
+				var urlString = this.getUrlWithActionPrefix() + options.customEndpoint;
+			} else {
+				var urlString = this.getUrlWithActionPrefix()+ apiSubsystemName + ':' +'main.get&entityName='+entityName;
+			}
 			params.enableAveragesAndSums = options.enableAveragesAndSums || false;
-			var urlString = this.getUrlWithActionPrefix()+ apiSubsystemName + ':' +'main.get&entityName='+entityName;
+			if(angular.isDefined(options.listingSearchConfig)){
+				params.listingSearchConfig = options.listingSearchConfig;
+			}
 		}
 
 		if(angular.isDefined(options.id)) {
@@ -458,6 +471,24 @@ class HibachiService{
 		}
 		return metaData.$$getRBKey('object.'+metaData.className.toLowerCase()+'.'+propertyName.toLowerCase());
 	}
+	
+	//this cannot live in rbkeyService because it creates a circular dependency
+	getRBKeyFromPropertyIdentifier = (baseEntityName, propertyIdentifier) =>{
+		//strip alias if it exists and convert everything to be periods
+		if(propertyIdentifier.charAt(0) === '_'){
+			propertyIdentifier = this.utilityService.listRest(propertyIdentifier.replace(/_/g,'.'),'.'); 
+		}
+		
+		//if we're dealing with collection response property identfier sku_skuCode
+		if(propertyIdentifier.split('_').length > 0){
+			propertyIdentifier = propertyIdentifier.replace('_','.');
+		}
+		
+		var lastEntityName = this.getLastEntityNameInPropertyIdentifier(baseEntityName, propertyIdentifier);
+		var lastProperty = this.getLastPropertyNameInPropertyIdentifier(propertyIdentifier);
+		
+		return 'entity.' + lastEntityName + '.' + lastProperty;
+	}
 
 	saveEntity= (entityName,id,params,context) => {
 
@@ -475,6 +506,14 @@ class HibachiService{
 		}
 		let request = this.requestService.newAdminRequest(urlString,params);
 
+		return request.promise;
+	};
+	
+	savePersonalCollection= (params) => {
+
+		var urlString = this.getUrlWithActionPrefix()+'api:main.savePersonalCollection';
+		let request = this.requestService.newAdminRequest(urlString,params);
+		
 		return request.promise;
 	};
 
@@ -516,13 +555,13 @@ class HibachiService{
 
 		var urlString = this.getUrlWithActionPrefix()+'api:main.getResourceBundle&instantiationKey='+this.appConfig.instantiationKey+'&locale='+locale;
 
-		let request = this.requestService.newAdminRequest(urlString);
+		let request = this.requestService.newAdminRequest(urlString, null, 'GET');
 		return request.promise
 	};
 
 	getCurrencies = () =>{
 		var urlString = this.getUrlWithActionPrefix()+'api:main.getCurrencies&instantiationKey='+this.appConfig.instantiationKey;
-		let request = this.requestService.newAdminRequest(urlString);
+		let request = this.requestService.newAdminRequest(urlString, null, 'GET');
 
 		return request.promise;
 	};

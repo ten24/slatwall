@@ -103,8 +103,16 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	this.secureMethods=listAppend(this.secureMethods,'createreport');
 	this.secureMethods=listAppend(this.secureMethods,'editreport');
 	this.secureMethods=listAppend(this.secureMethods,'deletereport');
+	this.secureMethods=listAppend(this.secureMethods,'editWishList');
+	this.secureMethods=listAppend(this.secureMethods,'saveWishList');
+	this.secureMethods=listAppend(this.secureMethods, 'listform');
+	this.secureMethods=listAppend(this.secureMethods, 'listaccountrelationshiprole');
+	this.secureMethods=listAppend(this.secureMethods, 'listgiftcard');
+	this.secureMethods=listAppend(this.secureMethods, 'editPermissionGroup');
+	this.secureMethods=listAppend(this.secureMethods, 'retryEntityQueueFailures');
 	
 	this.secureMethods=listAppend(this.secureMethods, 'preprocessorderfulfillment_manualfulfillmentcharge');
+	this.secureMethods=listAppend(this.secureMethods, 'preprocessaccount_changepassword');
 
 	// Address Zone Location\
 	public void function createAddressZoneLocation(required struct rc) {
@@ -249,9 +257,22 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				rc.order = subscriptionOrderItem.getOrderItem().getOrder();	
 			}
 		}
+		
 		if(!isNull(rc.orderID) && getService('orderService').getOrder(rc.orderID).validate('edit').hasErrors()){
-			getHibachiScope().showMessage(rbkey('validate.edit.Order.closed'),"failure");
-			renderOrRedirectFailure(defaultAction="admin:entity.detailorder",maintainQueryString=true,rc=arguments.rc);
+			var order = getService('orderService').getOrder(rc.orderID);
+
+			// Only display "The order cannot be edited as the order is fully paid or closed." if the order
+			// is paid and closed. This is showing in some cases while the order still owes money. That combined with
+			// failing 'Save' context validations causes a stack overflow.
+			
+			if (order.getPaymentAmountDue() <= 0){
+				if (!isNull(order) && !isNull(order.getOrderStatusType()) && 
+					!isNull(order.getOrderStatusType().getSystemCode()) && 
+					order.getOrderStatusType().getSystemCode() == "ostClosed"){
+					getHibachiScope().showMessage(rbkey('validate.edit.Order.closed'),"failure");
+					renderOrRedirectFailure(defaultAction="admin:entity.detailorder",maintainQueryString=true,rc=arguments.rc);	
+				}
+			}
 		}
 		
 		genericEditMethod(entityName="Order", rc=arguments.rc);
@@ -263,16 +284,16 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		
 	}
 	
-private void function populateWithAddressVerification(required struct rc){
+	private void function populateWithAddressVerification(required struct rc){
 		
 		if(
-			len(getHibachiScope().setting('globalShippingIntegrationForAddressVerification')) &&
-			getHibachiScope().setting('globalShippingIntegrationForAddressVerification') != 'internal' &&
+			len(getHibachiScope().setting('globalIntegrationForAddressVerification')) &&
+			getHibachiScope().setting('globalIntegrationForAddressVerification') != 'internal' &&
 			arguments.rc.orderFulfillment.getFulfillmentMethodType() eq "shipping" &&
 			!isNull(arguments.rc.orderFulfillment.getShippingAddress())
 		){
 
-			rc.addressVerificationStruct = getService("AddressService").verifyAddressWithShippingIntegration(rc.orderFulfillment.getShippingAddress().getAddressID());
+			rc.addressVerificationStruct = getService("AddressService").verifyAddressByID(rc.orderFulfillment.getShippingAddress().getAddressID());
 
 			if(structKeyExists(rc,'addressVerificationStruct') && structKeyExists(rc.addressVerificationStruct,"suggestedAddress")){
 				rc.suggestedAddressName = getService("AddressService").getAddressName(rc.addressVerificationStruct.suggestedAddress);
@@ -295,7 +316,7 @@ private void function populateWithAddressVerification(required struct rc){
 	}
 
 	public void function updateAddressWithSuggestedAddress(required struct rc){
-		var addressVerificationStruct = getService("AddressService").verifyAddressWithShippingIntegration(rc.addressID);
+		var addressVerificationStruct = getService("AddressService").verifyAddressByID(rc.addressID);
 		var address = getService("AddressService").getAddress(rc.addressID);
 		var orderFulfillment = getService("FulfillmentService").getOrderFulfillment(rc.orderFulfillmentID);
 
@@ -324,7 +345,10 @@ private void function populateWithAddressVerification(required struct rc){
 			getFW().setView("admin:entity.ajax");
 
 			rc.templatePath = "./#rc.viewPath#.cfm";
-
+			if( fileExists('/Slatwall/custom/admin/views/entity/#rc.viewPath#.cfm')){ 
+				//relative path from admin/entity/ajax.cfm
+				rc.templatePath = '../../../custom/admin/views/entity/#rc.viewPath#.cfm'; 
+			}
 		}
 	}
 	
@@ -384,7 +408,65 @@ private void function populateWithAddressVerification(required struct rc){
 		arguments.rc.entityActionDetails.createAction="admin:entity.createOrder";
 		getFW().setView("admin:entity.listorder");
 	}
+	
+	// Order (Wish Lists)
+	public void function listWishList(required struct rc) {
+		genericListMethod(entityName="OrderTemplate", rc=arguments.rc);
 
+		arguments.rc.orderTemplateCollectionList.addFilter('orderTemplateType.systemCode','ottWishList','IN');
+		arguments.rc.orderTemplateCollectionList.addOrderBy('createdDateTime|DESC');
+
+		getFW().setView("admin:entity.listwishlist");
+	}
+	
+	public void function accountWishListsTab(required struct rc){
+		genericDetailMethod(entityName="OrderTemplate", rc=arguments.rc);
+		if(!isNull(rc.orderTemplate) && rc.orderTemplate.orderTemplateType.getSystemCode() eq "ottWishList") {
+			rc.entityActionDetails.listAction = "admin:entity.listwishlist";
+			rc.entityActionDetails.backAction = "admin:entity.listwishlist";
+		}
+		
+		getFW().setView("admin:entity.listordertemplate");
+	}
+	
+	public void function detailWishList(required struct rc) {
+		param name="rc.orderTemplateID" type="string" default="";
+		genericListMethod(entityName="OrderTemplate", rc=arguments.rc);
+		
+		rc.orderTemplate = getOrderService().getOrderTemplate(rc.orderTemplateID);
+		//rc.edit = true;
+		
+		getFW().setView("admin:entity.detailwishlist");
+	}
+	
+	public void function editWishList(required struct rc) {
+		param name="rc.orderTemplateID" default="";
+		genericEditMethod(entityName="OrderTemplate", rc=arguments.rc);
+		
+		rc.orderTemplate = getOrderService().getOrderTemplate(rc.orderTemplateID);
+
+		getFW().setView("admin:entity.detailwishlist");
+	}
+	
+	public void function saveWishList(required struct rc) {
+		param name="rc.orderTemplateID" default="";
+		genericSaveMethod(entityName="OrderTemplate", rc=arguments.rc);
+		
+		rc.orderTemplate = getOrderService().getOrderTemplate(rc.orderTemplateID);
+
+		getFW().setView("admin:entity.detailwishlist");
+	}
+
+	public void function deleteWishList(required struct rc) {
+		param name="arguments.rc.orderTemplateID" default="";
+		arguments.rc.orderTemplate = getOrderService().getOrderTemplate(arguments.rc.orderTemplateID);
+		getOrderService().deleteOrderTemplate(arguments.rc.orderTemplate);
+		
+		getFW().redirect(action="admin:entity.listwishlist",preserve="messages");
+
+	}
+	
+	
 	// Order Payment
 	public any function createorderpayment( required struct rc ) {
 		param name="rc.orderID" type="string" default="";
@@ -650,8 +732,25 @@ private void function populateWithAddressVerification(required struct rc){
 			rc=params
 		);
 	}
+	
+	public void function retryEntityQueueFailures(required struct rc){
+		super.genericDetailMethod(arguments.rc.entityName, arguments.rc);
+		
+		var entity = arguments.rc[arguments.rc.entityName];
 
-
+		getDAO('HibachiEntityQueueDAO').reQueueItems(arguments.rc.entityName, entity.getPrimaryIDValue())
+	
+		var params = {};
+		params[entity.getPrimaryIDPropertyName()] = entity.getPrimaryIDValue();
+		
+		getHibachiScope().showMessage(getHibachiScope().rbKey("admin.entity.retryEntityQueueFailures_success"), "success"); 
+		
+		renderOrRedirectSuccess( 
+			defaultAction="admin:entity.detail#lcase(rc.entityName)#", 
+			maintainQueryString=true,
+			rc=params
+		);
+	}
 
 	// Task Schedule
 	public void function saveTaskSchedule(required struct rc){

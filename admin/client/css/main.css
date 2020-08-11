@@ -994,6 +994,9 @@ label {
 .modal-dialog {
   text-align: left;
 }
+.input-group-btn {
+  vertical-align: top;
+}
 .modal-body {
   overflow-y: auto;
   overflow-x: auto;
@@ -1034,6 +1037,9 @@ label {
   right: 24px;
   margin-top: 8px;
   color: #ccc;
+}
+.angular-modal-service-active .using-modal-service {
+  display: block !important;
 }
 .modal-content .s-content-wrapper {
   margin-top: 5px;
@@ -1576,6 +1582,18 @@ select.error {
 .form-horizontal .control-label {
   margin-bottom: 4px;
   text-align: left;
+}
+.flex {
+  display: flex;
+}
+.items-center {
+  align-items: center;
+}
+.mb-20 {
+  margin-bottom: 20px;
+}
+.p-20 {
+  padding: 20px;
 }
 .btn-group {
   float: right;
@@ -2773,6 +2791,12 @@ table .s-table-header .table-section a.s-hint {
   display: none;
 }
 .radio input[type=radio]:checked + label:after {
+  -webkit-transform: scale(1, 1);
+  -ms-transform: scale(1, 1);
+  -o-transform: scale(1, 1);
+  transform: scale(1, 1);
+}
+.radio label.checked:after {
   -webkit-transform: scale(1, 1);
   -ms-transform: scale(1, 1);
   -o-transform: scale(1, 1);
@@ -7426,13 +7450,6 @@ sw-sku-thumbnail .thumbnail .caption {
 .s-page-table-wrapper .s-detail-content-wrapper .s-detail-body {
   border: 1px solid #e7eaec;
 }
-.s-detail-content-wrapper .s-content-header .s-expand-icon {
-  font-size: 15px;
-  display: none;
-}
-.s-page-table-wrapper .s-detail-content-wrapper .s-detail-body {
-  border: 1px solid #e7eaec;
-}
 .s-detail-content-wrapper .s-content-header .s-compress-icon {
   font-size: 17px;
   display: inline-block;
@@ -7501,12 +7518,11 @@ sw-sku-thumbnail .thumbnail .caption {
 .s-detail-content-wrapper .s-detail-body {
   position: relative;
   background: #fff;
-  margin-bottom: 5px;
-  padding: 0 10px;
-  border: 1px solid rgba(0, 0, 0, 0);
+  margin-bottom: 10px;
+  padding: 10px 10px;
   border-radius: 4px;
-  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+  box-shadow: 2px 2px 2px #0000000f;
+  -webkit-box-shadow: 2px 2px 2px #0000000f;
 }
 .s-detail-content-wrapper .s-detail-body.s-arrow {
   margin-bottom: 16px;
@@ -8694,4 +8710,109 @@ table.s-detail-content-table tbody tr.s-done {
 }
 .Mbtn-round {
   border-radius: 17px;
+}
+.tab-pane,
+.position-relative {
+  position: relative;
+}
+.valign-middle {
+  vertical-align: middle;
+}
+.pl-1 {
+  padding-left: 1rem;
+}
+.form-control-feedback {
+  pointer-events: all;
+}
+/** Full page loader **/
+.fullpage-loader {
+  color: #fff;
+  position: fixed;
+  box-sizing: border-box;
+  left: -9999px;
+  top: -9999px;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  z-index: 999999;
+}
+.fullpage-loader:after,
+.fullpage-loader:before {
+  box-sizing: border-box;
+  display: none;
+}
+.fullpage-loader.is-active {
+  background-color: rgba(0, 0, 0, 0.85);
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+}
+.fullpage-loader.is-active:after,
+.fullpage-loader.is-active:before {
+  display: block;
+}
+@keyframes rotation {
+  0% {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(359deg);
+  }
+}
+@keyframes blink {
+  0% {
+    opacity: 0.5;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.fullpage-loader[data-text]:before {
+  position: fixed;
+  left: 0;
+  top: 50%;
+  color: currentColor;
+  font-family: Helvetica, Arial, sans-serif;
+  text-align: center;
+  width: 100%;
+  font-size: 14px;
+}
+.fullpage-loader[data-text=""]:before {
+  content: "Loading";
+}
+.fullpage-loader[data-text]:not([data-text=""]):before {
+  content: attr(data-text);
+}
+.fullpage-loader[data-text][data-blink]:before {
+  animation: blink 1s linear infinite alternate;
+}
+.fullpage-loader-default[data-text]:before {
+  top: calc(50% - 63px);
+}
+.fullpage-loader-default:after {
+  content: "";
+  position: fixed;
+  width: 48px;
+  height: 48px;
+  border: 8px solid #fff;
+  border-left-color: transparent;
+  border-radius: 50%;
+  top: calc(50% - 24px);
+  left: calc(50% - 24px);
+  animation: rotation 1s linear infinite;
+}
+.fullpage-loader-default[data-half]:after {
+  border-right-color: transparent;
+}
+.fullpage-loader-default[data-inverse]:after {
+  animation-direction: reverse;
+}
+#adminModal .modal-body {
+  min-height: 50vh;
+}
+.ng-enter {
+  /* standard transition code */
+  transition: 0.3s ease all;
+  opacity: 0.2;
 }

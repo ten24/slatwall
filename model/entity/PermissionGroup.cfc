@@ -51,6 +51,8 @@ component entityname="SlatwallPermissionGroup" table="SwPermissionGroup" persist
 	// Persistent Properties
 	property name="permissionGroupID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="permissionGroupName" ormtype="string";
+	//used to check if we need to generate a new permision group json file
+	property name="calculatedJsonCheckSum" ormtype="string";
 	
 	// Related Object Properties (many-to-one)
 	
@@ -72,6 +74,24 @@ component entityname="SlatwallPermissionGroup" table="SwPermissionGroup" persist
 	
 	// Non-Persistent Properties
 	property name="permissionsByDetails" persistent="false"; 
+	property name="jsonCheckSum" persistent="false";
+	
+	public string function getJsonCheckSum(boolean returnFileCheckSum=false){
+		if(arguments.returnFileCheckSum){
+			var systemrbpath = expandPath('/#getDAO("hibachiDAO").getApplicationKey()#') & "/custom/system/permissions";
+			var filePath = systemrbpath & '/#getPermissionGroupID()#.json';
+			if(fileExists(filePath)){
+				var checkSum = hash(FileRead(filePath),'md5');
+				return checkSum; 
+			}
+		}else{
+			if(!getNewFlag()){
+				return hash(serializeJson(getService('hibachiJsonService').getPermissionJsonStruct(permissionGroup.getPermissionsByDetails(true))),'md5');
+			}
+		}
+		
+		return "";
+	}
 	
 	public string function getPermissionsByDetailsCacheKey(){
 		if(structKeyExists(variables,'permissionGroupID') && len(variables.permissionGroupID)){

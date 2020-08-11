@@ -61,6 +61,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 	property name="hibachiSessionService" type="any";
 	property name="hibachiUtilityService" type="any";
+	property name="hibachiValidationService" type="any";
 
 	this.publicMethods='';
 	this.publicMethods=listAppend(this.publicMethods, 'login');
@@ -101,21 +102,29 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		rc.orderSmartList.addInFilter("orderStatusType.systemCode", "ostNew,ostProcessing,ostOnHold,ostClosed,ostCanceled");
 		rc.orderSmartList.addOrder("orderOpenDateTime|DESC");
 		rc.orderSmartList.setPageRecordsShow(10);
-		
+
 		rc.orderCollectionList = getOrderService().getOrderCollectionList();
-		rc.orderCollectionList.setDisplayProperties('orderNumber,account.calculatedFullName,orderOpenDateTime,orderStatusType.typeName,calculatedTotal',{isVisible:true});
+		rc.orderCollectionList.setDisplayProperties('orderNumber,account.calculatedFullName,orderOpenDateTime,orderStatusType.typeName,calculatedTotal',{isVisible:true, isSearchable:true});
 		rc.orderCollectionList.addDisplayProperty('orderID',javacast('null',''),{hidden=true});
 		rc.orderCollectionList.addFilter('orderStatusType.systemCode','ostNotPlaced','!=');
+		rc.orderCollectionList.addFilter('orderOpenDateTime',dateAdd('m','-1',now()),'>');
 		rc.orderCollectionList.setOrderBy('orderOpenDateTime|DESC');
 
 		rc.productReviewSmartList = getProductService().getProductReviewSmartList();
 		rc.productReviewSmartList.addFilter("activeFlag", 0);
 		rc.productReviewSmartList.setPageRecordsShow(10);
-		
+
 		rc.productReviewCollectionList = getProductService().getProductReviewCollectionList();
-		rc.productReviewCollectionList.setDisplayProperties('product.calculatedTitle,reviewerName,reviewTitle',{isVisible:true});
+		rc.productReviewCollectionList.setDisplayProperties('product.calculatedTitle,reviewerName,reviewTitle',{isVisible:true, isSearchable:true});
 		rc.productReviewCollectionList.addDisplayProperty('productReviewID',javacast('null',''),{hidden=true});
 		rc.productReviewCollectionList.addFilter('activeFlag',0);
+
+		rc.accountCollectionList = getAccountService().getAccountCollectionList();
+		rc.accountCollectionList.setDisplayProperties('firstName,lastName,primaryEmailAddress.emailAddress,createdDateTime',{isVisible:true, isSearchable:true});
+		rc.accountCollectionList.addDisplayProperty('accountID',javacast('null',''),{hidden=true});
+		rc.accountCollectionList.addFilter('activeFlag','1','=');
+		rc.accountCollectionList.addFilter('createdDateTime',dateAdd('m','-1',now()),'>');
+		rc.accountCollectionList.setOrderBy('createdDateTime|DESC');
 
 		if(getUpdateService().getMetaFolderExistsWithoutDismissalFlag()) {
 			rc.$.slatwall.showMessageKey( 'admin.metaexists_error' );
@@ -256,7 +265,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 	public void function authorizeLogin(required struct rc) {
 		// Determine where to retrieve email and password data from
-		// 1. With basic authentication "rc" contains the emailAddress ans password as the login process occurs during a single request
+		// 1. With basic authentication "rc" contains the emailAddress and password as the login process occurs during a single request
 		// 2. With two-factor authentication "rc" contains the emailAddress and password during the first request
 		//    and during the second request it contains the authenticationCode in order to continue with the login process.
 		//    We do not want to be resending password data back to the client to only to have it repopulated in the "rc" 
@@ -269,28 +278,87 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			rc.$.slatwall.clearSessionValue('preservedLoginData');
 		}
 		
-		// Login without two-factor authentication
-		if (!getAccountService().verifyTwoFactorAuthenticationRequiredByEmail(emailAddress=rc.emailAddress)) {
-			getAccountService().processAccount(rc.$.slatwall.getAccount(), rc, "login");
-		// Login with two-factor authentication
-		} else if (getAccountService().verifyTwoFactorAuthenticationRequiredByEmail(emailAddress=rc.emailAddress)) {
-			// Preserve login data and defer login process request
-			if (!structKeyExists(rc, "authenticationCode")) {
-				var preservedLoginData = {
-				emailAddress = rc.emailAddress,
-				password = rc.password
-				};
-				
-				// Preserve data from last login attempt
-				rc.$.slatwall.setSessionValue('preservedLoginData', preservedLoginData);
-				
-				// Clear errors and proceed with next attempt for authentication code verification
-				rc.$.slatwall.getAccount().clearProcessObject("login");
-				rc.$.slatwall.getAccount().getHibachiErrors().setErrors(structNew());
-				rc.twoFactorAuthenticationRequiredFlag = true;
-			// Process login with all required data
-			} else {
-				getAccountService().processAccount(rc.$.slatwall.getAccount(), rc, "login");
+		// If emailAddressOrUsername setting is turned on
+		if(!isNull(arguments.rc.emailAddressOrUsername)){
+			
+			// If emailAddressOrUsername is an email
+			if(isValid('email',arguments.rc.emailAddressOrUsername)){
+				// Login without two-factor authentication
+				if (!getAccountService().verifyTwoFactorAuthenticationRequiredByEmail(emailAddressOrUsername=arguments.rc.emailAddressOrUsername)) {
+					getAccountService().processAccount(getHibachiScope().getAccount(), arguments.rc, "login");
+				// Login with two-factor authentication
+				} else if (getAccountService().verifyTwoFactorAuthenticationRequiredByEmail(emailAddressOrUsername=arguments.rc.emailAddressOrUsername)) {
+					// Preserve login data and defer login process request
+					if (!structKeyExists(arguments.rc, "authenticationCode")) {
+						var preservedLoginData = {
+						emailAddress = arguments.rc.emailAddressOrUsername,
+						password = arguments.rc.password
+						};
+						
+						// Preserve data from last login attempt
+						rc.$.slatwall.setSessionValue('preservedLoginData', preservedLoginData);
+						
+						// Clear errors and proceed with next attempt for authentication code verification
+						rc.$.slatwall.getAccount().clearProcessObject("login");
+						rc.$.slatwall.getAccount().getHibachiErrors().setErrors(structNew());
+						rc.twoFactorAuthenticationRequiredFlag = true;
+					// Process login with all required data
+					} else {
+						getAccountService().processAccount(getHibachiScope().getAccount(), arguments.rc, "login");
+					}
+				}
+			// If emailAddressOrUsername is a username
+			}else{
+				// Login without two-factor authentication
+				if (!getAccountService().verifyTwoFactorAuthenticationRequiredByUsername(emailAddressOrUsername=arguments.rc.emailAddressOrUsername)) {
+					getAccountService().processAccount(rc.$.slatwall.getAccount(), rc, "login");
+				// Login with two-factor authentication
+				} else if (getAccountService().verifyTwoFactorAuthenticationRequiredByUsername(emailAddressOrUsername=arguments.rc.emailAddressOrUsername)) {
+					// Preserve login data and defer login process request
+					if (!structKeyExists(arguments.rc, "authenticationCode")) {
+						var preservedLoginData = {
+						username = arguments.rc.emailAddressOrUsername,
+						password = arguments.rc.password
+						};
+						
+						// Preserve data from last login attempt
+						rc.$.slatwall.setSessionValue('preservedLoginData', preservedLoginData);
+						
+						// Clear errors and proceed with next attempt for authentication code verification
+						rc.$.slatwall.getAccount().clearProcessObject("login");
+						rc.$.slatwall.getAccount().getHibachiErrors().setErrors(structNew());
+						rc.twoFactorAuthenticationRequiredFlag = true;
+					// Process login with all required data
+					} else {
+						getAccountService().processAccount(getHibachiScope().getAccount(), arguments.rc, "login");
+					}
+				}
+			}
+		// If emailAddressOrUsername setting is turned off
+		}else{
+			// Login without two-factor authentication
+			if (!getAccountService().verifyTwoFactorAuthenticationRequiredByEmail(emailAddressOrUsername=arguments.rc.emailAddress)) {
+				getAccountService().processAccount(getHibachiScope().getAccount(), arguments.rc, "login");
+			// Login with two-factor authentication
+			} else if (getAccountService().verifyTwoFactorAuthenticationRequiredByEmail(emailAddressOrUsername=arguments.rc.emailAddress)) {
+				// Preserve login data and defer login process request
+				if (!structKeyExists(rc, "authenticationCode")) {
+					var preservedLoginData = {
+					emailAddress = rc.emailAddress,
+					password = rc.password
+					};
+					
+					// Preserve data from last login attempt
+					rc.$.slatwall.setSessionValue('preservedLoginData', preservedLoginData);
+					
+					// Clear errors and proceed with next attempt for authentication code verification
+					rc.$.slatwall.getAccount().clearProcessObject("login");
+					rc.$.slatwall.getAccount().getHibachiErrors().setErrors(structNew());
+					rc.twoFactorAuthenticationRequiredFlag = true;
+				// Process login with all required data
+				} else {
+					getAccountService().processAccount(rc.$.slatwall.getAccount(), rc, "login");
+				}
 			}
 		}
 		

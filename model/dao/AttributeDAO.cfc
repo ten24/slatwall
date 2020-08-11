@@ -123,5 +123,12 @@ Notes:
 		</cfquery>
 		<cfreturn local.attributesDataQuery />
 	</cffunction>
+	
+	<cffunction name="getAttributeOptionByAttributeOptionValueAndAttributeID" output="false" access="public">
+		<cfargument name="attributeOptionValue" type="string" required="true" >
+		<cfargument name="attributeID" type="string" required="true" >
+		
+		<cfreturn ormExecuteQuery("SELECT aAttributeOption FROM SlatwallAttributeOption aAttributeOption WHERE aAttributeOption.attributeOptionValue = ? AND aAttributeOption.attribute.attributeID = ? ORDER BY sortOrder ASC", [arguments.attributeOptionValue, arguments.attributeID], true, {maxResults=1}) />
+	</cffunction>
 
 </cfcomponent>
