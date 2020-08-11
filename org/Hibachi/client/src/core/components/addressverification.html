@@ -1,0 +1,62 @@
+<div
+	class="modal in using-modal-service"
+	role="dialog"
+	id="flexship-modal-payment-method{{ swAddressVerification.orderTemplate.orderTemplateID }}"
+>
+	<div class="modal-dialog modal-lg">
+        <form name="updateAddress">
+        	<div class="modal-header">
+        		<button
+					type="button"
+					class="close"
+					ng-click="swAddressVerification.closeModal()"
+					aria-label="Close"
+				>
+					<i class="fas fa-times"></i>
+				</button>
+        	</div>
+        	<div class="modal-body">
+				<div class="modal-content">
+					<!-- Modal Close -->
+					<div class="payment">
+						<h6 class="title-with-line mb-5">
+							{{ swAddressVerification.translations.suggestedAddress }}
+						</h6>
+						<div class="shipping-options"> 
+							<p>{{ swAddressVerification.translations.addressMessage }}</p>
+							<div
+								class="custom-radio form-group"
+								ng-repeat="address in swAddressVerification.suggestedAddresses track by $index"
+							>
+								<!--<h5>{{$index == 1 ? 'Suggested Address' : 'Entered Address'}}</h5>-->
+								<input
+									type="radio"
+									name="saved_cards"
+									id="address{{$index}}"
+									value="{{$index}}"
+									ng-model="swAddressVerification.selectedAddressIndex"
+									ng-checked="swAddressVerification.selectedAddressIndex == $index"
+								/>
+								<label for="address{{$index}}" ng-click="swAddressVerification.selectedAddressIndex = $index">
+									{{address.streetAddress}}, {{address.city}}, {{(address.stateCode || address.locality) ? (address.stateCode || address.locality) + ',' : ''}} {{address.postalCode}}
+								</label>
+							</div>
+						</div>
+					</div>
+		        </div>
+	        </div>
+			<div class="modal-footer">
+				<div class="footer">
+					<button
+						class="btn btn-block bg-primary"
+						ng-class="{ loading: swAddressVerification.loading }"
+						ng-disabled = "swAddressVerification.loading || swAddressVerification.selectedAddressIndex == undefined"
+						sw-rbkey="'admin.define.okay'"
+						ng-click="swAddressVerification.submit()"
+					>
+					</button>
+				</div>
+			</div>
+        </form>
+	</div>
+</div>

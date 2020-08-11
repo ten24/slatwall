@@ -48,6 +48,8 @@ Notes:
 */
 component extends="HibachiDAO" persistent="false" accessors="true" output="false" {
 
+	property name="hibachiService" type="any";
+
 	public array function getEntityQueueByBaseObjectAndBaseIDAndEntityQueueTypeAndIntegrationAndEntityQueueData(required string baseObject, required string baseID, required string entityQueueType, any integration, string entityQueueData){
 		var hql = 'SELECT eq FROM #getApplicationValue('applicationKey')#EntityQueue eq where eq.baseID=:baseID AND baseObject=:baseObject AND entityQueueType=:entityQueueType ';
 		var params = {baseID=arguments.baseID,baseObject=arguments.baseObject,entityQueueType=arguments.entityQueueType};
@@ -66,43 +68,221 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 		);
 	}
 	
-	public void function insertEntityQueue(required string baseID, required string baseObject, string processMethod='', string entityQueueID = createHibachiUUID()){
+	
+	public void function resetTimedOutEntityQueueItems(required numeric timeout){
 		var queryService = new query();
-		queryService.addParam(name='entityQueueID',value='#arguments.entityQueueID#',CFSQLTYPE="CF_SQL_STRING");
-		queryService.addParam(name='entityQueueType',value='#arguments.entityQueueType#',CFSQLTYPE="CF_SQL_STRING");
-		queryService.addParam(name='baseObject',value='#arguments.baseObject#',CFSQLTYPE="CF_SQL_STRING");
-		queryService.addParam(name='baseID',value='#arguments.baseID#',CFSQLTYPE="CF_SQL_STRING");
-		queryService.addParam(name='processMethod',value='#arguments.processMethod#',CFSQLTYPE="CF_SQL_STRING");
-		queryService.addParam(name='dateTimeNow',value='#now()#',CFSQLTYPE="CF_SQL_TIMESTAMP");
-		queryService.addParam(name='accountID',value='#getHibachiScope().getAccount().getAccountID()#',CFSQLTYPE="CF_SQL_STRING");
+		queryService.addParam(name='timeoutDateTime', value='#DateAdd("s",-1*arguments.timeout,now())#', CFSQLTYPE='CF_SQL_TIMESTAMP');
+			
+		var sql =	"UPDATE SwEntityQueue 
+					SET serverInstanceKey=NULL
+					WHERE 
+						serverInstanceKey IS NOT NULL
+						AND entityQueueProcessingDateTime < :timeoutDateTime
+					";
+						
+		queryService.execute(sql=sql);
+	}
+	
+	public any function claimEntityQueueItemsByServer(required any collection, required numeric fetchSize){
 		
-		var sql =	"INSERT INTO 
-						SwEntityQueue (entityQueueID,entityQueueType,baseObject,baseID,processMethod,createdDateTime,createdByAccountID,modifiedByAccountID,modifiedDateTime)
+		var newCollection = arguments.collection.duplicateCollection();
+		newCollection.addFilter('serverInstanceKey', 'NULL', 'IS');
+		var entityQueueIDs = newCollection.getPrimaryIDList(fetchSize * 2);
+		
+		var queryService = new query();
+		queryService.addParam(name='serverInstanceKey', value=getHibachiScope().getServerInstanceKey(), CFSQLTYPE='CF_SQL_STRING');
+		queryService.addParam(name='entityQueueIDs', value=entityQueueIDs, CFSQLTYPE='CF_SQL_STRING', list=true);
+		queryService.addParam(name='dateTimeNow', value='#now()#', CFSQLTYPE="CF_SQL_TIMESTAMP");
+		
+		var sql =	"UPDATE 
+						SwEntityQueue 
+					SET serverInstanceKey=:serverInstanceKey,
+					entityQueueProcessingDateTime = :dateTimeNow
+					WHERE 
+						entityQueueID IN (:entityQueueIDs)
+					AND
+						serverInstanceKey IS NULL
+					LIMIT
+					#arguments.fetchSize#";
+						
+		return queryService.execute(sql=sql);
+	}
+
+	public void function bulkInsertEntityQueueByPrimaryIDs(required string primaryIDList, required string entityName, required string processMethod, boolean unique=false){
+		var primaryIDPropertyName = getHibachiService().getPrimaryIDPropertyNameByEntityName(arguments.entityName);	
+		var queryService = new query();
+		var sql = "INSERT INTO SwEntityQueue (entityQueueID, baseObject, baseID, processMethod, createdDateTime, modifiedDateTime, entityQueueDateTime, createdByAccountID, modifiedByAccountID, tryCount) ";
+		sql &= "SELECT LOWER(REPLACE(CAST(UUID() as char character set utf8),'-','')) as entityQueueID, "; 
+		sql &= "'#arguments.entityName#' as baseObject, ";  
+		sql &= "#primaryIDPropertyName# as baseID, ";
+		sql &= "'#arguments.processMethod#' as processMethod, ";
+		sql &= "now() as createdDateTime, ";
+		sql &= "now() as modifiedDateTime, ";
+		sql &= "now() as entityQueueDateTime, ";
+
+		var accountID = 'NULL';
+		if(!isNull(getHibachiScope().getAccount())){
+			accountID = getHibachiScope().getAccount().getAccountID(); 
+		}
+		sql &= "'#accountID#' as createdByAccountID, ";
+		sql &= "'#accountID#' as modifiedByAccountID, ";
+		sql &= "0 as tryCount ";
+		
+		sql &= "FROM #getHibachiService().getTableNameByEntityName(arguments.entityName)# ";
+		sql &= "WHERE #primaryIDPropertyName# in ('";
+
+		//not paramatizing because cf query param has in list limit this allows us to do 10000+ insertions
+		//because user can't control IDs this is safe
+		sql &= replaceNoCase(arguments.primaryIDList, ",","','","all")  & "')";
+
+		if(arguments.unique){
+			sql &= " AND #primaryIDPropertyName# not in (";
+			sql &= " SELECT baseID FROM swEntityQueue";
+			sql &= " WHERE processMethod = :processMethod";
+			sql &= ")";
+		} 
+	
+		queryService.addParam(name='processMethod', value=arguments.processMethod, CFSQLTYPE="CF_SQL_VARCHAR");
+
+		queryService.execute(sql=sql);
+	} 
+
+	public void function bulkInsertEntityQueueByFlagPropertyName(required string flagPropertyName, required string entityName, required string processMethod, boolean unique = false, boolean flagValue = true, struct entityQueueData = {} ){
+		
+		var primaryIDPropertyName = getHibachiService().getPrimaryIDPropertyNameByEntityName(arguments.entityName);	
+		var queryService = new query();
+		
+		var sql = "INSERT INTO SwEntityQueue (entityQueueID, baseObject, baseID, processMethod, entityQueueData, createdDateTime, modifiedDateTime, entityQueueDateTime, createdByAccountID, modifiedByAccountID, tryCount) ";
+		sql &= "SELECT LOWER(REPLACE(CAST(UUID() as char character set utf8),'-','')) as entityQueueID, "; 
+		sql &= "'#arguments.entityName#' as baseObject, ";  
+		sql &= "#primaryIDPropertyName# as baseID, ";
+		sql &= "'#arguments.processMethod#' as processMethod, ";
+		sql &= "'#serializeJson(arguments.entityQueueData)#' as entityQueueData, ";
+		sql &= "now() as createdDateTime, ";
+		sql &= "now() as modifiedDateTime, ";
+		sql &= "now() as entityQueueDateTime, ";
+
+		var accountID = 'NULL';
+		if(!isNull(getHibachiScope().getAccount())){
+			accountID = getHibachiScope().getAccount().getAccountID(); 
+		}
+		
+		sql &= "'#accountID#' as createdByAccountID, ";
+		sql &= "'#accountID#' as modifiedByAccountID, ";
+		sql &= "0 as tryCount ";
+		
+		sql &= "FROM #getHibachiService().getTableNameByEntityName(arguments.entityName)# ";
+		sql &= "WHERE #arguments.flagPropertyName# = :flagValue";
+	
+		if(arguments.unique){
+			sql &= " AND #primaryIDPropertyName# not in (";
+			sql &= " SELECT baseID FROM swEntityQueue";
+			sql &= " WHERE processMethod = :processMethod";
+			sql &= ")";
+		}
+	
+		queryService.addParam(name='flagValue', value=arguments.flagValue, CFSQLTYPE="CF_SQL_BIT");
+		queryService.addParam(name='processMethod', value=arguments.processMethod, CFSQLTYPE="CF_SQL_VARCHAR");
+
+		queryService.execute(sql=sql);
+	}	
+
+	public void function insertEntityQueue(required string baseID, required string baseObject, string entityQueueID, string processMethod='', struct entityQueueData={}, string integrationID='', any entityQueueDateTime = now()){
+
+		if(!structKeyExists(arguments, 'entityQueueID')){
+			var dataString = "#arguments.baseObject#_#arguments.baseID#_#arguments.processMethod#_#serializeJSON(arguments.entityQueueData)#";
+			
+			if (structKeyExists(arguments, "integrationID") && len(arguments.integrationID)){
+				dataString = dataString & "_#integrationID#"; 
+			}
+			arguments.entityQueueID = hash(dataString, 'MD5');
+		}
+		
+		var queryService = new query();
+		queryService.addParam(name='entityQueueID', value='#arguments.entityQueueID#', CFSQLTYPE="CF_SQL_STRING");
+		queryService.addParam(name='baseObject', value='#arguments.baseObject#', CFSQLTYPE="CF_SQL_STRING");
+		queryService.addParam(name='baseID', value='#arguments.baseID#', CFSQLTYPE="CF_SQL_STRING");
+		queryService.addParam(name='processMethod', value='#arguments.processMethod#', CFSQLTYPE="CF_SQL_STRING");
+		queryService.addParam(name='entityQueueData', value='#serializeJSON(arguments.entityQueueData)#', CFSQLTYPE="CF_SQL_STRING");
+		queryService.addParam(name='integrationID', value='#arguments.integrationID#', CFSQLTYPE="CF_SQL_STRING", null=len(trim(arguments.integrationID)) ? false : true);
+		queryService.addParam(name='dateTimeNow', value='#now()#', CFSQLTYPE="CF_SQL_TIMESTAMP");
+		queryService.addParam(name='entityQueueDateTime', value='#arguments.entityQueueDateTime#', CFSQLTYPE="CF_SQL_TIMESTAMP");
+		
+		if (structKeyExists(arguments, "entityQueueProcessingDateTime")){
+			queryService.addParam(name='entityQueueProcessingDateTime', value='#arguments.entityQueueProcessingDateTime#', CFSQLTYPE="CF_SQL_TIMESTAMP");
+		}else{
+			queryService.addParam(name='entityQueueProcessingDateTime', CFSQLTYPE="CF_SQL_TIMESTAMP", null=true);
+		}
+		
+		queryService.addParam(name='accountID', value='#getHibachiScope().getAccount().getAccountID()#', CFSQLTYPE="CF_SQL_STRING");
+		
+		var sql =	"INSERT IGNORE INTO
+						SwEntityQueue (entityQueueID,baseObject,baseID,processMethod,entityQueueData,integrationID,createdDateTime,createdByAccountID,modifiedByAccountID,modifiedDateTime,entityQueueDateTime,tryCount,entityQueueProcessingDateTime)
 					VALUES 
-						(:entityQueueID,:entityQueueType,:baseObject,:baseID,:processMethod,:dateTimeNow,:accountID,:accountID,:dateTimeNow)";
+						(:entityQueueID,:baseObject,:baseID,:processMethod,:entityQueueData,:integrationID,:dateTimeNow,:accountID,:accountID,:dateTimeNow,:entityQueueDateTime,1,:entityQueueProcessingDateTime)";
 						
 		queryService.execute(sql=sql);
 	}
 	
-	public void function deleteEntityQueues(required string entityQueueIDs){
+	public void function deleteEntityQueueItem(required string entityQueueID){
 		var queryService = new query();
-		queryService.addParam(name='entityQueueID',value='#arguments.entityQueueIDs#',CFSQLTYPE="CF_SQL_STRING", list="true");
-		var sql = "DELETE FROM SwEntityQueue WHERE entityQueueID IN ( :entityQueueID )";
-						
+		queryService.addParam(name='entityQueueID',value='#arguments.entityQueueID#',CFSQLTYPE="CF_SQL_STRING", list="true");
+		var sql = "DELETE FROM SwEntityQueue WHERE entityQueueID = :entityQueueID";
+
+
 		queryService.execute(sql=sql);
 	}
-
-	public void function updateModifiedDateTime(required string entityQueueIDs){
-		var queryService = new query();
-		queryService.addParam(name='entityQueueID',value='#arguments.entityQueueIDs#',CFSQLTYPE="CF_SQL_STRING", list="true");
-		queryService.addParam(name='now',value='#now()#',CFSQLTYPE="CF_SQL_DATE", list="true");
-		var sql = "UPDATE SwEntityQueue SET modifiedDateTime = :now, tryCount= COALESCE(tryCount, 0) + 1  WHERE entityQueueID IN ( :entityQueueID )";
-						
-		queryService.execute(sql=sql);
-	}
-
 	
-	public void function addEntityToQueue(required any entity,required entityQueueType){
+	public void function updateNextRetryDateAndMostRecentError(required string entityQueueID, required string errorMessage, numeric retryDelay = 0){
+		var queryService = new query();
+		queryService.addParam(name='entityQueueID',value='#arguments.entityQueueID#',CFSQLTYPE="CF_SQL_STRING", list="true");
+		queryService.addParam(name='now',value='#now()#',CFSQLTYPE="CF_SQL_TIMESTAMP");
+		queryService.addParam(name='retryDelay',value='#DateAdd("s",retryDelay,now())#',CFSQLTYPE="CF_SQL_TIMESTAMP");
+		queryService.addParam(name='errorMessage',value='#errorMessage#',CFSQLTYPE="CF_SQL_STRING");
+		var sql = "UPDATE SwEntityQueue SET modifiedDateTime = :now, tryCount = tryCount + 1, mostRecentError=:errorMessage, serverInstanceKey = NULL, retryDelay=:retryDelay WHERE entityQueueID = :entityQueueID";
+
+		queryService.execute(sql=sql);
+	}
+	
+	
+	public void function archiveEntityQueue(required string entityQueueID, string mostRecentError = '' ){
+	
+		var columns = 'baseObject, baseID, processMethod, entityQueueType, entityQueueDateTime, entityQueueData, integrationID, createdDateTime, modifiedDateTime, entityQueueDateTime, createdByAccountID, modifiedByAccountID, tryCount';
+		
+		var insertQuery = new query();
+		var sql = "INSERT INTO SwEntityQueueFailure (entityQueueFailureID, remoteID, #columns#, mostRecentError) ";
+		sql &= "SELECT LOWER(REPLACE(CAST(UUID() as char character set utf8),'-','')) as entityQueueFailureID, entityQueueID as remoteID, #columns#, :mostRecentError as mostRecentError ";
+		sql &= "FROM swEntityQueue ";
+		sql &= "WHERE entityQueueID = :entityQueueID";
+		insertQuery.addParam(name='entityQueueID', value=arguments.entityQueueID, CFSQLTYPE="CF_SQL_VARCHAR");
+		insertQuery.addParam(name='mostRecentError', value=arguments.mostRecentError, CFSQLTYPE="CF_SQL_VARCHAR");
+		insertQuery.execute(sql=sql);
+		
+		var deleteQuery = new query();
+		sql = "DELETE FROM swEntityQueue WHERE entityQueueID = :entityQueueID";
+		deleteQuery.addParam(name='entityQueueID', value=arguments.entityQueueID, CFSQLTYPE="CF_SQL_VARCHAR");
+		deleteQuery.execute(sql=sql);
+		
+	}
+	
+	public void function ReQueueItems(required string baseObject, required string baseID){
+	
+		var columns = 'baseObject, baseID, processMethod, entityQueueType, entityQueueDateTime, entityQueueData, integrationID, createdDateTime, createdByAccountID';
+		
+		var insertQuery = new query();
+		var sql = "INSERT IGNORE INTO SwEntityQueue (entityQueueID, #columns#, tryCount, modifiedDateTime, entityQueueDateTime, modifiedByAccountID) ";
+		sql &= "SELECT remoteID as entityQueueID, #columns#, 0, now(), now(), '#getHibachiScope().getAccount().getAccountID()#' ";
+		sql &= "FROM swEntityQueueFailure ";
+		sql &= "WHERE baseObject = :baseObject AND baseID = :baseID";
+		insertQuery.addParam(name='baseObject', value=arguments.baseObject, CFSQLTYPE="CF_SQL_VARCHAR");
+		insertQuery.addParam(name='baseID', value=arguments.baseID, CFSQLTYPE="CF_SQL_VARCHAR");
+		insertQuery.execute(sql=sql);
+		
+		var deleteQuery = new query();
+		sql = "DELETE FROM swEntityQueueFailure WHERE baseObject = :baseObject AND baseID = :baseID";
+		deleteQuery.addParam(name='baseObject', value=arguments.baseObject, CFSQLTYPE="CF_SQL_VARCHAR");
+		deleteQuery.addParam(name='baseID', value=arguments.baseID, CFSQLTYPE="CF_SQL_VARCHAR");
+		deleteQuery.execute(sql=sql);
 		
 	}
 	

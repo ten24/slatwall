@@ -3,51 +3,65 @@
 
 
 class SWCurrency{
-   
+
     //@ngInject
-    public static Factory($sce,$log,$hibachi){
+    public static Factory($sce,$log,$hibachi,$filter){
         var data = null, serviceInvoked = false;
-        function realFilter(value,decimalPlace,returnStringFlag=true) {
-            // REAL FILTER LOGIC, DISREGARDING PROMISES
-            if(data == null){
-                $log.debug("Please provide a valid currencyCode, swcurrency defaults to $");
-                data="$";
+        
+        function realFilter(value, currencyCode:string, decimalPlace:number = 2, returnStringFlag = true) {
+         
+  
+            if( isNaN( parseFloat(value) )  ){
+                return returnStringFlag ? "--" : undefined; 
+            } 
+            
+            if(typeof value == 'string'){
+                //if the value is a string remove any commas and spaces
+                value = value.replace(/[, ]+/g, "").trim();
             }
-            if(value != null){
-                if(decimalPlace != null){
-                    value = parseFloat(value.toString()).toFixed(decimalPlace)
-                } else {
-                    value = parseFloat(value.toString()).toFixed(2)
-                }
-            }
+   
+            value = $filter('number')(parseFloat(value), decimalPlace);  
+
             if(returnStringFlag){
-                return data + value;
-            } else { 
-                return value;
-            }   
+                var currencySymbol = "$";
+                if(data != null && data[currencyCode] != null ){
+                    currencySymbol = data[currencyCode];
+                } 
+                else {
+                     $log.debug("Please provide a valid currencyCode, swcurrency defaults to $");
+                }
+                return currencySymbol + value; 
+            }
+            
+            //if they don't want a string returned, again make sure any commas and spaces are removed
+            if(typeof value == 'string'){
+                value = value.replace(/[, ]+/g, "").trim();
+            }
+            
+            return value;
         }
 
-        var filterStub:any;
-        filterStub = function(value,currencyCode,decimalPlace,returnStringFlag=true) {
+        var filterStub: any = function(value, currencyCode:string, decimalPlace:number, returnStringFlag =true) {
+           
+            if( data == null && returnStringFlag) {
 
-            if( data === null && returnStringFlag) {
                 if( !serviceInvoked ) {
                     serviceInvoked = true;
-                        $hibachi.getCurrencies().then((currencies)=>{
-                        var result = currencies.data;
-                        data = result[currencyCode];
+                    $hibachi.getCurrencies().then((currencies)=>{
+                        data = currencies.data;
                     });
                 }
-                return "-";
+                return  "--" + value;
             }
-            else return realFilter(value,decimalPlace,returnStringFlag);
+            else {
+                return realFilter(value,currencyCode,decimalPlace,returnStringFlag);
+            }
         }
-
+        
         filterStub.$stateful = true;
 
         return filterStub;
     }
-
 
 }
 export {SWCurrency};

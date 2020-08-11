@@ -63,10 +63,14 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="accountAddressID" hb_rbKey="entity.accountAddress" hb_formFieldType="select";
 	property name="orderTypeCode" hb_rbKey="entity.order.orderType";
 	property name="previousOrderPaymentID" hb_rbKey="entity.previousOrderPayment" hb_formFieldType="select";
+	property name="amount" hb_populateEnabled="public" hb_formatType="currency";
+
+	property name="addressID" hb_rbKey="entity.address";
 
 	// Data Properties (Inputs)
 	property name="saveAccountPaymentMethodFlag" hb_formFieldType="yesno" hb_populateEnabled="public";
 	property name="saveAccountPaymentMethodName" hb_rbKey="entity.accountPaymentMethod.accountPaymentMethodName" hb_populateEnabled="public";
+	property name="setPrimaryPaymentMethodFlag" hb_formFieldType="yesno" hb_populateEnabled="public";
 
 	property name="saveGiftCardToAccountFlag" hb_formFieldType="yesno";
 
@@ -83,7 +87,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="copyFromTypeOptions";
 
 	// Helper Properties
-
+	property name="updateOrderAmountFlag" default="1";
 
 	// ======================== START: Defaults ============================
 	public boolean function getSaveGiftCardToAccountFlag(){
@@ -149,6 +153,14 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		return variables.accountAddressID;
 	}
 
+	public string function getAddressID() {
+		if(!structKeyExists(variables, "addressID")) {
+			variables.addressID = "";
+		}
+		return variables.addressID;
+	}
+
+
 	public string function getOrderTypeCode(){
 		if(!structKeyExists(variables,"orderTypeCode")){
 			variables.orderTypeCode="otSalesOrder";
@@ -158,6 +170,13 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 	public boolean function getSaveAccountPaymentMethodFlag() {
 		if(!structKeyExists(variables, "saveAccountPaymentMethodFlag")) {
+			variables.saveAccountPaymentMethodFlag = 0;
+		}
+		return variables.saveAccountPaymentMethodFlag;
+	}
+	
+	public boolean function getSetPrimaryPaymentMethodFlag() {
+		if(!structKeyExists(variables, "setPrimaryPaymentMethodFlag")) {
 			variables.saveAccountPaymentMethodFlag = 0;
 		}
 		return variables.saveAccountPaymentMethodFlag;
@@ -260,6 +279,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		if(!structKeyExists(variables, "paymentMethodIDOptions")) {
 			variables.paymentMethodIDOptions = [];
 			var epmDetails = getService('paymentService').getEligiblePaymentMethodDetailsForOrder( getOrder() );
+			
 			for(var paymentDetail in epmDetails) {
 				arrayAppend(variables.paymentMethodIDOptions, {
 					name = paymentDetail.paymentMethod.getPaymentMethodName(),
@@ -271,7 +291,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		}
 		if(getHibachiScope().getAccount().getAdminAccountFlag()){
 			paymentMethodIDOptions = duplicate(variables.paymentMethodIDOptions);
-			arrayAppend(paymentMethodIDOptions, {
+			arrayPrepend(paymentMethodIDOptions, {
 				name = 'None',
 				value = 'none',
 				paymentmethodtype = 'none',

@@ -54,56 +54,25 @@ Notes:
 <cfparam name="rc.rewardType" type="string" default="#rc.promotionReward.getRewardType()#">
 <cfparam name="rc.edit" type="boolean">
 
-<cfset collectionAllSkus = $.slatwall.getService('SkuService').getSkuCollectionList()  >
-<cfset collectionAllSkus.setDisplayProperties("skuCode,product.productName",{
-    isVisible=true
-}) >
-<cfset collectionAllSkus.addDisplayProperty(displayProperty='skuID',columnConfig={
-		isVisible=false,
-		isSearchable=false,
-		isDeletable=false
-})/>
-
-<cfset collectionIncludedSkus = $.slatwall.getService('SkuService').getSkuCollectionList() >
-<cfset collectionIncludedSkus.setDisplayProperties("skuCode,product.productName",{
-    isVisible=true,
-    isSearchable=true,
-    isDeletable=false
-}) >
-<cfset collectionIncludedSkus.addFilter("promotionRewards.promotionRewardID","#rc.promotionReward.getPromotionRewardID()#") >
-<cfset collectionIncludedSkus.addDisplayProperty(displayProperty='skuID',columnConfig={
-		isVisible=false,
-		isSearchable=false,
-		isDeletable=false
-})/>
-
-<cfset collectionExcludedSkus = $.slatwall.getService('SkuService').getSkuCollectionList() >
-<cfset collectionExcludedSkus.setDisplayProperties("skuCode,product.productName",{
-    isVisible=true,
-    isSearchable=true,
-    isDeletable=false
-}) >
-<cfset collectionExcludedSkus.addFilter("promotionRewardExclusions.promotionRewardID","#rc.promotionReward.getPromotionRewardID()#") >
-<cfset collectionExcludedSkus.addDisplayProperty(displayProperty='skuID',columnConfig={
-		isVisible=false,
-		isSearchable=false,
-		isDeletable=false
-})/>
-
 <cfoutput>
-    <cfif rc.edit>
-    	<div class="col-md-6">
-    		<hb:HibachiFieldDisplay valueOptionsCollectionList="#collectionAllSkus#" value="#collectionIncludedSkus.getPrimaryIDList()#" fieldType="listingMultiselect" title="Included Skus" fieldName="skus" edit="#rc.edit#" displaytype="plainTitle" />
-    	</div>
-    	<div class="col-md-6">
-    	    <hb:HibachiFieldDisplay valueOptionsCollectionList="#collectionAllSkus#" value="#collectionExcludedSkus.getPrimaryIDList()#" fieldType="listingMultiselect" title="Excluded Skus" fieldName="excludedSkus" edit="#rc.edit#" displaytype="plainTitle" />
-    	</div>
-    <cfelse>
-        <div class="col-md-6">
-            <hb:HibachiFieldDisplay valueOptionsCollectionList="#collectionIncludedSkus#" value="#collectionIncludedSkus.getPrimaryIDList()#" fieldType="listingMultiselect" title="Included Skus" fieldName="skus" edit="#rc.edit#" displaytype="plainTitle" />
-    	</div>
-    	<div class="col-md-6">
-    	    <hb:HibachiFieldDisplay valueOptionsCollectionList="#collectionExcludedSkus#" value="#collectionExcludedSkus.getPrimaryIDList()#" fieldType="listingMultiselect" title="Excluded Skus" fieldName="excludedSkus" edit="#rc.edit#" displaytype="plainTitle" />
-    	</div>
-    </cfif>
+    <div class="col-md-6">
+        <hb:HibachiListingDisplay 
+            collectionList="#rc.promotionReward.getIncludedSkusCollection()#" 
+            title="Included Skus" 
+            collectionConfigFieldName="includedSkusCollectionConfig" 
+            edit="#rc.edit#" 
+            displaytype="plainTitle"
+            showSimpleListingControls="false"
+            hideUnfilteredResults="true"/>
+	</div>
+	<div class="col-md-6">
+	    <hb:HibachiListingDisplay 
+	        collectionList="#rc.promotionReward.getExcludedSkusCollection()#" 
+	        title="Excluded Skus" 
+	        collectionConfigFieldName="excludedSkusCollectionConfig" 
+	        edit="#rc.edit#" 
+            displaytype="plainTitle"
+            showSimpleListingControls="false"
+            hideUnfilteredResults="true"/>
+	</div>
 </cfoutput>

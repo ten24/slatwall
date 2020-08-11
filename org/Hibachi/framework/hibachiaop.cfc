@@ -66,5 +66,5 @@ component extends="framework.aop" {
             variables.beanCache[ qualifiedName ] = construct( info.cfc );
         }
     }
-    
+
 }

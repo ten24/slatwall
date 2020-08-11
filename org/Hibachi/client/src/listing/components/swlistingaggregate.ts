@@ -27,18 +27,7 @@ class SWListingAggregate implements ng.IDirective{
     public controllerAs="swListingAggregate";
 
     public static Factory(){
-        var directive:ng.IDirectiveFactory=(
-
-        )=>new SWListingAggregate(
-
-        );
-        directive.$inject = [
-
-        ];
-        return directive;
-    }
-    constructor(){
-
+        return /** @ngInject */ () => new this();
     }
 
     public link:ng.IDirectiveLinkFn = (scope:any, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
@@ -50,7 +39,6 @@ class SWListingAggregate implements ng.IDirective{
         };
 
         scope.$parent.swListingDisplay.aggregates.push(aggregate);
-
     }
 }
 export{

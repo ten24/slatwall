@@ -94,6 +94,30 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			return false;
 		}
 	}
+	
+	public any function getPriceBySkuIDAndCurrencyCodeAndQuantity(required string skuID, required string currencyCode, required numeric quantity, array priceGroups) {
+
+		var skuPriceResults = getDAO("SkuPriceDAO").getSkuPricesForSkuCurrencyCodeAndQuantity(argumentCollection=arguments);
+
+		if(!isNull(skuPriceResults) && isArray(skuPriceResults) && arrayLen(skuPriceResults) > 0){
+			var prices = [];
+			for(var i=1; i <= arrayLen(skuPriceResults); i++){
+				if(isNull(skuPriceResults[i]['price'])){
+					skuPriceResults[i]['price'] = 0;
+				}
+				ArrayAppend(prices, skuPriceResults[i]['price']);
+			}
+
+			ArraySort(prices, "numeric","asc");
+			return prices[1];
+		}
+
+		var baseSkuPrice = getDAO("SkuPriceDAO").getBaseSkuPriceForSkuByCurrencyCode(arguments.skuID, arguments.currencyCode);  
+
+		if(!isNull(baseSkuPrice)){
+			return baseSkuPrice.getPrice(); 
+		}
+	}
 
 
 	public array function getProductSkus(required any product, required boolean sorted, boolean fetchOptions=false, string joinType="inner") {
@@ -598,14 +622,23 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	public any function processSku_move(required any sku, any processObject){
 		var originalProduct = arguments.sku.getProduct(); 
-		var isDefaultSku = originalProduct.getDefaultSku().getSkuID() == arguments.sku.getSkuID(); 	
+		var isDefaultSku = false;
+		if(!IsNull(originalProduct.getDefaultSku()) && originalProduct.getDefaultSku().getSkuID() == arguments.sku.getSkuID()){
+			isDefaultSku = true;
+		}
 		
-		arguments.sku.setProduct(processObject.getProduct());
+		arguments.sku.setProduct(arguments.processObject.getProduct());
 		arguments.sku = this.saveSku(arguments.sku);		
-	
-		if(originalProduct.getSkusCount() == 1){
+		if(isDefaultSku){
+			originalProduct.setDefaultSku(JavaCast('null',''));
+		}
+		getHibachiScope().flushORMSession();
+		if(originalProduct.getSkusCount() == 0){
 			originalProduct.setSkus([]);
 			var success = getProductService().deleteProduct(originalProduct); 
+			if(!success){
+				arguments.sku.addError('deleteProduct',rbKey('validate.delete.product'));
+			}
 		} else if(isDefaultSku){
 			originalProduct.setDefaultSku(originalProduct.getSkus()[1]); 
 			originalProduct = getProductService().saveProduct(originalProduct); 
@@ -640,9 +673,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				this.saveSkuLocationQuantity(skuLocationQuantity);
 			}
 
-			return arguments.sku;
 
 		}
+		return arguments.sku;
 	}
 
 	// =====================  END: Process Methods ============================

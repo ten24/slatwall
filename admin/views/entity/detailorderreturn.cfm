@@ -70,9 +70,9 @@ Notes:
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>
 		
-		<hb:HibachiTabGroup object="#rc.orderReturn#">
-			<hb:HibachiTab view="admin:entity/orderreturntabs/orderreturnitems">
-		</hb:HibachiTabGroup>
+		<hb:HibachiEntityDetailGroup object="#rc.orderReturn#">
+			<hb:HibachiEntityDetailItem view="admin:entity/orderreturntabs/orderreturnitems" open="true">
+		</hb:HibachiEntityDetailGroup>
 		
 	</hb:HibachiEntityDetailForm>
 </cfoutput>
