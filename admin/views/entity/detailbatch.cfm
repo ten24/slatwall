@@ -50,15 +50,15 @@ Notes:
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
 
-<cfparam name="rc.stock" type="any">
+<cfparam name="rc.batch" type="any">
 <cfparam name="rc.edit" type="boolean" default="false" />
 
 <cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.stock#" edit="#rc.edit#" sRedirectAction="admin:entity.detailsbatch">
+	<hb:HibachiEntityDetailForm object="#rc.batch#" edit="#rc.edit#" sRedirectAction="admin:entity.detailsbatch">
 		<hb:HibachiEntityActionBar type="detail" object="#rc.batch#" edit="#rc.edit#">
 		</hb:HibachiEntityActionBar>
 		
-		<hb:HibachiEntityDetailGroup object="#rc.stock#">
+		<hb:HibachiEntityDetailGroup object="#rc.batch#">
 			<hb:HibachiEntityDetailItem view="admin:entity/batchtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
 		</hb:HibachiEntityDetailGroup>
 	</hb:HibachiEntityDetailForm>
