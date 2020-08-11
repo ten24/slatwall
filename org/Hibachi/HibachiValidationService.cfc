@@ -303,34 +303,42 @@ component output="false" accessors="true" extends="HibachiService" {
 	// ================================== VALIDATION CONSTRAINT LOGIC ===========================================
 
 	public boolean function validate_required(required any object, required string propertyIdentifier, boolean constraintValue=true) {
-		var propertyValue = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier ).invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");
-		if(arguments.constraintValue == false) {
-			return true;
+		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
+		
+		if(!isNull(propertyObject) ){
+            return this.validate_required_real( 
+                    propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#"),
+                    constraintValue = arguments.constraintValue 
+                );
 		}
-		if(
-			!isNull(propertyValue) 
-			&& (
-				isObject(propertyValue) 
-				|| (
-					isArray(propertyValue) 
-					&& arrayLen(propertyValue)
-				) || (
-					isStruct(propertyValue) 
-					&& structCount(propertyValue)
-				) || (
-					isSimpleValue(propertyValue) 
-					&& len(trim(propertyValue))
-				)
-			)
-		) {
-			return true;
+		
+		return false;
+	}
+	
+	public boolean function validate_required_real(any propertyValue, boolean constraintValue=true ){
+	   
+	    if( !isNull(arguments.propertyValue) ){
+	        
+	        if( arguments.constraintValue == false ){
+			    return true;
+	        }
+	        
+	        if(
+	            isObject(arguments.propertyValue) 
+    			|| ( isArray(arguments.propertyValue) && arrayLen(arguments.propertyValue) ) 
+    			|| ( isStruct(arguments.propertyValue)  && structCount(arguments.propertyValue) ) 
+    			|| ( isSimpleValue(arguments.propertyValue) && len(trim(arguments.propertyValue)) ) 
+    		){
+    		    return true;		    
+    		}
 		}
+		
 		return false;
 	}
 
 	public boolean function validate_null(required any object, required string propertyIdentifier, boolean constraintValue) {
 		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
-		if(!isNull(propertyObject)) {
+		if( !isNull(propertyObject) ){
 			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");
 		}
 		if(arguments.constraintValue == true){
@@ -339,25 +347,60 @@ component output="false" accessors="true" extends="HibachiService" {
 			return !isNull(propertyValue);			
 		}
 	}
+	
+	public boolean function validate_regex(required any object, required string propertyIdentifier, required numeric constraintValue) {
+		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
+		
+		if( !isNull(propertyObject) ){
+            return this.validate_regex_real( 
+                    propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#"),
+                    constraintValue = arguments.constraintValue 
+                );
+		}
+		
+		return false;
+	}
+	
+	public boolean function validate_regex_real(any propertyValue, required numeric constraintValue ){
+
+		if( isNull(arguments.propertyValue) || !len(arguments.propertyValue) || isValid("regex", arguments.propertyValue, arguments.constraintValue) ){
+			return true;
+		}
+
+		return false;
+	}
 
 	public boolean function validate_dataType(required any object, required string propertyIdentifier, required any constraintValue) {
 		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
-		if(!isNull(propertyObject)) {
-			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");
+		
+		if(!isNull(propertyObject) ){
+		
+		    return this.validate_dataType_real(
+		        propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#"),
+		        constraintValue = arguments.constraintValue
+		    );
+		    
 		}
+		return false;
+	}
 
+	public boolean function validate_dataType_real(any propertyValue, required any constraintValue) {
+	    
 		// Standard Validation DataTypes
-		if(listFindNoCase("any,array,binary,boolean,component,date,time,email,eurodate,float,numeric,guid,integer,query,range,regex,regular_expression,ssn,social_security_number,string,telephone,url,uuid,usdate,zipcode",arguments.constraintValue)) {
-			if(isNull(propertyValue) || isValid(arguments.constraintValue, propertyValue)) {
+		if( listFindNoCase("any,array,binary,boolean,component,date,time,email,eurodate,float,numeric,guid,integer,query,range,regex,regular_expression,ssn,social_security_number,string,telephone,url,uuid,usdate,zipcode", arguments.constraintValue) ){
+			
+			if( isNull(arguments.propertyValue) || isValid(arguments.constraintValue, arguments.propertyValue) ){
 				return true;
 			}
-
+		} 
 		// Custom CreditCardNumber DataTypes
-		} else if(listFindNoCase("creditCard,creditCardNumber",arguments.constraintValue)) {
-			if(isNull(propertyValue)) {
+		else if( listFindNoCase("creditCard,creditCardNumber",arguments.constraintValue) ){
+			
+			if( isNull(arguments.propertyValue) ){
 				return true;
 			}
-			if(len(propertyValue) && isNumeric(propertyValue)) {
+			
+			if( len(arguments.propertyValue) && isNumeric(arguments.propertyValue) ){
 				var nDigits = len(propertyValue);
 				var parity = nDigits MOD 2;
 				var digit = "";
@@ -377,189 +420,311 @@ component output="false" accessors="true" extends="HibachiService" {
 					return true;
 				}
 			}
+			
 			return false;
-		} else {
+		} 
+		else {
 			throw("The validation file: #arguments.object.getClassName()#.json has an incorrect dataType constraint value of '#arguments.constraintValue#' for one of it's properties.  Valid values are: any,array,binary,boolean,component,creditCard,date,time,email,eurodate,float,numeric,guid,integer,query,range,regex,regular_expression,ssn,social_security_number,string,telephone,url,uuid,usdate,zipcode");
 		}
 
 		return false;
 	}
-
+	
 	public boolean function validate_minValue(required any object, required string propertyIdentifier, required numeric constraintValue) {
 		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
-		if(!isNull(propertyObject)) {
-			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");
+		
+		if( !isNull(propertyObject) ){
+            return this.validate_minValue_real( 
+                    propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#"),
+                    constraintValue = arguments.constraintValue 
+                );
 		}
-		if(isNull(propertyValue) || (isNumeric(propertyValue) && propertyValue >= arguments.constraintValue) ) {
-			return true;
-		}
+		
 		return false;
 	}
-
+	
+	public boolean function validate_minValue_real(any propertyValue, required numeric constraintValue ){
+	   
+	    if(isNull(arguments.propertyValue) || (isNumeric(arguments.propertyValue) && arguments.propertyValue >= arguments.constraintValue) ) {
+			return true;
+		}
+		
+		return false;
+	}
+	
 	public boolean function validate_maxValue(required any object, required string propertyIdentifier, required numeric constraintValue) {
 		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
-		if(!isNull(propertyObject)) {
-			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");
+		
+		if( !isNull(propertyObject) ){
+            return this.validate_maxValue_real( 
+                    propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#"),
+                    constraintValue = arguments.constraintValue 
+                );
 		}
-		if(isNull(propertyValue) || (isNumeric(propertyValue) && propertyValue <= arguments.constraintValue) ) {
-			return true;
-		}
+		
 		return false;
 	}
-
-	public boolean function validate_minLength(required any object, required string propertyIdentifier, required numeric constraintValue) {
+	
+	public boolean function validate_maxValue_real(any propertyValue, required numeric constraintValue ){
+	   
+	    if(isNull(arguments.propertyValue) || (isNumeric(arguments.propertyValue) && arguments.propertyValue <= arguments.constraintValue) ) {
+			return true;
+		}
+		
+		return false;
+	}
+	
+	public boolean function validate_minLength(required any object, required string propertyIdentifier, required numeric constraintValue ){
 		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
-		if(!isNull(propertyObject)) {
-			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");
+		
+		if( !isNull(propertyObject) ){
+            return this.validate_minLength_real( 
+                    propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#"),
+                    constraintValue = arguments.constraintValue 
+                );
 		}
-		if(isNull(propertyValue) || (isSimpleValue(propertyValue) && len(trim(propertyValue)) >= arguments.constraintValue) ) {
-			return true;
-		}
+		
 		return false;
 	}
-
-	public boolean function validate_maxLength(required any object, required string propertyIdentifier, required numeric constraintValue) {
+	
+	public boolean function validate_minLength_real(any propertyValue, required numeric constraintValue ){
+	   
+		if(isNull(arguments.propertyValue) || (isSimpleValue(arguments.propertyValue) && len(trim(arguments.propertyValue)) >= arguments.constraintValue) ){
+			return true;
+		}
+		
+		return false;
+	}
+	
+	public boolean function validate_maxLength(required any object, required string propertyIdentifier, required numeric constraintValue ){
 		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
-		if(!isNull(propertyObject)) {
-			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");
+		
+		if( !isNull(propertyObject) ){
+            return this.validate_maxLength_real( 
+                    propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#"),
+                    constraintValue = arguments.constraintValue 
+                );
 		}
-		if(isNull(propertyValue) || (isSimpleValue(propertyValue) && len(trim(propertyValue)) <= arguments.constraintValue) ) {
-			return true;
-		}
+		
 		return false;
 	}
-
-	public boolean function validate_minCollection(required any object, required string propertyIdentifier, required numeric constraintValue) {
-		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
-		if(!isNull(propertyObject)) {
-			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");
-		}
-		if(isNull(propertyValue) || (isArray(propertyValue) && arrayLen(propertyValue) >= arguments.constraintValue) || (isStruct(propertyValue) && structCount(propertyValue) >= arguments.constraintValue)) {
+	
+	public boolean function validate_maxLength_real(any propertyValue, required numeric constraintValue ){
+	   
+		if(isNull(arguments.propertyValue) || ( isSimpleValue(arguments.propertyValue) && len(trim(arguments.propertyValue)) <= arguments.constraintValue) ){
 			return true;
 		}
+		
 		return false;
 	}
-
-	public boolean function validate_maxCollection(required any object, required string propertyIdentifier, required numeric constraintValue) {
-		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
-		if(!isNull(propertyObject)) {
-			if(arguments.constraintValue == 0){
-				var propertyCount = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#Count");
-				if(propertyCount==0){
-					return true;
-				}else{
-					return false;
-				}
-			}else{
-				var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");
-			}
-		}
-		if(
-			isNull(propertyValue)
-			|| (
-				isArray(propertyValue)
-				&& arrayLen(propertyValue) <= arguments.constraintValue
-			) || (
-				isStruct(propertyValue)
-				&& structCount(propertyValue) <= arguments.constraintValue
-			)
-		) {
-			return true;
-		}
-		return false;
-	}
-
+	
 	public boolean function validate_minList(required any object, required string propertyIdentifier, required numeric constraintValue) {
 		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
-		if(!isNull(propertyObject)) {
-			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");
+		
+		if( !isNull(propertyObject) ){
+            return this.validate_minList_real( 
+                    propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#"),
+                    constraintValue = arguments.constraintValue 
+                );
 		}
-		if((!isNull(propertyValue) && isSimpleValue(propertyValue) && listLen(propertyValue) >= arguments.constraintValue) || (isNull(propertyValue) && arguments.constraintValue == 0)) {
-			return true;
-		}
+		
 		return false;
 	}
-
+	
+	public boolean function validate_minList_real(any propertyValue, required numeric constraintValue ){
+	    
+		if(
+		    ( !isNull(arguments.propertyValue) && isSimpleValue(arguments.propertyValue) && listLen(arguments.propertyValue) >= arguments.constraintValue ) 
+		    || 
+		    ( isNull(arguments.propertyValue) && arguments.constraintValue == 0 )
+		){
+			return true;
+		}
+		
+		return false;
+	}
+	
 	public boolean function validate_maxList(required any object, required string propertyIdentifier, required numeric constraintValue) {
 		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
-		if(!isNull(propertyObject)) {
-			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");
+		
+		if( !isNull(propertyObject) ){
+            return this.validate_maxList_real( 
+                    propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#"),
+                    constraintValue = arguments.constraintValue 
+                );
 		}
-		if((!isNull(propertyValue) && isSimpleValue(propertyValue) && listLen(propertyValue) <= arguments.constraintValue) || (isNull(propertyValue) && arguments.constraintValue == 0)) {
-			return true;
-		}
+		
 		return false;
 	}
-
-	public boolean function validate_method(required any object, required string propertyIdentifier, required string constraintValue) {
-		return arguments.object.invokeMethod(arguments.constraintValue);
+	
+	public boolean function validate_maxList_real(any propertyValue, required numeric constraintValue ){
+	    
+		if(
+		    ( !isNull(arguments.propertyValue) && isSimpleValue(arguments.propertyValue) && listLen(arguments.propertyValue) <= arguments.constraintValue ) 
+		    || 
+		    ( isNull(arguments.propertyValue) && arguments.constraintValue == 0 )
+		){
+			return true;
+		}
+		
+		return false;
 	}
-
-	public boolean function validate_lte(required any object, required string propertyIdentifier, required string constraintValue) {
+	
+	public boolean function validate_inList(required any object, required string propertyIdentifier, required numeric constraintValue) {
 		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
-		if(!isNull(propertyObject)) {
-			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");
+		
+		if( !isNull(propertyObject) ){
+            return this.validate_inList_real( 
+                    propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#"),
+                    constraintValue = arguments.constraintValue 
+                );
 		}
-		if(!isNull(propertyValue) && propertyValue <= arguments.constraintValue) {
+		
+		return false;
+	}
+	
+	public boolean function validate_inList_real(any propertyValue, required numeric constraintValue ){
+	    
+		if( !isNull(arguments.propertyValue) && listFindNoCase(arguments.constraintValue, arguments.propertyValue) ){
 			return true;
 		}
+
+		return false;
+	}
+	
+	public boolean function validate_lte(required any object, required string propertyIdentifier, required numeric constraintValue) {
+		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
+		
+		if( !isNull(propertyObject) ){
+            return this.validate_lte_real( 
+                    propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#"),
+                    constraintValue = arguments.constraintValue 
+                );
+		}
+		
+		return false;
+	}
+	
+	public boolean function validate_lte_real(any propertyValue, required numeric constraintValue ){
+	    
+		if( !isNull(arguments.propertyValue) && (arguments.propertyValue <= arguments.constraintValue) ){
+			return true;
+		}
+
+		return false;
+	}
+	
+
+	public boolean function validate_lt(required any object, required string propertyIdentifier, required numeric constraintValue) {
+		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
+		
+		if( !isNull(propertyObject) ){
+            return this.validate_lt_real( 
+                    propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#"),
+                    constraintValue = arguments.constraintValue 
+                );
+		}
+		
+		return false;
+	}
+	
+	public boolean function validate_lt_real(any propertyValue, required numeric constraintValue ){
+	    
+		if( !isNull(arguments.propertyValue) && (arguments.propertyValue < arguments.constraintValue) ){
+			return true;
+		}
+
 		return false;
 	}
 
-	public boolean function validate_lt(required any object, required string propertyIdentifier, required string constraintValue) {
+	public boolean function validate_gte(required any object, required string propertyIdentifier, required numeric constraintValue) {
 		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
-		if(!isNull(propertyObject)) {
-			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");
+		
+		if( !isNull(propertyObject) ){
+            return this.validate_gte_real( 
+                    propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#"),
+                    constraintValue = arguments.constraintValue 
+                );
 		}
-		if(!isNull(propertyValue) && propertyValue < arguments.constraintValue) {
+		
+		return false;
+	}
+	
+	public boolean function validate_gte_real(any propertyValue, required numeric constraintValue ){
+	    
+		if( !isNull(arguments.propertyValue) && (arguments.propertyValue >= arguments.constraintValue) ){
 			return true;
 		}
+
 		return false;
 	}
 
-	public boolean function validate_gte(required any object, required string propertyIdentifier, required string constraintValue) {
+	public boolean function validate_gt(required any object, required string propertyIdentifier, required numeric constraintValue) {
 		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
-		if(!isNull(propertyObject)) {
-			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");
+		
+		if( !isNull(propertyObject) ){
+            return this.validate_gt_real( 
+                    propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#"),
+                    constraintValue = arguments.constraintValue 
+                );
 		}
-		if(!isNull(propertyValue) && propertyValue >= arguments.constraintValue) {
+		
+		return false;
+	}
+	
+	public boolean function validate_gt_real(any propertyValue, required numeric constraintValue ){
+	    
+		if( !isNull(arguments.propertyValue) && (arguments.propertyValue > arguments.constraintValue) ){
 			return true;
 		}
+
+		return false;
+	}
+	
+	public boolean function validate_gtNow(required any object, required string propertyIdentifier, required numeric constraintValue) {
+		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
+		
+		if( !isNull(propertyObject) ){
+            return this.validate_gtNow_real( 
+                    propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#"),
+                    constraintValue = arguments.constraintValue 
+                );
+		}
+		
+		return false;
+	}
+	
+	public boolean function validate_gtNow_real(any propertyValue, required numeric constraintValue ){
+	    
+		if(isNull(arguments.propertyValue) || dateCompare(arguments.propertyValue, now()) eq 1) {
+			return true;
+		}
+
+		return false;
+	}
+	
+	public boolean function validate_ltNow(required any object, required string propertyIdentifier, required numeric constraintValue) {
+		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
+		
+		if( !isNull(propertyObject) ){
+            return this.validate_ltNow_real( 
+                    propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#"),
+                    constraintValue = arguments.constraintValue 
+                );
+		}
+		
+		return false;
+	}
+	
+	public boolean function validate_ltNow_real(any propertyValue, required numeric constraintValue ){
+	    
+		if(isNull(arguments.propertyValue) || dateCompare(arguments.propertyValue, now()) eq -1) {
+			return true;
+		}
+
 		return false;
 	}
 
-	public boolean function validate_gt(required any object, required string propertyIdentifier, required string constraintValue) {
-		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
-		if(!isNull(propertyObject)) {
-			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");
-		}
-		if(!isNull(propertyValue) && propertyValue > arguments.constraintValue) {
-			return true;
-		}
-		return false;
-	}
-
-	public boolean function validate_gtNow(required any object, required string propertyIdentifier, required string constraintValue) {
-		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
-		if(!isNull(propertyObject)) {
-			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");
-		}
-		if(isNull(propertyValue) || dateCompare(propertyValue, now()) eq 1) {
-			return true;
-		}
-		return false;
-	}
-
-	public boolean function validate_ltNow(required any object, required string propertyIdentifier, required string constraintValue) {
-		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
-		if(!isNull(propertyObject)) {
-			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");
-		}
-		if(isNull(propertyValue) || dateCompare(propertyValue, now()) eq -1) {
-			return true;
-		}
-		return false;
-	}
 
 	public boolean function validate_eq(required any object, required string propertyIdentifier, required string constraintValue) {
 		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
@@ -593,6 +758,15 @@ component output="false" accessors="true" extends="HibachiService" {
 		return false;
 	}
 
+	
+	
+	// validations only for objects
+	
+		
+	public boolean function validate_method(required any object, required string propertyIdentifier, required string constraintValue) {
+		return arguments.object.invokeMethod(arguments.constraintValue);
+	}
+	
 	public boolean function validate_lteProperty(required any object, required string propertyIdentifier, required string constraintValue) {
 		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
 		var propertyName = listLast(arguments.propertyIdentifier,'.');
@@ -749,12 +923,41 @@ component output="false" accessors="true" extends="HibachiService" {
 		return false;
 	}
 
-	public boolean function validate_inList(required any object, required string propertyIdentifier, required string constraintValue) {
+	public boolean function validate_minCollection(required any object, required string propertyIdentifier, required numeric constraintValue) {
 		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
 		if(!isNull(propertyObject)) {
 			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");
 		}
-		if(!isNull(propertyValue) && listFindNoCase(arguments.constraintValue, propertyValue)) {
+		if(isNull(propertyValue) || (isArray(propertyValue) && arrayLen(propertyValue) >= arguments.constraintValue) || (isStruct(propertyValue) && structCount(propertyValue) >= arguments.constraintValue)) {
+			return true;
+		}
+		return false;
+	}
+
+	public boolean function validate_maxCollection(required any object, required string propertyIdentifier, required numeric constraintValue) {
+		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
+		if(!isNull(propertyObject)) {
+			if(arguments.constraintValue == 0){
+				var propertyCount = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#Count");
+				if(propertyCount==0){
+					return true;
+				}else{
+					return false;
+				}
+			}else{
+				var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");
+			}
+		}
+		if(
+			isNull(propertyValue)
+			|| (
+				isArray(propertyValue)
+				&& arrayLen(propertyValue) <= arguments.constraintValue
+			) || (
+				isStruct(propertyValue)
+				&& structCount(propertyValue) <= arguments.constraintValue
+			)
+		) {
 			return true;
 		}
 		return false;
@@ -782,18 +985,8 @@ component output="false" accessors="true" extends="HibachiService" {
 		return getHibachiDAO().isUniqueProperty(propertyName=listLast(arguments.propertyIdentifier,'.'), entity=propertyObject);
 	}
 
-	public boolean function validate_regex(required any object, required string propertyIdentifier, required string constraintValue) {
-		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
-		if(!isNull(propertyObject)) {
-			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");
-		}
-		if(isNull(propertyValue) || !len(propertyValue) || isValid("regex", propertyValue, arguments.constraintValue)) {
-			return true;
-		}
-		return false;
-	}
 
-
+    //private helpers
 	private boolean function validateAsNumeric(required any object, required string propertyName, string comparePropertyName){
 
 		if(arguments.object.hasProperty(arguments.propertyName) && arguments.object.getPropertyIsNumeric(arguments.propertyName)){
