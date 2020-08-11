@@ -49,37 +49,58 @@ Notes:
 component extends="HibachiDAO" accessors="true" output="false" {
 
 	public function getSkuPricesForSku (required string skuID){
-		return ormExecuteQuery( "SELECT sp FROM SlatwallSkuPrice sp WHERE sp.sku.skuID = :skuID", { skuID=arguments.skuID }, true );
+		return ormExecuteQuery( "SELECT sp FROM SlatwallSkuPrice sp WHERE sp.activeFlag = 1 AND sp.sku.skuID = :skuID AND sp.promotionReward is null", { skuID=arguments.skuID }, true );
 	}
 
 	public function getSkuPricesForSkuByCurrencyCode (required string skuID, required string currencyCode){
-		return ormExecuteQuery( "SELECT sp FROM SlatwallSkuPrice sp WHERE sp.sku.skuID = :skuID AND sp.currencyCode = :currencyCode", { skuID=arguments.skuID, currencyCode=arguments.currencyCode }, true );
+		return ormExecuteQuery( "SELECT sp FROM SlatwallSkuPrice sp WHERE sp.activeFlag = 1 AND sp.sku.skuID = :skuID AND sp.currencyCode = :currencyCode AND sp.promotionReward is null", { skuID=arguments.skuID, currencyCode=arguments.currencyCode }, true );
 	}
+	
+	public function getPromotionRewardSkuPriceForSkuByCurrencyCode( required string skuID, required string promotionRewardID, required string currencyCode, numeric quantity, array priceGroups=getHibachiScope().getAccount().getPriceGroups() ){
 
-	public function getBaseSkuPricesForSku (required string skuID){
-		return ormExecuteQuery( "SELECT sp FROM SlatwallSkuPrice sp WHERE sp.sku.skuID = :skuID AND sp.minQuantity is null AND sp.maxQuantity is null", { skuID=arguments.skuID }, true );
-	}
-
-	public function getBaseSkuPriceForSkuByCurrencyCode (required string skuID, required string currencyCode, priceGroups=getHibachiScope().getAccount().getPriceGroups()){
-		var hql = "SELECT sp FROM SlatwallSkuPrice sp WHERE sp.sku.skuID = :skuID AND sp.minQuantity is null AND sp.maxQuantity is null AND currencyCode = :currencyCode";
+		var hql = "SELECT sp FROM SlatwallSkuPrice sp WHERE sp.sku.skuID = :skuID AND currencyCode = :currencyCode AND sp.promotionReward.promotionRewardID = :promotionRewardID";
+		var params = { 
+			skuID=arguments.skuID, 
+			currencyCode=arguments.currencyCode, 
+			promotionRewardID=arguments.promotionRewardID 
+		};
 		
+		if(structKeyExists(arguments,'quantity')){
+			hql &= ' AND (sp.minQuantity <= :quantity OR sp.minQuantity is null) AND (sp.maxQuantity >= :quantity OR sp.maxQuantity is null)';
+			params['quantity'] = arguments.quantity;
+		}else{
+			hql &= ' AND sp.minQuantity is null AND sp.maxQuantity is null';
+		}
 		if(arraylen(arguments.priceGroups)){
 			var priceGroupIDs = "";
 			for(var priceGroup in arguments.priceGroups){
 				priceGroupIDs = listAppend(priceGroupIDs,priceGroup.getPriceGroupID());
 			}
 			//get the best price
-			hql &= ' AND sp.priceGroup.priceGroupID IN (:priceGroupIDs) ORDER BY sp.price ASC';
-			return ormExecuteQuery( hql, { skuID=arguments.skuID, currencyCode=arguments.currencyCode, priceGroupIDs=priceGroupIDs }, true,{maxresults=1} );
+			hql &= ' AND (sp.priceGroup.priceGroupID IN (:priceGroupIDs) OR sp.priceGroup.priceGroupID IS NULL)';
+			params['priceGroupIDs'] = priceGroupIDs;
 		}else{
 			hql &= ' AND sp.priceGroup is NULL';
-			return ormExecuteQuery( hql, { skuID=arguments.skuID, currencyCode=arguments.currencyCode }, true );
 		}
+		hql &= ' ORDER BY sp.price ASC';
+
+		return ormExecuteQuery( hql, params, true, {maxresults=1});
+
+	}
+
+	public function getBaseSkuPricesForSku (required string skuID){
+		return ormExecuteQuery( "SELECT sp FROM SlatwallSkuPrice sp WHERE sp.activeFlag = 1 AND sp.sku.skuID = :skuID AND sp.minQuantity is null AND sp.maxQuantity is null AND sp.promotionReward is null", { skuID=arguments.skuID }, true );
+	}
+
+	public function getBaseSkuPriceForSkuByCurrencyCode (required string skuID, required string currencyCode){
+		var hql = "SELECT sp FROM SlatwallSkuPrice sp WHERE sp.activeFlag = 1 AND sp.sku.skuID = :skuID AND sp.minQuantity is null AND sp.maxQuantity is null AND currencyCode = :currencyCode AND sp.promotionReward is null AND sp.priceGroup is NULL";
+
+		return ormExecuteQuery( hql, { skuID=arguments.skuID, currencyCode=arguments.currencyCode }, true, { maxresults=1 } );
 		
 	}
 
 	public function getSkuPricesForSkuAndQuantity(required string skuID, required numeric quantity){
-		return  ormExecuteQuery( "SELECT sp FROM SlatwallSkuPrice sp WHERE sp.sku.skuID = :skuID AND sp.minQuantity <= :quantity AND sp.maxQuantity >= :quantity", { skuID=arguments.skuID, quantity=arguments.quantity }, true );
+		return  ormExecuteQuery( "SELECT sp FROM SlatwallSkuPrice sp WHERE sp.activeFlag = 1 AND sp.sku.skuID = :skuID AND sp.minQuantity <= :quantity AND sp.maxQuantity >= :quantity AND sp.promotionReward is null", { skuID=arguments.skuID, quantity=arguments.quantity }, true );
 	}
 
 	public function getSkuPricesForSkuCurrencyCodeAndQuantity(required string skuID, required string currencyCode, required numeric quantity, array priceGroups=getHibachiScope().getAccount().getPriceGroups()){
@@ -94,13 +115,17 @@ component extends="HibachiDAO" accessors="true" output="false" {
 			FROM SlatwallSkuPrice _skuPrice 
 			left join _skuPrice.sku as _sku
 			left join _skuPrice.priceGroup as _priceGroup
-			WHERE _sku.skuID = :skuID 
-			AND _skuPrice.minQuantity <= :quantity 
-			AND _skuPrice.maxQuantity >= :quantity 
+			WHERE _skuPrice.activeFlag = 1
+			AND _sku.skuID = :skuID 
+			AND (_skuPrice.minQuantity <= :quantity OR _skuPrice.minQuantity IS NULL)
+			AND (_skuPrice.maxQuantity >= :quantity  OR _skuPrice.maxQuantity IS NULL)
 			AND _skuPrice.currencyCode = :currencyCode
 			AND (
 				_skuPrice.priceGroup IS NULL
 				#priceGroupString#
+			)
+			AND (
+				_skuPrice.promotionReward IS NULL
 			)
 			GROUP BY _skuPrice.price,_skuPrice.skuPriceID
 			";
@@ -114,21 +139,26 @@ component extends="HibachiDAO" accessors="true" output="false" {
 		if(len(priceGroupString)){
 			var priceGroupIDs = [];
 			for(var priceGroup in arguments.priceGroups){
-				arrayAppend(priceGroupIDs,priceGroup.getPriceGroupID());
+				if(structKeyExists(priceGroup, 'getPriceGroupID')){
+					arrayAppend(priceGroupIDs,priceGroup.getPriceGroupID());
+				} else {
+					arrayAppend(priceGroupIDs,priceGroup['priceGroupID']);
+				}
 			}
 			params.priceGroupIDs= priceGroupIDs;
 		}
+		this.logHibachi('getSkuPrices HQL #hql#',true);
 		return  ormExecuteQuery( hql,
 			params
 		);
 	}
 
 	public function getSkuPricesForSkuAndQuantityRange (required string skuID, required numeric minQuantity, required numeric maxQuantity ){
-		return ormExecuteQuery( "SELECT sp FROM SlatwallSkuPrice sp WHERE sp.sku.skuID = :skuID AND sp.minQuantity = :minQuantity AND sp.maxQuantity = :maxQuantity", { skuID=arguments.skuID, minQuantity=arguments.minQuantity, maxQuantity=arguments.maxQuantity }, true );
+		return ormExecuteQuery( "SELECT sp FROM SlatwallSkuPrice sp WHERE sp.activeFlag = 1 AND sp.sku.skuID = :skuID AND sp.minQuantity = :minQuantity AND sp.maxQuantity = :maxQuantity  AND sp.promotionReward is null", { skuID=arguments.skuID, minQuantity=arguments.minQuantity, maxQuantity=arguments.maxQuantity }, true );
 	}
 
 	public function getSkuPricesForSkuAndQuantityRangeByCurrencyCode (required string skuID, required numeric minQuantity, required numeric maxQuantity, required string currencyCode){
-		return ormExecuteQuery( "SELECT sp FROM SlatwallSkuPrice sp WHERE sp.sku.skuID = :skuID AND sp.minQuantity = :minQuantity AND sp.maxQuantity = :maxQuantity AND sp.currencyCode = :currencyCode", { skuID=arguments.skuID, minQuantity=arguments.minQuantity, maxQuantity=arguments.maxQuantity, currencyCode=arguments.currencyCode }, true );
+		return ormExecuteQuery( "SELECT sp FROM SlatwallSkuPrice sp WHERE sp.activeFlag = 1 AND sp.sku.skuID = :skuID AND sp.minQuantity = :minQuantity AND sp.maxQuantity = :maxQuantity AND sp.currencyCode = :currencyCode AND sp.promotionReward is null", { skuID=arguments.skuID, minQuantity=arguments.minQuantity, maxQuantity=arguments.maxQuantity, currencyCode=arguments.currencyCode }, true );
 	}
 
 }

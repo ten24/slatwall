@@ -1,0 +1,96 @@
+# Rules to correctly serve gzip compressed CSS and JS files.
+# Requires both mod_rewrite and mod_headers to be enabled.
+<IfModule mod_headers.c>
+  # Serve brotli compressed CSS files if they exist and the client accepts gzip.
+  RewriteCond %{HTTP:Accept-encoding} br
+  RewriteCond %{REQUEST_FILENAME}\.br -s
+  RewriteRule ^(.*)\.css $1\.css\.br [QSA]
+
+  # Serve gzip compressed CSS files if they exist and the client accepts gzip.
+  RewriteCond %{HTTP:Accept-encoding} gzip
+  RewriteCond %{REQUEST_FILENAME}\.gz -s
+  RewriteRule ^(.*)\.css $1\.css\.gz [QSA]
+  
+  # Serve brotli compressed JS files if they exist and the client accepts gzip.
+  RewriteCond %{HTTP:Accept-encoding} br
+  RewriteCond %{REQUEST_FILENAME}\.br -s
+  RewriteRule ^(.*)\.html $1\.html\.br [QSA]
+
+  # Serve gzip compressed JS files if they exist and the client accepts gzip.
+  RewriteCond %{HTTP:Accept-encoding} gzip
+  RewriteCond %{REQUEST_FILENAME}\.gz -s
+  RewriteRule ^(.*)\.html $1\.html\.gz [QSA]
+
+  # Serve brotli compressed JS files if they exist and the client accepts gzip.
+  RewriteCond %{HTTP:Accept-encoding} br
+  RewriteCond %{REQUEST_FILENAME}\.br -s
+  RewriteRule ^(.*)\.json $1\.json\.br [QSA]
+
+  # Serve gzip compressed JS files if they exist and the client accepts gzip.
+  RewriteCond %{HTTP:Accept-encoding} gzip
+  RewriteCond %{REQUEST_FILENAME}\.gz -s
+  RewriteRule ^(.*)\.json $1\.json\.gz [QSA]
+  
+  # Serve brotli compressed JS files if they exist and the client accepts gzip.
+  RewriteCond %{HTTP:Accept-encoding} br
+  RewriteCond %{REQUEST_FILENAME}\.br -s
+  RewriteRule ^(.*)\.js $1\.js\.br [QSA]
+
+  # Serve gzip compressed JS files if they exist and the client accepts gzip.
+  RewriteCond %{HTTP:Accept-encoding} gzip
+  RewriteCond %{REQUEST_FILENAME}\.gz -s
+  RewriteRule ^(.*)\.js $1\.js\.gz [QSA]
+  
+
+  # Serve correct content types, and prevent mod_deflate double gzip.
+  RewriteRule \.css\.gz$ - [T=text/css,E=no-gzip:1]
+  RewriteRule \.json\.gz$ - [T=application/json,E=no-gzip:1]
+  RewriteRule \.js\.gz$ - [T=text/javascript,E=no-gzip:1]
+  RewriteRule \.html\.gz$ - [T=text/html,E=no-gzip:1]
+  
+  RewriteRule \.css\.br$ - [T=text/css,E=no-gzip:1]
+  RewriteRule \.json\.br$ - [T=application/json,E=no-gzip:1]
+  RewriteRule \.js\.br$ - [T=text/javascript,E=no-gzip:1]
+  RewriteRule \.html\.br - [T=text/html,E=no-gzip:1]
+  
+  <FilesMatch "(\.json\.gz|\.js\.gz|\.css\.gz|\.html\.gz)$">
+    # Serve correct encoding type.
+    Header set Content-Encoding gzip
+    # Force proxies to cache gzipped & non-gzipped css/js files separately.
+    Header append Vary Accept-Encoding
+  </FilesMatch>
+  
+  <FilesMatch "(\.json\.br|\.js\.br|\.css\.br|\.html\.br)$">
+    # Serve correct encoding type.
+    Header set Content-Encoding br
+    # Force proxies to cache gzipped & non-gzipped css/js files separately.
+    Header append Vary Accept-Encoding
+  </FilesMatch>
+
+  # webpack regenerates the files everytime we build, regardless of whether their-cotent has changed, 
+  # if the content isn't changed the hash will remain same, so we'd what the browsers to cache the files forever
+  <FilesMatch "\.bundle.js\.gz$|\.bundle.js\.br">
+  	Header unset Last-Modified
+	Header unset Etag
+	Header set Cache-Control "max-age=31557600"
+  </FilesMatch>
+
+</IfModule>
+
+
+
+<IfModule mod_deflate.c>
+    #### On-the-fly compression by file extension: #####
+    # This saves more than 1.1 (additional to other compressed files) mb on slatwall home-page, 
+    # the page-load time decreases to 15 sec from 35 sec (slatwall-admin home )
+    # but on-the-fly compression will have significent overhead on cpu-usage, we'd need to do some load-testing 
+    
+    ##### some resources for monitoring and tuning #####
+    # Cpu-usage https://www.webperformance.com/library/reports/moddeflate/ 
+    # Monitoring https://www.tecmint.com/monitor-apache-web-server-load-and-page-statistics/  
+    # Caching https://www.digitalocean.com/community/tutorials/how-to-configure-apache-content-caching-on-ubuntu-14-04
+    <FilesMatch "\.(html?|css|js)$">
+        SetOutputFilter DEFLATE
+        Header set Custom-XXX-header Auto-Compressed
+    </FilesMatch>
+</IfModule>

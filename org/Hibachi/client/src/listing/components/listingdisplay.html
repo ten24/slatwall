@@ -21,7 +21,7 @@
 
     <!-- The s-shrink-view class can be removed to show expanded view -->
     <div class="col-xs-12 s-results-listing">
-        <div class="s-detail-body">
+        <div class="s-detail-body" id={{::swListingDisplay.tableID}}>
             <div class="s-content-header" data-ng-if="swListingDisplay.title">
                 <h2 data-ng-bind="swListingDisplay.title"></h2>
             </div>
@@ -30,6 +30,7 @@
                     data-collection-config="swListingDisplay.collectionConfig"
                     data-show-filters="swListingDisplay.showFilters"
                     data-show-export="swListingDisplay.showExport"
+                    data-show-report="swListingDisplay.showReport"
                     data-show-toggle-search="swListingDisplay.showSearch"
                     data-show-toggle-filters="swListingDisplay.showFilters"
                     data-show-print-options="swListingDisplay.showPrintOptions"
@@ -91,8 +92,8 @@
                         data-paginator="swListingDisplay.paginator">
                 </sw-pagination-bar>
             </div>
-            <div class="table-responsive" sw-loading="swListingDisplay.collectionData">
-
+            <div class="table-responsive">
+                
                 <table class="table table-bordered s-detail-content-table">
                     <thead>
                         <tr>
@@ -141,6 +142,7 @@
                                 </span>
                             </th>
                             <th class="s-detail-hidden-content" ng-if="
+                                swListingDisplay.administrativeCount > 0 ||
                                 swListingDisplay.recordDetailAction.length ||
                                 swListingDisplay.recordDetailActionIdProperty.length ||
                                 swListingDisplay.recordDetailActionIdKey.length ||
@@ -149,6 +151,17 @@
                                 swListingDisplay.recordDeleteAction.length ||
                                 swListingDisplay.recordProcessButtonDisplayFlag.length
                             ">
+                                <div ng-if="swListingDisplay.loading" class="right">
+                                    <style>
+                                        div.centered {
+                                            margin: auto;
+                                            width: 100%;
+                                            display: flex;
+                                            justify-content: center;
+                                        }
+                                    </style>
+                                    <div class="centered"><b><i class="fas fa-spinner fa-pulse"></i></b></div>
+                                </div>
                             </th>
                         </tr>
                     </thead>
@@ -232,13 +245,14 @@
                                     data-record-depth="pageRecord.depth"
                                     data-multiselect-id-paths="swListingDisplay.multiselectIdPaths"
                                     data-expandable-rules="swListingDisplay.expandableRules">
-							    
+
                             	<sw-listing-display-cell
                             		data-column="column"
                             		data-sw-listing-display="swListingDisplay"
                             		data-page-record="pageRecord"
                                     data-cell-view="{{column.cellView}}"
-                                    data-expandable-rules="swListingDisplay.expandableRules">
+                                    data-expandable-rules="swListingDisplay.expandableRules"
+                                    data-currency-code="{{swListingDisplay.currencyCode}}">
                             	</sw-listing-display-cell>
 							</td>
 
@@ -249,12 +263,12 @@
                                     <div ng-transclude="saveAction"></div>
                                 </span>
 
-                                <!-- Detail -->
-                                <span ng-if="swListingDisplay.recordDetailActionIdProperty && swListingDisplay.recordDetailActionIdKey">
+                                 <!-- Detail --> 
+                                <span ng-if="swListingDisplay.recordDetailActionProperty && swListingDisplay.recordDetailActionPropertyIdentifier">
                                     <sw-action-caller
                                             ng-if="swListingDisplay.recordDetailAction && swListingDisplay.recordDetailAction.length"
                                             data-action="{{swListingDisplay.recordDetailAction}}"
-                                            data-query-string="{{'&'+swListingDisplay.recordDetailActionIdProperty+'='+pageRecord[swListingDisplay.recordDetailActionIdKey]+swListingDisplay.recordDetailQueryString}}"
+                                            data-query-string="{{'&'+swListingDisplay.recordDetailActionProperty+'='+pageRecord[swListingDisplay.recordDetailActionPropertyIdentifier]+swListingDisplay.recordDetailQueryString}}"
                                             data-class="btn btn-default btn-xs"
                                             data-icon="eye-open"
                                             data-iconOnly="true"
@@ -265,7 +279,7 @@
                                     </sw-action-caller>
 
                                 </span>
-                                <span ng-if="!swListingDisplay.recordDetailActionIdProperty || !swListingDisplay.recordDetailActionIdKey">
+                                <span ng-if="!swListingDisplay.recordDetailActionProperty || !swListingDisplay.recordDetailActionPropertyIdentifier">
                                     <sw-action-caller
                                             ng-if="swListingDisplay.recordDetailAction && swListingDisplay.recordDetailAction.length"
                                             data-action="{{swListingDisplay.recordDetailAction}}"
@@ -285,11 +299,13 @@
                                 </span>
                                 <!--Edit-->
                                 <sw-action-caller
-                                        ng-if="swListingDisplay.recordEditAction && swListingDisplay.recordEditAction.length"
+                                        ng-if="swListingDisplay.hasRecordEditAction"
                                         data-action="{{swListingDisplay.recordEditAction}}"
-                                        data-query-string="{{'&'+swListingDisplay.exampleEntity.$$getIDName()+'='+pageRecord[swListingDisplay.exampleEntity.$$getIDName()]+swListingDisplay.recordDetailQueryString}}"
+                                        data-event="{{swListingDisplay.recordEditEvent}}"
+                                        data-payload="pageRecord"
+                                        data-query-string="{{::swListingDisplay.makeQueryStringForAction('edit',pageRecord)}}"
                                         data-class="btn btn-default btn-xs"
-                                        data-icon="pencil"
+                                        data-icon="{{swListingDisplay.recordEditIcon}}"
                                         data-iconOnly="true"
                                         data-modal="swListingDisplay.recordEditModal"
                                         data-is-angular-route="swListingDisplay.isAngularRoute"
@@ -302,13 +318,15 @@
 
                                 <!-- Delete -->
                                 <sw-action-caller
-                                        ng-if="swListingDisplay.recordDeleteAction && swListingDisplay.recordDeleteAction.length"
+                                        ng-if="swListingDisplay.hasRecordDeleteAction"
                                         data-action="{{swListingDisplay.recordDeleteAction}}"
-                                        data-query-string="{{'&'+swListingDisplay.exampleEntity.$$getIDName()+'='+pageRecord[swListingDisplay.exampleEntity.$$getIDName()]+swListingDisplay.recordDetailQueryString}}"
+                                        data-event="{{swListingDisplay.recordDeleteEvent}}"
+                                        data-payload="pageRecord"
+                                        data-query-string="{{::swListingDisplay.makeQueryStringForAction('delete',pageRecord)}}"
                                         data-class="btn btn-default btn-xs"
                                         data-icon="trash"
                                         data-iconOnly="true"
-                                        data-confirm="true"
+                                        data-display-confirm="true"
                                         data-is-angular-route="swListingDisplay.isAngularRoute"
                                 >
                                 </sw-action-caller>
@@ -319,9 +337,11 @@
 
                                 <!-- Add -->
                                 <sw-action-caller
-                                        ng-if="swListingDisplay.recordAddAction && swListingDisplay.recordAddAction.length"
+                                        ng-if="swListingDisplay.hasRecordAddAction"
                                         data-action="{{swListingDisplay.recordAddAction}}"
-                                        data-query-string="{{'&'+swListingDisplay.parentPropertyName+'ID='+pageRecord[swListingDisplay.exampleEntity.$$getIDName()]+swListingDisplay.recordAddQueryString}}"
+                                        data-event="{{swListingDisplay.recordAddEvent}}"
+                                        data-payload="pageRecord"
+                                        data-query-string="{{::swListingDisplay.makeQueryStringForAction('add',pageRecord)}}"
                                         data-class="btn btn-default btn-xs"
                                         data-icon="plus"
                                         data-iconOnly="true"
@@ -333,16 +353,22 @@
                                 <span ng-if="swListingDisplay.multiSlot">
                                     <div ng-transclude="addAction"></div>
                                 </span>
-
+                                
+                                <!-- Custom -->
                                 <sw-action-caller
                                         ng-repeat="action in swListingDisplay.actions"
                                         data-action="{{action.action}}"
+                                        data-event="{{action.event}}"
+                                        data-payload="pageRecord"
                                         data-query-string="{{swListingDisplay.replaceStringWithProperties(action.queryString,pageRecord)}}"
                                         data-class="{{action.tdclass}}"
                                         data-icon="{{action.icon}}"
                                         data-iconOnly="{{action.iconOnly}}"
                                         data-confirm="action.confirm"
                                         data-is-angular-route="swListingDisplay.isAngularRoute"
+                                        data-event-listener-id="{{(action.useEventListenerId)? pageRecord.$$hashKey : ''}}"
+                                        data-event-listeners="action.eventListeners"
+                                        data-display="action.display"
                                 >
                                 </sw-action-caller>
                             </td>
@@ -350,33 +376,24 @@
                         </tr>
 
                     </tbody>
-                    <thead ng-show="swListingDisplay.hasNumerical() === false">
+                    <thead ng-if="swListingDisplay.hasNumerical() === false">
                         <tr>
                             <!-- Sortable -->
                             <th data-ng-if="swListingDisplay.sortable && swListingDisplay.edit" class="s-order-table" style="display: table-cell;">&nbsp;</th>
                             <!-- Selectable -->
                             <th data-ng-if-end class="select" data-ng-class="{'disabled':!swListingDisplay.edit}" data-ng-bind="swListingDisplay.selectTitle"></th>
                             <!-- Multiselectable -->
-                            <th data-ng-if-end class="multiselect s-table-checkbox s-detail-hidden-content" data-ng-class="{'multiselect':1===1,'disabled':!swListingDisplay.edit}">
+                            <th data-ng-if-end class="multiselect s-table-checkbox s-detail-hidden-content" data-ng-class="{'multiselect':1===1,'disabled':!swListingDisplay.edit}"></th>
                             
-                            </th>
                             <!-- TODO: CREATE FLAG IN COLUMN TO SET CLASS 's-detail-hidden-content'-->
-
-                            <th class="s-detail-hidden-content">
-                            </th>
+                            <th class="s-detail-hidden-content"></th>
                         </tr>
                     </thead>
-                    <tbody data-ng-if="swListingDisplay.collectionData.pageRecords"
-                           data-listing-id="{{swListingDisplay.tableID}}"
-                           
-                           >
-
-                        <tr 
-                            data-ng-repeat="(pageRecordKey, pageRecord) in [swListingDisplay.collectionData.pageRecords[0]]"
+                    <tbody data-ng-if="swListingDisplay.hasAverageOrTotal() && swListingDisplay.collectionData.pageRecords" data-listing-id="{{swListingDisplay.tableID}}">
+                        <tr data-ng-repeat="(pageRecordKey, pageRecord) in [swListingDisplay.collectionData.pageRecords[0]]"
                             data-ng-show="pageRecord.dataIsVisible !== false"
                             data-ng-class="{{swListingDisplay.getNGClassObjectForPageRecordRow(pageRecord)}}"
-                            ng-if="!swListingDisplay.collectionConfig.hasNonPersistentProperty()"
-                        >
+                            ng-if="!swListingDisplay.collectionConfig.hasNonPersistentProperty()">
 
                             <!-- Sortable -->
                             <td  class="sort" data-ng-if="swListingDisplay.sortable && swListingDisplay.edit" class="s-order-table" style="display: table-cell;">
@@ -384,9 +401,7 @@
                             </td><!-- Need to put the form here -->
 
                             <!--Selectable/Multiselectable-->
-                            <td ng-if="swListingDisplay.selectable || swListingDisplay.multiselectable"
-                            	ng-class="{'s-table-select':swListingDisplay.selectable,'s-table-checkbox':swListingDisplay.multiselectable}"
-                            >
+                            <td ng-if="swListingDisplay.selectable || swListingDisplay.multiselectable" ng-class="{'s-table-select':swListingDisplay.selectable,'s-table-checkbox':swListingDisplay.multiselectable}">
                             </td>
 
                             <!--cell contents -->
@@ -398,7 +413,7 @@
                                     ng-style="{'border': swListingDisplay.collectionData['recordsSum'+swListingDisplay.getPageRecordKey(column.propertyIdentifier)] ? '1' : 'none'}"
                             >
 							    <sw-listing-display-cell
-							        ng-if="swListingDisplay.collectionData['recordsSum'+swListingDisplay.getPageRecordKey(column.propertyIdentifier)]"
+							        ng-if="swListingDisplay.collectionData['recordsSum'+swListingDisplay.getPageRecordKey(column.propertyIdentifier)] && !column.isEditable"
                             		data-column="column"
                             		data-sw-listing-display="swListingDisplay"
                             		data-value="swListingDisplay.collectionData['recordsSum'+swListingDisplay.getPageRecordKey(column.propertyIdentifier)]"
@@ -424,11 +439,15 @@
                             	</sw-listing-display-cell>
 							</td>
 
-                            <td class="admin admin{{swListingDisplay.administrativeCount}} s-detail-hidden-content s-actions" data-ng-show="swListingDisplay.administrativeCount > 0">
-                                <span  ng-show="swListingDisplay.hasNumerical()">
-                                    <div class="btn-group" style="position: static;">
-                                        <button class="btn btn-primary dropdown-toggle btn-primary calcRows" data-toggle="dropdown" aria-expanded="true">Total <span class="caret"></span></button>
-                                            <ul class="dropdown-menu pull-right" id="">
+                            <td class="admin admin{{swListingDisplay.administrativeCount}} s-detail-hidden-content s-actions" data-ng-show="swListingDisplay.administrativeCount > 0 && swListingDisplay.hasAverageOrTotal()">
+                                <span  >
+                                    <div class="btn-group pull-right" style="position: static;">
+                                        <button class="btn btn-primary dropdown-toggle btn-primary calcRows" data-toggle="dropdown" aria-expanded="true">
+                                            <span class="sw-total">Total</span>
+                                            <span class="sw-average" style="display:none" >Average</span>
+                                            <span class="caret"></span>
+                                        </button>
+                                            <ul class="dropdown-menu" id="">
                                                <li><a ng-click="swListingDisplay.showCalculation('average')">Average</a></li>
                                                <li><a ng-click="swListingDisplay.showCalculation('total')">Total</a></li>
                                             </ul>

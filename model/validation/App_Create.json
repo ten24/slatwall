@@ -1,6 +1,6 @@
 {
-	"properties":{
-		"appName":			[{"required":true}],
-		"appCode":			[{"required":true}]
+	"properties": {
+		"appName": [{ "required": true }],
+		"appCode": [{ "required": true }]
 	}
 }

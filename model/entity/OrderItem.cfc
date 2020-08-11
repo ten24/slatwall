@@ -50,18 +50,26 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="currencyCode" ormtype="string" length="3";
 	property name="quantity" hb_populateEnabled="public" ormtype="integer";
 	property name="bundleItemQuantity" hb_populateEnabled="public" ormtype="integer";
+	property name="allocatedOrderDiscountAmount" ormtype="big_decimal" hb_formatType="currency";
 	property name="estimatedDeliveryDateTime" ormtype="timestamp";
 	property name="estimatedFulfillmentDateTime" ormtype="timestamp";
-
-	
+	property name="stockLoss" ormtype="boolean"; //Stock Loss flag for order return items;
+	property name="stockLossReason" ormtype="string"; //Stock Loss reason for Order Return Items;
+	property name="userDefinedPriceFlag" ormtype="boolean" default="0" hint="To flag if the price can be set by user/admin, in that case the price won't get updated to the best available price";
+	property name="rewardSkuFlag" ormtype="boolean" default=0;
+		
 	// Calculated Properties
 	property name="calculatedExtendedPrice" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedExtendedUnitPrice" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedExtendedPriceAfterDiscount" column="calcExtendedPriceAfterDiscount" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedExtendedUnitPriceAfterDiscount" column="calcExtdUnitPriceAfterDiscount" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedExtendedPriceAfterDiscountMinusReturns" column="calcExtdPriceAfterDiscMinusReturns" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedTaxAmount" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedTaxAmountNotRefunded" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedItemTotal" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedDiscountAmount" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedQuantityDeliveredMinusReturns" column="calcQtyDeliveredMinusReturns" ormtype="integer";
+	
 	
 	// Related Object Properties (many-to-one)
 	property name="appliedPriceGroup" cfc="PriceGroup" fieldtype="many-to-one" fkcolumn="appliedPriceGroupID";
@@ -74,7 +82,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="orderReturn" cfc="OrderReturn" fieldtype="many-to-one" fkcolumn="orderReturnID";
 	property name="parentOrderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="parentOrderItemID";
 	property name="productBundleGroup" hb_populateEnabled="public" cfc="ProductBundleGroup" fieldtype="many-to-one" fkcolumn="productBundleGroupID";
-	property name="referencedOrderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="referencedOrderItemID"; // Used For Returns. This is set when this order is a return.
+	property name="referencedOrderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="referencedOrderItemID" hb_cascadeCalculate="true"; // Used For Returns. This is set when this order is a return.
 
 	// Related Object Properties (one-to-many)
 	property name="appliedPromotions" singularname="appliedPromotion" cfc="PromotionApplied" fieldtype="one-to-many" fkcolumn="orderItemID" inverse="true" cascade="all-delete-orphan";
@@ -90,7 +98,8 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="orderItemGiftRecipients" singularname="orderItemGiftRecipient" cfc="OrderItemGiftRecipient" type="array" fieldtype="one-to-many" fkcolumn="orderItemID" cascade="all" inverse="true";
 	property name="fulfillmentBatchItems" singularname="fulfillmentBatchItem" fieldType="one-to-many" type="array" fkColumn="orderItemID" cfc="FulfillmentBatchItem" inverse="true";
 	property name="stockHolds" singularname="stockHold" fieldType="one-to-many" type="array" fkColumn="orderItemID" cfc="StockHold" inverse="true";
-	
+    property name="orderItemSkuBundles" singularname="orderItemSkuBundle" fieldType="one-to-many" type="array" fkColumn="orderItemID" cfc="OrderItemSkuBundle" inverse="true" cascade="all-delete-orphan";
+    
 	// Related Object Properties (many-to-many)
 
 	property name="shippingMethodOptionSplitShipments" singularname="shippingMethodOptionSplitShipment" cfc="ShippingMethodOptionSplitShipment" fieldtype="many-to-many" linktable="SwShipMethodOptSplitShipOrdItm" inversejoincolumn="shipMethodOptSplitShipmentID" fkcolumn="orderItemID";
@@ -114,8 +123,10 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="extendedUnitPrice" persistent="false" hb_formatType="currency";
 	property name="extendedPriceAfterDiscount" persistent="false" hb_formatType="currency";
 	property name="extendedUnitPriceAfterDiscount" persistent="false" hb_formatType="currency";
+	property name="extendedPriceAfterDiscountMinusReturns" persistent="false" hb_formatType="currency";
 	property name="orderStatusCode" persistent="false";
 	property name="quantityDelivered" persistent="false";
+	property name="quantityDeliveredMinusReturns" persistent="false";
 	property name="quantityUndelivered" persistent="false";
 	property name="quantityReceived" persistent="false";
 	property name="quantityUnreceived" persistent="false";
@@ -124,15 +135,19 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="skuPerformCascadeCalculateFlag" persistent="false";
 	property name="stockPerformCascadeCalculateFlag" persistent="false";
 	property name="taxAmount" persistent="false" hb_formatType="currency";
+	property name="taxAmountNotRefunded" persistent="false" hb_formatType="currency";
+	property name="VATAmount" persistent="false" hb_formatType="currency";
+	property name="VATPrice" persistent="false" hb_formatType="currency";
 	property name="taxLiabilityAmount" persistent="false" hb_formatType="currency";
 	property name="itemTotal" persistent="false" hb_formatType="currency";
+	property name="itemTotalAfterOrderDiscounts" persistent="false" hb_formatType="currency";
 	property name="productBundlePrice" persistent="false" hb_formatType="currency";
 	property name="productBundleGroupPrice" persistent="false" hb_formatType="currency";
 	property name="salePrice" type="struct" persistent="false";
 	property name="totalWeight" persistent="false";
 	property name="quantityHasChanged" persistent="false" default="0";
- 
- 	public boolean function getQuantityHasChanged(){
+
+	public boolean function getQuantityHasChanged(){
 		return variables.quantityHasChanged;
 	}
 	
@@ -545,6 +560,31 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	public numeric function getExtendedPriceAfterDiscount(boolean forceCalculationFlag = false) {
 		return getService('HibachiUtilityService').precisionCalculate(getExtendedPrice() - getDiscountAmount(argumentCollection=arguments));
 	}
+	
+	public numeric function getExtendedPriceAfterDiscountMinusReturns(boolean forceCalculationFlag = false) {
+		return getService('HibachiUtilityService').precisionCalculate(getExtendedPrice() - getDiscountAmount(argumentCollection=arguments) - getExtendedPriceOnReturns());
+	}
+	
+	public numeric function getExtendedPriceOnReturns(){
+		var total = 0;
+		var referencingOrderItemSmartList = getService('HibachiService').getOrderItemSmartList();
+		referencingOrderItemSmartList.joinRelatedProperty('SlatwallOrderItem','orderItemType','inner');
+		referencingOrderItemSmartList.joinRelatedProperty('SlatwallOrderItem','order','inner');
+		referencingOrderItemSmartList.joinRelatedProperty('SlatwallOrder','orderStatusType','inner');
+		referencingOrderItemSmartList.addWhereCondition("aslatwalltype.systemCode IN ('oitReturn','oitReplacement')");
+		referencingOrderItemSmartList.addWhereCondition("bslatwalltype.systemCode NOT IN ('ostCanceled','ostNotPlaced')");
+		referencingOrderItemSmartList.addFilter('referencedOrderItem.orderItemID',getOrderItemID());
+		var result = referencingOrderItemSmartList.getRecords();
+		
+		for(var item in result){
+			if(item.getOrderItemType().getSystemCode() == 'oitReturn'){
+				total += item.getExtendedPriceAfterDiscount();
+			}else{
+				total -= item.getExtendedPriceAfterDiscount();
+			}
+		}
+		return total;
+	}
 
 	public numeric function getExtendedUnitPrice() {
 		if(!isNull(getQuantity()) && getQuantity() > 0){
@@ -583,17 +623,73 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	}
 
 	public numeric function getTaxAmount() {
-		if(!structKeyExists(variables,'taxAmount')){
-			var taxAmount = 0;
+		var taxAmount = 0;
+
+		for(var taxApplied in getAppliedTaxes()) {
+			taxAmount = getService('HibachiUtilityService').precisionCalculate(taxAmount + taxApplied.getTaxAmount());
+		}
+
+		return taxAmount;
+	}
+	
+	public numeric function getTaxAmountNotRefunded(){
+		return getService('HibachiUtilityService').precisionCalculate(getTaxAmount() + getTaxAmountOnReferencingItems());
+	}
+	
+	public numeric function getTaxAmountOnReferencingItems(){
+		var taxAmountOnReferencingItems = 0;
+		
+		for(var referencingOrderItem in getReferencingOrderItems()){
+			if(!listFindNoCase('ostNotPlaced,ostCanceled',referencingOrderItem.getOrder().getOrderStatusType().getSystemCode())){
+				if(referencingOrderItem.getOrderItemType().getSystemCode() == 'oitReturn'){
+					taxAmountOnReferencingItems -= referencingOrderItem.getTaxAmount();
+				}else{
+					taxAmountOnReferencingItems += referencingOrderItem.getTaxAmount();
+				}
+			}
+		}
+		return taxAmountOnReferencingItems;
+	}
+	
+	public numeric function getVATAmount() {
+		var VATAmount = 0;
+
+		for(var taxApplied in getAppliedTaxes()) {
+			VATAmount = getService('HibachiUtilityService').precisionCalculate(VATAmount + taxApplied.getVATAmount());
+		}
+
+		return VATAmount;
+	}
+	
+	public numeric function getVATAmountNotRefunded(){
+		return getService('HibachiUtilityService').precisionCalculate(getVATAmount() + getVATAmountOnReferencingItems());
+	}
+	
+	public numeric function getVATAmountOnReferencingItems(){
+		var VATAmountOnReferencingItems = 0;
+		
+		for(var referencingOrderItem in getReferencingOrderItems()){
+			if(!listFindNoCase('ostNotPlaced,ostCanceled',referencingOrderItem.getOrder().getOrderStatusType().getSystemCode())){
+				if(referencingOrderItem.getOrderItemType().getSystemCode() == 'oitReturn'){
+					VATAmountOnReferencingItems -= referencingOrderItem.getVATAmount();
+				}else{
+					VATAmountOnReferencingItems += referencingOrderItem.getVATAmount();
+				}
+			}
+		}
+		return VATAmountOnReferencingItems;
+	}
+	
+	public numeric function getVATPrice() {
+		if(!structKeyExists(variables,'VATPrice')){
+			var VATPrice = 0;
 
 			for(var taxApplied in getAppliedTaxes()) {
-				taxAmount = getService('HibachiUtilityService').precisionCalculate(taxAmount + taxApplied.getTaxAmount());
+				VATPrice = getService('HibachiUtilityService').precisionCalculate(VATPrice + taxApplied.getVATPrice());
 			}
-			variables.taxAmount = taxAmount;
+			variables.VATPrice = VATPrice;
 		}
-		
-
-		return variables.taxAmount;
+		return variables.VATPrice;
 	}
 
 	public numeric function getTaxLiabilityAmount() {
@@ -611,7 +707,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	}
 
 	public void function setQuantity(required numeric quantity){
-		if (structKeyExists(variables, "quantity") && arguments.quantity != variables.quantity){
+		if (structKeyExists(variables, "quantity") && structKeyExists(arguments,"quantity") && arguments.quantity != variables.quantity){
  			variables.quantityHasChanged = true; //a dirty check flag for validation.
  		}		
 		variables.quantity = arguments.quantity;
@@ -659,6 +755,31 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 
 		return quantityDelivered;
 	}
+	
+	public numeric function getQuantityDeliveredMinusReturns(){
+		return getQuantityDelivered() - getQuantityOnReturnOrders();
+	}
+	
+	public numeric function getQuantityOnReturnOrders(){
+		
+		var quantity = 0;
+		
+		var returnOrderItemCollectionList = getService('OrderService').getOrderItemCollectionList();
+		returnOrderItemCollectionList.setDisplayProperties('quantity');
+		returnOrderItemCollectionList.addFilter(propertyIdentifier='orderItemType.systemCode',value='oitReturn');
+		returnOrderItemCollectionList.addFilter(propertyIdentifier='order.orderType.systemCode',value='otReturnOrder,otExchangeOrder',comparisonOperator='IN');
+		returnOrderItemCollectionList.addFilter(propertyIdentifier='order.orderStatusType.systemCode',value='ostCanceled,ostNotPlaced',comparisonOperator='NOT IN');
+		returnOrderItemCollectionList.addFilter(propertyIdentifier='referencedOrderItem.orderItemID',value=getOrderItemID());
+
+		var result = returnOrderItemCollectionList.getRecords();
+		if(!isNull(result) && arrayLen(result)){
+			for(var item in result){
+				quantity += item['quantity'];
+			}
+		}
+		
+		return quantity;
+	}
 
 	public numeric function getQuantityReceived() {
 		var quantityReceived = 0;
@@ -683,6 +804,10 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	public numeric function getItemTotal() {
 		return val(getService('HibachiUtilityService').precisionCalculate(getTaxAmount() + getExtendedPriceAfterDiscount()));
 	}
+	
+	public numeric function getItemTotalAfterOrderDiscounts() {
+		return val(getService('HibachiUtilityService').precisionCalculate(getTaxAmount() + getExtendedPriceAfterAllDiscounts()));
+	}
 
 	public any function getSalePrice() {
 		if(!structKeyExists(variables, "OrderItemSalePrice")) {
@@ -691,33 +816,12 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 
 		return variables.OrderItemSalePrice;
 	}
+	
 
 	// ============  END:  Non-Persistent Property Methods =================
 
 	// ============= START: Bidirectional Helper Methods ===================
-
-	// Applied Price Group (many-to-one)
-	public void function setAppliedPriceGroup(required any appliedPriceGroup) {
-		variables.appliedPriceGroup = arguments.appliedPriceGroup;
-		if(isNew() or !arguments.appliedPriceGroup.hasAppliedOrderItem( this )) {
-			arrayAppend(arguments.appliedPriceGroup.getAppliedOrderItems(), this);
-		}
-	}
-	public void function removeAppliedPriceGroup(any appliedPriceGroup) {
-		if(!structKeyExists(arguments, "appliedPriceGroup")) {
-			if(!structKeyExists(variables, "appliedPriceGroup")){
-				return;
-			}
-			arguments.appliedPriceGroup = variables.appliedPriceGroup;
-		}
-		var index = arrayFind(arguments.appliedPriceGroup.getAppliedOrderItems(), this);
-		if(index > 0) {
-			arrayDeleteAt(arguments.appliedPriceGroup.getAppliedOrderItems(), index);
-			this.setPrice(this.getSkuPrice());
-		}
-		structDelete(variables, "appliedPriceGroup");
-	}
-
+	
 	// Order (many-to-one)
 	public void function setOrder(required any order) {
 		variables.order = arguments.order;
@@ -1081,5 +1185,6 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 
 	}
 
-	// ===================  END:  ORM Event Hooks  =========================
+	// ===================  END:  ORM Event Hooks  =========================	
+	
 }

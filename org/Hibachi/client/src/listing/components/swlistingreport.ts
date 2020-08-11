@@ -107,14 +107,12 @@ class SWListingReportController {
                 serializedJSONData['collectionName'] = collectionName;
             }
             
-            this.$hibachi.saveEntity(
-                'Collection',
-                this.collectionId || "",
+            this.$hibachi.savePersonalCollection(
                 {
+                    'entityID': this.collectionId,
                     'serializedJSONData':angular.toJson(serializedJSONData),
                     'propertyIdentifiersList':'collectionID,collectionName,collectionObject,collectionConfig'
-                },
-                'save'  
+                }  
             ).then((data)=>{
                 if(this.collectionId){
                     
@@ -567,7 +565,8 @@ class SWListingReportController {
 
 class SWListingReport  implements ng.IDirective{
 
-    public templateUrl;
+    public template= require('./listingreport.html');
+
     public restrict = 'EA';
     public scope = {};
     public bindToController =  {
@@ -578,27 +577,12 @@ class SWListingReport  implements ng.IDirective{
     public controller = SWListingReportController;
     public controllerAs = 'swListingReport';
     public require={swListingDisplay:"?^swListingDisplay"};
+    
     //@ngInject
-    constructor(
-        public scopeService,
-        public collectionPartialsPath, 
-        public hibachiPathBuilder
-    ){
-        this.templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.collectionPartialsPath) + "listingreport.html";
-    }
+    constructor(public scopeService){}
 
-    public static Factory(){
-        var directive = (
-            scopeService,
-            listingPartialPath,
-            hibachiPathBuilder
-        )=> new SWListingReport(
-            scopeService,
-            listingPartialPath,
-            hibachiPathBuilder
-        );
-        directive.$inject = [ 'scopeService', 'listingPartialPath', 'hibachiPathBuilder'];
-        return directive;
+     public static Factory(){
+        return /** @ngInject */ (scopeService)=> new this(scopeService)
     }
     
     public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{

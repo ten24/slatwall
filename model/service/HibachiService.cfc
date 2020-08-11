@@ -164,4 +164,19 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 		return getEntityObject( arguments.entityName ).getFilterProperties();
 	}
 	
+	
+	//used by the rest api to return default property values
+	public any function getDefaultPropertyIdentifiersListByEntityName(required string entityName, string includesList, string excludesList){
+		// First Check the application cache
+		var cacheKey = 'getDefaultPropertyIdentifiersListByEntityName#hash(arguments.entityName&arguments.includesList&arguments.excludesList,'md5')#';
+		
+		if(!getService('hibachiCacheService').hasCachedValue(cacheKey)) {
+			var pidList = getEntityObject( arguments.entityName ).getDefaultPropertyIdentifiersList(argumentsCollection = arguments);
+			getService('hibachiCacheService').setCachedValue(cacheKey, pidList);
+		}
+
+		return getService('hibachiCacheService').getCachedValue(cacheKey);
+	}
+		
+	
 }

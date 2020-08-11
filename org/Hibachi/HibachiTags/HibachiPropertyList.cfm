@@ -7,9 +7,9 @@
 	<cfoutput>
 		<div class="<cfif len(attributes.divClass)>#attributes.divClass#<cfelse>col-md-12</cfif>">
 			<cfif attributes.edit>
-				<div class="s-property form-horizontal">
+				<div class="form-horizontal">
 			<cfelse>
-				<div class="s-property-info form-horizontal">
+				<div class="form-horizontal">
 			</cfif>
 	</cfoutput>
 <cfelse>

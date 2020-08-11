@@ -48,10 +48,12 @@ Notes:
 */
 
 
-component accessors="true" output="false" displayname="SlatwallImporter" 
-implements="Slatwall.integrationServices.ImporterInterface" 
-extends="Slatwall.integrationServices.BaseIntegrationType" {
+component accessors="true" output="false" displayname="SlatwallImporter" implements="Slatwall.integrationServices.ImporterInterface" extends="Slatwall.integrationServices.BaseIntegrationType" {
 
 	property name="slatwallImporterService";
+	
+	public any function import(required string enittyName){
+	    
+	}
 
 }

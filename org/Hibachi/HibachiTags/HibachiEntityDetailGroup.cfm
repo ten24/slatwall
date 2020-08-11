@@ -6,8 +6,6 @@
 <cfparam name="attributes.tabLocation" type="string" default="left" />
 <cfparam name="attributes.createOrModalFlag" type="boolean" default="false" />
 
-
-
 <cfif (isObject(attributes.object) && attributes.object.isNew())|| (structKeyExists(request.context, "modal") and request.context.modal)>
 	<cfset attributes.createOrModalFlag = true />
 </cfif>
@@ -87,8 +85,19 @@
 				<cfloop array="#thistag.tabs#" index="tab">
 					<cfset iteration++ />
 					<cfset tabScope = "hibachiEntityDetailGroup#rereplace(createUUID(),'-','','all')##iteration#"/>
-					<div class="j-panel panel panel-default" ng-init="#tabScope#.active=#tab.open#" ng-click="#tabScope#.active=true" >
-						<a data-toggle="collapse"  href="##collapse#iteration#" <cfif !tab.open and !tab.open and structKeyExists(tab,'lazyLoad') and tab.lazyLoad and fileExists(expandPath(request.context.fw.parseViewOrLayoutPath(tab.view, 'view')))> onclick='getTabHTMLForTabGroup(this,{tabid:"#tab.tabid#",view:"#tab.view#"})'</cfif>>
+					
+					<!--- Creating New ID necause tabid can be template driven --->
+					<cfif CompareNoCase(tab.view, "") NEQ 0 >
+						<cfset local.panelID = ListGetAt(tab.view, 2 , '/') & "_" & ListLast(tab.view, '/') >
+					<cfelse> <!--- use tabid if view not available, in case of custom attributes --->
+						<cfset local.panelID = tab.tabid />
+						<cfif isObject(tab.object) >
+							<cfset local.panelID = lcase(tab.object.getClassName()) & "tabs_" & local.panelID />
+						</cfif>
+					</cfif>
+					
+					<div class="j-panel panel panel-default" id="tabdetails_#local.panelID#" ng-init="#tabScope#.active=#tab.open#" ng-click="#tabScope#.active=true" >
+						<a data-toggle="collapse"  href="##collapse#iteration#" <cfif !tab.open and !tab.open and structKeyExists(tab,'lazyLoad') and tab.lazyLoad and fileExists(expandPath(request.context.fw.parseViewOrLayoutPath(tab.view, 'view')))> onclick='failSafeGetTabHTMLForTabGroup(this,{tabid:"#tab.tabid#",view:"#tab.view#"})'</cfif>>
 							<div class="panel-heading">
 								<h4 class="panel-title">
 									<span>#tab.text#</span><cfif len(tab.count) and tab.count gt 0> <span class="badge">#tab.count#</span></cfif>
@@ -123,7 +132,8 @@
 					<cfset emailTemplateCollectionList.addFilter('emailTemplateObject', "#attributes.object.getClassName()#") />
 					<cfif emailTemplateCollectionList.getRecordsCount() gt 0 >
 						<!---emails tab --->
-						<div class="j-panel panel panel-default">
+						<cfset local.panelID = "tabdetails_" & lcase(attributes.object.getClassName()) & "tabs_email" />
+						<div class="j-panel panel panel-default" id="#local.panelID#">
 							<a data-toggle="collapse" href="##tabEmail">
 								<div class="panel-heading">
 									<h4 class="panel-title">
@@ -164,7 +174,9 @@
 				
 				<cfif isObject(attributes.object)>
 					<!---system tab --->
-					<div class="j-panel panel panel-default">
+					<cfset local.panelID = "tabdetails_" & lcase(attributes.object.getClassName()) & "tabs_system" />
+					
+					<div class="j-panel panel panel-default" id="#local.panelID#">
 						<a data-toggle="collapse" href="##tabSystem">
 							<div class="panel-heading">
 								<h4 class="panel-title">
@@ -191,19 +203,18 @@
 												<cfif attributes.object.hasProperty('createdDateTime')>
 													<hb:HibachiPropertyDisplay object="#attributes.object#" property="createdDateTime" />
 												</cfif>
-												<cfif attributes.object.hasProperty('createdByAccount')>
-													<hb:HibachiPropertyDisplay object="#attributes.object#" property="createdByAccount" />
+												<cfif attributes.object.hasProperty('createdByAccount') AND not isNull(attributes.object.getCreatedByAccount())>
+													<hb:HibachiPropertyDisplay ignoreHTMLEditFormat="true" title="#attributes.hibachiScope.rbkey('entity.define.createdByAccount')#" object="#attributes.object.getCreatedByAccount()#" property="fullNameWithPermissionGroups" />
 												</cfif>
 												<cfif attributes.object.hasProperty('modifiedDateTime')>
 													<hb:HibachiPropertyDisplay object="#attributes.object#" property="modifiedDateTime" />
 												</cfif>
-												<cfif attributes.object.hasProperty('modifiedByAccount')>
-													<hb:HibachiPropertyDisplay object="#attributes.object#" property="modifiedByAccount" />
+												<cfif attributes.object.hasProperty('modifiedByAccount') AND not isNull(attributes.object.getModifiedByAccount())>
+													<hb:HibachiPropertyDisplay ignoreHTMLEditFormat="true" title="#attributes.hibachiScope.rbkey('entity.define.modifiedByAccount')#" object="#attributes.object.getModifiedByAccount()#" property="fullNameWithPermissionGroups" />
 												</cfif>
 											</hb:HibachiPropertyList>
 
 											<hb:HibachiTimeline object="#attributes.object#" />
-
 									</div>
 								</cfoutput>
 							</content><!--- s-body-box --->

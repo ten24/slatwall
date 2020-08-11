@@ -53,7 +53,7 @@ class SWProductBundleGroupController {
 	public refreshProductBundleGroup;
     public productBundleGroups; 
 
-    //@ngInject
+    // @ngInject
 	constructor(private $log:ng.ILogService,
                 private $timeout:ng.ITimeoutService,
 				private collectionConfigService,
@@ -215,7 +215,7 @@ class SWProductBundleGroup implements ng.IDirective{
 	public controller=SWProductBundleGroupController;
 	public controllerAs="swProductBundleGroup";
 
-    //@ngInject
+    // @ngInject
 	constructor(
                 private productBundlePartialsPath,
 			    slatwallPathBuilder){

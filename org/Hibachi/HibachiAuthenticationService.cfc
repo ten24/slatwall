@@ -6,7 +6,8 @@ component output="false" accessors="true" extends="HibachiService" {
 	
 	public void function init(){
 		//on init load all possible record level perms
-		loadPermissionRecordRestrictionsCache();
+		variables.permissionRecordRestrictionMap = {};
+		//loadPermissionRecordRestrictionsCache();
 	}
 	
 	public void function loadPermissionRecordRestrictionsCache(boolean refresh=false){
@@ -23,7 +24,7 @@ component output="false" accessors="true" extends="HibachiService" {
 	}
 	
 	public boolean function hasPermissionRecordRestriction(required string entityName){
-		return structKeyExists(variables.permissionRecordRestrictionMap,entityName);
+		return structKeyExists(variables.permissionRecordRestrictionMap,arguments.entityName);
 	}
 	
 	// ============================ PUBLIC AUTHENTICATION METHODS =================================
@@ -48,9 +49,10 @@ component output="false" accessors="true" extends="HibachiService" {
 			timeout = false
 		};
 		
-		if(!(!isNull(arguments.account.getJwtToken()) && arguments.account.getJwtToken().verify())){
+		
+		if(!isNull(arguments.account.getJwtToken()) && !arguments.account.getJwtToken().verify()){
 			authDetails.invalidToken = true;
-		}
+		}	
 		
 		// Check if the user is a super admin 
 		if(getHibachiScope().getLoggedInFlag() && arguments.account.getSuperUserFlag() ) {
@@ -361,7 +363,6 @@ component output="false" accessors="true" extends="HibachiService" {
 	// ================================ PUBLIC META INFO ==========================================
 	
 	public struct function getEntityPermissionDetails() {
-		
 		// First check to see if this is cached
 		if(!getService('HibachiCacheService').hasCachedValue('entityPermissionDetails')){
 			
@@ -435,6 +436,7 @@ component output="false" accessors="true" extends="HibachiService" {
 			getService('HibachiCacheService').setCachedValue('entityPermissionDetails',entityPermissions);
 			getService('HibachiJsonService').createPermissionJson('entity',entityPermissions);
 			
+			
 		}
 		return getService('HibachiCacheService').getCachedValue('entityPermissionDetails');
 	}
@@ -457,7 +459,7 @@ component output="false" accessors="true" extends="HibachiService" {
 				
 			} // End Subsytem Loop
 			getService('HibachiCacheService').setCachedValue('actionPermissionDetails',allPermissions);
-			getService('HibachiJsonService').createPermissionJson('action',allPermissions);
+			
 		}
 		return getService('HibachiCacheService').getCachedValue('actionPermissionDetails');
 	}

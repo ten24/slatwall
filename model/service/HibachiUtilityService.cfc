@@ -53,11 +53,15 @@ Notes:
 	<cfscript>
 		
 		public any function formatValue_currency( required string value, struct formatDetails={} ) {
-			if(structKeyExists(arguments.formatDetails, "currencyCode")) {
+			if(structKeyExists(arguments.formatDetails, 'currencyCode')) {
 				var currencySymbol = getCurrencySymbolByCurrencyCode(arguments.formatDetails.currencyCode);
 				if(!isNull(currencySymbol)){
 					return currencySymbol & LSNumberFormat(arguments.value, ',.__');
 				}
+			}
+
+			if(structKeyExists(arguments.formatDetails, 'locale')){
+				return LSCurrencyFormat(arguments.value, "local", arguments.formatDetails.locale);
 			}
 
 			// Otherwsie use the global currencyLocal
@@ -73,7 +77,7 @@ Notes:
 					return variables[cacheKey];
 				}
 			}else{
-				variables[cacheKey];
+				return variables[cacheKey];
 			}
 		}
 
@@ -618,14 +622,158 @@ Notes:
        }
     }
 
-    public string function replaceStringTemplate(required string template, required any object, boolean formatValues=false, boolean removeMissingKeys=false) {
+	public string function replaceStringTemplate(required string template, required any object, boolean formatValues=false, boolean removeMissingKeys=false, string templateContextPathList) {
 		if(
 			getHibachiScope().onSlatwallCMS()
 		){
 			arguments.removeMissingKeys = true;
 		}
-		return super.replaceStringTemplate(argumentCollection=arguments);
+
+		var returnString = super.replaceStringTemplate(argumentCollection=arguments);
+
+		return replaceFunctionTemplate(returnString);
 	}
+	
+	private array function getFunctionTemplateKeys(required string template){
+		return reMatchNoCase("\!{[^{}]+}",arguments.template);
+	}
+	
+	private array function getStructTemplateKeys(required string template){
+		return reMatchNoCase("\%{[^{(}]+}",arguments.template);
+	}
+	
+	public string function replaceStringTemplateFromStruct(required string template,required struct data){
+		var templateKeys = getStructTemplateKeys(arguments.template);
+		var replacementArray = [];
+		var returnString = arguments.template;
+		
+		for(var i=1; i<=arrayLen(templateKeys); i++) {
+			var replaceDetails = {};
+			replaceDetails.key = templateKeys[i];
+			replaceDetails.value = templateKeys[i];
+
+			var valueKey = replace(replace(templateKeys[i], "%{", ""),"}","");
+			
+			if(structKeyExists(data,valueKey)){
+				replaceDetails.value = data[valueKey];
+				arrayAppend(replacementArray,replaceDetails);
+			}
+			
+		}
+		for(var i=1; i<=arrayLen(replacementArray); i++) {
+			returnString = replace(returnString, replacementArray[i].key, replacementArray[i].value, "all");
+		}
+		if(
+			arguments.template != returnString
+			&& arraylen(getFunctionTemplateKeys(returnString))
+		){
+			returnString = replaceFunctionTemplate(returnString);
+		}
+		return returnString;
+	}
+	
+	public string function replaceFunctionTemplate(required string template){
+		var templateKeys = getFunctionTemplateKeys(arguments.template);
+		var replacementArray = [];
+		var returnString = arguments.template;
+
+		for(var i=1; i<=arrayLen(templateKeys); i++) {
+			var replaceDetails = {};
+			replaceDetails.key = templateKeys[i];
+			replaceDetails.value = templateKeys[i];
+
+			var valueKey = replace(replace(templateKeys[i], "!{", ""),"}","");
+			var method = reMatchNoCase("^[^\(\)]+",valueKey);
+			var methodArgumentsStringArray = reMatchNoCase("\(.+\)",valueKey);
+			
+			if(arrayLen(methodArgumentsStringArray) && arrayLen(method)){
+				method = trim(method[1]);
+				var methodArgumentsString = methodArgumentsStringArray[1];
+				methodArgumentsString = replace(replace(methodArgumentsString,"(",""),")","");
+				var methodArguments = listToArray(methodArgumentsString,',');
+
+				if(arrayLen(methodArguments)){
+					switch(method){
+						case 'subtract':
+							replaceDetails.value = this.subtractItems(methodArguments);
+							break;
+						case 'add':
+							replaceDetails.value = this.addItems(methodArguments);
+							break;
+						case 'multiply':
+							replaceDetails.value = this.multiplyItems(methodArguments);
+							break;
+						case 'divide':
+							replaceDetails.value = this.divideItems(methodArguments);
+							break;
+						case 'dateAdd':
+							if( arrayLen( methodArguments ) >= 3 ){
+								var datePart = trim(methodArguments[1]);
+								var number = methodArguments[2];
+								var date = methodArguments[3];
+								for(var i = 4; i <= arrayLen( methodArguments ); i++){
+									date &= ','&methodArguments[ i ];
+								}
+								if(date == 'now()'){
+									date = now();
+								}
+								replaceDetails.value = dateFormat( dateAdd( datePart, number, date ), 'medium' );
+							}
+							break;
+					}
+				}
+				arrayAppend(replacementArray,replaceDetails);
+			}
+			
+		}
+		for(var i=1; i<=arrayLen(replacementArray); i++) {
+			returnString = replace(returnString, replacementArray[i].key, replacementArray[i].value, "all");
+		}
+		if(
+			arguments.template != returnString
+			&& arraylen(getFunctionTemplateKeys(returnString))
+		){
+			returnString = replaceFunctionTemplate(returnString);
+		}
+		return returnString;
+	}
+	
+	public numeric function addItems(required array items){
+		var total = items[1];
+		for(var i = 2; i <= arrayLen(items); i++){
+			total += items[i];
+		}
+		return total;
+	}
+	
+	public numeric function subtractItems(required array items){
+		var total = items[1];
+		for(var i = 2; i <= arrayLen(items); i++){
+			total -= items[i];
+		}
+		return total;
+	}
+	
+	public numeric function multiplyItems(required array items){
+		var total = items[1];
+		for(var i = 2; i <= arrayLen(items); i++){
+			total *= items[i];
+		}
+		return total;
+	}
+	
+	public any function divideItems(required array items){
+		var total = items[1];
+		for(var i = 2; i <= arrayLen(items); i++){
+			if(items[i] == 0){
+				total = 'Infinity';
+				break;
+			}
+			total /= items[i];
+		}
+		return total;
+	}
+	
 	</cfscript>
 
 </cfcomponent>

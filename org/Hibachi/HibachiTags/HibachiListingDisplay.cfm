@@ -10,33 +10,50 @@
 
 	<!--- Optional --->
 	<cfparam name="attributes.title" type="string" default="" />
+	<cfparam name="attributes.listingID" type="string" default="" />
 
 	<!--- Collection Params. If collectionList is specified the items below configure it --->
 	<cfparam name="attributes.collectionList" type="any" default=""/>
 	<cfparam name="attributes.collectionConfigJson" type="any" default=""/>
 	<cfparam name="attributes.collectionConfigFieldName" type="any" default=""/>
+	<cfparam name="attributes.listingColumns" type="any" default="" />
 	<cfparam name="attributes.showSimpleListingControls" type="boolean" default="true"/>
 	<cfparam name="attributes.showExport" type="boolean" default="true"/>
 	<cfparam name="attributes.showSearch" type="boolean" default="true"/>
 	<cfparam name="attributes.showReport" type="boolean" default="false"/>
 	<cfparam name="attributes.reportAction" type="string" default="" />
+	<cfparam name="attributes.refreshEvent" type="string" default="" />
 	<cfparam name="attributes.enableAveragesAndSums" type="boolean" default="true"/> <!--- Setting to false will disable averages and sums in listing; which is the default behaviour, see Collection::disableAveragesAndSumsFlag --->
 
 	<!--- Admin Actions --->
+	<cfparam name="attributes.recordActions" type="string" default="" />
+	<cfparam name="attributes.recordEditEvent" type="string" default="" />
 	<cfparam name="attributes.recordEditAction" type="string" default="" />
 	<cfparam name="attributes.recordEditActionProperty"type="string" default="" />
+	<cfparam name="attributes.recordEditActionPropertyIdentifier"type="string" default="" />
 	<cfparam name="attributes.recordEditQueryString" type="string" default="" />
 	<cfparam name="attributes.recordEditModal" type="boolean" default="false" />
 	<cfparam name="attributes.recordEditDisabled" type="boolean" default="false" />
+	<cfparam name="attributes.recordEditIcon" type="string" default="" />
+	<cfparam name="attributes.recordDetailActionIdProperty" type="string" default="" />
+	<cfparam name="attributes.recordDetailActionIdKey" type="string" default="" />
+	<cfparam name="attributes.recordDetailEvent" type="string" default="" />
 	<cfparam name="attributes.recordDetailAction" type="string" default="" />
 	<cfparam name="attributes.recordDetailActionProperty"type="string" default="" />
+	<cfparam name="attributes.recordDetailActionPropertyIdentifier"type="string" default="" />
 	<cfparam name="attributes.recordDetailQueryString" type="string" default="" />
 	<cfparam name="attributes.recordDetailModal" type="boolean" default="false" />
+	
+	<cfparam name="attributes.recordDeleteEvent" type="string" default="" />
 	<cfparam name="attributes.recordDeleteAction" type="string" default="" />
 	<cfparam name="attributes.recordDeleteActionProperty"type="string" default="" />
+	<cfparam name="attributes.recordDeleteActionPropertyIdentifier"type="string" default="" />
 	<cfparam name="attributes.recordDeleteQueryString" type="string" default="" />
+	
+	<cfparam name="attributes.recordProcessEvent" type="string" default="" />
 	<cfparam name="attributes.recordProcessAction" type="string" default="" />
 	<cfparam name="attributes.recordProcessActionProperty"type="string" default="" />
+	<cfparam name="attributes.recordProcessActionPropertyIdentifier"type="string" default="" />
 	<cfparam name="attributes.recordProcessQueryString" type="string" default="" />
 	<cfparam name="attributes.recordProcessContext" type="string" default="" />
 	<cfparam name="attributes.recordProcessEntity" type="any" default="" />
@@ -69,6 +86,7 @@
 
 	<!--- Settings --->
 	<cfparam name="attributes.showheader" type="boolean" default="true" /> <!--- Setting to false will hide the table header with search and filters --->
+	<cfparam name="attributes.hideUnfilteredResults" type="boolean" default="false" /> <!--- If true, collection will only show records when filtered or searched --->
 
 	<!--- ThisTag Variables used just inside --->
 	<cfparam name="thistag.columns" type="array" default="#arrayNew(1)#" />
@@ -89,6 +107,7 @@
 	<cfparam name="attributes.usingPersonalCollection" type="string" default="false" />
 	<cfparam name="attributes.personalCollectionIdentifier" type="string" default="" />
 	<cfparam name="attributes.personalCollectionKey" type="string" default="" />
+	<cfparam name="attributes.currencyCode" type="string" default="" />
 <cfelse>
 	<!--- if we have a collection list then use angular and exit --->
 	<cfif isObject(attributes.collectionList)>
@@ -99,6 +118,7 @@
 			<cfif len(attributes.collectionConfigJson)>
 				<cfset JSON = attributes.collectionConfigJson />
 			<cfelse> 	
+				<cfset attributes.collectionList.getCollectionConfigStruct()["listingSearchConfig"] = attributes.collectionList.getCollectionObjectListingSearchConfig() /> <!--- setting listing-search-config --->
 				<cfset attributes.collectionList.getCollectionConfigStruct()["enableAveragesAndSums"] = attributes.enableAveragesAndSums />
 				<cfset JSON = serializeJson(attributes.collectionList.getCollectionConfigStruct())/>
 			</cfif> 
@@ -128,6 +148,7 @@
 				data-title="'#attributes.title#'"
 				data-base-entity-name="{{#scopeVariableID#.baseEntityName}}"
 			    data-collection-config="#scopeVariableID#"
+				
 			    <cfif !isNull(attributes.collectionList.getCollectionID())>
 			    	data-collection-id="#isNull(attributes.collectionList.getCollectionID())?'':attributes.collectionList.getCollectionID()#"
 				</cfif>
@@ -136,11 +157,52 @@
 				</cfif>
 			    data-collection="#scopeVariableID#"
 			    data-edit="#attributes.edit#"
-			    data-name="#scopeVariableID#"
+			    <cfif len(attributes.listingID)>
+					data-name="#attributes.listingID#"
+				<cfelse> 
+					data-name="#scopeVariableID#"
+				</cfif> 	
+					
 				data-has-search="true"
+				data-actions="#attributes.recordActions#"
+				record-edit-event="#attributes.recordEditEvent#"
 				record-edit-action="#attributes.recordEditAction#"
+				
+				<cfif !isNull(attributes.recordDetailActionIdProperty)>
+					record-detail-action-property="#attributes.recordDetailActionIdProperty#"
+				</cfif>
+				
+				<cfif !isNull(attributes.recordDetailActionIdKey)>
+					record-detail-action-property-identifier="#attributes.recordDetailActionIdKey#"
+				</cfif>
+				<cfif len(attributes.recordEditIcon)>
+					record-edit-icon="#attributes.recordEditIcon#"
+				</cfif> 
+				record-detail-event="#attributes.recordDetailEvent#"
 				record-detail-action="#attributes.recordDetailAction#"
 				record-detail-modal="#attributes.recordDetailModal#"
+				record-detail-query-string="#attributes.recordDetailQueryString#"
+				record-detail-action-property="#attributes.recordDetailActionProperty#"
+				record-detail-action-id-key="#attributes.recordDetailActionPropertyIdentifier#"
+
+				record-edit-event="#attributes.recordEditEvent#"
+				record-edit-action="#attributes.recordEditAction#"
+				record-edit-modal="#attributes.recordEditModal#"
+				record-edit-query-string="#attributes.recordEditQueryString#"
+				record-edit-action-property="#attributes.recordEditActionProperty#"
+				record-edit-action-id-key="#attributes.recordEditActionPropertyIdentifier#"
+				
+				record-delete-event="#attributes.recordDeleteEvent#"
+				record-delete-action="#attributes.recordDeleteAction#"
+				record-delete-query-string="#attributes.recordDeleteQueryString#"
+				record-delete-action-property="#attributes.recordDeleteActionProperty#"
+				record-delete-action-id-key="#attributes.recordDeleteActionPropertyIdentifier#"
+				
+				<!---TODO: process--->
+				
+				record-add-event="#attributes.recordProcessEvent#"
+				record-add-action="#attributes.recordProcessAction#"
+			
 				report-action="#attributes.reportAction#"
 				show-report="#attributes.showReport#"
 				data-is-angular-route="false"
@@ -150,9 +212,15 @@
 				data-show-search="#attributes.showSearch#"
 				data-has-action-bar="false"
 				data-expandable="#attributes.expandable#"
-	 			data-using-personal-collection="#attributes.usingPersonalCollection#"
+				data-using-personal-collection="#attributes.usingPersonalCollection#"
+				<cfif len(attributes.listingColumns)>
+					data-listing-columns="#attributes.listingColumns#"
+				</cfif> 
 	 			<cfif len(attributes.personalCollectionIdentifier)>
 					data-personal-collection-identifier="#attributes.personalCollectionIdentifier#"
+ 				</cfif>
+ 				<cfif len(attributes.refreshEvent)>
+ 					data-refresh-event="#attributes.refreshEvent#" 
  				</cfif>
 			    <cfif len(attributes.multiselectFieldName)>
 				  data-multiselectable="true"
@@ -163,6 +231,12 @@
 			    <cfif structKeyExists(entityMetaData,'HB_CHILDPROPERTYNAME')>
 			    	child-property-name="#entityMetaData.HB_CHILDPROPERTYNAME#"
 			    </cfif>
+			    <cfif attributes.hideUnfilteredResults >
+			    	hide-unfiltered-results="true"
+			    </cfif>
+			    <cfif !isNull(attributes.currencyCode) && len(attributes.currencyCode)>
+			    	data-currency-code="#attributes.currencyCode#"
+			    </cfif>
 			>
 			</sw-listing-display>
 			<cfif structKeyExists(attributes,'collectionConfigFieldName')>
@@ -171,8 +245,8 @@
 		</cfoutput>
 
 	<cfelse>
-		<cfsilent>
 
+		<cfsilent>
 
 			<cfif !isObject(attributes.smartList) && !len(attributes.smartlist)>
 				<cfthrow message="The required parameter attributes.smartList was not provided."/>
@@ -184,11 +258,6 @@
 
 			<!--- Setup the example entity --->
 			<cfset thistag.exampleEntity = entityNew(attributes.smartList.getBaseEntityName()) />
-
-			<!--- Setup export action --->
-			<cfif not len(attributes.exportAction)>
-				<cfset attributes.exportAction = "admin:entity.export#attributes.smartList.getBaseEntityName()#" />
-			</cfif>
 
 			<!--- Setup the default table class --->
 			<cfset attributes.tableclass = listPrepend(attributes.tableclass, 'table table-bordered table-hover', ' ') />
@@ -230,8 +299,9 @@
 				<cfset attributes.tableclass = listAppend(attributes.tableclass, 'table-expandable', ' ') />
 
 				<cfset attributes.smartList.joinRelatedProperty( attributes.smartList.getBaseEntityName() , attributes.parentPropertyName, "LEFT") />
-				<cfset attributes.smartList.addFilter("#attributes.parentPropertyName#.#thistag.exampleEntity.getPrimaryIDPropertyName()#", "NULL") />
-
+				<cfif !len(attributes.smartList.getFilters("#attributes.parentPropertyName#.#thistag.exampleEntity.getPrimaryIDPropertyName()#")) >
+					<cfset attributes.smartList.addFilter("#attributes.parentPropertyName#.#thistag.exampleEntity.getPrimaryIDPropertyName()#", "NULL") />
+				</cfif>
 				<cfset thistag.allpropertyidentifiers = listAppend(thistag.allpropertyidentifiers, "#thisTag.exampleEntity.getPrimaryIDPropertyName()#Path") />
 
 				<cfset attributes.tableattributes = listAppend(attributes.tableattributes, 'data-parentidproperty="#attributes.parentPropertyName#.#thistag.exampleEntity.getPrimaryIDPropertyName()#"', " ") />
@@ -414,7 +484,7 @@
 			<cfif attributes.administativeCount>
 			</cfif>
 		</cfsilent>
-
+		
 		<cfoutput>
 
 			<div class="s-table-header-nav s-listing-head-margin">
@@ -433,11 +503,12 @@
 						<li class="s-table-action">
 							<div class="btn-group navbar-left dropdown">
 
-								<button type="button" class="btn btn-no-style dropdown-toggle"><i class="fa fa-cog"></i></button>
-
-								<ul class="dropdown-menu pull-right" role="menu">
-									<hb:HibachiActionCaller action="#attributes.exportAction#" text="#attributes.hibachiScope.rbKey('define.exportlist')#" type="list">
-								</ul>
+								<cfif len(attributes.exportAction)>
+									<button type="button" class="btn btn-no-style dropdown-toggle"><i class="fa fa-cog"></i></button>
+									<ul class="dropdown-menu pull-right" role="menu">
+										<hb:HibachiActionCaller action="#attributes.exportAction#" text="#attributes.hibachiScope.rbKey('define.exportlist')#" type="list">
+									</ul>
+								</cfif>
 								<!--- Listing: Button Groups --->
 								<cfif structKeyExists(thistag, "buttonGroup") && arrayLen(thistag.buttonGroup)>
 									<cfloop array="#thisTag.buttonGroup#" index="buttonGroup">
