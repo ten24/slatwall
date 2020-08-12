@@ -228,6 +228,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalAllowedOutsideRedirectSites = {fieldtype="text"},
 			globalAPIDirtyRead = {fieldtype="yesno", defaultValue=1},
 			globalAPIPageShowLimit = {fieldtype="text", defaultValue=250},
+			globalAPIExportLimit = {fieldtype="text", defaultValue=100000},
 			globalAssetsImageBaseURL = {fieldType="text", defaultValue=''},
 			globalAssetsImageFolderPath = {fieldType="text", defaultValue=getApplicationValue('applicationRootMappingPath') & '/custom/assets/images'},
 			globalAssetsFileFolderPath = {fieldType="text", defaultValue=getApplicationValue('applicationRootMappingPath') & '/custom/assets/files'},

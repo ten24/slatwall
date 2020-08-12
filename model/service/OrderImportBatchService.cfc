@@ -214,6 +214,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			if(!isNull(origin)){
 				order.setOrderOrigin(origin);
 			}
+			
+			if(!isNull(orderImportBatchItem.getOriginalOrder())){
+				order.setReferencedOrder(orderImportBatchItem.getOriginalOrder());
+			}
 			//Save Order
 			getOrderService().saveOrder(order);
 			orderImportBatchItem.setOrder(order);

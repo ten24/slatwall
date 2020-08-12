@@ -32,9 +32,9 @@
 		<cfargument name="step" default = "50" /> 
 		
 		<cfquery name="local.coordinatesByZipcode" maxrows="1">
-			SELECT LAT, LNG FROM zipusa WHERE ZIP_CODE = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Left(arguments.zipcode,5)#" />
+			SELECT LAT, LNG FROM zipusa WHERE ZIP_CODE = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Left(arguments.zipcode,9)#" />
 		</cfquery>
-
+		
 		<cfif local.coordinatesByZipcode.recordCount EQ 0>
 			<cfreturn '' />
 		</cfif>
@@ -86,6 +86,7 @@
 				<cfif local.marketPartnerByDistance.recordCount GT 0>
 					<cfreturn local.marketPartnerByDistance.accountID />
 				</cfif>
+				
 			</cfif>
 		</cfloop>
 
