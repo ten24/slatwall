@@ -48,8 +48,10 @@ Notes:
 */
 component extends="Slatwall.model.service.HibachiService" persistent="false" accessors="true" output="false"{
 	
-	property name="hibachiEntityQueueService";
-
+	property name = "hibachiUtilityService";
+	property name = "hibachiValidationService";
+	property name = "hibachiEntityQueueService";
+	
 
 	//////////////////////////////////////////  Importer functions for [ Account ]  ////////////////////////////////////////////
 
@@ -81,7 +83,11 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	public any function importAccount( required struct data, required any batch ){
 	    
 	    //TODO validate the incoming data 
-	    this.validateAccountData(arguments.data);
+	    var validation = this.validateAccountData(arguments.data);
+	    
+	    if( !validation.isValid){
+	        // if we're collecting errors we can directly send the item to failures (EntityQueue hisory)
+	    }
 	    
 	    //TODO format the data using mappings
 	    var formatterData = this.transformAccountData(arguments.data);
@@ -90,8 +96,8 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    // TODO insert into EntityQueue
 	}
 	
-	public boolean function validateAccountData( required struct data ){
-	    return this.validateData( arguments.data, this.getAccountMapping() );
+	public struct function validateAccountData( required struct data, boolean collectErrors = false ){
+	    return this.validateData( arguments.data, this.getAccountMapping(), arguments.collectErrors );
 	}
 	
 	public struct function transformAccountData( required struct data ){
@@ -109,22 +115,82 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	
 	//////////////////////////////////////// Utility functions//////////////////////////////////////////////
 
-	public boolean function validateData( required struct data, required struct mapping ){
+	public struct function validateData( required struct data, required struct mapping, boolean collectErrors = false ){
 	    
-	    for( var property in arguments.mapping.properties ){
-	        var propertyMeta = arguments.mapping.properties[property];
+	    var validationService = this.getHibachiValidationService();
+	    var utilityService = this.getHibachiUtilityService();
+	   
+	    var entityName = arguments.mapping.entity;
+	    var isValid = true;
+	    var errors = {};
+	    
+	    for( var propertyName in arguments.mapping.properties ){
+	        
+	        var propertyMeta = arguments.mapping.properties[propertyName];
 	        
 	        if( structKeyExists(propertyMeta, 'validations') ){
-	            var validations = propertyMeta.validations;
 	            
+	            var constraints = propertyMeta.validations;
+	            
+	            for( var constraintType in constraints ){
+	                
+	                //only a subset of validations is available for direct validation(non-object);
+	                var validationFunctionName = 'validate_#constraintType#_real';
+	                if( structKeyExists(validationService, validationFunctionName) ){
+	                    throw("invalid validation constraint type : #constraintType#");
+	                }
+	                
+	                var constraintValue = constraints.constraintType;
+	                
+	               isValid = validationService.invokeMethod( validationFunctionName, { 
+	                   propertyValue    :  data[propertyName] ?: javaCast('null',0);
+	                   constraintValue  : constraintValue; 
+	               });
+	               
+	               if( !isValid ){
+	                   
+	                    // if we're instructed to collecth the errors.
+                        if( arguments.collectErrors ){
+                            
+	                        if( constraintType eq "dataType" ){
+                    	        var errorMessage = getHibachiScope().rbKey('validate.import.#entityName#.#propertyName#.#constraintType#.#constraintValue#');
+                    		} 
+                    		else {
+                    			var errorMessage = getHibachiScope().rbKey('validate.import.#entityName#.#propertyName#.#constraintType#');
+                    		}
+                    		
+                    		errorMessage = utilityService.replaceStringTemplate( errorMessage, {
+                    		    "className":        entityName,
+                    		    "propertyName":     propertyName,
+                    		    "constraintValue":  constraintValue 
+                    		});
+                    		
+                    		
+                    		// collecting the error
+                    		if( !structKeyExists(errors, propertyName) ){
+                    		    errors[propertyName] = {};
+                    		}
+                    		ArrayApend( errors[entityName] ,  errorMessage );  
+                    		
+                    		
+                    		//resetting the flag to continue validating;
+	                        isValid = true;
+	                    } 
+	                    else { 
+	                        break;
+	                    }
+	                }
+	                
+	            }
+	        }
+	        
+	        if( !isValid && !arguments.collectErrors){
+	            break;
 	        }
 	    }
 	    
-	    //TODO add support for basic validation using mapping // required, data-type etc...
-	    
-	    return true;
+	    return { isValid: isValid, errors: errors };
 	}
-	
 	
 	public struct function transformData( required struct data, required struct mapping ){
 	    var transformedData = {};
