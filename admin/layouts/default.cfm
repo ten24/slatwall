@@ -231,7 +231,7 @@ Notes:
 										<hb:HibachiActionCaller action="#local.intsys['subsystem']#:main.default" text="#local.intsys['subsystem']#" type="list">
 										<cfset local.integration = $.slatwall.getService('integrationService').getIntegrationByIntegrationPackage(local.intsys['subsystem']) />
 										<cfset local.integrationCFC = $.slatwall.getService('integrationService').getIntegrationCFC(local.integration) />
-										<cfif structKeyExists(local.integrationCFC,'getMenuItems')>
+										<cfif NOT isNull(local.integrationCFC) AND structKeyExists(local.integrationCFC,'getMenuItems')>
 											<cfloop array="#local.integrationCFC.getMenuItems()#" index="local.menuitem">
 												<hb:HibachiActionCaller action="#local.menuitem['action']#" text="#local.menuitem['text']#" type="list">
 											</cfloop>
