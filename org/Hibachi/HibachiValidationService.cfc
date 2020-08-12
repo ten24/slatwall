@@ -349,7 +349,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		} 
 	}
 	
-	public boolean function validate_regex(required any object, required string propertyIdentifier, required numeric constraintValue) {
+	public boolean function validate_regex(required any object, required string propertyIdentifier, required string constraintValue) {
 		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
 		
 		if( !isNull(propertyObject) ){
@@ -362,7 +362,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		return false;
 	}
 	
-	public boolean function validate_regex_real(any propertyValue, required numeric constraintValue ){
+	public boolean function validate_regex_real(any propertyValue, required string constraintValue ){
 
 		if( isNull(arguments.propertyValue) || !len(arguments.propertyValue) || isValid("regex", arguments.propertyValue, arguments.constraintValue) ){
 			return true;
