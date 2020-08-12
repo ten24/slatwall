@@ -239,7 +239,7 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 		queryService.addParam(name='now',value='#now()#',CFSQLTYPE="CF_SQL_TIMESTAMP");
 		queryService.addParam(name='retryDelay',value='#DateAdd("s",retryDelay,now())#',CFSQLTYPE="CF_SQL_TIMESTAMP");
 		queryService.addParam(name='errorMessage',value='#errorMessage#',CFSQLTYPE="CF_SQL_STRING");
-		var sql = "UPDATE SwEntityQueue SET modifiedDateTime = :now, tryCount = tryCount + 1, mostRecentError=:errorMessage, serverInstanceKey = NULL, retryDelay=:retryDelay WHERE entityQueueID = :entityQueueID";
+		var sql = "UPDATE SwEntityQueue SET modifiedDateTime = :now, tryCount = tryCount + 1, mostRecentError=:errorMessage, serverInstanceKey = NULL, entityQueueDateTime=:retryDelay WHERE entityQueueID = :entityQueueID";
 
 		queryService.execute(sql=sql);
 	}
