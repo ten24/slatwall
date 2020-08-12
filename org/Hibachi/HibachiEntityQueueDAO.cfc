@@ -247,7 +247,7 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 	
 	public void function archiveEntityQueue(required string entityQueueID, string mostRecentError = '' ){
 	
-		var columns = 'baseObject, baseID, processMethod, entityQueueType, entityQueueDateTime, entityQueueData, integrationID, createdDateTime, modifiedDateTime, entityQueueDateTime, createdByAccountID, modifiedByAccountID, tryCount';
+		var columns = 'baseObject, baseID, processMethod, entityQueueType, entityQueueDateTime, entityQueueData, integrationID, createdDateTime, modifiedDateTime, createdByAccountID, modifiedByAccountID, tryCount';
 		
 		var insertQuery = new query();
 		var sql = "INSERT INTO SwEntityQueueFailure (entityQueueFailureID, remoteID, #columns#, mostRecentError) ";
