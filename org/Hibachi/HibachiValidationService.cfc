@@ -571,7 +571,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		return false;
 	}
 	
-	public boolean function validate_inList(required any object, required string propertyIdentifier, required numeric constraintValue) {
+	public boolean function validate_inList(required any object, required string propertyIdentifier, required string constraintValue) {
 		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
 		
 		if( !isNull(propertyObject) ){
@@ -584,7 +584,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		return false;
 	}
 	
-	public boolean function validate_inList_real(any propertyValue, required numeric constraintValue ){
+	public boolean function validate_inList_real(any propertyValue, required string constraintValue ){
 	    
 		if( !isNull(arguments.propertyValue) && listFindNoCase(arguments.constraintValue, arguments.propertyValue) ){
 			return true;
@@ -606,7 +606,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		return false;
 	}
 	
-	public boolean function validate_notInList_real(any propertyValue, required numeric constraintValue ){
+	public boolean function validate_notInList_real(any propertyValue, required string constraintValue ){
 	   
 	    if( !isNull(arguments.propertyValue) && !listFindNoCase(arguments.constraintValue, arguments.propertyValue) ){
 			return true;
@@ -615,7 +615,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		return false;
 	}
 	
-	public boolean function validate_lte(required any object, required string propertyIdentifier, required numeric constraintValue){
+	public boolean function validate_lte(required any object, required string propertyIdentifier, required any constraintValue){
 		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
 		
 		if( !isNull(propertyObject) ){
@@ -628,7 +628,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		return false;
 	}
 	
-	public boolean function validate_lte_real(any propertyValue, required numeric constraintValue ){
+	public boolean function validate_lte_real(any propertyValue, required any constraintValue ){
 	    
 		if( !isNull(arguments.propertyValue) && (arguments.propertyValue <= arguments.constraintValue) ){
 			return true;
@@ -638,7 +638,7 @@ component output="false" accessors="true" extends="HibachiService" {
 	}
 	
 
-	public boolean function validate_lt(required any object, required string propertyIdentifier, required numeric constraintValue) {
+	public boolean function validate_lt(required any object, required string propertyIdentifier, required any constraintValue) {
 		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
 		
 		if( !isNull(propertyObject) ){
@@ -651,7 +651,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		return false;
 	}
 	
-	public boolean function validate_lt_real(any propertyValue, required numeric constraintValue ){
+	public boolean function validate_lt_real(any propertyValue, required any constraintValue ){
 	    
 		if( !isNull(arguments.propertyValue) && (arguments.propertyValue < arguments.constraintValue) ){
 			return true;
@@ -660,7 +660,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		return false;
 	}
 
-	public boolean function validate_gte(required any object, required string propertyIdentifier, required numeric constraintValue) {
+	public boolean function validate_gte(required any object, required string propertyIdentifier, required any constraintValue) {
 		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
 		
 		if( !isNull(propertyObject) ){
@@ -673,7 +673,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		return false;
 	}
 	
-	public boolean function validate_gte_real(any propertyValue, required numeric constraintValue ){
+	public boolean function validate_gte_real(any propertyValue, required any constraintValue ){
 	    
 		if( !isNull(arguments.propertyValue) && (arguments.propertyValue >= arguments.constraintValue) ){
 			return true;
@@ -682,7 +682,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		return false;
 	}
 
-	public boolean function validate_gt(required any object, required string propertyIdentifier, required numeric constraintValue) {
+	public boolean function validate_gt(required any object, required string propertyIdentifier, required any constraintValue) {
 		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
 		
 		if( !isNull(propertyObject) ){
@@ -695,7 +695,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		return false;
 	}
 	
-	public boolean function validate_gt_real(any propertyValue, required numeric constraintValue ){
+	public boolean function validate_gt_real(any propertyValue, required any constraintValue ){
 	    
 		if( !isNull(arguments.propertyValue) && (arguments.propertyValue > arguments.constraintValue) ){
 			return true;
@@ -704,20 +704,19 @@ component output="false" accessors="true" extends="HibachiService" {
 		return false;
 	}
 	
-	public boolean function validate_gtNow(required any object, required string propertyIdentifier, required numeric constraintValue) {
+	public boolean function validate_gtNow(required any object, required string propertyIdentifier ){
 		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
 		
 		if( !isNull(propertyObject) ){
             return this.validate_gtNow_real( 
-                    propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#"),
-                    constraintValue = arguments.constraintValue 
+                    propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#")
                 );
 		}
 		
 		return false;
 	}
 	
-	public boolean function validate_gtNow_real(any propertyValue, required numeric constraintValue ){
+	public boolean function validate_gtNow_real( any propertyValue ){
 	    
 		if(isNull(arguments.propertyValue) || dateCompare(arguments.propertyValue, now()) eq 1) {
 			return true;
@@ -726,20 +725,19 @@ component output="false" accessors="true" extends="HibachiService" {
 		return false;
 	}
 	
-	public boolean function validate_ltNow(required any object, required string propertyIdentifier, required numeric constraintValue) {
+	public boolean function validate_ltNow (required any object, required string propertyIdentifier ){
 		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
 		
 		if( !isNull(propertyObject) ){
             return this.validate_ltNow_real( 
-                    propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#"),
-                    constraintValue = arguments.constraintValue 
+                    propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#")
                 );
 		}
 		
 		return false;
 	}
 	
-	public boolean function validate_ltNow_real(any propertyValue, required numeric constraintValue ){
+	public boolean function validate_ltNow_real(any propertyValue ){
 	    
 		if(isNull(arguments.propertyValue) || dateCompare(arguments.propertyValue, now()) eq -1) {
 			return true;
