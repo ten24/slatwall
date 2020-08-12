@@ -52,16 +52,15 @@ component entityname="SlatwallBatch" table="SwBatch" persistent="true" accessors
 	property name="batchID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="baseObject" ormType="string" index="EI_BASEOBJECT";
 	property name="baseID" ormType="string" index="EI_BASEID";
-	property name="batchType" ormType="string" hb_formatType="rbKey"; // dependent on the integration
 	property name="batchDescription" ormtype="string";
 	property name="batchCalculatedDescription" ormtype="string";
 	// Related Object Properties (many-to-one)
 	
 	// Related Object Properties (one-to-many)
-	property name="batchItems" singularname="batchItem" fieldtype="one-to-many" type="array" fkcolumn="batchID" cfc="EntityQueue";
+	property name="batchEntityQueueItems" singularname="batchEntityQueueItem" fieldtype="one-to-many" type="array" fkcolumn="batchID" cfc="EntityQueue";
 
 	// Related Object Properties (many-to-many)
-
+	property name="batchType" cfc="Type" fieldtype="many-to-one" fkcolumn="batchTypeID";
 	// Remote Properties
 
 	// Audit Properties

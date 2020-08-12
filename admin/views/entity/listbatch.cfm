@@ -52,14 +52,12 @@ Notes:
 
 <cfparam name="rc.batchSmartList" type="any" />
 
-<cfset rc.batchSmartList.addOrder('createdDateTime|DESC') />
-
 <hb:HibachiEntityActionBar type="listing" object="#rc.batchSmartList#" showCreate="false">
 </hb:HibachiEntityActionBar>
 
-<cfset auditCollectionList = getHibachiScope().getService('hibachiAuditService').getBatchCollectionList()>
+<cfset batchCollectionList = getHibachiScope().getService('HibachiEntityQueueService').getBatchCollectionList()>
 	<cfset displayProperties = "createdDateTime,batchType,baseObject,baseID"/>
-	<cfset auditCollectionList.setDisplayProperties(
+	<cfset batchCollectionList.setDisplayProperties(
 	displayProperties,
 	{
 		isVisible=true,
@@ -67,7 +65,7 @@ Notes:
 		isDeletable=true
 	})/>
 	
-	<cfset auditCollectionList.addDisplayProperty(
+	<cfset batchCollectionList.addDisplayProperty(
 	displayProperty='batchID',
 	columnConfig={
 		isVisible=false,
@@ -76,10 +74,9 @@ Notes:
 	})/>
 	
 		<hb:HibachiListingDisplay 
-		collectionList="#auditCollectionList#"
+		collectionList="#batchCollectionList#"
 		usingPersonalCollection="true"
 		personalCollectionKey='#request.context.entityactiondetails.itemname#'
-		recordEditAction="admin:entity.edit#lcase(auditCollectionList.getCollectionObject())#"
-		recordDetailAction="admin:entity.detail#lcase(auditCollectionList.getCollectionObject())#"
+		recordDetailAction="admin:entity.detailbatch"
 	>
 	</hb:HibachiListingDisplay>
