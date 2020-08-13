@@ -3732,7 +3732,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// First Re-Calculate the 'amounts' base on price groups
 
 			getPriceGroupService().updateOrderAmountsWithPriceGroups( arguments.order );
-
+			loghibachi('updating order amounts called for promos!')
 			// Then Re-Calculate the 'amounts' based on permotions ext.  This is done second so that the order already has priceGroup specific info added
 			getPromotionService().updateOrderAmountsWithPromotions( arguments.order );
 			
@@ -5548,6 +5548,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	public any function deleteOrderItem( required any orderItem, updateOrderAmounts = true ) {
+	
 		getHibachiEventService().announceEvent("beforeOrderItemDelete", arguments);
 
 		// Check delete validation
@@ -5555,7 +5556,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			// Remove the primary fields so that we can delete this entity
 			var order = arguments.orderItem.getOrder();
-			order.setDropSkuRemovedFlag(true);
+		
+			if(arguments.orderItem.getRewardSkuFlag()){
+					logHibachi('======setting dropSkuRemovedFlag to true!======');
+				order.setDropSkuRemovedFlag(true);	
+			}
+			
 			removeOrderItemAndChildItemRelationshipsAndDelete( arguments.orderItem );
 
 			// Recalculate the order amounts

@@ -1029,7 +1029,15 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 	public boolean function isOrderFullyDelivered(){
 		return getQuantityUndelivered() == 0 && getQuantityUnreceived() == 0;
 	}
-
+	
+	public boolean function hasDropSku(){
+		 var orderItemCollectionList = getOrderService().getOrderItemCollectionList();
+		 orderItemCollectionList.addFilter('order.orderID', this.getOrderID());
+		 orderItemCollectionList.addFilter('rewardSkuFlag', 1);
+		 orderItemCollectionList.setPageRecordsShow(1);
+		 return arrayLen(orderItemCollectionList.getRecords());
+	}
+	
 	public numeric function getPaymentAmountAuthorizedTotal() {
 		var totalPaymentsAuthorized = 0;
 
@@ -1685,7 +1693,7 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 		arguments.orderItem.setOrder( this );
 		structDelete(variables,'rootOrderItems');
 	}
-	public void function removeOrderItem(required any orderItem) {
+	public void function removeOrderItem(required any orderItem, boolean dropSkuCheck = false) {
 		arguments.orderItem.removeOrder( this );
 		structDelete(variables,'rootOrderItems');
 	}
