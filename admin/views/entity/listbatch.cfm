@@ -1,4 +1,4 @@
-/*
+<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,15 +45,35 @@
 
 Notes:
 
-*/
-component extends="Slatwall.integrationServices.BaseImporterService" persistent="false" accessors="true" output="false"{
+--->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
+<cfparam name="rc.batchSmartList" type="any" />
+    
+    <hb:HibachiEntityActionBar type="listing" object="#rc.batchSmartList#" showCreate="false">
+    </hb:HibachiEntityActionBar>
+
+    <cfset local.batchCollectionList = getHibachiScope().getService('HibachiService').getBatchCollectionList()/>
+
+	<cfset local.batchCollectionList.setDisplayProperties( 
+	"batchDescription,baseObject,batchType.systemCode|batchType,calculatedBatchEntityQueueItemsCount,calculatedBatchEntityQueueFailureItemsCount,createdDateTime", {
+		isVisible=true,
+		isDeletable=true,
+		isSearchable=true
+	})/>
 	
-	property name="integrationServices";
+	<cfset local.batchCollectionList.addDisplayProperty( displayProperty='batchID', columnConfig={
+		isVisible=false,
+		isDeletable=false,
+		isSearchable=false
+	})/>
 	
-	public any function getIntegration(){
-	    if( !structKeyExists( variables, 'integration') ){
-	        variables.integration = this.getIntegrationByIntegrationPackage('slatwallimporter');
-	    }
-        return variables.integration;
-    }
-}
+	<hb:HibachiListingDisplay 
+		collectionList="#local.batchCollectionList#"
+		usingPersonalCollection="true"
+		personalCollectionKey='#request.context.entityactiondetails.itemname#'
+		recordDetailAction="admin:entity.detailbatch"
+	>
+	</hb:HibachiListingDisplay>

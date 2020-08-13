@@ -48,25 +48,34 @@ Notes:
 */
 component extends="Slatwall.model.service.HibachiService" persistent="false" accessors="true" output="false"{
 	
-	property name="hibachiEntityQueueService";
+	property name = "hibachiUtilityService";
+	property name = "hibachiValidationService";
+	property name = "hibachiEntityQueueService";
+	
+	
+
+    public any function getIntegration(){
+        throw("override this function in your integrtion service to return the ")
+    }
+
 
 
 	//////////////////////////////////////////  Importer functions for [ Account ]  ////////////////////////////////////////////
 
 	public struct function getAccountMapping(){
 	    
-	    if( !structKeyExists(variables, 'accountMapping') ){
+	    if( !structKeyExists(variables, 'accountMappingStruct') ){
 
 	        //Read from file/DB whatever 
 	        var mapingJson = FileRead( ExpandPath('/Slatwall') & '/config/importer/mappings/Account.json');
 	        
-	        variables.accountMapping = serializeJson(mapingJson);
+	        variables.accountMappingStruct = deSerializeJson(mapingJson);
 	    }
 	    
-        return variables.accountMapping;
+        return variables.accountMappingStruct;
 	}
 	
-	public any function importAccounts(required struct queryOrArrayOfStruct ){
+	public any function importAccounts( required struct queryOrArrayOfStruct ){
 	    
 	    //Create a new Batch
 	    var newBatch = this.getHibachiEntityQueueService().newBatch();
@@ -80,22 +89,42 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	
 	public any function importAccount( required struct data, required any batch ){
 	    
-	    //TODO validate the incoming data 
-	    this.validateAccountData(arguments.data);
+	    var validation = this.validateAccountData( data = arguments.data, collectErrors=true );
 	    
-	    //TODO format the data using mappings
-	    var formatterData = this.transformAccountData(arguments.data);
+	    if( !validation.isValid ){
+	        // if we're collecting errors we can directly send the item to failures (EntityQueue hisory)
+	        this.getEntityQueueDAO().insertEntityQueueFailure(
+        	    baseID = '', 
+        	    baseObject = "Account", 
+        	    processMethod = 'importAccount',
+        	    entityQueueData = arguments.data, 
+        	    entityQueueType = '', // Question ???
+        	    integrationID = this.getIntegration().getIntegrationID(), 
+        	    batchID = arguments.batch.getBatchID(),
+        	    mostRecentError= Serializejson( validation.errors ),
+        	    tryCount = 1 
+        	);
+	    }
 	    
+	    var transformedData = this.transformAccountData(arguments.data);
 	    
-	    // TODO insert into EntityQueue
+	    this.getEntityQueueDAO().insertEntityQueue(
+    	    baseID = '', 
+    	    baseObject = 'Account', 
+    	    processMethod ='processAccount_import || processAccount_create', // Question: which process method?? 
+    	    entityQueueData = transformedData, 
+    	    integrationID = this.getIntegration().getIntegrationID(), // Q ^^^ 
+        	batchID = arguments.batch.getBatchID()
+    	);
+    	
 	}
 	
-	public boolean function validateAccountData( required struct data ){
-	    return this.validateData( arguments.data, this.getAccountMapping() );
+	public struct function validateAccountData( required struct data, struct mapping = this.getAccountMapping(), boolean collectErrors = false ){
+	    return this.validateData( argumentCollection = arguments);
 	}
 	
-	public struct function transformAccountData( required struct data ){
-	    return this.transformAccountData( arguments.data, this.getAccountMapping() );
+	public struct function transformAccountData( required struct data, struct mapping = this.getAccountMapping() ){
+	    return this.transformData( argumentCollection = arguments);
 	}
 	
 	
@@ -109,20 +138,84 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	
 	//////////////////////////////////////// Utility functions//////////////////////////////////////////////
 
-	public boolean function validateData( required struct data, required struct mapping ){
+	public struct function validateData( required struct data, required struct mapping, boolean collectErrors = false ){
 	    
-	    for( var property in arguments.mapping.properties ){
-	        var propertyMeta = arguments.mapping.properties[property];
+	    var validationService = this.getHibachiValidationService();
+	    var utilityService = this.getHibachiUtilityService();
+	   
+	    var entityName = arguments.mapping.entity;
+	    var isValid = true;
+	    var errors = {};
+	    
+	    for( var propertyName in arguments.mapping.properties ){
+	        
+	        var propertyMeta = arguments.mapping.properties[propertyName];
 	        
 	        if( structKeyExists(propertyMeta, 'validations') ){
-	            var validations = propertyMeta.validations;
 	            
+	            var constraints = propertyMeta.validations;
+	            
+	            for( var constraintType in constraints ){
+	                
+	                //only a subset of validations is available for direct validation(non-object);
+	                var validationFunctionName = 'validate_#constraintType#_real';
+	                if( !structKeyExists(validationService, validationFunctionName) ){
+	                    throw("invalid validation constraint type : #constraintType#");
+	                }
+	                
+	                var constraintValue = constraints[constraintType];
+	                
+	               isValid = validationService.invokeMethod( validationFunctionName, { 
+	                   propertyValue    :  data[propertyName] ?: javaCast('null',0),
+	                   constraintValue  :  constraintValue,
+	               });
+	               
+	               if( !isValid ){
+	                   
+	                    // if we're instructed to collecth the errors.
+                        if( arguments.collectErrors ){
+                            
+	                        if( constraintType eq "dataType" ){
+                    	        var errorMessage = getHibachiScope().rbKey('validate.import.#entityName#.#propertyName#.#constraintType#.#constraintValue#');
+                    		} 
+                    		else {
+                    			var errorMessage = getHibachiScope().rbKey('validate.import.#entityName#.#propertyName#.#constraintType#');
+                    		}
+                    		
+                    		errorMessage = utilityService.replaceStringTemplate( errorMessage, {
+                    		    "className":        entityName,
+                    		    "propertyName":     propertyName,
+                    		    "constraintValue":  constraintValue 
+                    		});
+                    		
+                    		
+                    		// collecting the error
+                    		if( !structKeyExists(errors, propertyName) ){
+                    		    errors[propertyName] = [];
+                    		}
+                    		
+                            ArrayAppend( errors[propertyName] ,  errorMessage );  
+                    		
+                    		//resetting the flag to continue validating;
+	                        isValid = true;
+	                    } 
+	                    else { 
+	                        break;
+	                    }
+	                }
+	                
+	            }
+	        }
+	        
+	        if( !isValid && !arguments.collectErrors){
+	            break;
 	        }
 	    }
 	    
-	    //TODO add support for basic validation using mapping // required, data-type etc...
-	    
-	    return true;
+	    return { 
+	        isValid:  !arguments.collectErrors ? isValid : StructIsEmpty( errors ), 
+	        errors: errors 
+	    };
 	}
 	
 	
@@ -130,22 +223,30 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    var transformedData = {};
 	    
 	    for( var property in arguments.mapping.properties ){
+	        
 	        var propertyMeta = arguments.mapping.properties[property];
 	        var propertyIdentifier = propertyMeta.propertyIdentifier;
 	        
-	        var propertyIdentifierLen = listLen(propertyIdentifier, '.'); 
-	        if(  propertyIdentifierLen > 1 ){
-	            var propertyName = listLast(propertyIdentifier, '.');
-	            var entities = listToArray(propertyIdentifier, '.');
-	            for()
+	        var lastStruct = transformedData;
+	        var lastPropertyName = propertyIdentifier;
+	        
+	        if( listLen(propertyIdentifier, '.') > 1 ){
 	            
+	            lastPropertyName = listLast(propertyIdentifier, '.');
+	            propertyIdentifier = listDeleteAt( propertyIdentifier, listLen(propertyIdentifier, '.'), '.');
+	            
+	            var entities = listToArray( propertyIdentifier, '.' );
+
+                for(var entityName in entities){
+                    if( !structKeyExists(lastStruct, entityName) ){
+                        lastStruct[entityName] = {};
+                    }
+                    lastStruct = lastStruct[entityName];
+                }
 	        }
 	        
-	        
+	        lastStruct[lastPropertyName] = data[property];
 	    }
-	    
-	    
-	    // TODO 
 	    
 	    return transformedData;
 	}
