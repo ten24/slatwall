@@ -51,13 +51,12 @@ component entityname="SlatwallBatch" table="SwBatch" persistent="true" accessors
 	// Persistent Properties
 	property name="batchID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="baseObject" ormType="string" index="EI_BASEOBJECT";
-	property name="baseID" ormType="string" index="EI_BASEID";
 	property name="batchDescription" ormtype="string";
-	property name="batchCalculatedDescription" ormtype="string";
 	// Related Object Properties (many-to-one)
 	
 	// Related Object Properties (one-to-many)
 	property name="batchEntityQueueItems" singularname="batchEntityQueueItem" fieldtype="one-to-many" type="array" fkcolumn="batchID" cfc="EntityQueue";
+	property name="batchEntityQueueFailureItems" singularname="batchEntityQueueFailureItem" fieldtype="one-to-many" type="array" fkcolumn="batchID" cfc="EntityQueueFailure";
 
 	// Related Object Properties (many-to-many)
 	property name="batchType" cfc="Type" fieldtype="many-to-one" fkcolumn="batchTypeID";
@@ -70,9 +69,24 @@ component entityname="SlatwallBatch" table="SwBatch" persistent="true" accessors
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
 	// Non-Persistent Properties
+    property name="batchEntityQueueItemsCount" persistent="false";
+	property name="batchEntityQueueFailureItemsCount" persistent="false";
+	
+	// Calculated properties
+	property name="calculatedBatchEntityQueueItemsCount" ormtype="numeric";
+	property name="calculatedBatchEntityQueueFailureItemsCount" ormtype="numeric";
+    
 
 	// ============ START: Non-Persistent Property Methods =================
-
+    
+    public numeric function getBatchEntityQueueItemsCount(){
+        return 0; // TODO (use dao or collection)
+    }
+    
+    public numeric function getBatchEntityQueueFailureItemsCount(){
+        return 0; // TODO (use dao or collection)
+    }
+    
 	// ============  END:  Non-Persistent Property Methods =================
 
 	// ============= START: Bidirectional Helper Methods ===================
