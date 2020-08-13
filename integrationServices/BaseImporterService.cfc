@@ -98,11 +98,11 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         	    baseObject = "Account", 
         	    processMethod = 'importAccount',
         	    entityQueueData = arguments.data, 
-        	    entityQueueType = '' // Question ???
+        	    entityQueueType = '', // Question ???
         	    integrationID = this.getIntegration().getIntegrationID(), 
         	    batchID = arguments.batch.getBatchID(),
-        	   mostRecentErro r= Serializejson( validation.errors ),
-        	   tryCount = 1 
+        	    mostRecentError= Serializejson( validation.errors ),
+        	    tryCount = 1 
         	);
 	    }
 	    
