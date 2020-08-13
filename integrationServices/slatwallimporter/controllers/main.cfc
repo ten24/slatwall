@@ -10,7 +10,7 @@ component extends="Slatwall.org.Hibachi.HibachiController" accessors="true" outp
 	}
 	
 	
-	//TODO upload/download CSVs, UI
+	//upload CSVs, 
 	
 	public any function uploadCSV (required any rc){	
 		getService("hibachiTagService").cfsetting(requesttimeout=60000);
@@ -23,20 +23,19 @@ component extends="Slatwall.org.Hibachi.HibachiController" accessors="true" outp
 		}	
 		try
 		{
-			var file = FileUpload(pathToImport, "importFile", "*", "Overwrite",".csv");
-			getFW().setView("slatwallimporter:main");
-		}
-		catch(any excpt)
-		{
-			return excpt.Message;
-		}
+			var file = FileUpload(pathToImport, "importFile", "text/csv", "Overwrite");
+			if (not listFindNoCase("csv", file.serverFileExt)) {
+    		 	getHibachiScope().showMessage("The uploaded file is not of type CSV.", "error");
+    	    }
+			getHibachiScope().showMessage("Uppload success", "success");
 		
-	
-	    //FileDelete(pathToImport&file.serverfile);
+		}catch (any e) {
+    		getHibachiScope().showMessage("An error occurred while uploading your file" & e.Message, "error");
+			
+		}
+		getFW().setView("slatwallimporter:main");
 	}
 
-	
-	
 	
 	public void function after( required struct rc ) {
 		if(structKeyExists(arguments.rc, "fRedirectURL") && arrayLen(getHibachiScope().getFailureActions()) ){
