@@ -6,7 +6,7 @@
 		    "validations": { "required": true, "dataType": "string" }
 		},
 		"lastName": {
-		    "propertyIdentifier" : "firstName",
+		    "propertyIdentifier" : "lastName",
 		    "validations": { "dataType": "string" }
 		},
 		"username": {
