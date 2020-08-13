@@ -46,30 +46,21 @@
 Notes:
 
 */
-component entityname="SlatwallEntityQueue" table="SwEntityQueue" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="HibachiEntityQueueService" hb_auditable="false" {
+component entityname="SlatwallBatch" table="SwBatch" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="HibachiEntityQueueService" {
 
 	// Persistent Properties
-	property name="entityQueueID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="batchID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="baseObject" ormType="string" index="EI_BASEOBJECT";
 	property name="baseID" ormType="string" index="EI_BASEID";
-	property name="processMethod" ormType="string";
-	property name="entityQueueType" ormType="string" hb_formatType="rbKey"; // dependent on the integration
-	property name="entityQueueDateTime" ormtype="timestamp";
-	property name="entityQueueData" ormtype="string" length="8000";
-	property name="logHistoryFlag" ormtype="boolean" default="0";
-	property name="mostRecentError" ormtype="string" length="8000";
-	property name="tryCount" ormType="integer" default="0";
-	property name="entityQueueProcessingDateTime" ormtype="timestamp";
-	property name="serverInstanceKey" ormType="string";
-	
+	property name="batchDescription" ormtype="string";
+	property name="batchCalculatedDescription" ormtype="string";
 	// Related Object Properties (many-to-one)
 	
-	property name="integration" hb_populateEnabled="public" cfc="Integration" fieldtype="many-to-one" fkcolumn="integrationID";
-
 	// Related Object Properties (one-to-many)
-	property name="batch" hb_populateEnabled="public" cfc="Batch" fieldtype="many-to-one" fkcolumn="batchID";
-	// Related Object Properties (many-to-many)
+	property name="batchEntityQueueItems" singularname="batchEntityQueueItem" fieldtype="one-to-many" type="array" fkcolumn="batchID" cfc="EntityQueue";
 
+	// Related Object Properties (many-to-many)
+	property name="batchType" cfc="Type" fieldtype="many-to-one" fkcolumn="batchTypeID";
 	// Remote Properties
 
 	// Audit Properties
@@ -79,9 +70,6 @@ component entityname="SlatwallEntityQueue" table="SwEntityQueue" persistent="tru
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
 	// Non-Persistent Properties
-	public any function getDefaultCollectionProperties(string includesList = "entityQueueID,baseObject,baseID,processMethod,entityQueueDateTime,entityQueueData,logHistoryFlag,mostRecentError,tryCount,integration.integrationID", string excludesList=""){
-		return super.getDefaultCollectionProperties(argumentCollection=arguments);
-	}
 
 	// ============ START: Non-Persistent Property Methods =================
 
