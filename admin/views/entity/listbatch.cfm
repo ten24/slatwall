@@ -1,4 +1,4 @@
-/*
+<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,28 +45,35 @@
 
 Notes:
 
-*/
-component extends="testbox.Application"{
+--->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
-	// Allow For Application Config
-	try{include "../../config/configApplication.cfm";}catch(any e){}
-	// Allow For Instance Config
-	try{include "../../custom/config/configApplication.cfm";}catch(any e){}
+
+<cfparam name="rc.batchSmartList" type="any" />
     
-	this.sessionManagement = true;
-	this.applicationTimeout = createTimespan(0, 0, 100000, 0);
+    <hb:HibachiEntityActionBar type="listing" object="#rc.batchSmartList#" showCreate="false">
+    </hb:HibachiEntityActionBar>
 
-	this.mappings[ "/Slatwall" ] = replace(replace(getDirectoryFromPath(getCurrentTemplatePath()),"\","/","all"), "/meta/tests/", "");
+    <cfset local.batchCollectionList = getHibachiScope().getService('HibachiService').getBatchCollectionList()/>
+
+	<cfset local.batchCollectionList.setDisplayProperties( 
+	"batchDescription,baseObject,calculatedBatchEntityQueueItemsCount,calculatedBatchEntityQueueFailureItemsCount,createdDateTime", {
+		isVisible=true,
+		isDeletable=true,
+		isSearchable=true
+	})/>
 	
-	this.mappings[ '/framework' ] =  "#this.mappings['/Slatwall']#/org/Hibachi/framework";
-	this.mappings[ "/mxunit" ] = expandPath( "/testbox/system/compat" );
-	this.mappings["/testbox"] = "#this.mappings['/Slatwall']#/meta/tests/testbox";
-	this.mappings["/meta"] = "#this.mappings['/Slatwall']#/meta";
-	this.ormEnabled = true;
-	this.ormSettings.cfclocation = ["/Slatwall/model/entity"];
-	this.ormSettings.dbcreate = "update";
-	this.ormSettings.flushAtRequestEnd = false;
-	this.ormsettings.eventhandling = true;
-	this.ormSettings.automanageSession = false;
-
-}
+	<cfset local.batchCollectionList.addDisplayProperty( displayProperty='batchID', columnConfig={
+		isVisible=false,
+		isDeletable=false,
+		isSearchable=false
+	})/>
+	
+	<hb:HibachiListingDisplay 
+		collectionList="#local.batchCollectionList#"
+		usingPersonalCollection="true"
+		personalCollectionKey='#request.context.entityactiondetails.itemname#'
+		recordDetailAction="admin:entity.detailbatch"
+	>
+	</hb:HibachiListingDisplay>

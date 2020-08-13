@@ -46,27 +46,14 @@
 Notes:
 
 */
-component extends="testbox.Application"{
-
-	// Allow For Application Config
-	try{include "../../config/configApplication.cfm";}catch(any e){}
-	// Allow For Instance Config
-	try{include "../../custom/config/configApplication.cfm";}catch(any e){}
-    
-	this.sessionManagement = true;
-	this.applicationTimeout = createTimespan(0, 0, 100000, 0);
-
-	this.mappings[ "/Slatwall" ] = replace(replace(getDirectoryFromPath(getCurrentTemplatePath()),"\","/","all"), "/meta/tests/", "");
+component extends="Slatwall.integrationServices.BaseImporterService" persistent="false" accessors="true" output="false"{
 	
-	this.mappings[ '/framework' ] =  "#this.mappings['/Slatwall']#/org/Hibachi/framework";
-	this.mappings[ "/mxunit" ] = expandPath( "/testbox/system/compat" );
-	this.mappings["/testbox"] = "#this.mappings['/Slatwall']#/meta/tests/testbox";
-	this.mappings["/meta"] = "#this.mappings['/Slatwall']#/meta";
-	this.ormEnabled = true;
-	this.ormSettings.cfclocation = ["/Slatwall/model/entity"];
-	this.ormSettings.dbcreate = "update";
-	this.ormSettings.flushAtRequestEnd = false;
-	this.ormsettings.eventhandling = true;
-	this.ormSettings.automanageSession = false;
-
+	property name="integrationServices";
+	
+	public any function getIntegration(){
+	    if( !structKeyExists( variables, 'integration') ){
+	        variables.integration = this.getIntegrationByIntegrationPackage('slatwallimporter');
+	    }
+        return variables.integration;
+    }
 }
