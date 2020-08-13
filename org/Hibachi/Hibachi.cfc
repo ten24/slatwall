@@ -309,9 +309,10 @@ component extends="framework.one" {
     }
 
 	public any function bootstrap() {
-		
+	    
 		setupRequestDefaults();
 		setupGlobalRequest();
+		
 		// Announce the applicatoinRequest event
 		getHibachiScope().getService("hibachiEventService").announceEvent(eventName="onApplicationBootstrapRequestStart");
 
@@ -333,8 +334,9 @@ component extends="framework.one" {
 		var httpRequestData = GetHttpRequestData();
 		
 		// clean any beancache for local development
-		if(structKeyExists(url, "reloadbean") && getHibachiScope().getApplicationValue('applicationEnvironment') == 'local'){
+		if( structKeyExists(url, "reloadbean") && this.getEnvironment() == 'local' ){
 			getBeanFactory().reloadBean(url.reloadbean);
+			writeLog(file="#variables.framework.applicationKey#", text="General Log - Reloading bean #url.reloadbean#");
 		}
 		
         getHibachiScope().setIsAwsInstance(variables.framework.isAwsInstance);
@@ -788,6 +790,7 @@ component extends="framework.one" {
 					var hibachiBF = new framework.hibachiaop("/#variables.framework.applicationKey#/org/Hibachi", {
 						constants={
 							'applicationKey'=variables.framework.applicationKey,
+							'applicationRootMappingPath' = applicationInitData["applicationRootMappingPath"],
 							'hibachiInstanceApplicationScopeKey'=getHibachiInstanceApplicationScopeKey()
 						},
 						recurse=false,

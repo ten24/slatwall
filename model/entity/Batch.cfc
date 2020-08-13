@@ -46,30 +46,19 @@
 Notes:
 
 */
-component entityname="SlatwallEntityQueue" table="SwEntityQueue" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="HibachiEntityQueueService" hb_auditable="false" {
+component entityname="SlatwallBatch" table="SwBatch" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="HibachiEntityQueueService" {
 
 	// Persistent Properties
-	property name="entityQueueID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="batchID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="baseObject" ormType="string" index="EI_BASEOBJECT";
-	property name="baseID" ormType="string" index="EI_BASEID";
-	property name="processMethod" ormType="string";
-	property name="entityQueueType" ormType="string" hb_formatType="rbKey"; // dependent on the integration
-	property name="entityQueueDateTime" ormtype="timestamp";
-	property name="entityQueueData" ormtype="string" length="8000";
-	property name="logHistoryFlag" ormtype="boolean" default="0";
-	property name="mostRecentError" ormtype="string" length="8000";
-	property name="tryCount" ormType="integer" default="0";
-	property name="entityQueueProcessingDateTime" ormtype="timestamp";
-	property name="serverInstanceKey" ormType="string";
-	
+	property name="batchDescription" ormtype="string";
 	// Related Object Properties (many-to-one)
 	
-	property name="integration" hb_populateEnabled="public" cfc="Integration" fieldtype="many-to-one" fkcolumn="integrationID";
-	property name="batch" cfc="Batch" fieldtype="many-to-one" fkcolumn="batchID";
-
 	// Related Object Properties (one-to-many)
-	// Related Object Properties (many-to-many)
+	property name="batchEntityQueueItems" singularname="batchEntityQueueItem" fieldtype="one-to-many" type="array" fkcolumn="batchID" cfc="EntityQueue";
+	property name="batchEntityQueueFailureItems" singularname="batchEntityQueueFailureItem" fieldtype="one-to-many" type="array" fkcolumn="batchID" cfc="EntityQueueFailure";
 
+	// Related Object Properties (many-to-many)
 	// Remote Properties
 
 	// Audit Properties
@@ -79,12 +68,41 @@ component entityname="SlatwallEntityQueue" table="SwEntityQueue" persistent="tru
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
 	// Non-Persistent Properties
-	public any function getDefaultCollectionProperties(string includesList = "entityQueueID,baseObject,baseID,processMethod,entityQueueDateTime,entityQueueData,logHistoryFlag,mostRecentError,tryCount,integration.integrationID", string excludesList=""){
-		return super.getDefaultCollectionProperties(argumentCollection=arguments);
-	}
+    property name="batchEntityQueueItemsCount" persistent="false";
+	property name="batchEntityQueueFailureItemsCount" persistent="false";
+	
+	// Calculated properties
+	property name="calculatedBatchEntityQueueItemsCount" ormtype="numeric";
+	property name="calculatedBatchEntityQueueFailureItemsCount" ormtype="numeric";
+    
 
 	// ============ START: Non-Persistent Property Methods =================
-
+    
+    public numeric function getBatchEntityQueueItemsCount(){
+        
+        if( !StructKeyExists(variables, 'batchEntityQueueItemsCount') ){
+            
+            if( this.isNew() ){
+                variables.batchEntityQueueItemsCount = 0;
+            } else {
+                variables.batchEntityQueueItemsCount = this.getBatchEntityQueueItemsCollectionList().getRecordsCount();
+            }
+        }
+        return variables.batchEntityQueueItemsCount;
+    }
+    
+    public numeric function getBatchEntityQueueFailureItemsCount(){
+         if( !StructKeyExists(variables, 'batchEntityQueueFailureItemsCount') ){
+            
+            if( this.isNew() ){
+                variables.batchEntityQueueFailureItemsCount = 0;
+            } else {
+                variables.batchEntityQueueFailureItemsCount = this.getBatchEntityQueueFailureItemsCollectionList().getRecordsCount();
+            }
+        }
+        return variables.batchEntityQueueFailureItemsCount;
+    }
+    
 	// ============  END:  Non-Persistent Property Methods =================
 
 	// ============= START: Bidirectional Helper Methods ===================
@@ -98,4 +116,18 @@ component entityname="SlatwallEntityQueue" table="SwEntityQueue" persistent="tru
 	// =================== START: ORM Event Hooks  =========================
 
 	// ===================  END:  ORM Event Hooks  =========================
+	
+	public any function getBatchEntityQueueItemsCollectionList(){
+	    var collectionList = getService('hibachiEntityQueueService').getEntityQueueCollectionList();
+        collectionList.setDisplayProperties('entityQueueID');
+        collectionList.addFilter('batch.batchID', this.getBatchID() );
+        return collectionList;
+	}
+	
+	public any function getBatchEntityQueueFailureItemsCollectionList(){
+	    var collectionList = getService('hibachiEntityQueueService').getEntityQueueFailureCollectionList();
+        collectionList.setDisplayProperties('entityQueueFailureID');
+        collectionList.addFilter('batch.batchID', this.getBatchID() );
+        return collectionList;
+	}
 }

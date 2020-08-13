@@ -1,0 +1,21 @@
+{
+	"entity": "Account",
+	"properties": {
+	    "firstName": {
+		    "propertyIdentifier" : "firstName",
+		    "validations": { "required": true, "dataType": "string" }
+		},
+		"lastName": {
+		    "propertyIdentifier" : "lastName",
+		    "validations": { "dataType": "string" }
+		},
+		"username": {
+		    "propertyIdentifier" : "username",
+		    "validations": { "required": true, "dataType": "string" }
+		},
+		"emailAddress": {
+		    "propertyIdentifier" : "primaryEmailAddress.emailAddress",
+		    "validations": { "required": true, "dataType": "email" }
+		}
+	}
+}
