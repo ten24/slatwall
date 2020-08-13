@@ -310,10 +310,6 @@ component extends="framework.one" {
 
 	public any function bootstrap() {
 		
-		if( !getHibachiScope().hasApplicationValue("initialized") || !getHibachiScope().getApplicationValue("initialized") ){
-		   this.onApplicationStart(); 
-		}
-		
 		setupGlobalRequest();
 		
 		// Announce the applicatoinRequest event
