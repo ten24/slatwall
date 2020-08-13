@@ -495,7 +495,13 @@ property name="personalVolume" ormtype="big_decimal";
 			return getOrderFulfillment().getEstimatedDeliveryDateTime();
 		}
     }
-
+    
+    public numeric function getPrice(){
+        if( !isNull(this.getRewardSkuFlag()) && this.getRewardSkuFlag()){
+            return 0;
+        }
+        return variables.price;
+    }
 
 	// ============ START: Non-Persistent Property Methods =================
 
@@ -1552,12 +1558,5 @@ public void function refreshAmounts(){
             structDelete(variables,'retailValueVolume');
         }
     }
-    
-    public numeric function getPrice(){
-        if( !isNull(this.getRewardSkuFlag()) && this.getRewardSkuFlag()){
-            return 0;
-        }
-        return variables.price;
-    }
-//CUSTOM FUNCTIONS END
+    //CUSTOM FUNCTIONS END
 }
