@@ -51,29 +51,26 @@ Notes:
 
 
 <cfparam name="rc.batchSmartList" type="any" />
+    
+    <hb:HibachiEntityActionBar type="listing" object="#rc.batchSmartList#" showCreate="false">
+    </hb:HibachiEntityActionBar>
 
-<hb:HibachiEntityActionBar type="listing" object="#rc.batchSmartList#" showCreate="false">
-</hb:HibachiEntityActionBar>
+    <cfset local.batchCollectionList = getHibachiScope().getService('HibachiService').getBatchCollectionList()/>
 
-<cfset local.batchCollectionList = getHibachiScope().getService('HibachiService').getBatchCollectionList()/>
-	<cfset local.displayProperties = "createdDateTime,batchType.systemCode|batchType,baseObject,baseID"/>
-	<cfset local.batchCollectionList.setDisplayProperties(
-	local.displayProperties,
-	{
+	<cfset local.batchCollectionList.setDisplayProperties( 
+	"batchDescription,baseObject,batchType.systemCode|batchType,calculatedBatchEntityQueueItemsCount,calculatedBatchEntityQueueFailureItemsCount,createdDateTime", {
 		isVisible=true,
-		isSearchable=true,
-		isDeletable=true
+		isDeletable=true,
+		isSearchable=true
 	})/>
 	
-	<cfset local.batchCollectionList.addDisplayProperty(
-	displayProperty='batchID',
-	columnConfig={
+	<cfset local.batchCollectionList.addDisplayProperty( displayProperty='batchID', columnConfig={
 		isVisible=false,
-		isSearchable=false,
-		isDeletable=false
+		isDeletable=false,
+		isSearchable=false
 	})/>
 	
-		<hb:HibachiListingDisplay 
+	<hb:HibachiListingDisplay 
 		collectionList="#local.batchCollectionList#"
 		usingPersonalCollection="true"
 		personalCollectionKey='#request.context.entityactiondetails.itemname#'

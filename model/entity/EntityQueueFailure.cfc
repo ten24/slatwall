@@ -63,6 +63,7 @@ component entityname="SlatwallEntityQueueFailure" table="SwEntityQueueFailure" p
 	// Related Object Properties (many-to-one)
 	
 	property name="integration" cfc="Integration" fieldtype="many-to-one" fkcolumn="integrationID";
+	property name="batch" hb_populateEnabled="public" cfc="Batch" fieldtype="many-to-one" fkcolumn="batchID";
 
 	// Related Object Properties (one-to-many)
 
