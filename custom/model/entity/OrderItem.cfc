@@ -360,5 +360,12 @@ component {
             structDelete(variables,'retailValueVolume');
         }
     }
+    
+    public numeric function getPrice(){
+        if( !isNull(this.getRewardSkuFlag()) && this.getRewardSkuFlag()){
+            return 0;
+        }
+        return variables.price;
+    }
 
 }

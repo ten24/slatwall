@@ -312,18 +312,21 @@ component extends="Slatwall.model.service.PromotionService" {
 	}
 	
 	public void function addRewardSkusToOrder(required array itemsToBeAdded, required any order, required any fulfillment){
-		
+	logHibachi('=============================adding reward skus to order =============================')
 		if(arguments.order.getDropSkuRemovedFlag()){
+				logHibachi('=============================DROP SKU REMOVED FLAG WAS SET =============================')
 			return;
 		}
 		
 		var skuService = getService('skuService');
+		var currencyCode = arguments.order.getCurrencyCode() ?: 'USD';
 		for(var item in arguments.itemsToBeAdded){
+			
 			var sku = skuService.getSku(item.skuID);
 			if(isNull(sku)){
 				continue;
 			}
-			
+			logHibachi('=============================#sku.getSkuID()# =============================')
 			var newOrderItem = getService("OrderService").newOrderItem();
 			newOrderItem.setPrice(0);
 			newOrderItem.setSkuPrice(0);
@@ -334,16 +337,19 @@ component extends="Slatwall.model.service.PromotionService" {
 			newOrderItem.setSku(sku);
 			newOrderItem.setOrder(arguments.order);
 			newOrderItem.setRewardSkuFlag(true);
+			newOrderItem.setCurrencyCode(currencyCode);
 			var showInCartFlag = item.promotionReward.getShowRewardSkuInCartFlag() ?: true;
 			newOrderItem.setShowInCartFlag(showInCartFlag);
+			logHibachi('=============================order item has price: #newOrderItem.getPrice()#')
 			getService('orderService').saveOrderItem(newOrderItem);
 			
-			if(!newOrderItem.hasErrors() && !arguments.order.hasErrors()){
-				
+			if(!newOrderItem.hasErrors()){
+				logHibachi('=============================order item has no errors #newOrderItem.getOrderItemID()#=============================');
 				getPromotionDAO().insertAppliedPromotionFromOrderItem(
 						orderItemID=newOrderItem.getOrderItemID(), 
 						promotionID =item.promotion.getPromotionID(),
-						promotionRewardID= item.promotionReward.getPromotionRewardID()
+						promotionRewardID= item.promotionReward.getPromotionRewardID(),
+						skuID=sku.getSkuID()
 					);
 			}
 		}

@@ -66,7 +66,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					orderService.saveOrder(order);
 				}
 			}
-			ArrayClear(orderItem.getAppliedPromotions());
+			ArrayClear(orderItem.getAppliedPromotions());	
 		}
 	}
 
@@ -438,6 +438,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		for(var skuRecord in rewardSkusCollection){
+		
 			var addOrderItemData = {
 				quantity: skuRewardQuantity,
 				skuID: skuRecord['skuID'],
@@ -453,7 +454,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public void function addRewardSkusToOrder(required array itemsToBeAdded, required any order, required any fulfillment){
-	
+		logHibachi('ADDING REWARD SKU TO ORDER')
 		if(arguments.order.getDropSkuRemovedFlag()){
 			return;
 		}
@@ -602,6 +603,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						} else if (orderRewards and reward.getRewardType() eq "order" ) {
 							processOrderRewards(arguments.order, orderQualifiedDiscounts, reward);
 						}else if(orderRewards and reward.getRewardType() eq "rewardSku"){
+							logHibachi('we have a reward sku promo!!!!!!!!!!!!')
 							processRewardSkuPromotionReward(arguments.order, itemsToBeAdded, reward)
 						}// ============= END ALL REWARD TYPES
 	

@@ -5376,7 +5376,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	public any function saveOrderItem(required any orderItem, struct data={}, string context="save", boolean updateOrderAmounts=true,boolean updateCalculatedProperties=false, boolean updateShippingMethodOptions=true) {
-
+		
+        if( !isNull(arguments.orderItem.getRewardSkuFlag()) && arguments.orderItem.getRewardSkuFlag()){
+           arguments.orderItem.setPrice(0);
+        }
+        
 		// Call the generic save method to populate and validate
 		arguments.orderItem = save(arguments.orderItem, arguments.data, arguments.context);
 		
