@@ -48,4 +48,12 @@ Notes:
 */
 component extends="Slatwall.integrationServices.BaseImporterService" persistent="false" accessors="true" output="false"{
 	
+	property name="integrationServices";
+	
+	public any function getIntegration(){
+	    if( !structKeyExists( variables, 'integration') ){
+	        variables.integration = this.getIntegrationByIntegrationPackage('slatwallimporter');
+	    }
+        return variables.integration;
+    }
 }
