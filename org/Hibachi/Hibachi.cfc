@@ -309,7 +309,8 @@ component extends="framework.one" {
     }
 
 	public any function bootstrap() {
-		
+	    
+		setupRequestDefaults();
 		setupGlobalRequest();
 		
 		// Announce the applicatoinRequest event
