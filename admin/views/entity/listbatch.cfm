@@ -58,7 +58,7 @@ Notes:
 <cfset local.batchCollectionList = getHibachiScope().getService('HibachiService').getBatchCollectionList()/>
 	<cfset local.displayProperties = "createdDateTime,batchType.systemCode|batchType,baseObject,baseID"/>
 	<cfset local.batchCollectionList.setDisplayProperties(
-	displayProperties,
+	local.displayProperties,
 	{
 		isVisible=true,
 		isSearchable=true,
