@@ -55,9 +55,9 @@ Notes:
 <hb:HibachiEntityActionBar type="listing" object="#rc.batchSmartList#" showCreate="false">
 </hb:HibachiEntityActionBar>
 
-<cfset local.batchCollectionList = getHibachiScope().getService('HibachiEntityQueueService').getBatchCollectionList()>
-	<cfset displayProperties = "createdDateTime,batchType,baseObject,baseID"/>
-	<cfset batchCollectionList.setDisplayProperties(
+<cfset local.batchCollectionList = getHibachiScope().getService('HibachiService').getBatchCollectionList()/>
+	<cfset displayProperties = "createdDateTime,batchType.systemCode|batchType,baseObject,baseID"/>
+	<cfset local.batchCollectionList.setDisplayProperties(
 	displayProperties,
 	{
 		isVisible=true,
@@ -65,7 +65,7 @@ Notes:
 		isDeletable=true
 	})/>
 	
-	<cfset batchCollectionList.addDisplayProperty(
+	<cfset local.batchCollectionList.addDisplayProperty(
 	displayProperty='batchID',
 	columnConfig={
 		isVisible=false,
@@ -74,7 +74,7 @@ Notes:
 	})/>
 	
 		<hb:HibachiListingDisplay 
-		collectionList="#batchCollectionList#"
+		collectionList="#local.batchCollectionList#"
 		usingPersonalCollection="true"
 		personalCollectionKey='#request.context.entityactiondetails.itemname#'
 		recordDetailAction="admin:entity.detailbatch"
