@@ -84,8 +84,7 @@ component entityname="SlatwallBatch" table="SwBatch" persistent="true" accessors
             
             if( this.isNew() ){
                 variables.batchEntityQueueItemsCount = 0;
-            } 
-            else{
+            } else {
                 variables.batchEntityQueueItemsCount = this.getBatchEntityQueueItemsCollectionList().getRecordsCount();
             }
         }
@@ -97,8 +96,7 @@ component entityname="SlatwallBatch" table="SwBatch" persistent="true" accessors
             
             if( this.isNew() ){
                 variables.batchEntityQueueFailureItemsCount = 0;
-            } 
-            else{
+            } else {
                 variables.batchEntityQueueFailureItemsCount = this.getBatchEntityQueueFailureItemsCollectionList().getRecordsCount();
             }
         }
