@@ -312,9 +312,8 @@ component extends="Slatwall.model.service.PromotionService" {
 	}
 	
 	public void function addRewardSkusToOrder(required array itemsToBeAdded, required any order, required any fulfillment){
-	logHibachi('=============================adding reward skus to order =============================')
+
 		if(arguments.order.getDropSkuRemovedFlag()){
-				logHibachi('=============================DROP SKU REMOVED FLAG WAS SET =============================')
 			return;
 		}
 		
@@ -326,7 +325,7 @@ component extends="Slatwall.model.service.PromotionService" {
 			if(isNull(sku)){
 				continue;
 			}
-			logHibachi('=============================#sku.getSkuID()# =============================')
+
 			var newOrderItem = getService("OrderService").newOrderItem();
 			newOrderItem.setPrice(0);
 			newOrderItem.setSkuPrice(0);
@@ -340,11 +339,11 @@ component extends="Slatwall.model.service.PromotionService" {
 			newOrderItem.setCurrencyCode(currencyCode);
 			var showInCartFlag = item.promotionReward.getShowRewardSkuInCartFlag() ?: true;
 			newOrderItem.setShowInCartFlag(showInCartFlag);
-			logHibachi('=============================order item has price: #newOrderItem.getPrice()#')
+	
 			getService('orderService').saveOrderItem(newOrderItem);
 			
 			if(!newOrderItem.hasErrors()){
-				logHibachi('=============================order item has no errors #newOrderItem.getOrderItemID()#=============================');
+
 				getPromotionDAO().insertAppliedPromotionFromOrderItem(
 						orderItemID=newOrderItem.getOrderItemID(), 
 						promotionID =item.promotion.getPromotionID(),

@@ -1693,7 +1693,7 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 		arguments.orderItem.setOrder( this );
 		structDelete(variables,'rootOrderItems');
 	}
-	public void function removeOrderItem(required any orderItem, boolean dropSkuCheck = false) {
+	public void function removeOrderItem(required any orderItem) {
 		arguments.orderItem.removeOrder( this );
 		structDelete(variables,'rootOrderItems');
 	}

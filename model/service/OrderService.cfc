@@ -3732,7 +3732,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// First Re-Calculate the 'amounts' base on price groups
 
 			getPriceGroupService().updateOrderAmountsWithPriceGroups( arguments.order );
-			loghibachi('updating order amounts called for promos!')
+		
 			// Then Re-Calculate the 'amounts' based on permotions ext.  This is done second so that the order already has priceGroup specific info added
 			getPromotionService().updateOrderAmountsWithPromotions( arguments.order );
 			
@@ -5558,7 +5558,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var order = arguments.orderItem.getOrder();
 		
 			if(arguments.orderItem.getRewardSkuFlag()){
-					logHibachi('======setting dropSkuRemovedFlag to true!======');
 				order.setDropSkuRemovedFlag(true);	
 			}
 			

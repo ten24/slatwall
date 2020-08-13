@@ -48,12 +48,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="skuService" type="any";
 
 	private void function clearPreviouslyAppliedPromotionsForOrderItems(required array orderItems){
-			loghibachi('Clearing orderitens!!!!!!!!!!!!!!!')
+		
 		var orderService = getService('orderService');
 		// Clear all previously applied promotions for order items
 		for(var oi=1; oi<=arrayLen(arguments.orderItems); oi++) {
 			var orderItem = arguments.orderItems[oi];
-				loghibachi('Clearing orderitens:#orderItem.getOrderItemID()#!!!!!!!!!!!!!!!')
 			var appliedPromotions = orderItem.getAppliedPromotions();
 			for(var appliedPromotion in appliedPromotions){
 				appliedPromotion.removeOrderItem(reciprocateFlag=false);
@@ -63,7 +62,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					&& !isNull(orderItem.getOrder())
 					&& !appliedPromotion.getPromotionReward().getPromotionRewardProcessingFlag()
 				){	
-					logHibachi('DEELETGIN IT!')
 					order = orderItem.getOrder();
 					order.removeOrderItem(orderItem);
 					orderService.saveOrder(order);
@@ -94,7 +92,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	private void function clearPreviouslyAppliedPromotions(required any order){
-		logHibachi('clear all propnois called!')
 		var orderItems = arguments.order.getOrderItems();
 		clearPreviouslyAppliedPromotionsForOrderItems(orderItems);
 		clearPreviouslyAppliedPromotionsForOrderFulfillments(arguments.order.getOrderFulfillments());
@@ -413,7 +410,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(arguments.promotionReward.getPromoHasRan()){
 			return;
 		}
-		//I THINK WE JUST NEED TO SET THIS ON THE ORDER ITEM INSTEAD
+	
 		promotionReward.setPromotionRewardProcessingFlag(true);
 		
 		arguments.promotionReward.setPromoHasRan(true);
@@ -458,7 +455,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public void function addRewardSkusToOrder(required array itemsToBeAdded, required any order, required any fulfillment){
-		logHibachi('ADDING REWARD SKU TO ORDER')
+	
 		if(arguments.order.getDropSkuRemovedFlag()){
 			return;
 		}
@@ -519,9 +516,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
  		}
 
  		var orderFulfillmentList ="";
- 			loghibachi('maybe clearing items 523!!!!!!!!')
+ 		
  		for(var orderFulfillment in arguments.order.getOrderFulfillments()){
- 				loghibachi('maybe clearing items 525!!!!!!!!')
  			if(!isNull(orderFulfillment.getShippingAddress())){
  				orderFulfillmentList = listAppend(orderFulfillmentList,orderFulfillment.getShippingAddress().getFullAddress());
  				if(!isNull(orderFulfillment.getSelectedShippingMethodOption())){
@@ -541,10 +537,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		if(isNull(arguments.order.getPromotionCacheKey()) || arguments.order.getPromotionCacheKey() != promotionCacheKey){
 			arguments.order.setPromotionCacheKey(promotionCacheKey);
-				loghibachi('maybe clearing items!!!!!!!!')
+		
 			// Sale & Exchange Orders
 			if( listFindNoCase("otSalesOrder,otExchangeOrder", arguments.order.getOrderType().getSystemCode()) ) {
-				loghibachi('clearing items!!!!!!!!')
+	
 				clearPreviouslyAppliedPromotions(arguments.order);
 				clearPreviouslyAppliedPromotionMessages(arguments.order);
 				getHibachiScope().flushOrmSession();
@@ -610,7 +606,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						} else if (orderRewards and reward.getRewardType() eq "order" ) {
 							processOrderRewards(arguments.order, orderQualifiedDiscounts, reward);
 						}else if(orderRewards and reward.getRewardType() eq "rewardSku"){
-							logHibachi('we have a reward sku promo!!!!!!!!!!!!')
 							processRewardSkuPromotionReward(arguments.order, itemsToBeAdded, reward)
 						}// ============= END ALL REWARD TYPES
 	
