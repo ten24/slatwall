@@ -122,14 +122,14 @@ component entityname="SlatwallBatch" table="SwBatch" persistent="true" accessors
 	public any function getBatchEntityQueueItemsCollectionList(){
 	    var collectionList = getService('hibachiEntityQueueService').getEntityQueueCollectionList();
         collectionList.setDisplayProperties('entityQueueID');
-        collectionList.addFilter('vatch.batchID', this.getBatchID() );
+        collectionList.addFilter('batch.batchID', this.getBatchID() );
         return collectionList;
 	}
 	
 	public any function getBatchEntityQueueFailureItemsCollectionList(){
 	    var collectionList = getService('hibachiEntityQueueService').getEntityQueueFailureCollectionList();
-        collectionList.setDisplayProperties('entityQueueID');
-        collectionList.addFilter('vatch.batchID', this.getBatchID() );
+        collectionList.setDisplayProperties('entityQueueFailureID');
+        collectionList.addFilter('batch.batchID', this.getBatchID() );
         return collectionList;
 	}
 }
