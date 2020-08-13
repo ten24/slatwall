@@ -498,7 +498,7 @@ property name="personalVolume" ormtype="big_decimal";
     
     public numeric function getPrice(){
         if( !isNull(this.getRewardSkuFlag()) && this.getRewardSkuFlag()){
-            return 0;
+            variables.price = 0;
         }
         return variables.price;
     }
