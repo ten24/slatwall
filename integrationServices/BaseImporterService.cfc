@@ -52,6 +52,13 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	property name = "hibachiValidationService";
 	property name = "hibachiEntityQueueService";
 	
+	
+
+    public any function getIntegration(){
+        throw("override this function in your integrtion service to return the ")
+    }
+
+
 
 	//////////////////////////////////////////  Importer functions for [ Account ]  ////////////////////////////////////////////
 
@@ -82,18 +89,34 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	
 	public any function importAccount( required struct data, required any batch ){
 	    
-	    //TODO validate the incoming data 
 	    var validation = this.validateAccountData( data = arguments.data, collectErrors=true );
 	    
-	    if( !validation.isValid){
+	    if( !validation.isValid ){
 	        // if we're collecting errors we can directly send the item to failures (EntityQueue hisory)
+	        this.getEntityQueueDAO().insertEntityQueueFailure(
+        	    baseID = '', 
+        	    baseObject = "Account", 
+        	    processMethod = 'importAccount',
+        	    entityQueueData = arguments.data, 
+        	    entityQueueType = '' // Question ???
+        	    integrationID = this.getIntegration().getIntegrationID();, 
+        	    batchID = arguments.batch.getBatchID(),
+        	    string mostRecentErro r= Serializejson( validation.errors ),
+        	    numeric tryCount = 1 ,
+        	);
 	    }
 	    
-	    //TODO format the data using mappings
-	    var formatterData = this.transformAccountData(arguments.data);
+	    var transformedData = this.transformAccountData(arguments.data);
 	    
-	    
-	    // TODO insert into EntityQueue
+	    this.getEntityQueueDAO().insertEntityQueue(
+    	    baseID = '', 
+    	    baseObject = 'Account', 
+    	    processMethod ='processAccount_import || processAccount_create', // Question: which process method?? 
+    	    entityQueueData = transformedData, 
+    	    integrationID = this.getIntegration().getIntegrationID(), // Q ^^^ 
+        	batchID = arguments.batch.getBatchID(), 
+    	);
+    	
 	}
 	
 	public struct function validateAccountData( required struct data, struct mapping = this.getAccountMapping(), boolean collectErrors = false ){
