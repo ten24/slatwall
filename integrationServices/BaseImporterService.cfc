@@ -99,10 +99,10 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         	    processMethod = 'importAccount',
         	    entityQueueData = arguments.data, 
         	    entityQueueType = '' // Question ???
-        	    integrationID = this.getIntegration().getIntegrationID();, 
+        	    integrationID = this.getIntegration().getIntegrationID(), 
         	    batchID = arguments.batch.getBatchID(),
-        	    string mostRecentErro r= Serializejson( validation.errors ),
-        	    numeric tryCount = 1 ,
+        	   mostRecentErro r= Serializejson( validation.errors ),
+        	   tryCount = 1 
         	);
 	    }
 	    
@@ -114,7 +114,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
     	    processMethod ='processAccount_import || processAccount_create', // Question: which process method?? 
     	    entityQueueData = transformedData, 
     	    integrationID = this.getIntegration().getIntegrationID(), // Q ^^^ 
-        	batchID = arguments.batch.getBatchID(), 
+        	batchID = arguments.batch.getBatchID()
     	);
     	
 	}
