@@ -57,15 +57,15 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 
 	public struct function getAccountMapping(){
 	    
-	    if( !structKeyExists(variables, 'accountMapping') ){
+	    if( !structKeyExists(variables, 'accountMappingStruct') ){
 
 	        //Read from file/DB whatever 
 	        var mapingJson = FileRead( ExpandPath('/Slatwall') & '/config/importer/mappings/Account.json');
 	        
-	        variables.accountMapping = serializeJson(mapingJson);
+	        variables.accountMappingStruct = deSerializeJson(mapingJson);
 	    }
 	    
-        return variables.accountMapping;
+        return variables.accountMappingStruct;
 	}
 	
 	public any function importAccounts(required struct queryOrArrayOfStruct ){
@@ -136,15 +136,15 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	                
 	                //only a subset of validations is available for direct validation(non-object);
 	                var validationFunctionName = 'validate_#constraintType#_real';
-	                if( structKeyExists(validationService, validationFunctionName) ){
+	                if( !structKeyExists(validationService, validationFunctionName) ){
 	                    throw("invalid validation constraint type : #constraintType#");
 	                }
 	                
-	                var constraintValue = constraints.constraintType;
+	                var constraintValue = constraints[constraintType];
 	                
 	               isValid = validationService.invokeMethod( validationFunctionName, { 
-	                   propertyValue    :  data[propertyName] ?: javaCast('null',0);
-	                   constraintValue  : constraintValue; 
+	                   propertyValue    :  data[propertyName] ?: javaCast('null',0),
+	                   constraintValue  :  constraintValue,
 	               });
 	               
 	               if( !isValid ){
@@ -168,10 +168,10 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
                     		
                     		// collecting the error
                     		if( !structKeyExists(errors, propertyName) ){
-                    		    errors[propertyName] = {};
+                    		    errors[propertyName] = [];
                     		}
-                    		ArrayApend( errors[entityName] ,  errorMessage );  
                     		
+                            ArrayAppend( errors[propertyName] ,  errorMessage );  
                     		
                     		//resetting the flag to continue validating;
 	                        isValid = true;
@@ -189,7 +189,10 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	        }
 	    }
 	    
-	    return { isValid: isValid, errors: errors };
+	    return { 
+	        isValid:  !arguments.collectErrors ? isValid : StructIsEmpty( errors ), 
+	        errors: errors 
+	    };
 	}
 	
 	public struct function transformData( required struct data, required struct mapping ){
@@ -203,7 +206,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	        if(  propertyIdentifierLen > 1 ){
 	            var propertyName = listLast(propertyIdentifier, '.');
 	            var entities = listToArray(propertyIdentifier, '.');
-	            for()
+	           // for()
 	            
 	        }
 	        
