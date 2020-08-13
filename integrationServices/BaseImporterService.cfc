@@ -48,10 +48,11 @@ Notes:
 */
 component extends="Slatwall.model.service.HibachiService" persistent="false" accessors="true" output="false"{
 	
+	property name = "accountService";
+	
 	property name = "hibachiUtilityService";
 	property name = "hibachiValidationService";
 	property name = "hibachiEntityQueueService";
-	
 	
 
     public any function getIntegration(){
@@ -75,7 +76,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         return variables.accountMappingStruct;
 	}
 	
-	public any function importAccounts( required struct queryOrArrayOfStruct ){
+	public any function importAccountsIntoQueue( required struct queryOrArrayOfStruct ){
 	    
 	    //Create a new Batch
 	    var newBatch = this.getHibachiEntityQueueService().newBatch();
@@ -83,11 +84,11 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    this.getHibachiEntityQueueService().saveBatch(newBatch);
 	    
 	    for( var accountData in queryOrArrayOfStruct ){
-	        this.importAccount(accountData, newBatch);
+	        this.importAccountIntoQueue(accountData, newBatch);
 	    }
 	}
 	
-	public any function importAccount( required struct data, required any batch ){
+	public any function importAccountIntoQueue( required struct data, required any batch ){
 	    
 	    var validation = this.validateAccountData( data = arguments.data, collectErrors=true );
 	    
@@ -111,12 +112,11 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    this.getEntityQueueDAO().insertEntityQueue(
     	    baseID = '', 
     	    baseObject = 'Account', 
-    	    processMethod ='processAccount_import || processAccount_create', // Question: which process method?? 
+    	    processMethod ='processsAccount_import',
     	    entityQueueData = transformedData, 
-    	    integrationID = this.getIntegration().getIntegrationID(), // Q ^^^ 
+    	    integrationID = this.getIntegration().getIntegrationID(), 
         	batchID = arguments.batch.getBatchID()
     	);
-    	
 	}
 	
 	public struct function validateAccountData( required struct data, struct mapping = this.getAccountMapping(), boolean collectErrors = false ){
@@ -127,7 +127,11 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    return this.transformData( argumentCollection = arguments);
 	}
 	
-	
+	public any function processsAccount_import(required any account, any data){
+	    arguments.account.populate(arguments.data);
+	    this.getAccountService().saveAccount(arguments.account);
+	    return arguments.account;
+	}
 	
 	////////////////////////////////////////// TODO Importer functions for other Entities  ////////////////////////////////////////////
 	////////////////////////////////////////// TODO Importer functions for other Entities  ////////////////////////////////////////////
