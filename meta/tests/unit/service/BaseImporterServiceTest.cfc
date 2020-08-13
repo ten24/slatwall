@@ -46,36 +46,67 @@
 Notes:
 
 */
-component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
-
+component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
+    
+    property name="service";
+    
 	public void function setUp() {
 		super.setup();
-
-		//variables.service = request.slatwallScope.getBean("appService");
-		variables.service = createMock('Slatwall.integrationServices.BaseImporterService');
-
-	}
-	
-	private array function getAcountsData(){
-	    return [
-	        {},
-	        {},
-	        {}
-	    ];
-	}
-	
-
-	/**
-	* @test
-	*/
-	public void function validateDataTest(required struct data, required struct mapping ){
-		throw("Not implemented yet");
+		variables.service = variables.mockService.getBaseImporterServiceMock();
 	}
 	
 	/**
 	* @test
 	*/
-	public void function transformDataTest(required struct data, required struct mapping ){
+	public void function validateAccountData_should_fail_for_firstName(){
+	    
+	    var validation = this.getService().validateAccountData( 
+	        { lastName: "Yadav", username: 'nitin.yadav', emailAddress: "nitin.yadav@ten24web.com" }, 
+	        true 
+	    );
+	    
+	    debug(validation);
+	    assertFalse(validation.isValid);
+	    expect(validation.errors).toHaveKey('firstName', "the validation should fail for firstName");
+	}
+
+	/**
+	* @test
+	*/
+	public void function validateAccountData_should_fail_for_email(){
+	    
+	    var validation = this.getService().validateAccountData( 
+	        { firstName: "Nitin", lastName: "Yadav", username: 'nitin.yadav', emailAddress: "invalid email address" }, 
+	        true 
+	    );
+	    
+	    debug(validation);
+	    assertFalse(validation.isValid);
+	    expect(validation.errors).toHaveKey('emailAddress', "the validation should fail for email");
+	}
+	
+	/**
+	* @test
+	*/
+	public void function validateAccountData_should_fail_for_username(){
+	    
+	    var validation = this.getService().validateAccountData( 
+	        { firstName: "Nitin", lastName: "Yadav", usernameeee: 'nitin.yadav', emailAddress: "nitin.yadav@ten24web.com" }, 
+	        true 
+	    );
+	    
+	    debug(validation);
+	    assertFalse(validation.isValid);
+	    expect(validation.errors).toHaveKey('username', "the validation should fail for username");
+	}
+	
+	
+	
+	
+	/**
+	* @test
+	*/
+	public void function transformDataTest(){
 		throw("Not implemented yet");
 	}
 }
