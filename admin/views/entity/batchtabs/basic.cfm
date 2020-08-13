@@ -6,8 +6,11 @@
 <cfoutput>
 	<hb:HibachiPropertyRow>
 		<hb:HibachiPropertyList>
-			<hb:HibachiPropertyDisplay object="#rc.batch#" property="baseID" >
 			<hb:HibachiPropertyDisplay object="#rc.batch#" property="baseObject" >
+			<hb:HibachiPropertyDisplay object="#rc.batch#" property="batchDescription" >
+			<hb:HibachiPropertyDisplay object="#rc.batch#" property="batchEntityQueueItemsCount" >
+			<hb:HibachiPropertyDisplay object="#rc.batch#" property="batchEntityQueueFailureItemsCount" >
+			    
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 </cfoutput>
