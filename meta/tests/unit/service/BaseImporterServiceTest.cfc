@@ -56,6 +56,14 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 	}
 	
+	private array function getAcountsData(){
+	    return [
+	        {},
+	        {},
+	        {}
+	    ];
+	}
+	
 
 	/**
 	* @test
