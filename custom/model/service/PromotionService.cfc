@@ -318,7 +318,11 @@ component extends="Slatwall.model.service.PromotionService" {
 		}
 		
 		var skuService = getService('skuService');
-		var currencyCode = arguments.order.getCurrencyCode() ?: 'USD';
+		var currencyCode = arguments.order.getCurrencyCode();
+		if(isNull(currencyCode)){
+			return;
+		}
+		
 		for(var item in arguments.itemsToBeAdded){
 			
 			var sku = skuService.getSku(item.skuID);
