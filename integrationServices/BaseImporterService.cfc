@@ -56,7 +56,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	
 
     public any function getIntegration(){
-        throw("override this function in your integrtion service to return the ")
+        throw("override this function in your integrtion service to return the associated instance of integration-entity");
     }
 
 
@@ -99,7 +99,6 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         	    baseObject = "Account", 
         	    processMethod = 'importAccount',
         	    entityQueueData = arguments.data, 
-        	    entityQueueType = '', // Question ???
         	    integrationID = this.getIntegration().getIntegrationID(), 
         	    batchID = arguments.batch.getBatchID(),
         	    mostRecentError= Serializejson( validation.errors ),
