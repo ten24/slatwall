@@ -68,7 +68,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         return variables.accountMappingStruct;
 	}
 	
-	public any function importAccounts(required struct queryOrArrayOfStruct ){
+	public any function importAccounts( required struct queryOrArrayOfStruct ){
 	    
 	    //Create a new Batch
 	    var newBatch = this.getHibachiEntityQueueService().newBatch();
@@ -83,7 +83,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	public any function importAccount( required struct data, required any batch ){
 	    
 	    //TODO validate the incoming data 
-	    var validation = this.validateAccountData(arguments.data);
+	    var validation = this.validateAccountData( data = arguments.data, collectErrors=true );
 	    
 	    if( !validation.isValid){
 	        // if we're collecting errors we can directly send the item to failures (EntityQueue hisory)
@@ -96,12 +96,12 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    // TODO insert into EntityQueue
 	}
 	
-	public struct function validateAccountData( required struct data, boolean collectErrors = false ){
-	    return this.validateData( arguments.data, this.getAccountMapping(), arguments.collectErrors );
+	public struct function validateAccountData( required struct data, struct mapping = this.getAccountMapping(), boolean collectErrors = false ){
+	    return this.validateData( argumentCollection = arguments);
 	}
 	
-	public struct function transformAccountData( required struct data ){
-	    return this.transformAccountData( arguments.data, this.getAccountMapping() );
+	public struct function transformAccountData( required struct data, struct mapping = this.getAccountMapping() ){
+	    return this.transformData( argumentCollection = arguments);
 	}
 	
 	
@@ -195,26 +195,35 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    };
 	}
 	
+	
 	public struct function transformData( required struct data, required struct mapping ){
 	    var transformedData = {};
 	    
 	    for( var property in arguments.mapping.properties ){
+	        
 	        var propertyMeta = arguments.mapping.properties[property];
 	        var propertyIdentifier = propertyMeta.propertyIdentifier;
 	        
-	        var propertyIdentifierLen = listLen(propertyIdentifier, '.'); 
-	        if(  propertyIdentifierLen > 1 ){
-	            var propertyName = listLast(propertyIdentifier, '.');
-	            var entities = listToArray(propertyIdentifier, '.');
-	           // for()
+	        var lastStruct = transformedData;
+	        var lastPropertyName = propertyIdentifier;
+	        
+	        if( listLen(propertyIdentifier, '.') > 1 ){
 	            
+	            lastPropertyName = listLast(propertyIdentifier, '.');
+	            propertyIdentifier = listDeleteAt( propertyIdentifier, listLen(propertyIdentifier, '.'), '.');
+	            
+	            var entities = listToArray( propertyIdentifier, '.' );
+
+                for(var entityName in entities){
+                    if( !structKeyExists(lastStruct, entityName) ){
+                        lastStruct[entityName] = {};
+                    }
+                    lastStruct = lastStruct[entityName];
+                }
 	        }
 	        
-	        
+	        lastStruct[lastPropertyName] = data[property];
 	    }
-	    
-	    
-	    // TODO 
 	    
 	    return transformedData;
 	}
