@@ -401,7 +401,19 @@ component extends="framework.one" {
 
 		//check if we have the authorization header
 		if(len(AuthToken)){
-			getHibachiScope().getService("hibachiSessionService").setAccountSessionByAuthToken(AuthToken);
+			var authorizationHeader = AuthToken;
+			var prefix = 'Bearer ';
+			//get token by stripping prefix
+			var token = right(authorizationHeader,len(authorizationHeader) - len(prefix));
+			var jwt = getHibachiScope().getService('HibachiJWTService').getJwtByToken(token);
+			
+			if(jwt.verify()){
+				var jwtAccount = getHibachiScope().getService('accountService').getAccountByAccountID(jwt.getPayload().accountid);
+				if(!isNull(jwtAccount)){
+					jwtAccount.setJwtToken(jwt);
+					getHibachiScope().getSession().setAccount( jwtAccount );
+				}
+			}
 		}
 		
 		// Call the onEveryRequest() Method for the parent Application.cfc
