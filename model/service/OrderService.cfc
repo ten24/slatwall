@@ -1876,6 +1876,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		getHibachiScope().removeExcludedModifiedEntityName('TaxApplied');
 		getHibachiScope().removeExcludedModifiedEntityName('PromotionApplied');
+		newOrder.updateCalculatedProperties(runAgain=true, cascadeCalculateFlag=false);
 		return arguments.orderTemplate; 
 	}
 	
