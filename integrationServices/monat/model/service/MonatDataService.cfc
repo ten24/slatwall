@@ -1096,17 +1096,17 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 			var importSkuConfig = FileRead('#basePath#../../config/import/skus.json');
 			var updateSkuConfig = FileRead('#basePath#../../config/import/skus_update.json');
 			
-			var skuCodesResult = QueryExecute('SELECT GROUP_CONCAT(skuCode) skuCodes from swSku where skuCode IN ( :skuCodes )',{ 
+			var skuCodesResults = QueryExecute('SELECT skuCode from swSku where skuCode IN ( :skuCodes )',{ 
 				'skuCodes' = { 
 				    'value' = arrayToList(skuCodes), 
 				    'list' = true
 				}
 			});
-				
-			var existingSkuCodes = listToArray(skuCodesResult['skuCodes']);
 			
-			
-		    
+			var existingSkuCodes = [];
+			for(var skuCodesResult in skuCodesResults){
+				arrayAppend(existingSkuCodes, skuCodesResult['skuCode']);
+			}
 		    
 		    var existingSkus = skuQuery.filter(function(row, rowNumber, qryData){
                 return arrayFind(existingSkuCodes, arguments.row.SKUItemCode);
