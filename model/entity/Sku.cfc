@@ -1991,16 +1991,6 @@ property name="sapItemCode" ormtype="string";
 			super.updateCalculatedProperties(argumentCollection=arguments);
 			getHibachiScope().flushORMSession();
 			getService("skuService").processSku(this, "updateInventoryCalculationsForLocations");
-			
-			var parentSkuCollection = getService('skuService').getSkuCollectionList();
-			parentSkuCollection.addFilter('bundledSkus.bundledSku.skuID',getSkuID());
-			parentSkuCollection.addFilter('activeFlag',1);
-			parentSkuCollection.setDisplayProperties('skuID');
-			var parentSkuRecords = parentSkuCollection.getRecords();
-			for( var record in parentSkuRecords ){
-				var sku = getService('skuService').getSku(record.skuID);
-				sku.updateCalculatedProperties(argumentCollection=arguments);
-			}
 		}
 	}
 
