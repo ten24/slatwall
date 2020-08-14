@@ -46,6 +46,7 @@ class VIPController {
 	public showUpgradeErrorMessage:boolean;
 	public hairProductFilter:any;
 	public skinProductFilter:any;
+	public pageRecordsShow:number = 40;
 	
 	// @ngInject
 	constructor(
@@ -181,7 +182,8 @@ class VIPController {
 		let data:any = {
 			priceGroupCode: 3,
 			hideProductPacksAndDisplayOnly: true,
-			flexshipFlag:true
+			flexshipFlag:true,
+			pageRecordsShow:this.pageRecordsShow
 		};
 		
 		if(category){
@@ -206,7 +208,8 @@ class VIPController {
 		
 		let data:any = {
 			priceGroupCode: 3,
-			hideProductPacksAndDisplayOnly: true
+			hideProductPacksAndDisplayOnly: true,
+			pageRecordsShow:this.pageRecordsShow
 		};
 		
 		if(category){
