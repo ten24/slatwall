@@ -55,7 +55,7 @@ Notes:
 <hb:HibachiEntityActionBar type="listing" object="#rc.entityQueueSmartList#" showCreate="false">
 </hb:HibachiEntityActionBar>
 
-<cfset local.entityQueueCollectionList = getHibachiScope().getService('HibachiService').getEntityQueueCollectionList()/>
+<cfset local.entityQueueCollectionList = getHibachiScope().getService('HibachiEntityQueueService').getEntityQueueCollectionList()/>
 	<cfset local.displayProperties = "createdDateTime,processMethod,baseObject,baseID"/>
 	<cfset local.entityQueueCollectionList.setDisplayProperties(
 	local.displayProperties,
@@ -78,5 +78,6 @@ Notes:
 		usingPersonalCollection="true"
 		personalCollectionKey='#request.context.entityactiondetails.itemname#'
 		recordDetailAction="admin:entity.detailentityqueue"
+		recordEditAction="admin:entity.editentityqueue"
 	>
 	</hb:HibachiListingDisplay>
