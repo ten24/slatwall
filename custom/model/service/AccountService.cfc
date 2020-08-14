@@ -446,6 +446,8 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
     		rethrow;
         }
 		ormStatelessSession.close();
+		
+		getService('HibachiEventService').announceEvent('afterAccountUpdateSponsorSuccess', {'account':account, 'entity':account});
 
 	}
 	

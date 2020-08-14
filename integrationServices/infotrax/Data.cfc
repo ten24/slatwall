@@ -247,29 +247,11 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 				var account = relatedToAccount ? arguments.entity.getAccount() : arguments.entity;
 				
 				if( structKeyExists(iceResponse, 'marketpartnerid') ){
-
-					if( !isNull(account.getUplineMPAccount()) ){
-						var oldUplineMPAccount = account.getUplineMPAccount(); 
-					} 
 				
 					var newUplineMPAccount = getService('accountService').getAccountByAccountNumber(iceResponse.marketpartnerid);
 					
-					if( !isNull(newUplineMPAccount) ) { 
-
-						if(
-							(
-								isNull(oldUplineMPAccount) || 
-								oldUplineMPAccount.getAccountCode() != iceResponse.marketpartnerid 
-							)
-						){
-							account.setUplineMPAccount(newUplineMPAccount);
-							account.setOwnerAccount(newUplineMPAccount);
-							getService('HibachiEventService').announceEvent('afterAccountUplineMPAccountChangedSuccess', {'account':account, 'entity':account});
-						}
-
-						if(!isNull(oldUplineMPAccount) && oldUplineMPAccount.getAccountCode() == iceResponse.marketpartnerid ){
-							getService('HibachiEventService').announceEvent('afterAccountUplineMPAccountNotChangedSuccess', {'account':account, 'entity':account});
-						} 
+					if( !isNull(newUplineMPAccount) ){
+						account.setUplineMPAccount(newUplineMPAccount);
 					}
 				}
 				
