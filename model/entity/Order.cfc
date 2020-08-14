@@ -247,6 +247,7 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
     property name="retailValueVolumeTotal" persistent="false";
     property name="vipEnrollmentOrderFlag" persistent="false";
     property name="marketPartnerEnrollmentOrderID" persistent="false";
+    property name="creditCardLastFour" persistent="false";
     
     property name="calculatedVipEnrollmentOrderFlag" ormtype="boolean";
     property name="calculatedPersonalVolumeSubtotal" ormtype="big_decimal" hb_formatType="none";
@@ -2251,6 +2252,23 @@ public numeric function getPersonalVolumeSubtotal(){
         return orderItemCollectionList.getRecordsCount() > 0;
 	}
 	
+	public string function getCreditCardLastFour(){
+		if(!structKeyExists(variables,'creditCardLastFour')){
+			var creditCardLastFour = '';
+			var orderPayments = getOrderPayments();
+			if( arrayLen(orderPayments) ){
+				for( var orderPayment in orderPayments ){
+					if( !isNull(orderPayment.getCreditCardLastFour()) ){
+						creditCardLastFour = orderPayment.getCreditCardLastFour();
+						break;
+					}
+				}
+			}
+			variables.creditCardLastFour = creditCardLastFour;
+		}
+		return variables.creditCardLastFour;
+	}
+	
 	/**
 	 * This validates that the orders site matches the accounts created site
 	 * if the order has an account already.
@@ -2459,9 +2477,9 @@ public numeric function getPersonalVolumeSubtotal(){
 					total+=order.calculatedTotal;
 				}
 			}
-			
+
 			total += this.getTotal();
-            
+
             var maxAmountAllowedToSpendDuringInitialEnrollmentPeriod = site.setting("siteMaxAmountAllowedToSpendInInitialEnrollmentPeriod");//200
 			//If adding the order item will increase the order to over 200 EU return false  
 			if (total > maxAmountAllowedToSpendDuringInitialEnrollmentPeriod){
