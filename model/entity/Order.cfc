@@ -1035,7 +1035,7 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 		 orderItemCollectionList.addFilter('order.orderID', this.getOrderID());
 		 orderItemCollectionList.addFilter('rewardSkuFlag', 1);
 		 orderItemCollectionList.setPageRecordsShow(1);
-		 return arrayLen(orderItemCollectionList.getRecords());
+		 return arrayLen(orderItemCollectionList.getPageRecords(formatRecords=false));
 	}
 	
 	public numeric function getPaymentAmountAuthorizedTotal() {
