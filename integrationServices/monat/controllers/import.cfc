@@ -580,6 +580,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			var order = QueryExecute("SELECT orderID FROM swOrder where ordernumber = '#each.orders_ordernumber_delete#' ");
 			var sql = "
 				DELETE i FROM swInventory i INNER JOIN swOrderDeliveryItem od ON i.orderDeliveryItemID = od.orderDeliveryItemID INNER JOIN swOrderItem oi ON od.orderItemID = oi.orderItemID WHERE oi.orderID = '#order.orderID#';
+				DELETE FROM SwOpenOrderItem WHERE orderID = '#order.orderID#';
 				DELETE od FROM swOrderDeliveryItem od INNER JOIN swOrderItem oi ON od.orderItemID = oi.orderItemID WHERE oi.orderID = '#order.orderID#';
 				DELETE ta FROM swTaxApplied ta INNER JOIN swOrderItem oi ON ta.orderItemID = oi.orderItemID WHERE oi.orderID = '#order.orderID#';
 				DELETE ta FROM swTaxApplied ta INNER JOIN swOrderFulfillment of ON ta.orderFulfillmentID = of.orderFulfillmentID WHERE of.orderID = '#order.orderID#';
@@ -595,7 +596,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				DELETE FROM swOrderFulfillment WHERE orderID = '#order.orderID#';
 				DELETE FROM swPromotionApplied WHERE orderID = '#order.orderID#';
 				DELETE FROM swOrderReturn WHERE orderID = '#order.orderID#';
-				DELETE FROM SwOpenOrderItem WHERE orderID = '#order.orderID#';
 				DELETE FROM swComment WHERE remoteID = '#order.orderID#';
 				DELETE FROM swCommentRelationship WHERE orderID = '#order.orderID#';
 				DELETE FROM swOrder WHERE orderID = '#order.orderID#';
