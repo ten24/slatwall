@@ -42,16 +42,16 @@
 		//Quantity Delivered on Order
 		public array function getQDOO(required string productID, string productRemoteID){
 			var q = new Query();
-			var sql = "SELECT 
+			var sql = "SELECT a.*, location.locationIDPath as locationIDPath 
+						FROM (SELECT 
 					    coalesce(sum(ooi.quantityDelivered), 0) as quantity, 
 					    ooi.skuID as skuID, 
 					    ooi.stockID as stockID, 
-					    ooi.locationID as locationID,
-					    location.locationIDPath as locationIDPath
+					    ooi.locationID as locationID
 					    FROM SwOpenOrderItem ooi 
-					        left join SwLocation location on ooi.locationID=location.locationID 
 					    WHERE ooi.productID=:productID 
-					    GROUP BY ooi.skuID, ooi.stockID, ooi.locationID, location.locationIDPath
+					    GROUP BY ooi.skuID, ooi.stockID, ooi.locationID ) a
+					    LEFT JOIN SwLocation location ON a.locationID=location.locationID 
 						  	 ";
 			q.addParam(name="productID", value="#arguments.productID#", cfsqltype="CF_SQL_VARCHAR");	
 			q.setSQL(sql);
