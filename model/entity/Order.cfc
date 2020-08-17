@@ -1030,7 +1030,15 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 	public boolean function isOrderFullyDelivered(){
 		return getQuantityUndelivered() == 0 && getQuantityUnreceived() == 0;
 	}
-
+	
+	public boolean function hasDropSku(){
+		 var orderItemCollectionList = getOrderService().getOrderItemCollectionList();
+		 orderItemCollectionList.addFilter('order.orderID', this.getOrderID());
+		 orderItemCollectionList.addFilter('rewardSkuFlag', 1);
+		 orderItemCollectionList.setPageRecordsShow(1);
+		 return arrayLen(orderItemCollectionList.getPageRecords(formatRecords=false));
+	}
+	
 	public numeric function getPaymentAmountAuthorizedTotal() {
 		var totalPaymentsAuthorized = 0;
 
