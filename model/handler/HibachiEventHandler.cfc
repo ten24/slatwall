@@ -17,8 +17,10 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 		if(arguments.workflowTrigger.getWorkflow().getWorkflowObject() == 'EntityQueue'){
 			//reset items that have an abandoned server
 			getService('HibachiEntityQueueService').resetTimedOutEntityQueueItems(arguments.timeout);
+			
 			//reserve items based on fetchSize to be processed by specific server
-			getService('HibachiEntityQueueService').claimEntityQueueItemsByServer(arguments.workflowTrigger.getCollection(), arguments.workflowTrigger.getCollectionFetchSize());
+			getService('HibachiEntityQueueService').claimEntityQueueItemsByServer(arguments.workflowTrigger.getCollection(), arguments.workflowTrigger.getCollectionFetchSize(), val(arguments.workflowTrigger.getMaxTryCount()));
+			arguments.workflowTrigger.getCollection().addDisplayProperty('tryCount');
 			arguments.workflowTrigger.getCollection().addFilter('serverInstanceKey',getHibachiScope().getServerInstanceKey());
 		}
 	}

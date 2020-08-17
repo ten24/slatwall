@@ -257,30 +257,6 @@ component extends="HibachiService" accessors="true" output="false" {
 					var scheduleCollection = arguments.workflowTrigger.getCollection();
 					var currentObjectName = arguments.workflowTrigger.getCollection().getCollectionObject();
 					
-					if(currentObjectName == 'EntityQueue' && isNumeric(arguments.workflowTrigger.getMaxTryCount())){
-						scheduleCollection.addDisplayProperty('tryCount');
-						scheduleCollection.addFilter(
-							propertyIdentifier = 'tryCount',
-							value = arguments.workflowTrigger.getMaxTryCount(),
-							comparisonOperator = "<=",
-							filterGroupAlias = "maxTryCount"
-						);
-						
-						scheduleCollection.addFilter(
-							propertyIdentifier = 'entityQueueDateTime',
-							value = 'NULL',
-							comparisonOperator = 'IS',
-							filterGroupAlias = 'processingTime'
-						);
-						
-						scheduleCollection.addFilter(
-							logicalOperator='OR',
-							propertyIdentifier = 'entityQueueDateTime',
-							value = now(),
-							comparisonOperator = '<=',
-							filterGroupAlias = 'processingTime'
-						);
-					}
 				
 					if(arguments.workflowTrigger.getCollectionPassthrough()){
 							
@@ -375,6 +351,7 @@ component extends="HibachiService" accessors="true" output="false" {
 				}
 	
 			} catch(any e){
+				rethrow;
 				if(!isNull(workflowTriggerHistory)) {
 					// Update the workflowTriggerHistory
 					workflowTriggerHistory.setSuccessFlag(false);

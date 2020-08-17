@@ -116,6 +116,7 @@ component accessors="true" output="false" extends="HibachiService" {
 
 	public any function processEntityQueueArray(required array entityQueueArray, boolean useThread = false, numeric maxTryCount = 3, numeric retryDelay = 0){
 
+			this.logHibachi('Queue Items Count: #arraylen(entityQueueArray)#',true);
 		if(!arraylen(arguments.entityQueueArray)){
 			return;
 		}
