@@ -200,7 +200,9 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			return variables.nextDeliveryScheduleDate;
 		}
 	}
+	
 	public any function getActiveSkuPricesForProductByCurrencyCode(required string currencyCode){
+
 		var skuPriceCollectionList = getService('skuService').getSkuPriceCollectionList();
 		skuPriceCollectionList.addFilter('sku.product.productID', this.getProductID());
 		skuPriceCollectionList.addFilter('activeFlag', 1);
@@ -221,6 +223,20 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		
 		return priceStruct;
 	}
+	
+	public any function getCorrectSkuForPriceGroup(required string currencyCode, required number priceGroupCode){
+		var skuPrices = this.getActiveSkuPricesForProductByCurrencyCode(arguments.currencyCode);
+
+		var skuID = ( !isNull(skuPrices[arguments.priceGroupCode]) && arrayLen(skuPrices[arguments.priceGroupCode]) && !isNull(skuPrices[arguments.priceGroupCode][1]['sku_skuID']) )
+    				? skuPrices[arguments.priceGroupCode][1]['sku_skuID'] : '';
+		if(len(skuID)){
+			return getService('skuService').getSku(skuID);
+		}else{
+			return this.getDefaultSku();
+		}
+    		
+	}
+	
 	public boolean function getDeferredRevenueFlag(){
 		if(!structKeyExists(variables,'deferredRevenueFlag')){
 			return false;
