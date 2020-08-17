@@ -351,7 +351,6 @@ component extends="HibachiService" accessors="true" output="false" {
 				}
 	
 			} catch(any e){
-				rethrow;
 				if(!isNull(workflowTriggerHistory)) {
 					// Update the workflowTriggerHistory
 					workflowTriggerHistory.setSuccessFlag(false);
