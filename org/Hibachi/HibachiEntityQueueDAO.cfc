@@ -87,6 +87,22 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 		
 		var newCollection = arguments.collection.duplicateCollection();
 		newCollection.addFilter('serverInstanceKey', 'NULL', 'IS');
+
+		newCollection.addFilter(
+			propertyIdentifier = 'entityQueueDateTime',
+			value = 'NULL',
+			comparisonOperator = 'IS',
+			filterGroupAlias = 'processingTime'
+		);
+
+		newCollection.addFilter(
+			logicalOperator='OR',
+			propertyIdentifier = 'entityQueueDateTime',
+			value = now(),
+			comparisonOperator = '<=',
+			filterGroupAlias = 'processingTime'
+		);
+
 		var entityQueueIDs = newCollection.getPrimaryIDList(fetchSize * 2);
 		
 		var queryService = new query();
@@ -100,10 +116,6 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 					SET serverInstanceKey=:serverInstanceKey,
 					entityQueueProcessingDateTime = :dateTimeNow
 					WHERE 
-						tryCount <= :maxTryCount
-					AND
-						( entityQueueDateTime IS NULL OR entityQueueDateTime <= :dateTimeNow )
-					AND
 						entityQueueID IN (:entityQueueIDs)
 					AND
 						serverInstanceKey IS NULL
