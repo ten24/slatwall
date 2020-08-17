@@ -2263,15 +2263,18 @@ public numeric function getPersonalVolumeSubtotal(){
 	public string function getCreditCardLastFour(){
 		if(!structKeyExists(variables,'creditCardLastFour')){
 			var creditCardLastFour = '';
-			var orderPayments = getOrderPayments();
-			if( arrayLen(orderPayments) ){
-				for( var orderPayment in orderPayments ){
-					if( !isNull(orderPayment.getCreditCardLastFour()) ){
-						creditCardLastFour = orderPayment.getCreditCardLastFour();
-						break;
-					}
-				}
+			
+			var orderPaymentCollection = getService('OrderService').getOrderPaymentCollectionList();
+			orderPaymentCollection.addFilter('orderPaymentStatusType.systemCode','opstActive');
+			orderPaymentCollection.addFilter('paymentMethod.paymentMethodType','creditCard');
+			orderPaymentCollection.addOrderBy('createdDateTime|desc');
+			orderPaymentCollection.setDisplayProperties('creditCardLastFour');
+			orderPaymentCollection.setPageRecordsShow(1);
+			var orderPayments = orderPaymentCollection.getPageRecords();
+			if(arraylen(orderPayments)){
+				creditCardLastFour = orderPayments[1].creditCardLastFour;
 			}
+			
 			variables.creditCardLastFour = creditCardLastFour;
 		}
 		return variables.creditCardLastFour;
