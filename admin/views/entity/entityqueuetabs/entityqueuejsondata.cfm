@@ -46,21 +46,12 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
+<cfparam name="rc.entityQueueData" type="any" />
+<cfparam name="rc.edit" type="boolean" />
 
-<cfparam name="rc.entityqueue" type="any">
-<cfparam name="rc.edit" type="boolean" default="false" />
-
-<cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.entityqueue#" edit="#rc.edit#" sRedirectAction="admin:entity.detailentityqueue">
-		<hb:HibachiEntityActionBar type="detail" object="#rc.entityqueue#" showcreate="false" showedit="false" showcancel="false">
-		</hb:HibachiEntityActionBar>
-		
-		<hb:HibachiEntityDetailGroup object="#rc.entityqueue#">
-			<hb:HibachiEntityDetailItem view="admin:entity/entityqueuetabs/basic" open="true" />
-			<hb:HibachiEntityDetailItem view="admin:entity/entityqueuetabs/entityqueuejsondata" />
-		</hb:HibachiEntityDetailGroup>
-	</hb:HibachiEntityDetailForm>
-</cfoutput>
+<hb:HibachiPropertyList>
+	<hb:HibachiPropertyDisplay object="#rc.entityQueueData#" property="entityQueueData" edit="#rc.edit#" fieldType="wysiwyg" displayType="plain">
+</hb:HibachiPropertyList>

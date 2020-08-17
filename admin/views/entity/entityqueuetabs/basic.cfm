@@ -2,12 +2,12 @@
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
 <cfparam name="rc.entityqueue" type="any" />
-<cfparam name="rc.edit" type="boolean" default="false" />
+<cfparam name="rc.edit" type="boolean"/>
 <cfoutput>
 	<hb:HibachiPropertyRow>
 		<hb:HibachiPropertyList>
 			<hb:HibachiPropertyDisplay object="#rc.entityqueue#" property="baseObject" >
-			<hb:HibachiPropertyDisplay object="#rc.entityqueue#" property="processMethod" >
+			<hb:HibachiPropertyDisplay object="#rc.entityqueue#" property="processMethod" edit="#rc.edit#" >
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 </cfoutput>
