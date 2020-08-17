@@ -77,6 +77,7 @@ Notes:
 		collectionList="#local.entityQueueCollectionList#"
 		usingPersonalCollection="true"
 		personalCollectionKey='#request.context.entityactiondetails.itemname#'
-		recordDetailAction="admin:entity.detailentityqueue"
+		recordDetailAction="admin:entity.preprocessentityqueue_updatedata"
+		recordEditQueryString="modal=1"
 	>
 	</hb:HibachiListingDisplay>
