@@ -19,7 +19,7 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 			getService('HibachiEntityQueueService').resetTimedOutEntityQueueItems(arguments.timeout);
 			
 			//reserve items based on fetchSize to be processed by specific server
-			getService('HibachiEntityQueueService').claimEntityQueueItemsByServer(arguments.workflowTrigger.getCollection(), arguments.workflowTrigger.getCollectionFetchSize(), val(arguments.workflowTrigger.getMaxTryCount()));
+			getService('HibachiEntityQueueService').claimEntityQueueItemsByServer(arguments.workflowTrigger.getCollection(), arguments.workflowTrigger.getCollectionFetchSize());
 			arguments.workflowTrigger.getCollection().addDisplayProperty('tryCount');
 			arguments.workflowTrigger.getCollection().addFilter('serverInstanceKey',getHibachiScope().getServerInstanceKey());
 		}

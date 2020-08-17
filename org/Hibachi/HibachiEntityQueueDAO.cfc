@@ -83,7 +83,7 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 		queryService.execute(sql=sql);
 	}
 	
-	public any function claimEntityQueueItemsByServer(required any collection, required numeric fetchSize, numeric maxTryCount = 3){
+	public any function claimEntityQueueItemsByServer(required any collection, required numeric fetchSize){
 		
 		var newCollection = arguments.collection.duplicateCollection();
 		newCollection.addFilter('serverInstanceKey', 'NULL', 'IS');
@@ -109,7 +109,6 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 		queryService.addParam(name='serverInstanceKey', value=getHibachiScope().getServerInstanceKey(), CFSQLTYPE='CF_SQL_STRING');
 		queryService.addParam(name='entityQueueIDs', value=entityQueueIDs, CFSQLTYPE='CF_SQL_STRING', list=true);
 		queryService.addParam(name='dateTimeNow', value='#now()#', CFSQLTYPE="CF_SQL_TIMESTAMP");
-		queryService.addParam(name='maxTryCount', value='#arguments.maxTryCount#', CFSQLTYPE="CF_SQL_NUMERIC");
 		
 		var sql =	"UPDATE 
 						SwEntityQueue 
