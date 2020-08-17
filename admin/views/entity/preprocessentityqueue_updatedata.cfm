@@ -50,34 +50,17 @@ Notes:
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
 
-<cfparam name="rc.entityQueueSmartList" type="any" />
+<cfparam name="rc.entityQueue" type="any" />
+<cfparam name="rc.processObject" type="any" />
+<cfparam name="rc.edit" type="boolean" />
 
-<hb:HibachiEntityActionBar type="listing" object="#rc.entityQueueSmartList#" showCreate="false">
-</hb:HibachiEntityActionBar>
+<cfoutput>
+	<hb:HibachiEntityProcessForm entity="#rc.entityQueue#" edit="#rc.edit#" sRedirectAction="admin:entity.entityqueue">
 
-<cfset local.entityQueueCollectionList = getHibachiScope().getService('HibachiEntityQueueService').getEntityQueueCollectionList()/>
-	<cfset local.displayProperties = "baseObject,processMethod,tryCount,createdDateTime"/>
-	<cfset local.entityQueueCollectionList.setDisplayProperties(
-	local.displayProperties,
-	{
-		isVisible=true,
-		isSearchable=true,
-		isDeletable=true
-	})/>
-	
-	<cfset local.entityQueueCollectionList.addDisplayProperty(
-	displayProperty='entityQueueID',
-	columnConfig={
-		isVisible=false,
-		isSearchable=false,
-		isDeletable=false
-	})/>
-	
-		<hb:HibachiListingDisplay 
-		collectionList="#local.entityQueueCollectionList#"
-		usingPersonalCollection="true"
-		personalCollectionKey='#request.context.entityactiondetails.itemname#'
-		recordDetailAction="admin:entity.detailentityqueue"
-		recordEditAction="admin:entity.edit#lcase(rc.entityQueueCollectionList.getCollectionObject())#"
-	>
-	</hb:HibachiListingDisplay>
+		<hb:HibachiEntityActionBar type="preprocess" object="#rc.entityQueue#">
+		</hb:HibachiEntityActionBar>
+
+		<hb:HibachiPropertyDisplay object="#rc.processObject#" property="processMethod" edit="#rc.edit#">
+
+	</hb:HibachiEntityProcessForm>
+</cfoutput>
