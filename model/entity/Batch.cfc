@@ -79,11 +79,28 @@ component entityname="SlatwallBatch" table="SwBatch" persistent="true" accessors
 	// ============ START: Non-Persistent Property Methods =================
     
     public numeric function getBatchEntityQueueItemsCount(){
-        return 0; // TODO (use dao or collection)
+        
+        if( !StructKeyExists(variables, 'batchEntityQueueItemsCount') ){
+            
+            if( this.isNew() ){
+                variables.batchEntityQueueItemsCount = 0;
+            } else {
+                variables.batchEntityQueueItemsCount = this.getBatchEntityQueueItemsCollectionList().getRecordsCount();
+            }
+        }
+        return variables.batchEntityQueueItemsCount;
     }
     
     public numeric function getBatchEntityQueueFailureItemsCount(){
-        return 0; // TODO (use dao or collection)
+         if( !StructKeyExists(variables, 'batchEntityQueueFailureItemsCount') ){
+            
+            if( this.isNew() ){
+                variables.batchEntityQueueFailureItemsCount = 0;
+            } else {
+                variables.batchEntityQueueFailureItemsCount = this.getBatchEntityQueueFailureItemsCollectionList().getRecordsCount();
+            }
+        }
+        return variables.batchEntityQueueFailureItemsCount;
     }
     
 	// ============  END:  Non-Persistent Property Methods =================
@@ -99,4 +116,18 @@ component entityname="SlatwallBatch" table="SwBatch" persistent="true" accessors
 	// =================== START: ORM Event Hooks  =========================
 
 	// ===================  END:  ORM Event Hooks  =========================
+	
+	public any function getBatchEntityQueueItemsCollectionList(){
+	    var collectionList = getService('hibachiEntityQueueService').getEntityQueueCollectionList();
+        collectionList.setDisplayProperties('entityQueueID');
+        collectionList.addFilter('batch.batchID', this.getBatchID() );
+        return collectionList;
+	}
+	
+	public any function getBatchEntityQueueFailureItemsCollectionList(){
+	    var collectionList = getService('hibachiEntityQueueService').getEntityQueueFailureCollectionList();
+        collectionList.setDisplayProperties('entityQueueFailureID');
+        collectionList.addFilter('batch.batchID', this.getBatchID() );
+        return collectionList;
+	}
 }
