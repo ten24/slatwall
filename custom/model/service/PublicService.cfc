@@ -1348,6 +1348,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         productCollectionList.addDisplayProperty('urlTitle');
         productCollectionList.addDisplayProperty('skus.imageFile');
         productCollectionList.addDisplayProperty('skus.displayOnlyFlag');
+        productCollectionList.addDisplayProperty('skus.skuPrices.personalVolume');
+        productCollectionList.addDisplayProperty('skus.skuPrices.price');
         
         var currentRequestSite = getService('siteService').getSiteByCMSSiteID(arguments.data.cmsSiteID);
         if(!isNull(currentRequestSite) && currentRequestSite.hasLocation()){
@@ -1362,9 +1364,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         productCollectionList.addFilter(propertyIdentifier = 'publishedEndDateTime',value='NULL', comparisonOperator="IS", logicalOperator="OR", filterGroupAlias = 'publishedEndDateTimeFilter');
         productCollectionList.addFilter('skus.activeFlag',1);
         productCollectionList.addFilter('skus.publishedFlag',1);
-        productCollectionList.addFilter(propertyIdentifier ="skus.skuPrices.price", value= 0.00, comparisonOperator = "!=", filterGroupAlias="skuPrice");
-        productCollectionList.addFilter(propertyIdentifier='skus.skuPrices.currencyCode', value= currencyCode, comparisonOperator="=", filterGroupAlias="skuPrice");
-        productCollectionList.addFilter(propertyIdentifier='skus.skuPrices.priceGroup.priceGroupCode',value=priceGroupCode,filterGroupAlias="skuPrice");
         productCollectionList.addFilter('productType.parentProductType.urlTitle','other-income','!=');
         productCollectionList.addFilter('sites.siteID',site.getSiteID());
         productCollectionList.addFilter('skus.skuPrices.promotionReward.promotionRewardID','NULL','IS')
@@ -1384,11 +1383,19 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         if(structKeyExists(arguments.data,"hideProductPacksAndDisplayOnly") && arguments.data.hideProductPacksAndDisplayOnly){
             productCollectionList.addFilter(propertyIdentifier ="skus.displayOnlyFlag", value= 1, comparisonOperator= "!=");
             productCollectionList.addFilter('productType.urlTitle','starter-kit','!=');
-            productCollectionList.addFilter('productType.urlTitle','productPack','!=');    
-            productCollectionList.addDisplayProperty('skus.skuPrices.personalVolume');
-            productCollectionList.addDisplayProperty('skus.skuPrices.price');
+            productCollectionList.addFilter('productType.urlTitle','productPack','!=');
+            productCollectionList.addFilter(propertyIdentifier ="skus.skuPrices.price", value= 0.00, comparisonOperator = "!=");
+            productCollectionList.addFilter(propertyIdentifier='skus.skuPrices.currencyCode', value= currencyCode, comparisonOperator="=");
+            productCollectionList.addFilter(propertyIdentifier='skus.skuPrices.priceGroup.priceGroupCode',value=priceGroupCode);
         }else{
-            productCollectionList.addFilter(propertyIdentifier ="skus.displayOnlyFlag", value= 1, comparisonOperator= "=", logicalOperator="OR", filterGroupAlias="skuPrice");
+            productCollectionList.addFilterGroupWithAlias('hasSkuPriceOrDisplayOnly','AND');
+            productCollectionList.addFilterGroupWithAlias('displayOnly','AND','hasSkuPriceOrDisplayOnly');
+            productCollectionList.addFilter(propertyIdentifier ="skus.displayOnlyFlag", value= 1, comparisonOperator= "=", filterGroupAlias="hasSkuPriceOrDisplayOnly.displayOnly");
+            productCollectionList.addFilter(propertyIdentifier ="skus.skuPrices.skuPriceID", value="null", comparisonOperator="IS",filterGroupAlias="hasSkuPriceOrDisplayOnly.displayOnly");
+            productCollectionList.addFilterGroupWithAlias('hasSkuPrice','OR','hasSkuPriceOrDisplayOnly');
+            productCollectionList.addFilter(propertyIdentifier ="skus.skuPrices.price", value= 0.00, comparisonOperator = "!=", filterGroupAlias="hasSkuPriceOrDisplayOnly.hasSkuPrice");
+            productCollectionList.addFilter(propertyIdentifier='skus.skuPrices.currencyCode', value= currencyCode, comparisonOperator="=", filterGroupAlias="hasSkuPriceOrDisplayOnly.hasSkuPrice");
+            productCollectionList.addFilter(propertyIdentifier='skus.skuPrices.priceGroup.priceGroupCode',value=priceGroupCode,filterGroupAlias="hasSkuPriceOrDisplayOnly.hasSkuPrice");
         }
 
         return { productCollectionList: productCollectionList, priceGroupCode: priceGroupCode, currencyCode: currencyCode };
@@ -1464,14 +1471,10 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         productCollectionList.setOrderBy('productName|DESC');
         productCollectionList.setPageRecordsShow(arguments.data.pageRecordsShow);
         productCollectionList.setCurrentPageDeclaration(arguments.data.currentPage);
-        // writeDump(productCollectionList.getHQL());abort;
+
         var records = productCollectionList.getPageRecords();
-        writeDump(var=arraylen(records),label="Total PageRecords");
-        writeDump(records);
         var nonPersistentRecords = getCommonNonPersistentProductProperties(productCollectionList.getPageRecords(), priceGroupCode, currencyCode, siteCode);
-        writeDump(var=structCount(nonPersistentRecords),label="final page records");
-        writeDump(nonPersistentRecords);
-        abort;
+        
 		arguments.data['ajaxResponse']['productList'] = nonPersistentRecords;
         arguments.data['ajaxResponse']['recordsCount'] = productCollectionList.getRecordsCount();
     }
@@ -1676,11 +1679,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                 'calculatedAllowBackorderFlag': record.calculatedAllowBackorderFlag,
                 'displayOnlyFlag': record.skus_displayOnlyFlag
             };
-            
-            if(structKeyExists(productMap,record.skus_skuID)){
-                writeDump(var=productMap[record.skus_skuID],label="EXISTING");
-                writeDump(var=data,label="NEW");
-            }
+
             productMap[record.skus_skuID] = data;
             //add skuID's to skuID array for query below
             skuIDsToQuery = listAppend(skuIDsToQuery, record.skus_skuID);

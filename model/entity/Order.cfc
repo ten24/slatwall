@@ -2467,9 +2467,9 @@ public numeric function getPersonalVolumeSubtotal(){
 					total+=order.calculatedTotal;
 				}
 			}
-			
+
 			total += this.getTotal();
-            
+
             var maxAmountAllowedToSpendDuringInitialEnrollmentPeriod = site.setting("siteMaxAmountAllowedToSpendInInitialEnrollmentPeriod");//200
 			//If adding the order item will increase the order to over 200 EU return false  
 			if (total > maxAmountAllowedToSpendDuringInitialEnrollmentPeriod){
