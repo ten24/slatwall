@@ -58,7 +58,7 @@ Notes:
     <cfset local.batchCollectionList = getHibachiScope().getService('HibachiService').getBatchCollectionList()/>
 
 	<cfset local.batchCollectionList.setDisplayProperties( 
-	"batchDescription,baseObject,calculatedBatchEntityQueueItemsCount,calculatedBatchEntityQueueFailureItemsCount,createdDateTime", {
+	"batchDescription,baseObject,initialEntityQueueItemsCount,initialEntityQueueFailureItemsCount,createdDateTime", {
 		isVisible=true,
 		isDeletable=true,
 		isSearchable=true
