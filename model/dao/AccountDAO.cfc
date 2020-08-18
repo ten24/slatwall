@@ -502,6 +502,16 @@ Notes:
 		</cfloop>
 
 	</cffunction>
+	
+	<cffunction name="setAccountPaymentMethodInactive" returntype="void" access="public">
+		<cfargument name="accountPaymentMethodID" required="true"  />
+		<cfset var rs = "" />
+		<cfquery name="rs">
+			UPDATE SwAccountPaymentMethod
+			SET activeFlag = false
+			WHERE accountPaymentMethodID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.accountPaymentMethodID#" />
+		</cfquery>
+	</cffunction>
 
 	<cffunction name="removeAccountFromAllSessions" returntype="void" access="public">
 		<cfargument name="accountID" required="true"  />

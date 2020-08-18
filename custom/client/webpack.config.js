@@ -85,6 +85,11 @@ let devConfig = {
 
 devConfig.module = {
     rules: [
+        { 
+            test: /\.js$/, 
+            enforce: 'pre', 
+            use: ['source-map-loader'] 
+        },
 		{
 			test: /\.tsx?$/i,
 			use: [
@@ -213,5 +218,6 @@ devConfig.plugins =  [
     })
 
 ];   
+
 
 module.exports = devConfig;

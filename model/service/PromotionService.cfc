@@ -48,6 +48,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="skuService" type="any";
 
 	private void function clearPreviouslyAppliedPromotionsForOrderItems(required array orderItems){
+		
 		var orderService = getService('orderService');
 		// Clear all previously applied promotions for order items
 		for(var oi=1; oi<=arrayLen(arguments.orderItems); oi++) {
@@ -60,13 +61,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					&& appliedPromotion.getPromotionReward().getRewardType() =='rewardSku' 
 					&& !isNull(orderItem.getOrder())
 					&& !appliedPromotion.getPromotionReward().getPromotionRewardProcessingFlag()
-				){
+				){	
 					order = orderItem.getOrder();
 					order.removeOrderItem(orderItem);
 					orderService.saveOrder(order);
 				}
 			}
-			ArrayClear(orderItem.getAppliedPromotions());
+			ArrayClear(orderItem.getAppliedPromotions());	
 		}
 	}
 
@@ -409,7 +410,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(arguments.promotionReward.getPromoHasRan()){
 			return;
 		}
-		
+	
 		promotionReward.setPromotionRewardProcessingFlag(true);
 		
 		arguments.promotionReward.setPromoHasRan(true);
@@ -438,6 +439,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		for(var skuRecord in rewardSkusCollection){
+		
 			var addOrderItemData = {
 				quantity: skuRewardQuantity,
 				skuID: skuRecord['skuID'],
@@ -453,22 +455,30 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public void function addRewardSkusToOrder(required array itemsToBeAdded, required any order, required any fulfillment){
-	
+
 		if(arguments.order.getDropSkuRemovedFlag()){
 			return;
 		}
 		
 		var skuService = getService('skuService');
+		var currencyCode = arguments.order.getCurrencyCode();
+		if(isNull(currencyCode)){
+			return;
+		}
 		
 		for(var item in arguments.itemsToBeAdded){
+			
 			var sku = skuService.getSku(item.skuID);
 			if(isNull(sku)){
 				continue;
 			}
 
 			var newOrderItem = getService("OrderService").newOrderItem();
-			newOrderItem.setPrice(0);
-			newOrderItem.setSkuPrice(0);
+			var priceFields = ['taxableAmount','listPrice', 'price', 'skuPrice'];
+			for(var priceField in priceFields){
+				newOrderItem.invokeMethod('set#priceField#', {1=0});
+			}
+			
 			newOrderItem.setUserDefinedPriceFlag(true);
 			newOrderItem.setOrderItemType( getService('typeService').getTypeBySystemCode('oitSale') );
 			newOrderItem.setOrderFulfillment( arguments.fulfillment );
@@ -476,13 +486,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			newOrderItem.setSku(sku);
 			newOrderItem.setOrder(arguments.order);
 			newOrderItem.setRewardSkuFlag(true);
+			newOrderItem.setCurrencyCode(currencyCode);
+	
 			getService('orderService').saveOrderItem(newOrderItem);
 			
-			if(!newOrderItem.hasErrors() && !arguments.order.hasErrors()){
+			if(!newOrderItem.hasErrors()){
+
 				getPromotionDAO().insertAppliedPromotionFromOrderItem(
 						orderItemID=newOrderItem.getOrderItemID(), 
 						promotionID =item.promotion.getPromotionID(),
-						promotionRewardID= item.promotionReward.getPromotionRewardID()
+						promotionRewardID= item.promotionReward.getPromotionRewardID(),
+						skuID=sku.getSkuID()
 					);
 			}
 		}
@@ -494,8 +508,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(arguments.order.getNewFlag()){
 			getService('hibachiService').saveOrder(arguments.order);
 		}
-
-		if(arguments.order.isOrderPaidFor()){
+		
+		if(arguments.order.isOrderPaidFor() && !arguments.order.hasDropSku()){
 			return;
 		}
 
@@ -514,6 +528,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
  		}
 
  		var orderFulfillmentList ="";
+ 		
  		for(var orderFulfillment in arguments.order.getOrderFulfillments()){
  			if(!isNull(orderFulfillment.getShippingAddress())){
  				orderFulfillmentList = listAppend(orderFulfillmentList,orderFulfillment.getShippingAddress().getFullAddress());
@@ -534,9 +549,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		if(isNull(arguments.order.getPromotionCacheKey()) || arguments.order.getPromotionCacheKey() != promotionCacheKey){
 			arguments.order.setPromotionCacheKey(promotionCacheKey);
+		
 			// Sale & Exchange Orders
 			if( listFindNoCase("otSalesOrder,otExchangeOrder", arguments.order.getOrderType().getSystemCode()) ) {
-				
+	
 				clearPreviouslyAppliedPromotions(arguments.order);
 				clearPreviouslyAppliedPromotionMessages(arguments.order);
 				getHibachiScope().flushOrmSession();

@@ -312,21 +312,30 @@ component extends="Slatwall.model.service.PromotionService" {
 	}
 	
 	public void function addRewardSkusToOrder(required array itemsToBeAdded, required any order, required any fulfillment){
-		
+
 		if(arguments.order.getDropSkuRemovedFlag()){
 			return;
 		}
 		
 		var skuService = getService('skuService');
+		var currencyCode = arguments.order.getCurrencyCode();
+		if(isNull(currencyCode)){
+			return;
+		}
+		
 		for(var item in arguments.itemsToBeAdded){
+			
 			var sku = skuService.getSku(item.skuID);
 			if(isNull(sku)){
 				continue;
 			}
-			
+
 			var newOrderItem = getService("OrderService").newOrderItem();
-			newOrderItem.setPrice(0);
-			newOrderItem.setSkuPrice(0);
+			var priceFields = ['personalVolume', 'taxableAmount', 'commissionableVolume', 'retailCommission', 'productPackVolume', 'retailValueVolume', 'listPrice', 'price', 'skuPrice'];
+			for(var priceField in priceFields){
+				newOrderItem.invokeMethod('set#priceField#', {1=0});
+			}
+			
 			newOrderItem.setUserDefinedPriceFlag(true);
 			newOrderItem.setOrderItemType( getService('typeService').getTypeBySystemCode('oitSale') );
 			newOrderItem.setOrderFulfillment( arguments.fulfillment );
@@ -334,16 +343,19 @@ component extends="Slatwall.model.service.PromotionService" {
 			newOrderItem.setSku(sku);
 			newOrderItem.setOrder(arguments.order);
 			newOrderItem.setRewardSkuFlag(true);
+			newOrderItem.setCurrencyCode(currencyCode);
 			var showInCartFlag = item.promotionReward.getShowRewardSkuInCartFlag() ?: true;
 			newOrderItem.setShowInCartFlag(showInCartFlag);
+	
 			getService('orderService').saveOrderItem(newOrderItem);
 			
-			if(!newOrderItem.hasErrors() && !arguments.order.hasErrors()){
-				
+			if(!newOrderItem.hasErrors()){
+
 				getPromotionDAO().insertAppliedPromotionFromOrderItem(
 						orderItemID=newOrderItem.getOrderItemID(), 
 						promotionID =item.promotion.getPromotionID(),
-						promotionRewardID= item.promotionReward.getPromotionRewardID()
+						promotionRewardID= item.promotionReward.getPromotionRewardID(),
+						skuID=sku.getSkuID()
 					);
 			}
 		}

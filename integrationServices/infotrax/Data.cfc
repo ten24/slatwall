@@ -242,36 +242,18 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 				
 				if(structKeyExists(arguments.data.DTSArguments, 'distType')){
 					query &= ', upgradeSyncFlag = 0'	
+					
+					logHibachi('InfoTrax - DistType sent - Response: #serializeJson(iceResponse)#');
 				}
 				
 				var account = relatedToAccount ? arguments.entity.getAccount() : arguments.entity;
 				
 				if( structKeyExists(iceResponse, 'marketpartnerid') ){
-
-					if( !isNull(account.getUplineMPAccount()) ){
-						var oldUplineMPAccount = account.getUplineMPAccount(); 
-					} 			
 				
 					var newUplineMPAccount = getService('accountService').getAccountByAccountNumber(iceResponse.marketpartnerid);
 					
-					if( !isNull(newUplineMPAccount) ) { 
-
-						if(
-							(
-								isNull(oldUplineMPAccount) || 
-								oldUplineMPAccount.getAccountCode() != iceResponse.marketpartnerid 
-							)
-						){
-							account.setUplineMPAccount(newUplineMPAccount);
-
-							if(!isNull(oldUplineMPAccount)){
-								getService('HibachiEventService').announceEvent('afterAccountUplineMPAccountChangedSuccess', {'account' : newUplineMPAccount,'entity' : newUplineMPAccount, 'downlineAccount': account});
-							}	
-						}
-
-						if(!isNull(oldUplineMPAccount) && oldUplineMPAccount.getAccountCode() == iceResponse.marketpartnerid ){
-							getService('HibachiEventService').announceEvent('afterAccountUplineMPAccountNotChangedSuccess', {'account' : oldUplineMPAccount,'entity' : oldUplineMPAccount, 'downlineAccount': account});
-						} 
+					if( !isNull(newUplineMPAccount) ){
+						account.setUplineMPAccount(newUplineMPAccount);
 					}
 				}
 				
@@ -304,7 +286,11 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 			query &=' WHERE #filter#';
 			 
 			QueryExecute(query, params);
-			
+
+			if(structKeyExists(iceResponse, 'errors') && arrayLen(iceResponse.errors) ){
+				//make sure the record updates happened before we throw, for the next time call UPDATE instead of CREATE
+				throw('Record out of sync, force retry by Slatwall');
+			}
 			
 			if( !isNull(account) && isNull(account.getLastSyncedDateTime()) ){
 				getService('HibachiEventService').announceEvent('afterInfotraxAccountCreateSuccess',{ entity : account });

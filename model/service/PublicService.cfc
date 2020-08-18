@@ -1585,7 +1585,13 @@ component  accessors="true" output="false"
         }
 
         if (!isNull(newBillingAddress) && newBillingAddress.hasErrors()) {
-            this.addErrors(arguments.data, newBillingAddress.getErrors());
+            if(!isNull(paymentMethod)){
+                paymentMethod.addError('addOrderPayment',getHibachiScope().rbKey('validate.processOrder_AddOrderPayment.invalidBillingAddress'),true);
+                this.addErrors(arguments.data, paymentMethod.getErrors());
+                getDAO('AccountDAO').setAccountPaymentMethodInactive(paymentMethod.getAccountPaymentMethodID());
+            }else{
+                this.addErrors(arguments.data, newBillingAddress.getErrors());
+            }
             return;
         }
 

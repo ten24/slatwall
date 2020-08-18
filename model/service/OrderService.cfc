@@ -1857,8 +1857,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			newOrder.setPaymentLastRetryDateTime(now());
 			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has declined payment');
 			newOrder.clearHibachiErrors();
-			// newOrder = this.processOrder( newOrder, {}, 'updateOrderAmounts' );
-			newOrder = this.saveOrder(newOrder, updateOrderAmounts=false, updateShippingMethodOptions=false, checkNewAccountAddressSave=false); 
+
+			newOrder = this.saveOrder(order=newOrder, updateOrderAmounts=false, updateShippingMethodOptions=false, checkNewAccountAddressSave=false); 
 			ormFlush(); 
 			//fire retry payment failure event so it can be utilized in workflows
 			getHibachiEventService().announceEvent("afterOrderProcess_retryPaymentFailure", {"entity":newOrder, "order":newOrder});
@@ -1876,6 +1876,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		getHibachiScope().removeExcludedModifiedEntityName('TaxApplied');
 		getHibachiScope().removeExcludedModifiedEntityName('PromotionApplied');
+		newOrder.updateCalculatedProperties(runAgain=true, cascadeCalculateFlag=false);
 		return arguments.orderTemplate; 
 	}
 	
@@ -3732,7 +3733,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// First Re-Calculate the 'amounts' base on price groups
 
 			getPriceGroupService().updateOrderAmountsWithPriceGroups( arguments.order );
-
+		
 			// Then Re-Calculate the 'amounts' based on permotions ext.  This is done second so that the order already has priceGroup specific info added
 			getPromotionService().updateOrderAmountsWithPromotions( arguments.order );
 			
@@ -5376,7 +5377,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	public any function saveOrderItem(required any orderItem, struct data={}, string context="save", boolean updateOrderAmounts=true,boolean updateCalculatedProperties=false, boolean updateShippingMethodOptions=true) {
-
+		
+        if( !isNull(arguments.orderItem.getRewardSkuFlag()) && arguments.orderItem.getRewardSkuFlag()){
+           arguments.orderItem.setPrice(0);
+        }
+        
 		// Call the generic save method to populate and validate
 		arguments.orderItem = save(arguments.orderItem, arguments.data, arguments.context);
 		
@@ -5544,6 +5549,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	public any function deleteOrderItem( required any orderItem, updateOrderAmounts = true ) {
+	
 		getHibachiEventService().announceEvent("beforeOrderItemDelete", arguments);
 
 		// Check delete validation
@@ -5551,7 +5557,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			// Remove the primary fields so that we can delete this entity
 			var order = arguments.orderItem.getOrder();
-			order.setDropSkuRemovedFlag(true);
+		
+			if(arguments.orderItem.getRewardSkuFlag()){
+				order.setDropSkuRemovedFlag(true);	
+			}
+			
 			removeOrderItemAndChildItemRelationshipsAndDelete( arguments.orderItem );
 
 			// Recalculate the order amounts

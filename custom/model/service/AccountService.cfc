@@ -80,13 +80,8 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 				'entityName': 'Account'
 			},
 			{
-				'name': 'Account - After Account Upline MP Account Changed to Orginal Upline Success | afterAccountUplineMPAccountChangedSuccess',
-				'value': 'afterAccountUplineMPAccountChangedSuccess',
-				'entityName': 'Account'
-			},
-			{
-				'name': 'Account - After Account Upline MP Account Not Changed to Current Upline Success | afterAccountUplineMPAccountNotChangedSuccess',
-				'value': 'afterAccountUplineMPAccountNotChangedSuccess',
+				'name': 'Account - After Account Sponsor Changed Success | afterAccountUpdateSponsorSuccess',
+				'value': 'afterAccountUpdateSponsorSuccess',
 				'entityName': 'Account'
 			},
 			{
@@ -446,6 +441,8 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
     		rethrow;
         }
 		ormStatelessSession.close();
+		
+		getService('HibachiEventService').announceEvent('afterAccountUpdateSponsorSuccess', {'account':account, 'entity':account});
 
 	}
 	

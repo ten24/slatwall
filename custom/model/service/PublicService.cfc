@@ -1143,8 +1143,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         if( !len(arguments.data.sponsorID) ){
             
             arguments.data.sponsorID = getDAO('accountDAO').getEligibleMarketPartner(
-                    account.getPrimaryAddress().getAddress().getPostalCode()
-                );
+                zipcode = account.getPrimaryAddress().getAddress().getPostalCode(),
+                countryCode = account.getPrimaryAddress().getAddress().getCountryCode()
+            );
                 
             if(!len(arguments.data.sponsorID)){
                 this.addErrors(arguments.data, getHibachiScope().rbKey('validate.submitSponsor.notfound'));
@@ -1344,12 +1345,12 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         productCollectionList.setDisplayProperties('productID');
         productCollectionList.addDisplayProperty('productName');
         productCollectionList.addDisplayProperty('skus.skuID');
-        productCollectionList.addDisplayProperty('skus.skuPrices.personalVolume');
-        productCollectionList.addDisplayProperty('skus.skuPrices.price');
         productCollectionList.addDisplayProperty('calculatedAllowBackorderFlag');
         productCollectionList.addDisplayProperty('urlTitle');
         productCollectionList.addDisplayProperty('skus.imageFile');
         productCollectionList.addDisplayProperty('skus.displayOnlyFlag');
+        productCollectionList.addDisplayProperty('skus.skuPrices.personalVolume');
+        productCollectionList.addDisplayProperty('skus.skuPrices.price');
         
         var currentRequestSite = getService('siteService').getSiteByCMSSiteID(arguments.data.cmsSiteID);
         if(!isNull(currentRequestSite) && currentRequestSite.hasLocation()){
@@ -1364,9 +1365,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         productCollectionList.addFilter(propertyIdentifier = 'publishedEndDateTime',value='NULL', comparisonOperator="IS", logicalOperator="OR", filterGroupAlias = 'publishedEndDateTimeFilter');
         productCollectionList.addFilter('skus.activeFlag',1);
         productCollectionList.addFilter('skus.publishedFlag',1);
-        productCollectionList.addFilter(propertyIdentifier ="skus.skuPrices.price", value= 0.00, comparisonOperator = "!=", filterGroupAlias="skuPrice");
-        productCollectionList.addFilter(propertyIdentifier='skus.skuPrices.currencyCode', value= currencyCode, comparisonOperator="=", filterGroupAlias="skuPrice");
-        productCollectionList.addFilter(propertyIdentifier='skus.skuPrices.priceGroup.priceGroupCode',value=priceGroupCode,filterGroupAlias="skuPrice");
         productCollectionList.addFilter('productType.parentProductType.urlTitle','other-income','!=');
         productCollectionList.addFilter('sites.siteID',site.getSiteID());
         productCollectionList.addFilter('skus.skuPrices.promotionReward.promotionRewardID','NULL','IS')
@@ -1386,9 +1384,19 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         if(structKeyExists(arguments.data,"hideProductPacksAndDisplayOnly") && arguments.data.hideProductPacksAndDisplayOnly){
             productCollectionList.addFilter(propertyIdentifier ="skus.displayOnlyFlag", value= 1, comparisonOperator= "!=");
             productCollectionList.addFilter('productType.urlTitle','starter-kit','!=');
-            productCollectionList.addFilter('productType.urlTitle','productPack','!=');    
+            productCollectionList.addFilter('productType.urlTitle','productPack','!=');
+            productCollectionList.addFilter(propertyIdentifier ="skus.skuPrices.price", value= 0.00, comparisonOperator = "!=");
+            productCollectionList.addFilter(propertyIdentifier='skus.skuPrices.currencyCode', value= currencyCode, comparisonOperator="=");
+            productCollectionList.addFilter(propertyIdentifier='skus.skuPrices.priceGroup.priceGroupCode',value=priceGroupCode);
         }else{
-            productCollectionList.addFilter(propertyIdentifier ="skus.displayOnlyFlag", value= 1, comparisonOperator= "=", logicalOperator="OR", filterGroupAlias="skuPrice");
+            productCollectionList.addFilterGroupWithAlias('hasSkuPriceOrDisplayOnly','AND');
+            productCollectionList.addFilterGroupWithAlias('displayOnly','AND','hasSkuPriceOrDisplayOnly');
+            productCollectionList.addFilter(propertyIdentifier ="skus.displayOnlyFlag", value= 1, comparisonOperator= "=", filterGroupAlias="hasSkuPriceOrDisplayOnly.displayOnly");
+            productCollectionList.addFilter(propertyIdentifier ="skus.skuPrices.skuPriceID", value="null", comparisonOperator="IS",filterGroupAlias="hasSkuPriceOrDisplayOnly.displayOnly");
+            productCollectionList.addFilterGroupWithAlias('hasSkuPrice','OR','hasSkuPriceOrDisplayOnly');
+            productCollectionList.addFilter(propertyIdentifier ="skus.skuPrices.price", value= 0.00, comparisonOperator = "!=", filterGroupAlias="hasSkuPriceOrDisplayOnly.hasSkuPrice");
+            productCollectionList.addFilter(propertyIdentifier='skus.skuPrices.currencyCode', value= currencyCode, comparisonOperator="=", filterGroupAlias="hasSkuPriceOrDisplayOnly.hasSkuPrice");
+            productCollectionList.addFilter(propertyIdentifier='skus.skuPrices.priceGroup.priceGroupCode',value=priceGroupCode,filterGroupAlias="hasSkuPriceOrDisplayOnly.hasSkuPrice");
         }
 
         return { productCollectionList: productCollectionList, priceGroupCode: priceGroupCode, currencyCode: currencyCode };
@@ -1464,8 +1472,10 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         productCollectionList.setOrderBy('productName|DESC');
         productCollectionList.setPageRecordsShow(arguments.data.pageRecordsShow);
         productCollectionList.setCurrentPageDeclaration(arguments.data.currentPage);
+
+        var records = productCollectionList.getPageRecords();
         var nonPersistentRecords = getCommonNonPersistentProductProperties(productCollectionList.getPageRecords(), priceGroupCode, currencyCode, siteCode);
- 
+        
 		arguments.data['ajaxResponse']['productList'] = nonPersistentRecords;
         arguments.data['ajaxResponse']['recordsCount'] = productCollectionList.getRecordsCount();
     }
@@ -1655,11 +1665,11 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         //Looping over the collection list and using helper method to get non persistent properties
         for(var record in arguments.records){
-            productMap[record.skus_skuID] = {
+            var data = {
                 'productID': record.productID,
                 'skuID': record.skus_skuID,
-                'personalVolume': record.skus_skuPrices_personalVolume,
-                'price': record.skus_skuPrices_price,
+                'personalVolume': record.skus_skuPrices_personalVolume ?: 0,
+                'price': record.skus_skuPrices_price ?: 0,
                 'productName': record.productName,
                 'skuImagePath': imageService.getResizedImageByProfileName(record.skus_skuID,'medium'), //TODO: Find a faster method
                 'skuProductURL': '#productURL##productService.getProductUrlByUrlTitle( record.urlTitle )#',
@@ -1670,7 +1680,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                 'calculatedAllowBackorderFlag': record.calculatedAllowBackorderFlag,
                 'displayOnlyFlag': record.skus_displayOnlyFlag
             };
-            
+
+            productMap[record.skus_skuID] = data;
             //add skuID's to skuID array for query below
             skuIDsToQuery = listAppend(skuIDsToQuery, record.skus_skuID);
         }
