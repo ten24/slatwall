@@ -242,6 +242,8 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 				
 				if(structKeyExists(arguments.data.DTSArguments, 'distType')){
 					query &= ', upgradeSyncFlag = 0'	
+					
+					logHibachi('InfoTrax - DistType sent - Response: #serializeJson(iceResponse)#');
 				}
 				
 				var account = relatedToAccount ? arguments.entity.getAccount() : arguments.entity;
