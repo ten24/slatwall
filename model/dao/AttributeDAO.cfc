@@ -107,14 +107,14 @@ Notes:
 	
 	<cffunction name = "getAttributesDataByEntityName">
 		<cfargument name="entityName" type="string" required="true" >
-		<cfargument name="includeCustomProperty" type="boolean" default="false" >
+		<cfargument name="includeCustomProperties" type="boolean" default="false" >
 		
 		<cfquery name = "local.attributesDataQuery">
 				SELECT attributeCode, attributeInputType 
 				FROM swAttribute
 				INNER JOIN swAttributeSet on swAttribute.attributeSetID = swAttributeSet.attributeSetID
 				WHERE
-				<cfif arguments.includeCustomProperty >
+				<cfif !arguments.includeCustomProperties >
 					( swAttribute.customPropertyFlag is null OR swAttribute.customPropertyFlag = 0 )
 				AND
 				</cfif>

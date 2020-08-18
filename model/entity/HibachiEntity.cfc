@@ -55,7 +55,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		// Call the super populate to do all the standard logic
 		super.populate(argumentcollection=arguments);
 
-		var attributes = getAssignedAttributes();
+		var attributes = getAssignedAttributes(includeCustomProperties=true);
 		for(var attribute in attributes) {
 			if(structKeyExists(arguments.data, attribute['attributeCode'])) {
 				setAttributeValue( attribute['attributeCode'], nullReplace(data[ attribute['attributeCode'] ], ""), this.getRollbackProcessedFlag() && attribute['attributeInputType'] == "password");
@@ -388,17 +388,17 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		return variables.assignedAttributeSetSmartList;
 	}
 	
-	public array function getAssignedAttributes(boolean includeCustomProperty = false) {
+	public array function getAssignedAttributes(boolean includeCustomProperties = false) {
 		 //cacheing structure of attribute code and type info
 		 var cacheKey = 'attributes_getAssignedAttributes_' & getClassName();
-		 if(arguments.includeCustomProperty){
+		 if(arguments.includeCustomProperties){
 		 	cacheKey &= '_customproperties';
 		 }
 		 if(!getService('HibachiCacheService').hasCachedValue(cacheKey)){
 		 	
 			var assignedAttributesArray = [];
 		 	
-		 	var attributesDataQuery = getService("attributeDAO").getAttributesDataByEntityName(entityName=getClassName(), includeCustomProperty = arguments.includeCustomProperty);
+		 	var attributesDataQuery = getService("attributeDAO").getAttributesDataByEntityName(entityName=getClassName(), includeCustomProperties = arguments.includeCustomProperties);
 		 	// Converts query to struct object
 		 	for (var attributeStruct in attributesDataQuery) {
 		 		arrayAppend(assignedAttributesArray, attributeStruct);
@@ -450,7 +450,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		if( !getHibachiScope().hasApplicationValue("classAuditablePropertyCache_#getClassFullname()#") ) {
 			var auditableProperties = super.getAuditableProperties();
 			
-			var attributes = getAssignedAttributes();
+			var attributes = getAssignedAttributes(includeCustomProperties=true);
 			var propertyExclusionList = getAuditablePropertyExclusionList();
 			// Loop over attributes
 			for(var attribute in attributes) {
