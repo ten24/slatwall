@@ -48,98 +48,109 @@ Notes:
 */
 component extends="Slatwall.model.service.HibachiService" persistent="false" accessors="true" output="false"{
 	
-	property name = "accountService";
-	
+	property name = "hibachiService";
 	property name = "hibachiUtilityService";
 	property name = "hibachiValidationService";
 	property name = "hibachiEntityQueueService";
+
+	property name = "entityMappings" type="struct";
 	
 
+	public any function init() {
+	    super.init(argumentCollection = arguments);
+	    variables.entityMappings = {};
+	}
+	
+	
     public any function getIntegration(){
         throw("override this function in your integrtion service to return the associated instance of integration-entity");
     }
 
-
-
-	//////////////////////////////////////////  Importer functions for [ Account ]  ////////////////////////////////////////////
-
-	public struct function getAccountMapping(){
+	public struct function getEntityMapping( required string entityName ){
 	    
-	    if( !structKeyExists(variables, 'accountMappingStruct') ){
-
-	        //Read from file/DB whatever 
-	        var mapingJson = FileRead( ExpandPath('/Slatwall') & '/config/importer/mappings/Account.json');
+	    var entityMappings = this.getEntityMappings();
+	    
+	    if( !structKeyExists( entityMappings, arguments.entityName) ){
 	        
-	        variables.accountMappingStruct = deSerializeJson(mapingJson);
+	        //Can be overriden to Read from Files/DB/Function whatever 
+	        var mapingJson = FileRead( ExpandPath('/Slatwall') & '/config/importer/mappings/#arguments.entityName#.json');
+	        
+	        entityMappings[ arguments.entityName ] = deSerializeJson(mapingJson);
 	    }
 	    
-        return variables.accountMappingStruct;
+        return entityMappings[ arguments.entityName ];
 	}
-	
-	public any function importAccountsIntoQueue( required struct queryOrArrayOfStruct ){
+
+
+	public any function importEntityRecordsIntoQueue( required string entityName, required struct queryOrArrayOfStruct ){
 	    
 	    //Create a new Batch
 	    var newBatch = this.getHibachiEntityQueueService().newBatch();
 	    //populate other details
 	    this.getHibachiEntityQueueService().saveBatch(newBatch);
 	    
-	    for( var accountData in queryOrArrayOfStruct ){
-	        this.importAccountIntoQueue(accountData, newBatch);
+	    this.getHibachiScope().flushORMSession();
+	    
+	    for( var record in queryOrArrayOfStruct ){
+	        this.importEntityIntoQueue( arguments.entityName, record, newBatch);
 	    }
+	    
+	    //TODO: update initial batch-items values
 	}
 	
-	public any function importAccountIntoQueue( required struct data, required any batch ){
+	
+	public any function importEntityIntoQueue( required string entityName, required struct data, required any batch ){
 	    
-	    var validation = this.validateAccountData( data = arguments.data, collectErrors=true );
+	    var validation = this.validateEntityData( entityName = arguments.entityName, data = arguments.data, collectErrors=true );
 	    
 	    if( !validation.isValid ){
+	        
 	        // if we're collecting errors we can directly send the item to failures (EntityQueue hisory)
 	        this.getEntityQueueDAO().insertEntityQueueFailure(
         	    baseID = '', 
-        	    baseObject = "Account", 
-        	    processMethod = 'importAccount',
+        	    baseObject = arguments.entityName, 
+        	    processMethod = 'importEntityIntoQueue',
         	    entityQueueData = arguments.data, 
         	    integrationID = this.getIntegration().getIntegrationID(), 
         	    batchID = arguments.batch.getBatchID(),
-        	    mostRecentError= Serializejson( validation.errors ),
+        	    mostRecentError = serializejson( validation.errors ),
         	    tryCount = 1 
         	);
 	    }
 	    
-	    var transformedData = this.transformAccountData(arguments.data);
+	    var transformedData = this.transformEntityData( entityName = arguments.entityName, data = arguments.data);
 	    
 	    this.getEntityQueueDAO().insertEntityQueue(
     	    baseID = '', 
-    	    baseObject = 'Account', 
-    	    processMethod ='processsAccount_import',
+    	    baseObject = arguments.entityName, 
+    	    processMethod ='processsEntity_import',
     	    entityQueueData = transformedData, 
     	    integrationID = this.getIntegration().getIntegrationID(), 
         	batchID = arguments.batch.getBatchID()
     	);
 	}
 	
-	public struct function validateAccountData( required struct data, struct mapping = this.getAccountMapping(), boolean collectErrors = false ){
-	    return this.validateData( argumentCollection = arguments);
-	}
-	
-	public struct function transformAccountData( required struct data, struct mapping = this.getAccountMapping() ){
-	    return this.transformData( argumentCollection = arguments);
-	}
-	
-	public any function processsAccount_import(required any account, any data){
-	    arguments.account.populate(arguments.data);
-	    this.getAccountService().saveAccount(arguments.account);
-	    return arguments.account;
-	}
-	
-	////////////////////////////////////////// TODO Importer functions for other Entities  ////////////////////////////////////////////
-	////////////////////////////////////////// TODO Importer functions for other Entities  ////////////////////////////////////////////
-	////////////////////////////////////////// TODO Importer functions for other Entities  ////////////////////////////////////////////
-	////////////////////////////////////////// TODO Importer functions for other Entities  ////////////////////////////////////////////
-	////////////////////////////////////////// TODO Importer functions for other Entities  ////////////////////////////////////////////
-
-	
-	//////////////////////////////////////// Utility functions//////////////////////////////////////////////
+    public struct function validateEntityData(required string entityName, required struct data, boolean collectErrors = false ){
+        arguments.mapping = this.getEntityMapping( arguments.entityName );
+        
+        if( structKeyExists( this, 'validate#arguments.entityName#Data') ){
+            return this.invokeMethod('validate#arguments.entityName#Data', arguments );
+        } 
+        else {
+    	    return this.validateData( argumentCollection = arguments);
+        }
+    }
+    
+    public struct function transformEntityData(required string entityName, required struct data, boolean collectErrors = false ){
+        arguments.mapping = this.getEntityMapping( arguments.entityName );
+                
+        if( structKeyExists( this, 'transform#arguments.entityName#Data') ){
+            return this.invokeMethod('transform#arguments.entityName#Data', arguments );
+        } 
+        else {
+    	    return this.transformData( argumentCollection = arguments);
+        }
+    }
 
 	public struct function validateData( required struct data, required struct mapping, boolean collectErrors = false ){
 	    
@@ -252,6 +263,23 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    }
 	    
 	    return transformedData;
+	}
+	
+	
+	public any function processsEntityImport( required string entity, any data ){
+	    var entityName = arguments.entity.getClassName();
+	    
+	    if( structKeyExists(this, 'processs#entityName#_import') ){
+	        return this.invokeMethod( 'processs#entityName#_import', arguments );
+	    }
+	    
+	    arguments.entity.populate(arguments.data);
+	  
+	    var entityService = this.getHibachiService().getServiceByEntityName( entityName = entityName);
+	  
+	    entityService.invokeMethod("save#entityName#" arguments.entity);
+	    
+	    return arguments.entity;
 	}
 	
 }
