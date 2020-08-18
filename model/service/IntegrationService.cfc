@@ -311,10 +311,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				    }
 				    
 					
-					if(directoryExists("#this.getApplicationRootMappingPath()#/integrationServices/#integrationPackage#/model")) {
+					if(directoryExists( expandPath("/Slatwall") & "/integrationServices/#integrationPackage#/model")) {
 						
 						//if we have entities then copy them into root model/entity
-						if( directoryExists("#this.getApplicationRootMappingPath()#/integrationServices/#integrationPackage#/model/entity") ){
+						if( directoryExists( expandPath('/Slatwall') & "/integrationServices/#integrationPackage#/model/entity") ){
 							
 							var modelList = directoryList( expandPath("/Slatwall") & "/integrationServices/#integrationPackage#/model/entity" );
 							
