@@ -224,7 +224,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		return priceStruct;
 	}
 	
-	public any function getCorrectSkuForPriceGroup(required string currencyCode, required number priceGroupCode){
+	public any function getSkuForPriceGroup(required string currencyCode, required number priceGroupCode){
 		var skuPrices = this.getActiveSkuPricesForProductByCurrencyCode(arguments.currencyCode);
 
 		var skuID = ( !isNull(skuPrices[arguments.priceGroupCode]) && arrayLen(skuPrices[arguments.priceGroupCode]) && !isNull(skuPrices[arguments.priceGroupCode][1]['sku_skuID']) )
