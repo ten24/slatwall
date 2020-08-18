@@ -31,6 +31,7 @@ component {
     property name="retailValueVolumeTotal" persistent="false";
     property name="vipEnrollmentOrderFlag" persistent="false";
     property name="marketPartnerEnrollmentOrderID" persistent="false";
+    property name="creditCardLastFour" persistent="false";
     
     property name="calculatedVipEnrollmentOrderFlag" ormtype="boolean";
     property name="calculatedPersonalVolumeSubtotal" ormtype="big_decimal" hb_formatType="none";
@@ -325,6 +326,26 @@ component {
         orderItemCollectionList.addFilter('order.orderID',getOrderID());
         orderItemCollectionList.addFilter('sku.product.productType.urlTitle','productPack,starter-kit','in');
         return orderItemCollectionList.getRecordsCount() > 0;
+	}
+	
+	public string function getCreditCardLastFour(){
+		if(!structKeyExists(variables,'creditCardLastFour')){
+			var creditCardLastFour = '';
+			
+			var orderPaymentCollection = getService('OrderService').getOrderPaymentCollectionList();
+			orderPaymentCollection.addFilter('orderPaymentStatusType.systemCode','opstActive');
+			orderPaymentCollection.addFilter('paymentMethod.paymentMethodType','creditCard');
+			orderPaymentCollection.addOrderBy('createdDateTime|desc');
+			orderPaymentCollection.setDisplayProperties('creditCardLastFour');
+			orderPaymentCollection.setPageRecordsShow(1);
+			var orderPayments = orderPaymentCollection.getPageRecords();
+			if(arraylen(orderPayments)){
+				creditCardLastFour = orderPayments[1].creditCardLastFour;
+			}
+			
+			variables.creditCardLastFour = creditCardLastFour;
+		}
+		return variables.creditCardLastFour;
 	}
 	
 	/**
