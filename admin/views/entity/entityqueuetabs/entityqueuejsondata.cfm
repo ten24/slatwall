@@ -49,9 +49,9 @@ Notes:
 <cfimport prefix="swa" taglib="../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
-<cfparam name="rc.entityQueueData" type="any" />
+<cfparam name="rc.entityQueue" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
 <hb:HibachiPropertyList>
-	<hb:HibachiPropertyDisplay object="#rc.entityQueueData#" property="entityQueueData" edit="#rc.edit#" fieldType="wysiwyg" displayType="plain">
+	<hb:HibachiPropertyDisplay object="#rc.entityQueue#" property="entityQueueData" edit="#rc.edit#" fieldType="wysiwyg" displayType="plain" cols="50" rows="10">
 </hb:HibachiPropertyList>
