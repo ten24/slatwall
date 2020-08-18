@@ -82,7 +82,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	}
 
 
-	public any function importEntityRecordsIntoQueue( required string entityName, required struct queryOrArrayOfStruct ){
+	public any function pushRecordsIntoImportQueue( required string entityName, required struct queryOrArrayOfStruct ){
 	    
 	    //Create a new Batch
 	    var newBatch = this.getHibachiEntityQueueService().newBatch();
@@ -99,7 +99,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	}
 	
 	
-	public any function importEntityIntoQueue( required string entityName, required struct data, required any batch ){
+	public any function pushRecordIntoImportQueue( required string entityName, required struct data, required any batch ){
 	    
 	    var validation = this.validateEntityData( entityName = arguments.entityName, data = arguments.data, collectErrors=true );
 	    
@@ -109,7 +109,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	        this.getEntityQueueDAO().insertEntityQueueFailure(
         	    baseID = '', 
         	    baseObject = arguments.entityName, 
-        	    processMethod = 'importEntityIntoQueue',
+        	    processMethod = 'pushRecordIntoImportQueue',
         	    entityQueueData = arguments.data, 
         	    integrationID = this.getIntegration().getIntegrationID(), 
         	    batchID = arguments.batch.getBatchID(),
@@ -120,10 +120,12 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    
 	    var transformedData = this.transformEntityData( entityName = arguments.entityName, data = arguments.data);
 	    
+	   // TODO: upsert (use some remote-id to fine and set baseID ) 
+	   
 	    this.getEntityQueueDAO().insertEntityQueue(
     	    baseID = '', 
     	    baseObject = arguments.entityName, 
-    	    processMethod ='processsEntity_import',
+    	    processMethod ='processsEntityImport',
     	    entityQueueData = transformedData, 
     	    integrationID = this.getIntegration().getIntegrationID(), 
         	batchID = arguments.batch.getBatchID()
