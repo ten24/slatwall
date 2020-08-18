@@ -55,14 +55,10 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		// Call the super populate to do all the standard logic
 		super.populate(argumentcollection=arguments);
 
-		// Loop over attribute sets
-		for(var attributeSet in getAssignedAttributeSetSmartList().getRecords()) {
-			
-			// Loop over attributes
-			for(var attribute in attributeSet.getAttributes()) {
-				if(structKeyExists(arguments.data, attribute.getAttributeCode())) {
-					setAttributeValue( attribute.getAttributeCode(), nullReplace(data[ attribute.getAttributeCode() ], ""), this.getRollbackProcessedFlag() && attribute.getAttributeInputType() == "password");
-				}
+		var attributes = getAssignedAttributes();
+		for(var attribute in attributes) {
+			if(structKeyExists(arguments.data, attribute['attributeCode'])) {
+				setAttributeValue( attribute['attributeCode'], nullReplace(data[ attribute['attributeCode'] ], ""), this.getRollbackProcessedFlag() && attribute['attributeInputType'] == "password");
 			}
 			
 		}
@@ -392,13 +388,17 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		return variables.assignedAttributeSetSmartList;
 	}
 	
-	public array function getAssignedAttributes() {
+	public array function getAssignedAttributes(boolean includeCustomProperty = false) {
 		 //cacheing structure of attribute code and type info
-		 var cacheKey = "attributes_getAssignedAttribtues"&getClassName();
+		 var cacheKey = 'attributes_getAssignedAttributes_' & getClassName();
+		 if(arguments.includeCustomProperty){
+		 	cacheKey &= '_customproperties';
+		 }
 		 if(!getService('HibachiCacheService').hasCachedValue(cacheKey)){
+		 	
 			var assignedAttributesArray = [];
 		 	
-		 	var attributesDataQuery = getService("attributeDAO").getAttributesDataByEntityName(getClassName());
+		 	var attributesDataQuery = getService("attributeDAO").getAttributesDataByEntityName(entityName=getClassName(), includeCustomProperty = arguments.includeCustomProperty);
 		 	// Converts query to struct object
 		 	for (var attributeStruct in attributesDataQuery) {
 		 		arrayAppend(assignedAttributesArray, attributeStruct);
@@ -450,13 +450,12 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		if( !getHibachiScope().hasApplicationValue("classAuditablePropertyCache_#getClassFullname()#") ) {
 			var auditableProperties = super.getAuditableProperties();
 			
-			for(var attributeSet in getAssignedAttributeSetSmartList().getRecords()) {
-			
-				// Loop over attributes
-				for(var attribute in attributeSet.getAttributes()) {
-					if (!listFindNoCase(getAuditablePropertyExclusionList(), attribute.getAttributeCode())) {
-						arrayAppend(auditableProperties, {name=attribute.getAttributeCode(), attributeFlag=true});
-					}
+			var attributes = getAssignedAttributes();
+			var propertyExclusionList = getAuditablePropertyExclusionList();
+			// Loop over attributes
+			for(var attribute in attributes) {
+				if (!listFindNoCase(propertyExclusionList, attribute['attributeCode'])) {
+					arrayAppend(auditableProperties, {name=attribute['attributeCode'], attributeFlag=true});
 				}
 				
 			}
