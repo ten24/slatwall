@@ -287,7 +287,7 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 			 
 			QueryExecute(query, params);
 
-			if(tableName == 'swAccount' && structKeyExists(iceResponse, 'errors') && arrayLen(iceResponse.errors) ){
+			if(structKeyExists(iceResponse, 'errors') && arrayLen(iceResponse.errors) ){
 				//make sure the record updates happened before we throw, for the next time call UPDATE instead of CREATE
 				throw('Record out of sync, force retry by Slatwall');
 			}
