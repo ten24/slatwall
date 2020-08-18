@@ -4357,21 +4357,21 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				
 				//if we have the collection objects primary id property as a column exclude all others group bys for better performance
 				if( getPrimaryIDFound()){
-					
-					if(find(getService('HibachiService').getPrimaryIDPropertyNameByEntityName(getCollectionObject()),groupByOverride) ){
+					// writeDump(var=find(getService('HibachiService').getPrimaryIDPropertyNameByEntityName(getCollectionObject()),groupByOverride),label="THIS IS THE THING");abort;
+					// if(find(getService('HibachiService').getPrimaryIDPropertyNameByEntityName(getCollectionObject()),groupByOverride) ){
 						
 						if(arraylen(getOrderBys()) == 0 && !isNull(getDefaultOrderBy()) ){
 							groupByOverride = listAppend(groupByOverride, convertALiasToPropertyIdentifier(getDefaultOrderBy().propertyIdentifier) );
 						}
     					variables.groupBys = groupByOverride;
     					return variables.groupBys;
-    				}
+    				// }
 	
     				if(structKeyExists(collectionConfig, 'orderBy') && arraylen(collectionConfig.orderBy) > 0 ){
     					
     					if(getApplyOrderBysToGroupBys() ){
     						for (var j = 1; j <= arraylen(collectionConfig.orderBy); j++ ){
-    							if ( 
+    							if (
     							    ListFindNoCase(groupByList, collectionConfig.orderBy[j].propertyIdentifier) > 0 
     							    || isAggregateFunction(collectionConfig.orderBy[j].propertyIdentifier) 
     							){

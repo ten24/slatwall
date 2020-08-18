@@ -1344,8 +1344,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         productCollectionList.setDisplayProperties('productID');
         productCollectionList.addDisplayProperty('productName');
         productCollectionList.addDisplayProperty('skus.skuID');
-        productCollectionList.addDisplayProperty('skus.skuPrices.personalVolume');
-        productCollectionList.addDisplayProperty('skus.skuPrices.price');
         productCollectionList.addDisplayProperty('calculatedAllowBackorderFlag');
         productCollectionList.addDisplayProperty('urlTitle');
         productCollectionList.addDisplayProperty('skus.imageFile');
@@ -1387,6 +1385,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             productCollectionList.addFilter(propertyIdentifier ="skus.displayOnlyFlag", value= 1, comparisonOperator= "!=");
             productCollectionList.addFilter('productType.urlTitle','starter-kit','!=');
             productCollectionList.addFilter('productType.urlTitle','productPack','!=');    
+            productCollectionList.addDisplayProperty('skus.skuPrices.personalVolume');
+            productCollectionList.addDisplayProperty('skus.skuPrices.price');
         }else{
             productCollectionList.addFilter(propertyIdentifier ="skus.displayOnlyFlag", value= 1, comparisonOperator= "=", logicalOperator="OR", filterGroupAlias="skuPrice");
         }
@@ -1464,8 +1464,14 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         productCollectionList.setOrderBy('productName|DESC');
         productCollectionList.setPageRecordsShow(arguments.data.pageRecordsShow);
         productCollectionList.setCurrentPageDeclaration(arguments.data.currentPage);
+        // writeDump(productCollectionList.getHQL());abort;
+        var records = productCollectionList.getPageRecords();
+        writeDump(var=arraylen(records),label="Total PageRecords");
+        writeDump(records);
         var nonPersistentRecords = getCommonNonPersistentProductProperties(productCollectionList.getPageRecords(), priceGroupCode, currencyCode, siteCode);
- 
+        writeDump(var=structCount(nonPersistentRecords),label="final page records");
+        writeDump(nonPersistentRecords);
+        abort;
 		arguments.data['ajaxResponse']['productList'] = nonPersistentRecords;
         arguments.data['ajaxResponse']['recordsCount'] = productCollectionList.getRecordsCount();
     }
@@ -1655,11 +1661,11 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         
         //Looping over the collection list and using helper method to get non persistent properties
         for(var record in arguments.records){
-            productMap[record.skus_skuID] = {
+            var data = {
                 'productID': record.productID,
                 'skuID': record.skus_skuID,
-                'personalVolume': record.skus_skuPrices_personalVolume,
-                'price': record.skus_skuPrices_price,
+                'personalVolume': record.skus_skuPrices_personalVolume ?: 0,
+                'price': record.skus_skuPrices_price ?: 0,
                 'productName': record.productName,
                 'skuImagePath': imageService.getResizedImageByProfileName(record.skus_skuID,'medium'), //TODO: Find a faster method
                 'skuProductURL': '#productURL##productService.getProductUrlByUrlTitle( record.urlTitle )#',
@@ -1671,6 +1677,11 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                 'displayOnlyFlag': record.skus_displayOnlyFlag
             };
             
+            if(structKeyExists(productMap,record.skus_skuID)){
+                writeDump(var=productMap[record.skus_skuID],label="EXISTING");
+                writeDump(var=data,label="NEW");
+            }
+            productMap[record.skus_skuID] = data;
             //add skuID's to skuID array for query below
             skuIDsToQuery = listAppend(skuIDsToQuery, record.skus_skuID);
         }
