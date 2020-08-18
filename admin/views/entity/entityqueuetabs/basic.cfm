@@ -13,7 +13,7 @@
 			<hb:HibachiPropertyDisplay object="#rc.entityqueue#" property="mostRecentError">
 			<hb:HibachiPropertyDisplay object="#rc.entityqueue#" property="tryCount">
 			<hb:HibachiPropertyDisplay object="#rc.entityqueue#" property="entityQueueProcessingDateTime">
-			<hb:HibachiPropertyDisplay object="#rc.entityqueue#" property="serverInstanceKey">
+			<hb:HibachiPropertyDisplay object="#rc.entityQueue#" property="entityQueueData" edit="#rc.edit#" fieldType="textarea" fieldAttributes="rows='20'">	
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 </cfoutput>

@@ -51,7 +51,7 @@ Notes:
 
 
 <cfparam name="rc.entityqueue" type="any">
-<cfparam name="rc.edit" type="boolean" default="false" />
+<cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
 	<hb:HibachiEntityDetailForm object="#rc.entityqueue#" edit="#rc.edit#" sRedirectAction="admin:entity.detailentityqueue">
@@ -60,7 +60,6 @@ Notes:
 		
 		<hb:HibachiEntityDetailGroup object="#rc.entityqueue#">
 			<hb:HibachiEntityDetailItem view="admin:entity/entityqueuetabs/basic" open="true" />
-			<hb:HibachiEntityDetailItem view="admin:entity/entityqueuetabs/entityqueuejsondata" />
 		</hb:HibachiEntityDetailGroup>
 	</hb:HibachiEntityDetailForm>
 </cfoutput>

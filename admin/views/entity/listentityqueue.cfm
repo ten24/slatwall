@@ -56,7 +56,7 @@ Notes:
 </hb:HibachiEntityActionBar>
 
 <cfset local.entityQueueCollectionList = getHibachiScope().getService('HibachiEntityQueueService').getEntityQueueCollectionList()/>
-	<cfset local.displayProperties = "baseObject,processMethod,tryCount,createdDateTime"/>
+	<cfset local.displayProperties = "baseObject,processMethod,tryCount,createdDateTime,integration.integrationName,mostRecentError"/>
 	<cfset local.entityQueueCollectionList.setDisplayProperties(
 	local.displayProperties,
 	{
