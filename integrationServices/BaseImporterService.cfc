@@ -53,12 +53,12 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	property name = "hibachiValidationService";
 	property name = "hibachiEntityQueueService";
 
-	property name = "entityMappings" type="struct";
+	property name = "cachedEntityMappings" type="struct";
 	
 
 	public any function init() {
 	    super.init(argumentCollection = arguments);
-	    variables.entityMappings = {};
+	    variables.cachedEntityMappings = {};
 	}
 	
 	
@@ -68,7 +68,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 
 	public struct function getEntityMapping( required string entityName ){
 	    
-	    var entityMappings = this.getEntityMappings();
+	    var entityMappings = this.getCachedEntityMappings();
 	    
 	    if( !structKeyExists( entityMappings, arguments.entityName) ){
 	        
