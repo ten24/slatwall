@@ -55,7 +55,7 @@ Notes:
 <hb:HibachiEntityActionBar type="listing" object="#rc.entityQueueSmartList#" showCreate="false">
 </hb:HibachiEntityActionBar>
 
-<cfset local.entityQueueCollectionList = getHibachiScope().getService('HibachiEntityQueueService').getEntityQueueCollectionList()/>
+	<cfset local.entityQueueCollectionList = getHibachiScope().getService('HibachiEntityQueueService').getEntityQueueCollectionList()/>
 	<cfset local.displayProperties = "baseObject,processMethod,tryCount,createdDateTime,integration.integrationName,mostRecentError"/>
 	<cfset local.entityQueueCollectionList.setDisplayProperties(
 	local.displayProperties,
@@ -81,3 +81,36 @@ Notes:
 		recordEditAction="admin:entity.edit#lcase(rc.entityQueueCollectionList.getCollectionObject())#"
 	>
 	</hb:HibachiListingDisplay>
+	
+	<div>
+	    <span class="h5">Failures</span>
+	</div>
+	
+	<cfset local.entityQueueFailureCollectionList = getHibachiScope().getService('HibachiEntityQueueService').getEntityQueueFailureCollectionList()/>
+	<cfset local.displayFailureProperties = "baseObject,processMethod,tryCount,createdDateTime,integration.integrationName,mostRecentError"/>
+	<cfset local.entityQueueFailureCollectionList.setDisplayProperties(
+	local.displayFailureProperties,
+	{
+		isVisible=true,
+		isSearchable=true,
+		isDeletable=true
+	})/>
+	
+	<cfset local.entityQueueFailureCollectionList.addDisplayProperty(
+	displayProperty='entityQueueFailureID',
+	columnConfig={
+		isVisible=false,
+		isSearchable=false,
+		isDeletable=false
+	})/>
+	
+		<hb:HibachiListingDisplay 
+		collectionList="#local.entityQueueFailureCollectionList#"
+		usingPersonalCollection="true"
+		personalCollectionKey='#request.context.entityactiondetails.itemname#_failure'
+		recordDetailAction="admin:entity.detailentityqueuefailure"
+		recordEditAction="admin:entity.editentityqueuefailure"
+	>
+	</hb:HibachiListingDisplay>
+	
+	
