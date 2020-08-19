@@ -294,6 +294,7 @@ Notes:
 									<hb:HibachiActionCaller action="admin:main.log" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listaudit" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listbatch" type="list">
+									<hb:HibachiActionCaller action="admin:entity.listentityqueue" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listemail" type="list">
 									<hb:HibachiActionCaller action="admin:main.processBouncedEmails" type="list">
 									<hb:HibachiActionCaller action="admin:main.update" type="list">
