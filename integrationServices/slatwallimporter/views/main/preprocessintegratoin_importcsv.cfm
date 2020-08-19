@@ -17,16 +17,7 @@
     	       </hb:HibachiPropertyList>
         </hb:HibachiPropertyRow>
      <hb:HibachiPropertyRow>
-     <cfdirectory action="list" directory="#ExpandPath('/integrationServices/slatwallimporter/assets/downloadsample/')#" name="listRoot">
-       <ul class="list-group">
-            <cfloop query="listRoot">
-               <li class="list-group-item">
-                <a target="_blank"  href="#$.slatwall.getApplicationValue('baseURL')#/integrationServices/slatwallimporter/assets/downloadsample/#name#" download="#name#">#name# Sample</a>
-                </br>
-              </li>
-            </cfloop>
-       </ul>
-      </hb:HibachiPropertyRow>
+  </hb:HibachiPropertyRow>
 </hb:HibachiEntityProcessForm>
    
   
