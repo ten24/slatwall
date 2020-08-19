@@ -132,22 +132,28 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
     	);
 	}
 	
-    public struct function validateEntityData(required string entityName, required struct data, boolean collectErrors = false ){
-        arguments.mapping = this.getEntityMapping( arguments.entityName );
+    public struct function validateEntityData(required string entityName, required struct data, struct mapping, boolean collectErrors = false ){
+        
+        if( !structKeyExists(arguments, 'mapping') ){
+            arguments.mapping = this.getEntityMapping( arguments.entityName );
+        }
         
         if( structKeyExists( this, 'validate#arguments.entityName#Data') ){
-            return this.invokeMethod('validate#arguments.entityName#Data', arguments );
+            return this.invokeMethod( 'validate#arguments.entityName#Data', arguments );
         } 
         else {
     	    return this.validateData( argumentCollection = arguments);
         }
     }
     
-    public struct function transformEntityData(required string entityName, required struct data, boolean collectErrors = false ){
-        arguments.mapping = this.getEntityMapping( arguments.entityName );
-                
+    public struct function transformEntityData(required string entityName, required struct data, struct mapping ){
+        
+        if( !structKeyExists(arguments, 'mapping') ){
+            arguments.mapping = this.getEntityMapping( arguments.entityName );
+        }
+
         if( structKeyExists( this, 'transform#arguments.entityName#Data') ){
-            return this.invokeMethod('transform#arguments.entityName#Data', arguments );
+            return this.invokeMethod( 'transform#arguments.entityName#Data', arguments );
         } 
         else {
     	    return this.transformData( argumentCollection = arguments);
@@ -182,8 +188,8 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	                var constraintValue = constraints[constraintType];
 	                
 	               isValid = validationService.invokeMethod( validationFunctionName, { 
-	                   propertyValue    :  data[propertyName] ?: javaCast('null',0),
-	                   constraintValue  :  constraintValue,
+	                   propertyValue    :  data[propertyName] ?: javaCast('null', 0),
+	                   constraintValue  :  constraintValue
 	               });
 	               
 	               if( !isValid ){
@@ -279,7 +285,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	  
 	    var entityService = this.getHibachiService().getServiceByEntityName( entityName = entityName);
 	  
-	    entityService.invokeMethod("save#entityName#" arguments.entity);
+	    entityService.invokeMethod("save#entityName#", arguments.entity);
 	    
 	    return arguments.entity;
 	}
