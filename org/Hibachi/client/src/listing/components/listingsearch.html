@@ -180,4 +180,38 @@
             </li>
         </ul>
     </span>
+    
+    <!-- Auto Referesh -->
+    <span class="input-group-btn valign-middle s-action" ng-click="swListingSearch.saveAutoRefereshIntervalCollection()"
+        ng-if="swListingSearch.swListingControls.showToggleFilters || swListingSearch.swListingControls.showToggleDisplayOptions">
+        <button class="btn btn-sm btn-default dropdown-toggle"
+            type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+        >
+            <span sw-tooltip class="tool-tip-item" data-text="Save Timeout" data-position="bottom">
+                <i class="fas fa-refresh"></i>
+            </span>
+        </button>
+        <ul class="dropdown-menu pull-right" ng-show="swListingSearch.collectionNameSaveIsOpen">
+            <li style="padding:8px;">
+                <div class="s-form-input s-input-group s-edit" style="width:100px;">
+                    <input type="checkbox" name="isTimerTrue" id="isTimerTrue"/>
+                    <input
+                        type="text"
+                        ng-model="swListingSearch.collectionName"
+                        class="form-control" placeholder=""
+                        style="display: inline-block !important;
+                        height: 22px !important;
+                        vertical-align: bottom !important;
+                        font-size: 12px;
+                        padding: 0px 5px;"
+                    >
+                    <a class="btn btn-xs btn-success s-action-btn"
+                        ng-click="swListingSearch.saveAutoRefereshIntervalCollection(swListingSearch.collectionName)"
+                    >
+                        save
+                    </a>
+                </div>
+            </li>
+        </ul>
+    </span>
 </div>
