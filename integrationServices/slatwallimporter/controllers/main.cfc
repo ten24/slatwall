@@ -52,6 +52,8 @@ component extends="Slatwall.org.Hibachi.HibachiController" accessors="true" outp
 	
 	public void function preprocessintegratoin(required struct rc)
 	{
+			var arrayOfLocalFiles = directoryList( expandPath( "/Slatwall/integrationServices/slatwallimporter/assets/downloadsample/" ), false, "name" );
+   			arguments.rc.fileslist = arrayOfLocalFiles;
 			arguments.rc.entityActionDetails.processAction = 'slatwallimporter:main.uploadCSV';
 			arguments.rc.entityActionDetails.sRedirectAction = 'slatwallimporter:main';
 			arguments.rc.edit = true;
@@ -84,10 +86,7 @@ component extends="Slatwall.org.Hibachi.HibachiController" accessors="true" outp
 		getFW().setView("main");
 	}
 
-   public function getCsvDwonlaadLink()
-   {
-   	
-   }
+ 
 	
 	public void function after( required struct rc ) {
 		if(structKeyExists(arguments.rc, "fRedirectURL") && arrayLen(getHibachiScope().getFailureActions()) ){
