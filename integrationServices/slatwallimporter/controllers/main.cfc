@@ -64,10 +64,8 @@ component extends="Slatwall.org.Hibachi.HibachiController" accessors="true" outp
 	public any function uploadCSV (required any rc){	
 		getService("hibachiTagService").cfsetting(requesttimeout=60000);
         var pathToImport = ExpandPath('/Slatwall') & '/integrationServices/slatwallimporter/assets/csv/'; 
-      	if(FileExists(pathToImport)){
-			FileDelete(pathToImport); 
-		} 
-		if(!DirectoryExists(pathToImport)){
+      
+      	if(!DirectoryExists(pathToImport)){
 			DirectoryCreate(pathToImport);
 		}	
 		try
