@@ -242,6 +242,8 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 				
 				if(structKeyExists(arguments.data.DTSArguments, 'distType')){
 					query &= ', upgradeSyncFlag = 0'	
+					
+					logHibachi('InfoTrax - DistType sent - Response: #serializeJson(iceResponse)#');
 				}
 				
 				var account = relatedToAccount ? arguments.entity.getAccount() : arguments.entity;
@@ -284,7 +286,11 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 			query &=' WHERE #filter#';
 			 
 			QueryExecute(query, params);
-			
+
+			if(structKeyExists(iceResponse, 'errors') && arrayLen(iceResponse.errors) ){
+				//make sure the record updates happened before we throw, for the next time call UPDATE instead of CREATE
+				throw('Record out of sync, force retry by Slatwall');
+			}
 			
 			if( !isNull(account) && isNull(account.getLastSyncedDateTime()) ){
 				getService('HibachiEventService').announceEvent('afterInfotraxAccountCreateSuccess',{ entity : account });

@@ -27,12 +27,19 @@
 	
 	
 	<cffunction name="getEligibleMarketPartner" access="public">
-		<cfargument name="zipcode" /> 
+		<cfargument name="zipcode" required="true" /> 
 		<cfargument name="maxRadius" default = "500" /> 
 		<cfargument name="step" default = "50" /> 
+		<cfargument name="countryCode" default="US" /> 
 		
 		<cfquery name="local.coordinatesByZipcode" maxrows="1">
-			SELECT LAT, LNG FROM zipusa WHERE ZIP_CODE = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Left(arguments.zipcode,9)#" />
+			SELECT 
+				LAT, LNG 
+			FROM 
+				zipusa 
+			WHERE 
+			countryCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.countryCode#" /> AND
+			ZIP_CODE = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Left(arguments.zipcode,9)#" /> 
 		</cfquery>
 		
 		<cfif local.coordinatesByZipcode.recordCount EQ 0>
@@ -41,7 +48,7 @@
 		
 		<cfloop index="local.currentRadius" from="#arguments.step#" to="#arguments.maxRadius#" step="#arguments.step#">
 			<cfquery name="local.Zipcodes" maxrows="1">
-				SELECT GROUP_CONCAT(zips.ZIP_CODE) zipcodeList FROM (
+				SELECT GROUP_CONCAT(DISTINCT zips.ZIP_CODE) zipcodeList FROM (
 					SELECT 
 						ZIP_CODE, ( 
 							3959 * 
@@ -53,8 +60,8 @@
 							sin( radians( LAT ) ) ) 
 						) distance
 					FROM zipusa
-					
-					HAVING distance > <cfqueryparam cfsqltype="cf_sql_integer" value="#local.currentRadius - arguments.step#" />  AND distance <= <cfqueryparam cfsqltype="cf_sql_integer" value="#local.currentRadius#" />
+					WHERE countryCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.countryCode#" />
+					HAVING distance >= <cfqueryparam cfsqltype="cf_sql_integer" value="#local.currentRadius - arguments.step#" />  AND distance < <cfqueryparam cfsqltype="cf_sql_integer" value="#local.currentRadius#" />
 					ORDER BY distance ASC
 				) zips;
 			</cfquery>
@@ -71,11 +78,13 @@
 					INNER JOIN swAddress a ON a.addressID = aa.addressID
 					LEFT JOIN swAccountLead al ON acc.accountID = al.accountID
 					WHERE 
+						a.countryCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.countryCode#" /> AND
 						acc.accountType = 'marketPartner' AND
 						acc.activeFlag = 1 AND
 						acc.accountStatusTypeID = '2c9180836dacb117016dad11ebf2000e' AND
 						acc.rank >= 7 AND 
 						a.postalCode IN (<cfqueryparam cfsqltype="cf_sql_varchar" value="#local.Zipcodes.zipcodeList#" list="true" />)
+						
 					GROUP BY 
 						acc.accountID
 					ORDER BY 

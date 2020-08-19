@@ -331,8 +331,11 @@ component extends="Slatwall.model.service.PromotionService" {
 			}
 
 			var newOrderItem = getService("OrderService").newOrderItem();
-			newOrderItem.setPrice(0);
-			newOrderItem.setSkuPrice(0);
+			var priceFields = ['personalVolume', 'taxableAmount', 'commissionableVolume', 'retailCommission', 'productPackVolume', 'retailValueVolume', 'listPrice', 'price', 'skuPrice'];
+			for(var priceField in priceFields){
+				newOrderItem.invokeMethod('set#priceField#', {1=0});
+			}
+			
 			newOrderItem.setUserDefinedPriceFlag(true);
 			newOrderItem.setOrderItemType( getService('typeService').getTypeBySystemCode('oitSale') );
 			newOrderItem.setOrderFulfillment( arguments.fulfillment );
