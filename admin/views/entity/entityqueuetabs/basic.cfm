@@ -7,6 +7,7 @@
 	<hb:HibachiPropertyRow>
 		<hb:HibachiPropertyList>
 			<hb:HibachiPropertyDisplay object="#rc.entityqueue#" property="baseObject" >
+			<hb:HibachiPropertyDisplay object="#rc.entityqueue#" property="baseID" >
 			<hb:HibachiPropertyDisplay object="#rc.entityqueue#" property="processMethod" edit="#rc.edit#" >
 			<hb:HibachiPropertyDisplay object="#rc.entityqueue#" property="entityQueueDateTime">
 			<hb:HibachiPropertyDisplay object="#rc.entityqueue#" property="logHistoryFlag" edit="rc.edit">
