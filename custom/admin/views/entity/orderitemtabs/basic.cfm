@@ -54,8 +54,8 @@
 				<cfif rc.orderItem.getSku().getProduct().getBaseProductType() eq "subscription">
 					<hb:HibachiPropertyDisplay object="#rc.orderItem.getSku()#" property="renewalPrice" edit="#rc.edit#" displayType="table" />
 				</cfif>
-				<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="skuPrice" edit="false" displayType="table" />
-				<hb:HibachiPropertyDisplay object="#rc.orderItem.getSku()#" property="price" edit="false" displayType="table" />
+				<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="skuPrice" title="Sku Price (Snapshot)" edit="false" displayType="table" />
+				<hb:HibachiPropertyDisplay object="#rc.orderItem.getSku()#" property="price"  title="Sku Price (Current)" edit="false" displayType="table" />
 				<hb:HibachiPropertyTableBreak header="Status" />
 				<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="orderItemStatusType" edit="false" displayType="table" />
 				<cfif rc.orderItem.getOrderItemType().getSystemCode() eq "oitSale">
