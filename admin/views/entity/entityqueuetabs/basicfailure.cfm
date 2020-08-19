@@ -7,6 +7,7 @@
 	<hb:HibachiPropertyRow>
 		<hb:HibachiPropertyList>
 			<hb:HibachiPropertyDisplay object="#rc.entityqueuefailure#" property="baseObject" >
+			<hb:HibachiPropertyDisplay object="#rc.entityqueuefailure#" property="baseID" >
 			<hb:HibachiPropertyDisplay object="#rc.entityqueuefailure#" property="processMethod" edit="#rc.edit#" >
 			<hb:HibachiPropertyDisplay object="#rc.entityqueuefailure#" property="entityQueueDateTime">
 			<hb:HibachiPropertyDisplay object="#rc.entityqueuefailure#" property="mostRecentError">
