@@ -1875,6 +1875,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		getOrderDAO().removeTemporaryOrderTemplateItems(arguments.orderTemplate.getOrderTemplateID());	
 		this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# completing place order and has status: #newOrder.getOrderStatusType().getTypeName()#', true);
 		
+		newOrder.updateCalculatedProperties(runAgain=true, cascadeCalculateFlag=false);
 		return arguments.orderTemplate; 
 	}
 	
