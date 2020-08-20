@@ -1368,7 +1368,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         productCollectionList.addFilter('productType.parentProductType.urlTitle','other-income','!=');
         productCollectionList.addFilter('sites.siteID',site.getSiteID());
         productCollectionList.addFilter('skus.skuPrices.promotionReward.promotionRewardID','NULL','IS')
-    
+        productCollectionList.addFilter(propertyIdentifier='skus.skuPrices.currencyCode', value= currencyCode, comparisonOperator="=");
+        productCollectionList.addFilter(propertyIdentifier='skus.skuPrices.priceGroup.priceGroupCode',value=priceGroupCode);
+        
         if(isNull(accountType) || accountType == 'customer'){
            productCollectionList.addFilter('skus.retailFlag', 1);
         }else if(accountType == 'marketPartner'){
@@ -1386,8 +1388,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             productCollectionList.addFilter('productType.urlTitle','starter-kit','!=');
             productCollectionList.addFilter('productType.urlTitle','productPack','!=');
             productCollectionList.addFilter(propertyIdentifier ="skus.skuPrices.price", value= 0.00, comparisonOperator = "!=");
-            productCollectionList.addFilter(propertyIdentifier='skus.skuPrices.currencyCode', value= currencyCode, comparisonOperator="=");
-            productCollectionList.addFilter(propertyIdentifier='skus.skuPrices.priceGroup.priceGroupCode',value=priceGroupCode);
         }else{
             productCollectionList.addFilterGroupWithAlias('hasSkuPriceOrDisplayOnly','AND');
             productCollectionList.addFilterGroupWithAlias('displayOnly','AND','hasSkuPriceOrDisplayOnly');
@@ -1395,8 +1395,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             productCollectionList.addFilter(propertyIdentifier ="skus.skuPrices.skuPriceID", value="null", comparisonOperator="IS",filterGroupAlias="hasSkuPriceOrDisplayOnly.displayOnly");
             productCollectionList.addFilterGroupWithAlias('hasSkuPrice','OR','hasSkuPriceOrDisplayOnly');
             productCollectionList.addFilter(propertyIdentifier ="skus.skuPrices.price", value= 0.00, comparisonOperator = "!=", filterGroupAlias="hasSkuPriceOrDisplayOnly.hasSkuPrice");
-            productCollectionList.addFilter(propertyIdentifier='skus.skuPrices.currencyCode', value= currencyCode, comparisonOperator="=", filterGroupAlias="hasSkuPriceOrDisplayOnly.hasSkuPrice");
-            productCollectionList.addFilter(propertyIdentifier='skus.skuPrices.priceGroup.priceGroupCode',value=priceGroupCode,filterGroupAlias="hasSkuPriceOrDisplayOnly.hasSkuPrice");
         }
 
         return { productCollectionList: productCollectionList, priceGroupCode: priceGroupCode, currencyCode: currencyCode };
