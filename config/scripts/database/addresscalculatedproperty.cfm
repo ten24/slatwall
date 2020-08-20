@@ -16,8 +16,8 @@
 </cftry>
 
 <cfif local.scriptHasErrors>
-	<cflog file="Slatwall" text="General Log - Part of Script Update Custom Properties SCRIPT had errors when running">
+	<cflog file="Slatwall" text="General Log - Part of Script SwAddress Change AddressName SCRIPT had errors when running">
 	<cfthrow detail="Part of Script Update Custom Properties had errors when running">
 <cfelse>
-	<cflog file="Slatwall" text="General Log - Script Database Columns for Update Custom Properties has run with no errors">
+	<cflog file="Slatwall" text="General Log - Script Database Columns for SwAddress Change AddressName has run with no errors">
 </cfif>
