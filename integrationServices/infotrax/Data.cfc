@@ -234,6 +234,8 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 		
 		if(structKeyExists(iceResponse, 'returnserialnumber')){
 			
+			var hasErrors = structKeyExists(iceResponse, 'errors') && arrayLen(iceResponse.errors);
+			
 			logHibachi('InfoTrax - returnserialnumber: #iceResponse.returnserialnumber#');
 			
 			var query = 'UPDATE #tableName# SET lastSyncedDateTime = NOW()';
@@ -241,7 +243,10 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 			if( tableName == 'swAccount' ){
 				
 				if(structKeyExists(arguments.data.DTSArguments, 'distType')){
-					query &= ', upgradeSyncFlag = 0'	
+					
+					if(!hasErrors){
+						query &= ', upgradeSyncFlag = 0'	
+					}
 					
 					logHibachi('InfoTrax - DistType sent - Response: #serializeJson(iceResponse)#');
 				}
@@ -287,7 +292,7 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 			 
 			QueryExecute(query, params);
 
-			if(structKeyExists(iceResponse, 'errors') && arrayLen(iceResponse.errors) ){
+			if(hasErrors){
 				//make sure the record updates happened before we throw, for the next time call UPDATE instead of CREATE
 				throw('Record out of sync, force retry by Slatwall');
 			}
