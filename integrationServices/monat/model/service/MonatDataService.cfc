@@ -446,7 +446,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
          * Allows the user to override the last h HOURS that get checked. 
          * Defaults to 60 Minutes ago.
          **/
-        var intervalOverride = arguments.rc.hours ?: 1;
+        var intervalOverride = arguments.rc.hours ?: 24;
         
         /**
          * The page number to start with 
@@ -456,7 +456,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
         /**
          * How many records to process per page. 
          **/
-		var pageSize = 50;
+		var pageSize = 1000;
 		
 		/**
 		 * the page number to end on (exclusive) 
