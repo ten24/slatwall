@@ -1159,11 +1159,13 @@ component extends="framework.one" {
 		//Process request entity queue
 		var entityQueueData = getHibachiScope().getEntityQueueData();
 		var entityQueueDataLength = structCount(entityQueueData);
+		writeDump(entityQueueDataLength);
 		if(entityQueueDataLength > 0){
 			
 			var entityQueueArray = [];
 			var currentIndex = 1;
 			var limit = getHibachiScope().setting('globalEntityQueueDataProcessCount');
+			writeDump(limit);
 			for(var i in entityQueueData){
 				if(limit > 0 && limit >= currentIndex){
 					break;
@@ -1171,7 +1173,9 @@ component extends="framework.one" {
 				arrayAppend(entityQueueArray, entityQueueData[i]);
 				currentIndex++;
 			}
-			getHibachiScope().getService("hibachiEntityQueueService").processEntityQueueArray(entityQueueArray, true);	
+			writeDump(arrayLen(entityQueueArray));
+			getHibachiScope().getService("hibachiEntityQueueService").processEntityQueueArray(entityQueueArray, false);	
+			abort;
 		}
 		
 	}
