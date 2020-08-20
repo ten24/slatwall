@@ -146,6 +146,7 @@ class SWFWishlistController {
         }
         // Set the heart to be filled on the product details page
         $('#skuID_' + this.skuId).removeClass('far').addClass('fas');
+        this.observerService.notify('addWishlistItemID',{skuID:this.skuId});
         // Close the modal
      	this.close?.();
     };
