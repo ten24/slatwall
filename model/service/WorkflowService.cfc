@@ -438,9 +438,15 @@ component extends="HibachiService" accessors="true" output="false" {
 
 			//PROCESS
 			case 'process' :
+				
+				// Append extra data passed in the WorkflowAction
+				structAppend(arguments.data, arguments.workflowTaskAction.getProcessMethodDataStruct(), true);
+					
 				if(structKeyExists(arguments,'entity')){
 					var entityService = getServiceByEntityName( entityName=arguments.entity.getClassName());
 					var processContext = listLast(workflowTaskAction.getProcessMethod(),'_');
+					
+					
 
 					//process will determine whether we need to inflate a process object or pass data directly
 					arguments.entity = entityService.process(arguments.entity, arguments.data, processContext);
@@ -450,9 +456,8 @@ component extends="HibachiService" accessors="true" output="false" {
 					}
 				}else{
 					var entityService = getServiceByEntityName( entityName=arguments.workflowTaskAction.getWorkflowTask().getWorkflow().getWorkflowObject());
-					var processData = {};
 					try{
-						var processMethod = entityService.invokeMethod(arguments.workflowTaskAction.getProcessMethod(), processData);
+						var processMethod = entityService.invokeMethod(arguments.workflowTaskAction.getProcessMethod(), { 'data' : arguments.data } );
 						actionSuccess = true;
 					}catch(any e){
 						actionSuccess = false;
@@ -674,7 +679,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		arguments.entity = super.save(argumentcollection=arguments);
 
 		//Check if is a Schedule Trigger
-		if(structKeyExists(arguments.data, "schedule")){
+		if(structKeyExists(arguments.data, "schedule") && !isNull(entity.getSchedule())){
 		// Update the nextRunDateTime
 			arguments.entity.setNextRunDateTime( entity.getSchedule().getNextRunDateTime(entity.getStartDateTime(), entity.getEndDateTime()) );
 		}

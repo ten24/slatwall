@@ -394,15 +394,13 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 			.retrySyncPendingOrders(argumentCollection=arguments);
 	}
 	
-	public any function processAccount_importAccountUpdates() {
+	public any function processAccount_importAccountUpdates(struct data={}) {
 		
-		getHibachiScope()
+		return getHibachiScope()
 			.getService('integrationService')
 			.getIntegrationByIntegrationPackage('monat')
 			.getIntegrationCFC("data")
-			.importAccountUpdates({});
-
-		return arguments.account;
+			.importAccountUpdates(arguments.data);
 	}
 	
 	public any function updateSponsor(required any account, required string sponsorAccountNumber){

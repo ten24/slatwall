@@ -87,7 +87,7 @@ component accessors="true" output="false" displayname="Monat" extends="Slatwall.
 	
 	public void function importAccountUpdates(required struct rc){
 		try{
-			getService("MonatDataService").importAccountUpdates();
+			getService("MonatDataService").importAccountUpdates(argumentCollection=arguments);
 		}catch(any accountErrors){
 			logHibachi("The account update failed with #accountErrors.message#");
 		}
@@ -95,7 +95,7 @@ component accessors="true" output="false" displayname="Monat" extends="Slatwall.
 	
 	public void function importOrderUpdates(required struct rc){
 		try{
-			getService("MonatDataService").importOrderUpdates();
+			getService("MonatDataService").importOrderUpdates(argumentCollection=arguments);
 		}catch(any orderErrors){
 			logHibachi("The order update failed with #orderErrors.message#");
 		}
@@ -103,7 +103,7 @@ component accessors="true" output="false" displayname="Monat" extends="Slatwall.
 	
 	public void function importOrderShipments(required struct rc){
 		try{
-			getService("MonatDataService").importOrderShipments();
+			getService("MonatDataService").importOrderShipments(argumentCollection=arguments);
 		}catch(any shipmentErrors){
 			logHibachi("The shipment update failed with #shipmentErrors.message#");
 		}
@@ -111,7 +111,7 @@ component accessors="true" output="false" displayname="Monat" extends="Slatwall.
 	
 	public void function importInventoryUpdates(required struct rc){
 		try{
-			getService("MonatDataService").importInventoryUpdates();
+			getService("MonatDataService").importInventoryUpdates(argumentCollection=arguments);
 		}catch(any inventoryErrors){
 			logHibachi("The inventory update failed with #inventoryErrors.message#");
 		}
