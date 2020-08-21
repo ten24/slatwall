@@ -296,7 +296,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	}
 
 	public void function addModifiedEntity( required any entity ) {
-		if(!arrayFindNoCase(getExcludedModifiedEntityNames(), arguments.entity.getClassName())){
+		if(!arrayFindNoCase(getExcludedModifiedEntityNames(), arguments.entity.getClassName()) && !arguments.entity.getExcludeFromModifiedEntitiesFlag()){
 			arrayAppend(getModifiedEntities(), arguments.entity);
 		}
 	}

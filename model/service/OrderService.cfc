@@ -1249,7 +1249,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		request[orderTemplateOrderDetailsKey]['promotionalRewardSkuCollectionConfig'] = skuCollection.getCollectionConfigStruct(); 
 
 		var threadName = "t" & getHibachiUtilityService().generateRandomID(15);	
-		
+
 		thread name="#threadName#"
 			   action="run" 
 			   orderTemplateOrderDetailsKey = "#orderTemplateOrderDetailsKey#" 
@@ -1299,6 +1299,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 			StructDelete(request[orderTemplateOrderDetailsKey], 'orderTemplate'); //we don't need it anymore
 		}
+
 		// //join thread so we can return synchronously
 		threadJoin(threadName);
 
@@ -1354,6 +1355,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public any function newTransientOrderFromOrderTemplate(required any orderTemplate, boolean evictFromSession=true, boolean updateShippingMethodOptions=true){
 
 		arguments.transientOrder = new Slatwall.model.entity.Order();
+		arguments.transientOrder.setExcludeFromModifiedEntitiesFlag(true);
 		arguments.transientOrder.setOrderTemplate(arguments.orderTemplate); 
 		
 		if(arguments.evictFromSession){	
@@ -1407,7 +1409,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public any function newTransientOrderFulfillmentFromOrderTemplate(required any orderTemplate, boolean evictFromSession=true, any transientOrder, boolean updateShippingMethodOptions=true){
 		
 		arguments.transientOrderFulfillment = new Slatwall.model.entity.OrderFulfillment();
-	
+		arguments.transientOrderFulfillment.setExcludeFromModifiedEntitiesFlag(true);
 		if(arguments.evictFromSession){	
 			ORMGetSession().evict(arguments.transientOrderFulfillment);
 		}	
@@ -1464,6 +1466,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		for(var orderTemplateItem in orderTemplateItems){ 
 			var transientOrderItem = new Slatwall.model.entity.OrderItem();
+			transientOrderItem.setExcludeFromModifiedEntitiesFlag(true);
 			var sku = orderTemplateItem.getSku(); 		
 	
 			if(arguments.evictFromSession){	

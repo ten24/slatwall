@@ -12,6 +12,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	property name="dataCacheProperties" type="array" persistent="false";
 	property name="disableRecordLevelPermissions" persistent="false"; 
 	property name="preUpdateData" persistent="false"; 
+	property name="excludeFromModifiedEntitiesFlag" persistent="false";
 
 	// Audit Properties
 	property name="createdByAccount" persistent="false";
@@ -52,6 +53,13 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		}	
 		return variables.disableRecordLevelPermissions; 
 	}	
+	
+	public function getExcludeFromModifiedEntitiesFlag(){
+		if(!structKeyExists(variables, 'excludeFromModifiedEntitiesFlag')){
+			variables.excludeFromModifiedEntitiesFlag = false;
+		}
+		return variables.excludeFromModifiedEntitiesFlag;
+	}
 
 	private void function throwNoAccess(){
 		var context = getPageContext();
