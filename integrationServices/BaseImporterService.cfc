@@ -73,7 +73,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    if( !structKeyExists( entityMappings, arguments.entityName) ){
 	        
 	        //Can be overriden to Read from Files/DB/Function whatever 
-	        var mapingJson = FileRead( ExpandPath('/Slatwall') & '/config/importer/mappings/#arguments.entityName#.json');
+	        var mapingJson = FileRead( this.getApplicationValue('applicationRootMappingPath') & '/config/importer/mappings/#arguments.entityName#.json');
 	        
 	        entityMappings[ arguments.entityName ] = deSerializeJson(mapingJson);
 	    }
