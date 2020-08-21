@@ -136,6 +136,7 @@ component accessors="true" output="false" extends="HibachiService" {
 								    !len(entityQueue['processMethod']);  
 	
 					if(noMethod) { 
+						deleteEntityQueueItem(entityQueue['entityQueueID']);
 						return;
 					}
 				
@@ -143,7 +144,8 @@ component accessors="true" output="false" extends="HibachiService" {
 	
 					var entity = entityService.invokeMethod( "get#entityQueue['baseObject']#", {1= entityQueue['baseID'] });
 					if(isNull(entity)){
-						return entityQueue['entityQueueID'];
+						deleteEntityQueueItem(entityQueue['entityQueueID']);
+						return;
 					}
 	
 					var entityMethodInvoked = invokeMethodOrProcessOnService(entityQueue, entity, entityService);  
