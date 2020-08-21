@@ -63,4 +63,25 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
         return arrayOfLocalFiles;
   	    
   	}
+  	
+  	public any function uploadCSVFile(required any rc)
+  	{
+  	    
+        var pathToImport = ExpandPath('/Slatwall') & '/integrationServices/slatwallimporter/assets/csv/'; 
+       	if(!DirectoryExists(pathToImport)){
+			DirectoryCreate(pathToImport);
+		}	
+		try
+		{
+			var file = FileUpload(pathToImport, "uploadFile", "text/csv", "Overwrite");
+			if (not listFindNoCase("csv", file.serverFileExt)) {
+    		 	getHibachiScope().showMessage("The uploaded file is not of type CSV.", "error");
+    	    }
+			getHibachiScope().showMessage("Uppload success", "success");
+		
+		}catch (any e) {
+    		getHibachiScope().showMessage("An error occurred while uploading your file" & e.Message, "error");
+			
+		}
+  	}
 }

@@ -1,60 +1,35 @@
 component extends="Slatwall.org.Hibachi.HibachiControllerEntity" accessors="true" output="false"{
 
 	property name="slatwallImporterIntegrationCFC";
+	property name="SlatwallImporterService";
+	property name="integrationService";
+	property name="hibachiTagService";
 
 	public function before(required struct rc)
 	{
 		super.before(rc);
-    	arguments.rc.integration=getService('integrationService').getIntegrationByIntegrationPackage('slatwallImporter');
-
-
+    	arguments.rc.integration=getIntegrationService().getIntegrationByIntegrationPackage('slatwallImporter');
 	}
     
     public function default(required struct rc)
     {
-    	arguments.rc.fileslist = getService('SlatwallImporterService').getDownloadLink();
+    	arguments.rc.fileslist = getSlatwallImporterService().getDownloadLink();
     }
     
 	public void function preprocessintegratoin(required struct rc)
 	{
-			
-   		   	arguments.rc.processObject =arguments.rc.integration.getProcessObject( 'Importcsv' );//getHibachiScope().getAccount().getProcessObject('Importcsv'); 
-   			arguments.rc.entityActionDetails.processAction = 'slatwallimporter:main.uploadCSV';
-			arguments.rc.entityActionDetails.sRedirectAction = 'slatwallimporter:main';
-			arguments.rc.edit = true;
-    		arguments.rc.pageTitle ="ImportCsv"; 
-    		getFW().setView("main.preprocessintegratoin_importcsv");
+			genericPreProcessMethod(entityName="Integration", rc=arguments.rc);
+   			arguments.rc.entityActionDetails.sRedirectAction = 'slatwallimporter:main';
 	}
 
-	//upload CSVs, 
+	public void function processintegratoin (required any rc){
 	
-	public any function uploadCSV (required any rc){	
-		getService("hibachiTagService").cfsetting(requesttimeout=60000);
-		arguments.rc.processObject =arguments.rc.integration.getProcessObject( 'Importcsv' );
-        var pathToImport = ExpandPath('/Slatwall') & '/integrationServices/slatwallimporter/assets/csv/'; 
-      
-      	if(!DirectoryExists(pathToImport)){
-			DirectoryCreate(pathToImport);
-		}	
-		try
-		{
-			var file = FileUpload(pathToImport, "uploadFile", "text/csv", "Overwrite");
-		
-			if (not listFindNoCase("csv", file.serverFileExt)) {
-    		 	getHibachiScope().showMessage("The uploaded file is not of type CSV.", "error");
-    	    }
-			getHibachiScope().showMessage("Uppload success", "success");
-		
-		}catch (any e) {
-    		getHibachiScope().showMessage("An error occurred while uploading your file" & e.Message, "error");
-			
-		}
-		getFW().setView("main");
+		getHibachiTagService().cfsetting(requesttimeout=60000);
+		getSlatwallImporterService().uploadCSVFile(rc);
+		renderOrRedirectSuccess( defaultAction="slatwallimporter:main", maintainQueryString=true, rc=arguments.rc);
 	}
 
- 
-	
-	public void function after( required struct rc ) {
+ 	public void function after( required struct rc ) {
 		if(structKeyExists(arguments.rc, "fRedirectURL") && arrayLen(getHibachiScope().getFailureActions()) ){
 				getFW().redirectExact( redirectLocation=arguments.rc.fRedirectURL );
 		} 
