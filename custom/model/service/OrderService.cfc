@@ -1120,7 +1120,8 @@ component extends="Slatwall.model.service.OrderService" {
 	
 		// Process: Order
 	public any function processOrder_addOrderItem(required any order, required any processObject){
-
+		getHibachiScope().addExcludedModifiedEntityName('TaxApplied');
+		getHibachiScope().addExcludedModifiedEntityName('PromotionApplied');
 		// Setup a boolean to see if we were able to just add this order item to an existing one
 		var foundItem = false;
 

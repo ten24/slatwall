@@ -47,6 +47,7 @@ class MonatProductListingController {
         if(this.callEndpoint) this.getProducts();
         
         this.observerService.attach(this.getWishlistItems,'getAccountSuccess');
+        this.observerService.attach(this.addWishlistItemID, 'addWishlistItemID');
 	}
 	
 	public getWishlistItems = () => {
@@ -59,6 +60,10 @@ class MonatProductListingController {
             this.wishlistItems = [];
             wishlistItems.forEach( item => this.wishlistItems.push(item.skuID) );
         });
+	}
+	
+	public addWishlistItemID = (skuID) =>{
+		this.wishlistItems.push(skuID);
 	}
 	
     public getProducts = (category?:any, categoryType?:string) => {
