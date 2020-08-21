@@ -1,60 +1,25 @@
-component extends="Slatwall.org.Hibachi.HibachiController" accessors="true" output="false"{
+component extends="Slatwall.org.Hibachi.HibachiControllerEntity" accessors="true" output="false"{
 
-	property name="fw";
 	property name="slatwallImporterIntegrationCFC";
 
-	this.secureMethods='';
-	this.secureMethods=listAppend(this.secureMethods, 'default');
-	public any function init(required any fw){
-		setFW(arguments.fw);
-		return this;
-	}
-	
-	
 	public function before(required struct rc)
 	{
-        arguments.rc.entityActionDetails = {};
-       
-        arguments.rc.entityActionDetails['thisAction'] = arguments.rc[ getFW().getAction() ];
-		arguments.rc.entityActionDetails['subsystemName'] = getFW().getSubsystem( arguments.rc.entityActionDetails.thisAction );
-		arguments.rc.entityActionDetails['sectionName'] = getFW().getSection( arguments.rc.entityActionDetails.thisAction );
-		arguments.rc.entityActionDetails['itemName'] = getFW().getItem( arguments.rc.entityActionDetails.thisAction );
-	
-		arguments.rc.entityActionDetails['itemEntityName'] = "";
-		arguments.rc.entityActionDetails['backAction'] = arguments.rc.entityActionDetails.thisAction;
-		arguments.rc.entityActionDetails['cancelAction'] = arguments.rc.entityActionDetails.thisAction;
-		arguments.rc.entityActionDetails['createAction'] = arguments.rc.entityActionDetails.thisAction;
-		arguments.rc.entityActionDetails['deleteAction'] = arguments.rc.entityActionDetails.thisAction;
-		arguments.rc.entityActionDetails['detailAction'] = arguments.rc.entityActionDetails.thisAction;
-		arguments.rc.entityActionDetails['editAction'] = arguments.rc.entityActionDetails.thisAction;
-		arguments.rc.entityActionDetails['exportAction'] = arguments.rc.entityActionDetails.thisAction;
-		arguments.rc.entityActionDetails['listAction'] = arguments.rc.entityActionDetails.thisAction;
-		arguments.rc.entityActionDetails['multiPreProcessAction'] = arguments.rc.entityActionDetails.thisAction;
-		arguments.rc.entityActionDetails['multiProcessAction'] = arguments.rc.entityActionDetails.thisAction;
-		arguments.rc.entityActionDetails['preProcessAction'] = arguments.rc.entityActionDetails.thisAction;
-		arguments.rc.entityActionDetails['processAction'] = arguments.rc.entityActionDetails.thisAction;
-		arguments.rc.entityActionDetails['saveAction'] = arguments.rc.entityActionDetails.thisAction;
-		arguments.rc.entityActionDetails.actionItemEntityName="integration";
-		arguments.rc.entityActionDetails.sRedirectURL = "";
-		arguments.rc.entityActionDetails.sRedirectAction = "";
-		arguments.rc.entityActionDetails.fRedirectURL = "";
-		arguments.rc.entityActionDetails.fRedirectAction = "";
-		arguments.rc.entityActionDetails.fRenderItem = "";
-		arguments.rc.entityActionDetails.sRedirectQS = "";
-		arguments.rc.entityActionDetails.fRedirectQS = "";
-		arguments.rc.entityActionDetails.sRenderItem = "";
-		arguments.rc.integration=getService('integrationService').getIntegrationByIntegrationPackage('slatwallImporter');
-	   	arguments.rc.processObject =arguments.rc.integration.getProcessObject( 'Importcsv' );//getHibachiScope().getAccount().getProcessObject('Importcsv'); 
-	   
-	    
+		super.before(rc);
+    	arguments.rc.integration=getService('integrationService').getIntegrationByIntegrationPackage('slatwallImporter');
+
+
 	}
-	
-	
+    
+    public function default(required struct rc)
+    {
+    	arguments.rc.fileslist = getService('SlatwallImporterService').getDownloadLink();
+    }
+    
 	public void function preprocessintegratoin(required struct rc)
 	{
-			var arrayOfLocalFiles = directoryList( expandPath( "/Slatwall/integrationServices/slatwallimporter/assets/downloadsample/" ), false, "name" );
-   			arguments.rc.fileslist = arrayOfLocalFiles;
-			arguments.rc.entityActionDetails.processAction = 'slatwallimporter:main.uploadCSV';
+			
+   		   	arguments.rc.processObject =arguments.rc.integration.getProcessObject( 'Importcsv' );//getHibachiScope().getAccount().getProcessObject('Importcsv'); 
+   			arguments.rc.entityActionDetails.processAction = 'slatwallimporter:main.uploadCSV';
 			arguments.rc.entityActionDetails.sRedirectAction = 'slatwallimporter:main';
 			arguments.rc.edit = true;
     		arguments.rc.pageTitle ="ImportCsv"; 
@@ -65,6 +30,7 @@ component extends="Slatwall.org.Hibachi.HibachiController" accessors="true" outp
 	
 	public any function uploadCSV (required any rc){	
 		getService("hibachiTagService").cfsetting(requesttimeout=60000);
+		arguments.rc.processObject =arguments.rc.integration.getProcessObject( 'Importcsv' );
         var pathToImport = ExpandPath('/Slatwall') & '/integrationServices/slatwallimporter/assets/csv/'; 
       
       	if(!DirectoryExists(pathToImport)){

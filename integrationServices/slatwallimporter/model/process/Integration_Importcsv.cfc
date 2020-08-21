@@ -11,10 +11,5 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiP
 	    var optoin=[{name:"Ex",value:"entity1"},{name:"BX",value:"entity1"}];
 	    return optoin;
 	}
-	
-	public any function getDownloadLink() {
-		return "hrere";
-	}
-	
-	
+
 }

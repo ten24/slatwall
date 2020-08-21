@@ -56,4 +56,11 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	    }
         return variables.integration;
     }
+    
+  	public any function getDownloadLink() {
+        
+        var arrayOfLocalFiles = directoryList( expandPath( "/Slatwall/integrationServices/slatwallimporter/assets/downloadsample/" ), false, "name" );    
+        return arrayOfLocalFiles;
+  	    
+  	}
 }
