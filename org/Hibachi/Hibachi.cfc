@@ -1171,7 +1171,9 @@ component extends="framework.one" {
 				arrayAppend(entityQueueArray, entityQueueData[i]);
 				currentIndex++;
 			}
+			
 			getHibachiScope().getService("hibachiEntityQueueService").processEntityQueueArray(entityQueueArray, true);	
+			
 		}
 		
 	}
