@@ -150,15 +150,12 @@ component accessors="true" output="false" extends="HibachiService" {
 					
 					if(entityMethodInvoked){
 						ormflush();
-						writeDump('fuck yeah');
 					} else {
-						writeDump('ah shit');
 						ORMClearSession();
 						getHibachiScope().setORMHasErrors(false);
 					}
 					deleteEntityQueueItem(entityQueue['entityQueueID']);
 				}catch(any e){
-					writeDump('well balls');
 					if(val(entityQueue['tryCount']) >= maxTryCount){
 						getHibachiEntityQueueDAO().archiveEntityQueue(entityQueue['entityQueueID'], e.message);
 					}else{
