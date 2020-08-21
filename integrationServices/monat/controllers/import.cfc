@@ -40,6 +40,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	this.secureMethods=listAppend(this.secureMethods,'importInventoryUpdates');
 	this.secureMethods=listAppend(this.secureMethods,'importOrderReasons');
 	this.secureMethods=listAppend(this.secureMethods,'updateGeoIPDatabase');
+	this.secureMethods=listAppend(this.secureMethods,'deleteOrders');
 
 	// @hint helper function to return a Setting
 	public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
@@ -571,6 +572,40 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			datePart("d",date));
 	}
 
+	public void function deleteOrders(any rc){
+		
+		getService("HibachiTagService").cfsetting(requesttimeout="60000");
+		var deleteData = QueryExecute("SELECT * FROM tempimport where orders_ordernumber_delete IS NOT NULL");
+		for(var each in deleteData ){
+			var order = QueryExecute("SELECT orderID FROM swOrder where ordernumber = '#each.orders_ordernumber_delete#' ");
+			var sql = "
+				DELETE i FROM swInventory i INNER JOIN swOrderDeliveryItem od ON i.orderDeliveryItemID = od.orderDeliveryItemID INNER JOIN swOrderItem oi ON od.orderItemID = oi.orderItemID WHERE oi.orderID = '#order.orderID#';
+				DELETE FROM SwOpenOrderItem WHERE orderID = '#order.orderID#';
+				DELETE od FROM swOrderDeliveryItem od INNER JOIN swOrderItem oi ON od.orderItemID = oi.orderItemID WHERE oi.orderID = '#order.orderID#';
+				DELETE ta FROM swTaxApplied ta INNER JOIN swOrderItem oi ON ta.orderItemID = oi.orderItemID WHERE oi.orderID = '#order.orderID#';
+				DELETE ta FROM swTaxApplied ta INNER JOIN swOrderFulfillment of ON ta.orderFulfillmentID = of.orderFulfillmentID WHERE of.orderID = '#order.orderID#';
+				DELETE pa FROM swPromotionApplied pa INNER JOIN swOrderItem oi ON pa.orderItemID = oi.orderItemID WHERE oi.orderID = '#order.orderID#';
+				DELETE oisb FROM sworderitemskubundle oisb INNER JOIN swOrderItem oi ON oisb.orderItemID = oi.orderItemID WHERE oi.orderID = '#order.orderID#';
+				DELETE sri FROM swStockReceiverItem sri INNER JOIN swOrderItem oi ON sri.orderItemID = oi.orderItemID WHERE oi.orderID = '#order.orderID#';
+				DELETE FROM swOrderItem WHERE orderID = '#order.orderID#';
+				DELETE pt FROM swPaymentTransaction pt INNER JOIN swOrderPayment op ON op.orderPaymentID = pt.orderPaymentID WHERE op.orderID = '#order.orderID#';
+				DELETE FROM swOrderPayment WHERE orderID = '#order.orderID#';
+				DELETE FROM swOrderDelivery WHERE orderID = '#order.orderID#';
+				DELETE sm FROM swShippingMethodOption sm INNER JOIN swOrderFulfillment of ON of.orderFulfillmentID = sm.orderFulfillmentID WHERE of.orderID = '#order.orderID#';
+				DELETE FROM swStockReceiver WHERE orderID = '#order.orderID#';
+				DELETE FROM swOrderFulfillment WHERE orderID = '#order.orderID#';
+				DELETE FROM swPromotionApplied WHERE orderID = '#order.orderID#';
+				DELETE FROM swOrderReturn WHERE orderID = '#order.orderID#';
+				DELETE FROM swComment WHERE remoteID = '#order.orderID#';
+				DELETE FROM swCommentRelationship WHERE orderID = '#order.orderID#';
+				DELETE FROM swOrder WHERE orderID = '#order.orderID#';
+			"
+			var deletedOrder = QueryExecute(sql);
+			
+			logHibachi("Deleted ordernumber: #each.orders_ordernumber_delete#", true);
+		};
+	}
+	
 	
 	
 	/**
