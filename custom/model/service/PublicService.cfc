@@ -1389,12 +1389,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             productCollectionList.addFilter('productType.urlTitle','productPack','!=');
             productCollectionList.addFilter(propertyIdentifier ="skus.skuPrices.price", value= 0.00, comparisonOperator = "!=");
         }else{
-            productCollectionList.addFilterGroupWithAlias('hasSkuPriceOrDisplayOnly','AND');
-            productCollectionList.addFilterGroupWithAlias('displayOnly','AND','hasSkuPriceOrDisplayOnly');
-            productCollectionList.addFilter(propertyIdentifier ="skus.displayOnlyFlag", value= 1, comparisonOperator= "=", filterGroupAlias="hasSkuPriceOrDisplayOnly.displayOnly");
-            productCollectionList.addFilter(propertyIdentifier ="skus.skuPrices.skuPriceID", value="null", comparisonOperator="IS",filterGroupAlias="hasSkuPriceOrDisplayOnly.displayOnly");
-            productCollectionList.addFilterGroupWithAlias('hasSkuPrice','OR','hasSkuPriceOrDisplayOnly');
-            productCollectionList.addFilter(propertyIdentifier ="skus.skuPrices.price", value= 0.00, comparisonOperator = "!=", filterGroupAlias="hasSkuPriceOrDisplayOnly.hasSkuPrice");
+            productCollectionList.addFilter(propertyIdentifier ="skus.displayOnlyFlag", value= 1, comparisonOperator= "=", filterGroupAlias="hasSkuPriceOrDisplayOnly");
+            productCollectionList.addFilter(propertyIdentifier ="skus.skuPrices.price", value= 0.00, logicalOperator="OR", comparisonOperator = "!=", filterGroupAlias="hasSkuPriceOrDisplayOnly");
         }
 
         return { productCollectionList: productCollectionList, priceGroupCode: priceGroupCode, currencyCode: currencyCode };
