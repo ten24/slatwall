@@ -240,7 +240,64 @@ class SWListingSearchController {
             this.getPersonalCollections();
         });
     }
+    public saveAutoRefereshIntervalCollection=(collectionName?)=>{
+         if(
+            this.localStorageService.hasItem('selectedTimerCollection') &&
+            this.localStorageService.getItem('selectedTimerCollection')[this.swListingDisplay.personalCollectionKey] &&
+            (angular.isUndefined(this.personalCollectionIdentifier) ||
+            (angular.isDefined(this.localStorageService.getItem('selectedTimerCollection')[this.swListingDisplay.personalCollectionKey]['collectionDescription']) &&
+            this.localStorageService.getItem('selectedTimerCollection')[this.swListingDisplay.personalCollectionKey]['collectionDescription'] == this.personalCollectionIdentifier))
+        ){
+            var selectedPersonalCollection = angular.fromJson(this.localStorageService.getItem('selectedTimerCollection'));
+            if(selectedPersonalCollection[this.swListingDisplay.personalCollectionKey]){
 
+                this.$hibachi.savePersonalCollection(
+                    {
+                        'entityID':selectedPersonalCollection[this.swListingDisplay.personalCollectionKey].collectionID,
+                        'collectionConfig':this.swListingDisplay.collectionConfig.collectionConfigString
+                    }
+                ).then((data)=>{
+
+                });
+                return;
+            }
+
+        }else if(collectionName){
+            var serializedJSONData={
+                'collectionConfig':this.swListingDisplay.collectionConfig.collectionConfigString,
+                'collectionName':collectionName,
+                'collectionDescription':this.personalCollectionIdentifier,
+                'collectionObject':this.swListingDisplay.collectionConfig.baseEntityName
+            }
+
+            this.$hibachi.savePersonalCollection(
+                {
+                    'serializedJSONData':angular.toJson(serializedJSONData),
+                    'propertyIdentifiersList':'collectionID,collectionName,collectionObject,collectionDescription'
+                }
+            ).then((data)=>{
+
+                if(!this.localStorageService.hasItem('selectedTimerCollection')){
+                    this.localStorageService.setItem('selectedTimerCollection','{}');
+                }
+                var selectedPersonalCollection = angular.fromJson(this.localStorageService.getItem('selectedTimerCollection'));
+
+                selectedPersonalCollection[this.swListingDisplay.personalCollectionKey] = {
+                    collectionID:data.data.collectionID,
+                    collectionObject:data.data.collectionObject,
+                    collectionName:data.data.collectionName,
+                    collectionDescription:data.data.collectionDescription
+                }
+                this.localStorageService.setItem('selectedTimerCollection',angular.toJson(selectedPersonalCollection));
+                this.$rootScope.slatwall.selectedPersonalCollection = selectedPersonalCollection;
+                this.collectionNameSaveIsOpen = false;
+                this.hasPersonalCollections=false;
+            });
+            return;
+        }
+
+        this.collectionNameSaveIsOpen = true;
+    }
     public savePersonalCollection=(collectionName?)=>{
         if(
             this.localStorageService.hasItem('selectedPersonalCollection') &&

@@ -194,7 +194,9 @@
         <ul class="dropdown-menu pull-right" ng-show="swListingSearch.collectionNameSaveIsOpen">
             <li style="padding:8px;">
                 <div class="s-form-input s-input-group s-edit" style="width:100px;">
-                    <input type="checkbox" name="isTimerTrue" id="isTimerTrue"/>
+                    <input type="checkbox" name="isTimerTrue" id="isTimerTrue" ng-model="chkselct"/>
+                    <span ng-hide="chkselct"> <a class="btn btn-xs btn-success s-action-btn" ng-click="">Refresh</a></span>
+                    <span ng-show="chkselct1">
                     <input
                         type="text"
                         ng-model="swListingSearch.collectionName"
@@ -209,7 +211,7 @@
                         ng-click="swListingSearch.saveAutoRefereshIntervalCollection(swListingSearch.collectionName)"
                     >
                         save
-                    </a>
+                    </a> </span>
                 </div>
             </li>
         </ul>
