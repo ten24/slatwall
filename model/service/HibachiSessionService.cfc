@@ -127,4 +127,40 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 		}
 	}
 	
+	/**
+	 * Method override to setup cart information on session
+	 * */
+	public void function setAccountSessionByAuthToken(required string authToken) {
+		super.setAccountSessionByAuthToken(arguments.authToken);
+
+		//Set Cart on Session
+		if(!isNull(getHibachiScope().getSession()) && getHibachiScope().getSession().getLoggedInFlag() && !isNull(getHibachiScope().getSession().getAccount()) && !isEmpty( getHibachiScope().getAccount().getAccountID() ) ) {
+			
+			var authorizationHeader = arguments.authToken;
+			var jwt = getHibachiScope().getService('HibachiJWTService').getJwtByToken(right(authorizationHeader,len(authorizationHeader) - len('Bearer ')));
+			//don't need to call verify as it's being verified in super
+			var jwtPayload = jwt.getPayload();
+			
+			//if order id exists in payload then use that to get recent order else get most recent not placed order order
+			if( structKeyExists(jwtPayload, 'orderid') && !isEmpty(jwtPayload.orderid)) {
+				var mostRecentCart = getOrderService().getOrder( jwtPayload.orderid );
+			}
+			if( !structKeyExists(jwtPayload, 'orderid') ) {
+				var mostRecentCart = getOrderService().getMostRecentNotPlacedOrderByAccountID( getHibachiScope().getSession().getAccount().getAccountID() );
+			}
+			
+			
+			if(!isNull(mostRecentCart)) {
+
+				getHibachiScope().getSession().setOrder( mostRecentCart );
+
+				this.saveSession(getHibachiScope().getSession());
+
+				// Force persistance
+				getHibachiDAO().flushORMSession();
+			}
+		}
+
+	}
+	
 }
