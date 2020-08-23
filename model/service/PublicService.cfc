@@ -1514,6 +1514,14 @@ component  accessors="true" output="false"
     public void function clearOrder( required struct data ) {
         var cart = getService("OrderService").processOrder( getHibachiScope().cart(), arguments.data, 'clear');
         
+        if( !cart.hasErrors() ) {
+            //create new session with blank orderid
+            if( getHibachiScope().getLoggedInFlag()  && !isNull(getHibachiScope().getAccount()) && !isEmpty( getHibachiScope().getAccount().getAccountID() ) ) {
+                arguments.data.ajaxResponse['token'] = getService('HibachiJWTService').createToken(clearOrder = true);
+            }
+            
+        }
+        
         getHibachiScope().addActionResult( "public:cart.clear", cart.hasErrors() );
     }
     
@@ -1643,6 +1651,12 @@ component  accessors="true" output="false"
             
             // Make sure that the session is persisted
             getHibachiSessionService().persistSession();
+            
+            //create new token with cart information
+            if( getHibachiScope().getLoggedInFlag()  && !isNull(getHibachiScope().getAccount()) && !isEmpty( getHibachiScope().getAccount().getAccountID() ) ) {
+                arguments.data.ajaxResponse['token'] = getService('HibachiJWTService').createToken();
+            }
+            
             
         }else{
             addErrors(data, getHibachiScope().getCart().getProcessObject("addOrderItem").getErrors());
@@ -2044,6 +2058,9 @@ component  accessors="true" output="false"
             if(!order.hasErrors()) {
                 getHibachiScope().setSessionValue('confirmationOrderID', order.getOrderID());
                 getHibachiScope().getSession().setLastPlacedOrderID( order.getOrderID() );
+                
+                //create new session with blank orderid
+                arguments.data.ajaxResponse['token'] = getService('HibachiJWTService').createToken(clearOrder = true);
             }else{
               this.addErrors(data,order.getErrors());
             }
