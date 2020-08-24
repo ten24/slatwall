@@ -57,31 +57,47 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
         return variables.integration;
     }
     
-  	public any function getDownloadLink() {
-        
-        var arrayOfLocalFiles = directoryList( expandPath( "/Slatwall/integrationServices/slatwallimporter/assets/downloadsample/" ), false, "name" );    
-        return arrayOfLocalFiles;
+  	public any function getSampleCsvFilesOptions(){
   	    
+  	    if( !structKeyExists(variables, 'sampleCSVFilesOptions') ){
+            
+            variables.sampleCSVFilesOptions = [];
+  	        
+            var baseUrl = this.getHibachiScope().getBaseUrl();
+            var files = directoryList( this.getHibachiScope().getApplicationValue('applicationRootMappingPath') & "/integrationServices/slatwallimporter/assets/downloadsample/" ), false, "name" ); 
+            
+            for( var fileName in files ){
+                var option = {
+                    'name': fileName,
+                    'value': baseUrl & '/integrationServices/slatwallimporter/assets/downloadsample/' & fileName
+                } 
+                arrayAppend( variables.sampleCSVFilesOptions, option );
+            }
+  	    }
+  	    
+  	    return variables.sampleCSVFilesOptions;
   	}
   	
-  	public any function uploadCSVFile(required any rc)
-  	{
+  	public any function uploadCSVFile( required any rc ){
   	    
-        var pathToImport = ExpandPath('/Slatwall') & '/integrationServices/slatwallimporter/assets/csv/'; 
-       	if(!DirectoryExists(pathToImport)){
-			DirectoryCreate(pathToImport);
-		}	
-		try
-		{
-			var file = FileUpload(pathToImport, "uploadFile", "text/csv", "Overwrite");
-			if (not listFindNoCase("csv", file.serverFileExt)) {
-    		 	getHibachiScope().showMessage("The uploaded file is not of type CSV.", "error");
-    	    }
-			getHibachiScope().showMessage("Uppload success", "success");
-		
-		}catch (any e) {
-    		getHibachiScope().showMessage("An error occurred while uploading your file" & e.Message, "error");
-			
+  	    var importFilesUploadDirectory = ExpandPath('/Slatwall') & '/integrationServices/slatwallimporter/assets/uploads/'; 
+       	
+       	if(!DirectoryExists(importFilesUploadDirectory)){
+			DirectoryCreate(importFilesUploadDirectory);
 		}
+		
+		try{
+			var file = FileUpload(importFilesUploadDirectory, "uploadFile", "text/csv", "Overwrite");
+			
+			if ( !listFindNoCase("csv", file.serverFileExt) ){
+    		 	this.getHibachiScope().showMessage("The uploaded file is not of type CSV.", "error");
+    	    }
+    	    
+			this.getHibachiScope().showMessage("Uppload success", "success");
+		} 
+		catch ( any e ){
+    		this.getHibachiScope().showMessage("An error occurred while uploading your file" & e.Message, "error");
+		}
+		
   	}
 }
