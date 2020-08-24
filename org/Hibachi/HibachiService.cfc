@@ -1337,20 +1337,9 @@
 			var propertyIdentifierParts = ListToArray(arguments.propertyIdentifier, '.');
 			
 			for (var i = 1; i <= arraylen(propertyIdentifierParts); i++) {
-				if(structKeyExists(propertiesStruct, propertyIdentifierParts[i])){
-				
+				if(structKeyExists(propertiesStruct, propertyIdentifierParts[i]) && structKeyExists(propertiesStruct[propertyIdentifierParts[i]], 'cfc')){
 					var currentProperty = propertiesStruct[propertyIdentifierParts[i]];
-					
-					if(!structKeyExists(currentProperty, 'cfc')){
-						continue;
-					}
-					if(
-						structKeyExists(currentProperty, "fieldtype") 
-						&& (
-							currentProperty["fieldtype"] == 'one-to-many'
-							|| currentProperty["fieldtype"] == 'many-to-many'
-						)
-					){
+					if(	structKeyExists(currentProperty, "fieldtype") && currentProperty["fieldtype"].endsWith('-to-many')){
 						hasToMany = true;
 						break;
 					}
@@ -1367,7 +1356,7 @@
             return StructKeyExists(entityMetaData, "hb_defaultOrderProperty");
 		}
 		
-		public string function getDfaultOrderByProeprtyNameByEntityName(required string entityName){
+		public string function getDefaultOrderByPropertyNameByEntityName(required string entityName){
 			var entityMetaData = this.getEntityMetaData( arguments.entityName );
             return entityMetaData["hb_defaultOrderProperty"];
 		}
@@ -1375,7 +1364,7 @@
 		public string function getDefaultOrderByPropertyIdentifierByEntityName(required string entityName, string orderByPropertyName){
 
 			if( !structKeyExists(arguments, 'orderByPropertyName') ){
-			    arguments.orderByPropertyName = this.getDfaultOrderByProeprtyNameByEntityName(arguments.entityName);
+			    arguments.orderByPropertyName = this.getDefaultOrderByPropertyNameByEntityName(arguments.entityName);
 			}
 
 			return '_' & lcase( this.getProperlyCasedShortEntityName(arguments.entityName) ) & '.' & arguments.orderByPropertyName;
