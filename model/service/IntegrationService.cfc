@@ -171,7 +171,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	public void function loadDataFromIntegrations(){
 
-		var integrationCollectionList = getService('hibachiService').getIntegrationCollectionList();
+		var integrationCollectionList = this.getService('hibachiService').getIntegrationCollectionList();
 		integrationCollectionList.addFilter('activeFlag',1);
 		integrationCollectionList.setDisplayProperties('integrationPackage');
 		var integrations = integrationCollectionList.getRecords();
@@ -180,7 +180,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			if(directoryExists(integrationPath)){
 				var integrationDbDataPath = integrationPath & '/config/dbdata';
 				if(directoryExists(integrationDbDataPath) && !getApplicationValue('skipDbData')){
-					getService("hibachiDataService").loadDataFromXMLDirectory(xmlDirectory = integrationDbDataPath);
+					this.getService("hibachiDataService").loadDataFromXMLDirectory(xmlDirectory = integrationDbDataPath);
 				}
 			}
 		}
@@ -295,18 +295,21 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						}
 						
 						// Register remaining beans with the Bean-factory;
-						var integrationBF = new framework.hibachiaop("#this.getApplicationValue('applicationRootMappingPath')#/integrationServices/#integrationPackage#/model", {
+						var integrationBF = new framework.hibachiaop("/Slatwall/integrationServices/#integrationPackage#/model", {
 							transients=["process", "transient", "report"],
 							exclude=["entity"],
 							omitDirectoryAliases = getApplicationValue("hibachiConfig").beanFactoryOmitDirectoryAliases
 						});
 						
 						var integrationBFBeans = integrationBF.getBeanInfo();
+						
 						for(var beanName in integrationBFBeans.beanInfo) {
 						    
 						    if( beanName == "beanFactory" ){ 
 						        continue;
 						    }
+						    
+						    logHibachi("Declaring bean. #beanName# . for integration. #integrationPackage# .");
 						    
 						    var thisBeanInfo = integrationBFBeans.beanInfo[ beanName ];
 						    
@@ -450,7 +453,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				structDelete(variables, "activeFW1Subsystems");
 			}
 			
-			getHibachiCacheService().resetCachedKey('actionPermissionDetails');
+			this.getService('hibachiCacheService').resetCachedKey('actionPermissionDetails');
 			
 			if(arguments.entity.getEnabledFlag()){
 				getHibachiScope().setApplicationValue("initialized",false);
