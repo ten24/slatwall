@@ -1331,11 +1331,12 @@
 		}
 		
 		public string function hasToManyByEntityNameAndPropertyIdentifier( required string entityName, required string propertyIdentifier ) {
-			if(listLen(arguments.propertyIdentifier) > 0){
+			if(listLen(arguments.propertyIdentifier,".") > 0){
 				var propertiesStruct = getPropertiesStructByEntityName( arguments.entityName );
 				var isFinalProperty = listLen(arguments.propertyIdentifier, ".") <= 1;
-				if( !structKeyExists(propertiesStruct, listFirst(arguments.propertyIdentifier, ".")) 
-					|| (!isFinalProperty && !structKeyExists(propertiesStruct[listFirst(arguments.propertyIdentifier, ".")], "cfc")) ) {
+				var propertyIdentifierDoesntExist = !structKeyExists(propertiesStruct, listFirst(arguments.propertyIdentifier, ".")) 
+					|| !structKeyExists(propertiesStruct[listFirst(arguments.propertyIdentifier, ".")], "cfc");
+				if( !isFinalProperty && propertyIdentifierDoesntExist ) {
 					throw("The Property Identifier #arguments.propertyIdentifier# is invalid for the entity #arguments.entityName#");
 				}
 				if(
