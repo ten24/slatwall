@@ -1,6 +1,10 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 
+import { ObserverService } from "../../core/core.module";
+import { LocalStorageService } from "../../core/services/localstorageservice";
+import { CollectionService } from "../../collection/services/collectionservice";
+
 class SWListingSearchController {
 
     private filterPropertiesList;
@@ -27,23 +31,34 @@ class SWListingSearchController {
     public limitCountTotal;
     
     public swListingControls:any;
-    public hasPersonalCollections:boolean=false;
+    public hasPersonalCollections = false;
     public personalCollections:any;
     public selectedPersonalCollection:any;
-    public collectionNameSaveIsOpen:boolean=false;
+    public collectionNameSaveIsOpen = false;
     public printTemplateOptions:any[];
     public personalCollectionIdentifier:string;
-
+    
+    
+    //Auto-refresh
+    public refreshListingSaveIsOpen: false;
+    
+    public autoRefreshConfig = {
+        'autoRefreshInterval' : 10, // seconds --> for timeout x1000
+        'autoRefreshEnabled' : true // if this is set the Listing-Display will refresh itself automatically; at the given `autoRefreshInterval`;
+    };
+    
+    
     //@ngInject
     constructor(
         public $scope,
         public $rootScope,
+        public $timeout,
         public $hibachi,
         public metadataService,
         public listingService,
-        public collectionService,
-        public observerService,
-        public localStorageService,
+        public collectionService : CollectionService,
+        public observerService : ObserverService,
+        public localStorageService : LocalStorageService,
         public appConfig
     ) {
        
@@ -140,6 +155,13 @@ class SWListingSearchController {
                 }
             );
         }
+        
+        // on init --> check to set time-out intervals
+        let thisAutoRefreshConfig = this.localStorageService.getItem('selectedAutoRefreshConfigs')?.[this.swListingDisplay.personalCollectionKey];
+          
+        if(thisAutoRefreshConfig && thisAutoRefreshConfig.autoRefreshEnabled){
+              this.setupAutoRefreshTimeout();
+        }
     }
     
     public configureListingSearchConfigControls(searchConfig?) {
@@ -156,7 +178,6 @@ class SWListingSearchController {
         }
         
     }
-    
     
     public changeSearchFilter = (filter)=>{
         if(this.swListingDisplay.collectionConfig.listingSearchConfig.selectedSearchFilterCode !== filter.value){
@@ -240,64 +261,64 @@ class SWListingSearchController {
             this.getPersonalCollections();
         });
     }
-    public saveAutoRefereshIntervalCollection=(collectionName?)=>{
-         if(
-            this.localStorageService.hasItem('selectedAutoRefreshConfigs') &&
-            this.localStorageService.getItem('selectedAutoRefreshConfigs')[this.swListingDisplay.personalCollectionKey] &&
-            (angular.isUndefined(this.personalCollectionIdentifier) ||
-            (angular.isDefined(this.localStorageService.getItem('selectedAutoRefreshConfigs')[this.swListingDisplay.personalCollectionKey]['collectionDescription']) &&
-            this.localStorageService.getItem('selectedAutoRefreshConfigs')[this.swListingDisplay.personalCollectionKey]['collectionDescription'] == this.personalCollectionIdentifier))
-        ){
-            var selectedPersonalCollection = angular.fromJson(this.localStorageService.getItem('selectedAutoRefreshConfigs'));
-            if(selectedPersonalCollection[this.swListingDisplay.personalCollectionKey]){
-
-                this.$hibachi.savePersonalCollection(
-                    {
-                        'entityID':selectedPersonalCollection[this.swListingDisplay.personalCollectionKey].collectionID,
-                        'collectionConfig':this.swListingDisplay.collectionConfig.collectionConfigString
-                    }
-                ).then((data)=>{
-
-                });
-                return;
-            }
-
-        }else if(collectionName){
-            var serializedJSONData={
-                'collectionConfig':this.swListingDisplay.collectionConfig.collectionConfigString,
-                'collectionName':collectionName,
-                'collectionDescription':this.personalCollectionIdentifier,
-                'collectionObject':this.swListingDisplay.collectionConfig.baseEntityName
-            }
-
-            this.$hibachi.savePersonalCollection(
-                {
-                    'serializedJSONData':angular.toJson(serializedJSONData),
-                    'propertyIdentifiersList':'collectionID,collectionName,collectionObject,collectionDescription'
-                }
-            ).then((data)=>{
-
-                if(!this.localStorageService.hasItem('selectedAutoRefreshConfigs')){
-                    this.localStorageService.setItem('selectedAutoRefreshConfigs','{}');
-                }
-                var selectedPersonalCollection = angular.fromJson(this.localStorageService.getItem('selectedAutoRefreshConfigs'));
-
-                selectedPersonalCollection[this.swListingDisplay.personalCollectionKey] = {
-                    collectionID:data.data.collectionID,
-                    collectionObject:data.data.collectionObject,
-                    collectionName:data.data.collectionName,
-                    collectionDescription:data.data.collectionDescription
-                }
-                this.localStorageService.setItem('selectedAutoRefreshConfigs',angular.toJson(selectedPersonalCollection));
-                this.$rootScope.slatwall.selectedPersonalCollection = selectedPersonalCollection;
-                this.collectionNameSaveIsOpen = false;
-                this.hasPersonalCollections=false;
-            });
-            return;
-        }
-
-        this.collectionNameSaveIsOpen = true;
+    
+    public onRefresh = () => {
+        //notify - Refresh - Listing
+        this.observerService.notifyById( 'refreshListingDisplay', this.swListingDisplay.tableID , null); // this.swListingDisplay.refreshListingDisplay();
     }
+    
+    public onSaveAutoRefereshEnabled = () => {
+        
+        if( !this.autoRefreshConfig.autoRefreshEnabled ){
+            this.autoRefreshConfig.autoRefreshEnabled = true;
+        } 
+        else {
+            this.autoRefreshConfig.autoRefreshEnabled = false;
+        }
+        
+        // update local-storage
+        let selectedAutoRefreshConfigs = this.localStorageService.getItem('selectedAutoRefreshConfigs');
+        selectedAutoRefreshConfigs[this.swListingDisplay.personalCollectionKey] = angular.copy(this.autoRefreshConfig);
+        this.localStorageService.setItem('selectedAutoRefreshConfigs', selectedAutoRefreshConfigs );
+        
+        
+        if( !this.autoRefreshConfig.autoRefreshEnabled ){
+            // set-timeouts
+            this.setupAutoRefreshTimeout();
+        } 
+        else {
+            // unset-timeouts
+            this.clearAutoRefreshTimeout();
+        }
+    }
+    
+    public onSaveAutoRefereshConfig = () => {
+        
+        // update local-storage --> save autoRefreshConfig
+        let selectedAutoRefreshConfigs = this.localStorageService.getItem('selectedAutoRefreshConfigs');
+        
+        //@ts-ignore
+        selectedAutoRefreshConfigs[this.swListingDisplay.personalCollectionKey] = angular.copy(this.autoRefreshConfig);
+        
+        this.localStorageService.setItem('selectedAutoRefreshConfigs', selectedAutoRefreshConfigs );
+        
+        // update-timeputs
+        this.setupAutoRefreshTimeout();
+    }
+    
+    private setupAutoRefreshTimeout = () => {
+        //clear old timeouts if any
+        let thisAutoRefreshConfig = this.localStorageService.getItem('selectedAutoRefreshConfigs')?.[this.swListingDisplay.personalCollectionKey];
+        
+        //setup timeouts loop
+        // http://tutorials.jenkov.com/angularjs/timeout-interval.html
+    }
+    
+    private clearAutoRefreshTimeout = () => {
+        // remove timeouts loop
+    }
+    
+    
     public savePersonalCollection=(collectionName?)=>{
         if(
             this.localStorageService.hasItem('selectedPersonalCollection') &&
