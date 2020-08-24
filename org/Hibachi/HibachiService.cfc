@@ -1331,23 +1331,26 @@
 		}
 		
 		public string function hasToManyByEntityNameAndPropertyIdentifier( required string entityName, required string propertyIdentifier ) {
-			
-			if(listLen(arguments.propertyIdentifier, ".") gt 1) {
-				var propertiesSruct = getPropertiesStructByEntityName( arguments.entityName );
-				if( !structKeyExists(propertiesSruct, listFirst(arguments.propertyIdentifier, ".")) || !structKeyExists(propertiesSruct[listFirst(arguments.propertyIdentifier, ".")], "cfc") ) {
+			if(listLen(arguments.propertyIdentifier) > 0){
+				var propertiesStruct = getPropertiesStructByEntityName( arguments.entityName );
+				var isFinalProperty = listLen(arguments.propertyIdentifier, ".") <= 1;
+				if( !structKeyExists(propertiesStruct, listFirst(arguments.propertyIdentifier, ".")) 
+					|| (!isFinalProperty && !structKeyExists(propertiesStruct[listFirst(arguments.propertyIdentifier, ".")], "cfc")) ) {
 					throw("The Property Identifier #arguments.propertyIdentifier# is invalid for the entity #arguments.entityName#");
 				}
 				if(
-					structKeyExists(propertiesSruct[listFirst(arguments.propertyIdentifier, ".")], "fieldtype") 
+					structKeyExists(propertiesStruct[listFirst(arguments.propertyIdentifier, ".")], "fieldtype") 
 					&& (
-						propertiesSruct[listFirst(arguments.propertyIdentifier, ".")]["fieldtype"] == 'one-to-many'
-						|| propertiesSruct[listFirst(arguments.propertyIdentifier, ".")]["fieldtype"] == 'many-to-many'
+						propertiesStruct[listFirst(arguments.propertyIdentifier, ".")]["fieldtype"] == 'one-to-many'
+						|| propertiesStruct[listFirst(arguments.propertyIdentifier, ".")]["fieldtype"] == 'many-to-many'
 					)
 				){
 					return true;
 				}
 				
-				return hasToManyByEntityNameAndPropertyIdentifier( entityName=listLast(propertiesSruct[listFirst(arguments.propertyIdentifier, ".")].cfc, "."), propertyIdentifier=right(arguments.propertyIdentifier, len(arguments.propertyIdentifier)-(len(listFirst(arguments.propertyIdentifier, "._"))+1)));	
+				if(!isFinalProperty) {
+					return hasToManyByEntityNameAndPropertyIdentifier( entityName=listLast(propertiesStruct[listFirst(arguments.propertyIdentifier, ".")].cfc, "."), propertyIdentifier=right(arguments.propertyIdentifier, len(arguments.propertyIdentifier)-(len(listFirst(arguments.propertyIdentifier, "._"))+1)));	
+				}
 			}
 			return false;
 			
