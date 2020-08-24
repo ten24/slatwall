@@ -1,4 +1,4 @@
-/*
+<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,43 +45,35 @@
 
 Notes:
 
-*/
-component extends="Slatwall.integrationServices.BaseImporterService" persistent="false" accessors="true" output="false"{
-	
-	property name="integrationServices";
-	
-	public any function getIntegration(){
-	    if( !structKeyExists( variables, 'integration') ){
-	        variables.integration = this.getIntegrationByIntegrationPackage('slatwallimporter');
-	    }
-        return variables.integration;
-    }
+--->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
+<cfparam name="rc.batchSmartList" type="any" />
     
-  	public any function getDownloadLink() {
-        
-        var arrayOfLocalFiles = directoryList( expandPath( "/Slatwall/integrationServices/slatwallimporter/assets/downloadsample/" ), false, "name" );    
-        return arrayOfLocalFiles;
-  	    
-  	}
-  	
-  	public any function uploadCSVFile(required any rc)
-  	{
-  	    
-        var pathToImport = ExpandPath('/Slatwall') & '/integrationServices/slatwallimporter/assets/csv/'; 
-       	if(!DirectoryExists(pathToImport)){
-			DirectoryCreate(pathToImport);
-		}	
-		try
-		{
-			var file = FileUpload(pathToImport, "uploadFile", "text/csv", "Overwrite");
-			if (not listFindNoCase("csv", file.serverFileExt)) {
-    		 	getHibachiScope().showMessage("The uploaded file is not of type CSV.", "error");
-    	    }
-			getHibachiScope().showMessage("Uppload success", "success");
-		
-		}catch (any e) {
-    		getHibachiScope().showMessage("An error occurred while uploading your file" & e.Message, "error");
-			
-		}
-  	}
-}
+    <hb:HibachiEntityActionBar type="listing" object="#rc.batchSmartList#" showCreate="false">
+    </hb:HibachiEntityActionBar>
+
+    <cfset local.batchCollectionList = getHibachiScope().getService('HibachiService').getBatchCollectionList()/>
+
+	<cfset local.batchCollectionList.setDisplayProperties( 
+	"batchDescription,baseObject,batchType.systemCode|batchType,calculatedBatchEntityQueueItemsCount,calculatedBatchEntityQueueFailureItemsCount,createdDateTime", {
+		isVisible=true,
+		isDeletable=true,
+		isSearchable=true
+	})/>
+	
+	<cfset local.batchCollectionList.addDisplayProperty( displayProperty='batchID', columnConfig={
+		isVisible=false,
+		isDeletable=false,
+		isSearchable=false
+	})/>
+	
+	<hb:HibachiListingDisplay 
+		collectionList="#local.batchCollectionList#"
+		usingPersonalCollection="true"
+		personalCollectionKey='#request.context.entityactiondetails.itemname#'
+		recordDetailAction="admin:entity.detailbatch"
+	>
+	</hb:HibachiListingDisplay>

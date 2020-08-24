@@ -1,44 +1,35 @@
-component extends="Slatwall.org.Hibachi.HibachiController" accessors="true" output="false"{
+component extends="Slatwall.org.Hibachi.HibachiControllerEntity" accessors="true" output="false"{
 
-	property name="fw";
 	property name="slatwallImporterIntegrationCFC";
+	property name="SlatwallImporterService";
+	property name="integrationService";
+	property name="hibachiTagService";
 
-
-	public any function init(required any fw){
-		setFW(arguments.fw);
-		return this;
+	public function before(required struct rc)
+	{
+		super.before(rc);
+    	arguments.rc.integration=getIntegrationService().getIntegrationByIntegrationPackage('slatwallImporter');
 	}
-	
-	
-	//TODO upload/download CSVs, UI
-	
-	public any function uploadCSV (required any rc){	
-		getService("hibachiTagService").cfsetting(requesttimeout=60000);
-        var pathToImport = ExpandPath('/Slatwall') & '/integrationServices/slatwallimporter/assets/csv/'; 
-		if(FileExists(pathToImport)){
-			FileDelete(pathToImport); 
-		} 
-		if(!DirectoryExists(pathToImport)){
-			DirectoryCreate(pathToImport);
-		}	
-		try
-		{
-			var file = FileUpload(pathToImport, "importFile", "*", "Overwrite",".csv");
-			getFW().setView("slatwallimporter:main");
-		}
-		catch(any excpt)
-		{
-			return excpt.Message;
-		}
-		
-	
-	    //FileDelete(pathToImport&file.serverfile);
+    
+    public function default(required struct rc)
+    {
+    	arguments.rc.fileslist = getSlatwallImporterService().getDownloadLink();
+    }
+    
+	public void function preprocessintegratoin(required struct rc)
+	{
+			genericPreProcessMethod(entityName="Integration", rc=arguments.rc);
+   			arguments.rc.entityActionDetails.sRedirectAction = 'slatwallimporter:main';
 	}
 
+	public void function processintegratoin (required any rc){
 	
-	
-	
-	public void function after( required struct rc ) {
+		getHibachiTagService().cfsetting(requesttimeout=60000);
+		getSlatwallImporterService().uploadCSVFile(rc);
+		renderOrRedirectSuccess( defaultAction="slatwallimporter:main", maintainQueryString=true, rc=arguments.rc);
+	}
+
+ 	public void function after( required struct rc ) {
 		if(structKeyExists(arguments.rc, "fRedirectURL") && arrayLen(getHibachiScope().getFailureActions()) ){
 				getFW().redirectExact( redirectLocation=arguments.rc.fRedirectURL );
 		} 

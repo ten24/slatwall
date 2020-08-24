@@ -310,8 +310,12 @@ component extends="framework.one" {
 
 	public any function bootstrap() {
 		
-		setupRequestDefaults();
+		if( !getHibachiScope().hasApplicationValue("initialized") || !getHibachiScope().getApplicationValue("initialized") ){
+		   this.onApplicationStart(); 
+		}
+		
 		setupGlobalRequest();
+		
 		// Announce the applicatoinRequest event
 		getHibachiScope().getService("hibachiEventService").announceEvent(eventName="onApplicationBootstrapRequestStart");
 
@@ -335,6 +339,7 @@ component extends="framework.one" {
 		// clean any beancache for local development
 		if( structKeyExists(url, "reloadbean") && this.getEnvironment() == 'local' ){
 			getBeanFactory().reloadBean(url.reloadbean);
+			writeLog(file="#variables.framework.applicationKey#", text="General Log - Reloading bean #url.reloadbean#");
 		}
 		
         getHibachiScope().setIsAwsInstance(variables.framework.isAwsInstance);

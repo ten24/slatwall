@@ -9,6 +9,7 @@
 	<cfparam name="attributes.collectionEntity" type="any" default="" />
 	<cfparam name="attributes.pageTitle" type="string" default="" />
 	<cfparam name="attributes.edit" type="boolean" default="#request.context.edit#" />
+	<cfparam name="attributes.showbackAction" type="boolean" default="true" />
 
 	<!--- Action Callers (top buttons) --->
 	<cfparam name="attributes.showcancel" type="boolean" default="true" />
@@ -78,8 +79,9 @@
 							<cfelseif attributes.type eq "reportlisting">
 							
 								<cfparam name="request.context.keywords" default="" />
+								<cfif attributes.showbackAction>
 								<hb:HibachiActionCaller action="#attributes.backAction#" queryString="#attributes.backQueryString#" class="btn btn-default" icon="arrow-left">
-								
+								</cfif>
 								<cfif len( trim( thistag.generatedcontent ) ) gt 1>
 									<button class="btn dropdown-toggle btn-default" data-toggle="dropdown"><i class="icon-list-alt"></i> #attributes.hibachiScope.rbKey('define.actions')# <span class="caret"></span></button>
 									<ul class="dropdown-menu pull-right">
@@ -118,8 +120,9 @@
 							
 								<div class="btn-group btn-group-sm">
 									<!--- Detail: Back Button --->
+									<cfif attributes.showbackAction>
 									<hb:HibachiActionCaller action="#attributes.backAction#" queryString="#attributes.backQueryString#" class="btn btn-default" icon="arrow-left">
-	
+									</cfif>
 									<!--- Detail: Actions --->
 									<cfif !attributes.object.isNew() && len( trim( thistag.generatedcontent ) ) gt 1 || attributes.object.hasCalculatedProperties()>
 										<button class="btn dropdown-toggle btn-default" data-toggle="dropdown"><i class="icon-list-alt"></i> #attributes.hibachiScope.rbKey('define.actions')# <span class="caret"></span></button>
@@ -229,9 +232,11 @@
 									<cfif !len(attributes.processAction) and structKeyExists(request.context.entityActionDetails, "processAction")>
 										<cfset attributes.processAction = request.context.entityActionDetails.processAction />
 									</cfif>
+									<cfif attributes.showbackAction>
 									<div class="btn-group btn-group-sm">
 										<hb:HibachiActionCaller action="#attributes.backAction#" queryString="#attributes.backQueryString#" class="btn btn-default" icon="arrow-left">
 									</div>
+									</cfif>
 									<div class="btn-group btn-group-sm">
 										<button type="submit" class="btn btn-primary">#attributes.hibachiScope.rbKey( "entity.#attributes.object.getClassName()#.process.#attributes.processContext#" )#</button>
 									</div>
