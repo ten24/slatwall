@@ -1331,7 +1331,7 @@
 		}
 		
 		public string function hasToManyByEntityNameAndPropertyIdentifier( required string entityName, required string propertyIdentifier ) {
-			if(listLen(arguments.propertyIdentifier) > 0){
+			if(listLen(arguments.propertyIdentifier,".") > 0){
 				var propertiesStruct = getPropertiesStructByEntityName( arguments.entityName );
 				var isFinalProperty = listLen(arguments.propertyIdentifier, ".") <= 1;
 				var propertyIdentifierDoesntExist = !structKeyExists(propertiesStruct, listFirst(arguments.propertyIdentifier, ".")) 
