@@ -162,6 +162,20 @@ property name="personalVolumeDiscountAmount" ormtype="big_decimal";
 		structDelete(variables, "order");
 	}
 
+	public boolean function getExcludeFromModifiedEntitiesFlag(){
+		if(!structKeyExists(variables,'excludeFromModifiedEntitiesFlag')){
+			if( !isNull(getOrderItem()) ){
+				return getOrderItem().getExcludeFromModifiedEntitiesFlag();
+			}
+			if(!isNull(getOrderFulfillment())){
+				return getOrderFulfillment().getExcludeFromModifiedEntitiesFlag();
+			}
+			if(!isNull(getOrder())){
+				return getOrder().getExcludeFromModifiedEntitiesFlag();
+			}
+		}
+	}
+
 	// =============  END:  Bidirectional Helper Methods ===================
 	
 	// =================== START: ORM Event Hooks  =========================
