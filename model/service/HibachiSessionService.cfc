@@ -145,10 +145,6 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 			if( structKeyExists(jwtPayload, 'orderid') && !isEmpty(jwtPayload.orderid)) {
 				var mostRecentCart = getOrderService().getOrder( jwtPayload.orderid );
 			}
-			if( !structKeyExists(jwtPayload, 'orderid') ) {
-				var mostRecentCart = getOrderService().getMostRecentNotPlacedOrderByAccountID( getHibachiScope().getSession().getAccount().getAccountID() );
-			}
-			
 			
 			if(!isNull(mostRecentCart)) {
 
