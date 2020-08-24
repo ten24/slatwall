@@ -58,8 +58,7 @@ component entityname="SlatwallBatch" table="SwBatch" persistent="true" accessors
 	property name="entityQueueItems" singularname="entityQueueItem" fieldtype="one-to-many" type="array" fkcolumn="batchID" cfc="EntityQueue";
 	property name="entityQueueFailureItems" singularname="entityQueueFailureItem" fieldtype="one-to-many" type="array" fkcolumn="batchID" cfc="EntityQueueFailure";
 	property name="initialEntityQueueItemsCount" ormtype="numeric";
-	property name="initialEntityQueueFailureItemsCount" ormtype="numeric";
-    
+
 	// Related Object Properties (many-to-many)
 	// Remote Properties
 

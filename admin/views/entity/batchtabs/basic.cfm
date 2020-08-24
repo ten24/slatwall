@@ -9,7 +9,6 @@
 			<hb:HibachiPropertyDisplay object="#rc.batch#" property="baseObject" >
 			<hb:HibachiPropertyDisplay object="#rc.batch#" property="batchDescription" >
 			<hb:HibachiPropertyDisplay object="#rc.batch#" property="initialEntityQueueItemsCount" >
-			<hb:HibachiPropertyDisplay object="#rc.batch#" property="initialEntityQueueFailureItemsCount" >
 			<hb:HibachiPropertyDisplay object="#rc.batch#" property="entityQueueItemsCount" >
 			<hb:HibachiPropertyDisplay object="#rc.batch#" property="entityQueueFailureItemsCount" >
 		</hb:HibachiPropertyList>
