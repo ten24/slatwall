@@ -242,13 +242,13 @@ class SWListingSearchController {
     }
     public saveAutoRefereshIntervalCollection=(collectionName?)=>{
          if(
-            this.localStorageService.hasItem('selectedTimerCollection') &&
-            this.localStorageService.getItem('selectedTimerCollection')[this.swListingDisplay.personalCollectionKey] &&
+            this.localStorageService.hasItem('selectedAutoRefreshConfigs') &&
+            this.localStorageService.getItem('selectedAutoRefreshConfigs')[this.swListingDisplay.personalCollectionKey] &&
             (angular.isUndefined(this.personalCollectionIdentifier) ||
-            (angular.isDefined(this.localStorageService.getItem('selectedTimerCollection')[this.swListingDisplay.personalCollectionKey]['collectionDescription']) &&
-            this.localStorageService.getItem('selectedTimerCollection')[this.swListingDisplay.personalCollectionKey]['collectionDescription'] == this.personalCollectionIdentifier))
+            (angular.isDefined(this.localStorageService.getItem('selectedAutoRefreshConfigs')[this.swListingDisplay.personalCollectionKey]['collectionDescription']) &&
+            this.localStorageService.getItem('selectedAutoRefreshConfigs')[this.swListingDisplay.personalCollectionKey]['collectionDescription'] == this.personalCollectionIdentifier))
         ){
-            var selectedPersonalCollection = angular.fromJson(this.localStorageService.getItem('selectedTimerCollection'));
+            var selectedPersonalCollection = angular.fromJson(this.localStorageService.getItem('selectedAutoRefreshConfigs'));
             if(selectedPersonalCollection[this.swListingDisplay.personalCollectionKey]){
 
                 this.$hibachi.savePersonalCollection(
@@ -277,10 +277,10 @@ class SWListingSearchController {
                 }
             ).then((data)=>{
 
-                if(!this.localStorageService.hasItem('selectedTimerCollection')){
-                    this.localStorageService.setItem('selectedTimerCollection','{}');
+                if(!this.localStorageService.hasItem('selectedAutoRefreshConfigs')){
+                    this.localStorageService.setItem('selectedAutoRefreshConfigs','{}');
                 }
-                var selectedPersonalCollection = angular.fromJson(this.localStorageService.getItem('selectedTimerCollection'));
+                var selectedPersonalCollection = angular.fromJson(this.localStorageService.getItem('selectedAutoRefreshConfigs'));
 
                 selectedPersonalCollection[this.swListingDisplay.personalCollectionKey] = {
                     collectionID:data.data.collectionID,
@@ -288,7 +288,7 @@ class SWListingSearchController {
                     collectionName:data.data.collectionName,
                     collectionDescription:data.data.collectionDescription
                 }
-                this.localStorageService.setItem('selectedTimerCollection',angular.toJson(selectedPersonalCollection));
+                this.localStorageService.setItem('selectedAutoRefreshConfigs',angular.toJson(selectedPersonalCollection));
                 this.$rootScope.slatwall.selectedPersonalCollection = selectedPersonalCollection;
                 this.collectionNameSaveIsOpen = false;
                 this.hasPersonalCollections=false;
