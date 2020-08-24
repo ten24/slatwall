@@ -51,6 +51,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	property name="integrationServices";
 	
 	public any function getIntegration(){
+	    
 	    if( !structKeyExists( variables, 'integration') ){
 	        variables.integration = this.getIntegrationByIntegrationPackage('slatwallimporter');
 	    }
@@ -64,12 +65,16 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
             variables.sampleCSVFilesOptions = [];
   	        
             var baseUrl = this.getHibachiScope().getBaseUrl();
-            var files = directoryList( this.getHibachiScope().getApplicationValue('applicationRootMappingPath') & "/integrationServices/slatwallimporter/assets/downloadsample/" ), false, "name" ); 
+            var files = directoryList( 
+                            this.getHibachiScope().getApplicationValue('applicationRootMappingPath') & "/integrationServices/slatwallimporter/assets/downloadsample/", 
+                            false, 
+                            "name"
+                        ); 
             
             for( var fileName in files ){
                 var option = {
-                    'name': fileName,
-                    'value': baseUrl & '/integrationServices/slatwallimporter/assets/downloadsample/' & fileName
+                    'name'  : fileName,
+                    'value' : baseUrl & '/integrationServices/slatwallimporter/assets/downloadsample/' & fileName
                 } 
                 arrayAppend( variables.sampleCSVFilesOptions, option );
             }
@@ -78,16 +83,16 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
   	    return variables.sampleCSVFilesOptions;
   	}
   	
-  	public any function uploadCSVFile( required any rc ){
+  	public any function uploadCSVFile( required any data ){
   	    
-  	    var importFilesUploadDirectory = ExpandPath('/Slatwall') & '/integrationServices/slatwallimporter/assets/uploads/'; 
+  	    var importFilesUploadDirectory = this.getHibachiScope().getApplicationValue('applicationRootMappingPath') & '/integrationServices/slatwallimporter/assets/uploads/'; 
        	
-       	if(!DirectoryExists(importFilesUploadDirectory)){
+       	if( !DirectoryExists(importFilesUploadDirectory) ){
 			DirectoryCreate(importFilesUploadDirectory);
 		}
 		
 		try{
-			var file = FileUpload(importFilesUploadDirectory, "uploadFile", "text/csv", "Overwrite");
+			var file = FileUpload( importFilesUploadDirectory, "uploadFile", "text/csv", "Overwrite");
 			
 			if ( !listFindNoCase("csv", file.serverFileExt) ){
     		 	this.getHibachiScope().showMessage("The uploaded file is not of type CSV.", "error");

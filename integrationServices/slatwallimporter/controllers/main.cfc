@@ -1,30 +1,32 @@
 component extends="Slatwall.org.Hibachi.HibachiControllerEntity" accessors="true" output="false"{
 
-	property name="slatwallImporterIntegrationCFC";
-	property name="SlatwallImporterService";
-	property name="integrationService";
-	property name="hibachiTagService";
+	this.secureMethods=listAppend(this.secureMethods, 'default');
+	this.secureMethods=listAppend(this.secureMethods, 'preprocessintegration');
+	this.secureMethods=listAppend(this.secureMethods, 'processintegration');
 
 	public function before( required struct rc ){
 		super.before(rc);
-    	arguments.rc.integration=getIntegrationService().getIntegrationByIntegrationPackage('slatwallImporter');
+    	arguments.rc.integration = this.getService("integrationService").getIntegrationByIntegrationPackage('slatwallImporter');
 	}
     
     public function default( required struct rc ){
-    	arguments.rc.sampleCsvFilesOptions = this.getSlatwallImporterService().getSampleCsvFilesOptions();
+        
+    	arguments.rc.sampleCsvFilesOptions = this.getService("slatwallImporterService").getSampleCsvFilesOptions();
     }
     
-	public void function preprocessintegratoin( required struct rc ){
+	public void function preprocessintegration( required struct rc ){
+   		arguments.rc.sRedirectAction = 'slatwallimporter:main';
+   		arguments.rc.backAction = "slatwallimporter:main" ;
+   		
 		super.genericPreProcessMethod(entityName="Integration", rc=arguments.rc);
-   		arguments.rc.entityActionDetails.sRedirectAction = 'slatwallimporter:main';
 	}
 
-	public void function processintegratoin( required any rc ){
+	public void function processintegration( required any rc ){
 	
-		this.getHibachiTagService().cfsetting( requesttimeout=60000 );
+		this.getService("hibachiTagService").cfsetting( requesttimeout=60000 );
 		
-		this.getSlatwallImporterService().uploadCSVFile( arguments.rc );
+		this.getService("slatwallImporterService").uploadCSVFile( arguments.rc );
 		
-		this.renderOrRedirectSuccess( defaultAction="slatwallimporter:main", maintainQueryString=true, rc=arguments.rc);
+		super.renderOrRedirectSuccess( defaultAction="slatwallimporter:main", maintainQueryString=true, rc=arguments.rc);
 	}
 }
