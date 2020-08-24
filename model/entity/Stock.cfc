@@ -327,17 +327,9 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 			parentStockCollection.setDisplayProperties('stockID');
 			var parentStockRecords = parentStockCollection.getRecords();
 
-			if( arrayLen(parentStockRecords) ){
-				var insertString = "INSERT INTO swentityqueue(entityQueueID,baseObject,baseID,processMethod,entityQueueData,createdDateTime,modifiedDateTime,tryCount) VALUES ";
-				var firstRecord = true;
-				for(var record in parentStockRecords){
-					if(!firstRecord){
-						insertString &= ',';
-					}
-					firstRecord = false;
-					insertString &= "('#createHibachiUUID()#','Stock','#record.stockID#','processStock_updateCalculatedProperties','{}',#now()#,#now()#,0)";
-				}
-				queryExecute(insertString);
+			for(var record in parentStockRecords){
+				var parentStock = getService('StockService').getStock(record.stockID);
+				getHibachiScope().addModifiedEntity(parentStock);
 			}
  		}
  	}
