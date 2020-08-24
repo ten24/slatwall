@@ -40,7 +40,7 @@ class SWListingSearchController {
     
     
     //Auto-refresh
-    public refreshListingSaveIsOpen: false;
+    public refreshListingSaveIsOpen = false;
     
     public autoRefreshConfig = {
         'autoRefreshInterval' : 10, // seconds --> for timeout x1000
@@ -290,6 +290,7 @@ class SWListingSearchController {
             // unset-timeouts
             this.clearAutoRefreshTimeout();
         }
+        this.refreshListingSaveIsOpen = true;
     }
     
     public onSaveAutoRefereshConfig = () => {
