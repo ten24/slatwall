@@ -1725,7 +1725,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			getService('ShippingService').updateOrderFulfillmentShippingMethodOptions(orderFulfillment);
 		}
 		ormFlush();
-		newOrder = this.processOrder_placeOrder(newOrder,{ignoreCanPlaceOrderFlag:true, updateOrderAmounts:true, updateShippingMethodOptions:false});
+		
+		newOrder.validate( context = 'placeOrder' );
+		
+		if(!newOrder.hasErrors()){
+			newOrder = this.processOrder_placeOrder(newOrder,{ignoreCanPlaceOrderFlag:true, updateOrderAmounts:true, updateShippingMethodOptions:false});
+		}
 
 		if(newOrder.hasErrors()){
 			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors on place order #serializeJson(newOrder.getErrors())# when placing order');
