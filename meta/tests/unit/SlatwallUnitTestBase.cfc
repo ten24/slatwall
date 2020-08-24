@@ -54,8 +54,8 @@ component displayName="mytestcase" extends="testbox.system.compat.framework.Test
 
 	// BEFORE ALL TESTS IN THIS SUITE
 	public void function beforeTests(){
-
-		// Setup Components
+	    
+	    // Setup Components
 		variables.slatwallFW1Application = createObject("component", "Slatwall.Application");
 		if(!(structKeyExists(url,'reporter') && url.reporter=='JUnit') && right(variables.slatwallFW1Application.getDatasource(),5) neq '-test'){
 			throw('datasource should be named [proj]-test for unit tests');
@@ -67,7 +67,9 @@ component displayName="mytestcase" extends="testbox.system.compat.framework.Test
 	// BEFORE EACH TEST
 	public void function setUp() {
 		
-		variables.slatwallFW1Application.bootstrap();
+		variables.slatwallFW1Application.onRequestStart( getCurrentTemplatePath() );
+		
+	    request.slatwallScope = variables.slatwallFW1Application.getHibachiScope();
 		
 		request.slatwallScope.getAccount().setSuperUserFlag(1);
 		request.slatwallScope.getAccount().setFirstName('BigBoy');

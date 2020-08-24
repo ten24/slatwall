@@ -55,11 +55,12 @@ component entityname="SlatwallBatch" table="SwBatch" persistent="true" accessors
 	// Related Object Properties (many-to-one)
 	
 	// Related Object Properties (one-to-many)
-	property name="batchEntityQueueItems" singularname="batchEntityQueueItem" fieldtype="one-to-many" type="array" fkcolumn="batchID" cfc="EntityQueue";
-	property name="batchEntityQueueFailureItems" singularname="batchEntityQueueFailureItem" fieldtype="one-to-many" type="array" fkcolumn="batchID" cfc="EntityQueueFailure";
-
+	property name="entityQueueItems" singularname="entityQueueItem" fieldtype="one-to-many" type="array" fkcolumn="batchID" cfc="EntityQueue";
+	property name="entityQueueFailureItems" singularname="entityQueueFailureItem" fieldtype="one-to-many" type="array" fkcolumn="batchID" cfc="EntityQueueFailure";
+	property name="initialEntityQueueItemsCount" ormtype="numeric";
+	property name="initialEntityQueueFailureItemsCount" ormtype="numeric";
+    
 	// Related Object Properties (many-to-many)
-	property name="batchType" cfc="Type" fieldtype="many-to-one" fkcolumn="batchTypeID";
 	// Remote Properties
 
 	// Audit Properties
@@ -69,22 +70,36 @@ component entityname="SlatwallBatch" table="SwBatch" persistent="true" accessors
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
 	// Non-Persistent Properties
-    property name="batchEntityQueueItemsCount" persistent="false";
-	property name="batchEntityQueueFailureItemsCount" persistent="false";
+    property name="entityQueueItemsCount" persistent="false";
+	property name="entityQueueFailureItemsCount" persistent="false";
 	
 	// Calculated properties
-	property name="calculatedBatchEntityQueueItemsCount" ormtype="numeric";
-	property name="calculatedBatchEntityQueueFailureItemsCount" ormtype="numeric";
-    
-
+	
 	// ============ START: Non-Persistent Property Methods =================
     
-    public numeric function getBatchEntityQueueItemsCount(){
-        return 0; // TODO (use dao or collection)
+    public numeric function getEntityQueueItemsCount(){
+        
+        if( !StructKeyExists(variables, 'entityQueueItemsCount') ){
+            
+            if( this.isNew() ){
+                variables.entityQueueItemsCount = 0;
+            } else {
+                variables.entityQueueItemsCount = this.getEntityQueueItemsCollectionList().getRecordsCount();
+            }
+        }
+        return variables.entityQueueItemsCount;
     }
     
-    public numeric function getBatchEntityQueueFailureItemsCount(){
-        return 0; // TODO (use dao or collection)
+    public numeric function getEntityQueueFailureItemsCount(){
+         if( !StructKeyExists(variables, 'entityQueueFailureItemsCount') ){
+            
+            if( this.isNew() ){
+                variables.entityQueueFailureItemsCount = 0;
+            } else {
+                variables.entityQueueFailureItemsCount = this.getEntityQueueFailureItemsCollectionList().getRecordsCount();
+            }
+        }
+        return variables.entityQueueFailureItemsCount;
     }
     
 	// ============  END:  Non-Persistent Property Methods =================
@@ -100,4 +115,18 @@ component entityname="SlatwallBatch" table="SwBatch" persistent="true" accessors
 	// =================== START: ORM Event Hooks  =========================
 
 	// ===================  END:  ORM Event Hooks  =========================
+	
+	public any function getEntityQueueItemsCollectionList(){
+	    var collectionList = getService('hibachiEntityQueueService').getEntityQueueCollectionList();
+        collectionList.setDisplayProperties('entityQueueID');
+        collectionList.addFilter('batch.batchID', this.getBatchID() );
+        return collectionList;
+	}
+	
+	public any function getEntityQueueFailureItemsCollectionList(){
+	    var collectionList = getService('hibachiEntityQueueService').getEntityQueueFailureCollectionList();
+        collectionList.setDisplayProperties('entityQueueFailureID');
+        collectionList.addFilter('batch.batchID', this.getBatchID() );
+        return collectionList;
+	}
 }

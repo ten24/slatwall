@@ -239,18 +239,17 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 	    required string baseObject, 
 	    string processMethod='', 
 	    struct entityQueueData={}, 
-	    string entityQueueType=''
 	    string integrationID='', 
 	    string batchID='', 
 	    string mostRecentError='',
 	    numeric tryCount = 10,
-	    any createdDateTime = now() 
+	    any createdDateTime = now(),
 	    any entityQueueProcessingDateTime = now() 
 	){
 	
 		var insertQuery = new query();
-		var columns = 'entityQueueFailureID,  baseObject,  baseID,  processMethod,  entityQueueData,  entityQueueType,  integrationID,  batchID,  mostRecentError,  tryCount,  createdDateTime,  entityQueueProcessingDateTime,  createdByAccountID, modifiedByAccountID';
-		var values = ':entityQueueFailureID, :baseObject, :baseID, :processMethod, :entityQueueData, :entityQueueType, :integrationID, :batchID, :mostRecentError, :tryCount, :createdDateTime, :entityQueueProcessingDateTime, :accountID, :accountID ';
+		var columns = 'entityQueueFailureID,  baseObject,  baseID,  processMethod,  entityQueueData,  integrationID,  batchID,  mostRecentError,  tryCount,  createdDateTime,  entityQueueProcessingDateTime,  createdByAccountID, modifiedByAccountID';
+		var values = ':entityQueueFailureID, :baseObject, :baseID, :processMethod, :entityQueueData, :integrationID, :batchID, :mostRecentError, :tryCount, :createdDateTime, :entityQueueProcessingDateTime, :accountID, :accountID ';
 		
 		var sql = " INSERT INTO SwEntityQueueFailure ( #columns# ) VALUES ( #values# ) ";
 		
@@ -261,7 +260,6 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 		insertQuery.addParam( name='processMethod', value= arguments.processMethod, CFSQLTYPE="CF_SQL_VARCHAR");
 		insertQuery.addParam( name='entityQueueData', value= "#Serializejson(arguments.entityQueueData)#", CFSQLTYPE="CF_SQL_VARCHAR");
 		
-		insertQuery.addParam( name='entityQueueType', value= arguments.entityQueueType, CFSQLTYPE="CF_SQL_VARCHAR");
 		insertQuery.addParam( name='integrationID', value= arguments.integrationID, CFSQLTYPE="CF_SQL_STRING", null=len(trim(arguments.integrationID)) ? false : true );
 		insertQuery.addParam( name='batchID', value= arguments.batchID, CFSQLTYPE="CF_SQL_STRING", null=len(trim(arguments.batchID)) ? false : true );
 		

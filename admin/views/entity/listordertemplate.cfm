@@ -54,7 +54,6 @@ Notes:
 <cfset rc.orderTemplateCollectionList.addDisplayProperties('account.primaryEmailAddress.emailAddress',{isVisible=true,isSearchable=false,isDeletable=false}) />
 <cfset rc.orderTemplateCollectionList.addDisplayProperties('account.firstName',{isVisible=false,isSearchable=true,isDeletable=false}) />
 <cfset rc.orderTemplateCollectionList.addDisplayProperties('account.lastName',{isVisible=false,isSearchable=true,isDeletable=false}) />
-<cfset rc.orderTemplateCollectionList.addDisplayProperties('account.accountNumber',{isVisible=false,isSearchable=true,isDeletable=false}) />
 <cfset rc.orderTemplateCollectionList.addDisplayProperties('createdDateTime',{isVisible=true,isSearchable=false,isDeletable=true}) />
 <cfset rc.orderTemplateCollectionList.addDisplayProperties('calculatedTotal',{isVisible=true,isSearchable=false,isDeletable=true}) />
 <cfset rc.orderTemplateCollectionList.addDisplayProperties('scheduleOrderNextPlaceDateTime',{isVisible=true,isSearchable=false,isDeletable=true}) />

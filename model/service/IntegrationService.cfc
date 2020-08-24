@@ -48,20 +48,19 @@ Notes:
 */
 component extends="HibachiService" persistent="false" accessors="true" output="false" {
 
-	// Place holder properties that get populated lazily
-	property name="settings" type="any";
-	property name="applicationKey" type="string";
-	property name="applicationRootMappingPath" type="string";
-	
-	variables.integrationCFCs = {};
-	variables.paymentIntegrationCFCs = {};
-	variables.shippingIntegrationCFCs = {};
-	variables.authenticationIntegrationCFCs = {};
-	variables.taxIntegrationCFCs = {};
-	variables.dataIntegrationCFCs = {};
+	/**
+	 *  *****   
+	 *  *****   
+	 * 
+	 *      This service is not inject-safe, 
+	 *      when it's used for the first time [to setup integrations], the bean-factory is not loaded yet. 
+	 *      
+	 *  *****   
+	 *  *****   
+	*/
+
+
 	variables.jsObjectAdditions = '';
-	
-	variables.addressIntegrationCFCs = {};
 	
 	public void function clearActiveFW1Subsystems() {
 		structDelete(variables, "activeFW1Subsystems");
@@ -118,77 +117,39 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
         return this.getBean("#arguments.integration.getIntegrationPackage()##arguments.integrationTypeName#CFC");
 	}
 	
+	
 	/**
-	 * Function to return an *Importer-Integration* Object for the the given *Integration*.
-	 *
-	 * @integration the associated *Integration-Entity* for the "Integration-Package"; ==> getIntegrationByIntegrationPackage('SlatwallImporter');
+	 * @deprecated, these functions are left here for the sake of compatibility;    Use bean-factory instead;
+	 * 
+	 * @integration is the associated *Integration-Entity* for the "Integration-Package";
+	 *      ==> getIntegrationByIntegrationPackage('paypal');
 	*/ 
 	public any function getImporterIntegrationCFC(required any integration) {
 		return this.getIntegrationTypeCFC(arguments.integration, "Importer");
 	}
-	
-	/**
-	 * Helper function to (if not already cached, create and cache and then) return a cached ['IntegrationType'].cfc Object, e.g. Data.cfc, Adress.cfc
-	 * 
-	 * TODO: refacot other function to use this function, 
-	 * or inplement onMissingMethod for pattern get['Address']IntegrationCFC(required integration);
-	 * 
-	*/ 
-	public any function getIntegrationTypeCFC(required any integration, required string integrationTypeName) {
-		
-		// Verify the cfc file exists before attempting to instantiate.
-		if (!fileExists(expandPath("/Slatwall/integrationServices/#arguments.integration.getIntegrationPackage()#/#arguments.integrationTypeName#.cfc"))) {
-			throw("IntegrationType: #arguments.integrationTypeName# does not exist for Integration: #arguments.integration.getDisplayName()#");
-		}
-		
-		var cacheKey = "#lcase(arguments.integrationTypeName)#IntegrationCFCs"; // e.g. paymentIntegrationCFCs, addressIntegrationCFCs
-		if( !structKeyExists( variables[cacheKey], arguments.integration.getIntegrationPackage()) ) {
-			
-			//TODO: ability to pass arguments in the constructor, 
-			variables[cacheKey][arguments.integration.getIntegrationPackage()] = createObject("component", "Slatwall.integrationServices.#arguments.integration.getIntegrationPackage()#.#arguments.integrationTypeName#").init();
-
-		}
-
-		return variables[cacheKey][arguments.integration.getIntegrationPackage()];
-	}
-	
-	
-	/**
-	 * Function to return an *Address-Integration* Object for the the given *Integration*.
-	 *
-	 * Note: the integrations are cached in the memory, hence treat them as singletons;
-	 *
-	 * @integration the associated *Integration-Entity* for the "Integration-Package";
-	 * 
-	 * TODO: add functions like get['Type']IntegrationBy(required string 'PackageName' );
-	*/ 
 	public any function getAddressIntegrationCFC(required any integration) {
-		return getIntegrationTypeCFC(arguments.integration, "Address");
+		return this.getIntegrationTypeCFC(arguments.integration, "Address");
 	}
-	
-
 	public any function getAuthenticationIntegrationCFC(required any integration) {
 		return this.getIntegrationTypeCFC(arguments.integration, "Authentication");
 	}
-
 	public any function getPaymentIntegrationCFC(required any integration) {
 		return this.getIntegrationTypeCFC(arguments.integration, "Payment");
 	}
-	
 	public any function getShippingIntegrationCFC(required any integration) {
 		return this.getIntegrationTypeCFC(arguments.integration, "Shipping");
 	}
-	
 	public any function getDataIntegrationCFC(required any integration) {
 		return this.getIntegrationTypeCFC(arguments.integration, "Data");
 	}
-
 	public any function getTaxIntegrationCFC(required any integration) {
 		return this.getIntegrationTypeCFC(arguments.integration, "Tax");
 	}
-	
+
+
+
 	public any function updateIntegrationsFromDirectory() {
-		var dirList = directoryList( expandPath("/Slatwall") & '/integrationServices' );
+		var dirList = directoryList( this.getApplicationValue('applicationRootMappingPath') & '/integrationServices' );
 		var installedIntegrationList = "";
 		
 		// Loop over each integration in the integration directory
@@ -229,7 +190,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public string function updateIntegrationFromDirectory(required string directoryList, any integrationEntity){
 		var beanFactory = getBeanFactory();
 		var fileInfo = getFileInfo(arguments.directoryList);
-
+        
 		if(fileInfo.type == "directory" && fileExists("#fileInfo.path#/Integration.cfc") ) {
 			
 			var integrationPackage = listLast(arguments.directoryList,"\/");
@@ -311,18 +272,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				    }
 				    
 					
-					if(directoryExists("#this.getApplicationRootMappingPath()#/integrationServices/#integrationPackage#/model")) {
+					if(directoryExists( this.getApplicationValue('applicationRootMappingPath') & "/integrationServices/#integrationPackage#/model")) {
 						
 						//if we have entities then copy them into root model/entity
-						if( directoryExists("#this.getApplicationRootMappingPath()#/integrationServices/#integrationPackage#/model/entity") ){
+						if( directoryExists( expandPath('/Slatwall') & "/integrationServices/#integrationPackage#/model/entity") ){
 							
-							var modelList = directoryList( expandPath("/Slatwall") & "/integrationServices/#integrationPackage#/model/entity" );
+							var modelList = directoryList( this.getApplicationValue('applicationRootMappingPath') & "/integrationServices/#integrationPackage#/model/entity" );
 							
 							for(var modelFilePath in modelList){
 								
 								var beanCFC = listLast(replace(modelFilePath,"\","/","all"),'/');
 								var beanName = listFirst(beanCFC,'.');
-								var modelDestinationPath = expandPath("/Slatwall") & "/model/entity/" & beanCFC;
+								var modelDestinationPath = this.getApplicationValue('applicationRootMappingPath') & "/model/entity/" & beanCFC;
 								
 								FileCopy(modelFilePath,modelDestinationPath);
 								
@@ -334,7 +295,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						}
 						
 						// Register remaining beans with the Bean-factory;
-						var integrationBF = new framework.hibachiaop("#this.getApplicationRootMappingPath()#/integrationServices/#integrationPackage#/model", {
+						var integrationBF = new framework.hibachiaop("#this.getApplicationValue('applicationRootMappingPath')#/integrationServices/#integrationPackage#/model", {
 							transients=["process", "transient", "report"],
 							exclude=["entity"],
 							omitDirectoryAliases = getApplicationValue("hibachiConfig").beanFactoryOmitDirectoryAliases
@@ -342,6 +303,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						
 						var integrationBFBeans = integrationBF.getBeanInfo();
 						for(var beanName in integrationBFBeans.beanInfo) {
+						    
+						    if( beanName == "beanFactory" ){ 
+						        continue;
+						    }
+						    
 						    var thisBeanInfo = integrationBFBeans.beanInfo[ beanName ];
 						    
 							if( isStruct(thisBeanInfo) && structKeyExists(thisBeanInfo, "cfc")  && structKeyExists(thisBeanInfo, "isSingleton") ){
