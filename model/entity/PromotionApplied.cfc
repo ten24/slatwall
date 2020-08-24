@@ -165,15 +165,19 @@ property name="personalVolumeDiscountAmount" ormtype="big_decimal";
 	public boolean function getExcludeFromModifiedEntitiesFlag(){
 		if(!structKeyExists(variables,'excludeFromModifiedEntitiesFlag')){
 			if( !isNull(getOrderItem()) ){
-				return getOrderItem().getExcludeFromModifiedEntitiesFlag();
+				variables.excludeFromModifiedEntitiesFlag = getOrderItem().getExcludeFromModifiedEntitiesFlag();
 			}
 			if(!isNull(getOrderFulfillment())){
-				return getOrderFulfillment().getExcludeFromModifiedEntitiesFlag();
+				variables.excludeFromModifiedEntitiesFlag = getOrderFulfillment().getExcludeFromModifiedEntitiesFlag();
 			}
 			if(!isNull(getOrder())){
-				return getOrder().getExcludeFromModifiedEntitiesFlag();
+				variables.excludeFromModifiedEntitiesFlag = getOrder().getExcludeFromModifiedEntitiesFlag();
 			}
 		}
+		if(!structKeyExists(variables,'excludeFromModifiedEntitiesFlag')){
+			variables.excludeFromModifiedEntitiesFlag = false;
+		}
+		return variables.excludeFromModifiedEntitiesFlag;
 	}
 
 	// =============  END:  Bidirectional Helper Methods ===================

@@ -149,12 +149,16 @@ component entityname="SlatwallTaxApplied" table="SwTaxApplied" persistent="true"
 	public boolean function getExcludeFromModifiedEntitiesFlag(){
 		if(!structKeyExists(variables,'excludeFromModifiedEntitiesFlag')){
 			if( !isNull(getOrderItem()) ){
-				return getOrderItem().getExcludeFromModifiedEntitiesFlag();
+				variables.excludeFromModifiedEntitiesFlag = getOrderItem().getExcludeFromModifiedEntitiesFlag();
 			}
 			if(!isNull(getOrderFulfillment())){
-				return getOrderFulfillment().getExcludeFromModifiedEntitiesFlag();
+				variables.excludeFromModifiedEntitiesFlag = getOrderFulfillment().getExcludeFromModifiedEntitiesFlag();
 			}
 		}
+		if(!structKeyExists(variables,'excludeFromModifiedEntitiesFlag')){
+			variables.excludeFromModifiedEntitiesFlag = false;
+		}
+		return variables.excludeFromModifiedEntitiesFlag;
 	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================
