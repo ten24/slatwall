@@ -119,6 +119,20 @@ Notes:
 	<!---this block deals with shopping cart session--->
 	
 	
+	<!---this block deals with accounts --->
+	<cfset accountCollectionList = getHibachiScope().getService('accountService').getAccountCollectionList() />
+	<cfset accountCollectionList.setDisplayProperties('') />
+	<cfset accountCollectionList.addDisplayAggregate('accountID','COUNT','totalAccounts') />
+	<cfset accountCollectionList.addFilter('accountCreatedSite.siteID', 'NULL','IS')/>
+	<cfset accountCollectionList.addFilter('createdDateTime', currentDayMinDateTime,'>=')/>
+	<cfset accountCollectionList.addFilter('createdDateTime', currentDayMaxDateTime,'<=')/>
+	<cfif accountCollectionList.getRecords()[1]['totalAccounts'] EQ " ">
+	<cfset accounts="0" />
+	<cfelse>
+	<cfset accounts = "#accountCollectionList.getRecords()[1]['totalAccounts']#" />
+	</cfif>
+	<!---this block deals with accounts --->
+	
 	<!---this block deals with average order current day--->
 	<cfset averageDayOrdersCollectionList = getHibachiScope().getService('orderService').getOrderCollectionList() />
 	<cfset averageDayOrdersCollectionList.setDisplayProperties('') />
@@ -160,17 +174,7 @@ Notes:
 		                    </div>
 		                </div>
 
- 		                <div class="col-md-3">
-		                    <div class="Mcard">
-		                        <div class="Mcard-body ">
-		                           <div><h1> #shoppingCartDay# </h1></div>
-		                           <div><img src="/assets/images/user-2.png" alt="User Icon"></div>
-		                        </div>
-		                        <div class="Mcard-footer Mcard-footer3">
-		                            <div><p>Shopping Cart Today</p></div> <div><img src="/assets/images/arrow.png" alt="arrow"></div>
-		                        </div>
-		                    </div>
-		                </div>
+ 
 		                <div class="col-md-3">
 		                    <div class="Mcard">
 		                        <div class="Mcard-body ">
@@ -179,6 +183,18 @@ Notes:
 		                        </div>
 		                        <div class="Mcard-footer Mcard-footer4">
 		                            <div><p>Average Orders Today</p></div> <div><img src="/assets/images/arrow.png" alt="arrow"></div>
+		                        </div>
+		                    </div>
+		                </div>
+		                
+		            	<div class="col-md-3">
+		                    <div class="Mcard">
+		                        <div class="Mcard-body ">
+		                           <div><h1> #accounts# </h1></div>
+		                           <div><img src="/assets/images/user-2.png" alt="User Icon"></div>
+		                        </div>
+		                        <div class="Mcard-footer Mcard-footer3">
+		                            <div><p>Accounts Today</p></div> <div><img src="/assets/images/arrow.png" alt="arrow"></div>
 		                        </div>
 		                    </div>
 		                </div>
@@ -247,6 +263,20 @@ Notes:
 	</cfif>
 	<!---this block deals with shopping cart session--->
 	
+	<!---this block deals with accounts --->
+	<cfset accountCollectionList = getHibachiScope().getService('accountService').getAccountCollectionList() />
+	<cfset accountCollectionList.setDisplayProperties('') />
+	<cfset accountCollectionList.addDisplayAggregate('accountID','COUNT','totalAccounts') />
+	<cfset accountCollectionList.addFilter('accountCreatedSite.siteID', siteID,'=')/>
+	<cfset accountCollectionList.addFilter('createdDateTime', currentDayMinDateTime,'>=')/>
+	<cfset accountCollectionList.addFilter('createdDateTime', currentDayMaxDateTime,'<=')/>
+	<cfif accountCollectionList.getRecords()[1]['totalAccounts'] EQ " ">
+	<cfset accounts="0" />
+	<cfelse>
+	<cfset accounts = "#accountCollectionList.getRecords()[1]['totalAccounts']#" />
+	</cfif>
+	<!---this block deals with accounts --->
+	
 	
 	<!---this block deals with average order current day--->
 	<cfset averageDayOrdersCollectionList = getHibachiScope().getService('orderService').getOrderCollectionList() />
@@ -290,17 +320,7 @@ Notes:
 		                    </div>
 		                </div>
 
- 		                <div class="col-md-3">
-		                    <div class="Mcard">
-		                        <div class="Mcard-body ">
-		                           <div><h1> #shoppingCartDay# </h1></div>
-		                           <div><img src="/assets/images/user-2.png" alt="User Icon"></div>
-		                        </div>
-		                        <div class="Mcard-footer Mcard-footer3">
-		                            <div><p>Shopping Cart Today</p></div> <div><img src="/assets/images/arrow.png" alt="arrow"></div>
-		                        </div>
-		                    </div>
-		                </div>
+
 		                <div class="col-md-3">
 		                    <div class="Mcard">
 		                        <div class="Mcard-body ">
@@ -309,6 +329,18 @@ Notes:
 		                        </div>
 		                        <div class="Mcard-footer Mcard-footer4">
 		                            <div><p>Average Orders Today</p></div> <div><img src="/assets/images/arrow.png" alt="arrow"></div>
+		                        </div>
+		                    </div>
+		                </div>
+		                
+ 		                <div class="col-md-3">
+		                    <div class="Mcard">
+		                        <div class="Mcard-body ">
+		                           <div><h1> #accounts# </h1></div>
+		                           <div><img src="/assets/images/user-2.png" alt="User Icon"></div>
+		                        </div>
+		                        <div class="Mcard-footer Mcard-footer3">
+		                            <div><p>Accounts Today</p></div> <div><img src="/assets/images/arrow.png" alt="arrow"></div>
 		                        </div>
 		                    </div>
 		                </div>
