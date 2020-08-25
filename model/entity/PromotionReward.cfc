@@ -475,6 +475,10 @@ property name="personalVolumeAmount" ormtype="big_decimal" hb_formatType="custom
 
 	// =================== START: ORM Event Hooks  =========================
 	
+	public void function preDelete(){
+		getDAO('PromotionDAO').deleteRewardStackingForPromotionReward(this);
+	}
+	
 	// ===================  END:  ORM Event Hooks  =========================
 	
 	// ================= START: Deprecated Methods  ========================
