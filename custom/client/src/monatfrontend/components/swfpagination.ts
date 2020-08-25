@@ -19,13 +19,14 @@ class SWFPaginationController {
     private pageCache = {};
     
 	// @ngInject
-	constructor(public observerService, public $scope, public publicService, private $q, private $window) { 
+	constructor(public observerService, public $scope, public publicService, private $q) { 
         this.observerService.attach(this.init,"PromiseComplete"); 
         if(this.beginPaginationAt){
             this.elipsesNum = this.beginPaginationAt;
         }else {
             this.elipsesNum = 10;
         }
+        this.parentController = this.parentController || {};
 	}
 	
 	public init = () => {
