@@ -55,11 +55,14 @@ Notes:
 
 <cfoutput>
 	<hb:HibachiEntityDetailForm object="#rc.entityqueuefailure#" edit="#rc.edit#" sRedirectAction="admin:entity.detailentityqueuefailure">
+		
 		<hb:HibachiEntityActionBar type="detail" object="#rc.entityQueueFailure#" edit="#rc.edit#">
 		    <hb:HibachiProcessCaller entity="#rc.entityQueueFailure#" action="admin:entity.processentityqueuefailure" processContext="processQueue" type="list" />
 		</hb:HibachiEntityActionBar>
+		
         <hb:HibachiEntityDetailGroup object="#rc.entityqueuefailure#">
-		<hb:HibachiEntityDetailItem view="admin:entity/entityqueuetabs/basicfailure" open="true" />
+		    <hb:HibachiEntityDetailItem view="admin:entity/entityqueuefailuretabs/basic" open="true" />
 		</hb:HibachiEntityDetailGroup>
+		
 	</hb:HibachiEntityDetailForm>
 </cfoutput>
