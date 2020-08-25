@@ -275,8 +275,8 @@ class SWListingSearchController {
         }
         
         // update local-storage
-        let selectedAutoRefreshConfigs = this.localStorageService.getItem('selectedAutoRefreshConfigs');
-        //selectedAutoRefreshConfigs[this.swListingDisplay.personalCollectionKey] = angular.copy(this.autoRefreshConfig);
+        let selectedAutoRefreshConfigs = this.localStorageService.getItem('selectedAutoRefreshConfigs') || {};
+        selectedAutoRefreshConfigs[this.swListingDisplay.personalCollectionKey] = angular.copy(this.autoRefreshConfig);
         this.localStorageService.setItem('selectedAutoRefreshConfigs', selectedAutoRefreshConfigs );
         
         
