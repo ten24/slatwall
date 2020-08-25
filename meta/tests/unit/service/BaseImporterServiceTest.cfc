@@ -92,9 +92,9 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	/**
 	* @test
 	*/
-	public void function validateAccountData_should_fail(){
+	public void function validateEntityData_should_fail(){
 	    
-	    var validation = this.getService().validateAccountData( data={}, mapping=this.getAccountMapping(), collectErrors=false );
+	    var validation = this.getService().validateEntityData( entityName="Account", data={}, mapping=this.getAccountMapping(), collectErrors=false );
 	    
 	    debug(validation);
 	    assertFalse(validation.isValid);
@@ -104,9 +104,10 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	/**
 	* @test
 	*/
-	public void function validateAccountData_should_fail_for_firstName(){
+	public void function validateEntityData_should_fail_for_firstName(){
 	    
-	    var validation = this.getService().validateAccountData( 
+	    var validation = this.getService().validateEntityData(
+	        entityName="Account", 
 	        data = { lastName: "Yadav", username: 'nitin.yadav', emailAddress: "nitin.yadav@ten24web.com" }, 
 	        mapping = this.getAccountMapping(), 
 	        collectErrors = true 
@@ -120,9 +121,10 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	/**
 	* @test
 	*/
-	public void function validateAccountData_should_fail_for_email(){
+	public void function validateEntityData_should_fail_for_email(){
 	    
-	    var validation = this.getService().validateAccountData( 
+	    var validation = this.getService().validateEntityData(
+	        entityName="Account", 
 	        data = { firstName: "Nitin", lastName: "Yadav", username: 'nitin.yadav', emailAddress: "invalid email address" }, 
 	        mapping = this.getAccountMapping(), 
 	        collectErrors = true 
@@ -136,9 +138,10 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	/**
 	* @test
 	*/
-	public void function validateAccountData_should_fail_for_username(){
+	public void function validateEntityData_should_fail_for_username(){
 	    
-	    var validation = this.getService().validateAccountData( 
+	    var validation = this.getService().validateEntityData(
+	        entityName="Account", 
 	        data = { firstName: "Nitin", lastName: "Yadav", usernameeee: 'nitin.yadav', emailAddress: "nitin.yadav@ten24web.com" }, 
 	        mapping = this.getAccountMapping(), 
 	        collectErrors = true 
@@ -152,9 +155,10 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	/**
 	* @test
 	*/
-	public void function validateAccountData_should_pass(){
+	public void function validateEntityData_should_pass(){
 	    
-	    var validation = this.getService().validateAccountData( 
+	    var validation = this.getService().validateEntityData(
+	        entityName="Account", 
 	        data = { firstName: "Nitin", username: 'nitin.yadav', emailAddress: "nitin.yadav@ten24web.com" }, 
 	        mapping = this.getAccountMapping(), 
 	        collectErrors = true 

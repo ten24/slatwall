@@ -55,8 +55,9 @@ component entityname="SlatwallBatch" table="SwBatch" persistent="true" accessors
 	// Related Object Properties (many-to-one)
 	
 	// Related Object Properties (one-to-many)
-	property name="batchEntityQueueItems" singularname="batchEntityQueueItem" fieldtype="one-to-many" type="array" fkcolumn="batchID" cfc="EntityQueue";
-	property name="batchEntityQueueFailureItems" singularname="batchEntityQueueFailureItem" fieldtype="one-to-many" type="array" fkcolumn="batchID" cfc="EntityQueueFailure";
+	property name="entityQueueItems" singularname="entityQueueItem" fieldtype="one-to-many" type="array" fkcolumn="batchID" cfc="EntityQueue";
+	property name="entityQueueFailureItems" singularname="entityQueueFailureItem" fieldtype="one-to-many" type="array" fkcolumn="batchID" cfc="EntityQueueFailure";
+	property name="initialEntityQueueItemsCount" ormtype="numeric";
 
 	// Related Object Properties (many-to-many)
 	// Remote Properties
@@ -68,39 +69,36 @@ component entityname="SlatwallBatch" table="SwBatch" persistent="true" accessors
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
 	// Non-Persistent Properties
-    property name="batchEntityQueueItemsCount" persistent="false";
-	property name="batchEntityQueueFailureItemsCount" persistent="false";
+    property name="entityQueueItemsCount" persistent="false";
+	property name="entityQueueFailureItemsCount" persistent="false";
 	
 	// Calculated properties
-	property name="calculatedBatchEntityQueueItemsCount" ormtype="numeric";
-	property name="calculatedBatchEntityQueueFailureItemsCount" ormtype="numeric";
-    
-
+	
 	// ============ START: Non-Persistent Property Methods =================
     
-    public numeric function getBatchEntityQueueItemsCount(){
+    public numeric function getEntityQueueItemsCount(){
         
-        if( !StructKeyExists(variables, 'batchEntityQueueItemsCount') ){
+        if( !StructKeyExists(variables, 'entityQueueItemsCount') ){
             
             if( this.isNew() ){
-                variables.batchEntityQueueItemsCount = 0;
+                variables.entityQueueItemsCount = 0;
             } else {
-                variables.batchEntityQueueItemsCount = this.getBatchEntityQueueItemsCollectionList().getRecordsCount();
+                variables.entityQueueItemsCount = this.getEntityQueueItemsCollectionList().getRecordsCount();
             }
         }
-        return variables.batchEntityQueueItemsCount;
+        return variables.entityQueueItemsCount;
     }
     
-    public numeric function getBatchEntityQueueFailureItemsCount(){
-         if( !StructKeyExists(variables, 'batchEntityQueueFailureItemsCount') ){
+    public numeric function getEntityQueueFailureItemsCount(){
+         if( !StructKeyExists(variables, 'entityQueueFailureItemsCount') ){
             
             if( this.isNew() ){
-                variables.batchEntityQueueFailureItemsCount = 0;
+                variables.entityQueueFailureItemsCount = 0;
             } else {
-                variables.batchEntityQueueFailureItemsCount = this.getBatchEntityQueueFailureItemsCollectionList().getRecordsCount();
+                variables.entityQueueFailureItemsCount = this.getEntityQueueFailureItemsCollectionList().getRecordsCount();
             }
         }
-        return variables.batchEntityQueueFailureItemsCount;
+        return variables.entityQueueFailureItemsCount;
     }
     
 	// ============  END:  Non-Persistent Property Methods =================
@@ -117,14 +115,14 @@ component entityname="SlatwallBatch" table="SwBatch" persistent="true" accessors
 
 	// ===================  END:  ORM Event Hooks  =========================
 	
-	public any function getBatchEntityQueueItemsCollectionList(){
+	public any function getEntityQueueItemsCollectionList(){
 	    var collectionList = getService('hibachiEntityQueueService').getEntityQueueCollectionList();
         collectionList.setDisplayProperties('entityQueueID');
         collectionList.addFilter('batch.batchID', this.getBatchID() );
         return collectionList;
 	}
 	
-	public any function getBatchEntityQueueFailureItemsCollectionList(){
+	public any function getEntityQueueFailureItemsCollectionList(){
 	    var collectionList = getService('hibachiEntityQueueService').getEntityQueueFailureCollectionList();
         collectionList.setDisplayProperties('entityQueueFailureID');
         collectionList.addFilter('batch.batchID', this.getBatchID() );
