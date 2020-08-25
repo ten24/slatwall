@@ -60,14 +60,7 @@ component extends="Slatwall.org.Hibachi.HibachiEntityQueueService" persistent="f
 	// ===================== START: Process Methods ===========================
 	
 	public void function addQueueHistoryAndDeleteQueue(required any entityQueue, required boolean success){
-		var entityQueueHistory = this.newEntityQueueHistory();
-		entityQueueHistory.setEntityQueueType(arguments.entityQueue.getEntityQueueType());
-		entityQueueHistory.setBaseObject(arguments.entityQueue.getBaseObject());
-		entityQueueHistory.setBaseID(arguments.entityQueue.getBaseID());
-		entityQueueHistory.setEntityQueueHistoryDateTime(arguments.entityQueue.getEntityQueueDateTime());
-		entityQueueHistory.setSuccessFlag(arguments.success);
-		entityQueueHistory = this.saveEntityQueueHistory(entityQueueHistory);
-
+		this.addQueueHistory( argumentCollection=arguments );
 		this.deleteEntityQueue(entityQueue);
 	}
 

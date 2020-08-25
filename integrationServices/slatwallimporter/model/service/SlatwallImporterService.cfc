@@ -51,9 +51,58 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	property name="integrationServices";
 	
 	public any function getIntegration(){
+	    
 	    if( !structKeyExists( variables, 'integration') ){
 	        variables.integration = this.getIntegrationByIntegrationPackage('slatwallimporter');
 	    }
         return variables.integration;
     }
+    
+  	public any function getSampleCsvFilesOptions(){
+  	    
+  	    if( !structKeyExists(variables, 'sampleCSVFilesOptions') ){
+            
+            variables.sampleCSVFilesOptions = [];
+  	        
+            var baseUrl = this.getHibachiScope().getBaseUrl();
+            var files = directoryList( 
+                            this.getHibachiScope().getApplicationValue('applicationRootMappingPath') & "/integrationServices/slatwallimporter/assets/downloadsample/", 
+                            false, 
+                            "name"
+                        ); 
+            
+            for( var fileName in files ){
+                var option = {
+                    'name'  : fileName,
+                    'value' : baseUrl & '/integrationServices/slatwallimporter/assets/downloadsample/' & fileName
+                } 
+                arrayAppend( variables.sampleCSVFilesOptions, option );
+            }
+  	    }
+  	    
+  	    return variables.sampleCSVFilesOptions;
+  	}
+  	
+  	public any function uploadCSVFile( required any data ){
+  	    
+  	    var importFilesUploadDirectory = this.getHibachiScope().getApplicationValue('applicationRootMappingPath') & '/integrationServices/slatwallimporter/assets/uploads/'; 
+       	
+       	if( !DirectoryExists(importFilesUploadDirectory) ){
+			DirectoryCreate(importFilesUploadDirectory);
+		}
+		
+		try{
+			var file = FileUpload( importFilesUploadDirectory, "uploadFile", "text/csv", "Overwrite");
+			
+			if ( !listFindNoCase("csv", file.serverFileExt) ){
+    		 	this.getHibachiScope().showMessage("The uploaded file is not of type CSV.", "error");
+    	    }
+    	    
+			this.getHibachiScope().showMessage("Uppload success", "success");
+		} 
+		catch ( any e ){
+    		this.getHibachiScope().showMessage("An error occurred while uploading your file" & e.Message, "error");
+		}
+		
+  	}
 }

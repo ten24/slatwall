@@ -8,8 +8,9 @@
 		<hb:HibachiPropertyList>
 			<hb:HibachiPropertyDisplay object="#rc.batch#" property="baseObject" >
 			<hb:HibachiPropertyDisplay object="#rc.batch#" property="batchDescription" >
-			<hb:HibachiPropertyDisplay object="#rc.batch#" property="batchEntityQueueItemsCount" >
-			<hb:HibachiPropertyDisplay object="#rc.batch#" property="batchEntityQueueFailureItemsCount" >
+			<hb:HibachiPropertyDisplay object="#rc.batch#" property="initialEntityQueueItemsCount" >
+			<hb:HibachiPropertyDisplay object="#rc.batch#" property="entityQueueItemsCount" >
+			<hb:HibachiPropertyDisplay object="#rc.batch#" property="entityQueueFailureItemsCount" >
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 </cfoutput>
