@@ -293,14 +293,15 @@ class SWListingSearchController {
     public onSaveAutoRefereshConfig = () => {
         
         // update local-storage --> save autoRefreshConfig
-         let selectedAutoRefreshConfigs = this.localStorageService.getItem('selectedAutoRefreshConfigs');
-        //@ts-ignore
-        selectedAutoRefreshConfigs[this.swListingDisplay.personalCollectionKey] = angular.copy(this.autoRefreshConfig);
-        
-        this.localStorageService.setItem('selectedAutoRefreshConfigs', selectedAutoRefreshConfigs );
-        
+        this.saveSelectedAutoRefreshConfig(this.swListingDisplay.personalCollectionKey, this.autoRefreshConfig);
         // update-timeputs
         this.setupAutoRefreshTimeout();
+    }
+    
+    private saveSelectedAutoRefreshConfig = ( cacheKey: string, config) => {
+	    let selectedAutoRefreshConfigs = this.localStorageService.getItem('selectedAutoRefreshConfigs') || {};
+	    selectedAutoRefreshConfigs[ cacheKey ] = angular.copy(config);
+	    this.localStorageService.setItem('selectedAutoRefreshConfigs', selectedAutoRefreshConfigs );
     }
     
     private setupAutoRefreshTimeout = () => {
