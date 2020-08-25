@@ -40,8 +40,6 @@ class SWListingSearchController {
     
     
     //Auto-refresh
-    public refreshListingSaveIsOpen = false;
-    
     public autoRefreshConfig = {
         'autoRefreshInterval' : 10, // seconds --> for timeout x1000
         'autoRefreshEnabled' : true // if this is set the Listing-Display will refresh itself automatically; at the given `autoRefreshInterval`;
@@ -159,7 +157,7 @@ class SWListingSearchController {
         // on init --> check to set time-out intervals
         let thisAutoRefreshConfig = this.localStorageService.getItem('selectedAutoRefreshConfigs')?.[this.swListingDisplay.personalCollectionKey];
           
-        if(thisAutoRefreshConfig && thisAutoRefreshConfig.autoRefreshEnabled){
+        if(thisAutoRefreshConfig){ //thisAutoRefreshConfig && thisAutoRefreshConfig.autoRefreshEnabled)
               this.setupAutoRefreshTimeout();
         }
     }
@@ -278,7 +276,7 @@ class SWListingSearchController {
         
         // update local-storage
         let selectedAutoRefreshConfigs = this.localStorageService.getItem('selectedAutoRefreshConfigs');
-        selectedAutoRefreshConfigs[this.swListingDisplay.personalCollectionKey] = angular.copy(this.autoRefreshConfig);
+        //selectedAutoRefreshConfigs[this.swListingDisplay.personalCollectionKey] = angular.copy(this.autoRefreshConfig);
         this.localStorageService.setItem('selectedAutoRefreshConfigs', selectedAutoRefreshConfigs );
         
         
@@ -290,14 +288,12 @@ class SWListingSearchController {
             // unset-timeouts
             this.clearAutoRefreshTimeout();
         }
-        this.refreshListingSaveIsOpen = true;
     }
     
     public onSaveAutoRefereshConfig = () => {
         
         // update local-storage --> save autoRefreshConfig
-        let selectedAutoRefreshConfigs = this.localStorageService.getItem('selectedAutoRefreshConfigs');
-        
+         let selectedAutoRefreshConfigs = this.localStorageService.getItem('selectedAutoRefreshConfigs');
         //@ts-ignore
         selectedAutoRefreshConfigs[this.swListingDisplay.personalCollectionKey] = angular.copy(this.autoRefreshConfig);
         
@@ -438,6 +434,10 @@ class SWListingSearchController {
     }
 
 
+
+    private newMethod(selectedAutoRefreshConfigs: string) {
+        return selectedAutoRefreshConfigs[this.swListingDisplay.personalCollectionKey];
+    }
 }
 
 class SWListingSearch  implements ng.IDirective{
