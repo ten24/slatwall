@@ -118,6 +118,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 
 	// Non persistent properties
 	property name="activeEventRegistrations" persistent="false";
+	property name="currentSkuPrice" persistent="false"  hb_formatType="currency";
 	property name="discountAmount" persistent="false" hb_formatType="currency" hint="This is the discount amount after quantity (talk to Greg if you don't understand)" ;
 	property name="extendedPrice" persistent="false" hb_formatType="currency";
 	property name="extendedUnitPrice" persistent="false" hb_formatType="currency";
@@ -620,7 +621,10 @@ property name="personalVolume" ormtype="big_decimal";
 		}
 
 	}
-
+	
+	public numeric function getCurrentSkuPrice(){
+		return getSku().getPriceByCurrencyCode(currencyCode=this.getCurrencyCode(),priceGroups=this.getOrder().getAccount().getPriceGroups());
+	}
 
 	public numeric function getExtendedSkuPrice() {
 		return getService('HibachiUtilityService').precisionCalculate(getSkuPrice() * getQuantity());
