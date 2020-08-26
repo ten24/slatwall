@@ -193,14 +193,14 @@
         <ul class="dropdown-menu pull-right">
             <li style="padding:8px;">
                 <div class="s-form-input s-input-group s-edit" style="width:100px;">
-                    
+                    <div>
                     <input type="checkbox" name="isTimerTrue" id="isTimerTrue"
                         ng-checked="swListingSearch.autoRefreshConfig.autoRefreshEnabled"
-                        ng-click="swListingSearch.onSaveAutoRefereshEnabled()"
-                    />
-                    
+                        ng-click="swListingSearch.onSaveAutoRefereshEnabled()" 
+                        style="margin-right: 4px !important;"
+                    />    
                     <span ng-hide="swListingSearch.autoRefreshConfig.autoRefreshEnabled"> 
-                        <a class="btn btn-xs btn-success s-action-btn" ng-click="swListingSearch.onRefresh()"><label for="refresh">Refresh</label></a>
+                        <a class="btn btn-xs btn-success s-action-btn" ng-click="swListingSearch.onRefresh()">Refresh</a>
                     </span>
                     
                     <span ng-show="swListingSearch.autoRefreshConfig.autoRefreshEnabled">
@@ -212,12 +212,14 @@
                             height: 22px !important;
                             vertical-align: bottom !important;
                             font-size: 12px;
-                            padding: 0px 5px;"
+                            padding: 0px 5px;
+                            margin-right:4px !important;"
                         >
                         <a class="btn btn-xs btn-success s-action-btn"
                             ng-click="swListingSearch.onSaveAutoRefereshConfig()"
                         > save </a> 
                     </span>
+                    </div>
                 </div>
             </li>
         </ul>
