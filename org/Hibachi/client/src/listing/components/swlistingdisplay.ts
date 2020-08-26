@@ -216,7 +216,7 @@ class SWListingDisplayController{
         
         //setup a listener for refreshing this listing based on a refrsh event string 
         if (this.refreshEvent && initial){
-            this.observerService.attach(this.refreshListingDisplay, this.refreshEvent,  this.tableID);
+            this.observerService.attach(this.refreshListingDisplay, this.refreshEvent);
         }
         
         if (initial){
@@ -225,10 +225,6 @@ class SWListingDisplayController{
         
         if (initial){
             this.observerService.attach(this.stopLoading, "addOrderItemStopLoading");
-        }
-        
-        if(initial){
-            this.observerService.attach(this.refreshListingDisplay, 'refreshListingDisplay', this.tableID);
         }
         
         if(angular.isUndefined(this.usingPersonalCollection)){
@@ -467,6 +463,9 @@ class SWListingDisplayController{
         } else {
             this.tableID = 'LD'+this.utilityService.createID();
         }
+        
+        this.observerService.attach(this.refreshListingDisplay, 'refreshListingDisplay', this.tableID);
+        
         
         if (angular.isUndefined(this.collectionConfig)){
             //make it available to swCollectionConfig
