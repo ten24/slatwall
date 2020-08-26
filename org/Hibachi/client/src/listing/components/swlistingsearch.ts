@@ -43,7 +43,7 @@ class SWListingSearchController {
     private autoRefreshIntervalReference = null;
 
     public autoRefreshConfig = {
-        'autoRefreshInterval' : 30, // seconds --> for timeout x1000
+        'autoRefreshInterval' : 30*1000, // seconds --> for timeout x1000
         'autoRefreshEnabled' : false // if this is set the Listing-Display will refresh itself automatically; at the given `autoRefreshInterval`;
     };
     
@@ -318,7 +318,7 @@ class SWListingSearchController {
         let thisAutoRefreshConfig = this.localStorageService.getItem('selectedAutoRefreshConfigs')?.[this.swListingDisplay.personalCollectionKey];
         
         if( thisAutoRefreshConfig?.autoRefreshEnabled ){
-            this.autoRefreshIntervalReference = this.$interval(this.onRefresh, thisAutoRefreshConfig.autoRefreshInterval);
+            this.autoRefreshIntervalReference = this.$interval(this.onRefresh, thisAutoRefreshConfig.autoRefreshInterval*1000);
         }
     }
     
