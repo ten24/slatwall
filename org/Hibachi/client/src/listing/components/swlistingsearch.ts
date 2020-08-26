@@ -328,6 +328,9 @@ class SWListingSearchController {
         this.autoRefreshIntervalReference = null;
     }
     
+    private refreshMethod(selectedAutoRefreshConfigs: string) {
+        return selectedAutoRefreshConfigs[this.swListingDisplay.personalCollectionKey];
+    }
     
     public savePersonalCollection=(collectionName?)=>{
         if(
