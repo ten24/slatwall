@@ -316,6 +316,9 @@ class SWListingSearchController {
         // remove timeouts loop
     }
     
+    private refreshMethod(selectedAutoRefreshConfigs: string) {
+        return selectedAutoRefreshConfigs[this.swListingDisplay.personalCollectionKey];
+    }
     
     public savePersonalCollection=(collectionName?)=>{
         if(
