@@ -451,9 +451,6 @@ class SWListingSearchController {
 
 
 
-    private newMethod(selectedAutoRefreshConfigs: string) {
-        return selectedAutoRefreshConfigs[this.swListingDisplay.personalCollectionKey];
-    }
 }
 
 class SWListingSearch  implements ng.IDirective{
