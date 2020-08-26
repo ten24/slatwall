@@ -456,4 +456,19 @@ Notes:
 		</cfquery>
 	</cffunction>
 	
+	<cffunction name="deleteRewardStackingForPromotionReward" returntype="void" access="public">
+		<cfargument name="promotionReward" required="true" type="any" />
+		<cfset var promotionRewardID = arguments.promotionReward.getPromotionRewardID() />
+		<cfquery>
+			DELETE FROM swpromorewardstackexcl
+			WHERE promotionRewardID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#promotionRewardID#" />
+			OR linkedPromotionRewardID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#promotionRewardID#" />
+		</cfquery>
+		<cfquery>
+			DELETE FROM swpromorewardstackincl
+			WHERE promotionRewardID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#promotionRewardID#" />
+			OR linkedPromotionRewardID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#promotionRewardID#" />
+		</cfquery>
+	</cffunction>
+	
 </cfcomponent>
