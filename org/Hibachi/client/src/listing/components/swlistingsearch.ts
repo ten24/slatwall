@@ -272,7 +272,7 @@ class SWListingSearchController {
         this.observerService.notifyById( 'refreshListingDisplay', this.listingId , null); // this.swListingDisplay.refreshListingDisplay();
     }
     
-    public onSaveAutoRefereshEnabled = () => {
+    public onToggleAutoRefereshEnabled = () => {
         
         if( !this.autoRefreshConfig.autoRefreshEnabled ){
             this.autoRefreshConfig.autoRefreshEnabled = true;
