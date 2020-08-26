@@ -42,7 +42,7 @@ class SWListingSearchController {
     //Auto-refresh
     public autoRefreshConfig = {
         'autoRefreshInterval' : 10, // seconds --> for timeout x1000
-        'autoRefreshEnabled' : true // if this is set the Listing-Display will refresh itself automatically; at the given `autoRefreshInterval`;
+        'autoRefreshEnabled' : false // if this is set the Listing-Display will refresh itself automatically; at the given `autoRefreshInterval`;
     };
     
     
