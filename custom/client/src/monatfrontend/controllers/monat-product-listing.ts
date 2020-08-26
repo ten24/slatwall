@@ -32,6 +32,7 @@ class MonatProductListingController {
 		public $rootScope           : ng.IRootScopeService,
 		public publicService        : PublicService,
 		public observerService      : ObserverService,
+		public $timeout,
         private monatService        : MonatService,
 		private monatAlertService   : MonatAlertService,
 		private orderTemplateService: OrderTemplateService
@@ -80,11 +81,19 @@ class MonatProductListingController {
         if(this.cmsCategoryFilterFlag) this.argumentsObject['cmsCategoryFilterFlag'] = true; 
         
 		if(category){
-			this.argumentsObject['categoryFilterFlag'] = true;
-			this.argumentsObject['categoryID'] = category.value;
-			this.hairProductFilter = null;
-			this.skinProductFilter = null;
-			this[`${categoryType}ProductFilter`] = category;
+			if(category != 'none'){
+				this.argumentsObject['categoryFilterFlag'] = true;
+				this.argumentsObject['categoryID'] = category.value;
+				this.hairProductFilter = null;
+				this.skinProductFilter = null;
+				this[`${categoryType}ProductFilter`] = category;
+			}else{
+				this.argumentsObject['categoryFilterFlag'] = false;
+				this.argumentsObject['categoryID'] = null;
+				this.hairProductFilter = null;
+				this.skinProductFilter = null;
+			}
+			this.argumentsObject['currentPage'] = 1;
 		}
 		
 		if(this.flexshipFlag){
@@ -103,7 +112,8 @@ class MonatProductListingController {
             this.productList = result.productList;
             this.recordsCount = result.recordsCount;
 			this.observerService.notify('PromiseComplete');
-            this.loading = false;
+            
+            this.$timeout(()=>this.loading = false);
         });
     }
     

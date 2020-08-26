@@ -14,15 +14,19 @@ class SWFPaginationController {
     public displayPages:any;
     public elipsesNum;
     public hasNextPageSet:boolean = true;
+    public parentController;
+    private scrollTo:string;
+    private pageCache = {};
     
 	// @ngInject
-	constructor(public observerService, public $scope,public publicService) { 
+	constructor(public observerService, public $scope, public publicService, private $q) { 
         this.observerService.attach(this.init,"PromiseComplete"); 
         if(this.beginPaginationAt){
             this.elipsesNum = this.beginPaginationAt;
         }else {
             this.elipsesNum = 10;
         }
+        this.parentController = this.parentController || {};
 	}
 	
 	public init = () => {
@@ -91,21 +95,46 @@ class SWFPaginationController {
         this.argumentsObject['pageRecordsShow'] = this.itemsPerPage;
         this.argumentsObject['currentPage'] = pageNumber;
         this.publicService.paginationIsLoading = true;
+        this.parentController.loading = true;
         
-        return this.publicService.doAction(this.action, this.argumentsObject).then(result=>{
-            this.recordList = 
-                (result.productList) 
-                ? result.productList 
-                :(result.pageRecords) 
-                ? result.pageRecords 
-                :result.ordersOnAccount.ordersOnAccount;
-            
-            this.pageTracker = pageNumber;
-            this.publicService.paginationIsLoading = false;
-            this.observerService.notify('paginationEvent');
-        });
+        if(this.scrollTo){
+            let element = $(this.scrollTo)[0];
+            element.scrollIntoView();
+        }
+        
+        let pageCacheKey = JSON.stringify(this.argumentsObject) + this.action;
+        
+        let deferred = this.$q.defer();
+        
+        if(this.pageCache[pageCacheKey]){
+            let result = this.pageCache[pageCacheKey];
+            this.handlePageResponse(deferred, result, pageNumber);
+        }else{
+            this.publicService.doAction(this.action, this.argumentsObject).then(result=>{
+                this.handlePageResponse(deferred, result, pageNumber, pageCacheKey);
+            });
+        }
+        return deferred.promise;
     }
 
+    public handlePageResponse = ( deferred, result, pageNumber, pageCacheKey? ) =>{
+        this.recordList = 
+            (result.productList) 
+            ? result.productList 
+            :(result.pageRecords) 
+            ? result.pageRecords 
+            :result.ordersOnAccount.ordersOnAccount;
+        
+        this.pageTracker = pageNumber;
+        this.publicService.paginationIsLoading = false;
+        this.parentController.loading = false;
+        this.observerService.notify('paginationEvent');
+        
+        if(pageCacheKey){
+            this.pageCache[pageCacheKey] = result;
+        }
+        deferred.resolve();
+    }
 	
 }
 
@@ -120,7 +149,9 @@ class SWFPagination {
 		itemsPerPage:'@?', //Number of items to display in a page
 		recordList:'=', //Sets up two way binding so succeeding API responses overwrite the records with updated data
 		argumentsObject:'<?', //optional object of arguments to pass in to the api call
-		beginPaginationAt:'@?' //this is unneeded unless the user wants the ellipsis to begin following a number other than 11
+		beginPaginationAt:'@?', //this is unneeded unless the user wants the ellipsis to begin following a number other than 11
+	    parentController:'=?',
+	    scrollTo:'@?'
 	};
 
 	public controller = SWFPaginationController;

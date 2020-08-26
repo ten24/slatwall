@@ -12,6 +12,7 @@ class MonatSearchController {
 	public priceGroupCode;
 	public argumentsObject: any;
 	public wishlistItems: string[];
+	public pageRecordsShow: number=40;
 
 	// @ngInject
 	constructor(
@@ -44,7 +45,8 @@ class MonatSearchController {
 		this.loading = true;
 		this.keyword = keyword;
 		let priceGroupCode = this.priceGroupCode;
-		this.publicService.doAction( 'getProductsByKeyword', { keyword: keyword, priceGroupCode: priceGroupCode } ).then(data => {
+		let pageRecordsShow=40;
+		this.publicService.doAction( 'getProductsByKeyword', { keyword: keyword, priceGroupCode: priceGroupCode,pageRecordsShow:pageRecordsShow } ).then(data => {
 			this.observerService.notify('PromiseComplete');
 			this.recordsCount = data.recordsCount;
 			this.productList = data.productList;
