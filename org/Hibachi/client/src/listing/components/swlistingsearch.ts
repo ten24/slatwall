@@ -40,8 +40,10 @@ class SWListingSearchController {
     
     
     //Auto-refresh
+    private autoRefreshIntervalReference = null;
+
     public autoRefreshConfig = {
-        'autoRefreshInterval' : 10, // seconds --> for timeout x1000
+        'autoRefreshInterval' : 30, // seconds --> for timeout x1000
         'autoRefreshEnabled' : false // if this is set the Listing-Display will refresh itself automatically; at the given `autoRefreshInterval`;
     };
     
@@ -51,6 +53,7 @@ class SWListingSearchController {
         public $scope,
         public $rootScope,
         public $timeout,
+        public $interval : ng.IIntervalService,
         public $hibachi,
         public metadataService,
         public listingService,
@@ -155,10 +158,14 @@ class SWListingSearchController {
         }
         
         // on init --> check to set time-out intervals
-        let thisAutoRefreshConfig = this.localStorageService.getItem('selectedAutoRefreshConfigs')?.[this.swListingDisplay.personalCollectionKey];
-          
-        if(thisAutoRefreshConfig){ //thisAutoRefreshConfig && thisAutoRefreshConfig.autoRefreshEnabled)
-              this.setupAutoRefreshTimeout();
+        let savedAutoRefreshConfig = this.localStorageService.getItem('selectedAutoRefreshConfigs')?.[this.swListingDisplay.personalCollectionKey];
+        
+        if( savedAutoRefreshConfig ){
+            this.autoRefreshConfig = savedAutoRefreshConfig;
+        }
+        
+        if( savedAutoRefreshConfig?.autoRefreshEnabled ){
+            this.setupAutoRefreshTimeout();
         }
     }
     
@@ -306,14 +313,19 @@ class SWListingSearchController {
     
     private setupAutoRefreshTimeout = () => {
         //clear old timeouts if any
+        this.clearAutoRefreshTimeout();
+        
         let thisAutoRefreshConfig = this.localStorageService.getItem('selectedAutoRefreshConfigs')?.[this.swListingDisplay.personalCollectionKey];
         
-        //setup timeouts loop
-        // http://tutorials.jenkov.com/angularjs/timeout-interval.html
+        if( thisAutoRefreshConfig?.autoRefreshEnabled ){
+            this.autoRefreshIntervalReference = this.$interval(this.onRefresh, thisAutoRefreshConfig.autoRefreshInterval);
+        }
     }
     
     private clearAutoRefreshTimeout = () => {
-        // remove timeouts loop
+        // remove interval
+        this.$interval.cancel(this.autoRefreshIntervalReference);
+        this.autoRefreshIntervalReference = null;
     }
     
     
