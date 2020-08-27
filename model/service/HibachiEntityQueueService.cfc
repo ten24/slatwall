@@ -48,7 +48,8 @@ Notes:
 */
 component extends="Slatwall.org.Hibachi.HibachiEntityQueueService" persistent="false" accessors="true" output="false" {
 	
-	
+	property name="batchDAO" type="any";
+
 	// ===================== START: Logical Methods ===========================
 	
 	// =====================  END: Logical Methods ============================
@@ -65,17 +66,15 @@ component extends="Slatwall.org.Hibachi.HibachiEntityQueueService" persistent="f
 	}
 	
 	public boolean function deleteBatch(required any batch) {
-	    writeDump(arguments.batch);abort;
 	    getService("HibachiTagService").cfsetting(requesttimeout="120");
         // Check delete validation for batch
 		if(arguments.batch.isDeletable()) {
 
 			// Remove the primary fields so that we can delete this entity
 			arguments.batch.setEntityQueueItems(javaCast("null", ""));
-			arguments.batch.setBatchTypeID(javaCast("null", ""));
 			arguments.batch.setEntityQueueFailureItems(javaCast("null", ""));
 
-			getAccountDAO().removeBatch( arguments.batch.getBatchID() );
+			getBatchDAO().removeBatch( arguments.batch.getBatchID() );
 			
 		}
 
