@@ -104,11 +104,12 @@ Notes:
 		}
 		
 		public string function replaceCurrencyFormatMaskTemplate(required string currencySymbol,required string formatMask, required numeric value, string locale=''){
-			// example formatMasks: '$9', 'CAN $ 9', '9 $'
+		
 			var formattedValue = LSNumberFormat(arguments.value, ',.__',arguments.locale);
 			var result = arguments.formatMask.replace('$',arguments.currencySymbol)
 			result = result.replace('{9}',formattedValue);
 			return result;
+			
 		}
 
 		public any function formatValue_datetime( required string value, struct formatDetails={} ) {

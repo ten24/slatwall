@@ -149,14 +149,18 @@ component output="false" accessors="true" extends="HibachiController" {
     public void function getCurrencies(required struct rc){
         param name="arguments.rc.detailFlag" default="false";
         var currenciesCollection = getHibachiScope().getService('hibachiCollectionService').getCurrencyCollectionList();
-        currenciesCollection.setDisplayProperties('currencyCode,currencySymbol,formatMask');
+        currenciesCollection.setDisplayProperties('currencyCode,currencySymbol');
+        
+        if(arguments.rc.detailFlag){
+            currenciesCollection.addDisplayProperty('formatMask');
+        }
         var currencyStruct = {};
         for(var currency in currenciesCollection.getRecords()){
             if(arguments.rc.detailFlag){
                 currencyStruct[currency['currencyCode']] = {
                     'currencySymbol':currency['currencySymbol'],
                     'formatMask':currency['formatMask']
-                }
+                };
             }else{
                 currencyStruct[currency['currencyCode']] = currency['currencySymbol'];
             }
