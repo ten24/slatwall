@@ -464,6 +464,9 @@ class SWListingDisplayController{
             this.tableID = 'LD'+this.utilityService.createID();
         }
         
+        this.observerService.attach(this.refreshListingDisplay, 'refreshListingDisplay', this.tableID);
+        
+        
         if (angular.isUndefined(this.collectionConfig)){
             //make it available to swCollectionConfig
             this.collectionConfig = null;

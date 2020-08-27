@@ -32,10 +32,10 @@ class LocalStorageService{
             return false;    
         }
     }
-
-    getItem = (key:string)=>{
+    
+    getItem = (key:string) : any =>{
         let value = this.$window.localStorage.getItem(key);
-        if(value.charAt(0)==='{' || value.charAt(0)==='['){
+        if( value?.charAt(0) === '{' || value?.charAt(0) === '[' ){
             value = angular.fromJson(value);
         }
         return value;
