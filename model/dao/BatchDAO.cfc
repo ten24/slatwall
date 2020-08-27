@@ -1,4 +1,4 @@
-/*
+<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,56 +45,15 @@
 
 Notes:
 
-*/
-component extends="Slatwall.org.Hibachi.HibachiEntityQueueService" persistent="false" accessors="true" output="false" {
+--->
+<cfcomponent extends="HibachiDAO">
 	
+	<cffunction name="removeBatch" returntype="void" access="public">
+		<cfargument name="batchID" type="string" required="true" />
+		<cfquery name="rs">
+			DELETE FROM Swbatch 
+			WHERE batchID =  <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.batchID#" />
+		</cfquery>
+	</cffunction>
 	
-	// ===================== START: Logical Methods ===========================
-	
-	// =====================  END: Logical Methods ============================
-	
-	// ===================== START: DAO Passthrough ===========================
-	
-	// ===================== START: DAO Passthrough ===========================
-	
-	// ===================== START: Process Methods ===========================
-	
-	public void function addQueueHistoryAndDeleteQueue(required any entityQueue, required boolean success){
-		this.addQueueHistory( argumentCollection=arguments );
-		this.deleteEntityQueue(entityQueue);
-	}
-	
-	public boolean function deleteBatch(required any batch) {
-	    writeDump(arguments.batch);abort;
-	    getService("HibachiTagService").cfsetting(requesttimeout="120");
-        // Check delete validation for batch
-		if(arguments.batch.isDeletable()) {
-
-			// Remove the primary fields so that we can delete this entity
-			arguments.batch.setEntityQueueItems(javaCast("null", ""));
-			arguments.batch.setBatchTypeID(javaCast("null", ""));
-			arguments.batch.setEntityQueueFailureItems(javaCast("null", ""));
-
-			getAccountDAO().removeBatch( arguments.batch.getBatchID() );
-			
-		}
-
-		return delete( arguments.batch );
-	}
-
-
-	// =====================  END: Process Methods ============================
-	
-	// ====================== START: Save Overrides ===========================
-	
-	// ======================  END: Save Overrides ============================
-	
-	// ==================== START: Smart List Overrides =======================
-	
-	// ====================  END: Smart List Overrides ========================
-	
-	// ====================== START: Get Overrides ============================
-	
-	// ======================  END: Get Overrides =============================
-	
-}
+</cfcomponent>
