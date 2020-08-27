@@ -1,5 +1,4 @@
 <div class="input-group">
-    
     <div class="input-group-btn valign-middle search-panel" ng-show="swListingSearch.swListingControls.showToggleSearch">
         <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
             <span data-ng-bind="swListingSearch.selectedSearchColumn.title"></span> <span class="caret"></span>
@@ -177,6 +176,44 @@
                 <a ng-click="swListingSearch.swListingControls.printCollection(printTemplate.printTemplateID)">
                     <span ng-bind="printTemplate.printTemplateName"></span>
                 </a>
+            </li>
+        </ul>
+    </span>
+    
+    <!-- Auto Referesh -->
+    <span class="input-group-btn valign-middle s-action">
+        
+        <button class="btn btn-sm btn-default dropdown-toggle"
+            type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span sw-tooltip class="tool-tip-item" data-text="Save Timeout" data-position="bottom">
+                <i class="fa fa-sync" aria-hidden="true"></i>
+            </span>
+        </button>
+        
+        <ul class="dropdown-menu pull-right">
+            <li class="autoRefreshDropDown">
+                <div class="s-form-input s-input-group s-edit refreshInputGroup">
+                    <div>
+                    <input type="checkbox" name="isTimerTrue" id="isTimerTrue" class="enableAutoRefresh"
+                        ng-checked="swListingSearch.autoRefreshConfig.autoRefreshEnabled"
+                        ng-click="swListingSearch.onToggleAutoRefereshEnabled()" 
+                    />    
+                    <span ng-hide="swListingSearch.autoRefreshConfig.autoRefreshEnabled"> 
+                        <a class="btn btn-xs btn-success s-action-btn" ng-click="swListingSearch.onRefresh()">Refresh</a>
+                    </span>
+                    
+                    <span ng-show="swListingSearch.autoRefreshConfig.autoRefreshEnabled">
+                        <input
+                            type="text"
+                            ng-model="swListingSearch.autoRefreshConfig.autoRefreshInterval"
+                            class="form-control refreshTextbox" 
+                        >
+                        <a class="btn btn-xs btn-success s-action-btn"
+                            ng-click="swListingSearch.onSaveAutoRefereshConfig()"
+                        > save </a> 
+                    </span>
+                    </div>
+                </div>
             </li>
         </ul>
     </span>
