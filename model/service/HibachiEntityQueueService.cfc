@@ -66,6 +66,7 @@ component extends="Slatwall.org.Hibachi.HibachiEntityQueueService" persistent="f
 	}
 	
 	public boolean function deleteBatch(required any batch) {
+		
 	    getService("HibachiTagService").cfsetting(requesttimeout="120");
         // Check delete validation for batch
 		if(arguments.batch.isDeletable()) {
@@ -76,9 +77,14 @@ component extends="Slatwall.org.Hibachi.HibachiEntityQueueService" persistent="f
 
 			getBatchDAO().removeBatch( arguments.batch.getBatchID() );
 			
+			return true;
+			
+		} else {
+			
+		  return false;	
+		  
 		}
-
-		return delete( arguments.batch );
+		
 	}
 
 
