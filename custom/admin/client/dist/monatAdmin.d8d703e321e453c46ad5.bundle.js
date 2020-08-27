@@ -171,12 +171,12 @@ var defaultskuservice_1 = __webpack_require__("AptY");
 var skupriceservice_1 = __webpack_require__("ZLQ0");
 //controllers
 //directives
-var swpricingmanager_1 = __webpack_require__("CrOa");
+var swpricingmanager_1 = __webpack_require__("ISbx");
 var swimagedetailmodallauncher_1 = __webpack_require__("npU/");
 var swaddskupricemodallauncher_1 = __webpack_require__("NKMX");
 var swdeleteskupricemodallauncher_1 = __webpack_require__("I2lK");
 var sweditskupricemodallauncher_1 = __webpack_require__("VFv6");
-var swskupricemodal_1 = __webpack_require__("xtYT");
+var swskupricemodal_1 = __webpack_require__("nf8Q");
 var swskustockadjustmentmodallauncher_1 = __webpack_require__("Dr+i");
 var swdefaultskuradio_1 = __webpack_require__("JBrK");
 var swskuimage_1 = __webpack_require__("jqXq");
@@ -611,7 +611,7 @@ var swchildorderitem_1 = __webpack_require__("Vq54");
 var sworderitem_1 = __webpack_require__("MhDg");
 var swoishippinglabelstamp_1 = __webpack_require__("guqW");
 var sworderitemdetailstamp_1 = __webpack_require__("3XR6");
-var sworderitems_1 = __webpack_require__("UaxI");
+var sworderitems_1 = __webpack_require__("IYLP");
 var swresizedimage_1 = __webpack_require__("pAW6");
 var orderitemmodule = angular.module('hibachi.orderitem', [core_module_1.coremodule.name])
     // .config(['$provide','baseURL',($provide,baseURL)=>{
@@ -3934,89 +3934,6 @@ exports.SWFlexshipSurveyModal = SWFlexshipSurveyModal;
 
 /***/ }),
 
-/***/ "Co5z":
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.SWAddOrderItemsBySkuController = exports.SWAddOrderItemsBySku = void 0;
-var swaddorderitemsbysku_1 = __webpack_require__("d3ZG");
-var swaddorderitemsbysku_2 = __webpack_require__("d3ZG");
-var SWAddOrderItemsBySkuController = /** @class */ (function (_super) {
-    __extends(SWAddOrderItemsBySkuController, _super);
-    function SWAddOrderItemsBySkuController($hibachi, collectionConfigService, observerService, orderTemplateService, rbkeyService, alertService) {
-        var _this = _super.call(this, $hibachi, collectionConfigService, observerService, orderTemplateService, rbkeyService, alertService) || this;
-        _this.$hibachi = $hibachi;
-        _this.collectionConfigService = collectionConfigService;
-        _this.observerService = observerService;
-        _this.orderTemplateService = orderTemplateService;
-        _this.rbkeyService = rbkeyService;
-        _this.alertService = alertService;
-        return _this;
-    }
-    SWAddOrderItemsBySkuController.prototype.initCollectionConfig = function () {
-        var _a, _b;
-        _super.prototype.initCollectionConfig.call(this);
-        switch ((_b = (_a = this.accountType) === null || _a === void 0 ? void 0 : _a.trim()) === null || _b === void 0 ? void 0 : _b.toLowerCase()) {
-            case 'marketpartner':
-                this.addSkuCollection.addFilter('mpFlag', true, '=', undefined, true);
-                break;
-            case 'vip':
-                this.addSkuCollection.addFilter('vipFlag', true, '=', undefined, true);
-                break;
-            default:
-                this.addSkuCollection.addFilter('retailFlag', true, '=', undefined, true);
-                break;
-        }
-    };
-    return SWAddOrderItemsBySkuController;
-}(swaddorderitemsbysku_1.SWAddOrderItemsBySkuController));
-exports.SWAddOrderItemsBySkuController = SWAddOrderItemsBySkuController;
-var SWAddOrderItemsBySku = /** @class */ (function (_super) {
-    __extends(SWAddOrderItemsBySku, _super);
-    function SWAddOrderItemsBySku(orderPartialsPath, slatwallPathBuilder, $hibachi, rbkeyService, alertService) {
-        var _this = _super.call(this, orderPartialsPath, slatwallPathBuilder, $hibachi, rbkeyService, alertService) || this;
-        _this.orderPartialsPath = orderPartialsPath;
-        _this.slatwallPathBuilder = slatwallPathBuilder;
-        _this.$hibachi = $hibachi;
-        _this.rbkeyService = rbkeyService;
-        _this.alertService = alertService;
-        _this.controller = SWAddOrderItemsBySkuController;
-        _this.bindToController['accountType'] = '<?';
-        return _this;
-    }
-    SWAddOrderItemsBySku.Factory = function () {
-        var directive = function (orderPartialsPath, slatwallPathBuilder, $hibachi, rbkeyService, alertService) { return new SWAddOrderItemsBySku(orderPartialsPath, slatwallPathBuilder, $hibachi, rbkeyService, alertService); };
-        directive.$inject = [
-            'orderPartialsPath',
-            'slatwallPathBuilder',
-            '$hibachi',
-            'rbkeyService',
-            'alertService'
-        ];
-        return directive;
-    };
-    return SWAddOrderItemsBySku;
-}(swaddorderitemsbysku_2.SWAddOrderItemsBySku));
-exports.SWAddOrderItemsBySku = SWAddOrderItemsBySku;
-
-
-/***/ }),
-
 /***/ "CrOa":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -5754,6 +5671,60 @@ exports.SWDeleteSkuPriceModalLauncher = SWDeleteSkuPriceModalLauncher;
 
 /***/ }),
 
+/***/ "ISbx":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.SWPricingManager = exports.SWPricingManagerController = void 0;
+var swpricingmanager_1 = __webpack_require__("CrOa");
+var swpricingmanager_2 = __webpack_require__("CrOa");
+var SWPricingManagerController = /** @class */ (function (_super) {
+    __extends(SWPricingManagerController, _super);
+    function SWPricingManagerController(collectionConfigService) {
+        var _this = _super.call(this, collectionConfigService) || this;
+        _this.collectionConfigService = collectionConfigService;
+        if (_this.skuPriceCollectionConfig) {
+            _this.skuPriceCollectionConfig.addDisplayProperty("personalVolume", "", { isEditable: true });
+            _this.skuPriceCollectionConfig.addDisplayProperty("taxableAmount", "", { isEditable: true });
+            _this.skuPriceCollectionConfig.addDisplayProperty("commissionableVolume", "", { isEditable: true });
+            _this.skuPriceCollectionConfig.addDisplayProperty("retailCommission", "", { isEditable: true });
+            _this.skuPriceCollectionConfig.addDisplayProperty("productPackVolume", "", { isEditable: true });
+            _this.skuPriceCollectionConfig.addDisplayProperty("retailValueVolume", "", { isEditable: true });
+        }
+        return _this;
+    }
+    return SWPricingManagerController;
+}(swpricingmanager_1.SWPricingManagerController));
+exports.SWPricingManagerController = SWPricingManagerController;
+var SWPricingManager = /** @class */ (function (_super) {
+    __extends(SWPricingManager, _super);
+    function SWPricingManager() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.controller = SWPricingManagerController;
+        return _this;
+    }
+    return SWPricingManager;
+}(swpricingmanager_2.SWPricingManager));
+exports.SWPricingManager = SWPricingManager;
+
+
+/***/ }),
+
 /***/ "IT1P":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -5830,6 +5801,161 @@ var SWOptionsForOptionGroup = /** @class */ (function () {
     return SWOptionsForOptionGroup;
 }());
 exports.SWOptionsForOptionGroup = SWOptionsForOptionGroup;
+
+
+/***/ }),
+
+/***/ "IYLP":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.SWOrderItems = void 0;
+var SWOrderItems = /** @class */ (function () {
+    //@ngInject
+    SWOrderItems.$inject = ["$log", "$timeout", "$location", "$hibachi", "collectionConfigService", "formService", "orderItemPartialsPath", "slatwallPathBuilder", "paginationService", "observerService"];
+    function SWOrderItems($log, $timeout, $location, $hibachi, collectionConfigService, formService, orderItemPartialsPath, slatwallPathBuilder, paginationService, observerService) {
+        return {
+            restrict: 'E',
+            scope: {
+                orderId: "@"
+            },
+            templateUrl: slatwallPathBuilder.buildPartialsPath(orderItemPartialsPath) + "orderitems.html",
+            link: function (scope, element, attrs) {
+                var options = {};
+                scope.keywords = "";
+                scope.loadingCollection = false;
+                scope.$watch('recordsCount', function (newValue, oldValue, scope) {
+                    //Do anything with $scope.letters
+                    if (oldValue != undefined && newValue != undefined && newValue.length > oldValue.length) {
+                        //refresh so order totals refresh.
+                        window.location.reload();
+                    }
+                });
+                var searchPromise;
+                scope.searchCollection = function () {
+                    if (searchPromise) {
+                        $timeout.cancel(searchPromise);
+                    }
+                    searchPromise = $timeout(function () {
+                        $log.debug('search with keywords');
+                        $log.debug(scope.keywords);
+                        //Set current page here so that the pagination does not break when getting collection
+                        scope.paginator.setCurrentPage(1);
+                        scope.loadingCollection = true;
+                        scope.getCollection();
+                    }, 500);
+                };
+                $log.debug('Init Order Item');
+                $log.debug(scope.orderId);
+                //Setup the data needed for each order item object.
+                scope.getCollection = function () {
+                    if (scope.pageShow === 'Auto') {
+                        scope.pageShow = 50;
+                    }
+                    var orderItemCollection = collectionConfigService.newCollectionConfig('OrderItem');
+                    orderItemCollection.setDisplayProperties("orderItemID,currencyCode,sku.skuName\n                         ,price,skuPrice,sku.skuID,sku.skuCode,productBundleGroup.productBundleGroupID\n\t\t\t\t\t\t ,sku.product.productID\n \t\t\t\t\t\t ,sku.product.productName,sku.product.productDescription\n\t\t\t\t\t\t ,sku.eventStartDateTime\n \t\t\t\t\t\t ,quantity\n\t\t\t\t\t\t ,orderFulfillment.fulfillmentMethod.fulfillmentMethodName\n\t\t\t\t\t\t ,orderFulfillment.orderFulfillmentID\n \t\t\t\t\t\t ,orderFulfillment.shippingAddress.streetAddress\n     \t\t\t\t\t ,orderFulfillment.shippingAddress.street2Address\n\t\t\t\t\t\t ,orderFulfillment.shippingAddress.postalCode\n\t\t\t\t\t\t ,orderFulfillment.shippingAddress.city,orderFulfillment.shippingAddress.stateCode\n \t\t\t\t\t\t ,orderFulfillment.shippingAddress.countryCode\n                         ,orderItemType.systemCode\n\t\t\t\t\t\t ,orderFulfillment.fulfillmentMethod.fulfillmentMethodType\n                         ,orderFulfillment.pickupLocation.primaryAddress.address.streetAddress\n\t\t\t\t\t\t ,orderFulfillment.pickupLocation.primaryAddress.address.street2Address\n                         ,orderFulfillment.pickupLocation.primaryAddress.address.city\n\t\t\t\t\t\t ,orderFulfillment.pickupLocation.primaryAddress.address.stateCode\n                         ,orderFulfillment.pickupLocation.primaryAddress.address.postalCode\n\t\t\t\t\t\t ,orderReturn.orderReturnID\n \t\t\t\t\t\t ,orderReturn.returnLocation.primaryAddress.address.streetAddress\n\t\t\t\t\t\t ,orderReturn.returnLocation.primaryAddress.address.street2Address\n                         ,orderReturn.returnLocation.primaryAddress.address.city\n\t\t\t\t\t\t ,orderReturn.returnLocation.primaryAddress.address.stateCode\n                         ,orderReturn.returnLocation.primaryAddress.address.postalCode\n\t\t\t\t\t\t ,itemTotal,discountAmount,taxAmount,extendedPrice,productBundlePrice,sku.baseProductType\n                         ,sku.subscriptionBenefits\n\t\t\t\t\t\t ,sku.product.productType.systemCode\n\t\t\t\t\t\t ,sku.bundleFlag \n\t\t\t\t\t\t ,sku.options\n\t\t\t\t\t\t ,sku.locations\n \t\t\t\t\t\t ,sku.subscriptionTerm.subscriptionTermName\n \t\t\t\t\t\t ,sku.imageFile\n                         ,stock.location.locationName")
+                        .addFilter('order.orderID', scope.orderId)
+                        .addFilter('parentOrderItem', 'null', 'IS')
+                        .setKeywords(scope.keywords)
+                        .setPageShow(scope.paginator.getPageShow())
+                        .setCurrentPage(scope.paginator.getCurrentPage());
+                    //add attributes to the column config
+                    angular.forEach(scope.attributes, function (attribute) {
+                        var attributeColumn = {
+                            propertyIdentifier: "_orderitem." + attribute.attributeCode,
+                            attributeID: attribute.attributeID,
+                            attributeSetObject: "orderItem"
+                        };
+                        orderItemCollection.columns.push(attributeColumn);
+                    });
+                    var orderItemsPromise = orderItemCollection.getEntity();
+                    orderItemsPromise.then(function (value) {
+                        scope.collection = value;
+                        var collectionConfig = {};
+                        scope.recordsCount = value.pageRecords;
+                        scope.orderItems = $hibachi.populateCollection(value.pageRecords, orderItemCollection);
+                        for (var orderItem in scope.orderItems) {
+                            $log.debug("OrderItem Product Type");
+                            $log.debug(scope.orderItems);
+                            //orderItem.productType = orderItem.data.sku.data.product.data.productType.$$getParentProductType();
+                        }
+                        scope.paginator.setPageRecordsInfo(scope.collection);
+                        scope.loadingCollection = false;
+                    }, function (value) {
+                        scope.orderItems = [];
+                    });
+                };
+                var attributesCollection = collectionConfigService.newCollectionConfig('Attribute');
+                attributesCollection.setDisplayProperties('attributeID,attributeCode,attributeName')
+                    .addFilter('displayOnOrderDetailFlag', true)
+                    .addFilter('activeFlag', true)
+                    .setAllRecords(true);
+                var attItemsPromise = attributesCollection.getEntity();
+                attItemsPromise.then(function (value) {
+                    scope.attributes = [];
+                    angular.forEach(value.records, function (attributeItemData) {
+                        //Use that custom attribute name to get the value.
+                        scope.attributes.push(attributeItemData);
+                    });
+                    scope.getCollection();
+                });
+                //Add claim function and cancel function
+                /*scope.appendToCollection = function(){
+                    if(scope.pageShow === 'Auto'){
+                        $log.debug('AppendToCollection');
+                        if(scope.paginator.autoScrollPage < scope.collection.totalPages){
+                            scope.paginator.autoScrollDisabled = true;
+                            scope.paginator.autoScrollPage++;
+
+                            var appendOptions:any = {};
+                            angular.extend(appendOptions,options);
+                            appendOptions.pageShow = 50;
+                            appendOptions.currentPage = scope.paginator.autoScrollPage;
+
+                            var collectionListingPromise = $hibachi.getEntity('orderItem', appendOptions);
+                            collectionListingPromise.then(function(value){
+                                scope.collection.pageRecords = scope.collection.pageRecords.concat(value.pageRecords);
+                                scope.autoScrollDisabled = false;
+                            },function(reason){
+                                scope.collection.pageRecords = [];
+                            });
+                        }
+                    }
+                };*/
+                scope.paginator = paginationService.createPagination();
+                scope.paginator.notifyById = false;
+                scope.paginator.collection = scope.collection;
+                scope.paginator.getCollection = scope.getCollection;
+                //set up custom event as temporary fix to update when new sku is adding via jquery ajax instead of angular scope
+                $(document).on("listingDisplayUpdate", {}, function (event, arg1, arg2) {
+                    scope.orderItems = undefined;
+                    scope.getCollection();
+                });
+                observerService.attach(scope.getCollection, 'swPaginationAction');
+            } //<--End link
+        };
+    }
+    SWOrderItems.Factory = function () {
+        var directive = function ($log, $timeout, $location, $hibachi, collectionConfigService, formService, orderItemPartialsPath, slatwallPathBuilder, paginationService, observerService) { return new SWOrderItems($log, $timeout, $location, $hibachi, collectionConfigService, formService, orderItemPartialsPath, slatwallPathBuilder, paginationService, observerService); };
+        directive.$inject = [
+            '$log',
+            '$timeout',
+            '$location',
+            '$hibachi',
+            'collectionConfigService',
+            'formService',
+            'orderItemPartialsPath',
+            'slatwallPathBuilder',
+            'paginationService',
+            'observerService'
+        ];
+        return directive;
+    };
+    return SWOrderItems;
+}());
+exports.SWOrderItems = SWOrderItems;
 
 
 /***/ }),
@@ -7653,6 +7779,13 @@ exports.slatwalladminmodule = slatwalladminmodule;
 
 /***/ }),
 
+/***/ "Qfls":
+/***/ (function(module, exports) {
+
+module.exports = "<sw-modal-launcher data-launch-event-name=\"EDIT_SKUPRICE\"\n                   data-modal-name=\"{{swSkuPriceModal.uniqueName}}\" \n                   data-title=\"Sku Price - Detail\" \n                   data-save-action=\"swSkuPriceModal.save\">\n    \n    <sw-modal-content> \n        \n        <sw-form ng-if=\"swSkuPriceModal.skuPrice\"\n                 name=\"{{swSkuPriceModal.formName}}\" \n                 data-object=\"swSkuPriceModal.skuPrice\"    \n                 data-context=\"save\"\n                 >\n            <div ng-show=\"!swSkuPriceModal.saveSuccess\" class=\"alert alert-error\" role=\"alert\" sw-rbkey=\"'admin.entity.addskuprice.invalid'\"></div>\n            <div class=\"row\">\n                    <div class=\"col-sm-4\">\n                        <sw-sku-thumbnail ng-if=\"swSkuPriceModal.sku.data\" data-sku-data=\"swSkuPriceModal.sku.data\">\n                        </sw-sku-thumbnail>\n                    </div>\n                    <div class=\"col-sm-8\">\n                        <div class=\"row\">\n                            <div class=\"col-sm-4\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.price'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"price\" \n                                        ng-model=\"swSkuPriceModal.skuPrice.price\"\n                                />\n                            </div> \n                            <div class=\"col-sm-4\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.listPrice'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"listPrice\" \n                                        ng-model=\"swSkuPriceModal.skuPrice.listPrice\"\n                                />\n                            </div> \n                            <div class=\"col-sm-4\">\n                                <div class=\"form-group\">\n                                    <label for=\"\" class=\"control-label\">Currency Code</label>\n                                    <select class=\"form-control\" \n                                            name=\"currencyCode\"\n                                            ng-model=\"swSkuPriceModal.selectedCurrencyCode\"\n                                            ng-options=\"item as item for item in swSkuPriceModal.currencyCodeOptions track by item\"\n                                            ng-disabled=\"swSkuPriceModal.isDefaultSkuPrice()\"\n                                            >\n                                    </select>\n                                </div>\n                            </div>\n                        </div>\n                        \n                        <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.minQuantity'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"minQuantity\" \n                                        ng-model=\"swSkuPriceModal.skuPrice.minQuantity\"\n                                        ng-disabled=\"swSkuPriceModal.isDefaultSkuPrice()\"\n                                />\n                            </div>\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.maxQuantity'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"maxQuantity\" \n                                        ng-model=\"swSkuPriceModal.skuPrice.maxQuantity\"\n                                        ng-disabled=\"swSkuPriceModal.isDefaultSkuPrice()\"\n                                />\n                            </div>\n                        </div>\n                        <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.Sku'\">\n                                        \n                                </label>\n                                <sw-typeahead-search    data-collection-config=\"swSkuPriceModal.skuCollectionConfig\"\n                                                        data-disabled=\"swSkuPriceModal.isDefaultSkuPrice()\"\n                                                        data-placeholder-text=\"Select Sku\"\n                                                        data-search-text=\"swSkuPriceModal.compoundSkuName\"\n                                                        data-add-function=\"swSkuPriceModal.setSelectedSku\">\n                                    \n                                    <span sw-typeahead-search-line-item data-property-identifier=\"skuName\"></span>\n                                    <span> - </span>\n                                    <span sw-typeahead-search-line-item data-property-identifier=\"skuCode\"></span>\n                                </sw-typeahead-search>\n                                \n                                <input type=\"hidden\" readonly style=\"display:none\" name=\"sku\" ng-model=\"swSkuPriceModal.submittedSku\" />\n                            </div>\n                            <div class=\"col-sm-6\">\n                                \n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.PriceGroup'\">\n                                        \n                                </label>\n                                <select class=\"form-control\" \n                                        ng-model=\"swSkuPriceModal.selectedPriceGroup\"\n                                        ng-options=\"item as item.priceGroupName for item in swSkuPriceModal.priceGroupOptions track by item.priceGroupID\"\n                                        ng-change=\"swSkuPriceModal.setSelectedPriceGroup(swSkuPriceModal.selectedPriceGroup)\"\n                                        ng-disabled=\"swSkuPriceModal.isDefaultSkuPrice() || swSkuPriceModal.priceGroupEditable == false\"\n                                        >\n                                </select>\n                                <input type=\"hidden\" readonly style=\"display:none\" name=\"priceGroup\" ng-model=\"swSkuPriceModal.submittedPriceGroup\" />\n                            </div>\n                        </div>\n                        \n                        <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.personalVolume'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"personalVolume\" \n                                        ng-model=\"swSkuPriceModal.skuPrice.personalVolume\"\n                                />\n                            </div>\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.taxableAmount'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"taxableAmount\" \n                                        ng-model=\"swSkuPriceModal.skuPrice.taxableAmount\"\n                                />\n                            </div>\n                        </div>\n                        \n                        <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.commissionableVolume'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"commissionableVolume\" \n                                        ng-model=\"swSkuPriceModal.skuPrice.commissionableVolume\"\n                                />\n                            </div>\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.retailCommission'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"retailCommission\" \n                                        ng-model=\"swSkuPriceModal.skuPrice.retailCommission\"\n                                />\n                            </div>\n                        </div>\n                        \n                        <div class=\"row\">\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.productPackVolume'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"productPackVolume\" \n                                        ng-model=\"swSkuPriceModal.skuPrice.productPackVolume\"\n                                />\n                            </div>\n                            <div class=\"col-sm-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.retailValueVolume'\">\n                                </label>\n                                <input  class=\"form-control\" \n                                        type=\"text\" \n                                        name=\"retailValueVolume\" \n                                        ng-model=\"swSkuPriceModal.skuPrice.retailValueVolume\"\n                                />\n                            </div>\n                        </div>\n                        <div class=\"row\">\n                            \n                            <div class=\"col-xs-6\">\n                                <label  class=\"control-label\"\n                                        sw-rbKey=\"'entity.SkuPrice.activeFlag'\">\n                                </label>\n                                <div class=\"s-ladel-options\">\n                                    <div class=\"col-xs-4 radio\">\n                                        <input id=\"active\" type=\"radio\" name=\"activeFlag\" value=\"1\" ng-model=\"swSkuPriceModal.skuPrice.activeFlag\">\n                                        <label for=\"active\">Yes</label>\n                                    </div>\n                                    <div class=\"col-xs-4 radio\">\n                                        <input id=\"inactive\" type=\"radio\" name=\"activeFlag\" value=\"0\" ng-model=\"swSkuPriceModal.skuPrice.activeFlag\">\n                                        <label for=\"inactive\">No</label>\n                                    </div>\n                                </div>\n                            </div>\n                        </div>\n                        <!-- BEGIN HIDDEN FIELDS -->\n                        \n                        <!-- END HIDDEN FIELDS -->\n                    </div>\n                </div>\n            </sw-form>\n    </sw-modal-content> \n</sw-modal-launcher>";
+
+/***/ }),
+
 /***/ "RUVr":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -8281,163 +8414,6 @@ var OrderTemplateService = /** @class */ (function () {
     return OrderTemplateService;
 }());
 exports.OrderTemplateService = OrderTemplateService;
-
-
-/***/ }),
-
-/***/ "UaxI":
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.SWOrderItems = void 0;
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
-var SWOrderItems = /** @class */ (function () {
-    //@ngInject
-    SWOrderItems.$inject = ["$log", "$timeout", "$location", "$hibachi", "collectionConfigService", "formService", "orderItemPartialsPath", "slatwallPathBuilder", "paginationService", "observerService"];
-    function SWOrderItems($log, $timeout, $location, $hibachi, collectionConfigService, formService, orderItemPartialsPath, slatwallPathBuilder, paginationService, observerService) {
-        return {
-            restrict: 'E',
-            scope: {
-                orderId: "@"
-            },
-            templateUrl: slatwallPathBuilder.buildPartialsPath(orderItemPartialsPath) + "orderitems.html",
-            link: function (scope, element, attrs) {
-                var options = {};
-                scope.keywords = "";
-                scope.loadingCollection = false;
-                scope.$watch('recordsCount', function (newValue, oldValue, scope) {
-                    //Do anything with $scope.letters
-                    if (oldValue != undefined && newValue != undefined && newValue.length > oldValue.length) {
-                        //refresh so order totals refresh.
-                        window.location.reload();
-                    }
-                });
-                var searchPromise;
-                scope.searchCollection = function () {
-                    if (searchPromise) {
-                        $timeout.cancel(searchPromise);
-                    }
-                    searchPromise = $timeout(function () {
-                        $log.debug('search with keywords');
-                        $log.debug(scope.keywords);
-                        //Set current page here so that the pagination does not break when getting collection
-                        scope.paginator.setCurrentPage(1);
-                        scope.loadingCollection = true;
-                        scope.getCollection();
-                    }, 500);
-                };
-                $log.debug('Init Order Item');
-                $log.debug(scope.orderId);
-                //Setup the data needed for each order item object.
-                scope.getCollection = function () {
-                    if (scope.pageShow === 'Auto') {
-                        scope.pageShow = 50;
-                    }
-                    var orderItemCollection = collectionConfigService.newCollectionConfig('OrderItem');
-                    orderItemCollection.setDisplayProperties("orderItemID,currencyCode,sku.skuName\n                         ,price,skuPrice,sku.skuID,sku.skuCode,productBundleGroup.productBundleGroupID\n\t\t\t\t\t\t ,sku.product.productID\n \t\t\t\t\t\t ,sku.product.productName,sku.product.productDescription\n\t\t\t\t\t\t ,sku.eventStartDateTime\n \t\t\t\t\t\t ,quantity\n\t\t\t\t\t\t ,orderFulfillment.fulfillmentMethod.fulfillmentMethodName\n\t\t\t\t\t\t ,orderFulfillment.orderFulfillmentID\n \t\t\t\t\t\t ,orderFulfillment.shippingAddress.streetAddress\n     \t\t\t\t\t ,orderFulfillment.shippingAddress.street2Address\n\t\t\t\t\t\t ,orderFulfillment.shippingAddress.postalCode\n\t\t\t\t\t\t ,orderFulfillment.shippingAddress.city,orderFulfillment.shippingAddress.stateCode\n \t\t\t\t\t\t ,orderFulfillment.shippingAddress.countryCode\n                         ,orderItemType.systemCode\n\t\t\t\t\t\t ,orderFulfillment.fulfillmentMethod.fulfillmentMethodType\n                         ,orderFulfillment.pickupLocation.primaryAddress.address.streetAddress\n\t\t\t\t\t\t ,orderFulfillment.pickupLocation.primaryAddress.address.street2Address\n                         ,orderFulfillment.pickupLocation.primaryAddress.address.city\n\t\t\t\t\t\t ,orderFulfillment.pickupLocation.primaryAddress.address.stateCode\n                         ,orderFulfillment.pickupLocation.primaryAddress.address.postalCode\n\t\t\t\t\t\t ,orderReturn.orderReturnID\n \t\t\t\t\t\t ,orderReturn.returnLocation.primaryAddress.address.streetAddress\n\t\t\t\t\t\t ,orderReturn.returnLocation.primaryAddress.address.street2Address\n                         ,orderReturn.returnLocation.primaryAddress.address.city\n\t\t\t\t\t\t ,orderReturn.returnLocation.primaryAddress.address.stateCode\n                         ,orderReturn.returnLocation.primaryAddress.address.postalCode\n\t\t\t\t\t\t ,itemTotal,discountAmount,taxAmount,extendedPrice,productBundlePrice,sku.baseProductType\n                         ,sku.subscriptionBenefits\n\t\t\t\t\t\t ,sku.product.productType.systemCode\n\t\t\t\t\t\t ,sku.bundleFlag \n\t\t\t\t\t\t ,sku.options\n\t\t\t\t\t\t ,sku.locations\n \t\t\t\t\t\t ,sku.subscriptionTerm.subscriptionTermName\n \t\t\t\t\t\t ,sku.imageFile\n                         ,stock.location.locationName")
-                        .addFilter('order.orderID', scope.orderId)
-                        .addFilter('parentOrderItem', 'null', 'IS')
-                        .setKeywords(scope.keywords)
-                        .setPageShow(scope.paginator.getPageShow())
-                        .setCurrentPage(scope.paginator.getCurrentPage());
-                    //add attributes to the column config
-                    angular.forEach(scope.attributes, function (attribute) {
-                        var attributeColumn = {
-                            propertyIdentifier: "_orderitem." + attribute.attributeCode,
-                            attributeID: attribute.attributeID,
-                            attributeSetObject: "orderItem"
-                        };
-                        orderItemCollection.columns.push(attributeColumn);
-                    });
-                    var orderItemsPromise = orderItemCollection.getEntity();
-                    orderItemsPromise.then(function (value) {
-                        scope.collection = value;
-                        var collectionConfig = {};
-                        scope.recordsCount = value.pageRecords;
-                        scope.orderItems = $hibachi.populateCollection(value.pageRecords, orderItemCollection);
-                        for (var orderItem in scope.orderItems) {
-                            $log.debug("OrderItem Product Type");
-                            $log.debug(scope.orderItems);
-                            //orderItem.productType = orderItem.data.sku.data.product.data.productType.$$getParentProductType();
-                        }
-                        scope.paginator.setPageRecordsInfo(scope.collection);
-                        scope.loadingCollection = false;
-                    }, function (value) {
-                        scope.orderItems = [];
-                    });
-                };
-                var attributesCollection = collectionConfigService.newCollectionConfig('Attribute');
-                attributesCollection.setDisplayProperties('attributeID,attributeCode,attributeName')
-                    .addFilter('displayOnOrderDetailFlag', true)
-                    .addFilter('activeFlag', true)
-                    .setAllRecords(true);
-                var attItemsPromise = attributesCollection.getEntity();
-                attItemsPromise.then(function (value) {
-                    scope.attributes = [];
-                    angular.forEach(value.records, function (attributeItemData) {
-                        //Use that custom attribute name to get the value.
-                        scope.attributes.push(attributeItemData);
-                    });
-                    scope.getCollection();
-                });
-                //Add claim function and cancel function
-                /*scope.appendToCollection = function(){
-                    if(scope.pageShow === 'Auto'){
-                        $log.debug('AppendToCollection');
-                        if(scope.paginator.autoScrollPage < scope.collection.totalPages){
-                            scope.paginator.autoScrollDisabled = true;
-                            scope.paginator.autoScrollPage++;
-
-                            var appendOptions:any = {};
-                            angular.extend(appendOptions,options);
-                            appendOptions.pageShow = 50;
-                            appendOptions.currentPage = scope.paginator.autoScrollPage;
-
-                            var collectionListingPromise = $hibachi.getEntity('orderItem', appendOptions);
-                            collectionListingPromise.then(function(value){
-                                scope.collection.pageRecords = scope.collection.pageRecords.concat(value.pageRecords);
-                                scope.autoScrollDisabled = false;
-                            },function(reason){
-                                scope.collection.pageRecords = [];
-                            });
-                        }
-                    }
-                };*/
-                scope.paginator = paginationService.createPagination();
-                scope.paginator.notifyById = false;
-                scope.paginator.collection = scope.collection;
-                scope.paginator.getCollection = scope.getCollection;
-                //set up custom event as temporary fix to update when new sku is adding via jquery ajax instead of angular scope
-                $(document).on("listingDisplayUpdate", {}, function (event, arg1, arg2) {
-                    scope.orderItems = undefined;
-                    scope.getCollection();
-                });
-                observerService.attach(scope.getCollection, 'swPaginationAction');
-            } //<--End link
-        };
-    }
-    SWOrderItems.Factory = function () {
-        var directive = function ($log, $timeout, $location, $hibachi, collectionConfigService, formService, orderItemPartialsPath, slatwallPathBuilder, paginationService, observerService) { return new SWOrderItems($log, $timeout, $location, $hibachi, collectionConfigService, formService, orderItemPartialsPath, slatwallPathBuilder, paginationService, observerService); };
-        directive.$inject = [
-            '$log',
-            '$timeout',
-            '$location',
-            '$hibachi',
-            'collectionConfigService',
-            'formService',
-            'orderItemPartialsPath',
-            'slatwallPathBuilder',
-            'paginationService',
-            'observerService'
-        ];
-        return directive;
-    };
-    return SWOrderItems;
-}());
-exports.SWOrderItems = SWOrderItems;
 
 
 /***/ }),
@@ -10796,7 +10772,7 @@ var swordertemplatepromotions_1 = __webpack_require__("nhih");
 var swordertemplatepromotionitems_1 = __webpack_require__("d0Ek");
 var swordertemplateupcomingorderscard_1 = __webpack_require__("bdPw");
 var swordertemplateupdateschedulemodal_1 = __webpack_require__("v8Ze");
-var swaddorderitemsbysku_1 = __webpack_require__("Co5z");
+var swaddorderitemsbysku_1 = __webpack_require__("d3ZG");
 var swaddpromotionorderitemsbysku_1 = __webpack_require__("5yDc");
 var ordermodule = angular.module('order', [core_module_1.coremodule.name])
     .config([function () {
@@ -12772,6 +12748,84 @@ exports.SWSkuCurrencySelector = SWSkuCurrencySelector;
 
 /***/ }),
 
+/***/ "nf8Q":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.SWSkuPriceModalController = exports.SWSkuPriceModal = void 0;
+var swskupricemodal_1 = __webpack_require__("xtYT");
+var swskupricemodal_2 = __webpack_require__("xtYT");
+var SWSkuPriceModalController = /** @class */ (function (_super) {
+    __extends(SWSkuPriceModalController, _super);
+    //@ngInject
+    SWSkuPriceModalController.$inject = ["$hibachi", "entityService", "formService", "listingService", "observerService", "skuPriceService", "utilityService", "collectionConfigService", "scopeService", "$scope", "$timeout", "requestService"];
+    function SWSkuPriceModalController($hibachi, entityService, formService, listingService, observerService, skuPriceService, utilityService, collectionConfigService, scopeService, $scope, $timeout, requestService) {
+        var _this = _super.call(this, $hibachi, entityService, formService, listingService, observerService, skuPriceService, utilityService, collectionConfigService, scopeService, $scope, $timeout, requestService) || this;
+        _this.$hibachi = $hibachi;
+        _this.entityService = entityService;
+        _this.formService = formService;
+        _this.listingService = listingService;
+        _this.observerService = observerService;
+        _this.skuPriceService = skuPriceService;
+        _this.utilityService = utilityService;
+        _this.collectionConfigService = collectionConfigService;
+        _this.scopeService = scopeService;
+        _this.$scope = $scope;
+        _this.$timeout = $timeout;
+        _this.requestService = requestService;
+        _this.initData = function (pageRecord) {
+            _super.prototype.initData.call(_this, pageRecord);
+            if (angular.isDefined(_this.pageRecord) && angular.isDefined(_this.pageRecord.skuPriceID) && _this.pageRecord.skuPriceID.length) {
+                _this.skuPrice.personalVolume = _this.pageRecord.personalVolume;
+                _this.skuPrice.taxableAmount = _this.pageRecord.taxableAmount;
+                _this.skuPrice.commissionableVolume = _this.pageRecord.commissionableVolume;
+                _this.skuPrice.retailCommission = _this.pageRecord.retailCommission;
+                _this.skuPrice.productPackVolume = _this.pageRecord.productPackVolume;
+                _this.skuPrice.retailValueVolume = _this.pageRecord.retailValueVolume;
+                _this.skuPrice.handlingFee = _this.pageRecord.handlingFee;
+                _this.skuPrice.activeFlag = _this.pageRecord.activeFlag;
+            }
+        };
+        _this.$onDestroy = function () {
+            _this.observerService.detachByEvent('EDIT_SKUPRICE');
+        };
+        _this.observerService.detachByEvent('EDIT_SKUPRICE'); // Detach core event
+        _this.observerService.attach(_this.initData, "EDIT_SKUPRICE"); // Attach custom event
+        return _this;
+    }
+    return SWSkuPriceModalController;
+}(swskupricemodal_2.SWSkuPriceModalController));
+exports.SWSkuPriceModalController = SWSkuPriceModalController;
+var SWSkuPriceModal = /** @class */ (function (_super) {
+    __extends(SWSkuPriceModal, _super);
+    function SWSkuPriceModal() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.template = __webpack_require__("Qfls");
+        _this.controller = SWSkuPriceModalController;
+        return _this;
+    }
+    return SWSkuPriceModal;
+}(swskupricemodal_1.SWSkuPriceModal));
+exports.SWSkuPriceModal = SWSkuPriceModal;
+
+
+/***/ }),
+
 /***/ "nhih":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -14268,4 +14322,4 @@ exports.SWSkuPriceModal = SWSkuPriceModal;
 /***/ })
 
 /******/ });
-//# sourceMappingURL=monatAdmin.ea87e40eb8b774bbe720.bundle.js.map
+//# sourceMappingURL=monatAdmin.d8d703e321e453c46ad5.bundle.js.map

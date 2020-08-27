@@ -53,19 +53,41 @@ Notes:
 	<cfscript>
 		
 		public any function formatValue_currency( required string value, struct formatDetails={} ) {
+			if(!structKeyExists(arguments.formatDetails,'locale')){
+				arguments.formatDetails['locale'] = getHibachiScope().getSession().getRbLocale();
+			}
+			
 			if(structKeyExists(arguments.formatDetails, 'currencyCode')) {
 				var currencySymbol = getCurrencySymbolByCurrencyCode(arguments.formatDetails.currencyCode);
-				if(!isNull(currencySymbol)){
-					return currencySymbol & LSNumberFormat(arguments.value, ',.__');
+				var formatMask = getCurrencyFormatMaskByCurrencyCode(arguments.formatDetails.currencyCode);
+				
+				if(isNull(formatMask) && !isNull(currencySymbol)){
+					return currencySymbol & LSNumberFormat(arguments.value, ',.__',arguments.formatDetails.locale);
+				}else if (!isNull(formatMask)){
+					if(isNull(currencySymbol)){
+						currencySymbol = '';
+					}
+					return replaceCurrencyFormatMaskTemplate(currencySymbol,formatMask,arguments.value,arguments.formatDetails.locale);
 				}
 			}
-
 			if(structKeyExists(arguments.formatDetails, 'locale')){
 				return LSCurrencyFormat(arguments.value, "local", arguments.formatDetails.locale);
 			}
-
 			// Otherwsie use the global currencyLocal
 			return LSCurrencyFormat(arguments.value, getSettingService().getSettingValue("globalCurrencyType"), getSettingService().getSettingValue("globalCurrencyLocale"));
+		}
+		
+		public any function getCurrencyFormatMaskByCurrencyCode(required string currencyCode){
+			var cacheKey = 'getCurrencyFormatMaskByCurrencyCode#arguments.currencyCode##getHibachiScope().getSession().getRbLocale()#';
+			if(!structKeyExists(variables,cacheKey)){
+				var currency = getService("currencyService").getCurrency( arguments.currencyCode );
+				if(!isNull(currency)){
+					variables[cacheKey] = currency.getFormattedValue('formatMask');
+					return variables[cacheKey];
+				}
+			}else{
+				return variables[cacheKey];
+			}
 		}
 		
 		public any function getCurrencySymbolByCurrencyCode(required string currencyCode){
@@ -79,6 +101,14 @@ Notes:
 			}else{
 				return variables[cacheKey];
 			}
+		}
+		
+		public string function replaceCurrencyFormatMaskTemplate(required string currencySymbol,required string formatMask, required numeric value, string locale=''){
+			// example formatMasks: '$9', 'CAN $ 9', '9 $'
+			var formattedValue = LSNumberFormat(arguments.value, ',.__',arguments.locale);
+			var result = arguments.formatMask.replace('$',arguments.currencySymbol)
+			result = result.replace('{9}',formattedValue);
+			return result;
 		}
 
 		public any function formatValue_datetime( required string value, struct formatDetails={} ) {

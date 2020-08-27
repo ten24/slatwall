@@ -6,7 +6,7 @@ import {SWChildOrderItem} from "./components/swchildorderitem";
 import {SWOrderItem} from "./components/sworderitem";
 import {SWOiShippingLabelStamp} from "./components/swoishippinglabelstamp";
 import {SWOrderItemDetailStamp} from "./components/sworderitemdetailstamp";
-import {SWOrderItems} from "orderitem/components/sworderitems";
+import {SWOrderItems} from "./components/sworderitems";
  import {SWResizedImage} from "./components/swresizedimage";
 
 

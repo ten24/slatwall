@@ -559,8 +559,12 @@ class HibachiService{
 		return request.promise
 	};
 
-	getCurrencies = () =>{
-		var urlString = this.getUrlWithActionPrefix()+'api:main.getCurrencies&instantiationKey='+this.appConfig.instantiationKey;
+	getCurrencies = (detail:boolean=false) =>{
+		var urlString = this.getUrlWithActionPrefix()+'api:main.getCurrencies';
+		if(detail){
+			urlString += '&detailFlag=true'
+		}
+		urlString += '&instantiationKey='+this.appConfig.instantiationKey;
 		let request = this.requestService.newAdminRequest(urlString, null, 'GET');
 
 		return request.promise;

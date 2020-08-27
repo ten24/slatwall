@@ -25,12 +25,18 @@ class SWCurrency{
             if(returnStringFlag){
                 var currencySymbol = "$";
                 if(data != null && data[currencyCode] != null ){
-                    currencySymbol = data[currencyCode];
+                    currencySymbol = data[currencyCode].currencySymbol;
                 } 
                 else {
                      $log.debug("Please provide a valid currencyCode, swcurrency defaults to $");
                 }
-                return currencySymbol + value; 
+
+                if(data != null && data[currencyCode] != null && data[currencyCode].formatMask != null && data[currencyCode].formatMask.trim().length){
+                    let formatMask = data[currencyCode].formatMask;
+                    return formatMask.replace('$',currencySymbol).replace('{9}',value);
+                }else{
+                    return currencySymbol + value; 
+                }
             }
             
             //if they don't want a string returned, again make sure any commas and spaces are removed
@@ -47,7 +53,7 @@ class SWCurrency{
 
                 if( !serviceInvoked ) {
                     serviceInvoked = true;
-                    $hibachi.getCurrencies().then((currencies)=>{
+                    $hibachi.getCurrencies(true).then((currencies)=>{
                         data = currencies.data;
                     });
                 }
