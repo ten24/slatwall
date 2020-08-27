@@ -50,10 +50,22 @@ Notes:
 	
 	<cffunction name="removeBatch" returntype="void" access="public">
 		<cfargument name="batchID" type="string" required="true" />
+		
+		<cfquery name="rs">
+			DELETE FROM Swentityqueue 
+			WHERE batchID =  <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.batchID#" />
+		</cfquery>
+		
+		<cfquery name="rs">
+			DELETE FROM swentityqueuefailure 
+			WHERE batchID =  <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.batchID#" />
+		</cfquery>
+		
 		<cfquery name="rs">
 			DELETE FROM Swbatch 
 			WHERE batchID =  <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.batchID#" />
 		</cfquery>
+		
 	</cffunction>
 	
 </cfcomponent>
