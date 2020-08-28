@@ -70,7 +70,7 @@ component extends="Slatwall.org.Hibachi.HibachiEntityQueueService" persistent="f
         // Check delete validation for batch
 		if(arguments.batch.isDeletable()) {
 
-			getBatchDAO().removeBatch( arguments.batch.getBatchID() );
+			getHibachiEntityQueueDAO().removeBatch( arguments.batch.getBatchID() );
 			
 			return true;
 			
