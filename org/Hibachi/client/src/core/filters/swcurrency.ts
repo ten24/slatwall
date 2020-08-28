@@ -38,7 +38,7 @@ class SWCurrency{
 
                 if(data != null && data[currencyCode] != null && data[currencyCode].formatMask != null && data[currencyCode].formatMask.trim().length){
                     let formatMask = data[currencyCode].formatMask;
-                    return formatMask.replace('$',currencySymbol).replace('/ /g','\u00a0').replace('{9}',value);
+                    return formatMask.replace('$',currencySymbol).replace(/ /g,'\u00a0').replace('{9}',value);
                 }else{
                     return currencySymbol + value; 
                 }
