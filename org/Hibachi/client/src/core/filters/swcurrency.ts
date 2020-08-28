@@ -6,7 +6,7 @@ class SWCurrency{
 
     //@ngInject
     public static Factory($sce,$log,$hibachi,$filter){
-        var data = null, serviceInvoked = false;
+        var data = null, serviceInvoked = false,locale='en-us';
         
         function realFilter(value, currencyCode:string, decimalPlace:number = 2, returnStringFlag = true) {
          
@@ -20,20 +20,25 @@ class SWCurrency{
                 value = value.replace(/[, ]+/g, "").trim();
             }
    
-            value = $filter('number')(parseFloat(value), decimalPlace);  
+            try{
+                let newValue = parseFloat(value).toLocaleString(locale,{minimumFractionDigits:2,maximumFractionDigits:2});
+                value = newValue;
+            }catch(e){
+            }
 
             if(returnStringFlag){
                 var currencySymbol = "$";
+                
                 if(data != null && data[currencyCode] != null ){
                     currencySymbol = data[currencyCode].currencySymbol;
-                } 
+                }
                 else {
                      $log.debug("Please provide a valid currencyCode, swcurrency defaults to $");
                 }
 
                 if(data != null && data[currencyCode] != null && data[currencyCode].formatMask != null && data[currencyCode].formatMask.trim().length){
                     let formatMask = data[currencyCode].formatMask;
-                    return formatMask.replace('$',currencySymbol).replace('{9}',value);
+                    return formatMask.replace('$',currencySymbol).replace('/ /g','\u00a0').replace('{9}',value);
                 }else{
                     return currencySymbol + value; 
                 }
@@ -55,6 +60,7 @@ class SWCurrency{
                     serviceInvoked = true;
                     $hibachi.getCurrencies(true).then((currencies)=>{
                         data = currencies.data;
+                        locale = currencies.locale.replace('_','-');
                     });
                 }
                 return  "--" + value;

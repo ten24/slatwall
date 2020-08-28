@@ -167,6 +167,7 @@ component output="false" accessors="true" extends="HibachiController" {
         }
 
         arguments.rc.apiResponse.content['data'] = currencyStruct;
+        arguments.rc.apiResponse.content['locale'] = getHibachiScope().getSession().getRBLocale();
     }
 
     public void function getCurrencyRates(required struct rc){
