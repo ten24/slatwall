@@ -48,7 +48,6 @@ Notes:
 */
 component extends="Slatwall.org.Hibachi.HibachiEntityQueueService" persistent="false" accessors="true" output="false" {
 	
-	property name="batchDAO" type="any";
 
 	// ===================== START: Logical Methods ===========================
 	
