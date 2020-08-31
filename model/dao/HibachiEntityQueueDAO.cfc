@@ -48,7 +48,7 @@ Notes:
 --->
 <cfcomponent extends="Slatwall.org.Hibachi.HibachiEntityQueueDAO">
 
-	<cffunction name="removeBatch" returntype="void" access="public">
+	<cffunction name="deleteBatchItems" returntype="void" access="public">
 		<cfargument name="batchID" type="string" required="true" />
 		
 		<cfquery name="rs">
