@@ -61,11 +61,6 @@ Notes:
 			WHERE batchID =  <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.batchID#" />
 		</cfquery>
 		
-		<cfquery name="rs">
-			DELETE FROM Swbatch 
-			WHERE batchID =  <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.batchID#" />
-		</cfquery>
-		
 	</cffunction>
 
 </cfcomponent>
