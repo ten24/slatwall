@@ -54,7 +54,7 @@
 	<div 
 		ng-if="
 			(monatEnrollment.currentStepName == 'orderListing' &&  monatEnrollment.orderTemplateService.mostRecentOrderTemplate.purchasePlusMessage.message.length) 
-			|| ( monatEnrollment.currentStepName != 'orderListing' && monatEnrollment.monatService.cart.purchasePlusMessage.message.length)" 
+			|| ( monatEnrollment.currentStepName == 'todaysOrder' && monatEnrollment.monatService.cart.purchasePlusMessage.message.length)" 
 		class="alert discount-block text-white promotion-bar-block"
 	>
 		<button 

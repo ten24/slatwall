@@ -64,7 +64,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				){	
 					order = orderItem.getOrder();
 					order.removeOrderItem(orderItem);
-					orderService.saveOrder(order);
 				}
 			}
 			ArrayClear(orderItem.getAppliedPromotions());	
