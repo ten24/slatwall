@@ -48,7 +48,7 @@ Notes:
 */
 component extends="Slatwall.org.Hibachi.HibachiEntityQueueService" persistent="false" accessors="true" output="false" {
 	
-	
+
 	// ===================== START: Logical Methods ===========================
 	
 	// =====================  END: Logical Methods ============================
@@ -62,6 +62,19 @@ component extends="Slatwall.org.Hibachi.HibachiEntityQueueService" persistent="f
 	public void function addQueueHistoryAndDeleteQueue(required any entityQueue, required boolean success){
 		this.addQueueHistory( argumentCollection=arguments );
 		this.deleteEntityQueue(entityQueue);
+	}
+	
+	public boolean function deleteBatch(required any batch) {
+		
+        // Check delete validation for batch
+		if(arguments.batch.isDeletable()) {
+
+			this.getHibachiEntityQueueDAO().deleteBatchItems( arguments.batch.getBatchID() );
+			
+		}
+		
+		return delete( arguments.batch );
+		
 	}
 
 
