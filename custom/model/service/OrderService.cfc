@@ -913,7 +913,11 @@ component extends="Slatwall.model.service.OrderService" {
 	}
 
 	public any function processOrder_placeInProcessingOne(required any order, struct data) {
-		this.updateOrderStatusBySystemCode(arguments.order, "ostProcessing", "processing1");
+		if(arguments.order.isOrderPaidFor()){
+			this.updateOrderStatusBySystemCode(arguments.order, "ostProcessing", "processing1");
+		}else{
+			arguments.order.addError( 'placeInProcessingOne', getHibachiScope().rbKey('entity.order.process.placeInProcessingOne.paymentRequired') );
+		}
 		return arguments.order;
 	}
 	
@@ -1071,6 +1075,18 @@ component extends="Slatwall.model.service.OrderService" {
 			getHibachiScope().clearCurrentFlexship();
 		}
 		return super.delete( arguments.orderTemplate );
+	}
+	
+	public any function processOrderTemplate_createAndPlaceOrder(required any orderTemplate, any processObject, struct data={}){
+		arguments.orderTemplate = super.processOrderTemplate_createAndPlaceOrder(argumentCollection=arguments);
+		if(!arguments.orderTemplate.hasErrors()){
+			var order = arguments.orderTemplate.getLastPlacedOrder();
+			var orderPayments = order.getOrderPayments();
+			if(!arrayLen(orderPayments)){
+				this.updateOrderStatusBySystemCode(arguments.order,'ostProcessing','paymentDeclined');
+			}
+		}
+		return arguments.orderTemplate;
 	}
 
 	public any function processVolumeRebuildBatch_create(required any volumeRebuildBatch, required any processObject){
