@@ -66,6 +66,11 @@ Notes:
 	<div class="col-md-12"><hb:HibachiMessageDisplay /></div>
 
 	<div class="col-md-6">
+		<cfset rc.orderCollectionlist.addDisplayProperty(displayProperty='currencyCode',columnConfig={
+			isVisible=false,
+			isSearchable=false,
+			isDeletable=false
+		})/>
 		<hb:HibachiListingDisplay title="#request.slatwallScope.rbKey("admin.main.dashboard.neworders")#" 
 			collectionList="#rc.orderCollectionList#"
 			recordDetailAction="admin:entity.detailorder">
