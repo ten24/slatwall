@@ -579,7 +579,7 @@ component extends="Slatwall.model.service.OrderService" {
 
         var orderType        = arguments.order.getOrderType();
         var currentOrderStatusType  = arguments.order.getOrderStatusType();
-        
+		
         /** 
          * if order is locked it can go back and forth b/w processsing1 and processing2 status 
          * but if that's not the case, we're checking further
@@ -687,9 +687,14 @@ component extends="Slatwall.model.service.OrderService" {
     	                );
 	               
 				} else if( listFindNoCase('otReplacementOrder,otExchangeOrder', orderType.getSystemCode()) ){
-	
+					var args = {
+						'systemCode':arguments.systemCode
+					};
+					if(arguments.typeCode != ''){
+						args['typeCode'] = arguments.typeCode;
+					}
 	            	arguments.order.setOrderStatusType(
-    	            	    this.getTypeService().getTypeBySystemCode(systemCode=arguments.systemCode, typeCode=arguments.typeCode)
+    	            	    this.getTypeService().getTypeBySystemCode(argumentCollection=args)
     	            	);
 	            	
 	            } else if( currentOrderStatusType.getSystemCode() == 'ostNew' // only if it's a new RMA order it can be received
