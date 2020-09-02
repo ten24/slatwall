@@ -208,7 +208,7 @@ component {
 	}
 	
 	public boolean function userCanCancelFlexship(){
-		return getAccount().getAccountType() == 'MarketPartner' || getHibachiScope().getAccount().getAdminAccountFlag();
+		return !isNull(getAccount()) && getAccount().getAccountType() == 'MarketPartner' || getHibachiScope().getAccount().getAdminAccountFlag();
 	}
 	
 	public any function getappliedPromotionMessagesJson(){
