@@ -1076,18 +1076,6 @@ component extends="Slatwall.model.service.OrderService" {
 		}
 		return super.delete( arguments.orderTemplate );
 	}
-	
-	public any function processOrderTemplate_createAndPlaceOrder(required any orderTemplate, any processObject, struct data={}){
-		arguments.orderTemplate = super.processOrderTemplate_createAndPlaceOrder(argumentCollection=arguments);
-		if(!arguments.orderTemplate.hasErrors()){
-			var order = arguments.orderTemplate.getLastPlacedOrder();
-			var orderPayments = order.getOrderPayments();
-			if(!arrayLen(orderPayments)){
-				this.updateOrderStatusBySystemCode(arguments.order,'ostProcessing','paymentDeclined');
-			}
-		}
-		return arguments.orderTemplate;
-	}
 
 	public any function processVolumeRebuildBatch_create(required any volumeRebuildBatch, required any processObject){
 		var volumeRebuildBatchOrders = arguments.processObject.getVolumeRebuildBatchOrders();

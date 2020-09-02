@@ -412,18 +412,6 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 	public void function removeAttributeValue(required any attributeValue) {
 		arguments.attributeValue.removeOrderTemplate( this );
 	}
-
-	public any function getLastPlacedOrder(){
-		var orderCollection = this.getOrdersCollectionList();
-		orderCollection.addFilter('orderStatusType.systemCode','ostNotPlaced,ostCanceled','NOT IN');
-		orderCollection.setDisplayProperties('orderID');
-		orderCollection.addOrderBy('orderOpenDateTime|DESC');
-		orderCollection.setPageRecordsShow(1);
-		var orders = orderCollection.getPageRecords();
-		if(arrayLen(orders)){
-			return getService('OrderService').getOrder(orders[1]['orderID']);
-		}
-	}
 	
 	//Email Template Helpers
 	public string function getOrderTemplateItemDetailsHTML(){
