@@ -165,52 +165,7 @@
                                         </div>
 										<div class="clearfix"></div>
 									</div>
-									<div class="form-group form-group-sm" id="j-placeholder-trigger-select" style="display:none;">
-										<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">On Order Item Event:</label>
-										<div class="col-sm-12 s-no-paddings">
-
-											<!-- search -->
-											<div class="s-search-filter">
-												<div class="input-group">
-													<input type="text" class="form-control input-sm j-search-input" placeholder="Search&hellip;">
-													<ul class="dropdown-menu s-search-options">
-														<li><button type="button" class="btn btn-lgrey" data-toggle="collapse" data-target="#j-toggle-add-bundle-type"><i class="fa fa-plus"></i> Add "This should be the name"</button></li>
-														<li><a>On Order Item Save</a></li>
-														<li><a>On Order Item Update</a></li>
-														<li><a>On Order Item Cancel</a></li>
-														<li><a>On Order Item Delete</a></li>
-														<li><hr/></li>
-														<li id="j-placeholder-trigger"><a>On Order Item Event</a></li>
-														<li><a>On Order Fulfillment Event</a></li>
-													</ul>
-													<div class="input-group-btn">
-														<button type="button" class="btn btn-sm btn-default j-dropdown-options"><span class="caret"></span></button>
-													</div>
-												</div>
-												<div class="s-add-content collapse" id="j-toggle-add-bundle-type">
-													<div class="form-group has-error">
-														<label for="">Group Name <i class="fa fa-asterisk"></i></label>
-														<input type="text" class="form-control" id="" value="" placeholder="">
-														<p class="help-block">Example Of Error</p>
-													</div>
-													<div class="form-group">
-														<label for="">Group Code</label>
-														<input type="text" class="form-control" id="" value="" placeholder="">
-													</div>
-													<div class="form-group">
-														<label for="">Group Description</label>
-														<textarea class="field form-control" id="textarea" rows="4" placeholder=""></textarea>
-													</div>
-													<div class="form-group">
-														<button type="button" class="btn btn-sm btn-primary"><i class="fa fa-plus"></i> Add Group Type</button>
-													</div>
-												</div>
-											</div>
-											<!-- // search -->
-
-										</div>
-										<div class="clearfix"></div>
-									</div>
+									
 								</div>
 							</span>
 							<!-- //Filter Criteria End -->
@@ -224,10 +179,24 @@
 										<div class="col-sm-12 s-no-paddings">
 										    
 										    <ng-form name="listingForm" sw-isolate-child-form>
-										    
+										        <!--- display initial listing or saved collection config --->
                                                 <sw-listing-display
+                                                    data-ng-if="!workflowTriggers.selectedTrigger.workflowTriggerCollectionConfig"
                                                     data-using-personal-collection="false"
                                                     data-collection="workflow.data.workflowObject"
+                                                    data-edit="false"
+                                            	    data-has-search="true"
+                                            	    data-is-angular-route="false"
+                                            	    data-angular-links="false"
+                                            	    data-has-action-bar="false"
+                                            	    data-name="{{ schedule.tableID }}_new"
+                                                >
+                                                </sw-listing-display>
+                                                
+                                                <sw-listing-display
+                                                    data-ng-if="workflowTriggers.selectedTrigger.workflowTriggerCollectionConfig"
+                                                    data-using-personal-collection="false"
+                                                    data-collection-config="workflowTriggers.selectedTrigger.workflowTriggerCollectionConfig"
                                                     data-edit="false"
                                             	    data-has-search="true"
                                             	    data-is-angular-route="false"
@@ -239,13 +208,12 @@
                                                
                                             </ng-form>
 										</div>
-										{{ workflowTriggers.selectedTrigger.data.scheduleCollectionConfig }} 
 										<sw-property-display
                                                 data-object="workflowTriggers.selectedTrigger"
                                                 data-property-identifier="scheduleCollectionConfig"
                                                 data-editing="true"
                                                 data-is-dirty="true"
-                                                
+                                                style="display:none"
                                             ></sw-property-display>
 									</div>
 

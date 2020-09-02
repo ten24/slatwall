@@ -72,6 +72,9 @@ class SWWorkflowTriggers{
                             if(angular.isDefined(newValue.data.scheduleCollection)){
                                 scope.selectedCollection = newValue.data.scheduleCollection.data.collectionName;
                             }
+                            if(angular.isDefined(newValue.data.scheduleCollectionConfig) && newValue.data.scheduleCollectionConfig.trim() ){
+                                scope.workflowTriggers.selectedTrigger.workflowTriggerCollectionConfig = collectionConfigService.newCollectionConfig().loadJson(angular.copy(newValue.data.scheduleCollectionConfig));
+                            }
                         }else{
                             scope.searchEvent.name = scope.workflowTriggers.selectedTrigger.triggerEventTitle;
                         }
@@ -84,7 +87,8 @@ class SWWorkflowTriggers{
                 
                 scope.updateCollection = (collectionConfigData)=>{
                     if(scope.workflowTriggers && scope.workflowTriggers.selectedTrigger && collectionConfigData.collectionConfig){
-                        scope.workflowTriggers.selectedTrigger.data.scheduleCollectionConfig = angular.copy(collectionConfigData.collectionConfig.collectionConfigString);
+                        scope.workflowTriggers.selectedTrigger.data.scheduleCollectionConfig = angular.copy(collectionConfigData.collectionConfig);
+                        //scope.workflowTriggers.selectedTrigger.workflowTriggerCollectionConfig = collectionConfigService.newCollectionConfig().loadJson(angular.copy(collectionConfigData.collectionConfi));
                         //update the property display programatically
                         observerService.notifyById('pullBindings','WorkflowTriggerscheduleCollectionConfigpullBindings');
                     }
@@ -102,6 +106,12 @@ class SWWorkflowTriggers{
                     scope.updateCollection,
                     'swPaginationUpdate',
                     scope.schedule.tableID
+                );
+                
+                observerService.attach(
+                    scope.updateCollection,
+                    'swPaginationUpdate',
+                    scope.schedule.tableID + '_new'
                 );
                 
                 scope.scheduleCollectionConfig = collectionConfigService.newCollectionConfig("Schedule");

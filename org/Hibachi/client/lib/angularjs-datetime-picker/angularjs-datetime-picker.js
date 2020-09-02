@@ -344,7 +344,8 @@
                         dateOnly: attrs.dateOnly,
                         timeOnly: attrs.timeOnly,
                         futureOnly: attrs.futureOnly,
-                        closeOnSelect: attrs.closeOnSelect
+                        closeOnSelect: attrs.closeOnSelect,
+                        scope: scope
                     });
                 });
             }

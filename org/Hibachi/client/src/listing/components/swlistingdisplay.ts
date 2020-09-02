@@ -214,23 +214,17 @@ class SWListingDisplayController{
     **/
     public initListingDisplay = ($q, $rootScope, initial) => {
         
-        if(this.name!=null){
-            this.tableID = this.name;
-        } else {
-            this.tableID = 'LD'+this.utilityService.createID();
-        }
-        
         //setup a listener for refreshing this listing based on a refrsh event string 
         if (this.refreshEvent && initial){
-            this.observerService.attach(this.refreshListingDisplay, this.refreshEvent, this.tableID);
+            this.observerService.attach(this.refreshListingDisplay, this.refreshEvent);
         }
         
         if (initial){
-            this.observerService.attach(this.startLoading, 'addOrderItemStartLoading', this.tableID);
+            this.observerService.attach(this.startLoading, "addOrderItemStartLoading");
         }
         
         if (initial){
-            this.observerService.attach(this.stopLoading, 'addOrderItemStopLoading', this.tableID);
+            this.observerService.attach(this.stopLoading, "addOrderItemStopLoading");
         }
         
         if(angular.isUndefined(this.usingPersonalCollection)){
@@ -259,10 +253,6 @@ class SWListingDisplayController{
             
             this.$timeout(()=>{
                 this.collection = this.collectionConfig;
-                
-                 this.observerService.notify('collectionConfigCreated', {
-                    collectionConfig: this.collection
-                });
                 this.columns = this.collectionConfig.columns;
             });
 
@@ -468,6 +458,11 @@ class SWListingDisplayController{
     };
 
     private initializeState = () =>{
+        if(this.name!=null){
+            this.tableID = this.name;
+        } else {
+            this.tableID = 'LD'+this.utilityService.createID();
+        }
         
         if (angular.isUndefined(this.collectionConfig)){
             //make it available to swCollectionConfig
