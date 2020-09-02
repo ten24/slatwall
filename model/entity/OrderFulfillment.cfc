@@ -961,6 +961,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	public void function preUpdate(Struct oldData){
 		//Check to make sure that the previous order is not null and that the new order is different from the old order
 		if (
+			!this.getExcludeFromModifiedEntitiesFlag() &&
 			structKeyExists(arguments.oldData, "order")
 			&& !isNull(arguments.oldData.order.getOrderID())
 			&& (
