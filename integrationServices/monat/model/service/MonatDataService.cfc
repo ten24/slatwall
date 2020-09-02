@@ -388,19 +388,19 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 		            orderDeliveryItem.setCreatedDateTime(orderDelivery.getCreatedDateTime());
 		            orderDeliveryItem.setModifiedDateTime(orderDelivery.getModifiedDateTime());
 		            
-		            getService("inventoryService").createInventory( orderDeliveryItem, false );
 					ormStatelessSession.insert("SlatwallOrderDeliveryItem", orderDeliveryItem);
 					
 					orderItem.setCalculatedQuantityDelivered(val(orderItem.getCalculatedQuantityDelivered()) + item['QuantityShipped']);
 					orderItem.setCalculatedQuantityDeliveredMinusReturns(val(orderItem.getCalculatedQuantityDeliveredMinusReturns()) + item['QuantityShipped']);
 					ormStatelessSession.update("SlatwallOrderItem",orderItem);
 					
-					var orderFulfillment = orderItem.getOrderFulfillment();
-					orderFulfillment.setOrderFulfillmentStatusType(fulfilledStatusType);
+					// var orderFulfillment = orderItem.getOrderFulfillment();
+					// orderFulfillment.setOrderFulfillmentStatusType(fulfilledStatusType);
 					
 					getDAO('InventoryDAO').manageOpenOrderItem(actionType = 'update', orderItemID = orderItem.getOrderItemID(), quantityDelivered = orderDeliveryItem.getQuantity());
                 }
-                ormStatelessSession.update("SlatwallOrderFulfillment",orderFulfillment);
+
+                // ormStatelessSession.update("SlatwallOrderFulfillment",orderFulfillment);
                 logHibachi("importOrderShipments - Created a delivery for orderNumber: #shipment['OrderNumber']#",true);
                 
 				order.setOrderStatusType(SHIPPED);
@@ -409,7 +409,6 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 			}
 			if(persist){
 				tx.commit();
-				ormGetSession().clear();
 			}
 		
 		}
@@ -428,8 +427,15 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 			var eventData = { entity: orderDelivery };
 			getHibachiScope().getService("hibachiEventService").announceEvent(eventName="afterOrderDeliveryCreateSuccess", eventData=eventData);
 
+			var orderDeliveryItems = orderDelivery.getOrderDeliveryItems();
+			for(var item in orderDeliveryItems){
+				getService('InventoryService').createInventory( orderDeliveryItem, false );
+			}
+			ormFlush();
 		}	
-		
+		if(persist){
+			ormGetSession().clear();
+		}
 	}
 	
     
