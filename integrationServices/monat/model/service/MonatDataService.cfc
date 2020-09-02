@@ -388,6 +388,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 		            orderDeliveryItem.setCreatedDateTime(orderDelivery.getCreatedDateTime());
 		            orderDeliveryItem.setModifiedDateTime(orderDelivery.getModifiedDateTime());
 		            
+		            getService("inventoryService").createInventory( orderDeliveryItem, false );
 					ormStatelessSession.insert("SlatwallOrderDeliveryItem", orderDeliveryItem);
 					
 					orderItem.setCalculatedQuantityDelivered(val(orderItem.getCalculatedQuantityDelivered()) + item['QuantityShipped']);
