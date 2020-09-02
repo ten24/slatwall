@@ -3455,7 +3455,8 @@ c){var e=a|0,f=c;void 0===f&&(f=Math.min(b(a),3));Math.pow(10,f);return 1==e&&0=
                         dateOnly: attrs.dateOnly,
                         timeOnly: attrs.timeOnly,
                         futureOnly: attrs.futureOnly,
-                        closeOnSelect: attrs.closeOnSelect
+                        closeOnSelect: attrs.closeOnSelect,
+                        scope: scope
                     });
                 });
             }
