@@ -394,13 +394,13 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 					orderItem.setCalculatedQuantityDeliveredMinusReturns(val(orderItem.getCalculatedQuantityDeliveredMinusReturns()) + item['QuantityShipped']);
 					ormStatelessSession.update("SlatwallOrderItem",orderItem);
 					
-					// var orderFulfillment = orderItem.getOrderFulfillment();
-					// orderFulfillment.setOrderFulfillmentStatusType(fulfilledStatusType);
+					var orderFulfillment = orderItem.getOrderFulfillment();
+					orderFulfillment.setOrderFulfillmentStatusType(fulfilledStatusType);
 					
 					getDAO('InventoryDAO').manageOpenOrderItem(actionType = 'update', orderItemID = orderItem.getOrderItemID(), quantityDelivered = orderDeliveryItem.getQuantity());
                 }
 
-                // ormStatelessSession.update("SlatwallOrderFulfillment",orderFulfillment);
+                ormStatelessSession.update("SlatwallOrderFulfillment",orderFulfillment);
                 logHibachi("importOrderShipments - Created a delivery for orderNumber: #shipment['OrderNumber']#",true);
                 
 				order.setOrderStatusType(SHIPPED);
