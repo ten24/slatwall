@@ -11,7 +11,8 @@ class SWWorkflowTriggers{
 			hibachiPathBuilder,
             collectionConfigService,
             scheduleService,
-            dialogService
+            dialogService,
+            utilityService
 		)=> new SWWorkflowTriggers(
 			$hibachi,
 			workflowPartialsPath,
@@ -20,7 +21,8 @@ class SWWorkflowTriggers{
 			hibachiPathBuilder,
             collectionConfigService,
             scheduleService,
-            dialogService
+            dialogService,
+            utilityService
 		);
 		directive.$inject = [
 			'$hibachi',
@@ -30,7 +32,8 @@ class SWWorkflowTriggers{
 			'hibachiPathBuilder',
             'collectionConfigService',
             'scheduleService',
-            'dialogService'
+            'dialogService',
+            'utilityService'
 		];
 		return directive;
 	}
@@ -42,7 +45,8 @@ class SWWorkflowTriggers{
         hibachiPathBuilder,
         collectionConfigService,
         scheduleService,
-        dialogService
+        dialogService,
+        utilityService
 	){
 		return {
 			restrict: 'E',
@@ -54,7 +58,9 @@ class SWWorkflowTriggers{
 			
 			link: function(scope, element,attrs,formController){
                 
-                scope.schedule = {};
+                scope.schedule = {
+                    'tableID' : 'LD' + utilityService.createID()
+                };
 
                 scope.$watch('workflowTriggers.selectedTrigger', function(newValue, oldValue){
                     if(newValue !== undefined && newValue !== oldValue){
@@ -77,15 +83,10 @@ class SWWorkflowTriggers{
                 scope.collectionCollectionConfig.addFilter("collectionObject",scope.workflow.data.workflowObject);
                 
                 scope.updateCollection = (collectionConfigData)=>{
-                    
-                    if(scope.workflowTriggers && scope.workflowTriggers.selectedTrigger && collectionConfigData.collectionConfig && collectionConfigData.collectionConfig.collectionConfigString){
-                        
+                    if(scope.workflowTriggers && scope.workflowTriggers.selectedTrigger && collectionConfigData.collectionConfig){
                         scope.workflowTriggers.selectedTrigger.data.scheduleCollectionConfig = angular.copy(collectionConfigData.collectionConfig.collectionConfigString);
-                        scope.workflowTriggers.selectedTrigger.workflowTriggerCollectionConfig = collectionConfigService.newCollectionConfig().loadJson(angular.copy(collectionConfigData.collectionConfig.collectionConfigString));
                         //update the property display programatically
-                        observerService.notifyById('pullBindings','WorkflowTriggerscheduleCollectionConfigpullBindings').then(function(){
-                              
-                        });
+                        observerService.notifyById('pullBindings','WorkflowTriggerscheduleCollectionConfigpullBindings');
                     }
                     
                 };
@@ -99,9 +100,10 @@ class SWWorkflowTriggers{
                 
                 observerService.attach(
                     scope.updateCollection,
-                    'filterItemAction'
+                    'swPaginationUpdate',
+                    scope.schedule.tableID
                 );
-
+                
                 scope.scheduleCollectionConfig = collectionConfigService.newCollectionConfig("Schedule");
                 scope.scheduleCollectionConfig.setDisplayProperties("scheduleID,scheduleName,daysOfMonthToRun,daysOfWeekToRun,recuringType,frequencyStartTime,frequencyEndTime,frequencyInterval");
 
