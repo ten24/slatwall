@@ -189,6 +189,21 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return super.delete(arguments.location);
 	}
 	
+	public boolean function deleteLocationAddress(required any locationAddress) {
+		
+        // Check delete validation for batch
+        writeDump(locationAddress);abort;
+		if(arguments.locationAddress.isDeletable()) {
+			
+			arguments.locationAddress.setLocation(javaCast("null", ""));
+			arguments.locationAddress.setAddress(javaCast("null", ""));
+			
+		}
+
+		return delete( arguments.locationAddress );
+
+	}
+	
 	// ======================  END: Delete Overrides ==========================
 	
 	// ==================== START: Smart List Overrides =======================
