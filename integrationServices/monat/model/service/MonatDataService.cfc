@@ -1140,6 +1140,24 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" {
 					'onTheFlySkuCodes' = { 'value' = onTheFlySkuCodes, 'list' = true }
 				}
 		    );
+		    QueryExecute(
+				"INSERT INTO swsetting (settingID, settingName, settingValue, createdDateTime, modifiedDateTime, skuID, baseObject)
+				 SELECT 
+                	LOWER(REPLACE(CAST(UUID() as char character set utf8), '-', ''))  settingID,
+                	'skuQATSIncludesMQATSBOMFlag' settingName,
+                	'1' settingValue,
+                	NOW() createdDateTime,
+                	NOW() modifiedDateTime,
+                	sku.skuID skuID,
+                	'sku' baseObject
+                 FROM swSku sku
+                 LEFT JOIN swSetting s ON sku.skuID = s.skuID and s.settingName = 'skuQATSIncludesMQATSBOMFlag'
+                 WHERE
+                	skuCode in (:onTheFlySkuCodes) AND s.settingID is NULL",
+				{ 
+					'onTheFlySkuCodes' = { 'value' = onTheFlySkuCodes, 'list' = true }
+				}
+		    );
 	    }
 		
 
