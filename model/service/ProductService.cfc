@@ -68,6 +68,15 @@ component extends="HibachiService" accessors="true" {
 
 	// ===================== START: Logical Methods ===========================
 	
+	public any function getApprovedProductReviewCollectionList(required any productID){
+		var approvedProductReviewCollectionList = this.getProductReviewCollectionList();
+		approvedProductReviewCollectionList.setDisplayProperties("reviewerName,review,reviewTitle,rating,activeFlag");
+		approvedProductReviewCollectionList.addFilter("product.productID",arguments.productID);
+		approvedProductReviewCollectionList.addFilter("product.activeFlag",1);
+		approvedProductReviewCollectionList.addFilter("productReviewStatusType.systemCode","prstApproved");
+		return approvedProductReviewCollectionList;
+	}
+	
 	public any function getAllRelatedProducts(required any productID) {
 		var relatedProducts = this.getProductRelationshipCollectionList();
 		relatedProducts.setDisplayProperties("relatedProduct.productID, relatedProduct.calculatedQATS, relatedProduct.calculatedProductRating, relatedProduct.activeFlag, relatedProduct.urlTitle, relatedProduct.productName");
