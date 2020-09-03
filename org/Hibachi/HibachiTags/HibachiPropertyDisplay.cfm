@@ -50,6 +50,8 @@
 	<cfparam name="attributes.fieldAttributes" type="string" default="" />					<!--- hint: This is used to pass specific additional fieldAttributes when in edit mode --->
 	<cfparam name="attributes.ignoreHTMLEditFormat" type="boolean" default="false" />
 	<cfparam name="attributes.showEmptySelectBox" type="boolean" default="#false#" /> 		<!--- If set to false, will hide select box if no options are available --->
+	<cfparam name="attributes.attributeFlag" type="boolean" default="false" />				<!--- Set to true when property is a custom property linked to an attribute in order to display the attribute value label rather than the value --->
+	
 	<!---
 		attributes.fieldType have the following options:
 		
@@ -81,8 +83,7 @@
 	
 	<!--- First Make sure that we have the ability to actually display this property --->
 	<cfif !attributes.object.isPersistent() || attributes.hibachiScope.authenticateEntityProperty('read', attributes.object.getClassName(), attributes.property)>
-		
-		<cfsilent>
+		<!---<cfsilent>--->
 			
 			<!--- If this was originally set to edit... make sure that they have edit ability for this property --->
 
@@ -134,7 +135,7 @@
 				</cfif>
 				<cfset attributes.fieldAttributes = listAppend(attributes.fieldAttributes, 'data-acnameproperty="#attributes.autocompleteNameProperty#"', ' ') />
 			</cfif>
-			
+
 			<!--- Set Up The Value --->
 			<cfif attributes.value eq "">
 	
@@ -150,7 +151,7 @@
 				>
 					<cfset attributes.value = attributes.object.getFormattedValue(attributes.property,'decimal') />
 				</cfif>
-				
+
 				<!--- If the value was an object, typically a MANY-TO-ONE, then we get either the identifierValue or for display a simpleRepresentation --->
 				<cfif isObject(attributes.value) && attributes.object.isPersistent()>
 					<cfif attributes.edit>
@@ -186,8 +187,11 @@
 						<cfif isNumeric(attributes.value) and attributes.value lt 0>
 							<cfset attributes.valueClass &= " negative" />
 						</cfif>
-						
-						<cfset attributes.value = attributes.object.getFormattedValue(attributes.property) />
+						<cfif attributes.attributeFlag AND attributes.object.hasAttributeCode(attributes.property)>
+							<cfset attributes.value = attributes.object.getAttributeValueLabel(attributes.property)>
+						<cfelse>
+							<cfset attributes.value = attributes.object.getFormattedValue(attributes.property) />
+						</cfif>
 						
 					</cfif>
 				</cfif>
@@ -247,7 +251,7 @@
 			<cfif structKeyExists(attributes.object.getPropertyMetaData(attributes.property), "hb_nullRBKey")>
 				 <cfset attributes.fieldAttributes = listAppend(attributes.fieldAttributes, 'placeholder="#attributes.hibachiScope.rbKey( attributes.object.getPropertyMetaData(attributes.property).hb_nullRBKey )#"', " ") />
 			</cfif>
-		</cfsilent>
+		<!---</cfsilent>--->
 		
 		<hb:HibachiFieldDisplay attributecollection="#attributes#" />
 	</cfif>

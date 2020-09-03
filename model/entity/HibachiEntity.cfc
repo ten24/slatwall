@@ -422,6 +422,22 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 
 		return variables.attributeValuesByAttributeIDStruct;
 	}
+	
+	public string function getAttributeValueLabel(required string attributeCode){
+		var cacheKey = 'attributeValueLabel_#arguments.attributeCode#';
+		if(!structKeyExists(variables, cacheKey)){
+			var label = '';
+			var attributeValue = getAttributeValue(arguments.attributeCode);
+			if( !isNull( attributeValue ) ){
+				var attributeOptionLabel = getService("AttributeService").getAttributeOptionLabelByAttributeCodeAndAttributeValue(arguments.attributeCode, attributeValue);
+				if( !isNull( attributeOptionLabel ) ){
+					label = attributeOptionLabel;
+				}
+			}
+			variables[cacheKey] = label;
+		}
+		return variables[cacheKey];
+	}
 
 	public struct function getAttributeValuesByAttributeCodeStruct() {
 		if(!structKeyExists(variables, "attributeValuesByAttributeCodeStruct")) {
