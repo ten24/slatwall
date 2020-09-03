@@ -519,7 +519,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var thisStock = getStockService().getStockBySkuAndLocation( sku=bundledSku.getBundledSku(), location=arguments.processObject.getLocation() );
 			var makeupQuantity = bundledSku.getNativeUnitQuantityFromBundledQuantity() * arguments.processObject.getQuantity();
 
-			if(thisStock.getQATS() >=  makeupQuantity){
+			if(!arguments.processObject.getValidateQuantityFlag() || thisStock.getQATS() >=  makeupQuantity){
 
 				var bundleItem = getStockService().newStockAdjustmentItem();
 				bundleItem.setStockAdjustment( stockAdjustment );

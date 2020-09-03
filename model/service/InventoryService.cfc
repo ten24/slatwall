@@ -121,7 +121,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 	
 	// entity will be one of StockReceiverItem, StockPhysicalItem, StrockAdjustmentDeliveryItem, VendorOrderDeliveryItem, OrderDeliveryItem
-	public void function createInventory(required any entity) {
+	public void function createInventory(required any entity, boolean validateQuantityFlag=true) {
 		
 		switch(arguments.entity.getEntityName()) {
 			case "SlatwallStockReceiverItem": {
@@ -139,7 +139,8 @@ component extends="HibachiService" accessors="true" output="false" {
 
 						var processData = {
 							locationID=arguments.entity.getStock().getLocation().getLocationID(),
-							quantity=arguments.entity.getQuantity() - arguments.entity.getStock().getQuantity("QOH")
+							quantity=arguments.entity.getQuantity() - arguments.entity.getStock().getQuantity("QOH"),
+							validateQuantityFlag=arguments.validateQuantityFlag
 						};
 
 						if(arguments.entity.getStock().getSku().getProcessObject('makeupBundledSkus').getPopulatedFlag()){
