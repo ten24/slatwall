@@ -961,7 +961,6 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	public void function preUpdate(Struct oldData){
 		//Check to make sure that the previous order is not null and that the new order is different from the old order
 		if (
-			!this.getExcludeFromModifiedEntitiesFlag() &&
 			structKeyExists(arguments.oldData, "order")
 			&& !isNull(arguments.oldData.order.getOrderID())
 			&& (
@@ -969,11 +968,12 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 				|| (!isNull(this.getOrder()) &&  this.getOrder().getOrderID() != arguments.oldData.order.getOrderID() )
 			)
 		){
+			var newOrderID = isNull(this.getOrder()) ? 'NULL' : this.getOrder().getOrderID();
 			//Reset the order to the old Data
 			this.setOrder(arguments.oldData.order);
 
 			//Log that this occurred in the Slatwall Log
-			logHibachi("Order Fulfillment: #this.getOrderFulfillmentID()# tried to update it's order. This change has been prevented", true);
+			logHibachi("Order Fulfillment: #this.getOrderFulfillmentID()# tried to update it's order. This change has been prevented. Old Order ID: #arguments.oldData.order.getOrderID()#, new Order ID: #newOrderID#", true);
 		}
 
 		super.preUpdate(argumentCollection=arguments);
