@@ -918,7 +918,11 @@ component extends="Slatwall.model.service.OrderService" {
 	}
 
 	public any function processOrder_placeInProcessingOne(required any order, struct data) {
-		this.updateOrderStatusBySystemCode(arguments.order, "ostProcessing", "processing1");
+		if(arguments.order.isOrderPaidFor()){
+			this.updateOrderStatusBySystemCode(arguments.order, "ostProcessing", "processing1");
+		}else{
+			arguments.order.addError( 'placeInProcessingOne', getHibachiScope().rbKey('entity.order.process.placeInProcessingOne.paymentRequired') );
+		}
 		return arguments.order;
 	}
 	

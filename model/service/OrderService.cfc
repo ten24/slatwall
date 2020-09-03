@@ -1860,7 +1860,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		newOrder.setPaymentProcessingInProgressFlag(false); 
 		newOrder = this.saveOrder(order=newOrder, updateOrderAmounts=false, updateShippingMethodOptions=false, checkNewAccountAddressSave=false); 
 
-		if(newOrder.hasErrors() || newOrder.getPaymentAmountDue() > 0){
+		if(newOrder.hasErrors() || newOrder.getPaymentAmountDue() > 0 || !arrayLen(newOrder.getOrderPayments()) ){
 			this.updateOrderStatusBySystemCode(newOrder, 'ostProcessing', 'paymentDeclined');
 			newOrder.setPaymentTryCount(1);
 			newOrder.setPaymentLastRetryDateTime(now());
@@ -5820,7 +5820,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	public void function updateOrderStatusBySystemCode(required any order, required string systemCode) {
-		arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode(arguments.systemCode) );
+		var typeArgs={
+			'systemCode'=arguments.systemCode
+		};
+		if(!isNull(arguments.typeCode)){
+			typeArgs['typeCode'] = arguments.typeCode;
+		}
+		arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode(argumentCollection=typeArgs) );
 	}
 	
 	private any function addNewOrderItemSetupGetSkuPrice(required any newOrderItem, required any processObject) {

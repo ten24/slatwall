@@ -412,8 +412,7 @@ property name="lastSyncedDateTime" ormtype="timestamp";
 	public void function removeAttributeValue(required any attributeValue) {
 		arguments.attributeValue.removeOrderTemplate( this );
 	}
-
-
+	
 	//Email Template Helpers
 	public string function getOrderTemplateItemDetailsHTML(){
 		var html = "<ul>";
