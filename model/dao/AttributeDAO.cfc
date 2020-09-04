@@ -133,5 +133,21 @@ Notes:
 		
 		<cfreturn ormExecuteQuery("SELECT aAttributeOption FROM SlatwallAttributeOption aAttributeOption WHERE aAttributeOption.attributeOptionValue = ? AND aAttributeOption.attribute.attributeID = ? ORDER BY sortOrder ASC", [arguments.attributeOptionValue, arguments.attributeID], true, {maxResults=1}) />
 	</cffunction>
+	
+	<cffunction name="getAttributeOptionLabelByAttributeCodeAndAttributeValue" output="false" access="public">
+		<cfargument name="attributeCode" type="string" required="true">
+		<cfargument name="attributeValue" type="string" required="true">
+		<cfquery name="local.attributeOptionLabels">
+			SELECT IFNULL(ao.attributeOptionLabel,'') as label
+			FROM swattributeoption ao 
+				JOIN swattribute a on a.attributeID = ao.attributeID
+			WHERE ao.attributeOptionValue = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.attributeValue#"/>
+				AND a.attributeCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.attributeCode#"/>
+			LIMIT 1
+		</cfquery>
+		<cfloop query="#local.attributeOptionLabels#">
+			<cfreturn label>
+		</cfloop>
+	</cffunction>
 
 </cfcomponent>
