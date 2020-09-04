@@ -4303,6 +4303,12 @@ table.s-detail-content-table tbody tr.s-done {
 
 	.Mcard-wrapper { padding:1em; }
 	.Mcard { background-color:#ffffff; }
+	.card-shadow {
+		box-shadow: 0 1px 1px rgba(0,0,0,0.12), 
+					0 2px 2px rgba(0,0,0,0.12), 
+					0 4px 4px rgba(0,0,0,0.12), 
+					0 8px 8px rgba(0,0,0,0.12);
+	}
 	.Mcard-body { display: flex; align-items: flex-end; justify-content: space-between; padding: .75em 1em;}
 	
 	.Mcard-body h1 {
@@ -4312,23 +4318,6 @@ table.s-detail-content-table tbody tr.s-done {
 	    font-weight: 500;
 	    line-height: 0;
 	}
-
-
-
-
-	.Mcard-wrapper { padding:1em; }
-	.Mcard { background-color:#ffffff; }
-	.Mcard-body { display: flex; align-items: flex-end; justify-content: space-between; padding: .75em 1em;}
-	
-	.Mcard-body h1 {
-	    color: #666666;
-	    display: inline;
-	    vertical-align: sub;
-	    font-weight: 500;
-	    line-height: 0;
-	}
-
-
 
 .col span .save-icon{
     margin: 0 5px;
@@ -4338,7 +4327,6 @@ table.s-detail-content-table tbody tr.s-done {
 .Malert{ margin: 0 1em; padding: 8px; color: #3a2f2f; background-color: #efe4ab; }
 
 .Mcard-wrapper { padding:1em; }
-.Mcard { background-color:#ffffff; }
 .Mcard-body { display: flex; align-items: flex-end; justify-content: space-between; padding: .75em 1em;}
 
 
@@ -4352,6 +4340,23 @@ table.s-detail-content-table tbody tr.s-done {
 	
 	#hibachi-report-disable-compare { position: absolute; top: -29%; right: -2px; font-weight: bold; font-size: 1.2em; }
 
+	.hibachi-report-date-group {
+		padding: 4px 16px; 
+		margin-right: 8px; 
+		background: none; 
+		border: 2px solid #707070; 
+		color: #707070; 
+		border-radius: 32px; 
+		font-size: 15px;
+	}
+	
+	.activated {
+		color: #4e4e4e;
+		font-weight: 700;
+		border: 2px solid #4e4e4e;
+		background: rgba(243, 134, 49, 0.3);	
+	}
+	
 	.col span .save-icon{
 	    margin: 0 5px;
 	    font-size: 16px;
@@ -4428,3 +4433,16 @@ table.s-detail-content-table tbody tr.s-done {
 	padding: 16px 10px;
 }
 
+#hibachi-report-configure-bar {
+	padding-bottom: 12px;	
+}
+
+.hibachi-report-chart-container {
+	width: 94vw;
+	margin: 0 auto;
+}
+
+.hibachi-report-chart-title {
+	padding: 8px; 
+	border-bottom: 1px solid #666666;
+}
