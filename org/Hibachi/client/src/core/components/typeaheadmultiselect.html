@@ -1,0 +1,23 @@
+<input ng-attr-name="{{swTypeaheadMultiselect.selectionFieldName}}" type="hidden" ng-value="swTypeaheadMultiselect.selectionList" /> 
+<div sw-typeahead-search 
+        data-placeholder-rb-key="{{swTypeaheadMultiselect.placeholderRbKey}}"
+        data-add-function="swTypeaheadMultiselect.addSelection"
+        data-remove-function="swTypeaheadMultiselect.removeSelection"
+        data-view-function="swTypeaheadMultiselect.viewFunction"
+        data-add-button-function="swTypeaheadMultiselect.addButtonFunction"
+        data-show-add-button="swTypeaheadMultiselect.hasAddButtonFunction"
+        data-show-view-button="swTypeaheadMultiselect.hasViewFunction"
+        data-validate-required="false"
+        data-collection-config="swTypeaheadMultiselect.collectionConfig"
+        data-multiselect-mode="swTypeaheadMultiselect.multiselectMode"
+        data-typeahead-data-key="{{swTypeaheadMultiselect.typeaheadDataKey}}"
+        data-property-to-compare="{{swTypeaheadMultiselect.propertyToCompare}}"
+        data-fallback-properties-to-compare="{{swTypeaheadMultiselect.fallbackPropertiesToCompare}}"
+        data-right-content-property-identifier="{{swTypeaheadMultiselect.rightContentPropertyIdentifier}}"
+        data-disabled="swTypeaheadMultiselect.disabled"
+        >
+        <ng-transclude></ng-transclude>
+</div>
+<div class="s-selected-list" ng-show="swTypeaheadMultiselect.showSelections">
+    <!-- Populated by directives link function -->
+</div>

@@ -1,0 +1,14 @@
+<sw-listing-display
+    ng-if="swRestrictionConfig.collectionConfig"
+    data-collection-config="swRestrictionConfig.collectionConfig"
+    data-has-search="true"
+    data-has-action-bar="false"
+    data-show-filters="true"
+    show-simple-listing-controls="false"
+>
+</sw-listing-display>
+<sw-form ng-if="swRestrictionConfig.permissionRecordRestriction" ng-show="false" name="permissionRecordRestrictionForm" is-dirty="true" ng-show="true" object="swRestrictionConfig.permissionRecordRestriction">
+    <sw-property-display property-identifier="collectionConfig" is-dirty="true" data-editing="true"
+    	data-editable="true"
+    ></sw-property-display>
+</sw-form>

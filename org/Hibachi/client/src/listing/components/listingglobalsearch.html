@@ -1,0 +1,25 @@
+<div class="col-xs-6 s-no-padding-left">
+	
+		<ul class="list-inline list-unstyled">
+			<!-- to implement searching-->
+			<li>
+				<div class="s-select-list-wrapper">
+					<div class="form-group">
+						<div class="input-group">
+							<div class="s-input-btn">
+								<input  type="text"
+									class="form-control input-sm"
+									placeholder=""
+									ng-model="swListingGlobalSearch.searchText"
+									ng-change="swListingGlobalSearch.search()"
+									/>
+								<i ng-show="swListingGlobalSearch.searching" class="fa fa-refresh fa-spin"></i>
+								<i ng-hide="swListingGlobalSearch.searching" class="fa fa-search"></i>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- s-select-list-wrapper -->
+			</li>
+		</ul>
+	</div>

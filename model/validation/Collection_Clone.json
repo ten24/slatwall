@@ -1,0 +1,6 @@
+{
+	"properties":{
+		"collectionCode":		[{"contexts":"save","uniqueOrNull":true,"regex":"^[a-zA-Z0-9-_.|:~^]+$"}],
+		"collectionName":		[{"contexts":"clone","required":true}]
+	}
+}

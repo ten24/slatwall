@@ -1,0 +1,7 @@
+{
+	
+	"properties":{
+		"amount":						[{"contexts":"save","required":false,"dataType":"numeric"}],
+		"currencyCode":						[{"contexts":"save","neqProperty":"promotionReward.currencyCode"}]
+	}
+}

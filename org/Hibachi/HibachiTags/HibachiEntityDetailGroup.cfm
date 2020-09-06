@@ -1,0 +1,223 @@
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+<cfparam name="attributes.hibachiScope" type="any" default="#request.context.fw.getHibachiScope()#" />
+<cfparam name="attributes.object" type="any" default="" />
+<cfparam name="attributes.subsystem" type="string" default="#request.context.fw.getSubsystem( request.context[ request.context.fw.getAction() ])#">
+<cfparam name="attributes.section" type="string" default="#request.context.fw.getSection( request.context[ request.context.fw.getAction() ])#">
+<cfparam name="attributes.tabLocation" type="string" default="left" />
+<cfparam name="attributes.createOrModalFlag" type="boolean" default="false" />
+
+
+
+<cfif (isObject(attributes.object) && attributes.object.isNew())|| (structKeyExists(request.context, "modal") and request.context.modal)>
+	<cfset attributes.createOrModalFlag = true />
+</cfif>
+
+<cfif thisTag.executionMode is "end">
+	
+	<cfparam name="thistag.tabs" default="#arrayNew(1)#" />
+	<cfparam name="activeTab" default="basic" />
+
+	<cfloop array="#thistag.tabs#" index="tab">
+		
+		<cfset propertyFieldType = ""/>
+		<cfif isObject(attributes.object) and len(tab.property)>
+			<cftry>
+				<cfset propertyFieldType = attributes.object.getPropertyFieldType(tab.property)/>
+			<cfcatch>
+				<cfset propertyFieldType = ""/>
+			</cfcatch>
+			</cftry>
+		</cfif>
+		
+		<!--- Make sure there is a view --->
+		<cfif not len(tab.view) and len(tab.property)>
+			<cfset tab.lazyLoad = false/>
+			<cfset tab.view = "#attributes.subsystem#:#attributes.section#/#lcase(attributes.object.getClassName())#tabs/#lcase(tab.property)#" />
+
+			<cfset propertyMetaData = attributes.object.getPropertyMetaData( tab.property ) />
+
+			<cfif not len(tab.text)>
+				<cfset tab.text = attributes.object.getPropertyTitle( tab.property ) />
+			</cfif>
+
+			<cfif not len(tab.count) and structKeyExists(propertyMetaData, "fieldtype") and listFindNoCase("many-to-one,one-to-many,many-to-many", propertyMetaData.fieldtype)>
+				<cfset thisCount = attributes.object.getPropertyCount( tab.property ) />
+			</cfif>
+		</cfif>
+
+		<!--- Make sure there is a tabid --->
+		<cfif not len(tab.tabid)>
+			<cfset tab.tabid = "tab" & listLast(tab.view, '/') />
+		</cfif>
+
+		<!--- Make sure there is text for the tab name --->
+		<cfif !structKeyExists(tab,'text') || not len(tab.text)>
+			<cfset tab.text = attributes.hibachiScope.rbKey( replace( replace(tab.view, '/', '.', 'all') ,':','.','all' ) ) />
+		</cfif>
+		
+		<cfif 
+			(not len(tab.tabcontent) and (not attributes.createOrModalFlag or tab.showOnCreateFlag))
+			
+		>
+			<cfif !tab.lazyLoad || tab.open || propertyFieldType eq 'wysiwyg'>
+				<cfif len(tab.view) and fileExists(expandPath(request.context.fw.parseViewOrLayoutPath(tab.view, 'view')))>
+					<cfif !len(tab.property) OR !attributes.object.isPersistent() OR attributes.hibachiScope.authenticateEntityProperty(attributes.hibachiScope.getService('hibachiUtilityService').hibachiTernary(request.context.edit, 'update', 'read'), attributes.object.getClassName(), tab.property)>
+						<cfset tab.tabcontent = request.context.fw.view(tab.view, {rc=request.context, params=tab.params}) />
+					</cfif>
+				<cfelseif len(tab.property)>
+					<cfsavecontent variable="tab.tabcontent">
+						<hb:HibachiPropertyDisplay object="#attributes.object#" property="#tab.property#" edit="#request.context.edit#" displaytype="plain" />
+					</cfsavecontent>
+				</cfif>
+			</cfif>
+		</cfif>
+	</cfloop>
+
+	<cfoutput>
+		<cfif not attributes.createOrModalFlag>
+			<div class="row s-pannel-control">
+				<div class="col-md-12 s-toggle-panels">
+					<a href="##" class="j-openall j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" title="Expand All"><i class="fa fa-expand"></i></a>
+					<a href="##" class="j-closeall j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" title="Collapse All"><i class="fa fa-compress"></i></a>
+				</div>
+			</div>
+
+			<cfset iteration = 0 />
+			<div class="panel-group s-pannel-group" id="accordion">
+				<cfloop array="#thistag.tabs#" index="tab">
+					<cfset iteration++ />
+					<cfset tabScope = "hibachiEntityDetailGroup#rereplace(createUUID(),'-','','all')##iteration#"/>
+					<div class="j-panel panel panel-default" ng-init="#tabScope#.active=#tab.open#" ng-click="#tabScope#.active=true" >
+						<a data-toggle="collapse"  href="##collapse#iteration#" <cfif !tab.open and !tab.open and structKeyExists(tab,'lazyLoad') and tab.lazyLoad and fileExists(expandPath(request.context.fw.parseViewOrLayoutPath(tab.view, 'view')))> onclick='getTabHTMLForTabGroup(this,{tabid:"#tab.tabid#",view:"#tab.view#"})'</cfif>>
+							<div class="panel-heading">
+								<h4 class="panel-title">
+									<span>#tab.text#</span><cfif len(tab.count) and tab.count gt 0> <span class="badge">#tab.count#</span></cfif>
+									<i class="fa fa-caret-left s-accordion-toggle-icon"></i>
+								</h4>
+							</div>
+						</a>
+
+						<div id="collapse#iteration#" class="panel-collapse collapse<cfif tab.open> in</cfif>" >
+							<content class="s-body-box">
+								<cfoutput>
+									<div <cfif activeTab eq tab.tabid>class="tab-pane active"<cfelse>class="tab-pane"</cfif> id="#tab.tabid#">
+										<!---
+											if is a non-angular content js needs to be able to init html without ng-if preventing compilation
+										 --->
+										<cfif findNoCase('<sw-',tab.tabcontent) && !findNoCase('wysiwyg',tab.tabcontent)>
+											<span ng-if="#tabScope#.active">
+												#tab.tabcontent#
+											</span>
+										<cfelse>
+											#tab.tabcontent#
+										</cfif>
+									</div>
+								</cfoutput>
+							</content><!--- s-body-box --->
+						</div><!--- panel-collapse collapse in --->
+					</div><!--- j-panel panel-default --->
+				</cfloop>
+				
+				<cfif isObject(attributes.object)>
+					<cfset emailTemplateCollectionList = attributes.hibachiScope.getService("emailService").getEmailTemplateCollectionList() />
+					<cfset emailTemplateCollectionList.addFilter('emailTemplateObject', "#attributes.object.getClassName()#") />
+					<cfif emailTemplateCollectionList.getRecordsCount() gt 0 >
+						<!---emails tab --->
+						<div class="j-panel panel panel-default">
+							<a data-toggle="collapse" href="##tabEmail">
+								<div class="panel-heading">
+									<h4 class="panel-title">
+										<span>#attributes.hibachiScope.rbKey('define.email')#</span>
+										<i class="fa fa-caret-left s-accordion-toggle-icon"></i>
+									</h4>
+								</div>
+							</a>
+							<div id="tabEmail" class="panel-collapse collapse">
+								<content class="s-body-box">
+									<cfoutput>
+										<div <cfif !isNull(tab) && structKeyExists(tab, "tabid") && activeTab eq tab.tabid> class="tab-pane active" <cfelse> class="tab-pane" </cfif> id="tabEmail">
+											<cfset emailCollection = attributes.hibachiScope.getService('emailService').getEmailCollectionList()/>
+											<cfset emailCollection.setDisplayProperties("emailSubject,emailTo",{isVisible=true,isSearchable=true} ) />
+											<cfset emailCollection.addDisplayProperty(displayProperty="createdDateTime",columnConfig={isVisible=true} ) />
+											<cfset emailCollection.addDisplayProperty(displayProperty="emailID",columnConfig={isVisible=false,isDeletable=false} ) />
+											
+											<cfset emailCollection.addFilter(propertyIdentifier='relatedObjectID',value=attributes.object.getPrimaryIDValue() )/>
+											<cfset emailCollection.addFilter(propertyIdentifier='relatedObject',value=attributes.object.getClassName() )/>
+											
+											<hb:HibachiListingDisplay 
+												collectionList="#emailCollection#"
+												usingPersonalCollection="false"
+												recordEditAction="admin:entity.editemail"
+												recordEditQueryString="redirectAction=admin:entity.listemail"
+												recordDetailAction="admin:entity.detailemail"
+											>
+											</hb:HibachiListingDisplay>
+										</div>
+									</cfoutput>
+								</content><!--- s-body-box --->
+							</div>
+						</div><!--- panel panel-default --->
+					</cfif>
+				</cfif>
+				
+				
+				
+				<cfif isObject(attributes.object)>
+					<!---system tab --->
+					<div class="j-panel panel panel-default">
+						<a data-toggle="collapse" href="##tabSystem">
+							<div class="panel-heading">
+								<h4 class="panel-title">
+									<span>#attributes.hibachiScope.rbKey('define.system')#</span>
+									<i class="fa fa-caret-left s-accordion-toggle-icon"></i>
+								</h4>
+							</div>
+						</a>
+						<div id="tabSystem" class="panel-collapse collapse">
+							<content class="s-body-box">
+								<cfoutput>
+									<div <cfif !isNull(tab) && structKeyExists(tab, "tabid") && activeTab eq tab.tabid> class="tab-pane active" <cfelse> class="tab-pane" </cfif> id="tabSystem">
+
+											<hb:HibachiPropertyList>
+												<hb:HibachiPropertyDisplay object="#attributes.object#" property="#attributes.object.getPrimaryIDPropertyName()#" />
+												<cfif attributes.object.hasProperty('remoteID') and attributes.hibachiScope.setting('globalRemoteIDShowFlag')>
+													<hb:HibachiPropertyDisplay object="#attributes.object#" property="remoteID" edit="#attributes.hibachiScope.getService('hibachiUtilityService').hibachiTernary(request.context.edit && attributes.hibachiScope.setting('globalRemoteIDEditFlag'), true, false)#" />
+												</cfif>
+												<cfif !attributes.object.hasErrors()>
+													<cfif len( attributes.object.getShortReferenceID() )>
+														<hb:HibachiFieldDisplay title="#attributes.hibachiScope.rbkey('entity.define.shortreferenceid')#" value="#attributes.object.getshortReferenceID()#" edit="false" displayType="dl">
+													</cfif>
+												</cfif>
+												<cfif attributes.object.hasProperty('createdDateTime')>
+													<hb:HibachiPropertyDisplay object="#attributes.object#" property="createdDateTime" />
+												</cfif>
+												<cfif attributes.object.hasProperty('createdByAccount')>
+													<hb:HibachiPropertyDisplay object="#attributes.object#" property="createdByAccount" />
+												</cfif>
+												<cfif attributes.object.hasProperty('modifiedDateTime')>
+													<hb:HibachiPropertyDisplay object="#attributes.object#" property="modifiedDateTime" />
+												</cfif>
+												<cfif attributes.object.hasProperty('modifiedByAccount')>
+													<hb:HibachiPropertyDisplay object="#attributes.object#" property="modifiedByAccount" />
+												</cfif>
+											</hb:HibachiPropertyList>
+
+											<hb:HibachiTimeline object="#attributes.object#" />
+
+									</div>
+								</cfoutput>
+							</content><!--- s-body-box --->
+
+					</div><!--- panel panel-default --->
+				</cfif>
+				
+			</div>
+		<cfelse>
+			<cfloop array="#thistag.tabs#" index="tab">
+				<cfif tab.showOnCreateFlag>
+					#tab.tabcontent#
+				</cfif>
+			</cfloop>
+		</cfif>
+	</cfoutput>
+</cfif>

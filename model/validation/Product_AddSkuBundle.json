@@ -1,0 +1,8 @@
+{
+
+	"properties":{
+		"price":						[{"dataType":"numeric","required":true,"minValue":0}],
+		"skuCode":						[{"required":true,"regex":"^[a-zA-Z0-9-_.|:~^]+$"}],
+		"skus":							[{"required":true}]
+	}
+}

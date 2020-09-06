@@ -1,0 +1,13 @@
+
+
+<span
+      ng-bind="'big_decimal,float,double'.indexOf(swListingDisplayCell.column.ormtype) >= 0 ? (swListingDisplayCell.value|number:2) : swListingDisplayCell.column.ormtype == 'integer' ? (swListingDisplayCell.value|number) : (swListingDisplayCell.value)"
+      popover="{{swListingDisplayCell.popover}}"
+      popover-trigger="mouseenter"
+      popover-placement="bottom"
+      popover-popup-delay="50"
+      popover-append-to-body="true">
+</span>
+
+
+

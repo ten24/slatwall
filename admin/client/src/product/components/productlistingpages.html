@@ -1,0 +1,169 @@
+<sw-tab-group>
+    <sw-tab-content name="Assigned Pages">
+        <sw-listing-display
+            data-multi-slot="true"
+            data-edit="swProductListingPages.edit"
+            data-custom-listing-controls="true"
+            data-has-action-bar="false"
+            data-administrative-count="1"
+            data-base-entity-name="ProductListingPage"
+            data-name="addProductListingPages"
+        >
+            <sw-listing-columns>
+                <sw-listing-column data-property-identifier="content.title"
+                                   data-fallback-property-identifiers="title"
+                                   data-action="admin:entity.detailcontent"
+                                   data-query-string="contentID=${content.contentID}">
+                </sw-listing-column>
+                <sw-listing-column data-property-identifier="content.titlePath"
+                                   data-fallback-property-identifiers="titlePath">
+                </sw-listing-column>
+                <sw-listing-column data-property-identifier="content.site.siteName"
+                                   data-fallback-property-identifiers="site_siteName">
+                </sw-listing-column>
+                <sw-listing-column data-property-identifier="content.activeFlag"
+                                   data-fallback-property-identifiers="activeFlag">
+                </sw-listing-column>
+            </sw-listing-columns>
+
+            <sw-collection-configs>
+                <sw-collection-config data-entity-name="ProductListingPage"
+                                      data-in-listing-display="true"
+                                      data-all-records="false">
+                    <sw-collection-columns>
+                        <sw-collection-column data-property-identifier="productListingPageID"
+                                              data-is-visible="false"
+                        ></sw-collection-column>
+                        <sw-collection-column data-property-identifier="content.title"                  
+                        ></sw-collection-column>
+                        <sw-collection-column data-property-identifier="content.titlePath"             
+                        ></sw-collection-column>
+                        <sw-collection-column data-property-identifier="content.site.siteName"               
+                        ></sw-collection-column>
+                        <sw-collection-column data-property-identifier="content.activeFlag"
+                        ></sw-collection-column>
+                        <sw-collection-column data-property-identifier="content.contentID"
+                                              data-fallback-property-identifiers="contentID"
+                                              data-is-visible="false" >
+                        </sw-collection-column>
+                    </sw-collection-columns>
+                    <sw-collection-filters>
+                        <sw-collection-filter data-property-identifier="product.productID" data-comparison-operator="=" data-comparison-value="{{swProductListingPages.productId}}"></sw-collection-filter>
+                    </sw-collection-filters>
+                </sw-collection-config>
+            </sw-collection-configs>
+
+            <sw-custom-listing-controls>
+                <div class="row s-table-inner-nav">
+                    <div class="col-sm-10">
+                        <sw-typeahead-multiselect
+                                    data-disabled="!swProductListingPages.edit"
+                                    data-placeholder-rb-key="define.searchandassignproducts"
+                                    data-collection-config="swProductListingPages.collectionConfig"
+                                    data-selected-collection-config="swProductListingPages.alreadySelectedContentCollectionConfig"
+                                    data-in-listing-display="true"
+                                    data-selection-field-name="assignedContentIDList"
+                                    data-typeahead-data-key="{{swProductListingPages.typeaheadDataKey}}"
+                                    data-fallback-properties-to-compare="contentID,content_contentID"
+                                    data-right-content-property-identifier="titlePath"
+                                    >
+                            <sw-typeahead-search-line-item data-property-identifier="title"></sw-typeahead-search-line-item>
+                        </sw-typeahead-multiselect>
+                    </div>
+                    <div class="col-sm-2 s-action-right">
+                        <sw-site-selector data-disabled="!swProductListingPages.edit"
+                                          data-collection-config-to-filter="swProductListingPages.collectionConfig"
+                                          data-filter-property-identifier="site.siteID"
+                                          data-in-listing-display="false"
+                                          data-with-typeahead="true"
+                                          data-typeahead-data-key="{{swProductListingPages.typeaheadDataKey}}"
+                        ></sw-site-selector>
+                    </div>
+                </div>
+            </sw-custom-listing-controls>
+
+             <sw-listing-delete-action>
+                <sw-typeahead-remove-selection data-disabled="!swProductListingPages.edit" data-typeahead-data-key="{{swProductListingPages.typeaheadDataKey}}"></sw-typeahead-remove-selection>
+            </sw-listing-delete-action>
+        </sw-listing-display>
+    </sw-tab-content>
+
+    <sw-tab-content name="Site View">
+        <sw-listing-display
+            data-multiselect-field-name="assignedContentIDList"
+            data-multiselect-id-paths="{{swProductListingPages.selectedListingPageIdPaths}}"
+            data-edit="swProductListingPages.edit"
+            data-expandable="true"
+            data-has-search="true"
+            data-has-action-bar="false"
+            data-record-edit-action="admin:entity.editcontent"
+            data-custom-listing-controls="true"
+            data-is-angular-route="false"
+            data-get-child-count="true"
+            data-multi-slot="true"
+            data-base-entity-name="Content"
+        >
+            <sw-collection-configs>
+                <sw-collection-config data-entity-name="Content"
+                                      data-in-listing-display="true"
+                                      data-filter-flag="false"
+                                      data-all-records="false">
+                    <sw-collection-columns>
+                        <sw-collection-column data-property-identifier="contentID"
+                                              data-is-visible="false"
+                                              data-is-searchable="false"
+                                              data-is-keyword-column="true"
+                                              data-is-only-keyword-column="false"
+                        ></sw-collection-column>
+                        <sw-collection-column data-property-identifier="parentContent.contentID"
+                                              data-is-visible="false"
+                                              data-is-searchable="false"
+                                              data-is-keyword-column="true"
+                                              data-is-only-keyword-column="false"
+                        ></sw-collection-column>
+                        <sw-collection-column data-tdclass="primary"
+                                              data-property-identifier="title"
+                                              data-fallback-property-identifiers="titlePath"
+                                              data-is-visible="true"
+                                              data-is-searchable="true"
+                                              data-is-keyword-column="false"
+                                              data-is-only-keyword-column="false"
+                        ></sw-collection-column>
+                        <sw-collection-column data-property-identifier="titlePath"
+                                              data-is-visible="true"
+                                              data-is-searchable="true"
+                                              data-is-keyword-column="true"
+                                              data-is-only-keyword-column="true"
+                        ></sw-collection-column>
+                        <sw-collection-column data-property-identifier="site.siteName"
+                                              data-is-visible="true"
+                                              data-is-searchable="true"
+                                              data-is-keyword-column="true"
+                                              data-is-only-keyword-column="false"
+                        ></sw-collection-column>
+                        <sw-collection-column data-property-identifier="activeFlag"
+                                              data-is-visible="true"
+                                              data-is-searchable="false"
+                                              data-is-keyword-column="true"
+                                              data-is-only-keyword-column="false"
+                        ></sw-collection-column>
+                    </sw-collection-columns>
+                </sw-collection-config>
+            </sw-collection-configs>
+
+            <sw-custom-listing-controls>
+                <div class="row s-table-inner-nav">
+                    <div class="col-sm-10">
+                        <sw-listing-search data-show-toggle-filters="false"
+                                           data-show-toggle-display-options="false">
+                        </sw-listing-search>
+                    </div>
+                    <div class="col-sm-2">
+                        <sw-site-selector data-filter-property-identifier="site.siteID"
+                        ></sw-site-selector>
+                    </div>
+                </div>
+            </sw-custom-listing-controls>
+        </sw-listing-display>
+    </sw-tab-content>
+</sw-tab-group>

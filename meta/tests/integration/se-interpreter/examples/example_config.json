@@ -1,0 +1,17 @@
+{
+  "type": "interpreter-config",
+  "configurations": [
+    {
+      "settings": [
+        {
+          "browserOptions": {
+            "browserName": "firefox"
+          }
+        }
+      ],
+      "scripts": [
+        "examples/tests/a_directory/*"
+      ]
+    }
+  ]
+}
