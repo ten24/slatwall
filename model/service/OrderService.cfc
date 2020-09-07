@@ -2673,7 +2673,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			this.saveOrderFulfillment( arguments.processObject.getOrderFulfillment() );
 			
 			//must flush otherwise the dao won't get the correct amount.
-			if (!arguments.processObject.getOrderFulfillment().hasErrors()){
+			if (!arguments.processObject.getOrderFulfillment().hasErrors() && !arguments.orderDelivery.hasErrors()){
 				ormFlush();
 			}
 			
