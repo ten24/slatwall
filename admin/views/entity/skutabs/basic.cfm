@@ -84,7 +84,7 @@
 					<hb:HibachiPropertyDisplay object="#rc.sku#" property="formattedRedemptionAmount">
 				<cfelse>
 					<div ng-hide="redemptionAmountType == 'sameAsPrice' || redemptionAmountType == ''">
-						<hb:HibachiPropertyDisplay object="#rc.sku#" property="redemptionAmount" edit="#rc.edit#">
+						<hb:HibachiPropertyDisplay object="#rc.sku#" property="baseRedemptionAmount" edit="#rc.edit#">
 					</div>
 				</cfif>
 			</cfif>

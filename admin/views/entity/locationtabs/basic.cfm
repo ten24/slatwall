@@ -11,7 +11,7 @@
 			<hb:HibachiPropertyDisplay object="#rc.location#" property="locationName" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.location#" property="locationCode" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.location#" property="currencyCode" edit="#rc.edit#">
-			<hb:HibachiPropertyDisplay object="#rc.location#" property="parentLocation" edit="#rc.location.getNewFlag()#" valueOptions="#$.slatwall.getService('locationService').getLocationParentOptions()#">
+			<hb:HibachiPropertyDisplay object="#rc.location#" property="parentLocation" edit="#rc.location.getNewFlag()#">
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 </cfoutput>

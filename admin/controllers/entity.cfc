@@ -182,6 +182,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		rc.collection=getService('HibachiCollectionService').getCollection(rc.collectionID);
 		//redirect to report listing only if the collection is a report
 		if(rc.collection.isReport()){
+			// custom Success message for entities
+			getHibachiScope().showMessage( replace(getHibachiScope().rbKey( "admin.define.clone_success" ), "${itemEntityName}", rbKey('admin.define.report'), "all" ), "success");
 			rc.sRedirectAction="entity.reportlist#rc.collection.getCollectionObject()#";
 		}
 		genericProcessMethod(entityName="Collection",rc=arguments.rc);
@@ -316,16 +318,6 @@ private void function populateWithAddressVerification(required struct rc){
 		sites.addFilter('activeFlag', 1);
 		arguments.rc.sitesArray = sites.getRecords();
 		super.before(rc);
-	}
-	
-	public void function after(required struct rc){
-		if(structKeyExists(rc,'viewPath')){
-			request.layout = false;
-			getFW().setView("admin:entity.ajax");
-
-			rc.templatePath = "./#rc.viewPath#.cfm";
-
-		}
 	}
 	
 	//Account
@@ -517,6 +509,33 @@ private void function populateWithAddressVerification(required struct rc){
 			renderOrRedirectFailure( defaultAction="admin:entity.detailstate", maintainQueryString=true, rc=arguments.rc);
 		}
 	}
+	
+	
+	
+	
+	public void function deleteReport(required struct rc) {
+		rc.collection=getService('HibachiCollectionService').getCollection(rc.collectionID);
+		var deleteOK = getService('HibachiCollectionService').delete(rc.collection);
+		
+		// SUCCESS
+		if(deleteOK)
+		{
+		getHibachiScope().showMessage( replace(getHibachiScope().rbKey( "admin.entity.delete_success" ), "${itemEntityName}", rbKey('admin.define.report'), "all" ), "success");
+		renderOrRedirectFailure( defaultAction="admin:entity.reportlist#lcase(rc.collection.getCollectionObject())#", maintainQueryString=false, rc=arguments.rc);
+		
+			
+		// FAILURE
+		} else {
+
+			// Show all of the specific messages & error messages for the entity
+			entity.showErrorsAndMessages();
+
+			// Render or Redirect a faluire
+			renderOrRedirectFailure( defaultAction="admin:entity.reportlist#lcase(rc.collection.getCollectionObject())#", maintainQueryString=true, rc=arguments.rc);
+		}
+		
+	}
+
 
 	public void function saveState(required struct rc) {
 		param name="rc.countryCode" default="";

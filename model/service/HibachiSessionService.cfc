@@ -103,14 +103,15 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 		session[ "#getApplicationValue('applicationKey')#CKFinderAccess"] = getHibachiScope().authenticateAction("admin:main.ckfinder");
 	}
 	
-	public void function setProperSession() {
+	public void function setProperSession(boolean stateless=false) {
+		
 		if(len(getHibachiScope().setting('globalNoSessionIPRegex')) && reFindNoCase(getHibachiScope().setting('globalNoSessionIPRegex'), getRemoteAddress())) {
 			getHibachiScope().setPersistSessionFlag( false );
 		} else if (getHibachiScope().setting('globalNoSessionPersistDefault')) {
 			getHibachiScope().setPersistSessionFlag( false );
 		}
 		
-		super.setProperSession();
+		super.setProperSession(arguments.stateless);
 		
 		// If the current session account was authenticated by an integration, then check the verifySessionLogin() method to make sure that we should still be logged in
 		if(!isNull(getHibachiScope().getSession().getAccountAuthentication()) && !isNull(getHibachiScope().getSession().getAccountAuthentication().getIntegration()) && !getHibachiScope().getSession().getAccountAuthentication().getIntegration().getIntegrationCFC("authentication").verifySessionLogin()) {
@@ -124,6 +125,38 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 			// Force persistance
 			getHibachiDAO().flushORMSession();
 		}
+	}
+	
+	/**
+	 * Method override to setup cart information on session
+	 * */
+	public void function setAccountSessionByAuthToken(required string authToken) {
+		super.setAccountSessionByAuthToken(arguments.authToken);
+
+		//Set Cart on Session
+		if(!isNull(getHibachiScope().getSession()) && getHibachiScope().getSession().getLoggedInFlag() && !isNull(getHibachiScope().getSession().getAccount()) && !isEmpty( getHibachiScope().getAccount().getAccountID() ) ) {
+			
+			var authorizationHeader = arguments.authToken;
+			var jwt = getHibachiScope().getService('HibachiJWTService').getJwtByToken(right(authorizationHeader,len(authorizationHeader) - len('Bearer ')));
+			//don't need to call verify as it's being verified in super
+			var jwtPayload = jwt.getPayload();
+			
+			//if order id exists in payload then use that to get recent order else get most recent not placed order order
+			if( structKeyExists(jwtPayload, 'orderid') && !isEmpty(jwtPayload.orderid)) {
+				var mostRecentCart = getOrderService().getOrder( jwtPayload.orderid );
+			}
+			
+			if(!isNull(mostRecentCart)) {
+
+				getHibachiScope().getSession().setOrder( mostRecentCart );
+
+				this.saveSession(getHibachiScope().getSession());
+
+				// Force persistance
+				getHibachiDAO().flushORMSession();
+			}
+		}
+
 	}
 	
 }

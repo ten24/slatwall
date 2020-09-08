@@ -137,10 +137,6 @@ class SWListingDisplayController{
         // if (!(this.collectionConfig) && !this.collectionConfigs.length && !this.collection){
         //     return;
         // }
-        if(angular.isUndefined(this.personalCollectionKey)){
-            this.personalCollectionKey = this.baseEntityName.toLowerCase();
-        }
-        
         if(angular.isUndefined(this.usingPersonalCollection)){
             this.usingPersonalCollection=false;
         }
@@ -189,6 +185,9 @@ class SWListingDisplayController{
                 )
             )
         ){
+            if(angular.isUndefined(this.personalCollectionKey)){
+                this.personalCollectionKey = this.baseEntityName.toLowerCase();
+            }
             var personalCollection = this.listingService.getPersonalCollectionByBaseEntityName(this.personalCollectionKey);
            
            // personalCollection.addFilter('collectionDescription',this.personalCollectionIdentifier);
@@ -539,13 +538,11 @@ class SWListingDisplayController{
         $(`.sw-${show}`).show();
     }
     public hasNumerical=()=>{
-        
         // Iterate over columns, find out if we have any numericals and return
         if(this.columns != null && this.columns.length){
             
             return this.columns.reduce((totalNumericalCols, col) => {
-            
-                return totalNumericalCols + (col.ormtype && 'big_decimal,integer,float,double'.indexOf(col.ormtype) >= 0) ? 1 : 0;
+                return totalNumericalCols + (col.ormtype && col.isVisible===true && 'big_decimal,integer,float,double'.indexOf(col.ormtype) >= 0) ? 1 : 0;
             }, 0);    
         }
         return false;
@@ -792,6 +789,7 @@ class SWListingDisplay implements ng.IDirective{
 
             /*Searching*/
             searchText:"<?",
+            searchFilterPropertyIdentifier:"@?",
 
             /*Sorting*/
             sortable:"<?",
@@ -824,6 +822,7 @@ class SWListingDisplay implements ng.IDirective{
             showTopPagination:"<?",
             showToggleDisplayOptions:"<?",
             showSearch:"<?",
+            showSearchFilterDropDown:"<?",
             showSearchFilters:"<?",
             showFilters:"<?",
             showSimpleListingControls:"<?",

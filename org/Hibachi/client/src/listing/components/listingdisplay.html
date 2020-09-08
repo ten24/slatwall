@@ -366,7 +366,9 @@
                             </th>
                         </tr>
                     </thead>
-                    <tbody data-ng-if="swListingDisplay.collectionData.pageRecords"
+                    <tbody data-ng-if="((swListingDisplay.collectionData.pageRecords != null && swListingDisplay.collectionData.pageRecords.length > 0) ||
+                                        (swlistingDisplay.collectionData.records != null && swListingDisplay.collectionData.records.length > 0) ) && swListingDisplay.hasNumerical() > 0 
+                                        && swListingDisplay.collectionConfig.enableAveragesAndSums"
                            data-listing-id="{{swListingDisplay.tableID}}"
                            
                            >
@@ -424,8 +426,8 @@
                             	</sw-listing-display-cell>
 							</td>
 
-                            <td class="admin admin{{swListingDisplay.administrativeCount}} s-detail-hidden-content s-actions" data-ng-show="swListingDisplay.administrativeCount > 0">
-                                <span  ng-show="swListingDisplay.hasNumerical()">
+                            <td class="admin admin{{swListingDisplay.administrativeCount}} s-detail-hidden-content s-actions" data-ng-show="swListingDisplay.administrativeCount > 0 && swListingDisplay.hasNumerical()">
+                                <span>
                                     <div class="btn-group" style="position: static;">
                                         <button class="btn btn-primary dropdown-toggle btn-primary calcRows" data-toggle="dropdown" aria-expanded="true">Total <span class="caret"></span></button>
                                             <ul class="dropdown-menu pull-right" id="">

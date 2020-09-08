@@ -84,8 +84,10 @@ Notes:
 	
 	<cfset displayPropertyList = ""/>
 	<cfset searchableDisplayPropertyList = "" />
+	<cfset searchFilterPropertyIdentifier="createdDateTime"/>
 	<cfif rc.slatAction eq "admin:entity.listorder">
 		<cfset displayPropertyList &= "orderOpenDateTime,"/>
+		<cfset searchFilterPropertyIdentifier = "orderOpenDateTime"/>
 		
 	<cfelse>
 	</cfif>
@@ -137,6 +139,8 @@ Notes:
 	<hb:HibachiListingDisplay 
 		collectionList="#rc.orderCollectionlist#"
 		usingPersonalCollection="true"
+		showSearchFilterDropDown="true"
+		searchFilterPropertyIdentifier="#searchFilterPropertyIdentifier#"
 		personalCollectionKey='#request.context.entityactiondetails.itemname#'
 		recordEditAction="admin:entity.edit#lcase(rc.orderCollectionlist.getCollectionObject())#"
 		recordDetailAction="admin:entity.detail#lcase(rc.orderCollectionlist.getCollectionObject())#"

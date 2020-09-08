@@ -6,11 +6,41 @@ class HibachiAuthenticationService{
     constructor(
        public $rootScope:any,
        public $q,
+       public $window,
        public appConfig,
        public $injector,
-       public utilityService
+       public utilityService,
+       public token
     ){
         
+    }
+    
+    public getJWTDataFromToken =(str)=>{
+    	// Going backwards: from bytestream, to percent-encoding, to original string.
+	    str = str.split('.')[1];
+	    var decodedString = decodeURIComponent(this.$window.atob(str).split('').map((c)=> {
+	        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+	    }).join(''));
+	    
+	    var jwtData = angular.fromJson(decodedString);
+		var now = +new Date();
+		var nowString = now.toString().substr(0,jwtData.exp.toString().length);
+		now = +nowString;
+		if(jwtData.issuer && jwtData.issuer == this.$window.location.hostname && jwtData.exp > now){
+		    if(!this.$rootScope.slatwall.account){
+		    	this.$rootScope.slatwall.account = {};
+		    }
+		    this.$rootScope.slatwall.account.accountID = jwtData.accountid;
+		    //important to check to prevent recursion between $http and hibachinterceptor
+		    if(!this.$rootScope.slatwall.role){
+	    		this.$rootScope.slatwall.role=jwtData.role;
+	    		this.getRoleBasedData(jwtData);
+	    		if(jwtData.permissionGroups){
+	    			this.$rootScope.slatwall.permissionGroups=jwtData.permissionGroups;
+	    		}
+	    		
+		    }
+    	}
     }
     
     public isSuperUser=()=>{
@@ -18,6 +48,9 @@ class HibachiAuthenticationService{
     }
     
     public authenticateActionByAccount=(action:string,processContext:string)=>{
+    	if(!this.$rootScope.slatwall.authInfo){
+    		this.getJWTDataFromToken(this.token);
+    	}
         var authDetails:any = this.getActionAuthenticationDetailsByAccount(action,processContext);
         return authDetails.authorizedFlag;
     }

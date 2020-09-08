@@ -186,7 +186,7 @@ Notes:
 										<!--- Existing Account --->
 										<hb:HibachiDisplayToggle selector="input[name='registrants[#i#].newAccountFlag']" showValues="0" >
 											<cfset fieldAttributes = 'data-acpropertyidentifiers="adminIcon,fullName,company,emailAddress,phoneNumber,address.simpleRepresentation" data-entityname="Account" data-acvalueproperty="AccountID" data-acnameproperty="simpleRepresentation"' />
-											<hb:HibachiFieldDisplay fieldAttributes="#fieldAttributes#" fieldName="registrants[#i#].accountID" fieldType="textautocomplete" edit="#rc.edit#" title="#$.slatwall.rbKey('entity.account')#"/>
+											<hb:HibachiFieldDisplay fieldAttributes="#fieldAttributes#" fieldName="registrants[#i#].accountID" fieldType="textautocomplete" edit="#rc.edit#" title="#$.slatwall.rbKey('entity.account')#"  object="#rc.order#" property="account"/>
 										</hb:HibachiDisplayToggle>
 									</fieldset>
 									<br>
@@ -249,8 +249,7 @@ Notes:
 										<cfif not isNull(rc.processObject.getPickupLocationID())>
 											<cfset selectedLocationID = rc.processObject.getPickupLocationID() />
 										</cfif>
-
-										<swa:SlatwallLocationTypeahead selectedLocationID="#selectedLocationID#" locationPropertyName="pickupLocationID"  locationLabelText="#rc.$.slatwall.rbKey('entity.orderFulfillment.pickupLocation')#" edit="#rc.edit#" showActiveLocationsFlag="true" topLevelLocationID="#topLevelLocationID#" ></swa:SlatwallLocationTypeahead>
+										<hb:HibachiPropertyDisplay labelText="#rc.$.slatwall.rbKey('entity.orderFulfillment.pickupLocation')#" object="#rc.processObject#" property="pickupLocationID" edit="#rc.edit#">
 										
 									</hb:HibachiDisplayToggle>
 
@@ -270,7 +269,7 @@ Notes:
 											</cfif>
 
 											<!--- Display typeahead if options exist --->
-											<swa:SlatwallLocationTypeahead selectedLocationID="#selectedLocationID#" locationPropertyName="locationID"  locationLabelText="#rc.$.slatwall.rbKey('processObject.Order_AddOrderItem.locationID')#" edit="#rc.edit#" showActiveLocationsFlag="true" topLevelLocationID="#topLevelLocationID#" ></swa:SlatwallLocationTypeahead>
+											<hb:HibachiPropertyDisplay labelText="#rc.$.slatwall.rbKey('processObject.Order_AddOrderItem.locationID')#" object="#rc.processObject#" property="locationID" edit="#rc.edit#">
 											<!---
 											<hb:HibachiPropertyDisplay object="#rc.processObject#" property="locationID" edit="#rc.edit#" title="#$.slatwall.rbKey('processObject.Order_AddOrderItem.locationID')#" />  
 											--->
@@ -301,9 +300,10 @@ Notes:
 
 										<!--- New Address --->
 										<hb:HibachiDisplayToggle selector="select[name='shippingAccountAddressID']" showValues="" loadVisable="#!len(defaultValue)#">
-
+											<span ng-if="shippingAccountAddressID == ''">
 											<!--- Address Display --->
 											<swa:SlatwallAdminAddressDisplay address="#rc.processObject.getShippingAddress()#" fieldNamePrefix="shippingAddress." />
+											</span>
 
 										<cfif !isNull(rc.order.getAccount())>
 											<!--- Save New Address --->

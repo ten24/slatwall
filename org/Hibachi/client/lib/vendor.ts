@@ -2,7 +2,7 @@ import "script-loader!../../HibachiAssets/js/jquery-3.3.1.min.js";
 import "script-loader!../..//HibachiAssets/js/jquery-migrate-1.4.1.min.js";
 import "script-loader!../..//HibachiAssets/js/jquery-ui.min.js";
 import "script-loader!../..//HibachiAssets/js/jquery-validate-1.9.0.min.js";
-
+import "script-loader!../..//HibachiAssets/js/jquery-validate-override.js";
 
 import "./date/date.min.js";
 import "./angular/angular.min.js";

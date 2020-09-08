@@ -300,18 +300,22 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	// ================= Smart List Helper Methods =====================
 	
 	// Product Smart List
-	public any function getProductSmartList() {
-		if(!structKeyExists(variables, "productSmartList")) {
-			variables.productSmartList = getService("productService").getProductSmartList(data=url);
-			variables.productSmartList.setSelectDistinctFlag( 1 );
-			variables.productSmartList.addFilter('activeFlag', 1);
-			variables.productSmartList.addFilter('publishedFlag', 1);
-			variables.productSmartList.addRange('calculatedQATS', '1^');
+	public any function getProductSmartList(boolean isNew=false) {
+		if(!structKeyExists(variables, "productSmartList") || arguments.isNew) {
+			var productSmartList = getService("productService").getProductSmartList(data=url);
+			productSmartList.setSelectDistinctFlag( 1 );
+			productSmartList.addFilter('activeFlag', 1);
+			productSmartList.addFilter('publishedFlag', 1);
+			productSmartList.addRange('calculatedQATS', '1^');
 			if(isBoolean(getContent().getProductListingPageFlag()) && getContent().getProductListingPageFlag() && isBoolean(getContent().setting('contentIncludeChildContentProductsFlag')) && getContent().setting('contentIncludeChildContentProductsFlag')) {
-				variables.productSmartList.addWhereCondition(" EXISTS(SELECT sc.contentID FROM SlatwallContent sc INNER JOIN sc.listingPages slp WHERE sc.contentIDPath LIKE '%#getContent().getContentID()#%' AND slp.product.productID = aslatwallproduct.productID) ");
+				productSmartList.addWhereCondition(" EXISTS(SELECT sc.contentID FROM SlatwallContent sc INNER JOIN sc.listingPages slp WHERE sc.contentIDPath LIKE '%#getContent().getContentID()#%' AND slp.product.productID = aslatwallproduct.productID) ");
 			} else if(isBoolean(getContent().getProductListingPageFlag()) && getContent().getProductListingPageFlag()) {
-				variables.productSmartList.addFilter('listingPages.content.contentID',getContent().getContentID());
+				productSmartList.addFilter('listingPages.content.contentID',getContent().getContentID());
 			}
+			if(arguments.isNew){
+				return productSmartList;
+			}
+			variables.productSmartList = productSmartList;
 		}
 		return variables.productSmartList;
 	}
@@ -383,6 +387,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 
 	public any function getAvailableAccountPropertyList() {
 		return ReReplace("accountID,firstName,lastName,company,remoteID,primaryPhoneNumber.accountPhoneNumberID,primaryPhoneNumber.phoneNumber,primaryEmailAddress.accountEmailAddressID,primaryEmailAddress.emailAddress,
+			accountEmailAddresses.accountEmailAddressID, accountEmailAddresses.emailAddress,
+			accountPhoneNumbers.accountPhoneNumberID, accountPhoneNumbers.phoneNumber,
 			primaryAddress.accountAddressID,
 			accountAddresses.accountAddressName,accountAddresses.accountAddressID,
 			accountAddresses.address.addressID,accountAddresses.address.countryCode,accountAddresses.address.firstName,accountAddresses.address.lastName,accountAddresses.address.emailAddress,accountAddresses.accountAddressName,accountAddresses.address.streetAddress,accountAddresses.address.street2Address,accountAddresses.address.city,accountAddresses.address.stateCode,accountAddresses.address.postalCode,accountAddresses.address.countrycode,accountAddresses.address.name,accountAddresses.address.company,accountAddresses.address.phoneNumber,accountPaymentMethods.accountPaymentMethodID,accountPaymentMethods.creditCardLastFour,accountPaymentMethods.creditCardType,accountPaymentMethods.nameOnCreditCard,accountPaymentMethods.expirationMonth,accountPaymentMethods.expirationYear,accountPaymentMethods.accountPaymentMethodName,accountPaymentMethods.activeFlag","[[:space:]]","","all");
@@ -392,11 +398,11 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 		
 		var availablePropertyList = getAvailableAccountPropertyList();
 
-		availablePropertyList = ReReplace(availablePropertyList,"[[:space:]]","","all");
-
 		if(structKeyExists(getService('accountService'), "getCustomAvailableProperties")){
 			availablePropertyList = listAppend(availablePropertyList, getService('accountService').getCustomAvailableProperties());
 		}
+		
+		availablePropertyList = ReReplace(availablePropertyList,"[[:space:]]","","all");
 
 		if(!structKeyExists(arguments,"propertyList") || trim(arguments.propertyList) == "") {
 			arguments.propertyList = availablePropertyList;
@@ -478,15 +484,17 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	public any function getCartData(string propertyList,string cartDataOptions="full") {
 		
 		var availablePropertyList = getAvailableCartPropertyList(arguments.cartDataOptions);
-		availablePropertyList = ReReplace(availablePropertyList,"[[:space:]]","","all");
+		
 		availablePropertyList = ListAppend(availablePropertyList, getService('OrderService').getOrderAttributePropertyList());
 
         if(!structKeyExists(arguments,"propertyList") || trim(arguments.propertyList) == "") {
             arguments.propertyList = availablePropertyList;
         }
-
+        
+        availablePropertyList = ReReplace(availablePropertyList,"[[:space:]]","","all");
+        
         var data = getService('hibachiUtilityService').buildPropertyIdentifierListDataStruct(getCart(), arguments.propertyList, availablePropertyList);
-
+        
         //only need to work if order fulfillment data exists
         if(structKeyExists(data,'orderFulfillments')){
             //Attach some meta for for orderFulfillments
@@ -502,15 +510,15 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
             }
             data['requiresFulfillment'] = requiresFulfillment;
             if (requiresFulfillment){
-                  data['orderFulfillmentWithShippingMethodOptionsIndex'] = orderFulfillmentWithShippingMethodOptionsIndex - 1;
+            	data['orderFulfillmentWithShippingMethodOptionsIndex'] = orderFulfillmentWithShippingMethodOptionsIndex - 1;
             }else{
-                  data['orderFulfillmentWithShippingMethodOptionsIndex'] = -1;
+            	data['orderFulfillmentWithShippingMethodOptionsIndex'] = -1;
             }
         }
         // add error messages
         data["hasErrors"] = getCart().hasErrors();
         data["errors"] = getCart().getErrors();
-
+        
         // add process object error messages
         data[ 'processObjects' ] = {};
         for(var key in getCart().getProcessObjects()) {

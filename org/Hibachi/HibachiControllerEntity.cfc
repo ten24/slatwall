@@ -140,6 +140,16 @@ component output="false" accessors="true" extends="HibachiController" {
 			}
 		}
 	}
+	
+	public void function after(required struct rc){
+		if(structKeyExists(rc,'viewPath')){
+			request.layout = false;
+			getFW().setView("#getFW().getSubsystem()#:#getFW().getSection()#.ajax");
+
+			rc.templatePath = "./#rc.viewPath#.cfm";
+
+		}
+	}
 
 	// Implicit onMissingMethod() to handle standard CRUD
 	public void function onMissingMethod(string missingMethodName, struct missingMethodArguments) {

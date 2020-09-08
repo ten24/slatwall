@@ -154,7 +154,26 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	// ===================== START: Logical Methods ===========================
-
+	
+	/** 
+	 * Function append settings value to existing sku List
+	 * @param - array of skus
+	 * @return - updated array of skus
+	 **/
+	public array function appendSettingsToSku(required array skus) {
+		if(arrayLen(arguments.skus)) {
+			
+			for(var sku in arguments.skus) {
+	            
+	            var currentSku = this.getSku(sku.skuID);
+	            sku['skuOrderMinimumQuantity'] = currentSku.setting('skuOrderMinimumQuantity');
+	            sku['skuOrderMaximumQuantity'] = currentSku.setting('skuOrderMaximumQuantity');
+	            sku['skuFulfillmentMethods'] = currentSku.getEligibleFulfillmentMethodsWithShippingMethods();
+	        }
+		}
+		return arguments.skus;
+	}
+	
 	// =====================  END: Logical Methods ============================
 
 	// ===================== START: DAO Passthrough ===========================
@@ -599,8 +618,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public any function processSku_move(required any sku, any processObject){
 		var originalProduct = arguments.sku.getProduct(); 
 		var isDefaultSku = originalProduct.getDefaultSku().getSkuID() == arguments.sku.getSkuID(); 	
-		
-		arguments.sku.setProduct(processObject.getProduct());
+		arguments.sku.setProduct(arguments.processObject.getProduct());
 		arguments.sku = this.saveSku(arguments.sku);		
 	
 		if(originalProduct.getSkusCount() == 1){
@@ -640,9 +658,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				this.saveSkuLocationQuantity(skuLocationQuantity);
 			}
 
-			return arguments.sku;
+			
 
 		}
+		return arguments.sku;
 	}
 
 	// =====================  END: Process Methods ============================
