@@ -190,14 +190,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public boolean function deleteLocationAddress(required any locationAddress) {
-		
         // Check delete validation for batch
-        writeDump(locationAddress);abort;
+        //writeDump(locationAddress);abort;
 		if(arguments.locationAddress.isDeletable()) {
-			
-			arguments.locationAddress.setLocation(javaCast("null", ""));
-			arguments.locationAddress.setAddress(javaCast("null", ""));
-			
+		  var data = getDAO("LocationDAO").remoteAddressLocation(arguments.locationAddress.getLocationAddressID());
 		}
 
 		return delete( arguments.locationAddress );

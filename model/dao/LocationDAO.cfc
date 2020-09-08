@@ -91,4 +91,10 @@ component extends="HibachiDAO" {
 			,{locationID=arguments.locationID},true
 		);
 	}
+	
+	public any function remoteAddressLocation(required any addressID){
+		//writeOutput("UPDATE swlocation SET locationAddressID = NULL WHERE locationAddressID = '"&arguments.addressID&"'");abort;
+		return 	ormExecuteQuery("UPDATE swlocation SET locationAddressID = NULL WHERE locationAddressID = '"&arguments.addressID&"'");
+	}
+	
 }
