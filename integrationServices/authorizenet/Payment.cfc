@@ -182,10 +182,11 @@ component accessors="true" output="false" displayname="Authorize.net" implements
 		var response = getTransient('CreditCardTransactionResponseBean');
 		arguments.requestData = deserializeJSON(REReplace(trim(arguments.requestData), '[^\x00-\x7F]', '', "ALL"));
 
-		var responseData = deserializeJSON(REReplace(trim(arguments.rawResponse.fileContent), '[^\x00-\x7F]', '', "ALL")).transactionResponse;
-
-
-		// Populate the data with the raw response & request
+		var responseData = deserializeJSON(REReplace(trim(arguments.rawResponse.fileContent), '[^\x00-\x7F]', '', "ALL"));
+		if(structKeyExists(responseData,'transactionResponse')){
+			responseData=responseData.transactionResponse;
+		}
+			// Populate the data with the raw response & request
 		var data = {
 			responseData = arguments.rawResponse,
 			requestData = arguments.requestData
