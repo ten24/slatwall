@@ -242,7 +242,7 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 	
 	public void function deleteEntityQueueItem(required string entityQueueID){
 		var queryService = new query();
-		queryService.addParam(name='entityQueueID',value='#arguments.entityQueueID#',CFSQLTYPE="CF_SQL_STRING", list="true");
+		queryService.addParam(name='entityQueueID',value='#arguments.entityQueueID#',CFSQLTYPE="CF_SQL_STRING");
 		var sql = "DELETE FROM SwEntityQueue WHERE entityQueueID = :entityQueueID";
 
 
@@ -283,7 +283,7 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 	
 	public void function ReQueueItems(required string baseObject, required string baseID){
 	
-		var columns = 'baseObject, baseID, processMethod, entityQueueType, entityQueueDateTime, entityQueueData, integrationID, createdDateTime, createdByAccountID';
+		var columns = 'baseObject, baseID, processMethod, entityQueueType, entityQueueData, integrationID, createdDateTime, createdByAccountID';
 		
 		var insertQuery = new query();
 		var sql = "INSERT IGNORE INTO SwEntityQueue (entityQueueID, #columns#, tryCount, modifiedDateTime, entityQueueDateTime, modifiedByAccountID) ";

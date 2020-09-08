@@ -53,7 +53,6 @@
 			],
 		"orderStatusType": [ { "contexts": "edit", "method": "isNotClosed" }],
 		"orderItems":[{"conditions":"mpEnrollmentOrder","contexts":"placeOrder","method":"hasProductPackOrderItem"}],
-		"subTotal": [{"contexts":"placeOrder","conditions":"anyReturnOrder","method":"subtotalWithinAllowedPercentage"}],
 		
 		"isLockedInProcessingFlag": [{ "contexts": "edit,clear,delete,addOrderPayment,removeOrderPayment,retryPayment,placeOrder,addOrderItem,removeOrderItem,addOrderItemGiftRecipient,addSaleOrderItem,addPromotionCode,removePromotionCode,changeCurrencyCode,forceItemQuantityUpdate,removePersonalInfo,closeOrder,createReturn,takeOffHold,placeOnHold,auditRollback,releaseCredits,reopenOrder", "eq": false }],
 		"statusCode":  [
