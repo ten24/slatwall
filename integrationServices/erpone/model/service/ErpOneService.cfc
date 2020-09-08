@@ -62,8 +62,36 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
         
     }
     
-    public any function getData(){
-
-    }
+    public struct function getErponeDataByUrl(required string url , required string authorizationToken){
+	    var requestURL = setting("devGatewayURL"); 
+		requestURL &=arguments.url;
+		var httpRequest = new http();
+		httpRequest.setMethod('GET');
+		httpRequest.setUrl( requestURL );
+    	httpRequest.addParam( type='header', name='Content-Type', value='application/json');
+		// Authentication headers
+    	httpRequest.addParam( type='header', name='Authorization', value= "Bearer #arguments.authorizationToken#" );
+		var rawRequest = httpRequest.send().getPrefix();
+		
+		var response = {};
+		if( IsJson(rawRequest.fileContent) ) {
+		   
+			response = DeSerializeJson(rawRequest.fileContent); 
+			
+			if(StructKeyExists(response,"data")) {
+			    
+			    response = { "status": "success",  "data": response.data };
+		        } 
+			 else {
+			    response = { "status": "error",  "message": "Error: Data missing"  };
+		        } 
+			
+		} 
+		else {
+			response = { "status": "error",  "message": "Error: response is not valid JSON"  };
+		} 
+		
+		return response;
+	}
   	
 }

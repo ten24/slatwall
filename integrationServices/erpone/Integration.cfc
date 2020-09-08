@@ -52,19 +52,21 @@ extends="Slatwall.integrationServices.BaseIntegration" {
 	property name="ErpOneService";
 	
 	public string function getIntegrationTypes() {
-		return "Erpone";
+		return "Data";
 	}
 	
 	public string function getDisplayName() {
-		return "Erpone";
+		return "ERP One";
 	}
 	
 	public struct function getSettings() {
 		return {
-    		ProdLoginID = {fieldType="text", defaultValue=""},
-			DevLoginID = {fieldType="text", defaultValue=""},
-			ProdLicense = {fieldType="text", defaultValue=""},
-			DevLicense = {fieldType="text", defaultValue=""}
+		    devGatewayURL = {fieldType="text", defaultValue="https://www.test.com"},
+			prodGatewayURL = {fieldType="text", defaultValue="https://www.test.com"},
+    		prodLoginID = {fieldType="text", defaultValue=""},
+			devLoginID = {fieldType="text", defaultValue=""},
+			prodLicense = {fieldType="text", defaultValue=""},
+			devLicense = {fieldType="text", defaultValue=""}
     	};
 	}
 	
