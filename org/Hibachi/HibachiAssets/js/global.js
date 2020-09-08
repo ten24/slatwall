@@ -1863,6 +1863,9 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 							            		stepSize: 5,
 							            	}
 							            }]
+							        },
+							        legend: {
+							        	display: false;
 							        }
 							    }
 							});	

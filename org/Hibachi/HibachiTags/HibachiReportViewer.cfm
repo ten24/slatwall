@@ -149,12 +149,12 @@
 			
 			<!--- Chart --->
 			<div class="hibachi-report-chart-container">
-				<h3 class="hibachi-report-chart-title">#attributes.report.getChartData().options.title.text#</h3>
+				<h3 class="hibachi-report-chart-title">#attributes.report.getReportEntity().getReportTitle()#</h3>
 				<div id="hibachi-report-chart-wrapper">
 					<canvas id="hibachi-report-chart" width="1800" height="600"></canvas>
 				</div>
 			</div>
-
+			
 			<script type="text/javascript">
 				jQuery(document).ready(function(){
 					addLoadingDiv( 'hibachi-report' );

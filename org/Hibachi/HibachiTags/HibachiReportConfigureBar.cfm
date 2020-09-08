@@ -5,7 +5,7 @@
 	<cfparam name="attributes.report" type="any" />
 	
 	<cfoutput>
-		<cfform action="?s=1" method="post" style="margin:0px;">
+		<form action="?s=1" method="post" style="margin:0px;">
 			<input type="hidden" name="reportName" value="#attributes.report.getClassName()#" />
 			<cfif not isNull(attributes.report.getReportEntity())>
 				<input type="hidden" name="reportID" value="#attributes.report.getReportEntity().getReportID()#" />
@@ -14,21 +14,21 @@
 			</cfif>
 
 			<div class="row s-report-info">
+		<span ng-init="toggleCustomDate = false"></span>			
 		<!--- Report DateTime GroupBy ---> 
-					
 		<div class="col-md-12">
-			<div style="display: flex; width: 90%; margin: 0 auto; justify-content: space-between; align-items: flex-end;">
+			<div class="configure-bar-container">
 				<div>
-					<div style="margin-bottom: 20px;">
-						<a href="" class="hibachi-report-date-group btn btn-xs btn-default<cfif attributes.report.getReportDateTimeGroupBy() eq 'hour'> activated</cfif>" data-groupby="hour">Hour</a>
-						<a href="" class="hibachi-report-date-group btn btn-xs btn-default<cfif attributes.report.getReportDateTimeGroupBy() eq 'day'> activated</cfif>" data-groupby="day">Day</a>
-						<a href="" class="hibachi-report-date-group btn btn-xs btn-default<cfif attributes.report.getReportDateTimeGroupBy() eq 'week'> activated</cfif>" data-groupby="week">Week</a>
-						<a href="" class="hibachi-report-date-group btn btn-xs btn-default<cfif attributes.report.getReportDateTimeGroupBy() eq 'month'> activated</cfif>" data-groupby="month">Month</a>
-						<a href="" class="hibachi-report-date-group btn btn-xs btn-default<cfif attributes.report.getReportDateTimeGroupBy() eq 'year'> activated</cfif>" data-groupby="year">Year</a>
-						<button class="hibachi-report-date-group btn btn-xs btn-default">Custom</button>
+					<div class="report-btn-container">
+						<a href="" class="hibachi-report-date-group btn btn-xs btn-default" ng-class="{activated: #attributes.report.getReportDateTimeGroupBy() eq 'hour'#}" data-groupby="hour">Hour</a>
+						<a href="" class="hibachi-report-date-group btn btn-xs btn-default" ng-class="{activated: #attributes.report.getReportDateTimeGroupBy() eq 'day'#}" data-groupby="day">Day</a>
+						<a href="" class="hibachi-report-date-group btn btn-xs btn-default" ng-class="{activated: #attributes.report.getReportDateTimeGroupBy() eq 'week'#}" >Week</a>
+						<a href="" class="hibachi-report-date-group btn btn-xs btn-default" ng-class="{activated: #attributes.report.getReportDateTimeGroupBy() eq 'month'#}"  data-groupby="month">Month</a>
+						<a href="" class="hibachi-report-date-group btn btn-xs btn-default" ng-class="{activated: #attributes.report.getReportDateTimeGroupBy() eq 'year'#}"  data-groupby="year">Year</a>
+						<button type="button" class="hibachi-report-date-group-custom-toggle btn btn-xs btn-default">Custom</button>
 					</div>
 				</div>
-				<div style="margin-bottom: 20px; width: 300px;">
+				<div class="site-selector-container">
 					<cfset siteCollectionList = attributes.hibachiScope.getService('siteService').getSiteCollectionList() />
 					<cfset siteCollectionList.setDisplayProperties('siteID,siteName', { isVisible=true }) />
 					<h4>Site</h4>
@@ -50,6 +50,6 @@
 	
 				</div>
 			</div>
-		</cfform>
+		</form>
 	</cfoutput>
 </cfif>
