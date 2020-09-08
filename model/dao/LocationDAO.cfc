@@ -92,9 +92,12 @@ component extends="HibachiDAO" {
 		);
 	}
 	
-	public any function remoteAddressLocation(required any addressID){
-		//writeOutput("UPDATE swlocation SET locationAddressID = NULL WHERE locationAddressID = '"&arguments.addressID&"'");abort;
+	public any function removeAddressLocation(required any addressID){
 		return 	ormExecuteQuery("UPDATE swlocation SET locationAddressID = NULL WHERE locationAddressID = '"&arguments.addressID&"'");
+	}
+	
+	public any function removeAssociatedLocationRecords(required any locationID){
+		return 	ormExecuteQuery("DELETE FROM swlocationaddress WHERE locationID = '"&arguments.locationID&"'");
 	}
 	
 }

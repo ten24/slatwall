@@ -185,6 +185,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		for(var i=1; i<=arrayLen(defaultStockLocationOrders); i++) {
 				defaultStockLocationOrders[i].setDefaultStockLocation(javaCast('null',''));
 		}
+		var data = getDAO("LocationDAO").removeAssociatedLocationRecords(arguments.location.getLocationID());
 		
 		return super.delete(arguments.location);
 	}
@@ -193,7 +194,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
         // Check delete validation for batch
         //writeDump(locationAddress);abort;
 		if(arguments.locationAddress.isDeletable()) {
-		  var data = getDAO("LocationDAO").remoteAddressLocation(arguments.locationAddress.getLocationAddressID());
+		  var data = getDAO("LocationDAO").removeAddressLocation(arguments.locationAddress.getLocationAddressID());
 		}
 
 		return delete( arguments.locationAddress );
