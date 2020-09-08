@@ -386,6 +386,7 @@ component extends="HibachiService" output="false" accessors="true" {
 
 			// Site
 			siteAvailableLocales = {fieldType="multiselect", defaultValue="en_us"},
+			siteDateFormat = {fieldType="select", defaultValue="mm-dd-yyyy"},
 			siteDefaultAccountPaymentMethod = {fieldtype="select", defaultValue="444df303dedc6dab69dd7ebcc9b8036a"},	
 			siteDefaultLocale = {fieldType="select"},
 			siteForgotPasswordEmailTemplate = {fieldType="select", defaultValue="dbb327e796334dee73fb9d8fd801df91"},
@@ -651,6 +652,13 @@ component extends="HibachiService" output="false" accessors="true" {
 				return ['-','_'];
 			case "siteAvailableLocales":
 				return getTranslationService().getSiteAvailableLocalesOptions();
+			case "siteDateFormat":
+				var options = [
+					{'value':'mm-dd-yyyy','name':'Month - Day - Year'},
+					{'value':'dd-mm-yyyy','name':'Day - Month - Year'},
+					{'value':'yyyy-mm-dd','name':'Year - Month - Day'}
+				]
+				return options;
 			case "siteDefaultLocale":
 				return getTranslationService().getSiteAvailableLocalesOptions();
 			case "siteDefaultAccountPaymentMethod":

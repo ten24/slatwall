@@ -53,6 +53,7 @@ Notes:
 <cfoutput>
 	<swa:SlatwallSettingTable>
 		<swa:SlatwallSetting settingName="siteAvailableLocales" settingObject="#rc.site#" />
+		<swa:SlatwallSetting settingName="siteDateFormat" settingObject="#rc.site#" />
 		<swa:SlatwallSetting settingName="siteDefaultLocale" settingObject="#rc.site#" />
 		<swa:SlatwallSetting settingName="siteDefaultAccountPaymentMethod" settingObject="#rc.site#" />	
 		<swa:SlatwallSetting settingName="siteForgotPasswordEmailTemplate" settingObject="#rc.site#" />
