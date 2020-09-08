@@ -93,11 +93,11 @@ component extends="HibachiDAO" {
 	}
 	
 	public any function removeAddressLocation(required any addressID){
-		return 	ormExecuteQuery("UPDATE swlocation SET locationAddressID = NULL WHERE locationAddressID = '"&arguments.addressID&"'");
+		return 	ormExecuteQuery("UPDATE SlatwallLocation SET locationAddressID = NULL WHERE locationAddressID = '"&arguments.addressID&"'");
 	}
 	
 	public any function removeAssociatedLocationRecords(required any locationID){
-		return 	ormExecuteQuery("DELETE FROM swlocationaddress WHERE locationID = '"&arguments.locationID&"'");
+		return ormExecuteQuery("UPDATE SlatwallLocationAddress SET locationID = NULL WHERE locationID = '"&arguments.locationID&"'");
 	}
 	
 }

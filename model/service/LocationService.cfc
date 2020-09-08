@@ -185,6 +185,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		for(var i=1; i<=arrayLen(defaultStockLocationOrders); i++) {
 				defaultStockLocationOrders[i].setDefaultStockLocation(javaCast('null',''));
 		}
+		
+		arguments.location.setLocationAddresses(javaCast("null", ""));
 		var data = getDAO("LocationDAO").removeAssociatedLocationRecords(arguments.location.getLocationID());
 		
 		return super.delete(arguments.location);
