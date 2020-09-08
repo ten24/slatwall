@@ -136,18 +136,6 @@ Notes:
 							</cfif>
 				  		</ul>					  		
 				  	</div>	
-				  	<div class="col-sm-3">
-				  		<ul class="list-unstyled">
-					  		<li>Lorem Ipsum Delorem <span>| Orders</span></li>
-				  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
-				  			<li>Lorem Ipsum Delorem <span>| Products</span></li>
-				  			<li>Lorem Ipsum Delorem <span>| Account </span></li>
-				  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
-				  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
-				  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
-				  			<li>Lorem Ipsum Delorem <span>| Orders</span></li>
-				  		</ul>					  		
-				  	</div>
 				  </div>
 				</div>
 			</div>	
