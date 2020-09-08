@@ -1823,7 +1823,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate, {}, 'placeOrder'); 	
 		
 		if(newOrder.hasErrors()){
-			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors on add order payment #serializeJson(newOrder.getErrors())# when adding a payment');
+			this.logHibachi('OrderTemplate #arguments.orderTemplate.getOrderTemplateID()# has errors on add order payment #serializeJson(newOrder.getErrors())# when adding a payment',true);
 			arguments.orderTemplate.addErrors(newOrder.getErrors()); 
 			getOrderDAO().setScheduleOrderProcessingFlag(arguments.orderTemplate.getOrderTemplateID(), false, serializeJson(newOrder.getErrors()));
 			return arguments.orderTemplate;
