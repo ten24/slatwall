@@ -1865,7 +1865,7 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 							            }]
 							        },
 							        legend: {
-							        	display: false;
+							        	display: false
 							        }
 							    }
 							});	

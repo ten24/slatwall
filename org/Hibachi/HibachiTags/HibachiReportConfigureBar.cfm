@@ -20,11 +20,11 @@
 			<div class="configure-bar-container">
 				<div>
 					<div class="report-btn-container">
-						<a href="" class="hibachi-report-date-group btn btn-xs btn-default" ng-class="{activated: #attributes.report.getReportDateTimeGroupBy() eq 'hour'#}" data-groupby="hour">Hour</a>
-						<a href="" class="hibachi-report-date-group btn btn-xs btn-default" ng-class="{activated: #attributes.report.getReportDateTimeGroupBy() eq 'day'#}" data-groupby="day">Day</a>
-						<a href="" class="hibachi-report-date-group btn btn-xs btn-default" ng-class="{activated: #attributes.report.getReportDateTimeGroupBy() eq 'week'#}" >Week</a>
-						<a href="" class="hibachi-report-date-group btn btn-xs btn-default" ng-class="{activated: #attributes.report.getReportDateTimeGroupBy() eq 'month'#}"  data-groupby="month">Month</a>
-						<a href="" class="hibachi-report-date-group btn btn-xs btn-default" ng-class="{activated: #attributes.report.getReportDateTimeGroupBy() eq 'year'#}"  data-groupby="year">Year</a>
+						<a href="" class="hibachi-report-date-group btn btn-xs btn-default<cfif attributes.report.getReportDateTimeGroupBy() eq 'hour'> active</cfif>" data-groupby="hour">Hour</a>
+						<a href="" class="hibachi-report-date-group btn btn-xs btn-default<cfif attributes.report.getReportDateTimeGroupBy() eq 'day'> active</cfif>" data-groupby="day">Day</a>
+						<a href="" class="hibachi-report-date-group btn btn-xs btn-default<cfif attributes.report.getReportDateTimeGroupBy() eq 'week'> active</cfif>" data-groupby="week">Week</a>
+						<a href="" class="hibachi-report-date-group btn btn-xs btn-default<cfif attributes.report.getReportDateTimeGroupBy() eq 'month'> active</cfif>" data-groupby="month">Month</a>
+						<a href="" class="hibachi-report-date-group btn btn-xs btn-default<cfif attributes.report.getReportDateTimeGroupBy() eq 'year'> active</cfif>" data-groupby="year">Year</a>
 						<button type="button" class="hibachi-report-date-group-custom-toggle btn btn-xs btn-default">Custom</button>
 					</div>
 				</div>
