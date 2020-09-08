@@ -1814,6 +1814,52 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	// ===================== START: Process Methods ===========================
 
+	public any function processPromotion_duplicate(required any promotion, required any processObject){
+
+		var newPromotion = this.newPromotion();
+		
+		var promotionName = arguments.promotion.getPromotionName();
+		if(!isNull(arguments.processObject.getPromotionName())){
+			promotionName = arguments.processObject.getPromotionName();
+		}
+		
+		newPromotion.setPromotionName( promotionName );
+		newPromotion.setActiveFlag(false);
+		
+		if( !isNull(arguments.promotion.getPromotionSummary()) ){
+			newPromotion.setPromotionSummary(arguments.promotion.getPromotionSummary());
+		}
+		if( !isNull(arguments.promotion.getPromotionDescription()) ){
+			newPromotion.setPromotionDescription(arguments.promotion.getPromotionDescription());
+		}
+		if( !isNull(arguments.promotion.getPriority()) ){
+			newPromotion.setPriority(arguments.promotion.getPriority());
+		}
+		
+		if( !isNull(arguments.promotion.getDefaultImage()) ){
+			newPromotion.setDefaultImage(arguments.promotion.getDefaultImage());
+		}
+		if( !isNull(arguments.promotion.getSite()) ){
+			newPromotion.setSite(arguments.promotion.getSite());
+		}
+
+		this.savePromotion(newPromotion);
+		
+		for( var promotionPeriod in arguments.promotion.getPromotionPeriods() ){
+			
+			var processObject = promotionPeriod.getProcessObject('duplicatePromotionPeriod');
+			processObject.setPromotionPeriodName( promotionPeriod.getPromotionPeriodName() );
+			processObject.setMaximumUseCount( promotionPeriod.getMaximumUseCount() );
+			processObject.setMaximumAccountUseCount( promotionPeriod.getMaximumAccountUseCount() );
+			processObject.setPromotion( newPromotion );
+			
+			var newPromotionPeriod = this.processPromotionPeriod_duplicatePromotionPeriod(promotionPeriod,processObject);
+		}
+		
+		
+		return newPromotion;
+	}
+
 	public any function processPromotionPeriod_duplicatePromotionPeriod(required any promotionPeriod, required any processObject){
 
 		// Duplicate promotion period and set new values from process object
@@ -1832,7 +1878,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(!isNull(arguments.processObject.getMaximumAccountUseCount()) && len(arguments.processObject.getMaximumAccountUseCount())) {
 			newPromotionPeriod.setMaximumAccountUseCount(arguments.processObject.getMaximumAccountUseCount());
 		}
-		newPromotionPeriod.setPromotion(arguments.promotionPeriod.getPromotion());
+		newPromotionPeriod.setPromotion(arguments.processObject.getPromotion());
+		
 		var newPromotionPeriod = this.savePromotionPeriod(newPromotionPeriod);
 
 		// Duplicate promotionRewards
