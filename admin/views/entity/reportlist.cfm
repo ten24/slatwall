@@ -62,9 +62,13 @@ Notes:
     <cfset rc.collection = getHibachiScope().getService('hibachiCollectionService').newCollection()/>
 </cfif>    
 <hb:HibachiEntityDetailForm object="#rc.collection#" edit="true">
-    <hb:HibachiEntityActionBar type="reportlisting" object="#rc['#rc.entityActionDetails.itemEntityName#SmartList']#" collectionEntity="#rc.collection#" 
-        deleteAction="entity.deleteCollection" deleteQueryString="sRedirectAction=entity.reportlist#lcase(rc.collection.getCollectionObject())#"
-    >
+    <!---<hb:HibachiEntityActionBar type="reportlisting" object="#rc['#rc.entityActionDetails.itemEntityName#SmartList']#" collectionEntity="#rc.collection#" 
+        deleteAction="entity.deleteCollection" deleteQueryString="sRedirectAction=entity.reportlist#lcase(rc.collection.getCollectionObject())#" showdelete="false"
+    >--->
+    <hb:HibachiEntityActionBar type="reportlisting" object="#rc['#rc.entityActionDetails.itemEntityName#SmartList']#" collectionEntity="#rc.collection#"  showdelete="false">
+        <hb:HibachiEntityActionBarButtonGroup>
+        <hb:HibachiActionCaller action="admin:entity.deleteReport" querystring="collectionID=#rc.collection.getCollectionID()#" text="#$.slatwall.rbkey('define.delete')#" class="btn btn-default s-remove" icon="trash icon-white" confirm="true" confirmtext="#$.slatwall.rbkey('entity.Collection.process.deleteReport')#" >
+    	</hb:HibachiEntityActionBarButtonGroup>
     	<!--- Create ---> 
     	    <cfif structKeyExists(rc,'collection')>
     	        <cfif !rc.collection.isNew()>

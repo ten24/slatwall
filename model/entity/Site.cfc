@@ -170,23 +170,27 @@ component entityname="SlatwallSite" table="SwSite" persistent="true" accessors="
 			
 			if(dbtype eq "mysql")
 			{
-				if(getDao('siteDao').validateDomainName(currentdomain, this.getsiteId()))
+				var input_domains = ListToArray(currentdomain,",");
+				for(var domain in input_domains)
 				{
-					return false;
+					if(getDao('siteDao').validateDomainName(domain, this.getsiteId()))
+					{
+						return false;
+					}
 				}
-				else{
-					return true;
-				}
+				
+				return true;
+				
 			}
 			else{
 				var allrecords = getService('siteService').getSiteCollectionList();
-				for( var key in allrecords.getRecords())
+				for( var domain in allrecords.getRecords())
 				{
 					//using OR condition so this method can work for create / edit both while creating new site without app
-					if(isNull(this.getsiteId()) || key.siteId != this.getsiteId()) 
+					if(isNull(this.getsiteId()) || domain.siteId != this.getsiteId())
 					{
-						var domains = listFind(key.domainNames,currentdomain,",");
-						if(domains)
+						var domain_check = listFind(domain.domainNames,currentdomain,",");
+						if(domain_check)
 						{
 							return false;
 						}

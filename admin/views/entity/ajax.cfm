@@ -47,6 +47,13 @@ Notes:
 
 --->
 <cfoutput>
-	
-	<cfinclude template="#rc.templatePath#"/>
+    <cfset customPath = '/custom/admin/views/entity/#right(rc.templatePath,len(rc.templatePath)-2)#'/>
+    <cfset customTemplateAbsolutePath = expandPath('/Slatwall') & customPath/>
+
+	<cfif fileExists(customTemplateAbsolutePath)>
+	    <cfset customTemplateRelativePath = '../../../#customPath#'/>
+	    <cfinclude template="#customTemplateRelativePath#"/>
+	<cfelse>
+	    <cfinclude template="#rc.templatePath#"/>
+	</cfif>
 </cfoutput>

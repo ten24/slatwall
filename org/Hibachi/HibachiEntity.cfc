@@ -81,16 +81,28 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		return getService('HibachiService').getServiceByEntityName( entityName=getClassName() ); 
 	} 
 
-	public struct function getStructRepresentation(){
-		return getEntityService().invokeMethod('get#getClassName()#Struct',{1=this.getPrimaryIDValue()});
+	public struct function getStructRepresentation(string properties){
+		if(structKeyExists(arguments, 'properties')){
+			return getEntityService().invokeMethod('get#getClassName()#Struct',{1=this.getPrimaryIDValue(), 2=arguments.properties});
+		} else {
+			return getEntityService().invokeMethod('get#getClassName()#Struct',{1=this.getPrimaryIDValue()});
+		} 
 	}
 
-	public string function getJsonRepresentation(){
-		return serializeJson(this.getStructRepresentation()); 
+	public string function getJsonRepresentation(string properties){
+		if(structKeyExists(arguments, 'properties')){
+			return serializeJson(this.getStructRepresentation(arguments.properties)); 
+		} else {
+			return serializeJson(this.getStructRepresentation()); 
+		}
 	} 
 
-	public string function getEncodedJsonRepresentation(){ 
-		return encodeForHTML(this.getJsonRepresentation()); 
+	public string function getEncodedJsonRepresentation(string properties){ 
+		if(structKeyExists(arguments, 'properties')){
+			return getService('HibachiUtilityService').hibachiHTMLEditFormat(this.getJsonRepresentation(arguments.properties)); 
+		} else {
+			return getService('HibachiUtilityService').hibachiHTMLEditFormat(this.getJsonRepresentation()); 
+		}
 	} 
 
 	public string function getTableName(){
@@ -159,7 +171,6 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 					}
                 }
             }
-
         }
     }
 
@@ -619,10 +630,10 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 
 
 	// @hint returns a collection list or records that can be used as options for a many-to-one property
-	public any function getPropertyOptionsCollectionList( required string propertyName ) {
+	public any function getPropertyOptionsCollectionList( required string propertyName, refresh=false ) {
 		var cacheKey = "#arguments.propertyName#OptionsCollectionList";
 
-		if(!structKeyExists(variables, cacheKey)) {
+		if(!structKeyExists(variables, cacheKey) || arguments.refresh) {
 
 			var propertyMeta = getPropertyMetaData( arguments.propertyName );
 			var entityService = getService("hibachiService").getServiceByEntityName( listLast(propertyMeta.cfc,'.') );
@@ -929,7 +940,11 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 					return getPropertySmartList( propertyName=propertyName );
 				}
 			}
-			// getXXXStruct()		Where XXX is a one-to-many or many-to-many property where we want a key delimited struct
+			// getXXXTypeAheadCollectionList similar to Options but instead of returning data it will return a collectionlist to get data lazily
+			if ( len(arguments.missingMethodName) > 23 && right(arguments.missingMethodName, 23) == "TypeAheadCollectionList") {
+				propertyName=left(right(arguments.missingMethodName, len(arguments.missingMethodName)-3), len(arguments.missingMethodName)-26);
+				return getPropertyOptionsCollectionList(propertyName,true);
+			}
 			if ( right(arguments.missingMethodName, 14) == "CollectionList") {
 				propertyName=left(right(arguments.missingMethodName, len(arguments.missingMethodName)-3), len(arguments.missingMethodName)-17);
 				if(hasProperty(propertyName)){
@@ -1070,61 +1085,66 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	// =================== START: ORM Event Hooks  =========================
 
 	public void function preInsert(){
-		if(!this.isPersistable()) {
-			for(var errorName in getErrors()) {
-				for(var i=1; i<=arrayLen(getErrors()[errorName]); i++) {
-					logHibachi("an ormFlush() failed for an Entity Insert of #getEntityName()# with an errorName: #errorName# and errorMessage: #getErrors()[errorName][i]#", true);
+		try{
+			if(!this.isPersistable()) {
+				for(var errorName in getErrors()) {
+					for(var i=1; i<=arrayLen(getErrors()[errorName]); i++) {
+						logHibachi("an ormFlush() failed for an Entity Insert of #getEntityName()# with an errorName: #errorName# and errorMessage: #getErrors()[errorName][i]#", true);
+					}
 				}
+				throw("An ormFlush has been called on the hibernate session, however there is a #getEntityName()# entity in the hibernate session with errors.  The specific errors will be shown in the Slatwall log.");
 			}
-			throw("An ormFlush has been called on the hibernate session, however there is a #getEntityName()# entity in the hibernate session with errors.  The specific errors will be shown in the Slatwall log.");
-		}
-
-		var timestamp = now();
-
-		// Setup The First Created Date Time
-		if(structKeyExists(this,"setCreatedDateTime")){
-			this.setCreatedDateTime(timestamp);
-		}
-
-		// Setup The First Modified Date Time
-		if(structKeyExists(this,"setModifiedDateTime")){
-			this.setModifiedDateTime(timestamp);
-		}
-
-		// These are more complicated options that should not be called during application setup
-		if(getHibachiScope().hasApplicationValue("initialized") && getHibachiScope().getApplicationValue("initialized")) {
-
-			// Setup the first sortOrder
-			if(structKeyExists(this,"setSortOrder")) {
-				var metaData = getPropertyMetaData("sortOrder");
-				var topSortOrder = 0;
-				if(structKeyExists(metaData, "sortContext") && structKeyExists(variables, metaData.sortContext)) {
-					topSortOrder =  getService("hibachiService").getTableTopSortOrder( tableName=getMetaData(this).table, contextIDColumn=variables[ metaData.sortContext ].getPrimaryIDPropertyName(), contextIDValue=variables[ metaData.sortContext ].getPrimaryIDValue() );
-				} else {
-					topSortOrder =  getService("hibachiService").getTableTopSortOrder( tableName=getMetaData(this).table );
+			
+			var timestamp = now();
+		
+				// Setup The First Created Date Time
+				if(structKeyExists(this,"setCreatedDateTime")){
+					this.setCreatedDateTime(timestamp);
 				}
-				setSortOrder( topSortOrder + 1 );
-			}
-
-			// Set createdByAccount
-			if(structKeyExists(this,"setCreatedByAccountID") && !getHibachiScope().getAccount().isNew() ){
-				setCreatedByAccountID( getHibachiScope().getAccount().getAccountID() );
-			}
-
-			// Set modifiedByAccount
-			if(structKeyExists(this,"setModifiedByAccountID") && !getHibachiScope().getAccount().isNew() ){
-				setModifiedByAccountID( getHibachiScope().getAccount().getAccountID() );
-			}
-
-			// Log audit only if admin user
-			if(!getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ) {
-				getService("hibachiAuditService").logEntityModify(entity=this);
-			}
-
+		
+				// Setup The First Modified Date Time
+				if(structKeyExists(this,"setModifiedDateTime")){
+					this.setModifiedDateTime(timestamp);
+				}
+		
+				// These are more complicated options that should not be called during application setup
+				if(!isNull(getHibachiScope()) && getHibachiScope().hasApplicationValue("initialized") && getHibachiScope().getApplicationValue("initialized")) {
+		
+					// Setup the first sortOrder
+					if(structKeyExists(this,"setSortOrder")) {
+						var metaData = getPropertyMetaData("sortOrder");
+						var topSortOrder = 0;
+						if(structKeyExists(metaData, "sortContext") && structKeyExists(variables, metaData.sortContext)) {
+							topSortOrder =  getService("hibachiService").getTableTopSortOrder( tableName=getMetaData(this).table, contextIDColumn=variables[ metaData.sortContext ].getPrimaryIDPropertyName(), contextIDValue=variables[ metaData.sortContext ].getPrimaryIDValue() );
+						} else {
+							topSortOrder =  getService("hibachiService").getTableTopSortOrder( tableName=getMetaData(this).table );
+						}
+						setSortOrder( topSortOrder + 1 );
+					}
+		
+					// Set createdByAccount
+					if(structKeyExists(this,"setCreatedByAccountID") && !isNull(getHibachiScope().getAccount()) && !getHibachiScope().getAccount().isNew() ){
+						setCreatedByAccountID( getHibachiScope().getAccount().getAccountID() );
+					}
+		
+					// Set modifiedByAccount
+					if(structKeyExists(this,"setModifiedByAccountID") && !isNull(getHibachiScope().getAccount()) && !getHibachiScope().getAccount().isNew() ){
+						setModifiedByAccountID( getHibachiScope().getAccount().getAccountID() );
+					}
+		
+					// Log audit only if admin user
+					if(!isNull(getHibachiScope().getAccount()) && !getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ) {
+						getService("hibachiAuditService").logEntityModify(entity=this);
+					}
+		
+				}
+			
 			// Add to the modifiedEntities
 			getHibachiScope().addModifiedEntity( this );
+		}catch(any e){
+			logHibachi('preInsert fail:'&serializeJson(e),false);
+			writedump(e);abort;
 		}
-
 	}
 	
 	public void function postInsert(){
@@ -1164,38 +1184,45 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	}
 
 	public void function preUpdate(struct oldData){
-		if(!this.isPersistable()) {
-			for(var errorName in getErrors()) {
-				for(var i=1; i<=arrayLen(getErrors()[errorName]); i++) {
-					logHibachi("an ormFlush() failed for an Entity Update of #getEntityName()# with an errorName: #errorName# and errorMessage: #getErrors()[errorName][i]#", true);
+		try{
+			if(!this.isPersistable()) {
+				for(var errorName in getErrors()) {
+					for(var i=1; i<=arrayLen(getErrors()[errorName]); i++) {
+						logHibachi("an ormFlush() failed for an Entity Update of #getEntityName()# with an errorName: #errorName# and errorMessage: #getErrors()[errorName][i]#", true);
+					}
 				}
+				throw("An ormFlush has been called on the hibernate session, however there is a #getEntityName()# entity in the hibernate session with errors - #serializeJSON(getErrors())#");
 			}
-			throw("An ormFlush has been called on the hibernate session, however there is a #getEntityName()# entity in the hibernate session with errors - #serializeJSON(getErrors())#");
-		}
-
-		var timestamp = now();
-
-		// Update the Modified datetime if one exists
-		if(structKeyExists(this,"setModifiedDateTime")){
-			this.setModifiedDateTime(timestamp);
-		}
-
-		// These are more complicated options that should not be called during application setup
-		if(getHibachiScope().hasApplicationValue("initialized") && getHibachiScope().getApplicationValue("initialized")) {
-
-			// Set modifiedByAccount
-			if(structKeyExists(this,"setModifiedByAccountID") && !getHibachiScope().getAccount().isNew() ){
-				setModifiedByAccountID(getHibachiScope().getAccount().getAccountID());
+			var timestamp = now();
+		
+			// Update the Modified datetime if one exists
+			if(structKeyExists(this,"setModifiedDateTime")){
+				this.setModifiedDateTime(timestamp);
 			}
-
-			// Log audit only if admin user or there are prevous audit recods
-			if(getService("hibachiAuditService").getAuditSmartListForEntity(entity=this).getRecordsCount() != 0 || !getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ) {
-
-				getService("hibachiAuditService").logEntityModify(entity=this, oldData=arguments.oldData);
+	
+			// These are more complicated options that should not be called during application setup
+			if(!isNull(getHibachiScope()) && getHibachiScope().hasApplicationValue("initialized") && getHibachiScope().getApplicationValue("initialized")) {
+	
+				// Set modifiedByAccount
+				if(structKeyExists(this,"setModifiedByAccountID") && !isNull(getHibachiScope().getAccount()) && !getHibachiScope().getAccount().isNew() ){
+					setModifiedByAccountID(getHibachiScope().getAccount().getAccountID());
+				}
+	
+				// Log audit only if admin user or there are prevous audit recods
+				if(
+					getService("hibachiAuditService").getAuditSmartListForEntity(entity=this).getRecordsCount() != 0 
+					|| !isNull(getHibachiScope()) && !isNull(getHibachiScope().getAccount()) && !getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() 
+				) {
+	
+					getService("hibachiAuditService").logEntityModify(entity=this, oldData=arguments.oldData);
+				}
+	
 			}
-
 			// Add to the modifiedEntities
 			getHibachiScope().addModifiedEntity( this );
+		}catch(any e){
+			logHibachi('Preupdate Faile:'&serializeJson(e),false);
+			writedump(e);abort;
 		}
 
 	}

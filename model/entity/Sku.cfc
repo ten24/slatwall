@@ -73,7 +73,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="attendedQuantity" ormtype="integer" hint="Optional field for manually entered event attendance.";
 	property name="allowEventWaitlistingFlag" ormtype="boolean" default="0";
 	property name="redemptionAmountType" ormtype="string" hb_formFieldType="select" hint="used for gift card credit calculation. Values sameAsPrice, fixedAmount, Percentage"  hb_formatType="rbKey";
-	property name="redemptionAmount" hb_formatType="currency" ormtype="big_decimal" hint="value to be used in calculation conjunction with redeptionAmountType";
+	property name="baseRedemptionAmount" hb_formatType="currency" ormtype="big_decimal" hint="value to be used in calculation conjunction with redeptionAmountType";
 	property name="inventoryTrackBy" ormtype="string" default="Quantity" hb_formFieldType="select";
 	property name="nextDeliveryScheduleDate" ormtype="timestamp" description="This field is repopulated by deliveryScheduleDate";
 
@@ -168,6 +168,8 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="eligibleCurrencyCodeList" type="string" persistent="false";
 	property name="defaultFlag" type="boolean" persistent="false";
 	property name="eligibleFulfillmentMethods" type="array" persistent="false";
+	property name="eligibleFulfillmentMethodsWithShippingMethods" type="array" persistent="false";
+	
 	property name="eventConflictsSmartList" persistent="false";
 	property name="eventConflictExistsFlag" type="boolean" persistent="false";
 	property name="eventOverbookedFlag" type="boolean" persistent="false";
@@ -189,6 +191,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="eventStatus" type="any" persistent="false";
 	property name="qats" type="numeric" persistent="false";
 	property name="qoh" type="numeric" persistent="false";
+	property name="redemptionAmount" persistent="false";
 	property name="qoq" persistent="false";
 	property name="registeredUserCount" type="integer" persistent="false";
 	property name="registrantCount" type="integer" persistent="false";
@@ -223,6 +226,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return skuCollectionList;
 	}
 	
+
 	public any function getVendorSkusSmartList(){
 		var vendorSkuSmartList = getService('VendorOrderService').getVendorSkuSmartList();
 		vendorSkuSmartList.addFilter('sku.skuID',this.getSkuID());
@@ -383,12 +387,12 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	            case "sameAsPrice":
 	                break;
 	            case "fixedAmount":
-	                if(!isNull(getUserDefinedPriceFlag()) && !getUserDefinedPriceFlag() && structKeyExists(variables, "redemptionAmount")){
-	                    amount = variables.redemptionAmount;
+	                if(!isNull(getUserDefinedPriceFlag()) && !getUserDefinedPriceFlag() && structKeyExists(variables, "baseRedemptionAmount")){
+	                    amount = variables.baseRedemptionAmount;
 	                }
 	                break;
 	            case "percentage":
-	                amount = getService('HibachiUtilityService').precisionCalculate(getService('HibachiUtilityService').precisionCalculate(amount * variables.redemptionAmount)/100);
+	                amount = getService('HibachiUtilityService').precisionCalculate(getService('HibachiUtilityService').precisionCalculate(amount * variables.baseRedemptionAmount)/100);
 	                break;
 	        }
 	    }else{
@@ -1019,6 +1023,20 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 			variables.eligibleFulfillmentMethods = sl.getRecords();
 		}
 		return variables.eligibleFulfillmentMethods;
+	}
+	
+	/**
+	 * Helper method to populate Eligible Fulfillment methods for SKU
+	 * */
+	public array function getEligibleFulfillmentMethodsWithShippingMethods() {
+		if(!structKeyExists(variables, "eligibleFulfillmentMethodsWithShippingMethods")) {
+			var fulfillmentMethod = getService("fulfillmentService").getFulfillmentMethodCollectionList();
+			fulfillmentMethod.setDisplayProperties("fulfillmentMethodID, fulfillmentMethodName, fulfillmentMethodType")
+			fulfillmentMethod.addFilter('fulfillmentMethodID', setting('skuEligibleFulfillmentMethods'), "IN");
+			fulfillmentMethod.addOrderBy('sortOrder');
+			variables.eligibleFulfillmentMethodsWithShippingMethods = fulfillmentMethod.getRecords(formatRecord = false);
+		}
+		return variables.eligibleFulfillmentMethodsWithShippingMethods;
 	}
 
 	public any function getBundledSkusCount() {
@@ -1907,7 +1925,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	public void function updateCalculatedProperties(boolean runAgain=false) {
 		if(!structKeyExists(variables, "calculatedUpdateRunFlag") || runAgain) {
 			super.updateCalculatedProperties(argumentCollection=arguments);
-			getHibachiScope().flushORMSession();
+			getHibachiScope().flushORMSession(arguments.runAgain);
 			getService("skuService").processSku(this, "updateInventoryCalculationsForLocations");
 		}
 	}

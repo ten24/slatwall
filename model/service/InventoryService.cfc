@@ -440,53 +440,56 @@ component extends="HibachiService" accessors="true" output="false" {
 			var skuID = "";
 		
 			// Increment Product value
-			returnStruct[ arguments.inventoryType ] += arguments.inventoryArray[i][ arguments.inventoryType ];
-			
-			// Setup the location
-			if( structKeyExists(arguments.inventoryArray[i], "locationIDPath") ) {
-				for(var l=1; l<=listLen(arguments.inventoryArray[i]["locationIDPath"]); l++) {
-					locationID = listGetAt(arguments.inventoryArray[i]["locationIDPath"], l);
-					
-					if( !structKeyExists(returnStruct.locations, locationID) ) {
-						returnStruct.locations[ locationID ] = 0;
-					}
-					
-					// Increment Location
-					returnStruct.locations[ locationID ] += arguments.inventoryArray[i][ arguments.inventoryType ];	
-				}
-			}
-			
-			// Setup the stock
-			if( structKeyExists(arguments.inventoryArray[i], "stockID") ) {
-				var stockID = arguments.inventoryArray[i]["stockID"];	
-				returnStruct.stocks[ stockID ] = arguments.inventoryArray[i][ arguments.inventoryType ];	
-			}
-			
-			// Setup the sku
-			if( structKeyExists(arguments.inventoryArray[i], "skuID") ) {
-				var skuID = arguments.inventoryArray[i]["skuID"];
+			if(structKeyExists(arguments.inventoryArray[i],arguments.inventoryType)){
+				returnStruct[ arguments.inventoryType ] += arguments.inventoryArray[i][ arguments.inventoryType ];
 				
-				if(!structKeyExists(returnStruct.skus, skuID)) {
-					returnStruct.skus[ skuID ] = {};
-					returnStruct.skus[ skuID ].locations = {};
-					returnStruct.skus[ skuID ][ arguments.inventoryType ] = 0;
-				}
 				
-				returnStruct.skus[ skuID ][ arguments.inventoryType ] += arguments.inventoryArray[i][ arguments.inventoryType ];
-				
-				// Add location to sku if it exists
-				if(structKeyExists(arguments.inventoryArray[i],'locationIDPath')){
+				// Setup the location
+				if( structKeyExists(arguments.inventoryArray[i], "locationIDPath") ) {
 					for(var l=1; l<=listLen(arguments.inventoryArray[i]["locationIDPath"]); l++) {
 						locationID = listGetAt(arguments.inventoryArray[i]["locationIDPath"], l);
-					
-						if(!structKeyExists(returnStruct.skus[ skuID ].locations, locationID)) {
-							returnStruct.skus[ skuID ].locations[ locationID ] = 0;
+						
+						if( !structKeyExists(returnStruct.locations, locationID) ) {
+							returnStruct.locations[ locationID ] = 0;
 						}
-						returnStruct.skus[ skuID ].locations[ locationID ] += arguments.inventoryArray[i][ arguments.inventoryType ];
+						
+						// Increment Location
+						returnStruct.locations[ locationID ] += arguments.inventoryArray[i][ arguments.inventoryType ];	
 					}
 				}
 				
-
+				// Setup the stock
+				if( structKeyExists(arguments.inventoryArray[i], "stockID") ) {
+					var stockID = arguments.inventoryArray[i]["stockID"];	
+					returnStruct.stocks[ stockID ] = arguments.inventoryArray[i][ arguments.inventoryType ];	
+				}
+				
+				// Setup the sku
+				if( structKeyExists(arguments.inventoryArray[i], "skuID") ) {
+					var skuID = arguments.inventoryArray[i]["skuID"];
+					
+					if(!structKeyExists(returnStruct.skus, skuID)) {
+						returnStruct.skus[ skuID ] = {};
+						returnStruct.skus[ skuID ].locations = {};
+						returnStruct.skus[ skuID ][ arguments.inventoryType ] = 0;
+					}
+					
+					returnStruct.skus[ skuID ][ arguments.inventoryType ] += arguments.inventoryArray[i][ arguments.inventoryType ];
+					
+					// Add location to sku if it exists
+					if(structKeyExists(arguments.inventoryArray[i],'locationIDPath')){
+						for(var l=1; l<=listLen(arguments.inventoryArray[i]["locationIDPath"]); l++) {
+							locationID = listGetAt(arguments.inventoryArray[i]["locationIDPath"], l);
+						
+							if(!structKeyExists(returnStruct.skus[ skuID ].locations, locationID)) {
+								returnStruct.skus[ skuID ].locations[ locationID ] = 0;
+							}
+							returnStruct.skus[ skuID ].locations[ locationID ] += arguments.inventoryArray[i][ arguments.inventoryType ];
+						}
+					}
+					
+	
+				}
 			}
 			
 		}

@@ -64,7 +64,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="shippingMethodID" hb_formFieldType="select";
 	property name="fulfillmentMethodID" hb_formFieldType="select";
 	property name="shippingAccountAddressID" hb_formFieldType="select";
-	property name="pickupLocationID" hb_formFieldType="select" hb_rbKey="entity.orderFulfillment.pickupLocation";
+	property name="pickupLocationID" hb_formFieldType="typeahead" hb_rbKey="entity.orderFulfillment.pickupLocation";
 	property name="accountEmailAddressID" hb_formFieldType="select";
 
 	// Data Properties (Inputs)
@@ -93,13 +93,23 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 	// ======================== START: Defaults ============================
 
+	public any function getPickupLocationIDTypeAheadCollectionList(){
+		var locationCollectionList = getService('locationService').getLocationCollectionList();
+		locationCollectionList.addFilter('activeFlag',1);
+		locationCollectionList.addFilter('parentLocation','NULL','IS NOT');
+		if(!isNull(getOrderFulfillment().getOrder().getDefaultStockLocation())){
+			locationCollectionList.addFilter('locationIDPath','%#getOrderFulfillment().getOrder().getDefaultStockLocation().getLocationID()#%','LIKE');
+		}
+		return locationCollectionList;
+	}
+
 	public any function getShippingAddress() {
 		if(!structKeyExists(variables, "shippingAddress")) {
 			variables.shippingAddress = getService("addressService").newAddress();
 		}
 		return variables.shippingAddress;
 	}
-
+	
 	public any function getSaveShippingAccountAddressFlag() {
 		if(!structKeyExists(variables, "saveShippingAccountAddressFlag")) {
 			variables.saveShippingAccountAddressFlag = 1;
