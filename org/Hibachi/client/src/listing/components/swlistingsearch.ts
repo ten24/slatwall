@@ -352,7 +352,6 @@ class SWListingSearchController {
     };
 
     private configureSearchableColumns=(column)=>{
-        console.log('configureSearchableColumns', column)
 
         var searchableColumns = [];
         if(column.propertyIdentifier){
