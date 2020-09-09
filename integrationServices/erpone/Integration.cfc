@@ -66,7 +66,11 @@ extends="Slatwall.integrationServices.BaseIntegration" {
     		prodLoginID = {fieldType="text", defaultValue=""},
 			devLoginID = {fieldType="text", defaultValue=""},
 			prodLicense = {fieldType="text", defaultValue=""},
-			devLicense = {fieldType="text", defaultValue=""}
+			devLicense = {fieldType="text", defaultValue=""},
+			client = {fieldType="text", defaultValue="web"},
+			company = {fieldType="text", defaultValue="DC"},
+			username = {fieldType="text", defaultValue="Ten24Dev"},
+			password = {fieldType="text", defaultValue="HJ68ZmhL"}
     	};
 	}
 	

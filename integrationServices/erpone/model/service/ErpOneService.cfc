@@ -58,34 +58,24 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
         return variables.integration;
     }
     
-    public any function getAuthenticatio(){
-        
-    }
-    
-    public struct function getErponeDataByUrl(required string url , required string authorizationToken){
-	    var requestURL = setting("devGatewayURL"); 
-		requestURL &=arguments.url;
+    public struct function authTokenswithUrl(required string url){
+	    var requestURL = setting("devGatewayURL");
+		requestURL &= "distone/rest/service/authorize/grant";
 		var httpRequest = new http();
 		httpRequest.setMethod('GET');
 		httpRequest.setUrl( requestURL );
-    	httpRequest.addParam( type='header', name='Content-Type', value='application/json');
+
+    	httpRequest.addParam( type='header', name='Content-Type', value='application/x-www-form-urlencoded');
 		// Authentication headers
-    	httpRequest.addParam( type='header', name='Authorization', value= "Bearer #arguments.authorizationToken#" );
+    	httpRequest.addParam( type='header', name='client', value="Basic #setting('client')#" );
+    	httpRequest.addParam( type='header', name='company', value="Basic #setting('company')#" );
+    	httpRequest.addParam( type='header', name='username', value="Basic #setting('username')#" );
+    	httpRequest.addParam( type='header', name='password', value="Basic #setting('password')#" );
 		var rawRequest = httpRequest.send().getPrefix();
-		
+		writeDump(rawRequest);abort;
 		var response = {};
 		if( IsJson(rawRequest.fileContent) ) {
-		   
 			response = DeSerializeJson(rawRequest.fileContent); 
-			
-			if(StructKeyExists(response,"data")) {
-			    
-			    response = { "status": "success",  "data": response.data };
-		        } 
-			 else {
-			    response = { "status": "error",  "message": "Error: Data missing"  };
-		        } 
-			
 		} 
 		else {
 			response = { "status": "error",  "message": "Error: response is not valid JSON"  };
@@ -93,5 +83,4 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		
 		return response;
 	}
-  	
 }
