@@ -33,6 +33,7 @@ class SWListingSearchController {
     public collectionNameSaveIsOpen:boolean=false;
     public printTemplateOptions:any[];
     public personalCollectionIdentifier:string;
+    public defaultSearchColumn: any;
 
     //@ngInject
     constructor(
@@ -115,7 +116,17 @@ class SWListingSearchController {
             this.configureListingSearchConfigControls(this.swListingDisplay.collectionConfig.listingSearchConfig);
         }
 
-        this.selectedSearchColumn={title:'All'};
+        if(this.defaultSearchColumn){
+            this.selectedSearchColumn = this.searchableOptions
+                                                .find(column => column.propertyIdentifier === this.collectionConfig.baseEntityAlias+'.'+this.defaultSearchColumn);
+        }
+            
+        if(!this.selectedSearchColumn){
+            this.selectedSearchColumn = { title : 'All' };
+        }
+            
+            
+        
         this.configureSearchableColumns(this.selectedSearchColumn);
 
         if(this.swListingControls.showPrintOptions){
@@ -341,6 +352,7 @@ class SWListingSearchController {
     };
 
     private configureSearchableColumns=(column)=>{
+        console.log('configureSearchableColumns', column)
 
         var searchableColumns = [];
         if(column.propertyIdentifier){
@@ -373,6 +385,7 @@ class SWListingSearch  implements ng.IDirective{
         paginator : "=?",
         listingId : "@?",
         showToggleSearch:"=?",
+        defaultSearchColumn:"=?"
     };
     public controller = SWListingSearchController;
     public controllerAs = 'swListingSearch';
