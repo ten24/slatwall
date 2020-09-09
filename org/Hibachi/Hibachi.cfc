@@ -92,6 +92,8 @@ component extends="framework.one" {
 	variables.framework.hibachi.errorNotifyEmailAddresses = '';
 	variables.framework.hibachi.fullUpdateKey = "update";
 	variables.framework.hibachi.fullUpdatePassword = "true";
+	variables.framework.hibachi.createJsonKey = 'createJson';
+	variables.framework.hibachi.createJsonPassword = 'true';
 	variables.framework.hibachi.runDbDataKey = 'runDbData';
 	variables.framework.hibachi.loginSubsystems = "admin,public";
 	variables.framework.hibachi.loginDefaultSubsystem = 'admin';
@@ -329,31 +331,41 @@ component extends="framework.one" {
 			server[variables.framework.applicationKey] = {};
 		}
 
-		if(!structKeyExists(server[variables.framework.applicationKey], 'serverInstanceKey')){	
-			server[variables.framework.applicationKey].serverInstanceKey = createUUID();	
+		//ensure that we don't generate to different server instance keys concurrently
+		lock scope="Application" timeout="20"  {
+			if(!structKeyExists(server[variables.framework.applicationKey], 'serverInstanceKey')){	
+				server[variables.framework.applicationKey].serverInstanceKey = createUUID();	
+			}
 		}
 
 		// Verify that the application is setup
 		verifyApplicationSetup(noredirect=arguments.noredirect);
 
 		if(!variables.framework.hibachi.isApplicationStart && 
-			variables.framework.hibachi.useServerInstanceCacheControl &&
-			getHibachiScope().getService('hibachiCacheService').isServerInstanceCacheExpired(server[variables.framework.applicationKey].serverInstanceKey, getHibachiScope().getServerInstanceIPAddress())
+			variables.framework.hibachi.useServerInstanceCacheControl
 		){
+				//lock the server instance check per server so two sibling requests do not concurrently check expired state
+				lock name="serverInstance_#server[variables.framework.applicationKey].serverInstanceKey#" timeout="20" {	
+					if(getHibachiScope().getService('hibachiCacheService').isServerInstanceCacheExpired(server[variables.framework.applicationKey].serverInstanceKey, getHibachiScope().getServerInstanceIPAddress())){
 
-			verifyApplicationSetup(reloadByServerInstance=true);
+						verifyApplicationSetup(reloadByServerInstance=true);
 
-		}else if(getHibachiScope().getService('hibachiCacheService').isServerInstanceSettingsCacheExpired(server[variables.framework.applicationKey].serverInstanceKey, getHibachiScope().getServerInstanceIPAddress())){
+					}else if(getHibachiScope().getService('hibachiCacheService').isServerInstanceSettingsCacheExpired(server[variables.framework.applicationKey].serverInstanceKey, getHibachiScope().getServerInstanceIPAddress())){
 
-			getBeanFactory().getBean('hibachiCacheService').resetCachedKeyByPrefix('setting',true);
+						getBeanFactory().getBean('hibachiCacheService').resetCachedKeyByPrefix('setting',true);
 
-			var serverInstance = getBeanFactory().getBean('hibachiCacheService').getServerInstanceByServerInstanceKey(server[variables.framework.applicationKey].serverInstanceKey);
-			serverInstance.setSettingsExpired(false);
-			getBeanFactory().getBean('hibachiCacheService').saveServerInstance(serverInstance);
-		}
-		
+						var serverInstance = getBeanFactory().getBean('hibachiCacheService').getServerInstanceByServerInstanceKey(server[variables.framework.applicationKey].serverInstanceKey);
+						serverInstance.setSettingsExpired(false);
+						getBeanFactory().getBean('hibachiCacheService').saveServerInstance(serverInstance);
+					}
+				}
+		}	
+	
 		// Verify that the session is setup
-		getHibachiScope().getService("hibachiSessionService").setProperSession();
+		if(isAPIGetRequest()){
+			getHibachiScope().setStateless(true);
+		}
+		getHibachiScope().getService("hibachiSessionService").setProperSession(getHibachiScope().getStateless());
 		
 		// CSRF / Duplicate Request Handling
 		if(structKeyExists(request, "context")){
@@ -389,24 +401,9 @@ component extends="framework.one" {
 
 		//check if we have the authorization header
 		if(len(AuthToken)){
-
-			var authorizationHeader = AuthToken;
-			var prefix = 'Bearer ';
-			//get token by stripping prefix
-			var token = right(authorizationHeader,len(authorizationHeader) - len(prefix));
-			var jwt = getHibachiScope().getService('HibachiJWTService').getJwtByToken(token);
-			
-			if(jwt.verify()){
-
-				var jwtAccount = getHibachiScope().getService('accountService').getAccountByAccountID(jwt.getPayload().accountid);
-				if(!isNull(jwtAccount)){
-					jwtAccount.setJwtToken(jwt);
-					getHibachiScope().getSession().setAccount( jwtAccount );
-				}
-			}
-
+			getHibachiScope().getService("hibachiSessionService").setAccountSessionByAuthToken(AuthToken);
 		}
-
+		
 		// Call the onEveryRequest() Method for the parent Application.cfc
 		onEveryRequest();
 		if(structKeyExists(request,'context')){
@@ -499,14 +496,15 @@ component extends="framework.one" {
 			authenticationArguments.processContext = lCase(request.context.processContext);
 		}
 		var authorizationDetails = getHibachiScope().getService("hibachiAuthenticationService").getActionAuthenticationDetailsByAccount(argumentCollection = authenticationArguments);
-		
 		// Get the hibachiConfig out of the application scope in case any changes were made to it
 		var hibachiConfig = getHibachiScope().getApplicationValue("hibachiConfig");
 		// Verify Authentication before anything happens
 
 		if(
 			!authorizationDetails.authorizedFlag
+			&& !getHibachiScope().getStateless()
 		) {
+			
 			// Get the hibachiConfig out of the application scope in case any changes were made to it
 			var hibachiConfig = getHibachiScope().getApplicationValue("hibachiConfig");
 
@@ -626,6 +624,14 @@ component extends="framework.one" {
 			&& url[variables.framework.reload] == variables.framework.password
 		) || !hasBeanFactory();
 	}
+	
+	public boolean function hasCreateJsonKey(){
+
+		return (
+			structKeyExists(url, variables.framework.hibachi.createJsonKey)
+			&& url[variables.framework.hibachi.createJsonKey] == variables.framework.hibachi.createJsonPassword
+		);
+	}
 
 	public void function verifyApplicationSetup(reloadByServerInstance=false,noredirect=false) {
 		createHibachiScope();
@@ -675,6 +681,8 @@ component extends="framework.one" {
 					applicationInitData["updateDestinationContentExclustionList"] = variables.framework.hibachi.updateDestinationContentExclustionList;
 					applicationInitData["applicationUpdateKey"] = 		variables.framework.hibachi.fullUpdateKey;
 					applicationInitData["applicationUpdatePassword"] =	variables.framework.hibachi.fullUpdatePassword;
+					applicationInitData["applicationCreateJsonKey"] = 		variables.framework.hibachi.createJsonKey;
+					applicationInitData["applicationCreateJsonPassword"] =	variables.framework.hibachi.createJsonPassword;
 					applicationInitData["debugFlag"] =					variables.framework.hibachi.debugFlag;
 					applicationInitData["gzipJavascript"] = 			variables.framework.hibachi.gzipJavascript;
 					applicationInitData["errorDisplayFlag"] =			variables.framework.hibachi.errorDisplayFlag;
@@ -880,8 +888,15 @@ component extends="framework.one" {
 					getBeanFactory().getBean('HibachiAuditService').verifyIntegrity();
 
 					//==================== START: JSON BUILD SETUP ========================
-
-					if(!variables.framework.hibachi.skipCreateJsonOnServerStartup){
+					//skip if not application start or if config override specified
+					if(
+						hasCreateJsonKey()
+						||
+						(
+							variables.framework.hibachi.isApplicationStart
+							&& !variables.framework.hibachi.skipCreateJsonOnServerStartup
+						)
+					){
 						getBeanFactory().getBean('HibachiJsonService').createJson();
 					}
 
@@ -981,7 +996,6 @@ component extends="framework.one" {
 		//leaving a note here in case we ever wish to support XML for api responses
 		if(isStruct(request.context.apiResponse.content) && request.context.headers['Content-Type'] eq 'application/json'){
 			responseString = serializeJSON(request.context.apiResponse.content);
-
 			// If running CF9 we need to fix strings that were improperly cast to numbers
 			if(left(server.coldFusion.productVersion, 1) eq 9) {
 				responseString = getHibachiScope().getService("hibachiUtilityService").updateCF9SerializeJSONOutput(responseString);
@@ -992,6 +1006,14 @@ component extends="framework.one" {
 		}
 		writeOutput( responseString );
 		abort;
+	}
+	
+	public boolean function isAPIRequest(){
+		return getSubSystem()=='api';
+	}
+	
+	public boolean function isAPIGetRequest(){
+		return isApiRequest() && getSection() == 'main' && getItem() == 'get';
 	}
 
 	public void function setupResponse(rc) {
@@ -1005,6 +1027,7 @@ component extends="framework.one" {
 		}
 		
 		endHibachiLifecycle();
+		
 		// Announce the applicationRequestStart event
 		getHibachiScope().getService("hibachiEventService").announceEvent(eventName="onApplicationRequestEnd");
 		

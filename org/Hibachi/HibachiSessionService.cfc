@@ -72,7 +72,11 @@ component output="false" accessors="true" extends="HibachiService"  {
  		return arguments.rc;	
 	}
 	
-	public void function setProperSession() {
+	public void function setProperSession(boolean stateless=false) {
+		if(arguments.stateless){
+			getHibachiScope().setSession(this.newSession());
+			return;
+		}
 		var requestHeaders = getHTTPRequestData();
 		
 		// Check to see if a session value doesn't exist, then we can check for a cookie... or just set it to blank
@@ -252,6 +256,25 @@ component output="false" accessors="true" extends="HibachiService"  {
 		getHibachiScope().getSession().setLastRequestDateTime( now() );
 		getHibachiScope().getSession().setLastRequestIPAddress( getRemoteAddress() );
 		
+	}
+	
+	/**
+	 * Method to create account session using Bearer Token
+	 * */
+	public void function setAccountSessionByAuthToken(required string authToken){
+		var authorizationHeader = arguments.authToken;
+		var prefix = 'Bearer ';
+		//get token by stripping prefix
+		var token = right(authorizationHeader,len(authorizationHeader) - len(prefix));
+		var jwt = getHibachiScope().getService('HibachiJWTService').getJwtByToken(token);
+
+		if(jwt.verify()){
+			var jwtAccount = getHibachiScope().getService('accountService').getAccountByAccountID(jwt.getPayload().accountid);
+			if(!isNull(jwtAccount)){
+				jwtAccount.setJwtToken(jwt);
+				getHibachiScope().getSession().setAccount( jwtAccount );
+			}
+		}
 	}
 	
 	public any function getSessionBySessionCookieNPSID(any cookie,boolean isNew=false){

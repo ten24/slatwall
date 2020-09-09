@@ -79,12 +79,11 @@ component accessors="true" output="false" extends="HibachiService" {
 		if(arguments.useThread == true && !getService('hibachiUtilityService').isInThread()){
 			var threadName = "updateCalculatedProperties_#replace(createUUID(),'-','','ALL')#";
 			thread name="#threadName#" entityQueueArray="#arguments.entityQueueArray#" {
-				processEntityQueueArray(entityQueueArray, false);
+				processEntityQueueArray(attributes.entityQueueArray, false);
 			}
 		}else{
 			var entityQueueIDsToBeDeleted = '';
 			var entityQueueIDsToBeUpdated = '';
-			
 			for(var entityQueue in arguments.entityQueueArray){
 			
 				var entityService = getServiceByEntityName( entityName=entityQueue['baseObject'] );
@@ -109,8 +108,10 @@ component accessors="true" output="false" extends="HibachiService" {
 					entityService.invokeMethod("#entityQueue['processMethod']#", processData);
 					entityQueueIDsToBeDeleted = listAppend(entityQueueIDsToBeDeleted, entityQueue['entityQueueID']);
 					ormflush();
+					
 				}catch(any e){
 					entityQueueIDsToBeUpdated = listAppend(entityQueueIDsToBeUpdated, entityQueue['entityQueueID']);
+					logHibachi(serializeJson(e),false);
 				}
 			}
 			if(listLen(entityQueueIDsToBeDeleted)){

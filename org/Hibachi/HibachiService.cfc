@@ -543,7 +543,12 @@
 			var entityName = missingMethodName.substring( 3,entityNameLength + 3 );
 			var entityID = missingMethodArguments[ 1 ]; 
 			
-			var collection = getCollectionList(entityName=entityName); 
+			var collection = getCollectionList(entityName=entityName);
+			
+			if(structCount(arguments.missingMethodArguments) > 1){
+				collection.setDisplayProperties(arguments.missingMethodArguments[2]);
+			} 
+			
 			collection.addFilter(getPrimaryIDPropertyNameByEntityName(entityName), entityID);
 			collection.setPageRecordsShow(1);
 			return collection.getPageRecords(formatRecords=false)[1];

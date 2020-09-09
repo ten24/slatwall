@@ -65,7 +65,6 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 	property name="expirationYear" type="numeric";
 	property name="securityCode" type="string";
 	property name="providerToken" type="string";
-	
 	// Account Info
 	property name="accountFirstName" type="string";   
 	property name="accountLastName" type="string";   
@@ -92,6 +91,7 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 	// Pertinent Reference Information (used for orderPayments)
 	property name="orderPaymentID" type="string";
 	property name="orderID" type="string";
+	property name="orderShortReferenceID" type="string";
 	
 	// Pertinent Reference Information (used for all above)
 	property name="accountID" type="string";

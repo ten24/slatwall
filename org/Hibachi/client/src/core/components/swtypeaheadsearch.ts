@@ -284,6 +284,7 @@ class SWTypeaheadSearchController {
 
    public updateSelections = () =>{
        this.typeaheadService.updateSelections(this.typeaheadDataKey);
+       this.hideSearch = true;
    }
 
     public updateSearchableProperties = (column) =>{
@@ -468,7 +469,7 @@ class SWTypeaheadSearch implements ng.IDirective{
                     `
                 }
 
-                anchorTemplateString = anchorTemplateString + rightContentTemplateString; 
+                
                 var listItemTemplate = angular.element(listItemTemplateString);
                 var anchorTemplate = angular.element(anchorTemplateString);
                
