@@ -1286,7 +1286,7 @@
 	             apiRequestAudit.setParams( serializeJson(form) );
 	        }
 	        
-	        apiRequestAudit.setStatusCode( getPageContext().getResponse().getResponse().getStatus() );
+	        apiRequestAudit.setStatusCode( getPageContext().getResponse().getStatus() );
 	        
 	        apiRequestAudit.setRequestType( arguments.requestType);
 	        apiRequestAudit.setAccount(getHibachiScope().getAccount());
