@@ -107,7 +107,6 @@ Notes:
 	
 	<cfset accountCollectionList.addOrderBy('createdDateTime|DESC') />
 	
-	<cfdump var="#accountCollectionList.getHQL()#" />
 	
 	<hb:HibachiListingDisplay 
 		collectionList="#accountCollectionList#"
