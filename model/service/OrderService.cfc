@@ -836,6 +836,103 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		list.addFilter("orderTemplateType.typeID","2c9280846b712d47016b75464e800014");
 		return list.getRecords();
 	}
+	
+	public any function processTemplateItemBatch_process(required any templateItemBatch){
+		
+		var orderTemplateCollection = arguments.templateItemBatch.getOrderTemplateCollection();
+		if( isNull( orderTemplateCollection ) ){
+			arguments.templateItemBatch.addError('orderTemplateCollection',getHibachiScope().rbKey('validate.templateItemBatch.orderTemplateCollection'));
+			return arguments.templateItemBatch;
+		}
+		
+		var removalSku = arguments.templateItemBatch.getRemovalSku();
+		if( isNull( removalSku ) ){
+			arguments.templateItemBatch.addError('removalSku',getHibachiScope().rbKey('validate.templateItemBatch.removalSku'));
+			return arguments.templateItemBatch;
+		}
+		
+		var entityQueueData = {
+			'removalSkuID':removalSku.getSkuID()
+		};
+		
+		var replacementSku = arguments.templateItemBatch.getReplacementSku();
+		var processMethod = 'processOrderTemplate_removeSku';
+		if( !isNull( replacementSku ) ){
+			processMethod = 'processOrderTemplate_replaceSku';
+			entityQueueData['replacementSkuID'] = replacementSku.getSkuID();
+		}
+		
+		orderTemplateCollection.addFilter('orderTemplateItems.sku.skuID',removalSku.getSkuID());
+		
+		orderTemplateCollection.setLimitCountTotal(0);
+		orderTemplateCollection.setPageRecordsShow(1000);
+		orderTemplateCollection.setDisplayProperties('orderTemplateID');
+		var numPages = orderTemplateCollection.getTotalPages();
+		
+		var entityQueueArguments = {
+			'entityName':'OrderTemplate',
+			'processMethod':processMethod,
+			'entityQueueData':entityQueueData
+		};
+		try{
+			for(var i = 1; i <= numPages; i++){
+				var orderTemplateIDList = '';
+				orderTemplateCollection.setCurrentPageDeclaration(i);
+				var pageRecords = orderTemplateCollection.getPageRecords();
+				for(var pageRecord in pageRecords){
+					orderTemplateIDList = listAppend(orderTemplateIDList,pageRecord['orderTemplateID']);
+				}
+				entityQueueArguments['primaryIDList'] = orderTemplateIDList;
+				getDAO('HibachiEntityQueueDAO').bulkInsertEntityQueueByPrimaryIDs(argumentCollection=entityQueueArguments);
+			}
+		}catch(any e){
+			arguments.templateItemBatch.addError('process',e.message);
+		}
+		if(!arguments.templateItemBatch.hasErrors()){
+			arguments.templateItemBatch.setTemplateItemBatchStatusType(getService('TypeService').getTypeBySystemCode('tibstProcessed'));
+		}
+		return arguments.templateItemBatch;
+	}
+	
+	public any function processOrderTemplate_removeSku(required any orderTemplate, required data={}){
+		if( !structKeyExists(arguments.data, 'removalSkuID') ){
+			arguments.orderTemplate.addError('removalSku',getHibachiScope().rbKey('validate.orderTemplate_removeSku.removalSkuID'));
+		}
+		var orderTemplateItemCollection = arguments.orderTemplate.getOrderTemplateItemsCollectionList();
+		orderTemplateItemCollection.addFilter('sku.skuID',arguments.data.removalSkuID);
+		orderTemplateItemCollection.setDisplayProperties('orderTemplateItemID');
+		var itemRecords = orderTemplateItemCollection.getRecords();
+		for(itemRecord in itemRecords){
+			var orderTemplateItem = this.getOrderTemplateItem(itemRecord['orderTemplateItemID']);
+			arguments.orderTemplate.removeOrderTemplateItem(orderTemplateItem);
+			this.saveOrderTemplate(arguments.orderTemplate);
+		}
+		return arguments.orderTemplate;
+	}
+	
+	public any function processOrderTemplate_replaceSku(required any orderTemplate, required data={}){
+		if( !structKeyExists(arguments.data, 'removalSkuID') ){
+			arguments.orderTemplate.addError('removalSku',getHibachiScope().rbKey('validate.orderTemplate_removeSku.removalSkuID'));
+		}
+		if( !structKeyExists(arguments.data, 'replacementSkuID') ){
+			arguments.orderTemplate.addError('replacementSku',getHibachiScope().rbKey('validate.orderTemplate_replaceSku.replacementSkuID'));
+		}
+		var orderTemplateItemCollection = arguments.orderTemplate.getOrderTemplateItemsCollectionList();
+		orderTemplateItemCollection.addFilter('sku.skuID',arguments.data.removalSkuID);
+		orderTemplateItemCollection.setDisplayProperties('orderTemplateItemID,quantity');
+		var itemRecords = orderTemplateItemCollection.getRecords();
+		for(itemRecord in itemRecords){
+			var orderTemplateItem = this.getOrderTemplateItem(itemRecord['orderTemplateItemID']);
+			arguments.orderTemplate.removeOrderTemplateItem(orderTemplateItem);
+			
+			var addOrderTemplateItemProcessData = {
+				'skuID':arguments.data.replacementSkuID,
+				'quantity':itemRecord['quantity']
+			};
+			arguments.orderTemplate = this.processOrderTemplate(arguments.orderTemplate, addOrderTemplateItemProcessData, 'addOrderTemplateItem');
+		}
+		return arguments.orderTemplate;
+	}
 
 	// @hint Process to associate orderItem and orderItemGiftRecipient
 	public any function processOrder_addOrderItemGiftRecipient(required any order, required any processObject){
