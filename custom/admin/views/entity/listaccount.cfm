@@ -77,7 +77,15 @@ Notes:
 	displayProperty='primaryEmailAddress.emailAddress',
 	columnConfig={
 		isVisible=true,
-		isSearchable=false,
+		isSearchable=true,
+		isDeletable=true
+	})/>
+	
+	<cfset accountCollectionList.addDisplayProperty(
+	displayProperty='primaryPhoneNumber.phoneNumber',
+	columnConfig={
+		isVisible=false,
+		isSearchable=true,
 		isDeletable=true
 	})/>
 	
@@ -99,12 +107,14 @@ Notes:
 	
 	<cfset accountCollectionList.addOrderBy('createdDateTime|DESC') />
 	
+	
 	<hb:HibachiListingDisplay 
 		collectionList="#accountCollectionList#"
 		usingPersonalCollection="true"
 		personalCollectionKey='#request.context.entityactiondetails.itemname#'
 		recordEditAction="admin:entity.edit#lcase(accountCollectionList.getCollectionObject())#"
 		recordDetailAction="admin:entity.detail#lcase(accountCollectionList.getCollectionObject())#"
+		defaultSearchColumn="accountNumber"
 	>
 	</hb:HibachiListingDisplay>
 
