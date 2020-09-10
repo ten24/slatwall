@@ -92,7 +92,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    this.getHibachiScope().flushORMSession();
 	    
 	    for( var record in queryOrArrayOfStruct ){
-	        this.importEntityIntoQueue( arguments.entityName, record, newBatch);
+	        this.pushRecordIntoImportQueue( arguments.entityName, record, newBatch);
 	    }
 	    
 	    //TODO: update initial batch-items values
