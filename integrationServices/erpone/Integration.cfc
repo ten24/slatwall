@@ -73,7 +73,4 @@ extends="Slatwall.integrationServices.BaseIntegration" {
 			password = {fieldType="text", defaultValue="HJ68ZmhL"}
     	};
 	}
-	
-	
-	
 }

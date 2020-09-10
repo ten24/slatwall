@@ -48,7 +48,7 @@ Notes:
 */
 
 
-component accessors="true" output="false" displayname="ErpOne" implements="Slatwall.integrationServices.ErpOneInterface" extends="Slatwall.integrationServices.BaseIntegrationType" {
+component accessors="true" output="false" displayname="ErpOne" extends="Slatwall.integrationServices.BaseIntegrationType" {
 
 	property name="ErpOneService";
 	
