@@ -43,18 +43,6 @@
     If you modify this program, you may extend this exception to your version
     of the program, but you are not obligated to do so.
 
-Notes:
-
-	Order Status Types
-	__________________
-	ostNotPlaced
-	ostNew
-	ostProcessing
-	ostOnHold
-	ostClosed
-	ostCanceled
-
-
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />

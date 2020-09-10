@@ -881,7 +881,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			for(var i = 1; i <= numPages; i++){
 				var orderTemplateIDList = '';
 				orderTemplateCollection.setCurrentPageDeclaration(i);
-				var pageRecords = orderTemplateCollection.getPageRecords();
+				var pageRecords = orderTemplateCollection.getPageRecords(refresh=true);
 				for(var pageRecord in pageRecords){
 					orderTemplateIDList = listAppend(orderTemplateIDList,pageRecord['orderTemplateID']);
 				}
