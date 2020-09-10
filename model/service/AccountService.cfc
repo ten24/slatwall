@@ -1512,8 +1512,9 @@ component extends="HibachiService" accessors="true" output="false" {
 				arguments.accountPayment.addError('createTransaction', paymentTransaction.getError('runTransaction'), true);
 			}
 			
-			if (paymentTransaction.getTransactionSuccessFlag() == false){
-				arguments.accountPayment.setActiveFlag(false);
+			if(paymentTransaction.getTransactionSuccessFlag() == false){
+				writeDump(arguments.accountPayment);abort;
+				accountPayment.setActiveFlag(false);
 			}
 		}
 
