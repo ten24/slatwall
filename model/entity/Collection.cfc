@@ -2119,16 +2119,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			var columns = collectionConfigStruct.columns;
 			var columnCount = arraylen(columns); 
             for(var i = 1; i <= columnCount; i++){
-            	
-            	if(
-            		structKeyExists(columns[i], 'isVisible') && columns[i]['isVisible'] == false
-            		&& (	!isSearchableColumn(columns[i])
-            			||
-            				( isSearchableColumn(columns[i]) && !hasKeywords())
-            			)
-            	){
-            		continue;
-            	}
                 aliases = listAppend(aliases, listFirst(columns[i].propertyIdentifier, '.'));
             }
         }
@@ -4078,10 +4068,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}//<--end if
 
 			}else{
-				
-				if(structKeyExists(column,'isVisible') && !column['isVisible']){
-					continue;
-				}
 				
 				getPropertyIdentifierAlias(column.propertyIdentifier,'column');
 				if(!arguments.forExport || (arguments.forExport && structKeyExists(column,'isExportable') && column.isExportable)){
