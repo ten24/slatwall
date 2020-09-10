@@ -21,7 +21,6 @@
 	<cfparam name="attributes.showExport" type="boolean" default="true"/>
 	<cfparam name="attributes.showSearch" type="boolean" default="true"/>
 	<cfparam name="attributes.showReport" type="boolean" default="false"/>
-	<cfparam name="attributes.defaultSearchColumn" type="string" default=""/>
 	<cfparam name="attributes.reportAction" type="string" default="" />
 	<cfparam name="attributes.refreshEvent" type="string" default="" />
 	<cfparam name="attributes.enableAveragesAndSums" type="boolean" default="true"/> <!--- Setting to false will disable averages and sums in listing; which is the default behaviour, see Collection::disableAveragesAndSumsFlag --->
@@ -155,9 +154,6 @@
 				</cfif>
 				<cfif len(attributes.personalCollectionKey)>
 					data-personal-collection-key="#attributes.personalCollectionKey#"
-				</cfif>
-				<cfif len(attributes.defaultSearchColumn)>
-					data-default-search-column="#attributes.defaultSearchColumn#"
 				</cfif>
 			    data-collection="#scopeVariableID#"
 			    data-edit="#attributes.edit#"

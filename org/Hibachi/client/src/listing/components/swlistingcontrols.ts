@@ -207,8 +207,7 @@ class SWListingControls  implements ng.IDirective{
         showToggleFilters : "=?",
         showToggleDisplayOptions : "=?",
         displayOptionsClosed:"=?",
-        simple:"=?",
-        defaultSearchColumn:"=?"
+        simple:"=?"
     };
     public controller = SWListingControlsController;
     public controllerAs = 'swListingControls';
