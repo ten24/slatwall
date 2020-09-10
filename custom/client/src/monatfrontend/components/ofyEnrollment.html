@@ -11,6 +11,13 @@
 					ng-class="{ 'selected': item.skuID == ofyEnrollment.stagedProductID }"
 				>
 					<div class="fitbox">
+						<div class="quick-view">
+		      				<div class="overlay">
+		      					<div class="overlay-inner">
+		      						<span><a ng-click="ofyEnrollment.launchQuickShopModal(item)" class="btn prod-btn" sw-rbkey="'frontend.global.quickShop'"></a></span>
+		      					</div>
+		      				</div>
+		      			</div>
 						<figure>
 							<img image-manager ng-src="{{ item.skuImagePath[0] }}" />
 						</figure>
