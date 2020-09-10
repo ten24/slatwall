@@ -2668,14 +2668,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			}
 			
+			// Save the orderDelivery
+			arguments.orderDelivery = this.saveOrderDelivery(arguments.orderDelivery);
+			this.saveOrderFulfillment( arguments.processObject.getOrderFulfillment() );
 			
 			if(arguments.orderDelivery.hasErrors()){
 				arguments.processObject.getOrderFulfillment().setErrors(arguments.orderDelivery.getErrors());
 			}
-			
-			// Save the orderDelivery
-			arguments.orderDelivery = this.saveOrderDelivery(arguments.orderDelivery);
-			this.saveOrderFulfillment( arguments.processObject.getOrderFulfillment() );
 			
 			//must flush otherwise the dao won't get the correct amount.
 			if (!arguments.processObject.getOrderFulfillment().hasErrors()){
