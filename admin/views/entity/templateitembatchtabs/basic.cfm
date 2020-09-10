@@ -11,6 +11,7 @@
 			<cfif NOT rc.templateItemBatch.getNewFlag() >
 				<hb:HibachiPropertyDisplay object="#rc.templateItemBatch#" property="templateItemBatchStatusType" edit="false" />
 			</cfif>
+			<hb:HibachiPropertyDisplay object="#rc.templateItemBatch#" property="replacementFlag" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay 
 				object="#rc.templateItemBatch#" 
 				property="removalSku" 
@@ -18,13 +19,15 @@
 				autocompleteNameProperty="skuName"
 				autocompletePropertyIdentifiers="skuName,skuCode"
 				edit="#rc.edit#" />
-			<hb:HibachiPropertyDisplay 
-				object="#rc.templateItemBatch#" 
-				property="replacementSku"
-				fieldType="typeahead"
-				autocompleteNameProperty="skuName"
-				autocompletePropertyIdentifiers="skuName,skuCode"
-				edit="#rc.edit#" />
+			<hb:HibachiDisplayToggle selector="input[name='replacementFlag']" showValues="1" >
+				<hb:HibachiPropertyDisplay 
+					object="#rc.templateItemBatch#" 
+					property="replacementSku"
+					fieldType="typeahead"
+					autocompleteNameProperty="skuName"
+					autocompletePropertyIdentifiers="skuName,skuCode"
+					edit="#rc.edit#" />
+			</hb:HibachiDisplayToggle>
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 	

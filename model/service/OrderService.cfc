@@ -854,14 +854,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var entityQueueData = {
 			'removalSkuID':removalSku.getSkuID()
 		};
-		
-		var replacementSku = arguments.templateItemBatch.getReplacementSku();
 		var processMethod = 'processOrderTemplate_removeSku';
-		if( !isNull( replacementSku ) ){
-			processMethod = 'processOrderTemplate_replaceSku';
-			entityQueueData['replacementSkuID'] = replacementSku.getSkuID();
+		if(!isNull(arguments.templateItemBatch.getReplacementFlag()) && arguments.templateItemBatch.getReplacementFlag()){
+			var replacementSku = arguments.templateItemBatch.getReplacementSku();
+			if( !isNull( replacementSku ) ){
+				processMethod = 'processOrderTemplate_replaceSku';
+				entityQueueData['replacementSkuID'] = replacementSku.getSkuID();
+			}else{
+				arguments.templateItemBatch.addError('replacementSku',getHibachiScope().rbKey('validate.orderTemplate_replaceSku.replacementSkuID'));
+				return arguments.templateItemBatch;
+			}
 		}
-		
 		orderTemplateCollection.addFilter('orderTemplateItems.sku.skuID',removalSku.getSkuID());
 		
 		orderTemplateCollection.setLimitCountTotal(0);

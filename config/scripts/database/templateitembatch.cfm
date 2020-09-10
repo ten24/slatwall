@@ -4,6 +4,7 @@
     <cfquery name="local.templateitembatch">
         CREATE TABLE IF NOT EXISTS `swtemplateitembatch` (
             `templateItemBatchID` varchar(32) NOT NULL,
+            `replacementFlag` boolean DEFAULT NULL,
             `createdDateTime` datetime DEFAULT NULL,
             `modifiedDateTime` datetime DEFAULT NULL,
             `createdByAccountID` varchar(32) DEFAULT NULL,

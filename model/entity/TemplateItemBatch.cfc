@@ -2,6 +2,7 @@ component extends="Slatwall.model.entity.HibachiEntity" displayname="TemplateIte
     
     property name="templateItemBatchID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
     property name="templateItemBatchName" ormtype="string";
+    property name="replacementFlag" ormtype="boolean" default="false";
     property name="orderTemplateCollectionConfig" ormtype="text";
     
     // Related Object Properties (many-to-one)
