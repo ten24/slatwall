@@ -10,6 +10,7 @@ import {entitymodule} from "../entity/entity.module";
 import {paginationmodule} from "../pagination/pagination.module";
 import {formmodule} from "../form/form.module";
 import {validationmodule} from "../validation/validation.module";
+import {widgetmodule} from "../widget/widget.module";
 import {workflowmodule} from "../workflow/workflow.module";
 
 //directives
@@ -25,6 +26,7 @@ var hibachimodule = angular.module('hibachi',[
     paginationmodule.name,
     formmodule.name,
     validationmodule.name,
+    widgetmodule.name,
     workflowmodule.name
 ]).config([()=>{
 
