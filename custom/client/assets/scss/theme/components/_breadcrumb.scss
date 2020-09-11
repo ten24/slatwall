@@ -1,0 +1,46 @@
+//
+// Breadcrumb
+// --------------------------------------------------
+
+.breadcrumb-item {
+  font: {
+    size: $breadcrumb-item-font-size;
+    weight: $nav-link-font-weight;
+  }
+  &::before {
+    font: {
+      family: 'cartzilla-icons';
+      size: .9em;
+    }
+    vertical-align: middle;
+  }
+  > a {
+    transition: $nav-link-transition;
+    color: $breadcrumb-dark-item-link-color;
+    &:hover {
+      color: $breadcrumb-dark-item-link-hover-color;
+      text-decoration: none;
+    }
+    > i {
+      margin: {
+        top: -.175rem;
+        right: .325rem;
+      }
+      font-size: 1.05em;
+      vertical-align: middle;
+    }
+  }
+  &.active { cursor: default; }
+}
+
+// Light version
+.breadcrumb-light .breadcrumb-item  {
+  &::before { color: $breadcrumb-light-divider-color; }
+  > a {
+    color: $breadcrumb-light-item-link-color;
+    &:hover {
+      color: $breadcrumb-light-item-link-hover-color;
+    }
+  }
+  &.active { color: $breadcrumb-light-active-color; }
+}

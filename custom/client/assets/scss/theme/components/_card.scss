@@ -1,0 +1,92 @@
+//
+// Card
+// --------------------------------------------------
+
+
+// Header navs
+
+.card-header-tabs {
+  margin: {
+    top: -$card-spacer-x / 3;
+    right: -$card-spacer-x;
+    bottom: -$card-spacer-y;
+    left: -$card-spacer-x;
+  }
+}
+
+
+// Cards border-color variations
+
+.card {
+  &.border-primary,
+  .card-header.border-primary { border-color: rgba($primary, .35) !important; }
+  &.border-accent,
+  .card-header.border-accent { border-color: rgba($accent, .35) !important; }
+  &.border-success,
+  .card-header.border-success { border-color: rgba($success, .35) !important; }
+  &.border-danger,
+  .card-header.border-danger { border-color: rgba($danger, .35) !important; }
+  &.border-warning,
+  .card-header.border-warning { border-color: rgba($warning, .35) !important; }
+  &.border-info,
+  .card-header.border-info { border-color: rgba($info, .35) !important; }
+  &.border-dark,
+  .card-header.border-dark { border-color: rgba($dark, .35) !important; }
+}
+
+
+// Accordion
+
+.accordion {
+  .card-header {
+    padding: 0;
+    background-color: transparent;
+  }
+  .accordion-heading {
+    margin-bottom: 0;
+    font: {
+      size: $accordion-heading-font-size;
+      weight: $accordion-heading-font-weight;
+    }
+    > a {
+      display: block;
+      position: relative;
+      padding: ($card-spacer-y * 1.25) $card-spacer-x;
+      padding-right: ($card-spacer-x * 1.5 + $accordion-indicator-box-size);
+      color: $accordion-heading-color;
+      &:hover {
+        color: inherit;
+        text-decoration: none;
+      }
+    }
+  }
+  .accordion-indicator {
+    display: block;
+    position: absolute;
+    top: 50%;
+    right: $card-spacer-y;
+    width: $accordion-indicator-box-size;
+    height: $accordion-indicator-box-size;
+    margin-top: -($accordion-indicator-box-size / 2);
+    transition: $accordion-indicator-transition;
+    border-radius: 50%;
+    background-color: $accordion-indicator-bg;
+    font: {
+      family: 'cartzilla-icons';
+      size: $accordion-indicator-icon-size;
+      weight: bold;
+    }
+    line-height: $accordion-indicator-box-size - .125rem;
+    text-align: center;
+    &::before { content: '\e90c'; }
+  }
+  .collapsed .accordion-indicator {
+    transform: rotate(-180deg);
+  }
+}
+
+
+// IE 11 Fix
+// Core Bootstrap issue https://github.com/twbs/bootstrap/issues/21885
+.card *,
+.flex-column * { min-height: .01px; }

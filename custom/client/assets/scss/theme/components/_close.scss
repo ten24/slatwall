@@ -1,0 +1,26 @@
+//
+// Close
+// --------------------------------------------------
+
+.close {
+  transition: $close-transition;
+  opacity: .7;
+  &:focus { outline: none; }
+  &:not(:disabled):not(.disabled):hover { opacity: 1; }
+}
+.close-floating {
+  display: block;
+  position: absolute;
+  top: -($close-floating-size / 3);
+  right: -($close-floating-size / 3);
+  width: $close-floating-size;
+  height: $close-floating-size;
+  border-radius: 50%;
+  background-color: $close-floating-bg;
+  color: $close-floating-color;
+  font-size: $close-floating-font-size;
+  text-align: center;
+  cursor: pointer;
+  z-index: 5;
+  > i { line-height: $close-floating-size; }
+}
