@@ -905,7 +905,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		orderTemplateItemCollection.addFilter('sku.skuID',arguments.data.removalSkuID);
 		orderTemplateItemCollection.setDisplayProperties('orderTemplateItemID');
 		var itemRecords = orderTemplateItemCollection.getRecords();
-		for(itemRecord in itemRecords){
+		for(var itemRecord in itemRecords){
 			var orderTemplateItem = this.getOrderTemplateItem(itemRecord['orderTemplateItemID']);
 			arguments.orderTemplate.removeOrderTemplateItem(orderTemplateItem);
 			this.saveOrderTemplate(arguments.orderTemplate);
