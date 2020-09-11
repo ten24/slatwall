@@ -193,6 +193,13 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 	
 		});
 		
+		//When user adding payment method to account
+		var getPaymentMethodType = $(".j-custom-select option:selected").attr('paymentmethodtype');
+		jQuery.each( jQuery( scopeSelector ).find( jQuery('.hibachi-display-toggle.hide') ), function(index, value){
+			if($("#"+jQuery(this).attr('id')).attr('data-hibachi-show-values') == getPaymentMethodType || (getPaymentMethodType != undefined && $("#"+jQuery(this).attr('id')).attr('data-hibachi-show-values') == 'creditCard,termPayment')){
+				$("#"+jQuery(this).attr('id')).removeClass("hide");
+			}
+	    });
 		
 		// Form Empty value clear (IMPORTANT!!! KEEP THIS ABOVE THE VALIDATION ASIGNMENT)
 		jQuery.each(jQuery( scopeSelector ).find(jQuery('form')), function(index, value) {
@@ -1792,7 +1799,8 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 				dimensions: jQuery('input[name="dimensions"]').val(),
 				metrics: jQuery('input[name="metrics"]').val(),
 				reportType: jQuery('select[name="reporttype"]').val(), 
-				orderByType: jQuery('select[name="orderbytype"]').val()
+				orderByType: jQuery('select[name="orderbytype"]').val(),
+				reportSite: jQuery('select[name="siteSelector"').val()
 			};
 		
 			if(jQuery('input[name="showReport"]').is(':checked')){
@@ -1825,9 +1833,49 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 						jQuery("#hibachi-report-chart-wrapper").hide();
 					} else { 
 						if(r.report.chartData.series !== undefined){
-							var html = "<div id='hibachi-report-chart'></div>";
+							var html = "<canvas id='hibachi-report-chart' width='1800' height='600'></canvas>";
 							jQuery("#hibachi-report-chart-wrapper").html(html);
-							var chart = new Highcharts.Chart(r.report.chartData);	
+							var ctx = jQuery("#hibachi-report-chart")[0].getContext("2d");
+							var chart = new Chart(ctx, {
+							    type: r.report.chartData.data.type,
+							    data: {
+							        datasets: [{
+							            label: r.report.chartData.series[0].label,
+							            data: r.report.chartData.series[0].data,
+							            borderColor: [
+							                '#f38631'
+							            ],
+							            pointBackgroundColor: "#f38631",
+							            pointBorderColor: "#f38631",
+							            fill: false,
+							            borderWidth: 3,
+							            lineTension: 0
+							        }]
+							    },
+							    options: {
+							        scales: {
+							            yAxes: [{
+							                ticks: {
+							                    beginAtZero: true
+							                }
+							            }],
+							            xAxes: [{
+							            	type: 'time',
+							            	ticks: {
+							            		source: 'data',
+							            	},
+							            	time: {
+							            		parser: 'string',
+							            		unit: 'week',
+							            		stepSize: 5,
+							            	}
+							            }]
+							        },
+							        legend: {
+							        	display: false
+							        }
+							    }
+							});	
 						}
 						jQuery("#hibachi-report-chart-wrapper").show();
 					}

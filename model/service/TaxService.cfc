@@ -95,6 +95,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
  				continue;
  			}
  			
+ 			for(var appliedPromotion in orderFulfillment.getAppliedPromotions()){
+ 				orderFulfillmentList = listAppend(orderFulfillmentList,appliedPromotion.getPromotion().getPromotionID());
+ 			}
+ 			
  			if(!isNull(orderFulfillment.getShippingAddress())){
  				orderFulfillmentList = listAppend(orderFulfillmentList,orderFulfillment.getShippingAddress().getFullAddress());
  				if(!isNull(orderFulfillment.getSelectedShippingMethodOption())){

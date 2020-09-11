@@ -22,6 +22,7 @@
 	<cfproperty name="reportType" />
 	<cfproperty name="limitResults" />
 	<cfproperty name="showReport" />
+	<cfproperty name="reportSite" />
 
 	<!--- Metric / Dimension States --->
 	<cfproperty name="metrics" />
@@ -365,6 +366,13 @@
 		</cfif>
 		<cfreturn variables.reportDateTime />
 	</cffunction>
+	
+	<cffunction name="getReportSite" access="public" output="false">
+		<cfif not structKeyExists(variables, "reportSite")>
+			<cfset variables.reportSite = "ALL" />
+		</cfif>
+		<cfreturn variables.reportSite />
+	</cffunction>
 
 	<!--- ==================  END: SELECTION DEFAULTS ======================== --->
 
@@ -605,12 +613,14 @@
 
 			<cfset variables.chartData = {} />
 			<cfset variables.chartData["chart"] = {} />
-			<cfset variables.chartData["chart"]["type"] = getReportType() />
+			<cfset variables.chartData["data"]["type"] = getReportType() />
 			<cfset variables.chartData["chart"]["renderTo"]="hibachi-report-chart" />
 			<cfset variables.chartData["legend"] = {} />
 			<cfset variables.chartData["legend"]["enabled"] = false />
-			<cfset variables.chartData["title"] = {} />
-			<cfset variables.chartData["title"]["text"] = getReportTitle() />
+			<cfset variables.chartData["options"] = {} />
+			<cfset variables.chartData["options"]["title"] = {} />
+			<cfset variables.chartData["options"]["title"]["text"] = getReportTitle() />
+			<cfset variables.chartData["options"]["title"]["display"] = true />
 
 			<cfif getReportType() EQ 'column'>
 				<cfset variables.chartData["plotOptions"] = {} />
@@ -622,7 +632,7 @@
 			</cfif>
 
 			<!--- Setup xAxis --->
-			<cfset variables.chartData["xAxis"] = [] />
+			<cfset variables.chartData["xAxes"] = [] />
 
 			<cfif getReportCompareFlag()>
 				<cfset var xAxisCompareData = {} />
@@ -643,7 +653,8 @@
 			<cfif getReportType() EQ "line">
 				<cfset xAxisData["type"] = "datetime" />
 				<cfset xAxisData["opposite"] = true />
-				<cfset arrayAppend(variables.chartData["xAxis"], xAxisData) />
+				<cfset xAxisData["labels"] = [] />
+				<cfset arrayAppend(variables.chartData["xAxes"], xAxisData) />
 				<cfloop from="1" to="#listLen(getMetrics())#" step="1" index="local.m">
 
 					<cfset var metricDefinition = getMetricDefinition( listGetAt(getMetrics(), m) ) />
@@ -653,20 +664,21 @@
 
 					<!--- Setup Data Series --->
 					<cfset arrayAppend(variables.chartData["series"], {})>
-					<cfset variables.chartData["series"][dataSeriesID]["name"] = getMetricTitle(metricDefinition.alias) />
+					<cfset variables.chartData["series"][dataSeriesID]["label"] = getMetricTitle(metricDefinition.alias) />
 					<cfset variables.chartData["series"][dataSeriesID]["data"] = [] />
 					<cfset variables.chartData["series"][dataSeriesID]["xAxis"] = 0 />
-					<cfset variables.chartData["series"][dataSeriesID]["color"] = getMetricColorDetails()[m]['color'] />
+					<cfset variables.chartData["series"][dataSeriesID]["backgroundColor"] = getMetricColorDetails()[m]['color'] />
 					<cfset variables.chartData["series"][dataSeriesID]["type"] = getReportType() />
 
 					<hb:HibachiDateLoop index="thisDate" from="#getReportStartDateTime()#" to="#chartReportEndDateTime#" datepart="#loopdatepart#">
-						<cfset var thisData = [] />
-						<cfset arrayAppend(thisData, dateDiff("s", createdatetime( '1970','01','01','00','00','00' ), dateAdd("h", 1, thisDate))*1000) />
+						<cfset var thisData = {} />
+						<cfset var xCord = dateDiff("s", createdatetime( '1970','01','01','00','00','00' ), dateAdd("h", 1, thisDate))*1000 />
+						<cfset structInsert(thisData, "x", xCord) />
 	 					<cfif addChartSeriesDataCheck(thisDate, getReportDateTimeGroupBy(), chartDataQuery, chartRow)>
-							<cfset arrayAppend(thisData, chartDataQuery[ metricDefinition.alias ][ chartRow ]) />
+							<cfset structInsert(thisData, "y", chartDataQuery[ metricDefinition.alias ][ chartRow ]) />
 							<cfset chartRow ++ />
 						<cfelse>
-							<cfset arrayAppend(thisData, 0) />
+							<cfset structInsert(thisData, "y", 0) />
 						</cfif>
 						<cfset arrayAppend(variables.chartData["series"][dataSeriesID]["data"], thisData) />
 					</hb:HibachiDateLoop>
@@ -713,12 +725,12 @@
 					<cfset arrayAppend(data, evaluate("chartDataQuery.#dimensionDefinition.alias#Total"))>
 					<cfset arrayAppend(variables.chartData["series"][1]["data"], data)/>
 				</cfloop>
-				<cfset arrayAppend(variables.chartData["xAxis"], xAxisData) />
+				<cfset arrayAppend(variables.chartData["xAxes"], xAxisData) />
 
 			</cfif>
 
 			<cfif getReportCompareFlag()>
-				<cfset arrayAppend(variables.chartData["xAxis"], xAxisCompareData) />
+				<cfset arrayAppend(variables.chartData["xAxes"], xAxisCompareData) />
 			</cfif>
 		</cfif>
 

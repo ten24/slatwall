@@ -521,8 +521,9 @@ component output="false" accessors="true" extends="HibachiController" {
 			if(!arguments.rc[ arguments.entityName ].hasErrors()) {
 				
 				// Show the Generic Action Success Message
+				if(isEmpty(arguments.rc.messages)){
 				getHibachiScope().showMessage( getHibachiScope().rbKey( "#arguments.rc.entityActionDetails.subsystemName#.#arguments.rc.entityActionDetails.sectionName#.#arguments.rc.entityActionDetails.itemName#.#arguments.rc.processContext#_success" ), "success");
-
+				}
 				// Show all of the specific messages & error messages for the entity
 				arguments.rc[ arguments.entityName ].showErrorsAndMessages();
 
