@@ -101,7 +101,7 @@
 			</cfif>
 			<!---this block deals with average order current day--->
 		
-		    <div class="Mcard-wrapper col-md-12" style="margin-bottom: 24px;">
+		    <div class="Mcard-wrapper col-md-12">
 		        <div class="col-md-3">
 					<sw-stat-widget 
 						title="Sales This Week" 
@@ -148,7 +148,7 @@
 			</div>
 			
 			<!--- Chart --->
-			<div class="hibachi-report-chart-container">
+			<div class="hibachi-report-chart-container col-md-12">
 				<h3 class="hibachi-report-chart-title">#attributes.report.getReportEntity().getReportTitle()#</h3>
 				<div id="hibachi-report-chart-wrapper">
 					<canvas id="hibachi-report-chart" width="1800" height="600"></canvas>

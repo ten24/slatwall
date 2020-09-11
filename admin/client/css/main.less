@@ -4255,7 +4255,11 @@ table.s-detail-content-table tbody tr.s-done {
 	
    .s-search-wrapper button:focus {outline-style: none !important; outline: 0 !important; box-shadow: none !important;}
 
-	#navTabs-Container { padding:2em 1em; }
+	#navTabs-Container { 
+		padding:2em 1em; 
+		width: 90%;
+		margin: 0 auto;
+	}
 	
 	#navTabs-Container .nav-tabs{
 	  padding-left:0;
@@ -4288,6 +4292,7 @@ table.s-detail-content-table tbody tr.s-done {
 	
 	#navTabs-Container .tab-content{
 	  background-color:#ffffff;
+	  margin-bottom: 24px;
 	}
 	
 	#navTabs-Container .tab-content ul li {
@@ -4342,8 +4347,9 @@ table.s-detail-content-table tbody tr.s-done {
 
 	.configure-bar-container {
 		display: flex; 
-		width: 90%;
+		width: 100%;
 		margin: 0 auto;
+		padding: 1em 1em 0 1em;
 		justify-content: space-between;
 		align-items: flex-end;	
 	}
@@ -4455,6 +4461,12 @@ table.s-detail-content-table tbody tr.s-done {
 	padding: 16px 10px;
 }
 
+#hibachi-report {
+	padding-top: 24px;
+	width: 90%;
+	margin: 0 auto;
+}
+
 #hibachi-report-configure-bar {
 	padding-bottom: 12px;	
 }
@@ -4462,10 +4474,15 @@ table.s-detail-content-table tbody tr.s-done {
 .site-selector-container {
 	margin-bottom: 20px; 
 	width: 300px;
+	display: flex;
+	align-items: center;
+}
+
+.site-selector-title {
+	margin-right: 12px;
 }
 
 .hibachi-report-chart-container {
-	width: 94vw;
 	margin: 0 auto;
 }
 
