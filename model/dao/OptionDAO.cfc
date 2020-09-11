@@ -158,13 +158,16 @@ Notes:
 				true,
 				{maxResults=1}
 			);
-			var queryService = new query();
-			var sql = "INSERT INTO SwSkuOption (skuID,optionID)
-				SELECT s.skuID,'#optionID#' as optionID
-				FROM SwSku s where s.productID = :productID
-			";
-			queryService.addParam(name='productID',value=arguments.productID,CFSQLTYPE="CF_SQL_STRING");
-			queryService.execute(sql=sql);
+			
+			if(!isNull('#optionID#') && !isEmpty('#optionID#')){
+				var queryService = new query();
+				var sql = "INSERT INTO SwSkuOption (skuID,optionID)
+					SELECT s.skuID,'#optionID#' as optionID
+					FROM SwSku s where s.productID = :productID
+				";
+				queryService.addParam(name='productID',value=arguments.productID,CFSQLTYPE="CF_SQL_STRING");
+				queryService.execute(sql=sql);
+			}
 		}
 	</cfscript>
 </cfcomponent>
