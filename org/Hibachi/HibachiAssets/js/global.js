@@ -193,6 +193,13 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 	
 		});
 		
+		//When user adding payment method to account
+		var getPaymentMethodType = $(".j-custom-select option:selected").attr('paymentmethodtype');
+		jQuery.each( jQuery( scopeSelector ).find( jQuery('.hibachi-display-toggle.hide') ), function(index, value){
+			if($("#"+jQuery(this).attr('id')).attr('data-hibachi-show-values') == getPaymentMethodType || (getPaymentMethodType != undefined && $("#"+jQuery(this).attr('id')).attr('data-hibachi-show-values') == 'creditCard,termPayment')){
+				$("#"+jQuery(this).attr('id')).removeClass("hide");
+			}
+	    });
 		
 		// Form Empty value clear (IMPORTANT!!! KEEP THIS ABOVE THE VALIDATION ASIGNMENT)
 		jQuery.each(jQuery( scopeSelector ).find(jQuery('form')), function(index, value) {
