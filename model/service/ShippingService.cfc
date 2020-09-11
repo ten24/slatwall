@@ -686,7 +686,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var shippingMethodRateIntegrationMethod = this.getShippingMethodRateIntegrationMethodByShippingIntegrationIDAndShippingMethodRateID(integrationID,shippingMethodRate.getShippingMethodRateID(),true);
 			shippingMethodRateIntegrationMethod.setShippingIntegration(shippingIntegration);
 			if(shippingMethodRateIntegrationMethod.isNew()){
-				var shippingMethodRate = this.getShippingMethodRateByShippingMethodRateID(arguments.shippingMethodRateID);
+				var shippingMethodRate = this.getShippingMethodRateByShippingMethodRateID(arguments.shippingMethodRateID,true);
 			}
 			shippingMethodRateIntegrationMethod.setShippingMethodRate(shippingMethodRate);
 			shippingMethodRateIntegrationMethod.showErrorsAndMessages();
