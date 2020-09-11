@@ -69,7 +69,8 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
     
     public any function getAccessToken(){
 		if(!getService('HibachiCacheService').hasCachedValue('accessToken')){
-			setGrantToken();
+			var grantToken=getService('HibachiCacheService').getCachedValue('grantToken')
+			setAccessToken(grantToken);
 		}
 		else{
 			writeDump(getService('HibachiCacheService').getCachedValue('accessToken'));abort;
@@ -78,52 +79,54 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
     }
     
     public any function setGrantToken(){
+    	var requestURL = setting("devGatewayURL");
+		requestURL &= "distone/rest/service/authorize/grant";
 		var httpRequest = new http();
 		httpRequest.setMethod('POST');
 		httpRequest.setCharset("utf-8");
-		httpRequest.setUrl("https://d1-int.iscorp.com/stone/distone/rest/service/authorize/grant");
+		httpRequest.setUrl(requestURL);
     	httpRequest.addParam( type='header', name='Content-Type', value='application/x-www-form-urlencoded');
 		
 		// Authentication headers
-    	httpRequest.addParam( type='formfield', name='client', value="web" );
-    	httpRequest.addParam( type='formfield', name='company', value="DC" );
-    	httpRequest.addParam( type='formfield', name='username', value="Ten24Dev" );
-    	httpRequest.addParam( type='formfield', name='password', value="HJ68ZmhL" );
+    	httpRequest.addParam( type='formfield', name='client', value="#setting('client')#" );
+    	httpRequest.addParam( type='formfield', name='company', value="#setting('company')#" );
+    	httpRequest.addParam( type='formfield', name='username', value="#setting('username')#" );
+    	httpRequest.addParam( type='formfield', name='password', value="#setting('password')#" );
 		var rawRequest = httpRequest.send().getPrefix();
 		var response = {};
 		if( IsJson(rawRequest.fileContent) ) {
 			response = DeSerializeJson(rawRequest.fileContent);
-			getService('HibachiCacheService').setCachedValue('grantToken',response.grant_token,now());
+			getService('HibachiCacheService').setCachedValue('grantToken',response.grant_token,DateAdd("n",60,now()));
 			setAccessToken(response.grant_token);
 		} 
 		else {
 			response = { "status": "error",  "message": "Error: response is not valid JSON"  };
 		}
-		writeDump(response);abort;
-    	
+		// writeDump(response);abort;
     }
     
     public any function setAccessToken(required string grantToken){
+    	var requestURL = setting("devGatewayURL");
+		requestURL &= "distone/rest/service/authorize/access";
 		var httpRequest = new http();
 		httpRequest.setMethod('POST');
 		httpRequest.setCharset("utf-8");
-		httpRequest.setUrl("https://d1-int.iscorp.com/stone/distone/rest/service/authorize/access");
+		httpRequest.setUrl(requestURL);
     	httpRequest.addParam( type='header', name='Content-Type', value='application/x-www-form-urlencoded');
 		
 		// Authentication headers
-    	httpRequest.addParam( type='formfield', name='client', value="web" );
-    	httpRequest.addParam( type='formfield', name='company', value="DC" );
+    	httpRequest.addParam( type='formfield', name='client', value="#setting('client')#" );
+    	httpRequest.addParam( type='formfield', name='company', value="#setting('company')#" );
     	httpRequest.addParam( type='formfield', name='grant_token', value=arguments.grantToken );
 		var rawRequest = httpRequest.send().getPrefix();
 		var response = {};
 		if( IsJson(rawRequest.fileContent) ) {
 			response = DeSerializeJson(rawRequest.fileContent);
-			getService('HibachiCacheService').setCachedValue('accessToken',response.access_token,now());
+			getService('HibachiCacheService').setCachedValue('accessToken',response.access_token,DateAdd("n",60,now()));
 		} 
 		else {
 			response = { "status": "error",  "message": "Error: response is not valid JSON"  };
 		} 
-		writeDump(response);abort;
-    	
+		//writeDump(response);abort;
     }
 }

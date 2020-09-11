@@ -73,4 +73,21 @@ extends="Slatwall.integrationServices.BaseIntegration" {
 			password = {fieldType="text", defaultValue="HJ68ZmhL"}
     	};
 	}
+	
+	public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
+		//preventing multiple look ups on the external cache look up
+		var cacheKey = "#arguments.settingName##arguments.formatValue#";
+		for(var filterEntity in arguments.filterEntities){
+			cacheKey &= filterEntity.getPrimaryIDValue();
+		}
+		if(!structKeyExists(variables,cacheKey)){
+			if(structKeyExists(getIntegration().getSettings(), arguments.settingName)) {
+				variables[cacheKey] = getService("settingService").getSettingValue(settingName="integration#getPackageName()##arguments.settingName#", object=this, filterEntities=arguments.filterEntities, formatValue=arguments.formatValue);	
+			}else{
+				variables[cacheKey] = getService("settingService").getSettingValue(settingName=arguments.settingName, object=this, filterEntities=arguments.filterEntities, formatValue=arguments.formatValue);
+			}
+		}
+		
+		return variables[cacheKey];
+	}
 }
