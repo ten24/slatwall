@@ -1511,10 +1511,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			if(paymentTransaction.hasError('runTransaction') || paymentTransaction.getTransactionSuccessFlag() == false) {
 				arguments.accountPayment.addError('createTransaction', paymentTransaction.getError('runTransaction'), true);
 			}
-			
-			if (paymentTransaction.getTransactionSuccessFlag() == false){
-				arguments.accountPayment.setActiveFlag(false);
-			}
+		
 		}
 
 		return arguments.accountPayment;

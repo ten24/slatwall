@@ -49,7 +49,7 @@ Notes:
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfparam name="rc.orderSmartList" type="any" />
-<cfparam name="rc.productReviewSmartList" type="any" />
+<cfparam name="rc.report" type="any" />
 
 <cfoutput>
 	<div class="row s-body-nav">
@@ -59,39 +59,84 @@ Notes:
 				<!--- Page Title --->
 				<h1 class="actionbar-title">#$.slatwall.rbKey('admin.main.default')#</h1>
 			</div>
-		 </div>
 	   </nav>
-	 </div>
-	
-	<div class="col-md-12"><hb:HibachiMessageDisplay /></div>
-
-	<div class="col-md-6">
-		<hb:HibachiListingDisplay title="#request.slatwallScope.rbKey("admin.main.dashboard.neworders")#" 
-			collectionList="#rc.orderCollectionList#"
-			recordDetailAction="admin:entity.detailorder">
-			
-		</hb:HibachiListingDisplay>
-		<br />
-		<hb:HibachiListingDisplay title="#request.slatwallScope.rbKey("admin.main.dashboard.recentproductreviews")#" 
-				recordDetailAction="admin:entity.detailproductreview"
-			collectionList="#rc.productReviewCollectionList#"
-			>
-			
-		</hb:HibachiListingDisplay>
 	</div>
+	<div class="col-md-12">
+		<hb:HibachiMessageDisplay />
+	</div>
+
+	<hb:HibachiReportViewer report="#rc.report#" />
 	
-	<div class="col-md-6">
-		<div class="row s-detail-content-wrapper">
-			<div class="col-xs-12 s-results-listing">
-				<div class="s-detail-body">
-					<div class="s-content-header customtimeline">
-						<h2>#request.slatwallScope.rbKey("admin.main.dashboard.timeline")#</h2>
-					</div>
-					<hb:HibachiTimeline baseObjectList="Product,Order,Brand,Account" recordsShow="20" />
-				</div>
-			</div>
+	<div class="navTabs-Container col-md-12" id="navTabs-Container">
+		<ul class="nav nav-tabs" role="tablist">
+			  <li class="active tab-selector"><a href="##reports-overview" role="tab" data-toggle="tab">My Custom Reports</a></li>
+			  <li class="tab-selector"><a href="##popular-reports" role="tab" data-toggle="tab">Popular Reports</a></li>
+			  <li class="tab-selector"><a href="##all-reports" role="tab" data-toggle="tab">All Reports</a></li>
+		</ul>
+		
+		<!-- Markup for reporting tab panes -->
+		<div class="tab-content col-md-12">
+		  <div class="tab-pane active flex" id="reports-overview">
+		  	<div class="col-sm-3">
+		  		<ul class="list-unstyled">
+					<cfif arrayLen(rc.savedReports)>
+						<cfloop array="#rc.savedReports#" index="report">
+							<hb:HibachiActionCaller action="admin:report.default" queryString="reportID=#report.getReportID()#" text="#report.getReportTitle()#" type="list" />
+						</cfloop>
+					</cfif>
+		  		</ul>
+		  	</div>
+		  </div>
+		  
+		  <div class="tab-pane flex" id="popular-reports">			  	
+			<div class="col-sm-3">
+		  		<ul class="list-unstyled">
+				<cfif listLen(rc.builtInReportsList)>
+					<cfloop list="#rc.builtInReportsList#" index="reportName">
+						<hb:HibachiActionCaller action="admin:report.default" queryString="reportName=#reportName#" text="#$.slatwall.rbKey('report.#reportName#')#" type="list" />
+					</cfloop>
+				</cfif>
+		  		</ul>
+		  	</div>
+		  </div>
+		  
+		  <div class="tab-pane flex" id="all-reports">
+		  	<div class="col-sm-3">
+		  		<ul class="list-unstyled">
+					<cfif arrayLen(rc.savedReports)>
+						<cfloop array="#rc.savedReports#" index="report">
+							<hb:HibachiActionCaller action="admin:report.default" queryString="reportID=#report.getReportID()#" text="#report.getReportTitle()#" type="list" />
+						</cfloop>
+					</cfif>
+		  		</ul>
+		  	</div>
+		  	
+		  	<div class="col-sm-3">
+		  		<ul class="list-unstyled">
+					<cfif listLen(rc.builtInReportsList)>
+						<cfloop list="#rc.builtInReportsList#" index="reportName">
+							<hb:HibachiActionCaller action="admin:report.default" queryString="reportName=#reportName#" text="#$.slatwall.rbKey('report.#reportName#')#" type="list" />
+						</cfloop>
+					</cfif>
+		  		</ul>					  		
+		  	</div>
+		  	<div class="col-sm-3">
+		  		<ul class="list-unstyled">
+					<cfif listLen(rc.customReportsList)>
+						<li><h5><strong>#$.slatwall.rbKey('admin.report.default.customReports')#</strong></h5></li>
+						<cfloop list="#rc.customReportsList#" index="reportName">
+							<hb:HibachiActionCaller action="admin:report.default" queryString="reportName=#reportName#" text="#$.slatwall.rbKey('report.#reportName#')#" type="list" />
+						</cfloop>
+					</cfif>
+					<cfif listLen(rc.integrationReportsList)>
+						<li><h5><strong>#$.slatwall.rbKey('admin.report.default.integrationReports')#</strong></h5></li>
+						<cfloop list="#rc.integrationReportsList#" index="reportName">
+							<hb:HibachiActionCaller action="admin:report.default" queryString="reportName=#reportName#" text="#$.slatwall.rbKey('report.#reportName#')#" type="list" />
+						</cfloop>
+					</cfif>
+		  		</ul>					  		
+		  	</div>	
+		  </div>
 		</div>
 	</div>
-	
-
 </cfoutput>
