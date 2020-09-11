@@ -159,7 +159,7 @@ Notes:
 				{maxResults=1}
 			);
 			
-			if(!isNull('#optionID#') && !isEmpty('#optionID#')){
+			if(!isNull(optionID) && !isEmpty(optionID)){
 				var queryService = new query();
 				var sql = "INSERT INTO SwSkuOption (skuID,optionID)
 					SELECT s.skuID,'#optionID#' as optionID
