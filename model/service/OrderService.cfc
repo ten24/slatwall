@@ -1512,7 +1512,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 			
 		}
-
+		// We are processing return order at multiple Placeses so error can be genertaed in any sub process
+		if(returnOrder.hasErrors()){
+			this.getHibachiScope().setORMHasErrors(true);
+		}
 		// Return the new order so that the redirect takes users to this new order
 		return returnOrder;
 	}
