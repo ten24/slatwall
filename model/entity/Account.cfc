@@ -1230,11 +1230,6 @@ property name="accountType" ormtype="string" hb_formFieldType="select";
 	// ==================  END:  Overridden Methods ========================
 
 	// =================== START: ORM Event Hooks  =========================
-	
-	public any function preDelete(){
-		//Unlink any emails
-		getDAO('AccountDAO').removeAccountFromEmails(this);
-	}
 
 	// ===================  END:  ORM Event Hooks  =========================
 

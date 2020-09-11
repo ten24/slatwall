@@ -478,8 +478,7 @@ Notes:
 	</cffunction>
 	
 	<cffunction name="removeAccountFromEmails">
-		<cfargument name="account" type="any" required="true" >
-		<cfset local.accountID = arguments.account.getAccountID() />
+		<cfargument name="accountID" type="any" required="true" >
 
 		<cfquery name="local.emailQuery">
 			UPDATE
@@ -487,7 +486,7 @@ Notes:
 			SET
 				accountID = null
 			WHERE
-				accountID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.accountID#" />
+				accountID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.accountID#" />
 		</cfquery>
 	</cffunction>
 
