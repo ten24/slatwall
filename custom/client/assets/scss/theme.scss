@@ -15,5 +15,9 @@
 @import 'theme/components';
 @import 'theme/utilities';
 
+// Icons
+$fa-font-path: "../webfonts";
+@import "theme/fontawesome/fontawesome";
+
 // Custom Core
 @import 'user';
