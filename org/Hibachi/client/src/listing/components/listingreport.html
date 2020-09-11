@@ -10,10 +10,11 @@
             		<div style="margin-bottom:5px;">
             		    <label>Dimensions</label>
             			<select 
-                      ng-model="swListingReport.selectedPeriodColumn" 
-                      ng-options="periodColumn as periodColumn.displayPropertyIdentifier group by !periodColumn.ormtype ? 'Related Data' : undefined
-                                        for periodColumn in swListingReport.periodColumns
-                                         | orderBy:['displayPropertyIdentifier'] track by periodColumn.propertyIdentifier
+            			    class="form-control"
+                            ng-model="swListingReport.selectedPeriodColumn" 
+                            ng-options="periodColumn as periodColumn.displayPropertyIdentifier group by !periodColumn.ormtype ? 'Related Data' : undefined
+                                for periodColumn in swListingReport.periodColumns
+                                 | orderBy:['displayPropertyIdentifier'] track by periodColumn.propertyIdentifier
                             "
                             ng-change="swListingReport.selectPeriodColumn(swListingReport.selectedPeriodColumn)"
                         >
