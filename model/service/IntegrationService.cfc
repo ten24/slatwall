@@ -268,9 +268,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	                */
 				    for(var integrationType in integrationCFC.getIntegrationTypes() ){
 				        
-				        // if( integrationType == 'fw1' ){
-				        //     continue;
-				        // }
+				         if( integrationType == 'fw1' ){
+				             continue;
+				         }
 				        
 				        beanFactory.declare("#integrationPackage##integrationType#CFC")
     					    .instanceOf("Slatwall.integrationServices.#integrationPackage#.#integrationType#").asSingleton();
