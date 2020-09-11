@@ -2439,9 +2439,6 @@ table .s-edit-elements a:hover {
   display: inline-block;
   width: 100%;
 }
-.s-add-filter-secondary-layout.s-add-filter .s-option-group.s-selected .s-option-wrapper .form-control {
-  border: 1px solid #428bca;
-}
 .s-table-header-options {
   background: #fff;
   padding-right: 10px;
@@ -5901,7 +5898,6 @@ a.disabled > i.hibachi-ui-radio-checked {
   width: 100%;
   height: 34px;
   background-color: #fff;
-  border: 1px solid #DDDDDD;
   border-radius: 0;
   -webkit-appearance: none;
   background-position: right 50%;
