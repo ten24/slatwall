@@ -49,7 +49,7 @@
         <div class="col-md-4">
           <div class="widget pb-2 mb-4">
             <h3 class="widget-title text-light pb-1">Stay informed</h3>
-            <form class="validate" action="https://studio.us12.list-manage.com/subscribe/post-json?u=c7103e2c981361a6639545bd5&amp;amp;id=29ca296126&amp;c=?" method="get" name="mc-embedded-subscribe-form" id="mc-embedded-subscribe-form">
+            <form class="validate" action="##" method="get" name="mc-embedded-subscribe-form" id="mc-embedded-subscribe-form">
               <div class="input-group input-group-overlay flex-nowrap">
                 <div class="input-group-prepend-overlay"><span class="input-group-text text-muted font-size-base"><i class="czi-mail"></i></span></div>
                 <input class="form-control prepended-form-control" type="email" name="EMAIL" id="mce-EMAIL" value="" placeholder="Your email" required>
@@ -150,15 +150,10 @@
       </div>
     </div>
   </footer>
-  <!--- Toolbar for handheld devices--->
-  <div class="cz-handheld-toolbar">
-    <div class="d-table table-fixed w-100"><a class="d-table-cell cz-handheld-toolbar-item" href="account-wishlist.html"><span class="cz-handheld-toolbar-icon"><i class="czi-heart"></i></span><span class="cz-handheld-toolbar-label">Wishlist</span></a><a class="d-table-cell cz-handheld-toolbar-item" href="#navbarCollapse" data-toggle="collapse" onclick="window.scrollTo(0, 0)"><span class="cz-handheld-toolbar-icon"><i class="czi-menu"></i></span><span class="cz-handheld-toolbar-label">Menu</span></a><a class="d-table-cell cz-handheld-toolbar-item" href="shop-cart.html"><span class="cz-handheld-toolbar-icon"><i class="czi-cart"></i><span class="badge badge-primary badge-pill ml-1">4</span></span><span class="cz-handheld-toolbar-label">$265.00</span></a>
-    </div>
-  </div>
-  <!--- Back To Top Button---><a class="btn-scroll-top" href="##top" data-scroll><span class="btn-scroll-top-tooltip text-muted font-size-sm mr-2">Top</span><i class="btn-scroll-top-icon czi-arrow-up">   </i></a>
   <!--- JavaScript libraries, plugins and custom scripts--->
-  <!--- <script src="js/vendor.min.js"></script> --->
   <script src="#$.getThemePath()#/client/assets/js/theme.min.js"></script>
+  <script src="#$.getThemePath()#/client/assets/js/bootstrap.min.js"></script>
+  <script src="#$.getThemePath()#/client/assets/js/tiny-slider.min.js"></script>
 </body>
 </html>
 

@@ -4,9 +4,6 @@
 <head>
 	<cfinclude template="scripts/head.cfm" />
 </head>
-
-<!DOCTYPE html>
-<html lang="en">
   
   <!-- Body-->
   <body class="toolbar-enabled">
