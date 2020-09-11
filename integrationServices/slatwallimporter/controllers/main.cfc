@@ -21,7 +21,7 @@ component extends="Slatwall.org.Hibachi.HibachiControllerEntity" accessors="true
 		super.genericPreProcessMethod(entityName="Integration", rc=arguments.rc);
 	}
 
-	public void function processintegration( required any rc ){
+	public void function processIntegration( required any rc ){
 	
 		this.getService("hibachiTagService").cfsetting( requesttimeout=60000 );
 		

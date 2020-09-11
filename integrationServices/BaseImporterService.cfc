@@ -122,6 +122,8 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    
 	   // TODO: upsert (use some remote-id to fine and set baseID ) 
 	   
+	   // 
+	   
 	    this.getEntityQueueDAO().insertEntityQueue(
     	    baseID = '', 
     	    baseObject = arguments.entityName, 
@@ -175,7 +177,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	        
 	        if( structKeyExists(propertyMeta, 'validations') ){
 	            
-	            var constraints = propertyMeta.validations;
+	            var constraints = propertyMeta.validations ?: [];
 	            
 	            for( var constraintType in constraints ){
 	                
@@ -272,9 +274,9 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    
 	    return transformedData;
 	}
+
 	
-	
-	public any function processsEntityImport( required string entity, any data ){
+	public any function processsEntityImport( required any entity, any data ){
 	    var entityName = arguments.entity.getClassName();
 	    
 	    if( structKeyExists(this, 'processs#entityName#_import') ){
