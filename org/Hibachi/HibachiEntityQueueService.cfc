@@ -88,26 +88,45 @@ component accessors="true" output="false" extends="HibachiService" {
 		var processContext = ''; 
 
 		if(hasProcessContext){
+		    
 			processContext = listLast(method, '_');//listlast to equate processEntity_processContext & processContext
 			
 			var hibachiErrors = getHibachiValidationService().validate(entity, processContext, false);//don't set errors on object
 			entityValidToInvoke = !hibachiErrors.hasErrors();
 			
 			if(entityValidToInvoke){
+			
 				arguments.entity = 	arguments.service.process(arguments.entity, entityQueueData, processContext); 	
+				
 				entityValidToInvoke = !arguments.entity.hasErrors();
 				if(!entityValidToInvoke){
 					this.logHibachi('entity queue encountered errors after invoking process #serializeJson(arguments.entity.getErrors())#',true);
-				} 
-			}else{
+				}
+				
+			} else {
 				throw('Validation Errors: '&serializeJson(hibachiErrors.getErrors()));
 			}
-		} else if(entityValidToInvoke) {
+			
+		} else {
+		    
 			var methodData = { '1'=entity };
-			if(hasEntityQueueData){
+			
+			if( hasEntityQueueData ){
 				methodData['2'] = entityQueueData;
 			}	
-			arguments.service.invokeMethod("#entityQueue['processMethod']#", methodData);
+			
+			var entityOrAnything = arguments.service.invokeMethod("#entityQueue['processMethod']#", methodData);
+			
+			if( !isNull(entityOrAnything) && isObject(entityOrAnything) ){   // then assuming it's will be an entity
+			    
+			    arguments.entity = entityOrAnything;
+			    
+			    entityValidToInvoke = !arguments.entity.hasErrors();
+			    
+				if( !entityValidToInvoke ){
+				    throw('Entity queue encountered errors after invoking #entityQueue["processMethod"]#: '&serializeJson(arguments.entity.getErrors()) );
+				}
+			}
 		}
 		
 		return entityValidToInvoke;
@@ -139,8 +158,17 @@ component accessors="true" output="false" extends="HibachiService" {
 					}
 				
 					var entityService = getServiceForEntityQueue(entityQueue);
-	
-					var entity = entityService.invokeMethod( "get#entityQueue['baseObject']#", {1= entityQueue['baseID'] });
+	                
+	                if( !len(entityQueue['baseID']) ){
+	                    
+	                    var entity = entityService.invokeMethod( "new#entityQueue['baseObject']#" );
+	                    
+	                } else {
+	                    
+					    // not passing the 2nd argument as true to return a new entity, so that we ignore bad entity-IDs;
+					    var entity = entityService.invokeMethod( "get#entityQueue['baseObject']#", {1= entityQueue['baseID']} );
+	                }
+	                
 					if(isNull(entity)){
 						return entityQueue['entityQueueID'];
 					}

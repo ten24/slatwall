@@ -276,14 +276,14 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	}
 
 	
-	public any function processsEntityImport( required any entity, any data ){
+	public any function processsEntityImport( any entity, struct entityData ){
 	    var entityName = arguments.entity.getClassName();
 	    
 	    if( structKeyExists(this, 'processs#entityName#_import') ){
 	        return this.invokeMethod( 'processs#entityName#_import', arguments );
 	    }
 	    
-	    arguments.entity.populate(arguments.data);
+	    arguments.entity.populate(arguments.entityData);
 	  
 	    var entityService = this.getHibachiService().getServiceByEntityName( entityName = entityName);
 	  
