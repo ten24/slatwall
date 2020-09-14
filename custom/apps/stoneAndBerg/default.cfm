@@ -8,7 +8,7 @@
   <section class="cz-carousel cz-controls-lg">
     <div class="cz-carousel-inner" data-carousel-options="{&quot;mode&quot;: &quot;gallery&quot;, &quot;responsive&quot;: {&quot;0&quot;:{&quot;nav&quot;:true, &quot;controls&quot;: false},&quot;992&quot;:{&quot;nav&quot;:false, &quot;controls&quot;: true}}}">
       <!--- Item--->
-      <div class="px-lg-5" style="background-color: #3aafd2;">
+      <div class="px-lg-5" style="background-color: ##3aafd2;">
         <div class="d-lg-flex justify-content-between align-items-center pl-lg-4"><img class="d-block order-lg-2 mr-lg-n5 flex-shrink-0" src="img/home/hero-slider/01.jpg" alt="Summer Collection">
           <div class="position-relative mx-auto mr-lg-n5 py-5 px-4 mb-lg-5 order-lg-1" style="max-width: 42rem; z-index: 10;">
             <div class="pb-lg-5 mb-lg-5 text-center text-lg-left text-lg-nowrap">
@@ -20,7 +20,7 @@
         </div>
       </div>
       <!--- Item--->
-      <div class="px-lg-5" style="background-color: #f5b1b0;">
+      <div class="px-lg-5" style="background-color: ##f5b1b0;">
         <div class="d-lg-flex justify-content-between align-items-center pl-lg-4"><img class="d-block order-lg-2 mr-lg-n5 flex-shrink-0" src="img/home/hero-slider/02.jpg" alt="Women Sportswear">
           <div class="position-relative mx-auto mr-lg-n5 py-5 px-4 mb-lg-5 order-lg-1" style="max-width: 42rem; z-index: 10;">
             <div class="pb-lg-5 mb-lg-5 text-center text-lg-left text-lg-nowrap">
@@ -32,7 +32,7 @@
         </div>
       </div>
       <!--- Item--->
-      <div class="px-lg-5" style="background-color: #eba170;">
+      <div class="px-lg-5" style="background-color: ##eba170;">
         <div class="d-lg-flex justify-content-between align-items-center pl-lg-4"><img class="d-block order-lg-2 mr-lg-n5 flex-shrink-0" src="img/home/hero-slider/03.jpg" alt="Men Accessories">
           <div class="position-relative mx-auto mr-lg-n5 py-5 px-4 mb-lg-5 order-lg-1" style="max-width: 42rem; z-index: 10;">
             <div class="pb-lg-5 mb-lg-5 text-center text-lg-left text-lg-nowrap">
@@ -99,8 +99,8 @@
                 <label class="custom-option-label" for="s-90">9</label>
               </div>
             </div>
-            <button class="btn btn-primary btn-sm btn-block mb-2" type="button" data-toggle="toast" data-target="#cart-toast"><i class="czi-cart font-size-sm mr-1"></i>Add to Cart</button>
-            <div class="text-center"><a class="nav-link-style font-size-ms" href="#quick-view" data-toggle="modal"><i class="czi-eye align-middle mr-1"></i>Quick view</a></div>
+            <button class="btn btn-primary btn-sm btn-block mb-2" type="button" data-toggle="toast" data-target="##cart-toast"><i class="czi-cart font-size-sm mr-1"></i>Add to Cart</button>
+            <div class="text-center"><a class="nav-link-style font-size-ms" href="##quick-view" data-toggle="modal"><i class="czi-eye align-middle mr-1"></i>Quick view</a></div>
           </div>
         </div>
         <hr class="d-sm-none">
@@ -123,19 +123,19 @@
             <div class="text-center pb-2">
               <div class="custom-control custom-option custom-control-inline mb-2">
                 <input class="custom-control-input" type="radio" name="color1" id="white" checked>
-                <label class="custom-option-label rounded-circle" for="white"><span class="custom-option-color rounded-circle" style="background-color: #eaeaeb;"></span></label>
+                <label class="custom-option-label rounded-circle" for="white"><span class="custom-option-color rounded-circle" style="background-color: ##eaeaeb;"></span></label>
               </div>
               <div class="custom-control custom-option custom-control-inline mb-2">
                 <input class="custom-control-input" type="radio" name="color1" id="blue">
-                <label class="custom-option-label rounded-circle" for="blue"><span class="custom-option-color rounded-circle" style="background-color: #d1dceb;"></span></label>
+                <label class="custom-option-label rounded-circle" for="blue"><span class="custom-option-color rounded-circle" style="background-color: ##d1dceb;"></span></label>
               </div>
               <div class="custom-control custom-option custom-control-inline mb-2">
                 <input class="custom-control-input" type="radio" name="color1" id="yellow">
-                <label class="custom-option-label rounded-circle" for="yellow"><span class="custom-option-color rounded-circle" style="background-color: #f4e6a2;"></span></label>
+                <label class="custom-option-label rounded-circle" for="yellow"><span class="custom-option-color rounded-circle" style="background-color: ##f4e6a2;"></span></label>
               </div>
               <div class="custom-control custom-option custom-control-inline mb-2">
                 <input class="custom-control-input" type="radio" name="color1" id="pink">
-                <label class="custom-option-label rounded-circle" for="pink"><span class="custom-option-color rounded-circle" style="background-color: #f3dcff;"></span></label>
+                <label class="custom-option-label rounded-circle" for="pink"><span class="custom-option-color rounded-circle" style="background-color: ##f3dcff;"></span></label>
               </div>
             </div>
             <div class="d-flex mb-2">
@@ -146,9 +146,9 @@
                 <option>L</option>
                 <option>XL</option>
               </select>
-              <button class="btn btn-primary btn-sm" type="button" data-toggle="toast" data-target="#cart-toast"><i class="czi-cart font-size-sm mr-1"></i>Add to Cart</button>
+              <button class="btn btn-primary btn-sm" type="button" data-toggle="toast" data-target="##cart-toast"><i class="czi-cart font-size-sm mr-1"></i>Add to Cart</button>
             </div>
-            <div class="text-center"><a class="nav-link-style font-size-ms" href="#quick-view" data-toggle="modal"><i class="czi-eye align-middle mr-1"></i>Quick view</a></div>
+            <div class="text-center"><a class="nav-link-style font-size-ms" href="##quick-view" data-toggle="modal"><i class="czi-eye align-middle mr-1"></i>Quick view</a></div>
           </div>
         </div>
         <hr class="d-sm-none">
@@ -184,8 +184,8 @@
                 <label class="custom-option-label" for="l">L</label>
               </div>
             </div>
-            <button class="btn btn-primary btn-sm btn-block mb-2" type="button" data-toggle="toast" data-target="#cart-toast"><i class="czi-cart font-size-sm mr-1"></i>Add to Cart</button>
-            <div class="text-center"><a class="nav-link-style font-size-ms" href="#quick-view" data-toggle="modal"><i class="czi-eye align-middle mr-1"></i>Quick view</a></div>
+            <button class="btn btn-primary btn-sm btn-block mb-2" type="button" data-toggle="toast" data-target="##cart-toast"><i class="czi-cart font-size-sm mr-1"></i>Add to Cart</button>
+            <div class="text-center"><a class="nav-link-style font-size-ms" href="##quick-view" data-toggle="modal"><i class="czi-eye align-middle mr-1"></i>Quick view</a></div>
           </div>
         </div>
         <hr class="d-sm-none">
@@ -217,8 +217,8 @@
                 <label class="custom-option-label" for="m3">M</label>
               </div>
             </div>
-            <button class="btn btn-primary btn-sm btn-block mb-2" type="button" data-toggle="toast" data-target="#cart-toast"><i class="czi-cart font-size-sm mr-1"></i>Add to Cart</button>
-            <div class="text-center"><a class="nav-link-style font-size-ms" href="#quick-view" data-toggle="modal"><i class="czi-eye align-middle mr-1"></i>Quick view</a></div>
+            <button class="btn btn-primary btn-sm btn-block mb-2" type="button" data-toggle="toast" data-target="##cart-toast"><i class="czi-cart font-size-sm mr-1"></i>Add to Cart</button>
+            <div class="text-center"><a class="nav-link-style font-size-ms" href="##quick-view" data-toggle="modal"><i class="czi-eye align-middle mr-1"></i>Quick view</a></div>
           </div>
         </div>
         <hr class="d-sm-none">
@@ -254,8 +254,8 @@
                 <label class="custom-option-label" for="l2">L</label>
               </div>
             </div>
-            <button class="btn btn-primary btn-sm btn-block mb-2" type="button" data-toggle="toast" data-target="#cart-toast"><i class="czi-cart font-size-sm mr-1"></i>Add to Cart</button>
-            <div class="text-center"><a class="nav-link-style font-size-ms" href="#quick-view" data-toggle="modal"><i class="czi-eye align-middle mr-1"></i>Quick view</a></div>
+            <button class="btn btn-primary btn-sm btn-block mb-2" type="button" data-toggle="toast" data-target="##cart-toast"><i class="czi-cart font-size-sm mr-1"></i>Add to Cart</button>
+            <div class="text-center"><a class="nav-link-style font-size-ms" href="##quick-view" data-toggle="modal"><i class="czi-eye align-middle mr-1"></i>Quick view</a></div>
           </div>
         </div>
         <hr class="d-sm-none">
@@ -273,7 +273,7 @@
             </div>
           </div>
           <div class="card-body card-body-hidden"><a class="btn btn-secondary btn-sm btn-block mb-2" href="shop-single-v1.html">View details</a>
-            <div class="text-center"><a class="nav-link-style font-size-ms" href="#quick-view" data-toggle="modal"><i class="czi-eye align-middle mr-1"></i>Quick view</a></div>
+            <div class="text-center"><a class="nav-link-style font-size-ms" href="##quick-view" data-toggle="modal"><i class="czi-eye align-middle mr-1"></i>Quick view</a></div>
           </div>
         </div>
         <hr class="d-sm-none">
@@ -294,15 +294,15 @@
             <div class="text-center pb-2">
               <div class="custom-control custom-option custom-control-inline mb-2">
                 <input class="custom-control-input" type="radio" name="color2" id="khaki" checked>
-                <label class="custom-option-label rounded-circle" for="khaki"><span class="custom-option-color rounded-circle" style="background-color: #97947c;"></span></label>
+                <label class="custom-option-label rounded-circle" for="khaki"><span class="custom-option-color rounded-circle" style="background-color: ##97947c;"></span></label>
               </div>
               <div class="custom-control custom-option custom-control-inline mb-2">
                 <input class="custom-control-input" type="radio" name="color2" id="jeans">
-                <label class="custom-option-label rounded-circle" for="jeans"><span class="custom-option-color rounded-circle" style="background-color: #99a8be;"></span></label>
+                <label class="custom-option-label rounded-circle" for="jeans"><span class="custom-option-color rounded-circle" style="background-color: ##99a8be;"></span></label>
               </div>
               <div class="custom-control custom-option custom-control-inline mb-2">
                 <input class="custom-control-input" type="radio" name="color2" id="white2">
-                <label class="custom-option-label rounded-circle" for="white2"><span class="custom-option-color rounded-circle" style="background-color: #eaeaeb;"></span></label>
+                <label class="custom-option-label rounded-circle" for="white2"><span class="custom-option-color rounded-circle" style="background-color: ##eaeaeb;"></span></label>
               </div>
             </div>
             <button class="btn btn-primary btn-sm btn-block mb-2" type="button" data-toggle="toast" data-target="#cart-toast"><i class="czi-cart font-size-sm mr-1"></i>Add to Cart</button>
@@ -342,8 +342,8 @@
                 <label class="custom-option-label" for="s4-95">9.5</label>
               </div>
             </div>
-            <button class="btn btn-primary btn-sm btn-block mb-2" type="button" data-toggle="toast" data-target="#cart-toast"><i class="czi-cart font-size-sm mr-1"></i>Add to Cart</button>
-            <div class="text-center"><a class="nav-link-style font-size-ms" href="#quick-view" data-toggle="modal"><i class="czi-eye align-middle mr-1"></i>Quick view</a></div>
+            <button class="btn btn-primary btn-sm btn-block mb-2" type="button" data-toggle="toast" data-target="##cart-toast"><i class="czi-cart font-size-sm mr-1"></i>Add to Cart</button>
+            <div class="text-center"><a class="nav-link-style font-size-ms" href="##quick-view" data-toggle="modal"><i class="czi-eye align-middle mr-1"></i>Quick view</a></div>
           </div>
         </div>
         <hr class="d-sm-none">
@@ -379,7 +379,7 @@
     <div class="row">
       <!--- Banner with controls--->
       <div class="col-md-5">
-        <div class="d-flex flex-column h-100 overflow-hidden rounded-lg" style="background-color: #e2e9ef;">
+        <div class="d-flex flex-column h-100 overflow-hidden rounded-lg" style="background-color: ##e2e9ef;">
           <div class="d-flex justify-content-between px-grid-gutter py-grid-gutter">
             <div>
               <h3 class="mb-1">Hoodie day</h3><a class="font-size-md" href="shop-grid-ls.html">Shop hoodies<i class="czi-arrow-right font-size-xs align-middle ml-1"></i></a>
@@ -394,7 +394,7 @@
       <!--- Product grid (carousel)--->
       <div class="col-md-7 pt-4 pt-md-0">
         <div class="cz-carousel">
-          <div class="cz-carousel-inner" data-carousel-options="{&quot;nav&quot;: false, &quot;controlsContainer&quot;: &quot;#hoodie-day&quot;}">
+          <div class="cz-carousel-inner" data-carousel-options="{&quot;nav&quot;: false, &quot;controlsContainer&quot;: &quot;##hoodie-day&quot;}">
             <!--- Carousel item--->
             <div>
               <div class="row mx-n2">
