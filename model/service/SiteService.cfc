@@ -374,16 +374,6 @@ component  extends="HibachiService" accessors="true" {
 		}
 		return arguments.site;
 	}
-	
-   public boolean function deleteSite(required any site) {
-        // Check delete validation for site
-		if(arguments.site.isDeletable()) {
-		  var data = getDAO("SiteDAO").removeSite(arguments.site.getSiteID());
-		}
-
-		return delete( arguments.site );
-
-	}
 
 	// ======================  END: Save Overrides ============================
 
