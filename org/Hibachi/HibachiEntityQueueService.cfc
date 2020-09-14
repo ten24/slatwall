@@ -164,10 +164,6 @@ component accessors="true" output="false" extends="HibachiService" {
 					    // not passing the 2nd argument as true to return a new entity, so that we ignore bad entity-IDs;
 					    var entity = entityService.invokeMethod( "get#entityQueue['baseObject']#", {1= entityQueue['baseID']} );
 	                    
-	                } else if( len(entityQueue['remoteID']) ){
-	                    
-	                    var entity = entityService.invokeMethod( "get#entityQueue['baseObject']#ByRmoteID", {1=entityQueue['remoteID']} );
-
 	                } else {
 	                    
 	                    var entity = entityService.invokeMethod( "new#entityQueue['baseObject']#" );
