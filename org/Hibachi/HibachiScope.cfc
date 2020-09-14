@@ -573,7 +573,12 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		}
 		
 		arguments.entityQueueID = hash(dataString, 'MD5');
-		arguments.entityQueueProcessingDateTime = now(); //this will be processed in this request.
+		
+		//this will be processed in this request.
+		arguments.entityQueueProcessingDateTime = now(); 
+		
+		// add 5 minutes for workflow retry if something goes wrong at the end of the request
+		arguments.entityQueueDateTime = DateAdd('m',5,now()); 
 		
 		if(!structKeyExists(variables.entityQueueData, arguments.entityQueueID)){
 			variables.entityQueueData[arguments.entityQueueID] = arguments;
