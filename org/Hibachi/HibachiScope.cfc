@@ -578,7 +578,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		arguments.entityQueueProcessingDateTime = now(); 
 		
 		// add 5 minutes for workflow retry if something goes wrong at the end of the request
-		arguments.entityQueueDateTime = DateAdd('m',5,now()); 
+		arguments.entityQueueDateTime = DateAdd('n',5,now()); 
 		
 		if(!structKeyExists(variables.entityQueueData, arguments.entityQueueID)){
 			variables.entityQueueData[arguments.entityQueueID] = arguments;
