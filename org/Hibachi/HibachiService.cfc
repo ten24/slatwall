@@ -1380,6 +1380,22 @@
 			var entityMetaData = getEntityMetaData( arguments.entityName );
 			return entityMetaData.table; 
 		}
+		
+		public any function getAnyKeyValueByEntityNameAndUniqueKeyValue( required string entityName, required string keyToFetch, required string uniqueKey, required any uniqueValue ){
+		    return this.getHibachiDAO().getAnyKeyValueByTableNameAndUniqueKeyValue(
+		        tableName   = this.getTableNameByEntityName( arguments.entityName ), 
+		        keyToFetch  = arguments.keyToFetch, 
+		        uniqueKey   = arguments.uniqueKey, 
+		        uniqueValue = arguments.uniqueValue
+		    );
+		}
+		
+		public any function getPrimaryIDValueByEntityNameAndUniqueKeyValue( required string entityName, required string uniqueKey, required any uniqueValue ){
+		    
+		    arguments.keyToFetch  = this.getPrimaryIDColumnNameByEntityName( arguments.entityName );
+		    
+		    return this.getHibachiDAO().getAnyKeyValueByEntityNameAndUniqueKeyValue( argumentCollection = arguments );
+		}
 	
 		public any function updateRecordSortOrder(required string recordIDColumn, required string recordID, required string entityName, required numeric newSortOrder) {
 			var entityMetaData = getEntityMetaData( arguments.entityName );

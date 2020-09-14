@@ -175,6 +175,22 @@
 		// =====================  END: Private Helper Methods ============================
 
 
+        public any function getAnyKeyValueByTableNameAndUniqueKeyValue(required string tableName, required string keyToFetch, required string uniqueKey, required any uniqueValue ){
+			
+			var qry = new query();
+			
+			qry.addParam( name='uniqueKey',      value=arguments.uniqueKey );
+			qry.addParam( name='uniqueValue',    value=arguments.uniqueValue );
+			
+			qry = qry.execute(sql="
+    			    SELECT  #arguments.keyToFetch# 
+    			    FROM    #arguments.tableName# 
+    			    WHERE   #arguments.uniqueKey# = :uniqueValue 
+    			");
+			
+	    	return qry.getResult();
+		}
+
 	</cfscript>
 
 	<!--- hint: This method is for doing validation checks to make sure a property value isn't already in use --->

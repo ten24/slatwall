@@ -103,11 +103,15 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    
 	    var validation = this.validateEntityData( entityName = arguments.entityName, data = arguments.data, collectErrors=true );
 	    
+	    var primaryIDValue = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue( 
+	                                arguments.entityName, 'remoteID', ( data.remoteID ?: '') 
+	                         ) ?: '';
+	    
 	    if( !validation.isValid ){
 	        
 	        // if we're collecting errors we can directly send the item to failures (EntityQueue hisory)
 	        this.getEntityQueueDAO().insertEntityQueueFailure(
-        	    baseID = '', 
+        	    baseID = primaryIDValue, 
         	    baseObject = arguments.entityName, 
         	    processMethod = 'pushRecordIntoImportQueue',
         	    entityQueueData = arguments.data, 
@@ -125,7 +129,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	   // 
 	   
 	    this.getEntityQueueDAO().insertEntityQueue(
-    	    baseID = '', 
+    	    remoteID = primaryIDValue, 
     	    baseObject = arguments.entityName, 
     	    processMethod ='processsEntityImport',
     	    entityQueueData = transformedData, 
