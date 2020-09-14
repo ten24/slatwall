@@ -46,10 +46,9 @@
 Notes:
 
 */
-component accessors="true" output="false" implements="Slatwall.integrationServices.IntegrationInterface" 
-extends="Slatwall.integrationServices.BaseIntegration" {
+component accessors="true" output="false" implements="Slatwall.integrationServices.IntegrationInterface" extends="Slatwall.integrationServices.BaseIntegration" {
 	
-	property name="ErpOneService";
+	property name="erpOneService";
 	
 	public string function getIntegrationTypes() {
 		return "Data";
@@ -70,7 +69,7 @@ extends="Slatwall.integrationServices.BaseIntegration" {
 			client = {fieldType="text", defaultValue="web"},
 			company = {fieldType="text", defaultValue="DC"},
 			username = {fieldType="text", defaultValue="Ten24Dev"},
-			password = {fieldType="text", defaultValue="HJ68ZmhL"}
+			password = {fieldType="password"}
     	};
 	}
 	
