@@ -2098,6 +2098,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			if(arguments.account.getAdminAccountFlag()){
 				getAccountDAO().removeAccountFromAuditProperties( arguments.account.getAccountID() );
 			}
+			getDAO('AccountDAO').removeAccountFromEmails(arguments.account.getAccountID());
 			
 		}
 

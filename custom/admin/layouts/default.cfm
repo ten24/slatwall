@@ -207,6 +207,7 @@ Notes:
 									<hb:HibachiActionCaller action="admin:entity.listeventregistration" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listgiftcard" type="list">
 									<li class="divider"></li>
+									<hb:HibachiActionCaller action="admin:entity.listtemplateitembatch" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listvolumerebuildbatch" type="list">
 								</hb:HibachiDividerHider>
 							</hb:HibachiActionCallerDropdown>

@@ -124,14 +124,15 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 		return queryService.execute(sql=sql);
 	}
 
-	public void function bulkInsertEntityQueueByPrimaryIDs(required string primaryIDList, required string entityName, required string processMethod, boolean unique=false){
+	public void function bulkInsertEntityQueueByPrimaryIDs(required string primaryIDList, required string entityName, required string processMethod, boolean unique=false, struct entityQueueData={}){
 		var primaryIDPropertyName = getHibachiService().getPrimaryIDPropertyNameByEntityName(arguments.entityName);	
 		var queryService = new query();
-		var sql = "INSERT INTO SwEntityQueue (entityQueueID, baseObject, baseID, processMethod, createdDateTime, modifiedDateTime, entityQueueDateTime, createdByAccountID, modifiedByAccountID, tryCount) ";
+		var sql = "INSERT INTO SwEntityQueue (entityQueueID, baseObject, baseID, processMethod, entityQueueData, createdDateTime, modifiedDateTime, entityQueueDateTime, createdByAccountID, modifiedByAccountID, tryCount) ";
 		sql &= "SELECT LOWER(REPLACE(CAST(UUID() as char character set utf8),'-','')) as entityQueueID, "; 
 		sql &= "'#arguments.entityName#' as baseObject, ";  
 		sql &= "#primaryIDPropertyName# as baseID, ";
 		sql &= "'#arguments.processMethod#' as processMethod, ";
+		sql &= "'#serializeJson(arguments.entityQueueData)#' as entityQueueData, ";
 		sql &= "now() as createdDateTime, ";
 		sql &= "now() as modifiedDateTime, ";
 		sql &= "now() as entityQueueDateTime, ";

@@ -46,76 +46,49 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../../tags" />
-<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
-
-
-<cfparam name="rc.accountSmartList" type="any" />
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
 <cfoutput>
 
-	<hb:HibachiEntityActionBar type="listing" object="#rc.accountSmartList#" showCreate="false">
+	<hb:HibachiEntityActionBar type="listing" showCreate="false">
 
-	<!--- Create --->
+		<!--- Create --->
 		<hb:HibachiEntityActionBarButtonGroup>
-			<hb:HibachiProcessCaller action="admin:entity.preprocessaccount" entity="account" processContext="create" class="btn btn-primary" icon="plus icon-white" text="#$.slatwall.rbKey('define.create')# #$.slatwall.rbKey('entity.account')#" modal="true" />
+			<hb:HibachiActionCaller action="admin:entity.createtemplateitembatch" class="btn btn-primary" icon="plus icon-white" />
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 
-    <cfset accountCollectionList = getHibachiScope().getService('accountService').getAccountCollectionList()>
+	<cfset rc.templateItemBatchCollectionList = $.slatwall.getService('OrderService').getTemplateItemBatchCollectionList() />
 
-	<cfset searchableDisplayProperties = "accountNumber,firstName,lastName,username"/>
-	<cfset accountCollectionList.setDisplayProperties(
-	searchableDisplayProperties,
-	{
-		isVisible=true,
-		isSearchable=true,
-		isDeletable=true
-	})/>
-	
-	<cfset accountCollectionList.addDisplayProperty(
-	displayProperty='primaryEmailAddress.emailAddress',
-	columnConfig={
-		isVisible=true,
-		isSearchable=true,
-		isDeletable=true
-	})/>
-	
-	<cfset accountCollectionList.addDisplayProperty(
-	displayProperty='primaryPhoneNumber.phoneNumber',
-	columnConfig={
-		isVisible=false,
-		isSearchable=true,
-		isDeletable=true
-	})/>
-	
-	<cfset accountCollectionList.addDisplayProperty(
-	displayProperty='ownerAccount.firstName',
-	columnConfig={
-		isVisible=true,
-		isSearchable=false,
-		isDeletable=true
-	})/>
+	<cfset rc.templateItemBatchCollectionList.setDisplayProperties(
+		'templateItemBatchName',
+		{
+			isVisible=true,
+			isSearchable=true,
+			isDeletable=true
+		}
+	)/>
+	<cfset rc.templateItemBatchCollectionList.addDisplayProperty('removalSku.skuName','Removal Sku Name',{
+			isVisible=true,
+			isSearchable=true,
+			isDeletable=true
+		}) />
+	<cfset rc.templateItemBatchCollectionList.addDisplayProperty('replacementSku.skuName','Replacement Sku Name',{
+			isVisible=true,
+			isSearchable=true,
+			isDeletable=true
+		}) />
+    <cfset rc.templateItemBatchCollectionList.addDisplayProperty('templateItemBatchID','templateItemBatchID',{isVisible:false}) />
 
-	<cfset accountCollectionList.addDisplayProperty(
-	displayProperty='accountID',
-	columnConfig={
-		isVisible=false,
-		isSearchable=false,
-		isDeletable=false
-	})/>
-	
-	<cfset accountCollectionList.addOrderBy('createdDateTime|DESC') />
-	
-	
+	<!--- Searchables --->
 	<hb:HibachiListingDisplay 
-		collectionList="#accountCollectionList#"
+		collectionList="#rc.templateItemBatchCollectionList#"
 		usingPersonalCollection="true"
 		personalCollectionKey='#request.context.entityactiondetails.itemname#'
-		recordEditAction="admin:entity.edit#lcase(accountCollectionList.getCollectionObject())#"
-		recordDetailAction="admin:entity.detail#lcase(accountCollectionList.getCollectionObject())#"
-		defaultSearchColumn="accountNumber"
+		recordDetailAction="admin:entity.detailTemplateItemBatch"
 	>
 	</hb:HibachiListingDisplay>
+
 
 </cfoutput>
