@@ -1973,14 +1973,25 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 			
 			if( !isNull( promotionReward.getExcludedSkusCollectionConfig() ) 
-				&& len( promotionReward.getExcludedSkusCollectionConfig() ) ){
-					newPromotionReward.setExcludedSkusCollectionConfig( promotionReward.getExcludedSkusCollectionConfig() );	
-				} 
+				&& len( promotionReward.getExcludedSkusCollectionConfig() ) )
+			{
+				newPromotionReward.setExcludedSkusCollectionConfig( promotionReward.getExcludedSkusCollectionConfig() );	
+			} 
+				
 			if( !isNull(promotionReward.getIncludedSkusCollectionConfig() )
-				&& len( promotionReward.getIncludedSkusCollectionConfig() ) ){
-					newPromotionReward.setIncludedSkusCollectionConfig( promotionReward.getIncludedSkusCollectionConfig() );
-				}
-		
+				&& len( promotionReward.getIncludedSkusCollectionConfig() ) )
+			{
+				newPromotionReward.setIncludedSkusCollectionConfig( promotionReward.getIncludedSkusCollectionConfig() );
+			}
+			
+			if( !isNull(promotionReward.getRewardSkuQuantity()) ){
+				newPromotionPeriod.setRewardSkuQuantity(promotionReward.getRewardSkuQuantity())
+			}
+			
+			if( !isNull(promotionReward.getRewardSkuQuantity()) ){
+				newPromotionPeriod.setRewardSkuQuantity(promotionReward.getRewardSkuQuantity())
+			}
+			
 			newPromotionPeriod.addPromotionReward(newPromotionReward);
 		}
 
