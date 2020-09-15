@@ -89,6 +89,74 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         
 	}
 	
+	{
+	    "entity" : "EmailAddress",
+	    "properties": {
+	        
+	        "emailAddressXYZ": { // key in the incoming struct
+	        
+    		    "propertyIdentifier" : "emailAddress", // property name in this entity
+    		    "validations": { "required": true, "dataType": "string" }
+    		    
+    		},
+	    },
+	    
+	    // it is needed for scenarios where the incoming data does not have a `remoteID` but is stored in an entity in Slatwall, like `phoneNumber`  
+	    "importIdentifier": {
+	        "propertyIdentifier": "importRemoteID",
+            "properties" : 'remoteOrderID,remoteOderItemID' // list of keys keys in the data not DB ; 
+            // to generate, we'll concate the values and then hash  
+            // all of the keys are required
+	    }
+	    
+	}
+	
+	
+	{
+        	"entity": "Account",
+        	"properties": {
+        	    
+        	    "firstName": {
+        		    "propertyIdentifier" : "firstName",
+        		    "validations": { "required": true, "dataType": "string" }
+        		},
+        		
+        		"lastName": {
+        		    "propertyIdentifier" : "lastName",
+        		    "validations": { "dataType": "string" }
+        		},
+        		
+        		"username": {
+        		    "propertyIdentifier" : "username",
+        		    "validations": { "required": true, "dataType": "string" }
+        		},
+        		
+        		"emailAddress123": {
+        		    
+        		    "entity"      : "AccountEmailAddress",
+        		    "relation"    : 'oneToMany',
+        		    
+    		        "propertyIdentifier" : "primaryEmailAddress.emailAddressXYZ",  // first part is the name on the property in the current entity, next parts are the name of the key in the struct for subsequent entity-mapping
+    		        
+        		    "validations": { "required": true, "dataType": "email" }
+        		},
+        		
+        		"city": {
+        		    
+        		    "entity"      : "AccountAddress",
+        		    "relation"    : 'oneToOne',
+        		    
+        		    "propertyIdentifier" : "primaryAccountAddress.address.city",
+        		    "validations": { "dataType": "string" }
+        		},
+        		
+        		"state": {
+        		    "propertyIdentifier" : "primaryAccountAddress.address.state",
+        		    "validations": { "dataType": "string" }
+        		}
+        	}
+        }
+	
 	/**
 	* @test
 	*/
@@ -98,6 +166,24 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    
 	    debug(validation);
 	    assertFalse(validation.isValid);
+	}
+	
+		
+	/**
+	* @test
+	*/
+	public void function validateEntityData_should_fail_for_firstNamexxx(){
+	    
+	    var validation = this.getService().validateEntityData(
+	        entityName="Account", 
+	        data = { lastName: "Yadav", remoteAccountID:'1234', username: 'nitin.yadav', emailAddress: "nitin.yadav@ten24web.com" }, 
+	        mapping = this.getAccountMapping(), 
+	        collectErrors = true 
+	    );
+	    
+	    debug(validation);
+	    assertFalse(validation.isValid);
+	    expect(validation.errors).toHaveKey('firstName', "the validation should fail for firstName");
 	}
 
 	

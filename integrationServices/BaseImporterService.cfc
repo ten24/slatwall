@@ -97,8 +97,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    
 	    //TODO: update initial batch-items values
 	}
-	
-	
+
 	public any function pushRecordIntoImportQueue( required string entityName, required struct data, required any batch ){
 	    
 	    var validation = this.validateEntityData( entityName = arguments.entityName, data = arguments.data, collectErrors=true );
@@ -129,13 +128,64 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	   // 
 	   
 	    this.getEntityQueueDAO().insertEntityQueue(
-    	    remoteID = primaryIDValue, 
+    	    baseID = primaryIDValue, 
     	    baseObject = arguments.entityName, 
     	    processMethod ='processsEntityImport',
     	    entityQueueData = transformedData, 
     	    integrationID = this.getIntegration().getIntegrationID(), 
         	batchID = arguments.batch.getBatchID()
     	);
+	}
+	
+	
+		
+	public struct function getEntityIdentifierKeyValuePairFromData( required string entityName, required struct data, struct mapping){
+	    
+	    if( !structKeyExists(arguments, 'mapping') ){
+            arguments.mapping = this.getEntityMapping( arguments.entityName );
+        }
+        
+        if( structKeyExists( this, 'get#arguments.entityName#IdentifierKeyValuePairFromData') ){
+            return this.invokeMethod( 'get#arguments.entityName#IdentifierKeyValuePairFromData', arguments );
+        } 
+        else {
+    	    return this.validateData( argumentCollection = arguments);
+        }
+	}
+	
+	
+	
+	/**
+	 will extract all of the identifiers properties from the `Mapping`, and the equivalent value from `DATA`,
+	 and will return an struct of key-values like:
+    	 
+    	 ``` 
+        	 {
+        	     'remoteID':  { val: '123456', type='unique }'
+        	     'phoneNumber':{ val: '9090909090', 
+        	 }
+    	 ```
+    	 
+    	 Limitation/TODO s
+    	 1. no nesting, only first level properties
+    	 2. identifier fields will be required
+    	 
+	 */
+	public struct function getIdentifierKeyValuePairFromData( required struct data, required struct mapping ){
+	    
+	    var identifiers = {};
+	    
+	    for( var propertyName in arguments.mapping.properties ){
+	        
+	        var propertyMeta = arguments.mapping.properties[ propertyName ];
+	        var propertyIdentifier = propertyMeta.propertyIdentifier;
+	        
+	        if( StructKeyExists(propertyMeta, 'identifier') ){
+	            identifiers [ propertyName ] = data[ propertyName ];
+	        }
+	    }
+	    
+	    return identifiers;
 	}
 	
     public struct function validateEntityData(required string entityName, required struct data, struct mapping, boolean collectErrors = false ){
@@ -149,20 +199,6 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         } 
         else {
     	    return this.validateData( argumentCollection = arguments);
-        }
-    }
-    
-    public struct function transformEntityData(required string entityName, required struct data, struct mapping ){
-        
-        if( !structKeyExists(arguments, 'mapping') ){
-            arguments.mapping = this.getEntityMapping( arguments.entityName );
-        }
-
-        if( structKeyExists( this, 'transform#arguments.entityName#Data') ){
-            return this.invokeMethod( 'transform#arguments.entityName#Data', arguments );
-        } 
-        else {
-    	    return this.transformData( argumentCollection = arguments);
         }
     }
 
@@ -246,7 +282,20 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    };
 	}
 	
-	
+    public struct function transformEntityData(required string entityName, required struct data, struct mapping ){
+        
+        if( !structKeyExists(arguments, 'mapping') ){
+            arguments.mapping = this.getEntityMapping( arguments.entityName );
+        }
+
+        if( structKeyExists( this, 'transform#arguments.entityName#Data') ){
+            return this.invokeMethod( 'transform#arguments.entityName#Data', arguments );
+        } 
+        else {
+    	    return this.transformData( argumentCollection = arguments);
+        }
+    }
+
 	public struct function transformData( required struct data, required struct mapping ){
 	    var transformedData = {};
 	    
@@ -263,13 +312,15 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	            lastPropertyName = listLast(propertyIdentifier, '.');
 	            propertyIdentifier = listDeleteAt( propertyIdentifier, listLen(propertyIdentifier, '.'), '.');
 	            
-	            var entities = listToArray( propertyIdentifier, '.' );
+                // propertyNmae represent a relation 
+	            var relationProperties = listToArray( propertyIdentifier, '.' );
 
-                for(var entityName in entities){
-                    if( !structKeyExists(lastStruct, entityName) ){
-                        lastStruct[entityName] = {};
+                for(var propertyName in relationProperties){
+                    
+                    if( !structKeyExists(lastStruct, propertyName) ){
+                        lastStruct[propertyName] = {};
                     }
-                    lastStruct = lastStruct[entityName];
+                    lastStruct = lastStruct[propertyName];
                 }
 	        }
 	        
@@ -287,7 +338,20 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	        return this.invokeMethod( 'processs#entityName#_import', arguments );
 	    }
 	    
-	    arguments.entity.populate(arguments.entityData);
+	   
+	   // relations [ 'accountAddress' ] 
+	   // arguments.entity.populate(arguments.entityData);
+	   
+	   // entityData {
+	   
+	            'remoteID': 'afasgd',
+	            'name': 'dfhgfgv',
+	            
+        	   'accountAddress' : {
+        	       'accountAddressID': "123" // <-- fill in from DB in transform function
+        	   }
+	       
+	   // }
 	  
 	    var entityService = this.getHibachiService().getServiceByEntityName( entityName = entityName);
 	  

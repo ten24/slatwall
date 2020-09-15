@@ -1,9 +1,10 @@
 {
 	"entity": "Account",
 	"properties": {
+	   
 	    "firstName": {
 		    "propertyIdentifier" : "firstName",
-		    "validations": { "required": true, "dataType": "string" }
+		    "validations": { "required": true, "dataType": "string", "": }
 		},
 		"lastName": {
 		    "propertyIdentifier" : "lastName",
@@ -18,4 +19,83 @@
 		    "validations": { "required": true, "dataType": "email" }
 		}
 	}
+	
+	//one-to-many, many-to-many, many-to-one
+}
+
+
+// orted items
+orderRemoteID | orderItemRemoteID | 
+
+accoutRemoteID | phoneNumber 
+
+
+
+importerRemoteID = "accoutRemoteID+phoneNumber" --> 
+
+{
+	"entity": "Order",
+	
+	"properties": {
+	    
+	    "firstName": {
+		    "propertyIdentifier" : "firstName",
+		    "validations": { "required": true, "dataType": "string", "": }
+		},
+		
+		"orderID": {
+		    "identifier": {
+		        'type': 'composit'
+		    },
+		    "propertyIdentifier" : "account.remoteID", // 2 level deep
+		    "validations": { "required": true, "shouldExistForCreate": true }
+		},
+		"remoteID": {
+		    
+		    "propertyIdentifier" : "remoteID", // 2 level deep
+		    "validations": { "required": true, "shouldExistForCreate": true }
+		},
+
+	},
+	
+	
+	
+
+	"identifier": {
+	  
+	    "propertyIdentifier": "importRemoteID",
+        "type": "composit",  // AND, OR
+        "properties" : 'remoteOrderID', 'remoteOderItemID' // columns in the data not DB
+           
+    },
+    
+    "relatedData": [ "OrderItem" ]    
+	
+	
+	WHERE id1 = val1 OR id2 = val3 // evry thing is unique
+	
+	WHERE id1 = val1 AND id2 = val3 // evry thing is unique
+	
+	
+	// for upsert
+	//get orderItemByImportRemotID()
+	
+	// ImportRemotID == orderRemoteID + orderItemRemoteID
+	
+	//one-to-many, many-to-many, many-to-one
+}
+
+
+name, email, id
+
+
+
+{
+    'name': {
+        proeprtyIdentifier: 'firstName'
+    },
+    
+    'email': {
+        proeprtyIdentifier: 'accountEmailAddress.emailAddress'
+    }
 }

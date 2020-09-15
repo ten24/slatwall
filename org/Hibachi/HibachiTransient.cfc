@@ -402,7 +402,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 		// If the primaryID exists then we can set the relationship
 		if( structKeyExists(arguments.propertyValue, primaryIDPropertyName) ){
 
-            var primaryIDValue = trim( arguments.propertyValue[primaryIDPropertyName] );
+            var primaryIDValue = trim( data[primaryIDPropertyName] );
             
 			// set the service to use to get the specific entity
 			var entityService = this.getService( "hibachiService" ).getServiceByEntityName( entityName );
@@ -411,12 +411,19 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 			if( structCount(arguments.propertyValue) > 1 ){
 
 				// Load the specifiv entity, if one doesn't exist, this will return a new entity
-				var currentEntity = this.invokeMethod( "get" & currentPropertyName );
+				var order = this.invokeMethod( "get" & currentPropertyName );
 				
-				if( isNull(currentEntity) || currentEntity.getPrimaryIDValue() != primaryIDValue ){
+				
+				if (pareremoteid exist in the data) {
+				    currentEntity.getRemoteID() != data.parentRemoteID;
+				}
+			
+				if( isNull(currentEntity) || currentEntity.getPrimaryIDValue() != primaryIDValue  ){
 				    
 					currentEntity = entityService.invokeMethod( "get" & entityName, { 1=primaryIDValue, 2=true } );
-				} 
+				} else {
+				    
+				}
 
 				// Set the value of the property as the loaded entity
 				_setProperty( arguments.propertyMeta.name, currentEntity );
