@@ -275,9 +275,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	                */
 				    for(var integrationType in integrationCFC.getIntegrationTypes() ){
 				        
-				         if( integrationType == 'fw1' ){
-				             continue;
-				         }
+				        // we don't have CFCs for these integrtion type
+				        if(  listFindNoCase('fw1,app', integrationType) ){
+				            continue;
+				        }
+
 				        
 				        beanFactory.declare("#integrationPackage##integrationType#CFC")
     					    .instanceOf("Slatwall.integrationServices.#integrationPackage#.#integrationType#").asSingleton();
@@ -349,8 +351,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
         						    beanFactory.declareBean( "#integrationPackage##beanName#", thisBeanInfo.cfc, thisBeanInfo.isSingleton );
         						}
         						else {
-        						    throw("Error while loading integration beans from #integrationPackage#/model directory, #beanName# already exist in the bean-factory");
-        						}
+                                    this.logHibachi("Skipping #beanName# while loading integration-beans from #integrationPackage#/model directory, #beanName# has been already registered in the bean-factory");    
+                                }
 							}
 							
 						}
