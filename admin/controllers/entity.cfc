@@ -179,9 +179,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	
 	//Collection
 	public void function processCollection(required struct rc){
-		rc.collection=getService('HibachiCollectionService').getCollection(rc.collectionID);
+		arguments.rc.collection=getService('HibachiCollectionService').getCollection(arguments.rc.collectionID);
 		//redirect to report listing only if the collection is a report
-		if(rc.collection.isReport() && rc.processContext=='clone'){
+		if(arguments.rc.collection.isReport() && arguments.rc.processContext == 'clone'){
 			// custom Success message for entities
 			getHibachiScope().showMessage( replace(getHibachiScope().rbKey( "admin.define.clone_success" ), "${itemEntityName}", rbKey('admin.define.report'), "all" ), "success");
 			rc.sRedirectAction="entity.reportlist#rc.collection.getCollectionObject()#";
