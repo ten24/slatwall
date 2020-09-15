@@ -50,7 +50,7 @@ Notes:
 
 component accessors="true" output="false" displayname="ErpOne" extends="Slatwall.integrationServices.BaseIntegrationType" {
 
-	property name="ErpOneService";
+	property name="erpOneService";
 	
 
 }

@@ -49,6 +49,7 @@ Notes:
 component extends="Slatwall.integrationServices.BaseImporterService" persistent="false" accessors="true" output="false"{
 	
 	property name="integrationService";
+	property name = "hibachiCacheService";
 	
 	public any function getIntegration(){
 	    
@@ -59,74 +60,73 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
     }
     
     public any function getGrantToken(){
-		if(!getService('HibachiCacheService').hasCachedValue('grantToken')){
-			setGrantToken();
+		if(!getHibachiCacheService().hasCachedValue('grantToken')){
+			createSetGrantToken();
 		}
-		else{
-			writeDump(getService('HibachiCacheService').getCachedValue('grantToken'));abort;
-		}
+		return getHibachiCacheService().getCachedValue('grantToken');
     }
     
     public any function getAccessToken(){
-		if(!getService('HibachiCacheService').hasCachedValue('accessToken')){
-			var grantToken=getService('HibachiCacheService').getCachedValue('grantToken')
-			setAccessToken(grantToken);
+		if(!getHibachiCacheService().hasCachedValue('accessToken')){
+			createSetAccessToken(grantToken);
 		}
-		else{
-			writeDump(getService('HibachiCacheService').getCachedValue('accessToken'));abort;
-		}
-    	
+		return getHibachiCacheService().getCachedValue('accessToken');
     }
     
-    public any function setGrantToken(){
-    	var requestURL = setting("devGatewayURL");
-		requestURL &= "distone/rest/service/authorize/grant";
+    public any function createSetGrantToken(){
+		var endPointURL = "distone/rest/service/authorize/grant";
+		var httpRequest = this.createHttpRequest(endPointURL);
+		// Authentication headers
+    	httpRequest.addParam( type='formfield', name='client', value="web" );
+    	httpRequest.addParam( type='formfield', name='company', value="DC" );
+    	httpRequest.addParam( type='formfield', name='username', value="Ten24Dev" );
+    	httpRequest.addParam( type='formfield', name='password', value="HJ68ZmhL" );
+		var rawRequest = httpRequest.send().getPrefix();
+		var response = {};
+		try{
+			if(IsJson(rawRequest.fileContent)) {
+			response = DeSerializeJson(rawRequest.fileContent);
+			getHibachiCacheService().setCachedValue('grantToken',response.grant_token,DateAdd("n",60,now()));
+			createSetAccessToken(response.grant_token);
+			} 
+		}
+		catch (){
+			throw("invalid Grant Token");
+		}
+    }
+    
+    public any function createSetAccessToken(required string grantToken){
+    	var grantToken = this.getGrantToken();
+    	var endPointURL = "distone/rest/service/authorize/access";
+		var httpRequest = this.createHttpRequest(endPointURL);
+		
+		// Authentication headers
+    	httpRequest.addParam( type='formfield', name='client', value="#setting('client')#" );
+    	httpRequest.addParam( type='formfield', name='company', value="#setting('company')#" );
+    	httpRequest.addParam( type='formfield', name='grant_token', value=grantToken );
+		var rawRequest = httpRequest.send().getPrefix();
+		var response = {};
+		try{
+			if( IsJson(rawRequest.fileContent) ) {
+			response = DeSerializeJson(rawRequest.fileContent);
+			getHibachiCacheService().setCachedValue('accessToken',response.access_token,DateAdd("n",60,now()));
+			}
+		} 
+		catch (){
+			throw("invalid Access Token");
+		}
+    }
+    public any function createHttpRequest(required string endPointUrl){
+    	if(!setting("devMode")){
+			var requestURL = setting("prodGatewayURL");
+		}
+		var requestURL = setting("devGatewayURL");
+		requestURL &= arguments.endPointUrl;
 		var httpRequest = new http();
 		httpRequest.setMethod('POST');
 		httpRequest.setCharset("utf-8");
 		httpRequest.setUrl(requestURL);
     	httpRequest.addParam( type='header', name='Content-Type', value='application/x-www-form-urlencoded');
-		
-		// Authentication headers
-    	httpRequest.addParam( type='formfield', name='client', value="#setting('client')#" );
-    	httpRequest.addParam( type='formfield', name='company', value="#setting('company')#" );
-    	httpRequest.addParam( type='formfield', name='username', value="#setting('username')#" );
-    	httpRequest.addParam( type='formfield', name='password', value="#setting('password')#" );
-		var rawRequest = httpRequest.send().getPrefix();
-		var response = {};
-		if( IsJson(rawRequest.fileContent) ) {
-			response = DeSerializeJson(rawRequest.fileContent);
-			getService('HibachiCacheService').setCachedValue('grantToken',response.grant_token,DateAdd("n",60,now()));
-			setAccessToken(response.grant_token);
-		} 
-		else {
-			response = { "status": "error",  "message": "Error: response is not valid JSON"  };
-		}
-		// writeDump(response);abort;
-    }
-    
-    public any function setAccessToken(required string grantToken){
-    	var requestURL = setting("devGatewayURL");
-		requestURL &= "distone/rest/service/authorize/access";
-		var httpRequest = new http();
-		httpRequest.setMethod('POST');
-		httpRequest.setCharset("utf-8");
-		httpRequest.setUrl(requestURL);
-    	httpRequest.addParam( type='header', name='Content-Type', value='application/x-www-form-urlencoded');
-		
-		// Authentication headers
-    	httpRequest.addParam( type='formfield', name='client', value="#setting('client')#" );
-    	httpRequest.addParam( type='formfield', name='company', value="#setting('company')#" );
-    	httpRequest.addParam( type='formfield', name='grant_token', value=arguments.grantToken );
-		var rawRequest = httpRequest.send().getPrefix();
-		var response = {};
-		if( IsJson(rawRequest.fileContent) ) {
-			response = DeSerializeJson(rawRequest.fileContent);
-			getService('HibachiCacheService').setCachedValue('accessToken',response.access_token,DateAdd("n",60,now()));
-		} 
-		else {
-			response = { "status": "error",  "message": "Error: response is not valid JSON"  };
-		} 
-		//writeDump(response);abort;
+    	return httpRequest;
     }
 }

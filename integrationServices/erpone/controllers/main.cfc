@@ -1,12 +1,12 @@
 component extends="Slatwall.org.Hibachi.HibachiController" accessors="true" output="false"{
-    
+ 
     public any function getAuthToken(){
-	    getService('ErpOneService').setGrantToken();
+	    getService('erpOneService').createSetGrantToken();
 	}
 	public any function getGrant(){
-	    getService('ErpOneService').getGrantToken();
+	    getService('erpOneService').getGrantToken();
 	}
 	public any function getAccess(){
-	    getService('ErpOneService').getAccessToken();
+	    getService('erpOneService').getAccessToken();
 	}
 }

@@ -60,33 +60,17 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 	
 	public struct function getSettings() {
 		return {
-		    devGatewayURL = {fieldType="text", defaultValue="https://www.test.com"},
-			prodGatewayURL = {fieldType="text", defaultValue="https://www.test.com"},
-    		prodLoginID = {fieldType="text", defaultValue=""},
-			devLoginID = {fieldType="text", defaultValue=""},
-			prodLicense = {fieldType="text", defaultValue=""},
-			devLicense = {fieldType="text", defaultValue=""},
-			client = {fieldType="text", defaultValue="web"},
-			company = {fieldType="text", defaultValue="DC"},
-			username = {fieldType="text", defaultValue="Ten24Dev"},
-			password = {fieldType="password"}
+		    devGatewayURL = {fieldType="text"},
+			prodGatewayURL = {fieldType="text"},
+			devMode = { fieldType="yesno", defaultValue=1 },
+			devClient = {fieldType="text", defaultValue="web"},
+			prodClient = {fieldType="text", defaultValue="web"},
+			devCompany = {fieldType="text", defaultValue="DC"},
+			prodCompany = {fieldType="text", defaultValue="DC"},
+			devUsername = {fieldType="text", defaultValue="Ten24Dev"},
+			prodUsername = {fieldType="text", defaultValue="Ten24Dev"},
+			devPassword = {fieldType="password"},
+			prodPassword = {fieldType="password"}
     	};
-	}
-	
-	public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
-		//preventing multiple look ups on the external cache look up
-		var cacheKey = "#arguments.settingName##arguments.formatValue#";
-		for(var filterEntity in arguments.filterEntities){
-			cacheKey &= filterEntity.getPrimaryIDValue();
-		}
-		if(!structKeyExists(variables,cacheKey)){
-			if(structKeyExists(getIntegration().getSettings(), arguments.settingName)) {
-				variables[cacheKey] = getService("settingService").getSettingValue(settingName="integration#getPackageName()##arguments.settingName#", object=this, filterEntities=arguments.filterEntities, formatValue=arguments.formatValue);	
-			}else{
-				variables[cacheKey] = getService("settingService").getSettingValue(settingName=arguments.settingName, object=this, filterEntities=arguments.filterEntities, formatValue=arguments.formatValue);
-			}
-		}
-		
-		return variables[cacheKey];
 	}
 }
