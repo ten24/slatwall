@@ -108,7 +108,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public any function getIntegrationCFC(required any integration ){
-        return this.getBean("#arguments.integration.getIntegrationPackage()#IntegrationCFC");
+		var beanName = "#arguments.integration.getIntegrationPackage()#IntegrationCFC";
+		if(this.hasBean(beanName)){
+        	return this.getBean(beanName);
+		}
+		else{
+			// This should only happen when the integration is under development and source code is in some local env
+			logHibachi("Integration CFC #beanName# doesnot exists in the bean Factory");
+		}
 	}
 	
 	/**
