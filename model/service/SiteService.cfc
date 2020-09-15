@@ -380,7 +380,6 @@ component  extends="HibachiService" accessors="true" {
 		if(arguments.site.isDeletable()) {
 		  var data = getDAO("SiteDAO").removeSite(arguments.site.getSiteID());
 		}
-
 		return delete( arguments.site );
 
 	}

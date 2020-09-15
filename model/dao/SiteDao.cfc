@@ -87,6 +87,32 @@ Notes:
 		</cfif>
 		<cfreturn local.query.recordCount />
 	</cffunction>
+	
+	<cffunction name="removeSite" returntype="void" access="public">
+	
+		<cfargument name="siteID" type="string" required="true" />
+
+		<cfquery name="rs">
+			UPDATE Swpromotion SET siteID = NULL 
+			WHERE siteID =  <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.siteID#" />
+		</cfquery>
+
+		<cfquery name="rs">
+			UPDATE Swcontent SET siteID = NULL 
+			WHERE siteID =  <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.siteID#" />
+		</cfquery>
+		
+		<cfquery name="rs">
+			UPDATE Swlocationsite SET siteID = NULL 
+			WHERE siteID =  <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.siteID#" />
+		</cfquery>
+		
+		<cfquery name="rs">
+			UPDATE Sworder SET orderCreatedSiteID = NULL
+			WHERE orderCreatedSiteID =  <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.siteID#" />
+		</cfquery>
+		
+	</cffunction>
 
 </cfcomponent>
 
