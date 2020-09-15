@@ -106,7 +106,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public any function getIntegrationCFC(required any integration ){
-        return this.getBean("#arguments.integration.getIntegrationPackage()#IntegrationCFC");
+		var beanName = "#arguments.integration.getIntegrationPackage()#IntegrationCFC";
+		if(this.hasBean(beanName)){
+        	return this.getBean(beanName);
+		}
+		else{
+			// This should only happen when the integration is under development and source code is in some local env
+			logHibachi("Integration CFC #beanName# doesnot exists in the bean Factory");
+		}
 	}
 	
 	/**
@@ -263,9 +270,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	                */
 				    for(var integrationType in integrationCFC.getIntegrationTypes() ){
 				        
-				        if( integrationType == 'fw1' ){
+				        // we don't have CFCs for these integrtion type
+				        if(  listFindNoCase('fw1,app', integrationType) ){
 				            continue;
 				        }
+
 				        
 				        beanFactory.declare("#integrationPackage##integrationType#CFC")
     					    .instanceOf("Slatwall.integrationServices.#integrationPackage#.#integrationType#").asSingleton();
@@ -335,8 +344,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
         						    beanFactory.declareBean( "#integrationPackage##beanName#", thisBeanInfo.cfc, thisBeanInfo.isSingleton );
         						}
         						else {
-        						    throw("Error while loading integration beans from #integrationPackage#/model directory, #beanName# already exist in the bean-factory");
-        						}
+                                    this.logHibachi("Skipping #beanName# while loading integration-beans from #integrationPackage#/model directory, #beanName# has been already registered in the bean-factory");    
+                                }
 							}
 							
 						}
