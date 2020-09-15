@@ -95,7 +95,9 @@
    <!-- Add To Cart -->
    <div ng-if="monatProductCard.product.displayOnlyFlag != true && (monatProductCard.product.calculatedAllowBackorderFlag || monatProductCard.product.qats > 0)" class="product-actions">
          <button 
-            ng-click="monatProductCard.addToCart(monatProductCard.product.skuID, monatProductCard.product.skuCode)" 
+            ng-click="monatProductCard.addToCart(monatProductCard.product.skuID, monatProductCard.product.skuCode); 
+                        hybridCart.toggleCart();
+                        $timeout( hybridCart.showCart = false, 3000);" 
             class="btn bg-primary add-to-cart" 
             ng-class="{
                 'bg-primary': monatProductCard.type == 'enrollment',
