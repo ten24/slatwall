@@ -77,10 +77,14 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		var endPointURL = "distone/rest/service/authorize/grant";
 		var httpRequest = this.createHttpRequest(endPointURL);
 		// Authentication headers
-    	httpRequest.addParam( type='formfield', name='client', value="web" );
-    	httpRequest.addParam( type='formfield', name='company', value="DC" );
-    	httpRequest.addParam( type='formfield', name='username', value="Ten24Dev" );
-    	httpRequest.addParam( type='formfield', name='password', value="HJ68ZmhL" );
+    	httpRequest.addParam( type='formfield', name='client', value="#setting('client')#" );
+    	httpRequest.addParam( type='formfield', name='company', value="#setting('company')#" );
+    	if(!setting("devMode")){
+			httpRequest.addParam( type='formfield', name='username', value="#setting('prodUsername')#" );
+    		httpRequest.addParam( type='formfield', name='password', value="#setting('prodPassword')#" );
+		}
+    	httpRequest.addParam( type='formfield', name='username', value="#setting('devUsername')#" );
+    	httpRequest.addParam( type='formfield', name='password', value="#setting('devPassword')#" );
 		var rawRequest = httpRequest.send().getPrefix();
 		var response = {};
 		try{
