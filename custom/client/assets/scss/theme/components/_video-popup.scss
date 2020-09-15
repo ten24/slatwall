@@ -1,0 +1,46 @@
+//
+// Video popup
+// --------------------------------------------------
+
+
+.video-popup-btn:not(.video-cover) {
+  display: inline-block;
+  width: $video-popup-btn-size;
+  height: $video-popup-btn-size;
+  transition: $video-popup-btn-transition;
+  border-radius: 50%;
+  background-color: $video-popup-btn-bg;
+  color: $video-popup-btn-color;
+  text-align: center;
+  line-height: $video-popup-btn-size;
+  box-shadow: $video-popup-btn-box-shadow;
+  vertical-align: middle;
+  &::before {
+    font: {
+      family: 'cartzilla-icons';
+      size: $video-popup-btn-font-size;
+      weight: 700;
+    }
+    content: '\e969';
+  }
+
+  // hover state
+  &:hover {
+    background-color: $video-popup-btn-hover-bg;
+    color: $video-popup-btn-hover-color;
+    box-shadow: $video-popup-btn-hover-box-shadow;
+  }
+}
+
+
+// YouTube feed video cover
+
+.video-cover-thumb {
+  position: relative;
+  .badge {
+    position: absolute;
+    right: .5rem;
+    bottom: .5rem;
+    z-index: 5;
+  }
+}

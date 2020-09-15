@@ -1,0 +1,43 @@
+//
+// Badge
+// --------------------------------------------------
+
+.badge-primary, .badge-success,
+.badge-info, .badge-warning,
+.badge-danger, .badge-dark {
+  color: $white;
+  @include hover-focus {
+    color: $white !important;
+  }
+}
+.badge-secondary,
+.badge-light {
+  color: $headings-color;
+}
+
+
+// Adding box-shadow to badges
+
+@each $color, $value in $theme-colors {
+  @if $color != 'secondary' or $color != 'light' {
+    .badge-#{$color}.badge-shadow {
+      box-shadow: 0 .5rem 1.125rem -.275rem rgba($value, .9);
+    }
+  }
+}
+.badge-secondary,
+.badge-light {
+  &.badge-shadow {
+    box-shadow: 0 .5rem 1.125rem -.275rem rgba($black, .25);
+  }
+}
+a.badge-shadow:hover {
+  box-shadow: none;
+}
+
+.img-thumbnail.rounded-circle .badge {
+  position: absolute;
+  top: -.3125rem;
+  right: 0;
+  cursor: default;
+}

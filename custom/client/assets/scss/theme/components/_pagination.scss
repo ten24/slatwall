@@ -1,0 +1,84 @@
+//
+// Pagination
+// --------------------------------------------------
+
+
+// Pagination
+
+.pagination {
+  margin-bottom: 0;
+  user-select: none;
+}
+.page-link {
+  position: relative;
+  transition: $pagination-transition;
+  &.page-link-static:hover {
+    border-color: transparent;
+    background-color: $pagination-bg;
+    color: $pagination-color;
+  }
+  > i {
+    margin-top: -.125rem;
+    vertical-align: middle;
+  }
+}
+.page-item {
+  margin: .15rem;
+  &.active {
+    position: relative;
+    z-index: 5;
+    cursor: default;
+    > .page-link {
+      @include box-shadow($pagination-active-box-shadow);
+    }
+  }
+}
+
+// Sizing
+.pagination .page-link {
+  @include border-radius($btn-border-radius);
+  font-size: $pagination-font-size;
+}
+.pagination-sm .page-link {
+  @include border-radius($btn-border-radius-sm);
+  font-size: $pagination-font-size-sm;
+}
+.pagination-lg .page-link {
+  @include border-radius($btn-border-radius-lg);
+  font-size: $pagination-font-size-lg;
+}
+
+
+// Entry navigation
+
+.entry-navigation {
+  display: flex;
+  border: $entry-navigation-border-width solid $entry-navigation-border-color;
+  @include border-radius($entry-navigation-border-radius);
+  background-color: $entry-navigation-bg;
+}
+.entry-navigation-link {
+  flex-basis: 0;
+  flex-grow: 1;
+  max-width: 100%;
+  padding: $entry-navigation-padding-y $entry-navigation-padding-x;
+  transition: $entry-navigation-transition;
+  border-right: $entry-navigation-border-width solid $entry-navigation-border-color;
+  color: $entry-navigation-color;
+  font-weight: $entry-navigation-font-weight;
+  text: {
+    align: center;
+    decoration: none;
+  }
+  &:last-child {
+    border-right: 0;
+  }
+  > i {
+    margin-top: -.1875rem;
+    vertical-align: middle;
+  }
+  &:hover {
+    color: $entry-navigation-hover-color;
+    text-decoration: none;
+  }
+}
