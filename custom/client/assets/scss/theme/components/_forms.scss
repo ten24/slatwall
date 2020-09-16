@@ -1,0 +1,296 @@
+//
+// Forms
+// --------------------------------------------------
+
+
+// Label
+
+label {
+  padding-top: .0625rem;
+  font-size: $label-font-size;
+  &:not(.form-check-label):not(.custom-control-label):not(.custom-file-label):not(.custom-option-label) {
+    color: $headings-color;
+  }
+}
+.col-form-label {
+  font-size: $label-font-size;
+}
+
+
+// Password visibility toggle
+
+.password-toggle {
+  position: relative;
+  .form-control {
+    padding-right: $font-size-base + ($spacer * 2);
+  }
+}
+.password-toggle-btn {
+  position: absolute;
+  top: 50%;
+  right: .625rem;
+  margin-bottom: 0;
+  padding: $spacer / 2;
+  transform: translateY(-50%);
+  font-size: $btn-font-size-lg;
+  line-height: 1;
+  cursor: pointer;
+  .password-toggle-indicator {
+    transition: color .2s ease-in-out;
+    color: $input-placeholder-color;
+    &:hover { color: $input-color; }
+  }
+  .custom-control-input:checked ~ .password-toggle-indicator {
+    color: $primary;
+  }
+}
+.was-validated .password-toggle .form-control:invalid,
+.was-validated .password-toggle .form-control.is-invalid,
+.was-validated .password-toggle .form-control:valid,
+.was-validated .password-toggle .form-control.is-valid {
+  padding-right: 4rem;
+  & + .password-toggle-btn { right: 2.1rem; }
+}
+
+
+// Custom control label
+
+.custom-control:focus,
+.custom-control-label:focus { outline: none; }
+
+
+// Custom switch
+
+.custom-switch {
+  .custom-control-label::before {
+    height: $custom-switch-height;
+    border: 0;
+    background-color: $custom-switch-bg;
+  }
+  .custom-control-label {
+    &::before, &::after {
+      margin-top: -.125rem;
+    }
+    &::after {
+      background-color: $custom-switch-indicator-bg;
+      box-shadow: $custom-switch-indicator-box-shadow;
+    }
+  }
+  .custom-control-input:checked ~ .custom-control-label {
+    &::before {
+      box-shadow: 0 .375rem .875rem -.3rem $custom-control-indicator-checked-bg;
+    }
+    &::after {
+      transform: translateX($custom-switch-width - $custom-switch-height);
+    }
+  }
+  .custom-control-input:disabled ~ .custom-control-label {
+    &::before {
+      background-color: $custom-switch-disabled-bg;
+    }
+    &::after {
+      opacity: .8;
+    }
+  }
+}
+.input-group-text .custom-control {
+  margin-right: -.625rem;
+}
+
+
+// Form validation
+
+.was-validated .form-control:valid,
+.was-validated .form-control.is-valid,
+.was-validated .custom-file-input:valid ~ .custom-file-label {
+  &, &:focus {
+    border-color: $input-border-color;
+  }
+}
+.valid-tooltip,
+.invalid-tooltip {
+  position: static;
+  margin-top: .25rem;
+  padding: .15rem .5rem;
+  font-size: $form-feedback-font-size;
+}
+.valid-tooltip {
+  color: $success;
+}
+.invalid-tooltip {
+  color: $danger;
+}
+.was-validated {
+  .form-control:invalid,
+  .form-control.is-invalid,
+  .custom-control-input:invalid,
+  .custom-control-input.is-invalid {
+    &~.invalid-tooltip { display: table; }
+  }
+  .form-control:valid,
+  .form-control.is-valid,
+  .custom-control-input:valid,
+  .custom-control-input.is-valid {
+    &~.valid-tooltip { display: table; }
+  }
+}
+
+.was-validated .custom-control-input:valid ~ .custom-control-label,
+.was-validated .custom-control-input.is-valid ~ .custom-control-label {
+  color: inherit;
+}  
+.was-validated .custom-control-input:valid:checked ~ .custom-control-label::before, .was-validated .custom-control-input.is-valid:checked ~ .custom-control-label::before {
+  border-color: $custom-control-indicator-checked-bg !important;
+  background-color: $custom-control-indicator-checked-bg;
+}
+.was-validated .custom-control-input:valid ~ .custom-control-label::before,
+.was-validated .custom-control-input.is-valid ~ .custom-control-label::before {
+  border-color: $custom-control-indicator-border-color !important;
+}
+
+
+// Disabled inputs
+
+.form-control:disabled {
+  cursor: not-allowed;
+}
+
+
+// Form text
+
+.form-text {
+  padding-top: .125rem;
+  font-size: $font-size-xs;
+}
+
+
+// Subscription form status
+
+.subscribe-status {
+  @include border-radius($border-radius-sm);
+  font-size: $font-size-ms;
+  text-align: center;
+  &.status-success,
+  &.status-error {
+    margin-top: .5rem;
+    padding: .25rem .375rem;
+  }
+  &.status-success {
+    background-color: rgba($success, .1);
+    color: $success;
+  }
+  &.status-error {
+    background-color: rgba($danger, .1);
+    color: $danger;
+  }
+}
+
+
+// Custom size / color radios
+
+.custom-option {
+  padding-left: 0;
+  &.custom-control-inline {
+    margin-right: ($spacer / 4);
+  }
+}
+.custom-option-label {
+  position: relative;
+  width: $custom-option-size;
+  height: $custom-option-size;
+  margin-bottom: 0;
+  transition: $custom-option-transition;
+  border: $custom-option-border-width solid $custom-option-border-color;
+  @include border-radius($custom-option-border-radius);
+  color: $custom-option-color;
+  font: {
+    size: $custom-option-font-size;
+    weight: $custom-option-font-weight;
+  }
+  text-align: center;
+  line-height: ($custom-option-size - .25rem);
+  cursor: pointer;
+  &:hover {
+    border-color: $custom-option-hover-border-color;
+    color: $custom-option-hover-color;
+  }
+}
+.custom-option-color {
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: ($custom-option-size - .5rem);
+  height: ($custom-option-size - .5rem);
+  margin: {
+    top: -(($custom-option-size - .5rem) / 2);
+    left: -(($custom-option-size - .5rem) / 2);
+  }
+  background: {
+    position: top left;
+    size: ($custom-option-size - .5rem) ($custom-option-size - .5rem);
+    repeat: no-repeat;
+  }
+}
+.custom-control-input:checked ~ .custom-option-label {
+  border-color: $custom-option-active-border-color;
+  color: $custom-option-active-color;
+}
+
+
+// Custom file input drop area
+
+.cz-file-drop-area {
+  position: relative;
+  padding: ($spacer * 2) $spacer;
+  transition: $input-transition;
+  border: ($input-border-width * 2) dashed $input-border-color;
+  background-color: $input-bg;
+  text-align: center;
+  cursor: pointer;
+
+  .cz-file-drop-input {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    opacity: 0;
+    outline: none;
+    cursor: pointer;
+    z-index: 2;
+  }
+
+  .cz-file-drop-icon {
+    display: block;
+    margin-bottom: .75rem;
+    color: $gray-500;
+    font-size: $font-size-xl;
+  }
+
+  .cz-file-drop-preview {
+    max-width: $file-drop-area-preview-width;
+    margin: {
+      right: auto;
+      bottom: .75rem;
+      left: auto;
+    }
+  }
+
+  .cz-file-drop-message {
+    display: block;
+    font-size: $font-size-sm;
+    margin-bottom: 1.25rem;
+  }
+
+  .btn {
+    position: relative;
+    z-index: 3;
+  }
+
+  &:hover {
+    border-color: darken($input-border-color, 7%);
+  }
+}

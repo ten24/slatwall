@@ -1,0 +1,23 @@
+/*
+ * Cartzilla | Bootstrap E-Commerce Template
+ * Copyright 2019 Createx Studio
+ * Theme Styles
+ */
+ 
+ // Custom Variables
+ @import 'user-variables';
+
+// Theme Helpers: Variables, Mixins and Placeholders
+@import 'theme/helpers';
+
+// Theme Core
+@import 'theme/reboot';
+@import 'theme/components';
+@import 'theme/utilities';
+
+// Icons
+$fa-font-path: "../webfonts";
+@import "theme/fontawesome/fontawesome";
+
+// Custom Core
+@import 'user';
