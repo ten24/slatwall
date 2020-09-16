@@ -106,7 +106,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	        
 	        // if we're collecting errors we can directly send the item to failures (EntityQueue hisory)
 	        this.getEntityQueueDAO().insertEntityQueueFailure(
-        	    baseID = '', 
+        	    baseID = '',  //not needed
         	    baseObject = arguments.entityName, 
         	    processMethod = 'pushRecordIntoImportQueue', // TODO: won't work with EQ as the arguments will not match
         	    entityQueueData = arguments.data, 
@@ -118,18 +118,11 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    }
 	    
 	    var transformedData = this.transformEntityData( entityName = arguments.entityName, data = arguments.data);
-	    
-	    //can be moved to transform-data
-	    var args = {
-	        "entityName" : arguments.entityName,
-	        "uniqueueKey": this.getImportIdentifierProeprtyNameByEntityName( arguments.entityName ),
-	        "uniqueValue": this.generateEntityImportIdentifierFromData(arguments.entityName, arguments.data );
-	    };
-	    
-	    var primaryIDValue = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue( args ) ?: '';
+
+	    var primaryIDPropertyName = this.getHibachiService().getPrimaryIDPropertyNameByEntityName( arguments.mapping.entityName );
 
 	    this.getEntityQueueDAO().insertEntityQueue(
-    	    baseID = primaryIDValue, 
+    	    baseID = transformedData[ primaryIDPropertyName ];, 
     	    baseObject = arguments.entityName, 
     	    processMethod ='processsEntityImport',
     	    entityQueueData = transformedData, 
@@ -280,15 +273,12 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	            
 	            if( !isValid && !arguments.collectErrors){
     	            break;
-    	        } else {
-            		//resetting the flag to continue validating;
-                    isValid = true;
-    	        }
+    	        } 
 	        }
 	    }
 	    
 	    return { 
-	        isValid:  !arguments.collectErrors ? isValid : StructIsEmpty( errors ), 
+	        isValid: arguments.collectErrors ?  StructIsEmpty( errors ) : isValid , 
 	        errors: errors 
 	    };
 	}
@@ -296,22 +286,16 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	//utility
 	private struct function mergeErrors(required struct errors1, required struct errors2){
 	    
-	    for(var key in arguments.errors2 ){
-	        
-	        if( !structKeyExists(arguments.struct1, key) ){
-	            
-	            arguments.struct1[ key ] = arguments.struct2[ key ];
-	            
+	    for(var propertyName in arguments.errors2 ){
+	        if( !structKeyExists(arguments.struct1, propertyName) ){
+	            arguments.struct1[ propertyName ] = arguments.struct2[ propertyName ];
 	        } else {
-	            
-	            arguments.struct1[ key ] = arguments.struct1[ key ].merge( arguments.struct2[ key ] );
+	            arguments.struct1[ propertyName ] = arguments.struct1[ propertyName ].merge( arguments.struct2[ propertyName ] );
 	        }
-	        
 	    }
 	    
 	    return arguments.errors1;
 	}
-	
 	
 	
     public struct function transformEntityData(required string entityName, required struct data, struct mapping ){
@@ -333,27 +317,25 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    var transformedData = {};
 	    
 	    for( var sourcePropertyName in arguments.mapping.properties ){
+	        var propertyidentifier = arguments.mapping.properties[ sourcePropertyName ].propertyIdentifier;
 	        
 	        transformedData[ arguments.mapping.properties[ sourcePropertyName ].propertyIdentifier ] = data[ sourcePropertyName ];
 	    }
 	    
-	    
 	    var importIdentifierPropertyName = this.getImportIdentifierProeprtyNameByEntityName( arguments.mapping.entityName );
-	    
 	    if( !structKeyExists( arguments.data, importIdentifierPropertyName) ){
 	        arguments.data[ importIdentifierPropertyName ] = this.generateEntityImportIdentifierFromData( arguments.mapping.entityName, arguments.data );
 	    }
-	    
-	 
+	   
 	    var primaryIDPropertyName = this.getHibachiService().getPrimaryIDPropertyNameByEntityName( arguments.mapping.entityName );
-	    
-	    var args = {
-	        "entityName" : arguments.mapping.entityName,
-	        "uniqueueKey": importIdentifierPropertyName,
-	        "uniqueValue": arguments.data[ importIdentifierPropertyName ];
-	    };
-	    
 	    if( !structKeyExists( arguments.data, primaryIDPropertyName) ){
+	        
+    	    var args = {
+    	        "entityName" : arguments.mapping.entityName,
+    	        "uniqueueKey": importIdentifierPropertyName,
+    	        "uniqueValue": arguments.data[ importIdentifierPropertyName ];
+    	    };
+    	    
 	        arguments.data[ primaryIDPropertyName ] = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue( args ) ?: '';
 	    }
 	    
@@ -361,11 +343,8 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    transformedData[ primaryIDPropertyName ] = arguments.data[ primaryIDPropertyName ];
 	    
 	    if( structKeyExists(arguments.mapping, 'relations' ) ){
-	        
 	        for(var related in arguments.mapping.relations ){
-	         
 	            transformedData[ related.propertyIdentifier ] = this.transformEntityData( related.entityName, arguments.data );
-	            
 	        }
 	    }
 	    

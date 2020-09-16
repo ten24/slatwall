@@ -18,7 +18,7 @@
 	"importIdentifier": {
 	    "propertyIdentifier": "importAccountPhoneNumberID",
         "type": "composit",
-        "keys" : [ "userID", "phone" ]
+        "keys" : [ "importAccountID", "phone" ]
     }
 }
 

@@ -175,7 +175,7 @@
 		// =====================  END: Private Helper Methods ============================
 
 
-        public any function getAnyKeyValueByTableNameAndUniqueKeyValue(required string tableName, required string keyToFetch, required string uniqueKey, required any uniqueValue ){
+        public any function getAnyColumnValueByTableNameAndUniqueKeyValue(required string tableName, required string columnToFetch, required string uniqueKey, required any uniqueValue ){
 			
 			var qry = new query();
 			
@@ -183,7 +183,7 @@
 			qry.addParam( name='uniqueValue',    value=arguments.uniqueValue );
 			
 			qry = qry.execute(sql="
-    			    SELECT  #arguments.keyToFetch# 
+    			    SELECT  #arguments.columnToFetch# 
     			    FROM    #arguments.tableName# 
     			    WHERE   #arguments.uniqueKey# = :uniqueValue 
     			");

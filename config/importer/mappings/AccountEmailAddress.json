@@ -12,7 +12,7 @@
 	"importIdentifier": {
 	    "propertyIdentifier": "importAccountEmailAddressID",
         "type": "composit",
-        "keys" : [ "userID", "email" ]
+        "keys" : [ "importAccountID", "email" ]
     }
 }
 
