@@ -61,7 +61,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
     
     public any function getGrantToken(){
 		if(!getHibachiCacheService().hasCachedValue('grantToken')){
-			createSetGrantToken();
+			createAndSetGrantToken();
 		}
 		return getHibachiCacheService().getCachedValue('grantToken');
     }
@@ -73,7 +73,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		return getHibachiCacheService().getCachedValue('accessToken');
     }
     
-    public any function createSetGrantToken(){
+    public any function createAndSetGrantToken(){
 		var endPointURL = "distone/rest/service/authorize/grant";
 		var httpRequest = this.createHttpRequest(endPointURL);
 		// Authentication headers
@@ -120,14 +120,14 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 			throw("invalid Access Token");
 		}
     }
-    public any function createHttpRequest(required string endPointUrl){
+    public any function createHttpRequest(required string endPointUrl, string requestType="POST"){
     	if(!setting("devMode")){
 			var requestURL = setting("prodGatewayURL");
 		}
 		var requestURL = setting("devGatewayURL");
 		requestURL &= arguments.endPointUrl;
 		var httpRequest = new http();
-		httpRequest.setMethod('POST');
+		httpRequest.setMethod(arguments.requestType);
 		httpRequest.setCharset("utf-8");
 		httpRequest.setUrl(requestURL);
     	httpRequest.addParam( type='header', name='Content-Type', value='application/x-www-form-urlencoded');
