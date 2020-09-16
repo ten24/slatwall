@@ -49,10 +49,10 @@ Notes:
 component extends="Slatwall.integrationServices.BaseImporterService" persistent="false" accessors="true" output="false"{
 	
 	property name="integrationService";
+	property name="erpOneIntegrationCFC";
 	property name = "hibachiCacheService";
 	
 	public any function getIntegration(){
-	    
 	    if( !structKeyExists( variables, 'integration') ){
 	        variables.integration = this.getIntegrationByIntegrationPackage('erpone');
 	    }
@@ -60,7 +60,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
     }
     
     public any function getGrantToken(){
-		if(!getHibachiCacheService().hasCachedValue('grantToken')){
+		if(!(getHibachiCacheService().hasCachedValue('grantToken'))){
 			createAndSetGrantToken();
 		}
 		return getHibachiCacheService().getCachedValue('grantToken');
@@ -68,7 +68,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
     
     public any function getAccessToken(){
 		if(!getHibachiCacheService().hasCachedValue('accessToken')){
-			createSetAccessToken(grantToken);
+			createAndSetAccessToken(grantToken);
 		}
 		return getHibachiCacheService().getCachedValue('accessToken');
     }
@@ -77,36 +77,43 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		var endPointURL = "distone/rest/service/authorize/grant";
 		var httpRequest = this.createHttpRequest(endPointURL);
 		// Authentication headers
-    	httpRequest.addParam( type='formfield', name='client', value="#setting('client')#" );
-    	httpRequest.addParam( type='formfield', name='company', value="#setting('company')#" );
-    	if(!setting("devMode")){
-			httpRequest.addParam( type='formfield', name='username', value="#setting('prodUsername')#" );
-    		httpRequest.addParam( type='formfield', name='password', value="#setting('prodPassword')#" );
+    	if(!this.setting("devMode")){
+    		httpRequest.addParam( type='formfield', name='client', value= this.setting('prodClient'));
+    		httpRequest.addParam( type='formfield', name='company', value= this.setting("prodCompany"));
+			httpRequest.addParam( type='formfield', name='username', value=this.setting("prodUsername"));
+    		httpRequest.addParam( type='formfield', name='password', value=this.setting("prodPassword"));
 		}
-    	httpRequest.addParam( type='formfield', name='username', value="#setting('devUsername')#" );
-    	httpRequest.addParam( type='formfield', name='password', value="#setting('devPassword')#" );
+		httpRequest.addParam( type='formfield', name='client', value= this.setting('devClient'));
+    	httpRequest.addParam( type='formfield', name='company', value= this.setting("devCompany"));
+    	httpRequest.addParam( type='formfield', name='username', value=this.setting("devUsername"));
+    	httpRequest.addParam( type='formfield', name='password', value=this.setting("devPassword"));
 		var rawRequest = httpRequest.send().getPrefix();
 		var response = {};
 		try{
 			if(IsJson(rawRequest.fileContent)) {
 			response = DeSerializeJson(rawRequest.fileContent);
 			getHibachiCacheService().setCachedValue('grantToken',response.grant_token,DateAdd("n",60,now()));
-			createSetAccessToken(response.grant_token);
+			this.createAndSetAccessToken();
 			} 
 		}
-		catch (){
-			throw("invalid Grant Token");
+		catch ( any e ){
+			throw("Invalid Grant Token" & e.Message);
 		}
     }
     
-    public any function createSetAccessToken(required string grantToken){
+    public any function createAndSetAccessToken(){
     	var grantToken = this.getGrantToken();
     	var endPointURL = "distone/rest/service/authorize/access";
 		var httpRequest = this.createHttpRequest(endPointURL);
 		
 		// Authentication headers
-    	httpRequest.addParam( type='formfield', name='client', value="#setting('client')#" );
-    	httpRequest.addParam( type='formfield', name='company', value="#setting('company')#" );
+		if(!this.setting("devMode")){
+    		httpRequest.addParam( type='formfield', name='client', value= this.setting('prodClient'));
+    		httpRequest.addParam( type='formfield', name='company', value= this.setting("prodCompany"));
+    		httpRequest.addParam( type='formfield', name='grant_token', value=grantToken );
+		}
+		httpRequest.addParam( type='formfield', name='client', value= this.setting('devClient'));
+    	httpRequest.addParam( type='formfield', name='company', value= this.setting("devCompany"));
     	httpRequest.addParam( type='formfield', name='grant_token', value=grantToken );
 		var rawRequest = httpRequest.send().getPrefix();
 		var response = {};
@@ -116,15 +123,15 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 			getHibachiCacheService().setCachedValue('accessToken',response.access_token,DateAdd("n",60,now()));
 			}
 		} 
-		catch (){
+		catch ( any e ){
 			throw("invalid Access Token");
 		}
     }
     public any function createHttpRequest(required string endPointUrl, string requestType="POST"){
-    	if(!setting("devMode")){
-			var requestURL = setting("prodGatewayURL");
+    	if(!this.setting("devMode")){
+			var requestURL = this.setting("prodGatewayURL");
 		}
-		var requestURL = setting("devGatewayURL");
+		var requestURL = this.setting("devGatewayURL");
 		requestURL &= arguments.endPointUrl;
 		var httpRequest = new http();
 		httpRequest.setMethod(arguments.requestType);
@@ -133,4 +140,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
     	httpRequest.addParam( type='header', name='Content-Type', value='application/x-www-form-urlencoded');
     	return httpRequest;
     }
+    public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
+    	return this.getErpOneIntegrationCFC().setting(arguments.settingName);
+	}
 }
