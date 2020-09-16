@@ -159,10 +159,10 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	public string function generateImportIdentifierFromDataAndMapping( required struct data, required struct mapping ){
 	    
 	    var compositeValue =  arguments.mapping.importIdentifier.keys.reduce( function(result, key){ 
-                                	        return result & data[ key ]; // it is expected that each key will exist in the data
+                                	        return result & "_" & hash( data[ key ], 'MD5' ); // it is expected that each key will exist in the data
                                 	    }, '');
                                 	    
-        return hash( compositeValue, 'MD5' );
+        return compositeValue;
 	}
 	
 	
