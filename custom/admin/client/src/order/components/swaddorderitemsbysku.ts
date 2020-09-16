@@ -16,13 +16,13 @@ class SWAddOrderItemsBySkuController extends AddOrderItemsBySkuController{
 	){
 		
 		super($hibachi, collectionConfigService,  observerService, orderTemplateService, rbkeyService, alertService)
-		console.log("==11==");
+		
 	}
 	
 	public initCollectionConfig(){
 		
 		super.initCollectionConfig();
-		console.log("test text 2");
+		
 		switch(this.accountType?.trim()?.toLowerCase()){
 			case 'marketpartner': 
 				this.addSkuCollection.addFilter('mpFlag', true, '=', undefined, true);
@@ -34,8 +34,8 @@ class SWAddOrderItemsBySkuController extends AddOrderItemsBySkuController{
 	        	this.addSkuCollection.addFilter('retailFlag', true, '=', undefined, true);
 			break;
 		}
-		console.log("test text");
-		this.addSkuCollection.addFilter('displayOnlyFlag', true, '=', undefined, true));
+		
+		this.addSkuCollection.addFilter('displayOnlyFlag', true, '!=');
 	}
 
 }

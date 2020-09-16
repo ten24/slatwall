@@ -9,12 +9,12 @@ import {SkuPriceService} from "./services/skupriceservice";
 //controllers
 
 //directives
-import {SWPricingManager} from "./components/swpricingmanager";
+import {SWPricingManager} from "sku/components/swpricingmanager";
 import {SWImageDetailModalLauncher} from "./components/swimagedetailmodallauncher";
 import {SWAddSkuPriceModalLauncher} from "./components/swaddskupricemodallauncher";
 import {SWDeleteSkuPriceModalLauncher} from "./components/swdeleteskupricemodallauncher";
 import {SWEditSkuPriceModalLauncher} from "./components/sweditskupricemodallauncher";
-import { SWSkuPriceModal } from "./components/swskupricemodal";
+import { SWSkuPriceModal } from "sku/components/swskupricemodal";
 import {SWSkuStockAdjustmentModalLauncher} from "./components/swskustockadjustmentmodallauncher";
 import {SWDefaultSkuRadio} from "./components/swdefaultskuradio"; 
 import {SWSkuImage} from "./components/swskuimage";
