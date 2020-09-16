@@ -97,6 +97,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    
 	    //TODO: update initial batch-items values
 	}
+	
 
 	public any function pushRecordIntoImportQueue( required string entityName, required struct data, required any batch ){
 	    
@@ -106,7 +107,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	        
 	        // if we're collecting errors we can directly send the item to failures (EntityQueue hisory)
 	        this.getEntityQueueDAO().insertEntityQueueFailure(
-        	    baseID = '',  //not needed
+        	    baseID = '', //get hibach iuuid   //not needed
         	    baseObject = arguments.entityName, 
         	    processMethod = 'pushRecordIntoImportQueue', // TODO: won't work with EQ as the arguments will not match
         	    entityQueueData = arguments.data, 
@@ -122,9 +123,9 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    var primaryIDPropertyName = this.getHibachiService().getPrimaryIDPropertyNameByEntityName( arguments.mapping.entityName );
 
 	    this.getEntityQueueDAO().insertEntityQueue(
-    	    baseID = transformedData[ primaryIDPropertyName ];, 
+    	    baseID = transformedData[ primaryIDPropertyName ], 
     	    baseObject = arguments.entityName, 
-    	    processMethod ='processsEntityImport',
+    	    processMethod ='processEntityImport',
     	    entityQueueData = transformedData, 
     	    integrationID = this.getIntegration().getIntegrationID(), 
         	batchID = arguments.batch.getBatchID()
@@ -159,7 +160,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	public string function generateImportIdentifierFromDataAndMapping( required struct data, required struct mapping ){
 	    
 	    var compositeValue =  arguments.mapping.importIdentifier.keys.reduce( function(result, key){ 
-                                	        return result & "_" & hash( data[ key ], 'MD5' ); // it is expected that each key will exist in the data
+                                	        return ListAppend( result , hash( data[ key ], 'MD5' ), '_'); // it is expected that each key will exist in the data
                                 	    }, '');
                                 	    
         return compositeValue;
@@ -323,16 +324,16 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    }
 	    
 	    var importIdentifierPropertyName = this.getImportIdentifierProeprtyNameByEntityName( arguments.mapping.entityName );
-	    if( !structKeyExists( arguments.data, importIdentifierPropertyName) ){
-	        arguments.data[ importIdentifierPropertyName ] = this.generateEntityImportIdentifierFromData( arguments.mapping.entityName, arguments.data );
-	    }
+	    
+	    arguments.data[ importIdentifierPropertyName ] = this.generateEntityImportIdentifierFromData( arguments.mapping.entityName, arguments.data );
+	    
 	   
 	    var primaryIDPropertyName = this.getHibachiService().getPrimaryIDPropertyNameByEntityName( arguments.mapping.entityName );
 	    if( !structKeyExists( arguments.data, primaryIDPropertyName) ){
 	        
     	    var args = {
     	        "entityName" : arguments.mapping.entityName,
-    	        "uniqueueKey": importIdentifierPropertyName,
+    	        "uniqueKey": importIdentifierPropertyName,
     	        "uniqueValue": arguments.data[ importIdentifierPropertyName ];
     	    };
     	    
@@ -352,11 +353,11 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	}
 
 	
-	public any function processsEntityImport( any entity, struct entityData ){
+	public any function processEntityImport( any entity, struct entityData ){
 	    var entityName = arguments.entity.getClassName();
 	    
-	    if( structKeyExists(this, 'processs#entityName#_import') ){
-	        return this.invokeMethod( 'processs#entityName#_import', arguments );
+	    if( structKeyExists(this, 'process#entityName#_import') ){
+	        return this.invokeMethod( 'process#entityName#_import', arguments );
 	    }
 	    
 	    var entityService = this.getHibachiService().getServiceByEntityName( entityName = entityName);

@@ -29,13 +29,14 @@
 	"importIdentifier": {
 	    "propertyIdentifier": "importAccountID", //property on the entity, should exist in all imported entities
         "type": "composit",  // AND, OR --> TODO
-        "keys" : [ "userID", "username" ] // keys in the data not DB
+        "keys" : [ "userID"  ] // keys in the data not DB
     },
 	
 	// relations one-to-one, one-to-many, many-to-many, many-to-one
 	"relations": [
 	    {
 	        "entityName": "AccountEmailAddress",
+	        "type": "manyToOne"
 	        "proeprtyIdentifier": "primaryEmailAddress", // property on the entity
         },
         {
