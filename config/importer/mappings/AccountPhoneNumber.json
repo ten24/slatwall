@@ -1,0 +1,25 @@
+{
+	"entityName": "AccountPhoneNumber",
+	
+	"properties": {
+	    
+	    "phone": {
+		    "propertyIdentifier" : "phoneNumber",
+		    "validations": { "required": true, "dataType": "number" }
+		},
+		
+		"countryCode": {
+		    "propertyIdentifier" : "countryCallingCode",
+		    "validations": { "required": false,  }
+		}
+		
+	},
+	
+	"importIdentifier": {
+	    "propertyIdentifier": "importAccountPhoneNumberID",
+        "type": "composit",
+        "keys" : [ "userID", "phone" ]
+    }
+}
+
+

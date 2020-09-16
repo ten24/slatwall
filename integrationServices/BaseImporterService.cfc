@@ -102,17 +102,13 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    
 	    var validation = this.validateEntityData( entityName = arguments.entityName, data = arguments.data, collectErrors=true );
 	    
-	    var primaryIDValue = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue( 
-	                                arguments.entityName, 'remoteID', ( data.remoteID ?: '') 
-	                         ) ?: '';
-	    
 	    if( !validation.isValid ){
 	        
 	        // if we're collecting errors we can directly send the item to failures (EntityQueue hisory)
 	        this.getEntityQueueDAO().insertEntityQueueFailure(
-        	    baseID = primaryIDValue, 
+        	    baseID = '', 
         	    baseObject = arguments.entityName, 
-        	    processMethod = 'pushRecordIntoImportQueue',
+        	    processMethod = 'pushRecordIntoImportQueue', // TODO: won't work with EQ as the arguments will not match
         	    entityQueueData = arguments.data, 
         	    integrationID = this.getIntegration().getIntegrationID(), 
         	    batchID = arguments.batch.getBatchID(),
@@ -123,10 +119,15 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    
 	    var transformedData = this.transformEntityData( entityName = arguments.entityName, data = arguments.data);
 	    
-	   // TODO: upsert (use some remote-id to fine and set baseID ) 
-	   
-	   // 
-	   
+	    //can be moved to transform-data
+	    var args = {
+	        "entityName" : arguments.entityName,
+	        "uniqueueKey": this.getImportIdentifierProeprtyNameByEntityName( arguments.entityName ),
+	        "uniqueValue": this.generateEntityImportIdentifierFromData(arguments.entityName, arguments.data );
+	    };
+	    
+	    var primaryIDValue = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue( args ) ?: '';
+
 	    this.getEntityQueueDAO().insertEntityQueue(
     	    baseID = primaryIDValue, 
     	    baseObject = arguments.entityName, 
@@ -138,55 +139,40 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	}
 	
 	
-		
-	public struct function getEntityIdentifierKeyValuePairFromData( required string entityName, required struct data, struct mapping){
+	public string function getImportIdentifierProeprtyNameByEntityName( required string entityName ){
+	 
+        var mapping = this.getEntityMapping( arguments.entityName );
+     
+        return arguments.mapping.importIdentifier.propertyIdentifier;
+	}
+	
+	public string function generateEntityImportIdentifierFromData( required string entityName, required struct data, struct mapping){
 	    
 	    if( !structKeyExists(arguments, 'mapping') ){
             arguments.mapping = this.getEntityMapping( arguments.entityName );
         }
         
-        if( structKeyExists( this, 'get#arguments.entityName#IdentifierKeyValuePairFromData') ){
-            return this.invokeMethod( 'get#arguments.entityName#IdentifierKeyValuePairFromData', arguments );
-        } 
-        else {
-    	    return this.validateData( argumentCollection = arguments);
+        var importIdentifierGeneratorFunctionName = 'generate#arguments.entityName#ImportIdentifierFromData';
+        
+        if( structKeyExists(this, importIdentifierGeneratorFunctionName) ){
+            
+            return this.invokeMethod( importIdentifierGeneratorFunctionName, arguments );
+        } else {
+            
+    	    return this.generateImportIdentifierFromDataAndMapping( argumentCollection = arguments);
         }
 	}
 	
-	
-	
-	/**
-	 will extract all of the identifiers properties from the `Mapping`, and the equivalent value from `DATA`,
-	 and will return an struct of key-values like:
-    	 
-    	 ``` 
-        	 {
-        	     'remoteID':  { val: '123456', type='unique }'
-        	     'phoneNumber':{ val: '9090909090', 
-        	 }
-    	 ```
-    	 
-    	 Limitation/TODO s
-    	 1. no nesting, only first level properties
-    	 2. identifier fields will be required
-    	 
-	 */
-	public struct function getIdentifierKeyValuePairFromData( required struct data, required struct mapping ){
+	public string function generateImportIdentifierFromDataAndMapping( required struct data, required struct mapping ){
 	    
-	    var identifiers = {};
-	    
-	    for( var propertyName in arguments.mapping.properties ){
-	        
-	        var propertyMeta = arguments.mapping.properties[ propertyName ];
-	        var propertyIdentifier = propertyMeta.propertyIdentifier;
-	        
-	        if( StructKeyExists(propertyMeta, 'identifier') ){
-	            identifiers [ propertyName ] = data[ propertyName ];
-	        }
-	    }
-	    
-	    return identifiers;
+	    var compositeValue =  arguments.mapping.importIdentifier.keys.reduce( function(result, key){ 
+                                	        return result & data[ key ]; // it is expected that each key will exist in the data
+                                	    }, '');
+                                	    
+        return hash( compositeValue, 'MD5' );
 	}
+	
+	
 	
     public struct function validateEntityData(required string entityName, required struct data, struct mapping, boolean collectErrors = false ){
         
@@ -194,10 +180,13 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
             arguments.mapping = this.getEntityMapping( arguments.entityName );
         }
         
-        if( structKeyExists( this, 'validate#arguments.entityName#Data') ){
-            return this.invokeMethod( 'validate#arguments.entityName#Data', arguments );
-        } 
-        else {
+        var validatorFunctionName = 'validate#arguments.entityName#Data';
+        
+        if( structKeyExists( this, validatorFunctionName) ){
+            
+            return this.invokeMethod( validatorFunctionName, arguments );
+        } else {
+            
     	    return this.validateData( argumentCollection = arguments);
         }
     }
@@ -276,11 +265,54 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	        }
 	    }
 	    
+	    
+	    if(  (isValid || arguments.collectErrors) && structKeyExists(arguments.mapping, 'relations' ) ){
+	        
+	        for(var related in arguments.mapping.relations ){
+	         
+	            var validation = this.validateEntityData(related.entityName, arguments.data,  arguments.collectErrors );
+	            
+	            isValid = validation.isValid;
+	            
+	            if(arguments.collectErrors){
+	                errors = mergeErrors( errors, validation.errors );
+	            }
+	            
+	            if( !isValid && !arguments.collectErrors){
+    	            break;
+    	        } else {
+            		//resetting the flag to continue validating;
+                    isValid = true;
+    	        }
+	        }
+	    }
+	    
 	    return { 
 	        isValid:  !arguments.collectErrors ? isValid : StructIsEmpty( errors ), 
 	        errors: errors 
 	    };
 	}
+	
+	//utility
+	private struct function mergeErrors(required struct errors1, required struct errors2){
+	    
+	    for(var key in arguments.errors2 ){
+	        
+	        if( !structKeyExists(arguments.struct1, key) ){
+	            
+	            arguments.struct1[ key ] = arguments.struct2[ key ];
+	            
+	        } else {
+	            
+	            arguments.struct1[ key ] = arguments.struct1[ key ].merge( arguments.struct2[ key ] );
+	        }
+	        
+	    }
+	    
+	    return arguments.errors1;
+	}
+	
+	
 	
     public struct function transformEntityData(required string entityName, required struct data, struct mapping ){
         
@@ -295,36 +327,46 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
     	    return this.transformData( argumentCollection = arguments);
         }
     }
-
+    
+    // make it recursive
 	public struct function transformData( required struct data, required struct mapping ){
 	    var transformedData = {};
 	    
-	    for( var property in arguments.mapping.properties ){
+	    for( var sourcePropertyName in arguments.mapping.properties ){
 	        
-	        var propertyMeta = arguments.mapping.properties[property];
-	        var propertyIdentifier = propertyMeta.propertyIdentifier;
+	        transformedData[ arguments.mapping.properties[ sourcePropertyName ].propertyIdentifier ] = data[ sourcePropertyName ];
+	    }
+	    
+	    
+	    var importIdentifierPropertyName = this.getImportIdentifierProeprtyNameByEntityName( arguments.mapping.entityName );
+	    
+	    if( !structKeyExists( arguments.data, importIdentifierPropertyName) ){
+	        arguments.data[ importIdentifierPropertyName ] = this.generateEntityImportIdentifierFromData( arguments.mapping.entityName, arguments.data );
+	    }
+	    
+	 
+	    var primaryIDPropertyName = this.getHibachiService().getPrimaryIDPropertyNameByEntityName( arguments.mapping.entityName );
+	    
+	    var args = {
+	        "entityName" : arguments.mapping.entityName,
+	        "uniqueueKey": importIdentifierPropertyName,
+	        "uniqueValue": arguments.data[ importIdentifierPropertyName ];
+	    };
+	    
+	    if( !structKeyExists( arguments.data, primaryIDPropertyName) ){
+	        arguments.data[ primaryIDPropertyName ] = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue( args ) ?: '';
+	    }
+	    
+	    transformedData[ importIdentifierPropertyName ] = arguments.data[ importIdentifierPropertyName ];
+	    transformedData[ primaryIDPropertyName ] = arguments.data[ primaryIDPropertyName ];
+	    
+	    if( structKeyExists(arguments.mapping, 'relations' ) ){
 	        
-	        var lastStruct = transformedData;
-	        var lastPropertyName = propertyIdentifier;
-	        
-	        if( listLen(propertyIdentifier, '.') > 1 ){
+	        for(var related in arguments.mapping.relations ){
+	         
+	            transformedData[ related.propertyIdentifier ] = this.transformEntityData( related.entityName, arguments.data );
 	            
-	            lastPropertyName = listLast(propertyIdentifier, '.');
-	            propertyIdentifier = listDeleteAt( propertyIdentifier, listLen(propertyIdentifier, '.'), '.');
-	            
-                // propertyNmae represent a relation 
-	            var relationProperties = listToArray( propertyIdentifier, '.' );
-
-                for(var propertyName in relationProperties){
-                    
-                    if( !structKeyExists(lastStruct, propertyName) ){
-                        lastStruct[propertyName] = {};
-                    }
-                    lastStruct = lastStruct[propertyName];
-                }
 	        }
-	        
-	        lastStruct[lastPropertyName] = data[property];
 	    }
 	    
 	    return transformedData;
@@ -338,21 +380,6 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	        return this.invokeMethod( 'processs#entityName#_import', arguments );
 	    }
 	    
-	   
-	   // relations [ 'accountAddress' ] 
-	   // arguments.entity.populate(arguments.entityData);
-	   
-	   // entityData {
-	   
-	            'remoteID': 'afasgd',
-	            'name': 'dfhgfgv',
-	            
-        	   'accountAddress' : {
-        	       'accountAddressID': "123" // <-- fill in from DB in transform function
-        	   }
-	       
-	   // }
-	  
 	    var entityService = this.getHibachiService().getServiceByEntityName( entityName = entityName);
 	  
 	    entityService.invokeMethod("save#entityName#", arguments.entity);

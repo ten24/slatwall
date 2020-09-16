@@ -1,101 +1,48 @@
 {
-	"entity": "Account",
+	"entityName": "Account",
+	
 	"properties": {
-	   
+	    
+	    "userID": {
+	        "propertyIdentifier": "remoteID",
+	        "validations": { "required": true, "dataType": "string"}
+	    }
+	    
 	    "firstName": {
 		    "propertyIdentifier" : "firstName",
-		    "validations": { "required": true, "dataType": "string", "": }
+		    "validations": { "required": true, "dataType": "string" }
 		},
+		
 		"lastName": {
 		    "propertyIdentifier" : "lastName",
 		    "validations": { "dataType": "string" }
 		},
+		
 		"username": {
 		    "propertyIdentifier" : "username",
 		    "validations": { "required": true, "dataType": "string" }
-		},
-		"emailAddress": {
-		    "propertyIdentifier" : "primaryEmailAddress.emailAddress",
-		    "validations": { "required": true, "dataType": "email" }
 		}
-	}
-	
-	//one-to-many, many-to-many, many-to-one
-}
-
-
-// orted items
-orderRemoteID | orderItemRemoteID | 
-
-accoutRemoteID | phoneNumber 
-
-
-
-importerRemoteID = "accoutRemoteID+phoneNumber" --> 
-
-{
-	"entity": "Order",
-	
-	"properties": {
-	    
-	    "firstName": {
-		    "propertyIdentifier" : "firstName",
-		    "validations": { "required": true, "dataType": "string", "": }
-		},
 		
-		"orderID": {
-		    "identifier": {
-		        'type': 'composit'
-		    },
-		    "propertyIdentifier" : "account.remoteID", // 2 level deep
-		    "validations": { "required": true, "shouldExistForCreate": true }
-		},
-		"remoteID": {
-		    
-		    "propertyIdentifier" : "remoteID", // 2 level deep
-		    "validations": { "required": true, "shouldExistForCreate": true }
-		},
-
 	},
 	
-	
-	
-
-	"identifier": {
-	  
-	    "propertyIdentifier": "importRemoteID",
-        "type": "composit",  // AND, OR
-        "properties" : 'remoteOrderID', 'remoteOderItemID' // columns in the data not DB
-           
+	// uniqueue identifier, to figure-out upserts of imported data ==> md5( data.accoutRemoteID + data.phoneNumber );
+	"importIdentifier": {
+	    "propertyIdentifier": "importAccountID", //property on the entity, should exist in all imported entities
+        "type": "composit",  // AND, OR --> TODO
+        "keys" : [ "userID", "username" ] // keys in the data not DB
     },
-    
-    "relatedData": [ "OrderItem" ]    
 	
-	
-	WHERE id1 = val1 OR id2 = val3 // evry thing is unique
-	
-	WHERE id1 = val1 AND id2 = val3 // evry thing is unique
-	
-	
-	// for upsert
-	//get orderItemByImportRemotID()
-	
-	// ImportRemotID == orderRemoteID + orderItemRemoteID
-	
-	//one-to-many, many-to-many, many-to-one
+	// relations one-to-one, one-to-many, many-to-many, many-to-one
+	"relations": [
+	    {
+	        "entityName": "AccountEmailAddress",
+	        "proeprtyIdentifier": "primaryEmailAddress", // property on the entity
+        },
+        {
+	        "entityName": "AccountPhoneNumber",
+	        "proeprtyIdentifier": "primaryPhoneNumber",
+        }
+    ]
 }
 
 
-name, email, id
-
-
-
-{
-    'name': {
-        proeprtyIdentifier: 'firstName'
-    },
-    
-    'email': {
-        proeprtyIdentifier: 'accountEmailAddress.emailAddress'
-    }
-}

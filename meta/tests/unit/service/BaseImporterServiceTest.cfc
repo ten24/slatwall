@@ -58,8 +58,13 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	private struct function getAccountMapping(){
 	    
 	    return {
+	        
         	"entity": "Account",
         	"properties": {
+        	    "userID": {
+        	        "propertyIdentifier": "remoteID",
+        	        "validations": { "required": true, "dataType": "string"}
+        	    }
         	    "firstName": {
         		    "propertyIdentifier" : "firstName",
         		    "validations": { "required": true, "dataType": "string" }
@@ -71,91 +76,30 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         		"username": {
         		    "propertyIdentifier" : "username",
         		    "validations": { "required": true, "dataType": "string" }
-        		},
-        		"emailAddress": {
-        		    "propertyIdentifier" : "primaryEmailAddress.emailAddress",
-        		    "validations": { "required": true, "dataType": "email" }
-        		},
-        		"city": {
-        		    "propertyIdentifier" : "primaryAccountAddress.address.city",
-        		    "validations": { "dataType": "string" }
-        		},
-        		"state": {
-        		    "propertyIdentifier" : "primaryAccountAddress.address.state",
-        		    "validations": { "dataType": "string" }
         		}
-        	}
+        	},
+        	
+        	// uniqueue identifier, to figure-out upserts of imported data ==> md5( data.accoutRemoteID + data.phoneNumber );
+        	// it is needed for scenarios where the incoming data does not have a `remoteID` but is stored in an entity in Slatwall, like `phoneNumber`  
+        	"importIdentifier": {
+        	    "propertyIdentifier": "importRemoteID", //property on the entity, should exist in all imported entities
+                "type": "composite",  // AND, OR --> TODO
+                "keys" : [ "userID", "username" ] // to generate, we'll concate the values and then md5; all of the keys must be required
+            },
+        	
+        	// Related-Entities one-to-one, one-to-many, many-to-many, many-to-one
+        	"relations": [
+        	    {
+        	        "entityName": "AccountEmailAddress",
+        	        "proeprtyIdentifier": "primaryEmailAddress", // property on the entity
+                },
+                {
+        	        "entityName": "AccountPhoneNumber",
+        	        "proeprtyIdentifier": "primaryPhoneNumber",
+                }
+            ]
         };
-        
 	}
-	
-	{
-	    "entity" : "EmailAddress",
-	    "properties": {
-	        
-	        "emailAddressXYZ": { // key in the incoming struct
-	        
-    		    "propertyIdentifier" : "emailAddress", // property name in this entity
-    		    "validations": { "required": true, "dataType": "string" }
-    		    
-    		},
-	    },
-	    
-	    // it is needed for scenarios where the incoming data does not have a `remoteID` but is stored in an entity in Slatwall, like `phoneNumber`  
-	    "importIdentifier": {
-	        "propertyIdentifier": "importRemoteID",
-            "properties" : 'remoteOrderID,remoteOderItemID' // list of keys keys in the data not DB ; 
-            // to generate, we'll concate the values and then hash  
-            // all of the keys are required
-	    }
-	    
-	}
-	
-	
-	{
-        	"entity": "Account",
-        	"properties": {
-        	    
-        	    "firstName": {
-        		    "propertyIdentifier" : "firstName",
-        		    "validations": { "required": true, "dataType": "string" }
-        		},
-        		
-        		"lastName": {
-        		    "propertyIdentifier" : "lastName",
-        		    "validations": { "dataType": "string" }
-        		},
-        		
-        		"username": {
-        		    "propertyIdentifier" : "username",
-        		    "validations": { "required": true, "dataType": "string" }
-        		},
-        		
-        		"emailAddress123": {
-        		    
-        		    "entity"      : "AccountEmailAddress",
-        		    "relation"    : 'oneToMany',
-        		    
-    		        "propertyIdentifier" : "primaryEmailAddress.emailAddressXYZ",  // first part is the name on the property in the current entity, next parts are the name of the key in the struct for subsequent entity-mapping
-    		        
-        		    "validations": { "required": true, "dataType": "email" }
-        		},
-        		
-        		"city": {
-        		    
-        		    "entity"      : "AccountAddress",
-        		    "relation"    : 'oneToOne',
-        		    
-        		    "propertyIdentifier" : "primaryAccountAddress.address.city",
-        		    "validations": { "dataType": "string" }
-        		},
-        		
-        		"state": {
-        		    "propertyIdentifier" : "primaryAccountAddress.address.state",
-        		    "validations": { "dataType": "string" }
-        		}
-        	}
-        }
 	
 	/**
 	* @test
@@ -255,7 +199,25 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    expect(validation.errors).toBeEmpty("the validation should fail for username");
 	}
 	
-	
+
+    /**
+     * 
+     	{
+         	'accoutnID': ''
+            "username": "qerwg",
+            "primaryEmailAddress": {
+                // the parent entity id will always be there in the incoing-data
+                "primaryEmailAddressID": ''
+                "address": {
+                    "addressID": ''
+                    "addresRemoteID": '1324e'
+                    "city": "qerre",
+                    "state": "sgfd"
+                }
+            }
+     	}
+     *
+     */
 	
 	/**
 	* @test

@@ -1,0 +1,19 @@
+{
+	"entityName": "AccountEmailAddress",
+	
+	"properties": {
+	    
+	    "email": {
+		    "propertyIdentifier" : "emailAddress",
+		    "validations": { "required": true, "dataType": "email" }
+		}
+	},
+	
+	"importIdentifier": {
+	    "propertyIdentifier": "importAccountEmailAddressID",
+        "type": "composit",
+        "keys" : [ "userID", "email" ]
+    }
+}
+
+
