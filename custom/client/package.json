@@ -1,0 +1,24 @@
+{
+	"name": "Dev",
+	"version": "0.0.0",
+	"description": "Development Site",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "",
+	"devDependencies": {
+		"gulp": "^3.9.1",
+		"gulp-autoprefixer": "~4.0.0",
+		"gulp-concat": "~2.6.1",
+		"gulp-cssnano": "~2.1.2",
+		"gulp-declare": "~0.3.0",
+		"gulp-group-css-media-queries": "~1.2.0",
+		"gulp-livereload": "^3.8.1",
+		"gulp-rename": "~1.2.2",
+		"gulp-sass": "~3.1.0",
+		"gulp-sourcemaps": "~2.6.1",
+		"gulp-uglify": "~3.0.0",
+		"gulp-wrap": "~0.13.0"
+	}
+}

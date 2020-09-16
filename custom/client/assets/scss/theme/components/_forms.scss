@@ -41,7 +41,7 @@ label {
     &:hover { color: $input-color; }
   }
   .custom-control-input:checked ~ .password-toggle-indicator {
-    color: $primary;
+    color: $brand-primary;
   }
 }
 .was-validated .password-toggle .form-control:invalid,

@@ -8,7 +8,7 @@
 .display-404 {
   color: $white;
   font-size: $display404-size;
-  text-shadow: -.0625rem 0 $primary, 0 .0625rem $primary, .0625rem 0 $primary, 0 -.0625rem $primary;
+  text-shadow: -.0625rem 0 $brand-primary, 0 .0625rem $brand-primary, .0625rem 0 $brand-primary, 0 -.0625rem $brand-primary;
 }
 @include media-breakpoint-down(md) {
   .display-1 { font-size: ($display1-size * .85); }
