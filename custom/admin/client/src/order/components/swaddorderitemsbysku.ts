@@ -4,7 +4,6 @@ import {SWAddOrderItemsBySku as AddOrderItemsBySku} from "../../../../../../admi
 
 class SWAddOrderItemsBySkuController extends AddOrderItemsBySkuController{
 
-		
 	public accountType: string;
 	
 	constructor(public $hibachi,
@@ -14,9 +13,7 @@ class SWAddOrderItemsBySkuController extends AddOrderItemsBySkuController{
 				public rbkeyService,
 				public alertService
 	){
-		
 		super($hibachi, collectionConfigService,  observerService, orderTemplateService, rbkeyService, alertService)
-		
 	}
 	
 	public initCollectionConfig(){
@@ -34,7 +31,6 @@ class SWAddOrderItemsBySkuController extends AddOrderItemsBySkuController{
 	        	this.addSkuCollection.addFilter('retailFlag', true, '=', undefined, true);
 			break;
 		}
-		
 		this.addSkuCollection.addFilter('displayOnlyFlag', true, '!=');
 	}
 
@@ -52,7 +48,6 @@ class SWAddOrderItemsBySku extends AddOrderItemsBySku {
 				public alertService
 	){
         super(orderPartialsPath, slatwallPathBuilder, $hibachi, rbkeyService, alertService);
-        console.log("test text 3");
         this.bindToController['accountType'] =  '<?';
 	}
 	
