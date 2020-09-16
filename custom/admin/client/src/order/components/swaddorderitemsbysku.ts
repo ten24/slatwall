@@ -4,7 +4,7 @@ import {SWAddOrderItemsBySku as AddOrderItemsBySku} from "../../../../../../admi
 
 class SWAddOrderItemsBySkuController extends AddOrderItemsBySkuController{
 
-	
+		
 	public accountType: string;
 	
 	constructor(public $hibachi,
@@ -14,13 +14,15 @@ class SWAddOrderItemsBySkuController extends AddOrderItemsBySkuController{
 				public rbkeyService,
 				public alertService
 	){
+		
 		super($hibachi, collectionConfigService,  observerService, orderTemplateService, rbkeyService, alertService)
+		console.log("==11==");
 	}
 	
 	public initCollectionConfig(){
 		
 		super.initCollectionConfig();
-		
+		console.log("test text 2");
 		switch(this.accountType?.trim()?.toLowerCase()){
 			case 'marketpartner': 
 				this.addSkuCollection.addFilter('mpFlag', true, '=', undefined, true);
@@ -32,6 +34,8 @@ class SWAddOrderItemsBySkuController extends AddOrderItemsBySkuController{
 	        	this.addSkuCollection.addFilter('retailFlag', true, '=', undefined, true);
 			break;
 		}
+		console.log("test text");
+		this.addSkuCollection.addFilter('displayOnlyFlag', true, '=', undefined, true));
 	}
 
 }
@@ -48,6 +52,7 @@ class SWAddOrderItemsBySku extends AddOrderItemsBySku {
 				public alertService
 	){
         super(orderPartialsPath, slatwallPathBuilder, $hibachi, rbkeyService, alertService);
+        console.log("test text 3");
         this.bindToController['accountType'] =  '<?';
 	}
 	
