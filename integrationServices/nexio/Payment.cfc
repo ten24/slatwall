@@ -437,10 +437,10 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			    "processingOptions" = {
 				    "checkFraud" = checkFraud,
 				    "verifyAvs" = LSParseNumber(setting(settingName='verifyAvsSetting', requestBean=arguments.requestBean)),
-				    "verifyCvc" = (setting(settingName='verifyCvcFlag', requestBean=arguments.requestBean)? true : false),
-				    'merchantID' = setting(settingName='merchantIDTest', requestBean=arguments.requestBean)
+				    "verifyCvc" = (setting(settingName='verifyCvcFlag', requestBean=arguments.requestBean)? true : false)
 			    }
 			};	
+			
 			var responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'authorize', requestData);
 			
 			// Response Data
@@ -486,8 +486,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			    "processingOptions" = {
 				    "checkFraud" = checkFraud,
 				    "verifyAvs" = LSParseNumber(setting(settingName='verifyAvsSetting', requestBean=arguments.requestBean)),
-				    "verifyCvc" = (setting(settingName='verifyCvcFlag', requestBean=arguments.requestBean)? true : false),
-				    'merchantID' = setting(settingName='merchantIDTest', requestBean=arguments.requestBean)
+				    "verifyCvc" = (setting(settingName='verifyCvcFlag', requestBean=arguments.requestBean)? true : false)
 			    }
 			};	
 
@@ -580,11 +579,9 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			    "card" = {
 			    	"expirationMonth" = arguments.requestBean.getExpirationMonth(),
 			    	"expirationYear" = arguments.requestBean.getExpirationYear()
-			    },
-			    "processingOptions" = {
-				    'merchantID' = setting(settingName='merchantIDTest', requestBean=arguments.requestBean)
 			    }
 			}
+			
 			var responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'credit', requestData);
 			
 			// Response Data
