@@ -331,6 +331,8 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	        
 	        if(structKeyExists(data, sourcePropertyName) ){
 	            transformedData[ arguments.mapping.properties[ sourcePropertyName ].propertyIdentifier ] = data[ sourcePropertyName ];
+	        } else if( structKeyExists(arguments.mapping, 'defaultValue') ){
+	            transformedData[ arguments.mapping.properties[ sourcePropertyName ].propertyIdentifier ] = arguments.mapping.defaultValue;
 	        }
 	    }
 	    

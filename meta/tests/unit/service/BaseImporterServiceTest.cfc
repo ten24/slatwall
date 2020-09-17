@@ -78,7 +78,20 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         		"username": {
         		    "propertyIdentifier" : "username",
         		    "validations": { "required": true, "dataType": "string" }
-        		}
+        		},
+                "companyName": {
+                    "propertyIdentifier": "company",
+                    "validations": {
+                        "dataType": "string"
+                    }
+                },
+                "organizationFlag": {
+                    "propertyIdentifier": "organizationFlag",
+                    "defaultValue": false,
+                    "validations": {
+                        "dataType": "boolean"
+                    }
+                }
         	},
         	
         	// uniqueue identifier, to figure-out upserts of imported data ==> md5( data.accoutRemoteID + data.phoneNumber );
@@ -110,6 +123,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	        firstName: "Nitin",  
 	        lastName: "Yadav", 
 	        username: 'nitin.yadav', 
+	        company: "Ten24",
 	        
 	        //AccountEmailAddress
 	        email: "nitin.yadav@ten24web.com",
