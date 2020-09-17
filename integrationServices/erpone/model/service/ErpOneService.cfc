@@ -82,10 +82,12 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 			httpRequest.addParam( type='formfield', name='username', value=this.setting("prodUsername"));
     		httpRequest.addParam( type='formfield', name='password', value=this.setting("prodPassword"));
 		}
-		httpRequest.addParam( type='formfield', name='client', value= this.setting('devClient'));
-    	httpRequest.addParam( type='formfield', name='company', value= this.setting("devCompany"));
-    	httpRequest.addParam( type='formfield', name='username', value=this.setting("devUsername"));
-    	httpRequest.addParam( type='formfield', name='password', value=this.setting("devPassword"));
+		else{
+			httpRequest.addParam( type='formfield', name='client', value= this.setting('devClient'));
+	    	httpRequest.addParam( type='formfield', name='company', value= this.setting("devCompany"));
+	    	httpRequest.addParam( type='formfield', name='username', value=this.setting("devUsername"));
+	    	httpRequest.addParam( type='formfield', name='password', value=this.setting("devPassword"));
+		}
 		var rawRequest = httpRequest.send().getPrefix();
 		var response = {};
 		try{
@@ -110,9 +112,12 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
     		httpRequest.addParam( type='formfield', name='company', value= this.setting("prodCompany"));
     		httpRequest.addParam( type='formfield', name='grant_token', value=grantToken );
 		}
-		httpRequest.addParam( type='formfield', name='client', value= this.setting('devClient'));
-    	httpRequest.addParam( type='formfield', name='company', value= this.setting("devCompany"));
-    	httpRequest.addParam( type='formfield', name='grant_token', value=grantToken );
+		else{
+			httpRequest.addParam( type='formfield', name='client', value= this.setting('devClient'));
+	    	httpRequest.addParam( type='formfield', name='company', value= this.setting("devCompany"));
+	    	httpRequest.addParam( type='formfield', name='grant_token', value=grantToken );
+		}
+		
 		var rawRequest = httpRequest.send().getPrefix();
 		var response = {};
 		try{
@@ -129,7 +134,9 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
     	if(!this.setting("devMode")){
 			var requestURL = this.setting("prodGatewayURL") & arguments.endPointUrl;
 		}
-		var requestURL = this.setting("devGatewayURL") & arguments.endPointUrl;
+		else{
+			var requestURL = this.setting("devGatewayURL") & arguments.endPointUrl;
+		}
 		var httpRequest = new http();
 		httpRequest.setMethod(arguments.requestType);
 		httpRequest.setCharset("utf-8");
