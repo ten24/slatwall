@@ -1381,20 +1381,23 @@
 			return entityMetaData.table; 
 		}
 		
+		
 		public any function getAnyColumnValueByEntityNameAndUniqueKeyValue( required string entityName, required string columnToFetch, required string uniqueKey, required any uniqueValue ){
+		
 		    return this.getHibachiDAO().getAnyColumnValueByTableNameAndUniqueKeyValue(
 		        tableName   = this.getTableNameByEntityName( arguments.entityName ), 
 		        columnToFetch  = arguments.columnToFetch, 
 		        uniqueKey   = arguments.uniqueKey, 
 		        uniqueValue = arguments.uniqueValue
 		    );
+		    
 		}
 		
 		public any function getPrimaryIDValueByEntityNameAndUniqueKeyValue( required string entityName, required string uniqueKey, required any uniqueValue ){
 		    
 		    arguments.columnToFetch  = this.getPrimaryIDColumnNameByEntityName( arguments.entityName );
 		    
-		    return this.getHibachiDAO().getAnyColumnValueByEntityNameAndUniqueKeyValue( argumentCollection = arguments );
+		    return this.getAnyColumnValueByEntityNameAndUniqueKeyValue( argumentCollection = arguments );
 		}
 	
 		public any function updateRecordSortOrder(required string recordIDColumn, required string recordID, required string entityName, required numeric newSortOrder) {

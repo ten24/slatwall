@@ -318,12 +318,12 @@ component output="false" accessors="true" extends="HibachiService" {
 	
 	public boolean function validate_required_real(any propertyValue, boolean constraintValue=true ){
 	   
+        if( arguments.constraintValue == false ){
+		    return true;
+        }
+        
 	    if( !isNull(arguments.propertyValue) ){
-	        
-	        if( arguments.constraintValue == false ){
-			    return true;
-	        }
-	        
+
 	        if(
 	            isObject(arguments.propertyValue) 
     			|| ( isArray(arguments.propertyValue) && arrayLen(arguments.propertyValue) ) 
@@ -425,7 +425,7 @@ component output="false" accessors="true" extends="HibachiService" {
 			return false;
 		} 
 		else {
-			throw("The validation file: #arguments.object.getClassName()#.json has an incorrect dataType constraint value of '#arguments.constraintValue#' for one of it's properties.  Valid values are: any,array,binary,boolean,component,creditCard,date,time,email,eurodate,float,numeric,guid,integer,query,range,regex,regular_expression,ssn,social_security_number,string,telephone,url,uuid,usdate,zipcode");
+			throw("The validation has an incorrect dataType constraint value of '#arguments.constraintValue#' for one of it's properties.  Valid values are: any,array,binary,boolean,component,creditCard,date,time,email,eurodate,float,numeric,guid,integer,query,range,regex,regular_expression,ssn,social_security_number,string,telephone,url,uuid,usdate,zipcode");
 		}
 
 		return false;
