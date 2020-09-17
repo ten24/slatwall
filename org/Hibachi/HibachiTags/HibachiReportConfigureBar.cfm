@@ -18,7 +18,7 @@
 		<!--- Report DateTime GroupBy ---> 
 		<div class="col-md-12">
 			<div class="configure-bar-container">
-				<div>
+				<div class="col-md-6">
 					<div class="report-btn-container">
 						<a href="" class="hibachi-report-date-group btn btn-xs btn-default<cfif attributes.report.getReportDateTimeGroupBy() eq 'hour'> active</cfif>" data-groupby="hour">Hour</a>
 						<a href="" class="hibachi-report-date-group btn btn-xs btn-default<cfif attributes.report.getReportDateTimeGroupBy() eq 'day'> active</cfif>" data-groupby="day">Day</a>
@@ -28,10 +28,10 @@
 						<button type="button" class="hibachi-report-date-group-custom-toggle btn btn-xs btn-default">Custom</button>
 					</div>
 				</div>
-				<div class="site-selector-container">
+				<div class="site-selector-container col-md-3">
 					<cfset siteCollectionList = attributes.hibachiScope.getService('siteService').getSiteCollectionList() />
 					<cfset siteCollectionList.setDisplayProperties('siteID,siteName', { isVisible=true }) />
-					<h4>Site</h4>
+					<h4 class="site-selector-title">Site</h4>
 					<select 
 						class="form-control j-custom-select" 
 						name="siteSelector"

@@ -6,7 +6,7 @@
         <swf-alert data-alert-trigger="removeOrderItemFailure" data-alert-type="danger small" data-message="Item removed failure" data-duration="3"></swf-alert>
         <swf-alert data-alert-trigger="updateOrderItemSuccess" data-alert-type="success small" data-message="Quantity Updated" data-duration="3"></swf-alert>
         <swf-alert data-alert-trigger="updateOrderItemFailure" data-alert-type="danger small" data-message="Quantity update failure" data-duration="3"></swf-alert>
-        <swf-alert data-alert-trigger="clearSuccess" data-alert-type="success small" data-message="Cart Cleared" data-duration="3"></swf-alert>
+        
         <div class="row" ng-repeat-start="orderItem in slatwall.cart.orderItems" swf-cart-items order-item="orderItem" ng-cloak>
         <!---- the directive swf-cart-items passed in as an attribute above drives all the functionality in this template.
                all methods and variables (excluding the ones preceded by "slatwall") will be applied to the current orderItem 
