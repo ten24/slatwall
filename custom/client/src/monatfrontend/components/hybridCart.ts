@@ -25,10 +25,9 @@ class HybridCartController {
 	public listPrice:number;
 	public otherDiscounts:number;
 	public type:string;
-	public timedToggle:any = {};
-
+	
 	//@ngInject
-	constructor(public monatService, public observerService, public orderTemplateService, public publicService, public $timeout:ng.ITimeoutService) {
+	constructor(public monatService, public observerService, public orderTemplateService, public publicService) {
 		this.observerService.attach(this.getCart.bind(this,false),'updateOrderItemSuccess');
 		this.observerService.attach(this.getCart.bind(this,false),'removeOrderItemSuccess');
 		this.observerService.attach(this.getCart.bind(this,false),'addOrderItemSuccess');
@@ -46,17 +45,6 @@ class HybridCartController {
 		if(this.showCart || this.isEnrollment){
 			this.getCart();
 		}
-	}
-	
-	public toggleCartOnAdd():void{
-			this.toggleCart();
-			var currentState = this.showCart;
-			
-			this.timedToggle = this.timedToggle = this.$timeout(()=>{
-				if(currentState == this.showCart){
-					this.toggleCart();
-				}
-			}, 3000);
 	}
 	
 	public redirect(destination):void{
