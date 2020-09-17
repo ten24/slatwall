@@ -8663,6 +8663,8 @@ table.s-detail-content-table tbody tr.s-done {
 }
 #navTabs-Container {
   padding: 2em 1em;
+  width: 90%;
+  margin: 0 auto;
 }
 #navTabs-Container .nav-tabs {
   padding-left: 0;
@@ -8692,6 +8694,7 @@ table.s-detail-content-table tbody tr.s-done {
 }
 #navTabs-Container .tab-content {
   background-color: #ffffff;
+  margin-bottom: 24px;
 }
 #navTabs-Container .tab-content ul li {
   color: #666666;
@@ -8767,8 +8770,9 @@ table.s-detail-content-table tbody tr.s-done {
 }
 .configure-bar-container {
   display: flex;
-  width: 90%;
+  width: 100%;
   margin: 0 auto;
+  padding: 1em 1em 0 1em;
   justify-content: space-between;
   align-items: flex-end;
 }
@@ -8881,15 +8885,24 @@ table.s-detail-content-table tbody tr.s-done {
 #j-property-box .form-group-sm .form-control {
   padding: 16px 10px;
 }
+#hibachi-report {
+  padding-top: 24px;
+  width: 90%;
+  margin: 0 auto;
+}
 #hibachi-report-configure-bar {
   padding-bottom: 12px;
 }
 .site-selector-container {
   margin-bottom: 20px;
   width: 300px;
+  display: flex;
+  align-items: center;
+}
+.site-selector-title {
+  margin-right: 12px;
 }
 .hibachi-report-chart-container {
-  width: 94vw;
   margin: 0 auto;
 }
 .hibachi-report-chart-title {
