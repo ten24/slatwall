@@ -240,7 +240,6 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
                     		    "constraintValue":  constraintValue 
                     		});
                     		
-                    		
                     		// collecting the error
                     		if( !structKeyExists(errors, propertyName) ){
                     		    errors[propertyName] = [];
@@ -330,7 +329,9 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    for( var sourcePropertyName in arguments.mapping.properties ){
 	        var propertyidentifier = arguments.mapping.properties[ sourcePropertyName ].propertyIdentifier;
 	        
-	        transformedData[ arguments.mapping.properties[ sourcePropertyName ].propertyIdentifier ] = data[ sourcePropertyName ];
+	        if(structKeyExists(data, sourcePropertyName) ){
+	            transformedData[ arguments.mapping.properties[ sourcePropertyName ].propertyIdentifier ] = data[ sourcePropertyName ];
+	        }
 	    }
 	    
 	    arguments.data['importRmoteID'] = this.createEntityImportRemoteID( arguments.mapping.entityName, arguments.data );
