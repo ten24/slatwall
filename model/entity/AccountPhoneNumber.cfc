@@ -58,7 +58,8 @@ component displayname="Account Phone Number" entityname="SlatwallAccountPhoneNum
 	property name="accountPhoneType" hb_populateEnabled="public" cfc="Type" fieldtype="many-to-one" fkcolumn="accountPhoneTypeID" hb_optionsNullRBKey="define.select" hb_optionsSmartListData="f:parentType.systemCode=accountPhoneType";
 	// Remote properties
  	property name="remoteID" hb_populateEnabled="false" ormtype="string" hint="Only used when integrated with a remote system";
-  	
+  	property name="importRemoteemoteID" hb_populateEnabled="importer" ormtype="string" hint="Used via data-importer";
+
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";

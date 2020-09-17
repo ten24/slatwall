@@ -1,6 +1,8 @@
 {
     "entityName": "Account",
+    
     "properties": {
+        
         "userID": {
             "propertyIdentifier": "remoteID",
             "validations": {
@@ -21,6 +23,12 @@
                 "dataType": "string"
             }
         },
+        "companyName": {
+            "propertyIdentifier": "company",
+            "validations": {
+                "dataType": "string"
+            }
+        },
         "username": {
             "propertyIdentifier": "username",
             "validations": {
@@ -29,6 +37,7 @@
             }
         }
     },
+    
     "importIdentifier": {
         "propertyIdentifier": "importRemoteID",
         "type": "composite",
@@ -36,10 +45,10 @@
             "userID"
         ]
     },
+    
     "relations": [
         {
             "entityName": "AccountEmailAddress",
-            "type": "manyToOne",
             "propertyIdentifier": "primaryEmailAddress"
         },
         {
