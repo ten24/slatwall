@@ -1829,6 +1829,9 @@ component extends="HibachiService" accessors="true" output="false" {
 			getService('HibachiCacheService').resetCachedKey(arguments.permissionGroup.getPermissionsByDetailsCacheKey());
 			//clears cache keys on the permissiongroup Object
 			getService('HibachiCacheService').resetCachedKeyByPrefix('PermissionGroup.');
+			
+			//reset server instance settings cache
+			getService('HibachiCacheService').updateServerInstanceSettingsCache();
 		}
 
 		return arguments.permissionGroup;
