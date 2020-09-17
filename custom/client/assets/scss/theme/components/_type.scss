@@ -1,0 +1,83 @@
+//
+// Typography
+// --------------------------------------------------
+
+
+// Responsive Display headings
+
+.display-404 {
+  color: $white;
+  font-size: $display404-size;
+  text-shadow: -.0625rem 0 $primary, 0 .0625rem $primary, .0625rem 0 $primary, 0 -.0625rem $primary;
+}
+@include media-breakpoint-down(md) {
+  .display-1 { font-size: ($display1-size * .85); }
+  .display-2 { font-size: ($display2-size * .86); }
+  .display-3 { font-size: ($display3-size * .88); }
+  .display-4 { font-size: ($display4-size * .9); }
+  .display-404 { font-size: ($display404-size * .8); }
+}
+
+
+// Lists
+
+.list-style {
+  list-style: none;
+  li {
+    margin-bottom: $spacer / 2.5;
+    &::before {
+      display: inline-block;
+      width: 1em;
+      margin-left: -1em;
+      color: $list-style-color;
+      font-weight: bold;
+      content: '\2022';
+    }
+  }
+}
+ol.list-style {
+  counter-reset: li;
+  li {
+    counter-increment: li;
+    &::before {
+      margin: {
+        right: .5em;
+        left: -1.5em;
+      }
+      font-weight: inherit;
+      text-align: right;
+      direction: rtl;
+      white-space: nowrap;
+      content: '.' counter(li);
+    }
+  }
+}
+.list-unstyled > li {
+  margin-bottom: $spacer / 2.5;
+  ul li, ol li {
+    margin-bottom: $spacer / 3;
+  }
+}
+.list-inline-item:not(:last-child) {
+  margin-right: $spacer;
+}
+
+
+// Description list
+
+dt {
+  color: $headings-color;
+  margin-bottom: $spacer / 4;
+  font-weight: $headings-font-weight;
+}
+dd {
+  font-size: $font-size-sm;
+  margin-bottom: $spacer;
+}
+
+
+// Horizontal rule - light version
+
+.hr-light {
+  border-color: $border-light-color;
+}
