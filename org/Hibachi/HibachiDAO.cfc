@@ -188,7 +188,7 @@
     			    WHERE   #arguments.uniqueKey# = :uniqueValue 
     			");
 			
-	    	return qry.getResult();
+	    	return qry.getResult()[ arguments.columnToFetch ];
 		}
 
 	</cfscript>
