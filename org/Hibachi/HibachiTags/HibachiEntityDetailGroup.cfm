@@ -157,7 +157,7 @@
 												<cfset emailCollection.addFilter(propertyIdentifier='relatedObjectID',value=attributes.object.getPrimaryIDValue() )/>
 												<cfset emailCollection.addFilter(propertyIdentifier='relatedObject',value=attributes.object.getClassName() )/>
 											</cfif>
-											
+											<cfset emailCollection.addOrderBy('createdDateTime|DESC') />
 											<hb:HibachiListingDisplay 
 												collectionList="#emailCollection#"
 												usingPersonalCollection="false"
