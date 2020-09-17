@@ -358,7 +358,7 @@ class SWReturnOrderItemsController{
         
         const maxRefund = Math.min(orderPayment.amountToRefund,this.refundTotal - paymentTotal);
         
-        const assignMaxRefundFlag = (nonGiftCardPaymentCount == 1 && orderPayment.paymentMethodType != 'giftCard')
+        const assignMaxRefundFlag = (nonGiftCardPaymentCount == 1 && orderPayment.paymentMethodType != 'giftCard');
         
         if(assignMaxRefundFlag || orderPayment.amount > maxRefund){
             orderPayment.amount = getDecimalRep(Math.max(maxRefund,0));
