@@ -184,7 +184,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
        
         if( structKeyExists(arguments.propertyMeta, "hb_populateEnabled") ){
            
-            // population is blocked explicitely
+            // populating is blocked explicitely
             if( arguments.propertyMeta.hb_populateEnabled == false){
                 return false; 
             }
@@ -256,7 +256,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 			// If there were additional values in the data, then we will get the entity by the primaryID and populate / validate by calling save in its service.
 			if( structCount(arguments.propertyValue) gt 1 ){
 
-				// Load the specifiv entity, if one doesn't exist, this will return a new entity
+				// Load the specific entity, if one doesn't exist, this will return a new entity
 				var currentEntity = this.invokeMethod( "get" & currentPropertyName );
 				
 				if( isNull(currentEntity) || currentEntity.getPrimaryIDValue() != primaryIDValue ){
