@@ -179,7 +179,6 @@
 			
 			var qry = new query();
 			
-			qry.addParam( name='uniqueKey',      value=arguments.uniqueKey );
 			qry.addParam( name='uniqueValue',    value=arguments.uniqueValue );
 			
 			qry = qry.execute(sql="

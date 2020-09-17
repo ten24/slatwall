@@ -55,6 +55,16 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	public void function setUp() {
 		super.setup();
 		variables.service = variables.mockService.getBaseImporterServiceMock();
+		this.initMockFunctions();
+	}
+	
+	private void function initMockFunctions(){
+	    
+	    variables.service['getIntegration'] = function(){
+		    var integrations =  entityLoad("SlatwallIntegration", { "integrationPackage"="slatwallImporter" });
+		    
+		    return integrations[1];
+		}
 	}
 	
 	private struct function getAccountMapping(){
@@ -137,11 +147,120 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    
 	}
 	
+	private any function insertRow( required string tableName, required struct keyValuePairs ){
+	    var sql = "INSERT INTO #arguments.tableName#";
+	    var qry = new query();
+	    
+	    var keys = structKeyList(arguments.keyValuePairs);
+	    
+	    sql &= " ( #keys# ) ";
+	    
+        var insertSQL = ListReduce( keys, function( previousValue, key ){
+                            var fragment = ":#key#";
+                            qry.addParam( name=key, value=keyValuePairs[key], null=!len(trim(keyValuePairs[key])) );
+                            
+                            return previousValue &= ( len(previousValue) ? "," & fragment : fragment ); 
+                        }, '');
+        
+        sql &= "VALUES ( #insertSQL# ) ";
+
+        debug(sql);
+        
+		qry = qry.execute(sql=sql);
+	    return qry.getResult();
+	}
+	
+	private any function updateRow( required string tableName, required struct keyValuePairs, required string uniqueKey, required string uniqueValue){
+	    var sql = "UPDATE #arguments.tableName# SET ";
+	    var qry = new query();
+	   
+        var updateSQL = arguments.keyValuePairs.reduce( function( previousValue, key, value ){
+                            var fragment = " `#key#` = :#key#";
+                            qry.addParam( name=key, value=value, null=!len(trim(value)) );
+
+                            return previousValue &= ( len(previousValue) ? "," & fragment : fragment ); 
+                        }, '');
+        
+        sql &= updateSQL;
+	    sql &= " WHERE #arguments.uniqueKey# = :uniqueValue";
+	    
+	    qry.addParam( name='uniqueValue', value=arguments.uniqueValue );
+
+        debug(sql);
+        
+		qry = qry.execute(sql=sql);
+	    return qry.getResult();
+	}
+	
+	private any function selectRow(required string tableName, required struct uniqueKeyValuePairs ){
+        
+        var sql = "SELECT * FROM #arguments.tableName# WHERE ( " ;
+    	var qry = new query();
+        
+        var filterSQL = arguments.uniqueKeyValuePairs.reduce( function( previousValue, key, value ){
+                            var fragment = " #key# = :#key#";
+                            qry.addParam( name=key, value=value );
+                            
+                            return previousValue &= ( len(previousValue) ? " AND" & fragment : fragment); 
+                        }, '');
+        
+        sql &= filterSQL;
+        sql &= " )";
+        
+        debug(sql);
+        
+		qry = qry.execute(sql=sql);
+	    return qry.getResult();
+    }
+	    
+    private any function deleteRow(required string tableName, required string uniqueKey, required string uniqueValue ){
+        
+        var sql = "DELETE FROM #arguments.tableName# WHERE #arguments.uniqueKey# = :uniqueValue";
+    	var qry = new query();
+		qry.addParam( name='uniqueValue',    value=arguments.uniqueValue );
+		
+		debug(sql);
+		
+		qry = qry.execute(sql=sql);
+	    return qry.getResult();
+    }
+    
+    /**
+	 * @test
+	*/
+    public void function insertUpdateSelectDeleteTest(){
+        //insert batch
+        var batchID = hash("123xxxunittest"&now(), 'MD5');
+        
+        insertRow("swBatch", {
+           'batchID': batchID,
+           'baseObject': 'Account'
+        });
+        var select = selectRow('swbatch', { 'batchID': batchID } );
+        debug(select);
+        
+        expect(select.batchID).toBe(batchID, "select batchID should be equal to #batchID# ");
+        
+        updateRow("swBatch", { "baseObject": "Account2"}, 'batchID', batchID );
+        select = selectRow('swbatch', { 'batchID': batchID });
+        debug(select);
+        
+        expect(select.baseObject).toBe("Account2", "select baseObject should be equal to Account2");
+        
+        deleteRow('swBatch', 'batchID', batchID ); 
+        select = selectRow('swbatch', { 'batchID': batchID });
+        debug(select);
+        
+        expect( select.batchID ).toBeEmpty( "select should not have batchID");
+        expect( select.baseObject ).toBeEmpty( "select should not have baseObject");
+        
+    }
+	
 	
 	/*****************************.  Validation.  .******************************/
 	
 	/**
-	* @test
+	 * @test
 	*/
 	public void function validateAccountData_should_fail(){
 	    
@@ -152,7 +271,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	}
 
 	/**
-	* @test
+	 * @test
 	*/
 	public void function validateAccountData_should_fail_for_firstName(){
 	    
@@ -171,7 +290,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	}
 
 	/**
-	* @test
+	 * @test
 	*/
 	public void function validateAccountData_should_fail_for_email(){
 	    
@@ -190,7 +309,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	}
 	
 	/**
-	* @test
+	 * @test
 	*/
 	public void function validateAccountData_should_fail_for_username(){
 	    
@@ -210,7 +329,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	}
 	
 	/**
-	* @test
+	 * @test
 	*/
 	public void function validateAccountData_should_pass(){
 	    
@@ -228,7 +347,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	}
 	
 	/**
-	* @test
+	 * @test
 	*/
 	public void function validateAccountData_should_pass_without_lastName_and_countryCode(){
 	    
@@ -395,7 +514,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    
     }
     
-     /** 
+    /** 
 	 * @test
 	*/
     public void function transformAccountDataTest_should_contain_primaryEmailAddress_properties(){
@@ -413,5 +532,179 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    
 	    expect(data.primaryEmailAddress).toHaveKey('emailAddress',  "primaryEmailAddress should have key 'phoneNumber' ");
     }
+    
+    /** 
+	 * @test
+	*/
+    public void function pushRecordIntoImportQueueTest_should_enqueue_to_failureQueue(){
+	    
+	    var sampleAccountData = getSampleAccountData();
+	    sampleAccountData.delete('firstName');
+        
+        //insert batch
+        var batchID = hash("123xxxunittest"&now(), 'MD5');
+        insertRow("swBatch", { 'batchID': batchID, 'baseObject': 'Account' });
+        
+	    var validation = this.getService().pushRecordIntoImportQueue( 
+	            entityName="Account", 
+	            data = sampleAccountData,
+	            batchID = batchID
+	    );
+	    
+	    //validation errors
+	    debug(validation);
+	    assertFalse(validation.isValid);
+	    expect(validation.errors).toHaveKey('firstName', "the validation should fail for firstName");
+        
+        
+	    var entityQueueFailure = selectRow('swEntityQueueFailure', { 'batchID': batchID, 'baseObject': 'Account' });
+	    debug(entityQueueFailure);
+	    expect(entityQueueFailure).toHaveKey('batchID', "the entityQueueFailure should have batchID #batchID#");
+        expect(entityQueueFailure.batchID).toBe(batchID, "the entityQueueFailure should have batchID #batchID#");
+        
+        //............cleanup..........
+        
+        //reset relationship
+        updateRow("swEntityQueueFailure", { "batchID": ""}, 'entityQueueFailureID', entityQueueFailure.entityQueueFailureID );
+        // delete entity-queue-faliure
+        deleteRow('swEntityQueueFailure', 'entityQueueFailureID', entityQueueFailure.entityQueueFailureID);
+        // delete batch
+        deleteRow('swBatch', 'batchID', batchID ); 
+    }
+    
+    /** 
+	 * @test
+	*/
+    public void function pushRecordIntoImportQueueTest_should_enqueue_to_entityQueue(){
+	    
+	    var sampleAccountData = getSampleAccountData();
+	    
+	    //insert batch
+        var batchID = hash("123xxxunittest"&now(), 'MD5');
+        insertRow("swBatch", { 'batchID': batchID, 'baseObject': 'Account' });
+        
+	    var validation = this.getService().pushRecordIntoImportQueue( 
+	            entityName="Account", 
+	            data = sampleAccountData,
+	            batchID = batchID
+	    );
+	    debug(validation);
+	    assert(validation.isValid);
+	    
+	    var entityQueue = selectRow('swEntityQueue', { 'batchID': batchID, 'baseObject': 'Account' });
+	    debug(entityQueue);
+	    expect(entityQueue).toHaveKey('batchID', "the entityQueue should have batchID #batchID#");
+        expect(entityQueue.batchID).toBe(batchID, "the entityQueue should have batchID #batchID#");
+        
+        //............cleanup..........
+        
+        //reset relationship
+        updateRow("swEntityQueue", { "batchID": ""}, 'entityQueueID', entityQueue.entityQueueID );
+        // delete entity-queue
+        deleteRow('swEntityQueue', 'entityQueueID', entityQueue.entityQueueID);
+        // delete batch
+        deleteRow('swBatch', 'batchID', batchID ); 
+    }
+    
+    /** 
+	 * @test
+	*/
+    public void function reQueueImportFailureTest(){
+	    
+	    var sampleAccountData = getSampleAccountData();
+	    sampleAccountData.delete('firstName');
+        
+        //insert batch
+        var batchID = hash("123xxxunittest"&now(), 'MD5');
+        insertRow("swBatch", { 'batchID': batchID, 'baseObject': 'Account' });
+        
+	    var validation = this.getService().pushRecordIntoImportQueue( 
+	            entityName="Account", 
+	            data = sampleAccountData,
+	            batchID = batchID
+	    );
+	    
+        // get and format failure-queue-data
+	    var entityQueueFailure = selectRow('swEntityQueueFailure', { 'batchID': batchID, 'baseObject': 'Account' });
+	    debug(entityQueueFailure);
+	    
+	    var entityQueueData = DeSerializejson(entityQueueFailure.entityQueueData);
+	    entityQueueData.data['firstName'] = 'Nitin';
+	    
+	    var tempAccount = this.getService().getHibachiService().newAccount();
+	    
+	    // try to re-queue
+	    tempAccount = this.getService().reQueueImportFailure( tempAccount, entityQueueData );
+	    expect( tempAccount.hasErrors() ).toBeFalse("Account should not have errors");
+        
+        
+        // asert that it's int the entity-queue
+        var entityQueue = selectRow('swEntityQueue', { 'batchID': batchID, 'baseObject': 'Account' });
+	    debug(entityQueue);
+	    expect(entityQueue).toHaveKey('batchID', "the entityQueue should have batchID #batchID#");
+        expect(entityQueue.batchID).toBe(batchID, "the entityQueue should have batchID #batchID#");
+        
+        //............cleanup..........
+        
+        //reset relationship
+        updateRow("swEntityQueue", { "batchID": ""}, 'entityQueueID', entityQueue.entityQueueID );
+        updateRow("swEntityQueueFailure", { "batchID": ""}, 'entityQueueFailureID', entityQueueFailure.entityQueueFailureID );
+        // delete entity-queue
+        deleteRow('swEntityQueue', 'entityQueueID', entityQueue.entityQueueID);
+        // delete entity-queue-faliure
+        deleteRow('swEntityQueueFailure', 'entityQueueFailureID', entityQueueFailure.entityQueueFailureID);
+        
+        // delete batch
+        deleteRow('swBatch', 'batchID', batchID ); 
+    }
+    
+        
+    /** 
+	 * @test
+	*/
+    public void function processEntityImportTest_should_not_have_errors(){
+	    
+	    var sampleAccountData = getSampleAccountData();
+	    
+	    sampleAccountData['username'] = "nitin.yadav.test";
+	
+	    var transformedData = this.getService().transformEntityData("Account", sampleAccountData);
+	    debug(transformedData);
+	    
+	    var tempAccount = this.getService().getHibachiService().newAccount();
+	    
+	    // try to import
+	    tempAccount = this.getService().processEntityImport( tempAccount, transformedData );
+	
+	    debug(tempAccount.getErrors()); 
+	    
+	    expect( tempAccount.hasErrors() ).toBeFalse("Account should not have errors");
+        
+    }
+    
+    
+    /** 
+	 * @test
+	*/
+    public void function processEntityImportTest_should_have_errors(){
+	    
+	    var sampleAccountData = getSampleAccountData();
+	    sampleAccountData.delete('firstName');
+	    
+	    var transformedData = this.getService().transformEntityData("Account", sampleAccountData);
+
+	    debug(transformedData);
+	    
+	    var tempAccount = this.getService().getHibachiService().newAccount();
+	    
+	    // try to import
+	    tempAccount = this.getService().processEntityImport( tempAccount, transformedData );
+	
+		debug(tempAccount.getErrors()); 
+
+	    expect( tempAccount.hasErrors() ).toBeTrue("Account should have errors");
+    }
+    
+    
 }
 

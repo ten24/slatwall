@@ -45,6 +45,7 @@ component extends="testbox.system.BaseSpec"{
         baseImporterServiceMock.setHibachiUtilityService(this.getHibachiUtilityServiceMock());
         baseImporterServiceMock.setHibachiValidationService(this.getHibachiValidationServiceMock());
         baseImporterServiceMock.setHibachiEntityQueueService(this.getHibachiEntityQueueServiceMock());
+		baseImporterServiceMock.setHibachiEntityQueueDAO( this.getHibachiEntityQueueDAOMock() );
 
         return baseImporterServiceMock;
 	}

@@ -52,6 +52,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	property name = "hibachiUtilityService";
 	property name = "hibachiValidationService";
 	property name = "hibachiEntityQueueService";
+	property name = "hibachiEntityQueueDAO";
 
 	property name = "cachedEntityMappings" type="struct";
 	
@@ -111,7 +112,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	        }
 	        
 	        // if we're collecting errors we can directly send the item to failures (EntityQueue hisory)
-	        this.getEntityQueueDAO().insertEntityQueueFailure(
+	        this.getHibachiEntityQueueDAO().insertEntityQueueFailure(
         	    baseID = '', //not needed
         	    baseObject = arguments.entityName, 
         	    processMethod = 'reQueueImportFailure',
@@ -125,19 +126,19 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    } else {
 	    
     	    var transformedData = this.transformEntityData( entityName = arguments.entityName, data = arguments.data);
-    	    var primaryIDPropertyName = this.getHibachiService().getPrimaryIDPropertyNameByEntityName( arguments.mapping.entityName );
+    	    var primaryIDPropertyName = this.getHibachiService().getPrimaryIDPropertyNameByEntityName( arguments.entityName );
     
-    	    this.getEntityQueueDAO().insertEntityQueue(
+    	    this.getHibachiEntityQueueDAO().insertEntityQueue(
         	    baseID = transformedData[ primaryIDPropertyName ], 
         	    baseObject = arguments.entityName, 
         	    processMethod ='processEntityImport',
         	    entityQueueData = transformedData, 
         	    integrationID = this.getIntegration().getIntegrationID(), 
-            	batchID = arguments.batchID
+            	batchID = arguments.batchID,
+            	tryCount = arguments.tryCount 
         	);
 	        
 	    }
-	    
 	    
     	return validation;
 	}
@@ -146,8 +147,8 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 
         var validation = this.pushRecordIntoImportQueue(
             data       = arguments.entityQueueData.data, 
-            batch      = arguments.entityQueueData.batchID, 
-            tryCount   = arguments.entityQueueData.tryCount + 1,
+            batchID    = arguments.entityQueueData.batchID, 
+            tryCount   = arguments.entityQueueData.tryCount+1,
             entityName = arguments.entityQueueData.entityName 
         );
         
@@ -168,9 +169,10 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	        return this.invokeMethod( 'process#entityName#_import', arguments );
 	    }
 	    
-	    var entityService = this.getHibachiService().getServiceByEntityName( entityName=entityName );
+	    var entityService = this.getHibachiService().getServiceByEntityName( "entityName"=entityName );
 	    arguments.entity.populate( arguments.entityQueueData );
-	    arguments.entity = entityService.invokeMethod( "save#entityName#", arguments.entity );
+	    
+	    arguments.entity = entityService.invokeMethod( "save#entityName#",  { "#entityName#" : arguments.entity });
 	    
 	    return arguments.entity;
 	}

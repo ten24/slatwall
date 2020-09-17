@@ -195,6 +195,7 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 	    struct entityQueueData={}, 
 	    string integrationID='', 
 	    string batchID='', 
+	    numeric tryCount = 1,
 	    any entityQueueDateTime = now()
 	){
 
@@ -224,12 +225,14 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 			queryService.addParam(name='entityQueueProcessingDateTime', CFSQLTYPE="CF_SQL_TIMESTAMP", null=true);
 		}
 		
+		queryService.addParam(name='tryCount', value=arguments.tryCount, CFSQLTYPE="CF_SQL_INT");
+		
 		queryService.addParam(name='accountID', value='#getHibachiScope().getAccount().getAccountID()#', CFSQLTYPE="CF_SQL_STRING");
 		
 		var sql =	"INSERT IGNORE INTO
 						SwEntityQueue (entityQueueID,baseObject,baseID,processMethod,entityQueueData,integrationID,batchID,createdDateTime,createdByAccountID,modifiedByAccountID,modifiedDateTime,entityQueueDateTime,tryCount,entityQueueProcessingDateTime)
 					VALUES 
-						(:entityQueueID,:baseObject,:baseID,:processMethod,:entityQueueData,:integrationID,:batchID,:dateTimeNow,:accountID,:accountID,:dateTimeNow,:entityQueueDateTime,1,:entityQueueProcessingDateTime)";
+						(:entityQueueID,:baseObject,:baseID,:processMethod,:entityQueueData,:integrationID,:batchID,:dateTimeNow,:accountID,:accountID,:dateTimeNow,:entityQueueDateTime,:tryCount,:entityQueueProcessingDateTime)";
 						
 		queryService.execute(sql=sql);
 	}
@@ -242,7 +245,7 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 	    string integrationID='', 
 	    string batchID='', 
 	    string mostRecentError='',
-	    numeric tryCount = 10,
+	    numeric tryCount = 1,
 	    any createdDateTime = now(),
 	    any entityQueueProcessingDateTime = now() 
 	){
@@ -253,7 +256,7 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 		
 		var sql = " INSERT INTO SwEntityQueueFailure ( #columns# ) VALUES ( #values# ) ";
 		
-		insertQuery.addParam( name='entityQueueFailureID', value= this.createSlatwallUUID(), CFSQLTYPE="CF_SQL_VARCHAR");
+		insertQuery.addParam( name='entityQueueFailureID', value= this.createHibachiUUID(), CFSQLTYPE="CF_SQL_VARCHAR");
 		
 		insertQuery.addParam( name='baseID', value= arguments.baseID, CFSQLTYPE="CF_SQL_VARCHAR");
 		insertQuery.addParam( name='baseObject', value= arguments.baseObject, CFSQLTYPE="CF_SQL_VARCHAR");
