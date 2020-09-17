@@ -1,25 +1,26 @@
 {
-	"entityName": "AccountPhoneNumber",
-	
-	"properties": {
-	    
-	    "phone": {
-		    "propertyIdentifier" : "phoneNumber",
-		    "validations": { "required": true, "dataType": "number" }
-		},
-		
-		"countryCode": {
-		    "propertyIdentifier" : "countryCallingCode",
-		    "validations": { "required": false,  }
-		}
-		
-	},
-	
-	"importIdentifier": {
-	    "propertyIdentifier": "importAccountPhoneNumberID",
-        "type": "composit",
-        "keys" : [ "userID", "phone" ]
+    "entityName": "AccountPhoneNumber",
+    "properties": {
+        "phone": {
+            "propertyIdentifier": "phoneNumber",
+            "validations": {
+                "required": true,
+                "dataType": "numeric"
+            }
+        },
+        "countryCode": {
+            "propertyIdentifier": "countryCallingCode",
+            "validations": {
+                "required": false
+            }
+        }
+    },
+    "importIdentifier": {
+        "propertyIdentifier": "importRemoteID",
+        "type": "composite",
+        "keys": [
+            "userID",
+            "phone"
+        ]
     }
 }
-
-

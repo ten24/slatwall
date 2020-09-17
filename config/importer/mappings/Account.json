@@ -1,49 +1,50 @@
 {
-	"entityName": "Account",
-	
-	"properties": {
-	    
-	    "userID": {
-	        "propertyIdentifier": "remoteID",
-	        "validations": { "required": true, "dataType": "string"}
-	    }
-	    
-	    "firstName": {
-		    "propertyIdentifier" : "firstName",
-		    "validations": { "required": true, "dataType": "string" }
-		},
-		
-		"lastName": {
-		    "propertyIdentifier" : "lastName",
-		    "validations": { "dataType": "string" }
-		},
-		
-		"username": {
-		    "propertyIdentifier" : "username",
-		    "validations": { "required": true, "dataType": "string" }
-		}
-		
-	},
-	
-	// uniqueue identifier, to figure-out upserts of imported data ==> md5( data.accoutRemoteID + data.phoneNumber );
-	"importIdentifier": {
-	    "propertyIdentifier": "importAccountID", //property on the entity, should exist in all imported entities
-        "type": "composit",  // AND, OR --> TODO
-        "keys" : [ "userID"  ] // keys in the data not DB
+    "entityName": "Account",
+    "properties": {
+        "userID": {
+            "propertyIdentifier": "remoteID",
+            "validations": {
+                "required": true,
+                "dataType": "string"
+            }
+        },
+        "firstName": {
+            "propertyIdentifier": "firstName",
+            "validations": {
+                "required": true,
+                "dataType": "string"
+            }
+        },
+        "lastName": {
+            "propertyIdentifier": "lastName",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "username": {
+            "propertyIdentifier": "username",
+            "validations": {
+                "required": true,
+                "dataType": "string"
+            }
+        }
     },
-	
-	// relations one-to-one, one-to-many, many-to-many, many-to-one
-	"relations": [
-	    {
-	        "entityName": "AccountEmailAddress",
-	        "type": "manyToOne"
-	        "proeprtyIdentifier": "primaryEmailAddress", // property on the entity
+    "importIdentifier": {
+        "propertyIdentifier": "importRemoteID",
+        "type": "composite",
+        "keys": [
+            "userID"
+        ]
+    },
+    "relations": [
+        {
+            "entityName": "AccountEmailAddress",
+            "type": "manyToOne",
+            "propertyIdentifier": "primaryEmailAddress"
         },
         {
-	        "entityName": "AccountPhoneNumber",
-	        "proeprtyIdentifier": "primaryPhoneNumber",
+            "entityName": "AccountPhoneNumber",
+            "propertyIdentifier": "primaryPhoneNumber"
         }
     ]
 }
-
-
