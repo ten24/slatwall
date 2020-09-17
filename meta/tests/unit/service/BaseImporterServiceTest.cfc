@@ -121,24 +121,24 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    
 	}
 	
+	
+	/*****************************.  Validation.  .******************************/
+	
 	/**
 	* @test
 	*/
-	public void function validateEntityData_should_fail(){
+	public void function validateAccountData_should_fail(){
 	    
 	    var validation = this.getService().validateEntityData( entityName="Account", data={}, collectErrors=false );
 	    
 	    debug(validation);
 	    assertFalse(validation.isValid);
 	}
-	
-		
 
-	
 	/**
 	* @test
 	*/
-	public void function validateEntityData_should_fail_for_firstName(){
+	public void function validateAccountData_should_fail_for_firstName(){
 	    
 	    var sampleAccountData = getSampleAccountData();
 	    sampleAccountData.delete('firstName');
@@ -157,7 +157,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	/**
 	* @test
 	*/
-	public void function validateEntityData_should_fail_for_email(){
+	public void function validateAccountData_should_fail_for_email(){
 	    
 	    var sampleAccountData = getSampleAccountData();
 	    sampleAccountData['email'] = "Invalid Email Address";
@@ -176,7 +176,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	/**
 	* @test
 	*/
-	public void function validateEntityData_should_fail_for_username(){
+	public void function validateAccountData_should_fail_for_username(){
 	    
 	    var sampleAccountData = getSampleAccountData();
 	    sampleAccountData.delete('username');
@@ -196,7 +196,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	/**
 	* @test
 	*/
-	public void function validateEntityData_should_pass(){
+	public void function validateAccountData_should_pass(){
 	    
 	    var sampleAccountData = getSampleAccountData();
 
@@ -214,7 +214,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	/**
 	* @test
 	*/
-	public void function validateEntityData_should_pass_without_lastName_and_countryCode(){
+	public void function validateAccountData_should_pass_without_lastName_and_countryCode(){
 	    
 	    var sampleAccountData = getSampleAccountData();
 	    
@@ -232,6 +232,10 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    expect(validation.errors).toBeEmpty("the validation should pass without lastName and countryCode");
 	}
 	
+
+
+	/** ***************************.  Transform  .***************************** */
+
 
     /**
      * 
@@ -260,11 +264,11 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 
      *
      */
-	
-	/**
-	* @test
+     
+    /** 
+	 * @test
 	*/
-	public void function transformDataTest(){
+    public void function transformAccountDataTest_should_ignore_extra_properties(){
 	    
 	    var sampleAccountData = getSampleAccountData();
 	    
@@ -273,21 +277,125 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    var data = this.getService().transformEntityData("Account", sampleAccountData);
 	    debug(data);
 	    
-	    expect(data).toHaveKey('firstName', "transformed data should have key 'firstName' ");
-	    expect(data).toHaveKey('lastName',  "transformed data should have key 'firstName' ");
-	    expect(data).toHaveKey('username',  "transformed data should have key 'username' ");
-	    
-	    expect(data).toHaveKey('primaryEmailAddress',  "transformed data should have key 'primaryEmailAddress' ");
-	    expect(data.primaryEmailAddress).toHaveKey('emailAddress',  "primaryEmailAddress should have key 'emailAddress' ");
-	    
-	    expect(data).toHaveKey('primaryPhoneNumber',  "transformed data should have key 'primaryPhoneNumber' ");
-	    expect(data.primaryPhoneNumber).toHaveKey('phoneNumber',  "primaryPhoneNumber should have key 'phoneNumber' ");
+	    expect( StructKeyExists(data, 'extraProp') ).toBeFalse("transformed data should not contain key 'extraProp'");
+    }
 
+    /** 
+	 * @test
+	*/
+    public void function transformAccountDataTest_should_contain_accountID(){
 	    
-	   // expect(data).toHaveKey('primaryEmailAddress',  "transformed data should have key 'primaryEmailAddress' ");
-	   // expect(data.primaryAccountAddress).toHaveKey('address',  "primaryAccountAddress should have key 'address' ");
-	   // expect(data.primaryAccountAddress.address).toHaveKey('state',  "primaryAccountAddress.address should have key 'state' ");
-	   // expect(data.primaryAccountAddress.address).toHaveKey('city',  "primaryAccountAddress.address should have key 'city' ");
+	    var sampleAccountData = getSampleAccountData();
+	    
+	    var data = this.getService().transformEntityData("Account", sampleAccountData);
+	    debug(data);
+	    
+	    expect(data).toHaveKey('accountID', "transformed data should have key 'accountID' ");
+    }
+    
+    /** 
+	 * @test
+	*/
+    public void function transformAccountDataTest_should_contain_importRemoteID(){
+	    
+	    var sampleAccountData = getSampleAccountData();
+	    
+	    var data = this.getService().transformEntityData("Account", sampleAccountData);
+	    debug(data);
+	    
+	    expect(data).toHaveKey('importRemoteID', "transformed data should have key 'importRemoteID' ");
+    }
+    
+    /** 
+	 * @test
+	*/
+    public void function transformAccountDataTest_importRemoteID_should_match(){
+	    
+	    var sampleAccountData = getSampleAccountData();
+	    
+	    var data = this.getService().transformEntityData("Account", sampleAccountData);
+	    debug(data);
+	    
+	    var importRemoteID = this.getService().createEntityImportRemoteID( this.getService().getEntityMapping("Account"), sampleAccountData );
+	    
+	    expect(data.importRmoteID).toBe( importRemoteID, "importRemoteID in transformed data should match with generated-id ");
+    }
+    
+    /** 
+	 * @test
+	*/
+    public void function transformAccountDataTest_should_contain_account_properties(){
+	    
+	    var sampleAccountData = getSampleAccountData();
+	    
+	    var data = this.getService().transformEntityData("Account", sampleAccountData);
+	    debug(data);
+	    
+	    expect(data).toHaveKey('firstName',  "transformed data should have key 'firstName' ");
+	    expect(data).toHaveKey('lastName',   "transformed data should have key 'firstName' ");
+	    expect(data).toHaveKey('username',   "transformed data should have key 'username' ");
+	    expect(data).toHaveKey('company',    "transformed data should have key 'company' ");
+	    expect(data).toHaveKey('accountID',  "transformed data should have key 'accountID' ");
+	    expect(data).toHaveKey('remoteID',   "transformed data should have key  'remoteID' ");
+	    expect(data).toHaveKey('importRemoteID', "transformed data should have key 'importRemoteID' ");
+    }
+    
+    /** 
+	 * @test
+	*/
+    public void function transformAccountDataTest_should_contain_related_properties(){
+	    
+	    var sampleAccountData = getSampleAccountData();
+	    
+	    var data = this.getService().transformEntityData("Account", sampleAccountData);
+	    debug(data);
+	    
+	    expect(data).toHaveKey('primaryPhoneNumber', "transformed data should have key 'primaryPhoneNumber' ");
+	    expect(data.primaryPhoneNumber).toBeTypeOf('struct',  "primaryPhoneNumber should be an struct ");
+	   
+	    expect(data).toHaveKey('primaryEmailAddress', "transformed data should have key 'primaryEmailAddress' ");
+	    expect(data.primaryEmailAddress).toBeTypeOf('struct',  "primaryEmailAddress should be an struct ");
+    }
+    
+    /** 
+	 * @test
+	*/
+    public void function transformAccountDataTest_should_contain_primaryPhoneNumber_properties(){
+	    
+	    var sampleAccountData = getSampleAccountData();
+	    
+	    var data = this.getService().transformEntityData("Account", sampleAccountData);
+	    debug(data);
+	    
+	    expect(data).toHaveKey('primaryPhoneNumber', "transformed data should have key 'primaryPhoneNumber' ");
+	    expect(data.primaryPhoneNumber).toBeTypeOf('struct',  "primaryPhoneNumber should be an struct ");
+	   
+	    expect(data.primaryPhoneNumber).toHaveKey('importRemoteID', "transformed data should have key 'importRemoteID' ");
+	    expect(data.primaryPhoneNumber).toHaveKey('accountPhoneNumberID',  "transformed data should have key 'accountPhoneNumberID' ");
+	    
+	    expect(data.primaryPhoneNumber).toHaveKey('phoneNumber',  "primaryPhoneNumber should have key 'phoneNumber' ");
+	    expect(data.primaryPhoneNumber).toHaveKey('countryCallingCode',  "primaryPhoneNumber should have key 'countryCallingCode' ");
+	    
+	    
+    }
+    
+     /** 
+	 * @test
+	*/
+    public void function transformAccountDataTest_should_contain_primaryEmailAddress_properties(){
+	    
+	    var sampleAccountData = getSampleAccountData();
+	    
+	    var data = this.getService().transformEntityData("Account", sampleAccountData);
+	    debug(data);
+	    
+	    expect(data).toHaveKey('primaryEmailAddress', "transformed data should have key 'primaryEmailAddress' ");
+	    expect(data.primaryEmailAddress).toBeTypeOf('struct',  "primaryEmailAddress should be an struct ");
+	   
+	    expect(data.primaryEmailAddress).toHaveKey('importRemoteID', "transformed data should have key 'importRemoteID' ");
+	    expect(data.primaryEmailAddress).toHaveKey('accountEmailAddressID',  "transformed data should have key 'accountEmailAddressID' ");
+	    
+	    expect(data.primaryEmailAddress).toHaveKey('emailAddress',  "primaryEmailAddress should have key 'phoneNumber' ");
     }
 }
 
