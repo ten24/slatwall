@@ -97,7 +97,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    //TODO: update initial batch-items values
 	}
 	
-	public any function pushRecordIntoImportQueue( required string entityName, required struct data, required string batchID, numeric tryCount = 1 ){
+	public struct function pushRecordIntoImportQueue( required string entityName, required struct data, required string batchID, numeric tryCount = 1 ){
 	    
 	    var validation = this.validateEntityData( entityName = arguments.entityName, data = arguments.data, collectErrors=true);
 	    
@@ -114,37 +114,46 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	        this.getEntityQueueDAO().insertEntityQueueFailure(
         	    baseID = '', //not needed
         	    baseObject = arguments.entityName, 
-        	    processMethod = 'reQueueEntityImportFailure',
+        	    processMethod = 'reQueueImportFailure',
         	    entityQueueData = entityQueueData, 
         	    integrationID = this.getIntegration().getIntegrationID(), 
         	    batchID = arguments.batchID,
         	    mostRecentError = serializeJson( validation.errors ),
         	    tryCount = arguments.tryCount 
         	);
+        	
+	    } else {
+	    
+    	    var transformedData = this.transformEntityData( entityName = arguments.entityName, data = arguments.data);
+    	    var primaryIDPropertyName = this.getHibachiService().getPrimaryIDPropertyNameByEntityName( arguments.mapping.entityName );
+    
+    	    this.getEntityQueueDAO().insertEntityQueue(
+        	    baseID = transformedData[ primaryIDPropertyName ], 
+        	    baseObject = arguments.entityName, 
+        	    processMethod ='processEntityImport',
+        	    entityQueueData = transformedData, 
+        	    integrationID = this.getIntegration().getIntegrationID(), 
+            	batchID = arguments.batchID
+        	);
+	        
 	    }
 	    
 	    
-	    var transformedData = this.transformEntityData( entityName = arguments.entityName, data = arguments.data);
-	    var primaryIDPropertyName = this.getHibachiService().getPrimaryIDPropertyNameByEntityName( arguments.mapping.entityName );
-
-	    this.getEntityQueueDAO().insertEntityQueue(
-    	    baseID = transformedData[ primaryIDPropertyName ], 
-    	    baseObject = arguments.entityName, 
-    	    processMethod ='processEntityImport',
-    	    entityQueueData = transformedData, 
-    	    integrationID = this.getIntegration().getIntegrationID(), 
-        	batchID = arguments.batchID
-    	);
+    	return validation;
 	}
 	
-	public any function reQueueEntityImportFailure( any entity, struct entityQueueData ){
+	public any function reQueueImportFailure( any entity, struct entityQueueData ){
 
-        this.pushRecordIntoImportQueue(
+        var validation = this.pushRecordIntoImportQueue(
             data       = arguments.entityQueueData.data, 
             batch      = arguments.entityQueueData.batchID, 
             tryCount   = arguments.entityQueueData.tryCount + 1,
             entityName = arguments.entityQueueData.entityName 
         );
+        
+        if(!validation.isValid){
+            arguments.entity.setErrors( validation.errors );
+        }
 	    
 	    return arguments.entity;
 	}
