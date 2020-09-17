@@ -133,24 +133,6 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	}
 	
 		
-// 	/**
-// 	* @test
-// 	*/
-// 	public void function validateEntityData_should_fail_for_firstNamexxx(){
-	    
-// 	    var sampleAccountData = getSampleAccountData();
-// 	    sampleAccountData.delete('firstName');
-	    
-// 	    var validation = this.getService().validateEntityData(
-// 	        entityName="Account", 
-// 	        data = sampleAccountData, 
-// 	        collectErrors = true 
-// 	    );
-	    
-// 	    debug(validation);
-// 	    assertFalse(validation.isValid);
-// 	    expect(validation.errors).toHaveKey('firstName', "the validation should fail for firstName");
-// 	}
 
 	
 	/**
@@ -308,5 +290,4 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	   // expect(data.primaryAccountAddress.address).toHaveKey('city',  "primaryAccountAddress.address should have key 'city' ");
     }
 }
-
 
