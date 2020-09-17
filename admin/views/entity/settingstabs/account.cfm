@@ -54,6 +54,7 @@ Notes:
 		<swa:SlatwallSetting settingName="accountHTMLTitleString" />
 		<swa:SlatwallSetting settingName="accountMetaDescriptionString" />
 		<swa:SlatwallSetting settingName="accountMetaKeywordsString" />
+		<swa:SlatwallSetting settingName="accountCustomAdminStylesheet" />
 		<swa:SlatwallSetting settingName="accountEligiblePaymentMethods" />
 		<swa:SlatwallSetting settingName="accountEligiblePaymentTerms" />
 		<swa:SlatwallSetting settingName="accountPaymentTerm" />
