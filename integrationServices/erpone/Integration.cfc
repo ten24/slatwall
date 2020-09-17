@@ -48,8 +48,6 @@ Notes:
 */
 component accessors="true" output="false" implements="Slatwall.integrationServices.IntegrationInterface" extends="Slatwall.integrationServices.BaseIntegration" {
 	
-	property name="erpOneService";
-	
 	public string function getIntegrationTypes() {
 		return "Data";
 	}

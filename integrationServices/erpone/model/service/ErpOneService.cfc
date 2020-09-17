@@ -50,7 +50,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	
 	property name="integrationService";
 	property name="erpOneIntegrationCFC";
-	property name = "hibachiCacheService";
+	property name="hibachiCacheService";
 	
 	public any function getIntegration(){
 	    if( !structKeyExists( variables, 'integration') ){
@@ -60,7 +60,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
     }
     
     public any function getGrantToken(){
-		if(!(getHibachiCacheService().hasCachedValue('grantToken'))){
+		if( !this.getHibachiCacheService().hasCachedValue('grantToken') ){
 			createAndSetGrantToken();
 		}
 		return getHibachiCacheService().getCachedValue('grantToken');
@@ -74,8 +74,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
     }
     
     public any function createAndSetGrantToken(){
-		var endPointURL = "distone/rest/service/authorize/grant";
-		var httpRequest = this.createHttpRequest(endPointURL);
+		var httpRequest = this.createHttpRequest('distone/rest/service/authorize/grant');
 		// Authentication headers
     	if(!this.setting("devMode")){
     		httpRequest.addParam( type='formfield', name='client', value= this.setting('prodClient'));
@@ -103,8 +102,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
     
     public any function createAndSetAccessToken(){
     	var grantToken = this.getGrantToken();
-    	var endPointURL = "distone/rest/service/authorize/access";
-		var httpRequest = this.createHttpRequest(endPointURL);
+    	var httpRequest = this.createHttpRequest('distone/rest/service/authorize/access');
 		
 		// Authentication headers
 		if(!this.setting("devMode")){
@@ -124,15 +122,14 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 			}
 		} 
 		catch ( any e ){
-			throw("invalid Access Token");
+			throw("Invalid Grant Token" & e.Message);
 		}
     }
     public any function createHttpRequest(required string endPointUrl, string requestType="POST"){
     	if(!this.setting("devMode")){
-			var requestURL = this.setting("prodGatewayURL");
+			var requestURL = this.setting("prodGatewayURL") & arguments.endPointUrl;
 		}
-		var requestURL = this.setting("devGatewayURL");
-		requestURL &= arguments.endPointUrl;
+		var requestURL = this.setting("devGatewayURL") & arguments.endPointUrl;
 		var httpRequest = new http();
 		httpRequest.setMethod(arguments.requestType);
 		httpRequest.setCharset("utf-8");
@@ -141,6 +138,6 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
     	return httpRequest;
     }
     public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
-    	return this.getErpOneIntegrationCFC().setting(arguments.settingName);
+    	return this.getErpOneIntegrationCFC().setting( argumentCollection=arguments );
 	}
 }
