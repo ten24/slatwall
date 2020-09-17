@@ -60,11 +60,13 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    return {
 	        
         	"entity": "Account",
+        	
         	"properties": {
+        	    
         	    "userID": {
         	        "propertyIdentifier": "remoteID",
         	        "validations": { "required": true, "dataType": "string"}
-        	    }
+        	    },
         	    "firstName": {
         		    "propertyIdentifier" : "firstName",
         		    "validations": { "required": true, "dataType": "string" }
@@ -101,34 +103,54 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         };
 	}
 	
+    private struct function getSampleAccountData(){
+	    
+	    return {
+	        userID: 123, 
+	        firstName: "Nitin",  
+	        lastName: "Yadav", 
+	        username: 'nitin.yadav', 
+	        
+	        //AccountEmailAddress
+	        email: "nitin.yadav@ten24web.com",
+	        
+	        //AccountPhoneNumber
+	        phone: 9090909090,
+	        countryCode: "+91"
+	    };
+	    
+	}
+	
 	/**
 	* @test
 	*/
 	public void function validateEntityData_should_fail(){
 	    
-	    var validation = this.getService().validateEntityData( entityName="Account", data={}, mapping=this.getAccountMapping(), collectErrors=false );
+	    var validation = this.getService().validateEntityData( entityName="Account", data={}, collectErrors=false );
 	    
 	    debug(validation);
 	    assertFalse(validation.isValid);
 	}
 	
 		
-	/**
-	* @test
-	*/
-	public void function validateEntityData_should_fail_for_firstNamexxx(){
+// 	/**
+// 	* @test
+// 	*/
+// 	public void function validateEntityData_should_fail_for_firstNamexxx(){
 	    
-	    var validation = this.getService().validateEntityData(
-	        entityName="Account", 
-	        data = { lastName: "Yadav", remoteAccountID:'1234', username: 'nitin.yadav', emailAddress: "nitin.yadav@ten24web.com" }, 
-	        mapping = this.getAccountMapping(), 
-	        collectErrors = true 
-	    );
+// 	    var sampleAccountData = getSampleAccountData();
+// 	    sampleAccountData.delete('firstName');
 	    
-	    debug(validation);
-	    assertFalse(validation.isValid);
-	    expect(validation.errors).toHaveKey('firstName', "the validation should fail for firstName");
-	}
+// 	    var validation = this.getService().validateEntityData(
+// 	        entityName="Account", 
+// 	        data = sampleAccountData, 
+// 	        collectErrors = true 
+// 	    );
+	    
+// 	    debug(validation);
+// 	    assertFalse(validation.isValid);
+// 	    expect(validation.errors).toHaveKey('firstName', "the validation should fail for firstName");
+// 	}
 
 	
 	/**
@@ -136,10 +158,12 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	*/
 	public void function validateEntityData_should_fail_for_firstName(){
 	    
+	    var sampleAccountData = getSampleAccountData();
+	    sampleAccountData.delete('firstName');
+	    
 	    var validation = this.getService().validateEntityData(
 	        entityName="Account", 
-	        data = { lastName: "Yadav", username: 'nitin.yadav', emailAddress: "nitin.yadav@ten24web.com" }, 
-	        mapping = this.getAccountMapping(), 
+	        data = sampleAccountData, 
 	        collectErrors = true 
 	    );
 	    
@@ -153,16 +177,18 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	*/
 	public void function validateEntityData_should_fail_for_email(){
 	    
+	    var sampleAccountData = getSampleAccountData();
+	    sampleAccountData['email'] = "Invalid Email Address";
+	    
 	    var validation = this.getService().validateEntityData(
 	        entityName="Account", 
-	        data = { firstName: "Nitin", lastName: "Yadav", username: 'nitin.yadav', emailAddress: "invalid email address" }, 
-	        mapping = this.getAccountMapping(), 
+	        data = sampleAccountData, 
 	        collectErrors = true 
 	    );
 	    
 	    debug(validation);
 	    assertFalse(validation.isValid);
-	    expect(validation.errors).toHaveKey('emailAddress', "the validation should fail for email");
+	    expect(validation.errors).toHaveKey('email', "the validation should fail for email");
 	}
 	
 	/**
@@ -170,10 +196,13 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	*/
 	public void function validateEntityData_should_fail_for_username(){
 	    
+	    var sampleAccountData = getSampleAccountData();
+	    sampleAccountData.delete('username');
+	    sampleAccountData['usernameeee'] = "nitin.yadav";
+	    
 	    var validation = this.getService().validateEntityData(
 	        entityName="Account", 
-	        data = { firstName: "Nitin", lastName: "Yadav", usernameeee: 'nitin.yadav', emailAddress: "nitin.yadav@ten24web.com" }, 
-	        mapping = this.getAccountMapping(), 
+	        data = sampleAccountData, 
 	        collectErrors = true 
 	    );
 	    
@@ -187,35 +216,66 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	*/
 	public void function validateEntityData_should_pass(){
 	    
+	    var sampleAccountData = getSampleAccountData();
+
 	    var validation = this.getService().validateEntityData(
 	        entityName="Account", 
-	        data = { firstName: "Nitin", username: 'nitin.yadav', emailAddress: "nitin.yadav@ten24web.com" }, 
-	        mapping = this.getAccountMapping(), 
+	        data = sampleAccountData, 
 	        collectErrors = true 
 	    );
 	    
 	    debug(validation);
 	    assert(validation.isValid);
-	    expect(validation.errors).toBeEmpty("the validation should fail for username");
+	    expect(validation.errors).toBeEmpty("the validation should pass");
+	}
+	
+	/**
+	* @test
+	*/
+	public void function validateEntityData_should_pass_without_lastName_and_countryCode(){
+	    
+	    var sampleAccountData = getSampleAccountData();
+	    
+	    sampleAccountData.delete('lastName');
+	    sampleAccountData.delete('countryCode');
+
+	    var validation = this.getService().validateEntityData(
+	        entityName="Account", 
+	        data = sampleAccountData, 
+	        collectErrors = true 
+	    );
+	    
+	    debug(validation);
+	    assert(validation.isValid);
+	    expect(validation.errors).toBeEmpty("the validation should pass without lastName and countryCode");
 	}
 	
 
     /**
      * 
-     	{
-         	'accoutnID': ''
-            "username": "qerwg",
-            "primaryEmailAddress": {
-                // the parent entity id will always be there in the incoing-data
-                "primaryEmailAddressID": ''
-                "address": {
-                    "addressID": ''
-                    "addresRemoteID": '1324e'
-                    "city": "qerre",
-                    "state": "sgfd"
-                }
+        { 	
+            accountID :	'',
+            firstName :	'Nitin',
+            lastName :	'Yadav',
+            remoteID :	123,
+            username :	nitin.yadav.
+            
+            importRmoteID :	'202CB962AC59075B964B07152D234B70',
+            
+            primaryEmailAddress : {
+                accountEmailAddressID :	'',
+                emailAddress          :	'nitin.yadav@ten24web.com',
+                importRmoteID         :	'202CB962AC59075B964B07152D234B70_1824DCF4879D57843ABBA22D59862B77'
+            },
+            
+            primaryPhoneNumber : {
+                accountPhoneNumberID :	'',
+                countryCallingCode	 :	'+91',
+                importRmoteID        :	'202CB962AC59075B964B07152D234B70_6BA70BB28A5A0D671CA8DD4BB488BE83',
+                phoneNumber          :	9090909090
             }
-     	}
+        }
+
      *
      */
 	
@@ -224,18 +284,11 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	*/
 	public void function transformDataTest(){
 	    
-	    var data = this.getService().transformAccountData( 
-	        data = { 
-	            firstName: "Nitin", 
-	            lastName: "Yadav",
-	            username: 'nitin.yadav', 
-	            emailAddress: "nitin.yadav@ten24web.com",
-	            extraProp: "safwgreng",
-	            city: "Gurgaon",
-	            state: "Haryana"
-	        }, 
-	        mapping = this.getAccountMapping()
-	    );
+	    var sampleAccountData = getSampleAccountData();
+	    
+	    sampleAccountData['extraProp'] = "132432543";
+
+	    var data = this.getService().transformEntityData("Account", sampleAccountData);
 	    debug(data);
 	    
 	    expect(data).toHaveKey('firstName', "transformed data should have key 'firstName' ");
@@ -245,11 +298,14 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    expect(data).toHaveKey('primaryEmailAddress',  "transformed data should have key 'primaryEmailAddress' ");
 	    expect(data.primaryEmailAddress).toHaveKey('emailAddress',  "primaryEmailAddress should have key 'emailAddress' ");
 	    
-	    expect(data).toHaveKey('primaryAccountAddress',  "transformed data should have key 'primaryAccountAddress' ");
-	    expect(data.primaryAccountAddress).toHaveKey('address',  "primaryAccountAddress should have key 'address' ");
-	    expect(data.primaryAccountAddress.address).toHaveKey('state',  "primaryAccountAddress.address should have key 'state' ");
-	    expect(data.primaryAccountAddress.address).toHaveKey('city',  "primaryAccountAddress.address should have key 'city' ");
+	    expect(data).toHaveKey('primaryPhoneNumber',  "transformed data should have key 'primaryPhoneNumber' ");
+	    expect(data.primaryPhoneNumber).toHaveKey('phoneNumber',  "primaryPhoneNumber should have key 'phoneNumber' ");
 
+	    
+	   // expect(data).toHaveKey('primaryEmailAddress',  "transformed data should have key 'primaryEmailAddress' ");
+	   // expect(data.primaryAccountAddress).toHaveKey('address',  "primaryAccountAddress should have key 'address' ");
+	   // expect(data.primaryAccountAddress.address).toHaveKey('state',  "primaryAccountAddress.address should have key 'state' ");
+	   // expect(data.primaryAccountAddress.address).toHaveKey('city',  "primaryAccountAddress.address should have key 'city' ");
     }
 }
 
