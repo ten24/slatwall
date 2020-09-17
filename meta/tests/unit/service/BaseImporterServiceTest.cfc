@@ -45,6 +45,8 @@
 
 Notes:
 
+    https://cfdocs.org/testbox
+
 */
 component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
     
@@ -123,7 +125,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	        firstName: "Nitin",  
 	        lastName: "Yadav", 
 	        username: 'nitin.yadav', 
-	        company: "Ten24",
+	        companyName: "Ten24",
 	        
 	        //AccountEmailAddress
 	        email: "nitin.yadav@ten24web.com",
@@ -260,18 +262,18 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
             remoteID :	123,
             username :	nitin.yadav.
             
-            importRmoteID :	'202CB962AC59075B964B07152D234B70',
+            importRemoteID :	'202CB962AC59075B964B07152D234B70',
             
             primaryEmailAddress : {
                 accountEmailAddressID :	'',
                 emailAddress          :	'nitin.yadav@ten24web.com',
-                importRmoteID         :	'202CB962AC59075B964B07152D234B70_1824DCF4879D57843ABBA22D59862B77'
+                importRemoteID         :	'202CB962AC59075B964B07152D234B70_1824DCF4879D57843ABBA22D59862B77'
             },
             
             primaryPhoneNumber : {
                 accountPhoneNumberID :	'',
                 countryCallingCode	 :	'+91',
-                importRmoteID        :	'202CB962AC59075B964B07152D234B70_6BA70BB28A5A0D671CA8DD4BB488BE83',
+                importRemoteID        :	'202CB962AC59075B964B07152D234B70_6BA70BB28A5A0D671CA8DD4BB488BE83',
                 phoneNumber          :	9090909090
             }
         }
@@ -330,9 +332,9 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    var data = this.getService().transformEntityData("Account", sampleAccountData);
 	    debug(data);
 	    
-	    var importRemoteID = this.getService().createEntityImportRemoteID( this.getService().getEntityMapping("Account"), sampleAccountData );
+	    var importRemoteID = this.getService().createEntityImportRemoteID( "Account", sampleAccountData );
 	    
-	    expect(data.importRmoteID).toBe( importRemoteID, "importRemoteID in transformed data should match with generated-id ");
+	    expect(data.importRemoteID).toBe( importRemoteID, "importRemoteID in transformed data should match with generated-id ");
     }
     
     /** 

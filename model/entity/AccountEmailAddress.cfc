@@ -68,7 +68,7 @@ component displayname="Account Email Address" entityname="SlatwallAccountEmailAd
 	
 	// Remote properties
 	property name="remoteID" hb_populateEnabled="false" ormtype="string";
-	property name="importRemoteemoteID" hb_populateEnabled="importer" ormtype="string" hint="Used via data-importer";
+	property name="importRemoteID" hb_populateEnabled="importer" ormtype="string" hint="Used via data-importer";
 
 	
 	// Audit Properties

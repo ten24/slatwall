@@ -327,33 +327,37 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    var transformedData = {};
 	    
 	    for( var sourcePropertyName in arguments.mapping.properties ){
-	        var propertyidentifier = arguments.mapping.properties[ sourcePropertyName ].propertyIdentifier;
 	        
+	        var propertyMetaData = arguments.mapping.properties[ sourcePropertyName ];
+
 	        if(structKeyExists(data, sourcePropertyName) ){
-	            transformedData[ arguments.mapping.properties[ sourcePropertyName ].propertyIdentifier ] = data[ sourcePropertyName ];
-	        } else if( structKeyExists(arguments.mapping, 'defaultValue') ){
-	            transformedData[ arguments.mapping.properties[ sourcePropertyName ].propertyIdentifier ] = arguments.mapping.defaultValue;
+	            
+	            transformedData[ propertyMetaData.propertyIdentifier ] = data[ sourcePropertyName ];
+	            
+	        } else if( structKeyExists(propertyMetaData, 'defaultValue') ){
+	            
+	            transformedData[ propertyMetaData.propertyIdentifier ] = propertyMetaData.defaultValue;
 	        }
 	    }
 	    
-	    arguments.data['importRmoteID'] = this.createEntityImportRemoteID( arguments.mapping.entityName, arguments.data );
+	    arguments.data['importRemoteID'] = this.createEntityImportRemoteID( arguments.mapping.entityName, arguments.data );
 	  
 	    var primaryIDPropertyName = this.getHibachiService().getPrimaryIDPropertyNameByEntityName( arguments.mapping.entityName );
 	    if( !structKeyExists( arguments.data, primaryIDPropertyName) ){
 	        
     	    var args = {
     	        "entityName"  : arguments.mapping.entityName,
-    	        "uniqueKey"   : 'importRmoteID',
-    	        "uniqueValue" : arguments.data['importRmoteID']
+    	        "uniqueKey"   : 'importRemoteID',
+    	        "uniqueValue" : arguments.data['importRemoteID']
     	    };
     	    
 	        arguments.data[ primaryIDPropertyName ] = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue( argumentCollection = args ) ?: '';
 	    }
 	    
-	    transformedData['importRmoteID'] = arguments.data['importRmoteID'];
+	    transformedData['importRemoteID'] = arguments.data['importRemoteID'];
 	    transformedData[ primaryIDPropertyName ] = arguments.data[ primaryIDPropertyName ];
 
-	   // transformedData['importRmoteID'] = arguments.data['importRmoteID'];
+	   // transformedData['importRemoteID'] = arguments.data['importRemoteID'];
 	   // transformedData[ primaryIDPropertyName ] = '';
 	    
 	    if( structKeyExists(arguments.mapping, 'relations' ) ){
