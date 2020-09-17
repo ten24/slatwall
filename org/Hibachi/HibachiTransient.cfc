@@ -196,6 +196,10 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
             if( this.getHibachiScope().getWorkflowPopulateFlag() && arguments.propertyMeta.hb_populateEnabled == "workflow" ){
                 return true;
             }
+            
+            if( this.getHibachiScope().getImporterPopulateFlag() && arguments.propertyMeta.hb_populateEnabled == "importer" ){
+                return true;
+            }
         } 
         
         // population is not restricted explicitly, and it's a Transient

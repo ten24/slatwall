@@ -159,7 +159,9 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	}
 	
 	public any function processEntityImport( any entity, struct entityQueueData ){
-	   
+	    
+	    this.getHibachiScope().setImporterPopulateFlag(true);
+	    
 	    var entityName = arguments.entity.getClassName();
 	    
 	    if( structKeyExists(this, 'process#entityName#_import') ){
