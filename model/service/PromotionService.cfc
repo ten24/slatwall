@@ -1896,78 +1896,108 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			if(!isNull(promotionReward.getRoundingRule())) {
 				newPromotionReward.setRoundingRule(promotionReward.getRoundingRule());
 			}
-			if(arrayLen(promotionReward.getPromotionRewardCurrencies())) {
-				for(var promotionRewardCurrency in promotionReward.getPromotionRewardCurrencies()) {
+			
+			var currencies = promotionReward.getPromotionRewardCurrencies();
+			if(arrayLen(currencies)) {
+				for(var promotionRewardCurrency in currencies) {
 					newPromotionReward.addPromotionRewardCurrency(promotionRewardCurrency);
 				}
 			}
-			if(arrayLen(promotionReward.getEligiblePriceGroups())) {
-				for(var eligiblePriceGroup in promotionReward.getEligiblePriceGroups()) {
+			
+			var priceGroups = promotionReward.getEligiblePriceGroups();
+			if(arrayLen(priceGroups)) {
+				for(var eligiblePriceGroup in priceGroups ) {
 					newPromotionReward.addEligiblePriceGroup(eligiblePriceGroup);
 				}
 			}
-			if(arrayLen(promotionReward.getFulfillmentMethods())) {
-				for(var fulfillmentMethod in promotionReward.getFulfillmentMethods()) {
+			
+			var fulfillments = promotionReward.getFulfillmentMethods();
+			if(arrayLen(fulfillments)) {
+				for(var fulfillmentMethod in fulfillments ) {
 					newPromotionReward.addFulfillmentMethod(fulfillmentMethod);
 				}
 			}
-			if(arrayLen(promotionReward.getShippingAddressZones())) {
-				for(var shippingAddressZone in promotionReward.getShippingAddressZones()) {
+			
+			var addresses = promotionReward.getShippingAddressZones();
+			if(arrayLen(addresses)) {
+				for(var shippingAddressZone in addresses ) {
 					newPromotionReward.addShippingAddressZone(shippingAddressZone);
 				}
 			}
-			if(arrayLen(promotionReward.getShippingMethods())) {
-				for(var shippingMethod in promotionReward.getShippingMethods()) {
+			
+			var shipMethods = promotionReward.getShippingMethods();
+			if(arrayLen(shipMethods)) {
+				for(var shippingMethod in shipMethods) {
 					newPromotionReward.addShippingMethod(shippingMethod);
 				}
 			}
-			if(arrayLen(promotionReward.getBrands())) {
-				for(var brand in promotionReward.getBrands()) {
+			
+			var brands = promotionReward.getBrands();
+			if(arrayLen(brands)) {
+				for(var brand in brands) {
 					newPromotionReward.addBrand(brand);
 				}
 			}
-			if(arrayLen(promotionReward.getOptions())) {
-				for(var option in promotionReward.getOptions()) {
+			
+			var options = promotionReward.getOptions();
+			if(arrayLen(options)) {
+				for(var option in options) {
 					newPromotionReward.addOption(option);
 				}
 			}
-			if(arrayLen(promotionReward.getSkus())) {
-				for(var sku in promotionReward.getSkus()) {
+			
+			var skus = promotionReward.getSkus();
+			if(arrayLen(skus)) {
+				for(var sku in skus) {
 					newPromotionReward.addSku(sku);
 				}
 			}
-			if(arrayLen(promotionReward.getProducts())) {
-				for(var product in promotionReward.getProducts()) {
+			
+			var products = promotionReward.getProducts();
+			if(arrayLen(products)) {
+				for(var product in products) {
 					newPromotionReward.addProduct(product);
 				}
 			}
-			if(arrayLen(promotionReward.getProductTypes())) {
-				for(var productType in promotionReward.getProductTypes()) {
+			
+			var productTypes = promotionReward.getProductTypes();
+			if(arrayLen(productTypes)) {
+				for(var productType in productTypes) {
 					newPromotionReward.addProductType(productType);
 				}
 			}
-			if(arrayLen(promotionReward.getExcludedBrands())) {
-				for(var excludedBrand in promotionReward.getExcludedBrands()) {
+			
+			var excludedBrands = promotionReward.getExcludedBrands();
+			if(arrayLen(excludedBrands)) {
+				for(var excludedBrand in excludedBrands) {
 					newPromotionReward.addExcludedBrand(excludedBrand);
 				}
 			}
-			if(arrayLen(promotionReward.getExcludedOptions())) {
-				for(var excludedOption in promotionReward.getExcludedOptions()) {
+			
+			var excludedOptions = promotionReward.getExcludedOptions();
+			if(arrayLen(excludedOptions)) {
+				for(var excludedOption in excludedOptions) {
 					newPromotionReward.addExcludedOption(excludedOption);
 				}
 			}
-			if(arrayLen(promotionReward.getExcludedSkus())) {
-				for(var excludedSkus in promotionReward.getExcludedSkus()) {
-					newPromotionReward.addExcludedSkus(excludedSkus);
+			
+			var excludedSkus = promotionReward.getExcludedSkus();
+			if(arrayLen(excludedSkus)) {
+				for(var excludedSku in excludedSkus) {
+					newPromotionReward.addExcludedSkus(excludedSku);
 				}
 			}
-			if(arrayLen(promotionReward.getExcludedProducts())) {
-				for(var excludedProduct in promotionReward.getExcludedProducts()) {
+			
+			var excludedProducts = promotionReward.getExcludedProducts();
+			if(arrayLen(excludedProducts)) {
+				for(var excludedProduct in excludedProducts) {
 					newPromotionReward.addExcludedProduct(excludedProduct);
 				}
 			}
-			if(arrayLen(promotionReward.getExcludedProductTypes())) {
-				for(var excludedProductType in promotionReward.getExcludedProductTypes()) {
+			
+			var excludedProductTypes = promotionReward.getExcludedProductTypes();
+			if(arrayLen(excludedProductTypes)) {
+				for(var excludedProductType in excludedProductTypes) {
 					newPromotionReward.addExcludedProductType(excludedProductType);
 				}
 			}
@@ -1985,11 +2015,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 			
 			if( !isNull(promotionReward.getRewardSkuQuantity()) ){
-				newPromotionPeriod.setRewardSkuQuantity(promotionReward.getRewardSkuQuantity())
-			}
-			
-			if( !isNull(promotionReward.getRewardSkuQuantity()) ){
-				newPromotionPeriod.setRewardSkuQuantity(promotionReward.getRewardSkuQuantity())
+				newPromotionReward.setRewardSkuQuantity(promotionReward.getRewardSkuQuantity())
 			}
 			
 			newPromotionPeriod.addPromotionReward(newPromotionReward);
@@ -2010,74 +2036,102 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			newpromotionQualifier.setMinimumFulfillmentWeight(promotionQualifier.getMinimumFulfillmentWeight());
 			newpromotionQualifier.setMaximumFulfillmentWeight(promotionQualifier.getMaximumFulfillmentWeight());
 			newpromotionQualifier.setRewardMatchingType(promotionQualifier.getRewardMatchingType());
-			if(arrayLen(promotionQualifier.getFulFillmentMethods())) {
-				for(var fulFillmentMethod in promotionQualifier.getFulFillmentMethods()) {
+			
+			var fulfillmentMethods = promotionQualifier.getFulFillmentMethods();
+			if(arrayLen(fulfillmentMethods)) {
+				for(var fulFillmentMethod in fulfillmentMethods) {
 					newpromotionQualifier.addFulFillmentMethod(fulFillmentMethod);
 				}
 			}
-			if(arrayLen(promotionQualifier.getShippingMethods())) {
-				for(var shippingMethod in promotionQualifier.getShippingMethods()) {
+			
+			var shipMethods = promotionQualifier.getShippingMethods();
+			
+			if(arrayLen(shipMethods)) {
+				for(var shippingMethod in shipMethods) {
 					newpromotionQualifier.addShippingMethod(shippingMethod);
 				}
 			}
-			if(arrayLen(promotionQualifier.getShippingAddressZones())) {
-				for(var shippingAddressZone in promotionQualifier.getShippingAddressZones()) {
+			
+			var addressZones = promotionQualifier.getShippingAddressZones();
+			if(arrayLen(addressZones)) {
+				for(var shippingAddressZone in addressZones) {
 					newpromotionQualifier.addShippingAddressZone(shippingAddressZone);
 				}
 			}
-			if(arrayLen(promotionQualifier.getBrands())) {
-				for(var brand in promotionQualifier.getBrands()) {
+			
+			var brands = promotionQualifier.getBrands();
+			if(arrayLen(brands)) {
+				for(var brand in brands) {
 					newpromotionQualifier.addBrand(brand);
 				}
 			}
-			if(arrayLen(promotionQualifier.getOptions())) {
-				for(var option in promotionQualifier.getOptions()) {
+			
+			var options = promotionQualifier.getOptions();
+			if(arrayLen(options)) {
+				for(var option in options) {
 					newpromotionQualifier.addOption(option);
 				}
 			}
-			if(arrayLen(promotionQualifier.getSkus())) {
-				for(var sku in promotionQualifier.getSkus()) {
+			
+			var skus = promotionQualifier.getSkus();
+			if(arrayLen(skus)) {
+				for(var sku in skus) {
 					newpromotionQualifier.addSku(sku);
 				}
 			}
-			if(arrayLen(promotionQualifier.getProducts())) {
-				for(var product in promotionQualifier.getProducts()) {
+			
+			var products = promotionQualifier.getProducts();
+			if(arrayLen(products)) {
+				for(var product in products ) {
 					newpromotionQualifier.addProduct(product);
 				}
 			}
-			if(arrayLen(promotionQualifier.getProductTypes())) {
-				for(var productType in promotionQualifier.getProductTypes()) {
+			
+			var productTypes = promotionQualifier.getProductTypes();
+			if(arrayLen( productTypes )) {
+				for(var productType in productTypes ) {
 					newpromotionQualifier.addProductType(productType);
 				}
 			}
-			if(arrayLen(promotionQualifier.getExcludedBrands())) {
-				for(var excludedBrand in promotionQualifier.getExcludedBrands()) {
+			
+			var brands = promotionQualifier.getExcludedBrands();
+			if(arrayLen(brands)) {
+				for(var excludedBrand in brands) {
 					newpromotionQualifier.addExcludedBrand(excludedBrand);
 				}
 			}
-			if(arrayLen(promotionQualifier.getExcludedOptions())) {
-				for(var excludedOption in promotionQualifier.getExcludedOptions()) {
+			
+			var excludedOptions = promotionQualifier.getExcludedOptions();
+			if(arrayLen(excludedOptions)) {
+				for(var excludedOption in excludedOptions) {
 					newpromotionQualifier.addExcludedOption(excludedOption);
 				}
 			}
-			if(arrayLen(promotionQualifier.getExcludedSkus())) {
-				for(var excludedSku in promotionQualifier.getExcludedSkus()) {
+			
+			var excludedBrands = promotionQualifier.getExcludedSkus();
+			if(arrayLen(excludedBrands)) {
+				for(var excludedSku in excludedBrands) {
 					newpromotionQualifier.addExcludedSku(excludedSku);
 				}
 			}
-			if(arrayLen(promotionQualifier.getExcludedProducts())) {
-				for(var excludedProduct in promotionQualifier.getExcludedProducts()) {
+			
+			var excludedProducts = promotionQualifier.getExcludedProducts();
+			if(arrayLen(excludedProducts)) {
+				for(var excludedProduct in excludedProducts) {
 					newpromotionQualifier.addExcludedProduct(excludedProduct);
 				}
 			}
-			if(arrayLen(promotionQualifier.getExcludedProductTypes())) {
-				for(var excludedProductType in promotionQualifier.getExcludedProductTypes()) {
+			
+			var excludedTypes = promotionQualifier.getExcludedProductTypes()
+			if(arrayLen(excludedTypes)) {
+				for(var excludedProductType in excludedTypes) {
 					newpromotionQualifier.addExcludedProductType(excludedProductType);
 				}
 			}
 			
-			if(arrayLen(promotionQualifier.getPromotionQualifierMessages())) {
-				for(var originalMessage in promotionQualifier.getPromotionQualifierMessages()) {
+			var promoMessages = promotionQualifier.getPromotionQualifierMessages();
+			if(arrayLen(promoMessages)) {
+				for(var originalMessage in promoMessages) {
 					var newMessage = this.newPromotionQualifierMessage();
 					newMessage.setMessage(originalMessage.getMessage());
 					newMessage.setMessageRequirementsCollectionConfig(originalMessage.getMessageRequirementsCollectionConfig());

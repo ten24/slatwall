@@ -362,7 +362,7 @@ component extends="Slatwall.model.service.PromotionService" {
 		arguments.itemsToBeAdded = [];
 	}
 	
-		public any function processPromotionPeriod_duplicatePromotionPeriod(required any promotionPeriod, required any processObject){
+	public any function processPromotionPeriod_duplicatePromotionPeriod(required any promotionPeriod, required any processObject){
 
 		// Duplicate promotion period and set new values from process object
 		var newPromotionPeriod = this.newPromotionPeriod();
@@ -398,78 +398,108 @@ component extends="Slatwall.model.service.PromotionService" {
 			if(!isNull(promotionReward.getRoundingRule())) {
 				newPromotionReward.setRoundingRule(promotionReward.getRoundingRule());
 			}
-			if(arrayLen(promotionReward.getPromotionRewardCurrencies())) {
-				for(var promotionRewardCurrency in promotionReward.getPromotionRewardCurrencies()) {
+			
+			var currencies = promotionReward.getPromotionRewardCurrencies();
+			if(arrayLen(currencies)) {
+				for(var promotionRewardCurrency in currencies) {
 					newPromotionReward.addPromotionRewardCurrency(promotionRewardCurrency);
 				}
 			}
-			if(arrayLen(promotionReward.getEligiblePriceGroups())) {
-				for(var eligiblePriceGroup in promotionReward.getEligiblePriceGroups()) {
+			
+			var priceGroups = promotionReward.getEligiblePriceGroups();
+			if(arrayLen(priceGroups)) {
+				for(var eligiblePriceGroup in priceGroups ) {
 					newPromotionReward.addEligiblePriceGroup(eligiblePriceGroup);
 				}
 			}
-			if(arrayLen(promotionReward.getFulfillmentMethods())) {
-				for(var fulfillmentMethod in promotionReward.getFulfillmentMethods()) {
+			
+			var fulfillments = promotionReward.getFulfillmentMethods();
+			if(arrayLen(fulfillments)) {
+				for(var fulfillmentMethod in fulfillments ) {
 					newPromotionReward.addFulfillmentMethod(fulfillmentMethod);
 				}
 			}
-			if(arrayLen(promotionReward.getShippingAddressZones())) {
-				for(var shippingAddressZone in promotionReward.getShippingAddressZones()) {
+			
+			var addresses = promotionReward.getShippingAddressZones();
+			if(arrayLen(addresses)) {
+				for(var shippingAddressZone in addresses ) {
 					newPromotionReward.addShippingAddressZone(shippingAddressZone);
 				}
 			}
-			if(arrayLen(promotionReward.getShippingMethods())) {
-				for(var shippingMethod in promotionReward.getShippingMethods()) {
+			
+			var shipMethods = promotionReward.getShippingMethods();
+			if(arrayLen(shipMethods)) {
+				for(var shippingMethod in shipMethods) {
 					newPromotionReward.addShippingMethod(shippingMethod);
 				}
 			}
-			if(arrayLen(promotionReward.getBrands())) {
-				for(var brand in promotionReward.getBrands()) {
+			
+			var brands = promotionReward.getBrands();
+			if(arrayLen(brands)) {
+				for(var brand in brands) {
 					newPromotionReward.addBrand(brand);
 				}
 			}
-			if(arrayLen(promotionReward.getOptions())) {
-				for(var option in promotionReward.getOptions()) {
+			
+			var options = promotionReward.getOptions();
+			if(arrayLen(options)) {
+				for(var option in options) {
 					newPromotionReward.addOption(option);
 				}
 			}
-			if(arrayLen(promotionReward.getSkus())) {
-				for(var sku in promotionReward.getSkus()) {
+			
+			var skus = promotionReward.getSkus();
+			if(arrayLen(skus)) {
+				for(var sku in skus) {
 					newPromotionReward.addSku(sku);
 				}
 			}
-			if(arrayLen(promotionReward.getProducts())) {
-				for(var product in promotionReward.getProducts()) {
+			
+			var products = promotionReward.getProducts();
+			if(arrayLen(products)) {
+				for(var product in products) {
 					newPromotionReward.addProduct(product);
 				}
 			}
-			if(arrayLen(promotionReward.getProductTypes())) {
-				for(var productType in promotionReward.getProductTypes()) {
+			
+			var productTypes = promotionReward.getProductTypes();
+			if(arrayLen(productTypes)) {
+				for(var productType in productTypes) {
 					newPromotionReward.addProductType(productType);
 				}
 			}
-			if(arrayLen(promotionReward.getExcludedBrands())) {
-				for(var excludedBrand in promotionReward.getExcludedBrands()) {
+			
+			var excludedBrands = promotionReward.getExcludedBrands();
+			if(arrayLen(excludedBrands)) {
+				for(var excludedBrand in excludedBrands) {
 					newPromotionReward.addExcludedBrand(excludedBrand);
 				}
 			}
-			if(arrayLen(promotionReward.getExcludedOptions())) {
-				for(var excludedOption in promotionReward.getExcludedOptions()) {
+			
+			var excludedOptions = promotionReward.getExcludedOptions();
+			if(arrayLen(excludedOptions)) {
+				for(var excludedOption in excludedOptions) {
 					newPromotionReward.addExcludedOption(excludedOption);
 				}
 			}
-			if(arrayLen(promotionReward.getExcludedSkus())) {
-				for(var excludedSkus in promotionReward.getExcludedSkus()) {
-					newPromotionReward.addExcludedSkus(excludedSkus);
+			
+			var excludedSkus = promotionReward.getExcludedSkus();
+			if(arrayLen(excludedSkus)) {
+				for(var excludedSku in excludedSkus) {
+					newPromotionReward.addExcludedSkus(excludedSku);
 				}
 			}
-			if(arrayLen(promotionReward.getExcludedProducts())) {
-				for(var excludedProduct in promotionReward.getExcludedProducts()) {
+			
+			var excludedProducts = promotionReward.getExcludedProducts();
+			if(arrayLen(excludedProducts)) {
+				for(var excludedProduct in excludedProducts) {
 					newPromotionReward.addExcludedProduct(excludedProduct);
 				}
 			}
-			if(arrayLen(promotionReward.getExcludedProductTypes())) {
-				for(var excludedProductType in promotionReward.getExcludedProductTypes()) {
+			
+			var excludedProductTypes = promotionReward.getExcludedProductTypes();
+			if(arrayLen(excludedProductTypes)) {
+				for(var excludedProductType in excludedProductTypes) {
 					newPromotionReward.addExcludedProductType(excludedProductType);
 				}
 			}
