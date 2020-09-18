@@ -576,11 +576,7 @@ component extends="Slatwall.model.service.OrderService" {
 	}
 
     public void function updateOrderStatusBySystemCode(required any order, required string systemCode, string typeCode='') {
-		try{
-					throw('Attempted to update order status from Processing to New');
-				}catch(any e){
-					logHibachi(e.stackTrace);
-				}
+
         var orderType        = arguments.order.getOrderType();
         var currentOrderStatusType  = arguments.order.getOrderStatusType();
 		
@@ -650,7 +646,7 @@ component extends="Slatwall.model.service.OrderService" {
         } else if (arguments.systemCode == 'ostNew') {
 			if( currentOrderStatusType.getSystemCode() == 'ostProcessing' ){
 				try{
-					throw('Attempted to update order status from Processing to New');
+					throw('Attempted to update order status from Processing to New - order #arguments.order.getOrderNumber()#');
 				}catch(any e){
 					logHibachi(e.stackTrace);
 				}
