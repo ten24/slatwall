@@ -59,7 +59,7 @@ let devConfig = {
     output : {
         path:  PATHS.clientDist,
         pathinfo: false,
-        filename: "[name].[contenthash].bundle.js",
+        filename: "[name].bundle.js",
     },
     
     resolve : {
@@ -163,7 +163,7 @@ devConfig.module = {
 devConfig.plugins =  [
     
    new MiniCssExtractPlugin({
-		filename: "[name].[contenthash].bundle.css",
+		filename: "[name].bundle.css",
 	}),
 	
     new webpack.HashedModuleIdsPlugin(), // so that file hashes don't change unexpectedly
