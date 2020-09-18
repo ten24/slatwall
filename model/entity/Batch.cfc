@@ -100,7 +100,7 @@ component entityname="SlatwallBatch" table="SwBatch" persistent="true" accessors
         }
         return variables.entityQueueFailureItemsCount;
     }
-    
+	
 	// ============  END:  Non-Persistent Property Methods =================
 
 	// ============= START: Bidirectional Helper Methods ===================
@@ -108,7 +108,11 @@ component entityname="SlatwallBatch" table="SwBatch" persistent="true" accessors
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// ================== START: Overridden Methods ========================
-
+    
+    public string function getSimpleRepresentationPropertyName(){
+		return "batchDescription";
+	}
+	
 	// ==================  END:  Overridden Methods ========================
 
 	// =================== START: ORM Event Hooks  =========================

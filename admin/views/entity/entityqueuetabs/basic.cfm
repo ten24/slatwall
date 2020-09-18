@@ -8,13 +8,14 @@
 		<hb:HibachiPropertyList>
 			<hb:HibachiPropertyDisplay object="#rc.entityqueue#" property="baseObject" >
 			<hb:HibachiPropertyDisplay object="#rc.entityqueue#" property="baseID" >
+			<hb:HibachiPropertyDisplay object="#rc.entityqueue#" property="batch" valuelink="?slatAction=admin:entity.detailbatch&batchID=#rc.entityqueue.getBatch().getBatchID()#">
 			<hb:HibachiPropertyDisplay object="#rc.entityqueue#" property="processMethod" edit="#rc.edit#" >
 			<hb:HibachiPropertyDisplay object="#rc.entityqueue#" property="entityQueueDateTime">
 			<hb:HibachiPropertyDisplay object="#rc.entityqueue#" property="logHistoryFlag" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.entityqueue#" property="mostRecentError">
 			<hb:HibachiPropertyDisplay object="#rc.entityqueue#" property="tryCount">
 			<hb:HibachiPropertyDisplay object="#rc.entityqueue#" property="entityQueueProcessingDateTime">
-			<hb:HibachiPropertyDisplay object="#rc.entityQueue#" property="entityQueueData" edit="#rc.edit#" fieldType="textarea" fieldAttributes="rows='20'">	
+			<hb:HibachiPropertyDisplay object="#rc.entityQueue#" property="entityQueueData" edit="#rc.edit#" fieldType="json" fieldAttributes="rows='20'">	
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 </cfoutput>

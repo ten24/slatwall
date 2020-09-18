@@ -27,7 +27,8 @@ component accessors="true" output="false" extends="HibachiService" {
 		var records = this.getHibachiUtilityService().csvStringToArray( FileRead(arguments.csvFilePath,"utf-8") );
 
 		var columns="";
-		if (arguments.useHeaderRowAsColumns) {
+		
+		if( arguments.useHeaderRowAsColumns ){
 			columns = ArrayToList( records[1] );
 		} else {
 			columns = arguments.columns;
