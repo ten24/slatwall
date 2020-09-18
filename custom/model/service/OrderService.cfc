@@ -576,7 +576,11 @@ component extends="Slatwall.model.service.OrderService" {
 	}
 
     public void function updateOrderStatusBySystemCode(required any order, required string systemCode, string typeCode='') {
-
+		try{
+					throw('Attempted to update order status from Processing to New');
+				}catch(any e){
+					logHibachi(e.stackTrace);
+				}
         var orderType        = arguments.order.getOrderType();
         var currentOrderStatusType  = arguments.order.getOrderStatusType();
 		
@@ -644,7 +648,14 @@ component extends="Slatwall.model.service.OrderService" {
         	getService("hibachiEventService").announceEvent(eventName="afterOrderProcess_OrderCloseSuccess", eventData={ entity: arguments.order, order: arguments.order, data: {} });
         	
         } else if (arguments.systemCode == 'ostNew') {
-
+			if( currentOrderStatusType.getSystemCode() == 'ostProcessing' ){
+				try{
+					throw('Attempted to update order status from Processing to New');
+				}catch(any e){
+					logHibachi(e.stackTrace);
+				}
+				return;
+			}
 			//if the order is paid don't set to new, otherwise set to new
 			if (  arguments.order.getPaymentAmountDue() <= 0  && orderType.getSystemCode() == 'otSalesOrder' ){
 				//type for PaidOrder  systemCode=ostProcessing, typeCode=2
