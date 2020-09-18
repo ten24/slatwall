@@ -255,6 +255,18 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         expect( select.baseObject ).toBeEmpty( "select should not have baseObject");
         
     }
+    
+    
+    
+    /**
+     * @test 
+    */
+    public void function getAccountCSVHeaderMetaDataTest_should_match(){
+        var header = this.getService().getEntityCSVHeaderMetaData( 'Account' );
+        debug( header );
+        
+        $assert.isEqual("companyName,countryCode,email,firstName,lastName,organizationFlag,phone,userID,username", header.columns );
+    }
 	
 	
 	/*****************************.  Validation.  .******************************/
@@ -267,7 +279,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    var validation = this.getService().validateEntityData( entityName="Account", data={}, collectErrors=false );
 	    
 	    debug(validation);
-	    assertFalse(validation.isValid);
+	    $assert.isFalse(validation.isValid);
 	}
 
 	/**

@@ -49,6 +49,7 @@ Notes:
 component extends="Slatwall.integrationServices.BaseImporterService" persistent="false" accessors="true" output="false"{
 	
 	property name="integrationServices";
+	property name="hibachiDataService";
 	
 	public any function getIntegration(){
 	    
@@ -57,6 +58,7 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 	    }
         return variables.integration;
     }
+    
     
   	public any function getSampleCsvFilesOptions(){
   	    
@@ -86,19 +88,45 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
   	public any function uploadCSVFile( required any data ){
   	    
   	    var importFilesUploadDirectory = this.getHibachiScope().getApplicationValue('applicationRootMappingPath') & '/integrationServices/slatwallimporter/assets/uploads/'; 
-       	
-       	if( !DirectoryExists(importFilesUploadDirectory) ){
-			DirectoryCreate(importFilesUploadDirectory);
-		}
 		
 		try{
-			var file = FileUpload( importFilesUploadDirectory, "uploadFile", "text/csv", "Overwrite");
+			var uploadData = FileUpload( importFilesUploadDirectory, "uploadFile", "text/csv", "Overwrite");
 			
-			if ( !listFindNoCase("csv", file.serverFileExt) ){
+			if ( !listFindNoCase("csv", uploadData.serverFileExt) ){
     		 	this.getHibachiScope().showMessage("The uploaded file is not of type CSV.", "error");
     	    }
     	    
-			this.getHibachiScope().showMessage("Uppload success", "success");
+    	    var header = this.getEntityCSVHeaderMetaData( data.entityName );
+    	    var uploadedFilePath = uploadData.serverdirectory & '/' & uploadData.serverfile;
+			
+	    	var result = this.getHibachiDataService().csvFileToQuery(
+				'csvFilePath'           = uploadedFilePath, 
+				'columnTypes'           = header.columnTypes, 
+				'columns'               = header.columns,
+				'useHeaderRowAsColumns' = false
+			);
+
+			for(var error in result.errors){
+				this.getHibachiScope().addError( "line-#error.line#", 
+					"Invalid data at Line-#error.line#, #ArrayToList(error.record)#"
+				);
+			}
+			
+			if( !result.query.recordCount ){
+			    this.getHibachiScope().showMessage("Nothing to import", "warning");
+			}
+		    
+		    var batch = this.pushRecordsIntoImportQueue( data.entityName, result.query );
+		    
+		    if( !batch.hasErrors() ){
+			    this.getHibachiScope().showMessage("Uppload success", "success");
+		    } else {
+		        batch.showErrorsAndMessages();
+		        batch.clearHibachiErrors();
+		    }
+    	    
+			//delete uploaded file
+			fileDelete( uploadedFilePath );
 		} 
 		catch ( any e ){
     		this.getHibachiScope().showMessage("An error occurred while uploading your file" & e.Message, "error");

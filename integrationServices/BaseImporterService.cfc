@@ -81,21 +81,72 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         return entityMappings[ arguments.entityName ];
 	}
 
+  	public struct function createEntityCSVHeaderMetaDataRecursively( required string entityName ){
+        var headers = {};
+        var mapping = this.getEntityMapping( arguments.entityName );
 
-	public any function pushRecordsIntoImportQueue( required string entityName, required struct queryOrArrayOfStruct ){
+  	    mapping.properties.each( function(key, propertyMeta ){
+  	        headers[ key ] = "VarChar"; // ~~~~TODO, need a way to either define or infer this, should work like this
+  	    });
+  	    
+  	    if( structKeyExists(mapping, 'relations') ){
+  	        
+  	        // ~~~~TODO: ( if required) add relationship-type-check (if the property can be availabe in a csv)
+  	        for(var related in mapping.relations ){
+  	            headers.append( this.createEntityCSVHeaderMetaDataRecursively(related.entityName) );
+	        }
+  	    }
+  	    
+  	    return headers;
+    }
+
+	public struct function getEntityCSVHeaderMetaData( required string entityName ){
+	    
+	    var cacheKey = "getEntityCSVHeaderMetaData_" &arguments.entityName;
+	    
+	    if( !structKeyExists(variables, cacheKey) ){
+	        
+      	    var columnNamesAndTypes = this.createEntityCSVHeaderMetaDataRecursively( arguments.entityName );
+      	    
+      	    var columns = columnNamesAndTypes.keyArray().sort('textNoCase');
+      	    var columnTypes = columns.map( function( column ){ 
+      	        return columnNamesAndTypes[ column ]; 
+      	    });
+      	    
+      	    variables[ cacheKey ] = { "columns": columns.toList(), "columnTypes": columnTypes.toList() };
+	    }
+	    
+  	    return variables[ cacheKey ];
+  	}
+  	
+
+	public any function pushRecordsIntoImportQueue( required string entityName, required any queryOrArrayOfStruct ){
 	    
 	    //Create a new Batch
 	    var newBatch = this.getHibachiEntityQueueService().newBatch();
+	    
+	    newBatch.setBaseObject( arguments.entityName );
+	    newBatch.setBatchDescription("#arguments.entityName# Import Batch created on " & dateFormat(now(), "long") );
+	    
+	    if( isArray(arguments.queryOrArrayOfStruct) ){
+	        newBatch.setInitialEntityQueueItemsCount( arguments.queryOrArrayOfStruct.len() );
+	    } else {
+	        newBatch.setInitialEntityQueueItemsCount( arguments.queryOrArrayOfStruct.recordCount );
+	    }
 	    //populate other details
 	    this.getHibachiEntityQueueService().saveBatch(newBatch);
 	    
 	    this.getHibachiScope().flushORMSession();
 	    
 	    for( var record in queryOrArrayOfStruct ){
-	        this.pushRecordIntoImportQueue( arguments.entityName, record, newBatch.getBatchID() );
+	        var validation = this.pushRecordIntoImportQueue( arguments.entityName, record, newBatch.getBatchID() );
+	        
+	        if( validation.isValid ){
+	            newBatch.addErrors( validation.errors );
+	        }
 	    }
 	    
-	    //TODO: update initial batch-items values
+	    return newBatch;
 	}
 	
 	public struct function pushRecordIntoImportQueue( required string entityName, required struct data, required string batchID, numeric tryCount = 1 ){

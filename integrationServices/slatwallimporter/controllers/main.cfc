@@ -14,9 +14,9 @@ component extends="Slatwall.org.Hibachi.HibachiControllerEntity" accessors="true
     	arguments.rc.sampleCsvFilesOptions = this.getService("slatwallImporterService").getSampleCsvFilesOptions();
     }
     
-	public void function preprocessintegration( required struct rc ){
-   		arguments.rc.sRedirectAction = 'slatwallimporter:main';
-   		arguments.rc.backAction = "slatwallimporter:main" ;
+	public void function preProcessIntegration( required struct rc ){
+   		arguments.rc.sRedirectAction = 'slatwallImporter:main';
+   		arguments.rc.backAction = "slatwallImporter:main" ;
    		
 		super.genericPreProcessMethod(entityName="Integration", rc=arguments.rc);
 	}

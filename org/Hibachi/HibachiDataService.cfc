@@ -6,6 +6,61 @@ component accessors="true" output="false" extends="HibachiService" {
 	public boolean function isUniqueProperty( required string propertyName, required any entity ) {
 		return getHibachiDAO().isUniqueProperty(argumentcollection=arguments);
 	}
+	
+	/**
+	 * this function takes a csv-file path, a list of columnTypes and returns an struct like 
+	 * 
+	 * returns an struct containig the query-object and an array or lines with errors
+	 *	{ 
+	 *		query  : theQueryObject, 
+	 *		errors : [  
+	 *					{
+	 *						line: number, 
+	 *						record: [val1, val2, ......] // array of all the columns on that like
+	 *					}
+	 *				] 
+	 *	}
+	*/
+	public any function csvFileToQuery(required string csvFilePath, required string columnTypes, boolean useHeaderRowAsColumns=true, string columns, string delimiter=",", boolean trimTrailingEmptyLine=true){
+
+		//read-csv-file
+		var records = this.getHibachiUtilityService().csvStringToArray( FileRead(arguments.csvFilePath,"utf-8") );
+
+		var columns="";
+		if (arguments.useHeaderRowAsColumns) {
+			columns = ArrayToList( records[1] );
+		} else {
+			columns = arguments.columns;
+		}
+
+		columns = REReplace(columns, '[^a-zA-Z\d,]', '', 'ALL');
+
+		var numberOfColumns = Listlen(columns, ',', true);
+		var numberOfRecords = ArrayLen(records);
+
+		this.logHibachi("HibachiDataService loading CSV  with columns: " & arguments.columns, true );
+		this.logHibachi("HibachiDataService loading CSV  with column types: " & arguments.columnTypes, true );
+		this.logHibachi("HibachiDataService loading CSV  with ## of columns: " & numberOfColumns, true );
+		this.logHibachi("HibachiDataService loading CSV  with ## of records: " & numberOfRecords, true );
+
+
+		var csvQuery = QueryNew(arguments.columns, arguments.columnTypes);
+		var errors = [];
+
+		// starting from 2, to skip the header
+		for(var i=2; i<= numberOfRecords; i++) {
+			var record = records[i];
+			
+			if(ArrayLen(record) != numberOfColumns){
+				ArrayAppend(errors, {"line": i, 'record': record } );	
+				continue;
+			}
+			
+			QueryAddRow(csvQuery, record);
+		}
+
+		return { 'query': csvQuery, 'errors': errors };
+	}
 
 	public any function loadQueryFromCSVFileWithColumnTypeList(required string pathToCSV, string columnTypeList='', boolean useHeaderRow=true, string columnsList){
 		var csvFile = FileOpen(pathToCSV);
@@ -331,7 +386,7 @@ component accessors="true" output="false" extends="HibachiService" {
 			}
 
 			if( structKeyExists(propertyMeta, "ormType") ) {
-				columnInfo["dataType"] = getService('hibachiUtilityService').getSQLType(propertyMeta.ormType);
+				columnInfo["dataType"] = this.getHibachiUtilityService().getSQLType(propertyMeta.ormType);
 			} else if ( structKeyExists(propertyMeta, "type") ) {
 				columnInfo["dataType"] = propertyMeta.type;
 			}
@@ -497,7 +552,7 @@ component accessors="true" output="false" extends="HibachiService" {
 	}
 
 	public void function loadDataFromQuery(required any query, required any configJSON, dryRun = false) {
-		var qryColumns = getService("HibachiUtilityService").getQueryLabels(arguments.query);
+		var qryColumns =  this.getHibachiUtilityService().getQueryLabels(arguments.query);
 		var configStruct = parseImportConfig(arguments.configJSON);
 		var tables = configStruct["tables"];
 		
@@ -693,10 +748,10 @@ component accessors="true" output="false" extends="HibachiService" {
 									idKeyList = listAppend(idKeyList, "null", ".");
 								}
 							}
-							var idKeyStruct = structGet(getService("HibachiUtilityService").formatStructKeyList("generatedIDStruct.#tableName#.#idKeyList#"));
+							var idKeyStruct = structGet( this.getHibachiUtilityService().formatStructKeyList("generatedIDStruct.#tableName#.#idKeyList#"));
 							idKeyStruct["value"] = primaryKeyValue == "" ? "null" : primaryKeyValue;
 						} else if(tables[ tableName ][ "tableType" ] != "linktable") {
-							var idKeyStruct = structGet(getService("HibachiUtilityService").formatStructKeyList("generatedIDStruct.#tableName#"));
+							var idKeyStruct = structGet( this.getHibachiUtilityService().formatStructKeyList("generatedIDStruct.#tableName#"));
 							idKeyStruct["value"] = primaryKeyValue;
 						}
 
@@ -773,12 +828,12 @@ component accessors="true" output="false" extends="HibachiService" {
 									idKeyList = listAppend(idKeyList, "null", ".");
 								}
 							}
-							var IDValueStruct = structGet(getService("HibachiUtilityService").formatStructKeyList("generatedIDStruct.#tableName#.#idKeyList#"));
+							var IDValueStruct = structGet( this.getHibachiUtilityService().formatStructKeyList("generatedIDStruct.#tableName#.#idKeyList#"));
 							if(structKeyExists(IDValueStruct, "value")) {
 								IDValue = IDValueStruct["value"];
 							}
 						} else {
-							var IDValueStruct = structGet(getService("HibachiUtilityService").formatStructKeyList("generatedIDStruct.#tableName#"));
+							var IDValueStruct = structGet( this.getHibachiUtilityService().formatStructKeyList("generatedIDStruct.#tableName#"));
 							if(structKeyExists(IDValueStruct, "value")) {
 								IDValue = IDValueStruct["value"];
 							}
