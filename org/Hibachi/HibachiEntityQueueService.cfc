@@ -60,7 +60,7 @@ component accessors="true" output="false" extends="HibachiService" {
 		if(hasIntegration || hasIntegrationPackageService){
 			
 			if(!hasIntegrationPackageService) { 
-				var integration = getService("IntegrationService").getIntegrationByIntegrationID(entityQueue['integrationID']);
+				var integration = getService("IntegrationService").getIntegrationByIntegrationID(entityQueue['integration_integrationID']);
 				entityQueue['integration_integrationPackage'] = integration.getIntegrationPackage();
 			}  				
 			
@@ -84,7 +84,7 @@ component accessors="true" output="false" extends="HibachiService" {
 			entityQueueData = deserializeJson(entityQueue['entityQueueData']); 
 		}
 
-		var hasProcessContext = left(method, 7) == 'process' || listLen(method, '_') > 1;
+		var hasProcessContext = left(method, 7) == 'process' && listLen(method, '_') > 1;
 		var processContext = ''; 
 
 		if(hasProcessContext){

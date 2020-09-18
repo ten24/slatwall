@@ -8,7 +8,10 @@
 		<hb:HibachiPropertyList>
 			<hb:HibachiPropertyDisplay object="#rc.entityqueue#" property="baseObject" >
 			<hb:HibachiPropertyDisplay object="#rc.entityqueue#" property="baseID" >
-			<hb:HibachiPropertyDisplay object="#rc.entityqueue#" property="batch" valuelink="?slatAction=admin:entity.detailbatch&batchID=#rc.entityqueue.getBatch().getBatchID()#">
+			<cfif NOT isNUll(rc.entityqueue.getBatch()) >
+			    <hb:HibachiPropertyDisplay object="#rc.entityqueue#" property="batch" valuelink="?slatAction=admin:entity.detailbatch&batchID=#rc.entityqueue.getBatch().getBatchID()#">
+			</cfif>
+			<hb:HibachiPropertyDisplay object="#rc.entityqueue#" property="integration" >
 			<hb:HibachiPropertyDisplay object="#rc.entityqueue#" property="processMethod" edit="#rc.edit#" >
 			<hb:HibachiPropertyDisplay object="#rc.entityqueue#" property="entityQueueDateTime">
 			<hb:HibachiPropertyDisplay object="#rc.entityqueue#" property="logHistoryFlag" edit="#rc.edit#">

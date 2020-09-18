@@ -6,7 +6,7 @@
 <cfoutput>
    
     <hb:HibachiEntityActionBar pageTitle="Slatwall Importer" type="detail" object="#rc.integration#" showcancel="false" showbackAction="false" showcreate="false" showedit="false" showdelete="false">
-        <hb:HibachiProcessCaller entity="#rc.integration#" action="slatwallimporter:main.preprocessintegration" processContext="importcsv" type="list" modal="true" />
+        <hb:HibachiProcessCaller entity="#rc.integration#" action="slatwallimporter:main.preprocessintegration" processContext="importcsv" type="list" icon="upload icon-white" modal="true" />
     </hb:HibachiEntityActionBar>
    
     <hb:HibachiPropertyRow>

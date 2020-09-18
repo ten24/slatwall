@@ -54,10 +54,10 @@ Notes:
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.entityqueue#" edit="#rc.edit#" sRedirectAction="admin:entity.detailentityqueue">
+	<hb:HibachiEntityDetailForm object="#rc.entityqueue#" edit="#rc.edit#" sRedirectAction="admin:entity.detailEntityqueue">
 		
 		<hb:HibachiEntityActionBar type="detail" object="#rc.entityQueue#" edit="#rc.edit#">
-		    <hb:HibachiProcessCaller entity="#rc.entityQueue#" action="admin:entity.processentityqueue" processContext="processQueue" type="list" />
+		    <hb:HibachiProcessCaller entity="#rc.entityQueue#" action="admin:entity.processEntityqueue" processContext="processQueue" type="list" />
 		</hb:HibachiEntityActionBar>
 		
         <hb:HibachiEntityDetailGroup object="#rc.entityqueue#">

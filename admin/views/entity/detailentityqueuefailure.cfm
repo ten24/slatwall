@@ -57,7 +57,7 @@ Notes:
 	<hb:HibachiEntityDetailForm object="#rc.entityqueuefailure#" edit="#rc.edit#" sRedirectAction="admin:entity.detailentityqueuefailure">
 		
 		<hb:HibachiEntityActionBar type="detail" object="#rc.entityQueueFailure#" edit="#rc.edit#">
-		    <hb:HibachiProcessCaller entity="#rc.entityQueueFailure#" action="admin:entity.processentityqueuefailure" processContext="processQueue" type="list" />
+		    <hb:HibachiProcessCaller entity="#rc.entityQueueFailure#" action="admin:entity.processEntityEueueFailure" processContext="requeue" type="list" />
 		</hb:HibachiEntityActionBar>
 		
         <hb:HibachiEntityDetailGroup object="#rc.entityqueuefailure#">
