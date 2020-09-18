@@ -475,10 +475,14 @@ component  accessors="true" output="false"
      	if ( !isNull(newAddress) && !newAddress.hasErrors() ) {
      	    
      	    newAddress = getService("AddressService").saveAddress(newAddress, arguments.data, "full");
-            if(!newAddress.hasErrors()) {
+     	    
+     	    //save account address
+     	    accountAddress = getHibachiScope().getService("AccountService").saveAccountAddress( accountAddress, arguments.data );
+     	    
+            if(!newAddress.hasErrors() && !accountAddress.hasErrors()) {
   	     	   getHibachiScope().addActionResult( "public:cart.updateAddress", true );
             }else {
-                getHibachiScope().addActionResult( "public:cart.updateAddress", newAddress.hasErrors() ); 
+                getHibachiScope().addActionResult( "public:cart.updateAddress", (newAddress.hasErrors() || accountAddress.hasErrors() ) ); 
             }
     	}else {
     	    if(isNull(newAddress)) {
