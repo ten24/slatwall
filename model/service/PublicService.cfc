@@ -482,7 +482,7 @@ component  accessors="true" output="false"
             if(!newAddress.hasErrors() && !accountAddress.hasErrors()) {
   	     	   getHibachiScope().addActionResult( "public:cart.updateAddress", true );
             }else {
-                getHibachiScope().addActionResult( "public:cart.updateAddress", newAddress.hasErrors() ? true : (accountAddress.hasErrors() ? true: false) ); 
+                getHibachiScope().addActionResult( "public:cart.updateAddress", (newAddress.hasErrors() || accountAddress.hasErrors() ) ); 
             }
     	}else {
     	    if(isNull(newAddress)) {
