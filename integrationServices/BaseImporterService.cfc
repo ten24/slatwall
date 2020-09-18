@@ -360,9 +360,6 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    
 	    transformedData['importRemoteID'] = arguments.data['importRemoteID'];
 	    transformedData[ primaryIDPropertyName ] = arguments.data[ primaryIDPropertyName ];
-
-	   // transformedData['importRemoteID'] = arguments.data['importRemoteID'];
-	   // transformedData[ primaryIDPropertyName ] = '';
 	    
 	    if( structKeyExists(arguments.mapping, 'relations' ) ){
 	        for(var related in arguments.mapping.relations ){
