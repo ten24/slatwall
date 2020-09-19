@@ -2944,7 +2944,7 @@ table .s-table-header .table-section a.s-hint {
 .s-add-filter h4 i {
   float: right;
   cursor: pointer;
-  font-size: 15px;
+  font-size: 18px;
   color: #e6e6e6;
 }
 .s-add-filter h4 {
@@ -3005,30 +3005,9 @@ table .s-table-header .table-section a.s-hint {
   padding: 8px 15px;
   background-color: #606060;
   color: #ffffff;
-  font-size: 13px;
+  font-size: 14px;
   border-top-left-radius: 2px;
   border-top-right-radius: 2px;
-}
-.s-add-filter > .row > h4 .filterBreadcrumb {
-  padding-left: 15px;
-  padding-right: 10px;
-  position: relative;
-}
-.s-add-filter > .row > h4 .filterBreadcrumb span {
-  text-decoration: underline;
-  color: #FFF;
-}
-.s-add-filter > .row > h4 .filterBreadcrumb:hover {
-  cursor: pointer;
-}
-.s-add-filter > .row > h4 .filterBreadcrumb:after {
-  content: '/';
-  color: #AEAEAE;
-  position: absolute;
-  left: 0;
-}
-.s-add-filter > .row > h4 .filterBreadcrumb:last-child:after {
-  display: none;
 }
 .s-add-filter .row h4.s-heading {
   margin-top: 0px;
@@ -8684,7 +8663,6 @@ table.s-detail-content-table tbody tr.s-done {
 }
 #navTabs-Container {
   padding: 2em 1em;
-  width: 90%;
   margin: 0 auto;
 }
 #navTabs-Container .nav-tabs {
@@ -8725,6 +8703,10 @@ table.s-detail-content-table tbody tr.s-done {
 #navTabs-Container .tab-content ul li span {
   color: #a2a2a2;
   font-weight: 400;
+}
+.report-menu-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
 }
 .Mcard-wrapper {
   padding: 1em;

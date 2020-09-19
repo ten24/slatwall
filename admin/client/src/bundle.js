@@ -64,7 +64,7 @@ var hibachi =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 887);
+/******/ 	return __webpack_require__(__webpack_require__.s = 889);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -76,7 +76,7 @@ var hibachi =
 var root_1 = __webpack_require__(11);
 var toSubscriber_1 = __webpack_require__(604);
 var observable_1 = __webpack_require__(37);
-var pipe_1 = __webpack_require__(60);
+var pipe_1 = __webpack_require__(61);
 /**
  * A representation of any set of values over any amount of time. This is the most basic building block
  * of RxJS.
@@ -4985,7 +4985,7 @@ exports.Observable = Observable;
 
 })));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(886)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(888)(module)))
 
 /***/ }),
 /* 2 */
@@ -6277,7 +6277,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var Observable_1 = __webpack_require__(0);
-var ScalarObservable_1 = __webpack_require__(44);
+var ScalarObservable_1 = __webpack_require__(45);
 var EmptyObservable_1 = __webpack_require__(16);
 var isScheduler_1 = __webpack_require__(12);
 /**
@@ -6720,7 +6720,7 @@ exports.Notification = Notification;
 var isScheduler_1 = __webpack_require__(12);
 var of_1 = __webpack_require__(202);
 var from_1 = __webpack_require__(201);
-var concatAll_1 = __webpack_require__(47);
+var concatAll_1 = __webpack_require__(48);
 /* tslint:enable:max-line-length */
 /**
  * Creates an output Observable which sequentially emits all values from given
@@ -7108,10 +7108,10 @@ exports.MergeMapSubscriber = MergeMapSubscriber;
 
 "use strict";
 
-var scan_1 = __webpack_require__(55);
-var takeLast_1 = __webpack_require__(57);
-var defaultIfEmpty_1 = __webpack_require__(49);
-var pipe_1 = __webpack_require__(60);
+var scan_1 = __webpack_require__(56);
+var takeLast_1 = __webpack_require__(58);
+var defaultIfEmpty_1 = __webpack_require__(50);
+var pipe_1 = __webpack_require__(61);
 /* tslint:enable:max-line-length */
 /**
  * Applies an accumulator function over the source Observable, and returns the
@@ -8656,6 +8656,92 @@ exports.isFunction = isFunction;
 /* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+/// <reference path='../../typings/hibachiTypescript.d.ts' />
+/// <reference path='../../typings/tsd.d.ts' />
+//modules
+var core_module_1 = __webpack_require__(6);
+//services
+var collectionconfigservice_1 = __webpack_require__(715);
+var collectionservice_1 = __webpack_require__(716);
+//controllers
+var collections_1 = __webpack_require__(710);
+var createcollection_1 = __webpack_require__(712);
+var confirmationcontroller_1 = __webpack_require__(711);
+var entity_createcollection_1 = __webpack_require__(713);
+//directives
+var swcollection_1 = __webpack_require__(689);
+var swaddfilterbuttons_1 = __webpack_require__(688);
+var swdisplayoptions_1 = __webpack_require__(704);
+var swdisplayitem_1 = __webpack_require__(702);
+var swdisplayitemaggregate_1 = __webpack_require__(703);
+var swcollectiontable_1 = __webpack_require__(690);
+var swcolumnitem_1 = __webpack_require__(691);
+var swconditioncriteria_1 = __webpack_require__(692);
+var swcriteria_1 = __webpack_require__(693);
+var swcriteriaboolean_1 = __webpack_require__(694);
+var swcriteriadate_1 = __webpack_require__(695);
+var swcriteriamanytomany_1 = __webpack_require__(696);
+var swcriteriamanytoone_1 = __webpack_require__(697);
+var swcriterianumber_1 = __webpack_require__(698);
+var swcriteriaonetomany_1 = __webpack_require__(699);
+var swcriteriarelatedobject_1 = __webpack_require__(700);
+var swcriteriastring_1 = __webpack_require__(701);
+var sweditfilteritem_1 = __webpack_require__(705);
+var swfiltergroups_1 = __webpack_require__(707);
+var swfilteritem_1 = __webpack_require__(708);
+var swfiltergroupitem_1 = __webpack_require__(706);
+var swrestrictionconfig_1 = __webpack_require__(709);
+//filters
+var aggregatefilter_1 = __webpack_require__(714);
+var collectionmodule = angular.module('hibachi.collection', [core_module_1.coremodule.name])
+    .config([function () {
+    }]).run([function () {
+    }])
+    //constants
+    .constant('collectionPartialsPath', 'collection/components/')
+    //controllers
+    .controller('collections', collections_1.CollectionController)
+    .controller('confirmationController', confirmationcontroller_1.ConfirmationController)
+    .controller('createCollection', createcollection_1.CreateCollection)
+    .controller('entity_createcollection', entity_createcollection_1.CollectionCreateController)
+    //services
+    .factory('collectionConfigService', ['rbkeyService', '$hibachi', 'utilityService', 'observerService', function (rbkeyService, $hibachi, utilityService, observerService) { return new collectionconfigservice_1.CollectionConfig(rbkeyService, $hibachi, utilityService, observerService); }])
+    .service('collectionService', collectionservice_1.CollectionService)
+    //directives
+    .directive('swRestrictionConfig', swrestrictionconfig_1.SWRestrictionConfig.Factory())
+    .directive('swCollection', swcollection_1.SWCollection.Factory())
+    .directive('swAddFilterButtons', swaddfilterbuttons_1.SWAddFilterButtons.Factory())
+    .directive('swDisplayOptions', swdisplayoptions_1.SWDisplayOptions.Factory())
+    .directive('swDisplayItem', swdisplayitem_1.SWDisplayItem.Factory())
+    .directive('swDisplayItemAggregate', swdisplayitemaggregate_1.SWDisplayItemAggregate.Factory())
+    .directive('swCollectionTable', swcollectiontable_1.SWCollectionTable.Factory())
+    .directive('swColumnItem', swcolumnitem_1.SWColumnItem.Factory())
+    .directive('swConditionCriteria', swconditioncriteria_1.SWConditionCriteria.Factory())
+    .directive('swCriteria', swcriteria_1.SWCriteria.Factory())
+    .directive('swCriteriaBoolean', swcriteriaboolean_1.SWCriteriaBoolean.Factory())
+    .directive('swCriteriaDate', swcriteriadate_1.SWCriteriaDate.Factory())
+    .directive('swCriteriaManyToMany', swcriteriamanytomany_1.SWCriteriaManyToMany.Factory())
+    .directive('swCriteriaManyToOne', swcriteriamanytoone_1.SWCriteriaManyToOne.Factory())
+    .directive('swCriteriaNumber', swcriterianumber_1.SWCriteriaNumber.Factory())
+    .directive('swCriteriaOneToMany', swcriteriaonetomany_1.SWCriteriaOneToMany.Factory())
+    .directive('swCriteriaRelatedObject', swcriteriarelatedobject_1.SWCriteriaRelatedObject.Factory())
+    .directive('swCriteriaString', swcriteriastring_1.SWCriteriaString.Factory())
+    .directive('swEditFilterItem', sweditfilteritem_1.SWEditFilterItem.Factory())
+    .directive('swFilterGroups', swfiltergroups_1.SWFilterGroups.Factory())
+    .directive('swFilterItem', swfilteritem_1.SWFilterItem.Factory())
+    .directive('swFilterGroupItem', swfiltergroupitem_1.SWFilterGroupItem.Factory())
+    //filters
+    .filter('aggregateFilter', ['$filter', aggregatefilter_1.AggregateFilter.Factory]);
+exports.collectionmodule = collectionmodule;
+
+
+/***/ }),
+/* 44 */
+/***/ (function(module, exports, __webpack_require__) {
+
 (function(){
   var crypt = __webpack_require__(307),
       utf8 = __webpack_require__(66).utf8,
@@ -8819,7 +8905,7 @@ exports.isFunction = isFunction;
 
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8883,7 +8969,7 @@ exports.ScalarObservable = ScalarObservable;
 //# sourceMappingURL=ScalarObservable.js.map
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8978,7 +9064,7 @@ exports.RaceSubscriber = RaceSubscriber;
 //# sourceMappingURL=race.js.map
 
 /***/ }),
-/* 46 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9102,7 +9188,7 @@ var AuditSubscriber = (function (_super) {
 //# sourceMappingURL=audit.js.map
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9163,7 +9249,7 @@ exports.concatAll = concatAll;
 //# sourceMappingURL=concatAll.js.map
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9236,7 +9322,7 @@ exports.concatMap = concatMap;
 //# sourceMappingURL=concatMap.js.map
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9319,7 +9405,7 @@ var DefaultIfEmptySubscriber = (function (_super) {
 //# sourceMappingURL=defaultIfEmpty.js.map
 
 /***/ }),
-/* 50 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9433,7 +9519,7 @@ var DistinctUntilChangedSubscriber = (function (_super) {
 //# sourceMappingURL=distinctUntilChanged.js.map
 
 /***/ }),
-/* 51 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9533,7 +9619,7 @@ var FilterSubscriber = (function (_super) {
 //# sourceMappingURL=filter.js.map
 
 /***/ }),
-/* 52 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9639,7 +9725,7 @@ exports.FindValueSubscriber = FindValueSubscriber;
 //# sourceMappingURL=find.js.map
 
 /***/ }),
-/* 53 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9782,7 +9868,7 @@ var OnErrorResumeNextSubscriber = (function (_super) {
 //# sourceMappingURL=onErrorResumeNext.js.map
 
 /***/ }),
-/* 54 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9873,7 +9959,7 @@ var RefCountSubscriber = (function (_super) {
 //# sourceMappingURL=refCount.js.map
 
 /***/ }),
-/* 55 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10000,7 +10086,7 @@ var ScanSubscriber = (function (_super) {
 //# sourceMappingURL=scan.js.map
 
 /***/ }),
-/* 56 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10148,7 +10234,7 @@ var SwitchMapSubscriber = (function (_super) {
 //# sourceMappingURL=switchMap.js.map
 
 /***/ }),
-/* 57 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10263,7 +10349,7 @@ var TakeLastSubscriber = (function (_super) {
 //# sourceMappingURL=takeLast.js.map
 
 /***/ }),
-/* 58 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10294,7 +10380,7 @@ exports.Timestamp = Timestamp;
 //# sourceMappingURL=timestamp.js.map
 
 /***/ }),
-/* 59 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10305,12 +10391,12 @@ exports.noop = noop;
 //# sourceMappingURL=noop.js.map
 
 /***/ }),
-/* 60 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var noop_1 = __webpack_require__(59);
+var noop_1 = __webpack_require__(60);
 /* tslint:enable:max-line-length */
 function pipe() {
     var fns = [];
@@ -10334,92 +10420,6 @@ function pipeFromArray(fns) {
 }
 exports.pipeFromArray = pipeFromArray;
 //# sourceMappingURL=pipe.js.map
-
-/***/ }),
-/* 61 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-/// <reference path='../../typings/hibachiTypescript.d.ts' />
-/// <reference path='../../typings/tsd.d.ts' />
-//modules
-var core_module_1 = __webpack_require__(6);
-//services
-var collectionconfigservice_1 = __webpack_require__(715);
-var collectionservice_1 = __webpack_require__(716);
-//controllers
-var collections_1 = __webpack_require__(710);
-var createcollection_1 = __webpack_require__(712);
-var confirmationcontroller_1 = __webpack_require__(711);
-var entity_createcollection_1 = __webpack_require__(713);
-//directives
-var swcollection_1 = __webpack_require__(689);
-var swaddfilterbuttons_1 = __webpack_require__(688);
-var swdisplayoptions_1 = __webpack_require__(704);
-var swdisplayitem_1 = __webpack_require__(702);
-var swdisplayitemaggregate_1 = __webpack_require__(703);
-var swcollectiontable_1 = __webpack_require__(690);
-var swcolumnitem_1 = __webpack_require__(691);
-var swconditioncriteria_1 = __webpack_require__(692);
-var swcriteria_1 = __webpack_require__(693);
-var swcriteriaboolean_1 = __webpack_require__(694);
-var swcriteriadate_1 = __webpack_require__(695);
-var swcriteriamanytomany_1 = __webpack_require__(696);
-var swcriteriamanytoone_1 = __webpack_require__(697);
-var swcriterianumber_1 = __webpack_require__(698);
-var swcriteriaonetomany_1 = __webpack_require__(699);
-var swcriteriarelatedobject_1 = __webpack_require__(700);
-var swcriteriastring_1 = __webpack_require__(701);
-var sweditfilteritem_1 = __webpack_require__(705);
-var swfiltergroups_1 = __webpack_require__(707);
-var swfilteritem_1 = __webpack_require__(708);
-var swfiltergroupitem_1 = __webpack_require__(706);
-var swrestrictionconfig_1 = __webpack_require__(709);
-//filters
-var aggregatefilter_1 = __webpack_require__(714);
-var collectionmodule = angular.module('hibachi.collection', [core_module_1.coremodule.name])
-    .config([function () {
-    }]).run([function () {
-    }])
-    //constants
-    .constant('collectionPartialsPath', 'collection/components/')
-    //controllers
-    .controller('collections', collections_1.CollectionController)
-    .controller('confirmationController', confirmationcontroller_1.ConfirmationController)
-    .controller('createCollection', createcollection_1.CreateCollection)
-    .controller('entity_createcollection', entity_createcollection_1.CollectionCreateController)
-    //services
-    .factory('collectionConfigService', ['rbkeyService', '$hibachi', 'utilityService', 'observerService', function (rbkeyService, $hibachi, utilityService, observerService) { return new collectionconfigservice_1.CollectionConfig(rbkeyService, $hibachi, utilityService, observerService); }])
-    .service('collectionService', collectionservice_1.CollectionService)
-    //directives
-    .directive('swRestrictionConfig', swrestrictionconfig_1.SWRestrictionConfig.Factory())
-    .directive('swCollection', swcollection_1.SWCollection.Factory())
-    .directive('swAddFilterButtons', swaddfilterbuttons_1.SWAddFilterButtons.Factory())
-    .directive('swDisplayOptions', swdisplayoptions_1.SWDisplayOptions.Factory())
-    .directive('swDisplayItem', swdisplayitem_1.SWDisplayItem.Factory())
-    .directive('swDisplayItemAggregate', swdisplayitemaggregate_1.SWDisplayItemAggregate.Factory())
-    .directive('swCollectionTable', swcollectiontable_1.SWCollectionTable.Factory())
-    .directive('swColumnItem', swcolumnitem_1.SWColumnItem.Factory())
-    .directive('swConditionCriteria', swconditioncriteria_1.SWConditionCriteria.Factory())
-    .directive('swCriteria', swcriteria_1.SWCriteria.Factory())
-    .directive('swCriteriaBoolean', swcriteriaboolean_1.SWCriteriaBoolean.Factory())
-    .directive('swCriteriaDate', swcriteriadate_1.SWCriteriaDate.Factory())
-    .directive('swCriteriaManyToMany', swcriteriamanytomany_1.SWCriteriaManyToMany.Factory())
-    .directive('swCriteriaManyToOne', swcriteriamanytoone_1.SWCriteriaManyToOne.Factory())
-    .directive('swCriteriaNumber', swcriterianumber_1.SWCriteriaNumber.Factory())
-    .directive('swCriteriaOneToMany', swcriteriaonetomany_1.SWCriteriaOneToMany.Factory())
-    .directive('swCriteriaRelatedObject', swcriteriarelatedobject_1.SWCriteriaRelatedObject.Factory())
-    .directive('swCriteriaString', swcriteriastring_1.SWCriteriaString.Factory())
-    .directive('swEditFilterItem', sweditfilteritem_1.SWEditFilterItem.Factory())
-    .directive('swFilterGroups', swfiltergroups_1.SWFilterGroups.Factory())
-    .directive('swFilterItem', swfilteritem_1.SWFilterItem.Factory())
-    .directive('swFilterGroupItem', swfiltergroupitem_1.SWFilterGroupItem.Factory())
-    //filters
-    .filter('aggregateFilter', ['$filter', aggregatefilter_1.AggregateFilter.Factory]);
-exports.collectionmodule = collectionmodule;
-
 
 /***/ }),
 /* 62 */
@@ -23050,7 +23050,7 @@ var Subject_1 = __webpack_require__(8);
 var Observable_1 = __webpack_require__(0);
 var Subscriber_1 = __webpack_require__(2);
 var Subscription_1 = __webpack_require__(7);
-var refCount_1 = __webpack_require__(54);
+var refCount_1 = __webpack_require__(55);
 /**
  * @class ConnectableObservable<T>
  */
@@ -23958,7 +23958,7 @@ exports.timeInterval = timeInterval;
 "use strict";
 
 var async_1 = __webpack_require__(5);
-var audit_1 = __webpack_require__(46);
+var audit_1 = __webpack_require__(47);
 var timer_1 = __webpack_require__(203);
 /**
  * Ignores source values for `duration` milliseconds, then emits the most recent
@@ -24948,7 +24948,7 @@ exports.concat = concat;
 
 "use strict";
 
-var concatMap_1 = __webpack_require__(48);
+var concatMap_1 = __webpack_require__(49);
 /* tslint:enable:max-line-length */
 /**
  * Projects each source value to the same Observable which is merged multiple
@@ -25941,7 +25941,7 @@ exports.DistinctSubscriber = DistinctSubscriber;
 
 "use strict";
 
-var distinctUntilChanged_1 = __webpack_require__(50);
+var distinctUntilChanged_1 = __webpack_require__(51);
 /* tslint:enable:max-line-length */
 /**
  * Returns an Observable that emits all items emitted by the source Observable that are distinct by comparison from the previous item,
@@ -26643,7 +26643,7 @@ var FinallySubscriber = (function (_super) {
 
 "use strict";
 
-var find_1 = __webpack_require__(52);
+var find_1 = __webpack_require__(53);
 /**
  * Emits only the index of the first value emitted by the source Observable that
  * meets some condition.
@@ -27136,7 +27136,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var Subscriber_1 = __webpack_require__(2);
-var noop_1 = __webpack_require__(59);
+var noop_1 = __webpack_require__(60);
 /**
  * Ignores all items emitted by the source Observable and only passes calls of `complete` or `error`.
  *
@@ -28065,7 +28065,7 @@ var PairwiseSubscriber = (function (_super) {
 "use strict";
 
 var not_1 = __webpack_require__(603);
-var filter_1 = __webpack_require__(51);
+var filter_1 = __webpack_require__(52);
 /**
  * Splits the source Observable into two, one with values that satisfy a
  * predicate, and another with values that don't satisfy the predicate.
@@ -28270,7 +28270,7 @@ exports.publishReplay = publishReplay;
 "use strict";
 
 var isArray_1 = __webpack_require__(13);
-var race_1 = __webpack_require__(45);
+var race_1 = __webpack_require__(46);
 /* tslint:enable:max-line-length */
 /**
  * Returns an Observable that mirrors the first source Observable to emit an item
@@ -29035,7 +29035,7 @@ var SequenceEqualCompareToSubscriber = (function (_super) {
 "use strict";
 
 var multicast_1 = __webpack_require__(17);
-var refCount_1 = __webpack_require__(54);
+var refCount_1 = __webpack_require__(55);
 var Subject_1 = __webpack_require__(8);
 function shareSubjectFactory() {
     return new Subject_1.Subject();
@@ -29521,7 +29521,7 @@ var SkipWhileSubscriber = (function (_super) {
 "use strict";
 
 var ArrayObservable_1 = __webpack_require__(15);
-var ScalarObservable_1 = __webpack_require__(44);
+var ScalarObservable_1 = __webpack_require__(45);
 var EmptyObservable_1 = __webpack_require__(16);
 var concat_1 = __webpack_require__(20);
 var isScheduler_1 = __webpack_require__(12);
@@ -29574,7 +29574,7 @@ exports.startWith = startWith;
 
 "use strict";
 
-var switchMap_1 = __webpack_require__(56);
+var switchMap_1 = __webpack_require__(57);
 var identity_1 = __webpack_require__(291);
 function switchAll() {
     return switchMap_1.switchMap(identity_1.identity);
@@ -33637,21 +33637,21 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../typings/tsd.d.ts' />
 //services
-var workflowconditionservice_1 = __webpack_require__(885);
-var scheduleservice_1 = __webpack_require__(884);
+var workflowconditionservice_1 = __webpack_require__(887);
+var scheduleservice_1 = __webpack_require__(886);
 //directives
-var swadmincreatesuperuser_1 = __webpack_require__(872);
-var swworkflowbasic_1 = __webpack_require__(874);
-var swworkflowcondition_1 = __webpack_require__(875);
-var swworkflowconditiongroupitem_1 = __webpack_require__(876);
-var swworkflowconditiongroups_1 = __webpack_require__(877);
-var swworkflowtask_1 = __webpack_require__(878);
-var swworkflowtaskactions_1 = __webpack_require__(879);
-var swworkflowtasks_1 = __webpack_require__(880);
-var swworkflowtrigger_1 = __webpack_require__(881);
-var swworkflowtriggers_1 = __webpack_require__(883);
-var swworkflowtriggerhistory_1 = __webpack_require__(882);
-var swschedulepreview_1 = __webpack_require__(873);
+var swadmincreatesuperuser_1 = __webpack_require__(874);
+var swworkflowbasic_1 = __webpack_require__(876);
+var swworkflowcondition_1 = __webpack_require__(877);
+var swworkflowconditiongroupitem_1 = __webpack_require__(878);
+var swworkflowconditiongroups_1 = __webpack_require__(879);
+var swworkflowtask_1 = __webpack_require__(880);
+var swworkflowtaskactions_1 = __webpack_require__(881);
+var swworkflowtasks_1 = __webpack_require__(882);
+var swworkflowtrigger_1 = __webpack_require__(883);
+var swworkflowtriggers_1 = __webpack_require__(885);
+var swworkflowtriggerhistory_1 = __webpack_require__(884);
+var swschedulepreview_1 = __webpack_require__(875);
 //filters
 var workflowmodule = angular.module('hibachi.workflow', ['hibachi.collection']).config(function () {
 })
@@ -49213,7 +49213,7 @@ var UnsubscriptionError_1 = __webpack_require__(289);
 exports.UnsubscriptionError = UnsubscriptionError_1.UnsubscriptionError;
 var timeInterval_1 = __webpack_require__(204);
 exports.TimeInterval = timeInterval_1.TimeInterval;
-var timestamp_1 = __webpack_require__(58);
+var timestamp_1 = __webpack_require__(59);
 exports.Timestamp = timestamp_1.Timestamp;
 var TestScheduler_1 = __webpack_require__(595);
 exports.TestScheduler = TestScheduler_1.TestScheduler;
@@ -49223,7 +49223,7 @@ var AjaxObservable_1 = __webpack_require__(200);
 exports.AjaxResponse = AjaxObservable_1.AjaxResponse;
 exports.AjaxError = AjaxObservable_1.AjaxError;
 exports.AjaxTimeoutError = AjaxObservable_1.AjaxTimeoutError;
-var pipe_1 = __webpack_require__(60);
+var pipe_1 = __webpack_require__(61);
 exports.pipe = pipe_1.pipe;
 var asap_1 = __webpack_require__(284);
 var async_1 = __webpack_require__(5);
@@ -49569,7 +49569,7 @@ Observable_1.Observable.pairs = pairs_1.pairs;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var race_1 = __webpack_require__(45);
+var race_1 = __webpack_require__(46);
 Observable_1.Observable.race = race_1.race;
 //# sourceMappingURL=race.js.map
 
@@ -50766,7 +50766,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var Observable_1 = __webpack_require__(0);
-var ScalarObservable_1 = __webpack_require__(44);
+var ScalarObservable_1 = __webpack_require__(45);
 var EmptyObservable_1 = __webpack_require__(16);
 /**
  * We need this JSDoc comment for affecting ESDoc.
@@ -52595,7 +52595,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var Observable_1 = __webpack_require__(0);
-var noop_1 = __webpack_require__(59);
+var noop_1 = __webpack_require__(60);
 /**
  * We need this JSDoc comment for affecting ESDoc.
  * @extends {Ignored}
@@ -53622,7 +53622,7 @@ exports.never = NeverObservable_1.NeverObservable.create;
 
 "use strict";
 
-var onErrorResumeNext_1 = __webpack_require__(53);
+var onErrorResumeNext_1 = __webpack_require__(54);
 exports.onErrorResumeNext = onErrorResumeNext_1.onErrorResumeNextStatic;
 //# sourceMappingURL=onErrorResumeNext.js.map
 
@@ -53682,7 +53682,7 @@ exports.zip = zip_1.zipStatic;
 
 "use strict";
 
-var audit_1 = __webpack_require__(46);
+var audit_1 = __webpack_require__(47);
 /**
  * Ignores source values for a duration determined by another Observable, then
  * emits the most recent value from the source Observable, then repeats this
@@ -54317,7 +54317,7 @@ exports.concat = concat;
 
 "use strict";
 
-var concatAll_1 = __webpack_require__(47);
+var concatAll_1 = __webpack_require__(48);
 /* tslint:enable:max-line-length */
 /**
  * Converts a higher-order Observable into a first-order Observable by
@@ -54379,7 +54379,7 @@ exports.concatAll = concatAll;
 
 "use strict";
 
-var concatMap_1 = __webpack_require__(48);
+var concatMap_1 = __webpack_require__(49);
 /* tslint:enable:max-line-length */
 /**
  * Projects each source value to an Observable which is merged in the output
@@ -54699,7 +54699,7 @@ exports.debounceTime = debounceTime;
 
 "use strict";
 
-var defaultIfEmpty_1 = __webpack_require__(49);
+var defaultIfEmpty_1 = __webpack_require__(50);
 /* tslint:enable:max-line-length */
 /**
  * Emits a given value if the source Observable completes without emitting any
@@ -54967,7 +54967,7 @@ exports.distinct = distinct;
 
 "use strict";
 
-var distinctUntilChanged_1 = __webpack_require__(50);
+var distinctUntilChanged_1 = __webpack_require__(51);
 /* tslint:enable:max-line-length */
 /**
  * Returns an Observable that emits all items emitted by the source Observable that are distinct by comparison from the previous item.
@@ -55399,7 +55399,7 @@ exports.expand = expand;
 
 "use strict";
 
-var filter_1 = __webpack_require__(51);
+var filter_1 = __webpack_require__(52);
 /* tslint:enable:max-line-length */
 /**
  * Filter items emitted by the source Observable by only emitting those that
@@ -55473,7 +55473,7 @@ exports._finally = _finally;
 
 "use strict";
 
-var find_1 = __webpack_require__(52);
+var find_1 = __webpack_require__(53);
 /* tslint:enable:max-line-length */
 /**
  * Emits only the first value emitted by the source Observable that meets some
@@ -56504,7 +56504,7 @@ exports.observeOn = observeOn;
 
 "use strict";
 
-var onErrorResumeNext_1 = __webpack_require__(53);
+var onErrorResumeNext_1 = __webpack_require__(54);
 /* tslint:enable:max-line-length */
 /**
  * When any of the provided Observable emits an complete or error notification, it immediately subscribes to the next one
@@ -56818,7 +56818,7 @@ exports.publishReplay = publishReplay;
 
 var race_1 = __webpack_require__(249);
 // NOTE: to support backwards compatability with 5.4.* and lower
-var race_2 = __webpack_require__(45);
+var race_2 = __webpack_require__(46);
 exports.raceStatic = race_2.race;
 /* tslint:enable:max-line-length */
 /**
@@ -57119,7 +57119,7 @@ exports.sampleTime = sampleTime;
 
 "use strict";
 
-var scan_1 = __webpack_require__(55);
+var scan_1 = __webpack_require__(56);
 /* tslint:enable:max-line-length */
 /**
  * Applies an accumulator function over the source Observable, and returns each
@@ -57546,7 +57546,7 @@ exports._switch = _switch;
 
 "use strict";
 
-var switchMap_1 = __webpack_require__(56);
+var switchMap_1 = __webpack_require__(57);
 /* tslint:enable:max-line-length */
 /**
  * Projects each source value to an Observable which is merged in the output
@@ -57709,7 +57709,7 @@ exports.take = take;
 
 "use strict";
 
-var takeLast_1 = __webpack_require__(57);
+var takeLast_1 = __webpack_require__(58);
 /**
  * Emits only the last `count` values emitted by the source Observable.
  *
@@ -58107,7 +58107,7 @@ exports.timeoutWith = timeoutWith;
 "use strict";
 
 var async_1 = __webpack_require__(5);
-var timestamp_1 = __webpack_require__(58);
+var timestamp_1 = __webpack_require__(59);
 /**
  * @param scheduler
  * @return {Observable<Timestamp<any>>|WebSocketSubject<T>|Observable<T>}
@@ -58512,7 +58512,7 @@ exports.zipAll = zipAll;
 
 "use strict";
 
-var audit_1 = __webpack_require__(46);
+var audit_1 = __webpack_require__(47);
 exports.audit = audit_1.audit;
 var auditTime_1 = __webpack_require__(205);
 exports.auditTime = auditTime_1.auditTime;
@@ -58534,9 +58534,9 @@ var combineLatest_1 = __webpack_require__(32);
 exports.combineLatest = combineLatest_1.combineLatest;
 var concat_1 = __webpack_require__(213);
 exports.concat = concat_1.concat;
-var concatAll_1 = __webpack_require__(47);
+var concatAll_1 = __webpack_require__(48);
 exports.concatAll = concatAll_1.concatAll;
-var concatMap_1 = __webpack_require__(48);
+var concatMap_1 = __webpack_require__(49);
 exports.concatMap = concatMap_1.concatMap;
 var concatMapTo_1 = __webpack_require__(214);
 exports.concatMapTo = concatMapTo_1.concatMapTo;
@@ -58546,7 +58546,7 @@ var debounce_1 = __webpack_require__(216);
 exports.debounce = debounce_1.debounce;
 var debounceTime_1 = __webpack_require__(217);
 exports.debounceTime = debounceTime_1.debounceTime;
-var defaultIfEmpty_1 = __webpack_require__(49);
+var defaultIfEmpty_1 = __webpack_require__(50);
 exports.defaultIfEmpty = defaultIfEmpty_1.defaultIfEmpty;
 var delay_1 = __webpack_require__(218);
 exports.delay = delay_1.delay;
@@ -58556,7 +58556,7 @@ var dematerialize_1 = __webpack_require__(220);
 exports.dematerialize = dematerialize_1.dematerialize;
 var distinct_1 = __webpack_require__(221);
 exports.distinct = distinct_1.distinct;
-var distinctUntilChanged_1 = __webpack_require__(50);
+var distinctUntilChanged_1 = __webpack_require__(51);
 exports.distinctUntilChanged = distinctUntilChanged_1.distinctUntilChanged;
 var distinctUntilKeyChanged_1 = __webpack_require__(222);
 exports.distinctUntilKeyChanged = distinctUntilKeyChanged_1.distinctUntilKeyChanged;
@@ -58570,11 +58570,11 @@ var exhaustMap_1 = __webpack_require__(226);
 exports.exhaustMap = exhaustMap_1.exhaustMap;
 var expand_1 = __webpack_require__(227);
 exports.expand = expand_1.expand;
-var filter_1 = __webpack_require__(51);
+var filter_1 = __webpack_require__(52);
 exports.filter = filter_1.filter;
 var finalize_1 = __webpack_require__(228);
 exports.finalize = finalize_1.finalize;
-var find_1 = __webpack_require__(52);
+var find_1 = __webpack_require__(53);
 exports.find = find_1.find;
 var findIndex_1 = __webpack_require__(229);
 exports.findIndex = findIndex_1.findIndex;
@@ -58614,7 +58614,7 @@ var multicast_1 = __webpack_require__(17);
 exports.multicast = multicast_1.multicast;
 var observeOn_1 = __webpack_require__(34);
 exports.observeOn = observeOn_1.observeOn;
-var onErrorResumeNext_1 = __webpack_require__(53);
+var onErrorResumeNext_1 = __webpack_require__(54);
 exports.onErrorResumeNext = onErrorResumeNext_1.onErrorResumeNext;
 var pairwise_1 = __webpack_require__(242);
 exports.pairwise = pairwise_1.pairwise;
@@ -58642,13 +58642,13 @@ var retry_1 = __webpack_require__(252);
 exports.retry = retry_1.retry;
 var retryWhen_1 = __webpack_require__(253);
 exports.retryWhen = retryWhen_1.retryWhen;
-var refCount_1 = __webpack_require__(54);
+var refCount_1 = __webpack_require__(55);
 exports.refCount = refCount_1.refCount;
 var sample_1 = __webpack_require__(254);
 exports.sample = sample_1.sample;
 var sampleTime_1 = __webpack_require__(255);
 exports.sampleTime = sampleTime_1.sampleTime;
-var scan_1 = __webpack_require__(55);
+var scan_1 = __webpack_require__(56);
 exports.scan = scan_1.scan;
 var sequenceEqual_1 = __webpack_require__(256);
 exports.sequenceEqual = sequenceEqual_1.sequenceEqual;
@@ -58677,13 +58677,13 @@ exports.startWith = startWith_1.startWith;
 // export { subscribeOn } from './operators/subscribeOn';
 var switchAll_1 = __webpack_require__(265);
 exports.switchAll = switchAll_1.switchAll;
-var switchMap_1 = __webpack_require__(56);
+var switchMap_1 = __webpack_require__(57);
 exports.switchMap = switchMap_1.switchMap;
 var switchMapTo_1 = __webpack_require__(266);
 exports.switchMapTo = switchMapTo_1.switchMapTo;
 var take_1 = __webpack_require__(267);
 exports.take = take_1.take;
-var takeLast_1 = __webpack_require__(57);
+var takeLast_1 = __webpack_require__(58);
 exports.takeLast = takeLast_1.takeLast;
 var takeUntil_1 = __webpack_require__(268);
 exports.takeUntil = takeUntil_1.takeUntil;
@@ -58701,7 +58701,7 @@ var timeout_1 = __webpack_require__(273);
 exports.timeout = timeout_1.timeout;
 var timeoutWith_1 = __webpack_require__(274);
 exports.timeoutWith = timeoutWith_1.timeoutWith;
-var timestamp_1 = __webpack_require__(58);
+var timestamp_1 = __webpack_require__(59);
 exports.timestamp = timestamp_1.timestamp;
 var toArray_1 = __webpack_require__(275);
 exports.toArray = toArray_1.toArray;
@@ -62108,7 +62108,7 @@ exports.GiftRecipient = GiftRecipient;
 Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-var md5 = __webpack_require__(43);
+var md5 = __webpack_require__(44);
 var optionWithGroup = /** @class */ (function () {
     function optionWithGroup(optionID, optionGroupID, match) {
         var _this = this;
@@ -68707,7 +68707,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../typings/hibachiTypescript.d.ts' />
 /// <reference path='../typings/tsd.d.ts' />
 var core_module_1 = __webpack_require__(6);
-var md5 = __webpack_require__(43);
+var md5 = __webpack_require__(44);
 //generic bootstrapper
 var BaseBootStrapper = /** @class */ (function () {
     function BaseBootStrapper(myApplication) {
@@ -76733,7 +76733,7 @@ exports.SWExportAction = SWExportAction;
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
-var md5 = __webpack_require__(43);
+var md5 = __webpack_require__(44);
 var SWGravatarController = /** @class */ (function () {
     // @ngInject
     function SWGravatarController() {
@@ -88027,14 +88027,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //import alertmodule = require('./alert/alert.module');
 var alert_module_1 = __webpack_require__(298);
 var card_module_1 = __webpack_require__(680);
-var collection_module_1 = __webpack_require__(61);
+var collection_module_1 = __webpack_require__(43);
 var listing_module_1 = __webpack_require__(847);
 var dialog_module_1 = __webpack_require__(301);
 var entity_module_1 = __webpack_require__(302);
 var pagination_module_1 = __webpack_require__(850);
 var form_module_1 = __webpack_require__(828);
-var validation_module_1 = __webpack_require__(869);
-var widget_module_1 = __webpack_require__(871);
+var report_module_1 = __webpack_require__(853);
+var validation_module_1 = __webpack_require__(871);
+var widget_module_1 = __webpack_require__(873);
 var workflow_module_1 = __webpack_require__(304);
 //directives
 var swsaveandfinish_1 = __webpack_require__(830);
@@ -88047,6 +88048,7 @@ var hibachimodule = angular.module('hibachi', [
     listing_module_1.listingmodule.name,
     pagination_module_1.paginationmodule.name,
     form_module_1.formmodule.name,
+    report_module_1.reportmodule.name,
     validation_module_1.validationmodule.name,
     widget_module_1.widgetmodule.name,
     workflow_module_1.workflowmodule.name
@@ -90569,7 +90571,7 @@ exports.SWListingSearch = SWListingSearch;
 /// <reference path="../../typings/hibachiTypescript.d.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 //modules
-var collection_module_1 = __webpack_require__(61);
+var collection_module_1 = __webpack_require__(43);
 //services
 var listingservice_1 = __webpack_require__(848);
 //directives
@@ -91856,6 +91858,98 @@ exports.PaginationService = PaginationService;
 
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
+Object.defineProperty(exports, "__esModule", { value: true });
+var SWReportMenuController = /** @class */ (function () {
+    function SWReportMenuController($rootScope) {
+        var _this = this;
+        this.$rootScope = $rootScope;
+        this.$onInit = function () {
+            console.log(_this.collectionConfig);
+            console.log('hi');
+            _this.getPersistedReports();
+        };
+        this.test = function () {
+            console.log('hiiiiii');
+        };
+        this.getPersistedReports = function () {
+            var persistedReportsCollectionList = _this.collectionConfig.newCollectionConfig('Collection');
+            persistedReportsCollectionList.setDisplayProperties('collectionID,collectionName,collectionConfig');
+            persistedReportsCollectionList.addFilter('reportFlag', 1);
+            persistedReportsCollectionList.addFilter('collectionObject', _this.collectionConfig.baseEntityName);
+            persistedReportsCollectionList.addFilter('accountOwner.accountID', _this.$rootScope.slatwall.account.accountID, '=', 'OR', true, true, false, 'accountOwner');
+            persistedReportsCollectionList.addFilter('accountOwner.accountID', 'NULL', 'IS', 'OR', true, true, false, 'accountOwner');
+            persistedReportsCollectionList.setAllRecords(true);
+            persistedReportsCollectionList.getEntity().then(function (data) {
+                _this.persistedReportCollections = data.records;
+            });
+        };
+    }
+    return SWReportMenuController;
+}());
+var SWReportMenu = /** @class */ (function () {
+    function SWReportMenu(reportPartialPath, hibachiPathBuilder) {
+        this.restrict = "E";
+        this.controller = SWReportMenuController;
+        this.controllerAs = "swReportMenu";
+        this.scope = {};
+        this.bindToController = {
+            propertyDisplay: "=?",
+            propertyIdentifier: "@?",
+            name: "@?",
+            class: "@?",
+            collectionConfig: "<?"
+        };
+        this.link = function (scope, element, attrs, transcludeFn) {
+        };
+        this.templateUrl = hibachiPathBuilder.buildPartialsPath(reportPartialPath) + 'reportmenu.html';
+    }
+    /**
+        * Handles injecting the partials path into this class
+        */
+    SWReportMenu.Factory = function () {
+        var directive = function (reportPartialPath, hibachiPathBuilder) { return new SWReportMenu(reportPartialPath, hibachiPathBuilder); };
+        directive.$inject = [
+            'reportPartialPath',
+            'hibachiPathBuilder'
+        ];
+        return directive;
+    };
+    return SWReportMenu;
+}());
+exports.SWReportMenu = SWReportMenu;
+
+
+/***/ }),
+/* 853 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/// <reference path="../../typings/tsd.d.ts" />
+/// <reference path="../../typings/hibachiTypescript.d.ts" />
+Object.defineProperty(exports, "__esModule", { value: true });
+//modules
+var collection_module_1 = __webpack_require__(43);
+//directives
+var swreportmenu_1 = __webpack_require__(852);
+var reportmodule = angular.module('hibachi.report', [collection_module_1.collectionmodule.name])
+    .run([function () {
+    }])
+    //directives
+    .directive('swReportMenu', swreportmenu_1.SWReportMenu.Factory())
+    //constants
+    .constant('reportPartialPath', 'report/components/');
+exports.reportmodule = reportmodule;
+
+
+/***/ }),
+/* 854 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 /**
  * This validate directive will look at the current element, figure out the context (save, edit, delete) and
  * validate based on that context as defined in the validation properties object.
@@ -92238,7 +92332,7 @@ exports.SWValidate = SWValidate;
 
 
 /***/ }),
-/* 853 */
+/* 855 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -92270,7 +92364,7 @@ exports.SWValidationDataType = SWValidationDataType;
 
 
 /***/ }),
-/* 854 */
+/* 856 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -92303,7 +92397,7 @@ exports.SWValidationEq = SWValidationEq;
 
 
 /***/ }),
-/* 855 */
+/* 857 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -92367,7 +92461,7 @@ exports.SWValidationEqProperty = SWValidationEqProperty;
 
 
 /***/ }),
-/* 856 */
+/* 858 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -92397,7 +92491,7 @@ exports.SWValidationGte = SWValidationGte;
 
 
 /***/ }),
-/* 857 */
+/* 859 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -92427,7 +92521,7 @@ exports.SWValidationLte = SWValidationLte;
 
 
 /***/ }),
-/* 858 */
+/* 860 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -92461,7 +92555,7 @@ exports.SWValidationMaxLength = SWValidationMaxLength;
 
 
 /***/ }),
-/* 859 */
+/* 861 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -92494,7 +92588,7 @@ exports.SWValidationMaxValue = SWValidationMaxValue;
 
 
 /***/ }),
-/* 860 */
+/* 862 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -92528,7 +92622,7 @@ exports.SWValidationMinLength = SWValidationMinLength;
 
 
 /***/ }),
-/* 861 */
+/* 863 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -92561,7 +92655,7 @@ exports.SWValidationMinValue = SWValidationMinValue;
 
 
 /***/ }),
-/* 862 */
+/* 864 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -92591,7 +92685,7 @@ exports.SWValidationNeq = SWValidationNeq;
 
 
 /***/ }),
-/* 863 */
+/* 865 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -92621,7 +92715,7 @@ exports.SWValidationNumeric = SWValidationNumeric;
 
 
 /***/ }),
-/* 864 */
+/* 866 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -92652,7 +92746,7 @@ exports.SWValidationRegex = SWValidationRegex;
 
 
 /***/ }),
-/* 865 */
+/* 867 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -92689,7 +92783,7 @@ exports.SWValidationRequired = SWValidationRequired;
 
 
 /***/ }),
-/* 866 */
+/* 868 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -92722,7 +92816,7 @@ exports.SWValidationUnique = SWValidationUnique;
 
 
 /***/ }),
-/* 867 */
+/* 869 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -92759,7 +92853,7 @@ exports.SWValidationUniqueOrNull = SWValidationUniqueOrNull;
 
 
 /***/ }),
-/* 868 */
+/* 870 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -92916,7 +93010,7 @@ exports.ValidationService = ValidationService;
 
 
 /***/ }),
-/* 869 */
+/* 871 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -92925,24 +93019,24 @@ exports.ValidationService = ValidationService;
 /// <reference path="../../typings/hibachiTypescript.d.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 //components
-var swvalidate_1 = __webpack_require__(852);
-var swvalidationminlength_1 = __webpack_require__(860);
-var swvalidationdatatype_1 = __webpack_require__(853);
-var swvalidationeq_1 = __webpack_require__(854);
-var swvalidationeqproperty_1 = __webpack_require__(855);
-var swvalidationgte_1 = __webpack_require__(856);
-var swvalidationlte_1 = __webpack_require__(857);
-var swvalidationmaxlength_1 = __webpack_require__(858);
-var swvalidationmaxvalue_1 = __webpack_require__(859);
-var swvalidationminvalue_1 = __webpack_require__(861);
-var swvalidationneq_1 = __webpack_require__(862);
-var swvalidationnumeric_1 = __webpack_require__(863);
-var swvalidationregex_1 = __webpack_require__(864);
-var swvalidationrequired_1 = __webpack_require__(865);
-var swvalidationunique_1 = __webpack_require__(866);
-var swvalidationuniqueornull_1 = __webpack_require__(867);
+var swvalidate_1 = __webpack_require__(854);
+var swvalidationminlength_1 = __webpack_require__(862);
+var swvalidationdatatype_1 = __webpack_require__(855);
+var swvalidationeq_1 = __webpack_require__(856);
+var swvalidationeqproperty_1 = __webpack_require__(857);
+var swvalidationgte_1 = __webpack_require__(858);
+var swvalidationlte_1 = __webpack_require__(859);
+var swvalidationmaxlength_1 = __webpack_require__(860);
+var swvalidationmaxvalue_1 = __webpack_require__(861);
+var swvalidationminvalue_1 = __webpack_require__(863);
+var swvalidationneq_1 = __webpack_require__(864);
+var swvalidationnumeric_1 = __webpack_require__(865);
+var swvalidationregex_1 = __webpack_require__(866);
+var swvalidationrequired_1 = __webpack_require__(867);
+var swvalidationunique_1 = __webpack_require__(868);
+var swvalidationuniqueornull_1 = __webpack_require__(869);
 //services
-var validationservice_1 = __webpack_require__(868);
+var validationservice_1 = __webpack_require__(870);
 var core_module_1 = __webpack_require__(6);
 var validationmodule = angular.module('hibachi.validation', [core_module_1.coremodule.name])
     .run([function () {
@@ -92970,7 +93064,7 @@ exports.validationmodule = validationmodule;
 
 
 /***/ }),
-/* 870 */
+/* 872 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93026,7 +93120,7 @@ exports.SWStatWidget = SWStatWidget;
 
 
 /***/ }),
-/* 871 */
+/* 873 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93035,9 +93129,9 @@ exports.SWStatWidget = SWStatWidget;
 /// <reference path="../../typings/hibachiTypescript.d.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 //modules
-var collection_module_1 = __webpack_require__(61);
+var collection_module_1 = __webpack_require__(43);
 //directives
-var swstatwidget_1 = __webpack_require__(870);
+var swstatwidget_1 = __webpack_require__(872);
 var widgetmodule = angular.module('hibachi.widget', [collection_module_1.collectionmodule.name])
     .run([function () {
     }])
@@ -93049,7 +93143,7 @@ exports.widgetmodule = widgetmodule;
 
 
 /***/ }),
-/* 872 */
+/* 874 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93083,7 +93177,7 @@ exports.SWAdminCreateSuperUser = SWAdminCreateSuperUser;
 
 
 /***/ }),
-/* 873 */
+/* 875 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93121,7 +93215,7 @@ exports.SWSchedulePreview = SWSchedulePreview;
 
 
 /***/ }),
-/* 874 */
+/* 876 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93155,7 +93249,7 @@ exports.SWWorkflowBasic = SWWorkflowBasic;
 
 
 /***/ }),
-/* 875 */
+/* 877 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93276,7 +93370,7 @@ exports.SWWorkflowCondition = SWWorkflowCondition;
 
 
 /***/ }),
-/* 876 */
+/* 878 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93307,7 +93401,7 @@ exports.SWWorkflowConditionGroupItem = SWWorkflowConditionGroupItem;
 
 
 /***/ }),
-/* 877 */
+/* 879 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93357,7 +93451,7 @@ exports.SWWorkflowConditionGroups = SWWorkflowConditionGroups;
 
 
 /***/ }),
-/* 878 */
+/* 880 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93404,7 +93498,7 @@ exports.SWWorkflowTask = SWWorkflowTask;
 
 
 /***/ }),
-/* 879 */
+/* 881 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93676,7 +93770,7 @@ exports.SWWorkflowTaskActions = SWWorkflowTaskActions;
 
 
 /***/ }),
-/* 880 */
+/* 882 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93876,7 +93970,7 @@ exports.SWWorkflowTasks = SWWorkflowTasks;
 
 
 /***/ }),
-/* 881 */
+/* 883 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93978,7 +94072,7 @@ exports.SWWorkflowTrigger = SWWorkflowTrigger;
 
 
 /***/ }),
-/* 882 */
+/* 884 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -94023,7 +94117,7 @@ exports.SWWorkflowTriggerHistory = SWWorkflowTriggerHistory;
 
 
 /***/ }),
-/* 883 */
+/* 885 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -94312,7 +94406,7 @@ exports.SWWorkflowTriggers = SWWorkflowTriggers;
 
 
 /***/ }),
-/* 884 */
+/* 886 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -94424,7 +94518,7 @@ exports.ScheduleService = ScheduleService;
 
 
 /***/ }),
-/* 885 */
+/* 887 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -94482,7 +94576,7 @@ exports.WorkflowConditionService = WorkflowConditionService;
 
 
 /***/ }),
-/* 886 */
+/* 888 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -94510,7 +94604,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 887 */
+/* 889 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(305);

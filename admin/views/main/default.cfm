@@ -55,10 +55,8 @@ Notes:
 	<div class="col-md-12">
 		<hb:HibachiMessageDisplay />
 	</div>
-	
-	<hb:HibachiReportViewer report="#rc.report#" />
-
-	<div class="navTabs-Container" id="navTabs-Container">
+	<hb:HibachiReportViewer report="#rc.report#" collectionList="#rc.orderCollectionList#" />
+	<!---<div class="navTabs-Container" id="navTabs-Container">
 		<ul class="nav nav-tabs" role="tablist">
 			  <li class="active tab-selector"><a href="##reports-overview" role="tab" data-toggle="tab">My Custom Reports</a></li>
 			  <li class="tab-selector"><a href="##popular-reports" role="tab" data-toggle="tab">Popular Reports</a></li>
@@ -129,5 +127,5 @@ Notes:
 		  	</div>	
 		  </div>
 		</div>
-	</div>
+	</div>--->
 </cfoutput>

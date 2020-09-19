@@ -1,6 +1,8 @@
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfif thisTag.executionMode is "start">
 	<cfparam name="attributes.report" type="any" />
+	<cfparam name="attributes.collectionList" type="any" />
+	<cfparam name="attributes.enableAveragesAndSums" type="boolean" default="true"/> 
 	<cfparam name="attributes.hibachiScope" type="any" default="#request.context.fw.getHibachiScope()#" />
 	
 	<cfoutput>
@@ -155,6 +157,35 @@
 				</div>
 			</div>
 			
+				<cfset scopeVariableID = '#attributes.collectionlist.getCollectionObject()##rereplace(createUUID(),'-','','all')#'/>
+				<cfset entityMetaData = getMetaData(attributes.collectionList.getCollectionEntityObject())/>
+	
+				<cfset attributes.collectionList.getCollectionConfigStruct()["enableAveragesAndSums"] = attributes.enableAveragesAndSums />
+				<cfset JSON = serializeJson(attributes.collectionList.getCollectionConfigStruct())/>
+
+				<!---escape apostraphe boi--->
+				<cfset JSON = rereplace(JSON,"'","\'",'all')/>
+				<!---convert double quotes to single--->
+				<cfset JSON = rereplace(JSON,'"',"'",'all')/>
+				<span ng-init="
+					#scopeVariableID#=$root.hibachiScope.$injector.get('collectionConfigService').newCollectionConfig().loadJson(#JSON#);
+				"></span>
+				
+				<cfif !attributes.collectionList.getNewFlag() && !structKeyExists(attributes.collectionList.getCollectionConfigStruct(),'periodInterval') >
+					<span ng-controller="collections"
+						data-table-id="#scopeVariableID#"
+						data-collection-id="#attributes.collectionList.getCollectionID()#"
+					>
+					</span>
+				</cfif>
+				
+				<cfset personalCollectionKey = hash(serializeJson(attributes.collectionList.getCollectionConfigStruct()))/>
+
+				<sw-report-menu
+					data-collection-config="#scopeVariableID#"
+				>
+				</sw-report-menu>
+
 			<script type="text/javascript">
 				jQuery(document).ready(function(){
 					addLoadingDiv( 'hibachi-report' );

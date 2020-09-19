@@ -31,19 +31,16 @@
 				<div class="site-selector-container col-md-3">
 					<cfset siteCollectionList = attributes.hibachiScope.getService('siteService').getSiteCollectionList() />
 					<cfset siteCollectionList.setDisplayProperties('siteID,siteName', { isVisible=true }) />
-					<h4 class="site-selector-title">Site</h4>
 					<select 
 						class="form-control j-custom-select" 
 						name="siteSelector"
 						onChange="updateReport()"
 						>
-						<option value="all" selected>All Sites</option>
 						<cfloop array="#siteCollectionList.getRecords()#" index="siteRecord" >
 					        <cfset siteName = siteRecord['siteName'] />
 					        <cfset siteID = siteRecord['siteID'] />
 					        <option value="#siteID#">#siteName#</option>
 						</cfloop>
-						<option value="">* No Site Provided *</option>
 					</select>
 				</div>
 			</div>
