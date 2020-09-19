@@ -228,20 +228,24 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 		jQuery.each(jQuery( scopeSelector ).find(jQuery( 'pre.json' )), function(i, v){
 		    
 		    var jsonStr = $(this).text();
-		    var jsonObj = {};
+		    var jsonObj = jsonStr;
 		    
 		    try {
 		        jsonObj = JSON.parse( jsonStr );
 		    } catch (e){
-		        console.error(e);
+		        console.warn(e);
 		    }
 
             var syntaxHighlight = function(json){
         
-                if (typeof json != 'string') {
-                    json = JSON.stringify(json, undefined, "\t");
-                }
-                
+                try {
+                    if (typeof json != 'string') {
+                        json = JSON.stringify(json, undefined, "\t");
+                    }
+                } catch (e){
+    		        console.warn(e);
+    		    }   
+    		    
                 json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
                 
                 return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
