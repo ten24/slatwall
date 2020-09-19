@@ -19,7 +19,7 @@
 
 .card {
   &.border-primary,
-  .card-header.border-primary { border-color: rgba($primary, .35) !important; }
+  .card-header.border-primary { border-color: rgba($brand-primary, .35) !important; }
   &.border-accent,
   .card-header.border-accent { border-color: rgba($accent, .35) !important; }
   &.border-success,

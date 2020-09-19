@@ -48,16 +48,16 @@ div.code-toolbar > .toolbar {
     padding: .25rem .75rem;
     transition: $btn-transition;
     border-radius: $border-radius-sm;
-    border: $border-width solid rgba($primary, .3);
+    border: $border-width solid rgba($brand-primary, .3);
     background-color: transparent;
-    color: $primary !important;
+    color: $brand-primary !important;
     box-shadow: none;
     &:focus {
       outline: none;
       box-shadow: none;
     }
     &:hover {
-      background-color: $primary;
+      background-color: $brand-primary;
       color: $white !important;
     }
   }
