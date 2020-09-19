@@ -71,10 +71,10 @@ component extends="Slatwall.org.Hibachi.HibachiEntityQueueService" persistent="f
 
 			this.getHibachiEntityQueueDAO().deleteBatchItems( arguments.batch.getBatchID() );
 			
+		    return delete( arguments.batch );
 		}
 		
-		return delete( arguments.batch );
-		
+		return false;
 	}
 
 
