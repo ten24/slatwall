@@ -78,10 +78,10 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
   	
   	public any function uploadCSVFile( required any data ){
   	    
-  	    var importFilesUploadDirectory = this.getHibachiScope().getApplicationValue('applicationRootMappingPath') & '/integrationServices/slatwallimporter/assets/uploads/'; 
-		
+		var importFilesUploadDirectory = this.getVirtualFileSystemPath() & '/importcsv/'; 
+
 		try{
-			var uploadData = FileUpload( importFilesUploadDirectory, "uploadFile", "text/csv", "Overwrite");
+			var uploadData = FileUpload( importFilesUploadDirectory, "uploadFile", "text/csv", "makeunique");
 			
 			if ( !listFindNoCase("csv", uploadData.serverFileExt) ){
     		 	this.getHibachiScope().showMessage("The uploaded file is not of type CSV.", "error");
