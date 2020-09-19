@@ -265,7 +265,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         var header = this.getService().getEntityCSVHeaderMetaData( 'Account' );
         debug( header );
         
-        $assert.isEqual("companyName,countryCode,email,firstName,lastName,organizationFlag,phone,userID,username", header.columns );
+        $assert.isEqual("CompanyName,CountryCode,Email,FirstName,LastName,OrganizationFlag,Phone,UserID,Username", header.columns );
     }
 	
 	

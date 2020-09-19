@@ -86,7 +86,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         var mapping = this.getEntityMapping( arguments.entityName );
 
   	    mapping.properties.each( function(key, propertyMeta ){
-  	        headers[ key ] = "VarChar"; // ~~~~TODO, need a way to either define or infer this, should work like this
+  	        headers[ ucFirst(key, true) ] = "VarChar"; // ~~~~TODO, need a way to either define or infer this, should work like this
   	    });
   	    
   	    if( structKeyExists(mapping, 'relations') ){
@@ -141,7 +141,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    for( var record in queryOrArrayOfStruct ){
 	        var validation = this.pushRecordIntoImportQueue( arguments.entityName, record, newBatch.getBatchID() );
 	        
-	        if( validation.isValid ){
+	        if( !validation.isValid ){
 	            newBatch.addErrors( validation.errors );
 	        }
 	    }

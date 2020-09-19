@@ -60,26 +60,17 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
     }
     
     
-  	public any function getSampleCsvFilesOptions(){
+  	public struct function getAvailableSampleCsvFilesIndex(){
   	    
-  	    if( !structKeyExists(variables, 'sampleCSVFilesOptions') ){
-            
-            variables.sampleCSVFilesOptions = [];
+  	    if( !structKeyExists(variables, 'availableSampleCsvFilesIndex') ){
   	        
-            var baseUrl = this.getHibachiScope().getBaseUrl();
-            var files = directoryList( 
-                            this.getHibachiScope().getApplicationValue('applicationRootMappingPath') & "/integrationServices/slatwallimporter/assets/downloadsample/", 
-                            false, 
-                            "name"
-                        ); 
-            
-            for( var fileName in files ){
-                var option = {
-                    'name'  : fileName,
-                    'value' : baseUrl & '/integrationServices/slatwallimporter/assets/downloadsample/' & fileName
-                } 
-                arrayAppend( variables.sampleCSVFilesOptions, option );
-            }
+            // creating struct for fast-lookups
+            variables.sampleCSVFilesOptions = {
+                "Account" : "account",
+                "Order" : "account"
+            };
+            // TODO, need a way to figureout which entity-mappings are allowed to be import, 
+            // account vs account-phone-number
   	    }
   	    
   	    return variables.sampleCSVFilesOptions;
@@ -112,19 +103,24 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 				);
 			}
 			
-			if( !result.query.recordCount ){
-			    this.getHibachiScope().showMessage("Nothing to import", "warning");
+			if( result.query.recordCount ){
+
+    		    var batch = this.pushRecordsIntoImportQueue( data.entityName, result.query );
+    		    
+    		    if( !batch.hasErrors() ){
+    			    this.getHibachiScope().showMessage("All #batch.getInitialEntityQueueItemsCount()# items has been pushed to import-queue Successfully", "success");
+    		    } 
+    		    else {
+    		        this.getHibachiScope().showMessage("Some of #batch.getInitialEntityQueueItemsCount()# items has been pushed to import-queue", "success");
+    		        batch.showErrorsAndMessages();
+    		        batch.clearHibachiErrors();
+    		    }
+			} 
+			else {
+			    this.getHibachiScope().showMessage("Nothing got imported", "warning");
+			    this.getHibachiScope().showErrorsAndMessages();
 			}
 		    
-		    var batch = this.pushRecordsIntoImportQueue( data.entityName, result.query );
-		    
-		    if( !batch.hasErrors() ){
-			    this.getHibachiScope().showMessage("Uppload success", "success");
-		    } else {
-		        batch.showErrorsAndMessages();
-		        batch.clearHibachiErrors();
-		    }
-    	    
 			//delete uploaded file
 			fileDelete( uploadedFilePath );
 		} 

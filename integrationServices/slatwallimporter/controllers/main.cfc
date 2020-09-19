@@ -11,7 +11,7 @@ component extends="Slatwall.org.Hibachi.HibachiControllerEntity" accessors="true
     
     public function default( required struct rc ){
         
-    	arguments.rc.sampleCsvFilesOptions = this.getService("slatwallImporterService").getSampleCsvFilesOptions();
+    	arguments.rc.sampleCsvFilesIndex = this.getService("slatwallImporterService").getAvailableSampleCsvFilesIndex();
     }
     
 	public void function preProcessIntegration( required struct rc ){
@@ -27,6 +27,30 @@ component extends="Slatwall.org.Hibachi.HibachiControllerEntity" accessors="true
 		
 		this.getService("slatwallImporterService").uploadCSVFile( arguments.rc );
 		
-		super.renderOrRedirectSuccess( defaultAction="slatwallimporter:main", maintainQueryString=true, rc=arguments.rc);
+		super.renderOrRedirectSuccess( defaultAction="slatwallImporter:main", maintainQueryString=false, rc=arguments.rc);
+	}
+	
+	
+	public void function getSampleCSV( required struct rc ){
+   		
+   		var index = this.getService("slatwallImporterService").getAvailableSampleCsvFilesIndex();
+   		
+   		if( structKeyExists(index, arguments.rc.entityName) ){
+   		    
+   		    var header = this.getService('slatwallImporterService').getEntityCSVHeaderMetaData( arguments.rc.entityName );
+            
+            var tmpFileName = "#arguments.rc.entityName#_Import_Sample.csv";
+            var tmpFile = getTempFile( this.getVirtualFileSystemPath(), tmpFileName);
+            
+   		    fileWrite( filePath=tmpFile, data=header.columns );
+   		   
+        	cfHeader( charset="utf-8", name="Content-Disposition", value="attachment; filename=#tmpFileName#" );
+        	
+        	cfContent( deleteFile=true, file=tmpFile, type="application/csv" );
+   		} 
+   		else {
+   		    this.getHibachiScope().showMessage("Imvalid Entity-Name, no samplee found available", "warning");
+   		    super.renderOrRedirectFailure( defaultAction="slatwallImporter:main", maintainQueryString=false, rc=arguments.rc);
+   		}
 	}
 }
