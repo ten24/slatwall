@@ -26,6 +26,21 @@ component accessors="true" output="false" extends="HibachiService" {
 	public void function claimEntityQueueItemsByServer(required any collection, required numeric fetchSize){
 		getHibachiEntityQueueDAO().claimEntityQueueItemsByServer(argumentCollection=arguments);
 	}
+	
+	
+	// will move the entity-queue to entity-queue-failure 
+	public any function processEntityQueueFailure_reQueue(required any entityQueueFailure){
+    
+	    this.getHibachiEntityQueueDAO().reQueueEntityQueueFailure( arguments.entityQueueFailure.getEntityQueueFailureID() );
+	    return arguments.entityQueueFailure;
+	}
+	
+	// will move the entity-queue to entity-queue-failure 
+	public any function processEntityQueue_archive(required any entityQueue){
+    
+	    this.getHibachiEntityQueueDAO().archiveEntityQueue( arguments.entityQueue.getEntityQueueID(), arguments.entityQueue.getMostRecentError() );
+	    return arguments.entityQueue;
+	}
 
 	//delegates to processEntityQueueArray so we're not maintaining one function for object and one for hash map
 	//entry point will always be from workflow which should pass collectionData  

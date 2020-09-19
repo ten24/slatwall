@@ -50,17 +50,18 @@ Notes:
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
 
-<cfparam name="rc.entityqueue" type="any">
+<cfparam name="rc.entityQueue" type="any">
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.entityqueue#" edit="#rc.edit#" sRedirectAction="admin:entity.detailEntityqueue">
+	<hb:HibachiEntityDetailForm object="#rc.entityQueue#" edit="#rc.edit#" sRedirectAction="admin:entity.detailEntityqueue">
 		
 		<hb:HibachiEntityActionBar type="detail" object="#rc.entityQueue#" edit="#rc.edit#">
-		    <hb:HibachiProcessCaller entity="#rc.entityQueue#" action="admin:entity.processEntityqueue" processContext="processQueue" type="list" />
+		    <hb:HibachiProcessCaller entity="#rc.entityQueue#" action="admin:entity.processEntityQueue" sRedirectAction="admin:entity.listEntityQueue" processContext="archive" type="list" />
+		    <hb:HibachiProcessCaller entity="#rc.entityQueue#" action="admin:entity.processEntityQueue" sRedirectAction="admin:entity.listEntityQueue" processContext="processQueue" type="list" />
 		</hb:HibachiEntityActionBar>
 		
-        <hb:HibachiEntityDetailGroup object="#rc.entityqueue#">
+        <hb:HibachiEntityDetailGroup object="#rc.entityQueue#">
 		    <hb:HibachiEntityDetailItem view="admin:entity/entityqueuetabs/basic" open="true" />
 		</hb:HibachiEntityDetailGroup>
 		

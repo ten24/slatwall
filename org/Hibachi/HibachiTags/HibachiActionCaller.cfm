@@ -149,7 +149,7 @@
 				<li>
 					<a  title="#attributes.title#" 
 						class="#attributes.class#" 
-						target="attributes.target" 
+						target="#attributes.target#" 
 						href="#attributes.hibachiScope.buildURL(action=attributes.action,querystring=attributes.querystring)#"
 						<cfif attributes.modal 
 							&& not attributes.disabled

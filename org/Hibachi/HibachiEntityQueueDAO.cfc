@@ -109,6 +109,9 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 	}
 
 	public void function bulkInsertEntityQueueByPrimaryIDs(required string primaryIDList, required string entityName, required string processMethod, boolean unique=false){
+		
+		//TODO: create a new Batch
+		
 		var primaryIDPropertyName = getHibachiService().getPrimaryIDPropertyNameByEntityName(arguments.entityName);	
 		var queryService = new query();
 		var sql = "INSERT INTO SwEntityQueue (entityQueueID, baseObject, baseID, processMethod, createdDateTime, modifiedDateTime, entityQueueDateTime, createdByAccountID, modifiedByAccountID, tryCount) ";
@@ -148,6 +151,8 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 	} 
 
 	public void function bulkInsertEntityQueueByFlagPropertyName(required string flagPropertyName, required string entityName, required string processMethod, boolean unique = false, boolean flagValue = true, struct entityQueueData = {} ){
+		
+		// TODO: create a new Batch
 		
 		var primaryIDPropertyName = getHibachiService().getPrimaryIDPropertyNameByEntityName(arguments.entityName);	
 		var queryService = new query();
@@ -311,7 +316,7 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 	
 	public void function archiveEntityQueue(required string entityQueueID, string mostRecentError = '' ){
 	
-		var columns = 'baseObject, baseID, processMethod, entityQueueType, entityQueueDateTime, entityQueueData, integrationID, createdDateTime, modifiedDateTime, createdByAccountID, modifiedByAccountID, tryCount';
+		var columns = 'baseObject, baseID, batchID, processMethod, entityQueueType, entityQueueDateTime, entityQueueData, integrationID, createdDateTime, modifiedDateTime, createdByAccountID, modifiedByAccountID, tryCount';
 		
 		var insertQuery = new query();
 		var sql = "INSERT INTO SwEntityQueueFailure (entityQueueFailureID, remoteID, #columns#, mostRecentError) ";
@@ -329,9 +334,28 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 		
 	}
 	
+	public void function reQueueEntityQueueFailure(required string entityQueueFailureID){
+	    var columns = 'baseObject, baseID, batchID, processMethod, entityQueueType, entityQueueData, integrationID, createdDateTime, createdByAccountID';
+		
+		var insertQuery = new query();
+		var sql = "INSERT IGNORE INTO SwEntityQueue (entityQueueID, #columns#, tryCount, modifiedDateTime, entityQueueDateTime, modifiedByAccountID) ";
+		sql &= "SELECT remoteID as entityQueueID, #columns#, 0, now(), now(), '#getHibachiScope().getAccount().getAccountID()#' ";
+		sql &= "FROM swEntityQueueFailure ";
+		sql &= "WHERE entityQueueFailureID = :entityQueueFailureID";
+
+		insertQuery.addParam(name='entityQueueFailureID', value=arguments.entityQueueFailureID, CFSQLTYPE="CF_SQL_VARCHAR");
+		insertQuery.execute(sql=sql);
+		
+		var deleteQuery = new query();
+		sql = "DELETE FROM swEntityQueueFailure WHERE entityQueueFailureID = :entityQueueFailureID";
+		
+		deleteQuery.addParam(name='entityQueueFailureID', value=arguments.entityQueueFailureID, CFSQLTYPE="CF_SQL_VARCHAR");
+		deleteQuery.execute(sql=sql);
+	}
+	
 	public void function ReQueueItems(required string baseObject, required string baseID){
 	
-		var columns = 'baseObject, baseID, processMethod, entityQueueType, entityQueueDateTime, entityQueueData, integrationID, createdDateTime, createdByAccountID';
+		var columns = 'baseObject, baseID, batchID, processMethod, entityQueueType, entityQueueData, integrationID, createdDateTime, createdByAccountID';
 		
 		var insertQuery = new query();
 		var sql = "INSERT IGNORE INTO SwEntityQueue (entityQueueID, #columns#, tryCount, modifiedDateTime, entityQueueDateTime, modifiedByAccountID) ";
