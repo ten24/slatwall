@@ -18,9 +18,9 @@
 			<cfset local.endOfMonth = CreateDateTime(Year(now()),Month(DateAdd('m', 1, now())),1,0,0,0) />
 			<cfset local.endOfHour = CreateDateTime(Year(now()),Month(now()),Day(now()),Hour(now()),59,59) />
 			<cfset local.lastTwentyFourHours = DateAdd("h", -24, local.endOfHour) />
-			<cfset local.lastTwoWeeks = DateAdd("d", -13, local.startOfToday) />
-			<cfset local.weekGrouping = DateAdd("ww", -11, local.startOfToday) />
-			<cfset local.monthGrouping = DateAdd("m", -11, local.startOfMonth) />
+			<cfset local.lastTwoWeeks = DateAdd("d", -13, local.endOfToday) />
+			<cfset local.weekGrouping = DateAdd("ww", -11, local.endOfToday) />
+			<cfset local.monthGrouping = DateAdd("m", -11, local.endOfMonth) />
 
 			<div class="row s-report-info">
 		<span ng-init="toggleCustomDate = false"></span>			
@@ -41,7 +41,7 @@
 							class="hibachi-report-date-group btn btn-xs btn-default<cfif attributes.report.getReportDateTimeGroupBy() eq 'day'> active</cfif>" 
 							data-groupby="day" 
 							data-start="#local.lastTwoWeeks#" 
-							data-end="#CreateDateTime(Year(now()),Month(now()),Day(DateAdd('d', 1,now())),0,0,0)#"
+							data-end="#local.endOfToday#"
 							>Day</a>
 						<a 
 							href="" 
@@ -61,8 +61,8 @@
 							href="" 
 							class="hibachi-report-date-group btn btn-xs btn-default<cfif attributes.report.getReportDateTimeGroupBy() eq 'year'> active</cfif>" 
 							data-groupby="year" 
-							data-start="#CreateDateTime(Year(DateAdd('yyyy', -12, now())),1,1,0,0,0)#" 
-							data-end="#local.startOfToday#"
+							data-start="#CreateDateTime(Year(DateAdd('yyyy', -10, now())),1,1,0,0,0)#" 
+							data-end="#CreateDateTime(Year(DateAdd('yyyy', 1, now())),Month(now()),1,0,0,0)#"
 							>Year</a>
 						<button type="button" class="hibachi-report-date-group-custom-toggle btn btn-xs btn-default">Custom</button>
 					</div>

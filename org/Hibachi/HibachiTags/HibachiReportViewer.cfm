@@ -15,48 +15,85 @@
 			</div>
 		    <div class="Mcard-wrapper col-md-12">
 		        <div class="col-md-3">
-					<sw-stat-widget 
-						title="Sales" 
-						metric="sales-revenue-this-period"
-						img-src="/assets/images/piggy-bank-1.png"
-						img-alt="Piggy Bank"
-						footer-class="Mcard-footer1"
-					>
-					</sw-stat-widget>
+					<div class="Mcard card-shadow">
+					    <div class="Mcard-body ">
+					       <div>
+					           <h1 id="sales-revenue-this-period"></h1>
+					        </div>
+					       <div>
+					           <img src="/assets/images/piggy-bank-1.png" alt="Piggy Bank">
+					       </div>
+					    </div>
+					    <div class="Mcard-footer Mcard-footer1">
+					        <div>
+					            <p>Sales <span class="time-period"></span></p>
+					        </div>
+					    </div>
+					</div>
 		        </div>
 		
 		         <div class="col-md-3">
-		        	<sw-stat-widget 
-						title="Order Count" 
-						metric="order-count-this-period"
-						img-src="/assets/images/shopping-bag-gray.png"
-						img-alt="Shopping Bags"
-						footer-class="Mcard-footer2"
-					>
-					</sw-stat-widget>
+					<div class="Mcard card-shadow">
+					    <div class="Mcard-body ">
+					       <div>
+					           <h1 id="order-count-this-period"></h1>
+					        </div>
+					       <div>
+					           <img src="/assets/images/shopping-bag-gray.png" alt="Shopping Bags">
+					       </div>
+					    </div>
+					    <div class="Mcard-footer Mcard-footer2">
+					        <div>
+					            <p>Order Count <span class="time-period"></span></p>
+					        </div>
+					    </div>
+					</div>
 		        </div>
 		
 		        <div class="col-md-3">
-		    		<sw-stat-widget 
-						title="Average Order Value" 
-						metric="average-order-total-this-period"
-						img-src="/assets/images/dollar-symbol-gray.png"
-						img-alt="Dollar Symbol Badge"
-						footer-class="Mcard-footer4"
-					>
-					</sw-stat-widget>
+					<div class="Mcard card-shadow">
+					    <div class="Mcard-body ">
+					       <div>
+					           <h1 id="average-order-total-this-period"></h1>
+					        </div>
+					       <div>
+					           <img src="/assets/images/dollar-symbol-gray.png" alt="Dollar Symbol Badge">
+					       </div>
+					    </div>
+					    <div class="Mcard-footer Mcard-footer4">
+					        <div>
+					            <p>Average Order Value <span class="time-period"></span></p>
+					        </div>
+					    </div>
+					</div>
 		        </div>
 		        
 		    	<div class="col-md-3">
-		    		<sw-stat-widget 
+		    		<!---<sw-stat-widget 
 						title="Accounts Created" 
 						metric="accounts-created-this-period"
 						img-src="/assets/images/user-2.png"
 						img-alt="User Icon"
 						footer-class="Mcard-footer3"
 					>
-					</sw-stat-widget>
+					</sw-stat-widget>--->
+					<div class="Mcard card-shadow">
+					    <div class="Mcard-body ">
+					       <div>
+					           <h1 id="accounts-created-this-period"></h1>
+					        </div>
+					       <div>
+					           <img src="/assets/images/user-2.png" alt="User Icon">
+					       </div>
+					    </div>
+					    <div class="Mcard-footer Mcard-footer3">
+					        <div>
+					            <p>Accounts Created <span class="time-period"></span></p>
+					        </div>
+					    </div>
+					</div>
 		        </div>
+		        
 			</div>
 			<!--- Chart --->
 			<div class="hibachi-report-chart-container col-md-12">

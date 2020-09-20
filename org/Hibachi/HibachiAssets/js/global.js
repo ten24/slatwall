@@ -1873,7 +1873,7 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 							            	time: {
 							            		parser: 'string',
 							            		unit: r.report.reportDateTimeGroupBy,
-							            		stepSize: 5,
+							            		stepSize: 1,
 							            	}
 							            }]
 							        },

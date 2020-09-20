@@ -56,7 +56,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	this.secureMethods=listAppend(this.secureMethods,'default');
 	this.secureMethods=listAppend(this.secureMethods,'exportxls');
 	this.secureMethods=listAppend(this.secureMethods,'exportcsv');
-	this.secureMethods=listAppend(this.secureMethods,'widget');
 
 	public void function default(required struct rc) {
 		param name="arguments.rc.reportID" default="";
@@ -130,11 +129,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			arguments.rc.pageTitle = arguments.rc.report.getReportTitle();
 		}
 		
-		arguments.rc.ajaxResponse["report"]["salesRevenueThisPeriod"] = {};
-		arguments.rc.ajaxResponse["report"]["orderCount"] = 0;
-		arguments.rc.ajaxResponse["report"]["averageOrderTotal"] = "$0";
-		arguments.rc.ajaxResponse["report"]["accountCount"] = 0;
-		
 		arguments.rc.ajaxResponse["report"]["period"] = "Today";
 		var currentPeriodMinDateTime = CreateDateTime(Year(now()),Month(now()),Day(now()),0,0,0);
 		var currentPeriodMaxDateTime = CreateDateTime(Year(now()),Month(now()),Day(now()),23,59,59);
@@ -182,13 +176,13 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		} else {
 			salesRevenueThisPeriodCollectionList.addFilter('orderCreatedSite.siteID', arguments.rc.report.getReportSite(),'=');
 		}
-		//salesRevenueThisPeriodCollectionList.addFilter('createdDateTime', arguments.rc.report.getReportStartDateTime(), '>=');
 		salesRevenueThisPeriodCollectionList.addFilter('createdDateTime', currentPeriodMinDateTime, '>=');
-		//salesRevenueThisPeriodCollectionList.addFilter('createdDateTime', arguments.rc.report.getReportEndDateTime(), '<=');
 		salesRevenueThisPeriodCollectionList.addFilter('createdDateTime', currentPeriodMaxDateTime, '<=');
 		salesRevenueThisPeriodCollectionList.addFilter('orderStatusType.systemCode','ostNotPlaced','!=');
 		if(salesRevenueThisPeriodCollectionList.getRecords()[1]['totalSalesRevenue'] EQ " ") {
 			arguments.rc.ajaxResponse["report"]["salesRevenueThisPeriod"] = "$0";
+			arguments.rc.ajaxResponse["report"]["orderCount"] = 0;
+			arguments.rc.ajaxResponse["report"]["averageOrderTotal"] = "$0";
 		} else {
 			arguments.rc.ajaxResponse["report"]["salesRevenueThisPeriod"] = formatValue(salesRevenueThisPeriodCollectionList.getRecords()[1]['totalSalesRevenue'], 'currency');
 			arguments.rc.ajaxResponse["report"]["orderCount"] = salesRevenueThisPeriodCollectionList.getRecords()[1]['orderCount'];
@@ -198,14 +192,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		var accountsThisPeriodCollectionList = getAccountService().getAccountCollectionList();
 		accountsThisPeriodCollectionList.setDisplayProperties("");
 		accountsThisPeriodCollectionList.addDisplayAggregate('accountID','COUNT','accountCount');
-		// if(arguments.rc.report.getReportSite() != "ALL") {
-		// 	accountsThisPeriodCollectionList.addFilter('accountCreatedSite.siteID', 'NULL','IS');
-		// } else {
-		// 	accountsThisPeriodCollectionList.addFilter('accountCreatedSite.siteID', arguments.rc.report.getReportSite(),'=');
-		// }
-		//accountsThisPeriodCollectionList.addFilter('createdDateTime', arguments.rc.report.getReportStartDateTime(), '>=');
 		accountsThisPeriodCollectionList.addFilter('createdDateTime', currentPeriodMinDateTime, '>=');
-		//accountsThisPeriodCollectionList.addFilter('createdDateTime', arguments.rc.report.getReportEndDateTime(), '<=');
 		accountsThisPeriodCollectionList.addFilter('createdDateTime', currentPeriodMaxDateTime, '<=');
 		if(accountsThisPeriodCollectionList.getRecords()[1]['accountCount'] EQ " ") {
 			arguments.rc.ajaxResponse["report"]["accountCount"] = 0;
@@ -242,11 +229,5 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		report.exportCSV();
 		
 		getFW().redirect(action="admin:report.default", queryString="reportName=#report.getClassName()#");
-	}
-	
-	public void function widget(required struct rc) {
-		request.layout = false;
-		genericDetailMethod(entityName="Report", rc=arguments.rc);
-		arguments.rc.report = getHibachiReportService().getReportCFC(arguments.rc.report.getReportName(), arguments.rc);
 	}
 }

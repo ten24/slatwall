@@ -3,35 +3,8 @@
 
 
 class SWStatWidgetController{
-    constructor(
-	    public $scope,
-        public $http,
-        public $hibachi,
-    ){
-		// console.log('hi')
-		// let data = {
-		// 	slatAction: 'admin:report.default',
-		// 	reportDateTimeGroupBy: "hello there"
-		// };
-		
-  //      $http({
-  //  		url: "http://slatwalldevelop.local:8906/",
-  //  		method: "POST",
-		// 	data: data,
-		// 	headers: {
-		// 		"Content-Type": "JSON",
-		// 		"X-Hibachi-AJAX": true,
-		// 	}
-			
-		// }).then(function successCallback(response) {
-		//         // this callback will be called asynchronously
-		//         // when the response is available
-		//         console.log(response);
-		//     }, function errorCallback(response) {
-		//         // called asynchronously if an error occurs
-		//         // or server returns response with an error status.
-		//         console.log(response);
-		// });
+    constructor(){
+    
     }
 }
 
