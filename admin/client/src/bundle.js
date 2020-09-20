@@ -91864,12 +91864,7 @@ var SWReportMenuController = /** @class */ (function () {
         var _this = this;
         this.$rootScope = $rootScope;
         this.$onInit = function () {
-            console.log(_this.collectionConfig);
-            console.log('hi');
             _this.getPersistedReports();
-        };
-        this.test = function () {
-            console.log('hiiiiii');
         };
         this.getPersistedReports = function () {
             var persistedReportsCollectionList = _this.collectionConfig.newCollectionConfig('Collection');
@@ -93073,10 +93068,32 @@ exports.validationmodule = validationmodule;
 /// <reference path='../../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
 var SWStatWidgetController = /** @class */ (function () {
-    function SWStatWidgetController() {
-        this.init = function () {
-        };
-        this.init();
+    function SWStatWidgetController($scope, $http, $hibachi) {
+        // console.log('hi')
+        // let data = {
+        // 	slatAction: 'admin:report.default',
+        // 	reportDateTimeGroupBy: "hello there"
+        // };
+        this.$scope = $scope;
+        this.$http = $http;
+        this.$hibachi = $hibachi;
+        //      $http({
+        //  		url: "http://slatwalldevelop.local:8906/",
+        //  		method: "POST",
+        // 	data: data,
+        // 	headers: {
+        // 		"Content-Type": "JSON",
+        // 		"X-Hibachi-AJAX": true,
+        // 	}
+        // }).then(function successCallback(response) {
+        //         // this callback will be called asynchronously
+        //         // when the response is available
+        //         console.log(response);
+        //     }, function errorCallback(response) {
+        //         // called asynchronously if an error occurs
+        //         // or server returns response with an error status.
+        //         console.log(response);
+        // });
     }
     return SWStatWidgetController;
 }());

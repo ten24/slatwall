@@ -1789,8 +1789,8 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 				slatAction: 'admin:report.default',
 				reportID: jQuery('input[name="reportID"]').val(),
 				reportName: jQuery('#hibachi-report').data('reportname'),
-				reportStartDateTime: jQuery('input[name="reportStartDateTime"]').val(),
-				reportEndDateTime: jQuery('input[name="reportEndDateTime"]').val(),
+				reportStartDateTime: jQuery('a.hibachi-report-date-group.active').data('start'),
+				reportEndDateTime: jQuery('a.hibachi-report-date-group.active').data('end'),
 				reportCompareStartDateTime: jQuery('input[name="reportCompareStartDateTime"]').val(),
 				reportCompareEndDateTime: jQuery('input[name="reportCompareEndDateTime"]').val(),
 				reportDateTimeGroupBy: jQuery('a.hibachi-report-date-group.active').data('groupby'),
@@ -1828,6 +1828,7 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 					removeLoadingDiv( 'hibachi-report' );
 				},
 				success: function( r ) {
+					console.log(r);
 					if(r.report.hideChart !== undefined){ 
 						jQuery("#hibachi-report-chart").remove();
 						jQuery("#hibachi-report-chart-wrapper").hide();
@@ -1835,6 +1836,11 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 						if(r.report.chartData.series !== undefined){
 							var html = "<canvas id='hibachi-report-chart' width='1800' height='600'></canvas>";
 							jQuery("#hibachi-report-chart-wrapper").html(html);
+							jQuery("#sales-revenue-this-period").html(r.report.salesRevenueThisPeriod);
+							jQuery("#order-count-this-period").html(r.report.orderCount);
+							jQuery("#average-order-total-this-period").html(r.report.averageOrderTotal);
+							jQuery("#accounts-created-this-period").html(r.report.accountCount);
+							jQuery(".time-period").html(r.report.period);
 							var ctx = jQuery("#hibachi-report-chart")[0].getContext("2d");
 							var chart = new Chart(ctx, {
 							    type: r.report.chartData.data.type,
@@ -1866,7 +1872,7 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 							            	},
 							            	time: {
 							            		parser: 'string',
-							            		unit: 'week',
+							            		unit: r.report.reportDateTimeGroupBy,
 							            		stepSize: 5,
 							            	}
 							            }]

@@ -8893,6 +8893,10 @@ table.s-detail-content-table tbody tr.s-done {
   width: 90%;
   margin: 0 auto;
 }
+#loadinghibachi-report {
+  width: 100vw!important;
+  height: 100vh!important;
+}
 #hibachi-report-configure-bar {
   padding-bottom: 12px;
 }
@@ -8906,7 +8910,7 @@ table.s-detail-content-table tbody tr.s-done {
   margin-right: 12px;
 }
 .hibachi-report-chart-container {
-  margin: 0 auto;
+  margin: 0 auto 24px auto;
 }
 .hibachi-report-chart-title {
   padding: 8px;
