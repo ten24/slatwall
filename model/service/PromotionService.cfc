@@ -454,7 +454,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public void function addRewardSkusToOrder(required array itemsToBeAdded, required any order, required any fulfillment){
-
+		getHibachiScope().logHibachi('Adding reward sku called', true);
 		if(arguments.order.getDropSkuRemovedFlag()){
 			return;
 		}
@@ -464,7 +464,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(isNull(currencyCode)){
 			return;
 		}
-		
+			getHibachiScope().logHibachi('Looping over SKus', true);
 		for(var item in arguments.itemsToBeAdded){
 			
 			var sku = skuService.getSku(item.skuID);
@@ -497,6 +497,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						promotionRewardID= item.promotionReward.getPromotionRewardID(),
 						skuID=sku.getSkuID()
 					);
+			}else{
+				newOrderItem.removeOrderFulfillment(arguments.fulfillment);
+				newOrderItem.removeOrder(arguments.order);
 			}
 		}
 		arguments.itemsToBeAdded = [];
