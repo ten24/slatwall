@@ -15,6 +15,8 @@
 			<hb:HibachiPropertyDisplay object="#rc.account#" property="genderFullWord" edit="false">   
 			<hb:HibachiPropertyDisplay object="#rc.account#" property="complianceStatus" edit="false" attributeFlag="true">
 			<hb:HibachiPropertyDisplay object="#rc.account#" property="username" edit="false">
+			<hb:HibachiPropertyDisplay object="#rc.account#" property="accountCreatedSite" edit="false">
+				
 			<div class="form-group">
 				<label class="control-label col-sm-4 title">#$.slatwall.rbKey('entity.account.accountNumber')#</label>
 				<div class="col-sm-8">
