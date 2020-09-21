@@ -40,7 +40,7 @@ component extends="Slatwall.model.service.SkuService" accessors="true" output="f
 			.getService('integrationService')
 			.getIntegrationByIntegrationPackage('monat')
 			.getIntegrationCFC("data")
-			.importMonatProducts({ 'days' : 1 });
+			.importMonatProducts({ 'minutes' : 30 });
 
 		return this.newSku();
 	}
