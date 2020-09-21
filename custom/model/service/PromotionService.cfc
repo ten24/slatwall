@@ -312,7 +312,7 @@ component extends="Slatwall.model.service.PromotionService" {
 	}
 	
 	public void function addRewardSkusToOrder(required array itemsToBeAdded, required any order, required any fulfillment){
-	getHibachiScope().logHibachi('Adding reward sku called', true);
+
 		if(arguments.order.getDropSkuRemovedFlag()){
 			return;
 		}
