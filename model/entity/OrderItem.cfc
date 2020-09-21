@@ -310,12 +310,15 @@ property name="personalVolume" ormtype="big_decimal";
 					
 					maxQTY = getStock().getQuantity('QATS');
 				
-				} else if( getSku().getQATS() <= maxQTY ){
+				} else if( isNull( this.getOrder().getDefaultStockLocation() ) && getSku().getQATS() <= maxQTY ){
 					
-					if ( isNull( this.getOrder().getDefaultStockLocation() ) ){
-						maxQTY = getSku().getQATS();
-					}else{
-						maxQTY = getSku().getQuantity(quantityType='QATS', locationID=this.getOrder().getDefaultStockLocation().getLocationID() );
+					maxQTY = getSku().getQATS();
+					
+				} else if( !isNull( this.getOrder().getDefaultStockLocation() ) ){
+					
+					var locationQATS = getSku().getQuantity(quantityType='QATS', locationID=this.getOrder().getDefaultStockLocation().getLocationID() );
+					if( locationQATS < maxQTY ){
+						maxQTY = locationQATS;
 					}
 				}
 				
