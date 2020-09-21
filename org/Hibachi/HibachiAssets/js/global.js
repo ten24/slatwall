@@ -224,7 +224,7 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 			}
 		});
 		
-		// Wysiwyg
+		// JSON
 		jQuery.each(jQuery( scopeSelector ).find(jQuery( 'pre.json' )), function(i, v){
 		    
 		    var jsonStr = $(this).text();
