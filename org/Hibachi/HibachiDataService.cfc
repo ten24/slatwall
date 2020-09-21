@@ -10,13 +10,13 @@ component accessors="true" output="false" extends="HibachiService" {
 	/**
 	 * this function takes a csv-file path, a list of columnTypes and returns an struct like 
 	 * 
-	 * returns an struct containig the query-object and an array or lines with errors
+	 * returns an struct containig the query-object and an array of lines with errors
 	 *	{ 
 	 *		query  : theQueryObject, 
 	 *		errors : [  
 	 *					{
 	 *						line: number, 
-	 *						record: [val1, val2, ......] // array of all the columns on that like
+	 *						record: [val1, val2, ......] // array of all the columns in that line
 	 *					}
 	 *				] 
 	 *	}
