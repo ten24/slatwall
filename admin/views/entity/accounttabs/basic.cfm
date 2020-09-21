@@ -9,6 +9,7 @@
 		<hb:HibachiPropertyList divclass="col-md-6">
 			<hb:HibachiPropertyDisplay object="#rc.account#" property="firstName" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.account#" property="lastName" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.account#" property="username" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.account#" property="company" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.account#" property="accountCreatedSite" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.account#" property="activeFlag" edit="#rc.edit#" hint="Active Account">
