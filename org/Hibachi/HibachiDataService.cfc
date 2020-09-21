@@ -26,24 +26,15 @@ component accessors="true" output="false" extends="HibachiService" {
 		//read-csv-file
 		var records = this.getHibachiUtilityService().csvStringToArray( FileRead(arguments.csvFilePath,"utf-8") );
 
-		var columns="";
-		
+
 		if( arguments.useHeaderRowAsColumns ){
-			columns = ArrayToList( records[1] );
-		} else {
-			columns = arguments.columns;
-		}
+			arguments.columns = ArrayToList( records[1] );
+		} 
 
-		columns = REReplace(columns, '[^a-zA-Z\d,]', '', 'ALL');
+		arguments.columns = REReplace(arguments.columns, '[^a-zA-Z\d,]', '', 'ALL');
 
-		var numberOfColumns = Listlen(columns, ',', true);
+		var numberOfColumns = Listlen(arguments.columns, ',', true);
 		var numberOfRecords = ArrayLen(records);
-
-		this.logHibachi("HibachiDataService loading CSV  with columns: " & arguments.columns, true );
-		this.logHibachi("HibachiDataService loading CSV  with column types: " & arguments.columnTypes, true );
-		this.logHibachi("HibachiDataService loading CSV  with ## of columns: " & numberOfColumns, true );
-		this.logHibachi("HibachiDataService loading CSV  with ## of records: " & numberOfRecords, true );
-
 
 		var csvQuery = QueryNew(arguments.columns, arguments.columnTypes);
 		var errors = [];

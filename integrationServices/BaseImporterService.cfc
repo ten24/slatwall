@@ -149,7 +149,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    return newBatch;
 	}
 	
-	public struct function pushRecordIntoImportQueue( required string entityName, required struct data, required string batchID, numeric tryCount = 1 ){
+	public struct function pushRecordIntoImportQueue( required string entityName, required struct data, required string batchID ){
 	    
 	    var validation = this.validateEntityData( entityName = arguments.entityName, data = arguments.data, collectErrors=true);
 	    
@@ -158,7 +158,6 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	        var entityQueueData = {
 	            'data':  arguments.data,
 	            'batchID': arguments.batchID,
-	            'tryCount': arguments.tryCount,
 	            'entityName': arguments.entityName
 	        }
 	        
@@ -171,7 +170,6 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         	    integrationID = this.getIntegration().getIntegrationID(), 
         	    batchID = arguments.batchID,
         	    mostRecentError = serializeJson( validation.errors ),
-        	    tryCount = arguments.tryCount 
         	);
         	
 	    } else {
@@ -186,7 +184,6 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         	    entityQueueData = transformedData, 
         	    integrationID = this.getIntegration().getIntegrationID(), 
             	batchID = arguments.batchID,
-            	tryCount = arguments.tryCount 
         	);
 	        
 	    }
@@ -199,7 +196,6 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         var validation = this.pushRecordIntoImportQueue(
             data       = arguments.entityQueueData.data, 
             batchID    = arguments.entityQueueData.batchID, 
-            tryCount   = arguments.entityQueueData.tryCount+1,
             entityName = arguments.entityQueueData.entityName 
         );
         

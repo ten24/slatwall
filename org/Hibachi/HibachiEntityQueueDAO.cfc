@@ -200,7 +200,6 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 	    struct entityQueueData={}, 
 	    string integrationID='', 
 	    string batchID='', 
-	    numeric tryCount = 1,
 	    any entityQueueDateTime = now()
 	){
 
@@ -230,14 +229,12 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 			queryService.addParam(name='entityQueueProcessingDateTime', CFSQLTYPE="CF_SQL_TIMESTAMP", null=true);
 		}
 		
-		queryService.addParam(name='tryCount', value=arguments.tryCount, CFSQLTYPE="CF_SQL_INT");
-		
 		queryService.addParam(name='accountID', value='#getHibachiScope().getAccount().getAccountID()#', CFSQLTYPE="CF_SQL_STRING");
 		
 		var sql =	"INSERT IGNORE INTO
 						SwEntityQueue (entityQueueID,baseObject,baseID,processMethod,entityQueueData,integrationID,batchID,createdDateTime,createdByAccountID,modifiedByAccountID,modifiedDateTime,entityQueueDateTime,tryCount,entityQueueProcessingDateTime)
 					VALUES 
-						(:entityQueueID,:baseObject,:baseID,:processMethod,:entityQueueData,:integrationID,:batchID,:dateTimeNow,:accountID,:accountID,:dateTimeNow,:entityQueueDateTime,:tryCount,:entityQueueProcessingDateTime)";
+						(:entityQueueID,:baseObject,:baseID,:processMethod,:entityQueueData,:integrationID,:batchID,:dateTimeNow,:accountID,:accountID,:dateTimeNow,:entityQueueDateTime,1,:entityQueueProcessingDateTime)";
 						
 		queryService.execute(sql=sql);
 	}
@@ -251,14 +248,13 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 	    string entityQueueID, 
 	    string batchID='', 
 	    string mostRecentError='',
-	    numeric tryCount = 1,
 	    any createdDateTime = now(),
 	    any entityQueueProcessingDateTime = now() 
 	){
 	
 		var insertQuery = new query();
 		var columns = 'entityQueueFailureID,  baseObject,  baseID,  processMethod,  entityQueueData,  integrationID,  batchID,  remoteID,  mostRecentError,  tryCount,  createdDateTime,  entityQueueProcessingDateTime,  createdByAccountID, modifiedByAccountID';
-		var values = ':entityQueueFailureID, :baseObject, :baseID, :processMethod, :entityQueueData, :integrationID, :batchID, :remoteID, :mostRecentError, :tryCount, :createdDateTime, :entityQueueProcessingDateTime, :accountID, :accountID ';
+		var values = ':entityQueueFailureID, :baseObject, :baseID, :processMethod, :entityQueueData, :integrationID, :batchID, :remoteID, :mostRecentError, 1, :createdDateTime, :entityQueueProcessingDateTime, :accountID, :accountID ';
 		
 		var sql = " INSERT INTO SwEntityQueueFailure ( #columns# ) VALUES ( #values# ) ";
 		
@@ -283,7 +279,6 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 		insertQuery.addParam( name="remoteID", value=arguments.entityQueueID, CFSQLTYPE="CF_SQL_VARCHAR" );
 		insertQuery.addParam( name='batchID', value= arguments.batchID, CFSQLTYPE="CF_SQL_VARCHAR", null=len(trim(arguments.batchID)) ? false : true );
 		
-		insertQuery.addParam( name='tryCount', value= arguments.tryCount, CFSQLTYPE="CF_SQL_INT");
 		insertQuery.addParam( name='mostRecentError', value=arguments.mostRecentError, CFSQLTYPE="CF_SQL_VARCHAR");
 		
 		if( structKeyExists(arguments, "createdDateTime") ){

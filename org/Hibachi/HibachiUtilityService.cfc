@@ -1358,6 +1358,8 @@
     			Now, let's define the pattern for parsing the CSV data. We are going to use verbose regular expression 
     			since this is a rather complicated pattern.
     			NOTE: We are using the verbose flag such that we can use 	white space in our regex for readability.
+    			
+    			"(?x)\G(?:""([^""]*+ (?>""""[^""]*+)* )"" | ([^""\,\r\n]*+)) (\,\r\n?|\n|$)"
     		*/
     		var regEx = ""
     		savecontent variable="regEx"{
