@@ -169,7 +169,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         	    entityQueueData = entityQueueData, 
         	    integrationID = this.getIntegration().getIntegrationID(), 
         	    batchID = arguments.batchID,
-        	    mostRecentError = serializeJson( validation.errors ),
+        	    mostRecentError = serializeJson( validation.errors )
         	);
         	
 	    } else {
@@ -183,7 +183,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         	    processMethod ='processEntityImport',
         	    entityQueueData = transformedData, 
         	    integrationID = this.getIntegration().getIntegrationID(), 
-            	batchID = arguments.batchID,
+            	batchID = arguments.batchID
         	);
 	        
 	    }
