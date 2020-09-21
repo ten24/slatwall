@@ -52,22 +52,13 @@ Notes:
 <cfparam name="rc.report" type="any" />
 
 <cfoutput>
-	<div class="row s-body-nav">
-	    <nav class="navbar navbar-default" role="navigation">
-	      <div class="col-md-4 s-header-info">
-
-				<!--- Page Title --->
-				<h1 class="actionbar-title">#$.slatwall.rbKey('admin.main.default')#</h1>
-			</div>
-	   </nav>
-	</div>
 	<div class="col-md-12">
 		<hb:HibachiMessageDisplay />
 	</div>
-
-	<hb:HibachiReportViewer report="#rc.report#" />
 	
-	<div class="navTabs-Container col-md-12" id="navTabs-Container">
+	<hb:HibachiReportViewer report="#rc.report#" />
+
+	<div class="navTabs-Container" id="navTabs-Container">
 		<ul class="nav nav-tabs" role="tablist">
 			  <li class="active tab-selector"><a href="##reports-overview" role="tab" data-toggle="tab">My Custom Reports</a></li>
 			  <li class="tab-selector"><a href="##popular-reports" role="tab" data-toggle="tab">Popular Reports</a></li>
