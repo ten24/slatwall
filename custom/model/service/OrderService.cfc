@@ -753,7 +753,7 @@ component extends="Slatwall.model.service.OrderService" {
 		
 		///Order Item Data
 		var ordersItemsList = this.getOrderItemCollectionList();
-		ordersItemsList.setDisplayProperties('quantity,price,calculatedListPrice,calculatedExtendedPriceAfterDiscount,sku.product.productName,sku.product.productID,sku.product.productType.systemCode,sku.skuID,skuProductURL,skuImagePath,orderFulfillment.shippingAddress.streetAddress,orderFulfillment.shippingAddress.street2Address,orderFulfillment.shippingAddress.city,orderFulfillment.shippingAddress.stateCode,orderFulfillment.shippingAddress.postalCode,orderFulfillment.shippingAddress.name,orderFulfillment.shippingAddress.countryCode,orderFulfillment.shippingMethod.shippingMethodName,orderFulfillment.handlingFee,orderFulfillment.fulfillmentCharge');
+		ordersItemsList.setDisplayProperties('orderItemID,quantity,price,calculatedListPrice,calculatedExtendedPriceAfterDiscount,sku.product.productName,sku.product.productID,sku.product.productType.systemCode,sku.skuID,skuProductURL,skuImagePath,orderFulfillment.shippingAddress.streetAddress,orderFulfillment.shippingAddress.street2Address,orderFulfillment.shippingAddress.city,orderFulfillment.shippingAddress.stateCode,orderFulfillment.shippingAddress.postalCode,orderFulfillment.shippingAddress.name,orderFulfillment.shippingAddress.countryCode,orderFulfillment.shippingMethod.shippingMethodName,orderFulfillment.handlingFee,orderFulfillment.fulfillmentCharge');
 		ordersItemsList.addFilter( 'order.orderID', arguments.data.orderID, '=');
 		ordersItemsList.addFilter( 'order.account.accountID', arguments.data.accountID, '=');
 		ordersItemsList.addFilter('showInCartFlag', 0, '!=');
@@ -774,14 +774,14 @@ component extends="Slatwall.model.service.OrderService" {
 		orderPromotionList.addFilter( 'order.orderID', arguments.data.orderID, '=');
 		
 		//Tracking info
-		var orderDeliveriesList = this.getOrderDeliveryCollectionList();
-		orderDeliveriesList.setDisplayProperties('trackingUrl');
-		orderDeliveriesList.addFilter( 'order.orderID', arguments.data.orderID, '=');
+		var orderDeliveryItemsList = this.getOrderDeliveryItemCollectionList();
+		orderDeliveryItemsList.setDisplayProperties('quantity,orderItem.orderItemID,orderDelivery.trackingUrl');
+		orderDeliveryItemsList.addFilter( 'orderDelivery.order.orderID', arguments.data.orderID, '=');
 		
 		var orderPayments = orderPaymentList.getPageRecords();
 		var orderItems = ordersItemsList.getPageRecords();
 		var orderPromotions = orderPromotionList.getPageRecords();
-		var orderDeliveries = orderDeliveriesList.getPageRecords();
+		var orderDeliveryItems = orderDeliveryItemsList.getPageRecords();
 		var orderItemData = {};
 		
 		orderItemData['orderPayments'] = orderPayments;
@@ -790,11 +790,11 @@ component extends="Slatwall.model.service.OrderService" {
 		orderItemData['orderRefundTotal'] = orderRefundTotal;
 		orderItemData['purchasePlusTotal'] = order.getPurchasePlusTotal();
 		
-		if ( len( orderDeliveries ) ) {
-			orderItemData['orderDelivery'] = orderDeliveries[1];
+		if ( len( orderDeliveryItems ) ) {
+			orderItemData['orderDeliveryItems'] = orderDeliveryItems;
 		}
 		
-		return orderItemData
+		return orderItemData;
     }
     
     public void function updateOrderItemsWithAllocatedOrderDiscountAmount(required any order) {
