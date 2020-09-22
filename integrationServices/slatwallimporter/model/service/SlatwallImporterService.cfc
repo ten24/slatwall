@@ -49,6 +49,7 @@ Notes:
 component extends="Slatwall.integrationServices.BaseImporterService" persistent="false" accessors="true" output="false"{
 	
 	property name="integrationServices";
+	property name="hibachiDataService";
 	
 	public any function getIntegration(){
 	    
@@ -58,26 +59,18 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
         return variables.integration;
     }
     
-  	public any function getSampleCsvFilesOptions(){
+    
+  	public struct function getAvailableSampleCsvFilesIndex(){
   	    
-  	    if( !structKeyExists(variables, 'sampleCSVFilesOptions') ){
-            
-            variables.sampleCSVFilesOptions = [];
+  	    if( !structKeyExists(variables, 'availableSampleCsvFilesIndex') ){
   	        
-            var baseUrl = this.getHibachiScope().getBaseUrl();
-            var files = directoryList( 
-                            this.getHibachiScope().getApplicationValue('applicationRootMappingPath') & "/integrationServices/slatwallimporter/assets/downloadsample/", 
-                            false, 
-                            "name"
-                        ); 
-            
-            for( var fileName in files ){
-                var option = {
-                    'name'  : fileName,
-                    'value' : baseUrl & '/integrationServices/slatwallimporter/assets/downloadsample/' & fileName
-                } 
-                arrayAppend( variables.sampleCSVFilesOptions, option );
-            }
+            // creating struct for fast-lookups
+            variables.sampleCSVFilesOptions = {
+                "Account" : "account",
+                "Order" : "account"
+            };
+            // TODO, need a way to figureout which entity-mappings are allowed to be import, 
+            // account vs account-phone-number
   	    }
   	    
   	    return variables.sampleCSVFilesOptions;
@@ -85,20 +78,51 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
   	
   	public any function uploadCSVFile( required any data ){
   	    
-  	    var importFilesUploadDirectory = this.getHibachiScope().getApplicationValue('applicationRootMappingPath') & '/integrationServices/slatwallimporter/assets/uploads/'; 
-       	
-       	if( !DirectoryExists(importFilesUploadDirectory) ){
-			DirectoryCreate(importFilesUploadDirectory);
-		}
-		
+		var importFilesUploadDirectory = this.getVirtualFileSystemPath() & '/importcsv/'; 
+
 		try{
-			var file = FileUpload( importFilesUploadDirectory, "uploadFile", "text/csv", "Overwrite");
+			var uploadData = FileUpload( importFilesUploadDirectory, "uploadFile", "text/csv", "makeunique");
 			
-			if ( !listFindNoCase("csv", file.serverFileExt) ){
+			if ( !listFindNoCase("csv", uploadData.serverFileExt) ){
     		 	this.getHibachiScope().showMessage("The uploaded file is not of type CSV.", "error");
     	    }
     	    
-			this.getHibachiScope().showMessage("Uppload success", "success");
+    	    var header = this.getEntityCSVHeaderMetaData( data.entityName );
+    	    var uploadedFilePath = uploadData.serverdirectory & '/' & uploadData.serverfile;
+			
+	    	var result = this.getHibachiDataService().csvFileToQuery(
+				'csvFilePath'           = uploadedFilePath, 
+				'columnTypes'           = header.columnTypes, 
+				'columns'               = header.columns,
+				'useHeaderRowAsColumns' = false
+			);
+
+			for(var error in result.errors){
+				this.getHibachiScope().addError( "line-#error.line#", 
+					"Invalid data at Line-#error.line#, #ArrayToList(error.record)#"
+				);
+			}
+			
+			if( result.query.recordCount ){
+
+    		    var batch = this.pushRecordsIntoImportQueue( data.entityName, result.query );
+    		    
+    		    if( !batch.hasErrors() ){
+    			    this.getHibachiScope().showMessage("All #batch.getInitialEntityQueueItemsCount()# items has been pushed to import-queue Successfully", "success");
+    		    } 
+    		    else {
+    		        this.getHibachiScope().showMessage("Some of #batch.getInitialEntityQueueItemsCount()# items has been pushed to import-queue", "success");
+    		        batch.showErrorsAndMessages();
+    		        batch.clearHibachiErrors();
+    		    }
+			} 
+			else {
+			    this.getHibachiScope().showMessage("Nothing got imported", "warning");
+			    this.getHibachiScope().showErrorsAndMessages();
+			}
+		    
+			//delete uploaded file
+			fileDelete( uploadedFilePath );
 		} 
 		catch ( any e ){
     		this.getHibachiScope().showMessage("An error occurred while uploading your file" & e.Message, "error");

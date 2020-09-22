@@ -9,6 +9,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	property name="loggedInAsAdminFlag" type="boolean";
 	property name="publicPopulateFlag" type="boolean";
 	property name="workflowPopulateFlag" type="boolean";
+	property name="importerPopulateFlag" type="boolean";
 	property name="persistSessionFlag" type="boolean";
 	property name="sessionFoundNPSIDCookieFlag" type="boolean";
 	property name="sessionFoundPSIDCookieFlag" type="boolean";
@@ -33,6 +34,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		setRBLocale( "en_us" );
 		setPublicPopulateFlag( false );
 		setWorkflowPopulateFlag( false );
+		setImporterPopulateFlag(false);
 		setPersistSessionFlag( true );
 		setSessionFoundNPSIDCookieFlag( false );
 		setSessionFoundPSIDCookieFlag( false );

@@ -18,7 +18,5 @@
 <meta name="theme-color" content="##ffffff">
 <!--- Main Theme Styles --->
 <link rel="stylesheet" media="screen" id="main-styles" href="#$.getThemePath()#/custom/client/dist/app.bundle.css">
-<!--- Slider Vendor--->
-<link rel="stylesheet" media="screen" href="#$.getThemePath()#/custom/client/dist/tiny-slider.min.css">
 
 </cfoutput>

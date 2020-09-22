@@ -115,6 +115,8 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="remoteCustomerID" hb_populateEnabled="false" ormtype="string" hint="Only used when integrated with a remote system";
 	property name="remoteContactID" hb_populateEnabled="false" ormtype="string" hint="Only used when integrated with a remote system";
 
+	property name="importRemoteID" hb_populateEnabled="importer" ormtype="string" hint="Used via data-importer";
+
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";

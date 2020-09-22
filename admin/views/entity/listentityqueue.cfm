@@ -73,19 +73,21 @@ Notes:
 		isDeletable=false
 	})/>
 	
-		<hb:HibachiListingDisplay 
+	<hb:HibachiListingDisplay 
 		collectionList="#local.entityQueueCollectionList#"
 		usingPersonalCollection="true"
 		personalCollectionKey='#request.context.entityactiondetails.itemname#'
 		recordDetailAction="admin:entity.detailentityqueue"
-		recordEditAction="admin:entity.edit#lcase(rc.entityQueueCollectionList.getCollectionObject())#"
+		recordEditAction="admin:entity.editentityqueue"
 	>
 	</hb:HibachiListingDisplay>
 	
+	<br/>
 	<div>
 	    <span class="h5">Failures</span>
 	</div>
-	
+	<br/>
+
 	<cfset local.entityQueueFailureCollectionList = getHibachiScope().getService('HibachiEntityQueueService').getEntityQueueFailureCollectionList()/>
 	<cfset local.displayFailureProperties = "baseObject,processMethod,tryCount,createdDateTime,integration.integrationName,mostRecentError"/>
 	<cfset local.entityQueueFailureCollectionList.setDisplayProperties(
@@ -104,7 +106,7 @@ Notes:
 		isDeletable=false
 	})/>
 	
-		<hb:HibachiListingDisplay 
+	<hb:HibachiListingDisplay 
 		collectionList="#local.entityQueueFailureCollectionList#"
 		usingPersonalCollection="true"
 		personalCollectionKey='#request.context.entityactiondetails.itemname#_failure'

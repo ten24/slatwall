@@ -109,6 +109,9 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 	}
 
 	public void function bulkInsertEntityQueueByPrimaryIDs(required string primaryIDList, required string entityName, required string processMethod, boolean unique=false){
+		
+		//TODO: create a new Batch
+		
 		var primaryIDPropertyName = getHibachiService().getPrimaryIDPropertyNameByEntityName(arguments.entityName);	
 		var queryService = new query();
 		var sql = "INSERT INTO SwEntityQueue (entityQueueID, baseObject, baseID, processMethod, createdDateTime, modifiedDateTime, entityQueueDateTime, createdByAccountID, modifiedByAccountID, tryCount) ";
@@ -148,6 +151,8 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 	} 
 
 	public void function bulkInsertEntityQueueByFlagPropertyName(required string flagPropertyName, required string entityName, required string processMethod, boolean unique = false, boolean flagValue = true, struct entityQueueData = {} ){
+		
+		// TODO: create a new Batch
 		
 		var primaryIDPropertyName = getHibachiService().getPrimaryIDPropertyNameByEntityName(arguments.entityName);	
 		var queryService = new query();
@@ -240,30 +245,40 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 	    string processMethod='', 
 	    struct entityQueueData={}, 
 	    string integrationID='', 
+	    string entityQueueID, 
 	    string batchID='', 
 	    string mostRecentError='',
-	    numeric tryCount = 10,
 	    any createdDateTime = now(),
 	    any entityQueueProcessingDateTime = now() 
 	){
 	
 		var insertQuery = new query();
-		var columns = 'entityQueueFailureID,  baseObject,  baseID,  processMethod,  entityQueueData,  integrationID,  batchID,  mostRecentError,  tryCount,  createdDateTime,  entityQueueProcessingDateTime,  createdByAccountID, modifiedByAccountID';
-		var values = ':entityQueueFailureID, :baseObject, :baseID, :processMethod, :entityQueueData, :integrationID, :batchID, :mostRecentError, :tryCount, :createdDateTime, :entityQueueProcessingDateTime, :accountID, :accountID ';
+		var columns = 'entityQueueFailureID,  baseObject,  baseID,  processMethod,  entityQueueData,  integrationID,  batchID,  remoteID,  mostRecentError,  tryCount,  createdDateTime,  entityQueueProcessingDateTime,  createdByAccountID, modifiedByAccountID';
+		var values = ':entityQueueFailureID, :baseObject, :baseID, :processMethod, :entityQueueData, :integrationID, :batchID, :remoteID, :mostRecentError, 1, :createdDateTime, :entityQueueProcessingDateTime, :accountID, :accountID ';
 		
 		var sql = " INSERT INTO SwEntityQueueFailure ( #columns# ) VALUES ( #values# ) ";
 		
-		insertQuery.addParam( name='entityQueueFailureID', value= this.createSlatwallUUID(), CFSQLTYPE="CF_SQL_VARCHAR");
+		//
+		if(!structKeyExists(arguments, 'entityQueueID')){
+			var dataString = "#arguments.baseObject#_#arguments.baseID#_#arguments.processMethod#_#serializeJSON(arguments.entityQueueData)#";
+			
+			if (structKeyExists(arguments, "integrationID") && len(arguments.integrationID)){
+				dataString = dataString & "_#integrationID#"; 
+			}
+			arguments.entityQueueID = hash(dataString, 'MD5');
+		}
+		
+		insertQuery.addParam( name='entityQueueFailureID', value= this.createHibachiUUID(), CFSQLTYPE="CF_SQL_VARCHAR");
 		
 		insertQuery.addParam( name='baseID', value= arguments.baseID, CFSQLTYPE="CF_SQL_VARCHAR");
 		insertQuery.addParam( name='baseObject', value= arguments.baseObject, CFSQLTYPE="CF_SQL_VARCHAR");
 		insertQuery.addParam( name='processMethod', value= arguments.processMethod, CFSQLTYPE="CF_SQL_VARCHAR");
 		insertQuery.addParam( name='entityQueueData', value= "#Serializejson(arguments.entityQueueData)#", CFSQLTYPE="CF_SQL_VARCHAR");
 		
-		insertQuery.addParam( name='integrationID', value= arguments.integrationID, CFSQLTYPE="CF_SQL_STRING", null=len(trim(arguments.integrationID)) ? false : true );
-		insertQuery.addParam( name='batchID', value= arguments.batchID, CFSQLTYPE="CF_SQL_STRING", null=len(trim(arguments.batchID)) ? false : true );
+		insertQuery.addParam( name='integrationID', value= arguments.integrationID, CFSQLTYPE="CF_SQL_VARCHAR", null=len(trim(arguments.integrationID)) ? false : true );
+		insertQuery.addParam( name="remoteID", value=arguments.entityQueueID, CFSQLTYPE="CF_SQL_VARCHAR" );
+		insertQuery.addParam( name='batchID', value= arguments.batchID, CFSQLTYPE="CF_SQL_VARCHAR", null=len(trim(arguments.batchID)) ? false : true );
 		
-		insertQuery.addParam( name='tryCount', value= arguments.tryCount, CFSQLTYPE="CF_SQL_INT");
 		insertQuery.addParam( name='mostRecentError', value=arguments.mostRecentError, CFSQLTYPE="CF_SQL_VARCHAR");
 		
 		if( structKeyExists(arguments, "createdDateTime") ){
@@ -300,7 +315,7 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 		queryService.addParam(name='now',value='#now()#',CFSQLTYPE="CF_SQL_TIMESTAMP");
 		queryService.addParam(name='retryDelay',value='#DateAdd("s",retryDelay,now())#',CFSQLTYPE="CF_SQL_TIMESTAMP");
 		queryService.addParam(name='errorMessage',value='#errorMessage#',CFSQLTYPE="CF_SQL_STRING");
-		var sql = "UPDATE SwEntityQueue SET modifiedDateTime = :now, tryCount = tryCount + 1, mostRecentError=:errorMessage, serverInstanceKey = NULL, retryDelay=:retryDelay WHERE entityQueueID = :entityQueueID";
+		var sql = "UPDATE SwEntityQueue SET modifiedDateTime = :now, tryCount = tryCount + 1, mostRecentError=:errorMessage, serverInstanceKey = NULL, entityQueueDateTime=:retryDelay WHERE entityQueueID = :entityQueueID";
 
 		queryService.execute(sql=sql);
 	}
@@ -308,7 +323,7 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 	
 	public void function archiveEntityQueue(required string entityQueueID, string mostRecentError = '' ){
 	
-		var columns = 'baseObject, baseID, processMethod, entityQueueType, entityQueueDateTime, entityQueueData, integrationID, createdDateTime, modifiedDateTime, entityQueueDateTime, createdByAccountID, modifiedByAccountID, tryCount';
+		var columns = 'baseObject, baseID, batchID, processMethod, entityQueueType, entityQueueDateTime, entityQueueData, integrationID, createdDateTime, modifiedDateTime, createdByAccountID, modifiedByAccountID, tryCount';
 		
 		var insertQuery = new query();
 		var sql = "INSERT INTO SwEntityQueueFailure (entityQueueFailureID, remoteID, #columns#, mostRecentError) ";
@@ -326,9 +341,28 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 		
 	}
 	
+	public void function reQueueEntityQueueFailure(required string entityQueueFailureID){
+	    var columns = 'baseObject, baseID, batchID, processMethod, entityQueueType, entityQueueData, integrationID, createdDateTime, createdByAccountID';
+		
+		var insertQuery = new query();
+		var sql = "INSERT IGNORE INTO SwEntityQueue (entityQueueID, #columns#, tryCount, modifiedDateTime, entityQueueDateTime, modifiedByAccountID) ";
+		sql &= "SELECT remoteID as entityQueueID, #columns#, 0, now(), now(), '#getHibachiScope().getAccount().getAccountID()#' ";
+		sql &= "FROM swEntityQueueFailure ";
+		sql &= "WHERE entityQueueFailureID = :entityQueueFailureID";
+
+		insertQuery.addParam(name='entityQueueFailureID', value=arguments.entityQueueFailureID, CFSQLTYPE="CF_SQL_VARCHAR");
+		insertQuery.execute(sql=sql);
+		
+		var deleteQuery = new query();
+		sql = "DELETE FROM swEntityQueueFailure WHERE entityQueueFailureID = :entityQueueFailureID";
+		
+		deleteQuery.addParam(name='entityQueueFailureID', value=arguments.entityQueueFailureID, CFSQLTYPE="CF_SQL_VARCHAR");
+		deleteQuery.execute(sql=sql);
+	}
+	
 	public void function ReQueueItems(required string baseObject, required string baseID){
 	
-		var columns = 'baseObject, baseID, processMethod, entityQueueType, entityQueueDateTime, entityQueueData, integrationID, createdDateTime, createdByAccountID';
+		var columns = 'baseObject, baseID, batchID, processMethod, entityQueueType, entityQueueData, integrationID, createdDateTime, createdByAccountID';
 		
 		var insertQuery = new query();
 		var sql = "INSERT IGNORE INTO SwEntityQueue (entityQueueID, #columns#, tryCount, modifiedDateTime, entityQueueDateTime, modifiedByAccountID) ";

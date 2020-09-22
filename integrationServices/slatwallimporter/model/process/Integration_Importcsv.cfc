@@ -8,13 +8,16 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiP
     property name="uploadFile" hb_formFieldType="file" hb_fileAcceptMIMEType="text/csv" hb_fileAcceptExtension=".csv";
 	
 	
-	public any function getEntityNameOptions()
-	{
-	    var optoin=[
-	        {   name:"Account",    value:"Account"  },
-	        {   name:"Order",      value:"Order"    }
-	    ];
-	    return optoin;
+	public any function getEntityNameOptions(){
+	    
+	    var index = this.getService("slatwallImporterService").getAvailableSampleCsvFilesIndex();
+	    var options = [];
+	    
+	    for(var entityName in index){
+	        options.append( {"name": entityName, "value": entityName} );
+	    }
+	    
+	    return options;
 	}
 
 }
