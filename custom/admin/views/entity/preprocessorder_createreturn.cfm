@@ -111,6 +111,12 @@ Notes:
 				</div>
 			</nav>
 		</div>
+		<cfif rc.order.returnDatePercentagesApply() >
+			<div class="alert alert-warning fade in">
+				<a class="close" data-dismiss="alert"><i class="fa fa-times"></i></a>
+				#$.slatwall.rbKey('validate.placeOrder.Order.subTotal.subtotalWithinAllowedPercentage')#
+			</div>
+		</cfif>
 		<hb:HibachiMessageDisplay />
 		<div class="panel p-20">
 			<hb:HibachiPropertyRow>

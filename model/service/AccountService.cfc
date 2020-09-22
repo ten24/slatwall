@@ -348,7 +348,12 @@ component extends="HibachiService" accessors="true" output="false" {
 		//change password and create password functions should be combined at some point. Work needed to do this still needs to be scoped out.
 		//For now they are just calling this function that handles the actual work.
 		arguments.account = createNewAccountPassword(arguments.account, arguments.processObject);
-
+		
+		if(!arguments.account.hasErrors()){
+			//If user successfully change his password logout that user
+			this.processAccount_logout(arguments.account);
+		}
+		
 		return arguments.account;
 	}
 	public any function processAccount_changePosPin(required any account, required any processObject) {
