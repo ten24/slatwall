@@ -336,31 +336,37 @@ class SWReturnOrderItemsController{
        }else{
            this.fulfillmentRefundTaxAmount = 0;
        }
-       this.updateRefundTotals();
+       this.updateTotals();
    }
    
    public validateAmount = (orderPayment)=>{
+        let nonGiftCardPaymentCount = orderPayment.paymentMethodType == 'giftCard' ? 0 : 1;
         if(orderPayment.amount < 0){
             orderPayment.amount = 0;
         }
-       const paymentTotal = this.orderPayments.reduce((total:number,payment:any)=>{
+        const paymentTotal = this.orderPayments.reduce((total:number,payment:any)=>{
            if(payment != orderPayment){
                if(payment.paymentMethodType == 'giftCard'){
                    payment.amount = Math.min(payment.amountToRefund,this.refundTotal);
+               }else{
+                   nonGiftCardPaymentCount++;
                }
                return total += payment.amount;
            }
            return total;
-       },0);
-       
-       const maxRefund = Math.min(orderPayment.amountToRefund,this.refundTotal - paymentTotal);
- 
-       if(orderPayment.amount == undefined){
+        },0);
+        
+        const maxRefund = Math.min(orderPayment.amountToRefund,this.refundTotal - paymentTotal);
+        
+        const assignMaxRefundFlag = (nonGiftCardPaymentCount == 1 && orderPayment.paymentMethodType != 'giftCard');
+        
+        if(assignMaxRefundFlag || orderPayment.amount > maxRefund){
+            orderPayment.amount = getDecimalRep(Math.max(maxRefund,0));
+        }
+        
+        if(orderPayment.amount == undefined){
            orderPayment.amount = 0;
-       }
-       if(orderPayment.amount > maxRefund){
-           orderPayment.amount = getDecimalRep(Math.max(maxRefund,0));
-       }
+        }
    }
 
 }

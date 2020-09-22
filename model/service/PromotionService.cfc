@@ -511,7 +511,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			getService('hibachiService').saveOrder(arguments.order);
 		}
 		
-		if(arguments.order.isOrderPaidFor() && !arguments.order.hasDropSku()){
+		if(arguments.order.isOrderPaidFor() 
+			&& ( !arguments.order.hasDropSku() || listFindNoCase('ostNew,ostProcessing,ostClosed',arguments.order.getOrderStatusType().getSystemCode() ) ) ){
 			return;
 		}
 

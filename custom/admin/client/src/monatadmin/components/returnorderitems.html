@@ -111,7 +111,8 @@
 		<td class="total">
 			<input type="hidden" name="orderPayments[{{$index+1}}].orderPaymentID" value="">
 			<input type="hidden" name="orderPayments[{{$index+1}}].originalOrderPaymentID" value="{{orderPayment.value}}">
-			<input type="number" ng-change="swReturnOrderItems.validateAmount(orderPayment)" name="orderPayments[{{$index+1}}].amount" ng-model="orderPayment.amount" class="span1 number" />
+			<input ng-if="swReturnOrderItems.orderPayments.length > 1" type="number" ng-change="swReturnOrderItems.validateAmount(orderPayment)" name="orderPayments[{{$index+1}}].amount" ng-model="orderPayment.amount" class="span1 number" />
+			<span ng-if="swReturnOrderItems.orderPayments.length == 1" ng-bind-html="orderPayment.amount | swcurrency:swReturnOrderItems.currencyCode"></span>
 		</td>
 	</tr>
 	
