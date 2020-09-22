@@ -151,6 +151,7 @@
     </div>
   </footer>
   <!--- JavaScript libraries, plugins and custom scripts--->
+  <script src="#$.getThemePath()#/client/dist/app.bundle.js"></script>
   <script src="#$.getThemePath()#/client/assets/js/theme.min.js"></script>
   <script src="#$.getThemePath()#/client/assets/js/bootstrap.min.js"></script>
   <script src="#$.getThemePath()#/client/assets/js/tiny-slider.min.js"></script>

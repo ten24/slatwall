@@ -60,6 +60,7 @@ Notes:
 		
 		<hb:HibachiEntityDetailGroup object="#rc.batch#">
 			<hb:HibachiEntityDetailItem view="admin:entity/batchtabs/basic" open="true" />
+			<hb:HibachiEntityDetailItem view="admin:entity/batchtabs/batchItems" lazy="true" count=#rc.batch.getInitialEntityQueueItemsCount()# />
 		</hb:HibachiEntityDetailGroup>
 	</hb:HibachiEntityDetailForm>
 </cfoutput>

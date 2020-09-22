@@ -7,6 +7,7 @@
 	<cfparam name="attributes.queryString" type="string" default="" />
 	<cfparam name="attributes.title" type="string" default="">
 	<cfparam name="attributes.class" type="string" default="">
+	<cfparam name="attributes.target" type="string" default="_self">
 	<cfparam name="attributes.icon" type="string" default="">
 	<cfparam name="attributes.iconOnly" type="boolean" default="false">
 	<cfparam name="attributes.submit" type="boolean" default="false">
@@ -125,7 +126,7 @@
 			<cfoutput>
 				<a  title="#attributes.title#" 
 					class="#attributes.class#" 
-					target="_self" 
+					target="#attributes.target#" 
 					href="#attributes.hibachiScope.buildURL(action=attributes.action,querystring=attributes.querystring)#"
 					<cfif attributes.modal && not attributes.disabled>
 						 data-toggle="modal" 
@@ -148,7 +149,7 @@
 				<li>
 					<a  title="#attributes.title#" 
 						class="#attributes.class#" 
-						target="_self" 
+						target="#attributes.target#" 
 						href="#attributes.hibachiScope.buildURL(action=attributes.action,querystring=attributes.querystring)#"
 						<cfif attributes.modal 
 							&& not attributes.disabled

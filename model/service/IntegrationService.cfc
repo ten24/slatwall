@@ -90,6 +90,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 			if(fileInfo.type == "directory" && fileExists("#fileInfo.path#/Integration.cfc") ) {
 				var integrationPackage = listLast(dirList[i],"\/");
+				
+				//TODO: optimize we're creating 2 objects and 2 calls for metadata
 				var integrationCFC = createObject("component", "Slatwall.integrationServices.#integrationPackage#.Integration").init();
 				var integrationMeta = getMetaData(integrationCFC);
 				
@@ -201,6 +203,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(fileInfo.type == "directory" && fileExists("#fileInfo.path#/Integration.cfc") ) {
 			
 			var integrationPackage = listLast(arguments.directoryList,"\/");
+			
+			//TODO: optimize
 			var integrationCFC = createObject("component", "Slatwall.integrationServices.#integrationPackage#.Integration").init();
 			var integrationMeta = getMetaData(integrationCFC);
 			
@@ -228,6 +232,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				integration.setIntegrationTypeList( integrationCFC.getIntegrationTypes() );
 
 				
+			    //TODO: optimize
 				// Call Entity Save so that any new integrations get persisted
 				getHibachiDAO().save( integration );
 				getHibachiDAO().flushORMSession();
@@ -294,6 +299,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 								var beanName = listFirst(beanCFC,'.');
 								var modelDestinationPath = this.getApplicationValue('applicationRootMappingPath') & "/model/entity/" & beanCFC;
 								
+								// TODO: figureout a way so it doesn't replace core entities
 								FileCopy(modelFilePath,modelDestinationPath);
 								
 								if(!beanFactory.containsBean(beanName) ){
@@ -331,6 +337,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							     * 
 							     * for Integrations, as a *rule of thumb* declare your beans with package-name prepend to avoid bean-not-found issues;
 							     * This doesn't go along with other conventions like `entity.getProcessObject('context');`
+							     * other thing you can do is change the context so that it starts with integration-package `package+contest`.
 							     * but as long as the entity-names are uniqueue that shuldn't be a problem.
 							    */
 								if( !beanFactory.containsBean(beanName) ){
