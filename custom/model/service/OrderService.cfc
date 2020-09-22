@@ -775,7 +775,7 @@ component extends="Slatwall.model.service.OrderService" {
 		
 		//Tracking info
 		var orderDeliveryItemsList = this.getOrderDeliveryItemCollectionList();
-		orderDeliveryItemsList.setDisplayProperties('quantity,orderItem.orderItemID,orderDelivery.trackingUrl');
+		orderDeliveryItemsList.setDisplayProperties('orderDelivery.orderDeliveryID,orderDelivery.trackingUrl,quantity,orderItem.orderItemID,orderItem.sku.product.productName');
 		orderDeliveryItemsList.addFilter( 'orderDelivery.order.orderID', arguments.data.orderID, '=');
 		
 		var orderPayments = orderPaymentList.getPageRecords();
@@ -791,7 +791,26 @@ component extends="Slatwall.model.service.OrderService" {
 		orderItemData['purchasePlusTotal'] = order.getPurchasePlusTotal();
 		
 		if ( len( orderDeliveryItems ) ) {
-			orderItemData['orderDeliveryItems'] = orderDeliveryItems;
+			var orderDeliveriesMap = {};
+			var orderDeliveries = [];
+			for(var orderDeliveryItem in orderDeliveryItems){
+				var itemData = {
+					'productName':orderDeliveryitem.orderItem_sku_product_productName,
+					'quantity':orderDeliveryItem.quantity
+				};
+				
+				if( !structKeyExists( orderDeliveriesMap, orderDeliveryItem.orderDelivery_orderDeliveryID ) ){
+					var orderDeliveryData = {
+						'trackingUrl':orderDeliveryItem.orderDelivery_trackingUrl,
+						'orderDeliveryItems':[]
+					}
+					orderDeliveriesMap[orderDeliveryItem.orderDelivery_orderDeliveryID] = orderDeliveryData;
+					ArrayAppend(orderDeliveries, orderDeliveryData);
+				}
+				
+				ArrayAppend(orderDeliveriesMap[orderDeliveryItem.orderDelivery_orderDeliveryID].orderDeliveryItems, itemData);
+			}
+			orderItemData['orderDeliveries'] = orderDeliveries;
 		}
 		
 		return orderItemData;
