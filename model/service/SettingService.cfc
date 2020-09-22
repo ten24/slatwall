@@ -130,6 +130,7 @@ component extends="HibachiService" output="false" accessors="true" {
 		var allSettingMetaData = {
 
 			// Account
+			accountCustomAdminStylesheet = {fieldtype="text"},
 			accountEligiblePaymentMethods = {fieldType="listingMultiselect", listingMultiselectEntityName="PaymentMethod", defaultValue=getPaymentService().getAllActivePaymentMethodIDList()},
 			accountEligiblePaymentTerms = {fieldType="listingMultiselect", listingMultiselectEntityName="PaymentTerm", defaultValue=getPaymentService().getAllActivePaymentTermIDList()},
 			accountPaymentTerm = {fieldType="select"},

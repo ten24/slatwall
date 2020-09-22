@@ -76,6 +76,10 @@ Notes:
 		<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/css/bootstrap.min.css" rel="stylesheet">
 		<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/css/jquery-ui.min.css" rel="stylesheet">
 		<link href="#request.slatwallScope.getBaseURL()#/admin/client/css/main.css?v=#$.slatwall.getApplicationValue('instantiationKey')#" rel="stylesheet">
+		<cfset local.customStylesheet = request.slatwallScope.getAccount().setting('accountCustomAdminStylesheet') />
+		<cfif !isNull(local.customStylesheet) >
+			<style>#local.customStylesheet#</style>
+		</cfif>
 		<link href="#request.slatwallScope.getBaseURL()#/admin/client/css/pacejs/pace-theme-flash.css" rel="stylesheet">
 		<link href="#request.slatwallScope.getBaseURL()#/assets/flags/css/flag-icon.min.css" rel="stylesheet">
 		<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/client/lib/font-awesome/css/font-awesome.min.css" rel="stylesheet" type='text/css'>

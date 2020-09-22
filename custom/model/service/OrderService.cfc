@@ -644,7 +644,14 @@ component extends="Slatwall.model.service.OrderService" {
         	getService("hibachiEventService").announceEvent(eventName="afterOrderProcess_OrderCloseSuccess", eventData={ entity: arguments.order, order: arguments.order, data: {} });
         	
         } else if (arguments.systemCode == 'ostNew') {
-
+			if( currentOrderStatusType.getSystemCode() == 'ostProcessing' ){
+				try{
+					throw('Attempted to update order status from Processing to New - order #arguments.order.getOrderNumber()#');
+				}catch(any e){
+					logHibachi(e.stackTrace);
+				}
+				return;
+			}
 			//if the order is paid don't set to new, otherwise set to new
 			if (  arguments.order.getPaymentAmountDue() <= 0  && orderType.getSystemCode() == 'otSalesOrder' ){
 				//type for PaidOrder  systemCode=ostProcessing, typeCode=2
