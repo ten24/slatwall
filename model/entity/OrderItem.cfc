@@ -304,6 +304,9 @@ property name="personalVolume" ormtype="big_decimal";
 		var maxQTY = 0;
 		if(getSku().getActiveFlag() && getSku().getProduct().getActiveFlag()) {
 			maxQTY = getSku().setting('skuOrderMaximumQuantity');
+			if(isEmpty(maxQTY)){
+				maxQTY = 0;		
+			}
 			if(getSku().setting('skuTrackInventoryFlag') && (!getSku().setting('skuAllowBackorderFlag') || getSku().setting('skuBackorderLimit') > 0) && getOrderItemType().getSystemCode() neq 'oitReturn') {
 				
 				if( !isNull(getStock()) && getStock().getQuantity('QATS') <= maxQTY && getStock().getLocation().setting('locationRequiresQATSForOrdering')) {
