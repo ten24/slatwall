@@ -114,7 +114,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
  		var taxRateCacheKey = hash(taxAddressList&orderItemIDList&taxIntegrationIDList&orderFulfillmentList&arguments.order.getTotalItemQuantity()&arguments.order.getSubtotal(),'md5');
 		
 		if ( (isNull(arguments.order.getTaxRateCacheKey()) || arguments.order.getTaxRateCacheKey() != taxRateCacheKey)
-			&& (len(orderFulfillmentList) || len(taxAddressList))
+			&& (len(orderFulfillmentList) || len(taxAddressList) || arguments.order.hasOrderReturn())
 		){
 
 			arguments.order.setTaxRateCacheKey(taxRateCacheKey);
