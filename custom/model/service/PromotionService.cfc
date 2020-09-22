@@ -361,4 +361,292 @@ component extends="Slatwall.model.service.PromotionService" {
 		}
 		arguments.itemsToBeAdded = [];
 	}
+	
+	public any function processPromotionPeriod_duplicatePromotionPeriod(required any promotionPeriod, required any processObject){
+
+		// Duplicate promotion period and set new values from process object
+		var newPromotionPeriod = this.newPromotionPeriod();
+		var newMessages = [];
+		newPromotionPeriod.setPromotionPeriodName(arguments.processObject.getPromotionPeriodName());
+		if(!isNull(arguments.processObject.getStartDateTime()) && len(arguments.processObject.getStartDateTime())) {
+			newPromotionPeriod.setStartDateTime(arguments.processObject.getStartDateTime());
+		}
+		if(!isNull(arguments.processObject.getEndDateTime()) && len(arguments.processObject.getEndDateTime())) {
+			newPromotionPeriod.setEndDateTime(arguments.processObject.getEndDateTime());
+		}
+		if(!isNull(arguments.processObject.getMaximumUseCount()) && len(arguments.processObject.getMaximumUseCount())) {
+			newPromotionPeriod.setMaximumUseCount(arguments.processObject.getMaximumUseCount());
+		}
+		if(!isNull(arguments.processObject.getMaximumAccountUseCount()) && len(arguments.processObject.getMaximumAccountUseCount())) {
+			newPromotionPeriod.setMaximumAccountUseCount(arguments.processObject.getMaximumAccountUseCount());
+		}
+		newPromotionPeriod.setPromotion(arguments.processObject.getPromotion());
+		
+		var newPromotionPeriod = this.savePromotionPeriod(newPromotionPeriod);
+
+		// Duplicate promotionRewards
+		for(var promotionReward in arguments.promotionPeriod.getPromotionRewards()){
+			var newPromotionReward = this.newPromotionReward();
+			newPromotionReward.setAmount(promotionReward.getAmount());
+			newPromotionReward.setCurrencyCode(promotionReward.getCurrencyCode());
+			newPromotionReward.setAmountType(promotionReward.getAmountType());
+			newPromotionReward.setRewardType(promotionReward.getRewardType());
+			newPromotionReward.setApplicableTerm(promotionReward.getApplicableTerm());
+			newPromotionReward.setMaximumUsePerOrder(promotionReward.getMaximumUsePerOrder());
+			newPromotionReward.setMaximumUsePerItem(promotionReward.getMaximumUsePerItem());
+			newPromotionReward.setMaximumUsePerQualification(promotionReward.getMaximumUsePerQualification());
+			if(!isNull(promotionReward.getRoundingRule())) {
+				newPromotionReward.setRoundingRule(promotionReward.getRoundingRule());
+			}
+			
+			var currencies = promotionReward.getPromotionRewardCurrencies();
+			if(arrayLen(currencies)) {
+				for(var promotionRewardCurrency in currencies) {
+					newPromotionReward.addPromotionRewardCurrency(promotionRewardCurrency);
+				}
+			}
+			
+			var priceGroups = promotionReward.getEligiblePriceGroups();
+			if(arrayLen(priceGroups)) {
+				for(var eligiblePriceGroup in priceGroups ) {
+					newPromotionReward.addEligiblePriceGroup(eligiblePriceGroup);
+				}
+			}
+			
+			var fulfillments = promotionReward.getFulfillmentMethods();
+			if(arrayLen(fulfillments)) {
+				for(var fulfillmentMethod in fulfillments ) {
+					newPromotionReward.addFulfillmentMethod(fulfillmentMethod);
+				}
+			}
+			
+			var addresses = promotionReward.getShippingAddressZones();
+			if(arrayLen(addresses)) {
+				for(var shippingAddressZone in addresses ) {
+					newPromotionReward.addShippingAddressZone(shippingAddressZone);
+				}
+			}
+			
+			var shipMethods = promotionReward.getShippingMethods();
+			if(arrayLen(shipMethods)) {
+				for(var shippingMethod in shipMethods) {
+					newPromotionReward.addShippingMethod(shippingMethod);
+				}
+			}
+			
+			var brands = promotionReward.getBrands();
+			if(arrayLen(brands)) {
+				for(var brand in brands) {
+					newPromotionReward.addBrand(brand);
+				}
+			}
+			
+			var options = promotionReward.getOptions();
+			if(arrayLen(options)) {
+				for(var option in options) {
+					newPromotionReward.addOption(option);
+				}
+			}
+			
+			var skus = promotionReward.getSkus();
+			if(arrayLen(skus)) {
+				for(var sku in skus) {
+					newPromotionReward.addSku(sku);
+				}
+			}
+			
+			var products = promotionReward.getProducts();
+			if(arrayLen(products)) {
+				for(var product in products) {
+					newPromotionReward.addProduct(product);
+				}
+			}
+			
+			var productTypes = promotionReward.getProductTypes();
+			if(arrayLen(productTypes)) {
+				for(var productType in productTypes) {
+					newPromotionReward.addProductType(productType);
+				}
+			}
+			
+			var excludedBrands = promotionReward.getExcludedBrands();
+			if(arrayLen(excludedBrands)) {
+				for(var excludedBrand in excludedBrands) {
+					newPromotionReward.addExcludedBrand(excludedBrand);
+				}
+			}
+			
+			var excludedOptions = promotionReward.getExcludedOptions();
+			if(arrayLen(excludedOptions)) {
+				for(var excludedOption in excludedOptions) {
+					newPromotionReward.addExcludedOption(excludedOption);
+				}
+			}
+			
+			var excludedSkus = promotionReward.getExcludedSkus();
+			if(arrayLen(excludedSkus)) {
+				for(var excludedSku in excludedSkus) {
+					newPromotionReward.addExcludedSkus(excludedSku);
+				}
+			}
+			
+			var excludedProducts = promotionReward.getExcludedProducts();
+			if(arrayLen(excludedProducts)) {
+				for(var excludedProduct in excludedProducts) {
+					newPromotionReward.addExcludedProduct(excludedProduct);
+				}
+			}
+			
+			var excludedProductTypes = promotionReward.getExcludedProductTypes();
+			if(arrayLen(excludedProductTypes)) {
+				for(var excludedProductType in excludedProductTypes) {
+					newPromotionReward.addExcludedProductType(excludedProductType);
+				}
+			}
+			
+			if( !isNull( promotionReward.getExcludedSkusCollectionConfig() ) 
+				&& len( promotionReward.getExcludedSkusCollectionConfig() ) )
+			{
+				newPromotionReward.setExcludedSkusCollectionConfig( promotionReward.getExcludedSkusCollectionConfig() );	
+			} 
+				
+			if( !isNull(promotionReward.getIncludedSkusCollectionConfig() )
+				&& len( promotionReward.getIncludedSkusCollectionConfig() ) )
+			{
+				newPromotionReward.setIncludedSkusCollectionConfig( promotionReward.getIncludedSkusCollectionConfig() );
+			}
+			
+			if( !isNull(promotionReward.getRewardSkuQuantity()) ){
+				newPromotionReward.setRewardSkuQuantity(promotionReward.getRewardSkuQuantity())
+			}
+			
+			if( !isNull(promotionReward.getShowRewardSkuInCartFlag()) ){
+				newPromotionReward.setShowRewardSkuInCartFlag(promotionReward.getShowRewardSkuInCartFlag())
+			}
+			
+			newPromotionPeriod.addPromotionReward(newPromotionReward);
+		}
+
+		// Duplicate promotionQualifiers
+		for(var promotionQualifier in arguments.promotionPeriod.getPromotionQualifiers()){
+			var newpromotionQualifier = this.newpromotionQualifier();
+			newpromotionQualifier.setQualifierType(promotionQualifier.getQualifierType());
+			newpromotionQualifier.setMinimumOrderQuantity(promotionQualifier.getMinimumOrderQuantity());
+			newpromotionQualifier.setMaximumOrderQuantity(promotionQualifier.getMaximumOrderQuantity());
+			newpromotionQualifier.setMinimumOrderSubtotal(promotionQualifier.getMinimumOrderSubtotal());
+			newpromotionQualifier.setMaximumOrderSubtotal(promotionQualifier.getMaximumOrderSubtotal());
+			newpromotionQualifier.setMinimumItemQuantity(promotionQualifier.getMinimumItemQuantity());
+			newpromotionQualifier.setMaximumItemQuantity(promotionQualifier.getMaximumItemQuantity());
+			newpromotionQualifier.setMinimumItemPrice(promotionQualifier.getMinimumItemPrice());
+			newpromotionQualifier.setMaximumItemPrice(promotionQualifier.getMaximumItemPrice());
+			newpromotionQualifier.setMinimumFulfillmentWeight(promotionQualifier.getMinimumFulfillmentWeight());
+			newpromotionQualifier.setMaximumFulfillmentWeight(promotionQualifier.getMaximumFulfillmentWeight());
+			newpromotionQualifier.setRewardMatchingType(promotionQualifier.getRewardMatchingType());
+			if(arrayLen(promotionQualifier.getFulFillmentMethods())) {
+				for(var fulFillmentMethod in promotionQualifier.getFulFillmentMethods()) {
+					newpromotionQualifier.addFulFillmentMethod(fulFillmentMethod);
+				}
+			}
+			if(arrayLen(promotionQualifier.getShippingMethods())) {
+				for(var shippingMethod in promotionQualifier.getShippingMethods()) {
+					newpromotionQualifier.addShippingMethod(shippingMethod);
+				}
+			}
+			if(arrayLen(promotionQualifier.getShippingAddressZones())) {
+				for(var shippingAddressZone in promotionQualifier.getShippingAddressZones()) {
+					newpromotionQualifier.addShippingAddressZone(shippingAddressZone);
+				}
+			}
+			if(arrayLen(promotionQualifier.getBrands())) {
+				for(var brand in promotionQualifier.getBrands()) {
+					newpromotionQualifier.addBrand(brand);
+				}
+			}
+			if(arrayLen(promotionQualifier.getOptions())) {
+				for(var option in promotionQualifier.getOptions()) {
+					newpromotionQualifier.addOption(option);
+				}
+			}
+			if(arrayLen(promotionQualifier.getSkus())) {
+				for(var sku in promotionQualifier.getSkus()) {
+					newpromotionQualifier.addSku(sku);
+				}
+			}
+			if(arrayLen(promotionQualifier.getProducts())) {
+				for(var product in promotionQualifier.getProducts()) {
+					newpromotionQualifier.addProduct(product);
+				}
+			}
+			if(arrayLen(promotionQualifier.getProductTypes())) {
+				for(var productType in promotionQualifier.getProductTypes()) {
+					newpromotionQualifier.addProductType(productType);
+				}
+			}
+			if(arrayLen(promotionQualifier.getExcludedBrands())) {
+				for(var excludedBrand in promotionQualifier.getExcludedBrands()) {
+					newpromotionQualifier.addExcludedBrand(excludedBrand);
+				}
+			}
+			if(arrayLen(promotionQualifier.getExcludedOptions())) {
+				for(var excludedOption in promotionQualifier.getExcludedOptions()) {
+					newpromotionQualifier.addExcludedOption(excludedOption);
+				}
+			}
+			if(arrayLen(promotionQualifier.getExcludedSkus())) {
+				for(var excludedSku in promotionQualifier.getExcludedSkus()) {
+					newpromotionQualifier.addExcludedSku(excludedSku);
+				}
+			}
+			if(arrayLen(promotionQualifier.getExcludedProducts())) {
+				for(var excludedProduct in promotionQualifier.getExcludedProducts()) {
+					newpromotionQualifier.addExcludedProduct(excludedProduct);
+				}
+			}
+			if(arrayLen(promotionQualifier.getExcludedProductTypes())) {
+				for(var excludedProductType in promotionQualifier.getExcludedProductTypes()) {
+					newpromotionQualifier.addExcludedProductType(excludedProductType);
+				}
+			}
+			
+			if(arrayLen(promotionQualifier.getPromotionQualifierMessages())) {
+				for(var originalMessage in promotionQualifier.getPromotionQualifierMessages()) {
+					var newMessage = this.newPromotionQualifierMessage();
+					newMessage.setMessage(originalMessage.getMessage());
+					newMessage.setMessageRequirementsCollectionConfig(originalMessage.getMessageRequirementsCollectionConfig());
+					newMessage.setPriority(originalMessage.getPriority());
+					newMessage.setQualifierProgressTemplate(originalMessage.getQualifierProgressTemplate());
+					newMessage.setPromotionQualifier(newpromotionQualifier);
+					arrayAppend(newMessages, newMessage);
+				}
+			}			
+			if(!isNull(promotionQualifier.getIncludedOrdersCollectionConfig()) && len(promotionQualifier.getIncludedOrdersCollectionConfig()) ) newpromotionQualifier.setIncludedOrdersCollectionConfig(promotionQualifier.getIncludedOrdersCollectionConfig());
+			if(!isNull(promotionQualifier.getExcludedOrdersCollectionConfig()) && len(promotionQualifier.getExcludedOrdersCollectionConfig())  ) newpromotionQualifier.setExcludedOrdersCollectionConfig(promotionQualifier.getExcludedOrdersCollectionConfig());
+			if(!isNull(promotionQualifier.getExcludedSkusCollectionConfig()) && len(promotionQualifier.getExcludedSkusCollectionConfig()) ) newpromotionQualifier.setExcludedSkusCollectionConfig(promotionQualifier.getExcludedSkusCollectionConfig());
+			if(!isNull(promotionQualifier.getIncludedSkusCollectionConfig()) && len(promotionQualifier.getIncludedSkusCollectionConfig()) ) newpromotionQualifier.setIncludedSkusCollectionConfig(promotionQualifier.getIncludedSkusCollectionConfig());
+			newPromotionPeriod.addPromotionQualifier(newpromotionQualifier);
+		}
+		
+		if(!newPromotionPeriod.hasErrors()){
+			this.savePromotionPeriod(newPromotionPeriod);
+			for(var message in newMessages){
+				this.savePromotionQualifierMessage(message);
+			}
+			getHibachiScope().flushOrmSession();
+			var copyFromList = [];
+			var index = 1;
+			
+			for(var reward in arguments.promotionPeriod.getPromotionRewards()){
+				arrayAppend(copyFromList, reward.getPromotionRewardID());
+			}
+
+			for(var reward in newPromotionPeriod.getPromotionRewards()){
+				getPromotionDAO().cloneAndInsertIncludedStackableRewards(copyFromID = copyFromList[index], newPromoRewardID = reward.getPromotionRewardID());
+				index++;
+			}
+			
+		}
+
+		return newPromotionPeriod;
+	}
+
 }
