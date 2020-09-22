@@ -1,0 +1,53 @@
+{
+    "entityName": "Order",
+    
+    "properties": {
+        
+        "OrderID": {
+            "propertyIdentifier": "remoteID",
+            "validations": {
+                "required": true,
+                "dataType": "string"
+            }
+        },
+        "orderNumber": {
+            "propertyIdentifier": "orderNumber",
+            "validations": {
+                "required": true,
+                "dataType": "string"
+            }
+        },
+        "currencyCode": {
+            "propertyIdentifier": "currencyCode",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "orderOpenDateTime": {
+            "propertyIdentifier": "orderOpenDateTime",
+            "validations": {
+                "dataType": "datetime"
+            }
+        },
+        "orderCloseDateTime": {
+            "propertyIdentifier": "orderCloseDateTime",
+            "validations": {
+                "dataType": "timestamp"
+            }
+        },
+        "estimatedDeliveryDateTime": {
+            "propertyIdentifier": "estimatedDeliveryDateTime",
+            "validations": {
+                "dataType": "timestamp"
+            }
+        },
+        "quoteFlag": {
+            "propertyIdentifier": "quoteFlag",
+            "defaultValue": false,
+            "validations": {
+                "dataType": "boolean"
+            }
+        }
+        
+    }
+}

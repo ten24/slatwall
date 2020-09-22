@@ -1,0 +1,60 @@
+{
+    "entityName": "OrderItem",
+    
+    "properties": {
+        
+        "orderItemID": {
+            "propertyIdentifier": "remoteID",
+            "validations": {
+                "required": true,
+                "dataType": "string"
+            }
+        },
+        "price": {
+            "propertyIdentifier": "price",
+            "validations": {
+                "required": true,
+                "dataType": "currency"
+            }
+        },
+        "skuPrice": {
+            "propertyIdentifier": "skuPrice",
+            "validations": {
+                "dataType": "currency"
+            }
+        },
+        "currencyCode": {
+            "propertyIdentifier": "currencyCode",
+            "validations": {
+                "required": true,
+                "dataType": "string"
+            }
+        },
+        "quantity": {
+            "propertyIdentifier": "quantity",
+            "validations": {
+                "dataType": "integer"
+            }
+        },
+        "estimatedDeliveryDateTime": {
+            "propertyIdentifier": "estimatedDeliveryDateTime",
+            "validations": {
+                "dataType": "timestamp"
+            }
+        },
+        "estimatedFulfillmentDateTime": {
+            "propertyIdentifier": "estimatedFulfillmentDateTime",
+            "validations": {
+                "dataType": "timestamp"
+            }
+        },
+        "userDefinedPriceFlag": {
+            "propertyIdentifier": "userDefinedPriceFlag",
+            "defaultValue": false,
+            "validations": {
+                "dataType": "boolean"
+            }
+        }
+        
+    }
+}
