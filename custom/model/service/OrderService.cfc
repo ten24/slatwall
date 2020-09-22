@@ -580,13 +580,21 @@ component extends="Slatwall.model.service.OrderService" {
         var orderType        = arguments.order.getOrderType();
         var currentOrderStatusType  = arguments.order.getOrderStatusType();
 		
+		if( orderType.getSystemCode() == 'otSalesOrder'
+			&& arguments.systemCode == 'ostProcessing'
+			&& !len(arguments.typeCode)
+			&& arguments.order.isOrderPartiallyDelivered() ){
+				
+			arguments.typeCode = 'partiallyShipped';
+		}
+		
         /** 
          * if order is locked it can go back and forth b/w processsing1 and processing2 status 
          * but if that's not the case, we're checking further
         */ 
         if( 
         	arguments.order.getIsLockedInProcessingFlag() && 
-        	( !ListFindNoCase( 'processing1,processing2', arguments.typeCode)  || arguments.systemCode != 'ostProcessing') 
+        	( !ListFindNoCase( 'processing1,processing2,partiallyShipped', arguments.typeCode)  || arguments.systemCode != 'ostProcessing') 
         ) {
 
 	        /** 
@@ -676,7 +684,7 @@ component extends="Slatwall.model.service.OrderService" {
 						
 						// all processing status allowed when called with a specific typecode
 						arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode( systemCode=arguments.systemCode, typeCode=arguments.typeCode) );
-						
+					
 					} else if( currentOrderStatusType.getSystemCode() == 'ostClosed') {
 						
 						//reopening closed-order, which is ostProcessing

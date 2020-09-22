@@ -2218,6 +2218,21 @@ public numeric function getPersonalVolumeSubtotal(){
 		return variables.orderHasProductPack;
 	}
 	
+	public boolean function returnDatePercentagesApply(){
+		var referencedOrder = this.getReferencedOrder();
+	    if(isNull(referencedOrder)){
+	        return true;
+	    }
+	    var dateDiff = 0;
+	    if(!isNull(referencedOrder.getOrderCloseDateTime())){
+    	         dateDiff = dateDiff('d',referencedOrder.getOrderCloseDateTime(),now());
+	    }
+	    if(dateDiff >= 30){
+	        return true;
+	    }
+	    return false;
+	}
+	
 	public boolean function subtotalWithinAllowedPercentage(){
 	    var referencedOrder = this.getReferencedOrder();
 	    if(isNull(referencedOrder)){
@@ -2553,5 +2568,9 @@ public numeric function getPersonalVolumeSubtotal(){
 		}
 		
 		return isValidOrder;
+	}
+	
+	public boolean function isOrderPartiallyDelivered(){
+		return getQuantityUndelivered() != 0 && getQuantityDelivered() != 0;
 	}//CUSTOM FUNCTIONS END
 }

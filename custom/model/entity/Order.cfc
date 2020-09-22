@@ -637,4 +637,8 @@ component {
 		
 		return isValidOrder;
 	}
+	
+	public boolean function isOrderPartiallyDelivered(){
+		return getQuantityUndelivered() != 0 && getQuantityDelivered() != 0;
+	}
 }

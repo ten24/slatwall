@@ -13,6 +13,7 @@
     </Columns>
     <Records>
         
+        <Record typeID="36e38224fc4111ea85500aca2b469e19" typeIDPath="444df2b3df09f67ddcb27918f02c2d83,36e38224fc4111ea85500aca2b469e19" parentTypeID="444df2b3df09f67ddcb27918f02c2d83" typeName="Partially Shipped" systemCode="ostProcessing" sortOrder="8" typeCode="partiallyShipped" typeDescription="Some, but not all, of the order items have been fulfilled." />
         <Record typeID="2c9180866b4d105e016b4e23aee70027" typeIDPath="444df2b3df09f67ddcb27918f02c2d83,2c9180866b4d105e016b4e23aee70027" parentTypeID="444df2b3df09f67ddcb27918f02c2d83" typeName="Received" systemCode="ostProcessing" sortOrder="9" typeCode="rmaReceived" typeDescription="An order delivery/fulfillment has been created and entered but is unfulfilled" />
 		<Record typeID="2c9180866b4d105e016b4e25bf350028" typeIDPath="444df2b3df09f67ddcb27918f02c2d83,2c9180866b4d105e016b4e25bf350028" parentTypeID="444df2b3df09f67ddcb27918f02c2d83" typeName="Approved" systemCode="ostProcessing" sortOrder="10" typeCode="rmaApproved" typeDescription="Order delivery items were approved, confirmed, and updated as fulfilled." />
 		<Record typeID="2c9180866b4d105e016b4e2666760029" typeIDPath="444df2b3df09f67ddcb27918f02c2d83,2c9180866b4d105e016b4e2666760029" parentTypeID="444df2b3df09f67ddcb27918f02c2d83" typeName="Released" systemCode="ostClosed" sortOrder="11" typeCode="rmaReleased" typeDescription="RMA return order closed" />
