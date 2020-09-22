@@ -93,7 +93,7 @@ Notes:
 		<cfargument name="siteID" type="string" required="true" />
 
 		<cfquery name="rs">
-			UPDATE Swpromotion SET siteID = NULL 
+			UPDATE Swpromotion SET siteID = NULL,activeFlag=0 
 			WHERE siteID =  <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.siteID#" />
 		</cfquery>
 
