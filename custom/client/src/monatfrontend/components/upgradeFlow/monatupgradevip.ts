@@ -155,7 +155,7 @@ class VIPUpgradeController {
 	
 	public getProductList = () => {
 		this.loading = true;
-		console.log('UpgradeVIP');
+		
 		this.publicService.doAction('getProductsByCategoryOrContentID', {priceGroupCode: 3}).then((result) => {
             this.productList = result.productList;
             this.recordsCount = result.recordsCount;

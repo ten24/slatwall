@@ -196,7 +196,6 @@ class VIPController {
 		}
 		
 		this.publicService.doAction('getProductsByCategoryOrContentID', data).then((result) => {
-			console.log('enrollementVP1');
 			this.observerService.notify("PromiseComplete");
 			this.flexshipProductList = result.productList;
 			this.flexshipProductRecordsCount = result.recordsCount
@@ -223,7 +222,6 @@ class VIPController {
 		}
 		
 		this.publicService.doAction('getproductsByCategoryOrContentID', data).then((result) => {
-			console.log('enrollementVIP2');
 			this.observerService.notify("PromiseComplete");
 			this.productList = result.productList;
 			this.productRecordsCount = result.recordsCount

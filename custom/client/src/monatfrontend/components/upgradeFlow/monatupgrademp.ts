@@ -156,7 +156,6 @@ class UpgradeMPController {
 
 	public getProductList = (pageNumber = 1, pageRecordsShow = 12 ) => {
 		this.loading = true;
-		console.log('UpgradeMP');
 		this.publicService.doAction('getproductsByCategoryOrContentID', {priceGroupCode: 1}).then((result) => {
 			this.observerService.notify("PromiseComplete");
 			this.productList = result.productList;
