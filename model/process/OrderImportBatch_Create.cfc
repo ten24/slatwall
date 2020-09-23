@@ -50,9 +50,12 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 	// Injected Entity
 	property name="orderImportBatch";
-
+    property name="orderType" cfc="Type";
 	// Data Properties
     property name="orderImportBatchName" type="string";
 	property name="batchFile" hb_formFieldType="file";
 	
+	public any function getOrderTypeOptions(){
+	    arguments.orderImportBatch.getOrderTypeOptions();
+	}
 }

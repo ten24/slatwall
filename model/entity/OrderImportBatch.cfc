@@ -12,6 +12,7 @@ component extends="Slatwall.model.entity.HibachiEntity" displayname="OrderImport
 
     // Related Object Properties (many-to-one)
     property name="orderImportBatchStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderImportBatchStatusTypeID" hb_optionsSmartListData="f:parentType.systemCode=orderImportBatchStatusType";
+    property name="orderType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderTypeID";
     property name="shippingMethod" cfc="ShippingMethod" fieldtype="many-to-one" fkcolumn="shippingMethodID";
 
     // Audit Properties
@@ -39,6 +40,15 @@ component extends="Slatwall.model.entity.HibachiEntity" displayname="OrderImport
 		if(structKeyExists(variables,'shippingMethod')){
 			return variables.shippingMethod;
 		}
+	}
+	
+	public any function getOrderTypeOptions(){
+		if(!structKeyExists(variables, 'orderTypeOptions')){
+			var orderTypeCollectionList = getService('TypeService').getTypeCollectionList();
+			orderTypeCollectionList.addFilter('systemCode','otSalesOrder,otReplacementOrder','in');
+			variables.orderTypeOptions = orderTypeCollectionList.getRecordOptions();
+		}
+		return variables.orderTypeOptions;
 	}
 	
 	public array function getShippingMethodOptions(){

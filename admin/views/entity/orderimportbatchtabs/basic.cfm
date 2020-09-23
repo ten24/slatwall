@@ -9,6 +9,7 @@
 	<hb:HibachiPropertyRow>
 		<hb:HibachiPropertyList divclass="col-md-6">
  			<hb:HibachiPropertyDisplay object="#rc.orderImportBatch#" property="orderImportBatchName" edit="false">
+ 			<hb:HibachiPropertyDisplay object="#rc.orderImportBatch#" property="orderType" edit="#rc.edit#">
  			<hb:HibachiPropertyDisplay object="#rc.orderImportBatch#" property="shippingMethod" edit="#rc.edit#">
  		    <hb:HibachiPropertyDisplay object="#rc.orderImportBatch#" property="orderImportBatchStatusType" edit="false">
  	    	<hb:HibachiPropertyDisplay object="#rc.orderImportBatch#" property="comment" edit="#rc.edit#">
