@@ -38,7 +38,7 @@
         "estimatedDeliveryDateTime": {
             "propertyIdentifier": "estimatedDeliveryDateTime",
             "validations": {
-                "dataType": "timestamp"
+                "dataType": "date"
             }
         },
         "quoteFlag": {
