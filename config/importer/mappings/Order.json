@@ -32,7 +32,7 @@
         "orderCloseDateTime": {
             "propertyIdentifier": "orderCloseDateTime",
             "validations": {
-                "dataType": "timestamp"
+                "dataType": "date"
             }
         },
         "estimatedDeliveryDateTime": {
