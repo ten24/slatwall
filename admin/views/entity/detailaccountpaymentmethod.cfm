@@ -122,7 +122,7 @@ Notes:
 				<cfif rc.accountPaymentMethod.isNew()>
 					<hb:HibachiDisplayToggle selector="select[name='paymentMethod.paymentMethodID']" valueAttribute="paymentmethodtype" showValues="creditCard,termPayment">
 					
-							<span ng-if="$root.slatwall.billingAccountAddress !== 'new'">
+							<span ng-init="$root.slatwall.billingAccountAddress = ($root.slatwall.billingAccountAddress) ? $root.slatwall.billingAccountAddress : 'new' ">
 								<cfif not isNull(url.accountID)>
 									<hb:HibachiPropertyDisplay object="#rc.accountPaymentMethod#" property="billingAccountAddress" valueoptions="#rc.accountPaymentMethod.getBillingAccountAddressOptions(url.accountID)#" edit="#rc.edit#" fieldAttributes="ng-model='$root.slatwall.billingAccountAddress'" />
 			
