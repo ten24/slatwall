@@ -60403,6 +60403,12 @@ var SWContentListController = /** @class */ (function () {
                     isSearchable: false
                 },
                 {
+                    propertyIdentifier: '_content.sortOrder',
+                    isVisible: true,
+                    ormtype: 'integer',
+                    isSearchable: true
+                },
+                {
                     propertyIdentifier: '_content.activeFlag',
                     isVisible: true,
                     ormtype: 'boolean',
@@ -60497,6 +60503,7 @@ var SWContentListController = /** @class */ (function () {
             angular.forEach(filterGroupsConfig[0].filterGroup, function (filter) {
                 _this.collectionConfig.addFilter(filter.propertyIdentifier, filter.value, filter.comparisonOperator, filter.logicalOperator);
             });
+            _this.collectionConfig.setOrderBy("sortOrder|ASC");
             _this.collectionListingPromise = _this.collectionConfig.getEntity();
             _this.collectionListingPromise.then(function (value) {
                 _this.$timeout(function () {
@@ -76458,6 +76465,7 @@ var SWExpandableRecordController = /** @class */ (function () {
             angular.forEach(_this.collectionConfig.joins, function (join) {
                 _this.childCollectionConfig.addJoin(join);
             });
+            _this.childCollectionConfig.orderBy = _this.collectionConfig.orderBy;
             _this.childCollectionConfig.groupBys = _this.collectionConfig.groupBys;
         };
         this.getEntity = function () {
@@ -76472,7 +76480,7 @@ var SWExpandableRecordController = /** @class */ (function () {
                         pageRecord.depth++;
                         //push the children into the listing display
                         _this.children.push(pageRecord);
-                        _this.records.splice(_this.recordIndex + 1, 0, pageRecord);
+                        _this.records.push(pageRecord);
                     });
                 }
                 _this.childrenLoaded = true;
