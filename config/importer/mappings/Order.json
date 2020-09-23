@@ -3,7 +3,7 @@
     
     "properties": {
         
-        "OrderID": {
+        "orderID": {
             "propertyIdentifier": "remoteID",
             "validations": {
                 "required": true,
