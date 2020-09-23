@@ -6,3 +6,13 @@
 // Example of a variable override to change Cartzilla background color
 // Remove the "//" to comment it in and see it in action!
 // $body-bg: #12263F;
+
+$theme-colors: (
+  "primary": #5F1018,
+  "danger": #ff4136,
+  "dark": #221E20,
+  "light": #F9F9F9
+);
+$primary: theme-color('primary');
+$color-light: theme-color('light');
+$color-dark: theme-color('dark');

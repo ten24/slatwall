@@ -37,6 +37,15 @@
  background-color: theme-color('light');
 }
 
+.btn-primary{
+  background-color: theme-color('primary');
+  border-color: theme-color('primary');
+  &:hover{
+    background-color: lighten($primary, 10%) !important;
+    border-color: lighten($primary, 10%) !important;
+  }
+}
+
 
 // Outline buttons
 
