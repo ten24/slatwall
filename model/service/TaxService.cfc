@@ -563,8 +563,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 									newAppliedTax.setTaxCategoryRate( taxCategoryRate );
 									newAppliedTax.setOrderFulfillment( orderFulfillment );
 									newAppliedTax.setCurrencyCode( arguments.order.getCurrencyCode() );
-									//newAppliedTax.setTaxLiabilityAmount( getService('hibachiUtilityService').precisionCalculate((orderFulfillment.getFulfillmentCharge() - orderFulfillment.getDiscountAmount()) * taxCategoryRate.getTaxRate() / 100) );
-									newAppliedTax.setTaxLiabilityAmount( round(orderFulfillment.getFulfillmentCharge() * taxCategoryRate.getTaxRate()) / 100 );
+									newAppliedTax.setTaxLiabilityAmount( getService('hibachiUtilityService').precisionCalculate((orderFulfillment.getFulfillmentCharge() - orderFulfillment.getDiscountAmount()) * taxCategoryRate.getTaxRate() / 100) );
+									//newAppliedTax.setTaxLiabilityAmount( round(orderFulfillment.getFulfillmentCharge() * taxCategoryRate.getTaxRate()) / 100 );
 	
 									newAppliedTax.setTaxStreetAddress( taxAddress.getStreetAddress() );
 									newAppliedTax.setTaxStreet2Address( taxAddress.getStreet2Address() );
