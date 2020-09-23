@@ -80,7 +80,7 @@
 		
 		public any function getCollectionReportList(string entityName, struct data={}){
 		
-			var collection = getService('hibachiCollectionService').newCollection(argumentcollection=arguments);
+			var collection = this.newCollection(argumentcollection=arguments);
 			collection.setReportFlag(1);
 			var addDefaultColumns = true;
 			if(structKeyExists(arguments.data, 'defaultColumns')){

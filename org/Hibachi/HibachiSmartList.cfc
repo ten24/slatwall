@@ -830,6 +830,7 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 	}
 
 	public array function getRecords(boolean refresh=false) {
+		//throw('getRecords');
 		if( !structKeyExists(variables, "records") || arguments.refresh == true) {
 			variables.records = ormExecuteQuery(getHQL(), getHQLParams(), false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#getCacheName()#"});
 		}
@@ -838,6 +839,7 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 	
 	// Paging Methods
 	public array function getPageRecords(boolean refresh=false) {
+		//throw('getPageRecords');
 		if( !structKeyExists(variables, "pageRecords") || arguments.refresh == true) {
 			saveState();
 			variables.pageRecords = ormExecuteQuery(getHQL(), getHQLParams(), false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#"});
@@ -858,6 +860,7 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 	}
 	
 	public numeric function getRecordsCount() {
+		//throw('getRecordsCount');
 		if(!structKeyExists(variables, "recordsCount")) {
 			if(getCacheable() && structKeyExists(session.entitySmartList, getCacheName()) && structKeyExists(session.entitySmartList[getCacheName()], "recordsCount")) {
 				variables.recordsCount = session.entitySmartList[ getCacheName() ].recordsCount;

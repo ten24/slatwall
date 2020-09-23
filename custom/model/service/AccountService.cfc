@@ -447,7 +447,7 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 	
 	public any function processAccount_syncWithMailchimp(required any account){
 		if( !isNull( arguments.account.getPrimaryEmailAddress() ) ){
-			var allowCorporateEmailsFlag = getService('MailchimpAPIService').getSubscribedFlagByEmailAddress( arguments.account.getPrimaryEmailAddress().getEmailAddress() ); 
+			var allowCorporateEmailsFlag = getService('mailchimpService').getSubscribedFlagByEmailAddress( arguments.account.getPrimaryEmailAddress().getEmailAddress() ); 
 			arguments.account.setAllowCorporateEmailsFlag( allowCorporateEmailsFlag );
 		}
 		return arguments.account;

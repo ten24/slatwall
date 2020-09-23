@@ -247,6 +247,7 @@ class EnrollmentMPController {
 		}
 		
 		this.publicService.doAction('getproductsByCategoryOrContentID', data).then((result) => {
+			console.log('enrollementMP');
 			this.observerService.notify("PromiseComplete");
 			this.productList = result.productList;
 			this.productRecordsCount = result.recordsCount

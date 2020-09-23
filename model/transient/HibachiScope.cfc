@@ -140,10 +140,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 			var site = getCurrentRequestSite();
 			if ( !isNull(site) ){
 				//Though the relationship is a many-to-many we're only dealing with 1 location as of now
-				
 				if(site.getLocationsCount()){
-					var locationsSmartList = site.getLocationsSmartlist();
-					variables.currentRequestSiteLocation= locationsSmartList.getFirstRecord();
+					variables.currentRequestSiteLocation= site.getLocations()[1];
 				}
 			}
 		}
