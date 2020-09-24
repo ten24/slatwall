@@ -151,9 +151,10 @@
     </div>
   </footer>
   <!--- JavaScript libraries, plugins and custom scripts--->
-  <script src="#$.getThemePath()#/client/assets/js/theme.min.js"></script>
-  <script src="#$.getThemePath()#/client/assets/js/bootstrap.min.js"></script>
-  <script src="#$.getThemePath()#/client/assets/js/tiny-slider.min.js"></script>
+  <script src="#$.getThemePath()#/custom/client/assets/js/jquery.min.js"></script>
+  <script src="#$.getThemePath()#/custom/client/assets/js/bootstrap.min.js"></script>
+  <script src="#$.getThemePath()#/custom/client/assets/js/theme.js"></script>
+  <script src="#$.getThemePath()#/custom/client/assets/js/tiny-slider.min.js"></script>
 </body>
 </html>
 

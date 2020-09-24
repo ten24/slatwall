@@ -65,6 +65,8 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 	property name="displayInNavigation" ormtype="boolean";
 	property name="excludeFromSearch" ormtype="boolean";
 	property name="sortOrder" ormtype="integer";
+	property name="customBody" length="4000"  ormtype="string" hb_formFieldType="wysiwyg";
+	property name="linkUrl" ormtype="string";
 
 	// CMS Properties
 	property name="cmsContentID" ormtype="string" index="RI_CMSCONTENTID";
@@ -112,7 +114,10 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 	property name="cmsContentIDPath" ormtype="string" length="500";
 
 
-	// ============ START: Non-Persistent Property Methods =================
+	// ============ START: Non-Persistent Property Methods =================	//CUSTOM PROPERTIES BEGIN
+
+ property name="customBody" length="4000"  ormtype="string" hb_formFieldType="wysiwyg";
+ property name="linkUrl" ormtype="string";//CUSTOM PROPERTIES END
 	public string function getAssetsPath(){
 		if(!isNull(getSite()) && !structKeyExists(variables,'assetsPath')){
 			variables.assetsPath = getSite().getAssetsPath();
