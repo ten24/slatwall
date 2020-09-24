@@ -44,6 +44,8 @@ class MonatCheckoutController {
 	public sponsorLoading:boolean;
 	public isLoading:boolean;
 	public addingSavedPaymentMethod = false;
+	public firstFormPost = true;
+	public formHasBeenPosted = false;
 	
 	// @ngInject
 	constructor(
@@ -113,7 +115,9 @@ class MonatCheckoutController {
 		const currDate = new Date;
         this.currentYear = currDate.getFullYear();
         let manipulateableYear = this.currentYear;
-     
+		
+		this.$scope.slatwall.preValidate = this.preValidate;
+		
         do {
             this.yearOptions.push(manipulateableYear++);
         }
@@ -428,6 +432,16 @@ class MonatCheckoutController {
 		if(!this.account.accountID.length) return;
 		this.getCurrentCheckoutScreen(setDefault, hardRefresh);
 
+	}
+	
+	public preValidate = (model) => {
+		console.log(model);
+		let shouldValidate = false;
+		
+		if(this.firstFormPost && shouldValidate){
+			this.firstFormPost = false;
+			return false;
+		}
 	}
 }
 
