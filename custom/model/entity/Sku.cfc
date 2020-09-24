@@ -6,6 +6,7 @@ component {
 	property name="vipFlag" ormtype="boolean" default="1";
 	property name="mpFlag" ormtype="boolean" default="1";
 	property name="retailFlag" ormtype="boolean" default="1";
+	property name="backorderedMessaging" ormtype="string";
 	
 	// Non-persistent properties
     property name="personalVolumeByCurrencyCode" persistent="false";
