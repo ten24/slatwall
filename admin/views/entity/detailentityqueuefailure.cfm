@@ -50,17 +50,17 @@ Notes:
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
 
-<cfparam name="rc.entityqueuefailure" type="any">
+<cfparam name="rc.entityQueueFailure" type="any">
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.entityqueuefailure#" edit="#rc.edit#" sRedirectAction="admin:entity.detailentityqueuefailure">
+	<hb:HibachiEntityDetailForm object="#rc.entityQueueFailure#" edit="#rc.edit#" sRedirectAction="admin:entity.detailEntityQueueFailure">
 		
-		<hb:HibachiEntityActionBar type="detail" object="#rc.entityQueueFailure#" edit="#rc.edit#">
-		    <hb:HibachiProcessCaller entity="#rc.entityQueueFailure#" action="admin:entity.processentityqueuefailure" processContext="processQueue" type="list" />
+		<hb:HibachiEntityActionBar type="detail" object="#rc.entityQueueFailure#" edit="#rc.edit#" backAction="admin:entity.listEntityQueue">
+		    <hb:HibachiProcessCaller entity="#rc.entityQueueFailure#" action="admin:entity.processEntityQueueFailure" sRedirectAction="admin:entity.listEntityQueue" processContext="reQueue" type="list" />
 		</hb:HibachiEntityActionBar>
 		
-        <hb:HibachiEntityDetailGroup object="#rc.entityqueuefailure#">
+        <hb:HibachiEntityDetailGroup object="#rc.entityQueueFailure#">
 		    <hb:HibachiEntityDetailItem view="admin:entity/entityqueuefailuretabs/basic" open="true" />
 		</hb:HibachiEntityDetailGroup>
 		

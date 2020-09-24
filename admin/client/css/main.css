@@ -8833,3 +8833,22 @@ table.s-detail-content-table tbody tr.s-done {
 .refreshInputGroup {
   width: 100px;
 }
+pre.json {
+  padding: 5px;
+  margin: 5px;
+}
+pre.json .string {
+  color: #008000;
+}
+pre.json .number {
+  color: #0000ff;
+}
+pre.json .boolean {
+  color: #b22222;
+}
+pre.json .null {
+  color: #808080;
+}
+pre.json .key {
+  color: #c056ddab;
+}

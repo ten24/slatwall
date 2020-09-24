@@ -1,21 +1,67 @@
 {
-	"entity": "Account",
-	"properties": {
-	    "firstName": {
-		    "propertyIdentifier" : "firstName",
-		    "validations": { "required": true, "dataType": "string" }
-		},
-		"lastName": {
-		    "propertyIdentifier" : "lastName",
-		    "validations": { "dataType": "string" }
-		},
-		"username": {
-		    "propertyIdentifier" : "username",
-		    "validations": { "required": true, "dataType": "string" }
-		},
-		"emailAddress": {
-		    "propertyIdentifier" : "primaryEmailAddress.emailAddress",
-		    "validations": { "required": true, "dataType": "email" }
-		}
-	}
+    "entityName": "Account",
+    
+    "properties": {
+        
+        "userID": {
+            "propertyIdentifier": "remoteID",
+            "validations": {
+                "required": true,
+                "dataType": "string"
+            }
+        },
+        "firstName": {
+            "propertyIdentifier": "firstName",
+            "validations": {
+                "required": true,
+                "dataType": "string"
+            }
+        },
+        "lastName": {
+            "propertyIdentifier": "lastName",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "username": {
+            "propertyIdentifier": "username",
+            "validations": {
+                "required": true,
+                "dataType": "string"
+            }
+        },
+        "companyName": {
+            "propertyIdentifier": "company",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "organizationFlag": {
+            "propertyIdentifier": "organizationFlag",
+            "defaultValue": false,
+            "validations": {
+                "dataType": "boolean"
+            }
+        }
+        
+    },
+    
+    "importIdentifier": {
+        "propertyIdentifier": "importRemoteID",
+        "type": "composite",
+        "keys": [
+            "userID"
+        ]
+    },
+    
+    "relations": [
+        {
+            "entityName": "AccountEmailAddress",
+            "propertyIdentifier": "primaryEmailAddress"
+        },
+        {
+            "entityName": "AccountPhoneNumber",
+            "propertyIdentifier": "primaryPhoneNumber"
+        }
+    ]
 }

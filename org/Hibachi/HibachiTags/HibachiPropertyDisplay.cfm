@@ -64,6 +64,7 @@
 		select      		|	Requires the valueOptions to be an array of simple value if name and value is same or array of structs with the format of {value="", name=""}
 		text				|	Simple Text Field
 		textarea			|	Simple Textarea
+		json    			|	Simple Formatted json
 		time				|	This is still just a textbox, but it adds the jQuery time picker
 		wysiwyg				|	Value needs to be a string
 		yesno				|	This is used by booleans and flags to create a radio group of Yes and No
@@ -229,6 +230,11 @@
 				<cfset attributes.translateAttributes.queryString = listAppend(attributes.translateAttributes.queryString, "baseObject=#attributes.object.getClassName()#", "&") />
 				<cfset attributes.translateAttributes.queryString = listAppend(attributes.translateAttributes.queryString, "baseID=#attributes.object.getPrimaryIDValue()#", "&") />
 				<cfset attributes.translateAttributes.queryString = listAppend(attributes.translateAttributes.queryString, "basePropertyName=#attributes.property#", "&") />
+			</cfif>
+			
+				<!--- Setup Translate attributes for persistent entities with string properties --->
+			<cfif attributes.fieldType EQ 'json'>
+			    <cfset attributes.fieldClass= attributes.fieldClass &" json"/>
 			</cfif>
 				
 			<!--- Add the error class to the form field if it didn't pass validation --->
