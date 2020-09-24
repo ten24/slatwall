@@ -353,6 +353,9 @@ component extends="framework.one" {
 					}else if(getHibachiScope().getService('hibachiCacheService').isServerInstanceSettingsCacheExpired(server[variables.framework.applicationKey].serverInstanceKey, getHibachiScope().getServerInstanceIPAddress())){
 
 						getBeanFactory().getBean('hibachiCacheService').resetCachedKeyByPrefix('setting',true);
+						
+						//Reset Permission Cache
+						getBeanFactory().getBean('hibachiCacheService').resetPermissionCache();
 
 						var serverInstance = getBeanFactory().getBean('hibachiCacheService').getServerInstanceByServerInstanceKey(server[variables.framework.applicationKey].serverInstanceKey);
 						serverInstance.setSettingsExpired(false);
