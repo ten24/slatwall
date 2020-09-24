@@ -211,6 +211,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			order.setCurrencyCode(currencyCode);
 			order.setOrderImportBatch(arguments.orderImportBatch);
 			order.setShippingAddress(orderImportBatchItem.getShippingAddress());
+			order.setSendEmailNotificationsFlag(arguments.orderImportBatch.getSendEmailNotificationsFlag());
 			if(!isNull(origin)){
 				order.setOrderOrigin(origin);
 			}
