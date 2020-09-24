@@ -1,706 +1,465 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-declare var Date:any;
-class SWCriteriaDate{
+class SWEditFilterItem{
 	public static Factory(){
-		var directive:ng.IDirectiveFactory = (
+		var directive = (
 			$log,
+			$filter,
+            $timeout,
+			$hibachi,
 			collectionPartialsPath,
-			hibachiPathBuilder
-		)=>new SWCriteriaDate(
+			collectionService,
+			metadataService,
+			hibachiPathBuilder,
+            rbkeyService,
+            observerService,
+            utilityService
+		)=> new SWEditFilterItem(
 			$log,
+			$filter,
+            $timeout,
+			$hibachi,
 			collectionPartialsPath,
-			hibachiPathBuilder
+			collectionService,
+			metadataService,
+			hibachiPathBuilder,
+            rbkeyService,
+            observerService,
+            utilityService
 		);
 		directive.$inject = [
 			'$log',
+			'$filter',
+            '$timeout',
+			'$hibachi',
 			'collectionPartialsPath',
-			'hibachiPathBuilder'
+			'collectionService',
+			'metadataService',
+			'hibachiPathBuilder',
+            'rbkeyService',
+            'observerService',
+            'utilityService'
 		];
 		return directive;
 	}
 	constructor(
 		$log,
+		$filter,
+        $timeout,
+		$hibachi,
 		collectionPartialsPath,
-		hibachiPathBuilder
+		collectionService,
+		metadataService,
+		hibachiPathBuilder,
+        rbkeyService,
+        observerService,
+        utilityService
 	){
 		return {
+            require:{
+                swFilterGroups:'^swFilterGroups',
+                swListingControls:'?^swListingControls'
+            },
 			restrict: 'E',
-			templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+'criteriadate.html',
-			link: function(scope, element, attrs){
-					
-				var getDateOptions = function(type){
-					if(angular.isUndefined(type)){
-				 		type = 'filter'
-				 	}
-				 	var dateOptions = [];
-				 	if(type === 'filter'){
-				    	dateOptions = [
-				    		{
-				    			display:"Date",
-				    			comparisonOperator:	"between",
-				    			dateInfo:{
-				    				type:'date',
-				    			}
-				    		},
-				    		{
-				    			display:"In Range",
-				    			comparisonOperator:	"between",
-				    			dateInfo:{
-				    				type:'range'
-				    			}
-				    		},
-				    		{
-				    			display:"Not In Range",
-				    			comparisonOperator:	"not between",
-				    			dateInfo:{
-				    				type:'range'
-				    			}
-				    		},
-				    		{
-				    			display:"Today",
-				    			comparisonOperator:	"between",
-				    			dateInfo:{
-				    				type:'calculation',
-				    				measureType:'today'
-				    			}
-				    		},
-				    		{
-				    			display:"Yesterday",
-				    			comparisonOperator:	"between",
-				    			dateInfo:{
-				    				type:'calculation',
-				    				measureType:'yesterday'
-				    			}
-				    		},
-				    		{
-				    			display:"This Week",
-				    			comparisonOperator:	"between",
-				    			dateInfo:{
-				    				type:'calculation',
-				    				measureType:'thisWeek'
-				    			}
-				    		},
-				    		{
-				    			display:"This Month",
-				    			comparisonOperator:	"between",
-				    			dateInfo:{
-				    				type:'calculation',
-				    				measureType:'thisMonth'
-				    			}
-				    		},
-				    		{
-				    			display:"This Quarter",
-				    			comparisonOperator:	"between",
-				    			dateInfo:{
-				    				type:'calculation',
-				    				measureType:'thisQuarter'
-				    			}
-				    		},
-				    		{
-				    			display:"This Year",
-				    			comparisonOperator:	"between",
-				    			dateInfo:{
-				    				type:'calculation',
-				    				measureType:'thisYear'
-				    			}
-				    		},
-				    		{
-				    			display:"Last N Hour(s)",
-				    			comparisonOperator:	"between",
-				    			dateInfo:{
-				    				type:'calculation',
-				    				measureType:'lastHour',
-				    				measureTypeDisplay:'Hours'
-				    			}
-				    		},
-				    		{
-				    			display:"Last N Day(s)",
-				    			comparisonOperator:	"between",
-				    			dateInfo:{
-				    				type:'calculation',
-				    				measureType:'lastDay',
-				    				measureTypeDisplay:'Days'
-				    			}
-				    		},
-				    		{
-				    			display:"Last N Week(s)",
-				    			comparisonOperator:	"between",
-				    			dateInfo:{
-				    				type:'calculation',
-				    				measureType:'lastWeek',
-				    				measureTypeDisplay:'Weeks'
+			scope:{
+				collectionConfig:"=",
+				filterItem:"=",
+				filterPropertiesList:"=",
+				saveCollection:"&?",
+				removeFilterItem:"&",
+				filterItemIndex:"=",
+				comparisonType:"=",
+                simple:"="
+			},
+			templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"editfilteritem.html",
+			link: function(scope, element,attrs,filterGroupsController){
 
-				    			}
-				    		},
-				    		{
-				    			display:"Last N Month(s)",
-				    			comparisonOperator:	"between",
-				    			dateInfo:{
-				    				type:'calculation',
-				    				measureType:'lastMonth',
-				    				measureTypeDisplay:'Months'
-				    			}
-				    		},
-				    		{
-				    			display:"Last N Quarter(s)",
-				    			comparisonOperator:	"between",
-				    			dateInfo:{
-				    				type:'calculation',
-				    				measureType:'lastQuarter',
-				    				measureTypeDisplay:'Quarters'
-				    			}
-				    		},
-				    		{
-				    			display:"Last N Year(s)",
-				    			comparisonOperator:	"between",
-				    			dateInfo:{
-				    				type:'calculation',
-				    				measureType:'lastYear',
-				    				measureTypeDisplay:'Years'
-				    			} 
-				    		},
-				    		{
-				    			display:"More Than N Minute(s) Ago",
-				    			comparisonOperator:	"<",
-				    			dateInfo:{
-				    				type:'calculation',
-				    				measureType:'moreMinutes',
-				    				measureTypeDisplay:'Minute(s)'
-				    			}
-				    		},
-				    		{
-				    			display:"More Than N Hours(s) Ago",
-				    			comparisonOperator:	"<",
-				    			dateInfo:{
-				    				type:'calculation',
-				    				measureType:'moreHours',
-				    				measureTypeDisplay:'Hour(s)'
-				    			}
-				    		},
-				    		{
-				    			display:"More Than N Day(s) Ago",
-				    			comparisonOperator:	"<",
-				    			dateInfo:{
-				    				type:'calculation',
-				    				measureType:'moreDays',
-				    				measureTypeDisplay:'Days'
-				    			}
-				    		},
-				    		{
-				    			display:"More Than N Week(s) Ago",
-				    			comparisonOperator:	"<",
-				    			dateInfo:{
-				    				type:'calculation',
-				    				measureType:'moreWeeks',
-				    				measureTypeDisplay:'Weeks'
- 				    			}
-				    		},
-				    		{
-				    			display:"More Than N Month(s) Ago",
-				    			comparisonOperator:	"<",
-				    			dateInfo:{
-				    				type:'calculation',
-				    				measureType:'moreMonths',
-				    				measureTypeDisplay:'Months'
-				    			}
-				    		},
-				    		{
-				    			display:"More Than N Year(s) Ago",
-				    			comparisonOperator:	"<",
-				    			dateInfo:{
-				    				type:'calculation',
-				    				measureType:'moreYears',
-				    				measureTypeDisplay:'Years'
-				    			}
-				    			
-				    		},
-                            {
-                                display:"Exact N Day(s) Ago",
-                                comparisonOperator:	"between",
-                                dateInfo:{
-                                    type:'calculation',
-                                    measureType:'exactDays',
-                                    measureTypeDisplay:'Days'
+
+                if(!scope.saveCollection && filterGroupsController.swListingControls){
+
+                    scope.saveCollection = ()=>{
+                        filterGroupsController.swListingControls.collectionConfig=scope.collectionConfig;
+                        filterGroupsController.swListingControls.saveCollection();
+                    }
+                }
+
+                function daysBetween(first, second) {
+
+                    // Copy date parts of the timestamps, discarding the time parts.
+                    var one = new Date(first.getFullYear(), first.getMonth(), first.getDate());
+                    var two = new Date(second.getFullYear(), second.getMonth(), second.getDate());
+
+                    // Do the math.
+                    var millisecondsPerDay = 1000 * 60 * 60 * 24;
+                    var millisBetween = two.getTime() - one.getTime();
+                    var days = millisBetween / millisecondsPerDay;
+
+                    // Round down.
+                    return Math.floor(days);
+                }
+               if(angular.isUndefined(scope.filterItem.breadCrumbs)){
+
+                    scope.filterItem.breadCrumbs = [];
+                    if(scope.filterItem.propertyIdentifier === ""){
+
+                        scope.filterItem.breadCrumbs = [
+                                                {
+                                                    rbKey:rbkeyService.getRBKey('entity.'+scope.collectionConfig.baseEntityAlias.replace('_','')),
+                                                    entityAlias:scope.collectionConfig.baseEntityAlias,
+                                                    cfc:scope.collectionConfig.baseEntityName,
+                                                    propertyIdentifier:scope.collectionConfig.baseEntityAlias
+                                                }
+                                            ];
+                    }else{
+                        var entityAliasArrayFromString = scope.filterItem.propertyIdentifier.split('.');
+                        entityAliasArrayFromString.pop();
+                        for(var i in entityAliasArrayFromString){
+                            var breadCrumb = {
+                                    rbKey:rbkeyService.getRBKey('entity.'+scope.collectionConfig.baseEntityAlias.replace('_','')),
+                                    entityAlias:entityAliasArrayFromString[i],
+                                    cfc:entityAliasArrayFromString[i],
+                                    propertyIdentifier:entityAliasArrayFromString[i]
+                            };
+                            scope.filterItem.breadCrumbs.push(breadCrumb);
+                        }
+                    }
+                }else{
+
+                    angular.forEach(scope.filterItem.breadCrumbs,function(breadCrumb,key){
+                        if(angular.isUndefined(scope.filterPropertiesList[breadCrumb.propertyIdentifier])){
+                            var filterPropertiesPromise = $hibachi.getFilterPropertiesByBaseEntityName(breadCrumb.cfc);
+                            filterPropertiesPromise.then(function(value){
+                                metadataService.setPropertiesList(value,breadCrumb.propertyIdentifier);
+                                scope.filterPropertiesList[breadCrumb.propertyIdentifier] = metadataService.getPropertiesListByBaseEntityAlias(breadCrumb.propertyIdentifier);
+                                metadataService.formatPropertiesList(scope.filterPropertiesList[breadCrumb.propertyIdentifier],breadCrumb.propertyIdentifier);
+                                var entityAliasArrayFromString = scope.filterItem.propertyIdentifier.split('.');
+                                entityAliasArrayFromString.pop();
+
+                                entityAliasArrayFromString = entityAliasArrayFromString.join('.').trim();
+                                if(angular.isDefined(scope.filterPropertiesList[entityAliasArrayFromString])){
+                                    for(var i in scope.filterPropertiesList[entityAliasArrayFromString].data){
+                                        var filterProperty = scope.filterPropertiesList[entityAliasArrayFromString].data[i];
+                                        if(filterProperty.propertyIdentifier === scope.filterItem.propertyIdentifier){
+                                            //selectItem from drop down
+                                            scope.selectedFilterProperty = filterProperty;
+                                            //decorate with value and comparison Operator so we can use it in the Condition section
+                                            scope.selectedFilterProperty.value = scope.filterItem.value;
+                                            scope.selectedFilterProperty.comparisonOperator = scope.filterItem.comparisonOperator;
+                                        }
+                                    }
                                 }
-                            },
-                            {
-                                display:"Exact N Month(s) Ago",
-                                comparisonOperator:	"between",
-                                dateInfo:{
-                                    type:'calculation',
-                                    measureType:'exactMonths',
-                                    measureTypeDisplay:'Months'
+                            });
+                        }else{
+                            var entityAliasArrayFromString = scope.filterItem.propertyIdentifier.split('.');
+                            entityAliasArrayFromString.pop();
+
+                            entityAliasArrayFromString = entityAliasArrayFromString.join('.').trim();
+                            if(angular.isDefined(scope.filterPropertiesList[entityAliasArrayFromString])){
+                                for(var i in scope.filterPropertiesList[entityAliasArrayFromString].data){
+                                    var filterProperty = scope.filterPropertiesList[entityAliasArrayFromString].data[i];
+                                    if(filterProperty.propertyIdentifier === scope.filterItem.propertyIdentifier){
+                                        //selectItem from drop down
+
+                                        scope.selectedFilterProperty = filterProperty;
+                                        //decorate with value and comparison Operator so we can use it in the Condition section
+                                        scope.selectedFilterProperty.value = scope.filterItem.value;
+                                        scope.selectedFilterProperty.comparisonOperator = scope.filterItem.comparisonOperator;
+                                    }
                                 }
-                            },
-                            {
-                                display:"Exact N Year(s) Ago",
-                                comparisonOperator:	"between",
-                                dateInfo:{
-                                    type:'calculation',
-                                    measureType:'exactYears',
-                                    measureTypeDisplay:'Years'
+                            }
+
+                        }
+                    });
+                }
+
+                if(angular.isUndefined(scope.filterItem.$$isClosed)){
+                    scope.filterItem.$$isClosed = true;
+                }
+
+
+                scope.filterGroupItem = filterGroupsController.swFilterGroups.getFilterGroupItem();
+
+
+                scope.togglePrepareForFilterGroup = function(){
+                    scope.filterItem.$$prepareForFilterGroup = !scope.filterItem.$$prepareForFilterGroup;
+                };
+
+                //public functions
+
+                scope.selectBreadCrumb = function(breadCrumbIndex){
+                    //splice out array items above index
+                    var removeCount = scope.filterItem.breadCrumbs.length - 1 - breadCrumbIndex;
+                    scope.filterItem.breadCrumbs.splice(breadCrumbIndex + 1,removeCount);
+                    $log.debug('selectBreadCrumb');
+                    $log.debug(scope.selectedFilterProperty);
+                    //scope.selectedFilterPropertyChanged(scope.filterItem.breadCrumbs[scope.filterItem.breadCrumbs.length -1].filterProperty);
+                    scope.selectedFilterPropertyChanged(null);
+                };
+
+                scope.selectedFilterPropertyChanged = function(selectedFilterProperty){
+                    $log.debug('selectedFilterProperty');
+                    $log.debug(selectedFilterProperty);
+
+                    if(angular.isDefined(scope.selectedFilterProperty) && scope.selectedFilterProperty === null){
+                        scope.selectedFilterProperty = {};
+                    }
+                    if(angular.isDefined(scope.selectedFilterProperty) && angular.isDefined(scope.selectedFilterProperty.selectedCriteriaType)){
+                        delete scope.selectedFilterProperty.selectedCriteriaType;
+                    }
+                    if(angular.isDefined(scope.filterItem.value)){
+                        delete scope.filterItem.value;
+                    }
+
+                    scope.selectedFilterProperty.showCriteriaValue = false;
+                    scope.selectedFilterProperty = selectedFilterProperty;
+                };
+
+                scope.addFilterItem = function(){
+                    collectionService.newFilterItem(filterGroupsController.swFilterGroups.getFilterGroupItem(),filterGroupsController.swFilterGroups.setItemInUse);
+                    this.observerService.notify('collectionConfigUpdated', {
+                        collectionConfig: collectionService
+                    });
+                };
+
+                scope.cancelFilterItem = function(){
+                    $log.debug('cancelFilterItem');
+                    $log.debug(scope.filterItemIndex);
+                    //scope.deselectItems(scope.filterGroupItem[filterItemIndex]);
+                    scope.filterItem.setItemInUse(false);
+                    scope.filterItem.$$isClosed = true;
+                    for(var siblingIndex in scope.filterItem.$$siblingItems){
+                        scope.filterItem.$$siblingItems[siblingIndex].$$disabled = false;
+                    }
+                    if(scope.filterItem.$$isNew === true){
+                        scope.removeFilterItem({filterItemIndex:scope.filterItemIndex});
+                    }else{
+                        observerService.notify('filterItemAction', {action: 'close',filterItemIndex:scope.filterItemIndex});
+                    }
+                };
+
+                scope.saveFilter = function(selectedFilterProperty,filterItem,callback){
+                    $log.debug('saveFilter begin');
+                    if(angular.isDefined(selectedFilterProperty.selectedCriteriaType) && angular.equals({}, selectedFilterProperty.selectedCriteriaType)){
+                        return;
+                    }
+
+                    if((selectedFilterProperty.propertyIdentifier.match(/_/g) || []).length > 1 ){
+                        var propertyIdentifierStart = (selectedFilterProperty.propertyIdentifier.charAt(0)  == '_') ? 1 : 0;
+                        var propertyIdentifierEnd = (selectedFilterProperty.propertyIdentifier.indexOf('.') == -1) ? selectedFilterProperty.propertyIdentifier.length : selectedFilterProperty.propertyIdentifier.indexOf('.');
+                        var propertyIdentifierJoins = selectedFilterProperty.propertyIdentifier.substring(propertyIdentifierStart, propertyIdentifierEnd);
+                        var propertyIdentifierParts = propertyIdentifierJoins.split('_');
+                        var  current_collection = $hibachi.getEntityExample(scope.collectionConfig.baseEntityName);
+                        var _propertyIdentifier = '';
+                        var joins = [];
+
+                        if(angular.isDefined(scope.collectionConfig.joins)){
+                            joins = scope.collectionConfig.joins;
+                        }
+
+                        for(var i = 1; i < propertyIdentifierParts.length; i++){
+                            if (angular.isDefined(current_collection.metaData[propertyIdentifierParts[i]]) && ('cfc' in current_collection.metaData[propertyIdentifierParts[i]])) {
+                                current_collection = $hibachi.getEntityExample(current_collection.metaData[propertyIdentifierParts[i]].cfc);
+                                _propertyIdentifier += '_' + propertyIdentifierParts[i];
+                                var newJoin = {
+                                    associationName: _propertyIdentifier.replace(/_([^_]+)$/,'.$1').substring(1),
+                                    alias: '_'+propertyIdentifierParts[0]+ _propertyIdentifier
+                                };
+                                var joinFound = false;
+                                for (var j = 0; j < joins.length; j++) {
+                                    if (joins[j].alias === newJoin.alias) {
+                                        joinFound = true;
+                                        break;
+                                    }
                                 }
-                            },
-							{
-                                display:"Exact N Day(s) From Now",
-                                comparisonOperator:	"between",
-                                dateInfo:{
-                                    type:'calculation',
-                                    measureType:'exactDayFromNow',
-                                    measureTypeDisplay:'Days'
+                                if(!joinFound){
+                                    joins.push(newJoin);
                                 }
-                            },
-							{
-								display:"Match Day of Month",
-								comparisonOperator:	"=",
-								dateInfo:{
-									type:'matchPart',
-									measureType:'d',
-									measureTypeDisplay:'Day'
-								}
-							},
-							{
-								display:"Match Month",
-								comparisonOperator:	"=",
-								dateInfo:{
-									type:'matchPart',
-									measureType:'m',
-									measureTypeDisplay:'Month'
-								}
-							},
-							{
-								display:"Match Year",
-								comparisonOperator:	"=",
-								dateInfo:{
-									type:'matchPart',
-									measureType:'y',
-									measureTypeDisplay:'Year'
-								}
-							},
-							{
-								display:"Defined",
-								comparisonOperator:"is not",
-								value:"null"
-							},
-							{
-								display:"Not Defined",
-								comparisonOperator:"is",
-								value:"null"
-							},
-							{
-								display:"Past",
-								comparisonOperator: "<=",
-								value:"now()"
-							},
-							{
-								display:"Future",
-								comparisonOperator: ">=",
-								value:"now()"
-							}
-				    	];
-				    }else if(type === 'condition'){
-				 		dateOptions = [
-				 			{
-								display:"Equals",
-								comparisonOperator:"eq"
-							},
-							{
-								display:"Doesn't Equal",
-								comparisonOperator:"neq"
-							},
-							{
-								display:"Defined",
-								comparisonOperator:"null",
-								value:"False"
-							},
-							{
-								display:"Not Defined",
-								comparisonOperator:"null",
-								value:"True"
-							}
-				 		];
-				 	}
+                            }
+                        }
+                        scope.collectionConfig.joins = joins;
 
-			    	return dateOptions;
-			    };
+                        if (angular.isDefined(scope.collectionConfig.columns) && (angular.isUndefined(scope.collectionConfig.groupBys) || scope.collectionConfig.groupBys.split(',').length != scope.collectionConfig.columns.length)) {
+                            var groupbyArray = angular.isUndefined(scope.collectionConfig.groupBys) ? [] : scope.collectionConfig.groupBys.split(',');
+                            for (var column = 0; column < scope.collectionConfig.columns.length; column++) {
+                                if (groupbyArray.indexOf(scope.collectionConfig.columns[column].propertyIdentifier) == -1) {
+                                    groupbyArray.push(scope.collectionConfig.columns[column].propertyIdentifier);
+                                }
+                            }
+                            scope.collectionConfig.groupBys = groupbyArray.join(',');
+                        }
 
-			    scope.conditionOptions = getDateOptions(scope.comparisonType);
-				scope.today = function() {
-					if (angular.isDefined(scope.selectedFilterProperty)) {
-						scope.selectedFilterProperty.criteriaRangeStart = new Date().getTime();
-						scope.selectedFilterProperty.criteriaRangeEnd = new Date().getTime();
-					}
-				};
 
-				scope.clear = function() {
-					scope.selectedFilterProperty.criteriaRangeStart = null;
-					scope.selectedFilterProperty.criteriaRangeEnd = null;
-				};
+                    }
 
-				scope.openCalendarStart = function($event) {
-					$event.preventDefault();
-					$event.stopPropagation();
+                    if(angular.isDefined(selectedFilterProperty) && angular.isDefined(selectedFilterProperty.selectedCriteriaType)){
+                        //populate filterItem with selectedFilterProperty values
+                        filterItem.$$isNew = false;
+                        filterItem.propertyIdentifier = selectedFilterProperty.propertyIdentifier;
+                        filterItem.displayPropertyIdentifier = selectedFilterProperty.displayPropertyIdentifier;
 
-					scope.openedCalendarStart = true;
-				};
+                        switch(selectedFilterProperty.ormtype){
+                            case 'boolean':
+                                filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
+                                filterItem.value = selectedFilterProperty.selectedCriteriaType.value;
+                                filterItem.displayValue = filterItem.value;
+                            break;
+                            case 'string':
+                            case 'big_decimal':
+                            case 'integer':
+                            case 'float':
+                                if(angular.isDefined(selectedFilterProperty.attributeID)){
+                                    filterItem.attributeID = selectedFilterProperty.attributeID;
+                                    filterItem.attributeSetObject = selectedFilterProperty.attributeSetObject;
+                                }
 
-				scope.openCalendarEnd = function($event) {
-					$event.preventDefault();
-					$event.stopPropagation();
+                                if(selectedFilterProperty.selectedCriteriaType.comparisonOperatorCalculated){
+                                    filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperatorCalculated;
+                                } else {
+                                    filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
+                                }
 
-					scope.openedCalendarEnd = true;
-				};
+                                //retrieving implied value or user input | ex. implied:prop is null, user input:prop = "Name"
+                                if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)){
+                                    filterItem.value = selectedFilterProperty.selectedCriteriaType.value.toString();
+                                //if has a pattern then we need to evaluate where to add % for like statement
+							    }else if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.pattern)){
+                                    filterItem.pattern = selectedFilterProperty.selectedCriteriaType.pattern;
+                                }
+                                filterItem.displayValue = filterItem.value;
 
-				scope.formats = [
-						'dd-MMMM-yyyy',
-						'yyyy/MM/dd',
-						'dd.MM.yyyy',
-						'shortDate' ];
-				scope.format = scope.formats[1];
+                                break;
+                                //TODO:simplify timestamp and big decimal to leverage reusable function for null, range, and value
+                            case 'timestamp':
+                                //retrieving implied value or user input | ex. implied:prop is null, user input:prop = "Name"
+                                filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
+                                //is it null or a range
+                                if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)){
+                                    filterItem.value = selectedFilterProperty.selectedCriteriaType.value;
+                                    filterItem.displayValue = filterItem.value;
+                                }else{
+                                    if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.dateInfo.type) && selectedFilterProperty.selectedCriteriaType.dateInfo.type === 'calculation'){
+                                        
+                                        var _daysBetween = daysBetween(new Date(selectedFilterProperty.criteriaRangeStart),new Date(selectedFilterProperty.criteriaRangeEnd));
+                                        
+                                        filterItem.displayValue = selectedFilterProperty.selectedCriteriaType.display;
+                                        
+                                        filterItem.measureType = selectedFilterProperty.selectedCriteriaType.dateInfo.measureType;
+                                        filterItem.measureCriteria = selectedFilterProperty.selectedCriteriaType.dateInfo.type;
+                                        
+                                        if(angular.isDefined(selectedFilterProperty.criteriaNumberOf)){
+                                            filterItem.criteriaNumberOf = selectedFilterProperty.criteriaNumberOf;
+                                            filterItem.value = filterItem.criteriaNumberOf;
+                                            
+                                            //Update Display Value
+                                            filterItem.displayValue = filterItem.displayValue.replace("N", filterItem.criteriaNumberOf);
+                                        
+                                        } else {
+                                            filterItem.criteriaNumberOf = "0";
+                                            filterItem.value = _daysBetween;
+                                        }
+                                    }else  if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.dateInfo.type) && selectedFilterProperty.selectedCriteriaType.dateInfo.type === 'matchPart'){
+                                        filterItem.measureType = selectedFilterProperty.selectedCriteriaType.dateInfo.measureType;
+                                        filterItem.measureCriteria = selectedFilterProperty.selectedCriteriaType.dateInfo.type;
+                                        if(angular.isDefined(selectedFilterProperty.criteriaNumberOf)){
+                                            filterItem.value = selectedFilterProperty.criteriaNumberOf;
+                                            filterItem.displayValue = '';
+                                            switch(filterItem.measureType){
+                                                case 'd':
+                                                    filterItem.displayValue +='Day ';
+                                                    break;
+                                                case 'm':
+                                                    filterItem.displayValue +='Month ';
+                                                    break;
+                                                case 'y':
+                                                    filterItem.displayValue +='Year ';
+                                                    break;
+                                            }
+                                            filterItem.displayValue += filterItem.value;
+                                        }
+                                    }else{
+                                        filterItem.value = selectedFilterProperty.criteriaRangeStart + '-' + selectedFilterProperty.criteriaRangeEnd;
+                                        var formattedDateValueString = $filter('date')(angular.copy(selectedFilterProperty.criteriaRangeStart),'MM/dd/yyyy @ h:mma') + '-' + $filter('date')(angular.copy(selectedFilterProperty.criteriaRangeEnd),'MM/dd/yyyy @ h:mma');
+                                        filterItem.displayValue = formattedDateValueString;
+                                        if(angular.isDefined(selectedFilterProperty.criteriaNumberOf)){
+                                            filterItem.criteriaNumberOf = selectedFilterProperty.criteriaNumberOf;
+                                        }
+                                    }
 
-				scope.selectedConditionChanged = function(selectedFilterProperty){
-					$log.debug('selectedConditionChanged Begin');
 
-				  	var selectedCondition:any = selectedFilterProperty.selectedCriteriaType;
-				  	//check whether condition is checking for null values in date
-				  	if(angular.isDefined(selectedCondition.dateInfo)){
-				  		//is condition a calculation
-				  		if(selectedCondition.dateInfo.type === 'calculation'){
-				  			
-			  				var setStartRange = false;
-							var setEndRange = false;
-							var setNumberOf = false;
-							var setStartDate = Date.parse('today');
-							var setEndDate = Date.parse('today');
-			  				
-				  			//get this Measure to date
-	  						switch(selectedCondition.dateInfo.measureType){
-	  							case "today":
-	  								setStartRange = true;
-	  								setEndRange = true;
-	  								break;
-	  							case "yesterday":
-	  								setStartRange = true;
-	  								setEndRange = true;
-	  								setStartDate = setStartDate.add(-1).days();
-	  								setEndDate = setStartDate;
-	  								break;
-	  							case 'thisWeek': //This Week
-	  								setStartRange = true;
-	  								setEndRange = true;
-	  								setStartDate = Date.today().monday().add(-7).days(); //added 7 days because Date.today().monday() is not returning this week's monday
-	  								setEndDate = Date.today().sunday();
-	  								break;
-	  							case 'thisMonth': //This Month
-	  								setStartRange = true;
-	  								setEndRange = true;
-	  								setStartDate = new Date.today().moveToFirstDayOfMonth();
-	  								setEndDate = new Date.today().moveToLastDayOfMonth();
-	  								break;
-	  							case 'thisQuarter': //This Quarter
-	  								setStartRange = true;
-	  								setEndRange = true;
-	  								var month = Date.parse('today').toString('M');
-	  								var year = Date.parse('today').toString('yyyy');
-	  								var quarterMonth = (Math.floor(month/3)*3);
-	  								setStartDate = new Date(year,quarterMonth,1);
-	  								setEndDate = new Date(year,quarterMonth,1).addMonths(3).add(-1).days();
-	  								break;
-	  							case 'thisYear': //This Year
-	  								setStartRange = true;
-	  								setEndRange = true;
-	  								var year = Date.parse('today').toString('yyyy');
-	  								setStartDate = new Date(year,0,1);
-	  								setEndDate = new Date(year,11,31);
-	  								break;
-	  							case 'lastHour': //Last N Hour
-	  								setStartRange = true;
-	  								setEndRange = true;
-	  								setNumberOf = true;
-	  								break;
-	  							case 'lastDay': //Last N Day
-	  								setStartRange = true;
-	  								setEndRange = true;
-	  								setNumberOf = true;
-	  								setStartDate = setStartDate.add(-1).days();
-	  								setEndDate = setStartDate;
-	  								break;
-	  							case 'lastWeek': //Last N Week
-	  								setStartRange = true;
-	  								setEndRange = true;
-	  								setNumberOf = true;
-	  								setStartDate = Date.today().monday().add(-2).weeks();
-	  								setEndDate = Date.today().sunday().add(-1).weeks();
-	  								break;
-	  							case 'lastMonth': //Last N Month
-	  								setStartRange = true;
-	  								setEndRange = true;
-	  								setNumberOf = true;
-	  								setStartDate = new Date.today().last().month().moveToFirstDayOfMonth();
-	  								setEndDate = new Date.today().last().month().moveToLastDayOfMonth();
-	  								break;
-	  							case 'lastQuarter': //Last Quarter
-	  								setStartRange = true;
-	  								setEndRange = true;
-	  								setNumberOf = true;
-	  								var month = Date.parse('today').toString('M');
-	  								var year = Date.parse('today').toString('yyyy');
-	  								var quarterMonth = (Math.floor(month/3)*3);
-	  								setStartDate = new Date(year,quarterMonth,1).addMonths(-3);
-	  								setEndDate = new Date(year,quarterMonth,1).add(-1).days();
-	  								break;
-	  							case 'lastYear': //Last N Year
-	  								setStartRange = true;
-	  								setEndRange = true;
-	  								setNumberOf = true;
-	  								var year = Date.parse('today').toString('yyyy');
-	  								setStartDate = new Date(year - 1,0,1);
-	  								setEndDate = new Date(year - 1,11,31);
-	  								break;
-	  							case 'moreMinutes': //More than N Minutes Ago
-	  								setNumberOf = true;
-	  								break;
-	  							case 'moreHours': //More than N Hours Ago
-	  								setNumberOf = true;
-	  								break;	
-	  							case 'moreDays': //More than N Day Ago
-	  								setStartRange = true;
-	  								setEndRange = false;
-	  								setNumberOf = true;
-	  								setStartDate = setStartDate.add(-1).days();
-	  								break;
-	  							case 'moreWeeks': //More than N Week Ago
-	  								setStartRange = true;
-	  								setEndRange = false;
-	  								setNumberOf = true;
-	  								setStartDate = Date.today().monday().add(-2).weeks();
-	  								break;
-	  							case 'moreMonths': //More than N Month Ago
-	  								setStartRange = true;
-	  								setEndRange = false;
-	  								setNumberOf = true;
-	  								setStartDate = new Date.today().last().month().moveToFirstDayOfMonth();
-	  								break;
-	  							case 'moreYears': //More than N Year Ago
-	  								setStartRange = true;
-	  								setEndRange = false;
-	  								setNumberOf = true;
-	  								var year = Date.parse('today').toString('yyyy');
-	  								setStartDate = new Date(year - 1,0,1);
-	  								break;
-	  							case 'exactDays': //Exact N Day Ago
-	  								setStartRange = false;
-	  								setEndRange = false;
-	  								setNumberOf = true;
-	  								break;
-	  							case 'exactMonths': //Exact N Month Ago
-	  								setStartRange = false;
-	  								setEndRange = false;
-	  								setNumberOf = true;
-	  								break;
-	  							case 'exactYears': //Exact N Year Ago
-	  								setStartRange = false;
-	  								setEndRange = false;
-	  								setNumberOf = true;
-	  								break;
-	  							case 'exactDayFromNow':
-	  								setStartRange = false;
-	  								setEndRange = false;
-	  								setNumberOf = true;
-	  								break;
-	  						}
-	  						
-	  						if(setStartRange == true) {
-	  							selectedCondition.showCriteriaStart = true;
-	  							selectedCondition.disableCriteriaStart = true;
-	  							if(selectedCondition.dateInfo.measureType != "lastHour") //set time to current, if filter is for hours
-				  				{
-	  								selectedFilterProperty.criteriaRangeStart = setStartDate.setHours(0,0,0,0);
-				  				} else {
-				  					selectedFilterProperty.criteriaRangeStart = setStartDate.getTime();
-				  				}
-	  						} else {
-	  							selectedCondition.showCriteriaStart = false;
-	  							selectedCondition.disableCriteriaStart = false;
-	  						}
-	  						
-	  						if(setEndRange == true) {
-	  							selectedCondition.showCriteriaEnd = true;
-				  				selectedCondition.disableCriteriaEnd = true;
-				  				if(selectedCondition.dateInfo.measureType != "lastHour") //set time to current, if filter is for hours
-				  				{
-				  					selectedFilterProperty.criteriaRangeEnd = setEndDate.setHours(23,59,59,999);
-				  				} else {
-				  					selectedFilterProperty.criteriaRangeEnd = setEndDate.getTime();
-				  				}
-	  						} else {
-	  							selectedCondition.showCriteriaEnd = false;
-				  				selectedCondition.disableCriteriaEnd = false;
-	  						}
-	  						
-	  						selectedCondition.showNumberOf = setNumberOf;
-	  						if(setNumberOf == true) {
-	  							if(angular.isDefined(selectedCondition.dateInfo.measureTypeDisplay)) {
-	  								selectedCondition.conditionDisplay = 'Number of '+ selectedCondition.dateInfo.measureTypeDisplay + ' :';
-	  							}
-	  						} else {
-	  							selectedCondition.conditionDisplay = "";
-	  						}
+                                }
 
-				  			//if item is a calculation of an N number of measure display the measure and number input
+                                break;
+                        }
 
-		  					// if(angular.isUndefined(selectedCondition.dateInfo.behavior)){
-				  			// 	selectedCondition.showNumberOf = true;
-				  			// 	selectedCondition.conditionDisplay = 'Number of '+ selectedCondition.dateInfo.measureTypeDisplay + ' :';
+                        switch(selectedFilterProperty.fieldtype){
+                            case 'one-to-many':
+                            case 'many-to-many':
+                            case 'many-to-one':
+                                filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
+                                //is null, is not null
+                                if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)){
+                                    filterItem.value = selectedFilterProperty.selectedCriteriaType.value;
+                                }
+                                filterItem.displayValue = filterItem.value;
+                                break;
+                            //case 'one-to-many':
+                            //
+                            //case 'many-to-many':
+                            //    filterItem.collectionID = selectedFilterProperty.selectedCollection.collectionID;
+                            //    filterItem.displayValue = selectedFilterProperty.selectedCollection.collectionName;
+                            //    filterItem.criteria = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
+                            //
+                            //    break;
+                        }
 
-		  					// }else{
-		  						
-		  					// }
-				  		}
-				  		else if(selectedCondition.dateInfo.type === 'range'){
-				  			selectedCondition.showCriteriaStart = true;
-				  			selectedCondition.showCriteriaEnd = true;
+                        if(angular.isUndefined(filterItem.displayValue)){
+                            filterItem.displayValue = filterItem.value;
+                        }
 
-				  			selectedCondition.disableCriteriaStart = false;
-				  			selectedCondition.disableCriteriaEnd = false;
-				  			selectedCondition.showNumberOf = false;
-				  		}
-				  		else  if(selectedCondition.dateInfo.type === 'date'){
-				  			selectedCondition.showCriteriaStart = true;
-				  			selectedCondition.showCriteriaEnd = false;
-				  			selectedCondition.disableCriteriaStart = false;
-				  			selectedCondition.showNumberOf = false;
-				  		}
-				  		else  if(selectedCondition.dateInfo.type === 'matchPart'){
-				  			selectedCondition.showCriteriaStart = false;
-				  			selectedCondition.showCriteriaEnd = false;
-				  			selectedCondition.showNumberOf = true;
-				  			selectedCondition.conditionDisplay = 'Enter '+ selectedCondition.dateInfo.measureTypeDisplay+':';
-				  		}
-				  	}else{
-				  		selectedCondition.showCriteriaStart = false;
-				  		selectedCondition.showCriteriaEnd = false;
-				  		selectedCondition.showNumberOf = false;
+                        if(angular.isDefined(selectedFilterProperty.ormtype)){
+                            filterItem.ormtype = selectedFilterProperty.ormtype;
+                        }
+                        if(angular.isDefined(selectedFilterProperty.fieldtype)){
+                            filterItem.fieldtype = selectedFilterProperty.fieldtype;
+                        }
+                        for(var siblingIndex in filterItem.$$siblingItems){
+                            filterItem.$$siblingItems[siblingIndex].$$disabled = false;
+                        }
+                        
+                        if(angular.isDefined(selectedFilterProperty.aggregate)){
+                            let aggregateFunction = selectedFilterProperty.aggregate.toUpperCase();
+                            if(aggregateFunction == 'AVERAGE'){
+                                aggregateFunction = 'AVG';
+                            }
+                            filterItem.aggregate = aggregateFunction;
+                        }
 
-				  		selectedCondition.conditionDisplay = '';
-				  	}
-			  		$log.debug('selectedConditionChanged End');
-			  		$log.debug('selectedConditionChanged Result');
-			  		$log.debug(selectedCondition);
-			  		$log.debug(selectedFilterProperty);
-			  		
-				  }; //End selectedConditionChanged
+                        filterItem.conditionDisplay = selectedFilterProperty.selectedCriteriaType.display;
 
-				  scope.criteriaRangeChanged = function(selectedFilterProperty){
-					  $log.debug('criteriaRangeChanged');
-					  $log.debug(selectedFilterProperty);
-				  	var selectedCondition = selectedFilterProperty.selectedCriteriaType;
-				  	var measureCount = selectedFilterProperty.criteriaNumberOf;
-				  	if(selectedCondition.dateInfo.type === 'calculation'){
-		  				switch(selectedCondition.dateInfo.measureType){
-		  					case 'lastHour':
-			  					var todayXHoursAgo = Date.parse('today').add(-(measureCount)).hours();
-			  					selectedFilterProperty.criteriaRangeStart = todayXHoursAgo.getTime();
-		  						break;
-		  					case 'lastDay':
-		  					case 'moreDays':
-		  					//case 'ed':
-		  						var lastXDaysAgo = Date.parse('today').add(-(measureCount)).days();
-								selectedFilterProperty.criteriaRangeStart = lastXDaysAgo.getTime();
-								break;
-							case 'lastWeek':
-							case 'moreWeeks':
-								var lastXWeeksAgo = Date.today().last().monday().add(-(measureCount)).weeks();
-								selectedFilterProperty.criteriaRangeStart = lastXWeeksAgo.getTime();
-								break;
-							case 'lastMonth':
-							case 'moreMonths':
-							//case 'em':
-			  					var lastXMonthsAgo = Date.today().months().moveToFirstDayOfMonth().add(-(measureCount)).months();
-			  					selectedFilterProperty.criteriaRangeStart = lastXMonthsAgo.getTime();
-								break;
-							case 'lastQuarter':
-								 var currentQuarter = Math.floor((Date.parse('today').getMonth() / 3));
-								 var lastXQuartersAgo = new Date(Date.parse('today').getFullYear(), currentQuarter * 3, 1);
-							 	lastXQuartersAgo.add(-(measureCount * 3)).months();
-							 	selectedFilterProperty.criteriaRangeStart = lastXQuartersAgo.getTime();
-								break;
-							case 'lastYear':
-							case 'moreYears':
-							//case 'ey':
-			  					var lastXYearsAgo = new Date(new Date().getFullYear(), 0, 1).add(-measureCount).years();
-			  					selectedFilterProperty.criteriaRangeStart = lastXYearsAgo.getTime();
-								break;
-							case 'exactDayFromNow':
-								var xDaysFromNow = new Date(Date.parse('today').getTime() + (measureCount * 24 * 60 * 60 * 1000));
-								selectedFilterProperty.criteriaRangeStart = xDaysFromNow.setHours(0,0,0,0);
-								selectedFilterProperty.criteriaRangeEnd = new Date(selectedFilterProperty.criteriaRangeStart).setHours(23,59,59,999);
-								break;
-		  				}
-		  				
-		  				// if(selectedCondition.dateInfo.measureType == "em" || selectedCondition.dateInfo.measureType == "ed" || selectedCondition.dateInfo.measureType == "ey") {
-		  				// 	selectedFilterProperty.criteriaRangeEnd = selectedFilterProperty.criteriaRangeStart.setHours(23,59,59,999);
-		  				// }
-	  				}
-	  				
-	  				if(selectedCondition.dateInfo.type === 'date' ){
-	  					if(angular.isDefined(selectedFilterProperty.criteriaRangeStart) ){
-	  						selectedFilterProperty.criteriaRangeStart = new Date(selectedFilterProperty.criteriaRangeStart).setHours(0,0,0,0);
-	  						selectedFilterProperty.criteriaRangeEnd = new Date(selectedFilterProperty.criteriaRangeStart).setHours(23,59,59,999);
-	  					}
-	  				}
-	  				
-	  				if(selectedCondition.dateInfo.type === 'range' ){
-	  					if(angular.isDefined(selectedFilterProperty.criteriaRangeStart) ){
-	  						selectedFilterProperty.criteriaRangeStart = new Date(selectedFilterProperty.criteriaRangeStart).setHours(0,0,0,0);
-	  					}
+                        //if the add to New group checkbox has been checked then we need to transplant the filter item into a filter group
+                        if(filterItem.$$prepareForFilterGroup === true){
+                            collectionService.transplantFilterItemIntoFilterGroup(filterGroupsController.swFilterGroups.getFilterGroupItem(),filterItem);
+                        }
+                        //persist Config and
+                        scope.saveCollection();
 
-	  					if(angular.isDefined(selectedFilterProperty.criteriaRangeEnd)){
-	  						selectedFilterProperty.criteriaRangeEnd = new Date(selectedFilterProperty.criteriaRangeEnd).setHours(23,59,59,999);
-	  					}
-	  				}
+                        $log.debug(selectedFilterProperty);
+                        $log.debug(filterItem);
+                        var timeoutpromise = $timeout(function(){
+                            callback();
+                        });
+                        timeoutpromise.then(()=>{
+                            observerService.notify('filterItemAction', {action: 'add',filterItemIndex:scope.filterItemIndex,collectionConfig:this.collectionConfig});
+                        });
 
-				  	$log.debug('criteriaRangeChanged');
-			  		$log.debug(selectedCondition);
-			  		$log.debug(selectedFilterProperty);
-				  };
-				  
-				   if(angular.isUndefined(scope.filterItem.$$isNew) || scope.filterItem.$$isNew === false){
-					  angular.forEach(scope.conditionOptions, function(conditionOption){
-							if(conditionOption.display == scope.filterItem.conditionDisplay ){
-								scope.selectedFilterProperty.selectedCriteriaType = conditionOption;
-								scope.selectedFilterProperty.criteriaValue = scope.filterItem.value;
 
-								if(angular.isDefined(scope.selectedFilterProperty.selectedCriteriaType.dateInfo)
-								&& angular.isDefined(scope.filterItem.value)
-								&& scope.filterItem.value.length
-								){
-									var dateRangeArray = scope.filterItem.value.split("-");
-
-									scope.selectedFilterProperty.criteriaRangeStart = parseInt(dateRangeArray[0]);
-									scope.selectedFilterProperty.criteriaRangeEnd = parseInt(dateRangeArray[1]);
-								}
-								
-								if(angular.isDefined(scope.filterItem.criteriaNumberOf)){
-									scope.selectedFilterProperty.criteriaNumberOf = scope.filterItem.criteriaNumberOf;
-								}
-
-								if(angular.isDefined(scope.selectedConditionChanged)){
-									scope.selectedConditionChanged(scope.selectedFilterProperty);
-								}
-							}
-					  });
-				  }else{
-					  scope.selectedFilterProperty.criteriaValue = '';
-					  scope.selectedFilterProperty.criteriaRangeStart = new Date().setHours(0,0,0,0);
-					  scope.selectedFilterProperty.criteriaRangeEnd = new Date().setHours(11,59,59,999);
-				  }
-
-			}
+                        $log.debug('saveFilter end');
+                    }
+                };
+            }
 		};
 	}
 }
 export{
-	SWCriteriaDate
+	SWEditFilterItem
 }

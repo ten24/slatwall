@@ -3140,7 +3140,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		var dateRangePredicate = "";
 		var range = StructNew();
 		
-		if(structKeyExists(arguments.filter, 'measureCriteria') && arguments.filter.measureCriteria == 'exactDate' && structKeyExists(arguments.filter, 'measureType')) {
+		if(structKeyExists(arguments.filter, 'measureCriteria') && structKeyExists(arguments.filter, 'measureType')) {
 			
 			range = makeDateRangeFromCriteriaAndMeasureType(arguments.filter.measureCriteria, arguments.filter.measureType);
 		
