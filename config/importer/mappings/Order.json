@@ -49,5 +49,12 @@
             }
         }
         
+    },
+    "importIdentifier": {
+        "propertyIdentifier": "importRemoteID",
+        "type": "composite",
+        "keys": [
+            "orderID"
+        ]
     }
 }

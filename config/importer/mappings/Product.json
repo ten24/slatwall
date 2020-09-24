@@ -24,7 +24,7 @@
             }
         },
         "productDescription": {
-            "propertyIdentifier": "username",
+            "propertyIdentifier": "productDescription",
             "validations": {
                 "required": true,
                 "dataType": "string"
@@ -37,6 +37,12 @@
                 "dataType": "boolean"
             }
         }
-        
+    },
+    "importIdentifier": {
+        "propertyIdentifier": "importRemoteID",
+        "type": "composite",
+        "keys": [
+            "productID"
+        ]
     }
 }

@@ -39,13 +39,13 @@
         "estimatedDeliveryDateTime": {
             "propertyIdentifier": "estimatedDeliveryDateTime",
             "validations": {
-                "dataType": "timestamp"
+                "dataType": "date"
             }
         },
         "estimatedFulfillmentDateTime": {
             "propertyIdentifier": "estimatedFulfillmentDateTime",
             "validations": {
-                "dataType": "timestamp"
+                "dataType": "date"
             }
         },
         "userDefinedPriceFlag": {
@@ -55,6 +55,12 @@
                 "dataType": "boolean"
             }
         }
-        
+    },
+    "importIdentifier": {
+        "propertyIdentifier": "importRemoteID",
+        "type": "composite",
+        "keys": [
+            "orderItemID"
+        ]
     }
 }
