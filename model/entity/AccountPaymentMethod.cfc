@@ -390,6 +390,9 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 			}
 			
 			arrayPrepend(variables.billingAccountAddressOptions, {value="new", name="New"});
+			if( arrayLen(variables.billingAccountAddressOptions) == 1){
+			    variables.billingAccountAddressOptions[1]['selected'] = "selected";
+			}
 		}
 		return variables.billingAccountAddressOptions;
 	}
