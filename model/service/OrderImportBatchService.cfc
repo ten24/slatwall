@@ -188,7 +188,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.orderImportBatch;
 	}
 	
-	public any function processOrderImportBatch_Process(required any orderImportBatch){
+	public any function processOrderImportBatch_process(required any orderImportBatch){
 		var placedOrders = 0;
 		var origin = getOrderService().getOrderOriginByOrderOriginName('Batch Import');
 
@@ -207,7 +207,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			if(!structKeyExists(local,'currencyCode')){
 				var currencyCode = 'USD';
 			}
-			
+			order.setOrderType(arguments.orderImportBatch.getOrderType());
 			order.setCurrencyCode(currencyCode);
 			order.setOrderImportBatch(arguments.orderImportBatch);
 			order.setShippingAddress(orderImportBatchItem.getShippingAddress());
@@ -263,14 +263,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				if(orderItem.hasErrors()){
 					order.addErrors(orderItem.getErrors());
 				}else{
-					
-					orderImportBatchItem.setOrderItem(orderItem);
-					getHibachiDAO().flushORMSession();
-					order = getOrderService().processOrder(order,{'newOrderPayment.paymentMethod.paymentMethodID':'none'},'placeOrder');
-					
 					if(!order.hasErrors()){
-						orderImportBatchItem.setOrderImportBatchItemStatusType(getTypeService().getTypeBySystemCode('oibstPlaced'));	
-						placedOrders += 1;
+						orderImportBatchItem.setOrderItem(orderItem);
+						getHibachiScope().flushORMSession();
+						order = getOrderService().processOrder(order,{'newOrderPayment.paymentMethod.paymentMethodID':'none'},'placeOrder');
+						
+						if(!order.hasErrors()){
+							orderImportBatchItem.setOrderImportBatchItemStatusType(getTypeService().getTypeBySystemCode('oibstPlaced'));	
+							placedOrders += 1;
+						}
 					}
 				}
 			}
