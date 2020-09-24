@@ -279,6 +279,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			if(order.hasErrors()){
 				orderImportBatchItem.setProcessingErrors(serialize(order.getErrors()));
 				orderImportBatchItem.setOrderImportBatchItemStatusType(getTypeService().getTypeBySystemCode('oibstError'))
+				getService('orderService').deleteOrder(order);
 			}
 			
 			getDAO('OrderImportBatchDao').updateOrderImportBatchItem(
@@ -286,6 +287,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				orderImportBatchItemID = orderImportBatchItem.getOrderImportBatchItemID(), 
 				processingErrors = orderImportBatchItem.getProcessingErrors()
 			)
+			
+			
 		}
 		
 		
