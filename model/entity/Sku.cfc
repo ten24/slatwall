@@ -55,7 +55,6 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="publishedStartDateTime" ormtype="timestamp" description="This field can be set to restrict the beginning of a time period when this product can be published.";
 	property name="publishedEndDateTime" ormtype="timestamp" description="This field can be set to restrict the end of a time period when this product can be published.";
 	property name="skuName" ormtype="string";
-	property name="backorderedMessaging" ormtype="string";
 	property name="skuDescription" ormtype="string" length="4000" hb_formFieldType="wysiwyg";
 	property name="skuCode" ormtype="string" unique="true" length="50" index="PI_SKUCODE" hb_translate="false";
 	property name="eventAttendanceCode" ormtype="string" length="8" hint="Unique code to track event attendance";
