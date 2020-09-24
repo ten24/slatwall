@@ -2932,7 +2932,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	private struct function makeDateRangeFromCriteriaAndMeasureType(required any criteria, required any measureType, any measureCriteria){
 		var rangeStruct = StructNew();
-	
+		
 		//Backward compatibility
 		if( arguments.measureCriteria == 'exactDate' || arguments.measureCriteria == 'exactDateFuture' ) {
 			
@@ -3142,8 +3142,14 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		
 		if(structKeyExists(arguments.filter, 'measureCriteria') && structKeyExists(arguments.filter, 'measureType')) {
 			
-			range = makeDateRangeFromCriteriaAndMeasureType(arguments.filter.measureCriteria, arguments.filter.measureType);
-		
+			range = makeDateRangeFromCriteriaAndMeasureType(arguments.filter.criteriaNumberOf, arguments.filter.measureType, arguments.filter.measureCriteria);
+			
+			if (listFindnocase('>=,>,gt,gte', arguments.filter.comparisonOperator)) {
+				structDelete(range, 'rangeEndValue');
+			}else if (listFindnocase('<=,<,lt,lte', arguments.filter.comparisonOperator)) {
+				structDelete(range, 'rangStartValue');
+			}
+			
 		} else if(listfindnocase("between,not between", arguments.filter.comparisonOperator) && listLen(arguments.filter.value,'-') == 2) {// if its a full range i.e. range1-range2 
 			
 			if(listLen(arguments.filter.value,'/') > 1) { // if it's a date range dd/mm/yyyy-dd/mm/yyyy
