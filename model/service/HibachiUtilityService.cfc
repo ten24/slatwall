@@ -56,17 +56,21 @@ Notes:
 			if(!structKeyExists(arguments.formatDetails,'locale')){
 				arguments.formatDetails['locale'] = getHibachiScope().getSession().getRbLocale();
 			}
-			
+
 			if(structKeyExists(arguments.formatDetails, 'currencyCode')) {
 				var currencySymbol = getCurrencySymbolByCurrencyCode(arguments.formatDetails.currencyCode);
 				var formatMask = getCurrencyFormatMaskByCurrencyCode(arguments.formatDetails.currencyCode);
 				
-				if(isNull(formatMask) && !isNull(currencySymbol)){
+				if( ( isNull(formatMask) || !len(formatMask) ) && !isNull(currencySymbol)){
+					logHibachi("Format mask is null | value: #arguments.value# | Currency symbol: #currencySymbol ?: ''# |  #LSNumberFormat(arguments.value, ',.__',arguments.formatDetails.locale)#", true)
+
 					return currencySymbol & LSNumberFormat(arguments.value, ',.__',arguments.formatDetails.locale);
-				}else if (!isNull(formatMask)){
+				}else if (!isNull(formatMask) && len(formatMask)){
 					if(isNull(currencySymbol)){
 						currencySymbol = '';
 					}
+					logHibachi("Format mask is NOT null #formatMask# | #arguments.formatDetails['propertyName']# #replaceCurrencyFormatMaskTemplate(currencySymbol,formatMask,arguments.value,arguments.formatDetails.locale)#", true)
+
 					return replaceCurrencyFormatMaskTemplate(currencySymbol,formatMask,arguments.value,arguments.formatDetails.locale);
 				}
 			}
