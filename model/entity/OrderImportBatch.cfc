@@ -83,4 +83,11 @@ component extends="Slatwall.model.entity.HibachiEntity" displayname="OrderImport
 		}
 		return variables.shippingMethodOptions;
 	}
+	
+	public boolean function allItemsHaveOriginalOrder(){
+		var orderImportBatchItemCollection = getService('OrderImportBatchService').getOrderImportBatchItemCollectionList();
+		orderImportBatchItemCollection.addFilter('orderImportBatch.orderImportBatchID',this.getOrderImportBatchID());
+		orderImportBatchItemCollection.addFilter('originalOrder.orderID','null','IS');
+		return orderImportBatchItemCollection.getRecordsCount() == 0;
+	}
 } 
