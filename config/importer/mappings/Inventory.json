@@ -1,0 +1,70 @@
+{
+    "entityName": "Inventory",
+    
+    "properties": {
+        
+        "inventoryID": {
+            "propertyIdentifier": "remoteID",
+            "validations": {
+                "required": true,
+                "dataType": "string"
+            }
+        },
+        "quantityIn": {
+            "propertyIdentifier": "quantityIn",
+            "validations": {
+                "dataType": "float"
+            }
+        },
+        "quantityOut": {
+            "propertyIdentifier": "quantityOut", 
+            "validations": {
+                "dataType": "float"
+            }
+        },
+        "cost": {
+            "propertyIdentifier": "cost",
+            "validations": {
+                "dataType": "currency"
+            }
+        },
+        "cogs": {
+            "propertyIdentifier": "cogs",
+            "validations": {
+                "dataType": "currency"
+            }
+        },
+        "landedCost": {
+            "propertyIdentifier": "landedCost",
+            "validations": {
+                "dataType": "currency"
+            }
+        },
+        "landedAmount": {
+            "propertyIdentifier": "landedAmount",
+            "validations": {
+                "dataType": "currency"
+            }
+        },
+        "currencyCode": {
+            "propertyIdentifier": "currencyCode",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "createdDateTime": {
+            "propertyIdentifier": "createdDateTime",
+            "validations": {
+                "dataType": "date"
+            }
+        }
+        
+    },
+    "importIdentifier": {
+        "propertyIdentifier": "importRemoteID",
+        "type": "composite",
+        "keys": [
+            "inventoryID"
+        ]
+    }
+}

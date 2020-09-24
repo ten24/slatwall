@@ -1,0 +1,61 @@
+{
+    "entityName": "Sku",
+    
+    "properties": {
+        
+        "skuID": {
+            "propertyIdentifier": "remoteID",
+            "validations": {
+                "required": true,
+                "dataType": "string"
+            }
+        },
+        "skuName": {
+            "propertyIdentifier": "skuName",
+            "validations": {
+                "required": true,
+                "dataType": "string"
+            }
+        },
+        "skuCode": {
+            "propertyIdentifier": "skuCode",
+            "validations": {
+                "required": true,
+                "dataType": "string"
+            }
+        },
+        "currencyCode": {
+            "propertyIdentifier": "currencyCode",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "publishedStartDateTime": {
+            "propertyIdentifier": "publishedStartDateTime",
+            "validations": {
+                "dataType": "date"
+            }
+        },
+        "publishedEndDateTime": {
+            "propertyIdentifier": "publishedEndDateTime",
+            "validations": {
+                "dataType": "date"
+            }
+        },
+        "publishedFlag": {
+            "propertyIdentifier": "publishedFlag",
+            "defaultValue": false,
+            "validations": {
+                "dataType": "boolean"
+            }
+        }
+        
+    },
+    "importIdentifier": {
+        "propertyIdentifier": "importRemoteID",
+        "type": "composite",
+        "keys": [
+            "skuID"
+        ]
+    }
+}
