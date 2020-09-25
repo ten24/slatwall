@@ -24,10 +24,17 @@ component extends="Slatwall.org.Hibachi.HibachiControllerEntity" accessors="true
 	public void function processIntegration( required any rc ){
 	
 		this.getService("hibachiTagService").cfsetting( requesttimeout=60000 );
+		var batch = this.getService("slatwallImporterService").uploadCSVFile( arguments.rc );
 		
-		this.getService("slatwallImporterService").uploadCSVFile( arguments.rc );
-		
-		super.renderOrRedirectSuccess( defaultAction="slatwallImporter:main", maintainQueryString=false, rc=arguments.rc);
+		if( !isNull(batch) ){
+		    arguments.rc['sRedirectAction'] = "admin:entity.detailBatch";
+		    arguments.rc['sRedirectQS'] = "?batchID=#batch.getbatchID()#";
+	        super.renderOrRedirectSuccess( defaultAction="slatwallImporter:main", maintainQueryString=true, rc=arguments.rc);
+		} 
+		// if no batch returned, then there was some issue with the import; sending user back
+		else{ 
+		    super.renderOrRedirectFailure( defaultAction="slatwallImporter:main.preProcessIntegration", maintainQueryString=true, rc=arguments.rc);
+		}
 	}
 	
 	
