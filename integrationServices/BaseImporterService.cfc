@@ -395,7 +395,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
     	        "uniqueValue" : arguments.data['importRemoteID']
     	    };
     	    
-    	    // Select accountPhoneNumberID from swAccountPhoneNubmer wheren "importRemoteID" ="3CEF96DCC9B8035D23F69E30BB19218A_544C0D3D51EFBA18DB26C48C7B69E025"
+    	    // Select accountPhoneNumberID from swAccountPhoneNubmer where "importRemoteID" ="3CEF96DCC9B8035D23F69E30BB19218A_544C0D3D51EFBA18DB26C48C7B69E025"
     	    
 	        arguments.data[ primaryIDPropertyName ] = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue( argumentCollection = args ) ?: '';
 	    }
