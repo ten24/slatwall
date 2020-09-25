@@ -227,3 +227,79 @@
     }
   }
 }
+
+// Home Page Brand Slick Slider
+
+.brand-slider .repeater div {
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  img {
+    max-height: 100px;
+    width: auto;
+    max-width: 200px;
+    @include media-breakpoint-down(lg) {
+      max-width: 150px;
+    }
+    @include media-breakpoint-down(sm) {
+      max-width: 130px;
+    }
+  }
+}
+@include media-breakpoint-down(lg) {
+  .container.home-brand {
+    padding-left: 50px;
+    padding-right: 50px;
+  }
+}
+
+// Slick Slider Previous and Next Buttons
+
+.slick-prev, .slick-next {
+  font-size: 0;
+  line-height: 0;
+  position: absolute;
+  top: 50%;
+  display: block;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  -webkit-transform: translate(0, -50%);
+  -ms-transform: translate(0, -50%);
+  transform: translate(0, -50%);
+  cursor: pointer;
+  color: transparent;
+  border: none;
+  outline: none;
+  background-color: $gray-200;
+  border-radius: 20px;
+}
+
+.slick-prev:before, .slick-next:before {
+  font-family: "Font Awesome 5 Pro";
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 1;
+  opacity: .75;
+  color: $gray-900;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.slick-next:before {
+  content: '\f054';
+  padding-left: 2px;
+}
+.slick-next {
+    right: -35px;
+}
+
+.slick-prev:before {
+  content: '\f053';
+  padding-right: 2px;
+}
+.slick-prev {
+  left: -35px;
+}
+
