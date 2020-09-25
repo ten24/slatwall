@@ -68,3 +68,14 @@ small { font-weight: inherit; }
 button:focus {
   outline: none;
 }
+
+// breakpoints
+@include media-breakpoint-up(l) {
+  .container, 
+  .container-lg, 
+  .container-md, 
+  .container-sm, 
+  .container-xl {
+      max-width: 1240px;
+  }
+}
