@@ -341,6 +341,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 	}
 	
+	public any function processOrderImportBatch_downloadReport(required any orderImportBatch){
+		var orderCollection = getService('orderService').getOrderCollectionList();
+		orderCollection.addFilter('orderImportBatch.orderImportBatchID',arguments.orderImportBatch.getOrderImportBatchID());
+		orderCollection.setDisplayProperties('orderID,orderNumber,account.accountNumber,account.calculatedFullName',{isExportable:true});
+
+		getService('HibachiCollectionService').collectionConfigExport({collectionConfig:serializeJSON(orderCollection.getCollectionConfigStruct())});
+		return orderImportBatch;
+	}
+	
 	// =====================  END: Logical Methods ============================
 	
 	// ===================== START: DAO Passthrough ===========================
