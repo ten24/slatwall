@@ -10,7 +10,7 @@
       <div class="row">
         <div class="col-0 col-md-2"></div>
         <div class="col-md-8 text-center">
-         	#$.renderContent($.getContentByUrlTitlePath('footer/contact-us').getContentID(), 'body')#
+         	#$.renderContent($.getContentByUrlTitlePath('footer/contact-us').getContentID(), 'customBody')#
         </div>
         <div class="col-0 col-md-2"></div>
       </div>
@@ -21,17 +21,17 @@
         <div class="row pt-2">
           <div class="col-md-2 col-sm-6">
             <div class="widget widget-links pb-2 mb-4">
-         	#$.renderContent($.getContentByUrlTitlePath('footer/site-links').getContentID(), 'body')#
+         	#$.renderContent($.getContentByUrlTitlePath('footer/site-links').getContentID(), 'customBody')#
             </div>
           </div>
           <div class="col-md-4 col-sm-6">
             <div class="widget widget-links pb-2 mb-4">
-          	#$.renderContent($.getContentByUrlTitlePath('footer/get-in-touch').getContentID(), 'body')#
+          	#$.renderContent($.getContentByUrlTitlePath('footer/get-in-touch').getContentID(), 'customBody')#
             </div>
           </div>
           <div class="col-md-6">
             <div class="widget pb-2 mb-4">
-         	  #$.renderContent($.getContentByUrlTitlePath('footer/stay-informed').getContentID(), 'body')#
+         	  #$.renderContent($.getContentByUrlTitlePath('footer/stay-informed').getContentID(), 'customBody')#
               <form class="validate" action="##" method="get" name="mc-embedded-subscribe-form" id="mc-embedded-subscribe-form">
                 <div class="input-group input-group-overlay flex-nowrap">
                   <div class="input-group-prepend-overlay"><span class="input-group-text text-muted font-size-base"></span></div>
