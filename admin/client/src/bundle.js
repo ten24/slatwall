@@ -76487,14 +76487,17 @@ var SWExpandableRecordController = /** @class */ (function () {
                 _this.collectionData = data;
                 _this.collectionData.pageRecords = _this.collectionData.pageRecords || _this.collectionData.records;
                 if (_this.collectionData.pageRecords.length) {
-                    angular.forEach(_this.collectionData.pageRecords, function (pageRecord) {
+                    angular.forEach(
+                    // reversing here so the child records are in order
+                    _this.collectionData.pageRecords.slice().reverse(), function (pageRecord) {
                         _this.expandableService.addRecord(pageRecord[_this.parentIDName], true);
                         pageRecord.dataparentID = _this.recordID;
                         pageRecord.depth = _this.recordDepth || 0;
                         pageRecord.depth++;
                         //push the children into the listing display
                         _this.children.push(pageRecord);
-                        _this.records.push(pageRecord);
+                        // adding all of the childrens JUST-NEXT to the parent ont bu one
+                        _this.records.splice(_this.recordIndex + 1, 0, pageRecord);
                     });
                 }
                 _this.childrenLoaded = true;
