@@ -29,6 +29,9 @@
 .bg-primary{
   background-color: $primary !important;
   color: $color-light;
+  .btn{
+    background-color: $color-light;
+  }
 }
 
 // Faded background color
