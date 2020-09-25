@@ -3031,6 +3031,26 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					setStartRange = DateAdd("yyyy", - arguments.criteria, firstDayOfCurrentYear);
 					setEndRange = DateAdd("d", -1, firstDayOfCurrentYear);
 				break;
+				case 'lastFullWeek': //Last Full Week
+					var firstOfCurrentWeek = DateAdd("d",  - (DayOfWeek(Now()) - 1), Now());
+					setStartRange = DateAdd('d',-7,firstOfCurrentWeek);
+					setEndRange = DateAdd('d',-1,firstOfCurrentWeek);
+					break;
+				case 'lastFullMonth': //Last Full Month
+					var firstOfCurrentMonth = createDate(year(now()), month(now()), 1);
+					setStartRange = DateAdd('m',-1,firstOfCurrentMonth);
+					setEndRange = DateAdd('d',-1,firstOfCurrentMonth);
+					break;
+				case 'lastFullQuarter': //Last Full Quarter
+					var quarter = floor(month(now()) / 3);
+					setStartRange = CreateDate(year(now()), (quarter-1)*3 + 1, 1);
+					setEndRange = DateAdd("d", -1, DateAdd("m", 3, FirstDayOfQuarter));
+					break;
+				case 'lastFullYear': //Last Full year
+					var firstDayOfCurrentYear = CreateDate(year(now()), 1, 1);
+					setStartRange = DateAdd("yyyy", -1, firstDayOfCurrentYear);
+					setEndRange = DateAdd("d", -1, firstDayOfCurrentYear);
+					break;
 				case 'moreDays': //More than N Day Ago
 					setStartRange = DateAdd("d",  - arguments.criteria, Now());
 				break;

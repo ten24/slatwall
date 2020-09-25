@@ -373,7 +373,20 @@ class SWEditFilterItem{
                                                 case 'y':
                                                     filterItem.displayValue +='Year ';
                                                     break;
+                                                case 'lastWeek':
+                                                    filterItem.displayValue =' Last Week';
+                                                    break;
+                                                case 'lastMonth':
+                                                    filterItem.displayValue =' Last Month';
+                                                    break;
+                                                case 'lastQuarter':
+                                                    filterItem.displayValue =' Last Quarter';
+                                                    break;
+                                                case 'lastYear':
+                                                    filterItem.displayValue =' Last Year';
+                                                    break;
                                             }
+                                            
                                             filterItem.displayValue += filterItem.value;
                                         }
                                     }else{

@@ -160,6 +160,45 @@ class SWCriteriaDate{
 				    				measureTypeDisplay:'Years'
 				    			} 
 				    		},
+				    		
+				    		{
+				    			display:"Last Full Week",
+				    			comparisonOperator:	"between",
+				    			dateInfo:{
+				    				type:'calculation',
+				    				measureType:'lastFullWeek',
+				    				measureTypeDisplay:'Week'
+
+				    			}
+				    		},
+				    		{
+				    			display:"Last Full Month",
+				    			comparisonOperator:	"between",
+				    			dateInfo:{
+				    				type:'calculation',
+				    				measureType:'lastFullMonth',
+				    				measureTypeDisplay:'Month'
+				    			}
+				    		},
+				    		{
+				    			display:"Last Full Quarter",
+				    			comparisonOperator:	"between",
+				    			dateInfo:{
+				    				type:'calculation',
+				    				measureType:'lastFullQuarter',
+				    				measureTypeDisplay:'Quarter'
+				    			}
+				    		},
+				    		{
+				    			display:"Last Full Year",
+				    			comparisonOperator:	"between",
+				    			dateInfo:{
+				    				type:'calculation',
+				    				measureType:'lastFullYear',
+				    				measureTypeDisplay:'Year'
+				    			}
+				    		},
+				    		
 				    		{
 				    			display:"More Than N Day(s) Ago",
 				    			comparisonOperator:	"<",
@@ -440,6 +479,36 @@ class SWCriteriaDate{
 	  								setStartDate = new Date(year - 1,0,1);
 	  								setEndDate = new Date(year - 1,11,31);
 	  								break;
+	  							
+	  							case 'lastFullWeek': //Last Full Week
+	  								setStartRange = true;
+	  								setEndRange = true;
+	  								setStartDate = Date.today().last().week().sunday();
+	  								setEndDate = Date.today().last().saturday();
+	  								break;
+	  							case 'lastFullMonth': //Last Full Month
+	  								setStartRange = true;
+	  								setEndRange = true;
+	  								setStartDate = Date.today().last().month().moveToFirstDayOfMonth();
+				  					setEndDate = Date.today().last().month().moveToLastDayOfMonth();
+	  								break;
+	  							case 'lastFullQuarter': //Last Full Quarter
+	  								setStartRange = true;
+	  								setEndRange = true;
+  									var currentQuarter = Math.floor((Date.parse('today').getMonth() / 3));
+									var firstDayOfCurrentQuarter = new Date(Date.parse('today').getFullYear(), currentQuarter * 3, 1);
+									setEndDate = firstDayOfCurrentQuarter.add(-1).days();
+									var lastXQuartersAgo = new Date(Date.parse('today').getFullYear(), currentQuarter * 3, 1);
+								 	setStartDate = lastXQuartersAgo.add(-3).months();
+	  								break;
+	  							case 'lastFullYear': //Last Full Year
+	  								setStartRange = true;
+	  								setEndRange = true;
+	  								var lastyear = Date.parse('today').last().year().toString('yyyy');
+	  								setStartDate = new Date(lastyear,0,1);
+	  								setEndDate = new Date(lastyear,11,31);
+	  								break;
+	  								
 	  							case 'moreDays': //More than N Day Ago
 	  								setStartRange = true;
 	  								setEndRange = false;
