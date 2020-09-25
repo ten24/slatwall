@@ -228,6 +228,25 @@
   }
 }
 
+// Home Page Main Banner Slick Slider
+
+.hero {
+  background-position: top;
+  background-size: cover;
+  .main-banner {
+    .h2 {
+      color: $white;
+    }
+    .repeater {
+      margin: 3rem 3rem 1rem;
+    }
+  }
+}
+
+.featured-products {
+  border-radius: 0 0 7px 7px;
+}
+
 // Home Page Brand Slick Slider
 
 .brand-slider .repeater div {
@@ -245,12 +264,6 @@
     @include media-breakpoint-down(sm) {
       max-width: 130px;
     }
-  }
-}
-@include media-breakpoint-down(lg) {
-  .container.home-brand {
-    padding-left: 50px;
-    padding-right: 50px;
   }
 }
 
@@ -273,7 +286,7 @@
   border: none;
   outline: none;
   background-color: $gray-200;
-  border-radius: 20px;
+  border-radius: 50px;
 }
 
 .slick-prev:before, .slick-next:before {
@@ -292,7 +305,7 @@
   padding-left: 2px;
 }
 .slick-next {
-    right: -35px;
+  right: -35px;
 }
 
 .slick-prev:before {
@@ -303,3 +316,46 @@
   left: -35px;
 }
 
+.slider-dark .slick-prev:before, 
+.slider-dark .slick-next:before {
+  color: $white;
+} 
+.slider-dark .slick-prev, 
+.slider-dark .slick-next {
+  background-color: $black;
+}
+
+.slick-dots {
+	display: flex;
+	justify-content: center;
+	margin: 0;
+	padding: 2rem 0;
+	list-style-type: none;
+		li {
+			margin: 0 0.25rem;
+		}
+		> li:only-child {
+        display: none;
+    }
+		button {
+			display: block;
+			width: 10px;
+			height: 10px;
+			padding: 0;
+			border: none;
+			border-radius: 100%;
+			border: 1px solid $white;
+			background: none;
+			text-indent: -9999px;
+		}
+		li.slick-active button {
+			background-color: $white;
+		}
+}
+
+@include media-breakpoint-down(lg) {
+  .container.container-slider {
+    padding-left: 50px;
+    padding-right: 50px;
+  }
+}
