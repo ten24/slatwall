@@ -56,7 +56,7 @@ component extends="Slatwall.org.Hibachi.HibachiControllerEntity" accessors="true
         	cfContent( deleteFile=true, file=tmpFile, type="application/csv" );
    		} 
    		else {
-   		    this.getHibachiScope().showMessage("Imvalid Entity-Name, no samplee found available", "warning");
+   		    this.getHibachiScope().showMessage("Invalid import type, no sample file available", "warning");
    		    super.renderOrRedirectFailure( defaultAction="slatwallImporter:main", maintainQueryString=false, rc=arguments.rc);
    		}
 	}
