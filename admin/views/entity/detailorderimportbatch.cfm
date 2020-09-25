@@ -47,6 +47,9 @@
 			<cfif rc.orderImportBatch.getOrderImportBatchStatusType().getSystemCode() eq "oibstNew">
 				<hb:HibachiProcessCaller action="admin:entity.processorderimportbatch" entity="#rc.orderImportBatch#" processContext="process" type="list" hideDisabled="true" />
 			</cfif>
+			<cfif rc.orderImportBatch.getOrderImportBatchStatusType().getSystemCode() eq "oibstProcessed">
+				<hb:HibachiProcessCaller action="admin:entity.processorderimportbatch" entity="#rc.orderImportBatch#" processContext="downloadReport" type="list" hideDisabled="true" />
+			</cfif>
 		</hb:HibachiEntityActionBar>
 
 		<!--- Tabs --->

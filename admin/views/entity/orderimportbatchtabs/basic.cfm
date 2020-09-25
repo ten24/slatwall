@@ -16,6 +16,6 @@
      		<hb:HibachiPropertyDisplay object="#rc.orderImportBatch#" property="itemCount" edit="false">
  			<hb:HibachiPropertyDisplay object="#rc.orderImportBatch#" property="placedOrdersCount" edit="false">
  			<hb:HibachiPropertyDisplay object="#rc.orderImportBatch#" property="sendEmailNotificationsFlag" edit="#rc.edit#">
- 	    </hb:HibachiPropertyList>	
+ 	    </hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 </cfoutput>
