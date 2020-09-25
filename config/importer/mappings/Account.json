@@ -3,7 +3,7 @@
     
     "properties": {
         
-        "userID": {
+        "remoteAccountID": {
             "propertyIdentifier": "remoteID",
             "validations": {
                 "required": true,
@@ -50,7 +50,7 @@
         "propertyIdentifier": "importRemoteID",
         "type": "composite",
         "keys": [
-            "userID"
+            "remoteAccountID"
         ]
     },
     
