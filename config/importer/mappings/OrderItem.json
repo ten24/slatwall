@@ -14,13 +14,13 @@
             "propertyIdentifier": "price",
             "validations": {
                 "required": true,
-                "dataType": "currency"
+                "dataType": "numeric"
             }
         },
         "skuPrice": {
             "propertyIdentifier": "skuPrice",
             "validations": {
-                "dataType": "currency"
+                "dataType": "numeric"
             }
         },
         "currencyCode": {
