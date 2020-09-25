@@ -62,9 +62,11 @@
         <h3 class="pb-0 mb-0"
             ><a ng-href="{{ !monatProductCard.isEnrollment ? monatProductCard.product.skuProductURL : undefined  }}"
                 >{{monatProductCard.product.productName}}</a
-            ></h3
-        >
-         
+            ></h3>
+            <div ngif="monatProductCard.product.backorderedMessaging != null && monatProductCard.product.backorderedMessaging != '' && monatProductCard.product.skuAllowBackorderFlag == true">
+                <h5 style="color:red;">{{monatProductCard.product.backorderedMessaging}}</h5>
+            </div>
+            
         <div ng-if="monatProductCard.product.displayOnlyFlag != true" class="price">
             <strong>
                 <span ng-bind-html="monatProductCard.product.price | swcurrency:monatProductCard.currencyCode "></span>
@@ -91,6 +93,7 @@
 
 
    </div>
+   
    
    <!-- Add To Cart -->
    <div ng-if="monatProductCard.product.displayOnlyFlag != true && (monatProductCard.product.qats > 0)" class="product-actions">
