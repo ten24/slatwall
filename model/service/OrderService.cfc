@@ -3385,8 +3385,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			orderTemplate = this.saveOrderTemplate(orderTemplate, {} , 'placeOrder');
 		}
-		arguments.order.updateCalculatedProperties(true);
-		getHibachiScope().flushOrmSession();
+
 		return arguments.order;
 	}
 
