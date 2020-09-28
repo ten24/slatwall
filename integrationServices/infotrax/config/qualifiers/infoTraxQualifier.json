@@ -101,6 +101,12 @@
 					"ormtype": "string"
 				},
 				{
+					"propertyIdentifier": "calculatedPaymentAmountDue",
+					"comparisonOperator": "=",
+					"logicalOperator": "AND",
+					"value": "0"
+				},
+				{
 					"propertyIdentifier": "orderType.systemCode",
 					"comparisonOperator": "=",
 					"logicalOperator": "AND",
@@ -134,6 +140,12 @@
 					"comparisonOperator": "is not",
 					"value": "null",
 					"ormtype": "string"
+				},
+				{
+					"propertyIdentifier": "calculatedPaymentAmountDue",
+					"comparisonOperator": "=",
+					"logicalOperator": "AND",
+					"value": "0"
 				},
 				{
 					"propertyIdentifier": "orderType.systemCode",
