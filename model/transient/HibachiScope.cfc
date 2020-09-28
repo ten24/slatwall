@@ -520,14 +520,13 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
         }
         
         var data = getService('hibachiUtilityService').buildPropertyIdentifierListDataStruct(getCart(), arguments.propertyList, availablePropertyList);
-		var skuService = getService('skuService');
+		
         //only need to work if order fulfillment data exists
         if(structKeyExists(data,'orderFulfillments')){
             //Attach some meta for for orderFulfillments
             var requiresFulfillment = false;
             var orderFulfillmentWithShippingMethodOptionsIndex = 1;
             for (var orderFulfillment in data.orderFulfillments){
-            	
             	if(structKeyExists(orderFulfillment,'shippingMethodOptions')){
                     if (isArray(orderFulfillment.shippingMethodOptions) && arrayLen(orderFulfillment.shippingMethodOptions) >= 1){
                                 requiresFulfillment = true; break;
@@ -544,6 +543,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
         }
         
         //get skuAllowBackorderFlag from setting for SKU
+        var skuService = getService('skuService');
         var count = 1;
         if(structKeyExists(data,'orderItems')){
         	for (var getOrderItems in data.orderItems){
