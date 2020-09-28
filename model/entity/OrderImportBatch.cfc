@@ -90,4 +90,15 @@ component extends="Slatwall.model.entity.HibachiEntity" displayname="OrderImport
 		orderImportBatchItemCollection.addFilter('originalOrder.orderID','null','IS');
 		return orderImportBatchItemCollection.getRecordsCount() == 0;
 	}
+	
+	public boolean function skusAreActiveAndAccountsAreInGoodStanding(){
+		var orderImportBatchItemCollection = getService('OrderImportBatchService').getOrderImportBatchItemCollectionList();
+		orderImportBatchItemCollection.addFilter('orderImportBatch.orderImportBatchID',this.getOrderImportBatchID());
+		orderImportBatchItemCollection.addFilter('sku.skuID','null','IS','OR','','invalidReasons');
+		orderImportBatchItemCollection.addFilter('sku.activeFlag',0,'=','OR','','invalidReasons');
+		orderImportBatchItemCollection.addFilter('sku.product.activeFlag',0,'=','OR','','invalidReasons');
+		orderImportBatchItemCollection.addFilter('account.accountID','null','IS','OR','','invalidReasons');
+		orderImportBatchItemCollection.addFilter('account.accountStatusType.systemCode','astGoodStanding','!=','OR','','invalidReasons');
+		return orderImportBatchItemCollection.getRecordsCount() == 0;
+	}
 } 
