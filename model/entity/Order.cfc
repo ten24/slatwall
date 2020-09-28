@@ -457,6 +457,8 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 				orderPayment.setAmount( orderPayment.getAmount() );
 			}
 			
+			this.setCalculatedPaymentAmountDue(this.getPaymentAmountDue());
+			
 			// create openorderitem records
 			getDAO('InventoryDAO').manageOpenOrderItem(actionType = 'add', orderID = getOrderID());
 
@@ -2216,6 +2218,21 @@ public numeric function getPersonalVolumeSubtotal(){
             variables.orderHasProductPack = getService('orderService').orderHasProductPack(this.getOrderID());
 		}
 		return variables.orderHasProductPack;
+	}
+	
+	public boolean function returnDatePercentagesApply(){
+		var referencedOrder = this.getReferencedOrder();
+	    if(isNull(referencedOrder)){
+	        return true;
+	    }
+	    var dateDiff = 0;
+	    if(!isNull(referencedOrder.getOrderCloseDateTime())){
+    	         dateDiff = dateDiff('d',referencedOrder.getOrderCloseDateTime(),now());
+	    }
+	    if(dateDiff >= 30){
+	        return true;
+	    }
+	    return false;
 	}
 	
 	public boolean function subtotalWithinAllowedPercentage(){
