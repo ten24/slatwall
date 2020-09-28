@@ -114,6 +114,7 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 
 	// ============ START: Non-Persistent Property Methods =================	//CUSTOM PROPERTIES BEGIN
 
+ property name="linkLabel" ormtype="string";
  property name="customBody" length="4000"  ormtype="string" hb_formFieldType="wysiwyg";
  property name="linkUrl" ormtype="string";
  property name="associatedImage" hb_fileUpload="true" hb_fileAcceptMIMEType="*/*" ormtype="string" hb_formFieldType="file";//CUSTOM PROPERTIES END

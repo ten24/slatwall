@@ -3,9 +3,43 @@
 
 <cfoutput>
   
-  <!--- Featured Products --->
-  
   <!--- Hero slider --->
+  <div class="hero" style="background-image: url(#$.getThemePath()#/custom/client/assets/images/main-bg-img.jpg);">
+    <!--- Featured Products --->
+    <div class="container">
+      <div class="featured-products bg-white text-center pb-5 pt-5">
+        <h3 class="h3">Featured Products</h3>
+        <a href="##" class="text-link">Shop All Specials</a>
+        <!--- Featured products slider to go here --->
+      </div>
+    </div>
+    
+    <div class="container">
+      <div class="main-banner text-white text-center mr-5 ml-5">
+        <div class="main-slider slider-dark">
+          <cfset local.homeMainBanner = $.slatwall.getService('contentService').getContentCollectionList()>
+          <cfset local.homeMainBanner.setDisplayProperties('site.siteCode,contentID,urlTitle,title,sortOrder,customBody,linkUrl,linkLabel')>
+          <cfset local.homeMainBanner.addFilter("site.siteCode",$.slatwall.getSite().getSiteCode())>
+          <cfset local.homeMainBanner.addFilter("activeFlag", true)>
+          <cfset local.homeMainBanner.addFilter("urlTitlePath","%main-banner-slider/%","LIKE")>
+          <cfset local.homeMainBanner.addOrderBy("sortOrder|ASC")>
+          <cfset local.homeBanner = local.homeMainBanner.getPageRecords()>
+          
+          <cfloop array="#local.homeBanner#" index="local.slide">
+            <div class="repeater">
+              <h2 class="h2">#local.slide['title']#</h2>
+              #local.slide['customBody']#
+              <cfif len(trim(local.slide['linkUrl']))>
+                <a href="#local.slide['linkUrl']#" class="btn btn-light btn-long">#local.slide['linkLabel']#</a>
+              </cfif>
+            </div>
+          </cfloop>
+          
+        </div>
+      </div>
+    </div>
+    
+  </div>
   
   <!--- Content Columns --->
   <div class="container">
@@ -22,7 +56,7 @@
         <div class="col-md">
           <cfset local.contentImage = "/custom/assets/files/associatedimage/#local.contentColumn['associatedImage']#">
           <img class="mb-3" src="#local.contentImage#" alt="" />
-          <h3>#local.contentColumn['title']#</h3>
+          <h3 class="h3">#local.contentColumn['title']#</h3>
           #local.contentColumn['customBody']#
         </div>
       </cfloop>
@@ -31,22 +65,31 @@
   </div>
   
   <!--- Brand Slider --->
-  <div class="container py-lg-4 mb-4">
-    <h2 class="h3 text-center pb-4">Shop by brand</h2>
-    <div class="row">
-      <div class="col-md-3 col-sm-4 col-6"><a class="d-block bg-white box-shadow-sm rounded-lg py-3 py-sm-4 mb-grid-gutter" href="##"><img class="d-block mx-auto" src="img/shop/brands/01.png" style="width: 150px;" alt="Brand"></a></div>
-      <div class="col-md-3 col-sm-4 col-6"><a class="d-block bg-white box-shadow-sm rounded-lg py-3 py-sm-4 mb-grid-gutter" href="##"><img class="d-block mx-auto" src="img/shop/brands/02.png" style="width: 150px;" alt="Brand"></a></div>
-      <div class="col-md-3 col-sm-4 col-6"><a class="d-block bg-white box-shadow-sm rounded-lg py-3 py-sm-4 mb-grid-gutter" href="##"><img class="d-block mx-auto" src="img/shop/brands/03.png" style="width: 150px;" alt="Brand"></a></div>
-      <div class="col-md-3 col-sm-4 col-6"><a class="d-block bg-white box-shadow-sm rounded-lg py-3 py-sm-4 mb-grid-gutter" href="##"><img class="d-block mx-auto" src="img/shop/brands/04.png" style="width: 150px;" alt="Brand"></a></div>
-      <div class="col-md-3 col-sm-4 col-6"><a class="d-block bg-white box-shadow-sm rounded-lg py-3 py-sm-4 mb-grid-gutter" href="##"><img class="d-block mx-auto" src="img/shop/brands/05.png" style="width: 150px;" alt="Brand"></a></div>
-      <div class="col-md-3 col-sm-4 col-6"><a class="d-block bg-white box-shadow-sm rounded-lg py-3 py-sm-4 mb-grid-gutter" href="##"><img class="d-block mx-auto" src="img/shop/brands/06.png" style="width: 150px;" alt="Brand"></a></div>
-      <div class="col-md-3 col-sm-4 col-6"><a class="d-block bg-white box-shadow-sm rounded-lg py-3 py-sm-4 mb-grid-gutter" href="##"><img class="d-block mx-auto" src="img/shop/brands/07.png" style="width: 150px;" alt="Brand"></a></div>
-      <div class="col-md-3 col-sm-4 col-6"><a class="d-block bg-white box-shadow-sm rounded-lg py-3 py-sm-4 mb-grid-gutter" href="##"><img class="d-block mx-auto" src="img/shop/brands/08.png" style="width: 150px;" alt="Brand"></a></div>
-      <div class="col-md-3 col-sm-4 col-6"><a class="d-block bg-white box-shadow-sm rounded-lg py-3 py-sm-4 mb-grid-gutter" href="##"><img class="d-block mx-auto" src="img/shop/brands/09.png" style="width: 150px;" alt="Brand"></a></div>
-      <div class="col-md-3 col-sm-4 col-6"><a class="d-block bg-white box-shadow-sm rounded-lg py-3 py-sm-4 mb-grid-gutter" href="##"><img class="d-block mx-auto" src="img/shop/brands/10.png" style="width: 150px;" alt="Brand"></a></div>
-      <div class="col-md-3 col-sm-4 col-6"><a class="d-block bg-white box-shadow-sm rounded-lg py-3 py-sm-4 mb-grid-gutter" href="##"><img class="d-block mx-auto" src="img/shop/brands/11.png" style="width: 150px;" alt="Brand"></a></div>
-      <div class="col-md-3 col-sm-4 col-6"><a class="d-block bg-white box-shadow-sm rounded-lg py-3 py-sm-4 mb-grid-gutter" href="##"><img class="d-block mx-auto" src="img/shop/brands/12.png" style="width: 150px;" alt="Brand"></a></div>
+  <div class="home-brand container-slider container py-lg-4 mb-4 mt-4 text-center">
+    <h3 class="h3">#$.renderContent($.getContentByUrlTitlePath('home/shop-by').getContentID(), 'title')#</h3>
+    
+    <div class="brand-slider">
+      <cfset local.homeBrands = $.slatwall.getService('contentService').getContentCollectionList()>
+      <cfset local.homeBrands.setDisplayProperties('site.siteCode,contentID,urlTitle,title,sortOrder,linkUrl,associatedImage')>
+      <cfset local.homeBrands.addFilter("site.siteCode",$.slatwall.getSite().getSiteCode())>
+      <cfset local.homeBrands.addFilter("activeFlag", true)>
+      <cfset local.homeBrands.addFilter("urlTitlePath","%shop-by/%","LIKE")>
+      <cfset local.homeBrands.addOrderBy("sortOrder|ASC")>
+      <cfset local.homeBrand = local.homeBrands.getPageRecords()>
+      
+      <cfloop array="#local.homeBrand#" index="local.brand">
+        <div class="repeater">
+          <div class="brand-box bg-white box-shadow-sm rounded-lg m-3">
+            <a class="d-block p-4" href="#local.brand['linkUrl']#">
+              <cfset local.brandLogo = "/custom/assets/files/associatedimage/#local.brand['associatedImage']#">
+              <img class="d-block mx-auto" src="#local.brandLogo#" alt="#local.brand['title']#">
+            </a>
+          </div>
+        </div>
+      </cfloop>
     </div>
+    
+    <a class="btn btn-primary mt-3 btn-long" href="#$.renderContent($.getContentByUrlTitlePath('home/shop-by').getContentID(), 'linkUrl')#">More Brands</a>
   </div>
 
 </cfoutput>
