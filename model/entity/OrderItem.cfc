@@ -305,7 +305,8 @@ property name="personalVolume" ormtype="big_decimal";
 		if(getSku().getActiveFlag() && getSku().getProduct().getActiveFlag()) {
 			maxQTY = getSku().setting('skuOrderMaximumQuantity');
 			if(isEmpty(maxQTY)){
-				maxQTY = 0;		
+				//Set maximum quantity by global setting
+				maxQTY = setting('skuOrderMaximumQuantity');		
 			}
 			if(getSku().setting('skuTrackInventoryFlag') && (!getSku().setting('skuAllowBackorderFlag') || getSku().setting('skuBackorderLimit') > 0) && getOrderItemType().getSystemCode() neq 'oitReturn') {
 				
