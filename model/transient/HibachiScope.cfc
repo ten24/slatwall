@@ -520,14 +520,15 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
         }
         
         var data = getService('hibachiUtilityService').buildPropertyIdentifierListDataStruct(getCart(), arguments.propertyList, availablePropertyList);
-
+		var skuService = getService('skuService');
         //only need to work if order fulfillment data exists
         if(structKeyExists(data,'orderFulfillments')){
             //Attach some meta for for orderFulfillments
             var requiresFulfillment = false;
             var orderFulfillmentWithShippingMethodOptionsIndex = 1;
             for (var orderFulfillment in data.orderFulfillments){
-                if(structKeyExists(orderFulfillment,'shippingMethodOptions')){
+            	
+            	if(structKeyExists(orderFulfillment,'shippingMethodOptions')){
                     if (isArray(orderFulfillment.shippingMethodOptions) && arrayLen(orderFulfillment.shippingMethodOptions) >= 1){
                                 requiresFulfillment = true; break;
                     }
@@ -541,6 +542,18 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
                   data['orderFulfillmentWithShippingMethodOptionsIndex'] = -1;
             }
         }
+        
+        //get skuAllowBackorderFlag from setting for SKU
+        var count = 1;
+        if(structKeyExists(data,'orderItems')){
+        	for (var getOrderItems in data.orderItems){
+        		var skuScope = skuService.getSkuByskuID(getOrderItems.sku.skuID);
+            	var skuAllowBackorderFlag = skuScope.setting('skuAllowBackorderFlag');
+            	data['orderItems'][count]['skuAllowBackorderFlag'] = skuAllowBackorderFlag;
+            	count++;
+        	}
+        }
+        
         // add error messages
         data["hasErrors"] = getCart().hasErrors();
         data["errors"] = getCart().getErrors();
