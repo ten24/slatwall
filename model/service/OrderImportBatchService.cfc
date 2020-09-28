@@ -222,6 +222,24 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			//Save Order
 			getOrderService().saveOrder(order);
 			orderImportBatchItem.setOrder(order);
+			
+			if(!isNull(arguments.orderImportBatch.getComment())){
+				var comment = getService('CommentService').newComment();
+				var data = {
+					'commentID':'',
+					'comment':arguments.orderImportBatch.getComment(),
+					'commentRelationships':[
+						{
+							'commentRelationshipID':'',
+							'order':{
+								orderID:order.getOrderID()
+							}
+						}
+					],
+					'publicFlag':0
+				};
+				comment = getService('CommentService').saveComment(comment, data);
+			}
 
 			//Create Order Fulfillment
 			var orderFulfillment = getOrderService().newOrderFulfillment();
