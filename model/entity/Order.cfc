@@ -459,6 +459,8 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
 				orderPayment.setAmount( orderPayment.getAmount() );
 			}
 			
+			this.setCalculatedPaymentAmountDue(this.getPaymentAmountDue());
+			
 			// create openorderitem records
 			getDAO('InventoryDAO').manageOpenOrderItem(actionType = 'add', orderID = getOrderID());
 

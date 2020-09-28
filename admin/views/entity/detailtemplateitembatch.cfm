@@ -49,9 +49,7 @@
 
 <cfparam name="rc.edit" default="false" />
 <cfparam name="rc.templateItemBatch" type="any"/>
-<cfif NOT rc.templateItemBatch.getNewFlag() AND rc.templateItemBatch.getTemplateItemBatchStatusType().getSystemCode() eq "tibstProcessed" >
-	<cfset rc.edit=false>
-</cfif>
+
 <cfoutput>
 	<hb:HibachiEntityDetailForm object="#rc.templateItemBatch#" edit="#rc.edit#">
 		<cfif rc.templateItemBatch.getNewFlag() >

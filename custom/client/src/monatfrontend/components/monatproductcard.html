@@ -93,7 +93,7 @@
    </div>
    
    <!-- Add To Cart -->
-   <div ng-if="monatProductCard.product.displayOnlyFlag != true && (monatProductCard.product.calculatedAllowBackorderFlag || monatProductCard.product.qats > 0)" class="product-actions">
+   <div ng-if="monatProductCard.product.displayOnlyFlag != true && (monatProductCard.product.qats > 0)" class="product-actions">
          <button 
             ng-click="monatProductCard.addToCart(monatProductCard.product.skuID, monatProductCard.product.skuCode); 
                         hybridCart.toggleCartOnAdd();" 
@@ -108,7 +108,7 @@
          </button>
    </div>
    
-    <div ng-if="monatProductCard.product.qats <= 0 && !monatProductCard.product.calculatedAllowBackorderFlag" class="product-actions">
+    <div ng-if="monatProductCard.product.qats <= 0" class="product-actions">
         <button 
             class="btn bg-primary add-to-cart" 
             ng-class="{
