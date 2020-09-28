@@ -25,6 +25,7 @@ class SWFFormController {
     public modalId:string;
     public newMethod:string;
     public preFormPost:any;
+    public formShouldReturn = true;
     // @ngInject
     constructor(
         public $rootScope,
@@ -89,13 +90,18 @@ class SWFFormController {
             this.loading = true;
             let formData = this.getFormData();
             let shouldReturn = false;
-            if(this.preFormPost && !this.preFormPost(formData)){
+            
+            if(this.preFormPost && !this.preFormPost(formData) && this.formShouldReturn == true && this.$rootScope.preFormPost){
                 shouldReturn = true;
+                this.loading = false;
             }
             
+            this.formShouldReturn = false;
+            
             if(shouldReturn){
-                return;
+                return new Promise((reject)=>[]);
             }
+            console.log('postform');
             if(this.closeModal && this.modalId){
                 $(`#${this.modalId}`).modal('toggle');
             }

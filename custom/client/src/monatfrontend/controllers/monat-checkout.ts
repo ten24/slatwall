@@ -46,6 +46,7 @@ class MonatCheckoutController {
 	public addingSavedPaymentMethod = false;
 	public firstFormPost = true;
 	public formHasBeenPosted = false;
+	public promptForZip = false;
 	
 	// @ngInject
 	constructor(
@@ -437,11 +438,25 @@ class MonatCheckoutController {
 	public preValidate = (model) => {
 		console.log(model);
 		let shouldValidate = false;
-		
-		if(this.firstFormPost && shouldValidate){
-			this.firstFormPost = false;
+		if(typeof model.postalCode === 'string' && model.postalCode.trim() == ""){
+			shouldValidate = true;
+		} else if (model.postalCode == undefined){
+			shouldValidate = true;
+		}
+		if(!this.firstFormPost){
+			this.$rootScope.preFormPost = false;
 			return false;
 		}
+		if(this.firstFormPost){
+			this.firstFormPost = false;
+		}
+		if(model.countryCode =="IE" && shouldValidate){
+			$("#promptForZip").modal('show');
+			this.$rootScope.preFormPost = true;
+		} else {
+			this.$rootScope.preFormPost = false;
+		}
+		
 	}
 }
 
