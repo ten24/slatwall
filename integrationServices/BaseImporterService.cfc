@@ -133,17 +133,12 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    } else {
 	        newBatch.setInitialEntityQueueItemsCount( arguments.queryOrArrayOfStruct.recordCount );
 	    }
-	    //populate other details
+
 	    this.getHibachiEntityQueueService().saveBatch(newBatch);
-	    
 	    this.getHibachiScope().flushORMSession();
 	    
 	    for( var record in queryOrArrayOfStruct ){
-	        var validation = this.pushRecordIntoImportQueue( arguments.entityName, record, newBatch.getBatchID() );
-	        
-	        if( !validation.isValid ){
-	            newBatch.addErrors( validation.errors );
-	        }
+	        this.pushRecordIntoImportQueue( arguments.entityName, record, newBatch.getBatchID() );
 	    }
 	    
 	    return newBatch;
@@ -216,14 +211,12 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	        return this.invokeMethod( 'process#entityName#_import', arguments );
 	    }
 	    
-	    var entityService = this.getHibachiService().getServiceByEntityName( "entityName"=entityName );
 	    arguments.entity.populate( arguments.entityQueueData );
-	    
+	    var entityService = this.getHibachiService().getServiceByEntityName( "entityName"=entityName );
 	    arguments.entity = entityService.invokeMethod( "save#entityName#",  { "#entityName#" : arguments.entity });
 	    
 	    return arguments.entity;
 	}
-	
 	
     public struct function validateEntityData(required string entityName, required struct data, struct mapping, boolean collectErrors = false ){
         
@@ -401,6 +394,8 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
     	        "uniqueKey"   : 'importRemoteID',
     	        "uniqueValue" : arguments.data['importRemoteID']
     	    };
+    	    
+    	    // Select accountPhoneNumberID from swAccountPhoneNubmer where "importRemoteID" ="3CEF96DCC9B8035D23F69E30BB19218A_544C0D3D51EFBA18DB26C48C7B69E025"
     	    
 	        arguments.data[ primaryIDPropertyName ] = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue( argumentCollection = args ) ?: '';
 	    }
