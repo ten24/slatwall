@@ -43,12 +43,7 @@ component extends="Slatwall.model.entity.HibachiEntity" displayname="OrderImport
 	}
 	
 	public any function getOrderTypeOptions(){
-		if(!structKeyExists(variables, 'orderTypeOptions')){
-			var orderTypeCollectionList = getService('TypeService').getTypeCollectionList();
-			orderTypeCollectionList.addFilter('systemCode','otSalesOrder,otReplacementOrder','in');
-			variables.orderTypeOptions = orderTypeCollectionList.getRecordOptions(false);
-		}
-		return variables.orderTypeOptions;
+		return getService('OrderImportBatchService').getOrderTypeOptions();
 	}
 	
 	public array function getShippingMethodOptions(){

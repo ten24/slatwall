@@ -61,7 +61,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		arguments.orderImportBatch.setOrderImportBatchName(arguments.processObject.getOrderImportBatchName());
 		arguments.orderImportBatch.setOrderImportBatchStatusType(getTypeService().getTypeBySystemCode('oibstNew'));
-		
+		arguments.orderImportBatch.setOrderType(arguments.processObject.getOrderType());
 	    // If a count file was uploaded, then we can use that
 		if( !isNull(arguments.processObject.getBatchFile()) ) {
 
@@ -366,6 +366,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		getService('HibachiCollectionService').collectionConfigExport({collectionConfig:serializeJSON(orderCollection.getCollectionConfigStruct())});
 		return orderImportBatch;
+	}
+	
+	public any function getOrderTypeOptions(){
+		if(!structKeyExists(variables, 'orderTypeOptions')){
+			var orderTypeCollectionList = getService('TypeService').getTypeCollectionList();
+			orderTypeCollectionList.addFilter('systemCode','otSalesOrder,otReplacementOrder','in');
+			variables.orderTypeOptions = orderTypeCollectionList.getRecordOptions(false);
+		}
+		return variables.orderTypeOptions;
 	}
 	
 	// =====================  END: Logical Methods ============================

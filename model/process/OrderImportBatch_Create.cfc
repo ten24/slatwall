@@ -49,13 +49,25 @@ Notes:
 component output="false" accessors="true" extends="HibachiProcess" {
 
 	// Injected Entity
-	property name="orderImportBatch";
+	property name="orderImportBatch" cfc="OrderImportBatch";
     property name="orderType" cfc="Type";
 	// Data Properties
     property name="orderImportBatchName" type="string";
 	property name="batchFile" hb_formFieldType="file";
+	property name="orderTypeID" type="string" hb_formFieldType="select" hb_rbKey="entity.OrderImportBatch.orderType";
 	
-	public any function getOrderTypeOptions(){
-	    arguments.orderImportBatch.getOrderTypeOptions();
+	public any function getOrderTypeIDOptions(){
+	    return getService('OrderImportBatchService').getOrderTypeOptions();
+	}
+	
+	public any function getOrderType(){
+	    if(!structKeyExists(variables,'orderType')){
+	        if(structKeyExists(variables,'orderTypeID')){
+	            variables.orderType = getService('TypeService').getType(variables.orderTypeID);
+	        }else{
+	            variables.orderType = getService('TypeService').getTypeBySystemCode('otSalesOrder');
+	        }
+	    }
+	    return variables.orderType;
 	}
 }
