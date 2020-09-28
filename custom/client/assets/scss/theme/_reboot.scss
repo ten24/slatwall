@@ -69,6 +69,10 @@ button:focus {
   outline: none;
 }
 
+.text-link {
+  text-decoration: underline;
+}
+
 // breakpoints
 @include media-breakpoint-up(l) {
   .container, 
