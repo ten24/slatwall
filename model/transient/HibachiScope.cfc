@@ -542,18 +542,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
             }
         }
         
-        //get skuAllowBackorderFlag from setting for SKU
-        var skuService = getService('skuService');
-        var count = 1;
-        if(structKeyExists(data,'orderItems')){
-        	for (var getOrderItems in data.orderItems){
-        		var skuScope = skuService.getSkuByskuID(getOrderItems.sku.skuID);
-            	var skuAllowBackorderFlag = skuScope.setting('skuAllowBackorderFlag');
-            	data['orderItems'][count]['skuAllowBackorderFlag'] = skuAllowBackorderFlag;
-            	count++;
-        	}
-        }
-        
         // add error messages
         data["hasErrors"] = getCart().hasErrors();
         data["errors"] = getCart().getErrors();

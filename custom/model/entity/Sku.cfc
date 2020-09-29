@@ -11,6 +11,7 @@ component {
 	// Non-persistent properties
     property name="personalVolumeByCurrencyCode" persistent="false";
 	property name="commissionableVolumeByCurrencyCode" persistent="false";
+	property name="AllowBackorderFlag" persistent="false";
 
 	public boolean function canBePurchased(required any account, any order){
 		if( !isNull(arguments.order) && !isNull(arguments.order.getAccountType()) ){
@@ -160,4 +161,7 @@ component {
 		}    
 	}
    
+	public any function getAllowBackorderFlag(){
+		return this.setting("skuAllowBackorderFlag");
+	}
 }
