@@ -46,6 +46,34 @@
             </a>
           </div>
           
+			<div class="row bg-lightgray pt-3 pr-3 pl-3 rounded mb-5">
+				<div class="col-md-4">
+					<h3 class="h6">Shipping Address:</h3>
+					<p>
+						<em>Address Nickname</em><br />
+						Name <br />
+						Street Address <br />
+						City, State Zip
+					</p>
+				</div>
+				<div class="col-md-4">
+					<h3 class="h6">Billing Address:</h3>
+					<p>
+						<em>Address Nickname</em><br />
+						Name <br />
+						Street Address <br />
+						City, State Zip
+					</p>
+				</div>
+				<div class="col-md-4">
+					<h3 class="h6">Payment Method:</h3>
+					<p>
+						<em>method of payment</em><br />
+						Name <br />
+						Vias ending in x1234
+					</p>
+				</div>
+			</div>
           
           <!-- Order Items -->
           <h2 class="h6 pt-1 pb-3 mb-3 border-bottom">Review your order</h2>
