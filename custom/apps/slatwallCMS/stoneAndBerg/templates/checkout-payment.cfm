@@ -10,8 +10,8 @@
         <div class="order-lg-2 mb-3 mb-lg-0 pt-lg-2">
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb breadcrumb-dark flex-lg-nowrap justify-content-center justify-content-lg-start">
-              <li class="breadcrumb-item"><a class="text-nowrap" href="index.html"><i class="far fa-home"></i>Home</a></li>
-              <li class="breadcrumb-item text-nowrap"><a href="shop-grid-ls.html">Shop</a>
+              <li class="breadcrumb-item"><a class="text-nowrap" href="/"><i class="far fa-home"></i>Home</a></li>
+              <li class="breadcrumb-item text-nowrap"><a href="##">Shop</a>
               </li>
               <li class="breadcrumb-item text-nowrap active" aria-current="page">Checkout</li>
             </ol>
@@ -143,8 +143,8 @@
          
           <!-- Navigation (desktop)-->
           <div class="d-lg-flex pt-4 mt-3">
-            <div class="w-50 pr-3"><a class="btn btn-secondary btn-block" href="shop-cart.html"><i class="far fa-chevron-left"></i> <span class="d-none d-sm-inline">Back</span><span class="d-inline d-sm-none">Back</span></a></div>
-            <div class="w-50 pl-2"><a class="btn btn-primary btn-block" href="checkout-shipping.html"><span class="d-none d-sm-inline">Save & Continue</span><span class="d-inline d-sm-none">Next</span> <i class="far fa-chevron-right"></i></a></div>
+            <div class="w-50 pr-3"><a class="btn btn-secondary btn-block" href="##"><i class="far fa-chevron-left"></i> <span class="d-none d-sm-inline">Back</span><span class="d-inline d-sm-none">Back</span></a></div>
+            <div class="w-50 pl-2"><a class="btn btn-primary btn-block" href="##"><span class="d-none d-sm-inline">Save & Continue</span><span class="d-inline d-sm-none">Next</span> <i class="far fa-chevron-right"></i></a></div>
           </div>
         </section>
         <!-- Sidebar-->
