@@ -1345,6 +1345,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         productCollectionList.setDisplayProperties('productID');
         productCollectionList.addDisplayProperty('productName');
         productCollectionList.addDisplayProperty('skus.skuID');
+        productCollectionList.addDisplayProperty('skus.backorderedMessaging');
         productCollectionList.addDisplayProperty('calculatedAllowBackorderFlag');
         productCollectionList.addDisplayProperty('urlTitle');
         productCollectionList.addDisplayProperty('skus.imageFile');
@@ -1392,7 +1393,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             productCollectionList.addFilter(propertyIdentifier ="skus.displayOnlyFlag", value= 1, comparisonOperator= "=", filterGroupAlias="hasSkuPriceOrDisplayOnly");
             productCollectionList.addFilter(propertyIdentifier ="skus.skuPrices.price", value= 0.00, logicalOperator="OR", comparisonOperator = "!=", filterGroupAlias="hasSkuPriceOrDisplayOnly");
         }
-
+        
         return { productCollectionList: productCollectionList, priceGroupCode: priceGroupCode, currencyCode: currencyCode };
     }
     
@@ -1657,8 +1658,13 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             var upgradedPriceGroupID = "84a7a5c187b04705a614eb1b074959d4";
         }
         
+        var skuService = getService('skuService');
+            
         //Looping over the collection list and using helper method to get non persistent properties
         for(var record in arguments.records){
+            var skuScope = skuService.getSkuByskuID(record.skus_skuID);
+            var skuAllowBackorderFlag = skuScope.setting('skuAllowBackorderFlag');
+            
             var data = {
                 'productID': record.productID,
                 'skuID': record.skus_skuID,
@@ -1672,7 +1678,9 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                 'upgradedPriceGroupCode': upgradedPriceGroupCode,
                 'qats': record.skus_stocks_calculatedQATS,
                 'calculatedAllowBackorderFlag': record.calculatedAllowBackorderFlag,
-                'displayOnlyFlag': record.skus_displayOnlyFlag
+                'displayOnlyFlag': record.skus_displayOnlyFlag,
+                'backorderedMessaging':record.skus_backorderedMessaging,
+                'skuAllowBackorderFlag':skuAllowBackorderFlag
             };
 
             productMap[record.skus_skuID] = data;
