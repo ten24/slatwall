@@ -1,6 +1,6 @@
 <cfoutput>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-us">
 <head>
 	<cfinclude template="head.cfm" />
 </head>

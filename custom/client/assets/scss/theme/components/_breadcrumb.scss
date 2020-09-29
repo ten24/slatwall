@@ -9,10 +9,15 @@
   }
   &::before {
     font: {
-      family: 'cartzilla-icons';
-      size: .9em;
+      family: "Font Awesome 5 Pro";
+      weight: 500;
+      size: 12px;
     }
+    content: "\f054"!important; //override bootstrap classs
     vertical-align: middle;
+  }
+  &:first-child::before {
+    display: none;
   }
   > a {
     transition: $nav-link-transition;
@@ -43,4 +48,8 @@
     }
   }
   &.active { color: $breadcrumb-light-active-color; }
+}
+
+.bg-lightgray {
+  background-color: $gray-100;
 }
