@@ -15,14 +15,14 @@ class SWReportMenuController{
     
     public getPersistedReports = () => {
         var persistedReportsCollectionList = this.collectionConfig.newCollectionConfig('Collection');
-        persistedReportsCollectionList.setDisplayProperties('collectionID,collectionName,collectionConfig');
+        persistedReportsCollectionList.setDisplayProperties('collectionID,collectionName,collectionConfig,collectionCode');
         persistedReportsCollectionList.addFilter('reportFlag',1);
         persistedReportsCollectionList.addFilter('collectionObject',this.collectionConfig.baseEntityName);
         persistedReportsCollectionList.addFilter('accountOwner.accountID',this.$rootScope.slatwall.account.accountID,'=','OR',true,true,false,'accountOwner');
         persistedReportsCollectionList.addFilter('accountOwner.accountID','NULL','IS','OR',true,true,false,'accountOwner');
         persistedReportsCollectionList.setAllRecords(true);
         persistedReportsCollectionList.getEntity().then((data)=>{
-            
+            console.log(data)
             this.persistedReportCollections = data.records;
         });
     }
@@ -42,6 +42,7 @@ class SWReportMenu implements ng.IDirective {
             collectionConfig:"<?"
 	};
 	public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes, transcludeFn:ng.ITranscludeFunction) =>{
+            console.log("SWReportMenu IDirectiveLinkFn" )
 
 	}
 

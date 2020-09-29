@@ -1783,6 +1783,53 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 		}
 	}
 	
+	function generatChart(){
+		
+		console.log("<---------- generatChart")
+		// var ctx = jQuery("#hibachi-report-chart")[0].getContext("2d");
+		// 					var chart = new Chart(ctx, {
+		// 					    type: r.report.chartData.data.type,
+		// 					    data: {
+		// 					        datasets: [{
+		// 					            label: r.report.chartData.series[0].label,
+		// 					            data: r.report.chartData.series[0].data,
+		// 					            borderColor: [
+		// 					                '#f38631'
+		// 					            ],
+		// 					            pointBackgroundColor: "#f38631",
+		// 					            pointBorderColor: "#f38631",
+		// 					            fill: false,
+		// 					            borderWidth: 3,
+		// 					            lineTension: 0
+		// 					        }]
+		// 					    },
+		// 					    options: {
+		// 					        scales: {
+		// 					            yAxes: [{
+		// 					                ticks: {
+		// 					                    beginAtZero: true
+		// 					                }
+		// 					            }],
+		// 					            xAxes: [{
+		// 					            	type: 'time',
+		// 					            	ticks: {
+		// 					            		source: 'data',
+		// 					            	},
+		// 					            	time: {
+		// 					            		parser: 'string',
+		// 					            		unit: r.report.reportDateTimeGroupBy,
+		// 					            		stepSize: 1,
+		// 					            	}
+		// 					            }]
+		// 					        },
+		// 					        legend: {
+		// 					        	display: false
+		// 					        }
+		// 					    }
+		// 					});	
+		
+	}
+	
 	function updateReport( page ) {
 		if(jQuery("#hibachi-report").length){
 			var data = {
@@ -1829,11 +1876,15 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 				},
 				success: function( r ) {
 					console.log(r);
+																	console.log("Leds Build");
+
 					if(r.report.hideChart !== undefined){ 
 						jQuery("#hibachi-report-chart").remove();
 						jQuery("#hibachi-report-chart-wrapper").hide();
 					} else { 
 						if(r.report.chartData.series !== undefined){
+												console.log("le Build");
+
 							var html = "<canvas id='hibachi-report-chart' width='1800' height='600'></canvas>";
 							jQuery("#hibachi-report-chart-wrapper").html(html);
 							jQuery("#sales-revenue-this-period").html(r.report.salesRevenueThisPeriod);
@@ -1841,6 +1892,8 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 							jQuery("#average-order-total-this-period").html(r.report.averageOrderTotal);
 							jQuery("#accounts-created-this-period").html(r.report.accountCount);
 							jQuery(".time-period").html(r.report.period);
+																			console.log(jQuery(".time-period"));
+
 							var ctx = jQuery("#hibachi-report-chart")[0].getContext("2d");
 							var chart = new Chart(ctx, {
 							    type: r.report.chartData.data.type,

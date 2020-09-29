@@ -3,8 +3,18 @@
 
 
 class SWStatWidgetController{
-    constructor(){
-    
+    constructor(    
+    	    private $scope,
+			private dashboardService
+){
+	if( dashboardService.dashboardData.report){
+			$scope.data = dashboardService.dashboardData.report.salesRevenueThisPeriod
+
+	}else{
+			$scope.data =6
+
+	}
+    	console.log("Loaded")
     }
 }
 
