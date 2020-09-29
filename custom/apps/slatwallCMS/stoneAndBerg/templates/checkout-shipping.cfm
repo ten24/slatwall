@@ -49,16 +49,14 @@
           <div class="row mb-3">
           	<div class="col-sm-12">
               <div class="form-group">
-                <label for="checkout-recieve">How do you want to recieve your items?</label>
-                <div class="d-flex">
-                	<div class="custom-control custom-radio mr-4">
-	                  <input class="custom-control-input" type="radio" id="ship" name="shipping-method" checked="">
-	                  <label class="custom-control-label" for="checkout-recieve">Ship my order</label>
-	                </div>
-	                <div class="custom-control custom-radio">
-	                  <input class="custom-control-input" type="radio" id="pickup" name="shipping-method">
-	                  <label class="custom-control-label" for="checkout-recieve">Pickup my order</label>
-	                </div>
+                <label class="w-100" for="checkout-recieve">How do you want to recieve your items?</label>
+                <div class="form-check form-check-inline custom-control custom-radio d-inline-flex">
+                  <input class="custom-control-input" type="radio" name="inlineRadioOptions" id="ship" value="option1" checked>
+                  <label class="custom-control-label" for="ship">Ship my order</label>
+                </div>
+                <div class="form-check form-check-inline custom-control custom-radio d-inline-flex">
+                  <input class="custom-control-input" type="radio" name="inlineRadioOptions" id="pickup" value="option2">
+                  <label class="custom-control-label" for="pickup">Pick up my order</label>
                 </div>
               </div>
             </div>
@@ -67,17 +65,17 @@
           <!-- Shipping address-->
           <h2 class="h6 pt-1 pb-3 mb-3 border-bottom">Shipping address</h2>
           
-          <div class="row">
-          	<div class="col-sm-6">
-	            <div class="form-group">
-					<label for="checkout-country">Country</label>
-					<select class="form-control custom-select" id="checkout-country">
-						<option>Choose country</option>
-						<option>Canada</option>
-						<option>USA</option>
-					</select>
-				</div>
-			</div>
+            <div class="row">
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label for="checkout-country">Country</label>
+                  <select class="form-control custom-select" id="checkout-country">
+                    <option value="">Choose country</option>
+                    <option value="CA">Canada</option>
+                    <option value="US" selected>USA</option>
+                  </select>
+                </div>
+              </div>
             <div class="col-sm-6">
               <div class="form-group">
                 <label for="checkout-n">Name</label>
@@ -110,61 +108,61 @@
             </div>
             <div class="col-sm-3">
               <div class="form-group">
-					<label for="checkout-country">State</label>
-					<select class="form-control custom-select" id="checkout-state">
-						<option value="AL">Alabama</option>
-						<option value="AK">Alaska</option>
-						<option value="AZ">Arizona</option>
-						<option value="AR">Arkansas</option>
-						<option value="CA">California</option>
-						<option value="CO">Colorado</option>
-						<option value="CT">Connecticut</option>
-						<option value="DE">Delaware</option>
-						<option value="DC">District Of Columbia</option>
-						<option value="FL">Florida</option>
-						<option value="GA">Georgia</option>
-						<option value="HI">Hawaii</option>
-						<option value="ID">Idaho</option>
-						<option value="IL">Illinois</option>
-						<option value="IN">Indiana</option>
-						<option value="IA">Iowa</option>
-						<option value="KS">Kansas</option>
-						<option value="KY">Kentucky</option>
-						<option value="LA">Louisiana</option>
-						<option value="ME">Maine</option>
-						<option value="MD">Maryland</option>
-						<option value="MA">Massachusetts</option>
-						<option value="MI">Michigan</option>
-						<option value="MN">Minnesota</option>
-						<option value="MS">Mississippi</option>
-						<option value="MO">Missouri</option>
-						<option value="MT">Montana</option>
-						<option value="NE">Nebraska</option>
-						<option value="NV">Nevada</option>
-						<option value="NH">New Hampshire</option>
-						<option value="NJ">New Jersey</option>
-						<option value="NM">New Mexico</option>
-						<option value="NY">New York</option>
-						<option value="NC">North Carolina</option>
-						<option value="ND">North Dakota</option>
-						<option value="OH">Ohio</option>
-						<option value="OK">Oklahoma</option>
-						<option value="OR">Oregon</option>
-						<option value="PA">Pennsylvania</option>
-						<option value="RI">Rhode Island</option>
-						<option value="SC">South Carolina</option>
-						<option value="SD">South Dakota</option>
-						<option value="TN">Tennessee</option>
-						<option value="TX">Texas</option>
-						<option value="UT">Utah</option>
-						<option value="VT">Vermont</option>
-						<option value="VA">Virginia</option>
-						<option value="WA">Washington</option>
-						<option value="WV">West Virginia</option>
-						<option value="WI">Wisconsin</option>
-						<option value="WY">Wyoming</option>
-					</select>
-				</div>
+                <label for="checkout-country">State</label>
+                <select class="form-control custom-select" id="checkout-state">
+                  <option value="AL">Alabama</option>
+                  <option value="AK">Alaska</option>
+                  <option value="AZ">Arizona</option>
+                  <option value="AR">Arkansas</option>
+                  <option value="CA">California</option>
+                  <option value="CO">Colorado</option>
+                  <option value="CT">Connecticut</option>
+                  <option value="DE">Delaware</option>
+                  <option value="DC">District Of Columbia</option>
+                  <option value="FL">Florida</option>
+                  <option value="GA">Georgia</option>
+                  <option value="HI">Hawaii</option>
+                  <option value="ID">Idaho</option>
+                  <option value="IL">Illinois</option>
+                  <option value="IN">Indiana</option>
+                  <option value="IA">Iowa</option>
+                  <option value="KS">Kansas</option>
+                  <option value="KY">Kentucky</option>
+                  <option value="LA">Louisiana</option>
+                  <option value="ME">Maine</option>
+                  <option value="MD">Maryland</option>
+                  <option value="MA">Massachusetts</option>
+                  <option value="MI">Michigan</option>
+                  <option value="MN">Minnesota</option>
+                  <option value="MS">Mississippi</option>
+                  <option value="MO">Missouri</option>
+                  <option value="MT">Montana</option>
+                  <option value="NE">Nebraska</option>
+                  <option value="NV">Nevada</option>
+                  <option value="NH">New Hampshire</option>
+                  <option value="NJ">New Jersey</option>
+                  <option value="NM">New Mexico</option>
+                  <option value="NY">New York</option>
+                  <option value="NC">North Carolina</option>
+                  <option value="ND">North Dakota</option>
+                  <option value="OH">Ohio</option>
+                  <option value="OK">Oklahoma</option>
+                  <option value="OR">Oregon</option>
+                  <option value="PA">Pennsylvania</option>
+                  <option value="RI">Rhode Island</option>
+                  <option value="SC">South Carolina</option>
+                  <option value="SD">South Dakota</option>
+                  <option value="TN">Tennessee</option>
+                  <option value="TX">Texas</option>
+                  <option value="UT">Utah</option>
+                  <option value="VT">Vermont</option>
+                  <option value="VA">Virginia</option>
+                  <option value="WA">Washington</option>
+                  <option value="WV">West Virginia</option>
+                  <option value="WI">Wisconsin</option>
+                  <option value="WY">Wyoming</option>
+                </select>
+              </div>
             </div>
             <div class="col-sm-3">
               <div class="form-group">
@@ -184,8 +182,8 @@
           </div>
           
           <!-- Navigation (desktop)-->
-          <div class="d-none d-lg-flex pt-4 mt-3">
-            <div class="w-50 pr-3"><a class="btn btn-secondary btn-block" href="shop-cart.html"><i class="far fa-chevron-left"></i> <span class="d-none d-sm-inline">Back to Cart</span><span class="d-inline d-sm-none">Back</span></a></div>
+          <div class="d-lg-flex pt-4 mt-3">
+            <div class="w-50 pr-3"><a class="btn btn-secondary btn-block" href="shop-cart.html"><i class="far fa-chevron-left"></i> <span class="d-none d-sm-inline">Back</span><span class="d-inline d-sm-none">Back</span></a></div>
             <div class="w-50 pl-2"><a class="btn btn-primary btn-block" href="checkout-shipping.html"><span class="d-none d-sm-inline">Save & Continue</span><span class="d-inline d-sm-none">Next</span> <i class="far fa-chevron-right"></i></a></div>
           </div>
         </section>
@@ -216,15 +214,7 @@
           </div>
         </aside>
       </div>
-      <!-- Navigation (mobile)-->
-      <div class="row d-lg-none">
-        <div class="col-lg-8">
-          <div class="d-flex pt-4 mt-3">
-            <div class="w-50 pr-3"><a class="btn btn-secondary btn-block" href="shop-cart.html"><i class="far fa-chevron-left"></i><span class="d-none d-sm-inline">Back to Cart</span><span class="d-inline d-sm-none">Back</span></a></div>
-            <div class="w-50 pl-2"><a class="btn btn-primary btn-block" href="checkout-shipping.html"><span class="d-none d-sm-inline"> Save & Continue</span><span class="d-inline d-sm-none">Next</span> <i class="far fa-chevron-right"></i></a></div>
-          </div>
-        </div>
-      </div>
+      
     </div>
 </cfoutput>
 <cfinclude template="inc/footer.cfm" />
