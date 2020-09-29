@@ -6,6 +6,7 @@
 			
 		<hb:HibachiPropertyList divclass="col-md-6">
 			<hb:HibachiPropertyDisplay object="#rc.order#" property="orderNumber" edit="false" valuelink="#getHibachiScope().buildURL(action=rc.entityActionDetails.detailAction, queryString='orderID=#rc.order.getOrderID()#')#" title="#$.slatwall.rbKey('entity.order')#">
+			<hb:HibachiPropertyDisplay object="#rc.order#" property="orderCloseDateTime" edit="false" >
 			<hb:HibachiPropertyDisplay object="#rc.order#" property="commissionPeriod" edit="false">
 			<hb:HibachiPropertyDisplay object="#rc.order#" property="commissionableVolumeTotal" edit="false">
 			<hb:HibachiPropertyDisplay object="#rc.order#" property="personalVolumeTotal" edit="false">

@@ -130,6 +130,7 @@ component extends="HibachiService" output="false" accessors="true" {
 		var allSettingMetaData = {
 
 			// Account
+			accountCustomAdminStylesheet = {fieldtype="text"},
 			accountEligiblePaymentMethods = {fieldType="listingMultiselect", listingMultiselectEntityName="PaymentMethod", defaultValue=getPaymentService().getAllActivePaymentMethodIDList()},
 			accountEligiblePaymentTerms = {fieldType="listingMultiselect", listingMultiselectEntityName="PaymentTerm", defaultValue=getPaymentService().getAllActivePaymentTermIDList()},
 			accountPaymentTerm = {fieldType="select"},
@@ -417,6 +418,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			skuAllowBackorderFlag = {fieldType="yesno", defaultValue=0},
 			skuAllowPreorderFlag = {fieldType="yesno", defaultValue=0},
 			skuAllowWaitlistingFlag = {fieldType="yesno", defaultValue=0},
+			skuBackorderLimit = {fieldType="text", defaultValue=0, validate={dataType="numeric"}},
 			skuBundleAutoMakeupInventoryOnSaleFlag = {fieldType="yesno", defaultValue=0},
 			skuBundleAutoBreakupInventoryOnReturnFlag = {fieldType="yesno", defaultValue=0},
 			skuCurrency = {fieldType="select", defaultValue="USD"},

@@ -476,6 +476,19 @@ Notes:
 				accountAddressID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.accountAddressID#" />
 		</cfquery>
 	</cffunction>
+	
+	<cffunction name="removeAccountFromEmails">
+		<cfargument name="accountID" type="any" required="true" >
+
+		<cfquery name="local.emailQuery">
+			UPDATE
+				SwEmail
+			SET
+				accountID = null
+			WHERE
+				accountID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.accountID#" />
+		</cfquery>
+	</cffunction>
 
 	<cffunction name="removeAccountFromAuditProperties" returntype="void" access="public">
 		<cfargument name="accountID" type="string" required="true" />

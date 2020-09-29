@@ -331,6 +331,7 @@
 						labelText=""
 						placeholder="Search #propertynamerbkey#"
 						initialEntityID="#attributes.value#"
+						propertyToShow="#attributes.autocompleteNameProperty#"
 						data-max-records="20"
 					></hb:HibachiTypeahead>
 				</div>

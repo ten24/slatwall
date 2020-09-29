@@ -52,6 +52,7 @@ Notes:
 <cfoutput>
 	<swa:SlatwallSettingTable showInheritance="false">
 		<swa:SlatwallSetting settingName="skuAllowBackorderFlag" />
+		<swa:SlatwallSetting settingName="skuBackorderLimit" />
 		<swa:SlatwallSetting settingName="skuAllowPreorderFlag" />
 		<swa:SlatwallSetting settingName="skuAllowWaitlistingFlag" />
 		<swa:SlatwallSetting settingName="skuRegistrationApprovalRequiredFlag" />

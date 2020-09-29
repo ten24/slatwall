@@ -95,7 +95,6 @@ Notes:
 			<hb:HibachiEntityDetailItem view="admin:entity/accounttabs/wishlists" />
 			<hb:HibachiEntityDetailItem view="admin:entity/accounttabs/cartsandquotes" count="#rc.ordersNotPlacedSmartList.getRecordsCount()#" />
 			<hb:HibachiEntityDetailItem property="accountPayments" />
-			<hb:HibachiEntityDetailItem property="accountLoyalties" count="#rc.account.getAccountLoyaltiesSmartList().getRecordsCount()#" />
 			<hb:HibachiEntityDetailItem property="productReviews" />
 			<hb:HibachiEntityDetailItem view="admin:entity/accounttabs/subscriptionusage" count="#rc.account.getSubscriptionUsagesSmartList().getRecordsCount()#" />
 			<hb:HibachiEntityDetailItem property="permissionGroups" />

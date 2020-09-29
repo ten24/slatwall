@@ -4,7 +4,6 @@ import {SWAddOrderItemsBySku as AddOrderItemsBySku} from "../../../../../../admi
 
 class SWAddOrderItemsBySkuController extends AddOrderItemsBySkuController{
 
-	
 	public accountType: string;
 	
 	constructor(public $hibachi,
@@ -32,6 +31,7 @@ class SWAddOrderItemsBySkuController extends AddOrderItemsBySkuController{
 	        	this.addSkuCollection.addFilter('retailFlag', true, '=', undefined, true);
 			break;
 		}
+		this.addSkuCollection.addFilter('displayOnlyFlag', true, '!=');
 	}
 
 }

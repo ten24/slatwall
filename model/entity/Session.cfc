@@ -152,7 +152,7 @@ property name="currentFlexship" type="any" cfc="OrderTemplate" fieldtype="many-t
 	
 	
 	public any function getOrder() {
-		if(structKeyExists(variables, "order") && variables.order.getOrderCreatedSite().getSiteID() == getHibachiScope().getCurrentRequestSite().getSiteID()) {
+		if(structKeyExists(variables, "order") && (isNull(getHibachiScope().getCurrentRequestSite()) || variables.order.getOrderCreatedSite().getSiteID() == getHibachiScope().getCurrentRequestSite().getSiteID())) {
 			
 			return variables.order;
 		} else if (!structKeyExists(variables, "requestOrder")) {
