@@ -287,6 +287,8 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
     property name="calculatedPaymentAmountDue" ormtype="big_decimal";
     property name="priceGroup" cfc="PriceGroup" fieldtype="many-to-one" fkcolumn="priceGroupID";
     property name="upgradeFlag" ormtype="boolean" default="0";
+    
+    property name="sendEmailNotificationsFlag" ormtype="boolean" default="true"; //Used on orders imported with the Batch Order Import functionality
 
     property name="isLockedInProcessingFlag" persistent="false";
     property name="isLockedInProcessingOneFlag" persistent="false";
@@ -2571,5 +2573,9 @@ public numeric function getPersonalVolumeSubtotal(){
 		}
 		
 		return isValidOrder;
+	}
+	
+	public boolean function isOrderPartiallyDelivered(){
+		return getQuantityUndelivered() != 0 && getQuantityDelivered() != 0;
 	}//CUSTOM FUNCTIONS END
 }

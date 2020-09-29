@@ -54,6 +54,9 @@
 												<a class="w-100 pb-1 pt-0" href="#" ng-click="hybridCart.redirect(item.skuProductURL)">
 													<p class="d-inline title" ng-bind="item.sku.skuDefinition"></p>
 												</a>
+												<div ngif="item.sku.backorderedMessaging != null && item.sku.backorderedMessaging != '' && item.sku.AllowBackorderFlag == 1">
+									                <h7 style="color:red;">{{item.sku.backorderedMessaging}}</h7>
+									            </div>
 												<div class="qty">
 													<button
 														ng-if="!item.freezeQuantity"
