@@ -79,3 +79,19 @@
     clip: padding-box;
   }
 }
+
+.alert-success.alert-wicon {
+  color: $gray-800;
+  font-size: 13px;
+  padding-left: 35px;
+  position: relative;
+  i {
+    position: absolute;
+    left: 10px;
+    top: 0;
+    bottom: 0;
+    font-size: 18px;
+    margin: auto;
+    height: 18px;
+  }
+}
