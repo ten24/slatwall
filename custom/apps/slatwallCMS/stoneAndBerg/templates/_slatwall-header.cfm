@@ -43,10 +43,14 @@
         }
       }
     </style>
-
+	<cfinclude template="#$.getThemePath()#/custom/apps/slatwallCMS/stoneAndBerg/templates/inc/header/head.cfm" />
+	<script src="#$.getThemePath()#/custom/client/assets/js/bootstrap.min.js"></script>
+	<script src="#$.getThemePath()#/custom/client/assets/js/jquery.min.js"></script>
+	<script src="#$.getThemePath()#/custom/client/assets/js/slick.min.js"></script>
+	<script src="#$.getThemePath()#/custom/client/assets/js/theme.js"></script>
   </head>
 
-  <body ng-cloak>
+  <body ng-cloak class="bg-dark">
     <cfinclude template="inc/globalAngularVariables.cfm" />
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
       <div class="container">
