@@ -18,6 +18,7 @@ component extends="Slatwall.model.entity.HibachiEntity" displayname="TemplateIte
 	
 	//Non-persistent Properties
 	property name="orderTemplateCollection" persistent="false";
+	property name="statusCode" persistent="false";
 	
 	public string function getSimpleRepresentationPropertyName(){
 	    return 'templateItemBatchName';
@@ -33,5 +34,9 @@ component extends="Slatwall.model.entity.HibachiEntity" displayname="TemplateIte
 	    if(structKeyExists(variables, 'orderTemplateCollection')){
 	        return variables.orderTemplateCollection;
 	    }
+	}
+	
+	public string function getStatusCode(){
+		return getTemplateItemBatchStatusType().getSystemCode();
 	}
 }

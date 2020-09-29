@@ -1626,6 +1626,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arguments.data.context = "save";
 		}
 
+		arguments.orderTemplate.getOrderTemplateNumber();
+		
 		return this.saveOrderTemplate(arguments.orderTemplate, {}, arguments.data.context); 
 	} 
     

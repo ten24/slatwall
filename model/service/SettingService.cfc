@@ -1348,7 +1348,7 @@ component extends="HibachiService" output="false" accessors="true" {
 
 		// Check to see if we are going to need to update the
 		var calculateStockNeeded = false;
-		if(listFindNoCase("skuAllowBackorderFlag,skuAllowPreorderFlag,skuQATSIncludesQNROROFlag,skuQATSIncludesQNROVOFlag,skuQATSIncludesQNROSAFlag,skuTrackInventoryFlag", arguments.entity.getSettingName())) {
+		if(listFindNoCase("skuAllowBackorderFlag,skuBackorderLimit,skuAllowPreorderFlag,skuQATSIncludesQNROROFlag,skuQATSIncludesQNROVOFlag,skuQATSIncludesQNROSAFlag,skuTrackInventoryFlag", arguments.entity.getSettingName())) {
 			calculateStockNeeded = true;
 		}
 		var settingName = arguments.entity.getSettingName();
@@ -1397,7 +1397,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			getHibachiDAO().flushORMSession();
 			
 			// If calculation is needed, then we should do it
-			if(listFindNoCase("skuAllowBackorderFlag,skuAllowPreorderFlag,skuQATSIncludesQNROROFlag,skuQATSIncludesQNROVOFlag,skuQATSIncludesQNROSAFlag,skuTrackInventoryFlag", arguments.entity.getSettingName())) {
+			if(listFindNoCase("skuAllowBackorderFlag,skuBackorderLimit,skuAllowPreorderFlag,skuQATSIncludesQNROROFlag,skuQATSIncludesQNROVOFlag,skuQATSIncludesQNROSAFlag,skuTrackInventoryFlag", arguments.entity.getSettingName())) {
 				updateStockCalculated(argumentCollection=arguments);
 			}
 		}
