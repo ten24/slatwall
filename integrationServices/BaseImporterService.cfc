@@ -200,6 +200,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    
 	    return arguments.entity;
 	}
+
 	
 	public any function processEntityImport( any entity, struct entityQueueData ){
 	    
@@ -212,7 +213,18 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    }
 	    
 	    arguments.entity.populate( arguments.entityQueueData );
-	    var entityService = this.getHibachiService().getServiceByEntityName( "entityName"=entityName );
+	    var entityService = this.getHibachiService().getServiceByEntityName( entityName=entityName );
+	    
+	    var entityMapping = this.getEntityMapping( entityName );
+	    
+	    // Functions to be called after populating the entity, like `updateCalculatedProperties`
+	    if( structKeyExists(entityMapping, 'postPostulateMethods') && isArray(entityMapping.postPostulateMethods) ){
+	        for( var methodName in entityMapping.postPostulateMethods ){
+	            entity.invokeMethod( methodName );
+	        }
+	    }
+	    
+	    // "#entityName#" needs to be unwrapped, as variables are not allowed as keys in stucts
 	    arguments.entity = entityService.invokeMethod( "save#entityName#",  { "#entityName#" : arguments.entity });
 	    
 	    return arguments.entity;
@@ -373,8 +385,29 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    for( var sourcePropertyName in arguments.mapping.properties ){
 	        
 	        var propertyMetaData = arguments.mapping.properties[ sourcePropertyName ];
-
-	        if(structKeyExists(data, sourcePropertyName) ){
+	        
+	        /**
+	         * Fallback order 
+	         * 1. generator-function
+	         * 2. generate[ProertyName ==> propertyMetaData.propertyIdentifier] public function in the service, 
+	         *    prefixed `generate` so it doesn't conflict with getters.
+	         * 3. value in the incoming data
+	         * 4. default value from the propertyMetadata
+	        */
+	        
+	        if( structKeyExists(propertyMetaData, 'generatorFunction') ){
+	            
+	            transformedData[ propertyMetaData.propertyIdentifier ] = this.invokeMethod( 
+	                                        propertyMetaData.generatorFunction,  
+	                                        {
+	                                            
+	                                        }
+	                               )
+	            
+	        } else if( structKeyExists(this, 'generator'&propertyMetaData.propertyIdentifier) ){
+	            
+	            
+	        } else if(structKeyExists(data, sourcePropertyName) ){
 	            
 	            transformedData[ propertyMetaData.propertyIdentifier ] = data[ sourcePropertyName ];
 	            
@@ -408,6 +441,8 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	            transformedData[ related.propertyIdentifier ] = this.transformEntityData( related.entityName, arguments.data );
 	        }
 	    }
+	    
+	    
 	    
 	    return transformedData;
 	}

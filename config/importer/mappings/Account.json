@@ -43,7 +43,6 @@
                 "dataType": "boolean"
             }
         }
-        
     },
     
     "importIdentifier": {
@@ -54,6 +53,17 @@
         ]
     },
     
+    "generatedProperties": [
+        {
+            "propertyIdentifier": "activeFlag",
+            "generatorFunction":  "createActiveValueForAccount"
+        }
+    ],
+    
+    "validationContext": "save";
+    
+    "postPostulateMethods": [ "getPhoneNumber", "updateCalculatedProperties" ],
+    
     "relations": [
         {
             "entityName": "AccountEmailAddress",
@@ -62,6 +72,10 @@
         {
             "entityName": "AccountPhoneNumber",
             "propertyIdentifier": "primaryPhoneNumber"
+        },
+        {
+            "entityName": "AccountAuthentication",
+            "propertyIdentifier": "accountAuthentictions",
         }
     ]
 }
