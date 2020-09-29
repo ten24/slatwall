@@ -424,7 +424,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 			arguments.propertyList = availablePropertyList;
 		}
 		
-		var data = getService('hibachiUtilityService').buildPropertyIdentifierListDataStruct(getAccount(), arguments.propertyList, availablePropertyList);
+		var data = getService('hibachiUtilityService').PropertyIdentifierListDataStruct(getAccount(), arguments.propertyList, availablePropertyList);
 		
 		// add error messages
 		data["hasErrors"] = getAccount().hasErrors();
