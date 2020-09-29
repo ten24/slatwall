@@ -1,7 +1,7 @@
 <cfoutput>
 
 <meta charset="utf-8">
-<title>Stone & Berg</title>
+<title>#$.slatwall.getCurrentRequestSite().getSiteName()#</title>
 <!--- SEO Meta Tags--->
 <meta name="description" content="">
 <meta name="keywords" content="">

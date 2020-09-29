@@ -21,6 +21,19 @@
   background-color: $gray-900 !important;
 }
 
+.bg-light{
+  background-color: $color-light;
+  color: $color-dark;
+}
+
+.bg-primary{
+  background-color: $primary !important;
+  color: $color-light;
+  .btn{
+    background-color: $color-light;
+  }
+}
+
 // Faded background color
 .bg-faded-primary {
   background-color: rgba($primary, .1) !important;
