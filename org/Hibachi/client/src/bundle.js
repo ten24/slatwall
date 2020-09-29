@@ -61177,7 +61177,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 var SWCriteriaDate = /** @class */ (function () {
-    function SWCriteriaDate($log, collectionPartialsPath, hibachiPathBuilder) {
+    function SWCriteriaDate($log, collectionPartialsPath, hibachiPathBuilder, rbkeyService) {
         return {
             restrict: 'E',
             templateUrl: hibachiPathBuilder.buildPartialsPath(collectionPartialsPath) + 'criteriadate.html',
@@ -61193,7 +61193,7 @@ var SWCriteriaDate = /** @class */ (function () {
                                 display: "Date",
                                 comparisonOperator: "between",
                                 dateInfo: {
-                                    type: 'exactDate',
+                                    type: 'date',
                                 }
                             },
                             {
@@ -61215,9 +61215,7 @@ var SWCriteriaDate = /** @class */ (function () {
                                 comparisonOperator: "between",
                                 dateInfo: {
                                     type: 'calculation',
-                                    measureType: 'd',
-                                    measureCount: 0,
-                                    behavior: 'toDate'
+                                    measureType: 'today'
                                 }
                             },
                             {
@@ -61225,9 +61223,7 @@ var SWCriteriaDate = /** @class */ (function () {
                                 comparisonOperator: "between",
                                 dateInfo: {
                                     type: 'calculation',
-                                    measureType: 'd',
-                                    measureCount: -1,
-                                    behavior: 'toDate'
+                                    measureType: 'yesterday'
                                 }
                             },
                             {
@@ -61235,8 +61231,7 @@ var SWCriteriaDate = /** @class */ (function () {
                                 comparisonOperator: "between",
                                 dateInfo: {
                                     type: 'calculation',
-                                    measureType: 'w',
-                                    behavior: 'toDate'
+                                    measureType: 'thisWeek'
                                 }
                             },
                             {
@@ -61244,8 +61239,7 @@ var SWCriteriaDate = /** @class */ (function () {
                                 comparisonOperator: "between",
                                 dateInfo: {
                                     type: 'calculation',
-                                    measureType: 'm',
-                                    behavior: 'toDate'
+                                    measureType: 'thisMonth'
                                 }
                             },
                             {
@@ -61253,8 +61247,7 @@ var SWCriteriaDate = /** @class */ (function () {
                                 comparisonOperator: "between",
                                 dateInfo: {
                                     type: 'calculation',
-                                    measureType: 'q',
-                                    behavior: 'toDate'
+                                    measureType: 'thisQuarter'
                                 }
                             },
                             {
@@ -61262,88 +61255,7 @@ var SWCriteriaDate = /** @class */ (function () {
                                 comparisonOperator: "between",
                                 dateInfo: {
                                     type: 'calculation',
-                                    measureType: 'y',
-                                    behavior: 'toDate'
-                                }
-                            },
-                            {
-                                display: "Last Week to Current Day",
-                                comparisonOperator: "between",
-                                dateInfo: {
-                                    type: 'calculation',
-                                    measureType: 'lwtc',
-                                    measureTypeDisplay: 'Weeks',
-                                    behavior: 'toDate',
-                                }
-                            },
-                            {
-                                display: "Last Month to Current Day",
-                                comparisonOperator: "between",
-                                dateInfo: {
-                                    type: 'calculation',
-                                    measureType: 'lmtc',
-                                    measureTypeDisplay: 'Months',
-                                    behavior: 'toDate',
-                                }
-                            },
-                            {
-                                display: "Last Quarter to Current Day",
-                                comparisonOperator: "between",
-                                dateInfo: {
-                                    type: 'calculation',
-                                    measureType: 'lqtc',
-                                    measureTypeDisplay: 'Quarters',
-                                    behavior: 'toDate',
-                                }
-                            },
-                            {
-                                display: "Last Year to Current Day",
-                                comparisonOperator: "between",
-                                dateInfo: {
-                                    type: 'calculation',
-                                    measureType: 'lytc',
-                                    measureTypeDisplay: 'Years',
-                                    behavior: 'toDate',
-                                },
-                            },
-                            {
-                                display: "Last Full Week",
-                                comparisonOperator: "between",
-                                dateInfo: {
-                                    type: 'calculation',
-                                    measureType: 'lw',
-                                    measureTypeDisplay: 'Weeks',
-                                    behavior: 'toDate',
-                                }
-                            },
-                            {
-                                display: "Last Full Month",
-                                comparisonOperator: "between",
-                                dateInfo: {
-                                    type: 'calculation',
-                                    measureType: 'lm',
-                                    behavior: 'toDate',
-                                    measureTypeDisplay: 'Months'
-                                }
-                            },
-                            {
-                                display: "Last Full Quarter",
-                                comparisonOperator: "between",
-                                dateInfo: {
-                                    type: 'calculation',
-                                    measureType: 'lq',
-                                    behavior: 'toDate',
-                                    measureTypeDisplay: 'Quarters'
-                                }
-                            },
-                            {
-                                display: "Last Full Year",
-                                comparisonOperator: "between",
-                                dateInfo: {
-                                    type: 'calculation',
-                                    measureType: 'ly',
-                                    behavior: 'toDate',
-                                    measureTypeDisplay: 'Years'
+                                    measureType: 'thisYear'
                                 }
                             },
                             {
@@ -61351,7 +61263,7 @@ var SWCriteriaDate = /** @class */ (function () {
                                 comparisonOperator: "between",
                                 dateInfo: {
                                     type: 'calculation',
-                                    measureType: 'h',
+                                    measureType: 'lastHour',
                                     measureTypeDisplay: 'Hours'
                                 }
                             },
@@ -61360,7 +61272,7 @@ var SWCriteriaDate = /** @class */ (function () {
                                 comparisonOperator: "between",
                                 dateInfo: {
                                     type: 'calculation',
-                                    measureType: 'd',
+                                    measureType: 'lastDay',
                                     measureTypeDisplay: 'Days'
                                 }
                             },
@@ -61369,7 +61281,7 @@ var SWCriteriaDate = /** @class */ (function () {
                                 comparisonOperator: "between",
                                 dateInfo: {
                                     type: 'calculation',
-                                    measureType: 'w',
+                                    measureType: 'lastWeek',
                                     measureTypeDisplay: 'Weeks'
                                 }
                             },
@@ -61378,7 +61290,7 @@ var SWCriteriaDate = /** @class */ (function () {
                                 comparisonOperator: "between",
                                 dateInfo: {
                                     type: 'calculation',
-                                    measureType: 'm',
+                                    measureType: 'lastMonth',
                                     measureTypeDisplay: 'Months'
                                 }
                             },
@@ -61387,7 +61299,7 @@ var SWCriteriaDate = /** @class */ (function () {
                                 comparisonOperator: "between",
                                 dateInfo: {
                                     type: 'calculation',
-                                    measureType: 'q',
+                                    measureType: 'lastQuarter',
                                     measureTypeDisplay: 'Quarters'
                                 }
                             },
@@ -61396,16 +61308,52 @@ var SWCriteriaDate = /** @class */ (function () {
                                 comparisonOperator: "between",
                                 dateInfo: {
                                     type: 'calculation',
-                                    measureType: 'y',
+                                    measureType: 'lastYear',
                                     measureTypeDisplay: 'Years'
+                                }
+                            },
+                            {
+                                display: "Last Full Week",
+                                comparisonOperator: "between",
+                                dateInfo: {
+                                    type: 'calculation',
+                                    measureType: 'lastFullWeek',
+                                    measureTypeDisplay: 'Week'
+                                }
+                            },
+                            {
+                                display: "Last Full Month",
+                                comparisonOperator: "between",
+                                dateInfo: {
+                                    type: 'calculation',
+                                    measureType: 'lastFullMonth',
+                                    measureTypeDisplay: 'Month'
+                                }
+                            },
+                            {
+                                display: "Last Full Quarter",
+                                comparisonOperator: "between",
+                                dateInfo: {
+                                    type: 'calculation',
+                                    measureType: 'lastFullQuarter',
+                                    measureTypeDisplay: 'Quarter'
+                                }
+                            },
+                            {
+                                display: "Last Full Year",
+                                comparisonOperator: "between",
+                                dateInfo: {
+                                    type: 'calculation',
+                                    measureType: 'lastFullYear',
+                                    measureTypeDisplay: 'Year'
                                 }
                             },
                             {
                                 display: "More Than N Day(s) Ago",
                                 comparisonOperator: "<",
                                 dateInfo: {
-                                    type: 'exactDate',
-                                    measureType: 'd',
+                                    type: 'calculation',
+                                    measureType: 'moreDays',
                                     measureTypeDisplay: 'Days'
                                 }
                             },
@@ -61413,8 +61361,8 @@ var SWCriteriaDate = /** @class */ (function () {
                                 display: "More Than N Week(s) Ago",
                                 comparisonOperator: "<",
                                 dateInfo: {
-                                    type: 'exactDate',
-                                    measureType: 'w',
+                                    type: 'calculation',
+                                    measureType: 'moreWeeks',
                                     measureTypeDisplay: 'Weeks'
                                 }
                             },
@@ -61422,8 +61370,8 @@ var SWCriteriaDate = /** @class */ (function () {
                                 display: "More Than N Month(s) Ago",
                                 comparisonOperator: "<",
                                 dateInfo: {
-                                    type: 'exactDate',
-                                    measureType: 'm',
+                                    type: 'calculation',
+                                    measureType: 'moreMonths',
                                     measureTypeDisplay: 'Months'
                                 }
                             },
@@ -61431,8 +61379,8 @@ var SWCriteriaDate = /** @class */ (function () {
                                 display: "More Than N Year(s) Ago",
                                 comparisonOperator: "<",
                                 dateInfo: {
-                                    type: 'exactDate',
-                                    measureType: 'y',
+                                    type: 'calculation',
+                                    measureType: 'moreYears',
                                     measureTypeDisplay: 'Years'
                                 }
                             },
@@ -61440,8 +61388,8 @@ var SWCriteriaDate = /** @class */ (function () {
                                 display: "Exact N Day(s) Ago",
                                 comparisonOperator: "between",
                                 dateInfo: {
-                                    type: 'exactDate',
-                                    measureType: 'd',
+                                    type: 'calculation',
+                                    measureType: 'exactDays',
                                     measureTypeDisplay: 'Days'
                                 }
                             },
@@ -61449,8 +61397,8 @@ var SWCriteriaDate = /** @class */ (function () {
                                 display: "Exact N Month(s) Ago",
                                 comparisonOperator: "between",
                                 dateInfo: {
-                                    type: 'exactDate',
-                                    measureType: 'm',
+                                    type: 'calculation',
+                                    measureType: 'exactMonths',
                                     measureTypeDisplay: 'Months'
                                 }
                             },
@@ -61458,36 +61406,45 @@ var SWCriteriaDate = /** @class */ (function () {
                                 display: "Exact N Year(s) Ago",
                                 comparisonOperator: "between",
                                 dateInfo: {
-                                    type: 'exactDate',
-                                    measureType: 'y',
+                                    type: 'calculation',
+                                    measureType: 'exactYears',
                                     measureTypeDisplay: 'Years'
                                 }
                             },
                             {
-                                display: "Exact N Day(s) Ago",
+                                display: "Exact N Day(s) From Now",
                                 comparisonOperator: "between",
                                 dateInfo: {
-                                    type: 'exactDate',
-                                    measureType: 'd',
+                                    type: 'calculation',
+                                    measureType: 'exactDayFromNow',
                                     measureTypeDisplay: 'Days'
                                 }
                             },
                             {
-                                display: "Exact N Month(s) Ago",
-                                comparisonOperator: "between",
+                                display: "Match Day of Month",
+                                comparisonOperator: "=",
                                 dateInfo: {
-                                    type: 'exactDate',
-                                    measureType: 'm',
-                                    measureTypeDisplay: 'Months'
+                                    type: 'matchPart',
+                                    measureType: 'd',
+                                    measureTypeDisplay: 'Day'
                                 }
                             },
                             {
-                                display: "Exact N Year(s) Ago",
-                                comparisonOperator: "between",
+                                display: "Match Month",
+                                comparisonOperator: "=",
                                 dateInfo: {
-                                    type: 'exactDate',
+                                    type: 'matchPart',
+                                    measureType: 'm',
+                                    measureTypeDisplay: 'Month'
+                                }
+                            },
+                            {
+                                display: "Match Year",
+                                comparisonOperator: "=",
+                                dateInfo: {
+                                    type: 'matchPart',
                                     measureType: 'y',
-                                    measureTypeDisplay: 'Years'
+                                    measureTypeDisplay: 'Year'
                                 }
                             },
                             {
@@ -61499,6 +61456,16 @@ var SWCriteriaDate = /** @class */ (function () {
                                 display: "Not Defined",
                                 comparisonOperator: "is",
                                 value: "null"
+                            },
+                            {
+                                display: "Past",
+                                comparisonOperator: "<=",
+                                value: "now()"
+                            },
+                            {
+                                display: "Future",
+                                comparisonOperator: ">=",
+                                value: "now()"
                             }
                         ];
                     }
@@ -61561,123 +61528,234 @@ var SWCriteriaDate = /** @class */ (function () {
                     if (angular.isDefined(selectedCondition.dateInfo)) {
                         //is condition a calculation
                         if (selectedCondition.dateInfo.type === 'calculation') {
-                            selectedCondition.showCriteriaStart = true;
-                            selectedCondition.showCriteriaEnd = true;
-                            selectedCondition.disableCriteriaStart = true;
-                            selectedCondition.disableCriteriaEnd = true;
-                            //if item is a calculation of an N number of measure display the measure and number input
-                            if (angular.isUndefined(selectedCondition.dateInfo.behavior)) {
-                                $log.debug('Not toDate');
-                                selectedCondition.showNumberOf = true;
-                                selectedCondition.conditionDisplay = 'Number of ' + selectedCondition.dateInfo.measureTypeDisplay + ' :';
+                            var setStartRange = false;
+                            var setEndRange = false;
+                            var setNumberOf = false;
+                            var setStartDate = Date.parse('today');
+                            var setEndDate = Date.parse('today');
+                            //get this Measure to date
+                            switch (selectedCondition.dateInfo.measureType) {
+                                case "today":
+                                    setStartRange = true;
+                                    setEndRange = true;
+                                    break;
+                                case "yesterday":
+                                    setStartRange = true;
+                                    setEndRange = true;
+                                    setStartDate = setStartDate.add(-1).days();
+                                    setEndDate = setStartDate;
+                                    break;
+                                case 'thisWeek': //This Week
+                                    setStartRange = true;
+                                    setEndRange = true;
+                                    setStartDate = Date.today().monday().add(-7).days(); //added 7 days because Date.today().monday() is not returning this week's monday
+                                    setEndDate = Date.today().sunday();
+                                    break;
+                                case 'thisMonth': //This Month
+                                    setStartRange = true;
+                                    setEndRange = true;
+                                    setStartDate = new Date.today().moveToFirstDayOfMonth();
+                                    setEndDate = new Date.today().moveToLastDayOfMonth();
+                                    break;
+                                case 'thisQuarter': //This Quarter
+                                    setStartRange = true;
+                                    setEndRange = true;
+                                    var month = Date.parse('today').toString('M');
+                                    var year = Date.parse('today').toString('yyyy');
+                                    var quarterMonth = (Math.floor(month / 3) * 3);
+                                    setStartDate = new Date(year, quarterMonth, 1);
+                                    setEndDate = new Date(year, quarterMonth, 1).addMonths(3).add(-1).days();
+                                    break;
+                                case 'thisYear': //This Year
+                                    setStartRange = true;
+                                    setEndRange = true;
+                                    var year = Date.parse('today').toString('yyyy');
+                                    setStartDate = new Date(year, 0, 1);
+                                    setEndDate = new Date(year, 11, 31);
+                                    break;
+                                case 'lastHour': //Last N Hour
+                                    setStartRange = true;
+                                    setEndRange = true;
+                                    setNumberOf = true;
+                                    break;
+                                case 'lastDay': //Last N Day
+                                    setStartRange = true;
+                                    setEndRange = true;
+                                    setNumberOf = true;
+                                    setStartDate = setStartDate.add(-1).days();
+                                    setEndDate = setStartDate;
+                                    break;
+                                case 'lastWeek': //Last N Week
+                                    setStartRange = true;
+                                    setEndRange = true;
+                                    setNumberOf = true;
+                                    setStartDate = Date.today().monday().add(-2).weeks();
+                                    setEndDate = Date.today().sunday().add(-1).weeks();
+                                    break;
+                                case 'lastMonth': //Last N Month
+                                    setStartRange = true;
+                                    setEndRange = true;
+                                    setNumberOf = true;
+                                    setStartDate = new Date.today().last().month().moveToFirstDayOfMonth();
+                                    setEndDate = new Date.today().last().month().moveToLastDayOfMonth();
+                                    break;
+                                case 'lastQuarter': //Last Quarter
+                                    setStartRange = true;
+                                    setEndRange = true;
+                                    setNumberOf = true;
+                                    var month = Date.parse('today').toString('M');
+                                    var year = Date.parse('today').toString('yyyy');
+                                    var quarterMonth = (Math.floor(month / 3) * 3);
+                                    setStartDate = new Date(year, quarterMonth, 1).addMonths(-3);
+                                    setEndDate = new Date(year, quarterMonth, 1).add(-1).days();
+                                    break;
+                                case 'lastYear': //Last N Year
+                                    setStartRange = true;
+                                    setEndRange = true;
+                                    setNumberOf = true;
+                                    var year = Date.parse('today').toString('yyyy');
+                                    setStartDate = new Date(year - 1, 0, 1);
+                                    setEndDate = new Date(year - 1, 11, 31);
+                                    break;
+                                case 'lastFullWeek': //Last Full Week
+                                    setStartRange = true;
+                                    setEndRange = true;
+                                    setStartDate = Date.today().last().week().sunday();
+                                    setEndDate = Date.today().last().saturday();
+                                    break;
+                                case 'lastFullMonth': //Last Full Month
+                                    setStartRange = true;
+                                    setEndRange = true;
+                                    setStartDate = Date.today().last().month().moveToFirstDayOfMonth();
+                                    setEndDate = Date.today().last().month().moveToLastDayOfMonth();
+                                    break;
+                                case 'lastFullQuarter': //Last Full Quarter
+                                    setStartRange = true;
+                                    setEndRange = true;
+                                    var currentQuarter = Math.floor((Date.parse('today').getMonth() / 3));
+                                    var firstDayOfCurrentQuarter = new Date(Date.parse('today').getFullYear(), currentQuarter * 3, 1);
+                                    setEndDate = firstDayOfCurrentQuarter.add(-1).days();
+                                    var lastXQuartersAgo = new Date(Date.parse('today').getFullYear(), currentQuarter * 3, 1);
+                                    setStartDate = lastXQuartersAgo.add(-3).months();
+                                    break;
+                                case 'lastFullYear': //Last Full Year
+                                    setStartRange = true;
+                                    setEndRange = true;
+                                    setNumberOf = true;
+                                    var lastyear = Date.parse('today').last().year().toString('yyyy');
+                                    setStartDate = new Date(lastyear, 0, 1);
+                                    setEndDate = new Date(lastyear, 11, 31);
+                                    break;
+                                case 'moreDays': //More than N Day Ago
+                                    setStartRange = true;
+                                    setEndRange = false;
+                                    setNumberOf = true;
+                                    setStartDate = setStartDate.add(-1).days();
+                                    break;
+                                case 'moreWeeks': //More than N Week Ago
+                                    setStartRange = true;
+                                    setEndRange = false;
+                                    setNumberOf = true;
+                                    setStartDate = Date.today().monday().add(-2).weeks();
+                                    break;
+                                case 'moreMonths': //More than N Month Ago
+                                    setStartRange = true;
+                                    setEndRange = false;
+                                    setNumberOf = true;
+                                    setStartDate = new Date.today().last().month().moveToFirstDayOfMonth();
+                                    break;
+                                case 'moreYears': //More than N Year Ago
+                                    setStartRange = true;
+                                    setEndRange = false;
+                                    setNumberOf = true;
+                                    var year = Date.parse('today').toString('yyyy');
+                                    setStartDate = new Date(year - 1, 0, 1);
+                                    break;
+                                case 'exactDays': //Exact N Day Ago
+                                    setStartRange = false;
+                                    setEndRange = false;
+                                    setNumberOf = true;
+                                    break;
+                                case 'exactMonths': //Exact N Month Ago
+                                    setStartRange = false;
+                                    setEndRange = false;
+                                    setNumberOf = true;
+                                    break;
+                                case 'exactYears': //Exact N Year Ago
+                                    setStartRange = false;
+                                    setEndRange = false;
+                                    setNumberOf = true;
+                                    break;
+                                case 'exactDayFromNow':
+                                    setStartRange = false;
+                                    setEndRange = false;
+                                    setNumberOf = true;
+                                    break;
                             }
-                            else {
-                                $log.debug('toDate');
-                                var today = Date.parse('today');
-                                var todayEOD = today.setHours(23, 59, 59, 999);
-                                selectedFilterProperty.criteriaRangeEnd = todayEOD;
-                                //get this Measure to date
-                                switch (selectedCondition.dateInfo.measureType) {
-                                    case 'd':
-                                        var dateBOD = Date.parse('today').add(selectedCondition.dateInfo.measureCount).days();
-                                        dateBOD.setHours(0, 0, 0, 0);
-                                        selectedFilterProperty.criteriaRangeStart = dateBOD.getTime();
-                                        break;
-                                    case 'w':
-                                        var firstDayOfWeek = Date.today().last().monday();
-                                        selectedFilterProperty.criteriaRangeStart = firstDayOfWeek.getTime();
-                                        break;
-                                    case 'lwtc':
-                                        var lastweekstart = Date.today().last().week().sunday();
-                                        selectedFilterProperty.criteriaRangeStart = lastweekstart.getTime();
-                                        break;
-                                    case 'lw':
-                                        var lastweekstart = Date.today().last().week().sunday();
-                                        var lastweekend = Date.today().last().saturday();
-                                        selectedFilterProperty.criteriaRangeStart = lastweekstart.getTime();
-                                        selectedFilterProperty.criteriaRangeEnd = lastweekend.getTime();
-                                        break;
-                                    case 'm':
-                                        var firstDayOfMonth = Date.today().moveToFirstDayOfMonth();
-                                        selectedFilterProperty.criteriaRangeStart = firstDayOfMonth.getTime();
-                                        break;
-                                    case 'lmtc':
-                                        var firstDayOfMonth = Date.today().last().month().moveToFirstDayOfMonth();
-                                        selectedFilterProperty.criteriaRangeStart = firstDayOfMonth.getTime();
-                                        break;
-                                    case 'lm':
-                                        var firstDayOfMonth = Date.today().last().month().moveToFirstDayOfMonth();
-                                        selectedFilterProperty.criteriaRangeStart = firstDayOfMonth.getTime();
-                                        var lastDayOfMonth = Date.today().last().month().moveToLastDayOfMonth();
-                                        selectedFilterProperty.criteriaRangeEnd = lastDayOfMonth.getTime();
-                                        break;
-                                    case 'q':
-                                        var month = Date.parse('today').toString('MM');
-                                        var year = Date.parse('today').toString('yyyy');
-                                        var quarterMonth = (Math.floor(month / 3) * 3);
-                                        var firstDayOfQuarter = new Date(year, quarterMonth, 1);
-                                        selectedFilterProperty.criteriaRangeStart = firstDayOfQuarter.getTime();
-                                        break;
-                                    case 'lqtc':
-                                        var currentQuarter = Math.floor((Date.parse('today').getMonth() / 3));
-                                        var lastXQuartersAgo = new Date(Date.parse('today').getFullYear(), currentQuarter * 3, 1);
-                                        lastXQuartersAgo.add(-3).months();
-                                        selectedFilterProperty.criteriaRangeStart = lastXQuartersAgo.getTime();
-                                        break;
-                                    case 'lq':
-                                        var currentQuarter = Math.floor((Date.parse('today').getMonth() / 3));
-                                        var firstDayOfCurrentQuarter = new Date(Date.parse('today').getFullYear(), currentQuarter * 3, 1);
-                                        var lastDayOfPreviousQuarter = firstDayOfCurrentQuarter.add(-1).days();
-                                        lastDayOfPreviousQuarter.setHours(23, 59, 59, 999);
-                                        selectedFilterProperty.criteriaRangeEnd = lastDayOfPreviousQuarter.getTime();
-                                        var lastXQuartersAgo = new Date(Date.parse('today').getFullYear(), currentQuarter * 3, 1);
-                                        lastXQuartersAgo.add(-3).months();
-                                        selectedFilterProperty.criteriaRangeStart = lastXQuartersAgo.getTime();
-                                        break;
-                                    case 'y':
-                                        var year = Date.parse('today').toString('yyyy');
-                                        var firstDayOfYear = new Date(year, 0, 1);
-                                        selectedFilterProperty.criteriaRangeStart = firstDayOfYear.getTime();
-                                        break;
-                                    case 'lytc':
-                                        var lastyear = Date.parse('today').last().year().toString('yyyy');
-                                        var firstDayOfYear = new Date(lastyear, 0, 1);
-                                        selectedFilterProperty.criteriaRangeStart = firstDayOfYear.getTime();
-                                        break;
-                                    case 'ly':
-                                        var lastyear = Date.parse('today').last().year().toString('yyyy');
-                                        var firstDayOfYear = new Date(lastyear, 0, 1);
-                                        selectedFilterProperty.criteriaRangeStart = firstDayOfYear.getTime();
-                                        var lastDayOfYear = new Date(lastyear, 11, 31);
-                                        selectedFilterProperty.criteriaRangeEnd = lastDayOfYear.getTime();
-                                        break;
+                            if (setStartRange == true) {
+                                selectedCondition.showCriteriaStart = true;
+                                selectedCondition.disableCriteriaStart = true;
+                                if (selectedCondition.dateInfo.measureType != "lastHour") //set time to current, if filter is for hours
+                                 {
+                                    selectedFilterProperty.criteriaRangeStart = setStartDate.setHours(0, 0, 0, 0);
+                                }
+                                else {
+                                    selectedFilterProperty.criteriaRangeStart = setStartDate.getTime();
                                 }
                             }
+                            else {
+                                selectedCondition.showCriteriaStart = false;
+                                selectedCondition.disableCriteriaStart = false;
+                            }
+                            if (setEndRange == true) {
+                                selectedCondition.showCriteriaEnd = true;
+                                selectedCondition.disableCriteriaEnd = true;
+                                if (selectedCondition.dateInfo.measureType != "lastHour") //set time to current, if filter is for hours
+                                 {
+                                    selectedFilterProperty.criteriaRangeEnd = setEndDate.setHours(23, 59, 59, 999);
+                                }
+                                else {
+                                    selectedFilterProperty.criteriaRangeEnd = setEndDate.getTime();
+                                }
+                            }
+                            else {
+                                selectedCondition.showCriteriaEnd = false;
+                                selectedCondition.disableCriteriaEnd = false;
+                            }
+                            selectedCondition.showNumberOf = setNumberOf;
+                            if (setNumberOf == true) {
+                                if (angular.isDefined(selectedCondition.dateInfo.measureTypeDisplay)) {
+                                    selectedCondition.conditionDisplay = 'Number of ' + selectedCondition.dateInfo.measureTypeDisplay + ' :';
+                                }
+                            }
+                            else {
+                                selectedCondition.conditionDisplay = "";
+                            }
+                            //if item is a calculation of an N number of measure display the measure and number input
+                            // if(angular.isUndefined(selectedCondition.dateInfo.behavior)){
+                            // 	selectedCondition.showNumberOf = true;
+                            // 	selectedCondition.conditionDisplay = 'Number of '+ selectedCondition.dateInfo.measureTypeDisplay + ' :';
+                            // }else{
+                            // }
                         }
-                        if (selectedCondition.dateInfo.type === 'range') {
+                        else if (selectedCondition.dateInfo.type === 'range') {
                             selectedCondition.showCriteriaStart = true;
                             selectedCondition.showCriteriaEnd = true;
                             selectedCondition.disableCriteriaStart = false;
                             selectedCondition.disableCriteriaEnd = false;
                             selectedCondition.showNumberOf = false;
                         }
-                        if (selectedCondition.dateInfo.type === 'exactDate') {
+                        else if (selectedCondition.dateInfo.type === 'date') {
                             selectedCondition.showCriteriaStart = true;
                             selectedCondition.showCriteriaEnd = false;
                             selectedCondition.disableCriteriaStart = false;
-                            selectedCondition.disableCriteriaEnd = true;
-                            if (!selectedCondition.dateInfo.measureType) {
-                                selectedCondition.conditionDisplay = '';
-                                selectedCondition.showCriteriaStart = true;
-                                selectedCondition.showNumberOf = false;
-                                selectedFilterProperty.criteriaRangeStart = new Date(selectedFilterProperty.criteriaRangeStart).setHours(0, 0, 0, 0);
-                                selectedFilterProperty.criteriaRangeEnd = new Date(selectedFilterProperty.criteriaRangeStart).setHours(23, 59, 59, 999);
-                            }
-                            else {
-                                selectedCondition.conditionDisplay = 'How many ' + selectedCondition.dateInfo.measureTypeDisplay + ' ago?';
-                                selectedCondition.showCriteriaStart = false;
-                                selectedCondition.showNumberOf = true;
-                            }
+                            selectedCondition.showNumberOf = false;
+                        }
+                        else if (selectedCondition.dateInfo.type === 'matchPart') {
+                            selectedCondition.showCriteriaStart = false;
+                            selectedCondition.showCriteriaEnd = false;
+                            selectedCondition.showNumberOf = true;
+                            selectedCondition.conditionDisplay = 'Enter ' + selectedCondition.dateInfo.measureTypeDisplay + ':';
                         }
                     }
                     else {
@@ -61690,69 +61768,68 @@ var SWCriteriaDate = /** @class */ (function () {
                     $log.debug('selectedConditionChanged Result');
                     $log.debug(selectedCondition);
                     $log.debug(selectedFilterProperty);
-                };
+                }; //End selectedConditionChanged
                 scope.criteriaRangeChanged = function (selectedFilterProperty) {
                     $log.debug('criteriaRangeChanged');
                     $log.debug(selectedFilterProperty);
                     var selectedCondition = selectedFilterProperty.selectedCriteriaType;
+                    var measureCount = selectedFilterProperty.criteriaNumberOf;
                     if (selectedCondition.dateInfo.type === 'calculation') {
-                        var measureCount = selectedFilterProperty.criteriaNumberOf;
                         switch (selectedCondition.dateInfo.measureType) {
-                            case 'h':
-                                var today = Date.parse('today');
-                                selectedFilterProperty.criteriaRangeEnd = today.getTime();
+                            case 'lastHour':
                                 var todayXHoursAgo = Date.parse('today').add(-(measureCount)).hours();
                                 selectedFilterProperty.criteriaRangeStart = todayXHoursAgo.getTime();
                                 break;
-                            case 'd':
-                                var lastFullDay = Date.parse('today').add(-1).days();
-                                lastFullDay.setHours(23, 59, 59, 999);
-                                selectedFilterProperty.criteriaRangeEnd = lastFullDay.getTime();
+                            case 'lastDay':
+                            case 'moreDays':
+                                //case 'ed':
                                 var lastXDaysAgo = Date.parse('today').add(-(measureCount)).days();
                                 selectedFilterProperty.criteriaRangeStart = lastXDaysAgo.getTime();
                                 break;
-                            case 'w':
-                                var lastFullWeekEnd = Date.today().last().sunday();
-                                lastFullWeekEnd.setHours(23, 59, 59, 999);
-                                selectedFilterProperty.criteriaRangeEnd = lastFullWeekEnd.getTime();
-                                var lastXWeeksAgo = Date.today().last().sunday().add(-(measureCount)).weeks();
+                            case 'lastWeek':
+                            case 'moreWeeks':
+                                var lastXWeeksAgo = Date.today().last().monday().add(-(measureCount)).weeks();
                                 selectedFilterProperty.criteriaRangeStart = lastXWeeksAgo.getTime();
                                 break;
-                            case 'm':
-                                var lastFullMonthEnd = Date.today().add(-1).months().moveToLastDayOfMonth();
-                                lastFullMonthEnd.setHours(23, 59, 59, 999);
-                                selectedFilterProperty.criteriaRangeEnd = lastFullMonthEnd.getTime();
-                                var lastXMonthsAgo = Date.today().add(-1).months().moveToLastDayOfMonth().add(-(measureCount)).months();
+                            case 'lastMonth':
+                            case 'moreMonths':
+                                //case 'em':
+                                var lastXMonthsAgo = Date.today().months().moveToFirstDayOfMonth().add(-(measureCount)).months();
                                 selectedFilterProperty.criteriaRangeStart = lastXMonthsAgo.getTime();
                                 break;
-                            case 'q':
+                            case 'lastQuarter':
                                 var currentQuarter = Math.floor((Date.parse('today').getMonth() / 3));
-                                var firstDayOfCurrentQuarter = new Date(Date.parse('today').getFullYear(), currentQuarter * 3, 1);
-                                var lastDayOfPreviousQuarter = firstDayOfCurrentQuarter.add(-1).days();
-                                lastDayOfPreviousQuarter.setHours(23, 59, 59, 999);
-                                selectedFilterProperty.criteriaRangeEnd = lastDayOfPreviousQuarter.getTime();
                                 var lastXQuartersAgo = new Date(Date.parse('today').getFullYear(), currentQuarter * 3, 1);
                                 lastXQuartersAgo.add(-(measureCount * 3)).months();
                                 selectedFilterProperty.criteriaRangeStart = lastXQuartersAgo.getTime();
                                 break;
-                            case 'y':
-                                var lastFullYearEnd = new Date(new Date().getFullYear(), 11, 31).add(-1).years();
-                                lastFullYearEnd.setHours(23, 59, 59, 999);
-                                selectedFilterProperty.criteriaRangeEnd = lastFullYearEnd.getTime();
-                                var lastXYearsAgo = new Date(new Date().getFullYear(), 11, 31).add(-(measureCount) - 1).years();
+                            case 'lastYear':
+                            case 'moreYears':
+                                //case 'ey':
+                                var lastXYearsAgo = new Date(new Date().getFullYear(), 0, 1).add(-measureCount).years();
                                 selectedFilterProperty.criteriaRangeStart = lastXYearsAgo.getTime();
                                 break;
+                            case 'exactDayFromNow':
+                                var xDaysFromNow = new Date(Date.parse('today').getTime() + (measureCount * 24 * 60 * 60 * 1000));
+                                selectedFilterProperty.criteriaRangeStart = xDaysFromNow.setHours(0, 0, 0, 0);
+                                selectedFilterProperty.criteriaRangeEnd = new Date(selectedFilterProperty.criteriaRangeStart).setHours(23, 59, 59, 999);
+                                break;
                         }
+                        // if(selectedCondition.dateInfo.measureType == "em" || selectedCondition.dateInfo.measureType == "ed" || selectedCondition.dateInfo.measureType == "ey") {
+                        // 	selectedFilterProperty.criteriaRangeEnd = selectedFilterProperty.criteriaRangeStart.setHours(23,59,59,999);
+                        // }
                     }
-                    if (selectedCondition.dateInfo.type === 'exactDate' && angular.isDefined(selectedFilterProperty.criteriaRangeStart) && angular.isDefined(selectedFilterProperty.criteriaRangeStart.setHours)) {
-                        selectedFilterProperty.criteriaRangeStart = selectedFilterProperty.criteriaRangeStart.setHours(0, 0, 0, 0);
-                        selectedFilterProperty.criteriaRangeEnd = new Date(selectedFilterProperty.criteriaRangeStart).setHours(23, 59, 59, 999);
+                    if (selectedCondition.dateInfo.type === 'date') {
+                        if (angular.isDefined(selectedFilterProperty.criteriaRangeStart)) {
+                            selectedFilterProperty.criteriaRangeStart = new Date(selectedFilterProperty.criteriaRangeStart).setHours(0, 0, 0, 0);
+                            selectedFilterProperty.criteriaRangeEnd = new Date(selectedFilterProperty.criteriaRangeStart).setHours(23, 59, 59, 999);
+                        }
                     }
                     if (selectedCondition.dateInfo.type === 'range') {
-                        if (angular.isDefined(selectedFilterProperty.criteriaRangeStart) && angular.isDefined(selectedFilterProperty.criteriaRangeStart)) {
+                        if (angular.isDefined(selectedFilterProperty.criteriaRangeStart)) {
                             selectedFilterProperty.criteriaRangeStart = new Date(selectedFilterProperty.criteriaRangeStart).setHours(0, 0, 0, 0);
                         }
-                        if (angular.isDefined(selectedFilterProperty.criteriaRangeEnd) && angular.isDefined(selectedFilterProperty.criteriaRangeStart)) {
+                        if (angular.isDefined(selectedFilterProperty.criteriaRangeEnd)) {
                             selectedFilterProperty.criteriaRangeEnd = new Date(selectedFilterProperty.criteriaRangeEnd).setHours(23, 59, 59, 999);
                         }
                     }
@@ -61787,11 +61864,12 @@ var SWCriteriaDate = /** @class */ (function () {
         };
     }
     SWCriteriaDate.Factory = function () {
-        var directive = function ($log, collectionPartialsPath, hibachiPathBuilder) { return new SWCriteriaDate($log, collectionPartialsPath, hibachiPathBuilder); };
+        var directive = function ($log, collectionPartialsPath, hibachiPathBuilder, rbkeyService) { return new SWCriteriaDate($log, collectionPartialsPath, hibachiPathBuilder, rbkeyService); };
         directive.$inject = [
             '$log',
             'collectionPartialsPath',
-            'hibachiPathBuilder'
+            'hibachiPathBuilder',
+            'rbkeyService',
         ];
         return directive;
     };
@@ -63453,38 +63531,50 @@ var SWEditFilterItem = /** @class */ (function () {
                                 else {
                                     if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.dateInfo.type) && selectedFilterProperty.selectedCriteriaType.dateInfo.type === 'calculation') {
                                         var _daysBetween = daysBetween(new Date(selectedFilterProperty.criteriaRangeStart), new Date(selectedFilterProperty.criteriaRangeEnd));
-                                        filterItem.value = _daysBetween;
                                         filterItem.displayValue = selectedFilterProperty.selectedCriteriaType.display;
+                                        filterItem.measureType = selectedFilterProperty.selectedCriteriaType.dateInfo.measureType;
+                                        filterItem.measureCriteria = selectedFilterProperty.selectedCriteriaType.dateInfo.type;
                                         if (angular.isDefined(selectedFilterProperty.criteriaNumberOf)) {
                                             filterItem.criteriaNumberOf = selectedFilterProperty.criteriaNumberOf;
-                                        }
-                                    }
-                                    else if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.dateInfo.type) && selectedFilterProperty.selectedCriteriaType.dateInfo.type === 'exactDate') {
-                                        if (angular.isUndefined(selectedFilterProperty.selectedCriteriaType.dateInfo.measureType)) {
-                                            filterItem.value = selectedFilterProperty.criteriaRangeStart + '-' + selectedFilterProperty.criteriaRangeEnd;
-                                            filterItem.displayValue = $filter('date')(angular.copy(selectedFilterProperty.criteriaRangeStart), 'MM/dd/yyyy @ h:mma') + '-' + $filter('date')(angular.copy(selectedFilterProperty.criteriaRangeEnd), 'MM/dd/yyyy @ h:mma');
+                                            filterItem.value = filterItem.criteriaNumberOf;
+                                            //Update Display Value
+                                            filterItem.displayValue = filterItem.displayValue.replace("N", filterItem.criteriaNumberOf);
                                         }
                                         else {
-                                            filterItem.measureType = selectedFilterProperty.selectedCriteriaType.dateInfo.measureType;
-                                            filterItem.measureCriteria = selectedFilterProperty.selectedCriteriaType.dateInfo.type;
                                             filterItem.criteriaNumberOf = "0";
-                                            if (angular.isDefined(selectedFilterProperty.criteriaNumberOf)) {
-                                                filterItem.criteriaNumberOf = selectedFilterProperty.criteriaNumberOf;
-                                            }
-                                            filterItem.value = filterItem.criteriaNumberOf;
-                                            filterItem.displayValue = filterItem.criteriaNumberOf;
+                                            filterItem.value = _daysBetween;
+                                        }
+                                    }
+                                    else if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.dateInfo.type) && selectedFilterProperty.selectedCriteriaType.dateInfo.type === 'matchPart') {
+                                        filterItem.measureType = selectedFilterProperty.selectedCriteriaType.dateInfo.measureType;
+                                        filterItem.measureCriteria = selectedFilterProperty.selectedCriteriaType.dateInfo.type;
+                                        if (angular.isDefined(selectedFilterProperty.criteriaNumberOf)) {
+                                            filterItem.value = selectedFilterProperty.criteriaNumberOf;
+                                            filterItem.displayValue = '';
                                             switch (filterItem.measureType) {
                                                 case 'd':
-                                                    filterItem.displayValue += ' Day';
+                                                    filterItem.displayValue += 'Day ';
                                                     break;
                                                 case 'm':
-                                                    filterItem.displayValue += ' Month';
+                                                    filterItem.displayValue += 'Month ';
                                                     break;
                                                 case 'y':
-                                                    filterItem.displayValue += ' Year';
+                                                    filterItem.displayValue += 'Year ';
+                                                    break;
+                                                case 'lastWeek':
+                                                    filterItem.displayValue = ' Last Week';
+                                                    break;
+                                                case 'lastMonth':
+                                                    filterItem.displayValue = ' Last Month';
+                                                    break;
+                                                case 'lastQuarter':
+                                                    filterItem.displayValue = ' Last Quarter';
+                                                    break;
+                                                case 'lastYear':
+                                                    filterItem.displayValue = ' Last Year';
                                                     break;
                                             }
-                                            filterItem.displayValue += ((filterItem.criteriaNumberOf > 1) ? 's' : '') + ' Ago';
+                                            filterItem.displayValue += filterItem.value;
                                         }
                                     }
                                     else {
@@ -66792,6 +66882,7 @@ var SWExpandableRecordController = /** @class */ (function () {
             angular.forEach(_this.collectionConfig.joins, function (join) {
                 _this.childCollectionConfig.addJoin(join);
             });
+            _this.childCollectionConfig.orderBy = _this.collectionConfig.orderBy;
             _this.childCollectionConfig.groupBys = _this.collectionConfig.groupBys;
         };
         this.getEntity = function () {
@@ -66806,7 +66897,7 @@ var SWExpandableRecordController = /** @class */ (function () {
                         pageRecord.depth++;
                         //push the children into the listing display
                         _this.children.push(pageRecord);
-                        _this.records.splice(_this.recordIndex + 1, 0, pageRecord);
+                        _this.records.push(pageRecord);
                     });
                 }
                 _this.childrenLoaded = true;
