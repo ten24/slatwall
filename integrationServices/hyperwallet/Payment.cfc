@@ -112,16 +112,22 @@ component accessors="true" output="false" displayname="HyperWallet" implements="
 			return;
 		}
 		
+		var shortReferenceID = '';
+		if(!isNull(arguments.requestBean.getOrder())){
+			shortReferenceID = arguments.requestBean.getOrder().getShortReferenceID(true);
+		}
 		
 		var requestData = {
 			'clientTransferId' = arguments.requestBean.getTransactionID(),
 			'destinationAmount' = LSParseNumber(arguments.requestBean.getTransactionAmount()),
 			'destinationCurrency' = arguments.requestBean.getTransactionCurrencyCode(),
-			'notes': "Partial-Balance Transfer", //TODO: Add order information
+			'notes': shortReferenceID, 
 			'memo': "TransferClientId56387",//TODO: Add order information
 			'sourceToken' = arguments.requestBean.getProviderToken(),
 			'destinationToken': setting(settingName='vendorAccount', requestBean=arguments.requestBean)
 		};
+		
+	
 		// Response Data
 		var responseData = sendHttpAPIRequest(arguments.requestBean, 'transfers', requestData);
 		
@@ -326,7 +332,7 @@ component accessors="true" output="false" displayname="HyperWallet" implements="
 			username = setting(settingName='usernameLive', requestBean=arguments.requestBean);
 		}
 		
-		apiUrl &= uri;
+		apiUrl &= arguments.uri;
 		
 		if( (find("users",arguments.uri) && find('balances',arguments.uri) )
 			|| (find("accounts",arguments.uri) && find('balances',arguments.uri))
@@ -355,7 +361,7 @@ component accessors="true" output="false" displayname="HyperWallet" implements="
 		if(requestMethod != 'GET') {
 			httpRequest.addParam(type="body", value=arguments.data);
 		}
-		
+	
 		// Make HTTP request to endpoint
 		return httpRequest.send().getPrefix();
 	}
