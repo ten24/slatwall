@@ -331,7 +331,7 @@
 </div>
 </div>
 </div>
-
-<cfinclude template="_slatwall-footer.cfm" />
+</div>
 </cfoutput>
 
+<cfinclude template="inc/footer.cfm" />
