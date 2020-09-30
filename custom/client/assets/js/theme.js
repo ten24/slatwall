@@ -1035,6 +1035,7 @@
     slidesToShow: 1,
     slidesToScroll: 1,
   });
+  
   $('.featured-slider').slick({
     dots: false,
     infinite: true,
@@ -1061,6 +1062,7 @@
       }
     ]
   });
+  
   
 setTimeout(function(){
  $('.product-slider').slick({
