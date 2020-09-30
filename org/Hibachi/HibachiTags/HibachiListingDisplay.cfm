@@ -20,6 +20,7 @@
 	<cfparam name="attributes.showSimpleListingControls" type="boolean" default="true"/>
 	<cfparam name="attributes.showExport" type="boolean" default="true"/>
 	<cfparam name="attributes.showSearch" type="boolean" default="true"/>
+	<cfparam name="attributes.showAutoRefresh" type="boolean" default="true"/>
 	<cfparam name="attributes.showReport" type="boolean" default="false"/>
 	<cfparam name="attributes.reportAction" type="string" default="" />
 	<cfparam name="attributes.refreshEvent" type="string" default="" />
@@ -210,6 +211,7 @@
 				data-show-simple-listing-controls="#attributes.showSimpleListingControls#"
 				data-show-export="#attributes.showExport#"
 				data-show-search="#attributes.showSearch#"
+				data-show-auto-refresh="#attributes.showAutoRefresh#"
 				data-has-action-bar="false"
 				data-expandable="#attributes.expandable#"
 				data-using-personal-collection="#attributes.usingPersonalCollection#"
