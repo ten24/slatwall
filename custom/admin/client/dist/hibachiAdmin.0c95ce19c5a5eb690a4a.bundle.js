@@ -22883,6 +22883,10 @@ var SWFFormController = /** @class */ (function () {
             if (_this.form.$valid) {
                 _this.loading = true;
                 var formData = _this.getFormData();
+                if (_this.preFormPost && !_this.preFormPost(formData)) {
+                    _this.loading = false;
+                    return new Promise(function (reject) { return []; });
+                }
                 if (_this.closeModal && _this.modalId) {
                     $("#" + _this.modalId).modal('toggle');
                 }
@@ -22995,6 +22999,7 @@ var SWFForm = /** @class */ (function () {
             fileFlag: "@?",
             afterSubmitEventName: "@?",
             closeModal: "@?",
+            preFormPost: "<?",
             modalId: "@?",
         };
         this.controller = SWFFormController;
@@ -30054,4 +30059,4 @@ exports.OrderService = OrderService;
 /***/ })
 
 }]);
-//# sourceMappingURL=hibachiAdmin.60afff2a29233c8b7d0b.bundle.js.map
+//# sourceMappingURL=hibachiAdmin.0c95ce19c5a5eb690a4a.bundle.js.map
