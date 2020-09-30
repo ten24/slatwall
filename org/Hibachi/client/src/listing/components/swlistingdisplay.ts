@@ -114,6 +114,7 @@ class SWListingDisplayController{
     public showExport:boolean;
     public showPrintOptions:boolean; 
     public showSearch:boolean;
+    public showAutoRefresh:boolean;
     public showReport:boolean;
     public showSearchFilters = false;
     public showTopPagination:boolean;
@@ -127,6 +128,7 @@ class SWListingDisplayController{
     public tableattributes:string;
     public typeaheadDataKey:string;
     public hasSearch:boolean;
+    public hasAutoRefresh:boolean;
     public baseEntity:any;
     public baseEntityName:string;
     public baseEntityID:string;
@@ -545,6 +547,12 @@ class SWListingDisplayController{
             this.hasSearch = true;
             this.showSearch = true;
         }
+        
+        if(angular.isUndefined(this.hasAutoRefresh)){
+            this.hasAutoRefresh = true;
+            this.showAutoRefresh = true;
+        }
+        
         if(angular.isUndefined(this.showOrderBy)){
             this.showOrderBy = true;
         }
@@ -1024,6 +1032,7 @@ class SWListingDisplay implements ng.IDirective{
             showTopPagination:"<?",
             showToggleDisplayOptions:"<?",
             showSearch:"<?",
+            showAutoRefresh:"<?",
             showSearchFilters:"<?",
             showFilters:"<?",
             showSimpleListingControls:"<?",
@@ -1039,6 +1048,7 @@ class SWListingDisplay implements ng.IDirective{
             currencyCode:"@?",
             getChildCount:"<?",
             hasSearch:"<?",
+            hasAutoRefresh:"<?",
             hasActionBar:"<?",
             multiSlot:"=?",
             customListingControls:"<?",
