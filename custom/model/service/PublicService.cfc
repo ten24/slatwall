@@ -2072,6 +2072,20 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     
     public void function getOrderItemsByOrderID(required any data){
         var OrderItemsByOrderID = getOrderService().getOrderItemsHeavy({orderID: arguments.data.orderID, currentPage: arguments.data.currentPage, pageRecordsShow: arguments.data.pageRecordsShow });
+        
+        var skuService = getService('skuService');
+        var count = 1;
+        if(structKeyExists(OrderItemsByOrderID,'orderItems')){
+        	for (var getOrderItems in OrderItemsByOrderID.orderItems){
+        		var skuScope = skuService.getSkuByskuID(getOrderItems.sku_skuID);
+            	var skuAllowBackorderFlag = skuScope.getAllowBackorderFlag();
+            	var backorderedMessaging = skuScope.getbackorderedMessaging();
+            	OrderItemsByOrderID['orderItems'][count]['skuAllowBackorderFlag'] = skuAllowBackorderFlag;
+            	OrderItemsByOrderID['orderItems'][count]['backorderedMessaging'] = backorderedMessaging;
+            	count++;
+        	}
+        }
+        
         arguments.data['ajaxResponse']['OrderItemsByOrderID'] = OrderItemsByOrderID;
     }
     
