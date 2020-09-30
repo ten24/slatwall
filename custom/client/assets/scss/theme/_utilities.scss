@@ -29,6 +29,9 @@
 .bg-primary{
   background-color: $primary !important;
   color: $white;
+  h4{
+    color: $white;
+  }
   .btn{
     background-color: $white;
   }
