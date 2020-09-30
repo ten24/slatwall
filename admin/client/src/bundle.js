@@ -70864,7 +70864,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 var SWCriteriaDate = /** @class */ (function () {
-    function SWCriteriaDate($log, collectionPartialsPath, hibachiPathBuilder, rbkeyService) {
+    function SWCriteriaDate($log, collectionPartialsPath, hibachiPathBuilder) {
         return {
             restrict: 'E',
             templateUrl: hibachiPathBuilder.buildPartialsPath(collectionPartialsPath) + 'criteriadate.html',
@@ -71550,12 +71550,11 @@ var SWCriteriaDate = /** @class */ (function () {
         };
     }
     SWCriteriaDate.Factory = function () {
-        var directive = function ($log, collectionPartialsPath, hibachiPathBuilder, rbkeyService) { return new SWCriteriaDate($log, collectionPartialsPath, hibachiPathBuilder, rbkeyService); };
+        var directive = function ($log, collectionPartialsPath, hibachiPathBuilder) { return new SWCriteriaDate($log, collectionPartialsPath, hibachiPathBuilder); };
         directive.$inject = [
             '$log',
             'collectionPartialsPath',
-            'hibachiPathBuilder',
-            'rbkeyService',
+            'hibachiPathBuilder'
         ];
         return directive;
     };
