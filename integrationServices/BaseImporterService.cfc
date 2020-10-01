@@ -56,11 +56,15 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 
 	property name = "cachedEntityMappings" type="struct";
 	
-
+	
 	public any function init() {
 	    super.init(argumentCollection = arguments);
 	    this.setCachedEntityMappings( {} );
 	}
+	
+	
+	
+	/*****************                      Meta-Data                 ******************/
 	
     public any function getIntegration(){
         throw("override this function in your integrtion service to return the associated instance of integration-entity");
@@ -84,14 +88,16 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
   	public struct function createEntityCSVHeaderMetaDataRecursively( required string entityName ){
         var headers = {};
         var mapping = this.getEntityMapping( arguments.entityName );
-
-  	    mapping.properties.each( function(key, propertyMeta ){
-  	        headers[ ucFirst(key, true) ] = "VarChar"; // ~~~~TODO, need a way to either define or infer this, should work like this
-  	    });
+    
+        if(structKeyExists(mapping, 'properties') ){
+      	    mapping.properties.each( function(key, propertyMeta ){
+      	        headers[ ucFirst(key, true) ] = "VarChar"; // we can add a way to either define or infer this
+      	    });
+        }
   	    
   	    if( structKeyExists(mapping, 'relations') ){
   	        
-  	        // ~~~~TODO: ( if required) add relationship-type-check (if the property can be availabe in a csv)
+  	        // ( if required) we can add relationship-type-check to check if the property can be availabe in a csv ( only *-to-one relations )
   	        for(var related in mapping.relations ){
   	            headers.append( this.createEntityCSVHeaderMetaDataRecursively(related.entityName) );
 	        }
@@ -119,6 +125,9 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
   	    return variables[ cacheKey ];
   	}
   	
+  	
+  	
+  	/*****************              Process - Queue - Process                 ******************/
 
 	public any function pushRecordsIntoImportQueue( required string entityName, required any queryOrArrayOfStruct ){
 	    
@@ -201,7 +210,6 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    return arguments.entity;
 	}
 
-	
 	public any function processEntityImport( any entity, struct entityQueueData ){
 	    
 	    this.getHibachiScope().setImporterPopulateFlag(true);
@@ -213,23 +221,37 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    }
 	    
 	    arguments.entity.populate( arguments.entityQueueData );
-	    var entityService = this.getHibachiService().getServiceByEntityName( entityName=entityName );
 	    
 	    var entityMapping = this.getEntityMapping( entityName );
 	    
 	    // Functions to be called after populating the entity, like `updateCalculatedProperties`
 	    if( structKeyExists(entityMapping, 'postPostulateMethods') && isArray(entityMapping.postPostulateMethods) ){
 	        for( var methodName in entityMapping.postPostulateMethods ){
-	            entity.invokeMethod( methodName );
+	            arguments.entity.invokeMethod( methodName );
 	        }
 	    }
 	    
-	    // "#entityName#" needs to be unwrapped, as variables are not allowed as keys in stucts
-	    arguments.entity = entityService.invokeMethod( "save#entityName#",  { "#entityName#" : arguments.entity });
+	    
+	    var entityService = this.getHibachiService().getServiceByEntityName( entityName=entityName );
+
+	    
+	    if( !structKeyExists(entityMapping, 'validationContext') ){
+	        entityMapping['validationContext'] = 'save';
+	    }
+
+	    
+	    arguments.entity = entityService.invokeMethod( "save"&entityName,  { 
+	        "#entityName#"  : arguments.entity, // "#entityName#" needs to be unwrapped, as variables are not allowed as keys in stucts
+	        "context"       : entityMapping.validationContext
+	    });
 	    
 	    return arguments.entity;
 	}
 	
+	
+	
+	/*****************                      VALIDATE                 ******************/
+
     public struct function validateEntityData(required string entityName, required struct data, struct mapping, boolean collectErrors = false ){
         
         if( !structKeyExists(arguments, 'mapping') ){
@@ -257,66 +279,76 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    var errors = {};
 	    
 	    // validate entity properties
-	    for( var propertyName in arguments.mapping.properties ){
+	    if( structKeyExists(arguments.mapping, 'properties') ){
 	        
-	        var propertyMeta = arguments.mapping.properties[propertyName];
-	        
-	        if( structKeyExists(propertyMeta, 'validations') ){
-	            
-	            for( var constraintType in propertyMeta.validations ){
-	                
-	                //only a subset of validations is available for direct validation(non-object);
-	                var validationFunctionName = 'validate_#constraintType#_real';
-	                if( !structKeyExists(validationService, validationFunctionName) ){
-	                    throw("invalid validation constraint type : #constraintType#");
-	                }
-	                
-	                var constraintValue = propertyMeta.validations[constraintType];
-	                
-                    isValid = validationService.invokeMethod( validationFunctionName, { 
-                       propertyValue    :  data[propertyName] ?: javaCast('null', 0),
-                       constraintValue  :  constraintValue
-                    });
-	               
-                    if( !isValid ){
-                       
-                        // if we're instructed to collecth the errors.
-                        if( arguments.collectErrors ){
+    	    for( var propertyName in arguments.mapping.properties ){
+    	        
+    	        var propertyMeta = arguments.mapping.properties[propertyName];
+    	        
+    	        if( structKeyExists(propertyMeta, 'validations') ){
+    	            
+    	            for( var constraintType in propertyMeta.validations ){
+    	                var constraintValue = propertyMeta.validations[constraintType];
+    	                var validationFunctionName = 'validate_#constraintType#_value';
+    	                
+    	                if( structKeyExists(this, validationFunctionName) ){
+    	                    
+                            isValid = this.invokeMethod( validationFunctionName, { 
+                               propertyValue    :  data[propertyName] ?: javaCast('null', 0),
+                               constraintValue  :  constraintValue
+                            });
                             
-                            if( constraintType eq "dataType" ){
-                    	        var errorMessage = getHibachiScope().rbKey('validate.import.#entityName#.#propertyName#.#constraintType#.#constraintValue#');
-                    		} 
-                    		else {
-                    			var errorMessage = getHibachiScope().rbKey('validate.import.#entityName#.#propertyName#.#constraintType#');
-                    		}
-                    		
-                    		errorMessage = utilityService.replaceStringTemplate( errorMessage, {
-                    		    "className":        entityName,
-                    		    "propertyName":     propertyName,
-                    		    "constraintValue":  constraintValue 
-                    		});
-                    		
-                    		// collecting the error
-                    		if( !structKeyExists(errors, propertyName) ){
-                    		    errors[propertyName] = [];
-                    		}
-                    		
-                            ArrayAppend( errors[propertyName] ,  errorMessage );  
-                    		
-                    		//resetting the flag to continue validating;
-                            isValid = true;
-                        } 
-                        else { 
-                            break;
+    	                } else if( structKeyExists(validationService, validationFunctionName) ){
+    	                    
+                                isValid = validationService.invokeMethod( validationFunctionName, { 
+                                   propertyValue    :  data[propertyName] ?: javaCast('null', 0),
+                                   constraintValue  :  constraintValue
+                                });
+            	                    
+    	                } else ( !structKeyExists(validationService, validationFunctionName) ){
+    	                    throw("invalid validation constraint type : #constraintType#, function #validationFunctionName# does not exist");
+    	                }
+    	               
+                        if( !isValid ){
+                           
+                            // if we're instructed to collecth the errors.
+                            if( arguments.collectErrors ){
+                                
+                                if( constraintType eq "dataType" ){
+                        	        var errorMessage = getHibachiScope().rbKey('validate.import.#entityName#.#propertyName#.#constraintType#.#constraintValue#');
+                        		} 
+                        		else {
+                        			var errorMessage = getHibachiScope().rbKey('validate.import.#entityName#.#propertyName#.#constraintType#');
+                        		}
+                        		
+                        		errorMessage = utilityService.replaceStringTemplate( errorMessage, {
+                        		    "className":        entityName,
+                        		    "propertyName":     propertyName,
+                        		    "constraintValue":  constraintValue 
+                        		});
+                        		
+                        		// collecting the error
+                        		if( !structKeyExists(errors, propertyName) ){
+                        		    errors[propertyName] = [];
+                        		}
+                        		
+                                ArrayAppend( errors[propertyName] ,  errorMessage );  
+                        		
+                        		//resetting the flag to continue validating;
+                                isValid = true;
+                            } 
+                            else { 
+                                break;
+                            }
                         }
-                    }
-
-	            }
-	        }
-	        
-	        if( !isValid && !arguments.collectErrors){
-	            break;
-	        }
+    
+    	            }
+    	        }
+    	        
+    	        if( !isValid && !arguments.collectErrors){
+    	            break;
+    	        }
+    	    }
 	    }
 	    
 	    // validate related sub-entities as well
@@ -324,21 +356,21 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	        
 	        for(var related in arguments.mapping.relations ){
 	         
-	            var validation = this.validateEntityData(
-            	                data =  arguments.data,  
-            	                entityName = related.entityName, 
-            	                collectErrors = arguments.collectErrors 
-            	           );
-	            
-	            isValid = validation.isValid;
-	            
-	            if(arguments.collectErrors){
-	                errors = mergeErrors( errors, validation.errors );
-	            }
-	            
-	            if( !isValid && !arguments.collectErrors){
-    	            break;
-    	        } 
+                var validation = this.validateEntityData(
+                    data =  arguments.data,  
+                    entityName = related.entityName, 
+                    collectErrors = arguments.collectErrors 
+                );
+                
+                isValid = validation.isValid;
+                
+                if(arguments.collectErrors){
+                    errors = this.mergeErrors( errors, validation.errors );
+                }
+                
+                if( !isValid && !arguments.collectErrors){
+                    break;
+                } 
 	        }
 	    }
 	    
@@ -350,8 +382,18 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    };
 	}
 	
-	//utility
-	private struct function mergeErrors(required struct errors1, required struct errors2){
+	/**
+	 * utility function to merge 2 errro sructs
+	 * 
+	 * Error structa looks like 
+	 *  { 
+	 *      errorName1: ["error message one", "one more error message"] 
+	 *      errorName2: ["error message two"]
+	 *      ......
+	 *  }
+	 * 
+	 */
+	public struct function mergeErrors(required struct errors1, required struct errors2){
 	    
 	    for(var propertyName in arguments.errors2 ){
 	        if( !structKeyExists(arguments.errors1, propertyName) ){
@@ -365,6 +407,23 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	}
 	
 	
+	
+	/*****************         VALIDATOR-FUNCTIONS                 ******************/
+	/**
+        Conventional validate-functions `validate_constraintType` in the service, 
+        as an override to hibachi-validation-service functions
+        Ex. validate_constraintType_value(){......} 
+	*/
+	
+	
+	
+	
+	/*****************      END : VALIDATOR-FUNCTIONS                 ******************/
+	
+	
+	
+	/*****************                      TRANSFORM                 ******************/
+
     public struct function transformEntityData(required string entityName, required struct data, struct mapping ){
         
         if( !structKeyExists(arguments, 'mapping') ){
@@ -381,61 +440,82 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
     
 	public struct function transformData( required struct data, required struct mapping ){
 	    var transformedData = {};
+	    var entityName = arguments.mapping.entityName;
 	    
-	    for( var sourcePropertyName in arguments.mapping.properties ){
+	    // First level properties from mapping everything inside `mapping.properties`
+	    if( structKeyExists(arguments.mapping, 'properties') ){
+    	    for( var sourcePropertyName in arguments.mapping.properties ){
+    	        
+    	        var propertyMetaData = arguments.mapping.properties[ sourcePropertyName ];
+    	        
+    	        var propertyValue = this.getOrGeneratePropertyValue(
+    	            data               : arguments.data, 
+        	        mapping            : arguments.mapping,
+        	        propertyMetaData   : propertyMetaData,
+        	        sourcePropertyName : sourcePropertyName
+    	        );
+                        	        
+    	        if( !isNull(propertyValue) ){
+            	    transformedData[ propertyMetaData.propertyIdentifier ] = propertyValue;
+    	        }
+    	    }
+	    }
+	    
+	    // Inferd properties, importRemoteID and `primaryIDProperty`
+	    var importRemoteIDValue = this.createEntityImportRemoteID( entityName, arguments.data );
+	  	transformedData['importRemoteID'] = importRemoteIDValue;
+	  
+	  
+	    var primaryIDPropertyName = this.getHibachiService().getPrimaryIDPropertyNameByEntityName( entityName );
+	    /**
+	      * if there's no promaryIDValue in the data, 
+	      * try to infer from the database( in case if upserts ) 
+	      * otherwise set it to empty string (in case of insert)
+	      * 
+	    */
+	    if( !structKeyExists( arguments.data, primaryIDPropertyName) ){
 	        
-	        var propertyMetaData = arguments.mapping.properties[ sourcePropertyName ];
+    	    /** 
+    	     * This will execute a query to the DB like:
+    	     *  
+    	     *  Select
+    	     *      accountPhoneNumberID 
+    	     *  From 
+    	     *      swAccountPhoneNubmer 
+    	     *  Where 
+    	     *      "importRemoteID" ="3CEF96DCC9B8035D23F69E30BB19218A_544C0D3D51EFBA18DB26C48C7B69E025"
+    	     * 
+    	    */
+	        var primaryIDValue = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue(
+    	        "entityName"  : entityName,
+    	        "uniqueKey"   : 'importRemoteID',
+    	        "uniqueValue" : importRemoteIDValue
+    	    );
+
+	        arguments.data[ primaryIDPropertyName ] =  primaryIDValue ?: '';
+	    }
+	    
+	    transformedData[ primaryIDPropertyName ] = arguments.data[ primaryIDPropertyName ];
+	    
+	    
+	    // generated-properties, properties which don't have a source-property and are complete generated in slatwall, like `url-title`
+	    if( structKeyExists(arguments.mapping, 'generatedProperties') ){
 	        
-	        /**
-	         * Fallback order 
-	         * 1. generator-function
-	         * 2. generate[ProertyName ==> propertyMetaData.propertyIdentifier] public function in the service, 
-	         *    prefixed `generate` so it doesn't conflict with getters.
-	         * 3. value in the incoming data
-	         * 4. default value from the propertyMetadata
-	        */
-	        
-	        if( structKeyExists(propertyMetaData, 'generatorFunction') ){
+	        for(var propertyMetaData in arguments.mapping.generatedProperties ){
 	            
-	            transformedData[ propertyMetaData.propertyIdentifier ] = this.invokeMethod( 
-	                                        propertyMetaData.generatorFunction,  
-	                                        {
-	                                            
-	                                        }
-	                               )
-	            
-	        } else if( structKeyExists(this, 'generator'&propertyMetaData.propertyIdentifier) ){
-	            
-	            
-	        } else if(structKeyExists(data, sourcePropertyName) ){
-	            
-	            transformedData[ propertyMetaData.propertyIdentifier ] = data[ sourcePropertyName ];
-	            
-	        } else if( structKeyExists(propertyMetaData, 'defaultValue') ){
-	            
-	            transformedData[ propertyMetaData.propertyIdentifier ] = propertyMetaData.defaultValue;
+    	        var propertyValue = this.getOrGeneratePropertyValue(
+    	            data               : arguments.data, 
+        	        mapping            : arguments.mapping,
+        	        propertyMetaData   : propertyMetaData
+        	   );
+        	   
+    	        if( !isNull(propertyValue) ){
+            	    transformedData[ propertyMetaData.propertyIdentifier ] = propertyValue;
+    	        }
 	        }
 	    }
 	    
-	    arguments.data['importRemoteID'] = this.createEntityImportRemoteID( arguments.mapping.entityName, arguments.data );
-	  
-	    var primaryIDPropertyName = this.getHibachiService().getPrimaryIDPropertyNameByEntityName( arguments.mapping.entityName );
-	    if( !structKeyExists( arguments.data, primaryIDPropertyName) ){
-	        
-    	    var args = {
-    	        "entityName"  : arguments.mapping.entityName,
-    	        "uniqueKey"   : 'importRemoteID',
-    	        "uniqueValue" : arguments.data['importRemoteID']
-    	    };
-    	    
-    	    // Select accountPhoneNumberID from swAccountPhoneNubmer where "importRemoteID" ="3CEF96DCC9B8035D23F69E30BB19218A_544C0D3D51EFBA18DB26C48C7B69E025"
-    	    
-	        arguments.data[ primaryIDPropertyName ] = this.getHibachiService().getPrimaryIDValueByEntityNameAndUniqueKeyValue( argumentCollection = args ) ?: '';
-	    }
-	    
-	    transformedData['importRemoteID'] = arguments.data['importRemoteID'];
-	    transformedData[ primaryIDPropertyName ] = arguments.data[ primaryIDPropertyName ];
-	    
+	    // relations, properties which belong to some slatwall entity, like `email` is stored in AccountEmailAddress
 	    if( structKeyExists(arguments.mapping, 'relations' ) ){
 	        for(var related in arguments.mapping.relations ){
 	            transformedData[ related.propertyIdentifier ] = this.transformEntityData( related.entityName, arguments.data );
@@ -443,10 +523,61 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    }
 	    
 	    
-	    
 	    return transformedData;
 	}
 	
+    
+    /**
+     * utility function to get property value either from @data or generated using some helper functions  
+     * 
+    */ 
+    public any function getOrGeneratePropertyValue( 
+        required struct data, 
+        required struct mapping,
+        required struct propertyMetaData
+        string sourcePropertyName
+    ){
+        
+        /**
+         * Fallback order 
+         * 1. generator-function provided in the propertyMetadata
+         * 
+         * 2. conventional generator-functions `generate_[entityName]_[ProertyName]` in the service, 
+         *    where ProertyName ==> propertyMetaData.propertyIdentifier
+         *    
+         *    Ex. generate_account_activeFlag(){......}
+         * 
+         * 3. value in the incoming data
+         * 
+         * 4. default value from the propertyMetadata
+        */
+        
+        if( !structKeyExists(arguments, 'mapping')){
+            arguments[ 'mapping' ] = this.getEntityMapping( arguments.entityName );
+        }
+        
+        var entityName = arguments.mapping.entityName;
+
+        if( structKeyExists(arguments.propertyMetaData, 'generatorFunction') ){
+            
+            return this.invokeMethod( arguments.propertyMetaData.generatorFunction, arguments );
+            
+        } else if( structKeyExists(this, 'generate_'&entityName&'_'&arguments.propertyMetaData.propertyIdentifier) ){
+            
+            return this.invokeMethod( 'generate_'&entityName&'_'&arguments.propertyMetaData.propertyIdentifier, arguments );
+            
+        } else if( structKeyExists(arguments, 'sourcePropertyName') && structKeyExists(arguments.data, arguments.sourcePropertyName) ){
+            
+            return arguments.data[ arguments.sourcePropertyName ];
+            
+        } else if( structKeyExists(arguments.propertyMetaData, 'defaultValue') ){
+            
+            return arguments.propertyMetaData.defaultValue;
+        }
+	        
+    }
+    
+    
 	public string function createEntityImportRemoteID( required string entityName, required struct data, struct mapping){
 	    
 	    if( !structKeyExists(arguments, 'mapping') ){
@@ -462,7 +593,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         }
 	}
 	
-	// utility
+	// utility function to create a `importRemoteID` from mapping and input-data
 	public string function createImportRemoteIDFromDataAndMapping( required struct data, required struct mapping ){
 	    
 	    var compositeValue =  arguments.mapping.importIdentifier.keys.reduce( function(result, key){ 
@@ -472,4 +603,27 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         return compositeValue;
 	}
 	
+	
+	/*****************         GENERATOR-FUNCTIONS                 ******************/
+	/**
+	    Conventional generator-functions `generate_[entityName]_[ProertyName]` in the service, 
+        where ProertyName ==> propertyMetaData.propertyIdentifier
+        
+        Ex. generate_account_activeFlag(){......}
+	*/
+	
+	/**
+	 * Example function, is getting used to generate passwords for imported accounts 
+	*/
+	public any function generate_accountAuthentication_password( struct data, struct mapping, struct propertyMetaData ){
+	    return this.getHibachiUtilityService().generateRandomPassword(10);
+	}
+	
+	public avy function generate_Account_activeFlag( struct data, struct mapping, struct propertyMetaData ){
+	    return true;
+	}
+	
+	
+	/*****************         END : GENERATOR-FUNCTIONS                 ******************/
+
 }

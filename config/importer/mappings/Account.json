@@ -42,27 +42,19 @@
             "validations": {
                 "dataType": "boolean"
             }
-        }
-    },
-    
-    "importIdentifier": {
-        "propertyIdentifier": "importRemoteID",
-        "type": "composite",
-        "keys": [
-            "remoteAccountID"
-        ]
+        },
+        "activeFlag": {
+            "propertyIdentifier": "activeFlag",
+            "generatorFunction":  "generate_Account_activeFlag"
+        },
     },
     
     "generatedProperties": [
         {
             "propertyIdentifier": "activeFlag",
-            "generatorFunction":  "createActiveValueForAccount"
+            "generatorFunction":  "createActiveFlagValueForAccount"
         }
     ],
-    
-    "validationContext": "save";
-    
-    "postPostulateMethods": [ "getPhoneNumber", "updateCalculatedProperties" ],
     
     "relations": [
         {
@@ -77,5 +69,18 @@
             "entityName": "AccountAuthentication",
             "propertyIdentifier": "accountAuthentictions",
         }
-    ]
+    ],
+    
+    "importIdentifier": {
+        "propertyIdentifier": "importRemoteID",
+        "type": "composite",
+        "keys": [
+            "remoteAccountID"
+        ]
+    },
+    
+    "validationContext": "save",
+    
+    "postPostulateMethods": [ "updateCalculatedProperties" ]
+    
 }
