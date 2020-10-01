@@ -1,11 +1,11 @@
   <cfoutput>
       <div class="cz-sidebar rounded-lg box-shadow-lg" id="shop-sidebar">
         <div class="cz-sidebar-body" data-simplebar="init" data-simplebar-auto-hide="true">
-          <div class="simplebar-wrapper" style="margin: -30px -16px -30px -30px;">
+          <div class="simplebar-wrapper simplebar-main-wrapper">
             <div class="simplebar-mask">
-              <div class="simplebar-offset" style="right: 0px; bottom: 0px;">
-                <div class="simplebar-content-wrapper" style="height: auto; padding-right: 0px; padding-bottom: 0px; overflow: hidden;">
-                  <div class="simplebar-content" style="padding: 30px 16px 30px 30px;">
+              <div class="simplebar-offset">
+                <div class="simplebar-content-wrapper">
+                  <div class="simplebar-content simplebar-first-content" >
                     <!---- Search ---->
                     <div class="widget widget-links cz-filter mb-4">
                       <h3 class="widget-title">Filters</h3>
@@ -23,15 +23,15 @@
                           </div>
                           <div class="collapse" id="product-type" data-parent="##product-type">
                             <div class="card-body">
-                              <ul class="widget-list cz-filter-list pt-1" style="height: 12rem;" data-simplebar="init" data-simplebar-auto-hide="false">
-                                <div class="simplebar-wrapper" style="margin: -4px -16px 0px 0px;">
+                              <ul class="widget-list cz-filter-list pt-1" data-simplebar="init" data-simplebar-auto-hide="false">
+                                <div class="simplebar-wrapper simplebar-widget-wrapper">
                                   <div class="simplebar-height-auto-observer-wrapper">
                                     <div class="simplebar-height-auto-observer"></div>
                                   </div>
                                   <div class="simplebar-mask">
-                                    <div class="simplebar-offset" style="right: 0px; bottom: 0px;">
-                                      <div class="simplebar-content-wrapper" style="height: auto; padding-right: 0px; padding-bottom: 0px; overflow: hidden;">
-                                        <div class="simplebar-content" style="padding: 4px 16px 0px 0px;">
+                                    <div class="simplebar-offset">
+                                      <div class="simplebar-content-wrapper">
+                                        <div class="simplebar-content simplebar-widget-content">
                                           <li class="widget-list-item cz-filter-item"><a class="widget-list-link d-flex justify-content-between align-items-center" href="##"><span class="cz-filter-item-text">View all</span><span class="font-size-xs text-muted ml-3">1,953</span></a></li>
                                           <li class="widget-list-item cz-filter-item"><a class="widget-list-link d-flex justify-content-between align-items-center" href="##"><span class="cz-filter-item-text">Pumps &amp; High Heels</span><span class="font-size-xs text-muted ml-3">247</span></a></li>
                                           <li class="widget-list-item cz-filter-item"><a class="widget-list-link d-flex justify-content-between align-items-center" href="##"><span class="cz-filter-item-text">Ballerinas &amp; Flats</span><span class="font-size-xs text-muted ml-3">156</span></a></li>
@@ -50,13 +50,13 @@
                                       </div>
                                     </div>
                                   </div>
-                                  <div class="simplebar-placeholder" style="width: 0px; height: 0px;"></div>
+                                  <div class="simplebar-placeholder"></div>
                                 </div>
-                                <div class="simplebar-track simplebar-horizontal" style="visibility: hidden;">
-                                  <div class="simplebar-scrollbar simplebar-visible" style="transform: translate3d(0px, 0px, 0px); display: none;"></div>
+                                <div class="simplebar-track simplebar-horizontal">
+                                  <div class="simplebar-scrollbar simplebar-visible"></div>
                                 </div>
-                                <div class="simplebar-track simplebar-vertical" style="visibility: hidden;">
-                                  <div class="simplebar-scrollbar simplebar-visible" style="transform: translate3d(0px, 0px, 0px); display: none;"></div>
+                                <div class="simplebar-track simplebar-vertical">
+                                  <div class="simplebar-scrollbar simplebar-visible"></div>
                                 </div>
                               </ul>
                             </div>
@@ -76,15 +76,15 @@
                         <div class="card">
                           <div class="collapse" id="product-brand" data-parent="##shop-product-brand">
                             <div class="card-body">
-                              <ul class="widget-list cz-filter-list pt-1" style="height: 12rem;" data-simplebar="init" data-simplebar-auto-hide="false">
-                                <div class="simplebar-wrapper" style="margin: -4px -16px 0px 0px;">
+                              <ul class="widget-list cz-filter-list pt-1" data-simplebar="init" data-simplebar-auto-hide="false">
+                                <div class="simplebar-wrapper simplebar-widget-wrapper">
                                   <div class="simplebar-height-auto-observer-wrapper">
                                     <div class="simplebar-height-auto-observer"></div>
                                   </div>
                                   <div class="simplebar-mask">
-                                    <div class="simplebar-offset" style="right: 0px; bottom: 0px;">
-                                      <div class="simplebar-content-wrapper" style="height: auto; padding-right: 0px; padding-bottom: 0px; overflow: hidden;">
-                                        <div class="simplebar-content" style="padding: 4px 16px 0px 0px;">
+                                    <div class="simplebar-offset">
+                                      <div class="simplebar-content-wrapper">
+                                        <div class="simplebar-content simplebar-widget-content">
                                           <li class="widget-list-item cz-filter-item"><a class="widget-list-link d-flex justify-content-between align-items-center" href="##"><span class="cz-filter-item-text">View all</span><span class="font-size-xs text-muted ml-3">1,953</span></a></li>
                                           <li class="widget-list-item cz-filter-item"><a class="widget-list-link d-flex justify-content-between align-items-center" href="##"><span class="cz-filter-item-text">Pumps &amp; High Heels</span><span class="font-size-xs text-muted ml-3">247</span></a></li>
                                           <li class="widget-list-item cz-filter-item"><a class="widget-list-link d-flex justify-content-between align-items-center" href="##"><span class="cz-filter-item-text">Ballerinas &amp; Flats</span><span class="font-size-xs text-muted ml-3">156</span></a></li>
@@ -103,13 +103,13 @@
                                       </div>
                                     </div>
                                   </div>
-                                  <div class="simplebar-placeholder" style="width: 0px; height: 0px;"></div>
+                                  <div class="simplebar-placeholder"></div>
                                 </div>
-                                <div class="simplebar-track simplebar-horizontal" style="visibility: hidden;">
-                                  <div class="simplebar-scrollbar simplebar-visible" style="transform: translate3d(0px, 0px, 0px); display: none;"></div>
+                                <div class="simplebar-track simplebar-horizontal">
+                                  <div class="simplebar-scrollbar simplebar-visible"></div>
                                 </div>
-                                <div class="simplebar-track simplebar-vertical" style="visibility: hidden;">
-                                  <div class="simplebar-scrollbar simplebar-visible" style="transform: translate3d(0px, 0px, 0px); display: none;"></div>
+                                <div class="simplebar-track simplebar-vertical">
+                                  <div class="simplebar-scrollbar simplebar-visible"></div>
                                 </div>
                               </ul>
                             </div>
@@ -126,15 +126,15 @@
                         <div class="card">
                           <div class="collapse" id="product-style" data-parent="##product-style">
                             <div class="card-body">
-                              <ul class="widget-list cz-filter-list pt-1" style="height: 12rem;" data-simplebar="init" data-simplebar-auto-hide="false">
-                                <div class="simplebar-wrapper" style="margin: -4px -16px 0px 0px;">
+                              <ul class="widget-list cz-filter-list pt-1" data-simplebar="init" data-simplebar-auto-hide="false">
+                                <div class="simplebar-wrapper simplebar-widget-wrapper">
                                   <div class="simplebar-height-auto-observer-wrapper">
                                     <div class="simplebar-height-auto-observer"></div>
                                   </div>
                                   <div class="simplebar-mask">
-                                    <div class="simplebar-offset" style="right: 0px; bottom: 0px;">
-                                      <div class="simplebar-content-wrapper" style="height: auto; padding-right: 0px; padding-bottom: 0px; overflow: hidden;">
-                                        <div class="simplebar-content" style="padding: 4px 16px 0px 0px;">
+                                    <div class="simplebar-offset">
+                                      <div class="simplebar-content-wrapper ">
+                                        <div class="simplebar-content simplebar-widget-content">
                                           <li class="widget-list-item cz-filter-item"><a class="widget-list-link d-flex justify-content-between align-items-center" href="##"><span class="cz-filter-item-text">View all</span><span class="font-size-xs text-muted ml-3">1,953</span></a></li>
                                           <li class="widget-list-item cz-filter-item"><a class="widget-list-link d-flex justify-content-between align-items-center" href="##"><span class="cz-filter-item-text">Pumps &amp; High Heels</span><span class="font-size-xs text-muted ml-3">247</span></a></li>
                                           <li class="widget-list-item cz-filter-item"><a class="widget-list-link d-flex justify-content-between align-items-center" href="##"><span class="cz-filter-item-text">Ballerinas &amp; Flats</span><span class="font-size-xs text-muted ml-3">156</span></a></li>
@@ -153,13 +153,13 @@
                                       </div>
                                     </div>
                                   </div>
-                                  <div class="simplebar-placeholder" style="width: 0px; height: 0px;"></div>
+                                  <div class="simplebar-placeholder"></div>
                                 </div>
-                                <div class="simplebar-track simplebar-horizontal" style="visibility: hidden;">
-                                  <div class="simplebar-scrollbar simplebar-visible" style="transform: translate3d(0px, 0px, 0px); display: none;"></div>
+                                <div class="simplebar-track simplebar-horizontal">
+                                  <div class="simplebar-scrollbar simplebar-visible"></div>
                                 </div>
-                                <div class="simplebar-track simplebar-vertical" style="visibility: hidden;">
-                                  <div class="simplebar-scrollbar simplebar-visible" style="transform: translate3d(0px, 0px, 0px); display: none;"></div>
+                                <div class="simplebar-track simplebar-vertical">
+                                  <div class="simplebar-scrollbar simplebar-visible"></div>
                                 </div>
                               </ul>
                             </div>
@@ -175,15 +175,15 @@
                         <div class="card">
                           <div class="collapse" id="product-finish" data-parent="##product-finish">
                             <div class="card-body">
-                              <ul class="widget-list cz-filter-list pt-1" style="height: 12rem;" data-simplebar="init" data-simplebar-auto-hide="false">
-                                <div class="simplebar-wrapper" style="margin: -4px -16px 0px 0px;">
+                              <ul class="widget-list cz-filter-list pt-1" data-simplebar="init" data-simplebar-auto-hide="false">
+                                <div class="simplebar-wrapper simplebar-widget-wrapper">
                                   <div class="simplebar-height-auto-observer-wrapper">
                                     <div class="simplebar-height-auto-observer"></div>
                                   </div>
                                   <div class="simplebar-mask">
-                                    <div class="simplebar-offset" style="right: 0px; bottom: 0px;">
-                                      <div class="simplebar-content-wrapper" style="height: auto; padding-right: 0px; padding-bottom: 0px; overflow: hidden;">
-                                        <div class="simplebar-content" style="padding: 4px 16px 0px 0px;">
+                                    <div class="simplebar-offset">
+                                      <div class="simplebar-content-wrapper">
+                                        <div class="simplebar-content simplebar-widget-content">
                                           <li class="widget-list-item cz-filter-item"><a class="widget-list-link d-flex justify-content-between align-items-center" href="##"><span class="cz-filter-item-text">View all</span><span class="font-size-xs text-muted ml-3">1,953</span></a></li>
                                           <li class="widget-list-item cz-filter-item"><a class="widget-list-link d-flex justify-content-between align-items-center" href="##"><span class="cz-filter-item-text">Pumps &amp; High Heels</span><span class="font-size-xs text-muted ml-3">247</span></a></li>
                                           <li class="widget-list-item cz-filter-item"><a class="widget-list-link d-flex justify-content-between align-items-center" href="##"><span class="cz-filter-item-text">Ballerinas &amp; Flats</span><span class="font-size-xs text-muted ml-3">156</span></a></li>
@@ -202,13 +202,13 @@
                                       </div>
                                     </div>
                                   </div>
-                                  <div class="simplebar-placeholder" style="width: 0px; height: 0px;"></div>
+                                  <div class="simplebar-placeholder"></div>
                                 </div>
-                                <div class="simplebar-track simplebar-horizontal" style="visibility: hidden;">
-                                  <div class="simplebar-scrollbar simplebar-visible" style="transform: translate3d(0px, 0px, 0px); display: none;"></div>
+                                <div class="simplebar-track simplebar-horizontal">
+                                  <div class="simplebar-scrollbar simplebar-visible"></div>
                                 </div>
-                                <div class="simplebar-track simplebar-vertical" style="visibility: hidden;">
-                                  <div class="simplebar-scrollbar simplebar-visible" style="transform: translate3d(0px, 0px, 0px); display: none;"></div>
+                                <div class="simplebar-track simplebar-vertical">
+                                  <div class="simplebar-scrollbar simplebar-visible"></div>
                                 </div>
                               </ul>
                             </div>
