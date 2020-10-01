@@ -6,7 +6,7 @@
 </head>
   
   <!-- Body-->
-  <body class="toolbar-enabled bg-dark">
+  <body class="toolbar-enabled">
     <!-- Navbar 3 Level (Light)-->
     <header class="box-shadow-sm">
 
