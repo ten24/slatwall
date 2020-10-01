@@ -304,6 +304,9 @@ class SWListingSearchController {
     }
     
     private saveSelectedAutoRefreshConfig = ( cacheKey: string, config) => {
+        if(!this.localStorageService.hasItem('selectedAutoRefreshConfigs')){
+            this.localStorageService.setItem('selectedAutoRefreshConfigs','{}');
+        }
 	    let selectedAutoRefreshConfigs = this.localStorageService.getItem('selectedAutoRefreshConfigs') || {};
 	    selectedAutoRefreshConfigs[ cacheKey ] = angular.copy(config);
 	    this.localStorageService.setItem('selectedAutoRefreshConfigs', selectedAutoRefreshConfigs );
