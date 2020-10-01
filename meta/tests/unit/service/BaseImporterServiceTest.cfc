@@ -131,7 +131,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     private struct function getSampleAccountData(){
 	    
 	    return {
-	        userID: 123, 
+	        remoteAccountID: 123, 
 	        firstName: "Nitin",  
 	        lastName: "Yadav", 
 	        username: 'nitin.yadav', 
@@ -265,7 +265,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         var header = this.getService().getEntityCSVHeaderMetaData( 'Account' );
         debug( header );
         
-        $assert.isEqual("CompanyName,CountryCode,Email,FirstName,LastName,OrganizationFlag,Phone,UserID,Username", header.columns );
+        $assert.isEqual("ActiveFlag,CompanyName,CountryCode,Email,FirstName,LastName,OrganizationFlag,Phone,RemoteAccountID,Username", header.columns );
     }
 	
 	

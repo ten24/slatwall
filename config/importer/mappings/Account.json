@@ -49,23 +49,21 @@
         },
     },
     
-    "generatedProperties": [
-        {
-            "propertyIdentifier": "activeFlag",
-            "generatorFunction":  "createActiveFlagValueForAccount"
-        }
-    ],
+    "generatedProperties": [],
     
     "relations": [
         {
+            "type": "oneToOne",
             "entityName": "AccountEmailAddress",
             "propertyIdentifier": "primaryEmailAddress"
         },
         {
+            "type": "oneToOne",
             "entityName": "AccountPhoneNumber",
             "propertyIdentifier": "primaryPhoneNumber"
         },
         {
+            "type": "oneToMany",
             "entityName": "AccountAuthentication",
             "propertyIdentifier": "accountAuthentictions",
         }

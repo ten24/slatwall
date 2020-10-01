@@ -1069,10 +1069,10 @@
             }
      
     		//  Set up available lower case values. 
-    		var strLowerCaseAlpha = "abcdefghijklmnopqrstuvwxyz";
+    		var strLowerCaseAlpha = "abcdefghjkmnpqrstuvwxyz"; // o,i,l has been ignored as they can have confusing-font
     		var strUpperCaseAlpha = UCase( strLowerCaseAlpha );
     		//  Set up available numbers. 
-    		var strNumbers = "0123456789";
+    		var strNumbers = "123456789"; // 0 is ignored as it can has confusing fonts for example  o,O,0
     		//  Set up additional valid password chars. 
     		var strOtherChars = "~!@##$%^&*";
     	

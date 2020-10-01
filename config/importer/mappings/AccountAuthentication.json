@@ -14,7 +14,7 @@
             "propertyIdentifier" : "updatePasswordOnNextLoginFlag",
             "defaultValue" : true
         }
-    ]
+    ],
     
     "importIdentifier": {
         "propertyIdentifier": "importRemoteID",

@@ -77,9 +77,13 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    if( !structKeyExists( entityMappings, arguments.entityName) ){
 	        
 	        //Can be overriden to Read from Files/DB/Function whatever 
-	        var mapingJson = FileRead( this.getApplicationValue('applicationRootMappingPath') & '/config/importer/mappings/#arguments.entityName#.json');
+	        var mappingJson = FileRead( this.getApplicationValue('applicationRootMappingPath') & '/config/importer/mappings/#arguments.entityName#.json');
 	        
-	        entityMappings[ arguments.entityName ] = DeserializeJSON(mapingJson);
+	        if( isJson(mappingJson) ){
+	            entityMappings[ arguments.entityName ] = DeserializeJSON(mappingJson);
+	        } else {
+	            throw( "Mapping for #arguments.entityName#.json is not valid : \n" &mappingJson );
+	        }
 	    }
 	    
         return entityMappings[ arguments.entityName ];
@@ -305,7 +309,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
                                    constraintValue  :  constraintValue
                                 });
             	                    
-    	                } else ( !structKeyExists(validationService, validationFunctionName) ){
+    	                } else {
     	                    throw("invalid validation constraint type : #constraintType#, function #validationFunctionName# does not exist");
     	                }
     	               
@@ -517,8 +521,25 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    
 	    // relations, properties which belong to some slatwall entity, like `email` is stored in AccountEmailAddress
 	    if( structKeyExists(arguments.mapping, 'relations' ) ){
-	        for(var related in arguments.mapping.relations ){
-	            transformedData[ related.propertyIdentifier ] = this.transformEntityData( related.entityName, arguments.data );
+	        for(var relation in arguments.mapping.relations ){
+	            
+	            
+	            //TODO: ( if-needed ) properly handle scenarios for -to-Many relations
+	            // if source-property for the relation already exist in the incoming-data, than it should be an array
+	            // otherwise ic the incoming-data is 1 level struct, then there will be onle one new record in the generated-array
+	            
+	            var transformedRelationData = this.transformEntityData( relation.entityName, arguments.data );
+	            
+	            if( listFindNoCase('oneToOne,manyToOne', relation.type) ){
+	                
+	                transformedData[ relation.propertyIdentifier ] = transformedRelationData;
+	                
+	            } else if(  relation.type == 'oneToMany' ){
+	                
+	                // currently this expect only one item for [ -to-many ] array
+	                transformedRelationData = [ transformedRelationData ];
+	                transformedData[ relation.propertyIdentifier ] = transformedRelationData;
+	            }
 	        }
 	    }
 	    
@@ -619,7 +640,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    return this.getHibachiUtilityService().generateRandomPassword(10);
 	}
 	
-	public avy function generate_Account_activeFlag( struct data, struct mapping, struct propertyMetaData ){
+	public boolean function generate_Account_activeFlag( struct data, struct mapping, struct propertyMetaData ){
 	    return true;
 	}
 	
