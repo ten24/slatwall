@@ -67,67 +67,6 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 		}
 	}
 	
-	private struct function getAccountMapping(){
-	    
-	    return {
-	        
-        	"entity": "Account",
-        	
-        	"properties": {
-        	    
-        	    "userID": {
-        	        "propertyIdentifier": "remoteID",
-        	        "validations": { "required": true, "dataType": "string"}
-        	    },
-        	    "firstName": {
-        		    "propertyIdentifier" : "firstName",
-        		    "validations": { "required": true, "dataType": "string" }
-        		},
-        		"lastName": {
-        		    "propertyIdentifier" : "lastName",
-        		    "validations": { "dataType": "string" }
-        		},
-        		"username": {
-        		    "propertyIdentifier" : "username",
-        		    "validations": { "required": true, "dataType": "string" }
-        		},
-                "companyName": {
-                    "propertyIdentifier": "company",
-                    "validations": {
-                        "dataType": "string"
-                    }
-                },
-                "organizationFlag": {
-                    "propertyIdentifier": "organizationFlag",
-                    "defaultValue": false,
-                    "validations": {
-                        "dataType": "boolean"
-                    }
-                }
-        	},
-        	
-        	// uniqueue identifier, to figure-out upserts of imported data ==> md5( data.accoutRemoteID + data.phoneNumber );
-        	// it is needed for scenarios where the incoming data does not have a `remoteID` but is stored in an entity in Slatwall, like `phoneNumber`  
-        	"importIdentifier": {
-        	    "propertyIdentifier": "importRemoteID", //property on the entity, should exist in all imported entities
-                "type": "composite",  // AND, OR --> TODO
-                "keys" : [ "userID", "username" ] // to generate, we'll concate the values and then md5; all of the keys must be required
-            },
-        	
-        	// Related-Entities one-to-one, one-to-many, many-to-many, many-to-one
-        	"relations": [
-        	    {
-        	        "entityName": "AccountEmailAddress",
-        	        "proeprtyIdentifier": "primaryEmailAddress", // property on the entity
-                },
-                {
-        	        "entityName": "AccountPhoneNumber",
-        	        "proeprtyIdentifier": "primaryPhoneNumber",
-                }
-            ]
-        };
-	}
-	
     private struct function getSampleAccountData(){
 	    
 	    return {
@@ -261,7 +200,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     /**
      * @test 
     */
-    public void function getAccountCSVHeaderMetaDataTest_should_match(){
+    public void function getAccountCSVHeaderMetaData_should_match_with_given_columns(){
         var header = this.getService().getEntityCSVHeaderMetaData( 'Account' );
         debug( header );
         
@@ -274,7 +213,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	/**
 	 * @test
 	*/
-	public void function validateAccountData_should_fail(){
+	public void function validateAccountData_should_fail_for_no_data(){
 	    
 	    var validation = this.getService().validateEntityData( entityName="Account", data={}, collectErrors=false );
 	    
@@ -343,7 +282,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	/**
 	 * @test
 	*/
-	public void function validateAccountData_should_pass(){
+	public void function validateAccountData_should_pass_for_valida_data(){
 	    
 	    var sampleAccountData = getSampleAccountData();
 
@@ -379,6 +318,59 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    expect(validation.errors).toBeEmpty("the validation should pass without lastName and countryCode");
 	}
 	
+	
+    /**
+     * @test
+    */
+    public void function validateAccountData_should_throw_for_invalid_validation_constraint(){
+        var sampleAccountData = getSampleAccountData();
+        var mapping = this.getService().getEntityMapping( 'Account' );
+
+        mapping.properties.remoteAccountID.validations["invalidConstraint"] = "whaever";
+
+        $assert.throws( function() {
+            this.getService().validateEntityData(
+                entityName="Account",
+                data = sampleAccountData,
+                collectErrors = true,
+                mapping = mapping
+            )
+        });
+    }
+    
+    /**
+     * @test
+    */
+    public void function validateAccountData_should_call_overriden_validation_function(){
+        
+        var sampleAccountData = getSampleAccountData();
+        var mapping = this.getService().getEntityMapping( 'Account' );
+        mapping.properties.remoteAccountID.validations["testConstraint"] = "whaever";
+        
+        // declare a mock validation-finction on the target-service
+        variables.service['validate_testConstraint_value'] = function(any propertyValue, any constraintValue){
+            variables.service['validate_dataType_testConstraint_called'] = true;
+            return true;
+        }
+
+        this.getService().validateEntityData(
+            entityName="Account",
+            data = sampleAccountData,
+            collectErrors = true,
+            mapping = mapping
+        );
+        
+        expect( variables.service ).toHaveKey('validate_dataType_testConstraint_called');
+        expect( variables.service.validate_dataType_testConstraint_called ).toBeTrue();
+        
+        debug(variables.service.validate_dataType_testConstraint_called);
+        
+        // cleanup
+        structDelete( variables.service, 'validate_dataType_testConstraint_called');
+        structDelete( variables.service, 'validate_testConstraint_value');
+    }
+
+
 
 
 	/** ***************************.  Transform  .***************************** */
