@@ -952,11 +952,12 @@ component extends="Slatwall.model.service.OrderService" {
 				orderItem.setQuantity(quantityReceived);
 			}
 		}
+		order.setIncompleteReturnFlag(incompleteReturnFlag);
 		this.saveOrder(order);
 		return orderReturn;
 	}
 	
-	public any function processOrder_approveReturn(required any order, required struct data){
+	public any function processOrder_approveReturn(required any order, struct data={}){
 		
 	    if(!isNull(arguments.data.orderItems) &&arrayLen(arguments.data.orderItems)){
 	        for(var orderItemStruct in arguments.data.orderItems){

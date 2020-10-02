@@ -5076,6 +5076,20 @@ var SWListingDisplayController = /** @class */ (function () {
             if (angular.isUndefined(_this.showFilters)) {
                 _this.showFilters = true;
             }
+            if (angular.isUndefined(_this.actionBarActions)) {
+                _this.actionBarActions = {
+                    export: true,
+                    print: true,
+                    email: true
+                };
+            }
+            else if (typeof _this.actionBarActions == 'string') {
+                var actionBarArray = _this.actionBarActions.split(',');
+                _this.actionBarActions = {};
+                for (var i = 0; i < actionBarArray.length; i++) {
+                    _this.actionBarActions[actionBarArray[i]] = true;
+                }
+            }
             //promises to determine which set of logic will run
             _this.multipleCollectionDeffered = $q.defer();
             _this.multipleCollectionPromise = _this.multipleCollectionDeffered.promise;
@@ -5626,6 +5640,17 @@ var SWListingDisplayController = /** @class */ (function () {
         }
         return queryString;
     };
+    SWListingDisplayController.prototype.executeListAction = function (listAction) {
+        var data = {};
+        if (listAction.selectedRecords) {
+            data[this.multiselectFieldName] = this.selectionService.getSelections(this.tableID).join();
+        }
+        $('body').append('<form action="/?' + this.$hibachi.getConfigValue('action') + '=' + listAction.action + '" method="post" id="executeListAction"></form>');
+        if (listAction.selectedRecords) {
+            $('#executeListAction').append("<input type='hidden' name='" + this.multiselectFieldName + "' value='" + this.selectionService.getSelections(this.tableID).join() + "' />");
+        }
+        $('#executeListAction').submit().remove();
+    };
     return SWListingDisplayController;
 }());
 var SWListingDisplay = /** @class */ (function () {
@@ -5672,6 +5697,7 @@ var SWListingDisplay = /** @class */ (function () {
             customEndpoint: "@?",
             /*Admin Actions*/
             actions: "<?",
+            actionBarActions: "@?",
             administrativeCount: "@?",
             recordEditModal: "<?",
             recordEditEvent: "@?",
@@ -5715,6 +5741,7 @@ var SWListingDisplay = /** @class */ (function () {
             }
             ]
             */
+            listActions: '<?',
             listingColumns: '<?',
             /*Hierachy Expandable*/
             parentPropertyName: "@?",
@@ -22883,6 +22910,10 @@ var SWFFormController = /** @class */ (function () {
             if (_this.form.$valid) {
                 _this.loading = true;
                 var formData = _this.getFormData();
+                if (_this.preFormPost && !_this.preFormPost(formData)) {
+                    _this.loading = false;
+                    return new Promise(function (reject) { return []; });
+                }
                 if (_this.closeModal && _this.modalId) {
                     $("#" + _this.modalId).modal('toggle');
                 }
@@ -22995,6 +23026,7 @@ var SWFForm = /** @class */ (function () {
             fileFlag: "@?",
             afterSubmitEventName: "@?",
             closeModal: "@?",
+            preFormPost: "<?",
             modalId: "@?",
         };
         this.controller = SWFFormController;
@@ -30054,4 +30086,4 @@ exports.OrderService = OrderService;
 /***/ })
 
 }]);
-//# sourceMappingURL=hibachiAdmin.60afff2a29233c8b7d0b.bundle.js.map
+//# sourceMappingURL=hibachiAdmin.30863729b189c6d45a03.bundle.js.map

@@ -228,10 +228,12 @@ property name="sapItemCode" ormtype="string";
 	property name="vipFlag" ormtype="boolean" default="1";
 	property name="mpFlag" ormtype="boolean" default="1";
 	property name="retailFlag" ormtype="boolean" default="1";
+	property name="backorderedMessaging" ormtype="string";
 	
 	// Non-persistent properties
     property name="personalVolumeByCurrencyCode" persistent="false";
 	property name="commissionableVolumeByCurrencyCode" persistent="false";
+	property name="AllowBackorderFlag" persistent="false";
 
 
  property name="displayOnlyFlag" ormtype="boolean" hb_formatType="yesno" default="0";
@@ -2222,5 +2224,8 @@ public boolean function canBePurchased(required any account, any order){
 			} 	 
 		}    
 	}
-   //CUSTOM FUNCTIONS END
+   
+	public any function getAllowBackorderFlag(){
+		return this.setting("skuAllowBackorderFlag");
+	}//CUSTOM FUNCTIONS END
 }
