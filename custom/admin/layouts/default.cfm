@@ -194,6 +194,7 @@ Notes:
 							<hb:HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.orders_nav')#" icon="inbox icon-white" type="nav">
 								<hb:HibachiDividerHider>
 									<hb:HibachiActionCaller action="admin:entity.listorder" type="list">
+									<hb:HibachiActionCaller action="admin:entity.listreturnorder" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listordertemplate" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listcartandquote" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listwishlist" type="list">
