@@ -60,7 +60,7 @@
         </figure>
       
         <h3 class="pb-0 mb-0"><a ng-href="{{ !monatProductCard.isEnrollment ? monatProductCard.product.skuProductURL : undefined  }}">{{monatProductCard.product.productName}}</a></h3>
-        <div ngif="monatProductCard.product.backorderedMessaging != null && monatProductCard.product.backorderedMessaging != '' && monatProductCard.product.skuAllowBackorderFlag == true">
+        <div ng-if="monatProductCard.product.skuAllowBackorderFlag === '1' && monatProductCard.product.backorderedMessaging != null && monatProductCard.product.backorderedMessaging != ''">
             <h5 style="color:red;">{{monatProductCard.product.backorderedMessaging}}</h5>
         </div>
             
