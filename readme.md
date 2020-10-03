@@ -1,7 +1,7 @@
 # Slatwall eCommerce Platform
 [![Circle CI](https://circleci.com/gh/ten24/slatwall/tree/master.svg?style=svg)](https://circleci.com/gh/ten24/slatwall/tree/master) [![Analytics](https://slatwall-ga-beacon.appspot.com/UA-22767386-6/code)](https://github.com/igrigorik/ga-beacon)
 
-Slatwall is an open source eCommerce platform that runs on the JVM.  Learn more about what you can do with Slatwall Commerce by visiting: http://slatwallcommerce.com
+Slatwall is an open source eCommerce Platform that runs on the JVM.  Learn more about what you can do with Slatwall Commerce by visiting: http://slatwallcommerce.com
 
 Requirements
 ------------
@@ -16,13 +16,13 @@ Lucee 4.5.
 Documentation
 -------------
 
-Please view the project documentation, including install instructions: http://docs.slatwallcommerce.com
+Please view the Project documentation, including install instructions: http://docs.slatwallcommerce.com
 
 
 Running Repo For Development
 ----------------------------
 
-The easiest way to run this repo is via Docker & Docker-Compose.  Once you have docker installed on your machine simply create a docker-compose.yml file and place it in the root directory after cloning the repo down.  The contents of the docker-compose.yml file should look something like this:
+The easiest way to run this repo is via Docker & Docker-Compose.  Once you have docker installed on your machine simply create a docker-compose.yml file and place it in the root directory after cloning the repo down. The contents of the docker-compose.yml file should look something like this:
 
 ```
 version: '2'
@@ -50,7 +50,7 @@ services:
      MYSQL_DATABASE : Slatwall
 ```
 
-Once the file is there you should be able to simply run:
+Once the file is there you should be able to simply run :
 
 ```
 docker-compose up
