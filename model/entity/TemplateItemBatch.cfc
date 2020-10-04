@@ -25,10 +25,13 @@ component extends="Slatwall.model.entity.HibachiEntity" displayname="TemplateIte
 	}
 	
 	public any function getOrderTemplateCollection(){
-	    if(!structKeyExists(variables,'orderTemplateCollection') 
-	        && structKeyExists(variables, 'orderTemplateCollectionConfig')){
-	        var orderTemplateCollection = getService('OrderService').getOrderTemplateCollectionList();
-	        orderTemplateCollection.setCollectionConfig(getOrderTemplateCollectionConfig());
+	    if(!structKeyExists(variables,'orderTemplateCollection')){
+		    var orderTemplateCollection = getService('OrderService').getOrderTemplateCollectionList();
+	    	if(structKeyExists(variables, 'orderTemplateCollectionConfig')){
+		        orderTemplateCollection.setCollectionConfig(getOrderTemplateCollectionConfig());
+	    	}else if(structKeyExists(variables, 'removalSku')){
+	    		orderTemplateCollection.addFilter(propertyIdentifier='orderTemplateItems.sku.skuCode',value=getRemovalSku().getSkuCode(),hidden=false);
+	    	}
 	        variables.orderTemplateCollection = orderTemplateCollection;
 	    }
 	    if(structKeyExists(variables, 'orderTemplateCollection')){
