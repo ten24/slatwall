@@ -128,7 +128,6 @@ class SWListingDisplayController{
     public tableattributes:string;
     public typeaheadDataKey:string;
     public hasSearch:boolean;
-    public hasAutoRefresh:boolean;
     public baseEntity:any;
     public baseEntityName:string;
     public baseEntityID:string;
