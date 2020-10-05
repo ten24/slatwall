@@ -3044,7 +3044,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				case 'lastFullQuarter': //Last Full Quarter
 					var quarter = floor(month(now()) / 3);
 					setStartRange = CreateDate(year(now()), (quarter-1)*3 + 1, 1);
-					setEndRange = DateAdd("d", -1, DateAdd("m", 3, FirstDayOfQuarter));
+					setEndRange = DateAdd("d", -1, DateAdd("m", 3, setStartRange));
 					break;
 				case 'lastFullYear': //Last Full year
 					var firstDayOfCurrentYear = CreateDate(year(now()), 1, 1);
