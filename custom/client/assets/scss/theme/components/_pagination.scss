@@ -28,9 +28,6 @@
     position: relative;
     z-index: 5;
     cursor: default;
-    > .page-link {
-      @include box-shadow($pagination-active-box-shadow);
-    }
   }
 }
 
