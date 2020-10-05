@@ -1046,7 +1046,6 @@ class SWListingDisplay implements ng.IDirective{
             currencyCode:"@?",
             getChildCount:"<?",
             hasSearch:"<?",
-            hasAutoRefresh:"<?",
             hasActionBar:"<?",
             multiSlot:"=?",
             customListingControls:"<?",
