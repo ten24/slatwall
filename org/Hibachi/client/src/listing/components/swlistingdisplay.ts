@@ -173,7 +173,7 @@ class SWListingDisplayController{
     public $onInit = () => {
         // giving it a time-out to run this code in next digest-cycle, so everything is rendered 
         this.$timeout( () =>  this.startLoading() );
-        
+
     }
     
     public refreshListingDisplay = () => {
@@ -547,9 +547,12 @@ class SWListingDisplayController{
             this.showSearch = true;
         }
         
-        if(angular.isUndefined(this.hasAutoRefresh)){
-            this.showAutoRefresh = false;
+        this.showAutoRefresh = false;
+        
+        if(this.personalCollectionKey=='listbatch' || this.personalCollectionKey=='listentityqueue' || this.personalCollectionKey=='listentityqueue_failure' ) {
+            this.showAutoRefresh = true;   
         }
+        console.log("UK7");console.log(this.personalCollectionKey);console.log(this.showAutoRefresh);console.log("UK9");
         
         if(angular.isUndefined(this.showOrderBy)){
             this.showOrderBy = true;
