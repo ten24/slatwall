@@ -304,9 +304,7 @@ class SWListingSearchController {
     }
     
     private saveSelectedAutoRefreshConfig = ( cacheKey: string, config) => {
-        if(!this.localStorageService.hasItem('selectedAutoRefreshConfigs')){
-            this.localStorageService.setItem('selectedAutoRefreshConfigs','{}');
-        }
+this won't be needed, as we already have some login on th enext line to handle that scenario
 	    let selectedAutoRefreshConfigs = this.localStorageService.getItem('selectedAutoRefreshConfigs') || {};
 	    selectedAutoRefreshConfigs[ cacheKey ] = angular.copy(config);
 	    this.localStorageService.setItem('selectedAutoRefreshConfigs', selectedAutoRefreshConfigs );
