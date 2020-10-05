@@ -548,8 +548,7 @@ class SWListingDisplayController{
         }
         
         if(angular.isUndefined(this.hasAutoRefresh)){
-            this.hasAutoRefresh = true;
-            this.showAutoRefresh = true;
+            this.showAutoRefresh = false;
         }
         
         if(angular.isUndefined(this.showOrderBy)){
