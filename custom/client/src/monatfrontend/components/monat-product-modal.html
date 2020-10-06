@@ -18,8 +18,8 @@
 						<a ng-href="{{monatProductModal.product.skuProductURL}}">
 							{{monatProductModal.product.productName ? monatProductModal.product.productName : monatProductModal.product.skuName }}
 						</a>
-						<div ng-if="monatProductModal.product.backorderedMessaging != null && monatProductModal.product.backorderedMessaging != '' && monatProductModal.product.skuAllowBackorderFlag === '1'">
-			                <h4 style="color:red;">{{monatProductModal.product.backorderedMessaging}}</h4>
+						<div ng-if="monatProductModal.product.backOrderedMessaging != null && monatProductModal.product.backOrderedMessaging != '' && monatProductModal.product.skuAllowBackOrderFlag == '1'">
+			                <h4 style="color:red;">{{monatProductModal.product.backOrderedMessaging}}</h4>
 			            </div>
 					</h2>
 	

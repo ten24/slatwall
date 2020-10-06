@@ -6,12 +6,12 @@ component {
 	property name="vipFlag" ormtype="boolean" default="1";
 	property name="mpFlag" ormtype="boolean" default="1";
 	property name="retailFlag" ormtype="boolean" default="1";
-	property name="backorderedMessaging" ormtype="string";
+	property name="backOrderedMessaging" ormtype="string";
 	
 	// Non-persistent properties
     property name="personalVolumeByCurrencyCode" persistent="false";
 	property name="commissionableVolumeByCurrencyCode" persistent="false";
-	property name="AllowBackorderFlag" persistent="false";
+	property name="AllowBackOrderFlag" persistent="false";
 
 	public boolean function canBePurchased(required any account, any order){
 		if( !isNull(arguments.order) && !isNull(arguments.order.getAccountType()) ){
@@ -161,7 +161,7 @@ component {
 		}    
 	}
    
-	public any function getAllowBackorderFlag(){
+	public any function getAllowBackOrderFlag(){
 		return this.setting("skuAllowBackorderFlag");
 	}
 }
