@@ -93292,7 +93292,18 @@ var SWReportConfigurationBarController = /** @class */ (function () {
         this.updateCustomPeriod = function () {
             _this.startDateTime = '{ts \'' + _this.customReportStartDateTime.toString('yyyy-MM-dd HH:mm:ss') + '\'}';
             _this.endDateTime = '{ts \'' + _this.customReporEndDateTime.toString('yyyy-MM-dd HH:mm:ss') + '\'}';
-            _this.observerService.notify('swReportConfigurationBar_PeriodUpdate', { "startDateTime": _this.startDateTime, "endDateTime": _this.endDateTime, "period": 'month' });
+            var dynamicPeriod = 'hour';
+            var diff = (_this.customReporEndDateTime - _this.customReportStartDateTime) / (1000 * 3600 * 24);
+            if (diff >= 730) {
+                dynamicPeriod = "year";
+            }
+            else if (diff >= 77 && diff < 730) {
+                dynamicPeriod = "month";
+            }
+            else if (diff > 2 && diff < 77) {
+                dynamicPeriod = "day";
+            }
+            _this.observerService.notify('swReportConfigurationBar_PeriodUpdate', { "startDateTime": _this.startDateTime, "endDateTime": _this.endDateTime, "period": dynamicPeriod });
         };
         var now = new Date();
         $scope.startOfToday = '{ts \'' + new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0).toString('yyyy-MM-dd HH:mm:ss') + '\'}';
