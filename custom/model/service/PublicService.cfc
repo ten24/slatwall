@@ -2079,7 +2079,7 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
         	for (var getOrderItems in orderItemsByOrderID.orderItems){
         		var skuScope = skuService.getSkuByskuID(getOrderItems.sku_skuID);
             	var skuAllowBackOrderFlag = skuScope.getAllowBackOrderFlag();
-            	var backOrderedMessaging = skuScope.getbackOrderedMessaging();
+            	var backOrderedMessaging = skuScope.getBackOrderedMessaging();
             	orderItemsByOrderID['orderItems'][count]['skuAllowBackorderFlag'] = skuAllowBackOrderFlag;
             	orderItemsByOrderID['orderItems'][count]['backorderedMessaging'] = backOrderedMessaging;
             	count++;
