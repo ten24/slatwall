@@ -22,15 +22,18 @@
 }
 
 .bg-light{
-  background-color: $color-light;
-  color: $color-dark;
+  background-color: $gray-100;
+  color: $black;
 }
 
 .bg-primary{
   background-color: $primary !important;
-  color: $color-light;
+  color: $white;
+  h4{
+    color: $white;
+  }
   .btn{
-    background-color: $color-light;
+    background-color: $white;
   }
 }
 
