@@ -110,6 +110,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	this.secureMethods=listAppend(this.secureMethods, 'listgiftcard');
 	this.secureMethods=listAppend(this.secureMethods, 'editPermissionGroup');
 	this.secureMethods=listAppend(this.secureMethods, 'retryEntityQueueFailures');
+	this.secureMethods=listAppend(this.secureMethods, 'batchReleaseReturnOrders');
 	
 	this.secureMethods=listAppend(this.secureMethods, 'preprocessorderfulfillment_manualfulfillmentcharge');
 	this.secureMethods=listAppend(this.secureMethods, 'preprocessaccount_changepassword');
@@ -778,5 +779,19 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			getOptionService().removeDefaultImageFromOption(rc.optionID,rc.imageID);
 		}
 		genericDeleteMethod(entityName="image", rc=arguments.rc);
+	}
+	
+	public void function batchReleaseReturnOrders(required struct rc){
+		param name="arguments.rc.orderIDList";
+		
+		for(var orderID in arguments.rc.orderIDList){
+			var entityQueueArguments = {
+				'baseObject':'Order',
+				'processMethod':'processOrder_releaseCredits',
+				'baseID':orderID
+			};
+			getHibachiScope().addEntityQueueData(argumentCollection=entityQueueArguments);
+		}
+		renderOrRedirectSuccess( defaultAction="admin:entity.listreturnorder", maintainQueryString=false, rc=arguments.rc);
 	}
 }
