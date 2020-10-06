@@ -1946,7 +1946,7 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 						jQuery("#hibachi-report-table").show();
 					}
 						
-					jQuery('#hibachi-report-configure-bar').html(r.report.configureBar);		
+					//jQuery('#hibachi-report-configure-bar').html(r.report.configureBar);		
 					initUIElements('#hibachi-report');
 					removeLoadingDiv( 'hibachi-report' );
 				}

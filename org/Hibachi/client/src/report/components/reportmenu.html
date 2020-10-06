@@ -10,10 +10,10 @@
 	  <div class="tab-pane active flex" id="reports-overview">
 	  	<div>
 	  		<ul class="list-unstyled report-menu-list">
-                <li ng-repeat="persistedReport in swReportMenu.persistedReportCollections" >
+                <li ng-repeat="persistedReport in swReportMenu.persistedReportCollections.myCustomReports" >
                     <a
-                        ng-href="{{$root.hibachiScope.appConfig.baseURL}}?{{$root.hibachiScope.appConfig.action}}=entity.reportlist{{swReportMenu.collectionConfig.baseEntityName.toLowerCase()}}&collectionID={{persistedReport.collectionID}}"
-                    >{{persistedReport.collectionName}} | <span>{{swReportMenu.collectionConfig.baseEntityName}}</span></a>
+                        ng-href="{{$root.hibachiScope.appConfig.baseURL}}?{{$root.hibachiScope.appConfig.action}}=entity.reportlist{{persistedReport.collectionConfig.baseEntityName.toLowerCase()}}&collectionID={{persistedReport.collectionID}}"
+                    >{{persistedReport.collectionName}} | <span>{{persistedReport.collectionConfig.baseEntityName}}</span></a>
                 </li>
 	  		</ul>
 	  	</div>
@@ -22,10 +22,10 @@
 	  <div class="tab-pane flex" id="popular-reports">			  	
 	  	<div>
 	  		<ul class="list-unstyled report-menu-list">
-                <li ng-repeat="persistedReport in swReportMenu.persistedReportCollections" >
+                <li ng-repeat="persistedReport in swReportMenu.persistedReportCollections.popularReports" >
                     <a
-                        ng-href="{{$root.hibachiScope.appConfig.baseURL}}?{{$root.hibachiScope.appConfig.action}}=entity.reportlist{{swReportMenu.collectionConfig.baseEntityName.toLowerCase()}}&collectionID={{persistedReport.collectionID}}"
-                    >{{persistedReport.collectionName}} | <span>{{swReportMenu.collectionConfig.baseEntityName}}</span></a>
+                        ng-href="{{$root.hibachiScope.appConfig.baseURL}}?{{$root.hibachiScope.appConfig.action}}=entity.reportlist{{persistedReport.collectionConfig.baseEntityName.toLowerCase()}}&collectionID={{persistedReport.collectionID}}"
+                    >{{persistedReport.collectionName}} | <span>{{persistedReport.collectionConfig.baseEntityName}}</span></a>
                 </li>
 	  		</ul>
 	  	</div>
@@ -34,10 +34,10 @@
 	  <div class="tab-pane flex" id="all-reports">
 	  	<div>
 	  		<ul class="list-unstyled report-menu-list">
-                <li ng-repeat="persistedReport in swReportMenu.persistedReportCollections" >
+                <li ng-repeat="persistedReport in swReportMenu.persistedReportCollections.allReports" >
                     <a
-                        ng-href="{{$root.hibachiScope.appConfig.baseURL}}?{{$root.hibachiScope.appConfig.action}}=entity.reportlist{{swReportMenu.collectionConfig.baseEntityName.toLowerCase()}}&collectionID={{persistedReport.collectionID}}"
-                    >{{persistedReport.collectionName}} | <span>{{swReportMenu.collectionConfig.baseEntityName}}</span></a>
+                        ng-href="{{$root.hibachiScope.appConfig.baseURL}}?{{$root.hibachiScope.appConfig.action}}=entity.reportlist{{persistedReport.collectionConfig.baseEntityName.toLowerCase()}}&collectionID={{persistedReport.collectionID}}"
+                    >{{persistedReport.collectionName}} | <span>{{persistedReport.collectionConfig.baseEntityName}}</span></a>
                 </li>
 	  		</ul>
 	  	</div>

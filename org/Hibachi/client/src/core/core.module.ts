@@ -21,7 +21,6 @@ import {FormService} from "./services/formservice";
 import {FilterService} from "./services/filterservice";
 import {ExpandableService} from "./services/expandableservice";
 import {HibachiAuthenticationService} from "./services/hibachiauthenticationservice";
-import {DashboardService} from "./services/dashboardservice";
 
 import {MetaDataService} from "./services/metadataservice";
 import {RbKeyService} from "./services/rbkeyservice";
@@ -228,7 +227,6 @@ var coremodule = angular.module('hibachi.core',[
 .service('cartService',CartService)
 .service('hibachiValidationService',HibachiValidationService)
 .service('entityService',EntityService)
-.service('dashboardService',DashboardService)
 
 //controllers
 .controller('globalSearch',GlobalSearchController)

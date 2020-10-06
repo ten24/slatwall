@@ -64,7 +64,7 @@ var hibachi =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 892);
+/******/ 	return __webpack_require__(__webpack_require__.s = 893);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -4985,7 +4985,7 @@ exports.Observable = Observable;
 
 })));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(891)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(892)(module)))
 
 /***/ }),
 /* 2 */
@@ -5466,7 +5466,6 @@ var formservice_1 = __webpack_require__(785);
 var filterservice_1 = __webpack_require__(784);
 var expandableservice_1 = __webpack_require__(783);
 var hibachiauthenticationservice_1 = __webpack_require__(786);
-var dashboardservice_1 = __webpack_require__(780);
 var metadataservice_1 = __webpack_require__(795);
 var rbkeyservice_1 = __webpack_require__(800);
 var typeaheadservice_1 = __webpack_require__(805);
@@ -5664,7 +5663,6 @@ var coremodule = angular.module('hibachi.core', [
     .service('cartService', cartservice_1.CartService)
     .service('hibachiValidationService', hibachivalidationservice_1.HibachiValidationService)
     .service('entityService', entityservice_1.EntityService)
-    .service('dashboardService', dashboardservice_1.DashboardService)
     //controllers
     .controller('globalSearch', globalsearch_1.GlobalSearchController)
     //filters 
@@ -48325,21 +48323,21 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../typings/tsd.d.ts' />
 //services
-var workflowconditionservice_1 = __webpack_require__(890);
-var scheduleservice_1 = __webpack_require__(889);
+var workflowconditionservice_1 = __webpack_require__(891);
+var scheduleservice_1 = __webpack_require__(890);
 //directives
-var swadmincreatesuperuser_1 = __webpack_require__(877);
-var swworkflowbasic_1 = __webpack_require__(879);
-var swworkflowcondition_1 = __webpack_require__(880);
-var swworkflowconditiongroupitem_1 = __webpack_require__(881);
-var swworkflowconditiongroups_1 = __webpack_require__(882);
-var swworkflowtask_1 = __webpack_require__(883);
-var swworkflowtaskactions_1 = __webpack_require__(884);
-var swworkflowtasks_1 = __webpack_require__(885);
-var swworkflowtrigger_1 = __webpack_require__(886);
-var swworkflowtriggers_1 = __webpack_require__(888);
-var swworkflowtriggerhistory_1 = __webpack_require__(887);
-var swschedulepreview_1 = __webpack_require__(878);
+var swadmincreatesuperuser_1 = __webpack_require__(878);
+var swworkflowbasic_1 = __webpack_require__(880);
+var swworkflowcondition_1 = __webpack_require__(881);
+var swworkflowconditiongroupitem_1 = __webpack_require__(882);
+var swworkflowconditiongroups_1 = __webpack_require__(883);
+var swworkflowtask_1 = __webpack_require__(884);
+var swworkflowtaskactions_1 = __webpack_require__(885);
+var swworkflowtasks_1 = __webpack_require__(886);
+var swworkflowtrigger_1 = __webpack_require__(887);
+var swworkflowtriggers_1 = __webpack_require__(889);
+var swworkflowtriggerhistory_1 = __webpack_require__(888);
+var swschedulepreview_1 = __webpack_require__(879);
 //filters
 var workflowmodule = angular.module('hibachi.workflow', ['hibachi.collection']).config(function () {
 })
@@ -79872,63 +79870,7 @@ exports.CartService = CartService;
 
 
 /***/ }),
-/* 780 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var DashboardService = /** @class */ (function () {
-    //@ngInject
-    function DashboardService(requestService) {
-        var _this = this;
-        this.requestService = requestService;
-        this.dashboardData = {};
-        this.salesRevenueThisPeriod = 0;
-        this.orderCount = 0;
-        this.averageOrderTotal = 0;
-        this.accountCount = 0;
-        this.getReportData = function () {
-            var data = {
-                slatAction: "admin:report.default",
-                reportID: jQuery('input[name="reportID"]').val(),
-                reportName: jQuery("#hibachi-report").data("reportname"),
-                reportStartDateTime: jQuery("a.hibachi-report-date-group.active").data("start"),
-                reportEndDateTime: jQuery("a.hibachi-report-date-group.active").data("end"),
-                reportCompareStartDateTime: jQuery('input[name="reportCompareStartDateTime"]').val(),
-                reportCompareEndDateTime: jQuery('input[name="reportCompareEndDateTime"]').val(),
-                reportDateTimeGroupBy: jQuery("a.hibachi-report-date-group.active").data("groupby"),
-                reportSite: jQuery('select[name="siteSelector"').val(),
-                showReport: false
-            };
-            console.log(data);
-            var promise = _this.requestService.newPublicRequest("/", data, "post", {
-                //   "Content-Type": "application/json",
-                'Content-Type': "application/x-www-form-urlencoded",
-                'X-Hibachi-AJAX': true
-            }).promise;
-            promise.then(function (response) {
-                console.log("LOg");
-                console.log(response);
-                _this.salesRevenueThisPeriod = response.report.salesRevenueThisPeriod;
-                _this.accountCount = response.report.accountCount;
-                _this.reportDateTimeGroupBy = response.report.reportDateTimeGroupBy;
-                _this.period = response.report.period;
-                _this.orderCount = response.report.orderCount;
-                _this.configureBar = response.report.configureBar;
-                _this.chartData = response.report.chartData;
-                _this.averageOrderTotal = response.report.averageOrderTotal;
-                _this.accountCount = response.report.accountCount;
-                _this.dashboardData = response;
-            });
-        };
-    }
-    return DashboardService;
-}());
-exports.DashboardService = DashboardService;
-
-
-/***/ }),
+/* 780 */,
 /* 781 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -88094,7 +88036,7 @@ var pagination_module_1 = __webpack_require__(851);
 var form_module_1 = __webpack_require__(829);
 var report_module_1 = __webpack_require__(854);
 var validation_module_1 = __webpack_require__(872);
-var widget_module_1 = __webpack_require__(876);
+var widget_module_1 = __webpack_require__(877);
 var workflow_module_1 = __webpack_require__(305);
 //directives
 var swsaveandfinish_1 = __webpack_require__(831);
@@ -91919,13 +91861,39 @@ exports.PaginationService = PaginationService;
 /// <reference path='../../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
 var SWReportMenuController = /** @class */ (function () {
-    function SWReportMenuController($rootScope) {
+    function SWReportMenuController($rootScope, requestService, accountService) {
         var _this = this;
         this.$rootScope = $rootScope;
+        this.requestService = requestService;
+        this.accountService = accountService;
         this.$onInit = function () {
-            _this.getPersistedReports();
+            if (_this.collectionConfig) {
+                // this.getPersistedReports();
+                _this.getDashboardReports();
+            }
+            else {
+            }
+        };
+        this.getDashboardReports = function () {
+            console.log("getDashboardReports");
+            var data = {
+                slatAction: "admin:report.tomsreports",
+                accountID: _this.accountService.accountID,
+            };
+            var promise = _this.requestService.newPublicRequest("/", data, "post", {
+                //   "Content-Type": "application/json",
+                'Content-Type': "application/x-www-form-urlencoded",
+                'X-Hibachi-AJAX': true
+            }).promise;
+            promise.then(function (response) {
+                console.log("getDashboardReports");
+                console.log(response);
+                _this.persistedReportCollections = response;
+            });
         };
         this.getPersistedReports = function () {
+            console.log("collectionConfig 1");
+            console.log(_this.collectionConfig);
             var persistedReportsCollectionList = _this.collectionConfig.newCollectionConfig('Collection');
             persistedReportsCollectionList.setDisplayProperties('collectionID,collectionName,collectionConfig,collectionCode');
             persistedReportsCollectionList.addFilter('reportFlag', 1);
@@ -91934,7 +91902,6 @@ var SWReportMenuController = /** @class */ (function () {
             persistedReportsCollectionList.addFilter('accountOwner.accountID', 'NULL', 'IS', 'OR', true, true, false, 'accountOwner');
             persistedReportsCollectionList.setAllRecords(true);
             persistedReportsCollectionList.getEntity().then(function (data) {
-                console.log(data);
                 _this.persistedReportCollections = data.records;
             });
         };
@@ -93134,27 +93101,74 @@ var chart_js_1 = __webpack_require__(67);
 ///dev-ops/projects/SlatwallDevelop/org/Hibachi/client/src/widget/components/swchartwidget.ts
 var SWChartWidgetController = /** @class */ (function () {
     // @ngInject
-    function SWChartWidgetController($scope, $q, $transclude, $http, requestService, dashboardService, $rootScope) {
+    function SWChartWidgetController($filter, $scope, $q, $transclude, $http, requestService, collectionConfigService, $rootScope, observerService) {
         var _this = this;
+        this.$filter = $filter;
         this.$scope = $scope;
         this.$q = $q;
         this.$transclude = $transclude;
         this.$http = $http;
         this.requestService = requestService;
-        this.dashboardService = dashboardService;
+        this.collectionConfigService = collectionConfigService;
         this.$rootScope = $rootScope;
-        this.$onInit = function () {
+        this.observerService = observerService;
+        this.chartID = 'report-chart';
+        this.dates = [];
+        this.period = "Day";
+        this.periodIntervalKey = "createdDateTime";
+        this.metricKey = "orderTotal";
+        this.getMyChart = function () {
+            var metricCollection = _this.collectionConfigService.newCollectionConfig('Order');
+            metricCollection.setReportFlag(1);
+            metricCollection.setPeriodInterval(_this.period);
+            metricCollection.addDisplayProperty("createdDateTime", '', {
+                isHidden: true,
+                isPeriod: true
+            });
+            if (_this.siteId) {
+                metricCollection.addFilter('orderCreatedSite.siteID', _this.siteId, '=');
+            }
+            else {
+                metricCollection.addFilter('orderCreatedSite.siteID', 'NULL', 'IS');
+            }
+            metricCollection.addDisplayAggregate('calculatedTotal', 'sum', _this.metricKey);
+            metricCollection.removeFilterGroupByFilterGroupAlias('dates');
+            metricCollection.setOrderBy('createdDateTime|ASC');
+            metricCollection.addFilter('createdDateTime', _this.startDateTime, '>=', 'AND', true, true, false, 'dates');
+            metricCollection.addFilter('createdDateTime', _this.endDateTime, '<=', 'AND', true, true, false, 'dates');
+            metricCollection.setAllRecords(true);
+            metricCollection.getEntity().then(function (data) {
+                _this.dates = [];
+                _this.chartData = [];
+                if (data["records"] && data["records"].length > 0) {
+                    var metrics_1 = [];
+                    data["records"].forEach(function (element) {
+                        var value = _this.$filter('swdatereporting')(element[_this.periodIntervalKey], _this.period);
+                        _this.dates.push(value);
+                    });
+                    data["records"].forEach(function (element) {
+                        metrics_1.push({
+                            y: element["orderTotal"],
+                            x: element[_this.periodIntervalKey]
+                        });
+                    });
+                    _this.chartData = metrics_1;
+                }
+                _this.renderChart();
+            });
         };
         this.renderChart = function () {
-            console.log("report-chart");
-            var ctx = $("#report-chart");
-            console.log(_this.dashboardService.chartData);
-            var chart = new chart_js_1.Chart(ctx, {
-                type: _this.dashboardService.chartData.data.type,
+            if (_this.chart) {
+                _this.chart.destroy();
+            }
+            _this.chart = new chart_js_1.Chart(_this.chartID, {
+                type: "line",
                 data: {
+                    labels: _this.dates,
+                    spanGaps: true,
                     datasets: [{
-                            label: _this.dashboardService.chartData.series[0].label,
-                            data: _this.dashboardService.chartData.series[0].data,
+                            label: "Revenue",
+                            data: _this.chartData,
                             borderColor: [
                                 '#f38631'
                             ],
@@ -93173,15 +93187,11 @@ var SWChartWidgetController = /** @class */ (function () {
                                 }
                             }],
                         xAxes: [{
-                                type: 'time',
-                                ticks: {
-                                    source: 'data',
+                                display: true,
+                                scaleLabel: {
+                                    labelString: "Revenue by " + _this.period,
+                                    display: true,
                                 },
-                                time: {
-                                    parser: 'string',
-                                    unit: _this.dashboardService.reportDateTimeGroupBy,
-                                    stepSize: 1,
-                                }
                             }]
                     },
                     legend: {
@@ -93189,31 +93199,23 @@ var SWChartWidgetController = /** @class */ (function () {
                     }
                 }
             });
-            chart.draw();
+            _this.chart.draw();
         };
-        console.log("SWChartWidgetController");
-        $scope.chartData = {
-            labels: ["January", "February", "March", "April", "May", "June", "July"],
-            series: ['Foo', 'Baz', 'Bar'],
-            data: [
-                [65, 59, 80, 81, 56, 55, 40],
-                [28, 48, 40, 19, 86, 27, 90],
-                [42, 17, 28, 73, 50, 12, 68]
-            ]
-        };
-        $scope.$watch(function () {
-            return dashboardService.chartData;
-        }, function () {
-            console.log("Attempt check");
-            if (angular.isDefined(dashboardService.chartData)) {
-                console.log(dashboardService.chartData);
-                console.log("Attempt render");
-                _this.renderChart();
-            }
-        });
-        // 	jQuery("#hibachi-report-chart").remove();
-        // 		jQuery("#hibachi-report-chart-wrapper").hide();
-        // 		jQuery("#hibachi-report-chart-wrapper").show();
+        this.observerService.attach(function (config) {
+            _this.period = config.period;
+            _this.startDateTime = config.startDateTime;
+            _this.endDateTime = config.endDateTime;
+            _this.getMyChart();
+        }, 'swReportConfigurationBar_PeriodUpdate', 'report-chart');
+        this.observerService.attach(function (siteId) {
+            _this.siteId = siteId;
+            _this.getMyChart();
+        }, 'swReportConfigurationBar_SiteUpdate', 'report-chart');
+        var now = new Date();
+        var eodData = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59);
+        this.startDateTime = '{ts \'' + new Date(eodData).addDays(-13).toString('yyyy-MM-dd HH:mm:ss') + '\'}';
+        this.endDateTime = '{ts \'' + eodData.toString('yyyy-MM-dd HH:mm:ss') + '\'}';
+        this.getMyChart();
     }
     return SWChartWidgetController;
 }());
@@ -93227,48 +93229,16 @@ var SWChartWidget = /** @class */ (function () {
         this.bindToController = {
             name: "@?",
             reportTitle: "@?",
+            collectionConfig: "<?",
+            startDateTime: "@?",
+            endDateTime: "@?",
+            siteId: "@?",
+            chartID: "<?"
         };
         this.link = function (scope, element, attrs, transcludeFn) {
-            console.log("SWChartWidget IDirectiveLinkFn");
-            // var canvas =  <HTMLCanvasElement> element[0].children[0]
-            //     console.log(element);
-            //     console.log(canvas);
-            // var context = canvas.getContext('2d');
-            //     console.log(context);
-            //     const ctx = canvas.getContext('2d');
-            //     console.log(canvas);
-            //     var myChart = new Chart(ctx, {
-            //             type: 'bar',
-            //             data: {
-            //                 labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-            //                 datasets: [{
-            //                     label: '# of Votes',
-            //                     data: [12, 19, 3, 5, 2, 3],
-            //                     backgroundColor: [
-            //                         'rgba(255, 99, 132, 0.2)',
-            //                         'rgba(54, 162, 235, 0.2)',
-            //                         'rgba(255, 206, 86, 0.2)',
-            //                         'rgba(75, 192, 192, 0.2)',
-            //                         'rgba(153, 102, 255, 0.2)',
-            //                         'rgba(255, 159, 64, 0.2)'
-            //                     ],
-            //                     borderColor: [
-            //                         'rgba(255, 99, 132, 1)',
-            //                         'rgba(54, 162, 235, 1)',
-            //                         'rgba(255, 206, 86, 1)',
-            //                         'rgba(75, 192, 192, 1)',
-            //                         'rgba(153, 102, 255, 1)',
-            //                         'rgba(255, 159, 64, 1)'
-            //                     ],
-            //                     borderWidth: 1
-            //                 }]
-            //             }
-            //         });	
-            //                 console.log(myChart);
         };
         this.templateUrl =
             hibachiPathBuilder.buildPartialsPath(widgetPartialPath) + "chartwidget.html";
-        console.log("SWTileBarController Factory constructor ");
     }
     /**
      * Handles injecting the partials path into this class
@@ -93286,63 +93256,7 @@ exports.SWChartWidget = SWChartWidget;
 
 
 /***/ }),
-/* 874 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
-Object.defineProperty(exports, "__esModule", { value: true });
-var SWDashboardController = /** @class */ (function () {
-    // @ngInject
-    function SWDashboardController($scope, $q, $transclude, $http, requestService, dashboardService) {
-        this.$scope = $scope;
-        this.$q = $q;
-        this.$transclude = $transclude;
-        this.$http = $http;
-        this.requestService = requestService;
-        this.dashboardService = dashboardService;
-        console.log("SWDashboardController");
-        console.log(dashboardService);
-        dashboardService.getReportData();
-    }
-    return SWDashboardController;
-}());
-var SWDashboard = /** @class */ (function () {
-    function SWDashboard(widgetPartialPath, hibachiPathBuilder) {
-        this.restrict = "E";
-        this.controller = SWDashboardController;
-        this.transclude = true;
-        this.controllerAs = "swDashboard";
-        this.scope = {};
-        this.bindToController = {
-            name: "@?",
-        };
-        this.link = function (scope, element, attrs, transcludeFn) {
-            console.log("SWDashboard IDirectiveLinkFn");
-            console.log(scope);
-        };
-        this.templateUrl =
-            hibachiPathBuilder.buildPartialsPath(widgetPartialPath) + "dashboard.html";
-        console.log("SWTileBarController Factory constructor ");
-    }
-    /**
-     * Handles injecting the partials path into this class
-     */
-    SWDashboard.Factory = function () {
-        var directive = function (widgetPartialPath, hibachiPathBuilder) {
-            return new SWDashboard(widgetPartialPath, hibachiPathBuilder);
-        };
-        directive.$inject = ["widgetPartialPath", "hibachiPathBuilder"];
-        return directive;
-    };
-    return SWDashboard;
-}());
-exports.SWDashboard = SWDashboard;
-
-
-/***/ }),
+/* 874 */,
 /* 875 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -93351,17 +93265,234 @@ exports.SWDashboard = SWDashboard;
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
-var SWStatWidgetController = /** @class */ (function () {
-    function SWStatWidgetController($scope, dashboardService) {
+var SWReportConfigurationBarController = /** @class */ (function () {
+    function SWReportConfigurationBarController($scope, observerService) {
+        var _this = this;
         this.$scope = $scope;
-        this.dashboardService = dashboardService;
-        if (dashboardService.dashboardData.report) {
-            $scope.data = dashboardService.dashboardData.report.salesRevenueThisPeriod;
-        }
-        else {
-            $scope.data = 6;
-        }
-        console.log("Loaded");
+        this.observerService = observerService;
+        this.customToggle = false;
+        this.period = "day";
+        this.changeTimeRange = function (period, startTime, endTime) {
+            _this.startDateTime = startTime;
+            _this.endDateTime = endTime;
+            _this.period = period;
+            _this.observerService.notify('swReportConfigurationBar_PeriodUpdate', { "startDateTime": _this.startDateTime, "endDateTime": _this.endDateTime, "period": _this.period });
+        };
+        this.startCustomRange = function ($event) {
+            $event.preventDefault();
+            $event.stopPropagation();
+            _this.customToggle = !_this.customToggle;
+            // this.observerService.notify('swReportConfigurationBar_PeriodUpdate', {"startDateTime": this.startDateTime, "endDateTime": this.endDateTime, "period": this.period});
+        };
+        var now = new Date();
+        $scope.startOfToday = '{ts \'' + new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0).toString('yyyy-MM-dd HH:mm:ss') + '\'}';
+        $scope.eodData = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59);
+        $scope.endOfToday = '{ts \'' + $scope.eodData.toString('yyyy-MM-dd HH:mm:ss') + '\'}';
+        $scope.startOfMonth = '{ts \'' + new Date(now.getFullYear(), now.getMonth(), 1).toString('yyyy-MM-dd HH:mm:ss') + '\'}';
+        $scope.eomData = new Date(now.getFullYear(), now.getMonth() + 1, 1); //correct  this month
+        $scope.endOfMonth = '{ts \'' + $scope.eomData.toString('yyyy-MM-dd HH:mm:ss') + '\'}';
+        $scope.eohData = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), 59, 59); // correct
+        $scope.endOfHour = '{ts \'' + $scope.eohData.toString('yyyy-MM-dd HH:mm:ss') + '\'}';
+        $scope.startOfYear = '{ts \'' + new Date(now.getFullYear() - 10, 0).toString('yyyy-MM-dd HH:mm:ss') + '\'}';
+        $scope.endOfYear = '{ts \'' + new Date(now.getFullYear() + 1, now.getMonth(), 1).toString('yyyy-MM-dd HH:mm:ss') + '\'}';
+        $scope.lastTwentyFourHours = '{ts \'' + new Date($scope.eohData).addDays(-1).toString('yyyy-MM-dd HH:mm:ss') + '\'}';
+        $scope.lastTwoWeeks = '{ts \'' + new Date($scope.eodData).addDays(-13).toString('yyyy-MM-dd HH:mm:ss') + '\'}';
+        $scope.weekGrouping = '{ts \'' + new Date($scope.eodData).addWeeks(-11).toString('yyyy-MM-dd HH:mm:ss') + '\'}';
+        $scope.monthGrouping = '{ts \'' + new Date($scope.eomData).addMonths(-11).toString('yyyy-MM-dd HH:mm:ss') + '\'}';
+        $scope.$watch('swReportConfigurationBar.site', function () {
+            _this.observerService.notify('swReportConfigurationBar_SiteUpdate', _this.site.siteID);
+        });
+        this.site = $scope.swReportConfigurationBar.siteCollectionList[0];
+    }
+    return SWReportConfigurationBarController;
+}());
+var SWReportConfigurationBar = /** @class */ (function () {
+    function SWReportConfigurationBar(scopeService, widgetPartialPath, hibachiPathBuilder) {
+        this.restrict = "E";
+        this.controller = SWReportConfigurationBarController;
+        this.controllerAs = "swReportConfigurationBar";
+        this.scope = {};
+        this.bindToController = {
+            // startOfToday : "@?",
+            //         endOfToday: "@?",
+            //         startOfMonth : "@?",
+            //         endOfMonth: "@?",
+            //         endOfHour: "@?",
+            //         startOfYear : "@?",
+            //         endOfYear: "@?",
+            //         lastTwentyFourHours: "@?",
+            //         lastTwoWeeks: "@?",
+            //         weekGrouping: "@?",
+            //         monthGrouping: "@?",
+            siteCollectionList: "=?",
+            groupBy: "@?"
+        };
+        this.link = function (scope, element, attrs, transcludeFn) {
+            //  scope.swReportConfigurationBar.startCustomRange = ($event) =>{
+            //  	$event.preventDefault();
+            // $event.stopPropagation();
+            // 			console.log("Here")
+            // 			scope.swReportConfigurationBar.customToggle = !scope.swReportConfigurationBar.customToggle
+            // 	}
+        };
+        this.templateUrl = hibachiPathBuilder.buildPartialsPath(widgetPartialPath) + 'reportconfigurationbar.html';
+    }
+    /**
+        * Handles injecting the partials path into this class
+        */
+    SWReportConfigurationBar.Factory = function () {
+        var directive = function (scopeService, widgetPartialPath, hibachiPathBuilder) { return new SWReportConfigurationBar(scopeService, widgetPartialPath, hibachiPathBuilder); };
+        directive.$inject = [
+            'scopeService',
+            'widgetPartialPath',
+            'hibachiPathBuilder'
+        ];
+        return directive;
+    };
+    return SWReportConfigurationBar;
+}());
+exports.SWReportConfigurationBar = SWReportConfigurationBar;
+
+
+/***/ }),
+/* 876 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
+Object.defineProperty(exports, "__esModule", { value: true });
+var SWStatWidgetController = /** @class */ (function () {
+    function SWStatWidgetController($scope, collectionConfigService, observerService) {
+        var _this = this;
+        this.$scope = $scope;
+        this.collectionConfigService = collectionConfigService;
+        this.observerService = observerService;
+        this.metric = 0;
+        this.period = "day";
+        this.getMetrics = function () {
+            if (_this.metricCode === 'accountCount') {
+                _this.getAccountCount();
+            }
+            else if (_this.metricCode === 'orderCount') {
+                _this.getOrderCount();
+            }
+            else if (_this.metricCode === 'avgSales') {
+                _this.getAverageSalesRevenue();
+            }
+            else if (_this.metricCode === 'totalSales') {
+                _this.getSalesRevenue();
+            }
+        };
+        this.getSalesRevenue = function () {
+            var metricCollection = _this.collectionConfigService.newCollectionConfig('Order');
+            metricCollection.setReportFlag(true);
+            if (_this.siteId) {
+                metricCollection.addFilter('orderCreatedSite.siteID', _this.siteId, '=');
+            }
+            else {
+                metricCollection.addFilter('orderCreatedSite.siteID', 'NULL', 'IS');
+            }
+            metricCollection;
+            metricCollection.addFilter('orderStatusType.systemCode', 'ostNotPlaced', '!=');
+            metricCollection.addDisplayAggregate('calculatedTotal', 'sum', "orderTotal");
+            metricCollection.addFilter('createdDateTime', _this.startDateTime, '>=');
+            metricCollection.addFilter('createdDateTime', _this.endDateTime, '<=');
+            metricCollection.getEntity().then(function (data) {
+                if (data["pageRecords"] && data["pageRecords"].length > 0) {
+                    if (data["pageRecords"][0]["orderTotal"] !== " ") {
+                        _this.metric = data["pageRecords"][0]["orderTotal"];
+                    }
+                    else {
+                        _this.metric = 0;
+                    }
+                }
+            });
+        };
+        this.getOrderCount = function () {
+            var metricCollection = _this.collectionConfigService.newCollectionConfig('Order');
+            metricCollection.setReportFlag(true);
+            if (_this.siteId) {
+                metricCollection.addFilter('orderCreatedSite.siteID', _this.siteId, '=');
+            }
+            else {
+                metricCollection.addFilter('orderCreatedSite.siteID', 'NULL', 'IS');
+            }
+            metricCollection.addFilter('orderStatusType.systemCode', 'ostNotPlaced', '!=');
+            metricCollection.addDisplayAggregate('orderID', 'COUNT', "orderCount");
+            metricCollection.addFilter('createdDateTime', _this.startDateTime, '>=');
+            metricCollection.addFilter('createdDateTime', _this.endDateTime, '<=');
+            metricCollection.getEntity().then(function (data) {
+                if (data["pageRecords"] && data["pageRecords"].length > 0) {
+                    if (data["pageRecords"][0]["orderTotal"] !== " ") {
+                        _this.metric = data["pageRecords"][0]["orderCount"];
+                    }
+                    else {
+                        _this.metric = 0;
+                    }
+                }
+            });
+        };
+        this.getAverageSalesRevenue = function () {
+            var metricCollection = _this.collectionConfigService.newCollectionConfig('Order');
+            metricCollection.setReportFlag(true);
+            if (_this.siteId) {
+                metricCollection.addFilter('orderCreatedSite.siteID', _this.siteId, '=');
+            }
+            else {
+                metricCollection.addFilter('orderCreatedSite.siteID', 'NULL', 'IS');
+            }
+            metricCollection.addFilter('orderStatusType.systemCode', 'ostNotPlaced', '!=');
+            metricCollection.addDisplayAggregate('calculatedTotal', 'AVG', "averageOrderTotal");
+            metricCollection.addFilter('createdDateTime', _this.startDateTime, '>=');
+            metricCollection.addFilter('createdDateTime', _this.endDateTime, '<=');
+            metricCollection.getEntity().then(function (data) {
+                if (data["pageRecords"] && data["pageRecords"].length > 0) {
+                    if (data["pageRecords"][0]["averageOrderTotal"] !== " ") {
+                        _this.metric = data["pageRecords"][0]["averageOrderTotal"];
+                    }
+                    else {
+                        _this.metric = 0;
+                    }
+                }
+            });
+        };
+        this.getAccountCount = function () {
+            var metricCollection = _this.collectionConfigService.newCollectionConfig('Account');
+            metricCollection.setReportFlag(true);
+            if (_this.siteId) {
+                metricCollection.addFilter('accountCreatedSite.siteID', _this.siteId, '=');
+            }
+            else {
+                metricCollection.addFilter('accountCreatedSite.siteID', 'NULL', 'IS');
+            }
+            metricCollection.addDisplayAggregate('accountID', 'COUNT', "accountsTotal");
+            metricCollection.addFilter('createdDateTime', _this.startDateTime, '>=');
+            metricCollection.addFilter('createdDateTime', _this.endDateTime, '<=');
+            metricCollection.getEntity().then(function (data) {
+                if (data["pageRecords"] && data["pageRecords"].length > 0) {
+                    if (data["pageRecords"][0]["orderTotal"] !== " ") {
+                        _this.metric = data["pageRecords"][0]["accountsTotal"];
+                    }
+                    else {
+                        _this.metric = 0;
+                    }
+                }
+            });
+        };
+        this.observerService.attach(function (config) {
+            _this.period = config.period;
+            _this.startDateTime = config.startDateTime;
+            _this.endDateTime = config.endDateTime;
+            _this.getMetrics();
+        }, 'swReportConfigurationBar_PeriodUpdate', 'report-wiget');
+        this.observerService.attach(function (siteID) {
+            console.log("sidget");
+            _this.siteId = siteID;
+            _this.getMetrics();
+        }, 'swReportConfigurationBar_SiteUpdate', 'report-wiget');
+        this.getMetrics();
     }
     return SWStatWidgetController;
 }());
@@ -93376,13 +93507,17 @@ var SWStatWidget = /** @class */ (function () {
             propertyIdentifier: "@?",
             name: "@?",
             class: "@?",
+            startDateTime: "@?",
+            endDateTime: "@?",
+            siteId: "@?",
             errorClass: "@?",
             type: "@?",
             title: "@?",
-            metric: "@?",
+            metricCode: "@",
             imgSrc: "@?",
             imgAlt: "@?",
-            footerClass: "@?"
+            footerClass: "@?",
+            collectionConfig: "<?"
         };
         this.link = function (scope, element, attrs, transcludeFn) {
         };
@@ -93405,7 +93540,7 @@ exports.SWStatWidget = SWStatWidget;
 
 
 /***/ }),
-/* 876 */
+/* 877 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93416,23 +93551,23 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //modules
 var collection_module_1 = __webpack_require__(43);
 //directives
-var swstatwidget_1 = __webpack_require__(875);
-var swdashboard_1 = __webpack_require__(874);
+var swstatwidget_1 = __webpack_require__(876);
 var swchartwidget_1 = __webpack_require__(873);
+var swreportconfigurationbar_1 = __webpack_require__(875);
 var widgetmodule = angular.module('hibachi.widget', [collection_module_1.collectionmodule.name])
     .run([function () {
     }])
     //directives
     .directive('swStatWidget', swstatwidget_1.SWStatWidget.Factory())
-    .directive('swDashboard', swdashboard_1.SWDashboard.Factory())
     .directive('swChartWidget', swchartwidget_1.SWChartWidget.Factory())
+    .directive('swReportConfigurationBar', swreportconfigurationbar_1.SWReportConfigurationBar.Factory())
     //constants
     .constant('widgetPartialPath', 'widget/components/');
 exports.widgetmodule = widgetmodule;
 
 
 /***/ }),
-/* 877 */
+/* 878 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93466,7 +93601,7 @@ exports.SWAdminCreateSuperUser = SWAdminCreateSuperUser;
 
 
 /***/ }),
-/* 878 */
+/* 879 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93504,7 +93639,7 @@ exports.SWSchedulePreview = SWSchedulePreview;
 
 
 /***/ }),
-/* 879 */
+/* 880 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93538,7 +93673,7 @@ exports.SWWorkflowBasic = SWWorkflowBasic;
 
 
 /***/ }),
-/* 880 */
+/* 881 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93659,7 +93794,7 @@ exports.SWWorkflowCondition = SWWorkflowCondition;
 
 
 /***/ }),
-/* 881 */
+/* 882 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93690,7 +93825,7 @@ exports.SWWorkflowConditionGroupItem = SWWorkflowConditionGroupItem;
 
 
 /***/ }),
-/* 882 */
+/* 883 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93740,7 +93875,7 @@ exports.SWWorkflowConditionGroups = SWWorkflowConditionGroups;
 
 
 /***/ }),
-/* 883 */
+/* 884 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93787,7 +93922,7 @@ exports.SWWorkflowTask = SWWorkflowTask;
 
 
 /***/ }),
-/* 884 */
+/* 885 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -94059,7 +94194,7 @@ exports.SWWorkflowTaskActions = SWWorkflowTaskActions;
 
 
 /***/ }),
-/* 885 */
+/* 886 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -94259,7 +94394,7 @@ exports.SWWorkflowTasks = SWWorkflowTasks;
 
 
 /***/ }),
-/* 886 */
+/* 887 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -94361,7 +94496,7 @@ exports.SWWorkflowTrigger = SWWorkflowTrigger;
 
 
 /***/ }),
-/* 887 */
+/* 888 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -94406,7 +94541,7 @@ exports.SWWorkflowTriggerHistory = SWWorkflowTriggerHistory;
 
 
 /***/ }),
-/* 888 */
+/* 889 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -94695,7 +94830,7 @@ exports.SWWorkflowTriggers = SWWorkflowTriggers;
 
 
 /***/ }),
-/* 889 */
+/* 890 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -94807,7 +94942,7 @@ exports.ScheduleService = ScheduleService;
 
 
 /***/ }),
-/* 890 */
+/* 891 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -94865,7 +95000,7 @@ exports.WorkflowConditionService = WorkflowConditionService;
 
 
 /***/ }),
-/* 891 */
+/* 892 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -94893,7 +95028,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 892 */
+/* 893 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(306);

@@ -9,63 +9,114 @@ import { Chart, ChartData, Point } from 'chart.js';
 ///dev-ops/projects/SlatwallDevelop/org/Hibachi/client/typings/chart.js/index.d.ts
 ///dev-ops/projects/SlatwallDevelop/org/Hibachi/client/src/widget/components/swchartwidget.ts
 class SWChartWidgetController {
+  public collectionConfig: any;
+  private chartData;
+  private chartID = 'report-chart';
+  private chart;
+  private dates = [];
+  private siteId;
+  private period = "Day";
+  private periodIntervalKey = "createdDateTime";
+  private metricKey = "orderTotal";
+  private startDateTime ;
+  private endDateTime ;
   // @ngInject
   constructor(
+    public $filter,
     private $scope,
     private $q,
     private $transclude,
     private $http,
     private requestService,
-    private dashboardService,
-    public $rootScope:any
+    private collectionConfigService,
+    public $rootScope:any,
+    public observerService
   ) {
-    console.log("SWChartWidgetController");
-    
-$scope.chartData = {
-    labels: ["January", "February", "March", "April", "May", "June", "July"],
-    series: ['Foo', 'Baz', 'Bar'],
-    data: [
-        [65, 59, 80, 81, 56, 55, 40],
-        [28, 48, 40, 19, 86, 27, 90],
-        [42, 17, 28, 73, 50, 12, 68]
-    ]
-};
-
-$scope.$watch(()=>{
-    return dashboardService.chartData
-}, ()=>{
-    console.log("Attempt check")
-    if(angular.isDefined(dashboardService.chartData)){
-    console.log(dashboardService.chartData)
-    console.log("Attempt render")
-        this.renderChart()
-    }
-})
-
-
-    // 	jQuery("#hibachi-report-chart").remove();
-				// 		jQuery("#hibachi-report-chart-wrapper").hide();
-						
-					
-
-						
-				// 		jQuery("#hibachi-report-chart-wrapper").show();
+    	        this.observerService.attach((config)=>{
+    	          this.period = config.period
+    	                  this.startDateTime = config.startDateTime
+                this.endDateTime  =config.endDateTime
+                this.getMyChart()
+    	        },'swReportConfigurationBar_PeriodUpdate', 'report-chart');
+    	        
+		        this.observerService.attach((siteId)=>{
+    	          this.siteId = siteId
+    	          this.getMyChart()
+    	        },'swReportConfigurationBar_SiteUpdate', 'report-chart');
+    	        
+    	 const now = new Date()
+        const eodData = new Date( now.getFullYear(),  now.getMonth(), now.getDate(), 23,59,59)
+        this.startDateTime = '{ts \'' +   new Date(eodData).addDays(-13).toString('yyyy-MM-dd HH:mm:ss') + '\'}'
+        this.endDateTime  ='{ts \'' +  eodData.toString('yyyy-MM-dd HH:mm:ss') + '\'}'
+          
+  this.getMyChart()
   }
-      public $onInit=()=>{
-    }
+    public getMyChart = () => {
+
+
+				
+      var metricCollection = this.collectionConfigService.newCollectionConfig('Order');
+      metricCollection.setReportFlag(1)
+  
+      metricCollection.setPeriodInterval(this.period);
+      metricCollection.addDisplayProperty("createdDateTime", '', {
+          isHidden: true,
+          isPeriod: true
+      });
+      if(this.siteId){
+	    		metricCollection.addFilter('orderCreatedSite.siteID', this.siteId,'=');
+	    }else{
+				metricCollection.addFilter('orderCreatedSite.siteID', 'NULL','IS');
+	    }
+      metricCollection.addDisplayAggregate('calculatedTotal', 'sum', this.metricKey);
+      metricCollection.removeFilterGroupByFilterGroupAlias('dates');
+      metricCollection.setOrderBy('createdDateTime|ASC');
+      metricCollection.addFilter('createdDateTime', this.startDateTime, '>=', 'AND', true, true, false, 'dates');
+      metricCollection.addFilter('createdDateTime', this.endDateTime, '<=', 'AND', true, true, false, 'dates');
+      metricCollection.setAllRecords(true);
+  
+  
+      metricCollection.getEntity().then((data) => {
+              this.dates = []
+              this.chartData = []
+          if (data["records"] && data["records"].length > 0) {
+              let metrics = []
+
+              	data["records"].forEach(element=>{
+              		    var value = this.$filter('swdatereporting')(element[this.periodIntervalKey],this.period);
+              		    
+              		    this.dates.push(value);
+              		});
+
+              data["records"].forEach(element => {
+                  metrics.push({
+                      y: element["orderTotal"],
+                      x: element[this.periodIntervalKey]
+                  })
+              });
+  
+              this.chartData = metrics
+          }
+          this.renderChart()
+  
+      });
+  
+  }
     
     public renderChart=()=>{
-            console.log("report-chart");
+      if(this.chart){
+        this.chart.destroy()
+      }
 
-        			var ctx = $("#report-chart");
-    console.log(this.dashboardService.chartData);
-
-     							var chart = new Chart(ctx, {
-							    type: this.dashboardService.chartData.data.type,
+   							 this.chart = new Chart(this.chartID, {
+							    type: "line",
 							    data: {
+							    labels: this.dates,
+                  spanGaps:true,
+
 							        datasets: [{
-							            label: this.dashboardService.chartData.series[0].label,
-							            data: this.dashboardService.chartData.series[0].data,
+							            label: "Revenue",
+							            data: this.chartData,
 							            borderColor: [
 							                '#f38631'
 							            ],
@@ -84,15 +135,11 @@ $scope.$watch(()=>{
 							                }
 							            }],
 							            xAxes: [{
-							            	type: 'time',
-							            	ticks: {
-							            		source: 'data',
-							            	},
-							            	time: {
-							            		parser: 'string',
-							            		unit: this.dashboardService.reportDateTimeGroupBy,
-							            		stepSize: 1,
-							            	}
+							            	display: true,
+                            scaleLabel: {
+                              labelString: "Revenue by " + this.period ,
+                              display: true,
+                            },
 							            }]
 							        },
 							        legend: {
@@ -100,7 +147,8 @@ $scope.$watch(()=>{
 							        }
 							    }
 							});	
-        chart.draw();
+        this.chart.draw();
+      
     }
     
 }
@@ -115,6 +163,11 @@ class SWChartWidget implements ng.IDirective {
   public bindToController = {
     name: "@?",
     reportTitle: "@?",
+    collectionConfig:"<?",
+    startDateTime: "@?",
+    endDateTime: "@?",
+    siteId: "@?",
+    chartID:"<?"
   };
   public link: ng.IDirectiveLinkFn = (
     scope: ng.IScope,
@@ -122,42 +175,7 @@ class SWChartWidget implements ng.IDirective {
     attrs: ng.IAttributes,
     transcludeFn: ng.ITranscludeFunction
   ) => {
-    console.log("SWChartWidget IDirectiveLinkFn");
-    // var canvas =  <HTMLCanvasElement> element[0].children[0]
-    //     console.log(element);
-    //     console.log(canvas);
-    // var context = canvas.getContext('2d');
-    //     console.log(context);
-    //     const ctx = canvas.getContext('2d');
-    //     console.log(canvas);
-    //     var myChart = new Chart(ctx, {
-    //             type: 'bar',
-    //             data: {
-    //                 labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-    //                 datasets: [{
-    //                     label: '# of Votes',
-    //                     data: [12, 19, 3, 5, 2, 3],
-    //                     backgroundColor: [
-    //                         'rgba(255, 99, 132, 0.2)',
-    //                         'rgba(54, 162, 235, 0.2)',
-    //                         'rgba(255, 206, 86, 0.2)',
-    //                         'rgba(75, 192, 192, 0.2)',
-    //                         'rgba(153, 102, 255, 0.2)',
-    //                         'rgba(255, 159, 64, 0.2)'
-    //                     ],
-    //                     borderColor: [
-    //                         'rgba(255, 99, 132, 1)',
-    //                         'rgba(54, 162, 235, 1)',
-    //                         'rgba(255, 206, 86, 1)',
-    //                         'rgba(75, 192, 192, 1)',
-    //                         'rgba(153, 102, 255, 1)',
-    //                         'rgba(255, 159, 64, 1)'
-    //                     ],
-    //                     borderWidth: 1
-    //                 }]
-    //             }
-    //         });	
-    //                 console.log(myChart);
+    
 
   };
 
@@ -173,7 +191,6 @@ class SWChartWidget implements ng.IDirective {
   constructor(widgetPartialPath, hibachiPathBuilder) {
     this.templateUrl =
       hibachiPathBuilder.buildPartialsPath(widgetPartialPath) + "chartwidget.html";
-    console.log("SWTileBarController Factory constructor ");
   }
 }
 

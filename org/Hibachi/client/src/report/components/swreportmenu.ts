@@ -7,13 +7,47 @@ class SWReportMenuController{
 	public persistedReportCollections: any;
     constructor(
         public $rootScope,
-    ){}
+        private requestService,
+        private accountService
+    ){
+
+    }
 
     public $onInit = () => {
-    	this.getPersistedReports();
+    	if(this.collectionConfig){
+	    	// this.getPersistedReports();
+	    	this.getDashboardReports();
+    	}else{
+    		
+    	}
+    	
+    }
+    
+    private getDashboardReports = () => {
+    	console.log("getDashboardReports")
+	    const data = {
+	      slatAction: "admin:report.tomsreports",
+	      accountID: this.accountService.accountID,
+	    };
+	
+	    var promise = this.requestService.newPublicRequest("/", 
+	    data, "post", {
+	    //   "Content-Type": "application/json",
+	    'Content-Type':"application/x-www-form-urlencoded",
+	      'X-Hibachi-AJAX': true
+	    }).promise;
+	
+	    promise.then((response) => {
+	        console.log("getDashboardReports")
+	        console.log(response)
+	        this.persistedReportCollections = response
+		});
+    	
     }
     
     public getPersistedReports = () => {
+    	console.log("collectionConfig 1")
+    	console.log(this.collectionConfig)
         var persistedReportsCollectionList = this.collectionConfig.newCollectionConfig('Collection');
         persistedReportsCollectionList.setDisplayProperties('collectionID,collectionName,collectionConfig,collectionCode');
         persistedReportsCollectionList.addFilter('reportFlag',1);
@@ -22,8 +56,7 @@ class SWReportMenuController{
         persistedReportsCollectionList.addFilter('accountOwner.accountID','NULL','IS','OR',true,true,false,'accountOwner');
         persistedReportsCollectionList.setAllRecords(true);
         persistedReportsCollectionList.getEntity().then((data)=>{
-            console.log(data)
-            this.persistedReportCollections = data.records;
+        	this.persistedReportCollections = data.records;
         });
     }
 }

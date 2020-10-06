@@ -6,8 +6,8 @@ import {collectionmodule} from "../collection/collection.module";
 
 //directives
 import {SWStatWidget} from "./components/swstatwidget";
-import {SWDashboard} from "./components/swdashboard";
 import {SWChartWidget} from "./components/swchartwidget";
+import {SWReportConfigurationBar} from "./components/swreportconfigurationbar";
 
 
 
@@ -17,8 +17,8 @@ var widgetmodule = angular.module('hibachi.widget', [collectionmodule.name])
 
 //directives
 .directive('swStatWidget',SWStatWidget.Factory())
-.directive('swDashboard',SWDashboard.Factory())
 .directive('swChartWidget',SWChartWidget.Factory())
+.directive('swReportConfigurationBar',SWReportConfigurationBar.Factory())
 
 //constants
 .constant('widgetPartialPath','widget/components/')

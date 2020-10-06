@@ -2,7 +2,7 @@
 <div class="Mcard card-shadow">
     <div class="Mcard-body ">
        <div>
-           <h1 >{{swStatWidget.dashboardService[swStatWidget.metric]}}</h1>
+           <h1 >{{swStatWidget.metric}}</h1>
         </div>
        <div>
            <img src="{{swStatWidget.imgSrc}}" alt="{{swStatWidget.imgAlt}}">
@@ -10,7 +10,7 @@
     </div>
     <div class="Mcard-footer {{swStatWidget.footerClass}}">
         <div>
-            <p>{{swStatWidget.title}} <span class="time-period"></span></p>
+            <p>{{swStatWidget.title}} by {{swStatWidget.period}}</p>
         </div>
     </div>
 </div>
