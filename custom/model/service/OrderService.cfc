@@ -937,7 +937,27 @@ component extends="Slatwall.model.service.OrderService" {
 	    return order;
 	}
 	
-	public any function processOrder_approveReturn(required any order, required struct data){
+	public any function processOrderReturn_receive(required any orderReturn, required any processObject, struct data){
+		var orderReturn = super.processOrderReturn_receive(argumentCollection=arguments);
+		var order = orderReturn.getOrder();
+		var orderItems = order.getOrderItems();
+		var incompleteReturnFlag = false;
+		var itemsToRemove = [];
+		
+		for(var orderItem in orderItems){
+			var quantity = orderItem.getQuantity();
+			var quantityReceived = orderItem.getQuantityReceived();
+			if(quantityReceived < quantity){
+				incompleteReturnFlag = true;
+				orderItem.setQuantity(quantityReceived);
+			}
+		}
+		order.setIncompleteReturnFlag(incompleteReturnFlag);
+		this.saveOrder(order);
+		return orderReturn;
+	}
+	
+	public any function processOrder_approveReturn(required any order, struct data={}){
 		
 	    if(!isNull(arguments.data.orderItems) &&arrayLen(arguments.data.orderItems)){
 	        for(var orderItemStruct in arguments.data.orderItems){

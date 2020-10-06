@@ -220,7 +220,8 @@ property name="commissionPeriodStartDateTime" ormtype="timestamp" hb_formatType=
     property name="secondaryReturnReasonType" cfc="Type" fieldtype="many-to-one" fkcolumn="secondaryReturnReasonTypeID"; // Intended to be used by Ops accounts
      property name="monatOrderType" cfc="Type" fieldtype="many-to-one" fkcolumn="monatOrderTypeID" hb_optionsSmartListData="f:parentType.typeID=2c9280846deeca0b016deef94a090038";
     property name="dropSkuRemovedFlag" ormtype="boolean" default=0;
-
+	property name="incompleteReturnFlag" ormtype="boolean";
+	
     property name="personalVolumeSubtotal" persistent="false";
     property name="taxableAmountSubtotal" persistent="false";
     property name="commissionableVolumeSubtotal" persistent="false";
