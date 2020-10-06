@@ -64,7 +64,7 @@ var hibachi =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 890);
+/******/ 	return __webpack_require__(__webpack_require__.s = 891);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -4985,7 +4985,7 @@ exports.Observable = Observable;
 
 })));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(889)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(890)(module)))
 
 /***/ }),
 /* 2 */
@@ -48323,21 +48323,21 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../typings/tsd.d.ts' />
 //services
-var workflowconditionservice_1 = __webpack_require__(888);
-var scheduleservice_1 = __webpack_require__(887);
+var workflowconditionservice_1 = __webpack_require__(889);
+var scheduleservice_1 = __webpack_require__(888);
 //directives
-var swadmincreatesuperuser_1 = __webpack_require__(875);
-var swworkflowbasic_1 = __webpack_require__(877);
-var swworkflowcondition_1 = __webpack_require__(878);
-var swworkflowconditiongroupitem_1 = __webpack_require__(879);
-var swworkflowconditiongroups_1 = __webpack_require__(880);
-var swworkflowtask_1 = __webpack_require__(881);
-var swworkflowtaskactions_1 = __webpack_require__(882);
-var swworkflowtasks_1 = __webpack_require__(883);
-var swworkflowtrigger_1 = __webpack_require__(884);
-var swworkflowtriggers_1 = __webpack_require__(886);
-var swworkflowtriggerhistory_1 = __webpack_require__(885);
-var swschedulepreview_1 = __webpack_require__(876);
+var swadmincreatesuperuser_1 = __webpack_require__(876);
+var swworkflowbasic_1 = __webpack_require__(878);
+var swworkflowcondition_1 = __webpack_require__(879);
+var swworkflowconditiongroupitem_1 = __webpack_require__(880);
+var swworkflowconditiongroups_1 = __webpack_require__(881);
+var swworkflowtask_1 = __webpack_require__(882);
+var swworkflowtaskactions_1 = __webpack_require__(883);
+var swworkflowtasks_1 = __webpack_require__(884);
+var swworkflowtrigger_1 = __webpack_require__(885);
+var swworkflowtriggers_1 = __webpack_require__(887);
+var swworkflowtriggerhistory_1 = __webpack_require__(886);
+var swschedulepreview_1 = __webpack_require__(877);
 //filters
 var workflowmodule = angular.module('hibachi.workflow', ['hibachi.collection']).config(function () {
 })
@@ -88035,7 +88035,7 @@ var pagination_module_1 = __webpack_require__(850);
 var form_module_1 = __webpack_require__(828);
 var report_module_1 = __webpack_require__(853);
 var validation_module_1 = __webpack_require__(871);
-var widget_module_1 = __webpack_require__(874);
+var widget_module_1 = __webpack_require__(875);
 var workflow_module_1 = __webpack_require__(305);
 //directives
 var swsaveandfinish_1 = __webpack_require__(830);
@@ -91860,17 +91860,13 @@ exports.PaginationService = PaginationService;
 /// <reference path='../../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
 var SWReportMenuController = /** @class */ (function () {
-    function SWReportMenuController($rootScope, requestService, accountService, collectionConfigService) {
+    function SWReportMenuController($scope, $rootScope, requestService, accountService, collectionConfigService) {
         var _this = this;
+        this.$scope = $scope;
         this.$rootScope = $rootScope;
         this.requestService = requestService;
         this.accountService = accountService;
         this.collectionConfigService = collectionConfigService;
-        this.$onInit = function () {
-            _this.getPopularReports();
-            _this.getAllReports();
-            _this.getMyCustomReports();
-        };
         this.getPopularReports = function () {
             var popularReports = _this.collectionConfigService.newCollectionConfig('Collection');
             popularReports.setDisplayProperties('collectionID,collectionName,collectionConfig,collectionCode,reportFlag,accountOwner.accountID');
@@ -91900,8 +91896,8 @@ var SWReportMenuController = /** @class */ (function () {
             var myCustomReports = _this.collectionConfigService.newCollectionConfig('Collection');
             myCustomReports.setReportFlag(1);
             myCustomReports.setDisplayProperties('collectionID,collectionName,collectionConfig,collectionCode,reportFlag');
-            myCustomReports.addFilter('createdByAccountID', _this.$rootScope.slatwall.account.accountID, '=', 'OR', '', 'group1');
-            myCustomReports.addFilter('accountOwner.accountID', _this.$rootScope.slatwall.account.accountID, '=', 'OR', '', 'group1');
+            myCustomReports.addFilter('createdByAccountID', _this.slatwall.account.accountID, '=', 'OR', '', 'group1');
+            myCustomReports.addFilter('accountOwner.accountID', _this.slatwall.account.accountID, '=', 'OR', '', 'group1');
             myCustomReports.setAllRecords(true);
             myCustomReports.getEntity().then(function (data) {
                 data.records.forEach(function (customRecord) {
@@ -91910,6 +91906,10 @@ var SWReportMenuController = /** @class */ (function () {
                 _this.myCustomReports = data.records;
             });
         };
+        this.slatwall = $rootScope.slatwall;
+        $scope.$watch('slatwall.account.accountID', this.getMyCustomReports);
+        this.getPopularReports();
+        this.getAllReports();
     }
     return SWReportMenuController;
 }());
@@ -93268,6 +93268,117 @@ exports.SWChartWidget = SWChartWidget;
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
+var SWReportConfigurationBarController = /** @class */ (function () {
+    function SWReportConfigurationBarController($scope, observerService) {
+        var _this = this;
+        this.$scope = $scope;
+        this.observerService = observerService;
+        this.customToggle = false;
+        this.period = "day";
+        this.changeTimeRange = function (period, startTime, endTime) {
+            _this.startDateTime = startTime;
+            _this.endDateTime = endTime;
+            _this.period = period;
+            _this.customToggle = false;
+            _this.observerService.notify('swReportConfigurationBar_PeriodUpdate', { "startDateTime": _this.startDateTime, "endDateTime": _this.endDateTime, "period": _this.period });
+        };
+        this.startCustomRange = function ($event) {
+            $event.preventDefault();
+            $event.stopPropagation();
+            _this.customToggle = !_this.customToggle;
+            _this.period = "custom";
+            _this.updateCustomPeriod();
+        };
+        this.updateCustomPeriod = function () {
+            _this.startDateTime = '{ts \'' + _this.customReportStartDateTime.toString('yyyy-MM-dd HH:mm:ss') + '\'}';
+            _this.endDateTime = '{ts \'' + _this.customReporEndDateTime.toString('yyyy-MM-dd HH:mm:ss') + '\'}';
+            _this.observerService.notify('swReportConfigurationBar_PeriodUpdate', { "startDateTime": _this.startDateTime, "endDateTime": _this.endDateTime, "period": 'month' });
+        };
+        var now = new Date();
+        $scope.startOfToday = '{ts \'' + new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0).toString('yyyy-MM-dd HH:mm:ss') + '\'}';
+        $scope.eodData = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59);
+        $scope.endOfToday = '{ts \'' + $scope.eodData.toString('yyyy-MM-dd HH:mm:ss') + '\'}';
+        $scope.startOfMonth = '{ts \'' + new Date(now.getFullYear(), now.getMonth(), 1).toString('yyyy-MM-dd HH:mm:ss') + '\'}';
+        $scope.eomData = new Date(now.getFullYear(), now.getMonth() + 1, 1); //correct  this month
+        $scope.endOfMonth = '{ts \'' + $scope.eomData.toString('yyyy-MM-dd HH:mm:ss') + '\'}';
+        $scope.eohData = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), 59, 59); // correct
+        $scope.endOfHour = '{ts \'' + $scope.eohData.toString('yyyy-MM-dd HH:mm:ss') + '\'}';
+        $scope.startOfYear = '{ts \'' + new Date(now.getFullYear() - 10, 0).toString('yyyy-MM-dd HH:mm:ss') + '\'}';
+        $scope.endOfYear = '{ts \'' + new Date(now.getFullYear() + 1, now.getMonth(), 1).toString('yyyy-MM-dd HH:mm:ss') + '\'}';
+        $scope.lastTwentyFourHours = '{ts \'' + new Date($scope.eohData).addDays(-1).toString('yyyy-MM-dd HH:mm:ss') + '\'}';
+        $scope.lastTwoWeeks = '{ts \'' + new Date($scope.eodData).addDays(-13).toString('yyyy-MM-dd HH:mm:ss') + '\'}';
+        $scope.weekGrouping = '{ts \'' + new Date($scope.eodData).addWeeks(-11).toString('yyyy-MM-dd HH:mm:ss') + '\'}';
+        $scope.monthGrouping = '{ts \'' + new Date($scope.eomData).addMonths(-11).toString('yyyy-MM-dd HH:mm:ss') + '\'}';
+        $scope.$watch('swReportConfigurationBar.site', function () {
+            _this.observerService.notify('swReportConfigurationBar_SiteUpdate', _this.site.siteID);
+        });
+        this.customReportStartDateTime = new Date($scope.eomData).addMonths(-11);
+        this.customReporEndDateTime = $scope.eomData;
+        this.site = $scope.swReportConfigurationBar.siteCollectionList[0];
+    }
+    return SWReportConfigurationBarController;
+}());
+var SWReportConfigurationBar = /** @class */ (function () {
+    function SWReportConfigurationBar(scopeService, widgetPartialPath, hibachiPathBuilder) {
+        this.restrict = "E";
+        this.controller = SWReportConfigurationBarController;
+        this.controllerAs = "swReportConfigurationBar";
+        this.scope = {};
+        this.bindToController = {
+            // startOfToday : "@?",
+            //         endOfToday: "@?",
+            //         startOfMonth : "@?",
+            //         endOfMonth: "@?",
+            //         endOfHour: "@?",
+            //         startOfYear : "@?",
+            //         endOfYear: "@?",
+            //         lastTwentyFourHours: "@?",
+            //         lastTwoWeeks: "@?",
+            //         weekGrouping: "@?",
+            //         monthGrouping: "@?",
+            siteCollectionList: "=?",
+            groupBy: "@?"
+        };
+        this.link = function (scope, element, attrs, transcludeFn) {
+            scope.swReportConfigurationBar.openCalendarStart = function ($event) {
+                $event.preventDefault();
+                $event.stopPropagation();
+                scope.swReportConfigurationBar.openedCalendarStart = true;
+            };
+            scope.swReportConfigurationBar.openCalendarEnd = function ($event) {
+                $event.preventDefault();
+                $event.stopPropagation();
+                scope.swReportConfigurationBar.openedCalendarEnd = true;
+            };
+        };
+        this.templateUrl = hibachiPathBuilder.buildPartialsPath(widgetPartialPath) + 'reportconfigurationbar.html';
+    }
+    /**
+        * Handles injecting the partials path into this class
+        */
+    SWReportConfigurationBar.Factory = function () {
+        var directive = function (scopeService, widgetPartialPath, hibachiPathBuilder) { return new SWReportConfigurationBar(scopeService, widgetPartialPath, hibachiPathBuilder); };
+        directive.$inject = [
+            'scopeService',
+            'widgetPartialPath',
+            'hibachiPathBuilder'
+        ];
+        return directive;
+    };
+    return SWReportConfigurationBar;
+}());
+exports.SWReportConfigurationBar = SWReportConfigurationBar;
+
+
+/***/ }),
+/* 874 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
+Object.defineProperty(exports, "__esModule", { value: true });
 var SWStatWidgetController = /** @class */ (function () {
     function SWStatWidgetController($scope, collectionConfigService, observerService) {
         var _this = this;
@@ -93444,7 +93555,7 @@ exports.SWStatWidget = SWStatWidget;
 
 
 /***/ }),
-/* 874 */
+/* 875 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93455,9 +93566,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //modules
 var collection_module_1 = __webpack_require__(43);
 //directives
-var swstatwidget_1 = __webpack_require__(873);
+var swstatwidget_1 = __webpack_require__(874);
 var swchartwidget_1 = __webpack_require__(872);
-var swreportconfigurationbar_1 = __webpack_require__(891);
+var swreportconfigurationbar_1 = __webpack_require__(873);
 var widgetmodule = angular.module('hibachi.widget', [collection_module_1.collectionmodule.name])
     .run([function () {
     }])
@@ -93471,7 +93582,7 @@ exports.widgetmodule = widgetmodule;
 
 
 /***/ }),
-/* 875 */
+/* 876 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93505,7 +93616,7 @@ exports.SWAdminCreateSuperUser = SWAdminCreateSuperUser;
 
 
 /***/ }),
-/* 876 */
+/* 877 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93543,7 +93654,7 @@ exports.SWSchedulePreview = SWSchedulePreview;
 
 
 /***/ }),
-/* 877 */
+/* 878 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93577,7 +93688,7 @@ exports.SWWorkflowBasic = SWWorkflowBasic;
 
 
 /***/ }),
-/* 878 */
+/* 879 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93698,7 +93809,7 @@ exports.SWWorkflowCondition = SWWorkflowCondition;
 
 
 /***/ }),
-/* 879 */
+/* 880 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93729,7 +93840,7 @@ exports.SWWorkflowConditionGroupItem = SWWorkflowConditionGroupItem;
 
 
 /***/ }),
-/* 880 */
+/* 881 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93779,7 +93890,7 @@ exports.SWWorkflowConditionGroups = SWWorkflowConditionGroups;
 
 
 /***/ }),
-/* 881 */
+/* 882 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -93826,7 +93937,7 @@ exports.SWWorkflowTask = SWWorkflowTask;
 
 
 /***/ }),
-/* 882 */
+/* 883 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -94098,7 +94209,7 @@ exports.SWWorkflowTaskActions = SWWorkflowTaskActions;
 
 
 /***/ }),
-/* 883 */
+/* 884 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -94298,7 +94409,7 @@ exports.SWWorkflowTasks = SWWorkflowTasks;
 
 
 /***/ }),
-/* 884 */
+/* 885 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -94400,7 +94511,7 @@ exports.SWWorkflowTrigger = SWWorkflowTrigger;
 
 
 /***/ }),
-/* 885 */
+/* 886 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -94445,7 +94556,7 @@ exports.SWWorkflowTriggerHistory = SWWorkflowTriggerHistory;
 
 
 /***/ }),
-/* 886 */
+/* 887 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -94734,7 +94845,7 @@ exports.SWWorkflowTriggers = SWWorkflowTriggers;
 
 
 /***/ }),
-/* 887 */
+/* 888 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -94846,7 +94957,7 @@ exports.ScheduleService = ScheduleService;
 
 
 /***/ }),
-/* 888 */
+/* 889 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -94904,7 +95015,7 @@ exports.WorkflowConditionService = WorkflowConditionService;
 
 
 /***/ }),
-/* 889 */
+/* 890 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -94932,108 +95043,10 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 890 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(306);
-
-
-/***/ }),
 /* 891 */
 /***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-
-/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
-Object.defineProperty(exports, "__esModule", { value: true });
-var SWReportConfigurationBarController = /** @class */ (function () {
-    function SWReportConfigurationBarController($scope, observerService) {
-        var _this = this;
-        this.$scope = $scope;
-        this.observerService = observerService;
-        this.customToggle = false;
-        this.period = "day";
-        this.changeTimeRange = function (period, startTime, endTime) {
-            _this.startDateTime = startTime;
-            _this.endDateTime = endTime;
-            _this.period = period;
-            _this.observerService.notify('swReportConfigurationBar_PeriodUpdate', { "startDateTime": _this.startDateTime, "endDateTime": _this.endDateTime, "period": _this.period });
-        };
-        this.startCustomRange = function ($event) {
-            $event.preventDefault();
-            $event.stopPropagation();
-            _this.customToggle = !_this.customToggle;
-            // this.observerService.notify('swReportConfigurationBar_PeriodUpdate', {"startDateTime": this.startDateTime, "endDateTime": this.endDateTime, "period": this.period});
-        };
-        var now = new Date();
-        $scope.startOfToday = '{ts \'' + new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0).toString('yyyy-MM-dd HH:mm:ss') + '\'}';
-        $scope.eodData = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59);
-        $scope.endOfToday = '{ts \'' + $scope.eodData.toString('yyyy-MM-dd HH:mm:ss') + '\'}';
-        $scope.startOfMonth = '{ts \'' + new Date(now.getFullYear(), now.getMonth(), 1).toString('yyyy-MM-dd HH:mm:ss') + '\'}';
-        $scope.eomData = new Date(now.getFullYear(), now.getMonth() + 1, 1); //correct  this month
-        $scope.endOfMonth = '{ts \'' + $scope.eomData.toString('yyyy-MM-dd HH:mm:ss') + '\'}';
-        $scope.eohData = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), 59, 59); // correct
-        $scope.endOfHour = '{ts \'' + $scope.eohData.toString('yyyy-MM-dd HH:mm:ss') + '\'}';
-        $scope.startOfYear = '{ts \'' + new Date(now.getFullYear() - 10, 0).toString('yyyy-MM-dd HH:mm:ss') + '\'}';
-        $scope.endOfYear = '{ts \'' + new Date(now.getFullYear() + 1, now.getMonth(), 1).toString('yyyy-MM-dd HH:mm:ss') + '\'}';
-        $scope.lastTwentyFourHours = '{ts \'' + new Date($scope.eohData).addDays(-1).toString('yyyy-MM-dd HH:mm:ss') + '\'}';
-        $scope.lastTwoWeeks = '{ts \'' + new Date($scope.eodData).addDays(-13).toString('yyyy-MM-dd HH:mm:ss') + '\'}';
-        $scope.weekGrouping = '{ts \'' + new Date($scope.eodData).addWeeks(-11).toString('yyyy-MM-dd HH:mm:ss') + '\'}';
-        $scope.monthGrouping = '{ts \'' + new Date($scope.eomData).addMonths(-11).toString('yyyy-MM-dd HH:mm:ss') + '\'}';
-        $scope.$watch('swReportConfigurationBar.site', function () {
-            _this.observerService.notify('swReportConfigurationBar_SiteUpdate', _this.site.siteID);
-        });
-        this.site = $scope.swReportConfigurationBar.siteCollectionList[0];
-    }
-    return SWReportConfigurationBarController;
-}());
-var SWReportConfigurationBar = /** @class */ (function () {
-    function SWReportConfigurationBar(scopeService, widgetPartialPath, hibachiPathBuilder) {
-        this.restrict = "E";
-        this.controller = SWReportConfigurationBarController;
-        this.controllerAs = "swReportConfigurationBar";
-        this.scope = {};
-        this.bindToController = {
-            // startOfToday : "@?",
-            //         endOfToday: "@?",
-            //         startOfMonth : "@?",
-            //         endOfMonth: "@?",
-            //         endOfHour: "@?",
-            //         startOfYear : "@?",
-            //         endOfYear: "@?",
-            //         lastTwentyFourHours: "@?",
-            //         lastTwoWeeks: "@?",
-            //         weekGrouping: "@?",
-            //         monthGrouping: "@?",
-            siteCollectionList: "=?",
-            groupBy: "@?"
-        };
-        this.link = function (scope, element, attrs, transcludeFn) {
-            //  scope.swReportConfigurationBar.startCustomRange = ($event) =>{
-            //  	$event.preventDefault();
-            // $event.stopPropagation();
-            // 			console.log("Here")
-            // 			scope.swReportConfigurationBar.customToggle = !scope.swReportConfigurationBar.customToggle
-            // 	}
-        };
-        this.templateUrl = hibachiPathBuilder.buildPartialsPath(widgetPartialPath) + 'reportconfigurationbar.html';
-    }
-    /**
-        * Handles injecting the partials path into this class
-        */
-    SWReportConfigurationBar.Factory = function () {
-        var directive = function (scopeService, widgetPartialPath, hibachiPathBuilder) { return new SWReportConfigurationBar(scopeService, widgetPartialPath, hibachiPathBuilder); };
-        directive.$inject = [
-            'scopeService',
-            'widgetPartialPath',
-            'hibachiPathBuilder'
-        ];
-        return directive;
-    };
-    return SWReportConfigurationBar;
-}());
-exports.SWReportConfigurationBar = SWReportConfigurationBar;
+module.exports = __webpack_require__(306);
 
 
 /***/ })

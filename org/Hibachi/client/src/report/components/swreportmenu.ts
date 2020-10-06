@@ -8,21 +8,21 @@ class SWReportMenuController{
 	public popularReports: any;
 	public allReports: any;
 	public myCustomReports: any;
+	private slatwall: any;
     constructor(
+    	private $scope,
         public $rootScope,
         private requestService,
         private accountService,
         private collectionConfigService,
     ){
-
+    	this.slatwall = $rootScope.slatwall
+    	$scope.$watch('slatwall.account.accountID',this.getMyCustomReports);
+    	this.getPopularReports();
+	    this.getAllReports();
     }
 
-    public $onInit = () => {
-    		    	this.getPopularReports();
-	    	this.getAllReports();
-	    	this.getMyCustomReports();
-    	
-    }
+
     
     public getPopularReports = () =>{
 		var popularReports = this.collectionConfigService.newCollectionConfig('Collection');
@@ -53,8 +53,8 @@ class SWReportMenuController{
 		var myCustomReports = this.collectionConfigService.newCollectionConfig('Collection');
     	myCustomReports.setReportFlag(1)
     	myCustomReports.setDisplayProperties('collectionID,collectionName,collectionConfig,collectionCode,reportFlag');
-		myCustomReports.addFilter('createdByAccountID', this.$rootScope.slatwall.account.accountID ,'=', 'OR', '', 'group1');
-		myCustomReports.addFilter('accountOwner.accountID',this.$rootScope.slatwall.account.accountID ,'=','OR','', 'group1');
+		myCustomReports.addFilter('createdByAccountID', 	this.slatwall.account.accountID ,'=', 'OR', '', 'group1');
+		myCustomReports.addFilter('accountOwner.accountID',	this.slatwall.account.accountID ,'=','OR','', 'group1');
 		myCustomReports.setAllRecords(true);
 		myCustomReports.getEntity().then((data)=>{
 			data.records.forEach((customRecord)=>{

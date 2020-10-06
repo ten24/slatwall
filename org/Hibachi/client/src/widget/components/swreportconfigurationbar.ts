@@ -6,6 +6,8 @@ class SWReportConfigurationBarController{
 	public customToggle = false;
 	public site;
     public startDateTime;
+    public customReportStartDateTime;
+    public customReporEndDateTime;
     public endDateTime;
     public period = "day";
     constructor(    
@@ -31,8 +33,9 @@ class SWReportConfigurationBarController{
 		$scope.monthGrouping = '{ts \'' +   new Date(	$scope.eomData).addMonths(-11).toString('yyyy-MM-dd HH:mm:ss') + '\'}'
 		$scope.$watch('swReportConfigurationBar.site', ()=>{
         	this.observerService.notify('swReportConfigurationBar_SiteUpdate', this.site.siteID);
-
 		});
+		this.customReportStartDateTime =  new Date(	$scope.eomData).addMonths(-11)
+		this.customReporEndDateTime = $scope.eomData
     	this.site = $scope.swReportConfigurationBar.siteCollectionList[0]
 
     }
@@ -40,15 +43,23 @@ class SWReportConfigurationBarController{
         	this.startDateTime = startTime
         	this.endDateTime = endTime
         	this.period = period
+        	this.customToggle = false
         	this.observerService.notify('swReportConfigurationBar_PeriodUpdate', {"startDateTime": this.startDateTime, "endDateTime": this.endDateTime, "period": this.period});
     }
 
-    startCustomRange = ($event) =>{
+    	startCustomRange = ($event) =>{
     	
-		    	$event.preventDefault();
-				$event.stopPropagation();
+		    	$event.preventDefault()
+				$event.stopPropagation()
     			this.customToggle = !this.customToggle
-    			        	// this.observerService.notify('swReportConfigurationBar_PeriodUpdate', {"startDateTime": this.startDateTime, "endDateTime": this.endDateTime, "period": this.period});
+    			this.period = "custom"
+    			this.updateCustomPeriod()
+    	}
+    	
+    	updateCustomPeriod = () =>{
+       		this.startDateTime =  '{ts \'' +   this.customReportStartDateTime.toString('yyyy-MM-dd HH:mm:ss') + '\'}'
+    		this.endDateTime =  '{ts \'' +   this.customReporEndDateTime.toString('yyyy-MM-dd HH:mm:ss') + '\'}'
+        	this.observerService.notify('swReportConfigurationBar_PeriodUpdate', {"startDateTime": this.startDateTime, "endDateTime": this.endDateTime, "period": 'month'});
 
     	}
     
@@ -76,12 +87,18 @@ class SWReportConfigurationBar implements ng.IDirective {
             groupBy: "@?"
 	};
 	public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes, transcludeFn:ng.ITranscludeFunction) =>{
-		  //  scope.swReportConfigurationBar.startCustomRange = ($event) =>{
-		  //  	$event.preventDefault();
-				// $event.stopPropagation();
-    // 			console.log("Here")
-    // 			scope.swReportConfigurationBar.customToggle = !scope.swReportConfigurationBar.customToggle
-    // 	}
+        scope.swReportConfigurationBar.openCalendarStart = function($event) {
+			$event.preventDefault();
+			$event.stopPropagation();
+		    scope.swReportConfigurationBar.openedCalendarStart = true;
+		};
+				
+		scope.swReportConfigurationBar.openCalendarEnd = function($event) {
+			$event.preventDefault();
+			$event.stopPropagation();
+		    scope.swReportConfigurationBar.openedCalendarEnd = true;
+		};
+		
 
 	}
 
