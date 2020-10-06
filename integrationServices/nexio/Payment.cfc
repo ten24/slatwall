@@ -489,11 +489,14 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				    "verifyCvc" = (setting(settingName='verifyCvcFlag', requestBean=arguments.requestBean)? true : false)
 			    }
 			};	
-
+			
 			var responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'authorizeAndCharge', requestData);
-	
-			// Response Data
-			if (!responseBean.hasErrors()) {
+			
+			if(structKeyExists(responseData, 'Error')){
+					arguments.responseBean.getHibachiErrors().setErrors(structnew());
+					var fetchErrorMsg = getHibachiScope().getRbKey("Nexio.#responseData['Error']#");
+					arguments.responseBean.addError("Nexio error",fetchErrorMsg);
+			}else if (!responseBean.hasErrors()) {
 				arguments.responseBean.setProviderToken(requestData.tokenex.token);
 				arguments.responseBean.setProviderTransactionID(responseData.id);
 				if(structKeyExists(responseData, 'authCode')){
