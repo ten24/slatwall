@@ -24,7 +24,6 @@ class SWStatWidgetController{
     	        },'swReportConfigurationBar_PeriodUpdate', 'report-wiget');
     	        
 		    this.observerService.attach((siteID)=>{
-		    	console.log("sidget")
     	          this.siteId = siteID
     	          this.getMetrics()
     	        },'swReportConfigurationBar_SiteUpdate', 'report-wiget');

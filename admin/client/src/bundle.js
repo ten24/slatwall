@@ -91861,48 +91861,54 @@ exports.PaginationService = PaginationService;
 /// <reference path='../../../typings/tsd.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
 var SWReportMenuController = /** @class */ (function () {
-    function SWReportMenuController($rootScope, requestService, accountService) {
+    function SWReportMenuController($rootScope, requestService, accountService, collectionConfigService) {
         var _this = this;
         this.$rootScope = $rootScope;
         this.requestService = requestService;
         this.accountService = accountService;
+        this.collectionConfigService = collectionConfigService;
         this.$onInit = function () {
-            if (_this.collectionConfig) {
-                // this.getPersistedReports();
-                _this.getDashboardReports();
-            }
-            else {
-            }
+            _this.getPopularReports();
+            _this.getAllReports();
+            _this.getMyCustomReports();
         };
-        this.getDashboardReports = function () {
-            console.log("getDashboardReports");
-            var data = {
-                slatAction: "admin:report.tomsreports",
-                accountID: _this.accountService.accountID,
-            };
-            var promise = _this.requestService.newPublicRequest("/", data, "post", {
-                //   "Content-Type": "application/json",
-                'Content-Type': "application/x-www-form-urlencoded",
-                'X-Hibachi-AJAX': true
-            }).promise;
-            promise.then(function (response) {
-                console.log("getDashboardReports");
-                console.log(response);
-                _this.persistedReportCollections = response;
+        this.getPopularReports = function () {
+            var popularReports = _this.collectionConfigService.newCollectionConfig('Collection');
+            popularReports.setDisplayProperties('collectionID,collectionName,collectionConfig,collectionCode,reportFlag,accountOwner.accountID');
+            popularReports.addFilter('reportFlag', 1);
+            popularReports.addFilter('accountOwner.accountID', 'null', 'is not');
+            popularReports.setAllRecords(true);
+            popularReports.getEntity().then(function (data) {
+                data.records.forEach(function (customRecord) {
+                    customRecord.collectionConfig = JSON.parse(customRecord.collectionConfig);
+                });
+                _this.popularReports = data.records;
             });
         };
-        this.getPersistedReports = function () {
-            console.log("collectionConfig 1");
-            console.log(_this.collectionConfig);
-            var persistedReportsCollectionList = _this.collectionConfig.newCollectionConfig('Collection');
-            persistedReportsCollectionList.setDisplayProperties('collectionID,collectionName,collectionConfig,collectionCode');
-            persistedReportsCollectionList.addFilter('reportFlag', 1);
-            persistedReportsCollectionList.addFilter('collectionObject', _this.collectionConfig.baseEntityName);
-            persistedReportsCollectionList.addFilter('accountOwner.accountID', _this.$rootScope.slatwall.account.accountID, '=', 'OR', true, true, false, 'accountOwner');
-            persistedReportsCollectionList.addFilter('accountOwner.accountID', 'NULL', 'IS', 'OR', true, true, false, 'accountOwner');
-            persistedReportsCollectionList.setAllRecords(true);
-            persistedReportsCollectionList.getEntity().then(function (data) {
-                _this.persistedReportCollections = data.records;
+        this.getAllReports = function () {
+            var allReports = _this.collectionConfigService.newCollectionConfig('Collection');
+            allReports.setDisplayProperties('collectionID,collectionName,collectionConfig,collectionCode,reportFlag');
+            allReports.addFilter('reportFlag', 1);
+            allReports.setAllRecords(true);
+            allReports.getEntity().then(function (data) {
+                data.records.forEach(function (customRecord) {
+                    customRecord.collectionConfig = JSON.parse(customRecord.collectionConfig);
+                });
+                _this.allReports = data.records;
+            });
+        };
+        this.getMyCustomReports = function () {
+            var myCustomReports = _this.collectionConfigService.newCollectionConfig('Collection');
+            myCustomReports.setReportFlag(1);
+            myCustomReports.setDisplayProperties('collectionID,collectionName,collectionConfig,collectionCode,reportFlag');
+            myCustomReports.addFilter('createdByAccountID', _this.$rootScope.slatwall.account.accountID, '=', 'OR', '', 'group1');
+            myCustomReports.addFilter('accountOwner.accountID', _this.$rootScope.slatwall.account.accountID, '=', 'OR', '', 'group1');
+            myCustomReports.setAllRecords(true);
+            myCustomReports.getEntity().then(function (data) {
+                data.records.forEach(function (customRecord) {
+                    customRecord.collectionConfig = JSON.parse(customRecord.collectionConfig);
+                });
+                _this.myCustomReports = data.records;
             });
         };
     }
@@ -91922,7 +91928,6 @@ var SWReportMenu = /** @class */ (function () {
             collectionConfig: "<?"
         };
         this.link = function (scope, element, attrs, transcludeFn) {
-            console.log("SWReportMenu IDirectiveLinkFn");
         };
         this.templateUrl = hibachiPathBuilder.buildPartialsPath(reportPartialPath) + 'reportmenu.html';
     }
@@ -93488,7 +93493,6 @@ var SWStatWidgetController = /** @class */ (function () {
             _this.getMetrics();
         }, 'swReportConfigurationBar_PeriodUpdate', 'report-wiget');
         this.observerService.attach(function (siteID) {
-            console.log("sidget");
             _this.siteId = siteID;
             _this.getMetrics();
         }, 'swReportConfigurationBar_SiteUpdate', 'report-wiget');

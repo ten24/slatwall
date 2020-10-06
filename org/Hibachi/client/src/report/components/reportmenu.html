@@ -10,7 +10,7 @@
 	  <div class="tab-pane active flex" id="reports-overview">
 	  	<div>
 	  		<ul class="list-unstyled report-menu-list">
-                <li ng-repeat="persistedReport in swReportMenu.persistedReportCollections.myCustomReports" >
+                <li ng-repeat="persistedReport in swReportMenu.myCustomReports" >
                     <a
                         ng-href="{{$root.hibachiScope.appConfig.baseURL}}?{{$root.hibachiScope.appConfig.action}}=entity.reportlist{{persistedReport.collectionConfig.baseEntityName.toLowerCase()}}&collectionID={{persistedReport.collectionID}}"
                     >{{persistedReport.collectionName}} | <span>{{persistedReport.collectionConfig.baseEntityName}}</span></a>
@@ -22,7 +22,7 @@
 	  <div class="tab-pane flex" id="popular-reports">			  	
 	  	<div>
 	  		<ul class="list-unstyled report-menu-list">
-                <li ng-repeat="persistedReport in swReportMenu.persistedReportCollections.popularReports" >
+                <li ng-repeat="persistedReport in swReportMenu.popularReports" >
                     <a
                         ng-href="{{$root.hibachiScope.appConfig.baseURL}}?{{$root.hibachiScope.appConfig.action}}=entity.reportlist{{persistedReport.collectionConfig.baseEntityName.toLowerCase()}}&collectionID={{persistedReport.collectionID}}"
                     >{{persistedReport.collectionName}} | <span>{{persistedReport.collectionConfig.baseEntityName}}</span></a>
@@ -34,7 +34,7 @@
 	  <div class="tab-pane flex" id="all-reports">
 	  	<div>
 	  		<ul class="list-unstyled report-menu-list">
-                <li ng-repeat="persistedReport in swReportMenu.persistedReportCollections.allReports" >
+                <li ng-repeat="persistedReport in swReportMenu.allReports" >
                     <a
                         ng-href="{{$root.hibachiScope.appConfig.baseURL}}?{{$root.hibachiScope.appConfig.action}}=entity.reportlist{{persistedReport.collectionConfig.baseEntityName.toLowerCase()}}&collectionID={{persistedReport.collectionID}}"
                     >{{persistedReport.collectionName}} | <span>{{persistedReport.collectionConfig.baseEntityName}}</span></a>
