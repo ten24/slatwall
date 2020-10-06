@@ -36,10 +36,10 @@
               </div>
             </div>
             <div class="bg-secondary px-4 py-3">
-              <h3 class="font-size-sm mb-0 text-muted"><a href="/my-account" class="nav-link-style">Overview</a></h3>
+              <h3 class="font-size-sm mb-0 text-muted"><a href="/my-account" class="nav-link-style active">Overview</a></h3>
             </div>
             <ul class="list-unstyled mb-0">
-              <li class="border-bottom mb-0"><a class="nav-link-style d-flex align-items-center px-4 py-3 active" href="##"><i class="far fa-shopping-bag pr-2"></i> Order History</a></li>
+              <li class="border-bottom mb-0"><a class="nav-link-style d-flex align-items-center px-4 py-3" href="##"><i class="far fa-shopping-bag pr-2"></i> Order History</a></li>
               <li class="border-bottom mb-0"><a class="nav-link-style d-flex align-items-center px-4 py-3" href="##"><i class="far fa-user pr-2"></i> Profile Info</a></li>
               <li class="border-bottom mb-0"><a class="nav-link-style d-flex align-items-center px-4 py-3" href="##"><i class="far fa-heart pr-2"></i> Favorties</a></li>
               <li class="border-bottom mb-0"><a class="nav-link-style d-flex align-items-center px-4 py-3" href="##"><i class="far fa-map-marker-alt pr-2"></i> Addresses</a></li>
@@ -59,8 +59,8 @@
           
           #$.renderContent($.getContentByUrlTitlePath('my-account').getContentID(), 'customBody')#
           
-          <h3 class="h4 mt-5">Most Recent Order</h3>
-          <div class="row bg-lightgray rounded align-items-center justify-content-between mb-3">
+          <h3 class="h4 mt-5 mb-3">Most Recent Order</h3>
+          <div class="row bg-lightgray rounded align-items-center justify-content-between mb-4">
             <div class="col-xs-4 p-3">
               <h6>Order ##43810583021</h6>
               <span>10/12/2020</span>
