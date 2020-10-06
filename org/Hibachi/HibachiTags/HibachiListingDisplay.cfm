@@ -20,7 +20,7 @@
 	<cfparam name="attributes.showSimpleListingControls" type="boolean" default="true"/>
 	<cfparam name="attributes.showExport" type="boolean" default="true"/>
 	<cfparam name="attributes.showSearch" type="boolean" default="true"/>
-	<cfparam name="attributes.showAutoRefresh" type="boolean" default="true"/>
+	<cfparam name="attributes.showAutoRefresh" type="boolean" default="false"/>
 	<cfparam name="attributes.showReport" type="boolean" default="false"/>
 	<cfparam name="attributes.reportAction" type="string" default="" />
 	<cfparam name="attributes.refreshEvent" type="string" default="" />

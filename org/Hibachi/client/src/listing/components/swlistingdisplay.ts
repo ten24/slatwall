@@ -546,14 +546,7 @@ class SWListingDisplayController{
             this.hasSearch = true;
             this.showSearch = true;
         }
-        
-        this.showAutoRefresh = false;
-        
-        if(this.personalCollectionKey=='listbatch' || this.personalCollectionKey=='listentityqueue' || this.personalCollectionKey=='listentityqueue_failure' ) {
-            this.showAutoRefresh = true;   
-        }
-        console.log("UK7");console.log(this.personalCollectionKey);console.log(this.showAutoRefresh);console.log("UK9");
-        
+
         if(angular.isUndefined(this.showOrderBy)){
             this.showOrderBy = true;
         }
