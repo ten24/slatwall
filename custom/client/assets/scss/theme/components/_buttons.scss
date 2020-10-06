@@ -208,3 +208,15 @@
     &.show { right: $spacer; }
   }
 }
+
+.previous-btn, .next-btn {
+  color: $gray-900;
+  font-size: 13px;
+  position: relative;
+}
+.previous-btn i {
+  margin-right: 5px;
+}
+.next-btn i {
+  margin-left: 5px;
+}
