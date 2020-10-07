@@ -155,10 +155,6 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 
 	
 	
-		//CUSTOM PROPERTIES BEGIN
-
- property name="houseColor" cfc="Type" fieldtype="many-to-one" fkcolumn="houseColorID" hb_optionsSmartListData="f:parentType.typeID=2c918083693a5b2701693b5b00610116";
- property name="accountNickname" ormtype="string";//CUSTOM PROPERTIES END
 	public boolean function isPriceGroupAssigned(required string  priceGroupId) {
 		return structKeyExists(this.getPriceGroupsStruct(), arguments.priceGroupID);
 	}
