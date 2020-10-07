@@ -70,11 +70,15 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     private struct function getSampleAccountData(){
 	    
 	    return {
-	        remoteAccountID: 123, 
-	        firstName: "Nitin",  
-	        lastName: "Yadav", 
-	        username: 'nitin.yadav', 
-	        companyName: "Ten24",
+	        
+	        remoteAccountID     : 123, 
+	        firstName           : "Nitin",  
+	        lastName            : "Yadav", 
+	        username            : "nitin.yadav", 
+	        companyName         : "Ten24",
+	        
+	        organizationFlag    : false,
+	        activeFlag          : "does not matter",
 	        
 	        //AccountEmailAddress
 	        email: "nitin.yadav@ten24web.com",
@@ -407,7 +411,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     /** 
 	 * @test
 	*/
-    public void function transformAccountDataTest_should_ignore_extra_properties(){
+    public void function transformAccountDataTest_should_ignore_extra_source_properties(){
 	    
 	    var sampleAccountData = getSampleAccountData();
 	    
@@ -459,6 +463,138 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    
 	    expect(data.importRemoteID).toBe( importRemoteID, "importRemoteID in transformed data should match with generated-id ");
     }
+    
+    
+    /** 
+	 * @test
+	*/
+    public void function transformAccountDataTest_should_infer_default_value_when_no_source_property(){
+	    
+	    var sampleAccountData = getSampleAccountData();
+	    
+	    sampleAccountData.delete('organizationFlag');
+
+	    
+	    var data = this.getService().transformEntityData("Account", sampleAccountData);
+	    debug(data);
+	    
+	    expect(data).toHaveKey('organizationFlag', "key organizationFlag should exist in transformed data");
+	    expect(data.organizationFlag).toBe( true, "the defaule value for organizationFlag should get inferred and should be true");
+    }
+    
+     
+    /** 
+	 * @test
+	*/
+    public void function transformAccountDataTest_should_call_generator_function_when_proviced(){
+        
+        var sampleAccountData = getSampleAccountData();
+        
+        var mapping = this.getService().getEntityMapping( 'Account' );
+        mapping.properties.activeFlag = {
+            "propertyIdentifier": "activeFlag",
+            "generatorFunction":  "generateAccountActiveFlag_spy"
+        };
+
+        function generateAccountActiveFlag_spy(any propertyValue, any constraintValue){
+            // puting something in the THIS scope of the SERVICE so it can be verified later
+            variables.this['generateAccountActiveFlag_spy_called'] = 'xxxxx-yyyyy-does-not-matter'; 
+            return true;
+        }
+        // declare a mock generator-finction on the target-service
+        variables.service['generateAccountActiveFlag_spy'] = generateAccountActiveFlag_spy;
+
+
+        var data = this.getService().transformEntityData("Account", sampleAccountData, mapping);
+        debug(data);
+
+        expect( variables.service )
+            .toHaveKey('generateAccountActiveFlag_spy_called');
+            
+        debug( variables.service.generateAccountActiveFlag_spy_called );
+        
+        expect( variables.service.generateAccountActiveFlag_spy_called )
+            .toBe('xxxxx-yyyyy-does-not-matter');
+            
+	    expect( data )
+	        .toHaveKey('activeFlag', "key activeFlag should exist in transformed data");
+	        
+	    expect( data.activeFlag )
+	        .toBe( true, "the defaule value for activeFlag should get generated and should be true");
+       
+        // cleanup
+        structDelete( variables.service, 'generateAccountActiveFlag_spy');
+        structDelete( variables.service, 'generateAccountActiveFlag_spy_called');
+    }
+    
+    
+    /** 
+	 * @test
+	*/
+    public void function transformAccountDataTest_generator_functions_should_provide_value(){
+        
+        var sampleAccountData = getSampleAccountData();
+        
+        var data = this.getService().transformEntityData("Account", sampleAccountData);
+        debug(data);
+
+	    expect( data )
+	        .toHaveKey('activeFlag', "key activeFlag should exist in transformed data");
+	        
+	    expect( data.activeFlag )
+	        .toBe( true, "the defaule value for activeFlag should get generated and should be true");
+	        
+    }
+    
+    
+    /** 
+	 * @test
+	*/
+    public void function transformAccountDataTest_should_use_conventional_generator_function_when_declared(){
+        
+        var sampleAccountData = getSampleAccountData();
+        
+        var mapping = this.getService().getEntityMapping( 'Account' );
+        mapping.properties['exampleProperty'] = {
+            "propertyIdentifier": "examplePropertyIdentifier",
+        };
+
+        function generate_Account_exampleProperty_spy(any propertyValue, any constraintValue){
+            // puting something in the THIS scope of the SERVICE so it can be verified later
+            variables.this['generate_Account_exampleProperty_spy_called'] = 'it-does-not-matter'; 
+            return 'example_value';
+        }
+        
+        
+        // declare a mock generator-finction on the target-service
+        // it follows the pattern `generate_[entityName]_[propertyName]`
+        variables.service['generate_Account_exampleProperty'] = generate_Account_exampleProperty_spy;
+
+
+        var data = this.getService().transformEntityData("Account", sampleAccountData, mapping);
+        debug(data);
+
+        expect( variables.service )
+            .toHaveKey('generate_Account_exampleProperty_spy_called');
+            
+        debug( variables.service.generate_Account_exampleProperty_spy_called );
+        
+        expect( variables.service.generate_Account_exampleProperty_spy_called )
+            .toBe('it-does-not-matter');
+            
+	    expect( data )
+	        .toHaveKey('exampleProperty', "key exampleProperty should exist in transformed data");
+	        
+	    expect( data.exampleProperty )
+	        .toBe( 'example_value', "the defaule value for exampleProperty should get generated and should be 'example_value' ");
+       
+        // cleanup
+        structDelete( variables.service, 'generate_Account_exampleProperty_spy_called');
+        structDelete( variables.service, 'generate_Account_exampleProperty');
+    }
+    
+    
+    
     
     /** 
 	 * @test
@@ -534,8 +670,59 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    expect(data.primaryEmailAddress).toHaveKey('importRemoteID', "transformed data should have key 'importRemoteID' ");
 	    expect(data.primaryEmailAddress).toHaveKey('accountEmailAddressID',  "transformed data should have key 'accountEmailAddressID' ");
 	    
-	    expect(data.primaryEmailAddress).toHaveKey('emailAddress',  "primaryEmailAddress should have key 'phoneNumber' ");
+	    expect(data.primaryEmailAddress).toHaveKey('emailAddress',  "primaryEmailAddress should have key 'emailAddress' ");
     }
+    
+    
+    /** 
+	 * @test
+	*/
+    public void function transformAccountDataTest_should_contain_accountAuthentication_properties(){
+	    
+	    var sampleAccountData = getSampleAccountData();
+	    
+	    var data = this.getService().transformEntityData("Account", sampleAccountData);
+	    debug(data);
+	    
+	    expect(data).toHaveKey('accountAuthentications', "transformed data should have key 'accountAuthentications' ");
+	    expect(data.accountAuthentications).toBeTypeOf('array',  "accountAuthentications should be an struct ");
+	    
+	    var accountAuthentication = data.accountAuthentications[1];
+	    expect(accountAuthentication).toBeTypeOf('struct',  "accountAuthentication should be an struct ");
+	   
+	    expect(accountAuthentication).toHaveKey('importRemoteID', "transformed data should have key 'importRemoteID' ");
+	    expect(accountAuthentication).toHaveKey('accountAuthenticationID',  "transformed data should have key 'accountAuthenticationID' ");
+	    
+	    expect(accountAuthentication).toHaveKey('password',  "transformed data should have key 'password' ");
+	    expect(accountAuthentication).toHaveKey('activeFlag',  "primaryEmailAddress should have key 'activeFlag' ");
+	    expect(accountAuthentication).toHaveKey('updatePasswordOnNextLoginFlag',  "primaryEmailAddress should have key 'updatePasswordOnNextLoginFlag' ");
+    }
+    
+    
+    
+
+    /**
+     * @test
+    */
+    public void function transformAccountData_should_throw_for_invalid_validation_constraint(){
+        var sampleAccountData = getSampleAccountData();
+        var mapping = this.getService().getEntityMapping( 'Account' );
+
+        mapping.properties.remoteAccountID.validations["invalidConstraint"] = "whaever";
+
+        $assert.throws( function() {
+            this.getService().validateEntityData(
+                entityName="Account",
+                data = sampleAccountData,
+                collectErrors = true,
+                mapping = mapping
+            )
+        });
+    }
+    
+    /** ***************************.  EntityQueue and FailureQueue .***************************** */
+
+    
     
     /** 
 	 * @test
