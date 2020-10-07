@@ -1032,6 +1032,17 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             account.addPriceGroup(priceGroup);
         }
         
+        if(arguments.accountType == 'customer'){
+            var employeeDomains = getService('SettingService').getSettingValue('globalEmployeeEmailDomains');
+            var emailDomain = reReplace(arguments.data.emailAddress,'^.+@(.+)$','\1');
+            if(listFindNoCase(employeeDomains,emailDomain)){
+                var employeePriceGroup = getService('PriceGroupService').getPriceGroupByPriceGroupCode('15');
+                if(!isNull(employeePriceGroup)){
+                    account.addPriceGroup(employeePriceGroup);
+                }
+            }
+        }
+        
         var accountStatusType = getService('TypeService').getTypeBySystemCodeOnly(accountTypeInfo[arguments.accountType].statusSystemCode);
         
         account.setAccountStatusType(accountStatusType);
