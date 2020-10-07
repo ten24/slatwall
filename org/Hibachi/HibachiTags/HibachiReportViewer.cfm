@@ -9,6 +9,7 @@
         <cfset local.lastTwoWeeks = DateAdd("d", -13, local.endOfToday) />
         <cfset siteCollectionList = attributes.hibachiScope.getService('siteService').getSiteCollectionList() />
         <cfset siteCollectionList.setDisplayProperties('siteID,siteName', { isVisible=true }) />
+        <cfset siteCollectionList.setOrderBy('siteName|ASC') />
         <cfset siteCollectionListRecords = siteCollectionList.getRecords()/>
         <div id="hibachi-report">
             <!--- Configure --->

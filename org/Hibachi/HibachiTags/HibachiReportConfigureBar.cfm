@@ -19,11 +19,11 @@
 
    <cfset siteCollectionList = attributes.hibachiScope.getService('siteService').getSiteCollectionList() />
    <cfset siteCollectionList.setDisplayProperties('siteID,siteName', { isVisible=true }) />
+   <cfset siteCollectionList.setOrderBy('siteName|ASC') />
    <cfset siteCollectionListJson = serializeJson(siteCollectionList.getRecords())/>
    <!---escape apostrophes--->
-   <cfset siteCollectionListJson = rereplace(siteCollectionListJson,"'","\'",'all')/>
-   <!---convert double quotes to single--->
-   <cfset siteCollectionListJson = rereplace(siteCollectionListJson,'"',"'",'all')/>
+
+   <cfset siteCollectionListJson = esapiEncode('html_attr', siteCollectionListJson)/>
    <!---
    
    start-of-today="#CreateDateTime(Year(now()),Month(now()),Day(now()),0,0,0)#"
