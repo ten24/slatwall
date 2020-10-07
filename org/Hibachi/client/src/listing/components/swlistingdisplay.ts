@@ -114,6 +114,7 @@ class SWListingDisplayController{
     public showExport:boolean;
     public showPrintOptions:boolean; 
     public showSearch:boolean;
+    public showAutoRefresh:boolean;
     public showReport:boolean;
     public showSearchFilters = false;
     public showTopPagination:boolean;
@@ -172,7 +173,7 @@ class SWListingDisplayController{
     public $onInit = () => {
         // giving it a time-out to run this code in next digest-cycle, so everything is rendered 
         this.$timeout( () =>  this.startLoading() );
-        
+
     }
     
     public refreshListingDisplay = () => {
@@ -545,6 +546,7 @@ class SWListingDisplayController{
             this.hasSearch = true;
             this.showSearch = true;
         }
+
         if(angular.isUndefined(this.showOrderBy)){
             this.showOrderBy = true;
         }
@@ -1024,6 +1026,7 @@ class SWListingDisplay implements ng.IDirective{
             showTopPagination:"<?",
             showToggleDisplayOptions:"<?",
             showSearch:"<?",
+            showAutoRefresh:"<?",
             showSearchFilters:"<?",
             showFilters:"<?",
             showSimpleListingControls:"<?",

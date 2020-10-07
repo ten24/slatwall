@@ -75,5 +75,6 @@ Notes:
 		usingPersonalCollection="true"
 		personalCollectionKey='#request.context.entityactiondetails.itemname#'
 		recordDetailAction="admin:entity.detailbatch"
+		showAutoRefresh="true"
 	>
 	</hb:HibachiListingDisplay>

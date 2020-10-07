@@ -194,7 +194,7 @@
             <li class="autoRefreshDropDown">
                 <div class="s-edit refreshInputGroup">
                     
-                    <label onclick="event.stopPropagation();">
+                    <label onclick="event.stopPropagation();" ng-if="swListingSearch.showAutoRefresh">
                         <input type="checkbox" name="isTimerTrue" id="isTimerTrue" class="enableAutoRefresh"
                             ng-checked="swListingSearch.autoRefreshConfig.autoRefreshEnabled"
                             ng-click="swListingSearch.onToggleAutoRefereshEnabled()" 
