@@ -950,6 +950,14 @@ component extends="Slatwall.model.service.OrderService" {
 			if(quantityReceived < quantity){
 				incompleteReturnFlag = true;
 				orderItem.setQuantity(quantityReceived);
+				var comment = getCommentService().newComment();
+				comment.setPublicFlag(false);
+				comment.setComment('Order Item #orderItem.getOrderItemID()# (Sku #orderItem.getSku().getSkuCode()#) Original Quantity: #quantity#, Received Quantity: #quantityReceived#');
+				var commentRelationship = getCommentService().newCommentRelationship();
+				commentRelationship.setOrder(order);
+				commentRelationship.setComment(comment);
+				commentRelationship = getCommentService().saveCommentRelationship(commentRelationship);
+				comment = getCommentService().saveComment(comment,{});
 			}
 		}
 		order.setIncompleteReturnFlag(incompleteReturnFlag);
