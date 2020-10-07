@@ -16,6 +16,7 @@ class SWListingSearchController {
     private filtersClosed:boolean=true;
     private showToggleFilters:boolean;
     private showToggleDisplayOptions:boolean;
+    private showAutoRefresh:boolean;
     private newFilterPosition;
     private itemInUse;
     private getCollection;
@@ -157,15 +158,17 @@ class SWListingSearchController {
             );
         }
         
-        // on init --> check to set time-out intervals
-        let savedAutoRefreshConfig = this.localStorageService.getItem('selectedAutoRefreshConfigs')?.[this.swListingDisplay.personalCollectionKey];
-        
-        if( savedAutoRefreshConfig ){
-            this.autoRefreshConfig = savedAutoRefreshConfig;
-        }
-        
-        if( savedAutoRefreshConfig?.autoRefreshEnabled ){
-            this.setupAutoRefreshTimeout();
+       if(this.showAutoRefresh) {
+            // on init --> check to set time-out intervals
+            let savedAutoRefreshConfig = this.localStorageService.getItem('selectedAutoRefreshConfigs')?.[this.swListingDisplay.personalCollectionKey];
+            
+            if( savedAutoRefreshConfig ){
+                this.autoRefreshConfig = savedAutoRefreshConfig;
+            }
+            
+            if( savedAutoRefreshConfig?.autoRefreshEnabled){
+                this.setupAutoRefreshTimeout();
+            }
         }
     }
     
@@ -459,6 +462,7 @@ class SWListingSearch  implements ng.IDirective{
         collectionConfig : "=",
         paginator : "=?",
         listingId : "@?",
+        showAutoRefresh : "<?",
         showToggleSearch:"=?",
     };
     public controller = SWListingSearchController;
