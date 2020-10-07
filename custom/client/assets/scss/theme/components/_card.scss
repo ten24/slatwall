@@ -107,3 +107,11 @@
 // Core Bootstrap issue https://github.com/twbs/bootstrap/issues/21885
 .card *,
 .flex-column * { min-height: .01px; }
+
+#account-detail-card{
+  padding: 20px;
+  input{
+    width: 100%;
+    border: 1px solid rgba(0,0,0,.085);
+  }
+}
