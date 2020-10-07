@@ -37,7 +37,6 @@
  background-color: theme-color('light');
 }
 
-
 // Outline buttons
 
 @each $color, $value in $theme-colors {
@@ -84,6 +83,10 @@
   }
 }
 
+.btn-long {
+  padding-right: 4em;
+  padding-left: 4em;
+}
 
 // Square buttons
 
@@ -204,4 +207,16 @@
     }
     &.show { right: $spacer; }
   }
+}
+
+.previous-btn, .next-btn {
+  color: $gray-900;
+  font-size: 13px;
+  position: relative;
+}
+.previous-btn i {
+  margin-right: 5px;
+}
+.next-btn i {
+  margin-left: 5px;
 }

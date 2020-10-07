@@ -164,6 +164,44 @@
   }
 }
 
+//Widget links style without classes
+.widget {
+  h3 {
+    margin-bottom: $spacer * 1.125;
+    font: {
+      size: $widget-title-font-size;
+      weight: $widget-title-font-weight;
+    }
+  }
+    ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      li {
+        margin-bottom: $spacer * .375;
+        &:last-child {
+          margin-bottom: 0;
+        }
+        color: $widget-links-dark-color;
+        font: {
+          size: $widget-links-font-size;
+          weight: $widget-links-font-weight;
+        }
+        a {
+          display: block;
+          transition: $widget-transition;
+          color: $widget-links-dark-color;
+          font: {
+            size: $widget-links-font-size;
+            weight: $widget-links-font-weight;
+          }
+          &:hover {
+            color: $widget-links-dark-hover-color;
+          }
+        }
+      }
+    }
+  }
 
 // Widget: Tags
 

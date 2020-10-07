@@ -13,7 +13,7 @@
         "propertyIdentifier": "importRemoteID",
         "type": "composite",
         "keys": [
-            "userID",
+            "remoteAccountID",
             "email"
         ]
     }
