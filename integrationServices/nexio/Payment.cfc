@@ -493,9 +493,18 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 			var responseData = sendHttpAPIRequest(arguments.requestBean, arguments.responseBean, 'authorizeAndCharge', requestData);
 			
 			if(structKeyExists(responseData, 'Error')){
+					
+					var getNexioError = arguments.responseBean.getErrors();
+					if(structKeyExists(getNexioError, 'serverCommunicationFault')){
+						var defaultMessage = getNexioError['serverCommunicationFault']['1'];
+					}else{
+						var defaultMessage = "Nexio server communication fault";
+					}
+					
+					var getErroMessage = getHibachiScope().getService('PublicService').getFormattedErrorMessage("Nexio","#responseData['Error']#",defaultMessage);
+					
 					arguments.responseBean.getHibachiErrors().setErrors(structnew());
-					var fetchErrorMsg = getHibachiScope().getRbKey("Nexio.#responseData['Error']#");
-					arguments.responseBean.addError("Nexio error",fetchErrorMsg);
+					arguments.responseBean.addError("Nexio error",getErroMessage);
 			}else if (!responseBean.hasErrors()) {
 				arguments.responseBean.setProviderToken(requestData.tokenex.token);
 				arguments.responseBean.setProviderTransactionID(responseData.id);
