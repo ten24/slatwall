@@ -2,6 +2,7 @@
 <cfif thisTag.executionMode is "start">
    <cfparam name="attributes.hibachiScope" type="any" default="#request.context.fw.getHibachiScope()#" />
    <cfparam name="attributes.report" type="any" />
+   <!---
    <cfset local.startOfToday = CreateDateTime(Year(now()),Month(now()),Day(now()),0,0,0) />
    <cfset local.endOfToday = CreateDateTime(Year(now()),Month(now()),Day(now()),23,59,59) />
    
@@ -14,6 +15,8 @@
    <cfset local.monthGrouping = DateAdd("m", -11, local.endOfMonth) />
    <cfset local.startOfYear = CreateDateTime(Year(DateAdd('yyyy', -10, now())),1,1,0,0,0) />
    <cfset local.endOfYear = CreateDateTime(Year(DateAdd('yyyy', -10, now())),1,1,0,0,0) />
+               --->
+
    <cfset siteCollectionList = attributes.hibachiScope.getService('siteService').getSiteCollectionList() />
    <cfset siteCollectionList.setDisplayProperties('siteID,siteName', { isVisible=true }) />
    <cfset siteCollectionListJson = serializeJson(siteCollectionList.getRecords())/>
@@ -38,14 +41,10 @@
             
             
             --->
-   <cfoutput>
-      <div class="row s-report-info">
-         <span ng-init="toggleCustomDate = false"></span>			
-         <sw-report-configuration-bar
-            site-collection-list="#siteCollectionListJson#"
-            >
-         </sw-report-configure-bar>
-      </div>
-   </cfoutput>
-   
+<cfoutput>
+    <div class="row s-report-info">
+        <span ng-init="toggleCustomDate = false"></span>			
+        <sw-report-configuration-bar site-collection-list="#siteCollectionListJson#" />
+    </div>
+</cfoutput>
 </cfif>

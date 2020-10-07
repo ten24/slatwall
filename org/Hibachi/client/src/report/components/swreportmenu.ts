@@ -4,7 +4,6 @@
 
 class SWReportMenuController{
 	public collectionConfig: any;
-	public persistedReportCollections: any;
 	public popularReports: any;
 	public allReports: any;
 	public myCustomReports: any;
@@ -75,7 +74,6 @@ class SWReportMenu implements ng.IDirective {
 	public bindToController = {
 			propertyDisplay : "=?",
             propertyIdentifier: "@?",
-            name : "@?",
             class: "@?",
             collectionConfig:"<?"
 	};

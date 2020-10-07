@@ -91922,7 +91922,6 @@ var SWReportMenu = /** @class */ (function () {
         this.bindToController = {
             propertyDisplay: "=?",
             propertyIdentifier: "@?",
-            name: "@?",
             class: "@?",
             collectionConfig: "<?"
         };
@@ -93096,13 +93095,10 @@ exports.validationmodule = validationmodule;
 
 "use strict";
 
-/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 Object.defineProperty(exports, "__esModule", { value: true });
+/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 var chart_js_1 = __webpack_require__(67);
 // <reference path='../../../typings/tsd.d.ts' />
-///dev-ops/projects/SlatwallDevelop/org/Hibachi/client/typings/chart.js/index.d.ts
-///dev-ops/projects/SlatwallDevelop/org/Hibachi/client/typings/chart.js/index.d.ts
-///dev-ops/projects/SlatwallDevelop/org/Hibachi/client/src/widget/components/swchartwidget.ts
 var SWChartWidgetController = /** @class */ (function () {
     // @ngInject
     function SWChartWidgetController($filter, $scope, $q, $transclude, $http, requestService, collectionConfigService, $rootScope, observerService) {
@@ -93387,9 +93383,9 @@ exports.SWReportConfigurationBar = SWReportConfigurationBar;
 
 "use strict";
 
+Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-Object.defineProperty(exports, "__esModule", { value: true });
 var SWStatWidgetController = /** @class */ (function () {
     function SWStatWidgetController($scope, collectionConfigService, observerService) {
         var _this = this;
@@ -93429,10 +93425,10 @@ var SWStatWidgetController = /** @class */ (function () {
             metricCollection.getEntity().then(function (data) {
                 if (data["pageRecords"] && data["pageRecords"].length > 0) {
                     if (data["pageRecords"][0]["orderTotal"] !== " ") {
-                        _this.metric = data["pageRecords"][0]["orderTotal"];
+                        _this.metric = "$" + data["pageRecords"][0]["orderTotal"];
                     }
                     else {
-                        _this.metric = 0;
+                        _this.metric = "$0";
                     }
                 }
             });
@@ -93477,10 +93473,10 @@ var SWStatWidgetController = /** @class */ (function () {
             metricCollection.getEntity().then(function (data) {
                 if (data["pageRecords"] && data["pageRecords"].length > 0) {
                     if (data["pageRecords"][0]["averageOrderTotal"] !== " ") {
-                        _this.metric = data["pageRecords"][0]["averageOrderTotal"];
+                        _this.metric = "$" + data["pageRecords"][0]["averageOrderTotal"];
                     }
                     else {
-                        _this.metric = 0;
+                        _this.metric = "$0";
                     }
                 }
             });
@@ -93537,7 +93533,6 @@ var SWStatWidget = /** @class */ (function () {
             endDateTime: "@?",
             siteId: "@?",
             errorClass: "@?",
-            type: "@?",
             title: "@?",
             metricCode: "@",
             imgSrc: "@?",
@@ -93550,8 +93545,8 @@ var SWStatWidget = /** @class */ (function () {
         this.templateUrl = hibachiPathBuilder.buildPartialsPath(widgetPartialPath) + 'statwidget.html';
     }
     /**
-        * Handles injecting the partials path into this class
-        */
+     * Handles injecting the partials path into this class
+     */
     SWStatWidget.Factory = function () {
         var directive = function (widgetPartialPath, hibachiPathBuilder) { return new SWStatWidget(widgetPartialPath, hibachiPathBuilder); };
         directive.$inject = [

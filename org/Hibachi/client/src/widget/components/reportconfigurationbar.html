@@ -1,91 +1,85 @@
 <div id="reporting-top">
-   
-   <div class="col-md-12">
-      <div class="configure-bar-container">
-         <div class="col-md-6">
-            <div class="report-btn-container">
-                <a href="" class="hibachi-report-date-group-custom-toggle btn btn-xs btn-default "
-                  ng-class="swReportConfigurationBar.period === 'hour' ?'active' : '' "
-                  ng-click="swReportConfigurationBar.changeTimeRange('hour',lastTwentyFourHours,endOfHour)"
-                  data-groupby="hour" data-start="{{lastTwentyFourHours}}" data-end="{{endOfHour}}">Hour</a>
-                  
-               <a href="" class="hibachi-report-date-group-custom-toggle btn btn-xs btn-default" 
-                  ng-class="swReportConfigurationBar.period === 'day' ?'active' : '' "
-                  ng-click="swReportConfigurationBar.changeTimeRange('day',lastTwoWeeks,endOfToday)"
-                  data-groupby="day" data-start="lastTwoWeeks" data-end="endOfToday">Day</a>
-                  
-               <a href="" class="hibachi-report-date-group-custom-toggle btn btn-xs btn-default" 
-                  ng-class="swReportConfigurationBar.period === 'week' ?'active' : '' "
-                  ng-click="swReportConfigurationBar.changeTimeRange('week',weekGrouping,endOfToday)"
-                  data-groupby="week" data-start="weekGrouping" data-end="endOfToday">Week</a>
-                  
-               <a href="" class="hibachi-report-date-group-custom-toggle btn btn-xs btn-default" 
-                  ng-class="swReportConfigurationBar.period === 'month' ?'active' : '' "
-                  ng-click="swReportConfigurationBar.changeTimeRange('month',monthGrouping,endOfMonth)"
-                  data-groupby="month" data-start="monthGrouping" data-end="endOfMonth">Month</a>
-                  
-               <a href="" class="hibachi-report-date-group-custom-toggle btn btn-xs btn-default" 
-                  ng-class="swReportConfigurationBar.period === 'year' ?'active' : '' "
-                  ng-click="swReportConfigurationBar.changeTimeRange('year',startOfYear,endOfYear)"
-                  data-groupby="year" data-start="startOfYear" data-end="endOfYear">Year</a>
-                  
-               <a  
-                  ng-class="swReportConfigurationBar.period === 'custom' ?'active' : '' "
-               class="hibachi-report-date-group-custom-toggle btn btn-xs btn-default" 
-               ng-click="swReportConfigurationBar.startCustomRange($event)">Custom</a>
+    <div class="col-md-12">
+        <div class="configure-bar-container">
+            <div class="col-md-6">
+                <div class="report-btn-container">
+                    <a href="" class="hibachi-report-date-group-custom-toggle btn btn-xs btn-default "
+                        ng-class="swReportConfigurationBar.period === 'hour' ?'active' : '' "
+                        ng-click="swReportConfigurationBar.changeTimeRange('hour',lastTwentyFourHours,endOfHour)"
+                        data-groupby="hour" data-start="{{lastTwentyFourHours}}" data-end="{{endOfHour}}">Hour</a>
+                    <a href="" class="hibachi-report-date-group-custom-toggle btn btn-xs btn-default" 
+                        ng-class="swReportConfigurationBar.period === 'day' ?'active' : '' "
+                        ng-click="swReportConfigurationBar.changeTimeRange('day',lastTwoWeeks,endOfToday)"
+                        data-groupby="day" data-start="lastTwoWeeks" data-end="endOfToday">Day</a>
+                    <a href="" class="hibachi-report-date-group-custom-toggle btn btn-xs btn-default" 
+                        ng-class="swReportConfigurationBar.period === 'week' ?'active' : '' "
+                        ng-click="swReportConfigurationBar.changeTimeRange('week',weekGrouping,endOfToday)"
+                        data-groupby="week" data-start="weekGrouping" data-end="endOfToday">Week</a>
+                    <a href="" class="hibachi-report-date-group-custom-toggle btn btn-xs btn-default" 
+                        ng-class="swReportConfigurationBar.period === 'month' ?'active' : '' "
+                        ng-click="swReportConfigurationBar.changeTimeRange('month',monthGrouping,endOfMonth)"
+                        data-groupby="month" data-start="monthGrouping" data-end="endOfMonth">Month</a>
+                    <a href="" class="hibachi-report-date-group-custom-toggle btn btn-xs btn-default" 
+                        ng-class="swReportConfigurationBar.period === 'year' ?'active' : '' "
+                        ng-click="swReportConfigurationBar.changeTimeRange('year',startOfYear,endOfYear)"
+                        data-groupby="year" data-start="startOfYear" data-end="endOfYear">Year</a>
+                    <a  
+                        ng-class="swReportConfigurationBar.period === 'custom' ?'active' : '' "
+                        class="hibachi-report-date-group-custom-toggle btn btn-xs btn-default" 
+                        ng-click="swReportConfigurationBar.startCustomRange($event)">Custom</a>
+                </div>
             </div>
-         </div>
-         <div class="site-selector-container col-md-3">
-            <select 
-               class="form-control j-custom-select" 
-               name="siteSelector"
-               ng-model="swReportConfigurationBar.site"
-               ng-options="site.siteName for site in swReportConfigurationBar.siteCollectionList"
-               >
-            </select>
-         </div>
-      </div>
-   </div>
-   <div ng-show="swReportConfigurationBar.customToggle" class="col-md-12">
-      <div class="configure-bar-container">
+            <div class="site-selector-container col-md-3">
+                <select 
+                    class="form-control j-custom-select" 
+                    name="siteSelector"
+                    ng-model="swReportConfigurationBar.site"
+                    ng-options="site.siteName for site in swReportConfigurationBar.siteCollectionList"
+                    >
+                </select>
+            </div>
+        </div>
+    </div>
+    <div ng-show="swReportConfigurationBar.customToggle" class="col-md-12">
+        <div class="configure-bar-container">
             <div id="hibachi-report-compare-date" class="flex compare">
-          		<div class="col mBorder">
-           			<div class="flex flex-cal">
-               			<div class="col-cal">
-                  <p class="input-group s-datepicker">
-                     <label>Start Date</label>
-                                         <input class="form-control" 
-                                     		datepicker-popup="MMM dd, yyyy" 
-                                     		close-text="Close" 
-                                     		type="text"
-                                     		is-open="swReportConfigurationBar.openedCalendarStart" 
-                                     		ng-change="swReportConfigurationBar.updateCustomPeriod()"
-                                     		ng-model="swReportConfigurationBar.customReportStartDateTime"
-                                     		/>
-                     <span class="input-group-btn" >
-                     <button type="button" class="btn btn-default btn-sm btn-cal" ng-click="swReportConfigurationBar.openCalendarStart($event)"><i class="glyphicon glyphicon-calendar"></i></button>
-                     </span>
-                  </p>
-               </div>
+                <div class="col mBorder">
+                    <div class="flex flex-cal">
                         <div class="col-cal">
-                  <p class="input-group s-datepicker">
-                     <label>End Date</label>
-                                              <input class="form-control" 
-                                     		datepicker-popup="MMM dd, yyyy" 
-                                     		close-text="Close" 
-                                     		type="text"
-                                     		is-open="swReportConfigurationBar.openedCalendarEnd" 
-                                     		ng-change="swReportConfigurationBar.updateCustomPeriod()"
-                                     		ng-model="swReportConfigurationBar.customReporEndDateTime"
-                                     		/>
-                     <span class="input-group-btn" >
-                     <button type="button" class="btn btn-default btn-sm btn-cal" ng-click="swReportConfigurationBar.openCalendarEnd($event)"><i class="glyphicon glyphicon-calendar"></i></button>
-                     </span>
-                  </p>
-               </div>
-                  </div>
-               </div>
+                            <p class="input-group s-datepicker">
+                                <label>Start Date</label>
+                                <input class="form-control" 
+                                    datepicker-popup="MMM dd, yyyy" 
+                                    close-text="Close" 
+                                    type="text"
+                                    is-open="swReportConfigurationBar.openedCalendarStart" 
+                                    ng-change="swReportConfigurationBar.updateCustomPeriod()"
+                                    ng-model="swReportConfigurationBar.customReportStartDateTime"
+                                    />
+                                <span class="input-group-btn" >
+                                <button type="button" class="btn btn-default btn-sm btn-cal" ng-click="swReportConfigurationBar.openCalendarStart($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                </span>
+                            </p>
+                        </div>
+                        <div class="col-cal">
+                            <p class="input-group s-datepicker">
+                                <label>End Date</label>
+                                <input class="form-control" 
+                                    datepicker-popup="MMM dd, yyyy" 
+                                    close-text="Close" 
+                                    type="text"
+                                    is-open="swReportConfigurationBar.openedCalendarEnd" 
+                                    ng-change="swReportConfigurationBar.updateCustomPeriod()"
+                                    ng-model="swReportConfigurationBar.customReporEndDateTime"
+                                    />
+                                <span class="input-group-btn" >
+                                <button type="button" class="btn btn-default btn-sm btn-cal" ng-click="swReportConfigurationBar.openCalendarEnd($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
             </div>
-      </div>
-   </div>   
+        </div>
+    </div>
 </div>
