@@ -62,11 +62,13 @@ class SWReportConfigurationBarController{
     		let dynamicPeriod = 'hour'
 	    	let diff =( this.customReporEndDateTime - this.customReportStartDateTime ) /(1000 * 3600 * 24)
 	    	
-	    	if(diff >= 730){
+	    	if(diff > 365){
 	    		dynamicPeriod = "year"
-	    	}else if(diff >= 77 && diff < 730){
+	    	}else if(diff > 30 && diff <= 365){
 	    		dynamicPeriod = "month"
-	    	}else if(diff > 2 && diff < 77){
+	    	}else if(diff > 7 && diff <= 30){
+	    		dynamicPeriod = "week"
+	    	}else if(diff > 1 && diff <= 7){
 	    		dynamicPeriod = "day"
 	    	}
 	    	this.observerService.notify('swReportConfigurationBar_PeriodUpdate', {"startDateTime": this.startDateTime, "endDateTime": this.endDateTime, "period": dynamicPeriod});
