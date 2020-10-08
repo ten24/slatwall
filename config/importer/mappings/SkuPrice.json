@@ -1,0 +1,65 @@
+{
+    "entityName": "`SkuPrice",
+    
+    "properties": {
+        
+        "skuPriceID": {
+            "propertyIdentifier": "remoteID",
+            "validations": {
+                "required": true,
+                "dataType": "string"
+            }
+        },
+        "minQuantity": {
+            "propertyIdentifier": "minQuantity",
+            "validations": {
+                "required": true,
+                "defaultValue":null,
+                "dataType": "string"
+            }
+        },
+        "maxQuantity": {
+            "propertyIdentifier": "minQuantity",
+            "validations": {
+                "required": true,
+                "defaultValue":null,
+                "dataType": "string"
+            }
+        },
+        "currencyCode": {
+            "propertyIdentifier": "currencyCode",
+            "validations": {
+                "required": false,
+                "dataType": "string"
+            }
+        },
+        "price": {
+            "propertyIdentifier": "price",
+            "validations": {
+                "required": false,
+                "dataType": "numeric"
+            }
+        },
+        "listPrice": {
+            "propertyIdentifier": "listPrice",
+            "defaultValue": true,
+            "validations": {
+                "dataType": "numeric"
+            }
+        },
+        "activeFlag": {
+            "propertyIdentifier": "activeFlag",
+            "defaultValue": true,
+            "validations": {
+                "dataType": "boolean"
+            }
+        }
+    },
+    "importIdentifier": {
+        "propertyIdentifier": "importRemoteID",
+        "type": "composite",
+        "keys": [
+            "skuPriceID"
+        ]
+    }
+}
