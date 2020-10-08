@@ -214,14 +214,14 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    return arguments.entity;
 	}
 
-	public any function processEntityImport( any entity, struct entityQueueData, struct mapping ){
+	public any function processEntityImport( required any entity, required struct entityQueueData, struct mapping ){
 	    
 	    this.getHibachiScope().setImporterPopulateFlag(true);
 
 	    var entityName = arguments.entity.getClassName();
 	    
-	    if( structKeyExists(this, 'process#entityName#_import') ){
-	        return this.invokeMethod( 'process#entityName#_import', arguments );
+	    if( structKeyExists(this, 'process#entityName#Import') ){
+	        return this.invokeMethod( 'process#entityName#Import', arguments );
 	    }
 	    
 	    arguments.entity.populate( arguments.entityQueueData );

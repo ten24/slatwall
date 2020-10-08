@@ -377,6 +377,33 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     }
 
 
+    /**
+     * @test
+    */
+    public void function validateAccountData_should_call_extention_point_when_declared(){
+        
+        var sampleAccountData = getSampleAccountData();
+
+        // declare a mock validation-finction on the target-service
+        function validateAccountData_spy(required string entityName, required struct data, struct mapping, boolean collectErrors){
+            this['validateAccountData_spy_called'] = "it works";
+            return {isValid:true, errors:[] };
+        }
+        
+        variables.service['validateAccountData'] = validateAccountData_spy;
+        
+        this.getService().validateEntityData( entityName="Account", data=sampleAccountData );
+        
+        expect( variables.service ).toHaveKey('validateAccountData_spy_called');
+        expect( variables.service.validateAccountData_spy_called ).toBe('it works');
+        
+        debug(variables.service.validateAccountData_spy_called);
+        
+        // cleanup
+        structDelete( variables.service, 'validateAccountData_spy_called');
+        structDelete( variables.service, 'validateAccountData');
+    }
+
 
 
 	/** ***************************.  Transform  .***************************** */
@@ -454,7 +481,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     /** 
 	 * @test
 	*/
-    public void function transformAccountDataTest_importRemoteID_should_match(){
+    public void function transformAccountDataTest_importRemoteID_should_match_with_createEntityImportRemoteID(){
 	    
 	    var sampleAccountData = getSampleAccountData();
 	    
@@ -464,6 +491,33 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    var importRemoteID = this.getService().createEntityImportRemoteID( "Account", sampleAccountData );
 	    
 	    expect(data.importRemoteID).toBe( importRemoteID, "importRemoteID in transformed data should match with generated-id ");
+    }
+    
+    /**
+     * @test
+    */
+    public void function createEntityImportRemoteID_should_call_extention_point_when_declared(){
+        
+        var sampleAccountData = getSampleAccountData();
+
+        // declare a mock validation-finction on the target-service
+        function createAccountImportRemoteID_spy(required string entityName, required struct data, struct mapping, boolean collectErrors){
+            this['createAccountImportRemoteID_spy_called'] = "it works";
+            return true;
+        }
+        
+        variables.service['createAccountImportRemoteID'] = createAccountImportRemoteID_spy;
+        
+        variables.service.createEntityImportRemoteID( "Account", sampleAccountData );
+
+        expect( variables.service ).toHaveKey('createAccountImportRemoteID_spy_called');
+        expect( variables.service.createAccountImportRemoteID_spy_called ).toBe('it works');
+        
+        debug(variables.service.createAccountImportRemoteID_spy_called);
+        
+        // cleanup
+        structDelete( variables.service, 'createAccountImportRemoteID_spy_called');
+        structDelete( variables.service, 'createAccountImportRemoteID');
     }
     
     
@@ -701,6 +755,34 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     }
     
     
+    /**
+     * @test
+    */
+    public void function transformAccountData_should_call_extention_point_when_declared(){
+        
+        var sampleAccountData = getSampleAccountData();
+
+        // declare a mock validation-finction on the target-service
+        function transformAccountData_spy(required string entityName, required struct data, struct mapping, boolean collectErrors){
+            this['transformAccountData_spy_called'] = "it works";
+            return {};
+        }
+        
+        variables.service['transformAccountData'] = transformAccountData_spy;
+        
+        this.getService().transformEntityData( entityName="Account", data=sampleAccountData );
+        
+        expect( variables.service ).toHaveKey('transformAccountData_spy_called');
+        expect( variables.service.transformAccountData_spy_called ).toBe('it works');
+        
+        debug(variables.service.transformAccountData_spy_called);
+        
+        // cleanup
+        structDelete( variables.service, 'transformAccountData_spy_called');
+        structDelete( variables.service, 'transformAccountData');
+    }
+
+    
 
     
     /** ***************************.  EntityQueue and FailureQueue .***************************** */
@@ -913,6 +995,37 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
             .toBe('it-does-not-matter');
     }
     
+    
+    /**
+     * @test
+    */
+    public void function processEntityImport_should_call_extention_point_when_declared(){
+        
+        var sampleAccountData = getSampleAccountData();
+
+        // declare a mock validation-finction on the target-service
+        function processAccountImport_spy(required any entity, required struct entityQueueData, ){
+            this['processAccountImport_spy_called'] = "it works";
+            return true;
+        }
+        
+        variables.service['processAccountImport'] = processAccountImport_spy;
+        
+        var data = this.getService().transformEntityData( entityName="Account", data=sampleAccountData );
+        
+        var tempAccount = this.getService().getHibachiService().newAccount();
+	    tempAccount = this.getService().processEntityImport( tempAccount, data );
+
+        
+        expect( variables.service ).toHaveKey('processAccountImport_spy_called');
+        expect( variables.service.processAccountImport_spy_called ).toBe('it works');
+        
+        debug(variables.service.processAccountImport_spy_called);
+        
+        // cleanup
+        structDelete( variables.service, 'processAccountImport_spy_called');
+        structDelete( variables.service, 'processAccountImport');
+    }
     
     
     
