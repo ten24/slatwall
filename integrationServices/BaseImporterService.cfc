@@ -386,9 +386,9 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	}
 	
 	/**
-	 * utility function to merge 2 errro sructs
+	 * utility function to merge 2 errro structs
 	 * 
-	 * Error structa looks like 
+	 * Error struct looks like 
 	 *  { 
 	 *      errorName1: ["error message one", "one more error message"] 
 	 *      errorName2: ["error message two"]
@@ -472,7 +472,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    var primaryIDPropertyName = this.getHibachiService().getPrimaryIDPropertyNameByEntityName( entityName );
 	    /**
 	      * if there's no promaryIDValue in the data, 
-	      * try to infer from the database( in case if upserts ) 
+	      * try to infer from the database( in case of upserts ) 
 	      * otherwise set it to empty string (in case of insert)
 	      * 
 	    */
@@ -525,7 +525,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	            
 	            //TODO: ( if-needed ) properly handle scenarios for -to-Many relations
 	            // if source-property for the relation already exist in the incoming-data, than it should be an array
-	            // otherwise ic the incoming-data is 1 level struct, then there will be onle one new record in the generated-array
+	            // otherwise if the incoming-data is a flat struct, then there will be only one new record in the generated-array
 	            
 	            var transformedRelationData = this.transformEntityData( relation.entityName, arguments.data );
 	            
