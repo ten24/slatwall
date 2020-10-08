@@ -423,11 +423,7 @@ class MonatCheckoutController {
 		let hardRefresh = true;
 	
 		if(this.account.accountStatusType && this.account.accountStatusType.systemCode == 'astEnrollmentPending' ) {
-			if(this.account.ownerAccount?.accountID?.length){
-				this.hasSponsor = true;
-			}else{
-				this.hasSponsor = false;
-			}
+			this.hasSponsor = this.account.ownerAccount?.accountID?.length;
 			setDefault = false;
 			hardRefresh = true;
 		}
