@@ -68,20 +68,22 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	}
 	
     private struct function getSampleAccountData(){
+        
+        var randomUsername = "nitin.yadav.test"&rand();
 	    
 	    return {
 	        
 	        remoteAccountID     : 123, 
 	        firstName           : "Nitin",  
 	        lastName            : "Yadav", 
-	        username            : "nitin.yadav", 
+	        username            : randomUsername, 
 	        companyName         : "Ten24",
 	        
 	        organizationFlag    : false,
 	        activeFlag          : "does not matter",
 	        
 	        //AccountEmailAddress
-	        email: "nitin.yadav@ten24web.com",
+	        email: randomUsername&"@ten24web.com",
 	        
 	        //AccountPhoneNumber
 	        phone: 9090909090,
@@ -699,26 +701,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     }
     
     
-    
 
-    /**
-     * @test
-    */
-    public void function transformAccountData_should_throw_for_invalid_validation_constraint(){
-        var sampleAccountData = getSampleAccountData();
-        var mapping = this.getService().getEntityMapping( 'Account' );
-
-        mapping.properties.remoteAccountID.validations["invalidConstraint"] = "whaever";
-
-        $assert.throws( function() {
-            this.getService().validateEntityData(
-                entityName="Account",
-                data = sampleAccountData,
-                collectErrors = true,
-                mapping = mapping
-            )
-        });
-    }
     
     /** ***************************.  EntityQueue and FailureQueue .***************************** */
 
@@ -727,7 +710,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     /** 
 	 * @test
 	*/
-    public void function pushRecordIntoImportQueueTest_should_enqueue_to_failureQueue(){
+    public void function pushRecordIntoImportQueueTest_should_enqueue_to_failureQueue_when_validation_fails(){
 	    
 	    var sampleAccountData = getSampleAccountData();
 	    sampleAccountData.delete('firstName');
@@ -766,7 +749,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     /** 
 	 * @test
 	*/
-    public void function pushRecordIntoImportQueueTest_should_enqueue_to_entityQueue(){
+    public void function pushRecordIntoImportQueueTest_should_enqueue_to_entityQueue_when_validation_passes(){
 	    
 	    var sampleAccountData = getSampleAccountData();
 	    
@@ -800,7 +783,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     /** 
 	 * @test
 	*/
-    public void function reQueueImportFailureTest(){
+    public void function reQueueImportFailure_should_be_able_to_enqueue_from_failure_to_entity_queue(){
 	    
 	    var sampleAccountData = getSampleAccountData();
 	    sampleAccountData.delete('firstName');
@@ -853,13 +836,10 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     /** 
 	 * @test
 	*/
-    public void function processEntityImportTest_should_not_have_errors(){
+    public void function processEntityImportTest_should_be_able_to_save_without_errors(){
 	    
 	    var sampleAccountData = getSampleAccountData();
 	    
-	    sampleAccountData['username'] = "nitin.yadav.test"&rand();
-	    sampleAccountData['email'] = sampleAccountData['username']&"@ten24web.com";
-	
 	    var transformedData = this.getService().transformEntityData("Account", sampleAccountData);
 	    debug(transformedData);
 	    
@@ -874,11 +854,10 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         
     }
     
-    
     /** 
 	 * @test
 	*/
-    public void function processEntityImportTest_should_have_errors(){
+    public void function processEntityImportTest_should_have_errors_when_entity_validations_fails(){
 	    
 	    var sampleAccountData = getSampleAccountData();
 	    sampleAccountData.delete('firstName');
@@ -896,6 +875,45 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 
 	    expect( tempAccount.hasErrors() ).toBeTrue("Account should have errors");
     }
+    
+    
+    /** 
+	 * @test
+	*/
+    public void function processEntityImportTest_should_call_post_populate_functions_on_entity_if_provided(){
+	    
+	    var tempAccount = this.getService().getHibachiService().newAccount();
+	    var sampleAccountData = getSampleAccountData();
+	    
+        var mapping = this.getService().getEntityMapping( 'Account' );
+        mapping.postPostulateMethods = ['postPopulateExampleMethod'];
+        
+        var data = this.getService().transformEntityData("Account", sampleAccountData, mapping);
+        debug(data);
+
+
+        function postPopulateExampleMethod_spy(){
+            // puting something in the THIS scope of the ENTITY so it can be verified later
+            this['postPopulateExampleMethod_called'] = 'it-does-not-matter'; 
+        }
+        tempAccount['postPopulateExampleMethod'] = postPopulateExampleMethod_spy;
+
+	
+        // it does not exist before processing
+	    expect( structKeyExists(tempAccount, 'postPopulateExampleMethod_called') ).toBe(false);
+
+	   
+	    // try to import
+	    tempAccount = this.getService().processEntityImport( tempAccount, data, mapping );
+	    
+	   
+        expect( tempAccount )
+            .toHaveKey('postPopulateExampleMethod_called');
+        expect( tempAccount.postPopulateExampleMethod_called )
+            .toBe('it-does-not-matter');
+    }
+    
+    
     
     
 }

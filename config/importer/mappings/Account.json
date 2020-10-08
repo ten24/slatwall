@@ -45,8 +45,7 @@
         },
         "activeFlag": {
             "propertyIdentifier": "activeFlag",
-            "generatorFunction":  "generate_Account_activeFlag"
-        },
+        }
     },
     
     "generatedProperties": [],
@@ -79,6 +78,6 @@
     
     "validationContext": "save",
     
-    "postPostulateMethods": [ "updateCalculatedProperties" ]
+    "postPopulateMethods": [ "updateCalculatedProperties" ]
     
 }

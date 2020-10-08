@@ -214,10 +214,10 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    return arguments.entity;
 	}
 
-	public any function processEntityImport( any entity, struct entityQueueData ){
+	public any function processEntityImport( any entity, struct entityQueueData, struct mapping ){
 	    
 	    this.getHibachiScope().setImporterPopulateFlag(true);
-	    
+
 	    var entityName = arguments.entity.getClassName();
 	    
 	    if( structKeyExists(this, 'process#entityName#_import') ){
@@ -226,27 +226,26 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    
 	    arguments.entity.populate( arguments.entityQueueData );
 	    
-	    var entityMapping = this.getEntityMapping( entityName );
-	    
+	    if( !structKeyExists(arguments, 'mapping') ){
+            arguments.mapping = this.getEntityMapping( entityName );
+        }
+
 	    // Functions to be called after populating the entity, like `updateCalculatedProperties`
-	    if( structKeyExists(entityMapping, 'postPostulateMethods') && isArray(entityMapping.postPostulateMethods) ){
-	        for( var methodName in entityMapping.postPostulateMethods ){
+	    if( structKeyExists(arguments.mapping, 'postPostulateMethods') && isArray(arguments.mapping.postPostulateMethods) ){
+	        for( var methodName in arguments.mapping.postPostulateMethods ){
 	            arguments.entity.invokeMethod( methodName );
 	        }
 	    }
 	    
-	    
 	    var entityService = this.getHibachiService().getServiceByEntityName( entityName=entityName );
 
-	    
-	    if( !structKeyExists(entityMapping, 'validationContext') ){
-	        entityMapping['validationContext'] = 'save';
+	    if( !structKeyExists(arguments.mapping, 'validationContext') ){
+	        arguments.mapping['validationContext'] = 'save';
 	    }
 
-	    
 	    arguments.entity = entityService.invokeMethod( "save"&entityName,  { 
 	        "#entityName#"  : arguments.entity, // "#entityName#" needs to be unwrapped, as variables are not allowed as keys in stucts
-	        "context"       : entityMapping.validationContext
+	        "context"       : arguments.mapping.validationContext
 	    });
 	    
 	    return arguments.entity;
