@@ -500,10 +500,8 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 					}else{
 						var defaultMessage = "Nexio server communication fault";
 					}
-					
 					var getErroMessage = getHibachiScope().getService('PublicService').getFormattedErrorMessage("Nexio","#responseData['Error']#",defaultMessage);
-					
-					arguments.responseBean.getHibachiErrors().setErrors(structnew());
+					arguments.responseBean.clearHibachiErrors()
 					arguments.responseBean.addError("Nexio error",getErroMessage);
 			}else if (!responseBean.hasErrors()) {
 				arguments.responseBean.setProviderToken(requestData.tokenex.token);
