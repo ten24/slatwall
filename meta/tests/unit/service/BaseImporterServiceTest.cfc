@@ -354,10 +354,12 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         mapping.properties.remoteAccountID.validations["testConstraint"] = "whaever";
         
         // declare a mock validation-finction on the target-service
-        variables.service['validate_testConstraint_value'] = function(any propertyValue, any constraintValue){
-            variables.service['validate_dataType_testConstraint_called'] = true;
+        function validate_testConstraint_value_spy(any propertyValue, any constraintValue){
+            this['validate_dataType_testConstraint_called'] = true;
             return true;
         }
+        
+        variables.service['validate_testConstraint_value'] = validate_testConstraint_value_spy;
 
         this.getService().validateEntityData(
             entityName="Account",
