@@ -563,7 +563,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
          * Fallback order 
          * 1. generator-function provided in the propertyMetadata
          * 
-         * 2. conventional generator-functions `generate_[entityName]_[ProertyName]` in the service, 
+         * 2. conventional generator-functions `generate_[entityName]_[examplePropertyIdentifier]` in the service, 
          *    where ProertyName ==> propertyMetaData.propertyIdentifier
          *    
          *    Ex. generate_account_activeFlag(){......}
@@ -627,7 +627,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	
 	/*****************         GENERATOR-FUNCTIONS                 ******************/
 	/**
-	    Conventional generator-functions `generate_[entityName]_[ProertyName]` in the service, 
+	    Conventional generator-functions `generate_[entityName]_[examplePropertyIdentifier]` in the service, 
         where ProertyName ==> propertyMetaData.propertyIdentifier
         
         Ex. generate_account_activeFlag(){......}

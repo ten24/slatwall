@@ -479,7 +479,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    debug(data);
 	    
 	    expect(data).toHaveKey('organizationFlag', "key organizationFlag should exist in transformed data");
-	    expect(data.organizationFlag).toBe( true, "the defaule value for organizationFlag should get inferred and should be true");
+	    expect(data.organizationFlag).toBe( false, "the defaule value for organizationFlag should get inferred and should be false");
     }
     
      
@@ -561,14 +561,14 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 
         function generate_Account_exampleProperty_spy(any propertyValue, any constraintValue){
             // puting something in the THIS scope of the SERVICE so it can be verified later
-            variables.this['generate_Account_exampleProperty_spy_called'] = 'it-does-not-matter'; 
+            this['generate_Account_exampleProperty_spy_called'] = 'it-does-not-matter'; 
             return 'example_value';
         }
         
         
         // declare a mock generator-finction on the target-service
-        // it follows the pattern `generate_[entityName]_[propertyName]`
-        variables.service['generate_Account_exampleProperty'] = generate_Account_exampleProperty_spy;
+        // it follows the pattern `generate_[entityName]_[examplePropertyIdentifier]`
+        variables.service['generate_Account_examplePropertyIdentifier'] = generate_Account_exampleProperty_spy;
 
 
         var data = this.getService().transformEntityData("Account", sampleAccountData, mapping);
@@ -583,10 +583,10 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
             .toBe('it-does-not-matter');
             
 	    expect( data )
-	        .toHaveKey('exampleProperty', "key exampleProperty should exist in transformed data");
+	        .toHaveKey('examplePropertyIdentifier', "key examplePropertyIdentifier should exist in transformed data");
 	        
-	    expect( data.exampleProperty )
-	        .toBe( 'example_value', "the defaule value for exampleProperty should get generated and should be 'example_value' ");
+	    expect( data.examplePropertyIdentifier )
+	        .toBe( 'example_value', "the defaule value for examplePropertyIdentifier should get generated and should be 'example_value' ");
        
         // cleanup
         structDelete( variables.service, 'generate_Account_exampleProperty_spy_called');
@@ -857,7 +857,8 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    
 	    var sampleAccountData = getSampleAccountData();
 	    
-	    sampleAccountData['username'] = "nitin.yadav.test";
+	    sampleAccountData['username'] = "nitin.yadav.test"&rand();
+	    sampleAccountData['email'] = sampleAccountData['username']&"@ten24web.com";
 	
 	    var transformedData = this.getService().transformEntityData("Account", sampleAccountData);
 	    debug(transformedData);

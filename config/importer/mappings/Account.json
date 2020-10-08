@@ -65,7 +65,7 @@
         {
             "type": "oneToMany",
             "entityName": "AccountAuthentication",
-            "propertyIdentifier": "accountAuthentictions",
+            "propertyIdentifier": "accountAuthentications",
         }
     ],
     
