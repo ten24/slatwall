@@ -10,12 +10,12 @@
             <ol class="breadcrumb breadcrumb-dark flex-lg-nowrap justify-content-center justify-content-lg-start">
               <li class="breadcrumb-item"><a class="text-nowrap" href="/"><i class="far fa-home"></i>Home</a></li>
               <li class="breadcrumb-item text-nowrap"><a href="##">Account</a></li>
-              <li class="breadcrumb-item text-nowrap active"><a href="##">Addresses</a></li>
+              <li class="breadcrumb-item text-nowrap active"><a href="##">Payment Methods</a></li>
             </ol>
           </nav>
         </div>
         <div class="order-lg-1 pr-lg-4 text-center text-lg-left">
-          <h1 class="h3 mb-0">My Addresses</h1>
+          <h1 class="h3 mb-0">Payment Methods</h1>
         </div>
       </div>
     </div>
@@ -41,8 +41,8 @@
               <li class="border-bottom mb-0"><a class="nav-link-style d-flex align-items-center px-4 py-3" href="##"><i class="far fa-shopping-bag pr-2"></i> Order History</a></li>
               <li class="border-bottom mb-0"><a class="nav-link-style d-flex align-items-center px-4 py-3" href="##"><i class="far fa-user pr-2"></i> Profile Info</a></li>
               <li class="border-bottom mb-0"><a class="nav-link-style d-flex align-items-center px-4 py-3" href="##"><i class="far fa-heart pr-2"></i> Favorties</a></li>
-              <li class="border-bottom mb-0"><a class="nav-link-style d-flex align-items-center px-4 py-3 active" href="##"><i class="far fa-map-marker-alt pr-2"></i> Addresses</a></li>
-              <li class="mb-0"><a class="nav-link-style d-flex align-items-center px-4 py-3" href="##"><i class="far fa-credit-card pr-2"></i> Payment Methods</a></li>
+              <li class="border-bottom mb-0"><a class="nav-link-style d-flex align-items-center px-4 py-3" href="##"><i class="far fa-map-marker-alt pr-2"></i> Addresses</a></li>
+              <li class="mb-0"><a class="nav-link-style d-flex align-items-center px-4 py-3 active" href="##"><i class="far fa-credit-card pr-2"></i> Payment Methods</a></li>
             </ul>
           </div>
         </aside>
@@ -52,7 +52,7 @@
           <!-- Toolbar-->
           <div class="d-flex justify-content-between align-items-center pt-lg-2 pb-4 pb-lg-5 mb-lg-3">
             <div class="d-flex justify-content-between w-100">
-              <h6 class="h6">List of your registered addresses:</h6>
+              <h6 class="h6">Primary payment method is used by default</h6>
             </div>
           </div>
           
@@ -60,23 +60,54 @@
             <table class="table table-hover mb-0">
               <thead>
                 <tr>
-                  <th>Address</th>
-                  <th>Actions</th>
+                  <th>Your credit / debit cards</th>
+                  <th>Name on card</th>
+                  <th>Expires on</th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td class="py-3 align-middle">396 Lillian Blvd, Holbrook, NY 11741, USA<span class="align-middle badge badge-info ml-2">Primary</span></td>
+                  <td class="py-3 align-middle">
+                    <div class="media align-items-center">
+                      <div class="media-body"><span class="font-weight-medium text-heading mr-1">Visa</span>ending in 4999<span class="align-middle badge badge-info ml-2">Primary</span></div>
+                    </div>
+                  </td>
+                  <td class="py-3 align-middle">Susan Gardner</td>
+                  <td class="py-3 align-middle">08 / 2019</td>
                   <td class="py-3 align-middle"><a class="nav-link-style mr-2" href="##" data-toggle="tooltip" title="" data-original-title="Edit"><i class="far fa-edit"></i></a><a class="nav-link-style text-primary" href="##" data-toggle="tooltip" title="" data-original-title="Remove">
                       <i class="far fa-trash-alt"></i></a></td>
                 </tr>
                 <tr>
-                  <td class="py-3 align-middle">769, Industrial, West Chicago, IL 60185, USA</td>
+                  <td class="py-3 align-middle">
+                    <div class="media align-items-center">
+                      <div class="media-body"><span class="font-weight-medium text-heading mr-1">MasterCard</span>ending in 0015</div>
+                    </div>
+                  </td>
+                  <td class="py-3 align-middle">Susan Gardner</td>
+                  <td class="py-3 align-middle">11 / 2021</td>
                   <td class="py-3 align-middle"><a class="nav-link-style mr-2" href="##" data-toggle="tooltip" title="" data-original-title="Edit"><i class="far fa-edit"></i></a><a class="nav-link-style text-primary" href="##" data-toggle="tooltip" title="" data-original-title="Remove">
                       <i class="far fa-trash-alt"></i></a></td>
                 </tr>
                 <tr>
-                  <td class="py-3 align-middle">514 S. Magnolia St. Orlando, FL 32806, USA</td>
+                  <td class="py-3 align-middle">
+                    <div class="media align-items-center">
+                      <div class="media-body"><span class="font-weight-medium text-heading mr-1">Visa</span>ending in 6073</div>
+                    </div>
+                  </td>
+                  <td class="py-3 align-middle">Susan Gardner</td>
+                  <td class="py-3 align-middle">09 / 2021</td>
+                  <td class="py-3 align-middle"><a class="nav-link-style mr-2" href="##" data-toggle="tooltip" title="" data-original-title="Edit"><i class="far fa-edit"></i></a><a class="nav-link-style text-primary" href="##" data-toggle="tooltip" title="" data-original-title="Remove">
+                      <i class="far fa-trash-alt"></i></a></td>
+                </tr>
+                <tr>
+                  <td class="py-3 align-middle">
+                    <div class="media align-items-center">
+                      <div class="media-body"><span class="font-weight-medium text-heading mr-1">Visa</span>ending in 9791</div>
+                    </div>
+                  </td>
+                  <td class="py-3 align-middle">Susan Gardner</td>
+                  <td class="py-3 align-middle">05 / 2021</td>
                   <td class="py-3 align-middle"><a class="nav-link-style mr-2" href="##" data-toggle="tooltip" title="" data-original-title="Edit"><i class="far fa-edit"></i></a><a class="nav-link-style text-primary" href="##" data-toggle="tooltip" title="" data-original-title="Remove">
                       <i class="far fa-trash-alt"></i></a></td>
                 </tr>
