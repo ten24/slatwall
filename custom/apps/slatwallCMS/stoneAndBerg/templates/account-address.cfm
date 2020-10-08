@@ -1,6 +1,5 @@
 <cfinclude template="inc/header/header.cfm" />
 
-
 <cfoutput>
 	
 	<div class="page-title-overlap bg-lightgray pt-4">
