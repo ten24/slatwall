@@ -68,7 +68,7 @@
   <!----- end demo loop data----->  
 
     <!---- product start ---->
-        <div class="col-md-4 col-sm-6 px-2 mb-4">
+        <div class="col-md-3 col-sm-6 px-2 mb-4">
           <div class="card product-card">
             <button 
                 class="btn-wishlist btn-sm" 
@@ -77,7 +77,7 @@
                 data-placement="left" 
                 title="" 
                 data-original-title="Add to wishlist">
-                    <i class="fa fa-heart"></i>
+                    <i class="fal fa-heart"></i>
             </button>
             <a class="card-img-top d-block overflow-hidden" href="/product-detail"><img src="#$.getThemePath()#/custom/client/assets/images/product-img-#local.imgCount#.png" alt="Product"></a>
           <div class="card-body py-2">
@@ -87,7 +87,7 @@
             </h3>
             <div class="d-flex justify-content-between">
               <div class="product-price">
-                <span class="text-accent">$154.<small>00</small></span> <small>LIST</small>
+                <span class="text-accent">$154.00</span> <small>$299.99 LIST</small>
               </div>
             </div>
           </div>
@@ -109,6 +109,24 @@
 
 
       </div>
+      
+      <!--- Pagination --->
+      <nav class="d-flex justify-content-between mt-5" aria-label="Page navigation">
+        <ul class="pagination">
+          <li class="page-item"><a class="page-link" href="##"><i class="far fa-chevron-left mr-2"></i> Prev</a></li>
+        </ul>
+        <ul class="pagination">
+          <li class="page-item d-sm-none"><span class="page-link page-link-static">1 / 5</span></li>
+          <li class="page-item active d-none d-sm-block" aria-current="page"><span class="page-link">1<span class="sr-only">(current)</span></span></li>
+          <li class="page-item d-none d-sm-block"><a class="page-link" href="##">2</a></li>
+          <li class="page-item d-none d-sm-block"><a class="page-link" href="##">3</a></li>
+          <li class="page-item d-none d-sm-block"><a class="page-link" href="##">4</a></li>
+          <li class="page-item d-none d-sm-block"><a class="page-link" href="##">5</a></li>
+        </ul>
+        <ul class="pagination">
+          <li class="page-item"><a class="page-link" href="##" aria-label="Next">Next <i class="far fa-chevron-right ml-2"></i></a></li>
+        </ul>
+      </nav>
 
 
       <!---- end Products Grid ---->
