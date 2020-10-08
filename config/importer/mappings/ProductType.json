@@ -1,0 +1,62 @@
+{
+    "entityName": "ProductType",
+    
+    "properties": {
+        
+        "productTypeID": {
+            "propertyIdentifier": "remoteID",
+            "validations": {
+                "required": true,
+                "dataType": "string"
+            }
+        },
+        "productTypeName": {
+            "propertyIdentifier": "productTypeName",
+            "validations": {
+                "required": true,
+                "dataType": "string"
+            }
+        },
+        "productCode": {
+            "propertyIdentifier": "productCode",
+            "validations": {
+                "dataType": "string"
+            }
+        },
+        "productTypeDescription": {
+            "propertyIdentifier": "productTypeDescription",
+            "validations": {
+                "required": true,
+                "dataType": "string"
+            }
+        },
+        "urlTitle": {
+            "propertyIdentifier": "urlTitle",
+            "validations": {
+                "required": false,
+                "dataType": "string"
+            }
+        },
+        "publishedFlag": {
+            "propertyIdentifier": "publishedFlag",
+            "defaultValue": true,
+            "validations": {
+                "dataType": "boolean"
+            }
+        },
+        "activeFlag": {
+            "propertyIdentifier": "activeFlag",
+            "defaultValue": true,
+            "validations": {
+                "dataType": "boolean"
+            }
+        }
+    },
+    "importIdentifier": {
+        "propertyIdentifier": "importRemoteID",
+        "type": "composite",
+        "keys": [
+            "productTypeID"
+        ]
+    }
+}
