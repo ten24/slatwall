@@ -427,7 +427,9 @@ class MonatCheckoutController {
 			setDefault = false;
 			hardRefresh = true;
 		}
-	
+		if(data.messages){
+			this.publicService.messages = data.messages;
+		}
 		if(!this.account.accountID.length) return;
 		this.getCurrentCheckoutScreen(setDefault, hardRefresh);
 

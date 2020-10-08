@@ -1036,10 +1036,13 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
             var employeeDomains = getService('SettingService').getSettingValue('globalEmployeeEmailDomains');
             var emailDomain = reReplace(arguments.data.emailAddress,'^.+@(.+)$','\1');
             if(listFindNoCase(employeeDomains,emailDomain)){
+                //Add Employee price group
                 var employeePriceGroup = getService('PriceGroupService').getPriceGroupByPriceGroupCode('15');
                 if(!isNull(employeePriceGroup)){
                     account.addPriceGroup(employeePriceGroup);
                 }
+                
+                //Set employee sponsor
                 var sponsor5 = getService('AccountService').getAccountByAccountNumber('5');
                 if(!isNull(sponsor5)){
                     if(account.hasParentAccountRelationship()){
@@ -1049,7 +1052,6 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                             }
                         }
                     }
-                    
                     if(!account.hasParentAccountRelationship()){
                         var accountRelationship = getService('accountService').newAccountRelationship();
                         accountRelationship.setParentAccount(sponsor5);
@@ -1058,6 +1060,8 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
                     }
                     account.setOwnerAccount(sponsor5);
                 }
+                account.setActiveFlag(false);
+                arguments.data.messages = [getHibachiScope().getRbKey('monat.employeeAccount.enrollmentMessage')];
             }
         }
         
