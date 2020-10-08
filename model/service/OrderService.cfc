@@ -5045,13 +5045,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		} else {
 			arguments.orderPayment.setOrderPaymentStatusType( getTypeService().getTypeBySystemCode('opstActive') );
 		}
-
+		var order = arguments.orderPayment.getOrder();
+		order.setCalculatedPaymentAmountDue(order.getPaymentAmountDue());
 		// Flush the statusType for the orderPayment
 		getHibachiDAO().flushORMSession();
 
 		// If no errors, attempt To Update The Order Status
 		if(!arguments.orderPayment.hasErrors()) {
-			this.processOrder(arguments.orderPayment.getOrder(), {}, 'updateStatus');
+			this.processOrder(order, {}, 'updateStatus');
 			getHibachiScope().addModifiedEntity(arguments.orderPayment.getOrder());
 			this.logHibachi('Order added to modified entities and status updated', true);
         }
@@ -5133,7 +5134,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}	
 		
 		arguments.order.setPaymentProcessingInProgressFlag(false); 
-		
 		arguments.order = this.saveOrder(arguments.order);	
 
 		return arguments.order; 
