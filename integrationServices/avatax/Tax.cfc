@@ -328,14 +328,13 @@ extends = "Slatwall.integrationServices.BaseTax" {
         
         // Set the auth and other http headers
         getAvataxService().setHttpHeaders(httpRequest, requestDataStruct);
-        
+
 		httpRequest.addParam(type="body", value=serializeJSON(requestDataStruct));
 		httpRequest.setTimeout(60);
 	
 		var responseData = httpRequest.send().getPrefix();
 
 		if (IsJSON(responseData.FileContent)){
-	
 			// a valid response was retrieved
 			// health check passed
 			responseBean.healthcheckFlag = true;
@@ -344,13 +343,19 @@ extends = "Slatwall.integrationServices.BaseTax" {
 			
 			if (structKeyExists(fileContent, 'resultCode') && fileContent.resultCode == 'Error'){
 				responseBean.setData(fileContent.messages);
+				for(var message in fileContent.messages){
+					responseBean.addError(message['RefersTo'],message['Summary']);
+				}
 			}
 			
 			if( setting('debugModeFlag') ) {
 				responseBean.addMessage("Request", serializeJSON(requestDataStruct));
 				responseBean.addMessage("Response", serializeJSON(responseData));
 			}
-
+			
+			if(structKeyExists(fileContent,'DocCode')){
+				responseBean.setData({'DocCode':fileContent['DocCode']});
+			}
 			if (structKeyExists(fileContent, 'TaxLines')){
 				// Loop over all orderItems in response
 				for(var taxLine in fileContent.TaxLines) {
@@ -412,13 +417,14 @@ extends = "Slatwall.integrationServices.BaseTax" {
 			}
 		}else if(structKeyExists(responseData,'ResponseHeader') && structKeyExists(responseData.responseHeader,'Explanation')){
 			responseBean.setData(responseData.Responseheader.Explanation);
+			responseBean.addError('error',responseData.responseHeader.Explanation);
 			logHibachi(serialize(responseBean.getData()));
 		}else{
 			logHibachi('Avatax Error: ' & serialize(responseData));
 			responseBean.setData('An Error occured when attempting to retrieve tax information');
+			responseBean.addError('error','An Error occured when attempting to retrieve tax information');
 			
 		}
-
 		return responseBean;
 	}
 	
