@@ -2077,9 +2077,9 @@ component extends="Slatwall.model.service.OrderService" {
 				try{
 					var responseBean = integrationTaxAPI.getTaxRates( taxRatesRequestBean );
 					if(!responseBean.hasErrors()){
-						arguments.order.setTaxCommitDateTime(now());
 						var data = responseBean.getData();
 						if(!isNull(data) && structKeyExists(data,'DocCode')){
+							arguments.order.setTaxCommitDateTime(now());
 							arguments.order.setTaxTransactionReferenceNumber(responseBean.getData()['DocCode']);
 						}
 					}
