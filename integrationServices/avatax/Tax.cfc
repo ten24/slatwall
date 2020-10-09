@@ -344,7 +344,7 @@ extends = "Slatwall.integrationServices.BaseTax" {
 			var fileContent = DeserializeJSON(responseData.FileContent);
 			if (structKeyExists(fileContent, 'resultCode') && fileContent.resultCode == 'Error'){
 				var getAvalaraError = fileContent.messages['1']['Summary'];
-				if(!isEmpty(getAvalaraError)){
+				if(!len(trim(getAvalaraError))){
 					var defaultMessage = getAvalaraError;
 				}else{
 					var defaultMessage = "Avalara server communication fault";
