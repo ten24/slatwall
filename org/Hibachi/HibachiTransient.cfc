@@ -180,36 +180,51 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 	/**
 	 * Helper function to for `populate()` to check if the property can be populated; 
 	*/
-    private boolean function canPopulateProperty( required struct propertyMeta ){
-       
-        if( structKeyExists(arguments.propertyMeta, "hb_populateEnabled") ){
-           
-            // populating is blocked explicitely
-            if( arguments.propertyMeta.hb_populateEnabled == false){
-                return false; 
-            }
-            
-            if( this.getHibachiScope().getPublicPopulateFlag()  && arguments.propertyMeta.hb_populateEnabled == "public" ){
-                return true;
-            }
-            
-            if( this.getHibachiScope().getWorkflowPopulateFlag() && arguments.propertyMeta.hb_populateEnabled == "workflow" ){
-                return true;
-            }
-            
-            if( this.getHibachiScope().getImporterPopulateFlag() && arguments.propertyMeta.hb_populateEnabled == "importer" ){
-                return true;
-            }
-        } 
+    private boolean function canPopulateProperty( 
+        required struct propertyMeta,  
+        string populateMode = 'default' //allowed values are [ default, public, private ]
+    ){
         
-        // population is not restricted explicitly, and it's a Transient
-        if( !this.isPersistent() ){
-            return true;
+        var propertyPopulateType = 'default';
+        
+        if( structKeyExists(arguments.propertyMeta, "hb_populateEnabled") ){
+            // allowed values are, [ false, private, public, true ]
+            propertyPopulateType = arguments.propertyMeta.hb_populateEnabled; 
         }
-           
-        if( this.getHibachiScope().authenticateEntityProperty( crudType="update", entityName=this.getClassName(), propertyName=arguments.propertyMeta.name ) ){
-            return true;
+        
+        // if the property is explicitly marked to not populate in any condition [ 'hb_populateEnabled=false' ]
+        if( propertyPopulateType == false ){
+            return false; 
         }
+        
+        // if the property is explicitly marked to populate in all conditions [ 'hb_populateEnabled=true' ]
+        // OR if the Object is a Transient
+        if( ( propertyPopulateType == true ) || !this.isPersistent() ){
+            return true; 
+        }
+        
+        // if populate-mode is PRIVATE
+        // all populate-type [ private, public, true ] can be populated in PRIVATE mode
+        if( arguments.populateMode == 'private' && listFindNoCase('private,public', propertyPopulateType) ){
+            return true; 
+        }
+        
+        // if populate-mode on is PUBLIC
+        // populate-type [ public, true ] can be populated in PRIVATE mode
+        if( arguments.populateMode == 'public' && propertyPopulateType == 'public' ){
+            return true; 
+        }
+        
+        // else the populate-mode is DEFAULT,  
+        // we'll check if current-user can perform CRUD for this property
+        return this.getHibachiScope().authenticateEntityProperty( 
+            crudType        = "update", 
+            entityName      = this.getClassName(),
+            propertyName    = arguments.propertyMeta.name 
+        );
+        
+        logHibachi("the populate-mode: #arguments.populateMode# & property-populate-type: #propertyPopulateType# are not valid for Entity: #this.getClassName()# & propertyMetaData: " & serializeJSON(arguments.propertyMeta) );
+        return false;
     }
     
     /**
@@ -243,7 +258,12 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
     /**
 	 * Helper function to for `populate()` to populate many-to-one properties; 
 	*/
-    private void function populateManyToOne( required struct propertyMeta, required struct propertyValue, formUploadDottedPath="" ){
+    private void function populateManyToOne( 
+        required struct propertyMeta, 
+        required struct propertyValue, 
+        formUploadDottedPath="", 
+        string populateMode = this.getHibachiScope().getPopulateMode(),
+    ){
         
         var entityName = listLast( arguments.propertyMeta.cfc, '.' );
         
@@ -278,7 +298,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 				_setProperty( arguments.propertyMeta.name, currentEntity );
 
 				// Populate the sub property
-				currentEntity.populate( arguments.propertyValue, arguments.formUploadDottedPath & currentPropertyName & '.' );
+				currentEntity.populate( arguments.propertyValue, arguments.formUploadDottedPath & currentPropertyName & '.', arguments.populateMode );
 
 				// Tell the variables scope that we populated this sub-property
 				this.addPopulatedSubProperty( currentPropertyName, currentEntity);
@@ -308,7 +328,13 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
     /**
 	 * Helper function to for `populate()` to populate ont-to-many properties; 
 	*/   
-    private void function populateOneToMany( required struct propertyMeta, required array propertyValue, string formUploadDottedPath="", boolean canPopulateSubProperties = true){
+    private void function populateOneToMany( 
+        required struct propertyMeta, 
+        required array propertyValue, 
+        string formUploadDottedPath="", 
+        boolean canPopulateSubProperties = true,
+        string populateMode = this.getHibachiScope().getPopulateMode();    
+    ){
         
         var entityName = listLast( arguments.propertyMeta.cfc, '.' );
 		var entityService = this.getService( "hibachiService" ).getServiceByEntityName( entityName );
@@ -338,7 +364,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 				// If there were additional values in the data array, then we use those values to populate the entity, and validating it aswell.
 				if( structCount(item) > 1) {
 					// Populate the sub property
-					thisEntity.populate( item, arguments.formUploadDottedPath&currentPropertyName&"["&i&"]."); // E.g. order.orderItems[1].
+					thisEntity.populate( item, arguments.formUploadDottedPath&currentPropertyName&"["&i&"].", arguments.populateMode ); // E.g. order.orderItems[1].
 					this.addPopulatedSubProperty(currentPropertyName, thisEntity);
 				}
 			}
@@ -399,7 +425,12 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
     }
 
 	// @hint Public populate method to utilize a struct of data that follows the standard property form format
-	public any function populate( required struct data={}, formUploadDottedPath="" ) {
+	public any function populate( 
+	    required struct data    = {}, 
+	    formUploadDottedPath    = "", 
+	    string populateMode     = this.getHibachiScope().getPopulateMode() 
+	){
+	    
 		// Call beforePopulate
 		beforePopulate(data=arguments.data);
 
