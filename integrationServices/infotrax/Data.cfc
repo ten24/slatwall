@@ -182,6 +182,7 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 				
 			case 'afterOrderProcess_placeorderSuccess':
 			case 'afterOrderProcess_updateOrderAmountsSuccess':
+			case 'afterOrderProcess_updateStatusSuccess':
 			case 'afterOrderSaveSuccess':
 			case 'afterOrderProcess_OrderCloseSuccess':
 			case 'afterOrderProcess_releaseCreditsSuccess':
