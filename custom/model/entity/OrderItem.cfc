@@ -40,6 +40,7 @@ component {
 	property name="mainCreditCardExpirationDate" persistent="false";
 	property name="mainPromotionOnOrder" persistent="false";
 	property name="netAmount" persistent="false" hb_formatType="currency";
+	property name="allowableRefundPercent" persistent="false";
 
     property name="calculatedExtendedPersonalVolume" ormtype="big_decimal" hb_formatType="none";
     property name="calculatedExtendedTaxableAmount" ormtype="big_decimal" hb_formatType="none";
@@ -213,6 +214,33 @@ component {
     
     public any function getExtendedRetailValueVolumeAfterAllDiscounts(){
         return getCustomExtendedPriceAfterAllDiscounts('retailValueVolume');
+    }
+    
+    public any function getAllowableRefundPercent(){
+        var map = [{
+                'minDays': 0,
+                'maxDays': 30,
+                'refundPercent': 100
+            },
+            {
+                'minDays': 31,
+                'maxDays': 365,
+                'refundPercent': 90
+            },
+            {
+                'minDays': 365,
+                'maxDays': 9999,
+                'refundPercent': 0
+            }];
+        if(!structKeyExists(variables,'allowableRefundPercent')){
+            var dateDiff = 0;
+        	    if(!isNull(this.getOrder().getOrderCloseDateTime())){
+            		dateDiff = dateDiff('d',this.getOrder().getOrderCloseDateTime(),now());
+        	    }
+           
+            variables.allowableRefundPercent = 80
+        }
+        return variables.allowableRefundPercent;
     }
     
     public any function getNetAmount(){

@@ -13,6 +13,9 @@ function getDecimalRep(input,scale?){
 
 class ReturnOrderItem{
     public orderItemID:string;
+    public daysSinceOrderClose:number;
+    public orderRefundMultiplier:number=1;
+    public allowableRefundPercent:number;
     public quantity:number;
     public sku_calculatedSkuDefinition:string;
     public calculatedDiscountAmount:number;
@@ -48,7 +51,7 @@ class ReturnOrderItem{
         this.total = this.calculatedExtendedPriceAfterDiscount;
         this.pvTotal = this.calculatedExtendedPersonalVolumeAfterDiscount;
         this.cvTotal = this.calculatedExtendedCommissionableVolumeAfterDiscount;
-        this.refundUnitPrice = this.calculatedExtendedUnitPriceAfterDiscount;
+        this.refundUnitPrice =  this.applyRefundMultiplier(this.calculatedExtendedUnitPriceAfterDiscount);
         this.taxTotal = this.calculatedTaxAmount;
         this.taxRefundAmount = 0;
         
@@ -63,10 +66,11 @@ class ReturnOrderItem{
         if(this.refundUnitPrice){
             this.maxRefund = this.refundUnitPrice * this.returnQuantityMaximum;
         }else{
-            this.maxRefund = this.total;
+            this.maxRefund =  this.applyRefundMultiplier(this.total);
         }
         return this;
     }
+    
     
     //  Following equations have a (this.maxRefund / this.total) term included in order to get the remaining values
     
@@ -90,6 +94,10 @@ class ReturnOrderItem{
             return getDecimalRep( (this.allocatedOrderCommissionableVolumeDiscountAmount * this.refundCVTotal * this.maxRefund / (this.cvTotal * this.total) ) );
         }
         return 0;
+    }
+
+    public applyRefundMultiplier = (value) =>{
+           return getDecimalRep(value * (this.allowableRefundPercent))
     }
 }
 
@@ -144,6 +152,7 @@ class SWReturnOrderItemsController{
                 quantity,
                 sku.calculatedSkuDefinition,
                 calculatedDiscountAmount,
+                allowableRefundPercent,
                 calculatedExtendedPriceAfterDiscount,
                 calculatedExtendedUnitPriceAfterDiscount,
                 calculatedTaxAmount,
@@ -179,7 +188,7 @@ class SWReturnOrderItemsController{
         }else{
             this.orderItems = this.refundOrderItems.map(item=>{
                 item.calculatedExtendedPriceAfterDiscount = this.orderTotal;
-                return new ReturnOrderItem( item, orderDiscountRatio )
+                return new ReturnOrderItem( item, orderDiscountRatio)
             });
         }
         
@@ -187,8 +196,12 @@ class SWReturnOrderItemsController{
             this.currencySymbol = result.data[this.currencyCode];
         })
     }
-
+    public applyRefundMultiplier = (orderItem, value) =>{
+        return getDecimalRep(value * orderItem.allowableRefundPercent)
+    }
+    
     public updateOrderItem = (orderItem,maxRefund,attemptNum) => {
+
        let orderMaxRefund:number;
        if(!attemptNum){
            attemptNum = 0;
@@ -197,11 +210,14 @@ class SWReturnOrderItemsController{
        orderItem = this.setValuesWithinConstraints(orderItem);
 
        orderItem.refundTotal = orderItem.returnQuantity * orderItem.refundUnitPrice;
+
        if(orderItem.returnQuantity > 0 && orderItem.total > 0){
-           orderItem.refundUnitPV = getDecimalRep( (orderItem.refundTotal * orderItem.pvTotal / (orderItem.total * orderItem.returnQuantity)) );
-           orderItem.refundPVTotal = getDecimalRep( (orderItem.refundUnitPV * orderItem.returnQuantity) );
-           orderItem.refundUnitCV = getDecimalRep( (orderItem.refundTotal * orderItem.cvTotal / (orderItem.total * orderItem.returnQuantity)) );
-           orderItem.refundCVTotal = getDecimalRep((orderItem.refundUnitCV * orderItem.returnQuantity));
+
+           orderItem.refundUnitPV = getDecimalRep( orderItem.refundTotal * orderItem.pvTotal / ( this.applyRefundMultiplier(orderItem, orderItem.total) * orderItem.returnQuantity) );
+           orderItem.refundPVTotal = getDecimalRep( orderItem.refundUnitPV * orderItem.returnQuantity );
+           orderItem.refundUnitCV = getDecimalRep( orderItem.refundTotal * orderItem.cvTotal / (this.applyRefundMultiplier(orderItem, orderItem.total) * orderItem.returnQuantity) );
+           orderItem.refundCVTotal = getDecimalRep( orderItem.refundUnitCV * orderItem.returnQuantity );
+
        }else{
            orderItem.refundUnitPV = 0;
            orderItem.refundPVTotal = 0;
@@ -209,24 +225,26 @@ class SWReturnOrderItemsController{
            orderItem.refundCVTotal = 0;
        }
 
-       orderItem.taxRefundAmount = getDecimalRep( orderItem.taxTotal * orderItem.returnQuantity / orderItem.quantity );
-       
+       orderItem.taxRefundAmount = getDecimalRep( this.applyRefundMultiplier(orderItem, orderItem.taxTotal * orderItem.returnQuantity / orderItem.quantity) );
+
        if('undefined' != typeof orderItem.calculatedTaxAmountNotRefunded){
             orderItem.taxRefundAmount = Math.min(orderItem.taxRefundAmount,orderItem.calculatedTaxAmountNotRefunded);
+
        }
        if(maxRefund == undefined){
            let refundTotal = this.orderItems.reduce((total:number,item:any)=>{
                return (item == orderItem) ?  total : total += item.refundTotal;
            },0);
-           
+
             orderMaxRefund = this.orderTotal - refundTotal;
             maxRefund = Math.min(orderMaxRefund,orderItem.maxRefund);
+
         }
        
        if((orderItem.refundTotal > maxRefund)){
            orderItem.refundUnitPrice = (Math.max(maxRefund,0) / orderItem.returnQuantity);
-           orderItem.refundTotal = getDecimalRep((orderItem.refundUnitPrice * orderItem.quantity));
-           orderItem.refundUnitPrice = getDecimalRep(orderItem.refundUnitPrice);
+           orderItem.refundTotal = getDecimalRep( orderItem.refundUnitPrice * orderItem.quantity);
+           orderItem.refundUnitPrice = getDecimalRep( orderItem.refundUnitPrice);
            if(attemptNum > 2){
                maxRefund += 0.01;
            }

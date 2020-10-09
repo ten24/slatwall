@@ -191,6 +191,7 @@ property name="personalVolume" ormtype="big_decimal";
 	property name="mainCreditCardExpirationDate" persistent="false";
 	property name="mainPromotionOnOrder" persistent="false";
 	property name="netAmount" persistent="false" hb_formatType="currency";
+	property name="allowableRefundPercent" persistent="false";
 
     property name="calculatedExtendedPersonalVolume" ormtype="big_decimal" hb_formatType="none";
     property name="calculatedExtendedTaxableAmount" ormtype="big_decimal" hb_formatType="none";
@@ -1422,6 +1423,38 @@ public void function refreshAmounts(){
     
     public any function getExtendedRetailValueVolumeAfterAllDiscounts(){
         return getCustomExtendedPriceAfterAllDiscounts('retailValueVolume');
+    }
+    
+    public any function getAllowableRefundPercent(){
+        var allowableRefundPercentSetting = [{
+                'minDays': 0,
+                'maxDays': 30,
+                'refundPercent': 50
+            },
+            {
+                'minDays': 31,
+                'maxDays': 365,
+                'refundPercent': 40
+            },
+            {
+                'minDays': 365,
+                'maxDays': 9999,
+                'refundPercent': 88
+            }];
+        if(!structKeyExists(variables,'allowableRefundPercent')){
+        	variables.allowableRefundPercent = 100
+            var dateDiff = 0;
+        	    if(!isNull(this.getOrder().getOrderCloseDateTime())){
+            		dateDiff = dateDiff('d',this.getOrder().getOrderCloseDateTime(),now());
+        	    }
+           for (setting in allowableRefundPercentSetting) {
+				if(dateDiff >= setting.minDays && dateDiff <= setting.maxDays){
+					variables.allowableRefundPercent = setting.refundPercent;
+				}
+			}
+			            
+        }
+        return variables.allowableRefundPercent / 100;
     }
     
     public any function getNetAmount(){
