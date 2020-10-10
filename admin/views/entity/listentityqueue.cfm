@@ -79,6 +79,7 @@ Notes:
 		personalCollectionKey='#request.context.entityactiondetails.itemname#'
 		recordDetailAction="admin:entity.detailentityqueue"
 		recordEditAction="admin:entity.editentityqueue"
+		showAutoRefresh="true"
 	>
 	</hb:HibachiListingDisplay>
 	
@@ -112,6 +113,7 @@ Notes:
 		personalCollectionKey='#request.context.entityactiondetails.itemname#_failure'
 		recordDetailAction="admin:entity.detailentityqueuefailure"
 		recordEditAction="admin:entity.editentityqueuefailure"
+		showAutoRefresh="true"
 	>
 	</hb:HibachiListingDisplay>
 	
