@@ -404,7 +404,11 @@ component extends="framework.one" {
 		
 		
 		// Verify that the session is setup
-		getHibachiScope().getService("hibachiSessionService").setProperSession();
+		if(!structKeyExists(arguments, "managesession") || arguments.managesession == true){
+			getHibachiScope().getService("hibachiSessionService").setProperSession();
+		} else {
+			getHibachiScope().setPersistSessionFlag(false);
+		}
 		
 		// CSRF / Duplicate Request Handling
 		if(structKeyExists(request, "context")){
