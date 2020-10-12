@@ -216,33 +216,6 @@ component {
         return getCustomExtendedPriceAfterAllDiscounts('retailValueVolume');
     }
     
-    public any function getAllowableRefundPercent(){
-        var map = [{
-                'minDays': 0,
-                'maxDays': 30,
-                'refundPercent': 100
-            },
-            {
-                'minDays': 31,
-                'maxDays': 365,
-                'refundPercent': 90
-            },
-            {
-                'minDays': 365,
-                'maxDays': 9999,
-                'refundPercent': 0
-            }];
-        if(!structKeyExists(variables,'allowableRefundPercent')){
-            var dateDiff = 0;
-        	    if(!isNull(this.getOrder().getOrderCloseDateTime())){
-            		dateDiff = dateDiff('d',this.getOrder().getOrderCloseDateTime(),now());
-        	    }
-           
-            variables.allowableRefundPercent = 80
-        }
-        return variables.allowableRefundPercent;
-    }
-    
     public any function getNetAmount(){
         if(!structKeyExists(variables,'netAmount')){
             variables.netAmount = getService('HibachiUtilityService').precisionCalculate(this.getExtendedPriceAfterDiscount() - this.getExtendedPersonalVolumeAfterDiscount())
@@ -285,6 +258,26 @@ component {
 		
 		return discountAmount;
 	}
+	public any function getAllowableRefundPercent(){
+        if(!structKeyExists(variables,'allowableRefundPercent')){
+	    	var map = getSku().setting('skuAllowableRefundPercentages')
+	        var dateDiff = 0;
+	        if(!isNull(this.getOrder().getOrderCloseDateTime())){
+	            dateDiff = dateDiff('d',this.getOrder().getOrderCloseDateTime(),now());
+	        }
+	        
+            variables.allowableRefundPercent = 100
+            if(!isNull(map)){
+		        map = DeserializeJSON(map);
+		        for (rule in map) {
+					if(rule.minDays <= dateDiff && rule.maxDays >= dateDiff){
+						variables.allowableRefundPercent = rule.refundPercent
+					}
+				}
+            }
+        }
+        return variables.allowableRefundPercent;
+    }
     
 	public numeric function getCustomExtendedPrice(required string priceField) {
 		if(!structKeyExists(variables,'extended#arguments.priceField#')){

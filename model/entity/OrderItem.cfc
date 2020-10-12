@@ -1425,38 +1425,6 @@ public void function refreshAmounts(){
         return getCustomExtendedPriceAfterAllDiscounts('retailValueVolume');
     }
     
-    public any function getAllowableRefundPercent(){
-        var allowableRefundPercentSetting = [{
-                'minDays': 0,
-                'maxDays': 30,
-                'refundPercent': 50
-            },
-            {
-                'minDays': 31,
-                'maxDays': 365,
-                'refundPercent': 40
-            },
-            {
-                'minDays': 365,
-                'maxDays': 9999,
-                'refundPercent': 88
-            }];
-        if(!structKeyExists(variables,'allowableRefundPercent')){
-        	variables.allowableRefundPercent = 100
-            var dateDiff = 0;
-        	    if(!isNull(this.getOrder().getOrderCloseDateTime())){
-            		dateDiff = dateDiff('d',this.getOrder().getOrderCloseDateTime(),now());
-        	    }
-           for (setting in allowableRefundPercentSetting) {
-				if(dateDiff >= setting.minDays && dateDiff <= setting.maxDays){
-					variables.allowableRefundPercent = setting.refundPercent;
-				}
-			}
-			            
-        }
-        return variables.allowableRefundPercent / 100;
-    }
-    
     public any function getNetAmount(){
         if(!structKeyExists(variables,'netAmount')){
             variables.netAmount = getService('HibachiUtilityService').precisionCalculate(this.getExtendedPriceAfterDiscount() - this.getExtendedPersonalVolumeAfterDiscount())
@@ -1499,6 +1467,26 @@ public void function refreshAmounts(){
 		
 		return discountAmount;
 	}
+	public any function getAllowableRefundPercent(){
+        if(!structKeyExists(variables,'allowableRefundPercent')){
+	    	var map = getSku().setting('skuAllowableRefundPercentages')
+	        var dateDiff = 0;
+	        if(!isNull(this.getOrder().getOrderCloseDateTime())){
+	            dateDiff = dateDiff('d',this.getOrder().getOrderCloseDateTime(),now());
+	        }
+	        
+            variables.allowableRefundPercent = 100
+            if(!isNull(map)){
+		        map = DeserializeJSON(map);
+		        for (rule in map) {
+					if(rule.minDays <= dateDiff && rule.maxDays >= dateDiff){
+						variables.allowableRefundPercent = rule.refundPercent
+					}
+				}
+            }
+        }
+        return variables.allowableRefundPercent;
+    }
     
 	public numeric function getCustomExtendedPrice(required string priceField) {
 		if(!structKeyExists(variables,'extended#arguments.priceField#')){
