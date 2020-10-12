@@ -91,6 +91,7 @@ Notes:
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="shippingMethodCode" />
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="activeFlag" />
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="publishedFlag" />
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="shippingMethodDescription" />
 		
 	</hb:HibachiListingDisplay>
 	
