@@ -1006,12 +1006,12 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         var sampleAccountData = getSampleAccountData();
 
         // declare a mock validation-finction on the target-service
-        function processAccountImport_spy(required any entity, required struct entityQueueData, ){
-            this['processAccountImport_spy_called'] = "it works";
+        function processAccount_import_spy(required any entity, required struct entityQueueData, ){
+            this['processAccount_import_spy_called'] = "it works";
             return true;
         }
         
-        variables.service['processAccountImport'] = processAccountImport_spy;
+        variables.service['processAccount_import'] = processAccount_import_spy;
         
         var data = this.getService().transformEntityData( entityName="Account", data=sampleAccountData );
         
@@ -1019,10 +1019,10 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    tempAccount = this.getService().processEntityImport( tempAccount, data );
 
         
-        expect( variables.service ).toHaveKey('processAccountImport_spy_called');
-        expect( variables.service.processAccountImport_spy_called ).toBe('it works');
+        expect( variables.service ).toHaveKey('processAccount_import_spy_called');
+        expect( variables.service.processAccount_import_spy_called ).toBe('it works');
         
-        debug(variables.service.processAccountImport_spy_called);
+        debug(variables.service.processAccount_import_spy_called);
         
         // cleanup
         structDelete( variables.service, 'processAccountImport_spy_called');

@@ -220,8 +220,8 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 
 	    var entityName = arguments.entity.getClassName();
 	    
-	    if( structKeyExists(this, 'process#entityName#Import') ){
-	        return this.invokeMethod( 'process#entityName#Import', arguments );
+	    if( structKeyExists(this, 'process#entityName#_import') ){
+	        return this.invokeMethod( 'process#entityName#_mport', arguments );
 	    }
 	    
 	    arguments.entity.populate( arguments.entityQueueData );
