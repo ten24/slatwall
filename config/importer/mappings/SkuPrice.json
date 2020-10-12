@@ -3,10 +3,9 @@
     
     "properties": {
         
-        "skuPriceID": {
+        "remoteSkuPriceID": {
             "propertyIdentifier": "remoteID",
             "validations": {
-                "required": true,
                 "dataType": "string"
             }
         },

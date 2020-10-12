@@ -3,7 +3,7 @@
 
     "properties": {
 
-        "productTypeID": {
+        "remoteProductTypeID": {
             "propertyIdentifier": "remoteID",
             "validations": {
                 "required": true,
@@ -17,8 +17,8 @@
                 "dataType": "string"
             }
         },
-        "productCode": {
-            "propertyIdentifier": "productCode",
+        "typeCode": {
+            "propertyIdentifier": "systemCode",
             "validations": {
                 "dataType": "string"
             }
@@ -26,14 +26,6 @@
         "productTypeDescription": {
             "propertyIdentifier": "productTypeDescription",
             "validations": {
-                "required": true,
-                "dataType": "string"
-            }
-        },
-        "urlTitle": {
-            "propertyIdentifier": "urlTitle",
-            "validations": {
-                "required": false,
                 "dataType": "string"
             }
         },
@@ -52,6 +44,22 @@
             }
         }
     },
+    
+    "generatedProperties" : [
+        {
+            "propertyIdentifier" : "urlTitle",
+            "generatorFunction"  : "generate_product_urlTitle"
+        },
+        {
+            "propertyIdentifier" : "productTypeIDPath",
+            "generatorFunction"  : "generate_product_productTypeIDPath"
+        },
+        {
+            "propertyIdentifier" : "productTypeNamePath",
+            "generatorFunction"  : "generate_product_productTypeNamePath"
+        }
+    ],
+    
     "importIdentifier": {
         "propertyIdentifier": "importRemoteID",
         "type": "composite",

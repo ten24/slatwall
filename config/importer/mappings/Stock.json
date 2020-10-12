@@ -1,34 +1,21 @@
 {
     "entityName": "Stock",
     
-    "properties": {
-        
-        "stockID": {
-            "propertyIdentifier": "remoteID",
-            "validations": {
-                "required": true,
-                "dataType": "string"
-            }
+    "generatedProperties" : [
+        {
+            "propertyIdentifier" : "minQuantity",
+            "generatorFunction"  : "generate_stock_minQuantity"
         },
-        "minQuantity": {
-            "propertyIdentifier": "minQuantity",
-            "validations": {
-                "required": true,
-                "dataType": "string"
-            }
-        },
-        "maxQuantity": {
-            "propertyIdentifier": "maxQuantity",
-            "validations": {
-                "dataType": "string"
-            }
+        {
+            "propertyIdentifier" : "maxQuantity",
+            "generatorFunction"  : "generate_stock_maxQuantityd"
         }
-    },
+    ],
     "importIdentifier": {
         "propertyIdentifier": "importRemoteID",
         "type": "composite",
         "keys": [
-            "stockID"
+            "remoteStockID"
         ]
     }
 }

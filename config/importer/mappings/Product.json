@@ -3,7 +3,7 @@
     
     "properties": {
         
-        "productID": {
+        "remoteProductID": {
             "propertyIdentifier": "remoteID",
             "validations": {
                 "required": true,
@@ -26,32 +26,32 @@
         "productDescription": {
             "propertyIdentifier": "productDescription",
             "validations": {
-                "required": true,
-                "dataType": "string"
-            }
-        },
-        "urlTitle": {
-            "propertyIdentifier": "urlTitle",
-            "validations": {
-                "required": true,
                 "dataType": "string"
             }
         },
         "publishedFlag": {
             "propertyIdentifier": "publishedFlag",
-            "defaultValue": false,
+            "defaultValue": true,
             "validations": {
                 "dataType": "boolean"
             }
         },
         "activeFlag": {
             "propertyIdentifier": "activeFlag",
-            "defaultValue": false,
+            "defaultValue": true,
             "validations": {
                 "dataType": "boolean"
             }
         }
     },
+    
+    "generatedProperties" : [
+        {
+            "propertyIdentifier" : "urlTitle",
+            "generatorFunction"  : "generate_product_urlTitle"
+        }
+    ],
+    
     "importIdentifier": {
         "propertyIdentifier": "importRemoteID",
         "type": "composite",

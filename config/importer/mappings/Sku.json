@@ -3,7 +3,7 @@
     
     "properties": {
         
-        "skuID": {
+        "remoteSkuID": {
             "propertyIdentifier": "remoteID",
             "validations": {
                 "required": true,
@@ -26,28 +26,14 @@
         },
         "currencyCode": {
             "propertyIdentifier": "currencyCode",
+            "defaultValue": "USD"
             "validations": {
                 "dataType": "string"
             }
         },
-        "publishedStartDateTime": {
-            "propertyIdentifier": "publishedStartDateTime",
-            "validations": {
-                "dataType": "date"
-            }
-        },
-        "publishedEndDateTime": {
-            "propertyIdentifier": "publishedEndDateTime",
-            "validations": {
-                "dataType": "date"
-            }
-        },
         "publishedFlag": {
             "propertyIdentifier": "publishedFlag",
-            "defaultValue": false,
-            "validations": {
-                "dataType": "boolean"
-            }
+            "defaultValue": true
         }
         
     },
@@ -69,8 +55,8 @@
             "propertyIdentifier": "Stock"
         },
         {
-            "entityName": "orderItems",
-            "propertyIdentifier": "OrderItem"
+            "entityName": "skuPrice",
+            "propertyIdentifier": "skuPrice"
         }
     ]
 }
