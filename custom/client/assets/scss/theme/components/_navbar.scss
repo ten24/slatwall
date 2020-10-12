@@ -11,8 +11,8 @@
   }
   .nav-link {
     padding: {
-      top: $navbar-nav-link-padding-y / 2;
-      bottom: $navbar-nav-link-padding-y / 2;
+      top: $navbar-nav-link-padding-y / 1;
+      bottom: $navbar-nav-link-padding-y / 1;
     }
   }
   .dropdown-menu {
@@ -28,7 +28,103 @@
   }
 }
 
+.navbar-brand {
+  width: 100%;
+  max-width: 450px;
+  flex: 1;
+}
+
+.navbar-topright {
+  display: flex;
+  margin-top: 20px;
+  justify-content: flex-end;
+  @include media-breakpoint-down(md) {
+    margin-top: 10px;
+  }
+  .input-group-append-overlay {
+    height: 40px;
+  }
+  .form-control {
+    height: 40px;
+    font-size: 14px;
+  }
+}
+
+.navbar-main-links ul {
+  list-style: none;
+  display: flex;
+  justify-content: flex-end;
+  margin: 20px 0 10px;
+  padding: 0;
+  li {
+    margin-left: 40px;
+  }
+  a {
+    color: $gray-900;
+  }
+  @include media-breakpoint-down(md) {
+    margin: 10px 0 0;
+    li {
+      margin-left: 20px;
+    }
+  }
+}
+
+.navbar-nav .widget-links {
+  .product-dropdown-header {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    font-weight: 500;
+    border-bottom: 1px solid $gray-300;
+  }
+  a {
+    display: block;
+    transition: $widget-transition;
+    color: $widget-links-dark-color;
+    font: {
+      size: $widget-links-font-size;
+      weight: $widget-links-font-weight;
+    }
+    &:hover {
+      color: $widget-links-dark-hover-color;
+    }
+    @include media-breakpoint-down(lg) {
+      color: $widget-links-light-color;
+      &:hover {
+        color: $white;
+      }
+    }
+  }
+  ul {
+    margin-bottom: 1em;
+    padding: 0;
+    list-style: none;
+  }
+  li {
+    margin-bottom: 1px;
+    &:last-child { margin-bottom: 0; }
+  }
+}
+
+.nav-shop-all {
+  background-color: $gray-300;
+  padding: 5px 20px;
+  font-size: 14px;
+  a {
+    color: $gray-900;
+  }
+  @include media-breakpoint-down(lg) {
+    background-color: $gray-900;
+    a {
+      color: $white;
+    }
+  }
+}
+
 // Navbar toggler
+.navbar-toggler {
+  border: 0;
+}
 .navbar-toggler:focus {
   outline: none;
 }
@@ -186,7 +282,11 @@
 @include media-breakpoint-down(md) {
   .search-box { display: none; }
 }
-
+.navbar .input-group-overlay {
+  max-width: 270px;
+  margin-left: auto;
+  margin-right: 10px;
+}
 
 // Styles for expanded navbar
 
@@ -215,9 +315,10 @@
         .navbar-nav {
           .nav-item { margin-bottom: 0; }
           .nav-link {
+            font-size: 14px;
             padding: {
-              top: $navbar-nav-link-padding-y + .125rem;
-              bottom: $navbar-nav-link-padding-y - .125rem;
+              top: 10px;
+              bottom: 10px;
             }
           }
         }
@@ -339,7 +440,7 @@
 .navbar-light {
   .nav-link > i {
     transition: $nav-link-transition;
-    color: $gray-600;
+    color: $gray-300;
   }
   .nav-item:hover .nav-link:not(.disabled),
   .nav-item:hover .nav-link:not(.disabled) > i {
@@ -352,7 +453,13 @@
   }
   .navbar-tool-icon-box {
     color: $navbar-light-tool-color;
+    position: relative;
     &.bg-secondary { background-color: $gray-200 !important; }
+    .fa-shopping-cart:before {
+      position: absolute;
+      top: 15px;
+      left: 14px;
+    }
   }
   .navbar-tool:hover {
     .navbar-tool-icon-box {
@@ -384,12 +491,15 @@
     color: $navbar-light-tool-hover-color;
   }
   .mega-nav::after {
-    background-color: $border-color;
+    background-color: $gray-300;
   }
 }
 
 // White links against a dark background
 .navbar-dark {
+  .navbar-nav .nav-link {
+    color: $gray-300;
+  }
   .nav-link > i {
     transition: $nav-link-transition;
     color: rgba($white, .5);

@@ -8,7 +8,7 @@
 
 // Grayscale
 $white:                 #fff !default;
-$gray-100:              #f6f9fc !default;
+$gray-100:              #f6f9fc !default; // lightest
 $gray-200:              #f3f5f9 !default;
 $gray-300:              #e3e9ef !default;
 $gray-400:              #dae1e7 !default;
@@ -16,12 +16,13 @@ $gray-500:              #aeb4be !default;
 $gray-600:              #7d879c !default;
 $gray-700:            	#4b566b !default;
 $gray-800:              #373f50 !default;
-$gray-900:              #2b3445 !default;
-$black:                 #000 !default;
+$gray-900:              #2b3445 !default; // darkest
+$black:                 #000 !default; 
 
 
 // Brand colors
 $brand-primary:         #5F1018 !default;
+$primary:               #5F1018 !default;
 $accent:                $brand-primary !default;
 $secondary:             $gray-200 !default;
 $info:		              #69b3fe !default;
@@ -360,10 +361,10 @@ $zindex-toast:                      1040 !default;
 
 $nav-link-padding-y:                      .75rem !default;
 $nav-link-padding-x:                      1.25rem !default;
-$nav-link-font-weight:                    normal !default;
+$nav-link-font-weight:                    600 !default;
 $nav-link-transition:                     color .25s ease-in-out, background-color .25s ease-in-out, box-shadow .25s ease-in-out, border-color .25s ease-in-out !default;
 $nav-link-icon-size:                      $font-size-base !default;
-$nav-link-disabled-color:                 $gray-600 !default;
+$nav-link-disabled-color:                 $gray-300 !default;
 
 $nav-link-dark-color:                     $gray-700 !default;
 $nav-link-dark-hover-color:               $brand-primary !default;
@@ -679,9 +680,9 @@ $step-transition:                     color .25s ease-in-out !default;
 
 $step-dark-color:                     $gray-600 !default;
 $step-dark-hover-color:               $gray-700 !default;
-$step-dark-active-color:              $gray-800 !default;
-$step-dark-progress-bg:               $gray-200 !default;
-$step-dark-progress-color:            $gray-700 !default;
+$step-dark-active-color:              $gray-900 !default;
+$step-dark-progress-bg:               $gray-500 !default;
+$step-dark-progress-color:            $white !default;
 $step-dark-progress-active-color:     $white !default;
 $step-dark-progress-active-bg:        $brand-primary !default;
 

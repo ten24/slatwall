@@ -102,26 +102,32 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 				'columns'               = header.columns,
 				'useHeaderRowAsColumns' = false
 			);
-
-			for(var error in result.errors){
-				this.getHibachiScope().addError( "line-#error.line#", 
-					"Invalid data at Line-#error.line#, #ArrayToList(error.record)#"
-				);
-			}
+			
+			 // Adding this check so it doesn't mess with the UI
+		    if( result.errors.len() <= 10 ){
+			    
+			    for( var error in result.errors ){
+    				this.getHibachiScope().addError( "line-#error.line#", "Invalid data at Line-#error.line#, #ArrayToList(error.record)#" );
+    			}
+    			
+		    } else {
+		        
+		        this.getHibachiScope().addError( "Errors in CSV", "CSV has invalid data at #result.errors.len()# lines" );
+		    }
+			
 			
 			if( result.query.recordCount ){
 
     		    var batch = this.pushRecordsIntoImportQueue( data.entityName, result.query );
     		    
-    		    if( !batch.hasErrors() ){
+    		    if( batch.getEntityQueueItemsCount() == batch.getInitialEntityQueueItemsCount() ){
     			    this.getHibachiScope().showMessage("All #batch.getInitialEntityQueueItemsCount()# items has been pushed to import-queue Successfully", "success");
     		    } 
     		    else {
-    		        this.getHibachiScope().showMessage("Some of #batch.getInitialEntityQueueItemsCount()# items has been pushed to import-queue", "success");
-    		        batch.showErrorsAndMessages();
-    		        batch.clearHibachiErrors();
+    		        this.getHibachiScope().showMessage("#batch.getEntityQueueItemsCount()# out of #batch.getInitialEntityQueueItemsCount()# items has been pushed to import-queue", "warning");
     		    }
 			} 
+			// if there's no record count in the query, then there were some issues in the parsing 
 			else {
 			    this.getHibachiScope().showMessage("Nothing got imported", "warning");
 			    this.getHibachiScope().showErrorsAndMessages();
@@ -129,6 +135,10 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 		    
 			//delete uploaded file
 			fileDelete( uploadedFilePath );
+			
+			if( !isNull(batch) ){
+			    return batch;
+			}
 		} 
 		catch ( any e ){
     		this.getHibachiScope().showMessage("An error occurred while uploading your file" & e.Message, "error");
