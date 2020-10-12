@@ -207,13 +207,13 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
         }
         
         // if populate-mode is PRIVATE
-        // only populate-type [ private, public, true ] can be populated in PRIVATE mode
+        // only populate-level [ private, public, true ] can be populated in PRIVATE mode
         if( arguments.objectPopulateMode == 'private' && listFindNoCase('private,public', propertyPopulateLevel) ){
             return true; 
         }
         
         // if populate-mode on is PUBLIC
-        // only populate-type [ public, true ] can be populated in PRIVATE mode
+        // only populate-level [ public, true ] can be populated in PRIVATE mode
         if( arguments.objectPopulateMode == 'public' && propertyPopulateLevel == 'public' ){
             return true; 
         }
@@ -226,7 +226,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
             propertyName    = arguments.propertyMeta.name 
         );
         
-        logHibachi("the populate-mode: #arguments.objectPopulateMode# & property-populate-type: #propertyPopulateLevel# are not valid for Entity: #this.getClassName()# & propertyMetaData: " & serializeJSON(arguments.propertyMeta) );
+        this.logHibachi("the populate-mode: #arguments.objectPopulateMode# & property-populate-level: #propertyPopulateLevel# are not valid for Entity: #this.getClassName()# & propertyMetaData: " & serializeJSON(arguments.propertyMeta) );
         return false;
     }
     
