@@ -18,7 +18,7 @@
 		<!--- Report DateTime GroupBy ---> 
 		<div class="col-md-12">
 			<div class="configure-bar-container">
-				<div class="col-md-6">
+				<div class="col-md-9">
 					<div class="report-btn-container">
 						<a href="" class="hibachi-report-date-group btn btn-xs btn-default<cfif attributes.report.getReportDateTimeGroupBy() eq 'hour'> active</cfif>" data-groupby="hour">Hour</a>
 						<a href="" class="hibachi-report-date-group btn btn-xs btn-default<cfif attributes.report.getReportDateTimeGroupBy() eq 'day'> active</cfif>" data-groupby="day">Day</a>
