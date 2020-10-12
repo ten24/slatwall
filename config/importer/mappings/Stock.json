@@ -1,0 +1,34 @@
+{
+    "entityName": "Stock",
+    
+    "properties": {
+        
+        "stockID": {
+            "propertyIdentifier": "remoteID",
+            "validations": {
+                "required": true,
+                "dataType": "string"
+            }
+        },
+        "minQuantity": {
+            "propertyIdentifier": "minQuantity",
+            "validations": {
+                "required": true,
+                "dataType": "string"
+            }
+        },
+        "maxQuantity": {
+            "propertyIdentifier": "maxQuantity",
+            "validations": {
+                "dataType": "string"
+            }
+        }
+    },
+    "importIdentifier": {
+        "propertyIdentifier": "importRemoteID",
+        "type": "composite",
+        "keys": [
+            "stockID"
+        ]
+    }
+}

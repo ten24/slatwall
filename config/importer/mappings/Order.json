@@ -56,5 +56,24 @@
         "keys": [
             "orderID"
         ]
-    }
+    },
+    
+    "relations": [
+        {
+            "entityName": "account",
+            "propertyIdentifier": "Account"
+        },
+        {
+            "entityName": "billingAccountAddress",
+            "propertyIdentifier": "AccountAddress"
+        },
+        {
+            "entityName": "defaultStockLocation",
+            "propertyIdentifier": "Location"
+        },
+        {
+            "entityName": "shippingAccountAddress",
+            "propertyIdentifier": "AccountAddress"
+        }
+    ]
 }

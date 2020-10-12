@@ -3,36 +3,42 @@
     
     "properties": {
         
-        "productID": {
+        "productTypeIDPath": {
             "propertyIdentifier": "remoteID",
             "validations": {
                 "required": true,
                 "dataType": "string"
             }
         },
-        "productName": {
-            "propertyIdentifier": "productName",
+        "productTypeName": {
+            "propertyIdentifier": "productTypeName",
             "validations": {
                 "required": true,
                 "dataType": "string"
             }
         },
-        "productCode": {
-            "propertyIdentifier": "productCode",
+        "Description": {
+            "propertyIdentifier": "productTypeDescription",
             "validations": {
                 "dataType": "string"
             }
         },
-        "productDescription": {
-            "propertyIdentifier": "productDescription",
+        "parentProductType": {
+            "propertyIdentifier": "parentProductType",
             "validations": {
-                "required": true,
                 "dataType": "string"
+            }
+        },
+        "activeFlag": {
+            "propertyIdentifier": "activeFlag",
+            "defaultValue": true,
+            "validations": {
+                "dataType": "boolean"
             }
         },
         "publishedFlag": {
             "propertyIdentifier": "publishedFlag",
-            "defaultValue": false,
+            "defaultValue": true,
             "validations": {
                 "dataType": "boolean"
             }
@@ -42,22 +48,7 @@
         "propertyIdentifier": "importRemoteID",
         "type": "composite",
         "keys": [
-            "productID"
+            "productTypeIDPath"
         ]
-    },
-    
-    "relations": [
-        {
-            "entityName": "brand",
-            "propertyIdentifier": "Brand"
-        },
-        {
-            "entityName": "productType",
-            "propertyIdentifier": "ProductType"
-        },
-        {
-            "entityName": "defaultSku",
-            "propertyIdentifier": "Sku"
-        }
-    ],
-    
+    }
+}

@@ -57,5 +57,20 @@
         "keys": [
             "skuID"
         ]
-    }
+    },
+    
+    "relations": [
+        {
+            "entityName": "product",
+            "propertyIdentifier": "Product"
+        },
+        {
+            "entityName": "stocks",
+            "propertyIdentifier": "Stock"
+        },
+        {
+            "entityName": "orderItems",
+            "propertyIdentifier": "OrderItem"
+        }
+    ]
 }

@@ -62,5 +62,24 @@
         "keys": [
             "orderItemID"
         ]
-    }
+    },
+    
+    "relations": [
+        {
+            "entityName": "sku",
+            "propertyIdentifier": "Sku"
+        },
+        {
+            "entityName": "stock",
+            "propertyIdentifier": "Stock"
+        },
+        {
+            "entityName": "order",
+            "propertyIdentifier": "Order"
+        },
+        {
+            "entityName": "orderFulfillment",
+            "propertyIdentifier": "OrderFulfillment"
+        }
+    ]
 }
