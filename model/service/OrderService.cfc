@@ -5106,38 +5106,41 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		getOrderDAO().turnOnPaymentProcessingFlag(arguments.order.getOrderID()); 
 		var amountToCredit = -1* order.getPaymentAmountDue();
-		for(var orderPayment in orderPayments) {
-			if(orderPayment.getStatusCode() == 'opstActive') {
-				var paymentAmount = orderPayment.getAmountUncredited();
-				if(paymentAmount > amountToCredit){
-					paymentAmount = amountToCredit;
-				}
-				var processData = {
-					transactionType = 'credit',
-					amount = paymentAmount, 
-					setOrderPaymentInvalidOnFailedTransactionFlag = false
-				};
-
-				orderPayment = this.createTransactionAndCheckErrors(orderPayment, processData);
-				
-				if(orderPayment.hasErrors() || arguments.order.hasErrors()){
-					if(!arguments.order.hasErrors()){
-						arguments.order.addErrors(orderPayment.getErrors());
-						arguments.orderPayment.clearHibachiErrors();
+		if(amountToCredit != 0){
+			for(var orderPayment in orderPayments) {
+				if(orderPayment.getStatusCode() == 'opstActive') {
+					var paymentAmount = orderPayment.getAmountUncredited();
+					if(paymentAmount > amountToCredit){
+						paymentAmount = amountToCredit;
 					}
-					var currentTryCount = arguments.order.getPaymentTryCount() + 1;
-					arguments.order.setPaymentTryCount(currentTryCount);
-					arguments.order.setPaymentLastRetryDateTime(now());
-				}else{
-					amountToCredit -= paymentAmount;
+					var processData = {
+						transactionType = 'credit',
+						amount = paymentAmount, 
+						setOrderPaymentInvalidOnFailedTransactionFlag = false
+					};
+	
+					orderPayment = this.createTransactionAndCheckErrors(orderPayment, processData);
+					
+					if(orderPayment.hasErrors() || arguments.order.hasErrors()){
+						if(!arguments.order.hasErrors()){
+							arguments.order.addErrors(orderPayment.getErrors());
+							arguments.orderPayment.clearHibachiErrors();
+						}
+						var currentTryCount = arguments.order.getPaymentTryCount() + 1;
+						arguments.order.setPaymentTryCount(currentTryCount);
+						arguments.order.setPaymentLastRetryDateTime(now());
+					}else{
+						amountToCredit -= paymentAmount;
+					}
 				}
-			}
-		}	
+			}	
+		}
+		arguments.order.setPaymentProcessingInProgressFlag(false);
+		arguments.order = this.saveOrder(arguments.order);
 		
-		arguments.order.setPaymentProcessingInProgressFlag(false); 
-		
-		arguments.order = this.saveOrder(arguments.order);	
-
+		if(arguments.order.getOrderStatusType().getSystemCode() neq 'ostClosed'){
+			order = getService('orderService').processOrder(order,{},'updateStatus');
+		}
 		return arguments.order; 
 	} 
 
