@@ -65,7 +65,7 @@ component extends="Slatwall.model.service.HibachiService" {
     }
     
     public any function getAccountActivationCode(required any account){
-        var accountID = arguments.account.getAccountID;
+        var accountID = arguments.account.getAccountID();
         var emailAddress = arguments.account.getEmailAddress();
         var code = hash(emailAddress,'md5') & accountID;
         return code;
@@ -76,7 +76,7 @@ component extends="Slatwall.model.service.HibachiService" {
         var accountID = right(arguments.accountActivationCode,32);
         var emailAddressHash = left(arguments.accountActivationCode,32);
         var account = getService('accountService').getAccount(accountID);
-        if(!isNull(account) && account.activeFlag == false){
+        if(!isNull(account) && account.getActiveFlag() == false){
             var emailAddress = account.getEmailAddress();
             if(emailAddressHash == hash(emailAddress,'md5')){
                 account.setActiveFlag(true);

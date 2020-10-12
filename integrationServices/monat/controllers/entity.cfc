@@ -22,13 +22,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	
 	public void function activateAccount(required struct rc){
 		param name="arguments.rc.code";
-		
+		// param name="arguments.rc.SRedirectURL" default="/";
 		var success = getService('MonatUtilityService').activateAccount(arguments.rc.code);
-		if(success){
-			var message = getHibachiScope().rbKey('monat.activateAccount_success');
-		}else{
-			var message = getHibachiScope().rbKey('monat.activateAccount_failure');
-		}
-		arguments.rc.messages = [message];
+		getHibachiScope().addActionResult('monat:entity.activateAccount',!success);
 	}
 }
