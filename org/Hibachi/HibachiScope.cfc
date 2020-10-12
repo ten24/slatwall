@@ -8,9 +8,6 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	property name="session" type="any";
 	property name="loggedInAsAdminFlag" type="boolean";
 	property name="objectPopulateMode" type="string" default="default"; // default, private, public
-// 	property name="publicPopulateFlag" type="boolean";
-// 	property name="workflowPopulateFlag" type="boolean";
-// 	property name="importerPopulateFlag" type="boolean";
 	property name="persistSessionFlag" type="boolean";
 	property name="sessionFoundNPSIDCookieFlag" type="boolean";
 	property name="sessionFoundPSIDCookieFlag" type="boolean";
@@ -33,9 +30,6 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	public any function init() {
 		setORMHasErrors( false );
 		setRBLocale( "en_us" );
-// 		setPublicPopulateFlag( false );
-// 		setWorkflowPopulateFlag( false );
-// 		setImporterPopulateFlag(false);
 		setPersistSessionFlag( true );
 		setSessionFoundNPSIDCookieFlag( false );
 		setSessionFoundPSIDCookieFlag( false );
