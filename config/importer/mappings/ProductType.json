@@ -48,15 +48,15 @@
     "generatedProperties" : [
         {
             "propertyIdentifier" : "urlTitle",
-            "generatorFunction"  : "generate_product_urlTitle"
+            "generatorFunction"  : "generate_productType_urlTitle"
         },
         {
             "propertyIdentifier" : "productTypeIDPath",
-            "generatorFunction"  : "generate_product_productTypeIDPath"
+            "generatorFunction"  : "generate_productType_productTypeIDPath"
         },
         {
             "propertyIdentifier" : "productTypeNamePath",
-            "generatorFunction"  : "generate_product_productTypeNamePath"
+            "generatorFunction"  : "generate_productType_productTypeNamePath"
         }
     ],
     

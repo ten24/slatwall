@@ -642,6 +642,27 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	public boolean function generate_Account_activeFlag( struct data, struct mapping, struct propertyMetaData ){
 	    return true;
 	}
+	public any function generate_brand_urlTitle( struct data, struct mapping, struct propertyMetaData ){
+	    /*** Logic to be discussed ***/
+	}
+	public any function generate_product_urlTitle( struct data, struct mapping, struct propertyMetaData ){
+	    /*** Logic to be discussed ***/
+	}
+	public any function generate_productType_urlTitle( struct data, struct mapping, struct propertyMetaData ){
+	    /*** Logic to be discussed ***/
+	}
+	public any function generate_productType_productTypeIDPath( struct data, struct mapping, struct propertyMetaData ){
+	    /*** Logic to be discussed ***/
+	}
+	public any function generate_productType_productTypeNamePath( struct data, struct mapping, struct propertyMetaData ){
+	    /*** Logic to be discussed ***/
+	}
+	public any function generate_stock_minQuantity( struct data, struct mapping, struct propertyMetaData ){
+	    /*** Logic to be discussed ***/
+	}
+	public any function generate_stock_maxQuantityd( struct data, struct mapping, struct propertyMetaData ){
+	    /*** Logic to be discussed ***/
+	}
 	
 	
 	/*****************         END : GENERATOR-FUNCTIONS                 ******************/
