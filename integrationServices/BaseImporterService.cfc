@@ -224,7 +224,10 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	        return this.invokeMethod( 'process#entityName#Import', arguments );
 	    }
 	    
-	    arguments.entity.populate( arguments.entityQueueData );
+	    arguments.entity.populate( 
+	        date = arguments.entityQueueData,
+	        objectPopulateMode = 'private'
+	    );
 	    
 	    if( !structKeyExists(arguments, 'mapping') ){
             arguments.mapping = this.getEntityMapping( entityName );
@@ -618,7 +621,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    
 	    var compositeValue =  arguments.mapping.importIdentifier.keys.reduce( function(result, key){ 
                             	        // it is expected that each key will exist in the data
-                            	        return ListAppend( result , hash( data[ key ], 'MD5' ), '_'); 
+                            	        return ListAppend( result , hash( trim( data[ key ] ), 'MD5' ), '_'); 
                         	    }, '');
         return compositeValue;
 	}

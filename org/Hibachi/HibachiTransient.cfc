@@ -180,7 +180,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 	/**
 	 * Helper function to for `populate()` to check if the property can be populated; 
 	*/
-    private boolean function canPopulateProperty( 
+    public boolean function canPopulateProperty( 
         required struct propertyMeta,  
         string objectPopulateMode = 'default' //allowed values are [ default, public, private ]
     ){
@@ -195,14 +195,14 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
             propertyPopulateLevel = arguments.propertyMeta.hb_populateEnabled; 
         }
         
-        // if the property is explicitly marked to not populate in any condition [ 'hb_populateEnabled=false' ]
-        if( !propertyPopulateLevel ){
+        // if the property is explicitly marked to not populate in any condition [ `hb_populateEnabled="false"` ]
+        if( propertyPopulateLevel == false ){
             return false; 
         }
         
-        // if the property is explicitly marked to populate in all conditions [ 'hb_populateEnabled=true' ]
+        // if the property is explicitly marked to populate in all conditions [ `hb_populateEnabled="true"` ]
         // OR if the current-Object is a Transient
-        if( propertyPopulateLevel || !this.isPersistent() ){
+        if( ( propertyPopulateLevel == true ) || !this.isPersistent() ){
             return true; 
         }
         
@@ -261,7 +261,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
     /**
 	 * Helper function to for `populate()` to populate many-to-one properties; 
 	*/
-    private void function populateManyToOne( 
+    private any function populateManyToOne( 
         required struct propertyMeta, 
         required struct manyToOneDataStruct, 
         string formUploadDottedPath="", 
@@ -330,11 +330,11 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
     /**
 	 * Helper function to for `populate()` to populate ont-to-many properties; 
 	*/   
-    private void function populateOneToMany( 
+    private any function populateOneToMany( 
         required struct propertyMeta, 
         required array oneToManyDataArray, 
         string formUploadDottedPath="", 
-        string objectPopulateMode = this.getHibachiScope().getObjectPopulateMode();    
+        string objectPopulateMode = this.getHibachiScope().getObjectPopulateMode()  
     ){
         
         var entityName = listLast( arguments.propertyMeta.cfc, '.' );
@@ -371,7 +371,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 					relatedEntity.populate( 
 					    data                    = oneToManyItemDataStruct, 
 					    formUploadDottedPath    = arguments.formUploadDottedPath&currentPropertyName&"["&i&"].", // E.g. `order.orderItems[1].`
-					    objectPopulateMode            = arguments.objectPopulateMode 
+					    objectPopulateMode      = arguments.objectPopulateMode 
 					);
 					
 					this.addPopulatedSubProperty(currentPropertyName, relatedEntity);
@@ -433,9 +433,9 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 
 	// @hint Public populate method to utilize a struct of data that follows the standard property form format
 	public any function populate( 
-	    required struct data    = {}, 
-	    formUploadDottedPath    = "", 
-	    string objectPopulateMode     = this.getHibachiScope().getObjectPopulateMode() 
+	    required struct data, 
+	    string formUploadDottedPath        = "", 
+	    string objectPopulateMode   = this.getHibachiScope().getObjectPopulateMode() 
 	){
 	    
 		// Call beforePopulate
