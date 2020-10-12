@@ -675,6 +675,7 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 		}
 		var basicAuthCredentialsBase64 = toBase64('#username#:#password#');
 		var httpRequest = new http();
+		httpRequest.setTimeout(10);
 		httpRequest.setUrl(apiUrl);
 		if(arguments.transactionName == 'transactionStatus' || arguments.transactionName == 'cardView'){
 			httpRequest.setMethod('GET');
@@ -715,8 +716,11 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 
 		if (arguments.transactionName == 'deleteToken') {
 			var responseData = {};
-			
-			responseData = deserializeJSON(httpResponse.fileContent);
+			if(isJSON(httpResponse.fileContent)){
+				responseData = deserializeJSON(httpResponse.fileContent);
+			}else{
+				responseData = httpResponse.fileContent;
+			}
 			return responseData;
 		} else {
 			var responseData = {};
@@ -725,9 +729,13 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 				arguments.responseBean.setStatusCode("ERROR");
 				
 				// Public error message
-				var responseContent = deserializeJSON( httpResponse.filecontent );
-				if ( isStruct( responseContent ) && structKeyExists( responseContent, 'message' ) ) {
-					arguments.responseBean.addError( 'serverCommunicationFault', responseContent.message );
+				if(isJSON(httpResponse.fileContent)){
+					responseData = deserializeJSON(httpResponse.fileContent);
+				}else{
+					responseData = httpResponse.fileContent;
+				}
+				if ( isStruct( responseData ) && structKeyExists( responseData, 'message' ) ) {
+					arguments.responseBean.addError( 'serverCommunicationFault', responseData.message );
 				} else {
 					arguments.responseBean.addError( 'serverCommunicationFault', "#rbKey('nexio.error.serverCommunication_public')# #httpResponse.statusCode#" );
 				}
@@ -744,19 +752,16 @@ component accessors="true" output="false" displayname="Nexio" implements="Slatwa
 					arguments.responseBean.setStatusCode(httpResponse.status_code);
 					arguments.responseBean.addMessage('errorStatusCode', "#httpResponse.status_code#");
 	
-					// Convert JSON response
-					responseData = deserializeJSON(httpResponse.fileContent);
-					
 					// ---> Comment Out:
 					// fileWrite('#logPath#/#timeSufix#_AVS_response.json',httpResponse.fileContent);
 					// Comment Out: <---
 	
 					
-					if (structKeyExists(responseData, 'error')) {
+					if ( isStruct(responseData) && structKeyExists(responseData, 'error') ) {
 						arguments.responseBean.addMessage('errorCode', "#responseData.error#");
 					}
 	
-					if (structKeyExists(responseData, 'message')) {
+					if ( isStruct(responseData) && structKeyExists(responseData, 'message') ) {
 						// Add additional instructions for unauthorized error.
 						if (httpResponse.status_code == '401') {
 							responseData.message &= ". Verify Nexio integration is configured using the proper credentials and encryption key/password.";

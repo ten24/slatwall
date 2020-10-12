@@ -1460,7 +1460,7 @@ public boolean function getUpgradeSyncFlag(){
 	
 	public void function setAllowCorporateEmailsFlag( required boolean allowCorporateEmailsFlag ){
 		
-		getService('MailchimpAPIService').updateSubscriptionByAccount( this, arguments.allowCorporateEmailsFlag )
+		getService('mailchimpService').queueSubscriptionUpdate( this, arguments.allowCorporateEmailsFlag );
 		variables.allowCorporateEmailsFlag = arguments.allowCorporateEmailsFlag;
 		
 	}//CUSTOM FUNCTIONS END
