@@ -1,0 +1,24 @@
+{
+    "entityName": "AccountAuthentication",
+    
+    "generatedProperties" : [
+        {
+            "propertyIdentifier" : "password",
+            "generatorFunction"  : "generate_accountAuthentication_password"
+        },
+        {
+            "propertyIdentifier" : "activeFlag",
+            "defaultValue" : true
+        },
+        {
+            "propertyIdentifier" : "updatePasswordOnNextLoginFlag",
+            "defaultValue" : true
+        }
+    ],
+    
+    "importIdentifier": {
+        "propertyIdentifier": "importRemoteID",
+        "type": "composite",
+        "keys": [ "remoteAccountID" ]
+    }
+}

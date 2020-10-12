@@ -67,78 +67,23 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 		}
 	}
 	
-	private struct function getAccountMapping(){
+    private struct function getSampleAccountData(){
+        
+        var randomUsername = "nitin.yadav.test"&rand();
 	    
 	    return {
 	        
-        	"entity": "Account",
-        	
-        	"properties": {
-        	    
-        	    "userID": {
-        	        "propertyIdentifier": "remoteID",
-        	        "validations": { "required": true, "dataType": "string"}
-        	    },
-        	    "firstName": {
-        		    "propertyIdentifier" : "firstName",
-        		    "validations": { "required": true, "dataType": "string" }
-        		},
-        		"lastName": {
-        		    "propertyIdentifier" : "lastName",
-        		    "validations": { "dataType": "string" }
-        		},
-        		"username": {
-        		    "propertyIdentifier" : "username",
-        		    "validations": { "required": true, "dataType": "string" }
-        		},
-                "companyName": {
-                    "propertyIdentifier": "company",
-                    "validations": {
-                        "dataType": "string"
-                    }
-                },
-                "organizationFlag": {
-                    "propertyIdentifier": "organizationFlag",
-                    "defaultValue": false,
-                    "validations": {
-                        "dataType": "boolean"
-                    }
-                }
-        	},
-        	
-        	// uniqueue identifier, to figure-out upserts of imported data ==> md5( data.accoutRemoteID + data.phoneNumber );
-        	// it is needed for scenarios where the incoming data does not have a `remoteID` but is stored in an entity in Slatwall, like `phoneNumber`  
-        	"importIdentifier": {
-        	    "propertyIdentifier": "importRemoteID", //property on the entity, should exist in all imported entities
-                "type": "composite",  // AND, OR --> TODO
-                "keys" : [ "userID", "username" ] // to generate, we'll concate the values and then md5; all of the keys must be required
-            },
-        	
-        	// Related-Entities one-to-one, one-to-many, many-to-many, many-to-one
-        	"relations": [
-        	    {
-        	        "entityName": "AccountEmailAddress",
-        	        "proeprtyIdentifier": "primaryEmailAddress", // property on the entity
-                },
-                {
-        	        "entityName": "AccountPhoneNumber",
-        	        "proeprtyIdentifier": "primaryPhoneNumber",
-                }
-            ]
-        };
-	}
-	
-    private struct function getSampleAccountData(){
-	    
-	    return {
-	        userID: 123, 
-	        firstName: "Nitin",  
-	        lastName: "Yadav", 
-	        username: 'nitin.yadav', 
-	        companyName: "Ten24",
+	        remoteAccountID     : 123, 
+	        firstName           : "Nitin",  
+	        lastName            : "Yadav", 
+	        username            : randomUsername, 
+	        companyName         : "Ten24",
+	        
+	        organizationFlag    : false,
+	        activeFlag          : "does not matter",
 	        
 	        //AccountEmailAddress
-	        email: "nitin.yadav@ten24web.com",
+	        email: randomUsername&"@ten24web.com",
 	        
 	        //AccountPhoneNumber
 	        phone: 9090909090,
@@ -261,11 +206,11 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     /**
      * @test 
     */
-    public void function getAccountCSVHeaderMetaDataTest_should_match(){
+    public void function getAccountCSVHeaderMetaData_should_match_with_given_columns(){
         var header = this.getService().getEntityCSVHeaderMetaData( 'Account' );
         debug( header );
         
-        $assert.isEqual("CompanyName,CountryCode,Email,FirstName,LastName,OrganizationFlag,Phone,UserID,Username", header.columns );
+        $assert.isEqual("ActiveFlag,CompanyName,CountryCode,Email,FirstName,LastName,OrganizationFlag,Phone,RemoteAccountID,Username", header.columns );
     }
 	
 	
@@ -274,7 +219,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	/**
 	 * @test
 	*/
-	public void function validateAccountData_should_fail(){
+	public void function validateAccountData_should_fail_for_no_data(){
 	    
 	    var validation = this.getService().validateEntityData( entityName="Account", data={}, collectErrors=false );
 	    
@@ -343,7 +288,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	/**
 	 * @test
 	*/
-	public void function validateAccountData_should_pass(){
+	public void function validateAccountData_should_pass_for_valida_data(){
 	    
 	    var sampleAccountData = getSampleAccountData();
 
@@ -379,6 +324,88 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    expect(validation.errors).toBeEmpty("the validation should pass without lastName and countryCode");
 	}
 	
+	
+    /**
+     * @test
+    */
+    public void function validateAccountData_should_throw_for_invalid_validation_constraint(){
+        var sampleAccountData = getSampleAccountData();
+        var mapping = this.getService().getEntityMapping( 'Account' );
+
+        mapping.properties.remoteAccountID.validations["invalidConstraint"] = "whaever";
+
+        $assert.throws( function() {
+            this.getService().validateEntityData(
+                entityName="Account",
+                data = sampleAccountData,
+                collectErrors = true,
+                mapping = mapping
+            )
+        });
+    }
+    
+    /**
+     * @test
+    */
+    public void function validateAccountData_should_call_overriden_validation_function(){
+        
+        var sampleAccountData = getSampleAccountData();
+        var mapping = this.getService().getEntityMapping( 'Account' );
+        mapping.properties.remoteAccountID.validations["testConstraint"] = "whaever";
+        
+        // declare a mock validation-finction on the target-service
+        function validate_testConstraint_value_spy(any propertyValue, any constraintValue){
+            this['validate_dataType_testConstraint_called'] = true;
+            return true;
+        }
+        
+        variables.service['validate_testConstraint_value'] = validate_testConstraint_value_spy;
+
+        this.getService().validateEntityData(
+            entityName="Account",
+            data = sampleAccountData,
+            collectErrors = true,
+            mapping = mapping
+        );
+        
+        expect( variables.service ).toHaveKey('validate_dataType_testConstraint_called');
+        expect( variables.service.validate_dataType_testConstraint_called ).toBeTrue();
+        
+        debug(variables.service.validate_dataType_testConstraint_called);
+        
+        // cleanup
+        structDelete( variables.service, 'validate_dataType_testConstraint_called');
+        structDelete( variables.service, 'validate_testConstraint_value');
+    }
+
+
+    /**
+     * @test
+    */
+    public void function validateAccountData_should_call_extention_point_when_declared(){
+        
+        var sampleAccountData = getSampleAccountData();
+
+        // declare a mock validation-finction on the target-service
+        function validateAccountData_spy(required string entityName, required struct data, struct mapping, boolean collectErrors){
+            this['validateAccountData_spy_called'] = "it works";
+            return {isValid:true, errors:[] };
+        }
+        
+        variables.service['validateAccountData'] = validateAccountData_spy;
+        
+        this.getService().validateEntityData( entityName="Account", data=sampleAccountData );
+        
+        expect( variables.service ).toHaveKey('validateAccountData_spy_called');
+        expect( variables.service.validateAccountData_spy_called ).toBe('it works');
+        
+        debug(variables.service.validateAccountData_spy_called);
+        
+        // cleanup
+        structDelete( variables.service, 'validateAccountData_spy_called');
+        structDelete( variables.service, 'validateAccountData');
+    }
+
 
 
 	/** ***************************.  Transform  .***************************** */
@@ -415,7 +442,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     /** 
 	 * @test
 	*/
-    public void function transformAccountDataTest_should_ignore_extra_properties(){
+    public void function transformAccountDataTest_should_ignore_extra_source_properties(){
 	    
 	    var sampleAccountData = getSampleAccountData();
 	    
@@ -456,7 +483,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     /** 
 	 * @test
 	*/
-    public void function transformAccountDataTest_importRemoteID_should_match(){
+    public void function transformAccountDataTest_importRemoteID_should_match_with_createEntityImportRemoteID(){
 	    
 	    var sampleAccountData = getSampleAccountData();
 	    
@@ -467,6 +494,165 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    
 	    expect(data.importRemoteID).toBe( importRemoteID, "importRemoteID in transformed data should match with generated-id ");
     }
+    
+    /**
+     * @test
+    */
+    public void function createEntityImportRemoteID_should_call_extention_point_when_declared(){
+        
+        var sampleAccountData = getSampleAccountData();
+
+        // declare a mock validation-finction on the target-service
+        function createAccountImportRemoteID_spy(required string entityName, required struct data, struct mapping, boolean collectErrors){
+            this['createAccountImportRemoteID_spy_called'] = "it works";
+            return true;
+        }
+        
+        variables.service['createAccountImportRemoteID'] = createAccountImportRemoteID_spy;
+        
+        variables.service.createEntityImportRemoteID( "Account", sampleAccountData );
+
+        expect( variables.service ).toHaveKey('createAccountImportRemoteID_spy_called');
+        expect( variables.service.createAccountImportRemoteID_spy_called ).toBe('it works');
+        
+        debug(variables.service.createAccountImportRemoteID_spy_called);
+        
+        // cleanup
+        structDelete( variables.service, 'createAccountImportRemoteID_spy_called');
+        structDelete( variables.service, 'createAccountImportRemoteID');
+    }
+    
+    
+    /** 
+	 * @test
+	*/
+    public void function transformAccountDataTest_should_infer_default_value_when_no_source_property(){
+	    
+	    var sampleAccountData = getSampleAccountData();
+	    
+	    sampleAccountData.delete('organizationFlag');
+
+	    
+	    var data = this.getService().transformEntityData("Account", sampleAccountData);
+	    debug(data);
+	    
+	    expect(data).toHaveKey('organizationFlag', "key organizationFlag should exist in transformed data");
+	    expect(data.organizationFlag).toBe( false, "the defaule value for organizationFlag should get inferred and should be false");
+    }
+    
+     
+    /** 
+	 * @test
+	*/
+    public void function transformAccountDataTest_should_call_generator_function_when_proviced(){
+        
+        var sampleAccountData = getSampleAccountData();
+        
+        var mapping = this.getService().getEntityMapping( 'Account' );
+        mapping.properties.activeFlag = {
+            "propertyIdentifier": "activeFlag",
+            "generatorFunction":  "generateAccountActiveFlag_spy"
+        };
+
+        function generateAccountActiveFlag_spy(any propertyValue, any constraintValue){
+            // puting something in the THIS scope of the SERVICE so it can be verified later
+            variables.this['generateAccountActiveFlag_spy_called'] = 'xxxxx-yyyyy-does-not-matter'; 
+            return true;
+        }
+        // declare a mock generator-finction on the target-service
+        variables.service['generateAccountActiveFlag_spy'] = generateAccountActiveFlag_spy;
+
+
+        var data = this.getService().transformEntityData("Account", sampleAccountData, mapping);
+        debug(data);
+
+        expect( variables.service )
+            .toHaveKey('generateAccountActiveFlag_spy_called');
+            
+        debug( variables.service.generateAccountActiveFlag_spy_called );
+        
+        expect( variables.service.generateAccountActiveFlag_spy_called )
+            .toBe('xxxxx-yyyyy-does-not-matter');
+            
+	    expect( data )
+	        .toHaveKey('activeFlag', "key activeFlag should exist in transformed data");
+	        
+	    expect( data.activeFlag )
+	        .toBe( true, "the defaule value for activeFlag should get generated and should be true");
+       
+        // cleanup
+        structDelete( variables.service, 'generateAccountActiveFlag_spy');
+        structDelete( variables.service, 'generateAccountActiveFlag_spy_called');
+    }
+    
+    
+    /** 
+	 * @test
+	*/
+    public void function transformAccountDataTest_generator_functions_should_provide_value(){
+        
+        var sampleAccountData = getSampleAccountData();
+        
+        var data = this.getService().transformEntityData("Account", sampleAccountData);
+        debug(data);
+
+	    expect( data )
+	        .toHaveKey('activeFlag', "key activeFlag should exist in transformed data");
+	        
+	    expect( data.activeFlag )
+	        .toBe( true, "the defaule value for activeFlag should get generated and should be true");
+	        
+    }
+    
+    
+    /** 
+	 * @test
+	*/
+    public void function transformAccountDataTest_should_use_conventional_generator_function_when_declared(){
+        
+        var sampleAccountData = getSampleAccountData();
+        
+        var mapping = this.getService().getEntityMapping( 'Account' );
+        mapping.properties['exampleProperty'] = {
+            "propertyIdentifier": "examplePropertyIdentifier",
+        };
+
+        function generate_Account_exampleProperty_spy(any propertyValue, any constraintValue){
+            // puting something in the THIS scope of the SERVICE so it can be verified later
+            this['generate_Account_exampleProperty_spy_called'] = 'it-does-not-matter'; 
+            return 'example_value';
+        }
+        
+        
+        // declare a mock generator-finction on the target-service
+        // it follows the pattern `generate_[entityName]_[examplePropertyIdentifier]`
+        variables.service['generate_Account_examplePropertyIdentifier'] = generate_Account_exampleProperty_spy;
+
+
+        var data = this.getService().transformEntityData("Account", sampleAccountData, mapping);
+        debug(data);
+
+        expect( variables.service )
+            .toHaveKey('generate_Account_exampleProperty_spy_called');
+            
+        debug( variables.service.generate_Account_exampleProperty_spy_called );
+        
+        expect( variables.service.generate_Account_exampleProperty_spy_called )
+            .toBe('it-does-not-matter');
+            
+	    expect( data )
+	        .toHaveKey('examplePropertyIdentifier', "key examplePropertyIdentifier should exist in transformed data");
+	        
+	    expect( data.examplePropertyIdentifier )
+	        .toBe( 'example_value', "the defaule value for examplePropertyIdentifier should get generated and should be 'example_value' ");
+       
+        // cleanup
+        structDelete( variables.service, 'generate_Account_exampleProperty_spy_called');
+        structDelete( variables.service, 'generate_Account_exampleProperty');
+    }
+    
+    
+    
     
     /** 
 	 * @test
@@ -542,13 +728,73 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    expect(data.primaryEmailAddress).toHaveKey('importRemoteID', "transformed data should have key 'importRemoteID' ");
 	    expect(data.primaryEmailAddress).toHaveKey('accountEmailAddressID',  "transformed data should have key 'accountEmailAddressID' ");
 	    
-	    expect(data.primaryEmailAddress).toHaveKey('emailAddress',  "primaryEmailAddress should have key 'phoneNumber' ");
+	    expect(data.primaryEmailAddress).toHaveKey('emailAddress',  "primaryEmailAddress should have key 'emailAddress' ");
     }
+    
     
     /** 
 	 * @test
 	*/
-    public void function pushRecordIntoImportQueueTest_should_enqueue_to_failureQueue(){
+    public void function transformAccountDataTest_should_contain_accountAuthentication_properties(){
+	    
+	    var sampleAccountData = getSampleAccountData();
+	    
+	    var data = this.getService().transformEntityData("Account", sampleAccountData);
+	    debug(data);
+	    
+	    expect(data).toHaveKey('accountAuthentications', "transformed data should have key 'accountAuthentications' ");
+	    expect(data.accountAuthentications).toBeTypeOf('array',  "accountAuthentications should be an struct ");
+	    
+	    var accountAuthentication = data.accountAuthentications[1];
+	    expect(accountAuthentication).toBeTypeOf('struct',  "accountAuthentication should be an struct ");
+	   
+	    expect(accountAuthentication).toHaveKey('importRemoteID', "transformed data should have key 'importRemoteID' ");
+	    expect(accountAuthentication).toHaveKey('accountAuthenticationID',  "transformed data should have key 'accountAuthenticationID' ");
+	    
+	    expect(accountAuthentication).toHaveKey('password',  "transformed data should have key 'password' ");
+	    expect(accountAuthentication).toHaveKey('activeFlag',  "primaryEmailAddress should have key 'activeFlag' ");
+	    expect(accountAuthentication).toHaveKey('updatePasswordOnNextLoginFlag',  "primaryEmailAddress should have key 'updatePasswordOnNextLoginFlag' ");
+    }
+    
+    
+    /**
+     * @test
+    */
+    public void function transformAccountData_should_call_extention_point_when_declared(){
+        
+        var sampleAccountData = getSampleAccountData();
+
+        // declare a mock validation-finction on the target-service
+        function transformAccountData_spy(required string entityName, required struct data, struct mapping, boolean collectErrors){
+            this['transformAccountData_spy_called'] = "it works";
+            return {};
+        }
+        
+        variables.service['transformAccountData'] = transformAccountData_spy;
+        
+        this.getService().transformEntityData( entityName="Account", data=sampleAccountData );
+        
+        expect( variables.service ).toHaveKey('transformAccountData_spy_called');
+        expect( variables.service.transformAccountData_spy_called ).toBe('it works');
+        
+        debug(variables.service.transformAccountData_spy_called);
+        
+        // cleanup
+        structDelete( variables.service, 'transformAccountData_spy_called');
+        structDelete( variables.service, 'transformAccountData');
+    }
+
+    
+
+    
+    /** ***************************.  EntityQueue and FailureQueue .***************************** */
+
+    
+    
+    /** 
+	 * @test
+	*/
+    public void function pushRecordIntoImportQueueTest_should_enqueue_to_failureQueue_when_validation_fails(){
 	    
 	    var sampleAccountData = getSampleAccountData();
 	    sampleAccountData.delete('firstName');
@@ -587,7 +833,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     /** 
 	 * @test
 	*/
-    public void function pushRecordIntoImportQueueTest_should_enqueue_to_entityQueue(){
+    public void function pushRecordIntoImportQueueTest_should_enqueue_to_entityQueue_when_validation_passes(){
 	    
 	    var sampleAccountData = getSampleAccountData();
 	    
@@ -621,7 +867,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     /** 
 	 * @test
 	*/
-    public void function reQueueImportFailureTest(){
+    public void function reQueueImportFailure_should_be_able_to_enqueue_from_failure_to_entity_queue(){
 	    
 	    var sampleAccountData = getSampleAccountData();
 	    sampleAccountData.delete('firstName');
@@ -674,12 +920,10 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
     /** 
 	 * @test
 	*/
-    public void function processEntityImportTest_should_not_have_errors(){
+    public void function processEntityImportTest_should_be_able_to_save_without_errors(){
 	    
 	    var sampleAccountData = getSampleAccountData();
 	    
-	    sampleAccountData['username'] = "nitin.yadav.test";
-	
 	    var transformedData = this.getService().transformEntityData("Account", sampleAccountData);
 	    debug(transformedData);
 	    
@@ -694,11 +938,10 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         
     }
     
-    
     /** 
 	 * @test
 	*/
-    public void function processEntityImportTest_should_have_errors(){
+    public void function processEntityImportTest_should_have_errors_when_entity_validations_fails(){
 	    
 	    var sampleAccountData = getSampleAccountData();
 	    sampleAccountData.delete('firstName');
@@ -716,6 +959,76 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 
 	    expect( tempAccount.hasErrors() ).toBeTrue("Account should have errors");
     }
+    
+    
+    /** 
+	 * @test
+	*/
+    public void function processEntityImportTest_should_call_post_populate_functions_on_entity_if_provided(){
+	    
+	    var tempAccount = this.getService().getHibachiService().newAccount();
+	    var sampleAccountData = getSampleAccountData();
+	    
+        var mapping = this.getService().getEntityMapping( 'Account' );
+        mapping.postPostulateMethods = ['postPopulateExampleMethod'];
+        
+        var data = this.getService().transformEntityData("Account", sampleAccountData, mapping);
+        debug(data);
+
+
+        function postPopulateExampleMethod_spy(){
+            // puting something in the THIS scope of the ENTITY so it can be verified later
+            this['postPopulateExampleMethod_called'] = 'it-does-not-matter'; 
+        }
+        tempAccount['postPopulateExampleMethod'] = postPopulateExampleMethod_spy;
+
+	
+        // it does not exist before processing
+	    expect( structKeyExists(tempAccount, 'postPopulateExampleMethod_called') ).toBe(false);
+
+	   
+	    // try to import
+	    tempAccount = this.getService().processEntityImport( tempAccount, data, mapping );
+	    
+	   
+        expect( tempAccount )
+            .toHaveKey('postPopulateExampleMethod_called');
+        expect( tempAccount.postPopulateExampleMethod_called )
+            .toBe('it-does-not-matter');
+    }
+    
+    
+    /**
+     * @test
+    */
+    public void function processEntityImport_should_call_extention_point_when_declared(){
+        
+        var sampleAccountData = getSampleAccountData();
+
+        // declare a mock validation-finction on the target-service
+        function processAccountImport_spy(required any entity, required struct entityQueueData, ){
+            this['processAccountImport_spy_called'] = "it works";
+            return true;
+        }
+        
+        variables.service['processAccountImport'] = processAccountImport_spy;
+        
+        var data = this.getService().transformEntityData( entityName="Account", data=sampleAccountData );
+        
+        var tempAccount = this.getService().getHibachiService().newAccount();
+	    tempAccount = this.getService().processEntityImport( tempAccount, data );
+
+        
+        expect( variables.service ).toHaveKey('processAccountImport_spy_called');
+        expect( variables.service.processAccountImport_spy_called ).toBe('it works');
+        
+        debug(variables.service.processAccountImport_spy_called);
+        
+        // cleanup
+        structDelete( variables.service, 'processAccountImport_spy_called');
+        structDelete( variables.service, 'processAccountImport');
+    }
+    
     
     
 }

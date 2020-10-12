@@ -1057,6 +1057,71 @@
 
 			return passwords;
 		}
+		
+		/**
+		 * Utility function to generate random passowrds of given @length
+		 *  Example. generateRandomPassword(10);
+		*/
+		public string function generateRandomPassword( numeric length=8 ){
+            
+            if(arguments.length<5){
+                throw("there must be at least 5 chars in the password")
+            }
+     
+    		//  Set up available lower case values. 
+    		var strLowerCaseAlpha = "abcdefghjkmnpqrstuvwxyz"; // o,i,l has been ignored as they can have confusing-font
+    		var strUpperCaseAlpha = UCase( strLowerCaseAlpha );
+    		//  Set up available numbers. 
+    		var strNumbers = "123456789"; // 0 is ignored as it can has confusing fonts for example  o,O,0
+    		//  Set up additional valid password chars. 
+    		var strOtherChars = "~!@##$%^&*";
+    	
+    		var strAllValidChars = ( strLowerCaseAlpha & strUpperCaseAlpha & strNumbers & strOtherChars );
+    		
+    		// Create an array to contain the password ( think of a string as an array of character).
+    		var arrPassword = [];
+    		/* 
+    		    Rules
+    		
+            	the password must:
+            	- must be exactly [@arguments.length] characters in length
+            	- must have at least 1 number
+            	- must have at least 1 uppercase letter
+            	- must have at least 1 lower case letter
+            */
+            
+    		//  Select the random number from our number set. 
+    		arrPassword[ 1 ] = Mid( strNumbers, RandRange( 1, Len(strNumbers) ), 1 );
+    		//  Select the random letter from our lower case set. 
+    		arrPassword[ 2 ] = Mid( strLowerCaseAlpha, RandRange( 1, Len(strLowerCaseAlpha) ), 1 );
+    		//  Select the random letter from our upper case set. 
+    		arrPassword[ 3 ] = Mid( strUpperCaseAlpha, RandRange( 1, Len(strUpperCaseAlpha) ), 1 );
+    		/* 
+            	ASSERT: At this time, we have satisfied the character
+            	requirements of the password, but NOT the length
+            	requirement. In order to do that, we must add more
+            	random characters to make up a proper length. 
+            */
+            
+    		//  Create rest of the password. 
+    		for ( var charIndex=(ArrayLen( arrPassword ) + 1) ; charIndex<= arguments.length ; charIndex++ ) {
+        		/*  Pick random value. For this character, we can choose from the entire set of valid characters. */
+        		arrPassword[ charIndex ] = Mid( strAllValidChars, RandRange( 1, Len(strAllValidChars) ), 1 );
+    		}
+    		
+    		/* 
+            	Now, we have an array that has the proper number of
+            	characters and fits the business rules. But, we don't
+            	always want the first three characters to be of the
+            	same order (by type).
+            */
+    		CreateObject( "java", "java.util.Collections" ).Shuffle( arrPassword );
+    		/* 
+            	We now have a randomly shuffled array. Now, we just need to join all the characters into a single string.
+            */
+    		return ArrayToList( arrPassword, "" );
+	    }
+
 
 		private string function getEncryptionKeyFilePath() {
 			return getEncryptionKeyLocation() & getEncryptionKeyFileName();
