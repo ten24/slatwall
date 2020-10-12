@@ -1,52 +1,45 @@
 {
-    "entityName": "ProductType",
-
+    "entityName": "Brand",
+    
     "properties": {
-
-        "productTypeID": {
+        
+        "brandID": {
             "propertyIdentifier": "remoteID",
             "validations": {
                 "required": true,
                 "dataType": "string"
             }
         },
-        "productTypeName": {
-            "propertyIdentifier": "productTypeName",
+        "brandName": {
+            "propertyIdentifier": "brandName",
             "validations": {
                 "required": true,
                 "dataType": "string"
             }
         },
-        "productCode": {
-            "propertyIdentifier": "productCode",
+        "brandWebsite": {
+            "propertyIdentifier": "brandWebsite",
             "validations": {
-                "dataType": "string"
-            }
-        },
-        "productTypeDescription": {
-            "propertyIdentifier": "productTypeDescription",
-            "validations": {
-                "required": true,
                 "dataType": "string"
             }
         },
         "urlTitle": {
             "propertyIdentifier": "urlTitle",
             "validations": {
-                "required": false,
+                "required": true,
                 "dataType": "string"
             }
         },
         "publishedFlag": {
             "propertyIdentifier": "publishedFlag",
-            "defaultValue": true,
+            "defaultValue": false,
             "validations": {
                 "dataType": "boolean"
             }
         },
         "activeFlag": {
             "propertyIdentifier": "activeFlag",
-            "defaultValue": true,
+            "defaultValue": false,
             "validations": {
                 "dataType": "boolean"
             }
@@ -56,7 +49,7 @@
         "propertyIdentifier": "importRemoteID",
         "type": "composite",
         "keys": [
-            "productTypeID"
+            "brandID"
         ]
     }
-} 
+}

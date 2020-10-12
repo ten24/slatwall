@@ -1,47 +1,50 @@
 {
-    "entityName": "ProductType",
-
+    "entityName": "`SkuPrice",
+    
     "properties": {
-
-        "productTypeID": {
+        
+        "skuPriceID": {
             "propertyIdentifier": "remoteID",
             "validations": {
                 "required": true,
                 "dataType": "string"
             }
         },
-        "productTypeName": {
-            "propertyIdentifier": "productTypeName",
+        "minQuantity": {
+            "propertyIdentifier": "minQuantity",
             "validations": {
                 "required": true,
+                "defaultValue":null,
                 "dataType": "string"
             }
         },
-        "productCode": {
-            "propertyIdentifier": "productCode",
-            "validations": {
-                "dataType": "string"
-            }
-        },
-        "productTypeDescription": {
-            "propertyIdentifier": "productTypeDescription",
+        "maxQuantity": {
+            "propertyIdentifier": "minQuantity",
             "validations": {
                 "required": true,
+                "defaultValue":null,
                 "dataType": "string"
             }
         },
-        "urlTitle": {
-            "propertyIdentifier": "urlTitle",
+        "currencyCode": {
+            "propertyIdentifier": "currencyCode",
             "validations": {
                 "required": false,
                 "dataType": "string"
             }
         },
-        "publishedFlag": {
-            "propertyIdentifier": "publishedFlag",
+        "price": {
+            "propertyIdentifier": "price",
+            "validations": {
+                "required": false,
+                "dataType": "numeric"
+            }
+        },
+        "listPrice": {
+            "propertyIdentifier": "listPrice",
             "defaultValue": true,
             "validations": {
-                "dataType": "boolean"
+                "dataType": "numeric"
             }
         },
         "activeFlag": {
@@ -56,7 +59,7 @@
         "propertyIdentifier": "importRemoteID",
         "type": "composite",
         "keys": [
-            "productTypeID"
+            "skuPriceID"
         ]
     }
-} 
+}
