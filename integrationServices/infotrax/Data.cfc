@@ -69,7 +69,8 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 	}
 	
 	private struct function postRequest(required string service, required struct requestData, string jsessionid){
-		
+		logHibachi('InfoTrax - Start API call #arguments.service#');
+
 		var requestURL = setting('liveModeFlag') ? setting('liveURL') : setting('testURL');
 		
 		if( structKeyExists(arguments, 'jsessionid') ){
@@ -118,7 +119,9 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 			}
 			throw(response['MESSAGE'] & ' - ' & response['DETAIL']);
 		}
-		
+
+		logHibachi('InfoTrax - Response: #serializeJson(response)#');
+
 		return response;
 	}
 	
@@ -179,6 +182,7 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 				
 			case 'afterOrderProcess_placeorderSuccess':
 			case 'afterOrderProcess_updateOrderAmountsSuccess':
+			case 'afterOrderProcess_updateStatusSuccess':
 			case 'afterOrderSaveSuccess':
 			case 'afterOrderProcess_OrderCloseSuccess':
 			case 'afterOrderProcess_releaseCreditsSuccess':
@@ -230,8 +234,7 @@ component accessors='true' output='false' displayname='InfoTrax' extends='Slatwa
 			default:
 				return;
 		}
-		
-		
+				
 		if(structKeyExists(iceResponse, 'returnserialnumber')){
 			
 			var hasErrors = structKeyExists(iceResponse, 'errors') && arrayLen(iceResponse.errors);

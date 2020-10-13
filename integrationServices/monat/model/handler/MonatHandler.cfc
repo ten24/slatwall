@@ -157,16 +157,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiE
 					
 				}
 				
-				//TODO: Move this logic to account save
-				// // Email opt-in when finishing enrollment
-				// if ( !isNull(account.getAllowCorporateEmailsFlag()) && account.getAllowCorporateEmailsFlag() ) {
-				// 	try{
-				// 		getService('MailchimpAPIService').addMemberToListByAccount( account );
-				// 	}catch(any e){
-				// 		logHibachi("afterOrderProcess_placeOrderSuccess failed @ addMemberToListByAccount for #account.getAccountID()#");
-				// 	}
-				// }
-				
 				getHibachiEventService().announceEvent('afterAccount#account.getAccountType()#EnrollmentSuccess', {'account':account, 'entity':account}); 
 				getHibachiEventService().announceEvent('afterAccountEnrollmentSuccess', {'account':account, 'entity':account}); 
 

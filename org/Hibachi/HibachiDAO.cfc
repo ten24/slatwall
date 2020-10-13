@@ -58,7 +58,7 @@
 
 
 		public any function new( required string entityName ) {
-			// Adds the Applicatoin Prefix to the entityName when needed.
+			// Adds the Application Prefix to the entityName when needed.
 			if(left(arguments.entityName, len(getApplicationKey()) ) != getApplicationKey()) {
 				arguments.entityName = "#getApplicationKey()##arguments.entityName#";
 			}
