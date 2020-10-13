@@ -4361,13 +4361,13 @@ table.s-detail-content-table tbody tr.s-done {
 	}
 	
 	.hibachi-report-date-group, .hibachi-report-date-group-custom-toggle {
-		padding: 4px 16px; 
+		padding: 3px 30px; 
 		margin-right: 8px; 
 		background: none; 
-		border: 2px solid #707070; 
-		color: #707070; 
+		border: 2px solid lighten(#707070, 30%); 
+		color: lighten(#707070, 30%); 
 		border-radius: 32px; 
-		font-size: 15px;
+		font-size: 13px;
 	}
 	
 	.hibachi-report-date-group:hover, 
@@ -4375,16 +4375,16 @@ table.s-detail-content-table tbody tr.s-done {
 	.hibachi-report-date-group-custom-toggle:hover, 
 	.hibachi-report-date-group-custom-toggle:active,
 	{
-		background: lighten(@brand-ten24, 20%);	
-		border: 2px solid #4e4e4e; 
-		color: #4e4e4e; 
+		border: 2px solid #707070; 
+		color: #707070;  
 	}
 	
 	.hibachi-report-date-group + .active {
-		color: #4e4e4e;
+		color: #707070;
 		font-weight: 700;
-		border: 2px solid #4e4e4e;
-		background: lighten(@brand-ten24, 25%);	
+		border: 2px solid #707070;
+		background: none;
+		box-shadow: none;
 	}
 	
 	.col span .save-icon{
