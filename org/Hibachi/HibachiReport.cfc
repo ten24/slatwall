@@ -302,16 +302,16 @@
 
 	<cffunction name="getReportStartDateTime" access="public" output="false">
 		<cfif not structKeyExists(variables, "reportStartDateTime")>
-			<cfset variables.reportStartDateTime = dateFormat(now() - 30, "yyyy-mm-dd") />
+			<cfset variables.reportStartDateTime = dateFormat(now() - 30, "yyyy-mm-dd HH:nn:ss") />
 		</cfif>
-		<cfreturn dateFormat(variables.reportStartDateTime,"yyyy-mm-dd") />
+		<cfreturn dateTimeFormat(variables.reportStartDateTime,"yyyy-mm-dd HH:nn:ss") />
 	</cffunction>
 
 	<cffunction name="getReportEndDateTime" access="public" output="false">
 		<cfif not structKeyExists(variables, "reportEndDateTime")>
-			<cfset variables.reportEndDateTime = dateFormat(now(), "yyyy-mm-dd") />
+			<cfset variables.reportEndDateTime = dateFormat(now(), "yyyy-mm-dd HH:nn:ss") />
 		</cfif>
-		<cfreturn dateFormat(variables.reportEndDateTime,"yyyy-mm-dd") />
+		<cfreturn dateTimeFormat(variables.reportEndDateTime,"yyyy-mm-dd HH:nn:ss") />
 	</cffunction>
 
 	<cffunction name="getReportCompareStartDateTime" access="public" output="false">
