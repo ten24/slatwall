@@ -40,6 +40,14 @@
         }
     ],
     
+    "relations": [
+        {
+            "type": "manyToOne",
+            "entityName": "Product",
+            "propertyIdentifier": "Product"
+        }
+    ],
+    
     "importIdentifier": {
         "propertyIdentifier": "importRemoteID",
         "type": "composite",
