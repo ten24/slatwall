@@ -80,8 +80,6 @@ extends = "Slatwall.integrationServices.BaseTax" {
 	}
 	
 	public any function getTaxRates(required any requestBean) {
-		
-		
 		// Create new TaxRatesResponseBean to be populated with XML Data retrieved from Quotation Request
 		var responseBean = new Slatwall.model.transient.tax.TaxRatesResponseBean();
 		responseBean.healthcheckFlag = false;
@@ -349,7 +347,7 @@ extends = "Slatwall.integrationServices.BaseTax" {
 				}else{
 					var defaultMessage = "Avalara server communication fault";
 				}
-				var getErroMessage = getHibachiScope().getService('PublicService').getFormattedErrorMessage("Avalara",fileContent.resultCode,defaultMessage);
+				var getErroMessage = getHibachiScope().getService('HibachiUtilityService').getFormattedErrorMessage("Avalara",fileContent.resultCode,defaultMessage);
 				responseBean.clearHibachiErrors();
 				responseBean.addError("Avalara error",getErroMessage);
 				responseBean.setData(fileContent.messages);

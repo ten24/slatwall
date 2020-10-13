@@ -807,6 +807,20 @@ Notes:
 		return total;
 	}
 	
+	public string function getFormattedErrorMessage(any integrationName,any errorCode,string fallbackMessage){
+        
+        var getRbkeyMsg = getHibachiScope().rbKey('#integrationName#_errorcode_#errorCode#');
+        var searchMissingIndex = find("missing",getRbkeyMsg);
+        if(searchMissingIndex > 0){
+            //If error message is not found in RB keys
+            var errorMsg = arguments.fallbackMessage;
+        }else{
+            var errorMsg = getRbkeyMsg;
+        }
+        
+        return errorMsg;
+    }
+	
 	</cfscript>
 
 </cfcomponent>
