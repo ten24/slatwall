@@ -1783,52 +1783,7 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 		}
 	}
 	
-	function generatChart(){
-		
-		console.log("<---------- generatChart")
-		// var ctx = jQuery("#hibachi-report-chart")[0].getContext("2d");
-		// 					var chart = new Chart(ctx, {
-		// 					    type: r.report.chartData.data.type,
-		// 					    data: {
-		// 					        datasets: [{
-		// 					            label: r.report.chartData.series[0].label,
-		// 					            data: r.report.chartData.series[0].data,
-		// 					            borderColor: [
-		// 					                '#f38631'
-		// 					            ],
-		// 					            pointBackgroundColor: "#f38631",
-		// 					            pointBorderColor: "#f38631",
-		// 					            fill: false,
-		// 					            borderWidth: 3,
-		// 					            lineTension: 0
-		// 					        }]
-		// 					    },
-		// 					    options: {
-		// 					        scales: {
-		// 					            yAxes: [{
-		// 					                ticks: {
-		// 					                    beginAtZero: true
-		// 					                }
-		// 					            }],
-		// 					            xAxes: [{
-		// 					            	type: 'time',
-		// 					            	ticks: {
-		// 					            		source: 'data',
-		// 					            	},
-		// 					            	time: {
-		// 					            		parser: 'string',
-		// 					            		unit: r.report.reportDateTimeGroupBy,
-		// 					            		stepSize: 1,
-		// 					            	}
-		// 					            }]
-		// 					        },
-		// 					        legend: {
-		// 					        	display: false
-		// 					        }
-		// 					    }
-		// 					});	
-		
-	}
+
 	
 	function updateReport( page ) {
 		if(jQuery("#hibachi-report").length){
@@ -1946,7 +1901,6 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 						jQuery("#hibachi-report-table").show();
 					}
 						
-					//jQuery('#hibachi-report-configure-bar').html(r.report.configureBar);		
 					initUIElements('#hibachi-report');
 					removeLoadingDiv( 'hibachi-report' );
 				}

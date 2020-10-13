@@ -106,7 +106,7 @@ class SWStatWidgetController {
         metricCollection.getEntity().then((data) => {
             if (data["pageRecords"] && data["pageRecords"].length > 0) {
                 if (data["pageRecords"][0]["averageOrderTotal"] !== " ") {
-                    this.metric = "$" + data["pageRecords"][0]["averageOrderTotal"];
+                    this.metric = "$" + data["pageRecords"][0]["averageOrderTotal"].toFixed(2);
                 } else {
                     this.metric = "$0"
                 }

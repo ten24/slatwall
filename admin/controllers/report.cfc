@@ -60,11 +60,11 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	public void function default(required struct rc) {
 		param name="arguments.rc.reportID" default="";
 		
-		rc.orderCollectionList = getOrderService().getOrderCollectionList();
-		rc.orderCollectionList.setDisplayProperties('orderNumber,account.calculatedFullName,orderOpenDateTime,orderStatusType.typeName,calculatedTotal',{isVisible:true});
-		rc.orderCollectionList.addDisplayProperty('orderID',javacast('null',''),{hidden=true});
-		rc.orderCollectionList.addFilter('orderStatusType.systemCode','ostNotPlaced','!=');
-		rc.orderCollectionList.setOrderBy('orderOpenDateTime|DESC');
+		arguments.rc.orderCollectionList = getOrderService().getOrderCollectionList();
+		arguments.rc.orderCollectionList.setDisplayProperties('orderNumber,account.calculatedFullName,orderOpenDateTime,orderStatusType.typeName,calculatedTotal',{isVisible:true});
+		arguments.rc.orderCollectionList.addDisplayProperty('orderID',javacast('null',''),{hidden=true});
+		arguments.rc.orderCollectionList.addFilter('orderStatusType.systemCode','ostNotPlaced','!=');
+		arguments.rc.orderCollectionList.setOrderBy('orderOpenDateTime|DESC');
 
 		if(!arguments.rc.ajaxRequest) {
 			var savedReportsSmartList = getHibachiReportService().getReportSmartList();

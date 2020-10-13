@@ -9,7 +9,24 @@ class SWReportConfigurationBarController{
     public customReportStartDateTime;
     public customReporEndDateTime;
     public endDateTime;
+    public name = "tom";
     public period = "day";
+    public startOfToday 
+    public endOfToday
+    public startOfMonth
+    public endOfMonth
+    public endOfHour
+    public startOfYear
+    public endOfYear
+    public lastTwentyFourHours
+    public lastTwoWeeks
+    public weekGrouping
+    public monthGrouping
+    public siteCollectionList
+    
+    
+    
+    
     constructor(    
     	    private $scope,
 			public observerService
@@ -17,26 +34,26 @@ class SWReportConfigurationBarController{
 
     	
     	const now = new Date()
-		$scope.startOfToday = '{ts \'' + new Date(  now.getFullYear(),   now.getMonth(),  now.getDate(), 0).toString('yyyy-MM-dd HH:mm:ss') + '\'}'
-		$scope.eodData = new Date( now.getFullYear(),  now.getMonth(), now.getDate(), 23,59,59)
-		$scope.endOfToday ='{ts \'' +  $scope.eodData.toString('yyyy-MM-dd HH:mm:ss') + '\'}'
-		$scope.startOfMonth = '{ts \'' + new Date( now.getFullYear(),  now.getMonth() , 1).toString('yyyy-MM-dd HH:mm:ss') + '\'}'
-		$scope.eomData = new Date(now.getFullYear(), now.getMonth() + 1, 1) //correct  this month
-		$scope.endOfMonth = '{ts \'' + $scope.eomData.toString('yyyy-MM-dd HH:mm:ss') + '\'}'
-		$scope.eohData =  new Date( now.getFullYear(),  now.getMonth(), now.getDate(),now.getHours(), 59,59) // correct
-		$scope.endOfHour = '{ts \'' +  $scope.eohData.toString('yyyy-MM-dd HH:mm:ss') + '\'}'
-		$scope.startOfYear =  '{ts \'' + new Date( now.getFullYear()-10,  0).toString('yyyy-MM-dd HH:mm:ss') + '\'}'
-		$scope.endOfYear = '{ts \'' +  new Date( now.getFullYear() +1,  now.getMonth(), 1).toString('yyyy-MM-dd HH:mm:ss') + '\'}'
-		$scope.lastTwentyFourHours = '{ts \'' +   new Date(	$scope.eohData).addDays(-1).toString('yyyy-MM-dd HH:mm:ss') + '\'}'
-		$scope.lastTwoWeeks = '{ts \'' +   new Date(	$scope.eodData).addDays(-13).toString('yyyy-MM-dd HH:mm:ss') + '\'}'
-		$scope.weekGrouping =  '{ts \'' +  new Date(	$scope.eodData).addWeeks(-11).toString('yyyy-MM-dd HH:mm:ss') + '\'}'
-		$scope.monthGrouping = '{ts \'' +   new Date(	$scope.eomData).addMonths(-11).toString('yyyy-MM-dd HH:mm:ss') + '\'}'
+		this.startOfToday = '{ts \'' + new Date(  now.getFullYear(),   now.getMonth(),  now.getDate(), 0).toString('yyyy-MM-dd HH:mm:ss') + '\'}'
+		let eodData = new Date( now.getFullYear(),  now.getMonth(), now.getDate(), 23,59,59)
+		this.endOfToday ='{ts \'' +  eodData.toString('yyyy-MM-dd HH:mm:ss') + '\'}'
+		this.startOfMonth = '{ts \'' + new Date( now.getFullYear(),  now.getMonth() , 1).toString('yyyy-MM-dd HH:mm:ss') + '\'}'
+		let eomData = new Date(now.getFullYear(), now.getMonth() + 1, 1) //correct  this month
+		this.endOfMonth = '{ts \'' + eomData.toString('yyyy-MM-dd HH:mm:ss') + '\'}'
+		let eohData =  new Date( now.getFullYear(),  now.getMonth(), now.getDate(),now.getHours(), 59,59) // correct
+		this.endOfHour = '{ts \'' +  eohData.toString('yyyy-MM-dd HH:mm:ss') + '\'}'
+		this.startOfYear =  '{ts \'' + new Date( now.getFullYear()-10,  0).toString('yyyy-MM-dd HH:mm:ss') + '\'}'
+		this.endOfYear = '{ts \'' +  new Date( now.getFullYear() +1,  now.getMonth(), 1).toString('yyyy-MM-dd HH:mm:ss') + '\'}'
+		this.lastTwentyFourHours = '{ts \'' +   new Date(	eohData).addDays(-1).toString('yyyy-MM-dd HH:mm:ss') + '\'}'
+		this.lastTwoWeeks = '{ts \'' +   new Date(	eodData).addDays(-13).toString('yyyy-MM-dd HH:mm:ss') + '\'}'
+		this.weekGrouping =  '{ts \'' +  new Date(	eodData).addWeeks(-11).toString('yyyy-MM-dd HH:mm:ss') + '\'}'
+		this.monthGrouping = '{ts \'' +   new Date(	eomData).addMonths(-11).toString('yyyy-MM-dd HH:mm:ss') + '\'}'
 		$scope.$watch('swReportConfigurationBar.site', ()=>{
         	this.observerService.notify('swReportConfigurationBar_SiteUpdate', this.site.siteID);
 		});
-		this.customReportStartDateTime =  new Date(	$scope.eomData).addMonths(-11)
-		this.customReporEndDateTime = $scope.eomData
-    	this.site = $scope.swReportConfigurationBar.siteCollectionList[0]
+		this.customReportStartDateTime =  new Date(	eomData).addMonths(-11)
+		this.customReporEndDateTime = eomData
+    	this.site = this.siteCollectionList[0]
 
     }
         changeTimeRange = (period, startTime, endTime )=>{
@@ -84,19 +101,21 @@ class SWReportConfigurationBar implements ng.IDirective {
 	public controllerAs = "swReportConfigurationBar";
 	public scope = {};
 	public bindToController = {
-			// startOfToday : "@?",
-   //         endOfToday: "@?",
-   //         startOfMonth : "@?",
-   //         endOfMonth: "@?",
-   //         endOfHour: "@?",
-   //         startOfYear : "@?",
-   //         endOfYear: "@?",
-   //         lastTwentyFourHours: "@?",
-   //         lastTwoWeeks: "@?",
-   //         weekGrouping: "@?",
-   //         monthGrouping: "@?",
             siteCollectionList: "=?",
-            groupBy: "@?"
+            groupBy: "@?",
+            name: "@?",
+            startOfToday : "@?",
+            endOfToday: "@?",
+            startOfMonth : "@?",
+            endOfMonth: "@?",
+            endOfHour: "@?",
+            startOfYear : "@?",
+            endOfYear: "@?",
+            lastTwentyFourHours: "@?",
+            lastTwoWeeks: "@?",
+            weekGrouping: "@?",
+            monthGrouping: "@?",
+            
 	};
 	public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes, transcludeFn:ng.ITranscludeFunction) =>{
         scope.swReportConfigurationBar.openCalendarStart = function($event) {

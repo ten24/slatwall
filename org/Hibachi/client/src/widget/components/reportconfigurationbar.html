@@ -5,24 +5,24 @@
                 <div class="report-btn-container">
                     <a href="" class="hibachi-report-date-group-custom-toggle btn btn-xs btn-default "
                         ng-class="swReportConfigurationBar.period === 'hour' ?'active' : '' "
-                        ng-click="swReportConfigurationBar.changeTimeRange('hour',lastTwentyFourHours,endOfHour)"
-                        data-groupby="hour" data-start="{{lastTwentyFourHours}}" data-end="{{endOfHour}}">Hour</a>
+                        ng-click="swReportConfigurationBar.changeTimeRange('hour',swReportConfigurationBar.lastTwentyFourHours,swReportConfigurationBar.endOfHour)"
+                        data-groupby="hour" data-start="{{swReportConfigurationBar.lastTwentyFourHours}}" data-end="{{swReportConfigurationBar.endOfHour}}">Hour</a>
                     <a href="" class="hibachi-report-date-group-custom-toggle btn btn-xs btn-default" 
                         ng-class="swReportConfigurationBar.period === 'day' ?'active' : '' "
-                        ng-click="swReportConfigurationBar.changeTimeRange('day',lastTwoWeeks,endOfToday)"
+                        ng-click="swReportConfigurationBar.changeTimeRange('day',swReportConfigurationBar.lastTwoWeeks,swReportConfigurationBar.endOfToday)"
                         data-groupby="day" data-start="lastTwoWeeks" data-end="endOfToday">Day</a>
                     <a href="" class="hibachi-report-date-group-custom-toggle btn btn-xs btn-default" 
                         ng-class="swReportConfigurationBar.period === 'week' ?'active' : '' "
-                        ng-click="swReportConfigurationBar.changeTimeRange('week',weekGrouping,endOfToday)"
-                        data-groupby="week" data-start="weekGrouping" data-end="endOfToday">Week</a>
+                        ng-click="swReportConfigurationBar.changeTimeRange('week',swReportConfigurationBar.weekGrouping,swReportConfigurationBar.endOfToday)"
+                        data-groupby="week" data-start="swReportConfigurationBar.weekGrouping" data-end="swReportConfigurationBar.endOfToday">Week</a>
                     <a href="" class="hibachi-report-date-group-custom-toggle btn btn-xs btn-default" 
                         ng-class="swReportConfigurationBar.period === 'month' ?'active' : '' "
-                        ng-click="swReportConfigurationBar.changeTimeRange('month',monthGrouping,endOfMonth)"
-                        data-groupby="month" data-start="monthGrouping" data-end="endOfMonth">Month</a>
+                        ng-click="swReportConfigurationBar.changeTimeRange('month',swReportConfigurationBar.monthGrouping,swReportConfigurationBar.endOfMonth)"
+                        data-groupby="month" data-start="swReportConfigurationBar.monthGrouping" data-end="swReportConfigurationBar.endOfMonth">Month</a>
                     <a href="" class="hibachi-report-date-group-custom-toggle btn btn-xs btn-default" 
                         ng-class="swReportConfigurationBar.period === 'year' ?'active' : '' "
-                        ng-click="swReportConfigurationBar.changeTimeRange('year',startOfYear,endOfYear)"
-                        data-groupby="year" data-start="startOfYear" data-end="endOfYear">Year</a>
+                        ng-click="swReportConfigurationBar.changeTimeRange('year',swReportConfigurationBar.startOfYear,swReportConfigurationBar.endOfYear)"
+                        data-groupby="year" data-start="swReportConfigurationBar.startOfYear" data-end="swReportConfigurationBar.endOfYear">Year</a>
                     <a  
                         ng-class="swReportConfigurationBar.period === 'custom' ?'active' : '' "
                         class="hibachi-report-date-group-custom-toggle btn btn-xs btn-default" 
