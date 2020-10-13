@@ -108,7 +108,7 @@ class MonatProductListingController {
         
         this.argumentsObject.returnJsonObjects='';
         
-        this.publicService.doAction('getProductsByCategoryOrContentID', this.argumentsObject).then(result => {
+        this.publicService.doAction('getProductsByCategoryOrContentID', this.argumentsObject, 'GET').then(result => {
             this.productList = result.productList;
             this.recordsCount = result.recordsCount;
 			this.observerService.notify('PromiseComplete');

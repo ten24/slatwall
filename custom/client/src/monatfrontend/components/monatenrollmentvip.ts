@@ -195,7 +195,7 @@ class VIPController {
 			this.paginationObject['categoryID'] = category.value;
 		}
 		
-		this.publicService.doAction('getProductsByCategoryOrContentID', data).then((result) => {
+		this.publicService.doAction('getProductsByCategoryOrContentID', data, 'GET').then((result) => {
 			this.observerService.notify("PromiseComplete");
 			this.flexshipProductList = result.productList;
 			this.flexshipProductRecordsCount = result.recordsCount
@@ -221,7 +221,7 @@ class VIPController {
 			this.paginationObject['categoryID'] = category.value;
 		}
 		
-		this.publicService.doAction('getproductsByCategoryOrContentID', data).then((result) => {
+		this.publicService.doAction('getproductsByCategoryOrContentID', data, 'GET').then((result) => {
 			this.observerService.notify("PromiseComplete");
 			this.productList = result.productList;
 			this.productRecordsCount = result.recordsCount
