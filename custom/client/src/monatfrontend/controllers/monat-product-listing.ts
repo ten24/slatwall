@@ -40,7 +40,7 @@ class MonatProductListingController {
 
     
     public $onInit = () => {
-        this.publicService.getCart();
+        this.monatService.getCart(); // monat-service caches cart in session-cache for 15 min
         this.getWishlistItems();
     }
     
