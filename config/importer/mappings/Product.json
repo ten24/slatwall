@@ -52,6 +52,24 @@
         }
     ],
     
+    "relations": [
+        {
+            "type": "manyToOne",
+            "entityName": "Brand",
+            "propertyIdentifier": "Brand"
+        },
+        {
+            "type": "manyToOne",
+            "entityName": "ProductType",
+            "propertyIdentifier": "ProductType"
+        },
+        {
+            "type": "manyToOne",
+            "entityName": "Sku",
+            "propertyIdentifier": "defaultSku"
+        }
+    ],
+    
     "importIdentifier": {
         "propertyIdentifier": "importRemoteID",
         "type": "composite",
@@ -60,18 +78,8 @@
         ]
     },
     
-    "relations": [
-        {
-            "entityName": "brand",
-            "propertyIdentifier": "Brand"
-        },
-        {
-            "entityName": "productType",
-            "propertyIdentifier": "ProductType"
-        },
-        {
-            "entityName": "defaultSku",
-            "propertyIdentifier": "Sku"
-        }
-    ],
+    "validationContext": "save",
+    
+    "postPopulateMethods": []
+}
     

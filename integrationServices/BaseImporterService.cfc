@@ -645,8 +645,22 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	public any function generate_brand_urlTitle( struct data, struct mapping, struct propertyMetaData ){
 	    /*** Logic to be discussed ***/
 	}
-	public any function generate_product_urlTitle( struct data, struct mapping, struct propertyMetaData ){
-	    /*** Logic to be discussed ***/
+	public any function generate_product_urlTitle( struct data, struct mapping, struct propertyMetaData , string spacer="-"){
+	    var result = replace("[{,./?:;(*&^%$@!~ This is a string abcde àáâãäå èéêë ìíîï òóôö ùúûü ñ año ñññññññññññññ","'", "", "all");
+		
+		result = trim(ReReplaceNoCase(result, "<[^>]*>", "", "ALL"));
+		
+		result = ReplaceList(result, "À,Á,Â,Ã,Ä,Å,Æ,È,É,Ê,Ë,Ì,Í,Î,Ï,Ð,Ñ,Ò,Ó,Ô,Õ,Ö,Ø,Ù,Ú,Û,Ü,Ý,à,á,â,ã,ä,å,æ,è,é,ê,ë,ì,í,î,ï,ñ,ò,ó,ô,õ,ö,ø,ù,ú,û,ü,ý,&nbsp;,&amp;", "A,A,A,A,A,A,AE,E,E,E,E,I,I,I,I,D,N,O,O,O,O,O,0,U,U,U,U,Y,a,a,a,a,a,a,ae,e,e,e,e,i,i,i,i,n,o,o,o,o,o,0,u,u,u,u,y, , ");
+		
+		result = trim(rereplace(result, "[[:punct:]]"," ","all"));
+		
+		result = rereplace(result, "[[:space:]]+","!","all");
+		
+		result = ReReplace(result, "[^a-zA-Z0-9!]", "", "ALL");
+	
+		result = trim(rereplace(result, "!+", arguments.Spacer, "all"));
+	
+		return result;
 	}
 	public any function generate_productType_urlTitle( struct data, struct mapping, struct propertyMetaData ){
 	    /*** Logic to be discussed ***/
@@ -655,12 +669,6 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    /*** Logic to be discussed ***/
 	}
 	public any function generate_productType_productTypeNamePath( struct data, struct mapping, struct propertyMetaData ){
-	    /*** Logic to be discussed ***/
-	}
-	public any function generate_stock_minQuantity( struct data, struct mapping, struct propertyMetaData ){
-	    /*** Logic to be discussed ***/
-	}
-	public any function generate_stock_maxQuantityd( struct data, struct mapping, struct propertyMetaData ){
 	    /*** Logic to be discussed ***/
 	}
 	

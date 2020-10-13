@@ -26,7 +26,7 @@
         },
         "currencyCode": {
             "propertyIdentifier": "currencyCode",
-            "defaultValue": "USD"
+            "defaultValue": "USD",
             "validations": {
                 "dataType": "string"
             }
@@ -37,6 +37,27 @@
         }
         
     },
+    
+    "generatedProperties": [],
+    
+    "relations": [
+        {
+            "type": "manyToOne",
+            "entityName": "Product",
+            "propertyIdentifier": "Product"
+        },
+        {
+            "type": "oneToMany",
+            "entityName": "Stock",
+            "propertyIdentifier": "Stock"
+        },
+        {
+            "type": "oneToMany",
+            "entityName": "SkuPrice",
+            "propertyIdentifier": "skuPrice"
+        }
+    ],
+    
     "importIdentifier": {
         "propertyIdentifier": "importRemoteID",
         "type": "composite",
@@ -45,18 +66,7 @@
         ]
     },
     
-    "relations": [
-        {
-            "entityName": "product",
-            "propertyIdentifier": "Product"
-        },
-        {
-            "entityName": "stocks",
-            "propertyIdentifier": "Stock"
-        },
-        {
-            "entityName": "skuPrice",
-            "propertyIdentifier": "skuPrice"
-        }
-    ]
+    "validationContext": "save",
+    
+    "postPopulateMethods": []
 }
