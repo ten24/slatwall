@@ -59,6 +59,17 @@ Notes:
 		<cfreturn local.query.shipMethRateIntegrationMethID/>
 	</cffunction>
 	
+	<cffunction name='getShippingMethodDescription'>
+		<cfargument name="shippingMethodID" required="true" >
+		
+		<cfquery name="local.query">
+			SELECT shippingMethodDescription FROM SwShippingMethod
+			WHERE shippingMethodID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.shippingMethodID#">
+			
+		</cfquery>	
+		<cfreturn local.query.shippingMethodDescription/>
+	</cffunction>
+	
 	<cffunction name='hasShippingMethodRateIntegrationMethod'>
 		<cfargument name="shippingMethodRateID" required="true" >
 		<cfargument name="method" required="true" >

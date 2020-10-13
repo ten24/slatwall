@@ -5768,7 +5768,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				thisOption['shippingMethodCode'] = shippingMethodOption.getShippingMethodRate().getShippingMethod().getShippingMethodCode();
 			}
 			thisOption['publishedFlag'] = shippingMethodOption.getShippingMethodRate().getShippingMethod().getPublishedFlag();
-
+			thisOption['shippingMethodDescription'] = getDAO('ShippingDAO').getShippingMethodDescription(thisOption['value']);
+			
 			var inserted = false;
 
 			arrayAppend(optionsArray, thisOption);
