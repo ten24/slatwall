@@ -391,7 +391,7 @@ component extends="Slatwall.model.service.AccountService" accessors="true" outpu
 		return getHibachiScope().getService('integrationService')
 			.getIntegrationByIntegrationPackage('infotrax')
 			.getIntegrationCFC("data")
-			.retrySyncPendingOrders(argumentCollection=arguments);
+			.retrySyncPendingAccounts(argumentCollection=arguments);
 	}
 	
 	public any function processAccount_importAccountUpdates(struct data={}) {
