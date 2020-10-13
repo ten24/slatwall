@@ -153,6 +153,7 @@ component output="false" accessors="true" extends="Slatwall.model.transient.Hiba
 			,'instantiationKey' : getApplicationValue("instantiationKey")
 			,'attributeCacheKey' : getService("hibachiService").getAttributeCacheKey()
 			,'missingImagePath' : currentRequestSite.setting('siteMissingImagePath')
+			,'currencies' : getService("currencyService").getAllActiveCurrencies(detailFlag=true)
 		};
 		
 		

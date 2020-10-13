@@ -140,10 +140,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 			var site = getCurrentRequestSite();
 			if ( !isNull(site) ){
 				//Though the relationship is a many-to-many we're only dealing with 1 location as of now
-				
 				if(site.getLocationsCount()){
-					var locationsSmartList = site.getLocationsSmartlist();
-					variables.currentRequestSiteLocation= locationsSmartList.getFirstRecord();
+					variables.currentRequestSiteLocation= site.getLocations()[1];
 				}
 			}
 		}
@@ -412,6 +410,13 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	
 	public any function getAccountData(string propertyList) {
 		
+		if(hasSessionValue('accountData')){
+			var data = getSessionValue('accountData');
+			if(isStruct(data) && !structIsEmpty(data)){
+				return data;
+			}
+		}
+		
 		var availablePropertyList = getAvailableAccountPropertyList();
 
 		availablePropertyList = ReReplace(availablePropertyList,"[[:space:]]","","all");
@@ -438,6 +443,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 			data[ 'processObjects' ][ key ][ 'errors' ] = getAccount().getProcessObjects()[ key ].getErrors();
 		}
 		
+		setSessionValue('accountData', data);
 		return data;
 	}
 
@@ -500,6 +506,13 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	
 	public any function getCartData(string propertyList,string cartDataOptions="full", boolean updateOrderAmounts) {
 		
+		if(hasSessionValue('cartData')){
+			var data = getSessionValue('cartData');
+			if(isStruct(data) && !structIsEmpty(data)){
+				return data;
+			}
+		}
+		
 		var availablePropertyList = getAvailableCartPropertyList(arguments.cartDataOptions);
 		availablePropertyList = ReReplace(availablePropertyList,"[[:space:]]","","all");
 		
@@ -554,6 +567,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
             data[ 'processObjects' ][ key ][ 'errors' ] = getCart().getProcessObjects()[ key ].getErrors();
         }
 		
+		setSessionValue('cartData', data);
 		return data;
 	}
 
