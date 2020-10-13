@@ -221,9 +221,9 @@ class SWReturnOrderItemsController{
 
        if(orderItem.returnQuantity > 0 && orderItem.total > 0){
 
-           orderItem.refundUnitPV = getDecimalRep( orderItem.refundTotal * orderItem.pvTotal / ( this.applyRefundPercentage(orderItem, orderItem.total) * orderItem.returnQuantity) );
+           orderItem.refundUnitPV = this.applyRefundPercentage(orderItem,  orderItem.refundTotal * orderItem.pvTotal / ( this.applyRefundPercentage(orderItem, orderItem.total) * orderItem.returnQuantity) );
            orderItem.refundPVTotal = getDecimalRep( orderItem.refundUnitPV * orderItem.returnQuantity );
-           orderItem.refundUnitCV = getDecimalRep( orderItem.refundTotal * orderItem.cvTotal / (this.applyRefundPercentage(orderItem, orderItem.total) * orderItem.returnQuantity) );
+           orderItem.refundUnitCV = this.applyRefundPercentage(orderItem,  orderItem.refundTotal * orderItem.cvTotal / (this.applyRefundPercentage(orderItem, orderItem.total) * orderItem.returnQuantity) );
            orderItem.refundCVTotal = getDecimalRep( orderItem.refundUnitCV * orderItem.returnQuantity );
 
        }else{
@@ -233,7 +233,7 @@ class SWReturnOrderItemsController{
            orderItem.refundCVTotal = 0;
        }
 
-       orderItem.taxRefundAmount = getDecimalRep( this.applyRefundPercentage(orderItem, orderItem.taxTotal * orderItem.returnQuantity / orderItem.quantity) );
+       orderItem.taxRefundAmount = getDecimalRep(  orderItem.taxTotal * orderItem.returnQuantity / orderItem.quantity );
 
        if('undefined' != typeof orderItem.calculatedTaxAmountNotRefunded){
             orderItem.taxRefundAmount = Math.min(orderItem.taxRefundAmount,orderItem.calculatedTaxAmountNotRefunded);
