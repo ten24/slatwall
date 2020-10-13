@@ -58,9 +58,9 @@ class SWCurrency{
 
                 if( !serviceInvoked ) {
                     serviceInvoked = true;
-                    $hibachi.getCurrencies(true).then((currencies)=>{
-                        data = currencies.data;
-                        locale = currencies.locale.replace('_','-');
+                    $hibachi.getCurrencies().then((currencies)=>{
+                        data = currencies;
+                        locale = $hibachi.getConfig().rbLocale.replace('_','-');
                     });
                 }
                 return  "--" + value;

@@ -1,5 +1,15 @@
 component extends="Slatwall.model.service.HibachiService" accessors="true" output="false" {
 	
+	
+	private any function getIntegration(){
+		
+		if( !structKeyExists(variables,'integration') ){
+			variables.integration = getService('integrationService').getIntegrationByIntegrationPackage( 'mailchimp' );
+		}
+		
+		return variables.integration;
+	}
+	
 	/**
 	 * Gets a boolean if the user is subscribed to mailchimp.
 	 * 
@@ -43,6 +53,19 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" outpu
 		return member;
 	}
 	
+	public void function queueSubscriptionUpdate( required struct account, required boolean subscribeFlag ) {
+		
+		var integrationID = getIntegration().getIntegrationID();
+
+		getDAO('HibachiEntityQueueDAO').insertEntityQueue(
+			baseID          = account.getAccountID(),
+			baseObject      = 'Account',
+			processMethod   = 'updateSubscriptionByAccount',
+			entityQueueData = { 'subscribeFlag' = arguments.subscribeFlag },
+			integrationID   = integrationID
+		);
+	}
+	
 	/**
 	 * Update subscription by account.
 	 * 
@@ -50,16 +73,17 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" outpu
 	 * If the member does exist, we will update the status based on the subscribe flag
 	 * 
 	 * @param {struct} account - Account entity.
-	 * @param {boolean} subscribeFlag - If the user should be subscribed or unsubscribed.
+	 * @param {struct} data - data struct containing the current subscription status
 	 * @return void
 	 */
-	public void function updateSubscriptionByAccount( required struct account, required boolean subscribeFlag ) {
+	public void function updateSubscriptionByAccount( required struct account, required struct data ) {
+		param name="arguments.data.subscribeFlag" default="false";
 		
 		var member = this.getMemberByEmailAddress( arguments.account.getPrimaryEmailAddress().getEmailAddress() );
 		
 		if ( !isStruct( member ) ) {
 			// If the subscribe flag is set to true, add them to our list.
-			if ( arguments.subscribeFlag ) {
+			if ( arguments.data.subscribeFlag ) {
 				this.addMemberToListByAccount( arguments.account );
 			}
 			
@@ -70,7 +94,7 @@ component extends="Slatwall.model.service.HibachiService" accessors="true" outpu
 			var dataCenter = getHibachiScope().setting('integrationmailchimpmailChimpDataCenter');
 			var apiPath = 'https://#dataCenter#.api.mailchimp.com/3.0/lists/#list_id#/members/#member.ID#';
 			
-			var status = ( arguments.subscribeFlag ) ? 'subscribed' : 'unsubscribed';
+			var status = ( arguments.data.subscribeFlag ) ? 'subscribed' : 'unsubscribed';
 			var mailchimpData = {
 				'status': status
 			};

@@ -214,6 +214,9 @@
 	"afterOrderProcess_placeOrderSuccess" : {
 		"filters" : "validOrder"
 	},
+	"afterOrderProcess_updateStatusSuccess" : {
+		"filters" : "validOrder"
+	},
 	"afterOrderProcess_updateOrderAmountsSuccess" : {
 		"filters" : "validOrder"
 	},

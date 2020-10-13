@@ -184,7 +184,7 @@ class SWReturnOrderItemsController{
         }
         
         $hibachi.getCurrencies().then(result=>{
-            this.currencySymbol = result.data[this.currencyCode];
+            this.currencySymbol = result.data[this.currencyCode]['currencySymbol'];
         })
     }
 
