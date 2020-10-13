@@ -74,7 +74,11 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
             && left(arguments.rc.context,3) == 'GET'
         ){
             getHibachiScope().setPersistSessionFlag(false);
-        }
+        } else if (arguments.rc.context != "getCart" && arguments.rc.context != "getAccount") {
+            // if it's a post request clear cart / account cache
+            getHibachiScope().clearSessionValue('cartData');
+            getHibachiScope().clearSessionValue('accountData');
+        }        
     }
 
     public any function get( required struct rc ) {
