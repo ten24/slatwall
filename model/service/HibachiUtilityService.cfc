@@ -808,16 +808,11 @@ Notes:
 	}
 	
 	public string function getFormattedErrorMessage(any integrationName,any errorCode,string fallbackMessage){
-        
-        var getRbkeyMsg = getHibachiScope().rbKey('#integrationName#_errorcode_#errorCode#');
-        var searchMissingIndex = find("missing",getRbkeyMsg);
-        if(searchMissingIndex > 0){
+        var errorMsg = getHibachiScope().rbKey('#integrationName#_errorcode_#errorCode#');
+        if(find("missing",errorMsg) > 0){
             //If error message is not found in RB keys
-            var errorMsg = arguments.fallbackMessage;
-        }else{
-            var errorMsg = getRbkeyMsg;
+             errorMsg = arguments.fallbackMessage;
         }
-        
         return errorMsg;
     }
 	
