@@ -49,7 +49,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="totpSecretKey" hb_populateEnabled="false" ormtype="string" hb_auditable="false";
 	property name="totpSecretKeyCreatedDateTime" hb_populateEnabled="false" ormtype="string" hb_auditable="false";
 	property name="taxExemptFlag" ormtype="boolean";
-	property name="organizationFlag" ormtype="boolean" hb_populateEnabled="private" default="false";
+	property name="organizationFlag" ormtype="boolean" default="false";
 	property name="testAccountFlag" ormtype="boolean";
 	property name="verifiedAccountFlag" ormtype="boolean" default="false";
 	property name="accountCode" ormtype="string" hb_populateEnabled="public" index="PI_ACCOUNTCODE";
