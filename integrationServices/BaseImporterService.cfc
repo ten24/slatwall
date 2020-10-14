@@ -221,7 +221,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    var entityName = arguments.entity.getClassName();
 	    
 	    if( structKeyExists(this, 'process#entityName#_import') ){
-	        return this.invokeMethod( 'process#entityName#_mport', arguments );
+	        return this.invokeMethod( 'process#entityName#_import', arguments );
 	    }
 	    
 	    arguments.entity.populate( arguments.entityQueueData );
@@ -231,8 +231,8 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         }
 
 	    // Functions to be called after populating the entity, like `updateCalculatedProperties`
-	    if( structKeyExists(arguments.mapping, 'postPostulateMethods') && isArray(arguments.mapping.postPostulateMethods) ){
-	        for( var methodName in arguments.mapping.postPostulateMethods ){
+	    if( structKeyExists(arguments.mapping, 'postPopulateMethods') && isArray(arguments.mapping.postPopulateMethods) ){
+	        for( var methodName in arguments.mapping.postPopulateMethods ){
 	            arguments.entity.invokeMethod( methodName );
 	        }
 	    }
