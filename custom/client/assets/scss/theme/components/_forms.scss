@@ -294,3 +294,38 @@ label {
     border-color: darken($input-border-color, 7%);
   }
 }
+
+
+// Contact us form
+
+.contactForm form {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 -5px;
+  > div {
+    flex: 1 0 50%;
+    padding: 10px;
+    @include media-breakpoint-down(xs) {
+      flex: 1 0 100%;
+    }
+    > div {
+      display: flex;
+      .radio {
+        margin: 10px 20px 0 0;
+      }
+      .position-relative {
+        width: 100%;
+      }
+    }
+  }
+  input[type=submit] {
+    flex-basis: 100%;
+    margin: 20px 10px;
+    @extend .btn;
+    @extend .btn-primary;
+  }
+}
+
+.contactForm.hide {
+  display: none;
+}

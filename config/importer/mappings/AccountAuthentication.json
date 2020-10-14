@@ -4,7 +4,7 @@
     "generatedProperties" : [
         {
             "propertyIdentifier" : "password",
-            "generatorFunction"  : "generate_accountAuthentication_password"
+            "generatorFunction"  : "generateAccountAuthenticationPassword"
         },
         {
             "propertyIdentifier" : "activeFlag",

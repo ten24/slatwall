@@ -617,27 +617,27 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
             "propertyIdentifier": "examplePropertyIdentifier",
         };
 
-        function generate_Account_exampleProperty_spy(any propertyValue, any constraintValue){
+        function generateAccountExamplePropertyIdentifier_spy(any propertyValue, any constraintValue){
             // puting something in the THIS scope of the SERVICE so it can be verified later
-            this['generate_Account_exampleProperty_spy_called'] = 'it-does-not-matter'; 
+            this['generateAccountExamplePropertyIdentifier_spy_called'] = 'it-does-not-matter'; 
             return 'example_value';
         }
         
         
         // declare a mock generator-finction on the target-service
-        // it follows the pattern `generate_[entityName]_[examplePropertyIdentifier]`
-        variables.service['generate_Account_examplePropertyIdentifier'] = generate_Account_exampleProperty_spy;
+        // it follows the pattern `generate[entityName][PropertyIdentifier]`
+        variables.service['generateAccountExamplePropertyIdentifier'] = generateAccountExamplePropertyIdentifier_spy;
 
 
         var data = this.getService().transformEntityData("Account", sampleAccountData, mapping);
         debug(data);
 
         expect( variables.service )
-            .toHaveKey('generate_Account_exampleProperty_spy_called');
+            .toHaveKey('generateAccountExamplePropertyIdentifier_spy_called');
             
-        debug( variables.service.generate_Account_exampleProperty_spy_called );
+        debug( variables.service.generateAccountExamplePropertyIdentifier_spy_called );
         
-        expect( variables.service.generate_Account_exampleProperty_spy_called )
+        expect( variables.service.generateAccountExamplePropertyIdentifier_spy_called )
             .toBe('it-does-not-matter');
             
 	    expect( data )
@@ -647,8 +647,8 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	        .toBe( 'example_value', "the defaule value for examplePropertyIdentifier should get generated and should be 'example_value' ");
        
         // cleanup
-        structDelete( variables.service, 'generate_Account_exampleProperty_spy_called');
-        structDelete( variables.service, 'generate_Account_exampleProperty');
+        structDelete( variables.service, 'generateAccountExamplePropertyIdentifier_spy_called');
+        structDelete( variables.service, 'generateAccountExamplePropertyIdentifier');
     }
     
     
@@ -970,7 +970,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    var sampleAccountData = getSampleAccountData();
 	    
         var mapping = this.getService().getEntityMapping( 'Account' );
-        mapping.postPostulateMethods = ['postPopulateExampleMethod'];
+        mapping.postPopulateMethods = ['postPopulateExampleMethod'];
         
         var data = this.getService().transformEntityData("Account", sampleAccountData, mapping);
         debug(data);
@@ -1006,12 +1006,12 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
         var sampleAccountData = getSampleAccountData();
 
         // declare a mock validation-finction on the target-service
-        function processAccountImport_spy(required any entity, required struct entityQueueData, ){
-            this['processAccountImport_spy_called'] = "it works";
+        function processAccount_import_spy(required any entity, required struct entityQueueData, ){
+            this['processAccount_import_spy_called'] = "it works";
             return true;
         }
         
-        variables.service['processAccountImport'] = processAccountImport_spy;
+        variables.service['processAccount_import'] = processAccount_import_spy;
         
         var data = this.getService().transformEntityData( entityName="Account", data=sampleAccountData );
         
@@ -1019,10 +1019,10 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    tempAccount = this.getService().processEntityImport( tempAccount, data );
 
         
-        expect( variables.service ).toHaveKey('processAccountImport_spy_called');
-        expect( variables.service.processAccountImport_spy_called ).toBe('it works');
+        expect( variables.service ).toHaveKey('processAccount_import_spy_called');
+        expect( variables.service.processAccount_import_spy_called ).toBe('it works');
         
-        debug(variables.service.processAccountImport_spy_called);
+        debug(variables.service.processAccount_import_spy_called);
         
         // cleanup
         structDelete( variables.service, 'processAccountImport_spy_called');
