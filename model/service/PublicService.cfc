@@ -717,7 +717,7 @@ component  accessors="true" output="false"
                     getService("OrderService").saveOrderFulfillment(fulfillment);
                 }
             }
-            getService("OrderService").saveOrder(order);
+            getService("OrderService").saveOrder(order = order, updateOrderAmounts = false);
             getHibachiScope().addActionResult( "public:cart.addShippingAddressUsingAccountAddress", order.hasErrors());
         }else{
             if(!isNull(accountAddress)){
