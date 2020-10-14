@@ -363,7 +363,7 @@ Notes:
 
 		var specificFormTemplateFilePath =  currentSite.getTemplatesPath() & specificFormTemplateFileName;
 		var siteTemplatePath = currentSite.getApp().getAppRootPath() & "/" & currentSite.getSiteCode() & "/templates/";
-		var baseTemplatePath = currentSite.getApp().getAppRootPath() & "/" & currentSite.getSiteCode() & "/templates/";
+		var baseTemplatePath = currentSite.getApp().getAppRootPath() & "/templates/";
 
 		if(fileExists(specificFormTemplateFilePath)){
 			var templatePath = siteTemplatePath & specificFormTemplateFileName;
