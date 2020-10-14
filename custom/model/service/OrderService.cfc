@@ -2136,7 +2136,7 @@ component extends="Slatwall.model.service.OrderService" {
 				getHibachiScope().addEntityQueueData(argumentCollection=entityQueueArguments);
 			}
 		}
-		// writeDump(var=getHibachiScope().getEntityQueueData(),top=5);abort;
+
 		return arguments.order;
 	}
 	
