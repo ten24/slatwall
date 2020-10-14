@@ -82,6 +82,7 @@
   <script src="#$.getThemePath()#/custom/client/assets/js/bootstrap.min.js"></script>
   <script src="#$.getThemePath()#/custom/client/assets/js/slick.min.js"></script>
   <script src="#$.getThemePath()#/custom/client/assets/js/theme.js"></script>
+  <script src="#$.getThemePath()#/custom/client/assets/js/simplebar.min.js"></script>
 </body>
 </html>
 
