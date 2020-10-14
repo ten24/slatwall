@@ -32,7 +32,7 @@
             <div class="col-lg-6 pr-lg-5 pt-0">
               <div class="cz-product-gallery">
                 <div class="cz-preview order-sm-2">
-                  <div class="cz-preview-item active" id="first"><img class="cz-image-zoom w-50 mx-auto" src="#$.getThemePath()#/custom/client/assets/images/product-img-1.png" data-zoom="#$.getThemePath()#/custom/client/assets/images/product-img-1.png" alt="Product image">
+                  <div class="cz-preview-item active" id="first"><img class="cz-image-zoom w-100 mx-auto" src="#$.getThemePath()#/custom/client/assets/images/product-img-1.png" data-zoom="#$.getThemePath()#/custom/client/assets/images/product-img-1.png" alt="Product image" style="max-width: 500px;">
                     <div class="cz-image-zoom-pane"></div>
                   </div>
                 </div>
