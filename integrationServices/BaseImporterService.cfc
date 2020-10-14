@@ -523,26 +523,20 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    
 	    // relations, properties which belong to some slatwall entity, like `email` is stored in AccountEmailAddress
 	    if( structKeyExists(arguments.mapping, 'relations' ) ){
+	        
 	        for(var relation in arguments.mapping.relations ){
 	            
-	            
-	            //TODO: ( if-needed ) properly handle scenarios for -to-Many relations
-	            // if source-property for the relation already exist in the incoming-data, than it should be an array
-	            // otherwise if the incoming-data is a flat struct, then there will be only one new record in the generated-array
-	            
-	            var transformedRelationData = this.transformEntityData( relation.entityName, arguments.data );
-	            
-	            if( listFindNoCase('oneToOne,manyToOne', relation.type) ){
+                var transformedRelationData = this.getOrGenerateRelationData(
+                    data                = arguments.data,
+                    parentEntityapping  = arguments.mapping,
+                    relationMetaData    = relation
+                );
 	                
-	                transformedData[ relation.propertyIdentifier ] = transformedRelationData;
-	                
-	            } else if(  relation.type == 'oneToMany' ){
-	                
-	                // currently this expect only one item for [ -to-many ] array
-	                transformedRelationData = [ transformedRelationData ];
-	                transformedData[ relation.propertyIdentifier ] = transformedRelationData;
-	            }
+                if( !isNull(transformedRelationData) ){
+                    transformedData[ relation.propertyIdentifier ] = transformedRelationData;
+                }
 	        }
+	        
 	    }
 	    
 	    
@@ -565,7 +559,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
          * Fallback order 
          * 1. generator-function provided in the propertyMetadata
          * 
-         * 2. conventional generator-functions `generate[entityName][examplePropertyIdentifier]` in the service, 
+         * 2. conventional generator-functions `generate[entityName][ProertyName]` in the service, 
          *    where ProertyName ==> propertyMetaData.propertyIdentifier
          *    
          *    Ex. generateAccountActiveFlag(){......}
@@ -574,32 +568,81 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
          * 
          * 4. default value from the propertyMetadata
         */
+
+        var entityName = arguments.mapping.entityName;
         
         if( !structKeyExists(arguments, 'mapping')){
-            arguments[ 'mapping' ] = this.getEntityMapping( arguments.entityName );
+            arguments[ 'mapping' ] = this.getEntityMapping( entityName );
         }
         
-        var entityName = arguments.mapping.entityName;
-
         if( structKeyExists(arguments.propertyMetaData, 'generatorFunction') ){
-            
             return this.invokeMethod( arguments.propertyMetaData.generatorFunction, arguments );
-            
-        } else if( structKeyExists(this, 'generate'&entityName&''&arguments.propertyMetaData.propertyIdentifier) ){
-            
-            return this.invokeMethod( 'generate'&entityName&''&arguments.propertyMetaData.propertyIdentifier, arguments );
-            
-        } else if( structKeyExists(arguments, 'sourcePropertyName') && structKeyExists(arguments.data, arguments.sourcePropertyName) ){
-            
+        }  
+        
+        var conventionalGeneratorFunctionName = 'generate'&entityName&arguments.propertyMetaData.propertyIdentifier;
+        if( structKeyExists(this, conventionalGeneratorFunctionName) ){
+            return this.invokeMethod( conventionalGeneratorFunctionName, arguments );
+        }  
+        
+        if( structKeyExists(arguments, 'sourcePropertyName') && structKeyExists(arguments.data, arguments.sourcePropertyName) ){
             return arguments.data[ arguments.sourcePropertyName ];
-            
-        } else if( structKeyExists(arguments.propertyMetaData, 'defaultValue') ){
-            
+        }  
+        
+        if( structKeyExists(arguments.propertyMetaData, 'defaultValue') ){
             return arguments.propertyMetaData.defaultValue;
         }
 	        
     }
     
+    
+    /**
+     * utility function to get relation value either from @data or generated using some helper functions  
+     * 
+    */ 
+    public any function getOrGenerateRelationData( 
+        required struct data, 
+        required struct parentEntityapping,
+        required struct relationMetaData
+    ){
+        
+        /**
+         * Fallback order 
+         * 1. generator-function provided in the relationMetaData
+         * 
+         * 2. conventional generator-functions `generate[entityName][relatedProertyName]` in the service, 
+         *    where ProertyName ==> relationMetaData.propertyIdentifier
+         *    
+         *    Ex. generateAccountPrimaryEmailAddress(){......}
+         * 
+         * 3. transform it using regular `transformEntityData` flow
+         * 
+        */
+        
+        if( structKeyExists(arguments.relationMetaData, 'generatorFunction') ){
+            return this.invokeMethod( arguments.relationMetaData.generatorFunction, arguments );
+        }
+        
+        var conventionalGeneratorFunctionName = 'generate'&arguments.parentEntityapping.entityName&arguments.relationMetaData.propertyIdentifier;
+        if( structKeyExists(this, conventionalGeneratorFunctionName) ){
+            return this.invokeMethod( conventionalGeneratorFunctionName, arguments );
+        }
+        
+        
+        //TODO: ( if-needed ) properly handle scenarios for -to-Many relations
+        // if source-property for the relation already exist in the incoming-data, than it should be an array
+        // otherwise if the incoming-data is a flat struct, then there will be only one new record in the generated-array
+        
+        var transformedRelationData = this.transformEntityData( arguments.relationMetaData.entityName, arguments.data );
+        
+        if( listFindNoCase('oneToOne,manyToOne', arguments.relationMetaData.type) ){
+            return transformedRelationData;
+        }  
+        
+        if(  arguments.relationMetaData.type == 'oneToMany' ){
+            // currently this expect only one item for [ -to-many ] array
+            return [ transformedRelationData ];
+        }
+    }
     
 	public string function createEntityImportRemoteID( required string entityName, required struct data, struct mapping){
 	    
