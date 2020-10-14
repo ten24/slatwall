@@ -1478,7 +1478,7 @@ public void function refreshAmounts(){
             variables.allowableRefundPercent = 100
             if(!isNull(map)){
 		        map = DeserializeJSON(map);
-		        for (rule in map) {
+		        for (var rule in map) {
 					if(rule.minDays <= dateDiff && rule.maxDays >= dateDiff){
 						variables.allowableRefundPercent = rule.refundPercent
 					}
