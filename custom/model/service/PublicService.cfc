@@ -2071,22 +2071,19 @@ component extends="Slatwall.model.service.PublicService" accessors="true" output
     }
     
     public void function getOrderItemsByOrderID(required any data){
-        var orderItemsByOrderID = getOrderService().getOrderItemsHeavy({orderID: arguments.data.orderID, currentPage: arguments.data.currentPage, pageRecordsShow: arguments.data.pageRecordsShow });
+        var orderItems = getOrderService().getOrderItemsHeavy({orderID: arguments.data.orderID, currentPage: arguments.data.currentPage, pageRecordsShow: arguments.data.pageRecordsShow });
         
         var skuService = getService('skuService');
-        var count = 1;
-        if(structKeyExists(orderItemsByOrderID,'orderItems')){
-        	for (var getOrderItems in orderItemsByOrderID.orderItems){
-        		var skuScope = skuService.getSkuByskuID(getOrderItems.sku_skuID);
-            	var skuAllowBackOrderFlag = skuScope.getAllowBackOrderFlag();
-            	var backOrderedMessaging = skuScope.getBackOrderedMessaging();
-            	orderItemsByOrderID['orderItems'][count]['skuAllowBackorderFlag'] = skuAllowBackOrderFlag;
-            	orderItemsByOrderID['orderItems'][count]['backorderedMessaging'] = backOrderedMessaging;
-            	count++;
+
+        if(structKeyExists(orderItems,'orderItems')){
+        	for (var orderItemStruct in orderItems.orderItems){
+        		var sku = skuService.getSku(orderItemStruct.sku_skuID);
+            	orderItemStruct['skuAllowBackorderFlag'] = sku.getAllowBackOrderFlag();
+            	orderItemStruct['backorderedMessaging'] = sku.getBackOrderedMessaging();
         	}
         }
         
-        arguments.data['ajaxResponse']['OrderItemsByOrderID'] = orderItemsByOrderID;
+        arguments.data['ajaxResponse']['OrderItemsByOrderID'] = orderItems;
     }
     
     public void function getMarketPartners(required struct data){
