@@ -71,17 +71,23 @@
 		}}
 		
 	</div>
-	
 </header>
-
 
 <ng-transclude></ng-transclude>
 
 <div ng-cloak ng-show="monatEnrollment.showCanPlaceOrderAlert && !monatEnrollment.monatService.canPlaceOrder" class="alert alert-danger alert-dismissible fade show text-center can-place-order-alert" role="alert">
     <span sw-rbkey="'frontend.order.canPlaceOrderFailure'"></span>
 </div>
-    
 <footer ng-if="monatEnrollment.currentStepName !== 'checkout'" class="steps-footer d-flex flex-column">
+	<span 
+		ng-show=
+		"monatEnrollment.currentStepName == 'todaysOrder'
+		&& monatEnrollment.type = 'vip'
+		&& monatEnrollment.monatService.cart.subtotal - monatEnrollment.orderTemplateService.cartTotalThresholdForOFYAndFreeShipping > 0"
+		ng-hide="monatEnrollment.currentStepName != 'todaysOrder' || monatEnrollment.monatService.cart.subtotal - monatEnrollment.orderTemplateService.cartTotalThresholdForOFYAndFreeShipping <= 0"
+		class="text-white d-flex align-items-center">
+		You have reached the threshold!
+	</span>
 	<div class="w-100 d-flex justify-content-between align-items-center">
 		<!-- Back button --->
 		<div class="d-flex align-items-center">
