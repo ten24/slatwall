@@ -3,6 +3,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
     this.publicMethods = '';
 	this.secureMethods=listAppend(this.secureMethods, 'processOrder_placeInProcessingOne');
 	this.secureMethods=listAppend(this.secureMethods, 'processOrder_placeInProcessingTwo');
+    this.secureMethods=listAppend(this.secureMethods, 'autoApproveQualifyingReturns');
     this.secureMethods=listAppend(this.secureMethods, 'batchApproveReturnOrders');
     
     public void function batchApproveReturnOrders(required struct rc){
@@ -18,4 +19,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		}
 		renderOrRedirectSuccess( defaultAction="admin:entity.listreturnorder", maintainQueryString=false, rc=arguments.rc);
 	}
+	
+	public any function autoApproveQualifyingReturns(){
+		var order = getService('OrderService').newOrder();
+        getService('OrderService').processOrder(order,'batchApproveFullRmas');
+    }
 }
