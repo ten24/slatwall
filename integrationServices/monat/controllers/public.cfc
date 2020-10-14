@@ -7,6 +7,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
     this.publicMethods=ListAppend(this.publicMethods, 'getProductReviews');
     this.publicMethods=ListAppend(this.publicMethods, 'getMarketPartners');
     this.publicMethods=ListAppend(this.publicMethods, 'getProductListingFilters');
+    this.publicMethods=ListAppend(this.publicMethods, 'saveEnrollment');
 
 
     public any function before(required struct rc){
@@ -51,4 +52,21 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
         
     }
     
+    public void function saveEnrollment(required struct rc){
+        param name="arguments.rc.emailAddress";
+        var cart = getHibachiScope().getCart();
+        var newOrder = getService('OrderService').processOrder(cart,{referencedOrderFlag:false},'duplicateOrder');
+        var emailTemplate = getService('EmailService').getEmailTemplateByEmailTemplateName('Share Enrollment');
+        var email = getService('EmailService').newEmail();
+        
+        var emailData = {
+            order:newOrder,
+            emailTemplate:emailTemplate
+        }
+        
+        var email = getService('emailService').processEmail(email,emailData,'createFromTemplate');
+        email.setEmailTo(arguments.emailAddress);
+        email = this.processEmail(email, arguments, 'addToQueue');
+        getHibachiScope().addActionResult('monat:public.saveEnrollment',email.hasErrors());
+    }
 }
