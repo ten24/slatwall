@@ -2447,8 +2447,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		param name="arguments.data.optionalProperties" type="string" default=""; //optional properties requested in the api call
 		
 		var orderTemplateCollection = this.getOrderTemplateCollectionList();
-		var displayProperties = 'calculatedSubTotal,orderTemplateID,orderTemplateName,scheduleOrderNextPlaceDateTime,calculatedOrderTemplateItemsCount,calculatedTotal,scheduleOrderDayOfTheMonth,statusCode';
-		displayProperties &= ",frequencyTerm.termID,frequencyTerm.termName,shippingMethod.shippingMethodID,accountPaymentMethod.accountPaymentMethodID,orderTemplateStatusType.typeName,currencyCode";
+		var displayProperties = 'calculatedSubTotal,orderTemplateID,orderTemplateName,scheduleOrderNextPlaceDateTime,calculatedOrderTemplateItemsCount,calculatedTotal,scheduleOrderDayOfTheMonth';
+		displayProperties &= ",frequencyTerm.termID,frequencyTerm.termName,shippingMethod.shippingMethodID,accountPaymentMethod.accountPaymentMethodID,orderTemplateStatusType.typeName,orderTemplateStatusType.systemCode,currencyCode";
 		
 		var addressCollectionProps = getService('hibachiService').getDefaultPropertyIdentifiersListByEntityName("AccountAddress");
 		var shippingAddressPropList = getService('hibachiUtilityService').prefixListItem(addressCollectionProps, "shippingAccountAddress.");
