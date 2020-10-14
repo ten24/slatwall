@@ -1122,7 +1122,27 @@
     		return ArrayToList( arrPassword, "" );
 	    }
 
+		/**
+		 * Utility function to generate url title for string provided
+		 *  Example. generateSlugifyUrl();
+		**/
+		public string function generateSlugifyUrl(string String,string Spacer){
+            var result = replace(arguments.String,"'", "", "all");
 
+			result = trim(ReReplaceNoCase(result, "<[^>]*>", "", "ALL"));
+	
+			result = ReplaceList(result, "À,Á,Â,Ã,Ä,Å,Æ,È,É,Ê,Ë,Ì,Í,Î,Ï,Ð,Ñ,Ò,Ó,Ô,Õ,Ö,Ø,Ù,Ú,Û,Ü,Ý,à,á,â,ã,ä,å,æ,è,é,ê,ë,ì,í,î,ï,ñ,ò,ó,ô,õ,ö,ø,ù,ú,û,ü,ý,&nbsp;,&amp;", "A,A,A,A,A,A,AE,E,E,E,E,I,I,I,I,D,N,O,O,O,O,O,0,U,U,U,U,Y,a,a,a,a,a,a,ae,e,e,e,e,i,i,i,i,n,o,o,o,o,o,0,u,u,u,u,y, , ");
+	
+			result = trim(rereplace(result, "[[:punct:]]"," ","all"));
+	
+			result = rereplace(result, "[[:space:]]+","!","all");
+	
+			result = ReReplace(result, "[^a-zA-Z0-9!]", "", "ALL");
+	
+			result = trim(rereplace(result, "!+", arguments.Spacer, "all"));
+	
+			return result;
+	    }
 		private string function getEncryptionKeyFilePath() {
 			return getEncryptionKeyLocation() & getEncryptionKeyFileName();
 		}

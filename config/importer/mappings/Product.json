@@ -48,7 +48,7 @@
     "generatedProperties" : [
         {
             "propertyIdentifier" : "urlTitle",
-            "generatorFunction"  : "generate_product_urlTitle"
+            "generatorFunction"  : "generate_Product_UrlTitle"
         }
     ],
     
@@ -76,10 +76,6 @@
         "keys": [
             "productID"
         ]
-    },
-    
-    "validationContext": "save",
-    
-    "postPopulateMethods": []
+    }
 }
     

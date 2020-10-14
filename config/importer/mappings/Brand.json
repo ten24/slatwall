@@ -36,15 +36,7 @@
     "generatedProperties" : [
         {
             "propertyIdentifier" : "urlTitle",
-            "generatorFunction"  : "generate_brand_urlTitle"
-        }
-    ],
-    
-    "relations": [
-        {
-            "type": "manyToOne",
-            "entityName": "Product",
-            "propertyIdentifier": "Product"
+            "generatorFunction"  : "generate_Brand_UrlTitle"
         }
     ],
     
@@ -54,9 +46,5 @@
         "keys": [
             "brandName"
         ]
-    },
-    
-    "validationContext": "save",
-    
-    "postPopulateMethods": []
+    }
 }

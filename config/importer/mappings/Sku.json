@@ -24,13 +24,6 @@
                 "dataType": "string"
             }
         },
-        "currencyCode": {
-            "propertyIdentifier": "currencyCode",
-            "defaultValue": "USD",
-            "validations": {
-                "dataType": "string"
-            }
-        },
         "publishedFlag": {
             "propertyIdentifier": "publishedFlag",
             "defaultValue": true
@@ -41,11 +34,6 @@
     "generatedProperties": [],
     
     "relations": [
-        {
-            "type": "manyToOne",
-            "entityName": "Product",
-            "propertyIdentifier": "Product"
-        },
         {
             "type": "oneToMany",
             "entityName": "Stock",
@@ -62,11 +50,7 @@
         "propertyIdentifier": "importRemoteID",
         "type": "composite",
         "keys": [
-            "skuID"
+            "remoteSkuID"
         ]
-    },
-    
-    "validationContext": "save",
-    
-    "postPopulateMethods": []
+    }
 }

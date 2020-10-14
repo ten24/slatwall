@@ -48,23 +48,15 @@
     "generatedProperties" : [
         {
             "propertyIdentifier" : "urlTitle",
-            "generatorFunction"  : "generate_productType_urlTitle"
+            "generatorFunction"  : "generate_ProductType_UrlTitle"
         },
         {
             "propertyIdentifier" : "productTypeIDPath",
-            "generatorFunction"  : "generate_productType_productTypeIDPath"
+            "generatorFunction"  : "generate_ProductType_ProductTypeIDPath"
         },
         {
             "propertyIdentifier" : "productTypeNamePath",
-            "generatorFunction"  : "generate_productType_productTypeNamePath"
-        }
-    ],
-    
-    "relations": [
-        {
-            "type": "manyToOne",
-            "entityName": "Product",
-            "propertyIdentifier": "Product"
+            "generatorFunction"  : "generate_ProductType_ProductTypeNamePath"
         }
     ],
     
@@ -72,7 +64,7 @@
         "propertyIdentifier": "importRemoteID",
         "type": "composite",
         "keys": [
-            "productTypeID"
+            "remoteProductTypeID"
         ]
     }
 } 

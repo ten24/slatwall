@@ -9,26 +9,24 @@
                 "dataType": "string"
             }
         },
-        "minQuantity": {
+        "minQuantity":  {
             "propertyIdentifier": "minQuantity",
+            "defaultValue":"null",
             "validations": {
-                "required": true,
-                "defaultValue":null,
                 "dataType": "string"
             }
         },
         "maxQuantity": {
-            "propertyIdentifier": "minQuantity",
+            "propertyIdentifier": "maxQuantity",
+            "defaultValue":"null",
             "validations": {
-                "required": true,
-                "defaultValue":null,
                 "dataType": "string"
             }
         },
         "currencyCode": {
             "propertyIdentifier": "currencyCode",
+            "defaultValue": "USD",
             "validations": {
-                "required": false,
                 "dataType": "string"
             }
         },
@@ -41,8 +39,8 @@
         },
         "listPrice": {
             "propertyIdentifier": "listPrice",
-            "defaultValue": true,
             "validations": {
+                "required": true,
                 "dataType": "numeric"
             }
         },
